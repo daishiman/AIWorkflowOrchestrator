@@ -14,11 +14,11 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 4. `../completed-task/task-010a-ut-skill-import-channel-conflict-001.md`（並列：010a∥011∥014）
 5. `../completed-task/task-011-ut-ipc-data-flow-type-gaps-001.md`（並列：010a∥011∥014）
-6. `task-014-ut-fix-skill-execute-interface-001.md`（並列：010a∥011∥014、依存なし）
+6. `../completed-task/task-014-ut-fix-skill-execute-interface-001.md`（完了 / 並列：010a∥011∥014、依存なし）
 7. `../completed-task/task-012-ut-skill-ipc-preload-extension-001.md`（010a/011完了後）
 8. `../completed-task/task-013-task9-ui-backend-consistency-improvements-001.md`（012完了後）
    - SubAgent Team: `../../../completed-tasks/task-013-subagent-team/index.md`
-9. `task-013e-phase12-action-bridge.md`（013再監査後、次アクション実行の入口）
+9. `~~task-013e-phase12-action-bridge.md~~`（完了）
 
 ```
 010a ─┐
@@ -144,3 +144,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 - `task-090-tasks-index-legacy.md`
 - `task-091-ui-overhaul-index-legacy.md`
 - `task-092-task9-execution-order-index-legacy.md`
+
+## 更新履歴
+
+- 2026-02-25: 実行ステータス再同期。`task-014` を完了タスクへ確定し、参照先を `../completed-task/task-014-ut-fix-skill-execute-interface-001.md` に更新。`task-013e-phase12-action-bridge.md` も完了扱いに同期。

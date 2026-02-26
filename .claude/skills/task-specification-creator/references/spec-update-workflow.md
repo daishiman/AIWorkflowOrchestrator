@@ -78,7 +78,10 @@ Phase 12 Task 2 開始
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
 | 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須** | 成果物実体と仕様書本体の実行記録が乖離すると監査で不整合になる。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
 | 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` で current を判定し、scope未指定の全体監査は baseline として別記録する |
+
+| 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` は `current/baseline` 分類で使い、合否は `currentViolations.total` を正本に判定する（scope未指定の全体監査は baseline として別記録） |
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
+| 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
 | 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要** | Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須。統合元セクションを「統合済み」に変更し、統合先セクションを拡張すること（P25-P28参照） |
@@ -318,7 +321,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
-- [ ] `audit-unassigned-tasks.js --json --target-file <path>` または `--diff-from <ref>` で current 判定を記録した
+- [ ] `audit-unassigned-tasks.js --json --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
@@ -396,16 +399,26 @@ comm -3 \
 # 1) 全体監査（既存違反を含む）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
+# 1.5) 対象ファイル監査（currentを抽出）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+  --target-file docs/30-workflows/unassigned-task/<task>.md | \
+  jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
+
 # 2) 今回差分の候補抽出（変更範囲を指定）
 node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001 \
   --output docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/.tmp-unassigned-candidates.json
+
+# 3) Phase出力構造の整合確認（位置引数）
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/<workflow-dir>
 ```
 
 判定ルール:
 
 - `baseline`: 着手前から存在する違反。スコープ外として記録し、別途改善対象化
 - `current`: 今回変更で新規発生した違反。今回タスク内で修正必須
+- `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。判定は `currentViolations.total` を使う
 
 記録フォーマット:
 

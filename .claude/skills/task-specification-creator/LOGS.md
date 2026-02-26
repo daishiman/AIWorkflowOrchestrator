@@ -83,16 +83,16 @@ node scripts/log-usage.js \
 
 ---
 
-## [2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再監査]
+## [2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12参照整合追補]
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（仕様同期・証跡補強）
+- **Phase**: Phase 12（仕様同期・台帳監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `verify-unassigned-links.js` の欠損2件（UT-TYPE / UT-IMP-AIWORKFLOW）を `task-workflow.md` 更新で解消
-  - `outputs/artifacts.json` を `artifacts.json` と同期し、Phase 12 完了条件（二重管理同期）を満たすよう是正
-  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` を再監査実態に合わせて更新
+  - `task-00-unified-implementation-sequence` の参照実在（`task-013e` / `task-014`）を再確認し、ブリッジ仕様を再配置
+  - `task-workflow.md` の未タスク行で `unassigned`/`completed` 参照ドリフトを補正
+  - `UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001` を完了表記へ同期し、参照先を `completed-tasks/` 正本へ更新
 
 ---
 
@@ -4585,3 +4585,21 @@ if (artifactPath) {
 - ステータス: success
 - Phase 1〜12: completed
 - Phase 13: pending（コミット/PR未実施）
+
+## 2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 再確認運用をスキルへ反映
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象: Phase 12 再確認手順の標準化
+
+### 実施内容
+
+- `references/spec-update-workflow.md` に `--target-file` 判定軸（`currentViolations.total`）を追記
+- `validate-phase-output.js <workflow-dir>` の位置引数ルールをコマンド例へ追加
+- `references/patterns.md` に scoped監査解釈・検証コマンド誤用防止パターンを追加
+
+### 結果
+
+- ステータス: success
+- 反映範囲: spec-update-workflow / patterns / SKILL change history

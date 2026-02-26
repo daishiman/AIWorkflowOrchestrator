@@ -13,6 +13,9 @@
 | ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
 | 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載** |
 | 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**                                                                                                                                                                                                                                                                      |
+
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **仕様書別SubAgent同期テンプレート** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **仕様書更新の単独進行による同期漏れ** |
+| 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**, **IPC契約ブリッジ（正式契約 + 後方互換）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**, **正式契約切替時の後方互換欠落**                                                                                                                                                                                                                                                                      |
 | 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
 | 📦 スキル設計             | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計**                                                                                                                                                                                                                                                                                                                                                                                                                                                    | -                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -866,6 +869,19 @@
   - [lessons-learned.md#UT-FIX-SKILL-IMPORT-ID-MISMATCH-001](../../aiworkflow-requirements/references/lessons-learned.md) - 苦戦箇所詳細
   - [architecture-implementation-patterns.md#S13](../../aiworkflow-requirements/references/architecture-implementation-patterns.md) - IPC 戻り値型変換パターン
 
+### [IPC] IPC契約ブリッジ（正式契約 + 後方互換）（UT-FIX-SKILL-EXECUTE-INTERFACE-001）
+
+- **状況**: shared/preload は `skillName` 契約へ移行済みだが、Main/Service は `skillId` 前提で稼働しており、一括置換すると既存呼び出しを壊す
+- **アプローチ**:
+  1. Mainハンドラで union 受理（正式: `SkillExecutionRequest`、互換: `{ skillId, params }`）
+  2. `skillName` 経路は境界で `name -> id` を解決し、Service APIは据え置き
+  3. 新旧契約を同一テスト群で回帰確認（正常系/異常系）
+  4. interfaces/security/task-workflow を同一ターンで同期更新
+- **結果**: 契約移行中のダウンタイムなしで `skill:execute` を整合化し、後方互換を維持
+- **適用条件**: IPC契約の正式化が先行し、内部APIの移行が段階的になるケース
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
 ### [Phase12] 未タスク検出の2段階判定（raw→実タスク候補）
 
 - **状況**: `detect-unassigned-tasks.js` が仕様書本文の説明用 TODO まで大量検出し、未タスク件数を過大評価しやすい
@@ -915,6 +931,30 @@
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
 - **クロスリファレンス**: [task-specification-creator/scripts/audit-unassigned-tasks.js](../../task-specification-creator/scripts/audit-unassigned-tasks.js), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
 
+### [Phase 12] scoped監査の `current` 判定固定（UT-FIX-SKILL-EXECUTE-INTERFACE-001）
+
+- **状況**: `--target-file` を使っても baseline が出力されるため、対象ファイルも違反と誤読しやすい
+- **解決策**:
+  1. `audit-unassigned-tasks --json --target-file <path>` の `scope.currentFiles` を確認する
+  2. 合否は `currentViolations.total` を正本にし、`baselineViolations.total` は別枠で記録する
+  3. 報告テンプレートに `current / baseline` を分離して記載する
+- **効果**: 既存負債に引きずられず、今回差分のフォーマット準拠可否を即判定できる
+- **適用条件**: unassigned-task 監査を既存違反が多いリポジトリで実行する場合
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
+### [Phase 12] `validate-phase-output` 位置引数固定
+
+- **状況**: `verify-all-specs` と同じオプション形式を想定し、`validate-phase-output` の実行が失敗しやすい
+- **解決策**:
+  1. `node .../validate-phase-output.js <workflow-dir>` の位置引数形式をテンプレート化する
+  2. `verify-all-specs --workflow <workflow-dir>` とセットで実行して証跡を残す
+  3. documentation-changelog に両コマンド結果を併記する
+- **効果**: Phase検証のコマンド誤用を抑止し、再確認時のやり直しを削減できる
+- **適用条件**: Phase 12 再監査または仕様整合の再検証を行う場合
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
 ### [Phase 12] 監査結果→次アクションブリッジ（TASK-013再監査）
 
 - **状況**: 監査レポートは作成済みだが、次にどの未タスクから着手するかが曖昧で、実行順序が固まらない
@@ -956,6 +996,21 @@
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
 - **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [ui-ux-design-system.md](../../aiworkflow-requirements/references/ui-ux-design-system.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
+### [Phase 12] 仕様書別SubAgent同期テンプレート（UT-FIX-SKILL-EXECUTE-INTERFACE-001）
+
+- **状況**: IPC契約修正時に `interfaces` / `security` / `task-workflow` / `lessons` が別ターン更新となり、同期漏れが再発しやすい
+- **解決策**:
+  1. 仕様書ごとに SubAgent を固定し、担当と完了条件を先に表で定義する
+  2. 各 SubAgent は「実装内容 + 苦戦箇所 + 再利用手順」を同時記述する
+  3. 統括担当が4仕様書の差分を集約し、同一ターンで変更履歴を更新する
+  4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` を実行して証跡化する
+  5. `assets/phase12-spec-sync-subagent-template.md` を起点に形式を統一する
+- **効果**: 仕様書間の責務境界が明確化され、Phase 12 の同期漏れと再監査コストを削減できる
+- **適用条件**: 1つの実装変更を複数仕様書へ横断反映する Phase 12
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+- **クロスリファレンス**: [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
 
 ### [ビルド・環境] モノレポ三層モジュール解決整合パターン（TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001）
 
@@ -1231,6 +1286,26 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-02-22
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
 
+### [Phase12] `--target-file` を「対象のみ出力」と誤解
+
+- **状況**: `audit-unassigned-tasks --target-file` の出力に baseline が含まれ、対象ファイルが fail に見える
+- **問題**: current=0 でも過剰修正が発生し、Phase 12完了が遅延する
+- **原因**: `--target-file` の仕様（分類モード）を表示フィルタと混同した
+- **教訓**: 判定は `currentViolations.total` を正本とし、baseline は別管理する
+- **対策**: 監査テンプレートへ `scope.currentFiles` / `currentViolations.total` / `baselineViolations.total` の3項目を固定で記録する
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
+### [Phase12] `validate-phase-output` の `--phase` 誤用
+
+- **状況**: `verify-all-specs` と同様に `--phase` 指定を試して検証が失敗する
+- **問題**: Phase 12再確認でコマンド再実行が増え、証跡同期が遅れる
+- **原因**: `validate-phase-output.js` が workflow-dir 位置引数のみ受け付ける仕様を明示していなかった
+- **教訓**: Phase検証コマンドは「仕様整合（verify-all-specs）」と「出力構造（validate-phase-output）」で引数形式を明示的に分離する
+- **対策**: 実行テンプレートを `validate-phase-output.js docs/30-workflows/<workflow-dir>` に統一する
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
 ### [Phase12] 監査結果の棚卸し止まり（次アクション未定義）
 
 - **状況**: 監査結果を表やレポートに整理したが、誰が・何を・どの順序で実行するかが未定義のまま完了扱いにした
@@ -1250,6 +1325,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: Task 1〜5突合レポートを必須化し、`phase-12-documentation.md` のチェック欄更新を完了条件へ昇格
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-UI-THEME-DYNAMIC-SWITCH-001
+
+### [Phase12] 仕様書更新の単独進行による同期漏れ
+
+- **状況**: `interfaces` 更新後に `security`/`task-workflow`/`lessons` の反映が遅れ、仕様書間で契約状態がずれる
+- **問題**: 実装は完了していても監査時に仕様不整合として差し戻しが発生する
+- **原因**: 仕様書ごとの責務分担と同時更新ルールが未定義
+- **教訓**: 横断仕様更新は単一担当で逐次進行せず、SubAgent分担で同一ターン同期する
+- **対策**: `assets/phase12-spec-sync-subagent-template.md` で担当/完了条件/検証コマンドを固定し、4仕様書を一括更新する
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 
 ### [Skill] 全リソース一括読み込み
 
@@ -1344,6 +1429,22 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-02-20
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001, UT-FIX-SKILL-IMPORT-INTERFACE-001
 - **関連Pitfall**: P23, P32, P42, P44
+
+### [IPC] 正式契約切替時の後方互換欠落（UT-FIX-SKILL-EXECUTE-INTERFACE-001）
+
+- **状況**: 新契約（`skillName`）へ移行する際、旧契約（`skillId`）を即時削除して既存呼び出しを破壊
+- **問題**: 既存テストや既存呼び出し経路がランタイムで失敗し、移行期間に障害が顕在化する
+- **原因**:
+  - 契約移行を単一フェーズで完了できる前提を置いていた
+  - 境界Adapterを用意せず、ドメインAPIまで同時変更した
+  - 新契約テストのみで旧契約回帰を省略した
+- **教訓**:
+  - 契約変更は「正式契約 + 互換契約 + 廃止条件」を1セットで定義する
+  - 互換期間は境界Adapterで吸収し、ドメインAPIの破壊的変更を遅らせる
+  - 新旧契約の両回帰テストを完了条件に含める
+- **対策**: IPC契約変更テンプレートに「後方互換チェック」を必須項目として追加
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 
 ### [IPC/Renderer] Renderer層での識別子混同（id/name）（UT-FIX-SKILL-IMPORT-ID-MISMATCH-001）
 

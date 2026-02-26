@@ -124,6 +124,16 @@ describe("skillHandlers delegation integration", () => {
       allowedTools: ["Read"],
       lastModified: new Date(),
     });
+    mockSkillService.scanAvailableSkills.mockResolvedValue({
+      skills: [
+        {
+          id: "test-skill",
+          name: "Test Skill",
+        },
+      ],
+      errors: [],
+      scannedAt: new Date(),
+    });
 
     mockSkillService.executeSkill.mockResolvedValue({
       executionId: "exec-123",
@@ -213,6 +223,23 @@ describe("skillHandlers delegation integration", () => {
       );
 
       // Then: skillService.executeSkill should be called
+      expect(mockSkillService.executeSkill).toHaveBeenCalledWith("test-skill", {
+        prompt: "Test prompt",
+      });
+    });
+
+    it("should resolve skillName contract and delegate with resolved skillId", async () => {
+      const handler = handlers.get("skill:execute");
+      if (!handler) {
+        throw new Error("skill:execute handler not registered");
+      }
+
+      await handler(
+        { sender: mockMainWindow.webContents },
+        { skillName: "Test Skill", prompt: "Test prompt" },
+      );
+
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenCalled();
       expect(mockSkillService.executeSkill).toHaveBeenCalledWith("test-skill", {
         prompt: "Test prompt",
       });

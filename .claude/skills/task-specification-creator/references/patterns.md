@@ -262,6 +262,34 @@
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-SKILL-IPC-PRELOAD-EXTENSION-001
 
+### scoped監査の判定軸固定（UT-FIX-SKILL-EXECUTE-INTERFACE-001 再確認）
+
+- **状況**: `audit-unassigned-tasks.js --json --target-file <path>` 実行時、baseline違反が大量に出力されて対象ファイルが fail に見えやすい
+- **問題**: `--target-file` は「対象のみ表示」ではなく「current/baseline 分類」であるため、表示件数だけで判断すると誤判定する
+- **解決パターン**:
+  1. `scope.currentFiles` が対象ファイルを指していることを確認
+  2. `currentViolations.total` を今回判定の正本にする
+  3. `baselineViolations.total` は別枠で記録し、今回タスクの fail 判定に直結させない
+- **効果**:
+  - 対象ファイルが準拠済み（current=0）かを安定して判定できる
+  - baseline負債による誤差し戻しを防止できる
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
+### `validate-phase-output` の引数仕様固定（位置引数）
+
+- **状況**: Phase検証時に `verify-all-specs` と同形式のオプション（`--phase` など）を想定しやすい
+- **問題**: `validate-phase-output.js` は workflow ディレクトリの位置引数のみ受け付けるため、誤用で検証が止まる
+- **解決パターン**:
+  1. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
+  2. `verify-all-specs --workflow` とコマンドペアで使い、役割を分離（仕様整合 / 出力構造）
+  3. Phase 12記録には両コマンドの結果を併記する
+- **効果**:
+  - コマンド誤用による再監査のやり直しを削減できる
+  - 検証証跡の比較可能性が上がる
+- **発見日**: 2026-02-25
+- **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+
 ### Phase 12出力成果物チェックリスト
 
 - **状況**: Phase 12タスク仕様書・成果物作成時
