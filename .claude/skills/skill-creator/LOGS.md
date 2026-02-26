@@ -13,6 +13,15 @@
 
 ---
 
+## [2026-02-26 - TASK-9A Phase 12 unassigned metadata dedup pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` の Phase 12 に成功パターン「未タスクメタ情報1セクション運用」と失敗パターン「未タスク指示書メタ情報の二重定義」を追加。`task-specification-creator/references/unassigned-task-guidelines.md` と連携し、`rg -n "^## メタ情報"` の機械監査手順を標準化。
+
+---
+
 ## [2026-02-25 - UT-UI-THEME-DYNAMIC-SWITCH-001 system-spec retrospective template]
 
 - **Agent**: skill-creator (update)

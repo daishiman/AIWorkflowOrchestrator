@@ -16,9 +16,18 @@ issue_number: 833
 | 対象機能     | SkillEditor / FileTreeSidebar / Main Process IPC |
 | 優先度       | 中                                               |
 | 見積もり規模 | 中規模                                           |
-| ステータス   | 未実施                                           |
+| ステータス   | 完了（TASK-9Aへ統合実装）                        |
 | 発見元       | TASK-9A-C Phase 1（要件定義）- スコープ外項目    |
 | 発見日       | 2026-02-19                                       |
+| 完了日       | 2026-02-26                                       |
+
+---
+
+## 完了記録
+
+- `TASK-9A-skill-editor` の実装で本タスク要件（ファイル作成・削除、確認ダイアログ、ツリー自動更新）を統合完了。
+- 実装は `apps/desktop/src/renderer/components/skill/SkillEditor.tsx` の `handleCreateFile` / `handleDeleteFile` で反映。
+- 参照正本: `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`。
 
 ---
 

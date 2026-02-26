@@ -109,6 +109,24 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ---
 
+## メタ情報フォーマット規約（重複禁止）
+
+未タスク指示書の `## メタ情報` は **1セクションのみ** とする。  
+`issue_number` の YAML ブロックとメタ情報テーブルを併記する場合も、同じ `## メタ情報` セクション内にまとめる。
+
+| NG例 | OK例 |
+| --- | --- |
+| `## メタ情報` を2回定義（YAML用 + テーブル用） | `## メタ情報` を1回定義し、その直下に YAML とテーブルを連続配置 |
+
+チェック方法（推奨）:
+
+```bash
+rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
+# 各ファイルで 1件のみであることを確認
+```
+
+---
+
 ## 記録対象の判定
 
 ### 記録すべき課題

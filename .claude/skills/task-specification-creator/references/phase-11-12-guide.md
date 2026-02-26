@@ -180,6 +180,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
+- [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning は `spec-update-workflow.md` Step 1-G.3.1 の判定基準に基づき対応）
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
@@ -252,6 +253,12 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 #   ✓ = Pass（検証項目をパス）
 #   ⚠ = Warning（合否に影響しない。分類は spec-update-workflow.md Step 1-G.3.1 参照）
 #   ✗ = Error（修正必須）
+# SKILL frontmatter検証（全3スキル一括）
+# 判定基準・Warning分類の詳細は spec-update-workflow.md Step 1-G.3 / 3.1 を参照
+for skill in skill-creator task-specification-creator aiworkflow-requirements; do
+  echo "=== $skill ===" && \
+  node .claude/skills/skill-creator/scripts/quick_validate.js ".claude/skills/$skill"
+done
 ```
 
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
@@ -292,6 +299,7 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 | Date | Changes |
 | ---- | ------- |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録・関連ドキュメントリンクを追加 |
+| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: Phase 11/12 実行で判明したリンク整合運用を更新（`task-workflow.md` の完了移管参照修正）、`quick_validate.js` 実行結果に基づく判定再現性確認フローを明文化 |
 | 2026-02-25 | `audit-unassigned-tasks.js` の scope制御（`--target-file`/`--diff-from`）を標準手順化。Phase 12チェックリストを「対象監査（current）→全体監査（baseline）」の2段判定に更新 |
 | 2026-02-25 | skill-creator連携を追加: Phase 12完了条件に `quick_validate.js` 検証を追加し、SKILL frontmatterの破損検知を標準化 |
 | 2026-02-25 | 未タスク監査運用を補強: `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合の current差分分離手順（`detect-unassigned-tasks --scan`）と記録要件を追加 |

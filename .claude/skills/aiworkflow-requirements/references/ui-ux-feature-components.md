@@ -20,7 +20,7 @@
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
-| Skill Editor UI              | TASK-9A-C        | SkillEditor, SkillCodeEditor                       | 仕様書作成済み | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` |
+| Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 
 ### 共通仕様
 
@@ -604,12 +604,13 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 
 ---
 
-## SkillEditor UI（TASK-9A-C / 仕様書作成済み）
+<a id="skill-editor-ui-task-9a"></a>
+## SkillEditor UI（TASK-9A / 完了）
 
-TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コードは未着手。
-本セクションは「実装完了」ではなく、実装着手前の正本仕様として扱う。
+TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phase 1-12）が完了。
+旧 `TASK-9A-C-skill-editor-ui` は仕様書作成フェーズの履歴として保持し、実装の正本は `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` とする。
 
-### 予定コンポーネント
+### 実装済みコンポーネント
 
 | コンポーネント | 役割 | 想定配置 |
 | --- | --- | --- |
@@ -620,23 +621,25 @@ TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コー
 
 | 項目 | 状態 | 参照 |
 | --- | --- | --- |
-| 仕様書（Phase 1-13） | ✅ 作成済み | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` |
-| 実装コード | ⏳ 未着手 | TASK-9A-C 本体で継続 |
-| テスト | ⏳ 未着手 | 実装後に Phase 11 実施 |
+| ワークフロー仕様（Phase 1-13） | ✅ 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
+| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx`, `SkillCodeEditor.tsx` |
+| テスト | ✅ 完了 | `SkillEditor.test.tsx`, `SkillCodeEditor.test.tsx`, `buildFileTree.test.ts`, `getLanguage.test.ts` |
 
 ### 関連ドキュメント
 
-- [TASK-9A-C ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
-- [TASK-9A-C 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/outputs/phase-12/implementation-guide.md)
-- [TASK-9A-C Phase 12準拠監査](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/outputs/phase-12/phase12-compliance-audit.md)
+- [TASK-9A ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/index.md)
+- [TASK-9A 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md)
+- [TASK-9A 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/spec-update-summary.md)
+- [旧 TASK-9A-C 仕様書（履歴）](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
 
 ### 関連未タスク
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
 | TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
-| TASK-9A-C-002 | ファイル作成・削除機能 | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` |
+| ~~TASK-9A-C-002~~ | ~~ファイル作成・削除機能~~ **完了: 2026-02-26（TASK-9Aへ統合）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md` |
 | TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+| ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
 
 ### コンポーネント階層
 
@@ -722,10 +725,10 @@ TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コー
 
 | 区分 | 反映内容 |
 | --- | --- |
-| 仕様整合 | `TASK-9A-C` 参照を `completed-task/` に統一 |
-| 成果物整合 | Phase 9-12成果物の実体を補完し、リンク切れを解消 |
-| 状態管理 | 実装未着手タスクとして `spec_created` に正規化 |
-| 品質検証 | `verify-all-specs --strict` / `verify-unassigned-links` を再実行し最終PASS確認 |
+| 仕様整合 | `TASK-9A-C（spec_created）` 表記を `TASK-9A（完了）` に統合更新 |
+| 機能実装 | read/write/create/delete/listBackups/restoreBackup を UI から実行可能化 |
+| 成果物整合 | Phase 1-12 の outputs/artifacts と仕様書リンクを同期 |
+| 品質検証 | UIテスト15件 + 回帰テスト + `verify-all-specs` / `verify-unassigned-links` の最終PASSを確認 |
 
 ---
 
@@ -733,6 +736,7 @@ TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コー
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-9A    | skill-editor（SkillEditor / SkillCodeEditor + CRUD + backups） | 2026-02-26 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                           |
 | TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
 | TASK-3-2-B | skill-stream-i18n                                              | 2026-01-28 | `docs/30-workflows/TASK-3-2-B-skill-stream-i18n/`                                                   |
@@ -763,6 +767,7 @@ TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コー
 - [タイムスタンプ自動更新](../../../docs/30-workflows/TASK-3-2-C-timestamp-autoupdate/outputs/phase-12/implementation-guide.md)
 - [SkillStreamDisplay i18n](../../../docs/30-workflows/TASK-3-2-B-skill-stream-i18n/outputs/phase-12/implementation-guide.md)
 - [SkillStreamDisplay コピー履歴](../../../docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md)
+- [TASK-9A SkillEditor実装](../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md)
 - [workspace-chat-edit-ui](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
 
 ---
@@ -771,6 +776,9 @@ TASK-9A-C は実装仕様書（Phase 1-13）まで作成済みで、実装コー
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-02-26 | v1.11.2    | TASK-9A成果物移管を反映。参照正本を `completed-tasks/TASK-9A-skill-editor/` に更新し、`TASK-9A-C-004` を完了化して `completed-tasks/unassigned-task/` へ移管 |
+| 2026-02-26 | v1.11.1    | TASK-9A-C-004 を関連未タスクへ追加。Phase 12再確認で顕在化した Part 1/2 要件漏れ・監査判定誤読・メタ情報重複・3仕様書同期漏れの再発防止タスクを台帳化 |
+| 2026-02-26 | v1.11.0    | TASK-9A完了反映: SkillEditor UI を `spec_created` から `完了` に更新。`TASK-9A-skill-editor` を正本参照へ追加し、未タスク `TASK-9A-C-002` を完了化（統合実装） |
 | 2026-02-19 | v1.10.0    | TASK-9A-C: 関連未タスク3件参照テーブル追加。仕様書ディレクトリをcompleted-tasks/にパス移行 |
 | 2026-02-19 | v1.9.0     | TASK-9A-C: SkillEditorコンポーネント仕様追加（コンポーネント階層、レイアウト、状態管理、IPC依存、キーボード、アクセシビリティ） |
 | 2026-02-19 | v1.8.1     | TASK-9A-C: Phase 12準拠監査結果（`phase12-compliance-audit.md`）と監査反映内容を追記 |

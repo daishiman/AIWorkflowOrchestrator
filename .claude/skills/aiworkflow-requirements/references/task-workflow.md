@@ -1253,13 +1253,49 @@
 
 ---
 
+### タスク: TASK-9A-skill-editor スキルエディター機能（2026-02-26完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-9A |
+| 完了日 | 2026-02-26 |
+| ステータス | **完了** |
+| 実装範囲 | SkillEditor / SkillCodeEditor / ファイル作成・削除 / バックアップ復元 / 未保存ガード |
+| 品質結果 | UIテスト15件PASS + 回帰/セキュリティテストPASS |
+
+#### 成果物
+
+| 成果物 | パス |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/spec-update-summary.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 実装時の苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 |
+| --- | --- | --- |
+| Phase 12実装ガイドの2パート要件不足 | Part 1/Part 2の必須要件を本文に十分反映できていなかった | Part 1を「理由先行 + 日常例え」、Part 2を「型/API/エラー/境界条件」固定テンプレで再構成 |
+| 未タスク監査ログの誤読 | `audit-unassigned-tasks --target-file` でも baseline が併記される仕様を誤解 | 合否判定を `currentViolations.total` に固定し、baseline は監視値として別管理 |
+| 未タスク指示書のメタ情報重複 | YAML と表のメタ情報を別セクションで管理していた | `## メタ情報` を1セクションに統一し、フォーマットを正規化 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. `verify-all-specs --workflow` と `validate-phase-output <workflow-dir>` を先に実行して Phase 構造を固定する。  
+2. 未タスク監査は `current` と `baseline` を分離記録し、合否は `current` のみで判定する。  
+3. 実装ガイドは Part 1/Part 2 の必須チェックを通してから完了判定する。  
+4. 仕様書・台帳・未タスク指示書を同一ターンで同期し、リンク検証を実行する。  
+
+---
+
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TASK-9A-C                                         | SkillEditor UI（仕様書作成済み・実装未着手）                                                                     | 高     | TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）                            | `docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/` (**spec_created**: Phase 1完了、Phase 2-13未着手)                                   |
+| ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
 | TASK-3-1-B                                        | SkillExecutor IPC Handler統合                                                                                    | 高     | TASK-3-1-A完了時（blocks）                                                  | `docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md`                                                                    |
@@ -1350,8 +1386,9 @@
 | ~~UT-FIX-SKILL-VALIDATION-P42-001~~               | ~~skillHandlers P42準拠バリデーション横展開~~                                                                      | ~~中~~ | ~~UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20）~~ **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）** | `docs/30-workflows/completed-tasks/skill-validation-consistency/` |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001               | skillHandlers IPCバリデーションエラー応答パターン統一                                                             | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20）                  | `docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`                                                                   |
 | TASK-9A-C-001                                     | SkillCodeEditor シンタックスハイライト機能                                                                        | 中     | TASK-9A-C Phase 1（将来拡張ポイント: language prop）                        | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md`                                                                               |
-| TASK-9A-C-002                                     | SkillEditor ファイル作成・削除機能（CRUD完全化）                                                                 | 中     | TASK-9A-C Phase 1-2（スコープ外: readFile/writeFileのみ実装）               | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md`                                                                              |
+| ~~TASK-9A-C-002~~                                     | ~~SkillEditor ファイル作成・削除機能（CRUD完全化）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                 | ~~中~~     | ~~TASK-9A-C Phase 1-2（スコープ外: readFile/writeFileのみ実装）~~               | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md`                                                                              |
 | TASK-9A-C-003                                     | SkillCodeEditor Monaco/CodeMirror エディタ移行                                                                   | 低     | TASK-9A-C Phase 2（将来拡張ポイント: textarea→高機能エディタ）              | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md`                                                                             |
+| ~~TASK-9A-C-004~~                                     | ~~SkillEditor Phase 12仕様同期ガード自動化（Part 1/2要件・監査判定・未タスクフォーマットの再発防止）~~ **完了: 2026-02-26（Phase 12完了に伴いcompletedへ移管）**               | ~~中~~     | ~~TASK-9A Phase 12再確認（苦戦箇所抽出: 2026-02-26）~~                           | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md`                                                                          |
 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001         | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理）                                               | 中     | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 5                            | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md`                                          |
 | ~~TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001~~       | ~~@repo/shared モジュール解決3層整合CIガード~~                                                                   | ~~高~~ | ~~TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR~~ **完了: 2026-02-22** | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/`                                                                                       |
 | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
@@ -1414,6 +1451,10 @@
 | **1.61.3** | **2026-02-26** | **TASK-9B 完了移管に同期**: 実行ワークフロー `docs/30-workflows/completed-tasks/task-9b-skill-creator/` への移動と、未タスク `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` の `completed-tasks/unassigned-task/` 移管を反映。残課題テーブルを完了表記へ更新 |
 | **1.61.2** | **2026-02-26** | **UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001 登録**: TASK-9B 再監査で顕在化した苦戦箇所（13chドリフト、`create` P42 3段検証漏れ、`current/baseline` 誤読）を再発防止する未タスクを残課題テーブルへ追加。未タスク仕様書の Section 3.5 に課題/発見経緯/解決策/教訓を反映 |
 | **1.61.1** | **2026-02-26** | **TASK-9B再監査の完了記録を追加**: 完了タスクセクションへ TASK-9B（13チャンネル同期、P42 `create` 補完、成果物台帳同期）を追加。仕様書別SubAgent分担、苦戦箇所3件、簡潔解決5ステップ、検証証跡（13/13・28項目・89/89・current=0）を記録 |
+| **1.61.3** | **2026-02-26** | **TASK-9A Phase 12完了に伴う移管**: `docs/30-workflows/TASK-9A-skill-editor/` を `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` へ移動し、完了タスク参照を更新。併せて `TASK-9A-C-004` を完了化し、未タスク指示書を `completed-tasks/unassigned-task/` へ移管 |
+| **1.61.2** | **2026-02-26** | **TASK-9A-C-004 未タスク登録**: `task-9a-c-phase12-spec-sync-guard.md` を残課題テーブルへ追加。Phase 12再確認で顕在化した Part 1/2 要件漏れ、`current/baseline` 誤読、`## メタ情報` 重複、3仕様書同期漏れを再発防止タスクとして台帳化 |
+| **1.61.1** | **2026-02-26** | **TASK-9A 再確認追補**: 完了タスク `TASK-9A-skill-editor` に実装時の苦戦箇所3件と4ステップ再利用手順を追記。Phase 12実装ガイド2パート要件不足・scoped監査誤読・未タスクメタ情報重複の再発防止手順を台帳化 |
+| **1.61.0** | **2026-02-26** | **TASK-9A完了同期**: 完了タスクセクションに `TASK-9A-skill-editor` を追加し、残課題テーブルの `TASK-9A-C`（spec_created）を完了化。併せて `TASK-9A-C-002`（ファイルCRUD）を完了化し、参照先を `completed-tasks/unassigned-task/` へ移管 |
 | **1.60.8** | **2026-02-25** | **UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 追加**: UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所（状態責務混在 / Hook再実行ループ / Phase 12証跡同期漏れ）を再発防止する未タスクを残課題テーブルへ登録 |
 | **1.60.7** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 テンプレート最適化**: 完了タスクセクションに「Phase 12 Step 2 転記テンプレート（短縮版）」を追加。実装内容・苦戦箇所・再利用手順・3仕様書同時更新・検証コマンドの記録形式を標準化 |
 | **1.60.6** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 完了記録追記**: 完了タスクセクションへ実装内容・苦戦箇所・簡潔解決手順（4ステップ）を追加。`outputs/phase-12/phase12-task-spec-compliance-check.md` を証跡として登録し、Phase 12 準拠判定の根拠を固定 |
