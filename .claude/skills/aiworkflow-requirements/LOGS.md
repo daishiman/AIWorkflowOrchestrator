@@ -82,74 +82,77 @@
 
 ---
 
-## 2026-02-25 - UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001 未タスク登録
+## 2026-02-25 - UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001 未タスク登録
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- タスクID: UT-IMP-AIWORKFLOW-RESOURCE-MAP-REGISTRATION-GUARD-001
-- 目的: 新規仕様追加時の `indexes/resource-map.md` 登録漏れを未タスク化し、再発防止する
+- 親タスク: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+- 目的: 仕様書別SubAgent同期の再発防止タスクを未タスク指示書として起票し、台帳へ同期する
 
 ### SubAgent分担
-- SubAgent-A（未タスク指示書）: `docs/30-workflows/unassigned-task/task-imp-aiworkflow-resource-map-registration-guard-001.md` を 9セクション形式で作成
-- SubAgent-B（台帳同期）: `references/task-workflow.md` 残課題テーブルへ登録
-- SubAgent-C（機能仕様同期）: `references/interfaces-agent-sdk-skill.md` 検出未タスクテーブルへ登録
-- Lead（統合）: `SKILL.md` / `LOGS.md` 更新と検証実行
+- SubAgent-A: 未タスク指示書作成（Why/What/How + Section 3.5 苦戦箇所）
+- SubAgent-B: `task-workflow.md` 残課題テーブル/変更履歴更新
+- SubAgent-C: `interfaces-agent-sdk-skill.md` 検出未タスク更新
+- SubAgent-D: `aiworkflow-requirements/SKILL.md` 変更履歴更新
 
 ### 実施内容
-- 未タスク指示書を Why/What/How + 3.5教訓付きで作成
-- 親タスク苦戦箇所（resource-map未同期、generate-index完了誤認、表編集ぶれ）を 3.5 に反映
-- `task-workflow.md` / `interfaces-agent-sdk-skill.md` の未タスク台帳へ同一IDで同期登録
+- `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md` を新規作成
+- 親タスクの苦戦箇所（同期漏れ、監査誤読、コマンド誤用）を Section 3.5 に反映
+- `task-workflow.md` 残課題テーブルと `interfaces-agent-sdk-skill.md` の関連未タスクへ登録
 
 ### 結果
 - ステータス: success
-- 完了日時: 2026-02-25
-- 補足: システム仕様書スキル（aiworkflow-requirements）へ未タスク作成結果を反映済み
+- 補足: 未タスク指示書・台帳・関連仕様の3点同期を同一ターンで完了
 
 ---
 
-## 2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 テンプレート最適化（skill-creator適用）
+## 2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 仕様書別SubAgent同期（追補）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- タスクID: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001
-- 目的: 今回の実装内容と苦戦箇所を、同種課題で即再利用できる正本へ再構成
+- タスクID: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+- 目的: 実装内容と苦戦箇所を仕様書ごとに責務分離して同期し、再発時の再利用性を高める
 
 ### SubAgent分担
-- SubAgent-A（構造化）: `workflow-skill-identifier-branded-type-resolution.md` を新規作成（SubAgent編成、4フェーズ、監査コマンド）
-- SubAgent-B（仕様同期）: `interfaces-agent-sdk-skill.md` / `lessons-learned.md` にプレイブック参照導線を追加
-- SubAgent-C（索引最適化）: `indexes/resource-map.md` に新規導線を追加
-- Lead（統合）: `SKILL.md` 変更履歴と本ログを同期
+- SubAgent-A: `interfaces-agent-sdk-skill.md`（契約定義・境界変換の同期）
+- SubAgent-B: `security-skill-ipc.md`（検証要件・セキュリティ責務の同期）
+- SubAgent-C: `task-workflow.md`（完了記録・検証証跡・未タスク監査の台帳化）
+- SubAgent-D: `lessons-learned.md`（苦戦箇所・簡潔解決手順の教訓化）
 
 ### 実施内容
-- `references/workflow-skill-identifier-branded-type-resolution.md` を追加
-- `references/interfaces-agent-sdk-skill.md` に再利用用プレイブック参照を追加
-- `references/lessons-learned.md` に正本テンプレート導線を追加
-- `indexes/resource-map.md` にクイックルックアップ/カテゴリ行を追加
+- `task-workflow.md` に仕様書別SubAgent分担表を追記
+- `interfaces-agent-sdk-skill.md` に同期分担表を追記
+- `security-skill-ipc.md` に同タスク専用セクション（実装反映/苦戦箇所/4ステップ）を追加
+- `lessons-learned.md` に「仕様書同期を単独進行した場合の漏れ」教訓を追記
 
 ### 結果
 - ステータス: success
-- 完了日時: 2026-02-25
-- 補足: 実装内容・苦戦箇所・再発防止を1ファイルに集約し、既存大型仕様書の重複追記を抑制
+- 補足: 4仕様書を同一ターンで同期し、後続タスク向けの再利用手順を固定化
 
 ---
 
-## 2026-02-25 - UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再監査（仕様同期）
+## 2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 仕様同期・再監査
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- タスクID: UT-TYPE-SKILL-IDENTIFIER-BRANDED-001
-- 目的: Branded Type導入後の仕様書同期漏れ（未タスク参照切れ・型表記ドリフト）を是正
+- タスクID: UT-FIX-SKILL-EXECUTE-INTERFACE-001
+- 目的: `skill:execute` 契約不整合の実装修正をシステム仕様へ同期し、Phase 12台帳の参照ドリフトを解消
+
+### SubAgent分担
+- SubAgent-A: `interfaces-agent-sdk-skill.md` の契約更新（`skillName` 正式 + `skillId` 後方互換）
+- SubAgent-B: `security-skill-ipc.md` の検証要件更新（`prompt` 含む）
+- SubAgent-C: `task-workflow.md` の完了反映・未タスク参照補正
+- SubAgent-D: `lessons-learned.md` へ苦戦箇所と再発防止手順を追加
 
 ### 実施内容
-- `references/task-workflow.md` の `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` を完了化し、参照先を `completed-tasks/task-type-skill-identifier-branded.md` へ更新
-- `references/task-workflow.md` の `UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001` 参照を `completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md` へ同期
-- `references/interfaces-agent-sdk-skill.md` に `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` 完了記録を追加し、`SkillId` / `SkillName` 適用表記へ更新
-- `references/api-ipc-agent.md` の Skill型表記を Branded Type文脈へ更新
+- `UT-FIX-SKILL-EXECUTE-INTERFACE-001` を完了タスクセクションへ追加
+- `UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001` を残課題から完了表記へ同期
+- `UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001` の参照先を `unassigned-task/` 正本へ補正
 
 ### 結果
 - ステータス: success
 - 完了日時: 2026-02-25
-- 補足: `verify-unassigned-links.js` の欠損2件を解消し、Phase 12 Step 1-C/1-E の台帳整合を再達成
+- 補足: 実装・テスト・仕様書・台帳の4点同期を同一ターンで完了
 
 ---
 
@@ -5421,3 +5424,25 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - `verify-unassigned-links.js`: missing 0 / `ALL_LINKS_EXIST`
+
+## 2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認反映
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: `skill:execute` 契約整合タスクの再確認記録
+
+### 実施内容
+
+- `task-workflow.md` 完了セクションへ再確認証跡を追加
+  - `verify-all-specs --workflow` PASS（13/13）
+  - `validate-phase-output <workflow-dir>` PASS（28項目）
+  - `verify-unassigned-links` PASS（missing 0）
+  - `audit --diff-from HEAD` で current=0 / baseline=75 を分離記録
+- 関連未タスク3件の scoped監査結果（current=0）を追記
+- `lessons-learned.md` に再確認時の苦戦箇所（`--target-file` 解釈、`validate-phase-output` 引数誤用）を追加
+
+### 結果
+
+- ステータス: success
+- 仕様反映: 完了（実装内容 + 苦戦箇所 + 再利用手順）

@@ -19,6 +19,7 @@ import {
 } from "../infrastructure/security/ipc-validator";
 import type { SkillName } from "@repo/shared/types/skill";
 import type {
+  SkillExecutionRequest,
   SkillAnalyzeRequest,
   SkillImproveRequest,
   SkillOptimizeRequest,
@@ -218,7 +219,9 @@ export function registerSkillHandlers(
     IPC_CHANNELS.SKILL_EXECUTE,
     async (
       event: IpcMainInvokeEvent,
-      args: { skillId: string; params?: Record<string, unknown> },
+      args:
+        | SkillExecutionRequest
+        | { skillId: string; params?: Record<string, unknown> },
     ) => {
       const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_EXECUTE, {
         getAllowedWindows: () => [mainWindow],
@@ -226,13 +229,49 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillId !== "string" || args.skillId.trim() === "") {
+      const isSkillNameRequest = (
+        payload: SkillExecutionRequest | { skillId: string },
+      ): payload is SkillExecutionRequest =>
+        typeof payload === "object" &&
+        payload !== null &&
+        "skillName" in payload;
+
+      const hasSkillName = isSkillNameRequest(args);
+      if (hasSkillName) {
+        if (
+          typeof args.skillName !== "string" ||
+          args.skillName.trim() === ""
+        ) {
+          throw {
+            code: "VALIDATION_ERROR",
+            message: "skillName must be a non-empty string",
+          };
+        }
+      } else if (
+        typeof args?.skillId !== "string" ||
+        args.skillId.trim() === ""
+      ) {
         throw {
           code: "VALIDATION_ERROR",
           message: "skillId must be a non-empty string",
         };
       }
+
       try {
+        if (hasSkillName) {
+          // Main service executes by skillId; resolve from name to align with preload contract.
+          const { skills } = await skillService.scanAvailableSkills();
+          const skill = skills.find((item) => item.name === args.skillName);
+          if (!skill) {
+            return { success: false, error: "スキルが見つかりません" };
+          }
+
+          const result = await skillService.executeSkill(skill.id, {
+            prompt: args.prompt,
+          });
+          return { success: true, data: result };
+        }
+
         const result = await skillService.executeSkill(
           args.skillId,
           args.params,

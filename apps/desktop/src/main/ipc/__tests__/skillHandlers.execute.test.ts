@@ -61,6 +61,7 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  getSkillByName: vi.fn(),
   executeSkill: vi.fn(), // New method to be tested
   clearCache: vi.fn(),
   // TASK-FIX-7-1: SkillExecutor委譲
@@ -139,6 +140,16 @@ describe("skillHandlers skill:execute", () => {
       startedAt: new Date(),
       completedAt: new Date(),
     });
+    mockSkillService.scanAvailableSkills.mockResolvedValue({
+      skills: [
+        {
+          id: "skill-id-1",
+          name: "Skill One",
+        },
+      ],
+      errors: [],
+      scannedAt: new Date(),
+    });
 
     // Try to import and register handlers (will fail in Red phase)
     try {
@@ -168,6 +179,38 @@ describe("skillHandlers skill:execute", () => {
   // ===========================================================================
 
   describe("TC-4-005: スキルを実行して結果を返す", () => {
+    it("should resolve skillName and call skillService.executeSkill with resolved skillId", async () => {
+      const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
+      if (!handler) {
+        throw new Error("skill:execute handler not registered - Red phase");
+      }
+
+      await handler({}, { skillName: "Skill One", prompt: "hello" });
+
+      expect(mockSkillService.scanAvailableSkills).toHaveBeenCalled();
+      expect(mockSkillService.executeSkill).toHaveBeenCalledWith("skill-id-1", {
+        prompt: "hello",
+      });
+    });
+
+    it("should return error when skillName cannot be resolved", async () => {
+      mockSkillService.scanAvailableSkills.mockResolvedValueOnce({
+        skills: [],
+        errors: [],
+        scannedAt: new Date(),
+      });
+      const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
+      if (!handler) {
+        throw new Error("skill:execute handler not registered - Red phase");
+      }
+
+      const result = await handler({}, { skillName: "missing", prompt: "" });
+      const opResult = result as OperationResult<SkillExecutionResult>;
+
+      expect(opResult.success).toBe(false);
+      expect(opResult.error).toContain("見つかりません");
+    });
+
     it("should call skillService.executeSkill with skillId", async () => {
       const mockResult: SkillExecutionResult = {
         executionId: "exec-123",

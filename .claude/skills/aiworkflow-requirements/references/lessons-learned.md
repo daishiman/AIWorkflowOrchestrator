@@ -22,8 +22,10 @@
 |------|-----------|----------|
 | 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
 | 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
-| 2026-02-25 | 1.25.9 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 の即時再利用正本を追加。`workflow-skill-identifier-branded-type-resolution.md` を新設し、SubAgent分担・Phase運用・監査コマンドをテンプレート準拠で集約 |
-| 2026-02-25 | 1.25.8 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 教訓追加: Branded Type導入時の苦戦箇所（型境界曖昧化、リンク移管同期、監査値誤読）と同種課題向け4ステップ解決手順を追加 |
+
+| 2026-02-25 | 1.26.0 | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: 仕様書別SubAgent分担で同期した際の苦戦箇所（責務境界・同期順序）を追加し、再利用手順を強化 |
+| 2026-02-25 | 1.25.9 | UT-FIX-SKILL-EXECUTE-INTERFACE-001 再確認追補: `audit-unassigned-tasks --target-file` の解釈（current/baseline分離）と `validate-phase-output` 位置引数ルールを苦戦箇所へ追加。再確認手順を7ステップへ更新 |
+| 2026-02-25 | 1.25.8 | UT-FIX-SKILL-EXECUTE-INTERFACE-001 教訓追加: `skillName` 正式契約と `skillId` 後方互換を同時維持する際の苦戦箇所（契約差分、name->id変換、テスト二重化）と4ステップ解決手順を追加 |
 | 2026-02-25 | 1.25.7 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 最終追補: `verify-all-specs.js` の `--workflow` 必須条件を苦戦箇所に追加。再検証コマンドを `quick_validate.js` + `verify-all-specs --workflow` に統一 |
 | 2026-02-25 | 1.25.6 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 追補: `quick_validate` 実行経路を `/Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js` に統一。検証コマンドの重複記載を整理し、再利用時の経路混同を防止 |
 | 2026-02-25 | 1.25.5 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12準拠確認で発生した苦戦箇所（証跡同期漏れリスク、quick_validate実行経路の混同）を追加。`target→full→validate→sync` の4ステップを標準手順化 |
@@ -78,6 +80,53 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ
+
+### 苦戦箇所: 正式契約（skillName）と後方互換（skillId）の同時維持
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | shared/preload は `skillName`、Main は `skillId` で処理しており、片側だけ直すと既存呼び出しを壊す |
+| 原因 | 契約変更を「単一正解への即時置換」で進め、移行期間の両立設計を先に定義していなかった |
+| 対処 | Mainハンドラで union受理し、`skillName` は正式経路・`skillId` は後方互換経路として分岐実装 |
+| 教訓 | IPC契約修正は「正式契約 + 互換契約 + 廃止条件」を同時に仕様化しないと再発する |
+
+### 苦戦箇所: `skillName -> skillId` 変換の責務配置
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillService.executeSkill()` が `skillId` 前提のため、Preload契約をそのまま渡すと検索失敗リスクがある |
+| 原因 | 境界変換（Adapter）をどの層で行うか未確定のまま修正を開始した |
+| 対処 | Mainハンドラ境界で `scanAvailableSkills()` により `name -> id` を解決し、Service APIは据え置き |
+| 教訓 | 既存Serviceを維持する段階移行では「境界での変換」が最小リスクになる |
+
+### 苦戦箇所: 新旧契約テストの取りこぼし
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 新契約テストを追加すると、旧契約回帰が欠落しやすい |
+| 原因 | 正常系の1経路のみで検証し、互換経路の異常系を同時設計していなかった |
+| 対処 | `execute` / `validation` / `delegate` の3テストで新旧両契約を同時検証 |
+| 教訓 | 互換維持タスクは「新旧2経路 x 正常/異常」の最小マトリクスを完了条件に固定する |
+
+### 苦戦箇所: 仕様書同期を単独進行すると更新漏れが発生
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `interfaces` 更新後に `security`/`task-workflow`/`lessons` の追記順序がずれ、証跡同期が遅延した |
+| 原因 | 仕様書ごとの責務分担を先に固定せず、単一担当で順次更新した |
+| 対処 | 仕様書別 SubAgent（A: interfaces / B: security / C: task-workflow / D: lessons）を固定し、同一ターンで同期 |
+| 教訓 | IPC契約修正は「コード更新」ではなく「仕様同期オーケストレーション」として扱うと漏れが減る |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. shared/preload/Main の引数契約を一覧化し、正式契約と互換契約を明示する。  
+2. 境界層に `name -> id` などの変換Adapterを置き、ドメイン層APIは段階的に移行する。  
+3. 新旧契約の正常系/異常系テストを同じターンで追加する。  
+4. `interfaces-agent-sdk-skill.md` / `security-skill-ipc.md` / `task-workflow.md` を同時更新する。  
 
 ---
 
@@ -190,13 +239,33 @@
 | 対処 | `--workflow docs/30-workflows/<task-id>` を必須で付与する形に統一 |
 | 教訓 | strict検証は「対象指定 + strict」の2要素を1セットで記述する |
 
-### 同種課題の簡潔解決手順（5ステップ・再確認版）
+### 苦戦箇所: `audit-unassigned-tasks --target-file` の出力解釈ミス
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `--target-file` を指定しても baseline 一覧が同時に出るため、「対象ファイルにも違反がある」と誤読しやすい |
+| 原因 | この監査は「対象だけ表示」ではなく「対象=current、その他=baseline」に分類する仕様だった |
+| 対処 | `scope.currentFiles` と `currentViolations.total` を判定の正本に固定し、baseline は別管理として記録 |
+| 教訓 | scoped監査は「表示件数」ではなく「current件数」で合否判定する |
+
+### 苦戦箇所: `validate-phase-output` の引数誤用
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `--phase` オプション形式を想定し、コマンド実行に失敗しやすい |
+| 原因 | `verify-all-specs` と同じ引数形式だと誤認していた |
+| 対処 | `validate-phase-output.js <workflow-dir>` の位置引数形式に統一 |
+| 教訓 | Phase検証コマンドは「ファイルごとの引数仕様差分」をテンプレート化して再利用する |
+
+### 同種課題の簡潔解決手順（7ステップ・再確認版）
 
 1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する  
 2. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を分離記録する  
 3. `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` を実行する  
 4. `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` を実行する  
-5. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する  
+5. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` を位置引数で実行する  
+6. `--target-file` 結果は `currentViolations.total` を正本に判定し、baseline と混同しない  
+7. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する  
 
 ## UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応
 
@@ -246,46 +315,6 @@
 
 ---
 
-## UT-TYPE-SKILL-IDENTIFIER-BRANDED-001: Skill識別子Branded Type導入（2026-02-25完了）
-
-### 苦戦箇所: ID/Name の意味境界が `string` で消える
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `skill.id` と `skill.name` が同じ `string` 扱いで、境界APIで取り違えが起きる |
-| 原因 | 型名に意味がなく、Renderer / Preload / Main で契約が暗黙化した |
-| 対処 | `SkillId` / `SkillName` の Branded Type を shared に導入し、境界APIの引数を `SkillName` に統一 |
-| 教訓 | 「内部識別子」と「表示名」は同じプリミティブでも型で分離しないと再発する |
-
-### 苦戦箇所: 完了移管後の参照リンク同期漏れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 未タスクを完了へ移管後、`task-workflow.md` に旧参照が残ってリンク切れになる |
-| 原因 | 物理移動と台帳更新を別タイミングで実施していた |
-| 対処 | 移管と同一ターンで `task-workflow.md` 更新 + `verify-unassigned-links.js` 実行を固定 |
-| 教訓 | 完了移管は「ファイル移動・台帳更新・リンク検証」の3点セットで扱う |
-
-### 苦戦箇所: current/baseline 監査値の誤読
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `audit-unassigned-tasks.js --json` の数値を今回差分のFAILと誤認しやすい |
-| 原因 | 全体監査（scopeなし）と差分監査（`--diff-from`）の用途が混同されやすい |
-| 対処 | 差分判定は `--diff-from HEAD` の `currentViolations`、全体監視は scopeなし `--json` を別記録 |
-| 教訓 | Phase 12レポートは `currentViolations` / `baselineViolations` を常にセットで記述する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. shared型で Branded Type を定義し、境界API引数型を先に固定する。  
-2. Renderer → Preload → Main の順で型を適用し、`string` 直渡しを排除する。  
-3. 完了移管時は `task-workflow` 更新と `verify-unassigned-links` を同一ターンで実施する。  
-4. 監査結果は `--diff-from HEAD`（差分）と scopeなし `--json`（全体）を分離記録する。  
-
-運用の正本テンプレート: [workflow-skill-identifier-branded-type-resolution.md](./workflow-skill-identifier-branded-type-resolution.md)
-
----
-
 ## 目次
 
 0. [UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応](#ut-ui-theme-dynamic-switch-001-settingsslice-テーマ動的切替対応)
@@ -294,10 +323,11 @@
    - [苦戦箇所: Phase 12成果物と仕様書本体の同期漏れ](#苦戦箇所-phase-12成果物と仕様書本体の同期漏れ)
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
    - [同種課題向け転記テンプレート（5分版）](#同種課題向け転記テンプレート5分版)
-0. [UT-TYPE-SKILL-IDENTIFIER-BRANDED-001: Skill識別子Branded Type導入（2026-02-25完了）](#ut-type-skill-identifier-branded-001-skill識別子branded-type導入2026-02-25完了)
-   - [苦戦箇所: ID/Name の意味境界が `string` で消える](#苦戦箇所-idname-の意味境界が-string-で消える)
-   - [苦戦箇所: 完了移管後の参照リンク同期漏れ](#苦戦箇所-完了移管後の参照リンク同期漏れ)
-   - [苦戦箇所: current/baseline 監査値の誤読](#苦戦箇所-currentbaseline-監査値の誤読)
+
+0. [UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ](#ut-fix-skill-execute-interface-001-skillexecute-ipc契約ブリッジ)
+   - [苦戦箇所: 正式契約（skillName）と後方互換（skillId）の同時維持](#苦戦箇所-正式契約skillnameと後方互換skillidの同時維持)
+   - [苦戦箇所: `skillName -> skillId` 変換の責務配置](#苦戦箇所-skillname---skillid-変換の責務配置)
+   - [苦戦箇所: 新旧契約テストの取りこぼし](#苦戦箇所-新旧契約テストの取りこぼし)
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ)
 0. [UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離](#ut-imp-unassigned-audit-scope-control-001-未タスク監査の-scope-分離)
    - [苦戦箇所: 全体監査結果を今回差分の失敗と誤読しやすい](#苦戦箇所-全体監査結果を今回差分の失敗と誤読しやすい)

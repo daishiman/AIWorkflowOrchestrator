@@ -122,7 +122,7 @@ describe("skillHandlers P42準拠バリデーション", () => {
 
     // デフォルトのモックレスポンス
     mockSkillService.scanAvailableSkills.mockResolvedValue({
-      skills: [],
+      skills: [{ id: "skill-1", name: "Test Skill" }],
       errors: [],
       scannedAt: new Date(),
     });
@@ -282,6 +282,36 @@ describe("skillHandlers P42準拠バリデーション", () => {
   // ===========================================================================
 
   describe("skill:execute バリデーション", () => {
+    it("SH-EXE-V00: skillName契約（preload互換）で正常処理されること", async () => {
+      const handler = getHandler(CHANNELS.EXECUTE);
+      mockSkillService.scanAvailableSkills.mockResolvedValueOnce({
+        skills: [{ id: "skill-1", name: "Test Skill" }],
+        errors: [],
+        scannedAt: new Date(),
+      });
+
+      const result = await handler({}, { skillName: "Test Skill", prompt: "" });
+
+      expect(mockSkillService.executeSkill).toHaveBeenCalledWith("skill-1", {
+        prompt: "",
+      });
+      expect((result as { success: boolean }).success).toBe(true);
+    });
+
+    it("SH-EXE-V00-2: 空文字列skillNameでVALIDATION_ERRORがthrowされること", async () => {
+      const handler = getHandler(CHANNELS.EXECUTE);
+
+      try {
+        await handler({}, { skillName: "", prompt: "" });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
     it("SH-EXE-V01: 正常な文字列skillIdで正常処理されること", async () => {
       const handler = getHandler(CHANNELS.EXECUTE);
 

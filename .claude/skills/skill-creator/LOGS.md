@@ -22,6 +22,24 @@
 
 ---
 
+## [2026-02-25 - Phase 12 仕様書別SubAgent同期テンプレート追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-spec-sync-subagent-template.md` を新規作成し、`references/resource-map.md` に登録。`references/patterns.md` に成功パターン「仕様書別SubAgent同期テンプレート」と失敗パターン「仕様書更新の単独進行による同期漏れ」を追加して、Phase 12 横断仕様同期の再利用導線を標準化。
+
+---
+
+## [2026-02-25 - UT-FIX-SKILL-EXECUTE-INTERFACE-001 IPC契約ブリッジパターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「IPC契約ブリッジ（正式契約 + 後方互換）」と失敗パターン「正式契約切替時の後方互換欠落」を追加。クイックナビの IPC 成功/失敗一覧に反映し、契約移行時の互換維持設計をテンプレート化。
+
+---
+
 ## [2026-02-25 - Phase 12 action-bridge template standardization]
 
 - **Agent**: skill-creator (update)
@@ -1165,5 +1183,17 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Phase**: Phase 4
 - **Result**: ✓ 成功
 - **Notes**: ipc-preload-spec-sync-guardian を生成し、テンプレート準拠で実用化
+
+---
+
+## [2026-02-25 - Phase 12再確認パターン追補]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン2件追加（scoped監査の`current`判定固定、`validate-phase-output`位置引数固定）
+  - 失敗パターン2件追加（`--target-file`誤解、`validate-phase-output --phase`誤用）
+  - `SKILL.md` 変更履歴に v10.22.0 を追記
 
 ---

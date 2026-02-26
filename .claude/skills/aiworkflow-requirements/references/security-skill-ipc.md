@@ -57,7 +57,7 @@
 | `skill:import`         | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-IMPORT-INTERFACE-001 + UT-FIX-SKILL-IMPORT-RETURN-TYPE-001） |
 | `skill:remove`         | sender検証 + skillName非空文字列検証（`trim()`含む） |
 | `skill:get-detail`     | sender検証 + skillId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
-| `skill:execute`        | sender検証 + skillId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:execute`        | sender検証 + `skillName`（正式）または`skillId`（後方互換）非空文字列検証（`trim()`含む）（UT-FIX-SKILL-EXECUTE-INTERFACE-001） |
 | `skill:abort`          | sender検証 + executionId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
 | `skill:get-status`     | sender検証 + executionId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
 | `skill:analyze`        | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
@@ -66,6 +66,8 @@
 `skill:import` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-IMPORT-INTERFACE-001）。
 
 `skill:remove` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-REMOVE-INTERFACE-001）。
+
+`skill:execute` は `SkillExecutionRequest`（`skillName`, `prompt`）を正式契約として受理し、旧 `{ skillId, params }` は後方互換として維持する。ハンドラ層では `skillName` / `skillId` の入力検証を実施し、`prompt` の内容制約はサービス層・実行エンジン側の責務として扱う（UT-FIX-SKILL-EXECUTE-INTERFACE-001）。
 
 > **IPC修正時のチェックリスト**: IPC ハンドラー / Preload API を修正する場合は [ipc-contract-checklist.md](./ipc-contract-checklist.md) の6フェーズチェックリストに従う。P23/P32/P42/P44 パターンを統合した契約ドリフト防止ガイド。
 
@@ -346,6 +348,41 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 | TASK-FIX-4-1-IPC-CONSOLIDATION IPCチャンネル統合 | 2026-02-05 | 42 |
 | TASK-9B-H-SKILL-CREATOR-IPC SkillCreatorService IPC登録 | 2026-02-12 | 85 |
 
+### UT-FIX-SKILL-EXECUTE-INTERFACE-001: `skill:execute` 検証要件同期（2026-02-25）
+
+#### 実装反映
+
+| 項目 | 内容 |
+| --- | --- |
+| 正式契約 | `SkillExecutionRequest`（`skillName`, `prompt`）を受理 |
+| 後方互換 | 旧 `{ skillId, params }` を継続受理 |
+| セキュリティ境界 | `validateIpcSender` + `skillName`/`skillId` の非空文字列検証（`trim()`） |
+| 責務分離 | `prompt` の内容制約はサービス層・実行エンジン側で評価 |
+
+#### 仕様書別SubAgent分担（同期反映）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | 正式契約 + 後方互換契約の定義同期 |
+| SubAgent-B | `security-skill-ipc.md` | sender/入力検証要件のセキュリティ観点明文化 |
+| SubAgent-C | `task-workflow.md` | 完了記録・検証証跡・未タスク監査結果の台帳化 |
+| SubAgent-D | `lessons-learned.md` | 苦戦箇所と再利用手順の教訓化 |
+
+#### 実装時の苦戦箇所と解決策
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| `skillName` と `skillId` の二重契約 | 一方を優先すると既存呼び出しを壊しやすい | 正式契約/後方互換契約を明示し、type guardで経路分離 |
+| 検証責務の過剰集約 | `prompt` 内容制約までIPC層に寄せると責務が肥大化 | IPC層は sender + 識別子検証のみ、内容検証は下位層へ委譲 |
+| 仕様書同期の順序依存 | interfaces/security/task台帳が別ターン更新でドリフトしやすい | 仕様書ごとにSubAgent担当を固定し、同一ターンで同期 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. IPC正式契約と後方互換契約を同時に定義する。  
+2. ハンドラー層では sender + 入力形式のみ検証し、業務ルールは下位層へ分離する。  
+3. 新旧契約の正常系/異常系テストを同一ターンで追加する。  
+4. interfaces/security/task/lessons の4仕様書を SubAgent 分担で同時更新する。  
+
 ### TASK-FIX-5-1-SKILL-API-UNIFICATION safeInvoke/safeOnパターン
 
 **実装場所**: `apps/desktop/src/preload/skill-api.ts`
@@ -410,6 +447,8 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.11.0    | 2026-02-25 | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: `skill:execute` 実装反映（正式契約 + 後方互換）、苦戦箇所、仕様書別SubAgent分担、再利用4ステップを追加 |
+| v1.10.0    | 2026-02-25 | UT-FIX-SKILL-EXECUTE-INTERFACE-001反映: `skill:execute` の検証要件を `skillName` 正式契約 + `skillId` 後方互換へ更新（`prompt` の内容制約はサービス層責務） |
 | v1.9.0     | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001完了反映: 残課題 `UT-FIX-SKILL-VALIDATION-P42-001` を完了化（補完タスクで実施済みとして同期） |
 | v1.8.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` の検証要件を `skillName` 非空文字列（`trim()` 含む3段バリデーション）に更新 |
 | v1.0.0     | 2026-01-25 | 初版作成                                     |
