@@ -1128,6 +1128,8 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
 
+> **SKILL 検証**: `spec-update-workflow.md` Step 1-G.3 に定義された正規経路コマンドで3スキル全てが Error 0件であることを確認する。
+
 ### Task 3: ドキュメント更新履歴 & artifacts.json更新【必須】
 
 ドキュメント更新履歴（documentation-changelog.md）を作成し、artifacts.jsonを更新する:

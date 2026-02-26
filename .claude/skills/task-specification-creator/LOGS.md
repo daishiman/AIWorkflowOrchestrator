@@ -43,6 +43,32 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了タスク記録追補]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 2 Step 1-A）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/spec-update-workflow.md` に完了タスク記録・関連ドキュメント・更新履歴を追加
+  - `references/phase-11-12-guide.md` に完了タスク記録と関連ドキュメントを追加
+  - `SKILL.md` 変更履歴を v9.92.9 として同期し、Step 1-A 記録の抜け漏れを是正
+
+---
+
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 仕様反映追補]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（運用ルール更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `spec-update-workflow.md` に SKILL検証の正規経路（`quick_validate.js` 3スキル）を追記
+  - Warning 判定を 3段階（許容/要監視/要対応）で定義し、判定フローと許容条件を明文化
+  - `phase-11-12-guide.md` / `phase-templates.md` に同判定基準への参照を同期
+
+---
+
 ## [2026-02-25 - UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 未タスク仕様書作成]
 
 - **Agent**: task-specification-creator
@@ -4603,3 +4629,21 @@ if (artifactPath) {
 
 - ステータス: success
 - 反映範囲: spec-update-workflow / patterns / SKILL change history
+
+## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象: skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）
+
+### 実施内容
+
+- spec-update-workflow.md に SKILL検証の正規経路（`quick_validate.js` 3スキル）と Warning 3段階分類（許容/要監視/要対応）を追加
+- phase-11-12-guide.md / phase-templates.md へ同判定基準の参照を同期
+- Phase 12 での検証解釈ブレを削減するルールを整備
+
+### 結果
+
+- ステータス: success
+- 仕様反映: 完了（検証コマンド統一 + Warning 3段階分類ルール追加）
