@@ -132,6 +132,69 @@
 
 ## 完了タスク
 
+### タスク: TASK-9B SkillCreator IPC拡張同期 再監査（2026-02-26完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-9B |
+| 完了日 | 2026-02-26 |
+| ステータス | **完了** |
+| タスク種別 | 仕様同期 + IPCバリデーション補完 |
+| Phase | Phase 1-12 完了（Phase 13未実施） |
+| 変更範囲 | Main IPC / Preload / Shared types / aiworkflow-requirements |
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
+| --- | --- | --- | --- |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | SkillCreatorService 12メソッド/API契約と 13チャンネル同期 | 実装差分（Main/Preload/shared）確定後 |
+| SubAgent-B | `security-skill-ipc.md` | sender/P42/パス/スキーマ/秘匿のセキュリティ同期 | SubAgent-Aの契約同期後 |
+| SubAgent-C | `task-workflow.md` | 完了台帳・検証証跡・成果物参照の固定化 | SubAgent-A/Bの反映後 |
+| SubAgent-D | `lessons-learned.md` | 苦戦箇所と簡潔解決手順の再利用化 | SubAgent-Cの証跡値を参照 |
+
+#### 実装内容（要点）
+
+- SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）に統一。
+- `skillCreatorHandlers.ts` の `create` で P42 3段バリデーション（型/空文字/trim空文字）を補完し、回帰テストを追加。
+- `outputs/artifacts.json` を追加し、`artifacts.json` と Phase 12 成果物台帳を同期。
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| 6チャンネル記述と13チャンネル実装のドリフト | 基盤実装と拡張実装の仕様同期が分離していた | `channels.ts` 正本を基準に関連仕様書を一括更新 | 仕様同期は SubAgent 分担で同一ターン実施 |
+| `create` の P42 チェック漏れ | 既存ハンドラー展開時に `trim()` 条件の実装が漏れた | `create` に3段バリデーションを追加し、空文字/空白回帰テストを追加 | IPC追加時はP42 + テスト追加を完了条件に固定 |
+| 未タスク監査の baseline 誤読 | 全体監査の違反数を今回差分違反と混同しやすい | `audit --diff-from HEAD` を合否判定、全体監査は監視値として別記録 | `currentViolations` と `baselineViolations` を常に分離記録 |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `channels.ts` と handler/preload 実装で契約数・型を先に確定する。  
+2. 全invokeに `validateIpcSender` と P42 3段バリデーションを適用する。  
+3. `interfaces/security/task/lessons` を SubAgent 分担で同時更新する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値と時刻を記録する。  
+
+#### 検証結果（2026-02-26 21:40 JST）
+
+| 検証項目 | コマンド | 結果 |
+| --- | --- | --- |
+| ワークフロー仕様整合 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-9b-skill-creator --json` | PASS（13/13、errors=0、warnings=0） |
+| Phase出力構造 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-9b-skill-creator` | PASS（28項目、error=0、warning=0） |
+| 未タスクリンク整合 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（89/89 existing、missing=0） |
+| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0、baselineViolations=71 |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/spec-update-summary.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/unassigned-task-detection.md` |
+| 整合性監査台帳 | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/elegant-solution-audit.md` |
+
+---
+
 ### タスク: UT-UI-THEME-DYNAMIC-SWITCH-001 settingsSlice テーマ動的切替対応（2026-02-25完了）
 
 | 項目       | 内容 |
@@ -1223,11 +1286,12 @@
 | task-ref-quality-requirements-split-001           | quality-requirements.md仕様書分割                                                                                | 低     | TASK-OPT-CI-TEST-PARALLEL-001 Phase 12（テンプレート準拠確認）              | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md`                                                                     |
 | task-e2e-permission-waitfortimeout-001            | E2E権限テスト waitForTimeout改善                                                                                 | 低     | TASK-8C-D Phase 10（TQ-M1指摘）                                             | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md`                                                              |
 | task-e2e-test-readme-documentation-001            | READMEへのE2Eテスト実行方法追加                                                                                  | 低     | TASK-8C-D Phase 9（DOC-M1指摘）                                             | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`                                                                          |
-| ~~TASK-9B-H~~                                     | ~~SkillCreatorService IPC通信設定~~                                                                              | ~~高~~ | **2026-02-12完了** TASK-9B-H-SKILL-CREATOR-IPC                              | `docs/30-workflows/skill-creator-ipc/`                                                                                                             |
+| ~~TASK-9B-H~~                                     | ~~SkillCreatorService IPC通信設定~~                                                                              | ~~高~~ | **2026-02-12完了** TASK-9B-H-SKILL-CREATOR-IPC                              | `docs/30-workflows/completed-tasks/skill-creator-ipc/`                                                                                            |
 | UI-INTEGRATION-9B                                 | SkillCreator UI統合（TASK-10A連携）                                                                              | 高     | TASK-9B-G Phase 12（UI未実装）                                              | `docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md`                                                                              |
 | ~~TASK-9B-I~~                                     | ~~Claude Agent SDK本格統合~~                                                                                     | ~~中~~ | ~~TASK-9B-G Phase 3（推奨事項）~~                                           | ~~`docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md`~~ **2026-02-12完了**                                              |
 | TASK-9B-J                                         | ResourceLoaderキャッシュ無効化                                                                                   | 低     | TASK-9B-G Phase 3（推奨事項）                                               | `docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md`                                                                  |
 | TASK-9B-K                                         | タイムアウト設定の外部化                                                                                         | 低     | TASK-9B-G Phase 3（推奨事項）                                               | `docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md`                                                                      |
+| ~~UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001~~        | ~~TASK-9B 仕様契約再監査ガード強化（13ch同期/P42 create/current-baseline判定）~~                                 | ~~中~~ | **2026-02-26完了** TASK-9B 再監査 Phase 12（実装苦戦箇所・2026-02-26）      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9b-spec-contract-guard-001.md`                                                                     |
 | TASK-10A-UI-SKILL-IMPROVE                         | スキル改善UI表示機能                                                                                             | 中     | TASK-9C Phase 11（手動テスト発見）                                          | `docs/30-workflows/unassigned-task/task-10a-ui-skill-improve.md`                                                                                   |
 | TASK-10B-IMPROVE-HISTORY                          | 改善履歴の永続化                                                                                                 | 低     | TASK-9C Phase 12（スコープ外候補）                                          | `docs/30-workflows/unassigned-task/task-10b-improve-history.md`                                                                                    |
 | TASK-10C-AB-TEST                                  | A/Bテスト実行・結果比較機能                                                                                      | 低     | TASK-9C Phase 12（スコープ外候補）                                          | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                                                                            |
@@ -1302,7 +1366,7 @@
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~            | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完・苦戦箇所付き）~~               | ~~中~~     | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-24**      | `docs/30-workflows/completed-tasks/skill-validation-consistency/`                                                                            |
 | UT-IMP-UNASSIGNED-FORMAT-NORMALIZATION-001         | 未タスク指示書フォーマット正規化（9セクション未準拠67件の是正）                                                   | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 監査（2026-02-22）                      | `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`                                                            |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~           | ~~SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-22）~~ **完了: 2026-02-22**                | `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/`                                                                                                  |
-| ~~UT-TYPE-SKILL-IDENTIFIER-BRANDED-001~~              | ~~Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）~~                                            | ~~中~~     | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）~~ **完了: 2026-02-25**             | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md`                                                                          |
+| UT-TYPE-SKILL-IDENTIFIER-BRANDED-001              | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）                                            | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md`                                                                          |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001         | SkillImportDialog同名コンポーネント解消（コンポーネント命名重複リファクタリング）                                | 低     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md`                                                                     |
 | ~~UT-UI-THEME-DYNAMIC-SWITCH-001~~                     | ~~settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → 4モード動的切替）~~                                   | ~~中~~     | ~~TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）~~ **完了: 2026-02-25**                      | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md`                                                                              |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001              | Tailwind CSS カスタムプロパティ統合（tokens.css変数をTailwind theme設定に反映）                                   | 低     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md`                                                                       |
@@ -1321,13 +1385,9 @@
 | ~~UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001~~ | ~~Phase 12 検証コマンド標準化ガード（`quick_validate.js` 統一 + `verify-all-specs --workflow` 必須化）~~                 | ~~中~~     | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md`                                                                  |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
-| ~~UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001~~       | ~~skill-creator検証ゲート整合化（quick_validate実行経路統一 + 警告ノイズ制御）~~                                      | ~~中~~     | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001 Phase 12再監査（実装・検証時の苦戦箇所）~~ **完了: 2026-02-26（Phase 1-12）** | `docs/30-workflows/completed-tasks/task-imp-skill-validation-gate-alignment-001.md`                                                           |
 
-| UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
-| UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001 | Phase 12 完了移管時の参照同期ガード（移管実体/台帳/本文の三点同期 + 旧参照検出標準化）                           | 中     | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12再確認（実装苦戦箇所・2026-02-26） | `docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md`                                              |
+| UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
-| UT-IMP-QUICK-VALIDATE-BOM-UTF8-001                | quick_validate.js BOM付きUTF-8 frontmatter検出修正                                                              | 低     | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 10 MINOR #1（2026-02-26） | `docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md`                                                                    |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001       | quick_validate.js name/description 空フィールドガード追加                                                        | 中     | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 10 MINOR #2（2026-02-26） | `docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md`                                                           |
 
 ### 未タスク管理ルール
 
@@ -1351,16 +1411,15 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.61.4** | **2026-02-26** | **UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001 登録**: `docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md` を残課題テーブルに追加。苦戦箇所（完了移管後の旧参照残存 / 台帳と実体ステータス不一致 / テンプレート旧経路残置）を指示書 Section 3.5 に記録し、同種課題で再利用可能な形に標準化 |
-| **1.61.3** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 のシステム仕様反映を最適化**: `lessons-learned.md` に仕様書別SubAgent分担マップ（A:台帳/B:教訓/C:履歴/D:検証）と5ステップ即時実行プロトコルを追記。完了済み指示書 `task-imp-skill-validation-gate-alignment-001.md` の参照先を `completed-tasks/` 正本へ同期 |
-| **1.61.2** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 完了反映**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、参照先を `completed-tasks/` へ更新。`lessons-learned.md` に Phase 12 検証経路差異の教訓を追記。未タスク検出: 新規 0件（既知2件は管理済み、skipテスト2件は既存 `UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001` のスコープ内） |
-| **1.61.1** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 の Phase 11/12 証跡を追補**: `manual-test-result.md` / `walkthrough-log.md` / `implementation-guide.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を作成し、`artifacts.json` を Phase 11/12 completed へ同期。Phase 10 MINOR由来未タスク2件の指示書フォーマットを9セクションへ正規化 |
-| **1.61.0** | **2026-02-26** | **未タスク台帳の参照整合を是正**: `UT-TYPE-SKILL-IDENTIFIER-BRANDED-001` を完了表記 + `completed-tasks/` 正本へ更新。`UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 指示書を `unassigned-task/` 配置へ戻し、`UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` を残課題テーブルへ登録 |
+| **1.61.3** | **2026-02-26** | **TASK-9B 完了移管に同期**: 実行ワークフロー `docs/30-workflows/completed-tasks/task-9b-skill-creator/` への移動と、未タスク `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` の `completed-tasks/unassigned-task/` 移管を反映。残課題テーブルを完了表記へ更新 |
+| **1.61.2** | **2026-02-26** | **UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001 登録**: TASK-9B 再監査で顕在化した苦戦箇所（13chドリフト、`create` P42 3段検証漏れ、`current/baseline` 誤読）を再発防止する未タスクを残課題テーブルへ追加。未タスク仕様書の Section 3.5 に課題/発見経緯/解決策/教訓を反映 |
+| **1.61.1** | **2026-02-26** | **TASK-9B再監査の完了記録を追加**: 完了タスクセクションへ TASK-9B（13チャンネル同期、P42 `create` 補完、成果物台帳同期）を追加。仕様書別SubAgent分担、苦戦箇所3件、簡潔解決5ステップ、検証証跡（13/13・28項目・89/89・current=0）を記録 |
 | **1.60.8** | **2026-02-25** | **UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 追加**: UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所（状態責務混在 / Hook再実行ループ / Phase 12証跡同期漏れ）を再発防止する未タスクを残課題テーブルへ登録 |
 | **1.60.7** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 テンプレート最適化**: 完了タスクセクションに「Phase 12 Step 2 転記テンプレート（短縮版）」を追加。実装内容・苦戦箇所・再利用手順・3仕様書同時更新・検証コマンドの記録形式を標準化 |
 | **1.60.6** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 完了記録追記**: 完了タスクセクションへ実装内容・苦戦箇所・簡潔解決手順（4ステップ）を追加。`outputs/phase-12/phase12-task-spec-compliance-check.md` を証跡として登録し、Phase 12 準拠判定の根拠を固定 |
 | **1.60.5** | **2026-02-25** | **UT-UI-THEME-DYNAMIC-SWITCH-001 台帳同期完了**: 残課題テーブルの同タスクを完了化（取り消し線 + 完了日）し、4モード動的切替（kanagawa-dragon/light/dark/system）完了状態へ整合 |
 
+| **1.61.0** | **2026-02-26** | **TASK-9B再監査反映**: `TASK-9B-H` 完了行の参照先を `completed-tasks/skill-creator-ipc/` に正規化し、task-workflow 上の SkillCreator 関連リンク整合を是正 |
 | **1.60.9** | **2026-02-25** | **UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001 登録**: UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12 再確認で顕在化した「4仕様書同期漏れ」「current/baseline誤読」「検証コマンド誤用」を再発防止する未タスクを残課題テーブルへ追加。指示書 Section 3.5 に苦戦箇所と解決策を反映 |
 | **1.60.8** | **2026-02-25** | **UT-FIX-SKILL-EXECUTE-INTERFACE-001 仕様書別SubAgent分担を追補**: 完了タスクセクションに仕様書同期チーム（A: interfaces / B: security / C: task-workflow / D: lessons）の分担表を追加。実装内容・苦戦箇所・検証証跡を仕様書単位で責務分離し、同期漏れ防止運用を明文化 |
 | **1.60.7** | **2026-02-25** | **UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認を追記**: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の再実行結果を完了セクションに追加。関連未タスク3件の scoped監査結果（current=0）と、再確認時の苦戦箇所（`--target-file`解釈・`validate-phase-output`引数誤用）を明文化 |

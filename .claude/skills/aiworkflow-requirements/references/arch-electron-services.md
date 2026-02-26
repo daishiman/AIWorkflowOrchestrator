@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
 | 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
 | 6.33.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` IPC引数を `skillName: string` に更新 |
 | 6.32.0     | 2026-02-07 | TASK-FIX-4-2完了: SkillImportManager永続化実装詳細セクション追加（型バリデーション・SkillStoreインターフェース・デバッグフラグ・テストファイル構成） |
@@ -295,6 +296,37 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `clearCache`          | -                    | `void`                   | キャッシュクリア   |
 | `executeSkill`        | `skillId: string, params?: ExecuteParams` | `Promise<SkillExecutionResponse>` | スキル実行（SkillExecutorに委譲） |
 | `setSkillExecutor`    | `executor: SkillExecutor` | `void` | SkillExecutorを設定（DI） |
+
+### SkillCreatorService（Facade）API
+
+> **実装場所**: `apps/desktop/src/main/services/skill/`
+
+SkillCreatorService はスキル生成・改善・運用支援を統合する Facade として実装される。
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `detectMode` | `request: string` | `Promise<SkillCreatorMode>` | 要求文から作成モード判定 |
+| `createSkill` | `options: CreateSkillOptions` | `Promise<string>` | スキル新規作成 |
+| `executeTasks` | `options: ExecuteTasksOptions` | `Promise<ExecutionReport>` | タスク仕様の実行 |
+| `validateSkill` | `skillDir: string` | `Promise<boolean>` | スキル検証 |
+| `validateWithSchema` | `schemaName: string, data: unknown` | `Promise<boolean>` | スキーマ検証 |
+| `improveSkill` | `skillName: string, autoApply: boolean` | `Promise<unknown>` | 改善提案生成/適用 |
+| `forkSkill` | `sourceName: string, newName: string, options: object` | `Promise<string>` | フォーク作成 |
+| `shareSkill` | `action: string, target: string, skillName: string` | `Promise<string>` | エクスポート共有 |
+| `scheduleSkill` | `skillName: string, schedule: object` | `Promise<void>` | スケジュール設定 |
+| `debugSkill` | `skillName: string, options: object` | `Promise<unknown>` | デバッグ実行 |
+| `generateDocs` | `skillName: string, format: string, sections: string[]` | `Promise<string>` | ドキュメント生成 |
+| `getStats` | `skillName: string, period: string` | `Promise<unknown>` | 使用統計取得 |
+
+**サブコンポーネント（分離実装）**:
+
+| ファイル | 責務 |
+| --- | --- |
+| `HearingFacilitator.ts` | 要件ヒアリング補助 |
+| `TaskGenerator.ts` | タスク仕様生成 |
+| `CodeGenerator.ts` | コード生成補助 |
+| `ApiIntegrator.ts` | 外部API統合補助 |
+| `SkillValidator.ts` | 検証処理補助 |
 
 ### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 

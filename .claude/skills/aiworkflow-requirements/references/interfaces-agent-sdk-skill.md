@@ -1344,6 +1344,8 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 | `generateTasks`   | `boolean`           | -    | タスク仕様書を生成するか       |
 | `interviewResult` | `InterviewResult`   | -    | インタビュー結果（collaborative時） |
 | `domainModel`     | `DomainModel`       | -    | ドメインモデル（collaborative時） |
+| `skillPath`       | `string`            | -    | スキルパス（update時）         |
+| `tasksDir`        | `string`            | -    | タスクディレクトリ（create時） |
 
 #### ScriptResult
 
@@ -1372,45 +1374,22 @@ TASK-FIX-1-1-TYPE-ALIGNMENT実装で得られた知見。同様の課題に直�
 
 ### SkillCreatorService API
 
-#### detectMode
+SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
-ユーザーリクエストから適切なモードを判定する。
-
-| パラメータ | 型       | 必須 | 説明               |
-| ---------- | -------- | ---- | ------------------ |
-| `request`  | `string` | ✓    | ユーザーリクエスト |
-
-**戻り値**: `Promise<SkillCreatorMode>`
-
-#### createSkill
-
-スキルを作成する。
-
-| パラメータ | 型                   | 必須 | 説明               |
-| ---------- | -------------------- | ---- | ------------------ |
-| `options`  | `CreateSkillOptions` | ✓    | スキル作成オプション |
-
-**戻り値**: `Promise<string>` - 作成されたスキルディレクトリパス
-
-#### executeTasks
-
-タスクを依存関係順に実行する。
-
-| パラメータ | 型                    | 必須 | 説明               |
-| ---------- | --------------------- | ---- | ------------------ |
-| `options`  | `ExecuteTasksOptions` | ✓    | タスク実行オプション |
-
-**戻り値**: `Promise<ExecutionReport>`
-
-#### validateSkill
-
-スキルを検証する。
-
-| パラメータ  | 型       | 必須 | 説明                   |
-| ----------- | -------- | ---- | ---------------------- |
-| `skillDir`  | `string` | ✓    | スキルディレクトリパス |
-
-**戻り値**: `Promise<boolean>`
+| メソッド | シグネチャ | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `detectMode` | `(request: string)` | `Promise<SkillCreatorMode>` | ユーザー要求からモード判定 |
+| `createSkill` | `(options: CreateSkillOptions)` | `Promise<string>` | スキル作成（戻り値は作成先パス） |
+| `executeTasks` | `(options: ExecuteTasksOptions)` | `Promise<ExecutionReport>` | タスク群実行（dry-run/実行） |
+| `validateSkill` | `(skillDir: string)` | `Promise<boolean>` | 生成スキル検証 |
+| `validateWithSchema` | `(schemaName: string, data: unknown)` | `Promise<boolean>` | スキーマ検証 |
+| `improveSkill` | `(skillName: string, autoApply: boolean)` | `Promise<unknown>` | 改善提案生成/適用 |
+| `forkSkill` | `(sourceName: string, newName: string, options: object)` | `Promise<string>` | スキル複製 |
+| `shareSkill` | `(action: string, target: string, skillName: string)` | `Promise<string>` | 共有/エクスポート |
+| `scheduleSkill` | `(skillName: string, schedule: object)` | `Promise<void>` | 実行スケジュール設定 |
+| `debugSkill` | `(skillName: string, options: object)` | `Promise<unknown>` | デバッグ実行 |
+| `generateDocs` | `(skillName: string, format: string, sections: string[])` | `Promise<string>` | ドキュメント生成 |
+| `getStats` | `(skillName: string, period: string)` | `Promise<unknown>` | 使用統計取得 |
 
 ---
 
@@ -1633,7 +1612,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| ~~UT-TYPE-SKILL-IDENTIFIER-BRANDED-001~~ | ~~Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md` (**完了: 2026-02-25**) |
+| UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別） | 中 | `docs/30-workflows/unassigned-task/task-type-skill-identifier-branded.md` |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001 | SkillImportDialog同名コンポーネント解消 | 低 | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md` |
 
 ---
@@ -1709,23 +1688,23 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
-### TASK-9B-H-SKILL-CREATOR-IPC: SkillCreatorService IPC登録（2026-02-12完了）
+### TASK-9B-H-SKILL-CREATOR-IPC / TASK-9B: SkillCreatorService IPC登録・拡張（2026-02-26同期）
 
 | 項目         | 内容                                                                       |
 | ------------ | -------------------------------------------------------------------------- |
-| タスクID     | TASK-9B-H-SKILL-CREATOR-IPC                                               |
-| 完了日       | 2026-02-12                                                                 |
+| タスクID     | TASK-9B-H-SKILL-CREATOR-IPC / TASK-9B                                     |
+| 完了日       | 2026-02-12（基盤） / 2026-02-26（拡張同期）                               |
 | ステータス   | **完了**                                                                   |
-| テスト数     | 85（自動テスト）                                                           |
+| テスト数     | 85（基盤） + 拡張チャンネル回帰テスト                                     |
 | 発見課題     | MINOR 2件（IpcResult型重複、Zodスキーマ未使用）                            |
-| ドキュメント | `docs/30-workflows/skill-creator-ipc/`                                     |
+| ドキュメント | `docs/30-workflows/completed-tasks/skill-creator-ipc/`, `docs/30-workflows/completed-tasks/task-9b-skill-creator/` |
 
 #### テスト結果サマリー
 
 | カテゴリ                     | テスト数 | PASS | FAIL |
 | ---------------------------- | -------- | ---- | ---- |
 | ハンドラー登録/解除          | 2        | 2    | 0    |
-| 正常フロー（5チャンネル）    | 22       | 22   | 0    |
+| 正常フロー（主要チャンネル） | 22       | 22   | 0    |
 | sender検証                   | 5        | 5    | 0    |
 | エッジケース                 | 12       | 12   | 0    |
 | セキュリティ                 | 8        | 8    | 0    |
@@ -1735,11 +1714,12 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 #### 成果物
 
-| 成果物             | パス                                                                              |
-| ------------------ | --------------------------------------------------------------------------------- |
-| 実装ガイド         | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md`    |
+| 成果物             | パス                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------- |
+| 実装ガイド（基盤） | `docs/30-workflows/completed-tasks/skill-creator-ipc/outputs/phase-12/implementation-guide.md` |
+| 実装ガイド（拡張） | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/implementation-guide.md`           |
 
-#### 追加チャンネル一覧（6チャンネル）
+#### 追加チャンネル一覧（13チャンネル）
 
 | 定数名                           | チャンネル値                      | 方向          |
 | -------------------------------- | --------------------------------- | ------------- |
@@ -1748,6 +1728,13 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | `SKILL_CREATOR_EXECUTE_TASKS`    | `skill-creator:execute-tasks`     | invoke (R->M) |
 | `SKILL_CREATOR_VALIDATE`         | `skill-creator:validate`          | invoke (R->M) |
 | `SKILL_CREATOR_VALIDATE_SCHEMA`  | `skill-creator:validate-schema`   | invoke (R->M) |
+| `SKILL_CREATOR_IMPROVE`          | `skill-creator:improve`           | invoke (R->M) |
+| `SKILL_CREATOR_FORK`             | `skill-creator:fork`              | invoke (R->M) |
+| `SKILL_CREATOR_SHARE`            | `skill-creator:share`             | invoke (R->M) |
+| `SKILL_CREATOR_SCHEDULE`         | `skill-creator:schedule`          | invoke (R->M) |
+| `SKILL_CREATOR_DEBUG`            | `skill-creator:debug`             | invoke (R->M) |
+| `SKILL_CREATOR_GENERATE_DOCS`    | `skill-creator:generate-docs`     | invoke (R->M) |
+| `SKILL_CREATOR_STATS`            | `skill-creator:stats`             | invoke (R->M) |
 | `SKILL_CREATOR_PROGRESS`         | `skill-creator:progress`          | on (M->R)     |
 
 #### 関連未タスク
@@ -1758,6 +1745,31 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | UT-9B-H-002 | IPCハンドラー引数検証のZodスキーマ移行      | 低     | `docs/30-workflows/unassigned-task/task-9b-h-zod-schema-migration.md`           |
 | ~~UT-9B-H-003~~ | ~~SkillCreator IPCセキュリティ強化（パストラバーサル対策、sanitizeError、schemaNameホワイトリスト）~~ | ~~高~~ | ~~`docs/30-workflows/completed-tasks/ut-9b-h-003-security-hardening/index.md`~~ **2026-02-12完了（UT-9B-H-003-security-hardeningで実施）** |
 | UT-9B-H-004 | SkillCreator設計書-実装整合性修正（Zod/型/メソッド名の乖離対応） | 中 | `docs/30-workflows/unassigned-task/task-9b-h-design-implementation-alignment.md` |
+| ~~UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001~~ | ~~TASK-9B 仕様契約再監査ガード強化（13ch同期/P42 create/current-baseline判定）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9b-spec-contract-guard-001.md` **（完了: 2026-02-26）** |
+
+#### 仕様書別SubAgent分担（TASK-9B 再監査）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | 12メソッドAPIと `CreateSkillOptions` / 進捗型の実装同期 |
+| SubAgent-B | `security-skill-ipc.md` | Sender検証 + P42 3段バリデーション適用範囲の同期 |
+| SubAgent-C | `task-workflow.md` | 完了台帳・検証証跡・成果物参照の同期 |
+| SubAgent-D | `lessons-learned.md` | 苦戦箇所と簡潔解決手順の再利用化 |
+
+#### 再監査時の苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| IPC契約のチャンネル数ドリフト（6と13の混在） | 基盤実装（TASK-9B-H）と拡張実装（TASK-9B）の同期タイミングが分離 | `channels.ts` 正本を基準に 13チャンネル（12 invoke + 1 progress）へ統一 | Phase 12で `interfaces/security/task/lessons` の4仕様書を同一ターン更新する |
+| `create` のP42 3段バリデーション漏れ | 既存ハンドラー群の水平展開時に `trim()` チェックが未適用 | `skillCreatorHandlers.ts` の `create` に型/空文字/trim空文字を追加し、回帰テストを実装 | 「新規/拡張ハンドラー追加時は P42 + テスト追加を1セット」をチェックリスト化 |
+| 成果物台帳の二重管理（`artifacts.json` / `outputs/artifacts.json`） | Phase 12終盤で片側更新になりやすい | 2ファイルを同時更新し、`spec-update-summary.md` に検証結果を固定 | Phase完了前に両ファイル差分を必須確認する |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. `channels.ts` を正本にして契約数・型を固定する。  
+2. 追加/変更したIPCに P42 3段バリデーションと回帰テストを同時実装する。  
+3. `interfaces/security/task/lessons` の4仕様書を SubAgent 分担で同一ターン更新する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の結果を成果物へ記録する。  
 
 ---
 
@@ -1845,7 +1857,10 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-02-26 | 1.36.0     | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 の参照を完了タスク正本へ更新（`unassigned-task/` → `completed-tasks/`）。UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001 は未実施のため `unassigned-task/` 配置を維持 |
+| 2026-02-26 | 1.39.0     | TASK-9B 完了移管に同期: 実行ワークフロー参照を `completed-tasks/task-9b-skill-creator/` に統一し、`UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を completed-tasks/unassigned-task 移管済みとして完了化 |
+| 2026-02-26 | 1.38.0     | TASK-9B 再監査の苦戦箇所を未タスク化: `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を関連未タスクへ追加（13chドリフト/P42 create検証漏れ/current-baseline誤読の再発防止） |
+| 2026-02-26 | 1.37.0     | TASK-9B再監査追補: 仕様書別SubAgent分担、実装時の苦戦箇所（13chドリフト/P42 create漏れ/成果物二重台帳）と4ステップ簡潔解決手順を TASK-9B-H/TASK-9B セクションへ追記 |
+| 2026-02-26 | 1.36.0     | TASK-9B反映: SkillCreatorService APIを12メソッドへ同期。TASK-9B-HセクションのIPCチャンネル一覧を13チャンネル（12 invoke + 1 progress）へ更新し、成果物リンクを `completed-tasks/skill-creator-ipc` と `task-9b-skill-creator` に正規化 |
 | 2026-02-25 | 1.35.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 由来の未タスク `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` を追加。4仕様書同期の運用ガード課題を関連未タスクとして記録 |
 | 2026-02-25 | 1.34.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: 仕様書別SubAgent分担（interfaces/security/task-workflow/lessons）を追加し、契約同期の責務分離を明文化 |
 | 2026-02-25 | 1.33.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001完了反映。`skill:execute` の正式契約（`skillName`）と後方互換契約（`skillId`）を仕様化し、Main境界の `name -> id` 変換フローと回帰テスト結果を追記 |

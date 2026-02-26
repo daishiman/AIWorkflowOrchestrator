@@ -20,9 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-02-26 | 1.26.3 | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 の再利用性を強化: 仕様書別SubAgent分担マップ（A:台帳/B:教訓/C:検証）と同種課題向け即時実行プロトコル（5ステップ）を追加。`quick_validate.js` 正規経路と `current/baseline` 分離判定をテンプレート化 |
-| 2026-02-26 | 1.26.2 | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12完了教訓追加: `quick_validate.py` vs `quick_validate.js` 実行経路差異と Warning 大量出力時の判定見落としリスクを追記 |
-| 2026-02-26 | 1.26.1 | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 教訓追加: `quick_validate` 実行経路統一と Phase 10 MINOR由来未タスク整合（実体作成/フォーマット是正/台帳同期）で発生した苦戦箇所3件を追記。同種課題向け簡潔解決手順（4ステップ）を追加 |
+| 2026-02-26 | 1.26.1 | TASK-9B SkillCreator IPC拡張同期の再監査教訓を追加。苦戦箇所3件（13チャンネル仕様ドリフト、P42 create未完了、current/baseline監査誤読）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
 | 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 
@@ -83,74 +81,6 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
-
----
-
-## UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001: quick_validate 検証ゲート整合化
-
-### 実装内容（Phase 12反映）
-
-- `quick_validate.js` を Phase 12 の正規検証経路として統一し、3スキルの Error 0 判定を標準化
-- Phase 11 手動テスト結果（再現性 diff 0、異常系 exit 3、current/baseline 分離）を証跡化
-- Phase 10 MINOR由来の未タスク2件を `unassigned-task/` に配置し、フォーマット/参照整合を是正
-
-### 苦戦箇所: 実行経路の混在で判定基準がぶれる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `.py` と `.js` の検証経路が混在し、同じ「検証」の意味が揺れた |
-| 原因 | 正規経路と fallback 経路の運用境界を先に固定していなかった |
-| 対処 | `quick_validate.js` を正規経路に固定し、fallback は条件付き利用へ限定 |
-| 教訓 | 「どのコマンドが正本か」を先に固定しないと判定再現性が落ちる |
-
-### 苦戦箇所: baseline違反を今回差分違反と誤読しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 全体監査の違反件数を、今回変更の失敗と誤認しやすい |
-| 原因 | `current` / `baseline` の分離判定を運用手順に固定していなかった |
-| 対処 | `audit-unassigned-tasks --diff-from HEAD` を合否正本にし、全体監査は別記録 |
-| 教訓 | 監査値は「今回判定」と「資産健全性」を必ず2軸で扱う |
-
-### 苦戦箇所: MINOR未タスクの実体と台帳にズレが出る
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 未タスクIDは台帳にあるが、指示書実体やフォーマットが追随していなかった |
-| 原因 | Phase 10→12の間で「作成・登録・参照検証」が同一ターンで実施されなかった |
-| 対処 | 指示書2件を9セクションへ正規化し、target-file監査で current=0 を確認 |
-| 教訓 | 未タスクは「作成・配置・台帳・参照検証」を1セットで完了扱いにする |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 検証コマンドの正規経路を1つに固定する（fallbackは条件付き）
-2. 監査は `current`（合否）と `baseline`（監視）を分離して記録する
-3. MINOR検出時は未タスク指示書を即作成し、`task-workflow.md` と参照リンクを同時更新する
-4. `verify-unassigned-links.js` と `audit --target-file` で配置/フォーマットを機械確認する
-
-### 仕様書別SubAgent分担マップ（関心ごとの分離）
-
-| SubAgent | 主担当仕様書 | 責務 | 完了条件 |
-| --- | --- | --- | --- |
-| A | `references/task-workflow.md` | 完了タスク/残課題/成果物参照の同期 | 参照先が実体ファイルと一致し、完了ステータスが矛盾しない |
-| B | `references/lessons-learned.md` | 苦戦箇所の原因・再発条件・対処を記録 | 同種課題で再利用できる手順が4ステップ以上で記載される |
-| C | `SKILL.md` / `LOGS.md` | 変更履歴と実行ログを同期 | バージョン履歴とログに同一タスクIDが記録される |
-| D | 検証スクリプト実行 | `quick_validate` / `verify-unassigned-links` / `audit` の最終判定 | Error 0 かつ `currentViolations=0` を確認 |
-
-### 同種課題の即時実行プロトコル（5ステップ）
-
-1. `quick_validate.js` を正規経路に固定し、fallbackは例外時のみ使用する  
-2. 仕様書更新は SubAgent A/B/C で分担し、同一ターンで反映する  
-3. 未タスクは「作成 → 台帳登録 → 参照検証」を1セットで完了させる  
-4. 監査結果は `current`（合否）と `baseline`（監視）を分離して記録する  
-5. `SKILL.md`・`LOGS.md`・`task-workflow.md` の3点を同時更新して終了する  
-
-### Phase 12検証: quick_validate.py vs quick_validate.js 実行経路差異（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001）
-
-- **苦戦箇所1**: `.codex`配下の`quick_validate.py`（7チェック、2段階判定）と、repo配下の`quick_validate.js`（8チェック、3段階判定）の実行経路の違いにより、同一入力に対する検証結果が異なった
-- **苦戦箇所2**: aiworkflow-requirementsの151件のWarning（大量参照リンク）により、Error 0件の判定が見落とされやすかった
-- **対策**: 実行経路を`quick_validate.js`に統一し、Warning 3段階分類（許容/要監視/要対応）と判定フローを`spec-update-workflow.md`に明文化
-- **教訓**: 仕様書改善タスクでも、検証ツールの実行経路統一は品質保証の前提条件
 
 ---
 
@@ -562,8 +492,12 @@
    - [苦戦箇所2: workflow移管後の旧参照パス残存](#2-workflow移管後の旧参照パス残存)
    - [苦戦箇所3: 生成ミスによる-outputs-ゴーストディレクトリ](#3-生成ミスによる-outputs-ゴーストディレクトリ)
    - [同種課題の簡潔解決手順（4ステップ）](#同種課題の簡潔解決手順4ステップ-1)
-9. [関連ドキュメント](#関連ドキュメント)
-10. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
+9. [TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26）](#task-9b-skillcreator-ipc拡張同期-再監査2026-02-26)
+   - [苦戦箇所1: IPCチャンネル契約数（6/13）の混在](#1-ipcチャンネル契約数613の混在)
+   - [苦戦箇所2: createハンドラーのP42 3段バリデーション未完了](#2-createハンドラーのp42-3段バリデーション未完了)
+   - [苦戦箇所3: 未タスク監査のcurrent/baseline混同](#3-未タスク監査のcurrentbaseline混同)
+10. [関連ドキュメント](#関連ドキュメント)
+11. [テンプレート（新規教訓追加用）](#テンプレート新規教訓追加用)
 
 ---
 
@@ -3613,6 +3547,64 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | 元タスク指示書（移管先） | `docs/30-workflows/completed-tasks/task-ipc-channel-naming-audit-001.md` |
 | 新規未タスク指示書（完了移管先） | `docs/30-workflows/completed-tasks/task-ipc-auth-handle-duplicate-001.md` |
 | Phase 12 未タスク検出レポート | `docs/30-workflows/ut-ipc-channel-naming-audit-001/outputs/phase-12/unassigned-task-detection.md` |
+
+---
+## TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9B |
+| 目的 | SkillCreator IPC拡張実装（13チャンネル）とシステム仕様書のドリフトを解消し、再利用可能な運用知見へ落とし込む |
+| 完了日 | 2026-02-26 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 1. IPCチャンネル契約数（6/13）の混在
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 基盤実装の6チャンネル記述と拡張実装の13チャンネル実体が混在し、仕様書ごとに記述がずれた |
+| 原因 | TASK-9B-H（基盤）とTASK-9B（拡張）の仕様同期を同一ターンで束ねていなかった |
+| 解決策 | `channels.ts` を正本にして `interfaces/security/task/lessons` を一括更新し、13チャンネルへ統一 |
+| 教訓 | IPC拡張は「実装完了」より先に「契約数の正本確定」を行うとドリフトを抑制できる |
+
+#### 2. createハンドラーのP42 3段バリデーション未完了
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `create` だけ `trim()` 空白検証が欠落し、P42運用に穴があった |
+| 原因 | 既存ハンドラー改修の水平展開時に、チェック項目の統一基準が暗黙運用だった |
+| 解決策 | `skillCreatorHandlers.ts` に型/空文字/trim空文字を実装し、空文字・空白回帰テストを追加 |
+| 教訓 | P42は「実装 + 回帰テスト」までを1セットで完了判定しないと再発する |
+
+#### 3. 未タスク監査のcurrent/baseline混同
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 全体監査の違反数を今回差分違反と誤認し、不要な是正作業に流れやすい |
+| 原因 | `audit-unassigned-tasks --json` と `--diff-from HEAD` の役割差を明示していなかった |
+| 解決策 | 合否判定は `--diff-from HEAD` の `currentViolations` に固定し、全体監査値は監視値として分離記録 |
+| 教訓 | 監査値は「current=合否」「baseline=既存負債」の2軸で扱うと判断が安定する |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. `channels.ts` を正本にして契約数・型・方向（invoke/on）を確定する。  
+2. IPCハンドラーは全invokeで `validateIpcSender` + P42 3段バリデーションを適用する。  
+3. 仕様同期は `interfaces/security/task/lessons` を SubAgent 分担で同時に更新する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値・時刻を記録して完了判定する。  
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/spec-update-summary.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/unassigned-task-detection.md` |
+| 整合性監査台帳 | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/elegant-solution-audit.md` |
 
 ---
 ## テンプレート（新規教訓追加用）

@@ -54,6 +54,10 @@ export interface CreateSkillOptions {
   interviewResult?: InterviewResult;
   /** ドメインモデル（collaborativeモード時） */
   domainModel?: DomainModel;
+  /** スキルパス（updateモード時） */
+  skillPath?: string;
+  /** タスクディレクトリ（createモード時） */
+  tasksDir?: string;
 }
 
 /**
@@ -231,3 +235,83 @@ export interface TaskSpec {
  * タスクIDをキーに、依存するタスク配列を値とするMap
  */
 export type DependencyGraph = Map<string, TaskSpec[]>;
+
+// ============================================
+// Phase 5: 新規メソッド用型定義 (TASK-9B)
+// ============================================
+
+/** スキル改善オプション */
+export interface ImproveOptions {
+  autoApply?: boolean;
+  targetAreas?: string[];
+}
+
+/** 改善提案 */
+export interface ImproveSuggestion {
+  category: string;
+  description: string;
+  severity: "low" | "medium" | "high";
+  autoFixable: boolean;
+}
+
+/** スキル改善結果 */
+export interface ImproveResult {
+  suggestions: ImproveSuggestion[];
+  applied: boolean;
+}
+
+/** フォークオプション */
+export interface ForkOptions {
+  copyAgents?: boolean;
+  copyReferences?: boolean;
+  copyScripts?: boolean;
+  modifyTools?: boolean;
+}
+
+/** エクスポート形式 */
+export type ExportFormat = "zip" | "tar" | "directory" | "gist";
+
+/** スケジュール設定 */
+export interface ScheduleConfig {
+  skillName: string;
+  scheduleType: "cron" | "interval" | "once";
+  value: string;
+  isEnabled: boolean;
+  timezone?: string;
+}
+
+/** デバッグオプション */
+export interface DebugOptions {
+  verbose?: boolean;
+  breakpoints?: string[];
+}
+
+/** デバッグステップ */
+export interface DebugStep {
+  stepNumber: number;
+  toolName: string;
+  input: unknown;
+  output: unknown;
+  duration: number;
+  hitBreakpoint: boolean;
+}
+
+/** デバッグ結果 */
+export interface DebugResult {
+  steps: DebugStep[];
+  exitCode?: number;
+  duration?: number;
+}
+
+/** 使用統計 */
+export interface UsageStats {
+  skillName: string;
+  period: string;
+  executionCount: number;
+  successCount: number;
+  failureCount: number;
+  averageDuration: number;
+  topTools: Array<{ tool: string; count: number }>;
+  hourlyDistribution: Record<string, number>;
+  errorTrends: Array<{ date: string; count: number }>;
+}

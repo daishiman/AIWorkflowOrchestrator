@@ -276,25 +276,32 @@ AIによるコード生成・編集の結果を保持する。
 ## Skill Creator IPC チャネル
 
 Electronデスクトップアプリでは、IPC通信でスキル作成・管理機能を提供する。
-SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク実行・検証を行う。
+SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク実行・検証に加え、改善・フォーク・共有・スケジュール・デバッグ・ドキュメント生成・統計取得を行う。
 
 **実装ファイル**:
 
 - チャンネル定義: `apps/desktop/src/preload/channels.ts`
 - IPCハンドラー: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
 - Preload API: `apps/desktop/src/preload/skill-creator-api.ts`
-- 型定義: `apps/desktop/src/preload/types.ts`
+- 型定義: `apps/desktop/src/preload/skill-creator-api.ts`、`packages/shared/src/types/skillCreator.ts`
 
 ### チャンネル一覧
 
-| チャネル                        | 方向            | 用途               | Request                                    | Response                       |
-| ------------------------------- | --------------- | ------------------ | ------------------------------------------ | ------------------------------ |
-| `skill-creator:detect-mode`     | Renderer → Main | モード自動判定     | `{ request: string }`                      | `IpcResult<SkillCreatorMode>`  |
-| `skill-creator:create`          | Renderer → Main | スキル新規作成     | `CreateSkillOptions`                       | `IpcResult<string>`            |
-| `skill-creator:execute-tasks`   | Renderer → Main | タスク群実行       | `ExecuteTasksOptions`                      | `IpcResult<ExecutionReport>`   |
-| `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                     | `IpcResult<boolean>`           |
-| `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`    | `IpcResult<boolean>`           |
-| `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                          | `SkillCreatorProgress`         |
+| チャネル                        | 方向            | 用途               | Request                                                    | Response                      |
+| ------------------------------- | --------------- | ------------------ | ---------------------------------------------------------- | ----------------------------- |
+| `skill-creator:detect-mode`     | Renderer → Main | モード自動判定     | `{ request: string }`                                      | `IpcResult<SkillCreatorMode>` |
+| `skill-creator:create`          | Renderer → Main | スキル新規作成     | `CreateSkillOptions`                                       | `IpcResult<string>`           |
+| `skill-creator:execute-tasks`   | Renderer → Main | タスク群実行       | `ExecuteTasksOptions`                                      | `IpcResult<ExecutionReport>`  |
+| `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                                     | `IpcResult<boolean>`          |
+| `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`                    | `IpcResult<boolean>`          |
+| `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
+| `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |
+| `skill-creator:share`           | Renderer → Main | スキル共有         | `{ skillName: string; format: string }`                    | `IpcResult<string>`           |
+| `skill-creator:schedule`        | Renderer → Main | スケジュール設定   | `{ skillName: string; schedule: object }`                  | `IpcResult<void>`             |
+| `skill-creator:debug`           | Renderer → Main | スキルデバッグ     | `{ skillName: string; options?: object }`                  | `IpcResult<unknown>`          |
+| `skill-creator:generate-docs`   | Renderer → Main | ドキュメント生成   | `{ skillName: string; format?: string; sections?: string[] }` | `IpcResult<string>`        |
+| `skill-creator:stats`           | Renderer → Main | 使用統計取得       | `{ skillName?: string; period?: string }`                  | `IpcResult<unknown>`          |
+| `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                                          | `SkillCreatorProgress`        |
 
 ### 型定義
 
@@ -305,31 +312,31 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | `CreateSkillOptions`   | スキル作成オプション                 |
 | `ExecuteTasksOptions`  | タスク実行オプション                 |
 | `ExecutionReport`      | タスク実行レポート                   |
-| `SkillCreatorProgress` | 進捗通知データ                       |
+| `SkillCreatorProgress` | 進捗通知データ（Preload型）          |
 | `SkillCreatorAPI`      | Preload APIインターフェース          |
 
 ### SkillCreatorProgress型
 
-| プロパティ  | 型       | 説明                           |
-| ----------- | -------- | ------------------------------ |
-| `phase`     | `string` | 現在のフェーズ名               |
-| `taskIndex` | `number` | 現在のタスクインデックス（0始まり） |
-| `totalTasks`| `number` | 総タスク数                     |
-| `message`   | `string` | 進捗メッセージ                 |
-| `timestamp` | `number` | タイムスタンプ（ミリ秒）       |
+| プロパティ   | 型       | 説明             |
+| ------------ | -------- | ---------------- |
+| `phase`      | `string` | 現在のフェーズ名 |
+| `percentage` | `number` | 進捗率（0-100）  |
+| `message`    | `string` | 進捗メッセージ   |
 
 ### 実装状況
 
-| 項目                      | 状態   | タスク                      |
-| ------------------------- | ------ | --------------------------- |
-| チャネル定数定義          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| ホワイトリスト追加        | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| IPCハンドラー実装         | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| Preload API実装           | 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| Sender検証（全ハンドラー）| 完了   | TASK-9B-H-SKILL-CREATOR-IPC |
-| エラーサニタイズ          | 完了   | UT-9B-H-003                 |
-| パストラバーサル検証      | 完了   | UT-9B-H-003                 |
-| schemaNameホワイトリスト検証 | 完了 | UT-9B-H-003                 |
+| 項目                         | 状態   | タスク                          |
+| ---------------------------- | ------ | ------------------------------- |
+| 基本6チャンネル定義          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC     |
+| 拡張7チャンネル定義          | 完了   | TASK-9B（2026-02-26反映）       |
+| ホワイトリスト追加           | 完了   | TASK-9B-H / TASK-9B             |
+| IPCハンドラー実装            | 完了   | TASK-9B-H / TASK-9B             |
+| Preload API実装              | 完了   | TASK-9B-H / TASK-9B             |
+| Sender検証（全12 invoke）    | 完了   | TASK-9B-H / TASK-9B             |
+| P42 3段バリデーション（create含む） | 完了 | UT-9B-H-003 / TASK-9B        |
+| エラーサニタイズ             | 完了   | UT-9B-H-003                     |
+| パストラバーサル検証         | 完了   | UT-9B-H-003                     |
+| schemaNameホワイトリスト検証 | 完了   | UT-9B-H-003                     |
 
 ### セキュリティ強化仕様（UT-9B-H-003）
 
@@ -430,6 +437,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | skill:remove IPCインターフェース不整合修正 | 2026-02-20 | `skill:remove` の Mainハンドラー引数契約を `skillName: string` に統一。空白文字列を拒否する3段バリデーションを追加 |
 | TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
+| TASK-9B    | SkillCreator IPC拡張反映 | 2026-02-26 | SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ同期。`skill-creator:improve/fork/share/schedule/debug/generate-docs/stats` を追加反映し、`SkillCreatorProgress` 契約を `phase/percentage/message` に実装準拠化 |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
 
 **TASK-9A-B 派生未タスク**:
@@ -446,6 +454,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.12.0    | 2026-02-26 | TASK-9B反映: SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ更新。拡張7チャンネル、`SkillCreatorProgress`（`phase/percentage/message`）、実装状況テーブルを実装実体へ同期 |
 | v1.11.0    | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数契約を `skillName: string` に統一した完了記録を追加 |
 | v1.10.0    | 2026-02-20 | 未タスク参照パス整合を修正: UT-9A-B-001〜003 の指示書参照を `docs/30-workflows/unassigned-task/` に統一 |
 | v1.9.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` 引数契約を `skillName: string` に統一し、完了タスクへ記録 |
