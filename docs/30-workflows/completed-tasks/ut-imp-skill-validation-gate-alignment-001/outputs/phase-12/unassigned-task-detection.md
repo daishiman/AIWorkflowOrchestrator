@@ -20,7 +20,7 @@ UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
 | 未タスクID                                  | ファイル                                                                             | 配置 | フォーマット監査        |
 | ------------------------------------------- | ------------------------------------------------------------------------------------ | ---- | ----------------------- |
 | UT-IMP-QUICK-VALIDATE-BOM-UTF8-001          | `docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md`          | OK   | target-file `current=0` |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 | `docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md` | OK   | target-file `current=0` |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 | `docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md` | OK   | target-file `current=0` |
 
 ## 3ステップ実施結果（P3対策）
 

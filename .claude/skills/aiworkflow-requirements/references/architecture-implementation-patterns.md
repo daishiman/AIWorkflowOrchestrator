@@ -2022,10 +2022,10 @@ ipcMain.handle("skill:import", async (event, skillName: string) => {
 
 ---
 
-## SkillEditor 実装パターン（TASK-9A-C spec_created）
+## SkillEditor 実装パターン（TASK-9A completed）
 
-> **ステータス**: 仕様書作成済み（実装未着手）
-> TASK-9A-C で実装予定のパターンを事前定義する。
+> **ステータス**: 実装完了（2026-02-26）
+> TASK-9A-skill-editor で採用した実装パターンを記録する。
 
 ### textareaベースコードエディターパターン
 
@@ -2055,7 +2055,7 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 
 ### IPC連携ファイル編集パターン
 
-ファイルの読み込み・編集・保存をIPC経由で行うデータフローパターン。
+ファイルの読み込み・編集・保存・作成・削除・復元をIPC経由で行うデータフローパターン。
 
 | ステップ | 処理                    | データフロー                        |
 | -------- | ----------------------- | ----------------------------------- |
@@ -2064,6 +2064,9 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 | 3        | コンテンツ表示          | setState(content) → textarea表示    |
 | 4        | 編集検知                | onChange → setState(newContent) + hasChanges=true |
 | 5        | 保存                    | writeFile(skillName, path, content) → hasChanges=false |
+| 6        | 新規作成                | createFile(skillName, path, "") → fileTree更新 + loadFile(path) |
+| 7        | 削除                    | deleteFile(skillName, path) → fileTree更新 + fallback選択 |
+| 8        | バックアップ復元        | restoreBackup(skillName, backupPath) → fileTree更新 + loadFile(originalPath) |
 
 **未保存検出**: `hasChanges` フラグで編集状態を追跡し、保存ボタンの有効/無効制御とEscape閉じる時の確認ダイアログ表示に使用。
 
@@ -2077,8 +2080,8 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 | P39     | happy-dom環境では fireEvent を使用            | テスト設計                       |
 | P40     | `apps/desktop` ディレクトリからテスト実行     | テスト実行手順                   |
 
-**関連タスク**: TASK-9A-C（spec_created）
-**関連ドキュメント**: [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skilleditor-uitask-9a-c--仕様書作成済み)
+**関連タスク**: TASK-9A（completed）
+**関連ドキュメント**: [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skill-editor-ui-task-9a)
 
 ---
 
@@ -2632,6 +2635,7 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |
 | v1.33.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22に再利用テンプレートを追加（目的/場所/検証/落とし穴対処）。同種課題の初動手順を標準化 |

@@ -1,0 +1,231 @@
+{
+  "taskId": "UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001",
+  "taskName": "quick_validate.js name/description 空フィールドガード追加",
+  "classification": "バグ修正（小規模）",
+  "issue": "#913",
+  "createdAt": "2026-02-27",
+  "completedAt": "2026-02-27",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifact": "phase-1-requirements.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-1/requirements-analysis.md",
+          "description": "要件定義・受入基準"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifact": "phase-2-design.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-2/design-document.md",
+          "description": "設計書・インターフェース定義"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifact": "phase-3-design-review.md",
+      "gate": {
+        "result": "PASS",
+        "options": ["PASS", "MINOR", "MAJOR"]
+      },
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-3/design-review.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifact": "phase-4-test-creation.md",
+      "outputs": [
+        {
+          "type": "test",
+          "path": ".claude/skills/skill-creator/scripts/__tests__/quick_validate.test.js",
+          "description": "空フィールドガード用テストケース TC-GUARD-001〜008 追加"
+        },
+        {
+          "type": "fixture",
+          "path": ".claude/skills/skill-creator/scripts/__tests__/fixtures/",
+          "description": "4フィクスチャ追加（name-whitespace-only, desc-whitespace-only, name-valid-desc-empty, name-empty-desc-valid）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-4/test-design.md",
+          "description": "テスト設計書"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifact": "phase-5-implementation.md",
+      "outputs": [
+        {
+          "type": "code",
+          "path": ".claude/skills/skill-creator/scripts/quick_validate.js",
+          "description": "name/description P42準拠3段バリデーション実装"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-5/implementation-report.md",
+          "description": "実装レポート"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifact": "phase-6-test-expansion.md",
+      "outputs": [
+        {
+          "type": "test",
+          "path": ".claude/skills/skill-creator/scripts/__tests__/quick_validate.test.js",
+          "description": "13テストケース追加（BV×3, COMBO×3, MSG×3, RG×4）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-6/coverage-report.md",
+          "description": "テスト拡充・カバレッジレポート"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifact": "phase-7-coverage-check.md",
+      "gate": {
+        "line": 95,
+        "branch": 90,
+        "function": 100,
+        "method": "practical-analysis",
+        "note": "v8プロバイダはexecSync子プロセスを計測不可のため実質的カバレッジ分析で代替",
+        "thresholds": {
+          "line": 80,
+          "branch": 60,
+          "function": 80
+        }
+      },
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-7/coverage-confirmation.md",
+          "description": "カバレッジ確認レポート（実質的分析）"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifact": "phase-8-refactoring.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-8/",
+          "description": "リファクタリング分析（YAGNI原則により変更なし）"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifact": "phase-9-quality-assurance.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-9/",
+          "description": "品質検証結果（Lint/型チェック/テスト全PASS）"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifact": "phase-10-final-review.md",
+      "gate": {
+        "result": "PASS",
+        "options": ["PASS", "MINOR", "MAJOR", "CRITICAL"]
+      },
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-10/",
+          "description": "最終レビュー結果（全項目PASS）"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifact": "phase-11-manual-test.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト結果（9テスト全PASS）"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifact": "phase-12-documentation.md",
+      "outputs": [
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 概念説明 + Part 2 技術詳細）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー（SubAgent分担・苦戦箇所・再利用手順）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート（0件）"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "artifact": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  },
+  "dependencies": {
+    "prerequisite": ["UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001"],
+    "successor": []
+  },
+  "targetFiles": {
+    "source": [".claude/skills/skill-creator/scripts/quick_validate.js"],
+    "test": [
+      ".claude/skills/skill-creator/scripts/__tests__/quick_validate.test.js"
+    ],
+    "fixtures": [".claude/skills/skill-creator/scripts/__tests__/fixtures/"]
+  }
+}

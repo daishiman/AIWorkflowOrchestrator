@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: ci
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: false # Railway 運用停止中のため deploy を無効化
     environment:
       name: production
     steps:
@@ -102,7 +102,20 @@ jobs:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           echo "🚀 Deploying to Railway..."
-          railway up --service backend --detach
+          set +e
+          DEPLOY_OUTPUT="$(railway up --service backend --detach 2>&1)"
+          DEPLOY_EXIT_CODE=$?
+          set -e
+
+          echo "$DEPLOY_OUTPUT"
+
+          if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
+            if echo "$DEPLOY_OUTPUT" | grep -qi "Usage limit exceeded"; then
+              echo "::error title=Railway usage limit exceeded::Railway の Hard limit を超過しています。Railway Dashboard > Usage で Hard limit を引き上げるか解除してください。"
+            fi
+            exit $DEPLOY_EXIT_CODE
+          fi
+
           echo "✅ Deployment triggered successfully"
 
       - name: Wait for deployment

@@ -136,11 +136,14 @@ function validateSkill(skillPath, verbose = false) {
   }
   result.addPassed("YAML frontmatter が存在する");
 
-  // 4. name フィールドの検証
-  if (!frontmatter.name) {
-    result.addError("name フィールドが存在しません");
+  // 4. name フィールドの検証（P42準拠: 3段バリデーション）
+  if (
+    typeof frontmatter.name !== "string" ||
+    frontmatter.name.trim() === ""
+  ) {
+    result.addError("name フィールドが存在しないか無効です");
   } else {
-    const name = frontmatter.name;
+    const name = frontmatter.name.trim();
     if (name.length > 64) {
       result.addError(`name が 64 文字を超えています (${name.length}文字)`);
     } else if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
@@ -154,11 +157,14 @@ function validateSkill(skillPath, verbose = false) {
     }
   }
 
-  // 5. description フィールドの検証
-  if (!frontmatter.description) {
-    result.addError("description フィールドが存在しません");
+  // 5. description フィールドの検証（P42準拠: 3段バリデーション）
+  if (
+    typeof frontmatter.description !== "string" ||
+    frontmatter.description.trim() === ""
+  ) {
+    result.addError("description フィールドが存在しないか無効です");
   } else {
-    const desc = frontmatter.description;
+    const desc = frontmatter.description.trim();
     if (desc.length > 1024) {
       result.addError(
         `description が 1024 文字を超えています (${desc.length}文字)`,

@@ -26,6 +26,15 @@
 
 ---
 
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Notes**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用。テスト21件追加（85 passed, 2 skipped）。Issue #913。`spec-update-workflow.md` の既知課題リンクを completed 側へ同期。
+
+---
+
 ## 使用方法
 
 ```bash
@@ -53,6 +62,33 @@ node scripts/log-usage.js \
   - `references/spec-update-workflow.md` に誤判断パターンを追加（IPC拡張時のチャンネル数据え置きを禁止）
   - 更新漏れ防止チェックリストに「チャンネル数と進捗型（例: SkillCreatorProgress）の実装/仕様一致確認」を追加
   - TASK-9B再監査で検出したドリフト（6->13、進捗型不一致）を再発防止ルールへ反映
+
+---
+
+## [2026-02-26 - TASK-9A 未タスクフォーマット再確認]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク品質ガイド更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に `## メタ情報` 1セクション原則を追加
+  - `task-9a-c-syntax-highlighting.md` / `task-9a-c-code-editor-migration.md` の重複メタ情報是正ルールを標準化
+  - `rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md` での機械確認手順を追記
+
+---
+
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12実行]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（検証ゲート整合化の完了処理）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/spec-update-workflow.md` の曖昧語（`等`）を除去し、grep判定の決定論を確保
+  - `references/phase-11-12-guide.md` に本タスクの運用更新履歴を追記
+  - `outputs/phase-11/walkthrough-log.md` を作成し、手順書ウォークスルー結果を証跡化
+  - `generate-documentation-changelog.js` 実行ベースで Phase 12 成果物群を更新
 
 ---
 

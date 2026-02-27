@@ -87,7 +87,7 @@ Phase 12 Task 2 開始
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
 | 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要** | Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須。統合元セクションを「統合済み」に変更し、統合先セクションを拡張すること（P25-P28参照） |
 | 「スキル改善なし」と判断                 | **フィードバック必須** | Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてskill-feedback-report.mdを作成すること |
-| 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり** | テスト戦略変更（renderHookパターン導入、テストヘルパー追加、テストカテゴリ体系変更等）は仕様書に記録すべき。テストの追加・削除のみなら不要 |
+| 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり** | テスト戦略変更（renderHookパターン導入、テストヘルパー追加、テストカテゴリ体系変更）は仕様書に記録すべき。テストケースの追加・削除のみなら不要 |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
 
@@ -115,14 +115,14 @@ Phase 12 Task 2 開始
 
 | 条件                          | 例                                            |
 | ----------------------------- | --------------------------------------------- |
-| 新規インターフェース/型の追加 | ICorrectiveRAG, CRAGResult等                  |
+| 新規インターフェース/型の追加 | ICorrectiveRAG, CRAGResult など               |
 | 既存インターフェースの変更    | メソッド追加、シグネチャ変更                  |
-| 新規定数/設定値の追加         | CRAG_DEFAULTS等                               |
+| 新規定数/設定値の追加         | CRAG_DEFAULTS など                            |
 | アーキテクチャパターンの追加  | 新しいパイプライン段階                        |
 | API仕様の変更                 | エンドポイント追加、リクエスト/レスポンス変更 |
 | データベーススキーマ変更      | テーブル追加、カラム変更                      |
-| 外部連携インターフェース追加  | IWebSearcher等                                |
-| テスト戦略・方法論の変更      | テストフレームワーク変更、テストパターン導入（renderHook等）、テストヘルパー新規設計 |
+| 外部連携インターフェース追加  | IWebSearcher など                             |
+| テスト戦略・方法論の変更      | テストフレームワーク変更、テストパターン導入（renderHook、fireEvent戦略変更）、テストヘルパー新規設計 |
 
 ### 更新が不要な場合
 
@@ -257,10 +257,10 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 ## エラー分類・リトライ更新チェックリスト
 
 - [ ] エラー種別の分類（retryable/non-retryable）がerror-handling.mdに記載されている
-- [ ] リトライ設定パラメータ（maxRetries, baseDelayMs等）が該当interfaces-*.mdに記載されている
-- [ ] バックオフアルゴリズム（Exponential Backoff, Jitter等）の仕様が記載されている
+- [ ] リトライ設定パラメータ（maxRetries, baseDelayMs など）が該当interfaces-*.mdに記載されている
+- [ ] バックオフアルゴリズム（Exponential Backoff, Jitter など）の仕様が記載されている
 - [ ] AbortSignal/キャンセル処理との連携が記載されている
-- [ ] ストリーミングイベント（retry通知等）の形式が記載されている
+- [ ] ストリーミングイベント（retry通知 など）の形式が記載されている
 ```
 
 ## 更新フロー（2ステップ）
@@ -301,7 +301,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 該当仕様書の「完了タスク」テーブルにタスクIDと完了日を追加した
 - [ ] 「タスク完了ステータス更新」セクションの**詳細テンプレート**で完了記録を追加した
   - [ ] テスト結果サマリー表（機能/エラーハンドリング/アクセシビリティ/統合テスト）
-  - [ ] 成果物テーブル（テスト結果レポート/実装ガイド等）
+  - [ ] 成果物テーブル（テスト結果レポート、実装ガイド、発見課題リスト）
 - [ ] 「関連ドキュメント」セクションに実装ガイドリンクを追加した
 - [ ] 「変更履歴」にバージョン番号を追記した
 
@@ -311,7 +311,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 更新対象として列挙した仕様書が実在することを `test -f <path>` で確認した
 
 ### Step 1-C: 関連タスクテーブル更新
-- [ ] arch-state-management.md等の「関連タスク」テーブルを確認した
+- [ ] arch-state-management.md、interfaces-agent-sdk.md、security-api-electron.md、task-workflow.md の「関連タスク」テーブルを確認した
 - [ ] 該当タスクのステータスを「**完了**」に更新した
 
 ### Step 1-D: topic-map.md再生成（⚠️ 見落としやすい）
@@ -321,14 +321,14 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 ### Step 1-E: 未タスク指示書作成・登録（1件以上検出時は必須）
 - [ ] 未タスク候補が1件以上の場合、`docs/30-workflows/unassigned-task/` に指示書を作成・配置した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
-- [ ] 関連仕様書（`interfaces-agent-sdk-history.md`等）の残課題テーブルに新規未タスクを登録した
+- [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
 - [ ] `audit-unassigned-tasks.js --json --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
 ### Step 1-F: DevOps関連ファイル更新（CI/CD最適化タスクの場合は必須）
-CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、以下のファイルを確認・更新する。
+CI/CD・ビルド・テスト並列化に関するDevOps関連タスク完了時は、以下のファイルを確認・更新する。
 
 - [ ] `deployment-gha.md` にCI/CD変更内容を記載した
   - [ ] シャード戦略（シャード数、分散方式）
@@ -345,6 +345,8 @@ CI/CD・ビルド・テスト並列化等のDevOps関連タスク完了時は、
 ### Step 1-G: 検証コマンド順次実行（Phase 12同期ガード）
 
 Phase 12 Task 2 の更新後は、以下を**この順序で**実行する。
+
+- 前提: すべてのコマンドは **リポジトリルート**（`AIWorkflowOrchestrator/`）をカレントディレクトリとして実行する。
 
 #### 1. 未タスク参照リンク検証
 
@@ -367,6 +369,9 @@ git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexe
 - 異常時: コマンド失敗、または意図しない差分が残る。差分内容を確認し必要箇所を反映
 
 #### 3. SKILL 検証（全3スキル: 正規経路）
+#### 3. SKILL 検証（3スキル）
+
+個別実行:
 
 ```bash
 # 正規経路（primary）: quick_validate.js（Node.js v18以上）
@@ -392,6 +397,9 @@ python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py 
   .claude/skills/aiworkflow-requirements
 python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
   .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 ```
 
 補助経路使用時は `documentation-changelog.md` に「補助経路を使用した」旨を明記する。
@@ -447,12 +455,51 @@ Warning 発生
 
 許容条件に該当しないファイル（いずれのインデックスからもリンクされていない）は「要監視」に分類する。
 
-**既知の制限事項（未タスク）:**
+**既知の制限事項（未タスク / 解消済み）:**
 
-以下は `quick_validate.js` の既知の制限事項であり、未タスクとして管理されている:
+`quick_validate.js` の既知課題は、未対応と解消済みを分離して管理する:
 
-- BOM付きUTF-8の SKILL.md で frontmatter 検出が失敗する（[UT-IMP-QUICK-VALIDATE-BOM-UTF8-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md)）
-- name/description フィールドが空の場合に `desc.toLowerCase()` でランタイムエラーが発生する（[UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md)）
+- 未タスク（対応中）: BOM付きUTF-8の SKILL.md で frontmatter 検出が失敗する（[UT-IMP-QUICK-VALIDATE-BOM-UTF8-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md)）
+- 解消済み: name/description フィールド空値で `desc.toLowerCase()` ランタイムエラーが発生する問題（[UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001](../../../../docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md)）
+
+全3スキル一括検証:
+
+```bash
+for skill in skill-creator task-specification-creator aiworkflow-requirements; do
+  echo "=== $skill ===" && \
+  node .claude/skills/skill-creator/scripts/quick_validate.js ".claude/skills/$skill"
+done
+```
+
+- 正常時: 3スキル全てで Error 0件（終了コード 0）
+- 異常時: Error が1件以上の場合、SKILL構造を修正後に再実行
+- Warning: 3段階分類（許容/要監視/要対応）に基づき対応する（下記参照）
+
+> **fallback**: Node.js が利用不可の場合のみ、`python3 /Users/dm/.codex/skills/.system/skill-creator/scripts/quick_validate.py <skill-path> --verbose` を使用する。fallback 使用時は成果物に「fallback 経路を使用した」旨を明記すること。
+
+#### 3.1 検証結果の判定基準
+
+**合格基準**: Error 0件で合格。Warning は3段階分類に基づき対応する。
+
+| 分類   | 定義                                                                          | 対応方針                                              |
+| ------ | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 許容   | 運用上避けられない Warning で、修正コストが高くスキルの動作・構造に影響しない | 件数を記録し、前回比で増加傾向がないことを確認する    |
+| 要監視 | 新規に発生した Warning で、放置するとスキル品質低下の兆候となる可能性がある   | 次回 Phase 12 までに対応方針を決定する                |
+| 要対応 | スキルの動作・構造の正確性に直接影響する Warning                              | 本 Phase 内で修正する。修正不可の場合は未タスク化する |
+
+**判定フロー:**
+
+1. 当該 Warning は前回 Phase 12 から存在する既知の Warning か？
+   - YES かつ件数横ばい → 「許容」
+   - YES かつ1件以上の増加 → 「要監視」
+   - NO → 次へ
+2. スキルの動作・構造の正確性に直接影響するか？（name不一致、必須セクション不足、agents/*.md の形式不備）
+   - YES → 「要対応」
+   - NO → 「要監視」
+
+**`aiworkflow-requirements` 固有の許容条件:**
+
+`references/` 配下のファイル（150ファイル以上）が SKILL.md からリンクされていない Warning は、`indexes/resource-map.md` または `indexes/topic-map.md` からリンクされていれば「許容」とする。Progressive Disclosure 設計により、全ファイルの SKILL.md 直接リンクは意図的に省略されている。
 
 #### 4. Phase仕様書参照と outputs 実体の整合確認
 
@@ -510,6 +557,7 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
 - [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（判定基準は Step 1-G.3.1 を参照）
+- [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
@@ -576,7 +624,7 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 
 ### Step 1-C: 関連タスクテーブル更新（該当する場合は必須）
 
-システム仕様書（`arch-state-management.md`、`interfaces-agent-sdk.md`等）に「関連タスク」テーブルがあり、
+システム仕様書（`arch-state-management.md`、`interfaces-agent-sdk.md`、`security-api-electron.md`、`task-workflow.md`）に「関連タスク」テーブルがあり、
 当該タスクが記載されている場合は、ステータスを更新する。
 
 ```
@@ -814,3 +862,11 @@ grep -rn "permission-tool-icons" references/
 | 記述ガイドライン           | `.claude/skills/aiworkflow-requirements/references/spec-guidelines.md`         |
 | 仕様テンプレート           | `.claude/skills/aiworkflow-requirements/assets/spec-template.md`               |
 | ドキュメント更新履歴テンプレート | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` |
+
+---
+
+## 変更履歴
+
+| Date | Changes |
+| ---- | ------- |
+| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: `quick_validate.js` 手動検証の再現性確認手順を Phase 11/12 の運用実績に合わせて再確認し、曖昧語（「など」表記へ統一）を調整して機械判定の一貫性を向上 |

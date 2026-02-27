@@ -2,12 +2,6 @@
 
 ## メタ情報
 
-```yaml
-issue_number: 913
-```
-
-## メタ情報
-
 | 項目         | 内容                                                         |
 | ------------ | ------------------------------------------------------------ |
 | タスクID     | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001                  |
@@ -15,7 +9,9 @@ issue_number: 913
 | 分類         | バグ修正                                                     |
 | 優先度       | 中                                                           |
 | 見積もり規模 | 小規模                                                       |
-| ステータス   | 未実施                                                       |
+| ステータス   | 完了                                                         |
+| 完了日       | 2026-02-27                                                   |
+| Issue        | #913                                                         |
 | 発見元       | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 10 MINOR #2 |
 | 発見日       | 2026-02-26                                                   |
 | 対象         | `.claude/skills/skill-creator/scripts/quick_validate.js`     |
@@ -96,10 +92,10 @@ issue_number: 913
 
 ## 5. 完了条件チェックリスト
 
-- [ ] 空/未定義 `name` でランタイム例外が発生しない。
-- [ ] 空/未定義 `description` でランタイム例外が発生しない。
-- [ ] validation error が明示的に出力される。
-- [ ] 回帰テストがPASSする。
+- [x] 空/未定義 `name` でランタイム例外が発生しない。
+- [x] 空/未定義 `description` でランタイム例外が発生しない。
+- [x] validation error が明示的に出力される。
+- [x] 回帰テストがPASSする。
 
 ## 6. 検証方法
 
@@ -122,4 +118,4 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-
 
 ## 9. 備考
 
-本タスクは Phase 10 MINOR #2 の是正タスク。Phase 12で台帳・参照を整備済み、実装は未着手。
+本タスクは Phase 10 MINOR #2 の是正タスク。`quick_validate.js` に P42 準拠ガードを適用し、テストは 85 passed / 2 skipped を確認済み。

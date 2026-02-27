@@ -1802,10 +1802,10 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
-## SkillEditor UI 型定義（TASK-9A-C / spec_created）
+## SkillEditor UI 型定義（TASK-9A / completed）
 
-> **ステータス**: 仕様書作成済み（実装未着手）
-> 本セクションは TASK-9A-C のUI実装で使用する型定義を定義する。
+> **ステータス**: 実装完了（2026-02-26）
+> 本セクションは TASK-9A-skill-editor で実装済みの UI 型定義を定義する。
 
 ### SkillEditorProps
 
@@ -1840,16 +1840,17 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ### 関連ドキュメント
 
-- [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skilleditor-uitask-9a-c--仕様書作成済み)
-- [TASK-9A-C ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
+- [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skill-editor-ui-task-9a)
+- [TASK-9A ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/index.md)
 
 ### 関連未タスク
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
 | TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
-| TASK-9A-C-002 | ファイル作成・削除機能 | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` |
+| ~~TASK-9A-C-002~~ | ~~ファイル作成・削除機能~~ **完了: 2026-02-26（TASK-9Aに統合）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md` |
 | TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+| ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
 
 ---
 
@@ -1861,6 +1862,9 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | 2026-02-26 | 1.38.0     | TASK-9B 再監査の苦戦箇所を未タスク化: `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を関連未タスクへ追加（13chドリフト/P42 create検証漏れ/current-baseline誤読の再発防止） |
 | 2026-02-26 | 1.37.0     | TASK-9B再監査追補: 仕様書別SubAgent分担、実装時の苦戦箇所（13chドリフト/P42 create漏れ/成果物二重台帳）と4ステップ簡潔解決手順を TASK-9B-H/TASK-9B セクションへ追記 |
 | 2026-02-26 | 1.36.0     | TASK-9B反映: SkillCreatorService APIを12メソッドへ同期。TASK-9B-HセクションのIPCチャンネル一覧を13チャンネル（12 invoke + 1 progress）へ更新し、成果物リンクを `completed-tasks/skill-creator-ipc` と `task-9b-skill-creator` に正規化 |
+| 2026-02-26 | 1.36.2     | TASK-9A成果物移管を反映。TASK-9A参照を `completed-tasks/TASK-9A-skill-editor/` に更新し、`TASK-9A-C-004` を完了化して `completed-tasks/unassigned-task/` へ移管 |
+| 2026-02-26 | 1.36.1     | TASK-9A-C-004 を関連未タスクへ追加。Phase 12再確認で顕在化した仕様同期運用課題（Part 1/2要件漏れ、監査判定誤読、メタ情報重複）を再発防止タスクとして登録 |
+| 2026-02-26 | 1.36.0     | TASK-9A完了反映: SkillEditor UI を `spec_created` から `completed` に更新。関連ドキュメント参照を `TASK-9A-skill-editor` 正本へ移行し、未タスク `TASK-9A-C-002` を完了化 |
 | 2026-02-25 | 1.35.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 由来の未タスク `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` を追加。4仕様書同期の運用ガード課題を関連未タスクとして記録 |
 | 2026-02-25 | 1.34.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: 仕様書別SubAgent分担（interfaces/security/task-workflow/lessons）を追加し、契約同期の責務分離を明文化 |
 | 2026-02-25 | 1.33.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001完了反映。`skill:execute` の正式契約（`skillName`）と後方互換契約（`skillId`）を仕様化し、Main境界の `name -> id` 変換フローと回帰テスト結果を追記 |
