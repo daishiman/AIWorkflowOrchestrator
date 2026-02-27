@@ -2,7 +2,7 @@
 
 > **バージョン**: 1.6.0
 > **更新日**: 2026-02-22
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A-C, TASK-UI-00-TOKENS
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS
 
 ---
 
@@ -618,10 +618,10 @@ await Promise.all([
 
 ---
 
-## 11. SkillEditor テストパターン（TASK-9A-C spec_created）
+## 11. SkillEditor テストパターン（TASK-9A completed）
 
-> **ステータス**: 仕様書作成済み（実装未着手）
-> TASK-9A-C のテスト実装時に適用する標準パターンを定義する。
+> **ステータス**: 実装完了（2026-02-26）
+> TASK-9A-skill-editor で実装・検証した標準パターンを定義する。
 
 ### textareaテスト
 
@@ -683,7 +683,7 @@ IPC呼び出しの完了を待機するには `await act(async () => {...})` パ
 | 実行ディレクトリ | `apps/desktop/` 配下（P40対策） |
 | IPC mock | `window.electronAPI.skill.readFile` / `writeFile` を `vi.fn()` でモック |
 
-**関連タスク**: TASK-9A-C（spec_created）
+**関連タスク**: TASK-9A（completed）
 
 ---
 
@@ -843,6 +843,7 @@ it("自動更新される", () => {
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期 |
 | 1.7.0   | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネントテストパターンセクション追加（Props駆動テスト、CSS変数アサーション、テーマ横断テスト、displayName検証、7コンポーネント必須テストケース、タイマーテストパターン、後方互換性テストパターン、テスト実績） |
 | 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点） |
 | 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記 |

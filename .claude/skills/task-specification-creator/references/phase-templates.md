@@ -1304,6 +1304,16 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 | `detect-unassigned-tasks.js`          | 手動で各Phaseのレビュー結果・発見課題を確認し、unassigned-task-detection.mdを作成                                    |
 | `validate-phase-output.js`            | 手動で成果物の存在と完了条件を確認                                                                                   |
 
+#### スキル検証
+
+```bash
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+```
+
+判定基準: `spec-update-workflow.md` Step 1-G.3.1 を参照。
+
 ## 次のPhase
 
 Phase 13: PR作成

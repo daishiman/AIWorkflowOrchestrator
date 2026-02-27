@@ -1,4 +1,8 @@
 export { PermissionDialog } from "./PermissionDialog";
+export { SkillCodeEditor } from "./SkillCodeEditor";
+export type { SkillCodeEditorProps } from "./SkillCodeEditor";
+export { SkillEditor } from "./SkillEditor";
+export type { SkillEditorProps, FileTreeCategory } from "./SkillEditor";
 export { SkillImportDialog } from "./SkillImportDialog";
 export type { SkillImportDialogProps } from "./SkillImportDialog";
 export { SkillSelector } from "./SkillSelector";
