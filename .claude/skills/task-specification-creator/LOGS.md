@@ -26,6 +26,15 @@
 
 ---
 
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Notes**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用。テスト21件追加（85 passed, 2 skipped）。Issue #913。`spec-update-workflow.md` の既知課題リンクを completed 側へ同期。
+
+---
+
 ## 使用方法
 
 ```bash

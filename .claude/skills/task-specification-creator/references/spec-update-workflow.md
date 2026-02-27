@@ -455,12 +455,13 @@ Warning 発生
 
 許容条件に該当しないファイル（いずれのインデックスからもリンクされていない）は「要監視」に分類する。
 
-**既知の制限事項（未タスク）:**
+**既知の制限事項（未タスク / 解消済み）:**
 
-以下は `quick_validate.js` の既知の制限事項であり、未タスクとして管理されている:
+`quick_validate.js` の既知課題は、未対応と解消済みを分離して管理する:
 
-- BOM付きUTF-8の SKILL.md で frontmatter 検出が失敗する（[UT-IMP-QUICK-VALIDATE-BOM-UTF8-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md)）
-- name/description フィールドが空の場合に `desc.toLowerCase()` でランタイムエラーが発生する（[UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md)）
+- 未タスク（対応中）: BOM付きUTF-8の SKILL.md で frontmatter 検出が失敗する（[UT-IMP-QUICK-VALIDATE-BOM-UTF8-001](../../../../docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md)）
+- 解消済み: name/description フィールド空値で `desc.toLowerCase()` ランタイムエラーが発生する問題（[UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001](../../../../docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md)）
+
 全3スキル一括検証:
 
 ```bash
