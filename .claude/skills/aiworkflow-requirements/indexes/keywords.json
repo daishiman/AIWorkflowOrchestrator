@@ -1,8 +1,6 @@
 {
-  "generated": "2026-02-27T03:01:22.016Z",
-  "totalKeywords": 1333,
-  "generated": "2026-02-27T06:44:39.069Z",
-  "totalKeywords": 1328,
+  "generated": "2026-02-27T03:25:54.291Z",
+  "totalKeywords": 1325,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -754,10 +752,6 @@
       "ui-ux-panels.md",
       "ui-ux-search-panel.md"
     ],
-    "スキル共有": [
-      "api-ipc-agent.md",
-      "interfaces-agent-sdk-skill.md"
-    ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
       "interfaces-auth.md"
@@ -1395,10 +1389,14 @@
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
     ],
-    "completed": [
+    "spec": [
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+    "created": [
+      "architecture-implementation-patterns.md",
+      "interfaces-agent-sdk-skill.md",
       "testing-component-patterns.md"
     ],
     "解決": [
@@ -2997,30 +2995,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "QUICK": [
-      "lessons-learned.md"
-    ],
-    "VALIDATE": [
-      "lessons-learned.md"
-    ],
-    "EMPTY": [
-      "lessons-learned.md"
-    ],
-    "FIELD": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
-      "lessons-learned.md"
-    ],
-    "quick": [
-      "lessons-learned.md"
-    ],
-    "validate": [
-      "lessons-learned.md"
-    ],
-    "空フィールドガード": [
-      "lessons-learned.md"
-    ],
     "EXECUTE": [
       "lessons-learned.md"
     ],
@@ -3064,12 +3038,6 @@
       "lessons-learned.md"
     ],
     "テーマ動的切替対応": [
-      "lessons-learned.md"
-    ],
-    "editor": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "目次": [
@@ -3133,6 +3101,9 @@
       "lessons-learned.md"
     ],
     "RESOLUTION": [
+      "lessons-learned.md"
+    ],
+    "GUARD": [
       "lessons-learned.md"
     ],
     "repo": [
@@ -3228,6 +3199,9 @@
       "lessons-learned.md"
     ],
     "未実施タスクの誤配置を検出": [
+      "lessons-learned.md"
+    ],
+    "completed": [
       "lessons-learned.md"
     ],
     "配下に未着手": [
@@ -3454,15 +3428,6 @@
       "lessons-learned.md"
     ],
     "拡張同期": [
-      "lessons-learned.md"
-    ],
-    "GATE": [
-      "lessons-learned.md"
-    ],
-    "検証ゲート整合化": [
-      "lessons-learned.md"
-    ],
-    "スキル共有・インポート機能": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -4060,9 +4025,6 @@
     "skillFileAPI": [
       "security-electron-ipc.md"
     ],
-    "skillShareAPI": [
-      "security-electron-ipc.md"
-    ],
     "自動更新のセキュリティ": [
       "security-electron-ipc.md"
     ],
@@ -4638,8 +4600,7 @@
       "ui-history-integration.md"
     ],
     "完了": [
-      "ui-history-integration.md",
-      "ui-ux-feature-components.md"
+      "ui-history-integration.md"
     ],
     "manual": [
       "ui-history-integration.md"
@@ -4811,6 +4772,9 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "仕様書作成済み": [
+      "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"

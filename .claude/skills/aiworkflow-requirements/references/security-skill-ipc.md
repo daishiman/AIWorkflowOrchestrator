@@ -62,12 +62,17 @@
 | `skill:get-status`     | sender検証 + executionId非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
 | `skill:analyze`        | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
 | `skill:improve`        | sender検証 + skillName非空文字列検証（`trim()`含む）（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001） |
+| `skill:optimize`       | sender検証 + prompt非空文字列検証（`trim()`含む、VALIDATION_ERRORをthrow）（UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査） |
+| `skill:optimize:variants` | sender検証 + prompt非空文字列検証（`trim()`含む、VALIDATION_ERRORをthrow）（UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査） |
+| `skill:optimize:evaluate` | sender検証 + prompt非空文字列検証（`trim()`含む、VALIDATION_ERRORをthrow）（UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査） |
 
 `skill:import` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-IMPORT-INTERFACE-001）。
 
 `skill:remove` は `typeof skillName === "string"` かつ `skillName.trim() !== ""` を満たす場合のみ処理を継続する（UT-FIX-SKILL-REMOVE-INTERFACE-001）。
 
 `skill:execute` は `SkillExecutionRequest`（`skillName`, `prompt`）を正式契約として受理し、旧 `{ skillId, params }` は後方互換として維持する。ハンドラ層では `skillName` / `skillId` の入力検証を実施し、`prompt` の内容制約はサービス層・実行エンジン側の責務として扱う（UT-FIX-SKILL-EXECUTE-INTERFACE-001）。
+
+`skill:list` / `skill:scan` / `skill:getImported` / `skill:get-detail` / `skill:execute` / `skill:analyze` / `skill:improve` / `skill:optimize*` は catch ブロックで `sanitizeErrorMessage()` を適用し、内部情報（path, host, token等）をマスクしてから Renderer へ返却する。非Error例外およびJSランタイム詳細エラーは `スキル処理でエラーが発生しました` に正規化する。
 
 > **IPC修正時のチェックリスト**: IPC ハンドラー / Preload API を修正する場合は [ipc-contract-checklist.md](./ipc-contract-checklist.md) の6フェーズチェックリストに従う。P23/P32/P42/P44 パターンを統合した契約ドリフト防止ガイド。
 
@@ -485,6 +490,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 
 | バージョン | 日付       | 変更内容                                     |
 | ---------- | ---------- | -------------------------------------------- |
+| v1.16.0    | 2026-02-27 | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査反映: `skill:optimize*` 3チャネルのP42検証要件（return→throw統一）を追加し、`sanitizeErrorMessage()` によるエラー秘匿の適用範囲とデフォルト文言を明文化 |
 | v1.15.0    | 2026-02-26 | TASK-9B 完了移管に同期: `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を完了化し、TASK-9B 実装ガイド参照を `completed-tasks/task-9b-skill-creator/` へ更新 |
 | v1.14.0    | 2026-02-26 | TASK-9B 再監査の苦戦箇所を未タスク化: 残課題に `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を追加（13chドリフト/P42 `create` 3段検証/current-baseline判定の再発防止） |
 | v1.13.0    | 2026-02-26 | TASK-9B再監査追補: `create` のP42 3段バリデーション補完、13チャンネル前提の検証範囲統一、`current/baseline` 分離運用を苦戦箇所と再利用5ステップとして追加 |
