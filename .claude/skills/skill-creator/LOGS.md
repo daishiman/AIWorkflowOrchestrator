@@ -4,12 +4,21 @@
 
 ---
 
-## [2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12 parent-reference sync pattern]
+## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
-- **Notes**: `references/patterns.md` に成功パターン「完了移管後の親タスク証跡参照同期」を追加。未タスク移管後に親タスク成果物へ残る旧 `unassigned-task` 参照を `rg` で抽出し、運用ドキュメントのみ更新・監査生ログは保持する運用を標準化。検証は `verify-unassigned-links` + `audit --diff-from HEAD` を必須化。
+- **Notes**: `references/patterns.md` のクイックナビで重複していた `📋 Phase 12` / `🔌 IPC・アーキテクチャ` 行を統合し、成功/失敗パターンを単一行へ正規化。`仕様書別SubAgent同期テンプレート`・`IPC契約ブリッジ` など最新パターンを保持したまま可読性を改善。
+
+---
+
+## [2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12 契約同期パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「IPCドキュメント契約同期（Main/Preload準拠）」と失敗パターン「IPC契約ドキュメントを概要のみで確定」を追加。Phase 12 Step 2で `ipc-documentation.md` の契約一致確認を必須化する再発防止ルールを標準化。
 
 ---
 
@@ -19,15 +28,6 @@
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**: `assets/phase12-system-spec-retrospective-template.md` を system spec 汎用向けに最適化。`ui-ux-design-system.md` 固定参照を `<domain-spec>.md` へ置換し、SubAgent分担を `A:台帳 / B:ドメイン仕様 / C:教訓 / D:検証` に統一。`quick_validate.js` コマンドを repo 相対へ正規化し、成果物名を `unassigned-task-detection.md` に更新。`references/resource-map.md` と `SKILL.md` 変更履歴を同期。
-
----
-
-## [2026-02-26 - TASK-9A Phase 12 unassigned metadata dedup pattern]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**: `references/patterns.md` の Phase 12 に成功パターン「未タスクメタ情報1セクション運用」と失敗パターン「未タスク指示書メタ情報の二重定義」を追加。`task-specification-creator/references/unassigned-task-guidelines.md` と連携し、`rg -n "^## メタ情報"` の機械監査手順を標準化。
 
 ---
 

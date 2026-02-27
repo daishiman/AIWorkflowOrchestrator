@@ -1,0 +1,259 @@
+{
+  "feature": "skill-ipc-response-consistency",
+  "created": "2026-02-27T00:00:00.000Z",
+  "lastUpdated": "2026-02-27T02:29:05.943Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/contract-matrix.md",
+          "description": "14チャンネル契約マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/preload-mapping.md",
+          "description": "Preload APIマッピング"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/renderer-expectations.md",
+          "description": "Renderer側の期待値分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/as-is-gap-analysis.md",
+          "description": "現状ギャップ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/contract-profiles.md",
+          "description": "契約プロファイルA/B/C定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計ドキュメント"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/migration-steps.md",
+          "description": "移行ステップ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/preload-unification-plan.md",
+          "description": "Preload統一計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/type-sync-plan.md",
+          "description": "型同期計画"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-checklist.md",
+          "description": "レビューチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/risk-assessment.md",
+          "description": "リスク評価"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定: PASS"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-case-matrix.md",
+          "description": "テストケースマトリクス"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/main/ipc/__tests__/skillHandlers.contract.test.ts",
+          "description": "Main契約テスト（54テスト）"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/preload/__tests__/skill-api.contract.test.ts",
+          "description": "Preload契約テスト（51テスト）"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/skillHandlers.ts",
+          "description": "sanitizeErrorMessage追加、optimize統一、catch統一"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-report.md",
+          "description": "実装レポート"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "テスト拡充レポート（454テスト全PASS）"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート（基準充足）"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリング不要判定"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質検証レポート（全PASS）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果: PASS"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（自動テスト代替検証）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 + Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/ipc-documentation.md",
+          "description": "IPC契約ドキュメント"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー（Step 1-A〜Step 3）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-report.md",
+          "description": "未タスク検出レポート（新規0件・既存1件参照）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/completion-checklist.md",
+          "description": "完了チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-template.md",
+          "description": "PRテンプレート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/requirements-extraction-audit.md",
+          "description": "仕様監査結果"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "refactor",
+    "totalTests": 454,
+    "testResults": "454/454 PASS",
+    "completedDate": "2026-02-27"
+  }
+}

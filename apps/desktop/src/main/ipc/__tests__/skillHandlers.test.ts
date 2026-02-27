@@ -538,7 +538,8 @@ describe("skillHandlers", () => {
       // Then: デフォルトメッセージが返される
       const opResult = result as OperationResult<Skill[]>;
       expect(opResult.success).toBe(false);
-      expect(opResult.error).toBe("スキャンに失敗しました");
+      // UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: sanitizeErrorMessageにより統一されたデフォルトメッセージ
+      expect(opResult.error).toBe("スキル処理でエラーが発生しました");
     });
 
     it("SH-SC-10: should be removed by unregisterSkillHandlers", async () => {

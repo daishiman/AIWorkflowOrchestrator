@@ -30,6 +30,45 @@ import type {
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
 
+// UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: エラーサニタイゼーション
+const STACK_TRACE_PATTERN = /\n\s+at\s+.*/g;
+const UNIX_PATH_PATTERN = /\/[\w./\\-]+/g;
+const WINDOWS_PATH_PATTERN = /[A-Z]:\\[\w.\\-]+/gi;
+const SENSITIVE_DATA_PATTERN = /(token|key|password|secret)=\S+/gi;
+const IP_ADDRESS_PATTERN = /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(:\d+)?/g;
+const JS_RUNTIME_ERROR_PATTERN =
+  /Cannot read properties? of (undefined|null).*$/;
+const DEFAULT_ERROR_MESSAGE = "スキル処理でエラーが発生しました";
+
+/**
+ * エラーメッセージをサニタイズし、内部情報の漏洩を防止する
+ * - スタックトレースを除去
+ * - Unixパス・Windowsパスを [path] に置換
+ * - IPアドレス:ポートを [host] に置換
+ * - JavaScriptランタイムエラーを汎用メッセージに置換
+ * - 機密情報（token, key, password, secret）をマスク
+ */
+function sanitizeErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return DEFAULT_ERROR_MESSAGE;
+  }
+
+  let message = error.message;
+
+  // JavaScriptランタイムエラーは内部実装の詳細を含むため汎用メッセージに置換
+  if (JS_RUNTIME_ERROR_PATTERN.test(message)) {
+    return DEFAULT_ERROR_MESSAGE;
+  }
+
+  message = message.replace(STACK_TRACE_PATTERN, "");
+  message = message.replace(UNIX_PATH_PATTERN, "[path]");
+  message = message.replace(WINDOWS_PATH_PATTERN, "[path]");
+  message = message.replace(IP_ADDRESS_PATTERN, "[host]");
+  message = message.replace(SENSITIVE_DATA_PATTERN, "$1=***");
+
+  return message || DEFAULT_ERROR_MESSAGE;
+}
+
 /**
  * スキル管理IPCハンドラーを登録する
  * @param mainWindow メインウィンドウ
@@ -64,10 +103,10 @@ export function registerSkillHandlers(
         );
         return { success: true, data: result.skills };
       } catch (error) {
+        log.error("[skillHandlers] skill:list failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキャンに失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -85,10 +124,10 @@ export function registerSkillHandlers(
       const result = await skillService.scanAvailableSkills(true);
       return { success: true, data: result.skills };
     } catch (error) {
+      log.error("[skillHandlers] skill:scan failed:", error);
       return {
         success: false,
-        error:
-          error instanceof Error ? error.message : "スキャンに失敗しました",
+        error: sanitizeErrorMessage(error),
       };
     }
   });
@@ -112,8 +151,7 @@ export function registerSkillHandlers(
         log.error("[skillHandlers] skill:getImported failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキル取得に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -205,10 +243,10 @@ export function registerSkillHandlers(
         }
         return { success: false, error: "スキルが見つかりません" };
       } catch (error) {
+        log.error("[skillHandlers] skill:get-detail failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキル取得に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -278,10 +316,10 @@ export function registerSkillHandlers(
         );
         return { success: true, data: result };
       } catch (error) {
+        log.error("[skillHandlers] skill:execute failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキル実行に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -371,10 +409,10 @@ export function registerSkillHandlers(
         const analysis = await skillAnalyzer.analyze(skill);
         return { success: true, data: analysis };
       } catch (error) {
+        log.error("[skillHandlers] skill:analyze failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキル分析に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -410,10 +448,10 @@ export function registerSkillHandlers(
         );
         return { success: true, data: result };
       } catch (error) {
+        log.error("[skillHandlers] skill:improve failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error ? error.message : "スキル改善に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -429,19 +467,21 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
+      // UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: throw統一（return→throw）
       if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
-        return { success: false, error: "プロンプトが指定されていません" };
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "prompt must be a non-empty string",
+        };
       }
       try {
         const result = await promptOptimizer.optimize(args.prompt);
         return { success: true, data: result };
       } catch (error) {
+        log.error("[skillHandlers] skill:optimize failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error
-              ? error.message
-              : "プロンプト最適化に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -461,8 +501,12 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
+      // UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: throw統一（return→throw）
       if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
-        return { success: false, error: "プロンプトが指定されていません" };
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "prompt must be a non-empty string",
+        };
       }
       try {
         const variants = await promptOptimizer.generateVariants(
@@ -471,12 +515,10 @@ export function registerSkillHandlers(
         );
         return { success: true, data: variants };
       } catch (error) {
+        log.error("[skillHandlers] skill:optimize:variants failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error
-              ? error.message
-              : "バリアント生成に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
@@ -496,19 +538,21 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
+      // UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: throw統一（return→throw）
       if (typeof args?.prompt !== "string" || args.prompt.trim() === "") {
-        return { success: false, error: "プロンプトが指定されていません" };
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "prompt must be a non-empty string",
+        };
       }
       try {
         const evaluation = await promptOptimizer.evaluate(args.prompt);
         return { success: true, data: evaluation };
       } catch (error) {
+        log.error("[skillHandlers] skill:optimize:evaluate failed:", error);
         return {
           success: false,
-          error:
-            error instanceof Error
-              ? error.message
-              : "プロンプト評価に失敗しました",
+          error: sanitizeErrorMessage(error),
         };
       }
     },
