@@ -132,6 +132,60 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 |
+| 完了日 | 2026-02-27 |
+| ステータス | **完了** |
+| タスク種別 | バグ修正 + テスト拡充 |
+| Phase | Phase 1-12 完了（Phase 13未実施） |
+| 変更範囲 | `skill-creator/scripts/quick_validate.js` / `quick_validate.test.js` / fixtures |
+
+#### 反映内容（要点）
+
+- `quick_validate.js` の `name` / `description` 検証を P42 準拠へ更新（`typeof` + `trim()`）し、非文字列入力時のランタイム例外を排除。
+- 空フィールド系テスト 21 件を追加し、`85 passed / 2 skipped` を確認。
+- 親タスク（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001）で登録された MINOR #2 を完了化し、未タスク指示書を `completed-tasks/` へ移管。
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `task-workflow.md` | 完了台帳、成果物、苦戦箇所の記録 | 実装内容 + 苦戦箇所 + 5ステップ手順が同期済み |
+| SubAgent-B | `claude-code-skills-process.md` | `quick_validate.js` の非空文字列検証運用を同期 | `typeof + trim()` ルールが仕様に明記済み |
+| SubAgent-C | `lessons-learned.md` | 再発条件付き教訓の記録 | 3課題すべてに再利用手順が付与済み |
+| SubAgent-D | 検証証跡（workflow/scripts） | 仕様準拠・未タスク整合の機械検証 | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit` がPASS |
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 再発条件 | 原因 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| Phase 12 実行済みでも `phase-12-documentation.md` のチェックリストが未反映 | 成果物作成と実行仕様書更新を分離して進める場合 | 成果物実体と手順書チェックを別ターンで更新していた | `outputs/phase-12/*` と `phase-12-documentation.md` を同時突合し、完了条件チェックを同期更新 | Phase 12 完了判定を「成果物存在 + チェックリスト同期」の2条件に固定 |
+| 完了移管後に親タスク成果物へ旧 `unassigned-task` 参照が残存 | 子タスクの完了移管だけを更新対象にした場合 | 子タスク移管後の親タスク証跡（artifacts/minor-issues）再同期が漏れた | 旧参照を `rg` で横断検出し、親タスクの `artifacts.json` / `minor-issues.md` / `unassigned-task-detection.md` を更新 | 完了移管時に「子タスク + 親タスク証跡」の両方を同一ターンで更新 |
+| 検証スクリプトの所在を `aiworkflow-requirements/scripts` と誤認しやすい | 検証コマンドを記憶ベースで直接実行する場合 | 監査系スクリプトが `task-specification-creator/scripts` に集約されている前提が共有されていない | `rg --files .claude/skills | rg 'verify-all-specs|audit-unassigned|validate-phase-output|verify-unassigned-links'` で実体解決後に実行 | Phase 12 の検証コマンドを「実体探索→実行」の順にテンプレート化 |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `phase-12-documentation.md` の完了条件と `outputs/phase-12/*` の実体を1対1で突合し、未同期チェックを修正する。  
+2. 完了移管した未タスクIDをキーに、親タスク配下の `artifacts.json` / `minor-issues.md` / `unassigned-task-detection.md` を横断検索する。  
+3. 検証スクリプトは `task-specification-creator/scripts` を正本として解決し、`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。  
+4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時反映する。  
+5. 最後に `quick_validate.js` とリンク監査を再実行し、`currentViolations=0` と `ALL_LINKS_EXIST` を確認する。  
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/` |
+| 完了済み未タスク指示書 | `docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/spec-update-summary.md` |
+| 更新履歴 | `docs/30-workflows/completed-tasks/ut-imp-quick-validate-empty-field-guard-001/outputs/phase-12/documentation-changelog.md` |
+
+---
+
 ### タスク: TASK-9B SkillCreator IPC拡張同期 再監査（2026-02-26完了）
 
 | 項目 | 内容 |
@@ -1422,8 +1476,8 @@
 | ~~UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001~~ | ~~Phase 12 検証コマンド標準化ガード（`quick_validate.js` 統一 + `verify-all-specs --workflow` 必須化）~~                 | ~~中~~     | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md`                                                                  |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
 | UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
-
-| UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
+| UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
+| UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 | Phase 12 仕様更新の版数・手順整合ガード（spec-update-summary / task-workflow / lessons / SKILL / LOGS 同期）     | 中     | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査（実装苦戦箇所・2026-02-27） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md`                                                     |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 
 ### 未タスク管理ルール
@@ -1448,6 +1502,10 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.61.7** | **2026-02-27** | **UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 登録**: Phase 12 再監査で顕在化した「版数ドリフト（`spec-update-summary` と正本差分）」「簡潔解決手順の件数ドリフト（4/5）」を再発防止する未タスクを残課題テーブルへ追加。併せて `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` の参照先を `unassigned-task/` 正本へ補正 |
+| **1.61.6** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 テンプレート準拠最適化**: 同タスクへ仕様書別SubAgent分担テーブルを追加し、苦戦箇所を再発条件付き形式に整理。成果物テーブルへ `outputs/phase-12/spec-update-summary.md` を追加し、Phase 12 Step 2 の再利用性を向上 |
+| **1.61.5** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査反映**: 同タスクに「苦戦箇所と解決策」および「同種課題の簡潔解決手順（5ステップ）」を追加。`phase-12-documentation.md` の完了チェック同期、親タスク証跡の旧 `unassigned-task` 参照是正、検証スクリプト実体解決手順を標準化 |
+| **1.61.4** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 完了反映**: 完了タスクセクションへ P42 準拠空フィールドガード修正（`typeof` + `trim()`、85 passed/2 skipped）を追加。完了済み未タスク指示書の参照先を `docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md` に同期 |
 | **1.61.3** | **2026-02-26** | **TASK-9B 完了移管に同期**: 実行ワークフロー `docs/30-workflows/completed-tasks/task-9b-skill-creator/` への移動と、未タスク `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` の `completed-tasks/unassigned-task/` 移管を反映。残課題テーブルを完了表記へ更新 |
 | **1.61.2** | **2026-02-26** | **UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001 登録**: TASK-9B 再監査で顕在化した苦戦箇所（13chドリフト、`create` P42 3段検証漏れ、`current/baseline` 誤読）を再発防止する未タスクを残課題テーブルへ追加。未タスク仕様書の Section 3.5 に課題/発見経緯/解決策/教訓を反映 |
 | **1.61.1** | **2026-02-26** | **TASK-9B再監査の完了記録を追加**: 完了タスクセクションへ TASK-9B（13チャンネル同期、P42 `create` 補完、成果物台帳同期）を追加。仕様書別SubAgent分担、苦戦箇所3件、簡潔解決5ステップ、検証証跡（13/13・28項目・89/89・current=0）を記録 |

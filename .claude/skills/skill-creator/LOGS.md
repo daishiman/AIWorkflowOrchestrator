@@ -4,6 +4,15 @@
 
 ---
 
+## [2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12 parent-reference sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「完了移管後の親タスク証跡参照同期」を追加。未タスク移管後に親タスク成果物へ残る旧 `unassigned-task` 参照を `rg` で抽出し、運用ドキュメントのみ更新・監査生ログは保持する運用を標準化。検証は `verify-unassigned-links` + `audit --diff-from HEAD` を必須化。
+
+---
+
 ## [2026-02-26 - TASK-9B system-spec retrospective template generalization]
 
 - **Agent**: skill-creator (update)

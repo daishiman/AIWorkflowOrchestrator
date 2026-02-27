@@ -5,6 +5,70 @@
 
 ---
 
+## 2026-02-27 - UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 仕様更新の版数・手順整合ドリフト
+- 目的: 同種課題で再発した `spec-update-summary`/正本仕様の不一致を未タスクとして固定し、再利用可能な是正手順を明文化
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
+- 親タスクの苦戦箇所（版数ドリフト、手順数ドリフト、並列更新時の転記漏れ）を未タスク仕様書へ転記
+- `task-workflow.md` 残課題テーブルへ同タスクを登録
+- `task-workflow.md` の `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 参照先を `unassigned-task/` 正本へ補正
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 の「実装内容・教訓・台帳」の版数/手順整合を次回から機械検証前提で運用できる状態へ更新
+
+---
+
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 準拠確認（実装内容 + 苦戦箇所の再利用化）
+- 目的: 同種課題を短手順で再現可能にするため、task-workflow / lessons-learned へ苦戦情報を固定
+
+### 実施内容
+- `task-workflow.md` に同タスクの「苦戦箇所と解決策」「同種課題の簡潔解決手順（5ステップ）」を追加し、再発条件付き形式へ最適化（v1.61.6）
+- `lessons-learned.md` に再監査教訓を追加し、テンプレート準拠へ整形（v1.26.3）
+- `phase-12-documentation.md` の完了条件チェックと Task 100% 実行確認を実体に合わせて同期
+- 完了移管後に残っていた親タスク側の旧 `unassigned-task` 参照を更新（artifacts/minor-issues/unassigned-task-detection）
+- `outputs/phase-12/spec-update-summary.md` をテンプレート準拠で新規作成し、SubAgent分担・苦戦箇所・再利用手順を統合
+- `task-workflow.md` の同タスクへ仕様書別SubAgent分担テーブルを追加
+- `lessons-learned.md` の同タスク教訓を再発条件カラム付き形式に最適化
+- `skill-creator/references/patterns.md` のクイックナビ重複を整理し、`SKILL.md` を v10.26.0 へ更新
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 の実行証跡（成果物実体 + 手順書完了記録 + 親子参照整合）を一体で再現できる状態に更新
+
+---
+
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
+
+### コンテキスト
+- スキル: skill-creator
+- 対象: `quick_validate.js` name/description 空フィールドガード
+- 目的: P42準拠3段バリデーション（typeof → 空文字列 → trim()）を適用し、非文字列型（配列・数値・boolean）入力によるTypeErrorクラッシュを防止
+
+### 実施内容
+- `quick_validate.js` L139-158（name検証）、L160-198（description検証）の falsy チェックを typeof + trim() 3段バリデーションに変更
+- エラーメッセージを「存在しません」→「存在しないか無効です」に更新
+- テストケース21件追加（TC-GUARD-001〜008, BV-001〜003, COMBO-001〜003, MSG-001〜003, RG-001〜004）
+- フィクスチャ4件追加（name-whitespace-only, desc-whitespace-only, name-valid-desc-empty, name-empty-desc-valid）
+- `task-workflow.md` に完了記録（v1.61.4）を追加し、`claude-code-skills-process.md` / `spec-update-workflow.md` の関連仕様を同期更新
+
+### 結果
+- ステータス: success
+- テスト: 85 passed, 2 skipped
+- Phase 10 ゲート: PASS
+- Issue: #913
+
+---
+
 ## 2026-02-26 - TASK-9B 再監査（実装内容+苦戦箇所の仕様反映）
 
 ### コンテキスト
