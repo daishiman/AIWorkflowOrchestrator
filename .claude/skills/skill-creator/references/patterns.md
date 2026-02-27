@@ -1706,3 +1706,43 @@ interface BadgeProps extends Omit<
 - **対策**: テスト仕様書の期待値は `>=N` 形式で記述し、Phase 5 実行後に実測値で更新
 - **発見日**: 2026-02-24
 - **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+
+### [Phase12] 検証スクリプト実体探索ファースト（TASK-9G再確認）
+
+- **状況**: Phase 12再確認で `verify-all-specs` 系コマンドを実行する時
+- **問題**: `scripts/` 直下を前提に実行すると `MODULE_NOT_FOUND` で失敗しやすい
+- **原因**: 監査系スクリプトが `.claude/skills/task-specification-creator/scripts/` に集約されている運用が意識されにくい
+- **解決策**:
+  1. まず `rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'` で実体を確定
+  2. 確定パスで `verify-all-specs -> validate-phase-output -> verify-unassigned-links -> audit --diff-from HEAD` を順次実行
+- **結果**: Phase 12準拠判定を決定論的に再実行でき、コマンド起因の誤判定を回避
+- **適用条件**: 仕様書再監査、未タスク再監査、Phase 12完了判定の再確認
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9G
+
+### [Phase12] 監査結果の current/baseline 分離判定（TASK-9G再確認）
+
+- **状況**: `audit-unassigned-tasks.js --json --diff-from HEAD` の結果を評価する時
+- **問題**: baseline違反件数が大きいと、今回差分の合否を誤認しやすい
+- **原因**: `currentViolations`（今回差分）と `baselineViolations`（既存課題）を同じ重みで扱ってしまう
+- **解決策**: 合否を `currentViolations` 固定で判定し、baselineは改善バックログとして別管理
+- **結果**: 再確認タスクの完了判定が明確化し、既存ノイズでの手戻りを削減
+- **適用条件**: 未タスク監査、Phase 12再監査、差分監査の完了判定
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9G
+
+### [Phase12] 仕様書別SubAgent責務固定（TASK-9G再確認）
+
+- **状況**: 実装済み機能を複数仕様書へ同期する時
+- **問題**: 単一担当で順次更新すると、契約・セキュリティ・台帳のうち一部が未同期になりやすい
+- **原因**: 仕様書更新を1ジョブとして扱い、責務境界（interfaces/api-ipc/security/architecture/task+lessons）を定義していない
+- **解決策**:
+  1. SubAgent-A: `interfaces-agent-sdk-skill.md`
+  2. SubAgent-B: `api-ipc-agent.md`
+  3. SubAgent-C: `security-electron-ipc.md`
+  4. SubAgent-D: `arch-electron-services.md` + `architecture-overview.md`
+  5. SubAgent-E: `task-workflow.md` + `lessons-learned.md`
+- **結果**: 仕様同期の依存順が明確になり、反映漏れの再発率を低減
+- **適用条件**: IPC追加、型追加、セキュリティ要件更新を同時に含む Phase 12
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9G

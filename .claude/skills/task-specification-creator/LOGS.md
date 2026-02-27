@@ -26,6 +26,42 @@
 
 ---
 
+## 2026-02-27 - TASK-9G 未タスク管理3ステップ完了化（Step 1-E追補）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク登録追補）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `unassigned-task-detection.md` で検出した UT-9G-001〜005 の指示書を `docs/30-workflows/unassigned-task/` に新規作成
+  - `task-workflow.md` 残課題テーブルと `interfaces-agent-sdk-skill.md` 関連未タスクへ 5件を同期
+  - `unassigned-task-detection.md` の Step 2/3 を完了化し、`spec-update-summary.md` / `documentation-changelog.md` に Step 1-E 実施結果を反映
+
+---
+
+## 2026-02-27 - TASK-9G スキルスケジュール機能 Phase 12再同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査・仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - 必須6仕様書（api-ipc-agent / arch-electron-services / security-electron-ipc / architecture-overview / interfaces-agent-sdk-skill / task-workflow）を TASK-9G 実装へ同期
+  - `outputs/phase-12` の必須5成果物を作成し、`phase-12-documentation.md` の完了チェックを実態に合わせて更新
+  - `outputs/phase-7〜13` の不足成果物を補完し、`artifacts.json` の実装パス誤記を修正
+  - `audit-unassigned-tasks --diff-from HEAD` を基準に current 違反 0 件で記録（baseline は分離管理）
+
+---
+
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Notes**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用。テスト21件追加（85 passed, 2 skipped）。Issue #913。`spec-update-workflow.md` の既知課題リンクを completed 側へ同期。
+
+---
+
 ## 使用方法
 
 ```bash
@@ -43,17 +79,18 @@ node scripts/log-usage.js \
 
 <!-- ログエントリーはここから下に追記 -->
 
-## [2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査ガード追補]
+## [2026-02-27 - TASK-9F スキル共有・インポート機能 Phase 1-12 完了]
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（仕様更新ワークフロー改善）
+- **Phase**: Phase 1-12（全フェーズ完了）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `references/spec-update-workflow.md` の誤判断パターンへ、成果物台帳二重管理（`artifacts.json` / `outputs/artifacts.json`）同期必須を追加
-  - Phase 9命名規約（`phase-9-quality-assurance.md`）と Phase 12必須4成果物（`spec-update-summary.md` ほか）をチェックリストへ追加
-  - `ipc-documentation.md` の引数/戻り値/エラー契約を実装に同期する必須チェックを明文化
-  - `verify-all-specs --workflow` 13/13 PASS、`validate-phase-output` 28項目 PASS、`verify-unassigned-links` 89/89 PASS を再確認
+  - Phase 1-12 を全て完了。Phase 10 判定: MINOR（6件）
+  - 実装: SkillShareManager.ts（586行）、skillHandlers.share.ts（225行）、skill-share.ts（87行）
+  - テスト: 92件全PASS（Statement 100%/97%, Branch 96.3%/95.7%, Function 100%/100%）
+  - Phase 12 成果物: implementation-guide.md, ipc-documentation.md, documentation-changelog.md, unassigned-task-report.md, skill-feedback-report.md
+  - 未タスク6件検出・登録: UT-9F-SETTER-INJECTION-001〜UT-9F-DISCRIMINATED-UNION-001
 
 ---
 
@@ -67,6 +104,33 @@ node scripts/log-usage.js \
   - `references/spec-update-workflow.md` に誤判断パターンを追加（IPC拡張時のチャンネル数据え置きを禁止）
   - 更新漏れ防止チェックリストに「チャンネル数と進捗型（例: SkillCreatorProgress）の実装/仕様一致確認」を追加
   - TASK-9B再監査で検出したドリフト（6->13、進捗型不一致）を再発防止ルールへ反映
+
+---
+
+## [2026-02-26 - TASK-9A 未タスクフォーマット再確認]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（未タスク品質ガイド更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に `## メタ情報` 1セクション原則を追加
+  - `task-9a-c-syntax-highlighting.md` / `task-9a-c-code-editor-migration.md` の重複メタ情報是正ルールを標準化
+  - `rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md` での機械確認手順を追記
+
+---
+
+## [2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12実行]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（検証ゲート整合化の完了処理）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/spec-update-workflow.md` の曖昧語（`等`）を除去し、grep判定の決定論を確保
+  - `references/phase-11-12-guide.md` に本タスクの運用更新履歴を追記
+  - `outputs/phase-11/walkthrough-log.md` を作成し、手順書ウォークスルー結果を証跡化
+  - `generate-documentation-changelog.js` 実行ベースで Phase 12 成果物群を更新
 
 ---
 

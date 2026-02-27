@@ -93,6 +93,14 @@ export type {
   ShareResult,
 } from "./src/types/skill-share";
 
+// Skill Schedule types (TASK-9G)
+export type {
+  ScheduledSkill,
+  SkillSchedule,
+  NotificationSettings,
+  ScheduledRunResult,
+} from "./src/types/skill-schedule";
+
 // Skill Creator types (TASK-9B-G)
 export type {
   SkillCreatorMode,

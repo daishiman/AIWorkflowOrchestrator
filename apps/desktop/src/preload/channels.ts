@@ -302,6 +302,13 @@ export const IPC_CHANNELS = {
   SKILL_IMPORT_FROM_SOURCE: "skill:importFromSource",
   SKILL_EXPORT: "skill:export",
   SKILL_VALIDATE_SOURCE: "skill:validateSource",
+
+  // Skill schedule operations (TASK-9G)
+  SKILL_SCHEDULE_LIST: "skill:schedule:list",
+  SKILL_SCHEDULE_ADD: "skill:schedule:add",
+  SKILL_SCHEDULE_UPDATE: "skill:schedule:update",
+  SKILL_SCHEDULE_DELETE: "skill:schedule:delete",
+  SKILL_SCHEDULE_TOGGLE: "skill:schedule:toggle",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -529,6 +536,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
   IPC_CHANNELS.SKILL_EXPORT,
   IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
+  // Skill schedule channels (TASK-9G)
+  IPC_CHANNELS.SKILL_SCHEDULE_LIST,
+  IPC_CHANNELS.SKILL_SCHEDULE_ADD,
+  IPC_CHANNELS.SKILL_SCHEDULE_UPDATE,
+  IPC_CHANNELS.SKILL_SCHEDULE_DELETE,
+  IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

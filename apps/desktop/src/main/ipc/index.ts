@@ -23,7 +23,10 @@ import { registerHistoryHandlers } from "./historyHandlers";
 import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
-import { registerSkillHandlers } from "./skillHandlers";
+import {
+  registerSkillHandlers,
+  registerSkillScheduleHandlers,
+} from "./skillHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
@@ -39,6 +42,8 @@ import {
   PermissionStore,
 } from "../services/skill";
 import { SkillFileManager } from "../services/skill/SkillFileManager";
+import { ScheduleStore } from "../services/skill/ScheduleStore";
+import { SkillScheduler } from "../services/skill/SkillScheduler";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import { registerAuthModeHandlers } from "./authModeHandlers";
 import {
@@ -547,6 +552,38 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     },
   );
   registerSkillShareHandlers(mainWindow, skillShareManager);
+
+  // Register Skill Schedule handlers (TASK-9G)
+  const scheduleStore = new ScheduleStore();
+  const schedulerExecutorAdapter = {
+    async execute(
+      request: { prompt: string; skillId: string },
+      _skill: {
+        id: string;
+        name: string;
+        description: string;
+        path: string;
+        anchors: unknown[];
+        allowedTools?: string[];
+      },
+    ) {
+      const result = await skillService.executeSkill(request.skillId, {
+        prompt: request.prompt,
+      });
+      return {
+        executionId: result.executionId,
+        success: result.success,
+        error: result.error,
+      };
+    },
+  };
+  const skillScheduler = new SkillScheduler(
+    scheduleStore,
+    schedulerExecutorAdapter,
+  );
+  // initialize は非同期だが、起動時にブロックしない
+  void skillScheduler.initialize();
+  registerSkillScheduleHandlers(mainWindow, skillScheduler, scheduleStore);
 
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();

@@ -173,6 +173,8 @@ vi.mock("../communityHandlers", () => ({
 }));
 vi.mock("../skillHandlers", () => ({
   registerSkillHandlers: vi.fn(),
+  registerSkillScheduleHandlers: vi.fn(),
+  unregisterSkillScheduleHandlers: vi.fn(),
 }));
 vi.mock("../skillHandlers.share", () => ({
   registerSkillShareHandlers: vi.fn(),

@@ -25,7 +25,10 @@ import type {
   SkillOptimizeRequest,
   SkillOptimizeVariantsRequest,
   SkillOptimizeEvaluateRequest,
+  ScheduledSkill,
 } from "@repo/shared";
+import type { SkillScheduler } from "../services/skill/SkillScheduler";
+import type { ScheduleStore } from "../services/skill/ScheduleStore";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -580,4 +583,246 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE);
+}
+
+// ========================================
+// TASK-9G: スキルスケジュール実行機能
+// ========================================
+
+/**
+ * P42準拠 3段バリデーション: 文字列引数を検証する
+ *
+ * @param value - 検証対象の値
+ * @param argName - 引数名（エラーメッセージ用）
+ * @returns 検証成功時は null、失敗時はエラーレスポンスオブジェクト
+ */
+function validateStringArg(
+  value: unknown,
+  argName: string,
+): { success: false; error: string } | null {
+  if (typeof value !== "string" || value.trim() === "") {
+    return {
+      success: false,
+      error: `${argName} must be a non-empty string`,
+    };
+  }
+  return null;
+}
+
+/**
+ * IPC エラーレスポンスを構築する
+ *
+ * @param error - キャッチされたエラー
+ * @returns 統一されたエラーレスポンス
+ */
+function toIpcErrorResponse(error: unknown): {
+  success: false;
+  error: string;
+} {
+  return {
+    success: false,
+    error: error instanceof Error ? error.message : "Internal error",
+  };
+}
+
+/**
+ * スキルスケジュール管理IPCハンドラーを登録する
+ *
+ * @param mainWindow メインウィンドウ
+ * @param skillScheduler スケジューラサービス
+ * @param scheduleStore スケジュールストア
+ */
+export function registerSkillScheduleHandlers(
+  mainWindow: BrowserWindow,
+  skillScheduler: SkillScheduler,
+  scheduleStore: ScheduleStore,
+): void {
+  // skill:schedule:list - スケジュール一覧を取得
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_SCHEDULE_LIST,
+    async (event: IpcMainInvokeEvent) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_SCHEDULE_LIST,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+      try {
+        const schedules = scheduleStore.getAll();
+        return { success: true, data: schedules };
+      } catch (error) {
+        return toIpcErrorResponse(error);
+      }
+    },
+  );
+
+  // skill:schedule:add - スケジュールを追加
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_SCHEDULE_ADD,
+    async (
+      event: IpcMainInvokeEvent,
+      args: Omit<ScheduledSkill, "id" | "runHistory">,
+    ) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_SCHEDULE_ADD,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      // P42準拠: 3段バリデーション（共通関数使用）
+      const skillNameError = validateStringArg(args?.skillName, "skillName");
+      if (skillNameError) return skillNameError;
+
+      const promptError = validateStringArg(args?.prompt, "prompt");
+      if (promptError) return promptError;
+
+      // スケジュール種別ごとのバリデーション
+      if (!args.schedule || typeof args.schedule.type !== "string") {
+        return {
+          success: false,
+          error: "schedule.type is required",
+        };
+      }
+      if (
+        args.schedule.type === "cron" &&
+        (typeof args.schedule.cronExpression !== "string" ||
+          args.schedule.cronExpression.trim() === "")
+      ) {
+        return {
+          success: false,
+          error: "cronExpression is required for cron schedule type",
+        };
+      }
+      if (args.schedule.type === "interval") {
+        if (
+          typeof args.schedule.interval !== "number" ||
+          args.schedule.interval <= 0
+        ) {
+          return {
+            success: false,
+            error: "interval must be a positive number",
+          };
+        }
+      }
+
+      try {
+        const schedule = await skillScheduler.addSchedule(args);
+        return { success: true, data: schedule };
+      } catch (error) {
+        return toIpcErrorResponse(error);
+      }
+    },
+  );
+
+  // skill:schedule:update - スケジュールを更新
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_SCHEDULE_UPDATE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { id: string; updates: Partial<ScheduledSkill> },
+    ) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_SCHEDULE_UPDATE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      // P42準拠: 3段バリデーション（共通関数使用）
+      const idError = validateStringArg(args?.id, "id");
+      if (idError) return idError;
+
+      try {
+        await skillScheduler.updateSchedule(args.id, args.updates);
+        return { success: true };
+      } catch (error) {
+        return toIpcErrorResponse(error);
+      }
+    },
+  );
+
+  // skill:schedule:delete - スケジュールを削除
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_SCHEDULE_DELETE,
+    async (event: IpcMainInvokeEvent, args: { id: string }) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_SCHEDULE_DELETE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      // P42準拠: 3段バリデーション（共通関数使用）
+      const idError = validateStringArg(args?.id, "id");
+      if (idError) return idError;
+
+      try {
+        await skillScheduler.deleteSchedule(args.id);
+        return { success: true };
+      } catch (error) {
+        return toIpcErrorResponse(error);
+      }
+    },
+  );
+
+  // skill:schedule:toggle - スケジュールの有効/無効を切り替え
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+    async (event: IpcMainInvokeEvent, args: { id: string }) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      // P42準拠: 3段バリデーション（共通関数使用）
+      const idError = validateStringArg(args?.id, "id");
+      if (idError) return idError;
+
+      try {
+        const schedule = scheduleStore.getById(args.id);
+        if (!schedule) {
+          return {
+            success: false,
+            error: `Schedule not found: ${args.id}`,
+          };
+        }
+
+        if (schedule.enabled) {
+          await skillScheduler.disableSchedule(args.id);
+        } else {
+          await skillScheduler.enableSchedule(args.id);
+        }
+
+        // 更新後のスケジュールを返す
+        const updated = scheduleStore.getById(args.id);
+        return { success: true, data: updated };
+      } catch (error) {
+        return toIpcErrorResponse(error);
+      }
+    },
+  );
+}
+
+/**
+ * スキルスケジュール管理IPCハンドラーを解除する
+ */
+export function unregisterSkillScheduleHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_LIST);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_ADD);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_UPDATE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_DELETE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE);
 }

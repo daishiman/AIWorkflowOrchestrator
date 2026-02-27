@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
 | 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
 | 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
 | 6.33.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` IPC引数を `skillName: string` に更新 |
@@ -106,6 +107,8 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | L2   | SkillAnalyzer      | スキル品質分析（TASK-9C）      |
 | L2   | SkillImprover      | スキル改善適用（TASK-9C）      |
 | L2   | PromptOptimizer    | プロンプト最適化（TASK-9C）    |
+| L2   | ScheduleStore      | スケジュール永続化（TASK-9G）  |
+| L2   | SkillScheduler     | スケジュール実行制御（TASK-9G） |
 | L1   | IPC Handlers       | Renderer通信                   |
 | L2   | skillHandlers.ts   | IPCハンドラ実装                |
 
@@ -119,6 +122,8 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillAnalyzer.ts`      | スキル静的・AI分析（TASK-9C）     |
 | `SkillImprover.ts`      | 改善適用・バックアップ（TASK-9C） |
 | `PromptOptimizer.ts`    | プロンプト最適化（TASK-9C）       |
+| `ScheduleStore.ts`      | スケジュール永続化（TASK-9G）     |
+| `SkillScheduler.ts`     | cron/interval/once/event 実行制御（TASK-9G） |
 | `SkillService.ts`       | Facadeサービス（外部API）         |
 | `index.ts`              | エクスポート                      |
 | `skillHandlers.ts`      | IPCハンドラ（ipc/配下）           |
@@ -138,6 +143,10 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillScanResult`      | `packages/shared/src/types/skill.ts`     | スキャン結果                 |
 | `ImportResult`         | `packages/shared/src/types/skill.ts`     | インポート結果               |
 | `RemoveResult`         | `packages/shared/src/types/skill.ts`     | 削除結果                     |
+| `ScheduledSkill`       | `packages/shared/src/types/skill-schedule.ts` | スケジュール本体         |
+| `SkillSchedule`        | `packages/shared/src/types/skill-schedule.ts` | スケジュール設定         |
+| `NotificationSettings` | `packages/shared/src/types/skill-schedule.ts` | 通知設定                 |
+| `ScheduledRunResult`   | `packages/shared/src/types/skill-schedule.ts` | 実行履歴                 |
 
 ### SkillScanner（TASK-2A実装）
 
@@ -273,6 +282,11 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `skill:import`         | `skillName: string`  | `ImportedSkill` | スキルインポート（ハンドラー内で `[skillName]` に変換、UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で戻り値型修正） |
 | `skill:remove`         | `skillName: string`  | `RemoveResult`  | インポート解除     |
 | `skill:get-detail`     | `skillId: string`    | `Skill \| null` | スキル詳細取得     |
+| `skill:schedule:list`  | なし                 | `IpcResult<ScheduledSkill[]>` | スケジュール一覧取得 |
+| `skill:schedule:add`   | `Omit<ScheduledSkill, "id" \| "runHistory">` | `IpcResult<ScheduledSkill>` | スケジュール追加 |
+| `skill:schedule:update`| `{ id: string; updates: Partial<ScheduledSkill> }` | `IpcResult<void>` | スケジュール更新 |
+| `skill:schedule:delete`| `{ id: string }`     | `IpcResult<void>` | スケジュール削除 |
+| `skill:schedule:toggle`| `{ id: string }`     | `IpcResult<ScheduledSkill \| undefined>` | 有効/無効切替 |
 
 ### データフロー
 
@@ -328,6 +342,35 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | `ApiIntegrator.ts` | 外部API統合補助 |
 | `SkillValidator.ts` | 検証処理補助 |
 
+### SkillScheduler / ScheduleStore（TASK-9G）
+
+スキルスケジュール実行は、Facade の `SkillService` とは独立した専用サービスで構成する。
+
+| コンポーネント | 責務 | 実装ファイル |
+| --- | --- | --- |
+| `ScheduleStore` | `electron-store` への CRUD 永続化、実行履歴最大100件管理、復元時バリデーション（P19） | `apps/desktop/src/main/services/skill/ScheduleStore.ts` |
+| `SkillScheduler` | cron / interval / once / event のジョブ登録・停止、次回実行時刻計算、実行結果記録 | `apps/desktop/src/main/services/skill/SkillScheduler.ts` |
+| `registerSkillScheduleHandlers` | 5チャネルの IPC 境界（sender 検証 + P42 バリデーション + エラー正規化） | `apps/desktop/src/main/ipc/skillHandlers.ts` |
+
+#### 初期化配線（Main Process）
+
+`registerAllIpcHandlers`（`apps/desktop/src/main/ipc/index.ts`）で以下の順に初期化する。
+
+1. `new ScheduleStore()`
+2. `new SkillScheduler(scheduleStore, schedulerExecutorAdapter)`
+3. `skillScheduler.initialize()`（非同期・非ブロッキング）
+4. `registerSkillScheduleHandlers(mainWindow, skillScheduler, scheduleStore)`
+
+#### SchedulerSkillExecutor アダプタ
+
+`SkillScheduler` は `SchedulerSkillExecutor` インターフェースに依存し、`skillService.executeSkill()` を呼び出すアダプタで接続する。
+
+| 観点 | 設計方針 |
+| --- | --- |
+| 依存関係 | Scheduler は SkillService 実装詳細を知らない（DI） |
+| テスタビリティ | `SchedulerSkillExecutor` をモック可能 |
+| 責務分離 | 実行制御（Scheduler）とスキル実行本体（SkillService）を分離 |
+
 ### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 
 > **実装完了**: 2026-02-11（TASK-FIX-7-1）
@@ -340,7 +383,7 @@ SkillExecutor は `registerSkillHandlers()` 内で生成され、`setSkillExecut
 
 | ステップ | 処理 | ファイル |
 |----------|------|----------|
-| 1 | `registerSkillHandlers(mainWindow, skillService)` 呼び出し | `main/index.ts` |
+| 1 | `registerSkillHandlers(mainWindow, skillService)` 呼び出し | `main/ipc/index.ts` |
 | 2 | `new SkillExecutor(mainWindow)` でインスタンス生成 | `skillHandlers.ts` |
 | 3 | `skillService.setSkillExecutor(executor)` で注入 | `skillHandlers.ts` |
 | 4 | `skillService.executeSkill()` が内部で `skillExecutor.execute()` を呼び出し | `SkillService.ts` |

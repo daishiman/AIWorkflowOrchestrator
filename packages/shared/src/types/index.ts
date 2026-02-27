@@ -147,3 +147,6 @@ export * from "./auth-mode";
 
 // スキル共有型定義 (TASK-9F)
 export * from "./skill-share";
+
+// スキルスケジュール型定義 (TASK-9G)
+export * from "./skill-schedule";

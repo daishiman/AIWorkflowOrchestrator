@@ -79,6 +79,7 @@
 
 | コマンド | 目的 | 期待結果 |
 | --- | --- | --- |
+| `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
@@ -94,3 +95,4 @@
 - [ ] `documentation-changelog.md`
 - [ ] `unassigned-task-report.md`（または `unassigned-task-detection.md`）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
+- [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
