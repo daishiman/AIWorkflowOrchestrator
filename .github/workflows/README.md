@@ -101,6 +101,8 @@ flowchart TB
 | `RAILWAY_WEB_DOMAIN`  | ❌   | Webヘルスチェック URL（web未デプロイ時） |
 | `DISCORD_WEBHOOK_URL` | ❌   | デプロイ成功/失敗の通知                  |
 
+現在、Railway は未使用のため GitHub Actions の Railway deploy ジョブは `if: false` で停止しています。
+
 #### デスクトップリリース用
 
 | Secret名                      | 必須          | 取得方法                 |
@@ -200,6 +202,19 @@ cat .github/workflows/deploy-backend.yml | yq .
 1. Secret名が正確か確認（大文字小文字を区別）
 2. Secretsセクションで設定されているか確認
 3. リポジトリレベルのSecretか確認（Organizationレベルではない）
+
+### 「Usage limit exceeded」エラー（Railway）
+
+`railway up` 実行時に以下が出る場合:
+
+```text
+Usage limit exceeded. Please increase or remove the hard limit to resume resource provisioning
+```
+
+1. Railway Dashboard → **Usage** を開く
+2. 現在設定されている **Hard limit** を引き上げるか、必要に応じて解除する
+3. 必要なら未使用サービスを停止してコストを削減する
+4. 設定反映後に GitHub Actions の失敗ジョブを **Re-run** する
 
 ### デプロイが失敗する
 
