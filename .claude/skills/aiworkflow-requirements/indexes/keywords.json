@@ -1,6 +1,8 @@
 {
   "generated": "2026-02-27T03:01:22.016Z",
   "totalKeywords": 1333,
+  "generated": "2026-02-27T06:44:39.069Z",
+  "totalKeywords": 1328,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -751,6 +753,10 @@
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
       "ui-ux-search-panel.md"
+    ],
+    "スキル共有": [
+      "api-ipc-agent.md",
+      "interfaces-agent-sdk-skill.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -3456,6 +3462,9 @@
     "検証ゲート整合化": [
       "lessons-learned.md"
     ],
+    "スキル共有・インポート機能": [
+      "lessons-learned.md"
+    ],
     "新規教訓追加用": [
       "lessons-learned.md"
     ],
@@ -4049,6 +4058,9 @@
       "security-electron-ipc.md"
     ],
     "skillFileAPI": [
+      "security-electron-ipc.md"
+    ],
+    "skillShareAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

@@ -79,6 +79,20 @@ export type {
   SkillOptimizeEvaluateRequest,
 } from "./src/types/skill-improver";
 
+// Skill Share types (TASK-9F)
+export type {
+  ShareSourceType,
+  ShareDestinationType,
+  ShareTarget,
+  ShareDestination,
+  ShareImportResult,
+  ShareExportResult,
+  ShareValidateSourceResult,
+  ShareErrorCategory,
+  ShareError,
+  ShareResult,
+} from "./src/types/skill-share";
+
 // Skill Creator types (TASK-9B-G)
 export type {
   SkillCreatorMode,

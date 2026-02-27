@@ -25,10 +25,10 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillForker.ts
-    - packages/shared/src/types/skill/fork.ts
+    - packages/shared/src/types/skill-fork.ts
   # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.1 で定義
   modifies:
-    - packages/shared/src/types/skill/index.ts
+    - packages/shared/src/types/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/channels.ts
     - apps/desktop/src/preload/skill-api.ts
@@ -56,9 +56,9 @@ artifacts:
 
 ### Step 1: 型定義追加と SkillForker 実装
 
-**ファイル**: `packages/shared/src/types/skill/fork.ts`, `apps/desktop/src/main/services/skill/SkillForker.ts`
+**ファイル**: `packages/shared/src/types/skill-fork.ts`, `apps/desktop/src/main/services/skill/SkillForker.ts`
 
-`ForkOptions` / `ForkResult` / `ForkMetadata` は `packages/shared/src/types/skill/fork.ts` に定義し、`SkillForker.ts` から import して利用する。
+`ForkOptions` / `ForkResult` / `ForkMetadata` は `packages/shared/src/types/skill-fork.ts` に定義し、`SkillForker.ts` から import して利用する。
 
 ```typescript
 export interface ForkOptions {

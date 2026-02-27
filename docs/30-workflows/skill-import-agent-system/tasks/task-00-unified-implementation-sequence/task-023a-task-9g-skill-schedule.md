@@ -26,10 +26,10 @@ artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillScheduler.ts
     - apps/desktop/src/main/services/skill/ScheduleStore.ts
-    - packages/shared/src/types/skill/schedule.ts
+    - packages/shared/src/types/skill-schedule.ts
   # UI成果物は ./task-031b-ui-05b-skill-advanced-views.md#3B で定義
   modifies:
-    - packages/shared/src/types/skill/index.ts
+    - packages/shared/src/types/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/channels.ts
     - apps/desktop/src/preload/skill-api.ts
@@ -59,7 +59,7 @@ artifacts:
 
 ### Step 1: 型定義追加
 
-**ファイル**: `packages/shared/src/types/skill/schedule.ts`
+**ファイル**: `packages/shared/src/types/skill-schedule.ts`
 
 ```typescript
 export interface ScheduledSkill {

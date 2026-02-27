@@ -144,3 +144,6 @@ export type {
 
 // 認証モード型定義 (TASK-AUTH-MODE-SELECTION-001)
 export * from "./auth-mode";
+
+// スキル共有型定義 (TASK-9F)
+export * from "./skill-share";

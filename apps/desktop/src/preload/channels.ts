@@ -297,6 +297,11 @@ export const IPC_CHANNELS = {
   SKILL_DELETE_FILE: "skill:deleteFile",
   SKILL_LIST_BACKUPS: "skill:listBackups",
   SKILL_RESTORE_BACKUP: "skill:restoreBackup",
+
+  // Skill share operations (TASK-9F)
+  SKILL_IMPORT_FROM_SOURCE: "skill:importFromSource",
+  SKILL_EXPORT: "skill:export",
+  SKILL_VALIDATE_SOURCE: "skill:validateSource",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -520,6 +525,10 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DELETE_FILE,
   IPC_CHANNELS.SKILL_LIST_BACKUPS,
   IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+  // Skill share channels (TASK-9F)
+  IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
+  IPC_CHANNELS.SKILL_EXPORT,
+  IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

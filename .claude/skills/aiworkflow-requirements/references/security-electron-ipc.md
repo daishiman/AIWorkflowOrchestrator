@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.9.0     | 2026-02-27 | TASK-9F反映: skillShareAPIセキュリティ実装パターン追加（validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェック）。3チャンネル、92テスト全PASS |
 | v1.8.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001反映: AUTH IPC登録一元化パターンを追加。重複登録式の宣言的集約と fallback 経路の追跡性維持を明文化 |
 | v1.7.0     | 2026-02-21 | 契約ドリフト防止（P44/P45対策）セクション追加: ipc-contract-checklist.md参照・3箇所同時更新ルール・3段バリデーション検証テーブルを明文化 |
 | v1.6.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: Skill API（`skill:import`/`skill:remove`）の引数検証パターンを `skillName` 非空文字列（`trim()`含む）へ統一し、契約ドリフト対策を明文化 |
@@ -399,6 +400,61 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 ---
 
+## 実装例: skillShareAPI（TASK-9F）
+
+スキル共有（インポート／エクスポート／ソース検証）の3チャネルに適用するセキュリティパターン。
+
+### チャネル定数定義
+
+| 定数名                      | チャネル名               | 方向            |
+| --------------------------- | ------------------------ | --------------- |
+| SKILL_IMPORT_FROM_SOURCE    | `skill:importFromSource` | invoke (R→M) |
+| SKILL_EXPORT                | `skill:export`           | invoke (R→M) |
+| SKILL_VALIDATE_SOURCE       | `skill:validateSource`   | invoke (R→M) |
+
+### セキュリティ検証4層構造
+
+| 層 | 検証項目 | 実装 | 返却仕様 |
+| -- | -------- | ---- | -------- |
+| 1. Sender検証 | 送信元ウィンドウの正当性 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError(validation)` |
+| 2. 構造バリデーション | 引数がプレーンオブジェクトであること | `isPlainObject(value)` — `typeof === "object"` かつ `!== null` かつ `!Array.isArray()` | 不正時: `{ success: false, error: { code: "VALIDATION_ERROR" } }` |
+| 3. P42準拠3段バリデーション | 文字列フィールドの型・空文字列・trim空文字列 | `validateStringField(value, fieldName)` | 不正時: バリデーションエラー |
+| 4. 許可値チェック | source.type / destination.type が定義済み値に含まれること | `ALLOWED_SOURCE_TYPES.includes()` / `ALLOWED_DESTINATION_TYPES.includes()` | 不正時: バリデーションエラー |
+
+### 許可値リスト
+
+| フィールド | 許可値 |
+| ---------- | ------ |
+| `source.type` | `"github"`, `"gist"`, `"url"`, `"local"` |
+| `destination.type` | `"gist"`, `"local"` |
+
+### チャネル別バリデーション詳細
+
+| チャネル | バリデーション項目 |
+| -------- | ------------------ |
+| `skill:importFromSource` | source オブジェクト検証 → source.type P42 3段 → source.type 許可値 → github時 repo 長さ制限（MAX_STRING_LENGTH: 10000） |
+| `skill:export` | args オブジェクト検証 → args.skillName P42 3段 → args.destination オブジェクト検証 → args.destination.type P42 3段 → destination.type 許可値 |
+| `skill:validateSource` | source オブジェクト検証 → source.type P42 3段 |
+
+### 実装時の苦戦箇所（TASK-9F）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| Sender検証と構造検証の適用順序 | 先に構造検証を行うと unauthorized 呼び出しでも内部エラーパターンが混在する | `validateIpcSender` を最初に適用し、その後 `isPlainObject` / P42検証へ進む順序に固定 |
+| P42 3段バリデーションの漏れ | 一部フィールドで `trim()` 条件を見落とし、空白入力が通過しうる | `validateStringField` 共通関数へ集約し、全3チャネルで同一関数を使用 |
+| 未タスク化の遅延 | セキュリティ改善候補が台帳未登録だと再発防止が弱い | Phase 10 MINOR を UT-9F 系へ変換し、`task-workflow.md` 残課題へ即時登録 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. セキュリティ検証順序を `sender -> 構造 -> P42 -> 許可値` の固定パイプラインにする。  
+2. 文字列検証は共通関数化し、チャネルごとの差分をなくす。  
+3. セキュリティ改善項目は完了判定に混在させず、未タスクへ分離して追跡する。  
+4. 仕様更新後に `verify-unassigned-links` と `audit --diff-from HEAD` で台帳整合を確認する。  
+
+**関連タスク**: TASK-9F（2026-02-27完了）
+
+---
+
 ## 自動更新のセキュリティ
 
 | 項目         | 要件                         |
@@ -422,4 +478,5 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
+| TASK-9F | 2026-02-27 | 完了 | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了 | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持 |

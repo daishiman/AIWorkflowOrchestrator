@@ -22,6 +22,7 @@
 |------|-----------|----------|
 | 2026-02-27 | 1.26.3 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の教訓セクションをテンプレート準拠へ最適化。各苦戦箇所に「再発条件」「今後の標準ルール」を追加し、再利用性を向上 |
 | 2026-02-27 | 1.26.2 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の再監査教訓を追加。苦戦箇所3件（Phase 12チェック同期漏れ、完了移管後の親証跡旧参照、検証スクリプト所在誤認）と同種課題向け簡潔解決手順（5ステップ）を反映 |
+| 2026-02-27 | 1.27.0 | TASK-9F 再監査追補: 仕様書別SubAgent分担（interfaces/api-ipc/security/task/lessons）と検証証跡（13/13, 28項目, 95/95, current=0）を追加。`spec-update-summary.md` を成果物に追加して再利用手順を強化 |
 | 2026-02-26 | 1.26.1 | TASK-9B SkillCreator IPC拡張同期の再監査教訓を追加。苦戦箇所3件（13チャンネル仕様ドリフト、P42 create未完了、current/baseline監査誤読）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-26 | 1.26.3 | TASK-9A-skill-editor Phase 12 再確認の教訓を追加: 実装ガイド2パート要件不足、`audit-unassigned-tasks --target-file` の current/baseline 誤読、未タスク指示書メタ情報重複を再発防止する4ステップ手順を追記 |
 | 2026-02-26 | 1.26.2 | TASK-9A 完了同期の教訓を反映: `spec_created` 表記の残存と未タスク台帳の状態ドリフト（実装済みなのに未実施表示）が再発しやすいため、Phase 12で「仕様状態・台帳状態・実装状態」の3点同時照合を必須化 |
@@ -3755,6 +3756,85 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ---
 
+## TASK-9F: スキル共有・インポート機能 再監査（2026-02-27）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9F |
+| 目的 | 実装/仕様/未タスク管理のドリフトを除去し、Phase 12 実行証跡を再利用可能な形で固定する |
+| 完了日 | 2026-02-27 |
+| ステータス | **完了** |
+
+### 仕様書別SubAgent分担（再監査時）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+|------|------|------|
+| A | `interfaces-agent-sdk-skill.md` | 共有型10種 + Preload API 3メソッド契約の同期 |
+| B | `api-ipc-agent.md` | 3チャネルの request/response/validation 契約同期 |
+| C | `security-electron-ipc.md` | sender検証 + P42 + 許可値チェックの4層防御同期 |
+| D | `task-workflow.md` | 完了台帳・UT-9F残課題・検証証跡の固定化 |
+| E | `lessons-learned.md` | 苦戦箇所と簡潔解決手順の再利用化 |
+
+### 苦戦箇所と解決策
+
+#### 1. IPC ハンドラ実装と起動配線の乖離
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `skillHandlers.share.ts` が存在しても `registerAllIpcHandlers` に登録されておらず、実行時に機能しない状態が残った |
+| 原因 | 実装タスクと起動配線タスクを分離し、統合チェックを後回しにした |
+| 解決策 | `index.ts` に `registerSkillShareHandlers` と DI 配線、`createGitHubClient` 型注釈を追加して起動経路を固定 |
+| 教訓 | IPC機能は「ハンドラ実装」だけで完了判定しない。`channels + preload + register + tests` を1セットで閉じる |
+
+#### 2. 型パスの正本ドリフト（`skill/<domain>.ts` vs `skill-<domain>.ts`）
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 仕様書・監査スクリプト・未完了タスクで旧パス記述が混在し、監査が誤検知した |
+| 原因 | `packages/shared/src/types` のフラット化後に、監査ロジック更新が追従していなかった |
+| 解決策 | `task-workflow.md` / `ipc-preload-spec-sync-guardian` / task-023a〜f を一括で `types/index.ts` + `skill-<domain>.ts` に統一 |
+| 教訓 | 構成変更時は「実装→仕様→監査スクリプト」の順で同期しないと、監査結果自体が信頼できなくなる |
+
+#### 3. 未タスク配置先の混同とフォーマット不足
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | UT-9F 系6件が `docs/30-workflows/completed-tasks/skill-share/unassigned-task/` に配置され、正本ディレクトリと不一致だった |
+| 原因 | 親ワークフロー配下配置と共通 `docs/30-workflows/unassigned-task/` の運用ルールを混同した |
+| 解決策 | 6件を `docs/30-workflows/unassigned-task/` に9セクション形式で再作成し、`unassigned-task-report.md` / `task-workflow.md` の参照を同期 |
+| 教訓 | 未タスク作成は「配置先確認 + 形式監査 + 台帳登録」を同一ターンで完了させる |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. 追加機能の完了判定は「実装 + 起動配線 + 契約 + テスト」で固定する。  
+2. 仕様同期は `task-workflow.md` を起点に、関連仕様書と監査スクリプトを同時更新する。  
+3. 未タスクは `docs/30-workflows/unassigned-task/` に9セクション形式で作成する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. 検証値を `documentation-changelog` と `lessons-learned` に転記して終了する。  
+
+### 検証結果（2026-02-27 15:39 JST）
+
+| 検証項目 | 結果 |
+|------|------|
+| `verify-all-specs --workflow docs/30-workflows/completed-tasks/skill-share --json` | PASS（13/13、errors=0、warnings=0） |
+| `validate-phase-output docs/30-workflows/completed-tasks/skill-share` | PASS（28項目、error=0、warning=0） |
+| `verify-unassigned-links` | PASS（95/95 existing、missing=0） |
+| `audit-unassigned-tasks --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=71` |
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/skill-share/` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/skill-share/outputs/phase-12/spec-update-summary.md` |
+| ドキュメント変更ログ | `docs/30-workflows/completed-tasks/skill-share/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/completed-tasks/skill-share/outputs/phase-12/unassigned-task-report.md` |
+| 未タスク指示書（6件） | `docs/30-workflows/completed-tasks/skill-share/unassigned-task/task-9f-*.md` |
+| 完了台帳 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` |
+
+---
 ## テンプレート（新規教訓追加用）
 
 以下は将来のタスク記録用テンプレートです。
