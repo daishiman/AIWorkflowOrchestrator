@@ -20,7 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-02-27 | 1.27.1 | TASK-9G Phase 12再確認の教訓を追加。検証スクリプト実体探索、`currentViolations`基準判定、UT-9G未タスク5件の配置/フォーマット同時検証を標準手順化 |
+| 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-27 | 1.26.3 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の教訓セクションをテンプレート準拠へ最適化。各苦戦箇所に「再発条件」「今後の標準ルール」を追加し、再利用性を向上 |
 | 2026-02-27 | 1.26.2 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の再監査教訓を追加。苦戦箇所3件（Phase 12チェック同期漏れ、完了移管後の親証跡旧参照、検証スクリプト所在誤認）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-27 | 1.27.0 | TASK-9F 再監査追補: 仕様書別SubAgent分担（interfaces/api-ipc/security/task/lessons）と検証証跡（13/13, 28項目, 95/95, current=0）を追加。`spec-update-summary.md` を成果物に追加して再利用手順を強化 |
@@ -130,47 +130,6 @@
 3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。  
 4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。  
 5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。  
-
----
-
-## TASK-9G-skill-schedule: Phase 12再確認（2026-02-27）
-
-### 苦戦箇所: 監査スクリプトを誤ディレクトリで実行しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `scripts/verify-all-specs.js` などをプロジェクト直下で実行し、`MODULE_NOT_FOUND` になる |
-| 再発条件 | 実行前にスクリプト実体パスを確認しない場合 |
-| 原因 | 監査系スクリプトが `task-specification-creator/scripts` に集約されている運用が浸透していない |
-| 対処 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` で正本パスを確定してから実行 |
-| 今後の標準ルール | Phase 12再確認は「実体探索 → 検証実行」を固定順序にする |
-
-### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | baseline違反件数が多いと、今回差分の合否が不明瞭になる |
-| 再発条件 | `currentViolations` を見ずに total件数で判定した場合 |
-| 原因 | 全体監査と差分監査の目的を分離せずに結果を解釈した |
-| 対処 | 合否判定を `currentViolations` 固定にし、`baselineViolations` は既存課題として別管理 |
-| 今後の標準ルール | `audit-unassigned-tasks.js --json --diff-from HEAD` の出力は `currentViolations` のみで完了判定する |
-
-### 苦戦箇所: 未タスクは「存在」だけ確認して「形式」を見落としやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `docs/30-workflows/unassigned-task/` に配置されていても、テンプレート見出し不足で品質が落ちる |
-| 再発条件 | リンク存在チェックだけで完了判定した場合 |
-| 原因 | 配置検証とフォーマット検証を別タスクとして扱っていた |
-| 対処 | UT-9G-001〜005 を対象に `## メタ情報` + `## 1..9` の10見出しを機械確認 |
-| 今後の標準ルール | 未タスク確認は「配置 + 見出しフォーマット」を同時にPASSさせる |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 監査コマンド前に `rg --files` で実体パスを確定する。  
-2. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。  
-3. 監査合否は `currentViolations` を正本にし、baselineは改善バックログとして分離する。  
-4. 未タスクは `docs/30-workflows/unassigned-task/` 配置確認と `## メタ情報 + ## 1..9` 見出し確認を同時に実行する。  
 
 ---
 
@@ -445,6 +404,12 @@
 ---
 
 ## 目次
+
+0. [TASK-9H: スキルデバッグモード実装（2026-02-27）](#task-9h-スキルデバッグモード実装2026-02-27)
+   - [苦戦箇所1: `registerAllIpcHandlers` への登録漏れ](#苦戦箇所1-registerallipchandlers-への登録漏れ)
+   - [苦戦箇所2: Phase 12 必須成果物の不足](#苦戦箇所2-phase-12-必須成果物の不足)
+   - [苦戦箇所3: `phase-12-documentation.md` のステータス未同期](#苦戦箇所3-phase-12-documentationmd-のステータス未同期)
+   - [同種課題向け簡潔解決手順（4ステップ）](#同種課題向け簡潔解決手順4ステップ)
 
 0. [TASK-9A-skill-editor: Phase 12再確認（2026-02-26）](#task-9a-skill-editor-phase-12再確認2026-02-26)
    - [苦戦箇所1: 実装ガイドのPart 1/Part 2要件不足](#苦戦箇所1-実装ガイドのpart-1part-2要件不足)
@@ -3875,6 +3840,64 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | 未タスク検出レポート | `docs/30-workflows/completed-tasks/skill-share/outputs/phase-12/unassigned-task-report.md` |
 | 未タスク指示書（6件） | `docs/30-workflows/completed-tasks/skill-share/unassigned-task/task-9f-*.md` |
 | 完了台帳 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` |
+
+---
+## TASK-9H: スキルデバッグモード実装（2026-02-27）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9H |
+| 目的 | スキルデバッグ機能（7ch IPC + DebugSession/SkillDebugger）の実装内容と苦戦箇所を、再利用可能な手順として固定する |
+| 完了日 | 2026-02-27 |
+| ステータス | **完了** |
+
+### 苦戦箇所と解決策
+
+#### 苦戦箇所1: `registerAllIpcHandlers` への登録漏れ
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `skillDebugHandlers.ts` を実装しても、起動配線が漏れて機能が有効化されなかった |
+| 原因 | ハンドラ実装と `apps/desktop/src/main/ipc/index.ts` の登録作業を別タイミングで進めた |
+| 解決策 | `registerSkillDebugHandlers(mainWindow)` を `registerAllIpcHandlers` に追加し、起動経路を固定 |
+| 教訓 | IPC機能は「channels + preload + handlers + register」を1セットで更新する |
+
+#### 苦戦箇所2: Phase 12 必須成果物の不足
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `implementation-guide.md` 以外の必須成果物が欠落し、監査証跡が不完全になった |
+| 原因 | Task 1 の作成後に Task 2-5 成果物を一括確認する手順が不足していた |
+| 解決策 | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を追加作成 |
+| 教訓 | Phase 12は Task 1〜5 を成果物名で突合してから完了判定する |
+
+#### 苦戦箇所3: `phase-12-documentation.md` のステータス未同期
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 成果物と検証は完了しているのに、実行仕様書のステータスが `未実施` のまま残った |
+| 原因 | 成果物更新と手順書チェック更新が分離し、二重台帳が不一致になった |
+| 解決策 | ステータスを `完了` に更新し、完了条件チェックを成果物実体に合わせて同期 |
+| 教訓 | Phase 12完了判定は「成果物実体 + 仕様書チェック + 検証証跡」の三点一致で行う |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. 追加IPCは `channels.ts` / `skill-api.ts` / `skillDebugHandlers.ts` / `ipc/index.ts` を同ターンで更新する。  
+2. Phase 12 成果物5件（`implementation-guide`, `spec-update-summary`, `documentation-changelog`, `unassigned-task-detection`, `skill-feedback-report`）をファイル名で突合する。  
+3. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。  
+4. `task-workflow.md` と `lessons-learned.md` と `phase-12-documentation.md` を同時同期し、台帳不一致を残さない。  
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実装ガイド | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/spec-update-summary.md` |
+| 更新履歴 | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出 | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/unassigned-task-detection.md` |
+| スキルフィードバック | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/skill-feedback-report.md` |
 
 ---
 ## テンプレート（新規教訓追加用）

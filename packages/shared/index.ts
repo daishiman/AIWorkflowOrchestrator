@@ -79,6 +79,37 @@ export type {
   SkillOptimizeEvaluateRequest,
 } from "./src/types/skill-improver";
 
+// Skill Debug types and constants (TASK-9H)
+export type {
+  DebugSessionStatus,
+  DebugSessionState,
+  Breakpoint,
+  BreakpointType,
+  HookType,
+  DebugStep,
+  DebugStepType,
+  CallStackEntry,
+  CallStackEntryType,
+  DebugEvent,
+  DebugStepEvent,
+  DebugBreakpointHitEvent,
+  DebugVariableChangedEvent,
+  DebugSessionEndedEvent,
+  DebugCommand,
+  DebugStartRequest,
+  DebugCommandRequest,
+  DebugBreakpointAddRequest,
+  DebugBreakpointRemoveRequest,
+  DebugInspectRequest,
+  DebugEvaluateRequest,
+  DebugEvaluateResponse,
+} from "./src/types/skill-debug";
+
+export {
+  VALID_DEBUG_TRANSITIONS,
+  DEBUG_CONSTANTS,
+} from "./src/types/skill-debug";
+
 // Skill Share types (TASK-9F)
 export type {
   ShareSourceType,

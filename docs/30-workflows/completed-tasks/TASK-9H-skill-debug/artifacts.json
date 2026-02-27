@@ -1,0 +1,194 @@
+{
+  "taskId": "TASK-9H",
+  "taskName": "スキルデバッグモード実装",
+  "createdAt": "2026-02-27T00:00:00Z",
+  "updatedAt": "2026-02-27T14:05:00Z",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ipc-contract-design.md",
+        "outputs/phase-2/state-machine-design.md",
+        "outputs/phase-2/security-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "packages/shared/src/types/__tests__/skill-debug.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/SkillDebugger.test.ts",
+        "apps/desktop/src/main/services/skill/__tests__/DebugSession.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/skillDebugHandlers.test.ts"
+      ]
+    },
+    "phase-5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "artifacts": [
+        "packages/shared/src/types/skill-debug.ts",
+        "packages/shared/src/types/index.ts",
+        "packages/shared/index.ts",
+        "apps/desktop/src/main/services/skill/SkillDebugger.ts",
+        "apps/desktop/src/main/services/skill/DebugSession.ts",
+        "apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "apps/desktop/src/main/ipc/index.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/skill-api.ts",
+        "apps/desktop/src/preload/types.ts"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/security-review.md",
+        "outputs/phase-10/type-ipc-review.md",
+        "outputs/phase-10/architecture-review.md",
+        "outputs/phase-10/quality-coverage-review.md",
+        "outputs/phase-10/requirements-review.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/auto-test-result.md",
+        "outputs/phase-11/basic-flow-test-result.md",
+        "outputs/phase-11/step-execution-test-result.md",
+        "outputs/phase-11/breakpoint-test-result.md",
+        "outputs/phase-11/evaluate-test-result.md",
+        "outputs/phase-11/edge-case-test-result.md",
+        "outputs/phase-11/ipc-event-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-creation-result.md",
+        "outputs/phase-13/ci-result.md",
+        "outputs/phase-13/merge-readiness-report.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-9B"],
+    "parallel_with": [
+      "TASK-9D",
+      "TASK-9E",
+      "TASK-9F",
+      "TASK-9G",
+      "TASK-9I",
+      "TASK-9J"
+    ],
+    "blocks": []
+  },
+  "metadata": {
+    "tier": 3,
+    "priority": "low",
+    "estimated_complexity": "large",
+    "tags": [
+      "backend",
+      "main",
+      "skill-management",
+      "debug",
+      "breakpoint",
+      "hooks",
+      "future"
+    ]
+  },
+  "artifacts": {
+    "creates": [
+      "apps/desktop/src/main/services/skill/SkillDebugger.ts",
+      "apps/desktop/src/main/services/skill/DebugSession.ts",
+      "packages/shared/src/types/skill-debug.ts",
+      "apps/desktop/src/main/ipc/skillDebugHandlers.ts"
+    ],
+    "modifies": [
+      "packages/shared/src/types/index.ts",
+      "packages/shared/index.ts",
+      "apps/desktop/src/main/ipc/index.ts",
+      "apps/desktop/src/preload/channels.ts",
+      "apps/desktop/src/preload/skill-api.ts",
+      "apps/desktop/src/preload/types.ts"
+    ]
+  },
+  "testSummary": {
+    "total": 101,
+    "breakdown": {
+      "skill-debug.test.ts": 10,
+      "SkillDebugger.test.ts": 51,
+      "DebugSession.test.ts": 24,
+      "skillDebugHandlers.test.ts": 16
+    }
+  },
+  "qualityMetrics": {
+    "testCoverage": {
+      "line": "80% (target)",
+      "branch": "60% (target)",
+      "function": "80% (target)"
+    },
+    "lintErrors": 0,
+    "typeErrors": 0
+  }
+}
