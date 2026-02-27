@@ -118,7 +118,7 @@ export type {
   ExportFormat,
   ScheduleConfig,
   DebugOptions,
-  DebugStep,
+  DebugStep as SkillCreatorDebugStep,
   DebugResult,
   UsageStats,
 } from "./skillCreator";
@@ -150,3 +150,6 @@ export * from "./skill-share";
 
 // スキルスケジュール型定義 (TASK-9G)
 export * from "./skill-schedule";
+
+// スキルデバッグ型定義 (TASK-9H)
+export * from "./skill-debug";

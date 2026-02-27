@@ -201,13 +201,13 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L125 |
 | 状態管理アーキテクチャ | L159 |
 | データフローアーキテクチャ | L184 |
-| ディレクトリ構造 | L246 |
-| データ構造（型システム） | L303 |
-| 機能追加パターン | L337 |
-| 技術スタック | L372 |
-| テンプレート | L384 |
-| 関連ドキュメント | L404 |
-| 変更履歴 | L445 |
+| ディレクトリ構造 | L245 |
+| データ構造（型システム） | L302 |
+| 機能追加パターン | L336 |
+| 技術スタック | L371 |
+| テンプレート | L383 |
+| 関連ドキュメント | L403 |
+| 変更履歴 | L444 |
 
 ### references/architecture-patterns.md
 
@@ -285,8 +285,8 @@ node scripts/list-specs.js --topics
 | 完了タスク | L1519 |
 | SkillEditor UI 型定義（TASK-9A / completed） | L1805 |
 | スキル共有 型定義（TASK-9F） | L1855 |
-| スキルスケジュール 型定義（TASK-9G） | L1921 |
-| 変更履歴 | L1993 |
+| スキルデバッグ 型定義（TASK-9H） | L1921 |
+| 変更履歴 | L1971 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -645,9 +645,9 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L365 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L377 |
 | スキル共有 IPC チャネル（TASK-9F） | L431 |
-| スキルスケジュール IPC チャネル（TASK-9G） | L504 |
-| 完了タスク | L561 |
-| 変更履歴 | L583 |
+| スキルデバッグ IPC チャネル（TASK-9H） | L504 |
+| 完了タスク | L553 |
+| 変更履歴 | L575 |
 
 ### references/api-ipc-auth.md
 
@@ -1031,10 +1031,10 @@ node scripts/list-specs.js --topics
 | 実装例: skillCreatorAPI | L214 |
 | 実装例: skillFileAPI（TASK-9A-B） | L331 |
 | 実装例: skillShareAPI（TASK-9F） | L404 |
-| 実装例: skillScheduleAPI（TASK-9G） | L459 |
-| 自動更新のセキュリティ | L511 |
-| 関連ドキュメント | L522 |
-| 完了タスク | L530 |
+| 実装例: skillDebugAPI（TASK-9H） | L459 |
+| 自動更新のセキュリティ | L514 |
+| 関連ドキュメント | L525 |
+| 完了タスク | L533 |
 
 ### references/security-implementation.md
 
@@ -1335,9 +1335,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L22 |
-| スキル管理サービス | L89 |
-| 関連ドキュメント | L566 |
+| Environment Backend サービス | L21 |
+| スキル管理サービス | L88 |
+| 関連ドキュメント | L523 |
 
 ### references/arch-feature-addition.md
 
@@ -1552,23 +1552,23 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L94 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L136 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L177 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L224 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L278 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L361 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L409 |
-| 目次 | L447 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L638 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L797 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L846 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L895 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1069 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1120 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1190 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1498 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1609 |
-| 関連ドキュメント | L1748 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L136 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L183 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L237 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L320 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L368 |
+| 目次 | L406 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L603 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L762 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L811 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L860 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1034 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1085 |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1155 |
+| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1463 |
+| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1574 |
+| 関連ドキュメント | L1713 |
+| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1723 |
 
 ### references/llm-embedding.md
 
@@ -1910,9 +1910,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1526 |
-| 関連ドキュメント | L1685 |
-| 変更履歴 | L1695 |
+| 残課題（未タスク） | L1489 |
+| 関連ドキュメント | L1642 |
+| 変更履歴 | L1652 |
 
 ### references/testing-accessibility.md
 
