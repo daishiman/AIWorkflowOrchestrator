@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-27T13:55:11.875Z",
+  "generated": "2026-02-27T13:55:52.035Z",
   "totalKeywords": 1339,
   "keywords": {
     "チャット履歴": [
@@ -756,7 +756,7 @@
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
-    "スキルスケジュール": [
+    "スキルデバッグ": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
@@ -3023,12 +3023,6 @@
     "空フィールドガード": [
       "lessons-learned.md"
     ],
-    "schedule": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
-      "lessons-learned.md"
-    ],
     "EXECUTE": [
       "lessons-learned.md"
     ],
@@ -3075,6 +3069,9 @@
       "lessons-learned.md"
     ],
     "editor": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
       "lessons-learned.md"
     ],
     "目次": [
@@ -3468,6 +3465,9 @@
       "lessons-learned.md"
     ],
     "スキル共有・インポート機能": [
+      "lessons-learned.md"
+    ],
+    "スキルデバッグモード実装": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -4068,7 +4068,7 @@
     "skillShareAPI": [
       "security-electron-ipc.md"
     ],
-    "skillScheduleAPI": [
+    "skillDebugAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

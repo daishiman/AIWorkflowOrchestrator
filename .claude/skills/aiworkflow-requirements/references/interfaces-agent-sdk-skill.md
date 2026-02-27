@@ -1918,75 +1918,53 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
-## スキルスケジュール 型定義（TASK-9G）
+## スキルデバッグ 型定義（TASK-9H）
 
-`packages/shared/src/types/skill-schedule.ts` に定義されたスキルスケジュール機能の型。
+`packages/shared/src/types/skill-debug.ts` と `apps/desktop/src/preload/skill-api.ts` に定義されたスキルデバッグ機能の型契約。
 
 ### 型一覧
 
 | 型名 | 定義元 | 用途 |
 | --- | --- | --- |
-| `ScheduledSkill` | `packages/shared/src/types/skill-schedule.ts` | スケジュール本体 |
-| `SkillSchedule` | 同上 | スケジュール設定（cron/interval/once/event） |
-| `NotificationSettings` | 同上 | 通知設定 |
-| `ScheduledRunResult` | 同上 | 実行履歴 |
-
-### ScheduledSkill フィールド詳細
-
-| フィールド | 型 | 必須 | 説明 |
-| --- | --- | --- | --- |
-| `id` | `string` | ✓ | スケジュールID |
-| `skillName` | `string` | ✓ | 実行対象スキル名 |
-| `prompt` | `string` | ✓ | 実行時プロンプト |
-| `schedule` | `SkillSchedule` | ✓ | 実行方式設定 |
-| `enabled` | `boolean` | ✓ | 有効/無効 |
-| `runHistory` | `ScheduledRunResult[]` | ✓ | 実行履歴（最新先頭、最大100件） |
-| `notification` | `NotificationSettings` | ✓ | 通知設定 |
-| `lastRun` | `string \| null \| undefined` | - | 最終実行時刻（ISO 8601） |
-| `nextRun` | `string \| null \| undefined` | - | 次回実行時刻（ISO 8601） |
-| `createdAt` | `string` | ✓ | 作成時刻（ISO 8601） |
-| `updatedAt` | `string` | ✓ | 更新時刻（ISO 8601） |
-
-### SkillSchedule フィールド詳細
-
-| フィールド | 型 | 必須条件 | 説明 |
-| --- | --- | --- | --- |
-| `type` | `"cron" \| "interval" \| "once" \| "event"` | 常に必須 | 実行方式 |
-| `cronExpression` | `string` | `type="cron"` 時に必須 | cron 式 |
-| `interval` | `number` | `type="interval"` 時に必須 | 実行間隔（ms） |
-| `runAt` | `string \| null` | `type="once"` 時に使用 | 単発実行時刻（ISO 8601） |
-| `event` | `"app_start" \| "file_change" \| "git_commit"` | `type="event"` 時に必須 | イベントトリガー |
-| `eventConfig` | `Record<string, unknown>` | `type="event"` 時に任意 | イベント拡張設定 |
+| `DebugSessionStatus` | `packages/shared/src/types/skill-debug.ts` | セッション状態（idle/running/paused/completed/error） |
+| `DebugSessionState` | 同上 | IPC転送用セッション状態 |
+| `Breakpoint` / `BreakpointType` | 同上 | ブレークポイント定義 |
+| `DebugStep` / `DebugStepType` | 同上 | ステップ実行履歴 |
+| `DebugEvent` | 同上 | eventチャネル通知（Discriminated Union） |
+| `DebugCommand` | 同上 | デバッグ操作コマンド |
+| `DebugStartRequest` ほか6種 | 同上 | invokeチャネルのリクエスト/レスポンス型 |
+| `DEBUG_CONSTANTS` | 同上 | セッション/式評価/上限値の定数 |
 
 ### Preload API（`skill-api.ts`）
 
 | メソッド名 | 引数 | 戻り値 | チャネル |
 | --- | --- | --- | --- |
-| `scheduleList` | なし | `Promise<ScheduledSkill[]>` | `skill:schedule:list` |
-| `scheduleAdd` | `input: Omit<ScheduledSkill, "id" \| "runHistory">` | `Promise<ScheduledSkill>` | `skill:schedule:add` |
-| `scheduleUpdate` | `id: string, updates: Partial<ScheduledSkill>` | `Promise<void>` | `skill:schedule:update` |
-| `scheduleDelete` | `id: string` | `Promise<void>` | `skill:schedule:delete` |
-| `scheduleToggle` | `id: string` | `Promise<ScheduledSkill \| undefined>` | `skill:schedule:toggle` |
+| `startSession` | `request: DebugStartRequest` | `Promise<DebugSessionState>` | `skill:debug:start` |
+| `executeCommand` | `request: DebugCommandRequest` | `Promise<void>` | `skill:debug:command` |
+| `addBreakpoint` | `request: DebugBreakpointAddRequest` | `Promise<Breakpoint>` | `skill:debug:breakpoint:add` |
+| `removeBreakpoint` | `request: DebugBreakpointRemoveRequest` | `Promise<void>` | `skill:debug:breakpoint:remove` |
+| `inspectVariable` | `request: DebugInspectRequest` | `Promise<unknown>` | `skill:debug:inspect` |
+| `evaluateExpression` | `request: DebugEvaluateRequest` | `Promise<DebugEvaluateResponse>` | `skill:debug:evaluate` |
+| `onDebugEvent` | `callback: (event: DebugEvent) => void` | `() => void` | `skill:debug:event` |
 
-### 完了タスク
+### 実装上の苦戦箇所（TASK-9H）
 
-| タスクID | 完了日 | ステータス | 概要 |
-| --- | --- | --- | --- |
-| TASK-9G | 2026-02-27 | 完了 | スケジュール型定義4型追加、Preload API 5メソッド追加、IPC 5チャネル連携、テスト163件（desktop 158 + shared 5）PASS |
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| `skillHandlers.ts` 前提のドキュメント残存 | 実実装は `skillDebugHandlers.ts` 分離構成で差分が発生 | ワークフロー仕様・artifacts・テスト参照を `skillDebugHandlers.ts` / `skillDebugHandlers.test.ts` に統一 |
+| IPC配線漏れ | ハンドラ実装済みでも `registerAllIpcHandlers` への登録がないと機能未到達 | `registerSkillDebugHandlers(mainWindow)` をメイン登録フローへ追加 |
+| 状態遷移仕様と実装のズレ | paused -> error 遷移の扱いなどで仕様記述が古い | `VALID_DEBUG_TRANSITIONS` を正本として仕様書へ同期 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 追加型は `shared type` と `preload API` の両方で同時に契約表を更新する。  
+2. event チャネルは invoke 契約表から分離し、購読APIとして記載する。  
+3. 実装ファイル名が分離された場合、workflow/artifacts/tests の参照を一括で更新する。  
+4. `skillDebugHandlers` の登録有無を `registerAllIpcHandlers` で必ず確認する。  
 
 ### 関連ワークフロー
 
-- [TASK-9G ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/)
-
-### 関連未タスク（TASK-9G）
-
-| タスクID | 内容 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-9G-001 | cron 次回実行時刻の精度改善 | 中 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-cron-next-run-accuracy.md` |
-| UT-9G-002 | event スケジュール（file_change / git_commit）実行対応 | 低 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-event-trigger-completion.md` |
-| UT-9G-003 | スケジュール実行通知（sendNotification）実装 | 中 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-notification-dispatch.md` |
-| UT-9G-004 | SkillScheduler graceful shutdown 実装 | 低 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-graceful-shutdown.md` |
-| UT-9G-005 | スケジュール実行結果の Renderer push 通知追加 | 低 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-execution-push-event.md` |
+- [TASK-9H ワークフロー](../../../../docs/30-workflows/TASK-9H-skill-debug/index.md)
 
 ---
 
@@ -1994,8 +1972,7 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-02-27 | 1.41.1     | TASK-9G 未タスク同期: UT-9G-001〜005 を関連未タスクとして登録し、`unassigned-task/` 指示書への正本リンクを追加 |
-| 2026-02-27 | 1.41.0     | TASK-9G完了反映: スキルスケジュール型定義セクション追加（ScheduledSkill/SkillSchedule/NotificationSettings/ScheduledRunResult）、Preload API 5メソッド（scheduleList/add/update/delete/toggle）と完了タスク記録を追記 |
+| 2026-02-27 | 1.41.0     | TASK-9H反映: スキルデバッグ型定義セクション追加（`DebugSessionState` / `DebugEvent` / `DebugCommand` / Preload API 7メソッド、配線漏れ対策を含む） |
 | 2026-02-27 | 1.40.1     | TASK-9F追補: 型仕様の苦戦箇所3件（型パス正本/分岐契約明示/MINOR分離）と同種課題向け4ステップ手順を追加 |
 | 2026-02-27 | 1.40.0     | TASK-9F完了反映: スキル共有型定義セクション追加（ShareTarget/ShareImportResult/ShareExportResult/ShareValidateSourceResult等10型、Preload API 3メソッド、完了タスク記録） |
 | 2026-02-26 | 1.39.0     | TASK-9B 完了移管に同期: 実行ワークフロー参照を `completed-tasks/task-9b-skill-creator/` に統一し、`UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を completed-tasks/unassigned-task 移管済みとして完了化 |
