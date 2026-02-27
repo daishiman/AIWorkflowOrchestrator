@@ -1967,10 +1967,40 @@
 
 ---
 
+## Phase 12再確認パターン（TASK-9G 2026-02-27）
+
+### 検証スクリプト実体探索 → 実行の2段階固定
+
+- **状況**: Phase 12再確認で `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks` を実行する
+- **問題**: スクリプトパスを誤認すると `MODULE_NOT_FOUND` で判定が止まる
+- **パターン**:
+  1. `rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'` で実体パスを解決
+  2. 解決した正本パスで4検証を固定順に実行
+- **結果**: Phase 12再確認を毎回同じ手順で再実行できる
+- **適用条件**: 仕様書再監査、未タスク再監査、ブランチ最終確認
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9G
+
+### `audit-unassigned-tasks` の current/baseline 分離判定
+
+- **状況**: `audit-unassigned-tasks.js --json --diff-from HEAD` で未タスク監査を評価する
+- **問題**: baseline違反が多いリポジトリでは、今回差分の合否が埋もれる
+- **パターン**:
+  1. 合否判定は `currentViolations` のみを正本にする
+  2. `baselineViolations` は既存課題として別トラックで管理する
+  3. `--target-file` は監査対象ディレクトリ配下のみ使い、対象外は `--diff-from HEAD` で評価する
+- **結果**: 今回実施分の完了判定を誤読せずに確定できる
+- **適用条件**: Phase 12 Task 4（未タスク検出）、再確認タスク、監査自動化
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9G
+
+---
+
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-02-27** | **TASK-9G再確認パターン追加**: 検証スクリプト実体探索→実行の2段階固定、および `audit-unassigned-tasks` の `currentViolations` 正本判定 + baseline分離運用を追加 |
 | **2026-02-21** | **worktree運用時のPhase 12先送り誤判断を是正**: 成功パターン「worktree環境でもStep 1-Aを先送りしない」を追加。未実施タスク誤配置検出コマンド（completed配下の未着手/未実施検知）と `verify-unassigned-links.js` 最終検証を標準化 |
 | **2026-02-21** | **IPC不整合姉妹タスク横展開検出パターン追加**: 成功パターン1件（Phase 12未タスク検出時の横展開検証）追加。クイックナビゲーション更新（成功47+件） |
 | **2026-02-21** | **UT-FIX-SKILL-IMPORT-INTERFACE-001知見反映**: 成功パターン2件（P44 IPCインターフェース不整合体系的修正、7並列エージェント仕様書生成）・失敗パターン1件（artifacts.json Phaseステータス更新忘れ）追加。クイックナビゲーション更新（失敗9件・成功46+件） |

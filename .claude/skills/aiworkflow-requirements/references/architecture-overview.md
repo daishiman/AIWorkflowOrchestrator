@@ -209,6 +209,7 @@
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
 | registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 13 (12 invoke + 1 progress) | api-ipc-agent.md |
 | registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
+| registerSkillScheduleHandlers    | Pattern 4: mainWindow + service + store | 5 | api-ipc-agent.md |
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
 
@@ -227,6 +228,16 @@
 - **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:improve`, `skill-creator:fork`, `skill-creator:share`, `skill-creator:schedule`, `skill-creator:debug`, `skill-creator:generate-docs`, `skill-creator:stats`, `skill-creator:progress`
 - **セキュリティ**: 全ハンドラーでSender検証、エラーサニタイズ適用
 - **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+
+**Pattern 4 詳細（registerSkillScheduleHandlers）**:
+
+- **引数**: `mainWindow: BrowserWindow`, `skillScheduler: SkillScheduler`, `scheduleStore: ScheduleStore`
+- **mainWindow用途**: Sender検証（`validateIpcSender`）
+- **skillScheduler用途**: add/update/delete/enable/disable の実行制御
+- **scheduleStore用途**: list/toggle 後の最新状態読み出し
+- **対応チャンネル**: `skill:schedule:list`, `skill:schedule:add`, `skill:schedule:update`, `skill:schedule:delete`, `skill:schedule:toggle`
+- **セキュリティ**: 全ハンドラーで sender 検証 + P42準拠3段バリデーション + 方式別入力検証（cron/interval）
+- **関連タスク**: TASK-9G（2026-02-27完了）
 
 📖 詳細: [architecture-patterns.md](./architecture-patterns.md)
 
@@ -435,6 +446,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8.0 | 2026-02-27 | TASK-9G反映: IPC ハンドラー登録一覧に `registerSkillScheduleHandlers` を追加（Pattern 4: mainWindow + service + store）。5チャネル（skill:schedule:list/add/update/delete/toggle）と DI 構成（SkillScheduler + ScheduleStore）を追記 |
 | 1.7.0 | 2026-02-26 | TASK-9B反映: `registerSkillCreatorHandlers` のチャンネル数を 13（12 invoke + 1 progress）へ更新。Pattern 3 詳細に拡張7チャンネルを追記し、Main Process構造の `services/skill-creator/` 誤記を `services/skill/` に修正 |
 | 1.6.0 | 2026-02-12 | TASK-9B-H: SkillCreatorService追加。IPCハンドラー登録一覧セクション新設、Facadeパターン・ディレクトリ構造にskill-creator追加 |
 | 1.5.0 | 2026-01-26 | 仕様ガイドライン完全準拠: ASCII図（依存方向図、IPC通信図）を表形式に変換 |

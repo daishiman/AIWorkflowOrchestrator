@@ -1,0 +1,387 @@
+{
+  "feature": "task-9g-skill-schedule",
+  "created": "2026-02-27T17:23:16Z",
+  "lastUpdated": "2026-02-27T10:08:16.945Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（機能要件・非機能要件）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/api-specification.md",
+          "description": "IPC API仕様書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillScheduler.test.ts",
+          "description": "SkillSchedulerユニットテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/__tests__/ScheduleStore.test.ts",
+          "description": "ScheduleStoreユニットテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/__tests__/skillScheduleHandlers.test.ts",
+          "description": "スケジュールIPCハンドラーテスト"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/__tests__/skill-schedule.test.ts",
+          "description": "スケジュール型定義テスト"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/skill-schedule.ts",
+          "description": "スケジュール型定義"
+        },
+        {
+          "type": "code",
+          "path": "packages/shared/src/types/index.ts",
+          "description": "型定義re-export更新"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/ScheduleStore.ts",
+          "description": "スケジュール永続化実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/SkillScheduler.ts",
+          "description": "スケジューラサービス実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/skillHandlers.ts",
+          "description": "スケジュールIPCハンドラー追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/channels.ts",
+          "description": "スケジュールチャンネル定数追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/skill-api.ts",
+          "description": "PreloadスケジュールAPI追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/preload/types.ts",
+          "description": "SkillAPI型拡張"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/index.ts",
+          "description": "SkillScheduler初期化統合"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/__tests__/ScheduleStore.test.ts",
+          "description": "ScheduleStore境界値テスト拡充"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillScheduler.test.ts",
+          "description": "SkillScheduler境界値・並行実行テスト拡充"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/__tests__/skillScheduleHandlers.test.ts",
+          "description": "IPC境界値・セキュリティテスト拡充"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "テスト拡充結果サマリー"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ検証結果"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/skillscheduler-refactoring-analysis.md",
+          "description": "SkillSchedulerリファクタ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/schedulestore-validation-extraction.md",
+          "description": "ScheduleStoreバリデーション共通化結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/ipc-schedule-validation-commonization.md",
+          "description": "IPCバリデーション共通化結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/naming-type-unification.md",
+          "description": "命名・型定義統一確認"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/lint-report.md",
+          "description": "Lint検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-report.md",
+          "description": "型チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-report.md",
+          "description": "セキュリティ検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-coverage-report.md",
+          "description": "テスト・カバレッジ結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-result.md",
+          "description": "品質ゲート総合判定"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/security-review.md",
+          "description": "セキュリティレビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/type-ipc-contract-review.md",
+          "description": "型安全性・IPC契約レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/architecture-dependency-review.md",
+          "description": "アーキテクチャ・外部依存レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終判定"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（代替実施記録）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/auto-test-result.md",
+          "description": "自動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/schedule-add-test-result.md",
+          "description": "スケジュール追加テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/schedule-crud-test-result.md",
+          "description": "CRUD操作テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/schedule-toggle-test-result.md",
+          "description": "有効/無効トグルテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/persistence-test-result.md",
+          "description": "永続化・復元テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/validation-test-result.md",
+          "description": "バリデーションテスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/event-notification-test-result.md",
+          "description": "イベント・通知テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1 + Part 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカルチェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-creation-result.md",
+          "description": "PR作成結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/ci-result.md",
+          "description": "CI結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/merge-readiness-report.md",
+          "description": "マージ準備完了報告"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  }
+}

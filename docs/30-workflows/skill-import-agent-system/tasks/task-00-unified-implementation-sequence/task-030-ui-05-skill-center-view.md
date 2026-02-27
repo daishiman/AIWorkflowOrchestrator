@@ -941,7 +941,7 @@ interface ForkFormState {
 
 ### 15B.2 ImportSkillDialog / ExportSkillDialog 拡張（task-9f 移管）
 
-> バックエンド仕様: [task-022-task-9f-skill-share.md](./task-022-task-9f-skill-share.md)
+> バックエンド仕様: [task-022-task-9f-skill-share.md](../completed-task/task-022-task-9f-skill-share.md)
 
 既存の SkillImportSection（セクション 5.1 のコンポーネントツリー参照）を拡張し、複数ソースからのインポートとエクスポート機能を追加する。
 

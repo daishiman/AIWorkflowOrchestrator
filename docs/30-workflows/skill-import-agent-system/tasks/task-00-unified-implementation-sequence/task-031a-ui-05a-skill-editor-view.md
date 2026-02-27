@@ -244,7 +244,7 @@ interface EditorToolBarProps {
 
 ## 8. IPC 連携
 
-> IPC ハンドラーの詳細仕様は [task-020b-task-9a-skill-editor.md](./task-020b-task-9a-skill-editor.md) を参照。
+> IPC ハンドラーの詳細仕様は [task-020b-task-9a-skill-editor.md](../completed-task/task-020b-task-9a-skill-editor.md) を参照。
 
 | 操作             | IPC チャネル          | 引数                                                       |
 | ---------------- | --------------------- | ---------------------------------------------------------- |
@@ -382,14 +382,14 @@ apps/desktop/src/renderer/
 
 ## 14. 参照資料
 
-| 資料                             | パス / タスク ID                                                                 |
-| -------------------------------- | -------------------------------------------------------------------------------- |
-| デザイン基盤                     | TASK-UI-00 `00-ui-design-foundation.md`                                          |
-| UI アーキテクチャ                | TASK-UI-01 `01-store-ipc-architecture.md`                                        |
-| スキルセンター画面               | TASK-UI-05 `05-skill-center-view.md`                                             |
-| バックエンド仕様（IPC/サービス） | TASK-9A [task-020b-task-9a-skill-editor.md](./task-020b-task-9a-skill-editor.md) |
-| P31: Store Hook 無限ループ       | `.claude/rules/06-known-pitfalls.md#P31`                                         |
-| P39: happy-dom userEvent         | `.claude/rules/06-known-pitfalls.md#P39`                                         |
+| 資料                             | パス / タスク ID                                                                                 |
+| -------------------------------- | ------------------------------------------------------------------------------------------------ |
+| デザイン基盤                     | TASK-UI-00 `00-ui-design-foundation.md`                                                          |
+| UI アーキテクチャ                | TASK-UI-01 `01-store-ipc-architecture.md`                                                        |
+| スキルセンター画面               | TASK-UI-05 `05-skill-center-view.md`                                                             |
+| バックエンド仕様（IPC/サービス） | TASK-9A [task-020b-task-9a-skill-editor.md](../completed-task/task-020b-task-9a-skill-editor.md) |
+| P31: Store Hook 無限ループ       | `.claude/rules/06-known-pitfalls.md#P31`                                                         |
+| P39: happy-dom userEvent         | `.claude/rules/06-known-pitfalls.md#P39`                                                         |
 
 ## 15. 次の Phase
 

@@ -33,6 +33,7 @@ import type {
   ShareImportResult,
   ShareExportResult,
   ShareValidateSourceResult,
+  ScheduledSkill,
 } from "@repo/shared";
 import type { BackupInfo } from "./types";
 
@@ -174,6 +175,24 @@ export interface SkillAPI {
   validateSource: (
     source: ShareTarget,
   ) => Promise<ShareResult<ShareValidateSourceResult>>;
+
+  // === Skill Schedule Operations (TASK-9G) ===
+
+  /** スケジュール一覧を取得する */
+  scheduleList: () => Promise<ScheduledSkill[]>;
+  /** スケジュールを追加する */
+  scheduleAdd: (
+    input: Omit<ScheduledSkill, "id" | "runHistory">,
+  ) => Promise<ScheduledSkill>;
+  /** スケジュールを更新する */
+  scheduleUpdate: (
+    id: string,
+    updates: Partial<ScheduledSkill>,
+  ) => Promise<void>;
+  /** スケジュールを削除する */
+  scheduleDelete: (id: string) => Promise<void>;
+  /** スケジュールの有効/無効を切り替える */
+  scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
 }
 
 /**
@@ -367,4 +386,32 @@ export const skillAPI: SkillAPI = {
     source: ShareTarget,
   ): Promise<ShareResult<ShareValidateSourceResult>> =>
     safeInvoke(IPC_CHANNELS.SKILL_VALIDATE_SOURCE, source),
+
+  // === Skill Schedule Operations (TASK-9G) ===
+
+  scheduleList: (): Promise<ScheduledSkill[]> =>
+    safeInvokeUnwrap<ScheduledSkill[]>(IPC_CHANNELS.SKILL_SCHEDULE_LIST),
+
+  scheduleAdd: (
+    input: Omit<ScheduledSkill, "id" | "runHistory">,
+  ): Promise<ScheduledSkill> =>
+    safeInvokeUnwrap<ScheduledSkill>(IPC_CHANNELS.SKILL_SCHEDULE_ADD, input),
+
+  scheduleUpdate: (
+    id: string,
+    updates: Partial<ScheduledSkill>,
+  ): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_UPDATE, {
+      id,
+      updates,
+    }),
+
+  scheduleDelete: (id: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_DELETE, { id }),
+
+  scheduleToggle: (id: string): Promise<ScheduledSkill | undefined> =>
+    safeInvokeUnwrap<ScheduledSkill | undefined>(
+      IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+      { id },
+    ),
 };

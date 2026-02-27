@@ -26,15 +26,15 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 014  ─┘
 ```
 
-### Phase 2: バックエンド基幹（部分並列）
+### Phase 2: バックエンド基幹（部分並列・完了済み）
 
-9. `task-020a-task-9b-skill-creator.md`（並列：020a∥020b）
-10. `task-020b-task-9a-skill-editor.md`（並列：020a∥020b）
-11. `task-022-task-9f-skill-share.md`（020a完了後）
+9. `../completed-task/task-020a-task-9b-skill-creator.md`（完了）
+10. `../completed-task/task-020b-task-9a-skill-editor.md`（完了）
+11. `../completed-task/task-022-task-9f-skill-share.md`（完了）
 
 ```
 020a ─┐
-020b ─┤→ 022
+020b ─┤→ 022（すべて completed-task へ移管済み）
 ```
 
 ### Phase 3: バックエンド拡張（並列）
@@ -113,7 +113,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 ### Phase内の並列化
 
 - `task-010a` と `task-011` と `task-014` は同時実行可能（相互依存なし）。`task-012` は `task-010a/011` 完了後。
-- `task-020a` と `task-020b` は同時実行可能（同一依存元、parallel_with 相互記載）。`task-022` は `task-020a` 完了後。
+- `task-020a` と `task-020b` は同時実行可能（同一依存元、parallel_with 相互記載）。`task-022` は `task-020a` 完了後。3タスクとも完了済みのため、参照先は `completed-task` 側を正本とする。
 - `task-023a`〜`task-023f` は同時実行可能。
 - `task-031a` と `task-031b` は同時実行可能（`task-030` 完了後）。
 - `task-041a`〜`task-041c` は同時実行可能。`task-042` は `task-041a/b/c` 完了後。
@@ -147,4 +147,5 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ## 更新履歴
 
+- 2026-02-27: Phase 2 の正本参照を `completed-task` へ統一（`task-020a` / `task-020b` / `task-022`）。
 - 2026-02-25: 実行ステータス再同期。`task-014` を完了タスクへ確定し、参照先を `../completed-task/task-014-ut-fix-skill-execute-interface-001.md` に更新。`task-013e-phase12-action-bridge.md` も完了扱いに同期。

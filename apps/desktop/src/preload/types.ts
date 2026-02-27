@@ -1241,6 +1241,9 @@ import type {
   PermissionResponse as AgentPermissionResponse,
 } from "@repo/shared/types/agent";
 
+// Skill schedule types (TASK-9G) - P23対策: @repo/shared から型を参照
+import type { ScheduledSkill } from "@repo/shared";
+
 export type {
   AgentStartRequest,
   AgentStreamPayload,
@@ -1627,6 +1630,10 @@ export interface PermissionAPI {
     clearedCount: number;
   }>;
 }
+
+// ===== Skill Schedule types (TASK-9G) =====
+
+export type { ScheduledSkill };
 
 // Global type declaration
 declare global {

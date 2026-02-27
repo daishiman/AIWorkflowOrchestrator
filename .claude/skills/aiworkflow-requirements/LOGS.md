@@ -5,98 +5,132 @@
 
 ---
 
-## 2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査由来未タスク登録
+## 2026-02-27 - TASK-9G 未タスク登録同期追補（Step 1-E 完了化）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001` の再監査で判明した再発リスク
-- 目的: IPC契約ドキュメント同期・Phase 12台帳同期・監査判定軸を未タスクとして固定し、同種課題の再発を抑止する
-
-### SubAgent分担
-- SubAgent-A: 未タスク指示書作成（`docs/30-workflows/unassigned-task/`）
-- SubAgent-B: `task-workflow.md` 残課題テーブル同期
-- SubAgent-C: `interfaces-agent-sdk-skill.md` 関連未タスク同期
-- SubAgent-D: フォーマット/リンク検証（audit + verify）
+- 対象: TASK-9G スキルスケジュール実行機能
+- 目的: Phase 12 未タスク管理 3ステップの未完了項目を解消し、台帳・関連仕様書の参照整合を回復
 
 ### 実施内容
-- `task-imp-skill-ipc-documentation-contract-sync-guard-001.md` を新規作成（Why/What/How + Section 3.5で苦戦箇所を明記）
-- `task-workflow.md` 残課題テーブルに `UT-IMP-SKILL-IPC-DOCUMENTATION-CONTRACT-SYNC-GUARD-001` を追加
-- `interfaces-agent-sdk-skill.md` の skillHandlers 関連未タスクテーブルへ同タスクを追加
+- `docs/30-workflows/unassigned-task/` に UT-9G-001〜005 の未タスク指示書を新規作成
+- `references/task-workflow.md` 残課題（未タスク）テーブルへ 5 件を登録
+- `references/interfaces-agent-sdk-skill.md` に TASK-9G 関連未タスクテーブルを追加
+- `outputs/phase-12/unassigned-task-detection.md` の 3ステップを完了状態へ更新
+- `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` へ Step 1-E 実施結果を追記
 
 ### 結果
 - ステータス: success
-- 補足: 親タスクの苦戦箇所（IPCドキュメント契約ドリフト / 二重台帳同期 / current-baseline混同）を未タスク指示書に移植し、再利用可能な実行手順として固定化
+- 補足: Phase 12 Task 4 の「指示書作成 + 残課題登録 + 関連仕様書リンク」の3ステップを完了
 
 ---
 
-## 2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再利用教訓の体系化
+## 2026-02-27 - TASK-9G Phase 12再監査（スキルスケジュール仕様同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/skill-ipc-response-consistency/` の再監査追補
-- 目的: 実装内容と苦戦箇所を同種課題へ再利用できる形式で `lessons-learned.md` に固定
-
-### SubAgent分担
-- SubAgent-A: `references/interfaces-agent-sdk-skill.md`（実装契約の一次情報確認）
-- SubAgent-B: `references/task-workflow.md`（完了台帳と再監査証跡確認）
-- SubAgent-C: `references/lessons-learned.md`（苦戦箇所の一般化と4ステップ化）
+- 対象: TASK-9G スキルスケジュール実行機能
+- 目的: Phase 12 の仕様同期漏れ（必須6仕様書 + 成果物 + スキル運用ファイル）を解消し、実装実体と台帳の整合を回復
 
 ### 実施内容
-- `lessons-learned.md` に `UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査（2026-02-27）` セクションを追加
-- 実装内容3点（optimize群P42 throw統一、IPC契約再同期、Phase 12台帳同期）を整理
-- 苦戦箇所3件（台帳二重管理、契約記述ドリフト、current/baseline混同）を原因・解決策・教訓で記録
+- `api-ipc-agent.md` に `skill:schedule:*` 5チャネル仕様、型定義、実装状況、完了タスクを追記
+- `arch-electron-services.md` に `ScheduleStore` / `SkillScheduler` の責務分離、初期化配線、DI構成を追記
+- `security-electron-ipc.md` に skillScheduleAPI の4層セキュリティ検証（sender/P42/方式別必須/エラー境界）を追加
+- `architecture-overview.md` に `registerSkillScheduleHandlers`（Pattern 4）を追加
+- `interfaces-agent-sdk-skill.md` に ScheduledSkill 系型定義と preload 5メソッド契約を追加
+- `task-workflow.md` に TASK-9G 完了台帳・苦戦箇所・再利用手順を追加
+- `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-7〜13` の不足成果物を補完
+- `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/artifacts.json` の実装パス誤記を是正（`main/index.ts` → `main/ipc/index.ts`）
+- `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/{outputs` ゴーストディレクトリを削除
 
 ### 結果
 - ステータス: success
-- 補足: `task-workflow.md`/`interfaces-agent-sdk-skill.md` に記録済みだった内容を教訓テンプレートへ統合し、再利用導線を明確化
+- 補足: 必須6仕様書・Phase 12 成果物・LOGS/SKILL 更新の同期完了。Phase 13 はユーザー指示により未実施（PR未作成）。
 
 ---
 
-## 2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12準拠再確認（苦戦箇所追補）
+## 2026-02-27 - UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 未タスク登録
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/skill-ipc-response-consistency/` の Phase 12 再確認
-- 目的: 実装内容に加えて「再監査時の苦戦箇所」を仕様正本に固定し、同種課題の解決速度を上げる
-
-### SubAgent分担
-- SubAgent-A: `references/interfaces-agent-sdk-skill.md`（契約観点 + 苦戦箇所）
-- SubAgent-B: `references/task-workflow.md`（完了台帳 + 再監査課題/解決策）
-- SubAgent-C: 検証チェーン（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+- 対象: Phase 12 仕様更新の版数・手順整合ドリフト
+- 目的: 同種課題で再発した `spec-update-summary`/正本仕様の不一致を未タスクとして固定し、再利用可能な是正手順を明文化
 
 ### 実施内容
-- `interfaces-agent-sdk-skill.md` に再監査時の苦戦箇所テーブルを追加（IPCドキュメント契約ドリフト、artifacts同期不整合、current/baseline混同）
-- `task-workflow.md` に再監査時の苦戦箇所と解決策を追加し、完了記録を追補
-- Phase 12 準拠検証を再実行し、13/13 PASS・28項目 PASS・89/89 PASS・current=0 を再確認
+- `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
+- 親タスクの苦戦箇所（版数ドリフト、手順数ドリフト、並列更新時の転記漏れ）を未タスク仕様書へ転記
+- `task-workflow.md` 残課題テーブルへ同タスクを登録
+- `task-workflow.md` の `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 参照先を `unassigned-task/` 正本へ補正
 
 ### 結果
 - ステータス: success
-- 補足: 実装内容だけでなく「苦戦条件→解決手順」まで仕様化し、再監査の再利用性を改善
+- 補足: Phase 12 の「実装内容・教訓・台帳」の版数/手順整合を次回から機械検証前提で運用できる状態へ更新
 
 ---
 
-## 2026-02-27 - UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 再監査（仕様・成果物再整合）
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/skill-ipc-response-consistency/`
-- 目的: Phase 12 成果物漏れ・契約ドリフト・台帳不整合を再監査し、仕様正本へ確定反映する
-
-### SubAgent分担
-- SubAgent-A: `references/interfaces-agent-sdk-skill.md`（IPC契約再監査記録 + テスト証跡）
-- SubAgent-B: `references/security-skill-ipc.md`（P42 throw要件 + sanitize適用範囲）
-- SubAgent-C: `references/task-workflow.md`（完了台帳の再監査セクション + 変更履歴）
-- SubAgent-D: 検証チェーン（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+- 対象: Phase 12 準拠確認（実装内容 + 苦戦箇所の再利用化）
+- 目的: 同種課題を短手順で再現可能にするため、task-workflow / lessons-learned へ苦戦情報を固定
 
 ### 実施内容
-- `security-skill-ipc.md` に `skill:optimize*` 3チャネルの P42要件（throw統一）と `sanitizeErrorMessage()` 適用範囲/デフォルト文言を追記
-- `interfaces-agent-sdk-skill.md` に 2026-02-27 再監査節を追加し、契約テスト 175件 PASS を記録
-- `task-workflow.md` に再監査結果（artifacts同期、`spec-update-summary.md` 追補、current=0/baseline=71）を追記
-- 検証を再実行して 13/13 PASS・28項目 PASS・89/89 PASS・current violations 0 を確認
+- `task-workflow.md` に同タスクの「苦戦箇所と解決策」「同種課題の簡潔解決手順（5ステップ）」を追加し、再発条件付き形式へ最適化（v1.61.6）
+- `lessons-learned.md` に再監査教訓を追加し、テンプレート準拠へ整形（v1.26.3）
+- `phase-12-documentation.md` の完了条件チェックと Task 100% 実行確認を実体に合わせて同期
+- 完了移管後に残っていた親タスク側の旧 `unassigned-task` 参照を更新（artifacts/minor-issues/unassigned-task-detection）
+- `outputs/phase-12/spec-update-summary.md` をテンプレート準拠で新規作成し、SubAgent分担・苦戦箇所・再利用手順を統合
+- `task-workflow.md` の同タスクへ仕様書別SubAgent分担テーブルを追加
+- `lessons-learned.md` の同タスク教訓を再発条件カラム付き形式に最適化
+- `skill-creator/references/patterns.md` のクイックナビ重複を整理し、`SKILL.md` を v10.26.0 へ更新
 
 ### 結果
 - ステータス: success
-- 補足: 仕様正本と当ブランチ成果物の差分を解消し、Phase 12 再監査ルールを task-specification-creator 側にも横展開
+- 補足: Phase 12 の実行証跡（成果物実体 + 手順書完了記録 + 親子参照整合）を一体で再現できる状態に更新
+
+---
+
+## 2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
+
+### コンテキスト
+- スキル: skill-creator
+- 対象: `quick_validate.js` name/description 空フィールドガード
+- 目的: P42準拠3段バリデーション（typeof → 空文字列 → trim()）を適用し、非文字列型（配列・数値・boolean）入力によるTypeErrorクラッシュを防止
+
+### 実施内容
+- `quick_validate.js` L139-158（name検証）、L160-198（description検証）の falsy チェックを typeof + trim() 3段バリデーションに変更
+- エラーメッセージを「存在しません」→「存在しないか無効です」に更新
+- テストケース21件追加（TC-GUARD-001〜008, BV-001〜003, COMBO-001〜003, MSG-001〜003, RG-001〜004）
+- フィクスチャ4件追加（name-whitespace-only, desc-whitespace-only, name-valid-desc-empty, name-empty-desc-valid）
+- `task-workflow.md` に完了記録（v1.61.4）を追加し、`claude-code-skills-process.md` / `spec-update-workflow.md` の関連仕様を同期更新
+
+### 結果
+- ステータス: success
+- テスト: 85 passed, 2 skipped
+- Phase 10 ゲート: PASS
+- Issue: #913
+
+---
+
+## 2026-02-27 - TASK-9F完了反映（スキル共有・インポート機能）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9F スキル共有・インポート機能の仕様書同期
+- 目的: Phase 12 システム仕様書更新（4仕様書の同時同期）
+
+### 実施内容
+- `api-ipc-agent.md` にスキル共有IPCチャネルセクション追加（3チャンネル: skill:importFromSource, skill:export, skill:validateSource、型定義10型、バリデーションルール）
+- `security-electron-ipc.md` にskillShareAPIセキュリティパターン追加（P42準拠3段バリデーション、パストラバーサル検出、validateIpcSender）
+- `interfaces-agent-sdk-skill.md` にスキル共有型定義セクション追加（ShareTarget, ShareDestination, ShareImportResult等10型）
+- `task-workflow.md` に完了タスク記録追加（TASK-9F + 未タスク6件: UT-9F-SETTER-INJECTION-001〜UT-9F-DISCRIMINATED-UNION-001）
+
+### 結果
+- ステータス: success
+- 仕様書更新: 4ファイル（184行追加）
+- テスト: 92件全PASS
+- 未タスク: 6件検出・登録済み
 
 ---
 
@@ -143,6 +177,104 @@
 ### 結果
 - ステータス: success
 - 補足: SkillCreator IPC契約ドリフト（6->13、進捗型不一致）を解消し、Phase 12台帳と仕様正本を同期
+
+---
+
+## 2026-02-26 - TASK-9A Phase 12完了移管（workflow + 未タスク）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: TASK-9A / TASK-9A-C-004
+- 目的: Phase 12完了済み成果物を `completed-tasks/` へ移管し、台帳参照を同期
+
+### 実施内容
+- `docs/30-workflows/TASK-9A-skill-editor/` を `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` へ移動
+- `task-9a-c-phase12-spec-sync-guard.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` で `TASK-9A-C-004` を完了化し、参照先を completed 側へ更新
+- `ui-ux-feature-components.md` / `interfaces-agent-sdk-skill.md` / `ui-ux-components.md` の参照パスを同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: 移管後の未タスクリンク検証で missing 0 を確認
+
+---
+
+## 2026-02-26 - TASK-9A-C-004 未タスク登録（Phase 12仕様同期ガード）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: TASK-9A-C-004
+- 目的: TASK-9A の Phase 12再確認で顕在化した運用課題を再発防止タスクとして未タスク化し、仕様正本へ同期
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` を新規作成（9セクション + 3.5苦戦箇所）
+- `references/task-workflow.md` 残課題テーブルへ `TASK-9A-C-004` を追加
+- `references/ui-ux-feature-components.md` / `references/interfaces-agent-sdk-skill.md` の関連未タスクテーブルへ同IDを追加
+- 各仕様書の変更履歴へ反映行を追加
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: 再発防止対象は Part 1/Part 2要件漏れ、`current/baseline` 誤読、`## メタ情報` 重複、3仕様書同期漏れ
+
+---
+
+## 2026-02-26 - TASK-9A Phase 12再確認（苦戦箇所反映）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: TASK-9A
+- 目的: Phase 12成果物の要件不足と未タスク指示書フォーマット不整合を再確認し、システム仕様へ苦戦箇所を反映
+
+### 実施内容
+- `references/task-workflow.md` の TASK-9A 完了セクションへ苦戦箇所3件と4ステップ再利用手順を追記
+- `references/lessons-learned.md` に `TASK-9A-skill-editor: Phase 12再確認（2026-02-26）` セクションを追加
+- `outputs/phase-12/spec-update-summary.md` / `implementation-guide.md` と仕様記載内容を同期
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: Part 1/Part 2 要件、current/baseline 判定、未タスクメタ情報重複の再発防止を明文化
+
+---
+
+## 2026-02-26 - TASK-9A スキルエディター完了同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: TASK-9A
+- 目的: `TASK-9A-skill-editor` 実装完了状態を仕様正本へ反映し、未タスク台帳との不整合を解消
+
+### 実施内容
+- `references/ui-ux-feature-components.md` / `ui-ux-components.md` / `interfaces-agent-sdk-skill.md` / `architecture-implementation-patterns.md` / `testing-component-patterns.md` を `completed` 状態へ更新
+- `references/task-workflow.md` に TASK-9A 完了セクションを追加し、`TASK-9A-C` と `TASK-9A-C-002` を完了化
+- `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` を `completed-tasks/unassigned-task/` へ移管
+- `scripts/generate-index.js` を実行し topic-map / keywords を再生成
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: `verify-unassigned-links.js` 88/88、`verify-all-specs` 13/13、`quick_validate.js` 3スキル Error 0件
+
+---
+
+## 2026-02-26 - UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- タスクID: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001
+- 目的: `quick_validate.js` 検証ゲート統一タスクの Phase 12 証跡をシステム仕様へ同期
+
+### 実施内容
+- `references/task-workflow.md` の未実在リンク2件を `completed-tasks` 正本パスへ修正
+- `references/lessons-learned.md` に本タスクの苦戦箇所（検証経路分岐、Warningノイズ判定）を追記
+- `scripts/generate-index.js` を実行し topic-map を再生成
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-02-26
+- 補足: `verify-unassigned-links.js` で `ALL_LINKS_EXIST` を確認（89/89）
 
 ---
 
