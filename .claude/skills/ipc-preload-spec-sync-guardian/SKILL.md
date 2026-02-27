@@ -2,7 +2,7 @@
 name: ipc-preload-spec-sync-guardian
 description: |
   task-9D〜9J の IPC/Preload 仕様差分を短時間で検出し、仕様書を現行実体へ同期するスキル。
-  `preload/channels.ts` / `preload/skill-api.ts` / `preload/types.ts` と `packages/shared/src/types/skill/*` の整合を優先する。
+  `preload/channels.ts` / `preload/skill-api.ts` / `preload/types.ts` と `packages/shared/src/types/skill-*.ts` の整合を優先する。
 
   Anchors:
   • Lean Software Development / 適用: 小さな差分の継続是正 / 目的: 手戻り最小化
@@ -54,7 +54,7 @@ task-9D〜9J 仕様書の「旧参照パス」「artifacts不整合」「型配�
 **アクション**:
 1. `preload/skillAPI.ts` を `preload/skill-api.ts` に統一する。
 2. `main/ipc/channels.ts` を `preload/channels.ts` に統一する。
-3. `packages/shared/src/types/skill/*.ts` と `packages/shared/src/types/skill/index.ts` を artifacts に反映する。
+3. `packages/shared/src/types/skill-*.ts` と `packages/shared/src/types/index.ts` を artifacts に反映する。
 
 ### Phase 4: システム仕様同期
 

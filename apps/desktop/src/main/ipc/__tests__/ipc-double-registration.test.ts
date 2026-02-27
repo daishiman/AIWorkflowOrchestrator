@@ -174,6 +174,9 @@ vi.mock("../communityHandlers", () => ({
 vi.mock("../skillHandlers", () => ({
   registerSkillHandlers: vi.fn(),
 }));
+vi.mock("../skillHandlers.share", () => ({
+  registerSkillShareHandlers: vi.fn(),
+}));
 vi.mock("../../claude-cli", () => ({
   registerClaudeCliHandlers: vi.fn(),
 }));
@@ -188,6 +191,11 @@ vi.mock("../../services/skill", () => ({
   SkillParser: vi.fn().mockImplementation(() => ({})),
   SkillImportManager: vi.fn().mockImplementation(() => ({})),
   SkillService: vi.fn().mockImplementation(() => ({})),
+  SkillValidator: vi.fn().mockImplementation(() => ({
+    validateStructure: vi.fn().mockResolvedValue(true),
+    validateSkillMd: vi.fn().mockReturnValue({ isValid: true, errors: [] }),
+  })),
+  SkillShareManager: vi.fn().mockImplementation(() => ({})),
   PermissionStore: vi.fn().mockImplementation(() => ({})),
 }));
 vi.mock("../permission-store-handlers", () => ({

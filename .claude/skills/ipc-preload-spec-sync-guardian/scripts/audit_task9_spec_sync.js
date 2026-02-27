@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 const TARGETS = [
   { id: "9D", domain: "chain", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023e-task-9d-skill-chain.md" },
   { id: "9E", domain: "fork", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023f-task-9e-skill-fork.md" },
-  { id: "9F", domain: "share", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-022-task-9f-skill-share.md" },
+  { id: "9F", domain: "share", file: "docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-022-task-9f-skill-share.md" },
   { id: "9G", domain: "schedule", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023a-task-9g-skill-schedule.md" },
   { id: "9H", domain: "debug", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023b-task-9h-skill-debug.md" },
   { id: "9I", domain: "docs", file: "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-023c-task-9i-skill-docs.md" },
@@ -16,7 +16,7 @@ const REQUIRED_MODIFIES = [
   "apps/desktop/src/preload/channels.ts",
   "apps/desktop/src/preload/skill-api.ts",
   "apps/desktop/src/preload/types.ts",
-  "packages/shared/src/types/skill/index.ts",
+  "packages/shared/src/types/index.ts",
 ];
 
 const LEGACY_PATTERNS = [
@@ -58,7 +58,10 @@ function auditFile(target) {
     }
   }
 
-  const requiredDomainType = `packages/shared/src/types/skill/${target.domain}.ts`;
+  const requiredDomainType =
+    target.domain === "share"
+      ? "packages/shared/src/types/skill-share.ts"
+      : `packages/shared/src/types/skill-${target.domain}.ts`;
   if (!text.includes(requiredDomainType)) {
     missingArtifacts.push(requiredDomainType);
   }

@@ -1,4 +1,5 @@
 import { BrowserWindow, nativeTheme, ipcMain, net } from "electron";
+import fs from "fs/promises";
 import path from "path";
 import Store from "electron-store";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -23,6 +24,7 @@ import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
 import { registerSkillHandlers } from "./skillHandlers";
+import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
@@ -32,6 +34,8 @@ import {
   SkillParser,
   SkillImportManager,
   SkillService,
+  SkillValidator,
+  SkillShareManager,
   PermissionStore,
 } from "../services/skill";
 import { SkillFileManager } from "../services/skill/SkillFileManager";
@@ -57,9 +61,316 @@ import {
   FileService,
   ContextBuilder,
 } from "../services/chat-edit";
+import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
+
+type ShareCategory = ShareError["category"];
+type GitHubClientAdapter = ConstructorParameters<typeof SkillShareManager>[0];
+
+interface RepoContentEntry {
+  type?: string;
+  name?: string;
+  path?: string;
+  content?: string;
+  encoding?: string;
+  download_url?: string | null;
+}
+
+function createShareError(
+  code: number,
+  message: string,
+  category: ShareCategory,
+  isRetryable: boolean,
+): ShareError {
+  return { code, message, category, isRetryable };
+}
+
+function shareSuccess<T>(data: T): ShareResult<T> {
+  return { success: true, data };
+}
+
+function shareFailure<T>(error: ShareError): ShareResult<T> {
+  return { success: false, error };
+}
+
+function buildGitHubHeaders(includeAuth: boolean): HeadersInit {
+  const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+  const headers: Record<string, string> = {
+    Accept: "application/vnd.github+json",
+    "User-Agent": "AIWorkflowOrchestrator",
+  };
+  if (includeAuth && token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+function normalizeRepoPath(repoPath: string): string {
+  if (repoPath === "/" || repoPath === "") {
+    return "";
+  }
+  return repoPath.replace(/^\/+/, "").replace(/\/+$/, "");
+}
+
+function toRelativeRepoPath(entryPath: string, basePath: string): string {
+  const normalizedEntry = entryPath.replace(/^\/+/, "");
+  const normalizedBase = normalizeRepoPath(basePath);
+  if (normalizedBase && normalizedEntry.startsWith(`${normalizedBase}/`)) {
+    return normalizedEntry.slice(normalizedBase.length + 1);
+  }
+  return normalizedEntry;
+}
+
+async function readRepoFileContent(
+  entry: RepoContentEntry,
+): Promise<ShareResult<string>> {
+  if (typeof entry.content === "string") {
+    if (entry.encoding === "base64") {
+      try {
+        return shareSuccess(
+          Buffer.from(entry.content.replace(/\n/g, ""), "base64").toString(
+            "utf-8",
+          ),
+        );
+      } catch {
+        return shareFailure(
+          createShareError(
+            3001,
+            "Failed to decode repository content",
+            "external",
+            false,
+          ),
+        );
+      }
+    }
+    return shareSuccess(entry.content);
+  }
+
+  if (typeof entry.download_url === "string" && entry.download_url !== "") {
+    try {
+      const response = await fetch(entry.download_url, {
+        headers: buildGitHubHeaders(false),
+      });
+      if (!response.ok) {
+        return shareFailure(
+          createShareError(
+            3001,
+            `Failed to download file: HTTP ${response.status}`,
+            "external",
+            false,
+          ),
+        );
+      }
+      return shareSuccess(await response.text());
+    } catch (error) {
+      return shareFailure(
+        createShareError(
+          3002,
+          error instanceof Error ? error.message : "Network error",
+          "external",
+          true,
+        ),
+      );
+    }
+  }
+
+  return shareFailure(
+    createShareError(3001, "File content is not available", "external", false),
+  );
+}
+
+function createGitHubClient(): GitHubClientAdapter {
+  const fetchRepoContents = async (
+    repo: string,
+    repoPath: string,
+    branch: string,
+    basePath: string,
+  ): Promise<ShareResult<{ name: string; content: string }[]>> => {
+    const normalizedPath = normalizeRepoPath(repoPath);
+    const endpointPath =
+      normalizedPath === "" ? "contents" : `contents/${normalizedPath}`;
+    const url = `https://api.github.com/repos/${repo}/${endpointPath}?ref=${encodeURIComponent(branch)}`;
+
+    let payload: unknown;
+    try {
+      const response = await fetch(url, {
+        headers: buildGitHubHeaders(true),
+      });
+      if (!response.ok) {
+        return shareFailure(
+          createShareError(
+            3001,
+            `GitHub API error: HTTP ${response.status}`,
+            "external",
+            false,
+          ),
+        );
+      }
+      payload = await response.json();
+    } catch (error) {
+      return shareFailure(
+        createShareError(
+          3002,
+          error instanceof Error ? error.message : "Network error",
+          "external",
+          true,
+        ),
+      );
+    }
+
+    const entries: RepoContentEntry[] = Array.isArray(payload)
+      ? (payload as RepoContentEntry[])
+      : [payload as RepoContentEntry];
+
+    const files: { name: string; content: string }[] = [];
+
+    for (const entry of entries) {
+      if (!entry || typeof entry !== "object") {
+        continue;
+      }
+
+      if (entry.type === "dir" && typeof entry.path === "string") {
+        const nested = await fetchRepoContents(
+          repo,
+          entry.path,
+          branch,
+          basePath,
+        );
+        if (!nested.success) {
+          return nested;
+        }
+        files.push(...(nested.data ?? []));
+        continue;
+      }
+
+      if (entry.type !== "file") {
+        continue;
+      }
+
+      const contentResult = await readRepoFileContent(entry);
+      if (!contentResult.success) {
+        return shareFailure(contentResult.error!);
+      }
+
+      const fullPath =
+        typeof entry.path === "string" ? entry.path : (entry.name ?? "unknown");
+      files.push({
+        name: toRelativeRepoPath(fullPath, basePath),
+        content: contentResult.data!,
+      });
+    }
+
+    return shareSuccess(files);
+  };
+
+  return {
+    async getRepoContents(
+      repo: string,
+      repoPath: string,
+      branch: string,
+    ): Promise<ShareResult<{ name: string; content: string }[]>> {
+      return fetchRepoContents(repo, repoPath, branch, repoPath);
+    },
+
+    async getGist(
+      gistId: string,
+    ): Promise<ShareResult<{ files: Record<string, { content: string }> }>> {
+      try {
+        const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: buildGitHubHeaders(true),
+        });
+        if (!response.ok) {
+          return shareFailure(
+            createShareError(
+              3001,
+              `Gist API error: HTTP ${response.status}`,
+              "external",
+              false,
+            ),
+          );
+        }
+        const payload = (await response.json()) as {
+          files?: Record<string, { content?: string }>;
+        };
+
+        const files: Record<string, { content: string }> = {};
+        for (const [fileName, fileData] of Object.entries(
+          payload.files ?? {},
+        )) {
+          files[fileName] = { content: fileData.content ?? "" };
+        }
+
+        return shareSuccess({ files });
+      } catch (error) {
+        return shareFailure(
+          createShareError(
+            3002,
+            error instanceof Error ? error.message : "Network error",
+            "external",
+            true,
+          ),
+        );
+      }
+    },
+
+    async createGist(
+      files: Record<string, { content: string }>,
+      description: string,
+    ): Promise<ShareResult<{ url: string }>> {
+      const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+      if (!token) {
+        return shareFailure(
+          createShareError(
+            2005,
+            "GITHUB_TOKEN is required for gist export",
+            "business",
+            false,
+          ),
+        );
+      }
+
+      try {
+        const response = await fetch("https://api.github.com/gists", {
+          method: "POST",
+          headers: {
+            ...buildGitHubHeaders(true),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            description,
+            public: false,
+            files,
+          }),
+        });
+
+        if (!response.ok) {
+          return shareFailure(
+            createShareError(
+              3001,
+              `Gist create failed: HTTP ${response.status}`,
+              "external",
+              false,
+            ),
+          );
+        }
+
+        const payload = (await response.json()) as { html_url?: string };
+        return shareSuccess({ url: payload.html_url ?? "" });
+      } catch (error) {
+        return shareFailure(
+          createShareError(
+            3002,
+            error instanceof Error ? error.message : "Network error",
+            "external",
+            true,
+          ),
+        );
+      }
+    },
+  };
+}
 
 /**
  * 全 IPC ハンドラを解除する
@@ -172,6 +483,70 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register Skill File handlers (TASK-9A-B)
   const skillFileManager = new SkillFileManager();
   registerSkillFileHandlers(mainWindow, skillFileManager, skillService);
+
+  // Register Skill Share handlers (TASK-9F)
+  const skillValidator = new SkillValidator();
+  const skillShareManager = new SkillShareManager(
+    createGitHubClient(),
+    {
+      readFile: (targetPath: string) => fs.readFile(targetPath, "utf-8"),
+      writeFile: async (targetPath: string, content: string) => {
+        await fs.mkdir(path.dirname(targetPath), { recursive: true });
+        await fs.writeFile(targetPath, content, "utf-8");
+      },
+      readdir: (targetPath: string) => fs.readdir(targetPath),
+      stat: (targetPath: string) => fs.stat(targetPath),
+      mkdir: async (targetPath: string) => {
+        await fs.mkdir(targetPath, { recursive: true });
+      },
+      cp: (src: string, dest: string) => fs.cp(src, dest, { recursive: true }),
+      exists: async (targetPath: string) => {
+        try {
+          await fs.access(targetPath);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      resolveRealPath: (targetPath: string) => fs.realpath(targetPath),
+    },
+    {
+      validateStructure: async (targetPath: string) => {
+        const isValid = await skillValidator.validateStructure(targetPath);
+        return {
+          isValid,
+          errors: isValid ? [] : ["SKILL.md not found"],
+        };
+      },
+      validateSkillMd: (content: string) =>
+        skillValidator.validateSkillMd(content),
+    },
+    {
+      scanAvailableSkills: () => skillService.scanAvailableSkills(),
+      getSkillByName: async (name: string) => {
+        const skill = await skillService.getSkillByName(name as never);
+        if (!skill) {
+          return shareFailure(
+            createShareError(
+              2003,
+              `Skill not found: ${name}`,
+              "business",
+              false,
+            ),
+          );
+        }
+        return shareSuccess({
+          name: skill.name,
+          path: path.dirname(skill.path),
+        });
+      },
+      importManager: {
+        importSkills: (names: string[]) =>
+          skillService.importManager.importSkills(names as never),
+      },
+    },
+  );
+  registerSkillShareHandlers(mainWindow, skillShareManager);
 
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();

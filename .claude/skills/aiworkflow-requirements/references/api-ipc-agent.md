@@ -428,12 +428,84 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
 | エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
 
+## スキル共有 IPC チャネル（TASK-9F）
+
+スキル共有（インポート／エクスポート／ソース検証）の IPC チャネル。3チャネルすべて invoke（Renderer → Main）方向。
+
+### チャネル一覧
+
+| チャネル名              | 方向            | 概要                                     | リクエスト型                                           | レスポンス型                              |
+| ----------------------- | --------------- | ---------------------------------------- | ------------------------------------------------------ | ----------------------------------------- |
+| `skill:importFromSource` | Renderer → Main | 外部ソースからスキルをインポート         | `ShareTarget`（`{ type, repo?, branch?, gistId?, localPath?, url? }`） | `ShareResult<ShareImportResult>` |
+| `skill:export`          | Renderer → Main | スキルをエクスポート（Gist/ローカル）    | `{ skillName: string, destination: ShareDestination }` | `ShareResult<ShareExportResult>` |
+| `skill:validateSource`  | Renderer → Main | ソースの到達可能性と SKILL.md 構造を検証 | `ShareTarget`                                          | `ShareResult<ShareValidateSourceResult>` |
+
+### 型定義（`packages/shared/src/types/skill-share.ts`）
+
+| 型名                        | フィールド                                                   | 説明                 |
+| --------------------------- | ------------------------------------------------------------ | -------------------- |
+| `ShareSourceType`           | `"github" \| "gist" \| "url" \| "local"`                   | ソース種別           |
+| `ShareDestinationType`      | `"gist" \| "local"`                                        | エクスポート先種別   |
+| `ShareTarget`               | `{ type, repo?, branch?, path?, gistId?, localPath?, url? }` | インポートソース定義 |
+| `ShareDestination`          | `{ type, gistId?, localPath? }`                             | エクスポート先定義   |
+| `ShareImportResult`         | `{ success, skillName, skillPath, source, importedAt }`     | インポート結果       |
+| `ShareExportResult`         | `{ success, destination, exportedFiles, shareUrl? }`        | エクスポート結果     |
+| `ShareValidateSourceResult` | `{ isReachable, hasSkillMd, skillName?, errors }`           | ソース検証結果       |
+| `ShareResult<T>`            | `{ success, data?, error? }`                                | Result パターン      |
+| `ShareError`                | `{ code, message, category, isRetryable }`                  | エラー情報           |
+
+### バリデーションルール
+
+| チャネル                 | バリデーション項目                                          | エラーコード                |
+| ------------------------ | ----------------------------------------------------------- | --------------------------- |
+| `skill:importFromSource` | source がオブジェクト / source.type が P42 準拠3段バリデーション / source.type が `ALLOWED_SOURCE_TYPES` に含まれる / github 時 repo 長さ制限（10000文字） | `VALIDATION_ERROR` |
+| `skill:export`          | args がオブジェクト / args.skillName が P42 準拠3段バリデーション / args.destination がオブジェクト / args.destination.type が P42 準拠3段バリデーション / args.destination.type が `ALLOWED_DESTINATION_TYPES` に含まれる | `VALIDATION_ERROR` |
+| `skill:validateSource`  | source がオブジェクト / source.type が P42 準拠3段バリデーション                                                                                           | `VALIDATION_ERROR` |
+
+### 実装状況
+
+| 実装項目                     | ステータス | 関連タスク |
+| ---------------------------- | ---------- | ---------- |
+| チャネル定数定義（channels.ts）| 完了      | TASK-9F    |
+| ホワイトリスト追加           | 完了       | TASK-9F    |
+| IPCハンドラー実装            | 完了       | TASK-9F    |
+| Preload API実装              | 完了       | TASK-9F    |
+| Sender検証（全3ハンドラー）  | 完了       | TASK-9F    |
+| P42準拠3段バリデーション     | 完了       | TASK-9F    |
+| エラーサニタイズ             | 完了       | TASK-9F    |
+
+### セキュリティ仕様
+
+全3 invokeハンドラーで以下のセキュリティ検証を実施する。
+
+| 対策 | 実装 | 返却仕様 |
+| ---- | ---- | -------- |
+| Sender検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
+| 引数バリデーション | P42準拠3段バリデーション（型チェック → 空文字列 → trim空文字列） + 許可値チェック | 不正時: `{ success: false, error: { code: "VALIDATION_ERROR", message } }` |
+| 文字列長制限 | github ソースの repo フィールドに `MAX_STRING_LENGTH`（10000文字）制限 | 超過時: バリデーションエラー |
+
+### 実装時の苦戦箇所（TASK-9F）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| IPCハンドラ実装と起動配線の分離 | `skillHandlers.share.ts` 実装だけではランタイム到達しない | `registerAllIpcHandlers` への登録と依存DIを同時適用し、登録系テストを追加 |
+| 型パス正本の混在 | `types/skill/<domain>.ts` 旧記述が仕様に残り契約確認を阻害 | `types/index.ts` + `skill-<domain>.ts` に統一し、仕様・監査期待値を同時更新 |
+| 未タスク台帳と参照の非同期 | UT-9F指示書の配置先差分で追跡困難になった | `docs/30-workflows/unassigned-task/` 正本へ統一し、`task-workflow` とレポートを同時更新 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 追加チャネルは `channels/preload/main-register/tests` の4点を同一ターンで更新する。  
+2. request/response/validation を `api-ipc-agent.md` に先に固定し、実装との差分をなくす。  
+3. 未タスクが発生した場合は正本ディレクトリと9セクション形式を同時に満たす。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+
 ---
 
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9F    | スキル共有・インポート機能           | 2026-02-27 | 3チャンネル追加（skill:importFromSource/export/validateSource）、共有型定義10型新規作成、SkillShareManager実装、92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | skill:remove IPCインターフェース不整合修正 | 2026-02-20 | `skill:remove` の Mainハンドラー引数契約を `skillName: string` に統一。空白文字列を拒否する3段バリデーションを追加 |
 | TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
@@ -454,6 +526,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.13.1    | 2026-02-27 | TASK-9F追補: 実装時の苦戦箇所3件（起動配線分離/型パスドリフト/未タスク台帳非同期）と同種課題向け4ステップ手順を追加 |
+| v1.13.0    | 2026-02-27 | TASK-9F反映: スキル共有IPCチャネルセクション追加。3チャンネル（skill:importFromSource/export/validateSource）、共有型定義10型、バリデーションルール、セキュリティ仕様、完了タスク記録 |
 | v1.12.0    | 2026-02-26 | TASK-9B反映: SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ更新。拡張7チャンネル、`SkillCreatorProgress`（`phase/percentage/message`）、実装状況テーブルを実装実体へ同期 |
 | v1.11.0    | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数契約を `skillName: string` に統一した完了記録を追加 |
 | v1.10.0    | 2026-02-20 | 未タスク参照パス整合を修正: UT-9A-B-001〜003 の指示書参照を `docs/30-workflows/unassigned-task/` に統一 |

@@ -1494,6 +1494,42 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-02-12
 - **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
 
+### [Phase12] 未タスクの「配置・命名・9セクション」同時是正（TASK-9F）
+
+- **状況**: 未タスク6件を検出したが、`docs/30-workflows/completed-tasks/skill-share/unassigned-task/` に簡易フォーマットで配置していた
+- **問題**: `docs/30-workflows/unassigned-task/` 正本運用と不一致となり、`audit-unassigned-tasks` の `current` 判定と台帳整合が崩れた
+- **原因**:
+  - 親ワークフロー配下のローカル運用を優先し、共通ガイドライン（配置先/命名/9セクション）を後追い確認した
+  - `unassigned-task-report.md` と `task-workflow.md` の参照パス同期を同時に実施していなかった
+- **教訓**:
+  - 未タスクは「作成」ではなく「配置先 + 命名 + フォーマット + 台帳同期」を1作業単位で完了させる
+  - `task-specification-creator` のテンプレートに準拠し、`docs/30-workflows/unassigned-task/` 以外への配置を禁止する
+- **対策**:
+  1. 未タスク検出後に `assets/unassigned-task-template.md` で9セクション化
+  2. `docs/30-workflows/unassigned-task/task-*.md` へ保存
+  3. `task-workflow.md` 残課題テーブルと `unassigned-task-report.md` を同一ターンで同期
+  4. `audit-unassigned-tasks.js --diff-from HEAD` で `currentViolations=0` を確認
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9F, UT-9F-SETTER-INJECTION-001, UT-9F-EXPORT-PATH-TRAVERSAL-001
+
+### [Phase12] 仕様書別SubAgent同期 + spec-update-summary 固定化（TASK-9F追補）
+
+- **状況**: 実装内容と苦戦箇所は `task-workflow.md` / `lessons-learned.md` に記録済みだが、仕様書別責務と検証証跡の再利用性が不足していた
+- **問題**: 次回タスクで「どの仕様書を誰が更新するか」「どの検証値をどこへ転記するか」が毎回手作業判断になり、再監査コストが増える
+- **原因**:
+  - Phase 12 Step 2 の成果物に `spec-update-summary.md` を標準化していなかった
+  - SubAgent分担を「A:台帳/B:ドメイン/C:教訓/D:検証」の抽象表記で止め、実ファイル責務へ落とし込んでいなかった
+- **教訓**:
+  - 仕様書更新は `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の5責務に固定すると漏れを抑制できる
+  - 検証値（13/13, 28項目, 95/95, current=0）は `spec-update-summary.md` を正本にし、台帳と教訓へ転記する
+- **対策**:
+  1. `assets/phase12-system-spec-retrospective-template.md` で仕様書別SubAgent表を必須化
+  2. `outputs/phase-12/spec-update-summary.md` を成果物必須に追加
+  3. `task-workflow.md` に SubAgent分担 + 検証結果 + 成果物マトリクスを追記
+  4. `lessons-learned.md` に同一検証値と再利用5ステップを同期
+- **発見日**: 2026-02-27
+- **関連タスク**: TASK-9F
+
 ### [IPC] IPC契約ドリフト（Handler/Preload引数不整合）（UT-FIX-SKILL-REMOVE-INTERFACE-001）
 
 - **状況**: ハンドラ側がオブジェクト形式（`{ skillId: string }`）を期待し、Preload側が文字列（`skillName`）を渡すインターフェース不整合

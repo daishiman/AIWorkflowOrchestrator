@@ -13,6 +13,8 @@ export { SkillParser } from "./SkillParser";
 export { SkillImportManager } from "./SkillImportManager";
 export { SkillService } from "./SkillService";
 export { SkillExecutor } from "./SkillExecutor";
+export { SkillValidator } from "./SkillValidator";
+export { SkillShareManager } from "./SkillShareManager";
 export { PermissionResolver } from "./PermissionResolver";
 export { PermissionStore, createPermissionStore } from "./PermissionStore";
 export {
