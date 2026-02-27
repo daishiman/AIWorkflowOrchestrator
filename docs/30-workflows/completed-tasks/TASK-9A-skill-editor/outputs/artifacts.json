@@ -1,0 +1,317 @@
+{
+  "feature": "task-9a-skill-editor",
+  "created": "2026-02-26T04:45:00Z",
+  "lastUpdated": "2026-02-26T13:03:09.683Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（FR/NFR分類、受入基準AC-01〜AC-18）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義（含む/含まない）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計（コンポーネント階層、状態管理、データフロー）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/api-specification.md",
+          "description": "IPC API仕様（6チャンネル型定義）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS/MINOR/MAJOR判定）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書（67テスト設計）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-design.md",
+          "description": "統合テスト設計"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/__tests__/SkillFileManager.test.ts",
+          "description": "SkillFileManagerユニットテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/ipc/__tests__/skillFileHandlers.test.ts",
+          "description": "IPCハンドラーテスト"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillEditor.test.tsx",
+          "description": "SkillEditor UIテスト"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/main/services/skill/SkillFileManager.ts",
+          "description": "SkillFileManagerサービス実装"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/SkillEditor.tsx",
+          "description": "SkillEditor UIコンポーネント"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx",
+          "description": "SkillCodeEditorコンポーネント"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test.md",
+          "description": "統合テスト結果"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ検証結果（Line 80%+, Branch 60%+, Function 80%+）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/integration-test.md",
+          "description": "統合テスト検証結果"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/skillfilemanager-refactoring-analysis.md",
+          "description": "SkillFileManager重複分析・抽出結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/ipc-validation-commonization.md",
+          "description": "IPC 3段バリデーション共通化結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/path-traversal-extraction.md",
+          "description": "パストラバーサル防止ロジック抽出結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/skill-editor-state-optimization.md",
+          "description": "SkillEditor状態管理最適化結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/naming-type-unification.md",
+          "description": "命名規則・型定義統一確認結果"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/lint-report.md",
+          "description": "Lint検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/typecheck-report.md",
+          "description": "型チェック検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-report.md",
+          "description": "セキュリティ検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-coverage-report.md",
+          "description": "テスト実行・カバレッジ結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-result.md",
+          "description": "品質ゲート総合判定"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/security-review.md",
+          "description": "セキュリティ詳細レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/type-ipc-contract-review.md",
+          "description": "型安全性・IPC契約レビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/architecture-uiux-review.md",
+          "description": "アーキテクチャ・UI/UXレビュー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（10項目レビュー観点）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（正常系6+異常系3+UI3=12テストケース）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "手動テストで発見した課題（0件時は空レポート）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/walkthrough-log.md",
+          "description": "Phase 11手順書ウォークスルー証跡（詰まり箇所・判断根拠）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 中学生レベル + Part 2: 技術者向け）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー（Step 1-A〜Step 2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート（0件でも出力必須）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート（改善点なしでも出力必須）"
+        }
+      ],
+      "completedAt": "2026-02-26T13:03:09.683Z"
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報（URL、CIステータス）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "feat"
+  }
+}

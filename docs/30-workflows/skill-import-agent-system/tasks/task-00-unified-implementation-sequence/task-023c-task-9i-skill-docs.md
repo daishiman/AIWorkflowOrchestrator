@@ -25,10 +25,10 @@ verification:
 artifacts:
   creates:
     - apps/desktop/src/main/services/skill/SkillDocGenerator.ts
-    - packages/shared/src/types/skill/docs.ts
+    - packages/shared/src/types/skill-docs.ts
   # UI成果物は ./task-030-ui-05-skill-center-view.md#15B.3 で定義
   modifies:
-    - packages/shared/src/types/skill/index.ts
+    - packages/shared/src/types/index.ts
     - apps/desktop/src/main/ipc/skillHandlers.ts
     - apps/desktop/src/preload/channels.ts
     - apps/desktop/src/preload/skill-api.ts
@@ -56,7 +56,7 @@ artifacts:
 
 ### Step 1: 型定義追加
 
-**ファイル**: `packages/shared/src/types/skill/docs.ts`
+**ファイル**: `packages/shared/src/types/skill-docs.ts`
 
 ```typescript
 export interface DocGenerationRequest {

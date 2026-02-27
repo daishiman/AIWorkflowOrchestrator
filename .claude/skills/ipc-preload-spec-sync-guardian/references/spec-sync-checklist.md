@@ -12,18 +12,18 @@
 - [ ] `apps/desktop/src/preload/channels.ts`
 - [ ] `apps/desktop/src/preload/skill-api.ts`
 - [ ] `apps/desktop/src/preload/types.ts`
-- [ ] `packages/shared/src/types/skill/index.ts`
+- [ ] `packages/shared/src/types/index.ts`
 
 ## 3. 必須 artifacts.creates
 
 各 task の domain に対応する以下が存在すること:
-- [ ] `packages/shared/src/types/skill/chain.ts`
-- [ ] `packages/shared/src/types/skill/fork.ts`
-- [ ] `packages/shared/src/types/skill/share.ts`
-- [ ] `packages/shared/src/types/skill/schedule.ts`
-- [ ] `packages/shared/src/types/skill/debug.ts`
-- [ ] `packages/shared/src/types/skill/docs.ts`
-- [ ] `packages/shared/src/types/skill/analytics.ts`
+- [ ] `packages/shared/src/types/skill-chain.ts`
+- [ ] `packages/shared/src/types/skill-fork.ts`
+- [ ] `packages/shared/src/types/skill-share.ts`
+- [ ] `packages/shared/src/types/skill-schedule.ts`
+- [ ] `packages/shared/src/types/skill-debug.ts`
+- [ ] `packages/shared/src/types/skill-docs.ts`
+- [ ] `packages/shared/src/types/skill-analytics.ts`
 
 ## 4. 追加整合
 

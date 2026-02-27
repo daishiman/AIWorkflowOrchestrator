@@ -391,7 +391,11 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v9.94.0** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001完了**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用、テスト21件追加、全85テストPASS。`references/spec-update-workflow.md` の既知課題リンクを `completed-tasks` 側へ同期。Issue #913 |
+| **v9.94.0** | **2026-02-27** | **TASK-9F スキル共有・インポート機能 Phase 12 仕様同期**: api-ipc-agent.md（スキル共有IPCチャネル追加）、security-electron-ipc.md（skillShareAPIセキュリティパターン追加）、interfaces-agent-sdk-skill.md（スキル共有型定義10種追加）、task-workflow.md（TASK-9F完了記録）を更新 |
 | **v9.93.0** | **2026-02-26** | **TASK-9B再監査の教訓反映**: `references/spec-update-workflow.md` に「IPC拡張済みでも旧チャンネル数のままでよい」誤判断パターンを追加し、更新漏れ防止チェックリストへ「チャンネル数/進捗型の実装-仕様一致確認」を追記 |
+| **v9.92.9** | **2026-02-26** | **未タスク指示書メタ情報重複防止を追加**: `references/unassigned-task-guidelines.md` に `## メタ情報` 1セクション原則（YAML+表を同一セクションで管理）を追記。`rg -n "^## メタ情報"` による機械確認手順を標準化 |
+| **v9.92.8** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 反映**: `references/spec-update-workflow.md` の曖昧語を除去して機械判定を安定化し、`references/phase-11-12-guide.md` に運用更新履歴を追記。Phase 11 手順書ウォークスルー証跡（`outputs/phase-11/walkthrough-log.md`）を必須成果物として定着 |
 | **v9.92.7** | **2026-02-25** | **Phase 12再確認の運用ルール追補**: `references/spec-update-workflow.md` に `--target-file` の判定軸（`currentViolations.total`）と `validate-phase-output.js <workflow-dir>` の位置引数ルールを明記。`references/patterns.md` に scoped監査解釈と検証コマンド誤用防止パターンを追加 |
 | **v9.92.6** | **2026-02-25** | **Phase 12参照整合ガードを追補**: `task-00-unified-implementation-sequence` の参照実在チェック（`task-013e`/`task-014` など）を Phase 12 更新手順へ追加。未タスク完了移管時に `task-workflow.md` のステータス（未実施/完了）と参照先（unassigned/completed）を同時更新するルールを明文化 |
 | **v9.92.5** | **2026-02-25** | **Phase 12完了時の移管運用を反映**: Phase 12完了が確認できた場合、`docs/30-workflows/unassigned-task/` の当該未タスク指示書と、実行ワークフロー本体を `docs/30-workflows/completed-tasks/` へ移動し、`task-workflow.md` 残課題行を完了化する運用を適用 |

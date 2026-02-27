@@ -65,7 +65,7 @@ Phase 6 エッジケーステスト TC-EC-004 で動作記録済み。
 ### 未タスク変換
 
 - **未タスクID**: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001
-- **未タスク指示書**: `docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md`
+- **未タスク指示書**: `docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md`（完了移管済み）
 - **task-workflow.md 登録**: 完了
 - **関連仕様書リンク**: `spec-update-workflow.md` Step 1-G.3 に参照追記
 

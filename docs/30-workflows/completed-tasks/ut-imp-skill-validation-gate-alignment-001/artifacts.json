@@ -143,7 +143,7 @@
           "id": "UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001",
           "description": "name/description空フィールドランタイムエラー",
           "severity": "中",
-          "taskSpec": "docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md"
+          "taskSpec": "docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md"
         }
       ],
       "artifacts": [
@@ -151,7 +151,7 @@
         "docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-10/final-review-result.md",
         "docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-10/minor-issues.md",
         "docs/30-workflows/unassigned-task/task-imp-quick-validate-bom-utf8-001.md",
-        "docs/30-workflows/unassigned-task/task-imp-quick-validate-empty-field-guard-001.md"
+        "docs/30-workflows/completed-tasks/task-imp-quick-validate-empty-field-guard-001.md"
       ]
     },
     "11": {

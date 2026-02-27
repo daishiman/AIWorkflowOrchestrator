@@ -1802,10 +1802,10 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
-## SkillEditor UI 型定義（TASK-9A-C / spec_created）
+## SkillEditor UI 型定義（TASK-9A / completed）
 
-> **ステータス**: 仕様書作成済み（実装未着手）
-> 本セクションは TASK-9A-C のUI実装で使用する型定義を定義する。
+> **ステータス**: 実装完了（2026-02-26）
+> 本セクションは TASK-9A-skill-editor で実装済みの UI 型定義を定義する。
 
 ### SkillEditorProps
 
@@ -1840,16 +1840,81 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ### 関連ドキュメント
 
-- [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skilleditor-uitask-9a-c--仕様書作成済み)
-- [TASK-9A-C ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
+- [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skill-editor-ui-task-9a)
+- [TASK-9A ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/index.md)
 
 ### 関連未タスク
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
 | TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
-| TASK-9A-C-002 | ファイル作成・削除機能 | `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` |
+| ~~TASK-9A-C-002~~ | ~~ファイル作成・削除機能~~ **完了: 2026-02-26（TASK-9Aに統合）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md` |
 | TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+| ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
+
+## スキル共有 型定義（TASK-9F）
+
+`packages/shared/src/types/skill-share.ts` に定義されたスキル共有・インポート機能の型。
+
+### 型一覧
+
+| 型名                        | 定義元                                          | 用途                   |
+| --------------------------- | ----------------------------------------------- | ---------------------- |
+| `ShareSourceType`           | `packages/shared/src/types/skill-share.ts`     | ソース種別（union）    |
+| `ShareDestinationType`      | 同上                                            | エクスポート先種別     |
+| `ShareTarget`               | 同上                                            | インポートソース定義   |
+| `ShareDestination`          | 同上                                            | エクスポート先定義     |
+| `ShareImportResult`         | 同上                                            | インポート結果         |
+| `ShareExportResult`         | 同上                                            | エクスポート結果       |
+| `ShareValidateSourceResult` | 同上                                            | ソース検証結果         |
+| `ShareErrorCategory`        | 同上                                            | エラーカテゴリ（union）|
+| `ShareError`                | 同上                                            | エラー情報             |
+| `ShareResult<T>`            | 同上                                            | Result パターン        |
+
+### ShareTarget フィールド詳細
+
+| フィールド | 型                | 必須条件                    | 説明                        |
+| ---------- | ----------------- | --------------------------- | --------------------------- |
+| `type`     | `ShareSourceType` | 常に必須                    | ソース種別                  |
+| `repo`     | `string`          | `type="github"` 時に必須   | GitHub リポジトリ（`owner/repo`） |
+| `branch`   | `string`          | `type="github"` 時にオプション | ブランチ名（デフォルト: `"main"`） |
+| `path`     | `string`          | `type="github"` 時にオプション | リポジトリ内パス（デフォルト: `"/"`） |
+| `gistId`   | `string`          | `type="gist"` 時に必須     | Gist ID                     |
+| `localPath`| `string`          | `type="local"` 時に必須    | ローカルファイルパス        |
+| `url`      | `string`          | `type="url"` 時に必須      | URL                         |
+
+### Preload API（`skill-api.ts`）
+
+| メソッド名       | 引数                                            | 戻り値                                      | チャネル                  |
+| ---------------- | ----------------------------------------------- | ------------------------------------------- | ------------------------- |
+| `importFromSource` | `source: ShareTarget`                         | `Promise<ShareResult<ShareImportResult>>`   | `skill:importFromSource`  |
+| `exportSkill`    | `skillName: string, destination: ShareDestination` | `Promise<ShareResult<ShareExportResult>>` | `skill:export`            |
+| `validateSource` | `source: ShareTarget`                          | `Promise<ShareResult<ShareValidateSourceResult>>` | `skill:validateSource` |
+
+### 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| TASK-9F | 2026-02-27 | 完了 | 共有型定義10型新規作成、SkillShareManager実装、3チャネルIPCハンドラ、Preload API 3メソッド追加。92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
+
+### 実装時の苦戦箇所（TASK-9F）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| 型パス正本の混在 | `types/skill/<domain>.ts` 記述が仕様/監査に残り、参照先が揺れた | `types/index.ts` と `skill-<domain>.ts` の2系統へ統一し、型参照表と監査を同期 |
+| `ShareTarget` の分岐契約の明示不足 | source type ごとの必須フィールドが呼び出し側で曖昧化しやすい | `ShareTarget` フィールド表で条件付き必須を明示し、バリデーション仕様と接続 |
+| Phase 10 MINOR と型設計改善の切り分け | 改善候補（Discriminated Union化）が完了判定に混入しやすい | 改善分は UT-9F 未タスクへ分離し、完了タスクと残課題を分離管理 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 新規型を追加したら「型定義表 / Preload API / IPC契約」の3箇所を同時更新する。  
+2. 条件付き必須フィールドは `type` ごとの表で明示し、ランタイムバリデーションと一致させる。  
+3. 完了判定に含めない改善項目は未タスクへ分離して台帳管理する。  
+4. 仕様反映後に `verify-all-specs` と `validate-phase-output` で整合を確認する。  
+
+### 関連ワークフロー
+
+- [TASK-9F ワークフロー](../../../../docs/30-workflows/completed-tasks/skill-share/)
 
 ---
 
@@ -1857,10 +1922,15 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-27 | 1.40.1     | TASK-9F追補: 型仕様の苦戦箇所3件（型パス正本/分岐契約明示/MINOR分離）と同種課題向け4ステップ手順を追加 |
+| 2026-02-27 | 1.40.0     | TASK-9F完了反映: スキル共有型定義セクション追加（ShareTarget/ShareImportResult/ShareExportResult/ShareValidateSourceResult等10型、Preload API 3メソッド、完了タスク記録） |
 | 2026-02-26 | 1.39.0     | TASK-9B 完了移管に同期: 実行ワークフロー参照を `completed-tasks/task-9b-skill-creator/` に統一し、`UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を completed-tasks/unassigned-task 移管済みとして完了化 |
 | 2026-02-26 | 1.38.0     | TASK-9B 再監査の苦戦箇所を未タスク化: `UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を関連未タスクへ追加（13chドリフト/P42 create検証漏れ/current-baseline誤読の再発防止） |
 | 2026-02-26 | 1.37.0     | TASK-9B再監査追補: 仕様書別SubAgent分担、実装時の苦戦箇所（13chドリフト/P42 create漏れ/成果物二重台帳）と4ステップ簡潔解決手順を TASK-9B-H/TASK-9B セクションへ追記 |
 | 2026-02-26 | 1.36.0     | TASK-9B反映: SkillCreatorService APIを12メソッドへ同期。TASK-9B-HセクションのIPCチャンネル一覧を13チャンネル（12 invoke + 1 progress）へ更新し、成果物リンクを `completed-tasks/skill-creator-ipc` と `task-9b-skill-creator` に正規化 |
+| 2026-02-26 | 1.36.2     | TASK-9A成果物移管を反映。TASK-9A参照を `completed-tasks/TASK-9A-skill-editor/` に更新し、`TASK-9A-C-004` を完了化して `completed-tasks/unassigned-task/` へ移管 |
+| 2026-02-26 | 1.36.1     | TASK-9A-C-004 を関連未タスクへ追加。Phase 12再確認で顕在化した仕様同期運用課題（Part 1/2要件漏れ、監査判定誤読、メタ情報重複）を再発防止タスクとして登録 |
+| 2026-02-26 | 1.36.0     | TASK-9A完了反映: SkillEditor UI を `spec_created` から `completed` に更新。関連ドキュメント参照を `TASK-9A-skill-editor` 正本へ移行し、未タスク `TASK-9A-C-002` を完了化 |
 | 2026-02-25 | 1.35.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 由来の未タスク `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` を追加。4仕様書同期の運用ガード課題を関連未タスクとして記録 |
 | 2026-02-25 | 1.34.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 追補: 仕様書別SubAgent分担（interfaces/security/task-workflow/lessons）を追加し、契約同期の責務分離を明文化 |
 | 2026-02-25 | 1.33.0     | UT-FIX-SKILL-EXECUTE-INTERFACE-001完了反映。`skill:execute` の正式契約（`skillName`）と後方互換契約（`skillId`）を仕様化し、Main境界の `name -> id` 変換フローと回帰テスト結果を追記 |

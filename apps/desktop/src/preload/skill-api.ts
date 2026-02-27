@@ -26,6 +26,14 @@ import type {
   SkillMetadata,
   ImportedSkill,
 } from "@repo/shared";
+import type {
+  ShareTarget,
+  ShareDestination,
+  ShareResult,
+  ShareImportResult,
+  ShareExportResult,
+  ShareValidateSourceResult,
+} from "@repo/shared";
 import type { BackupInfo } from "./types";
 
 /**
@@ -150,6 +158,22 @@ export interface SkillAPI {
   listBackups: (skillName: string) => Promise<BackupInfo[]>;
   /** バックアップからファイルを復元する */
   restoreBackup: (skillName: string, backupPath: string) => Promise<void>;
+
+  // === Skill Share Operations (TASK-9F) ===
+
+  /** 外部ソースからスキルをインポートする */
+  importFromSource: (
+    source: ShareTarget,
+  ) => Promise<ShareResult<ShareImportResult>>;
+  /** スキルをエクスポートする */
+  exportSkill: (
+    skillName: string,
+    destination: ShareDestination,
+  ) => Promise<ShareResult<ShareExportResult>>;
+  /** ソースの有効性を検証する */
+  validateSource: (
+    source: ShareTarget,
+  ) => Promise<ShareResult<ShareValidateSourceResult>>;
 }
 
 /**
@@ -325,4 +349,22 @@ export const skillAPI: SkillAPI = {
       skillName,
       backupPath,
     }),
+
+  // === Skill Share Operations (TASK-9F) ===
+
+  importFromSource: (
+    source: ShareTarget,
+  ): Promise<ShareResult<ShareImportResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE, source),
+
+  exportSkill: (
+    skillName: string,
+    destination: ShareDestination,
+  ): Promise<ShareResult<ShareExportResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_EXPORT, { skillName, destination }),
+
+  validateSource: (
+    source: ShareTarget,
+  ): Promise<ShareResult<ShareValidateSourceResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_VALIDATE_SOURCE, source),
 };

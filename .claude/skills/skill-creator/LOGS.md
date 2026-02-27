@@ -4,12 +4,30 @@
 
 ---
 
+## [2026-02-27 - UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12 parent-reference sync pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「完了移管後の親タスク証跡参照同期」を追加。未タスク移管後に親タスク成果物へ残る旧 `unassigned-task` 参照を `rg` で抽出し、運用ドキュメントのみ更新・監査生ログは保持する運用を標準化。検証は `verify-unassigned-links` + `audit --diff-from HEAD` を必須化。
+
+---
+
 ## [2026-02-26 - TASK-9B system-spec retrospective template generalization]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**: `assets/phase12-system-spec-retrospective-template.md` を system spec 汎用向けに最適化。`ui-ux-design-system.md` 固定参照を `<domain-spec>.md` へ置換し、SubAgent分担を `A:台帳 / B:ドメイン仕様 / C:教訓 / D:検証` に統一。`quick_validate.js` コマンドを repo 相対へ正規化し、成果物名を `unassigned-task-detection.md` に更新。`references/resource-map.md` と `SKILL.md` 変更履歴を同期。
+
+---
+
+## [2026-02-26 - TASK-9A Phase 12 unassigned metadata dedup pattern]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` の Phase 12 に成功パターン「未タスクメタ情報1セクション運用」と失敗パターン「未タスク指示書メタ情報の二重定義」を追加。`task-specification-creator/references/unassigned-task-guidelines.md` と連携し、`rg -n "^## メタ情報"` の機械監査手順を標準化。
 
 ---
 

@@ -50,7 +50,7 @@ beforeEach(() => {
 // ============================================================
 describe("SkillAPI Unification", () => {
   describe("window.electronAPI.skill", () => {
-    it("should expose all 13 methods", () => {
+    it("should expose all 22 methods", () => {
       // skillAPI は window.electronAPI.skill として公開される
       // ここでは skillAPI オブジェクトを直接検証
 
@@ -74,9 +74,22 @@ describe("SkillAPI Unification", () => {
       // 権限系（2メソッド）
       expect(typeof skillAPI.onPermissionRequest).toBe("function");
       expect(typeof skillAPI.sendPermissionResponse).toBe("function");
+
+      // ファイル操作系（6メソッド）
+      expect(typeof skillAPI.readFile).toBe("function");
+      expect(typeof skillAPI.writeFile).toBe("function");
+      expect(typeof skillAPI.createFile).toBe("function");
+      expect(typeof skillAPI.deleteFile).toBe("function");
+      expect(typeof skillAPI.listBackups).toBe("function");
+      expect(typeof skillAPI.restoreBackup).toBe("function");
+
+      // 共有系（3メソッド）
+      expect(typeof skillAPI.importFromSource).toBe("function");
+      expect(typeof skillAPI.exportSkill).toBe("function");
+      expect(typeof skillAPI.validateSource).toBe("function");
     });
 
-    it("should have exactly 19 methods (no extra methods)", () => {
+    it("should have exactly 22 methods (no extra methods)", () => {
       const expectedMethods: (keyof SkillAPI)[] = [
         "list",
         "getImported",
@@ -97,6 +110,9 @@ describe("SkillAPI Unification", () => {
         "deleteFile",
         "listBackups",
         "restoreBackup",
+        "importFromSource",
+        "exportSkill",
+        "validateSource",
       ];
 
       const actualMethods = Object.keys(skillAPI).filter(
@@ -104,8 +120,8 @@ describe("SkillAPI Unification", () => {
           typeof (skillAPI as Record<string, unknown>)[key] === "function",
       );
 
-      // メソッド数が正確に19であること（13 + 6ファイル操作メソッド）
-      expect(actualMethods.length).toBe(19);
+      // メソッド数が正確に22であること（13 + 6ファイル操作 + 3共有）
+      expect(actualMethods.length).toBe(22);
 
       // 全ての期待メソッドが含まれていること
       for (const method of expectedMethods) {

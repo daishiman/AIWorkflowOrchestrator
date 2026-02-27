@@ -7,6 +7,7 @@
  */
 import path from "path";
 import fs from "fs/promises";
+import yaml from "yaml";
 
 /** パストラバーサル攻撃パターン */
 const PATH_TRAVERSAL_PATTERNS = ["../", "..\\"];
@@ -49,6 +50,76 @@ interface SchemaFieldSpec {
 }
 
 export class SkillValidator {
+  /**
+   * SKILL.md の妥当性を検証する
+   * - YAML frontmatter の存在
+   * - 必須フィールド（name, description）
+   *
+   * @param content - SKILL.md の内容
+   * @returns バリデーション結果
+   */
+  validateSkillMd(content: string): ValidationResult {
+    const errors: string[] = [];
+
+    // P42: 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+    if (typeof content !== "string") {
+      return {
+        isValid: false,
+        errors: ["SKILL.md content must be a string"],
+      };
+    }
+    if (content === "") {
+      return {
+        isValid: false,
+        errors: ["SKILL.md content must not be empty"],
+      };
+    }
+    if (content.trim() === "") {
+      return {
+        isValid: false,
+        errors: ["SKILL.md content must not be whitespace only"],
+      };
+    }
+
+    const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+    if (!frontmatterMatch) {
+      return {
+        isValid: false,
+        errors: ["SKILL.md must include YAML frontmatter"],
+      };
+    }
+
+    let frontmatter: Record<string, unknown> = {};
+    try {
+      frontmatter =
+        (yaml.parse(frontmatterMatch[1]) as Record<string, unknown>) ?? {};
+    } catch {
+      return {
+        isValid: false,
+        errors: ["Invalid YAML frontmatter"],
+      };
+    }
+
+    if (
+      typeof frontmatter.name !== "string" ||
+      frontmatter.name.trim() === ""
+    ) {
+      errors.push('Frontmatter "name" is required');
+    }
+
+    if (
+      typeof frontmatter.description !== "string" ||
+      frontmatter.description.trim() === ""
+    ) {
+      errors.push('Frontmatter "description" is required');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+    };
+  }
+
   /**
    * スキルディレクトリ構造の検証
    * SKILL.md の存在を含む構造検証を実施する
