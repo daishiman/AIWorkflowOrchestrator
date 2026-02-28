@@ -2032,12 +2032,65 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
+## スキル分析 型定義（TASK-9J）
+
+> 完了タスク: TASK-9J（2026-02-28）
+> 定義ファイル: `packages/shared/src/types/skill-analytics.ts`
+
+### 8インターフェース一覧
+
+| 型名 | 用途 | 主要フィールド |
+| --- | --- | --- |
+| SkillUsageEvent | 使用イベントの記録単位 | id, skillName, eventType, timestamp, success, toolsUsed |
+| ToolUsageStat | ツール別使用統計 | toolName, count, percentage |
+| SkillStatistics | スキル別の集計統計 | skillName, totalExecutions, successRate, averageDuration |
+| AnalyticsPeriod | 集計期間 | start, end, granularity ("hour"/"day"/"week"/"month") |
+| TrendDataPoint | トレンドの1データポイント | timestamp, executions, errors, avgDuration |
+| UsageTrend | 時系列トレンドデータ | period, dataPoints |
+| SkillUsageSummary | スキル別集計サマリー | skillName, executionCount, lastUsed |
+| AnalyticsSummary | 全スキルの総合サマリー | totalSkills, totalExecutions, overallSuccessRate, mostUsedSkills[], recentActivity[] |
+
+### IPC チャネルマッピング
+
+| Preload API メソッド | IPC チャネル | 戻り値型 |
+| --- | --- | --- |
+| analyticsRecord | skill:analytics:record | SkillUsageEvent |
+| analyticsStatistics | skill:analytics:statistics | SkillStatistics |
+| analyticsSummary | skill:analytics:summary | AnalyticsSummary |
+| analyticsTrend | skill:analytics:trend | UsageTrend |
+| analyticsExport | skill:analytics:export | string |
+
+### 完了タスク
+
+| タスクID | 完了日 | 内容 |
+| --- | --- | --- |
+| TASK-9J | 2026-02-28 | スキル分析・統計機能の型定義（8インターフェース）とIPC実装 |
+
+### 実装時の苦戦箇所（TASK-9J）
+
+| 苦戦箇所 | 課題 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 共有型の公開面同期漏れ | `src/types` 追加だけでは `@repo/shared` から参照できない | `packages/shared/index.ts` に `skill-analytics` の再エクスポートを追加 | 共有型は `definition + types/index + package index` の3点同期を必須化 |
+| Preload API命名ドリフト | 仕様書 `recordAnalytics` と実装 `analyticsRecord` が混在 | `skill-api.ts` を正本にして interfaces/api-ipc を同一ターン同期 | API命名は実装正本から一方向同期する |
+
+### 関連未タスク（TASK-9J）
+
+| タスクID | タスク名 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~ | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` |
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
 | 2026-02-27 | 1.41.0     | TASK-9H反映: スキルデバッグ型定義セクション追加（`DebugSessionState` / `DebugEvent` / `DebugCommand` / Preload API 7メソッド、配線漏れ対策を含む） |
 | 2026-02-28 | 1.42.0     | TASK-9I反映: スキルドキュメント型定義セクション追加（DocGenerationRequest / GeneratedDoc / DocSection / DocTemplate / TemplateSection）、Preload API 4メソッド（docsGenerate/docsPreview/docsExport/docsTemplates）、関連未タスク UT-9I-001/002 を登録 |
+| 2026-02-28 | 1.42.3     | TASK-9J未タスクの完了移管を反映: `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を completed-tasks/unassigned-task 参照へ更新 |
+| 2026-02-28 | 1.42.2     | TASK-9J関連未タスクを追加: `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を登録し、型仕様セクションから Phase 12 自動検証ガードへ参照可能にした |
+| 2026-02-28 | 1.42.1     | TASK-9J追補: 「実装時の苦戦箇所」セクションを追加。共有型公開面同期漏れとPreload API命名ドリフトの対処・標準ルールを明文化 |
+| 2026-02-28 | 1.42.0     | TASK-9J: スキル分析・統計型定義（8インターフェース）とIPCチャネル追加 |
 | 2026-02-27 | 1.41.1     | TASK-9G 未タスク同期: UT-9G-001〜005 を関連未タスクとして登録し、`unassigned-task/` 指示書への正本リンクを追加 |
 | 2026-02-27 | 1.41.0     | TASK-9G完了反映: スキルスケジュール型定義セクション追加（ScheduledSkill/SkillSchedule/NotificationSettings/ScheduledRunResult）、Preload API 5メソッド（scheduleList/add/update/delete/toggle）と完了タスク記録を追記 |
 | 2026-02-27 | 1.40.1     | TASK-9F追補: 型仕様の苦戦箇所3件（型パス正本/分岐契約明示/MINOR分離）と同種課題向け4ステップ手順を追加 |

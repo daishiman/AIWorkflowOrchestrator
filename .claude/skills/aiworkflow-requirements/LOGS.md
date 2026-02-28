@@ -124,6 +124,122 @@
 
 ---
 
+## 2026-02-28 - TASK-9J 完了移管（Phase 12完了条件に基づく成果物移動）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics / UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001
+- 目的: Phase 12 完了済み成果物を `completed-tasks/` へ移管し、未タスク指示書と台帳参照の整合を維持
+
+### 実施内容
+
+- `docs/30-workflows/TASK-9J-skill-analytics/` を `docs/30-workflows/completed-tasks/TASK-9J-skill-analytics/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` の残課題テーブルで `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を完了表記へ更新
+- `interfaces-agent-sdk-skill.md` の関連未タスク参照を completed パスへ更新
+- 移管後パスに合わせて検証コマンド例・参照パスを補正
+
+### 結果
+
+- ステータス: success
+- 補足: 指定どおり「未タスクファイル + タスク仕様書ディレクトリ」を completed-tasks に移管完了
+
+---
+
+## 2026-02-28 - TASK-9J 未タスク仕様書登録（Phase 12 IPC同期自動検証ガード）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics（Phase 12 再確認の派生未タスク）
+- 目的: 実装時の苦戦箇所（IPC登録漏れ・責務重複・命名ドリフト）を再発防止タスクとして台帳化し、仕様書間の参照整合を回復
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を作成（9セクション + 3.5 実装課題と解決策 + SubAgent分担）
+- `references/task-workflow.md` の残課題テーブルへ `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を追加
+- `references/interfaces-agent-sdk-skill.md` に TASK-9J 関連未タスクセクションを追加
+- 残課題テーブル内の重複行（同一IDの完了/未完了混在）を整理し、状態矛盾を是正
+- `SKILL.md` / `LOGS.md` の変更履歴を更新
+
+### 結果
+
+- ステータス: success
+- 補足: TASK-9J の苦戦箇所が未タスク指示書・残課題台帳・型仕様書で相互参照可能になり、次回同種課題の着手コストを削減
+
+---
+
+## 2026-02-28 - TASK-9J 仕様同期テンプレート最適化（5仕様書SubAgent分担）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics
+- 目的: Phase 12 Step 2 の再利用性向上（実装内容 + 苦戦箇所 + SubAgent同期 + 検証証跡の一体化）
+
+### 実施内容
+
+- `task-workflow.md` の TASK-9J をテンプレート準拠で再整形（メタ情報、仕様書別SubAgent分担、再発条件付き苦戦箇所、Phase 12検証証跡）
+- `lessons-learned.md` の TASK-9J に 5仕様書同期マトリクス（interfaces/api-ipc/security/task-workflow/lessons）を追加
+- `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` / `security-electron-ipc.md` に TASK-9J 実装時の苦戦箇所を追補
+- 各仕様書の変更履歴を更新し、台帳上の追跡性を確保
+
+### 結果
+
+- ステータス: success
+- 補足: 実装内容と苦戦箇所が5仕様書で相互参照可能になり、同種課題への転用手順が短縮された
+
+---
+
+## 2026-02-28 - TASK-9J Phase 12再確認（苦戦箇所追補 + 未タスク整合確認）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics
+- 目的: Phase 12準拠の再確認と、同種課題向けの再利用可能な苦戦箇所記録を追加
+
+### 実施内容
+
+- `verify-all-specs` / `validate-phase-output` で Phase 12を含む workflow 構造を再検証（PASS）
+- `verify-unassigned-links` で未タスクリンク整合を再検証（ALL_LINKS_EXIST）
+- `audit-unassigned-tasks --diff-from HEAD` で差分起因の未タスク違反を再検証（currentViolations=0）
+- `task-workflow.md` の TASK-9J セクションへ苦戦箇所3件（責務重複、IPC登録漏れ、Preload命名ドリフト）と4ステップ解決手順を追記
+- `lessons-learned.md` に TASK-9J専用教訓セクションを追加
+
+### 結果
+
+- ステータス: success
+- 補足: 未タスクは今回差分で新規違反なし（baseline違反は既存管理対象）
+
+---
+
+## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 12 仕様同期
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics（スキル使用統計・分析機能）
+
+### 実施内容
+
+- スキル使用統計・分析機能のバックエンド実装完了（Phase 1-11）
+- 新規5 IPCチャンネル追加（skill:analytics:record/statistics/summary/trend/export）
+- 新規サービス2つ追加（SkillAnalytics, AnalyticsStore）
+- 共有型定義8インターフェース追加（skill-analytics.ts）
+- Preload API 5メソッド追加（safeInvokeUnwrap パターン）
+- テスト97件全PASS（型定義8 + AnalyticsStore 15 + SkillAnalytics 37 + IPCハンドラ 37）
+- Phase 10 最終レビュー PASS（指摘0件）
+- カバレッジ全基準クリア（Line > 96%, Branch > 83%, Func > 85%）
+
+### 結果
+
+- ステータス: success
+- 仕様反映: Phase 12 成果物作成完了
+
+---
+
 ## 2026-02-27 - TASK-9G 未タスク登録同期追補（Step 1-E 完了化）
 
 ### コンテキスト

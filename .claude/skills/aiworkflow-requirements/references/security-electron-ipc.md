@@ -13,6 +13,8 @@
 | ---------- | ---------- | ---------------------------------------------- |
 | v1.10.0    | 2026-02-27 | TASK-9H反映: skillDebugAPI セキュリティ実装パターン追加（validateIpcSender + P42準拠3段バリデーション + vmサンドボックス式評価 + セッションID整合検証）。7チャネル（invoke 6 + event 1）を仕様化 |
 | v1.11.0    | 2026-02-28 | TASK-9I反映: skillDocsAPI セキュリティ実装パターン追加（sender 検証 + P42準拠3段バリデーション + 許可値チェック + パストラバーサル二重防御 + エラー正規化）。4チャンネル、64テストPASS |
+| v1.11.1    | 2026-02-28 | TASK-9J追補: 「実装時の苦戦箇所」セクションを追加。P42検証分散・許可値チェック漏れ・内部エラー露出リスクの再発防止ルールを明文化 |
+| v1.11.0    | 2026-02-28 | TASK-9J反映: skillAnalyticsAPI セキュリティ実装パターン追加（validateIpcSender + validateStringArg共通化 + 許可値リスト + toIpcErrorResponse正規化）。5チャンネル、37テストPASS |
 | v1.10.0    | 2026-02-27 | TASK-9G反映: skillScheduleAPI セキュリティ実装パターン追加（sender 検証 + P42準拠3段バリデーション + schedule種別ごとの必須検証 + 内部エラー正規化）。5チャンネル、163テストPASS（desktop 158 + shared 5） |
 | v1.9.0     | 2026-02-27 | TASK-9F反映: skillShareAPIセキュリティ実装パターン追加（validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェック）。3チャンネル、92テスト全PASS |
 | v1.8.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001反映: AUTH IPC登録一元化パターンを追加。重複登録式の宣言的集約と fallback 経路の追跡性維持を明文化 |
@@ -570,6 +572,39 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 ---
 
+## 実装例: skillAnalyticsAPI（TASK-9J）
+
+> 完了タスク: TASK-9J（2026-02-28）
+
+### セキュリティ検証マトリクス
+
+| チャンネル | validateIpcSender | sanitizeError | getAllowedWindows | IPC_CHANNELS定数 | 3段バリデーション |
+| --- | :---: | :---: | :---: | :---: | :---: |
+| skill:analytics:record | OK | OK ("Internal error") | OK | OK | OK (skillName, eventType) |
+| skill:analytics:statistics | OK | OK ("Internal error") | OK | OK | OK (skillName) |
+| skill:analytics:summary | OK | OK ("Internal error") | OK | OK | N/A (引数なし) |
+| skill:analytics:trend | OK | OK ("Internal error") | OK | OK | OK (start, end, granularity) |
+| skill:analytics:export | OK | OK ("Internal error") | OK | OK | OK (format) |
+
+### バリデーション詳細
+
+- **validateStringArg ヘルパー**: P42準拠3段バリデーション（typeof !== "string" → === "" → .trim() === ""）を共通化
+- **isPlainObject**: 引数がプレーンオブジェクトであることを検証
+- **許可値リスト**: ALLOWED_EVENT_TYPES, ALLOWED_GRANULARITIES, ALLOWED_FORMATS でホワイトリスト検証
+- **toIpcErrorResponse**: 全 catch ブロックで内部エラー情報を "Internal error" に正規化
+
+### 実装時の苦戦箇所（TASK-9J）
+
+| 苦戦箇所 | 課題 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 文字列検証ロジックの分散 | ハンドラごとにバリデーション実装がばらつくと品質差が出る | `validateStringArg` へ統一して5ハンドラへ適用 | P42 3段検証はヘルパー化し個別実装を禁止 |
+| 許可値チェックの抜け漏れ | `eventType` / `granularity` / `format` の検証粒度が揃わない | 3つの ALLOWED_* 定数を導入してホワイトリスト化 | enum相当入力は必ず ALLOWED_* で一元検証 |
+| 内部エラー情報の露出リスク | 例外内容をそのまま返すと情報漏えいにつながる | `toIpcErrorResponse` で "Internal error" に正規化 | catch 節はすべてサニタイズ関数経由で返却する |
+
+**関連タスク**: TASK-9J（2026-02-28完了）
+
+---
+
 ## 自動更新のセキュリティ
 
 | 項目         | 要件                         |
@@ -594,6 +629,7 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
 | TASK-9I | 2026-02-28 | 完了 | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用 |
+| TASK-9J | 2026-02-28 | 完了 | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
 | TASK-9G | 2026-02-27 | 完了 | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用 |
 | TASK-9F | 2026-02-27 | 完了 | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了 | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持 |

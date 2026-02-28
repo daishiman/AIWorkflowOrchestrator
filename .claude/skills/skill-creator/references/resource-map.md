@@ -203,7 +203,7 @@
 | [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
 | [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の仕様書別 SubAgent で同期し、`spec-update-summary.md` を固定化するテンプレート |
 
-| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 仕様書別SubAgent分担で同期漏れを防ぐテンプレート |
+| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）分担と `handler/register/preload` 三点突合を標準化するテンプレート |
 
 ### テンプレート（ランタイム別）
 

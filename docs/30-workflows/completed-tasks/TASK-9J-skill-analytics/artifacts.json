@@ -1,0 +1,115 @@
+{
+  "feature": "TASK-9J-skill-analytics",
+  "created": "2026-02-28T00:00:00Z",
+  "lastUpdated": "2026-02-28T13:05:00Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/existing-pattern-analysis.md",
+        "outputs/phase-1/ipc-integration-requirements.md",
+        "outputs/phase-1/specification-alignment.md",
+        "outputs/phase-1/type-alignment.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/domain-model-design.md",
+        "outputs/phase-2/error-handling-design.md",
+        "outputs/phase-2/ipc-channel-design.md",
+        "outputs/phase-2/preload-api-design.md",
+        "outputs/phase-2/test-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/ipc-contract-review.md",
+        "outputs/phase-3/iso8601-serialization-review.md",
+        "outputs/phase-3/pattern-consistency-review.md",
+        "outputs/phase-3/performance-review.md",
+        "outputs/phase-3/requirements-coverage-review.md",
+        "outputs/phase-3/security-review.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-creation-report.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-report.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-spec.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": { "status": "pending", "artifacts": [] }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["12"]
+  },
+  "qualityMetrics": {
+    "targetCoverage": { "line": 80, "branch": 60, "function": 80 },
+    "securityChecks": [
+      "sender-validation",
+      "p42-validation",
+      "error-sanitization"
+    ],
+    "actualCoverage": {
+      "line": 96.24,
+      "branch": 86.95,
+      "function": 100
+    },
+    "totalTests": 97
+  }
+}
