@@ -27,6 +27,24 @@
 
 ---
 
+## [2026-02-28 - Phase 12 5仕様書SubAgent同期テンプレート最適化（TASK-9J）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `assets/phase12-spec-sync-subagent-template.md` を4仕様書前提から5仕様書前提（interfaces/api-ipc/security/task-workflow/lessons）へ拡張。`handler/register/preload` 三点突合を必須工程として追加し、`references/patterns.md` に成功パターン「5仕様書同期 + IPC三点突合テンプレート」と失敗パターン「api-ipc仕様を同期対象から除外」を追記。`references/resource-map.md` も同期更新。
+
+---
+
+## [2026-02-28 - TASK-9J IPC登録配線再発防止パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` に成功パターン「IPC追加時の登録配線突合（handler/register/preload）」と失敗パターン「IPCハンドラ実装のみで登録配線を未確認」を追加。Phase 12クイックナビへ反映し、実装済みでも登録漏れで機能が起動しない再発を防止。
+
+---
+
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)

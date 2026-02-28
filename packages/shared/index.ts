@@ -124,6 +124,18 @@ export type {
   ShareResult,
 } from "./src/types/skill-share";
 
+// Skill Analytics types (TASK-9J)
+export type {
+  SkillUsageEvent,
+  ToolUsageStat,
+  SkillStatistics,
+  AnalyticsPeriod,
+  TrendDataPoint,
+  UsageTrend,
+  SkillUsageSummary,
+  AnalyticsSummary,
+} from "./src/types/skill-analytics";
+
 // Skill Schedule types (TASK-9G)
 export type {
   ScheduledSkill,

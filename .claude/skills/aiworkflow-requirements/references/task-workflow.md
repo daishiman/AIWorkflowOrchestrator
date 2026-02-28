@@ -132,6 +132,69 @@
 
 ## 完了タスク
 
+### タスク: TASK-9J スキル分析・統計機能（2026-02-28）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-9J |
+| 完了日 | 2026-02-28 |
+| ステータス | **完了** |
+| タスク種別 | 新規機能実装（Main IPC / Service / Store / Shared Types / Preload） |
+| Phase | Phase 1-12 完了（Phase 13 未実施） |
+
+#### 反映内容（要点）
+
+- SkillAnalytics サービス: 集計・分析ロジック（統計、サマリー、トレンド、エクスポート）
+- AnalyticsStore: electron-store ベースの永続化ストア（P19準拠バリデーション）
+- skillAnalyticsHandlers: 5 IPCチャネル（P42準拠3段バリデーション、validateIpcSender）
+- 8インターフェース型定義（@repo/shared）
+- Preload API: 5メソッド（safeInvokeUnwrap パターン）
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/interfaces-agent-sdk-skill.md` | 型定義8種と Preload API 5メソッドの契約同期 | 型定義・API名・戻り値型が実装と一致 |
+| SubAgent-B | `references/api-ipc-agent.md` | IPC 5チャネルの request/response/validation 同期 | チャネル一覧と実装状況テーブルが一致 |
+| SubAgent-C | `references/security-electron-ipc.md` | sender/P42/許可値リスト/エラー正規化の同期 | 5ハンドラすべてでセキュリティ要件が明記 |
+| SubAgent-D | `references/task-workflow.md` | 完了台帳・成果物・検証証跡・苦戦箇所の記録 | 実装内容 + 苦戦箇所 + 証跡が同一ターンで更新 |
+| SubAgent-E | `references/lessons-learned.md` | 再発条件付きの教訓化と簡潔解決手順の標準化 | 3課題以上が再利用可能形式で記録済み |
+
+#### 成果物
+
+- 新規: SkillAnalytics.ts, AnalyticsStore.ts, skillAnalyticsHandlers.ts, skill-analytics.ts
+- 修正: ipc/index.ts, channels.ts, skill-api.ts, types/index.ts, packages/shared/index.ts
+- テスト: 97テスト全PASS（型定義 8, AnalyticsStore 15, SkillAnalytics 37, IPC handlers 37）
+- カバレッジ: Stmts 98.68%, Branch 91.9%, Funcs 85.71%, Lines 98.68%
+
+#### 苦戦箇所と解決策（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 原因 | 今回の解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| @repo/shared からの型エクスポート漏れ | 共有型追加時に `src/types/index.ts` の更新だけで完了扱いにした場合 | tsup の公開面（`packages/shared/index.ts`）を同時更新していなかった | `packages/shared/index.ts` に明示的 re-export を追加 | 共有型は `型定義 + types/index + package index` の3点同時更新を必須化 |
+| ESLint unused parameter | エラーサニタイズ関数で受け取る引数を使用しない実装を残した場合 | lintルール（unused vars）との整合を後回しにした | `toIpcErrorResponse` の `error` を `_error` へリネーム | ハンドラ共通ユーティリティは実装時点で lint 0 を完了条件に含める |
+| analytics実装の責務重複（`skillHandlers.ts` と `skillAnalyticsHandlers.ts`） | 段階移行で旧ハンドラを残置したまま新ハンドラを追加する場合 | 正本ファイルを固定せず、同一責務が複数箇所に分散した | analytics責務を `skillAnalyticsHandlers.ts` に一本化し、重複実装を削除 | IPCチャネル群は1ファイル1責務を原則化し、重複実装を禁止 |
+| IPC追加後の登録配線漏れ | ハンドラ実装だけ確認して `ipc/index.ts` 登録を別作業にした場合 | 起動経路（register配線）を完了判定に含めていなかった | `registerSkillAnalyticsHandlers` を `ipc/index.ts` へ追加し、DI初期化と同時に接続 | IPC追加時は `handler/register/preload` の3点セット完了を必須化 |
+| Preload API名の仕様ドリフト（`recordAnalytics` vs `analyticsRecord`） | 実装後に仕様更新を分割し、命名突合を後回しにした場合 | 命名正本（Preload実装）に対する最終同期が不足 | `skill-api.ts` を正本にして `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` を同一ターン同期 | 命名同期は「実装正本 → 仕様書」一方向のみで管理する |
+
+#### 検証証跡（Phase 12 再確認）
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-9J-skill-analytics` | PASS（13/13, error 0, warning 0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-9J-skill-analytics` | PASS（28項目, error 0, warning 0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | ALL_LINKS_EXIST（92/92, missing 0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0（baselineViolations=71 は既存課題） |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. `git diff --name-only` と `rg -n "skill:analytics|registerSkillAnalyticsHandlers"` で「実装・登録・公開API」の3層を同時に確認する。
+2. IPC契約は `Main handler`・`Preload API`・`ドキュメント` の3点を1セットで更新し、1つでも未同期なら未完了扱いにする。
+3. Phase 12 は `verify-all-specs`・`validate-phase-output`・`verify-unassigned-links`・`audit-unassigned-tasks --diff-from HEAD` の4コマンドで完了判定する。
+4. 苦戦箇所は `task-workflow.md` と `lessons-learned.md` に同時記録し、再発条件と対処を固定化する。
+
+---
+
 ### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
 
 | 項目 | 内容 |
@@ -168,11 +231,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. `phase-12-documentation.md` の完了条件と `outputs/phase-12/*` の実体を1対1で突合し、未同期チェックを修正する。  
-2. 完了移管した未タスクIDをキーに、親タスク配下の `artifacts.json` / `minor-issues.md` / `unassigned-task-detection.md` を横断検索する。  
-3. 検証スクリプトは `task-specification-creator/scripts` を正本として解決し、`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。  
-4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時反映する。  
-5. 最後に `quick_validate.js` とリンク監査を再実行し、`currentViolations=0` と `ALL_LINKS_EXIST` を確認する。  
+1. `phase-12-documentation.md` の完了条件と `outputs/phase-12/*` の実体を1対1で突合し、未同期チェックを修正する。
+2. 完了移管した未タスクIDをキーに、親タスク配下の `artifacts.json` / `minor-issues.md` / `unassigned-task-detection.md` を横断検索する。
+3. 検証スクリプトは `task-specification-creator/scripts` を正本として解決し、`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。
+4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時反映する。
+5. 最後に `quick_validate.js` とリンク監査を再実行し、`currentViolations=0` と `ALL_LINKS_EXIST` を確認する。
 
 #### 成果物
 
@@ -237,11 +300,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. 追加IPCは `channels/preload/main-register/tests` の4点を同一ターンで更新する。  
-2. `verify-all-specs` と `validate-phase-output` でワークフローの仕様整合を先に確定する。  
-3. 未タスクは `unassigned-task-guidelines.md` の命名・9セクションテンプレートに必ず合わせる。  
-4. `task-workflow.md` と `unassigned-task-report.md` の参照パスを同時更新する。  
-5. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations=0` を確認して完了判定する。  
+1. 追加IPCは `channels/preload/main-register/tests` の4点を同一ターンで更新する。
+2. `verify-all-specs` と `validate-phase-output` でワークフローの仕様整合を先に確定する。
+3. 未タスクは `unassigned-task-guidelines.md` の命名・9セクションテンプレートに必ず合わせる。
+4. `task-workflow.md` と `unassigned-task-report.md` の参照パスを同時更新する。
+5. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations=0` を確認して完了判定する。
 
 #### 検証結果（2026-02-27 15:39 JST）
 
@@ -311,10 +374,10 @@
 
 #### 同種課題の簡潔解決手順（4ステップ）
 
-1. 追加IPCごとに `channels/preload/handlers/register` の4点を同時更新する。  
-2. 共有型を追加したら `packages/shared/index.ts` と `types/index.ts` の両方で export を同期する。  
-3. ワークフロー仕様の `artifacts.json` を実ファイル名で更新し、参照ドリフトを先に潰す。  
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行して完了判定する。  
+1. 追加IPCごとに `channels/preload/handlers/register` の4点を同時更新する。
+2. 共有型を追加したら `packages/shared/index.ts` と `types/index.ts` の両方で export を同期する。
+3. ワークフロー仕様の `artifacts.json` を実ファイル名で更新し、参照ドリフトを先に潰す。
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行して完了判定する。
 
 #### 成果物
 
@@ -365,11 +428,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. `channels.ts` と handler/preload 実装で契約数・型を先に確定する。  
-2. 全invokeに `validateIpcSender` と P42 3段バリデーションを適用する。  
-3. `interfaces/security/task/lessons` を SubAgent 分担で同時更新する。  
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
-5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値と時刻を記録する。  
+1. `channels.ts` と handler/preload 実装で契約数・型を先に確定する。
+2. 全invokeに `validateIpcSender` と P42 3段バリデーションを適用する。
+3. `interfaces/security/task/lessons` を SubAgent 分担で同時更新する。
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。
+5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値と時刻を記録する。
 
 #### 検証結果（2026-02-26 21:40 JST）
 
@@ -447,11 +510,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. 新規IPC追加時は `channels` / `handler` / `preload` / `tests` を同一ターンで更新する。  
-2. 共有型追加時は `packages/shared/src/types/index.ts` の re-export まで同時更新する。  
-3. Phase 12 は `outputs/phase-12/*` と `phase-12-documentation.md` を必ず相互同期する。  
-4. 仕様書更新は6ファイルを固定セットで確認し、`generate-index.js` 再生成を実施する。  
-5. 監査は `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を連続実行して完了判定する。  
+1. 新規IPC追加時は `channels` / `handler` / `preload` / `tests` を同一ターンで更新する。
+2. 共有型追加時は `packages/shared/src/types/index.ts` の re-export まで同時更新する。
+3. Phase 12 は `outputs/phase-12/*` と `phase-12-documentation.md` を必ず相互同期する。
+4. 仕様書更新は6ファイルを固定セットで確認し、`generate-index.js` 再生成を実施する。
+5. 監査は `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を連続実行して完了判定する。
 
 #### 成果物
 
@@ -484,10 +547,10 @@
 
 #### 同種課題の簡潔解決手順（再確認版 4ステップ）
 
-1. 監査コマンド実行前に、対象スクリプトの実体パスを `rg --files` で確定する。  
-2. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。  
-3. 監査結果は `currentViolations` を合否判定に使い、baselineは既存課題として分離記録する。  
-4. 未タスクは「配置先 + 見出しフォーマット（メタ情報 + 1..9）」を機械確認してから完了判定する。  
+1. 監査コマンド実行前に、対象スクリプトの実体パスを `rg --files` で確定する。
+2. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。
+3. 監査結果は `currentViolations` を合否判定に使い、baselineは既存課題として分離記録する。
+4. 未タスクは「配置先 + 見出しフォーマット（メタ情報 + 1..9）」を機械確認してから完了判定する。
 
 ---
 
@@ -576,11 +639,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md" .claude/skills/aiworkflow-requirements/references/task-workflow.md` でワイルドカード参照を検出し、実体パスへ置換する。  
-2. `verify-all-specs` と `validate-phase-output` を先に実行し、Phase整合を固定する。  
-3. `verify-unassigned-links` で台帳リンク切れを先に排除する。  
-4. 未タスクは `--target-file` 監査で `currentViolations.total` を合否基準にし、baselineは別枠で記録する。  
-5. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同一ターンで同期する。  
+1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md" .claude/skills/aiworkflow-requirements/references/task-workflow.md` でワイルドカード参照を検出し、実体パスへ置換する。
+2. `verify-all-specs` と `validate-phase-output` を先に実行し、Phase整合を固定する。
+3. `verify-unassigned-links` で台帳リンク切れを先に排除する。
+4. 未タスクは `--target-file` 監査で `currentViolations.total` を合否基準にし、baselineは別枠で記録する。
+5. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同一ターンで同期する。
 
 ---
 
@@ -621,10 +684,10 @@
 
 #### 同種課題の簡潔解決手順（4ステップ）
 
-1. 状態を「選択値」と「適用値」の2軸で設計する。  
-2. UI副作用は個別セレクタHookで依存を固定する。  
-3. `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する。  
-4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` を完了条件に固定する。  
+1. 状態を「選択値」と「適用値」の2軸で設計する。
+2. UI副作用は個別セレクタHookで依存を固定する。
+3. `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する。
+4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` を完了条件に固定する。
 
 #### Phase 12 Step 2 転記テンプレート（短縮版）
 
@@ -699,10 +762,10 @@
 
 #### 同種課題の簡潔解決手順（再確認版・4ステップ）
 
-1. `verify-all-specs --workflow` と `validate-phase-output <workflow-dir>` で Phase整合を先に固定する。  
-2. `audit-unassigned-tasks --diff-from HEAD` で current/baseline を分離し、今回差分の合否を確定する。  
-3. 関連未タスクは `--target-file` を使い、`currentViolations.total` を基準に個別確認する。  
-4. 仕様台帳（`task-workflow.md` / `lessons-learned.md`）へ同時追記して完了判定する。  
+1. `verify-all-specs --workflow` と `validate-phase-output <workflow-dir>` で Phase整合を先に固定する。
+2. `audit-unassigned-tasks --diff-from HEAD` で current/baseline を分離し、今回差分の合否を確定する。
+3. 関連未タスクは `--target-file` を使い、`currentViolations.total` を基準に個別確認する。
+4. 仕様台帳（`task-workflow.md` / `lessons-learned.md`）へ同時追記して完了判定する。
 
 ---
 
@@ -805,6 +868,7 @@
 | 成果物 | パス/内容 |
 | --- | --- |
 | 修正仕様書（task-9系） | `task-022-task-9f-skill-share.md`, `task-023a-task-9g-skill-schedule.md`, `task-023b-task-9h-skill-debug.md`, `task-023c-task-9i-skill-docs.md`, `task-023d-task-9j-skill-analytics.md`, `task-023e-task-9d-skill-chain.md`, `task-023f-task-9e-skill-fork.md` |
+| 修正仕様書（task-9系） | `../completed-task/task-022-task-9f-skill-share.md`（移管）, `task-023a-task-9g-skill-schedule.md`, `task-023b-task-9h-skill-debug.md`, `task-023c-task-9i-skill-docs.md`, `../completed-task/task-023d-task-9j-skill-analytics.md`（移管）, `task-023e-task-9d-skill-chain.md`, `task-023f-task-9e-skill-fork.md` |
 | 付随修正 | `task-003-execution-plan.md` の `skill-api.ts` 参照統一 |
 | 完了記録 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md` |
 
@@ -825,11 +889,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. 監査対象を task-9D〜9J に限定してノイズを分離する。  
-2. `oldPaths`（参照差分）と `missingArtifacts`（台帳差分）を分けて検出する。  
-3. 参照差分を一括修正し、次に artifacts を task単位で補完する。  
-4. Date型が残る仕様書は IPC境界方針（ISO 8601 string）へ揃える。  
-5. 完了記録・残課題状態・教訓記録を同一コミット相当で同期する。  
+1. 監査対象を task-9D〜9J に限定してノイズを分離する。
+2. `oldPaths`（参照差分）と `missingArtifacts`（台帳差分）を分けて検出する。
+3. 参照差分を一括修正し、次に artifacts を task単位で補完する。
+4. Date型が残る仕様書は IPC境界方針（ISO 8601 string）へ揃える。
+5. 完了記録・残課題状態・教訓記録を同一コミット相当で同期する。
 
 ---
 
@@ -1671,10 +1735,10 @@
 
 #### 同種課題の簡潔解決手順（4ステップ）
 
-1. `verify-all-specs --workflow` と `validate-phase-output <workflow-dir>` を先に実行して Phase 構造を固定する。  
-2. 未タスク監査は `current` と `baseline` を分離記録し、合否は `current` のみで判定する。  
-3. 実装ガイドは Part 1/Part 2 の必須チェックを通してから完了判定する。  
-4. 仕様書・台帳・未タスク指示書を同一ターンで同期し、リンク検証を実行する。  
+1. `verify-all-specs --workflow` と `validate-phase-output <workflow-dir>` を先に実行して Phase 構造を固定する。
+2. 未タスク監査は `current` と `baseline` を分離記録し、合否は `current` のみで判定する。
+3. 実装ガイドは Part 1/Part 2 の必須チェックを通してから完了判定する。
+4. 仕様書・台帳・未タスク指示書を同一ターンで同期し、リンク検証を実行する。
 
 ---
 
@@ -1811,7 +1875,6 @@
 | ~~UT-UI-THEME-DYNAMIC-SWITCH-001~~                     | ~~settingsSlice テーマ動的切替対応（kanagawa-dragon固定 → 4モード動的切替）~~                                   | ~~中~~     | ~~TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）~~ **完了: 2026-02-25**                      | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md`                                                                              |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001              | Tailwind CSS カスタムプロパティ統合（tokens.css変数をTailwind theme設定に反映）                                   | 低     | TASK-UI-00-TOKENS Phase 12（未タスク検出・2026-02-22）                      | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md`                                                                       |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001         | テーマ動的切替の再発防止ガード強化（状態責務分離/Hook依存安定化/Phase 12証跡同期）                                | 中     | UT-UI-THEME-DYNAMIC-SWITCH-001 Phase 12（実装苦戦箇所・2026-02-25）         | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md`                                                                |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001              | SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗） | 高     | ランタイムエラー調査（2026-02-22）                                          | `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md`                                                                    |
 | UT-UI-ATOMS-PROP-NAMING-001                       | RelativeTime Props命名統一（仕様書updateInterval → 実装refreshInterval）                                         | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-1（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-prop-naming.md`                                                                                   |
 | UT-UI-ATOMS-TOUCH-TARGET-001                      | SuggestionBubble size="sm" タッチターゲット Apple HIG 44px準拠                                                   | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-2（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-touch-target.md`                                                                                  |
 | UT-UI-ATOMS-SPEC-CLARIFICATION-001                | SuggestionBubble success-bounceマイクロインタラクション仕様書責務記述明確化                                       | 低     | TASK-UI-00-ATOMS Phase 10 MINOR M-3（2026-02-23）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-atoms-spec-clarification.md`                                                                            |
@@ -1824,10 +1887,9 @@
 | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001~~         | ~~未タスク監査の対象スコープ制御とベースライン分離（current/baseline判定）~~                                         | ~~中~~     | ~~UT-IPC-DATA-FLOW-TYPE-GAPS-001 Phase 12 再監査（苦戦箇所・2026-02-24）~~ **完了: 2026-02-25（Phase 1-12）**      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-unassigned-audit-scope-control-001.md`                                                              |
 | ~~UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001~~ | ~~Phase 12 検証コマンド標準化ガード（`quick_validate.js` 統一 + `verify-all-specs --workflow` 必須化）~~                 | ~~中~~     | ~~UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 Phase 12再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-validation-command-standardization-001.md`                                                                  |
 | UT-IMP-IPC-PRELOAD-SPEC-SYNC-CI-GUARD-001         | task-9D〜9J 仕様契約ドリフト自動検証CIガード（旧パス/artifacts/Date方針）                                        | 中     | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001 実装苦戦箇所（2026-02-25）  | `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md`                                                            |
-| UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001         | Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）                                       | 中     | UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 | UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
 | UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 | Phase 12 仕様更新の版数・手順整合ガード（spec-update-summary / task-workflow / lessons / SKILL / LOGS 同期）     | 中     | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査（実装苦戦箇所・2026-02-27） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md`                                                     |
-| UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001       | Phase 12 仕様書別SubAgent同期ガードの自動化（4仕様書同時更新 + current/baseline分離判定の標準化）                 | 中     | UT-FIX-SKILL-EXECUTE-INTERFACE-001 Phase 12再確認（実装苦戦箇所・2026-02-25） | `docs/30-workflows/completed-tasks/task-imp-phase12-spec-sync-subagent-guard-001.md`                                                           |
+| ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~    | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合の機械判定）~~               | ~~中~~     | ~~TASK-9J-skill-analytics Phase 12再確認（実装苦戦箇所・2026-02-28）~~ **完了: 2026-02-28（Phase 12完了移管）**           | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md`                                                        |
 | UT-IMP-AIWORKFLOW-UNASSIGNED-TABLE-DEDUP-001      | Phase 12 残課題テーブル重複・状態矛盾検知強化（同一ID一意性監査 + 完了/未完了矛盾検知）                           | 中     | TASK-9F Phase 12 再監査（仕様台帳再確認・2026-02-27）                         | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-unassigned-table-dedup-001.md`                                                          |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 
@@ -1857,6 +1919,11 @@
 | **1.63.1** | **2026-02-28** | **TASK-9I completed-tasks 移管**: Phase 12 完了条件を満たしたため、`docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動。関連未タスク `UT-9I-001/002` も同ディレクトリ配下 `unassigned-task/` へ移管し、台帳・成果物リンクを新パスへ同期 |
 | **1.63.0** | **2026-02-28** | **UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 登録 + TASK-9I再確認追補**: 残課題テーブルへ Phase 12 証跡/リンク整合ガード未タスクを追加。TASK-9I 再確認セクションへワイルドカード参照由来のリンク監査 false fail、`--target-file` 判定軸分離、再確認値ドリフト対策を追記し、対象監査行（新規UT）と未タスク配置/フォーマット確認を同期 |
 | **1.62.9** | **2026-02-28** | **TASK-9I完了反映 + 未タスク2件登録**: 完了タスクセクションへ TASK-9I（docs 4チャネル、SkillDocGenerator、共有型5種、テスト64件PASS）を追加。残課題テーブルへ UT-9I-001（LLMプロバイダ連携）/ UT-9I-002（テンプレートCRUD）を登録し、`docs/30-workflows/unassigned-task/` 正本リンクへ同期 |
+| **1.63.4** | **2026-02-28** | **TASK-9J 完了移管反映**: `docs/30-workflows/TASK-9J-skill-analytics/` を `completed-tasks/` へ移動。併せて `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を `completed-tasks/unassigned-task/` へ移管し、残課題テーブルを完了表記へ更新 |
+| **1.63.3** | **2026-02-28** | **TASK-9J 由来の未タスク登録と台帳整合**: `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を残課題テーブルへ追加。併せて重複していた `UT-FIX-SKILL-IMPORT-ID-MISMATCH-001` / `UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001` / `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` の行を整理し、状態矛盾を解消 |
+| **1.63.2** | **2026-02-28** | **TASK-9J テンプレート準拠最適化**: TASK-9Jセクションを再整形し、メタ情報テーブル・仕様書別SubAgent分担（5仕様書）・再発条件付き苦戦箇所テーブル・Phase 12検証証跡（13/13, 28項目, 92/92, current=0）を追加。仕様同期の再利用性を強化 |
+| **1.63.1** | **2026-02-28** | **TASK-9J 再確認追補**: TASK-9Jセクションに苦戦箇所3件（責務重複、IPC登録漏れ、Preload API命名ドリフト）と同種課題向け簡潔解決手順（4ステップ）を追加。Phase 12再確認の運用根拠を明文化 |
+| **1.63.0** | **2026-02-28** | **TASK-9J完了反映**: 完了タスクセクションにスキル分析・統計機能（SkillAnalytics, AnalyticsStore, 5 IPCチャネル, 8型定義, 97テストPASS）を追加。苦戦箇所（@repo/shared型エクスポート, ESLint unused parameter）を記録 |
 | **1.62.8** | **2026-02-27** | **UT-IMP-PHASE12-UNASSIGNED-BASELINE-REMEDIATION-002 登録**: TASK-9G Phase 12 再確認で顕在化した baseline 違反（未タスクフォーマット/命名/台帳整合）の段階是正タスクを残課題テーブルへ追加。未タスク指示書に「実装課題と解決策（実体探索/`current`-`baseline` 分離/メタ情報重複防止）」と SubAgent 分担を反映 |
 | **1.62.7** | **2026-02-27** | **TASK-9G Phase 12再確認結果を追加**: 検証証跡（13/13, 28項目, 96/96, current=0）を完了タスクセクションへ追記し、運用上の苦戦箇所（スクリプト実行パス誤認 / current-baseline誤読 / `--target-file` 制約）と再確認4ステップ手順を標準化 |
 | **1.62.6** | **2026-02-27** | **TASK-9G 未タスク登録同期**: UT-9G-001〜005（cron nextRun 精度改善 / event トリガー拡張 / 通知実装 / graceful shutdown / Renderer push 通知）を残課題テーブルへ追加し、`docs/30-workflows/unassigned-task/` の指示書5件へ正本リンクを登録 |

@@ -13,6 +13,7 @@
 | ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
 | 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **未タスクメタ情報1セクション運用**, **phase-12仕様書ステータス同期（未実施→完了）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクメタ情報の二重定義**, **phase-12仕様書ステータス未更新** |
 | 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **target監査 + 10見出し同時検証** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクの存在確認止まり（10見出し未検証）** |
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **5仕様書同期 + IPC三点突合テンプレート**, **IPC追加時の登録配線突合（handler/register/preload）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **api-ipc仕様を同期対象から除外**, **IPCハンドラ実装のみで登録配線を未確認** |
 | 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**, **IPC契約ブリッジ（正式契約 + 後方互換）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**, **正式契約切替時の後方互換欠落**                                                                                                                                                                                                                                                                      |
 | 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
@@ -288,6 +289,30 @@
 - **適用条件**: Phase 12でドキュメント成果物のみ先行して完了するタスク
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
+
+### [Phase12] IPCドキュメント契約同期（Main/Preload準拠）
+
+- **状況**: `ipc-documentation.md` が存在しても、`skillHandlers.ts` / `skill-api.ts` の引数・戻り値契約とズレることがある
+- **アプローチ**:
+  - Main (`skillHandlers.ts`) と Preload (`skill-api.ts`) を一次情報に固定し、チャネルごとの入力/出力/エラー契約を表で同期する
+  - 特に Profile A/B/C の返却形式と `sanitizeErrorMessage()` の適用範囲を明示する
+  - 同期後に契約テスト（Main contract + Preload contract）を再実行して回帰を確認する
+- **結果**: API利用者の誤実装を防ぎ、Phase 12 再監査時の差し戻しを減らせる
+- **適用条件**: IPCハンドラ・Preload契約を更新したタスクの Phase 12 Step 2
+- **発見日**: 2026-02-27
+- **関連タスク**: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001
+
+### [Phase12] IPC追加時の登録配線突合（handler/register/preload）
+
+- **状況**: 新規IPCハンドラを実装しても `ipc/index.ts` 側の登録が漏れ、実行時にチャネルが無効化されることがある
+- **アプローチ**:
+  - `handler` 実装、`register` 配線、`preload` 公開を1セットで確認する
+  - `rg -n "register<Feature>Handlers|skill:<feature>:"` で登録とチャネルの両方を機械確認する
+  - 仕様書は Preload API 実装名を正本として同期する（命名ドリフト防止）
+- **結果**: 「実装済みなのに起動しない」類のIPC欠陥を早期に検出できる
+- **適用条件**: IPCチャネル新規追加、または既存チャネルを専用ハンドラへ分割するタスク
+- **発見日**: 2026-02-28
+- **関連タスク**: TASK-9J
 
 ### [Testing] E2EテストでのARIA属性ベースセレクタ優先
 
@@ -1024,6 +1049,21 @@
 - **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 - **クロスリファレンス**: [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
 
+### [Phase12] 5仕様書同期 + IPC三点突合テンプレート（TASK-9J）
+
+- **状況**: `interfaces/security/task-workflow/lessons` は同期しても、`api-ipc` が漏れると IPC 契約の正本が分断される
+- **解決策**:
+  1. SubAgent を `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` の5責務に固定する
+  2. IPC追加時は `handler/register/preload` の3点を `rg` で同時突合し、1つでも欠けたら未完了と判定する
+  3. `task-workflow` へ検証証跡（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）を固定記録する
+  4. `lessons` には再発条件付きで苦戦箇所を記録し、次回タスクで流用できる形に整える
+  5. `assets/phase12-spec-sync-subagent-template.md` を唯一の入力テンプレートとして運用する
+- **効果**: 仕様ドリフト（API名・チャネル・検証要件）の再発を抑止し、Phase 12 再監査の手戻りを削減
+- **適用条件**: IPC追加を含む機能で、5仕様書以上の横断同期が必要な Phase 12
+- **発見日**: 2026-02-28
+- **関連タスク**: TASK-9J
+- **クロスリファレンス**: [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
 ### [Phase 12] 完了タスク記録の二重同期（UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001）
 
 - **状況**: `outputs/phase-12` と `artifacts.json` は更新済みでも、手順書側（`spec-update-workflow.md` / `phase-11-12-guide.md`）に完了タスク実記録が残らないことがある
@@ -1447,6 +1487,17 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 
 ### [Phase12] 未タスク指示書メタ情報の二重定義
+### [Phase12] api-ipc仕様を同期対象から除外
+
+- **状況**: interfaces と security を更新して完了扱いにしたが、`api-ipc-agent.md` のチャネル契約更新を省略する
+- **問題**: 実装済みチャネルの request/response/Preload対応が仕様書に残らず、後続実装が誤った契約を参照する
+- **原因**: SubAgent分担が4仕様書前提で固定され、api-ipc が責務表から抜けていた
+- **教訓**: IPC系タスクでは `api-ipc` を必須仕様書に含めた5仕様書同期が必要
+- **対策**: `phase12-spec-sync-subagent-template.md` の分担を `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` に固定し、完了チェックで5仕様書同時更新を必須化する
+- **発見日**: 2026-02-28
+- **関連タスク**: TASK-9J
+
+### [Phase12] IPC契約ドキュメントを概要のみで確定
 
 - **状況**: 未タスク指示書で `## メタ情報` を2回定義し、YAMLと表を別セクションに分離した
 - **問題**: フォーマット監査でノイズが増え、修正対象の切り分けが遅れる
@@ -1455,6 +1506,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: `unassigned-task-guidelines.md` に重複禁止ルールを追加し、`rg -n "^## メタ情報"` を定期監査に組み込む
 - **発見日**: 2026-02-26
 - **関連タスク**: TASK-9A-skill-editor
+
+### [Phase12] IPCハンドラ実装のみで登録配線を未確認
+
+- **状況**: `skillAnalyticsHandlers.ts` のような専用ハンドラを追加したが、`ipc/index.ts` の `register*Handlers()` 呼び出し追加を見落とす
+- **問題**: テストが部分的にPASSでも、実ランタイムでチャネルが未登録となり機能が使用できない
+- **原因**: 実装完了の判定を「ハンドラファイル作成」で止め、起動経路まで検証していない
+- **教訓**: IPC機能の完了条件は「実装 + 登録 + Preload公開」の3点セットで判定する
+- **対策**: Phase 12チェックリストに「`ipc/index.ts` の登録配線確認」を追加し、回帰テストに登録確認ケースを含める
+- **発見日**: 2026-02-28
+- **関連タスク**: TASK-9J
 
 ### [Skill] 全リソース一括読み込み
 

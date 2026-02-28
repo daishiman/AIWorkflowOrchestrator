@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-28T06:11:01.621Z",
-  "totalKeywords": 1364,
+  "generated": "2026-02-28T07:53:51.411Z",
+  "totalKeywords": 1368,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -763,6 +763,9 @@
     "スキルドキュメント生成": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
+    ],
+    "スキル分析・統計": [
+      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -2518,6 +2521,9 @@
       "interfaces-agent-sdk-skill.md",
       "lessons-learned.md"
     ],
+    "スキル分析": [
+      "interfaces-agent-sdk-skill.md"
+    ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
       "security-skill-ipc.md",
@@ -3028,10 +3034,13 @@
     "空フィールドガード": [
       "lessons-learned.md"
     ],
-    "schedule": [
+    "analytics": [
       "lessons-learned.md"
     ],
     "再確認": [
+      "lessons-learned.md"
+    ],
+    "schedule": [
       "lessons-learned.md"
     ],
     "docs": [
@@ -4146,6 +4155,9 @@
       "security-electron-ipc.md"
     ],
     "skillDocsAPI": [
+      "security-electron-ipc.md"
+    ],
+    "skillAnalyticsAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

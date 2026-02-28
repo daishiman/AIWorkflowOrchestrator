@@ -28,6 +28,7 @@ import {
   registerSkillScheduleHandlers,
   registerSkillDocsHandlers,
 } from "./skillHandlers";
+import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerSkillDebugHandlers } from "./skillDebugHandlers";
 import { registerClaudeCliHandlers } from "../claude-cli";
@@ -47,6 +48,8 @@ import { SkillFileManager } from "../services/skill/SkillFileManager";
 import { SkillDocGenerator as SkillDocGeneratorCls } from "../services/skill/SkillDocGenerator";
 import { ScheduleStore } from "../services/skill/ScheduleStore";
 import { SkillScheduler } from "../services/skill/SkillScheduler";
+import { AnalyticsStore } from "../services/skill/AnalyticsStore";
+import { SkillAnalytics } from "../services/skill/SkillAnalytics";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import { registerAuthModeHandlers } from "./authModeHandlers";
 import {
@@ -599,6 +602,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   );
   registerSkillDocsHandlers(mainWindow, skillDocGenerator);
 
+  // Register Skill Analytics handlers (TASK-9J)
+  const analyticsStore = new AnalyticsStore();
+  const skillAnalytics = new SkillAnalytics(analyticsStore);
+  registerSkillAnalyticsHandlers(mainWindow, skillAnalytics);
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();
   registerPermissionStoreHandlers(permissionStore);
