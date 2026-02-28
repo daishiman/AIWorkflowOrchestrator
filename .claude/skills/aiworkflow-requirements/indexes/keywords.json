@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-27T13:55:11.875Z",
-  "totalKeywords": 1339,
+  "generated": "2026-02-28T06:11:01.621Z",
+  "totalKeywords": 1364,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -756,7 +756,11 @@
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
-    "スキルスケジュール": [
+    "スキルデバッグ": [
+      "api-ipc-agent.md",
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "スキルドキュメント生成": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
@@ -1534,7 +1538,8 @@
       "architecture-implementation-patterns.md"
     ],
     "未タスク参照整合": [
-      "architecture-implementation-patterns.md"
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
     ],
     "スキル構造検証": [
       "architecture-implementation-patterns.md"
@@ -3029,6 +3034,75 @@
     "再確認": [
       "lessons-learned.md"
     ],
+    "docs": [
+      "lessons-learned.md"
+    ],
+    "仕様・成果物整合": [
+      "lessons-learned.md"
+    ],
+    "対象未タスク監査": [
+      "lessons-learned.md"
+    ],
+    "移管前のみ": [
+      "lessons-learned.md"
+    ],
+    "tasks": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "unassigned": [
+      "lessons-learned.md"
+    ],
+    "へ移管後は": [
+      "lessons-learned.md"
+    ],
+    "target": [
+      "lessons-learned.md"
+    ],
+    "file": [
+      "lessons-learned.md"
+    ],
+    "の対象外運用とし": [
+      "lessons-learned.md"
+    ],
+    "今回差分判定は": [
+      "lessons-learned.md"
+    ],
+    "Step": [
+      "lessons-learned.md"
+    ],
+    "diff": [
+      "lessons-learned.md"
+    ],
+    "from": [
+      "lessons-learned.md"
+    ],
+    "HEAD": [
+      "lessons-learned.md"
+    ],
+    "で実施する": [
+      "lessons-learned.md"
+    ],
+    "差分監査": [
+      "lessons-learned.md"
+    ],
+    "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
+      "lessons-learned.md"
+    ],
+    "LINK": [
+      "lessons-learned.md"
+    ],
+    "再確認証跡・未タスクリンク整合ガード": [
+      "lessons-learned.md"
+    ],
     "EXECUTE": [
       "lessons-learned.md"
     ],
@@ -3099,9 +3173,6 @@
       "lessons-learned.md"
     ],
     "ALIGNMENT": [
-      "lessons-learned.md"
-    ],
-    "task": [
       "lessons-learned.md"
     ],
     "仕様差分の統合是正": [
@@ -3468,6 +3539,9 @@
       "lessons-learned.md"
     ],
     "スキル共有・インポート機能": [
+      "lessons-learned.md"
+    ],
+    "スキルデバッグモード実装": [
       "lessons-learned.md"
     ],
     "新規教訓追加用": [
@@ -4068,7 +4142,10 @@
     "skillShareAPI": [
       "security-electron-ipc.md"
     ],
-    "skillScheduleAPI": [
+    "skillDebugAPI": [
+      "security-electron-ipc.md"
+    ],
+    "skillDocsAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

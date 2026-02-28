@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.37.0     | 2026-02-28 | TASK-9I反映: SkillDocGenerator セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と docs 4チャネルの責務分離、共有型5種を追記 |
 | 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
 | 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
 | 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
@@ -107,6 +108,7 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | L2   | SkillAnalyzer      | スキル品質分析（TASK-9C）      |
 | L2   | SkillImprover      | スキル改善適用（TASK-9C）      |
 | L2   | PromptOptimizer    | プロンプト最適化（TASK-9C）    |
+| L2   | SkillDocGenerator  | スキルドキュメント自動生成（TASK-9I） |
 | L2   | ScheduleStore      | スケジュール永続化（TASK-9G）  |
 | L2   | SkillScheduler     | スケジュール実行制御（TASK-9G） |
 | L1   | IPC Handlers       | Renderer通信                   |
@@ -122,6 +124,7 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillAnalyzer.ts`      | スキル静的・AI分析（TASK-9C）     |
 | `SkillImprover.ts`      | 改善適用・バックアップ（TASK-9C） |
 | `PromptOptimizer.ts`    | プロンプト最適化（TASK-9C）       |
+| `SkillDocGenerator.ts`  | スキルドキュメント自動生成（TASK-9I） |
 | `ScheduleStore.ts`      | スケジュール永続化（TASK-9G）     |
 | `SkillScheduler.ts`     | cron/interval/once/event 実行制御（TASK-9G） |
 | `SkillService.ts`       | Facadeサービス（外部API）         |
@@ -147,6 +150,11 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillSchedule`        | `packages/shared/src/types/skill-schedule.ts` | スケジュール設定         |
 | `NotificationSettings` | `packages/shared/src/types/skill-schedule.ts` | 通知設定                 |
 | `ScheduledRunResult`   | `packages/shared/src/types/skill-schedule.ts` | 実行履歴                 |
+| `DocGenerationRequest` | `packages/shared/src/types/skill-docs.ts` | ドキュメント生成リクエスト |
+| `GeneratedDoc`         | `packages/shared/src/types/skill-docs.ts` | 生成ドキュメント本体 |
+| `DocSection`           | `packages/shared/src/types/skill-docs.ts` | 生成結果セクション |
+| `DocTemplate`          | `packages/shared/src/types/skill-docs.ts` | テンプレート定義 |
+| `TemplateSection`      | `packages/shared/src/types/skill-docs.ts` | テンプレートセクション |
 
 ### SkillScanner（TASK-2A実装）
 
@@ -287,6 +295,10 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 | `skill:schedule:update`| `{ id: string; updates: Partial<ScheduledSkill> }` | `IpcResult<void>` | スケジュール更新 |
 | `skill:schedule:delete`| `{ id: string }`     | `IpcResult<void>` | スケジュール削除 |
 | `skill:schedule:toggle`| `{ id: string }`     | `IpcResult<ScheduledSkill \| undefined>` | 有効/無効切替 |
+| `skill:docs:generate`  | `DocGenerationRequest` | `{ success: true, data: GeneratedDoc }` | ドキュメント生成 |
+| `skill:docs:preview`   | `{ skillName: string; template?: DocTemplate }` | `{ success: true, data: GeneratedDoc }` | ドキュメントプレビュー |
+| `skill:docs:export`    | `{ doc: GeneratedDoc; outputPath: string }` | `{ success: true }` | ファイルエクスポート |
+| `skill:docs:templates` | なし | `{ success: true, data: DocTemplate[] }` | テンプレート一覧取得 |
 
 ### データフロー
 
@@ -370,6 +382,32 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | 依存関係 | Scheduler は SkillService 実装詳細を知らない（DI） |
 | テスタビリティ | `SchedulerSkillExecutor` をモック可能 |
 | 責務分離 | 実行制御（Scheduler）とスキル実行本体（SkillService）を分離 |
+
+### SkillDocGenerator（TASK-9I）
+
+スキルドキュメント生成は `SkillService` から独立した専用サービスとして実装する。LLM 依存は関数 DI（`LLMQueryFn`）で注入し、テスト時に差し替え可能とする。
+
+| コンポーネント | 責務 | 実装ファイル |
+| --- | --- | --- |
+| `SkillDocGenerator` | スキル構造解析、テンプレートセクション生成、markdown/html 変換、出力パス検証 | `apps/desktop/src/main/services/skill/SkillDocGenerator.ts` |
+| `registerSkillDocsHandlers` | docs 4チャネルの IPC 境界（sender 検証 + P42 バリデーション + エラー正規化） | `apps/desktop/src/main/ipc/skillHandlers.ts` |
+
+#### 初期化配線（Main Process）
+
+`registerAllIpcHandlers`（`apps/desktop/src/main/ipc/index.ts`）で以下の順に初期化する。
+
+1. `const skillFileManager = new SkillFileManager()`
+2. `const queryFn = stubQueryFn`（現時点は暫定、UT-9I-001 で実プロバイダ連携予定）
+3. `const skillDocGenerator = new SkillDocGenerator(queryFn, skillFileManager)`
+4. `registerSkillDocsHandlers(mainWindow, skillDocGenerator)`
+
+#### 設計上のポイント
+
+| 観点 | 設計方針 |
+| --- | --- |
+| 依存関係 | LLM 実装詳細を `LLMQueryFn` へ抽象化し、サービス本体と分離 |
+| テスタビリティ | `queryFn` と `SkillFileManager` をモック差し替え可能 |
+| セキュリティ | `skill:docs:export` は IPC 層とサービス層で二重にパストラバーサル検証 |
 
 ### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 

@@ -501,59 +501,107 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
-## スキルスケジュール IPC チャネル（TASK-9G）
+## スキルデバッグ IPC チャネル（TASK-9H）
 
-スキルの定期実行設定を管理する IPC チャネル。5チャネルすべて invoke（Renderer → Main）方向。
+スキル実行のデバッグ操作を提供する IPC 契約。6 invoke チャネル（Renderer -> Main）と 1 event チャネル（Main -> Renderer）で構成される。
 
 ### チャネル一覧
 
-| チャネル名               | 方向            | 概要 | リクエスト型 | レスポンス型 |
-| ------------------------ | --------------- | ---- | ------------ | ------------ |
-| `skill:schedule:list`    | Renderer → Main | スケジュール一覧取得 | なし | `IpcResult<ScheduledSkill[]>` |
-| `skill:schedule:add`     | Renderer → Main | スケジュール追加 | `Omit<ScheduledSkill, "id" \| "runHistory">` | `IpcResult<ScheduledSkill>` |
-| `skill:schedule:update`  | Renderer → Main | スケジュール更新 | `{ id: string; updates: Partial<ScheduledSkill> }` | `IpcResult<void>` |
-| `skill:schedule:delete`  | Renderer → Main | スケジュール削除 | `{ id: string }` | `IpcResult<void>` |
-| `skill:schedule:toggle`  | Renderer → Main | 有効/無効切り替え | `{ id: string }` | `IpcResult<ScheduledSkill \| undefined>` |
+| チャネル名 | 方向 | 概要 | リクエスト型 | レスポンス型 |
+| --- | --- | --- | --- | --- |
+| `skill:debug:start` | Renderer -> Main | デバッグセッション開始 | `DebugStartRequest` | `IpcResult<DebugSessionState>` |
+| `skill:debug:command` | Renderer -> Main | デバッグコマンド実行 | `DebugCommandRequest` | `IpcResult<void>` |
+| `skill:debug:breakpoint:add` | Renderer -> Main | ブレークポイント追加 | `DebugBreakpointAddRequest` | `IpcResult<Breakpoint>` |
+| `skill:debug:breakpoint:remove` | Renderer -> Main | ブレークポイント削除 | `DebugBreakpointRemoveRequest` | `IpcResult<void>` |
+| `skill:debug:inspect` | Renderer -> Main | 変数インスペクション | `DebugInspectRequest` | `IpcResult<unknown>` |
+| `skill:debug:evaluate` | Renderer -> Main | 式評価（paused時のみ） | `DebugEvaluateRequest` | `IpcResult<DebugEvaluateResponse>` |
+| `skill:debug:event` | Main -> Renderer | デバッグイベント通知 | - | `DebugEvent` |
 
-### 型定義（`packages/shared/src/types/skill-schedule.ts`）
+### 型定義（`packages/shared/src/types/skill-debug.ts`）
 
 | 型名 | 説明 |
-| ---- | ---- |
-| `ScheduledSkill` | スケジュール本体（`id`, `skillName`, `prompt`, `schedule`, `enabled`, `runHistory`, `notification`, `lastRun`, `nextRun`, `createdAt`, `updatedAt`） |
-| `SkillSchedule` | スケジュール設定（`type: "cron" \| "interval" \| "once" \| "event"` + 各方式の追加フィールド） |
-| `NotificationSettings` | 通知設定（成功/失敗通知と通知方式） |
-| `ScheduledRunResult` | 実行履歴（実行ID、開始/完了時刻、成功可否、出力/エラー） |
+| --- | --- |
+| `DebugSessionState` | `id`, `status`, `breakpoints`, `variables`, `steps` を含む IPC 転送用セッション状態 |
+| `DebugCommand` | `continue`, `stepOver`, `stepInto`, `stepOut`, `pause`, `stop` |
+| `DebugEvent` | `step` / `breakpoint-hit` / `variable-changed` / `session-ended` の Discriminated Union |
+| `DEBUG_CONSTANTS` | `SESSION_TIMEOUT_MS` / `MAX_BREAKPOINTS` / `MAX_STEPS` / `EXPRESSION_TIMEOUT_MS` |
 
 ### バリデーションルール
 
 | チャネル | バリデーション項目 | エラー |
-| -------- | ------------------ | ------ |
-| `skill:schedule:list` | sender 検証のみ | `toIPCValidationError` |
-| `skill:schedule:add` | `skillName` と `prompt` の P42 準拠3段バリデーション、`schedule.type` 必須、`cron` 時 `cronExpression` 必須、`interval` 時 `interval > 0` 必須 | `IpcResult.error` |
-| `skill:schedule:update` | `id` の P42 準拠3段バリデーション | `IpcResult.error` |
-| `skill:schedule:delete` | `id` の P42 準拠3段バリデーション | `IpcResult.error` |
-| `skill:schedule:toggle` | `id` の P42 準拠3段バリデーション + 対象存在確認 | `IpcResult.error` |
+| --- | --- | --- |
+| `skill:debug:start` | `skillName`/`prompt` が P42 準拠3段バリデーション、`breakpoints` が配列 | `skillName must be a non-empty string` など |
+| `skill:debug:command` | `sessionId` が非空文字列、`command` が許可値 | `command must be one of: ...` |
+| `skill:debug:breakpoint:add` | `sessionId` 非空、`breakpoint` が object | `breakpoint must be an object` |
+| `skill:debug:breakpoint:remove` | `sessionId`/`breakpointId` が非空文字列 | `breakpointId must be a non-empty string` |
+| `skill:debug:inspect` | `sessionId`/`path` が非空文字列 | `path must be a non-empty string` |
+| `skill:debug:evaluate` | `sessionId`/`expression` が非空文字列 | `expression must be a non-empty string` |
 
 ### 実装状況
 
 | 実装項目 | ステータス | 関連タスク |
-| -------- | ---------- | ---------- |
-| チャネル定数定義（channels.ts） | 完了 | TASK-9G |
-| ホワイトリスト追加（ALLOWED_INVOKE_CHANNELS） | 完了 | TASK-9G |
-| IPCハンドラー実装（5チャネル） | 完了 | TASK-9G |
-| Preload API実装（5メソッド） | 完了 | TASK-9G |
-| sender 検証（全5ハンドラー） | 完了 | TASK-9G |
-| P42準拠3段バリデーション | 完了 | TASK-9G |
+| --- | --- | --- |
+| チャネル定数定義（`channels.ts`） | 完了 | TASK-9H |
+| ホワイトリスト追加（invoke/on） | 完了 | TASK-9H |
+| IPCハンドラ実装（`skillDebugHandlers.ts`） | 完了 | TASK-9H |
+| ハンドラ登録（`registerAllIpcHandlers`） | 完了 | TASK-9H |
+| Preload API 実装（`skill-api.ts`） | 完了 | TASK-9H |
+| 共有型エクスポート（`@repo/shared`） | 完了 | TASK-9H |
+
+---
+
+## スキルドキュメント生成 IPC チャネル（TASK-9I）
+
+スキルの構造情報をもとにドキュメント生成・プレビュー・エクスポート・テンプレート取得を提供する IPC チャネル。4チャネルすべて invoke（Renderer → Main）方向。
+
+### チャネル一覧
+
+| チャネル名 | 方向 | 概要 | リクエスト型 | レスポンス型 |
+| --- | --- | --- | --- | --- |
+| `skill:docs:generate` | Renderer → Main | ドキュメント生成 | `DocGenerationRequest` | `{ success: true, data: GeneratedDoc }` |
+| `skill:docs:preview` | Renderer → Main | プレビュー生成 | `{ skillName: string; template?: DocTemplate }` | `{ success: true, data: GeneratedDoc }` |
+| `skill:docs:export` | Renderer → Main | ファイルエクスポート | `{ doc: GeneratedDoc; outputPath: string }` | `{ success: true }` |
+| `skill:docs:templates` | Renderer → Main | テンプレート一覧取得 | なし | `{ success: true, data: DocTemplate[] }` |
+
+### 型定義（`packages/shared/src/types/skill-docs.ts`）
+
+| 型名 | 説明 |
+| --- | --- |
+| `DocGenerationRequest` | 生成リクエスト（`skillName`, `outputFormat`, `includeExamples`, `includeApiReference`, `language`, `customSections?`） |
+| `GeneratedDoc` | 生成結果（`skillName`, `format`, `content`, `sections`, `generatedAt`, `wordCount`） |
+| `DocSection` | ドキュメントセクション（`id`, `title`, `content`, `order`） |
+| `DocTemplate` | テンプレート本体（`id`, `name`, `description`, `sections`） |
+| `TemplateSection` | テンプレートセクション定義（`id`, `title`, `prompt`, `required`） |
+
+### バリデーションルール
+
+| チャネル | バリデーション項目 | エラー |
+| --- | --- | --- |
+| `skill:docs:generate` | `request` オブジェクト検証、`skillName` P42準拠3段、`outputFormat` 許可値 (`markdown/html`)、`includeExamples`/`includeApiReference` boolean、`language` 許可値 (`ja/en`)、`customSections` が文字列配列 | `{ success: false, error: string }` |
+| `skill:docs:preview` | `args` オブジェクト検証、`skillName` P42準拠3段 | `{ success: false, error: string }` |
+| `skill:docs:export` | `args` オブジェクト検証、`doc` オブジェクト検証、`outputPath` P42準拠3段、`..` を含むパス拒否 | `{ success: false, error: string }` |
+| `skill:docs:templates` | sender 検証のみ | `toIPCValidationError` |
+
+### 実装状況
+
+| 実装項目 | ステータス | 関連タスク |
+| --- | --- | --- |
+| チャネル定数定義（channels.ts） | 完了 | TASK-9I |
+| ホワイトリスト追加（ALLOWED_INVOKE_CHANNELS） | 完了 | TASK-9I |
+| IPCハンドラー実装（4チャネル） | 完了 | TASK-9I |
+| Preload API実装（4メソッド） | 完了 | TASK-9I |
+| sender 検証（全4ハンドラー） | 完了 | TASK-9I |
+| P42準拠3段バリデーション | 完了 | TASK-9I |
 
 ### セキュリティ仕様
 
-全5 invoke ハンドラーで以下を適用する。
+全4 invoke ハンドラーで以下を適用する。
 
 | 対策 | 実装 | 返却仕様 |
-| ---- | ---- | -------- |
+| --- | --- | --- |
 | Sender 検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
-| 引数バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） | 不正時: `{ success: false, error: string }` |
-| 方式別バリデーション | `cron`/`interval` の必須フィールド検証 | 不正時: `{ success: false, error: string }` |
+| 引数バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） + 許可値チェック | 不正時: `{ success: false, error: string }` |
+| パストラバーサル防止 | `outputPath.includes(\"..\")` を IPC 層で拒否し、サービス層でも再検証 | 不正時: `{ success: false, error: \"Invalid output path\" }` |
 | エラー境界 | `try/catch` で unknown を `"Internal error"` に正規化 | 内部情報漏えい防止 |
 
 ---
@@ -562,6 +610,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
+| TASK-9I    | スキルドキュメント生成機能           | 2026-02-28 | 4チャンネル追加（skill:docs:generate/preview/export/templates）、SkillDocGenerator追加、Preload API 4メソッド追加、共有型5種追加、テスト64件PASS |
 | TASK-9G    | スキルスケジュール実行機能           | 2026-02-27 | 5チャンネル追加（skill:schedule:list/add/update/delete/toggle）、ScheduleStore/SkillScheduler追加、Preload API 5メソッド追加、テスト163件（desktop 158 + shared 5）PASS |
 | TASK-9F    | スキル共有・インポート機能           | 2026-02-27 | 3チャンネル追加（skill:importFromSource/export/validateSource）、共有型定義10型新規作成、SkillShareManager実装、92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
@@ -584,6 +634,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |
+| v1.15.0    | 2026-02-28 | TASK-9I反映: スキルドキュメント生成 IPC セクションを追加。4チャンネル（skill:docs:generate/preview/export/templates）、共有型5種、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
 | v1.14.0    | 2026-02-27 | TASK-9G反映: スキルスケジュールIPCチャネルセクション追加。5チャンネル（skill:schedule:list/add/update/delete/toggle）、型定義（ScheduledSkill系）、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
 | v1.13.1    | 2026-02-27 | TASK-9F追補: 実装時の苦戦箇所3件（起動配線分離/型パスドリフト/未タスク台帳非同期）と同種課題向け4ステップ手順を追加 |
 | v1.13.0    | 2026-02-27 | TASK-9F反映: スキル共有IPCチャネルセクション追加。3チャンネル（skill:importFromSource/export/validateSource）、共有型定義10型、バリデーションルール、セキュリティ仕様、完了タスク記録 |

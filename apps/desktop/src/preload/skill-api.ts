@@ -34,8 +34,23 @@ import type {
   ShareExportResult,
   ShareValidateSourceResult,
   ScheduledSkill,
+  DocGenerationRequest,
+  GeneratedDoc,
+  DocTemplate,
 } from "@repo/shared";
 import type { BackupInfo } from "./types";
+import type {
+  DebugSessionState,
+  Breakpoint,
+  DebugEvent,
+  DebugStartRequest,
+  DebugCommandRequest,
+  DebugBreakpointAddRequest,
+  DebugBreakpointRemoveRequest,
+  DebugInspectRequest,
+  DebugEvaluateRequest,
+  DebugEvaluateResponse,
+} from "@repo/shared";
 
 /**
  * SkillAPI - Skill 実行関連の Preload API インターフェース
@@ -193,6 +208,41 @@ export interface SkillAPI {
   scheduleDelete: (id: string) => Promise<void>;
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
+  // === Skill Debug API (TASK-9H) ===
+
+  /** デバッグセッション管理 */
+  debug: {
+    /** デバッグセッションを開始 */
+    startSession: (request: DebugStartRequest) => Promise<DebugSessionState>;
+    /** デバッグコマンドを実行 */
+    executeCommand: (request: DebugCommandRequest) => Promise<void>;
+    /** ブレークポイントを追加 */
+    addBreakpoint: (request: DebugBreakpointAddRequest) => Promise<Breakpoint>;
+    /** ブレークポイントを削除 */
+    removeBreakpoint: (request: DebugBreakpointRemoveRequest) => Promise<void>;
+    /** 変数をインスペクション */
+    inspectVariable: (request: DebugInspectRequest) => Promise<unknown>;
+    /** 式を評価 */
+    evaluateExpression: (
+      request: DebugEvaluateRequest,
+    ) => Promise<DebugEvaluateResponse>;
+    /** デバッグイベントを購読 */
+    onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
+  };
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  /** ドキュメントを生成する */
+  docsGenerate: (request: DocGenerationRequest) => Promise<GeneratedDoc>;
+  /** ドキュメントのプレビューを生成する */
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ) => Promise<GeneratedDoc>;
+  /** ドキュメントをファイルにエクスポートする */
+  docsExport: (doc: GeneratedDoc, outputPath: string) => Promise<void>;
+  /** 利用可能なテンプレート一覧を取得する */
+  docsTemplates: () => Promise<DocTemplate[]>;
 }
 
 /**
@@ -414,4 +464,65 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
+  // === Skill Debug API (TASK-9H) ===
+
+  debug: {
+    startSession: (request: DebugStartRequest): Promise<DebugSessionState> =>
+      safeInvokeUnwrap<DebugSessionState>(
+        IPC_CHANNELS.SKILL_DEBUG_START,
+        request,
+      ),
+
+    executeCommand: (request: DebugCommandRequest): Promise<void> =>
+      safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DEBUG_COMMAND, request),
+
+    addBreakpoint: (request: DebugBreakpointAddRequest): Promise<Breakpoint> =>
+      safeInvokeUnwrap<Breakpoint>(
+        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_ADD,
+        request,
+      ),
+
+    removeBreakpoint: (request: DebugBreakpointRemoveRequest): Promise<void> =>
+      safeInvokeUnwrap<void>(
+        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_REMOVE,
+        request,
+      ),
+
+    inspectVariable: (request: DebugInspectRequest): Promise<unknown> =>
+      safeInvokeUnwrap<unknown>(IPC_CHANNELS.SKILL_DEBUG_INSPECT, request),
+
+    evaluateExpression: (
+      request: DebugEvaluateRequest,
+    ): Promise<DebugEvaluateResponse> =>
+      safeInvokeUnwrap<DebugEvaluateResponse>(
+        IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
+        request,
+      ),
+
+    onDebugEvent: (callback: (event: DebugEvent) => void): (() => void) =>
+      safeOn<DebugEvent>(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback),
+  },
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  docsGenerate: (request: DocGenerationRequest): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_GENERATE, request),
+
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_PREVIEW, {
+      skillName,
+      template,
+    }),
+
+  docsExport: (doc: GeneratedDoc, outputPath: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DOCS_EXPORT, {
+      doc,
+      outputPath,
+    }),
+
+  docsTemplates: (): Promise<DocTemplate[]> =>
+    safeInvokeUnwrap<DocTemplate[]>(IPC_CHANNELS.SKILL_DOCS_TEMPLATES),
 };

@@ -26,6 +26,20 @@
 
 ---
 
+## 2026-02-28 - TASK-9I 仕様再監査（Phase 12漏れ補完）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新再実行）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `documentation-changelog.md` の Step 1-A/1-B/1-C/1-D/Step 2/Step 1-G を実施済みに同期
+  - `unassigned-task-detection.md` の「作成予定」を解消し、`UT-9I-001` / `UT-9I-002` 指示書2件を `docs/30-workflows/unassigned-task/` に作成
+  - 必須6仕様書（api-ipc / arch-electron-services / security-electron-ipc / architecture-overview / interfaces-agent-sdk-skill / task-workflow）へ TASK-9I 実装内容を反映
+  - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
+
+---
+
 ## 2026-02-27 - TASK-9G 未タスク管理3ステップ完了化（Step 1-E追補）
 
 - **Agent**: task-specification-creator
@@ -59,6 +73,19 @@
 - **Phase**: Phase 1-12
 - **Result**: ✓ 成功
 - **Notes**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用。テスト21件追加（85 passed, 2 skipped）。Issue #913。`spec-update-workflow.md` の既知課題リンクを completed 側へ同期。
+
+---
+
+## 2026-02-27 - TASK-9H Phase 12 再監査（テンプレート整合）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様整合 + 成果物補完）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `phase-4-test-creation.md` / `phase-5-implementation.md` に必須セクション「統合テスト連携」を追加し、`validate-phase-output` エラー2件を解消
+  - `outputs/phase-12` の必須成果物4件（`spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`）を作成
+  - `index.md` / `artifacts.json` のファイル台帳を実装実体（`skillDebugHandlers.ts`, `ipc/index.ts`, `packages/shared/index.ts`）へ同期
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行し current 違反 0 を確認
 
 ---
 
@@ -4694,3 +4721,20 @@ if (artifactPath) {
 
 - ステータス: success
 - 反映範囲: spec-update-workflow / patterns / SKILL change history
+
+## 2026-02-27 - TASK-9H Phase 12 完了同期パターン追加
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象: TASK-9H ドキュメント再監査
+
+### 実施内容
+
+- `references/patterns.md` に成功パターン `phase-12-documentation.md 完了同期` を追加
+- `phase-12-documentation.md` の状態同期手順（成果物5件確認 + ステータス更新 + 検証4点セット）を明文化
+
+### 結果
+
+- ステータス: success
+- 効果: Phase 12 の未実施残置による誤判定を防止

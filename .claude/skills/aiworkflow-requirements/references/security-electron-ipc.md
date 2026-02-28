@@ -11,6 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.10.0    | 2026-02-27 | TASK-9H反映: skillDebugAPI セキュリティ実装パターン追加（validateIpcSender + P42準拠3段バリデーション + vmサンドボックス式評価 + セッションID整合検証）。7チャネル（invoke 6 + event 1）を仕様化 |
+| v1.11.0    | 2026-02-28 | TASK-9I反映: skillDocsAPI セキュリティ実装パターン追加（sender 検証 + P42準拠3段バリデーション + 許可値チェック + パストラバーサル二重防御 + エラー正規化）。4チャンネル、64テストPASS |
 | v1.10.0    | 2026-02-27 | TASK-9G反映: skillScheduleAPI セキュリティ実装パターン追加（sender 検証 + P42準拠3段バリデーション + schedule種別ごとの必須検証 + 内部エラー正規化）。5チャンネル、163テストPASS（desktop 158 + shared 5） |
 | v1.9.0     | 2026-02-27 | TASK-9F反映: skillShareAPIセキュリティ実装パターン追加（validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェック）。3チャンネル、92テスト全PASS |
 | v1.8.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001反映: AUTH IPC登録一元化パターンを追加。重複登録式の宣言的集約と fallback 経路の追跡性維持を明文化 |
@@ -456,55 +458,115 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 ---
 
-## 実装例: skillScheduleAPI（TASK-9G）
+## 実装例: skillDebugAPI（TASK-9H）
 
-スキルスケジュール管理（一覧/追加/更新/削除/有効切替）の5チャネルに適用するセキュリティパターン。
+スキルデバッグ（セッション開始・コマンド実行・ブレークポイント管理・式評価）の7チャネルに適用するセキュリティパターン。
 
 ### チャネル定数定義
 
 | 定数名 | チャネル名 | 方向 |
 | --- | --- | --- |
-| SKILL_SCHEDULE_LIST | `skill:schedule:list` | invoke (R→M) |
-| SKILL_SCHEDULE_ADD | `skill:schedule:add` | invoke (R→M) |
-| SKILL_SCHEDULE_UPDATE | `skill:schedule:update` | invoke (R→M) |
-| SKILL_SCHEDULE_DELETE | `skill:schedule:delete` | invoke (R→M) |
-| SKILL_SCHEDULE_TOGGLE | `skill:schedule:toggle` | invoke (R→M) |
+| SKILL_DEBUG_START | `skill:debug:start` | invoke (R->M) |
+| SKILL_DEBUG_COMMAND | `skill:debug:command` | invoke (R->M) |
+| SKILL_DEBUG_BREAKPOINT_ADD | `skill:debug:breakpoint:add` | invoke (R->M) |
+| SKILL_DEBUG_BREAKPOINT_REMOVE | `skill:debug:breakpoint:remove` | invoke (R->M) |
+| SKILL_DEBUG_INSPECT | `skill:debug:inspect` | invoke (R->M) |
+| SKILL_DEBUG_EVALUATE | `skill:debug:evaluate` | invoke (R->M) |
+| SKILL_DEBUG_EVENT | `skill:debug:event` | on (M->R) |
+
+### セキュリティ検証4層構造（invoke 6チャネル共通）
+
+| 層 | 検証項目 | 実装 | 返却仕様 |
+| --- | --- | --- | --- |
+| 1. Sender検証 | 送信元ウィンドウの正当性 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError(validation)` |
+| 2. P42準拠3段バリデーション | 文字列フィールドの型・空文字列・trim空文字列 | `typeof value === "string"` + `value.trim() !== ""` | 不正時: `{ success: false, error: "... must be a non-empty string" }` |
+| 3. 契約値検証 | `command` 許可値、`breakpoint` オブジェクト、`sessionId` 一致 | `VALID_DEBUG_COMMANDS` / `validateSessionId` | 不正時: `command must be one of ...` / `Session ID mismatch ...` |
+| 4. サンドボックス実行制約 | 式評価時のプロセス境界 | `vm.createContext` + `vm.runInContext(..., { timeout })` | タイムアウト時: `Expression evaluation timed out` |
+
+### チャネル別バリデーション詳細
+
+| チャネル | バリデーション項目 |
+| --- | --- |
+| `skill:debug:start` | `skillName`/`prompt` 非空文字列、`breakpoints` 配列 |
+| `skill:debug:command` | `sessionId` 非空文字列、`command` が6許可値のいずれか |
+| `skill:debug:breakpoint:add` | `sessionId` 非空文字列、`breakpoint` が object |
+| `skill:debug:breakpoint:remove` | `sessionId`/`breakpointId` 非空文字列 |
+| `skill:debug:inspect` | `sessionId`/`path` 非空文字列 |
+| `skill:debug:evaluate` | `sessionId`/`expression` 非空文字列 + paused 状態 |
+
+### 実装上の苦戦箇所（TASK-9H）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| ハンドラ実装と起動配線の分離 | `skillDebugHandlers.ts` 実装のみではランタイム未到達 | `registerAllIpcHandlers` に `registerSkillDebugHandlers(mainWindow)` を追加して配線を固定 |
+| イベントチャネルの扱い誤解 | `skill:debug:event` を invoke 側に誤って混在させやすい | event は `ALLOWED_ON_CHANNELS` のみに登録し、`webContents.send` 専用と明示 |
+| サンドボックス例外の露出 | `vm` 例外をそのまま返すと内部情報漏洩リスク | エラーメッセージをハンドラでサニタイズし、戻り値は統一 `success/error` 契約に限定 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 追加IPCは `channels.ts` の invoke/on 両ホワイトリストを同時更新する。  
+2. ハンドラ追加時は `validateIpcSender` と P42 3段バリデーションをテンプレート化して全チャネルへ適用する。  
+3. イベントチャネルは invoke と分離し、`webContents.send` 経路だけを許可する。  
+4. `skillDebugHandlers.test.ts` と `verify-all-specs` で契約・配線を同時検証する。  
+
+**関連タスク**: TASK-9H（2026-02-27完了）
+
+---
+
+## 実装例: skillDocsAPI（TASK-9I）
+
+スキルドキュメント生成（generate / preview / export / templates）の4チャネルに適用するセキュリティパターン。
+
+### チャネル定数定義
+
+| 定数名 | チャネル名 | 方向 |
+| --- | --- | --- |
+| SKILL_DOCS_GENERATE | `skill:docs:generate` | invoke (R→M) |
+| SKILL_DOCS_PREVIEW | `skill:docs:preview` | invoke (R→M) |
+| SKILL_DOCS_EXPORT | `skill:docs:export` | invoke (R→M) |
+| SKILL_DOCS_TEMPLATES | `skill:docs:templates` | invoke (R→M) |
 
 ### セキュリティ検証4層構造
 
 | 層 | 検証項目 | 実装 | 返却仕様 |
-| -- | -------- | ---- | -------- |
+| --- | --- | --- | --- |
 | 1. Sender検証 | 送信元ウィンドウの正当性 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError(validation)` |
-| 2. P42準拠3段バリデーション | `skillName`/`prompt`/`id` の型・空文字列・trim空文字列 | `typeof === "string"` + `trim() !== ""` | 不正時: `{ success: false, error: string }` |
-| 3. 方式別必須検証 | `schedule.type` 必須、`cron` 時 `cronExpression` 必須、`interval` 時 `interval > 0` 必須 | チャネルごとの条件分岐検証 | 不正時: `{ success: false, error: string }` |
+| 2. P42準拠3段バリデーション | `skillName`/`outputPath` の型・空文字列・trim空文字列 | `typeof === "string"` + `trim() !== ""` | 不正時: `{ success: false, error: string }` |
+| 3. 入力制約検証 | `outputFormat`/`language` 許可値、boolean 型、`customSections` 文字列配列、`doc` オブジェクト | ハンドラー内の条件分岐検証 | 不正時: `{ success: false, error: string }` |
 | 4. エラー境界 | 例外情報の外部露出を防止 | `catch` で unknown を `"Internal error"` へ正規化 | 内部情報漏えい防止 |
 
 ### チャネル別バリデーション詳細
 
 | チャネル | バリデーション項目 |
-| -------- | ------------------ |
-| `skill:schedule:list` | Sender検証のみ |
-| `skill:schedule:add` | `skillName`/`prompt` 非空文字列、`schedule.type` 必須、`cronExpression` 必須（cron）、`interval > 0` 必須（interval） |
-| `skill:schedule:update` | `id` 非空文字列 |
-| `skill:schedule:delete` | `id` 非空文字列 |
-| `skill:schedule:toggle` | `id` 非空文字列 + `ScheduleStore.getById(id)` 存在確認 |
+| --- | --- |
+| `skill:docs:generate` | `request` オブジェクト、`skillName` 非空文字列、`outputFormat` (`markdown/html`)、`includeExamples` boolean、`includeApiReference` boolean、`language` (`ja/en`)、`customSections` 文字列配列 |
+| `skill:docs:preview` | `args` オブジェクト、`skillName` 非空文字列 |
+| `skill:docs:export` | `args` オブジェクト、`doc` オブジェクト、`outputPath` 非空文字列、`..` を含むパス拒否 |
+| `skill:docs:templates` | Sender検証のみ |
 
-### 実装時の苦戦箇所（TASK-9G）
+### 追加防御（export）
+
+| 防御層 | 実装位置 | 内容 |
+| --- | --- | --- |
+| IPC 層 | `registerSkillDocsHandlers` | `outputPath.includes("..")` を即時拒否 |
+| サービス層 | `SkillDocGenerator.validateOutputPath` | `path.resolve` + `..` 検証で再確認 |
+
+### 実装時の苦戦箇所（TASK-9I）
 
 | 苦戦箇所 | 問題 | 解決策 |
 | --- | --- | --- |
-| `schedule:add` の方式別検証漏れ | `cron`/`interval` 固有フィールドを同一検証で扱うと取りこぼしが起きる | `schedule.type` 分岐ごとに必須条件を明示し、ハンドラー内で順序固定（type → cronExpression/interval） |
-| エラー契約の不一致 | Preload 側 unwrap は `string` エラーを前提にするため object 返却が混入すると契約が崩れる | schedule 5チャネルは `{ success: false, error: string }` に統一 |
-| `toggle` の存在確認タイミング | 先に enable/disable を呼ぶと not-found の責務が曖昧になる | `ScheduleStore.getById` で存在確認後に enable/disable を分岐する |
+| 共有型 root export 漏れ | `@repo/shared` から docs 型を参照できず型エラー | `packages/shared/index.ts` に 5型を明示 export |
+| サービス契約不一致 | `listSkillFiles()` 呼び出しと `SkillFileManager` API が不整合 | `SkillFileManager.listSkillFiles()` を追加し API 契約を一致 |
+| 「検証済み」と実態の乖離 | documentation-changelog に Step が未完了のまま残存 | Step 単位の完了チェックと実行証跡を同時更新 |
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. 新規IPCは最初に sender 検証を固定し、以降の検証順序を崩さない。  
-2. 文字列入力はすべて P42 3段で統一する。  
-3. enum/方式分岐は「種別確認 → 種別固有必須」の2段で検証する。  
-4. 返却エラー型は Preload 契約と一致するプリミティブ型へ統一する。  
+1. `sender -> 入力構造 -> P42 -> 許可値` の順序で検証を固定する。  
+2. IPC で拒否した入力でも、サービス層で防御を重ねる（二重防御）。  
+3. shared 型追加時は root export まで同時更新し、型契約ドリフトを防ぐ。  
+4. 仕様更新時は changelog チェック欄と実ファイル更新を同一ターンで完了する。  
 
-**関連タスク**: TASK-9G（2026-02-27完了）
+**関連タスク**: TASK-9I（2026-02-28完了）
 
 ---
 
@@ -531,6 +593,7 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
+| TASK-9I | 2026-02-28 | 完了 | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用 |
 | TASK-9G | 2026-02-27 | 完了 | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用 |
 | TASK-9F | 2026-02-27 | 完了 | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了 | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持 |

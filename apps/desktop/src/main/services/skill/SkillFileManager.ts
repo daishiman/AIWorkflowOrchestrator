@@ -293,6 +293,23 @@ export class SkillFileManager {
   }
 
   /**
+   * スキル配下の通常ファイル一覧を取得
+   * @param skillName - スキル名
+   * @returns スキルディレクトリからの相対パス配列（ソート済み）
+   * @throws {SkillNotFoundError} スキルが見つからない場合
+   */
+  async listSkillFiles(skillName: string): Promise<string[]> {
+    const skillDir = await this.findSkillDir(skillName);
+    const allFiles = await this.walkDir(skillDir.path);
+
+    return allFiles
+      .map((filePath) => path.relative(skillDir.path, filePath))
+      .filter((relativePath) => !BACKUP_PATTERN.test(relativePath))
+      .map((relativePath) => relativePath.split(path.sep).join("/"))
+      .sort((a, b) => a.localeCompare(b));
+  }
+
+  /**
    * バックアップからファイルを復元
    * @param skillName - スキル名
    * @param backupPath - バックアップファイルの相対パス

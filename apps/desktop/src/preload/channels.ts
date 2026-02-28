@@ -309,6 +309,20 @@ export const IPC_CHANNELS = {
   SKILL_SCHEDULE_UPDATE: "skill:schedule:update",
   SKILL_SCHEDULE_DELETE: "skill:schedule:delete",
   SKILL_SCHEDULE_TOGGLE: "skill:schedule:toggle",
+  // Skill debug operations (TASK-9H)
+  SKILL_DEBUG_START: "skill:debug:start",
+  SKILL_DEBUG_COMMAND: "skill:debug:command",
+  SKILL_DEBUG_BREAKPOINT_ADD: "skill:debug:breakpoint:add",
+  SKILL_DEBUG_BREAKPOINT_REMOVE: "skill:debug:breakpoint:remove",
+  SKILL_DEBUG_INSPECT: "skill:debug:inspect",
+  SKILL_DEBUG_EVALUATE: "skill:debug:evaluate",
+  SKILL_DEBUG_EVENT: "skill:debug:event",
+
+  // Skill docs operations (TASK-9I)
+  SKILL_DOCS_GENERATE: "skill:docs:generate",
+  SKILL_DOCS_PREVIEW: "skill:docs:preview",
+  SKILL_DOCS_EXPORT: "skill:docs:export",
+  SKILL_DOCS_TEMPLATES: "skill:docs:templates",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -542,6 +556,18 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_SCHEDULE_UPDATE,
   IPC_CHANNELS.SKILL_SCHEDULE_DELETE,
   IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+  // Skill debug channels (TASK-9H)
+  IPC_CHANNELS.SKILL_DEBUG_START,
+  IPC_CHANNELS.SKILL_DEBUG_COMMAND,
+  IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_ADD,
+  IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_REMOVE,
+  IPC_CHANNELS.SKILL_DEBUG_INSPECT,
+  IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
+  // Skill docs channels (TASK-9I)
+  IPC_CHANNELS.SKILL_DOCS_GENERATE,
+  IPC_CHANNELS.SKILL_DOCS_PREVIEW,
+  IPC_CHANNELS.SKILL_DOCS_EXPORT,
+  IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -588,4 +614,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_MODE_CHANGED,
   // Skill Creator channels (TASK-9B-H)
   IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+  // Skill debug event channel (TASK-9H)
+  IPC_CHANNELS.SKILL_DEBUG_EVENT,
 ];

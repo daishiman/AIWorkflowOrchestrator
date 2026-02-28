@@ -1634,7 +1634,45 @@ export interface PermissionAPI {
 // ===== Skill Schedule types (TASK-9G) =====
 
 export type { ScheduledSkill };
+// ===== Skill Debug operations (TASK-9H) =====
 
+import type {
+  DebugSessionState,
+  Breakpoint,
+  DebugEvent,
+  DebugStartRequest,
+  DebugCommandRequest,
+  DebugBreakpointAddRequest,
+  DebugBreakpointRemoveRequest,
+  DebugInspectRequest,
+  DebugEvaluateRequest,
+  DebugEvaluateResponse,
+} from "@repo/shared";
+
+export type {
+  DebugSessionState,
+  Breakpoint,
+  DebugEvent,
+  DebugStartRequest,
+  DebugCommandRequest,
+  DebugBreakpointAddRequest,
+  DebugBreakpointRemoveRequest,
+  DebugInspectRequest,
+  DebugEvaluateRequest,
+  DebugEvaluateResponse,
+};
+
+export interface SkillDebugAPI {
+  startSession: (request: DebugStartRequest) => Promise<DebugSessionState>;
+  executeCommand: (request: DebugCommandRequest) => Promise<void>;
+  addBreakpoint: (request: DebugBreakpointAddRequest) => Promise<Breakpoint>;
+  removeBreakpoint: (request: DebugBreakpointRemoveRequest) => Promise<void>;
+  inspectVariable: (request: DebugInspectRequest) => Promise<unknown>;
+  evaluateExpression: (
+    request: DebugEvaluateRequest,
+  ) => Promise<DebugEvaluateResponse>;
+  onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
+}
 // Global type declaration
 declare global {
   interface Window {
@@ -1648,6 +1686,7 @@ declare global {
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     permissionAPI: PermissionAPI;
     skillCreatorAPI: import("./skill-creator-api").SkillCreatorAPI;
+    skillDebugAPI: SkillDebugAPI;
   }
 }
 

@@ -209,6 +209,8 @@
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
 | registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 13 (12 invoke + 1 progress) | api-ipc-agent.md |
 | registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
+| registerSkillDebugHandlers       | Pattern 3: mainWindow + service | 7 (6 invoke + 1 event) | api-ipc-agent.md |
+| registerSkillDocsHandlers        | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md |
 | registerSkillScheduleHandlers    | Pattern 4: mainWindow + service + store | 5 | api-ipc-agent.md |
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
@@ -229,15 +231,23 @@
 - **セキュリティ**: 全ハンドラーでSender検証、エラーサニタイズ適用
 - **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
 
-**Pattern 4 詳細（registerSkillScheduleHandlers）**:
+**Pattern 3 詳細（registerSkillDebugHandlers）**:
 
-- **引数**: `mainWindow: BrowserWindow`, `skillScheduler: SkillScheduler`, `scheduleStore: ScheduleStore`
+- **引数**: `mainWindow: BrowserWindow`
+- **mainWindow用途**: Sender検証（`validateIpcSender`）、イベント通知（`webContents.send`）
+- **service用途**: `SkillDebugger` を内部生成してセッション管理・式評価を委譲
+- **対応チャンネル**: `skill:debug:start`, `skill:debug:command`, `skill:debug:breakpoint:add`, `skill:debug:breakpoint:remove`, `skill:debug:inspect`, `skill:debug:evaluate`, `skill:debug:event`
+- **セキュリティ**: 全 invoke ハンドラーでSender検証 + P42準拠入力検証。`evaluate` は vm サンドボックス + タイムアウト制限を適用
+- **関連タスク**: TASK-9H（2026-02-27完了）
+
+**Pattern 3 詳細（registerSkillDocsHandlers）**:
+
+- **引数**: `mainWindow: BrowserWindow`, `skillDocGenerator: SkillDocGenerator`
 - **mainWindow用途**: Sender検証（`validateIpcSender`）
-- **skillScheduler用途**: add/update/delete/enable/disable の実行制御
-- **scheduleStore用途**: list/toggle 後の最新状態読み出し
-- **対応チャンネル**: `skill:schedule:list`, `skill:schedule:add`, `skill:schedule:update`, `skill:schedule:delete`, `skill:schedule:toggle`
-- **セキュリティ**: 全ハンドラーで sender 検証 + P42準拠3段バリデーション + 方式別入力検証（cron/interval）
-- **関連タスク**: TASK-9G（2026-02-27完了）
+- **service用途**: SkillDocGenerator へのドキュメント生成処理委譲
+- **対応チャンネル**: `skill:docs:generate`, `skill:docs:preview`, `skill:docs:export`, `skill:docs:templates`
+- **セキュリティ**: 全ハンドラーで sender 検証、P42準拠3段バリデーション、`export` のパストラバーサル検証、エラー正規化適用
+- **関連タスク**: TASK-9I（2026-02-28完了）
 
 📖 詳細: [architecture-patterns.md](./architecture-patterns.md)
 
@@ -446,6 +456,8 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8.0 | 2026-02-27 | TASK-9H反映: `registerSkillDebugHandlers` を IPC ハンドラー登録一覧へ追加。Pattern 3 詳細に 7チャネル（6 invoke + 1 event）、`SkillDebugger` 配線、vm サンドボックス方針を追記 |
+| 1.9.0 | 2026-02-28 | TASK-9I反映: IPC ハンドラー登録一覧に `registerSkillDocsHandlers` を追加（Pattern 3: mainWindow + service）。4チャネル（skill:docs:generate/preview/export/templates）と Pattern 3 詳細を追記 |
 | 1.8.0 | 2026-02-27 | TASK-9G反映: IPC ハンドラー登録一覧に `registerSkillScheduleHandlers` を追加（Pattern 4: mainWindow + service + store）。5チャネル（skill:schedule:list/add/update/delete/toggle）と DI 構成（SkillScheduler + ScheduleStore）を追記 |
 | 1.7.0 | 2026-02-26 | TASK-9B反映: `registerSkillCreatorHandlers` のチャンネル数を 13（12 invoke + 1 progress）へ更新。Pattern 3 詳細に拡張7チャンネルを追記し、Main Process構造の `services/skill-creator/` 誤記を `services/skill/` に修正 |
 | 1.6.0 | 2026-02-12 | TASK-9B-H: SkillCreatorService追加。IPCハンドラー登録一覧セクション新設、Facadeパターン・ディレクトリ構造にskill-creator追加 |

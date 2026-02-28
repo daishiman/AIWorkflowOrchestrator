@@ -4,6 +4,29 @@
 
 ---
 
+## [2026-02-28 - Phase 12テンプレート最適化（TASK-9I再利用強化）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` を最適化し、再確認タスク向けSubAgent分担（A:task-workflow/B:lessons/C:unassigned/D:検証）を追加
+  - 検証コマンドに `audit --target-file` と 10見出し機械確認（`## メタ情報` + `## 1..9`）を追加
+  - 成果物チェックを `unassigned-task-detection.md` 優先に正規化し、旧 `unassigned-task-report.md` は互換用途に限定
+  - `references/patterns.md` の TASK-9I 成功パターン文言をテンプレート仕様へ同期（10見出し定義の整合）
+  - `SKILL.md` 変更履歴を v10.27.0 に更新
+
+---
+
+## [2026-02-28 - TASK-9I Phase 12再確認パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**: `references/patterns.md` の Phase 12へ成功パターン「target監査 + 10見出し同時検証（TASK-9I再確認）」と失敗パターン「未タスクの存在確認止まり（10見出し未検証）」を追加。`audit-unassigned-tasks --target-file` の `current` 判定固定と、UT指示書の必須10見出し + `## メタ情報` 件数検証を同一ターンで実施する運用を標準化。`SKILL.md` 変更履歴を v10.26.0 に更新。
+
+---
+
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)
@@ -1224,3 +1247,22 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `SKILL.md` 変更履歴に v10.22.0 を追記
 
 ---
+
+## 2026-02-27 - TASK-9H Phase 12 パターン追補
+
+### コンテキスト
+
+- スキル: skill-creator
+- 対象: Phase 12 再監査（TASK-9H）
+
+### 実施内容
+
+- `references/patterns.md` の Phase 12 クイックナビへ成功/失敗パターンを追記
+  - 成功: `phase-12仕様書ステータス同期（未実施→完了）`
+  - 失敗: `phase-12仕様書ステータス未更新`
+- 本文に `phase-12-documentation.md` ステータス同期パターンを追加
+
+### 結果
+
+- ステータス: success
+- 効果: 成果物実体と実行仕様書の不一致を再発防止
