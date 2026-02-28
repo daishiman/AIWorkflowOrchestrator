@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 Phase 12 パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の Phase 12 成功パターンに「待機API/停止API責務分離の仕様固定」を追加
+  - 失敗パターンに「timeout待機APIへの停止副作用混在」を追加し、再発条件と4対策を明文化
+  - クイックナビ（📋 Phase 12）へ両パターンのキーワードを登録し、再利用導線を最適化
+  - `SKILL.md` 変更履歴を `v10.28.0` として同期
+
+---
+
 ## [2026-02-28 - Phase 12テンプレート最適化（TASK-9I再利用強化）]
 
 - **Agent**: skill-creator (update)
@@ -44,7 +57,6 @@
 - **Notes**: `references/patterns.md` に成功パターン「IPC追加時の登録配線突合（handler/register/preload）」と失敗パターン「IPCハンドラ実装のみで登録配線を未確認」を追加。Phase 12クイックナビへ反映し、実装済みでも登録漏れで機能が起動しない再発を防止。
 
 ---
-
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)

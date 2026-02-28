@@ -194,7 +194,71 @@
 4. 苦戦箇所は `task-workflow.md` と `lessons-learned.md` に同時記録し、再発条件と対処を固定化する。
 
 ---
+### タスク: TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 authCallbackServer タイムアウト停止責務分離（2026-02-28完了）
 
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 |
+| 完了日 | 2026-02-28 |
+| ステータス | **完了** |
+| タスク種別 | fix（認証コールバックサーバー安定化） |
+| Phase | Phase 1-13 完了 |
+| 変更範囲 | `apps/desktop/src/main/auth/authCallbackServer.ts` / `apps/desktop/src/main/auth/__tests__/authCallbackServer.test.ts` |
+
+#### 実装内容（要点）
+
+- `waitForCallback()` timeout 内の `instance.stop()` 自動実行を削除し、待機責務へ限定。
+- `stop()` に `!server || !server.listening` ガードを追加し、冪等停止を保証。
+- `server.close((_err) => { ... })` で close 失敗を握りつぶし、終了フローの安定性を確保。
+- timeout テスト（SRV-06）で `await server.stop()` を明示実行してクリーンアップ責務を固定。
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| SubAgent-A | `security-implementation.md` | ローカルHTTPサーバー停止契約の実装同期 |
+| SubAgent-B | `task-workflow.md` | 完了台帳・成果物・検証証跡の固定 |
+| SubAgent-C | `lessons-learned.md` | 再発防止手順（wait/stop責務分離）の教訓化 |
+| SubAgent-D | `task-specification-creator` 監査群 | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit` の実行・記録 |
+
+#### 検証結果（2026-02-28）
+
+| 検証項目 | コマンド | 結果 |
+| --- | --- | --- |
+| 仕様整合 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 --json` | PASS（13/13, error=0） |
+| Phase構造 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` | PASS（28項目, error=0, warning=0） |
+| 未タスクリンク | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（91/91 existing, missing=0） |
+| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0, baselineViolations=71 |
+| 対象テスト | `pnpm --filter @repo/desktop exec vitest run src/main/auth/__tests__/authCallbackServer.test.ts` | PASS（13/13） |
+
+#### 苦戦箇所と解決策（再利用用）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- |
+| timeout時に待機APIが停止責務まで持っていた | `waitForCallback()` の timeout 内で `stop()` を呼ぶ設計 | timeoutはエラー返却のみへ変更し、停止は呼び出し側 `stop()` に分離 | timeout系APIは副作用を持たせず、待機責務へ限定する |
+| `stop()` の多重実行で終了経路が揺れる | 停止済み判定が `!server` のみで `server.listening` を見ない | `!server || !server.listening` で早期returnし、closeエラーは握りつぶして冪等化 | 停止APIは idempotent を第一要件に固定する |
+| 監査スクリプトの所在を誤認しやすい | `aiworkflow-requirements/scripts` に監査スクリプトがある前提で実行 | `rg --files .claude/skills` で実体解決後に `task-specification-creator/scripts` を正本として実行 | 監査は「実体探索→実行」の順序をテンプレート化する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. 変更点を `wait`（待機）と `stop`（停止）の責務に分け、API境界を固定する。  
+2. 停止APIへ未起動/停止済みガードを追加し、冪等停止を先に確保する。  
+3. timeout テストに明示 `await stop()` を追加し、クリーンアップ責務を固定する。  
+4. `security-implementation.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで同期する。  
+5. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行し、検証値を `spec-update-summary.md` に固定する。  
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` |
+| Phase成果物台帳 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/artifacts.json` |
+| Phase 12 実装ガイド | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/implementation-guide.md` |
+| Phase 12 仕様更新サマリー | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/spec-update-summary.md` |
+| Phase 12 更新履歴 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/documentation-changelog.md` |
+| Phase 12 未タスク検出 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/unassigned-task-detection-report.md` |
+
+---
 ### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
 
 | 項目 | 内容 |
@@ -1810,6 +1874,7 @@
 | UT-SEC-001                                        | OAuth プロバイダー自動検出機能（consumeState→validate置換）                                                      | 低     | DEBT-SEC-001 Phase 12（設計乖離検出）                                       | `docs/30-workflows/unassigned-task/task-auth-provider-detection.md`                                                                                |
 | task-sec-auth-state-cleanup-001                   | State Map定期クリーンアップ実装                                                                                  | 低     | DEBT-SEC-001 Phase 12（既知制約検出）                                       | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                                                                          |
 | UT-PROTOCOL-URL-001                               | カスタムプロトコルURLパース標準ユーティリティ整備                                                                | 中     | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                             | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                                                                           |
+| ~~UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001~~ | ~~authCallbackServer wait/stop 責務境界の契約ガード（timeout副作用禁止・stop冪等性）~~                              | ~~中~~     | **2026-02-28完了** TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 Phase 12（完了移管）      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md`                                                        |
 | UT-FIX-5-2                                        | Preload Dialog API ハードコード削除                                                                              | 中     | TASK-FIX-5-1 Phase 10                                                       | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`                                                                     |
 | ~~UT-FIX-5-3~~                                    | ~~Preload Agent Abort セキュリティ修正~~                                                                         | ~~高~~ | ~~TASK-FIX-5-1 Phase 10~~                                                   | ~~`docs/30-workflows/completed-tasks/task-ut-fix-5-3-preload-agent-abort.md`~~ **2026-02-10完了**                                                  |
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT      | Updater/AgentHandler IPC チャネル名定数化                                                                        | 低     | TASK-FIX-12-1 Phase 12                                                      | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`                                                                |
@@ -1915,6 +1980,10 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.62.9** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映**: 実行ワークフローを `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動し、派生未タスク `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルを完了表記へ更新 |
+| **1.62.8** | **2026-02-28** | **UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録**: `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所（wait/stop責務混在、stop冪等性、監査スクリプト所在誤認）を再発防止する未タスクを残課題テーブルへ追加。未タスク指示書は `task-specification-creator` テンプレート（9セクション + 3.5 実装課題）準拠で `docs/30-workflows/completed-tasks/unassigned-task/` に配置 |
+| **1.62.7** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補**: 同タスクへ「苦戦箇所と解決策（再発条件付き）」と「同種課題の簡潔解決手順（5ステップ）」を追加。`phase12-system-spec-retrospective-template` 準拠で wait/stop 責務分離、冪等停止、監査スクリプト実体解決の3論点を再利用可能形式に固定 |
+| **1.62.6** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了反映**: auth callback server の timeout/stop 責務分離（自動 stop 削除、stop 冪等化、timeout テスト後の明示 stop）を完了タスクへ追加。検証証跡（13/13, 28項目, links 91/91, current=0, tests 13/13）を台帳へ固定 |
 | **1.62.5** | **2026-02-27** | **TASK-9H Phase 12再監査同期**: `TASK-9H` セクションに最終検証証跡（`verify-all-specs` 13/13、`validate-phase-output` error=0、`verify-unassigned-links` ALL_LINKS_EXIST、`audit --diff-from HEAD` current=0 / baseline=71）を反映。成果物参照（`spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）を確定し、運用手順を4ステップへ統一 |
 | **1.63.1** | **2026-02-28** | **TASK-9I completed-tasks 移管**: Phase 12 完了条件を満たしたため、`docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動。関連未タスク `UT-9I-001/002` も同ディレクトリ配下 `unassigned-task/` へ移管し、台帳・成果物リンクを新パスへ同期 |
 | **1.63.0** | **2026-02-28** | **UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 登録 + TASK-9I再確認追補**: 残課題テーブルへ Phase 12 証跡/リンク整合ガード未タスクを追加。TASK-9I 再確認セクションへワイルドカード参照由来のリンク監査 false fail、`--target-file` 判定軸分離、再確認値ドリフト対策を追記し、対象監査行（新規UT）と未タスク配置/フォーマット確認を同期 |

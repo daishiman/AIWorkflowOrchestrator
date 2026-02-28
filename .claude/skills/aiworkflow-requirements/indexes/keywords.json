@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-28T07:53:51.411Z",
-  "totalKeywords": 1368,
+  "generated": "2026-02-28T10:08:34.001Z",
+  "totalKeywords": 1376,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3008,6 +3008,30 @@
       "lessons-learned.md"
     ],
     "教訓集": [
+      "lessons-learned.md"
+    ],
+    "CALLBACK": [
+      "lessons-learned.md"
+    ],
+    "SERVER": [
+      "lessons-learned.md"
+    ],
+    "WORKER": [
+      "lessons-learned.md"
+    ],
+    "EXIT": [
+      "lessons-learned.md"
+    ],
+    "authCallbackServer": [
+      "lessons-learned.md"
+    ],
+    "timeout": [
+      "lessons-learned.md"
+    ],
+    "stop": [
+      "lessons-learned.md"
+    ],
+    "責務分離": [
       "lessons-learned.md"
     ],
     "QUICK": [
