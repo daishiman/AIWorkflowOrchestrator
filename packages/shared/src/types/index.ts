@@ -158,3 +158,6 @@ export * from "./skill-docs";
 
 // スキル分析型定義 (TASK-9J)
 export * from "./skill-analytics";
+
+// スキルチェーン型定義 (TASK-9D)
+export * from "./skill-chain";

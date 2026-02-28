@@ -29,8 +29,11 @@ import type {
 } from "@repo/shared";
 import type { SkillScheduler } from "../services/skill/SkillScheduler";
 import type { ScheduleStore } from "../services/skill/ScheduleStore";
+import { SkillChainStore } from "../services/skill/SkillChainStore";
+import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import type { SkillDocGenerator } from "../services/skill/SkillDocGenerator";
 import { DEFAULT_DOC_TEMPLATE } from "../services/skill/SkillDocGenerator";
+import type { SkillChainDefinition } from "@repo/shared";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -1071,4 +1074,175 @@ export function unregisterSkillDocsHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_PREVIEW);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_EXPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_TEMPLATES);
+}
+
+// ─── Skill Chain Handlers (TASK-9D) ───────────────────────────────────────
+
+/**
+ * スキルチェーン管理IPCハンドラーを登録する
+ *
+ * @param mainWindow メインウィンドウ
+ * @param chainStore チェーンストア
+ * @param chainExecutor チェーン実行エンジン
+ */
+export function registerSkillChainHandlers(
+  mainWindow: BrowserWindow,
+  chainStore: SkillChainStore,
+  chainExecutor: SkillChainExecutor,
+): void {
+  // skill:chain:list
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CHAIN_LIST,
+    async (event: IpcMainInvokeEvent) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CHAIN_LIST,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      try {
+        const chains = await chainStore.list();
+        return { success: true, data: chains };
+      } catch (error) {
+        log.error("[skillHandlers] skill:chain:list failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill:chain:get - P42準拠3段バリデーション
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CHAIN_GET,
+    async (event: IpcMainInvokeEvent, chainId: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CHAIN_GET,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      const chainIdError = validateStringArg(chainId, "chainId");
+      if (chainIdError) return chainIdError;
+
+      try {
+        const chain = await chainStore.get(chainId as string);
+        return { success: true, data: chain };
+      } catch (error) {
+        log.error("[skillHandlers] skill:chain:get failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill:chain:save - チェーン定義オブジェクトバリデーション
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CHAIN_SAVE,
+    async (event: IpcMainInvokeEvent, chain: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CHAIN_SAVE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (!chain || typeof chain !== "object") {
+        return { success: false, error: "chain must be an object" };
+      }
+      const def = chain as SkillChainDefinition;
+      const nameError = validateStringArg(def.name, "chain.name");
+      if (nameError) return nameError;
+
+      try {
+        const saved = await chainStore.save(def);
+        return { success: true, data: saved };
+      } catch (error) {
+        log.error("[skillHandlers] skill:chain:save failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill:chain:delete - P42準拠3段バリデーション
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CHAIN_DELETE,
+    async (event: IpcMainInvokeEvent, chainId: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CHAIN_DELETE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      const chainIdError = validateStringArg(chainId, "chainId");
+      if (chainIdError) return chainIdError;
+
+      try {
+        const deleted = await chainStore.delete(chainId as string);
+        return { success: true, data: { deleted } };
+      } catch (error) {
+        log.error("[skillHandlers] skill:chain:delete failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+
+  // skill:chain:execute - 複合バリデーション
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
+    async (event: IpcMainInvokeEvent, args: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (!args || typeof args !== "object") {
+        return { success: false, error: "args must be an object" };
+      }
+      const { chainId, variables } = args as {
+        chainId: unknown;
+        variables?: Record<string, unknown>;
+      };
+
+      const chainIdError = validateStringArg(chainId, "chainId");
+      if (chainIdError) return chainIdError;
+
+      try {
+        const definition = await chainStore.get(chainId as string);
+        if (!definition) {
+          return {
+            success: false,
+            error: `Chain not found: ${chainId as string}`,
+          };
+        }
+        const result = await chainExecutor.executeChain(definition, variables);
+        return { success: true, data: result };
+      } catch (error) {
+        log.error("[skillHandlers] skill:chain:execute failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
+}
+
+/**
+ * スキルチェーン管理IPCハンドラーを解除する
+ */
+export function unregisterSkillChainHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CHAIN_LIST);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CHAIN_GET);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CHAIN_SAVE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CHAIN_DELETE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CHAIN_EXECUTE);
 }

@@ -5,6 +5,82 @@
 
 ---
 
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 完了済みタスクの completed-tasks への移管
+- 目的: 完了済みワークフローと派生未タスクを正本ディレクトリへ統一し、参照ドリフトを防止する
+
+### 実施内容
+- `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` を `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動
+- `task-imp-auth-callback-lifecycle-contract-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動し、ステータスを `完了` に更新
+- `task-workflow.md` の残課題行を完了表記へ更新し、関連パスを completed-tasks へ同期
+- `security-implementation.md` / `SKILL.md` / Phase 12 成果物内リンクを移管先パスへ更新
+
+### 結果
+- ステータス: success
+- 補足: 未タスクリンク監査は `ALL_LINKS_EXIST`、差分監査は `currentViolations=0` を維持
+
+---
+
+## 2026-02-28 - UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: authCallbackServer timeout/wait/stop 契約の再発防止
+- 目的: 親タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所を未タスク指示書として再利用可能化する
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
+- `task-workflow.md` 残課題テーブルに `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` を追加
+- `security-implementation.md` の auth callback 節へ派生未タスク参照を追加
+- 親タスクの苦戦箇所3件（wait/stop責務混在、stop冪等化、監査スクリプト所在誤認）を未タスクへ転記
+
+### 結果
+- ステータス: success
+- 補足: auth callback 系の同種課題を「契約テスト追加 + 仕様同期 + 監査」の短手順で再現可能な状態に固定
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: authCallbackServer timeout/stop 責務分離の再監査（文書最適化）
+- 目的: 実装内容・苦戦箇所・検証証跡をテンプレート準拠で再利用可能化する
+
+### 実施内容
+- `security-implementation.md` に同タスクの苦戦箇所（再発条件付き）と4ステップ手順を追記
+- `task-workflow.md` の同タスク節へ「苦戦箇所と解決策（再利用用）」と「簡潔解決5ステップ」を追記
+- `outputs/phase-12/spec-update-summary.md` を `phase12-system-spec-retrospective-template` 準拠へ再編（メタ情報、SubAgent分担、仕様反映先、苦戦箇所、検証コマンド、成果物チェック）
+- `skill-creator` 側の `patterns.md` に成功/失敗パターンを同期し、再発防止を横断化
+
+### 結果
+- ステータス: success
+- 補足: 同種課題に対する短手順再利用の導線（仕様・台帳・教訓・パターン）が1セットで固定化された
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 仕様再同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: authCallbackServer timeout/stop 責務分離の実装同期
+- 目的: 実装とシステム仕様書のドリフト（コールバック後即停止）を解消し、完了台帳・教訓を反映する
+
+### 実施内容
+- `security-implementation.md` のローカルHTTPサーバー表を更新（timeout時は自動停止しない、停止は呼び出し側の `stop()` 責務）
+- `task-workflow.md` に完了タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` を追加
+- `lessons-learned.md` に wait/stop 責務分離の苦戦箇所と4ステップ再発防止手順を追加
+- 検証証跡を同期（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0, auth test 13/13）
+
+### 結果
+- ステータス: success
+- 補足: タスク成果物（Phase 1-13）とシステム仕様の整合を回復
+
+---
+
 ## 2026-02-27 - TASK-9H 仕様再監査（Phase 12 最終同期）
 ## 2026-02-28 - TASK-9I completed-tasks 移管（Phase 12完了条件充足）
 

@@ -79,11 +79,15 @@ Authorization Code Flow + PKCE方式を実装し、DEBT-SEC-001/002/003を解消
 | バインドアドレス | `127.0.0.1`（ローカルホストのみ）     |
 | ポート         | 動的割り当て（OS自動）                 |
 | タイムアウト   | 5分（TIMEOUT_MS = 300000）             |
-| コールバック後 | 即座にサーバー停止                     |
+| timeout時      | `waitForCallback()` は timeout エラーを返し、サーバー停止はしない |
+| 停止責務       | 呼び出し側が `stop()` を明示実行（冪等） |
+| コールバック後 | callback受信で待機解除。必要に応じて呼び出し側が `stop()` 実行 |
 
 **実装ファイル**: `apps/desktop/src/main/auth/authCallbackServer.ts`
 
-**詳細**: `docs/30-workflows/auth-callback-urlscheme/outputs/phase-12/implementation-guide.md`
+**詳細**:
+- `docs/30-workflows/completed-tasks/auth-callback-urlscheme/outputs/phase-12/implementation-guide.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/implementation-guide.md`
 
 ---
 
@@ -102,6 +106,33 @@ Authorization Code Flow + PKCE方式を実装し、DEBT-SEC-001/002/003を解消
 **適用範囲**: Electronアプリのカスタムプロトコルハンドラー全般に適用可能。`electron://`, `myapp://` 等のスキームすべてに同じ問題が発生する。
 
 **参照**: `apps/desktop/src/main/protocol/customProtocol.ts` の `extractProtocolPath()` 関数
+
+---
+
+### TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: auth callback server の timeout/stop 責務分離（2026-02-28）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題1 | `waitForCallback()` timeout 内で `stop()` を実行すると、待機失敗と停止処理が結合して終了順序が不安定になる |
+| 再発条件1 | 待機APIにライフサイクル操作（stop/close）を同居させる場合 |
+| 対処1 | timeout はエラー返却のみに限定し、停止は呼び出し側 `stop()` の責務へ分離 |
+| 標準ルール1 | timeout系APIは副作用を持たせず、`finally` で明示停止する |
+| 課題2 | 停止済みサーバーへの再停止で例外経路が混ざるとクリーンアップが揺れる |
+| 再発条件2 | `stop()` が `server.listening` 状態を判定しない場合 |
+| 対処2 | `!server || !server.listening` で早期returnし、`server.close` エラーは握りつぶして冪等停止に統一 |
+| 標準ルール2 | 停止APIは idempotent を第一要件にし、best-effort 終了を明文化する |
+
+**同種課題の簡潔解決手順（4ステップ）**:
+1. timeout APIから stop/close などの副作用を分離する。  
+2. 停止APIに「未起動」「停止済み」の二重ガードを入れる。  
+3. timeout テストに `finally` 相当の `await stop()` を固定する。  
+4. `task-workflow.md` と `lessons-learned.md` に同一内容を同一ターンで同期する。  
+
+**参照**:
+- `apps/desktop/src/main/auth/authCallbackServer.ts`
+- `apps/desktop/src/main/auth/__tests__/authCallbackServer.test.ts`
+- `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/spec-update-summary.md`
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md`（派生未タスク: 契約ガード）
 
 ---
 

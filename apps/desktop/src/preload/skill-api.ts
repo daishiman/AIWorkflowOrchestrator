@@ -43,6 +43,7 @@ import type {
   AnalyticsPeriod,
   UsageTrend,
 } from "@repo/shared";
+import type { SkillChainDefinition, SkillChainResult } from "@repo/shared";
 import type { BackupInfo } from "./types";
 import type {
   DebugSessionState,
@@ -272,6 +273,25 @@ export interface SkillAPI {
     format: "json" | "csv",
     period?: { start: string; end: string },
   ) => Promise<string>;
+
+  // === Skill Chain API (TASK-9D) ===
+
+  /** チェーンパイプライン管理 */
+  chain: {
+    /** チェーン定義一覧を取得 */
+    list: () => Promise<SkillChainDefinition[]>;
+    /** チェーン定義を取得 */
+    get: (chainId: string) => Promise<SkillChainDefinition | null>;
+    /** チェーン定義を保存 */
+    save: (chain: SkillChainDefinition) => Promise<SkillChainDefinition>;
+    /** チェーン定義を削除 */
+    delete: (chainId: string) => Promise<{ deleted: boolean }>;
+    /** チェーンを実行 */
+    execute: (
+      chainId: string,
+      variables?: Record<string, unknown>,
+    ) => Promise<SkillChainResult>;
+  };
 }
 
 /**
@@ -594,4 +614,37 @@ export const skillAPI: SkillAPI = {
       format,
       period,
     }),
+
+  // Skill chain operations (TASK-9D)
+  chain: {
+    list: (): Promise<SkillChainDefinition[]> =>
+      safeInvokeUnwrap<SkillChainDefinition[]>(IPC_CHANNELS.SKILL_CHAIN_LIST),
+
+    get: (chainId: string): Promise<SkillChainDefinition | null> =>
+      safeInvokeUnwrap<SkillChainDefinition | null>(
+        IPC_CHANNELS.SKILL_CHAIN_GET,
+        chainId,
+      ),
+
+    save: (chain: SkillChainDefinition): Promise<SkillChainDefinition> =>
+      safeInvokeUnwrap<SkillChainDefinition>(
+        IPC_CHANNELS.SKILL_CHAIN_SAVE,
+        chain,
+      ),
+
+    delete: (chainId: string): Promise<{ deleted: boolean }> =>
+      safeInvokeUnwrap<{ deleted: boolean }>(
+        IPC_CHANNELS.SKILL_CHAIN_DELETE,
+        chainId,
+      ),
+
+    execute: (
+      chainId: string,
+      variables?: Record<string, unknown>,
+    ): Promise<SkillChainResult> =>
+      safeInvokeUnwrap<SkillChainResult>(IPC_CHANNELS.SKILL_CHAIN_EXECUTE, {
+        chainId,
+        variables,
+      }),
+  },
 };

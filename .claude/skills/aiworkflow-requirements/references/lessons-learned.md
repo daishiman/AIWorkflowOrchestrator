@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
 | 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
@@ -94,6 +95,37 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離
+
+### 苦戦箇所: timeout時に待機APIが停止責務まで持っていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `waitForCallback()` timeout 内で `instance.stop()` を呼ぶと、待機失敗と停止処理が結合しワーカー終了時の不安定要因になる |
+| 再発条件 | timeout ハンドラ内で stop/close を直接呼ぶ実装を採用する場合 |
+| 原因 | 待機APIとライフサイクルAPIの責務境界が曖昧だった |
+| 対処 | timeout はエラー返却のみへ変更し、停止は呼び出し側の `stop()` 明示実行へ分離した |
+| 今後の標準ルール | timeout系APIは副作用を持たせず、停止責務を分離する |
+
+### 苦戦箇所: `stop()` の多重実行で終了経路が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 停止済みサーバーへの `stop()` で例外経路が混入するとクリーンアップが不安定になる |
+| 再発条件 | `!server` 判定のみで `server.listening` 状態を見ない場合 |
+| 原因 | `!server` のみ判定で `server.listening` 状態を見ていなかった |
+| 対処 | `!server || !server.listening` で早期returnし、`server.close` エラーは握りつぶして `Promise<void>` を解決する設計へ統一した |
+| 今後の標準ルール | 停止APIは idempotent を第一要件にし、終了時の best-effort 方針を明文化する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. timeout 系APIから停止/破棄などの副作用を分離する。  
+2. 停止APIに「未起動」「停止済み」の両ガードを実装する。  
+3. timeout テストに `finally` 相当の明示 `stop()` を必ず追加する。  
+4. `security-implementation.md` と `task-workflow.md` を同一ターンで同期し、仕様ドリフトを残さない。  
 
 ---
 

@@ -153,6 +153,19 @@ export type {
   TemplateSection,
 } from "./src/types/skill-docs";
 
+// Skill Chain types (TASK-9D)
+export type {
+  SkillChainDefinition,
+  SkillChainStep,
+  InputMapping,
+  OutputMapping,
+  SkillChainCondition,
+  SkillChainResult,
+  StepResult,
+  SkillChainErrorStrategy,
+  InputMappingType,
+  SkillChainConditionType,
+} from "./src/types/skill-chain";
 // Skill Creator types (TASK-9B-G)
 export type {
   SkillCreatorMode,
