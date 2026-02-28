@@ -34,6 +34,14 @@ import type {
   ShareExportResult,
   ShareValidateSourceResult,
   ScheduledSkill,
+  DocGenerationRequest,
+  GeneratedDoc,
+  DocTemplate,
+  SkillUsageEvent,
+  SkillStatistics,
+  AnalyticsSummary,
+  AnalyticsPeriod,
+  UsageTrend,
   SkillForkOptions,
   SkillForkResult,
 } from "@repo/shared";
@@ -189,6 +197,44 @@ export interface SkillAPI {
   validateSource: (
     source: ShareTarget,
   ) => Promise<ShareResult<ShareValidateSourceResult>>;
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  /** ドキュメントを生成する */
+  docsGenerate: (request: DocGenerationRequest) => Promise<GeneratedDoc>;
+  /** ドキュメントのプレビューを生成する */
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ) => Promise<GeneratedDoc>;
+  /** ドキュメントをファイルにエクスポートする */
+  docsExport: (doc: GeneratedDoc, outputPath: string) => Promise<void>;
+  /** 利用可能なテンプレート一覧を取得する */
+  docsTemplates: () => Promise<DocTemplate[]>;
+
+  // === Skill Analytics Operations (TASK-9J) ===
+
+  /** 利用イベントを記録する */
+  analyticsRecord: (
+    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
+  ) => Promise<SkillUsageEvent>;
+  /** スキル統計情報を取得する */
+  analyticsStatistics: (
+    skillName: string,
+    period?: { start: string; end: string },
+  ) => Promise<SkillStatistics>;
+  /** 全体サマリーを取得する */
+  analyticsSummary: () => Promise<AnalyticsSummary>;
+  /** 利用トレンドを取得する */
+  analyticsTrend: (
+    period: AnalyticsPeriod,
+    skillName?: string,
+  ) => Promise<UsageTrend>;
+  /** データをエクスポートする */
+  analyticsExport: (
+    format: "json" | "csv",
+    period?: { start: string; end: string },
+  ) => Promise<string>;
 
   // === Skill Fork Operations (TASK-9E) ===
 
@@ -431,6 +477,69 @@ export const skillAPI: SkillAPI = {
     source: ShareTarget,
   ): Promise<ShareResult<ShareValidateSourceResult>> =>
     safeInvoke(IPC_CHANNELS.SKILL_VALIDATE_SOURCE, source),
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  docsGenerate: (request: DocGenerationRequest): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_GENERATE, request),
+
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_PREVIEW, {
+      skillName,
+      template,
+    }),
+
+  docsExport: (doc: GeneratedDoc, outputPath: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DOCS_EXPORT, {
+      doc,
+      outputPath,
+    }),
+
+  docsTemplates: (): Promise<DocTemplate[]> =>
+    safeInvokeUnwrap<DocTemplate[]>(IPC_CHANNELS.SKILL_DOCS_TEMPLATES),
+
+  // === Skill Analytics Operations (TASK-9J) ===
+
+  analyticsRecord: (
+    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
+  ): Promise<SkillUsageEvent> =>
+    safeInvokeUnwrap<SkillUsageEvent>(
+      IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
+      event,
+    ),
+
+  analyticsStatistics: (
+    skillName: string,
+    period?: { start: string; end: string },
+  ): Promise<SkillStatistics> =>
+    safeInvokeUnwrap<SkillStatistics>(IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS, {
+      skillName,
+      period,
+    }),
+
+  analyticsSummary: (): Promise<AnalyticsSummary> =>
+    safeInvokeUnwrap<AnalyticsSummary>(IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY),
+
+  analyticsTrend: (
+    period: AnalyticsPeriod,
+    skillName?: string,
+  ): Promise<UsageTrend> =>
+    safeInvokeUnwrap<UsageTrend>(IPC_CHANNELS.SKILL_ANALYTICS_TREND, {
+      period,
+      skillName,
+    }),
+
+  analyticsExport: (
+    format: "json" | "csv",
+    period?: { start: string; end: string },
+  ): Promise<string> =>
+    safeInvokeUnwrap<string>(IPC_CHANNELS.SKILL_ANALYTICS_EXPORT, {
+      format,
+      period,
+    }),
 
   // === Skill Fork Operations (TASK-9E) ===
 
