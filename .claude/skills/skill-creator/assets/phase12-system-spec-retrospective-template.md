@@ -43,6 +43,12 @@
 | D | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | A/B/C完了後 |
 | E | `references/lessons-learned.md` | 苦戦箇所と再利用手順の教訓化 | D完了後 |
 
+再確認タスクでは次の分担に置き換えてよい:
+- `A: task-workflow`
+- `B: lessons-learned`
+- `C: unassigned-task (配置/見出し/監査)`
+- `D: 検証（verify/validate/links/audit）`
+
 ---
 
 ## 4. 仕様反映先（テンプレート準拠）
@@ -69,7 +75,7 @@
 
 1. `<変更範囲を interfaces/api-ipc/security/task/lessons の5責務へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
-3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に9セクション形式で作成する>`
+3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
 4. `<verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD を連続実行する>`
 5. `<検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
@@ -83,7 +89,9 @@
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
+| `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -93,6 +101,8 @@
 - [ ] `implementation-guide.md`
 - [ ] `spec-update-summary.md`
 - [ ] `documentation-changelog.md`
-- [ ] `unassigned-task-report.md`（または `unassigned-task-detection.md`）
+- [ ] `unassigned-task-detection.md`（標準）
+- [ ] `unassigned-task-report.md`（旧テンプレート互換が必要な場合のみ）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
+- [ ] `audit --target-file` の `currentViolations: 0` を確認

@@ -550,11 +550,69 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+## スキルドキュメント生成 IPC チャネル（TASK-9I）
+
+スキルの構造情報をもとにドキュメント生成・プレビュー・エクスポート・テンプレート取得を提供する IPC チャネル。4チャネルすべて invoke（Renderer → Main）方向。
+
+### チャネル一覧
+
+| チャネル名 | 方向 | 概要 | リクエスト型 | レスポンス型 |
+| --- | --- | --- | --- | --- |
+| `skill:docs:generate` | Renderer → Main | ドキュメント生成 | `DocGenerationRequest` | `{ success: true, data: GeneratedDoc }` |
+| `skill:docs:preview` | Renderer → Main | プレビュー生成 | `{ skillName: string; template?: DocTemplate }` | `{ success: true, data: GeneratedDoc }` |
+| `skill:docs:export` | Renderer → Main | ファイルエクスポート | `{ doc: GeneratedDoc; outputPath: string }` | `{ success: true }` |
+| `skill:docs:templates` | Renderer → Main | テンプレート一覧取得 | なし | `{ success: true, data: DocTemplate[] }` |
+
+### 型定義（`packages/shared/src/types/skill-docs.ts`）
+
+| 型名 | 説明 |
+| --- | --- |
+| `DocGenerationRequest` | 生成リクエスト（`skillName`, `outputFormat`, `includeExamples`, `includeApiReference`, `language`, `customSections?`） |
+| `GeneratedDoc` | 生成結果（`skillName`, `format`, `content`, `sections`, `generatedAt`, `wordCount`） |
+| `DocSection` | ドキュメントセクション（`id`, `title`, `content`, `order`） |
+| `DocTemplate` | テンプレート本体（`id`, `name`, `description`, `sections`） |
+| `TemplateSection` | テンプレートセクション定義（`id`, `title`, `prompt`, `required`） |
+
+### バリデーションルール
+
+| チャネル | バリデーション項目 | エラー |
+| --- | --- | --- |
+| `skill:docs:generate` | `request` オブジェクト検証、`skillName` P42準拠3段、`outputFormat` 許可値 (`markdown/html`)、`includeExamples`/`includeApiReference` boolean、`language` 許可値 (`ja/en`)、`customSections` が文字列配列 | `{ success: false, error: string }` |
+| `skill:docs:preview` | `args` オブジェクト検証、`skillName` P42準拠3段 | `{ success: false, error: string }` |
+| `skill:docs:export` | `args` オブジェクト検証、`doc` オブジェクト検証、`outputPath` P42準拠3段、`..` を含むパス拒否 | `{ success: false, error: string }` |
+| `skill:docs:templates` | sender 検証のみ | `toIPCValidationError` |
+
+### 実装状況
+
+| 実装項目 | ステータス | 関連タスク |
+| --- | --- | --- |
+| チャネル定数定義（channels.ts） | 完了 | TASK-9I |
+| ホワイトリスト追加（ALLOWED_INVOKE_CHANNELS） | 完了 | TASK-9I |
+| IPCハンドラー実装（4チャネル） | 完了 | TASK-9I |
+| Preload API実装（4メソッド） | 完了 | TASK-9I |
+| sender 検証（全4ハンドラー） | 完了 | TASK-9I |
+| P42準拠3段バリデーション | 完了 | TASK-9I |
+
+### セキュリティ仕様
+
+全4 invoke ハンドラーで以下を適用する。
+
+| 対策 | 実装 | 返却仕様 |
+| --- | --- | --- |
+| Sender 検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
+| 引数バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） + 許可値チェック | 不正時: `{ success: false, error: string }` |
+| パストラバーサル防止 | `outputPath.includes(\"..\")` を IPC 層で拒否し、サービス層でも再検証 | 不正時: `{ success: false, error: \"Invalid output path\" }` |
+| エラー境界 | `try/catch` で unknown を `"Internal error"` に正規化 | 内部情報漏えい防止 |
+
+---
+
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
+| TASK-9I    | スキルドキュメント生成機能           | 2026-02-28 | 4チャンネル追加（skill:docs:generate/preview/export/templates）、SkillDocGenerator追加、Preload API 4メソッド追加、共有型5種追加、テスト64件PASS |
+| TASK-9G    | スキルスケジュール実行機能           | 2026-02-27 | 5チャンネル追加（skill:schedule:list/add/update/delete/toggle）、ScheduleStore/SkillScheduler追加、Preload API 5メソッド追加、テスト163件（desktop 158 + shared 5）PASS |
 | TASK-9F    | スキル共有・インポート機能           | 2026-02-27 | 3チャンネル追加（skill:importFromSource/export/validateSource）、共有型定義10型新規作成、SkillShareManager実装、92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | skill:remove IPCインターフェース不整合修正 | 2026-02-20 | `skill:remove` の Mainハンドラー引数契約を `skillName: string` に統一。空白文字列を拒否する3段バリデーションを追加 |
@@ -577,6 +635,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
 | v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |
+| v1.15.0    | 2026-02-28 | TASK-9I反映: スキルドキュメント生成 IPC セクションを追加。4チャンネル（skill:docs:generate/preview/export/templates）、共有型5種、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
+| v1.14.0    | 2026-02-27 | TASK-9G反映: スキルスケジュールIPCチャネルセクション追加。5チャンネル（skill:schedule:list/add/update/delete/toggle）、型定義（ScheduledSkill系）、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
 | v1.13.1    | 2026-02-27 | TASK-9F追補: 実装時の苦戦箇所3件（起動配線分離/型パスドリフト/未タスク台帳非同期）と同種課題向け4ステップ手順を追加 |
 | v1.13.0    | 2026-02-27 | TASK-9F反映: スキル共有IPCチャネルセクション追加。3チャンネル（skill:importFromSource/export/validateSource）、共有型定義10型、バリデーションルール、セキュリティ仕様、完了タスク記録 |
 | v1.12.0    | 2026-02-26 | TASK-9B反映: SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ更新。拡張7チャンネル、`SkillCreatorProgress`（`phase/percentage/message`）、実装状況テーブルを実装実体へ同期 |

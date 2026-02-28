@@ -29,6 +29,8 @@ import type {
 } from "@repo/shared";
 import type { SkillScheduler } from "../services/skill/SkillScheduler";
 import type { ScheduleStore } from "../services/skill/ScheduleStore";
+import type { SkillDocGenerator } from "../services/skill/SkillDocGenerator";
+import { DEFAULT_DOC_TEMPLATE } from "../services/skill/SkillDocGenerator";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -825,4 +827,248 @@ export function unregisterSkillScheduleHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_UPDATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_DELETE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE);
+}
+
+// ========================================
+// TASK-9I: スキルドキュメント生成機能
+// ========================================
+
+const VALID_OUTPUT_FORMATS = ["markdown", "html"] as const;
+const VALID_LANGUAGES = ["ja", "en"] as const;
+
+/**
+ * スキルドキュメント生成IPCハンドラーを登録する
+ */
+export function registerSkillDocsHandlers(
+  mainWindow: BrowserWindow,
+  skillDocGenerator: SkillDocGenerator,
+): void {
+  // skill:docs:generate - ドキュメント生成
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_DOCS_GENERATE,
+    async (event: IpcMainInvokeEvent, request: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_DOCS_GENERATE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      // 引数バリデーション
+      if (request === null || typeof request !== "object") {
+        return { success: false, error: "request must be an object" };
+      }
+      const req = request as Record<string, unknown>;
+
+      // skillName: P42準拠3段バリデーション
+      const skillNameError = validateStringArg(req.skillName, "skillName");
+      if (skillNameError) return skillNameError;
+
+      // outputFormat: 許可値リストチェック
+      if (
+        typeof req.outputFormat !== "string" ||
+        !VALID_OUTPUT_FORMATS.includes(
+          req.outputFormat as (typeof VALID_OUTPUT_FORMATS)[number],
+        )
+      ) {
+        return {
+          success: false,
+          error: `outputFormat must be one of: ${VALID_OUTPUT_FORMATS.join(", ")}`,
+        };
+      }
+
+      // includeExamples: boolean チェック
+      if (typeof req.includeExamples !== "boolean") {
+        return { success: false, error: "includeExamples must be a boolean" };
+      }
+
+      // includeApiReference: boolean チェック
+      if (typeof req.includeApiReference !== "boolean") {
+        return {
+          success: false,
+          error: "includeApiReference must be a boolean",
+        };
+      }
+
+      // language: 許可値リストチェック
+      if (
+        typeof req.language !== "string" ||
+        !VALID_LANGUAGES.includes(
+          req.language as (typeof VALID_LANGUAGES)[number],
+        )
+      ) {
+        return {
+          success: false,
+          error: `language must be one of: ${VALID_LANGUAGES.join(", ")}`,
+        };
+      }
+
+      // customSections: 任意配列チェック
+      if (req.customSections !== undefined) {
+        if (
+          !Array.isArray(req.customSections) ||
+          !req.customSections.every((s: unknown) => typeof s === "string")
+        ) {
+          return {
+            success: false,
+            error: "customSections must be an array of strings",
+          };
+        }
+      }
+
+      try {
+        const generateRequest: import("@repo/shared").DocGenerationRequest = {
+          skillName: req.skillName as string,
+          outputFormat: req.outputFormat as "markdown" | "html",
+          includeExamples: req.includeExamples as boolean,
+          includeApiReference: req.includeApiReference as boolean,
+          language: req.language as "ja" | "en",
+          ...(req.customSections !== undefined
+            ? { customSections: req.customSections as string[] }
+            : {}),
+        };
+
+        const doc = await skillDocGenerator.generate(generateRequest);
+        return { success: true, data: doc };
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("Skill not found")
+        ) {
+          return { success: false, error: error.message };
+        }
+        if (
+          error instanceof Error &&
+          error.message.includes("Document generation failed")
+        ) {
+          return { success: false, error: "Document generation failed" };
+        }
+        return { success: false, error: "Internal error" };
+      }
+    },
+  );
+
+  // skill:docs:preview - プレビュー生成
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_DOCS_PREVIEW,
+    async (event: IpcMainInvokeEvent, args: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_DOCS_PREVIEW,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      if (args === null || typeof args !== "object") {
+        return { success: false, error: "args must be an object" };
+      }
+      const a = args as Record<string, unknown>;
+
+      const skillNameError = validateStringArg(a.skillName, "skillName");
+      if (skillNameError) return skillNameError;
+
+      try {
+        const doc = await skillDocGenerator.preview(
+          a.skillName as string,
+          a.template as import("@repo/shared").DocTemplate | undefined,
+        );
+        return { success: true, data: doc };
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("Skill not found")
+        ) {
+          return { success: false, error: error.message };
+        }
+        return { success: false, error: "Internal error" };
+      }
+    },
+  );
+
+  // skill:docs:export - ファイルエクスポート
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_DOCS_EXPORT,
+    async (event: IpcMainInvokeEvent, args: unknown) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_DOCS_EXPORT,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      if (args === null || typeof args !== "object") {
+        return { success: false, error: "args must be an object" };
+      }
+      const a = args as Record<string, unknown>;
+
+      if (a.doc === null || a.doc === undefined || typeof a.doc !== "object") {
+        return { success: false, error: "doc must be a valid object" };
+      }
+
+      const outputPathError = validateStringArg(a.outputPath, "outputPath");
+      if (outputPathError) return outputPathError;
+
+      // パストラバーサル検証（IPC層）
+      const outputPath = a.outputPath as string;
+      if (outputPath.includes("..")) {
+        return { success: false, error: "Invalid output path" };
+      }
+
+      try {
+        await skillDocGenerator.exportToFile(
+          a.doc as import("@repo/shared").GeneratedDoc,
+          outputPath,
+        );
+        return { success: true };
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.startsWith("Invalid output path")
+        ) {
+          return { success: false, error: error.message };
+        }
+        if (error instanceof Error && error.message.includes("Export failed")) {
+          return { success: false, error: "Export failed" };
+        }
+        return { success: false, error: "Internal error" };
+      }
+    },
+  );
+
+  // skill:docs:templates - テンプレート一覧取得
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
+    async (event: IpcMainInvokeEvent) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        return toIPCValidationError(validation);
+      }
+
+      try {
+        return { success: true, data: [DEFAULT_DOC_TEMPLATE] };
+      } catch {
+        return { success: false, error: "Internal error" };
+      }
+    },
+  );
+}
+
+/**
+ * スキルドキュメント生成IPCハンドラーを解除する
+ */
+export function unregisterSkillDocsHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_GENERATE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_PREVIEW);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_EXPORT);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_DOCS_TEMPLATES);
 }
