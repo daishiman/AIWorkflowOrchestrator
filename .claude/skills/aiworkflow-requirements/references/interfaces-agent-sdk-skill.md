@@ -1968,11 +1968,78 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 ---
 
+## スキルドキュメント生成 型定義（TASK-9I）
+
+`packages/shared/src/types/skill-docs.ts` に定義されたスキルドキュメント生成機能の型。
+
+### 型一覧
+
+| 型名 | 定義元 | 用途 |
+| --- | --- | --- |
+| `DocGenerationRequest` | `packages/shared/src/types/skill-docs.ts` | ドキュメント生成リクエスト |
+| `GeneratedDoc` | 同上 | 生成結果本体 |
+| `DocSection` | 同上 | セクション単位の出力 |
+| `DocTemplate` | 同上 | テンプレート定義 |
+| `TemplateSection` | 同上 | テンプレート内セクション定義 |
+
+### DocGenerationRequest フィールド詳細
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `skillName` | `string` | ✓ | 対象スキル名（P42準拠非空文字列） |
+| `outputFormat` | `"markdown" \| "html"` | ✓ | 出力形式 |
+| `includeExamples` | `boolean` | ✓ | examples セクション生成有無 |
+| `includeApiReference` | `boolean` | ✓ | API セクション生成有無 |
+| `language` | `"ja" \| "en"` | ✓ | 生成言語 |
+| `customSections` | `string[] \| undefined` | - | 追加セクション名 |
+
+### GeneratedDoc フィールド詳細
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `skillName` | `string` | ✓ | 対象スキル名 |
+| `format` | `"markdown" \| "html"` | ✓ | 生成形式 |
+| `content` | `string` | ✓ | 生成ドキュメント全文 |
+| `sections` | `DocSection[]` | ✓ | セクション一覧 |
+| `generatedAt` | `string` | ✓ | 生成日時（ISO 8601） |
+| `wordCount` | `number` | ✓ | 文字数合計 |
+
+### Preload API（`skill-api.ts`）
+
+| メソッド名 | 引数 | 戻り値 | チャネル |
+| --- | --- | --- | --- |
+| `docsGenerate` | `request: DocGenerationRequest` | `Promise<GeneratedDoc>` | `skill:docs:generate` |
+| `docsPreview` | `skillName: string, template?: DocTemplate` | `Promise<GeneratedDoc>` | `skill:docs:preview` |
+| `docsExport` | `doc: GeneratedDoc, outputPath: string` | `Promise<void>` | `skill:docs:export` |
+| `docsTemplates` | なし | `Promise<DocTemplate[]>` | `skill:docs:templates` |
+
+### 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| TASK-9I | 2026-02-28 | 完了 | docs 型定義5種追加、Preload API 4メソッド追加、IPC 4チャネル連携、テスト64件（desktop 56 + shared 8）PASS |
+
+### 関連ワークフロー
+
+- [TASK-9I ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9I-skill-docs/)
+
+### 関連未タスク（TASK-9I）
+
+| タスクID | 内容 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
+| UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
 | 2026-02-27 | 1.41.0     | TASK-9H反映: スキルデバッグ型定義セクション追加（`DebugSessionState` / `DebugEvent` / `DebugCommand` / Preload API 7メソッド、配線漏れ対策を含む） |
+| 2026-02-28 | 1.42.0     | TASK-9I反映: スキルドキュメント型定義セクション追加（DocGenerationRequest / GeneratedDoc / DocSection / DocTemplate / TemplateSection）、Preload API 4メソッド（docsGenerate/docsPreview/docsExport/docsTemplates）、関連未タスク UT-9I-001/002 を登録 |
+| 2026-02-27 | 1.41.1     | TASK-9G 未タスク同期: UT-9G-001〜005 を関連未タスクとして登録し、`unassigned-task/` 指示書への正本リンクを追加 |
+| 2026-02-27 | 1.41.0     | TASK-9G完了反映: スキルスケジュール型定義セクション追加（ScheduledSkill/SkillSchedule/NotificationSettings/ScheduledRunResult）、Preload API 5メソッド（scheduleList/add/update/delete/toggle）と完了タスク記録を追記 |
 | 2026-02-27 | 1.40.1     | TASK-9F追補: 型仕様の苦戦箇所3件（型パス正本/分岐契約明示/MINOR分離）と同種課題向け4ステップ手順を追加 |
 | 2026-02-27 | 1.40.0     | TASK-9F完了反映: スキル共有型定義セクション追加（ShareTarget/ShareImportResult/ShareExportResult/ShareValidateSourceResult等10型、Preload API 3メソッド、完了タスク記録） |
 | 2026-02-26 | 1.39.0     | TASK-9B 完了移管に同期: 実行ワークフロー参照を `completed-tasks/task-9b-skill-creator/` に統一し、`UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001` を completed-tasks/unassigned-task 移管済みとして完了化 |

@@ -34,6 +34,9 @@ import type {
   ShareExportResult,
   ShareValidateSourceResult,
   ScheduledSkill,
+  DocGenerationRequest,
+  GeneratedDoc,
+  DocTemplate,
 } from "@repo/shared";
 import type { BackupInfo } from "./types";
 import type {
@@ -205,7 +208,6 @@ export interface SkillAPI {
   scheduleDelete: (id: string) => Promise<void>;
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
-
   // === Skill Debug API (TASK-9H) ===
 
   /** デバッグセッション管理 */
@@ -227,6 +229,20 @@ export interface SkillAPI {
     /** デバッグイベントを購読 */
     onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
   };
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  /** ドキュメントを生成する */
+  docsGenerate: (request: DocGenerationRequest) => Promise<GeneratedDoc>;
+  /** ドキュメントのプレビューを生成する */
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ) => Promise<GeneratedDoc>;
+  /** ドキュメントをファイルにエクスポートする */
+  docsExport: (doc: GeneratedDoc, outputPath: string) => Promise<void>;
+  /** 利用可能なテンプレート一覧を取得する */
+  docsTemplates: () => Promise<DocTemplate[]>;
 }
 
 /**
@@ -448,7 +464,6 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
-
   // === Skill Debug API (TASK-9H) ===
 
   debug: {
@@ -487,4 +502,27 @@ export const skillAPI: SkillAPI = {
     onDebugEvent: (callback: (event: DebugEvent) => void): (() => void) =>
       safeOn<DebugEvent>(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback),
   },
+
+  // === Skill Docs Operations (TASK-9I) ===
+
+  docsGenerate: (request: DocGenerationRequest): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_GENERATE, request),
+
+  docsPreview: (
+    skillName: string,
+    template?: DocTemplate,
+  ): Promise<GeneratedDoc> =>
+    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_PREVIEW, {
+      skillName,
+      template,
+    }),
+
+  docsExport: (doc: GeneratedDoc, outputPath: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DOCS_EXPORT, {
+      doc,
+      outputPath,
+    }),
+
+  docsTemplates: (): Promise<DocTemplate[]> =>
+    safeInvokeUnwrap<DocTemplate[]>(IPC_CHANNELS.SKILL_DOCS_TEMPLATES),
 };
