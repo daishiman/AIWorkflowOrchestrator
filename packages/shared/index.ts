@@ -132,6 +132,37 @@ export type {
   ScheduledRunResult,
 } from "./src/types/skill-schedule";
 
+// Skill Analytics types (TASK-9I)
+export type {
+  SkillUsageEvent,
+  ToolUsageStat,
+  SkillStatistics,
+  AnalyticsPeriod,
+  TrendDataPoint,
+  UsageTrend,
+  SkillUsageSummary,
+  AnalyticsSummary,
+} from "./src/types/skill-analytics";
+
+// Skill Docs types (TASK-9J)
+export type {
+  DocGenerationRequest,
+  GeneratedDoc,
+  DocSection,
+  DocTemplate,
+  TemplateSection,
+} from "./src/types/skill-docs";
+
+// Skill Chain types (TASK-9D)
+export type {
+  SkillChainDefinition,
+  SkillChainResult,
+  StepResult,
+  InputMapping,
+  OutputMapping,
+  SkillChainCondition,
+} from "./src/types/skill-chain";
+
 // Skill Fork types (TASK-9E)
 export type {
   SkillForkOptions,

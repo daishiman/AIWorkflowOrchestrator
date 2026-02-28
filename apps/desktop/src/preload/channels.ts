@@ -198,6 +198,26 @@ export const IPC_CHANNELS = {
   SKILL_OPTIMIZE_VARIANTS: "skill:optimize:variants",
   SKILL_OPTIMIZE_EVALUATE: "skill:optimize:evaluate",
 
+  // Skill analytics operations (TASK-9I)
+  SKILL_ANALYTICS_RECORD: "skill:analytics:record",
+  SKILL_ANALYTICS_STATISTICS: "skill:analytics:statistics",
+  SKILL_ANALYTICS_SUMMARY: "skill:analytics:summary",
+  SKILL_ANALYTICS_TREND: "skill:analytics:trend",
+  SKILL_ANALYTICS_EXPORT: "skill:analytics:export",
+
+  // Skill docs operations (TASK-9J)
+  SKILL_DOCS_GENERATE: "skill:docs:generate",
+  SKILL_DOCS_PREVIEW: "skill:docs:preview",
+  SKILL_DOCS_EXPORT: "skill:docs:export",
+  SKILL_DOCS_TEMPLATES: "skill:docs:templates",
+
+  // Skill chain operations (TASK-9D)
+  SKILL_CHAIN_LIST: "skill:chain:list",
+  SKILL_CHAIN_GET: "skill:chain:get",
+  SKILL_CHAIN_SAVE: "skill:chain:save",
+  SKILL_CHAIN_DELETE: "skill:chain:delete",
+  SKILL_CHAIN_EXECUTE: "skill:chain:execute",
+
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
@@ -462,6 +482,23 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_OPTIMIZE,
   IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS,
   IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+  // Skill analytics channels (TASK-9I)
+  IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
+  IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS,
+  IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY,
+  IPC_CHANNELS.SKILL_ANALYTICS_TREND,
+  IPC_CHANNELS.SKILL_ANALYTICS_EXPORT,
+  // Skill docs channels (TASK-9J)
+  IPC_CHANNELS.SKILL_DOCS_GENERATE,
+  IPC_CHANNELS.SKILL_DOCS_PREVIEW,
+  IPC_CHANNELS.SKILL_DOCS_EXPORT,
+  IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
+  // Skill chain channels (TASK-9D)
+  IPC_CHANNELS.SKILL_CHAIN_LIST,
+  IPC_CHANNELS.SKILL_CHAIN_GET,
+  IPC_CHANNELS.SKILL_CHAIN_SAVE,
+  IPC_CHANNELS.SKILL_CHAIN_DELETE,
+  IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
