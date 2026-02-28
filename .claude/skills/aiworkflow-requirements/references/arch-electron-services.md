@@ -9,8 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
-| 6.37.0     | 2026-02-28 | TASK-9I反映: SkillDocGenerator セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と docs 4チャネルの責務分離、共有型5種を追記 |
-| 6.37.0     | 2026-02-28 | TASK-9J反映: AnalyticsStore/SkillAnalytics サービス追加 |
+| 6.37.0     | 2026-02-28 | TASK-9E反映: `SkillForker` サービスをスキル管理コンポーネントへ追加。`skill:fork` IPC契約、`SkillForkOptions/Result/Metadata` 型、Path境界検証（prefix一致すり抜け防止）を仕様化 |
 | 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
 | 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
 | 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
@@ -109,14 +108,11 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | L2   | SkillAnalyzer      | スキル品質分析（TASK-9C）      |
 | L2   | SkillImprover      | スキル改善適用（TASK-9C）      |
 | L2   | PromptOptimizer    | プロンプト最適化（TASK-9C）    |
-| L2   | SkillDocGenerator  | スキルドキュメント自動生成（TASK-9I） |
+| L2   | SkillForker        | スキル派生コピー（TASK-9E）    |
 | L2   | ScheduleStore      | スケジュール永続化（TASK-9G）  |
 | L2   | SkillScheduler     | スケジュール実行制御（TASK-9G） |
-| L2   | AnalyticsStore     | 分析イベント永続化（TASK-9J）  |
-| L2   | SkillAnalytics     | 分析・統計集計（TASK-9J）      |
 | L1   | IPC Handlers       | Renderer通信                   |
 | L2   | skillHandlers.ts   | IPCハンドラ実装                |
-| L2   | skillAnalyticsHandlers.ts | 分析IPCハンドラ実装（TASK-9J） |
 
 ### ファイル構成
 
@@ -128,15 +124,12 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillAnalyzer.ts`      | スキル静的・AI分析（TASK-9C）     |
 | `SkillImprover.ts`      | 改善適用・バックアップ（TASK-9C） |
 | `PromptOptimizer.ts`    | プロンプト最適化（TASK-9C）       |
-| `SkillDocGenerator.ts`  | スキルドキュメント自動生成（TASK-9I） |
+| `SkillForker.ts`        | スキルフォーク処理（TASK-9E）     |
 | `ScheduleStore.ts`      | スケジュール永続化（TASK-9G）     |
 | `SkillScheduler.ts`     | cron/interval/once/event 実行制御（TASK-9G） |
-| `AnalyticsStore.ts`     | 分析イベント永続化（TASK-9J）     |
-| `SkillAnalytics.ts`     | 分析・統計集計サービス（TASK-9J） |
 | `SkillService.ts`       | Facadeサービス（外部API）         |
 | `index.ts`              | エクスポート                      |
 | `skillHandlers.ts`      | IPCハンドラ（ipc/配下）           |
-| `skillAnalyticsHandlers.ts` | 分析IPCハンドラ（ipc/配下、TASK-9J） |
 
 ### 型定義
 
@@ -153,19 +146,13 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillScanResult`      | `packages/shared/src/types/skill.ts`     | スキャン結果                 |
 | `ImportResult`         | `packages/shared/src/types/skill.ts`     | インポート結果               |
 | `RemoveResult`         | `packages/shared/src/types/skill.ts`     | 削除結果                     |
+| `SkillForkOptions`     | `packages/shared/src/types/skill-fork.ts`| フォーク入力                 |
+| `SkillForkResult`      | `packages/shared/src/types/skill-fork.ts`| フォーク結果                 |
+| `SkillForkMetadata`    | `packages/shared/src/types/skill-fork.ts`| フォーク追跡メタデータ       |
 | `ScheduledSkill`       | `packages/shared/src/types/skill-schedule.ts` | スケジュール本体         |
 | `SkillSchedule`        | `packages/shared/src/types/skill-schedule.ts` | スケジュール設定         |
 | `NotificationSettings` | `packages/shared/src/types/skill-schedule.ts` | 通知設定                 |
 | `ScheduledRunResult`   | `packages/shared/src/types/skill-schedule.ts` | 実行履歴                 |
-| `DocGenerationRequest` | `packages/shared/src/types/skill-docs.ts` | ドキュメント生成リクエスト |
-| `GeneratedDoc`         | `packages/shared/src/types/skill-docs.ts` | 生成ドキュメント本体 |
-| `DocSection`           | `packages/shared/src/types/skill-docs.ts` | 生成結果セクション |
-| `DocTemplate`          | `packages/shared/src/types/skill-docs.ts` | テンプレート定義 |
-| `TemplateSection`      | `packages/shared/src/types/skill-docs.ts` | テンプレートセクション |
-| `SkillUsageEvent`      | `packages/shared/src/types/skill-analytics.ts` | 使用イベント             |
-| `SkillStatistics`      | `packages/shared/src/types/skill-analytics.ts` | スキル統計               |
-| `AnalyticsSummary`     | `packages/shared/src/types/skill-analytics.ts` | 全体サマリー             |
-| `UsageTrend`           | `packages/shared/src/types/skill-analytics.ts` | 使用トレンド             |
 
 ### SkillScanner（TASK-2A実装）
 
@@ -296,20 +283,18 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 
 | チャネル               | 引数                 | 戻り値          | 説明               |
 | ---------------------- | -------------------- | --------------- | ------------------ |
-| `skill:list-available` | `basePath: string`   | `Skill[]`       | スキルスキャン     |
-| `skill:list-imported`  | なし                 | `Skill[]`       | インポート済み取得 |
+| `skill:list`           | `{ forceRefresh?: boolean }` | `IpcResult<SkillMetadata[]>` | 利用可能スキル取得 |
+| `skill:scan`           | なし                 | `IpcResult<SkillMetadata[]>` | スキル強制再スキャン |
+| `skill:getImported`    | なし                 | `IpcResult<Skill[]>` | インポート済み取得 |
 | `skill:import`         | `skillName: string`  | `ImportedSkill` | スキルインポート（ハンドラー内で `[skillName]` に変換、UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で戻り値型修正） |
 | `skill:remove`         | `skillName: string`  | `RemoveResult`  | インポート解除     |
-| `skill:get-detail`     | `skillId: string`    | `Skill \| null` | スキル詳細取得     |
+| `skill:get-detail`     | `{ skillId: string }`    | `IpcResult<Skill>` | スキル詳細取得     |
+| `skill:fork`           | `SkillForkOptions`   | `IpcResult<SkillForkResult>` | スキルフォーク（TASK-9E） |
 | `skill:schedule:list`  | なし                 | `IpcResult<ScheduledSkill[]>` | スケジュール一覧取得 |
 | `skill:schedule:add`   | `Omit<ScheduledSkill, "id" \| "runHistory">` | `IpcResult<ScheduledSkill>` | スケジュール追加 |
 | `skill:schedule:update`| `{ id: string; updates: Partial<ScheduledSkill> }` | `IpcResult<void>` | スケジュール更新 |
 | `skill:schedule:delete`| `{ id: string }`     | `IpcResult<void>` | スケジュール削除 |
 | `skill:schedule:toggle`| `{ id: string }`     | `IpcResult<ScheduledSkill \| undefined>` | 有効/無効切替 |
-| `skill:docs:generate`  | `DocGenerationRequest` | `{ success: true, data: GeneratedDoc }` | ドキュメント生成 |
-| `skill:docs:preview`   | `{ skillName: string; template?: DocTemplate }` | `{ success: true, data: GeneratedDoc }` | ドキュメントプレビュー |
-| `skill:docs:export`    | `{ doc: GeneratedDoc; outputPath: string }` | `{ success: true }` | ファイルエクスポート |
-| `skill:docs:templates` | なし | `{ success: true, data: DocTemplate[] }` | テンプレート一覧取得 |
 
 ### データフロー
 
@@ -325,9 +310,9 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 
 | メソッド              | 引数                 | 戻り値                   | 説明               |
 | --------------------- | -------------------- | ------------------------ | ------------------ |
-| `scanAvailableSkills` | `basePath: string`   | `Promise<Skill[]>`       | スキルスキャン     |
+| `scanAvailableSkills` | `forceRefresh?: boolean`   | `Promise<SkillScanResult>`       | スキルスキャン（`skills` + `errors` + `warnings`）     |
 | `getImportedSkills`   | -                    | `Promise<Skill[]>`       | インポート済み取得 |
-| `importSkills`        | `skillIds: string[]` | `Promise<ImportResult>`  | インポート（Service内部API） |
+| `importSkills`        | `skillNames: SkillName[]` | `Promise<ImportResult>`  | インポート（Service内部API） |
 | `removeSkill`         | `skillName: string`  | `Promise<RemoveResult>`  | 削除               |
 | `getSkillById`        | `skillId: string`    | `Promise<Skill \| null>` | 詳細取得           |
 | `clearCache`          | -                    | `void`                   | キャッシュクリア   |
@@ -365,6 +350,25 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | `ApiIntegrator.ts` | 外部API統合補助 |
 | `SkillValidator.ts` | 検証処理補助 |
 
+### SkillForker（TASK-9E）
+
+`SkillForker` は Skill API ドメインでのフォーク実体処理を担当する。`SkillCreatorService.forkSkill()`（`skill-creator:fork`）とは別責務であり、`skill:fork` は既存スキルの派生コピー処理に特化する。
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `fork` | `options: SkillForkOptions` | `Promise<SkillForkResult>` | SKILL.md更新、選択サブディレクトリコピー、metadata書き込み、失敗時ロールバック |
+| `modifySkillMd` | `content: string, options: SkillForkOptions` | `string` | frontmatter の `name` / `description` / `allowed-tools` / `forked-from` を更新 |
+| `validatePath` | `name: string` | `void` | `path.relative` ベースの境界検証（`/skills` と `/skills-evil` の prefix 衝突回避） |
+
+**関連ファイル**:
+
+| ファイル | 役割 |
+| --- | --- |
+| `apps/desktop/src/main/services/skill/SkillForker.ts` | フォーク本体サービス |
+| `apps/desktop/src/main/ipc/skillHandlers.ts` | `skill:fork` IPCハンドラー（sender検証 + 入力検証 + サービス呼び出し） |
+| `apps/desktop/src/preload/skill-api.ts` | `forkSkill(options)` の Preload API |
+| `packages/shared/src/types/skill-fork.ts` | 入出力/メタデータ型の正本 |
+
 ### SkillScheduler / ScheduleStore（TASK-9G）
 
 スキルスケジュール実行は、Facade の `SkillService` とは独立した専用サービスで構成する。
@@ -393,65 +397,6 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | 依存関係 | Scheduler は SkillService 実装詳細を知らない（DI） |
 | テスタビリティ | `SchedulerSkillExecutor` をモック可能 |
 | 責務分離 | 実行制御（Scheduler）とスキル実行本体（SkillService）を分離 |
-
-### SkillDocGenerator（TASK-9I）
-
-スキルドキュメント生成は `SkillService` から独立した専用サービスとして実装する。LLM 依存は関数 DI（`LLMQueryFn`）で注入し、テスト時に差し替え可能とする。
-
-| コンポーネント | 責務 | 実装ファイル |
-| --- | --- | --- |
-| `SkillDocGenerator` | スキル構造解析、テンプレートセクション生成、markdown/html 変換、出力パス検証 | `apps/desktop/src/main/services/skill/SkillDocGenerator.ts` |
-| `registerSkillDocsHandlers` | docs 4チャネルの IPC 境界（sender 検証 + P42 バリデーション + エラー正規化） | `apps/desktop/src/main/ipc/skillHandlers.ts` |
-
-#### 初期化配線（Main Process）
-
-`registerAllIpcHandlers`（`apps/desktop/src/main/ipc/index.ts`）で以下の順に初期化する。
-
-1. `const skillFileManager = new SkillFileManager()`
-2. `const queryFn = stubQueryFn`（現時点は暫定、UT-9I-001 で実プロバイダ連携予定）
-3. `const skillDocGenerator = new SkillDocGenerator(queryFn, skillFileManager)`
-4. `registerSkillDocsHandlers(mainWindow, skillDocGenerator)`
-
-#### 設計上のポイント
-
-| 観点 | 設計方針 |
-| --- | --- |
-| 依存関係 | LLM 実装詳細を `LLMQueryFn` へ抽象化し、サービス本体と分離 |
-| テスタビリティ | `queryFn` と `SkillFileManager` をモック差し替え可能 |
-| セキュリティ | `skill:docs:export` は IPC 層とサービス層で二重にパストラバーサル検証 |
-
-### AnalyticsStore / SkillAnalytics（TASK-9J）
-
-#### AnalyticsStore
-
-electron-store ベースの永続化ストア。メモリキャッシュと永続化の二層構成。
-
-| メソッド | 引数 | 戻り値 | 説明 |
-| --- | --- | --- | --- |
-| constructor | store?: ElectronStore | - | P19準拠バリデーション付きデータ復元 |
-| getAllEvents() | - | SkillUsageEvent[] | 全イベント取得（コピー返却） |
-| addEvent(event) | Omit&lt;Event, "id"&gt; | SkillUsageEvent | UUID自動生成してイベント追加 |
-| getEventsBySkill | skillName: string | SkillUsageEvent[] | スキル名フィルタ |
-| getEventsByPeriod | start, end: string | SkillUsageEvent[] | 期間フィルタ |
-| clearBefore | before: string | void | 指定日時前のイベント削除 |
-| clearAll() | - | void | 全イベント削除 |
-
-設計ポイント: P19準拠（`Array.isArray()` + `.filter()` バリデーション）、P9準拠（`getAllEvents()` はコピー返却）、永続化キー `"skill-analytics-events"`。
-
-#### SkillAnalytics
-
-集計・分析サービス。AnalyticsStore を DI で注入。
-
-| メソッド | 引数 | 戻り値 | 説明 |
-| --- | --- | --- | --- |
-| recordEvent | event (id/timestamp省略可) | SkillUsageEvent | イベント記録 |
-| getStatistics | skillName, period? | SkillStatistics | スキル統計計算 |
-| getSummary | limit = 10 | AnalyticsSummary | 全体サマリー |
-| getUsageTrend | period, skillName? | UsageTrend | 時系列トレンド |
-| exportData | format, period? | string | JSON/CSVエクスポート |
-| clearData | before?: string | void | データ削除 |
-
-パフォーマンス: 10,000件のイベントで全集計が9ms以内で完了（SA-29テスト確認済み）。
 
 ### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 

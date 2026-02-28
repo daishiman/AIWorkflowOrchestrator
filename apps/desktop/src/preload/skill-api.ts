@@ -42,8 +42,9 @@ import type {
   AnalyticsSummary,
   AnalyticsPeriod,
   UsageTrend,
+  SkillForkOptions,
+  SkillForkResult,
 } from "@repo/shared";
-import type { SkillChainDefinition, SkillChainResult } from "@repo/shared";
 import type { BackupInfo } from "./types";
 import type {
   DebugSessionState,
@@ -197,45 +198,6 @@ export interface SkillAPI {
     source: ShareTarget,
   ) => Promise<ShareResult<ShareValidateSourceResult>>;
 
-  // === Skill Schedule Operations (TASK-9G) ===
-
-  /** スケジュール一覧を取得する */
-  scheduleList: () => Promise<ScheduledSkill[]>;
-  /** スケジュールを追加する */
-  scheduleAdd: (
-    input: Omit<ScheduledSkill, "id" | "runHistory">,
-  ) => Promise<ScheduledSkill>;
-  /** スケジュールを更新する */
-  scheduleUpdate: (
-    id: string,
-    updates: Partial<ScheduledSkill>,
-  ) => Promise<void>;
-  /** スケジュールを削除する */
-  scheduleDelete: (id: string) => Promise<void>;
-  /** スケジュールの有効/無効を切り替える */
-  scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
-  // === Skill Debug API (TASK-9H) ===
-
-  /** デバッグセッション管理 */
-  debug: {
-    /** デバッグセッションを開始 */
-    startSession: (request: DebugStartRequest) => Promise<DebugSessionState>;
-    /** デバッグコマンドを実行 */
-    executeCommand: (request: DebugCommandRequest) => Promise<void>;
-    /** ブレークポイントを追加 */
-    addBreakpoint: (request: DebugBreakpointAddRequest) => Promise<Breakpoint>;
-    /** ブレークポイントを削除 */
-    removeBreakpoint: (request: DebugBreakpointRemoveRequest) => Promise<void>;
-    /** 変数をインスペクション */
-    inspectVariable: (request: DebugInspectRequest) => Promise<unknown>;
-    /** 式を評価 */
-    evaluateExpression: (
-      request: DebugEvaluateRequest,
-    ) => Promise<DebugEvaluateResponse>;
-    /** デバッグイベントを購読 */
-    onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
-  };
-
   // === Skill Docs Operations (TASK-9I) ===
 
   /** ドキュメントを生成する */
@@ -274,23 +236,53 @@ export interface SkillAPI {
     period?: { start: string; end: string },
   ) => Promise<string>;
 
-  // === Skill Chain API (TASK-9D) ===
+  // === Skill Fork Operations (TASK-9E) ===
 
-  /** チェーンパイプライン管理 */
-  chain: {
-    /** チェーン定義一覧を取得 */
-    list: () => Promise<SkillChainDefinition[]>;
-    /** チェーン定義を取得 */
-    get: (chainId: string) => Promise<SkillChainDefinition | null>;
-    /** チェーン定義を保存 */
-    save: (chain: SkillChainDefinition) => Promise<SkillChainDefinition>;
-    /** チェーン定義を削除 */
-    delete: (chainId: string) => Promise<{ deleted: boolean }>;
-    /** チェーンを実行 */
-    execute: (
-      chainId: string,
-      variables?: Record<string, unknown>,
-    ) => Promise<SkillChainResult>;
+  /**
+   * 既存スキルをフォークして新スキルを作成する
+   * @param options フォークオプション
+   * @returns フォーク結果
+   */
+  forkSkill: (options: SkillForkOptions) => Promise<SkillForkResult>;
+
+  // === Skill Schedule Operations (TASK-9G) ===
+
+  /** スケジュール一覧を取得する */
+  scheduleList: () => Promise<ScheduledSkill[]>;
+  /** スケジュールを追加する */
+  scheduleAdd: (
+    input: Omit<ScheduledSkill, "id" | "runHistory">,
+  ) => Promise<ScheduledSkill>;
+  /** スケジュールを更新する */
+  scheduleUpdate: (
+    id: string,
+    updates: Partial<ScheduledSkill>,
+  ) => Promise<void>;
+  /** スケジュールを削除する */
+  scheduleDelete: (id: string) => Promise<void>;
+  /** スケジュールの有効/無効を切り替える */
+  scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
+
+  // === Skill Debug API (TASK-9H) ===
+
+  /** デバッグセッション管理 */
+  debug: {
+    /** デバッグセッションを開始 */
+    startSession: (request: DebugStartRequest) => Promise<DebugSessionState>;
+    /** デバッグコマンドを実行 */
+    executeCommand: (request: DebugCommandRequest) => Promise<void>;
+    /** ブレークポイントを追加 */
+    addBreakpoint: (request: DebugBreakpointAddRequest) => Promise<Breakpoint>;
+    /** ブレークポイントを削除 */
+    removeBreakpoint: (request: DebugBreakpointRemoveRequest) => Promise<void>;
+    /** 変数をインスペクション */
+    inspectVariable: (request: DebugInspectRequest) => Promise<unknown>;
+    /** 式を評価 */
+    evaluateExpression: (
+      request: DebugEvaluateRequest,
+    ) => Promise<DebugEvaluateResponse>;
+    /** デバッグイベントを購読 */
+    onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
   };
 }
 
@@ -486,72 +478,6 @@ export const skillAPI: SkillAPI = {
   ): Promise<ShareResult<ShareValidateSourceResult>> =>
     safeInvoke(IPC_CHANNELS.SKILL_VALIDATE_SOURCE, source),
 
-  // === Skill Schedule Operations (TASK-9G) ===
-
-  scheduleList: (): Promise<ScheduledSkill[]> =>
-    safeInvokeUnwrap<ScheduledSkill[]>(IPC_CHANNELS.SKILL_SCHEDULE_LIST),
-
-  scheduleAdd: (
-    input: Omit<ScheduledSkill, "id" | "runHistory">,
-  ): Promise<ScheduledSkill> =>
-    safeInvokeUnwrap<ScheduledSkill>(IPC_CHANNELS.SKILL_SCHEDULE_ADD, input),
-
-  scheduleUpdate: (
-    id: string,
-    updates: Partial<ScheduledSkill>,
-  ): Promise<void> =>
-    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_UPDATE, {
-      id,
-      updates,
-    }),
-
-  scheduleDelete: (id: string): Promise<void> =>
-    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_DELETE, { id }),
-
-  scheduleToggle: (id: string): Promise<ScheduledSkill | undefined> =>
-    safeInvokeUnwrap<ScheduledSkill | undefined>(
-      IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
-      { id },
-    ),
-  // === Skill Debug API (TASK-9H) ===
-
-  debug: {
-    startSession: (request: DebugStartRequest): Promise<DebugSessionState> =>
-      safeInvokeUnwrap<DebugSessionState>(
-        IPC_CHANNELS.SKILL_DEBUG_START,
-        request,
-      ),
-
-    executeCommand: (request: DebugCommandRequest): Promise<void> =>
-      safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DEBUG_COMMAND, request),
-
-    addBreakpoint: (request: DebugBreakpointAddRequest): Promise<Breakpoint> =>
-      safeInvokeUnwrap<Breakpoint>(
-        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_ADD,
-        request,
-      ),
-
-    removeBreakpoint: (request: DebugBreakpointRemoveRequest): Promise<void> =>
-      safeInvokeUnwrap<void>(
-        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_REMOVE,
-        request,
-      ),
-
-    inspectVariable: (request: DebugInspectRequest): Promise<unknown> =>
-      safeInvokeUnwrap<unknown>(IPC_CHANNELS.SKILL_DEBUG_INSPECT, request),
-
-    evaluateExpression: (
-      request: DebugEvaluateRequest,
-    ): Promise<DebugEvaluateResponse> =>
-      safeInvokeUnwrap<DebugEvaluateResponse>(
-        IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
-        request,
-      ),
-
-    onDebugEvent: (callback: (event: DebugEvent) => void): (() => void) =>
-      safeOn<DebugEvent>(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback),
-  },
-
   // === Skill Docs Operations (TASK-9I) ===
 
   docsGenerate: (request: DocGenerationRequest): Promise<GeneratedDoc> =>
@@ -615,36 +541,75 @@ export const skillAPI: SkillAPI = {
       period,
     }),
 
-  // Skill chain operations (TASK-9D)
-  chain: {
-    list: (): Promise<SkillChainDefinition[]> =>
-      safeInvokeUnwrap<SkillChainDefinition[]>(IPC_CHANNELS.SKILL_CHAIN_LIST),
+  // === Skill Fork Operations (TASK-9E) ===
 
-    get: (chainId: string): Promise<SkillChainDefinition | null> =>
-      safeInvokeUnwrap<SkillChainDefinition | null>(
-        IPC_CHANNELS.SKILL_CHAIN_GET,
-        chainId,
+  forkSkill: (options: SkillForkOptions): Promise<SkillForkResult> =>
+    safeInvokeUnwrap<SkillForkResult>(IPC_CHANNELS.SKILL_FORK, options),
+
+  // === Skill Schedule Operations (TASK-9G) ===
+
+  scheduleList: (): Promise<ScheduledSkill[]> =>
+    safeInvokeUnwrap<ScheduledSkill[]>(IPC_CHANNELS.SKILL_SCHEDULE_LIST),
+
+  scheduleAdd: (
+    input: Omit<ScheduledSkill, "id" | "runHistory">,
+  ): Promise<ScheduledSkill> =>
+    safeInvokeUnwrap<ScheduledSkill>(IPC_CHANNELS.SKILL_SCHEDULE_ADD, input),
+
+  scheduleUpdate: (
+    id: string,
+    updates: Partial<ScheduledSkill>,
+  ): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_UPDATE, {
+      id,
+      updates,
+    }),
+
+  scheduleDelete: (id: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_SCHEDULE_DELETE, { id }),
+
+  scheduleToggle: (id: string): Promise<ScheduledSkill | undefined> =>
+    safeInvokeUnwrap<ScheduledSkill | undefined>(
+      IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+      { id },
+    ),
+
+  // === Skill Debug API (TASK-9H) ===
+
+  debug: {
+    startSession: (request: DebugStartRequest): Promise<DebugSessionState> =>
+      safeInvokeUnwrap<DebugSessionState>(
+        IPC_CHANNELS.SKILL_DEBUG_START,
+        request,
       ),
 
-    save: (chain: SkillChainDefinition): Promise<SkillChainDefinition> =>
-      safeInvokeUnwrap<SkillChainDefinition>(
-        IPC_CHANNELS.SKILL_CHAIN_SAVE,
-        chain,
+    executeCommand: (request: DebugCommandRequest): Promise<void> =>
+      safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DEBUG_COMMAND, request),
+
+    addBreakpoint: (request: DebugBreakpointAddRequest): Promise<Breakpoint> =>
+      safeInvokeUnwrap<Breakpoint>(
+        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_ADD,
+        request,
       ),
 
-    delete: (chainId: string): Promise<{ deleted: boolean }> =>
-      safeInvokeUnwrap<{ deleted: boolean }>(
-        IPC_CHANNELS.SKILL_CHAIN_DELETE,
-        chainId,
+    removeBreakpoint: (request: DebugBreakpointRemoveRequest): Promise<void> =>
+      safeInvokeUnwrap<void>(
+        IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_REMOVE,
+        request,
       ),
 
-    execute: (
-      chainId: string,
-      variables?: Record<string, unknown>,
-    ): Promise<SkillChainResult> =>
-      safeInvokeUnwrap<SkillChainResult>(IPC_CHANNELS.SKILL_CHAIN_EXECUTE, {
-        chainId,
-        variables,
-      }),
+    inspectVariable: (request: DebugInspectRequest): Promise<unknown> =>
+      safeInvokeUnwrap<unknown>(IPC_CHANNELS.SKILL_DEBUG_INSPECT, request),
+
+    evaluateExpression: (
+      request: DebugEvaluateRequest,
+    ): Promise<DebugEvaluateResponse> =>
+      safeInvokeUnwrap<DebugEvaluateResponse>(
+        IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
+        request,
+      ),
+
+    onDebugEvent: (callback: (event: DebugEvent) => void): (() => void) =>
+      safeOn<DebugEvent>(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback),
   },
 };

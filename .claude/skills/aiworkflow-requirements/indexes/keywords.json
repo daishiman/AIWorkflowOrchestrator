@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-28T10:08:34.001Z",
-  "totalKeywords": 1376,
+  "generated": "2026-02-28T14:39:55.857Z",
+  "totalKeywords": 1341,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -756,16 +756,13 @@
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
+    "スキルフォーク": [
+      "api-ipc-agent.md",
+      "interfaces-agent-sdk-skill.md"
+    ],
     "スキルデバッグ": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
-    ],
-    "スキルドキュメント生成": [
-      "api-ipc-agent.md",
-      "interfaces-agent-sdk-skill.md"
-    ],
-    "スキル分析・統計": [
-      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -1541,8 +1538,7 @@
       "architecture-implementation-patterns.md"
     ],
     "未タスク参照整合": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
+      "architecture-implementation-patterns.md"
     ],
     "スキル構造検証": [
       "architecture-implementation-patterns.md"
@@ -2521,9 +2517,6 @@
       "interfaces-agent-sdk-skill.md",
       "lessons-learned.md"
     ],
-    "スキル分析": [
-      "interfaces-agent-sdk-skill.md"
-    ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
       "security-skill-ipc.md",
@@ -3010,30 +3003,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "CALLBACK": [
-      "lessons-learned.md"
-    ],
-    "SERVER": [
-      "lessons-learned.md"
-    ],
-    "WORKER": [
-      "lessons-learned.md"
-    ],
-    "EXIT": [
-      "lessons-learned.md"
-    ],
-    "authCallbackServer": [
-      "lessons-learned.md"
-    ],
-    "timeout": [
-      "lessons-learned.md"
-    ],
-    "stop": [
-      "lessons-learned.md"
-    ],
-    "責務分離": [
-      "lessons-learned.md"
-    ],
     "QUICK": [
       "lessons-learned.md"
     ],
@@ -3056,84 +3025,6 @@
       "lessons-learned.md"
     ],
     "空フィールドガード": [
-      "lessons-learned.md"
-    ],
-    "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
-      "lessons-learned.md"
-    ],
-    "schedule": [
-      "lessons-learned.md"
-    ],
-    "docs": [
-      "lessons-learned.md"
-    ],
-    "仕様・成果物整合": [
-      "lessons-learned.md"
-    ],
-    "対象未タスク監査": [
-      "lessons-learned.md"
-    ],
-    "移管前のみ": [
-      "lessons-learned.md"
-    ],
-    "tasks": [
-      "lessons-learned.md"
-    ],
-    "task": [
-      "lessons-learned.md"
-    ],
-    "unassigned": [
-      "lessons-learned.md"
-    ],
-    "へ移管後は": [
-      "lessons-learned.md"
-    ],
-    "target": [
-      "lessons-learned.md"
-    ],
-    "file": [
-      "lessons-learned.md"
-    ],
-    "の対象外運用とし": [
-      "lessons-learned.md"
-    ],
-    "今回差分判定は": [
-      "lessons-learned.md"
-    ],
-    "Step": [
-      "lessons-learned.md"
-    ],
-    "diff": [
-      "lessons-learned.md"
-    ],
-    "from": [
-      "lessons-learned.md"
-    ],
-    "HEAD": [
-      "lessons-learned.md"
-    ],
-    "で実施する": [
-      "lessons-learned.md"
-    ],
-    "差分監査": [
-      "lessons-learned.md"
-    ],
-    "今回変更のみ": [
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
-      "lessons-learned.md"
-    ],
-    "LINK": [
-      "lessons-learned.md"
-    ],
-    "再確認証跡・未タスクリンク整合ガード": [
       "lessons-learned.md"
     ],
     "EXECUTE": [
@@ -3184,6 +3075,9 @@
     "editor": [
       "lessons-learned.md"
     ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
     "目次": [
       "lessons-learned.md",
       "logging-migration-guide.md",
@@ -3206,6 +3100,9 @@
       "lessons-learned.md"
     ],
     "ALIGNMENT": [
+      "lessons-learned.md"
+    ],
+    "task": [
       "lessons-learned.md"
     ],
     "仕様差分の統合是正": [
@@ -3569,6 +3466,9 @@
       "lessons-learned.md"
     ],
     "検証ゲート整合化": [
+      "lessons-learned.md"
+    ],
+    "スキルフォーク機能": [
       "lessons-learned.md"
     ],
     "スキル共有・インポート機能": [
@@ -4176,12 +4076,6 @@
       "security-electron-ipc.md"
     ],
     "skillDebugAPI": [
-      "security-electron-ipc.md"
-    ],
-    "skillDocsAPI": [
-      "security-electron-ipc.md"
-    ],
-    "skillAnalyticsAPI": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

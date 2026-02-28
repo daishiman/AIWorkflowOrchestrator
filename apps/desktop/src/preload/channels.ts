@@ -198,6 +198,26 @@ export const IPC_CHANNELS = {
   SKILL_OPTIMIZE_VARIANTS: "skill:optimize:variants",
   SKILL_OPTIMIZE_EVALUATE: "skill:optimize:evaluate",
 
+  // Skill analytics operations (TASK-9I)
+  SKILL_ANALYTICS_RECORD: "skill:analytics:record",
+  SKILL_ANALYTICS_STATISTICS: "skill:analytics:statistics",
+  SKILL_ANALYTICS_SUMMARY: "skill:analytics:summary",
+  SKILL_ANALYTICS_TREND: "skill:analytics:trend",
+  SKILL_ANALYTICS_EXPORT: "skill:analytics:export",
+
+  // Skill docs operations (TASK-9J)
+  SKILL_DOCS_GENERATE: "skill:docs:generate",
+  SKILL_DOCS_PREVIEW: "skill:docs:preview",
+  SKILL_DOCS_EXPORT: "skill:docs:export",
+  SKILL_DOCS_TEMPLATES: "skill:docs:templates",
+
+  // Skill chain operations (TASK-9D)
+  SKILL_CHAIN_LIST: "skill:chain:list",
+  SKILL_CHAIN_GET: "skill:chain:get",
+  SKILL_CHAIN_SAVE: "skill:chain:save",
+  SKILL_CHAIN_DELETE: "skill:chain:delete",
+  SKILL_CHAIN_EXECUTE: "skill:chain:execute",
+
   // History operations
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
@@ -309,6 +329,10 @@ export const IPC_CHANNELS = {
   SKILL_SCHEDULE_UPDATE: "skill:schedule:update",
   SKILL_SCHEDULE_DELETE: "skill:schedule:delete",
   SKILL_SCHEDULE_TOGGLE: "skill:schedule:toggle",
+
+  // Skill fork operations (TASK-9E)
+  SKILL_FORK: "skill:fork",
+
   // Skill debug operations (TASK-9H)
   SKILL_DEBUG_START: "skill:debug:start",
   SKILL_DEBUG_COMMAND: "skill:debug:command",
@@ -317,26 +341,6 @@ export const IPC_CHANNELS = {
   SKILL_DEBUG_INSPECT: "skill:debug:inspect",
   SKILL_DEBUG_EVALUATE: "skill:debug:evaluate",
   SKILL_DEBUG_EVENT: "skill:debug:event",
-
-  // Skill docs operations (TASK-9I)
-  SKILL_DOCS_GENERATE: "skill:docs:generate",
-  SKILL_DOCS_PREVIEW: "skill:docs:preview",
-  SKILL_DOCS_EXPORT: "skill:docs:export",
-  SKILL_DOCS_TEMPLATES: "skill:docs:templates",
-
-  // Skill analytics operations (TASK-9J)
-  SKILL_ANALYTICS_RECORD: "skill:analytics:record",
-  SKILL_ANALYTICS_STATISTICS: "skill:analytics:statistics",
-  SKILL_ANALYTICS_SUMMARY: "skill:analytics:summary",
-  SKILL_ANALYTICS_TREND: "skill:analytics:trend",
-  SKILL_ANALYTICS_EXPORT: "skill:analytics:export",
-
-  // Skill chain operations (TASK-9D)
-  SKILL_CHAIN_LIST: "skill:chain:list",
-  SKILL_CHAIN_GET: "skill:chain:get",
-  SKILL_CHAIN_SAVE: "skill:chain:save",
-  SKILL_CHAIN_DELETE: "skill:chain:delete",
-  SKILL_CHAIN_EXECUTE: "skill:chain:execute",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -478,6 +482,23 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_OPTIMIZE,
   IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS,
   IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+  // Skill analytics channels (TASK-9I)
+  IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
+  IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS,
+  IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY,
+  IPC_CHANNELS.SKILL_ANALYTICS_TREND,
+  IPC_CHANNELS.SKILL_ANALYTICS_EXPORT,
+  // Skill docs channels (TASK-9J)
+  IPC_CHANNELS.SKILL_DOCS_GENERATE,
+  IPC_CHANNELS.SKILL_DOCS_PREVIEW,
+  IPC_CHANNELS.SKILL_DOCS_EXPORT,
+  IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
+  // Skill chain channels (TASK-9D)
+  IPC_CHANNELS.SKILL_CHAIN_LIST,
+  IPC_CHANNELS.SKILL_CHAIN_GET,
+  IPC_CHANNELS.SKILL_CHAIN_SAVE,
+  IPC_CHANNELS.SKILL_CHAIN_DELETE,
+  IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
   // History channels
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
@@ -570,6 +591,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_SCHEDULE_UPDATE,
   IPC_CHANNELS.SKILL_SCHEDULE_DELETE,
   IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
+  // Skill fork channels (TASK-9E)
+  IPC_CHANNELS.SKILL_FORK,
   // Skill debug channels (TASK-9H)
   IPC_CHANNELS.SKILL_DEBUG_START,
   IPC_CHANNELS.SKILL_DEBUG_COMMAND,
@@ -577,23 +600,6 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DEBUG_BREAKPOINT_REMOVE,
   IPC_CHANNELS.SKILL_DEBUG_INSPECT,
   IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
-  // Skill docs channels (TASK-9I)
-  IPC_CHANNELS.SKILL_DOCS_GENERATE,
-  IPC_CHANNELS.SKILL_DOCS_PREVIEW,
-  IPC_CHANNELS.SKILL_DOCS_EXPORT,
-  IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
-  // Skill analytics channels (TASK-9J)
-  IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
-  IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS,
-  IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY,
-  IPC_CHANNELS.SKILL_ANALYTICS_TREND,
-  IPC_CHANNELS.SKILL_ANALYTICS_EXPORT,
-  // Skill chain channels (TASK-9D)
-  IPC_CHANNELS.SKILL_CHAIN_LIST,
-  IPC_CHANNELS.SKILL_CHAIN_GET,
-  IPC_CHANNELS.SKILL_CHAIN_SAVE,
-  IPC_CHANNELS.SKILL_CHAIN_DELETE,
-  IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

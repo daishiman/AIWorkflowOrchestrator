@@ -1,0 +1,150 @@
+{
+  "taskId": "TASK-9E",
+  "taskName": "skill-fork-implementation",
+  "feature": "TASK-9E-skill-fork",
+  "created": "2026-02-28T00:00:00Z",
+  "lastUpdated": "2026-02-28T18:30:00Z",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/ipc-contract-design.md",
+        "outputs/phase-2/security-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "apps/desktop/src/main/services/skill/__tests__/SkillForker.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/skillHandlers.fork.test.ts"
+      ]
+    },
+    "phase-5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "artifacts": [
+        "packages/shared/src/types/skill-fork.ts",
+        "packages/shared/src/types/index.ts",
+        "packages/shared/index.ts",
+        "apps/desktop/src/main/services/skill/SkillForker.ts",
+        "apps/desktop/src/main/ipc/skillHandlers.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/skill-api.ts"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-notes.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-verification.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-checklist.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/ipc-documentation.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成・CI確認",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-creation-result.md",
+        "outputs/phase-13/ci-result.md",
+        "outputs/phase-13/merge-readiness-report.md",
+        "outputs/phase-13/pr-info.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "depends_on": ["TASK-9B"],
+    "parallel_with": [
+      "TASK-9D",
+      "TASK-9F",
+      "TASK-9G",
+      "TASK-9H",
+      "TASK-9I",
+      "TASK-9J"
+    ],
+    "blocks": []
+  },
+  "metadata": {
+    "tier": 3,
+    "priority": "low",
+    "estimated_complexity": "medium",
+    "tags": ["backend", "main", "skill-management", "fork", "derive", "future"]
+  },
+  "artifacts": {
+    "creates": [
+      "apps/desktop/src/main/services/skill/SkillForker.ts",
+      "packages/shared/src/types/skill-fork.ts"
+    ],
+    "modifies": [
+      "packages/shared/src/types/index.ts",
+      "apps/desktop/src/main/ipc/skillHandlers.ts",
+      "apps/desktop/src/preload/channels.ts",
+      "apps/desktop/src/preload/skill-api.ts",
+      "packages/shared/index.ts"
+    ]
+  },
+  "qualityMetrics": {
+    "testCoverage": {
+      "line": "80% (target)",
+      "branch": "60% (target)",
+      "function": "80% (target)"
+    },
+    "lintErrors": 0,
+    "typeErrors": 0
+  }
+}
