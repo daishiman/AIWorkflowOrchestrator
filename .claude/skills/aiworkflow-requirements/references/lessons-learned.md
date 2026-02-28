@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
+| 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
+| 2026-02-28 | 1.27.5 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の Phase 12 実行監査教訓を追加。成果物実体と `artifacts.json` ステータス不一致、`audit-unassigned-tasks` の current/baseline 誤読、チェックリスト未同期の3課題と4ステップ解決手順を標準化 |
 | 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
@@ -126,6 +129,64 @@
 2. 停止APIに「未起動」「停止済み」の両ガードを実装する。  
 3. timeout テストに `finally` 相当の明示 `stop()` を必ず追加する。  
 4. `security-implementation.md` と `task-workflow.md` を同一ターンで同期し、仕様ドリフトを残さない。  
+
+---
+
+## TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28）
+
+### 苦戦箇所: 成果物が存在しても `artifacts.json` ステータスが未同期になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` の必須成果物5件が存在していても、`artifacts.json` の `phases.12.status` が `pending` のまま残りやすい |
+| 再発条件 | ファイル存在確認だけで Phase 12 の完了判定を行う場合 |
+| 原因 | 「成果物実体」と「台帳ステータス」を別工程で管理し、同時突合していなかった |
+| 対処 | 監査時に `outputs/phase-12` と `artifacts.json` を同時確認し、乖離を明示記録した |
+| 今後の標準ルール | 完了判定は `成果物実体 + artifacts status + チェックリスト同期` の三点セットを必須化する |
+
+### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `--json` 単体実行の違反件数（baseline）を、今回差分の違反件数と誤認しやすい |
+| 再発条件 | `--diff-from` を使わずに合否を判定した場合 |
+| 原因 | 監視目的（baseline）と合否目的（current）の使い分けが曖昧だった |
+| 対処 | `--diff-from HEAD` を併用し、`currentViolations.total` を合否基準として固定した |
+| 今後の標準ルール | 監査結果は `current`（合否）と `baseline`（監視）を必ず分離して記録する |
+
+### 苦戦箇所: `phase-12-documentation.md` のチェックリスト未同期
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証コマンドがPASSでも、実行仕様書のチェック項目が未チェックのまま残りやすい |
+| 再発条件 | 成果物作成と仕様書更新を別ターンで進める場合 |
+| 原因 | 実体証跡の更新後に、手順書側の完了状態を同期する運用が固定されていなかった |
+| 対処 | 検証証跡を `task-workflow.md` と `lessons-learned.md` に同一ターン反映した |
+| 今後の標準ルール | Phase 12 は「実体証跡・仕様書チェック・教訓記録」の同時更新で完了とする |
+
+### 苦戦箇所: 仕様書別SubAgent分担で非対象仕様の扱いが揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書別に担当を切っても、更新不要な仕様書（interfaces/api-ipc/securityなど）の省略理由が残らず、再確認時に漏れと区別しづらい |
+| 再発条件 | 仕様書別SubAgent分担を適用したが、非対象仕様の記録欄がないテンプレートを使う場合 |
+| 原因 | 「担当あり/更新なし」の判断を文章でしか残しておらず、機械的な確認軸がなかった |
+| 対処 | `phase12-system-spec-retrospective-template.md` に N/A判定ログ（対象/非対象/理由/代替証跡）を追加した |
+| 今後の標準ルール | SubAgent分担では全仕様書の判定（更新 or N/A）を必ず表形式で残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` で Phase 構造を先に確定する。
+2. `outputs/phase-12` の必須成果物5件と `artifacts.json` ステータスを同時に確認する。
+3. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations` を合否基準に固定し、baselineは別管理する。
+4. 仕様書別SubAgent分担を作成し、更新不要な仕様書は `N/A + 理由 + 代替証跡` を記録する。
+5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` へ同一ターンで同期する。
+
+### 派生未タスク（継続改善）
+
+| タスクID | 目的 | 配置先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 での N/A 判定ログ固定と三点突合運用を機械確認まで引き上げる | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
 
 ---
 

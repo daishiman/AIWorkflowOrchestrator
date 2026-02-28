@@ -391,6 +391,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v9.98.0** | **2026-02-28** | **Phase 12 実行証跡整合ガードを追加**: `references/phase-11-12-guide.md` に Task 3.5（成果物実体 / artifacts status / チェックリスト同期の三点突合）を新設。完了チェックへ `currentViolations` 基準の差分監査判定を追加し、baseline誤読による false fail を防止 |
 | **v9.97.0** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査反映**: `outputs/phase-1`〜`phase-13` の成果物補完と `artifacts.json`/`outputs/artifacts.json` 同期を完了。Phase 12 必須成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection-report/skill-feedback-report）の実体を固定し、未タスク差分判定（current=0, baseline分離）を再確認 |
 | **v9.96.0** | **2026-02-27** | **TASK-9H 再確認運用を追補**: `references/patterns.md` に成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件実体確認→ステータス同期→検証4点セット固定の手順を標準化し、Phase 12 の未実施残置を防止 |
 | **v9.95.0** | **2026-02-27** | **TASK-9H Phase 12再監査運用を反映**: `phase-4-test-creation.md` / `phase-5-implementation.md` の必須セクション「統合テスト連携」を明記し、`validate-phase-output` エラー2件を解消。`outputs/phase-12` 必須4成果物（`spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`）の作成ガードと検証証跡（current/baseline分離）を再確認 |

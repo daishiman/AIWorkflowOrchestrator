@@ -259,6 +259,49 @@
 | Phase 12 未タスク検出 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/unassigned-task-detection-report.md` |
 
 ---
+### タスク: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12実行監査（2026-02-28）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 |
+| 実施日 | 2026-02-28 |
+| ステータス | **Phase 12監査完了（実装タスク本体は継続）** |
+| 対象 | `docs/30-workflows/TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001/phase-12-documentation.md` と `outputs/phase-12/` |
+
+#### 今回の実装内容（監査・反映）
+
+- Phase 12 必須成果物5件（`implementation-guide.md` / `documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）の実体を確認した。
+- `verify-all-specs`（13/13 PASS）と `validate-phase-output`（28項目 PASS）で、仕様書構造の整合を確認した。
+- `verify-unassigned-links`（missing=0）と `audit-unassigned-tasks --diff-from HEAD`（currentViolations=0, baselineViolations=71）で、未タスク運用の差分健全性を確認した。
+- `phase12-system-spec-retrospective-template.md` を実運用に合わせて更新し、仕様書単位の SubAgent 分担と実行可否ゲート（成果物実体/`artifacts.json`/チェックリスト同期）を固定化した。
+
+#### 仕様書別SubAgent分担（今回の監査チーム）
+
+| SubAgent | 担当仕様書/資産 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/task-workflow.md` | 完了台帳・検証証跡・成果物参照の同期 | 実装内容 + 苦戦箇所 + 手順を同期済み |
+| SubAgent-B | `references/lessons-learned.md` | 再発条件付きの苦戦箇所を教訓化 | 3件以上を再利用可能形式で記録 |
+| SubAgent-C | `skill-creator/assets/phase12-system-spec-retrospective-template.md` | テンプレート最適化（N/A判定・実行可否ゲート） | 次回転記でそのまま再利用できる |
+| SubAgent-D | 検証証跡（scripts） | `verify/validate/links/audit` の再実行 | 合否は `currentViolations=0` で固定 |
+
+#### 苦戦箇所と解決策（再利用用）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- |
+| 成果物実体が揃っていても `artifacts.json` が pending のまま残る | ファイル存在確認のみで完了判定した場合 | 成果物実体に加えて `artifacts.json` の phase status を同時確認した | Phase 12完了判定は「成果物実体 + artifacts status + チェックリスト同期」の三点突合を必須化する |
+| `audit-unassigned-tasks --json` の baseline違反を今回差分違反と誤認しやすい | full監査結果だけを見て合否を判断した場合 | `--diff-from HEAD` を併用し `currentViolations` を合否基準に固定した | 未タスク監査は `current`（合否）と `baseline`（監視）を必ず分離記録する |
+| `phase-12-documentation.md` のチェックリスト未同期で実行可否が曖昧化する | 出力ファイル生成と仕様書チェック更新を別ターンで進めた場合 | 監査結果を `task-workflow.md` / `lessons-learned.md` に同一ターン反映した | Phase 12は証跡同期（実体・仕様書・教訓）を同一ターンで完了させる |
+| 仕様書単位で SubAgent を分離しても「非対象仕様」の扱いがぶれる | interfaces/api-ipc/security の更新不要タスクで、担当だけ割り当てた場合 | テンプレートに N/A判定ログ（対象/非対象/理由）を追加し、省略理由を残した | 仕様書別SubAgent運用では非対象仕様も必ず `N/A + 理由` を記録する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` で仕様書構造を先に確定する。
+2. `outputs/phase-12` の必須5成果物と `artifacts.json` のステータス整合を突合する。
+3. `verify-unassigned-links` と `audit --diff-from HEAD` を実行し、`currentViolations` を合否基準に固定する。
+4. 仕様書ごとに SubAgent を割り当て、非対象仕様は `N/A + 理由` を明示して残す。
+5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` に同一ターンで同期する。
+
+---
 ### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
 
 | 項目 | 内容 |
@@ -1820,6 +1863,7 @@
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
+| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 仕様書別SubAgent N/A判定ログガード | 中 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12 実行監査（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
@@ -1980,6 +2024,9 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.63.7** | **2026-02-28** | **UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 を残課題へ登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の苦戦箇所（三点突合漏れ、`current/baseline` 誤読、仕様書別SubAgentの N/A 記録漏れ）を再発防止する未タスクを `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` に作成し、残課題テーブルへ同期 |
+| **1.63.6** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補（SubAgent分離 + テンプレート最適化）**: 同タスクの監査セクションに仕様書別SubAgent分担（台帳/教訓/テンプレート/検証）を追加し、実装内容へ `phase12-system-spec-retrospective-template.md` 最適化を追記。苦戦箇所に「非対象仕様（N/A）記録漏れ」を追加し、再利用手順を5ステップへ拡張 |
+| **1.63.5** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12実行監査を追加**: 完了タスクセクションへ監査記録を新設し、必須5成果物の実体確認、`verify-all-specs`/`validate-phase-output` PASS、`verify-unassigned-links` PASS、`audit --diff-from HEAD`（current=0 / baseline=71）を記録。あわせて苦戦箇所（成果物実体とステータス乖離、current/baseline誤読、チェックリスト未同期）と4ステップ再利用手順を追記 |
 | **1.62.9** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映**: 実行ワークフローを `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動し、派生未タスク `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルを完了表記へ更新 |
 | **1.62.8** | **2026-02-28** | **UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録**: `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所（wait/stop責務混在、stop冪等性、監査スクリプト所在誤認）を再発防止する未タスクを残課題テーブルへ追加。未タスク指示書は `task-specification-creator` テンプレート（9セクション + 3.5 実装課題）準拠で `docs/30-workflows/completed-tasks/unassigned-task/` に配置 |
 | **1.62.7** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補**: 同タスクへ「苦戦箇所と解決策（再発条件付き）」と「同種課題の簡潔解決手順（5ステップ）」を追加。`phase12-system-spec-retrospective-template` 準拠で wait/stop 責務分離、冪等停止、監査スクリプト実体解決の3論点を再利用可能形式に固定 |
