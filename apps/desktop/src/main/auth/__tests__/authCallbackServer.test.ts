@@ -86,6 +86,9 @@ describe("ローカルHTTPサーバー", () => {
 
     // 100msのタイムアウトでコールバック待機
     await expect(server.waitForCallback()).rejects.toThrow(/timeout/i);
+
+    // タイムアウト後にサーバーを確実に停止し、ワーカー終了前にクリーンアップを完了させる
+    await server.stop();
   });
 
   it("SRV-07: codeパラメータ欠如時にエラーレスポンスを返す", async () => {
