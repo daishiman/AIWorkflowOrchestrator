@@ -21,6 +21,10 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
+| 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
+| 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
+| 2026-02-28 | 1.27.2 | TASK-9I Phase 12再確認の教訓を追加。`--target-file` 監査の current/baseline 誤読、再確認証跡の分散、未タスクの存在確認止まりを解消する4ステップ手順を標準化 |
+| 2026-02-27 | 1.27.1 | TASK-9G Phase 12再確認の教訓を追加。検証スクリプト実体探索、`currentViolations`基準判定、UT-9G未タスク5件の配置/フォーマット同時検証を標準手順化 |
 | 2026-02-27 | 1.26.3 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の教訓セクションをテンプレート準拠へ最適化。各苦戦箇所に「再発条件」「今後の標準ルール」を追加し、再利用性を向上 |
 | 2026-02-27 | 1.26.2 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の再監査教訓を追加。苦戦箇所3件（Phase 12チェック同期漏れ、完了移管後の親証跡旧参照、検証スクリプト所在誤認）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-27 | 1.27.0 | TASK-9F 再監査追補: 仕様書別SubAgent分担（interfaces/api-ipc/security/task/lessons）と検証証跡（13/13, 28項目, 95/95, current=0）を追加。`spec-update-summary.md` を成果物に追加して再利用手順を強化 |
@@ -130,6 +134,148 @@
 3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。  
 4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。  
 5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。  
+
+---
+
+## TASK-9G-skill-schedule: Phase 12再確認（2026-02-27）
+
+### 苦戦箇所: 監査スクリプトを誤ディレクトリで実行しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `scripts/verify-all-specs.js` などをプロジェクト直下で実行し、`MODULE_NOT_FOUND` になる |
+| 再発条件 | 実行前にスクリプト実体パスを確認しない場合 |
+| 原因 | 監査系スクリプトが `task-specification-creator/scripts` に集約されている運用が浸透していない |
+| 対処 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` で正本パスを確定してから実行 |
+| 今後の標準ルール | Phase 12再確認は「実体探索 → 検証実行」を固定順序にする |
+
+### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | baseline違反件数が多いと、今回差分の合否が不明瞭になる |
+| 再発条件 | `currentViolations` を見ずに total件数で判定した場合 |
+| 原因 | 全体監査と差分監査の目的を分離せずに結果を解釈した |
+| 対処 | 合否判定を `currentViolations` 固定にし、`baselineViolations` は既存課題として別管理 |
+| 今後の標準ルール | `audit-unassigned-tasks.js --json --diff-from HEAD` の出力は `currentViolations` のみで完了判定する |
+
+### 苦戦箇所: 未タスクは「存在」だけ確認して「形式」を見落としやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `docs/30-workflows/unassigned-task/` に配置されていても、テンプレート見出し不足で品質が落ちる |
+| 再発条件 | リンク存在チェックだけで完了判定した場合 |
+| 原因 | 配置検証とフォーマット検証を別タスクとして扱っていた |
+| 対処 | UT-9G-001〜005 を対象に `## メタ情報` + `## 1..9` の10見出しを機械確認 |
+| 今後の標準ルール | 未タスク確認は「配置 + 見出しフォーマット」を同時にPASSさせる |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 監査コマンド前に `rg --files` で実体パスを確定する。  
+2. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。  
+3. 監査合否は `currentViolations` を正本にし、baselineは改善バックログとして分離する。  
+4. 未タスクは `docs/30-workflows/unassigned-task/` 配置確認と `## メタ情報 + ## 1..9` 見出し確認を同時に実行する。  
+
+---
+
+## TASK-9I-skill-docs: Phase 12再確認（2026-02-28）
+
+### 苦戦箇所: `audit-unassigned-tasks --target-file` の結果が過剰にfailへ見える
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 対象ファイルは準拠でも baseline 違反件数が同時出力され、今回差分が fail に見えやすい |
+| 再発条件 | `currentViolations` を確認せず、全体件数のみで判定した場合 |
+| 原因 | scoped監査（current判定）と全体監査（baseline監視）を分離せずに報告した |
+| 対処 | `--target-file` 出力は `currentViolations.total` を合否基準に固定し、baseline は既存課題として別記録した |
+| 今後の標準ルール | 監査結果は必ず `current/baseline` を2列で記録し、今回差分判定を先に確定する |
+
+### 苦戦箇所: Phase 12再確認の証跡が散在しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証結果が `documentation-changelog` / コマンドログ / 口頭報告に分散し、再確認時に追跡コストが高い |
+| 再発条件 | 検証コマンドの実行順と記録先を固定しない場合 |
+| 原因 | 証跡を「実行都度追記」に任せ、台帳側の集約ルールを先に決めていなかった |
+| 対処 | `task-workflow.md` に「再確認結果テーブル」を設け、verify/validate/links/audit を1表に集約した |
+| 今後の標準ルール | Phase 12再確認は「1表で証跡化」を完了条件にする |
+
+### 苦戦箇所: 未タスクは存在確認のみで形式確認が漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `docs/30-workflows/unassigned-task/` にファイルがあっても、9セクション形式崩れを見落としやすい |
+| 再発条件 | `ls` による存在確認だけで完了判定した場合 |
+| 原因 | 配置検証・見出し検証・監査判定を別工程として扱った |
+| 対処 | UT-9I-001/002 で `10見出し（メタ情報 + 1..9）` と `メタ情報見出し件数=1` を機械確認した |
+| 今後の標準ルール | 未タスク確認は「配置 + 見出し + current判定」の3点セットで完了判定する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` を先に実行し、Phase整合を固定する。  
+2. `verify-unassigned-links` で台帳リンク切れを排除してから未タスク監査に進む。  
+3. `audit --target-file` は `currentViolations.total` で合否判定し、baseline は別枠で記録する。  
+4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同一ターンで同期する。  
+
+### 同種課題の即時実行コマンドセット（TASK-9I再利用）
+
+```bash
+# 1) Phase仕様・成果物整合
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-9I-skill-docs --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-9I-skill-docs
+
+# 2) 未タスク参照整合
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+
+# 3) 対象未タスク監査（移管前のみ）
+# 注: completed-tasks/<task>/unassigned-task へ移管後は --target-file の対象外運用とし、
+#     今回差分判定は Step 4（--diff-from HEAD）で実施する
+
+# 4) 差分監査（今回変更のみ）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+```
+
+---
+
+## UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28）
+
+### 苦戦箇所: 未タスクリンクのワイルドカード参照が false fail を生む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `docs/30-workflows/unassigned-task/*.md` の参照は実体があってもリンク監査で missing 扱いになる |
+| 再発条件 | 台帳にワイルドカード参照を残したまま `verify-unassigned-links` を実行した場合 |
+| 原因 | 監査は実体ファイルパス判定であり、ワイルドカード展開を前提にしていない |
+| 対処 | 台帳参照を実体ファイル参照へ置換し、`verify-unassigned-links` を再実行して missing 0 を確認 |
+| 今後の標準ルール | 未タスクリンクはワイルドカード禁止、実体パスのみ許可する |
+
+### 苦戦箇所: `--target-file` 監査の baseline を今回差分と誤読しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `current=0` でも baseline 併記により fail と誤判定しやすい |
+| 再発条件 | `currentViolations.total` を見ずに総件数で判定した場合 |
+| 原因 | scoped監査（今回差分）と baseline（既存負債）の判定軸が分離されていなかった |
+| 対処 | 合否は `currentViolations.total` 固定、baseline は監視値として別列管理に統一 |
+| 今後の標準ルール | 監査記録は必ず `current/baseline` 2列で保存する |
+
+### 苦戦箇所: 再確認テーブル値が更新後にドリフトしやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | links件数などの証跡値が最新コマンド結果とずれる |
+| 再発条件 | 検証実行と台帳更新を別ターンで実施した場合 |
+| 原因 | コマンド結果転記が完了条件に含まれていなかった |
+| 対処 | 検証実行→台帳転記→差分監査を同一ターンで連続実行 |
+| 今後の標準ルール | Phase 12 は「実行結果の転記完了」までを完了条件にする |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md"` でワイルドカード参照を検出し、実体パスへ置換する。  
+2. `verify-all-specs` と `validate-phase-output` を実行して Phase 構造を先に固定する。  
+3. `verify-unassigned-links` で missing を 0 にする。  
+4. `audit --target-file` / `audit --diff-from HEAD` を実行し、合否は `currentViolations.total` で判定する。  
+5. `task-workflow.md` と `lessons-learned.md` に検証値・苦戦箇所・再利用手順を同一ターンで同期する。  
 
 ---
 

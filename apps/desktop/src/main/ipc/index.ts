@@ -26,6 +26,7 @@ import { registerCommunityHandlers } from "./communityHandlers";
 import {
   registerSkillHandlers,
   registerSkillScheduleHandlers,
+  registerSkillDocsHandlers,
 } from "./skillHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerSkillDebugHandlers } from "./skillDebugHandlers";
@@ -43,6 +44,7 @@ import {
   PermissionStore,
 } from "../services/skill";
 import { SkillFileManager } from "../services/skill/SkillFileManager";
+import { SkillDocGenerator as SkillDocGeneratorCls } from "../services/skill/SkillDocGenerator";
 import { ScheduleStore } from "../services/skill/ScheduleStore";
 import { SkillScheduler } from "../services/skill/SkillScheduler";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
@@ -586,6 +588,16 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // initialize は非同期だが、起動時にブロックしない
   void skillScheduler.initialize();
   registerSkillScheduleHandlers(mainWindow, skillScheduler, scheduleStore);
+
+  // Register Skill Docs handlers (TASK-9I)
+  const stubQueryFn = async (prompt: string) => ({
+    content: `Generated content for: ${prompt.slice(0, 50)}`,
+  });
+  const skillDocGenerator = new SkillDocGeneratorCls(
+    stubQueryFn,
+    skillFileManager,
+  );
+  registerSkillDocsHandlers(mainWindow, skillDocGenerator);
 
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();

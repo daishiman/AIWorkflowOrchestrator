@@ -132,6 +132,15 @@ export type {
   ScheduledRunResult,
 } from "./src/types/skill-schedule";
 
+// Skill Docs types (TASK-9I)
+export type {
+  DocGenerationRequest,
+  GeneratedDoc,
+  DocSection,
+  DocTemplate,
+  TemplateSection,
+} from "./src/types/skill-docs";
+
 // Skill Creator types (TASK-9B-G)
 export type {
   SkillCreatorMode,
