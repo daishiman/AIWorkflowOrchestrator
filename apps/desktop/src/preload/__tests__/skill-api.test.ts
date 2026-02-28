@@ -722,7 +722,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
 // 8. 統一API構造テスト
 // ============================================================
 describe("統一SkillAPI - API構造検証", () => {
-  it("統一APIが31メソッドを持つ（共有API・ドキュメントAPI含む）", () => {
+  it("統一APIが36メソッドを持つ（共有API・ドキュメントAPI・分析API含む）", () => {
     const expectedMethods: (keyof SkillAPI)[] = [
       "list",
       "getImported",
@@ -755,6 +755,11 @@ describe("統一SkillAPI - API構造検証", () => {
       "docsPreview",
       "docsExport",
       "docsTemplates",
+      "analyticsRecord",
+      "analyticsStatistics",
+      "analyticsSummary",
+      "analyticsTrend",
+      "analyticsExport",
     ];
 
     for (const method of expectedMethods) {
@@ -764,7 +769,7 @@ describe("統一SkillAPI - API構造検証", () => {
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(31);
+    expect(methodCount).toBe(36);
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {

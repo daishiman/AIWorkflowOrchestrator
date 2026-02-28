@@ -323,6 +323,13 @@ export const IPC_CHANNELS = {
   SKILL_DOCS_PREVIEW: "skill:docs:preview",
   SKILL_DOCS_EXPORT: "skill:docs:export",
   SKILL_DOCS_TEMPLATES: "skill:docs:templates",
+
+  // Skill analytics operations (TASK-9J)
+  SKILL_ANALYTICS_RECORD: "skill:analytics:record",
+  SKILL_ANALYTICS_STATISTICS: "skill:analytics:statistics",
+  SKILL_ANALYTICS_SUMMARY: "skill:analytics:summary",
+  SKILL_ANALYTICS_TREND: "skill:analytics:trend",
+  SKILL_ANALYTICS_EXPORT: "skill:analytics:export",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -568,6 +575,12 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DOCS_PREVIEW,
   IPC_CHANNELS.SKILL_DOCS_EXPORT,
   IPC_CHANNELS.SKILL_DOCS_TEMPLATES,
+  // Skill analytics channels (TASK-9J)
+  IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
+  IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS,
+  IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY,
+  IPC_CHANNELS.SKILL_ANALYTICS_TREND,
+  IPC_CHANNELS.SKILL_ANALYTICS_EXPORT,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [

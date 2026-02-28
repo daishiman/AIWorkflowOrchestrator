@@ -212,6 +212,7 @@
 | registerSkillDebugHandlers       | Pattern 3: mainWindow + service | 7 (6 invoke + 1 event) | api-ipc-agent.md |
 | registerSkillDocsHandlers        | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md |
 | registerSkillScheduleHandlers    | Pattern 4: mainWindow + service + store | 5 | api-ipc-agent.md |
+| registerSkillAnalyticsHandlers   | Pattern 3: mainWindow + service | 5 | api-ipc-agent.md |
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
 
@@ -458,6 +459,7 @@
 |---------|------|---------|
 | 1.8.0 | 2026-02-27 | TASK-9H反映: `registerSkillDebugHandlers` を IPC ハンドラー登録一覧へ追加。Pattern 3 詳細に 7チャネル（6 invoke + 1 event）、`SkillDebugger` 配線、vm サンドボックス方針を追記 |
 | 1.9.0 | 2026-02-28 | TASK-9I反映: IPC ハンドラー登録一覧に `registerSkillDocsHandlers` を追加（Pattern 3: mainWindow + service）。4チャネル（skill:docs:generate/preview/export/templates）と Pattern 3 詳細を追記 |
+| 1.9.0 | 2026-02-28 | TASK-9J: スキル分析・統計機能追加（SkillAnalytics, AnalyticsStore, 5 IPCチャネル, 8型定義） |
 | 1.8.0 | 2026-02-27 | TASK-9G反映: IPC ハンドラー登録一覧に `registerSkillScheduleHandlers` を追加（Pattern 4: mainWindow + service + store）。5チャネル（skill:schedule:list/add/update/delete/toggle）と DI 構成（SkillScheduler + ScheduleStore）を追記 |
 | 1.7.0 | 2026-02-26 | TASK-9B反映: `registerSkillCreatorHandlers` のチャンネル数を 13（12 invoke + 1 progress）へ更新。Pattern 3 詳細に拡張7チャンネルを追記し、Main Process構造の `services/skill-creator/` 誤記を `services/skill/` に修正 |
 | 1.6.0 | 2026-02-12 | TASK-9B-H: SkillCreatorService追加。IPCハンドラー登録一覧セクション新設、Facadeパターン・ディレクトリ構造にskill-creator追加 |
