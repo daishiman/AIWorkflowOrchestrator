@@ -20,17 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
-| 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
-| 2026-02-28 | 1.27.5 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の Phase 12 実行監査教訓を追加。成果物実体と `artifacts.json` ステータス不一致、`audit-unassigned-tasks` の current/baseline 誤読、チェックリスト未同期の3課題と4ステップ解決手順を標準化 |
-| 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
+| 2026-02-28 | 1.27.2 | TASK-9E 再監査教訓を追加。苦戦箇所3件（テスト件数ドリフト、fork契約境界混同、path境界判定）と同種課題向け簡潔解決手順（5ステップ）を反映。再発防止未タスク `UT-IMP-PHASE12-TASK9E-TEST-COUNT-SYNC-GUARD-001` を登録 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
-| 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
-| 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
-| 2026-02-28 | 1.27.2 | TASK-9I Phase 12再確認の教訓を追加。`--target-file` 監査の current/baseline 誤読、再確認証跡の分散、未タスクの存在確認止まりを解消する4ステップ手順を標準化 |
-| 2026-02-28 | 1.27.3 | TASK-9J 教訓セクションをテンプレート準拠へ再整形。仕様書別SubAgent分担（interfaces/api-ipc/security/task-workflow/lessons）と5仕様書同期マトリクスを追加し、再利用導線を強化 |
-| 2026-02-28 | 1.27.2 | TASK-9J Phase 12再確認の教訓を追加。IPC登録配線漏れ・責務重複・Preload API命名ドリフトの3課題と、同種課題向け簡潔解決手順（4ステップ）を標準化 |
-| 2026-02-27 | 1.27.1 | TASK-9G Phase 12再確認の教訓を追加。検証スクリプト実体探索、`currentViolations`基準判定、UT-9G未タスク5件の配置/フォーマット同時検証を標準手順化 |
 | 2026-02-27 | 1.26.3 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の教訓セクションをテンプレート準拠へ最適化。各苦戦箇所に「再発条件」「今後の標準ルール」を追加し、再利用性を向上 |
 | 2026-02-27 | 1.26.2 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の再監査教訓を追加。苦戦箇所3件（Phase 12チェック同期漏れ、完了移管後の親証跡旧参照、検証スクリプト所在誤認）と同種課題向け簡潔解決手順（5ステップ）を反映 |
 | 2026-02-27 | 1.27.0 | TASK-9F 再監査追補: 仕様書別SubAgent分担（interfaces/api-ipc/security/task/lessons）と検証証跡（13/13, 28項目, 95/95, current=0）を追加。`spec-update-summary.md` を成果物に追加して再利用手順を強化 |
@@ -101,95 +92,6 @@
 
 ---
 
-## TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離
-
-### 苦戦箇所: timeout時に待機APIが停止責務まで持っていた
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `waitForCallback()` timeout 内で `instance.stop()` を呼ぶと、待機失敗と停止処理が結合しワーカー終了時の不安定要因になる |
-| 再発条件 | timeout ハンドラ内で stop/close を直接呼ぶ実装を採用する場合 |
-| 原因 | 待機APIとライフサイクルAPIの責務境界が曖昧だった |
-| 対処 | timeout はエラー返却のみへ変更し、停止は呼び出し側の `stop()` 明示実行へ分離した |
-| 今後の標準ルール | timeout系APIは副作用を持たせず、停止責務を分離する |
-
-### 苦戦箇所: `stop()` の多重実行で終了経路が揺れる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 停止済みサーバーへの `stop()` で例外経路が混入するとクリーンアップが不安定になる |
-| 再発条件 | `!server` 判定のみで `server.listening` 状態を見ない場合 |
-| 原因 | `!server` のみ判定で `server.listening` 状態を見ていなかった |
-| 対処 | `!server || !server.listening` で早期returnし、`server.close` エラーは握りつぶして `Promise<void>` を解決する設計へ統一した |
-| 今後の標準ルール | 停止APIは idempotent を第一要件にし、終了時の best-effort 方針を明文化する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. timeout 系APIから停止/破棄などの副作用を分離する。  
-2. 停止APIに「未起動」「停止済み」の両ガードを実装する。  
-3. timeout テストに `finally` 相当の明示 `stop()` を必ず追加する。  
-4. `security-implementation.md` と `task-workflow.md` を同一ターンで同期し、仕様ドリフトを残さない。  
-
----
-
-## TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28）
-
-### 苦戦箇所: 成果物が存在しても `artifacts.json` ステータスが未同期になりやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `outputs/phase-12` の必須成果物5件が存在していても、`artifacts.json` の `phases.12.status` が `pending` のまま残りやすい |
-| 再発条件 | ファイル存在確認だけで Phase 12 の完了判定を行う場合 |
-| 原因 | 「成果物実体」と「台帳ステータス」を別工程で管理し、同時突合していなかった |
-| 対処 | 監査時に `outputs/phase-12` と `artifacts.json` を同時確認し、乖離を明示記録した |
-| 今後の標準ルール | 完了判定は `成果物実体 + artifacts status + チェックリスト同期` の三点セットを必須化する |
-
-### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `--json` 単体実行の違反件数（baseline）を、今回差分の違反件数と誤認しやすい |
-| 再発条件 | `--diff-from` を使わずに合否を判定した場合 |
-| 原因 | 監視目的（baseline）と合否目的（current）の使い分けが曖昧だった |
-| 対処 | `--diff-from HEAD` を併用し、`currentViolations.total` を合否基準として固定した |
-| 今後の標準ルール | 監査結果は `current`（合否）と `baseline`（監視）を必ず分離して記録する |
-
-### 苦戦箇所: `phase-12-documentation.md` のチェックリスト未同期
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 検証コマンドがPASSでも、実行仕様書のチェック項目が未チェックのまま残りやすい |
-| 再発条件 | 成果物作成と仕様書更新を別ターンで進める場合 |
-| 原因 | 実体証跡の更新後に、手順書側の完了状態を同期する運用が固定されていなかった |
-| 対処 | 検証証跡を `task-workflow.md` と `lessons-learned.md` に同一ターン反映した |
-| 今後の標準ルール | Phase 12 は「実体証跡・仕様書チェック・教訓記録」の同時更新で完了とする |
-
-### 苦戦箇所: 仕様書別SubAgent分担で非対象仕様の扱いが揺れる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 仕様書別に担当を切っても、更新不要な仕様書（interfaces/api-ipc/securityなど）の省略理由が残らず、再確認時に漏れと区別しづらい |
-| 再発条件 | 仕様書別SubAgent分担を適用したが、非対象仕様の記録欄がないテンプレートを使う場合 |
-| 原因 | 「担当あり/更新なし」の判断を文章でしか残しておらず、機械的な確認軸がなかった |
-| 対処 | `phase12-system-spec-retrospective-template.md` に N/A判定ログ（対象/非対象/理由/代替証跡）を追加した |
-| 今後の標準ルール | SubAgent分担では全仕様書の判定（更新 or N/A）を必ず表形式で残す |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `verify-all-specs` と `validate-phase-output` で Phase 構造を先に確定する。
-2. `outputs/phase-12` の必須成果物5件と `artifacts.json` ステータスを同時に確認する。
-3. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations` を合否基準に固定し、baselineは別管理する。
-4. 仕様書別SubAgent分担を作成し、更新不要な仕様書は `N/A + 理由 + 代替証跡` を記録する。
-5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` へ同一ターンで同期する。
-
-### 派生未タスク（継続改善）
-
-| タスクID | 目的 | 配置先 |
-| --- | --- | --- |
-| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 での N/A 判定ログ固定と三点突合運用を機械確認まで引き上げる | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
-
----
-
 ## UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード
 
 ### 苦戦箇所: Phase 12 実行済みでもチェックリスト同期が漏れる
@@ -224,214 +126,11 @@
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. `phase-12-documentation.md` と `outputs/phase-12/*` を突合し、完了チェック未同期を解消する。
-2. 完了移管した未タスクIDで `rg -n "task-imp-<id>.md"` を実行し、親タスク証跡の旧参照を一括更新する。
-3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。
-4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。
-5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。
-
----
-
-## TASK-9J-skill-analytics: Phase 12再確認（2026-02-28）
-
-### 仕様書別SubAgent分担（5仕様書同期）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| A | `references/interfaces-agent-sdk-skill.md` | 型定義8種 + Preload API 5メソッドの契約同期 | API名/型/戻り値が実装一致 |
-| B | `references/api-ipc-agent.md` | IPC 5チャネルの request/response/validation 同期 | チャネル表と実装状況が一致 |
-| C | `references/security-electron-ipc.md` | sender/P42/許可値リスト/エラー正規化を同期 | セキュリティ要件の欠落ゼロ |
-| D | `references/task-workflow.md` | 完了台帳・成果物・検証証跡・苦戦箇所を同期 | 実装内容 + 教訓 + 証跡を同一ターン更新 |
-| E | `references/lessons-learned.md` | 再発条件付き教訓と簡潔解決手順を固定化 | 同種課題で再利用できる手順が明記 |
-
-### 仕様反映先（5点セット）
-
-| 仕様書 | TASK-9Jで反映した内容 |
-| --- | --- |
-| `references/interfaces-agent-sdk-skill.md` | 型定義8種、Preload API 5メソッド、完了記録 |
-| `references/api-ipc-agent.md` | 5チャネル契約、実装状況、完了記録 |
-| `references/security-electron-ipc.md` | validateIpcSender / P42 / 許可値リスト / エラー正規化 |
-| `references/task-workflow.md` | 完了台帳、成果物、苦戦箇所、検証証跡 |
-| `references/lessons-learned.md` | 再発条件付き苦戦箇所、簡潔解決手順 |
-
-### 苦戦箇所: IPCハンドラ実装後の登録配線漏れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `skillAnalyticsHandlers.ts` を実装しても、`ipc/index.ts` 側の登録が漏れると機能が起動しない |
-| 再発条件 | 新規IPC追加時に「ハンドラ実装」と「登録配線」を別作業として扱う場合 |
-| 原因 | 実装完了をハンドラファイル単体で判定し、起動経路まで確認していなかった |
-| 対処 | `registerSkillAnalyticsHandlers` を `ipc/index.ts` に追加し、DI初期化（Store/Service）と同時に接続 |
-| 今後の標準ルール | IPC追加時は `handler` / `register` / `preload` の3点を完了条件に固定する |
-
-### 苦戦箇所: analytics責務の重複実装
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `skillHandlers.ts` と `skillAnalyticsHandlers.ts` に analytics 実装が分散し、契約差分が発生しやすい |
-| 再発条件 | 段階導入で旧ハンドラを残したまま新ハンドラを追加した場合 |
-| 原因 | 責務境界（どのファイルを正本にするか）が未固定 |
-| 対処 | analytics責務を `skillAnalyticsHandlers.ts` に一本化し、重複コードを削除 |
-| 今後の標準ルール | 同一チャネル群の実装は1ファイル1責務に統一し、重複実装を残さない |
-
-### 苦戦箇所: Preload API名の仕様ドリフト
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 文書の `recordAnalytics` 記述と実装の `analyticsRecord` が混在し、利用側が誤実装しやすい |
-| 再発条件 | 実装後に仕様書更新を段階分割し、命名確認を後回しにした場合 |
-| 原因 | 命名の正本（Preload API実装）に対する最終突合が不足 |
-| 対処 | `skill-api.ts` を正本として `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / Phase 12成果物を同一ターン同期 |
-| 今後の標準ルール | IPC命名は「実装正本→仕様書同期」の一方向で管理し、逆方向編集を禁止する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 新規IPCは `handler`・`register(index.ts)`・`preload` を同時確認し、1つでも未反映なら未完了と判定する。
-2. 重複ハンドラを検出したら責務を1ファイルに集約し、古い経路を削除して契約の正本を固定する。
-3. 命名は `skill-api.ts` を正本にして仕様書へ一括同期し、用語ドリフトを残さない。
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を通してから完了とする。
-
----
-
-## TASK-9G-skill-schedule: Phase 12再確認（2026-02-27）
-
-### 苦戦箇所: 監査スクリプトを誤ディレクトリで実行しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `scripts/verify-all-specs.js` などをプロジェクト直下で実行し、`MODULE_NOT_FOUND` になる |
-| 再発条件 | 実行前にスクリプト実体パスを確認しない場合 |
-| 原因 | 監査系スクリプトが `task-specification-creator/scripts` に集約されている運用が浸透していない |
-| 対処 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` で正本パスを確定してから実行 |
-| 今後の標準ルール | Phase 12再確認は「実体探索 → 検証実行」を固定順序にする |
-
-### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | baseline違反件数が多いと、今回差分の合否が不明瞭になる |
-| 再発条件 | `currentViolations` を見ずに total件数で判定した場合 |
-| 原因 | 全体監査と差分監査の目的を分離せずに結果を解釈した |
-| 対処 | 合否判定を `currentViolations` 固定にし、`baselineViolations` は既存課題として別管理 |
-| 今後の標準ルール | `audit-unassigned-tasks.js --json --diff-from HEAD` の出力は `currentViolations` のみで完了判定する |
-
-### 苦戦箇所: 未タスクは「存在」だけ確認して「形式」を見落としやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `docs/30-workflows/unassigned-task/` に配置されていても、テンプレート見出し不足で品質が落ちる |
-| 再発条件 | リンク存在チェックだけで完了判定した場合 |
-| 原因 | 配置検証とフォーマット検証を別タスクとして扱っていた |
-| 対処 | UT-9G-001〜005 を対象に `## メタ情報` + `## 1..9` の10見出しを機械確認 |
-| 今後の標準ルール | 未タスク確認は「配置 + 見出しフォーマット」を同時にPASSさせる |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 監査コマンド前に `rg --files` で実体パスを確定する。
-2. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。
-3. 監査合否は `currentViolations` を正本にし、baselineは改善バックログとして分離する。
-4. 未タスクは `docs/30-workflows/unassigned-task/` 配置確認と `## メタ情報 + ## 1..9` 見出し確認を同時に実行する。
-
----
-
-## TASK-9I-skill-docs: Phase 12再確認（2026-02-28）
-
-### 苦戦箇所: `audit-unassigned-tasks --target-file` の結果が過剰にfailへ見える
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 対象ファイルは準拠でも baseline 違反件数が同時出力され、今回差分が fail に見えやすい |
-| 再発条件 | `currentViolations` を確認せず、全体件数のみで判定した場合 |
-| 原因 | scoped監査（current判定）と全体監査（baseline監視）を分離せずに報告した |
-| 対処 | `--target-file` 出力は `currentViolations.total` を合否基準に固定し、baseline は既存課題として別記録した |
-| 今後の標準ルール | 監査結果は必ず `current/baseline` を2列で記録し、今回差分判定を先に確定する |
-
-### 苦戦箇所: Phase 12再確認の証跡が散在しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 検証結果が `documentation-changelog` / コマンドログ / 口頭報告に分散し、再確認時に追跡コストが高い |
-| 再発条件 | 検証コマンドの実行順と記録先を固定しない場合 |
-| 原因 | 証跡を「実行都度追記」に任せ、台帳側の集約ルールを先に決めていなかった |
-| 対処 | `task-workflow.md` に「再確認結果テーブル」を設け、verify/validate/links/audit を1表に集約した |
-| 今後の標準ルール | Phase 12再確認は「1表で証跡化」を完了条件にする |
-
-### 苦戦箇所: 未タスクは存在確認のみで形式確認が漏れやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `docs/30-workflows/unassigned-task/` にファイルがあっても、9セクション形式崩れを見落としやすい |
-| 再発条件 | `ls` による存在確認だけで完了判定した場合 |
-| 原因 | 配置検証・見出し検証・監査判定を別工程として扱った |
-| 対処 | UT-9I-001/002 で `10見出し（メタ情報 + 1..9）` と `メタ情報見出し件数=1` を機械確認した |
-| 今後の標準ルール | 未タスク確認は「配置 + 見出し + current判定」の3点セットで完了判定する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. `verify-all-specs` と `validate-phase-output` を先に実行し、Phase整合を固定する。
-2. `verify-unassigned-links` で台帳リンク切れを排除してから未タスク監査に進む。
-3. `audit --target-file` は `currentViolations.total` で合否判定し、baseline は別枠で記録する。
-4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同一ターンで同期する。
-
-### 同種課題の即時実行コマンドセット（TASK-9I再利用）
-
-```bash
-# 1) Phase仕様・成果物整合
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-9I-skill-docs --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-9I-skill-docs
-
-# 2) 未タスク参照整合
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-
-# 3) 対象未タスク監査（移管前のみ）
-# 注: completed-tasks/<task>/unassigned-task へ移管後は --target-file の対象外運用とし、
-#     今回差分判定は Step 4（--diff-from HEAD）で実施する
-
-# 4) 差分監査（今回変更のみ）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
-```
-
----
-
-## UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28）
-
-### 苦戦箇所: 未タスクリンクのワイルドカード参照が false fail を生む
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `docs/30-workflows/unassigned-task/*.md` の参照は実体があってもリンク監査で missing 扱いになる |
-| 再発条件 | 台帳にワイルドカード参照を残したまま `verify-unassigned-links` を実行した場合 |
-| 原因 | 監査は実体ファイルパス判定であり、ワイルドカード展開を前提にしていない |
-| 対処 | 台帳参照を実体ファイル参照へ置換し、`verify-unassigned-links` を再実行して missing 0 を確認 |
-| 今後の標準ルール | 未タスクリンクはワイルドカード禁止、実体パスのみ許可する |
-
-### 苦戦箇所: `--target-file` 監査の baseline を今回差分と誤読しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `current=0` でも baseline 併記により fail と誤判定しやすい |
-| 再発条件 | `currentViolations.total` を見ずに総件数で判定した場合 |
-| 原因 | scoped監査（今回差分）と baseline（既存負債）の判定軸が分離されていなかった |
-| 対処 | 合否は `currentViolations.total` 固定、baseline は監視値として別列管理に統一 |
-| 今後の標準ルール | 監査記録は必ず `current/baseline` 2列で保存する |
-
-### 苦戦箇所: 再確認テーブル値が更新後にドリフトしやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | links件数などの証跡値が最新コマンド結果とずれる |
-| 再発条件 | 検証実行と台帳更新を別ターンで実施した場合 |
-| 原因 | コマンド結果転記が完了条件に含まれていなかった |
-| 対処 | 検証実行→台帳転記→差分監査を同一ターンで連続実行 |
-| 今後の標準ルール | Phase 12 は「実行結果の転記完了」までを完了条件にする |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md"` でワイルドカード参照を検出し、実体パスへ置換する。
-2. `verify-all-specs` と `validate-phase-output` を実行して Phase 構造を先に固定する。
-3. `verify-unassigned-links` で missing を 0 にする。
-4. `audit --target-file` / `audit --diff-from HEAD` を実行し、合否は `currentViolations.total` で判定する。
-5. `task-workflow.md` と `lessons-learned.md` に検証値・苦戦箇所・再利用手順を同一ターンで同期する。
+1. `phase-12-documentation.md` と `outputs/phase-12/*` を突合し、完了チェック未同期を解消する。  
+2. 完了移管した未タスクIDで `rg -n "task-imp-<id>.md"` を実行し、親タスク証跡の旧参照を一括更新する。  
+3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。  
+4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。  
+5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。  
 
 ---
 
@@ -475,10 +174,10 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. shared/preload/Main の引数契約を一覧化し、正式契約と互換契約を明示する。
-2. 境界層に `name -> id` などの変換Adapterを置き、ドメイン層APIは段階的に移行する。
-3. 新旧契約の正常系/異常系テストを同じターンで追加する。
-4. `interfaces-agent-sdk-skill.md` / `security-skill-ipc.md` / `task-workflow.md` を同時更新する。
+1. shared/preload/Main の引数契約を一覧化し、正式契約と互換契約を明示する。  
+2. 境界層に `name -> id` などの変換Adapterを置き、ドメイン層APIは段階的に移行する。  
+3. 新旧契約の正常系/異常系テストを同じターンで追加する。  
+4. `interfaces-agent-sdk-skill.md` / `security-skill-ipc.md` / `task-workflow.md` を同時更新する。  
 
 ---
 
@@ -495,8 +194,8 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（3ステップ）
 
-1. `AUTH_*` の登録点を通常経路とfallback経路で同時列挙する
-2. 両経路を配列/マップ化し、`ipcMain.handle` 直接重複を排除する
+1. `AUTH_*` の登録点を通常経路とfallback経路で同時列挙する  
+2. 両経路を配列/マップ化し、`ipcMain.handle` 直接重複を排除する  
 3. `rg -n \"ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_\"` が0件であることを回帰テストと合わせて確認する
 
 ### 苦戦箇所: 全体監査FAILと今回差分FAILの混同
@@ -510,10 +209,10 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（4ステップ・再監査版）
 
-1. `audit-unassigned-tasks.js` で baseline 健全性を確認する
-2. `detect-unassigned-tasks --scan <変更範囲>` で current 差分を抽出する
-3. `unassigned-task-detection.md` に baseline/current を分けて記録する
-4. 完了移管した未タスク参照は `completed-tasks/` 側へ同期更新する
+1. `audit-unassigned-tasks.js` で baseline 健全性を確認する  
+2. `detect-unassigned-tasks --scan <変更範囲>` で current 差分を抽出する  
+3. `unassigned-task-detection.md` に baseline/current を分けて記録する  
+4. 完了移管した未タスク参照は `completed-tasks/` 側へ同期更新する  
 
 ### 同種課題の即時実行テンプレート（20分版）
 
@@ -558,11 +257,11 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する
-2. `audit-unassigned-tasks.js --json --diff-from <ref>` で差分対象を再確認する
-3. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を別記録する
-4. 完了した未タスク指示書を `completed-tasks/unassigned-task/` に移管し、`task-workflow.md` を同期更新する
-5. `verify-unassigned-links.js` で参照整合を機械検証する
+1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する  
+2. `audit-unassigned-tasks.js --json --diff-from <ref>` で差分対象を再確認する  
+3. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を別記録する  
+4. 完了した未タスク指示書を `completed-tasks/unassigned-task/` に移管し、`task-workflow.md` を同期更新する  
+5. `verify-unassigned-links.js` で参照整合を機械検証する  
 
 ### 苦戦箇所: Phase 12 証跡はPASSでも台帳未同期が残りやすい
 
@@ -611,13 +310,13 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（7ステップ・再確認版）
 
-1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する
-2. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を分離記録する
-3. `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` を実行する
-4. `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` を実行する
-5. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` を位置引数で実行する
-6. `--target-file` 結果は `currentViolations.total` を正本に判定し、baseline と混同しない
-7. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する
+1. `audit-unassigned-tasks.js --json --target-file <path>` で current 合否を先に確定する  
+2. `audit-unassigned-tasks.js --json` を実行し baseline 健全性を分離記録する  
+3. `node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` を実行する  
+4. `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` を実行する  
+5. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` を位置引数で実行する  
+6. `--target-file` 結果は `currentViolations.total` を正本に判定し、baseline と混同しない  
+7. `complete-phase` 後に `generate-index --regenerate` と `artifacts.json` 同期を同一ターンで完了する  
 
 ## UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応
 
@@ -650,10 +349,10 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. `themeMode`（選択値）と `resolvedTheme`（解決値）を状態設計で明示分離する
-2. UI副作用を持つ箇所は個別セレクタHookで依存を安定化する
-3. Phase 12では `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する
-4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` の結果を同一レポートに固定する
+1. `themeMode`（選択値）と `resolvedTheme`（解決値）を状態設計で明示分離する  
+2. UI副作用を持つ箇所は個別セレクタHookで依存を安定化する  
+3. Phase 12では `outputs/phase-12/*` と `phase-12-documentation.md` を1対1で突合する  
+4. `verify-all-specs --workflow --strict` と `verify-unassigned-links.js` の結果を同一レポートに固定する  
 
 ### 同種課題向け転記テンプレート（5分版）
 
@@ -698,10 +397,10 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. 実装ガイドを Part 1/Part 2 の必須要件チェックでレビューしてから完了扱いにする。
-2. `audit-unassigned-tasks` は `current` と `baseline` を分離して記録する。
-3. 未タスク指示書のメタ情報は1セクション運用に固定する。
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` を同ターンで再実行する。
+1. 実装ガイドを Part 1/Part 2 の必須要件チェックでレビューしてから完了扱いにする。  
+2. `audit-unassigned-tasks` は `current` と `baseline` を分離して記録する。  
+3. 未タスク指示書のメタ情報は1セクション運用に固定する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` を同ターンで再実行する。  
 
 ---
 
@@ -1102,11 +801,11 @@ ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => 
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. 監査対象を task 群へ限定し、全体ベースライン違反と分離する。
-2. 参照差分（oldPaths）と台帳差分（missingArtifacts）を別指標で収集する。
-3. 旧参照パスを一括置換し、再監査で0件化する。
-4. artifacts を共通セット + domain差分で補完し、7/7一致を確認する。
-5. `task-workflow.md` 完了記録・残課題状態・`LOGS.md` を同一タイミングで同期する。
+1. 監査対象を task 群へ限定し、全体ベースライン違反と分離する。  
+2. 参照差分（oldPaths）と台帳差分（missingArtifacts）を別指標で収集する。  
+3. 旧参照パスを一括置換し、再監査で0件化する。  
+4. artifacts を共通セット + domain差分で補完し、7/7一致を確認する。  
+5. `task-workflow.md` 完了記録・残課題状態・`LOGS.md` を同一タイミングで同期する。  
 
 ---
 
@@ -3860,9 +3559,9 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. **対象を固定**: `git diff --name-status` で今回対象ワークフローと仕様書更新対象（workflow / aiworkflow-requirements）を先に確定する。
-2. **参照を一括監査**: `rg -n "ui-overhaul|completed-task|../00-" <workflow-dir>` で旧パスを抽出し、実在パスへまとめて置換する。
-3. **台帳を同期**: 仕様書修正のみでも `task-workflow.md` 完了タスクと `lessons-learned.md` 苦戦箇所を同時更新する。
+1. **対象を固定**: `git diff --name-status` で今回対象ワークフローと仕様書更新対象（workflow / aiworkflow-requirements）を先に確定する。  
+2. **参照を一括監査**: `rg -n "ui-overhaul|completed-task|../00-" <workflow-dir>` で旧パスを抽出し、実在パスへまとめて置換する。  
+3. **台帳を同期**: 仕様書修正のみでも `task-workflow.md` 完了タスクと `lessons-learned.md` 苦戦箇所を同時更新する。  
 4. **機械検証で締める**: `verify-unassigned-links.js`・`audit-unassigned-tasks.js`・`generate-index.js` を実行し、リンク・フォーマット・索引を同期する。
 
 #### IPC チャネル名競合の検出・解消手順（5ステップ）
@@ -3934,10 +3633,10 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題向け簡潔解決手順（5ステップ）
 
-1. 監査結果を「対象内/対象外」に分離して記録する。
-2. 対象外の未解決事項がある場合は未タスク指示書を作成する。
-3. `task-workflow.md` に完了化と未タスク追加を同時反映する。
-4. `verify-unassigned-links.js` を実行し、参照切れ0件を確認する。
+1. 監査結果を「対象内/対象外」に分離して記録する。  
+2. 対象外の未解決事項がある場合は未タスク指示書を作成する。  
+3. `task-workflow.md` に完了化と未タスク追加を同時反映する。  
+4. `verify-unassigned-links.js` を実行し、参照切れ0件を確認する。  
 5. `artifacts.json` と `outputs/artifacts.json` を同期してから完了判定する。
 
 ### 成果物
@@ -3992,11 +3691,11 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題向け簡潔解決手順（5ステップ）
 
-1. `channels.ts` を正本にして契約数・型・方向（invoke/on）を確定する。
-2. IPCハンドラーは全invokeで `validateIpcSender` + P42 3段バリデーションを適用する。
-3. 仕様同期は `interfaces/security/task/lessons` を SubAgent 分担で同時に更新する。
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。
-5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値・時刻を記録して完了判定する。
+1. `channels.ts` を正本にして契約数・型・方向（invoke/on）を確定する。  
+2. IPCハンドラーは全invokeで `validateIpcSender` + P42 3段バリデーションを適用する。  
+3. 仕様同期は `interfaces/security/task/lessons` を SubAgent 分担で同時に更新する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. `spec-update-summary.md` と `unassigned-task-detection.md` に最終数値・時刻を記録して完了判定する。  
 
 ### 成果物
 
@@ -4050,10 +3749,10 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題向け簡潔解決手順（4ステップ）
 
-1. `verify-unassigned-links.js` を最初に実行し、参照切れを先に解消する。
-2. 曖昧語grepを実行し、ヒット語（特に `等`）を修正する。
-3. `audit-unassigned-tasks` は `target/diff` で current 判定し、全体実行は baseline 監視として分離する。
-4. 修正後に `quick_validate.js` 3スキル実行 + 再現性diff確認を行い、Phase 11 完了判定へ進む。
+1. `verify-unassigned-links.js` を最初に実行し、参照切れを先に解消する。  
+2. 曖昧語grepを実行し、ヒット語（特に `等`）を修正する。  
+3. `audit-unassigned-tasks` は `target/diff` で current 判定し、全体実行は baseline 監視として分離する。  
+4. 修正後に `quick_validate.js` 3スキル実行 + 再現性diff確認を行い、Phase 11 完了判定へ進む。  
 
 ### 成果物
 
@@ -4062,6 +3761,86 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | Phase 11 手動テスト結果 | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-11/manual-test-result.md` |
 | Phase 11 ウォークスルーログ | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-11/walkthrough-log.md` |
 | Phase 12 実装ガイド | `docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/implementation-guide.md` |
+
+---
+
+## TASK-9E: スキルフォーク機能 再監査（2026-02-28）
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-9E |
+| 目的 | `skill:fork` 実装と Phase 12 成果物・正本仕様の整合を再監査し、再発防止手順を固定する |
+| 完了日 | 2026-02-28 |
+| ステータス | **完了** |
+
+### 仕様書別SubAgent分担（再監査時）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+|------|------|------|
+| A | `api-ipc-agent.md` | `skill:fork` 契約/型/実装状況の同期 |
+| B | `security-electron-ipc.md` | sender検証/P42/path境界/サニタイズの同期 |
+| C | `interfaces-agent-sdk-skill.md` / `architecture-overview.md` | `skill:fork` と `skill-creator:fork` の責務境界同期 |
+| D | `task-workflow.md` | 完了台帳・苦戦箇所・残課題登録の同期 |
+| E | `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/outputs/phase-12/*` | 成果物更新と検証証跡固定 |
+
+### 苦戦箇所と解決策
+
+#### 1. Phase成果物のテスト件数ドリフト（57/59）
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | Phase 5/6/7/9/10/11 成果物の一部で旧件数（57, 32+25）が残存した |
+| 原因 | 追加テスト（34件化）後の転記同期が分散管理で漏れた |
+| 解決策 | TASK-9E 文脈を `rg` で抽出し、`59（34+25）` に統一。Phase時点値は最終値併記へ修正 |
+| 教訓 | 件数は正本1箇所に固定し、成果物は転記ルールで同期する |
+
+#### 2. `skill:fork` と `skill-creator:fork` の契約境界混同
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | 類似チャネル名のため、仕様書ごとに用途解釈がぶれた |
+| 原因 | API/Interface/Architecture で境界の明示粒度が揃っていなかった |
+| 解決策 | 3仕様書に責務境界テーブルを追加し、用途と担当サービスを明文化 |
+| 教訓 | 近似チャネルは「契約対比表」を先に作る |
+
+#### 3. `validatePath` の prefix一致すり抜け
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `/skills` と `/skills-evil` のような prefix衝突を防ぎ切れない判定だった |
+| 原因 | `startsWith` ベースの境界判定に依存していた |
+| 解決策 | `path.relative` 判定へ変更し、`SkillForker.test.ts` に検証ケースを追加 |
+| 教訓 | パス境界検証は relative 判定を標準にする |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. 正本（`task-workflow.md`）に実測値と内訳を固定する。  
+2. `rg` で TASK文脈の旧値を抽出し、仕様書と成果物を同時更新する。  
+3. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+4. `quick_validate.js` を3スキルへ実行し、error=0 を証跡として固定する。  
+5. 未解決の再発要因は `docs/30-workflows/completed-tasks/unassigned-task/` を参照して完了移管状況を確認する。  
+
+### 検証結果（2026-02-28）
+
+| 検証項目 | 結果 |
+|------|------|
+| `verify-all-specs --workflow docs/30-workflows/completed-tasks/TASK-9E-skill-fork --strict` | PASS（13/13, errors=0, warnings=0） |
+| `validate-phase-output docs/30-workflows/completed-tasks/TASK-9E-skill-fork` | PASS（28項目） |
+| `verify-unassigned-links --diff-from HEAD` | PASS（ALL_LINKS_EXIST） |
+| `audit-unassigned-tasks --diff-from HEAD` | PASS（current=0, baseline=71） |
+| `quick_validate.js`（3スキル） | PASS（error=0, warningsあり） |
+
+### 成果物
+
+| 成果物 | パス |
+|--------|------|
+| 実行ワークフロー | `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/` |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/outputs/phase-12/spec-update-summary.md` |
+| 更新履歴 | `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出 | `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/outputs/phase-12/unassigned-task-detection.md` |
+| 新規未タスク | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md` |
 
 ---
 
@@ -4117,11 +3896,11 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題向け簡潔解決手順（5ステップ）
 
-1. 追加機能の完了判定は「実装 + 起動配線 + 契約 + テスト」で固定する。
-2. 仕様同期は `task-workflow.md` を起点に、関連仕様書と監査スクリプトを同時更新する。
-3. 未タスクは `docs/30-workflows/unassigned-task/` に9セクション形式で作成する。
-4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。
-5. 検証値を `documentation-changelog` と `lessons-learned` に転記して終了する。
+1. 追加機能の完了判定は「実装 + 起動配線 + 契約 + テスト」で固定する。  
+2. 仕様同期は `task-workflow.md` を起点に、関連仕様書と監査スクリプトを同時更新する。  
+3. 未タスクは `docs/30-workflows/unassigned-task/` に9セクション形式で作成する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。  
+5. 検証値を `documentation-changelog` と `lessons-learned` に転記して終了する。  
 
 ### 検証結果（2026-02-27 15:39 JST）
 
@@ -4186,10 +3965,10 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 
 ### 同種課題向け簡潔解決手順（4ステップ）
 
-1. 追加IPCは `channels.ts` / `skill-api.ts` / `skillDebugHandlers.ts` / `ipc/index.ts` を同ターンで更新する。
-2. Phase 12 成果物5件（`implementation-guide`, `spec-update-summary`, `documentation-changelog`, `unassigned-task-detection`, `skill-feedback-report`）をファイル名で突合する。
-3. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。
-4. `task-workflow.md` と `lessons-learned.md` と `phase-12-documentation.md` を同時同期し、台帳不一致を残さない。
+1. 追加IPCは `channels.ts` / `skill-api.ts` / `skillDebugHandlers.ts` / `ipc/index.ts` を同ターンで更新する。  
+2. Phase 12 成果物5件（`implementation-guide`, `spec-update-summary`, `documentation-changelog`, `unassigned-task-detection`, `skill-feedback-report`）をファイル名で突合する。  
+3. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。  
+4. `task-workflow.md` と `lessons-learned.md` と `phase-12-documentation.md` を同時同期し、台帳不一致を残さない。  
 
 ### 成果物
 

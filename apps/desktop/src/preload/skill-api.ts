@@ -34,16 +34,9 @@ import type {
   ShareExportResult,
   ShareValidateSourceResult,
   ScheduledSkill,
-  DocGenerationRequest,
-  GeneratedDoc,
-  DocTemplate,
-  SkillUsageEvent,
-  SkillStatistics,
-  AnalyticsSummary,
-  AnalyticsPeriod,
-  UsageTrend,
+  SkillForkOptions,
+  SkillForkResult,
 } from "@repo/shared";
-import type { SkillChainDefinition, SkillChainResult } from "@repo/shared";
 import type { BackupInfo } from "./types";
 import type {
   DebugSessionState,
@@ -197,6 +190,15 @@ export interface SkillAPI {
     source: ShareTarget,
   ) => Promise<ShareResult<ShareValidateSourceResult>>;
 
+  // === Skill Fork Operations (TASK-9E) ===
+
+  /**
+   * 既存スキルをフォークして新スキルを作成する
+   * @param options フォークオプション
+   * @returns フォーク結果
+   */
+  forkSkill: (options: SkillForkOptions) => Promise<SkillForkResult>;
+
   // === Skill Schedule Operations (TASK-9G) ===
 
   /** スケジュール一覧を取得する */
@@ -214,6 +216,7 @@ export interface SkillAPI {
   scheduleDelete: (id: string) => Promise<void>;
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
+
   // === Skill Debug API (TASK-9H) ===
 
   /** デバッグセッション管理 */
@@ -234,63 +237,6 @@ export interface SkillAPI {
     ) => Promise<DebugEvaluateResponse>;
     /** デバッグイベントを購読 */
     onDebugEvent: (callback: (event: DebugEvent) => void) => () => void;
-  };
-
-  // === Skill Docs Operations (TASK-9I) ===
-
-  /** ドキュメントを生成する */
-  docsGenerate: (request: DocGenerationRequest) => Promise<GeneratedDoc>;
-  /** ドキュメントのプレビューを生成する */
-  docsPreview: (
-    skillName: string,
-    template?: DocTemplate,
-  ) => Promise<GeneratedDoc>;
-  /** ドキュメントをファイルにエクスポートする */
-  docsExport: (doc: GeneratedDoc, outputPath: string) => Promise<void>;
-  /** 利用可能なテンプレート一覧を取得する */
-  docsTemplates: () => Promise<DocTemplate[]>;
-
-  // === Skill Analytics Operations (TASK-9J) ===
-
-  /** 利用イベントを記録する */
-  analyticsRecord: (
-    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
-  ) => Promise<SkillUsageEvent>;
-  /** スキル統計情報を取得する */
-  analyticsStatistics: (
-    skillName: string,
-    period?: { start: string; end: string },
-  ) => Promise<SkillStatistics>;
-  /** 全体サマリーを取得する */
-  analyticsSummary: () => Promise<AnalyticsSummary>;
-  /** 利用トレンドを取得する */
-  analyticsTrend: (
-    period: AnalyticsPeriod,
-    skillName?: string,
-  ) => Promise<UsageTrend>;
-  /** データをエクスポートする */
-  analyticsExport: (
-    format: "json" | "csv",
-    period?: { start: string; end: string },
-  ) => Promise<string>;
-
-  // === Skill Chain API (TASK-9D) ===
-
-  /** チェーンパイプライン管理 */
-  chain: {
-    /** チェーン定義一覧を取得 */
-    list: () => Promise<SkillChainDefinition[]>;
-    /** チェーン定義を取得 */
-    get: (chainId: string) => Promise<SkillChainDefinition | null>;
-    /** チェーン定義を保存 */
-    save: (chain: SkillChainDefinition) => Promise<SkillChainDefinition>;
-    /** チェーン定義を削除 */
-    delete: (chainId: string) => Promise<{ deleted: boolean }>;
-    /** チェーンを実行 */
-    execute: (
-      chainId: string,
-      variables?: Record<string, unknown>,
-    ) => Promise<SkillChainResult>;
   };
 }
 
@@ -486,6 +432,11 @@ export const skillAPI: SkillAPI = {
   ): Promise<ShareResult<ShareValidateSourceResult>> =>
     safeInvoke(IPC_CHANNELS.SKILL_VALIDATE_SOURCE, source),
 
+  // === Skill Fork Operations (TASK-9E) ===
+
+  forkSkill: (options: SkillForkOptions): Promise<SkillForkResult> =>
+    safeInvokeUnwrap<SkillForkResult>(IPC_CHANNELS.SKILL_FORK, options),
+
   // === Skill Schedule Operations (TASK-9G) ===
 
   scheduleList: (): Promise<ScheduledSkill[]> =>
@@ -513,6 +464,7 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
+
   // === Skill Debug API (TASK-9H) ===
 
   debug: {
@@ -550,101 +502,5 @@ export const skillAPI: SkillAPI = {
 
     onDebugEvent: (callback: (event: DebugEvent) => void): (() => void) =>
       safeOn<DebugEvent>(IPC_CHANNELS.SKILL_DEBUG_EVENT, callback),
-  },
-
-  // === Skill Docs Operations (TASK-9I) ===
-
-  docsGenerate: (request: DocGenerationRequest): Promise<GeneratedDoc> =>
-    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_GENERATE, request),
-
-  docsPreview: (
-    skillName: string,
-    template?: DocTemplate,
-  ): Promise<GeneratedDoc> =>
-    safeInvokeUnwrap<GeneratedDoc>(IPC_CHANNELS.SKILL_DOCS_PREVIEW, {
-      skillName,
-      template,
-    }),
-
-  docsExport: (doc: GeneratedDoc, outputPath: string): Promise<void> =>
-    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_DOCS_EXPORT, {
-      doc,
-      outputPath,
-    }),
-
-  docsTemplates: (): Promise<DocTemplate[]> =>
-    safeInvokeUnwrap<DocTemplate[]>(IPC_CHANNELS.SKILL_DOCS_TEMPLATES),
-
-  // === Skill Analytics Operations (TASK-9J) ===
-
-  analyticsRecord: (
-    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
-  ): Promise<SkillUsageEvent> =>
-    safeInvokeUnwrap<SkillUsageEvent>(
-      IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
-      event,
-    ),
-
-  analyticsStatistics: (
-    skillName: string,
-    period?: { start: string; end: string },
-  ): Promise<SkillStatistics> =>
-    safeInvokeUnwrap<SkillStatistics>(IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS, {
-      skillName,
-      period,
-    }),
-
-  analyticsSummary: (): Promise<AnalyticsSummary> =>
-    safeInvokeUnwrap<AnalyticsSummary>(IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY),
-
-  analyticsTrend: (
-    period: AnalyticsPeriod,
-    skillName?: string,
-  ): Promise<UsageTrend> =>
-    safeInvokeUnwrap<UsageTrend>(IPC_CHANNELS.SKILL_ANALYTICS_TREND, {
-      period,
-      skillName,
-    }),
-
-  analyticsExport: (
-    format: "json" | "csv",
-    period?: { start: string; end: string },
-  ): Promise<string> =>
-    safeInvokeUnwrap<string>(IPC_CHANNELS.SKILL_ANALYTICS_EXPORT, {
-      format,
-      period,
-    }),
-
-  // Skill chain operations (TASK-9D)
-  chain: {
-    list: (): Promise<SkillChainDefinition[]> =>
-      safeInvokeUnwrap<SkillChainDefinition[]>(IPC_CHANNELS.SKILL_CHAIN_LIST),
-
-    get: (chainId: string): Promise<SkillChainDefinition | null> =>
-      safeInvokeUnwrap<SkillChainDefinition | null>(
-        IPC_CHANNELS.SKILL_CHAIN_GET,
-        chainId,
-      ),
-
-    save: (chain: SkillChainDefinition): Promise<SkillChainDefinition> =>
-      safeInvokeUnwrap<SkillChainDefinition>(
-        IPC_CHANNELS.SKILL_CHAIN_SAVE,
-        chain,
-      ),
-
-    delete: (chainId: string): Promise<{ deleted: boolean }> =>
-      safeInvokeUnwrap<{ deleted: boolean }>(
-        IPC_CHANNELS.SKILL_CHAIN_DELETE,
-        chainId,
-      ),
-
-    execute: (
-      chainId: string,
-      variables?: Record<string, unknown>,
-    ): Promise<SkillChainResult> =>
-      safeInvokeUnwrap<SkillChainResult>(IPC_CHANNELS.SKILL_CHAIN_EXECUTE, {
-        chainId,
-        variables,
-      }),
   },
 };

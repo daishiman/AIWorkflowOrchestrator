@@ -26,46 +26,30 @@
 
 ---
 
-## 2026-02-28 - TASK-9I 仕様再監査（Phase 12漏れ補完）
+## 2026-02-28 - TASK-9E Phase 12 再監査追補（件数ドリフト未タスク化）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（ドキュメント更新再実行）
+- **Phase**: Phase 12（再監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `documentation-changelog.md` の Step 1-A/1-B/1-C/1-D/Step 2/Step 1-G を実施済みに同期
-  - `unassigned-task-detection.md` の「作成予定」を解消し、`UT-9I-001` / `UT-9I-002` 指示書2件を `docs/30-workflows/unassigned-task/` に作成
-  - 必須6仕様書（api-ipc / arch-electron-services / security-electron-ipc / architecture-overview / interfaces-agent-sdk-skill / task-workflow）へ TASK-9I 実装内容を反映
-  - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
-
----
-## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 1-12 完了
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（ドキュメント更新）
-- **Result**: 成功
-- **Duration**: N/A
-- **Notes**:
-  - TASK-9J: スキル使用統計・分析機能のバックエンド実装完了
-  - Phase 1-11 全完了、Phase 10 最終レビュー PASS（指摘0件）
-  - 新規IPCチャンネル5つ、サービス2つ、型定義8インターフェース追加
-  - テスト97件全PASS、カバレッジ全基準クリア
-  - Phase 12 成果物5ファイル作成完了
+  - `references/patterns.md` に成功パターン「Phase 12 テスト件数ドリフト再同期（TASK-9E）」を追加
+  - 再監査で検出した運用課題を未タスク化し、`docs/30-workflows/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md` を9セクション形式で作成
+  - `task-workflow.md` 残課題テーブルに同タスクを登録し、`unassigned-task-detection.md` の3ステップ完了状態を同期
 
 ---
 
-## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査・成果物補完
+## 2026-02-28 - TASK-9E Phase 12 再確認（仕様同期漏れ是正）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-13（再監査・成果物整備）
+- **Phase**: Phase 12（再監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-1..13` の不足成果物を補完
-  - `artifacts.json` を全Phase completed に更新し、`outputs/artifacts.json` を同期生成
-  - Phase 12 必須成果物5件を実体化（`implementation-guide.md`, `spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection-report.md`, `skill-feedback-report.md`）
-  - 互換目的で `unassigned-task-detection.md` を併置し、命名ゆれによる参照ドリフトを抑制
-  - 検証コマンドを再実行し PASS を確認（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0）
+  - `TASK-9E-skill-fork` の Phase 12成果物を再監査し、`documentation-changelog.md` の Step 1-A〜2 未実施表記を是正
+  - `aiworkflow-requirements` 正本6仕様書（api-ipc-agent / security-electron-ipc / interfaces-agent-sdk-skill / architecture-overview / arch-electron-services / task-workflow）へ `skill:fork` 契約を同期
+  - `skill:fork` と `skill-creator:fork` の責務境界を仕様書へ明記し、契約混同を防止
+  - 機械検証（`verify-all-specs`, `validate-phase-output`, `verify-unassigned-links`, `audit --diff-from HEAD`）を再実行して current 違反 0 を確認
 
 ---
 

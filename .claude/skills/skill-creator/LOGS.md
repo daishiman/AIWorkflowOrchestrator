@@ -4,59 +4,24 @@
 
 ---
 
-## [2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 Phase 12 パターン同期]
+## [2026-02-28 - TASK-9E Phase 12 テンプレート最適化（5仕様書/5成果物/重複ID監査）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` の Phase 12 成功パターンに「待機API/停止API責務分離の仕様固定」を追加
-  - 失敗パターンに「timeout待機APIへの停止副作用混在」を追加し、再発条件と4対策を明文化
-  - クイックナビ（📋 Phase 12）へ両パターンのキーワードを登録し、再利用導線を最適化
-  - `SKILL.md` 変更履歴を `v10.28.0` として同期
+- **Notes**: `assets/phase12-system-spec-retrospective-template.md` の成果物チェックを5点固定（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）へ更新し、`task-workflow.md` の重複ID監査コマンドを追加。`assets/phase12-spec-sync-subagent-template.md` を5仕様書（interfaces/api-ipc/security/task-workflow/lessons）責務へ拡張し、`references/resource-map.md` / `references/patterns.md` に「残課題テーブル同一ID一意化」パターンを同期した。
 
 ---
 
-## [2026-02-28 - Phase 12テンプレート最適化（TASK-9I再利用強化）]
+## [2026-02-28 - TASK-9E Phase 12 再監査パターン追補]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
-- **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` を最適化し、再確認タスク向けSubAgent分担（A:task-workflow/B:lessons/C:unassigned/D:検証）を追加
-  - 検証コマンドに `audit --target-file` と 10見出し機械確認（`## メタ情報` + `## 1..9`）を追加
-  - 成果物チェックを `unassigned-task-detection.md` 優先に正規化し、旧 `unassigned-task-report.md` は互換用途に限定
-  - `references/patterns.md` の TASK-9I 成功パターン文言をテンプレート仕様へ同期（10見出し定義の整合）
-  - `SKILL.md` 変更履歴を v10.27.0 に更新
+- **Notes**: `references/patterns.md` に成功パターン「テスト件数ドリフトの正本固定+文脈抽出（TASK-9E再監査）」を追加。件数正本1箇所固定→TASK文脈限定抽出→Phase 12 成果物4点同期→未タスク化（`UT-IMP-PHASE12-TASK9E-TEST-COUNT-SYNC-GUARD-001`）の再発防止手順を標準化し、クイックナビへ反映。
 
 ---
 
-## [2026-02-28 - TASK-9I Phase 12再確認パターン同期]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**: `references/patterns.md` の Phase 12へ成功パターン「target監査 + 10見出し同時検証（TASK-9I再確認）」と失敗パターン「未タスクの存在確認止まり（10見出し未検証）」を追加。`audit-unassigned-tasks --target-file` の `current` 判定固定と、UT指示書の必須10見出し + `## メタ情報` 件数検証を同一ターンで実施する運用を標準化。`SKILL.md` 変更履歴を v10.26.0 に更新。
-
----
-
-## [2026-02-28 - Phase 12 5仕様書SubAgent同期テンプレート最適化（TASK-9J）]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**: `assets/phase12-spec-sync-subagent-template.md` を4仕様書前提から5仕様書前提（interfaces/api-ipc/security/task-workflow/lessons）へ拡張。`handler/register/preload` 三点突合を必須工程として追加し、`references/patterns.md` に成功パターン「5仕様書同期 + IPC三点突合テンプレート」と失敗パターン「api-ipc仕様を同期対象から除外」を追記。`references/resource-map.md` も同期更新。
-
----
-
-## [2026-02-28 - TASK-9J IPC登録配線再発防止パターン追加]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**: `references/patterns.md` に成功パターン「IPC追加時の登録配線突合（handler/register/preload）」と失敗パターン「IPCハンドラ実装のみで登録配線を未確認」を追加。Phase 12クイックナビへ反映し、実装済みでも登録漏れで機能が起動しない再発を防止。
-
----
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)
