@@ -267,6 +267,68 @@
 
 ---
 
+### タスク: TASK-9H スキルデバッグモード実装（2026-02-27完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-9H |
+| 完了日 | 2026-02-27 |
+| ステータス | **完了** |
+| タスク種別 | 新規機能実装（Main IPC + Preload + Shared 型） |
+| Phase | Phase 1-12 完了（Phase 13未実施） |
+| 変更範囲 | `packages/shared` / `apps/desktop/src/main/services/skill` / `apps/desktop/src/main/ipc` / `apps/desktop/src/preload` |
+
+#### 実装内容（要点）
+
+- `packages/shared/src/types/skill-debug.ts` を新規作成し、`DebugSessionState` / `DebugEvent` / `DebugCommand` / `DEBUG_CONSTANTS` を追加。
+- `SkillDebugger.ts` / `DebugSession.ts` を新規作成し、セッション状態遷移・ブレークポイント管理・vmサンドボックス式評価を実装。
+- `skillDebugHandlers.ts` を新規作成し、`skill:debug:*` 7チャネル（invoke 6 + event 1）を実装。
+- `registerAllIpcHandlers` へ `registerSkillDebugHandlers(mainWindow)` を追加し、起動配線漏れを解消。
+- Preload (`channels.ts`, `skill-api.ts`, `types.ts`) と shared export (`packages/shared/index.ts`, `packages/shared/src/types/index.ts`) を同期。
+
+#### テスト結果
+
+- TASK-9H 関連テスト: 129テスト全PASS（shared 38 + DebugSession 35 + SkillDebugger 40 + IPC 16）
+- 既存回帰: 1138テスト全PASS（既存機能への破壊的影響なし）
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| SubAgent-A | `api-ipc-agent.md` | 7チャネルの request/response/validation 契約同期 |
+| SubAgent-B | `interfaces-agent-sdk-skill.md` | Debug 型定義と Preload API 7メソッドの同期 |
+| SubAgent-C | `security-electron-ipc.md` | Sender検証 + P42 + vmサンドボックス制約の同期 |
+| SubAgent-D | `architecture-overview.md` | `registerSkillDebugHandlers` の配線・構造パターン同期 |
+| SubAgent-E | `task-workflow.md` | 完了台帳・検証証跡・成果物参照の固定化 |
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| ハンドラ未配線 | `skillDebugHandlers.ts` 実装のみで `registerAllIpcHandlers` 登録が漏れた | `registerSkillDebugHandlers(mainWindow)` を追加 | IPC追加時は `handlers + registerAllIpcHandlers` を同一PR内で必須化 |
+| ワークフロー参照の旧ファイル名 | `skillHandlers.ts` / `skillHandlers.debug.test.ts` が残存 | `skillDebugHandlers.ts` / `skillDebugHandlers.test.ts` に一括正規化 | Phase 12で artifacts と実ファイルを1対1突合 |
+| source task 参照ドリフト | 移管後も旧 `task-00-unified-implementation-sequence` 参照が残った | `completed-task/task-023b-task-9h-skill-debug.md` へ更新 | 完了移管後は `rg` で旧参照を横断検出して同期 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 追加IPCごとに `channels/preload/handlers/register` の4点を同時更新する。  
+2. 共有型を追加したら `packages/shared/index.ts` と `types/index.ts` の両方で export を同期する。  
+3. ワークフロー仕様の `artifacts.json` を実ファイル名で更新し、参照ドリフトを先に潰す。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行して完了判定する。  
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| 実行ワークフロー | `docs/30-workflows/TASK-9H-skill-debug/` |
+| 実装ガイド | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/spec-update-summary.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/unassigned-task-detection.md` |
+| スキルフィードバック | `docs/30-workflows/TASK-9H-skill-debug/outputs/phase-12/skill-feedback-report.md` |
+
+---
+
 ### タスク: TASK-9B SkillCreator IPC拡張同期 再監査（2026-02-26完了）
 
 | 項目 | 内容 |
@@ -327,105 +389,6 @@
 | 仕様更新サマリー | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/spec-update-summary.md` |
 | 未タスク検出レポート | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/unassigned-task-detection.md` |
 | 整合性監査台帳 | `docs/30-workflows/completed-tasks/task-9b-skill-creator/outputs/phase-12/elegant-solution-audit.md` |
-
----
-
-### タスク: TASK-9G スキルスケジュール実行機能（2026-02-27完了）
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-9G |
-| 完了日 | 2026-02-27 |
-| ステータス | **完了** |
-| タスク種別 | 新規機能実装 + 仕様同期 |
-| Phase | Phase 1-12 完了（Phase 13未実施） |
-| 変更範囲 | `packages/shared` 型定義 / Main サービス・IPC / Preload API / ワークフロー成果物 |
-
-#### 実装内容（要点）
-
-- 5チャネルを追加: `skill:schedule:list/add/update/delete/toggle`
-- `ScheduleStore` を新規実装し、`electron-store`（`skill-schedules`）へスケジュール永続化を追加
-- `SkillScheduler` を新規実装し、`cron/interval/once/event` の4方式を提供
-- `registerAllIpcHandlers` で `ScheduleStore` と `SkillScheduler` を初期化し、`registerSkillScheduleHandlers` を接続
-- Preload `skillAPI` に schedule 5メソッドを追加し、共有型 `ScheduledSkill` 系4型を公開
-
-#### テスト結果
-
-| 分類 | コマンド | 結果 |
-| --- | --- | --- |
-| Desktop 主要テスト | `pnpm --filter @repo/desktop exec vitest run ...`（6ファイル） | 158/158 PASS |
-| Shared 型定義テスト | `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill-schedule.test.ts` | 5/5 PASS |
-| Typecheck | `pnpm --filter @repo/desktop typecheck` / `pnpm --filter @repo/shared typecheck` | PASS |
-| Lint（対象ファイル） | `pnpm --filter @repo/desktop exec eslint ...` | PASS |
-
-#### セキュリティ準拠
-
-- 全5ハンドラーで `validateIpcSender` を適用
-- P42準拠3段バリデーション（型/空文字/trim空文字）を `skillName`/`prompt`/`id` に適用
-- `schedule:add` で方式別必須検証（cron: `cronExpression`、interval: 正の `interval`）を適用
-- 例外は `IpcResult` の `error: string` へ正規化し、内部情報漏えいを防止
-
-#### 仕様書別SubAgent分担（今回の再確認チーム）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
-| --- | --- | --- | --- |
-| SubAgent-A | `interfaces-agent-sdk-skill.md` | 共有型4種と Preload API 5メソッド契約の同期 | 実装差分確定後 |
-| SubAgent-B | `api-ipc-agent.md` | 5チャネル（request/response/validation）の契約同期 | SubAgent-A の型同期後 |
-| SubAgent-C | `security-electron-ipc.md` | sender検証 + P42 + 方式別必須検証 + エラー正規化の同期 | SubAgent-B のチャネル契約同期後 |
-| SubAgent-D | `arch-electron-services.md` / `architecture-overview.md` | Main 初期化配線・DI構成・責務分離の同期 | SubAgent-A/B/C の反映後 |
-| SubAgent-E | `task-workflow.md` / `lessons-learned.md` | 完了台帳・苦戦箇所・簡潔解決手順・検証証跡の同期 | SubAgent-D の証跡値を参照 |
-
-#### 実装時の苦戦箇所（TASK-9G）
-
-| 苦戦箇所 | 原因 | 解決策 |
-| --- | --- | --- |
-| 仕様書6ファイル同期漏れ | IPC契約・型・配線・台帳の更新箇所が分散していた | `api-ipc` / `arch` / `security` / `overview` / `interfaces` / `task-workflow` を同一ターンで更新 |
-| Phase成果物欠落（7〜13） | `artifacts.json` 定義と実体ファイル作成が分離していた | 欠落成果物を再作成し、`phase-12-documentation.md` と `artifacts.json` を同期 |
-| `coverage --reporter` の全体閾値失敗混在 | 対象機能カバレッジとワークスペース全体閾値を同時評価していた | Phase 9 では対象ファイル指標と全体閾値失敗を分離記録し、判定根拠を明示 |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. 新規IPC追加時は `channels` / `handler` / `preload` / `tests` を同一ターンで更新する。  
-2. 共有型追加時は `packages/shared/src/types/index.ts` の re-export まで同時更新する。  
-3. Phase 12 は `outputs/phase-12/*` と `phase-12-documentation.md` を必ず相互同期する。  
-4. 仕様書更新は6ファイルを固定セットで確認し、`generate-index.js` 再生成を実施する。  
-5. 監査は `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を連続実行して完了判定する。  
-
-#### 成果物
-
-| 成果物 | パス/内容 |
-| --- | --- |
-| 実行ワークフロー | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/` |
-| 実装ガイド | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-12/implementation-guide.md` |
-| 仕様更新サマリー | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-12/spec-update-summary.md` |
-| ドキュメント更新履歴 | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-12/documentation-changelog.md` |
-| 未タスク検出レポート | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-12/unassigned-task-detection.md` |
-| スキルフィードバック | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/outputs/phase-12/skill-feedback-report.md` |
-
-#### Phase 12再確認結果（2026-02-27）
-
-| 検証項目 | 実行コマンド/確認方法 | 結果 |
-| --- | --- | --- |
-| Phase仕様整合（1〜13） | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-9G-skill-schedule --json` | 13/13 PASS（errors=0, warnings=0） |
-| Phase成果物構造 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-9G-skill-schedule` | 28項目 PASS（0エラー, 0警告） |
-| 未タスクリンク整合 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 96/96 existing, missing=0 |
-| 未タスク監査（今回差分） | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0（baselineViolations=71 は既存課題として分離） |
-| UT-9G未タスク配置・形式 | `docs/30-workflows/unassigned-task/` 配下の UT-9G-001〜005 指示書5件の存在確認 + `## メタ情報` + `## 1..9` 見出し検査 | 5/5件 配置済み、各ファイル見出し10件を満たす |
-
-#### 再確認時の苦戦箇所（運用）
-
-| 苦戦箇所 | 原因 | 解決策 |
-| --- | --- | --- |
-| 監査スクリプトの実行パス誤認 | `scripts/` 直下にある前提で実行し、`MODULE_NOT_FOUND` になった | 先に `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` で実体を解決してから実行 |
-| `audit-unassigned-tasks` の結果誤読 | baseline違反件数が多く、今回差分判定が埋もれやすい | 判定は `currentViolations` を正本に固定し、`baselineViolations` は別トラックで管理 |
-| `--target-file` の適用範囲制約 | 監査対象外パスを指定すると失敗する | `--target-file` は監査対象ディレクトリ配下のみ使用し、対象外ケースは `--diff-from HEAD` で差分監査する |
-
-#### 同種課題の簡潔解決手順（再確認版 4ステップ）
-
-1. 監査コマンド実行前に、対象スクリプトの実体パスを `rg --files` で確定する。  
-2. `verify-all-specs` → `validate-phase-output` → `verify-unassigned-links` → `audit --diff-from HEAD` を固定順で実行する。  
-3. 監査結果は `currentViolations` を合否判定に使い、baselineは既存課題として分離記録する。  
-4. 未タスクは「配置先 + 見出しフォーマット（メタ情報 + 1..9）」を機械確認してから完了判定する。  
 
 ---
 
@@ -649,7 +612,7 @@
 
 | 成果物 | パス/内容 |
 | --- | --- |
-| 修正仕様書（task-9系） | `../completed-task/task-022-task-9f-skill-share.md`（移管）, `task-023a-task-9g-skill-schedule.md`, `task-023b-task-9h-skill-debug.md`, `task-023c-task-9i-skill-docs.md`, `task-023d-task-9j-skill-analytics.md`, `task-023e-task-9d-skill-chain.md`, `task-023f-task-9e-skill-fork.md` |
+| 修正仕様書（task-9系） | `task-022-task-9f-skill-share.md`, `task-023a-task-9g-skill-schedule.md`, `task-023b-task-9h-skill-debug.md`, `task-023c-task-9i-skill-docs.md`, `task-023d-task-9j-skill-analytics.md`, `task-023e-task-9d-skill-chain.md`, `task-023f-task-9e-skill-fork.md` |
 | 付随修正 | `task-003-execution-plan.md` の `skill-api.ts` 参照統一 |
 | 完了記録 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md` |
 
@@ -1529,11 +1492,6 @@
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UT-9G-001 | SkillScheduler cron 次回実行時刻の精度改善 | 中 | TASK-9G Phase 12 未タスク検出（簡易実装コメント） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-cron-next-run-accuracy.md` |
-| UT-9G-002 | event スケジュール（file_change / git_commit）実行対応 | 低 | TASK-9G Phase 12 未タスク検出（プレースホルダー実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-event-trigger-completion.md` |
-| UT-9G-003 | スケジュール実行通知（sendNotification）実装 | 中 | TASK-9G Phase 12 未タスク検出（NotificationSettings未接続） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-notification-dispatch.md` |
-| UT-9G-004 | SkillScheduler graceful shutdown 実装 | 低 | TASK-9G Phase 12 未タスク検出（終了時クリーンアップ未実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-graceful-shutdown.md` |
-| UT-9G-005 | スケジュール実行結果の Renderer push 通知追加 | 低 | TASK-9G Phase 12 未タスク検出（Main→Renderer push未実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-execution-push-event.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
@@ -1647,7 +1605,6 @@
 | UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001            | skill:get-detail引数名ドリフト修正（P45パターン：skillId→skillName統一）                                        | 低     | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）      | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md`                                                                           |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~            | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完・苦戦箇所付き）~~               | ~~中~~     | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-24**      | `docs/30-workflows/completed-tasks/skill-validation-consistency/`                                                                            |
 | UT-IMP-UNASSIGNED-FORMAT-NORMALIZATION-001         | 未タスク指示書フォーマット正規化（9セクション未準拠67件の是正）                                                   | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 監査（2026-02-22）                      | `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`                                                            |
-| UT-IMP-PHASE12-UNASSIGNED-BASELINE-REMEDIATION-002 | Phase 12 未タスク baseline 違反の段階是正（フォーマット/命名/台帳整合）                                            | 中     | TASK-9G Phase 12 再確認（2026-02-27）                                       | `docs/30-workflows/unassigned-task/task-imp-phase12-unassigned-baseline-remediation-002.md`                                                         |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~           | ~~SkillImportDialog skill.id→skill.name不一致修正（Rendererがハッシュを渡しgetSkillByNameが失敗）~~ | ~~高~~ | ~~ランタイムエラー調査（2026-02-22）~~ **完了: 2026-02-22**                | `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/`                                                                                                  |
 | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001              | Skill識別子Branded Type導入（SkillId / SkillName コンパイル時型区別）                                            | 中     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/completed-tasks/task-type-skill-identifier-branded.md`                                                                          |
 | UT-REFACTOR-SKILL-IMPORT-DIALOG-DEDUP-001         | SkillImportDialog同名コンポーネント解消（コンポーネント命名重複リファクタリング）                                | 低     | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 実装苦戦箇所（2026-02-22）             | `docs/30-workflows/unassigned-task/task-refactor-skill-import-dialog-dedup.md`                                                                     |
@@ -1696,10 +1653,7 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.62.8** | **2026-02-27** | **UT-IMP-PHASE12-UNASSIGNED-BASELINE-REMEDIATION-002 登録**: TASK-9G Phase 12 再確認で顕在化した baseline 違反（未タスクフォーマット/命名/台帳整合）の段階是正タスクを残課題テーブルへ追加。未タスク指示書に「実装課題と解決策（実体探索/`current`-`baseline` 分離/メタ情報重複防止）」と SubAgent 分担を反映 |
-| **1.62.7** | **2026-02-27** | **TASK-9G Phase 12再確認結果を追加**: 検証証跡（13/13, 28項目, 96/96, current=0）を完了タスクセクションへ追記し、運用上の苦戦箇所（スクリプト実行パス誤認 / current-baseline誤読 / `--target-file` 制約）と再確認4ステップ手順を標準化 |
-| **1.62.6** | **2026-02-27** | **TASK-9G 未タスク登録同期**: UT-9G-001〜005（cron nextRun 精度改善 / event トリガー拡張 / 通知実装 / graceful shutdown / Renderer push 通知）を残課題テーブルへ追加し、`docs/30-workflows/unassigned-task/` の指示書5件へ正本リンクを登録 |
-| **1.62.5** | **2026-02-27** | **TASK-9G完了反映**: 完了タスクセクションへ TASK-9G（スキルスケジュール5チャネル、ScheduleStore/SkillScheduler、Preload API 5メソッド、desktop/shared テストPASS）を追加。苦戦箇所（6仕様書同期漏れ・Phase成果物欠落・coverage判定混在）と5ステップ再利用手順を記録 |
+| **1.62.5** | **2026-02-27** | **TASK-9H Phase 12再監査同期**: `TASK-9H` セクションに最終検証証跡（`verify-all-specs` 13/13、`validate-phase-output` error=0、`verify-unassigned-links` ALL_LINKS_EXIST、`audit --diff-from HEAD` current=0 / baseline=71）を反映。成果物参照（`spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）を確定し、運用手順を4ステップへ統一 |
 | **1.61.7** | **2026-02-27** | **UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 登録**: Phase 12 再監査で顕在化した「版数ドリフト（`spec-update-summary` と正本差分）」「簡潔解決手順の件数ドリフト（4/5）」を再発防止する未タスクを残課題テーブルへ追加。併せて `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` の参照先を `unassigned-task/` 正本へ補正 |
 | **1.61.6** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 テンプレート準拠最適化**: 同タスクへ仕様書別SubAgent分担テーブルを追加し、苦戦箇所を再発条件付き形式に整理。成果物テーブルへ `outputs/phase-12/spec-update-summary.md` を追加し、Phase 12 Step 2 の再利用性を向上 |
 | **1.61.5** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査反映**: 同タスクに「苦戦箇所と解決策」および「同種課題の簡潔解決手順（5ステップ）」を追加。`phase-12-documentation.md` の完了チェック同期、親タスク証跡の旧 `unassigned-task` 参照是正、検証スクリプト実体解決手順を標準化 |

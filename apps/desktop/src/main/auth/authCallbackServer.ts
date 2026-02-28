@@ -153,9 +153,6 @@ export function createAuthCallbackServer(
           callbackResolve = null;
           timeoutHandle = null;
           reject(new Error("Callback timeout: no response received"));
-
-          // タイムアウト時にサーバーも停止
-          instance.stop().catch(() => {});
         }, timeoutMs);
       });
     },
@@ -172,12 +169,14 @@ export function createAuthCallbackServer(
         callbackReject = null;
       }
 
-      return new Promise((resolve) => {
-        if (!server) {
+      return new Promise<void>((resolve) => {
+        if (!server || !server.listening) {
+          server = null;
           resolve();
           return;
         }
-        server.close(() => {
+        server.close((_err) => {
+          // close エラーは握りつぶす（既に停止済みの場合等）
           server = null;
           resolve();
         });

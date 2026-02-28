@@ -28,6 +28,7 @@ import {
   registerSkillScheduleHandlers,
 } from "./skillHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
+import { registerSkillDebugHandlers } from "./skillDebugHandlers";
 import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
@@ -552,6 +553,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     },
   );
   registerSkillShareHandlers(mainWindow, skillShareManager);
+  registerSkillDebugHandlers(mainWindow);
 
   // Register Skill Schedule handlers (TASK-9G)
   const scheduleStore = new ScheduleStore();
