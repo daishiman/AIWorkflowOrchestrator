@@ -37,6 +37,11 @@ import type {
   DocGenerationRequest,
   GeneratedDoc,
   DocTemplate,
+  SkillUsageEvent,
+  SkillStatistics,
+  AnalyticsSummary,
+  AnalyticsPeriod,
+  UsageTrend,
 } from "@repo/shared";
 import type { BackupInfo } from "./types";
 import type {
@@ -243,6 +248,30 @@ export interface SkillAPI {
   docsExport: (doc: GeneratedDoc, outputPath: string) => Promise<void>;
   /** 利用可能なテンプレート一覧を取得する */
   docsTemplates: () => Promise<DocTemplate[]>;
+
+  // === Skill Analytics Operations (TASK-9J) ===
+
+  /** 利用イベントを記録する */
+  analyticsRecord: (
+    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
+  ) => Promise<SkillUsageEvent>;
+  /** スキル統計情報を取得する */
+  analyticsStatistics: (
+    skillName: string,
+    period?: { start: string; end: string },
+  ) => Promise<SkillStatistics>;
+  /** 全体サマリーを取得する */
+  analyticsSummary: () => Promise<AnalyticsSummary>;
+  /** 利用トレンドを取得する */
+  analyticsTrend: (
+    period: AnalyticsPeriod,
+    skillName?: string,
+  ) => Promise<UsageTrend>;
+  /** データをエクスポートする */
+  analyticsExport: (
+    format: "json" | "csv",
+    period?: { start: string; end: string },
+  ) => Promise<string>;
 }
 
 /**
@@ -525,4 +554,44 @@ export const skillAPI: SkillAPI = {
 
   docsTemplates: (): Promise<DocTemplate[]> =>
     safeInvokeUnwrap<DocTemplate[]>(IPC_CHANNELS.SKILL_DOCS_TEMPLATES),
+
+  // === Skill Analytics Operations (TASK-9J) ===
+
+  analyticsRecord: (
+    event: Omit<SkillUsageEvent, "id" | "timestamp"> & { timestamp?: string },
+  ): Promise<SkillUsageEvent> =>
+    safeInvokeUnwrap<SkillUsageEvent>(
+      IPC_CHANNELS.SKILL_ANALYTICS_RECORD,
+      event,
+    ),
+
+  analyticsStatistics: (
+    skillName: string,
+    period?: { start: string; end: string },
+  ): Promise<SkillStatistics> =>
+    safeInvokeUnwrap<SkillStatistics>(IPC_CHANNELS.SKILL_ANALYTICS_STATISTICS, {
+      skillName,
+      period,
+    }),
+
+  analyticsSummary: (): Promise<AnalyticsSummary> =>
+    safeInvokeUnwrap<AnalyticsSummary>(IPC_CHANNELS.SKILL_ANALYTICS_SUMMARY),
+
+  analyticsTrend: (
+    period: AnalyticsPeriod,
+    skillName?: string,
+  ): Promise<UsageTrend> =>
+    safeInvokeUnwrap<UsageTrend>(IPC_CHANNELS.SKILL_ANALYTICS_TREND, {
+      period,
+      skillName,
+    }),
+
+  analyticsExport: (
+    format: "json" | "csv",
+    period?: { start: string; end: string },
+  ): Promise<string> =>
+    safeInvokeUnwrap<string>(IPC_CHANNELS.SKILL_ANALYTICS_EXPORT, {
+      format,
+      period,
+    }),
 };

@@ -155,3 +155,6 @@ export * from "./skill-debug";
 
 // スキルドキュメント型定義 (TASK-9I)
 export * from "./skill-docs";
+
+// スキル分析型定義 (TASK-9J)
+export * from "./skill-analytics";

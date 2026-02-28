@@ -10,6 +10,7 @@
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
 | 6.37.0     | 2026-02-28 | TASK-9I反映: SkillDocGenerator セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と docs 4チャネルの責務分離、共有型5種を追記 |
+| 6.37.0     | 2026-02-28 | TASK-9J反映: AnalyticsStore/SkillAnalytics サービス追加 |
 | 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
 | 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
 | 6.34.0     | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数を `skillName: string` に更新（ハンドラー内で `[skillName]` 配列化）。UT-FIX-SKILL-IMPORT-RETURN-TYPE-001反映: 戻り値を `ImportedSkill` に更新 |
@@ -111,8 +112,11 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | L2   | SkillDocGenerator  | スキルドキュメント自動生成（TASK-9I） |
 | L2   | ScheduleStore      | スケジュール永続化（TASK-9G）  |
 | L2   | SkillScheduler     | スケジュール実行制御（TASK-9G） |
+| L2   | AnalyticsStore     | 分析イベント永続化（TASK-9J）  |
+| L2   | SkillAnalytics     | 分析・統計集計（TASK-9J）      |
 | L1   | IPC Handlers       | Renderer通信                   |
 | L2   | skillHandlers.ts   | IPCハンドラ実装                |
+| L2   | skillAnalyticsHandlers.ts | 分析IPCハンドラ実装（TASK-9J） |
 
 ### ファイル構成
 
@@ -127,9 +131,12 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `SkillDocGenerator.ts`  | スキルドキュメント自動生成（TASK-9I） |
 | `ScheduleStore.ts`      | スケジュール永続化（TASK-9G）     |
 | `SkillScheduler.ts`     | cron/interval/once/event 実行制御（TASK-9G） |
+| `AnalyticsStore.ts`     | 分析イベント永続化（TASK-9J）     |
+| `SkillAnalytics.ts`     | 分析・統計集計サービス（TASK-9J） |
 | `SkillService.ts`       | Facadeサービス（外部API）         |
 | `index.ts`              | エクスポート                      |
 | `skillHandlers.ts`      | IPCハンドラ（ipc/配下）           |
+| `skillAnalyticsHandlers.ts` | 分析IPCハンドラ（ipc/配下、TASK-9J） |
 
 ### 型定義
 
@@ -155,6 +162,10 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 | `DocSection`           | `packages/shared/src/types/skill-docs.ts` | 生成結果セクション |
 | `DocTemplate`          | `packages/shared/src/types/skill-docs.ts` | テンプレート定義 |
 | `TemplateSection`      | `packages/shared/src/types/skill-docs.ts` | テンプレートセクション |
+| `SkillUsageEvent`      | `packages/shared/src/types/skill-analytics.ts` | 使用イベント             |
+| `SkillStatistics`      | `packages/shared/src/types/skill-analytics.ts` | スキル統計               |
+| `AnalyticsSummary`     | `packages/shared/src/types/skill-analytics.ts` | 全体サマリー             |
+| `UsageTrend`           | `packages/shared/src/types/skill-analytics.ts` | 使用トレンド             |
 
 ### SkillScanner（TASK-2A実装）
 
@@ -408,6 +419,39 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | 依存関係 | LLM 実装詳細を `LLMQueryFn` へ抽象化し、サービス本体と分離 |
 | テスタビリティ | `queryFn` と `SkillFileManager` をモック差し替え可能 |
 | セキュリティ | `skill:docs:export` は IPC 層とサービス層で二重にパストラバーサル検証 |
+
+### AnalyticsStore / SkillAnalytics（TASK-9J）
+
+#### AnalyticsStore
+
+electron-store ベースの永続化ストア。メモリキャッシュと永続化の二層構成。
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| constructor | store?: ElectronStore | - | P19準拠バリデーション付きデータ復元 |
+| getAllEvents() | - | SkillUsageEvent[] | 全イベント取得（コピー返却） |
+| addEvent(event) | Omit&lt;Event, "id"&gt; | SkillUsageEvent | UUID自動生成してイベント追加 |
+| getEventsBySkill | skillName: string | SkillUsageEvent[] | スキル名フィルタ |
+| getEventsByPeriod | start, end: string | SkillUsageEvent[] | 期間フィルタ |
+| clearBefore | before: string | void | 指定日時前のイベント削除 |
+| clearAll() | - | void | 全イベント削除 |
+
+設計ポイント: P19準拠（`Array.isArray()` + `.filter()` バリデーション）、P9準拠（`getAllEvents()` はコピー返却）、永続化キー `"skill-analytics-events"`。
+
+#### SkillAnalytics
+
+集計・分析サービス。AnalyticsStore を DI で注入。
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| recordEvent | event (id/timestamp省略可) | SkillUsageEvent | イベント記録 |
+| getStatistics | skillName, period? | SkillStatistics | スキル統計計算 |
+| getSummary | limit = 10 | AnalyticsSummary | 全体サマリー |
+| getUsageTrend | period, skillName? | UsageTrend | 時系列トレンド |
+| exportData | format, period? | string | JSON/CSVエクスポート |
+| clearData | before?: string | void | データ削除 |
+
+パフォーマンス: 10,000件のイベントで全集計が9ms以内で完了（SA-29テスト確認済み）。
 
 ### SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 

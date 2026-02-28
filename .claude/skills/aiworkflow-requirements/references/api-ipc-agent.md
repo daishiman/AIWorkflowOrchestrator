@@ -606,12 +606,59 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+## スキル分析・統計 IPC チャネル（TASK-9J）
+
+> 完了タスク: TASK-9J（2026-02-28）
+
+### チャネル一覧
+
+| チャネル名 | メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- | --- |
+| `skill:analytics:record` | invoke | `{ skillName, eventType, duration?, success, errorMessage?, toolsUsed, tokenCount? }` | `{ success: true, data: SkillUsageEvent }` | 使用イベント記録 |
+| `skill:analytics:statistics` | invoke | `{ skillName: string, period?: { start, end } }` | `{ success: true, data: SkillStatistics }` | スキル別統計取得 |
+| `skill:analytics:summary` | invoke | なし | `{ success: true, data: AnalyticsSummary }` | 全体サマリー取得 |
+| `skill:analytics:trend` | invoke | `{ period: { start, end, granularity }, skillName? }` | `{ success: true, data: UsageTrend }` | 使用トレンド取得 |
+| `skill:analytics:export` | invoke | `{ format: "csv" | "json", period? }` | `{ success: true, data: string }` | データエクスポート |
+
+### 型定義
+
+8インターフェースを `@repo/shared` の `packages/shared/src/types/skill-analytics.ts` で定義:
+SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint, UsageTrend, SkillUsageSummary, AnalyticsSummary
+
+### 実装状況
+
+| チャネル | ハンドラ | Preload API | テスト | ステータス |
+| --- | --- | --- | --- | --- |
+| skill:analytics:record | skillAnalyticsHandlers.ts | skill-api.ts analyticsRecord | 37テスト | 完了 |
+| skill:analytics:statistics | skillAnalyticsHandlers.ts | skill-api.ts analyticsStatistics | (上記に含む) | 完了 |
+| skill:analytics:summary | skillAnalyticsHandlers.ts | skill-api.ts analyticsSummary | (上記に含む) | 完了 |
+| skill:analytics:trend | skillAnalyticsHandlers.ts | skill-api.ts analyticsTrend | (上記に含む) | 完了 |
+| skill:analytics:export | skillAnalyticsHandlers.ts | skill-api.ts analyticsExport | (上記に含む) | 完了 |
+
+### セキュリティ
+
+- 全5ハンドラに validateIpcSender 適用
+- P42準拠3段バリデーション（validateStringArg ヘルパー）
+- エラーサニタイズ: toIpcErrorResponse → "Internal error"
+- 許可値リスト: ALLOWED_EVENT_TYPES, ALLOWED_GRANULARITIES, ALLOWED_FORMATS
+
+### 実装時の苦戦箇所（TASK-9J）
+
+| 苦戦箇所 | 課題 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| IPC登録配線漏れ | ハンドラ実装済みでも `ipc/index.ts` 未登録だと機能が起動しない | `registerSkillAnalyticsHandlers` を `registerAllIpcHandlers` に組み込み | IPC追加時は `handler/register/preload` 3点を同時完了条件にする |
+| analytics責務の重複 | `skillHandlers.ts` と `skillAnalyticsHandlers.ts` に実装が分散 | analytics責務を `skillAnalyticsHandlers.ts` に一本化 | 同一チャネル群は1ファイル1責務を徹底する |
+| API命名の契約ドリフト | 仕様記述と実装メソッド名が乖離しやすい | Preload実装名（`analyticsRecord` など）を正本に統一 | IPC契約ドキュメントは実装名から逆算して更新する |
+
+---
+
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
 | TASK-9I    | スキルドキュメント生成機能           | 2026-02-28 | 4チャンネル追加（skill:docs:generate/preview/export/templates）、SkillDocGenerator追加、Preload API 4メソッド追加、共有型5種追加、テスト64件PASS |
+| TASK-9J    | スキル分析・統計機能                 | 2026-02-28 | 5チャンネル追加（skill:analytics:record/statistics/summary/trend/export）、AnalyticsStore/SkillAnalytics追加、Preload API 5メソッド追加、37テストPASS |
 | TASK-9G    | スキルスケジュール実行機能           | 2026-02-27 | 5チャンネル追加（skill:schedule:list/add/update/delete/toggle）、ScheduleStore/SkillScheduler追加、Preload API 5メソッド追加、テスト163件（desktop 158 + shared 5）PASS |
 | TASK-9F    | スキル共有・インポート機能           | 2026-02-27 | 3チャンネル追加（skill:importFromSource/export/validateSource）、共有型定義10型新規作成、SkillShareManager実装、92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
@@ -636,6 +683,8 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
 | v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |
 | v1.15.0    | 2026-02-28 | TASK-9I反映: スキルドキュメント生成 IPC セクションを追加。4チャンネル（skill:docs:generate/preview/export/templates）、共有型5種、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
+| v1.15.1    | 2026-02-28 | TASK-9J追補: 「実装時の苦戦箇所」セクションを追加。IPC登録配線漏れ・責務重複・API命名ドリフトの再発防止ルールを明文化 |
+| v1.15.0    | 2026-02-28 | TASK-9J: スキル分析・統計IPCチャネル5チャネル追加（record, statistics, summary, trend, export） |
 | v1.14.0    | 2026-02-27 | TASK-9G反映: スキルスケジュールIPCチャネルセクション追加。5チャンネル（skill:schedule:list/add/update/delete/toggle）、型定義（ScheduledSkill系）、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
 | v1.13.1    | 2026-02-27 | TASK-9F追補: 実装時の苦戦箇所3件（起動配線分離/型パスドリフト/未タスク台帳非同期）と同種課題向け4ステップ手順を追加 |
 | v1.13.0    | 2026-02-27 | TASK-9F反映: スキル共有IPCチャネルセクション追加。3チャンネル（skill:importFromSource/export/validateSource）、共有型定義10型、バリデーションルール、セキュリティ仕様、完了タスク記録 |
