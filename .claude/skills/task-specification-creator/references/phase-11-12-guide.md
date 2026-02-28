@@ -128,6 +128,16 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - システム仕様更新内容または「更新なし」の判断根拠
 - ソースコード変更の概要
 
+#### Task 3.5: 実行証跡整合ガード【必須】
+
+Phase 12 は「成果物ファイルが存在する」だけでは完了扱いにしない。以下3点を同時に満たすこと:
+
+1. `outputs/phase-12/` の必須5成果物が実在する
+2. `artifacts.json` の `phases.12.status` が `completed` である
+3. `phase-12-documentation.md` の完了チェックリストが実体証跡と同期している
+
+差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
+
 ---
 
 #### Task 4: 未タスク検出レポート作成【0件でも出力必須】
@@ -180,12 +190,14 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
-- [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning は `spec-update-workflow.md` Step 1-G.3.1 の判定基準に基づき対応）
+- [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`spec-update-summary.md` に「要監視 / 要対応」を記録した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
+- [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
+- [ ] `phase-12-documentation.md` の完了チェックリストが成果物実体・検証結果と同期している
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
@@ -197,6 +209,7 @@ node .claude/skills/task-specification-creator/scripts/generate-documentation-ch
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
+- [ ] `audit-unassigned-tasks.js --json --diff-from HEAD` を実行し、合否判定を `currentViolations.total` で記録した（baselineは別記録）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
