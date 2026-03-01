@@ -323,7 +323,7 @@ export function registerGroupB() {
     expect(handlers[2].registrationFunction).toBe("registerGroupB");
   });
 
-  it("実際のskillHandlers.tsから23ハンドラを検出する", () => {
+  it("実際のskillHandlers.tsから29ハンドラを検出する", () => {
     const skillHandlersPath = path.resolve(
       __dirname,
       "../src/main/ipc/skillHandlers.ts",
@@ -334,7 +334,7 @@ export function registerGroupB() {
     }
 
     const handlers = extractHandlers(skillHandlersPath);
-    expect(handlers.length).toBe(23);
+    expect(handlers.length).toBe(29);
 
     // 登録関数の分類確認
     const groupedByFunction = handlers.reduce(
@@ -345,9 +345,10 @@ export function registerGroupB() {
       {} as Record<string, number>,
     );
 
-    expect(groupedByFunction["registerSkillHandlers"]).toBe(14);
+    expect(groupedByFunction["registerSkillHandlers"]).toBe(15);
     expect(groupedByFunction["registerSkillScheduleHandlers"]).toBe(5);
     expect(groupedByFunction["registerSkillDocsHandlers"]).toBe(4);
+    expect(groupedByFunction["registerSkillChainHandlers"]).toBe(5);
   });
 });
 
