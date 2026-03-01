@@ -90,7 +90,7 @@ Phase 4〜5: 検証 → 完了
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
 | references/ | 15  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
+| scripts/    | 12  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
 | assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
@@ -103,11 +103,8 @@ Phase 4〜5: 検証 → 完了
 | 用途             | リソース                           |
 | ---------------- | ---------------------------------- |
 | タスク分解       | agents/decompose-task.md           |
-| スコープ定義     | agents/identify-scope.md           |
 | Phase設計        | agents/design-phases.md            |
 | 仕様書生成       | agents/generate-task-specs.md      |
-| ファイル出力     | agents/output-phase-files.md       |
-| 依存関係設定     | agents/update-dependencies.md      |
 | 品質検証         | agents/verify-specs.md             |
 | システム仕様更新 | agents/update-system-specs.md      |
 | 未タスク生成     | agents/generate-unassigned-task.md |
@@ -337,9 +334,6 @@ node scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
 # Phase完了処理
 node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{N}} --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 
-# スクリーンショット撮影（Phase 11 - UI/UX変更タスク）
-node scripts/capture-screenshots.js --workflow docs/30-workflows/{{FEATURE_NAME}} --routes /,/settings --state after
-
 # 未タスク検出（Phase 12）
 node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
 
@@ -397,16 +391,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v9.99.0** | **2026-03-01** | **Phase 11スクリーンショット標準化 + diff-to-pr PR本文拡充**: `scripts/capture-screenshots.js` 新規追加、Phase 11撮影ガイドライン・仕様照合チェックリスト追加、diff-to-prにタスク実行サマリー・Phase 5.5/5.6（実装ガイド・スクリーンショット投稿）追加 |
-| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: 未タスク成果物名を `unassigned-task-detection.md` に統一 |
-| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE + TASK-9E件数ドリフト再発防止**: Phase 7ハンドラ単位カバレッジ判定ルール追加、テスト件数ドリフト再同期パターン追加 |
-| **v9.97.0** | **2026-02-28** | **TASK-9E/9I/9J Phase 12反映**: TASK-9E再監査運用強化、TASK-9I仕様書同期・未タスク完了化、TASK-9Jスキル使用統計バックエンド実装（97テスト全PASS、IPCチャンネル5つ追加） |
-| **v9.96.0** | **2026-02-27** | **TASK-9H/9G再確認 + Step 1-E追補**: Phase 12完了同期パターン追加、必須4成果物作成ガード、未タスク5件登録・3ステップ完了化 |
-| **v9.95.0** | **2026-02-27** | **TASK-9H/9G Phase 12再監査反映**: Phase 4/5必須セクション是正、必須6仕様書更新、Phase 12成果物補完運用を記録 |
-| **v9.94.0** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE + TASK-9Fスキル共有**: `quick_validate.js` 空フィールドガード追加（85テストPASS）、スキル共有IPCチャネル・型定義追加 |
-| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: `spec-update-workflow.md` / `phase-templates.md` / `artifact-naming-conventions.md` / `patterns.md` の未タスク成果物名を `unassigned-task-detection.md` に統一。Step 2チェックリストと artifacts 例の正本を現行運用へ同期 |
-| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001完了**: Phase 7ハンドラ単位カバレッジ判定ルール追加。`phase-templates.md` にハンドラ単位カバレッジレポートサブセクションを追記 |
-| **v9.99.0** | **2026-03-01** | **UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 仕様書整合監査を反映**: `docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` の13Phase仕様書で検出した命名/構造/依存参照の警告を解消。`phase-9-quality-assurance.md` 命名統一、Phase 1〜3 実行タスク形式補強、Phase 4/7/8/9/11 依存参照補完を実施。加えて `assets/main-task-template.md` の Phase 9 リンク/ファイル名を同命名へ更新し再発を防止 |
+| **v9.99.0** | **2026-03-01** | **TASK-UI-05 Phase 12同期を反映**: 未タスク指示書6件（UT-UI-05-001〜006）の作成運用、Phase 11成果物補完（manual-test-result/discovered-issues）、`complete-phase.js` による artifacts 再同期、`generate-index.js` 再生成を実施。Phase 12 の「スコープ外記述残置」是正手順を LOGS へ固定 |
 | **v9.98.0** | **2026-02-28** | **Phase 12 実行証跡整合ガードを追加**: `references/phase-11-12-guide.md` に Task 3.5（成果物実体 / artifacts status / チェックリスト同期の三点突合）を新設。完了チェックへ `currentViolations` 基準の差分監査判定を追加し、baseline誤読による false fail を防止 |
 | **v9.97.0** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査反映**: `outputs/phase-1`〜`phase-13` の成果物補完と `artifacts.json`/`outputs/artifacts.json` 同期を完了。Phase 12 必須成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection-report/skill-feedback-report）の実体を固定し、未タスク差分判定（current=0, baseline分離）を再確認 |
 | **v9.96.0** | **2026-02-27** | **TASK-9H 再確認運用を追補**: `references/patterns.md` に成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件実体確認→ステータス同期→検証4点セット固定の手順を標準化し、Phase 12 の未実施残置を防止 |
@@ -437,4 +422,4 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v9.85.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 完了反映**: 仕様差分解消と検証結果を更新 |
 | **v9.84.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 反映**: IPC命名パターンの体系化を仕様へ展開 |
 
-> 補足: v9.93.0 以前の履歴は [changelog-archive.md](references/changelog-archive.md) に保持。
+> 補足: v9.83.2 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。

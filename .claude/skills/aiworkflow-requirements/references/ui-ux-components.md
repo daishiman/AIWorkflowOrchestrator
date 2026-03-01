@@ -60,6 +60,7 @@
 | SkillStreamDisplay | TASK-3-2 | スキル実行ストリーム表示 |
 | SkillImportDialog | TASK-7B | スキルインポート確認ダイアログ |
 | SkillEditor | TASK-9A | スキルファイル編集UI（実装完了） |
+| SkillCenterView | TASK-UI-05 | ツール探索・追加・詳細表示ビュー |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -97,6 +98,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | ---------------------- | ------------------------------ |
 | AgentExecutionView     | エージェント実行画面           |
 | ChatView               | チャット画面                   |
+| SkillCenterView        | ツール探索・追加・詳細表示画面 |
 
 ### components/organisms/
 
@@ -146,6 +148,21 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-9A | SkillEditor UI（SkillEditor / SkillCodeEditor / ファイルCRUD / バックアップ復元） | 2026-02-26 |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張） | 2026-02-23 |
+| TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
+
+---
+
+## SkillCenterView 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-UI-05-001 | CategoryId / SkillCategory 型統一 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-categoryid-skillcategory-type-unification.md` |
+| UT-UI-05-002 | SkillDetailPanel 内部 Molecule 分離 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-detail-panel-molecule-split.md` |
+| UT-UI-05-003 | ローディングスケルトン実装 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-loading-skeleton-implementation.md` |
+| UT-UI-05-004 | モバイルスワイプ閉じ実装 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-mobile-swipe-close-detail-panel.md` |
+| UT-UI-05-005 | SKILL.md 全文 Markdown レンダリング | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-markdown-full-rendering.md` |
+| UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
+| UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
 
 ---
 
@@ -153,6 +170,11 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.13.4  | 2026-03-01 | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
+| 2.13.3  | 2026-03-01 | TASK-UI-05追補: Phase 12 UI仕様同期ガード（UT-UI-05-007）を追加し、SkillCenterView 関連未タスクを7件へ拡張 |
+| 2.13.2  | 2026-03-01 | TASK-UI-05追補: SkillCenterView 関連未タスクテーブルを UT-UI-05-001〜006 の6件へ拡張し、task-workflow/feature仕様との参照整合を統一 |
+| 2.13.1  | 2026-03-01 | TASK-UI-05追補: SkillCenterView 関連未タスク（UT-UI-05-001〜003）への参照テーブルを追加 |
+| 2.13.0  | 2026-03-01 | TASK-UI-05完了反映: 主要UI一覧と views 階層に SkillCenterView を追加。完了タスクに TASK-UI-05 を登録し、関連ドキュメント参照を同期 |
 | 2.12.1  | 2026-02-26 | TASK-9A成果物移管を反映。関連ドキュメント参照を `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` へ更新 |
 | 2.12.0  | 2026-02-26 | TASK-9A完了反映: SkillEditorを `TASK-9A-C spec_created` から `TASK-9A completed` へ更新。主要UI一覧・完了タスク表・関連ドキュメント参照を `docs/30-workflows/TASK-9A-skill-editor/` 正本へ同期 |
 | 2.11.0  | 2026-02-23 | TASK-UI-00-ATOMS完了: 新規5コンポーネント（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）+ 既存2拡張（Badge/EmptyState）、156テスト全PASS、Atoms実装状況テーブル追加 |
@@ -182,3 +204,5 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
 - [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)
 - [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/spec-update-summary.md)

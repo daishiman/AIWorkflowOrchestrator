@@ -1,0 +1,194 @@
+{
+  "taskId": "TASK-UI-05-SKILL-CENTER-VIEW",
+  "taskName": "SkillCenterView（ツールを探す）",
+  "feature": "task-ui-05-skill-center-view",
+  "workflowPath": "docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW",
+  "created": "2026-03-01T10:20:00+09:00",
+  "lastUpdated": "2026-03-01T08:49:05.123Z",
+  "status": "in_progress",
+  "currentPhase": 13,
+  "phases": {
+    "0": {
+      "name": "準備作業（依存タスク確認・既存実装評価）",
+      "status": "completed",
+      "artifacts": []
+    },
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/architecture-design.md"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-specification.md"]
+    },
+    "5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-verification.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-01T08:45:20.700Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題リスト"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-01T08:45:20.879Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/component-documentation.md",
+          "description": "コンポーネントドキュメント"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "existingImplementation": {
+    "note": "SkillCenterViewは新規作成。既存のagentSlice、SkillImportDialog、IPCチャネルを利用する",
+    "existingFiles": {
+      "stores": ["apps/desktop/src/renderer/store/slices/agentSlice.ts"],
+      "organisms": [
+        "apps/desktop/src/renderer/components/organisms/SkillImportDialog/",
+        "apps/desktop/src/renderer/components/organisms/SkillDetailPanel/"
+      ],
+      "preload": [
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/skill-api.ts"
+      ],
+      "views": ["apps/desktop/src/renderer/views/AgentView/index.tsx"]
+    },
+    "newFiles": {
+      "views": [
+        "apps/desktop/src/renderer/views/SkillCenterView/index.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/FeaturedSection/FeaturedSection.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/FeaturedSection/FeaturedCard.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/SkillCard.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/AddButton.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/CategoryTabs.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/SkillDetailPanel/SkillDetailPanel.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/SkillEmptyState.tsx"
+      ],
+      "hooks": [
+        "apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/hooks/useFeaturedSkills.ts"
+      ],
+      "tests": [
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCenterView.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/FeaturedSection.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCard.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/AddButton.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/CategoryTabs.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillDetailPanel.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillEmptyState.test.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/useFeaturedSkills.test.ts"
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "actualCoverage": {
+      "line": "94.5%+",
+      "branch": "82.35%+",
+      "function": "100%"
+    },
+    "testCount": 125,
+    "testFileCount": 9,
+    "componentCount": 10,
+    "hookCount": 2,
+    "unassignedTaskCount": 6,
+    "phase10Judgment": "MINOR",
+    "minorIssueCount": 5
+  }
+}

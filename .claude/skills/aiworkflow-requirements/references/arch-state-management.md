@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v1.18.0    | 2026-03-01 | TASK-UI-05反映: SkillCenterView の状態管理パターンを追記（agentSlice個別セレクタ利用、UI一時状態を `useSkillCenter` に局所化、Store型とのカテゴリ境界を未タスク化） |
 | v1.17.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 追補: 実装時の苦戦箇所と再発防止策を追加（単体テスト再実行コマンド標準化、未タスク参照の物理ファイル検証、性能テスト揺らぎ時の再現確認手順） |
 | v1.16.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了: AgentViewを個別セレクタHookに移行（15セレクタ追加）、ローカルfetchSkills/useCallback削除、P31適用範囲をAgentViewまで拡張 |
 | v1.15.0    | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001完了: Store Hooksテスト実装ガイドセクション追加（renderHookパターン6種、テスト環境要件、実績テーブル） |
@@ -182,6 +183,7 @@
 | `LLMSelectorPanel` | `apps/desktop/src/renderer/components/settings/LLMSelectorPanel.tsx`      | `useAuthModeStore()` |
 | `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useSkillStore()`    |
 | `AgentView`        | `apps/desktop/src/renderer/views/AgentView/index.tsx`                     | `useAppStore()` のインラインセレクタ + ローカル `fetchSkills` |
+| `SkillCenterView`  | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`               | `useAvailableSkillsMetadata()` など個別セレクタ + `useSkillCenter` ローカル状態 |
 
 ### 短期解決策: useRefガードパターン
 

@@ -5,91 +5,102 @@
 
 ---
 
-## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了移管（workflow + 未タスク）
-## 2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 完了移管
+## 2026-03-01 - TASK-UI-05 completed-tasks 移管
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001`
-- 目的: Phase 12 完了条件を満たしたため、未タスク指示書と13Phase仕様書ディレクトリを `completed-tasks` へ移管する
+- 対象: `TASK-UI-05-SKILL-CENTER-VIEW`
+- 目的: `outputs/phase-12` 完了かつ Phase 12 準拠検証PASSを満たしたため、ワークフロー本体と関連未タスクを completed-tasks 配下へ移管
+
+### SubAgent分担
+- SubAgent-A: ワークフロー本体移動（`docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/`）
+- SubAgent-B: 関連未タスク7件移動（同ディレクトリ配下 `unassigned-task/`）
+- SubAgent-C: 仕様書参照同期（`task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md`）
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `docs/30-workflows/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` を `docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
-- `task-workflow.md` 残課題テーブルを完了表記へ更新し、変更履歴 `1.64.0` を追加
-- `lessons-learned.md` 派生未タスクテーブルを完了表記へ更新し、変更履歴 `1.28.1` を追加
-- 関連参照パス（workflow/unassigned-task）を completed パスへ一括同期
+- `docs/30-workflows/TASK-UI-05-SKILL-CENTER-VIEW/` を `completed-tasks/` へ移動
+- `docs/30-workflows/unassigned-task/task-ui-05-*.md` 7件を `completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/` へ移動
+- `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` の参照パスを新ディレクトリへ同期
+- `SKILL.md` 変更履歴を `8.92.0` に更新
 
 ### 結果
 - ステータス: success
-- 検証:
-  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → `28項目パス, 0エラー, 0警告`
-  - `verify-all-specs.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → `errors=0, warnings=0`
-  - `verify-unassigned-links.js` → `missing=0`
+- 補足: `verify-unassigned-links` 92/92 existing, missing=0。`audit --diff-from HEAD` は currentViolations=0 を維持
 
 ---
 
-## 2026-03-01 - UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001 登録・仕様同期
+## 2026-03-01 - UT-UI-05-007 未タスク登録（UI仕様同期ガード）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001`
-- 目的: Phase 12 成果物の証跡値を実測値で固定し、プレースホルダ残存・行数ドリフト・`current/baseline` 誤読を再発防止する
+- 対象: `TASK-UI-05-SKILL-CENTER-VIEW`
+- 目的: Phase 12 再確認で顕在化した UI仕様同期ドリフトを未タスク化し、再利用可能な運用課題として追跡する
 
 ### SubAgent分担
-- SubAgent-A: 未タスク仕様書作成（`docs/30-workflows/unassigned-task/task-imp-phase12-evidence-value-sync-guard-001.md`）
-- SubAgent-B: 台帳同期（`references/task-workflow.md` 残課題・変更履歴）
-- SubAgent-C: 教訓同期（`references/lessons-learned.md` の苦戦箇所・5ステップ手順）
-- SubAgent-D: 検証・索引再生成（`generate-index` / `verify-unassigned-links` / `audit` / `verify-all-specs` / `validate-phase-output`）
+- SubAgent-A: 未タスク指示書作成（`docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md`）
+- SubAgent-B: `task-workflow.md` へ TASK-UI-05節/残課題テーブル同期
+- SubAgent-C: `ui-ux-components.md` / `ui-ux-feature-components.md` の未タスク表同期
+- SubAgent-D: 検証（links / target監査 / diff監査）
 
 ### 実施内容
-- 未タスク指示書を task-specification-creator テンプレート準拠（`## メタ情報` + `## 1..9` + `3.5 実装課題と解決策`）で新規作成
-- `task-workflow.md` 残課題へ `UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001` を登録し、変更履歴 `1.63.9` を追加
-- `lessons-learned.md` に同タスク専用セクションを追加し、苦戦箇所4件（プレースホルダ/行数/current-baseline/台帳反映）と5ステップ手順を標準化
-- `SKILL.md` 変更履歴へ `8.89.0` を追加
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- `UT-UI-05-007` を task-specification-creator 形式で新規作成（`## メタ情報` + `## 1..9`）
+- 未タスク仕様書 `3.5 実装課題と解決策` に苦戦箇所3件（プロファイル誤適用、lessons同期漏れ、件数ドリフト）を記録
+- `task-workflow.md` の TASK-UI-05 未タスク表と残課題テーブルへ同IDを追加
+- `ui-ux-components.md` / `ui-ux-feature-components.md` の SkillCenterView 関連未タスク表へ同IDを追加
+- `SKILL.md` 変更履歴を `8.91.0` に更新
 
 ### 結果
 - ステータス: success
-- 検証:
-  - `verify-unassigned-links.js` → `total=94, existing=94, missing=0`
-  - `audit-unassigned-tasks.js --json --target-file ...evidence-value-sync-guard-001.md` → `current=0, baseline=71`
-  - `audit-unassigned-tasks.js --json --diff-from HEAD` → `current=0, baseline=71`
-  - `verify-all-specs.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → `errors=0, warnings=0`
-  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → `28項目パス, 0エラー, 0警告`
+- 補足: UI機能タスクでの Phase 12 同期漏れを未タスクとして明示し、再発防止の運用導線を固定
 
 ---
 
-## 2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 仕様書整合監査
+## 2026-03-01 - TASK-UI-05 UI仕様書追補（未タスク6件 + 苦戦箇所）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001`（未タスクの13Phase仕様書）
-- 目的: 仕様書・テンプレート・台帳の同期漏れ（命名ドリフト、構造警告、依存参照不足）を解消し、システム仕様へ反映する
+- 対象: `TASK-UI-05-SKILL-CENTER-VIEW`
+- 目的: UI仕様正本へ「実装内容 + 苦戦箇所 + 未タスク6件」をテンプレート準拠で追補し、再利用導線を明確化する
 
 ### SubAgent分担
-- SubAgent-A: ワークフロー仕様書整備（Phase 1-13 の構造・命名・参照資料）
-- SubAgent-B: システム仕様同期（`task-workflow.md` / `lessons-learned.md`）
-- SubAgent-C: スキルテンプレート更新（`task-specification-creator/assets/main-task-template.md`）
-- SubAgent-D: 検証実行（`verify-all-specs` / `validate-phase-output` / `generate-index`）
+- SubAgent-A: `references/ui-ux-components.md`（未タスク参照テーブルを 001〜006 に拡張）
+- SubAgent-B: `references/ui-ux-feature-components.md`（苦戦箇所と4ステップ簡潔手順を追記）
+- SubAgent-C: `references/task-workflow.md` / `references/lessons-learned.md`（既存教訓との整合確認）
+- SubAgent-D: `skill-creator` テンプレート側の同期（UI6仕様書プロファイル）
 
 ### 実施内容
-- ワークフローの Phase 9 ファイル名を `phase-9-quality-assurance.md` に統一し、`index.md` のリンクを更新
-- Phase 1〜3 の `実行タスク` を箇条書き+表の二層構成へ調整し、構造警告を解消
-- Phase 4/7/8/9/11 の参照資料テーブルに依存成果物を追加し、整合警告を解消
-- `skill-creator` に追加された Phase 12 ガードテンプレート4件を `references/resource-map.md` に登録
-- `.claude/scripts/` を `directory-structure.md` のルート構造へ追加し、ガードスクリプトの正本参照先を明示
-- `task-workflow.md` の残課題行を「13Phase仕様書作成済み」へ同期
-- `lessons-learned.md` に本件の再発防止手順（命名・構造・依存同期）を追加
-- `task-specification-creator/assets/main-task-template.md` の Phase 9 命名を `phase-9-quality-assurance.md` に更新
+- `ui-ux-components.md` の SkillCenterView 関連未タスクを6件へ拡張（UT-UI-05-001〜006）
+- `ui-ux-feature-components.md` に実装時の苦戦箇所3件（型境界・責務集中・Phase 12同期）を追加
+- 同ファイルへ同種課題向け4ステップ手順を追加し、`task-workflow.md` / `lessons-learned.md` と整合
+- `SKILL.md` 変更履歴を `8.90.0` に更新
 
 ### 結果
 - ステータス: success
-- 検証:
-  - `verify-all-specs --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → errors=0, warnings=0
-  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → 0エラー, 0警告
-  - `verify-unassigned-links.js` → `ALL_LINKS_EXIST`（92/92）
-  - `audit-unassigned-tasks.js --json --diff-from HEAD` → `current=0`（合格）/ `baseline=71`（監視値）
+- 補足: UI仕様正本（components/feature/components-arch/state/task/lessons）の責務分離と参照整合を強化
+
+---
+
+## 2026-03-01 - TASK-UI-05 Phase 12再確認（苦戦箇所テンプレート追補）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05-SKILL-CENTER-VIEW`
+- 目的: 実装内容に対する苦戦箇所と簡潔解決手順をシステム仕様書へ固定し、同種課題の再利用性を高める
+
+### SubAgent分担
+- SubAgent-A: `references/task-workflow.md`（完了タスク節へ苦戦箇所・5ステップ手順を追記）
+- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓を転記）
+- SubAgent-C: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+
+### 実施内容
+- TASK-UI-05セクションへ苦戦箇所3件（型境界、DetailPanel責務集中、Phase 12同期漏れ）を追加
+- `lessons-learned.md` に TASK-UI-05 専用節を新設し、5ステップの簡潔手順を追記
+- `SKILL.md` 変更履歴を `8.89.0` に更新
+
+### 結果
+- ステータス: success
+- 補足: 既存未タスク `UT-UI-05-001`〜`UT-UI-05-006` の管理方針と Phase 12 の検証手順を同一フォーマットで再利用可能化
 
 ---
 
@@ -97,73 +108,75 @@
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
-- 目的: Phase 12完了済みのため、ワークフローと今回作成未タスクを `completed-tasks/` へ移管し参照を同期
-
-### SubAgent分担
-- SubAgent-A: 物理移管（workflow本体）
-- SubAgent-B: 物理移管（未タスク指示書）
-- SubAgent-C: 台帳・仕様参照更新（task-workflow / quality）
-- SubAgent-D: 検証（links / audit / validate-phase-output）
+- 対象: Phase 12 完了済みタスクの completed-tasks への移管
+- 目的: 完了済みワークフローと派生未タスクを正本ディレクトリへ統一し、参照ドリフトを防止する
 
 ### 実施内容
-- `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
-- `task-workflow.md` 残課題テーブルの `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を完了化し、参照先を completed パスへ更新
-- `quality-requirements.md` と `lessons-learned.md` の関連参照を completed パスへ同期
+- `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` を `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動
+- `task-imp-auth-callback-lifecycle-contract-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動し、ステータスを `完了` に更新
+- `task-workflow.md` の残課題行を完了表記へ更新し、関連パスを completed-tasks へ同期
+- `security-implementation.md` / `SKILL.md` / Phase 12 成果物内リンクを移管先パスへ更新
 
 ### 結果
 - ステータス: success
-- 補足: `verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
+- 補足: 未タスクリンク監査は `ALL_LINKS_EXIST`、差分監査は `currentViolations=0` を維持
 
 ---
 
-## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 未タスク登録（苦戦箇所の再発防止）
+## 2026-02-28 - UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の Phase 12 再確認
-- 目的: 苦戦箇所（Istanbul形式誤認/命名例外/Vitest include漏れ）を未タスク指示書へ昇格し、同種課題を簡潔に再利用可能にする
-
-### SubAgent分担
-- SubAgent-A: 未タスク指示書作成（9セクション + 3.5実装課題）
-- SubAgent-B: `task-workflow.md` 残課題テーブル登録
-- SubAgent-C: `quality-requirements.md` 派生未タスク同期
-- SubAgent-D: 検証（`verify-unassigned-links` / `audit --target-file` / `audit --diff-from HEAD`）
+- 対象: authCallbackServer timeout/wait/stop 契約の再発防止
+- 目的: 親タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所を未タスク指示書として再利用可能化する
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を新規作成
-- `task-workflow.md` に `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を残課題として登録
-- `quality-requirements.md` に派生未タスクとして追記
-- `unassigned-task-detection.md` を 0件→1件へ更新し、3ステップ（指示書/台帳/関連仕様）を完了化
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
+- `task-workflow.md` 残課題テーブルに `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` を追加
+- `security-implementation.md` の auth callback 節へ派生未タスク参照を追加
+- 親タスクの苦戦箇所3件（wait/stop責務混在、stop冪等化、監査スクリプト所在誤認）を未タスクへ転記
 
 ### 結果
 - ステータス: success
-- 補足: 本タスクは実装追加ではなく再発防止運用の未タスク化。`currentViolations=0` を維持
+- 補足: auth callback 系の同種課題を「契約テスト追加 + 仕様同期 + 監査」の短手順で再現可能な状態に固定
 
 ---
 
-## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 再確認（Phase 12準拠 + 教訓同期）
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
-- 目的: 実装内容と苦戦箇所をシステム仕様書へ再同期し、Phase 12再確認証跡を固定化
-
-### SubAgent分担
-- SubAgent-A: `references/task-workflow.md`（完了タスク詳細・苦戦箇所・再利用手順）
-- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓3件 + 4ステップ手順）
-- SubAgent-C: 検証証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+- 対象: authCallbackServer timeout/stop 責務分離の再監査（文書最適化）
+- 目的: 実装内容・苦戦箇所・検証証跡をテンプレート準拠で再利用可能化する
 
 ### 実施内容
-- `task-workflow.md` に UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の完了タスクセクションを追加
-- 苦戦箇所3件（Istanbul形式誤認、定数変換例外、Vitest include漏れ）を再発条件付きで記録
-- `lessons-learned.md` に同タスク教訓セクションと簡潔解決手順（4ステップ）を追加
-- `task-specification-creator` / `skill-creator` の参照文書で旧成果物名 `unassigned-task-report.md` を現行名 `unassigned-task-detection.md` へ統一
+- `security-implementation.md` に同タスクの苦戦箇所（再発条件付き）と4ステップ手順を追記
+- `task-workflow.md` の同タスク節へ「苦戦箇所と解決策（再利用用）」と「簡潔解決5ステップ」を追記
+- `outputs/phase-12/spec-update-summary.md` を `phase12-system-spec-retrospective-template` 準拠へ再編（メタ情報、SubAgent分担、仕様反映先、苦戦箇所、検証コマンド、成果物チェック）
+- `skill-creator` 側の `patterns.md` に成功/失敗パターンを同期し、再発防止を横断化
 
 ### 結果
 - ステータス: success
-- 補足: `validate-phase-output` 28項目PASS、`verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
+- 補足: 同種課題に対する短手順再利用の導線（仕様・台帳・教訓・パターン）が1セットで固定化された
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 仕様再同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: authCallbackServer timeout/stop 責務分離の実装同期
+- 目的: 実装とシステム仕様書のドリフト（コールバック後即停止）を解消し、完了台帳・教訓を反映する
+
+### 実施内容
+- `security-implementation.md` のローカルHTTPサーバー表を更新（timeout時は自動停止しない、停止は呼び出し側の `stop()` 責務）
+- `task-workflow.md` に完了タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` を追加
+- `lessons-learned.md` に wait/stop 責務分離の苦戦箇所と4ステップ再発防止手順を追加
+- 検証証跡を同期（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0, auth test 13/13）
+
+### 結果
+- ステータス: success
+- 補足: タスク成果物（Phase 1-13）とシステム仕様の整合を回復
 
 ---
 
@@ -6111,24 +6124,37 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - 反映範囲: TASK-9H 教訓資産化 + Phase 12 台帳整合
 
----
-
-## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+## 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 最終同期
 
 ### コンテキスト
 
-- スキル: aiworkflow-requirements / task-specification-creator
-- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-UI-05-SKILL-CENTER-VIEW
+- 目的: SkillCenterView 実装内容を正本仕様書へ反映し、未タスク管理3ステップを完了
 
 ### 実施内容
 
-- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
-- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
-- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
-- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
-- 手動テスト MT-001〜MT-010 全PASS
+- `references/ui-ux-components.md` を更新
+  - 主要UI一覧・views一覧に `SkillCenterView` を追加
+  - 完了タスクへ `TASK-UI-05` を追加
+  - 関連ドキュメントに TASK-UI-05 実装ガイド/仕様更新サマリーを追加
+- `references/ui-ux-feature-components.md` を更新
+  - `SkillCenterView UI（TASK-UI-05 / 完了）` セクションを新設
+  - 実装構成（7 components + 2 hooks）と状態/IPC境界、関連未タスク6件を記録
+- `references/arch-ui-components.md` / `references/arch-state-management.md` を更新
+  - SkillCenterView のレイヤー構成、データフロー、状態管理パターンを追記
+- `references/task-workflow.md` を更新
+  - 完了タスクセクションに TASK-UI-05 を追加
+  - 残課題へ `UT-UI-05-001` 〜 `UT-UI-05-006` を登録
+- 未タスク指示書を `docs/30-workflows/unassigned-task/` に6件配置
+- 検証コマンドを実行
+  - verify-all-specs: PASS (13/13, error=0)
+  - validate-phase-output: PASS (28項目)
+  - verify-unassigned-links: ALL_LINKS_EXIST (104/104)
+  - audit-unassigned-tasks --diff-from HEAD: currentViolations=0 / baselineViolations=71
 
 ### 結果
 
 - ステータス: success
-- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`
+- 対象仕様書: `ui-ux-components.md`, `ui-ux-feature-components.md`, `arch-ui-components.md`, `arch-state-management.md`, `task-workflow.md`
+- 未タスク管理3ステップ: 完了（指示書作成 / 台帳登録 / 参照リンク）

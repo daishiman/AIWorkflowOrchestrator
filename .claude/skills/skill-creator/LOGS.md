@@ -4,18 +4,31 @@
 
 ---
 
-## [2026-03-01 - Phase 12クイックナビ重複の再正規化]
-## [2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 テンプレート資産登録]
+## [2026-03-01 - TASK-UI-05 UIプロファイル対応テンプレート最適化]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-na-judgment-log-template.md` を追加し、仕様書ごとの `更新/N/A` 判定ログ（理由/代替証跡/判定者）をテンプレート化
-  - `assets/phase12-subagent-assignment-template.md` を追加し、SubAgent分担とP43の3ファイル上限ルールを固定化
-  - `assets/phase12-completion-guard-checklist.md` を追加し、三点突合（成果物実体/artifacts/チェックリスト）を完了判定ゲート化
-  - `assets/phase12-audit-record-template.md` を追加し、`current/baseline` 分離監査の記録様式を標準化
-  - `references/resource-map.md` と `SKILL.md` 変更履歴へ登録し、参照導線を同期
+  - `assets/phase12-system-spec-retrospective-template.md` に UI機能実装向け6仕様書プロファイル（ui-ux/arch/task/lessons）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に UI向けSubAgent分担と完了チェック（プロファイル選択）を追加
+  - `references/resource-map.md` のテンプレート説明を UI6仕様書対応へ更新
+  - `references/patterns.md` に成功パターン「UI機能6仕様書SubAgent同期テンプレート」と失敗パターン「UIタスクに5仕様書テンプレート誤適用」を追加
+  - `SKILL.md` 変更履歴を `v10.32.0` として同期
+
+---
+
+## [2026-03-01 - TASK-UI-05 Phase 12 パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の Phase 12 クイックナビに成功キーワード「UI機能実装の未タスク6件分解（TASK-UI-05）」「未タスクtarget監査 + diff監査の二段合否固定」を追加
+  - 失敗キーワード「task-workflow のみ更新で lessons-learned 同期漏れ」を追加し、再発条件を明文化
+  - 成功パターン「UI機能実装の未タスク6件分解 + 二段監査固定（TASK-UI-05）」を追加
+  - 失敗パターン「task-workflow のみ更新で lessons-learned 同期漏れ（TASK-UI-05）」を追加
+  - `SKILL.md` 変更履歴を `v10.31.0` として同期
 
 ---
 
@@ -25,22 +38,10 @@
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` の `📋 Phase 12` 重複3行を1行へ統合
-  - `target監査 + 10見出し同時検証` / `未タスクメタ情報1セクション運用` / `phase-12仕様書ステータス同期` / `5仕様書同期 + IPC三点突合` を単一行へ集約して保持
-  - 失敗パターン側も `未タスクの存在確認止まり（10見出し未検証）` / `phase-12仕様書ステータス未更新` / `api-ipc仕様を同期対象から除外` を維持し、探索性のみ改善
-
----
-
-## [2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 パターン同期]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン「カバレッジ形式実体先行固定（Istanbul形式前提）」を追加
-  - 定数変換例外（`SKILL_GET_IMPORTED -> skill:getImported`）をパターンへ明記し、規則変換のみ運用の再発を防止
-  - `scripts/**/*.test.{ts,tsx}` の include 同期を「`src/` 外テスト追加時の必須更新」として標準化
-  - Phase 12 成果物名ドリフト是正として `unassigned-task-detection.md` 正本へ統一
+  - `references/patterns.md` の Phase 12 成功パターンに「待機API/停止API責務分離の仕様固定」を追加
+  - 失敗パターンに「timeout待機APIへの停止副作用混在」を追加し、再発条件と4対策を明文化
+  - クイックナビ（📋 Phase 12）へ両パターンのキーワードを登録し、再利用導線を最適化
+  - `SKILL.md` 変更履歴を `v10.28.0` として同期
 
 ---
 
@@ -84,7 +85,6 @@
 - **Notes**: `references/patterns.md` に成功パターン「IPC追加時の登録配線突合（handler/register/preload）」と失敗パターン「IPCハンドラ実装のみで登録配線を未確認」を追加。Phase 12クイックナビへ反映し、実装済みでも登録漏れで機能が起動しない再発を防止。
 
 ---
-
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)
@@ -1324,12 +1324,3 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: 成果物実体と実行仕様書の不一致を再発防止
-
-## [2026-03-01T10:07:52.273Z]
-
-- **Agent**: unknown
-- **Phase**: Phase 3 (update)
-- **Result**: ✓ 成功
-- **Notes**: なし
-
----

@@ -21,6 +21,7 @@
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
+| Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 
 ### 共通仕様
 
@@ -732,10 +733,83 @@ TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phas
 
 ---
 
+<a id="skill-center-view-task-ui-05"></a>
+## SkillCenterView UI（TASK-UI-05 / 完了）
+
+TASK-UI-05-SKILL-CENTER-VIEW で、ツール探索専用ビュー `SkillCenterView` の実装と検証（Phase 1-12）が完了。
+AgentView の「実行」責務と分離し、ツールの探索・追加・詳細確認を一画面で完結できる UI として定義する。
+
+### 実装済みコンポーネント / Hook
+
+| 区分 | コンポーネント / Hook | 役割 | 想定配置 |
+| --- | --- | --- | --- |
+| view | SkillCenterView | 画面統合（検索、カテゴリ、おすすめ、グリッド、詳細パネル） | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
+| organism | FeaturedSection | 未追加ツールのおすすめ表示（最大3件） | `.../components/FeaturedSection/FeaturedSection.tsx` |
+| organism | SkillDetailPanel | ツール詳細表示、削除導線 | `.../components/SkillDetailPanel/SkillDetailPanel.tsx` |
+| molecule | FeaturedCard / SkillCard / CategoryTabs / SkillEmptyState | カード表示・カテゴリ切替・空状態表示 | `.../components/` |
+| atom | AddButton | 追加ボタン状態遷移（idle/processing/success） | `.../components/AddButton.tsx` |
+| hook | useSkillCenter | Store接続、フィルタリング、詳細パネル状態管理 | `.../hooks/useSkillCenter.ts` |
+| hook | useFeaturedSkills | 未追加ツール抽出 + 多様性考慮のおすすめ選定 | `.../hooks/useFeaturedSkills.ts` |
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
+| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/views/SkillCenterView/` |
+| テスト資産 | ✅ 完了（9ファイル / 125テストケース定義） | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/` |
+| Phase 12成果物 | ✅ 完了（5必須 + 補助1） | `outputs/phase-12/*.md` |
+
+### 状態管理・IPC依存
+
+| 観点 | 採用方針 |
+| --- | --- |
+| Store接続 | `useAvailableSkillsMetadata` / `useImportedSkills` / `useSetSkillFilter` など個別セレクタを使用（P31準拠） |
+| ローカル状態 | 詳細パネル開閉、削除確認、追加中アニメーション状態を `useState` で管理 |
+| IPC利用 | Rendererは Store アクション経由で利用（`skill:list`, `skill:import`, `skill:remove`） |
+| 契約変更 | 新規IPCチャンネル追加なし（既存契約の再利用） |
+
+### 関連未タスク
+
+| タスクID | 概要 | 仕様書 |
+| --- | --- | --- |
+| UT-UI-05-001 | CategoryId / SkillCategory 型統一 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-categoryid-skillcategory-type-unification.md` |
+| UT-UI-05-002 | SkillDetailPanel 内部 Molecule 分離 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-detail-panel-molecule-split.md` |
+| UT-UI-05-003 | ローディングスケルトン実装 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-loading-skeleton-implementation.md` |
+| UT-UI-05-004 | モバイルスワイプ閉じ実装 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-mobile-swipe-close-detail-panel.md` |
+| UT-UI-05-005 | SKILL.md 全文 Markdown レンダリング | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-markdown-full-rendering.md` |
+| UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
+| UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
+
+### 実装時の苦戦箇所（TASK-UI-05）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| `CategoryId` / `SkillCategory` の境界が分散しやすい | 表示都合の `all` とドメインカテゴリを同じ層で扱う場合 | 変換点を限定し、`UT-UI-05-001` として型統一を追跡可能化 | 型は「表示ID層」「ドメイン層」「変換層」で分離する |
+| `SkillDetailPanel` への責務集中 | 表示/操作/状態を1コンポーネントで同時拡張する場合 | `UT-UI-05-002`〜`005` へ分解し、Phase 12で残課題を明示化 | 大型UIは完了時に Molecule 分割の未タスクを先に切る |
+| Phase 12証跡の同期漏れ | 成果物更新と仕様書更新を別ターンで実施する場合 | `verify/validate/links/audit` の結果を `task-workflow` / `lessons` へ同一ターン反映 | 実装記録と教訓記録は同一ターン同期を完了条件にする |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. UI責務を `view / organism / molecule / hook` に分解し、拡張点を先に決める。  
+2. 未タスク候補を `docs/30-workflows/unassigned-task/` に分離登録する。  
+3. `verify-unassigned-links` と `audit --target-file` で参照と形式を機械確認する。  
+4. `task-workflow.md` と `lessons-learned.md` に苦戦箇所を同一ターンで同期する。  
+
+### 関連ドキュメント
+
+- [TASK-UI-05 ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/index.md)
+- [TASK-UI-05 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/spec-update-summary.md)
+- [TASK-UI-05 未タスク検出](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/unassigned-task-detection.md)
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | TASK-9A    | skill-editor（SkillEditor / SkillCodeEditor + CRUD + backups） | 2026-02-26 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                           |
 | TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
@@ -769,6 +843,7 @@ TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phas
 - [SkillStreamDisplay コピー履歴](../../../docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/outputs/phase-12/implementation-guide.md)
 - [TASK-9A SkillEditor実装](../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md)
 - [workspace-chat-edit-ui](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05 SkillCenterView実装](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 
 ---
 
@@ -776,6 +851,10 @@ TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phas
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-01 | v1.12.3    | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
+| 2026-03-01 | v1.12.2    | TASK-UI-05追補: 関連未タスクに UT-UI-05-007（Phase 12 UI仕様同期プロファイル適用ガード）を追加し、task-workflow/ui-ux-components との参照整合を統一 |
+| 2026-03-01 | v1.12.1    | TASK-UI-05追補: SkillCenterView 実装時の苦戦箇所（型境界/責務集中/Phase 12同期）と4ステップ簡潔解決手順を追加 |
+| 2026-03-01 | v1.12.0    | TASK-UI-05完了反映: SkillCenterView セクション追加（コンポーネント/状態管理/IPC依存/関連未タスク）。収録機能一覧・完了タスク・関連ドキュメントを同期 |
 | 2026-02-26 | v1.11.2    | TASK-9A成果物移管を反映。参照正本を `completed-tasks/TASK-9A-skill-editor/` に更新し、`TASK-9A-C-004` を完了化して `completed-tasks/unassigned-task/` へ移管 |
 | 2026-02-26 | v1.11.1    | TASK-9A-C-004 を関連未タスクへ追加。Phase 12再確認で顕在化した Part 1/2 要件漏れ・監査判定誤読・メタ情報重複・3仕様書同期漏れの再発防止タスクを台帳化 |
 | 2026-02-26 | v1.11.0    | TASK-9A完了反映: SkillEditor UI を `spec_created` から `完了` に更新。`TASK-9A-skill-editor` を正本参照へ追加し、未タスク `TASK-9A-C-002` を完了化（統合実装） |

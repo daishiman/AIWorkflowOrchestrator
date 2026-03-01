@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-01T09:38:51.179Z",
-  "totalKeywords": 1392,
+  "generated": "2026-03-01T11:02:21.411Z",
+  "totalKeywords": 1382,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -756,10 +756,6 @@
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
-    "スキルフォーク": [
-      "api-ipc-agent.md",
-      "interfaces-agent-sdk-skill.md"
-    ],
     "スキルデバッグ": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
@@ -1124,6 +1120,16 @@
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md"
     ],
+    "SkillCenterView": [
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "アーキテクチャパターン": [
+      "arch-ui-components.md",
+      "architecture-file-conversion.md"
+    ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
     ],
@@ -1300,9 +1306,6 @@
     "integration": [
       "architecture-file-conversion.md"
     ],
-    "アーキテクチャパターン": [
-      "architecture-file-conversion.md"
-    ],
     "実装済みコンバーター": [
       "architecture-file-conversion.md"
     ],
@@ -1372,6 +1375,7 @@
     ],
     "実装": [
       "architecture-implementation-patterns.md",
+      "lessons-learned.md",
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc.md",
@@ -3014,6 +3018,12 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "CENTER": [
+      "lessons-learned.md"
+    ],
+    "VIEW": [
+      "lessons-learned.md"
+    ],
     "CALLBACK": [
       "lessons-learned.md"
     ],
@@ -3053,42 +3063,6 @@
     "実行監査": [
       "lessons-learned.md"
     ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "SUBAGENT": [
-      "lessons-learned.md"
-    ],
-    "NA": [
-      "lessons-learned.md"
-    ],
-    "LOG": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
-      "lessons-learned.md"
-    ],
-    "仕様書整合監査": [
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
-      "lessons-learned.md"
-    ],
-    "VALUE": [
-      "lessons-learned.md"
-    ],
-    "SYNC": [
-      "lessons-learned.md"
-    ],
-    "証跡値": [
-      "lessons-learned.md"
-    ],
-    "実測値": [
-      "lessons-learned.md"
-    ],
-    "同期ガード": [
-      "lessons-learned.md"
-    ],
     "QUICK": [
       "lessons-learned.md"
     ],
@@ -3101,6 +3075,9 @@
     "FIELD": [
       "lessons-learned.md"
     ],
+    "GUARD": [
+      "lessons-learned.md"
+    ],
     "quick": [
       "lessons-learned.md"
     ],
@@ -3108,18 +3085,6 @@
       "lessons-learned.md"
     ],
     "空フィールドガード": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
-    "COVERAGE": [
-      "lessons-learned.md"
-    ],
-    "GRANULAR": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ単位カバレッジ測定基盤": [
       "lessons-learned.md"
     ],
     "analytics": [
@@ -3186,6 +3151,12 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
       "lessons-learned.md"
     ],
     "LINK": [
@@ -3594,6 +3565,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
@@ -4657,7 +4631,8 @@
       "testing-component-patterns.md"
     ],
     "関連未タスク": [
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-components.md"
     ],
     "Atoms": [
       "testing-component-patterns.md",
