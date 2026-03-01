@@ -150,14 +150,9 @@ export * from "./skill-share";
 
 // スキルスケジュール型定義 (TASK-9G)
 export * from "./skill-schedule";
+
 // スキルデバッグ型定義 (TASK-9H)
 export * from "./skill-debug";
 
-// スキルドキュメント型定義 (TASK-9I)
-export * from "./skill-docs";
-
-// スキル分析型定義 (TASK-9J)
-export * from "./skill-analytics";
-
-// スキルチェーン型定義 (TASK-9D)
-export * from "./skill-chain";
+// スキルフォーク型定義 (TASK-9E)
+export * from "./skill-fork";

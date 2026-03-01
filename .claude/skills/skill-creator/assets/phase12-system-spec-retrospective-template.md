@@ -29,7 +29,6 @@
 | 何を実装したか | `<実装の要点を1-2行>` |
 | 変更範囲 | `<Main / Preload / Renderer / Store など>` |
 | なぜ必要か | `<背景と狙い>` |
-| どこに反映したか | `<task-workflow / lessons / domain-spec / template など>` |
 | 完了判定 | `<Phase 12要件と一致する根拠>` |
 
 ---
@@ -59,18 +58,6 @@
 | `task-workflow.md` | 完了タスク・成果物・苦戦箇所・簡潔手順を記録 | `<該当セクション>` |
 | `<domain-spec>.md` | 実装仕様・契約差分・苦戦箇所・関連タスクを記録 | `<該当セクション>` |
 | `lessons-learned.md` | 再発条件付きの苦戦箇所と再利用手順を記録 | `<該当セクション>` |
-
----
-
-## 4.5 仕様書適用判定ログ（N/A管理）
-
-| 仕様書 | 判定（更新 / N/A） | 理由 | 代替証跡 |
-| --- | --- | --- | --- |
-| `references/<interface-spec>.md` | `<更新 or N/A>` | `<判定理由>` | `<task-workflow該当行 など>` |
-| `references/<api-ipc-spec>.md` | `<更新 or N/A>` | `<判定理由>` | `<task-workflow該当行 など>` |
-| `references/<security-spec>.md` | `<更新 or N/A>` | `<判定理由>` | `<task-workflow該当行 など>` |
-| `references/task-workflow.md` | `更新` | `<完了台帳の正本>` | `<該当セクション>` |
-| `references/lessons-learned.md` | `更新` | `<教訓の正本>` | `<該当セクション>` |
 
 ---
 
@@ -104,8 +91,6 @@
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
-| `node -e "const fs=require('fs');const j=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));const p=(j.phases?.['12'] ?? j.phases?.[12]);console.log(p?.status ?? 'undefined');" <workflow-path>/artifacts.json` | `artifacts.json` の Phase 12 ステータス確認 | 出力が `completed` |
-| `rg -n "phase-12-documentation\|Task 1\|Task 2\|Task 3\|Task 4\|Task 5\|本Phase内の全タスク" <workflow-path>/phase-12-documentation.md` | 実行仕様書チェック同期の確認 | チェック対象項目が存在し、実体証跡と同期している |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
@@ -117,22 +102,7 @@
 - [ ] `spec-update-summary.md`
 - [ ] `documentation-changelog.md`
 - [ ] `unassigned-task-detection.md`（標準）
-- [ ] `unassigned-task-report.md`（旧テンプレート互換が必要な場合のみ）
+- [ ] 旧名 `unassigned-task-report.md` を新規作成していない（互換用途のみ・非推奨）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
-- [ ] `artifacts.json` の `phases.12.status=completed` を確認
-- [ ] `phase-12-documentation.md` のチェックリストが成果物実体と同期している
-- [ ] 仕様書適用判定ログ（更新/N/A）が記録されている
-
----
-
-## 9. Phase 12 実行可否ゲート（三点突合）
-
-| ゲート | 判定基準 | 失敗時の扱い |
-| --- | --- | --- |
-| 成果物実体 | 必須5成果物が `outputs/phase-12/` に存在 | 未完了（成果物作成へ戻す） |
-| 台帳ステータス | `artifacts.json` の `phases.12.status` が `completed` | 未完了（台帳更新へ戻す） |
-| 実行仕様書同期 | `phase-12-documentation.md` の完了チェックが実体証跡と一致 | 未完了（チェック同期へ戻す） |
-
-上記3ゲートをすべて満たした場合のみ `Phase 12 完了` と判定する。

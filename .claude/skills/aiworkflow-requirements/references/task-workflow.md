@@ -194,114 +194,65 @@
 4. 苦戦箇所は `task-workflow.md` と `lessons-learned.md` に同時記録し、再発条件と対処を固定化する。
 
 ---
-### タスク: TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 authCallbackServer タイムアウト停止責務分離（2026-02-28完了）
+
+### タスク: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 IPCハンドラ単位カバレッジ測定基盤（2026-02-28完了）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 |
+| タスクID | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 |
 | 完了日 | 2026-02-28 |
 | ステータス | **完了** |
-| タスク種別 | fix（認証コールバックサーバー安定化） |
-| Phase | Phase 1-13 完了 |
-| 変更範囲 | `apps/desktop/src/main/auth/authCallbackServer.ts` / `apps/desktop/src/main/auth/__tests__/authCallbackServer.test.ts` |
+| タスク種別 | 品質基盤実装（カバレッジ計測スクリプト + テスト + Phase 7運用拡張） |
+| Phase | Phase 1-12 完了（Phase 13未実施） |
 
-#### 実装内容（要点）
+#### 反映内容（要点）
 
-- `waitForCallback()` timeout 内の `instance.stop()` 自動実行を削除し、待機責務へ限定。
-- `stop()` に `!server || !server.listening` ガードを追加し、冪等停止を保証。
-- `server.close((_err) => { ... })` で close 失敗を握りつぶし、終了フローの安定性を確保。
-- timeout テスト（SRV-06）で `await server.stop()` を明示実行してクリーンアップ責務を固定。
+- `apps/desktop/scripts/coverage-by-handler.ts` を新規作成し、`ipcMain.handle()` をハンドラ単位で抽出して Line/Branch/Function を算出
+- `apps/desktop/scripts/coverage-by-handler.test.ts` を新規作成し、58テストで判定ロジックを固定
+- `quality-requirements.md` に Rule-1〜4（ハンドラ粒度判定 + P41注記）を追加
+- `task-specification-creator/references/phase-templates.md` に Phase 7 のハンドラ単位カバレッジ手順を追加
 
 #### 仕様書別SubAgent分担（今回の同期チーム）
 
-| SubAgent | 担当仕様書 | 主担当作業 |
-| --- | --- | --- |
-| SubAgent-A | `security-implementation.md` | ローカルHTTPサーバー停止契約の実装同期 |
-| SubAgent-B | `task-workflow.md` | 完了台帳・成果物・検証証跡の固定 |
-| SubAgent-C | `lessons-learned.md` | 再発防止手順（wait/stop責務分離）の教訓化 |
-| SubAgent-D | `task-specification-creator` 監査群 | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit` の実行・記録 |
-
-#### 検証結果（2026-02-28）
-
-| 検証項目 | コマンド | 結果 |
-| --- | --- | --- |
-| 仕様整合 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 --json` | PASS（13/13, error=0） |
-| Phase構造 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` | PASS（28項目, error=0, warning=0） |
-| 未タスクリンク | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（91/91 existing, missing=0） |
-| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0, baselineViolations=71 |
-| 対象テスト | `pnpm --filter @repo/desktop exec vitest run src/main/auth/__tests__/authCallbackServer.test.ts` | PASS（13/13） |
-
-#### 苦戦箇所と解決策（再利用用）
-
-| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| timeout時に待機APIが停止責務まで持っていた | `waitForCallback()` の timeout 内で `stop()` を呼ぶ設計 | timeoutはエラー返却のみへ変更し、停止は呼び出し側 `stop()` に分離 | timeout系APIは副作用を持たせず、待機責務へ限定する |
-| `stop()` の多重実行で終了経路が揺れる | 停止済み判定が `!server` のみで `server.listening` を見ない | `!server || !server.listening` で早期returnし、closeエラーは握りつぶして冪等化 | 停止APIは idempotent を第一要件に固定する |
-| 監査スクリプトの所在を誤認しやすい | `aiworkflow-requirements/scripts` に監査スクリプトがある前提で実行 | `rg --files .claude/skills` で実体解決後に `task-specification-creator/scripts` を正本として実行 | 監査は「実体探索→実行」の順序をテンプレート化する |
+| SubAgent-A | `references/quality-requirements.md` | Rule-1〜4・測定コマンド・完了タスク記録の同期 | 実装値と判定基準が一致 |
+| SubAgent-B | `references/task-workflow.md` | 完了台帳・苦戦箇所・検証証跡の同期 | 実装内容 + 苦戦箇所 + 手順が同一ターンで更新 |
+| SubAgent-C | `references/lessons-learned.md` | 再発条件付き教訓と簡潔解決手順の固定 | 同種課題向け手順が再利用可能形式で記録 |
+| SubAgent-D | `task-specification-creator/references/*` | Phase 12 成果物名の正本（`unassigned-task-detection.md`）同期 | 旧成果物名ドリフトが解消 |
 
-#### 同種課題の簡潔解決手順（5ステップ）
+#### 苦戦箇所と解決策（再利用形式）
 
-1. 変更点を `wait`（待機）と `stop`（停止）の責務に分け、API境界を固定する。  
-2. 停止APIへ未起動/停止済みガードを追加し、冪等停止を先に確保する。  
-3. timeout テストに明示 `await stop()` を追加し、クリーンアップ責務を固定する。  
-4. `security-implementation.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで同期する。  
-5. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行し、検証値を `spec-update-summary.md` に固定する。  
+| 苦戦箇所 | 再発条件 | 原因 | 今回の解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| `coverage-final.json` を raw v8 形式として誤解釈しやすい | カバレッジ仕様を想定で実装する場合 | Vitest v8 provider の実体が Istanbul 形式（`statementMap` / `branchMap` / `fnMap`）である点を先に固定していなかった | 解析対象を Istanbul 形式へ統一し、キー一致・末尾一致の2段探索を実装 | カバレッジ実装前に `coverage-final.json` 実体を先に採取し、形式を仕様書へ固定する |
+| `SKILL_GET_IMPORTED` のチャンネル名変換がドリフトする | 定数→チャンネル変換を機械変換だけで完結させる場合 | 既存命名が `skill:getImported`（camelCase）で例外扱いだった | 例外マップで `SKILL_GET_IMPORTED -> skill:getImported` を明示して判定を一致させた | 命名規則外の定数は例外マップに明示登録し、テストで固定する |
+| `scripts/**/*.test.ts` が Vitest に拾われない | `src/**` 前提の include で運用した場合 | スクリプト配下テストの探索パターンが未定義だった | `vitest.config.ts` に `scripts/**/*.test.{ts,tsx}` を追加 | `src/` 以外にテストを置く場合、include 変更を同一タスクで必須化する |
+
+#### 検証証跡（2026-03-01 再確認）
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001 12` | PASS（28項目, error 0, warning 0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | ALL_LINKS_EXIST（89/89, missing 0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`（`baselineViolations=71` は既存課題） |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 先に `coverage-final.json` 実体を確認し、Istanbul 形式を前提に解析コードを設計する。
+2. チャンネル名変換は規則変換 + 例外マップの2段で実装し、例外はテストで固定する。
+3. `scripts/` 配下テストを追加したら `vitest.config.ts` の include を同時更新する。
+4. Phase 12完了判定は `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の3点セットで固定する。
 
 #### 成果物
 
-| 成果物 | パス/内容 |
-| --- | --- |
-| 実行ワークフロー | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` |
-| Phase成果物台帳 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/artifacts.json` |
-| Phase 12 実装ガイド | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/implementation-guide.md` |
-| Phase 12 仕様更新サマリー | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/spec-update-summary.md` |
-| Phase 12 更新履歴 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/documentation-changelog.md` |
-| Phase 12 未タスク検出 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-12/unassigned-task-detection-report.md` |
+- 実行ワークフロー: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`
+- 実装ガイド: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/implementation-guide.md`
+- 仕様更新サマリー: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/spec-update-summary.md`
+- 未タスク検出: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/unassigned-task-detection.md`
 
 ---
-### タスク: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12実行監査（2026-02-28）
 
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 |
-| 実施日 | 2026-02-28 |
-| ステータス | **Phase 12監査完了（実装タスク本体は継続）** |
-| 対象 | `docs/30-workflows/TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001/phase-12-documentation.md` と `outputs/phase-12/` |
-
-#### 今回の実装内容（監査・反映）
-
-- Phase 12 必須成果物5件（`implementation-guide.md` / `documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）の実体を確認した。
-- `verify-all-specs`（13/13 PASS）と `validate-phase-output`（28項目 PASS）で、仕様書構造の整合を確認した。
-- `verify-unassigned-links`（missing=0）と `audit-unassigned-tasks --diff-from HEAD`（currentViolations=0, baselineViolations=71）で、未タスク運用の差分健全性を確認した。
-- `phase12-system-spec-retrospective-template.md` を実運用に合わせて更新し、仕様書単位の SubAgent 分担と実行可否ゲート（成果物実体/`artifacts.json`/チェックリスト同期）を固定化した。
-
-#### 仕様書別SubAgent分担（今回の監査チーム）
-
-| SubAgent | 担当仕様書/資産 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-A | `references/task-workflow.md` | 完了台帳・検証証跡・成果物参照の同期 | 実装内容 + 苦戦箇所 + 手順を同期済み |
-| SubAgent-B | `references/lessons-learned.md` | 再発条件付きの苦戦箇所を教訓化 | 3件以上を再利用可能形式で記録 |
-| SubAgent-C | `skill-creator/assets/phase12-system-spec-retrospective-template.md` | テンプレート最適化（N/A判定・実行可否ゲート） | 次回転記でそのまま再利用できる |
-| SubAgent-D | 検証証跡（scripts） | `verify/validate/links/audit` の再実行 | 合否は `currentViolations=0` で固定 |
-
-#### 苦戦箇所と解決策（再利用用）
-
-| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
-| --- | --- | --- | --- |
-| 成果物実体が揃っていても `artifacts.json` が pending のまま残る | ファイル存在確認のみで完了判定した場合 | 成果物実体に加えて `artifacts.json` の phase status を同時確認した | Phase 12完了判定は「成果物実体 + artifacts status + チェックリスト同期」の三点突合を必須化する |
-| `audit-unassigned-tasks --json` の baseline違反を今回差分違反と誤認しやすい | full監査結果だけを見て合否を判断した場合 | `--diff-from HEAD` を併用し `currentViolations` を合否基準に固定した | 未タスク監査は `current`（合否）と `baseline`（監視）を必ず分離記録する |
-| `phase-12-documentation.md` のチェックリスト未同期で実行可否が曖昧化する | 出力ファイル生成と仕様書チェック更新を別ターンで進めた場合 | 監査結果を `task-workflow.md` / `lessons-learned.md` に同一ターン反映した | Phase 12は証跡同期（実体・仕様書・教訓）を同一ターンで完了させる |
-| 仕様書単位で SubAgent を分離しても「非対象仕様」の扱いがぶれる | interfaces/api-ipc/security の更新不要タスクで、担当だけ割り当てた場合 | テンプレートに N/A判定ログ（対象/非対象/理由）を追加し、省略理由を残した | 仕様書別SubAgent運用では非対象仕様も必ず `N/A + 理由` を記録する |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. `verify-all-specs` と `validate-phase-output` で仕様書構造を先に確定する。
-2. `outputs/phase-12` の必須5成果物と `artifacts.json` のステータス整合を突合する。
-3. `verify-unassigned-links` と `audit --diff-from HEAD` を実行し、`currentViolations` を合否基準に固定する。
-4. 仕様書ごとに SubAgent を割り当て、非対象仕様は `N/A + 理由` を明示して残す。
-5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` に同一ターンで同期する。
-
----
 ### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
 
 | 項目 | 内容 |
@@ -1863,7 +1814,6 @@
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
-| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 仕様書別SubAgent N/A判定ログガード | 中 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12 実行監査（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
@@ -1918,7 +1868,6 @@
 | UT-SEC-001                                        | OAuth プロバイダー自動検出機能（consumeState→validate置換）                                                      | 低     | DEBT-SEC-001 Phase 12（設計乖離検出）                                       | `docs/30-workflows/unassigned-task/task-auth-provider-detection.md`                                                                                |
 | task-sec-auth-state-cleanup-001                   | State Map定期クリーンアップ実装                                                                                  | 低     | DEBT-SEC-001 Phase 12（既知制約検出）                                       | `docs/30-workflows/unassigned-task/task-auth-state-cleanup-scheduling.md`                                                                          |
 | UT-PROTOCOL-URL-001                               | カスタムプロトコルURLパース標準ユーティリティ整備                                                                | 中     | TASK-AUTH-CALLBACK-001 Phase 12（苦戦箇所検出）                             | `docs/30-workflows/unassigned-task/task-protocol-url-parsing-utility.md`                                                                           |
-| ~~UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001~~ | ~~authCallbackServer wait/stop 責務境界の契約ガード（timeout副作用禁止・stop冪等性）~~                              | ~~中~~     | **2026-02-28完了** TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 Phase 12（完了移管）      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md`                                                        |
 | UT-FIX-5-2                                        | Preload Dialog API ハードコード削除                                                                              | 中     | TASK-FIX-5-1 Phase 10                                                       | `docs/30-workflows/unassigned-task/task-ut-fix-5-2-preload-dialog-hardcode.md`                                                                     |
 | ~~UT-FIX-5-3~~                                    | ~~Preload Agent Abort セキュリティ修正~~                                                                         | ~~高~~ | ~~TASK-FIX-5-1 Phase 10~~                                                   | ~~`docs/30-workflows/completed-tasks/task-ut-fix-5-3-preload-agent-abort.md`~~ **2026-02-10完了**                                                  |
 | TASK-FIX-12-2-IPC-HARDCODE-FIX-UPDATER-AGENT      | Updater/AgentHandler IPC チャネル名定数化                                                                        | 低     | TASK-FIX-12-1 Phase 12                                                      | `docs/30-workflows/unassigned-task/task-fix-12-2-ipc-hardcode-fix-updater-agent.md`                                                                |
@@ -1970,7 +1919,8 @@
 | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
 | UT-FIX-SKILL-IPC-NAMING-P45-001                   | skillHandlers IPC引数命名統一（skillId → skillName横展開）                                                        | 中     | UT-FIX-SKILL-IMPORT-INTERFACE-001 / UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20） | `docs/30-workflows/unassigned-task/task-ut-fix-skill-ipc-naming-p45-001.md`                                                                        |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001              | Phase 11 Worktree環境手動テスト実行プロトコル策定                                                                | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
-| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
+| ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001~~       | ~~IPCハンドラ粒度カバレッジ計測インフラ構築~~                                                                     | ~~中~~ | ~~UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）~~ **完了: 2026-02-28** | `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`                                                                                      |
+| ~~UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001~~        | ~~IPCハンドラ単位カバレッジ計測ガードレール自動化（Istanbul形式固定・命名例外マップ・scriptsテスト探索ガード）~~ | ~~中~~     | ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 再確認（実装苦戦箇所・2026-03-01）~~ **完了: 2026-03-01（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
 | UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
@@ -2024,13 +1974,9 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.63.7** | **2026-02-28** | **UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 を残課題へ登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の苦戦箇所（三点突合漏れ、`current/baseline` 誤読、仕様書別SubAgentの N/A 記録漏れ）を再発防止する未タスクを `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` に作成し、残課題テーブルへ同期 |
-| **1.63.6** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補（SubAgent分離 + テンプレート最適化）**: 同タスクの監査セクションに仕様書別SubAgent分担（台帳/教訓/テンプレート/検証）を追加し、実装内容へ `phase12-system-spec-retrospective-template.md` 最適化を追記。苦戦箇所に「非対象仕様（N/A）記録漏れ」を追加し、再利用手順を5ステップへ拡張 |
-| **1.63.5** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12実行監査を追加**: 完了タスクセクションへ監査記録を新設し、必須5成果物の実体確認、`verify-all-specs`/`validate-phase-output` PASS、`verify-unassigned-links` PASS、`audit --diff-from HEAD`（current=0 / baseline=71）を記録。あわせて苦戦箇所（成果物実体とステータス乖離、current/baseline誤読、チェックリスト未同期）と4ステップ再利用手順を追記 |
-| **1.62.9** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映**: 実行ワークフローを `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動し、派生未タスク `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルを完了表記へ更新 |
-| **1.62.8** | **2026-02-28** | **UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録**: `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所（wait/stop責務混在、stop冪等性、監査スクリプト所在誤認）を再発防止する未タスクを残課題テーブルへ追加。未タスク指示書は `task-specification-creator` テンプレート（9セクション + 3.5 実装課題）準拠で `docs/30-workflows/completed-tasks/unassigned-task/` に配置 |
-| **1.62.7** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補**: 同タスクへ「苦戦箇所と解決策（再発条件付き）」と「同種課題の簡潔解決手順（5ステップ）」を追加。`phase12-system-spec-retrospective-template` 準拠で wait/stop 責務分離、冪等停止、監査スクリプト実体解決の3論点を再利用可能形式に固定 |
-| **1.62.6** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了反映**: auth callback server の timeout/stop 責務分離（自動 stop 削除、stop 冪等化、timeout テスト後の明示 stop）を完了タスクへ追加。検証証跡（13/13, 28項目, links 91/91, current=0, tests 13/13）を台帳へ固定 |
+| **1.63.7** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12完了移管**: `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `completed-tasks/` へ移動し、関連未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルと成果物参照パスを同期 |
+| **1.63.6** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 登録**: `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の苦戦箇所3件（Istanbul形式誤認・命名例外・Vitest include漏れ）を再発防止タスクとして残課題テーブルへ追加。未タスク指示書（9セクション + 3.5実装課題）を `docs/30-workflows/unassigned-task/` に登録 |
+| **1.63.5** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了記録を拡充**: 完了タスクセクションに本タスクの実装要点（`coverage-by-handler.ts` / 58テスト / Rule-1〜4）と苦戦箇所3件（Istanbul形式誤認・定数変換例外・Vitest include漏れ）を追加。再確認証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）と4ステップ再利用手順を追記 |
 | **1.62.5** | **2026-02-27** | **TASK-9H Phase 12再監査同期**: `TASK-9H` セクションに最終検証証跡（`verify-all-specs` 13/13、`validate-phase-output` error=0、`verify-unassigned-links` ALL_LINKS_EXIST、`audit --diff-from HEAD` current=0 / baseline=71）を反映。成果物参照（`spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）を確定し、運用手順を4ステップへ統一 |
 | **1.63.1** | **2026-02-28** | **TASK-9I completed-tasks 移管**: Phase 12 完了条件を満たしたため、`docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動。関連未タスク `UT-9I-001/002` も同ディレクトリ配下 `unassigned-task/` へ移管し、台帳・成果物リンクを新パスへ同期 |
 | **1.63.0** | **2026-02-28** | **UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 登録 + TASK-9I再確認追補**: 残課題テーブルへ Phase 12 証跡/リンク整合ガード未タスクを追加。TASK-9I 再確認セクションへワイルドカード参照由来のリンク監査 false fail、`--target-file` 判定軸分離、再確認値ドリフト対策を追記し、対象監査行（新規UT）と未タスク配置/フォーマット確認を同期 |

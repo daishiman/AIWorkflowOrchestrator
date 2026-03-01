@@ -11,6 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.11.1    | 2026-02-28 | TASK-9E追補: セキュリティ観点の苦戦箇所3件（sender検証順序、path境界判定、契約境界混同）と同種課題向け4ステップ手順を追加 |
+| v1.11.0    | 2026-02-28 | TASK-9E反映: `skill:fork` セキュリティ実装パターンを追加。`validateIpcSender`、P42準拠3段バリデーション、`SkillForker.validatePath` の境界検証（prefix一致すり抜け防止）、エラーサニタイズを仕様化 |
 | v1.10.0    | 2026-02-27 | TASK-9H反映: skillDebugAPI セキュリティ実装パターン追加（validateIpcSender + P42準拠3段バリデーション + vmサンドボックス式評価 + セッションID整合検証）。7チャネル（invoke 6 + event 1）を仕様化 |
 | v1.11.0    | 2026-02-28 | TASK-9I反映: skillDocsAPI セキュリティ実装パターン追加（sender 検証 + P42準拠3段バリデーション + 許可値チェック + パストラバーサル二重防御 + エラー正規化）。4チャンネル、64テストPASS |
 | v1.11.1    | 2026-02-28 | TASK-9J追補: 「実装時の苦戦箇所」セクションを追加。P42検証分散・許可値チェック漏れ・内部エラー露出リスクの再発防止ルールを明文化 |
@@ -111,6 +113,35 @@ IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフ�
 | 引数形式一致 | ハンドラ型定義 vs Preload `safeInvoke` 呼び出し |
 | 引数名セマンティクス | 実際の値が `skillId` か `skillName` か確認 |
 | バリデーション網羅 | `typeof` + `=== ""` + `.trim() === ""` の3段 |
+
+---
+
+### Skill Fork API セキュリティパターン（TASK-9E）
+
+`skill:fork` は Skill API ドメインのフォーク専用チャネルとして実装する。`skill-creator:fork` と混同せず、送信元検証・入力検証・パス境界検証を多層で適用する。
+
+| セキュリティ観点 | 実装 | 確認ポイント |
+| --- | --- | --- |
+| Sender検証 | `validateIpcSender(event, IPC_CHANNELS.SKILL_FORK, { getAllowedWindows: () => [mainWindow] })` | DevTools/未許可windowからの呼び出し拒否 |
+| 入力検証（P42） | `sourceSkill`/`newName` は `typeof` + 空文字 + `trim()` 3段検証、`copy*` は boolean、`modifyAllowedTools` は非空文字列配列 | IPC契約とPreload契約の一致 |
+| サービス境界検証 | `SkillForker.validatePath()` で `path.relative` ベースの境界判定を実施（`/skills` と `/skills-evil` の prefix 衝突を拒否） | パストラバーサル/境界外書き込み防止 |
+| 例外情報保護 | `sanitizeErrorMessage(error)` で内部パス/スタック情報をマスクして返却 | 機密情報・内部構造の漏洩防止 |
+| ハンドラー解除 | `unregisterSkillHandlers()` で `removeHandler(IPC_CHANNELS.SKILL_FORK)` を実施 | 再登録時の重複ハンドラ防止 |
+
+### 実装時の苦戦箇所（TASK-9E）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| sender検証順序のばらつき | 入力検証を先に行うと unauthorized 呼び出しでも内部エラー系の返却が混在した | `validateIpcSender` を最初に固定し、その後に P42 検証を適用 |
+| path境界判定のすり抜け | `startsWith` 判定だけでは `/skills-evil` を境界内と誤判定しうる | `path.relative` による境界判定へ統一し、仕様書にも境界検証方式を明記 |
+| `skill:fork` / `skill-creator:fork` 混同 | 類似チャネル名によりレビュー時の対象範囲がぶれた | Security/API/Interface の3仕様で責務境界を同時追記し、契約を分離管理 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. セキュリティ検証順序を `sender -> P42 -> 境界検証 -> サニタイズ` で固定する。  
+2. path検証は prefix 比較を避け、`path.relative` で境界判定する。  
+3. 近似チャネルは責務境界表を API/Interface/Security に同時反映する。  
+4. 仕様更新後にセキュリティ系テストと `verify-all-specs` を連続実行する。  
 
 ---
 

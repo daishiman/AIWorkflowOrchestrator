@@ -419,6 +419,7 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
+| `skill:fork`              | Renderer → Main | スキルフォーク（TASK-9E）   | `{ success: true, data: SkillForkResult } \| { success: false, error: string }` |
 | `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string }` |
 | `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
 | `skill:get-status`        | Renderer → Main | 実行ステータス取得          | `ExecutionStatus \| null`             |
@@ -454,6 +455,16 @@ Zustand Sliceパターンで実装された状態管理。
 | Main処理 | `skillName` 受信時は `scanAvailableSkills()` で `name -> id` 解決後に `executeSkill(skill.id, { prompt })` 実行 |
 | バリデーション | `skillName` または `skillId` に対する非空文字列検証（`trim()`含む） |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` または `"skillId must be a non-empty string"` |
+
+#### `skill:fork` リクエスト契約（TASK-9E）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 引数形式 | `SkillForkOptions`（`sourceSkill`, `newName`, `description?`, `copyAgents`, `copyReferences`, `copyScripts`, `copyAssets`, `modifyAllowedTools?`） |
+| 戻り値 | `SkillForkResult`（`newSkillPath`, `copiedFiles`, `warnings?`） |
+| バリデーション | `sourceSkill`/`newName` の P42準拠3段バリデーション、`copy*` boolean、`modifyAllowedTools` 非空文字列配列 |
+| 責務境界 | `skill:fork` は Skill API ドメイン。`skill-creator:fork`（SkillCreatorService）とは別契約として管理する |
+| エラー | `VALIDATION_ERROR` / サニタイズ済みメッセージ |
 
 #### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001）
 
@@ -1384,7 +1395,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `validateSkill` | `(skillDir: string)` | `Promise<boolean>` | 生成スキル検証 |
 | `validateWithSchema` | `(schemaName: string, data: unknown)` | `Promise<boolean>` | スキーマ検証 |
 | `improveSkill` | `(skillName: string, autoApply: boolean)` | `Promise<unknown>` | 改善提案生成/適用 |
-| `forkSkill` | `(sourceName: string, newName: string, options: object)` | `Promise<string>` | スキル複製 |
+| `forkSkill` | `(sourceName: string, newName: string, options: object)` | `Promise<string>` | SkillCreator向けフォーク（`skill-creator:fork` 契約） |
 | `shareSkill` | `(action: string, target: string, skillName: string)` | `Promise<string>` | 共有/エクスポート |
 | `scheduleSkill` | `(skillName: string, schedule: object)` | `Promise<void>` | 実行スケジュール設定 |
 | `debugSkill` | `(skillName: string, options: object)` | `Promise<unknown>` | デバッグ実行 |
@@ -1852,6 +1863,52 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
 | ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
 
+## スキルフォーク 型定義（TASK-9E）
+
+`packages/shared/src/types/skill-fork.ts` と `apps/desktop/src/preload/skill-api.ts` に定義されたスキルフォーク機能の型契約。
+
+### 型一覧
+
+| 型名 | 定義元 | 用途 |
+| --- | --- | --- |
+| `SkillForkOptions` | `packages/shared/src/types/skill-fork.ts` | フォーク入力契約 |
+| `SkillForkResult` | 同上 | フォーク実行結果 |
+| `SkillForkMetadata` | 同上 | `fork-metadata.json` 追跡情報 |
+
+### Preload API（`skill-api.ts`）
+
+| メソッド名 | 引数 | 戻り値 | チャネル |
+| --- | --- | --- | --- |
+| `forkSkill` | `options: SkillForkOptions` | `Promise<SkillForkResult>` | `skill:fork` |
+
+### 責務境界
+
+| 契約 | 用途 | 備考 |
+| --- | --- | --- |
+| `skill:fork` | Skill API ドメインのフォーク実体処理 | `SkillForker` が担当 |
+| `skill-creator:fork` | SkillCreator ワークフロー上の派生作成補助 | `SkillCreatorService.forkSkill` が担当 |
+
+### 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| TASK-9E | 2026-02-28 | 完了 | `skill:fork` 追加（Main IPC + Preload + Shared型 + SkillForker）。59テスト（SkillForker 34 / IPC 25）で契約を検証 |
+
+### 実装時の苦戦箇所（TASK-9E）
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| 57/59 の件数ドリフト | Phase成果物と型契約仕様でテスト件数の記載が分岐し、完了判定根拠が揺れた | `task-workflow.md` を正本件数（59）へ固定し、TASK-9E 文脈のみ `rg` で抽出して同期 |
+| `skill:fork` と `skill-creator:fork` の契約境界混同 | 名前が類似し、呼び出し側で用途を取り違えやすかった | インターフェース仕様に責務境界表を追加し、Preload API を `forkSkill(options)` 契約で固定 |
+| path境界判定の実装差分追従 | `startsWith` 由来の境界抜けを仕様が即時追従できず、再監査で差戻しが発生 | `path.relative` ベース判定へ更新した実装に合わせ、型/API説明とセキュリティ仕様を同時更新 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 型定義・Preload API・IPC契約の3点を同一ターンで更新する。  
+2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。  
+3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。  
+4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。  
+
 ## スキル共有 型定義（TASK-9F）
 
 `packages/shared/src/types/skill-share.ts` に定義されたスキル共有・インポート機能の型。
@@ -2085,6 +2142,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-02-28 | 1.42.1     | TASK-9E追補: 型/API契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界追従）と同種課題向け4ステップ手順を追加 |
+| 2026-02-28 | 1.42.0     | TASK-9E反映: `skill:fork` IPC契約と `SkillForkOptions/SkillForkResult/SkillForkMetadata` 型定義セクションを追加。`skill:fork` と `skill-creator:fork` の責務境界を明文化し、完了タスク記録を追記 |
 | 2026-02-27 | 1.41.0     | TASK-9H反映: スキルデバッグ型定義セクション追加（`DebugSessionState` / `DebugEvent` / `DebugCommand` / Preload API 7メソッド、配線漏れ対策を含む） |
 | 2026-02-28 | 1.42.0     | TASK-9I反映: スキルドキュメント型定義セクション追加（DocGenerationRequest / GeneratedDoc / DocSection / DocTemplate / TemplateSection）、Preload API 4メソッド（docsGenerate/docsPreview/docsExport/docsTemplates）、関連未タスク UT-9I-001/002 を登録 |
 | 2026-02-28 | 1.42.3     | TASK-9J未タスクの完了移管を反映: `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を completed-tasks/unassigned-task 参照へ更新 |

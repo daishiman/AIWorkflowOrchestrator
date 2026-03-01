@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-28T10:08:34.001Z",
-  "totalKeywords": 1376,
+  "generated": "2026-03-01T07:30:31.791Z",
+  "totalKeywords": 1371,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3010,30 +3010,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "CALLBACK": [
-      "lessons-learned.md"
-    ],
-    "SERVER": [
-      "lessons-learned.md"
-    ],
-    "WORKER": [
-      "lessons-learned.md"
-    ],
-    "EXIT": [
-      "lessons-learned.md"
-    ],
-    "authCallbackServer": [
-      "lessons-learned.md"
-    ],
-    "timeout": [
-      "lessons-learned.md"
-    ],
-    "stop": [
-      "lessons-learned.md"
-    ],
-    "責務分離": [
-      "lessons-learned.md"
-    ],
     "QUICK": [
       "lessons-learned.md"
     ],
@@ -3056,6 +3032,18 @@
       "lessons-learned.md"
     ],
     "空フィールドガード": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "COVERAGE": [
+      "lessons-learned.md"
+    ],
+    "GRANULAR": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ単位カバレッジ測定基盤": [
       "lessons-learned.md"
     ],
     "analytics": [
@@ -3542,9 +3530,6 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [

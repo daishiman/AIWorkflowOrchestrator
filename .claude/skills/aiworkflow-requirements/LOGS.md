@@ -5,79 +5,77 @@
 
 ---
 
-## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了移管（workflow + 未タスク）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: Phase 12 完了済みタスクの completed-tasks への移管
-- 目的: 完了済みワークフローと派生未タスクを正本ディレクトリへ統一し、参照ドリフトを防止する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: Phase 12完了済みのため、ワークフローと今回作成未タスクを `completed-tasks/` へ移管し参照を同期
+
+### SubAgent分担
+- SubAgent-A: 物理移管（workflow本体）
+- SubAgent-B: 物理移管（未タスク指示書）
+- SubAgent-C: 台帳・仕様参照更新（task-workflow / quality）
+- SubAgent-D: 検証（links / audit / validate-phase-output）
 
 ### 実施内容
-- `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` を `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動
-- `task-imp-auth-callback-lifecycle-contract-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動し、ステータスを `完了` に更新
-- `task-workflow.md` の残課題行を完了表記へ更新し、関連パスを completed-tasks へ同期
-- `security-implementation.md` / `SKILL.md` / Phase 12 成果物内リンクを移管先パスへ更新
+- `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` 残課題テーブルの `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を完了化し、参照先を completed パスへ更新
+- `quality-requirements.md` と `lessons-learned.md` の関連参照を completed パスへ同期
 
 ### 結果
 - ステータス: success
-- 補足: 未タスクリンク監査は `ALL_LINKS_EXIST`、差分監査は `currentViolations=0` を維持
+- 補足: `verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
 
 ---
 
-## 2026-02-28 - UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001 未タスク登録
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 未タスク登録（苦戦箇所の再発防止）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: authCallbackServer timeout/wait/stop 契約の再発防止
-- 目的: 親タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` の苦戦箇所を未タスク指示書として再利用可能化する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の Phase 12 再確認
+- 目的: 苦戦箇所（Istanbul形式誤認/命名例外/Vitest include漏れ）を未タスク指示書へ昇格し、同種課題を簡潔に再利用可能にする
+
+### SubAgent分担
+- SubAgent-A: 未タスク指示書作成（9セクション + 3.5実装課題）
+- SubAgent-B: `task-workflow.md` 残課題テーブル登録
+- SubAgent-C: `quality-requirements.md` 派生未タスク同期
+- SubAgent-D: 検証（`verify-unassigned-links` / `audit --target-file` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-callback-lifecycle-contract-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
-- `task-workflow.md` 残課題テーブルに `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` を追加
-- `security-implementation.md` の auth callback 節へ派生未タスク参照を追加
-- 親タスクの苦戦箇所3件（wait/stop責務混在、stop冪等化、監査スクリプト所在誤認）を未タスクへ転記
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を新規作成
+- `task-workflow.md` に `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を残課題として登録
+- `quality-requirements.md` に派生未タスクとして追記
+- `unassigned-task-detection.md` を 0件→1件へ更新し、3ステップ（指示書/台帳/関連仕様）を完了化
 
 ### 結果
 - ステータス: success
-- 補足: auth callback 系の同種課題を「契約テスト追加 + 仕様同期 + 監査」の短手順で再現可能な状態に固定
+- 補足: 本タスクは実装追加ではなく再発防止運用の未タスク化。`currentViolations=0` を維持
 
 ---
 
-## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 テンプレート最適化追補
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 再確認（Phase 12準拠 + 教訓同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: authCallbackServer timeout/stop 責務分離の再監査（文書最適化）
-- 目的: 実装内容・苦戦箇所・検証証跡をテンプレート準拠で再利用可能化する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: 実装内容と苦戦箇所をシステム仕様書へ再同期し、Phase 12再確認証跡を固定化
+
+### SubAgent分担
+- SubAgent-A: `references/task-workflow.md`（完了タスク詳細・苦戦箇所・再利用手順）
+- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓3件 + 4ステップ手順）
+- SubAgent-C: 検証証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `security-implementation.md` に同タスクの苦戦箇所（再発条件付き）と4ステップ手順を追記
-- `task-workflow.md` の同タスク節へ「苦戦箇所と解決策（再利用用）」と「簡潔解決5ステップ」を追記
-- `outputs/phase-12/spec-update-summary.md` を `phase12-system-spec-retrospective-template` 準拠へ再編（メタ情報、SubAgent分担、仕様反映先、苦戦箇所、検証コマンド、成果物チェック）
-- `skill-creator` 側の `patterns.md` に成功/失敗パターンを同期し、再発防止を横断化
+- `task-workflow.md` に UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の完了タスクセクションを追加
+- 苦戦箇所3件（Istanbul形式誤認、定数変換例外、Vitest include漏れ）を再発条件付きで記録
+- `lessons-learned.md` に同タスク教訓セクションと簡潔解決手順（4ステップ）を追加
+- `task-specification-creator` / `skill-creator` の参照文書で旧成果物名 `unassigned-task-report.md` を現行名 `unassigned-task-detection.md` へ統一
 
 ### 結果
 - ステータス: success
-- 補足: 同種課題に対する短手順再利用の導線（仕様・台帳・教訓・パターン）が1セットで固定化された
-
----
-
-## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 仕様再同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: authCallbackServer timeout/stop 責務分離の実装同期
-- 目的: 実装とシステム仕様書のドリフト（コールバック後即停止）を解消し、完了台帳・教訓を反映する
-
-### 実施内容
-- `security-implementation.md` のローカルHTTPサーバー表を更新（timeout時は自動停止しない、停止は呼び出し側の `stop()` 責務）
-- `task-workflow.md` に完了タスク `TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001` を追加
-- `lessons-learned.md` に wait/stop 責務分離の苦戦箇所と4ステップ再発防止手順を追加
-- 検証証跡を同期（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0, auth test 13/13）
-
-### 結果
-- ステータス: success
-- 補足: タスク成果物（Phase 1-13）とシステム仕様の整合を回復
+- 補足: `validate-phase-output` 28項目PASS、`verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
 
 ---
 
@@ -6024,3 +6022,25 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 反映範囲: TASK-9H 教訓資産化 + Phase 12 台帳整合
+
+---
+
+## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements / task-specification-creator
+- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+
+### 実施内容
+
+- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
+- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
+- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
+- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
+- 手動テスト MT-001〜MT-010 全PASS
+
+### 結果
+
+- ステータス: success
+- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`

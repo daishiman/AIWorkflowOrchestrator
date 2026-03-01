@@ -205,7 +205,7 @@
 | ハンドラー登録関数               | 登録パターン                 | チャンネル数 | 参照                     |
 | -------------------------------- | ---------------------------- | ------------ | ------------------------ |
 | registerAuthHandlers             | Pattern 1: mainWindow のみ  | -            | api-ipc-auth.md          |
-| registerSkillHandlers            | Pattern 2: service のみ     | -            | api-ipc-agent.md         |
+| registerSkillHandlers            | Pattern 3: mainWindow + service | -         | api-ipc-agent.md         |
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
 | registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 13 (12 invoke + 1 progress) | api-ipc-agent.md |
 | registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
@@ -213,6 +213,15 @@
 | registerSkillDocsHandlers        | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md |
 | registerSkillScheduleHandlers    | Pattern 4: mainWindow + service + store | 5 | api-ipc-agent.md |
 | registerSkillAnalyticsHandlers   | Pattern 3: mainWindow + service | 5 | api-ipc-agent.md |
+
+**Pattern 3 詳細（registerSkillHandlers）**:
+
+- **引数**: `mainWindow: BrowserWindow`, `service: SkillService`
+- **mainWindow用途**: Sender検証（`validateIpcSender`）、権限/進捗イベントの通知経路
+- **service用途**: `SkillService` を中心に `SkillAnalyzer` / `SkillImprover` / `PromptOptimizer` / `SkillForker` / `SkillScheduler` へ処理委譲
+- **対応チャネル**: `skill:list`, `skill:scan`, `skill:getImported`, `skill:import`, `skill:remove`, `skill:get-detail`, `skill:execute`, `skill:abort`, `skill:get-status`, `skill:analyze`, `skill:improve`, `skill:optimize`, `skill:optimize:variants`, `skill:optimize:evaluate`, `skill:fork`, `skill:schedule:*`
+- **セキュリティ**: 全 invoke ハンドラーで sender 検証 + P42準拠バリデーション + エラーサニタイズを適用
+- **関連タスク**: TASK-9C, TASK-9E, TASK-9G
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
 
@@ -457,6 +466,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.9.0 | 2026-02-28 | TASK-9E反映: `registerSkillHandlers` を実装準拠で Pattern 3（`mainWindow + service`）へ修正。`skill:fork` を含むチャネル責務、`SkillForker` への委譲、sender検証/P42/サニタイズの統合境界を追記 |
 | 1.8.0 | 2026-02-27 | TASK-9H反映: `registerSkillDebugHandlers` を IPC ハンドラー登録一覧へ追加。Pattern 3 詳細に 7チャネル（6 invoke + 1 event）、`SkillDebugger` 配線、vm サンドボックス方針を追記 |
 | 1.9.0 | 2026-02-28 | TASK-9I反映: IPC ハンドラー登録一覧に `registerSkillDocsHandlers` を追加（Pattern 3: mainWindow + service）。4チャネル（skill:docs:generate/preview/export/templates）と Pattern 3 詳細を追記 |
 | 1.9.0 | 2026-02-28 | TASK-9J: スキル分析・統計機能追加（SkillAnalytics, AnalyticsStore, 5 IPCチャネル, 8型定義） |

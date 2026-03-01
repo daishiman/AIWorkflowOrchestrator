@@ -12,6 +12,7 @@ import { SkillService } from "../services/skill/SkillService";
 import { SkillExecutor } from "../services/skill/SkillExecutor";
 import { SkillAnalyzer } from "../services/skill/SkillAnalyzer";
 import { SkillImprover } from "../services/skill/SkillImprover";
+import { SkillForker } from "../services/skill/SkillForker";
 import { PromptOptimizer } from "../services/skill/PromptOptimizer";
 import {
   validateIpcSender,
@@ -26,6 +27,7 @@ import type {
   SkillOptimizeVariantsRequest,
   SkillOptimizeEvaluateRequest,
   ScheduledSkill,
+  SkillForkOptions,
 } from "@repo/shared";
 import type { SkillScheduler } from "../services/skill/SkillScheduler";
 import type { ScheduleStore } from "../services/skill/ScheduleStore";
@@ -391,7 +393,109 @@ export function registerSkillHandlers(
   const skillsDir = skillService.getSkillsDirectory();
   const skillAnalyzer = new SkillAnalyzer(skillsDir);
   const skillImprover = new SkillImprover(skillsDir);
+  const skillForker = new SkillForker(skillsDir);
   const promptOptimizer = new PromptOptimizer();
+
+  // ========================================
+  // TASK-9E: スキルフォーク・派生機能
+  // ========================================
+
+  // skill:fork - スキルをフォーク
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_FORK,
+    async (event: IpcMainInvokeEvent, args: unknown) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_FORK, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      // P42準拠: args がオブジェクトであることを検証
+      if (typeof args !== "object" || args === null) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "args must be a non-null object",
+        };
+      }
+
+      const forkArgs = args as Record<string, unknown>;
+
+      // P42準拠3段バリデーション: sourceSkill
+      if (
+        typeof forkArgs.sourceSkill !== "string" ||
+        forkArgs.sourceSkill.trim() === ""
+      ) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "sourceSkill must be a non-empty string",
+        };
+      }
+
+      // P42準拠3段バリデーション: newName
+      if (
+        typeof forkArgs.newName !== "string" ||
+        forkArgs.newName.trim() === ""
+      ) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "newName must be a non-empty string",
+        };
+      }
+
+      // description: 指定時は非空チェック
+      if (
+        forkArgs.description !== undefined &&
+        (typeof forkArgs.description !== "string" ||
+          forkArgs.description.trim() === "")
+      ) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "description must be a non-empty string when provided",
+        };
+      }
+
+      // copyAgents, copyReferences, copyScripts, copyAssets: boolean
+      for (const flag of [
+        "copyAgents",
+        "copyReferences",
+        "copyScripts",
+        "copyAssets",
+      ]) {
+        if (typeof forkArgs[flag] !== "boolean") {
+          throw {
+            code: "VALIDATION_ERROR",
+            message: `${flag} must be a boolean`,
+          };
+        }
+      }
+
+      // modifyAllowedTools: string[] | undefined
+      if (forkArgs.modifyAllowedTools !== undefined) {
+        if (
+          !Array.isArray(forkArgs.modifyAllowedTools) ||
+          !forkArgs.modifyAllowedTools.every(
+            (t) => typeof t === "string" && (t as string).trim() !== "",
+          )
+        ) {
+          throw {
+            code: "VALIDATION_ERROR",
+            message: "modifyAllowedTools must be an array of non-empty strings",
+          };
+        }
+      }
+
+      try {
+        const result = await skillForker.fork(
+          forkArgs as unknown as SkillForkOptions,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        log.error("[skillHandlers] skill:fork failed:", error);
+        return { success: false, error: sanitizeErrorMessage(error) };
+      }
+    },
+  );
 
   // skill:analyze - スキル分析
   ipcMain.handle(
@@ -582,6 +686,8 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXECUTE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_ABORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_STATUS);
+  // TASK-9E: スキルフォーク
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_FORK);
   // TASK-9C: スキル改善・自動修正機能
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_ANALYZE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPROVE);
