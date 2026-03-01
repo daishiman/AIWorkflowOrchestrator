@@ -221,7 +221,8 @@ jobs:
     name: E2E Test (desktop)
     runs-on: ubuntu-latest
     needs: [build-shared]
-    timeout-minutes: 15
+    # セットアップ（依存導入/ブラウザ導入/ビルド）+ 179件E2Eの実行時間を考慮
+    timeout-minutes: 30
     env:
       CI: true
     steps:
