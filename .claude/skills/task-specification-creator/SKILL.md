@@ -391,6 +391,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: `spec-update-workflow.md` / `phase-templates.md` / `artifact-naming-conventions.md` / `patterns.md` の未タスク成果物名を `unassigned-task-detection.md` に統一。Step 2チェックリストと artifacts 例の正本を現行運用へ同期 |
+| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001完了**: Phase 7ハンドラ単位カバレッジ判定ルール追加。`phase-templates.md` にハンドラ単位カバレッジレポートサブセクションを追記 |
 | **v9.96.0** | **2026-02-27** | **TASK-9H 再確認運用を追補**: `references/patterns.md` に成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件実体確認→ステータス同期→検証4点セット固定の手順を標準化し、Phase 12 の未実施残置を防止 |
 | **v9.95.0** | **2026-02-27** | **TASK-9H Phase 12再監査運用を反映**: `phase-4-test-creation.md` / `phase-5-implementation.md` の必須セクション「統合テスト連携」を明記し、`validate-phase-output` エラー2件を解消。`outputs/phase-12` 必須4成果物（`spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`）の作成ガードと検証証跡（current/baseline分離）を再確認 |
 | **v9.97.0** | **2026-02-28** | **TASK-9I Phase 12再監査反映**: `documentation-changelog.md` の Step 進捗未同期を解消し、必須6仕様書（api-ipc/arch/security/overview/interfaces/task-workflow）を実装準拠へ更新。`UT-9I-001` / `UT-9I-002` 指示書を `docs/30-workflows/unassigned-task/` に新規作成し、未タスク3ステップ（指示書・残課題・関連仕様）を完了化 |

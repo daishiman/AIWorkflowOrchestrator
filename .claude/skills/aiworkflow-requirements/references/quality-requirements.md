@@ -681,6 +681,21 @@ vitest.config.tsで設定済みの閾値:
 | ドメインサービス層   | 100%必須            |
 | 新規コンバーター実装 | 100%必須（Phase 6） |
 
+### ハンドラ単位カバレッジ判定ルール（Phase 7拡張）
+
+IPCハンドラファイルのカバレッジ判定は、ファイル全体ではなくハンドラ単位で評価する。
+
+| ルール | 条件 | 判定 |
+|---|---|---|
+| Rule-1 | 対象ハンドラの Line >= 80%, Branch >= 60%, Function >= 80% | PASS |
+| Rule-2 | ファイル全体が低値でも修正対象ハンドラが基準超過 | PASS |
+| Rule-3 | 未カバーのハンドラは未タスク候補として記録 | N/A |
+| Rule-4 | ファイル全体の Branch >= 60% | 参考値 |
+
+**P41注記**: v8カバレッジプロバイダはインラインarrow function（例: `getAllowedWindows: () => [mainWindow]`）を独立関数としてカウントする。Function Coverage が実態より低く表示される場合がある。
+
+**測定ツール**: `npx tsx scripts/coverage-by-handler.ts --file <path>`
+
 ### 測定コマンド
 
 | 目的                     | コマンド                                              |
@@ -700,6 +715,39 @@ vitest.config.tsで設定済みの閾値:
 ---
 
 ## 完了タスク
+
+### UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ測定基盤構築（2026-02-28完了）
+
+**概要**: `skillHandlers.ts` のような複数IPCハンドラを含むファイルに対し、ハンドラ単位でLine/Branch/Function Coverageを算出する基盤を追加。Phase 7判定を「ファイル全体」だけでなく「対象ハンドラ粒度」で判断できるように拡張した。
+
+**品質ゲート達成状況**:
+
+| ゲート項目 | 結果 | 詳細 |
+| --- | --- | --- |
+| テスト | 58/58 PASS | `scripts/coverage-by-handler.test.ts` |
+| Line Coverage | 95.82% | 推奨基準90%超過 |
+| Branch Coverage | 90.36% | 推奨基準70%超過 |
+| Function Coverage | 100% | 推奨基準90%超過 |
+
+**主要成果**:
+
+| 項目 | 結果 |
+| --- | --- |
+| 測定スクリプト | `apps/desktop/scripts/coverage-by-handler.ts` 新規作成 |
+| AST検出 | `ipcMain.handle()` を23ハンドラ検出（`skillHandlers.ts`） |
+| 判定ルール | Rule-1〜4（ハンドラ単位PASS/FAIL + P41注記）を導入 |
+| テンプレート反映 | `task-specification-creator/references/phase-templates.md` にPhase 7手順を追加 |
+| Issue | #854 |
+
+**関連ドキュメント**:
+- 実行ワークフロー: [`docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/index.md`](../../../../docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/index.md)
+- 実装ガイド: [`outputs/phase-12/implementation-guide.md`](../../../../docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/implementation-guide.md)
+- 仕様更新サマリー: [`outputs/phase-12/spec-update-summary.md`](../../../../docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/spec-update-summary.md)
+
+**派生未タスク**:
+- [UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001](../../../../docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md): 苦戦箇所3件（Istanbul形式誤認、`SKILL_GET_IMPORTED` 命名例外、`scripts/**/*.test.ts` 探索漏れ）を再発防止するガードレール自動化（**完了: 2026-03-01**）
+
+---
 
 ### TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: `@repo/shared` モジュール解決3層整合CIガード（2026-02-22完了）
 
@@ -1009,6 +1057,9 @@ vitest.config.tsで設定済みの閾値:
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.10.2  | 2026-03-01 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の実行ワークフローを `completed-tasks/ut-imp-ipc-handler-coverage-granular-001` へ移管。派生未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` も `completed-tasks/unassigned-task/` 参照へ同期 |
+| 1.10.1  | 2026-03-01 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の派生未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を追記。Istanbul形式固定・命名例外マップ・Vitest include監査の再発防止対象を明文化 |
+| 1.10.0  | 2026-02-28 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ判定ルール（Rule-1〜4 + P41注記）を追加し、完了タスク記録（58テスト、Line 95.82%/Branch 90.36%/Function 100%）を追記 |
 | 1.9.1   | 2026-02-24 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001再監査反映: TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001の派生未タスク記載を完了化（2026-02-24完了、実装ワークフロー参照を追記） |
 | 1.9.0   | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（43テスト全PASS、Line 98.38%/Branch 96.96%/Function 100%、scripts/check-shared-module-sync.ts、check-module-sync CIジョブ） |
 | 1.8.1   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化: モジュール解決整合性テストセクション追加（3スイート分類表・品質ゲート項目表・サブパス追加時必須テスト要件7ステップ）。完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS）、変更規模（+353行/17ファイル）、未タスク検出（UT-FIX-TS-VITEST-TSCONFIG-PATHS-001）を追記 |

@@ -102,7 +102,7 @@
 - [ ] `spec-update-summary.md`
 - [ ] `documentation-changelog.md`
 - [ ] `unassigned-task-detection.md`（標準）
-- [ ] `unassigned-task-report.md`（旧テンプレート互換が必要な場合のみ）
+- [ ] 旧名 `unassigned-task-report.md` を新規作成していない（互換用途のみ・非推奨）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] `audit --target-file` の `currentViolations: 0` を確認

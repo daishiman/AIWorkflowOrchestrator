@@ -201,9 +201,8 @@
 | [agent-task-template.md](.claude/skills/skill-creator/assets/agent-task-template.md) | タスク特化エージェント生成時 | タスク実行用エージェント         |
 | [system-prompt-template.md](.claude/skills/skill-creator/assets/system-prompt-template.md) | LLM System Prompt生成時 | LLM外部呼び出し用System Promptテンプレート |
 | [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
-| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の仕様書別 SubAgent で同期し、`spec-update-summary.md` を固定化するテンプレート |
-
-| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）分担と `handler/register/preload` 三点突合を標準化するテンプレート |
+| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の仕様書別 SubAgent で同期し、成果物5点（`implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report`）を固定化するテンプレート |
+| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 5仕様書の SubAgent 分担（interfaces/api-ipc/security/task-workflow/lessons）と重複ID監査（`task-workflow.md` 一意性確認）を標準化するテンプレート |
 
 ### テンプレート（ランタイム別）
 

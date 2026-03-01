@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-01 | 1.27.5 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の教訓を追加。苦戦箇所3件（Istanbul形式誤認、定数→チャンネル変換例外、Vitest include漏れ）と同種課題向け簡潔解決手順（4ステップ）を標準化 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
 | 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
@@ -136,6 +137,47 @@
 3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。
 4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。
 5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。
+
+---
+
+## UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ測定基盤（2026-02-28）
+
+### 苦戦箇所: `coverage-final.json` 形式の誤認（raw v8 vs Istanbul）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `coverage-by-handler.ts` 初期設計で raw v8 形式を想定し、実際の `coverage-final.json`（Istanbul形式）と不一致になりやすかった |
+| 再発条件 | カバレッジデータ形式を実ファイル確認せずに実装を開始した場合 |
+| 原因 | Vitest v8 provider の出力仕様（`statementMap` / `branchMap` / `fnMap`）を事前固定していなかった |
+| 対処 | 解析対象を Istanbul 形式へ統一し、絶対パス一致 + 末尾一致フォールバックでファイル解決を安定化 |
+| 今後の標準ルール | カバレッジ系タスクは `coverage-final.json` の実体確認を最初の必須工程にする |
+
+### 苦戦箇所: `SKILL_GET_IMPORTED` の命名例外ドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 定数からチャンネル名へ機械変換すると `skill:get-imported` となり、実装側の `skill:getImported` とズレる |
+| 再発条件 | 規則変換のみで例外命名を扱わない場合 |
+| 原因 | 既存IPC契約に camelCase 例外が含まれていた |
+| 対処 | `SKILL_GET_IMPORTED -> skill:getImported` の例外マップを導入し、テストで固定 |
+| 今後の標準ルール | 定数→チャンネル変換は「規則 + 例外マップ」の二段構成を標準化する |
+
+### 苦戦箇所: `scripts/**/*.test.ts` が検出されない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `coverage-by-handler.test.ts` を追加しても Vitest が収集せず、品質ゲートが偽陽性になり得た |
+| 再発条件 | `src/**` 前提の include 設定を維持したまま script テストを追加した場合 |
+| 原因 | `vitest.config.ts` の include 範囲に `scripts/` が含まれていなかった |
+| 対処 | include に `scripts/**/*.test.{ts,tsx}` を追記してテスト探索を復旧 |
+| 今後の標準ルール | `src/` 以外へテスト追加するタスクは、設定更新を同一PR/同一タスク完了条件に含める |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. カバレッジファイル実体（`coverage-final.json`）を先に取得し、出力形式を仕様へ固定する。
+2. 定数→チャンネル変換は例外マップを持たせ、既存契約との差分をテストで固定する。
+3. テスト配置先を追加したら `vitest.config.ts` include を同時更新する。
+4. Phase 12 では `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の3コマンドで再確認する。
 
 ---
 
@@ -1664,7 +1706,7 @@ pnpm --filter @repo/shared build && pnpm typecheck
 | ~~UT-FIX-SKILL-VALIDATION-P42-001~~ | ~~skillHandlers P42準拠バリデーション横展開~~ | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）** |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md) |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
-| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md) |
+| ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001~~ | ~~IPCハンドラ粒度カバレッジ計測インフラ構築~~ | ~~中~~ | **完了: 2026-02-28**（`docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`） |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
 
 ---

@@ -5,6 +5,80 @@
 
 ---
 
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了移管（workflow + 未タスク）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: Phase 12完了済みのため、ワークフローと今回作成未タスクを `completed-tasks/` へ移管し参照を同期
+
+### SubAgent分担
+- SubAgent-A: 物理移管（workflow本体）
+- SubAgent-B: 物理移管（未タスク指示書）
+- SubAgent-C: 台帳・仕様参照更新（task-workflow / quality）
+- SubAgent-D: 検証（links / audit / validate-phase-output）
+
+### 実施内容
+- `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` 残課題テーブルの `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を完了化し、参照先を completed パスへ更新
+- `quality-requirements.md` と `lessons-learned.md` の関連参照を completed パスへ同期
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
+
+---
+
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 未タスク登録（苦戦箇所の再発防止）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の Phase 12 再確認
+- 目的: 苦戦箇所（Istanbul形式誤認/命名例外/Vitest include漏れ）を未タスク指示書へ昇格し、同種課題を簡潔に再利用可能にする
+
+### SubAgent分担
+- SubAgent-A: 未タスク指示書作成（9セクション + 3.5実装課題）
+- SubAgent-B: `task-workflow.md` 残課題テーブル登録
+- SubAgent-C: `quality-requirements.md` 派生未タスク同期
+- SubAgent-D: 検証（`verify-unassigned-links` / `audit --target-file` / `audit --diff-from HEAD`）
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を新規作成
+- `task-workflow.md` に `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を残課題として登録
+- `quality-requirements.md` に派生未タスクとして追記
+- `unassigned-task-detection.md` を 0件→1件へ更新し、3ステップ（指示書/台帳/関連仕様）を完了化
+
+### 結果
+- ステータス: success
+- 補足: 本タスクは実装追加ではなく再発防止運用の未タスク化。`currentViolations=0` を維持
+
+---
+
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 再確認（Phase 12準拠 + 教訓同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: 実装内容と苦戦箇所をシステム仕様書へ再同期し、Phase 12再確認証跡を固定化
+
+### SubAgent分担
+- SubAgent-A: `references/task-workflow.md`（完了タスク詳細・苦戦箇所・再利用手順）
+- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓3件 + 4ステップ手順）
+- SubAgent-C: 検証証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+
+### 実施内容
+- `task-workflow.md` に UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の完了タスクセクションを追加
+- 苦戦箇所3件（Istanbul形式誤認、定数変換例外、Vitest include漏れ）を再発条件付きで記録
+- `lessons-learned.md` に同タスク教訓セクションと簡潔解決手順（4ステップ）を追加
+- `task-specification-creator` / `skill-creator` の参照文書で旧成果物名 `unassigned-task-report.md` を現行名 `unassigned-task-detection.md` へ統一
+
+### 結果
+- ステータス: success
+- 補足: `validate-phase-output` 28項目PASS、`verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
+
+---
+
 ## 2026-02-27 - TASK-9H 仕様再監査（Phase 12 最終同期）
 ## 2026-02-28 - TASK-9I completed-tasks 移管（Phase 12完了条件充足）
 
@@ -5948,3 +6022,25 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 反映範囲: TASK-9H 教訓資産化 + Phase 12 台帳整合
+
+---
+
+## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements / task-specification-creator
+- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+
+### 実施内容
+
+- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
+- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
+- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
+- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
+- 手動テスト MT-001〜MT-010 全PASS
+
+### 結果
+
+- ステータス: success
+- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`

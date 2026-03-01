@@ -1,6 +1,6 @@
 {
-  "generated": "2026-02-28T07:53:51.411Z",
-  "totalKeywords": 1368,
+  "generated": "2026-03-01T07:30:31.791Z",
+  "totalKeywords": 1371,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3034,6 +3034,18 @@
     "空フィールドガード": [
       "lessons-learned.md"
     ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "COVERAGE": [
+      "lessons-learned.md"
+    ],
+    "GRANULAR": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ単位カバレッジ測定基盤": [
+      "lessons-learned.md"
+    ],
     "analytics": [
       "lessons-learned.md"
     ],
@@ -3518,9 +3530,6 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [

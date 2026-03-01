@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-28
+> 自動生成: 2026-03-01
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -77,9 +77,9 @@ node scripts/list-specs.js --topics
 | 保守性 | L498 |
 | アクセシビリティ | L598 |
 | テストカバレッジ目標 | L617 |
-| 関連ドキュメント | L694 |
-| 完了タスク | L702 |
-| 変更履歴 | L1008 |
+| 関連ドキュメント | L709 |
+| 完了タスク | L717 |
+| 変更履歴 | L1056 |
 
 ---
 
@@ -1557,24 +1557,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L100 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L142 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L203 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L244 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L303 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L345 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L392 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L446 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L529 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L577 |
-| 目次 | L615 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L812 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L971 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L1020 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L1069 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1243 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1294 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1364 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L101 |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ測定基盤（2026-02-28） | L143 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L184 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L245 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L286 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L345 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L387 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L434 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L488 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L571 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L619 |
+| 目次 | L657 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L854 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L1013 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L1062 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L1111 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1285 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1336 |
 
 ### references/llm-embedding.md
 
@@ -1916,9 +1916,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1745 |
-| 関連ドキュメント | L1904 |
-| 変更履歴 | L1914 |
+| 残課題（未タスク） | L1803 |
+| 関連ドキュメント | L1963 |
+| 変更履歴 | L1973 |
 
 ### references/testing-accessibility.md
 

@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-03-01 - Phase 12クイックナビ重複の再正規化]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の `📋 Phase 12` 重複3行を1行へ統合
+  - `target監査 + 10見出し同時検証` / `未タスクメタ情報1セクション運用` / `phase-12仕様書ステータス同期` / `5仕様書同期 + IPC三点突合` を単一行へ集約して保持
+  - 失敗パターン側も `未タスクの存在確認止まり（10見出し未検証）` / `phase-12仕様書ステータス未更新` / `api-ipc仕様を同期対象から除外` を維持し、探索性のみ改善
+
+---
+
+## [2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「カバレッジ形式実体先行固定（Istanbul形式前提）」を追加
+  - 定数変換例外（`SKILL_GET_IMPORTED -> skill:getImported`）をパターンへ明記し、規則変換のみ運用の再発を防止
+  - `scripts/**/*.test.{ts,tsx}` の include 同期を「`src/` 外テスト追加時の必須更新」として標準化
+  - Phase 12 成果物名ドリフト是正として `unassigned-task-detection.md` 正本へ統一
+
+---
+
 ## [2026-02-28 - Phase 12テンプレート最適化（TASK-9I再利用強化）]
 
 - **Agent**: skill-creator (update)

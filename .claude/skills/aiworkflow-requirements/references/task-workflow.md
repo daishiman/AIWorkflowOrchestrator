@@ -195,6 +195,64 @@
 
 ---
 
+### タスク: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 IPCハンドラ単位カバレッジ測定基盤（2026-02-28完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 |
+| 完了日 | 2026-02-28 |
+| ステータス | **完了** |
+| タスク種別 | 品質基盤実装（カバレッジ計測スクリプト + テスト + Phase 7運用拡張） |
+| Phase | Phase 1-12 完了（Phase 13未実施） |
+
+#### 反映内容（要点）
+
+- `apps/desktop/scripts/coverage-by-handler.ts` を新規作成し、`ipcMain.handle()` をハンドラ単位で抽出して Line/Branch/Function を算出
+- `apps/desktop/scripts/coverage-by-handler.test.ts` を新規作成し、58テストで判定ロジックを固定
+- `quality-requirements.md` に Rule-1〜4（ハンドラ粒度判定 + P41注記）を追加
+- `task-specification-creator/references/phase-templates.md` に Phase 7 のハンドラ単位カバレッジ手順を追加
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/quality-requirements.md` | Rule-1〜4・測定コマンド・完了タスク記録の同期 | 実装値と判定基準が一致 |
+| SubAgent-B | `references/task-workflow.md` | 完了台帳・苦戦箇所・検証証跡の同期 | 実装内容 + 苦戦箇所 + 手順が同一ターンで更新 |
+| SubAgent-C | `references/lessons-learned.md` | 再発条件付き教訓と簡潔解決手順の固定 | 同種課題向け手順が再利用可能形式で記録 |
+| SubAgent-D | `task-specification-creator/references/*` | Phase 12 成果物名の正本（`unassigned-task-detection.md`）同期 | 旧成果物名ドリフトが解消 |
+
+#### 苦戦箇所と解決策（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 原因 | 今回の解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| `coverage-final.json` を raw v8 形式として誤解釈しやすい | カバレッジ仕様を想定で実装する場合 | Vitest v8 provider の実体が Istanbul 形式（`statementMap` / `branchMap` / `fnMap`）である点を先に固定していなかった | 解析対象を Istanbul 形式へ統一し、キー一致・末尾一致の2段探索を実装 | カバレッジ実装前に `coverage-final.json` 実体を先に採取し、形式を仕様書へ固定する |
+| `SKILL_GET_IMPORTED` のチャンネル名変換がドリフトする | 定数→チャンネル変換を機械変換だけで完結させる場合 | 既存命名が `skill:getImported`（camelCase）で例外扱いだった | 例外マップで `SKILL_GET_IMPORTED -> skill:getImported` を明示して判定を一致させた | 命名規則外の定数は例外マップに明示登録し、テストで固定する |
+| `scripts/**/*.test.ts` が Vitest に拾われない | `src/**` 前提の include で運用した場合 | スクリプト配下テストの探索パターンが未定義だった | `vitest.config.ts` に `scripts/**/*.test.{ts,tsx}` を追加 | `src/` 以外にテストを置く場合、include 変更を同一タスクで必須化する |
+
+#### 検証証跡（2026-03-01 再確認）
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001 12` | PASS（28項目, error 0, warning 0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | ALL_LINKS_EXIST（89/89, missing 0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`（`baselineViolations=71` は既存課題） |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 先に `coverage-final.json` 実体を確認し、Istanbul 形式を前提に解析コードを設計する。
+2. チャンネル名変換は規則変換 + 例外マップの2段で実装し、例外はテストで固定する。
+3. `scripts/` 配下テストを追加したら `vitest.config.ts` の include を同時更新する。
+4. Phase 12完了判定は `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の3点セットで固定する。
+
+#### 成果物
+
+- 実行ワークフロー: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`
+- 実装ガイド: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/implementation-guide.md`
+- 仕様更新サマリー: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/spec-update-summary.md`
+- 未タスク検出: `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/outputs/phase-12/unassigned-task-detection.md`
+
+---
+
 ### タスク: UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 quick_validate.js 空フィールドガード追加（2026-02-27完了）
 
 | 項目 | 内容 |
@@ -1861,7 +1919,8 @@
 | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
 | UT-FIX-SKILL-IPC-NAMING-P45-001                   | skillHandlers IPC引数命名統一（skillId → skillName横展開）                                                        | 中     | UT-FIX-SKILL-IMPORT-INTERFACE-001 / UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20） | `docs/30-workflows/unassigned-task/task-ut-fix-skill-ipc-naming-p45-001.md`                                                                        |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001              | Phase 11 Worktree環境手動テスト実行プロトコル策定                                                                | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
-| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
+| ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001~~       | ~~IPCハンドラ粒度カバレッジ計測インフラ構築~~                                                                     | ~~中~~ | ~~UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）~~ **完了: 2026-02-28** | `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`                                                                                      |
+| ~~UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001~~        | ~~IPCハンドラ単位カバレッジ計測ガードレール自動化（Istanbul形式固定・命名例外マップ・scriptsテスト探索ガード）~~ | ~~中~~     | ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 再確認（実装苦戦箇所・2026-03-01）~~ **完了: 2026-03-01（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
 | UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
@@ -1915,6 +1974,9 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.63.7** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12完了移管**: `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `completed-tasks/` へ移動し、関連未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルと成果物参照パスを同期 |
+| **1.63.6** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 登録**: `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の苦戦箇所3件（Istanbul形式誤認・命名例外・Vitest include漏れ）を再発防止タスクとして残課題テーブルへ追加。未タスク指示書（9セクション + 3.5実装課題）を `docs/30-workflows/unassigned-task/` に登録 |
+| **1.63.5** | **2026-03-01** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了記録を拡充**: 完了タスクセクションに本タスクの実装要点（`coverage-by-handler.ts` / 58テスト / Rule-1〜4）と苦戦箇所3件（Istanbul形式誤認・定数変換例外・Vitest include漏れ）を追加。再確認証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）と4ステップ再利用手順を追記 |
 | **1.62.5** | **2026-02-27** | **TASK-9H Phase 12再監査同期**: `TASK-9H` セクションに最終検証証跡（`verify-all-specs` 13/13、`validate-phase-output` error=0、`verify-unassigned-links` ALL_LINKS_EXIST、`audit --diff-from HEAD` current=0 / baseline=71）を反映。成果物参照（`spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`）を確定し、運用手順を4ステップへ統一 |
 | **1.63.1** | **2026-02-28** | **TASK-9I completed-tasks 移管**: Phase 12 完了条件を満たしたため、`docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動。関連未タスク `UT-9I-001/002` も同ディレクトリ配下 `unassigned-task/` へ移管し、台帳・成果物リンクを新パスへ同期 |
 | **1.63.0** | **2026-02-28** | **UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 登録 + TASK-9I再確認追補**: 残課題テーブルへ Phase 12 証跡/リンク整合ガード未タスクを追加。TASK-9I 再確認セクションへワイルドカード参照由来のリンク監査 false fail、`--target-file` 判定軸分離、再確認値ドリフト対策を追記し、対象監査行（新規UT）と未タスク配置/フォーマット確認を同期 |

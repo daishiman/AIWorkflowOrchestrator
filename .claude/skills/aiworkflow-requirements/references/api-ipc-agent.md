@@ -501,6 +501,48 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+## スキルフォーク IPC チャネル（TASK-9E）
+
+既存スキルを派生コピーする IPC 契約。`skill-creator:fork`（SkillCreator ドメイン）とは責務を分離し、`skill:fork` は Skill API ドメインの実体コピー処理を担当する。
+
+### チャネル一覧
+
+| チャネル名 | 方向 | 概要 | リクエスト型 | レスポンス型 |
+| --- | --- | --- | --- | --- |
+| `skill:fork` | Renderer → Main | 既存スキルのフォーク実行 | `SkillForkOptions` | `IpcResult<SkillForkResult>` |
+
+### 型定義（`packages/shared/src/types/skill-fork.ts`）
+
+| 型名 | フィールド | 説明 |
+| --- | --- | --- |
+| `SkillForkOptions` | `sourceSkill`, `newName`, `description?`, `copyAgents`, `copyReferences`, `copyScripts`, `copyAssets`, `modifyAllowedTools?` | フォーク入力契約 |
+| `SkillForkResult` | `success`, `newSkillPath`, `copiedFiles`, `warnings?` | フォーク実行結果 |
+| `SkillForkMetadata` | `forkedFrom`, `forkedAt`, `originalDescription?` | `fork-metadata.json` に保存する追跡情報 |
+
+### バリデーションルール
+
+| 項目 | ルール | エラー |
+| --- | --- | --- |
+| `args` | 非 null object | `VALIDATION_ERROR` |
+| `sourceSkill`, `newName` | P42準拠3段バリデーション（型 → 空文字列 → `trim()`） | `"... must be a non-empty string"` |
+| `description` | 指定時のみ非空文字列 | `description must be a non-empty string when provided` |
+| `copy*` | 4フラグすべて boolean | `"... must be a boolean"` |
+| `modifyAllowedTools` | 指定時は非空文字列配列 | `modifyAllowedTools must be an array of non-empty strings` |
+| サービス側 | `SkillForker.validatePath` で境界外パス拒否、source存在/同名重複を検証 | `不正なパス...`, `フォーク元スキル...`, `同名のスキル...` |
+
+### 実装状況
+
+| 実装項目 | ステータス | 関連タスク |
+| --- | --- | --- |
+| チャネル定数（`IPC_CHANNELS.SKILL_FORK`） | 完了 | TASK-9E |
+| invokeホワイトリスト追加 | 完了 | TASK-9E |
+| IPCハンドラー実装（`skillHandlers.ts`） | 完了 | TASK-9E |
+| Preload API実装（`forkSkill(options)`） | 完了 | TASK-9E |
+| 共有型定義追加（`skill-fork.ts`） | 完了 | TASK-9E |
+| ユニット/IPCテスト追加（59件） | 完了 | TASK-9E |
+
+---
+
 ## スキルデバッグ IPC チャネル（TASK-9H）
 
 スキル実行のデバッグ操作を提供する IPC 契約。6 invoke チャネル（Renderer -> Main）と 1 event チャネル（Main -> Renderer）で構成される。
@@ -656,6 +698,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
 | TASK-9I    | スキルドキュメント生成機能           | 2026-02-28 | 4チャンネル追加（skill:docs:generate/preview/export/templates）、SkillDocGenerator追加、Preload API 4メソッド追加、共有型5種追加、テスト64件PASS |
 | TASK-9J    | スキル分析・統計機能                 | 2026-02-28 | 5チャンネル追加（skill:analytics:record/statistics/summary/trend/export）、AnalyticsStore/SkillAnalytics追加、Preload API 5メソッド追加、37テストPASS |
@@ -666,6 +709,14 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 | TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
 | TASK-9B    | SkillCreator IPC拡張反映 | 2026-02-26 | SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ同期。`skill-creator:improve/fork/share/schedule/debug/generate-docs/stats` を追加反映し、`SkillCreatorProgress` 契約を `phase/percentage/message` に実装準拠化 |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
+
+### TASK-9E 実装時の苦戦箇所（IPC契約観点）
+
+| 苦戦箇所 | 原因 | 解決策（簡潔） |
+| --- | --- | --- |
+| テスト件数表記が成果物間で 57/59 混在 | 追加テスト後の転記元が複数化した | 正本件数を `task-workflow.md` に固定し、TASK文脈抽出で同期 |
+| `skill:fork` と `skill-creator:fork` の用途混同 | 類似チャネル名で契約境界が曖昧だった | API/Interface/Architecture で責務境界を同時追記 |
+| path境界判定の抜け | prefix一致判定のみで境界を担保していた | `path.relative` 判定へ統一し、IPC+Service+Securityを同一ターンで更新 |
 
 **TASK-9A-B 派生未タスク**:
 
@@ -681,6 +732,8 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.15.1    | 2026-02-28 | TASK-9E追補: IPC契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界判定）と簡潔解決策テーブルを追加し、再監査時の参照導線を明確化 |
+| v1.15.0    | 2026-02-28 | TASK-9E反映: `skill:fork` チャネルセクション追加。`SkillForkOptions/Result/Metadata` 型契約、P42準拠バリデーション、実装状況、完了タスク記録（59テスト）を同期 |
 | v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |
 | v1.15.0    | 2026-02-28 | TASK-9I反映: スキルドキュメント生成 IPC セクションを追加。4チャンネル（skill:docs:generate/preview/export/templates）、共有型5種、バリデーション/セキュリティ仕様、完了タスク記録を同期 |
 | v1.15.1    | 2026-02-28 | TASK-9J追補: 「実装時の苦戦箇所」セクションを追加。IPC登録配線漏れ・責務重複・API命名ドリフトの再発防止ルールを明文化 |
