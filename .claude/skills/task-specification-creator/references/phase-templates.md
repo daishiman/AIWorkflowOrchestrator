@@ -990,6 +990,68 @@ Phase 11: 手動テスト検証
 - **統合テスト**: API連携/認証連携/データ永続化
 - **リグレッションテスト**: 既存機能/関連機能
 
+## スクリーンショット撮影ガイドライン
+
+### 適用判断
+
+| タスク種別                    | スクリーンショット | 判断基準                           |
+| ----------------------------- | ------------------ | ---------------------------------- |
+| UI/UX変更あり                 | **必須**           | Rendererコンポーネントの追加・変更 |
+| IPC/API変更のみ               | 推奨               | DevTools動作確認エビデンスとして   |
+| バックエンド/ドキュメントのみ | 不要               | UI変更を伴わないタスク             |
+
+### 撮影規定
+
+| 項目           | 規定                                                                |
+| -------------- | ------------------------------------------------------------------- |
+| 命名規則       | `TC-{番号}-{状態}.png`（例: `TC-01-before.png`, `TC-01-after.png`） |
+| 配置先         | `outputs/phase-11/screenshots/`                                     |
+| 必須タイミング | (1) 操作前の初期状態 (2) 操作後の結果状態 (3) エラー発生時のUI      |
+
+### 仕様照合チェックリスト（UI/UX変更時）
+
+- [ ] レイアウトがPhase 2設計書の画面設計と一致
+- [ ] カラーパレットがApple HIG準拠（`.claude/rules/01-architecture.md`参照）
+- [ ] スペーシングが8pxグリッドに従っている
+- [ ] ダークモード/ライトモード両方で確認（該当時）
+- [ ] エラー状態のUI表示が設計書と一致
+
+### 撮影コマンド（自動キャプチャ）
+
+```bash
+# before状態（実装前の画面）をキャプチャ
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes /,/settings \
+  --state before
+
+# after状態（実装後の画面）をキャプチャ
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes /,/settings \
+  --state after
+
+# ダークモード確認
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes /,/settings \
+  --state after --dark
+
+# ドライラン（出力パスの確認のみ）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes / --dry-run
+```
+
+**注意**: `--routes` にはタスクで変更したUI画面のルートを指定すること。
+
+### 撮影不可時の代替
+
+CI/ビルド環境制約でElectronを起動できない場合（スクリプトが自動で `NOTE.txt` を生成）:
+
+1. `outputs/phase-11/screenshots/NOTE.txt` に理由を記載（自動生成）
+2. DevToolsログまたはテスト実行結果をエビデンスとして記録
+
 ## 統合テスト連携【必須】
 
 手動統合テスト（UI/API接続）を確認:
@@ -1004,21 +1066,25 @@ Phase 11: 手動テスト検証
 
 ## テストケーステンプレート
 
-| No          | カテゴリ          | テスト項目    | 前提条件         | 操作手順  | 期待結果     | 実行結果   | 備考      |
-| ----------- | ----------------- | ------------- | ---------------- | --------- | ------------ | ---------- | --------- |
-| {{TEST_NO}} | {{TEST_CATEGORY}} | {{TEST_NAME}} | {{PRECONDITION}} | {{STEPS}} | {{EXPECTED}} | {{ACTUAL}} | {{NOTES}} |
+| No          | カテゴリ          | テスト項目    | 前提条件         | 操作手順  | 期待結果     | 実行結果   | スクリーンショット | 備考      |
+| ----------- | ----------------- | ------------- | ---------------- | --------- | ------------ | ---------- | ------------------ | --------- |
+| {{TEST_NO}} | {{TEST_CATEGORY}} | {{TEST_NAME}} | {{PRECONDITION}} | {{STEPS}} | {{EXPECTED}} | {{ACTUAL}} | {{SCREENSHOT}}     | {{NOTES}} |
 
 ## 成果物
 
-| 成果物     | パス                                     | 説明           |
-| ---------- | ---------------------------------------- | -------------- |
-| テスト結果 | `outputs/phase-11/manual-test-result.md` | 手動テスト結果 |
+| 成果物             | パス                                     | 必須   | 説明                              |
+| ------------------ | ---------------------------------------- | ------ | --------------------------------- |
+| テスト結果         | `outputs/phase-11/manual-test-result.md` | 必須   | 手動テスト結果                    |
+| 発見課題一覧       | `outputs/phase-11/discovered-issues.md`  | 必須   | 発見した課題（0件でも出力）       |
+| スクリーンショット | `outputs/phase-11/screenshots/`          | 条件付 | UI/UX変更時は必須、それ以外は任意 |
 
 ## 完了条件
 
 - [ ] すべてのテストケースが実行済み
 - [ ] すべてのテストケースがPASS
 - [ ] 統合テスト手動確認が完了
+- [ ] UI/UX変更タスクの場合: スクリーンショットが `outputs/phase-11/screenshots/` に配置済み
+- [ ] UI/UX変更タスクの場合: 仕様照合チェックリストが全項目確認済み
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
@@ -1385,6 +1451,13 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 /ai:diff-to-pr
 
 ````
+
+**PR作成時の自動投稿内容（`/ai:diff-to-pr`）**:
+
+1. **PR本文**: 概要・変更内容・変更タイプ・テスト・タスク実行サマリー・スクリーンショット・チェックリスト
+2. **PRコメント1**: 実装の詳細・レビュー注意点・テスト方法・参考資料
+3. **PRコメント2**（Phase 12成果物あり時）: implementation-guide.md の全文
+4. **PRコメント3**（Phase 11スクリーンショットあり時）: スクリーンショットギャラリー
 
 ### 4. 実行結果の確認
 

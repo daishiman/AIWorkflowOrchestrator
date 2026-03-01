@@ -17,10 +17,44 @@
    ↓
 3. 各カテゴリのテスト項目を実行・記録
    ↓
-4. 結果を outputs/phase-11/manual-test-result.md に出力
+4. UI/UX変更タスクの場合: capture-screenshots.js でスクリーンショットを自動撮影
    ↓
-5. 発見課題を outputs/phase-11/discovered-issues.md に出力
+5. UI/UX変更タスクの場合: 撮影結果と仕様照合チェックリストを確認
+   ↓
+6. 結果を outputs/phase-11/manual-test-result.md に出力
+   ↓
+7. 発見課題を outputs/phase-11/discovered-issues.md に出力
 ```
+
+### スクリーンショット自動撮影コマンド（UI/UX変更タスク）
+
+```bash
+# Step 1: dev serverを起動（別ターミナル or バックグラウンド）
+cd apps/desktop && npx vite --config vite.e2e.config.ts &
+
+# Step 2: before状態をキャプチャ（実装適用前のブランチで実行）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes {{変更対象のルート}} \
+  --state before
+
+# Step 3: after状態をキャプチャ（実装適用後）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes {{変更対象のルート}} \
+  --state after
+
+# Step 4: ダークモード確認（該当時）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes {{変更対象のルート}} \
+  --state after --dark
+
+# dev server停止
+kill %1 2>/dev/null
+```
+
+**スクリプトオプション一覧**: `capture-screenshots.js --help` または `--dry-run` で確認
 
 ### テスト結果レポート形式
 
@@ -50,6 +84,22 @@
 | テスト項目 | 結果 | 課題有無 |
 | ---------- | ---- | -------- |
 | IPC接続 | PASS | なし |
+
+### スクリーンショットエビデンス（UI/UX変更時）
+
+| TC-ID  | 撮影ファイル       | 仕様照合結果 | 備考 |
+| ------ | ------------------ | ------------ | ---- |
+| TC-001 | `TC-001-after.png` | 一致         |      |
+
+### 仕様照合結果サマリー
+
+| 確認項目           | 結果             |
+| ------------------ | ---------------- |
+| レイアウト一致     | PASS/FAIL        |
+| カラーパレット準拠 | PASS/FAIL        |
+| 8pxグリッド準拠    | PASS/FAIL        |
+| ダークモード確認   | PASS/FAIL/対象外 |
+| エラー状態UI       | PASS/FAIL/対象外 |
 ```
 
 ---
@@ -217,6 +267,8 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] 未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されていること（親タスクのtasks/ではない） ⚠️ **P3派生: TASK-9B-Iで再発**
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
+- [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
+- [ ] implementation-guide.md 内の画像パスがリポジトリ相対パスであること（PRコメント投稿時にGitHub上で表示可能）
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ### Phase 12 自動化コマンド

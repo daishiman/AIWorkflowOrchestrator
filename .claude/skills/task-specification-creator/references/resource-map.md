@@ -65,7 +65,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## scripts/ （12ファイル）
+## scripts/ （13ファイル）
 
 決定論的処理（100%精度）。
 
@@ -83,6 +83,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | `validate-schema.js` | スキーマ検証時 | JSON Schema検証 |
 | `log-usage.js` | 全モード完了時 | 使用ログ記録 |
 | `generate-index.js` | create完了後 | index.md自動生成 |
+| `capture-screenshots.js` | Phase 11実行時 | Playwrightによるスクリーンショット自動撮影 |
 
 ---
 
@@ -108,6 +109,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-01 | scripts/13に更新（capture-screenshots.js追加）、Phase 11スクリーンショット自動撮影 |
 | 2026-01-31 | assets/9に更新（documentation-changelog-template.md追加）、Phase 12 Task 2更新履歴テンプレート |
 | 2026-01-26 | schemas/8, scripts/10, assets/8に更新（review-gate-result, scope-definition, generate-index, review-result-template追加） |
 | 2026-01-26 | references/カウント修正（10→15） |
