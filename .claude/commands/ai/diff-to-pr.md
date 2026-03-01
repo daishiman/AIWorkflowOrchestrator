@@ -161,6 +161,8 @@ git checkout -b "${TASK_NAME}" 2>/dev/null || echo "Already on branch or worktre
 
 ```bash
 # ステージングと差分確認
+# 注: Phase 11のスクリーンショット（outputs/phase-11/screenshots/）と
+# Phase 12の成果物（outputs/phase-12/）もコミットに含めること
 git add .
 git diff --cached
 
@@ -267,6 +269,30 @@ gh pr create --title "<type>: <日本語の説明>" --body "$(cat <<'EOF'
 - [ ] ESLint チェック実行 (`pnpm lint`)
 - [ ] ビルド確認 (`pnpm build`)
 
+## タスク実行サマリー
+
+<!-- Phase 1-13ワークフローで実行された場合に記入。該当しない場合はセクション削除 -->
+
+| Phase    | 主な作業内容     | 成果物                    |
+| -------- | ---------------- | ------------------------- |
+| Phase 4  | テスト設計・作成 | テストファイルN個         |
+| Phase 5  | 実装             | 機能コードN個             |
+| Phase 9  | 品質検証         | lint/typecheck/test全PASS |
+| Phase 10 | 最終レビュー     | PASS                      |
+| Phase 11 | 手動テストN件    | 全PASS                    |
+| Phase 12 | ドキュメント更新 | 実装ガイド・仕様更新      |
+
+## スクリーンショット
+
+<!-- UI/UX変更がある場合、Phase 11で撮影したスクリーンショットを掲載 -->
+<!-- スクリーンショットはリポジトリにコミット済みの画像を相対パスで参照 -->
+<!-- UI/UX変更がない場合はこのセクションを削除 -->
+
+| 項目   | スクリーンショット                                                                          |
+| ------ | ------------------------------------------------------------------------------------------- |
+| 変更前 | ![before](docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-11/screenshots/TC-01-before.png) |
+| 変更後 | ![after](docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-11/screenshots/TC-01-after.png)   |
+
 ## チェックリスト
 
 - [ ] コードが既存のスタイルに従っている
@@ -309,6 +335,95 @@ gh pr comment "${PR_NUMBER}" --body "$(cat <<'EOF'
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
 )"
+```
+
+---
+
+### Phase 5.5: 実装ガイド全文コメント投稿（Phase 12成果物）
+
+Phase 12で作成された implementation-guide.md の**全文**をPRコメントとして投稿する。
+Part 1（中学生レベル概念説明）と Part 2（技術的詳細）の両方を含む完全なドキュメントを投稿する。
+
+**重要**: サマリーではなく全文を投稿すること。65536文字を超える場合は複数コメントに分割する。
+
+```bash
+IMPL_GUIDE=$(find docs/30-workflows -path "*/outputs/phase-12/implementation-guide.md" -print -quit 2>/dev/null)
+
+if [ -n "$IMPL_GUIDE" ]; then
+  TMPFILE=$(mktemp)
+  {
+    printf '## 📖 実装ガイド（全文）\n\n'
+    printf '> Phase 12で作成された実装ガイドです。\n'
+    printf '> Part 1: 中学生レベルの概念説明 / Part 2: 開発者向け技術的詳細\n\n'
+    cat "$IMPL_GUIDE"
+    printf '\n\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n'
+  } > "$TMPFILE"
+
+  # GitHub API制限: コメント本文は65536文字以下
+  # 超過時は分割投稿（切り詰めず全文を投稿する）
+  FILESIZE=$(wc -c < "$TMPFILE")
+  if [ "$FILESIZE" -gt 65000 ]; then
+    PART=1
+    TOTAL_PARTS=$(( (FILESIZE / 60000) + 1 ))
+    while [ -s "$TMPFILE" ]; do
+      PARTFILE=$(mktemp)
+      head -c 60000 "$TMPFILE" > "$PARTFILE"
+      # 行の途中で切れないよう、最後の改行位置で調整
+      LAST_NL=$(grep -b -n '' "$PARTFILE" | tail -1 | cut -d: -f1)
+      if [ "$LAST_NL" -lt "$(wc -c < "$PARTFILE")" ]; then
+        head -c "$LAST_NL" "$PARTFILE" > "${PARTFILE}.adj"
+        mv "${PARTFILE}.adj" "$PARTFILE"
+      fi
+      CUT_BYTES=$(wc -c < "$PARTFILE")
+
+      # パートヘッダーを付与（2パート目以降）
+      if [ "$PART" -gt 1 ]; then
+        HEADERFILE=$(mktemp)
+        printf '## 📖 実装ガイド（続き %d/%d）\n\n' "$PART" "$TOTAL_PARTS" > "$HEADERFILE"
+        cat "$PARTFILE" >> "$HEADERFILE"
+        mv "$HEADERFILE" "$PARTFILE"
+      fi
+
+      gh pr comment "${PR_NUMBER}" --body-file "$PARTFILE"
+      rm -f "$PARTFILE"
+
+      # 残りを取得
+      tail -c +"$((CUT_BYTES + 1))" "$TMPFILE" > "${TMPFILE}.rest"
+      mv "${TMPFILE}.rest" "$TMPFILE"
+      PART=$((PART + 1))
+    done
+  else
+    gh pr comment "${PR_NUMBER}" --body-file "$TMPFILE"
+  fi
+  rm -f "$TMPFILE"
+fi
+```
+
+---
+
+### Phase 5.6: スクリーンショットコメント投稿（Phase 11スクリーンショットがある場合）
+
+Phase 11でスクリーンショットが撮影されている場合、PRコメントとしてスクリーンショットギャラリーを投稿する。
+
+**前提**: スクリーンショットはPhase 3のコミット時にリポジトリに含まれていること。
+
+```bash
+SCREENSHOTS_DIR=$(find docs/30-workflows -path "*/outputs/phase-11/screenshots" -type d -print -quit 2>/dev/null)
+
+if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; then
+  TMPFILE=$(mktemp)
+  {
+    printf '## 📸 Phase 11 手動テスト スクリーンショット\n\n'
+    for img in "$SCREENSHOTS_DIR"/*.png; do
+      FILENAME=$(basename "$img")
+      REL_PATH="${img#$(git rev-parse --show-toplevel)/}"
+      printf '### %s\n\n![%s](%s)\n\n' "$FILENAME" "$FILENAME" "$REL_PATH"
+    done
+    printf '---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n'
+  } > "$TMPFILE"
+  gh pr comment "${PR_NUMBER}" --body-file "$TMPFILE"
+  rm -f "$TMPFILE"
+fi
 ```
 
 ---
@@ -425,7 +540,9 @@ git stash pop
 ┌─────────────────────────────────────────────────────────┐
 │ Phase 4-5: PR作成・コメント追加                         │
 │   git push && gh pr create                              │
-│   gh pr comment                                         │
+│   gh pr comment（実装詳細）                             │
+│   gh pr comment（実装ガイド、該当時）                   │
+│   gh pr comment（スクリーンショット、該当時）           │
 └─────────────────────────────────────────────────────────┘
                             ↓
 ┌─────────────────────────────────────────────────────────┐
@@ -453,5 +570,6 @@ git stash pop
 
 | 日付 | 変更内容 |
 |------|----------|
+| 2026-03-01 | PR本文にタスク実行サマリー・スクリーンショットセクション追加。Phase 5.5（実装ガイドコメント投稿）・Phase 5.6（スクリーンショットコメント投稿）を追加。Phase 3にスクリーンショット含有注記追加。Phase 5.5/5.6: `--body-file`+一時ファイル方式に統一（HEREDOC安全性・zsh互換性・GitHub API 65536文字制限対応） |
 | 2026-01-21 | Phase 3.5（タスク仕様書→Issue同期）を追加。git merge/stash後の未同期仕様書に対応 |
 | 2026-01-14 | Phase 0（リモート同期）、Phase 1（品質検証）を追加。コミット前にmain同期とテスト実行を必須化 |
