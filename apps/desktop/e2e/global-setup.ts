@@ -11,12 +11,24 @@ async function globalSetup(config: FullConfig) {
   const context = await browser.newContext();
   const page = await context.newPage();
 
-  // ベースURLに移動
-  const baseURL = config.projects[0]?.use?.baseURL || "http://localhost:5173";
-  await page.goto(baseURL);
+  const mockAuthState = {
+    isAuthenticated: true,
+    isLoading: false,
+    user: {
+      id: "e2e-test-user",
+      email: "e2e@test.com",
+      user_metadata: { full_name: "E2E Test User" },
+    },
+    session: {
+      access_token: "mock-e2e-access-token",
+      refresh_token: "mock-e2e-refresh-token",
+      expires_at: Date.now() + 3600000,
+    },
+  };
 
-  // ElectronAPIのモックを注入
-  await page.addInitScript(() => {
+  // ElectronAPIモック・認証状態をページ初期化前に注入する
+  // NOTE: App.tsx の debug-clear-storage reload と競合しないよう sessionStorage を事前設定する
+  await page.addInitScript((authState) => {
     // window.electronAPIをモック
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).electronAPI = {
@@ -70,26 +82,20 @@ async function globalSetup(config: FullConfig) {
         deleteSession: async () => ({ success: true }),
       },
     };
-  });
 
-  // 認証状態をlocalStorageに保存（バックアップ）
-  await page.evaluate(() => {
-    const mockAuthState = {
-      isAuthenticated: true,
-      isLoading: false,
-      user: {
-        id: "e2e-test-user",
-        email: "e2e@test.com",
-        user_metadata: { full_name: "E2E Test User" },
-      },
-      session: {
-        access_token: "mock-e2e-access-token",
-        refresh_token: "mock-e2e-refresh-token",
-        expires_at: Date.now() + 3600000,
-      },
-    };
+    window.sessionStorage.setItem("debug-clear-storage", "done");
+    window.localStorage.setItem("auth-storage", JSON.stringify(authState));
+    window.localStorage.setItem(
+      "claude-auth-token",
+      authState.session.access_token,
+    );
+  }, mockAuthState);
 
-    window.localStorage.setItem("auth-storage", JSON.stringify(mockAuthState));
+  // ベースURLに移動
+  const baseURL = config.projects[0]?.use?.baseURL || "http://localhost:5173";
+  await page.goto(baseURL, { waitUntil: "domcontentloaded" });
+  await page.waitForFunction(() => {
+    return !!window.localStorage.getItem("auth-storage");
   });
 
   // ストレージ状態を保存
