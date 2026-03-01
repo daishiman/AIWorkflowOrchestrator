@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-02-28
+> 自動生成: 2026-03-01
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -77,9 +77,9 @@ node scripts/list-specs.js --topics
 | 保守性 | L498 |
 | アクセシビリティ | L598 |
 | テストカバレッジ目標 | L617 |
-| 関連ドキュメント | L694 |
-| 完了タスク | L702 |
-| 変更履歴 | L1008 |
+| 関連ドキュメント | L709 |
+| 完了タスク | L717 |
+| 変更履歴 | L1056 |
 
 ---
 
@@ -201,13 +201,13 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L125 |
 | 状態管理アーキテクチャ | L159 |
 | データフローアーキテクチャ | L184 |
-| ディレクトリ構造 | L254 |
-| データ構造（型システム） | L311 |
-| 機能追加パターン | L345 |
-| 技術スタック | L380 |
-| テンプレート | L392 |
-| 関連ドキュメント | L412 |
-| 変更履歴 | L453 |
+| ディレクトリ構造 | L257 |
+| データ構造（型システム） | L314 |
+| 機能追加パターン | L348 |
+| 技術スタック | L383 |
+| テンプレート | L395 |
+| 関連ドキュメント | L415 |
+| 変更履歴 | L456 |
 
 ### references/architecture-patterns.md
 
@@ -273,21 +273,22 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L9 |
 | Skill Dashboard 型定義（AGENT-002） | L16 |
-| SkillImportStore（TASK-2B） | L719 |
-| SkillSlice型定義（TASK-6-1） | L771 |
-| ModifierSkill（スライド逆同期機能） | L863 |
-| ChatPanel統合（TASK-7D） | L897 |
-| SkillFileManager（TASK-9A-A） | L932 |
-| テストアーキテクチャ（TASK-8C-A） | L1020 |
-| 完了タスク | L1072 |
-| 関連ドキュメント | L1290 |
-| SkillCreatorService（TASK-9B-G） | L1303 |
-| 完了タスク | L1530 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L1816 |
-| スキルフォーク 型定義（TASK-9E） | L1866 |
-| スキル共有 型定義（TASK-9F） | L1912 |
-| スキルデバッグ 型定義（TASK-9H） | L1978 |
-| 変更履歴 | L2028 |
+| SkillImportStore（TASK-2B） | L708 |
+| SkillSlice型定義（TASK-6-1） | L760 |
+| ModifierSkill（スライド逆同期機能） | L852 |
+| ChatPanel統合（TASK-7D） | L886 |
+| SkillFileManager（TASK-9A-A） | L921 |
+| テストアーキテクチャ（TASK-8C-A） | L1009 |
+| 完了タスク | L1061 |
+| 関連ドキュメント | L1279 |
+| SkillCreatorService（TASK-9B-G） | L1292 |
+| 完了タスク | L1519 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L1805 |
+| スキル共有 型定義（TASK-9F） | L1855 |
+| スキルデバッグ 型定義（TASK-9H） | L1921 |
+| スキルドキュメント生成 型定義（TASK-9I） | L1971 |
+| スキル分析 型定義（TASK-9J） | L2035 |
+| 変更履歴 | L2084 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -646,10 +647,11 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L365 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L377 |
 | スキル共有 IPC チャネル（TASK-9F） | L431 |
-| スキルフォーク IPC チャネル（TASK-9E） | L504 |
-| スキルデバッグ IPC チャネル（TASK-9H） | L546 |
-| 完了タスク | L595 |
-| 変更履歴 | L626 |
+| スキルデバッグ IPC チャネル（TASK-9H） | L504 |
+| スキルドキュメント生成 IPC チャネル（TASK-9I） | L553 |
+| スキル分析・統計 IPC チャネル（TASK-9J） | L609 |
+| 完了タスク | L655 |
+| 変更履歴 | L680 |
 
 ### references/api-ipc-auth.md
 
@@ -1025,18 +1027,20 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L31 |
-| Content Security Policy (CSP) | L45 |
-| IPC通信のセキュリティ | L62 |
-| 実装例: historyAPI | L144 |
-| 実装例: slideSettingsAPI | L196 |
-| 実装例: skillCreatorAPI | L245 |
-| 実装例: skillFileAPI（TASK-9A-B） | L362 |
-| 実装例: skillShareAPI（TASK-9F） | L435 |
-| 実装例: skillDebugAPI（TASK-9H） | L490 |
-| 自動更新のセキュリティ | L545 |
-| 関連ドキュメント | L556 |
-| 完了タスク | L564 |
+| セキュリティ設定 | L33 |
+| Content Security Policy (CSP) | L47 |
+| IPC通信のセキュリティ | L64 |
+| 実装例: historyAPI | L117 |
+| 実装例: slideSettingsAPI | L169 |
+| 実装例: skillCreatorAPI | L218 |
+| 実装例: skillFileAPI（TASK-9A-B） | L335 |
+| 実装例: skillShareAPI（TASK-9F） | L408 |
+| 実装例: skillDebugAPI（TASK-9H） | L463 |
+| 実装例: skillDocsAPI（TASK-9I） | L518 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L575 |
+| 自動更新のセキュリティ | L608 |
+| 関連ドキュメント | L619 |
+| 完了タスク | L627 |
 
 ### references/security-implementation.md
 
@@ -1337,9 +1341,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Environment Backend サービス | L23 |
-| スキル管理サービス | L90 |
-| 関連ドキュメント | L593 |
+| Environment Backend サービス | L24 |
+| スキル管理サービス | L91 |
+| 関連ドキュメント | L648 |
 
 ### references/arch-feature-addition.md
 
@@ -1553,24 +1557,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L95 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L137 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L184 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L238 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L321 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L369 |
-| 目次 | L407 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L604 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L763 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L812 |
-| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L861 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1035 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1086 |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001: skill:remove インターフェース整合修正 | L1156 |
-| UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L1464 |
-| TASK-9A-C: SkillEditor 仕様書再監査（Phase 12準拠） | L1575 |
-| 関連ドキュメント | L1714 |
-| TASK-9A-B: スキルファイル操作IPCハンドラー実装 | L1724 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L101 |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ測定基盤（2026-02-28） | L143 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L184 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L245 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L286 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L345 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L387 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L434 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L488 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L571 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L619 |
+| 目次 | L657 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L854 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L1013 |
+| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L1062 |
+| TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 4設定ファイル整合CIガード | L1111 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L1285 |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001: skill:import インターフェース整合修正 | L1336 |
 
 ### references/llm-embedding.md
 
@@ -1912,9 +1916,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1552 |
-| 関連ドキュメント | L1705 |
-| 変更履歴 | L1715 |
+| 残課題（未タスク） | L1803 |
+| 関連ドキュメント | L1963 |
+| 変更履歴 | L1973 |
 
 ### references/testing-accessibility.md
 

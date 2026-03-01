@@ -742,6 +742,16 @@ pnpm test:e2e
 
 カバレッジ未達や統合テスト失敗がある場合、Phase 6へ戻って拡充する。
 
+#### ハンドラ単位カバレッジレポート（IPCハンドラファイル対象時）
+
+IPCハンドラを含むファイルのカバレッジ検証時は、ファイル全体カバレッジに加えてハンドラ単位カバレッジを実施する。
+
+```bash
+npx tsx scripts/coverage-by-handler.ts --file <対象ファイルパス>
+```
+
+出力レポートをPhase 7成果物に含める。判定はハンドラ単位で行う（quality-requirements.md参照）。
+
 ## 統合テスト連携【必須】
 
 統合テストの再実行とゲート判定:
@@ -1142,7 +1152,7 @@ node scripts/generate-documentation-changelog.js --workflow docs/30-workflows/{{
 node scripts/complete-phase.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --phase 12 \
-  --artifacts "outputs/phase-12/implementation-guide.md:実装ガイド,outputs/phase-12/documentation-changelog.md:ドキュメント更新履歴,outputs/phase-12/unassigned-task-report.md:未タスク検出レポート"
+  --artifacts "outputs/phase-12/implementation-guide.md:実装ガイド,outputs/phase-12/documentation-changelog.md:ドキュメント更新履歴,outputs/phase-12/unassigned-task-detection.md:未タスク検出レポート"
 ```
 
 **artifacts.json必須項目**:

@@ -5,106 +5,316 @@
 
 ---
 
-## 2026-02-28 - TASK-9E 完了移管（workflow + 未タスク2件）
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了移管（workflow + 未タスク）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-9E Phase 12 完了済み成果物
-- 目的: ワークフロー本体と関連未タスクを `completed-tasks/` へ移し、台帳参照を完了状態へ同期する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: Phase 12完了済みのため、ワークフローと今回作成未タスクを `completed-tasks/` へ移管し参照を同期
+
+### SubAgent分担
+- SubAgent-A: 物理移管（workflow本体）
+- SubAgent-B: 物理移管（未タスク指示書）
+- SubAgent-C: 台帳・仕様参照更新（task-workflow / quality）
+- SubAgent-D: 検証（links / audit / validate-phase-output）
 
 ### 実施内容
-- `docs/30-workflows/TASK-9E-skill-fork/` を `docs/30-workflows/completed-tasks/TASK-9E-skill-fork/` へ移動
-- `task-imp-phase12-task9e-test-count-sync-guard-001.md` / `task-imp-phase12-task9e-5spec-artifact-sync-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
-- `references/task-workflow.md` の TASK-9E 成果物参照を `completed-tasks` パスへ更新
-- 残課題テーブルの上記2タスクを取り消し線 + 完了日付きに更新し、参照先を completed 側へ同期
-- `references/task-workflow.md` 変更履歴へ `1.63.5`、`SKILL.md` 変更履歴へ `8.87.0` を追加
+- `docs/30-workflows/ut-imp-ipc-handler-coverage-granular-001/` を `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` 残課題テーブルの `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を完了化し、参照先を completed パスへ更新
+- `quality-requirements.md` と `lessons-learned.md` の関連参照を completed パスへ同期
 
 ### 結果
 - ステータス: success
-- 補足: Phase 12 完了済み対象の配置を `completed-tasks` へ統一し、未タスク台帳との参照整合を維持した
+- 補足: `verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
 
 ---
 
-## 2026-02-28 - TASK-9E 未タスク追補（5関心同期・命名整合）
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001 未タスク登録（苦戦箇所の再発防止）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-9E Phase 12 再確認で検出された運用ギャップ
-- 目的: 未タスク仕様書を新規作成し、台帳へ登録して再発防止を固定する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の Phase 12 再確認
+- 目的: 苦戦箇所（Istanbul形式誤認/命名例外/Vitest include漏れ）を未タスク指示書へ昇格し、同種課題を簡潔に再利用可能にする
+
+### SubAgent分担
+- SubAgent-A: 未タスク指示書作成（9セクション + 3.5実装課題）
+- SubAgent-B: `task-workflow.md` 残課題テーブル登録
+- SubAgent-C: `quality-requirements.md` 派生未タスク同期
+- SubAgent-D: 検証（`verify-unassigned-links` / `audit --target-file` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-task9e-5spec-artifact-sync-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
-- 苦戦箇所3件（4仕様書前提ドリフト / `unassigned-task-report`・`unassigned-task-detection` 命名混在 / `current`・`baseline` 判定誤読）を未タスク仕様へ反映
-- `references/task-workflow.md` 残課題テーブルへ `UT-IMP-PHASE12-TASK9E-5SPEC-ARTIFACT-SYNC-GUARD-001` を登録
-- `references/task-workflow.md` 変更履歴へ `1.63.4` を追加し、追補内容を記録
-- `SKILL.md` 変更履歴へ `8.86.0` を追加
+- `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md` を新規作成
+- `task-workflow.md` に `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を残課題として登録
+- `quality-requirements.md` に派生未タスクとして追記
+- `unassigned-task-detection.md` を 0件→1件へ更新し、3ステップ（指示書/台帳/関連仕様）を完了化
 
 ### 結果
 - ステータス: success
-- 補足: TASK-9E の Phase 12 再確認で再発した運用課題を「未タスク指示書 + 台帳 + スキル履歴」で一体管理できる状態に更新
+- 補足: 本タスクは実装追加ではなく再発防止運用の未タスク化。`currentViolations=0` を維持
 
 ---
 
-## 2026-02-28 - TASK-9E 仕様書追補（苦戦箇所の横断同期）
+## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 再確認（Phase 12準拠 + 教訓同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-9E `skill:fork` の Phase 12 仕様追補
-- 目的: 実装内容に加えて「実装時の苦戦箇所」と「同種課題の簡潔解決手順」を仕様書へ固定する
+- 対象: UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001
+- 目的: 実装内容と苦戦箇所をシステム仕様書へ再同期し、Phase 12再確認証跡を固定化
+
+### SubAgent分担
+- SubAgent-A: `references/task-workflow.md`（完了タスク詳細・苦戦箇所・再利用手順）
+- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓3件 + 4ステップ手順）
+- SubAgent-C: 検証証跡（`validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `references/interfaces-agent-sdk-skill.md` に TASK-9E の苦戦箇所3件と4ステップ手順を追加
-- `references/security-electron-ipc.md` に TASK-9E の苦戦箇所3件と4ステップ手順を追加
-- 両仕様書の変更履歴を更新（`1.42.1` / `v1.11.1`）
-- `task-workflow.md` の重複ID整合（`1.63.2` / `1.63.3`）と合わせて、Phase 12 台帳/契約/セキュリティの再監査導線を統一
+- `task-workflow.md` に UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の完了タスクセクションを追加
+- 苦戦箇所3件（Istanbul形式誤認、定数変換例外、Vitest include漏れ）を再発条件付きで記録
+- `lessons-learned.md` に同タスク教訓セクションと簡潔解決手順（4ステップ）を追加
+- `task-specification-creator` / `skill-creator` の参照文書で旧成果物名 `unassigned-task-report.md` を現行名 `unassigned-task-detection.md` へ統一
 
 ### 結果
 - ステータス: success
-- 補足: TASK-9E の「実装内容 + 苦戦箇所 + 再利用手順」が `api-ipc` / `interfaces` / `security` / `task-workflow` / `lessons` で整合した
-
----
-
-## 2026-02-28 - TASK-9E Phase 12 再監査追補（苦戦箇所・未タスク同期）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-9E スキルフォーク機能の Phase 12 完了証跡
-- 目的: 実装内容に加えて苦戦箇所と再発防止未タスクを正本仕様へ同期する
-
-### 実施内容
-- `task-workflow.md` の TASK-9E セクションに苦戦箇所3件と5ステップ簡潔解決手順を追加
-- `lessons-learned.md` に TASK-9E 専用セクションを新設（課題/原因/解決策/教訓 + 検証証跡）
-- `docs/30-workflows/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md` を新規作成し、残課題テーブルへ登録
-- `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` / `unassigned-task-detection.md` を再同期
-
-### 結果
-- ステータス: success
-- 補足: TASK-9E の「実装内容 + 苦戦箇所 + 未タスク3ステップ」を同一ターンで閉じ、Phase 12 準拠を強化
-
----
-
-## 2026-02-28 - TASK-9E Phase 12 再同期（skill:fork 仕様反映）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-9E スキルフォーク機能（`skill:fork`）
-- 目的: 実装済み契約（Main IPC / Preload / shared型）を正本仕様へ同期し、Phase 12 の未実施項目を解消する
-
-### 実施内容
-- `api-ipc-agent.md` に `skill:fork` セクションを追加（型契約・バリデーション・実装状況・完了タスク）
-- `security-electron-ipc.md` に `skill:fork` のセキュリティパターンを追加（sender検証、P42、path境界検証、サニタイズ）
-- `interfaces-agent-sdk-skill.md` に `skill:fork` IPC契約、`SkillForkOptions/Result/Metadata` 型定義、`skill:fork` と `skill-creator:fork` の責務境界を追記
-- `architecture-overview.md` で `registerSkillHandlers` の登録パターンを実装準拠（mainWindow + service）へ補正し、`skill:fork` を含む責務を明記
-- `arch-electron-services.md` に `SkillForker` サービス、`skill:fork` IPC、関連型を追加
-- `task-workflow.md` に TASK-9E 完了タスク記録と変更履歴を追加
-
-### 結果
-- ステータス: success
-- 補足: `skill:fork` 固有仕様の未整備を解消し、実装・仕様・台帳の整合を回復
+- 補足: `validate-phase-output` 28項目PASS、`verify-unassigned-links` missing=0、`audit --diff-from HEAD` currentViolations=0
 
 ---
 
 ## 2026-02-27 - TASK-9H 仕様再監査（Phase 12 最終同期）
+## 2026-02-28 - TASK-9I completed-tasks 移管（Phase 12完了条件充足）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9I スキルドキュメント生成機能
+- 目的: `outputs/phase-12` 生成完了かつ Phase 12 充足済みのため、タスク仕様書ディレクトリと関連未タスク指示書を completed-tasks へ移管
+
+### SubAgent分担
+- SubAgent-A: Phase 12 完了条件確認（outputs/phase-12 実体 + validate-phase-output）
+- SubAgent-B: 物理移動（ワークフロー本体、UT-9I-001/002）
+- SubAgent-C: 参照同期（task-workflow / interfaces / lessons）
+- SubAgent-D: リンク検証（verify-unassigned-links）
+
+### 実施内容
+- `docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動
+- `docs/30-workflows/unassigned-task/task-ut-9i-001-llm-provider-integration.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `docs/30-workflows/unassigned-task/task-ut-9i-002-template-crud.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の TASK-9I 関連参照先を移管先へ更新
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` は `missing=0`。移管後の `audit --target-file` は監査対象ディレクトリ制約により適用外
+
+---
+
+## 2026-02-28 - UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 登録・仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: Phase 12 再確認証跡と未タスクリンク整合の再発防止
+- 目的: 新規未タスク仕様書の登録、苦戦箇所の再利用化、台帳・教訓・履歴の同時同期
+
+### SubAgent分担
+- SubAgent-A: `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md`（未タスク指示書作成・3.5苦戦箇所記録）
+- SubAgent-B: `references/task-workflow.md`（TASK-9I追補、残課題登録、変更履歴更新）
+- SubAgent-C: `references/lessons-learned.md`（苦戦箇所3件 + 5ステップ再利用手順の教訓化）
+- SubAgent-D: 検証証跡（links監査、target監査、差分監査）
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を task-spec テンプレート準拠（`## メタ情報` + `## 1..9`）で作成し、`3.5 実装課題と解決策` に苦戦箇所3件を記録
+- `task-workflow.md` の TASK-9I セクションへ、ワイルドカード参照による false fail と `current/baseline` 判定軸分離、証跡値ドリフト対策を追記
+- `task-workflow.md` の残課題（未タスク）テーブルへ `UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001` を登録
+- `lessons-learned.md` に同タスク専用セクションを追加し、同種課題の簡潔解決手順（5ステップ）を標準化
+- `SKILL.md` 変更履歴を `8.86.0` として更新
+
+### 結果
+- ステータス: success
+- 補足: 未タスク指示書・システム仕様書・運用履歴の3層同期を同一ターンで完了
+
+---
+
+## 2026-02-28 - TASK-9I Phase 12ドキュメント最適化（テンプレート準拠）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9I スキルドキュメント生成機能の再確認記録
+- 目的: 同種課題へ再利用しやすいよう、証跡テーブル・苦戦箇所・即時実行手順をテンプレート準拠で最適化
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md`（再確認テーブルの最新値同期）
+- SubAgent-B: `lessons-learned.md`（苦戦箇所の即時実行コマンド化）
+- SubAgent-C: 検証証跡（verify/validate/links/target監査/diff監査）
+
+### 実施内容
+- `task-workflow.md` の TASK-9I 再確認表を最新値に更新（`verify-unassigned-links` を 96/96 へ同期、`audit --diff-from HEAD` 行を追加）
+- `lessons-learned.md` の TASK-9I セクションへ、4ステップ手順に対応する即時実行コマンドセットを追加
+- `references/lessons-learned.md` の変更履歴を `1.27.3` へ更新し、今回最適化内容を記録
+
+### 結果
+- ステータス: success
+- 補足: 実装内容 + 苦戦箇所 + 再利用コマンドの3点を同一セクションに統合し、同種課題の初動短縮を可能化
+
+---
+
+## 2026-02-28 - TASK-9I Phase 12再確認（最終整合）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9I スキルドキュメント生成機能
+- 目的: Phase 12仕様準拠・未タスク配置/形式・苦戦箇所記録の更新漏れを最終確認し、再利用可能な形で固定
+
+### 実施内容
+- `task-specification-creator` の検証チェーンを再実行し、`verify-all-specs`（13/13 PASS）、`validate-phase-output`（28項目 PASS）、`verify-unassigned-links`（missing 0）を確認
+- `quick_validate.js` を `skill-creator` / `task-specification-creator` / `aiworkflow-requirements` の3スキルで再確認し、いずれも errors 0 を確認
+- `audit-unassigned-tasks --json --target-file` を `UT-9I-001` / `UT-9I-002` へ実行し、`current=0`（baselineは既存課題）を確認
+- `task-workflow.md` の TASK-9I 完了台帳へ再確認証跡・未タスク配置/フォーマット確認・苦戦箇所/4ステップ手順を同期
+- `task-workflow.md` の SubAgent-C 参照をワイルドカード（`docs/30-workflows/unassigned-task/*.md`）から実体2ファイルへ是正し、`verify-unassigned-links` を missing 0 に回復
+- `lessons-learned.md` へ TASK-9I 再確認の苦戦箇所3件（`current`/`baseline`誤読、証跡分散、形式確認漏れ）と簡潔解決手順を追加
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 Task 1〜5 の証跡、未タスク実体、苦戦知見、再利用手順が同一ターンで同期済み
+
+---
+
+## 2026-02-28 - TASK-9I 再監査反映（スキルドキュメント生成仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-9I スキルドキュメント生成機能
+- 目的: Phase 12 の更新漏れ（必須6仕様書 + 未タスク実体 + 変更履歴）を解消し、実装実体との整合を回復
+
+### 実施内容
+- `references/api-ipc-agent.md` に `skill:docs:*` 4チャネル仕様、型定義5種、バリデーション/セキュリティ仕様、完了タスク記録を追加
+- `references/arch-electron-services.md` に SkillDocGenerator（L2）構成、型/チャネル追記、Main 初期化配線（DI）を追加
+- `references/security-electron-ipc.md` に skillDocsAPI の4層セキュリティ実装例（sender/P42/許可値/エラー境界）を追加
+- `references/architecture-overview.md` の IPC ハンドラー登録一覧へ `registerSkillDocsHandlers`（Pattern 3）を追加
+- `references/interfaces-agent-sdk-skill.md` に TASK-9I 型定義セクションと Preload API 4メソッド、関連未タスク UT-9I-001/002 を追加
+- `references/task-workflow.md` に TASK-9I 完了記録と残課題 UT-9I-001/002 を追加
+- `docs/30-workflows/unassigned-task/` に `task-ut-9i-001-llm-provider-integration.md` / `task-ut-9i-002-template-crud.md` を新規作成
+
+### 結果
+- ステータス: success
+- 補足: 仕様書6ファイル・未タスク指示書2件・台帳同期を同一ターンで完了
+
+---
+
+## 2026-02-28 - TASK-9J 完了移管（Phase 12完了条件に基づく成果物移動）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics / UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001
+- 目的: Phase 12 完了済み成果物を `completed-tasks/` へ移管し、未タスク指示書と台帳参照の整合を維持
+
+### 実施内容
+
+- `docs/30-workflows/TASK-9J-skill-analytics/` を `docs/30-workflows/completed-tasks/TASK-9J-skill-analytics/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` の残課題テーブルで `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を完了表記へ更新
+- `interfaces-agent-sdk-skill.md` の関連未タスク参照を completed パスへ更新
+- 移管後パスに合わせて検証コマンド例・参照パスを補正
+
+### 結果
+
+- ステータス: success
+- 補足: 指定どおり「未タスクファイル + タスク仕様書ディレクトリ」を completed-tasks に移管完了
+
+---
+
+## 2026-02-28 - TASK-9J 未タスク仕様書登録（Phase 12 IPC同期自動検証ガード）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics（Phase 12 再確認の派生未タスク）
+- 目的: 実装時の苦戦箇所（IPC登録漏れ・責務重複・命名ドリフト）を再発防止タスクとして台帳化し、仕様書間の参照整合を回復
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を作成（9セクション + 3.5 実装課題と解決策 + SubAgent分担）
+- `references/task-workflow.md` の残課題テーブルへ `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を追加
+- `references/interfaces-agent-sdk-skill.md` に TASK-9J 関連未タスクセクションを追加
+- 残課題テーブル内の重複行（同一IDの完了/未完了混在）を整理し、状態矛盾を是正
+- `SKILL.md` / `LOGS.md` の変更履歴を更新
+
+### 結果
+
+- ステータス: success
+- 補足: TASK-9J の苦戦箇所が未タスク指示書・残課題台帳・型仕様書で相互参照可能になり、次回同種課題の着手コストを削減
+
+---
+
+## 2026-02-28 - TASK-9J 仕様同期テンプレート最適化（5仕様書SubAgent分担）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics
+- 目的: Phase 12 Step 2 の再利用性向上（実装内容 + 苦戦箇所 + SubAgent同期 + 検証証跡の一体化）
+
+### 実施内容
+
+- `task-workflow.md` の TASK-9J をテンプレート準拠で再整形（メタ情報、仕様書別SubAgent分担、再発条件付き苦戦箇所、Phase 12検証証跡）
+- `lessons-learned.md` の TASK-9J に 5仕様書同期マトリクス（interfaces/api-ipc/security/task-workflow/lessons）を追加
+- `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` / `security-electron-ipc.md` に TASK-9J 実装時の苦戦箇所を追補
+- 各仕様書の変更履歴を更新し、台帳上の追跡性を確保
+
+### 結果
+
+- ステータス: success
+- 補足: 実装内容と苦戦箇所が5仕様書で相互参照可能になり、同種課題への転用手順が短縮された
+
+---
+
+## 2026-02-28 - TASK-9J Phase 12再確認（苦戦箇所追補 + 未タスク整合確認）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics
+- 目的: Phase 12準拠の再確認と、同種課題向けの再利用可能な苦戦箇所記録を追加
+
+### 実施内容
+
+- `verify-all-specs` / `validate-phase-output` で Phase 12を含む workflow 構造を再検証（PASS）
+- `verify-unassigned-links` で未タスクリンク整合を再検証（ALL_LINKS_EXIST）
+- `audit-unassigned-tasks --diff-from HEAD` で差分起因の未タスク違反を再検証（currentViolations=0）
+- `task-workflow.md` の TASK-9J セクションへ苦戦箇所3件（責務重複、IPC登録漏れ、Preload命名ドリフト）と4ステップ解決手順を追記
+- `lessons-learned.md` に TASK-9J専用教訓セクションを追加
+
+### 結果
+
+- ステータス: success
+- 補足: 未タスクは今回差分で新規違反なし（baseline違反は既存管理対象）
+
+---
+
+## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 12 仕様同期
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: TASK-9J-skill-analytics（スキル使用統計・分析機能）
+
+### 実施内容
+
+- スキル使用統計・分析機能のバックエンド実装完了（Phase 1-11）
+- 新規5 IPCチャンネル追加（skill:analytics:record/statistics/summary/trend/export）
+- 新規サービス2つ追加（SkillAnalytics, AnalyticsStore）
+- 共有型定義8インターフェース追加（skill-analytics.ts）
+- Preload API 5メソッド追加（safeInvokeUnwrap パターン）
+- テスト97件全PASS（型定義8 + AnalyticsStore 15 + SkillAnalytics 37 + IPCハンドラ 37）
+- Phase 10 最終レビュー PASS（指摘0件）
+- カバレッジ全基準クリア（Line > 96%, Branch > 83%, Func > 85%）
+
+### 結果
+
+- ステータス: success
+- 仕様反映: Phase 12 成果物作成完了
+
+---
+
+## 2026-02-27 - TASK-9G 未タスク登録同期追補（Step 1-E 完了化）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
@@ -5812,3 +6022,25 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 反映範囲: TASK-9H 教訓資産化 + Phase 12 台帳整合
+
+---
+
+## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements / task-specification-creator
+- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+
+### 実施内容
+
+- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
+- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
+- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
+- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
+- 手動テスト MT-001〜MT-010 全PASS
+
+### 結果
+
+- ステータス: success
+- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`

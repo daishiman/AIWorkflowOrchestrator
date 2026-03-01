@@ -10,7 +10,8 @@ import { cpus, totalmem } from "os";
 const CI_MAX_FORKS = 2;
 const cpuCount = cpus().length;
 const totalMemoryGb = Math.floor(totalmem() / 1024 / 1024 / 1024);
-const defaultLocalForksByMemory = totalMemoryGb >= 48 ? 4 : totalMemoryGb >= 24 ? 3 : 2;
+const defaultLocalForksByMemory =
+  totalMemoryGb >= 48 ? 4 : totalMemoryGb >= 24 ? 3 : 2;
 const LOCAL_MAX_FORKS = process.env.VITEST_MAX_FORKS
   ? parseInt(process.env.VITEST_MAX_FORKS, 10)
   : Math.max(1, Math.min(defaultLocalForksByMemory, Math.floor(cpuCount / 2)));
@@ -27,7 +28,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "happy-dom",
-    include: ["src/**/*.test.{ts,tsx}"],
+    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.{ts,tsx}"],
     exclude: ["node_modules/", "out/", "dist/"],
     setupFiles: ["./src/test/setup.ts"],
     pool: "forks",
@@ -72,7 +73,8 @@ export default defineConfig({
         "**/*.spec.{ts,tsx}",
         "src/test/**",
         "e2e/**",
-        "scripts/**",
+        "scripts/long-running-test.mjs",
+        "scripts/notarize.mjs",
         "src/main/index.ts",
         "src/main/updater.ts",
         "src/preload/index.ts",

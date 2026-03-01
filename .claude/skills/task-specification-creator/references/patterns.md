@@ -134,7 +134,7 @@
 - **漏れた要件**:
   1. `implementation-guide.md` Part 1（中学生レベル概念説明）
   2. `documentation-changelog.md`（システム仕様書更新履歴）
-  3. `unassigned-task-report.md`（0件でも必須）
+  3. `unassigned-task-detection.md`（0件でも必須）
 - **原因**: タスク仕様書がスキル仕様の全要件を網羅していなかった
 - **教訓**: Phase 12タスク仕様書作成時は必ずphase-11-12-guide.mdのTask 1-4を確認
 - **発見日**: 2026-01-26
@@ -328,7 +328,7 @@
   1. ✅ `implementation-guide.md` - Part 1（中学生レベル）+ Part 2（開発者向け）
   2. ✅ `api-documentation.md` / `ipc-documentation.md` / `component-documentation.md`
   3. ✅ `documentation-changelog.md` - システム仕様書更新判断と履歴
-  4. ✅ `unassigned-task-report.md` - 未タスク検出報告（0件でも必須）
+  4. ✅ `unassigned-task-detection.md` - 未タスク検出報告（0件でも必須）
 - **根拠**: phase-11-12-guide.md Task 1-4の完全準拠
 - **発見日**: 2026-01-26
 

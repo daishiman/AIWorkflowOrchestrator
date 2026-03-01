@@ -1,5 +1,10 @@
 # IPCハンドラ単位カバレッジ測定基盤構築 - タスク指示書
 
+> **この未タスクは完了済みです**
+>
+> 2026-02-28 に Phase 12 まで完了し、実行ワークフローは
+> `docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/` に記録されています。
+
 ## メタ情報
 
 ```yaml
@@ -16,9 +21,10 @@ issue_number: 854
 | 対象機能     | テスト基盤 / カバレッジ計測              |
 | 優先度       | 中                                       |
 | 見積もり規模 | 中規模                                   |
-| ステータス   | 未実施                                   |
+| ステータス   | 完了（2026-02-28, Phase 12完了移管）     |
 | 発見元       | Phase 7（カバレッジ確認）/ Phase 12      |
 | 発見日       | 2026-02-21                               |
+| 完了日       | 2026-02-28                               |
 
 ---
 
@@ -85,13 +91,13 @@ Phase 7 では「ファイル全体の基準未達は本タスクスコープ外
 
 ### 2.4 成果物
 
-| 成果物                                | 説明                                                                           |
-| ------------------------------------- | ------------------------------------------------------------------------------ |
-| `scripts/coverage-by-handler.ts`      | v8 カバレッジ JSON を解析してハンドラ単位のカバレッジを算出するスクリプト      |
-| `scripts/coverage-by-handler.test.ts` | 集計スクリプトのユニットテスト                                                 |
-| Phase 7 判定ルール文書                | `references/quality-requirements.md` または別ドキュメントに追記                |
-| Phase 7 テンプレート更新              | ハンドラ単位カバレッジレポートセクションの追加                                 |
-| Phase 12 成果物                       | implementation-guide.md, documentation-changelog.md, unassigned-task-report.md |
+| 成果物                                | 説明                                                                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/coverage-by-handler.ts`      | v8 カバレッジ JSON を解析してハンドラ単位のカバレッジを算出するスクリプト                                                           |
+| `scripts/coverage-by-handler.test.ts` | 集計スクリプトのユニットテスト                                                                                                      |
+| Phase 7 判定ルール文書                | `references/quality-requirements.md` または別ドキュメントに追記                                                                     |
+| Phase 7 テンプレート更新              | ハンドラ単位カバレッジレポートセクションの追加                                                                                      |
+| Phase 12 成果物                       | implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md, spec-update-summary.md |
 
 ---
 

@@ -112,7 +112,7 @@ docs/30-workflows/{{FEATURE_NAME}}/
 | 11    | 手動テスト結果       | `manual-test-result.md`       |
 | 12    | 実装ガイド           | `implementation-guide.md`     |
 | 12    | ドキュメント更新記録 | `documentation-changelog.md` |
-| 12    | 未タスク検出レポート | `unassigned-task-report.md`   |
+| 12    | 未タスク検出レポート | `unassigned-task-detection.md`   |
 | 13    | PR情報               | `pr-info.md`                  |
 
 ---

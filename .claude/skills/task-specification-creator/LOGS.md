@@ -26,30 +26,46 @@
 
 ---
 
-## 2026-02-28 - TASK-9E Phase 12 再監査追補（件数ドリフト未タスク化）
+## 2026-03-01 - Phase 12 成果物名同期（unassigned-task-detection 統一）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（再監査）
+- **Phase**: Phase 12（運用仕様の保守改善）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `references/patterns.md` に成功パターン「Phase 12 テスト件数ドリフト再同期（TASK-9E）」を追加
-  - 再監査で検出した運用課題を未タスク化し、`docs/30-workflows/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md` を9セクション形式で作成
-  - `task-workflow.md` 残課題テーブルに同タスクを登録し、`unassigned-task-detection.md` の3ステップ完了状態を同期
+  - `references/spec-update-workflow.md` の必須成果物チェックを `unassigned-task-detection.md` へ更新
+  - `references/phase-templates.md` の `complete-phase` artifacts 例を `unassigned-task-detection.md` へ更新
+  - `references/artifact-naming-conventions.md` の Phase 12 命名規約を現行名に統一
+  - `references/patterns.md` の Phase 12 成果物名記載を現行運用へ同期
 
 ---
 
-## 2026-02-28 - TASK-9E Phase 12 再確認（仕様同期漏れ是正）
+## 2026-02-28 - TASK-9I 仕様再監査（Phase 12漏れ補完）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（再監査）
+- **Phase**: Phase 12（ドキュメント更新再実行）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `TASK-9E-skill-fork` の Phase 12成果物を再監査し、`documentation-changelog.md` の Step 1-A〜2 未実施表記を是正
-  - `aiworkflow-requirements` 正本6仕様書（api-ipc-agent / security-electron-ipc / interfaces-agent-sdk-skill / architecture-overview / arch-electron-services / task-workflow）へ `skill:fork` 契約を同期
-  - `skill:fork` と `skill-creator:fork` の責務境界を仕様書へ明記し、契約混同を防止
-  - 機械検証（`verify-all-specs`, `validate-phase-output`, `verify-unassigned-links`, `audit --diff-from HEAD`）を再実行して current 違反 0 を確認
+  - `documentation-changelog.md` の Step 1-A/1-B/1-C/1-D/Step 2/Step 1-G を実施済みに同期
+  - `unassigned-task-detection.md` の「作成予定」を解消し、`UT-9I-001` / `UT-9I-002` 指示書2件を `docs/30-workflows/unassigned-task/` に作成
+  - 必須6仕様書（api-ipc / arch-electron-services / security-electron-ipc / architecture-overview / interfaces-agent-sdk-skill / task-workflow）へ TASK-9I 実装内容を反映
+  - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
+
+---
+
+## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 1-12 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - TASK-9J: スキル使用統計・分析機能のバックエンド実装完了
+  - Phase 1-11 全完了、Phase 10 最終レビュー PASS（指摘0件）
+  - 新規IPCチャンネル5つ、サービス2つ、型定義8インターフェース追加
+  - テスト97件全PASS、カバレッジ全基準クリア
+  - Phase 12 成果物5ファイル作成完了
 
 ---
 
@@ -4751,3 +4767,25 @@ if (artifactPath) {
 
 - ステータス: success
 - 効果: Phase 12 の未実施残置による誤判定を防止
+
+---
+
+## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements / task-specification-creator
+- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+
+### 実施内容
+
+- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
+- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
+- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
+- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
+- 手動テスト MT-001〜MT-010 全PASS
+
+### 結果
+
+- ステータス: success
+- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`
