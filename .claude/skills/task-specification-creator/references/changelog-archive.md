@@ -1,10 +1,29 @@
 # task-specification-creator 変更履歴アーカイブ
 
-- 目的: `SKILL.md` の可読性維持と行数最適化のため、`v9.74.0` 以前の履歴を退避
-- 退避日: 2026-02-25
+- 目的: `SKILL.md` の可読性維持と行数最適化のため、古い履歴を退避
+- 最終退避日: 2026-03-01
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v9.93.0** | **2026-02-26** | **TASK-9B再監査教訓反映**: `references/spec-update-workflow.md` に「IPC拡張済みでも旧チャンネル数のままでよい」誤判断パターンを追加し、更新漏れ防止チェックリストへ「チャンネル数/進捗型の実装-仕様一致確認」を追記 |
+| **v9.92.9** | **2026-02-26** | **未タスク指示書メタ情報重複防止を追加**: `references/unassigned-task-guidelines.md` に `## メタ情報` 1セクション原則を追記。`rg -n "^## メタ情報"` による機械確認手順を標準化 |
+| **v9.92.8** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 反映**: `references/spec-update-workflow.md` の曖昧語を除去して機械判定を安定化し、`references/phase-11-12-guide.md` に運用更新履歴を追記 |
+| **v9.92.7** | **2026-02-25** | **Phase 12再確認の運用ルール追補**: `references/spec-update-workflow.md` に `--target-file` の判定軸と `validate-phase-output.js` の位置引数ルールを明記 |
+| **v9.92.6** | **2026-02-25** | **Phase 12参照整合ガードを追補**: 未タスク完了移管時の `task-workflow.md` ステータスと参照先の同時更新ルールを明文化 |
+| **v9.92.5** | **2026-02-25** | **Phase 12完了時の移管運用を反映**: `docs/30-workflows/unassigned-task/` → `completed-tasks/` 移動と `task-workflow.md` 残課題行完了化の運用を適用 |
+| **v9.92.4** | **2026-02-25** | **未タスク仕様書作成運用の追補**: `UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001` を9セクションテンプレート準拠で登録 |
+| **v9.92.3** | **2026-02-25** | **Phase 12最終整合（quick_validate経路統一）**: SKILL検証コマンドを `quick_validate.js` へ統一。`verify-all-specs.js` は `--workflow` 必須 |
+| **v9.92.2** | **2026-02-25** | **Phase 12準拠再確認（skill-creator連携）**: `quick_validate.js` で構造検証を再実施する運用を確定 |
+| **v9.92.1** | **2026-02-25** | **履歴運用改善**: `SKILL.md` の変更履歴を直近中心に整理し、構造検証（500行上限）に適合 |
+| **v9.92.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査同期**: baseline/current 判定手順を `--target-file` / `--diff-from` ベースへ更新 |
+| **v9.91.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 実装反映**: `scripts/audit-unassigned-tasks.js` に `--target-file` / `--diff-from`、scoped 判定を追加 |
+| **v9.90.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001 再確認反映**: `phase-11-12-guide.md` / `spec-update-workflow.md` にスキル構造検証チェックを追記 |
+| **v9.89.0** | **2026-02-25** | **再監査運用改善**: baseline/current 分離監査ルールを標準化し、全体FAILと差分FAILの誤判定を防止 |
+| **v9.88.0** | **2026-02-25** | **Phase 1-12 実行反映**: 成果物出力完了、Phase 12仕様同期、`artifacts.json` と `outputs/artifacts.json` 同期運用を明文化 |
+| **v9.87.0** | **2026-02-25** | **Phase 12 再監査反映**: 未タスク登録・参照整合・成果物追補の運用ガードを更新 |
+| **v9.86.0** | **2026-02-24** | **Phase 12 要件再整合**: 必須タスクを4→5へ修正し、漏れパターンに `spec-update-summary.md` と artifacts 同期不一致を追加 |
+| **v9.85.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 完了反映**: 仕様差分解消と検証結果を更新 |
+| **v9.84.0** | **2026-02-23** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 反映**: IPC命名パターンの体系化を仕様へ展開 |
 | **9.74.0** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 12再監査反映**: `@repo/shared` 三層モジュール解決整合化（228件→0件、27 paths + 26 typesVersions + 3 alias、224テスト全PASS）。必須成果物不足（system-docs-update-log/unassigned-task-report/skill-feedback-report）の是正、未タスクリンク切れ4件補完、`spec-update-workflow.md` に source直参照時の `.d.ts` 取り込み確認チェックを追加。苦戦箇所: 三層整合同期・ソース構造二重性・paths定義順序 |
 | **9.73.0** | **2026-02-20** | **Phase 12 未タスク配置監査ルールを追加**: `phase-11-12-guide.md` の完了条件に「未実施タスク指示書が `completed-tasks/unassigned-task/` に混在していないこと」を追加。未実施は `docs/30-workflows/unassigned-task/`、完了済みのみ `completed-tasks/unassigned-task/` へ移管する運用境界を明文化 |
 | **9.72.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001 Phase 12再監査反映**: `spec-update-workflow` 準拠で `skill:remove` 契約更新を aiworkflow-requirements 側へ反映（interfaces/api/security/architecture/task-workflow）。完了タスク移管リンクの実在パス整合と LOGS/SKILL 同期更新手順を実施 |

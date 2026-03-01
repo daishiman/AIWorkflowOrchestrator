@@ -90,7 +90,7 @@ Phase 4〜5: 検証 → 完了
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
 | references/ | 15  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 12  | [resource-map.md#scripts](references/resource-map.md)    |
+| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
 | assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
@@ -103,8 +103,11 @@ Phase 4〜5: 検証 → 完了
 | 用途             | リソース                           |
 | ---------------- | ---------------------------------- |
 | タスク分解       | agents/decompose-task.md           |
+| スコープ定義     | agents/identify-scope.md           |
 | Phase設計        | agents/design-phases.md            |
 | 仕様書生成       | agents/generate-task-specs.md      |
+| ファイル出力     | agents/output-phase-files.md       |
+| 依存関係設定     | agents/update-dependencies.md      |
 | 品質検証         | agents/verify-specs.md             |
 | システム仕様更新 | agents/update-system-specs.md      |
 | 未タスク生成     | agents/generate-unassigned-task.md |
@@ -334,6 +337,9 @@ node scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
 # Phase完了処理
 node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{N}} --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 
+# スクリーンショット撮影（Phase 11 - UI/UX変更タスク）
+node scripts/capture-screenshots.js --workflow docs/30-workflows/{{FEATURE_NAME}} --routes /,/settings --state after
+
 # 未タスク検出（Phase 12）
 node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
 
@@ -391,34 +397,12 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: `spec-update-workflow.md` / `phase-templates.md` / `artifact-naming-conventions.md` / `patterns.md` の未タスク成果物名を `unassigned-task-detection.md` に統一。Step 2チェックリストと artifacts 例の正本を現行運用へ同期 |
-| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001完了**: Phase 7ハンドラ単位カバレッジ判定ルール追加。`phase-templates.md` にハンドラ単位カバレッジレポートサブセクションを追記 |
-| **v9.96.0** | **2026-02-27** | **TASK-9H 再確認運用を追補**: `references/patterns.md` に成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件実体確認→ステータス同期→検証4点セット固定の手順を標準化し、Phase 12 の未実施残置を防止 |
-| **v9.95.0** | **2026-02-27** | **TASK-9H Phase 12再監査運用を反映**: `phase-4-test-creation.md` / `phase-5-implementation.md` の必須セクション「統合テスト連携」を明記し、`validate-phase-output` エラー2件を解消。`outputs/phase-12` 必須4成果物（`spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`）の作成ガードと検証証跡（current/baseline分離）を再確認 |
-| **v9.97.0** | **2026-02-28** | **TASK-9I Phase 12再監査反映**: `documentation-changelog.md` の Step 進捗未同期を解消し、必須6仕様書（api-ipc/arch/security/overview/interfaces/task-workflow）を実装準拠へ更新。`UT-9I-001` / `UT-9I-002` 指示書を `docs/30-workflows/unassigned-task/` に新規作成し、未タスク3ステップ（指示書・残課題・関連仕様）を完了化 |
-| **v9.97.0** | **2026-02-28** | **TASK-9J完了**: スキル使用統計・分析機能のバックエンド実装。Phase 1-12完了、テスト97件全PASS、カバレッジ全基準クリア。新規IPCチャンネル5つ、サービス2つ、型定義8インターフェース追加 |
-| **v9.96.0** | **2026-02-27** | **TASK-9G Step 1-E追補**: 未タスク検出5件（UT-9G-001〜005）を `unassigned-task/` に正式登録し、`task-workflow.md` 残課題テーブル・`interfaces-agent-sdk-skill.md` 関連未タスクへ同期する運用を実適用。`unassigned-task-detection.md` の3ステップ完了化と `spec-update-summary` / `documentation-changelog` への追記を反映 |
-| **v9.95.0** | **2026-02-27** | **TASK-9G Phase 12再同期反映**: 必須6仕様書更新（api-ipc/arch/security/overview/interfaces/task-workflow）と `outputs/phase-12` 必須5成果物の再生成手順を実適用。`artifacts.json` 実装パス誤記是正、`phase-12-documentation.md` チェックリスト同期、`outputs/phase-7〜13` 欠落成果物補完の運用を記録 |
-| **v9.94.0** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001完了**: `quick_validate.js` name/description 空フィールドガード追加。P42準拠3段バリデーション適用、テスト21件追加、全85テストPASS。`references/spec-update-workflow.md` の既知課題リンクを `completed-tasks` 側へ同期。Issue #913 |
-| **v9.94.0** | **2026-02-27** | **TASK-9F スキル共有・インポート機能 Phase 12 仕様同期**: api-ipc-agent.md（スキル共有IPCチャネル追加）、security-electron-ipc.md（skillShareAPIセキュリティパターン追加）、interfaces-agent-sdk-skill.md（スキル共有型定義10種追加）、task-workflow.md（TASK-9F完了記録）を更新 |
-| **v9.93.0** | **2026-02-26** | **TASK-9B再監査の教訓反映**: `references/spec-update-workflow.md` に「IPC拡張済みでも旧チャンネル数のままでよい」誤判断パターンを追加し、更新漏れ防止チェックリストへ「チャンネル数/進捗型の実装-仕様一致確認」を追記 |
-| **v9.92.9** | **2026-02-26** | **未タスク指示書メタ情報重複防止を追加**: `references/unassigned-task-guidelines.md` に `## メタ情報` 1セクション原則（YAML+表を同一セクションで管理）を追記。`rg -n "^## メタ情報"` による機械確認手順を標準化 |
-| **v9.92.8** | **2026-02-26** | **UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 反映**: `references/spec-update-workflow.md` の曖昧語を除去して機械判定を安定化し、`references/phase-11-12-guide.md` に運用更新履歴を追記。Phase 11 手順書ウォークスルー証跡（`outputs/phase-11/walkthrough-log.md`）を必須成果物として定着 |
-| **v9.92.7** | **2026-02-25** | **Phase 12再確認の運用ルール追補**: `references/spec-update-workflow.md` に `--target-file` の判定軸（`currentViolations.total`）と `validate-phase-output.js <workflow-dir>` の位置引数ルールを明記。`references/patterns.md` に scoped監査解釈と検証コマンド誤用防止パターンを追加 |
-| **v9.92.6** | **2026-02-25** | **Phase 12参照整合ガードを追補**: `task-00-unified-implementation-sequence` の参照実在チェック（`task-013e`/`task-014` など）を Phase 12 更新手順へ追加。未タスク完了移管時に `task-workflow.md` のステータス（未実施/完了）と参照先（unassigned/completed）を同時更新するルールを明文化 |
-| **v9.92.5** | **2026-02-25** | **Phase 12完了時の移管運用を反映**: Phase 12完了が確認できた場合、`docs/30-workflows/unassigned-task/` の当該未タスク指示書と、実行ワークフロー本体を `docs/30-workflows/completed-tasks/` へ移動し、`task-workflow.md` 残課題行を完了化する運用を適用 |
-| **v9.92.4** | **2026-02-25** | **未タスク仕様書作成運用の追補**: `UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001` を9セクションテンプレート準拠で登録。Phase 12 再発防止（`quick_validate.js` 統一 / `verify-all-specs --workflow` 必須化）を未タスク化するフローを明文化 |
-| **v9.92.3** | **2026-02-25** | **Phase 12最終整合（quick_validate経路統一）**: `references/spec-update-workflow.md` の SKILL検証コマンドを `ObsidianMemo` の `skill-creator/scripts/quick_validate.js` へ統一。`verify-all-specs.js` は `--workflow` 必須で実行する運用を再確認 |
-| **v9.92.2** | **2026-02-25** | **Phase 12準拠再確認（skill-creator連携）**: `quick_validate.js`（system skill-creator）で `task-specification-creator` / `aiworkflow-requirements` の構造検証を再実施する運用を確定。`SKILL.md` の履歴圧縮後の再検証フローを標準化 |
-| **v9.92.1** | **2026-02-25** | **履歴運用改善**: `SKILL.md` の変更履歴を直近中心に整理し、構造検証（500行上限）に適合。詳細な長期履歴は `LOGS.md` を正本として参照する方針へ統一 |
-| **v9.92.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査同期**: `references/spec-update-workflow.md` の baseline/current 判定手順を `--target-file` / `--diff-from` ベースへ更新 |
-| **v9.91.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 実装反映**: `scripts/audit-unassigned-tasks.js` に `--target-file` / `--diff-from`、`currentViolations` / `baselineViolations` 分離、scoped 判定を追加 |
-| **v9.90.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001 再確認反映**: `phase-11-12-guide.md` / `spec-update-workflow.md` にスキル構造検証チェックを追記（`quick_validate.js` ベース） |
-| **v9.89.0** | **2026-02-25** | **再監査運用改善**: baseline/current 分離監査ルールを標準化し、全体FAILと差分FAILの誤判定を防止 |
-| **v9.88.0** | **2026-02-25** | **Phase 1-12 実行反映**: 成果物出力完了、Phase 12 仕様同期、`artifacts.json` と `outputs/artifacts.json` 同期運用を明文化 |
-| **v9.87.0** | **2026-02-25** | **Phase 12 再監査反映**: 未タスク登録・参照整合・成果物追補の運用ガードを更新 |
-| **v9.86.0** | **2026-02-24** | **Phase 12 要件再整合**: 必須タスクを4→5へ修正し、漏れパターンに `spec-update-summary.md` と artifacts 同期不一致を追加 |
-| **v9.85.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 完了反映**: 仕様差分解消と検証結果を更新 |
-| **v9.84.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 反映**: IPC命名パターンの体系化を仕様へ展開 |
+| **v9.99.0** | **2026-03-01** | **Phase 11スクリーンショット標準化 + diff-to-pr PR本文拡充**: `scripts/capture-screenshots.js` 新規追加、Phase 11撮影ガイドライン・仕様照合チェックリスト追加、diff-to-prにタスク実行サマリー・Phase 5.5/5.6（実装ガイド・スクリーンショット投稿）追加 |
+| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: 未タスク成果物名を `unassigned-task-detection.md` に統一 |
+| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE + TASK-9E件数ドリフト再発防止**: Phase 7ハンドラ単位カバレッジ判定ルール追加、テスト件数ドリフト再同期パターン追加 |
+| **v9.97.0** | **2026-02-28** | **TASK-9E/9I/9J Phase 12反映**: TASK-9E再監査運用強化、TASK-9I仕様書同期・未タスク完了化、TASK-9Jスキル使用統計バックエンド実装（97テスト全PASS、IPCチャンネル5つ追加） |
+| **v9.96.0** | **2026-02-27** | **TASK-9H/9G再確認 + Step 1-E追補**: Phase 12完了同期パターン追加、必須4成果物作成ガード、未タスク5件登録・3ステップ完了化 |
+| **v9.95.0** | **2026-02-27** | **TASK-9H/9G Phase 12再監査反映**: Phase 4/5必須セクション是正、必須6仕様書更新、Phase 12成果物補完運用を記録 |
+| **v9.94.0** | **2026-02-27** | **UT-IMP-QUICK-VALIDATE + TASK-9Fスキル共有**: `quick_validate.js` 空フィールドガード追加（85テストPASS）、スキル共有IPCチャネル・型定義追加 |
 
-> 補足: v9.83.2 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
+> 補足: v9.93.0 以前の履歴は [changelog-archive.md](references/changelog-archive.md) に保持。
