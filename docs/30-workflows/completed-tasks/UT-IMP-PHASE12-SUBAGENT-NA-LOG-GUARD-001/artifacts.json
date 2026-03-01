@@ -1,0 +1,190 @@
+{
+  "feature": "ut-imp-phase12-subagent-na-log-guard-001",
+  "title": "Phase 12 仕様書別SubAgent N/A判定ログガード",
+  "created": "2026-03-01T00:00:00Z",
+  "lastUpdated": "2026-03-01T00:00:00Z",
+  "phases": {
+    "1": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（N/A判定ログ・三点突合・current/baseline分離の要件）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入基準一覧"
+        }
+      ]
+    },
+    "2": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計書（テンプレート設計・判定アルゴリズム・分担表設計）"
+        }
+      ]
+    },
+    "3": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（ゲート判定）"
+        }
+      ]
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書（テンプレート記入テスト・三点突合テスト・分離記録テスト）"
+        }
+      ]
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー（テンプレート追加・仕様書更新）"
+        }
+      ]
+    },
+    "6": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "テスト拡充レポート（エッジケース・回帰テスト）"
+        }
+      ]
+    },
+    "7": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "9": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-verification.md",
+          "description": "品質検証結果（仕様書整合・テンプレート検証）"
+        }
+      ]
+    },
+    "10": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（運用改善の妥当性・整合性レビュー）"
+        }
+      ]
+    },
+    "11": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（15テストケース: N/A判定ログ・三点突合・分離記録・分担表・リグレッション）"
+        }
+      ]
+    },
+    "12": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 概念説明、Part 2: 技術詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴（全仕様書変更記録）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー（Step 1-A〜1-G, Step 2 の実施記録）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート（0件でも必須）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート（改善点なしでも必須）"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報（PR URL・番号・CI結果）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["5", "6", "7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "githubIssue": 933,
+    "discoveredBy": "Phase 12 実行監査（#934）",
+    "improvements": [
+      "N/A判定ログガード（仕様書ごとに更新/N/Aを記録）",
+      "三点突合（成果物実体・artifacts.json・チェックリスト）",
+      "current/baseline分離（currentViolations.total基準の合否判定）",
+      "SubAgent分担表（3ファイル以下/Agent制約、P43対策）"
+    ],
+    "relatedPitfalls": ["P1", "P2", "P3", "P4", "P29", "P43"]
+  }
+}

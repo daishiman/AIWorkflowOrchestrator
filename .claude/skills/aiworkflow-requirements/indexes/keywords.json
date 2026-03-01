@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-01T07:30:31.791Z",
-  "totalKeywords": 1371,
+  "generated": "2026-03-01T09:38:51.179Z",
+  "totalKeywords": 1392,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -753,6 +753,10 @@
       "ui-ux-search-panel.md"
     ],
     "スキル共有": [
+      "api-ipc-agent.md",
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "スキルフォーク": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
     ],
@@ -3010,6 +3014,81 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "CALLBACK": [
+      "lessons-learned.md"
+    ],
+    "SERVER": [
+      "lessons-learned.md"
+    ],
+    "WORKER": [
+      "lessons-learned.md"
+    ],
+    "EXIT": [
+      "lessons-learned.md"
+    ],
+    "authCallbackServer": [
+      "lessons-learned.md"
+    ],
+    "timeout": [
+      "lessons-learned.md"
+    ],
+    "stop": [
+      "lessons-learned.md"
+    ],
+    "責務分離": [
+      "lessons-learned.md"
+    ],
+    "REFACTOR": [
+      "lessons-learned.md"
+    ],
+    "SHARED": [
+      "lessons-learned.md"
+    ],
+    "SOURCE": [
+      "lessons-learned.md"
+    ],
+    "STRUCTURE": [
+      "lessons-learned.md"
+    ],
+    "実行監査": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "SUBAGENT": [
+      "lessons-learned.md"
+    ],
+    "NA": [
+      "lessons-learned.md"
+    ],
+    "LOG": [
+      "lessons-learned.md"
+    ],
+    "GUARD": [
+      "lessons-learned.md"
+    ],
+    "仕様書整合監査": [
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
+      "lessons-learned.md"
+    ],
+    "VALUE": [
+      "lessons-learned.md"
+    ],
+    "SYNC": [
+      "lessons-learned.md"
+    ],
+    "証跡値": [
+      "lessons-learned.md"
+    ],
+    "実測値": [
+      "lessons-learned.md"
+    ],
+    "同期ガード": [
+      "lessons-learned.md"
+    ],
     "QUICK": [
       "lessons-learned.md"
     ],
@@ -3020,9 +3099,6 @@
       "lessons-learned.md"
     ],
     "FIELD": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
       "lessons-learned.md"
     ],
     "quick": [
@@ -3110,12 +3186,6 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
       "lessons-learned.md"
     ],
     "LINK": [
@@ -3395,9 +3465,6 @@
     "拒否検知の復元": [
       "lessons-learned.md"
     ],
-    "SHARED": [
-      "lessons-learned.md"
-    ],
     "モジュール解決エラー修正": [
       "lessons-learned.md"
     ],
@@ -3476,9 +3543,6 @@
       "lessons-learned.md",
       "technology-devops.md",
       "testing-component-patterns.md"
-    ],
-    "REFACTOR": [
-      "lessons-learned.md"
     ],
     "renderHook": [
       "lessons-learned.md"

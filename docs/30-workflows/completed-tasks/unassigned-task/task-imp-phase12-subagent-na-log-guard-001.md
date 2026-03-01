@@ -223,7 +223,7 @@ N/A判定ログと三点突合の判定基準を固定する。
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 --strict
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 

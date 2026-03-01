@@ -6,6 +6,94 @@
 ---
 
 ## 2026-03-01 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 完了移管（workflow + 未タスク）
+## 2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 完了移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001`
+- 目的: Phase 12 完了条件を満たしたため、未タスク指示書と13Phase仕様書ディレクトリを `completed-tasks` へ移管する
+
+### 実施内容
+- `docs/30-workflows/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` を `docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` へ移動
+- `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `task-workflow.md` 残課題テーブルを完了表記へ更新し、変更履歴 `1.64.0` を追加
+- `lessons-learned.md` 派生未タスクテーブルを完了表記へ更新し、変更履歴 `1.28.1` を追加
+- 関連参照パス（workflow/unassigned-task）を completed パスへ一括同期
+
+### 結果
+- ステータス: success
+- 検証:
+  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → `28項目パス, 0エラー, 0警告`
+  - `verify-all-specs.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → `errors=0, warnings=0`
+  - `verify-unassigned-links.js` → `missing=0`
+
+---
+
+## 2026-03-01 - UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001 登録・仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001`
+- 目的: Phase 12 成果物の証跡値を実測値で固定し、プレースホルダ残存・行数ドリフト・`current/baseline` 誤読を再発防止する
+
+### SubAgent分担
+- SubAgent-A: 未タスク仕様書作成（`docs/30-workflows/unassigned-task/task-imp-phase12-evidence-value-sync-guard-001.md`）
+- SubAgent-B: 台帳同期（`references/task-workflow.md` 残課題・変更履歴）
+- SubAgent-C: 教訓同期（`references/lessons-learned.md` の苦戦箇所・5ステップ手順）
+- SubAgent-D: 検証・索引再生成（`generate-index` / `verify-unassigned-links` / `audit` / `verify-all-specs` / `validate-phase-output`）
+
+### 実施内容
+- 未タスク指示書を task-specification-creator テンプレート準拠（`## メタ情報` + `## 1..9` + `3.5 実装課題と解決策`）で新規作成
+- `task-workflow.md` 残課題へ `UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001` を登録し、変更履歴 `1.63.9` を追加
+- `lessons-learned.md` に同タスク専用セクションを追加し、苦戦箇所4件（プレースホルダ/行数/current-baseline/台帳反映）と5ステップ手順を標準化
+- `SKILL.md` 変更履歴へ `8.89.0` を追加
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 結果
+- ステータス: success
+- 検証:
+  - `verify-unassigned-links.js` → `total=94, existing=94, missing=0`
+  - `audit-unassigned-tasks.js --json --target-file ...evidence-value-sync-guard-001.md` → `current=0, baseline=71`
+  - `audit-unassigned-tasks.js --json --diff-from HEAD` → `current=0, baseline=71`
+  - `verify-all-specs.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → `errors=0, warnings=0`
+  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → `28項目パス, 0エラー, 0警告`
+
+---
+
+## 2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 仕様書整合監査
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001`（未タスクの13Phase仕様書）
+- 目的: 仕様書・テンプレート・台帳の同期漏れ（命名ドリフト、構造警告、依存参照不足）を解消し、システム仕様へ反映する
+
+### SubAgent分担
+- SubAgent-A: ワークフロー仕様書整備（Phase 1-13 の構造・命名・参照資料）
+- SubAgent-B: システム仕様同期（`task-workflow.md` / `lessons-learned.md`）
+- SubAgent-C: スキルテンプレート更新（`task-specification-creator/assets/main-task-template.md`）
+- SubAgent-D: 検証実行（`verify-all-specs` / `validate-phase-output` / `generate-index`）
+
+### 実施内容
+- ワークフローの Phase 9 ファイル名を `phase-9-quality-assurance.md` に統一し、`index.md` のリンクを更新
+- Phase 1〜3 の `実行タスク` を箇条書き+表の二層構成へ調整し、構造警告を解消
+- Phase 4/7/8/9/11 の参照資料テーブルに依存成果物を追加し、整合警告を解消
+- `skill-creator` に追加された Phase 12 ガードテンプレート4件を `references/resource-map.md` に登録
+- `.claude/scripts/` を `directory-structure.md` のルート構造へ追加し、ガードスクリプトの正本参照先を明示
+- `task-workflow.md` の残課題行を「13Phase仕様書作成済み」へ同期
+- `lessons-learned.md` に本件の再発防止手順（命名・構造・依存同期）を追加
+- `task-specification-creator/assets/main-task-template.md` の Phase 9 命名を `phase-9-quality-assurance.md` に更新
+
+### 結果
+- ステータス: success
+- 検証:
+  - `verify-all-specs --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 --json` → errors=0, warnings=0
+  - `validate-phase-output.js docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` → 0エラー, 0警告
+  - `verify-unassigned-links.js` → `ALL_LINKS_EXIST`（92/92）
+  - `audit-unassigned-tasks.js --json --diff-from HEAD` → `current=0`（合格）/ `baseline=71`（監視値）
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映
 
 ### コンテキスト
 - スキル: aiworkflow-requirements

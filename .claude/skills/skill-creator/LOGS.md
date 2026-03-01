@@ -5,6 +5,21 @@
 ---
 
 ## [2026-03-01 - Phase 12クイックナビ重複の再正規化]
+## [2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 テンプレート資産登録]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-na-judgment-log-template.md` を追加し、仕様書ごとの `更新/N/A` 判定ログ（理由/代替証跡/判定者）をテンプレート化
+  - `assets/phase12-subagent-assignment-template.md` を追加し、SubAgent分担とP43の3ファイル上限ルールを固定化
+  - `assets/phase12-completion-guard-checklist.md` を追加し、三点突合（成果物実体/artifacts/チェックリスト）を完了判定ゲート化
+  - `assets/phase12-audit-record-template.md` を追加し、`current/baseline` 分離監査の記録様式を標準化
+  - `references/resource-map.md` と `SKILL.md` 変更履歴へ登録し、参照導線を同期
+
+---
+
+## [2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 Phase 12 パターン同期]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement

@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "NA Judgment Log",
+  "description": "Phase 12 仕様書別SubAgent N/A判定ログのスキーマ定義。推奨5点セット仕様書に対する更新/N/A判定を構造化して記録する。",
+  "type": "object",
+  "required": ["taskId", "phase", "judgments", "summary"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9-]+$",
+      "description": "タスクID（例: UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001）"
+    },
+    "phase": {
+      "type": "integer",
+      "const": 12,
+      "description": "対象Phase（固定値: 12）"
+    },
+    "judgments": {
+      "type": "array",
+      "minItems": 5,
+      "items": {
+        "$ref": "#/$defs/judgmentEntry"
+      },
+      "description": "推奨5点セット仕様書それぞれの判定結果。interfaces-*.md, api-ipc-*.md, security-*.md, task-workflow.md, lessons-learned.md の全件を含む"
+    },
+    "summary": {
+      "type": "object",
+      "required": ["totalSpecs", "updatedCount", "naCount"],
+      "properties": {
+        "totalSpecs": {
+          "type": "integer",
+          "minimum": 5,
+          "description": "判定対象の仕様書総数（推奨5点セット以上）"
+        },
+        "updatedCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "updated判定の件数"
+        },
+        "naCount": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "N/A判定の件数"
+        }
+      },
+      "additionalProperties": false,
+      "description": "判定結果の集計。totalSpecs === updatedCount + naCount が成立すること"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "judgmentEntry": {
+      "type": "object",
+      "required": [
+        "specName",
+        "judgment",
+        "reason",
+        "alternativeProof",
+        "updatedBy",
+        "timestamp"
+      ],
+      "properties": {
+        "specName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "仕様書ファイル名（拡張子込み、例: interfaces-agent-sdk.md）"
+        },
+        "judgment": {
+          "type": "string",
+          "enum": ["updated", "na"],
+          "description": "判定結果。updated: 仕様書を更新した。na: 更新対象外と判定した"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 10,
+          "description": "判定理由（10文字以上）。updated: 更新内容の要約。na: N/A判定の根拠"
+        },
+        "alternativeProof": {
+          "type": "string",
+          "minLength": 10,
+          "description": "代替証跡（10文字以上）。updated: diff出力の要約。na: 検証手段と結果"
+        },
+        "updatedBy": {
+          "type": "string",
+          "enum": ["A", "B", "C", "D", "E", "lead"],
+          "description": "更新担当SubAgent名。A: interfaces, B: api-ipc, C: security, D: task-workflow+LOGS, E: lessons-learned, lead: リーダー"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "判定日時（ISO 8601形式、例: 2026-03-01T10:00:00Z）"
+        }
+      },
+      "additionalProperties": false,
+      "if": {
+        "properties": {
+          "judgment": { "const": "na" }
+        },
+        "required": ["judgment"]
+      },
+      "then": {
+        "properties": {
+          "alternativeProof": {
+            "pattern": "(grep|git diff|git log|検索|確認|0件|0 files|変更なし|該当なし)",
+            "description": "N/A判定時は検証手段パターン（grep, git diff, git log, 検索, 確認）のいずれかを含む具体的な証跡が必須"
+          }
+        }
+      }
+    }
+  }
+}

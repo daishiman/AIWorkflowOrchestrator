@@ -1,0 +1,129 @@
+{
+  "taskId": "UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001",
+  "taskName": "Phase 12 仕様書別SubAgent N/A判定ログガード",
+  "createdAt": "2026-03-01",
+  "updatedAt": "2026-03-01",
+  "overallStatus": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": [
+        "outputs/phase-1/fr-nfr-list.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": [
+        "outputs/phase-2/na-judgment-log-schema.json",
+        "outputs/phase-2/three-point-reconciliation-flow.md",
+        "outputs/phase-2/verification-commands.md",
+        "outputs/phase-2/subagent-assignment-template.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-3/review-judgment.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-03-01",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "tests": {
+      "total": 93,
+      "passed": 93,
+      "failed": 0,
+      "successRate": "100%"
+    },
+    "coverage": {
+      "lines": "97.8%",
+      "branches": "94.8%",
+      "functions": "100%",
+      "statements": "97.8%"
+    },
+    "manualTests": {
+      "total": 15,
+      "passed": 15,
+      "successRate": "100%"
+    }
+  },
+  "implementedFiles": [
+    ".claude/scripts/na-log-validator.ts",
+    ".claude/scripts/triple-check-validator.ts",
+    ".claude/scripts/audit-output-parser.ts",
+    ".claude/scripts/types.ts",
+    ".claude/scripts/vitest.config.ts",
+    ".claude/scripts/__tests__/na-log-validator.test.ts",
+    ".claude/scripts/__tests__/triple-check-validator.test.ts",
+    ".claude/scripts/__tests__/audit-output-parser.test.ts",
+    ".claude/scripts/__tests__/phase12-guard-integration.test.ts"
+  ]
+}
