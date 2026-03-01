@@ -203,6 +203,12 @@
 | [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
 | [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の仕様書別 SubAgent で同期し、成果物5点（`implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report`）を固定化するテンプレート |
 | [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 5仕様書の SubAgent 分担（interfaces/api-ipc/security/task-workflow/lessons）と重複ID監査（`task-workflow.md` 一意性確認）を標準化するテンプレート |
+| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の仕様書別 SubAgent で同期し、`spec-update-summary.md` を固定化するテンプレート |
+| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）分担と `handler/register/preload` 三点突合を標準化するテンプレート |
+| [phase12-na-judgment-log-template.md](.claude/skills/skill-creator/assets/phase12-na-judgment-log-template.md) | Phase 12 Step 2（仕様更新）時 | 仕様書ごとの `更新/N/A` 判定と理由・代替証跡を記録するテンプレート |
+| [phase12-subagent-assignment-template.md](.claude/skills/skill-creator/assets/phase12-subagent-assignment-template.md) | Phase 12 Step 2（仕様更新）時 | 仕様書更新を SubAgent 単位に分担し、P43の3ファイル上限を維持するテンプレート |
+| [phase12-completion-guard-checklist.md](.claude/skills/skill-creator/assets/phase12-completion-guard-checklist.md) | Phase 12最終判定時 | 三点突合（成果物実体/artifacts/チェックリスト）と実行可否ゲートを固定化するチェックリスト |
+| [phase12-audit-record-template.md](.claude/skills/skill-creator/assets/phase12-audit-record-template.md) | Phase 12監査結果記録時 | `current/baseline` 分離で監査結果を記録し、合否判定基準を固定するテンプレート |
 
 ### テンプレート（ランタイム別）
 

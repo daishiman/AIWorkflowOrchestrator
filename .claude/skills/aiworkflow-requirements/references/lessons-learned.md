@@ -21,6 +21,13 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-01 | 1.27.5 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の教訓を追加。苦戦箇所3件（Istanbul形式誤認、定数→チャンネル変換例外、Vitest include漏れ）と同種課題向け簡潔解決手順（4ステップ）を標準化 |
+| 2026-03-01 | 1.28.1 | UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 の完了移管を反映。未タスク指示書を `completed-tasks/unassigned-task` へ移動し、派生未タスクテーブルを完了表記へ更新 |
+| 2026-03-01 | 1.28.0 | UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001 の教訓を追加。Phase 12 成果物でのプレースホルダ残存、`wc -l` 実測値ドリフト、`current/baseline` 記録揺れ、台帳反映漏れを同時に抑止する5ステップ手順を標準化 |
+| 2026-03-01 | 1.27.9 | UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 の13Phase仕様書整合監査を追記。Phase 9ファイル命名ドリフト、実行タスク記法差、依存成果物参照漏れに加え、`skill-creator` 資産台帳と `.claude/scripts` 仕様反映漏れの同時是正手順を追加 |
+| 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
+| 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
+| 2026-02-28 | 1.27.5 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の Phase 12 実行監査教訓を追加。成果物実体と `artifacts.json` ステータス不一致、`audit-unassigned-tasks` の current/baseline 誤読、チェックリスト未同期の3課題と4ステップ解決手順を標準化 |
+| 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
 | 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
@@ -95,6 +102,200 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離
+
+### 苦戦箇所: timeout時に待機APIが停止責務まで持っていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `waitForCallback()` timeout 内で `instance.stop()` を呼ぶと、待機失敗と停止処理が結合しワーカー終了時の不安定要因になる |
+| 再発条件 | timeout ハンドラ内で stop/close を直接呼ぶ実装を採用する場合 |
+| 原因 | 待機APIとライフサイクルAPIの責務境界が曖昧だった |
+| 対処 | timeout はエラー返却のみへ変更し、停止は呼び出し側の `stop()` 明示実行へ分離した |
+| 今後の標準ルール | timeout系APIは副作用を持たせず、停止責務を分離する |
+
+### 苦戦箇所: `stop()` の多重実行で終了経路が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 停止済みサーバーへの `stop()` で例外経路が混入するとクリーンアップが不安定になる |
+| 再発条件 | `!server` 判定のみで `server.listening` 状態を見ない場合 |
+| 原因 | `!server` のみ判定で `server.listening` 状態を見ていなかった |
+| 対処 | `!server || !server.listening` で早期returnし、`server.close` エラーは握りつぶして `Promise<void>` を解決する設計へ統一した |
+| 今後の標準ルール | 停止APIは idempotent を第一要件にし、終了時の best-effort 方針を明文化する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. timeout 系APIから停止/破棄などの副作用を分離する。  
+2. 停止APIに「未起動」「停止済み」の両ガードを実装する。  
+3. timeout テストに `finally` 相当の明示 `stop()` を必ず追加する。  
+4. `security-implementation.md` と `task-workflow.md` を同一ターンで同期し、仕様ドリフトを残さない。  
+
+---
+
+## TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28）
+
+### 苦戦箇所: 成果物が存在しても `artifacts.json` ステータスが未同期になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` の必須成果物5件が存在していても、`artifacts.json` の `phases.12.status` が `pending` のまま残りやすい |
+| 再発条件 | ファイル存在確認だけで Phase 12 の完了判定を行う場合 |
+| 原因 | 「成果物実体」と「台帳ステータス」を別工程で管理し、同時突合していなかった |
+| 対処 | 監査時に `outputs/phase-12` と `artifacts.json` を同時確認し、乖離を明示記録した |
+| 今後の標準ルール | 完了判定は `成果物実体 + artifacts status + チェックリスト同期` の三点セットを必須化する |
+
+### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `--json` 単体実行の違反件数（baseline）を、今回差分の違反件数と誤認しやすい |
+| 再発条件 | `--diff-from` を使わずに合否を判定した場合 |
+| 原因 | 監視目的（baseline）と合否目的（current）の使い分けが曖昧だった |
+| 対処 | `--diff-from HEAD` を併用し、`currentViolations.total` を合否基準として固定した |
+| 今後の標準ルール | 監査結果は `current`（合否）と `baseline`（監視）を必ず分離して記録する |
+
+### 苦戦箇所: `phase-12-documentation.md` のチェックリスト未同期
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証コマンドがPASSでも、実行仕様書のチェック項目が未チェックのまま残りやすい |
+| 再発条件 | 成果物作成と仕様書更新を別ターンで進める場合 |
+| 原因 | 実体証跡の更新後に、手順書側の完了状態を同期する運用が固定されていなかった |
+| 対処 | 検証証跡を `task-workflow.md` と `lessons-learned.md` に同一ターン反映した |
+| 今後の標準ルール | Phase 12 は「実体証跡・仕様書チェック・教訓記録」の同時更新で完了とする |
+
+### 苦戦箇所: 仕様書別SubAgent分担で非対象仕様の扱いが揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書別に担当を切っても、更新不要な仕様書（interfaces/api-ipc/securityなど）の省略理由が残らず、再確認時に漏れと区別しづらい |
+| 再発条件 | 仕様書別SubAgent分担を適用したが、非対象仕様の記録欄がないテンプレートを使う場合 |
+| 原因 | 「担当あり/更新なし」の判断を文章でしか残しておらず、機械的な確認軸がなかった |
+| 対処 | `phase12-system-spec-retrospective-template.md` に N/A判定ログ（対象/非対象/理由/代替証跡）を追加した |
+| 今後の標準ルール | SubAgent分担では全仕様書の判定（更新 or N/A）を必ず表形式で残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` で Phase 構造を先に確定する。
+2. `outputs/phase-12` の必須成果物5件と `artifacts.json` ステータスを同時に確認する。
+3. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations` を合否基準に固定し、baselineは別管理する。
+4. 仕様書別SubAgent分担を作成し、更新不要な仕様書は `N/A + 理由 + 代替証跡` を記録する。
+5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` へ同一ターンで同期する。
+
+### 派生未タスク（継続改善）
+
+| タスクID | 目的 | 配置先 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001~~ | ~~Phase 12 での N/A 判定ログ固定と三点突合運用を機械確認まで引き上げる~~ **完了: 2026-03-01** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
+| UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001 | Phase 12 成果物の証跡値を実測値に固定し、プレースホルダ/行数ドリフト/判定軸揺れを抑止する | `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-value-sync-guard-001.md` |
+
+---
+
+## UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001: 13Phase仕様書整合監査（2026-03-01）
+
+### 苦戦箇所: Phase 9 ファイル名の命名ドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-9-quality.md` が残存し、`validate-phase-output` の推奨命名と不一致になった |
+| 再発条件 | `main-task-template.md` が旧命名を保持したまま新規仕様書を生成する場合 |
+| 原因 | テンプレート資産と検証ルールの更新タイミングがずれていた |
+| 対処 | ワークフロー実体を `phase-9-quality-assurance.md` へ改名し、`assets/main-task-template.md` も同時修正した |
+| 今後の標準ルール | 命名差分を修正したらテンプレート資産を同一ターンで更新し、再生成で再発有無を確認する |
+
+### 苦戦箇所: `実行タスク` セクションが表形式のみで警告化
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 1〜3 が表形式だけだったため、`validate-phase-output` で「実行タスク形式」警告が出た |
+| 再発条件 | テーブル主体で仕様を書き、箇条書き要件を省略した場合 |
+| 原因 | 構造基準（実行タスクはリスト形式）を満たす最小要件が抜けた |
+| 対処 | 表を残しつつ箇条書きの実行タスクを追加し、機械判定と可読性を両立した |
+| 今後の標準ルール | `## 実行タスク` は「箇条書き + 詳細テーブル」の二層構成を標準とする |
+
+### 苦戦箇所: 依存Phase成果物の参照漏れで `verify-all-specs` 警告
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4/7/8/9/11 で依存元成果物の参照が不足し、整合警告が残った |
+| 再発条件 | 依存定義を `artifacts.json` のみで管理し、各Phase本文の参照資料に反映しない場合 |
+| 原因 | 依存管理と本文参照の二重管理ポイントが同期されていなかった |
+| 対処 | 該当Phaseの参照資料テーブルへ依存成果物を追加し、`verify-all-specs` 警告0へ収束させた |
+| 今後の標準ルール | 依存変更後は `artifacts.json` と「参照資料テーブル」を必ず同時更新する |
+
+### 苦戦箇所: 新規ガード資産の台帳反映漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-creator/assets` に追加した Phase 12 テンプレート群と `.claude/scripts` の新規ガードスクリプトが、resource-map/構成仕様へ未反映になりやすい |
+| 再発条件 | ワークフロー成果物への記載だけで完了扱いにし、正本仕様の索引更新を後回しにした場合 |
+| 原因 | 「成果物説明」と「正本台帳（resource-map, directory-structure）」の責務分離が曖昧だった |
+| 対処 | `skill-creator/references/resource-map.md` と `aiworkflow-requirements/references/directory-structure.md` に新規資産を明示し、再生成インデックスへ反映した |
+| 今後の標準ルール | 新規テンプレート/スクリプト追加時は、成果物ファイル・台帳ファイル・インデックス再生成を1セットで実施する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` を先に実行し、命名・構造・依存の警告を分類する。  
+2. 仕様書実体の修正とテンプレート資産（`assets/main-task-template.md`）の修正を同一ターンで行う。  
+3. 依存警告が出たPhaseは「参照資料テーブル」に不足している依存成果物を追加する。  
+4. 新規テンプレート/スクリプトを追加した場合は `resource-map.md` と `directory-structure.md` の台帳へ同時登録する。  
+5. 再検証で warning=0 を確認し、`task-workflow.md` と `LOGS.md` へ同期記録する。  
+
+---
+
+## UT-IMP-PHASE12-EVIDENCE-VALUE-SYNC-GUARD-001: Phase 12 証跡値（実測値）同期ガード（2026-03-01）
+
+### 苦戦箇所: `spec-update-summary.md` にプレースホルダが残存しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証結果の値が `対象` のまま残り、実測値に置換されないケースがある |
+| 再発条件 | 監査コマンド実行後に手動転記だけで完了扱いにする場合 |
+| 原因 | 「値の取得」と「値の記録」が分離され、転記の完了条件が曖昧だった |
+| 対処 | `PASS + 実測値` を必須形式に固定し、プレースホルダ残存を `rg` で検出した |
+| 今後の標準ルール | 証跡欄は状態語ではなく、実測値付きの固定形式で記録する |
+
+### 苦戦箇所: `documentation-changelog.md` の行数が実ファイルとずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 行数記録が実態より少ない/多い値で残り、追跡性が下がる |
+| 再発条件 | ファイル修正後に `wc -l` を再取得せずに転記する場合 |
+| 原因 | 更新順序（編集→実測→転記）が固定されていなかった |
+| 対処 | 行数転記前に `wc -l` を必須化し、差分が出たら再転記する手順へ統一した |
+| 今後の標準ルール | 行数は毎回コマンド再取得し、推測値や前回値を使わない |
+
+### 苦戦箇所: `audit` の `current/baseline` が混在記録される
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `current=0` でも baseline を見て失敗判定する誤読が起きる |
+| 再発条件 | `--diff-from HEAD` と full 監査結果を同列で扱う場合 |
+| 原因 | 合否指標（current）と監視指標（baseline）の役割分離が弱かった |
+| 対処 | `current=0 / baseline=N` の固定フォーマットで記録し、合否は current のみに限定した |
+| 今後の標準ルール | 監査結果は必ず「判定値= current」「監視値= baseline」に分離する |
+
+### 苦戦箇所: 新規ガード資産の台帳反映漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | テンプレート/スクリプトを追加しても正本台帳に反映されず、後続監査で漏れ扱いになる |
+| 再発条件 | 成果物ファイル更新後に `task-workflow` / `resource-map` / `directory-structure` 同期を後回しにする場合 |
+| 原因 | 実体ファイルと台帳ファイルを別責務として分離し過ぎた |
+| 対処 | 成果物更新と同ターンで台帳更新し、`generate-index` まで実行して確定した |
+| 今後の標準ルール | 新規資産追加時は「実体更新 + 台帳更新 + 索引再生成」を1セットで実施する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を先に実行し、実測値を確定する。  
+2. `spec-update-summary.md` の証跡欄は `PASS + 実測値` へ置換し、`対象` などのプレースホルダを禁止する。  
+3. `documentation-changelog.md` は転記前に `wc -l` を再取得し、行数ドリフトを解消する。  
+4. 監査結果は `current`（合否）と `baseline`（監視）を分離して記録する。  
+5. `task-workflow.md` / `lessons-learned.md` / `LOGS.md` / インデックス再生成を同一ターンで完了する。  
 
 ---
 

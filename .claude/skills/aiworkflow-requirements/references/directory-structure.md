@@ -47,6 +47,7 @@
 | パス               | 説明                                                            |
 | ------------------ | --------------------------------------------------------------- |
 | .claude/           | AI開発アシスタント設定（agents、commands、skills）              |
+| .claude/scripts/   | **Phase 12 ガード共通スクリプト（N/A判定ログ・三点突合・監査出力解析）** |
 | docs/              | 仕様書（00-requirements、10-design、20-specifications、99-adr） |
 | packages/shared/   | Web/Desktop共通コード                                           |
 | apps/web/          | Next.js Webアプリ                                               |

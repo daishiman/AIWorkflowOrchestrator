@@ -166,7 +166,7 @@ graph TD
 | 6 | テスト拡充 | [phase-6-test-expansion.md](phase-6-test-expansion.md) | 未実施 |
 | 7 | カバレッジ確認 | [phase-7-coverage-check.md](phase-7-coverage-check.md) | 未実施 |
 | 8 | リファクタリング | [phase-8-refactoring.md](phase-8-refactoring.md) | 未実施 |
-| 9 | 品質保証 | [phase-9-quality.md](phase-9-quality.md) | 未実施 |
+| 9 | 品質保証 | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 未実施 |
 | 10 | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md) | 未実施 |
 | 11 | 手動テスト | [phase-11-manual-test.md](phase-11-manual-test.md) | 未実施 |
 | 12 | ドキュメント更新 | [phase-12-documentation.md](phase-12-documentation.md) | 未実施 |
@@ -264,7 +264,7 @@ docs/30-workflows/{{FEATURE_NAME}}/
 ├── phase-6-test-expansion.md     # Phase 6: テスト拡充
 ├── phase-7-coverage-check.md     # Phase 7: カバレッジ確認
 ├── phase-8-refactoring.md        # Phase 8: リファクタリング
-├── phase-9-quality.md            # Phase 9: 品質保証
+├── phase-9-quality-assurance.md  # Phase 9: 品質保証
 ├── phase-10-final-review.md      # Phase 10: 最終レビューゲート
 ├── phase-11-manual-test.md       # Phase 11: 手動テスト
 ├── phase-12-documentation.md     # Phase 12: ドキュメント更新
