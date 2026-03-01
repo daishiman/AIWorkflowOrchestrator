@@ -8,6 +8,14 @@
 > - `references/<security-spec>.md`（セキュリティ仕様）
 > - `references/task-workflow.md`（完了台帳）
 > - `references/lessons-learned.md`（再発防止知見）
+>  
+> **UI機能実装時（TASK-UI-05型）の推奨6点セット**:
+> - `references/ui-ux-components.md`（主要UI一覧・完了タスク）
+> - `references/ui-ux-feature-components.md`（機能仕様・関連未タスク・苦戦箇所）
+> - `references/arch-ui-components.md`（UI構造・責務境界）
+> - `references/arch-state-management.md`（状態管理パターン）
+> - `references/task-workflow.md`（完了台帳）
+> - `references/lessons-learned.md`（再発防止知見）
 
 ---
 
@@ -18,7 +26,7 @@
 | タスクID | `<TASK-ID>` |
 | 実施日 | `YYYY-MM-DD` |
 | ステータス | `completed` / `spec_created` |
-| SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons`（必要に応じて置換） |
+| SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui+state / D:task-workflow / E:lessons` |
 
 ---
 
@@ -43,6 +51,16 @@
 | D | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | A/B/C完了後 |
 | E | `references/lessons-learned.md` | 苦戦箇所と再利用手順の教訓化 | D完了後 |
 
+### 3.1 UI機能実装向けSubAgent分担（TASK-UI-05型）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
+| --- | --- | --- | --- |
+| A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・関連導線の同期 | 実装差分確定後 |
+| B | `references/ui-ux-feature-components.md` | 機能仕様・関連未タスク・苦戦箇所の同期 | A完了後 |
+| C | `references/arch-ui-components.md`, `references/arch-state-management.md` | UI構造/状態管理の責務境界を同期 | A/B完了後 |
+| D | `references/task-workflow.md` | 完了台帳・検証証跡・未タスクの同期 | A/B/C完了後 |
+| E | `references/lessons-learned.md` | 再発条件付き教訓と簡潔手順の同期 | D完了後 |
+
 再確認タスクでは次の分担に置き換えてよい:
 - `A: task-workflow`
 - `B: lessons-learned`
@@ -58,6 +76,12 @@
 | `task-workflow.md` | 完了タスク・成果物・苦戦箇所・簡潔手順を記録 | `<該当セクション>` |
 | `<domain-spec>.md` | 実装仕様・契約差分・苦戦箇所・関連タスクを記録 | `<該当セクション>` |
 | `lessons-learned.md` | 再発条件付きの苦戦箇所と再利用手順を記録 | `<該当セクション>` |
+
+UI機能実装の場合は次を推奨:
+- `ui-ux-components.md`（実装内容・完了タスク・未タスク導線）
+- `ui-ux-feature-components.md`（機能仕様・苦戦箇所）
+- `arch-ui-components.md` / `arch-state-management.md`（設計整合）
+- `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 
 ---
 

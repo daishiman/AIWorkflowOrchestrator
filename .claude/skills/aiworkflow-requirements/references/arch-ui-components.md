@@ -490,10 +490,64 @@ ChatPanelは、既存のチャット画面にスキル関連コンポーネン�
 
 ---
 
+## SkillCenterView アーキテクチャパターン（TASK-UI-05）
+
+### 概要
+
+SkillCenterView は、Renderer の「ツール探索・追加・詳細表示」に責務を限定した View である。
+AgentView の実行責務と分離し、`agentSlice` の既存セレクタ/アクションを再利用して実装する。
+
+### レイヤー構成
+
+| レイヤー | 主要要素 | 役割 |
+| --- | --- | --- |
+| View | `SkillCenterView/index.tsx` | 画面統合、ローディング/エラー/通常状態の切替 |
+| Components | `FeaturedSection`, `SkillCard`, `CategoryTabs`, `SkillDetailPanel`, `AddButton`, `SkillEmptyState` | 探索・追加・詳細表示のUI |
+| Hooks | `useSkillCenter`, `useFeaturedSkills` | フィルタリング、選択状態、推奨ロジック |
+| Store Bridge | `useFetchSkills`, `useImportSkill`, `useRemoveSkill` | Storeアクション経由のIPC呼び出し |
+
+### データフロー
+
+| 操作 | 経路 | 説明 |
+| --- | --- | --- |
+| 初期ロード | mount → `fetchSkills()` | 利用可能ツール/追加済みツールを同期 |
+| 追加 | `AddButton` → `handleAddSkill` → `useImportSkill` | 追加中状態を保持しつつインポート実行 |
+| 削除 | `SkillDetailPanel` → `handleRequestDelete` → `useRemoveSkill` | 詳細パネル起点で削除要求を実行 |
+| 検索/カテゴリ | search + tabs → `filteredSkills` 再計算 | キーワードとカテゴリの複合フィルタ |
+
+### 状態管理パターン
+
+| 状態カテゴリ | 管理場所 | 備考 |
+| --- | --- | --- |
+| 永続データ | Zustand (`agentSlice`) | 既存個別セレクタを使用（P31準拠） |
+| 一時UI状態 | `useState`（`useSkillCenter`） | 詳細開閉、削除対象、追加中状態 |
+| 派生値 | `useMemo` | `filteredSkills` / `featuredSkills` / `detailSkill` |
+
+### IPC境界
+
+| チャネル | 利用経路 | 変更有無 |
+| --- | --- | --- |
+| `skill:list` | `useFetchSkills` | 既存再利用 |
+| `skill:import` | `useImportSkill` | 既存再利用 |
+| `skill:remove` | `useRemoveSkill` | 既存再利用 |
+
+### 品質指標（TASK-UI-05）
+
+| 指標 | 値 |
+| --- | --- |
+| コンポーネント実装ファイル | 7 |
+| Hook実装ファイル | 2 |
+| テストファイル | 9 |
+| テストケース数 | 125 |
+| 未解決未タスク | 6（UT-UI-05-001〜006） |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 1.6.0   | 2026-03-01 | TASK-UI-05反映: SkillCenterViewアーキテクチャパターン（レイヤー構成、データフロー、状態管理、IPC境界、品質指標）を追加 |
 | 1.5.0   | 2026-02-02 | TASK-8Bコンポーネントテスト完了記録・テスト品質メトリクス追加 |
 | 1.4.0   | 2026-01-30 | ChatPanel統合パターン追加（TASK-7D） |
 | 1.3.0   | 2026-01-30 | SkillSelector詳細実装パターン追加（Props/Types/Hooks/スタイリング） |
@@ -509,3 +563,4 @@ ChatPanelは、既存のチャット画面にスキル関連コンポーネン�
 - [状態管理パターン](./arch-state-management.md)
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
 - [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05 SkillCenterView 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)

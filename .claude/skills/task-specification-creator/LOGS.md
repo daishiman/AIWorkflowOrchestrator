@@ -26,35 +26,6 @@
 
 ---
 
-## 2026-03-01 - Phase 12 成果物名同期（unassigned-task-detection 統一）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（運用仕様の保守改善）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/spec-update-workflow.md` の必須成果物チェックを `unassigned-task-detection.md` へ更新
-  - `references/phase-templates.md` の `complete-phase` artifacts 例を `unassigned-task-detection.md` へ更新
-  - `references/artifact-naming-conventions.md` の Phase 12 命名規約を現行名に統一
-  - `references/patterns.md` の Phase 12 成果物名記載を現行運用へ同期
-
----
-
-## 2026-03-01 - UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 仕様書整合監査
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-3（仕様書整備）+ スキルテンプレート更新
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001/` の13Phase仕様書を監査し、`verify-all-specs` warning=0 / `validate-phase-output` warning=0 まで是正
-  - Phase 9命名を `phase-9-quality-assurance.md` に統一
-  - Phase 1〜3 の `実行タスク` をリスト形式へ補強し、構造検証を安定化
-  - Phase 4/7/8/9/11 に依存成果物参照を追加し、整合警告を解消
-  - `assets/main-task-template.md` の旧命名 `phase-9-quality.md` を修正し、再発防止をスキル資産へ反映
-
----
-
 ## 2026-02-28 - TASK-9I 仕様再監査（Phase 12漏れ補完）
 
 - **Agent**: task-specification-creator
@@ -68,7 +39,6 @@
   - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
 
 ---
-
 ## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 1-12 完了
 
 - **Agent**: task-specification-creator
@@ -81,6 +51,21 @@
   - 新規IPCチャンネル5つ、サービス2つ、型定義8インターフェース追加
   - テスト97件全PASS、カバレッジ全基準クリア
   - Phase 12 成果物5ファイル作成完了
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査・成果物補完
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13（再監査・成果物整備）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-1..13` の不足成果物を補完
+  - `artifacts.json` を全Phase completed に更新し、`outputs/artifacts.json` を同期生成
+  - Phase 12 必須成果物5件を実体化（`implementation-guide.md`, `spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection-report.md`, `skill-feedback-report.md`）
+  - 互換目的で `unassigned-task-detection.md` を併置し、命名ゆれによる参照ドリフトを抑制
+  - 検証コマンドを再実行し PASS を確認（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0）
 
 ---
 
@@ -4783,24 +4768,40 @@ if (artifactPath) {
 - ステータス: success
 - 効果: Phase 12 の未実施残置による誤判定を防止
 
----
-
-## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+## 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 仕様運用同期
 
 ### コンテキスト
 
-- スキル: aiworkflow-requirements / task-specification-creator
-- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+- スキル: task-specification-creator
+- タスクID: TASK-UI-05-SKILL-CENTER-VIEW
+- フェーズ: 11-12（手動テスト成果物補完 + ドキュメント更新）
 
 ### 実施内容
 
-- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
-- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
-- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
-- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
-- 手動テスト MT-001〜MT-010 全PASS
+- Phase 11 成果物を補完
+  - `manual-test-result.md` を生成
+  - `discovered-issues.md` を作成（UT-UI-05-001〜006）
+- `complete-phase.js` で Phase 11/12 の artifacts を再登録
+- 未タスク指示書 5件を追加作成（既存1件と合わせて6件）
+- Phase 12成果物を実績ベースへ再同期
+  - `spec-update-summary.md`
+  - `documentation-changelog.md`
+  - `unassigned-task-detection.md`
+- Phaseインデックスを再生成
+  - `generate-index.js --workflow docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW --regenerate`
+- 検証実行
+  - verify-all-specs: PASS
+  - validate-phase-output: PASS
+  - verify-unassigned-links: PASS
+  - audit-unassigned-tasks --diff-from HEAD: current=0
+
+### 苦戦箇所
+
+1. Phase 12成果物に「スコープ外」記述が残っており、実施済み更新との差分が発生した
+2. `manual-test-checklist.md` のみ存在し、`manual-test-result.md` / `discovered-issues.md` が欠落していた
+3. `index.md` と `artifacts.json` の同期タイミングにズレがあり、再生成で整合させる必要があった
 
 ### 結果
 
 - ステータス: success
-- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`
+- Phase 11/12 仕様準拠: 完了
