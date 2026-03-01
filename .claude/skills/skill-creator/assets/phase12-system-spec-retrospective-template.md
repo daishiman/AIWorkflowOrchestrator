@@ -100,8 +100,8 @@ UI機能実装の場合は次を推奨:
 1. `<変更範囲を interfaces/api-ipc/security/task/lessons の5責務へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
-4. `<verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD を連続実行する>`
-5. `<検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+4. `<phase-12-documentation.md の完了チェック（Task 1-5 + 条件項目N/A理由）を成果物実体と同一ターンで同期する>`
+5. `<verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD を連続実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
 
@@ -115,8 +115,11 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` | リポジトリ全体のbaseline監視 | `currentViolations` を記録（差分判定には未使用） |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
+
+> 注記: `audit --target-file` は `docs/30-workflows/unassigned-task/` 配下のファイルのみ対象。未タスク検出0件時は `--diff-from HEAD` と `--json` を記録し、`target-file` は未実行理由を明記する。
 
 ---
 
@@ -128,5 +131,6 @@ UI機能実装の場合は次を推奨:
 - [ ] `unassigned-task-detection.md`（標準）
 - [ ] 旧名 `unassigned-task-report.md` を新規作成していない（互換用途のみ・非推奨）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
+- [ ] `phase-12-documentation.md` の完了チェックが成果物実体と同期している（条件項目はN/A理由を明記）
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
-- [ ] `audit --target-file` の `currentViolations: 0` を確認
+- [ ] `audit --target-file` の `currentViolations: 0` を確認（検出0件時は未実行理由 + `--diff-from HEAD` の結果を記録）
