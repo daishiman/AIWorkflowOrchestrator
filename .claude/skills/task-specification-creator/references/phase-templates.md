@@ -1007,6 +1007,7 @@ Phase 11: 手動テスト検証
 | 命名規則       | `TC-{番号}-{状態}.png`（例: `TC-01-before.png`, `TC-01-after.png`） |
 | 配置先         | `outputs/phase-11/screenshots/`                                     |
 | 必須タイミング | (1) 操作前の初期状態 (2) 操作後の結果状態 (3) エラー発生時のUI      |
+| 紐付け規定     | `manual-test-result.md` のテスト結果表で **各TCに最低1枚** の証跡を紐付ける |
 
 ### 仕様照合チェックリスト（UI/UX変更時）
 
@@ -1044,6 +1045,21 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 ```
 
 **注意**: `--routes` にはタスクで変更したUI画面のルートを指定すること。
+
+### 網羅性検証コマンド（UI/UX変更タスク）
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+非視覚TCのみ例外許可する場合:
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --allow-non-visual-tc TC-08
+```
 
 ### 撮影不可時の代替
 
@@ -1084,6 +1100,7 @@ CI/ビルド環境制約でElectronを起動できない場合（スクリプト
 - [ ] すべてのテストケースがPASS
 - [ ] 統合テスト手動確認が完了
 - [ ] UI/UX変更タスクの場合: スクリーンショットが `outputs/phase-11/screenshots/` に配置済み
+- [ ] UI/UX変更タスクの場合: 各TCにスクリーンショット証跡が紐付き、`validate-phase11-screenshot-coverage.js` がPASS
 - [ ] UI/UX変更タスクの場合: 仕様照合チェックリストが全項目確認済み
 - [ ] **本Phase内の全タスクを100%実行完了**
 

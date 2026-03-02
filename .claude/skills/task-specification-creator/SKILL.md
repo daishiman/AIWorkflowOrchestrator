@@ -392,6 +392,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.05.0** | **2026-03-02** | **TASK-10A-B Phase 11/12 再監査を反映**: `phase-11-manual-test.md` に必須セクション「統合テスト連携」を追加し、`manual-test-result.md` を実スクリーンショット証跡ベースへ更新。`unassigned-task-detection.md` を 7件→5件へ再同期。`verify-all-specs` warning 13→0、`validate-phase-output` を 28項目PASS へ復帰 |
+| **v10.04.0** | **2026-03-02** | **TASK-10A-B SkillAnalysisView 実装完了を反映**: Phase 1-12全完了（72テスト全PASS、カバレッジ Line100%/Branch95.83%/Function100%）。LOGS.md 2ファイル・SKILL.md 2ファイルを同時更新し、topic-map.md を再生成。`docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/spec-update-summary.md` を更新 |
 | **v10.03.0** | **2026-03-02** | **Phase 12準拠再確認の実行パターンを反映**: `skill-editor-view` と `TASK-UI-05` の2workflowで `verify-all-specs`/`validate-phase-output` を同時実行し、Task 1/3/4/5成果物実体・implementation-guide Part 1/2・未タスク10見出しを同一ターンで突合する運用を確立。未タスク監査は `currentViolations=0` を合格基準に固定 |
 | **v10.02.0** | **2026-03-02** | **TASK-UI-05A 再監査（Phase 11/12整合是正）**: `outputs/phase-11` へ 2026-03-02 再取得スクリーンショット（Dashboard/Editor/導線チェック）を追補。`outputs/phase-12/spec-update-summary.md` を追加し、未タスク正本3件（`docs/30-workflows/unassigned-task/`）と `artifacts.json`/`outputs/artifacts.json` の同期を反映 |
 | **v10.01.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・仕様修正反映**: Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加し、useFileTree 引数仕様を skillName ベースに統一。UT-UI-05A-GETFILETREE-001 未タスク登録を反映 |

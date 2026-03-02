@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-02 - TASK-10A-B再監査パターン同期 + テンプレート重複整理]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）で重複行を統合し、成功/失敗キーワードへ `TASK-10A-B` の再監査知見（Phase 11実画面証跡再取得、必須節検証、未タスク件数再計算）を反映
+  - 成功パターン「Phase 11 実画面証跡 + 必須節検証固定（TASK-10A-B）」を追加し、`rg` による必須節機械確認を標準手順化
+  - `assets/phase12-system-spec-retrospective-template.md` の `SubAgent分担` 重複行を解消し、Phase 11 必須節確認コマンドとUI再撮影鮮度チェックを追加
+  - `SKILL.md` 変更履歴を `v10.35.0` として同期
+
+---
+
 ## [2026-03-02 - Phase 12テンプレート最適化（2workflow同時監査 + 画面証跡）]
 
 - **Agent**: skill-creator (update)

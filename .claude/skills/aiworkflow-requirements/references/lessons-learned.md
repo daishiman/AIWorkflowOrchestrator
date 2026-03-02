@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
+| 2026-03-02 | 1.28.3 | TASK-10A-B 再監査教訓を追加。Phase 11 のコード分析ベース残置、`phase-11-manual-test.md` 必須節欠落、未タスク件数ドリフト（7→5）を解消する5ステップ手順を標準化 |
 | 2026-03-02 | 1.28.2 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定 |
 | 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
 | 2026-03-02 | 1.28.0 | TASK-UI-05A 再監査教訓を追加。`spec_created` 台帳と実装実体（未追跡ファイル含む）の乖離、未タスクの非正規配置（workflow配下）、画面証跡の鮮度不足を同時に解消する運用を標準化 |
@@ -247,6 +249,56 @@
 3. `phase-12-documentation.md` に依存Phase成果物の参照を追加して再検証する。  
 4. UI画面はスクリーンショットを再撮影し、更新時刻を証跡化する。  
 5. 未タスク監査は `current` を合否、`baseline` を改善バックログとして分離記録し、`task-workflow.md` と同時同期する。  
+
+---
+
+## TASK-10A-B: SkillAnalysisView 再監査（2026-03-02）
+
+### 苦戦箇所: Phase 11 がコード分析ベースのまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` が実画面証跡ではなくコード読解結果中心で記録され、UI検証の再現性が低下した |
+| 再発条件 | Electron起動制約を理由に、スクリーンショット再取得を省略する場合 |
+| 原因 | Phase 11 完了条件の「画面証跡必須」が運用で弱かった |
+| 対処 | 専用スクリプトで `TC-01`〜`TC-04` を再撮影し、手動テスト結果を実証跡ベースへ更新 |
+| 今後の標準ルール | UIタスクのPhase 11は「実画面スクリーンショット + 結果文書」の2点同時成立を必須化する |
+
+### 苦戦箇所: `phase-11-manual-test.md` の必須節不足で検証落ち
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `validate-phase-output` で「統合テスト連携」節不足がエラー化した |
+| 再発条件 | 既存文書を簡略更新し、テンプレート必須章の確認を省略する場合 |
+| 原因 | 画面証跡更新に寄り、Phase仕様テンプレートの章立て検証が後回しになった |
+| 対処 | 「統合テスト連携」を追記して再検証し、28項目PASSへ復帰 |
+| 今後の標準ルール | Phase 11/12 文書更新後は `validate-phase-output` を即実行し、章不足をその場で解消する |
+
+### 苦戦箇所: 未タスク件数が 7 件のまま残るドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 修正済み D1/D2（aria-label、text token）が未タスクとして残り、台帳が実態と不一致になった |
+| 再発条件 | 修正実施後に `unassigned-task-detection.md` と `task-workflow.md` を同時更新しない場合 |
+| 原因 | Phase 11修正と Phase 12台帳更新が別ターンで進みやすい |
+| 対処 | 未タスクを UT-TASK-10A-B-001〜005 の5件へ再同期し、台帳・仕様書・成果物を同一ターンで更新 |
+| 今後の標準ルール | 未タスクは「修正反映後に有効件数を再計算」し、検出レポートと台帳を同時更新する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `capture-*.mjs` などで画面証跡を再取得し、状態別ファイルを確定する。  
+2. `manual-test-result.md` と `discovered-issues.md` を実証跡ベースへ更新する。  
+3. `verify-all-specs` と `validate-phase-output` を連続実行し、warning/error をゼロ化する。  
+4. 未タスク件数を再計算し、`unassigned-task-detection.md` と `task-workflow.md` を同一ターン同期する。  
+5. 苦戦箇所を `lessons-learned.md` に再発条件付きで残し、次回の初動手順を固定する。  
+
+### 関連未タスク（再発防止ガード）
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
 
 ---
 

@@ -19,11 +19,13 @@
    ↓
 4. UI/UX変更タスクの場合: capture-screenshots.js でスクリーンショットを自動撮影
    ↓
-5. UI/UX変更タスクの場合: 撮影結果と仕様照合チェックリストを確認
+5. UI/UX変更タスクの場合: 撮影結果と仕様照合チェックリストを確認（TC単位で証跡を紐付け）
    ↓
-6. 結果を outputs/phase-11/manual-test-result.md に出力
+6. UI/UX変更タスクの場合: validate-phase11-screenshot-coverage.js で網羅性を検証
    ↓
-7. 発見課題を outputs/phase-11/discovered-issues.md に出力
+7. 結果を outputs/phase-11/manual-test-result.md に出力
+   ↓
+8. 発見課題を outputs/phase-11/discovered-issues.md に出力
 ```
 
 ### スクリーンショット自動撮影コマンド（UI/UX変更タスク）
@@ -55,6 +57,17 @@ kill %1 2>/dev/null
 ```
 
 **スクリプトオプション一覧**: `capture-screenshots.js --help` または `--dry-run` で確認
+
+### スクリーンショット網羅性検証コマンド（UI/UX変更タスク）
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+補足:
+- `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
+- 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 
 ### テスト結果レポート形式
 
