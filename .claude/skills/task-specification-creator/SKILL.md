@@ -392,6 +392,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.06.0** | **2026-03-02** | **TASK-10A-A Phase 12 最終整合ガードを追補**: Step 2 判定は `phase-12-documentation.md` の更新対象表を正本にする運用を追加。`documentation-changelog.md` と `spec-update-summary.md` の Step判定/更新ファイル一覧を同一ターンで突合し、`unassigned-task-detection.md` へ `audit --diff-from HEAD` の `current/baseline` 分離記録を必須化 |
+| **v10.05.0** | **2026-03-02** | **TASK-10A-A Phase 12 再監査運用を追補**: `aiworkflow-requirements/references/ui-ux-feature-components.md` で発生した「機能別仕様の反映漏れ + spec_created見出し矛盾」を是正する再監査手順を反映。UI系タスクでは `ui-ux-components` と `ui-ux-feature-components` の両方に同日証跡（スクリーンショット）を同期し、重複見出し矛盾を禁止するチェック観点を追加 |
+| **v10.04.0** | **2026-03-02** | **TASK-10A-A SkillManagementPanel Phase 12完了**: Phase 12 Task 1-4を実行。実装ガイド（Part 1/2）、コンポーネントドキュメント、仕様更新サマリー、documentation-changelog、未タスク検出レポート（Phase 11 MINOR 4件）を作成。LOGS.md 2ファイル・SKILL.md 2ファイル・task-workflow.md・artifacts.json を同期更新 |
 | **v10.03.0** | **2026-03-02** | **Phase 12準拠再確認の実行パターンを反映**: `skill-editor-view` と `TASK-UI-05` の2workflowで `verify-all-specs`/`validate-phase-output` を同時実行し、Task 1/3/4/5成果物実体・implementation-guide Part 1/2・未タスク10見出しを同一ターンで突合する運用を確立。未タスク監査は `currentViolations=0` を合格基準に固定 |
 | **v10.02.0** | **2026-03-02** | **TASK-UI-05A 再監査（Phase 11/12整合是正）**: `outputs/phase-11` へ 2026-03-02 再取得スクリーンショット（Dashboard/Editor/導線チェック）を追補。`outputs/phase-12/spec-update-summary.md` を追加し、未タスク正本3件（`docs/30-workflows/unassigned-task/`）と `artifacts.json`/`outputs/artifacts.json` の同期を反映 |
 | **v10.01.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・仕様修正反映**: Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加し、useFileTree 引数仕様を skillName ベースに統一。UT-UI-05A-GETFILETREE-001 未タスク登録を反映 |

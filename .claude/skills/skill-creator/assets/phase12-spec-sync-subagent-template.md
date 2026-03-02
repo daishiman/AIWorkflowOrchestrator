@@ -41,6 +41,14 @@
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
+### 2.3 Step 2 判定同期プロファイル（仕様更新タスク必須）
+
+| SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-S2-A | `phase-12-documentation.md` | Step 2 更新対象（`arch/api/interfaces/security`）の要否判定を確定 | 更新対象に応じて Step 2 を `完了` / `該当なし` で説明可能 |
+| SubAgent-S2-B | `outputs/phase-12/documentation-changelog.md` | Step 判定（1-A〜2）と理由を同期 | Step 2 判定が実装実体と一致 |
+| SubAgent-S2-C | `outputs/phase-12/spec-update-summary.md` | Step 2 更新仕様書の一覧化と反映内容同期 | changelog の Step 2 判定と更新対象一覧が一致 |
+
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |
@@ -76,6 +84,7 @@ node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --wor
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
+rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ls -la <workflow-path>/outputs/phase-11/screenshots
@@ -93,3 +102,6 @@ ls -la <workflow-path>/outputs/phase-11/screenshots
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
+- [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
+- [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
+- [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

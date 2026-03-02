@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-02T05:01:35.650Z",
-  "totalKeywords": 1399,
+  "generated": "2026-03-02T12:30:30.011Z",
+  "totalKeywords": 1402,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1172,6 +1172,11 @@
     "アーキテクチャパターン": [
       "arch-ui-components.md",
       "architecture-file-conversion.md"
+    ],
+    "SkillManagementPanel": [
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -3062,6 +3067,12 @@
       "lessons-learned.md"
     ],
     "再監査": [
+      "lessons-learned.md"
+    ],
+    "MANAGEMENT": [
+      "lessons-learned.md"
+    ],
+    "PANEL": [
       "lessons-learned.md"
     ],
     "CENTER": [

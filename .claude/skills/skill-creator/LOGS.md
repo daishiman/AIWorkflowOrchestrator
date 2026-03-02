@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-03-02 - Phase 12テンプレート最適化（Step 2判定ガード + ナビ重複整理）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に Step 2判定二重突合（`phase-12-documentation` / `documentation-changelog` / `spec-update-summary`）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に Step 2判定同期プロファイル（SubAgent-S2-A/B/C）を追加
+  - 両テンプレートの完了チェックへ `current=合否 / baseline=監視` 分離記録を明文化
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）重複行を整理し、探索性を改善
+  - `references/resource-map.md` のテンプレート説明を Step 2判定ガード対応へ同期
+  - `SKILL.md` 変更履歴を `v10.36.0` として同期
+
+---
+
+## [2026-03-02 - TASK-10A-A Step 2判定同期パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「[Phase 12] Step 2判定とchangelog同期の二重突合（TASK-10A-A）」を追加
+  - `phase-12-documentation.md` の更新対象表を Step 判定の正本に固定し、`documentation-changelog.md` と `spec-update-summary.md` の同一ターン突合ルールを明文化
+  - `audit --diff-from HEAD` の `current/baseline` 分離記録を再発防止ルールとして追記
+  - `SKILL.md` 変更履歴を `v10.35.0` として同期
+
+---
+
 ## [2026-03-02 - Phase 12テンプレート最適化（2workflow同時監査 + 画面証跡）]
 
 - **Agent**: skill-creator (update)

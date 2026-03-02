@@ -13,6 +13,7 @@ import { ChatView } from "./views/ChatView";
 import { GraphView } from "./views/GraphView";
 import { SettingsView } from "./views/SettingsView";
 import { AgentView } from "./views/AgentView";
+import { SkillManagementPanel } from "./components/skill/SkillManagementPanel";
 import { SkillChainBuilder } from "./views/SkillChainBuilder";
 import { ScheduleManager } from "./views/ScheduleManager";
 import { DebugPanel } from "./views/DebugPanel";
@@ -170,6 +171,10 @@ function App(): JSX.Element {
           <Route
             path="/advanced/analytics-dashboard"
             element={renderStandaloneView(<AnalyticsDashboard />)}
+          />
+          <Route
+            path="/advanced/skill-management-panel"
+            element={renderStandaloneView(<SkillManagementPanel />)}
           />
           {/* 既存のビューベースUI（デフォルト） */}
           <Route
