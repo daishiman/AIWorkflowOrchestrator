@@ -1616,6 +1616,7 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 - `/ai:diff-to-pr` の Phase 3.6 で、staged差分から `TARGET_WORKFLOW_DIR` を1件特定する
 - Phase 11/12成果物パス（`implementation-guide.md` / `screenshot-coverage.md` / `screenshots/`）は `TARGET_WORKFLOW_DIR` 配下のみ参照する
 - PR本文 `## その他` に、Phase 12 実装ガイド反映元パスと要点（Part 1/Part 2）を必ず記載する
+- UI/UX変更時は `outputs/phase-11/screenshots/*.png` を検出し、PR本文 `## スクリーンショット` に画像リンクを自動挿入する
 - UI/UX変更がない場合は PR本文 `## スクリーンショット` セクションを削除する
 - workflow候補が複数ある場合は、PR作成前にユーザーへ対象workflowを確認する
 
