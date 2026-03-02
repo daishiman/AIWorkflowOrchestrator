@@ -28,6 +28,7 @@
 | ステータス | `completed` / `spec_created` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui+state / D:task-workflow / E:lessons` |
+| SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui-components / D:arch-state-management / E:task-workflow / F:lessons` |
 
 ---
 
@@ -58,9 +59,10 @@
 | --- | --- | --- | --- |
 | A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・関連導線の同期 | 実装差分確定後 |
 | B | `references/ui-ux-feature-components.md` | 機能仕様・関連未タスク・苦戦箇所の同期 | A完了後 |
-| C | `references/arch-ui-components.md`, `references/arch-state-management.md` | UI構造/状態管理の責務境界を同期 | A/B完了後 |
-| D | `references/task-workflow.md` | 完了台帳・検証証跡・未タスクの同期 | A/B/C完了後 |
-| E | `references/lessons-learned.md` | 再発条件付き教訓と簡潔手順の同期 | D完了後 |
+| C | `references/arch-ui-components.md` | UI構造と責務境界の同期 | A/B完了後 |
+| D | `references/arch-state-management.md` | 状態管理設計とP31対策の同期 | C完了後 |
+| E | `references/task-workflow.md` | 完了台帳・検証証跡・未タスクの同期 | A/B/C/D完了後 |
+| F | `references/lessons-learned.md` | 再発条件付き教訓と簡潔手順の同期 | E完了後 |
 
 再確認タスクでは次の分担に置き換えてよい:
 - `A: task-workflow`
@@ -107,7 +109,7 @@ UI機能実装の場合は次を推奨:
 
 ## 6. 同種課題の簡潔解決手順（5ステップ）
 
-1. `<変更範囲を interfaces/api-ipc/security/task/lessons の5責務へ分離する>`
+1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
 4. `<verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD を連続実行する>`

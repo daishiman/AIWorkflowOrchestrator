@@ -118,6 +118,15 @@
 | **Apple HIG** | Electron Desktop | macOSネイティブな操作感 |
 | **WCAG 2.1 AA** | 全UI | アクセシビリティ |
 
+### Skill Advanced Views（TASK-UI-05B — 実装完了）
+
+| ビュー | 責務 | コンポーネント数 | 配置先 |
+|-------|------|--------------|-------|
+| 3A: SkillChainBuilder | スキルチェーンパイプライン構築 | 7 | views/SkillChainBuilder/ |
+| 3B: ScheduleManager | スケジュール管理 | 9 | views/ScheduleManager/ |
+| 3C: DebugPanel | デバッグパネル | 10 | views/DebugPanel/ |
+| 3D: AnalyticsDashboard | 分析ダッシュボード | 7 | views/AnalyticsDashboard/ |
+
 📖 詳細: [ui-ux-design-principles.md](./ui-ux-design-principles.md)
 
 ---
@@ -315,6 +324,10 @@
 | apps/desktop/src/renderer/store/slices/ | Zustand Slice |
 | apps/desktop/src/renderer/hooks/ | 共通フック |
 | apps/desktop/src/renderer/views/ | ビュー（ページ相当） |
+| apps/desktop/src/renderer/views/SkillChainBuilder/ | スキルチェーンビルダー（3A） |
+| apps/desktop/src/renderer/views/ScheduleManager/ | スケジュール管理（3B） |
+| apps/desktop/src/renderer/views/DebugPanel/ | デバッグパネル（3C） |
+| apps/desktop/src/renderer/views/AnalyticsDashboard/ | 分析ダッシュボード（3D） |
 
 📖 詳細: [directory-structure.md](./directory-structure.md)
 
@@ -466,6 +479,8 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v2.18.1 | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `spec_created` から `実装完了` へ更新し、4ビューの実装導線（App navigation + direct routing）を反映 |
+| v2.18.0 | 2026-03-01 | TASK-UI-05B spec_created を反映: UI/UXアーキテクチャにSkill Advanced Views（4ビュー/33コンポーネント）を追加。ディレクトリ構造にビューディレクトリを追記 |
 | 1.9.0 | 2026-02-28 | TASK-9E反映: `registerSkillHandlers` を実装準拠で Pattern 3（`mainWindow + service`）へ修正。`skill:fork` を含むチャネル責務、`SkillForker` への委譲、sender検証/P42/サニタイズの統合境界を追記 |
 | 1.8.0 | 2026-02-27 | TASK-9H反映: `registerSkillDebugHandlers` を IPC ハンドラー登録一覧へ追加。Pattern 3 詳細に 7チャネル（6 invoke + 1 event）、`SkillDebugger` 配線、vm サンドボックス方針を追記 |
 | 1.9.0 | 2026-02-28 | TASK-9I反映: IPC ハンドラー登録一覧に `registerSkillDocsHandlers` を追加（Pattern 3: mainWindow + service）。4チャネル（skill:docs:generate/preview/export/templates）と Pattern 3 詳細を追記 |

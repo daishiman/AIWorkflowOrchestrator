@@ -50,6 +50,18 @@
         "../../packages/shared/src/types/llm/schemas/index.ts"
       ],
       "@repo/shared/types/skill": ["../../packages/shared/src/types/skill.ts"],
+      "@repo/shared/types/skill-chain": [
+        "../../packages/shared/src/types/skill-chain.ts"
+      ],
+      "@repo/shared/types/skill-analytics": [
+        "../../packages/shared/src/types/skill-analytics.ts"
+      ],
+      "@repo/shared/types/skill-debug": [
+        "../../packages/shared/src/types/skill-debug.ts"
+      ],
+      "@repo/shared/types/skill-schedule": [
+        "../../packages/shared/src/types/skill-schedule.ts"
+      ],
       "@repo/shared/types/agent": ["../../packages/shared/src/types/agent.ts"],
       "@repo/shared/types/auth-mode": [
         "../../packages/shared/src/types/auth-mode.ts"

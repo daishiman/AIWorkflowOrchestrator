@@ -242,7 +242,7 @@
 | UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | 低 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
 | UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | 中 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
 
-#### 検証証跡（2026-03-01）
+#### 検証証跡（2026-03-02）
 
 | コマンド | 結果 |
 | --- | --- |
@@ -266,6 +266,80 @@
 3. `docs/30-workflows/unassigned-task/` へ未タスク指示書を配置し、`audit-unassigned-tasks --target-file` で各ファイル形式を確認する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD` を実行し、`currentViolations=0` を合否基準にする。
 5. 同一ターンで `lessons-learned.md` に苦戦箇所を転記し、再発条件と標準ルールをペアで残す。
+
+---
+
+### タスク: TASK-UI-05B-SKILL-ADVANCED-VIEWS ツール高度管理ビュー群実装（2026-03-02）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-05B-SKILL-ADVANCED-VIEWS |
+| 完了日 | 2026-03-02 |
+| ステータス | **完了（実装 + 仕様同期）** |
+| タスク種別 | UI機能実装 + IPC連携 + 仕様書同期 |
+| Phase | Phase 1-12 完了（Phase 13: PR作成は未実施） |
+
+#### 反映内容（要点）
+
+- `apps/desktop/src/renderer/views/` に 4ビュー（3A/3B/3C/3D）を実装し、`App.tsx` / `AppDock` / `ViewType` へ導線を追加。
+- `apps/desktop/src/preload/skill-api.ts` の chain/schedule/debug/analytics API と UI側 Hooks（`useIPCQuery`/`useIPCMutation` 含む）を統合。
+- `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` の成果物・手動テスト・仕様更新を実装実体に合わせて同期。
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク同期 | UI索引が実装と一致 |
+| SubAgent-B | `references/ui-ux-feature-components.md` | 4ビュー機能仕様・苦戦箇所同期 | 機能仕様が実装と一致 |
+| SubAgent-C | `references/arch-ui-components.md` | UI構造と責務境界の同期 | コンポーネント構造が実装と一致 |
+| SubAgent-D | `references/arch-state-management.md` | 状態管理設計とP31対策の同期 | 状態管理方針が実装と一致 |
+| SubAgent-E | `references/task-workflow.md` | 完了台帳・検証証跡・成果物同期 | 台帳と証跡が一致 |
+| SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓・簡潔手順の同期 | 同種課題で再利用できる教訓が明記 |
+
+#### 仕様反映先（6仕様書）
+
+| 仕様書 | 反映内容 |
+| --- | --- |
+| `references/ui-ux-components.md` | TASK-UI-05B 完了記録・導線同期 |
+| `references/ui-ux-feature-components.md` | 4ビュー責務・苦戦箇所・再利用手順同期 |
+| `references/arch-ui-components.md` | UI構造・責務境界同期 |
+| `references/arch-state-management.md` | ビュー単位の状態分離設計同期 |
+| `references/task-workflow.md` | 完了台帳・検証証跡・画面証跡同期 |
+| `references/lessons-learned.md` | 再発条件付きの苦戦箇所同期 |
+
+#### 検証証跡（2026-03-02）
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS` | PASS（13/13, error=0, warning=0）※初回 warning=7 から是正 |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS` | PASS（28項目, error=0, warning=0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（ALL_LINKS_EXIST） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=75） |
+| `node apps/desktop/scripts/capture-skill-advanced-views-screenshots.mjs` | PASS（4ビューのスクリーンショット再取得: 2026-03-02 12:03） |
+
+#### 苦戦箇所と解決策（再利用用）
+
+| 苦戦箇所 | 再発条件 | 原因 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| 仕様書移管時の参照切れ | 元仕様ファイルを移動/複製し、参照元台帳を更新しない場合 | ワークフロー正本と legacy 参照の二重管理 | 元パスを互換維持しつつ completed-task 側へ同期配置 | 参照が広い仕様は「移管 + 互換パス維持」を標準化 |
+| 仕様状態と実装状態の混同 | 実装後も `spec_created` 記載を残した場合 | 仕様更新時の再監査不足 | TASK-UI-05B 関連仕様を横断grepし、`completed` へ一括同期 | UI/IPC実装タスクは Phase 12 で「導線・API・画面証跡」の3点を必須照合する |
+| 画面証跡の未取得 | UI関連タスクで Phase 11 を文書のみで終える場合 | スクリーンショット必須運用の実行漏れ + 実行コマンド不統一 | `capture-skill-advanced-views-screenshots.mjs` を固定コマンド化して再撮影 | UI仕様タスクは「再撮影 + 更新時刻確認」を完了条件に含める |
+| `verify-all-specs` warning 値のドリフト | Phase 12 文書更新時に依存Phase成果物参照を省略した場合 | `phase-12-documentation.md` の参照資料が不足し、整合警告が残る | Phase 2/5/6/7/8/9/10 の成果物参照を追加して依存関係を明示 | Phase 12 再確認では warning の根拠を文書側で解消してから証跡を固定する |
+| 未タスク監査の baseline を今回差分と誤読 | `audit --diff-from HEAD` を単一値で評価する場合 | `current` と `baseline` を分離して記録していない | 合否は `currentViolations=0` 固定、`baseline` は改善バックログとして別記録 | 未タスク監査は必ず `current/baseline` の二軸で記録する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. 実装完了タスクは `completed` として台帳へ登録し、`spec_created` の残存記述をゼロにする。
+2. `verify-all-specs` と `validate-phase-output` で Phase 構造を先に固定する。
+3. `phase-12-documentation.md` の参照資料へ依存Phase成果物を登録し、warning の根拠を解消する。
+4. 画面関連タスクはスクリーンショットを再取得し、`outputs/phase-11/screenshots/` の更新時刻で当日証跡を固定する。
+5. `verify-unassigned-links` と `audit --diff-from HEAD` を再実行し、`current/baseline` を分離記録してから変更履歴を更新する。
+
+#### Phase 12 追補で登録した未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-UI-05B-001 | Phase 12 画面証跡再取得ガード（再撮影 + 更新時刻確認の標準化） | 中 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/unassigned-task/task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` |
 
 ---
 
@@ -2004,6 +2078,7 @@
 | UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | 低 | TASK-UI-05 コードコメント TODO | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
 | UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | 中 | TASK-UI-05 Phase 12 再確認（苦戦箇所） | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | Phase 12 2workflow同時監査の証跡集約ガード（spec_created/completed + 画面証跡 + current/baseline 分離） | 中 | TASK-UI-05A / TASK-UI-05 Phase 12再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
+| UT-UI-05B-001 | Phase 12 画面証跡再取得ガード（再撮影 + 更新時刻確認の標準化） | 中 | TASK-UI-05B Phase 12 再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/unassigned-task/task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` |
 | UT-9G-001 | SkillScheduler cron 次回実行時刻の精度改善 | 中 | TASK-9G Phase 12 未タスク検出（簡易実装コメント） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-cron-next-run-accuracy.md` |
 | UT-9G-002 | event スケジュール（file_change / git_commit）実行対応 | 低 | TASK-9G Phase 12 未タスク検出（プレースホルダー実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-event-trigger-completion.md` |
 | UT-9G-003 | スケジュール実行通知（sendNotification）実装 | 中 | TASK-9G Phase 12 未タスク検出（NotificationSettings未接続） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-notification-dispatch.md` |
@@ -2178,6 +2253,11 @@
 | **1.64.4** | **2026-03-02** | **TASK-UI-05A 再監査反映**: `views/SkillEditorView` 実装ファイル実在と 99 テスト PASS を台帳へ反映。`UT-UI-05A-GETFILETREE-001` / `UT-UI-05A-SPEC-CONSISTENCY-001` / `UT-UI-05A-IMPLEMENTATION-CLOSURE-001` を正規配置 `docs/30-workflows/unassigned-task/` へ同期し、画面証跡を 2026-03-02 再取得分へ更新 |
 | **1.64.3** | **2026-03-02** | **UT-UI-05A-GETFILETREE-001 登録**: TASK-UI-05A 監査で発見された `skill:getFileTree` IPCチャネル未実装を未タスクとして残課題テーブルへ追加。P3準拠3ステップ完了（指示書作成・残課題テーブル登録・関連仕様書参照リンク追加） |
 | **1.64.2** | **2026-03-01** | **TASK-UI-05A spec_created 反映**: 完了タスクセクションへ `TASK-UI-05A-SKILL-EDITOR-VIEW`（仕様書作成完了・実装未着手）を追加。画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を記録し、残課題テーブルへ実装未着手行を追加 |
+| **1.64.6** | **2026-03-02** | **UT-UI-05B-001 登録（画面証跡再取得ガード）**: TASK-UI-05B 再確認で抽出した苦戦箇所を未タスク化し、`docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/unassigned-task/task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` を追加。TASK-UI-05B セクションと残課題テーブルへ同IDを同期し、再撮影 + 更新時刻確認を運用標準として固定 |
+| **1.64.5** | **2026-03-02** | **TASK-UI-05B テンプレート最適化（仕様書ごとSubAgent分割）**: `TASK-UI-05B` セクションの同期チームを「1仕様書=1SubAgent」の6責務（ui-ux-components / ui-ux-feature-components / arch-ui-components / arch-state-management / task-workflow / lessons-learned）へ再編。検証証跡日付を 2026-03-02 へ統一し、仕様反映先テーブルを追加して責務境界を明確化 |
+| **1.64.4** | **2026-03-02** | **TASK-UI-05B 再確認追補**: `TASK-UI-05B` の検証証跡を再同期（`verify-all-specs`: warning=0、初回 warning=7 を是正 / `validate-phase-output`: 28項目PASS / `audit --diff-from HEAD`: current=0/baseline=75）。画面証跡を `capture-skill-advanced-views-screenshots.mjs` で再取得した記録を追加し、苦戦箇所に「Phase 12参照不足によるwarningドリフト」「current/baseline誤読防止」を追記 |
+| **1.64.3** | **2026-03-02** | **TASK-UI-05B 実装完了同期**: `TASK-UI-05B-SKILL-ADVANCED-VIEWS` を `completed（実装 + 仕様同期）` へ更新。4ビュー導線（AppDock/ViewType/App route）、Preload chain API実装反映、Phase 11 スクリーンショット証跡更新、`artifacts.json`/Phase状態の実体整合を記録 |
+| **1.64.2** | **2026-03-01** | **TASK-UI-05B spec_created 同期 + 参照切れ是正**: 完了タスクセクションへ `TASK-UI-05B-SKILL-ADVANCED-VIEWS`（spec_created）を追加し、4ビュー責務・検証証跡・画面スクリーンショット導線を記録。残課題テーブルの `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` / `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` を実在パスへ更新 |
 | **1.64.1** | **2026-03-01** | **TASK-UI-05 completed-tasks 移管**: Phase 12 完了条件充足に伴い、ワークフロー本体を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ移動。関連未タスク `task-ui-05-*.md` 7件を同ディレクトリ配下 `unassigned-task/` へ移管し、参照パスを一括同期 |
 | **1.64.0** | **2026-03-01** | **UT-UI-05-007 を残課題へ登録**: TASK-UI-05 の再確認で判明した「UIタスクに5仕様書テンプレートを誤適用しやすい」「task-workflow/lessons 同期漏れ」課題を未タスク化。TASK-UI-05 セクションの未タスク表と残課題テーブルへ `task-ui-05-phase12-ui-spec-sync-guard.md` を追加 |
 | **1.63.9** | **2026-03-01** | **TASK-UI-05 教訓同期を追補**: `TASK-UI-05-SKILL-CENTER-VIEW` セクションへ再発条件付きの苦戦箇所3件（型境界、DetailPanel責務集中、Phase 12三点同期）と「同種課題の簡潔解決手順（5ステップ）」を追加。`lessons-learned.md` との同一ターン同期運用を明示 |

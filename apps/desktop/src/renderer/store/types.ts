@@ -7,7 +7,11 @@ export type ViewType =
   | "chat"
   | "graph"
   | "settings"
-  | "agent";
+  | "agent"
+  | "chainBuilder"
+  | "scheduleManager"
+  | "debugPanel"
+  | "analyticsDashboard";
 
 // ファイルノード型
 export interface FileNode {

@@ -23,10 +23,10 @@ describe("AppDock", () => {
       );
     });
 
-    it("6つのナビゲーションアイテムを表示する", () => {
+    it("10個のナビゲーションアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(6);
+      expect(buttons).toHaveLength(10);
     });
   });
 
@@ -60,6 +60,26 @@ describe("AppDock", () => {
       render(<AppDock {...defaultProps} />);
       expect(screen.getByLabelText("Settings")).toBeInTheDocument();
     });
+
+    it("Chainアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Chain")).toBeInTheDocument();
+    });
+
+    it("Scheduleアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Schedule")).toBeInTheDocument();
+    });
+
+    it("Debugアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Debug")).toBeInTheDocument();
+    });
+
+    it("Analyticsアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Analytics")).toBeInTheDocument();
+    });
   });
 
   describe("インタラクション", () => {
@@ -82,6 +102,18 @@ describe("AppDock", () => {
 
       fireEvent.click(screen.getByLabelText("Agent"));
       expect(handleViewChange).toHaveBeenCalledWith("agent");
+
+      fireEvent.click(screen.getByLabelText("Chain"));
+      expect(handleViewChange).toHaveBeenCalledWith("chainBuilder");
+
+      fireEvent.click(screen.getByLabelText("Schedule"));
+      expect(handleViewChange).toHaveBeenCalledWith("scheduleManager");
+
+      fireEvent.click(screen.getByLabelText("Debug"));
+      expect(handleViewChange).toHaveBeenCalledWith("debugPanel");
+
+      fireEvent.click(screen.getByLabelText("Analytics"));
+      expect(handleViewChange).toHaveBeenCalledWith("analyticsDashboard");
 
       fireEvent.click(screen.getByLabelText("Settings"));
       expect(handleViewChange).toHaveBeenCalledWith("settings");

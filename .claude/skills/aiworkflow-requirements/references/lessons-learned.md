@@ -24,6 +24,8 @@
 | 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
 | 2026-03-02 | 1.28.0 | TASK-UI-05A 再監査教訓を追加。`spec_created` 台帳と実装実体（未追跡ファイル含む）の乖離、未タスクの非正規配置（workflow配下）、画面証跡の鮮度不足を同時に解消する運用を標準化 |
 | 2026-03-01 | 1.27.9 | completed-tasks 移管後の参照整合を補正。`UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` と `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の仕様書リンクを実体パスへ更新 |
+| 2026-03-02 | 1.27.10 | TASK-UI-05B 追補: 仕様書ごとSubAgent分割（6責務）を教訓手順へ組み込み、再利用手順を5ステップへ拡張 |
+| 2026-03-02 | 1.27.9 | TASK-UI-05B の再確認教訓を追加。Phase 12 参照不足による warning ドリフト、画面証跡の再撮影運用、未タスク監査の current/baseline 分離記録を標準化 |
 | 2026-03-01 | 1.27.8 | TASK-UI-05 の教訓を追加。型境界（CategoryId/SkillCategory）、詳細パネル責務集中、Phase 12 三点同期の3課題と5ステップ再利用手順を標準化 |
 | 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
 | 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
@@ -203,6 +205,48 @@
 3. 未タスクは `docs/30-workflows/unassigned-task/` へ作成し、`--target-file` 監査で形式を確定する。  
 4. `verify-unassigned-links` と `audit --diff-from HEAD` でリンクと差分違反を確定する。  
 5. 同一ターンで `lessons-learned.md` に苦戦箇所と再発条件を転記し、標準ルールを固定する。  
+
+---
+
+## TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02）
+
+### 苦戦箇所: `verify-all-specs` warning 値がドリフトする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify-all-specs` は PASS でも warning が残り、再確認時に「反映漏れか既知差分か」の判定が揺れる |
+| 再発条件 | `phase-12-documentation.md` の参照資料に依存Phase成果物を列挙しない場合 |
+| 原因 | Phase 12 文書を Task 1〜5 最小記述で閉じ、依存成果物参照を省略していた |
+| 対処 | 参照資料へ Phase 2/5/6/7/8/9/10 の成果物を追加し、warning 原因を明示した |
+| 今後の標準ルール | Phase 12 再確認では「依存成果物参照の補完 → verify実行」の順序を固定する |
+
+### 苦戦箇所: 画面証跡が古いまま残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 画面証跡ファイルが存在していても、再確認時点の実装状態を示していない可能性がある |
+| 再発条件 | 既存スクリーンショットの存在確認だけで完了判定する場合 |
+| 原因 | 再撮影手順が完了条件に固定されていなかった |
+| 対処 | `capture-skill-advanced-views-screenshots.mjs` を実行し、TC-04〜TC-07 を再取得して更新時刻で証跡化した |
+| 今後の標準ルール | UIタスクの再確認は「再撮影 + 更新時刻確認」を必須化する |
+
+### 苦戦箇所: 未タスク監査の baseline を今回差分と誤読する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit --diff-from HEAD` の結果で baseline 件数を見て誤って失敗扱いしやすい |
+| 再発条件 | `currentViolations` と `baselineViolations` を分離せず記録する場合 |
+| 原因 | 合否指標（current）と改善バックログ指標（baseline）の運用目的が混在 |
+| 対処 | 合否は `currentViolations=0` 固定、baseline は別管理として記録した |
+| 今後の標準ルール | 未タスク監査は `current/baseline` を必ず併記し、判定軸を固定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 更新対象仕様書を 1仕様書=1SubAgent（ui-ux-components / ui-ux-feature-components / arch-ui-components / arch-state-management / task-workflow / lessons-learned）で分割する。  
+2. `verify-all-specs` / `validate-phase-output` を実行し、warning/error の根拠を抽出する。  
+3. `phase-12-documentation.md` に依存Phase成果物の参照を追加して再検証する。  
+4. UI画面はスクリーンショットを再撮影し、更新時刻を証跡化する。  
+5. 未タスク監査は `current` を合否、`baseline` を改善バックログとして分離記録し、`task-workflow.md` と同時同期する。  
 
 ---
 

@@ -574,6 +574,108 @@ interface FileNode {
 
 ---
 
+## スキルチェーン IPC チャネル（TASK-9D）
+
+> 完了タスク: TASK-9D
+
+複数スキルをパイプラインとして連携させるスキルチェーン機能の IPC 契約。5 invoke チャネル（Renderer -> Main）で構成される。
+
+### チャネル一覧
+
+| チャネル名 | 方向 | 概要 | リクエスト型 | レスポンス型 |
+| --- | --- | --- | --- | --- |
+| `skill:chain:list` | Renderer -> Main | チェーン一覧取得 | なし | `IpcResult<SkillChainDefinition[]>` |
+| `skill:chain:get` | Renderer -> Main | チェーン定義取得 | `chainId: string` | `IpcResult<SkillChainDefinition>` |
+| `skill:chain:save` | Renderer -> Main | チェーン定義保存 | `SkillChainDefinition` | `IpcResult<SkillChainDefinition>` |
+| `skill:chain:delete` | Renderer -> Main | チェーン定義削除 | `chainId: string` | `IpcResult<{ deleted: boolean }>` |
+| `skill:chain:execute` | Renderer -> Main | チェーン実行 | `{ chainId: string, variables?: Record<string, unknown> }` | `IpcResult<SkillChainResult>` |
+
+### 型定義
+
+8インターフェースを `@repo/shared` の `packages/shared/src/types/skill-chain.ts` で定義:
+SkillChainDefinition, SkillChainStep, InputMapping, OutputMapping, SkillChainCondition, SkillChainResult, StepResult, SkillChainErrorStrategy
+
+### バリデーションルール
+
+| チャネル | バリデーション | エラー |
+| --- | --- | --- |
+| `skill:chain:list` | Sender 検証のみ | - |
+| `skill:chain:get` | `chainId` が P42準拠3段バリデーション | `chainId must be a non-empty string` |
+| `skill:chain:save` | `chain` が object、`chain.name` が P42準拠3段バリデーション | `chain must be an object`, `chain.name must be a non-empty string` |
+| `skill:chain:delete` | `chainId` が P42準拠3段バリデーション | `chainId must be a non-empty string` |
+| `skill:chain:execute` | `args` が object、`chainId` が P42準拠3段バリデーション、`variables` は任意 | `args must be an object`, `chainId must be a non-empty string` |
+
+### セキュリティ
+
+- 全5ハンドラに validateIpcSender 適用
+- P42準拠3段バリデーション（validateStringArg ヘルパー）
+- エラーサニタイズ: sanitizeErrorMessage → "Internal error"
+
+### 実装状況
+
+| 実装項目 | ステータス | 関連タスク |
+| --- | --- | --- |
+| チャネル定数（`IPC_CHANNELS.SKILL_CHAIN_*`） | 完了 | TASK-9D |
+| invokeホワイトリスト追加 | 完了 | TASK-9D |
+| IPCハンドラー実装（`skillHandlers.ts` registerSkillChainHandlers） | 完了 | TASK-9D |
+| Preload API実装 | 完了（`skill-api.ts`: `chainList/get/save/delete/execute`） | TASK-UI-05B |
+| 共有型定義追加（`skill-chain.ts`） | 完了 | TASK-9D |
+
+### 備考
+
+Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B の実装で追加済み。Main Process 側のハンドラは `registerSkillChainHandlers()` として `skillHandlers.ts` に実装済み。
+
+---
+
+## スキルスケジュール IPC チャネル（TASK-9G）
+
+> 完了タスク: TASK-9G（2026-02-27）
+
+スキルの定期実行・スケジュール管理の IPC 契約。5 invoke チャネル（Renderer -> Main）で構成される。
+
+### チャネル一覧
+
+| チャネル名 | メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- | --- |
+| `skill:schedule:list` | invoke | なし | `IpcResult<ScheduledSkill[]>` | スケジュール一覧取得 |
+| `skill:schedule:add` | invoke | `Omit<ScheduledSkill, "id" \| "runHistory">` | `IpcResult<ScheduledSkill>` | スケジュール追加 |
+| `skill:schedule:update` | invoke | `{ id: string, updates: Partial<ScheduledSkill> }` | `IpcResult<void>` | スケジュール更新 |
+| `skill:schedule:delete` | invoke | `{ id: string }` | `IpcResult<void>` | スケジュール削除 |
+| `skill:schedule:toggle` | invoke | `{ id: string }` | `IpcResult<ScheduledSkill \| undefined>` | 有効/無効切り替え |
+
+### 型定義
+
+4インターフェースを `@repo/shared` の `packages/shared/src/types/skill-schedule.ts` で定義:
+ScheduledSkill, SkillSchedule, NotificationSettings, ScheduledRunResult
+
+### バリデーションルール
+
+| チャネル | バリデーション | エラー |
+| --- | --- | --- |
+| `skill:schedule:list` | Sender 検証のみ | - |
+| `skill:schedule:add` | `skillName`/`prompt` が P42準拠3段バリデーション、`schedule.type` が string、cron 時は `cronExpression` 非空、interval 時は正の数 | `skillName must be a non-empty string`, `schedule.type is required`, `cronExpression is required for cron schedule type`, `interval must be a positive number` |
+| `skill:schedule:update` | `id` が P42準拠3段バリデーション | `id must be a non-empty string` |
+| `skill:schedule:delete` | `id` が P42準拠3段バリデーション | `id must be a non-empty string` |
+| `skill:schedule:toggle` | `id` が P42準拠3段バリデーション + 存在確認 | `id must be a non-empty string`, `Schedule not found: {id}` |
+
+### セキュリティ
+
+- 全5ハンドラに validateIpcSender 適用
+- P42準拠3段バリデーション（validateStringArg ヘルパー）
+- エラーサニタイズ: toIpcErrorResponse → "Internal error"
+
+### 実装状況
+
+| チャネル | ハンドラ | Preload API | テスト | ステータス |
+| --- | --- | --- | --- | --- |
+| skill:schedule:list | skillHandlers.ts | skill-api.ts scheduleList | 163テスト（desktop 158 + shared 5） | 完了 |
+| skill:schedule:add | skillHandlers.ts | skill-api.ts scheduleAdd | (上記に含む) | 完了 |
+| skill:schedule:update | skillHandlers.ts | skill-api.ts scheduleUpdate | (上記に含む) | 完了 |
+| skill:schedule:delete | skillHandlers.ts | skill-api.ts scheduleDelete | (上記に含む) | 完了 |
+| skill:schedule:toggle | skillHandlers.ts | skill-api.ts scheduleToggle | (上記に含む) | 完了 |
+
+---
+
 ## スキルデバッグ IPC チャネル（TASK-9H）
 
 スキル実行のデバッグ操作を提供する IPC 契約。6 invoke チャネル（Renderer -> Main）と 1 event チャネル（Main -> Renderer）で構成される。
@@ -729,6 +831,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
 | TASK-9I    | スキルドキュメント生成機能           | 2026-02-28 | 4チャンネル追加（skill:docs:generate/preview/export/templates）、SkillDocGenerator追加、Preload API 4メソッド追加、共有型5種追加、テスト64件PASS |
@@ -764,6 +867,8 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
 | v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |
+| v1.16.1    | 2026-03-02 | TASK-UI-05B 実装完了同期: `skill:chain:*` の Preload API 状態を「未実装」から「実装済み」へ更新し、TASK-9D 完了記録に実装日を追記 |
+| v1.16.0    | 2026-03-02 | TASK-UI-05B整合性検証: `skill:chain:*`（TASK-9D）5チャネル・`skill:schedule:*`（TASK-9G）5チャネルのIPCセクションを追加。TASK-9D完了タスク記録を追加 |
 | v1.15.1    | 2026-02-28 | TASK-9E追補: IPC契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界判定）と簡潔解決策テーブルを追加し、再監査時の参照導線を明確化 |
 | v1.15.0    | 2026-02-28 | TASK-9E反映: `skill:fork` チャネルセクション追加。`SkillForkOptions/Result/Metadata` 型契約、P42準拠バリデーション、実装状況、完了タスク記録（59テスト）を同期 |
 | v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |

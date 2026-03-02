@@ -9,6 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.7.2     | 2026-03-02 | TASK-UI-05B 追補: SubAgent-D 観点の苦戦箇所（責務分離の記述漏れ、監査結果の current/baseline 誤読）と5ステップ再利用手順を追加 |
+| v3.7.1     | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` に更新。4ビュー（Chain/Schedule/Debug/Analytics）の Hook 実装・導線追加・テスト完了を反映 |
+| v3.7.0     | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views（4ビュー）の状態管理方針を追加。新規Zustand Sliceなし、useStateベースカスタムHook + agentSlice個別セレクタの設計を記録 |
 | v1.18.0    | 2026-03-01 | TASK-UI-05反映: SkillCenterView の状態管理パターンを追記（agentSlice個別セレクタ利用、UI一時状態を `useSkillCenter` に局所化、Store型とのカテゴリ境界を未タスク化） |
 | v1.17.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 追補: 実装時の苦戦箇所と再発防止策を追加（単体テスト再実行コマンド標準化、未タスク参照の物理ファイル検証、性能テスト揺らぎ時の再現確認手順） |
 | v1.16.0    | 2026-02-12 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001完了: AgentViewを個別セレクタHookに移行（15セレクタ追加）、ローカルfetchSkills/useCallback削除、P31適用範囲をAgentViewまで拡張 |
@@ -998,6 +1001,51 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | ------------------------------- | ---------------------------- | ---------- |
 | task-imp-permission-history-001 | Permission履歴トラッキングUI | **完了**   |
 | task-imp-permission-date-filter | 期間別フィルタリング         | **完了**   |
+
+---
+
+## Skill Advanced Views 状態管理設計（TASK-UI-05B / completed）
+
+> ステータス: **completed**（実装・テスト・導線同期完了）
+
+TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C DebugPanel / 3D AnalyticsDashboard）は、ビュー間で状態を共有しない設計のため、新規 Zustand Slice は作成しない。
+
+### 状態配置方針
+
+| 状態 | 管理方法 | 理由 |
+| --- | --- | --- |
+| チェーン一覧 | `useChainList` (useState) | ビュー固有データ、他ビューと共有不要 |
+| チェーン編集中状態 | `useChainEditor` (useState) | エディター内でのみ使用 |
+| スケジュール一覧 | `useScheduleList` (useState) | ビュー固有データ |
+| デバッグセッション | `useDebugSession` (useState) | セッション状態はビュー内完結 |
+| ブレークポイント | `useBreakpoints` (useState) | デバッグビュー内でのみ使用 |
+| 分析サマリー | `useAnalyticsSummary` (useState) | ビュー固有データ |
+| トレンドデータ | `useUsageTrend` (useState) | ビュー固有データ |
+| 利用可能スキル一覧 | `agentSlice` 個別セレクタ | 既存 Store を再利用（P31対策で個別セレクタ） |
+
+### 設計根拠
+
+- **P31対策**: `agentSlice` の合成Store Hook を使わず、個別セレクタ（`useXxx()`）で必要なフィールドのみ取得
+- **関心の分離**: 4ビューが互いに依存しない設計により、将来の1ビュー単独リファクタリングが容易
+- **IPC中心**: 永続状態はMain Process側で管理し、Rendererはカスタム Hook 内でIPC経由取得
+
+### 実装時の苦戦箇所（SubAgent-D）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| 状態責務分離は実装済みでも仕様文に残し漏れる | Hook実装完了後に状態管理仕様の同期を後回しにする | `arch-state-management.md` に 4ビューの状態配置表を固定し、`task-workflow.md` へ同時同期 | 状態管理変更時はコードと仕様を同一ターンで更新する |
+| 未タスク監査の判定軸が揺れる | `current` と `baseline` を分離せず報告する | `currentViolations=0` を合否基準として明記し、baselineは別管理化 | 監査結果は `current/baseline` を必ず併記する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. ビューごとの状態責務（useState / selector / IPC）を表にして先に固定する。  
+2. `verify-all-specs` と `validate-phase-output` で仕様整合を先に確認する。  
+3. 状態管理仕様を `task-workflow.md` と同一ターンで更新する。  
+4. `audit --diff-from HEAD` は `current` を合否、`baseline` を改善課題として分離する。  
+5. 苦戦箇所を `lessons-learned.md` へ転記し、再発条件付きでルール化する。  
+
+### 参照
+- [TASK-UI-05B Phase 2 状態管理設計](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/phase-2-design.md)
 
 ---
 

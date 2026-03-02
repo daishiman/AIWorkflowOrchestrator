@@ -94,6 +94,52 @@
 
 ---
 
+## 2026-03-02 - TASK-UI-05B 実装完了再監査（Phase 11/12 再整合）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/skill-advanced-views` を再監査し、`spec_created` 残存を `completed` へ同期
+  - 画面証跡を再取得（`TC-04`〜`TC-07`）して Phase 11 成果物へ反映
+  - `phase-12-documentation.md` をテンプレート準拠へ補正（`実行タスク`/`参照資料`/`成果物`/`完了条件` を追加）
+  - 検証再実行:
+    - `verify-all-specs --workflow docs/30-workflows/skill-advanced-views`: PASS（13/13, error=0）
+    - `validate-phase-output.js docs/30-workflows/skill-advanced-views`: PASS（28項目, error=0）
+    - `verify-unassigned-links.js`: PASS（missing=0）
+    - `audit-unassigned-tasks.js --json --diff-from HEAD`: currentViolations=0（baseline分離）
+  - `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を同時更新し、Phase 12 Step 1-A の同期要件を満たした
+
+---
+
+## 2026-03-01 - TASK-UI-05B アーキテクチャ層仕様書追補（多角的検証で検出）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（追補監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - 多角的思考フレームワーク（垂直思考・システム思考・改善思考）により、4仕様書（`arch-ui-components.md` / `arch-state-management.md` / `architecture-overview.md` / `quality-requirements.md`）の TASK-UI-05B 未反映を検出
+  - 4並列エージェントで是正: コンポーネントアーキテクチャ/状態管理設計/ディレクトリ構造/パフォーマンス基準を追加
+  - P26（仕様書更新遅延）・P31（Phase 12更新漏れ）パターンの再発防止として記録
+
+---
+
+## 2026-03-01 - TASK-UI-05B 仕様再監査（spec_created同期 + 画面証跡）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/skill-advanced-views` を対象に `verify-all-specs` と `validate-phase-output` を実行し PASS を確認
+  - `capture-screenshots.js` 非互換を検知したため、`npx playwright@1.55.0 screenshot` へフォールバックして `outputs/phase-11/screenshots/TC-01-after.png` を生成し、UI関連タスクの画面証跡を補完
+  - `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` に `TASK-UI-05B-SKILL-ADVANCED-VIEWS`（spec_created）を同期
+  - `verify-unassigned-links` で検出した未実在リンク2件を実在パスへ修正し、参照整合を回復
+
+---
+
 ## 2026-02-28 - TASK-9I 仕様再監査（Phase 12漏れ補完）
 
 - **Agent**: task-specification-creator

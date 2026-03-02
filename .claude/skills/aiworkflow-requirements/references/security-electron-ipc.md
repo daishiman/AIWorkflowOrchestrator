@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.12.0    | 2026-03-02 | TASK-UI-05B仕様整合: skillChainAPI（TASK-9D、5ch、validateIpcSender + P42準拠3段バリデーション + sanitizeErrorMessage）とskillScheduleAPI（TASK-9G、5ch、既存セクション欠落の補完）のセキュリティ実装パターンを追加 |
 | v1.11.1    | 2026-02-28 | TASK-9E追補: セキュリティ観点の苦戦箇所3件（sender検証順序、path境界判定、契約境界混同）と同種課題向け4ステップ手順を追加 |
 | v1.11.0    | 2026-02-28 | TASK-9E反映: `skill:fork` セキュリティ実装パターンを追加。`validateIpcSender`、P42準拠3段バリデーション、`SkillForker.validatePath` の境界検証（prefix一致すり抜け防止）、エラーサニタイズを仕様化 |
 | v1.10.0    | 2026-02-27 | TASK-9H反映: skillDebugAPI セキュリティ実装パターン追加（validateIpcSender + P42準拠3段バリデーション + vmサンドボックス式評価 + セッションID整合検証）。7チャネル（invoke 6 + event 1）を仕様化 |
@@ -488,6 +489,84 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 4. 仕様更新後に `verify-unassigned-links` と `audit --diff-from HEAD` で台帳整合を確認する。  
 
 **関連タスク**: TASK-9F（2026-02-27完了）
+
+---
+
+## 実装例: skillChainAPI（TASK-9D）
+
+スキルチェーン（一覧取得・定義取得・保存・削除・実行）の5チャネルに適用するセキュリティパターン。
+
+### チャネル定数定義
+
+| 定数名 | チャネル名 | 方向 |
+| --- | --- | --- |
+| SKILL_CHAIN_LIST | `skill:chain:list` | invoke (R->M) |
+| SKILL_CHAIN_GET | `skill:chain:get` | invoke (R->M) |
+| SKILL_CHAIN_SAVE | `skill:chain:save` | invoke (R->M) |
+| SKILL_CHAIN_DELETE | `skill:chain:delete` | invoke (R->M) |
+| SKILL_CHAIN_EXECUTE | `skill:chain:execute` | invoke (R->M) |
+
+### バリデーションルール
+
+| チャネル | バリデーション |
+| --- | --- |
+| `skill:chain:list` | Sender 検証のみ |
+| `skill:chain:get` | `chainId` P42準拠3段バリデーション |
+| `skill:chain:save` | `chain` が object、`chain.name` P42準拠3段バリデーション |
+| `skill:chain:delete` | `chainId` P42準拠3段バリデーション |
+| `skill:chain:execute` | `args` が object、`chainId` P42準拠3段バリデーション |
+
+### セキュリティ対策一覧
+
+| skill:chain:list | skill:chain:get | skill:chain:save | skill:chain:delete | skill:chain:execute |
+| --- | --- | --- | --- | --- |
+| OK | OK | OK | OK | OK |
+
+全5ハンドラに以下を適用:
+- `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })`
+- P42準拠3段バリデーション（`validateStringArg` ヘルパー）
+- エラーサニタイズ: `sanitizeErrorMessage(error)` → "Internal error"
+
+**関連タスク**: TASK-9D
+
+---
+
+## 実装例: skillScheduleAPI（TASK-9G）
+
+スキルスケジュール（一覧取得・追加・更新・削除・有効/無効切替）の5チャネルに適用するセキュリティパターン。
+
+### チャネル定数定義
+
+| 定数名 | チャネル名 | 方向 |
+| --- | --- | --- |
+| SKILL_SCHEDULE_LIST | `skill:schedule:list` | invoke (R->M) |
+| SKILL_SCHEDULE_ADD | `skill:schedule:add` | invoke (R->M) |
+| SKILL_SCHEDULE_UPDATE | `skill:schedule:update` | invoke (R->M) |
+| SKILL_SCHEDULE_DELETE | `skill:schedule:delete` | invoke (R->M) |
+| SKILL_SCHEDULE_TOGGLE | `skill:schedule:toggle` | invoke (R->M) |
+
+### バリデーションルール
+
+| チャネル | バリデーション |
+| --- | --- |
+| `skill:schedule:list` | Sender 検証のみ |
+| `skill:schedule:add` | `skillName`/`prompt` P42準拠3段バリデーション、`schedule.type` 必須、cron 時は `cronExpression` 非空、interval 時は正の数 |
+| `skill:schedule:update` | `id` P42準拠3段バリデーション |
+| `skill:schedule:delete` | `id` P42準拠3段バリデーション |
+| `skill:schedule:toggle` | `id` P42準拠3段バリデーション + 存在確認 |
+
+### セキュリティ対策一覧
+
+| skill:schedule:list | skill:schedule:add | skill:schedule:update | skill:schedule:delete | skill:schedule:toggle |
+| --- | --- | --- | --- | --- |
+| OK | OK | OK | OK | OK |
+
+全5ハンドラに以下を適用:
+- `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })`
+- P42準拠3段バリデーション（`validateStringArg` ヘルパー）
+- エラーサニタイズ: `toIpcErrorResponse(error)` → "Internal error"
+
+**関連タスク**: TASK-9G（2026-02-27完了）
 
 ---
 

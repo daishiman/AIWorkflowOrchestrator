@@ -62,6 +62,7 @@
 | SkillEditor | TASK-9A | スキルファイル編集UI（実装完了） |
 | SkillCenterView | TASK-UI-05 | ツール探索・追加・詳細表示ビュー |
 | SkillEditorView | TASK-UI-05A | ツール編集専用ビュー（仕様書作成済み・実装ファイル実在、統合未完了） |
+| SkillAdvancedViews（3A-3D） | TASK-UI-05B | ツール高度管理ビュー群（実装完了） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -101,6 +102,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | ChatView               | チャット画面                   |
 | SkillCenterView        | ツール探索・追加・詳細表示画面 |
 | SkillEditorView        | ツール編集専用画面（spec_created / 実装ファイル実在） |
+| SkillAdvancedViews | 高度管理4ビュー（Chain/Schedule/Debug/Analytics） |
 
 ### components/organisms/
 
@@ -151,6 +153,25 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張） | 2026-02-23 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
+| TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
+
+---
+
+## TASK-UI-05B 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS | ツール高度管理ビュー群（3A SkillChainBuilder / 3B ScheduleManager / 3C DebugPanel / 3D AnalyticsDashboard） | completed（実装・テスト・画面検証完了） | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+
+### TASK-UI-05B 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | 4ビュー導線（`ViewType`/`AppDock`/`App.tsx`）を追加し、Preload API（chain/schedule/debug/analytics）と統合 |
+| 苦戦箇所1 | `verify-all-specs` warning ドリフト（依存Phase成果物参照不足） |
+| 苦戦箇所2 | 画面証跡の鮮度不足（既存画像の存在確認で止まりやすい） |
+| 苦戦箇所3 | 未タスク監査の `current/baseline` 誤読 |
+| 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-05B 節 |
 
 ---
 
@@ -193,6 +214,9 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
 | 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/unassigned-task/` 配下へ統一 |
 | 2.13.5  | 2026-03-01 | TASK-UI-05A spec_created 反映: `SkillEditorView` を主要UI一覧/viewsへ追加（実装未着手明記）。仕様書作成済みタスク表と画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を追加 |
+| 2.13.7  | 2026-03-02 | TASK-UI-05B 追補: 実装内容と苦戦箇所サマリーを追加し、再利用参照を feature/workflow/lessons へ統一 |
+| 2.13.6  | 2026-03-02 | TASK-UI-05B 実装完了同期: 主要UI一覧・views階層・完了タスクを `completed` 状態へ更新し、`spec_created` 台帳を実装完了記録へ置換 |
+| 2.13.5  | 2026-03-01 | TASK-UI-05B spec_created を反映: 主要UI一覧と views 階層に SkillAdvancedViews（3A-3D）を追加。`仕様書作成済みタスク` セクションを新設し、`docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` 参照を登録 |
 | 2.13.4  | 2026-03-01 | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
 | 2.13.3  | 2026-03-01 | TASK-UI-05追補: Phase 12 UI仕様同期ガード（UT-UI-05-007）を追加し、SkillCenterView 関連未タスクを7件へ拡張 |
 | 2.13.2  | 2026-03-01 | TASK-UI-05追補: SkillCenterView 関連未タスクテーブルを UT-UI-05-001〜006 の6件へ拡張し、task-workflow/feature仕様との参照整合を統一 |
@@ -231,3 +255,5 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-UI-05 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/spec-update-summary.md)
 - [TASK-UI-05A 仕様書（spec_created）](../../../../docs/30-workflows/skill-editor-view/index.md)
 - [TASK-UI-05A 手動検証結果](../../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
+- [TASK-UI-05B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/index.md)
+- [TASK-UI-05B 画面検証スクリーンショット](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/outputs/phase-11/screenshots/)

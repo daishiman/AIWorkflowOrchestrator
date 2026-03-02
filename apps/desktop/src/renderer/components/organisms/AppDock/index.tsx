@@ -2,14 +2,9 @@ import React from "react";
 import clsx from "clsx";
 import { Icon, type IconName } from "../../atoms/Icon";
 import { NavIcon } from "../../molecules/NavIcon";
+import type { ViewType as StoreViewType } from "../../../store/types";
 
-export type ViewType =
-  | "dashboard"
-  | "editor"
-  | "chat"
-  | "graph"
-  | "settings"
-  | "agent";
+export type ViewType = StoreViewType;
 
 export interface AppDockProps {
   currentView: ViewType;
@@ -35,6 +30,30 @@ const navItems: NavItem[] = [
   { id: "chat", icon: "message-circle", label: "Chat", shortcut: "Cmd+3" },
   { id: "graph", icon: "network", label: "Graph", shortcut: "Cmd+4" },
   { id: "agent", icon: "bot", label: "Agent", shortcut: "Cmd+5" },
+  {
+    id: "chainBuilder",
+    icon: "zap",
+    label: "Chain",
+    shortcut: "Cmd+6",
+  },
+  {
+    id: "scheduleManager",
+    icon: "clock",
+    label: "Schedule",
+    shortcut: "Cmd+7",
+  },
+  {
+    id: "debugPanel",
+    icon: "alert-circle",
+    label: "Debug",
+    shortcut: "Cmd+8",
+  },
+  {
+    id: "analyticsDashboard",
+    icon: "globe",
+    label: "Analytics",
+    shortcut: "Cmd+9",
+  },
   { id: "settings", icon: "user", label: "Settings", shortcut: "Cmd+," },
 ];
 

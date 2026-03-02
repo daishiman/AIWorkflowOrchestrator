@@ -52,6 +52,30 @@ describe("Navigation Integration - agent view", () => {
       useAppStore.getState().setCurrentView("settings");
       expect(useAppStore.getState().currentView).toBe("settings");
     });
+
+    it("should navigate from agent view to chainBuilder", () => {
+      useAppStore.getState().setCurrentView("agent");
+      useAppStore.getState().setCurrentView("chainBuilder");
+      expect(useAppStore.getState().currentView).toBe("chainBuilder");
+    });
+
+    it("should navigate from agent view to scheduleManager", () => {
+      useAppStore.getState().setCurrentView("agent");
+      useAppStore.getState().setCurrentView("scheduleManager");
+      expect(useAppStore.getState().currentView).toBe("scheduleManager");
+    });
+
+    it("should navigate from agent view to debugPanel", () => {
+      useAppStore.getState().setCurrentView("agent");
+      useAppStore.getState().setCurrentView("debugPanel");
+      expect(useAppStore.getState().currentView).toBe("debugPanel");
+    });
+
+    it("should navigate from agent view to analyticsDashboard", () => {
+      useAppStore.getState().setCurrentView("agent");
+      useAppStore.getState().setCurrentView("analyticsDashboard");
+      expect(useAppStore.getState().currentView).toBe("analyticsDashboard");
+    });
   });
 
   describe("状態保持", () => {
@@ -171,6 +195,10 @@ describe("Navigation Integration - agent view", () => {
         "graph",
         "settings",
         "agent",
+        "chainBuilder",
+        "scheduleManager",
+        "debugPanel",
+        "analyticsDashboard",
       ] as const;
 
       for (const view of allViews) {

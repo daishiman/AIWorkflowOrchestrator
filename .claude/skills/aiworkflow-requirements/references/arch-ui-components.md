@@ -543,10 +543,62 @@ AgentView の実行責務と分離し、`agentSlice` の既存セレクタ/ア�
 
 ---
 
+## Skill Advanced Views アーキテクチャパターン（TASK-UI-05B / completed）
+
+> ステータス: **completed**（実装・テスト・導線同期完了）
+
+TASK-UI-05B は SkillCenterView（TASK-UI-05）の拡張として、4つの高度管理ビューを定義する。各ビューは独立した organisms として実装し、SkillCenterView からナビゲーション経由でアクセスする。
+
+### コンポーネント構成
+
+| ビュー | Atomic Design層 | コンポーネント数 | バックエンド依存 |
+| --- | --- | --- | --- |
+| 3A SkillChainBuilder | organisms | 7 | TASK-9D（`skill:chain:*`） |
+| 3B ScheduleManager | organisms | 8 | TASK-9G（`skill:schedule:*`） |
+| 3C DebugPanel | organisms | 10 | TASK-9H（`skill:debug:*`） |
+| 3D AnalyticsDashboard | organisms | 8 | TASK-9J（`skill:analytics:*`） |
+
+### 状態管理方針
+
+4ビューは互いに状態を共有しないため、新規 Zustand Slice は作成しない。各ビューのカスタム Hook 内で `useState` を使用し、IPC 経由でデータを取得する。既存の `agentSlice` からスキル一覧を取得する場合のみ個別セレクタを使用する（P31対策）。
+
+| カスタムHook | 対象ビュー | 管理対象 |
+| --- | --- | --- |
+| useChainList / useChainEditor | 3A SkillChainBuilder | チェーン一覧・編集状態 |
+| useScheduleList / useScheduleEditor | 3B ScheduleManager | スケジュール一覧・編集状態 |
+| useDebugSession / useBreakpoints | 3C DebugPanel | デバッグセッション・ブレークポイント |
+| useAnalyticsSummary / useUsageTrend | 3D AnalyticsDashboard | 統計サマリー・トレンドデータ |
+
+### ファイル配置
+
+| ディレクトリ | 対象ビュー |
+| --- | --- |
+| `apps/desktop/src/renderer/views/SkillChainBuilder/` | 3A |
+| `apps/desktop/src/renderer/views/ScheduleManager/` | 3B |
+| `apps/desktop/src/renderer/views/DebugPanel/` | 3C |
+| `apps/desktop/src/renderer/views/AnalyticsDashboard/` | 3D |
+
+### 仕様同期時の苦戦箇所（SubAgent-C）
+
+| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| 構造仕様は完了だが warning が残る | `phase-12-documentation.md` の依存成果物参照不足でアーキ情報の根拠が弱かった | Phase 2/5/6/7/8/9/10 成果物参照を補完し、構造仕様の根拠を固定 | UI構造同期時は「仕様本文 + 依存成果物参照」をセットで更新する |
+| 画面証跡と構造仕様の更新タイミング不一致 | 既存スクリーンショットを流用し、最新導線との差分確認が遅れる | スクリーンショットを再撮影して、構造仕様の完了判定を同日証跡で固定 | UI構造仕様の完了判定には再撮影証跡を必須化する |
+
+### 参照
+
+- [TASK-UI-05B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/index.md)
+- [Phase 2 設計仕様](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/phase-2-design.md)
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
+| 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` へ更新し、UI導線追加に合わせてアーキテクチャ節を実装実体へ一致化 |
+| 2.8.0   | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views（4ビュー/33コンポーネント）のアーキテクチャパターン、状態管理方針、ファイル配置を追加 |
 | 1.6.0   | 2026-03-01 | TASK-UI-05反映: SkillCenterViewアーキテクチャパターン（レイヤー構成、データフロー、状態管理、IPC境界、品質指標）を追加 |
 | 1.5.0   | 2026-02-02 | TASK-8Bコンポーネントテスト完了記録・テスト品質メトリクス追加 |
 | 1.4.0   | 2026-01-30 | ChatPanel統合パターン追加（TASK-7D） |

@@ -45,6 +45,10 @@ import type {
   SkillForkOptions,
   SkillForkResult,
 } from "@repo/shared";
+import type {
+  SkillChainDefinition,
+  SkillChainResult,
+} from "@repo/shared/types/skill-chain";
 import type { BackupInfo } from "./types";
 import type {
   DebugSessionState,
@@ -244,6 +248,19 @@ export interface SkillAPI {
    * @returns フォーク結果
    */
   forkSkill: (options: SkillForkOptions) => Promise<SkillForkResult>;
+
+  // === Skill Chain Operations (TASK-UI-05B / TASK-9D) ===
+
+  /** チェーン一覧を取得する */
+  chainList: () => Promise<SkillChainDefinition[]>;
+  /** チェーンを取得する */
+  chainGet: (chainId: string) => Promise<SkillChainDefinition>;
+  /** チェーンを保存する（新規作成・更新兼用） */
+  chainSave: (chain: SkillChainDefinition) => Promise<SkillChainDefinition>;
+  /** チェーンを削除する */
+  chainDelete: (chainId: string) => Promise<void>;
+  /** チェーンを実行する */
+  chainExecute: (chainId: string) => Promise<SkillChainResult>;
 
   // === Skill Schedule Operations (TASK-9G) ===
 
@@ -545,6 +562,30 @@ export const skillAPI: SkillAPI = {
 
   forkSkill: (options: SkillForkOptions): Promise<SkillForkResult> =>
     safeInvokeUnwrap<SkillForkResult>(IPC_CHANNELS.SKILL_FORK, options),
+
+  // === Skill Chain Operations (TASK-UI-05B / TASK-9D) ===
+
+  chainList: (): Promise<SkillChainDefinition[]> =>
+    safeInvokeUnwrap<SkillChainDefinition[]>(IPC_CHANNELS.SKILL_CHAIN_LIST),
+
+  chainGet: (chainId: string): Promise<SkillChainDefinition> =>
+    safeInvokeUnwrap<SkillChainDefinition>(IPC_CHANNELS.SKILL_CHAIN_GET, {
+      chainId,
+    }),
+
+  chainSave: (chain: SkillChainDefinition): Promise<SkillChainDefinition> =>
+    safeInvokeUnwrap<SkillChainDefinition>(
+      IPC_CHANNELS.SKILL_CHAIN_SAVE,
+      chain,
+    ),
+
+  chainDelete: (chainId: string): Promise<void> =>
+    safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_CHAIN_DELETE, { chainId }),
+
+  chainExecute: (chainId: string): Promise<SkillChainResult> =>
+    safeInvokeUnwrap<SkillChainResult>(IPC_CHANNELS.SKILL_CHAIN_EXECUTE, {
+      chainId,
+    }),
 
   // === Skill Schedule Operations (TASK-9G) ===
 

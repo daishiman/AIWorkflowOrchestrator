@@ -73,6 +73,22 @@
       "types": "./dist/src/types/skill.d.ts",
       "import": "./dist/src/types/skill.js"
     },
+    "./types/skill-chain": {
+      "types": "./dist/src/types/skill-chain.d.ts",
+      "import": "./dist/src/types/skill-chain.js"
+    },
+    "./types/skill-analytics": {
+      "types": "./dist/src/types/skill-analytics.d.ts",
+      "import": "./dist/src/types/skill-analytics.js"
+    },
+    "./types/skill-debug": {
+      "types": "./dist/src/types/skill-debug.d.ts",
+      "import": "./dist/src/types/skill-debug.js"
+    },
+    "./types/skill-schedule": {
+      "types": "./dist/src/types/skill-schedule.d.ts",
+      "import": "./dist/src/types/skill-schedule.js"
+    },
     "./services/history/types": {
       "types": "./dist/src/services/history/types.d.ts",
       "import": "./dist/src/services/history/types.js"
@@ -157,6 +173,18 @@
       ],
       "types/skill": [
         "./src/types/skill.ts"
+      ],
+      "types/skill-chain": [
+        "./src/types/skill-chain.ts"
+      ],
+      "types/skill-analytics": [
+        "./src/types/skill-analytics.ts"
+      ],
+      "types/skill-debug": [
+        "./src/types/skill-debug.ts"
+      ],
+      "types/skill-schedule": [
+        "./src/types/skill-schedule.ts"
       ],
       "types/agent": [
         "./src/types/agent.ts"
