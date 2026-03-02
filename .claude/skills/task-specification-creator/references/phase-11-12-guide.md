@@ -332,6 +332,8 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
 - [ ] implementation-guide.md 内の画像パスがリポジトリ相対パスであること（PRコメント投稿時にGitHub上で表示可能）
+- [ ] Phase 13（`/ai:diff-to-pr`）で参照する `TARGET_WORKFLOW_DIR` が今回差分のworkflowを指すことを確認した
+- [ ] PR本文（`.github/pull_request_template.md` 準拠）の `## その他` に Phase 12 実装ガイド反映元パスと要点を記載する準備ができている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ### Phase 12 自動化コマンド

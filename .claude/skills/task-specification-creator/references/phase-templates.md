@@ -1605,10 +1605,19 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 
 **PR作成時の自動投稿内容（`/ai:diff-to-pr`）**:
 
-1. **PR本文**: 概要・変更内容・変更タイプ・テスト・タスク実行サマリー・スクリーンショット・チェックリスト
+1. **PR本文**（`.github/pull_request_template.md` 準拠）:
+   概要・変更内容・変更タイプ・テスト・関連 Issue・破壊的変更・（UI/UX変更時のみ）スクリーンショット・チェックリスト・その他
 2. **PRコメント1**: 実装の詳細・レビュー注意点・テスト方法・参考資料
 3. **PRコメント2**（Phase 12成果物あり時）: implementation-guide.md の全文
 4. **PRコメント3**（Phase 11スクリーンショットあり時）: スクリーンショットギャラリー
+
+**PR本文セクション連携ルール（必須）**:
+
+- `/ai:diff-to-pr` の Phase 3.6 で、staged差分から `TARGET_WORKFLOW_DIR` を1件特定する
+- Phase 11/12成果物パス（`implementation-guide.md` / `screenshot-coverage.md` / `screenshots/`）は `TARGET_WORKFLOW_DIR` 配下のみ参照する
+- PR本文 `## その他` に、Phase 12 実装ガイド反映元パスと要点（Part 1/Part 2）を必ず記載する
+- UI/UX変更がない場合は PR本文 `## スクリーンショット` セクションを削除する
+- workflow候補が複数ある場合は、PR作成前にユーザーへ対象workflowを確認する
 
 ### 4. 実行結果の確認
 
