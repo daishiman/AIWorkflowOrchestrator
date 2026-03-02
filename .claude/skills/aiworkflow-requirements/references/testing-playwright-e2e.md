@@ -9,13 +9,14 @@
 
 | Version | Date       | Changes                                      |
 | ------- | ---------- | -------------------------------------------- |
+| 1.1.0   | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001: Playwright設定のCI/ローカル動的切替（timeout/expect/retries/workers/reporter）を反映。`ci.yml` の `e2e-desktop` ジョブ（xvfb + chromium + artifact保存）を追記 |
 | 1.0.0   | 2026-02-02 | 初版作成（TASK-8C-D E2Eテスト実装を基に抽出） |
 
 ---
 
 ## 概要
 
-PlaywrightによるE2Eテストの実装パターンを定義する。Electron Rendererプロセスを対象とし、ViteのDevサーバー経由でテストを実行する。
+PlaywrightによるE2Eテストの実装パターンを定義する。Electron Rendererプロセスを対象とし、ViteのDevサーバー経由で実行する。CIでは `CI=true` を前提に、タイムアウト・リトライ・ワーカー数・レポーターを動的に切り替える。
 
 ---
 
@@ -37,6 +38,7 @@ PlaywrightによるE2Eテストの実装パターンを定義する。Electron R
 | パッケージ     | `@playwright/test`    |
 | 実行方法       | Vite DevServer経由    |
 | ベースURL      | `http://localhost:5173` |
+| CI統合         | `ci.yml` の `e2e-desktop` ジョブ（xvfb + chromium） |
 
 ---
 
@@ -279,25 +281,45 @@ test.skip(process.env.CI === 'true', 'CI環境ではスキップ');
 | 設定項目       | 推奨値                |
 | -------------- | --------------------- |
 | headless       | `true`                |
-| timeout        | `30000`（30秒）       |
+| timeout        | `60000`（CI） / `30000`（local） |
 | retries        | `2`（CI環境のみ）     |
 | workers        | `1`（並列競合防止）   |
+| reporter       | `github + html`（CI） |
+
+### `e2e-desktop` ジョブ標準構成（2026-03-01）
+
+| ステップ | 内容 |
+| --- | --- |
+| 1 | `pnpm install --frozen-lockfile` |
+| 2 | `actions/download-artifact@v4` で `shared-build` を取得 |
+| 3 | `actions/cache@v4` で `~/.cache/ms-playwright` をキャッシュ |
+| 4 | `pnpm --filter @repo/desktop exec playwright install --with-deps chromium` |
+| 5 | `pnpm --filter @repo/desktop build` |
+| 6 | `xvfb-run --auto-servernum pnpm --filter @repo/desktop exec playwright test` |
+| 7 | `apps/desktop/playwright-report/` をartifact保存（7日） |
 
 ### playwright.config.ts推奨設定
 
 ```typescript
+const isCI = !!process.env.CI;
+
 export default defineConfig({
   testDir: './e2e',
-  timeout: 30000,
+  timeout: isCI ? 60_000 : 30_000,
+  expect: { timeout: isCI ? 10_000 : 5_000 },
+  retries: isCI ? 2 : 0,
+  workers: isCI ? 1 : undefined,
+  reporter: isCI ? [['github'], ['html', { open: 'never' }]] : 'html',
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'pnpm dev',
+    command: 'npx vite --config vite.e2e.config.ts',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !isCI,
+    timeout: 120_000,
   },
 });
 ```
@@ -333,3 +355,4 @@ pnpm --filter @repo/desktop exec playwright test --trace on
 | [quality-e2e-testing.md](./quality-e2e-testing.md)   | E2Eテスト全体仕様      |
 | [testing-accessibility.md](./testing-accessibility.md) | アクセシビリティ仕様 |
 | [testing-fixtures.md](./testing-fixtures.md)         | テストフィクスチャ仕様 |
+| [deployment-gha.md](./deployment-gha.md)             | CIでのE2E実行要件      |

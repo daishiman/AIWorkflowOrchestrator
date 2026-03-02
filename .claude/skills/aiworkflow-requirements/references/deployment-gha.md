@@ -67,6 +67,10 @@
     - testジョブ完了後にカバレッジを収集
     - Codecovにレポートをアップロード
     - 閾値80%未達でCI失敗
+11. **Electron E2Eテスト実行**（実装済み 2026-03-01）
+    - `e2e-desktop` ジョブで Playwright + Chromium を起動
+    - `xvfb-run` で headless GUI 環境を提供
+    - `apps/desktop/playwright-report/` を artifact 保存
 
 ### 品質ゲート
 
@@ -76,6 +80,7 @@
   - Project coverage: 80%以上
   - Patch coverage: 80%以上
   - 設定ファイル: `codecov.yml`
+- `e2e-desktop` が失敗した場合はCI全体を失敗とする（IPC実環境回帰の防止）
 
 ---
 
@@ -180,6 +185,20 @@
 | VITEST_MAX_FORKS | ローカルでのfork数上書き |
 | VITEST_FILE_PARALLELISM | falseでファイル並列化無効化 |
 
+### Electron E2Eジョブ設計（UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 2026-03-01）
+
+`ci.yml` に `e2e-desktop` ジョブを追加し、Worktreeで代替していたLayer 3（実環境E2E）をCIで自動実行する。
+
+| 項目 | 設定 |
+| ---- | ---- |
+| ジョブ名 | `e2e-desktop` |
+| 依存関係 | `build-shared` |
+| 実行環境 | `ubuntu-latest` + `CI=true` |
+| ブラウザ | `playwright install --with-deps chromium` |
+| 実行コマンド | `xvfb-run --auto-servernum pnpm --filter @repo/desktop exec playwright test` |
+| 成果物 | `apps/desktop/playwright-report/`（retention 7日） |
+| キャッシュ | `~/.cache/ms-playwright`（`actions/cache@v4`） |
+
 ---
 
 ## CD ワークフロー要件（mainマージ時）
@@ -283,5 +302,6 @@
 
 | 日付       | バージョン | 変更内容 |
 | ---------- | ---------- | -------- |
+| 2026-03-01 | 1.2.0      | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001: `ci.yml` に `e2e-desktop` ジョブを追加（Playwright browser cache, chromium install, `xvfb-run` 実行, E2Eレポートartifact保存）。品質ゲートへE2E成功条件を追加 |
 | 2026-02-02 | 1.1.0      | TASK-OPT-CI-TEST-PARALLEL-001: テストシャード戦略（16シャード）、shared packageビルドキャッシュ、カバレッジ条件分岐、Vitest並列化設定、環境変数制御、actions/cache@v4明記追加 |
 | 2026-01-05 | 1.0.0      | 初版作成（カバレッジチェック・Codecov連携追加） |

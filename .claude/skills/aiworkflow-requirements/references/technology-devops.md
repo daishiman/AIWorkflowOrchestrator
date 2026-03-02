@@ -321,7 +321,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | Travis CI       | 老舗で安定             | 無料枠が縮小               | 不採用 |
 | Jenkins         | 完全にカスタマイズ可能 | 自己ホスティングの運用コスト | 不採用 |
 
-### 主要CIジョブ構成（2026-02-24更新）
+### 主要CIジョブ構成（2026-03-01更新）
 
 | ジョブ名 | トリガー | 主な処理 | 依存関係 |
 | --- | --- | --- | --- |
@@ -331,7 +331,8 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | `typecheck` | PR / `main` push | 全体型チェック | `build-shared` |
 | `test-shared` | PR / `main` push | shared テスト | `build-shared` |
 | `test-desktop` | PR / `main` push | desktop テスト（16 shard） | `build-shared` |
-| `build` | PR / `main` push | 最終ビルド検証 | `lint`, `typecheck`, `test-shared`, `test-desktop`, `build-shared`, `check-module-sync` |
+| `e2e-desktop` | PR / `main` push | desktop E2E テスト（Playwright + xvfb） | `build-shared` |
+| `build` | PR / `main` push | 最終ビルド検証 | `lint`, `typecheck`, `test-shared`, `test-desktop`, `e2e-desktop`, `build-shared`, `check-module-sync` |
 
 ### Codecov
 
@@ -453,6 +454,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 | ENV-INFRA-001 | better-sqlite3 Node.jsバージョン不一致修正 | 2026-02-04 | pnpm store prune + install --forceによる再ビルド、CONTRIBUTING.md作成 |
 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | 2026-02-22 | `scripts/check-shared-module-sync.ts` 新規作成、`check-module-sync` CIジョブ追加、43テスト全PASS |
 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | Vitest alias と tsconfig paths の同期自動化 | 2026-02-24 | `vite-tsconfig-paths` 導入で手動alias 27件削除。CI/ローカル実行コマンドを `pnpm check:module-sync` に統一。60テスト全PASS |
+| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Worktree制約を前提とした Electron E2E CI統合 | 2026-03-01 | `ci.yml` に `e2e-desktop` ジョブ追加。Playwright browser cache、Chromium install、`xvfb-run` 実行、E2Eレポートartifact保存を標準化 |
 
 ---
 
@@ -490,6 +492,7 @@ AI呼び出しのコストを最適化するため、環境と用途に応じて
 
 | 日付       | 変更内容                                                                     |
 | ---------- | ---------------------------------------------------------------------------- |
+| 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001: `e2e-desktop` CIジョブ（Playwright + xvfb）を主要CI構成と完了タスクへ追加 |
 | 2026-02-24 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: 4設定整合運用を反映（`check-module-sync` の説明を4設定整合へ更新、完了タスクを追加） |
 | 2026-02-22 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001: @repo/shared 3層整合CIガード完了タスク記録追加（check-module-syncジョブ） |
 | 2026-02-04 | ENV-INFRA-001: better-sqlite3バージョン不一致修正完了記録追加                |

@@ -13,64 +13,40 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-A | `references/interfaces-*.md` | 型定義・Preload API契約同期 | 実装型と仕様型の差分ゼロ |
-| SubAgent-B | `references/api-ipc-*.md` | IPCチャネル契約（request/response/validation）同期 | チャネル表・実装状況表が実装一致 |
-| SubAgent-C | `references/security-*.md` | sender/P42/許可値/エラー境界の同期 | セキュリティ要件の欠落ゼロ |
-| SubAgent-D | `references/task-workflow.md` | 完了記録・成果物・検証証跡・苦戦箇所同期 | 実装内容 + 証跡 + 苦戦箇所が同一ターンで記録済み |
-| SubAgent-E | `references/lessons-learned.md` | 苦戦箇所の再利用可能化 | 再発条件付きで簡潔解決手順が記録済み |
-
-### 2.1 UI機能実装プロファイル（TASK-UI-05型）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 | UI正本へ反映済み |
-| SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様・未タスク・苦戦箇所同期 | 機能仕様と再利用手順が記録済み |
-| SubAgent-C | `references/arch-ui-components.md` / `references/arch-state-management.md` | 構造/状態管理の責務境界同期 | レイヤーと状態境界が整合 |
-| SubAgent-D | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
-| SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
+| SubAgent-A | `references/interfaces-*.md` | 契約定義の同期 | 新旧契約・境界変換が明記されている |
+| SubAgent-B | `references/api-ipc-*.md` | IPCチャネル契約同期 | request/response/validationが実装準拠で記録されている |
+| SubAgent-C | `references/security-*.md` | 検証要件の同期 | sender/入力検証/path境界の責務分離が明記されている |
+| SubAgent-D | `references/task-workflow.md` | 完了記録と証跡の同期 | 検証コマンドと結果、残課題が記録されている |
+| SubAgent-E | `references/lessons-learned.md` | 苦戦箇所の教訓化 | 再利用可能な解決手順が追記されている |
 
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |
 | --- | --- |
-| interfaces | 実装内容、契約差分、後方互換方針、型公開面（package index） |
-| api-ipc | チャネル一覧、引数/戻り値、実装状況、Preload対応メソッド |
-| security | 検証要件、責務分離、許可値リスト、サニタイズ方針 |
-| task-workflow | 完了記録、成果物、苦戦箇所、検証証跡、未タスク監査結果 |
-| lessons-learned | 苦戦箇所、再発条件、原因、解決策、簡潔手順 |
+| interfaces | 実装内容、契約差分、後方互換方針 |
+| api-ipc | チャネル契約、バリデーション、実装状況 |
+| security | 検証要件、責務分離、苦戦箇所 |
+| task-workflow | 完了記録、検証証跡、未タスク監査結果、タスクID一意性 |
+| lessons-learned | 苦戦箇所、原因、解決策、簡潔手順 |
 
-UI機能実装時の必須記載（追加）:
-- `ui-ux-components`: 完了タスク、関連未タスク、実装導線
-- `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
-- `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
-
-## 4. IPC追加時の契約突合（必須）
-
-| 観点 | 確認方法 | 完了条件 |
-| --- | --- | --- |
-| handler 実装 | `rg -n "skill:.*" apps/desktop/src/main/ipc` | 追加チャネルのハンドラが存在 |
-| register 配線 | `rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts` | 新規ハンドラが `registerAllIpcHandlers` に登録済み |
-| preload 公開 | `rg -n "safeInvoke|safeInvokeUnwrap" apps/desktop/src/preload/skill-api.ts` | 全チャネルに対応する API が公開済み |
-| 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
-
-## 5. 検証コマンド
+## 4. 検証コマンド
 
 ```bash
-rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
-rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+awk -F'|' 'BEGIN{flag=0} /^## 残課題（未タスク）/ {flag=1; next} /^## / && flag {flag=0} flag && /^\|/ { id=$2; gsub(/^[[:space:]]+|[[:space:]]+$/, "", id); gsub(/^~~|~~$/, "", id); if (id ~ /^(UT|TASK|task)-/) print id }' .claude/skills/aiworkflow-requirements/references/task-workflow.md | sort | uniq -d
 ```
 
-## 6. 完了チェック
+> 注記: `audit-unassigned-tasks --json --target-file` を使う場合、対象は `docs/30-workflows/unassigned-task/` 配下のみ。検出0件のタスクでは `--diff-from HEAD` を current 判定として記録する。
 
-- [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
-- [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
-- [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` が同一ターンで更新されている
-- [ ] `handler/register/preload` 三点突合が完了している
+## 5. 完了チェック
+
+- [ ] 5仕様書が同一ターンで更新されている
 - [ ] 変更履歴が各仕様書で更新されている
-- [ ] 検証コマンド結果が `task-workflow.md` に記録されている
-- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
-- [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
+- [ ] 検証コマンド結果が台帳に記録されている
+- [ ] 苦戦箇所と再利用手順が lessons に反映されている
+- [ ] `phase-12-documentation.md` の完了チェックが成果物実体へ同期され、条件項目はN/A理由が明記されている
+- [ ] Phase 12成果物5点（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）が出力されている

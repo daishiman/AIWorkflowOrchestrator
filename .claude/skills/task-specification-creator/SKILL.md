@@ -391,9 +391,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v9.99.0** | **2026-03-01** | **TASK-UI-05 Phase 12同期を反映**: 未タスク指示書6件（UT-UI-05-001〜006）の作成運用、Phase 11成果物補完（manual-test-result/discovered-issues）、`complete-phase.js` による artifacts 再同期、`generate-index.js` 再生成を実施。Phase 12 の「スコープ外記述残置」是正手順を LOGS へ固定 |
-| **v9.98.0** | **2026-02-28** | **Phase 12 実行証跡整合ガードを追加**: `references/phase-11-12-guide.md` に Task 3.5（成果物実体 / artifacts status / チェックリスト同期の三点突合）を新設。完了チェックへ `currentViolations` 基準の差分監査判定を追加し、baseline誤読による false fail を防止 |
-| **v9.97.0** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査反映**: `outputs/phase-1`〜`phase-13` の成果物補完と `artifacts.json`/`outputs/artifacts.json` 同期を完了。Phase 12 必須成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection-report/skill-feedback-report）の実体を固定し、未タスク差分判定（current=0, baseline分離）を再確認 |
+| **v9.99.1** | **2026-03-01** | **UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補**: `phase-11-12-guide.md` に `audit --target-file` 対象制約（unassigned-task配下限定）と、`phase-12-documentation.md` 完了チェック同期（Task 1-5 + 条件項目N/A明記）の運用を追加。Phase 12 再監査での current/baseline 判定誤読を防止 |
+| **v9.99.0** | **2026-03-01** | **UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 反映完了**: `phase-11-12-guide.md` に完了タスク記録を追加し、Phase 12の正本同期対象（`task-workflow.md` / `deployment-gha.md` / `technology-devops.md` / `testing-playwright-e2e.md` / LOGS/SKILL）を更新する運用を実適用。`spec-update-summary.md` の Step 1-A/1-B/1-C/Step 2 未反映判定を解消 |
+| **v9.98.1** | **2026-03-01** | **Phase 12 成果物名ドリフト是正**: `spec-update-workflow.md` / `phase-templates.md` / `artifact-naming-conventions.md` / `patterns.md` の未タスク成果物名を `unassigned-task-detection.md` に統一。Step 2チェックリストと artifacts 例の正本を現行運用へ同期 |
+| **v9.98.0** | **2026-02-28** | **UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001完了**: Phase 7ハンドラ単位カバレッジ判定ルール追加。`phase-templates.md` にハンドラ単位カバレッジレポートサブセクションを追記 |
 | **v9.96.0** | **2026-02-27** | **TASK-9H 再確認運用を追補**: `references/patterns.md` に成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件実体確認→ステータス同期→検証4点セット固定の手順を標準化し、Phase 12 の未実施残置を防止 |
 | **v9.95.0** | **2026-02-27** | **TASK-9H Phase 12再監査運用を反映**: `phase-4-test-creation.md` / `phase-5-implementation.md` の必須セクション「統合テスト連携」を明記し、`validate-phase-output` エラー2件を解消。`outputs/phase-12` 必須4成果物（`spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`）の作成ガードと検証証跡（current/baseline分離）を再確認 |
 | **v9.97.0** | **2026-02-28** | **TASK-9I Phase 12再監査反映**: `documentation-changelog.md` の Step 進捗未同期を解消し、必須6仕様書（api-ipc/arch/security/overview/interfaces/task-workflow）を実装準拠へ更新。`UT-9I-001` / `UT-9I-002` 指示書を `docs/30-workflows/unassigned-task/` に新規作成し、未タスク3ステップ（指示書・残課題・関連仕様）を完了化 |
