@@ -24,14 +24,14 @@
 
 ## 参照資料
 
-| 資料名             | パス                                         | 説明          |
-| ------------------ | -------------------------------------------- | ------------- |
-| 要件定義書         | `outputs/phase-1/requirements-definition.md` | Phase 1成果物 |
-| 受け入れ基準       | `outputs/phase-1/acceptance-criteria.md`     | Phase 1成果物 |
-| スコープ定義       | `outputs/phase-1/scope-definition.md`        | Phase 1成果物 |
-| アーキテクチャ設計 | `outputs/phase-2/architecture-design.md`     | Phase 2成果物 |
-| タスク原本         | `task-030-ui-05-skill-center-view.md`        | 全仕様        |
-| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`         | Pitfall一覧   |
+| 資料名             | パス                                                                                                   | 説明          |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------- |
+| 要件定義書         | `outputs/phase-1/requirements-definition.md`                                                           | Phase 1成果物 |
+| 受け入れ基準       | `outputs/phase-1/acceptance-criteria.md`                                                               | Phase 1成果物 |
+| スコープ定義       | `outputs/phase-1/scope-definition.md`                                                                  | Phase 1成果物 |
+| アーキテクチャ設計 | `outputs/phase-2/architecture-design.md`                                                               | Phase 2成果物 |
+| タスク原本         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | 全仕様        |
+| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                   | Pitfall一覧   |
 
 ## 判定基準
 

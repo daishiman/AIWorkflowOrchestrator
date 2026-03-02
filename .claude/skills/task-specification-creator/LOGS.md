@@ -26,44 +26,71 @@
 
 ---
 
-## 2026-03-01 - UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補（Phase 12チェック同期）
+## 2026-03-02 - 未タスク指示書作成（2workflow同時監査の証跡集約ガード）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（再確認・運用追補）
+- **Phase**: Phase 12（Task 4: 未タスク作成）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `phase-12-documentation.md` の完了チェック（Task 1-5 / Task100%）を実施結果へ同期し、条件項目はN/A理由を明記
-  - `spec-update-summary.md` に Warning分類（要監視/要対応）、`audit --json` と `audit --diff-from HEAD` の分離判定、苦戦箇所3件を追記
-  - `references/phase-11-12-guide.md` に `audit --target-file` 対象制約（`unassigned-task/` 配下限定）を追加し、再発防止ルールを更新
+  - `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` を新規作成
+  - `## 3.5 実装課題と解決策` に今回苦戦箇所（証跡分散、Task 1/3/4/5 実体突合漏れ、current/baseline誤判定、画面証跡鮮度）を記録
+  - `task-workflow.md` 残課題テーブルへ同タスクを同期
+  - target監査（`audit --target-file`）で `currentViolations=0` を確認
 
 ---
 
-## 2026-03-01 - UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 Phase 12最終同期
+## 2026-03-02 - Phase 12準拠再確認（2workflow + 未タスク監査）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（仕様反映・整合最終化）
+- **Phase**: Phase 12（再検証・準拠確認）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `references/phase-11-12-guide.md` に本タスクの完了記録と関連ドキュメントを追記
-  - `aiworkflow-requirements` 側の正本仕様（`task-workflow.md` / `deployment-gha.md` / `technology-devops.md` / `testing-playwright-e2e.md`）へ実装差分を同期
-  - `spec-update-summary.md` の未反映判定（Step 1-A/1-B/1-C/Step 2）を解消し、未反映なしへ更新
-  - 検証チェーン（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`）を再実行し current=0 を確認
+  - `docs/30-workflows/skill-editor-view` と `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW` の2workflowで `verify-all-specs` / `validate-phase-output` を再実行（いずれもPASS）
+  - Phase 12必須成果物（Task 1/3/4/5）実体を突合し、`implementation-guide.md` の Part 1/Part 2 構成を確認
+  - `docs/30-workflows/unassigned-task/task-ui-05a-*.md` 3件の配置と10見出し準拠を確認
+  - 未タスク監査は `currentViolations=0` を合格基準として固定（baselineは既存課題として分離記録）
 
 ---
 
-## 2026-03-01 - Phase 12 成果物名同期（unassigned-task-detection 統一）
+## 2026-03-02 - TASK-UI-05A 再監査（Phase 11/12整合の是正）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（運用仕様の保守改善）
+- **Phase**: Phase 11-12（再検証・文書同期）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `references/spec-update-workflow.md` の必須成果物チェックを `unassigned-task-detection.md` へ更新
-  - `references/phase-templates.md` の `complete-phase` artifacts 例を `unassigned-task-detection.md` へ更新
-  - `references/artifact-naming-conventions.md` の Phase 12 命名規約を現行名に統一
-  - `references/patterns.md` の Phase 12 成果物名記載を現行運用へ同期
+  - `outputs/phase-11` に 2026-03-02 再取得スクリーンショットを追加（Dashboard/Editor + 導線チェック）
+  - `outputs/phase-12/spec-update-summary.md` を新規作成し、必須成果物5+2セットを充足
+  - 未タスク3件を `docs/30-workflows/unassigned-task/` 正本へ作成し、`task-workflow.md` と同期
+  - `artifacts.json` / `outputs/artifacts.json` を同期し、Phase 12成果物参照を更新
+
+---
+
+## 2026-03-01 - TASK-UI-05A 包括的監査・仕様修正
+
+- **Agent**: task-specification-creator
+- **Phase**: 仕様書品質監査
+- **Result**: ✓ 成功
+- **Notes**:
+  - Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加
+  - Phase 2/5 の useFileTree 引数仕様を統一（skillNameベース）
+  - UT-UI-05A-GETFILETREE-001 未タスクを登録
+
+---
+
+## 2026-03-01 - TASK-UI-05A spec_created 再監査（画面証跡・リンク整合）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（検証・仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/skill-editor-view/outputs/phase-11/` に画面検証成果物を追加（スクリーンショット2件 + manual-test-result + discovered-issues）
+  - `verify-unassigned-links` 失敗要因だった3リンクを是正（`task-workflow.md` / `lessons-learned.md`）
+  - `TASK-UI-05A-SKILL-EDITOR-VIEW` を `spec_created` として `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` に同期
+  - `aiworkflow-requirements/SKILL.md`（8.93.0）と `task-specification-creator/SKILL.md`（v10.00.0）の変更履歴を更新
 
 ---
 
@@ -80,7 +107,6 @@
   - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
 
 ---
-
 ## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 1-12 完了
 
 - **Agent**: task-specification-creator
@@ -93,6 +119,21 @@
   - 新規IPCチャンネル5つ、サービス2つ、型定義8インターフェース追加
   - テスト97件全PASS、カバレッジ全基準クリア
   - Phase 12 成果物5ファイル作成完了
+
+---
+
+## 2026-02-28 - TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査・成果物補完
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13（再監査・成果物整備）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/outputs/phase-1..13` の不足成果物を補完
+  - `artifacts.json` を全Phase completed に更新し、`outputs/artifacts.json` を同期生成
+  - Phase 12 必須成果物5件を実体化（`implementation-guide.md`, `spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection-report.md`, `skill-feedback-report.md`）
+  - 互換目的で `unassigned-task-detection.md` を併置し、命名ゆれによる参照ドリフトを抑制
+  - 検証コマンドを再実行し PASS を確認（`verify-all-specs` 13/13, `validate-phase-output` 28項目, `verify-unassigned-links` 91/91, `audit --diff-from HEAD` current=0）
 
 ---
 
@@ -4795,24 +4836,40 @@ if (artifactPath) {
 - ステータス: success
 - 効果: Phase 12 の未実施残置による誤判定を防止
 
----
-
-## 2026-02-28 - UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 Phase 12 完了
+## 2026-03-01 - TASK-UI-05-SKILL-CENTER-VIEW Phase 12 仕様運用同期
 
 ### コンテキスト
 
-- スキル: aiworkflow-requirements / task-specification-creator
-- 対象: IPCハンドラ単位カバレッジ測定基盤構築
+- スキル: task-specification-creator
+- タスクID: TASK-UI-05-SKILL-CENTER-VIEW
+- フェーズ: 11-12（手動テスト成果物補完 + ドキュメント更新）
 
 ### 実施内容
 
-- `coverage-by-handler.ts` スクリプト実装（ts-morph AST解析 + Istanbul形式カバレッジ集計）
-- 58テスト作成（Lines 95.82%, Branch 90.36%, Function 100%）
-- Phase 7判定ルール実装（ハンドラ単位PASS/FAIL判定、P41注記）
-- `quality-requirements.md` にハンドラ単位カバレッジ判定ルール追記
-- 手動テスト MT-001〜MT-010 全PASS
+- Phase 11 成果物を補完
+  - `manual-test-result.md` を生成
+  - `discovered-issues.md` を作成（UT-UI-05-001〜006）
+- `complete-phase.js` で Phase 11/12 の artifacts を再登録
+- 未タスク指示書 5件を追加作成（既存1件と合わせて6件）
+- Phase 12成果物を実績ベースへ再同期
+  - `spec-update-summary.md`
+  - `documentation-changelog.md`
+  - `unassigned-task-detection.md`
+- Phaseインデックスを再生成
+  - `generate-index.js --workflow docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW --regenerate`
+- 検証実行
+  - verify-all-specs: PASS
+  - validate-phase-output: PASS
+  - verify-unassigned-links: PASS
+  - audit-unassigned-tasks --diff-from HEAD: current=0
+
+### 苦戦箇所
+
+1. Phase 12成果物に「スコープ外」記述が残っており、実施済み更新との差分が発生した
+2. `manual-test-checklist.md` のみ存在し、`manual-test-result.md` / `discovered-issues.md` が欠落していた
+3. `index.md` と `artifacts.json` の同期タイミングにズレがあり、再生成で整合させる必要があった
 
 ### 結果
 
 - ステータス: success
-- 成果物: `apps/desktop/scripts/coverage-by-handler.ts`, `apps/desktop/scripts/coverage-by-handler.test.ts`
+- Phase 11/12 仕様準拠: 完了

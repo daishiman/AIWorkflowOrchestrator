@@ -27,18 +27,18 @@ Phase 5〜7 で実装・テスト拡充した SkillCenterView のコード品質
 
 ## 参照資料
 
-| 資料名             | パス                                         | 説明               |
-| ------------------ | -------------------------------------------- | ------------------ |
-| Phase 1 要件       | `outputs/phase-1/requirements-definition.md` | 要件境界の再確認   |
-| Phase 2 設計       | `outputs/phase-2/architecture-design.md`     | 設計契約の再確認   |
-| Phase 5 実装       | `outputs/phase-5/implementation-summary.md`  | 実装コード         |
-| Phase 6 テスト拡充 | `outputs/phase-6/test-expansion-report.md`   | 拡充テストの観点   |
-| Phase 7 カバレッジ | `outputs/phase-7/coverage-report.md`         | カバレッジ確認結果 |
-| コード品質ルール   | `.claude/rules/02-code-quality.md`           | 品質基準           |
-| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`         | P47 等の対策       |
-| アーキテクチャ     | `.claude/rules/01-architecture.md`           | Atomic Design 原則 |
-| 状態管理           | `.claude/rules/03-state-management.md`       | Zustand 設計原則   |
-| タスク定義         | `task-030-ui-05-skill-center-view.md`        | TASK-UI-05 全仕様  |
+| 資料名             | パス                                                                                                   | 説明               |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------------ |
+| Phase 1 要件       | `outputs/phase-1/requirements-definition.md`                                                           | 要件境界の再確認   |
+| Phase 2 設計       | `outputs/phase-2/architecture-design.md`                                                               | 設計契約の再確認   |
+| Phase 5 実装       | `outputs/phase-5/implementation-summary.md`                                                            | 実装コード         |
+| Phase 6 テスト拡充 | `outputs/phase-6/test-expansion-report.md`                                                             | 拡充テストの観点   |
+| Phase 7 カバレッジ | `outputs/phase-7/coverage-report.md`                                                                   | カバレッジ確認結果 |
+| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                                     | 品質基準           |
+| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                   | P47 等の対策       |
+| アーキテクチャ     | `.claude/rules/01-architecture.md`                                                                     | Atomic Design 原則 |
+| 状態管理           | `.claude/rules/03-state-management.md`                                                                 | Zustand 設計原則   |
+| タスク定義         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | TASK-UI-05 全仕様  |
 
 ## 実行手順
 

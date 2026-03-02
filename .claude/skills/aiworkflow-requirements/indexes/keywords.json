@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-01T14:03:00.832Z",
-  "totalKeywords": 1375,
+  "generated": "2026-03-02T03:10:44.502Z",
+  "totalKeywords": 1388,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -752,6 +752,46 @@
       "ui-ux-panels.md",
       "ui-ux-search-panel.md"
     ],
+    "スキルファイルツリー取得": [
+      "api-ipc-agent.md"
+    ],
+    "UI": [
+      "api-ipc-agent.md",
+      "arch-ui-components.md",
+      "architecture-chat-history.md",
+      "architecture-overview.md",
+      "error-handling.md",
+      "glossary.md",
+      "interfaces-agent-sdk-skill.md",
+      "interfaces-agent-sdk-ui.md",
+      "interfaces-chat-history.md",
+      "interfaces-rag-file-selection.md",
+      "lessons-learned.md",
+      "llm-streaming.md",
+      "spec-splitting-guidelines.md",
+      "technology-frontend.md",
+      "testing-component-patterns.md",
+      "ui-history-components.md",
+      "ui-history-data-types.md",
+      "ui-history-design.md",
+      "ui-history-integration.md",
+      "ui-ux-advanced.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-components.md",
+      "ui-ux-design-principles.md",
+      "ui-ux-design-system.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-forms.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md",
+      "ui-ux-system-prompt.md"
+    ],
     "スキル共有": [
       "api-ipc-agent.md",
       "interfaces-agent-sdk-skill.md"
@@ -1062,42 +1102,6 @@
     "権限要求履歴管理": [
       "arch-state-management.md"
     ],
-    "UI": [
-      "arch-ui-components.md",
-      "architecture-chat-history.md",
-      "architecture-overview.md",
-      "error-handling.md",
-      "glossary.md",
-      "interfaces-agent-sdk-skill.md",
-      "interfaces-agent-sdk-ui.md",
-      "interfaces-chat-history.md",
-      "interfaces-rag-file-selection.md",
-      "lessons-learned.md",
-      "llm-streaming.md",
-      "spec-splitting-guidelines.md",
-      "technology-frontend.md",
-      "testing-component-patterns.md",
-      "ui-history-components.md",
-      "ui-history-data-types.md",
-      "ui-history-design.md",
-      "ui-history-integration.md",
-      "ui-ux-advanced.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-components.md",
-      "ui-ux-design-principles.md",
-      "ui-ux-design-system.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-forms.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-navigation.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
-    ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
     ],
@@ -1123,6 +1127,16 @@
       "ui-ux-agent-execution.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md"
+    ],
+    "SkillCenterView": [
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "アーキテクチャパターン": [
+      "arch-ui-components.md",
+      "architecture-file-conversion.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1300,9 +1314,6 @@
     "integration": [
       "architecture-file-conversion.md"
     ],
-    "アーキテクチャパターン": [
-      "architecture-file-conversion.md"
-    ],
     "実装済みコンバーター": [
       "architecture-file-conversion.md"
     ],
@@ -1372,6 +1383,7 @@
     ],
     "実装": [
       "architecture-implementation-patterns.md",
+      "lessons-learned.md",
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc.md",
@@ -3014,19 +3026,55 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "PHASE": [
+    "EDITOR": [
       "lessons-learned.md"
     ],
-    "WORKTREE": [
+    "VIEW": [
       "lessons-learned.md"
     ],
-    "PROTOCOL": [
+    "再監査": [
       "lessons-learned.md"
     ],
-    "再確認": [
+    "CENTER": [
       "lessons-learned.md"
     ],
-    "追補": [
+    "CALLBACK": [
+      "lessons-learned.md"
+    ],
+    "SERVER": [
+      "lessons-learned.md"
+    ],
+    "WORKER": [
+      "lessons-learned.md"
+    ],
+    "EXIT": [
+      "lessons-learned.md"
+    ],
+    "authCallbackServer": [
+      "lessons-learned.md"
+    ],
+    "timeout": [
+      "lessons-learned.md"
+    ],
+    "stop": [
+      "lessons-learned.md"
+    ],
+    "責務分離": [
+      "lessons-learned.md"
+    ],
+    "REFACTOR": [
+      "lessons-learned.md"
+    ],
+    "SHARED": [
+      "lessons-learned.md"
+    ],
+    "SOURCE": [
+      "lessons-learned.md"
+    ],
+    "STRUCTURE": [
+      "lessons-learned.md"
+    ],
+    "実行監査": [
       "lessons-learned.md"
     ],
     "QUICK": [
@@ -3053,19 +3101,10 @@
     "空フィールドガード": [
       "lessons-learned.md"
     ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
-    "COVERAGE": [
-      "lessons-learned.md"
-    ],
-    "GRANULAR": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ単位カバレッジ測定基盤": [
-      "lessons-learned.md"
-    ],
     "analytics": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -3126,6 +3165,9 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
       "lessons-learned.md"
     ],
     "EVIDENCE": [
@@ -3190,9 +3232,6 @@
       "logging-migration-guide.md",
       "master-design.md",
       "patterns.md"
-    ],
-    "再監査": [
-      "lessons-learned.md"
     ],
     "仕様書修正タスク": [
       "lessons-learned.md"
@@ -3408,9 +3447,6 @@
     "拒否検知の復元": [
       "lessons-learned.md"
     ],
-    "SHARED": [
-      "lessons-learned.md"
-    ],
     "モジュール解決エラー修正": [
       "lessons-learned.md"
     ],
@@ -3490,9 +3526,6 @@
       "technology-devops.md",
       "testing-component-patterns.md"
     ],
-    "REFACTOR": [
-      "lessons-learned.md"
-    ],
     "renderHook": [
       "lessons-learned.md"
     ],
@@ -3543,6 +3576,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
@@ -4606,7 +4642,8 @@
       "testing-component-patterns.md"
     ],
     "関連未タスク": [
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-components.md"
     ],
     "Atoms": [
       "testing-component-patterns.md",
@@ -4833,6 +4870,18 @@
     ],
     "コンポーネント階層図": [
       "ui-ux-components.md"
+    ],
+    "仕様書作成済みタスク": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "spec": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "created": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
     ],
     "デザイン原則": [
       "ui-ux-design-principles.md"
