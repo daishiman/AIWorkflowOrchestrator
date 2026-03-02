@@ -71,15 +71,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | パフォーマンス要件 | L37 |
-| テスト戦略（TDD実践ガイド） | L125 |
-| セキュリティ | L452 |
-| 可用性 | L480 |
-| 保守性 | L498 |
-| アクセシビリティ | L598 |
-| テストカバレッジ目標 | L617 |
-| 関連ドキュメント | L709 |
-| 完了タスク | L717 |
-| 変更履歴 | L1056 |
+| テスト戦略（TDD実践ガイド） | L134 |
+| セキュリティ | L461 |
+| 可用性 | L489 |
+| 保守性 | L507 |
+| アクセシビリティ | L607 |
+| テストカバレッジ目標 | L626 |
+| 関連ドキュメント | L718 |
+| 完了タスク | L726 |
+| 変更履歴 | L1073 |
 
 ---
 
@@ -198,16 +198,16 @@ node scripts/list-specs.js --topics
 | レイヤー構成 | L41 |
 | デザインパターン | L71 |
 | UI/UXアーキテクチャ | L102 |
-| セキュリティアーキテクチャ | L125 |
-| 状態管理アーキテクチャ | L159 |
-| データフローアーキテクチャ | L184 |
-| ディレクトリ構造 | L266 |
-| データ構造（型システム） | L323 |
-| 機能追加パターン | L357 |
-| 技術スタック | L392 |
-| テンプレート | L404 |
-| 関連ドキュメント | L424 |
-| 変更履歴 | L465 |
+| セキュリティアーキテクチャ | L134 |
+| 状態管理アーキテクチャ | L168 |
+| データフローアーキテクチャ | L193 |
+| ディレクトリ構造 | L275 |
+| データ構造（型システム） | L336 |
+| 機能追加パターン | L370 |
+| 技術スタック | L405 |
+| テンプレート | L417 |
+| 関連ドキュメント | L437 |
+| 変更履歴 | L478 |
 
 ### references/architecture-patterns.md
 
@@ -284,12 +284,13 @@ node scripts/list-specs.js --topics
 | SkillCreatorService（TASK-9B-G） | L1303 |
 | 完了タスク | L1530 |
 | SkillEditor UI 型定義（TASK-9A / completed） | L1816 |
-| スキルフォーク 型定義（TASK-9E） | L1866 |
-| スキル共有 型定義（TASK-9F） | L1912 |
-| スキルデバッグ 型定義（TASK-9H） | L1978 |
-| スキルドキュメント生成 型定義（TASK-9I） | L2028 |
-| スキル分析 型定義（TASK-9J） | L2092 |
-| 変更履歴 | L2141 |
+| スキルチェーン 型定義（TASK-9D） | L1866 |
+| スキルスケジュール 型定義（TASK-9G） | L1901 |
+| スキルフォーク 型定義（TASK-9E） | L1926 |
+| スキル共有 型定義（TASK-9F） | L1972 |
+| スキルデバッグ 型定義（TASK-9H） | L2038 |
+| スキルドキュメント生成 型定義（TASK-9I） | L2088 |
+| スキル分析 型定義（TASK-9J） | L2152 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -650,11 +651,13 @@ node scripts/list-specs.js --topics
 | スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L431 |
 | スキル共有 IPC チャネル（TASK-9F） | L462 |
 | スキルフォーク IPC チャネル（TASK-9E） | L535 |
-| スキルデバッグ IPC チャネル（TASK-9H） | L577 |
-| スキルドキュメント生成 IPC チャネル（TASK-9I） | L626 |
-| スキル分析・統計 IPC チャネル（TASK-9J） | L682 |
-| 完了タスク | L728 |
-| 変更履歴 | L762 |
+| スキルチェーン IPC チャネル（TASK-9D） | L577 |
+| スキルスケジュール IPC チャネル（TASK-9G） | L630 |
+| スキルデバッグ IPC チャネル（TASK-9H） | L679 |
+| スキルドキュメント生成 IPC チャネル（TASK-9I） | L728 |
+| スキル分析・統計 IPC チャネル（TASK-9J） | L784 |
+| 完了タスク | L830 |
+| 変更履歴 | L865 |
 
 ### references/api-ipc-auth.md
 
@@ -786,13 +789,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L70 |
-| コンポーネント階層図 | L92 |
-| 完了タスク | L133 |
-| 仕様書作成済みタスク（spec_created） | L157 |
-| SkillCenterView 関連未タスク | L176 |
-| 変更履歴 | L190 |
-| 関連ドキュメント | L221 |
+| デザイン原則サマリー | L71 |
+| コンポーネント階層図 | L93 |
+| 完了タスク | L135 |
+| TASK-UI-05B 実装完了記録 | L160 |
+| 仕様書作成済みタスク（spec_created） | L178 |
+| SkillCenterView 関連未タスク | L197 |
+| 変更履歴 | L211 |
+| 関連ドキュメント | L245 |
 
 ### references/ui-ux-design-principles.md
 
@@ -823,20 +827,22 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L39 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L146 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L213 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L361 |
-| i18n対応（TASK-3-2-B） | L396 |
-| コピー履歴機能（TASK-3-2-D） | L445 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L554 |
-| SkillStreamingView コンポーネント（TASK-7D） | L565 |
-| SkillEditor UI（TASK-9A / 完了） | L610 |
-| SkillCenterView UI（TASK-UI-05 / 完了） | L738 |
-| 完了タスク | L809 |
-| 仕様書作成済みタスク（spec_created） | L826 |
-| 関連ドキュメント | L856 |
-| 変更履歴 | L883 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L40 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L147 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L214 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L362 |
+| i18n対応（TASK-3-2-B） | L397 |
+| コピー履歴機能（TASK-3-2-D） | L446 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L555 |
+| SkillStreamingView コンポーネント（TASK-7D） | L566 |
+| SkillEditor UI（TASK-9A / 完了） | L611 |
+| SkillCenterView UI（TASK-UI-05 / 完了） | L739 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L811 |
+| 完了タスク | L884 |
+| 仕様書作成済みタスク（spec_created） | L902 |
+| 仕様書作成済みタスク（spec_created） | L932 |
+| 関連ドキュメント | L938 |
+| 変更履歴 | L965 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1034,20 +1040,22 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L35 |
-| Content Security Policy (CSP) | L49 |
-| IPC通信のセキュリティ | L66 |
-| 実装例: historyAPI | L148 |
-| 実装例: slideSettingsAPI | L200 |
-| 実装例: skillCreatorAPI | L249 |
-| 実装例: skillFileAPI（TASK-9A-B） | L366 |
-| 実装例: skillShareAPI（TASK-9F） | L439 |
-| 実装例: skillDebugAPI（TASK-9H） | L494 |
-| 実装例: skillDocsAPI（TASK-9I） | L549 |
-| 実装例: skillAnalyticsAPI（TASK-9J） | L606 |
-| 自動更新のセキュリティ | L639 |
-| 関連ドキュメント | L650 |
-| 完了タスク | L658 |
+| セキュリティ設定 | L36 |
+| Content Security Policy (CSP) | L50 |
+| IPC通信のセキュリティ | L67 |
+| 実装例: historyAPI | L149 |
+| 実装例: slideSettingsAPI | L201 |
+| 実装例: skillCreatorAPI | L250 |
+| 実装例: skillFileAPI（TASK-9A-B） | L367 |
+| 実装例: skillShareAPI（TASK-9F） | L440 |
+| 実装例: skillChainAPI（TASK-9D） | L495 |
+| 実装例: skillScheduleAPI（TASK-9G） | L534 |
+| 実装例: skillDebugAPI（TASK-9H） | L573 |
+| 実装例: skillDocsAPI（TASK-9I） | L628 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L685 |
+| 自動更新のセキュリティ | L718 |
+| 関連ドキュメント | L729 |
+| 完了タスク | L737 |
 
 ### references/security-implementation.md
 
@@ -1167,12 +1175,12 @@ node scripts/list-specs.js --topics
 | 依存関係管理戦略 | L176 |
 | 無料枠の活用ガイド | L269 |
 | CI/CDツール選定 | L301 |
-| 学習リソースとコミュニティ | L387 |
-| マイグレーション計画 | L414 |
-| 関連ドキュメント | L435 |
-| 完了タスク | L445 |
-| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L459 |
-| 変更履歴 | L489 |
+| 学習リソースとコミュニティ | L388 |
+| マイグレーション計画 | L415 |
+| 関連ドキュメント | L436 |
+| 完了タスク | L446 |
+| CI最適化パターン（TASK-OPT-CI-TEST-PARALLEL-001 2026-02-02追加） | L461 |
+| 変更履歴 | L491 |
 
 ### references/technology-frontend.md
 
@@ -1372,12 +1380,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| Zustand Sliceパターン | L34 |
-| P31対策: Store Hooks無限ループ防止パターン | L164 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L627 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L717 |
-| permissionHistorySlice（権限要求履歴管理） | L875 |
-| 関連ドキュメント | L1004 |
+| Zustand Sliceパターン | L37 |
+| P31対策: Store Hooks無限ループ防止パターン | L167 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L630 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L720 |
+| permissionHistorySlice（権限要求履歴管理） | L878 |
+| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1007 |
+| 関連ドキュメント | L1052 |
 
 ### references/arch-ui-components.md
 
@@ -1386,8 +1395,9 @@ node scripts/list-specs.js --topics
 | SkillSelector コンポーネントパターン | L208 |
 | ChatPanel統合パターン（TASK-7D） | L442 |
 | SkillCenterView アーキテクチャパターン（TASK-UI-05） | L493 |
-| 変更履歴 | L546 |
-| 関連ドキュメント | L560 |
+| Skill Advanced Views アーキテクチャパターン（TASK-UI-05B / completed） | L546 |
+| 変更履歴 | L595 |
+| 関連ドキュメント | L612 |
 
 ### references/csrf-state-parameter.md
 
@@ -1421,13 +1431,13 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L10 |
 | ワークフロー構成 | L38 |
 | CI ワークフロー要件（PR時） | L48 |
-| キャッシュ戦略 | L82 |
-| 並列実行の活用 | L112 |
-| CD ワークフロー要件（mainマージ時） | L185 |
-| モニタリングとアラート | L209 |
-| GitHub Secrets の要件 | L256 |
-| 関連ドキュメント | L274 |
-| 変更履歴 | L282 |
+| キャッシュ戦略 | L87 |
+| 並列実行の活用 | L117 |
+| CD ワークフロー要件（mainマージ時） | L204 |
+| モニタリングとアラート | L228 |
+| GitHub Secrets の要件 | L275 |
+| 関連ドキュメント | L293 |
+| 変更履歴 | L301 |
 
 ### references/deployment-railway.md
 
@@ -1565,24 +1575,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L109 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L167 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L209 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L240 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L298 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L340 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L401 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L442 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L501 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L543 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L590 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L644 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L727 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L775 |
-| 目次 | L813 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L1010 |
-| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L1169 |
-| UT-FIX-TS-VITEST-TSCONFIG-PATHS-001: Vitest alias と tsconfig paths の同期自動化 | L1218 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L111 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L169 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L211 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L253 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L284 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L342 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L384 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L445 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L486 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L545 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L587 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L634 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L688 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L771 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L819 |
+| 目次 | L857 |
+| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L1054 |
+| UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L1213 |
 
 ### references/llm-embedding.md
 
@@ -1924,9 +1934,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L1989 |
-| 関連ドキュメント | L2162 |
-| 変更履歴 | L2172 |
+| 残課題（未タスク） | L2063 |
+| 関連ドキュメント | L2237 |
+| 変更履歴 | L2247 |
 
 ### references/testing-accessibility.md
 
@@ -1996,18 +2006,18 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L16 |
-| テスト構成 | L22 |
-| セレクター戦略 | L43 |
-| 待機戦略 | L77 |
-| ヘルパー関数パターン | L113 |
-| テストスイート構造 | L158 |
-| アクセシビリティテスト | L205 |
-| beforeEachパターン | L233 |
-| テストスキップパターン | L259 |
-| CI/CD統合 | L275 |
-| デバッグパターン | L307 |
-| 関連ドキュメント | L329 |
+| 概要 | L17 |
+| テスト構成 | L23 |
+| セレクター戦略 | L45 |
+| 待機戦略 | L79 |
+| ヘルパー関数パターン | L115 |
+| テストスイート構造 | L160 |
+| アクセシビリティテスト | L207 |
+| beforeEachパターン | L235 |
+| テストスキップパターン | L261 |
+| CI/CD統合 | L277 |
+| デバッグパターン | L329 |
+| 関連ドキュメント | L351 |
 
 ### references/ui-history-components.md
 

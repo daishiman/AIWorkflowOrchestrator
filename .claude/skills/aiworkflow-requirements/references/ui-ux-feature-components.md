@@ -23,6 +23,7 @@
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
+| Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 
 ### 共通仕様
 
@@ -806,11 +807,86 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 ---
 
+<a id="skill-advanced-views-task-ui-05b"></a>
+## Skill Advanced Views UI（TASK-UI-05B / completed）
+
+TASK-UI-05B-SKILL-ADVANCED-VIEWS は、SkillCenter 拡張として 4 ビュー（3A ChainBuilder / 3B ScheduleManager / 3C DebugPanel / 3D AnalyticsDashboard）を実装した完了タスク。
+UI 実装コード・IPC 統合・自動テスト・画面検証証跡を正本として管理する。
+
+### 対象ビューと責務
+
+| ビュー | 主要責務 | バックエンド依存 |
+| --- | --- | --- |
+| 3A SkillChainBuilder | ツールチェーン作成・編集・実行 | TASK-9D（`skill:chain:*`） |
+| 3B ScheduleManager | 定期実行設定と履歴確認 | TASK-9G（`skill:schedule:*`） |
+| 3C DebugPanel | 実行ステップ可視化・停止/継続制御 | TASK-9H（`skill:debug:*`） |
+| 3D AnalyticsDashboard | 実行統計・トレンド確認・エクスポート | TASK-9J（`skill:analytics:*`） |
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ completed | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/views/` |
+| 自動テスト資産 | ✅ 完了 | `apps/desktop/src/renderer/views/*/__tests__/` |
+| 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/outputs/phase-11/screenshots/` |
+
+### 仕様書別SubAgent分担（Phase 12 再同期）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| A | `ui-ux-components.md` | 主要UI一覧・完了タスク同期 | UI索引と実装導線が一致 |
+| B | `ui-ux-feature-components.md` | 4ビュー機能仕様・苦戦箇所同期 | 機能仕様と実装が一致 |
+| C | `arch-ui-components.md` | UI構造・責務境界同期 | コンポーネント構造が一致 |
+| D | `arch-state-management.md` | 状態管理・P31対策同期 | 状態分離方針が一致 |
+| E | `task-workflow.md` | 完了台帳・検証証跡同期 | 証跡値が同日同期済み |
+| F | `lessons-learned.md` | 再発条件付き教訓同期 | 同種課題に再利用可能 |
+
+### 実装時の苦戦箇所（再利用用）
+
+| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| Phase 12 再確認で `verify-all-specs` warning が残る | `phase-12-documentation.md` の参照資料に依存Phase成果物が不足 | Phase 2/5/6/7/8/9/10 の成果物参照を追記して依存関係を明示 | UIタスクの再確認は参照資料の依存Phaseを先に埋める |
+| 画面検証が既存画像の存在確認に寄る | スクリーンショット再取得コマンドが固定されていない | `capture-skill-advanced-views-screenshots.mjs` を実行して TC-04〜TC-07 を再取得 | UI完了判定は「画像存在」ではなく「再撮影 + 更新時刻確認」で行う |
+| 未タスク監査の baseline ノイズ誤読 | `current` と `baseline` を同じ判定として扱ってしまう | `audit --diff-from HEAD` の `currentViolations` を合否、`baseline` を改善バックログとして分離記録 | 未タスク監査は二軸（current/baseline）で記録する |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-UI-05B-001 | Phase 12 画面証跡再取得ガード（再撮影 + 更新時刻確認の標準化） | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/unassigned-task/task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 更新対象を 1仕様書=1SubAgent で分割し、担当責務を先に固定する。  
+2. `verify-all-specs` と `validate-phase-output` を実行し、warning/error の根拠を抽出する。  
+3. Phase 12 文書の参照資料に依存Phase成果物を追加して再検証する。  
+4. UI画面はスクリーンショットを再撮影し、更新時刻で当日証跡を固定する。  
+5. 未タスク監査結果は `current` を合否、`baseline` を改善バックログとして分離記録する。  
+
+### 実装着手前のガード条件
+
+| 観点 | ガード |
+| --- | --- |
+| 型境界 | 05B UI Props と task-9 系 shared types の境界を実装前に再監査する |
+| IPC契約 | `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `security-electron-ipc.md` の3点を同時更新する |
+| 状態管理 | `agentSlice` の個別セレクタ利用（P31）を維持し、Viewごとに Hook を分離する |
+| Phase 12同期 | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` を同一ターンで実行する |
+
+### 関連ドキュメント
+
+- [TASK-UI-05B ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/index.md)
+- [TASK-UI-05B Phase 11 手動テスト仕様](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/phase-11-manual-test.md)
+- [TASK-UI-05B 画面証跡スクリーンショット](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/outputs/phase-11/screenshots/)
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
+| TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | TASK-9A    | skill-editor（SkillEditor / SkillCodeEditor + CRUD + backups） | 2026-02-26 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                           |
 | TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
@@ -853,6 +929,12 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 ---
 
+## 仕様書作成済みタスク（spec_created）
+
+現時点で本ドキュメント内に `spec_created` 状態の UI タスクはなし（TASK-UI-05B は 2026-03-02 時点で completed へ移行）。
+
+---
+
 ## 関連ドキュメント
 
 ### 分割ファイル
@@ -886,6 +968,11 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
 | 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/unassigned-task/` へ統一 |
 | 2026-03-01 | v1.12.4    | TASK-UI-05A spec_created 反映: 収録機能一覧へ `Skill Editor View`（実装未着手）を追加。`仕様書作成済みタスク` セクションを新設し、未実装ギャップ（View未生成・導線未配線）と画面検証証跡を明記 |
+| 2026-03-02 | v1.12.8    | UT-UI-05B-001 登録: TASK-UI-05B の苦戦箇所（画面証跡の再撮影漏れリスク）を未タスク化し、関連未タスク表へ `task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` を追加 |
+| 2026-03-02 | v1.12.7    | TASK-UI-05B テンプレート最適化: 仕様書別SubAgent分担（6責務）を追加し、簡潔解決手順を5ステップへ再編 |
+| 2026-03-02 | v1.12.6    | TASK-UI-05B 再確認追補: 苦戦箇所（Phase 12参照不足warning、画面証跡再撮影、未タスク監査のcurrent/baseline分離）と4ステップの簡潔解決手順を追加 |
+| 2026-03-02 | v1.12.5    | TASK-UI-05B 実装完了同期: 収録機能一覧を `完了` に更新し、専用セクションの進捗を `completed` へ反映。完了タスクへ TASK-UI-05B を追加し、spec_created 台帳を解消 |
+| 2026-03-01 | v1.12.4    | TASK-UI-05B spec_created を反映: 収録機能一覧に Skill Advanced Views を追加し、専用セクション（4ビュー責務・実装前ガード・画面証跡）と `仕様書作成済みタスク` テーブルを新設 |
 | 2026-03-01 | v1.12.3    | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
 | 2026-03-01 | v1.12.2    | TASK-UI-05追補: 関連未タスクに UT-UI-05-007（Phase 12 UI仕様同期プロファイル適用ガード）を追加し、task-workflow/ui-ux-components との参照整合を統一 |
 | 2026-03-01 | v1.12.1    | TASK-UI-05追補: SkillCenterView 実装時の苦戦箇所（型境界/責務集中/Phase 12同期）と4ステップ簡潔解決手順を追加 |

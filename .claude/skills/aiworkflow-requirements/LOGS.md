@@ -132,6 +132,165 @@
 
 ---
 
+## 2026-03-02 - TASK-UI-05B 仕様書別SubAgent最適化（6仕様書分割）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05B-SKILL-ADVANCED-VIEWS`
+- 目的: システム仕様書へ「実装内容 + 苦戦箇所」を 1仕様書=1SubAgent で再同期し、再利用可能なテンプレート形へ統一する
+
+### SubAgent分担
+- SubAgent-A: `ui-ux-components.md`（実装内容サマリーと苦戦箇所の要約）
+- SubAgent-B: `ui-ux-feature-components.md`（機能仕様・苦戦箇所・5ステップ手順）
+- SubAgent-C: `arch-ui-components.md`（UI構造同期時の苦戦箇所）
+- SubAgent-D: `arch-state-management.md`（状態管理同期時の苦戦箇所）
+- SubAgent-E: `task-workflow.md`（6仕様書同期テーブル・検証証跡日付統一）
+- SubAgent-F: `lessons-learned.md`（再利用手順の5ステップ化）
+
+### 実施内容
+- `task-workflow.md` の TASK-UI-05B セクションを 6責務分担へ再編し、仕様反映先テーブルを追加
+- `ui-ux-components.md` に実装内容と苦戦箇所サマリーを追加
+- `ui-ux-feature-components.md` に 6仕様書SubAgent分担表を追加し、解決手順を4→5ステップへ更新
+- `arch-ui-components.md` / `arch-state-management.md` に SubAgent視点の苦戦箇所と標準化ルールを追加
+- `lessons-learned.md` の TASK-UI-05B 手順を 5ステップへ更新し、仕様書別分割運用を明文化
+- `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/outputs/phase-12/spec-update-summary.md` をテンプレート準拠に再編
+
+### 検証結果
+- `verify-all-specs --workflow docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（13/13, error=0, warning=0）
+- `validate-phase-output.js docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（28項目, error=0, warning=0）
+- `verify-unassigned-links.js`: PASS（89/89, missing=0）
+- `audit-unassigned-tasks.js --json --diff-from HEAD`: `currentViolations=0`, `baselineViolations=75`
+
+### 結果
+- ステータス: success
+- SKILL.md: `8.97.0` に更新
+- 補足: `current` 合格判定を維持したまま、仕様書責務分離の再利用性を強化
+
+---
+
+## 2026-03-02 - TASK-UI-05B Phase 12 再確認追補（苦戦箇所の再資産化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05B-SKILL-ADVANCED-VIEWS`
+- 目的: Phase 12 再確認で、最新検証値・画面証跡・苦戦箇所をシステム仕様書へ再同期する
+
+### SubAgent分担
+- SubAgent-A（workflow成果物）: `phase-12-documentation.md` / `outputs/phase-12/*` の再同期
+- SubAgent-B（仕様正本）: `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` への苦戦箇所追記
+- SubAgent-C（検証）: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD`
+- SubAgent-D（画面証跡）: `capture-skill-advanced-views-screenshots.mjs` で TC-04〜TC-07 を再取得
+
+### 実施内容
+- `task-workflow.md` の TASK-UI-05B セクションを更新（検証値を 2026-03-02 の再実行値へ同期）
+- `ui-ux-feature-components.md` に TASK-UI-05B 専用の苦戦箇所と4ステップ簡潔手順を追加
+- `lessons-learned.md` に TASK-UI-05B の教訓セクションを追加（warningドリフト、画面証跡再撮影、current/baseline分離）
+- `phase-12-documentation.md` の参照資料へ依存Phase成果物（2/5/6/7/8/9/10）を追加
+- `unassigned-task-detection.md` に `baselineViolations=75` と既存改善タスク参照を追記
+
+### 検証結果
+- `verify-all-specs --workflow docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（13/13, error=0, warning=0）※初回 warning=7 から是正
+- `validate-phase-output.js docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（28項目, error=0, warning=0）
+- `verify-unassigned-links.js`: PASS（89/89, missing=0）
+- `audit-unassigned-tasks.js --json --diff-from HEAD`: `currentViolations=0`, `baselineViolations=75`
+- `capture-skill-advanced-views-screenshots.mjs`: PASS（TC-04〜TC-07 更新時刻 2026-03-02 12:03）
+
+### 結果
+- ステータス: success
+- SKILL.md: `8.96.0` に更新
+- 補足: 未タスク baseline は既存負債として分離し、今回差分は `current=0` を維持
+
+---
+
+## 2026-03-02 - TASK-UI-05B 実装完了再同期（spec_created残存解消 + 画面証跡再取得）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05B-SKILL-ADVANCED-VIEWS`
+- 目的: 実装完了済み内容を正本仕様へ再同期し、`spec_created` 残存・Phase 12 構成不整合・画面証跡不足を同時に解消する
+
+### SubAgent分担
+- SubAgent-A（UI/状態管理）: `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` / `arch-state-management.md` / `architecture-overview.md` / `quality-requirements.md`
+- SubAgent-B（IPC/型契約）: `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md`
+- SubAgent-C（台帳同期）: `task-workflow.md` / `LOGS.md` / `SKILL.md`
+- SubAgent-D（検証・証跡）: スクリーンショット取得、`generate-index` / `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks`
+
+### 実施内容
+- TASK-UI-05B の状態を `spec_created` から `completed` へ同期し、関連仕様書の完了記録を更新
+- 画面検証証跡を追加（Phase 11）
+  - `TC-04-chain-builder.png`
+  - `TC-05-schedule-manager.png`
+  - `TC-06-debug-panel.png`
+  - `TC-07-analytics-dashboard.png`
+- `phase-12-documentation.md` をテンプレート準拠に再構成
+  - `実行タスク` / `参照資料` / `成果物` / `完了条件` の必須章を追加
+- インデックス再生成を実施
+  - `indexes/topic-map.md` / `indexes/keywords.json`
+
+### 検証結果
+- `verify-all-specs --workflow docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（13/13, error=0, warning=7）
+- `validate-phase-output.js docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS`: PASS（28項目, error=0）
+- `verify-unassigned-links.js`: PASS（89/89, missing=0）
+- `audit-unassigned-tasks.js --json --diff-from HEAD`: currentViolations=0（baseline=75）
+
+### 結果
+- ステータス: success
+- SKILL.md: `8.95.0` に更新
+- 補足: `spec_created` と実装完了の矛盾を TASK-UI-05B 範囲で解消
+
+---
+
+## 2026-03-01 - TASK-UI-05B アーキテクチャ層仕様書追補（多角的検証で検出）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05B-SKILL-ADVANCED-VIEWS`
+- 目的: 多角的思考フレームワーク検証で検出された4仕様書の未反映を是正（P26/P31再発防止）
+
+### 実施内容
+- `arch-ui-components.md` に Skill Advanced Views アーキテクチャパターン（4ビュー/33コンポーネント・状態管理方針・ファイル配置）を追加
+- `arch-state-management.md` に4ビューの状態管理設計（useState + agentSlice個別セレクタ）を追加
+- `architecture-overview.md` の UI/UXアーキテクチャ・ディレクトリ構造にTASK-UI-05B を追記
+- `quality-requirements.md` にパフォーマンス基準4項目と完了タスク（spec_created）を追加
+- `api-ipc-agent.md` / `security-electron-ipc.md` / `interfaces-agent-sdk-skill.md` にTASK-9D/9G IPC契約を追加
+
+### 検出フレームワーク
+垂直思考（論理的一貫性）・システム思考（UI→アーキテクチャ→品質の波及）・改善思考（P26/P31パターン再発検知）
+
+### 結果
+- ステータス: success
+- 更新ファイル: 7件追加（合計16ファイル変更）
+- SKILL.md: `8.94.0` に更新
+
+---
+
+## 2026-03-01 - TASK-UI-05B spec_created 同期 + 参照切れ是正
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05B-SKILL-ADVANCED-VIEWS`
+- 目的: UI高度管理ビュー群の仕様書作成完了（spec_created）を正本へ反映し、残課題テーブルの参照切れを解消する
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md` へ TASK-UI-05B 完了（spec_created）台帳を追記
+- SubAgent-B: `ui-ux-components.md` に主要UI一覧/仕様書作成済みタスクを追加
+- SubAgent-C: `ui-ux-feature-components.md` に4ビュー責務・実装前ガード・画面証跡導線を追加
+- SubAgent-D: 検証（`verify-unassigned-links` / `verify-all-specs` / `validate-phase-output`）
+
+### 実施内容
+- `task-workflow.md` に TASK-UI-05B セクション（spec_created）を追加し、検証証跡と苦戦箇所を記録
+- 残課題テーブルの未実在リンク2件を実在パスへ修正
+  - `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001`
+  - `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001`
+- `ui-ux-components.md` / `ui-ux-feature-components.md` に TASK-UI-05B の仕様導線を追加
+- `SKILL.md` 変更履歴を `8.93.0` に更新
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` は `ALL_LINKS_EXIST`。`TASK-UI-05B` は spec_created（実装未着手）として管理継続
+
+---
+
 ## 2026-03-01 - TASK-UI-05 completed-tasks 移管
 
 ### コンテキスト

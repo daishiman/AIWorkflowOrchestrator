@@ -26,9 +26,10 @@
 | --- | --- | --- | --- |
 | SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 | UI正本へ反映済み |
 | SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様・未タスク・苦戦箇所同期 | 機能仕様と再利用手順が記録済み |
-| SubAgent-C | `references/arch-ui-components.md` / `references/arch-state-management.md` | 構造/状態管理の責務境界同期 | レイヤーと状態境界が整合 |
-| SubAgent-D | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
-| SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
+| SubAgent-C | `references/arch-ui-components.md` | 構造責務境界の同期 | レイヤー境界が整合 |
+| SubAgent-D | `references/arch-state-management.md` | 状態管理責務の同期 | 状態境界が整合 |
+| SubAgent-E | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
+| SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -84,7 +85,7 @@ ls -la <workflow-path>/outputs/phase-11/screenshots
 
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
-- [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` が同一ターンで更新されている
+- [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている

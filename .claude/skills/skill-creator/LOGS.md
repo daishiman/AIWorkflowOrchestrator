@@ -31,6 +31,33 @@
 
 ---
 
+## [2026-03-02 - TASK-UI-05B 仕様書別SubAgentテンプレート最適化（6責務）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の UIプロファイルを 6責務（A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui-components / D:arch-state-management / E:task-workflow / F:lessons）へ更新
+  - `assets/phase12-spec-sync-subagent-template.md` の UI分担表を 1仕様書=1SubAgent へ再編し、完了チェックに同条件を追加
+  - `references/patterns.md` の Phase 12 クイックナビに成功キーワード「UI6仕様書の1仕様書1SubAgent固定（TASK-UI-05B）」と失敗キーワード「UI6仕様書を束ねて責務境界が曖昧」を追加
+  - 成功パターン「UI6仕様書を1仕様書1SubAgentで同期固定（TASK-UI-05B）」を追加し、テンプレート運用へクロスリファレンス
+  - `SKILL.md` 変更履歴を `v10.34.0` として同期
+
+---
+
+## [2026-03-02 - TASK-UI-05B Phase 12 再確認パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）に成功キーワード「Phase 12依存成果物参照補完（warningドリフト防止）」「UI再確認スクリーンショット再撮影固定（TASK-UI-05B）」を追加
+  - 失敗キーワード「verify-all-specs warningドリフトの放置」「UI再確認で既存スクショ存在確認のみで完了判定」を追加
+  - 成功パターン「依存成果物参照補完 + 画面再撮影固定（TASK-UI-05B 再確認）」を追加し、`current/baseline` 分離記録を標準手順として明文化
+  - `SKILL.md` 変更履歴を `v10.33.0` として同期
+
+---
+
 ## [2026-03-01 - TASK-UI-05 UIプロファイル対応テンプレート最適化]
 
 - **Agent**: skill-creator (update)

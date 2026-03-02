@@ -120,6 +120,15 @@
 - メモリ使用量が1GBを超えた場合は最適化を検討
 - タイムアウトエラーが頻発する場合は並列度を見直し
 
+### Skill Advanced Views パフォーマンス基準（TASK-UI-05B / completed）
+
+| 要件ID | 要件 | 基準値 |
+| --- | --- | --- |
+| NFR-P01 | 各ビューの初期レンダリング時間 | 200ms以下 |
+| NFR-P02 | IPC呼び出し後のUI更新遅延 | 100ms以下 |
+| NFR-P03 | チャート描画完了時間（AnalyticsDashboard） | 500ms以下 |
+| NFR-P04 | DebugPanelのイベント購読更新遅延 | 50ms以下 |
+
 ---
 
 ## テスト戦略（TDD実践ガイド）
@@ -1053,10 +1062,20 @@ IPCハンドラファイルのカバレッジ判定は、ファイル全体で�
 
 ---
 
+### TASK-UI-05B: Skill Advanced Views 実装完了（completed）
+
+**概要**: SkillCenter の高度管理ビュー群（SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard）を実装し、IPC統合・テスト・画面検証・仕様同期を完了。
+
+**ステータス**: completed（実装・テスト・画面検証完了）
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: パフォーマンス基準セクションと完了タスク記録を `completed` 状態へ更新（4ビュー実装 + IPC統合 + テスト完了） |
+| 2.8.0   | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views のパフォーマンス基準（4項目）を追加。完了タスクにspec_createdとして記録 |
 | 1.10.2  | 2026-03-01 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の実行ワークフローを `completed-tasks/ut-imp-ipc-handler-coverage-granular-001` へ移管。派生未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` も `completed-tasks/unassigned-task/` 参照へ同期 |
 | 1.10.1  | 2026-03-01 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の派生未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` を追記。Istanbul形式固定・命名例外マップ・Vitest include監査の再発防止対象を明文化 |
 | 1.10.0  | 2026-02-28 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ判定ルール（Rule-1〜4 + P41注記）を追加し、完了タスク記録（58テスト、Line 95.82%/Branch 90.36%/Function 100%）を追記 |

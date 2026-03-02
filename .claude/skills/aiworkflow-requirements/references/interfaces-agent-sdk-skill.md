@@ -1863,6 +1863,66 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 | TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
 | ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
 
+## スキルチェーン 型定義（TASK-9D）
+
+`packages/shared/src/types/skill-chain.ts` に定義されたスキルチェーンパイプライン機能の型契約。
+
+### 型一覧
+
+| 型名 | 定義元 | 用途 |
+| --- | --- | --- |
+| `SkillChainDefinition` | `packages/shared/src/types/skill-chain.ts` | チェーン全体定義（id, name, description, steps, variables, errorHandling, createdAt, updatedAt） |
+| `SkillChainStep` | 同上 | チェーン内1ステップ定義（stepId, skillName, inputMapping, outputMapping, condition, timeout, retryCount） |
+| `InputMapping` | 同上 | 入力マッピング（type: literal/variable/template/previousOutput, value, template） |
+| `OutputMapping` | 同上 | 出力マッピング（extractPath, variableName） |
+| `SkillChainCondition` | 同上 | ステップ実行条件（type: always/ifVariable/ifPreviousSuccess/expression, expression, variable, expectedValue） |
+| `SkillChainResult` | 同上 | チェーン実行結果（chainId, success, results, finalVariables, totalDuration） |
+| `StepResult` | 同上 | 個別ステップ実行結果（stepId, success, skipped, output, error, duration） |
+| `SkillChainErrorStrategy` | 同上 | エラーハンドリング戦略（"stop" / "skip" / "retry"） |
+| `InputMappingType` | 同上 | 入力マッピング種別（"literal" / "variable" / "template" / "previousOutput"） |
+| `SkillChainConditionType` | 同上 | 条件種別（"always" / "ifVariable" / "ifPreviousSuccess" / "expression"） |
+
+### Preload API
+
+Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（SkillChainBuilder UI）の実装で追加済み。
+
+### IPC チャネル対応
+
+| Preload メソッド | IPC チャネル | 戻り値型 |
+| --- | --- | --- |
+| `chainList` | `skill:chain:list` | `SkillChainDefinition[]` |
+| `chainGet` | `skill:chain:get` | `SkillChainDefinition` |
+| `chainSave` | `skill:chain:save` | `SkillChainDefinition` |
+| `chainDelete` | `skill:chain:delete` | `{ deleted: boolean }` |
+| `chainExecute` | `skill:chain:execute` | `SkillChainResult` |
+
+---
+
+## スキルスケジュール 型定義（TASK-9G）
+
+`packages/shared/src/types/skill-schedule.ts` と `apps/desktop/src/preload/skill-api.ts` に定義されたスキルスケジュール実行機能の型契約。
+
+### 型一覧
+
+| 型名 | 定義元 | 用途 |
+| --- | --- | --- |
+| `ScheduledSkill` | `packages/shared/src/types/skill-schedule.ts` | スケジュール済みスキル（id, skillName, prompt, schedule, enabled, runHistory, notification, lastRun, nextRun, createdAt, updatedAt） |
+| `SkillSchedule` | 同上 | スケジュール設定（type: cron/interval/once/event, cronExpression, interval, runAt, event, eventConfig） |
+| `NotificationSettings` | 同上 | 通知設定（onSuccess, onFailure, notificationType: system/inApp/both） |
+| `ScheduledRunResult` | 同上 | スケジュール実行結果（runId, startedAt, success, completedAt, output, error） |
+
+### Preload API（`skill-api.ts`）
+
+| メソッド名 | IPC チャネル | 引数 | 戻り値型 |
+| --- | --- | --- | --- |
+| `scheduleList` | `skill:schedule:list` | なし | `Promise<ScheduledSkill[]>` |
+| `scheduleAdd` | `skill:schedule:add` | `skillName, prompt, schedule, notification?` | `Promise<ScheduledSkill>` |
+| `scheduleUpdate` | `skill:schedule:update` | `id, updates` | `Promise<void>` |
+| `scheduleDelete` | `skill:schedule:delete` | `id` | `Promise<void>` |
+| `scheduleToggle` | `skill:schedule:toggle` | `id` | `Promise<ScheduledSkill \| undefined>` |
+
+---
+
 ## スキルフォーク 型定義（TASK-9E）
 
 `packages/shared/src/types/skill-fork.ts` と `apps/desktop/src/preload/skill-api.ts` に定義されたスキルフォーク機能の型契約。
@@ -2142,6 +2202,8 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |
+| 2026-03-02 | 1.43.0     | TASK-UI-05B仕様整合: TASK-9D（スキルチェーン型定義10型・IPCチャネル5ch）とTASK-9G（スキルスケジュール型定義4型・IPCチャネル5ch・Preload API 5メソッド）のセクションを追加。実装コードとの整合を検証済み |
 | 2026-02-28 | 1.42.1     | TASK-9E追補: 型/API契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界追従）と同種課題向け4ステップ手順を追加 |
 | 2026-02-28 | 1.42.0     | TASK-9E反映: `skill:fork` IPC契約と `SkillForkOptions/SkillForkResult/SkillForkMetadata` 型定義セクションを追加。`skill:fork` と `skill-creator:fork` の責務境界を明文化し、完了タスク記録を追記 |
 | 2026-02-27 | 1.41.0     | TASK-9H反映: スキルデバッグ型定義セクション追加（`DebugSessionState` / `DebugEvent` / `DebugCommand` / Preload API 7メソッド、配線漏れ対策を含む） |

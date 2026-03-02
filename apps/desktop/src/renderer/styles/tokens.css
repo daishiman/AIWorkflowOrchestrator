@@ -156,6 +156,7 @@
   /* Transitions */
   --duration-instant: 0ms;
   --duration-fast: 100ms;
+  --duration-quick: 150ms;
   --duration-default: 200ms;
   --duration-normal: 300ms;
   --duration-slow: 500ms;

@@ -50,7 +50,7 @@ beforeEach(() => {
 // ============================================================
 describe("SkillAPI Unification", () => {
   describe("window.electronAPI.skill", () => {
-    it("should expose all 37 methods", () => {
+    it("should expose all 42 methods", () => {
       // skillAPI は window.electronAPI.skill として公開される
       // ここでは skillAPI オブジェクトを直接検証
 
@@ -108,9 +108,16 @@ describe("SkillAPI Unification", () => {
       expect(typeof skillAPI.analyticsSummary).toBe("function");
       expect(typeof skillAPI.analyticsTrend).toBe("function");
       expect(typeof skillAPI.analyticsExport).toBe("function");
+
+      // チェーン系（5メソッド）
+      expect(typeof skillAPI.chainList).toBe("function");
+      expect(typeof skillAPI.chainGet).toBe("function");
+      expect(typeof skillAPI.chainSave).toBe("function");
+      expect(typeof skillAPI.chainDelete).toBe("function");
+      expect(typeof skillAPI.chainExecute).toBe("function");
     });
 
-    it("should have exactly 37 methods (no extra methods)", () => {
+    it("should have exactly 42 methods (no extra methods)", () => {
       const expectedMethods: (keyof SkillAPI)[] = [
         "list",
         "getImported",
@@ -149,6 +156,11 @@ describe("SkillAPI Unification", () => {
         "analyticsSummary",
         "analyticsTrend",
         "analyticsExport",
+        "chainList",
+        "chainGet",
+        "chainSave",
+        "chainDelete",
+        "chainExecute",
       ];
 
       const actualMethods = Object.keys(skillAPI).filter(
@@ -156,8 +168,8 @@ describe("SkillAPI Unification", () => {
           typeof (skillAPI as Record<string, unknown>)[key] === "function",
       );
 
-      // メソッド数が正確に37であること（13 + 6ファイル操作 + 3共有 + 5スケジュール + 1 fork + 4ドキュメント + 5分析）
-      expect(actualMethods.length).toBe(37);
+      // メソッド数が正確に42であること（13 + 6ファイル操作 + 3共有 + 5スケジュール + 1 fork + 4ドキュメント + 5分析 + 5チェーン）
+      expect(actualMethods.length).toBe(42);
 
       // 全ての期待メソッドが含まれていること
       for (const method of expectedMethods) {

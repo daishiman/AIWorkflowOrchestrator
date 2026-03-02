@@ -13,6 +13,10 @@ import { ChatView } from "./views/ChatView";
 import { GraphView } from "./views/GraphView";
 import { SettingsView } from "./views/SettingsView";
 import { AgentView } from "./views/AgentView";
+import { SkillChainBuilder } from "./views/SkillChainBuilder";
+import { ScheduleManager } from "./views/ScheduleManager";
+import { DebugPanel } from "./views/DebugPanel";
+import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
@@ -77,12 +81,26 @@ function App(): JSX.Element {
         return <GraphView />;
       case "agent":
         return <AgentView />;
+      case "chainBuilder":
+        return <SkillChainBuilder />;
+      case "scheduleManager":
+        return <ScheduleManager />;
+      case "debugPanel":
+        return <DebugPanel />;
+      case "analyticsDashboard":
+        return <AnalyticsDashboard />;
       case "settings":
         return <SettingsView />;
       default:
         return <DashboardView />;
     }
   };
+
+  const renderStandaloneView = (view: JSX.Element) => (
+    <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <main className="h-full overflow-auto p-6">{view}</main>
+    </div>
+  );
 
   const isDesktop = responsiveMode === "desktop";
 
@@ -135,6 +153,23 @@ function App(): JSX.Element {
                 <HistoryPage />
               </div>
             }
+          />
+          {/* Skill Advanced Views（直接ルーティング） */}
+          <Route
+            path="/advanced/chain-builder"
+            element={renderStandaloneView(<SkillChainBuilder />)}
+          />
+          <Route
+            path="/advanced/schedule-manager"
+            element={renderStandaloneView(<ScheduleManager />)}
+          />
+          <Route
+            path="/advanced/debug-panel"
+            element={renderStandaloneView(<DebugPanel />)}
+          />
+          <Route
+            path="/advanced/analytics-dashboard"
+            element={renderStandaloneView(<AnalyticsDashboard />)}
           />
           {/* 既存のビューベースUI（デフォルト） */}
           <Route

@@ -1,0 +1,157 @@
+{
+  "taskId": "TASK-UI-05B-SKILL-ADVANCED-VIEWS",
+  "taskName": "ツール高度管理ビュー群（Skill Advanced Views）",
+  "feature": "skill-advanced-views",
+  "workflowPath": "docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS",
+  "created": "2026-03-01T21:40:00+09:00",
+  "lastUpdated": "2026-03-02T11:35:00+09:00",
+  "status": "in_progress",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ],
+      "dependencies": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/component-hierarchy.md",
+        "outputs/phase-2/state-management-design.md",
+        "outputs/phase-2/ipc-interface-design.md"
+      ],
+      "dependencies": ["1"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-checklist.md"
+      ],
+      "dependencies": ["1", "2"]
+    },
+    "4": {
+      "name": "テスト作成（TDD: Red）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-design-report.md"],
+      "dependencies": ["1", "2", "3"]
+    },
+    "5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"],
+      "dependencies": ["4"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"],
+      "dependencies": ["5"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "dependencies": ["5", "6"]
+    },
+    "8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"],
+      "dependencies": ["1", "2", "5", "6", "7"]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"],
+      "dependencies": ["5"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/review-checklist.md"
+      ],
+      "dependencies": ["1", "2", "5"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshots/"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10"]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10", "11"]
+    },
+    "13": {
+      "name": "完了・PR準備",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/completion-summary.md",
+        "outputs/phase-13/pr-info.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+    }
+  },
+  "views": {
+    "3A": {
+      "name": "SkillChainBuilder",
+      "description": "パイプラインビルダー",
+      "backend": "TASK-9D",
+      "ipcPrefix": "skill:chain:*"
+    },
+    "3B": {
+      "name": "ScheduleManager",
+      "description": "スケジュール管理",
+      "backend": "TASK-9G",
+      "ipcPrefix": "skill:schedule:*"
+    },
+    "3C": {
+      "name": "DebugPanel",
+      "description": "デバッグパネル",
+      "backend": "TASK-9H",
+      "ipcPrefix": "skill:debug:*"
+    },
+    "3D": {
+      "name": "AnalyticsDashboard",
+      "description": "使用分析ダッシュボード",
+      "backend": "TASK-9J",
+      "ipcPrefix": "skill:analytics:*"
+    }
+  },
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "actualCoverage": null,
+    "testCount": 241,
+    "testFileCount": 23,
+    "componentCount": 34,
+    "hookCount": 8
+  }
+}
