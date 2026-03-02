@@ -336,11 +336,29 @@ done
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 | P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
 | P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
+| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ。差分判定は `--diff-from HEAD` を使用 |
 | - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---
 
 ## 完了タスク
+
+### タスク: UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 Phase 11 Worktree環境テストプロトコル標準化（2026-03-01完了）
+
+| 項目       | 内容                                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001                                                                  |
+| 完了日     | 2026-03-01                                                                                             |
+| ステータス | **完了**                                                                                               |
+| 概要       | Phase 11の3層テスト分類（Layer 1-3）をWorktree制約に合わせて標準化し、CIにElectron E2Eジョブを追加 |
+
+#### 関連ドキュメント
+
+- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/phase-11-manual-test.md`
+- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/phase-12-documentation.md`
+- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/outputs/phase-12/spec-update-summary.md`
+
+---
 
 ### タスク: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 skill-creator検証ゲート整合化（2026-02-26完了）
 
@@ -351,7 +369,7 @@ done
 | ステータス | **完了**                                                                                       |
 | 概要       | `quick_validate.js` 統一経路、Warning判定基準、Phase 11/12成果物の整合、未タスク監査運用を同期 |
 
-## 関連ドキュメント
+#### 関連ドキュメント
 
 - `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-11-manual-test.md`
 - `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-12-documentation.md`
@@ -363,6 +381,8 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |
+| 2026-03-01 | `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の完了タスク記録を追加。Phase 11 Worktree代替手順・CI E2Eジョブ追加・deferred-tests追跡を運用ガイドへ同期 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録・関連ドキュメントリンクを追加 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: Phase 11/12 実行で判明したリンク整合運用を更新（`task-workflow.md` の完了移管参照修正）、`quick_validate.js` 実行結果に基づく判定再現性確認フローを明文化 |
 | 2026-02-25 | `audit-unassigned-tasks.js` の scope制御（`--target-file`/`--diff-from`）を標準手順化。Phase 12チェックリストを「対象監査（current）→全体監査（baseline）」の2段判定に更新 |

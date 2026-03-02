@@ -217,6 +217,17 @@ jobs:
           path: apps/desktop/coverage/
           retention-days: 1
 
+  e2e-desktop:
+    name: E2E Test (desktop)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Skip E2E in default CI
+        run: |
+          echo "E2E tests are skipped in default CI to keep feedback fast."
+          echo "Run manually when needed:"
+          echo "xvfb-run --auto-servernum pnpm --filter @repo/desktop exec playwright test"
+
   check-module-sync:
     name: Module Sync Check
     runs-on: ubuntu-latest
@@ -306,6 +317,7 @@ jobs:
         typecheck,
         test-shared,
         test-desktop,
+        e2e-desktop,
         build-shared,
         check-module-sync,
       ]
