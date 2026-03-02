@@ -128,6 +128,10 @@
     "./types/auth-mode": {
       "types": "./dist/src/types/auth-mode.d.ts",
       "import": "./dist/src/types/auth-mode.js"
+    },
+    "./types/skill-improver": {
+      "types": "./dist/src/types/skill-improver.d.ts",
+      "import": "./dist/src/types/skill-improver.js"
     }
   },
   "typesVersions": {
@@ -221,6 +225,9 @@
       ],
       "src/ipc/channels": [
         "./src/ipc/channels.ts"
+      ],
+      "types/skill-improver": [
+        "./src/types/skill-improver.ts"
       ]
     }
   },

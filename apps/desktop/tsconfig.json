@@ -89,6 +89,9 @@
       ],
       "@repo/shared/src/ipc/channels": [
         "../../packages/shared/src/ipc/channels.ts"
+      ],
+      "@repo/shared/types/skill-improver": [
+        "../../packages/shared/src/types/skill-improver.ts"
       ]
     }
   },

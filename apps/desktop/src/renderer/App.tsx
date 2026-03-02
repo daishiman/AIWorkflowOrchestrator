@@ -21,6 +21,7 @@ import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
+import { SkillAnalysisView } from "./components/skill";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { ViewType } from "./components/organisms/AppDock";
 
@@ -175,6 +176,15 @@ function App(): JSX.Element {
           <Route
             path="/advanced/skill-management-panel"
             element={renderStandaloneView(<SkillManagementPanel />)}
+          />
+          <Route
+            path="/advanced/skill-analysis"
+            element={renderStandaloneView(
+              <SkillAnalysisView
+                skillName="demo-skill"
+                onClose={() => window.history.back()}
+              />,
+            )}
           />
           {/* 既存のビューベースUI（デフォルト） */}
           <Route

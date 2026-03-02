@@ -49,6 +49,12 @@ import type {
   SkillChainDefinition,
   SkillChainResult,
 } from "@repo/shared/types/skill-chain";
+import type {
+  SkillAnalysis,
+  Suggestion,
+  ImprovementResult,
+  ImprovementOptions,
+} from "@repo/shared/types/skill-improver";
 import type { BackupInfo } from "./types";
 import type {
   DebugSessionState,
@@ -279,6 +285,33 @@ export interface SkillAPI {
   scheduleDelete: (id: string) => Promise<void>;
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
+
+  // === Skill Analysis & Improvement API (TASK-10A-B) ===
+
+  /**
+   * スキルを分析する
+   * @param skillName - 分析対象のスキル名
+   * @returns 分析結果
+   */
+  analyze: (skillName: string) => Promise<SkillAnalysis>;
+
+  /**
+   * 選択した改善提案を適用する
+   * @param skillName - スキル名
+   * @param suggestions - 適用する提案リスト
+   * @returns 改善結果
+   */
+  applyImprovements: (
+    skillName: string,
+    suggestions: Suggestion[],
+  ) => Promise<ImprovementResult>;
+
+  /**
+   * 全自動改善を実行する
+   * @param skillName - スキル名
+   * @returns 改善結果
+   */
+  autoImprove: (skillName: string) => Promise<ImprovementResult>;
 
   // === Skill Debug API (TASK-9H) ===
 
@@ -614,6 +647,27 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
+
+  // === Skill Analysis & Improvement API (TASK-10A-B) ===
+
+  analyze: (skillName: string): Promise<SkillAnalysis> =>
+    safeInvokeUnwrap<SkillAnalysis>(IPC_CHANNELS.SKILL_ANALYZE, { skillName }),
+
+  applyImprovements: (
+    skillName: string,
+    suggestions: Suggestion[],
+  ): Promise<ImprovementResult> =>
+    safeInvokeUnwrap<ImprovementResult>(IPC_CHANNELS.SKILL_IMPROVE, {
+      skillName,
+      analysis: { suggestions } as SkillAnalysis,
+    }),
+
+  autoImprove: (skillName: string): Promise<ImprovementResult> =>
+    safeInvokeUnwrap<ImprovementResult>(IPC_CHANNELS.SKILL_IMPROVE, {
+      skillName,
+      analysis: {} as SkillAnalysis,
+      options: { autoFix: true } as ImprovementOptions,
+    }),
 
   // === Skill Debug API (TASK-9H) ===
 

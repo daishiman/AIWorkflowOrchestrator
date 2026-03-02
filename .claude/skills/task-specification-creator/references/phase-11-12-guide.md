@@ -17,45 +17,119 @@
    ↓
 3. 各カテゴリのテスト項目を実行・記録
    ↓
-4. UI/UX変更タスクの場合: capture-screenshots.js でスクリーンショットを自動撮影
+4. UI/UX変更タスクの場合: 画面カバレッジマトリクスを作成
+   4-1. git diff で変更コンポーネント一覧を洗い出す
+   4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
+   4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
+   4-4. 撮影計画 screenshot-plan.json を作成
    ↓
-5. UI/UX変更タスクの場合: 撮影結果と仕様照合チェックリストを確認
+5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
+   5-1. ルートベース撮影（ページ全体）
+   5-2. コンポーネント単位撮影（--selector で要素指定）
+   5-3. インタラクション状態撮影（--action + --action-target）
+   5-4. ダークモード撮影（--dark）
    ↓
-6. 結果を outputs/phase-11/manual-test-result.md に出力
+6. UI/UX変更タスクの場合: 画面カバレッジレポートを作成
+   6-1. コンポーネント/表示状態/インタラクション/テーマ各カバレッジ算出
+   6-2. 必須項目（優先度[A][B]）100%を確認（未達の場合は追加撮影、推奨[C]・任意[D]はN/A記録で代替可）
+   6-3. `validate-phase11-screenshot-coverage.js` でTC証跡の紐付けを検証
    ↓
-7. 発見課題を outputs/phase-11/discovered-issues.md に出力
+7. UI/UX変更タスクの場合: 各スクリーンショットのUI/UX品質を評価
+   7-1. 仕様照合チェックリスト（レイアウト/カラーパレット/8pxグリッド/テーマ/エラーUI）で評価
+   7-2. Apple HIG準拠・WCAG AA準拠の観点で品質問題を発見
+   7-3. 発見した問題を discovered-issues.md に記録（重要度: 高/中/低）
+   ↓
+8. UI/UX品質問題が発見された場合: 修正→再撮影→再評価のサイクル
+   8-1. 重要度「高」の問題は Phase 11 内で修正（CSS/レイアウト調整等）
+   8-2. 修正後に該当箇所を再撮影し、品質基準をクリアしたことを確認
+   8-3. 修正困難な問題は discovered-issues.md に記録し、未タスク候補とする
+   ↓
+9. 結果を outputs/phase-11/manual-test-result.md に出力
+   ↓
+10. 発見課題（修正済み・未修正）を outputs/phase-11/discovered-issues.md に出力
 ```
 
-### スクリーンショット自動撮影コマンド（UI/UX変更タスク）
+### スクリーンショット撮影の制約・ガイドライン
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 撮影枚数 | 該当必須状態（優先度[A][B]）に撮影上限は設けない。変更コンポーネントの必須状態を**全て**撮影する。推奨[C]・任意[D]はN/A理由記録で省略可 |
+| 4段階優先度 | **[A] 高価値・容易=必須**（正常表示/テーマ/主要操作後）、**[B] 高価値・困難=該当時必須**（エラー/空状態/モーダル）、**[C] 低価値・容易=推奨**（フォーカス/スクロール位置）、**[D] 低価値・困難=任意**（ホバー/アニメーション中間、N/A理由記録で省略可） |
+| Electron IPC制約 | Vite dev server経由のため、IPC通信に依存するElectron固有画面は完全再現不可の場合がある |
+| Playwright非対応環境 | NOTE.txt で代替（後述の実行フロー Step 5 参照） |
+| 完了基準 | 必須項目（優先度[A][B]）の**100%撮影**が完了していること。推奨[C]・任意[D]はN/A理由の記録で代替可 |
+
+### スクリーンショット撮影コマンド（UI/UX変更タスク）
+
+#### A. 撮影計画ベースの一括撮影（推奨）
 
 ```bash
 # Step 1: dev serverを起動（別ターミナル or バックグラウンド）
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
-# Step 2: before状態をキャプチャ（実装適用前のブランチで実行）
+# Step 2: screenshot-plan.json から全状態を一括撮影
 node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes {{変更対象のルート}} \
-  --state before
+  --plan outputs/phase-11/screenshot-plan.json
 
-# Step 3: after状態をキャプチャ（実装適用後）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes {{変更対象のルート}} \
-  --state after
-
-# Step 4: ダークモード確認（該当時）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes {{変更対象のルート}} \
-  --state after --dark
+# Step 3: カバレッジレポートを確認
+cat docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-11/screenshot-coverage.md
 
 # dev server停止
 kill %1 2>/dev/null
 ```
 
+#### B. 個別撮影コマンド（補助）
+
+```bash
+# ルートベース撮影（ページ全体）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes {{変更対象のルート}} \
+  --state after
+
+# コンポーネント単位撮影（要素指定）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes /settings \
+  --selector "[data-testid='my-component']" \
+  --state after
+
+# インタラクション状態撮影（ボタンクリック後等）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes /settings \
+  --action click --action-target "[data-testid='open-modal']" \
+  --state modal-open
+
+# ダークモード撮影
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --routes {{変更対象のルート}} \
+  --state after --dark
+
+# ドライラン（出力パス確認のみ）
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --plan outputs/phase-11/screenshot-plan.json --dry-run
+```
+
 **スクリプトオプション一覧**: `capture-screenshots.js --help` または `--dry-run` で確認
 
+> **before撮影に関する注意**: Phase 11 の時点で実装は完了済みのため、main ブランチに切り替えて before 撮影を行うのは非現実的である。before 撮影が必要な場合は、**Phase 5（実装）開始前に main ブランチのスクリーンショットを事前に撮影しておく**こと。Phase 11 では after 撮影のみを実施する。
+
+> **Phase 2 へのフィードバック（将来改善）**: UI状態マトリクスの根本的な入力源はPhase 2（設計）である。Phase 2テンプレートに「UI状態マトリクス」セクションを追加し、設計時にコンポーネント x 表示状態の組み合わせを定義しておくことで、Phase 11の撮影計画作成を大幅に効率化できる。
+
+### スクリーンショット網羅性検証コマンド（UI/UX変更タスク）
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+補足:
+- `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
+- 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 ### テスト結果レポート形式
 
 ```markdown
@@ -269,6 +343,8 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
 - [ ] implementation-guide.md 内の画像パスがリポジトリ相対パスであること（PRコメント投稿時にGitHub上で表示可能）
+- [ ] Phase 13（`/ai:diff-to-pr`）で参照する `TARGET_WORKFLOW_DIR` が今回差分のworkflowを指すことを確認した
+- [ ] PR本文（`.github/pull_request_template.md` 準拠）の `## その他` に Phase 12 実装ガイド反映元パスと要点を記載する準備ができている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ### Phase 12 自動化コマンド

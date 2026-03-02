@@ -24,7 +24,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## references/ （15ファイル）
+## references/ （16ファイル）
 
 詳細知識。必要時のみ読み込む。
 
@@ -45,6 +45,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | [technical-documentation-guide.md](technical-documentation-guide.md) | Phase 12実行時 | 技術ドキュメント作成 |
 | [self-improvement-cycle.md](self-improvement-cycle.md) | 改善分析時 | 自己改善サイクル |
 | [patterns.md](patterns.md) | 問題発生時 | 成功/失敗パターン集 |
+| [changelog-archive.md](changelog-archive.md) | 履歴参照時 | 変更履歴アーカイブ（v9.83.2以前） |
 
 ---
 
@@ -83,7 +84,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | `validate-schema.js` | スキーマ検証時 | JSON Schema検証 |
 | `log-usage.js` | 全モード完了時 | 使用ログ記録 |
 | `generate-index.js` | create完了後 | index.md自動生成 |
-| `capture-screenshots.js` | Phase 11実行時 | Playwrightによるスクリーンショット自動撮影 |
+| `capture-screenshots.js` | Phase 11実行時 | Playwrightによるスクリーンショット撮影（JSON撮影計画一括撮影/要素単位/インタラクション/カバレッジレポート生成対応） |
 
 ---
 
@@ -109,6 +110,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-02 | references/16に更新（changelog-archive.md追加）、capture-screenshots.js説明を拡張版機能に更新 |
 | 2026-03-01 | scripts/13に更新（capture-screenshots.js追加）、Phase 11スクリーンショット自動撮影 |
 | 2026-01-31 | assets/9に更新（documentation-changelog-template.md追加）、Phase 12 Task 2更新履歴テンプレート |
 | 2026-01-26 | schemas/8, scripts/10, assets/8に更新（review-gate-result, scope-definition, generate-index, review-result-template追加） |
