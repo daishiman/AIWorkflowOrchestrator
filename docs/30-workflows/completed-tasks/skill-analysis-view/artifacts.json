@@ -1,0 +1,163 @@
+{
+  "taskId": "TASK-10A-B",
+  "taskName": "SkillAnalysisView（スキル分析ビュー）",
+  "feature": "skill-analysis-view",
+  "workflowPath": "docs/30-workflows/completed-tasks/skill-analysis-view",
+  "created": "2026-03-02T06:20:00+09:00",
+  "lastUpdated": "2026-03-02T15:45:00+09:00",
+  "status": "phase_12_completed",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-03-02T07:00:00+09:00",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-03-02T07:30:00+09:00",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/api-specification.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-03-02T07:30:00+09:00",
+      "result": "PASS",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成（TDD: Red→Green）",
+      "status": "completed",
+      "completedAt": "2026-03-02T09:00:00+09:00",
+      "testCount": 36,
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "5": {
+      "name": "実装（TDD: Green）",
+      "status": "completed",
+      "completedAt": "2026-03-02T09:00:00+09:00",
+      "testCount": 36,
+      "testResult": "ALL_PASS",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-03-02T10:30:00+09:00",
+      "testCount": 72,
+      "testResult": "ALL_PASS",
+      "artifacts": [
+        "outputs/phase-6/coverage-report.md",
+        "outputs/phase-6/integration-test.md"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-03-02T10:30:00+09:00",
+      "coverage": {
+        "line": "100%",
+        "branch": "95.83%",
+        "function": "100%"
+      },
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング（TDD: Refactor）",
+      "status": "completed",
+      "completedAt": "2026-03-02T12:00:00+09:00",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "completedAt": "2026-03-02T12:00:00+09:00",
+      "qualityResult": {
+        "eslint": "0 errors / 0 warnings",
+        "typescript": "0 errors",
+        "prettier": "0 diffs",
+        "tests": "72 PASS",
+        "security": "PASS",
+        "accessibility": "PASS"
+      },
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-03-02T13:30:00+09:00",
+      "result": "MINOR",
+      "minorCount": 6,
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-03-02T14:00:00+09:00",
+      "result": "PASS",
+      "discoveredMinor": 2,
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-03-02T15:45:00+09:00",
+      "unassignedTasks": 7,
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": ["outputs/phase-13/pr-info.md"]
+    }
+  },
+  "dependencies": {
+    "upstream": [
+      {
+        "taskId": "TASK-9C",
+        "status": "completed",
+        "description": "SkillAnalyzer/SkillImprover バックエンド実装"
+      },
+      {
+        "taskId": "TASK-UI-00",
+        "status": "completed",
+        "description": "デザイントークン（CSS変数）基盤"
+      }
+    ],
+    "parallel": [
+      {
+        "taskId": "TASK-10A-A",
+        "description": "SkillManagementPanel（独立実装可能）"
+      }
+    ],
+    "downstream": [
+      {
+        "taskId": "TASK-10A-D",
+        "description": "統合タスク（本タスク完了後に開始）"
+      }
+    ]
+  }
+}

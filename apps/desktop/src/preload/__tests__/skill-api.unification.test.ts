@@ -50,7 +50,7 @@ beforeEach(() => {
 // ============================================================
 describe("SkillAPI Unification", () => {
   describe("window.electronAPI.skill", () => {
-    it("should expose all 42 methods", () => {
+    it("should expose all 45 methods", () => {
       // skillAPI は window.electronAPI.skill として公開される
       // ここでは skillAPI オブジェクトを直接検証
 
@@ -109,6 +109,11 @@ describe("SkillAPI Unification", () => {
       expect(typeof skillAPI.analyticsTrend).toBe("function");
       expect(typeof skillAPI.analyticsExport).toBe("function");
 
+      // 分析・改善系（3メソッド）
+      expect(typeof skillAPI.analyze).toBe("function");
+      expect(typeof skillAPI.applyImprovements).toBe("function");
+      expect(typeof skillAPI.autoImprove).toBe("function");
+
       // チェーン系（5メソッド）
       expect(typeof skillAPI.chainList).toBe("function");
       expect(typeof skillAPI.chainGet).toBe("function");
@@ -117,7 +122,7 @@ describe("SkillAPI Unification", () => {
       expect(typeof skillAPI.chainExecute).toBe("function");
     });
 
-    it("should have exactly 42 methods (no extra methods)", () => {
+    it("should have exactly 45 methods (no extra methods)", () => {
       const expectedMethods: (keyof SkillAPI)[] = [
         "list",
         "getImported",
@@ -156,6 +161,9 @@ describe("SkillAPI Unification", () => {
         "analyticsSummary",
         "analyticsTrend",
         "analyticsExport",
+        "analyze",
+        "applyImprovements",
+        "autoImprove",
         "chainList",
         "chainGet",
         "chainSave",
@@ -168,8 +176,9 @@ describe("SkillAPI Unification", () => {
           typeof (skillAPI as Record<string, unknown>)[key] === "function",
       );
 
-      // メソッド数が正確に42であること（13 + 6ファイル操作 + 3共有 + 5スケジュール + 1 fork + 4ドキュメント + 5分析 + 5チェーン）
-      expect(actualMethods.length).toBe(42);
+      // メソッド数が正確に45であること
+      // （13 + 6ファイル操作 + 3共有 + 5スケジュール + 1 fork + 4ドキュメント + 5分析 + 3分析改善 + 5チェーン）
+      expect(actualMethods.length).toBe(45);
 
       // 全ての期待メソッドが含まれていること
       for (const method of expectedMethods) {

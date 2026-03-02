@@ -9,3 +9,7 @@ export { SkillSelector } from "./SkillSelector";
 export type { SkillSelectorProps } from "./SkillSelector";
 export { SkillStreamingView } from "./SkillStreamingView";
 export type { SkillStreamingViewProps } from "./SkillStreamingView";
+export { SkillAnalysisView } from "./SkillAnalysisView";
+export { ScoreDisplay } from "./ScoreDisplay";
+export { SuggestionList } from "./SuggestionList";
+export { RiskPanel } from "./RiskPanel";

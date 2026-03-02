@@ -32,6 +32,7 @@
 6. UI/UX変更タスクの場合: 画面カバレッジレポートを作成
    6-1. コンポーネント/表示状態/インタラクション/テーマ各カバレッジ算出
    6-2. 必須項目（優先度[A][B]）100%を確認（未達の場合は追加撮影、推奨[C]・任意[D]はN/A記録で代替可）
+   6-3. `validate-phase11-screenshot-coverage.js` でTC証跡の紐付けを検証
    ↓
 7. UI/UX変更タスクの場合: 各スクリーンショットのUI/UX品質を評価
    7-1. 仕様照合チェックリスト（レイアウト/カラーパレット/8pxグリッド/テーマ/エラーUI）で評価
@@ -119,6 +120,16 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 
 > **Phase 2 へのフィードバック（将来改善）**: UI状態マトリクスの根本的な入力源はPhase 2（設計）である。Phase 2テンプレートに「UI状態マトリクス」セクションを追加し、設計時にコンポーネント x 表示状態の組み合わせを定義しておくことで、Phase 11の撮影計画作成を大幅に効率化できる。
 
+### スクリーンショット網羅性検証コマンド（UI/UX変更タスク）
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+補足:
+- `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
+- 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 ### テスト結果レポート形式
 
 ```markdown

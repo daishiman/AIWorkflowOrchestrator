@@ -592,10 +592,51 @@ TASK-UI-05B は SkillCenterView（TASK-UI-05）の拡張として、4つの高�
 
 ---
 
+## SkillAnalysisView アーキテクチャパターン（TASK-10A-B / completed）
+
+> ステータス: **completed**（実装・テスト・画面検証完了）
+
+TASK-10A-B は、分析結果表示と改善実行を 1 画面で完結する UI を実装した。`SkillAnalysisView` をコンテナとし、表示責務を 3 つの下位コンポーネントへ分離、非同期制御は `useSkillAnalysis` に集約する。
+
+### レイヤー構成
+
+| レイヤー | 主要要素 | 役割 |
+| --- | --- | --- |
+| Container | `SkillAnalysisView.tsx` | 画面状態の切替（loading/error/success）とアクション導線 |
+| Molecules | `ScoreDisplay.tsx`, `SuggestionList.tsx`, `RiskPanel.tsx` | スコア表示 / 提案選択 / リスク表示 |
+| Hook | `hooks/useSkillAnalysis.ts` | 分析実行、提案選択状態、改善適用、再分析 |
+| API Bridge | `window.electronAPI.skill.*` | `analyze` / `applyImprovements` / `autoImprove` の呼び出し |
+
+### データフロー
+
+| 操作 | 経路 | 説明 |
+| --- | --- | --- |
+| 初期分析 | mount → `handleAnalyze()` | 画面表示時に分析APIを実行して結果を取得 |
+| 提案選択 | checkbox → `handleToggleSuggestion()` | 選択インデックス集合を更新 |
+| 選択適用 | button → `handleApplySelected()` | 選択提案のみ適用後に再分析 |
+| 全自動改善 | button → `handleAutoImprove()` | 確認ダイアログ後に全適用し再分析 |
+| エラー復帰 | retry button → `handleAnalyze()` | エラー状態をクリアして再試行 |
+
+### UI品質補正（Phase 11 再監査）
+
+| 観点 | 反映内容 |
+| --- | --- |
+| a11y | `SuggestionList` / `RiskPanel` の `ul[role=\"list\"]` に `aria-label` を追加 |
+| トークン統一 | `SkillAnalysisView` の `text-white` を `text-[var(--text-inverse)]` へ統一 |
+| 画面証跡 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/` に4ケース保存 |
+
+### 参照
+
+- [TASK-10A-B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
+- [TASK-10A-B Phase 11 手動テスト結果](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.8.3   | 2026-03-02 | TASK-10A-B 完了反映: SkillAnalysisView アーキテクチャパターン（レイヤー構成/データフロー/UI品質補正）を追加 |
 | 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
 | 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` へ更新し、UI導線追加に合わせてアーキテクチャ節を実装実体へ一致化 |
 | 2.8.0   | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views（4ビュー/33コンポーネント）のアーキテクチャパターン、状態管理方針、ファイル配置を追加 |
@@ -616,3 +657,4 @@ TASK-UI-05B は SkillCenterView（TASK-UI-05）の拡張として、4つの高�
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
 - [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 SkillCenterView 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
+- [TASK-10A-B SkillAnalysisView 実装ガイド](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/implementation-guide.md)

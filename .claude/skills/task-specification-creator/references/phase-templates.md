@@ -1017,6 +1017,7 @@ Phase 11: 手動テスト検証
 | 命名規則       | `TC-{番号}-{状態ラベル}-{テーマ}.png`（例: `TC-01-default-light.png`, `TC-02-default-dark.png`） |
 | 配置先         | `outputs/phase-11/screenshots/`                                     |
 | 必須タイミング | (1) 操作後の結果状態 (2) エラー発生時のUI （※before撮影はPhase 5開始前に実施。Phase 11ではafter撮影のみ） |
+| 紐付け規定     | `manual-test-result.md` のテスト結果表で **各TCに最低1枚** の証跡を紐付ける |
 
 ### 仕様照合チェックリスト（UI/UX変更時）
 
@@ -1040,6 +1041,21 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 ```
 
 **注意**: `--plan` を使わず個別撮影する場合は、`--routes` にタスクで変更したUI画面のルートを指定すること。
+
+### 網羅性検証コマンド（UI/UX変更タスク）
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}}
+```
+
+非視覚TCのみ例外許可する場合:
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+  --workflow docs/30-workflows/{{FEATURE_NAME}} \
+  --allow-non-visual-tc TC-08
+```
 
 ### 撮影不可時の代替
 
@@ -1232,6 +1248,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 - [ ] UI/UX変更タスクの場合: 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙済み（N/A理由も記録）
 - [ ] UI/UX変更タスクの場合: 撮影計画 `screenshot-plan.json` が作成済み
 - [ ] UI/UX変更タスクの場合: 撮影計画の**全項目**のスクリーンショットが `outputs/phase-11/screenshots/` に配置済み
+- [ ] UI/UX変更タスクの場合: 各TCにスクリーンショット証跡が紐付き、`validate-phase11-screenshot-coverage.js` がPASS
 - [ ] UI/UX変更タスクの場合: 画面カバレッジレポートの必須項目（優先度[A][B]）が**100%**（推奨[C]・任意[D]はN/A記録で代替可）
 - [ ] UI/UX変更タスクの場合: 各スクリーンショットに対してUI/UX品質評価を実施済み（仕様照合チェックリスト全項目確認）
 - [ ] UI/UX変更タスクの場合: 品質評価で発見したUI/UX問題を全て修正済み（または `discovered-issues.md` に記録済み）
