@@ -22,19 +22,19 @@ SkillCenterView（ツールを探す）の要件を明確化し、受け入れ�
 
 ## 参照資料
 
-| 資料名                        | パス / タスクID                                                                                                                 | 説明                         |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| タスク原本                    | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | 全仕様                       |
-| デザイン基盤                  | TASK-UI-00 `00-design-foundation.md`                                                                                            | 共通コンポーネント・トークン |
-| UIアーキテクチャ              | TASK-UI-01 `01-architecture.md`                                                                                                 | Zustandスライス設計原則      |
-| ナビゲーションコア            | TASK-UI-02 `02-navigation-core.md`                                                                                              | サイドバーナビゲーション     |
-| エージェントビュー            | TASK-UI-03 `03-agent-view.md`                                                                                                   | AgentView仕様（変更不可）    |
-| 既存AgentView                 | `views/AgentView/index.tsx`                                                                                                     | 既存実装参照                 |
-| 既存SkillImportDialog         | `components/organisms/SkillImportDialog/`                                                                                       | 既存ダイアログ参照           |
-| 既存agentSlice                | `store/slices/agentSlice.ts`                                                                                                    | 既存スライス参照             |
-| IPCチャネル定義               | `preload/channels.ts`                                                                                                           | 既存チャネル定数             |
-| P44: IPC不整合（解決済み）    | `.claude/rules/06-known-pitfalls.md#P44`                                                                                        | skill:import/remove修正済み  |
-| P45: 命名ドリフト（解決済み） | `.claude/rules/06-known-pitfalls.md#P45`                                                                                        | skillName統一済み            |
+| 資料名                        | パス / タスクID                                                                                        | 説明                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| タスク原本                    | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | 全仕様                       |
+| デザイン基盤                  | TASK-UI-00 `00-design-foundation.md`                                                                   | 共通コンポーネント・トークン |
+| UIアーキテクチャ              | TASK-UI-01 `01-architecture.md`                                                                        | Zustandスライス設計原則      |
+| ナビゲーションコア            | TASK-UI-02 `02-navigation-core.md`                                                                     | サイドバーナビゲーション     |
+| エージェントビュー            | TASK-UI-03 `03-agent-view.md`                                                                          | AgentView仕様（変更不可）    |
+| 既存AgentView                 | `views/AgentView/index.tsx`                                                                            | 既存実装参照                 |
+| 既存SkillImportDialog         | `components/organisms/SkillImportDialog/`                                                              | 既存ダイアログ参照           |
+| 既存agentSlice                | `store/slices/agentSlice.ts`                                                                           | 既存スライス参照             |
+| IPCチャネル定義               | `preload/channels.ts`                                                                                  | 既存チャネル定数             |
+| P44: IPC不整合（解決済み）    | `.claude/rules/06-known-pitfalls.md#P44`                                                               | skill:import/remove修正済み  |
+| P45: 命名ドリフト（解決済み） | `.claude/rules/06-known-pitfalls.md#P45`                                                               | skillName統一済み            |
 
 ## aiworkflow-requirements 仕様抽出結果（resource-map準拠）
 

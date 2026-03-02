@@ -20,9 +20,15 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-01 | 1.27.7 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 の再確認教訓を追記。苦戦箇所3件（検証スクリプト実行パス誤認、`--target-file` 対象制約誤読、optional dependency 欠落）と同種課題向け4ステップ手順を標準化 |
-| 2026-03-01 | 1.27.6 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 の関連未タスクを完了化し、参照先を `completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md` へ同期 |
-| 2026-03-01 | 1.27.5 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の教訓を追加。苦戦箇所3件（Istanbul形式誤認、定数→チャンネル変換例外、Vitest include漏れ）と同種課題向け簡潔解決手順（4ステップ）を標準化 |
+| 2026-03-02 | 1.28.2 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定 |
+| 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
+| 2026-03-02 | 1.28.0 | TASK-UI-05A 再監査教訓を追加。`spec_created` 台帳と実装実体（未追跡ファイル含む）の乖離、未タスクの非正規配置（workflow配下）、画面証跡の鮮度不足を同時に解消する運用を標準化 |
+| 2026-03-01 | 1.27.9 | completed-tasks 移管後の参照整合を補正。`UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` と `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の仕様書リンクを実体パスへ更新 |
+| 2026-03-01 | 1.27.8 | TASK-UI-05 の教訓を追加。型境界（CategoryId/SkillCategory）、詳細パネル責務集中、Phase 12 三点同期の3課題と5ステップ再利用手順を標準化 |
+| 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
+| 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
+| 2026-02-28 | 1.27.5 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の Phase 12 実行監査教訓を追加。成果物実体と `artifacts.json` ステータス不一致、`audit-unassigned-tasks` の current/baseline 誤読、チェックリスト未同期の3課題と4ステップ解決手順を標準化 |
+| 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
 | 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
 | 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
 | 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
@@ -100,44 +106,192 @@
 
 ---
 
-## UT-IMP-PHASE11-WORKTREE-PROTOCOL-001: Phase 12再確認（2026-03-01 追補）
+## TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02）
 
-### 苦戦箇所: 検証スクリプトの実行パス誤認
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `verify-all-specs.js` などをリポジトリ直下 `scripts/` 想定で実行し、`MODULE_NOT_FOUND` で失敗した |
-| 再発条件 | 実行前にスクリプト実体パスを確認しない場合 |
-| 原因 | 監査系スクリプトが `task-specification-creator/scripts` に集約されている運用前提を見落とした |
-| 対処 | `node .claude/skills/task-specification-creator/scripts/<script>.js` へ実行経路を統一し再実行 |
-| 今後の標準ルール | Phase 12 検証は「実体探索（`rg --files`）→実行」を固定化する |
-
-### 苦戦箇所: `audit-unassigned-tasks --target-file` の対象制約誤読
+### 苦戦箇所: `spec_created` 記述と実装実体の状態ドリフト
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `completed-tasks` 配下のファイルを `--target-file` で監査しようとしてエラーになった |
-| 再発条件 | 監査対象ディレクトリ制約を確認せずに `--target-file` を使う場合 |
-| 原因 | `--target-file` が `docs/30-workflows/unassigned-task/` 配下のみ対象である仕様を未確認 |
-| 対処 | 今回差分は `--diff-from HEAD` で current 判定し、full監査（`--json`）は baseline監視として分離記録 |
-| 今後の標準ルール | `target-file` は対象未タスクがある時のみ使用し、差分判定は `--diff-from` を優先する |
+| 課題 | 仕様台帳では「実装未着手」と記録されていたが、`views/SkillEditorView` の実装ファイルとテストは存在していた |
+| 再発条件 | worktree で仕様更新を後回しにし、台帳と実装の観測タイミングがズレる場合 |
+| 対処 | `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` を同一ターンで再同期し、状態を「実装ファイル実在・統合未完了」に修正 |
+| 標準ルール | Phase 12再監査では「コード実体確認（`rg --files`）→ 仕様台帳更新 → 証跡更新」を必須チェーン化する |
 
-### 苦戦箇所: optional dependency 欠落で Vitest が起動しない
+### 苦戦箇所: 未タスク指示書の正本配置漏れ
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `@rollup/rollup-darwin-x64` 欠落により Vitest 実行が失敗した |
-| 再発条件 | ネイティブ/optional 依存を持つ環境で `node_modules` の再解決が不完全な場合 |
-| 原因 | Worktree/ローカル実行環境の依存状態が一致していなかった |
-| 対処 | 失敗原因を `documentation-changelog.md` に記録し、依存再解決後の再実行タスクとして切り分けた |
-| 今後の標準ルール | ネイティブ依存を含む検証は、依存解決状態確認を先行してから実行する |
+| 課題 | `UT-UI-05A-GETFILETREE-001` が workflow ローカル配下のみで管理され、正規監査対象から外れていた |
+| 再発条件 | Phase 12で検出レポートのみ更新し、`docs/30-workflows/unassigned-task/` への正本化を省略する場合 |
+| 対処 | 正規テンプレート準拠で未タスク3件を作成し、`task-workflow.md` 残課題テーブルと同期した |
+| 標準ルール | 未タスクは必ず「正本配置 → 残課題登録 → 関連仕様リンク」の3点を同一ターンで完了させる |
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. 監査スクリプトは `task-specification-creator/scripts` の実体を確認してから実行する。
-2. 未タスク監査は `--diff-from HEAD`（current）と `--json`（baseline監視）を分離して判定する。
-3. `phase-12-documentation.md` の完了チェックを成果物実体と同一ターンで同期する。
-4. 苦戦箇所は `task-workflow.md` と `lessons-learned.md` に同時反映し、再発条件まで固定化する。
+1. `git status --short` と `rg --files` で実装実体の有無を先に確定する。  
+2. 画面証跡を再取得し、証跡ファイル名を更新履歴へ反映する。  
+3. 未タスクを `docs/30-workflows/unassigned-task/` に正規作成し、台帳リンクを置換する。  
+4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` で current=0 を確認する。  
+
+### Phase 12準拠再確認での苦戦箇所（2026-03-02）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec_created` workflow（TASK-UI-05A）と完了workflow（TASK-UI-05）を同時監査した際、証跡の記録先が分散しやすい |
+| 再発条件 | 複数workflowを個別に検証してから後で転記する運用 |
+| 対処 | 対象workflowを先に固定し、`verify-all-specs` → `validate-phase-output` を2workflow分まとめて実行・記録した |
+| 標準ルール | Phase 12再確認は「対象workflow固定→構造検証→出力検証→成果物突合」を1セットで実施する |
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks` の baseline違反を今回差分違反と誤認しやすい |
+| 再発条件 | repo全体に既存フォーマット違反が残った状態で `--diff-from HEAD` を実行する場合 |
+| 対処 | 合否を `currentViolations` のみに固定し、baselineは監視値として分離記録した |
+| 標準ルール | 未タスク監査の合否基準は `currentViolations=0` 固定。baselineは別途改善タスクで扱う |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 対象workflowを先に列挙し、`verify-all-specs --workflow <dir>` を全対象へ実行する。  
+2. `validate-phase-output <dir>` を同じ対象へ実行し、Phase 12必須成果物（Task 1/3/4/5）の実体を突合する。  
+3. `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD` を連続実行し、`currentViolations=0` を判定基準にする。  
+4. 結果を `task-workflow.md` と `lessons-learned.md` に同一ターンで反映し、次ターンへの持ち越しを禁止する。  
+
+### 関連未タスク（2026-03-02 追補）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | 2workflow同時監査時の証跡集約ガード（Task 1/3/4/5 実体突合 + 画面証跡 + current/baseline 分離） | `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
+
+---
+
+## TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01）
+
+### 苦戦箇所: `CategoryId` と `SkillCategory` の境界が混在しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | カテゴリ選択・フィルタ・表示順の責務が同じ型として扱われ、比較条件が増えるほど読み解きコストが上がる |
+| 再発条件 | UI都合の `all` などをドメインカテゴリと同じ層で扱う場合 |
+| 原因 | 表示ID層とドメインカテゴリ層の責務分離が途中段階だった |
+| 対処 | `UT-UI-05-001` として型統一を未タスク化し、現時点は変換点（`all` と `categoryOrderMap`）を局所化して回帰テストで固定した |
+| 今後の標準ルール | カテゴリは「表示ID層」「ドメイン層」「変換層」を明示的に分離する |
+
+### 苦戦箇所: `SkillDetailPanel` への責務集中
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 詳細表示の拡張（Markdown描画、モバイル操作、Skeleton）を同時に進めると差分が肥大化し、レビュー観点が拡散する |
+| 再発条件 | 1コンポーネントに表示/操作/状態切替を集約したまま機能追加する場合 |
+| 原因 | 実装速度を優先して Molecule 分離を後段にした |
+| 対処 | `UT-UI-05-002` / `UT-UI-05-003` / `UT-UI-05-004` / `UT-UI-05-005` として課題を分解し、Phase 12で追跡可能化した |
+| 今後の標準ルール | 大型UIは「完了時に責務分離未タスクを先に切る」を必須化する |
+
+### 苦戦箇所: Phase 12 証跡値の同期漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証コマンドはPASSでも、`task-workflow.md` / `lessons-learned.md` / 未タスク参照の同期順がずれると再確認工数が増える |
+| 再発条件 | 成果物生成と仕様書転記を別ターンで進める場合 |
+| 原因 | 同一ターン同期ルールが作業手順に固定されていなかった |
+| 対処 | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の結果を同一ターンで台帳・教訓へ転記した |
+| 今後の標準ルール | Phase 12 は「検証値確定→台帳反映→教訓反映」を連続実行し、途中保存を完了扱いにしない |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs --workflow` と `validate-phase-output` を先に実行し、構造要件を確定する。  
+2. 実装要点・未タスク・検証証跡を `task-workflow.md` に先行記録する。  
+3. 未タスクは `docs/30-workflows/unassigned-task/` へ作成し、`--target-file` 監査で形式を確定する。  
+4. `verify-unassigned-links` と `audit --diff-from HEAD` でリンクと差分違反を確定する。  
+5. 同一ターンで `lessons-learned.md` に苦戦箇所と再発条件を転記し、標準ルールを固定する。  
+
+---
+
+## TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離
+
+### 苦戦箇所: timeout時に待機APIが停止責務まで持っていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `waitForCallback()` timeout 内で `instance.stop()` を呼ぶと、待機失敗と停止処理が結合しワーカー終了時の不安定要因になる |
+| 再発条件 | timeout ハンドラ内で stop/close を直接呼ぶ実装を採用する場合 |
+| 原因 | 待機APIとライフサイクルAPIの責務境界が曖昧だった |
+| 対処 | timeout はエラー返却のみへ変更し、停止は呼び出し側の `stop()` 明示実行へ分離した |
+| 今後の標準ルール | timeout系APIは副作用を持たせず、停止責務を分離する |
+
+### 苦戦箇所: `stop()` の多重実行で終了経路が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 停止済みサーバーへの `stop()` で例外経路が混入するとクリーンアップが不安定になる |
+| 再発条件 | `!server` 判定のみで `server.listening` 状態を見ない場合 |
+| 原因 | `!server` のみ判定で `server.listening` 状態を見ていなかった |
+| 対処 | `!server || !server.listening` で早期returnし、`server.close` エラーは握りつぶして `Promise<void>` を解決する設計へ統一した |
+| 今後の標準ルール | 停止APIは idempotent を第一要件にし、終了時の best-effort 方針を明文化する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. timeout 系APIから停止/破棄などの副作用を分離する。  
+2. 停止APIに「未起動」「停止済み」の両ガードを実装する。  
+3. timeout テストに `finally` 相当の明示 `stop()` を必ず追加する。  
+4. `security-implementation.md` と `task-workflow.md` を同一ターンで同期し、仕様ドリフトを残さない。  
+
+---
+
+## TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28）
+
+### 苦戦箇所: 成果物が存在しても `artifacts.json` ステータスが未同期になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` の必須成果物5件が存在していても、`artifacts.json` の `phases.12.status` が `pending` のまま残りやすい |
+| 再発条件 | ファイル存在確認だけで Phase 12 の完了判定を行う場合 |
+| 原因 | 「成果物実体」と「台帳ステータス」を別工程で管理し、同時突合していなかった |
+| 対処 | 監査時に `outputs/phase-12` と `artifacts.json` を同時確認し、乖離を明示記録した |
+| 今後の標準ルール | 完了判定は `成果物実体 + artifacts status + チェックリスト同期` の三点セットを必須化する |
+
+### 苦戦箇所: `audit-unassigned-tasks` の baseline と current を混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `--json` 単体実行の違反件数（baseline）を、今回差分の違反件数と誤認しやすい |
+| 再発条件 | `--diff-from` を使わずに合否を判定した場合 |
+| 原因 | 監視目的（baseline）と合否目的（current）の使い分けが曖昧だった |
+| 対処 | `--diff-from HEAD` を併用し、`currentViolations.total` を合否基準として固定した |
+| 今後の標準ルール | 監査結果は `current`（合否）と `baseline`（監視）を必ず分離して記録する |
+
+### 苦戦箇所: `phase-12-documentation.md` のチェックリスト未同期
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 検証コマンドがPASSでも、実行仕様書のチェック項目が未チェックのまま残りやすい |
+| 再発条件 | 成果物作成と仕様書更新を別ターンで進める場合 |
+| 原因 | 実体証跡の更新後に、手順書側の完了状態を同期する運用が固定されていなかった |
+| 対処 | 検証証跡を `task-workflow.md` と `lessons-learned.md` に同一ターン反映した |
+| 今後の標準ルール | Phase 12 は「実体証跡・仕様書チェック・教訓記録」の同時更新で完了とする |
+
+### 苦戦箇所: 仕様書別SubAgent分担で非対象仕様の扱いが揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書別に担当を切っても、更新不要な仕様書（interfaces/api-ipc/securityなど）の省略理由が残らず、再確認時に漏れと区別しづらい |
+| 再発条件 | 仕様書別SubAgent分担を適用したが、非対象仕様の記録欄がないテンプレートを使う場合 |
+| 原因 | 「担当あり/更新なし」の判断を文章でしか残しておらず、機械的な確認軸がなかった |
+| 対処 | `phase12-system-spec-retrospective-template.md` に N/A判定ログ（対象/非対象/理由/代替証跡）を追加した |
+| 今後の標準ルール | SubAgent分担では全仕様書の判定（更新 or N/A）を必ず表形式で残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs` と `validate-phase-output` で Phase 構造を先に確定する。
+2. `outputs/phase-12` の必須成果物5件と `artifacts.json` ステータスを同時に確認する。
+3. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations` を合否基準に固定し、baselineは別管理する。
+4. 仕様書別SubAgent分担を作成し、更新不要な仕様書は `N/A + 理由 + 代替証跡` を記録する。
+5. 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` へ同一ターンで同期する。
+
+### 派生未タスク（継続改善）
+
+| タスクID | 目的 | 配置先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 での N/A 判定ログ固定と三点突合運用を機械確認まで引き上げる | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
 
 ---
 
@@ -180,47 +334,6 @@
 3. 監査スクリプトは `task-specification-creator/scripts` を正本として `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を実行する。
 4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・再利用手順を同時追記する。
 5. 最終確認として `quick_validate.js` と `verify-unassigned-links.js` を再実行し、構造/リンク整合を確定する。
-
----
-
-## UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001: IPCハンドラ単位カバレッジ測定基盤（2026-02-28）
-
-### 苦戦箇所: `coverage-final.json` 形式の誤認（raw v8 vs Istanbul）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `coverage-by-handler.ts` 初期設計で raw v8 形式を想定し、実際の `coverage-final.json`（Istanbul形式）と不一致になりやすかった |
-| 再発条件 | カバレッジデータ形式を実ファイル確認せずに実装を開始した場合 |
-| 原因 | Vitest v8 provider の出力仕様（`statementMap` / `branchMap` / `fnMap`）を事前固定していなかった |
-| 対処 | 解析対象を Istanbul 形式へ統一し、絶対パス一致 + 末尾一致フォールバックでファイル解決を安定化 |
-| 今後の標準ルール | カバレッジ系タスクは `coverage-final.json` の実体確認を最初の必須工程にする |
-
-### 苦戦箇所: `SKILL_GET_IMPORTED` の命名例外ドリフト
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 定数からチャンネル名へ機械変換すると `skill:get-imported` となり、実装側の `skill:getImported` とズレる |
-| 再発条件 | 規則変換のみで例外命名を扱わない場合 |
-| 原因 | 既存IPC契約に camelCase 例外が含まれていた |
-| 対処 | `SKILL_GET_IMPORTED -> skill:getImported` の例外マップを導入し、テストで固定 |
-| 今後の標準ルール | 定数→チャンネル変換は「規則 + 例外マップ」の二段構成を標準化する |
-
-### 苦戦箇所: `scripts/**/*.test.ts` が検出されない
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `coverage-by-handler.test.ts` を追加しても Vitest が収集せず、品質ゲートが偽陽性になり得た |
-| 再発条件 | `src/**` 前提の include 設定を維持したまま script テストを追加した場合 |
-| 原因 | `vitest.config.ts` の include 範囲に `scripts/` が含まれていなかった |
-| 対処 | include に `scripts/**/*.test.{ts,tsx}` を追記してテスト探索を復旧 |
-| 今後の標準ルール | `src/` 以外へテスト追加するタスクは、設定更新を同一PR/同一タスク完了条件に含める |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. カバレッジファイル実体（`coverage-final.json`）を先に取得し、出力形式を仕様へ固定する。
-2. 定数→チャンネル変換は例外マップを持たせ、既存契約との差分をテストで固定する。
-3. テスト配置先を追加したら `vitest.config.ts` include を同時更新する。
-4. Phase 12 では `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` の3コマンドで再確認する。
 
 ---
 
@@ -1748,8 +1861,8 @@ pnpm --filter @repo/shared build && pnpm typecheck
 |---------|---------|--------|--------|
 | ~~UT-FIX-SKILL-VALIDATION-P42-001~~ | ~~skillHandlers P42準拠バリデーション横展開~~ | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）** |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md) |
-| ~~UT-IMP-PHASE11-WORKTREE-PROTOCOL-001~~ | ~~Phase 11 Worktree環境手動テスト実行プロトコル策定~~ | ~~中~~ | **完了: 2026-03-01**（[`docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md)） |
-| ~~UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001~~ | ~~IPCハンドラ粒度カバレッジ計測インフラ構築~~ | ~~中~~ | **完了: 2026-02-28**（`docs/30-workflows/completed-tasks/ut-imp-ipc-handler-coverage-granular-001/`） |
+| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md) |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
 
 ---

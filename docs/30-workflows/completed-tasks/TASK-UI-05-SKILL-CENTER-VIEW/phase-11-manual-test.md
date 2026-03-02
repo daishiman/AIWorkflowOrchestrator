@@ -24,18 +24,18 @@
 
 ## 参照資料
 
-| 資料名           | パス                                                                                                                            | 説明                    |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| タスク定義       | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | 画面仕様・完了条件      |
-| 設計書           | `outputs/phase-2/architecture-design.md`                                                                                        | レイアウト/状態設計確認 |
-| 実装サマリー     | `outputs/phase-5/implementation-summary.md`                                                                                     | 実装内容確認            |
-| テスト拡充結果   | `outputs/phase-6/test-expansion-report.md`                                                                                      | 拡充テスト観点確認      |
-| カバレッジ結果   | `outputs/phase-7/coverage-report.md`                                                                                            | カバレッジ達成確認      |
-| リファクタ結果   | `outputs/phase-8/refactoring-report.md`                                                                                         | 品質改善内容確認        |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                                                                       | Phase 10 判定結果       |
-| テスト仕様書     | `outputs/phase-4/test-specification.md`                                                                                         | テスト設計              |
-| 品質検証結果     | `outputs/phase-9/quality-verification.md`                                                                                       | Phase 9 品質レポート    |
-| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                                                            | P28: 手動テスト確認漏れ |
+| 資料名           | パス                                                                                                   | 説明                    |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ----------------------- |
+| タスク定義       | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | 画面仕様・完了条件      |
+| 設計書           | `outputs/phase-2/architecture-design.md`                                                               | レイアウト/状態設計確認 |
+| 実装サマリー     | `outputs/phase-5/implementation-summary.md`                                                            | 実装内容確認            |
+| テスト拡充結果   | `outputs/phase-6/test-expansion-report.md`                                                             | 拡充テスト観点確認      |
+| カバレッジ結果   | `outputs/phase-7/coverage-report.md`                                                                   | カバレッジ達成確認      |
+| リファクタ結果   | `outputs/phase-8/refactoring-report.md`                                                                | 品質改善内容確認        |
+| 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                                              | Phase 10 判定結果       |
+| テスト仕様書     | `outputs/phase-4/test-specification.md`                                                                | テスト設計              |
+| 品質検証結果     | `outputs/phase-9/quality-verification.md`                                                              | Phase 9 品質レポート    |
+| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                                   | P28: 手動テスト確認漏れ |
 
 ## 実行手順
 

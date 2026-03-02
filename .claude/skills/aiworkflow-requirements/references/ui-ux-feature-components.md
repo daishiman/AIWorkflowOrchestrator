@@ -22,6 +22,7 @@
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
+| Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
 
 ### 共通仕様
 
@@ -822,6 +823,36 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 ---
 
+## 仕様書作成済みタスク（spec_created）
+
+### SkillEditorView UI（TASK-UI-05A / 統合未完了）
+
+TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作成まで完了している。`views/SkillEditorView` の実装ファイルは存在するが、ナビゲーション導線と `skill:getFileTree` IPC連携が未完了のため、統合状態は未完了。
+既存の `EditorView` と `SkillEditor` とは責務が異なり、専用ビューとしては未配線の状態。
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ 作成済み | `docs/30-workflows/skill-editor-view/` |
+| 実装コード（`views/SkillEditorView`） | ⚠️ 実装済み（統合未完了） | `apps/desktop/src/renderer/views/SkillEditorView/` |
+| ナビゲーション導線（`ViewType` / `AppDock`） | ❌ 未配線 | `apps/desktop/src/renderer/store/types.ts`, `App.tsx` |
+| 画面検証証跡 | ✅ 取得済み | `docs/30-workflows/skill-editor-view/outputs/phase-11/` |
+| `skill:getFileTree` IPCチャネル | ❌ 未実装 | UT-UI-05A-GETFILETREE-001 で対応予定。`api-ipc-agent.md` に仕様追加済み |
+| 実装残課題の統合管理 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
+| `useFileTree` 契約整合 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+
+### 画面検証証跡
+
+| 証跡 | ファイル |
+| --- | --- |
+| 現行 Dashboard 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-01-current-dashboard.png` |
+| 現行 Editor 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-02-current-editor-view.png` |
+| 再監査 Dashboard 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-03-current-dashboard-20260302.png` |
+| 再監査 Editor 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-04-current-editor-20260302.png` |
+| 手動検証結果 | `docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md` |
+| 発見課題 | `docs/30-workflows/skill-editor-view/outputs/phase-11/discovered-issues.md` |
+
+---
+
 ## 関連ドキュメント
 
 ### 分割ファイル
@@ -844,6 +875,8 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 - [TASK-9A SkillEditor実装](../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md)
 - [workspace-chat-edit-ui](../../../docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 SkillCenterView実装](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-05A SkillEditorView仕様（spec_created）](../../../docs/30-workflows/skill-editor-view/index.md)
+- [TASK-UI-05A 画面検証結果](../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
 
 ---
 
@@ -851,6 +884,8 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/unassigned-task/` へ統一 |
+| 2026-03-01 | v1.12.4    | TASK-UI-05A spec_created 反映: 収録機能一覧へ `Skill Editor View`（実装未着手）を追加。`仕様書作成済みタスク` セクションを新設し、未実装ギャップ（View未生成・導線未配線）と画面検証証跡を明記 |
 | 2026-03-01 | v1.12.3    | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
 | 2026-03-01 | v1.12.2    | TASK-UI-05追補: 関連未タスクに UT-UI-05-007（Phase 12 UI仕様同期プロファイル適用ガード）を追加し、task-workflow/ui-ux-components との参照整合を統一 |
 | 2026-03-01 | v1.12.1    | TASK-UI-05追補: SkillCenterView 実装時の苦戦箇所（型境界/責務集中/Phase 12同期）と4ステップ簡潔解決手順を追加 |

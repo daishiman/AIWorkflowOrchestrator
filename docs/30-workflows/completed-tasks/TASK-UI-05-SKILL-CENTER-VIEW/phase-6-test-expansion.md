@@ -18,12 +18,12 @@ Phase 5 の実装に対してテストを拡充し、カバレッジ目標（Lin
 
 ## 参照資料
 
-| 資料名             | パス                                                                                                                            | 説明                                       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| タスク定義         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | セクション 9: マイクロインタラクション一覧 |
-| Phase 4 テスト仕様 | `outputs/phase-4/test-specification.md`                                                                                         | 基本テストケース                           |
-| Phase 5 実装コード | `apps/desktop/src/renderer/views/SkillCenterView/`                                                                              | 実装ソース                                 |
-| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                                            | P31, P39, P40, P41, P47 対策               |
+| 資料名             | パス                                                                                                   | 説明                                       |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| タスク定義         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | セクション 9: マイクロインタラクション一覧 |
+| Phase 4 テスト仕様 | `outputs/phase-4/test-specification.md`                                                                | 基本テストケース                           |
+| Phase 5 実装コード | `apps/desktop/src/renderer/views/SkillCenterView/`                                                     | 実装ソース                                 |
+| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                   | P31, P39, P40, P41, P47 対策               |
 
 ## テスト環境・実行ルール
 

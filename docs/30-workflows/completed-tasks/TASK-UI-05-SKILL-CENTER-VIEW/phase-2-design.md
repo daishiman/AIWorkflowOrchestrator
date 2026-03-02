@@ -25,14 +25,14 @@ Phase 1 で定義した要件を実現可能な構造に落とし込む。SkillC
 
 ## 参照資料
 
-| 資料名         | パス                                         | 説明                |
-| -------------- | -------------------------------------------- | ------------------- |
-| 要件定義書     | `outputs/phase-1/requirements-definition.md` | Phase 1成果物       |
-| 受け入れ基準   | `outputs/phase-1/acceptance-criteria.md`     | Phase 1成果物       |
-| スコープ定義   | `outputs/phase-1/scope-definition.md`        | Phase 1成果物       |
-| タスク原本     | `task-030-ui-05-skill-center-view.md`        | 全仕様              |
-| 状態管理ルール | `.claude/rules/03-state-management.md`       | Zustand設計原則     |
-| 既知の落とし穴 | `.claude/rules/06-known-pitfalls.md`         | P31/P39/P40/P44/P45 |
+| 資料名         | パス                                                                                                   | 説明                |
+| -------------- | ------------------------------------------------------------------------------------------------------ | ------------------- |
+| 要件定義書     | `outputs/phase-1/requirements-definition.md`                                                           | Phase 1成果物       |
+| 受け入れ基準   | `outputs/phase-1/acceptance-criteria.md`                                                               | Phase 1成果物       |
+| スコープ定義   | `outputs/phase-1/scope-definition.md`                                                                  | Phase 1成果物       |
+| タスク原本     | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | 全仕様              |
+| 状態管理ルール | `.claude/rules/03-state-management.md`                                                                 | Zustand設計原則     |
+| 既知の落とし穴 | `.claude/rules/06-known-pitfalls.md`                                                                   | P31/P39/P40/P44/P45 |
 
 ## aiworkflow-requirements 仕様抽出結果（設計Phase）
 
