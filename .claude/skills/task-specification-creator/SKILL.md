@@ -129,6 +129,7 @@ Phase 4〜5: 検証 → 完了
 | 成果物命名規則       | [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)     |
 | 未タスクガイドライン | [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)       |
 | 成功/失敗パターン    | [references/patterns.md](references/patterns.md)                                           |
+| 履歴アーカイブ       | [references/changelog-archive.md](references/changelog-archive.md)                         |
 | 自己改善サイクル     | [references/self-improvement-cycle.md](references/self-improvement-cycle.md)               |
 
 ### システム開発観点チェック
@@ -391,6 +392,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.03.0** | **2026-03-02** | **Phase 12準拠再確認の実行パターンを反映**: `skill-editor-view` と `TASK-UI-05` の2workflowで `verify-all-specs`/`validate-phase-output` を同時実行し、Task 1/3/4/5成果物実体・implementation-guide Part 1/2・未タスク10見出しを同一ターンで突合する運用を確立。未タスク監査は `currentViolations=0` を合格基準に固定 |
+| **v10.02.0** | **2026-03-02** | **TASK-UI-05A 再監査（Phase 11/12整合是正）**: `outputs/phase-11` へ 2026-03-02 再取得スクリーンショット（Dashboard/Editor/導線チェック）を追補。`outputs/phase-12/spec-update-summary.md` を追加し、未タスク正本3件（`docs/30-workflows/unassigned-task/`）と `artifacts.json`/`outputs/artifacts.json` の同期を反映 |
+| **v10.01.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・仕様修正反映**: Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加し、useFileTree 引数仕様を skillName ベースに統一。UT-UI-05A-GETFILETREE-001 未タスク登録を反映 |
+| **v10.00.0** | **2026-03-01** | **TASK-UI-05A spec_created 再監査を反映**: Phase 12運用に「画面検証スクリーンショット必須」を明記し、`docs/30-workflows/skill-editor-view/outputs/phase-11/` への証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）同期手順を追補。併せて `verify-unassigned-links` 失敗要因になっていた completed-tasks 移管後リンクドリフトの是正運用を反映 |
 | **v9.99.0** | **2026-03-01** | **TASK-UI-05 Phase 12同期を反映**: 未タスク指示書6件（UT-UI-05-001〜006）の作成運用、Phase 11成果物補完（manual-test-result/discovered-issues）、`complete-phase.js` による artifacts 再同期、`generate-index.js` 再生成を実施。Phase 12 の「スコープ外記述残置」是正手順を LOGS へ固定 |
 | **v9.98.0** | **2026-02-28** | **Phase 12 実行証跡整合ガードを追加**: `references/phase-11-12-guide.md` に Task 3.5（成果物実体 / artifacts status / チェックリスト同期の三点突合）を新設。完了チェックへ `currentViolations` 基準の差分監査判定を追加し、baseline誤読による false fail を防止 |
 | **v9.97.0** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 再監査反映**: `outputs/phase-1`〜`phase-13` の成果物補完と `artifacts.json`/`outputs/artifacts.json` 同期を完了。Phase 12 必須成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection-report/skill-feedback-report）の実体を固定し、未タスク差分判定（current=0, baseline分離）を再確認 |

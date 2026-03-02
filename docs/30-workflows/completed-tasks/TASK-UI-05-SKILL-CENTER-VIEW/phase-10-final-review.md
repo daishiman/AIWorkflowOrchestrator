@@ -35,23 +35,23 @@ Phase 9 までに品質保証を完了した SkillCenterView の実装全体を�
 
 ## 参照資料
 
-| 資料名               | パス                                         | 説明                  |
-| -------------------- | -------------------------------------------- | --------------------- |
-| タスク定義           | `task-030-ui-05-skill-center-view.md`        | TASK-UI-05 全仕様     |
-| Phase 1 要件定義     | `outputs/phase-1/requirements-definition.md` | 要件定義書            |
-| Phase 1 受入基準     | `outputs/phase-1/acceptance-criteria.md`     | 受入基準              |
-| Phase 2 設計         | `outputs/phase-2/architecture-design.md`     | アーキテクチャ設計    |
-| Phase 3 設計レビュー | `outputs/phase-3/design-review-result.md`    | 設計レビュー結果      |
-| Phase 4 テスト仕様   | `outputs/phase-4/test-specification.md`      | テスト設計            |
-| Phase 5 実装         | `outputs/phase-5/implementation-summary.md`  | 実装サマリー          |
-| Phase 7 カバレッジ   | `outputs/phase-7/coverage-report.md`         | カバレッジ結果        |
-| Phase 8 リファクタ   | `outputs/phase-8/refactoring-report.md`      | リファクタリング結果  |
-| Phase 9 品質検証     | `outputs/phase-9/quality-verification.md`    | 品質検証結果          |
-| コード品質ルール     | `.claude/rules/02-code-quality.md`           | 品質基準              |
-| アーキテクチャルール | `.claude/rules/01-architecture.md`           | Atomic Design・カラー |
-| セキュリティルール   | `.claude/rules/04-electron-security.md`      | IPC セキュリティ原則  |
-| 状態管理ルール       | `.claude/rules/03-state-management.md`       | Zustand 設計原則      |
-| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`         | 全 Pitfall 参照       |
+| 資料名               | パス                                                                                                   | 説明                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | --------------------- |
+| タスク定義           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | TASK-UI-05 全仕様     |
+| Phase 1 要件定義     | `outputs/phase-1/requirements-definition.md`                                                           | 要件定義書            |
+| Phase 1 受入基準     | `outputs/phase-1/acceptance-criteria.md`                                                               | 受入基準              |
+| Phase 2 設計         | `outputs/phase-2/architecture-design.md`                                                               | アーキテクチャ設計    |
+| Phase 3 設計レビュー | `outputs/phase-3/design-review-result.md`                                                              | 設計レビュー結果      |
+| Phase 4 テスト仕様   | `outputs/phase-4/test-specification.md`                                                                | テスト設計            |
+| Phase 5 実装         | `outputs/phase-5/implementation-summary.md`                                                            | 実装サマリー          |
+| Phase 7 カバレッジ   | `outputs/phase-7/coverage-report.md`                                                                   | カバレッジ結果        |
+| Phase 8 リファクタ   | `outputs/phase-8/refactoring-report.md`                                                                | リファクタリング結果  |
+| Phase 9 品質検証     | `outputs/phase-9/quality-verification.md`                                                              | 品質検証結果          |
+| コード品質ルール     | `.claude/rules/02-code-quality.md`                                                                     | 品質基準              |
+| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                                     | Atomic Design・カラー |
+| セキュリティルール   | `.claude/rules/04-electron-security.md`                                                                | IPC セキュリティ原則  |
+| 状態管理ルール       | `.claude/rules/03-state-management.md`                                                                 | Zustand 設計原則      |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                                   | 全 Pitfall 参照       |
 
 ## 実行手順
 

@@ -41,23 +41,23 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ## 参照資料
 
-| 資料名                   | パス                                                                                                                            | 説明                   |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| タスク原本               | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | タスク仕様書           |
-| spec-update-workflow     | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                                                  | 仕様更新ワークフロー   |
-| 06-known-pitfalls        | `.claude/rules/06-known-pitfalls.md`                                                                                            | 既知の落とし穴         |
-| 05-task-execution        | `.claude/rules/05-task-execution.md`                                                                                            | Phase 12チェックリスト |
-| 実装ガイドテンプレート   | `.claude/skills/task-specification-creator/assets/implementation-guide-template.md`                                             | テンプレート           |
-| Phase 2 設計成果物       | `outputs/phase-2/architecture-design.md`                                                                                        | 設計仕様               |
-| Phase 5 実装成果物       | `outputs/phase-5/implementation-summary.md`                                                                                     | 実装サマリー           |
-| Phase 6 テスト拡充成果物 | `outputs/phase-6/test-expansion-report.md`                                                                                      | テスト拡充結果         |
-| Phase 7 カバレッジ成果物 | `outputs/phase-7/coverage-report.md`                                                                                            | カバレッジ結果         |
-| Phase 8 リファクタ成果物 | `outputs/phase-8/refactoring-report.md`                                                                                         | 品質改善結果           |
-| Phase 9 品質成果物       | `outputs/phase-9/quality-verification.md`                                                                                       | 品質検証結果           |
-| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`                                                                                        | Phase 11成果物         |
-| 最終レビュー結果         | `outputs/phase-10/final-review-result.md`                                                                                       | Phase 10成果物         |
-| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md`                                                                                     | Phase 11 成果物        |
-| 発見課題リスト           | `outputs/phase-11/discovered-issues.md`                                                                                         | Phase 11 成果物        |
+| 資料名                   | パス                                                                                                   | 説明                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ | ---------------------- |
+| タスク原本               | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | タスク仕様書           |
+| spec-update-workflow     | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                         | 仕様更新ワークフロー   |
+| 06-known-pitfalls        | `.claude/rules/06-known-pitfalls.md`                                                                   | 既知の落とし穴         |
+| 05-task-execution        | `.claude/rules/05-task-execution.md`                                                                   | Phase 12チェックリスト |
+| 実装ガイドテンプレート   | `.claude/skills/task-specification-creator/assets/implementation-guide-template.md`                    | テンプレート           |
+| Phase 2 設計成果物       | `outputs/phase-2/architecture-design.md`                                                               | 設計仕様               |
+| Phase 5 実装成果物       | `outputs/phase-5/implementation-summary.md`                                                            | 実装サマリー           |
+| Phase 6 テスト拡充成果物 | `outputs/phase-6/test-expansion-report.md`                                                             | テスト拡充結果         |
+| Phase 7 カバレッジ成果物 | `outputs/phase-7/coverage-report.md`                                                                   | カバレッジ結果         |
+| Phase 8 リファクタ成果物 | `outputs/phase-8/refactoring-report.md`                                                                | 品質改善結果           |
+| Phase 9 品質成果物       | `outputs/phase-9/quality-verification.md`                                                              | 品質検証結果           |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`                                                               | Phase 11成果物         |
+| 最終レビュー結果         | `outputs/phase-10/final-review-result.md`                                                              | Phase 10成果物         |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md`                                                            | Phase 11 成果物        |
+| 発見課題リスト           | `outputs/phase-11/discovered-issues.md`                                                                | Phase 11 成果物        |
 
 ## aiworkflow-requirements 必須仕様の抽出（resource-map起点）
 

@@ -61,6 +61,7 @@
 | SkillImportDialog | TASK-7B | スキルインポート確認ダイアログ |
 | SkillEditor | TASK-9A | スキルファイル編集UI（実装完了） |
 | SkillCenterView | TASK-UI-05 | ツール探索・追加・詳細表示ビュー |
+| SkillEditorView | TASK-UI-05A | ツール編集専用ビュー（仕様書作成済み・実装ファイル実在、統合未完了） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -99,6 +100,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | AgentExecutionView     | エージェント実行画面           |
 | ChatView               | チャット画面                   |
 | SkillCenterView        | ツール探索・追加・詳細表示画面 |
+| SkillEditorView        | ツール編集専用画面（spec_created / 実装ファイル実在） |
 
 ### components/organisms/
 
@@ -152,6 +154,25 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 ---
 
+## 仕様書作成済みタスク（spec_created）
+
+| Task ID | 機能名 | 状態 | 仕様書 |
+| --- | --- | --- | --- |
+| TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（ツールエディター） | spec_created（実装ファイル実在、統合未完了） | `docs/30-workflows/skill-editor-view/` |
+
+### 画面検証証跡（TASK-UI-05A）
+
+| 証跡 | ファイル |
+| --- | --- |
+| 現行 Dashboard 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-01-current-dashboard.png` |
+| 現行 Editor 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-02-current-editor-view.png` |
+| 再監査 Dashboard 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-03-current-dashboard-20260302.png` |
+| 再監査 Editor 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-04-current-editor-20260302.png` |
+| 手動検証結果 | `docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md` |
+| 発見課題 | `docs/30-workflows/skill-editor-view/outputs/phase-11/discovered-issues.md` |
+
+---
+
 ## SkillCenterView 関連未タスク
 
 | 未タスクID | 概要 | 参照 |
@@ -170,6 +191,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/unassigned-task/` 配下へ統一 |
+| 2.13.5  | 2026-03-01 | TASK-UI-05A spec_created 反映: `SkillEditorView` を主要UI一覧/viewsへ追加（実装未着手明記）。仕様書作成済みタスク表と画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を追加 |
 | 2.13.4  | 2026-03-01 | TASK-UI-05 completed-tasks 移管: ワークフロー参照を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ更新し、関連未タスク7件の参照先を同ディレクトリ配下 `unassigned-task/` へ同期 |
 | 2.13.3  | 2026-03-01 | TASK-UI-05追補: Phase 12 UI仕様同期ガード（UT-UI-05-007）を追加し、SkillCenterView 関連未タスクを7件へ拡張 |
 | 2.13.2  | 2026-03-01 | TASK-UI-05追補: SkillCenterView 関連未タスクテーブルを UT-UI-05-001〜006 の6件へ拡張し、task-workflow/feature仕様との参照整合を統一 |
@@ -206,3 +229,5 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/spec-update-summary.md)
+- [TASK-UI-05A 仕様書（spec_created）](../../../../docs/30-workflows/skill-editor-view/index.md)
+- [TASK-UI-05A 手動検証結果](../../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)

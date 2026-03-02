@@ -18,14 +18,14 @@ Phase 4 で作成したテストを通すための最小限の実装を行う（
 
 ## 参照資料
 
-| 資料名             | パス                                                                                                                            | 説明                                 |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| タスク定義         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | 全セクション参照                     |
-| Phase 4 テスト仕様 | `outputs/phase-4/test-specification.md`                                                                                         | テストケース一覧                     |
-| Phase 2 設計書     | `outputs/phase-2/architecture-design.md`                                                                                        | コンポーネント設計                   |
-| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                                            | P31, P39, P40, P44, P45, P47         |
-| デザイン基盤       | TASK-UI-00                                                                                                                      | 共通コンポーネント・デザイントークン |
-| UI アーキテクチャ  | TASK-UI-01                                                                                                                      | 状態管理パターン                     |
+| 資料名             | パス                                                                                                   | 説明                                 |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| タスク定義         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | 全セクション参照                     |
+| Phase 4 テスト仕様 | `outputs/phase-4/test-specification.md`                                                                | テストケース一覧                     |
+| Phase 2 設計書     | `outputs/phase-2/architecture-design.md`                                                               | コンポーネント設計                   |
+| 既知の落とし穴     | `.claude/rules/06-known-pitfalls.md`                                                                   | P31, P39, P40, P44, P45, P47         |
+| デザイン基盤       | TASK-UI-00                                                                                             | 共通コンポーネント・デザイントークン |
+| UI アーキテクチャ  | TASK-UI-01                                                                                             | 状態管理パターン                     |
 
 ## aiworkflow-requirements 仕様抽出結果（実装Phase）
 

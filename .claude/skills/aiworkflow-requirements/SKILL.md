@@ -6,6 +6,13 @@ description: |
   次の作業で使用: 要件確認、アーキテクチャ判断、API/IPC契約確認、セキュリティ/テスト方針確認、仕様差分反映、未タスク登録、教訓反映。
   典型キーワード: 仕様/要件/設計/API/IPC/型定義/権限/履歴/リトライ/状態管理/Zustand/認証/セッション/UI/テスト/カバレッジ/コンポーネント/アクセシビリティ/デプロイ。
   目的は、実装と仕様の整合性維持、更新漏れ防止、再発防止知見の資産化。
+
+  Anchors:
+  • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
+  • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
+
+  Trigger:
+  仕様確認, 仕様更新, task-workflow同期, UI仕様反映, IPC契約確認, セキュリティ要件確認, 未タスク登録, lessons-learned同期
 allowed-tools:
   - Read
   - Glob
@@ -190,6 +197,11 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **8.97.0** | **2026-03-02** | **UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を反映**: `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` を新規作成し、`task-workflow.md` 残課題へ登録。`lessons-learned.md` に関連未タスク導線を追記し、2workflow同時監査（spec_created/completed）での証跡集約・Task 1/3/4/5 実体突合・UI画面証跡・`currentViolations=0` 判定固定を再利用可能化 |
+| **8.96.0** | **2026-03-02** | **Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を反映**: `task-workflow.md` に2workflow同時監査の検証証跡（`verify-all-specs`/`validate-phase-output`/必須成果物突合）と苦戦箇所（証跡分散、baseline/current誤読）を追記。`lessons-learned.md` に再利用4ステップを追加し、未タスク監査の合否基準を `currentViolations=0` 固定で明文化 |
+| **8.95.0** | **2026-03-02** | **TASK-UI-05A 再監査（実装実体同期 + 未タスク正本化）**: `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` の TASK-UI-05A 状態を「実装ファイル実在・統合未完了」へ是正。`docs/30-workflows/unassigned-task/` に未タスク正本3件を作成し、Phase 11再取得スクリーンショット（2026-03-02）と Phase 12 `spec-update-summary.md` / `artifacts.json` 同期を反映 |
+| **8.94.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・getFileTree仕様追加**: `api-ipc-agent.md` に `skill:getFileTree` チャネル仕様（FileNode型定義含む）を追加。`ui-ux-feature-components.md` SkillEditorView セクションに getFileTree 未実装注記を追記。LOGS.md 2ファイル・SKILL.md 2ファイルを同期更新 |
+| **8.93.0** | **2026-03-01** | **TASK-UI-05A spec_created + 参照整合を反映**: `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` に `TASK-UI-05A-SKILL-EDITOR-VIEW`（仕様書作成完了・実装未着手）を追加。Phase 11 画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を同期し、`UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` と `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の参照パスを実体へ是正 |
 | **8.92.0** | **2026-03-01** | **TASK-UI-05 completed-tasks 移管を反映**: `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へワークフロー本体を移動し、関連未タスク7件（`task-ui-05-*.md`）を同ディレクトリ配下 `unassigned-task/` へ移管。`task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` の参照先を新パスへ同期 |
 | **8.91.0** | **2026-03-01** | **UT-UI-05-007 未タスク登録を反映**: `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` を新規作成し、`task-workflow.md` の TASK-UI-05節/残課題テーブルへ登録。`ui-ux-components.md` と `ui-ux-feature-components.md` の SkillCenterView 関連未タスク表へ同IDを同期し、UI仕様同期ガードの運用課題を追跡可能化 |
 | **8.90.0** | **2026-03-01** | **TASK-UI-05 UI仕様書追補を反映**: `ui-ux-components.md` の SkillCenterView 関連未タスクを `UT-UI-05-001`〜`006` へ拡張し、`ui-ux-feature-components.md` に実装時の苦戦箇所（型境界、DetailPanel責務集中、Phase 12同期）と4ステップ簡潔解決手順を追加。`task-workflow.md` / `lessons-learned.md` の教訓記録と整合するよう仕様導線を統一 |

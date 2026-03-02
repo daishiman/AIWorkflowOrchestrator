@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-03-02 - Phase 12テンプレート最適化（2workflow同時監査 + 画面証跡）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に `監査対象workflow` メタ項目と `2workflow同時監査プロファイル（spec_created + completed）` を追加
+  - 同テンプレートの検証コマンド/完了チェックへ、2workflow検証証跡と UIスクリーンショット証跡（`outputs/phase-11/screenshots`）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に再確認向け SubAgent 分担（workflow-a/workflow-b/unassigned/task-workflow/lessons）を追加
+  - `references/resource-map.md` のテンプレート説明を 2workflow同時監査 + 画面証跡対応へ同期
+  - `SKILL.md` 変更履歴を `v10.34.0` として同期
+
+---
+
+## [2026-03-02 - Phase 12再確認パターン強化（2workflow同時監査）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の Phase 12 成功パターンに「2workflow同時監査 + Task 1/3/4/5実体突合（TASK-UI-05A/TASK-UI-05）」を追加
+  - 同ドメインの失敗パターンに「spec_created/完了workflow混在時の証跡分散」を追加
+  - クイックナビ（📋 Phase 12）へ成功/失敗キーワードを反映し、`currentViolations=0` 判定固定を再利用可能化
+  - `SKILL.md` 変更履歴を `v10.33.0` として同期
+
+---
+
 ## [2026-03-01 - TASK-UI-05 UIプロファイル対応テンプレート最適化]
 
 - **Agent**: skill-creator (update)

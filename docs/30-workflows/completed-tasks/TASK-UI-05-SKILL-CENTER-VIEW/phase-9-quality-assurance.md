@@ -26,16 +26,16 @@ Phase 8 までに完成した SkillCenterView の全コードに対し、定義�
 
 ## 参照資料
 
-| 資料名               | パス                                        | 説明                               |
-| -------------------- | ------------------------------------------- | ---------------------------------- |
-| Phase 5 実装         | `outputs/phase-5/implementation-summary.md` | 実装内容と品質ゲート対象の対応確認 |
-| Phase 8 レポート     | `outputs/phase-8/refactoring-report.md`     | リファクタリング結果               |
-| コード品質ルール     | `.claude/rules/02-code-quality.md`          | 品質基準                           |
-| アーキテクチャルール | `.claude/rules/01-architecture.md`          | Atomic Design・カラー              |
-| セキュリティルール   | `.claude/rules/04-electron-security.md`     | IPC セキュリティ原則               |
-| 状態管理ルール       | `.claude/rules/03-state-management.md`      | Zustand 設計原則                   |
-| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`        | P31,P39,P40,P44,P45,P47            |
-| タスク定義           | `task-030-ui-05-skill-center-view.md`       | TASK-UI-05 全仕様                  |
+| 資料名               | パス                                                                                                   | 説明                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| Phase 5 実装         | `outputs/phase-5/implementation-summary.md`                                                            | 実装内容と品質ゲート対象の対応確認 |
+| Phase 8 レポート     | `outputs/phase-8/refactoring-report.md`                                                                | リファクタリング結果               |
+| コード品質ルール     | `.claude/rules/02-code-quality.md`                                                                     | 品質基準                           |
+| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                                     | Atomic Design・カラー              |
+| セキュリティルール   | `.claude/rules/04-electron-security.md`                                                                | IPC セキュリティ原則               |
+| 状態管理ルール       | `.claude/rules/03-state-management.md`                                                                 | Zustand 設計原則                   |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                                   | P31,P39,P40,P44,P45,P47            |
+| タスク定義           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | TASK-UI-05 全仕様                  |
 
 ## 実行手順
 

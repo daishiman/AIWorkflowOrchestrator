@@ -18,14 +18,14 @@
 
 ## 参照資料
 
-| 資料名           | パス                                                                                                                            | 説明                      |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| タスク定義       | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-030-ui-05-skill-center-view.md` | セクション 12: テスト計画 |
-| 要件定義書       | `outputs/phase-1/requirements-definition.md`                                                                                    | Phase 1 成果物            |
-| 設計書           | `outputs/phase-2/architecture-design.md`                                                                                        | Phase 2 成果物            |
-| 設計レビュー結果 | `outputs/phase-3/design-review-result.md`                                                                                       | Phase 3 成果物            |
-| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                                                            | P31, P39, P40, P47 対策   |
-| デザイン基盤     | TASK-UI-00                                                                                                                      | 共通コンポーネント仕様    |
+| 資料名           | パス                                                                                                   | 説明                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ------------------------- |
+| タスク定義       | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-030-ui-05-skill-center-view.md` | セクション 12: テスト計画 |
+| 要件定義書       | `outputs/phase-1/requirements-definition.md`                                                           | Phase 1 成果物            |
+| 設計書           | `outputs/phase-2/architecture-design.md`                                                               | Phase 2 成果物            |
+| 設計レビュー結果 | `outputs/phase-3/design-review-result.md`                                                              | Phase 3 成果物            |
+| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                                   | P31, P39, P40, P47 対策   |
+| デザイン基盤     | TASK-UI-00                                                                                             | 共通コンポーネント仕様    |
 
 ## aiworkflow-requirements 仕様抽出結果（テストPhase）
 

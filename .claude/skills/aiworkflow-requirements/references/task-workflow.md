@@ -132,6 +132,78 @@
 
 ## 完了タスク
 
+### タスク: TASK-UI-05A-SKILL-EDITOR-VIEW SkillEditorView（ツールエディター）仕様書作成（2026-03-01）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-05A-SKILL-EDITOR-VIEW |
+| 完了日 | 2026-03-01 |
+| ステータス | **spec_created（再監査済み）**（Phase 1-13 仕様書作成完了。`views/SkillEditorView` は実装ファイル実在、導線/IPC連携は未完了） |
+| タスク種別 | UI仕様書作成 + 実装実体再監査（画面検証証跡・未タスク再整理を含む） |
+| Phase | 仕様書フェーズ完了（index + phase-1..13 + 抽出マトリクス）/ 実体再監査完了 |
+
+#### 反映内容（要点）
+
+- `docs/30-workflows/skill-editor-view/` に TASK-UI-05A のワークフロー仕様（Phase 1-13）を作成。
+- `aiworkflow-requirements` 正本へ `spec_created` として同期（`ui-ux-components` / `ui-ux-feature-components` / `task-workflow`）。
+- 画面検証はスクリーンショットで実施し、現行 UI（Dashboard / Editor）と未実装ギャップを記録。
+- 再監査で `views/SkillEditorView` 実装ファイル実在と 99 テスト PASS を確認し、未タスク台帳を正規配置（`docs/30-workflows/unassigned-task/`）へ是正。
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧と spec_created 台帳追加 | SkillEditorView が「実装ファイル実在・統合未完了」で明記される |
+| SubAgent-B | `references/ui-ux-feature-components.md` | 機能別仕様へ spec_created セクション追加 | 実装ギャップと証跡導線が追跡可能 |
+| SubAgent-C | `references/task-workflow.md` | 完了台帳・残課題・履歴の同期 | spec_created 記録と残課題行が一致 |
+| SubAgent-D | `docs/30-workflows/skill-editor-view/outputs/phase-11/` | スクリーンショット検証と手動検証記録 | 画面証跡 + 発見課題が出力済み |
+
+#### 画面検証証跡（2026-03-01）
+
+| 証跡 | パス |
+| --- | --- |
+| 現行 Dashboard 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-01-current-dashboard.png` |
+| 現行 Editor 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-02-current-editor-view.png` |
+| 手動検証結果 | `docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md` |
+| 発見課題 | `docs/30-workflows/skill-editor-view/outputs/phase-11/discovered-issues.md` |
+
+#### 実装ギャップ（次フェーズの論点）
+
+| 観点 | 現状 | 根拠 |
+| --- | --- | --- |
+| `views/SkillEditorView` 本体 | 実装ファイルは存在（統合未完了） | `apps/desktop/src/renderer/views/SkillEditorView/` 配下に component/hook/test 一式が存在 |
+| ナビゲーション導線 | 未配線 | `ViewType` / `AppDock` / `App.tsx` に専用遷移なし |
+| 既存 EditorView 影響 | なし | 現行 Editor は表示可能（画面証跡あり） |
+
+#### Phase 12仕様準拠の再確認（2026-03-02）
+
+| 観点 | 実行内容 | 結果 |
+| --- | --- | --- |
+| TASK-UI-05A ワークフロー構造 | `verify-all-specs --workflow docs/30-workflows/skill-editor-view` | PASS（13/13, error=0, warning=0） |
+| TASK-UI-05A Phase出力整合 | `validate-phase-output docs/30-workflows/skill-editor-view` | PASS（28項目） |
+| TASK-UI-05 ワークフロー構造 | `verify-all-specs --workflow docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW` | PASS（13/13, error=0, warning=0） |
+| TASK-UI-05 Phase出力整合 | `validate-phase-output docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW` | PASS（28項目） |
+| Phase 12必須成果物（Task 1/3/4/5） | `implementation-guide.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` 実体確認（2workflow） | すべて存在 |
+| 実装ガイド2パート要件 | `implementation-guide.md` の `Part 1` / `Part 2` 見出し確認（2workflow） | 準拠 |
+| 未タスクリンク整合 | `verify-unassigned-links` | PASS（92/92, missing=0） |
+| 未タスク差分監査 | `audit-unassigned-tasks --json --diff-from HEAD` | `currentViolations=0`（`baseline=75` は既存） |
+
+#### 今回の苦戦箇所と解決策（再利用用）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- |
+| `phase-12-documentation.md` の完了状態と成果物実体の同期確認がタスク単位で分散しやすい | spec_created系と完了系workflowを同時監査する場合 | 監査対象workflowを先に2本へ固定し、同一ターンで `verify-all-specs` / `validate-phase-output` を対で実行して証跡を一括確定 | Phase 12再確認は「workflow単位ペア検証（構造+出力）」を最初に実行する |
+| 未タスク監査で baseline違反を今回起因と誤認しやすい | repo全体に既存違反が多い状態で差分監査する場合 | 合否を `currentViolations` のみに固定し、baselineは監視値として記録 | 未タスク監査の判定は「`current=0` 合格、baselineは改善 backlog」に統一する |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 監査対象workflowを明示（spec_created系/完了系）し、`verify-all-specs` を先に2本実行する。  
+2. `validate-phase-output` を同じ2workflowに実行し、Phase 12の必須成果物実体（Task 1/3/4/5）を手動突合する。  
+3. 未タスクは `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合格基準にする。  
+4. 実装内容と苦戦箇所を `task-workflow.md` / `lessons-learned.md` に同一ターン転記して終了する。  
+
+---
+
 ### タスク: TASK-UI-05-SKILL-CENTER-VIEW SkillCenterView（ツールを探す）実装（2026-03-01）
 
 | 項目 | 内容 |
@@ -1920,6 +1992,10 @@
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
+| UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
+| UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | SkillEditorView 実装残課題収束（導線/UX7件） | 高 | TASK-UI-05A Phase 11 discovered-issues + 再監査（2026-03-02） | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
 | UT-UI-05-001 | CategoryId / SkillCategory 型統一 | 低 | TASK-UI-05 Phase 10 MINOR-1 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-categoryid-skillcategory-type-unification.md` |
 | UT-UI-05-002 | SkillDetailPanel 内部 Molecule 分離 | 中 | TASK-UI-05 Phase 10 MINOR-2 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-detail-panel-molecule-split.md` |
 | UT-UI-05-003 | ローディングスケルトン実装 | 低 | TASK-UI-05 Phase 10 MINOR-3 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-loading-skeleton-implementation.md` |
@@ -1927,6 +2003,7 @@
 | UT-UI-05-005 | SKILL.md 全文 Markdown レンダリング | 中 | TASK-UI-05 Phase 10 MINOR-5 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-markdown-full-rendering.md` |
 | UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | 低 | TASK-UI-05 コードコメント TODO | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
 | UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | 中 | TASK-UI-05 Phase 12 再確認（苦戦箇所） | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
+| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | Phase 12 2workflow同時監査の証跡集約ガード（spec_created/completed + 画面証跡 + current/baseline 分離） | 中 | TASK-UI-05A / TASK-UI-05 Phase 12再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
 | UT-9G-001 | SkillScheduler cron 次回実行時刻の精度改善 | 中 | TASK-9G Phase 12 未タスク検出（簡易実装コメント） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-cron-next-run-accuracy.md` |
 | UT-9G-002 | event スケジュール（file_change / git_commit）実行対応 | 低 | TASK-9G Phase 12 未タスク検出（プレースホルダー実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-event-trigger-completion.md` |
 | UT-9G-003 | スケジュール実行通知（sendNotification）実装 | 中 | TASK-9G Phase 12 未タスク検出（NotificationSettings未接続） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-notification-dispatch.md` |
@@ -1935,7 +2012,7 @@
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
-| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 仕様書別SubAgent N/A判定ログガード | 中 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12 実行監査（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
+| UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 仕様書別SubAgent N/A判定ログガード | 中 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12 実行監査（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |
@@ -2042,7 +2119,7 @@
 | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
 | UT-FIX-SKILL-IPC-NAMING-P45-001                   | skillHandlers IPC引数命名統一（skillId → skillName横展開）                                                        | 中     | UT-FIX-SKILL-IMPORT-INTERFACE-001 / UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20） | `docs/30-workflows/unassigned-task/task-ut-fix-skill-ipc-naming-p45-001.md`                                                                        |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001              | Phase 11 Worktree環境手動テスト実行プロトコル策定                                                                | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
-| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
+| UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
 | UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001       | skill IPCレスポンス契約マトリクスと自動整合チェック                                                              | 中     | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12（実装苦戦箇所・2026-02-25） | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md`                                           |
@@ -2096,11 +2173,16 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.64.6** | **2026-03-02** | **UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 登録**: TASK-UI-05A/TASK-UI-05 の再確認で顕在化した「2workflow同時監査時の証跡分散」「Task 1/3/4/5 実体突合漏れ」「UI画面証跡鮮度管理」「current/baseline 誤判定」を未タスク化し、正本 `docs/30-workflows/unassigned-task/` へ登録。残課題テーブルへ同期し、再利用可能な監査ガードとして追跡対象化 |
+| **1.64.5** | **2026-03-02** | **Phase 12準拠再確認（TASK-UI-05A / TASK-UI-05）**: 2workflowに対して `verify-all-specs` + `validate-phase-output` を再実行し、Task 1/3/4/5 成果物実体と実装ガイド2パート要件を再確認。あわせて未タスク監査の合否基準を `currentViolations=0` 固定で明文化し、苦戦箇所と4ステップ再利用手順を追加 |
+| **1.64.4** | **2026-03-02** | **TASK-UI-05A 再監査反映**: `views/SkillEditorView` 実装ファイル実在と 99 テスト PASS を台帳へ反映。`UT-UI-05A-GETFILETREE-001` / `UT-UI-05A-SPEC-CONSISTENCY-001` / `UT-UI-05A-IMPLEMENTATION-CLOSURE-001` を正規配置 `docs/30-workflows/unassigned-task/` へ同期し、画面証跡を 2026-03-02 再取得分へ更新 |
+| **1.64.3** | **2026-03-02** | **UT-UI-05A-GETFILETREE-001 登録**: TASK-UI-05A 監査で発見された `skill:getFileTree` IPCチャネル未実装を未タスクとして残課題テーブルへ追加。P3準拠3ステップ完了（指示書作成・残課題テーブル登録・関連仕様書参照リンク追加） |
+| **1.64.2** | **2026-03-01** | **TASK-UI-05A spec_created 反映**: 完了タスクセクションへ `TASK-UI-05A-SKILL-EDITOR-VIEW`（仕様書作成完了・実装未着手）を追加。画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を記録し、残課題テーブルへ実装未着手行を追加 |
 | **1.64.1** | **2026-03-01** | **TASK-UI-05 completed-tasks 移管**: Phase 12 完了条件充足に伴い、ワークフロー本体を `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` へ移動。関連未タスク `task-ui-05-*.md` 7件を同ディレクトリ配下 `unassigned-task/` へ移管し、参照パスを一括同期 |
 | **1.64.0** | **2026-03-01** | **UT-UI-05-007 を残課題へ登録**: TASK-UI-05 の再確認で判明した「UIタスクに5仕様書テンプレートを誤適用しやすい」「task-workflow/lessons 同期漏れ」課題を未タスク化。TASK-UI-05 セクションの未タスク表と残課題テーブルへ `task-ui-05-phase12-ui-spec-sync-guard.md` を追加 |
 | **1.63.9** | **2026-03-01** | **TASK-UI-05 教訓同期を追補**: `TASK-UI-05-SKILL-CENTER-VIEW` セクションへ再発条件付きの苦戦箇所3件（型境界、DetailPanel責務集中、Phase 12三点同期）と「同種課題の簡潔解決手順（5ステップ）」を追加。`lessons-learned.md` との同一ターン同期運用を明示 |
 | **1.63.8** | **2026-03-01** | **TASK-UI-05 完了反映 + 未タスク6件登録**: 完了タスクセクションに `TASK-UI-05-SKILL-CENTER-VIEW` を追加し、仕様書別SubAgent分担・検証証跡を記録。残課題テーブルへ `UT-UI-05-001`〜`UT-UI-05-006` を登録して `docs/30-workflows/unassigned-task/` の実体ファイル参照を同期 |
-| **1.63.7** | **2026-02-28** | **UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 を残課題へ登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の苦戦箇所（三点突合漏れ、`current/baseline` 誤読、仕様書別SubAgentの N/A 記録漏れ）を再発防止する未タスクを `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` に作成し、残課題テーブルへ同期 |
+| **1.63.7** | **2026-02-28** | **UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 を残課題へ登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の苦戦箇所（三点突合漏れ、`current/baseline` 誤読、仕様書別SubAgentの N/A 記録漏れ）を再発防止する未タスクを `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` に作成し、残課題テーブルへ同期 |
 | **1.63.6** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補（SubAgent分離 + テンプレート最適化）**: 同タスクの監査セクションに仕様書別SubAgent分担（台帳/教訓/テンプレート/検証）を追加し、実装内容へ `phase12-system-spec-retrospective-template.md` 最適化を追記。苦戦箇所に「非対象仕様（N/A）記録漏れ」を追加し、再利用手順を5ステップへ拡張 |
 | **1.63.5** | **2026-02-28** | **TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12実行監査を追加**: 完了タスクセクションへ監査記録を新設し、必須5成果物の実体確認、`verify-all-specs`/`validate-phase-output` PASS、`verify-unassigned-links` PASS、`audit --diff-from HEAD`（current=0 / baseline=71）を記録。あわせて苦戦箇所（成果物実体とステータス乖離、current/baseline誤読、チェックリスト未同期）と4ステップ再利用手順を追記 |
 | **1.62.9** | **2026-02-28** | **TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 完了移管反映**: 実行ワークフローを `docs/30-workflows/completed-tasks/TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001/` へ移動し、派生未タスク `UT-IMP-AUTH-CALLBACK-LIFECYCLE-CONTRACT-GUARD-001` も `completed-tasks/unassigned-task/` へ移管。残課題テーブルを完了表記へ更新 |

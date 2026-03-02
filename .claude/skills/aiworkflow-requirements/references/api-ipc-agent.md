@@ -428,6 +428,37 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
 | エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
 
+## スキルファイルツリー取得 IPC チャネル（TASK-UI-05A）
+
+スキルディレクトリのファイルツリー構造を取得する IPC チャネル。SkillEditorView のファイルツリーパネルで使用する。
+
+### チャネル仕様
+
+| 項目 | 内容 |
+| --- | --- |
+| チャネル名 | `skill:getFileTree` |
+| 方向 | Renderer → Main |
+| 引数 | `skillName: string` |
+| 戻り値 | `{ tree: FileNode[] }` |
+| バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） |
+| セキュリティ | パストラバーサル検証、送信元ウィンドウ検証 |
+| 実装状況 | 未実装（UT-UI-05A-GETFILETREE-001 で対応予定） |
+| 関連タスク | TASK-UI-05A-SKILL-EDITOR-VIEW |
+| 未タスク正本 | `docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
+
+### FileNode 型定義
+
+```typescript
+interface FileNode {
+  name: string;
+  path: string; // スキルルートからの相対パス
+  type: "file" | "directory";
+  children?: FileNode[];
+}
+```
+
+---
+
 ## スキル共有 IPC チャネル（TASK-9F）
 
 スキル共有（インポート／エクスポート／ソース検証）の IPC チャネル。3チャネルすべて invoke（Renderer → Main）方向。
@@ -732,6 +763,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |
 | v1.15.1    | 2026-02-28 | TASK-9E追補: IPC契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界判定）と簡潔解決策テーブルを追加し、再監査時の参照導線を明確化 |
 | v1.15.0    | 2026-02-28 | TASK-9E反映: `skill:fork` チャネルセクション追加。`SkillForkOptions/Result/Metadata` 型契約、P42準拠バリデーション、実装状況、完了タスク記録（59テスト）を同期 |
 | v1.14.0    | 2026-02-27 | TASK-9H反映: スキルデバッグ IPC チャネルセクションを追加（`skill:debug:*` 7チャネル、型定義、バリデーション、実装状況、完了タスク記録） |

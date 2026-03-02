@@ -6,6 +6,7 @@
 | --- | --- |
 | タスクID | `<TASK-ID>` |
 | 実装対象 | `<実装ファイル/機能>` |
+| 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons` |
 | 実行日 | `<YYYY-MM-DD>` |
 
@@ -28,6 +29,16 @@
 | SubAgent-C | `references/arch-ui-components.md` / `references/arch-state-management.md` | 構造/状態管理の責務境界同期 | レイヤーと状態境界が整合 |
 | SubAgent-D | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
+
+### 2.2 再確認（2workflow同時監査）プロファイル
+
+| SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `<workflow-a>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-a の検証が全て PASS |
+| SubAgent-B | `<workflow-b>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-b の検証が全て PASS（不要時はN/A理由記録） |
+| SubAgent-C | `docs/30-workflows/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 | `missing=0` かつ `currentViolations=0` |
+| SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
+| SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
 ## 3. 各仕様書の必須記載
 
@@ -60,8 +71,13 @@ rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-un
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+ls -la <workflow-path>/outputs/phase-11/screenshots
 ```
 
 ## 6. 完了チェック
@@ -74,3 +90,5 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
+- [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
+- [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している

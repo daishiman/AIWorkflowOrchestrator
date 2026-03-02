@@ -5,6 +5,133 @@
 
 ---
 
+## 2026-03-02 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05A / TASK-UI-05` の Phase 12再確認で抽出した運用課題
+- 目的: 2workflow同時監査時の証跡分散を未タスク化し、再利用可能な監査ガードとして台帳へ登録する
+
+### SubAgent分担
+- SubAgent-A: 未タスク指示書作成（`docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md`）
+- SubAgent-B: `task-workflow.md` 残課題テーブル同期 + 変更履歴追記
+- SubAgent-C: `lessons-learned.md` 参照導線追記
+- SubAgent-D: 検証（`verify-unassigned-links`, `audit --target-file`, 10見出し確認）
+
+### 実施内容
+- 未タスク指示書をテンプレート準拠（`## メタ情報` + `## 1..9`）で新規作成
+- 同指示書に「3.5 実装課題と解決策」を追加し、今回苦戦（証跡分散、Task 1/3/4/5 実体突合漏れ、画面証跡鮮度、current/baseline 誤判定）を反映
+- `task-workflow.md` 残課題へ `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001` を登録
+- `lessons-learned.md` に関連未タスク導線を追記
+
+### 結果
+- ステータス: success
+- 補足: target監査 `currentViolations=0`、10見出し=10件、リンク整合確認済み
+
+---
+
+## 2026-03-02 - Phase 12準拠再確認（TASK-UI-05A / TASK-UI-05）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/skill-editor-view/`, `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/`
+- 目的: 本ブランチ上の Phase 12 実行が task-specification-creator 仕様（必須タスク/成果物/未タスク監査）に準拠しているか再確認し、再利用可能な苦戦箇所を正本へ記録する
+
+### SubAgent分担
+- SubAgent-A: Phase 12構造監査（`verify-all-specs`, `validate-phase-output`）
+- SubAgent-B: 成果物実体突合（Task 1/3/4/5 + implementation-guide Part 1/2）
+- SubAgent-C: 未タスク監査（`verify-unassigned-links`, `audit --diff-from HEAD`, 10見出し確認）
+- SubAgent-D: system spec反映（`task-workflow.md`, `lessons-learned.md`, `SKILL.md` 履歴同期）
+
+### 実施内容
+- 2workflowの Phase 12 を再検証し、いずれも PASS（13/13, 28項目）
+- Task 1/3/4/5 の必須成果物実体と `implementation-guide.md` の Part 1/Part 2 を確認
+- 未タスク正本3件（`task-ui-05a-*.md`）が `docs/30-workflows/unassigned-task/` に配置され、10見出し準拠であることを確認
+- `task-workflow.md` に再確認証跡、苦戦箇所、4ステップ再利用手順を追加
+- `lessons-learned.md` に同内容の教訓を追加（version 1.28.1）
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` 92/92、`audit --diff-from HEAD` は `currentViolations=0`（baseline=75 は既存）
+
+---
+
+## 2026-03-02 - TASK-UI-05A 再監査（実装実体同期 + 未タスク正本化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05A-SKILL-EDITOR-VIEW`
+- 目的: `spec_created` 台帳と実装実体の不一致、未タスク配置漏れ、画面証跡の鮮度不足を同時解消
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md`（状態更新、残課題正本リンクへ置換、変更履歴追加）
+- SubAgent-B: `ui-ux-components.md` / `ui-ux-feature-components.md`（実装実体反映、証跡追記）
+- SubAgent-C: `api-ipc-agent.md` / `lessons-learned.md`（未タスク正本リンク、再発防止教訓）
+- SubAgent-D: `docs/30-workflows/skill-editor-view/`（Phase 11/12成果物・artifacts同期）
+
+### 実施内容
+- `views/SkillEditorView` 実装ファイル実在を仕様台帳へ反映（未着手→統合未完了）
+- 画面証跡を再取得
+  - `UI05A-03-current-dashboard-20260302.png`
+  - `UI05A-04-current-editor-20260302.png`
+  - `UI05A-05-navigation-check-20260302.txt`
+- 未タスク正本3件を `docs/30-workflows/unassigned-task/` に作成し、残課題テーブルを同期
+- `spec-update-summary.md` を追加し、Phase 12必須成果物セットを充足
+- `artifacts.json` と `outputs/artifacts.json` を同期
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` で currentViolations=0 を確認
+
+---
+
+## 2026-03-01 - TASK-UI-05A 包括的監査・getFileTree仕様追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-UI-05A-SKILL-EDITOR-VIEW
+- 目的: 包括的監査で発見されたgetFileTree IPCチャネル欠如を仕様書に反映
+
+### 実施内容
+- `api-ipc-agent.md` に `skill:getFileTree` チャネル仕様を追加
+- Phase 1/2/4/5 仕様書の IPC連携要件を7チャネルに修正
+- UT-UI-05A-GETFILETREE-001 未タスクを登録
+- task-workflow.md 残課題テーブルに CRITICAL 項目を追加
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-01 - TASK-UI-05A spec_created 再監査（画面証跡付き）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-05A-SKILL-EDITOR-VIEW`
+- 目的: 仕様書作成タスク（実装未着手）を正本仕様へ正しく同期し、リンクドリフトと画面証跡不足を解消する
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md`（spec_created完了記録 + 残課題テーブル + 変更履歴）
+- SubAgent-B: `ui-ux-components.md`（主要UI一覧 + spec_created台帳 + 証跡リンク）
+- SubAgent-C: `ui-ux-feature-components.md`（機能別spec_created節 + 実装ギャップ明示）
+- SubAgent-D: `lessons-learned.md` / `task-workflow.md` のリンク整合（completed-tasks移管後パス補正）
+
+### 実施内容
+- `TASK-UI-05A-SKILL-EDITOR-VIEW` を **spec_created** として正本仕様へ反映
+- 画面検証証跡を `docs/30-workflows/skill-editor-view/outputs/phase-11/` に集約
+  - `screenshots/UI05A-01-current-dashboard.png`
+  - `screenshots/UI05A-02-current-editor-view.png`
+  - `manual-test-result.md`
+  - `discovered-issues.md`
+- `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` と `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の参照を実体パスへ是正
+- `SKILL.md` 変更履歴を `8.93.0` に更新
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` の missing 3件は解消見込み（最終検証は同ターンで再実行）
+
+---
+
 ## 2026-03-01 - TASK-UI-05 completed-tasks 移管
 
 ### コンテキスト
