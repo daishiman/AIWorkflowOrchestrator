@@ -62,6 +62,7 @@
 | SkillEditor | TASK-9A | スキルファイル編集UI（実装完了） |
 | SkillCenterView | TASK-UI-05 | ツール探索・追加・詳細表示ビュー |
 | SkillEditorView | TASK-UI-05A | ツール編集専用ビュー（仕様書作成済み・実装ファイル実在、統合未完了） |
+| SkillAnalysisView | TASK-10A-B | スキル分析ビュー（スコア・改善提案・リスク表示） |
 | SkillAdvancedViews（3A-3D） | TASK-UI-05B | ツール高度管理ビュー群（実装完了） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
@@ -114,6 +115,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | SplitLayout            | 左右分割レイアウト             |
 | DiffPreview            | 差分プレビューモーダル         |
 | SkillImportDialog      | スキルインポート確認ダイアログ |
+| SkillAnalysisView      | スキル分析結果表示（ScoreDisplay / SuggestionList / RiskPanel） |
 
 ### components/molecules/
 
@@ -153,6 +155,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張） | 2026-02-23 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
+| TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 
 ---
@@ -172,6 +175,25 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 苦戦箇所2 | 画面証跡の鮮度不足（既存画像の存在確認で止まりやすい） |
 | 苦戦箇所3 | 未タスク監査の `current/baseline` 誤読 |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-05B 節 |
+
+---
+
+## TASK-10A-B 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel） | completed（実装・テスト・画面検証完了） | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
+
+### TASK-10A-B 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `SkillAnalysisView`・`ScoreDisplay`・`SuggestionList`・`RiskPanel`・`useSkillAnalysis` を実装し、分析/改善フローをUIへ統合 |
+| 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得して表示崩れ/状態遷移を確認 |
+| a11y対応 | `SuggestionList` / `RiskPanel` の `role=\"list\"` に `aria-label` を追加 |
+| デザイン整合 | `text-white` を `text-[var(--text-inverse)]` に統一 |
+| 残課題 | Phase 10 MINOR 起点の未タスク 5 件（UT-TASK-10A-B-001〜005）を `docs/30-workflows/unassigned-task/` に登録 |
+| 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` の TASK-10A-B 節 |
 
 ---
 
@@ -212,6 +234,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.13.8  | 2026-03-02 | TASK-10A-B 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillAnalysisView を追加し、実装完了記録（画面証跡・a11y修正・未タスク5件）を同期 |
 | 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/unassigned-task/` 配下へ統一 |
 | 2.13.5  | 2026-03-01 | TASK-UI-05A spec_created 反映: `SkillEditorView` を主要UI一覧/viewsへ追加（実装未着手明記）。仕様書作成済みタスク表と画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を追加 |
 | 2.13.7  | 2026-03-02 | TASK-UI-05B 追補: 実装内容と苦戦箇所サマリーを追加し、再利用参照を feature/workflow/lessons へ統一 |
@@ -257,3 +280,6 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-UI-05A 手動検証結果](../../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
 - [TASK-UI-05B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/index.md)
 - [TASK-UI-05B 画面検証スクリーンショット](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/outputs/phase-11/screenshots/)
+- [TASK-10A-B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
+- [TASK-10A-B 手動検証結果](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-B 画面検証スクリーンショット](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/)

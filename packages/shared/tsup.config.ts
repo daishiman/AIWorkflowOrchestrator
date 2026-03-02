@@ -19,6 +19,7 @@ export default defineConfig({
     "src/types/skill-analytics.ts",
     "src/types/skill-debug.ts",
     "src/types/skill-schedule.ts",
+    "src/types/skill-improver.ts",
     "src/types/replace.ts",
     "src/types/agent.ts",
     "src/types/agent-execution.ts",
