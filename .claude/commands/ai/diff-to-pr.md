@@ -216,6 +216,43 @@ git commit --amend --no-edit
 
 ---
 
+### Phase 3.6: PR本文連携対象workflowの特定【必須】
+
+PR本文・PRコメントで参照する Phase 11/12 成果物は、**今回差分に含まれる workflow ディレクトリ**に限定する。
+`find ... -print -quit` の先頭一致は使わない。
+
+```bash
+# docs/30-workflows 配下の差分から対象workflow候補を抽出
+TARGET_WORKFLOWS=$(git diff --name-only --cached | awk -F/ '
+  $1 == "docs" && $2 == "30-workflows" {
+    if ($3 == "completed-tasks" && $4 != "") {
+      print $1 "/" $2 "/" $3 "/" $4
+    } else if ($3 != "") {
+      print $1 "/" $2 "/" $3
+    }
+  }
+' | sort -u)
+
+TARGET_COUNT=$(printf "%s\n" "$TARGET_WORKFLOWS" | sed '/^$/d' | wc -l | tr -d ' ')
+
+if [ "$TARGET_COUNT" -eq 1 ]; then
+  TARGET_WORKFLOW_DIR=$(printf "%s\n" "$TARGET_WORKFLOWS")
+elif [ "$TARGET_COUNT" -gt 1 ]; then
+  echo "複数workflow候補を検出: $TARGET_WORKFLOWS"
+  echo "PR連携対象を1件に決めるためユーザー確認が必要"
+  exit 1
+else
+  TARGET_WORKFLOW_DIR=""
+fi
+
+PHASE12_IMPL_GUIDE="${TARGET_WORKFLOW_DIR}/outputs/phase-12/implementation-guide.md"
+PHASE12_SUMMARY="${TARGET_WORKFLOW_DIR}/outputs/phase-12/spec-update-summary.md"
+PHASE11_SCREENSHOTS_DIR="${TARGET_WORKFLOW_DIR}/outputs/phase-11/screenshots"
+PHASE11_COVERAGE="${TARGET_WORKFLOW_DIR}/outputs/phase-11/screenshot-coverage.md"
+```
+
+---
+
 ### Phase 4: PR作成
 
 **重要: PRタイトルの形式**
@@ -236,23 +273,65 @@ git commit --amend --no-edit
 ```bash
 git push -u origin "${TASK_NAME}"
 
+# PR本文生成に使う成果物を解決（Phase 11/12連携）
+IMPL_GUIDE=""
+if [ -n "$TARGET_WORKFLOW_DIR" ] && [ -f "$TARGET_WORKFLOW_DIR/outputs/phase-12/implementation-guide.md" ]; then
+  IMPL_GUIDE="$TARGET_WORKFLOW_DIR/outputs/phase-12/implementation-guide.md"
+fi
+if [ -z "$IMPL_GUIDE" ]; then
+  IMPL_GUIDE=$(git diff --name-only --cached | grep "/outputs/phase-12/implementation-guide.md$" | head -n 1)
+fi
+
+SCREENSHOTS_DIR=""
+if [ -n "$TARGET_WORKFLOW_DIR" ] && [ -d "$TARGET_WORKFLOW_DIR/outputs/phase-11/screenshots" ]; then
+  SCREENSHOTS_DIR="$TARGET_WORKFLOW_DIR/outputs/phase-11/screenshots"
+fi
+if [ -z "$SCREENSHOTS_DIR" ]; then
+  SCREENSHOTS_DIR=$(git diff --name-only --cached \
+    | grep "/outputs/phase-11/screenshots/.*\\.png$" \
+    | head -n 1 \
+    | xargs dirname 2>/dev/null)
+fi
+
+HAS_UI_SCREENSHOTS=0
+PHASE11_LIGHT_IMAGE_REL=""
+PHASE11_DARK_IMAGE_REL=""
+if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; then
+  HAS_UI_SCREENSHOTS=1
+
+  PHASE11_LIGHT_IMAGE=$(ls "$SCREENSHOTS_DIR"/*.png | grep -E -- "-light\\.png$" | head -n 1 || true)
+  PHASE11_DARK_IMAGE=$(ls "$SCREENSHOTS_DIR"/*.png | grep -E -- "-dark\\.png$" | head -n 1 || true)
+
+  if [ -n "$PHASE11_LIGHT_IMAGE" ]; then
+    PHASE11_LIGHT_IMAGE_REL="${PHASE11_LIGHT_IMAGE#$(git rev-parse --show-toplevel)/}"
+  fi
+  if [ -n "$PHASE11_DARK_IMAGE" ]; then
+    PHASE11_DARK_IMAGE_REL="${PHASE11_DARK_IMAGE#$(git rev-parse --show-toplevel)/}"
+  fi
+fi
+
+PR_BODY_FILE=$(mktemp)
+
 # PRタイトルはConventional Commits形式のプレフィックス + 日本語の説明
 # 例: "fix: 型エクスポートパスの修正とスタブ実装の追加"
 # 例: "docs: diff-to-prコマンドのPRタイトル形式を更新"
 # 例: "feat(auth): ログイン機能の実装"
-gh pr create --title "<type>: <日本語の説明>" --body "$(cat <<'EOF'
+{
+cat <<'EOF'
 ## 概要
 
-<!-- この PR の目的と背景 -->
+<!-- この PR の目的と背景を記述 -->
 
 ## 変更内容
 
-<!-- 主な変更点 -->
--
+## <!-- 主な変更点をリストアップ -->
+
 -
 -
 
 ## 変更タイプ
+
+<!-- 該当するものにチェック -->
 
 - [ ] 🐛 バグ修正 (bug fix)
 - [ ] ✨ 新機能 (new feature)
@@ -264,47 +343,91 @@ gh pr create --title "<type>: <日本語の説明>" --body "$(cat <<'EOF'
 
 ## テスト
 
+<!-- 実施したテストにチェック -->
+
 - [ ] ユニットテスト実行 (`pnpm test`)
 - [ ] 型チェック実行 (`pnpm typecheck`)
 - [ ] ESLint チェック実行 (`pnpm lint`)
 - [ ] ビルド確認 (`pnpm build`)
+- [ ] 手動テスト実施
 
-## タスク実行サマリー
+## 関連 Issue
 
-<!-- Phase 1-13ワークフローで実行された場合に記入。該当しない場合はセクション削除 -->
+<!-- 関連するIssue番号 -->
 
-| Phase    | 主な作業内容     | 成果物                    |
-| -------- | ---------------- | ------------------------- |
-| Phase 4  | テスト設計・作成 | テストファイルN個         |
-| Phase 5  | 実装             | 機能コードN個             |
-| Phase 9  | 品質検証         | lint/typecheck/test全PASS |
-| Phase 10 | 最終レビュー     | PASS                      |
-| Phase 11 | 手動テストN件    | 全PASS                    |
-| Phase 12 | ドキュメント更新 | 実装ガイド・仕様更新      |
+Closes #
+
+## 破壊的変更
+
+<!-- 破壊的変更がある場合は詳細を記述 -->
+
+- [ ] この PR には破壊的変更が含まれます
+
+<!-- 破壊的変更の詳細 -->
+EOF
+
+if [ "$HAS_UI_SCREENSHOTS" -eq 1 ]; then
+cat <<EOF
 
 ## スクリーンショット
 
-<!-- UI/UX変更がある場合、Phase 11で撮影したスクリーンショットを掲載 -->
-<!-- スクリーンショットはリポジトリにコミット済みの画像を相対パスで参照 -->
-<!-- UI/UX変更がない場合はこのセクションを削除 -->
+| 項目 | スクリーンショット |
+| ---- | ------------------ |
+EOF
+  if [ -n "$PHASE11_LIGHT_IMAGE_REL" ]; then
+    printf '| 変更後（Light） | ![after-light](%s) |\n' "$PHASE11_LIGHT_IMAGE_REL"
+  fi
+  if [ -n "$PHASE11_DARK_IMAGE_REL" ]; then
+    printf '| 変更後（Dark） | ![after-dark](%s) |\n' "$PHASE11_DARK_IMAGE_REL"
+  fi
+  if [ -z "$PHASE11_LIGHT_IMAGE_REL" ] && [ -z "$PHASE11_DARK_IMAGE_REL" ]; then
+    FIRST_IMAGE=$(ls "$SCREENSHOTS_DIR"/*.png | head -n 1)
+    FIRST_IMAGE_REL="${FIRST_IMAGE#$(git rev-parse --show-toplevel)/}"
+    printf '| 変更後 | ![after](%s) |\n' "$FIRST_IMAGE_REL"
+  fi
+fi
 
-| 項目   | スクリーンショット                                                                          |
-| ------ | ------------------------------------------------------------------------------------------- |
-| 変更前 | ![before](docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-11/screenshots/TC-01-before.png) |
-| 変更後 | ![after](docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-11/screenshots/TC-01-after.png)   |
+cat <<'EOF'
 
 ## チェックリスト
 
 - [ ] コードが既存のスタイルに従っている
 - [ ] 必要に応じてドキュメントを更新した
 - [ ] 新規・変更機能にテストを追加した
+- [ ] すべてのテストがローカルで成功する
+- [ ] Pre-commit hooks が成功する
+
+## その他
+
+<!-- Phase 12 実装ガイド反映元と要点を記載 -->
+EOF
+
+if [ -n "$IMPL_GUIDE" ]; then
+  printf -- '- Phase 12 実装ガイド反映元: `%s`\n' "$IMPL_GUIDE"
+fi
+printf -- '- 反映ポイント: Part 1 / Part 2 の要点を3点以内で記載\n'
+if [ -f "$PHASE11_COVERAGE" ]; then
+  printf -- '- UI/UX変更時: `%s` の必須カバレッジ結果を記載\n' "$PHASE11_COVERAGE"
+fi
+
+cat <<'EOF'
 
 ---
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
-)" --base main
+} > "$PR_BODY_FILE"
+
+gh pr create --title "<type>: <日本語の説明>" --body-file "$PR_BODY_FILE" --base main
+rm -f "$PR_BODY_FILE"
 ```
+
+**PR本文セクション連携ルール（必須）**:
+- `.github/pull_request_template.md` の見出し順を維持する
+- `## その他` に Phase 12 実装ガイドの反映元パスと要点を必ず記載する
+- UI/UX変更時は `outputs/phase-11/screenshots/*.png` からPR本文へ画像リンクを自動挿入する
+- UI/UX変更がない場合は `## スクリーンショット` セクション自体を出力しない
+- PR本文で参照する画像・成果物パスは `TARGET_WORKFLOW_DIR` 配下のみを使う
 
 ---
 
@@ -347,7 +470,17 @@ Part 1（中学生レベル概念説明）と Part 2（技術的詳細）の両�
 **重要**: サマリーではなく全文を投稿すること。65536文字を超える場合は複数コメントに分割する。
 
 ```bash
-IMPL_GUIDE=$(find docs/30-workflows -path "*/outputs/phase-12/implementation-guide.md" -print -quit 2>/dev/null)
+IMPL_GUIDE=""
+
+# 1) 差分から特定した対象workflowを最優先
+if [ -n "$TARGET_WORKFLOW_DIR" ] && [ -f "$TARGET_WORKFLOW_DIR/outputs/phase-12/implementation-guide.md" ]; then
+  IMPL_GUIDE="$TARGET_WORKFLOW_DIR/outputs/phase-12/implementation-guide.md"
+fi
+
+# 2) フォールバック: staged差分に含まれるimplementation-guideを利用
+if [ -z "$IMPL_GUIDE" ]; then
+  IMPL_GUIDE=$(git diff --name-only --cached | grep "/outputs/phase-12/implementation-guide.md$" | head -n 1)
+fi
 
 if [ -n "$IMPL_GUIDE" ]; then
   TMPFILE=$(mktemp)
@@ -408,7 +541,20 @@ Phase 11でスクリーンショットが撮影されている場合、PRコメ�
 **前提**: スクリーンショットはPhase 3のコミット時にリポジトリに含まれていること。
 
 ```bash
-SCREENSHOTS_DIR=$(find docs/30-workflows -path "*/outputs/phase-11/screenshots" -type d -print -quit 2>/dev/null)
+SCREENSHOTS_DIR=""
+
+# 1) 差分から特定した対象workflowを最優先
+if [ -n "$TARGET_WORKFLOW_DIR" ] && [ -d "$TARGET_WORKFLOW_DIR/outputs/phase-11/screenshots" ]; then
+  SCREENSHOTS_DIR="$TARGET_WORKFLOW_DIR/outputs/phase-11/screenshots"
+fi
+
+# 2) フォールバック: staged差分に含まれるスクリーンショットからディレクトリを復元
+if [ -z "$SCREENSHOTS_DIR" ]; then
+  SCREENSHOTS_DIR=$(git diff --name-only --cached \
+    | grep "/outputs/phase-11/screenshots/.*\\.png$" \
+    | head -n 1 \
+    | xargs dirname 2>/dev/null)
+fi
 
 if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; then
   TMPFILE=$(mktemp)
@@ -570,6 +716,7 @@ git stash pop
 
 | 日付 | 変更内容 |
 |------|----------|
+| 2026-03-02 | PR本文セクション連携を強化。Phase 3.6 で差分から `TARGET_WORKFLOW_DIR` を特定し、PR本文/implementation-guideコメント/スクリーンショットコメントを同一workflow成果物に統一。PR本文を `.github/pull_request_template.md` 準拠見出しへ更新し、`その他` に Phase 12 実装ガイド反映を必須化。UI/UX変更時は `outputs/phase-11/screenshots/*.png` を検出してPR本文 `## スクリーンショット` に画像リンクを自動挿入 |
 | 2026-03-01 | PR本文にタスク実行サマリー・スクリーンショットセクション追加。Phase 5.5（実装ガイドコメント投稿）・Phase 5.6（スクリーンショットコメント投稿）を追加。Phase 3にスクリーンショット含有注記追加。Phase 5.5/5.6: `--body-file`+一時ファイル方式に統一（HEREDOC安全性・zsh互換性・GitHub API 65536文字制限対応） |
 | 2026-01-21 | Phase 3.5（タスク仕様書→Issue同期）を追加。git merge/stash後の未同期仕様書に対応 |
 | 2026-01-14 | Phase 0（リモート同期）、Phase 1（品質検証）を追加。コミット前にmain同期とテスト実行を必須化 |
