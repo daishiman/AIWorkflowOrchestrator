@@ -23,8 +23,8 @@
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
-| Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+| Skill Management Panel       | TASK-10A-A       | SkillManagementPanel, SkillCard | 完了 | `docs/30-workflows/skill-management-panel/` |
 
 ### 共通仕様
 
@@ -882,85 +882,67 @@ UI 実装コード・IPC 統合・自動テスト・画面検証証跡を正本�
 
 ---
 
-<a id="skill-analysis-view-task-10a-b"></a>
-## SkillAnalysisView UI（TASK-10A-B / completed）
+<a id="skill-management-panel-task-10a-a"></a>
+## SkillManagementPanel UI（TASK-10A-A / completed）
 
-TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI）を実装し、Phase 1-12 を完了。
-`ScoreDisplay`（スコア表示）、`SuggestionList`（改善提案選択）、`RiskPanel`（リスク表示）を `useSkillAnalysis` で統合する構成を採用した。
+TASK-10A-A-SKILL-MANAGEMENT-PANEL は、スキル一覧・検索・編集導線・分析導線・削除確認・新規作成導線を集約する管理パネル。
+実装コード、単体テスト、手動画面検証証跡（スクリーンショット）を正本として管理する。
 
-### コンポーネント構成
+### 実装済みコンポーネント / Hook
 
 | 区分 | コンポーネント / Hook | 役割 | 想定配置 |
 | --- | --- | --- | --- |
-| view-like component | SkillAnalysisView | 画面統合、分析実行、改善アクション、エラー/ローディング表示 | `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx` |
-| molecule | ScoreDisplay | 総合スコア/カテゴリ別スコアの表示 | `.../components/skill/ScoreDisplay.tsx` |
-| molecule | SuggestionList | 優先度別提案リスト、チェック選択、auto-fixable表示 | `.../components/skill/SuggestionList.tsx` |
-| molecule | RiskPanel | リスクレベル別表示（critical/high/medium/low） | `.../components/skill/RiskPanel.tsx` |
-| hook | useSkillAnalysis | 分析API呼び出し、選択状態、改善適用、再分析制御 | `.../components/skill/hooks/useSkillAnalysis.ts` |
+| component | SkillManagementPanel | 一覧/検索/編集/分析/削除/新規作成の統合UI | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| component | SkillCard | スキルカード表示と操作導線（編集/分析/削除） | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| selector | useImportedSkills / useIsLoadingSkills | 一覧表示/ローディング状態 | `apps/desktop/src/renderer/store/` |
+| action | useFetchSkills / useRemoveSkill | 取得・削除のStore経由実行 | `apps/desktop/src/renderer/store/` |
 
 ### 進捗ステータス
 
 | 項目 | 状態 | 参照 |
 | --- | --- | --- |
-| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
-| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/` |
-| テスト資産 | ✅ 完了 | `apps/desktop/src/renderer/components/skill/__tests__/` |
-| 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/` |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了（Phase 13 は未実施） | `docs/30-workflows/skill-management-panel/` |
+| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| 自動テスト資産 | ✅ 完了（38テスト PASS） | `apps/desktop/src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx` |
+| 画面検証証跡 | ✅ 取得済み（TC-01〜TC-10） | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/` |
 
 ### 状態管理・IPC依存
 
 | 観点 | 採用方針 |
 | --- | --- |
-| 状態管理 | コンポーネントローカル状態 + `useSkillAnalysis` に集約（Store追加なし） |
-| IPC利用 | `window.electronAPI.skill.analyze` / `applyImprovements` / `autoImprove` |
-| エラー処理 | `role=\"alert\"` のUI表示 + 再試行導線 |
-| 設計方針 | UI表示とビジネスロジックを hook 分離（Refactor済み） |
+| Store接続 | `useImportedSkills` / `useIsLoadingSkills` / `useFetchSkills` / `useRemoveSkill` を個別セレクタで利用 |
+| ローカル状態 | `currentView` / `selectedSkill` / `searchQuery` / `skillToDelete` / `deleteError` を `useState` で管理 |
+| IPC利用 | Renderer は Store アクション経由で `skill:getImported` / `skill:remove` を利用 |
+| 検証導線 | `/advanced/skill-management-panel` へ直接遷移してPlaywrightで証跡取得 |
 
-### アクセシビリティ・デザイントークン補正（Phase 11 反映）
-
-| 観点 | 反映内容 |
-| --- | --- |
-| リストラベル | `SuggestionList` の優先度別リスト / `RiskPanel` リストへ `aria-label` を追加 |
-| 色トークン | `SkillAnalysisView` のボタン文字色を `text-[var(--text-inverse)]` に統一 |
-| テスト補強 | `SuggestionList.test.tsx` / `RiskPanel.test.tsx` に `aria-label` 検証を追加 |
-
-### 画面検証証跡（2026-03-02）
+### 画面検証証跡（2026-03-02 再取得）
 
 | 証跡 | ファイル |
 | --- | --- |
-| 初期表示（分析結果） | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-01-analysis-default.png` |
-| 提案選択状態 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-02-analysis-selection.png` |
-| 改善後状態 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-03-analysis-improved.png` |
-| エラー表示 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-04-analysis-error.png` |
+| 初期一覧/検索/操作導線 | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-01-skill-list.png` |
+| ビュー遷移（編集/分析/新規作成） | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-03-editor-view.png`, `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-04-analysis-view.png`, `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-06-create-view.png` |
+| 削除確認ダイアログ | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-05-delete-dialog.png` |
+| 空状態/アクセシビリティ/ダークモード | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-08-empty-state.png`, `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-09-keyboard-focus.png`, `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/tc-10-dark-mode.png` |
 
-### 実装時の苦戦箇所（TASK-10A-B）
+### 実装時の改善反映
 
-| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
-| --- | --- | --- | --- |
-| Phase 11 がコード分析ベースのまま残りやすい | UI起動制約を理由にスクリーンショット取得を省略する場合 | 専用スクリプトで 4 状態（通常/選択/改善後/エラー）を再撮影し、manual-test-result を実証跡ベースへ更新 | UIタスクのPhase 11は「実画面証跡」を完了条件に固定する |
-| Phase 11 必須セクション欠落で `validate-phase-output` が落ちる | `phase-11-manual-test.md` の章立てを簡略化しすぎる場合 | 「統合テスト連携」節を追加し、Phase 12未タスク連携を明記 | 仕様書更新前にテンプレート必須節を機械検証する |
-| Phase 12 で未タスク件数が古いまま残る | 修正済み課題（D1/D2）を未タスク台帳から除外し忘れる場合 | `unassigned-task-detection.md` を 7件→5件へ再同期し、task-workflow と合わせて更新 | 未タスク台帳は「現状有効件数」で毎回再計算する |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. 画面証跡を先に再取得し、`outputs/phase-11/screenshots` を更新する。  
-2. `manual-test-result` と `discovered-issues` を実証跡ベースに書き換える。  
-3. `verify-all-specs` と `validate-phase-output` を実行し、不足セクションを埋める。  
-4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。  
-5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。  
+| 項目 | 対応内容 |
+| --- | --- |
+| エラー耐性 | 削除失敗時の未捕捉 Promise rejection を解消し、エラー表示を追加 |
+| アクセシビリティ | 操作ボタンに `focus-visible` リングを追加 |
+| 空状態UX | 空状態に `新規作成へ進む` CTA を追加 |
+| 視覚フィードバック | `primary` / `secondary` ボタンの hover スタイルを追加 |
 
 ### 関連未タスク
 
-| 未タスクID | 概要 | タスク仕様書 |
-| --- | --- | --- |
-| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-003 | 改善結果内訳表示実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+- 新規検出なし（`outputs/phase-12/unassigned-task-detection.md`: 0件）
+
+### 関連ドキュメント
+
+- [TASK-10A-A ワークフロー](../../../../docs/30-workflows/skill-management-panel/index.md)
+- [TASK-10A-A 実装ガイド](../../../../docs/30-workflows/skill-management-panel/outputs/phase-12/implementation-guide.md)
+- [TASK-10A-A 手動検証結果](../../../../docs/30-workflows/skill-management-panel/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-A 画面証跡スクリーンショット](../../../../docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/)
 
 ---
 
@@ -970,7 +952,7 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
-| TASK-10A-B | SkillAnalysisView（分析・改善UI、4コンポーネント + 1 Hook） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
+| TASK-10A-A | SkillManagementPanel（一覧/検索/編集/分析/削除/新規作成 + 38テスト + 画面証跡） | 2026-03-02 | `docs/30-workflows/skill-management-panel/` |
 | TASK-9A    | skill-editor（SkillEditor / SkillCodeEditor + CRUD + backups） | 2026-02-26 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                           |
 | TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
@@ -1013,12 +995,6 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 ---
 
-## 仕様書作成済みタスク（spec_created）
-
-現時点で本ドキュメント内に `spec_created` 状態の UI タスクはなし（TASK-UI-05B は 2026-03-02 時点で completed へ移行）。
-
----
-
 ## 関連ドキュメント
 
 ### 分割ファイル
@@ -1043,9 +1019,6 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-05 SkillCenterView実装](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05A SkillEditorView仕様（spec_created）](../../../docs/30-workflows/skill-editor-view/index.md)
 - [TASK-UI-05A 画面検証結果](../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
-- [TASK-10A-B SkillAnalysisView仕様](../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
-- [TASK-10A-B 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
-- [TASK-10A-B 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/)
 
 ---
 
@@ -1053,9 +1026,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-02 | v1.13.1    | TASK-10A-B 未タスク追補: 苦戦箇所3件（Phase 11必須節検証/画面証跡鮮度/未タスク件数再計算）を独立未タスク `UT-TASK-10A-B-006〜008` として追加し、関連未タスク表を8件へ拡張 |
-| 2026-03-02 | v1.13.0    | TASK-10A-B 追補: 実装時の苦戦箇所（Phase 11 実証跡化/必須節不足/未タスク件数ドリフト）と5ステップ簡潔解決手順を追加 |
-| 2026-03-02 | v1.12.9    | TASK-10A-B 完了反映: 収録機能一覧・完了タスクへ SkillAnalysisView を追加。専用セクション（構成/IPC/a11y補正/画面証跡/未タスク5件）を新設 |
+| 2026-03-02 | v1.12.9    | TASK-10A-A 再監査反映: 収録機能一覧・専用セクション・完了タスク台帳へ SkillManagementPanel を追加。TC-01〜TC-10 の画面証跡と実装改善点を同期し、`仕様書作成済みタスク` の重複見出し矛盾を解消 |
 | 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/unassigned-task/` へ統一 |
 | 2026-03-01 | v1.12.4    | TASK-UI-05A spec_created 反映: 収録機能一覧へ `Skill Editor View`（実装未着手）を追加。`仕様書作成済みタスク` セクションを新設し、未実装ギャップ（View未生成・導線未配線）と画面検証証跡を明記 |
 | 2026-03-02 | v1.12.8    | UT-UI-05B-001 登録: TASK-UI-05B の苦戦箇所（画面証跡の再撮影漏れリスク）を未タスク化し、関連未タスク表へ `task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` を追加 |

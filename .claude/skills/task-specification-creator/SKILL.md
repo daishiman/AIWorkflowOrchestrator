@@ -89,8 +89,8 @@ Phase 4〜5: 検証 → 完了
 | カテゴリ    | 数  | 詳細参照                                                 |
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
-| references/ | 16  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
+| references/ | 15  | [resource-map.md#references](references/resource-map.md) |
+| scripts/    | 12  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
 | assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
@@ -392,10 +392,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.05.0** | **2026-03-02** | **Phase 13 PR本文セクション連携を強化**: `phase-templates.md` の Phase 13 に `/ai:diff-to-pr` Phase 3.6（`TARGET_WORKFLOW_DIR` 特定）との連携ルールを追加し、PR本文を `.github/pull_request_template.md` 準拠セクションへ同期。UI/UX変更時は `outputs/phase-11/screenshots/*.png` をPR本文 `## スクリーンショット` へ自動挿入する要件を追加。`phase-11-12-guide.md` 完了チェックへ「Phase 13で対象workflow確認」「`## その他` へのPhase 12実装ガイド反映」確認項目を追加 |
-| **v10.04.0** | **2026-03-02** | **Phase 11 画面カバレッジマトリクス改善**: `phase-templates.md` に画面カバレッジマトリクス（4ステップ: 変更コンポーネント洗い出し/UI状態カバレッジ定義/撮影計画JSON作成/カバレッジレポート）を追加。`phase-11-12-guide.md` の実行フローを9ステップに拡張し、撮影コマンドをA.計画ベース一括撮影/B.個別撮影の2構成に再編。`capture-screenshots.js` を拡張版に更新（--plan/--selector/--action/--action-target/--helpオプション追加、テーマ別グループ化、カバレッジレポート自動生成） |
-| **v10.05.0** | **2026-03-02** | **TASK-10A-B Phase 11/12 再監査を反映**: `phase-11-manual-test.md` に必須セクション「統合テスト連携」を追加し、`manual-test-result.md` を実スクリーンショット証跡ベースへ更新。`unassigned-task-detection.md` を 7件→5件へ再同期。`verify-all-specs` warning 13→0、`validate-phase-output` を 28項目PASS へ復帰 |
-| **v10.04.0** | **2026-03-02** | **TASK-10A-B SkillAnalysisView 実装完了を反映**: Phase 1-12全完了（72テスト全PASS、カバレッジ Line100%/Branch95.83%/Function100%）。LOGS.md 2ファイル・SKILL.md 2ファイルを同時更新し、topic-map.md を再生成。`docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/spec-update-summary.md` を更新 |
+| **v10.06.0** | **2026-03-02** | **TASK-10A-A Phase 12 最終整合ガードを追補**: Step 2 判定は `phase-12-documentation.md` の更新対象表を正本にする運用を追加。`documentation-changelog.md` と `spec-update-summary.md` の Step判定/更新ファイル一覧を同一ターンで突合し、`unassigned-task-detection.md` へ `audit --diff-from HEAD` の `current/baseline` 分離記録を必須化 |
+| **v10.05.0** | **2026-03-02** | **TASK-10A-A Phase 12 再監査運用を追補**: `aiworkflow-requirements/references/ui-ux-feature-components.md` で発生した「機能別仕様の反映漏れ + spec_created見出し矛盾」を是正する再監査手順を反映。UI系タスクでは `ui-ux-components` と `ui-ux-feature-components` の両方に同日証跡（スクリーンショット）を同期し、重複見出し矛盾を禁止するチェック観点を追加 |
+| **v10.04.0** | **2026-03-02** | **TASK-10A-A SkillManagementPanel Phase 12完了**: Phase 12 Task 1-4を実行。実装ガイド（Part 1/2）、コンポーネントドキュメント、仕様更新サマリー、documentation-changelog、未タスク検出レポート（Phase 11 MINOR 4件）を作成。LOGS.md 2ファイル・SKILL.md 2ファイル・task-workflow.md・artifacts.json を同期更新 |
 | **v10.03.0** | **2026-03-02** | **Phase 12準拠再確認の実行パターンを反映**: `skill-editor-view` と `TASK-UI-05` の2workflowで `verify-all-specs`/`validate-phase-output` を同時実行し、Task 1/3/4/5成果物実体・implementation-guide Part 1/2・未タスク10見出しを同一ターンで突合する運用を確立。未タスク監査は `currentViolations=0` を合格基準に固定 |
 | **v10.02.0** | **2026-03-02** | **TASK-UI-05A 再監査（Phase 11/12整合是正）**: `outputs/phase-11` へ 2026-03-02 再取得スクリーンショット（Dashboard/Editor/導線チェック）を追補。`outputs/phase-12/spec-update-summary.md` を追加し、未タスク正本3件（`docs/30-workflows/unassigned-task/`）と `artifacts.json`/`outputs/artifacts.json` の同期を反映 |
 | **v10.01.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・仕様修正反映**: Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加し、useFileTree 引数仕様を skillName ベースに統一。UT-UI-05A-GETFILETREE-001 未タスク登録を反映 |
