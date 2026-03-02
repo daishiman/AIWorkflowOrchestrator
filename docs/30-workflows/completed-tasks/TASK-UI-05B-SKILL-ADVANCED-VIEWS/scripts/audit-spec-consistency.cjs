@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-env node */
+/* global require, process, __dirname */
 /* eslint-disable @typescript-eslint/no-require-imports */
 "use strict";
 
