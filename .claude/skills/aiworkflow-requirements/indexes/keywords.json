@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T08:18:50.981Z",
-  "totalKeywords": 1409,
+  "generated": "2026-03-03T13:42:49.557Z",
+  "totalKeywords": 1410,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -747,6 +747,7 @@
       "quality-e2e-testing.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
+      "task-workflow.md",
       "technology-devops.md",
       "testing-component-patterns.md",
       "ui-ux-agent-execution.md",
@@ -823,6 +824,10 @@
     ],
     "スキル分析・統計": [
       "api-ipc-agent.md"
+    ],
+    "スキル作成ウィザード": [
+      "api-ipc-agent.md",
+      "interfaces-agent-sdk-skill.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -1174,9 +1179,7 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
-      "arch-ui-components.md",
-      "lessons-learned.md",
-      "ui-ux-feature-components.md"
+      "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1542,6 +1545,44 @@
     "形式引数パターンの確認": [
       "architecture-implementation-patterns.md"
     ],
+    "Phase": [
+      "architecture-implementation-patterns.md",
+      "claude-code-agents-workflow.md",
+      "lessons-learned.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "workflow": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "証跡バンドル同期パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "IMP": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "TWO": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "WORKFLOW": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "BUNDLE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
     "チャネル命名監査の運用パターン": [
       "architecture-implementation-patterns.md"
     ],
@@ -1570,10 +1611,6 @@
     ],
     "未タスク監査スコープ分離パターン": [
       "architecture-implementation-patterns.md"
-    ],
-    "IMP": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
@@ -1761,11 +1798,6 @@
     ],
     "ワークフローセクションの記述形式": [
       "claude-code-agents-workflow.md"
-    ],
-    "Phase": [
-      "claude-code-agents-workflow.md",
-      "lessons-learned.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -3060,15 +3092,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "CHAIN": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
-    "REGISTRATION": [
-      "lessons-learned.md"
-    ],
     "EDITOR": [
       "lessons-learned.md"
     ],
@@ -3078,19 +3101,7 @@
     "再監査": [
       "lessons-learned.md"
     ],
-    "MANAGEMENT": [
-      "lessons-learned.md"
-    ],
-    "PANEL": [
-      "lessons-learned.md"
-    ],
-    "IMPLEMENTATION": [
-      "lessons-learned.md"
-    ],
-    "CLOSURE": [
-      "lessons-learned.md"
-    ],
-    "再確認追補": [
+    "実装完了": [
       "lessons-learned.md"
     ],
     "CENTER": [
@@ -3103,6 +3114,19 @@
       "lessons-learned.md"
     ],
     "高度管理ビュー群再確認": [
+      "lessons-learned.md"
+    ],
+    "SkillAnalysisView": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "SkillCreateWizard": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "実装再監査": [
       "lessons-learned.md"
     ],
     "CALLBACK": [
@@ -3232,12 +3256,6 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
       "lessons-learned.md"
     ],
     "LINK": [
@@ -3452,10 +3470,6 @@
     "未実施が混在していないか": [
       "lessons-learned.md"
     ],
-    "workflow": [
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
-    ],
     "の参照整合を検証": [
       "lessons-learned.md"
     ],
@@ -3643,6 +3657,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
@@ -4270,6 +4287,9 @@
     "skillFileAPI": [
       "security-electron-ipc.md"
     ],
+    "skillCreateAPI": [
+      "security-electron-ipc.md"
+    ],
     "skillShareAPI": [
       "security-electron-ipc.md"
     ],
@@ -4521,6 +4541,10 @@
     ],
     "タスク実行仕様書生成ガイド": [
       "task-workflow.md"
+    ],
+    "実装完了記録": [
+      "task-workflow.md",
+      "ui-ux-components.md"
     ],
     "バックエンド技術スタック": [
       "technology-backend.md"
@@ -4941,23 +4965,15 @@
     "コンポーネント階層図": [
       "ui-ux-components.md"
     ],
-    "実装完了記録": [
-      "ui-ux-components.md"
-    ],
     "仕様書作成済みタスク": [
-      "ui-ux-components.md"
-    ],
-    "spec": [
-      "ui-ux-components.md"
-    ],
-    "created": [
-      "ui-ux-components.md"
-    ],
-    "実装収束": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],
-    "SkillEditorView": [
+    "spec": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "created": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],

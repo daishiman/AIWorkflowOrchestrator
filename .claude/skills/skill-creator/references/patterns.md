@@ -1004,6 +1004,20 @@
 - **関連タスク**: TASK-UI-05A-SKILL-EDITOR-VIEW, TASK-UI-05-SKILL-CENTER-VIEW
 - **クロスリファレンス**: [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [phase-12-documentation.md](../../../../docs/30-workflows/skill-editor-view/phase-12-documentation.md), [phase-12-documentation.md](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/phase-12-documentation.md)
 
+### [Phase 12] 2workflow証跡バンドル完了同期（UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001）
+
+- **状況**: 2workflow同時監査タスクを完了移管した後、`task-workflow.md` と関連仕様書の未タスク参照が旧パスのまま残り、`verify-unassigned-links` が fail しやすい
+- **解決策**:
+  1. 完了移管を伴う未タスクIDを先に列挙し、`task-workflow.md` と関連仕様書（例: `ui-ux-feature-components.md`）の参照先を同一ターンで実体パスへ更新する
+  2. `verify-unassigned-links` を再実行し、`missing=0` を確認してから完了記録を更新する
+  3. `audit --target-file` / `audit --diff-from HEAD` の合否は `currentViolations=0` に固定し、baselineは監視値として分離記録する
+  4. 実装内容・苦戦箇所・再利用手順を `task-workflow` / `architecture-implementation-patterns` / `lessons-learned` の3仕様へ同期する
+- **効果**: 完了移管後のリンクドリフトを防ぎ、2workflow同時監査タスクの完了判定を再現可能にできる
+- **適用条件**: Phase 12の再監査タスクで「未タスク登録→実装完了→completed-tasks移管」を跨ぐ場合
+- **発見日**: 2026-03-03
+- **関連タスク**: UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
 ### [Phase 12] `validate-phase-output` 位置引数固定
 
 - **状況**: `verify-all-specs` と同じオプション形式を想定し、`validate-phase-output` の実行が失敗しやすい

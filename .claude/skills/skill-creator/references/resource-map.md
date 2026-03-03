@@ -201,9 +201,8 @@
 | [agent-task-template.md](.claude/skills/skill-creator/assets/agent-task-template.md) | タスク特化エージェント生成時 | タスク実行用エージェント         |
 | [system-prompt-template.md](.claude/skills/skill-creator/assets/system-prompt-template.md) | LLM System Prompt生成時 | LLM外部呼び出し用System Promptテンプレート |
 | [phase12-action-bridge-template.md](.claude/skills/skill-creator/assets/phase12-action-bridge-template.md) | Phase 12再監査後 | 監査結果を次アクションへ変換する導線テンプレート |
-| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を仕様書別 SubAgent で同期するテンプレート。標準5仕様書（interfaces/api-ipc/security/task/lessons）に加えて UI機能6仕様書（ui-ux/arch/task/lessons）と 2workflow同時監査（spec_created + completed）に対応し、Step 2判定の二重突合（phase-12-documentation / changelog / spec-update-summary）および IPC登録後のサービス公開境界チェック（`services/*/index.ts`）を標準化 |
-
-| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | SubAgent分担を標準化するテンプレート。5仕様書（interfaces/api-ipc/security/task/lessons）と UI機能6仕様書（ui-ux-components/ui-ux-feature-components/arch-ui/arch-state/task/lessons）に加え、再確認向け2workflow同時監査プロファイル、Step 2判定同期プロファイル、画面証跡チェック、IPC登録時のサービス公開境界チェック（`services/*/index.ts`）に対応 |
+| [phase12-system-spec-retrospective-template.md](.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md) | Phase 12 Step 2（仕様更新）時 | 実装内容・苦戦箇所・再利用手順を仕様書別 SubAgent で同期するテンプレート。標準5仕様書（interfaces/api-ipc/security/task/lessons）に加えて UI機能6仕様書（ui-ux/arch/task/lessons）と 2workflow同時監査（spec_created + completed）、UI再撮影 + TCカバレッジ検証、`task-workflow` へのSubAgent分担表転記、5仕様書への実装内容+苦戦箇所+簡潔手順の転記チェック、completed-tasks移管後の未タスクリンク是正（`missing=0`）に対応 |
+| [phase12-spec-sync-subagent-template.md](.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md) | Phase 12仕様同期時 | SubAgent分担を標準化するテンプレート。5仕様書（interfaces/api-ipc/security/task/lessons）と UI機能6仕様書（ui-ux-components/ui-ux-feature-components/arch-ui/arch-state/task/lessons）に加え、再確認向け2workflow同時監査プロファイルと画面証跡（再撮影 + TCカバレッジ）チェックに対応 |
 
 ### テンプレート（ランタイム別）
 

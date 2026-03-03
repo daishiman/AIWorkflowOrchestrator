@@ -2539,45 +2539,62 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 ---
 
-### S23: IPC登録後のサービス公開境界整合パターン（TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 2026-03-03実装）
+## Phase 12 2workflow証跡バンドル同期パターン（UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 2026-03-03実装）
 
-> **発見タスク**: TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001  
-> **関連未タスク**: UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001
+### 問題
 
-#### 問題
+`spec_created` 系 workflow と `completed` 系 workflow を同時監査する際、以下が分散しやすい。
 
-IPCハンドラ登録漏れを修正して機能復旧しても、依存サービスの公開境界（`services/<domain>/index.ts`）が未同期だと、直接 import が増え続けて設計ドリフトを起こす。
+- `verify-all-specs` / `validate-phase-output` の記録先
+- Task 1/3/4/5 成果物の実体確認結果
+- 未タスクリンク更新（completed-tasks 移管後）と監査結果
 
-#### 解決策
+その結果、Phase 12 の完了判定が「成果物はあるが台帳が古い」状態になりやすい。
 
-登録配線修正と同ターンで「サービス公開境界」の整合監査を実施する。今回Waveで対応しない場合は未タスクへ明示移管する。
+### 解決パターン
 
-#### 適用チェックリスト
+#### 1. 監査対象を 2workflow で先に固定する
 
-- [ ] `registerAllIpcHandlers` の新規 register 呼出が追加されている
-- [ ] 対応する回帰テスト（`ipc-double-registration` 系）で呼出が検証されている
-- [ ] `services/<domain>/index.ts` の export 追加要否を判定している
-- [ ] 未対応の場合、`docs/30-workflows/unassigned-task/` に指示書を作成し `task-workflow.md` へリンクしている
+| 区分 | 例 | 目的 |
+| --- | --- | --- |
+| workflow-a | `spec_created` 系 | 仕様作成系の Task 1/3/4/5 整合確認 |
+| workflow-b | `completed` 系 | 実装完了系の Task 1/3/4/5 整合確認 |
 
-#### 検証コマンド
+#### 2. 構造監査 → 出力監査 → 実体突合を同一ターンで実施する
+
+1. `verify-all-specs --workflow <a/b>` を実行  
+2. `validate-phase-output <a/b>` を実行  
+3. `outputs/phase-12/` の必須5成果物実体を `a/b` 両方で突合  
+
+#### 3. 未タスク監査は `current` 判定を合否基準に固定する
+
+| 監査 | コマンド | 合否基準 |
+| --- | --- | --- |
+| リンク整合 | `verify-unassigned-links.js` | `missing=0` |
+| 対象監査 | `audit-unassigned-tasks.js --json --target-file <path>` | `currentViolations.total=0` |
+| 差分監査 | `audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations.total=0`（baselineは監視） |
+
+#### 4. completed-tasks移管後のリンクドリフトを先に是正する
+
+- `task-workflow.md` と関連仕様書（例: `ui-ux-feature-components.md`）の未タスク参照を実体パスへ更新
+- 更新後に `verify-unassigned-links.js` を再実行し `missing=0` を確認
+
+### 検証コマンド
 
 ```bash
-rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts
-rg -n "services/skill/SkillChain(Store|Executor)|from \"../services/skill\"" apps/desktop/src/main
-rg -n "SkillChain(Store|Executor)" apps/desktop/src/main/services/skill/index.ts
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-a> --json
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-b> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-a>
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-b>
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/<task-file>.md
 ```
 
-期待結果:
-- 登録配線が存在する
-- 直接 import の残存状況を説明可能
-- バレル export は「追加済み」または「未タスク化済み」のどちらかで追跡可能
+### 適用指針
 
-#### 同種課題の簡潔解決手順（4ステップ）
-
-1. IPC修正時は `handler/register/preload` を同時完了条件に固定する。  
-2. `ipc-double-registration` テストで新規 register 呼出を必ず検証する。  
-3. `services/*/index.ts` の公開境界を `rg` で機械確認し、直接 import を放置しない。  
-4. 今回Waveで対応しない設計課題は未タスク化して台帳へ同一ターン同期する。  
+- 2workflow同時監査では「検証結果の分離」ではなく「判定ロジックの統一」を優先する。  
+- 完了判定は `current`、負債管理は `baseline` に責務分離する。  
+- 完了移管を含む場合、リンク是正を先に終えてから Phase 12 完了記録へ進む。  
 
 ---
 
@@ -2677,7 +2694,7 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v1.35.0 | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 追補: S23「IPC登録後のサービス公開境界整合パターン」を追加。登録配線修正後の `services/*/index.ts` export 監査と未タスク移管手順を標準化 |
+| v1.35.0 | 2026-03-03 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001: Phase 12 2workflow証跡バンドル同期パターンを追加（workflow固定、Task 1/3/4/5 実体突合、`current/baseline` 判定分離、completed-tasks移管後リンク是正） |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |
