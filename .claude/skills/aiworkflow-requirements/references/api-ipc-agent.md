@@ -396,7 +396,6 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | `skill:deleteFile`    | Renderer → Main | ファイル削除         | `{ skillName: string, relativePath: string }`                        | `IpcResult<void>`     |
 | `skill:listBackups`   | Renderer → Main | バックアップ一覧取得 | `{ skillName: string }`                                              | `IpcResult<BackupInfo[]>` |
 | `skill:restoreBackup` | Renderer → Main | バックアップ復元     | `{ skillName: string, backupPath: string }`                          | `IpcResult<void>`     |
-| `skill:getFileTree`   | Renderer → Main | ファイルツリー取得   | `{ skillName: string }`                                              | `IpcResult<SkillFileTreeNode[]>` |
 
 ### 型定義
 
@@ -404,7 +403,6 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | ------------ | ---------------------------------------------- |
 | `IpcResult<T>` | IPC統一レスポンス型（`{ success: true; data: T } \| { success: false; error: string }`） |
 | `BackupInfo` | バックアップファイル情報（filename, relativePath, originalPath, type, timestamp, createdAt） |
-| `SkillFileTreeNode` | ファイルツリーノード（name, path, type, children） |
 
 ### 実装状況
 
@@ -421,7 +419,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ### セキュリティ仕様
 
-全7 invokeハンドラーで以下のセキュリティ検証を実施する。
+全6 invokeハンドラーで以下のセキュリティ検証を実施する。
 
 | 対策 | 実装 | 返却仕様 |
 | ---- | ---- | -------- |
@@ -441,22 +439,21 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | チャネル名 | `skill:getFileTree` |
 | 方向 | Renderer → Main |
 | 引数 | `skillName: string` |
-| 戻り値（Main） | `IpcResult<SkillFileTreeNode[]>` |
-| 戻り値（Preload公開） | `SkillFileTreeNode[]`（`safeInvokeUnwrap` により `data` を展開） |
+| 戻り値 | `{ tree: FileNode[] }` |
 | バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） |
-| セキュリティ | 送信元ウィンドウ検証、P42 3段バリデーション、SkillFileManager境界検証、未知エラーのサニタイズ |
-| 実装状況 | 完了（UT-UI-05A-GETFILETREE-001, 2026-03-03） |
+| セキュリティ | パストラバーサル検証、送信元ウィンドウ検証 |
+| 実装状況 | 未実装（UT-UI-05A-GETFILETREE-001 で対応予定） |
 | 関連タスク | TASK-UI-05A-SKILL-EDITOR-VIEW |
-| 実装ワークフロー | `docs/30-workflows/completed-tasks/getfiletree-ipc/` |
+| 未タスク正本 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 
-### SkillFileTreeNode 型定義
+### FileNode 型定義
 
 ```typescript
-interface SkillFileTreeNode {
+interface FileNode {
   name: string;
   path: string; // スキルルートからの相対パス
   type: "file" | "directory";
-  children?: SkillFileTreeNode[];
+  children?: FileNode[];
 }
 ```
 
@@ -626,7 +623,21 @@ SkillChainDefinition, SkillChainStep, InputMapping, OutputMapping, SkillChainCon
 
 ### 備考
 
-Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B の実装で追加済み。Main Process 側のハンドラは `registerSkillChainHandlers()` として `skillHandlers.ts` に実装済み。
+Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B の実装で追加済み。Main Process 側のハンドラは `registerSkillChainHandlers()` として `skillHandlers.ts` に実装され、`registerAllIpcHandlers()`（`ipc/index.ts`）から起動時に登録される。
+
+### 実装時の苦戦箇所（TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001）
+
+| 苦戦箇所 | 課題 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 起動時の登録配線漏れ | `skillHandlers.ts` 実装済みでも `registerAllIpcHandlers` 未登録だと `skill:chain:*` が到達しない | `ipc/index.ts` へ `registerSkillChainHandlers(mainWindow, chainStore, chainExecutor)` を追加し、`ipc-double-registration.test.ts` で呼出を固定検証 | IPC追加時は `handler/register/preload` を同一完了条件にする |
+| 依存サービス公開境界のドリフト | `SkillChainStore` / `SkillChainExecutor` が直接 import のまま残り、公開面の一貫性が低下 | 未タスク `UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001` を起票し、次Waveへ明示移管 | IPC登録修正時は `services/*/index.ts` の export 更新有無を同時監査する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 新規/修正IPCごとに `handler` 実装と `registerAllIpcHandlers` 配線を同一コミットで確認する。  
+2. `ipc-double-registration` 系テストへ「新規 register 関数が呼ばれること」を追加する。  
+3. `rg -n "services/<domain>/<Service>|from \"../services/<domain>\""` で直接 import を検出し、バレル export 要否を判定する。  
+4. Phase 12で `task-workflow.md` と `lessons-learned.md` に苦戦箇所と再利用手順を同一ターン同期する。  
 
 ---
 
@@ -834,6 +845,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 | skill:chain:list ハンドラ登録漏れ修正 | 2026-03-03 | `registerSkillChainHandlers` を `registerAllIpcHandlers` へ追加し、`ipc-double-registration` 回帰テストで登録漏れを検出可能化。関連未タスクとしてバレル公開整合タスクを登録 |
 | TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
@@ -843,8 +855,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 | TASK-9F    | スキル共有・インポート機能           | 2026-02-27 | 3チャンネル追加（skill:importFromSource/export/validateSource）、共有型定義10型新規作成、SkillShareManager実装、92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
 | UT-FIX-SKILL-IMPORT-INTERFACE-001 | skill:import IPCインターフェース不整合修正 | 2026-02-21 | `skill:import` の Mainハンドラー引数契約を `skillName: string` に統一。`skillService.importSkills([skillName])` で配列化する実装を反映 |
 | UT-FIX-SKILL-REMOVE-INTERFACE-001 | skill:remove IPCインターフェース不整合修正 | 2026-02-20 | `skill:remove` の Mainハンドラー引数契約を `skillName: string` に統一。空白文字列を拒否する3段バリデーションを追加 |
-| TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 基盤6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
-| UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPC実装 | 2026-03-03 | 追加1チャンネル（skill:getFileTree）を Main/Preload/Renderer に接続。`SkillFileTreeNode[]` 契約へ統一し、関連テスト（IPC/Service/Preload/Renderer）155件PASS |
+| TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
 | TASK-9B    | SkillCreator IPC拡張反映 | 2026-02-26 | SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ同期。`skill-creator:improve/fork/share/schedule/debug/generate-docs/stats` を追加反映し、`SkillCreatorProgress` 契約を `phase/percentage/message` に実装準拠化 |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
 
@@ -870,7 +881,8 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
-| v1.16.2    | 2026-03-03 | UT-UI-05A-GETFILETREE-001 完了同期: `skill:getFileTree` の実装状況を「完了」へ更新し、戻り値契約を `IpcResult<SkillFileTreeNode[]>`（Main）+ `SkillFileTreeNode[]`（Preload公開）へ是正。skillFileAPI のチャンネル/型/セキュリティ記述を7 invoke基準に更新 |
+| v1.16.3    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 の苦戦箇所と4ステップ簡潔解決手順を追記。完了タスク台帳に同タスクを追加し、登録漏れ修正と未タスク移管（バレル公開整合）を同期 |
+| v1.16.2    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001: `skill:chain:*` の備考を実装実態へ同期（`registerAllIpcHandlers` での登録保証を明記） |
 | v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |
 | v1.16.1    | 2026-03-02 | TASK-UI-05B 実装完了同期: `skill:chain:*` の Preload API 状態を「未実装」から「実装済み」へ更新し、TASK-9D 完了記録に実装日を追記 |
 | v1.16.0    | 2026-03-02 | TASK-UI-05B整合性検証: `skill:chain:*`（TASK-9D）5チャネル・`skill:schedule:*`（TASK-9G）5チャネルのIPCセクションを追加。TASK-9D完了タスク記録を追加 |

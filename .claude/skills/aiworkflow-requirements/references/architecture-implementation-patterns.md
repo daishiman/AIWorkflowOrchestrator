@@ -2539,6 +2539,48 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 ---
 
+### S23: IPC登録後のサービス公開境界整合パターン（TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 2026-03-03実装）
+
+> **発見タスク**: TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001  
+> **関連未タスク**: UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001
+
+#### 問題
+
+IPCハンドラ登録漏れを修正して機能復旧しても、依存サービスの公開境界（`services/<domain>/index.ts`）が未同期だと、直接 import が増え続けて設計ドリフトを起こす。
+
+#### 解決策
+
+登録配線修正と同ターンで「サービス公開境界」の整合監査を実施する。今回Waveで対応しない場合は未タスクへ明示移管する。
+
+#### 適用チェックリスト
+
+- [ ] `registerAllIpcHandlers` の新規 register 呼出が追加されている
+- [ ] 対応する回帰テスト（`ipc-double-registration` 系）で呼出が検証されている
+- [ ] `services/<domain>/index.ts` の export 追加要否を判定している
+- [ ] 未対応の場合、`docs/30-workflows/unassigned-task/` に指示書を作成し `task-workflow.md` へリンクしている
+
+#### 検証コマンド
+
+```bash
+rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts
+rg -n "services/skill/SkillChain(Store|Executor)|from \"../services/skill\"" apps/desktop/src/main
+rg -n "SkillChain(Store|Executor)" apps/desktop/src/main/services/skill/index.ts
+```
+
+期待結果:
+- 登録配線が存在する
+- 直接 import の残存状況を説明可能
+- バレル export は「追加済み」または「未タスク化済み」のどちらかで追跡可能
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. IPC修正時は `handler/register/preload` を同時完了条件に固定する。  
+2. `ipc-double-registration` テストで新規 register 呼出を必ず検証する。  
+3. `services/*/index.ts` の公開境界を `rg` で機械確認し、直接 import を放置しない。  
+4. 今回Waveで対応しない設計課題は未タスク化して台帳へ同一ターン同期する。  
+
+---
+
 ## IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施）
 
 ### 問題
@@ -2635,6 +2677,7 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.35.0 | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 追補: S23「IPC登録後のサービス公開境界整合パターン」を追加。登録配線修正後の `services/*/index.ts` export 監査と未タスク移管手順を標準化 |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |

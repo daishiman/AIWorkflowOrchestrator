@@ -176,6 +176,7 @@ vi.mock("../skillHandlers", () => ({
   registerSkillScheduleHandlers: vi.fn(),
   registerSkillDocsHandlers: vi.fn(),
   unregisterSkillScheduleHandlers: vi.fn(),
+  registerSkillChainHandlers: vi.fn(),
 }));
 vi.mock("../skillHandlers.share", () => ({
   registerSkillShareHandlers: vi.fn(),
@@ -229,10 +230,24 @@ vi.mock("../../services/chat-edit", () => ({
   FileService: vi.fn().mockImplementation(() => ({})),
   ContextBuilder: vi.fn().mockImplementation(() => ({})),
 }));
+vi.mock("../../services/skill/SkillChainStore", () => ({
+  SkillChainStore: vi.fn().mockImplementation(() => ({
+    list: vi.fn().mockResolvedValue([]),
+    get: vi.fn().mockResolvedValue(null),
+    save: vi.fn().mockResolvedValue({}),
+    delete: vi.fn().mockResolvedValue(false),
+  })),
+}));
+vi.mock("../../services/skill/SkillChainExecutor", () => ({
+  SkillChainExecutor: vi.fn().mockImplementation(() => ({
+    executeChain: vi.fn().mockResolvedValue({}),
+  })),
+}));
 
 // --- テスト対象のインポート ---
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
 import { setupThemeWatcher } from "../themeHandlers";
+import { registerSkillChainHandlers } from "../skillHandlers";
 
 describe("IPC Handler Double Registration Prevention", () => {
   beforeEach(() => {
@@ -386,6 +401,21 @@ describe("IPC Handler Double Registration Prevention", () => {
       const result = await handler();
 
       expect(result).toEqual({ success: true, data: { online: true } });
+    });
+  });
+
+  describe("skill:chain handlers registration", () => {
+    it("registerAllIpcHandlers が registerSkillChainHandlers を呼び出す", () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+      registerAllIpcHandlers(mockWindow);
+
+      expect(registerSkillChainHandlers).toHaveBeenCalledTimes(1);
+      expect(registerSkillChainHandlers).toHaveBeenCalledWith(
+        mockWindow,
+        expect.any(Object), // SkillChainStore instance
+        expect.any(Object), // SkillChainExecutor instance
+      );
     });
   });
 

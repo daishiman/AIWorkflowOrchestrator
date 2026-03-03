@@ -1,5 +1,9 @@
 # HybridRAG パイプライン アーキテクチャ概要
 
+```yaml
+issue_number: 957
+```
+
 ## 概要
 
 このドキュメントは、**HybridRAG**（GraphRAG + VectorRAG統合）に基づくファイル変換システムの全体アーキテクチャを説明する。8つのタスク（CONV-01〜CONV-08）で構成され、最高精度（90%+）のRAG検索を実現する。
