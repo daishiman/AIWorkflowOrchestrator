@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-02T11:38:16.480Z",
-  "totalKeywords": 1400,
+  "generated": "2026-03-03T01:13:00.571Z",
+  "totalKeywords": 1407,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -747,7 +747,6 @@
       "quality-e2e-testing.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
-      "task-workflow.md",
       "technology-devops.md",
       "testing-component-patterns.md",
       "ui-ux-agent-execution.md",
@@ -1174,10 +1173,9 @@
       "arch-ui-components.md",
       "architecture-file-conversion.md"
     ],
-    "SkillAnalysisView": [
+    "SkillManagementPanel": [
       "arch-ui-components.md",
       "lessons-learned.md",
-      "task-workflow.md",
       "ui-ux-feature-components.md"
     ],
     "認証・セキュリティ": [
@@ -3071,6 +3069,21 @@
     "再監査": [
       "lessons-learned.md"
     ],
+    "MANAGEMENT": [
+      "lessons-learned.md"
+    ],
+    "PANEL": [
+      "lessons-learned.md"
+    ],
+    "IMPLEMENTATION": [
+      "lessons-learned.md"
+    ],
+    "CLOSURE": [
+      "lessons-learned.md"
+    ],
+    "再確認追補": [
+      "lessons-learned.md"
+    ],
     "CENTER": [
       "lessons-learned.md"
     ],
@@ -4503,10 +4516,6 @@
     "タスク実行仕様書生成ガイド": [
       "task-workflow.md"
     ],
-    "実装完了記録": [
-      "task-workflow.md",
-      "ui-ux-components.md"
-    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -4926,15 +4935,23 @@
     "コンポーネント階層図": [
       "ui-ux-components.md"
     ],
+    "実装完了記録": [
+      "ui-ux-components.md"
+    ],
     "仕様書作成済みタスク": [
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md"
+      "ui-ux-components.md"
     ],
     "spec": [
+      "ui-ux-components.md"
+    ],
+    "created": [
+      "ui-ux-components.md"
+    ],
+    "実装収束": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],
-    "created": [
+    "SkillEditorView": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],

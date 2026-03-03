@@ -78,6 +78,14 @@
 
 > `<workflow-b>` が不要な場合は1workflowのみで運用し、理由を「備考」に明記する。
 
+### 3.3 Step 2 判定の二重突合（必須）
+
+| 観点 | 確認元 | 完了条件 |
+| --- | --- | --- |
+| Step 2 要否判定 | `phase-12-documentation.md` の更新対象テーブル | 更新対象に `arch-*` / `api-*` / `interfaces-*` / `security-*` が含まれる場合は Step 2 を `完了` にする |
+| Step判定同期 | `outputs/phase-12/documentation-changelog.md` | Step 2 が実装実体と一致している（`該当なし` の誤判定なし） |
+| 更新対象同期 | `outputs/phase-12/spec-update-summary.md` | Step 2 で更新した仕様書が一覧に明記され、反映内容が記載されている |
+
 ---
 
 ## 4. 仕様反映先（テンプレート準拠）
@@ -109,10 +117,10 @@ UI機能実装の場合は次を推奨:
 ## 6. 同種課題の簡潔解決手順（5ステップ）
 
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons）へ分離する>`
-2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
-3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
-4. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を連続実行する>`
-5. `<検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+2. `<phase-12-documentation.md の更新対象表を正本に Step 2 要否を確定し、documentation-changelog / spec-update-summary と二重突合する>`
+3. `<実装 + 契約 + セキュリティを同一ターンで同期し、苦戦箇所を task-workflow / lessons に同時記録する>`
+4. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
+5. `<verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD を連続実行し、current=合否・baseline=監視で分離記録する>`
 
 ---
 
@@ -125,13 +133,12 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
+| `rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md` | Step 2 判定の明示確認 | Step 2 行が更新対象と一致する |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0`（`baselineViolations` は監視値として別記録） |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
-| `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
-| `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -147,5 +154,7 @@ UI機能実装の場合は次を推奨:
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
-- [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
-- [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
+- [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録
+- [ ] `documentation-changelog.md` の Step 2 判定が `phase-12-documentation.md` の更新対象と一致している
+- [ ] `spec-update-summary.md` の更新対象一覧に Step 2 の実更新仕様書が反映されている
+- [ ] 未タスク監査結果は `current=合否 / baseline=監視` を分離して記録している

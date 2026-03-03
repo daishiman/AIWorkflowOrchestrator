@@ -592,43 +592,69 @@ TASK-UI-05B は SkillCenterView（TASK-UI-05）の拡張として、4つの高�
 
 ---
 
-## SkillAnalysisView アーキテクチャパターン（TASK-10A-B / completed）
+## SkillManagementPanel アーキテクチャパターン（TASK-10A-A / completed）
 
-> ステータス: **completed**（実装・テスト・画面検証完了）
+> ステータス: **completed**（実装・テスト・画面証跡・仕様同期完了）
 
-TASK-10A-B は、分析結果表示と改善実行を 1 画面で完結する UI を実装した。`SkillAnalysisView` をコンテナとし、表示責務を 3 つの下位コンポーネントへ分離、非同期制御は `useSkillAnalysis` に集約する。
+TASK-10A-A は、スキル運用に必要な 4ビュー（一覧/編集/分析/新規作成）を単一パネルで切り替える UI コンポーネントである。  
+`SkillCenterView` とは責務を分離し、検証用のスタンドアロン経路（`/advanced/skill-management-panel`）で動作させる。
 
 ### レイヤー構成
 
 | レイヤー | 主要要素 | 役割 |
 | --- | --- | --- |
-| Container | `SkillAnalysisView.tsx` | 画面状態の切替（loading/error/success）とアクション導線 |
-| Molecules | `ScoreDisplay.tsx`, `SuggestionList.tsx`, `RiskPanel.tsx` | スコア表示 / 提案選択 / リスク表示 |
-| Hook | `hooks/useSkillAnalysis.ts` | 分析実行、提案選択状態、改善適用、再分析 |
-| API Bridge | `window.electronAPI.skill.*` | `analyze` / `applyImprovements` / `autoImprove` の呼び出し |
+| Panel Root | `SkillManagementPanel` | 画面全体、状態遷移、イベント配線 |
+| List Item | `SkillCard` | スキル1件の表示と操作ボタン（編集/分析/削除） |
+| View Bridge | `SkillEditor` / 分析・作成プレースホルダー | `currentView` に応じた表示切替 |
+| Store Bridge | `useImportedSkills`, `useIsLoadingSkills`, `useFetchSkills`, `useRemoveSkill` | Zustand 個別セレクタ経由で IPC 呼び出しを抽象化 |
+
+### 状態遷移モデル
+
+| 状態 | トリガー | 遷移先 |
+| --- | --- | --- |
+| `list` | 編集ボタン | `editor` |
+| `list` | 分析ボタン | `analysis` |
+| `list` | 新規作成ボタン | `create` |
+| `editor` / `analysis` / `create` | 戻る/閉じる | `list` |
+| `list` + 削除要求 | 削除確認ダイアログ表示 | `list`（成功/失敗でメッセージ更新） |
 
 ### データフロー
 
 | 操作 | 経路 | 説明 |
 | --- | --- | --- |
-| 初期分析 | mount → `handleAnalyze()` | 画面表示時に分析APIを実行して結果を取得 |
-| 提案選択 | checkbox → `handleToggleSuggestion()` | 選択インデックス集合を更新 |
-| 選択適用 | button → `handleApplySelected()` | 選択提案のみ適用後に再分析 |
-| 全自動改善 | button → `handleAutoImprove()` | 確認ダイアログ後に全適用し再分析 |
-| エラー復帰 | retry button → `handleAnalyze()` | エラー状態をクリアして再試行 |
+| 初期ロード | mount → `fetchSkills()` | Store 経由でスキル一覧を同期 |
+| 検索 | `searchQuery` 更新 → `useMemo(filteredSkills)` | 名前/説明文の大小文字非依存フィルタ |
+| 編集/分析/作成 | ボタン押下 → `setCurrentView(...)` | ビュー状態を明示的に切替 |
+| 削除 | `handleRequestDelete` → `handleConfirmDelete` → `removeSkill(name)` | 成功時はダイアログ閉鎖、失敗時はエラーバナー表示 |
 
-### UI品質補正（Phase 11 再監査）
+### IPC境界
 
-| 観点 | 反映内容 |
+| チャネル | 利用経路 | 変更有無 |
+| --- | --- | --- |
+| `skill:list` | `useFetchSkills` | 既存再利用 |
+| `skill:remove` | `useRemoveSkill` | 既存再利用 |
+
+### 品質指標（TASK-10A-A）
+
+| 指標 | 値 |
 | --- | --- |
-| a11y | `SuggestionList` / `RiskPanel` の `ul[role=\"list\"]` に `aria-label` を追加 |
-| トークン統一 | `SkillAnalysisView` の `text-white` を `text-[var(--text-inverse)]` へ統一 |
-| 画面証跡 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/` に4ケース保存 |
+| テストファイル | 1（`SkillManagementPanel.test.tsx`） |
+| テストケース数 | 38（PASS） |
+| 画面証跡 | TC-01〜TC-10（スクリーンショット再取得済み） |
+| 検証コマンド | `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` PASS |
+
+### 仕様同期時の苦戦箇所（SubAgent-B）
+
+| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| Step 2 を `該当なし` と誤判定しやすい | UI新規コンポーネント追加時に `arch-ui-components.md` 更新判定を見落とした | `phase-12-documentation.md` の更新対象表を正として、`documentation-changelog.md` の Step 判定と突合して是正 | 新規 UI コンポーネント追加時は `arch-ui-components.md` を Step 2 必須更新に固定する |
+| `task-workflow` のみ先行更新して教訓同期が遅れる | 台帳更新と教訓更新を別ターンで進めた | `task-workflow.md` と `lessons-learned.md` を同ターン更新し、検証値を共通化した | UI機能の Phase 12 は「arch + task + lessons」を同一ターンで同期する |
 
 ### 参照
 
-- [TASK-10A-B ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
-- [TASK-10A-B Phase 11 手動テスト結果](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-A ワークフロー仕様](../../../../docs/30-workflows/skill-management-panel/index.md)
+- [TASK-10A-A 実装ガイド](../../../../docs/30-workflows/skill-management-panel/outputs/phase-12/implementation-guide.md)
+- [TASK-10A-A 手動検証結果](../../../../docs/30-workflows/skill-management-panel/outputs/phase-11/manual-test-result.md)
 
 ---
 
@@ -636,7 +662,7 @@ TASK-10A-B は、分析結果表示と改善実行を 1 画面で完結する UI
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
-| 2.8.3   | 2026-03-02 | TASK-10A-B 完了反映: SkillAnalysisView アーキテクチャパターン（レイヤー構成/データフロー/UI品質補正）を追加 |
+| 2.8.3   | 2026-03-02 | TASK-10A-A 反映: SkillManagementPanel のアーキテクチャ節（レイヤー構成、状態遷移、IPC境界、品質指標、苦戦箇所）を追加し、Step 2 判定漏れの再発防止ルールを追記 |
 | 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
 | 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` へ更新し、UI導線追加に合わせてアーキテクチャ節を実装実体へ一致化 |
 | 2.8.0   | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views（4ビュー/33コンポーネント）のアーキテクチャパターン、状態管理方針、ファイル配置を追加 |
@@ -657,4 +683,3 @@ TASK-10A-B は、分析結果表示と改善実行を 1 画面で完結する UI
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
 - [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 SkillCenterView 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
-- [TASK-10A-B SkillAnalysisView 実装ガイド](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/implementation-guide.md)

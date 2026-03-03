@@ -11,7 +11,9 @@ export type ViewType =
   | "chainBuilder"
   | "scheduleManager"
   | "debugPanel"
-  | "analyticsDashboard";
+  | "analyticsDashboard"
+  | "skill-editor"
+  | "skill-center";
 
 // ファイルノード型
 export interface FileNode {

@@ -132,6 +132,105 @@
 
 ## 完了タスク
 
+### タスク: TASK-10A-A-SKILL-MANAGEMENT-PANEL SkillManagementPanel 実装（2026-03-02）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-10A-A-SKILL-MANAGEMENT-PANEL |
+| 完了日 | 2026-03-02 |
+| ステータス | **完了（Phase 1-12）** |
+| タスク種別 | UI機能実装 + テスト + 画面検証 + 仕様同期 |
+| Phase | Phase 1-12 完了（Phase 13: PR作成は未実施） |
+
+#### 反映内容（要点）
+
+- `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を実装（一覧/検索/編集/分析/削除/新規作成導線）。
+- `SkillManagementPanel.test.tsx` は 38 テストケース全PASS。
+- Phase 11 画面検証で `tc-01`〜`tc-10` のスクリーンショットを再取得（Playwright）。
+- 再監査で検出されていた MINOR 4件（削除失敗未捕捉、focus-visible不足、空状態導線不足、hover不足）を実装修正で解消。
+- `ui-ux-components.md` / `ui-ux-feature-components.md` / `task-workflow.md` を同一ターンで同期。
+
+#### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク反映 | TASK-10A-A が UI正本へ登録済み |
+| SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様セクション反映 | コンポーネント責務と証跡導線が一致 |
+| SubAgent-C | `references/task-workflow.md` | 完了台帳・残課題リンク整合 | 完了記録と残課題リンク切れ0件 |
+| SubAgent-D | `docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL/outputs/phase-11/screenshots/` | 画面証跡再取得 | TC-01〜TC-10 の画像が実在 |
+
+#### 検証証跡（2026-03-02）
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx` | PASS（38/38） |
+| `node apps/desktop/scripts/capture-skill-management-panel-screenshots.mjs` | PASS（tc-01〜tc-10 取得） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL` | PASS（13/13） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL` | PASS（28項目） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（missing=0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=78） |
+
+#### 苦戦箇所と解決策（再利用用）
+
+| 苦戦箇所 | 再発条件 | 原因 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| `documentation-changelog.md` の Step 2 を `該当なし` と誤判定しやすい | UI新規コンポーネント追加時に Step 2 判定を口頭判断した場合 | `phase-12-documentation.md` の更新対象（`arch-ui-components.md`）と changelog の判定を突合していなかった | Step 2 を「完了」に修正し、`arch-ui-components.md` へ SkillManagementPanel アーキテクチャ節を追加した | Phase 12 は「Task仕様書の更新対象表」を正本にして Step 判定する |
+| 実装内容は同期済みでも苦戦箇所が system spec に残らない | `task-workflow.md` 更新後に `lessons-learned.md` 反映を別ターンへ分離した場合 | 台帳更新と教訓更新の完了条件が分かれていた | 同一ターンで `task-workflow.md` と `lessons-learned.md` に同内容を転記し、検証値を共通化した | UI機能の Phase 12 は「arch + task + lessons 同時更新」を完了条件に固定する |
+| 未タスク監査の baseline を今回差分と誤読しやすい | `audit --json` と `audit --diff-from HEAD` の結果を混在させた場合 | current/baseline の判定軸が文書化されていなかった | 合否は `currentViolations=0` 固定、baseline は既存負債として分離記録した | 未タスク監査は `current=合否 / baseline=監視` を常に併記する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `phase-12-documentation.md` の Task 2 更新対象を確認し、Step 2 要否を先に固定する。  
+2. `verify-all-specs` と `validate-phase-output` を実行して、成果物整合を先に確定する。  
+3. 画面関連はスクリーンショットを再取得し、`outputs/phase-11/screenshots/` の更新時刻で証跡を固定する。  
+4. `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合格基準にする。  
+5. `arch-ui-components.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで同期して完了判定する。  
+
+---
+
+### タスク: UT-UI-05A-IMPLEMENTATION-CLOSURE-001 SkillEditorView 実装残課題収束（2026-03-03）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 |
+| 完了日 | 2026-03-03 |
+| ステータス | **完了** |
+| タスク種別 | UI実装収束（7課題）+ Phase 11/12 証跡補完 |
+| Phase | Phase 1-12 完了（Phase 13 は PR未作成のまま記録） |
+
+#### 反映内容（要点）
+
+- SkillEditorView の 7課題（UT-UI-05A-001〜007）を実装収束。
+- `App.tsx` に `skill-center` / `skill-editor` 導線を追加し、直接検証ルートも整備。
+- Phase 11 の画面証跡 8 枚を `outputs/phase-11/screenshots/` に追加。
+- Phase 12 の必須成果物（`manual-test-result` / `discovered-issues` / `unassigned-task-detection` / `skill-feedback-report` / `spec-update-summary`）を作成。
+
+#### 検証証跡
+
+| 観点 | 実行内容 | 結果 |
+| --- | --- | --- |
+| ワークフロー構造 | `verify-all-specs --workflow docs/30-workflows/completed-tasks/skill-editor-view-closure --json` | PASS（13/13） |
+| Phase 出力整合 | `validate-phase-output docs/30-workflows/completed-tasks/skill-editor-view-closure` | PASS（28項目） |
+| 画面証跡再取得 | `node apps/desktop/scripts/capture-skill-editor-view-screenshots.mjs` | PASS（8枚再取得, 2026-03-03 08:30） |
+| 画面証跡整合 | `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/skill-editor-view-closure` | PASS |
+| 未タスク監査 | `verify-unassigned-links` / `audit --diff-from HEAD` | PASS（currentViolations=0） |
+
+#### 苦戦箇所と解決策（2026-03-03 再確認追補）
+
+| 苦戦箇所 | 再発条件 | 原因 | 解決策 | 今後の標準ルール |
+| --- | --- | --- | --- | --- |
+| `manual-test-result.md` の先頭列ヘッダ運用が揺れ、画面証跡監査の前提が曖昧になる | テンプレート例と実ファイルで `TC-ID` / `テストケース` が混在する場合 | `validate-phase11-screenshot-coverage` の入力契約（許容ヘッダ）の明文化が不足していた | `phase-11-12-guide.md` / `phase-templates.md` に許容ヘッダ（`テストケース` / `TC-ID` / `TC`）を追記し、推奨値を `テストケース` に統一した | Phase 11/12 テンプレート更新時は「スクリプト契約 + サンプル列名」を同時更新する |
+| TC-06 証跡のファイル名が実画面状態と意味不一致（`navigation-breadcrumb` だが実体は未保存離脱ダイアログ） | 撮影時の暫定命名をそのまま残した場合 | 命名規則が「一意性」中心で「意味一致」を必須化していなかった | 未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を継続管理し、テンプレートへ意味一致ルールを追記した | 画面証跡は「TC-ID + 状態名」の命名に固定し、状態語を省略しない |
+| Phase 12 の成果物実体・台帳・教訓が別ターン更新になりやすい | 画面再取得後に仕様書更新を後回しにする場合 | Step 2（苦戦箇所記録）を完了条件として先に固定していなかった | スクリーンショット再取得直後に `task-workflow.md` / `lessons-learned.md` / SKILL/LOGS を同ターン更新した | UIタスク再確認は「再撮影 → 検証4点 → 仕様同期（台帳+教訓+履歴）」を1セットで完了扱いにする |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `node apps/desktop/scripts/capture-*.mjs` で証跡を再取得し、更新時刻を固定する。  
+2. `validate-phase11-screenshot-coverage` を実行し、`expected TC` と `covered TC` が一致することを確認する。  
+3. `manual-test-result.md` の先頭列と証跡列のヘッダをテンプレート契約（`テストケース` / `証跡`）へ合わせる。  
+4. 証跡ファイル名が画面状態と一致しているかを点検し、不一致は未タスク化して即時台帳へ登録する。  
+5. `task-workflow.md` と `lessons-learned.md` に苦戦箇所と解決策を同一ターンで転記し、変更履歴を更新する。  
+
 ### タスク: TASK-UI-05A-SKILL-EDITOR-VIEW SkillEditorView（ツールエディター）仕様書作成（2026-03-01）
 
 | 項目 | 内容 |
@@ -2060,64 +2159,18 @@
 
 ---
 
-## TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02）
-
-### タスク概要
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-10A-B |
-| 機能 | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel） |
-| 実施日 | 2026-03-02 |
-| ステータス | completed（Phase 1-12） |
-| ワークフロー | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
-
-### 反映内容（Phase 12 再確認）
-
-| 観点 | 内容 |
-| --- | --- |
-| UI実装 | `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx` ほか4ファイルで分析表示・改善操作を実装 |
-| a11y改善 | `SuggestionList` / `RiskPanel` の `role="list"` に `aria-label` を追加 |
-| デザイントークン統一 | `text-white` を `text-[var(--text-inverse)]` へ置換 |
-| 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得 |
-| 未タスク管理 | Phase 10 MINOR 起点 5 件 + 再監査運用ガード 3 件（UT-TASK-10A-B-006〜008）を `docs/30-workflows/unassigned-task/` へ登録 |
-
-### 検証証跡
-
-| 検証項目 | コマンド / 証跡 | 結果 |
-| --- | --- | --- |
-| 単体テスト | `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx src/renderer/components/skill/__tests__/SuggestionList.test.tsx src/renderer/components/skill/__tests__/RiskPanel.test.tsx src/renderer/components/skill/__tests__/ScoreDisplay.test.tsx` | PASS（74 tests） |
-| 型検証 | `pnpm typecheck`（apps/desktop） | PASS |
-| 画面証跡 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/` | 4ファイル取得 |
-
-### 実装時の苦戦箇所と解決策
-
-| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
-| --- | --- | --- | --- |
-| Phase 11 がコード分析ベースのまま残る | 画面検証を手作業メモのみで完了扱いにする場合 | スクリーンショット取得スクリプトで4状態を再撮影し、Phase 11成果物を再作成 | UIタスクのPhase 11は「実画面証跡 + 結果文書」のセットを必須化 |
-| `phase-11-manual-test.md` の必須節不足 | テンプレート章立てを簡略化した場合 | 「統合テスト連携」節を追加し、`validate-phase-output` を再実行 | Phase 11更新後は `validate-phase-output` を必須実行する |
-| 未タスク件数ドリフト（7件→5件） | 修正済み課題を未タスク台帳に残し続ける場合 | D1/D2 を修正済み化し、UT-TASK-10A-B-001〜005 のみ継続管理へ再同期 | 未タスク台帳は毎回「有効件数」を再計算して更新する |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. 画面証跡を再取得し、`outputs/phase-11/screenshots` の鮮度を確定する。  
-2. `manual-test-result` / `discovered-issues` を実証跡ベースへ更新する。  
-3. `verify-all-specs` と `validate-phase-output` を連続実行し、章立て不備を解消する。  
-4. 未タスク件数を再計算して `unassigned-task-detection` と `task-workflow` を同時同期する。  
-5. 苦戦箇所を `lessons-learned.md` へ転記し、再発条件と標準ルールを固定する。  
-
----
-
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
-| UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
-| UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
-| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | SkillEditorView 実装残課題収束（導線/UX7件） | 高 | TASK-UI-05A Phase 11 discovered-issues + 再監査（2026-03-02） | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
+| ~~TASK-UI-05A-SKILL-EDITOR-VIEW~~ | ~~SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了）~~ **完了: 2026-03-03（UT-UI-05A-IMPLEMENTATION-CLOSURE-001）** | ~~高~~ | ~~TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02）~~ | `docs/30-workflows/completed-tasks/skill-editor-view-closure/` |
+| UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
+| UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+| ~~UT-UI-05A-IMPLEMENTATION-CLOSURE-001~~ | ~~SkillEditorView 実装残課題収束（導線/UX7件）~~ **完了: 2026-03-03** | ~~高~~ | ~~TASK-UI-05A Phase 11 discovered-issues + 再監査（2026-03-02）~~ | `docs/30-workflows/completed-tasks/skill-editor-view-closure/` |
+| UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001 | Phase 11 証跡ファイル名の意味一致化（breadcrumb→unsaved-dialog） | 低 | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 Phase 12（2026-03-03） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-phase11-screenshot-name-consistency.md` |
+| UT-UI-05A-PHASE12-SYNC-BUNDLE-GUARD-001 | Phase 12 同一ターン同期ガード（台帳/教訓/検証証跡） | 中 | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 Phase 12 再確認（2026-03-03） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-phase12-sync-bundle-guard.md` |
 | UT-TASK-10A-B-001 | SkillAnalysisView 自動修正可能フィルタボタン実装 | 中 | TASK-10A-B Phase 10 MINOR M1（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
 | UT-TASK-10A-B-002 | SkillAnalysisView 改善結果トースト通知実装 | 中 | TASK-10A-B Phase 10 MINOR M2（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
 | UT-TASK-10A-B-003 | SkillAnalysisView 改善結果内訳表示実装 | 中 | TASK-10A-B Phase 10 MINOR M3（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
@@ -2134,6 +2187,7 @@
 | UT-UI-05-006 | useFeaturedSkills 選定アルゴリズム改善 | 低 | TASK-UI-05 コードコメント TODO | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-featured-skills-algorithm-improvement.md` |
 | UT-UI-05-007 | Phase 12 UI仕様同期プロファイル適用ガード | 中 | TASK-UI-05 Phase 12 再確認（苦戦箇所） | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-phase12-ui-spec-sync-guard.md` |
 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | Phase 12 2workflow同時監査の証跡集約ガード（spec_created/completed + 画面証跡 + current/baseline 分離） | 中 | TASK-UI-05A / TASK-UI-05 Phase 12再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
+| UT-IMP-PHASE12-STEP2-TARGET-TRACE-GUARD-001 | Phase 12 Step 2 判定と更新対象突合ガード（phase-12-documentation ↔ changelog ↔ system spec） | 中 | TASK-10A-A Phase 12 再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL/unassigned-task/task-imp-phase12-step2-target-trace-guard-001.md` |
 | UT-UI-05B-001 | Phase 12 画面証跡再取得ガード（再撮影 + 更新時刻確認の標準化） | 中 | TASK-UI-05B Phase 12 再確認（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/unassigned-task/task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` |
 | UT-9G-001 | SkillScheduler cron 次回実行時刻の精度改善 | 中 | TASK-9G Phase 12 未タスク検出（簡易実装コメント） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-cron-next-run-accuracy.md` |
 | UT-9G-002 | event スケジュール（file_change / git_commit）実行対応 | 低 | TASK-9G Phase 12 未タスク検出（プレースホルダー実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-event-trigger-completion.md` |
@@ -2249,7 +2303,7 @@
 | ~~TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001~~       | ~~@repo/shared モジュール解決3層整合CIガード~~                                                                   | ~~高~~ | ~~TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 10 MINOR~~ **完了: 2026-02-22** | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/`                                                                                       |
 | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001~~            | ~~skill:import IPCハンドラ戻り値型不整合修正（ImportResult→ImportedSkill変換）~~                                 | ~~高~~ | ~~20フレームワーク多角的分析（2026-02-21）~~ **完了: 2026-02-21**           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md`                                   |
 | UT-FIX-SKILL-IPC-NAMING-P45-001                   | skillHandlers IPC引数命名統一（skillId → skillName横展開）                                                        | 中     | UT-FIX-SKILL-IMPORT-INTERFACE-001 / UT-FIX-SKILL-REMOVE-INTERFACE-001 実装時検出（2026-02-20） | `docs/30-workflows/unassigned-task/task-ut-fix-skill-ipc-naming-p45-001.md`                                                                        |
-| ~~UT-IMP-PHASE11-WORKTREE-PROTOCOL-001~~              | ~~Phase 11 Worktree環境手動テスト実行プロトコル策定~~ **完了: 2026-02-25**                                                                | ~~中~~     | ~~UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）~~               | `docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
+| ~~UT-IMP-PHASE11-WORKTREE-PROTOCOL-001~~              | ~~Phase 11 Worktree環境手動テスト実行プロトコル策定~~ **完了: 2026-03-01（Phase 1-12）**                                                                | ~~中~~     | ~~UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）~~               | `docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md`                                                              |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001          | IPCハンドラ粒度カバレッジ計測インフラ構築                                                                        | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md`                                                                  |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001        | マルチエージェントPhase依存順序ガード                                                                            | 中     | UT-FIX-SKILL-REMOVE-INTERFACE-001 実装苦戦箇所（2026-02-21）               | `docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`                                                                |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~      | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~                           | ~~中~~ | ~~UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 Phase 12（コード調査・2026-02-21）~~ **完了: 2026-02-25** | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md`                                                                            |
@@ -2304,6 +2358,12 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.64.8** | **2026-03-02** | **UT-IMP-PHASE12-STEP2-TARGET-TRACE-GUARD-001 登録**: TASK-10A-A 再確認で顕在化した「Step 2 判定の手動依存」「`phase-12-documentation.md` Task 2 と `documentation-changelog.md` の突合漏れ」「`current/baseline` 判定軸の誤読」を未タスク化し、`docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL/unassigned-task/task-imp-phase12-step2-target-trace-guard-001.md` を追加。残課題テーブルへ同期して追跡対象化 |
+| **1.64.7** | **2026-03-02** | **TASK-10A-A 再監査反映 + 残課題リンク是正**: `TASK-10A-A-SKILL-MANAGEMENT-PANEL` を完了タスクへ追加し、Playwright 画面証跡（TC-01〜TC-10）とテスト38件PASSを記録。残課題テーブルの参照切れ4件（UT-UI-05A系3件 + UT-IMP-PHASE11-WORKTREE-PROTOCOL-001）を実在パスへ更新し、`verify-unassigned-links` を PASS 化 |
+| **1.65.1** | **2026-03-03** | **TASK-UI-05A completed-tasks 移管反映**: `docs/30-workflows/skill-editor-view-closure/` を `docs/30-workflows/completed-tasks/skill-editor-view-closure/` へ移動し、関連未タスク5件（GETFILETREE/SPEC-CONSISTENCY/IMPLEMENTATION-CLOSURE/PHASE11-NAME/PHASE12-SYNC）を同ディレクトリ配下 `unassigned-task/` へ移管。残課題テーブル・検証コマンド・証跡参照パスを新パスへ同期 |
+| **1.65.0** | **2026-03-03** | **UT-UI-05A-PHASE12-SYNC-BUNDLE-GUARD-001 登録**: 画面再取得後に `task-workflow.md` / `lessons-learned.md` / Phase 12成果物台帳の更新が分散しやすい課題を未タスク化。`docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-phase12-sync-bundle-guard.md` を追加し、同一ターン同期（再撮影→検証4点→仕様同期）を標準運用として残課題テーブルへ反映 |
+| **1.64.9** | **2026-03-03** | **UT-UI-05A-IMPLEMENTATION-CLOSURE-001 再確認追補（画面証跡 + 苦戦箇所）**: `capture-skill-editor-view-screenshots.mjs` で 8 枚を再取得（2026-03-03 08:30）し、`validate-phase11-screenshot-coverage` PASS を再確認。完了タスク節へ苦戦箇所3件（ヘッダ契約、証跡ファイル名の意味不一致、Phase 12三点同期）と5ステップ簡潔解決手順を追加 |
+| **1.64.8** | **2026-03-03** | **UT-UI-05A-IMPLEMENTATION-CLOSURE-001 収束完了を再同期**: `TASK-UI-05A-SKILL-EDITOR-VIEW` / `UT-UI-05A-IMPLEMENTATION-CLOSURE-001` を完了表記へ固定し、Phase 11 証跡（8枚 + manual-test-result/discovered-issues）と Phase 12 成果物（spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback）を `skill-editor-view-closure` 正本へ同期。派生未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を残課題へ追加 |
 | **1.64.7** | **2026-03-02** | **UT-TASK-10A-B-006〜008 登録**: TASK-10A-B 再監査の苦戦箇所3件（Phase 11必須節不足、画面証跡鮮度不明、未タスク件数ドリフト）を未タスク化。`docs/30-workflows/unassigned-task/` に3指示書を追加し、残課題テーブルと TASK-10A-B セクションの未タスク管理行を「5件+3件」へ同期 |
 | **1.64.6** | **2026-03-02** | **UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 登録**: TASK-UI-05A/TASK-UI-05 の再確認で顕在化した「2workflow同時監査時の証跡分散」「Task 1/3/4/5 実体突合漏れ」「UI画面証跡鮮度管理」「current/baseline 誤判定」を未タスク化し、正本 `docs/30-workflows/unassigned-task/` へ登録。残課題テーブルへ同期し、再利用可能な監査ガードとして追跡対象化 |
 | **1.64.5** | **2026-03-02** | **Phase 12準拠再確認（TASK-UI-05A / TASK-UI-05）**: 2workflowに対して `verify-all-specs` + `validate-phase-output` を再実行し、Task 1/3/4/5 成果物実体と実装ガイド2パート要件を再確認。あわせて未タスク監査の合否基準を `currentViolations=0` 固定で明文化し、苦戦箇所と4ステップ再利用手順を追加 |
