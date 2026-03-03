@@ -392,6 +392,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.0** | **2026-03-03** | **Phase 12 implementation-guide 全文反映を強制**: `/ai:diff-to-pr` 連携ルールに「`implementation-guide.md` 全文をPRコメント投稿 + 投稿後API検証（見出し/Part 1/Part 2）」を必須化。スクリーンショットコメント更新時に実装ガイド全文コメントを上書きしないチェックを追加 |
 | **v10.08.0** | **2026-03-03** | **Phase 13 スクリーンショット埋め込み不具合を是正**: PR本文/PRコメントの画像リンクを相対パスから `raw.githubusercontent.com/<repo>/<commit>/<path>` 絶対URLへ統一する運用を追加。`phase-templates.md` / `phase-11-12-guide.md` のチェック項目を更新し、GitHub PR画面で画像が表示されない再発を防止 |
 | **v10.06.0** | **2026-03-02** | **TASK-10A-A Phase 12 最終整合ガードを追補**: Step 2 判定は `phase-12-documentation.md` の更新対象表を正本にする運用を追加。`documentation-changelog.md` と `spec-update-summary.md` の Step判定/更新ファイル一覧を同一ターンで突合し、`unassigned-task-detection.md` へ `audit --diff-from HEAD` の `current/baseline` 分離記録を必須化 |
 | **v10.05.0** | **2026-03-02** | **TASK-10A-A Phase 12 再監査運用を追補**: `aiworkflow-requirements/references/ui-ux-feature-components.md` で発生した「機能別仕様の反映漏れ + spec_created見出し矛盾」を是正する再監査手順を反映。UI系タスクでは `ui-ux-components` と `ui-ux-feature-components` の両方に同日証跡（スクリーンショット）を同期し、重複見出し矛盾を禁止するチェック観点を追加 |

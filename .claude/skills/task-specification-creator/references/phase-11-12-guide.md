@@ -346,7 +346,9 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
+- [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
+- [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
 - [ ] Phase 13（`/ai:diff-to-pr`）で参照する `TARGET_WORKFLOW_DIR` が今回差分のworkflowを指すことを確認した
 - [ ] PR本文（`.github/pull_request_template.md` 準拠）の `## その他` に Phase 12 実装ガイド反映元パスと要点を記載する準備ができている
 - [ ] **本Phase内の全タスクを100%実行完了**

@@ -26,6 +26,19 @@
 
 ---
 
+## 2026-03-03 - Phase 12 implementation-guide 全文PR反映ガード追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 13（PR作成運用改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-templates.md` に「implementation-guide全文コメント投稿 + API検証（見出し/Part 1/Part 2）」を必須ルールとして追記
+  - `phase-11-12-guide.md` 完了チェックに「全文コメント存在確認」「スクリーンショット更新時に全文コメントを上書きしない」項目を追加
+  - `/ai:diff-to-pr` 仕様と同期し、Phase 12成果物のPRメッセージ未反映を機械的に検出できるようにした
+
+---
+
 ## 2026-03-03 - Phase 13 PRスクリーンショット表示不具合の再発防止
 
 - **Agent**: task-specification-creator

@@ -450,6 +450,8 @@ rm -f "$PR_BODY_FILE"
 **PR本文セクション連携ルール（必須）**:
 - `.github/pull_request_template.md` の見出し順を維持する
 - `## その他` に Phase 12 実装ガイドの反映元パスと要点を必ず記載する
+- `implementation-guide.md` の**全文**をPRコメントへ投稿する（Part 1/Part 2 両方を含む）
+- 投稿後に `gh api .../issues/<PR_NUMBER>/comments` で全文コメントの存在を検証し、見つからない場合は失敗扱いにする
 - UI/UX変更時は `outputs/phase-11/screenshots/*.png` からPR本文へ画像リンクを自動挿入する
 - PR本文/コメントの画像リンクは `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLで出力する（相対パス直貼りを禁止）
 - UI/UX変更がない場合は `## スクリーンショット` セクション自体を出力しない
@@ -508,53 +510,65 @@ if [ -z "$IMPL_GUIDE" ]; then
   IMPL_GUIDE=$(git diff --name-only --cached | grep "/outputs/phase-12/implementation-guide.md$" | head -n 1)
 fi
 
-if [ -n "$IMPL_GUIDE" ]; then
-  TMPFILE=$(mktemp)
-  {
-    printf '## 📖 実装ガイド（全文）\n\n'
-    printf '> Phase 12で作成された実装ガイドです。\n'
-    printf '> Part 1: 中学生レベルの概念説明 / Part 2: 開発者向け技術的詳細\n\n'
-    cat "$IMPL_GUIDE"
-    printf '\n\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n'
-  } > "$TMPFILE"
+if [ -z "$IMPL_GUIDE" ] || [ ! -f "$IMPL_GUIDE" ]; then
+  echo "ERROR: Phase 12 implementation-guide.md が見つかりません。PR作成を中断します。"
+  exit 1
+fi
 
-  # GitHub API制限: コメント本文は65536文字以下
-  # 超過時は分割投稿（切り詰めず全文を投稿する）
-  FILESIZE=$(wc -c < "$TMPFILE")
-  if [ "$FILESIZE" -gt 65000 ]; then
-    PART=1
-    TOTAL_PARTS=$(( (FILESIZE / 60000) + 1 ))
-    while [ -s "$TMPFILE" ]; do
-      PARTFILE=$(mktemp)
-      head -c 60000 "$TMPFILE" > "$PARTFILE"
-      # 行の途中で切れないよう、最後の改行位置で調整
-      LAST_NL=$(grep -b -n '' "$PARTFILE" | tail -1 | cut -d: -f1)
-      if [ "$LAST_NL" -lt "$(wc -c < "$PARTFILE")" ]; then
-        head -c "$LAST_NL" "$PARTFILE" > "${PARTFILE}.adj"
-        mv "${PARTFILE}.adj" "$PARTFILE"
-      fi
-      CUT_BYTES=$(wc -c < "$PARTFILE")
+TMPFILE=$(mktemp)
+{
+  printf '## 📖 実装ガイド（全文）\n\n'
+  printf '> Phase 12で作成された実装ガイドです。\n'
+  printf '> Part 1: 中学生レベルの概念説明 / Part 2: 開発者向け技術的詳細\n\n'
+  cat "$IMPL_GUIDE"
+  printf '\n\n---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n'
+} > "$TMPFILE"
 
-      # パートヘッダーを付与（2パート目以降）
-      if [ "$PART" -gt 1 ]; then
-        HEADERFILE=$(mktemp)
-        printf '## 📖 実装ガイド（続き %d/%d）\n\n' "$PART" "$TOTAL_PARTS" > "$HEADERFILE"
-        cat "$PARTFILE" >> "$HEADERFILE"
-        mv "$HEADERFILE" "$PARTFILE"
-      fi
+# GitHub API制限: コメント本文は65536文字以下
+# 超過時は分割投稿（切り詰めず全文を投稿する）
+FILESIZE=$(wc -c < "$TMPFILE")
+if [ "$FILESIZE" -gt 65000 ]; then
+  PART=1
+  TOTAL_PARTS=$(( (FILESIZE / 60000) + 1 ))
+  while [ -s "$TMPFILE" ]; do
+    PARTFILE=$(mktemp)
+    head -c 60000 "$TMPFILE" > "$PARTFILE"
+    # 行の途中で切れないよう、最後の改行位置で調整
+    LAST_NL=$(grep -b -n '' "$PARTFILE" | tail -1 | cut -d: -f1)
+    if [ "$LAST_NL" -lt "$(wc -c < "$PARTFILE")" ]; then
+      head -c "$LAST_NL" "$PARTFILE" > "${PARTFILE}.adj"
+      mv "${PARTFILE}.adj" "$PARTFILE"
+    fi
+    CUT_BYTES=$(wc -c < "$PARTFILE")
 
-      gh pr comment "${PR_NUMBER}" --body-file "$PARTFILE"
-      rm -f "$PARTFILE"
+    # パートヘッダーを付与（2パート目以降）
+    if [ "$PART" -gt 1 ]; then
+      HEADERFILE=$(mktemp)
+      printf '## 📖 実装ガイド（続き %d/%d）\n\n' "$PART" "$TOTAL_PARTS" > "$HEADERFILE"
+      cat "$PARTFILE" >> "$HEADERFILE"
+      mv "$HEADERFILE" "$PARTFILE"
+    fi
 
-      # 残りを取得
-      tail -c +"$((CUT_BYTES + 1))" "$TMPFILE" > "${TMPFILE}.rest"
-      mv "${TMPFILE}.rest" "$TMPFILE"
-      PART=$((PART + 1))
-    done
-  else
-    gh pr comment "${PR_NUMBER}" --body-file "$TMPFILE"
-  fi
-  rm -f "$TMPFILE"
+    gh pr comment "${PR_NUMBER}" --body-file "$PARTFILE"
+    rm -f "$PARTFILE"
+
+    # 残りを取得
+    tail -c +"$((CUT_BYTES + 1))" "$TMPFILE" > "${TMPFILE}.rest"
+    mv "${TMPFILE}.rest" "$TMPFILE"
+    PART=$((PART + 1))
+  done
+else
+  gh pr comment "${PR_NUMBER}" --body-file "$TMPFILE"
+fi
+rm -f "$TMPFILE"
+
+# 投稿検証: 実装ガイド全文コメントがPR上に存在することを必須化
+REPO_SLUG=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+IMPL_COMMENT_COUNT=$(gh api "repos/${REPO_SLUG}/issues/${PR_NUMBER}/comments" --paginate \
+  --jq '[.[] | select((.body | startswith("## 📖 実装ガイド（全文）")) and (.body | contains("Part 1")) and (.body | contains("Part 2"))) ] | length')
+if [ "${IMPL_COMMENT_COUNT:-0}" -eq 0 ]; then
+  echo "ERROR: implementation-guide.md 全文コメントの投稿確認に失敗しました。PR作成を中断します。"
+  exit 1
 fi
 ```
 
@@ -563,6 +577,7 @@ fi
 ### Phase 5.6: スクリーンショットコメント投稿（Phase 11スクリーンショットがある場合）
 
 Phase 11でスクリーンショットが撮影されている場合、PRコメントとしてスクリーンショットギャラリーを投稿する。
+既存の「実装ガイド（全文）」コメントを編集・上書きしないこと（別コメントとして投稿する）。
 
 **前提**: スクリーンショットはPhase 3のコミット時にリポジトリに含まれていること。
 
@@ -756,6 +771,7 @@ git stash pop
 
 | 日付 | 変更内容 |
 |------|----------|
+| 2026-03-03 | Phase 5.5 を強化し、`implementation-guide.md` 全文コメント投稿を必須化。投稿後に `gh api .../issues/<PR_NUMBER>/comments` で見出し（`## 📖 実装ガイド（全文）`）と Part 1/Part 2 を検証し、未投稿時はPR作成を失敗扱いに変更 |
 | 2026-03-03 | PR本文/コメントのスクリーンショットURL解決を改善。`raw.githubusercontent.com/<repo>/<commit>/<path>` 形式の絶対URL生成を追加し、GitHub PR画面で画像が表示されない問題を防止 |
 | 2026-03-02 | PR本文セクション連携を強化。Phase 3.6 で差分から `TARGET_WORKFLOW_DIR` を特定し、PR本文/implementation-guideコメント/スクリーンショットコメントを同一workflow成果物に統一。PR本文を `.github/pull_request_template.md` 準拠見出しへ更新し、`その他` に Phase 12 実装ガイド反映を必須化。UI/UX変更時は `outputs/phase-11/screenshots/*.png` を検出してPR本文 `## スクリーンショット` に画像リンクを自動挿入 |
 | 2026-03-01 | PR本文にタスク実行サマリー・スクリーンショットセクション追加。Phase 5.5（実装ガイドコメント投稿）・Phase 5.6（スクリーンショットコメント投稿）を追加。Phase 3にスクリーンショット含有注記追加。Phase 5.5/5.6: `--body-file`+一時ファイル方式に統一（HEREDOC安全性・zsh互換性・GitHub API 65536文字制限対応） |
