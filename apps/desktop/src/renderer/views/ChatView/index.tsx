@@ -74,6 +74,7 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   // ----------------------------------------
   const setChatInput = useAppStore((state) => state.setChatInput);
   const sendMessage = useAppStore((state) => state.sendMessage);
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
   const toggleSystemPromptPanel = useAppStore(
     (state) => state.toggleSystemPromptPanel,
   );
@@ -182,14 +183,24 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
           <h1 className="text-lg font-semibold text-white">AIチャット</h1>
           <p className="text-sm text-gray-400">{ragStatusMessage}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/chat/history")}
-          aria-label="チャット履歴"
-          className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-        >
-          <History className="h-5 w-5" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setCurrentView("skill-center")}
+            aria-label="スキル管理"
+            className="px-3 py-1.5 text-sm rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            スキル管理
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/chat/history")}
+            aria-label="チャット履歴"
+            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <History className="h-5 w-5" />
+          </button>
+        </div>
       </header>
 
       {/* システムプロンプトトグルボタン */}

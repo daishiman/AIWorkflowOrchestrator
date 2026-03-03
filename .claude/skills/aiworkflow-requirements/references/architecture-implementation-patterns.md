@@ -2539,48 +2539,6 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 ---
 
-### S23: IPC登録後のサービス公開境界整合パターン（TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 2026-03-03実装）
-
-> **発見タスク**: TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001  
-> **関連未タスク**: UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001
-
-#### 問題
-
-IPCハンドラ登録漏れを修正して機能復旧しても、依存サービスの公開境界（`services/<domain>/index.ts`）が未同期だと、直接 import が増え続けて設計ドリフトを起こす。
-
-#### 解決策
-
-登録配線修正と同ターンで「サービス公開境界」の整合監査を実施する。今回Waveで対応しない場合は未タスクへ明示移管する。
-
-#### 適用チェックリスト
-
-- [ ] `registerAllIpcHandlers` の新規 register 呼出が追加されている
-- [ ] 対応する回帰テスト（`ipc-double-registration` 系）で呼出が検証されている
-- [ ] `services/<domain>/index.ts` の export 追加要否を判定している
-- [ ] 未対応の場合、`docs/30-workflows/unassigned-task/` に指示書を作成し `task-workflow.md` へリンクしている
-
-#### 検証コマンド
-
-```bash
-rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts
-rg -n "services/skill/SkillChain(Store|Executor)|from \"../services/skill\"" apps/desktop/src/main
-rg -n "SkillChain(Store|Executor)" apps/desktop/src/main/services/skill/index.ts
-```
-
-期待結果:
-- 登録配線が存在する
-- 直接 import の残存状況を説明可能
-- バレル export は「追加済み」または「未タスク化済み」のどちらかで追跡可能
-
-#### 同種課題の簡潔解決手順（4ステップ）
-
-1. IPC修正時は `handler/register/preload` を同時完了条件に固定する。  
-2. `ipc-double-registration` テストで新規 register 呼出を必ず検証する。  
-3. `services/*/index.ts` の公開境界を `rg` で機械確認し、直接 import を放置しない。  
-4. 今回Waveで対応しない設計課題は未タスク化して台帳へ同一ターン同期する。  
-
----
-
 ## IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施）
 
 ### 問題
@@ -2672,12 +2630,53 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 ---
 
+## 共有型インポート標準パターン（TASK-10A-D）
+
+### 問題
+
+Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層に分散すると、型不整合の発見が遅延する。特に Renderer 側で `unknown[]` プレースホルダ型を使用した場合、コンパイルは通るが実行時に型不一致が顕在化する（P23/P24/P32 の繰り返しパターン）。
+
+### 解決パターン
+
+#### 1. 型定義の配置ルール
+
+| 型の種類 | 配置先 | 例 |
+| --- | --- | --- |
+| ドメインモデル型 | `@repo/shared` (`packages/shared/src/`) | `Skill`, `SkillLifecycleState`, `Suggestion` |
+| Store Slice 状態型 | `@repo/shared` からimport + Slice固有の拡張 | `AgentSliceState extends { skills: Skill[] }` |
+| Preload API 型 | `apps/desktop/src/preload/types.ts` | `ElectronSkillAPI`, `SkillBridgeAPI` |
+| IPC ハンドラ引数型 | Main Process 内で定義、`@repo/shared` の型を参照 | `handler(event, skillName: string)` |
+
+#### 2. 新規型追加時のチェックリスト
+
+1. `@repo/shared` に型定義を追加
+2. `pnpm --filter @repo/shared build` で共有パッケージをビルド
+3. Preload `types.ts` の API 型定義を更新
+4. Store Slice の型を `@repo/shared` からの import に変更
+5. `pnpm typecheck` で全パッケージの型整合性を検証
+
+#### 3. 禁止パターン
+
+| 禁止パターン | 理由 | 正しいパターン |
+| --- | --- | --- |
+| `unknown[]` プレースホルダ型 | 型安全性が失われ、実行時エラーの発見が遅延 | `@repo/shared` から具体型をimport |
+| Slice 内での独自型定義 | Store と Preload で型が乖離する | `@repo/shared` の型をre-export |
+| `as unknown as TargetType` キャスト | 型不整合を隠蔽する | 共有型を統一してキャスト不要にする |
+
+### 適用指針
+
+- 新規 IPC チャネル追加時は P23/P32 準拠で `@repo/shared` → Preload → Store の順に型を定義する
+- 既存の `unknown[]` 型は発見次第、具体型への置換を未タスク化する
+- `pnpm typecheck` は型変更後に必ず全パッケージ（`--filter @repo/shared && --filter @repo/desktop`）で実行する
+
+---
+
 
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v1.35.0 | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 追補: S23「IPC登録後のサービス公開境界整合パターン」を追加。登録配線修正後の `services/*/index.ts` export 監査と未タスク移管手順を標準化 |
+| v1.35.0 | 2026-03-03 | TASK-10A-D: 共有型インポート標準パターン追加（@repo/shared起点の型配置ルール、禁止パターン3件、新規型追加チェックリスト） |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |

@@ -375,6 +375,9 @@ node scripts/quick_validate.js .claude/skills/<skill-name> --verbose
 - [ ] resource-map.md が最新のリソース構成を反映している
 - [ ] SKILL.md の変更履歴が更新されている
 - [ ] 実際の使用テスト（ドライラン）が実施されている
+- [ ] 未タスク監査を実施する場合、`current`（合否）と`baseline`（既存負債）を分離記録している
+- [ ] 画面証跡を扱う場合、各スクリーンショットに「状態名 + 検証目的」を記録している
+- [ ] 仕様更新タスクでは、仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を成果物に残している
 
 ### 検証コマンド
 
@@ -384,6 +387,12 @@ node scripts/validate_all.js --skill .claude/skills/<skill-name>
 
 # 構造検証
 node scripts/quick_validate.js .claude/skills/<skill-name>
+
+# （必要時）未タスク差分監査
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+
+# （必要時）未タスク全体監視
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 </details>

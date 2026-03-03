@@ -658,10 +658,113 @@ TASK-10A-A は、スキル運用に必要な 4ビュー（一覧/編集/分析/�
 
 ---
 
+## SkillManagementPanel ビュー統合アーキテクチャパターン（TASK-10A-D / completed）
+
+> ステータス: **completed**（実装・テスト・画面検証完了）
+
+TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中」プレースホルダーを実コンポーネント（SkillAnalysisView / SkillCreateWizard）に差し替え、ChatPanel からのアクセスポイントを追加するUI統合タスクである。
+
+### レイヤー構成
+
+| レイヤー | 主要要素 | 役割 |
+| --- | --- | --- |
+| Panel Root | `SkillManagementPanel` | 4ビュー切替（list/editor/analysis/create）、状態遷移 |
+| View Bridge | `SkillAnalysisView` / `SkillCreateWizard` / `SkillEditor` | `currentView` に応じた実コンポーネント表示 |
+| Access Point | `ChatPanel`（トグルボタン） | `showSkillManagement` state でパネル表示/非表示切替 |
+| Store Bridge | agentSlice 拡張（5アクション + 3状態 + 8セレクタ） | 分析・改善・作成操作を Store 経由で IPC 呼び出し |
+
+### コンポーネント関係図
+
+| 親コンポーネント | 子コンポーネント | 表示条件 |
+| --- | --- | --- |
+| ChatPanel | SkillManagementPanel | `showSkillManagement === true` |
+| SkillManagementPanel | SkillEditor | `currentView === 'editor'` |
+| SkillManagementPanel | SkillAnalysisView | `currentView === 'analysis'` |
+| SkillManagementPanel | SkillCreateWizard | `currentView === 'create'` |
+
+### 状態遷移モデル（TASK-10A-A からの差分）
+
+| 変更点 | TASK-10A-A（旧） | TASK-10A-D（新） |
+| --- | --- | --- |
+| `analysis` ビュー | プレースホルダー（準備中テキスト） | `SkillAnalysisView`（分析・改善・自動改善操作） |
+| `create` ビュー | プレースホルダー（準備中テキスト） | `SkillCreateWizard`（4ステップウィザード） |
+| ChatPanel導線 | なし | トグルボタン（`data-testid="skill-management-toggle"`） |
+| agentSlice | 既存セレクタのみ | 5アクション + 3状態フィールド + 8個別セレクタ追加 |
+
+### Store拡張（agentSlice差分）
+
+**追加状態フィールド**:
+
+| プロパティ | 型 | 用途 |
+| --- | --- | --- |
+| `currentAnalysis` | `SkillAnalysis \| null` | スキル分析結果の保持 |
+| `isAnalyzing` | `boolean` | 分析処理中フラグ |
+| `isImproving` | `boolean` | 改善処理中フラグ |
+
+**追加アクション**:
+
+| アクション | IPC依存 | 説明 |
+| --- | --- | --- |
+| `analyzeSkill` | `skill:analyze` | スキル分析を実行し `currentAnalysis` を更新 |
+| `applySkillImprovements` | `skill:applyImprovements` | 選択された改善提案を適用 |
+| `autoImproveSkill` | `skill:autoImprove` | 全自動改善を実行 |
+| `createSkill` | `skill:create` | 新規スキルを作成 |
+| `clearAnalysis` | なし | 分析結果をクリア |
+
+**追加個別セレクタ（P31準拠）**:
+
+| セレクタ | 種別 |
+| --- | --- |
+| `useCurrentAnalysis` | State |
+| `useIsAnalyzingSkill` | State |
+| `useIsImprovingSkill` | State |
+| `useAnalyzeSkill` | Action |
+| `useApplySkillImprovements` | Action |
+| `useAutoImproveSkill` | Action |
+| `useCreateSkill` | Action |
+| `useClearAnalysis` | Action |
+
+### IPC境界
+
+| チャネル | 利用経路 | 変更有無 |
+| --- | --- | --- |
+| `skill:list` | `useFetchSkills` | 既存再利用 |
+| `skill:remove` | `useRemoveSkill` | 既存再利用 |
+| `skill:analyze` | `useAnalyzeSkill` | 既存再利用（agentSlice経由追加） |
+| `skill:applyImprovements` | `useApplySkillImprovements` | 既存再利用（agentSlice経由追加） |
+| `skill:autoImprove` | `useAutoImproveSkill` | 既存再利用（agentSlice経由追加） |
+| `skill:create` | `useCreateSkill` | 既存再利用（agentSlice経由追加） |
+
+### 品質指標（TASK-10A-D）
+
+| 指標 | 値 |
+| --- | --- |
+| テストファイル | 4（SkillManagementPanel / ChatPanel / agentSlice / store selectors） |
+| テストケース数 | 132（全PASS） |
+| 変更ファイル | SkillManagementPanel.tsx, ChatPanel.tsx, agentSlice.ts, store/index.ts |
+
+### 苦戦箇所
+
+| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| `Suggestion`型を`unknown[]`で仮定義 | IPC境界の引数型を共有型から参照せず仮定義した | `@repo/shared/types/skill-improver`から`Suggestion`型を正しくインポート | IPC境界の型は常に`@repo/shared`の共有型を使用し、`unknown[]`で仮定義しない |
+| P40テスト実行ディレクトリ依存（再発） | モノレポルートからテスト実行すると`vitest.config.ts`が読み込まれない | テストコマンドに`cd apps/desktop &&`プレフィックスを含める | テスト実行は常に対象パッケージのディレクトリから行う |
+| PostToolUseフックによるEdit失敗（P11） | Prettier/ESLint自動修正がファイル内容を変更し文字列マッチが失敗 | 大量編集後は`git diff --stat`で変更数を検証 | 連続Edit時はフック実行後のファイル内容を前提として次のEdit文字列を構成する |
+
+### 参照
+
+- [TASK-10A-D ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/)
+- [TASK-10A-A SkillManagementPanel仕様（基盤）](../../../../docs/30-workflows/skill-management-panel/index.md)
+- [TASK-10A-B SkillAnalysisView仕様](../../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
+- [TASK-10A-C SkillCreateWizard仕様](../../../../docs/30-workflows/completed-tasks/skill-create-wizard/index.md)
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.9.0   | 2026-03-03 | TASK-10A-D 反映: SkillManagementPanel ビュー統合アーキテクチャ（レイヤー構成、コンポーネント関係図、状態遷移差分、Store拡張、IPC境界、品質指標、苦戦箇所）を追加 |
 | 2.8.3   | 2026-03-02 | TASK-10A-A 反映: SkillManagementPanel のアーキテクチャ節（レイヤー構成、状態遷移、IPC境界、品質指標、苦戦箇所）を追加し、Step 2 判定漏れの再発防止ルールを追記 |
 | 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
 | 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` へ更新し、UI導線追加に合わせてアーキテクチャ節を実装実体へ一致化 |

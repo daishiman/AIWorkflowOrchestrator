@@ -31,6 +31,11 @@ const navItems: NavItem[] = [
   { id: "graph", icon: "network", label: "Graph", shortcut: "Cmd+4" },
   { id: "agent", icon: "bot", label: "Agent", shortcut: "Cmd+5" },
   {
+    id: "skill-center",
+    icon: "sparkles",
+    label: "Skills",
+  },
+  {
     id: "chainBuilder",
     icon: "zap",
     label: "Chain",
