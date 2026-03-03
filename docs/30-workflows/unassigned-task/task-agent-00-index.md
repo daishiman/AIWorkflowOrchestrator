@@ -1,5 +1,9 @@
 # エージェント機能 - タスク一覧とインデックス
 
+```yaml
+issue_number: 959
+```
+
 ## 概要
 
 Claude CodeのClaude Agent SDKを使用したエージェント機能をアプリケーションに統合するためのタスク群。

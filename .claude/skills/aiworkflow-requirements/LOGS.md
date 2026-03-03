@@ -5,6 +5,125 @@
 
 ---
 
+## 2026-03-03 - 未タスク仕様書を task-specification-creator 準拠へ再構成（苦戦箇所継承）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001`
+- 目的: 未タスク仕様書を `task-specification-creator` の品質基準（9見出し + 実装課題継承）へ揃え、同種課題の初動を短縮する
+
+### SubAgent分担
+- SubAgent-A: 未タスク仕様書本体更新（Why/What/How + 3.4苦戦箇所 + 3.5簡潔手順）
+- SubAgent-B: `task-workflow.md` 連携更新（関連未タスク行へ継承状態を追記）
+- SubAgent-C: 検証実行（`verify-unassigned-links` / `audit-unassigned-tasks --target-file --diff-from`）
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-chain-barrel-export-consistency-001.md` を再構成し、`3.4 実装課題と解決策` に今回実装の苦戦箇所3件を記録
+- 同仕様書に `SubAgent分担` と `同種課題の簡潔解決手順（4ステップ）` を追加
+- `references/task-workflow.md` の関連未タスク行を「苦戦箇所継承済み」表現へ同期
+
+### 結果
+- ステータス: success
+- 補足: 未タスク仕様書は `task-specification-creator` の推奨構成（9見出し + 実装課題継承）を満たし、再利用手順を同一ファイルで参照可能化
+
+---
+
+## 2026-03-03 - Phase 12最適化追補（api-ipc / architecture 仕様書を同時同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001`
+- 目的: 実装内容と苦戦箇所を task-workflow だけでなく api/architecture 正本へ展開し、同種課題の再利用導線を短縮する
+
+### SubAgent分担
+- SubAgent-A: `references/api-ipc-agent.md`（契約観点）
+- SubAgent-B: `references/architecture-implementation-patterns.md`（実装パターン観点）
+- SubAgent-C: 台帳・履歴同期（`SKILL.md` / index）
+
+### 実施内容
+- `api-ipc-agent.md` の skill:chain セクションへ苦戦箇所2件と4ステップ簡潔手順を追加
+- `api-ipc-agent.md` の完了タスク台帳へ `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` を追加
+- `architecture-implementation-patterns.md` に S23（IPC登録後のサービス公開境界整合）を追加し、未タスク移管まで含む標準運用へ整理
+
+### 結果
+- ステータス: success
+- 補足: 実装内容・苦戦箇所・簡潔手順が `task-workflow / api-ipc / architecture / lessons` の4層で参照可能になった
+
+---
+
+## 2026-03-03 - 本ワークツリー Phase 12 実行監査（chain完了 / auth-preflight仕様作成）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` / `TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001`
+- 目的: 本ブランチで Phase 12 タスク仕様書どおりに実行できているかを監査し、実装内容と苦戦箇所を再利用可能な形で正本へ固定する
+
+### SubAgent分担
+- SubAgent-A: Phase 12 仕様書と成果物突合（2workflow）
+- SubAgent-B: 未タスク配置・フォーマット監査（target/diff）
+- SubAgent-C: `task-workflow.md` への「実装内容 + 苦戦箇所 + 簡潔解決手順」追記
+
+### 実施内容
+- `validate-phase-output.js` を2workflowで実行し、仕様書構造の整合を確認（両方PASS）
+- 実行実態は `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` が Phase 12 完了、`TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001` は `spec_created/pending`（実装未着手）であることを確認
+- 未タスク `UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001` の配置先と10見出し準拠を監査し、`currentViolations=0` を確認
+- `task-workflow.md` の当該タスク節へ苦戦箇所と4ステップ解決手順を追記
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` PASS（missing=0）、`audit --target-file` / `audit --diff-from HEAD` とも `currentViolations=0`
+
+---
+
+## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 最終再確認（再撮影 + 台帳同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001`
+- 目的: 画面再撮影と台帳再同期を実施し、再監査時点の証跡鮮度と仕様整合を確定する
+
+### SubAgent分担
+- SubAgent-A: 画面再撮影（Chain Builder）
+- SubAgent-B: Task Workflow 完了節更新（TC証跡 + 検証コマンド）
+- SubAgent-C: Index再生成（topic-map / keywords）
+- SubAgent-D: 検証再実行（Phase 11/12）
+
+### 実施内容
+- `outputs/phase-11/chain-builder-evidence.png` と `outputs/phase-11/screenshots/tc-01-chain-builder-view.png` を再撮影で更新
+- `references/task-workflow.md` に TC証跡パスと `validate-phase11-screenshot-coverage` の検証証跡を追記
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して index を再同期
+
+### 結果
+- ステータス: success
+- 補足: `validate-phase11-screenshot-coverage` PASS（expected=4, covered=1, errors=0）
+
+---
+
+## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 再監査同期（Phase 11/12整合）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001`
+- 目的: 本ブランチ差分の反映漏れをゼロ化し、Phase 11/12 とシステム仕様書の整合を再固定する
+
+### SubAgent分担
+- SubAgent-A: IPC契約同期（`api-ipc-agent.md` / `task-workflow.md`）
+- SubAgent-B: 教訓同期（`lessons-learned.md` / `SKILL.md`）
+- SubAgent-C: Phase 11証跡整合（TC-ID化、証跡表、screenshots配置）
+- SubAgent-D: 機械検証（verify-all-specs / validate-phase-output / verify-unassigned-links / validate-phase11-screenshot-coverage）
+
+### 実施内容
+- `phase-11-manual-test.md` に `TC-01..04` を追加し、手動テスト仕様を機械検証可能な形式へ統一
+- `outputs/phase-11/manual-test-result.md` に `証跡対応表` を追加し、`TC-01` の証跡ファイルを `screenshots/tc-01-chain-builder-view.png` へ紐付け
+- `outputs/phase-11/evidence-index.md` にスクリーンショット証跡（EV-17）を追加
+- `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` に Phase整合化の追記事項を反映
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`verify-unassigned-links` PASS（90/90）、`validate-phase11-screenshot-coverage` PASS（expected=4, covered=1, errors=0）
+
+---
+
 ## 2026-03-03 - UT-UI-05A Phase 12再確認追補（苦戦箇所テンプレート同期）
 
 ### コンテキスト

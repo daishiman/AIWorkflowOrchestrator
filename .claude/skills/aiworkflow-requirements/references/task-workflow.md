@@ -132,6 +132,51 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001（2026-03-03）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 |
+| 目的 | `registerSkillChainHandlers` の登録漏れを解消し、`skill:chain:*` を起動時に確実に有効化する |
+| 完了日 | 2026-03-03 |
+| ステータス | **完了（Phase 1-12）** |
+
+#### 反映内容（要点）
+
+- `apps/desktop/src/main/ipc/index.ts` に `registerSkillChainHandlers` 呼び出しと依存生成（`SkillChainStore` / `SkillChainExecutor`）を追加。
+- `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` に回帰テストを追加し、登録漏れの再発を防止。
+- Phase 11 画面証跡として `docs/30-workflows/completed-tasks/TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001/outputs/phase-11/chain-builder-evidence.png` を追加。
+- Phase 11 の TC 証跡として `docs/30-workflows/completed-tasks/TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001/outputs/phase-11/screenshots/tc-01-chain-builder-view.png` を追加し、`validate-phase11-screenshot-coverage` で紐付け確認。
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `CI=1 pnpm vitest run src/main/ipc/__tests__/ipc-double-registration.test.ts` | PASS（11/11） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` | PASS（13/13） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` | PASS（28項目） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001` | PASS（expected=4, covered=1, errors=0） |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001 | `SkillChainStore` / `SkillChainExecutor` のバレル公開統一（未タスク仕様書 `3.4` に苦戦箇所と4ステップ手順を継承） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-chain-barrel-export-consistency-001.md` |
+
+#### 苦戦箇所と簡潔解決手順（再利用用）
+
+| 苦戦箇所 | 再発条件 | 解決策 |
+| --- | --- | --- |
+| `skillHandlers.ts` 実装済みでも `registerAllIpcHandlers` への配線漏れで `skill:chain:*` が無効化される | IPC追加時に「ハンドラ実装」と「起動登録」を別工程に分ける場合 | `ipc/index.ts` の登録を同一コミットで追加し、`ipc-double-registration.test.ts` に呼出検証を固定する |
+| 依存サービスが直接 import のまま残り、公開境界がドリフトする | `services/skill/index.ts` のバレル更新を後回しにする場合 | 未タスク `UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001` として起票し、バレル公開統一を次Waveへ明示移管する |
+
+同種課題の簡潔解決手順:
+
+1. IPC追加時は `channels + preload + handlers + registerAllIpcHandlers` の4点を同時チェックする。  
+2. `ipc-double-registration` 系テストへ新規 register 関数の呼出アサーションを追加する。  
+3. バレル公開対象のサービス追加時は `services/*/index.ts` の export 更新有無を `rg` で機械確認する。  
+4. Phase 12 で `task-workflow` と `lessons-learned` を同一ターン更新し、再発条件を残す。  
+
 ### タスク: TASK-10A-A-SKILL-MANAGEMENT-PANEL SkillManagementPanel 実装（2026-03-02）
 
 | 項目 | 内容 |

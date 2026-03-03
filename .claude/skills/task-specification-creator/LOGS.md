@@ -26,6 +26,33 @@
 
 ---
 
+## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 最終再確認（スクリーンショット再撮影）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（最終再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - Chain Builder 画面を再撮影し、`chain-builder-evidence.png` と `screenshots/tc-01-chain-builder-view.png` を更新
+  - `validate-phase11-screenshot-coverage` を再実行し、TC単位証跡の欠落なしを再確認
+  - `task-workflow.md` の検証証跡表にスクリーンショットカバレッジ検証コマンドを追加
+
+---
+
+## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 Phase 11/12 準拠再監査
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `validate-phase11-screenshot-coverage.js` の要件に合わせ、Phase 11仕様書へ `TC-01..04` テストケースを追加
+  - `manual-test-result.md` に `テストケース` + `証跡` 列を持つ表を追加し、`TC-01` を `screenshots/tc-01-chain-builder-view.png` に紐付け
+  - `outputs/phase-11/screenshots/` を作成し、証跡画像を配置
+  - Step 1-A必須要件（`LOGS.md` 2ファイル更新）を満たすため、`aiworkflow-requirements/LOGS.md` と本ログを同時更新
+
+---
+
 ## 2026-03-03 - Phase 12 implementation-guide 全文PR反映ガード追加
 
 - **Agent**: task-specification-creator

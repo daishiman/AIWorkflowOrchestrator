@@ -27,6 +27,7 @@ import {
   registerSkillHandlers,
   registerSkillScheduleHandlers,
   registerSkillDocsHandlers,
+  registerSkillChainHandlers,
 } from "./skillHandlers";
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
@@ -45,6 +46,8 @@ import {
   PermissionStore,
 } from "../services/skill";
 import { SkillFileManager } from "../services/skill/SkillFileManager";
+import { SkillChainStore } from "../services/skill/SkillChainStore";
+import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import { SkillDocGenerator as SkillDocGeneratorCls } from "../services/skill/SkillDocGenerator";
 import { ScheduleStore } from "../services/skill/ScheduleStore";
 import { SkillScheduler } from "../services/skill/SkillScheduler";
@@ -606,6 +609,20 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   const analyticsStore = new AnalyticsStore();
   const skillAnalytics = new SkillAnalytics(analyticsStore);
   registerSkillAnalyticsHandlers(mainWindow, skillAnalytics);
+
+  // Register Skill Chain handlers (TASK-9D / TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001)
+  const chainStoragePath = path.join(homeDir, ".claude", "skill-chains.json");
+  const chainStore = new SkillChainStore(chainStoragePath);
+  const chainExecutor = new SkillChainExecutor(
+    async (skillName: string, input: unknown) => {
+      const result = await skillService.executeSkill(skillName, {
+        prompt: typeof input === "string" ? input : JSON.stringify(input),
+      });
+      return result;
+    },
+  );
+  registerSkillChainHandlers(mainWindow, chainStore, chainExecutor);
+
   // Register Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();
   registerPermissionStoreHandlers(permissionStore);

@@ -4,15 +4,29 @@
 
 ---
 
-## [2026-03-03 - UT-UI-05A-GETFILETREE-001 Phase 12再確認パターン追加]
+## [2026-03-03 - Phase 12テンプレート最適化（サービス公開境界チェック追加）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に成功パターン「[Phase 12] getFileTree再同期の5点固定（UT-UI-05A-GETFILETREE-001）」を追加
-  - Step 2 の5仕様書固定確認（api-ipc/ui-ux-feature/security/interfaces/task-workflow）を再発防止ルールとして明文化
-  - 成果物名1対1突合、スクリーンショット実ファイル確認、`## メタ情報` 1セクション監査、`currentViolations=0` 判定固定を標準化
+  - `assets/phase12-system-spec-retrospective-template.md` の簡潔解決手順/検証コマンド/完了チェックに `services/*/index.ts` 公開境界監査を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の IPC契約突合を `handler/register/preload + service公開境界` へ拡張
+  - `references/resource-map.md` のテンプレート説明を同内容へ同期
+  - `SKILL.md` 変更履歴を `v10.38.0` として同期
+
+---
+
+## [2026-03-03 - IPC登録後のサービスバレル公開整合パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の IPCドメインに成功キーワード「IPC登録後のサービスバレル公開整合チェック」を追加
+  - 失敗キーワード「サービス層バレル公開漏れ（直接import固定化）」を追加
+  - 成功パターン「[IPC] サービスバレル公開整合チェック（UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001）」を新設
+  - `registerAllIpcHandlers` 配線修正後に `services/*/index.ts` の export を同時監査する運用を標準化
   - `SKILL.md` 変更履歴を `v10.37.0` として同期
 
 ---
@@ -1419,27 +1433,3 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: 成果物実体と実行仕様書の不一致を再発防止
-
-## 2026-03-03 - UT-UI-05A-GETFILETREE-001 Phase 12テンプレート準拠追補
-
-### コンテキスト
-
-- スキル: skill-creator
-- 対象: Phase 12 再確認（UT-UI-05A-GETFILETREE-001）
-- 目的: 仕様書別SubAgent分担を成果物として固定し、責務境界の再利用性を高める
-
-### 実施内容
-
-- `references/patterns.md` に成功パターンを追加
-  - `[Phase 12] SubAgent成果物の明示固定（UT-UI-05A-GETFILETREE-001）`
-- パターン内容を5点で標準化
-  - `spec-update-summary` のテンプレート再構成
-  - `spec-sync-subagent-report.md` の新規作成
-  - Step 2 三点突合（`phase-12-documentation` / `documentation-changelog` / `spec-update-summary`）
-  - `task-workflow` / `lessons` の同一ターン同期
-  - `current=合否 / baseline=監視` の分離記録
-
-### 結果
-
-- ステータス: success
-- 効果: Phase 12再確認時の責務曖昧化を抑止し、仕様書ごとの関心分離を成果物レベルで再利用可能化

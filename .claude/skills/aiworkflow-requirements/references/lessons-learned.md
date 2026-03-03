@@ -20,9 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-03 | 1.28.6 | UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 を追加。SubAgent責務を成果物として固定する運用（`spec-update-summary` + `spec-sync-subagent-report` + Step 2三点突合）を未タスク化し、再発防止導線を明文化 |
-| 2026-03-03 | 1.28.5 | UT-UI-05A-GETFILETREE-001 をテンプレート準拠で追補。仕様書別SubAgent分担（api-ipc/interfaces/security/ui-ux-feature/task/lessons）を追加し、Step 2 二重突合を含む5ステップ手順へ更新 |
-| 2026-03-03 | 1.28.4 | UT-UI-05A-GETFILETREE-001 を追加。`skill:getFileTree` 実装同期で発生した3課題（Main/Preload契約差、Phase 12成果物命名ズレ、未タスクメタ情報重複）と4ステップ再利用手順を標準化 |
+| 2026-03-03 | 1.28.8 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 を追加。IPCハンドラ実装済みでも `registerAllIpcHandlers` 登録漏れで機能が無効化される課題を教訓化し、4ステップ再発防止手順を標準化 |
 | 2026-03-02 | 1.28.3 | TASK-10A-A（SkillManagementPanel）を追加。Step 2 誤判定（arch-ui-components未更新）・台帳/教訓同期遅延・unassigned監査の baseline/current 誤読を防ぐ5ステップ手順を標準化 |
 | 2026-03-03 | 1.28.7 | TASK-UI-05A completed-tasks 移管追補: `skill-editor-view-closure` workflow を `completed-tasks/` へ移動し、関連未タスク参照を `completed-tasks/skill-editor-view-closure/unassigned-task/` へ更新 |
 | 2026-03-03 | 1.28.6 | UT-UI-05A-PHASE12-SYNC-BUNDLE-GUARD-001 を追補: 画面再取得後の台帳/教訓/成果物台帳更新の分散を未タスク化し、同一ターン同期ガードを残課題導線へ追加 |
@@ -117,80 +115,24 @@
 
 ---
 
-## UT-UI-05A-GETFILETREE-001: skill:getFileTree IPC実装（2026-03-03）
+## TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001（2026-03-03）
 
-### タスク概要
-
-| 項目 | 内容 |
-|------|------|
-| タスクID | UT-UI-05A-GETFILETREE-001 |
-| 目的 | `skill:getFileTree` を Main/Preload/Renderer/仕様書へ同期し、SkillEditorView のファイルツリー取得契約を完了状態に固定する |
-| 完了日 | 2026-03-03 |
-| ステータス | **完了** |
-
-### 実装反映（システム仕様書）
-
-| 仕様書 | 反映内容 |
-|------|------|
-| `api-ipc-agent.md` | `skill:getFileTree` を実装済みに更新、Main側戻り値を `IpcResult<SkillFileTreeNode[]>` へ統一 |
-| `interfaces-agent-sdk-skill.md` | `getFileTree()` API と `SkillFileTreeNode` 型を追加 |
-| `security-electron-ipc.md` | skillFileAPI を 7 invoke チャネルへ更新し、同チャネルを防御範囲へ追加 |
-| `ui-ux-feature-components.md` | SkillEditorView の `skill:getFileTree` を完了化し、画面証跡（UI05A-GFT-01/02）を同期 |
-| `task-workflow.md` | `UT-UI-05A-GETFILETREE-001` / `UT-UI-05A-SPEC-CONSISTENCY-001` を完了化 |
-
-### 仕様書別SubAgent分担（今回の再同期）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-|------|------|------|------|
-| A | `api-ipc-agent.md` | Main/Preload契約の分離同期 | 契約表が実装一致 |
-| B | `interfaces-agent-sdk-skill.md` | 共有型 + 公開API同期 | `SkillFileTreeNode` / `getFileTree()` が一致 |
-| C | `security-electron-ipc.md` | 7 invoke前提の防御範囲同期 | `SKILL_GET_FILE_TREE` が防御対象化 |
-| D | `ui-ux-feature-components.md` | SkillEditorView 完了状態 + 画面証跡同期 | UI05A-GFT-01/02 を参照可能 |
-| E | `task-workflow.md` | 台帳・検証証跡・残課題同期 | 完了/未完了の状態整合 |
-| F | `lessons-learned.md` | 苦戦箇所と再利用手順の固定化 | 再発条件付きで再利用可能 |
-
-### 苦戦箇所と解決策
-
-#### 1. Main契約とPreload公開契約の表現差
+### 苦戦箇所: ハンドラ実装済みでも起動配線漏れで機能が死ぬ
 
 | 項目 | 内容 |
-|------|------|
-| 課題 | Mainは `IpcResult<T>`、Preloadは unwrap後 `T` を返すため、仕様書で戻り値表現がズレやすい |
-| 原因 | IPC層とUI層の責務境界を1つの戻り値表現で記述しようとした |
-| 解決策 | 仕様書に「Main契約（IpcResult）」と「Preload公開契約（配列）」を分離記載 |
-| 教訓 | IPC仕様は「処理層ごとの契約差」を明示しないと再同期時にドリフトする |
+| --- | --- |
+| 課題 | `registerSkillChainHandlers` は実装済みだったが、`registerAllIpcHandlers` から呼ばれておらず `skill:chain:*` が実行不能だった |
+| 再発条件 | 新規IPCグループ追加時に「handler実装」と「起動登録」を別タスクで進める場合 |
+| 原因 | IPC契約（channels/preload/handler）を満たした段階で完了扱いにし、登録配線レビューを省略した |
+| 解決策 | `ipc/index.ts` へ登録処理を追加し、`ipc-double-registration.test.ts` で呼出検証を固定化した |
+| 教訓 | IPC追加は `channels + preload + handlers + registerAllIpcHandlers + 回帰テスト` を同一完了条件にする |
 
-#### 2. Phase 12 成果物名の命名ドリフト
+### 同種課題の簡潔解決手順（4ステップ）
 
-| 項目 | 内容 |
-|------|------|
-| 課題 | `unassigned-task-detection.md` など必須成果物名と実体名がずれるリスクが残った |
-| 原因 | `phase-12-documentation.md` の成果物一覧を正本として扱う運用が弱かった |
-| 解決策 | 成果物一覧と `outputs/phase-12/` 実体を1対1で突合し、不足/命名差をその場で補正 |
-| 教訓 | Phase 12 は「成果物名の正確性」も完了条件に含める |
-
-#### 3. 未タスク指示書フォーマットの重複ノイズ
-
-| 項目 | 内容 |
-|------|------|
-| 課題 | `task-ui-05a-*.md` で `## メタ情報` が二重定義され、監査ノイズが発生 |
-| 原因 | YAML追加時に既存テーブルとの統合ルールが徹底されていなかった |
-| 解決策 | YAML+テーブルを単一 `## メタ情報` セクションへ統一し、`rg` で機械確認 |
-| 教訓 | 未タスクは「存在」だけでなく「フォーマット品質」を同時検証する |
-
-### 同種課題向け簡潔解決手順（5ステップ）
-
-1. 変更対象を `api-ipc / interfaces / security / ui-ux-feature / task-workflow / lessons` の6責務へ先に分離する。  
-2. `phase-12-documentation.md` の成果物表と Step 2 対象を正本化し、`documentation-changelog` / `spec-update-summary` と二重突合する。  
-3. IPC仕様は `Main契約` と `Preload公開契約` を分離して記述する。  
-4. 未タスク指示書は `## メタ情報` 1セクション原則を `rg` で機械確認する。  
-5. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を固定順で実行し、`currentViolations=0` で判定する。  
-
-### 関連未タスク（継続改善）
-
-| タスクID | 目的 | タスク仕様書 |
-| --- | --- | --- |
-| UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 | Phase 12 の SubAgent責務を成果物へ固定し、Step 2 三点突合を標準化する | `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
+1. IPC新機能を追加したら、`ipc/index.ts` の登録有無を同一コミットで確認する。  
+2. `ipc-double-registration` 系テストに「新規 register 関数の呼出検証」を追加する。  
+3. Phase 11 では画面証跡を必ず1枚取得し、導線断の早期検知を行う。  
+4. Phase 12 で `task-workflow` と `spec-update-summary` を同ターン更新して登録漏れ再発を防ぐ。  
 
 ---
 
