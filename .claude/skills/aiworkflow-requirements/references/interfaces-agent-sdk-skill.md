@@ -205,7 +205,7 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 | 3 | 存在する場合 `ipcRenderer.invoke()` 実行 | 存在する場合 `ipcRenderer.on()` でリスナー登録 |
 | 4 | - | クリーンアップ関数（`removeListener`）を返却 |
 
-#### 統一API 13メソッド一覧
+#### 統一API 14メソッド一覧
 
 | カテゴリ | メソッド | IPC方向 | 説明 |
 |----------|----------|---------|------|
@@ -218,6 +218,7 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 | **Permission** | `onPermissionRequest` | M→R | 権限リクエスト購読（Main起点） |
 | | `sendPermissionResponse` | R→M | 権限レスポンス送信 |
 | **Skill管理** | `list` | R→M | 利用可能スキル一覧取得 |
+| | `create` | R→M | SkillCreateWizard からスキル作成 |
 | | `getImported` | R→M | インポート済みスキル取得 |
 | | `rescan` | R→M | スキルディレクトリ再スキャン |
 | | `import` | R→M | スキルインポート |
@@ -416,6 +417,7 @@ Zustand Sliceパターンで実装された状態管理。
 | ------------------------- | --------------- | --------------------------- | ------------------------------------- |
 | `skill:getImported`       | Renderer → Main | インポート済みスキル取得    | `{ success: true, data: ImportedSkill[] } \| { success: false, error: string }` |
 | `skill:list`              | Renderer → Main | 利用可能スキル取得          | `{ success: true, data: SkillMetadata[] } \| { success: false, error: string }` |
+| `skill:create`            | Renderer → Main | スキル新規作成（TASK-10A-C） | `{ path: string }` |
 | `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
@@ -428,6 +430,16 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:optimize`          | Renderer → Main | プロンプト最適化（TASK-9C） | `OperationResult<OptimizationResult>` |
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
+
+#### `skill:create` リクエスト契約（TASK-10A-C）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 引数形式 | `description: string, options: { generateTasks: boolean; addAgents: boolean; addReferences: boolean }` |
+| バリデーション | `description` は P42準拠3段検証（`typeof` + 空文字 + `trim()`）。`options` は object かつ3フラグが boolean |
+| 戻り値 | `{ path: string }` |
+| Main処理 | `SkillService.createSkillFromWizard(description.trim(), options)` に委譲 |
+| エラー | `VALIDATION_ERROR` / サニタイズ済みメッセージ |
 
 #### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-INTERFACE-001）
 
@@ -586,6 +598,17 @@ Permission要求に対してユーザーの応答を送信する。
 **シグネチャ**: `sendPermissionResponse: (response: SkillPermissionResponse) => Promise<{ success: boolean }>`
 
 #### Skill管理API
+
+##### create
+
+SkillCreateWizard から新規スキルを作成する。
+
+| パラメータ | 型 | 必須 | 説明 |
+| ----------- | --- | ---- | --- |
+| `description` | `string` | ✓ | スキル説明（P42準拠3段検証） |
+| `options` | `{ generateTasks: boolean; addAgents: boolean; addReferences: boolean }` | ✓ | 初期生成オプション |
+
+**戻り値**: `Promise<{ path: string }>`
 
 ##### list
 
@@ -2198,10 +2221,55 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 ---
 
+## スキル作成ウィザード 型定義（TASK-10A-C）
+
+> 完了タスク: TASK-10A-C（2026-03-02）
+> 定義ファイル: `apps/desktop/src/preload/skill-api.ts`, `apps/desktop/src/main/ipc/skillHandlers.ts`
+
+### Preload API
+
+| メソッド名 | 引数 | 戻り値 | チャネル |
+| --- | --- | --- | --- |
+| `create` | `description: string, options: { generateTasks: boolean; addAgents: boolean; addReferences: boolean }` | `Promise<{ path: string }>` | `skill:create` |
+
+### 契約ポイント
+
+| 観点 | 契約 |
+| --- | --- |
+| 入力検証 | `description` は P42準拠3段検証 + `trim()` |
+| オプション検証 | `options` は object かつ `generateTasks` / `addAgents` / `addReferences` の boolean 構造 |
+| サービス委譲 | `SkillService.createSkillFromWizard()` が `SkillCreatorService.createSkill()` へ委譲 |
+| 返却 | 作成したスキルディレクトリの `{ path }` |
+
+### 完了タスク
+
+| タスクID | 完了日 | 内容 |
+| --- | --- | --- |
+| TASK-10A-C | 2026-03-02 | SkillCreateWizard の Preload API `create` と `skill:create` 契約を追加し、Main/Service へ接続 |
+
+### 実装時の苦戦箇所（TASK-10A-C）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 統一APIメソッド数の更新漏れ | `create` 追加後にAPI一覧表を更新しない場合 | 13→14メソッドへ更新し、`Skill管理API` に `create` を追加 | API追加時はメソッド総数とカテゴリ表を同時更新する |
+| 型契約と実装シグネチャの分離 | ドキュメント側の引数名/戻り値を実装から手入力する場合 | `skill-api.ts` 実装シグネチャを正本として契約表へ同期 | 契約は実装正本から逆算して記述する |
+| Service委譲の記録漏れ | Preload/APIのみ記録しMain-Service境界を省略する場合 | `SkillService.createSkillFromWizard -> SkillCreatorService.createSkill` を契約ポイントへ追記 | Renderer/Main/Service の委譲経路を必ず明示する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Preload API追加時に、統一API一覧（件数・カテゴリ）を先に更新する。  
+2. 引数/戻り値は実装シグネチャを正本として転記し、手入力差分を避ける。  
+3. Main-Service の委譲経路を契約ポイントに追加し、責務境界を明示する。  
+4. `api-ipc` / `security` / `task-workflow` と同一ターンで同期して完了判定する。  
+
+---
+
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-02 | 1.44.1     | TASK-10A-C追補: `create` 追加時の実装苦戦箇所（メソッド総数更新漏れ、型契約転記差分、Service委譲記録漏れ）と同種課題向け4ステップ手順を追加 |
+| 2026-03-02 | 1.44.0     | TASK-10A-C反映: 統一APIを13→14メソッドへ更新し、Skill管理APIに `create` を追加。IPCチャンネル表と `skill:create` リクエスト契約、TASK-10A-C 完了タスク記録を同期 |
 | 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |
 | 2026-03-02 | 1.43.0     | TASK-UI-05B仕様整合: TASK-9D（スキルチェーン型定義10型・IPCチャネル5ch）とTASK-9G（スキルスケジュール型定義4型・IPCチャネル5ch・Preload API 5メソッド）のセクションを追加。実装コードとの整合を検証済み |
 | 2026-02-28 | 1.42.1     | TASK-9E追補: 型/API契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界追従）と同種課題向け4ステップ手順を追加 |

@@ -89,8 +89,8 @@ Phase 4〜5: 検証 → 完了
 | カテゴリ    | 数  | 詳細参照                                                 |
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
-| references/ | 15  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 12  | [resource-map.md#scripts](references/resource-map.md)    |
+| references/ | 16  | [resource-map.md#references](references/resource-map.md) |
+| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
 | assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
 
@@ -392,13 +392,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.0** | **2026-03-03** | **Phase 12 implementation-guide 全文反映を強制**: `/ai:diff-to-pr` 連携ルールに「`implementation-guide.md` 全文をPRコメント投稿 + 投稿後API検証（見出し/Part 1/Part 2）」を必須化。スクリーンショットコメント更新時に実装ガイド全文コメントを上書きしないチェックを追加 |
-| **v10.08.0** | **2026-03-03** | **Phase 13 スクリーンショット埋め込み不具合を是正**: PR本文/PRコメントの画像リンクを相対パスから `raw.githubusercontent.com/<repo>/<commit>/<path>` 絶対URLへ統一する運用を追加。`phase-templates.md` / `phase-11-12-guide.md` のチェック項目を更新し、GitHub PR画面で画像が表示されない再発を防止 |
-| **v10.06.0** | **2026-03-02** | **TASK-10A-A Phase 12 最終整合ガードを追補**: Step 2 判定は `phase-12-documentation.md` の更新対象表を正本にする運用を追加。`documentation-changelog.md` と `spec-update-summary.md` の Step判定/更新ファイル一覧を同一ターンで突合し、`unassigned-task-detection.md` へ `audit --diff-from HEAD` の `current/baseline` 分離記録を必須化 |
-| **v10.05.0** | **2026-03-02** | **TASK-10A-A Phase 12 再監査運用を追補**: `aiworkflow-requirements/references/ui-ux-feature-components.md` で発生した「機能別仕様の反映漏れ + spec_created見出し矛盾」を是正する再監査手順を反映。UI系タスクでは `ui-ux-components` と `ui-ux-feature-components` の両方に同日証跡（スクリーンショット）を同期し、重複見出し矛盾を禁止するチェック観点を追加 |
-| **v10.04.0** | **2026-03-02** | **TASK-10A-A SkillManagementPanel Phase 12完了**: Phase 12 Task 1-4を実行。実装ガイド（Part 1/2）、コンポーネントドキュメント、仕様更新サマリー、documentation-changelog、未タスク検出レポート（Phase 11 MINOR 4件）を作成。LOGS.md 2ファイル・SKILL.md 2ファイル・task-workflow.md・artifacts.json を同期更新 |
-| **v10.07.0** | **2026-03-03** | **Phase 11画面証跡契約の再発防止を反映**: `phase-11-12-guide.md` / `phase-templates.md` に `manual-test-result.md` 先頭列ヘッダ契約（推奨: `テストケース`、互換: `TC-ID`/`TC`）を明記し、証跡ファイル名の意味一致ルールを追加。`skill-editor-view-closure` に `phase12-task-spec-compliance-check.md` を追加して Phase 12 準拠監査結果を固定 |
-| **v10.06.0** | **2026-03-03** | **UT-UI-05A 実装収束再監査を反映**: `skill-editor-view-closure` の Phase 11/12 成果物不足（manual-test-result / documentation-changelog / unassigned-task-detection / skill-feedback）を補完し、`phase-12-documentation.md` の成果物状態と完了チェックを全件同期。証跡再取得を Playwright スクリプト化し、未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` の3ステップ登録を標準運用へ反映 |
+| **v10.06.0** | **2026-03-02** | **TASK-10A-C 再監査パターンを反映**: `phase-11-manual-test.md` / `phase-12-documentation.md` で依存Phase成果物（2/5/6/7/8/9/10）の参照資料補完を必須化し、`verify-all-specs` の依存参照warningをゼロ化する運用を追記。UIタスクでは `screenshot:*` 再実行で証跡鮮度を固定し、Step 1-A の LOGS/SKILL 4点同時更新を完了条件として明文化 |
 | **v10.05.0** | **2026-03-02** | **Phase 13 PR本文セクション連携を強化**: `phase-templates.md` の Phase 13 に `/ai:diff-to-pr` Phase 3.6（`TARGET_WORKFLOW_DIR` 特定）との連携ルールを追加し、PR本文を `.github/pull_request_template.md` 準拠セクションへ同期。UI/UX変更時は `outputs/phase-11/screenshots/*.png` をPR本文 `## スクリーンショット` へ自動挿入する要件を追加。`phase-11-12-guide.md` 完了チェックへ「Phase 13で対象workflow確認」「`## その他` へのPhase 12実装ガイド反映」確認項目を追加 |
 | **v10.04.0** | **2026-03-02** | **Phase 11 画面カバレッジマトリクス改善**: `phase-templates.md` に画面カバレッジマトリクス（4ステップ: 変更コンポーネント洗い出し/UI状態カバレッジ定義/撮影計画JSON作成/カバレッジレポート）を追加。`phase-11-12-guide.md` の実行フローを9ステップに拡張し、撮影コマンドをA.計画ベース一括撮影/B.個別撮影の2構成に再編。`capture-screenshots.js` を拡張版に更新（--plan/--selector/--action/--action-target/--helpオプション追加、テーマ別グループ化、カバレッジレポート自動生成） |
 | **v10.05.0** | **2026-03-02** | **TASK-10A-B Phase 11/12 再監査を反映**: `phase-11-manual-test.md` に必須セクション「統合テスト連携」を追加し、`manual-test-result.md` を実スクリーンショット証跡ベースへ更新。`unassigned-task-detection.md` を 7件→5件へ再同期。`verify-all-specs` warning 13→0、`validate-phase-output` を 28項目PASS へ復帰 |

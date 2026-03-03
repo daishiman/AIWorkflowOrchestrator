@@ -18,6 +18,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "screenshot:skill-analysis": "node scripts/capture-skill-analysis-view-screenshots.mjs",
+    "screenshot:skill-create-wizard": "node scripts/capture-skill-create-wizard-screenshots.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
