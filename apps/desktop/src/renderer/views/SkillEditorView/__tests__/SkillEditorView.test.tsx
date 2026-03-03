@@ -148,9 +148,8 @@ describe("SkillEditorView", () => {
     const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
     expect(textarea.readOnly).toBe(true);
 
-    // 保存ボタンが disabled
-    const saveButton = screen.getByLabelText("保存");
-    expect(saveButton).toBeDisabled();
+    // UT-UI-05A-005: 保存ボタンが非表示（disabled ではなく非表示に変更）
+    expect(screen.queryByLabelText("保存")).not.toBeInTheDocument();
   });
 
   // SEV-08

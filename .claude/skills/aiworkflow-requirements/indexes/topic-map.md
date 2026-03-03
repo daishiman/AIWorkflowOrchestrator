@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-02
+> 自動生成: 2026-03-03
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -789,15 +789,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L72 |
-| コンポーネント階層図 | L94 |
-| 完了タスク | L138 |
-| TASK-UI-05B 実装完了記録 | L164 |
-| 仕様書作成済みタスク（spec_created） | L182 |
-| TASK-10A-A 実装完了記録 | L184 |
-| SkillCenterView 関連未タスク | L231 |
-| 変更履歴 | L245 |
-| 関連ドキュメント | L279 |
+| デザイン原則サマリー | L74 |
+| コンポーネント階層図 | L96 |
+| 完了タスク | L140 |
+| TASK-UI-05B 実装完了記録 | L166 |
+| 仕様書作成済みタスク（spec_created） | L184 |
+| TASK-10A-A 実装完了記録 | L186 |
+| TASK-UI-05A 実装収束 | L224 |
+| SkillEditorView 関連未タスク | L244 |
+| SkillCenterView 関連未タスク | L254 |
+| 変更履歴 | L268 |
+| 関連ドキュメント | L305 |
 
 ### references/ui-ux-design-principles.md
 
@@ -828,22 +830,22 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L10 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L41 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L148 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L215 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L363 |
-| i18n対応（TASK-3-2-B） | L398 |
-| コピー履歴機能（TASK-3-2-D） | L447 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L556 |
-| SkillStreamingView コンポーネント（TASK-7D） | L567 |
-| SkillEditor UI（TASK-9A / 完了） | L612 |
-| SkillCenterView UI（TASK-UI-05 / 完了） | L740 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L812 |
-| SkillManagementPanel UI（TASK-10A-A / completed） | L886 |
-| 完了タスク | L949 |
-| 仕様書作成済みタスク（spec_created） | L968 |
-| 関連ドキュメント | L998 |
-| 変更履歴 | L1025 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L43 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L150 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L217 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L365 |
+| i18n対応（TASK-3-2-B） | L400 |
+| コピー履歴機能（TASK-3-2-D） | L449 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L558 |
+| SkillStreamingView コンポーネント（TASK-7D） | L569 |
+| SkillEditor UI（TASK-9A / 完了） | L614 |
+| SkillCenterView UI（TASK-UI-05 / 完了） | L742 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L814 |
+| SkillManagementPanel UI（TASK-10A-A / completed） | L888 |
+| 完了タスク | L951 |
+| SkillEditorView 実装収束（TASK-UI-05A） | L970 |
+| 関連ドキュメント | L999 |
+| 変更履歴 | L1031 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1577,24 +1579,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L112 |
-| TASK-10A-A-SKILL-MANAGEMENT-PANEL: SkillManagementPanel 実装（2026-03-02） | L170 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L233 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L275 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L317 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L348 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L406 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L448 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L509 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L550 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L609 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L651 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L698 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L752 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L835 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L883 |
-| 目次 | L921 |
-| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L1118 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L117 |
+| TASK-10A-A-SKILL-MANAGEMENT-PANEL: SkillManagementPanel 実装（2026-03-02） | L175 |
+| UT-UI-05A-IMPLEMENTATION-CLOSURE-001: Phase 12再確認追補（2026-03-03） | L238 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L287 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L329 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L371 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L402 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L460 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L502 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L563 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L604 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L663 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L705 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L752 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L806 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L889 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L937 |
+| 目次 | L975 |
 
 ### references/llm-embedding.md
 
@@ -1936,9 +1938,9 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| 残課題（未タスク） | L2119 |
-| 関連ドキュメント | L2294 |
-| 変更履歴 | L2304 |
+| 残課題（未タスク） | L2162 |
+| 関連ドキュメント | L2347 |
+| 変更履歴 | L2357 |
 
 ### references/testing-accessibility.md
 

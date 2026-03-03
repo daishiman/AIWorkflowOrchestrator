@@ -444,7 +444,7 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | セキュリティ | パストラバーサル検証、送信元ウィンドウ検証 |
 | 実装状況 | 未実装（UT-UI-05A-GETFILETREE-001 で対応予定） |
 | 関連タスク | TASK-UI-05A-SKILL-EDITOR-VIEW |
-| 未タスク正本 | `docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
+| 未タスク正本 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 
 ### FileNode 型定義
 

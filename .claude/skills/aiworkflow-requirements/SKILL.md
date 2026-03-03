@@ -193,13 +193,17 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 ## 変更履歴
 
-> 古い履歴（v8.31.0以前）は [LOGS.md](LOGS.md#変更履歴アーカイブ) に移動しました。
+> 古い履歴（v8.31.0以前）は [LOGS.md](LOGS.md) に移動しました。
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **9.00.0** | **2026-03-02** | **TASK-10A-A Phase 12 最終同期（Step 2完了化 + 苦戦箇所資産化）**: `arch-ui-components.md` に SkillManagementPanel アーキテクチャ節を追加し、`task-workflow.md` と `lessons-learned.md` に苦戦箇所・再利用手順を同一ターンで同期。`documentation-changelog.md` の Step 判定を実体へ是正し、`spec-update-summary.md` / `unassigned-task-detection.md` に `currentViolations=0` と baseline 分離記録を反映 |
 | **8.99.0** | **2026-03-02** | **TASK-10A-A 再監査追補（機能別UI仕様の欠落是正）**: `ui-ux-feature-components.md` に SkillManagementPanel の専用セクション（実装構成・状態管理/IPC依存・画面証跡・改善反映）を追加し、完了タスク台帳へ `TASK-10A-A` を同期。重複していた `仕様書作成済みタスク` 見出しの矛盾を解消し、`task-workflow.md` / `ui-ux-components.md` / Phase 11-12 成果物との整合を再確認 |
 | **8.98.0** | **2026-03-02** | **TASK-10A-A SkillManagementPanel Phase 12 仕様同期**: `task-workflow.md` に TASK-10A-A 完了記録を追加。`ui-ux-components.md` / `ui-ux-feature-components.md` に SkillManagementPanel 実装内容を反映。Phase 11 MINOR 4件を未タスク検出レポートに記録。テスト38件全PASS、カバレッジ100% |
+| **9.01.0** | **2026-03-03** | **UT-UI-05A Phase 12再確認追補を反映**: `task-workflow.md` と `lessons-learned.md` に苦戦箇所3件（manual-testヘッダ契約、証跡ファイル名の意味一致、同ターン同期）と5ステップ簡潔解決手順を追加。`capture-skill-editor-view-screenshots.mjs` 再実行結果（8枚, 2026-03-03）を検証証跡へ同期 |
+| **9.00.0** | **2026-03-03** | **UT-UI-05A 実装収束の最終同期を反映**: `task-workflow.md`/`ui-ux-components.md`/`ui-ux-feature-components.md` を「実装収束完了 + 継続未タスク3件（GETFILETREE/SPEC-CONSISTENCY/SCREENSHOT-NAME-CONSISTENCY）」へ更新。Phase 11 証跡8枚と Phase 12 必須成果物を `skill-editor-view-closure` 正本へ同期し、`generate-index.js` 実行で `topic-map`/`keywords` を再生成 |
+| **8.99.0** | **2026-03-02** | **TASK-10A-B 再監査（画面証跡ベース）を反映**: `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` に SkillAnalysisView 完了記録を追加。`task-workflow.md` のテスト証跡を `74 tests PASS` へ更新し、`verify-all-specs` warning=0 / `validate-phase-output` PASS / `verify-unassigned-links` missing=0 を確認 |
+| **8.98.0** | **2026-03-02** | **TASK-10A-B SkillAnalysisView 実装完了を反映**: Phase 1-12全完了（72テスト全PASS、カバレッジ Line100%/Branch95.83%/Function100%）。LOGS.md 2ファイル・SKILL.md 2ファイルを同時更新し、topic-map.md を再生成。`docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/spec-update-summary.md` を更新 |
 | **8.97.0** | **2026-03-02** | **UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を反映**: `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` を新規作成し、`task-workflow.md` 残課題へ登録。`lessons-learned.md` に関連未タスク導線を追記し、2workflow同時監査（spec_created/completed）での証跡集約・Task 1/3/4/5 実体突合・UI画面証跡・`currentViolations=0` 判定固定を再利用可能化 |
 | **8.96.0** | **2026-03-02** | **Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を反映**: `task-workflow.md` に2workflow同時監査の検証証跡（`verify-all-specs`/`validate-phase-output`/必須成果物突合）と苦戦箇所（証跡分散、baseline/current誤読）を追記。`lessons-learned.md` に再利用4ステップを追加し、未タスク監査の合否基準を `currentViolations=0` 固定で明文化 |
 | **8.95.0** | **2026-03-02** | **TASK-UI-05A 再監査（実装実体同期 + 未タスク正本化）**: `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` の TASK-UI-05A 状態を「実装ファイル実在・統合未完了」へ是正。`docs/30-workflows/unassigned-task/` に未タスク正本3件を作成し、Phase 11再取得スクリーンショット（2026-03-02）と Phase 12 `spec-update-summary.md` / `artifacts.json` 同期を反映 |

@@ -1138,8 +1138,8 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 
 **テーブル形式（manual-test-result.md に記載）**:
 
-| TC-ID | コンポーネント | 状態 | 撮影方法 | テーマ | ファイル名 |
-|-------|--------------|------|---------|--------|-----------|
+| テストケース | コンポーネント | 状態 | 撮影方法 | テーマ | ファイル名 |
+|------------|--------------|------|---------|--------|-----------|
 | TC-01 | {{Component}} | デフォルト表示 | route: /xxx | light | `TC-01-default-light.png` |
 | TC-02 | {{Component}} | デフォルト表示 | route: /xxx --dark | dark | `TC-02-default-dark.png` |
 | TC-03 | {{Component}} | エラー表示 | route: /xxx + エラー操作 | light | `TC-03-error-light.png` |
@@ -1147,6 +1147,10 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 | TC-05 | {{Component}} | 空状態 | route: /xxx（データなし） | light | `TC-05-empty-light.png` |
 
 **撮影計画の命名規則**: `TC-{番号}-{状態ラベル}-{テーマ}.png`
+
+**整合ルール（必須）**:
+- `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
+- 証跡ファイル名は、実際に撮影した状態と意味を一致させる（例: 未保存離脱ダイアログは `*-unsaved-dialog-*.png`）
 
 **JSON形式（一括自動撮影用）**:
 

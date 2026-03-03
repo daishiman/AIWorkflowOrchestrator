@@ -26,6 +26,35 @@
 
 ---
 
+## 2026-03-03 - UT-UI-05A Phase 11/12 契約追補（ヘッダ・命名整合）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（ガイド改善 + 準拠監査固定）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` のテスト結果レポート例を `テストケース` ヘッダへ統一し、`TC-ID`/`TC` 互換を明記
+  - `references/phase-templates.md` に証跡ファイル名の意味一致ルール（状態名必須）を追記
+  - `docs/30-workflows/skill-editor-view-closure/outputs/phase-12/phase12-task-spec-compliance-check.md` を新規作成し、Phase 12 準拠監査（13/13, 28項目, expected=8/covered=8, current=0）を固定
+  - `documentation-changelog.md` / `spec-update-summary.md` に再確認追補を同期
+
+---
+
+## 2026-03-03 - UT-UI-05A-IMPLEMENTATION-CLOSURE-001 収束再監査（Phase 11-12）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（画面検証 + 仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/skill-editor-view-closure/` の Phase 11/12 成果物を再点検し、不足していた `manual-test-result.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を補完
+  - Playwright スクリプトで SkillEditorView の証跡 8 枚を再取得し、`validate-phase11-screenshot-coverage` を PASS へ収束
+  - `phase-12-documentation.md` の成果物ステータス/完了チェックを実態へ同期（全チェック完了）
+  - `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を未タスク化し、3ステップ（指示書/残課題/仕様リンク）を完了
+  - Step 1-A 要件として `aiworkflow-requirements` / `task-specification-creator` の LOGS/SKILL 履歴を同時更新
+
+---
+
 ## 2026-03-02 - TASK-10A-A Phase 12 最終整合（Step判定同期 + 未タスク監査軸固定）
 
 - **Agent**: task-specification-creator

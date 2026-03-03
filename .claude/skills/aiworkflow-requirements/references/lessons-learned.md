@@ -21,6 +21,11 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-02 | 1.28.3 | TASK-10A-A（SkillManagementPanel）を追加。Step 2 誤判定（arch-ui-components未更新）・台帳/教訓同期遅延・unassigned監査の baseline/current 誤読を防ぐ5ステップ手順を標準化 |
+| 2026-03-03 | 1.28.7 | TASK-UI-05A completed-tasks 移管追補: `skill-editor-view-closure` workflow を `completed-tasks/` へ移動し、関連未タスク参照を `completed-tasks/skill-editor-view-closure/unassigned-task/` へ更新 |
+| 2026-03-03 | 1.28.6 | UT-UI-05A-PHASE12-SYNC-BUNDLE-GUARD-001 を追補: 画面再取得後の台帳/教訓/成果物台帳更新の分散を未タスク化し、同一ターン同期ガードを残課題導線へ追加 |
+| 2026-03-03 | 1.28.5 | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 追補: 画面証跡8枚を再取得し、Phase 12再確認時の苦戦箇所3件（manual-testヘッダ契約、証跡ファイル名の意味不一致、台帳/教訓/履歴の同ターン同期）と簡潔解決手順5ステップを追加 |
+| 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
+| 2026-03-02 | 1.28.3 | TASK-10A-B 再監査教訓を追加。Phase 11 のコード分析ベース残置、`phase-11-manual-test.md` 必須節欠落、未タスク件数ドリフト（7→5）を解消する5ステップ手順を標準化 |
 | 2026-03-02 | 1.28.2 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定 |
 | 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
 | 2026-03-02 | 1.28.0 | TASK-UI-05A 再監査教訓を追加。`spec_created` 台帳と実装実体（未追跡ファイル含む）の乖離、未タスクの非正規配置（workflow配下）、画面証跡の鮮度不足を同時に解消する運用を標準化 |
@@ -227,6 +232,55 @@
 | 更新履歴 | `docs/30-workflows/skill-management-panel/outputs/phase-12/documentation-changelog.md` |
 | 未タスク検出 | `docs/30-workflows/skill-management-panel/outputs/phase-12/unassigned-task-detection.md` |
 | 画面証跡 | `docs/30-workflows/skill-management-panel/outputs/phase-11/screenshots/` |
+
+---
+
+## UT-UI-05A-IMPLEMENTATION-CLOSURE-001: Phase 12再確認追補（2026-03-03）
+
+### 苦戦箇所: `manual-test-result.md` の先頭列ヘッダ契約が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 先頭列が `TC-ID` / `テストケース` で混在し、監査条件の読み取りが人に依存しやすい |
+| 再発条件 | テンプレート更新と検証スクリプト契約の同期を別ターンで行う場合 |
+| 原因 | 「どのヘッダが推奨値か」がガイドで明示されていなかった |
+| 対処 | `phase-11-12-guide.md` / `phase-templates.md` に許容ヘッダ（`テストケース` / `TC-ID` / `TC`）と推奨値（`テストケース`）を明文化した |
+| 今後の標準ルール | 検証スクリプト契約を変えた/確認したターンで、テンプレート例も同時更新する |
+
+### 苦戦箇所: 画面証跡ファイル名の意味不一致
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | TC-06 の証跡名が `06-navigation-breadcrumb.png` だが、実体は未保存離脱ダイアログ状態 |
+| 再発条件 | 撮影時の暫定命名をそのまま正式証跡として残す場合 |
+| 原因 | 命名規則が「ユニークであること」に偏り、状態名一致ルールが弱かった |
+| 対処 | 継続未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` で是正を追跡し、テンプレートへ意味一致ルールを追記した |
+| 今後の標準ルール | 証跡は `TC-{番号}-{状態名}.png` を原則とし、状態名の省略を禁止する |
+
+### 苦戦箇所: 画面再取得後の仕様同期が分散しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | スクリーンショット再取得後に台帳/教訓/履歴の更新が分離し、再確認コストが増える |
+| 再発条件 | 「画面取得だけ先に完了」としてターンを分割する場合 |
+| 原因 | Phase 12 Step 2（苦戦箇所記録）の完了条件が実運用で弱かった |
+| 対処 | 再撮影直後に `task-workflow.md` / `lessons-learned.md` / SKILL/LOGS を同一ターンで更新した |
+| 今後の標準ルール | UIタスクは「再撮影 → 検証4点 → 仕様同期（台帳+教訓+履歴）」を1セットで完了判定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `node apps/desktop/scripts/capture-*.mjs` を実行し、証跡画像を再取得する。  
+2. `validate-phase11-screenshot-coverage --workflow <dir>` で `expected TC = covered TC` を確認する。  
+3. `manual-test-result.md` の先頭列と証跡列のヘッダを契約値へ合わせる（推奨: `テストケース` / `証跡`）。  
+4. ファイル名と画面状態の意味一致を確認し、不一致は即時未タスク化して台帳へ登録する。  
+5. `task-workflow.md` と `lessons-learned.md` に苦戦箇所・解決策・再発条件を同一ターンで反映する。  
+
+### 関連未タスク（2026-03-03 追補）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001 | Phase 11 証跡ファイル名の意味一致化（状態名必須） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-phase11-screenshot-name-consistency.md` |
+| UT-UI-05A-PHASE12-SYNC-BUNDLE-GUARD-001 | Phase 12 同一ターン同期ガード（台帳/教訓/検証証跡） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-phase12-sync-bundle-guard.md` |
 
 ---
 

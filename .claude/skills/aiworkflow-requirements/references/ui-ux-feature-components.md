@@ -23,6 +23,8 @@
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | Skill Center View            | TASK-UI-05       | SkillCenterView, FeaturedSection, SkillDetailPanel | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
+| Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | 完了（UT-UI-05A-IMPLEMENTATION-CLOSURE-001） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/` |
+| Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Skill Management Panel       | TASK-10A-A       | SkillManagementPanel, SkillCard | 完了 | `docs/30-workflows/skill-management-panel/` |
 
@@ -965,33 +967,32 @@ TASK-10A-A-SKILL-MANAGEMENT-PANEL は、スキル一覧・検索・編集導線�
 
 ---
 
-## 仕様書作成済みタスク（spec_created）
+## SkillEditorView 実装収束（TASK-UI-05A）
 
-### SkillEditorView UI（TASK-UI-05A / 統合未完了）
-
-TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作成まで完了している。`views/SkillEditorView` の実装ファイルは存在するが、ナビゲーション導線と `skill:getFileTree` IPC連携が未完了のため、統合状態は未完了。
-既存の `EditorView` と `SkillEditor` とは責務が異なり、専用ビューとしては未配線の状態。
+UT-UI-05A-IMPLEMENTATION-CLOSURE-001 により、SkillEditorView の 7 課題（UT-UI-05A-001〜007）を実装収束した。
+`App.tsx` への導線追加、Phase 11 手動検証（スクリーンショット 8 枚）、Phase 12 必須成果物の補完まで完了している。
 
 | 項目 | 状態 | 参照 |
 | --- | --- | --- |
-| ワークフロー仕様（Phase 1-13） | ✅ 作成済み | `docs/30-workflows/skill-editor-view/` |
-| 実装コード（`views/SkillEditorView`） | ⚠️ 実装済み（統合未完了） | `apps/desktop/src/renderer/views/SkillEditorView/` |
-| ナビゲーション導線（`ViewType` / `AppDock`） | ❌ 未配線 | `apps/desktop/src/renderer/store/types.ts`, `App.tsx` |
-| 画面検証証跡 | ✅ 取得済み | `docs/30-workflows/skill-editor-view/outputs/phase-11/` |
-| `skill:getFileTree` IPCチャネル | ❌ 未実装 | UT-UI-05A-GETFILETREE-001 で対応予定。`api-ipc-agent.md` に仕様追加済み |
-| 実装残課題の統合管理 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
-| `useFileTree` 契約整合 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+| ワークフロー仕様（Phase 1-13） | ✅ 完了 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/` |
+| 実装コード（`views/SkillEditorView`） | ✅ 完了 | `apps/desktop/src/renderer/views/SkillEditorView/` |
+| ナビゲーション導線（`App.tsx` / `ViewType`） | ✅ 完了 | `apps/desktop/src/renderer/App.tsx`, `apps/desktop/src/renderer/store/types.ts` |
+| 画面検証証跡 | ✅ 取得済み | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/` |
+| `skill:getFileTree` IPCチャネル | ⚠️ 継続課題 | UT-UI-05A-GETFILETREE-001 で対応予定 |
+| fileTree 契約整合 | ⚠️ 継続課題 | UT-UI-05A-SPEC-CONSISTENCY-001 で対応予定 |
+| Phase 11 証跡ファイル名の意味一致化 | ⚠️ 継続課題 | UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001 で対応予定 |
 
 ### 画面検証証跡
 
 | 証跡 | ファイル |
 | --- | --- |
-| 現行 Dashboard 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-01-current-dashboard.png` |
-| 現行 Editor 画面 | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-02-current-editor-view.png` |
-| 再監査 Dashboard 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-03-current-dashboard-20260302.png` |
-| 再監査 Editor 画面（2026-03-02） | `docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots/UI05A-04-current-editor-20260302.png` |
-| 手動検証結果 | `docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md` |
-| 発見課題 | `docs/30-workflows/skill-editor-view/outputs/phase-11/discovered-issues.md` |
+| FileTree キーボードフォーカス | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/01-filetree-keyboard-focus.png` |
+| モバイルドロワー開閉 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/02-mobile-drawer-closed.png`, `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/03-mobile-drawer-open.png` |
+| 保存成功 Toast | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/04-save-toast-success.png` |
+| 読み取り専用表示 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/05-readonly-indicator.png` |
+| 離脱確認ダイアログ | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/screenshots/06-navigation-breadcrumb.png` |
+| 手動検証結果 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/manual-test-result.md` |
+| 発見課題 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/discovered-issues.md` |
 
 ---
 
@@ -1019,6 +1020,11 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-05 SkillCenterView実装](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05A SkillEditorView仕様（spec_created）](../../../docs/30-workflows/skill-editor-view/index.md)
 - [TASK-UI-05A 画面検証結果](../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
+- [TASK-UI-05A SkillEditorView仕様（実装収束）](../../../docs/30-workflows/completed-tasks/skill-editor-view-closure/index.md)
+- [TASK-UI-05A 画面検証結果](../../../docs/30-workflows/completed-tasks/skill-editor-view-closure/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-B SkillAnalysisView仕様](../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
+- [TASK-10A-B 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-B 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/)
 
 ---
 
@@ -1027,6 +1033,11 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
 | 2026-03-02 | v1.12.9    | TASK-10A-A 再監査反映: 収録機能一覧・専用セクション・完了タスク台帳へ SkillManagementPanel を追加。TC-01〜TC-10 の画面証跡と実装改善点を同期し、`仕様書作成済みタスク` の重複見出し矛盾を解消 |
+| 2026-03-03 | v1.13.3    | UT-UI-05A 実装収束の追補同期: SkillEditorView 継続未タスクへ `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を追加し、残課題運用を IPC契約2件 + 証跡命名1件の3件構成へ更新 |
+| 2026-03-03 | v1.13.2    | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 完了反映: SkillEditorView の状態を `完了` へ更新。`App.tsx` 導線配線、Phase 11 画面証跡（8枚）、Phase 12 必須成果物（manual-test-result/discovered-issues/unassigned-task-detection/skill-feedback/spec-update-summary）を `skill-editor-view-closure` 正本へ同期 |
+| 2026-03-02 | v1.13.1    | TASK-10A-B 未タスク追補: 苦戦箇所3件（Phase 11必須節検証/画面証跡鮮度/未タスク件数再計算）を独立未タスク `UT-TASK-10A-B-006〜008` として追加し、関連未タスク表を8件へ拡張 |
+| 2026-03-02 | v1.13.0    | TASK-10A-B 追補: 実装時の苦戦箇所（Phase 11 実証跡化/必須節不足/未タスク件数ドリフト）と5ステップ簡潔解決手順を追加 |
+| 2026-03-02 | v1.12.9    | TASK-10A-B 完了反映: 収録機能一覧・完了タスクへ SkillAnalysisView を追加。専用セクション（構成/IPC/a11y補正/画面証跡/未タスク5件）を新設 |
 | 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/unassigned-task/` へ統一 |
 | 2026-03-01 | v1.12.4    | TASK-UI-05A spec_created 反映: 収録機能一覧へ `Skill Editor View`（実装未着手）を追加。`仕様書作成済みタスク` セクションを新設し、未実装ギャップ（View未生成・導線未配線）と画面検証証跡を明記 |
 | 2026-03-02 | v1.12.8    | UT-UI-05B-001 登録: TASK-UI-05B の苦戦箇所（画面証跡の再撮影漏れリスク）を未タスク化し、関連未タスク表へ `task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` を追加 |

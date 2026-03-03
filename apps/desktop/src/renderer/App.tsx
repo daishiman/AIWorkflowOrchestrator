@@ -19,6 +19,8 @@ import { ScheduleManager } from "./views/ScheduleManager";
 import { DebugPanel } from "./views/DebugPanel";
 import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
+import { SkillCenterView } from "./views/SkillCenterView";
+import { SkillEditorView } from "./views/SkillEditorView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView } from "./components/skill";
@@ -58,6 +60,8 @@ function App(): JSX.Element {
   const currentView = useCurrentView();
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const currentSkillName = useAppStore((state) => state.currentSkillName);
+  const setCurrentSkillName = useAppStore((state) => state.setCurrentSkillName);
   const dynamicIsland = useAppStore((state) => state.dynamicIsland);
 
   useEffect(() => {
@@ -91,6 +95,18 @@ function App(): JSX.Element {
         return <DebugPanel />;
       case "analyticsDashboard":
         return <AnalyticsDashboard />;
+      case "skill-center":
+        return <SkillCenterView />;
+      case "skill-editor":
+        return (
+          <SkillEditorView
+            skillName={currentSkillName ?? "demo-skill"}
+            onClose={() => {
+              setCurrentView("skill-center");
+              setCurrentSkillName(null);
+            }}
+          />
+        );
       case "settings":
         return <SettingsView />;
       default:
@@ -182,6 +198,29 @@ function App(): JSX.Element {
             element={renderStandaloneView(
               <SkillAnalysisView
                 skillName="demo-skill"
+                onClose={() => window.history.back()}
+              />,
+            )}
+          />
+          <Route
+            path="/advanced/skill-center"
+            element={renderStandaloneView(<SkillCenterView />)}
+          />
+          <Route
+            path="/advanced/skill-editor"
+            element={renderStandaloneView(
+              <SkillEditorView
+                skillName="demo-skill"
+                onClose={() => window.history.back()}
+              />,
+            )}
+          />
+          <Route
+            path="/advanced/skill-editor-readonly"
+            element={renderStandaloneView(
+              <SkillEditorView
+                skillName="demo-skill"
+                isReadOnly
                 onClose={() => window.history.back()}
               />,
             )}
