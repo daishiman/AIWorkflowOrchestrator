@@ -1146,6 +1146,35 @@
 - **関連タスク**: TASK-10A-A-SKILL-MANAGEMENT-PANEL
 - **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
 
+### [Phase 12] UI再撮影 + TCカバレッジ検証の同時固定（TASK-10A-C）
+
+- **状況**: UI証跡を再撮影しても、TCと画像の紐付け検証を省略すると `manual-test-result.md` と実ファイルの対応がずれやすい
+- **解決策**:
+  1. `pnpm --filter @repo/desktop run screenshot:<feature>` で当日再撮影する
+  2. `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` を実行し、TC単位の欠落を機械検証する
+  3. `ls -lt <workflow>/outputs/phase-11/screenshots` で更新時刻を確認し、証跡鮮度を台帳へ記録する
+  4. `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` に同一の検証値（撮影件数・TC件数）を同期する
+- **効果**: 画面証跡の鮮度確認とTC紐付け確認を分離せず実施でき、Phase 11/12 の再監査差し戻しを抑制できる
+- **適用条件**: UI機能の Phase 11/12 でスクリーンショットを完了証跡として扱う全タスク
+- **発見日**: 2026-03-02
+- **関連タスク**: TASK-10A-C
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [screenshot-coverage.md](../../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshot-coverage.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
+
+### [Phase 12] 仕様書別SubAgent分担を完了台帳へ固定（TASK-10A-C）
+
+- **状況**: `spec-update-summary.md` には分担を書いたが、`task-workflow.md` の完了記録に分担表が無く、再監査時の責務追跡が難しくなる
+- **解決策**:
+  1. `task-workflow.md` の対象タスク節へ `SubAgent-A..E` の分担表（api-ipc/interfaces/security/task/lessons）を転記する
+  2. 各SubAgentの完了条件を「実装同期済み」「検証証跡同期済み」の2軸で明記する
+  3. `spec-update-summary.md` と `task-workflow.md` の分担内容を同一ターンで一致させる
+  4. `verify-all-specs` / `validate-phase-output` 実行後に分担表を最終更新して差分固定する
+  5. `api-ipc/interfaces/security/task-workflow/lessons` の5仕様書すべてに「実装内容 + 苦戦箇所 + 簡潔手順」があることを最終確認する
+- **効果**: 関心分離ベースの責務境界が台帳に残り、次タスクで再利用しやすくなる
+- **適用条件**: 仕様書を複数SubAgentで同期する Phase 12 タスク全般
+- **発見日**: 2026-03-02
+- **関連タスク**: TASK-10A-C
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
+
 ### [Phase 12] `phase-12-documentation.md` ステータス同期（TASK-9H)
 
 - **状況**: `outputs/phase-12` の成果物とシステム仕様更新が完了していても、`phase-12-documentation.md` のメタ情報・完了条件チェックが `未実施` のまま残る
@@ -1485,6 +1514,26 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: 監査テンプレートに workflow別証跡表を追加し、合否指標は `currentViolations` 固定で記録する
 - **発見日**: 2026-03-02
 - **関連タスク**: TASK-UI-05A-SKILL-EDITOR-VIEW, TASK-UI-05-SKILL-CENTER-VIEW
+
+### [Phase12] UI再撮影後にTCカバレッジ検証を省略
+
+- **状況**: スクリーンショットを再取得して `ls` だけ確認し、TC紐付け検証（coverage validator）を実施せず完了判定する
+- **問題**: 画像枚数が揃っていても TC欠落や命名不一致を見逃し、`manual-test-result` の証跡信頼性が低下する
+- **原因**: 「再撮影」と「TC紐付け検証」を別工程として扱い、後者を必須化していない
+- **教訓**: UI証跡は「再撮影 + TCカバレッジ検証 + 更新時刻確認」の3点セットで完了判定する
+- **対策**: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` を Phase 12 標準コマンドへ追加し、`PASS` を台帳へ転記する
+- **発見日**: 2026-03-02
+- **関連タスク**: TASK-10A-C
+
+### [Phase12] SubAgent分担が `spec-update-summary` のみに残る
+
+- **状況**: 分担情報を `spec-update-summary.md` にのみ記録し、`task-workflow.md` の完了節へ転記しない
+- **問題**: 完了台帳から責務境界を追跡できず、再監査で「誰が何を同期したか」を再調査する必要が出る
+- **原因**: Step 2の成果物更新で台帳側の転記を必須条件にしていない
+- **教訓**: 分担情報は「成果物」と「完了台帳」の両方へ残す
+- **対策**: Phase 12チェックリストに「task-workflow へのSubAgent分担表転記」を必須項目として追加する
+- **発見日**: 2026-03-02
+- **関連タスク**: TASK-10A-C
 
 ### [Phase12] `--target-file` を「対象のみ出力」と誤解
 

@@ -286,6 +286,22 @@ export interface SkillAPI {
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
 
+  // === Skill Create Wizard API (TASK-10A-C) ===
+
+  /**
+   * スキルをウィザード経由で作成する
+   * @param params - 作成パラメータ（説明とオプション）
+   * @returns 作成結果（パスを含む）
+   */
+  create: (params: {
+    description: string;
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    };
+  }) => Promise<{ path: string }>;
+
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
 
   /**
@@ -647,6 +663,18 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
+
+  // === Skill Create Wizard API (TASK-10A-C) ===
+
+  create: (params: {
+    description: string;
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    };
+  }): Promise<{ path: string }> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATE, params.description, params.options),
 
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
 

@@ -228,9 +228,9 @@
 - **引数**: `mainWindow: BrowserWindow`, `service: SkillService`
 - **mainWindow用途**: Sender検証（`validateIpcSender`）、権限/進捗イベントの通知経路
 - **service用途**: `SkillService` を中心に `SkillAnalyzer` / `SkillImprover` / `PromptOptimizer` / `SkillForker` / `SkillScheduler` へ処理委譲
-- **対応チャネル**: `skill:list`, `skill:scan`, `skill:getImported`, `skill:import`, `skill:remove`, `skill:get-detail`, `skill:execute`, `skill:abort`, `skill:get-status`, `skill:analyze`, `skill:improve`, `skill:optimize`, `skill:optimize:variants`, `skill:optimize:evaluate`, `skill:fork`, `skill:schedule:*`
+- **対応チャネル**: `skill:list`, `skill:scan`, `skill:getImported`, `skill:import`, `skill:remove`, `skill:create`, `skill:get-detail`, `skill:execute`, `skill:abort`, `skill:get-status`, `skill:analyze`, `skill:improve`, `skill:optimize`, `skill:optimize:variants`, `skill:optimize:evaluate`, `skill:fork`, `skill:schedule:*`
 - **セキュリティ**: 全 invoke ハンドラーで sender 検証 + P42準拠バリデーション + エラーサニタイズを適用
-- **関連タスク**: TASK-9C, TASK-9E, TASK-9G
+- **関連タスク**: TASK-9C, TASK-9E, TASK-9G, TASK-10A-C
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
 
@@ -479,6 +479,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v2.18.2 | 2026-03-02 | TASK-10A-C反映: `registerSkillHandlers` の対応チャネルへ `skill:create` を追加し、Pattern 3 の関連タスクに TASK-10A-C を追記 |
 | v2.18.1 | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `spec_created` から `実装完了` へ更新し、4ビューの実装導線（App navigation + direct routing）を反映 |
 | v2.18.0 | 2026-03-01 | TASK-UI-05B spec_created を反映: UI/UXアーキテクチャにSkill Advanced Views（4ビュー/33コンポーネント）を追加。ディレクトリ構造にビューディレクトリを追記 |
 | 1.9.0 | 2026-02-28 | TASK-9E反映: `registerSkillHandlers` を実装準拠で Pattern 3（`mainWindow + service`）へ修正。`skill:fork` を含むチャネル責務、`SkillForker` への委譲、sender検証/P42/サニタイズの統合境界を追記 |

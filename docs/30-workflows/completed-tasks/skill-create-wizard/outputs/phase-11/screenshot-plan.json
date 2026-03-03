@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-03-02T00:00:00+09:00",
+  "route": "/advanced/skill-create-wizard",
+  "captures": [
+    {
+      "tcId": "TC-01",
+      "state": "step1-initial-dark",
+      "priority": "A",
+      "file": "screenshots/TC-01-step1-initial-dark.png"
+    },
+    {
+      "tcId": "TC-02",
+      "state": "step1-filled-dark",
+      "priority": "A",
+      "file": "screenshots/TC-02-step1-filled-dark.png"
+    },
+    {
+      "tcId": "TC-03",
+      "state": "step2-configure-dark",
+      "priority": "A",
+      "file": "screenshots/TC-03-step2-configure-dark.png"
+    },
+    {
+      "tcId": "TC-04",
+      "state": "step3-generating-dark",
+      "priority": "B",
+      "file": "screenshots/TC-04-step3-generating-dark.png"
+    },
+    {
+      "tcId": "TC-05",
+      "state": "step4-complete-dark",
+      "priority": "A",
+      "file": "screenshots/TC-05-step4-complete-dark.png"
+    },
+    {
+      "tcId": "TC-06",
+      "state": "step3-error-dark",
+      "priority": "B",
+      "file": "screenshots/TC-06-step3-error-dark.png"
+    },
+    {
+      "tcId": "TC-07",
+      "state": "step1-initial-light",
+      "priority": "A",
+      "file": "screenshots/TC-07-step1-initial-light.png"
+    },
+    {
+      "tcId": "TC-08",
+      "state": "step1-initial-mobile-dark",
+      "priority": "A",
+      "file": "screenshots/TC-08-step1-initial-mobile-dark.png"
+    }
+  ]
+}

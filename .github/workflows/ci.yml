@@ -204,9 +204,9 @@ jobs:
       - name: Run desktop app tests (shard ${{ matrix.shard }}/16)
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm --filter @repo/desktop test:run -- --shard=${{ matrix.shard }}/16
+            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/16
           else
-            pnpm --filter @repo/desktop test:run -- --shard=${{ matrix.shard }}/16 --coverage
+            pnpm --filter @repo/desktop exec vitest run --shard=${{ matrix.shard }}/16 --coverage
           fi
 
       - name: Upload coverage artifact
