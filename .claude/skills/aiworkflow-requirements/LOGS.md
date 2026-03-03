@@ -5,146 +5,112 @@
 
 ---
 
-## 2026-03-03 - TASK-10A-C 未タスク仕様書2件の追加（再発防止ガード）
+## 2026-03-03 - UT-UI-05A Phase 12再確認追補（苦戦箇所テンプレート同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-10A-C（SkillCreateWizard）
-- 目的: 今回の苦戦箇所を再利用可能な未タスクへ分離し、Phase 12 の再発防止導線を固定
+- 対象: `UT-UI-05A-IMPLEMENTATION-CLOSURE-001`（再確認追補）
+- 目的: 画面証跡再取得後のシステム仕様書同期（task-workflow / lessons）と再発防止テンプレートを同一ターンで固定する
 
 ### SubAgent分担
-- SubAgent-A: 未タスク仕様書A作成（5仕様書同時同期ガード）
-- SubAgent-B: 未タスク仕様書B作成（Phase 11画面証跡3点セットガード）
-- SubAgent-C: `task-workflow.md`（TASK-10A-C セクション + 残課題テーブル同期）
-- SubAgent-D: `lessons-learned.md`（関連未タスク導線 + 変更履歴追記）
-- SubAgent-E: 検証（target監査 / links監査 / diff監査）
+- SubAgent-A: 画面証跡再取得と検証（capture + coverage）
+- SubAgent-B: `task-workflow.md` 完了タスク節更新（苦戦箇所/5ステップ）
+- SubAgent-C: `lessons-learned.md` 教訓追補（再発条件付き）
+- SubAgent-D: 仕様運用履歴更新（SKILL/LOGS）
 
 ### 実施内容
-- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-five-spec-sync-guard-001.md` を新規作成
-- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md` を新規作成
-- `task-workflow.md` の TASK-10A-C セクションに「Phase 12で検出した未タスク」表を追加し、残課題テーブルへ2件を登録
-- `lessons-learned.md` の TASK-10A-C セクションへ関連未タスク表を追加し、変更履歴を 1.28.6 へ更新
-- `SKILL.md` 変更履歴を `v9.00.4` として同期
+- `capture-skill-editor-view-screenshots.mjs` を再実行し、8枚証跡を再取得（2026-03-03 08:30）
+- `task-workflow.md` の UT-UI-05A 完了節へ苦戦箇所3件と簡潔解決手順（5ステップ）を追記
+- `lessons-learned.md` に同内容を再利用テンプレート形式で追記（version 1.28.5）
+- `documentation-changelog.md` / `spec-update-summary.md` に再確認追補を反映
 
 ### 結果
 - ステータス: success
-- 補足: 未タスクは `task-specification-creator` テンプレート準拠（`## メタ情報` + `## 1..9`）で作成
+- 補足: `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`validate-phase11-screenshot-coverage` PASS（expected=8/covered=8）、`audit --diff-from HEAD` は `currentViolations=0`
 
 ---
 
-## 2026-03-03 - TASK-10A-C 最終再確認（仕様反映 + 画面証跡）
+## 2026-03-03 - UT-UI-05A-IMPLEMENTATION-CLOSURE-001 収束再監査（Phase 12 Step 1-A）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-10A-C（SkillCreateWizard）
-- 目的: ユーザー依頼に基づき、今回実装内容と苦戦箇所が5仕様書へ反映済みかを再確認し、同種課題の再利用導線を固定
+- 対象: `UT-UI-05A-IMPLEMENTATION-CLOSURE-001`（SkillEditorView 実装残課題収束）
+- 目的: 実装・画面証跡・Phase 12成果物・システム仕様書の最終整合を同一ターンで完了する
 
 ### SubAgent分担
-- SubAgent-A: `api-ipc-agent.md`（`skill:create` 契約 + 苦戦箇所）
-- SubAgent-B: `interfaces-agent-sdk-skill.md`（Preload API契約 + 苦戦箇所）
-- SubAgent-C: `security-electron-ipc.md`（4層防御 + 苦戦箇所）
-- SubAgent-D: `task-workflow.md`（完了台帳 + 検証証跡 + SubAgent分担）
-- SubAgent-E: `lessons-learned.md`（再発条件 + 簡潔解決手順）
+- SubAgent-A: 画面検証証跡の再取得（Playwright、8スクリーンショット）
+- SubAgent-B: workflow成果物補完（Phase 11/12 出力、artifacts 同期）
+- SubAgent-C: システム仕様同期（`task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md`）
+- SubAgent-D: 監査（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）
 
 ### 実施内容
-- `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行し、今回差分 `currentViolations=0` を確認
-- `pnpm --filter @repo/desktop run screenshot:skill-create-wizard` で TC-01〜TC-08 を再撮影
-- `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/skill-create-wizard` を実行し、`expected 8 / covered 8` を確認
-- 5仕様書（api-ipc / interfaces / security / task / lessons）に実装内容・苦戦箇所・簡潔解決手順が揃っていることを再確認
+- `App.tsx` に `skill-center` / `skill-editor` 導線を追加し、SkillEditorView 到達経路を実装へ同期
+- `outputs/phase-11` に手動検証結果を追加し、証跡 8 枚を `outputs/phase-11/screenshots/` へ集約
+- `outputs/phase-12` の必須成果物（documentation-changelog / unassigned-task-detection / skill-feedback / spec-update-summary）を作成
+- 派生未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を `docs/30-workflows/unassigned-task/` に登録し、`task-workflow.md` 残課題へ同期
+- `ui-ux-components.md` / `ui-ux-feature-components.md` の SkillEditorView セクションを「実装収束完了 + 継続未タスク3件」へ更新
+- `node scripts/generate-index.js` 実行で `indexes/topic-map.md` / `indexes/keywords.json` を再生成
 
 ### 結果
 - ステータス: success
-- 補足: SubAgent分離による関心分離と、UI証跡（再撮影 + TCカバレッジ）の同時完了条件を満たした
+- 補足: `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`validate-phase11-screenshot-coverage` PASS、`verify-unassigned-links` PASS、`audit --diff-from HEAD` は `currentViolations=0`
 
 ---
 
-## 2026-03-02 - TASK-10A-C SubAgent責務分離の仕様固定
+## 2026-03-02 - TASK-10A-A Phase 12 最終同期（Step 2完了化 + 苦戦箇所資産化）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-10A-C（SkillCreateWizard）
-- 目的: 仕様書ごとのSubAgent分担を明文化し、実装内容と苦戦箇所の再利用性を向上
+- 対象: `TASK-10A-A-SKILL-MANAGEMENT-PANEL`
+- 目的: Phase 12 の Step 判定矛盾を解消し、実装内容と苦戦箇所を system spec 正本へ完全同期する
 
 ### SubAgent分担
-- SubAgent-A: `task-workflow.md`（分担表・完了台帳・検証証跡）
-- SubAgent-B: `api-ipc-agent.md`（IPC契約 + 苦戦箇所）
-- SubAgent-C: `interfaces-agent-sdk-skill.md`（型契約 + 苦戦箇所）
-- SubAgent-D: `security-electron-ipc.md`（4層防御 + 苦戦箇所）
-- SubAgent-E: `docs/.../spec-update-summary.md`（テンプレート準拠最適化）
+- SubAgent-A: `references/arch-ui-components.md`（SkillManagementPanel アーキテクチャ節追加）
+- SubAgent-B: `references/task-workflow.md`（苦戦箇所・5ステップ手順・監査証跡追記）
+- SubAgent-C: `references/lessons-learned.md`（再利用可能な教訓セクション追加）
+- SubAgent-D: `outputs/phase-12/*.md`（documentation-changelog / spec-update-summary / unassigned-task-detection 整合）
 
 ### 実施内容
-- `task-workflow.md` の TASK-10A-C セクションへ仕様書別SubAgent分担表を追加
-- `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `security-electron-ipc.md` に TASK-10A-C の苦戦箇所と簡潔手順を追加
-- `spec-update-summary.md` をテンプレート準拠（分担表 + 苦戦箇所）へ更新
-- `SKILL.md` 変更履歴へ `v9.00.2` を追記
+- `documentation-changelog.md` の Step 判定を是正（Step 2: 該当なし → 完了）
+- `arch-ui-components.md` に TASK-10A-A のレイヤー構成・状態遷移・IPC境界・苦戦箇所を追記
+- `task-workflow.md` と `lessons-learned.md` に「Step 2誤判定」「台帳/教訓同期遅延」「baseline/current誤読」を反映
+- `spec-update-summary.md` に `arch-ui-components.md` と `lessons-learned.md` を追加、画面証跡一覧へ `tc-07-loading.png` を補完
+- `unassigned-task-detection.md` に `audit --diff-from HEAD` 判定（current=0, baseline=78）を追記
 
 ### 結果
 - ステータス: success
-- 補足: 関心分離に基づく仕様同期責務が仕様書単位で追跡可能になった
+- 補足: `verify-unassigned-links` は missing=0、`audit --diff-from HEAD` は currentViolations=0（baseline は既存負債）
 
 ---
 
-## 2026-03-02 - TASK-10A-C 教訓追補（lessons-learned同期）
+## 2026-03-02 - TASK-10A-A 再監査（機能別UI仕様の欠落是正 + 参照互換復元）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: TASK-10A-C（SkillCreateWizard）
-- 目的: 同種課題への再利用性を高めるため、苦戦箇所と簡潔解決手順を `lessons-learned.md` に追補
-
-### 実施内容
-- `references/lessons-learned.md` へ TASK-10A-C セクションを追加
-- 苦戦箇所3件（TC紐付け検証漏れ、`skill:create` 4仕様書同期漏れ、依存成果物参照漏れ）を再発条件付きで記録
-- 同種課題向け5ステップ手順を追加し、`task-workflow.md` / `ui-ux-feature-components.md` と整合
-- `SKILL.md` 変更履歴へ `v9.00.1` を追記
-
-### 結果
-- ステータス: success
-- 補足: Phase 12 Step 2 の「実装内容 + 苦戦箇所」同期要件を `task-workflow` と `lessons` の両台帳で充足
-
----
-
-## 2026-03-02 - TASK-10A-C SkillCreateWizard 再監査と仕様同期（Phase 12 Step 1-A）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-10A-C（SkillCreateWizard）
-- 目的: 本ワークツリーの実装・成果物・仕様同期の再監査を実施し、`skill:create` 契約と Phase 11/12 の依存整合漏れを解消
+- 対象: `TASK-10A-A-SKILL-MANAGEMENT-PANEL`
+- 目的: 機能別仕様の反映漏れと台帳矛盾を是正し、画面証跡・仕様書・成果物の整合を確定する
 
 ### SubAgent分担
-- SubAgent-A: `task-workflow.md` に TASK-10A-C 完了記録・検証証跡・変更履歴を追加
-- SubAgent-B: `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` に `skill:create` 契約を同期
-- SubAgent-C: `security-electron-ipc.md` に `skill:create` セキュリティ実装パターンを追加
-- SubAgent-D: `phase-11-manual-test.md` / `phase-12-documentation.md` の依存Phase参照漏れを補完し、スクリーンショット証跡を再取得
+- SubAgent-A: `ui-ux-feature-components.md`（TASK-10A-A セクション追加、完了タスク反映、spec_created重複見出し矛盾解消）
+- SubAgent-B: 画面証跡再確認（TC-01〜TC-10 ファイル実在と成果物参照の突合）
+- SubAgent-C: 検証（`verify-all-specs --workflow` / `validate-phase-output --phase 11,12` / `verify-unassigned-links`）
+- SubAgent-D: 参照互換復元（`task-030` / `task-041a` の旧パス復元で履歴リンク破断を防止）
 
 ### 実施内容
-- 画面検証を再実施し、`screenshot:skill-create-wizard` で TC-01〜TC-08 の8枚を再取得
-- Phase 11/12 の参照資料に Phase 2/5/6/7/8/9/10 成果物を追加して warning 原因を解消
-- `task-workflow.md` / `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `security-electron-ipc.md` を `skill:create` 実装実体へ同期
-- `LOGS.md` 2ファイル・`SKILL.md` 2ファイルの履歴更新を実施
+- `ui-ux-feature-components.md` に SkillManagementPanel の専用仕様節を追加
+  - 実装構成、状態管理・IPC依存、画面証跡、実装改善点、関連ドキュメント
+- `完了タスク` 台帳へ `TASK-10A-A` を追加
+- 重複していた `仕様書作成済みタスク（spec_created）` 見出しの矛盾を解消
+- `task-030-ui-05-skill-center-view.md` / `task-041a-task-10a-a-management-panel.md` を旧パスへ互換復元
+- 検証を再実行
+  - `verify-all-specs --workflow docs/30-workflows/skill-management-panel`: PASS（13/13, error=0, warning=0）
+  - `validate-phase-output ... --phase 11`: PASS
+  - `validate-phase-output ... --phase 12`: PASS
+  - `verify-unassigned-links`: PASS（89/89, missing=0）
 
 ### 結果
 - ステータス: success
-- 補足: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `validate-phase11-screenshot-coverage` を再実行し、PASSを確認
-
----
-
-## 2026-03-02 - TASK-10A-B SkillAnalysisView 実装完了（Phase 12 Step 1-A）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: TASK-10A-B（SkillAnalysisView スキル分析ビュー）
-- 目的: Phase 1-12完了に伴うタスク完了記録の追加
-
-### 実施内容
-- Phase 1-12 全完了
-- テスト: 72テスト全PASS
-- カバレッジ: Line 100% / Branch 95.83% / Function 100%
-- LOGS.md 2ファイル更新（P1/P25対策）
-- SKILL.md 2ファイル変更履歴更新（P29対策）
-- topic-map.md 再生成（P2/P27対策）
-
-### 結果
-- ステータス: success
+- 補足: TASK-10A-A の仕様反映は `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` / Phase 11-12成果物で整合済み
 
 ---
 
@@ -6588,39 +6554,154 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - 対象仕様書: `ui-ux-components.md`, `ui-ux-feature-components.md`, `arch-ui-components.md`, `arch-state-management.md`, `task-workflow.md`
 - 未タスク管理3ステップ: 完了（指示書作成 / 台帳登録 / 参照リンク）
 
-## 2026-03-02 - TASK-10A-B 再監査（画面証跡ベース）と仕様同期
+## 2026-03-02 - TASK-10A-A SkillManagementPanel Phase 12 仕様同期
 
 ### コンテキスト
 
 - スキル: aiworkflow-requirements
-- 対象: TASK-10A-B SkillAnalysisView
-- 目的: コード分析ベース記録を実スクリーンショット検証へ置換し、Phase 11/12 と正本仕様書の矛盾を解消
+- 対象タスク: TASK-10A-A-SKILL-MANAGEMENT-PANEL
+- 目的: SkillManagementPanel 実装内容を正本仕様書へ反映し、未タスク管理を完了
 
 ### 実施内容
 
-- 画面検証を再実施
-  - `capture-skill-analysis-view-screenshots.mjs` 実行で TC-01〜TC-04 を再取得
-  - 4枚を目視確認（通常/選択/改善後/エラー）
-- テスト再実行
-  - `pnpm --filter @repo/desktop typecheck` PASS
-  - SkillAnalysis関連4テストファイル `74 tests PASS`
-- Phase成果物の整合修正
-  - `phase-11-manual-test.md` に「統合テスト連携」を追記
-  - `outputs/phase-11/manual-test-result.md` を実画面証跡ベースへ更新
-  - `outputs/phase-11/discovered-issues.md` を新規課題0件へ更新
-  - `outputs/phase-12/unassigned-task-detection.md` を 7件→5件へ再同期
-  - `phase-12-documentation.md` / `documentation-changelog.md` / `spec-update-summary.md` を completed へ同期
-- 正本仕様更新
-  - `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` に TASK-10A-B 完了反映
-  - `task-workflow.md` の TASK-10A-B テスト証跡を `74 tests` に更新
-- インデックス再生成
-  - `generate-index.js` 実行（150ファイル、1400キーワード）
+- `references/ui-ux-components.md` を確認（SkillManagementPanel の追加対象）
+- `references/ui-ux-feature-components.md` を確認（SkillManagementPanel セクション追加対象）
+- `references/task-workflow.md` に TASK-10A-A 完了記録を追加
+- LOGS.md 2ファイル更新（P1/P25対策）
+- SKILL.md 2ファイル変更履歴更新（P29対策）
+- topic-map.md 再生成を実行
 
 ### 結果
 
 - ステータス: success
-- 検証結果:
-  - `verify-all-specs --workflow docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（13/13, warning=0）
-  - `validate-phase-output docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（28項目）
-  - `verify-unassigned-links`: PASS（97/97, missing=0）
-  - `audit-unassigned-tasks --json --diff-from HEAD`: `currentViolations=0`（baseline=75）
+- テスト: 38件全PASS、カバレッジ Line/Function/Branch 100%
+- 成果物: SkillManagementPanel.tsx + テスト + Phase 12ドキュメント一式
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 仕様同期（再監査）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: UT-UI-05A-GETFILETREE-001
+- 目的: getFileTree 実装完了を API/UI/Security/Interface/Task 台帳へ同期し、Phase 11/12 成果物の欠落を解消
+
+### 実施内容
+
+- `references/api-ipc-agent.md` を更新
+  - `skill:getFileTree` を実装済みへ変更
+  - 戻り値契約を `IpcResult<SkillFileTreeNode[]>`（Main）+ `SkillFileTreeNode[]`（Preload公開）へ是正
+  - skillFileAPI を 7 invoke チャネル前提へ更新
+- `references/ui-ux-feature-components.md` を更新
+  - SkillEditorView の `skill:getFileTree` 状態を実装完了へ変更
+  - `completed-tasks/skill-editor-view` 正本パスへ修正
+  - 2026-03-03 取得の画面証跡（UI05A-GFT-01/02）を追加
+- `references/task-workflow.md` を更新
+  - `UT-UI-05A-GETFILETREE-001` / `UT-UI-05A-SPEC-CONSISTENCY-001` を完了化
+  - `UT-UI-05A-IMPLEMENTATION-CLOSURE-001` のみ未完了として残存
+- `references/security-electron-ipc.md` を更新
+  - skillFileAPI セクションへ `SKILL_GET_FILE_TREE` を追加
+  - 7 invoke + 4層防御の適用範囲へ更新
+- `references/interfaces-agent-sdk-skill.md` を更新
+  - `getFileTree` API と `SkillFileTreeNode` 型を追加
+  - 完了タスク記録を追記
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-11` を補完
+  - `auto-test-result.md`
+  - `filetree-display-result.md`
+  - `error-case-result.md`
+  - `api-verification-result.md`
+  - `manual-test-report.md`
+  - `manual-test.md` を画面証跡あり前提に修正
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12` を補完
+  - `spec-update-summary.md`
+  - `unassigned-task-detection.md`
+  - `skill-feedback-report.md`
+  - `documentation-changelog.md` を実施内容ベースへ更新
+
+### 結果
+
+- ステータス: success
+- 参照整合: 更新済み
+- 未タスク監査判定: `currentViolations=0`
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 苦戦箇所の仕様書反映と未タスク形式補正
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: 実装内容に加えて苦戦箇所を仕様へ残し、同種課題の再発を防止する
+
+### 実施内容
+
+- `references/lessons-learned.md` に UT-UI-05A-GETFILETREE-001 セクションを追加
+  - Main/Preload 契約差
+  - Phase 12 成果物命名ドリフト
+  - 未タスクメタ情報重複
+  - 4ステップ簡潔解決手順
+- `docs/30-workflows/unassigned-task/task-ui-05a-*.md` を補正
+  - `## メタ情報` 重複を解消（3ファイル）
+  - 完了済み2タスクのステータスを台帳整合へ更新
+- `outputs/phase-12/documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` に苦戦箇所・監査値を追記
+
+### 結果
+
+- ステータス: success
+- 効果: 実装手順と教訓が同一仕様系統で再利用可能になり、未タスク形式監査の再現性を向上
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 テンプレート準拠最適化（SubAgent分担固定）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: 実装内容 + 苦戦箇所をテンプレート準拠で再編し、仕様書別SubAgent分担を再利用可能に固定する
+
+### 実施内容
+
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/spec-update-summary.md` を再構成
+  - `phase12-system-spec-retrospective-template` 準拠へ移行
+  - 6責務SubAgent分担（api-ipc/interfaces/security/ui-ux-feature/task/lessons）を明記
+  - Step 2 二重突合（`phase-12-documentation` / `documentation-changelog` / `spec-update-summary`）を明記
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/spec-sync-subagent-report.md` を新規作成
+  - `phase12-spec-sync-subagent-template` 準拠で仕様書ごとの責務・依存・完了条件を固定
+- `references/task-workflow.md` を更新
+  - `UT-UI-05A-GETFILETREE-001` 専用の完了セクションを追加
+  - SubAgent分担、苦戦箇所、検証証跡、5ステップ手順を同期
+- `references/lessons-learned.md` を更新
+  - 同タスクのSubAgent分担表を追補
+  - 再利用手順を4→5ステップへ更新
+- `outputs/phase-12/documentation-changelog.md` を更新
+  - Step 1-E（SubAgent同期レポート作成）を追加
+  - 更新ファイル一覧に `spec-sync-subagent-report.md` を反映
+
+### 結果
+
+- ステータス: success
+- 効果: 仕様書ごとの関心分離（SubAgent責務）が成果物に固定され、同種課題の再利用導線が明確化
+
+## 2026-03-03 - UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 未タスク登録
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: SubAgent責務の成果物固定（summary/report/changelog整合）を継続改善タスクとして追跡可能化する
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` を新規作成
+  - `task-specification-creator` の10見出し形式（`## メタ情報` + `## 1..9`）で作成
+  - `3.5 実装課題と解決策` に親タスク由来の苦戦箇所を反映
+- `references/task-workflow.md` を更新
+  - 残課題テーブルへ `UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` を追加
+  - 変更履歴に v1.65.1 を追加
+- `references/lessons-learned.md` を更新
+  - 変更履歴に v1.28.6 を追加
+  - UT-UI-05A-GETFILETREE-001 セクションへ関連未タスク導線を追加
+- `outputs/phase-12/unassigned-task-detection.md` を更新
+  - 新規未タスク起票の補足を追記
+
+### 結果
+
+- ステータス: success
+- 効果: Phase 12 の SubAgent責務固定が「成果物 + 台帳 + 教訓」で追跡可能となり、同種課題の再確認を簡潔化

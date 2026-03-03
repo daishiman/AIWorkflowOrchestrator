@@ -1,6 +1,14 @@
 // IPC Request/Response Types
 
 // Skill file operations (TASK-9A-B)
+/** ファイルツリーノード型 (UT-UI-05A-GETFILETREE-001) */
+export interface SkillFileTreeNode {
+  name: string;
+  path: string;
+  type: "file" | "directory";
+  children?: SkillFileTreeNode[];
+}
+
 export interface BackupInfo {
   filename: string;
   relativePath: string;

@@ -30,11 +30,11 @@
 
 ## 正式登録（正本）
 
-| タスクID                             | ファイル                                                                                                                        | 役割                              |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| UT-UI-05A-GETFILETREE-001            | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`     | IPC契約未実装の解消               |
-| UT-UI-05A-SPEC-CONSISTENCY-001       | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` | Phase 2/5 契約記述のドリフト解消  |
-| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` | UI統合残課題（001-007）の収束管理 |
+| タスクID                             | ファイル                                                                                                              | 役割                              |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| UT-UI-05A-GETFILETREE-001            | `docs/30-workflows/completed-tasks/getfiletree-ipc/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`     | IPC契約未実装の解消               |
+| UT-UI-05A-SPEC-CONSISTENCY-001       | `docs/30-workflows/completed-tasks/getfiletree-ipc/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` | Phase 2/5 契約記述のドリフト解消  |
+| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md`                                 | UI統合残課題（001-007）の収束管理 |
 
 ## 3ステップ完了確認（P3準拠）
 

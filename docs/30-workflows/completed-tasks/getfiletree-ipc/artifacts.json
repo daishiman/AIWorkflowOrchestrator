@@ -1,0 +1,151 @@
+{
+  "taskId": "UT-UI-05A-GETFILETREE-001",
+  "taskName": "skill:getFileTree IPC実装",
+  "feature": "getfiletree-ipc",
+  "featureName": "getfiletree-ipc",
+  "workflowPath": "docs/30-workflows/completed-tasks/getfiletree-ipc/",
+  "created": "2026-03-03T00:00:00Z",
+  "createdAt": "2026-03-03",
+  "lastUpdated": "2026-03-03T05:31:28Z",
+  "status": "phase13_ready",
+  "currentPhase": 13,
+  "issueNumber": 948,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "artifacts": ["outputs/phase-1/requirements.md"],
+      "dependsOn": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/interface-design.md"
+      ],
+      "dependsOn": ["phase-1"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review.md"],
+      "dependsOn": ["phase-1", "phase-2"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-design.md",
+        "outputs/phase-4/test-cases.md"
+      ],
+      "dependsOn": ["phase-3"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-report.md"],
+      "dependsOn": ["phase-4"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "artifacts": ["outputs/phase-6/test-enhancement-report.md"],
+      "dependsOn": ["phase-5"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-report.md"],
+      "dependsOn": ["phase-6"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"],
+      "dependsOn": ["phase-7"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "artifacts": ["outputs/phase-9/quality-report.md"],
+      "dependsOn": ["phase-8"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/functional-completeness.md",
+        "outputs/phase-10/security-review.md",
+        "outputs/phase-10/ipc-contract-review.md",
+        "outputs/phase-10/type-safety-review.md",
+        "outputs/phase-10/code-quality-review.md",
+        "outputs/phase-10/final-review-result.md"
+      ],
+      "dependsOn": ["phase-9"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/auto-test-result.md",
+        "outputs/phase-11/filetree-display-result.md",
+        "outputs/phase-11/error-case-result.md",
+        "outputs/phase-11/api-verification-result.md",
+        "outputs/phase-11/manual-test-report.md"
+      ],
+      "dependsOn": ["phase-10"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/ipc-documentation.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ],
+      "dependsOn": ["phase-11"]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "specFile": "phase-13-pr-creation.md",
+      "artifacts": [
+        "outputs/phase-13/artifact-verification.md",
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/completion-report.md"
+      ],
+      "dependsOn": ["phase-12"]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["4", "5"],
+    "7": ["6"],
+    "8": ["5", "7"],
+    "9": ["5", "8"],
+    "10": ["1", "2", "5", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["1", "2", "5", "8", "9", "10", "11"],
+    "13": ["10", "11", "12"]
+  }
+}
