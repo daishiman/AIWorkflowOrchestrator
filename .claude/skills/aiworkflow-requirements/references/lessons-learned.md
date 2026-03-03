@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-03 | 1.28.8 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 を追加。未タスク仕様書作成時に `aiworkflow-requirements` から必要情報を抽出する手順（resource-map/topic-map/search-spec）と、台帳同期（task-workflow/lessons）・監査判定（current固定）の再発防止導線を追記 |
+| 2026-03-03 | 1.28.7 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 の実装完了を反映。2workflow同時監査の完了記録（verify/validate/audit/links）と苦戦箇所3件（証跡分散、リンクドリフト、current/baseline誤読）を追記し、再利用5ステップを更新 |
 | 2026-03-03 | 1.28.6 | TASK-10A-C 追補: 苦戦箇所を未タスク2件へ分離（UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001, UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001）。5仕様書同時同期ガードとUI証跡3点セット（再撮影/TCカバレッジ/鮮度確認）を再利用導線として固定 |
 | 2026-03-02 | 1.28.5 | TASK-10A-C 教訓を追加。UI再撮影後のTC紐付け検証不足、`skill:create` 契約の4仕様書同期漏れ、Phase 11/12 依存成果物参照漏れを防ぐ5ステップ手順を標準化 |
 | 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
@@ -162,11 +164,47 @@
 3. `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD` を連続実行し、`currentViolations=0` を判定基準にする。  
 4. 結果を `task-workflow.md` と `lessons-learned.md` に同一ターンで反映し、次ターンへの持ち越しを禁止する。  
 
-### 関連未タスク（2026-03-02 追補）
+### 関連タスク（2026-03-03 更新）
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | 2workflow同時監査時の証跡集約ガード（Task 1/3/4/5 実体突合 + 画面証跡 + current/baseline 分離） | `docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
+| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | 2workflow同時監査時の証跡集約ガード（実装完了） | `docs/30-workflows/completed-tasks/phase12-two-workflow-evidence-bundle/index.md` |
+| UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | 未タスク作成時のシステム仕様スキル抽出・反映ガード（未実施） | `docs/30-workflows/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
+
+---
+
+## UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001: 実装完了（2026-03-03）
+
+### 実装内容サマリー
+
+| 項目 | 内容 |
+| --- | --- |
+| 実装対象 | `docs/30-workflows/completed-tasks/phase12-two-workflow-evidence-bundle/` |
+| 実装内容 | Phase 12 の 2workflow同時監査ガードを実装し、必須5成果物・証跡集約・未タスク監査を運用フロー化 |
+| 検証結果 | `verify-all-specs` PASS / `validate-phase-output` PASS（28項目）/ `audit --target-file` current=0 / `verify-unassigned-links` missing=0 |
+| 仕様反映 | `task-workflow.md` に完了記録と検証証跡、`task-specification-creator` に validator・参照資料・テンプレートを同期 |
+
+### 苦戦箇所
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題1 | spec_created系とcompleted系を同時監査すると、Task 1/3/4/5 実体確認の記録先が分散しやすい |
+| 再発条件1 | workflowごとに別ターンで verify/validate を回して後で転記する運用 |
+| 対処1 | 対象workflowを先に固定し、同一ターンで `verify-all-specs` → `validate-phase-output` を連続実行して証跡を一括固定 |
+| 課題2 | completed-tasks への移管後に `task-workflow.md` の未タスクリンクが古いまま残りやすい |
+| 再発条件2 | 未タスク実体移動後に台帳リンク更新と links検証を分離して実施 |
+| 対処2 | `UT-UI-05A-*` の参照を実体パスへ置換し、`verify-unassigned-links` missing=0 を完了条件に追加 |
+| 課題3 | `audit-unassigned-tasks` の baseline を今回差分の fail と誤読しやすい |
+| 再発条件3 | 既存違反を含む状態で `--diff-from HEAD` の値を単純比較する運用 |
+| 対処3 | 合否を `currentViolations` のみに固定し、baselineは監視指標として別記録 |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 監査対象workflowを先に固定し、`verify-all-specs` を全対象へ実行する。  
+2. 同じ対象へ `validate-phase-output` を実行し、Task 1/3/4/5 の実体を同時突合する。  
+3. `verify-unassigned-links` で参照実在を確認し、必要なら台帳リンクを先に是正する。  
+4. `audit-unassigned-tasks --target-file` / `--diff-from HEAD` を実行し、`currentViolations=0` で判定する。  
+5. 実装内容と苦戦箇所を `task-workflow.md` / `lessons-learned.md` に同一ターンで反映して完了する。  
 
 ---
 

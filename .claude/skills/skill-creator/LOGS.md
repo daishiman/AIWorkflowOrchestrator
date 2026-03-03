@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 完了同期パターン追補]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「2workflow証跡バンドル完了同期（リンク是正 + current判定固定）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` の簡潔解決手順と成果物チェックへ「completed-tasks移管後の未タスクリンク是正（missing=0）」を追記
+  - `references/resource-map.md` のテンプレート説明へリンク是正チェック対応を同期
+  - `SKILL.md` 変更履歴を `v10.36.2` として更新
+
+---
+
 ## [2026-03-03 - TASK-10A-C 仕様転記ガード追補（5仕様書チェック）]
 
 - **Agent**: skill-creator (update)

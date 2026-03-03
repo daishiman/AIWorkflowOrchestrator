@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T00:46:57.660Z",
-  "totalKeywords": 1404,
+  "generated": "2026-03-03T13:42:49.557Z",
+  "totalKeywords": 1410,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1178,11 +1178,8 @@
       "arch-ui-components.md",
       "architecture-file-conversion.md"
     ],
-    "SkillAnalysisView": [
-      "arch-ui-components.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "ui-ux-feature-components.md"
+    "SkillManagementPanel": [
+      "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1548,6 +1545,44 @@
     "形式引数パターンの確認": [
       "architecture-implementation-patterns.md"
     ],
+    "Phase": [
+      "architecture-implementation-patterns.md",
+      "claude-code-agents-workflow.md",
+      "lessons-learned.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "workflow": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "証跡バンドル同期パターン": [
+      "architecture-implementation-patterns.md"
+    ],
+    "IMP": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "TWO": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "WORKFLOW": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "BUNDLE": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
     "チャネル命名監査の運用パターン": [
       "architecture-implementation-patterns.md"
     ],
@@ -1576,10 +1611,6 @@
     ],
     "未タスク監査スコープ分離パターン": [
       "architecture-implementation-patterns.md"
-    ],
-    "IMP": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
@@ -1767,11 +1798,6 @@
     ],
     "ワークフローセクションの記述形式": [
       "claude-code-agents-workflow.md"
-    ],
-    "Phase": [
-      "claude-code-agents-workflow.md",
-      "lessons-learned.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -3075,6 +3101,9 @@
     "再監査": [
       "lessons-learned.md"
     ],
+    "実装完了": [
+      "lessons-learned.md"
+    ],
     "CENTER": [
       "lessons-learned.md"
     ],
@@ -3086,6 +3115,11 @@
     ],
     "高度管理ビュー群再確認": [
       "lessons-learned.md"
+    ],
+    "SkillAnalysisView": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "SkillCreateWizard": [
       "lessons-learned.md",
@@ -3222,12 +3256,6 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
       "lessons-learned.md"
     ],
     "LINK": [
@@ -3441,10 +3469,6 @@
     ],
     "未実施が混在していないか": [
       "lessons-learned.md"
-    ],
-    "workflow": [
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"

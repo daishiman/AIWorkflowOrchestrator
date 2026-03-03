@@ -1,7 +1,7 @@
 /**
  * Skill File IPC Handlers (TASK-9A-B)
  *
- * SkillFileManager の6つのファイル操作メソッドを IPC 経由で
+ * SkillFileManager の7つのファイル操作メソッドを IPC 経由で
  * Renderer プロセスから呼び出せるようにするハンドラーセット。
  *
  * セキュリティ: 多層防御
@@ -317,6 +317,38 @@ export function registerSkillFileHandlers(
       }
     },
   );
+
+  // skill:getFileTree (UT-UI-05A-GETFILETREE-001)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_GET_FILE_TREE,
+    async (event: IpcMainInvokeEvent, args: { skillName: string }) => {
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_GET_FILE_TREE,
+        { getAllowedWindows: () => [mainWindow] },
+      );
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+        return {
+          success: false,
+          error: "skillName must be a non-empty string",
+        };
+      }
+
+      try {
+        const tree = await skillFileManager.getFileTree(args.skillName);
+        return { success: true, data: tree };
+      } catch (error) {
+        if (isKnownSkillFileError(error)) {
+          return { success: false, error: error.message };
+        }
+        return { success: false, error: "Internal error" };
+      }
+    },
+  );
 }
 
 /**
@@ -329,4 +361,5 @@ export function unregisterSkillFileHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_DELETE_FILE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_LIST_BACKUPS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_RESTORE_BACKUP);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_FILE_TREE);
 }

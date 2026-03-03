@@ -1062,8 +1062,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | ナビゲーション導線（`ViewType` / `AppDock`） | ❌ 未配線 | `apps/desktop/src/renderer/store/types.ts`, `App.tsx` |
 | 画面検証証跡 | ✅ 取得済み | `docs/30-workflows/skill-editor-view/outputs/phase-11/` |
 | `skill:getFileTree` IPCチャネル | ❌ 未実装 | UT-UI-05A-GETFILETREE-001 で対応予定。`api-ipc-agent.md` に仕様追加済み |
-| 実装残課題の統合管理 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
-| `useFileTree` 契約整合 | ✅ 正式登録済み | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+| 実装残課題の統合管理 | ✅ 正式登録済み | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
+| `useFileTree` 契約整合 | ✅ 正式登録済み | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
 
 ### 画面検証証跡
 

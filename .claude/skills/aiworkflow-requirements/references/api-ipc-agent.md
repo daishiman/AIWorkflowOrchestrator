@@ -623,7 +623,21 @@ SkillChainDefinition, SkillChainStep, InputMapping, OutputMapping, SkillChainCon
 
 ### 備考
 
-Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B の実装で追加済み。Main Process 側のハンドラは `registerSkillChainHandlers()` として `skillHandlers.ts` に実装済み。
+Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B の実装で追加済み。Main Process 側のハンドラは `registerSkillChainHandlers()` として `skillHandlers.ts` に実装され、`registerAllIpcHandlers()`（`ipc/index.ts`）から起動時に登録される。
+
+### 実装時の苦戦箇所（TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001）
+
+| 苦戦箇所 | 課題 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 起動時の登録配線漏れ | `skillHandlers.ts` 実装済みでも `registerAllIpcHandlers` 未登録だと `skill:chain:*` が到達しない | `ipc/index.ts` へ `registerSkillChainHandlers(mainWindow, chainStore, chainExecutor)` を追加し、`ipc-double-registration.test.ts` で呼出を固定検証 | IPC追加時は `handler/register/preload` を同一完了条件にする |
+| 依存サービス公開境界のドリフト | `SkillChainStore` / `SkillChainExecutor` が直接 import のまま残り、公開面の一貫性が低下 | 未タスク `UT-IMP-SKILL-CHAIN-BARREL-EXPORT-CONSISTENCY-001` を起票し、次Waveへ明示移管 | IPC登録修正時は `services/*/index.ts` の export 更新有無を同時監査する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 新規/修正IPCごとに `handler` 実装と `registerAllIpcHandlers` 配線を同一コミットで確認する。  
+2. `ipc-double-registration` 系テストへ「新規 register 関数が呼ばれること」を追加する。  
+3. `rg -n "services/<domain>/<Service>|from \"../services/<domain>\""` で直接 import を検出し、バレル export 要否を判定する。  
+4. Phase 12で `task-workflow.md` と `lessons-learned.md` に苦戦箇所と再利用手順を同一ターン同期する。  
 
 ---
 
@@ -827,62 +841,11 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 ---
 
-## スキル作成ウィザード IPC チャネル（TASK-10A-C）
-
-> 完了タスク: TASK-10A-C（2026-03-02）
-
-### チャネル一覧
-
-| チャネル名 | メソッド | 引数 | 戻り値 | 説明 |
-| --- | --- | --- | --- | --- |
-| `skill:create` | invoke | `description: string, options: { generateTasks: boolean; addAgents: boolean; addReferences: boolean }` | `{ path: string }` | SkillCreateWizard からスキル雛形を作成 |
-
-### バリデーションルール
-
-| チャネル | バリデーション項目 | エラー |
-| --- | --- | --- |
-| `skill:create` | `description` は P42準拠3段検証（型/空文字/trim空文字）を満たすこと。`options` は object かつ `generateTasks`/`addAgents`/`addReferences` の boolean 構造であること | `VALIDATION_ERROR` / サニタイズ済みメッセージ |
-
-### 実装状況
-
-| 実装項目 | ステータス | 関連タスク |
-| --- | --- | --- |
-| チャネル定数定義（`IPC_CHANNELS.SKILL_CREATE`） | 完了 | TASK-10A-C |
-| ホワイトリスト追加（`ALLOWED_INVOKE_CHANNELS`） | 完了 | TASK-10A-C |
-| IPCハンドラー実装（`skillHandlers.ts`） | 完了 | TASK-10A-C |
-| Preload API実装（`skill-api.ts#create`） | 完了 | TASK-10A-C |
-| サービス委譲（`SkillService.createSkillFromWizard`） | 完了 | TASK-10A-C |
-
-### セキュリティ仕様
-
-| 対策 | 実装 | 返却仕様 |
-| --- | --- | --- |
-| Sender 検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
-| 引数バリデーション | `description` は P42準拠3段検証、`options` は構造検証 | 不正時: `VALIDATION_ERROR` |
-| エラーサニタイズ | `sanitizeErrorMessage(error)` | 内部情報漏えい防止 |
-
-### 実装時の苦戦箇所（TASK-10A-C）
-
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-| `skill:create` 契約の更新順序がズレる | Renderer/UI 実装を先行し、IPC仕様更新を後段に回す場合 | `channels/preload/handler/service` の4層差分を同一ターンで確定し、仕様書へ即転記 | 新規 `skill:*` 追加時は4層同期を完了条件に固定する |
-| `description`/`options` の検証責務が分散する | ハンドラー内で検証ロジックを個別追加する場合 | `description` をP42準拠3段、`options` を構造検証で統一して契約表へ明示 | 文字列・構造検証は契約表と実装を同時更新する |
-| UI証跡とIPC契約の結びつきが弱い | 画面検証結果を仕様書へ転記しない場合 | Phase 11のTC証跡とIPC契約更新を `task-workflow.md` へ同時記録 | UIタスクでは「画面証跡 + IPC契約」をセットで完了判定する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 新規チャネルの request/response を `api-ipc-agent` に先に固定する。  
-2. `channels/preload/handler/service` の4層を同一ターンで実装・テストする。  
-3. P42準拠3段検証 + 構造検証 + sender検証 + サニタイズを契約表へ反映する。  
-4. Phase 11 証跡と合わせて `task-workflow.md` に検証値を転記する。  
-
----
-
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
-| TASK-10A-C | SkillCreateWizard 実装 | 2026-03-02 | `skill:create` 追加（channels/preload/handler/service）。引数契約 `description + options` を P42準拠検証で実装し、返却 `{ path: string }` を仕様同期 |
+| TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 | skill:chain:list ハンドラ登録漏れ修正 | 2026-03-03 | `registerSkillChainHandlers` を `registerAllIpcHandlers` へ追加し、`ipc-double-registration` 回帰テストで登録漏れを検出可能化。関連未タスクとしてバレル公開整合タスクを登録 |
 | TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
@@ -918,8 +881,8 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
-| v1.17.1    | 2026-03-02 | TASK-10A-C追補: `skill:create` の実装時苦戦箇所（4層同期順序、検証責務分散、UI証跡との結合）と同種課題向け4ステップ手順を追加 |
-| v1.17.0    | 2026-03-02 | TASK-10A-C反映: `skill:create` IPCチャネルセクションを追加。引数契約（`description` + `options`）、P42準拠バリデーション、sender検証、`sanitizeErrorMessage`、実装状況テーブルを同期 |
+| v1.16.3    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 の苦戦箇所と4ステップ簡潔解決手順を追記。完了タスク台帳に同タスクを追加し、登録漏れ修正と未タスク移管（バレル公開整合）を同期 |
+| v1.16.2    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001: `skill:chain:*` の備考を実装実態へ同期（`registerAllIpcHandlers` での登録保証を明記） |
 | v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |
 | v1.16.1    | 2026-03-02 | TASK-UI-05B 実装完了同期: `skill:chain:*` の Preload API 状態を「未実装」から「実装済み」へ更新し、TASK-9D 完了記録に実装日を追記 |
 | v1.16.0    | 2026-03-02 | TASK-UI-05B整合性検証: `skill:chain:*`（TASK-9D）5チャネル・`skill:schedule:*`（TASK-9G）5チャネルのIPCセクションを追加。TASK-9D完了タスク記録を追加 |

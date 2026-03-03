@@ -71,6 +71,7 @@ UI機能実装時の必須記載（追加）:
 | handler 実装 | `rg -n "skill:.*" apps/desktop/src/main/ipc` | 追加チャネルのハンドラが存在 |
 | register 配線 | `rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts` | 新規ハンドラが `registerAllIpcHandlers` に登録済み |
 | preload 公開 | `rg -n "safeInvoke|safeInvokeUnwrap" apps/desktop/src/preload/skill-api.ts` | 全チャネルに対応する API が公開済み |
+| service 公開境界 | `rg -n "services/<domain>/|export .* from \"./\"|SkillChain(Store|Executor)" apps/desktop/src/main` | 依存サービスのバレル公開（または未タスク移管）が記録されている |
 | 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
 
 ## 5. 検証コマンド
@@ -78,6 +79,7 @@ UI機能実装時の必須記載（追加）:
 ```bash
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
+rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
@@ -96,6 +98,7 @@ ls -la <workflow-path>/outputs/phase-11/screenshots
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
+- [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している

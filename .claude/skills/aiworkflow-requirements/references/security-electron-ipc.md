@@ -11,8 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
-| v1.13.1    | 2026-03-02 | TASK-10A-C追補: `skill:create` のセキュリティ苦戦箇所（sender検証適用順序、P42/構造検証の責務分散、UI証跡との乖離）と同種課題向け4ステップ手順を追加 |
-| v1.13.0    | 2026-03-02 | TASK-10A-C反映: `skill:create` セキュリティ実装パターンを追加。`validateIpcSender` + `description` P42準拠3段検証 + `options` 構造検証 + `sanitizeErrorMessage` を仕様化 |
+| v1.12.1    | 2026-03-03 | UT-UI-05A-GETFILETREE-001 完了同期: skillFileAPI セクションを `skill:getFileTree` 含む 7 invoke チャネルへ更新。ホワイトリスト/4層防御/エラーサニタイズの適用範囲を拡張し、関連タスクを TASK-9A-B + UT-UI-05A-GETFILETREE-001 に更新 |
 | v1.12.0    | 2026-03-02 | TASK-UI-05B仕様整合: skillChainAPI（TASK-9D、5ch、validateIpcSender + P42準拠3段バリデーション + sanitizeErrorMessage）とskillScheduleAPI（TASK-9G、5ch、既存セクション欠落の補完）のセキュリティ実装パターンを追加 |
 | v1.11.1    | 2026-02-28 | TASK-9E追補: セキュリティ観点の苦戦箇所3件（sender検証順序、path境界判定、契約境界混同）と同種課題向け4ステップ手順を追加 |
 | v1.11.0    | 2026-02-28 | TASK-9E反映: `skill:fork` セキュリティ実装パターンを追加。`validateIpcSender`、P42準拠3段バリデーション、`SkillForker.validatePath` の境界検証（prefix一致すり抜け防止）、エラーサニタイズを仕様化 |
@@ -377,7 +376,7 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 **チャンネルホワイトリスト方式**:
 
-`SKILL_FILE_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用6チャンネルを管理する。
+`SKILL_FILE_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用7チャンネルを管理する。
 
 | 定数名                      | チャンネル名            | 用途                 |
 | --------------------------- | ----------------------- | -------------------- |
@@ -387,12 +386,13 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | SKILL_DELETE_FILE           | `skill:deleteFile`      | ファイル削除         |
 | SKILL_LIST_BACKUPS          | `skill:listBackups`     | バックアップ一覧取得 |
 | SKILL_RESTORE_BACKUP        | `skill:restoreBackup`   | バックアップ復元     |
+| SKILL_GET_FILE_TREE         | `skill:getFileTree`     | ファイルツリー取得   |
 
 **実装場所**: `apps/desktop/src/preload/channels.ts`
 
 **セキュリティ検証パターン（4層防御）**:
 
-全6 invokeハンドラーで以下のセキュリティ検証を実施する:
+全7 invokeハンドラーで以下のセキュリティ検証を実施する:
 
 1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
 2. **引数バリデーション**: `typeof` 文字列チェック + `.trim()` による空文字列検出
@@ -424,9 +424,9 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | パストラバーサル防止    | SkillFileManager内部の `validatePath()` | `PathTraversalError` スロー確認   |
 | エラーサニタイズ        | `isKnownSkillFileError()` で識別返却 | スタック/パス/機密情報非露出テスト  |
 
-**テストカバレッジ**: 65テスト全PASS
+**テストカバレッジ**: skillFileAPI 関連 155テスト全PASS（2026-03-03、IPC/Service/Preload/Renderer）
 
-**関連タスク**: TASK-9A-B（2026-02-19完了）
+**関連タスク**: TASK-9A-B（2026-02-19完了）, UT-UI-05A-GETFILETREE-001（2026-03-03完了）
 
 **関連未タスク（TASK-9A-B Phase 12 検出）**:
 
@@ -436,48 +436,6 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化 | 中     | isKnownSkillFileError の共通化   |
 
 > 上記未タスクは skillFileHandlers.ts のバリデーション・エラーサニタイズパターンを他のIPCハンドラー（skillCreatorHandlers.ts 等）に横展開するための改善タスク。
-
----
-
-## 実装例: skillCreateAPI（TASK-10A-C）
-
-SkillCreateWizard からの `skill:create` invoke チャネルに適用するセキュリティパターン。
-
-### チャネル定数定義
-
-| 定数名 | チャネル名 | 方向 |
-| --- | --- | --- |
-| `SKILL_CREATE` | `skill:create` | invoke (R→M) |
-
-### セキュリティ検証パターン（4層防御）
-
-| 層 | 観点 | 実装 | 返却 |
-| --- | --- | --- | --- |
-| 1 | Sender検証 | `validateIpcSender(event, IPC_CHANNELS.SKILL_CREATE, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
-| 2 | 文字列検証 | `description` に P42準拠3段（`typeof` + 空文字 + `trim()`） | 不正時: `VALIDATION_ERROR` |
-| 3 | 構造検証 | `options` が object で `generateTasks` / `addAgents` / `addReferences` が boolean | 不正時: `VALIDATION_ERROR` |
-| 4 | エラーサニタイズ | `sanitizeErrorMessage(error)` で内部情報を除去 | 不明エラー時: `"Internal error"` |
-
-### 実装箇所
-
-- `apps/desktop/src/main/ipc/skillHandlers.ts`（`IPC_CHANNELS.SKILL_CREATE` ハンドラー）
-- `apps/desktop/src/preload/skill-api.ts`（`create(description, options)`）
-- `apps/desktop/src/main/services/skill/SkillService.ts`（`createSkillFromWizard`）
-
-### 実装時の苦戦箇所（TASK-10A-C）
-
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-| sender検証の適用順序が後ろ倒しになる | 入力検証を先に実装する場合 | `validateIpcSender` を先頭で実行し、不正送信元を早期遮断 | セキュリティ検証順は `sender -> 入力 -> 構造 -> サニタイズ` に固定する |
-| P42検証と構造検証の責務分散 | 文字列検証・オプション検証を複数箇所へ分散する場合 | `description`（P42準拠3段）と `options`（boolean構造）を同一ハンドラーで集約 | 検証ルールは1チャネル1定義へ集約する |
-| UI証跡とセキュリティ仕様の乖離 | 画面検証完了後にセキュリティ仕様転記を省略する場合 | `task-workflow.md` の検証証跡と本仕様の4層防御を同一ターンで同期 | UI系IPCは「画面証跡 + セキュリティ仕様」を同時更新する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. 追加チャネルは最初に `validateIpcSender` を適用して検証順序を固定する。  
-2. 文字列（P42準拠3段）と構造検証を同一ハンドラー内で定義する。  
-3. catch節は `sanitizeErrorMessage` に統一し、内部情報を返さない。  
-4. Phase 11 の画面証跡と Phase 12 のセキュリティ仕様を同一ターンで転記する。  
 
 ---
 
@@ -782,7 +740,6 @@ SkillCreateWizard からの `skill:create` invoke チャネルに適用するセ
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
-| TASK-10A-C | 2026-03-02 | 完了 | `skill:create` のセキュリティ実装。`validateIpcSender`、`description` P42準拠3段検証、`options` 構造検証、`sanitizeErrorMessage` を適用 |
 | TASK-9I | 2026-02-28 | 完了 | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用 |
 | TASK-9J | 2026-02-28 | 完了 | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
 | TASK-9G | 2026-02-27 | 完了 | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用 |

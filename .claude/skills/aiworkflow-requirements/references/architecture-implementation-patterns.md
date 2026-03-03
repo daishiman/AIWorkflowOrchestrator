@@ -2539,6 +2539,65 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 ---
 
+## Phase 12 2workflow証跡バンドル同期パターン（UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 2026-03-03実装）
+
+### 問題
+
+`spec_created` 系 workflow と `completed` 系 workflow を同時監査する際、以下が分散しやすい。
+
+- `verify-all-specs` / `validate-phase-output` の記録先
+- Task 1/3/4/5 成果物の実体確認結果
+- 未タスクリンク更新（completed-tasks 移管後）と監査結果
+
+その結果、Phase 12 の完了判定が「成果物はあるが台帳が古い」状態になりやすい。
+
+### 解決パターン
+
+#### 1. 監査対象を 2workflow で先に固定する
+
+| 区分 | 例 | 目的 |
+| --- | --- | --- |
+| workflow-a | `spec_created` 系 | 仕様作成系の Task 1/3/4/5 整合確認 |
+| workflow-b | `completed` 系 | 実装完了系の Task 1/3/4/5 整合確認 |
+
+#### 2. 構造監査 → 出力監査 → 実体突合を同一ターンで実施する
+
+1. `verify-all-specs --workflow <a/b>` を実行  
+2. `validate-phase-output <a/b>` を実行  
+3. `outputs/phase-12/` の必須5成果物実体を `a/b` 両方で突合  
+
+#### 3. 未タスク監査は `current` 判定を合否基準に固定する
+
+| 監査 | コマンド | 合否基準 |
+| --- | --- | --- |
+| リンク整合 | `verify-unassigned-links.js` | `missing=0` |
+| 対象監査 | `audit-unassigned-tasks.js --json --target-file <path>` | `currentViolations.total=0` |
+| 差分監査 | `audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations.total=0`（baselineは監視） |
+
+#### 4. completed-tasks移管後のリンクドリフトを先に是正する
+
+- `task-workflow.md` と関連仕様書（例: `ui-ux-feature-components.md`）の未タスク参照を実体パスへ更新
+- 更新後に `verify-unassigned-links.js` を再実行し `missing=0` を確認
+
+### 検証コマンド
+
+```bash
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-a> --json
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-b> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-a>
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-b>
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/<task-file>.md
+```
+
+### 適用指針
+
+- 2workflow同時監査では「検証結果の分離」ではなく「判定ロジックの統一」を優先する。  
+- 完了判定は `current`、負債管理は `baseline` に責務分離する。  
+- 完了移管を含む場合、リンク是正を先に終えてから Phase 12 完了記録へ進む。  
+
+---
+
 ## IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施）
 
 ### 問題
@@ -2635,6 +2694,7 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.35.0 | 2026-03-03 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001: Phase 12 2workflow証跡バンドル同期パターンを追加（workflow固定、Task 1/3/4/5 実体突合、`current/baseline` 判定分離、completed-tasks移管後リンク是正） |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |

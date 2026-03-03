@@ -124,7 +124,8 @@ UI機能実装の場合は次を推奨:
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成する>`
 4. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を連続実行する>`
-5. `<検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+5. `<completed-tasks 移管を伴う場合は task-workflow / 関連仕様書の未タスク参照を実体パスへ更新し、verify-unassigned-links の missing=0 を確定する>`
+6. `<検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
 
@@ -162,6 +163,7 @@ UI機能実装の場合は次を推奨:
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
+- [ ] completed-tasks へ未タスクを移管した場合、`task-workflow.md` / 関連仕様書の参照を正本パスへ更新し、`verify-unassigned-links` の `missing=0` を確認
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である

@@ -96,7 +96,7 @@ export function setupSkillApiMocks(): {
     deleteFile: vi.fn().mockResolvedValue(undefined),
     listBackups: vi.fn().mockResolvedValue([]),
     restoreBackup: vi.fn().mockResolvedValue(undefined),
-    getFileTree: vi.fn().mockResolvedValue({ tree: sampleFileTree }),
+    getFileTree: vi.fn().mockResolvedValue(sampleFileTree),
   };
 
   // window.electronAPI.skill をモック化

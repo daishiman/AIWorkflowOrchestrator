@@ -10,7 +10,7 @@ category: 改善
 target_feature: Phase 12 再確認（spec_created + completed workflow 同時監査）
 priority: 中
 scale: 中規模
-status: 未実施
+status: 完了（2026-03-03）
 source_phase: TASK-UI-05A / TASK-UI-05 Phase 12再確認（2026-03-02）
 created_date: 2026-03-02
 dependencies:
@@ -29,7 +29,7 @@ dependencies:
 | 対象機能     | Phase 12 再確認（spec_created + completed workflow 同時監査） |
 | 優先度       | 中                                                            |
 | 見積もり規模 | 中規模                                                        |
-| ステータス   | 未実施                                                        |
+| ステータス   | 完了（2026-03-03）                                            |
 | 発見元       | TASK-UI-05A / TASK-UI-05 Phase 12再確認（苦戦箇所）           |
 | 発見日       | 2026-03-02                                                    |
 
@@ -240,7 +240,7 @@ node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --wor
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/skill-editor-view
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ls -la docs/30-workflows/skill-editor-view/outputs/phase-11/screenshots
 ```

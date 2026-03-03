@@ -24,7 +24,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## references/ （16ファイル）
+## references/ （19ファイル）
 
 詳細知識。必要時のみ読み込む。
 
@@ -43,6 +43,9 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | [unassigned-task-guidelines.md](unassigned-task-guidelines.md) | 未タスク検出時 | 未タスクガイドライン |
 | [spec-update-workflow.md](spec-update-workflow.md) | Phase 12実行時 | 仕様更新フロー |
 | [technical-documentation-guide.md](technical-documentation-guide.md) | Phase 12実行時 | 技術ドキュメント作成 |
+| [phase12-checklist-definition.md](phase12-checklist-definition.md) | Phase 12実体確認時 | Task 1/3/4/5チェック定義 |
+| [evidence-sync-rules.md](evidence-sync-rules.md) | Phase 12台帳同期時 | task-workflow/lessons/LOGS/SKILL 同期ルール |
+| [screenshot-verification-procedure.md](screenshot-verification-procedure.md) | UIタスクのPhase 11/12監査時 | スクリーンショット検証手順 |
 | [self-improvement-cycle.md](self-improvement-cycle.md) | 改善分析時 | 自己改善サイクル |
 | [patterns.md](patterns.md) | 問題発生時 | 成功/失敗パターン集 |
 | [changelog-archive.md](changelog-archive.md) | 履歴参照時 | 変更履歴アーカイブ（v9.83.2以前） |
@@ -66,7 +69,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## scripts/ （13ファイル）
+## scripts/ （15ファイル）
 
 決定論的処理（100%精度）。
 
@@ -85,10 +88,12 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | `log-usage.js` | 全モード完了時 | 使用ログ記録 |
 | `generate-index.js` | create完了後 | index.md自動生成 |
 | `capture-screenshots.js` | Phase 11実行時 | Playwrightによるスクリーンショット撮影（JSON撮影計画一括撮影/要素単位/インタラクション/カバレッジレポート生成対応） |
+| `validate-phase11-screenshot-coverage.js` | Phase 11監査時 | TC-スクリーンショット網羅性検証 |
+| `evidence-bundle-validator.ts` | Phase 12証跡集約時 | 2workflow証跡バンドルのフォーマット/判定検証 |
 
 ---
 
-## assets/ （9ファイル）
+## assets/ （10ファイル）
 
 出力で使用するテンプレート。
 
@@ -102,6 +107,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | [unassigned-task-template.md](../assets/unassigned-task-template.md) | 未タスク生成時 | 未タスク指示書テンプレート |
 | [implementation-guide-template.md](../assets/implementation-guide-template.md) | Phase 12実行時 | 実装ガイドテンプレート |
 | [documentation-changelog-template.md](../assets/documentation-changelog-template.md) | Phase 12 Task 2実行時 | ドキュメント更新履歴テンプレート |
+| [evidence-bundle-template.md](../assets/evidence-bundle-template.md) | Phase 12証跡集約時 | 2workflow同時監査の証跡テンプレート |
 | [review-result-template.md](../assets/review-result-template.md) | Phase 3/10レビュー時 | レビュー結果テンプレート |
 
 ---
@@ -110,6 +116,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-03 | references/19, scripts/15, assets/10に更新（evidence-sync-rules.md, phase12-checklist-definition.md, screenshot-verification-procedure.md, evidence-bundle-validator.ts, evidence-bundle-template.md追加） |
 | 2026-03-02 | references/16に更新（changelog-archive.md追加）、capture-screenshots.js説明を拡張版機能に更新 |
 | 2026-03-01 | scripts/13に更新（capture-screenshots.js追加）、Phase 11スクリーンショット自動撮影 |
 | 2026-01-31 | assets/9に更新（documentation-changelog-template.md追加）、Phase 12 Task 2更新履歴テンプレート |

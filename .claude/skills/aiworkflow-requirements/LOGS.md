@@ -5,6 +5,57 @@
 
 ---
 
+## 2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 テンプレート準拠最適化（パターン化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001`
+- 目的: 今回の実装内容・苦戦箇所を「同種課題へ再利用できる構造」に統一し、仕様書の責務境界を明確化する
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md`（仕様反映先テーブル追加、完了タスク節のテンプレート準拠化）
+- SubAgent-B: `architecture-implementation-patterns.md`（2workflow証跡バンドル同期パターン新設）
+- SubAgent-C: `lessons-learned.md`（苦戦箇所と5ステップ手順の整合確認）
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file`）
+
+### 実施内容
+- `task-workflow.md` に「仕様反映先（テンプレート準拠）」を追加し、task-workflow / patterns / lessons の3点同期を明記
+- `architecture-implementation-patterns.md` に「Phase 12 2workflow証跡バンドル同期パターン」を追加
+- 同パターンで `workflow固定 → Task 1/3/4/5 実体突合 → current/baseline分離 → リンク是正` を標準フロー化
+- `SKILL.md` 変更履歴へ `v9.00.6` を追記
+
+### 結果
+- ステータス: success
+- 補足: 実装記録と再利用パターンの責務分離が成立し、同種課題の初動手順を簡潔化
+
+---
+
+## 2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 実装完了同期（台帳 + 教訓 + リンク整合）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001`
+- 目的: 本ブランチ実装（phase12-two-workflow-evidence-bundle）の完了記録、苦戦箇所、再利用手順を system spec 正本へ反映し、未タスクリンクの参照切れを解消する
+
+### SubAgent分担
+- SubAgent-A: `task-workflow.md`（完了記録、検証証跡、残課題行の完了化）
+- SubAgent-B: `lessons-learned.md`（実装完了教訓 + 5ステップ手順）
+- SubAgent-C: `ui-ux-feature-components.md`（UT-UI-05A 関連リンクの正本パス同期）
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file`）
+
+### 実施内容
+- `task-workflow.md` に `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001` の完了タスクセクションを追加
+- 残課題テーブルの同タスク行を完了表記へ更新
+- `task-workflow.md` / `ui-ux-feature-components.md` の `UT-UI-05A-*` 参照3件を `completed-tasks/skill-editor-view-closure/unassigned-task/` へ置換
+- `lessons-learned.md` に実装完了セクション（苦戦箇所3件 + 5ステップ）を追加
+- `SKILL.md` 変更履歴へ `v9.00.5` を追記
+
+### 結果
+- ステータス: success
+- 補足: `verify-unassigned-links` は `missing=0` に回復し、未タスク監査は `currentViolations=0` を確認
+
+---
+
 ## 2026-03-03 - TASK-10A-C 未タスク仕様書2件の追加（再発防止ガード）
 
 ### コンテキスト

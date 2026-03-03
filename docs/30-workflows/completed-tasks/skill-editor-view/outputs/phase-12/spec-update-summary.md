@@ -27,9 +27,9 @@
 
 ## 未タスク正本（新規）
 
-1. `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`
-2. `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md`
-3. `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md`
+1. `docs/30-workflows/completed-tasks/getfiletree-ipc/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`
+2. `docs/30-workflows/completed-tasks/getfiletree-ipc/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md`
+3. `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md`
 
 ## 検証サマリー
 
