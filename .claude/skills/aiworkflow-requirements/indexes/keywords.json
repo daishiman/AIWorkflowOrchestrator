@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T13:42:49.557Z",
-  "totalKeywords": 1410,
+  "generated": "2026-03-03T15:40:39.241Z",
+  "totalKeywords": 1408,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -775,6 +775,7 @@
       "lessons-learned.md",
       "llm-streaming.md",
       "spec-splitting-guidelines.md",
+      "task-workflow.md",
       "technology-frontend.md",
       "testing-component-patterns.md",
       "ui-history-components.md",
@@ -1181,6 +1182,9 @@
     "SkillManagementPanel": [
       "arch-ui-components.md"
     ],
+    "ビュー統合アーキテクチャパターン": [
+      "arch-ui-components.md"
+    ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
     ],
@@ -1339,9 +1343,12 @@
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
       "technology-backend.md",
       "testing-playwright-e2e.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "history": [
@@ -1545,44 +1552,6 @@
     "形式引数パターンの確認": [
       "architecture-implementation-patterns.md"
     ],
-    "Phase": [
-      "architecture-implementation-patterns.md",
-      "claude-code-agents-workflow.md",
-      "lessons-learned.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
-    ],
-    "workflow": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
-    ],
-    "証跡バンドル同期パターン": [
-      "architecture-implementation-patterns.md"
-    ],
-    "IMP": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "TWO": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "WORKFLOW": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "BUNDLE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
     "チャネル命名監査の運用パターン": [
       "architecture-implementation-patterns.md"
     ],
@@ -1611,6 +1580,10 @@
     ],
     "未タスク監査スコープ分離パターン": [
       "architecture-implementation-patterns.md"
+    ],
+    "IMP": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
@@ -1646,6 +1619,9 @@
     "creator": [
       "architecture-implementation-patterns.md",
       "quality-e2e-testing.md"
+    ],
+    "共有型インポート標準パターン": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -1798,6 +1774,11 @@
     ],
     "ワークフローセクションの記述形式": [
       "claude-code-agents-workflow.md"
+    ],
+    "Phase": [
+      "claude-code-agents-workflow.md",
+      "lessons-learned.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -2606,6 +2587,12 @@
     "スキル分析": [
       "interfaces-agent-sdk-skill.md"
     ],
+    "スキルライフサイクル": [
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
       "security-skill-ipc.md",
@@ -3101,9 +3088,6 @@
     "再監査": [
       "lessons-learned.md"
     ],
-    "実装完了": [
-      "lessons-learned.md"
-    ],
     "CENTER": [
       "lessons-learned.md"
     ],
@@ -3256,6 +3240,12 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
       "lessons-learned.md"
     ],
     "LINK": [
@@ -3469,6 +3459,10 @@
     ],
     "未実施が混在していないか": [
       "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"

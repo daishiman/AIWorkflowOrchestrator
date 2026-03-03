@@ -2539,65 +2539,6 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 ---
 
-## Phase 12 2workflow証跡バンドル同期パターン（UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 2026-03-03実装）
-
-### 問題
-
-`spec_created` 系 workflow と `completed` 系 workflow を同時監査する際、以下が分散しやすい。
-
-- `verify-all-specs` / `validate-phase-output` の記録先
-- Task 1/3/4/5 成果物の実体確認結果
-- 未タスクリンク更新（completed-tasks 移管後）と監査結果
-
-その結果、Phase 12 の完了判定が「成果物はあるが台帳が古い」状態になりやすい。
-
-### 解決パターン
-
-#### 1. 監査対象を 2workflow で先に固定する
-
-| 区分 | 例 | 目的 |
-| --- | --- | --- |
-| workflow-a | `spec_created` 系 | 仕様作成系の Task 1/3/4/5 整合確認 |
-| workflow-b | `completed` 系 | 実装完了系の Task 1/3/4/5 整合確認 |
-
-#### 2. 構造監査 → 出力監査 → 実体突合を同一ターンで実施する
-
-1. `verify-all-specs --workflow <a/b>` を実行  
-2. `validate-phase-output <a/b>` を実行  
-3. `outputs/phase-12/` の必須5成果物実体を `a/b` 両方で突合  
-
-#### 3. 未タスク監査は `current` 判定を合否基準に固定する
-
-| 監査 | コマンド | 合否基準 |
-| --- | --- | --- |
-| リンク整合 | `verify-unassigned-links.js` | `missing=0` |
-| 対象監査 | `audit-unassigned-tasks.js --json --target-file <path>` | `currentViolations.total=0` |
-| 差分監査 | `audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations.total=0`（baselineは監視） |
-
-#### 4. completed-tasks移管後のリンクドリフトを先に是正する
-
-- `task-workflow.md` と関連仕様書（例: `ui-ux-feature-components.md`）の未タスク参照を実体パスへ更新
-- 更新後に `verify-unassigned-links.js` を再実行し `missing=0` を確認
-
-### 検証コマンド
-
-```bash
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-a> --json
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<workflow-b> --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-a>
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow-b>
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/<task-file>.md
-```
-
-### 適用指針
-
-- 2workflow同時監査では「検証結果の分離」ではなく「判定ロジックの統一」を優先する。  
-- 完了判定は `current`、負債管理は `baseline` に責務分離する。  
-- 完了移管を含む場合、リンク是正を先に終えてから Phase 12 完了記録へ進む。  
-
----
-
 ## IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施）
 
 ### 問題
@@ -2689,12 +2630,53 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 ---
 
+## 共有型インポート標準パターン（TASK-10A-D）
+
+### 問題
+
+Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層に分散すると、型不整合の発見が遅延する。特に Renderer 側で `unknown[]` プレースホルダ型を使用した場合、コンパイルは通るが実行時に型不一致が顕在化する（P23/P24/P32 の繰り返しパターン）。
+
+### 解決パターン
+
+#### 1. 型定義の配置ルール
+
+| 型の種類 | 配置先 | 例 |
+| --- | --- | --- |
+| ドメインモデル型 | `@repo/shared` (`packages/shared/src/`) | `Skill`, `SkillLifecycleState`, `Suggestion` |
+| Store Slice 状態型 | `@repo/shared` からimport + Slice固有の拡張 | `AgentSliceState extends { skills: Skill[] }` |
+| Preload API 型 | `apps/desktop/src/preload/types.ts` | `ElectronSkillAPI`, `SkillBridgeAPI` |
+| IPC ハンドラ引数型 | Main Process 内で定義、`@repo/shared` の型を参照 | `handler(event, skillName: string)` |
+
+#### 2. 新規型追加時のチェックリスト
+
+1. `@repo/shared` に型定義を追加
+2. `pnpm --filter @repo/shared build` で共有パッケージをビルド
+3. Preload `types.ts` の API 型定義を更新
+4. Store Slice の型を `@repo/shared` からの import に変更
+5. `pnpm typecheck` で全パッケージの型整合性を検証
+
+#### 3. 禁止パターン
+
+| 禁止パターン | 理由 | 正しいパターン |
+| --- | --- | --- |
+| `unknown[]` プレースホルダ型 | 型安全性が失われ、実行時エラーの発見が遅延 | `@repo/shared` から具体型をimport |
+| Slice 内での独自型定義 | Store と Preload で型が乖離する | `@repo/shared` の型をre-export |
+| `as unknown as TargetType` キャスト | 型不整合を隠蔽する | 共有型を統一してキャスト不要にする |
+
+### 適用指針
+
+- 新規 IPC チャネル追加時は P23/P32 準拠で `@repo/shared` → Preload → Store の順に型を定義する
+- 既存の `unknown[]` 型は発見次第、具体型への置換を未タスク化する
+- `pnpm typecheck` は型変更後に必ず全パッケージ（`--filter @repo/shared && --filter @repo/desktop`）で実行する
+
+---
+
 
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
-| v1.35.0 | 2026-03-03 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001: Phase 12 2workflow証跡バンドル同期パターンを追加（workflow固定、Task 1/3/4/5 実体突合、`current/baseline` 判定分離、completed-tasks移管後リンク是正） |
+| v1.35.0 | 2026-03-03 | TASK-10A-D: 共有型インポート標準パターン追加（@repo/shared起点の型配置ルール、禁止パターン3件、新規型追加チェックリスト） |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
 | v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |

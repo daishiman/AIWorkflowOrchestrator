@@ -258,6 +258,24 @@
 
 詳細: `.claude/rules/06-known-pitfalls.md#P31`
 
+### 個別セレクタ命名規約
+
+新規セレクタ追加時は以下の命名パターンに従う。
+
+| カテゴリ | プレフィックス | 例 | 用途 |
+| -------- | -------------- | --- | ---- |
+| 状態取得 | `use{StateName}` | `useSkills`, `useSelectedSkill` | Store内の値をそのまま返す |
+| アクション | `use{ActionVerb}{Target}` | `useFetchSkills`, `useSelectSkill` | Store内のアクション関数を返す |
+| boolean状態 | `useIs{Condition}` | `useIsLoadingSkills`, `useIsExecuting` | boolean値を返す |
+| boolean状態 | `useHas{Condition}` | `useHasPermissionRequest` | 存在判定のboolean値を返す |
+| 派生状態 | `use{DerivedName}` | `useSkillLifecycleState`, `useLLMDisplayName` | 複数状態から計算した値を返す |
+| 複合状態 | `use{Feature}State` | `useSkillLifecycleState` | 特定機能の関連状態をまとめて返す |
+
+**命名の原則**:
+- 状態取得は名詞形（`useSkills`）、アクションは動詞形（`useFetchSkills`）
+- `is` / `has` / `can` / `should` プレフィックスはboolean専用
+- `@repo/shared` の型名と一致させる（例: `Suggestion` 型 → `useSkillSuggestions`）
+
 ### Zustand Hook テスト戦略（renderHook パターン）
 
 個別セレクタHookのテストでは `renderHook` パターンを使用する。`getState()` 直接呼び出しはReactサブスクリプションを経由しないため、テスト対象として不適切。

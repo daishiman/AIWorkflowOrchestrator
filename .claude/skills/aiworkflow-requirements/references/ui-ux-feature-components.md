@@ -26,6 +26,7 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+| Skill Lifecycle UI Integration | TASK-10A-D     | SkillManagementPanel, ChatPanel | 完了 | 本ファイル |
 
 ### 共通仕様
 
@@ -1028,6 +1029,123 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 
 ---
 
+<a id="skill-lifecycle-ui-integration-task-10a-d"></a>
+## スキルライフサイクルUI統合（TASK-10A-D / completed）
+
+SkillManagementPanelの「準備中」プレースホルダーを実コンポーネントに差し替え、ChatPanelからのアクセスポイントを追加する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 子要素 |
+| --- | --- | --- | --- |
+| SkillManagementPanel | organisms | ChatPanel | SkillAnalysisView, SkillCreateWizard, SkillEditor |
+| ChatPanel（拡張） | organisms | App | SkillManagementPanel（条件付きレンダリング） |
+
+### ビュー構成（SkillManagementPanel）
+
+| ビュー | 条件 | 表示コンポーネント |
+| --- | --- | --- |
+| `list` | デフォルト | スキル一覧 + 検索 + 新規作成ボタン |
+| `editor` | `selectedSkill !== null` | `SkillEditor` |
+| `analysis` | `selectedSkill !== null` | `SkillAnalysisView` |
+| `create` | 条件なし | `SkillCreateWizard` |
+
+### ChatPanel統合
+
+| 要素 | 説明 |
+| --- | --- |
+| `showSkillManagement` state | `useState(false)` でパネル表示/非表示を管理 |
+| トグルボタン | `data-testid="skill-management-toggle"`, `aria-expanded`, `disabled={isExecuting}` |
+| 条件付きレンダリング | `showSkillManagement ? <SkillManagementPanel /> : <通常のチャット>` |
+
+### Store拡張（agentSlice）
+
+**追加された状態フィールド**:
+
+| プロパティ | 型 | 説明 |
+| --- | --- | --- |
+| `currentAnalysis` | `SkillAnalysis \| null` | 分析結果 |
+| `isAnalyzing` | `boolean` | 分析中フラグ |
+| `isImproving` | `boolean` | 改善中フラグ |
+
+**追加されたアクション**:
+
+| アクション | 引数 | 説明 |
+| --- | --- | --- |
+| `analyzeSkill` | `skillName: string` | 分析実行 |
+| `applySkillImprovements` | `skillName: string, suggestions: Suggestion[]` | 改善提案適用 |
+| `autoImproveSkill` | `skillName: string` | 全自動改善 |
+| `createSkill` | `description: string, options: CreateOptions` | スキル作成 |
+| `clearAnalysis` | - | 分析結果クリア |
+
+**追加された個別セレクタ（store/index.ts）**:
+
+| セレクタ | 種別 | 返却型 |
+| --- | --- | --- |
+| `useCurrentAnalysis()` | State | `SkillAnalysis \| null` |
+| `useIsAnalyzingSkill()` | State | `boolean` |
+| `useIsImprovingSkill()` | State | `boolean` |
+| `useAnalyzeSkill()` | Action | `(skillName: string) => Promise<void>` |
+| `useApplySkillImprovements()` | Action | `(skillName: string, suggestions: Suggestion[]) => Promise<void>` |
+| `useAutoImproveSkill()` | Action | `(skillName: string) => Promise<void>` |
+| `useCreateSkill()` | Action | `(description: string, options: CreateOptions) => Promise<string>` |
+| `useClearAnalysis()` | Action | `() => void` |
+
+### テスト
+
+| ファイル | テスト数 | カバレッジ |
+| --- | --- | --- |
+| SkillManagementPanel.test.tsx | 38 | ビュー統合テスト |
+| ChatPanel.test.tsx | 30 | ChatPanel統合テスト |
+| agentSlice.test.ts | 64 | Store拡張テスト |
+| 合計 | 132 | 全PASS |
+
+### 苦戦箇所と解決策
+
+| 苦戦箇所 | 解決策 |
+| --- | --- |
+| `Suggestion`型不整合（`unknown[]` → `Suggestion[]`） | `@repo/shared/types/skill-improver`から正しい型をインポート。IPC境界の型は`@repo/shared`の共有型を使用し`unknown[]`で仮定義しない |
+| P40テスト実行ディレクトリ依存 | テストコマンドに常に`cd apps/desktop &&`プレフィックスを含める |
+| PostToolUseフックによるEdit失敗 | 大量編集後は`git diff --stat`で変更数を検証。P11パターン |
+
+### 再確認追補（2026-03-04）
+
+| 観点 | 内容 | 判定 |
+| --- | --- | --- |
+| Phase 12 構造検証 | `verify-all-specs` / `validate-phase-output` を再実行 | PASS（13/13, 28項目） |
+| 画面証跡カバレッジ | `validate-phase11-screenshot-coverage` を再実行 | PASS（expected TC=5 / covered TC=5） |
+| スクリーンショット目視 | TC-01/03/04/05 の状態を再確認。TC-02 は analysis遷移時の API未接続フォールバック表示であることを確認 | PASS（証跡意図を `manual-test-result.md` に明記） |
+| 未タスク差分監査 | `audit-unassigned-tasks --json --diff-from HEAD` | PASS（currentViolations=0 / baselineViolations=85） |
+
+再確認時の運用ルール:
+1. 未タスク監査は `current`（合否）と `baseline`（既存負債）を分離して記録する。  
+2. UI証跡は「画面状態」と「検証目的」を同時に書き、同一見た目でも意図差を明示する。  
+
+### 関連未タスク（2026-03-04 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001 | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md` |
+| UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡の状態名+検証目的分離ガード（TC意図混同防止） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
+
+### 仕様書別SubAgent反映ログ（2026-03-04）
+
+| SubAgent | 担当仕様書 | 実装内容の反映 | 苦戦箇所の反映 | 検証証跡 |
+| --- | --- | --- | --- | --- |
+| SG-UIF-01 | `ui-ux-feature-components.md` | SkillManagementPanel 4ビュー統合、ChatPanel導線、agentSlice拡張を同期 | 型境界/P40/証跡解釈の3系統を再確認追補 | `manual-test-result.md` / `TC-01..05` スクリーンショット |
+| SG-TW-01 | `task-workflow.md` | 検証値（13/13、28項目、TC 5/5、current=0）を台帳へ反映 | `current/baseline` 分離と証跡意図分離を標準ルール化 | `spec-update-summary.md` / `documentation-changelog.md` |
+| SG-LL-01 | `lessons-learned.md` | 同種課題向け再利用手順を反映 | 再発条件付きの苦戦箇所を教訓化 | `references/lessons-learned.md` |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `ui-ux-feature-components` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で分担する。  
+2. 各仕様書で「実装内容」と「苦戦箇所」を同じセクションに記録し、片側だけの追記を禁止する。  
+3. `verify-all-specs` と `validate-phase-output` を先に通し、監査値を固定してから仕様書へ転記する。  
+4. UI証跡は `validate-phase11-screenshot-coverage` と目視確認をセットで行い、状態名+検証目的を追記する。  
+5. 未タスク監査は `audit --diff-from HEAD` を合否、`audit --json` を監視として分離記録する。  
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
@@ -1036,6 +1154,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 | TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | TASK-10A-B | SkillAnalysisView（分析・改善UI、4コンポーネント + 1 Hook） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + IPC `skill:create`） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
+| TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 | `docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/` |
 | TASK-9A    | skill-editor（SkillEditor / SkillCodeEditor + CRUD + backups） | 2026-02-26 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                           |
 | TASK-7D    | chatpanel-agent-integration（ChatPanel統合・SkillStreamingView） | 2026-01-31 | `docs/30-workflows/TASK-7D-chatpanel-agent-integration/`                                            |
 | TASK-3-2-D | skill-stream-copy-history                                      | 2026-01-28 | `docs/30-workflows/TASK-3-2-D-skill-stream-copy-history/`                                           |
@@ -1114,6 +1233,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-10A-C SkillCreateWizard仕様](../../../docs/30-workflows/completed-tasks/skill-create-wizard/index.md)
 - [TASK-10A-C 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/manual-test-result.md)
 - [TASK-10A-C 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/)
+- [TASK-10A-D ワークフロー仕様](../../../docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/)
 
 ---
 
@@ -1121,6 +1241,10 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-04 | v1.14.3    | TASK-10A-D の再確認苦戦箇所から未タスク2件を追加。`UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001`（仕様書別SubAgent実行ログ必須化）と `UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001`（画面証跡の状態名+検証目的分離）を関連未タスクへ登録 |
+| 2026-03-04 | v1.14.2    | TASK-10A-D 仕様書別SubAgent反映ログを追加。`ui-ux-feature-components` / `task-workflow` / `lessons-learned` の3仕様書分担で実装内容と苦戦箇所を同一ターン同期する運用を明文化し、5ステップの簡潔解決手順へ再編 |
+| 2026-03-04 | v1.14.1    | TASK-10A-D 再確認追補: Phase 12再検証値（13/13, 28項目, TC 5/5, current=0/baseline=85）を追加。TC-02（analysis遷移時フォールバック）とTC-05（意図的エラー検証）の証跡意図を分離し、画面証跡レビューの運用ルールを明文化 |
+| 2026-03-03 | v1.14.0    | TASK-10A-D 完了反映: 収録機能一覧・完了タスクへスキルライフサイクルUI統合を追加。専用セクション（コンポーネント階層/ビュー構成/ChatPanel統合/Store拡張/テスト132件/苦戦箇所3件）を新設 |
 | 2026-03-02 | v1.13.2    | TASK-10A-C 完了反映: 収録機能一覧・完了タスクへ SkillCreateWizard を追加。専用セクション（構成/IPC依存/画面証跡8件/苦戦箇所）を新設し、未タスク0件を同期 |
 | 2026-03-02 | v1.13.1    | TASK-10A-B 未タスク追補: 苦戦箇所3件（Phase 11必須節検証/画面証跡鮮度/未タスク件数再計算）を独立未タスク `UT-TASK-10A-B-006〜008` として追加し、関連未タスク表を8件へ拡張 |
 | 2026-03-02 | v1.13.0    | TASK-10A-B 追補: 実装時の苦戦箇所（Phase 11 実証跡化/必須節不足/未タスク件数ドリフト）と5ステップ簡潔解決手順を追加 |

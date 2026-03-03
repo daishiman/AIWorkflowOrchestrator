@@ -7,6 +7,8 @@ import {
   useRemoveSkill,
 } from "../../store";
 import { SkillEditor } from "./SkillEditor";
+import { SkillAnalysisView } from "./SkillAnalysisView";
+import { SkillCreateWizard } from "./SkillCreateWizard";
 
 /** ボタンスタイル定数 */
 export const buttonStyles = {
@@ -152,16 +154,13 @@ export function SkillManagementPanel() {
   }
 
   // --- 分析ビュー ---
-  if (currentView === "analysis") {
+  if (currentView === "analysis" && selectedSkill) {
     return (
-      <div className="p-4" data-testid="skill-management-panel-analysis-view">
-        <div>分析ビュー（準備中）</div>
-        <button
-          className={`mt-4 ${buttonStyles.secondary}`}
-          onClick={handleBackToList}
-        >
-          戻る
-        </button>
+      <div data-testid="skill-management-panel-analysis-view">
+        <SkillAnalysisView
+          skillName={String(selectedSkill.name)}
+          onClose={handleBackToList}
+        />
       </div>
     );
   }
@@ -169,14 +168,8 @@ export function SkillManagementPanel() {
   // --- 作成ビュー ---
   if (currentView === "create") {
     return (
-      <div className="p-4" data-testid="skill-management-panel-create-view">
-        <div>新規スキル作成（準備中）</div>
-        <button
-          className={`mt-4 ${buttonStyles.secondary}`}
-          onClick={handleBackToList}
-        >
-          戻る
-        </button>
+      <div data-testid="skill-management-panel-create-view">
+        <SkillCreateWizard onClose={handleBackToList} />
       </div>
     );
   }

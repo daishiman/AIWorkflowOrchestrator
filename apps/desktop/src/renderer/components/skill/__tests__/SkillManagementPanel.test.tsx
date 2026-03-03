@@ -103,6 +103,33 @@ vi.mock("../SkillEditor", () => ({
   ),
 }));
 
+// --- Mock SkillAnalysisView ---
+vi.mock("../SkillAnalysisView", () => ({
+  SkillAnalysisView: ({
+    skillName,
+    onClose,
+  }: {
+    skillName: string;
+    onClose: () => void;
+  }) => (
+    <div data-testid="skill-analysis-view">
+      <span data-testid="analysis-skill-name">{skillName}</span>
+      <button onClick={onClose}>閉じる</button>
+    </div>
+  ),
+}));
+
+// --- Mock SkillCreateWizard ---
+vi.mock("../SkillCreateWizard", () => ({
+  SkillCreateWizard: React.forwardRef<HTMLDivElement, { onClose: () => void }>(
+    ({ onClose }, ref) => (
+      <div ref={ref} data-testid="skill-create-wizard">
+        <button onClick={onClose}>閉じる</button>
+      </div>
+    ),
+  ),
+}));
+
 // --- Import component under test ---
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
@@ -235,7 +262,7 @@ describe("ビュー遷移", () => {
       fireEvent.click(analyzeButton);
     });
 
-    expect(screen.getByText("分析ビュー（準備中）")).toBeDefined();
+    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
   });
 
   it("TC-013: 新規作成ボタンクリックで作成ビューに遷移する", async () => {
@@ -246,7 +273,7 @@ describe("ビュー遷移", () => {
       fireEvent.click(createButton);
     });
 
-    expect(screen.getByText("新規スキル作成（準備中）")).toBeDefined();
+    expect(screen.getByTestId("skill-create-wizard")).toBeDefined();
   });
 
   it("TC-014: エディターの閉じるボタンでリストビューに戻る", async () => {
@@ -269,7 +296,7 @@ describe("ビュー遷移", () => {
     expect(screen.getByText("スキル管理")).toBeDefined();
   });
 
-  it("TC-015: 分析/作成ビューの戻るボタンでリストビューに戻る", async () => {
+  it("TC-015: 分析/作成ビューの閉じるボタンでリストビューに戻る", async () => {
     render(<SkillManagementPanel />);
 
     // 分析ビューへ遷移
@@ -277,15 +304,15 @@ describe("ビュー遷移", () => {
     await act(async () => {
       fireEvent.click(analyzeButton);
     });
-    expect(screen.getByText("分析ビュー（準備中）")).toBeDefined();
+    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
 
-    // 戻るボタンでリストに戻る
-    const backButton = screen.getByText("戻る");
+    // 閉じるボタンでリストに戻る
+    const closeButton = screen.getByText("閉じる");
     await act(async () => {
-      fireEvent.click(backButton);
+      fireEvent.click(closeButton);
     });
 
-    expect(screen.queryByText("分析ビュー（準備中）")).toBeNull();
+    expect(screen.queryByTestId("skill-analysis-view")).toBeNull();
     expect(screen.getByText("スキル管理")).toBeDefined();
   });
 });
@@ -628,12 +655,12 @@ describe("統合テスト", () => {
     await act(async () => {
       fireEvent.click(analyzeButton);
     });
-    expect(screen.getByText("分析ビュー（準備中）")).toBeDefined();
+    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
 
-    // リストに戻る
-    const backButton = screen.getByText("戻る");
+    // 閉じるボタンでリストに戻る
+    const closeButton = screen.getByText("閉じる");
     await act(async () => {
-      fireEvent.click(backButton);
+      fireEvent.click(closeButton);
     });
 
     // 検索クエリが維持されていることを確認
