@@ -160,6 +160,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
+| TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
 
 ---
 
@@ -219,6 +220,23 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 ---
 
+## TASK-10A-D 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION | スキルライフサイクルUI統合（SkillManagementPanel ビュー統合 + ChatPanel導線追加） | completed（実装・テスト・画面検証完了） | `docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/` |
+
+### TASK-10A-D 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | SkillManagementPanelの「準備中」プレースホルダーをSkillAnalysisView/SkillCreateWizardに差替、ChatPanelにスキル管理パネルトグルボタンを追加、agentSliceに5アクション+3状態フィールド+8個別セレクタを拡張 |
+| 苦戦箇所1 | `applySkillImprovements`の引数型を当初`unknown[]`で定義したが、Preload APIの型定義と不整合が発生。`@repo/shared/types/skill-improver`から`Suggestion`型を正しくインポートすることで解決 |
+| 苦戦箇所2 | P40（テスト実行ディレクトリ依存）が再発。`cd apps/desktop`せずにテスト実行すると`@testing-library/jest-dom`のmatcherが読み込まれず全テスト失敗 |
+| 苦戦箇所3 | PostToolUseフック（Prettier/ESLint自動修正）がファイル変更し、後続のEdit文字列マッチが失敗するP11パターンが発生 |
+
+---
+
 ## 仕様書作成済みタスク（spec_created）
 
 | Task ID | 機能名 | 状態 | 仕様書 |
@@ -256,6 +274,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.14.0  | 2026-03-03 | TASK-10A-D 完了反映: 完了タスクへ SkillManagementPanel ビュー統合を追加し、実装完了記録（SkillAnalysisView/SkillCreateWizard統合、ChatPanel導線、agentSlice拡張、苦戦箇所3件）を同期 |
 | 2.13.9  | 2026-03-02 | TASK-10A-C 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillCreateWizard を追加し、実装完了記録（4ステップUI、`skill:create` 契約、Phase 11 画面証跡 TC-01〜08、未タスク0件）を同期 |
 | 2.13.8  | 2026-03-02 | TASK-10A-B 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillAnalysisView を追加し、実装完了記録（画面証跡・a11y修正・未タスク5件）を同期 |
 | 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/unassigned-task/` 配下へ統一 |

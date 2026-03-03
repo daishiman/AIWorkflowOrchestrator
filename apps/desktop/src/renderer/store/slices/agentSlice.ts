@@ -21,6 +21,10 @@ import type {
   SkillStreamMessage,
   SkillPermissionRequest,
 } from "@repo/shared";
+import type {
+  SkillAnalysis,
+  Suggestion,
+} from "@repo/shared/types/skill-improver";
 
 // Re-export for backward compatibility
 export type { AgentExecutionStatus } from "@repo/shared/types/agent";
@@ -136,6 +140,14 @@ export interface AgentState {
   isImporting: boolean;
   /** インポート中のスキル名 */
   importingSkillName: SkillName | null;
+
+  // === スキルライフサイクル状態（TASK-10A-D） ===
+  /** 最新の分析結果 */
+  currentAnalysis: SkillAnalysis | null;
+  /** 分析処理中フラグ */
+  isAnalyzing: boolean;
+  /** 改善適用処理中フラグ */
+  isImproving: boolean;
 }
 
 /**
@@ -249,6 +261,28 @@ export interface AgentActions {
   /** ストリーミングメッセージをクリア */
   clearStreamingMessages: () => void;
 
+  // === スキルライフサイクルアクション（TASK-10A-D） ===
+  /** スキルを分析し結果をcurrentAnalysisに格納する */
+  analyzeSkill: (skillName: string) => Promise<void>;
+  /** 選択した改善提案を適用する */
+  applySkillImprovements: (
+    skillName: string,
+    suggestions: Suggestion[],
+  ) => Promise<void>;
+  /** 全自動改善を実行する */
+  autoImproveSkill: (skillName: string) => Promise<void>;
+  /** スキルを新規作成する */
+  createSkill: (
+    description: string,
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    },
+  ) => Promise<string>;
+  /** 分析結果をクリアする */
+  clearAnalysis: () => void;
+
   // === 内部アクション（IPCイベントハンドラ用） ===
   _handleStreamMessage: (msg: SkillStreamMessage) => void;
   _handleComplete: (executionId: string) => void;
@@ -316,6 +350,11 @@ const initialAgentState: AgentState = {
   isScanning: false,
   isImporting: false,
   importingSkillName: null,
+
+  // === スキルライフサイクル初期状態（TASK-10A-D） ===
+  currentAnalysis: null,
+  isAnalyzing: false,
+  isImproving: false,
 };
 
 /**
@@ -737,6 +776,122 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
 
   clearStreamingMessages: () => {
     set({ streamingMessages: [] });
+  },
+
+  // === スキルライフサイクルアクション（TASK-10A-D） ===
+
+  analyzeSkill: async (skillName: string) => {
+    // P42準拠: 3段バリデーション
+    if (typeof skillName !== "string" || skillName.trim() === "") {
+      set({ skillError: "スキル名が無効です" });
+      return;
+    }
+    set({ isAnalyzing: true, skillError: null, currentAnalysis: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      const result = await window.electronAPI.skill.analyze(skillName.trim());
+      set({ currentAnalysis: result, isAnalyzing: false });
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage("スキル分析に失敗", error),
+        isAnalyzing: false,
+      });
+    }
+  },
+
+  applySkillImprovements: async (
+    skillName: string,
+    suggestions: Suggestion[],
+  ) => {
+    // P42準拠: 3段バリデーション
+    if (typeof skillName !== "string" || skillName.trim() === "") {
+      set({ skillError: "スキル名が無効です" });
+      return;
+    }
+    if (!Array.isArray(suggestions) || suggestions.length === 0) {
+      set({ skillError: "改善提案が選択されていません" });
+      return;
+    }
+    set({ isImproving: true, skillError: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      await window.electronAPI.skill.applyImprovements(
+        skillName.trim(),
+        suggestions,
+      );
+      // 改善適用後に再分析して最新状態を取得
+      const result = await window.electronAPI.skill.analyze(skillName.trim());
+      set({ currentAnalysis: result, isImproving: false });
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage("改善適用に失敗", error),
+        isImproving: false,
+      });
+    }
+  },
+
+  autoImproveSkill: async (skillName: string) => {
+    // P42準拠: 3段バリデーション
+    if (typeof skillName !== "string" || skillName.trim() === "") {
+      set({ skillError: "スキル名が無効です" });
+      return;
+    }
+    set({ isImproving: true, skillError: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      await window.electronAPI.skill.autoImprove(skillName.trim());
+      // 全自動改善後に再分析
+      const result = await window.electronAPI.skill.analyze(skillName.trim());
+      set({ currentAnalysis: result, isImproving: false });
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage("全自動改善に失敗", error),
+        isImproving: false,
+      });
+    }
+  },
+
+  createSkill: async (
+    description: string,
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    },
+  ) => {
+    // P42準拠: 3段バリデーション
+    if (typeof description !== "string" || description.trim() === "") {
+      set({ skillError: "スキルの説明が無効です" });
+      return "";
+    }
+    set({ skillError: null });
+    try {
+      if (!window.electronAPI?.skill) {
+        throw new Error("Skill API not available");
+      }
+      const result = await window.electronAPI.skill.create({
+        description: description.trim(),
+        options,
+      });
+      // 作成後にスキル一覧を再取得
+      await get().fetchSkills();
+      return result.path;
+    } catch (error) {
+      set({
+        skillError: formatErrorMessage("スキル作成に失敗", error),
+      });
+      return "";
+    }
+  },
+
+  clearAnalysis: () => {
+    set({ currentAnalysis: null });
   },
 
   // === 内部ハンドラ（IPCイベント用） ===

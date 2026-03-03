@@ -18,6 +18,7 @@ import { SkillSelector } from "../skill/SkillSelector";
 import { SkillImportDialog } from "../skill/SkillImportDialog";
 import { PermissionDialog } from "../skill/PermissionDialog";
 import { SkillStreamingView } from "../skill/SkillStreamingView";
+import { SkillManagementPanel } from "../skill/SkillManagementPanel";
 
 // ============================================
 // Types
@@ -63,6 +64,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
     // Local state
     const [importDialogSkill, setImportDialogSkill] =
       useState<SkillMetadata | null>(null);
+    const [showSkillManagement, setShowSkillManagement] = useState(false);
 
     // Import request handler
     const handleImportRequest = (skill: SkillMetadata) => {
@@ -94,20 +96,42 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
 
           {/* SkillSelector */}
           <SkillSelector />
+
+          {/* スキル管理パネル切替 */}
+          <button
+            onClick={() => setShowSkillManagement((prev) => !prev)}
+            aria-label={
+              showSkillManagement
+                ? "スキル管理パネルを閉じる"
+                : "スキル管理パネルを開く"
+            }
+            aria-expanded={showSkillManagement}
+            disabled={isExecuting}
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="skill-management-toggle"
+          >
+            スキル管理
+          </button>
         </div>
 
         {/* Message Area */}
         <div className="flex-1 overflow-y-auto" data-testid="message-area">
-          {/* MessageList placeholder - existing component */}
-          <div data-testid="message-list-slot" />
+          {showSkillManagement ? (
+            <SkillManagementPanel />
+          ) : (
+            <>
+              {/* MessageList placeholder - existing component */}
+              <div data-testid="message-list-slot" />
 
-          {/* Skill Streaming View */}
-          {isExecuting && selectedSkillName && (
-            <SkillStreamingView
-              skillName={selectedSkillName}
-              messages={streamingMessages}
-              status={skillExecutionStatus}
-            />
+              {/* Skill Streaming View */}
+              {isExecuting && selectedSkillName && (
+                <SkillStreamingView
+                  skillName={selectedSkillName}
+                  messages={streamingMessages}
+                  status={skillExecutionStatus}
+                />
+              )}
+            </>
           )}
         </div>
 

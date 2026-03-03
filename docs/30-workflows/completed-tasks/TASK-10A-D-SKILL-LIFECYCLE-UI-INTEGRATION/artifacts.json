@@ -1,0 +1,241 @@
+{
+  "feature": "task-10a-d-skill-lifecycle-ui-integration",
+  "created": "2026-03-03T17:17:00Z",
+  "lastUpdated": "2026-03-03T15:03:18Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design-document.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx",
+          "description": "SkillManagementPanel 統合テスト"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle.test.ts",
+          "description": "agentSlice ライフサイクルアクションテスト"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle-selectors.test.ts",
+          "description": "agentSlice 個別セレクタ安定性テスト"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx",
+          "description": "ChatPanel スキル管理統合テスト"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/store/slices/agentSlice.ts",
+          "description": "agentSlice 拡張（分析・改善・作成アクション追加）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/store/index.ts",
+          "description": "個別セレクタ追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx",
+          "description": "SkillManagementPanel ビュー統合"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/chat/ChatPanel.tsx",
+          "description": "ChatPanel スキル管理アクセス追加"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx",
+          "description": "SkillAnalysisView Props整合（条件付き）"
+        },
+        {
+          "type": "code",
+          "path": "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+          "description": "SkillCreateWizard Props整合（条件付き）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx",
+          "description": "SkillManagementPanel 統合テスト追記"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle.test.ts",
+          "description": "agentSlice テスト追記"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "テスト拡充結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-result.md",
+          "description": "カバレッジ確認レポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "description": "リファクタリングレポート"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-verification-result.md",
+          "description": "品質検証レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビューレポート"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/",
+          "description": "スクリーンショット証跡"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題リスト"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/component-documentation.md",
+          "description": "コンポーネントドキュメント"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-compliance-audit.md",
+          "description": "仕様準拠監査レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "docs/30-workflows/unassigned-task/*.md",
+          "description": "未完了タスク指示書（条件付き）"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["4", "5"],
+    "7": ["6"],
+    "8": ["5", "7"],
+    "9": ["5", "8"],
+    "10": ["1", "2", "5", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["1", "2", "5", "8", "9", "10", "11"],
+    "13": ["10", "11", "12"]
+  }
+}
