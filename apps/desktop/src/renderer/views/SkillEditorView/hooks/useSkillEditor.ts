@@ -77,6 +77,7 @@ export const useSkillEditor = (
       setError(
         err instanceof Error ? err.message : "ファイルの保存に失敗しました",
       );
+      throw err;
     }
   }, [skillName, currentPath, content, hasChanges, isReadOnly]);
 

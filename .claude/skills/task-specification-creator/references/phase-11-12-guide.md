@@ -130,6 +130,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
 補足:
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
+- `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 ### テスト結果レポート形式
 
 ```markdown
@@ -137,20 +138,20 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
 
 ### 機能テスト（正常系）
 
-| TC-ID | 機能 | 期待結果 | 結果 | 備考 |
-| ----- | ---- | -------- | ---- | ---- |
+| テストケース | 機能 | 期待結果 | 結果 | 備考 |
+| ---------- | ---- | -------- | ---- | ---- |
 | TC-001 | {{機能名}} | {{期待される動作}} | PASS | |
 
 ### エラーハンドリングテスト（異常系）
 
-| TC-ID | 状況 | 期待結果 | 結果 | 備考 |
-| ----- | ---- | -------- | ---- | ---- |
+| テストケース | 状況 | 期待結果 | 結果 | 備考 |
+| ---------- | ---- | -------- | ---- | ---- |
 | TC-101 | {{異常状況}} | {{期待されるエラー}} | PASS | |
 
 ### アクセシビリティテスト
 
-| TC-ID | 要件 | 結果 | WCAG違反 |
-| ----- | ---- | ---- | -------- |
+| テストケース | 要件 | 結果 | WCAG違反 |
+| ---------- | ---- | ---- | -------- |
 | TC-201 | キーボードナビゲーション | PASS | なし |
 
 ### 統合テスト連携
@@ -161,9 +162,12 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
 
 ### スクリーンショットエビデンス（UI/UX変更時）
 
-| TC-ID  | 撮影ファイル       | 仕様照合結果 | 備考 |
-| ------ | ------------------ | ------------ | ---- |
+| テストケース | 撮影ファイル       | 仕様照合結果 | 備考 |
+| ------------ | ------------------ | ------------ | ---- |
 | TC-001 | `TC-001-after.png` | 一致         |      |
+
+> **命名ルール**: 撮影ファイル名は実際の画面状態と意味を一致させる。  
+> 例: 未保存離脱ダイアログの証跡は `*-unsaved-dialog-*.png` のように状態名を含める。
 
 ### 仕様照合結果サマリー
 
@@ -342,7 +346,9 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
-- [ ] implementation-guide.md 内の画像パスがリポジトリ相対パスであること（PRコメント投稿時にGitHub上で表示可能）
+- [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
+- [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
+- [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
 - [ ] Phase 13（`/ai:diff-to-pr`）で参照する `TARGET_WORKFLOW_DIR` が今回差分のworkflowを指すことを確認した
 - [ ] PR本文（`.github/pull_request_template.md` 準拠）の `## その他` に Phase 12 実装ガイド反映元パスと要点を記載する準備ができている
 - [ ] **本Phase内の全タスクを100%実行完了**

@@ -97,7 +97,9 @@ describe("useSkillEditor", () => {
       result.current.updateContent("changed");
     });
     await act(async () => {
-      await result.current.saveFile();
+      await result.current.saveFile().catch(() => {
+        // saveFile は内部で error 状態を設定しつつ re-throw する
+      });
     });
     expect(result.current.error).not.toBeNull();
     expect(result.current.error).toContain("Write failed");

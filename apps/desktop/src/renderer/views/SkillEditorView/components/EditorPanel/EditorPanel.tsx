@@ -72,10 +72,11 @@ export const EditorPanel: React.FC<EditorPanelProps> = ({
 
         {/* テキストエリア */}
         <textarea
-          className="w-full h-full resize-none p-4 font-mono text-sm text-[var(--text-primary)] bg-[var(--bg-primary)] outline-none"
+          className="w-full h-full resize-none p-4 font-mono text-sm text-[var(--text-primary)] bg-[var(--bg-primary)] outline-none transition-opacity duration-150 motion-reduce:transition-none"
           value={content}
           onChange={handleChange}
           readOnly={isReadOnly}
+          aria-readonly={isReadOnly ? "true" : undefined}
           spellCheck={false}
         />
       </div>

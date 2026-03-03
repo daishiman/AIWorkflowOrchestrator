@@ -90,8 +90,8 @@
 
 ## 正式未タスク登録先（2026-03-02 再監査）
 
-| 登録タスクID                         | 正本ファイル                                                                          |
-| ------------------------------------ | ------------------------------------------------------------------------------------- |
-| UT-UI-05A-GETFILETREE-001            | `docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`     |
-| UT-UI-05A-SPEC-CONSISTENCY-001       | `docs/30-workflows/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
-| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | `docs/30-workflows/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
+| 登録タスクID                         | 正本ファイル                                                                                                                    |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| UT-UI-05A-GETFILETREE-001            | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`     |
+| UT-UI-05A-SPEC-CONSISTENCY-001       | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
+| UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |

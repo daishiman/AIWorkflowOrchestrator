@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-02T12:30:30.011Z",
-  "totalKeywords": 1402,
+  "generated": "2026-03-03T01:13:00.571Z",
+  "totalKeywords": 1407,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3075,6 +3075,15 @@
     "PANEL": [
       "lessons-learned.md"
     ],
+    "IMPLEMENTATION": [
+      "lessons-learned.md"
+    ],
+    "CLOSURE": [
+      "lessons-learned.md"
+    ],
+    "再確認追補": [
+      "lessons-learned.md"
+    ],
     "CENTER": [
       "lessons-learned.md"
     ],
@@ -4930,14 +4939,19 @@
       "ui-ux-components.md"
     ],
     "仕様書作成済みタスク": [
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md"
+      "ui-ux-components.md"
     ],
     "spec": [
+      "ui-ux-components.md"
+    ],
+    "created": [
+      "ui-ux-components.md"
+    ],
+    "実装収束": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],
-    "created": [
+    "SkillEditorView": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],

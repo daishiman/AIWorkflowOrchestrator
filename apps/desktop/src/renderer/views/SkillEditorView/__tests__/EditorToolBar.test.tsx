@@ -61,8 +61,8 @@ describe("EditorToolBar", () => {
     expect(saveButton).toBeDisabled();
   });
 
-  // ETB-04
-  it("読み取り専用モードで保存ボタンを無効化する", () => {
+  // ETB-04: UT-UI-05A-005 更新 — 読み取り専用時は保存ボタン非表示 + Lock アイコン表示
+  it("読み取り専用モードで保存ボタンが非表示になりLockアイコンが表示される", () => {
     render(
       <EditorToolBar
         selectedFile="SKILL.md"
@@ -74,8 +74,8 @@ describe("EditorToolBar", () => {
         onOpenBackups={mockOnOpenBackups}
       />,
     );
-    const saveButton = screen.getByLabelText("保存");
-    expect(saveButton).toBeDisabled();
+    expect(screen.queryByLabelText("保存")).not.toBeInTheDocument();
+    expect(screen.getByTestId("toolbar-lock-icon")).toBeInTheDocument();
   });
 
   // ETB-05

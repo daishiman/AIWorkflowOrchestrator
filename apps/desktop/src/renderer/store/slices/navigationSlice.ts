@@ -5,11 +5,15 @@ export interface NavigationSlice {
   // State
   currentView: ViewType;
   viewHistory: ViewType[];
+  /** UT-UI-05A-006: 現在編集中のスキル名 */
+  currentSkillName: string | null;
 
   // Actions
   setCurrentView: (view: ViewType) => void;
   goBack: () => void;
   canGoBack: () => boolean;
+  /** UT-UI-05A-006: 編集中スキル名を設定 */
+  setCurrentSkillName: (name: string | null) => void;
 }
 
 export const createNavigationSlice: StateCreator<
@@ -21,6 +25,7 @@ export const createNavigationSlice: StateCreator<
   // Initial state
   currentView: "dashboard",
   viewHistory: ["dashboard"],
+  currentSkillName: null,
 
   // Actions
   setCurrentView: (view) => {
@@ -48,5 +53,9 @@ export const createNavigationSlice: StateCreator<
 
   canGoBack: () => {
     return get().viewHistory.length > 1;
+  },
+
+  setCurrentSkillName: (name) => {
+    set({ currentSkillName: name });
   },
 });

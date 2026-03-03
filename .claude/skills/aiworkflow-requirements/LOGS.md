@@ -5,6 +5,58 @@
 
 ---
 
+## 2026-03-03 - UT-UI-05A Phase 12再確認追補（苦戦箇所テンプレート同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-UI-05A-IMPLEMENTATION-CLOSURE-001`（再確認追補）
+- 目的: 画面証跡再取得後のシステム仕様書同期（task-workflow / lessons）と再発防止テンプレートを同一ターンで固定する
+
+### SubAgent分担
+- SubAgent-A: 画面証跡再取得と検証（capture + coverage）
+- SubAgent-B: `task-workflow.md` 完了タスク節更新（苦戦箇所/5ステップ）
+- SubAgent-C: `lessons-learned.md` 教訓追補（再発条件付き）
+- SubAgent-D: 仕様運用履歴更新（SKILL/LOGS）
+
+### 実施内容
+- `capture-skill-editor-view-screenshots.mjs` を再実行し、8枚証跡を再取得（2026-03-03 08:30）
+- `task-workflow.md` の UT-UI-05A 完了節へ苦戦箇所3件と簡潔解決手順（5ステップ）を追記
+- `lessons-learned.md` に同内容を再利用テンプレート形式で追記（version 1.28.5）
+- `documentation-changelog.md` / `spec-update-summary.md` に再確認追補を反映
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`validate-phase11-screenshot-coverage` PASS（expected=8/covered=8）、`audit --diff-from HEAD` は `currentViolations=0`
+
+---
+
+## 2026-03-03 - UT-UI-05A-IMPLEMENTATION-CLOSURE-001 収束再監査（Phase 12 Step 1-A）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-UI-05A-IMPLEMENTATION-CLOSURE-001`（SkillEditorView 実装残課題収束）
+- 目的: 実装・画面証跡・Phase 12成果物・システム仕様書の最終整合を同一ターンで完了する
+
+### SubAgent分担
+- SubAgent-A: 画面検証証跡の再取得（Playwright、8スクリーンショット）
+- SubAgent-B: workflow成果物補完（Phase 11/12 出力、artifacts 同期）
+- SubAgent-C: システム仕様同期（`task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md`）
+- SubAgent-D: 監査（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+
+### 実施内容
+- `App.tsx` に `skill-center` / `skill-editor` 導線を追加し、SkillEditorView 到達経路を実装へ同期
+- `outputs/phase-11` に手動検証結果を追加し、証跡 8 枚を `outputs/phase-11/screenshots/` へ集約
+- `outputs/phase-12` の必須成果物（documentation-changelog / unassigned-task-detection / skill-feedback / spec-update-summary）を作成
+- 派生未タスク `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を `docs/30-workflows/unassigned-task/` に登録し、`task-workflow.md` 残課題へ同期
+- `ui-ux-components.md` / `ui-ux-feature-components.md` の SkillEditorView セクションを「実装収束完了 + 継続未タスク3件」へ更新
+- `node scripts/generate-index.js` 実行で `indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`validate-phase11-screenshot-coverage` PASS、`verify-unassigned-links` PASS、`audit --diff-from HEAD` は `currentViolations=0`
+
+---
+
 ## 2026-03-02 - TASK-10A-A Phase 12 最終同期（Step 2完了化 + 苦戦箇所資産化）
 
 ### コンテキスト

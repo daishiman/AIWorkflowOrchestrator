@@ -4,6 +4,9 @@
  * ファイルツリーの各ノード（ファイル/ディレクトリ）を表示する。
  * ディレクトリノードは子要素を再帰的にレンダリングする。
  *
+ * UT-UI-05A-001: aria-current, isFocused 対応
+ * UT-UI-05A-007: motion-reduce:transition-none 対応
+ *
  * @module SkillEditorView/components/FileTreePanel/FileTreeNode
  */
 
@@ -15,6 +18,7 @@ export interface FileTreeNodeProps {
   node: SkillFileTreeNode;
   depth: number;
   isSelected: boolean;
+  isFocused?: boolean;
   unsavedFiles?: Set<string>;
   expandedDirs?: Set<string>;
   onSelect: (path: string) => void;
@@ -25,6 +29,7 @@ export const FileTreeNode: React.FC<FileTreeNodeProps> = ({
   node,
   depth,
   isSelected,
+  isFocused = false,
   unsavedFiles,
   expandedDirs,
   onSelect,
@@ -47,11 +52,14 @@ export const FileTreeNode: React.FC<FileTreeNodeProps> = ({
         role="treeitem"
         aria-selected={isSelected}
         aria-expanded={isDirectory ? isExpanded : undefined}
+        aria-current={isFocused ? "true" : undefined}
         className={`flex items-center gap-1.5 px-2 py-1 cursor-pointer text-sm select-none
           text-[var(--text-primary)]
           ${isSelected ? "bg-[var(--status-primary)] bg-opacity-10" : ""}
-          ${!isSelected ? "hover:bg-[var(--bg-tertiary)]" : ""}
-          transition-colors duration-150`}
+          ${isFocused && !isSelected ? "bg-[var(--bg-tertiary)]" : ""}
+          ${!isSelected && !isFocused ? "hover:bg-[var(--bg-tertiary)]" : ""}
+          transition-colors duration-150
+          motion-reduce:transition-none`}
         style={{ paddingLeft: `${depth * 16}px` }}
         onClick={handleClick}
       >
@@ -90,9 +98,12 @@ export const FileTreeNode: React.FC<FileTreeNodeProps> = ({
         )}
       </div>
 
-      {/* ディレクトリの子要素を再帰レンダリング */}
+      {/* ディレクトリの子要素を再帰レンダリング（UT-UI-05A-007: アニメーション付き） */}
       {isDirectory && isExpanded && node.children && (
-        <div role="group">
+        <div
+          role="group"
+          className="transition-[max-height] duration-200 overflow-hidden motion-reduce:transition-none"
+        >
           {node.children.map((child) => (
             <FileTreeNode
               key={child.path}

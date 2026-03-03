@@ -1138,8 +1138,8 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 
 **テーブル形式（manual-test-result.md に記載）**:
 
-| TC-ID | コンポーネント | 状態 | 撮影方法 | テーマ | ファイル名 |
-|-------|--------------|------|---------|--------|-----------|
+| テストケース | コンポーネント | 状態 | 撮影方法 | テーマ | ファイル名 |
+|------------|--------------|------|---------|--------|-----------|
 | TC-01 | {{Component}} | デフォルト表示 | route: /xxx | light | `TC-01-default-light.png` |
 | TC-02 | {{Component}} | デフォルト表示 | route: /xxx --dark | dark | `TC-02-default-dark.png` |
 | TC-03 | {{Component}} | エラー表示 | route: /xxx + エラー操作 | light | `TC-03-error-light.png` |
@@ -1147,6 +1147,10 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 | TC-05 | {{Component}} | 空状態 | route: /xxx（データなし） | light | `TC-05-empty-light.png` |
 
 **撮影計画の命名規則**: `TC-{番号}-{状態ラベル}-{テーマ}.png`
+
+**整合ルール（必須）**:
+- `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
+- 証跡ファイル名は、実際に撮影した状態と意味を一致させる（例: 未保存離脱ダイアログは `*-unsaved-dialog-*.png`）
 
 **JSON形式（一括自動撮影用）**:
 
@@ -1633,7 +1637,9 @@ PR作成前に、ユーザーにローカル環境での動作確認を依頼す
 - `/ai:diff-to-pr` の Phase 3.6 で、staged差分から `TARGET_WORKFLOW_DIR` を1件特定する
 - Phase 11/12成果物パス（`implementation-guide.md` / `screenshot-coverage.md` / `screenshots/`）は `TARGET_WORKFLOW_DIR` 配下のみ参照する
 - PR本文 `## その他` に、Phase 12 実装ガイド反映元パスと要点（Part 1/Part 2）を必ず記載する
+- `implementation-guide.md` の全文を PRコメントとして必ず投稿し、`## 📖 実装ガイド（全文）` 見出しと Part 1/Part 2 を含むことを `gh api .../issues/<PR_NUMBER>/comments` で検証する
 - UI/UX変更時は `outputs/phase-11/screenshots/*.png` を検出し、PR本文 `## スクリーンショット` に画像リンクを自動挿入する
+- PR本文/PRコメントで画像を埋め込む場合は `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLを使う（相対パス直貼りは禁止）
 - UI/UX変更がない場合は PR本文 `## スクリーンショット` セクションを削除する
 - workflow候補が複数ある場合は、PR作成前にユーザーへ対象workflowを確認する
 
