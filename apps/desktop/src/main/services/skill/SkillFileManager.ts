@@ -46,6 +46,14 @@ const BACKUP_PATTERN = /\.(backup|deleted)\.(\d+)$/;
 // Type Definitions
 // =========================================================================
 
+/** ファイルツリーのノード型 (UT-UI-05A-GETFILETREE-001) */
+export interface SkillFileTreeNode {
+  name: string;
+  path: string;
+  type: "file" | "directory";
+  children?: SkillFileTreeNode[];
+}
+
 /**
  * コンストラクタオプション
  */
@@ -310,6 +318,17 @@ export class SkillFileManager {
   }
 
   /**
+   * スキルのファイルツリーを取得する
+   * @param skillName - スキル名
+   * @returns ツリー構造のファイルノード配列
+   * @throws {SkillNotFoundError} スキルが見つからない場合
+   */
+  async getFileTree(skillName: string): Promise<SkillFileTreeNode[]> {
+    const skillDir = await this.findSkillDir(skillName);
+    return this.buildFileTree(skillDir.path, skillDir.path);
+  }
+
+  /**
    * バックアップからファイルを復元
    * @param skillName - スキル名
    * @param backupPath - バックアップファイルの相対パス
@@ -438,6 +457,53 @@ export class SkillFileManager {
       }
       throw error;
     }
+  }
+
+  /**
+   * ディレクトリを再帰走査してツリー構造を構築する
+   */
+  private async buildFileTree(
+    dir: string,
+    basePath: string,
+  ): Promise<SkillFileTreeNode[]> {
+    const nodes: SkillFileTreeNode[] = [];
+
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (BACKUP_PATTERN.test(entry.name)) {
+        continue;
+      }
+
+      const fullPath = path.join(dir, entry.name);
+      const relativePath = path
+        .relative(basePath, fullPath)
+        .split(path.sep)
+        .join("/");
+
+      if (entry.isDirectory()) {
+        const children = await this.buildFileTree(fullPath, basePath);
+        nodes.push({
+          name: entry.name,
+          path: relativePath,
+          type: "directory",
+          children,
+        });
+      } else if (entry.isFile()) {
+        nodes.push({
+          name: entry.name,
+          path: relativePath,
+          type: "file",
+        });
+      }
+    }
+
+    return nodes.sort((a, b) => {
+      if (a.type !== b.type) {
+        return a.type === "directory" ? -1 : 1;
+      }
+      return a.name.localeCompare(b.name);
+    });
   }
 
   /**

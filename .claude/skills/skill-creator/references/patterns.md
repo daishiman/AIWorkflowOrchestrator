@@ -1216,6 +1216,36 @@
 - **関連タスク**: TASK-9A-skill-editor
 - **クロスリファレンス**: [unassigned-task-guidelines.md](../../task-specification-creator/references/unassigned-task-guidelines.md)
 
+### [Phase 12] getFileTree再同期の5点固定（UT-UI-05A-GETFILETREE-001）
+
+- **状況**: IPC実装完了後に、仕様書同期・成果物命名・未タスク形式が別々に更新され、再確認で差し戻しが発生しやすい
+- **解決策**:
+  1. Step 2 は `api-ipc` / `ui-ux-feature` / `security` / `interfaces` / `task-workflow` の5仕様書を固定確認対象にする
+  2. `phase-12-documentation.md` の成果物表と `outputs/phase-12` 実体を1対1で突合する
+  3. 画面証跡は `outputs/phase-11/screenshots/*.png` を実際に開いて確認した上で同期する
+  4. 未タスク指示書は `## メタ情報` 1セクション原則（YAML+表同居）を `rg` で機械確認する
+  5. 合否判定は `audit --diff-from HEAD` の `currentViolations=0` に固定し、baselineは監視値として分離記録する
+- **効果**: Phase 12再確認で発生しやすい「実装済みなのに文書だけ未同期」「命名揺れ」「形式ノイズ」を同時に抑止できる
+- **適用条件**: IPC追加を伴う UIタスクで、Phase 11/12 の証跡と仕様更新を同一ターンで収束させる場合
+- **発見日**: 2026-03-03
+- **関連タスク**: UT-UI-05A-GETFILETREE-001
+- **クロスリファレンス**: [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [unassigned-task-guidelines.md](../../task-specification-creator/references/unassigned-task-guidelines.md)
+
+### [Phase 12] SubAgent成果物の明示固定（UT-UI-05A-GETFILETREE-001）
+
+- **状況**: 実装同期は完了していても、仕様書ごとの担当境界が成果物として残らないと、次回再確認で責務が再び曖昧化する
+- **解決策**:
+  1. `spec-update-summary.md` を `phase12-system-spec-retrospective-template` 準拠へ再構成する
+  2. `spec-sync-subagent-report.md` を新規作成し、1仕様書=1SubAgentの責務/依存/完了条件を固定する
+  3. Step 2 判定は `phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の三点突合で確定する
+  4. `task-workflow.md` と `lessons-learned.md` に同一の SubAgent分担と苦戦箇所を同一ターンで同期する
+  5. 検証結果は `currentViolations=0` を合否、`baseline` を監視として分離記録する
+- **効果**: 「実装はあるが責務定義が残らない」状態を防ぎ、次回の再確認コストを下げる
+- **適用条件**: 複数仕様書を同時更新する Phase 12 タスク全般（特に UI + IPC 混在タスク）
+- **発見日**: 2026-03-03
+- **関連タスク**: UT-UI-05A-GETFILETREE-001
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
+
 ### [Phase 12] 待機API/停止API責務分離の仕様固定（TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001）
 
 - **状況**: `waitForCallback()` timeout 時に `stop()` まで実行すると、待機失敗と停止処理が結合して終了順序が不安定になる

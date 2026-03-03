@@ -55,7 +55,7 @@ import type {
   ImprovementResult,
   ImprovementOptions,
 } from "@repo/shared/types/skill-improver";
-import type { BackupInfo } from "./types";
+import type { BackupInfo, SkillFileTreeNode } from "./types";
 import type {
   DebugSessionState,
   Breakpoint,
@@ -191,6 +191,8 @@ export interface SkillAPI {
   listBackups: (skillName: string) => Promise<BackupInfo[]>;
   /** バックアップからファイルを復元する */
   restoreBackup: (skillName: string, backupPath: string) => Promise<void>;
+  /** スキルのファイルツリーを取得する (UT-UI-05A-GETFILETREE-001) */
+  getFileTree: (skillName: string) => Promise<SkillFileTreeNode[]>;
 
   // === Skill Share Operations (TASK-9F) ===
 
@@ -524,6 +526,11 @@ export const skillAPI: SkillAPI = {
     safeInvokeUnwrap<void>(IPC_CHANNELS.SKILL_RESTORE_BACKUP, {
       skillName,
       backupPath,
+    }),
+
+  getFileTree: (skillName: string): Promise<SkillFileTreeNode[]> =>
+    safeInvokeUnwrap<SkillFileTreeNode[]>(IPC_CHANNELS.SKILL_GET_FILE_TREE, {
+      skillName,
     }),
 
   // === Skill Share Operations (TASK-9F) ===

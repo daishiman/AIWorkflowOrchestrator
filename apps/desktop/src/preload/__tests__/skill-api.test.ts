@@ -723,7 +723,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
 // 8. 統一API構造テスト
 // ============================================================
 describe("統一SkillAPI - API構造検証", () => {
-  it("統一APIが46メソッドを持つ（fork API・共有API・ドキュメントAPI・分析/改善API・チェーンAPI含む）", () => {
+  it("統一APIが47メソッドを持つ（fileTree API・fork API・共有API・ドキュメントAPI・分析/改善API・チェーンAPI含む）", () => {
     const expectedMethods: (keyof SkillAPI)[] = [
       "list",
       "getImported",
@@ -739,6 +739,7 @@ describe("統一SkillAPI - API構造検証", () => {
       "onError",
       "onPermissionRequest",
       "sendPermissionResponse",
+      "getFileTree",
       "readFile",
       "writeFile",
       "createFile",
@@ -780,7 +781,7 @@ describe("統一SkillAPI - API構造検証", () => {
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(46);
+    expect(methodCount).toBe(47);
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {

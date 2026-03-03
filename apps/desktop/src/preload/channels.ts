@@ -318,6 +318,7 @@ export const IPC_CHANNELS = {
   SKILL_DELETE_FILE: "skill:deleteFile",
   SKILL_LIST_BACKUPS: "skill:listBackups",
   SKILL_RESTORE_BACKUP: "skill:restoreBackup",
+  SKILL_GET_FILE_TREE: "skill:getFileTree",
 
   // Skill share operations (TASK-9F)
   SKILL_IMPORT_FROM_SOURCE: "skill:importFromSource",
@@ -583,6 +584,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DELETE_FILE,
   IPC_CHANNELS.SKILL_LIST_BACKUPS,
   IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+  IPC_CHANNELS.SKILL_GET_FILE_TREE,
   // Skill share channels (TASK-9F)
   IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
   IPC_CHANNELS.SKILL_EXPORT,
