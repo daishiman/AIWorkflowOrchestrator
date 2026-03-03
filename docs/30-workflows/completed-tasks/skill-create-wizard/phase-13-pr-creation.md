@@ -2,14 +2,16 @@
 
 ## メタ情報
 
-| 項目       | 値                           |
-| ---------- | ---------------------------- |
-| Phase番号  | 13                           |
-| 機能名     | skill-create-wizard          |
-| タスクID   | TASK-10A-C                   |
-| 作成日     | 2026-03-03                   |
-| ステータス | pending                      |
-| 依存Phase  | Phase 12（ドキュメント更新） |
+| 項目       | 値                                                           |
+| ---------- | ------------------------------------------------------------ |
+| Phase番号  | 13                                                           |
+| 機能名     | skill-create-wizard                                          |
+| タスクID   | TASK-10A-C                                                   |
+| 作成日     | 2026-03-03                                                   |
+| ステータス | completed                                                    |
+| 依存Phase  | Phase 12（ドキュメント更新）                                 |
+| PR番号     | #954                                                         |
+| PR URL     | https://github.com/daishiman/AIWorkflowOrchestrator/pull/954 |
 
 ## 目的
 

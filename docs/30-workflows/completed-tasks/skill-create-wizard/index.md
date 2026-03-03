@@ -7,8 +7,8 @@
 | タスクID   | TASK-10A-C              |
 | タスク名   | SkillCreateWizard 実装  |
 | 作成日     | 2026-03-02              |
-| ステータス | phase_12_completed      |
-| 現在Phase  | 12                      |
+| ステータス | phase_13_completed      |
+| 現在Phase  | 13                      |
 | 依存       | TASK-9B                 |
 | 並列       | TASK-10A-A / TASK-10A-B |
 | 後続       | TASK-10A-D              |
@@ -43,7 +43,7 @@
 | 10    | 最終レビュー     | `phase-10-final-review.md`     | completed  |
 | 11    | 手動テスト       | `phase-11-manual-test.md`      | completed  |
 | 12    | ドキュメント更新 | `phase-12-documentation.md`    | completed  |
-| 13    | PR作成           | `phase-13-pr-creation.md`      | pending    |
+| 13    | PR作成           | `phase-13-pr-creation.md`      | completed  |
 
 ## 成果物
 

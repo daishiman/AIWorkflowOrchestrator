@@ -4,9 +4,9 @@
   "feature": "skill-create-wizard",
   "workflowPath": "docs/30-workflows/completed-tasks/skill-create-wizard",
   "created": "2026-03-02T00:00:00+09:00",
-  "lastUpdated": "2026-03-02T00:00:00+09:00",
-  "status": "phase_12_completed",
-  "currentPhase": 12,
+  "lastUpdated": "2026-03-03T12:00:00+09:00",
+  "status": "phase_13_completed",
+  "currentPhase": 13,
   "phases": {
     "1": {
       "name": "要件定義",
@@ -95,8 +95,13 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/completion-report.md"
+      ],
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/954",
+      "completedAt": "2026-03-03"
     }
   },
   "dependencies": {
