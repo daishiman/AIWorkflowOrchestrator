@@ -23,10 +23,10 @@ describe("AppDock", () => {
       );
     });
 
-    it("10個のナビゲーションアイテムを表示する", () => {
+    it("11個のナビゲーションアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(10);
+      expect(buttons).toHaveLength(11);
     });
   });
 
@@ -54,6 +54,11 @@ describe("AppDock", () => {
     it("Agentアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       expect(screen.getByLabelText("Agent")).toBeInTheDocument();
+    });
+
+    it("Skillsアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("Skills")).toBeInTheDocument();
     });
 
     it("Settingsアイテムを表示する", () => {
@@ -102,6 +107,9 @@ describe("AppDock", () => {
 
       fireEvent.click(screen.getByLabelText("Agent"));
       expect(handleViewChange).toHaveBeenCalledWith("agent");
+
+      fireEvent.click(screen.getByLabelText("Skills"));
+      expect(handleViewChange).toHaveBeenCalledWith("skill-center");
 
       fireEvent.click(screen.getByLabelText("Chain"));
       expect(handleViewChange).toHaveBeenCalledWith("chainBuilder");

@@ -39,6 +39,7 @@ const createMockState = (overrides = {}) => ({
   isSystemPromptPanelExpanded: false,
   addMessage: vi.fn(),
   setChatInput: vi.fn(),
+  setCurrentView: vi.fn(),
   setIsSending: vi.fn(),
   setRagConnectionStatus: vi.fn(),
   updateMessage: vi.fn(),
@@ -231,6 +232,15 @@ describe("ChatView", () => {
   // ==========================================================================
   describe("ナビゲーション", () => {
     describe("履歴ボタン表示", () => {
+      it("スキル管理ボタンがヘッダーに表示される", () => {
+        renderWithRouter(<ChatView />);
+
+        const skillManagementButton = screen.getByRole("button", {
+          name: "スキル管理",
+        });
+        expect(skillManagementButton).toBeInTheDocument();
+      });
+
       it("履歴ボタンがヘッダーに表示される", () => {
         renderWithRouter(<ChatView />);
 
@@ -254,6 +264,29 @@ describe("ChatView", () => {
     });
 
     describe("履歴ボタンの遷移動作", () => {
+      it("スキル管理ボタンクリックでskill-centerへ遷移する", async () => {
+        const mockSetCurrentView = vi.fn();
+        const { useAppStore } = await import("../../store");
+        vi.mocked(useAppStore).mockImplementation(((
+          selector: (state: ReturnType<typeof createMockState>) => unknown,
+        ) =>
+          selector(
+            createMockState({
+              setCurrentView: mockSetCurrentView,
+            }),
+          )) as never);
+
+        renderWithRouter(<ChatView />);
+
+        const skillManagementButton = screen.getByRole("button", {
+          name: "スキル管理",
+        });
+        fireEvent.click(skillManagementButton);
+
+        expect(mockSetCurrentView).toHaveBeenCalledWith("skill-center");
+        expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
+      });
+
       it("履歴ボタンクリックで/chat/historyへ遷移する", () => {
         renderWithRouter(<ChatView />);
 
