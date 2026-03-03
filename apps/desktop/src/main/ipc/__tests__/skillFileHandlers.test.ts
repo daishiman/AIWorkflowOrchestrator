@@ -1,11 +1,14 @@
 /**
  * Skill File IPC Handlers - Unit Tests (TASK-9A-B Phase 4)
  *
- * 26 test cases covering:
+ * 47 test cases covering:
  * - 正常系 (U-01 ~ U-07)
  * - バリデーションエラー (U-08 ~ U-15)
  * - SkillFileManager エラー (U-16 ~ U-23)
  * - 登録・解除 (U-24 ~ U-26)
+ * - 境界値テスト (B-01 ~ B-07)
+ * - エッジケーステスト (E-01 ~ E-05)
+ * - skill:getFileTree (FT-01 ~ FT-12)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { IpcMainInvokeEvent } from "electron";
@@ -58,6 +61,7 @@ const mockSkillFileManager = {
   listBackups: vi.fn(),
   restoreBackup: vi.fn(),
   isReadonly: vi.fn(),
+  getFileTree: vi.fn(),
 };
 
 // Mock SkillService
@@ -451,12 +455,12 @@ describe("skillFileHandlers", () => {
   // =========================================================================
   describe("登録・解除", () => {
     // U-24
-    it("registerSkillFileHandlers で6チャンネル全てが登録される", () => {
-      expect(handlerMap.size).toBe(6);
+    it("registerSkillFileHandlers で7チャンネル全てが登録される", () => {
+      expect(handlerMap.size).toBe(7);
     });
 
     // U-25
-    it("unregisterSkillFileHandlers で6チャンネル全てが解除される", async () => {
+    it("unregisterSkillFileHandlers で7チャンネル全てが解除される", async () => {
       const { unregisterSkillFileHandlers } =
         await import("../skillFileHandlers");
       unregisterSkillFileHandlers();
@@ -472,6 +476,7 @@ describe("skillFileHandlers", () => {
         IPC_CHANNELS.SKILL_DELETE_FILE,
         IPC_CHANNELS.SKILL_LIST_BACKUPS,
         IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+        IPC_CHANNELS.SKILL_GET_FILE_TREE,
       ];
       for (const channel of expectedChannels) {
         expect(handlerMap.has(channel)).toBe(true);
@@ -568,6 +573,65 @@ describe("skillFileHandlers", () => {
   });
 
   // =========================================================================
+  // P41準拠: validateIpcSender getAllowedWindows コールバック検証
+  // =========================================================================
+  describe("P41: getAllowedWindows コールバック検証", () => {
+    it("全ハンドラーの getAllowedWindows が mainWindow を返す", async () => {
+      mockSkillFileManager.readFile.mockResolvedValue("content");
+      mockSkillFileManager.writeFile.mockResolvedValue(undefined);
+      mockSkillFileManager.createFile.mockResolvedValue(undefined);
+      mockSkillFileManager.deleteFile.mockResolvedValue(undefined);
+      mockSkillFileManager.listBackups.mockResolvedValue([]);
+      mockSkillFileManager.restoreBackup.mockResolvedValue(undefined);
+      mockSkillService.scanAvailableSkills.mockResolvedValue({ skills: [] });
+
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator");
+
+      const testCases = [
+        {
+          channel: IPC_CHANNELS.SKILL_READ_FILE,
+          args: { skillName: "s", relativePath: "p" },
+        },
+        {
+          channel: IPC_CHANNELS.SKILL_WRITE_FILE,
+          args: { skillName: "s", relativePath: "p", content: "c" },
+        },
+        {
+          channel: IPC_CHANNELS.SKILL_CREATE_FILE,
+          args: { skillName: "s", relativePath: "p", content: "c" },
+        },
+        {
+          channel: IPC_CHANNELS.SKILL_DELETE_FILE,
+          args: { skillName: "s", relativePath: "p" },
+        },
+        {
+          channel: IPC_CHANNELS.SKILL_LIST_BACKUPS,
+          args: { skillName: "s" },
+        },
+        {
+          channel: IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+          args: { skillName: "s", backupPath: "b" },
+        },
+      ];
+
+      for (const { channel, args } of testCases) {
+        const handler = handlerMap.get(channel);
+        await handler!(mockEvent, args);
+      }
+
+      const calls = (validateIpcSender as ReturnType<typeof vi.fn>).mock.calls;
+
+      for (const { channel } of testCases) {
+        const call = calls.find((c) => c[1] === channel);
+        expect(call).toBeDefined();
+        const options = call![2];
+        expect(options.getAllowedWindows()).toEqual([mainWindow]);
+      }
+    });
+  });
+
+  // =========================================================================
   // エッジケーステスト (E-01 ~ E-05) — Phase 6
   // =========================================================================
   describe("エッジケーステスト", () => {
@@ -658,6 +722,159 @@ describe("skillFileHandlers", () => {
         const result = await handler!(mockEvent, args);
         expect(result).toEqual({ success: false, error: "Internal error" });
       }
+    });
+  });
+
+  // =========================================================================
+  // skill:getFileTree テスト (FT-01 ~ FT-12) — UT-UI-05A-GETFILETREE-001
+  // =========================================================================
+  describe("skill:getFileTree", () => {
+    // FT-01
+    it("有効な skillName でファイルツリーを返却する", async () => {
+      const treeData = [
+        { name: "SKILL.md", path: "SKILL.md", type: "file" as const },
+        {
+          name: "references",
+          path: "references",
+          type: "directory" as const,
+          children: [
+            {
+              name: "guide.md",
+              path: "references/guide.md",
+              type: "file" as const,
+            },
+          ],
+        },
+      ];
+      mockSkillFileManager.getFileTree.mockResolvedValue(treeData);
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "test-skill" });
+      expect(result).toEqual({ success: true, data: treeData });
+      expect(mockSkillFileManager.getFileTree).toHaveBeenCalledWith(
+        "test-skill",
+      );
+    });
+
+    // FT-02
+    it("空ディレクトリのスキルで空配列を返却する", async () => {
+      mockSkillFileManager.getFileTree.mockResolvedValue([]);
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "empty-skill" });
+      expect(result).toEqual({ success: true, data: [] });
+    });
+
+    // FT-06
+    it("非文字列引数で VALIDATION_ERROR を返す", async () => {
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: 123 });
+      expect(result).toEqual({
+        success: false,
+        error: "skillName must be a non-empty string",
+      });
+    });
+
+    // FT-07
+    it("空文字列引数で VALIDATION_ERROR を返す", async () => {
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "" });
+      expect(result).toEqual({
+        success: false,
+        error: "skillName must be a non-empty string",
+      });
+    });
+
+    // FT-08
+    it("スペースのみ引数で VALIDATION_ERROR を返す (P42)", async () => {
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "   " });
+      expect(result).toEqual({
+        success: false,
+        error: "skillName must be a non-empty string",
+      });
+    });
+
+    // FT-09
+    it("undefined 引数で VALIDATION_ERROR を返す", async () => {
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, undefined);
+      expect(result).toEqual({
+        success: false,
+        error: "skillName must be a non-empty string",
+      });
+    });
+
+    // FT-10
+    it("不正な sender でセキュリティエラーを返す", async () => {
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator");
+      (validateIpcSender as ReturnType<typeof vi.fn>).mockReturnValueOnce({
+        valid: false,
+        errorCode: "IPC_UNAUTHORIZED",
+        errorMessage: "Unauthorized IPC call",
+      });
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      await expect(
+        handler!(mockEvent, { skillName: "test-skill" }),
+      ).rejects.toEqual({
+        success: false,
+        error: {
+          code: "IPC_UNAUTHORIZED",
+          message: "Unauthorized IPC call",
+        },
+      });
+    });
+
+    // FT-11
+    it("存在しないスキル名で SkillNotFoundError を返す", async () => {
+      mockSkillFileManager.getFileTree.mockRejectedValue(
+        new SkillNotFoundError("nonexistent"),
+      );
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "nonexistent" });
+      expect(result).toEqual({
+        success: false,
+        error: "Skill not found: nonexistent",
+      });
+    });
+
+    // FT-12
+    it("未知のエラーで Internal error を返す", async () => {
+      mockSkillFileManager.getFileTree.mockRejectedValue(
+        new Error("Unexpected disk error with /internal/path"),
+      );
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, { skillName: "test-skill" });
+      expect(result).toEqual({
+        success: false,
+        error: "Internal error",
+      });
+    });
+
+    // FT-15: P41準拠 - getAllowedWindows コールバック検証
+    it("validateIpcSender の getAllowedWindows が mainWindow を返す (P41)", async () => {
+      mockSkillFileManager.getFileTree.mockResolvedValue([]);
+      const { validateIpcSender } =
+        await import("../../infrastructure/security/ipc-validator");
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      await handler!(mockEvent, { skillName: "test-skill" });
+
+      const calls = (validateIpcSender as ReturnType<typeof vi.fn>).mock.calls;
+      const getFileTreeCall = calls.find(
+        (c) => c[1] === IPC_CHANNELS.SKILL_GET_FILE_TREE,
+      );
+      expect(getFileTreeCall).toBeDefined();
+      const options = getFileTreeCall![2];
+      expect(options.getAllowedWindows()).toEqual([mainWindow]);
+    });
+
+    // FT-16: null 引数でバリデーションエラーを返す
+    it("null 引数で VALIDATION_ERROR を返す", async () => {
+      const handler = handlerMap.get(IPC_CHANNELS.SKILL_GET_FILE_TREE);
+      const result = await handler!(mockEvent, null);
+      expect(result).toEqual({
+        success: false,
+        error: "skillName must be a non-empty string",
+      });
     });
   });
 });
