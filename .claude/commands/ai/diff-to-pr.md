@@ -293,9 +293,22 @@ if [ -z "$SCREENSHOTS_DIR" ]; then
     | xargs dirname 2>/dev/null)
 fi
 
+# PR本文/コメント用の画像URLベース（GitHubで確実に表示される絶対URL）
+REPO_SLUG=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)
+if [ -z "$REPO_SLUG" ]; then
+  REPO_SLUG=$(git remote get-url origin | sed -E 's#^git@github.com:##; s#^https://github.com/##; s#\.git$##')
+fi
+HEAD_COMMIT=$(git rev-parse HEAD)
+RAW_BASE_URL=""
+if [ -n "$REPO_SLUG" ] && [ -n "$HEAD_COMMIT" ]; then
+  RAW_BASE_URL="https://raw.githubusercontent.com/${REPO_SLUG}/${HEAD_COMMIT}"
+fi
+
 HAS_UI_SCREENSHOTS=0
 PHASE11_LIGHT_IMAGE_REL=""
 PHASE11_DARK_IMAGE_REL=""
+PHASE11_LIGHT_IMAGE_URL=""
+PHASE11_DARK_IMAGE_URL=""
 if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; then
   HAS_UI_SCREENSHOTS=1
 
@@ -304,9 +317,17 @@ if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; the
 
   if [ -n "$PHASE11_LIGHT_IMAGE" ]; then
     PHASE11_LIGHT_IMAGE_REL="${PHASE11_LIGHT_IMAGE#$(git rev-parse --show-toplevel)/}"
+    PHASE11_LIGHT_IMAGE_URL="$PHASE11_LIGHT_IMAGE_REL"
+    if [ -n "$RAW_BASE_URL" ]; then
+      PHASE11_LIGHT_IMAGE_URL="${RAW_BASE_URL}/${PHASE11_LIGHT_IMAGE_REL}"
+    fi
   fi
   if [ -n "$PHASE11_DARK_IMAGE" ]; then
     PHASE11_DARK_IMAGE_REL="${PHASE11_DARK_IMAGE#$(git rev-parse --show-toplevel)/}"
+    PHASE11_DARK_IMAGE_URL="$PHASE11_DARK_IMAGE_REL"
+    if [ -n "$RAW_BASE_URL" ]; then
+      PHASE11_DARK_IMAGE_URL="${RAW_BASE_URL}/${PHASE11_DARK_IMAGE_REL}"
+    fi
   fi
 fi
 
@@ -375,15 +396,19 @@ cat <<EOF
 | ---- | ------------------ |
 EOF
   if [ -n "$PHASE11_LIGHT_IMAGE_REL" ]; then
-    printf '| 変更後（Light） | ![after-light](%s) |\n' "$PHASE11_LIGHT_IMAGE_REL"
+    printf '| 変更後（Light） | ![after-light](%s) |\n' "$PHASE11_LIGHT_IMAGE_URL"
   fi
   if [ -n "$PHASE11_DARK_IMAGE_REL" ]; then
-    printf '| 変更後（Dark） | ![after-dark](%s) |\n' "$PHASE11_DARK_IMAGE_REL"
+    printf '| 変更後（Dark） | ![after-dark](%s) |\n' "$PHASE11_DARK_IMAGE_URL"
   fi
   if [ -z "$PHASE11_LIGHT_IMAGE_REL" ] && [ -z "$PHASE11_DARK_IMAGE_REL" ]; then
     FIRST_IMAGE=$(ls "$SCREENSHOTS_DIR"/*.png | head -n 1)
     FIRST_IMAGE_REL="${FIRST_IMAGE#$(git rev-parse --show-toplevel)/}"
-    printf '| 変更後 | ![after](%s) |\n' "$FIRST_IMAGE_REL"
+    FIRST_IMAGE_URL="$FIRST_IMAGE_REL"
+    if [ -n "$RAW_BASE_URL" ]; then
+      FIRST_IMAGE_URL="${RAW_BASE_URL}/${FIRST_IMAGE_REL}"
+    fi
+    printf '| 変更後 | ![after](%s) |\n' "$FIRST_IMAGE_URL"
   fi
 fi
 
@@ -426,6 +451,7 @@ rm -f "$PR_BODY_FILE"
 - `.github/pull_request_template.md` の見出し順を維持する
 - `## その他` に Phase 12 実装ガイドの反映元パスと要点を必ず記載する
 - UI/UX変更時は `outputs/phase-11/screenshots/*.png` からPR本文へ画像リンクを自動挿入する
+- PR本文/コメントの画像リンクは `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLで出力する（相対パス直貼りを禁止）
 - UI/UX変更がない場合は `## スクリーンショット` セクション自体を出力しない
 - PR本文で参照する画像・成果物パスは `TARGET_WORKFLOW_DIR` 配下のみを使う
 
@@ -557,13 +583,27 @@ if [ -z "$SCREENSHOTS_DIR" ]; then
 fi
 
 if [ -n "$SCREENSHOTS_DIR" ] && ls "$SCREENSHOTS_DIR"/*.png >/dev/null 2>&1; then
+  REPO_SLUG=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || true)
+  if [ -z "$REPO_SLUG" ]; then
+    REPO_SLUG=$(git remote get-url origin | sed -E 's#^git@github.com:##; s#^https://github.com/##; s#\.git$##')
+  fi
+  HEAD_COMMIT=$(git rev-parse HEAD)
+  RAW_BASE_URL=""
+  if [ -n "$REPO_SLUG" ] && [ -n "$HEAD_COMMIT" ]; then
+    RAW_BASE_URL="https://raw.githubusercontent.com/${REPO_SLUG}/${HEAD_COMMIT}"
+  fi
+
   TMPFILE=$(mktemp)
   {
     printf '## 📸 Phase 11 手動テスト スクリーンショット\n\n'
     for img in "$SCREENSHOTS_DIR"/*.png; do
       FILENAME=$(basename "$img")
       REL_PATH="${img#$(git rev-parse --show-toplevel)/}"
-      printf '### %s\n\n![%s](%s)\n\n' "$FILENAME" "$FILENAME" "$REL_PATH"
+      IMG_URL="$REL_PATH"
+      if [ -n "$RAW_BASE_URL" ]; then
+        IMG_URL="${RAW_BASE_URL}/${REL_PATH}"
+      fi
+      printf '### %s\n\n![%s](%s)\n\n' "$FILENAME" "$FILENAME" "$IMG_URL"
     done
     printf '---\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n'
   } > "$TMPFILE"
@@ -716,6 +756,7 @@ git stash pop
 
 | 日付 | 変更内容 |
 |------|----------|
+| 2026-03-03 | PR本文/コメントのスクリーンショットURL解決を改善。`raw.githubusercontent.com/<repo>/<commit>/<path>` 形式の絶対URL生成を追加し、GitHub PR画面で画像が表示されない問題を防止 |
 | 2026-03-02 | PR本文セクション連携を強化。Phase 3.6 で差分から `TARGET_WORKFLOW_DIR` を特定し、PR本文/implementation-guideコメント/スクリーンショットコメントを同一workflow成果物に統一。PR本文を `.github/pull_request_template.md` 準拠見出しへ更新し、`その他` に Phase 12 実装ガイド反映を必須化。UI/UX変更時は `outputs/phase-11/screenshots/*.png` を検出してPR本文 `## スクリーンショット` に画像リンクを自動挿入 |
 | 2026-03-01 | PR本文にタスク実行サマリー・スクリーンショットセクション追加。Phase 5.5（実装ガイドコメント投稿）・Phase 5.6（スクリーンショットコメント投稿）を追加。Phase 3にスクリーンショット含有注記追加。Phase 5.5/5.6: `--body-file`+一時ファイル方式に統一（HEREDOC安全性・zsh互換性・GitHub API 65536文字制限対応） |
 | 2026-01-21 | Phase 3.5（タスク仕様書→Issue同期）を追加。git merge/stash後の未同期仕様書に対応 |

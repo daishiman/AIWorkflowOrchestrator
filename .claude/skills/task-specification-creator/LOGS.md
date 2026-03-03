@@ -26,6 +26,19 @@
 
 ---
 
+## 2026-03-03 - Phase 13 PRスクリーンショット表示不具合の再発防止
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 13（PR作成運用改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-templates.md` の PR本文セクション連携ルールを更新し、画像リンクを `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLで生成する要件を追加
+  - `phase-11-12-guide.md` 完了チェックの画像リンク項目を、相対パス許容から絶対URL必須へ更新
+  - `/ai:diff-to-pr` 側の運用更新と整合し、GitHub PR本文/コメントでスクリーンショットが表示されない事象の再発を防止
+
+---
+
 ## 2026-03-03 - UT-UI-05A Phase 11/12 契約追補（ヘッダ・命名整合）
 
 - **Agent**: task-specification-creator
