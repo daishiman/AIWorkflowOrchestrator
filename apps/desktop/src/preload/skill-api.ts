@@ -55,7 +55,7 @@ import type {
   ImprovementResult,
   ImprovementOptions,
 } from "@repo/shared/types/skill-improver";
-import type { BackupInfo } from "./types";
+import type { BackupInfo, SkillFileTreeNode } from "./types";
 import type {
   DebugSessionState,
   Breakpoint,
@@ -191,6 +191,8 @@ export interface SkillAPI {
   listBackups: (skillName: string) => Promise<BackupInfo[]>;
   /** バックアップからファイルを復元する */
   restoreBackup: (skillName: string, backupPath: string) => Promise<void>;
+  /** スキルのファイルツリーを取得する (UT-UI-05A-GETFILETREE-001) */
+  getFileTree: (skillName: string) => Promise<SkillFileTreeNode[]>;
 
   // === Skill Share Operations (TASK-9F) ===
 
@@ -285,6 +287,22 @@ export interface SkillAPI {
   scheduleDelete: (id: string) => Promise<void>;
   /** スケジュールの有効/無効を切り替える */
   scheduleToggle: (id: string) => Promise<ScheduledSkill | undefined>;
+
+  // === Skill Create Wizard API (TASK-10A-C) ===
+
+  /**
+   * スキルをウィザード経由で作成する
+   * @param params - 作成パラメータ（説明とオプション）
+   * @returns 作成結果（パスを含む）
+   */
+  create: (params: {
+    description: string;
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    };
+  }) => Promise<{ path: string }>;
 
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
 
@@ -510,6 +528,11 @@ export const skillAPI: SkillAPI = {
       backupPath,
     }),
 
+  getFileTree: (skillName: string): Promise<SkillFileTreeNode[]> =>
+    safeInvokeUnwrap<SkillFileTreeNode[]>(IPC_CHANNELS.SKILL_GET_FILE_TREE, {
+      skillName,
+    }),
+
   // === Skill Share Operations (TASK-9F) ===
 
   importFromSource: (
@@ -647,6 +670,18 @@ export const skillAPI: SkillAPI = {
       IPC_CHANNELS.SKILL_SCHEDULE_TOGGLE,
       { id },
     ),
+
+  // === Skill Create Wizard API (TASK-10A-C) ===
+
+  create: (params: {
+    description: string;
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    };
+  }): Promise<{ path: string }> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATE, params.description, params.options),
 
   // === Skill Analysis & Improvement API (TASK-10A-B) ===
 

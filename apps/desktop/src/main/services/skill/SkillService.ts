@@ -13,10 +13,13 @@ import type {
   RemoveResult,
   ImportedSkill,
 } from "@repo/shared";
+import fs from "fs/promises";
 import log from "electron-log";
+import path from "path";
 import { SkillScanner } from "./SkillScanner";
 import { SkillParser } from "./SkillParser";
 import { SkillImportManager } from "./SkillImportManager";
+import { SkillCreatorService } from "./SkillCreatorService";
 import type {
   SkillExecutor,
   SkillExecutionRequest,
@@ -28,6 +31,7 @@ export class SkillService {
   private cache: Map<SkillId, Skill> = new Map();
   private lastScanTime: Date | null = null;
   private skillExecutor: SkillExecutor | null = null;
+  private skillCreatorService: SkillCreatorService | null = null;
 
   constructor(
     private scanner: SkillScanner,
@@ -228,5 +232,110 @@ export class SkillService {
 
     // SkillExecutorに委譲
     return this.skillExecutor.execute(request, metadata);
+  }
+
+  /**
+   * ウィザード経由でスキルを作成する (TASK-10A-C)
+   *
+   * @param description - スキルの自然言語説明
+   * @param options - 生成オプション
+   * @returns 作成結果（パスを含む）
+   */
+  async createSkillFromWizard(
+    description: string,
+    options: {
+      generateTasks: boolean;
+      addAgents: boolean;
+      addReferences: boolean;
+    },
+  ): Promise<{ path: string }> {
+    const baseName = this.toWizardSkillName(description);
+    const uniqueName = await this.resolveUniqueSkillName(baseName);
+
+    const skillPath = await this.getSkillCreatorService().createSkill({
+      name: uniqueName,
+      description,
+      mode: "create",
+      generateTasks: options.generateTasks,
+    });
+
+    if (options.addAgents) {
+      await this.ensureOptionalDirectory(
+        skillPath,
+        "agents",
+        "# Agents\n\nここにエージェント定義を追加します。\n",
+      );
+    }
+
+    if (options.addReferences) {
+      await this.ensureOptionalDirectory(
+        skillPath,
+        "references",
+        "# References\n\nここに参照資料を追加します。\n",
+      );
+    }
+
+    this.clearCache();
+    try {
+      await this.scanAvailableSkills(true);
+    } catch (error) {
+      log.warn("[SkillService] Rescan after create failed:", error);
+    }
+
+    return { path: skillPath };
+  }
+
+  private getSkillCreatorService(): SkillCreatorService {
+    if (!this.skillCreatorService) {
+      this.skillCreatorService = new SkillCreatorService(
+        this.scanner.getBasePath(),
+      );
+    }
+    return this.skillCreatorService;
+  }
+
+  private toWizardSkillName(description: string): string {
+    const normalized = description
+      .slice(0, 50)
+      .trim()
+      .replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF_-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    return normalized || "new-skill";
+  }
+
+  private async resolveUniqueSkillName(baseName: string): Promise<string> {
+    const basePath = this.scanner.getBasePath();
+    let index = 0;
+
+    while (true) {
+      const candidate =
+        index === 0 ? baseName : `${baseName}-${String(index + 1)}`;
+      const candidatePath = path.join(basePath, candidate);
+
+      try {
+        await fs.access(candidatePath);
+        index += 1;
+      } catch {
+        return candidate;
+      }
+    }
+  }
+
+  private async ensureOptionalDirectory(
+    skillPath: string,
+    directoryName: "agents" | "references",
+    readmeContent: string,
+  ): Promise<void> {
+    const directoryPath = path.join(skillPath, directoryName);
+    await fs.mkdir(directoryPath, { recursive: true });
+
+    const readmePath = path.join(directoryPath, "README.md");
+    try {
+      await fs.access(readmePath);
+    } catch {
+      await fs.writeFile(readmePath, readmeContent, "utf-8");
+    }
   }
 }

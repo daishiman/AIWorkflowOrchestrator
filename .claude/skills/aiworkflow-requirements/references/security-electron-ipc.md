@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.12.1    | 2026-03-03 | UT-UI-05A-GETFILETREE-001 完了同期: skillFileAPI セクションを `skill:getFileTree` 含む 7 invoke チャネルへ更新。ホワイトリスト/4層防御/エラーサニタイズの適用範囲を拡張し、関連タスクを TASK-9A-B + UT-UI-05A-GETFILETREE-001 に更新 |
 | v1.12.0    | 2026-03-02 | TASK-UI-05B仕様整合: skillChainAPI（TASK-9D、5ch、validateIpcSender + P42準拠3段バリデーション + sanitizeErrorMessage）とskillScheduleAPI（TASK-9G、5ch、既存セクション欠落の補完）のセキュリティ実装パターンを追加 |
 | v1.11.1    | 2026-02-28 | TASK-9E追補: セキュリティ観点の苦戦箇所3件（sender検証順序、path境界判定、契約境界混同）と同種課題向け4ステップ手順を追加 |
 | v1.11.0    | 2026-02-28 | TASK-9E反映: `skill:fork` セキュリティ実装パターンを追加。`validateIpcSender`、P42準拠3段バリデーション、`SkillForker.validatePath` の境界検証（prefix一致すり抜け防止）、エラーサニタイズを仕様化 |
@@ -375,7 +376,7 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 **チャンネルホワイトリスト方式**:
 
-`SKILL_FILE_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用6チャンネルを管理する。
+`SKILL_FILE_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用7チャンネルを管理する。
 
 | 定数名                      | チャンネル名            | 用途                 |
 | --------------------------- | ----------------------- | -------------------- |
@@ -385,12 +386,13 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | SKILL_DELETE_FILE           | `skill:deleteFile`      | ファイル削除         |
 | SKILL_LIST_BACKUPS          | `skill:listBackups`     | バックアップ一覧取得 |
 | SKILL_RESTORE_BACKUP        | `skill:restoreBackup`   | バックアップ復元     |
+| SKILL_GET_FILE_TREE         | `skill:getFileTree`     | ファイルツリー取得   |
 
 **実装場所**: `apps/desktop/src/preload/channels.ts`
 
 **セキュリティ検証パターン（4層防御）**:
 
-全6 invokeハンドラーで以下のセキュリティ検証を実施する:
+全7 invokeハンドラーで以下のセキュリティ検証を実施する:
 
 1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
 2. **引数バリデーション**: `typeof` 文字列チェック + `.trim()` による空文字列検出
@@ -422,9 +424,9 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | パストラバーサル防止    | SkillFileManager内部の `validatePath()` | `PathTraversalError` スロー確認   |
 | エラーサニタイズ        | `isKnownSkillFileError()` で識別返却 | スタック/パス/機密情報非露出テスト  |
 
-**テストカバレッジ**: 65テスト全PASS
+**テストカバレッジ**: skillFileAPI 関連 155テスト全PASS（2026-03-03、IPC/Service/Preload/Renderer）
 
-**関連タスク**: TASK-9A-B（2026-02-19完了）
+**関連タスク**: TASK-9A-B（2026-02-19完了）, UT-UI-05A-GETFILETREE-001（2026-03-03完了）
 
 **関連未タスク（TASK-9A-B Phase 12 検出）**:
 

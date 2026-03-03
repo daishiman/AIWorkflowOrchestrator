@@ -174,6 +174,7 @@ export const IPC_CHANNELS = {
   // Unified to SKILL_LIST and SKILL_GET_IMPORTED (see Skill import operations below)
   SKILL_IMPORT: "skill:import",
   SKILL_REMOVE: "skill:remove",
+  SKILL_CREATE: "skill:create",
   SKILL_GET_DETAIL: "skill:get-detail",
   SKILL_EXECUTE: "skill:execute",
   SKILL_STREAM: "skill:stream",
@@ -317,6 +318,7 @@ export const IPC_CHANNELS = {
   SKILL_DELETE_FILE: "skill:deleteFile",
   SKILL_LIST_BACKUPS: "skill:listBackups",
   SKILL_RESTORE_BACKUP: "skill:restoreBackup",
+  SKILL_GET_FILE_TREE: "skill:getFileTree",
 
   // Skill share operations (TASK-9F)
   SKILL_IMPORT_FROM_SOURCE: "skill:importFromSource",
@@ -465,6 +467,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   // Note: SKILL_LIST_AVAILABLE and SKILL_LIST_IMPORTED removed (TASK-FIX-4-1-IPC-CONSOLIDATION)
   IPC_CHANNELS.SKILL_IMPORT,
   IPC_CHANNELS.SKILL_REMOVE,
+  IPC_CHANNELS.SKILL_CREATE,
   IPC_CHANNELS.SKILL_GET_DETAIL,
   IPC_CHANNELS.SKILL_EXECUTE,
   IPC_CHANNELS.SKILL_ABORT,
@@ -581,6 +584,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DELETE_FILE,
   IPC_CHANNELS.SKILL_LIST_BACKUPS,
   IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+  IPC_CHANNELS.SKILL_GET_FILE_TREE,
   // Skill share channels (TASK-9F)
   IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
   IPC_CHANNELS.SKILL_EXPORT,

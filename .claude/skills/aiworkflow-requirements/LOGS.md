@@ -6576,3 +6576,132 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - テスト: 38件全PASS、カバレッジ Line/Function/Branch 100%
 - 成果物: SkillManagementPanel.tsx + テスト + Phase 12ドキュメント一式
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 仕様同期（再監査）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: UT-UI-05A-GETFILETREE-001
+- 目的: getFileTree 実装完了を API/UI/Security/Interface/Task 台帳へ同期し、Phase 11/12 成果物の欠落を解消
+
+### 実施内容
+
+- `references/api-ipc-agent.md` を更新
+  - `skill:getFileTree` を実装済みへ変更
+  - 戻り値契約を `IpcResult<SkillFileTreeNode[]>`（Main）+ `SkillFileTreeNode[]`（Preload公開）へ是正
+  - skillFileAPI を 7 invoke チャネル前提へ更新
+- `references/ui-ux-feature-components.md` を更新
+  - SkillEditorView の `skill:getFileTree` 状態を実装完了へ変更
+  - `completed-tasks/skill-editor-view` 正本パスへ修正
+  - 2026-03-03 取得の画面証跡（UI05A-GFT-01/02）を追加
+- `references/task-workflow.md` を更新
+  - `UT-UI-05A-GETFILETREE-001` / `UT-UI-05A-SPEC-CONSISTENCY-001` を完了化
+  - `UT-UI-05A-IMPLEMENTATION-CLOSURE-001` のみ未完了として残存
+- `references/security-electron-ipc.md` を更新
+  - skillFileAPI セクションへ `SKILL_GET_FILE_TREE` を追加
+  - 7 invoke + 4層防御の適用範囲へ更新
+- `references/interfaces-agent-sdk-skill.md` を更新
+  - `getFileTree` API と `SkillFileTreeNode` 型を追加
+  - 完了タスク記録を追記
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-11` を補完
+  - `auto-test-result.md`
+  - `filetree-display-result.md`
+  - `error-case-result.md`
+  - `api-verification-result.md`
+  - `manual-test-report.md`
+  - `manual-test.md` を画面証跡あり前提に修正
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12` を補完
+  - `spec-update-summary.md`
+  - `unassigned-task-detection.md`
+  - `skill-feedback-report.md`
+  - `documentation-changelog.md` を実施内容ベースへ更新
+
+### 結果
+
+- ステータス: success
+- 参照整合: 更新済み
+- 未タスク監査判定: `currentViolations=0`
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 苦戦箇所の仕様書反映と未タスク形式補正
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: 実装内容に加えて苦戦箇所を仕様へ残し、同種課題の再発を防止する
+
+### 実施内容
+
+- `references/lessons-learned.md` に UT-UI-05A-GETFILETREE-001 セクションを追加
+  - Main/Preload 契約差
+  - Phase 12 成果物命名ドリフト
+  - 未タスクメタ情報重複
+  - 4ステップ簡潔解決手順
+- `docs/30-workflows/unassigned-task/task-ui-05a-*.md` を補正
+  - `## メタ情報` 重複を解消（3ファイル）
+  - 完了済み2タスクのステータスを台帳整合へ更新
+- `outputs/phase-12/documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` に苦戦箇所・監査値を追記
+
+### 結果
+
+- ステータス: success
+- 効果: 実装手順と教訓が同一仕様系統で再利用可能になり、未タスク形式監査の再現性を向上
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 テンプレート準拠最適化（SubAgent分担固定）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: 実装内容 + 苦戦箇所をテンプレート準拠で再編し、仕様書別SubAgent分担を再利用可能に固定する
+
+### 実施内容
+
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/spec-update-summary.md` を再構成
+  - `phase12-system-spec-retrospective-template` 準拠へ移行
+  - 6責務SubAgent分担（api-ipc/interfaces/security/ui-ux-feature/task/lessons）を明記
+  - Step 2 二重突合（`phase-12-documentation` / `documentation-changelog` / `spec-update-summary`）を明記
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/spec-sync-subagent-report.md` を新規作成
+  - `phase12-spec-sync-subagent-template` 準拠で仕様書ごとの責務・依存・完了条件を固定
+- `references/task-workflow.md` を更新
+  - `UT-UI-05A-GETFILETREE-001` 専用の完了セクションを追加
+  - SubAgent分担、苦戦箇所、検証証跡、5ステップ手順を同期
+- `references/lessons-learned.md` を更新
+  - 同タスクのSubAgent分担表を追補
+  - 再利用手順を4→5ステップへ更新
+- `outputs/phase-12/documentation-changelog.md` を更新
+  - Step 1-E（SubAgent同期レポート作成）を追加
+  - 更新ファイル一覧に `spec-sync-subagent-report.md` を反映
+
+### 結果
+
+- ステータス: success
+- 効果: 仕様書ごとの関心分離（SubAgent責務）が成果物に固定され、同種課題の再利用導線が明確化
+
+## 2026-03-03 - UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 未タスク登録
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象: UT-UI-05A-GETFILETREE-001 Phase 12 追補
+- 目的: SubAgent責務の成果物固定（summary/report/changelog整合）を継続改善タスクとして追跡可能化する
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` を新規作成
+  - `task-specification-creator` の10見出し形式（`## メタ情報` + `## 1..9`）で作成
+  - `3.5 実装課題と解決策` に親タスク由来の苦戦箇所を反映
+- `references/task-workflow.md` を更新
+  - 残課題テーブルへ `UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` を追加
+  - 変更履歴に v1.65.1 を追加
+- `references/lessons-learned.md` を更新
+  - 変更履歴に v1.28.6 を追加
+  - UT-UI-05A-GETFILETREE-001 セクションへ関連未タスク導線を追加
+- `outputs/phase-12/unassigned-task-detection.md` を更新
+  - 新規未タスク起票の補足を追記
+
+### 結果
+
+- ステータス: success
+- 効果: Phase 12 の SubAgent責務固定が「成果物 + 台帳 + 教訓」で追跡可能となり、同種課題の再確認を簡潔化

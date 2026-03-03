@@ -123,7 +123,7 @@ describe("Expanded Tests", () => {
     it("useFileTree: エラー後の refreshTree でエラーがクリアされる", async () => {
       mocks.getFileTree
         .mockRejectedValueOnce(new Error("Network error"))
-        .mockResolvedValueOnce({ tree: sampleFileTree });
+        .mockResolvedValueOnce(sampleFileTree);
 
       const { result } = renderHook(() => useFileTree("my-skill"));
       await act(async () => {});
@@ -177,9 +177,7 @@ describe("Expanded Tests", () => {
       };
       const { result } = renderHook(() => useFileTree("test-skill"));
       await act(async () => {});
-      expect(result.current.error).toBe(
-        "ファイルツリーの取得はまだ実装されていません",
-      );
+      expect(result.current.error).toContain("getFileTree");
       expect(result.current.fileTree).toEqual([]);
     });
 
@@ -222,7 +220,7 @@ describe("Expanded Tests", () => {
     const mockOnClose = vi.fn();
 
     beforeEach(() => {
-      mocks.getFileTree.mockResolvedValue({ tree: sampleFileTree });
+      mocks.getFileTree.mockResolvedValue(sampleFileTree);
     });
 
     // INT-03

@@ -13,7 +13,7 @@ status: 未実施
 source_phase: Phase 11 / Phase 12 再監査
 created_date: 2026-03-02
 dependencies: []
-spec_path: docs/30-workflows/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md
+spec_path: docs/30-workflows/completed-tasks/getfiletree-ipc/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md
 ```
 
 | 項目       | 内容   |

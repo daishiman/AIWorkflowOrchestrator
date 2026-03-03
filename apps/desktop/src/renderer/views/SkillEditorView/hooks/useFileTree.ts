@@ -26,25 +26,7 @@ export const useFileTree = (skillName: string): UseFileTreeResult => {
     setIsLoading(true);
     setError(null);
     try {
-      // skill:getFileTree は未実装（UT-UI-05A-GETFILETREE-001）のため型に存在しない
-      const skillApi = window.electronAPI?.skill as
-        | (Record<string, unknown> & typeof window.electronAPI.skill)
-        | undefined;
-      const getFileTree = skillApi?.getFileTree as
-        | ((
-            name: string,
-          ) => Promise<{ tree: SkillFileTreeNode[] } | SkillFileTreeNode[]>)
-        | undefined;
-      if (typeof getFileTree !== "function") {
-        setError("ファイルツリーの取得はまだ実装されていません");
-        setFileTree([]);
-        return;
-      }
-      const result = await getFileTree(skillName);
-      // { tree: [...] } 形式と直接配列形式の両方に対応
-      const tree = Array.isArray(result)
-        ? result
-        : ((result as { tree: SkillFileTreeNode[] })?.tree ?? []);
+      const tree = await window.electronAPI.skill.getFileTree(skillName);
       setFileTree(tree);
     } catch (err) {
       setError(

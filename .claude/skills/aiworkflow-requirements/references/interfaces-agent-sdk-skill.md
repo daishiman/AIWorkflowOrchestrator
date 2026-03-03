@@ -114,10 +114,22 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | ステータス | **完了** |
 | テスト数   | 65（全PASS） |
 | カバレッジ | Line 91.14% / Branch 93.93% / Function 100% |
-| 主要変更   | スキルファイル操作IPCハンドラー6チャンネル追加（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup） |
+| 主要変更   | スキルファイル操作IPCハンドラー基盤6チャンネル追加（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup） |
 | 変更対象   | `apps/desktop/src/main/ipc/skillFileHandlers.ts`, `apps/desktop/src/preload/skill-api.ts`, `packages/shared/src/ipc/channels.ts` |
 | 実装ガイド | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/implementation-guide.md` |
 | 備考       | validateIpcSender + 引数バリデーション + isKnownSkillFileErrorエラーサニタイズによる多層防御。SkillFileManagerのファイル操作をIPC経由でRendererから呼び出し可能にした |
+
+#### UT-UI-05A-GETFILETREE-001（2026-03-03完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-UI-05A-GETFILETREE-001 |
+| ステータス | **完了** |
+| テスト数   | 155（関連テスト一式） |
+| 主要変更   | `skill:getFileTree` 追加（Main/Preload/Renderer連携）、`SkillFileTreeNode[]` 契約へ統一 |
+| 変更対象   | `skillFileHandlers.ts`, `SkillFileManager.ts`, `skill-api.ts`, `preload/types.ts`, `useFileTree.ts` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/implementation-guide.md` |
+| 備考       | `safeInvokeUnwrap` で `IpcResult<SkillFileTreeNode[]>` を展開し、Renderer は配列直接受け取りへ移行 |
 
 ##### UT-FIX-IPC-RESPONSE-UNWRAP-001 実装上の苦戦箇所・教訓
 
@@ -978,7 +990,17 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 | `deleteFile`    | `(skillName: string, relativePath: string) => Promise<void>`                  | ファイル削除     |
 | `listBackups`   | `(skillName: string) => Promise<BackupInfo[]>`                                | バックアップ一覧 |
 | `restoreBackup` | `(skillName: string, backupPath: string) => Promise<void>`                    | バックアップ復元 |
+| `getFileTree`   | `(skillName: string) => Promise<SkillFileTreeNode[]>`                         | ファイルツリー取得 |
 | `isReadonly`    | `(skillName: string) => Promise<boolean>`                                     | 読み取り専用判定 |
+
+#### SkillFileTreeNode
+
+| プロパティ | 型 | 説明 |
+| ---------- | --- | --- |
+| `name` | `string` | ノード名（ファイル名/ディレクトリ名） |
+| `path` | `string` | スキルルートからの相対パス（POSIX） |
+| `type` | `"file" \| "directory"` | ノード種別 |
+| `children` | `SkillFileTreeNode[]` | `type: "directory"` のときのみ存在 |
 
 ### エラークラス
 
@@ -2202,6 +2224,7 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
 | 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |
 | 2026-03-02 | 1.43.0     | TASK-UI-05B仕様整合: TASK-9D（スキルチェーン型定義10型・IPCチャネル5ch）とTASK-9G（スキルスケジュール型定義4型・IPCチャネル5ch・Preload API 5メソッド）のセクションを追加。実装コードとの整合を検証済み |
 | 2026-02-28 | 1.42.1     | TASK-9E追補: 型/API契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界追従）と同種課題向け4ステップ手順を追加 |

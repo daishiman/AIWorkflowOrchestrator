@@ -25,7 +25,7 @@ describe("useFileTree", () => {
   // UFT-02
   it("空ツリー応答時に fileTree が空配列になる", async () => {
     // getFileTree を常に空ツリーで返すように設定（useEffect初期化 + 手動呼び出し両方で使用される）
-    mocks.getFileTree.mockResolvedValue({ tree: [] });
+    mocks.getFileTree.mockResolvedValue([]);
     const { result } = renderHook(() => useFileTree("my-skill"));
     await act(async () => {
       await result.current.refreshTree();

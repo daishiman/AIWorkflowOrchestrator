@@ -1,0 +1,112 @@
+{
+  "taskId": "TASK-10A-C",
+  "taskName": "SkillCreateWizard 実装",
+  "feature": "skill-create-wizard",
+  "workflowPath": "docs/30-workflows/completed-tasks/skill-create-wizard",
+  "created": "2026-03-02T00:00:00+09:00",
+  "lastUpdated": "2026-03-03T12:00:00+09:00",
+  "status": "phase_13_completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/api-specification.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-red-status.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/coverage-analysis.md",
+        "outputs/phase-6/test-expansion-report.md"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshot-coverage.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/completion-report.md"
+      ],
+      "prUrl": "https://github.com/daishiman/AIWorkflowOrchestrator/pull/954",
+      "completedAt": "2026-03-03"
+    }
+  },
+  "dependencies": {
+    "requires": ["TASK-9B"],
+    "parallelWith": ["TASK-10A-A", "TASK-10A-B"],
+    "blocks": ["TASK-10A-D"]
+  }
+}

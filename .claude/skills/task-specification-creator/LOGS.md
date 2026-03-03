@@ -5031,3 +5031,31 @@ if (artifactPath) {
 
 - ステータス: success
 - テスト: 38件全PASS、カバレッジ全指標100%
+
+## 2026-03-03 - UT-UI-05A-GETFILETREE-001 Phase 11/12 成果物整合の運用反映
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象タスク: UT-UI-05A-GETFILETREE-001
+- 目的: 画面証跡必須要件と Phase 12 必須成果物命名整合の再確認結果を運用へ反映
+
+### 実施内容
+
+- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-11` の必須成果物5件を実体化
+  - `auto-test-result.md`
+  - `filetree-display-result.md`
+  - `error-case-result.md`
+  - `api-verification-result.md`
+  - `manual-test-report.md`
+- スクリーンショット検証を `manual-test.md` に明示（対象外扱いを解消）
+- `outputs/phase-12` の必須成果物命名をテンプレート準拠へ補完
+  - `spec-update-summary.md`
+  - `unassigned-task-detection.md`
+  - `skill-feedback-report.md`
+- `documentation-changelog.md` に Step 1-A〜1-D / Step 2 の実行結果を反映
+
+### 結果
+
+- ステータス: success
+- 運用反映: Phase 11 画面証跡必須、Phase 12 命名整合チェックを実案件で適用

@@ -13,3 +13,4 @@ export { SkillAnalysisView } from "./SkillAnalysisView";
 export { ScoreDisplay } from "./ScoreDisplay";
 export { SuggestionList } from "./SuggestionList";
 export { RiskPanel } from "./RiskPanel";
+export { SkillCreateWizard } from "./SkillCreateWizard";

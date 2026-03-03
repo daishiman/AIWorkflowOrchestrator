@@ -669,6 +669,56 @@ export function registerSkillHandlers(
       }
     },
   );
+
+  // skill:create - スキル作成ウィザード (TASK-10A-C)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATE,
+    async (
+      event: IpcMainInvokeEvent,
+      description: unknown,
+      options: unknown,
+    ) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_CREATE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+      // P42準拠: 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+      if (typeof description !== "string" || description.trim() === "") {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "description must be a non-empty string",
+        };
+      }
+      if (typeof options !== "object" || options === null) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "options must be an object",
+        };
+      }
+      try {
+        // TASK-10A-C: SkillCreatorService の create を呼び出す
+        // 既存の SKILL_CREATOR_CREATE チャンネル経由で skill-creator サービスに委譲
+        const typedOptions = options as {
+          generateTasks: boolean;
+          addAgents: boolean;
+          addReferences: boolean;
+        };
+        const result = await skillService.createSkillFromWizard(
+          description.trim(),
+          typedOptions,
+        );
+        return result;
+      } catch (error) {
+        log.error("[skillHandlers] skill:create failed:", error);
+        throw {
+          code: "CREATE_ERROR",
+          message: sanitizeErrorMessage(error),
+        };
+      }
+    },
+  );
 }
 
 /**
@@ -694,6 +744,8 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_VARIANTS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE);
+  // TASK-10A-C: スキル作成ウィザード
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATE);
 }
 
 // ========================================
