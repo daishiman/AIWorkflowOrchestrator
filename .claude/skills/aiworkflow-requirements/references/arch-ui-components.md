@@ -371,7 +371,6 @@ SkillSelectorはスキル選択用ドロップダウンコンポーネント。W
 | TASK-7A  | SkillSelector コンポーネント実装 | 2026-01-30 |
 | TASK-7D  | ChatPanel統合パターン             | 2026-01-30 |
 | TASK-8B  | コンポーネントテスト（全4コンポーネント） | 2026-02-02 |
-| TASK-UI-00-DESIGN-FOUNDATION | UI共通デザイン基盤（Molecules/Organisms 8コンポーネント） | 2026-03-04 |
 
 #### タスク: TASK-8B コンポーネントテスト（2026-02-02完了）
 
@@ -761,31 +760,49 @@ TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中
 
 ---
 
-## UI Design Foundation アーキテクチャ反映（TASK-UI-00-DESIGN-FOUNDATION）
+## TASK-UI-00-ORGANISMS アーキテクチャ記録
 
-TASK-UI-00-DESIGN-FOUNDATION では、Atomic Design の Molecules / Organisms 層に不足していた8コンポーネントを追加し、UI基盤を統一した。`UIDesignFoundationPreview` を用いて単一画面で構成確認できる構成にした。
+### 対象コンポーネント
 
-### 追加コンポーネント（レイヤー別）
-
-| レイヤー | コンポーネント | 主要責務 |
+| コンポーネント | 責務 | 再利用方針 |
 | --- | --- | --- |
-| molecules | SearchBar | 検索入力、Enter送信、クリア操作 |
-| molecules | CodeViewer | 行番号付きコード表示、コピー操作 |
-| molecules | TabSwitcher | キーボード操作対応タブ切替 |
-| molecules | SlideInPanel | 右側パネル開閉、フォーカストラップ |
-| molecules | ConfirmDialog | 危険操作の確認導線 |
-| organisms | CardGrid | loading/empty/data の3状態表示 |
-| organisms | MasterDetailLayout | 2ペイン構成とモバイル時の1ペイン切替 |
-| organisms | SearchFilterList | 検索バー + フィルタ + 一覧統合 |
+| `CardGrid` | カードのレスポンシブ表示、キーボード矢印移動、loading/empty表現 | Item型をジェネリクス化し、`renderCard` 注入で用途を分離 |
+| `MasterDetailLayout` | master/detail の画面分割とモバイル時のオーバーレイ表示 | 画面幅判定は `matchMedia` 抽象で統一し、desktop/tablet/mobile差分を内部吸収 |
+| `SearchFilterList` | 検索 + 複数フィルタ（AND） + list/grid 切替 + 件数表示 | 検索条件と描画責務を分離し、`renderItem`/`renderCard` フォールバックで適用先を拡張 |
 
-### 検証証跡
+### レイヤー設計（Atomic Design整合）
 
-| 項目 | 値 |
+| レイヤー | 構成要素 | 依存方向 |
+| --- | --- | --- |
+| Organisms | `CardGrid`, `MasterDetailLayout`, `SearchFilterList` | Molecules/Atomsに依存（逆依存なし） |
+| Molecules | `SearchBar`, `SlideInPanel` | Atomsに依存 |
+| Atoms | `FilterChip`, `EmptyState`, `SkeletonCard` | 末端レイヤー |
+
+### 品質メトリクス（TASK-UI-00-ORGANISMS）
+
+| 指標 | 値 |
 | --- | --- |
-| 自動テスト | 47ケース PASS（8テストファイル） |
-| 型チェック | `@repo/desktop typecheck` PASS |
-| 画面証跡 | Phase 11: TC-UI-00-301〜305（5枚） |
-| ワークフロー | `docs/30-workflows/task-050-ui-00-ui-design-foundation/` |
+| テストファイル | 3 |
+| テストケース | 41（全PASS） |
+| 対象カバレッジ（Statements/Branches/Functions/Lines） | 97.26% / 92.00% / 94.73% / 97.26% |
+| 手動検証スクリーンショット | 6枚（desktop dark/light + mobile dark） |
+
+### 設計時の苦戦箇所と対策（TASK-UI-00-ORGANISMS）
+
+| 苦戦箇所 | 原因 | 対策 | 標準化ルール |
+| --- | --- | --- | --- |
+| `MasterDetailLayout` の表示責務が viewport 条件で分散しやすい | desktop/tablet/mobile の分岐が呼び出し側へ漏れる | `MasterDetailLayout` 内で viewport 判定を吸収し、呼び出し側は `items/selectedId` のみを渡す構造へ統一 | レイアウト条件分岐は Organism 内に閉じる |
+| `SearchFilterList` の描画責務が list/grid で重複しやすい | `renderItem` と `renderCard` の分離が曖昧 | `viewMode` ごとに明示的に切替し、`renderCard ?? renderItem` をフォールバック順で固定 | 表示モード差分は 1コンポーネント内で完結させる |
+| `CardGrid` の loading/empty/loaded が分離されず回帰しやすい | 視覚状態とデータ状態の対応が未定義 | 3状態（loading/empty/loaded）をテストIDとスクショTCで固定化 | UI状態は実装前に状態表を先に定義する |
+
+### 関連タスク
+
+- **TASK-UI-00-ORGANISMS**: Organisms共通コンポーネント実装（2026-03-04完了）
+
+### 参照
+
+- [TASK-UI-00-ORGANISMS ワークフロー仕様](../../../../docs/30-workflows/skill-import-agent-system/tasks/task-054-ui-00-4-organisms-components/index.md)
+- [TASK-UI-00-ORGANISMS 手動テスト結果](../../../../docs/30-workflows/skill-import-agent-system/tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/manual-test-result.md)
 
 ---
 
@@ -793,7 +810,8 @@ TASK-UI-00-DESIGN-FOUNDATION では、Atomic Design の Molecules / Organisms �
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
-| 2.9.1   | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: Molecules/Organisms 8コンポーネントのアーキテクチャ責務を追加し、完了タスク表へ登録。`UIDesignFoundationPreview` を使った基盤検証導線と Phase 11 証跡（TC-UI-00-301〜305）を同期 |
+| 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |
+| 2.9.1   | 2026-03-04 | TASK-UI-00-ORGANISMS 反映: CardGrid/MasterDetailLayout/SearchFilterList のアーキテクチャ記録を追加（責務分離、Atomic Design整合、品質メトリクス、参照導線） |
 | 2.9.0   | 2026-03-03 | TASK-10A-D 反映: SkillManagementPanel ビュー統合アーキテクチャ（レイヤー構成、コンポーネント関係図、状態遷移差分、Store拡張、IPC境界、品質指標、苦戦箇所）を追加 |
 | 2.8.3   | 2026-03-02 | TASK-10A-A 反映: SkillManagementPanel のアーキテクチャ節（レイヤー構成、状態遷移、IPC境界、品質指標、苦戦箇所）を追加し、Step 2 判定漏れの再発防止ルールを追記 |
 | 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
@@ -816,5 +834,3 @@ TASK-UI-00-DESIGN-FOUNDATION では、Atomic Design の Molecules / Organisms �
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
 - [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 SkillCenterView 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
-- [TASK-UI-00-DESIGN-FOUNDATION ワークフロー仕様](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/index.md)
-- [TASK-UI-00-DESIGN-FOUNDATION 手動検証結果](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/outputs/phase-11/manual-test-result.md)

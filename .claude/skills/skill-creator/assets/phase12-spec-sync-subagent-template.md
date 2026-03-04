@@ -133,3 +133,19 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
+
+## 7. 最適なファイル形成（仕様書別）
+
+### 7.1 仕様書単位の出力粒度
+
+| 仕様書 | 最小構成（必須） |
+| --- | --- |
+| `task-workflow.md` | 実装内容、苦戦箇所、検証証跡、5分チェックリスト |
+| `lessons-learned.md` | 苦戦箇所（再発条件付き）、同種課題テンプレート |
+| `<domain-spec>.md` | 実装差分、契約/責務境界、再利用ルール |
+
+### 7.2 記録整合チェック
+
+- [ ] SubAgentごとに「実装内容 + 苦戦箇所 + 検証証跡」を同一行で記録している
+- [ ] 仕様書間で検証値（13/13, 28項目, current=0 など）の値が一致している
+- [ ] UIタスクでは画面証跡の時刻が仕様書間で一致している

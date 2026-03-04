@@ -20,6 +20,7 @@
     "screenshot:skill-analysis": "node scripts/capture-skill-analysis-view-screenshots.mjs",
     "screenshot:skill-create-wizard": "node scripts/capture-skill-create-wizard-screenshots.mjs",
     "screenshot:skill-import-idempotency-guard": "node scripts/capture-skill-import-idempotency-guard-screenshots.mjs",
+    "screenshot:organisms": "node scripts/capture-organisms-components-screenshots.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
