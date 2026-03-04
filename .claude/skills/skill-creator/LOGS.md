@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-03-04 - TASK-UI-00-MOLECULES 再確認テンプレート改善（時刻同期 + Task 1要件チェック）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに Task 1 要件機械確認（Part 1/Part 2）を追加
+  - 同テンプレートの完了チェックに `manual-test-result.md` / `screenshot-coverage.md` と `stat` の時刻整合確認を追加
+  - `SKILL.md` 変更履歴を `v10.36.8` として同期
+
+---
+
+## [2026-03-04 - Phase 12テンプレートへ未タスク配置先判定ガードを追補]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の同種課題手順/検証コマンド/完了チェックへ「未完了は `docs/30-workflows/unassigned-task/`、完了移管済みは `docs/30-workflows/completed-tasks/unassigned-task/`」判定を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 分担・検証コマンド・完了チェックへ同判定を追加
+  - `references/resource-map.md` のテンプレート説明を未タスク配置先判定対応へ同期
+  - `SKILL.md` 変更履歴を `v10.36.7` として同期
+
+---
+
 ## [2026-03-04 - Phase 12テンプレートへ preview preflight 既定手順を同期]
 
 - **Agent**: skill-creator (update)
@@ -28,39 +53,6 @@
   - 同クイックナビに失敗キーワード「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
   - 成功パターン本文「UI再撮影前 preview preflight + 失敗時未タスク化固定（SkillCenter）」を追加
   - 失敗パターン本文「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
-  - `SKILL.md` 変更履歴を `v10.36.5` として同期
-
----
-
-## [2026-03-04 - Phase 12 監査カウンタ再同期ガード追補]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン「未タスク監査カウンタ再同期（links/audit値の再計測固定）」を追加
-  - クイックナビ（📋 Phase 12）へ成功/失敗キーワードを追記
-    - 成功: 未タスク監査カウンタ再同期
-    - 失敗: 検証後の数値再同期漏れ（旧links/baseline値残置）
-  - `assets/phase12-system-spec-retrospective-template.md` に `current/baseline` 抽出コマンド（jq）を追加
-  - 同テンプレートの完了チェックに「`task-workflow` + `outputs/phase-12` への同値転記」を必須化
-  - `SKILL.md` 変更履歴を `v10.36.6` として同期
-
----
-
-## [2026-03-04 - Phase 12 運用ガード追補（実体探索 + Vitest非watch固定）]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン2件を追加
-    - 検証スクリプト実体探索先行（`rg --files` 固定）
-    - Vitest再確認の非watch固定（`pnpm --filter @repo/desktop exec vitest run`）
-  - 同ファイルのクイックナビ（Phase 12）へ成功/失敗キーワードを反映
-    - 失敗: 記憶ベース実行、`pnpm test` watch残留
-  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに `vitest run` 行を追加
-  - 同テンプレートの完了チェックへ「非watch実行確認」を追加
   - `SKILL.md` 変更履歴を `v10.36.5` として同期
 
 ---

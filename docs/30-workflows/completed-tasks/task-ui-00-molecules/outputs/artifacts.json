@@ -1,0 +1,310 @@
+{
+  "feature": "task-ui-00-molecules",
+  "created": "2026-03-04T05:22:04.359Z",
+  "lastUpdated": "2026-03-04T07:42:10.290Z",
+  "status": "in_progress",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-design.md",
+          "description": "コンポーネント設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/interface-contracts.md",
+          "description": "インターフェース契約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-design.md",
+          "description": "テスト設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "レビュー指摘"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-case-matrix.md",
+          "description": "テストケースマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-execution-guide.md",
+          "description": "テスト実行ガイド"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-plan.md",
+          "description": "テスト拡張計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-cases.md",
+          "description": "拡張テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "テスト拡張結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-analysis.md",
+          "description": "カバレッジギャップ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/additional-test-plan.md",
+          "description": "追加テスト計画"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactor-plan.md",
+          "description": "リファクタ計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactor-log.md",
+          "description": "リファクタログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/regression-test-result.md",
+          "description": "回帰テスト結果"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/accessibility-report.md",
+          "description": "アクセシビリティレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate.md",
+          "description": "品質ゲート判定"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-findings.md",
+          "description": "最終レビュー指摘"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/go-no-go.md",
+          "description": "Go/No-Go 判定"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "画面カバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-01-skill-center-default-dark.png",
+          "description": "TC-01 screenshot"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-02-skill-center-search-dark.png",
+          "description": "TC-02 screenshot"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-03-skill-center-default-light.png",
+          "description": "TC-03 screenshot"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-04-skill-center-default-mobile-dark.png",
+          "description": "TC-04 screenshot"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-04T07:08:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12仕様準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "actualPhases": 12,
+    "executionNote": "Phase 1-12 を順次実行し、実装・テスト・画面証跡・仕様同期まで完了（Phase 13は未実施）"
+  }
+}

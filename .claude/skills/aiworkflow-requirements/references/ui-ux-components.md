@@ -48,6 +48,16 @@
 | EmptyState | TASK-UI-00-ATOMS | 完了（拡張） | `apps/desktop/src/renderer/components/atoms/EmptyState/` |
 | RelativeTime | TASK-UI-00-ATOMS | 完了 | `apps/desktop/src/renderer/components/atoms/RelativeTime/` |
 
+### Molecules コンポーネント実装状況
+
+| コンポーネント | タスクID | ステータス | 実装パス |
+|---|---|---|---|
+| SearchBar | TASK-UI-00-MOLECULES | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/molecules/SearchBar/` |
+| CodeViewer | TASK-UI-00-MOLECULES | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/molecules/CodeViewer/` |
+| TabSwitcher | TASK-UI-00-MOLECULES | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/molecules/TabSwitcher/` |
+| SlideInPanel | TASK-UI-00-MOLECULES | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/molecules/SlideInPanel/` |
+| ConfirmDialog | TASK-UI-00-MOLECULES | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/molecules/ConfirmDialog/` |
+
 ### 主要UIコンポーネント一覧
 
 | コンポーネント | タスクID | 責務 |
@@ -156,6 +166,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-9A | SkillEditor UI（SkillEditor / SkillCodeEditor / ファイルCRUD / バックアップ復元） | 2026-02-26 |
 | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | SkillImportDialog skill.id→skill.name修正（`onImport`にハッシュではなくスキル名を渡すよう修正、P44 Renderer側バリエーション） | 2026-02-22 |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント実装（StatusIndicator・FilterChip・SkeletonCard・SuggestionBubble・RelativeTime新規、Badge・EmptyState拡張） | 2026-02-23 |
+| TASK-UI-00-MOLECULES | Molecules共通コンポーネント実装（SearchBar / CodeViewer / TabSwitcher / SlideInPanel / ConfirmDialog + 5テストファイル） | 2026-03-04 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
 | TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
@@ -256,6 +267,20 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 ---
 
+### 画面検証証跡（TASK-UI-00-MOLECULES）
+
+| 証跡 | ファイル |
+| --- | --- |
+| dark 初期表示 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/screenshots/TC-01-skill-center-default-dark.png` |
+| dark 検索状態 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/screenshots/TC-02-skill-center-search-dark.png` |
+| light 初期表示 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/screenshots/TC-03-skill-center-default-light.png` |
+| mobile 初期表示 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/screenshots/TC-04-skill-center-default-mobile-dark.png` |
+| 再撮影時刻（同期済み） | `2026-03-04 18:04 JST` |
+| 手動検証結果 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/manual-test-result.md` |
+| 発見課題 | `docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/discovered-issues.md` |
+
+---
+
 ## SkillCenterView 関連未タスク
 
 | 未タスクID | 概要 | 参照 |
@@ -274,6 +299,11 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.14.5  | 2026-03-04 | TASK-UI-00-MOLECULES 再確認最適化: Phase 11 スクリーンショットの再撮影時刻を 18:04 JST へ同期し、証跡テーブルと手動検証ドキュメントの整合を固定 |
+| 2.14.4  | 2026-03-04 | TASK-UI-00-MOLECULES Phase 12準拠追補: 実装ガイドの Task 1 要件（Part 1 理由先行+日常例え / Part 2 型・API・エッジケース・設定項目）を再同期し、再利用可能な品質基準へ更新 |
+| 2.14.3  | 2026-03-04 | TASK-UI-00-MOLECULES 再検証追補: SearchBar に Enter確定 `onSubmit` を追加した実装差分を反映。Molecules対象テスト実測値を 69 tests に同期し、Phase 11 画面証跡を再取得（17:09 JST）して検証時刻を更新 |
+| 2.14.2  | 2026-03-04 | TASK-UI-00-MOLECULES 実装完了反映: Molecules実装状況を `completed` へ更新。完了タスクへ TASK-UI-00-MOLECULES を追加し、`仕様書作成済みタスク` から同タスクを除外。Phase 11 画面証跡導線は維持したまま台帳状態を実体へ同期 |
+| 2.14.1  | 2026-03-04 | TASK-UI-00-MOLECULES 再監査反映: Molecules実装状況テーブル（SearchBar/CodeViewer/TabSwitcher/SlideInPanel/ConfirmDialog）を追加し、全件を `spec_created（未実装）` として同期。`仕様書作成済みタスク` に TASK-UI-00-MOLECULES を追加し、Phase 11 画面証跡（TC-01〜TC-04）と手動検証結果への導線を追記 |
 | 2.14.0  | 2026-03-03 | TASK-10A-D 完了反映: 完了タスクへ SkillManagementPanel ビュー統合を追加し、実装完了記録（SkillAnalysisView/SkillCreateWizard統合、ChatPanel導線、agentSlice拡張、苦戦箇所3件）を同期 |
 | 2.13.9  | 2026-03-02 | TASK-10A-C 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillCreateWizard を追加し、実装完了記録（4ステップUI、`skill:create` 契約、Phase 11 画面証跡 TC-01〜08、未タスク0件）を同期 |
 | 2.13.8  | 2026-03-02 | TASK-10A-B 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillAnalysisView を追加し、実装完了記録（画面証跡・a11y修正・未タスク5件）を同期 |
@@ -316,6 +346,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 - [TASK-7B 実装ガイド](../../../../docs/30-workflows/TASK-7B-skill-import-dialog/outputs/phase-12/implementation-guide.md)
 - [TASK-7D 実装ガイド](../../../../docs/30-workflows/TASK-7D-chat-panel-integration/outputs/phase-12/implementation-guide-part2.md)
 - [TASK-UI-00-ATOMS 実装ガイド](../../../../docs/30-workflows/completed-tasks/task-ui-00-atoms/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-00-MOLECULES ワークフロー仕様（Phase 1-12実行済み）](../../../../docs/30-workflows/completed-tasks/task-ui-00-molecules/index.md)
+- [TASK-UI-00-MOLECULES 手動検証結果](../../../../docs/30-workflows/completed-tasks/task-ui-00-molecules/outputs/phase-11/manual-test-result.md)
 - [TASK-UI-05 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/spec-update-summary.md)
 - [TASK-UI-05A 仕様書（spec_created）](../../../../docs/30-workflows/skill-editor-view/index.md)

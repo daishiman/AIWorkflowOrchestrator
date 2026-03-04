@@ -8,7 +8,7 @@
 | ------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------- |
 | TypeCheck           | `pnpm typecheck:desktop`                                                                   | PASS                                        |
 | Lint                | `pnpm lint`                                                                                | PASS（warning 4件, error 0）                |
-| Unit/Integration    | `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__` | PASS（9 files / 129 tests）                 |
+| Unit/Integration    | `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__` | PASS（10 files / 132 tests）                |
 | Coverage            | `vitest --coverage`（SkillCenter限定）                                                     | PASS（Line 96.9 / Branch 91.85 / Func 100） |
 | Screenshot Coverage | `validate-phase11-screenshot-coverage`                                                     | PASS（expected=4 / covered=4）              |
 

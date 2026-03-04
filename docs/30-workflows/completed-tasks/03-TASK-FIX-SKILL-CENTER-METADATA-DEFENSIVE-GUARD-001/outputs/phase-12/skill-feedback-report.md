@@ -7,12 +7,15 @@
 1. スクリーンショット再取得をコード化し、Phase 11 の再現性を強化できた。
 2. `task-workflow.md` の旧パス混在を早期検出できる監査観点を定着できた。
 3. `current/baseline` 分離で未タスク監査の誤判定を防げた。
+4. `skill-creator` テンプレートに未タスク配置先判定（未完了/完了移管）を追記し、運用の暗黙知を削減できた。
 
 ## 改善提案（スキル更新向け）
 
 1. `task-specification-creator` に「旧workflowパス残存チェック」を定型ルール化する。
 2. Phase 11 テンプレートへ「再撮影時刻記録」欄を標準追加する。
 3. `aiworkflow-requirements` 更新時に `task-workflow.md` の workflow パスを機械検証するスクリプトを追加する。
+4. SkillCenter の削除系UIでは `requestDelete` 状態を消費する確認ダイアログ有無をチェックリスト化する。
+5. 未タスク監査テンプレートに「配置先判定の証跡コマンド（unassigned/completed-tasks両方検索）」を固定ルール化する。
 
 ## ダブル・ループ思考での見直し
 

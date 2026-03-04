@@ -1,6 +1,6 @@
 # Phase 11 手動テスト結果（再撮影版）
 
-更新日: 2026-03-04 13:21 JST
+更新日: 2026-03-04 16:50 JST
 
 ## 実施概要
 
@@ -27,6 +27,8 @@
 ## 検証コマンド結果
 
 ```bash
+node apps/desktop/scripts/capture-skill-center-metadata-guard-screenshots.mjs
+
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 # expected TC: 4 / covered TC: 4 / PASS
 ```

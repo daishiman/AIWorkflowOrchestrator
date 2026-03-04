@@ -27,6 +27,6 @@
 
 ## 完了判定
 
-- 129テスト（SkillCenterView配下）PASS。
+- 132テスト（SkillCenterView配下）PASS。
 - 対象カバレッジが Line/Branch/Function 目標を満たす。
 - Phase 11 で TC-01〜TC-04 の画面証跡を取得し、視覚レビューで PASS。
