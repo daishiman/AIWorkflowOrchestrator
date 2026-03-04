@@ -174,6 +174,26 @@ describe("useSkillExecution - execute", () => {
     });
   });
 
+  it("should return AUTHENTICATION_ERROR and skip execute when auth preflight fails", async () => {
+    const existsMock = vi.fn().mockResolvedValue({ exists: false });
+    Object.defineProperty(window, "electronAPI", {
+      value: { skill: mockSkillAPI, authKey: { exists: existsMock } },
+      writable: true,
+      configurable: true,
+    });
+
+    const { result } = renderHook(() => useSkillExecution("test-skill"));
+
+    await act(async () => {
+      await result.current.execute("Test prompt");
+    });
+
+    expect(existsMock).toHaveBeenCalledTimes(1);
+    expect(mockSkillAPI.execute).not.toHaveBeenCalled();
+    expect(result.current.status).toBe("error");
+    expect(result.current.error?.code).toBe("AUTHENTICATION_ERROR");
+  });
+
   it("should set error status when execute fails", async () => {
     mockSkillAPI.execute.mockResolvedValue({
       executionId: "",
