@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 3                                            |
 | 後続Phase  | 実装                                               |
 | 作成日     | 2026-03-04                                         |
-| ステータス | completed                                          |
+| ステータス | pending                                            |
 
 ## 目的
 
@@ -36,16 +36,19 @@
 
 ## 参照資料
 
-| 参照資料           | パス                                         | 説明           |
-| ------------------ | -------------------------------------------- | -------------- |
-| 要件定義書         | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物 |
-| 受け入れ基準       | `outputs/phase-1/acceptance-criteria.md`     | Phase 1 成果物 |
-| スコープ定義       | `outputs/phase-1/scope-definition.md`        | Phase 1 成果物 |
-| アーキテクチャ設計 | `outputs/phase-2/architecture-design.md`     | Phase 2 成果物 |
-| API仕様            | `outputs/phase-2/api-specification.md`       | Phase 2 成果物 |
-| 状態設計           | `outputs/phase-2/state-design.md`            | Phase 2 成果物 |
-| 設計レビュー結果   | `outputs/phase-3/design-review-result.md`    | Phase 3 成果物 |
-| レビューゲート判定 | `outputs/phase-3/review-gate-decision.md`    | Phase 3 成果物 |
+| 参照資料                   | パス                                                    | 説明           |
+| -------------------------- | ------------------------------------------------------- | -------------- |
+| 要件定義書                 | `outputs/phase-1/requirements-definition.md`            | Phase 1 成果物 |
+| 受け入れ基準               | `outputs/phase-1/acceptance-criteria.md`                | Phase 1 成果物 |
+| スコープ定義               | `outputs/phase-1/scope-definition.md`                   | Phase 1 成果物 |
+| アーキテクチャ設計         | `outputs/phase-2/architecture-design.md`                | Phase 2 成果物 |
+| API仕様                    | `outputs/phase-2/api-specification.md`                  | Phase 2 成果物 |
+| 状態設計                   | `outputs/phase-2/state-design.md`                       | Phase 2 成果物 |
+| 設計レビュー結果           | `outputs/phase-3/design-review-result.md`               | Phase 3 成果物 |
+| レビューゲート判定         | `outputs/phase-3/review-gate-decision.md`               | Phase 3 成果物 |
+| ブランチ差分カバレッジ監査 | `outputs/phase-1/branch-diff-coverage.md`               | Phase 1 成果物 |
+| aiworkflow仕様抽出網羅監査 | `outputs/phase-1/aiworkflow-requirements-extraction.md` | Phase 1 成果物 |
+| 20思考フレーム整合監査     | `outputs/phase-1/multi-thinking-consistency-audit.md`   | Phase 1 成果物 |
 
 ## テスト対象ファイル（差分追跡）
 
@@ -86,28 +89,28 @@
 
 ## 完了条件
 
-- [x] 実行タスクの成果物が定義されている
-- [x] 参照仕様との整合根拠を記録した
-- [x] 次Phaseへの引き継ぎ事項を記録した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] 実行タスクの成果物が定義されている
+- [ ] 参照仕様との整合根拠を記録する
+- [ ] 次Phaseへの引き継ぎ事項を記録する
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] Phase内で定義した成果物を全件記録
+- [ ] 引き継ぎ事項を明記
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                               |
-| ------------ | ---------------------------------- |
-| 実行タスク   | 完了                               |
-| 発見事項     | 主要課題は仕様化済み・追加阻害なし |
-| 引き継ぎ事項 | 次Phaseへ成果物を引き継ぎ済み      |
+| 項目         | 記録    |
+| ------------ | ------- |
+| 実行タスク   | pending |
+| 発見事項     | pending |
+| 引き継ぎ事項 | pending |
 
 ## 次のPhase
 

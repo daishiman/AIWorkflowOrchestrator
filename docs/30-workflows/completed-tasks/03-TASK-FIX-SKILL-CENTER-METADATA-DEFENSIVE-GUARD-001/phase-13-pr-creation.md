@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 12                                           |
 | 後続Phase  | -                                                  |
 | 作成日     | 2026-03-04                                         |
-| ステータス | completed                                          |
+| ステータス | pending                                            |
 
 ## 目的
 
@@ -84,29 +84,29 @@ PR作成に必要な差分説明・検証結果・リスクを整理する。
 
 ## 完了条件
 
-- [x] 実行タスクの成果物が定義されている
-- [x] 参照仕様との整合根拠を記録した
-- [x] 次Phaseへの引き継ぎ事項を記録した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] 実行タスクの成果物が定義されている
+- [ ] 参照仕様との整合根拠を記録する
+- [ ] 次Phaseへの引き継ぎ事項を記録する
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] Phase内で定義した成果物を全件記録
+- [ ] 引き継ぎ事項を明記
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                                                                                 |
-| ------------ | ------------------------------------------------------------------------------------ |
-| 実行タスク   | PR本文ドラフト/証跡整理/CI前提整理を実施し、outputs/phase-13 に成果物2件を作成       |
-| 発見事項     | implementation-guide連携要件（Part 1/2）とスクリーンショット条件をPR作成フローへ反映 |
-| 引き継ぎ事項 | PR本文のテンプレ準拠・implementation-guide全文コメント投稿・CI結果確認後に手動マージ |
+| 項目         | 記録    |
+| ------------ | ------- |
+| 実行タスク   | pending |
+| 発見事項     | pending |
+| 引き継ぎ事項 | pending |
 
 ## 次のPhase
 
-完了 -
+なし（Phase 13 実行完了時に終了）
