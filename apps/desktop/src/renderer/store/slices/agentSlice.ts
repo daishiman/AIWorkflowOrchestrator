@@ -25,6 +25,7 @@ import type {
   SkillAnalysis,
   Suggestion,
 } from "@repo/shared/types/skill-improver";
+import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 
 // Re-export for backward compatibility
 export type { AgentExecutionStatus } from "@repo/shared/types/agent";
@@ -708,6 +709,27 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   executeSkill: async (prompt) => {
     const { selectedSkillName } = get();
     if (!selectedSkillName) return;
+
+    const hasAuthPreflightAPI =
+      typeof window !== "undefined" &&
+      typeof window.electronAPI?.authKey?.exists === "function";
+
+    // authKey API がある場合のみ事前検証を実施する。
+    // API 未提供環境では従来どおり同期的に実行開始し、既存の race condition 対策テストとの互換を保つ。
+    if (hasAuthPreflightAPI) {
+      const preflightResult = await preflightSkillExecutionAuth();
+      if (!preflightResult.ok) {
+        set({
+          isExecuting: false,
+          skillExecutionStatus: "error",
+          skillError:
+            preflightResult.error?.message ||
+            "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
+          executionId: null,
+        });
+        return;
+      }
+    }
 
     // race condition対策: IPC呼び出し前にexecutionIdを事前生成
     const tempExecutionId = generateExecutionId();

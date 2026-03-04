@@ -327,9 +327,14 @@ export function registerSkillHandlers(
         return { success: true, data: result };
       } catch (error) {
         log.error("[skillHandlers] skill:execute failed:", error);
+        const errorCode =
+          typeof (error as { code?: unknown })?.code === "string"
+            ? (error as { code: string }).code
+            : undefined;
         return {
           success: false,
           error: sanitizeErrorMessage(error),
+          ...(errorCode ? { errorCode } : {}),
         };
       }
     },
