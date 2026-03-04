@@ -10,7 +10,7 @@
 | 前提Phase  | -                                                  |
 | 後続Phase  | 設計                                               |
 | 作成日     | 2026-03-04                                         |
-| ステータス | completed                                          |
+| ステータス | pending                                            |
 
 ## 目的
 
@@ -33,6 +33,9 @@
 - 要件整理: 失敗条件・成功条件・再現手順を整理する
 - 受け入れ基準化: Given/When/Then を定義する
 - スコープ確定: 影響範囲と非対象を明文化する
+- 差分網羅監査: 本ブランチ差分の反映漏れを検出する
+- 仕様抽出監査: aiworkflow-requirements 参照の過不足を判定する
+- 多角監査: 20思考フレームで矛盾/漏れ/依存を点検する
 
 ## 参照資料
 
@@ -42,7 +45,11 @@
 | Interface 正本 | .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md | 型・契約確認  |
 | 状態管理正本   | .claude/skills/aiworkflow-requirements/references/arch-state-management.md      | Store同期確認 |
 | UI仕様正本     | .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md   | 画面要件確認  |
+| UI部品正本     | .claude/skills/aiworkflow-requirements/references/ui-ux-components.md           | 表示契約確認  |
+| UIアーキ正本   | .claude/skills/aiworkflow-requirements/references/arch-ui-components.md         | 責務境界確認  |
+| テストFixture  | .claude/skills/aiworkflow-requirements/references/testing-fixtures.md           | 欠損入力設計  |
 | エラー処理正本 | .claude/skills/aiworkflow-requirements/references/error-handling.md             | 例外方針確認  |
+| 教訓正本       | .claude/skills/aiworkflow-requirements/references/lessons-learned.md            | 再発防止確認  |
 
 ## 実行手順
 
@@ -67,36 +74,40 @@
 
 ## 成果物
 
-| 成果物       | パス                                         | 内容              |
-| ------------ | -------------------------------------------- | ----------------- |
-| 要件定義書   | `outputs/phase-1/requirements-definition.md` | FR/NFR と再現条件 |
-| 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`     | Given/When/Then   |
-| スコープ定義 | `outputs/phase-1/scope-definition.md`        | 対象・非対象      |
+| 成果物       | パス                                                    | 内容                 |
+| ------------ | ------------------------------------------------------- | -------------------- |
+| 要件定義書   | `outputs/phase-1/requirements-definition.md`            | FR/NFR と再現条件    |
+| 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`                | Given/When/Then      |
+| スコープ定義 | `outputs/phase-1/scope-definition.md`                   | 対象・非対象         |
+| 差分監査     | `outputs/phase-1/branch-diff-coverage.md`               | 本ブランチ差分網羅性 |
+| 抽出監査     | `outputs/phase-1/aiworkflow-requirements-extraction.md` | 仕様抽出の過不足判定 |
+| 多角監査     | `outputs/phase-1/multi-thinking-consistency-audit.md`   | 20思考フレーム監査   |
 
 ## 完了条件
 
-- [x] 実行タスクの成果物が定義されている
-- [x] 参照仕様との整合根拠を記録した
-- [x] 次Phaseへの引き継ぎ事項を記録した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] 実行タスクの成果物が定義されている
+- [ ] 参照仕様との整合根拠を記録する
+- [ ] 差分網羅監査・抽出監査・多角監査の3監査成果物を作成する
+- [ ] 次Phaseへの引き継ぎ事項を記録する
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] Phase内で定義した成果物を全件記録
+- [ ] 引き継ぎ事項を明記
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                               |
-| ------------ | ---------------------------------- |
-| 実行タスク   | 完了                               |
-| 発見事項     | 主要課題は仕様化済み・追加阻害なし |
-| 引き継ぎ事項 | 次Phaseへ成果物を引き継ぎ済み      |
+| 項目         | 記録    |
+| ------------ | ------- |
+| 実行タスク   | pending |
+| 発見事項     | pending |
+| 引き継ぎ事項 | pending |
 
 ## 次のPhase
 

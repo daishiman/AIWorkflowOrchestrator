@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const screenshotDir = path.join(
   repoRoot,
-  "docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots",
+  "docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots",
 );
 const port = process.env.SKILL_CENTER_SCREENSHOT_PORT ?? "5173";
 const baseUrl = `http://localhost:${port}`;

@@ -84,6 +84,7 @@ API認証・認可、Electron IPC、スキル実行のセキュリティ設計�
 | UT-FIX-5-4 | AgentSDKAPI型定義不一致修正          | 2026-02-10 | `agentSDKAPI.abort()` 戻り値型を `void` → `Promise<void>` に修正（P23パターン準拠） |
 | UT-FIX-5-3 | Preload Agent Abort セキュリティ修正 | 2026-02-10 | `agentSDKAPI.abort()` を `safeInvoke()` 経由に変更、Main側 `ipcMain.handle()` 使用  |
 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション形式統一 | 2026-02-24 | skillHandlers.ts 6ハンドラにP42準拠3段バリデーション（typeof+trim）とthrow形式エラーを適用。全11ハンドラのバリデーション形式統一完了 |
+| TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `skill:execute` 認証 preflight ガード | 2026-03-04 | Main 失敗契約へ `errorCode` を追加、Preload `safeInvokeUnwrap` で `Error.code` 転写、Renderer execute 前 `auth-key:exists` 判定で実行停止 |
 
 ---
 
@@ -91,6 +92,7 @@ API認証・認可、Electron IPC、スキル実行のセキュリティ設計�
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| 2.3.0      | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001完了反映: `skill:execute` の `errorCode` 伝搬契約と Renderer preflight (`auth-key:exists`) を完了タスクへ追加 |
 | 2.2.0      | 2026-02-10 | UT-FIX-5-4完了: AgentSDKAPI.abort()型定義修正。`void` → `Promise<void>` に修正 |
 | 2.1.0      | 2026-02-10 | UT-FIX-5-3完了: Agent Abort IPC セキュリティ修正                              |
 | 2.0.0      | 2026-01-26 | 4ファイルに分割（730行→インデックス+詳細ファイル）    |

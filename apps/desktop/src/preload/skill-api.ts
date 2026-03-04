@@ -365,6 +365,7 @@ interface IpcResult<T> {
   success: boolean;
   data?: T;
   error?: string;
+  errorCode?: string;
 }
 
 /**
@@ -395,7 +396,11 @@ async function safeInvokeUnwrap<T>(
 ): Promise<T> {
   const result = await safeInvoke<IpcResult<T>>(channel, ...args);
   if (!result.success) {
-    throw new Error(result.error || `IPC call failed: ${channel}`);
+    const error = new Error(result.error || `IPC call failed: ${channel}`);
+    if (typeof result.errorCode === "string") {
+      (error as Error & { code?: string }).code = result.errorCode;
+    }
+    throw error;
   }
   return result.data as T;
 }

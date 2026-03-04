@@ -1,10 +1,13 @@
-# Phase 10 修正指示
+# Phase 10 修正指示（再監査版）
 
-## 追加修正
+更新日: 2026-03-04
 
-- 追加の必須修正はなし。
+## 必須修正
 
-## 継続タスク
+1. `/.claude/skills/aiworkflow-requirements/references/task-workflow.md` の
+   `docs/30-workflows/completed-tasks/03-...` 参照を現行 `docs/30-workflows/03-...` へ更新する。
 
-- Phase 11で最終動作確認を記録。
-- Phase 12で仕様同期と未タスク監査を実施。
+## 推奨修正
+
+2. Phase成果物を実測値（129 tests / coverage 96.9 など）に同期する。
+3. Phase 11 スクリーンショットを再撮影し、検証コマンドを再実行する。

@@ -152,6 +152,15 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `AuthKeyValidateResponse`| `valid: boolean, error?`    | 検証結果                 |
 | `AuthKeyDeleteResponse`  | `success: boolean, error?`  | 削除結果                 |
 
+**`auth-key:exists` 判定契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001）**:
+
+| 項目 | 判定仕様 |
+| --- | --- |
+| 1次判定 | `AuthKeyService.hasKey()`（safeStorage 保存キー） |
+| 2次判定 | `process.env.ANTHROPIC_API_KEY` が非空文字列か |
+| 戻り値 | いずれかが true の場合 `{ exists: true }` |
+| 目的 | Renderer preflight と Main 実行時判定の乖離を防止 |
+
 **セキュリティ設計**:
 
 | 項目           | 対策                                              |
@@ -253,10 +262,24 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 ---
 
+## 完了タスク
+
+### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 |
+| 反映対象 | `auth-key:exists` 判定契約 |
+| 主要変更 | store キー有無に加え `ANTHROPIC_API_KEY` env fallback を仕様化 |
+| 関連ドキュメント | `docs/30-workflows/TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001/outputs/phase-12/spec-update-summary.md` |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.3.0     | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `auth-key:exists` 判定契約に env fallback（`ANTHROPIC_API_KEY`）を追加。Renderer preflight と Main 実行時判定の整合方針を明文化 |
 | v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |
 | v1.0.0     | -          | 初版作成                                           |

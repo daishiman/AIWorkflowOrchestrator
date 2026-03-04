@@ -5,6 +5,80 @@
 
 ---
 
+## 2026-03-04 - Phase 12テンプレート最適化の仕様同期（preview preflight分岐）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`（Phase 12再確認追補）
+- 目的: 今回実装したテンプレート最適化内容と苦戦箇所を再利用可能な形で仕様へ固定する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（完了台帳）: `references/task-workflow.md` へ実装内容・苦戦箇所・再利用ルールを追記
+- SubAgent-B（教訓）: `references/lessons-learned.md` へテンプレート同期版の苦戦箇所と5ステップ手順を追補
+- SubAgent-C（スキル履歴）: `SKILL.md` の変更履歴へ版数更新（v9.01.3）を反映
+
+### 実施内容
+- `task-workflow.md` に「Phase 12テンプレート最適化の実装反映」節を追加
+- `lessons-learned.md` に「今回実装した内容」「苦戦箇所」「テンプレート同期版5ステップ」を追加
+- `SKILL.md` 変更履歴へ `9.01.3` を追記し、仕様更新の目的と効果を明文化
+
+### 結果
+- ステータス: success
+- 補足: 仕様更新内容は `skill-creator` テンプレート本体更新（preflight + 失敗時未タスク化）と整合
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 再監査追補（preview preflight課題の分離）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`
+- 目的: 画面再撮影フローの運用ギャップ（preview preflight不足）を仕様・未タスク・教訓へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳同期）: `references/task-workflow.md` に追加苦戦箇所と残課題行を反映
+- SubAgent-B（教訓同期）: `references/lessons-learned.md` に再発条件付き苦戦箇所と5ステップ手順を追補
+- SubAgent-C（成果物同期）: `phase-12-documentation.md` / `outputs/phase-12/*` に未タスク検出結果と完了状態を反映
+
+### 実施内容
+- `task-workflow.md` の再監査証跡を最新値へ更新（`verify-unassigned-links`: 90/90、`audit --diff-from HEAD`: baseline=92）
+- 追加苦戦箇所「UI再撮影前 preflight 不足（`ERR_CONNECTION_REFUSED` / module resolve fail）」を `task-workflow.md` / `lessons-learned.md` へ反映
+- 未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を `docs/30-workflows/unassigned-task/` 正本へ登録し、残課題テーブルへ同期
+- `phase-12-documentation.md` を `completed` に同期し、`unassigned-task-detection.md` へ「新規1件登録」を追記
+
+### 結果
+- ステータス: success
+- 補足: 画面証跡（TC-01〜TC-04）は既存再撮影分を Apple UI/UX 観点で再確認し、`validate-phase11-screenshot-coverage` PASS（4/4）を維持
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 再監査（漏れ補完）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`
+- 目的: 仕様ドリフト（旧workflowパス参照）と成果物鮮度不足を解消し、再検証証跡を固定
+
+### 仕様書別SubAgent分担
+- SubAgent-A（コード/テスト整合）: SkillCenterView 9テストファイル再実行、Coverage再計測
+- SubAgent-B（タスク仕様整合）: `outputs/phase-1..12` を実測値へ同期
+- SubAgent-C（システム仕様整合）: `references/task-workflow.md` の `completed-tasks/03-...` 参照を現行パスへ更新
+
+### 実施内容
+- `task-workflow.md` の workflow パスを `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/` に統一
+- SkillCenterView テストを再実行（9 files / 129 tests PASS）
+- Coverage を再計測（Line 96.9 / Branch 91.85 / Function 100）
+- Phase 11 スクリーンショットを4枚再撮影（2026-03-04 13:21 JST）
+- `complete-phase.js` を Phase 1〜12 に順次適用し、`artifacts.json` を `completed` 同期 + `outputs/artifacts.json` を生成
+- `generate-index.js`（`aiworkflow-requirements` / `task-specification-creator`）を再実行して索引を再同期
+- `validate-phase11-screenshot-coverage` / `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` 再実行用の証跡を更新
+
+### 結果
+- ステータス: success
+- 補足: current差分に関する未タスク違反は 0 を維持
+
+---
+
 ## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の仕様同期（再監査）
 
 ### コンテキスト

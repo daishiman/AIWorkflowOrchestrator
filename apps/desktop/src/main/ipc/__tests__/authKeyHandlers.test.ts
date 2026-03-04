@@ -333,6 +333,31 @@ describe("authKeyHandlers", () => {
   });
 
   describe("AUTH_KEY_EXISTS (auth-key:exists)", () => {
+    it("storeにキーがなくても環境変数があればexists=trueを返す", async () => {
+      // Arrange
+      mockAuthKeyService.hasKey.mockResolvedValue(false);
+      const originalEnvKey = process.env.ANTHROPIC_API_KEY;
+      process.env.ANTHROPIC_API_KEY = "sk-ant-api03-env-fallback-key";
+
+      try {
+        registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
+        const handler = getRegisteredHandler("auth-key:exists");
+        const event = createMockEvent();
+
+        // Act
+        const result = await handler(event);
+
+        // Assert
+        expect(result).toEqual({ exists: true });
+      } finally {
+        if (originalEnvKey === undefined) {
+          delete process.env.ANTHROPIC_API_KEY;
+        } else {
+          process.env.ANTHROPIC_API_KEY = originalEnvKey;
+        }
+      }
+    });
+
     it("キー設定状態を確認できる - 設定あり", async () => {
       // Arrange
       mockAuthKeyService.hasKey.mockResolvedValue(true);

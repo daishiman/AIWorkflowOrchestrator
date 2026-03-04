@@ -38,26 +38,29 @@
 
 ## 参照資料
 
-| 参照資料               | パス                                         | 説明               |
-| ---------------------- | -------------------------------------------- | ------------------ |
-| 要件定義書             | `outputs/phase-1/requirements-definition.md` | Phase 1 成果物     |
-| 受け入れ基準           | `outputs/phase-1/acceptance-criteria.md`     | Phase 1 成果物     |
-| スコープ定義           | `outputs/phase-1/scope-definition.md`        | Phase 1 成果物     |
-| アーキテクチャ設計     | `outputs/phase-2/architecture-design.md`     | Phase 2 成果物     |
-| API仕様                | `outputs/phase-2/api-specification.md`       | Phase 2 成果物     |
-| 状態設計               | `outputs/phase-2/state-design.md`            | Phase 2 成果物     |
-| 実装サマリー           | `outputs/phase-5/implementation-summary.md`  | Phase 5 成果物     |
-| 変更ファイル一覧       | `outputs/phase-5/changed-files.md`           | Phase 5 成果物     |
-| リファクタリングログ   | `outputs/phase-8/refactoring-log.md`         | Phase 8 成果物     |
-| 互換性チェック         | `outputs/phase-8/compatibility-check.md`     | Phase 8 成果物     |
-| 品質レポート           | `outputs/phase-9/quality-report.md`          | Phase 9 成果物     |
-| リスク登録簿           | `outputs/phase-9/risk-register.md`           | Phase 9 成果物     |
-| 最終レビュー結果       | `outputs/phase-10/final-review-result.md`    | Phase 10 成果物    |
-| 修正指示               | `outputs/phase-10/fix-instructions.md`       | Phase 10 成果物    |
-| 手動テスト結果         | `outputs/phase-11/manual-test-result.md`     | Phase 11 成果物    |
-| スクリーンショット索引 | `outputs/phase-11/screenshot-index.md`       | Phase 11 成果物    |
-| 依存Phase 6 成果物     | `outputs/phase-6/`                           | Phase 6 依存成果物 |
-| 依存Phase 7 成果物     | `outputs/phase-7/`                           | Phase 7 依存成果物 |
+| 参照資料               | パス                                                    | 説明               |
+| ---------------------- | ------------------------------------------------------- | ------------------ |
+| 要件定義書             | `outputs/phase-1/requirements-definition.md`            | Phase 1 成果物     |
+| 受け入れ基準           | `outputs/phase-1/acceptance-criteria.md`                | Phase 1 成果物     |
+| スコープ定義           | `outputs/phase-1/scope-definition.md`                   | Phase 1 成果物     |
+| 差分監査               | `outputs/phase-1/branch-diff-coverage.md`               | Phase 1 成果物     |
+| 抽出監査               | `outputs/phase-1/aiworkflow-requirements-extraction.md` | Phase 1 成果物     |
+| 多角監査               | `outputs/phase-1/multi-thinking-consistency-audit.md`   | Phase 1 成果物     |
+| アーキテクチャ設計     | `outputs/phase-2/architecture-design.md`                | Phase 2 成果物     |
+| API仕様                | `outputs/phase-2/api-specification.md`                  | Phase 2 成果物     |
+| 状態設計               | `outputs/phase-2/state-design.md`                       | Phase 2 成果物     |
+| 実装サマリー           | `outputs/phase-5/implementation-summary.md`             | Phase 5 成果物     |
+| 変更ファイル一覧       | `outputs/phase-5/changed-files.md`                      | Phase 5 成果物     |
+| リファクタリングログ   | `outputs/phase-8/refactoring-log.md`                    | Phase 8 成果物     |
+| 互換性チェック         | `outputs/phase-8/compatibility-check.md`                | Phase 8 成果物     |
+| 品質レポート           | `outputs/phase-9/quality-report.md`                     | Phase 9 成果物     |
+| リスク登録簿           | `outputs/phase-9/risk-register.md`                      | Phase 9 成果物     |
+| 最終レビュー結果       | `outputs/phase-10/final-review-result.md`               | Phase 10 成果物    |
+| 修正指示               | `outputs/phase-10/fix-instructions.md`                  | Phase 10 成果物    |
+| 手動テスト結果         | `outputs/phase-11/manual-test-result.md`                | Phase 11 成果物    |
+| スクリーンショット索引 | `outputs/phase-11/screenshot-index.md`                  | Phase 11 成果物    |
+| 依存Phase 6 成果物     | `outputs/phase-6/`                                      | Phase 6 依存成果物 |
+| 依存Phase 7 成果物     | `outputs/phase-7/`                                      | Phase 7 依存成果物 |
 
 ## 実行手順
 
@@ -80,6 +83,7 @@
 
 - `task-workflow.md` と関連仕様の「関連タスク」「未タスク候補」を更新する。
 - `grep -rl "TASK_ID_OR_NAME" .claude/skills/aiworkflow-requirements/references/` で見落としを防止する。
+- `completed-tasks/03-...` 旧パス参照が残っていないかを確認し、現行パス `docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/` に統一する。
 
 ### Step 1-D: インデックス再生成（必須）
 
@@ -129,14 +133,14 @@
 
 ## 完了条件
 
-- [x] Task 1: `outputs/phase-12/implementation-guide.md` に Part 1（中学生向け）/ Part 2（技術者向け）を作成した
-- [x] Step 1-A: 完了タスク記録、関連ドキュメント導線、LOGS.md 2ファイル更新を実施した
-- [x] Step 1-B: 実装状況テーブルを `completed` または `spec_created` に更新した
-- [x] Step 1-C: 関連タスク/未タスク候補テーブルを更新した
-- [x] Step 1-D: index 再生成（topic-map/keywords同期）を実施した
-- [x] Step 1-E: 未タスク検出結果を反映し、`verify-unassigned-links` で整合を確認した
-- [x] Step 2: 仕様更新の実施有無と根拠を `documentation-changelog.md` に記録した
-- [x] 必須5成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）を揃えた
+- [x] Task 1: `outputs/phase-12/implementation-guide.md` に Part 1（中学生向け）/ Part 2（技術者向け）を作成する
+- [x] Step 1-A: 完了タスク記録、関連ドキュメント導線、LOGS.md 2ファイル更新を実施する
+- [x] Step 1-B: 実装状況テーブルを `completed` または `spec_created` に更新する
+- [x] Step 1-C: 関連タスク/未タスク候補テーブルを更新する
+- [x] Step 1-D: index 再生成（topic-map/keywords同期）を実施する
+- [x] Step 1-E: 未タスク検出結果を反映し、`verify-unassigned-links` で整合を確認する
+- [x] Step 2: 仕様更新の実施有無と根拠を `documentation-changelog.md` に記録する
+- [x] 必須5成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）を揃える
 - [x] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
@@ -146,16 +150,16 @@
 - [x] 引き継ぎ事項を明記
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                               |
-| ------------ | ---------------------------------- |
-| 実行タスク   | 完了                               |
-| 発見事項     | 主要課題は仕様化済み・追加阻害なし |
-| 引き継ぎ事項 | 次Phaseへ成果物を引き継ぎ済み      |
+| 項目         | 記録                                                                                                                                                                    |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 実行タスク   | Task 1〜5、Step 1-A〜1-E、Step 2 を実施し、必須5成果物を `outputs/phase-12/` に出力した                                                                                 |
+| 発見事項     | Phase 11 再撮影で `preview` 事前確認不足を検出（`ERR_CONNECTION_REFUSED` / module resolve fail）。未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を新規登録した |
+| 引き継ぎ事項 | `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を実装し、再撮影前 preflight（build成功 + 疎通確認）を標準化する                                                          |
 
 ## 次のPhase
 

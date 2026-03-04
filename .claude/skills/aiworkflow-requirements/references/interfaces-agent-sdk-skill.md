@@ -114,10 +114,22 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | ステータス | **完了** |
 | テスト数   | 65（全PASS） |
 | カバレッジ | Line 91.14% / Branch 93.93% / Function 100% |
-| 主要変更   | スキルファイル操作IPCハンドラー6チャンネル追加（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup） |
+| 主要変更   | スキルファイル操作IPCハンドラー基盤6チャンネル追加（skill:readFile, skill:writeFile, skill:createFile, skill:deleteFile, skill:listBackups, skill:restoreBackup） |
 | 変更対象   | `apps/desktop/src/main/ipc/skillFileHandlers.ts`, `apps/desktop/src/preload/skill-api.ts`, `packages/shared/src/ipc/channels.ts` |
 | 実装ガイド | `docs/30-workflows/TASK-9A-B-ipc-file-handlers/outputs/phase-12/implementation-guide.md` |
 | 備考       | validateIpcSender + 引数バリデーション + isKnownSkillFileErrorエラーサニタイズによる多層防御。SkillFileManagerのファイル操作をIPC経由でRendererから呼び出し可能にした |
+
+#### UT-UI-05A-GETFILETREE-001（2026-03-03完了）
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| タスクID   | UT-UI-05A-GETFILETREE-001 |
+| ステータス | **完了** |
+| テスト数   | 155（関連テスト一式） |
+| 主要変更   | `skill:getFileTree` 追加（Main/Preload/Renderer連携）、`SkillFileTreeNode[]` 契約へ統一 |
+| 変更対象   | `skillFileHandlers.ts`, `SkillFileManager.ts`, `skill-api.ts`, `preload/types.ts`, `useFileTree.ts` |
+| 実装ガイド | `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-12/implementation-guide.md` |
+| 備考       | `safeInvokeUnwrap` で `IpcResult<SkillFileTreeNode[]>` を展開し、Renderer は配列直接受け取りへ移行 |
 
 ##### UT-FIX-IPC-RESPONSE-UNWRAP-001 実装上の苦戦箇所・教訓
 
@@ -205,7 +217,7 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 | 3 | 存在する場合 `ipcRenderer.invoke()` 実行 | 存在する場合 `ipcRenderer.on()` でリスナー登録 |
 | 4 | - | クリーンアップ関数（`removeListener`）を返却 |
 
-#### 統一API 14メソッド一覧
+#### 統一API 13メソッド一覧
 
 | カテゴリ | メソッド | IPC方向 | 説明 |
 |----------|----------|---------|------|
@@ -218,7 +230,6 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 | **Permission** | `onPermissionRequest` | M→R | 権限リクエスト購読（Main起点） |
 | | `sendPermissionResponse` | R→M | 権限レスポンス送信 |
 | **Skill管理** | `list` | R→M | 利用可能スキル一覧取得 |
-| | `create` | R→M | SkillCreateWizard からスキル作成 |
 | | `getImported` | R→M | インポート済みスキル取得 |
 | | `rescan` | R→M | スキルディレクトリ再スキャン |
 | | `import` | R→M | スキルインポート |
@@ -417,12 +428,11 @@ Zustand Sliceパターンで実装された状態管理。
 | ------------------------- | --------------- | --------------------------- | ------------------------------------- |
 | `skill:getImported`       | Renderer → Main | インポート済みスキル取得    | `{ success: true, data: ImportedSkill[] } \| { success: false, error: string }` |
 | `skill:list`              | Renderer → Main | 利用可能スキル取得          | `{ success: true, data: SkillMetadata[] } \| { success: false, error: string }` |
-| `skill:create`            | Renderer → Main | スキル新規作成（TASK-10A-C） | `{ path: string }` |
-| `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（新規追加/既存追加済みの両ケースで成功時返却） |
+| `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
 | `skill:fork`              | Renderer → Main | スキルフォーク（TASK-9E）   | `{ success: true, data: SkillForkResult } \| { success: false, error: string }` |
-| `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string }` |
+| `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string, errorCode?: string }` |
 | `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
 | `skill:get-status`        | Renderer → Main | 実行ステータス取得          | `ExecutionStatus \| null`             |
 | `skill:analyze`           | Renderer → Main | スキル分析（TASK-9C）       | `OperationResult<SkillAnalysis>`      |
@@ -430,16 +440,6 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:optimize`          | Renderer → Main | プロンプト最適化（TASK-9C） | `OperationResult<OptimizationResult>` |
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
-
-#### `skill:create` リクエスト契約（TASK-10A-C）
-
-| 項目 | 契約 |
-| ---- | ---- |
-| 引数形式 | `description: string, options: { generateTasks: boolean; addAgents: boolean; addReferences: boolean }` |
-| バリデーション | `description` は P42準拠3段検証（`typeof` + 空文字 + `trim()`）。`options` は object かつ3フラグが boolean |
-| 戻り値 | `{ path: string }` |
-| Main処理 | `SkillService.createSkillFromWizard(description.trim(), options)` に委譲 |
-| エラー | `VALIDATION_ERROR` / サニタイズ済みメッセージ |
 
 #### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-INTERFACE-001）
 
@@ -468,6 +468,16 @@ Zustand Sliceパターンで実装された状態管理。
 | バリデーション | `skillName` または `skillId` に対する非空文字列検証（`trim()`含む） |
 | エラー | `VALIDATION_ERROR` / `"skillName must be a non-empty string"` または `"skillId must be a non-empty string"` |
 
+#### `skill:execute` 失敗レスポンス契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 失敗形式 | `{ success: false, error: string, errorCode?: string }` |
+| 認証失敗時 | `errorCode: "AUTHENTICATION_ERROR"` を付与する |
+| 後方互換 | `error` フィールドは従来どおり必須、`errorCode` は optional |
+| Preload挙動 | `safeInvokeUnwrap` で `errorCode` を `Error.code` に転写して throw |
+| Renderer preflight | `auth-key:exists` で事前判定し、`exists=false` の場合は execute を呼ばず `AUTHENTICATION_ERROR` を返す |
+
 #### `skill:fork` リクエスト契約（TASK-9E）
 
 | 項目 | 契約 |
@@ -484,28 +494,8 @@ Zustand Sliceパターンで実装された状態管理。
 | ---- | ---- |
 | 引数形式 | `skillName: string`（オブジェクトラップなし） |
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
-| 成功判定 | `result.success === true` かつ `result.errors.length === 0`（`importedCount` は成功条件に含めない） |
-| 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName。新規/既存どちらでも同一契約） |
+| 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName） |
 | エラー | `VALIDATION_ERROR` / `IMPORT_ERROR` |
-
-#### `skill:getImported` 互換キー契約（TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001）
-
-| 項目 | 契約 |
-| ---- | ---- |
-| 目的 | 過去データ互換のため、import manager へ保存済みキーを `skill.id` / `skill.name` の両方で解決する |
-| Main処理 | `SkillService.getImportedSkills()` で cache の `id` 解決を優先し、未一致時は `skill.name` 一致をフォールバックで探索 |
-| 互換対象 | 旧保存データ（`name` 保存）と現行保存データ（`id` 保存）の混在状態 |
-| 戻り値保証 | `skill:getImported` は互換解決後の `ImportedSkill[]` を返し、空配列時は正常終了 |
-
-#### SkillCenter 欠損メタデータ防御契約（TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001）
-
-| 項目 | 契約 |
-| ---- | ---- |
-| 対象 | `description`, `agents`, `references`, `indexes`, `scripts`, `otherFiles` が `undefined/null` のケース |
-| Renderer側ガード | `String(value ?? "")` と `Array.isArray(value)` ベースの `safeLength` / `safeSubResources` で防御 |
-| フィルタリング | `useSkillCenter` / `useFeaturedSkills` で `normalizeSearchText` を使い、欠損値でも `.toLowerCase()` 例外を発生させない |
-| UI要件 | SkillCard/DetailPanel/Featured計算で欠損メタデータを許容し、画面クラッシュを起こさない |
-| 検証証跡 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` |
 
 #### `skill:import` 関連タスク（完了）
 
@@ -618,17 +608,6 @@ Permission要求に対してユーザーの応答を送信する。
 **シグネチャ**: `sendPermissionResponse: (response: SkillPermissionResponse) => Promise<{ success: boolean }>`
 
 #### Skill管理API
-
-##### create
-
-SkillCreateWizard から新規スキルを作成する。
-
-| パラメータ | 型 | 必須 | 説明 |
-| ----------- | --- | ---- | --- |
-| `description` | `string` | ✓ | スキル説明（P42準拠3段検証） |
-| `options` | `{ generateTasks: boolean; addAgents: boolean; addReferences: boolean }` | ✓ | 初期生成オプション |
-
-**戻り値**: `Promise<{ path: string }>`
 
 ##### list
 
@@ -1021,7 +1000,17 @@ ChatPanelは、既存チャット機能にスキル関連コンポーネント�
 | `deleteFile`    | `(skillName: string, relativePath: string) => Promise<void>`                  | ファイル削除     |
 | `listBackups`   | `(skillName: string) => Promise<BackupInfo[]>`                                | バックアップ一覧 |
 | `restoreBackup` | `(skillName: string, backupPath: string) => Promise<void>`                    | バックアップ復元 |
+| `getFileTree`   | `(skillName: string) => Promise<SkillFileTreeNode[]>`                         | ファイルツリー取得 |
 | `isReadonly`    | `(skillName: string) => Promise<boolean>`                                     | 読み取り専用判定 |
+
+#### SkillFileTreeNode
+
+| プロパティ | 型 | 説明 |
+| ---------- | --- | --- |
+| `name` | `string` | ノード名（ファイル名/ディレクトリ名） |
+| `path` | `string` | スキルルートからの相対パス（POSIX） |
+| `type` | `"file" \| "directory"` | ノード種別 |
+| `children` | `SkillFileTreeNode[]` | `type: "directory"` のときのみ存在 |
 
 ### エラークラス
 
@@ -1571,6 +1560,49 @@ TASK-9B-G実装で得られた知見。同様の課題に直面した際の参�
 ---
 
 ## 完了タスク
+
+### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001: 認証 preflight ガードと `errorCode` 契約同期（2026-03-04完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001                             |
+| 完了日       | 2026-03-04                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 264（対象7ファイル）                                                 |
+| ドキュメント | `docs/30-workflows/TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001/`        |
+
+#### 変更ポイント
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| Main IPC 契約 | `skill:execute` 失敗応答に `errorCode?: string` を追加し、`AUTHENTICATION_ERROR` を伝搬 |
+| Preload 契約 | `safeInvokeUnwrap` で `result.errorCode` を `Error.code` へ転写 |
+| Renderer 境界 | AgentView / Hook / Store の execute 前に preflight (`auth-key:exists`) を実施 |
+| Auth 判定整合 | `auth-key:exists` は store キー + `ANTHROPIC_API_KEY` env fallback を判定 |
+
+#### 仕様書別SubAgent分担（同期反映）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | `skill:execute` 失敗契約更新（`errorCode`） | IPC契約表/失敗契約セクション/変更履歴が同期済み |
+| SubAgent-B | `api-ipc-system.md` | `auth-key:exists` fallback 契約更新 | store+env 判定順が明文化済み |
+| SubAgent-C | `security-electron-ipc.md` | preflight セキュリティ境界を追記 | sender検証順序と事前停止方針が同期済み |
+| SubAgent-D | `task-workflow.md` / `lessons-learned.md` | 完了台帳・苦戦箇所・再利用手順を反映 | 検証証跡と教訓が同一ターン同期済み |
+
+#### 実装上の苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
+| --- | --- | --- | --- |
+| `AUTHENTICATION_ERROR` が Renderer まで届かない | Main 失敗契約が `error` 文字列のみだった | Main で `errorCode` を返し、Preload で `Error.code` へ転写 | 失敗契約変更時は Main/Preload/Renderer を同時更新する |
+| preflight 判定と実行時判定の乖離 | `auth-key:exists` が store のみを見ていた | env fallback (`ANTHROPIC_API_KEY`) を `auth-key:exists` に追加 | 判定ロジックの複数経路は `api-ipc-system` 正本に順序を明記する |
+| 誘導導線の重複実装 | AgentView/Hook/Store で同じ分岐を個別実装 | `preflightSkillExecutionAuth` 共通 utility を導入 | preflight 導線は共通 utility を唯一の入口にする |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 失敗契約を `error` と `errorCode` に分解し、optional 追加で後方互換を維持する。  
+2. Main → Preload → Renderer の順で、エラーコード伝搬テストを先に固定する。  
+3. 実行前ガードを共通 utility 化し、UI層の重複分岐を排除する。  
+4. 契約変更と同時に `api-ipc-system` / `security-electron-ipc` / `task-workflow` を同期する。  
 
 ### UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約整合（2026-02-25完了）
 
@@ -2241,75 +2273,12 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 ---
 
-## スキル作成ウィザード 型定義（TASK-10A-C）
-
-> 完了タスク: TASK-10A-C（2026-03-02）
-> 定義ファイル: `apps/desktop/src/preload/skill-api.ts`, `apps/desktop/src/main/ipc/skillHandlers.ts`
-
-### Preload API
-
-| メソッド名 | 引数 | 戻り値 | チャネル |
-| --- | --- | --- | --- |
-| `create` | `description: string, options: { generateTasks: boolean; addAgents: boolean; addReferences: boolean }` | `Promise<{ path: string }>` | `skill:create` |
-
-### 契約ポイント
-
-| 観点 | 契約 |
-| --- | --- |
-| 入力検証 | `description` は P42準拠3段検証 + `trim()` |
-| オプション検証 | `options` は object かつ `generateTasks` / `addAgents` / `addReferences` の boolean 構造 |
-| サービス委譲 | `SkillService.createSkillFromWizard()` が `SkillCreatorService.createSkill()` へ委譲 |
-| 返却 | 作成したスキルディレクトリの `{ path }` |
-
-### 完了タスク
-
-| タスクID | 完了日 | 内容 |
-| --- | --- | --- |
-| TASK-10A-C | 2026-03-02 | SkillCreateWizard の Preload API `create` と `skill:create` 契約を追加し、Main/Service へ接続 |
-
-### 実装時の苦戦箇所（TASK-10A-C）
-
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-| 統一APIメソッド数の更新漏れ | `create` 追加後にAPI一覧表を更新しない場合 | 13→14メソッドへ更新し、`Skill管理API` に `create` を追加 | API追加時はメソッド総数とカテゴリ表を同時更新する |
-| 型契約と実装シグネチャの分離 | ドキュメント側の引数名/戻り値を実装から手入力する場合 | `skill-api.ts` 実装シグネチャを正本として契約表へ同期 | 契約は実装正本から逆算して記述する |
-| Service委譲の記録漏れ | Preload/APIのみ記録しMain-Service境界を省略する場合 | `SkillService.createSkillFromWizard -> SkillCreatorService.createSkill` を契約ポイントへ追記 | Renderer/Main/Service の委譲経路を必ず明示する |
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. Preload API追加時に、統一API一覧（件数・カテゴリ）を先に更新する。  
-2. 引数/戻り値は実装シグネチャを正本として転記し、手入力差分を避ける。  
-3. Main-Service の委譲経路を契約ポイントに追加し、責務境界を明示する。  
-4. `api-ipc` / `security` / `task-workflow` と同一ターンで同期して完了判定する。  
-
----
-
-## スキルライフサイクルUI統合 完了タスク（TASK-10A-D）
-
-> 完了タスク: TASK-10A-D（2026-03-03）
-
-#### TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION（2026-03-03完了）
-
-| 項目       | 内容                                                                  |
-| ---------- | --------------------------------------------------------------------- |
-| タスクID   | TASK-10A-D                                                            |
-| ステータス | **完了**                                                              |
-| テスト数   | 132（自動）+ 17（手動チェック項目）                                   |
-| 主要変更   | SkillManagementPanelビュー統合（SkillAnalysisView/SkillCreateWizard差替 + ChatPanel導線追加）、agentSlice拡張（3状態+5アクション+8セレクタ） |
-| 実装ガイド | `docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/outputs/phase-12/implementation-guide.md` |
-| 型契約     | `Suggestion`型（`@repo/shared/types/skill-improver`）、`SkillAnalysis`型、`CreateOptions`型 |
-| 備考       | P42準拠3段バリデーション適用、個別セレクタパターン（P31対策）適用 |
-
----
-
 ## 変更履歴
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-03-04 | 1.45.1     | TASK-FIX-SKILL-IMPORT 三連続是正（IMPORTED-STATE-RECONCILIATION / IMPORT-IDEMPOTENCY-GUARD / SKILL-CENTER-METADATA-DEFENSIVE-GUARD）を反映。`skill:import` 成功判定を `errors.length===0` 基準へ明文化し、`skill:getImported` の id/name 互換キー契約、SkillCenter 欠損メタデータ防御契約（description/配列 nullish 対応）を追加 |
-| 2026-03-03 | 1.45.0     | TASK-10A-D反映: スキルライフサイクルUI統合の完了タスク記録を追加。agentSlice拡張（3状態+5アクション+8セレクタ）と型契約（Suggestion/SkillAnalysis/CreateOptions）を記録 |
-| 2026-03-02 | 1.44.1     | TASK-10A-C追補: `create` 追加時の実装苦戦箇所（メソッド総数更新漏れ、型契約転記差分、Service委譲記録漏れ）と同種課題向け4ステップ手順を追加 |
-| 2026-03-02 | 1.44.0     | TASK-10A-C反映: 統一APIを13→14メソッドへ更新し、Skill管理APIに `create` を追加。IPCチャンネル表と `skill:create` リクエスト契約、TASK-10A-C 完了タスク記録を同期 |
+| 2026-03-04 | 1.43.3     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬と Renderer preflight（`auth-key:exists`）の境界を追加。完了タスク記録と苦戦箇所・再利用手順を追記 |
+| 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
 | 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |
 | 2026-03-02 | 1.43.0     | TASK-UI-05B仕様整合: TASK-9D（スキルチェーン型定義10型・IPCチャネル5ch）とTASK-9G（スキルスケジュール型定義4型・IPCチャネル5ch・Preload API 5メソッド）のセクションを追加。実装コードとの整合を検証済み |
 | 2026-02-28 | 1.42.1     | TASK-9E追補: 型/API契約観点の苦戦箇所3件（件数ドリフト/契約境界混同/path境界追従）と同種課題向け4ステップ手順を追加 |

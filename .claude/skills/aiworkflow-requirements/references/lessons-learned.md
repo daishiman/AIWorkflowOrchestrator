@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-04 | 1.29.6 | Phase 12テンプレート最適化の教訓を追加。`skill-creator` のテンプレート本体に preview preflight（build + 疎通）と失敗時未タスク化分岐を同期し、テンプレートと運用パターンのドリフトを解消する5ステップを追記 |
+| 2026-03-04 | 1.29.5 | TASK-FIX-SKILL-IMPORT 3連続是正の再監査追補を追加。UI再撮影で `preview` preflight が欠落した苦戦箇所（`ERR_CONNECTION_REFUSED` / module resolve fail）を明記し、未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を関連導線へ追加 |
 | 2026-03-04 | 1.29.4 | TASK-FIX-SKILL-IMPORT 3連続是正の完了移管を反映。関連未タスク3件の参照を `completed-tasks/unassigned-task/` へ更新し、完了日（2026-03-04）を明記 |
 | 2026-03-04 | 1.29.3 | TASK-FIX-SKILL-IMPORT 3連続是正の未タスク追補を追加。`UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` / `UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001` / `UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001` の関連導線を追加し、3workflow再監査の証跡集約・`scope.currentFiles` 判定固定を再利用可能化 |
 | 2026-03-04 | 1.29.2 | TASK-FIX-SKILL-IMPORT 3連続是正のPhase 12再確認追補を追加。3workflow同時監査時の証跡ドリフト防止、`audit-unassigned-tasks --target-file` の判定軸誤読防止（`scope.currentFiles` + `currentViolations` 固定）の苦戦箇所と4ステップ手順を追記 |
@@ -235,12 +237,22 @@
 | 対処 | `scope.currentFiles` が対象ファイルと一致することを先に確認し、合否は `currentViolations=0` のみで判定 |
 | 標準ルール | 未タスク個別監査は `scope.currentFiles` / `currentViolations` / `baselineViolations` を3点セットで記録する |
 
-### 同種課題向け簡潔解決手順（4ステップ）
+### 苦戦箇所: UI再撮影の前に preview preflight を固定していなかった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `capture-skill-center-phase11.mjs` 実行時に `ERR_CONNECTION_REFUSED` が発生し、`Rollup failed to resolve import "@repo/shared/types/skill"` で再撮影が停止した |
+| 再発条件 | `pnpm --filter @repo/desktop preview` の build成否と `127.0.0.1:4173` 疎通確認を省略して撮影を開始する場合 |
+| 対処 | 既存の TC-01〜TC-04 証跡（2026-03-04 13:21 JST）で視覚検証を継続し、運用ギャップを `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` として未タスク化した |
+| 標準ルール | UI再撮影は「preview preflight（build + 疎通）→再撮影→TCカバレッジ→台帳同期」の4段を必須化する |
+
+### 同種課題向け簡潔解決手順（5ステップ）
 
 1. `verify-all-specs --workflow` と `validate-phase-output` を対象workflow分まとめて実行する。  
 2. `validate-phase11-screenshot-coverage`（UI workflow）と `verify-unassigned-links` を同ターンで実行する。  
 3. `audit-unassigned-tasks --diff-from HEAD` で全体合否を `currentViolations=0` で確定する。  
-4. `audit-unassigned-tasks --target-file` は `scope.currentFiles` 一致を確認してから記録し、`task-workflow.md` と同時反映する。  
+4. UI再撮影前に `preview` preflight（build成功 + `127.0.0.1:4173` 疎通）を実行し、失敗時は未タスク化する。  
+5. `audit-unassigned-tasks --target-file` は `scope.currentFiles` 一致を確認してから記録し、`task-workflow.md` と同時反映する。  
 
 ### 関連未タスク（2026-03-04 追補）
 
@@ -249,6 +261,30 @@
 | UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 | 3workflow再監査のSubAgent成果物突合を固定し、仕様書別実行ログの欠落を防ぐ（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | `aiworkflow-requirements` からの必要仕様抽出と台帳同期を同一ターンで固定する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
 | UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001 | 3workflow再監査で `scope.currentFiles` / `currentViolations` / `baselineViolations` を分離記録する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
+| UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001 | SkillCenter 再撮影前の preview preflight と失敗時未タスク化を標準化する | `docs/30-workflows/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
+
+### 今回実装した内容（Phase 12テンプレート最適化）
+
+- `skill-creator` の `phase12-system-spec-retrospective-template.md` に preview preflight と失敗時未タスク化を追加。
+- `phase12-spec-sync-subagent-template.md` に preflight と screenshot coverage 検証の必須化を追加。
+- `resource-map.md` と `patterns.md` の説明をテンプレート更新に合わせて同期。
+
+### 苦戦箇所: パターンとテンプレート本体が同期しないと再利用時に漏れが出る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 成功/失敗パターンには preflight 失敗時の対処があるのに、テンプレート本体のチェック項目に同条件がないため、仕様更新時に転記漏れが発生しやすかった |
+| 再発条件 | `patterns.md` のみ更新して `assets/phase12-*.md` のコマンド・完了チェックを更新しない場合 |
+| 対処 | template本体（2ファイル） + resource-map + patterns を同一ターンで更新し、UI再撮影の前提条件を一貫化した |
+| 標準ルール | 「パターン更新時はテンプレート本体と資源マップも同時更新」を必須にする |
+
+### 同種課題向け簡潔解決手順（5ステップ・テンプレート同期版）
+
+1. まず `patterns.md` の成功/失敗パターンから再発条件を抽出する。  
+2. `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の「手順・コマンド・完了チェック」を同時更新する。  
+3. `resource-map.md` のテンプレート説明を同一ターンで同期し、参照面のドリフトを防ぐ。  
+4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時転記する。  
+5. `quick_validate` で `aiworkflow-requirements` と `skill-creator` の両方を検証し、失敗時は未タスクへ分離する。  
 
 ---
 

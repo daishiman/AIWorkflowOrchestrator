@@ -1,14 +1,20 @@
-# Phase 5 実装サマリー
+# Phase 5 実装サマリー（再監査版）
 
-## 実装方針
+更新日: 2026-03-04
 
-- hooks/componentsに safeLength / normalizeSearchText / nullish default を導入し防御。
+## 実装要点
 
-## 変更結果
+- Hook層で `normalizeSearchText` と `safeLength` を適用。
+- Component層で `String(value ?? "")` / `Array.isArray` ベース防御を適用。
+- 欠損入力混在時にも一覧・検索・詳細・featured を継続表示。
 
-- 問題起点: description.toLowerCase や length 前提処理で undefined データ時に実行時例外が発生する。
-- 解決要点: description/配列プロパティ欠落データでもSkillCenter UIがクラッシュしないようにする。
+## 今回の再監査で追加した実装（補助コード）
 
-## 実装完了判定
+- `apps/desktop/scripts/capture-skill-center-phase11.mjs`
+  - Phase 11 用スクリーンショット再取得の自動化。
+  - mock `electronAPI.skill` を使い、TC-01〜04 を再現可能化。
 
-- 対象差分は局所化され、既存仕様を維持したまま問題を解消。
+## 判定
+
+- 機能実装: 維持（既存防御コード有効）
+- 補助実装: 追加（検証再現性を向上）

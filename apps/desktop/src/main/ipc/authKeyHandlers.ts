@@ -215,7 +215,11 @@ export function registerAuthKeyHandlers(
       IPC_CHANNELS.AUTH_KEY_EXISTS,
       async (_event: IpcMainInvokeEvent): Promise<AuthKeyExistsResponse> => {
         try {
-          const exists = await authKeyService.hasKey();
+          const hasStoredKey = await authKeyService.hasKey();
+          const hasEnvKey =
+            typeof process.env.ANTHROPIC_API_KEY === "string" &&
+            process.env.ANTHROPIC_API_KEY.trim().length > 0;
+          const exists = hasStoredKey || hasEnvKey;
           return { exists };
         } catch (error) {
           console.error(

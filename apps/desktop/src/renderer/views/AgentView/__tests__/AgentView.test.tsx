@@ -689,6 +689,50 @@ describe("AgentView", () => {
       );
     });
 
+    it("should show settings guidance and skip execute when auth preflight fails", async () => {
+      const mockSkill = {
+        id: "skill-auth-preflight",
+        name: "Auth Preflight Skill",
+        description: "Test auth preflight",
+        path: "/path/auth-preflight",
+        triggers: ["test"],
+        anchors: [],
+      };
+
+      const store = await import("../../../store");
+      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
+      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
+
+      const executeMock = vi.fn();
+      const existsMock = vi.fn().mockResolvedValue({ exists: false });
+      (
+        window as unknown as {
+          electronAPI: {
+            skill: { execute: typeof executeMock };
+            authKey: { exists: typeof existsMock };
+          };
+        }
+      ).electronAPI = {
+        skill: { execute: executeMock },
+        authKey: { exists: existsMock },
+      };
+
+      render(<AgentView />);
+
+      const detailPanel = screen.getByRole("complementary");
+      const executeButton = within(detailPanel).getByText("実行");
+      await act(async () => {
+        fireEvent.click(executeButton);
+      });
+
+      expect(existsMock).toHaveBeenCalledTimes(1);
+      expect(executeMock).not.toHaveBeenCalled();
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "error",
+        expect.stringContaining("設定画面でAPIキーを登録"),
+      );
+    });
+
     it("should show generic error toast when execute fails with non-Error", async () => {
       const mockSkill = {
         id: "skill-exec-fail-generic",
@@ -707,9 +751,15 @@ describe("AgentView", () => {
       const execMock = vi.fn().mockRejectedValue("string error");
       (
         window as unknown as {
-          electronAPI: { skill: { execute: typeof execMock } };
+          electronAPI: {
+            skill: { execute: typeof execMock };
+            authKey: { exists: () => Promise<{ exists: boolean }> };
+          };
         }
-      ).electronAPI.skill.execute = execMock;
+      ).electronAPI = {
+        skill: { execute: execMock },
+        authKey: { exists: vi.fn().mockResolvedValue({ exists: true }) },
+      };
 
       render(<AgentView />);
 

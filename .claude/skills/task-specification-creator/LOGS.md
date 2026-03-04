@@ -26,6 +26,37 @@
 
 ---
 
+## 2026-03-04 - SkillCenter再監査追補（Phase 11再撮影 preflight ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement（Phase 11/12 ガイド更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に UI再撮影前の `preview preflight`（build + 疎通確認）を追加
+  - 失敗時は `unassigned-task-detection.md` へ記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する分岐を追加
+  - Phase 12 完了チェックリストへ preflight 記録の必須項目を追加
+  - `SKILL.md` 変更履歴を `v10.08.2` として同期
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 再監査（漏れ補完）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-1..12` を実測値へ更新
+  - SkillCenterView テスト再実行（9 files / 129 tests PASS）と Coverage再計測（Line 96.9 / Branch 91.85 / Func 100）
+  - Phase 11 スクリーンショット4枚を再撮影し、`validate-phase11-screenshot-coverage` PASS を確認
+  - `aiworkflow-requirements/references/task-workflow.md` の旧 `completed-tasks/03-...` 参照を現行パスへ是正
+  - `complete-phase.js` を Phase 1〜12 に順次適用し、`artifacts.json` と `outputs/artifacts.json` を同期
+  - `generate-index.js`（2スキル）を再実行し、workflow/index/topic-map を再生成
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行
+
+---
+
 ## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の再監査（Phase 12 Step 1-A/Task 5）
 
 - **Agent**: task-specification-creator
