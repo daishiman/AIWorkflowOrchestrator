@@ -13,7 +13,7 @@ status: 未実施
 source_phase: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 Phase 11/12 再確認
 created_date: 2026-03-04
 dependencies: []
-spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md
+spec_path: docs/30-workflows/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md
 ```
 
 | 項目       | 内容   |
