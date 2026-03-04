@@ -2053,6 +2053,42 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-01
 - **関連タスク**: TASK-UI-05-SKILL-CENTER-VIEW
 
+### [Phase12] 検証スクリプト実体探索先行パターン（TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001）
+
+- **状況**: Phase 12再確認で `verify/validate/links/audit` を連続実行する際、スクリプト所在の記憶依存で誤パス実行が起きやすい
+- **アプローチ**:
+  - 検証開始前に `rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'` を必須実行
+  - 実体解決後に `verify -> validate -> links -> audit` を固定順序で実行
+  - 実体探索結果と検証結果を同一ターンで `spec-update-summary.md` へ記録
+- **結果**: スクリプト所在誤認による再確認の手戻りを抑制し、証跡ドリフトを防止
+- **適用条件**: Phase 12 の再監査・再実行タスク全般
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+
+### [Phase12] Vitest再確認の非watch固定パターン（TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001）
+
+- **状況**: Phase 12 でテスト証跡を再取得する際、`pnpm test` の watch 残留で完了判定が遅延しやすい
+- **アプローチ**:
+  - テスト再確認は `pnpm --filter @repo/desktop exec vitest run <target>` を標準コマンドに固定
+  - ルート実行ではなく対象パッケージ文脈で実行して設定解決を安定化
+  - 実行コマンドを `implementation-guide.md` / `spec-update-summary.md` に明示して再現性を固定
+- **結果**: 非watchで決定論的に終了し、Phase 12 の証跡取得と台帳同期が安定
+- **適用条件**: モノレポで UI/Renderer テストを Phase 12 で再実行するタスク
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+
+### [Phase12] 未タスク監査カウンタ再同期パターン（TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001）
+
+- **状況**: Phase 12 再確認後に未タスク件数が更新されたが、`task-workflow` や `outputs/phase-12` に旧値（links/baseline）が残りやすい
+- **アプローチ**:
+  - 仕様更新の最終ステップで `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD` を再実行
+  - `existing/missing/current/baseline` を確定値として `task-workflow.md` / `spec-update-summary.md` / `unassigned-task-detection.md` へ同一ターン転記
+  - 変更履歴（`task-workflow` / `documentation-changelog`）にも同値を追記して記録値を一本化
+- **結果**: 未タスク監査の数値ドリフトを抑止し、再監査時の判定ブレを低減
+- **適用条件**: Phase 12 で未タスクの追加・完了移管・リンク更新を行ったタスク
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+
 ---
 
 ## ガイドライン

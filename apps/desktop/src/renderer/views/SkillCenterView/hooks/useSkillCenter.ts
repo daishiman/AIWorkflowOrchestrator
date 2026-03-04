@@ -213,6 +213,16 @@ export function useSkillCenter(): UseSkillCenterReturn {
   // --- ハンドラ ---
   const handleAddSkill = useCallback(
     async (skillName: string) => {
+      if (addingSkills.has(skillName)) {
+        return;
+      }
+
+      // 既にインポート済みの場合はアニメーションを出さずに状態同期だけ実施
+      if (importedSkillNames.includes(skillName)) {
+        await importSkill(skillName);
+        return;
+      }
+
       setAddingSkills((prev) => {
         const next = new Map(prev);
         next.set(skillName, true);
@@ -232,7 +242,7 @@ export function useSkillCenter(): UseSkillCenterReturn {
         }, 1500);
       }
     },
-    [importSkill],
+    [addingSkills, importedSkillNames, importSkill],
   );
 
   const handleRemoveSkill = useCallback(

@@ -59,6 +59,23 @@
 | 依存Phase 6 成果物     | `outputs/phase-6/`                           | Phase 6 依存成果物 |
 | 依存Phase 7 成果物     | `outputs/phase-7/`                           | Phase 7 依存成果物 |
 
+## システム仕様（aiworkflow-requirements）
+
+> 実装・検証の前に以下の正本仕様を確認し、仕様差分があれば Phase 12 で必ず同期すること。
+
+| 参照資料         | パス                                                                            | 内容                                                      |
+| ---------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 参照起点         | .claude/skills/aiworkflow-requirements/indexes/resource-map.md                  | タスク種別から必要仕様を絞り込む                          |
+| API/IPC 正本     | .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md              | `skill:import` 契約と成功判定の整合を確認                 |
+| Interface 正本   | .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md | `ImportedSkill` の型契約を確認                            |
+| 状態管理正本     | .claude/skills/aiworkflow-requirements/references/arch-state-management.md      | 冪等ガードと Store 同期契約を確認                         |
+| UI仕様正本       | .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md   | Skill Center 表示契約と導線を確認                         |
+| セキュリティ正本 | .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md      | IPC 境界防御（sender 検証・入力境界保護・権限境界）を確認 |
+| Electron API防御 | .claude/skills/aiworkflow-requirements/references/security-api-electron.md      | Preload公開面の境界防御を確認                             |
+| エラー処理正本   | .claude/skills/aiworkflow-requirements/references/error-handling.md             | 冪等早期終了時のエラー状態を確認                          |
+| タスク運用正本   | .claude/skills/aiworkflow-requirements/references/task-workflow.md              | `completed` 更新運用を確認                                |
+| 抽出網羅性監査   | outputs/phase-2/aiworkflow-requirements-extraction-audit.md                     | 必須仕様と条件付き仕様の判定結果を確認                    |
+
 ## 実行手順
 
 ### Step 0: 参照固定
@@ -139,23 +156,36 @@
 - [x] 必須5成果物（implementation-guide/spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）を揃えた
 - [x] 本Phase内の全タスクを100%実行完了
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施（Phase 1〜11）
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐに `completed` に更新すること。
+
 ## タスク100%実行確認【必須】
 
 - [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                               |
-| ------------ | ---------------------------------- |
-| 実行タスク   | 完了                               |
-| 発見事項     | 主要課題は仕様化済み・追加阻害なし |
-| 引き継ぎ事項 | 次Phaseへ成果物を引き継ぎ済み      |
+| 項目         | 記録                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| 実行タスク   | 完了（Task 1〜5 実施）                                                                       |
+| 発見事項     | Phase 11 はTC表 + カバレッジマトリクスが無いと機械検証で失敗するため、テンプレート補強が必要 |
+| 引き継ぎ事項 | Phase 13 は未実施（コミット/PR禁止要件により保留）                                           |
 
 ## 次のPhase
 

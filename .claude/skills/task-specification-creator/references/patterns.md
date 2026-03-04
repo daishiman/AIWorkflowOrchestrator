@@ -2010,12 +2010,35 @@
 - **発見日**: 2026-02-21
 - **関連タスク**: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001
 
+#### Phase 12 検証スクリプト実体探索先行パターン（UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001）
+
+- **状況**: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks` の実行前にスクリプト所在を誤認しやすい
+- **解決策**:
+  1. 検証開始前に `rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'` を実行する
+  2. `verify -> validate -> links -> audit` の順序で固定実行する
+  3. 実体探索結果を `spec-update-summary.md` へ同時記録する
+- **効果**: 誤パス実行による手戻りを削減し、Phase 12 の証跡を同一ターンで確定できる
+- **発見日**: 2026-03-04
+- **関連タスク**: UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001
+
+#### Phase 12 Vitest 非watch固定パターン（UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001）
+
+- **状況**: `pnpm test` 実行で watch が残留し、Phase 12 の再確認証跡取得が停滞する
+- **解決策**:
+  1. テスト再確認は `pnpm --filter @repo/desktop exec vitest run <target>` を標準化する
+  2. ルート実行ではなく対象パッケージ文脈で実行する
+  3. 実行コマンドを `implementation-guide.md` / `spec-update-summary.md` に明示する
+- **効果**: 非watchで決定論的に終了し、再確認フロー全体の完了時刻が安定する
+- **発見日**: 2026-03-04
+- **関連タスク**: UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001
+
 ---
 
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |
 | **2026-02-28** | **TASK-9E 再監査パターン追加**: 成功パターン「Phase 12 テスト件数ドリフト再同期」を追加。正本件数固定→文脈限定抽出→4点検証→未タスク化までの手順を標準化 |
 | **2026-02-27** | **TASK-9H 再監査パターン追加**: 成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件の実体確認→ステータス同期→検証証跡固定の4ステップを標準化 |
 | **2026-02-21** | **worktree運用時のPhase 12先送り誤判断を是正**: 成功パターン「worktree環境でもStep 1-Aを先送りしない」を追加。未実施タスク誤配置検出コマンド（completed配下の未着手/未実施検知）と `verify-unassigned-links.js` 最終検証を標準化 |

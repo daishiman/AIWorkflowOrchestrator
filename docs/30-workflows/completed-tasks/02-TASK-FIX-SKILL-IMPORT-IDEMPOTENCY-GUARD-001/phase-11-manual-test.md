@@ -34,6 +34,15 @@
 - 画面証跡取得: 検証目的付きスクリーンショットを保存する
 - 差分確認: 想定外挙動の有無を記録する
 
+## テストケース
+
+| TC-ID | 観点                 | 操作                                   | 期待結果                                                              |
+| ----- | -------------------- | -------------------------------------- | --------------------------------------------------------------------- |
+| TC-01 | 初期表示の冪等状態   | Skill Center 初期表示                  | 既に追加済みスキルは `追加済み!` 表示で、再追加導線が無効化されている |
+| TC-02 | 追加中の二重操作抑止 | 未追加スキルを追加し、処理中状態を確認 | ボタンは `追加中...` となり、追加処理中の重複トリガーが発生しない     |
+| TC-03 | 追加後の状態整合     | TC-02 の完了後状態を確認               | 追加済みスキルとして一覧から除外され、残カード数が整合する            |
+| TC-04 | 詳細パネル整合       | 追加済みスキルの詳細パネルを表示       | 詳細パネルに `追加済み` バッジが表示され、削除導線が正しく表示される  |
+
 ## 参照資料
 
 | 参照資料           | パス                                      | 説明               |
@@ -46,6 +55,23 @@
 | 依存Phase 7 成果物 | `outputs/phase-7/`                        | Phase 7 依存成果物 |
 | 依存Phase 8 成果物 | `outputs/phase-8/`                        | Phase 8 依存成果物 |
 | 依存Phase 9 成果物 | `outputs/phase-9/`                        | Phase 9 依存成果物 |
+
+## システム仕様（aiworkflow-requirements）
+
+> 実装・検証の前に以下の正本仕様を確認し、仕様差分があれば Phase 12 で必ず同期すること。
+
+| 参照資料         | パス                                                                            | 内容                                                      |
+| ---------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 参照起点         | .claude/skills/aiworkflow-requirements/indexes/resource-map.md                  | タスク種別から必要仕様を絞り込む                          |
+| API/IPC 正本     | .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md              | `skill:import` 契約と成功判定の整合を確認                 |
+| Interface 正本   | .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md | `ImportedSkill` の型契約を確認                            |
+| 状態管理正本     | .claude/skills/aiworkflow-requirements/references/arch-state-management.md      | 冪等ガードと Store 同期契約を確認                         |
+| UI仕様正本       | .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md   | Skill Center 表示契約と導線を確認                         |
+| セキュリティ正本 | .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md      | IPC 境界防御（sender 検証・入力境界保護・権限境界）を確認 |
+| Electron API防御 | .claude/skills/aiworkflow-requirements/references/security-api-electron.md      | Preload公開面の境界防御を確認                             |
+| エラー処理正本   | .claude/skills/aiworkflow-requirements/references/error-handling.md             | 冪等早期終了時のエラー状態を確認                          |
+| タスク運用正本   | .claude/skills/aiworkflow-requirements/references/task-workflow.md              | `spec_created` / `completed` の更新運用を確認             |
+| 抽出網羅性監査   | outputs/phase-2/aiworkflow-requirements-extraction-audit.md                     | 必須仕様と条件付き仕様の判定結果を確認                    |
 
 ## 実行手順
 
@@ -68,6 +94,15 @@
 | API/IPC            | 引数・戻り値・エラー契約         | api-_.md / interfaces-_.md |
 | エラーハンドリング | 例外分類と利用者通知             | error-handling.md          |
 
+## 画面カバレッジマトリクス
+
+| TC    | 画面/状態                               | 証跡                                                            |
+| ----- | --------------------------------------- | --------------------------------------------------------------- |
+| TC-01 | 初期表示（追加済み + 未追加の同時表示） | `outputs/phase-11/screenshots/TC-01-initial-imported-state.png` |
+| TC-02 | 追加中状態（processing）                | `outputs/phase-11/screenshots/TC-02-new-skill-processing.png`   |
+| TC-03 | 追加完了後状態（一覧整合）              | `outputs/phase-11/screenshots/TC-03-post-import-state.png`      |
+| TC-04 | 詳細パネル表示（追加済みバッジ）        | `outputs/phase-11/screenshots/TC-04-imported-detail-panel.png`  |
+
 ## 成果物
 
 | 成果物         | パス                                     | 内容             |
@@ -82,23 +117,36 @@
 - [x] 次Phaseへの引き継ぎ事項を記録した
 - [x] 本Phase内の全タスクを100%実行完了
 
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施（Phase 1〜11）
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐに `completed` に更新すること。
+
 ## タスク100%実行確認【必須】
 
 - [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                               |
-| ------------ | ---------------------------------- |
-| 実行タスク   | 完了                               |
-| 発見事項     | 主要課題は仕様化済み・追加阻害なし |
-| 引き継ぎ事項 | 次Phaseへ成果物を引き継ぎ済み      |
+| 項目         | 記録                                                       |
+| ------------ | ---------------------------------------------------------- |
+| 実行タスク   | 完了（TC-01〜TC-04 実施、スクリーンショット4枚取得）       |
+| 発見事項     | 冪等状態で `追加済み` 表示は安定。追加中状態でもUI破綻なし |
+| 引き継ぎ事項 | Phase 12で証跡・診断JSON・仕様更新内容を正本へ同期         |
 
 ## 次のPhase
 

@@ -3130,6 +3130,10 @@
     "実装再監査": [
       "lessons-learned.md"
     ],
+    "スキルライフサイクル": [
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
     "CALLBACK": [
       "lessons-learned.md"
     ],
@@ -4311,6 +4315,9 @@
       "security-electron-ipc.md"
     ],
     "skillAnalyticsAPI": [
+      "security-electron-ipc.md"
+    ],
+    "preflight": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [

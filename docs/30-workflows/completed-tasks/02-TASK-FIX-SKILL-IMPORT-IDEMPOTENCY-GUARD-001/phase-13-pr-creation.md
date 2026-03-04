@@ -10,7 +10,7 @@
 | 前提Phase  | Phase 12                                          |
 | 後続Phase  | -                                                 |
 | 作成日     | 2026-03-04                                        |
-| ステータス | completed                                         |
+| ステータス | pending                                           |
 
 ## 目的
 
@@ -54,6 +54,23 @@ PR作成に必要な差分説明・検証結果・リスクを整理する。
 | 依存Phase 8 成果物     | `outputs/phase-8/`                              | Phase 8 依存成果物 |
 | 依存Phase 9 成果物     | `outputs/phase-9/`                              | Phase 9 依存成果物 |
 
+## システム仕様（aiworkflow-requirements）
+
+> 実装・検証の前に以下の正本仕様を確認し、仕様差分があれば Phase 12 で必ず同期すること。
+
+| 参照資料         | パス                                                                            | 内容                                                      |
+| ---------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 参照起点         | .claude/skills/aiworkflow-requirements/indexes/resource-map.md                  | タスク種別から必要仕様を絞り込む                          |
+| API/IPC 正本     | .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md              | `skill:import` 契約と成功判定の整合を確認                 |
+| Interface 正本   | .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md | `ImportedSkill` の型契約を確認                            |
+| 状態管理正本     | .claude/skills/aiworkflow-requirements/references/arch-state-management.md      | 冪等ガードと Store 同期契約を確認                         |
+| UI仕様正本       | .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md   | Skill Center 表示契約と導線を確認                         |
+| セキュリティ正本 | .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md      | IPC 境界防御（sender 検証・入力境界保護・権限境界）を確認 |
+| Electron API防御 | .claude/skills/aiworkflow-requirements/references/security-api-electron.md      | Preload公開面の境界防御を確認                             |
+| エラー処理正本   | .claude/skills/aiworkflow-requirements/references/error-handling.md             | 冪等早期終了時のエラー状態を確認                          |
+| タスク運用正本   | .claude/skills/aiworkflow-requirements/references/task-workflow.md              | `spec_created` / `completed` の更新運用を確認             |
+| 抽出網羅性監査   | outputs/phase-2/aiworkflow-requirements-extraction-audit.md                     | 必須仕様と条件付き仕様の判定結果を確認                    |
+
 ## 実行手順
 
 1. 参照資料を確認して判断根拠を固定する。
@@ -84,28 +101,41 @@ PR作成に必要な差分説明・検証結果・リスクを整理する。
 
 ## 完了条件
 
-- [x] 実行タスクの成果物が定義されている
-- [x] 参照仕様との整合根拠を記録した
-- [x] 次Phaseへの引き継ぎ事項を記録した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] 実行タスクの成果物が定義されている
+- [ ] 参照仕様との整合根拠を記録した
+- [ ] 次Phaseへの引き継ぎ事項を記録した
+- [ ] 本Phase内の全タスクを100%実行完了
+
+## サブタスク管理
+
+Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施（Phase 1〜11）
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐに `completed` に更新すること。
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] Phase内で定義した成果物を全件記録
-- [x] 引き継ぎ事項を明記
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 ```
 
 ## Phase実行記録
 
-| 項目         | 記録                                                                                 |
-| ------------ | ------------------------------------------------------------------------------------ |
-| 実行タスク   | PR本文ドラフト/証跡整理/CI前提整理を実施し、outputs/phase-13 に成果物2件を作成       |
-| 発見事項     | implementation-guide連携要件（Part 1/2）とスクリーンショット条件をPR作成フローへ反映 |
-| 引き継ぎ事項 | PR本文のテンプレ準拠・implementation-guide全文コメント投稿・CI結果確認後に手動マージ |
+| 項目         | 記録                                |
+| ------------ | ----------------------------------- |
+| 実行タスク   | 未実行（仕様書作成のみ）            |
+| 発見事項     | 想定課題を仕様へ整理済み            |
+| 引き継ぎ事項 | 次Phase仕様へ引き継ぎ項目を定義済み |
 
 ## 次のPhase
 
