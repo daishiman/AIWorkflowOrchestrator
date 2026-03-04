@@ -21,6 +21,7 @@ import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
 import { SkillCenterView } from "./views/SkillCenterView";
 import { SkillEditorView } from "./views/SkillEditorView";
+import { UIDesignFoundationPreview } from "./views/UIDesignFoundationPreview";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
@@ -230,6 +231,10 @@ function App(): JSX.Element {
             element={renderStandaloneView(
               <SkillCreateWizard onClose={() => window.history.back()} />,
             )}
+          />
+          <Route
+            path="/advanced/ui-design-foundation"
+            element={renderStandaloneView(<UIDesignFoundationPreview />)}
           />
           {/* 既存のビューベースUI（デフォルト） */}
           <Route

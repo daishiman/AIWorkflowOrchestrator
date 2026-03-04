@@ -1,0 +1,148 @@
+{
+  "taskId": "TASK-UI-00-DESIGN-FOUNDATION",
+  "taskName": "UI共通デザイン基盤",
+  "createdAt": "2026-03-04",
+  "updatedAt": "2026-03-04",
+  "overallStatus": "phase12_completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/integration-design-notes.md",
+        "outputs/phase-2/subagent-assignment.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-findings.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-4/red-test-report.md",
+        "outputs/phase-4/test-case-matrix.md",
+        "outputs/phase-4/test-specification.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-5/green-test-report.md",
+        "outputs/phase-5/implementation-mapping.md",
+        "outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-6/additional-test-cases.md",
+        "outputs/phase-6/test-execution-log.md",
+        "outputs/phase-6/test-expansion-report.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-7/coverage-gap-analysis.md",
+        "outputs/phase-7/coverage-report.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-8/refactoring-report.md",
+        "outputs/phase-8/regression-report.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-9/qa-risk-register.md",
+        "outputs/phase-9/quality-verification.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/remediation-directives.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-03-04",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "qualityMetrics": {
+    "tests": {
+      "total": 47,
+      "passed": 47,
+      "failed": 0,
+      "successRate": "100%"
+    },
+    "typecheck": {
+      "status": "pass"
+    },
+    "manualTests": {
+      "total": 5,
+      "passed": 5,
+      "successRate": "100%"
+    }
+  }
+}

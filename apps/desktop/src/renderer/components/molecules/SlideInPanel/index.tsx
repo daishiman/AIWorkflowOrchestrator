@@ -1,9 +1,6 @@
-import React, { useEffect, useId, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { X } from "lucide-react";
-
-const FOCUSABLE_SELECTOR =
-  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export interface SlideInPanelProps {
   isOpen: boolean;
@@ -13,76 +10,81 @@ export interface SlideInPanelProps {
   title?: string;
   children: React.ReactNode;
   showOverlay?: boolean;
-  className?: string;
 }
 
-export const SlideInPanel: React.FC<SlideInPanelProps> = ({
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const selectors = [
+    "button:not([disabled])",
+    "[href]",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(",");
+  return Array.from(container.querySelectorAll<HTMLElement>(selectors));
+}
+
+const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
   isOpen,
   onClose,
   side,
   width = "400px",
   title,
   children,
-  showOverlay = false,
-  className,
+  showOverlay = true,
 }) => {
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const previousFocusedElementRef = useRef<HTMLElement | null>(null);
-  const titleId = useId();
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
-      return;
+      return undefined;
     }
 
-    previousFocusedElementRef.current =
+    previousFocusRef.current =
       document.activeElement instanceof HTMLElement
         ? document.activeElement
         : null;
 
     closeButtonRef.current?.focus();
 
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (!panelRef.current) {
+        return;
+      }
+
       if (event.key === "Escape") {
         event.preventDefault();
         onClose();
         return;
       }
 
-      if (event.key !== "Tab" || !panelRef.current) {
-        return;
-      }
+      if (event.key === "Tab") {
+        const focusables = getFocusableElements(panelRef.current);
+        if (focusables.length === 0) {
+          event.preventDefault();
+          return;
+        }
 
-      const focusableElements = Array.from(
-        panelRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
-      );
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
 
-      if (focusableElements.length === 0) {
-        event.preventDefault();
-        return;
-      }
-
-      const firstElement = focusableElements[0];
-      const lastElement = focusableElements[focusableElements.length - 1];
-
-      if (event.shiftKey && document.activeElement === firstElement) {
-        event.preventDefault();
-        lastElement.focus();
-      } else if (!event.shiftKey && document.activeElement === lastElement) {
-        event.preventDefault();
-        firstElement.focus();
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
-    document.addEventListener("keydown", handleKeyDown);
-
+    document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      const previousElement = previousFocusedElementRef.current;
-      if (previousElement && document.contains(previousElement)) {
-        previousElement.focus();
-      }
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocusRef.current?.focus();
     };
   }, [isOpen, onClose]);
 
@@ -91,60 +93,52 @@ export const SlideInPanel: React.FC<SlideInPanelProps> = ({
   }
 
   return (
-    <>
+    <div className="fixed inset-0 z-50">
       {showOverlay && (
-        <div
+        <button
+          type="button"
+          aria-label="オーバーレイを閉じる"
           data-testid="slide-in-panel-overlay"
-          aria-hidden="true"
-          className="fixed inset-0 z-[49] bg-black/30"
+          className="absolute inset-0 bg-black/30"
           onClick={onClose}
         />
       )}
-
-      <div
+      <aside
         ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={title ? titleId : undefined}
-        aria-label={title ? undefined : "サイドパネル"}
+        aria-label={title ?? "サイドパネル"}
         className={clsx(
-          "fixed inset-y-0 z-50 flex h-full flex-col bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-xl",
-          side === "right"
-            ? "right-0 border-l border-[var(--border-default)]"
-            : "left-0 border-r border-[var(--border-default)]",
-          className,
+          "absolute top-0 h-full bg-[var(--bg-secondary)]",
+          "transition-transform duration-[250ms] ease-out",
+          "border-[var(--border-default)]",
+          "translate-x-0",
+          side === "right" && "right-0 border-l",
+          side === "left" && "left-0 border-r",
         )}
         style={{ width: `min(100vw, ${width})` }}
       >
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] px-4 py-3">
-          {title ? (
-            <h2 id={titleId} className="text-base font-semibold">
-              {title}
+        <div className="flex h-full flex-col">
+          <header className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
+            <h2 className="text-sm font-medium text-[var(--text-primary)]">
+              {title ?? ""}
             </h2>
-          ) : (
-            <span />
-          )}
-
-          <button
-            ref={closeButtonRef}
-            type="button"
-            onClick={onClose}
-            aria-label="閉じる"
-            className={clsx(
-              "inline-flex h-8 w-8 items-center justify-center rounded-md",
-              "text-[var(--text-secondary)] transition-colors",
-              "hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]",
-              "focus:outline-none focus-visible:outline-2 focus-visible:outline-[var(--status-primary)]",
-            )}
-          >
-            <X size={16} aria-hidden="true" />
-          </button>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              aria-label="閉じる"
+              onClick={onClose}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+            >
+              <X size={16} aria-hidden="true" />
+            </button>
+          </header>
+          <div className="min-h-0 flex-1 overflow-auto p-4">{children}</div>
         </div>
-
-        <div className="flex-1 overflow-auto p-4">{children}</div>
-      </div>
-    </>
+      </aside>
+    </div>
   );
 };
 
+export const SlideInPanel = memo(SlideInPanelComponent);
 SlideInPanel.displayName = "SlideInPanel";

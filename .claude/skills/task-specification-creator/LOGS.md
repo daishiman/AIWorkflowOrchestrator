@@ -1,59 +1,3 @@
-## 2026-03-04 - TASK-UI-00-MOLECULES 再確認（Phase 12品質ゲート追補）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `capture-task-ui-00-molecules-screenshots.mjs` を再実行し、TC-01〜TC-04 を 18:04 JST で再取得
-  - `manual-test-result.md` / `screenshot-coverage.md` / `spec-update-summary.md` の時刻情報を最新証跡へ同期
-  - `task-imp-phase12-implementation-guide-quality-gate-001.md` の `## メタ情報` 重複を解消し、フォーマットを正規化
-  - `phase12-checklist-definition.md` を 15項目へ拡張し、未タスク `## メタ情報` 重複チェックを追加
-
----
-
-## 2026-03-04 - TASK-UI-00-MOLECULES Phase 11/12 再確認（実装追補同期）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - SearchBar `onSubmit` 追加に伴い、Molecules対象テスト実測値を `69 tests` へ再同期
-  - Phase 11 スクリーンショット（TC-01〜TC-04）を再取得し、証跡時刻を 17:09 JST へ更新
-  - `verification-report.md` / `quality-report.md` / `spec-update-summary.md` ほかの数値ドリフトを解消
-  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行して PASS を確認
-
----
-
-## 2026-03-04 - TASK-UI-00-MOLECULES Phase 1-12 完了同期（実装・テスト・画面証跡）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12（完了同期）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/task-ui-00-molecules/outputs/phase-1..10` を補完し、Phase 1〜12 成果物を充足
-  - `artifacts.json` / `outputs/artifacts.json` を Phase 1〜12 `completed`、Phase 13 `pending` に同期
-  - `generate-index --regenerate` で `index.md` を再生成し、Phase 1〜12 の完了状態を反映
-  - `verification-report.md` を実装完了版へ更新し、実体照合を FAIL から PASS へ更新
-
----
-
-## 2026-03-04 - TASK-UI-00-MOLECULES Phase 11/12 再監査（spec_created）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再監査）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/task-ui-00-molecules` の Phase 11/12 成果物不足を補完（manual/discovered/implementation-guide/spec-update-summary ほか）
-  - `phase-11-manual-test.md` に `テストケース` + `画面カバレッジマトリクス` を追加し、TC-01〜TC-04 の証跡を紐付け
-  - `artifacts.json` / `outputs/artifacts.json` を同期し、Phase 12 completed成果物を明示
-  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を再実行して PASS を確認
-
----
-
 # task-specification-creator - Usage Logs
 
 > **Self-Improvement Cycle**
@@ -79,6 +23,48 @@
 
 ---
 ```
+
+---
+
+## 2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策（NON_VISUAL記法追補）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（ガイド改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に「証跡は対象workflow配下 `outputs/phase-11/screenshots` を必須」を追記
+  - 非視覚TCの記録形式として `NON_VISUAL:` 記法を追加
+  - Phase 12チェックリストへ「workflow配下証跡」と「NON_VISUAL記法」確認項目を追加
+  - `SKILL.md` 変更履歴を `v10.08.6` として同期
+
+---
+
+## 2026-03-04 - workflow02 再確認追補（screenshot Port 5174 競合ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（ガイド改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` の preview preflight へ `lsof -nP -iTCP:5174 -sTCP:LISTEN || true` を追加
+  - チェックリストへ「ポート競合時の停止/再利用分岐を `spec-update-summary.md` に記録」を追記
+  - 自動化コマンドへポート競合確認コマンドを追加し、再撮影前提条件を固定
+  - `SKILL.md` 変更履歴を `v10.08.5` として同期
+
+---
+
+## 2026-03-04 - UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 再監査（Step 1-C 状態同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-C 再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` のステータスを `完了（2026-03-04）` へ更新
+  - `docs/30-workflows/issues/issue-968.md` のステータスと完了条件チェックリストを完了状態へ同期
+  - `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md` の関連未タスク表で同IDを完了表記へ更新
+  - 両スキル `SKILL.md` / `LOGS.md` へ同一ターンで履歴追記し、Phase 12 Task 5 の履歴漏れを防止
 
 ---
 

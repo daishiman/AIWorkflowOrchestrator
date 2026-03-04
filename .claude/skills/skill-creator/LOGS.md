@@ -4,14 +4,30 @@
 
 ---
 
-## [2026-03-04 - TASK-UI-00-MOLECULES 再確認テンプレート改善（時刻同期 + Task 1要件チェック）]
+## [2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策をテンプレートへ反映]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに Task 1 要件機械確認（Part 1/Part 2）を追加
-  - 同テンプレートの完了チェックに `manual-test-result.md` / `screenshot-coverage.md` と `stat` の時刻整合確認を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に TC証跡記法チェック（`screenshots/*.png` / `NON_VISUAL:`）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の検証コマンド/完了チェックに同ルールを同期
+  - `references/patterns.md` に失敗パターン「別workflow証跡参照のまま coverage validator 実行」を追加
+  - `references/patterns.md` に成功パターン「対象workflow配下への証跡正規配置 + NON_VISUAL 記法固定」を追加
+  - `SKILL.md` 変更履歴を `v10.36.9` として同期
+
+---
+
+## [2026-03-04 - workflow02 screenshot Port競合ガードを Phase 12 パターンへ追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）へ成功キーワード「UI再撮影前ポート競合preflight（5174）+ 分岐記録固定」を追加
+  - 同クイックナビへ失敗キーワード「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
+  - 失敗パターン本文「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
+  - 成功パターン本文「UI再撮影前ポート競合 preflight + 分岐記録固定（workflow02）」を追加
   - `SKILL.md` 変更履歴を `v10.36.8` として同期
 
 ---

@@ -827,15 +827,21 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
-| UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 | Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
-| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
+| ~~UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001~~ | ~~Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード~~ **完了: 2026-03-04（scripts 登録 + 文書同期 + coverage 4/4 PASS）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
+| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
+| UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001 | screenshot 実行時の `Port 5174` 競合を事前検査し、分岐結果を記録するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
+| UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001 | `phase-11-manual-test.md` の画面カバレッジマトリクス（視覚/非視覚TC区分 + 期待証跡）を必須化するガード | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
 
 ### workflow02 追補の苦戦箇所（再利用用）
 
 | 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
 | --- | --- | --- | --- |
-| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録を必須化 | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
+| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録後に `run` 表示確認 + 文書同期 + coverage 4/4 PASS まで完了化（2026-03-04 反映済み） | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
 | capture script の `page.goto` 待機戦略が環境依存で timeout する | `waitUntil: load` 固定で画面遷移待機するとき | 未タスク `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001` を起票し、`domcontentloaded` 基準 + 補助待機の標準化を追加 | 失敗時ログ（待機段階/URL）を残し、1回目失敗で切り分け可能にする |
+| screenshot 実行時に `Port 5174 is already in use` が混在する | 既存 preview/dev server が残った状態で screenshot コマンドを再実行するとき | `lsof -nP -iTCP:5174 -sTCP:LISTEN` を再確認手順へ追加し、競合時分岐を未タスク `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` として切り出した | 再撮影は「ポート検査 → 再撮影 → coverage検証 → 台帳同期」を1セットで完了判定する |
+| Phase 11 証跡を別workflow参照のまま残し coverage validator が失敗する | `manual-test-result.md` の証跡列のみ更新し、対象workflow配下 `outputs/phase-11/screenshots` を未配置のままにするとき | 対象workflow配下へ証跡を正規配置し、視覚TCは `screenshots/*.png`、非視覚TCは `NON_VISUAL:` 記法へ統一して `validate-phase11-screenshot-coverage` PASS を再取得した | UI証跡は「対象workflow配下の実体 + TC証跡記法 + coverage PASS」を同時に満たして完了判定する |
+| `validate-phase11-screenshot-coverage` が PASS でも matrix 未記載 warning が残る | `phase-11-manual-test.md` に画面カバレッジマトリクスを持たないまま運用するとき | 未タスク `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加し、matrix 必須列（TC-ID/区分/期待証跡/理由）を運用ルールへ分離した | UI証跡は「画像実体」だけでなく「Phase 11設計意図（matrix）」まで揃えて完了判定する |
+
 ### 2026-03-04 追補: 削除導線ホットフィックス
 
 | 観点 | 追補内容 |
@@ -1193,6 +1199,10 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-04 | v1.14.9    | workflow02 追補へ `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning を苦戦箇所として追記し、matrix 必須列（TC-ID/区分/期待証跡/理由）を再利用ルールへ反映 |
+| 2026-03-04 | v1.14.8    | workflow02 追補へ「Phase 11証跡の別workflow参照による coverage validator fail」を苦戦箇所として追加。対象workflow配下への証跡正規配置、`NON_VISUAL:` 記法、`validate-phase11-screenshot-coverage` PASS 固定を再利用ルールへ反映 |
+| 2026-03-04 | v1.14.7    | workflow02 追補へ `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` を追加。`Port 5174 is already in use` 混在時の再発条件・対処（`lsof` 事前検査 + 分岐記録）を苦戦箇所テーブルへ追記し、未タスク正本リンクを同期 |
+| 2026-03-04 | v1.14.6    | workflow02 追補の状態同期を実施。`UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を関連未タスク表で完了化（取り消し線 + 完了注記）し、苦戦箇所テーブルへ実施済み対処（scripts 登録 + 文書同期 + coverage 4/4 PASS）を反映 |
 | 2026-03-04 | v1.13.5    | SkillCenter削除導線ホットフィックスの実測値を再確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルへ固定し、再検証値を `3 files / 30 tests`、coverage `86.89/84.61/88.88` へ更新 |
 | 2026-03-04 | v1.13.4    | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 追補: SkillCenter 削除導線ホットフィックス（確認ダイアログ未描画の解消）を追加。テスト資産件数を `10ファイル / 132テスト` に更新し、再検証値（3 files / 30 tests、coverage 86.89/84.61/88.88）を記録 |
 | 2026-03-04 | v1.13.3    | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: SkillStreamDisplay セクションに認証 preflight UX ガード（`auth-key:exists` 事前判定、`AUTHENTICATION_ERROR` 表示、execute抑止）を追加。Phase 11 画面証跡3件を同期 |

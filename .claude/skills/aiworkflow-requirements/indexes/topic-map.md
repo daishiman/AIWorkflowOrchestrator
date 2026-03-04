@@ -791,17 +791,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | コンポーネント設計概要 | L25 |
-| デザイン原則サマリー | L83 |
-| コンポーネント階層図 | L105 |
-| 完了タスク | L149 |
-| TASK-UI-05B 実装完了記録 | L178 |
-| TASK-10A-B 実装完了記録 | L196 |
-| TASK-10A-C 実装完了記録 | L215 |
-| TASK-10A-D 実装完了記録 | L234 |
-| 仕様書作成済みタスク（spec_created） | L251 |
-| SkillCenterView 関連未タスク | L284 |
-| 変更履歴 | L298 |
-| 関連ドキュメント | L340 |
+| デザイン原則サマリー | L73 |
+| コンポーネント階層図 | L95 |
+| 完了タスク | L139 |
+| TASK-UI-05B 実装完了記録 | L167 |
+| TASK-10A-B 実装完了記録 | L185 |
+| TASK-10A-C 実装完了記録 | L204 |
+| TASK-10A-D 実装完了記録 | L223 |
+| 仕様書作成済みタスク（spec_created） | L240 |
+| SkillCenterView 関連未タスク | L259 |
+| 変更履歴 | L273 |
+| 関連ドキュメント | L310 |
 
 ### references/ui-ux-design-principles.md
 
@@ -842,14 +842,14 @@ node scripts/list-specs.js --topics
 | SkillStreamingView コンポーネント（TASK-7D） | L584 |
 | SkillEditor UI（TASK-9A / 完了） | L629 |
 | SkillCenterView UI（TASK-UI-05 / 完了） | L757 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L885 |
-| SkillAnalysisView UI（TASK-10A-B / completed） | L959 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L1041 |
-| 完了タスク | L1103 |
-| 仕様書作成済みタスク（spec_created） | L1123 |
-| 仕様書作成済みタスク（spec_created） | L1153 |
-| 関連ドキュメント | L1159 |
-| 変更履歴 | L1192 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L891 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L965 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L1047 |
+| 完了タスク | L1109 |
+| 仕様書作成済みタスク（spec_created） | L1129 |
+| 仕様書作成済みタスク（spec_created） | L1159 |
+| 関連ドキュメント | L1165 |
+| 変更履歴 | L1198 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1586,24 +1586,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L130 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L188 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L324 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L366 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L408 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L458 |
-| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L507 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L553 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L584 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L642 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L684 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L745 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L786 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L845 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L887 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L934 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L988 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L1071 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L133 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L191 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L391 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L433 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L475 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L525 |
+| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L574 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L620 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L651 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L709 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L751 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L812 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L853 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L912 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L954 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L1001 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L1055 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L1138 |
 
 ### references/llm-embedding.md
 
@@ -1945,12 +1945,12 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2168 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2216 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2283 |
-| 残課題（未タスク） | L2364 |
-| 関連ドキュメント | L2556 |
-| 変更履歴 | L2566 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2225 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2273 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2340 |
+| 残課題（未タスク） | L2421 |
+| 関連ドキュメント | L2614 |
+| 変更履歴 | L2624 |
 
 ### references/testing-accessibility.md
 

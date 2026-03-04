@@ -20,7 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-04 | 1.29.11 | UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001 の完了移管後同期を追補。TASK-UI-00-MOLECULES 再確認で顕在化した「UI再撮影時刻と `manual-test-result`/`screenshot-coverage` の更新時刻ドリフト」を再発条件付きで記録し、`task-workflow.md`/`lessons-learned.md`/未タスク仕様書の同一ターン同期手順を固定 |
+| 2026-03-04 | 1.29.14 | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`validate-phase11-screenshot-coverage` が PASS でも `phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning が残る苦戦箇所を記録し、視覚/非視覚TCの設計意図を固定する4ステップ手順を標準化 |
+| 2026-03-04 | 1.29.13 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` 追補を追加。Phase 11証跡を別workflow参照のまま残したことで coverage validator が失敗した苦戦箇所を記録し、対象workflow配下への証跡正規配置 + `NON_VISUAL:` 記法固定の4ステップ手順を標準化 |
+| 2026-03-04 | 1.29.12 | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` の教訓を追加。screenshot再取得時の `Port 5174 is already in use` 混在を再発条件付きで記録し、実行前ポート検査（`lsof`）と競合分岐記録を標準化 |
+| 2026-03-04 | 1.29.11 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` の教訓を追加。screenshot再取得スクリプトの実体と `pnpm run screenshot:*` 公開経路の不一致を再発条件付きで記録し、文書同期・検証ログ固定手順を標準化 |
 | 2026-03-04 | 1.29.10 | `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001` を追加。`--coverage.include` パス誤指定で回帰判定が揺れる苦戦箇所を未タスク化し、`task-workflow.md` 残課題テーブル/追加未タスク表と同期 |
 | 2026-03-04 | 1.29.9 | SkillCenter削除導線ホットフィックスの再計測値を確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルに固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を仕様書へ同期。あわせて Phase 12テンプレート最適化へ未タスク配置先判定（未完了/完了移管）を追補 |
 | 2026-03-04 | 1.29.8 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の第2回再確認を追加。Phase 11 証跡を 16:50 JST へ更新し、`verify-unassigned-links`（88/88）/ `audit --diff-from HEAD`（baseline=94）へ同期。`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `completed-tasks/unassigned-task/` へ統一 |
@@ -318,6 +321,70 @@
 3. `resource-map.md` のテンプレート説明を同一ターンで同期し、参照面のドリフトを防ぐ。  
 4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時転記する。  
 5. `quick_validate` で `aiworkflow-requirements` と `skill-creator` の両方を検証し、失敗時は未タスクへ分離する。  
+
+### 苦戦箇所: screenshot再取得スクリプトが `run` 一覧へ公開されていないと運用が人依存になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `capture-skill-import-idempotency-guard-screenshots.mjs` は存在していたが、`apps/desktop/package.json` scripts 未登録のため実行経路が統一されていなかった |
+| 再発条件 | 「スクリプト実体がある」ことのみを完了扱いにして、`pnpm run screenshot:*` 公開を省略した場合 |
+| 対処 | `screenshot:skill-import-idempotency-guard` を scripts へ追加し、workflow02 Phase 11/12 文書の実行コマンドを同一表記へ統一した |
+| 標準ルール | UI証跡運用は「スクリプト実体 + run公開 + 文書同期 + coverage検証」の4点が揃って初めて完了扱いにする |
+
+### 同種課題向け簡潔解決手順（4ステップ・screenshot公開版）
+
+1. `pnpm --filter @repo/desktop run | rg screenshot` で公開コマンド有無を先に確認する。  
+2. 未公開なら `package.json` scripts に `screenshot:<feature>` を追加して実体スクリプトへ接続する。  
+3. Phase 11/12 文書の実行例を `pnpm --filter @repo/desktop run screenshot:<feature>` へ統一し、旧コマンド残存を `rg` で検査する。  
+4. `validate-phase11-screenshot-coverage` と `verify-all-specs` を同一ターンで実行して結果を台帳へ転記する。  
+
+### 苦戦箇所: screenshot 実行時の `Port 5174` 競合で成功/警告が混在する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `screenshot:skill-import-idempotency-guard` 実行で証跡は取得できるが、`Port 5174 is already in use` が同時出力され判定が揺れた |
+| 再発条件 | 並列作業で既存 dev server が残った状態で screenshot コマンドを再実行する場合 |
+| 対処 | 実行前に `lsof -nP -iTCP:5174 -sTCP:LISTEN` を固定実行し、競合時は停止/再利用の分岐結果を `spec-update-summary.md` へ記録した |
+| 標準ルール | UI再撮影は「ポート検査→再撮影→coverage検証→台帳同期」を1セットで完了する |
+
+### 同種課題向け簡潔解決手順（4ステップ・port競合版）
+
+1. `lsof -nP -iTCP:5174 -sTCP:LISTEN || true` で占有有無を先に確定する。  
+2. 競合ありの場合は「既存プロセス停止」か「既存サーバー再利用」のどちらかに分岐し、選択理由を記録する。  
+3. `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard` 実行後に `validate-phase11-screenshot-coverage` を実施する。  
+4. 実行結果を `task-workflow.md` と `spec-update-summary.md` へ同一ターンで転記し、未解決なら未タスク化する。  
+
+### 苦戦箇所: Phase 11 証跡を別workflow参照のまま残すと coverage validator が失敗する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` の証跡列が別workflowのパスのみを参照し、対象workflow配下に `outputs/phase-11/screenshots` が存在しなかったため、`validate-phase11-screenshot-coverage` が `covered=0` で失敗した |
+| 再発条件 | 画面証跡を「参照文字列の更新のみ」で完了扱いにし、対象workflow配下へ証跡実体を配置しない場合 |
+| 対処 | 対象workflow配下へ screenshot 証跡を正規配置し、視覚TCは `screenshots/*.png` で明示。非視覚TCは `NON_VISUAL:` 記法へ統一して validator の許容条件を固定した |
+| 標準ルール | UI証跡は「対象workflow配下の実体 + TC証跡記法 + validator PASS」の3点を同時に満たして完了判定する |
+
+### 同種課題向け簡潔解決手順（4ステップ・証跡配置版）
+
+1. `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` を先に実行して欠落を検知する。  
+2. `outputs/phase-11/screenshots` が空なら、再取得または同一証跡を対象workflow配下へ正規配置する。  
+3. `manual-test-result.md` の視覚TCは `screenshots/*.png`、非視覚TCは `NON_VISUAL:` を必須化する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` と合わせて結果を `task-workflow.md` と `spec-update-summary.md` へ同一ターンで転記する。  
+
+### 苦戦箇所: `phase-11-manual-test.md` の画面カバレッジマトリクス欠落 warning が残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `validate-phase11-screenshot-coverage` の判定は PASS でも、`phase-11-manual-test.md` に画面カバレッジマトリクスがなく warning が継続し、設計意図の確認が人依存になった |
+| 再発条件 | `manual-test-result.md` の証跡記法のみ更新し、Phase 11 仕様書側へ TC設計（視覚/非視覚区分）を記録しない場合 |
+| 対処 | 未タスク `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加し、matrix 必須列（TC-ID/区分/期待証跡/理由）の標準化を分離して管理する方針へ変更 |
+| 標準ルール | UI証跡は「画像実体」「証跡記法」「カバレッジマトリクス」の3層を同時に満たして完了判定する |
+
+### 同種課題向け簡潔解決手順（4ステップ・matrix版）
+
+1. `phase-11-manual-test.md` に「画面カバレッジマトリクス」節があるか `rg` で機械確認する。  
+2. matrix へ `TC-ID` / `視覚or非視覚` / `期待証跡` / `理由` を必須列として記録する。  
+3. `manual-test-result.md` の `screenshots/*.png` / `NON_VISUAL:` 記法と matrix の行対応を突合する。  
+4. `validate-phase11-screenshot-coverage` の結果と合わせて `task-workflow.md` / `ui-ux-feature-components.md` に同一ターンで同期する。  
 
 ---
 
