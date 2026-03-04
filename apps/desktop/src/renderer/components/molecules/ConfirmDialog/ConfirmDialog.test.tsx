@@ -48,7 +48,7 @@ describe("ConfirmDialog", () => {
     const onClose = vi.fn();
     render(<ConfirmDialog {...baseProps} onClose={onClose} />);
 
-    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -56,7 +56,9 @@ describe("ConfirmDialog", () => {
     const onConfirm = vi.fn();
     render(<ConfirmDialog {...baseProps} onConfirm={onConfirm} />);
 
-    fireEvent.keyDown(window, { key: "Enter" });
+    const confirmButton = screen.getByRole("button", { name: "確認" });
+    confirmButton.focus();
+    fireEvent.keyDown(document, { key: "Enter" });
     expect(onConfirm).toHaveBeenCalledTimes(1);
   });
 
@@ -72,7 +74,8 @@ describe("ConfirmDialog", () => {
     render(<ConfirmDialog {...baseProps} isLoading={true} />);
 
     const confirmButton = screen.getByRole("button", { name: "確認" });
-    expect(confirmButton).toHaveAttribute("aria-busy", "true");
+    expect(confirmButton).toBeDisabled();
+    expect(screen.getByTestId("confirm-loading-icon")).toBeInTheDocument();
   });
 
   it("ARIA属性を設定する", () => {

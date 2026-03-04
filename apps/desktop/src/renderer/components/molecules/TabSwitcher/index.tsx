@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useMemo, useRef } from "react";
 import clsx from "clsx";
 import { Badge } from "../../atoms/Badge";
 import { Icon, type IconName } from "../../atoms/Icon";
@@ -24,25 +24,97 @@ const TabSwitcherComponent: React.FC<TabSwitcherProps> = ({
   onTabChange,
   variant = "underline",
 }) => {
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const enabledTabs = useMemo(
+    () => tabs.filter((tab) => !tab.disabled),
+    [tabs],
+  );
+
+  const focusTab = (tabId: string): void => {
+    tabRefs.current[tabId]?.focus();
+  };
+
+  const moveFocus = (currentTabId: string, direction: 1 | -1): void => {
+    if (enabledTabs.length === 0) {
+      return;
+    }
+
+    const currentIndex = enabledTabs.findIndex(
+      (tab) => tab.id === currentTabId,
+    );
+    if (currentIndex === -1) {
+      return;
+    }
+
+    const nextIndex =
+      (currentIndex + direction + enabledTabs.length) % enabledTabs.length;
+    focusTab(enabledTabs[nextIndex].id);
+  };
+
   return (
     <div
       role="tablist"
       aria-label="タブ切り替え"
-      className="flex w-full gap-1 overflow-x-auto"
+      className={clsx(
+        "flex w-full gap-1 overflow-x-auto",
+        variant === "pill" && "rounded-full bg-[var(--bg-secondary)] p-1",
+      )}
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
           <button
+            ref={(element) => {
+              tabRefs.current[tab.id] = element;
+            }}
             key={tab.id}
             type="button"
             role="tab"
             aria-selected={isActive}
             aria-controls={`panel-${tab.id}`}
+            data-testid={`tab-${tab.id}`}
             disabled={tab.disabled}
             onClick={() => {
               if (!tab.disabled) {
                 onTabChange(tab.id);
+              }
+            }}
+            onKeyDown={(event) => {
+              switch (event.key) {
+                case "ArrowRight": {
+                  event.preventDefault();
+                  moveFocus(tab.id, 1);
+                  break;
+                }
+                case "ArrowLeft": {
+                  event.preventDefault();
+                  moveFocus(tab.id, -1);
+                  break;
+                }
+                case "Home": {
+                  event.preventDefault();
+                  if (enabledTabs[0]) {
+                    focusTab(enabledTabs[0].id);
+                  }
+                  break;
+                }
+                case "End": {
+                  event.preventDefault();
+                  if (enabledTabs[enabledTabs.length - 1]) {
+                    focusTab(enabledTabs[enabledTabs.length - 1].id);
+                  }
+                  break;
+                }
+                case "Enter":
+                case " ": {
+                  if (!tab.disabled) {
+                    event.preventDefault();
+                    onTabChange(tab.id);
+                  }
+                  break;
+                }
+                default:
+                  break;
               }
             }}
             className={clsx(
@@ -76,3 +148,4 @@ const TabSwitcherComponent: React.FC<TabSwitcherProps> = ({
 
 export const TabSwitcher = memo(TabSwitcherComponent);
 TabSwitcher.displayName = "TabSwitcher";
+export type TabSwitcherTab = Tab;

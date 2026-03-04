@@ -33,7 +33,7 @@ describe("SlideInPanel", () => {
       </SlideInPanel>,
     );
 
-    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -50,9 +50,7 @@ describe("SlideInPanel", () => {
       </SlideInPanel>,
     );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: "オーバーレイを閉じる" }),
-    );
+    fireEvent.click(screen.getByTestId("slide-in-panel-overlay"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
@@ -64,6 +62,6 @@ describe("SlideInPanel", () => {
     );
 
     const dialog = screen.getByRole("dialog");
-    expect(dialog).toHaveStyle({ width: "512px" });
+    expect(dialog).toHaveStyle({ width: "min(100vw, 512px)" });
   });
 });

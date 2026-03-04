@@ -28,7 +28,7 @@ describe("SearchBar", () => {
     const onChange = vi.fn();
     render(<SearchBar value="keyword" onChange={onChange} />);
 
-    const clearButton = screen.getByRole("button", { name: "検索をクリア" });
+    const clearButton = screen.getByRole("button", { name: "クリア" });
     fireEvent.click(clearButton);
 
     expect(onChange).toHaveBeenCalledWith("");

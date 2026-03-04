@@ -1,4 +1,4 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { X } from "lucide-react";
 
@@ -12,6 +12,18 @@ export interface SlideInPanelProps {
   showOverlay?: boolean;
 }
 
+function getFocusableElements(container: HTMLElement): HTMLElement[] {
+  const selectors = [
+    "button:not([disabled])",
+    "[href]",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    '[tabindex]:not([tabindex="-1"])',
+  ].join(",");
+  return Array.from(container.querySelectorAll<HTMLElement>(selectors));
+}
+
 const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
   isOpen,
   onClose,
@@ -21,19 +33,59 @@ const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
   children,
   showOverlay = true,
 }) => {
+  const panelRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!isOpen) {
       return undefined;
     }
 
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    closeButtonRef.current?.focus();
+
     const onKeyDown = (event: KeyboardEvent): void => {
+      if (!panelRef.current) {
+        return;
+      }
+
       if (event.key === "Escape") {
+        event.preventDefault();
         onClose();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusables = getFocusableElements(panelRef.current);
+        if (focusables.length === 0) {
+          event.preventDefault();
+          return;
+        }
+
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+
+        if (event.shiftKey && active === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && active === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      previousFocusRef.current?.focus();
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) {
@@ -43,17 +95,17 @@ const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
   return (
     <div className="fixed inset-0 z-50">
       {showOverlay && (
-        <button
-          type="button"
-          aria-label="オーバーレイを閉じる"
+        <div
+          data-testid="slide-in-panel-overlay"
           className="absolute inset-0 bg-black/30"
           onClick={onClose}
         />
       )}
       <aside
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label={title ?? "スライドパネル"}
+        aria-label={title ?? "サイドパネル"}
         className={clsx(
           "absolute top-0 h-full bg-[var(--bg-secondary)]",
           "transition-transform duration-[250ms] ease-out",
@@ -62,14 +114,15 @@ const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
           side === "right" && "right-0 border-l",
           side === "left" && "left-0 border-r",
         )}
-        style={{ width }}
+        style={{ width: `min(100vw, ${width})` }}
       >
         <div className="flex h-full flex-col">
           <header className="flex items-center justify-between border-b border-[var(--border-subtle)] px-4 py-3">
             <h2 className="text-sm font-medium text-[var(--text-primary)]">
-              {title}
+              {title ?? ""}
             </h2>
             <button
+              ref={closeButtonRef}
               type="button"
               aria-label="閉じる"
               onClick={onClose}

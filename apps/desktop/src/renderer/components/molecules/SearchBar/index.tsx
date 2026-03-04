@@ -6,6 +6,7 @@ export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
   onDebouncedChange?: (value: string) => void;
+  onSubmit?: (value: string) => void;
   debounceMs?: number;
   placeholder?: string;
   shortcutHint?: string;
@@ -16,6 +17,7 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
   value,
   onChange,
   onDebouncedChange,
+  onSubmit,
   debounceMs = 300,
   placeholder = "検索",
   shortcutHint,
@@ -68,6 +70,17 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
         aria-label="検索"
         value={value}
         onChange={(event) => onChange(event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && value.length > 0) {
+            event.preventDefault();
+            onChange("");
+            return;
+          }
+
+          if (event.key === "Enter") {
+            onSubmit?.(value);
+          }
+        }}
         placeholder={placeholder}
         autoFocus={autoFocus}
         className={clsx(
@@ -79,7 +92,8 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
         <button
           type="button"
           onClick={() => onChange("")}
-          aria-label="検索をクリア"
+          aria-label="クリア"
+          title="検索をクリア"
           className={clsx(
             "inline-flex h-8 w-8 items-center justify-center rounded-full",
             "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)]",
@@ -89,7 +103,7 @@ const SearchBarComponent: React.FC<SearchBarProps> = ({
           <X size={14} aria-hidden="true" />
         </button>
       )}
-      {shortcutHint && (
+      {shortcutHint && value.length === 0 && (
         <kbd
           className={clsx(
             "rounded px-1.5 py-0.5 text-xs",
