@@ -20,8 +20,14 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-03 | 1.28.8 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 を追加。未タスク仕様書作成時に `aiworkflow-requirements` から必要情報を抽出する手順（resource-map/topic-map/search-spec）と、台帳同期（task-workflow/lessons）・監査判定（current固定）の再発防止導線を追記 |
-| 2026-03-03 | 1.28.7 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 の実装完了を反映。2workflow同時監査の完了記録（verify/validate/audit/links）と苦戦箇所3件（証跡分散、リンクドリフト、current/baseline誤読）を追記し、再利用5ステップを更新 |
+| 2026-03-04 | 1.29.4 | TASK-FIX-SKILL-IMPORT 3連続是正の完了移管を反映。関連未タスク3件の参照を `completed-tasks/unassigned-task/` へ更新し、完了日（2026-03-04）を明記 |
+| 2026-03-04 | 1.29.3 | TASK-FIX-SKILL-IMPORT 3連続是正の未タスク追補を追加。`UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` / `UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001` / `UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001` の関連導線を追加し、3workflow再監査の証跡集約・`scope.currentFiles` 判定固定を再利用可能化 |
+| 2026-03-04 | 1.29.2 | TASK-FIX-SKILL-IMPORT 3連続是正のPhase 12再確認追補を追加。3workflow同時監査時の証跡ドリフト防止、`audit-unassigned-tasks --target-file` の判定軸誤読防止（`scope.currentFiles` + `currentViolations` 固定）の苦戦箇所と4ステップ手順を追記 |
+| 2026-03-04 | 1.29.1 | TASK-FIX-SKILL-IMPORT 3連続是正の教訓を追加。`skill:getImported` 互換復元（id/name混在）、`skill:import` 成功判定（`importedCount`依存の誤り）、SkillCenter欠損メタデータ防御（nullishクラッシュ）を再発条件付きで標準化 |
+| 2026-03-04 | 1.29.0 | TASK-10A-D 追補: 再確認で抽出した運用課題を未タスク2件として分離（SubAgent実行ログ必須化 / 画面証跡の状態名+検証目的分離）。`task-workflow` / `ui-ux-feature-components` / `lessons-learned` 同期を前提にした再利用手順を更新 |
+| 2026-03-04 | 1.28.9 | TASK-10A-D を仕様書別SubAgent運用へ再編。実装内容サマリー・仕様書別SubAgent分担（task-workflow/ui-ux-feature/lessons/skill-creator）・同種課題向け5ステップを追加し、実装内容と苦戦箇所の同時記録を標準化 |
+| 2026-03-04 | 1.28.8 | TASK-10A-D 再確認追補を追加。`audit-unassigned-tasks` の current/baseline 判定分離、TC-02/TC-05 スクリーンショット解釈の曖昧さ解消、再確認5ステップ（verify/validate/links/audit/目視）を標準化 |
+| 2026-03-03 | 1.28.7 | TASK-10A-D 教訓を追加。IPC境界の型定義不整合（`unknown[]` vs `Suggestion`型）、P40テスト実行ディレクトリ依存の再発、P11フック起因のEdit失敗の3課題と5ステップ手順を標準化 |
 | 2026-03-03 | 1.28.6 | TASK-10A-C 追補: 苦戦箇所を未タスク2件へ分離（UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001, UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001）。5仕様書同時同期ガードとUI証跡3点セット（再撮影/TCカバレッジ/鮮度確認）を再利用導線として固定 |
 | 2026-03-02 | 1.28.5 | TASK-10A-C 教訓を追加。UI再撮影後のTC紐付け検証不足、`skill:create` 契約の4仕様書同期漏れ、Phase 11/12 依存成果物参照漏れを防ぐ5ステップ手順を標準化 |
 | 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
@@ -164,47 +170,85 @@
 3. `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD` を連続実行し、`currentViolations=0` を判定基準にする。  
 4. 結果を `task-workflow.md` と `lessons-learned.md` に同一ターンで反映し、次ターンへの持ち越しを禁止する。  
 
-### 関連タスク（2026-03-03 更新）
+### 関連未タスク（2026-03-02 追補）
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | 2workflow同時監査時の証跡集約ガード（実装完了） | `docs/30-workflows/completed-tasks/phase12-two-workflow-evidence-bundle/index.md` |
-| UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | 未タスク作成時のシステム仕様スキル抽出・反映ガード（未実施） | `docs/30-workflows/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
+| UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 | 2workflow同時監査時の証跡集約ガード（Task 1/3/4/5 実体突合 + 画面証跡 + current/baseline 分離） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md` |
 
 ---
 
-## UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001: 実装完了（2026-03-03）
+## TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04）
 
-### 実装内容サマリー
-
-| 項目 | 内容 |
-| --- | --- |
-| 実装対象 | `docs/30-workflows/completed-tasks/phase12-two-workflow-evidence-bundle/` |
-| 実装内容 | Phase 12 の 2workflow同時監査ガードを実装し、必須5成果物・証跡集約・未タスク監査を運用フロー化 |
-| 検証結果 | `verify-all-specs` PASS / `validate-phase-output` PASS（28項目）/ `audit --target-file` current=0 / `verify-unassigned-links` missing=0 |
-| 仕様反映 | `task-workflow.md` に完了記録と検証証跡、`task-specification-creator` に validator・参照資料・テンプレートを同期 |
-
-### 苦戦箇所
+### 苦戦箇所: `skill:getImported` の保存キー互換（id/name）を前提にしていなかった
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題1 | spec_created系とcompleted系を同時監査すると、Task 1/3/4/5 実体確認の記録先が分散しやすい |
-| 再発条件1 | workflowごとに別ターンで verify/validate を回して後で転記する運用 |
-| 対処1 | 対象workflowを先に固定し、同一ターンで `verify-all-specs` → `validate-phase-output` を連続実行して証跡を一括固定 |
-| 課題2 | completed-tasks への移管後に `task-workflow.md` の未タスクリンクが古いまま残りやすい |
-| 再発条件2 | 未タスク実体移動後に台帳リンク更新と links検証を分離して実施 |
-| 対処2 | `UT-UI-05A-*` の参照を実体パスへ置換し、`verify-unassigned-links` missing=0 を完了条件に追加 |
-| 課題3 | `audit-unassigned-tasks` の baseline を今回差分の fail と誤読しやすい |
-| 再発条件3 | 既存違反を含む状態で `--diff-from HEAD` の値を単純比較する運用 |
-| 対処3 | 合否を `currentViolations` のみに固定し、baselineは監視指標として別記録 |
+| 課題 | 旧保存データが `skill.name` キーの場合、`cache.get(id)` 前提の復元ロジックだと imported 状態を失う |
+| 再発条件 | 保存形式を `id` へ移行した後に、過去ストレージ互換を仕様へ反映しない場合 |
+| 対処 | `SkillService.getImportedSkills()` で `id` 解決を優先し、未一致時は `name` フォールバック探索を追加 |
+| 標準ルール | 永続データのキー移行時は「新形式優先 + 旧形式フォールバック」を明文化する |
+
+### 苦戦箇所: `skill:import` 成功判定を `importedCount` に依存していた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既にインポート済みの正常系で `importedCount=0` となり、失敗扱いされる契約ドリフトが発生した |
+| 再発条件 | idempotent 操作で「新規件数」を成功条件に使う場合 |
+| 対処 | Main IPC の成功判定を `result.success && result.errors.length===0` へ統一し、既存ケースも `ImportedSkill` を返却 |
+| 標準ルール | 冪等操作の成功判定は「エラーなし」を基準にし、件数は監視値として扱う |
+
+### 苦戦箇所: SkillCenter で欠損メタデータを想定していなかった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `description.toLowerCase()` や `agents.length` などが nullish データで例外を起こし、画面が不安定化した |
+| 再発条件 | 外部生成データ/旧データを UI 入力に含むのに、nullish 防御を入れない場合 |
+| 対処 | `String(value ?? "")` / `Array.isArray(value)` の防御関数を Hook+Component 両方へ適用し、TC-01〜04 スクリーンショットで確認 |
+| 標準ルール | UIは「文字列正規化」「配列正規化」を境界で必ず実施する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. 監査対象workflowを先に固定し、`verify-all-specs` を全対象へ実行する。  
-2. 同じ対象へ `validate-phase-output` を実行し、Task 1/3/4/5 の実体を同時突合する。  
-3. `verify-unassigned-links` で参照実在を確認し、必要なら台帳リンクを先に是正する。  
-4. `audit-unassigned-tasks --target-file` / `--diff-from HEAD` を実行し、`currentViolations=0` で判定する。  
-5. 実装内容と苦戦箇所を `task-workflow.md` / `lessons-learned.md` に同一ターンで反映して完了する。  
+1. 契約を IPC/型/状態/UI の4層に分離し、各層で成功条件を明文化する。  
+2. 永続データ互換は `current` 形式だけでなく `legacy` 形式の復元経路を先に実装する。  
+3. 冪等APIは「件数」ではなく「エラーなし」を成功判定に固定する。  
+4. UIは nullish 入力を前提に `String`/`Array` 正規化関数を共通化する。  
+5. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit(current)` を同一ターンで記録する。  
+
+### Phase 12再確認追補（2026-03-04）
+
+### 苦戦箇所: 3workflow 同時再監査で証跡転記がドリフトしやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify-all-specs` / `validate-phase-output` を workflow ごとに個別転記すると、件数・実行時刻・判定が台帳間でずれやすい |
+| 再発条件 | 複数workflowの再監査結果を別ターンで `task-workflow` と `lessons` に反映する場合 |
+| 対処 | 3workflow を同一ターンで再実行し、`13/13` と `28項目` をバンドル値として固定してから台帳へ同期 |
+| 標準ルール | 複数workflow再監査は「実行 → 集約表作成 → 台帳/教訓同時転記」の順で完了させる |
+
+### 苦戦箇所: `audit-unassigned-tasks --target-file` の判定軸を誤読しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 出力に baseline 情報が含まれるため、対象ファイルが失敗したように誤解しやすい |
+| 再発条件 | `target-file` 実行結果を `current` と `baseline` に分けずに読む場合 |
+| 対処 | `scope.currentFiles` が対象ファイルと一致することを先に確認し、合否は `currentViolations=0` のみで判定 |
+| 標準ルール | 未タスク個別監査は `scope.currentFiles` / `currentViolations` / `baselineViolations` を3点セットで記録する |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. `verify-all-specs --workflow` と `validate-phase-output` を対象workflow分まとめて実行する。  
+2. `validate-phase11-screenshot-coverage`（UI workflow）と `verify-unassigned-links` を同ターンで実行する。  
+3. `audit-unassigned-tasks --diff-from HEAD` で全体合否を `currentViolations=0` で確定する。  
+4. `audit-unassigned-tasks --target-file` は `scope.currentFiles` 一致を確認してから記録し、`task-workflow.md` と同時反映する。  
+
+### 関連未タスク（2026-03-04 追補）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 | 3workflow再監査のSubAgent成果物突合を固定し、仕様書別実行ログの欠落を防ぐ（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
+| UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | `aiworkflow-requirements` からの必要仕様抽出と台帳同期を同一ターンで固定する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
+| UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001 | 3workflow再監査で `scope.currentFiles` / `currentViolations` / `baselineViolations` を分離記録する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
 
 ---
 
@@ -388,6 +432,52 @@
 | --- | --- | --- |
 | UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001 | 5仕様書（api-ipc/interfaces/security/task-workflow/lessons）同時同期の完了ゲートを固定する | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-five-spec-sync-guard-001.md` |
 | UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001 | UI証跡3点セット（再撮影 + TCカバレッジ + 鮮度確認）を必須化する | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md` |
+
+---
+
+## TASK-10A-D スキルライフサイクルUI統合（2026-03-03）
+
+### 実装内容サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装要点 | SkillManagementPanel の `list/editor/analysis/create` 統合、ChatPanel導線追加、agentSliceの分析/改善状態拡張 |
+| 検証要点 | `verify-all-specs` 13/13、`validate-phase-output` 28項目、`validate-phase11-screenshot-coverage` TC 5/5、`audit --diff-from HEAD` current=0 |
+| 再確認で補強した点 | TC-02/TC-05 の証跡意図分離、未タスク監査の `current/baseline` 判定分離 |
+
+### 仕様書別SubAgent分担（再確認）
+
+| SubAgent | 担当仕様書 | 実装内容の反映 | 苦戦箇所の反映 | 完了条件 |
+| --- | --- | --- | --- | --- |
+| SG-TW-01 | `task-workflow.md` | TASK-10A-D 再確認証跡を台帳へ集約 | 監査誤読防止と証跡意図分離を追記 | 13/13, 28項目, TC 5/5, current=0 が記録済み |
+| SG-UIF-01 | `ui-ux-feature-components.md` | UI統合仕様（ビュー/導線/Store）を同期 | UI証跡の状態名+検証目的ルールを追記 | 機能仕様と再確認ルールが同時記録済み |
+| SG-LL-01 | `lessons-learned.md` | 教訓の再利用導線を整理 | 再発条件付きで苦戦箇所を整理 | 同種課題の簡潔手順が5ステップで記録済み |
+| SG-SC-01 | `skill-creator` テンプレート | SubAgent実行ログ欄をテンプレートに追加 | 「仕様書単位の記録漏れ」を予防 | 次回タスクで再利用可能なテンプレート更新完了 |
+
+### 苦戦箇所
+
+| # | 苦戦箇所 | 解決策 | 再利用性 |
+| --- | --- | --- | --- |
+| 1 | `applySkillImprovements`の引数型を`unknown[]`で仮定義したところ、Preload APIの`Suggestion`型と不整合が発生 | `@repo/shared/types/skill-improver`から正しい型をインポート。IPC境界を跨ぐ型は必ず`@repo/shared`の共有型を使用 | HIGH: IPC境界の型定義は全タスクで適用可能 |
+| 2 | P40（テスト実行ディレクトリ依存）が再発。モノレポルートからテスト実行すると`@testing-library/jest-dom`のmatcherが読み込まれず全テスト失敗 | テストコマンドに常に`cd apps/desktop &&`プレフィックスを含める | HIGH: 全desktopテストで適用必須 |
+| 3 | PostToolUseフック（Prettier/ESLint自動修正）がファイル変更し、後続のEdit文字列マッチが失敗（P11パターン） | 大量編集後は`git diff --stat`で変更数を検証 | MEDIUM: Claude Code Hooks環境固有 |
+| 4 | Phase 12 再確認で `audit-unassigned-tasks` の全体監査値を今回差分失敗と誤読しやすい | `--diff-from HEAD` の `currentViolations` を合否、`--json` 単体の `currentViolations` は baseline監視として分離記録 | HIGH: 未タスク監査全般で再発しやすい |
+| 5 | TC-02（analysis遷移）と TC-05（エラー状態）の画像がどちらもエラー表示に見え、証跡意図が伝わりにくい | `manual-test-result.md` に「TC-02=API未接続フォールバック」「TC-05=意図的エラー検証」を注記し、証跡表の状態名を補正 | MEDIUM: UI証跡レビュー全般で有効 |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 仕様書を `task-workflow` / `ui-ux-feature-components` / `lessons-learned` に分け、1仕様書=1SubAgentで担当固定する。  
+2. 各仕様書で「実装内容」と「苦戦箇所」を同時に追記し、片側のみ更新を禁止する。  
+3. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行して数値を確定する。  
+4. UIタスクはスクリーンショット目視確認を行い、証跡に「状態名 + 検証目的」を追記する。  
+5. `task-workflow.md` と `lessons-learned.md` の両方へ再発防止ルールを同一ターンで転記する。  
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001 | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を必須化し、仕様同期の説明責任を固定する | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md` |
+| UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡で状態名+検証目的を分離し、TC意図混同（TC-02/TC-05）を防ぐ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
 
 ---
 

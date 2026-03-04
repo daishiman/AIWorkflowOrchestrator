@@ -142,6 +142,16 @@ const ResourceList: React.FC<{
 
 ResourceList.displayName = "ResourceList";
 
+function safeSubResources(value: unknown): SkillSubResource[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function safeOtherFiles(
+  value: unknown,
+): Array<{ filename: string; size: number; type: string }> {
+  return Array.isArray(value) ? value : [];
+}
+
 /**
  * スキル詳細パネルコンポーネント。
  */
@@ -265,6 +275,15 @@ interface PanelContentProps {
 
 const PanelContent: React.FC<PanelContentProps> = memo(
   ({ skill, displayName, allowedTools, isImported, onClose, onDelete }) => {
+    const description = String(skill.description ?? "");
+    const agents = safeSubResources(skill.agents);
+    const references = safeSubResources(skill.references);
+    const indexes = safeSubResources(skill.indexes);
+    const scripts = safeSubResources(
+      isSkillMetadata(skill) ? skill.scripts : undefined,
+    );
+    const otherFiles = safeOtherFiles(skill.otherFiles);
+
     return (
       <>
         {/* ヘッダー */}
@@ -314,7 +333,7 @@ const PanelContent: React.FC<PanelContentProps> = memo(
           <div className={panelStyles.section}>
             <h3 className={panelStyles.sectionTitle}>説明</h3>
             <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-              {skill.description}
+              {description}
             </p>
           </div>
 
@@ -351,24 +370,24 @@ const PanelContent: React.FC<PanelContentProps> = memo(
           )}
 
           {/* サブリソース一覧 */}
-          <ResourceList title="エージェント" resources={skill.agents} />
-          <ResourceList title="リファレンス" resources={skill.references} />
-          <ResourceList title="インデックス" resources={skill.indexes} />
+          <ResourceList title="エージェント" resources={agents} />
+          <ResourceList title="リファレンス" resources={references} />
+          <ResourceList title="インデックス" resources={indexes} />
 
           {/* スクリプト */}
           {isSkillMetadata(skill) && (
-            <ResourceList title="スクリプト" resources={skill.scripts ?? []} />
+            <ResourceList title="スクリプト" resources={scripts} />
           )}
 
           {/* その他のファイル */}
-          {skill.otherFiles.length > 0 && (
+          {otherFiles.length > 0 && (
             <div
               className={panelStyles.section}
               data-testid="other-files-section"
             >
               <h3 className={panelStyles.sectionTitle}>その他のファイル</h3>
               <ul className="space-y-1">
-                {skill.otherFiles.map((file) => (
+                {otherFiles.map((file) => (
                   <li
                     key={file.filename}
                     className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"

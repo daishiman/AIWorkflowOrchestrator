@@ -52,7 +52,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Run lint
         run: pnpm lint
@@ -79,7 +79,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Download shared build artifact
         uses: actions/download-artifact@v4
@@ -112,7 +112,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Build shared package
         run: pnpm --filter @repo/shared build
@@ -148,7 +148,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Download shared build artifact
         uses: actions/download-artifact@v4
@@ -190,7 +190,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Download shared build artifact
         uses: actions/download-artifact@v4
@@ -249,7 +249,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Check module sync
         run: pnpm check:module-sync
@@ -275,7 +275,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Run security audit
         run: pnpm audit --audit-level=high
@@ -338,7 +338,7 @@ jobs:
         run: git config --global url."https://github.com/".insteadOf "git@github.com:"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        uses: ./.github/actions/pnpm-install-retry
 
       - name: Download shared build artifact
         uses: actions/download-artifact@v4

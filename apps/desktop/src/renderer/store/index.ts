@@ -524,6 +524,37 @@ export const useClearStreamingMessages = () =>
   useAppStore((state) => state.clearStreamingMessages);
 
 // ==========================================================================
+// スキルライフサイクルセレクタ（TASK-10A-D）
+// P31対策: 無限ループ防止のため個別セレクタで取得
+// ==========================================================================
+
+// --- 状態セレクタ ---
+/** 現在の分析結果 */
+export const useCurrentAnalysis = () =>
+  useAppStore((state) => state.currentAnalysis);
+/** スキル分析中フラグ */
+export const useIsAnalyzingSkill = () =>
+  useAppStore((state) => state.isAnalyzing);
+/** スキル改善中フラグ */
+export const useIsImprovingSkill = () =>
+  useAppStore((state) => state.isImproving);
+
+// --- アクションセレクタ ---
+/** スキル分析アクション */
+export const useAnalyzeSkill = () => useAppStore((state) => state.analyzeSkill);
+/** 選択改善適用アクション */
+export const useApplySkillImprovements = () =>
+  useAppStore((state) => state.applySkillImprovements);
+/** 全自動改善アクション */
+export const useAutoImproveSkill = () =>
+  useAppStore((state) => state.autoImproveSkill);
+/** スキル作成アクション */
+export const useCreateSkill = () => useAppStore((state) => state.createSkill);
+/** 分析結果クリアアクション */
+export const useClearAnalysis = () =>
+  useAppStore((state) => state.clearAnalysis);
+
+// ==========================================================================
 // AgentView用 個別セレクタ（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
 // P31対策: AgentViewのインラインセレクタを個別Hookに移行
 // ==========================================================================

@@ -1,0 +1,33 @@
+name: "Install dependencies with retry"
+description: "Run pnpm install with retries to mitigate transient network failures"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install dependencies with retry
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        max_attempts="${INSTALL_RETRY_MAX_ATTEMPTS:-3}"
+        attempt=1
+
+        while [ "$attempt" -le "$max_attempts" ]; do
+          echo "::group::pnpm install attempt ${attempt}/${max_attempts}"
+          if pnpm install --frozen-lockfile; then
+            echo "::endgroup::"
+            exit 0
+          fi
+          echo "::endgroup::"
+
+          if [ "$attempt" -lt "$max_attempts" ]; then
+            sleep_seconds=$((attempt * 10))
+            echo "pnpm install failed. retry in ${sleep_seconds}s..."
+            sleep "$sleep_seconds"
+          fi
+
+          attempt=$((attempt + 1))
+        done
+
+        echo "pnpm install failed after ${max_attempts} attempts"
+        exit 1

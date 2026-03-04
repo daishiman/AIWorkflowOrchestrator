@@ -56,12 +56,16 @@ export const cardStyles = {
 /**
  * スキルのファイル総数を計算する。
  */
+function safeLength(value: unknown): number {
+  return Array.isArray(value) ? value.length : 0;
+}
+
 function getFileCount(skill: SkillMetadata): number {
   return (
-    skill.agents.length +
-    skill.references.length +
-    skill.indexes.length +
-    skill.otherFiles.length
+    safeLength(skill.agents) +
+    safeLength(skill.references) +
+    safeLength(skill.indexes) +
+    safeLength(skill.otherFiles)
   );
 }
 
@@ -71,6 +75,7 @@ function getFileCount(skill: SkillMetadata): number {
 export const SkillCard: React.FC<SkillCardProps> = memo(
   ({ skill, isAdded, isAdding = false, onAdd, onSelect }) => {
     const skillName = String(skill.name);
+    const description = String(skill.description ?? "");
     const fileCount = getFileCount(skill);
 
     const handleCardClick = useCallback(() => {
@@ -107,8 +112,8 @@ export const SkillCard: React.FC<SkillCardProps> = memo(
           </span>
         </div>
         <h3 className={cardStyles.name}>{skillName}</h3>
-        <p className={cardStyles.description} title={skill.description}>
-          {skill.description}
+        <p className={cardStyles.description} title={description}>
+          {description}
         </p>
         <div className={cardStyles.footer}>
           <span className={cardStyles.fileCount}>

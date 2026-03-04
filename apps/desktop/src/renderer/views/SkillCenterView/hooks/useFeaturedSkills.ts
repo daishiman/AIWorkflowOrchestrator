@@ -26,8 +26,16 @@ export interface UseFeaturedSkillsParams {
  * スキルのスコアを計算する。
  * agents / references / indexes の総数で人気度を近似する。
  */
+function safeLength(value: unknown): number {
+  return Array.isArray(value) ? value.length : 0;
+}
+
 function computePopularity(skill: SkillMetadata): number {
-  return skill.agents.length + skill.references.length + skill.indexes.length;
+  return (
+    safeLength(skill.agents) +
+    safeLength(skill.references) +
+    safeLength(skill.indexes)
+  );
 }
 
 /**
@@ -35,7 +43,7 @@ function computePopularity(skill: SkillMetadata): number {
  * description から簡易的にカテゴリを推論する。
  */
 function inferCategory(skill: SkillMetadata): string {
-  const desc = skill.description.toLowerCase();
+  const desc = String(skill.description ?? "").toLowerCase();
   if (desc.includes("test") || desc.includes("テスト")) return "testing";
   if (desc.includes("design") || desc.includes("設計")) return "design";
   if (desc.includes("security") || desc.includes("セキュリティ"))
@@ -104,7 +112,7 @@ function ensureCategoryDiversity(
 export function useFeaturedSkills(
   params: UseFeaturedSkillsParams,
 ): SkillMetadata[] {
-  const { allSkills, importedSkillNames, maxCount = 3 } = params;
+  const { allSkills = [], importedSkillNames = [], maxCount = 3 } = params;
 
   return useMemo(() => {
     const importedSet = new Set(importedSkillNames);

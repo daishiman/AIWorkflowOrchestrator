@@ -4,16 +4,30 @@
 
 ---
 
-## [2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 完了同期パターン追補]
+## [2026-03-04 - 仕様書別SubAgent実行ログのテンプレート標準化]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に成功パターン「2workflow証跡バンドル完了同期（リンク是正 + current判定固定）」を追加
-  - `assets/phase12-system-spec-retrospective-template.md` の簡潔解決手順と成果物チェックへ「completed-tasks移管後の未タスクリンク是正（missing=0）」を追記
-  - `references/resource-map.md` のテンプレート説明へリンク是正チェック対応を同期
-  - `SKILL.md` 変更履歴を `v10.36.2` として更新
+  - `assets/phase12-system-spec-retrospective-template.md` に「仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）」を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に同ログ欄を追加し、全担当で両列（実装内容・苦戦箇所）必須化を明記
+  - `references/phase-completion-checklist.md` の Phase 6 完了条件へ「仕様書別SubAgent実行ログの記録」を追加
+  - `references/resource-map.md` のテンプレート説明を実行ログ対応へ同期
+  - `SKILL.md` 変更履歴を `v10.36.3` として同期
+
+---
+
+## [2026-03-04 - Phase 6 完了チェック強化（current/baseline分離 + 画面証跡意図記録）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/phase-completion-checklist.md` の Phase 6 完了条件に、`audit-unassigned-tasks` の `current`/`baseline` 分離記録チェックを追加
+  - 画面証跡レビューの再発防止として「スクリーンショットは状態名 + 検証目的を記録」を完了条件へ追加
+  - 同ファイルの検証コマンドへ `audit-unassigned-tasks --json --diff-from HEAD`（合否）と `--json`（baseline監視）を追記
+  - `SKILL.md` 変更履歴を `v10.36.2` として同期
 
 ---
 

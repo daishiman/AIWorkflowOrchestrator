@@ -5,54 +5,131 @@
 
 ---
 
-## 2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 テンプレート準拠最適化（パターン化）
+## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の仕様同期（再監査）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001`
-- 目的: 今回の実装内容・苦戦箇所を「同種課題へ再利用できる構造」に統一し、仕様書の責務境界を明確化する
+- 対象: `01/02/03`（imported state復元 / import冪等ガード / SkillCenter欠損メタデータ防御）
+- 目的: 実装済み変更を正本6仕様書へ漏れなく同期し、Phase 12 Task 5 の SKILL/LOGS 同時更新要件を充足
 
-### SubAgent分担
-- SubAgent-A: `task-workflow.md`（仕様反映先テーブル追加、完了タスク節のテンプレート準拠化）
-- SubAgent-B: `architecture-implementation-patterns.md`（2workflow証跡バンドル同期パターン新設）
-- SubAgent-C: `lessons-learned.md`（苦戦箇所と5ステップ手順の整合確認）
-- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file`）
+### 仕様書別SubAgent分担
+- SubAgent-A: `references/api-ipc-agent.md`（`skill:import` 成功判定と冪等返却契約）
+- SubAgent-B: `references/interfaces-agent-sdk-skill.md`（`getImported` id/name互換キー、SkillCenter防御契約）
+- SubAgent-C: `references/arch-state-management.md`（`agentSlice.importSkill` 事前ガード）
+- SubAgent-D: `references/ui-ux-feature-components.md`（欠損メタデータ防御 + TC-01〜TC-04画面証跡）
+- SubAgent-E: `references/task-workflow.md` / `references/lessons-learned.md`（完了台帳・教訓・再利用手順）
 
 ### 実施内容
-- `task-workflow.md` に「仕様反映先（テンプレート準拠）」を追加し、task-workflow / patterns / lessons の3点同期を明記
-- `architecture-implementation-patterns.md` に「Phase 12 2workflow証跡バンドル同期パターン」を追加
-- 同パターンで `workflow固定 → Task 1/3/4/5 実体突合 → current/baseline分離 → リンク是正` を標準フロー化
-- `SKILL.md` 変更履歴へ `v9.00.6` を追記
+- `api-ipc-agent.md` に `skill:import` 契約追補を追加（`errors.length===0` 成功判定、既存ケース返却契約）
+- `interfaces-agent-sdk-skill.md` に `skill:getImported` 互換キー契約（id/name）と nullish 防御契約を追記
+- `arch-state-management.md` に `importSkill` 冪等早期終了と SkillCenter Hook nullish 防御を追記
+- `ui-ux-feature-components.md` に欠損メタデータ防御仕様とスクリーンショット証跡4件を追記
+- `task-workflow.md` / `lessons-learned.md` に 3連続是正タスクの完了台帳と再利用手順を追加
 
 ### 結果
 - ステータス: success
-- 補足: 実装記録と再利用パターンの責務分離が成立し、同種課題の初動手順を簡潔化
+- 補足: `verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）を再実行し、すべて PASS
 
 ---
 
-## 2026-03-03 - UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 実装完了同期（台帳 + 教訓 + リンク整合）
+## 2026-03-04 - TASK-10A-D 苦戦箇所の未タスク分離（2件）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001`
-- 目的: 本ブランチ実装（phase12-two-workflow-evidence-bundle）の完了記録、苦戦箇所、再利用手順を system spec 正本へ反映し、未タスクリンクの参照切れを解消する
-
-### SubAgent分担
-- SubAgent-A: `task-workflow.md`（完了記録、検証証跡、残課題行の完了化）
-- SubAgent-B: `lessons-learned.md`（実装完了教訓 + 5ステップ手順）
-- SubAgent-C: `ui-ux-feature-components.md`（UT-UI-05A 関連リンクの正本パス同期）
-- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file`）
+- 対象: TASK-10A-D（Phase 11/12 再確認）
+- 目的: 再確認で残った運用課題を未タスク仕様書として分離し、再利用可能な改善導線を固定する
 
 ### 実施内容
-- `task-workflow.md` に `UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001` の完了タスクセクションを追加
-- 残課題テーブルの同タスク行を完了表記へ更新
-- `task-workflow.md` / `ui-ux-feature-components.md` の `UT-UI-05A-*` 参照3件を `completed-tasks/skill-editor-view-closure/unassigned-task/` へ置換
-- `lessons-learned.md` に実装完了セクション（苦戦箇所3件 + 5ステップ）を追加
-- `SKILL.md` 変更履歴へ `v9.00.5` を追記
+- `docs/30-workflows/unassigned-task/` に以下2件を新規作成
+  - `task-imp-task10a-d-subagent-execution-log-guard-001.md`
+  - `task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md`
+- `task-workflow.md` の TASK-10A-D セクションと残課題テーブルに2件を登録
+- `ui-ux-feature-components.md` の TASK-10A-D 関連未タスクへ2件を追記
+- `lessons-learned.md` の TASK-10A-D 関連未タスクを2件へ更新
 
 ### 結果
 - ステータス: success
-- 補足: `verify-unassigned-links` は `missing=0` に回復し、未タスク監査は `currentViolations=0` を確認
+- 補足: 未タスク指示書は `## メタ情報` + `## 1..9` のテンプレート構成に準拠
+
+---
+
+## 2026-03-04 - TASK-10A-D 仕様書別SubAgent運用の最適化
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-10A-D（Phase 12 システム仕様同期）
+- 目的: 実装内容と苦戦箇所を仕様書単位で同時記録し、再利用時の転記漏れを防ぐ
+
+### 実施内容
+- `task-workflow.md` に「仕様書別SubAgent実行ログ（task-workflow/ui-ux-feature/lessons/skill-creator）」を追加
+- `task-workflow.md` に SubAgent運用版の簡潔解決手順（5ステップ）を追加
+- `ui-ux-feature-components.md` に仕様書別SubAgent反映ログと5ステップ手順を追加
+- `lessons-learned.md` の TASK-10A-D 節へ実装内容サマリーと仕様書別SubAgent分担表を追加
+
+### 結果
+- ステータス: success
+- 補足: 3仕様書すべてで「実装内容 + 苦戦箇所」を同時記録する構成へ統一
+
+---
+
+## 2026-03-04 - TASK-10A-D 再確認追補（Phase 12再検証 + 画面証跡解釈同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-10A-D（Phase 12 再確認）
+- 目的: 今回実装内容と苦戦箇所を再検証結果込みで仕様書へ同期し、未タスク判定の current/baseline 誤読を防ぐ
+
+### 実施内容
+- `task-workflow.md` に再確認証跡（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）を追補
+- `lessons-learned.md` の TASK-10A-D セクションへ苦戦箇所2件を追加（監査値誤読、TC-02/TC-05 証跡意図の混在）
+- `ui-ux-feature-components.md` に再確認追補節を追加し、画面証跡レビュー運用（状態名 + 検証目的）を明文化
+- `phase-12-documentation.md` のメタ情報を完了状態へ同期（再確認日 2026-03-04）
+- `manual-test-result.md` に TC-02 注記を追加し、analysis遷移時フォールバック表示であることを明記
+
+### 結果
+- ステータス: success
+- 補足: 未タスク差分監査は `currentViolations=0`、全体監査は baseline負債検知として別記録（current=85）
+
+---
+
+## 2026-03-03 - TASK-10A-D 再監査追補（証跡再取得 + 未タスクリンク是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-10A-D（Phase 11/12 再確認）
+- 目的: 画面証跡欠落と `task-workflow.md` の未タスクリンク欠損を解消し、機械検証を再PASS化
+
+### 実施内容
+- `task-workflow.md` の UT-UI-05A 関連リンク3件を `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/` へ修正
+- `verify-unassigned-links.js` を再実行し `ALL_LINKS_EXIST`（89/89）を確認
+- Phase 11 スクリーンショット5件を `docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/outputs/phase-11/screenshots/` に配置
+- `validate-phase11-screenshot-coverage.js` を再実行し `expected TC=5 / covered TC=5` を確認
+
+### 結果
+- ステータス: success
+- 補足: 参照切れと証跡欠落を同時解消し、Phase 12監査結果を更新
+
+---
+
+## 2026-03-03 - TASK-10A-D スキルライフサイクルUI統合 完了同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: TASK-10A-D（SkillManagementPanelビュー統合 + ChatPanel導線追加 + agentSlice拡張）
+- 目的: Phase 12 Task 2（システム仕様書更新）の実行。5仕様書に実装内容・苦戦箇所を同期
+
+### 実施内容
+- `ui-ux-components.md` に完了タスクセクション追加（SkillManagementPanel ビュー統合記録）
+- `ui-ux-feature-components.md` に TASK-10A-D セクション追加（ビュー構成・Store拡張・テスト・苦戦箇所）
+- `arch-ui-components.md` に統合アーキテクチャ更新（SkillAnalysisView/SkillCreateWizard統合）
+- `arch-state-management.md` に agentSlice拡張記録（3状態+5アクション+8セレクタ）
+- `interfaces-agent-sdk-skill.md` に完了タスク + 型契約追記
+- `task-workflow.md` に TASK-10A-D 完了記録セクション追加
+- `LOGS.md` 2ファイル + `SKILL.md` 2ファイル更新
+
+### 結果
+- ステータス: success
+- 補足: P43対策として3ファイル以下/エージェントに分割実行。P1/P25対策としてLOGS.md 2ファイル同時更新
 
 ---
 

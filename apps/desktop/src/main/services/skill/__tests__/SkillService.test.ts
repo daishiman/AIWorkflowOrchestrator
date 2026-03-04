@@ -361,6 +361,23 @@ describe("SkillService", () => {
       expect(result).toHaveLength(1);
       expect(result[0].id).toBe("skill-id-1");
     });
+
+    it("SS-GIS-06: should resolve imported skills by name for backward compatibility", async () => {
+      // Given: import manager が name 形式で保持している
+      mockImportManager.getImportedSkillIds.mockReturnValue(["Skill One"]);
+
+      if (!service) {
+        throw new Error("SkillService not initialized - Red phase");
+      }
+
+      // When
+      const result = await service.getImportedSkills();
+
+      // Then: name一致で取得できる
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe("Skill One");
+      expect(result[0].id).toBe("skill-id-1");
+    });
   });
 
   // ===========================================================================

@@ -1144,27 +1144,26 @@ describe("skillHandlers", () => {
       );
     });
 
-    it("RT-09: should throw IMPORT_ERROR when importedCount is 0 despite success", async () => {
-      // Given: success=true だが importedCount=0（既にインポート済み等）
+    it("RT-09: should return ImportedSkill when importedCount is 0 but import succeeded", async () => {
+      // Given: success=true かつ importedCount=0（既にインポート済み）
       mockSkillService.importSkills.mockResolvedValue({
         success: true,
         importedCount: 0,
         errors: [],
       });
+      mockSkillService.getSkillByName.mockResolvedValue(mockImportedSkill);
 
       const handler = handlers.get(SKILL_CHANNELS.IMPORT);
       if (!handler) throw new Error("skill:import handler not registered");
 
-      // When & Then: IMPORT_ERROR がthrowされる
-      try {
-        await handler({}, "already-imported");
-        throw new Error("Expected IMPORT_ERROR");
-      } catch (error) {
-        expect((error as { code: string }).code).toBe("IMPORT_ERROR");
-        expect((error as { message: string }).message).toContain(
-          "already-imported",
-        );
-      }
+      // When: 再インポートを実行
+      const result = (await handler({}, "already-imported")) as ImportedSkill;
+
+      // Then: 冪等に ImportedSkill が返る
+      expect(result).toEqual(mockImportedSkill);
+      expect(mockSkillService.getSkillByName).toHaveBeenCalledWith(
+        "already-imported",
+      );
     });
 
     it("RT-10: should join multiple error messages in IMPORT_ERROR", async () => {

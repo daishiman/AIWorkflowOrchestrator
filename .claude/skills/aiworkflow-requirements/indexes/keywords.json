@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T13:42:49.557Z",
-  "totalKeywords": 1410,
+  "generated": "2026-03-04T01:30:12.849Z",
+  "totalKeywords": 1411,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -775,6 +775,7 @@
       "lessons-learned.md",
       "llm-streaming.md",
       "spec-splitting-guidelines.md",
+      "task-workflow.md",
       "technology-frontend.md",
       "testing-component-patterns.md",
       "ui-history-components.md",
@@ -825,9 +826,19 @@
     "スキル分析・統計": [
       "api-ipc-agent.md"
     ],
-    "スキル作成ウィザード": [
+    "skill": [
       "api-ipc-agent.md",
-      "interfaces-agent-sdk-skill.md"
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md"
+    ],
+    "import": [
+      "api-ipc-agent.md",
+      "lessons-learned.md"
+    ],
+    "契約追補": [
+      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -1142,6 +1153,16 @@
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
     ],
+    "Import": [
+      "arch-state-management.md",
+      "interfaces-agent-sdk-integration.md"
+    ],
+    "SkillCenter": [
+      "arch-state-management.md"
+    ],
+    "防御状態管理": [
+      "arch-state-management.md"
+    ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
     ],
@@ -1179,6 +1200,9 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
+      "arch-ui-components.md"
+    ],
+    "ビュー統合アーキテクチャパターン": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -1339,9 +1363,12 @@
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
       "technology-backend.md",
       "testing-playwright-e2e.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "history": [
@@ -1545,44 +1572,6 @@
     "形式引数パターンの確認": [
       "architecture-implementation-patterns.md"
     ],
-    "Phase": [
-      "architecture-implementation-patterns.md",
-      "claude-code-agents-workflow.md",
-      "lessons-learned.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
-    ],
-    "workflow": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md"
-    ],
-    "証跡バンドル同期パターン": [
-      "architecture-implementation-patterns.md"
-    ],
-    "IMP": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "PHASE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "TWO": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "WORKFLOW": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "EVIDENCE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
-    "BUNDLE": [
-      "architecture-implementation-patterns.md",
-      "lessons-learned.md"
-    ],
     "チャネル命名監査の運用パターン": [
       "architecture-implementation-patterns.md"
     ],
@@ -1612,6 +1601,10 @@
     "未タスク監査スコープ分離パターン": [
       "architecture-implementation-patterns.md"
     ],
+    "IMP": [
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
@@ -1637,15 +1630,12 @@
     "system": [
       "architecture-implementation-patterns.md"
     ],
-    "skill": [
-      "architecture-implementation-patterns.md",
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md"
-    ],
     "creator": [
       "architecture-implementation-patterns.md",
       "quality-e2e-testing.md"
+    ],
+    "共有型インポート標準パターン": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -1798,6 +1788,11 @@
     ],
     "ワークフローセクションの記述形式": [
       "claude-code-agents-workflow.md"
+    ],
+    "Phase": [
+      "claude-code-agents-workflow.md",
+      "lessons-learned.md",
+      "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
       "claude-code-agents-workflow.md"
@@ -2570,9 +2565,6 @@
     "セッション永続化": [
       "interfaces-agent-sdk-integration.md"
     ],
-    "Import": [
-      "interfaces-agent-sdk-integration.md"
-    ],
     "System": [
       "interfaces-agent-sdk-integration.md"
     ],
@@ -2605,6 +2597,15 @@
     ],
     "スキル分析": [
       "interfaces-agent-sdk-skill.md"
+    ],
+    "スキル作成ウィザード": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "スキルライフサイクル": [
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
@@ -3101,7 +3102,7 @@
     "再監査": [
       "lessons-learned.md"
     ],
-    "実装完了": [
+    "連続是正": [
       "lessons-learned.md"
     ],
     "CENTER": [
@@ -3258,6 +3259,12 @@
     "今回変更のみ": [
       "lessons-learned.md"
     ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "EVIDENCE": [
+      "lessons-learned.md"
+    ],
     "LINK": [
       "lessons-learned.md"
     ],
@@ -3396,9 +3403,6 @@
     "契約不整合修正": [
       "lessons-learned.md"
     ],
-    "import": [
-      "lessons-learned.md"
-    ],
     "インターフェース整合修正": [
       "lessons-learned.md"
     ],
@@ -3469,6 +3473,10 @@
     ],
     "未実施が混在していないか": [
       "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"
@@ -4285,9 +4293,6 @@
       "security-electron-ipc.md"
     ],
     "skillFileAPI": [
-      "security-electron-ipc.md"
-    ],
-    "skillCreateAPI": [
       "security-electron-ipc.md"
     ],
     "skillShareAPI": [

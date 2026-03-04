@@ -9,6 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
+| v3.8.1     | 2026-03-03 | TASK-10A-D教訓反映: 個別セレクタの命名規約（ドメインサフィックス必須ルール）を追加。`useIsAnalyzingSkill()` vs `useIsAnalyzing()` の命名判断基準を明文化 |
+| v3.8.0     | 2026-03-03 | TASK-10A-D反映: agentSlice拡張（3状態: currentAnalysis/isAnalyzing/isImproving + 5アクション: analyzeSkill/applySkillImprovements/autoImproveSkill/createSkill/clearAnalysis + 8個別セレクタ）を状態定義・アクション定義テーブルへ追記 |
 | v3.7.2     | 2026-03-02 | TASK-UI-05B 追補: SubAgent-D 観点の苦戦箇所（責務分離の記述漏れ、監査結果の current/baseline 誤読）と5ステップ再利用手順を追加 |
 | v3.7.1     | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `completed` に更新。4ビュー（Chain/Schedule/Debug/Analytics）の Hook 実装・導線追加・テスト完了を反映 |
 | v3.7.0     | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views（4ビュー）の状態管理方針を追加。新規Zustand Sliceなし、useStateベースカスタムHook + agentSlice個別セレクタの設計を記録 |
@@ -124,6 +127,9 @@
 | `executionOutput`    | `string[]`             | 実行出力           |
 | `isLoading`          | `boolean`              | ローディング状態   |
 | `error`              | `string \| null`       | エラーメッセージ   |
+| `currentAnalysis`    | `SkillAnalysis \| null` | 分析結果（TASK-10A-D追加） |
+| `isAnalyzing`        | `boolean`               | 分析中フラグ（TASK-10A-D追加） |
+| `isImproving`        | `boolean`               | 改善中フラグ（TASK-10A-D追加） |
 
 **アクション定義**:
 
@@ -137,6 +143,11 @@
 | `appendOutput`       | `output: string`               | 出力追加       |
 | `clearExecution`     | -                              | 実行クリア     |
 | `resetAgentState`    | -                              | 状態リセット   |
+| `analyzeSkill`           | `skillName: string`                                  | 分析実行（TASK-10A-D追加）     |
+| `applySkillImprovements` | `skillName: string, suggestions: Suggestion[]`       | 改善提案適用（TASK-10A-D追加） |
+| `autoImproveSkill`       | `skillName: string`                                  | 全自動改善（TASK-10A-D追加）   |
+| `createSkill`            | `description: string, options: CreateOptions`         | スキル作成（TASK-10A-D追加）   |
+| `clearAnalysis`          | -                                                     | 分析結果クリア（TASK-10A-D追加） |
 
 ### 新規Slice追加手順
 
@@ -257,6 +268,16 @@ export const useLLMProviders = () => useAppStore((state) => state.providers);
 // Action セレクタ（関数を返す - 参照安定）
 export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProviders);
 ```
+
+**個別セレクタの命名規約**:
+
+| ルール | 命名パターン | 例 |
+| --- | --- | --- |
+| 状態セレクタ | `use` + 状態名 + 機能ドメインサフィックス | `useIsAnalyzingSkill()` (`useIsAnalyzing()` は不可) |
+| アクションセレクタ | `use` + 動詞 + 対象 + 機能ドメインサフィックス | `useAnalyzeSkill()`, `useApplySkillImprovements()` |
+| 汎用名の回避 | 複数Sliceで同名になりうる場合はドメインを明示 | `useSkillError()` (`useError()` は不可) |
+
+> **TASK-10A-D教訓**: agentSlice に `isAnalyzing` / `isImproving` を追加した際、LLMSlice の `useIsLLMLoading()` と類似する汎用名になるリスクがあった。ドメインサフィックス（`Skill`）を付与して衝突を防止。
 
 **提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個（計30個）
 （UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け15個を追加し、P31適用範囲を拡張）
@@ -1046,6 +1067,36 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 
 ### 参照
 - [TASK-UI-05B Phase 2 状態管理設計](../../../../docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/phase-2-design.md)
+
+---
+
+## Skill Import / SkillCenter 防御状態管理（2026-03-04）
+
+`TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001` / `TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` / `TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001` を状態管理視点で同期した追補仕様。
+
+### agentSlice.importSkill の冪等ガード
+
+| 観点 | 契約 |
+| --- | --- |
+| 事前判定 | `importedSkills.some((s) => s.name === skillName)` が真なら IPC を呼ばずに早期 return |
+| 事前同期 | 既存インポート時でも `availableSkillsMetadata` から該当 `skillName` を除外し、一覧表示を整合 |
+| 追加時の重複防止 | import 成功後も `importedSkills` へ push 前に同名存在チェックを実施 |
+| エラー状態 | 冪等早期終了時は `skillError: null` を維持し、擬似失敗を記録しない |
+
+### SkillCenter 系 Hook の nullish 防御
+
+| 対象 | 防御契約 |
+| --- | --- |
+| `useSkillCenter` | `useAvailableSkillsMetadata() ?? []` / `useImportedSkills() ?? []` で Store 読み出し時の nullish を吸収 |
+| 検索/カテゴリ判定 | `normalizeSearchText(value)` で `description` 欠損時にも `.toLowerCase()` 例外を回避 |
+| Featured 計算 | `useFeaturedSkills` で `allSkills=[]`, `importedSkillNames=[]` を既定値化し、計算関数の前提を固定 |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | PASS（既存インポート時 IPC スキップと重複防止を確認） |
+| `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で欠損メタデータ時のクラッシュ非発生を確認 |
 
 ---
 
