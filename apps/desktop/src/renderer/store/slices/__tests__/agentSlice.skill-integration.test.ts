@@ -383,6 +383,7 @@ describe("agentSlice - スキル統合テスト（Phase 6）", () => {
 
       it("TS-6-1-69: 既にインポート済みのスキルは再インポートAPIを呼ばない", async () => {
         store.importedSkills = [...mockImportedSkills];
+        store.availableSkillsMetadata = [...mockAvailableSkills];
         const skillApi = setupMockElectronAPI({
           skillImportError: new Error("Already imported"),
         });
@@ -392,6 +393,11 @@ describe("agentSlice - スキル統合テスト（Phase 6）", () => {
         expect(skillApi.import).not.toHaveBeenCalled();
         expect(store.skillError).toBeNull();
         expect(store.importedSkills).toEqual(mockImportedSkills);
+        expect(
+          store.availableSkillsMetadata.some(
+            (skill) => skill.name === "test-skill-1",
+          ),
+        ).toBe(false);
       });
     });
 

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import type { SkillMetadata, SkillName } from "@repo/shared/types/skill";
+import type { ImportedSkill } from "@repo/shared";
 
 // --- テストデータファクトリ ---
 
@@ -19,6 +20,26 @@ const createMockSkillMetadata = (
   schemas: [],
   indexes: [],
   otherFiles: [],
+  ...overrides,
+});
+
+const createMockImportedSkill = (
+  overrides: Partial<ImportedSkill> = {},
+): ImportedSkill => ({
+  name: "imported-skill" as SkillName,
+  description: "インポート済みスキル",
+  allowedTools: ["Read"],
+  path: ".claude/skills/imported-skill",
+  updatedAt: new Date("2026-01-01"),
+  agents: [],
+  references: [],
+  scripts: [],
+  assets: [],
+  schemas: [],
+  indexes: [],
+  otherFiles: [],
+  importedAt: new Date("2026-01-02"),
+  status: "active",
   ...overrides,
 });
 
@@ -127,6 +148,48 @@ describe("useSkillCenter", () => {
     });
 
     expect(mockImportSkill).toHaveBeenCalledWith("new-skill");
+  });
+
+  it("handleAddSkill は追加中の同一スキルを再実行しない", async () => {
+    vi.useFakeTimers();
+    try {
+      mockImportSkill.mockResolvedValue(undefined);
+      const { result } = renderHook(() => useSkillCenter());
+
+      await act(async () => {
+        await result.current.handleAddSkill("new-skill" as SkillName);
+      });
+      expect(mockImportSkill).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        await result.current.handleAddSkill("new-skill" as SkillName);
+      });
+
+      expect(mockImportSkill).toHaveBeenCalledTimes(1);
+
+      act(() => {
+        vi.runAllTimers();
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("既にインポート済みのスキル追加ではアニメーションを開始しない", async () => {
+    const store = await import("../../../store");
+    vi.mocked(store.useImportedSkills).mockReturnValue([
+      createMockImportedSkill({ name: "already-imported" as SkillName }),
+    ]);
+    mockImportSkill.mockResolvedValue(undefined);
+
+    const { result } = renderHook(() => useSkillCenter());
+
+    await act(async () => {
+      await result.current.handleAddSkill("already-imported" as SkillName);
+    });
+
+    expect(mockImportSkill).toHaveBeenCalledWith("already-imported");
+    expect(result.current.addingSkills.has("already-imported")).toBe(false);
   });
 
   it("handleRequestDelete で削除確認ダイアログが開く", () => {

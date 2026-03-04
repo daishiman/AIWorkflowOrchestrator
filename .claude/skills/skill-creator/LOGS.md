@@ -32,6 +32,39 @@
 
 ---
 
+## [2026-03-04 - Phase 12 監査カウンタ再同期ガード追補]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「未タスク監査カウンタ再同期（links/audit値の再計測固定）」を追加
+  - クイックナビ（📋 Phase 12）へ成功/失敗キーワードを追記
+    - 成功: 未タスク監査カウンタ再同期
+    - 失敗: 検証後の数値再同期漏れ（旧links/baseline値残置）
+  - `assets/phase12-system-spec-retrospective-template.md` に `current/baseline` 抽出コマンド（jq）を追加
+  - 同テンプレートの完了チェックに「`task-workflow` + `outputs/phase-12` への同値転記」を必須化
+  - `SKILL.md` 変更履歴を `v10.36.6` として同期
+
+---
+
+## [2026-03-04 - Phase 12 運用ガード追補（実体探索 + Vitest非watch固定）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン2件を追加
+    - 検証スクリプト実体探索先行（`rg --files` 固定）
+    - Vitest再確認の非watch固定（`pnpm --filter @repo/desktop exec vitest run`）
+  - 同ファイルのクイックナビ（Phase 12）へ成功/失敗キーワードを反映
+    - 失敗: 記憶ベース実行、`pnpm test` watch残留
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに `vitest run` 行を追加
+  - 同テンプレートの完了チェックへ「非watch実行確認」を追加
+  - `SKILL.md` 変更履歴を `v10.36.5` として同期
+
+---
+
 ## [2026-03-04 - 仕様書別SubAgent実行ログのテンプレート標準化]
 
 - **Agent**: skill-creator (update)

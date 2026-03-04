@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-03T17:18:37.640Z
-> 対象: docs/30-workflows/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+> 検証日時: 2026-03-04T04:44:01.333Z
+> 対象: docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 
 ## サマリー
 

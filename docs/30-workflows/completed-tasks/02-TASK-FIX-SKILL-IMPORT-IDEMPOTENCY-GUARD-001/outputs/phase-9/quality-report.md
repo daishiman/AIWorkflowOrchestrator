@@ -8,5 +8,5 @@
 
 ## 根拠
 
-- 2 files / 129 tests PASS
+- 3 files / 142 tests PASS
 - 仕様書検証は後続Phaseで再実行して固定。

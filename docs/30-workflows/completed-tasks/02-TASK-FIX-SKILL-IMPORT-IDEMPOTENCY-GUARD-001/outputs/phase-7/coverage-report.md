@@ -2,7 +2,8 @@
 
 ## 実行ログ要約
 
-- テスト結果: 2 files / 129 tests PASS
+- テスト結果: 3 files / 142 tests PASS
+- 対象: Main IPC / Renderer Store / SkillCenter Hook の冪等ガード範囲
 - 備考: 対象テスト群は全PASS。
 
 ## 補足
