@@ -12,6 +12,7 @@ import type {
   SkillExecutionResponse,
   SkillExecutionError,
 } from "@repo/shared/types/skill";
+import { preflightSkillExecutionAuth } from "../utils/skillExecutionAuthPreflight";
 
 /**
  * 実行ステータス
@@ -124,11 +125,19 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
     async (prompt: string): Promise<SkillExecutionResponse | null> => {
       // 状態リセット
       setMessages([]);
-      setStatus("running");
+      setStatus("idle");
       setError(null);
       setIsAborting(false);
 
       try {
+        const preflightResult = await preflightSkillExecutionAuth();
+        if (!preflightResult.ok) {
+          setStatus("error");
+          setError(preflightResult.error || null);
+          return null;
+        }
+
+        setStatus("running");
         const response = await window.electronAPI.skill.execute({
           prompt,
           skillName: skillId,
@@ -154,8 +163,14 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
         return response;
       } catch (err) {
         setStatus("error");
+        const errorCode =
+          err instanceof Error &&
+          typeof (err as Error & { code?: unknown }).code === "string"
+            ? ((err as Error & { code: SkillExecutionError["code"] }).code ??
+              "EXECUTION_FAILED")
+            : "EXECUTION_FAILED";
         setError({
-          code: "EXECUTION_FAILED",
+          code: errorCode,
           message: err instanceof Error ? err.message : "Unknown error",
         });
         return null;

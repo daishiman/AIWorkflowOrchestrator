@@ -374,6 +374,40 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+## `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001）
+
+Renderer からのスキル実行要求を Main へ渡す中核チャネル。認証 preflight と失敗契約を同期し、`AUTHENTICATION_ERROR` を UI 層まで識別可能に伝搬する。
+
+### チャネル仕様
+
+| 項目 | 内容 |
+| --- | --- |
+| チャネル名 | `skill:execute` |
+| 方向 | Renderer → Main |
+| リクエスト | `SkillExecutionRequest`（`{ skillName: string; prompt: string }`） |
+| 後方互換入力 | `{ skillId: string; params: string }`（Main で吸収） |
+| 成功レスポンス | `{ success: true, data: SkillExecutionResponse }` |
+| 失敗レスポンス | `{ success: false, error: string, errorCode?: string }` |
+| 認証失敗時 | `errorCode: "AUTHENTICATION_ERROR"` を付与 |
+
+### 認証 preflight 連携
+
+| 層 | 仕様 |
+| --- | --- |
+| Renderer | `auth-key:exists` 実行結果が `exists=false` の場合、`skill:execute` を呼ばず処理停止 |
+| Main (`auth-key:exists`) | store値 + `process.env.ANTHROPIC_API_KEY` の順で存在判定 |
+| Preload | `safeInvokeUnwrap` で `errorCode` を `Error.code` へ転写 |
+
+### バリデーション・セキュリティ
+
+| 対策 | 実装 | 返却仕様 |
+| --- | --- | --- |
+| Sender 検証 | `validateIpcSender(event, mainWindow)` | 不正時 `toIPCValidationError` |
+| 入力検証 | P42 準拠3段（型/空文字/trim） | `VALIDATION_ERROR` |
+| エラーサニタイズ | `sanitizeErrorMessage(error)` | 内部情報は `"Internal error"` |
+
+---
+
 ## スキルファイル操作 IPC チャネル（TASK-9A-B）
 
 スキルファイルの読み書き・バックアップ・復元操作をIPC経由で提供する。
@@ -841,37 +875,12 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 ---
 
-## `skill:import` IPC 契約追補（2026-03-04）
-
-`TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001` と `TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` の反映として、`skill:import` の成功判定と冪等返却契約を固定する。
-
-### 契約ポイント
-
-| 観点 | 契約 |
-| --- | --- |
-| 引数 | `skillName: string`（P42準拠3段バリデーション） |
-| 成功判定 | `result.success === true` かつ `result.errors.length === 0`（`importedCount` は判定に含めない） |
-| 戻り値 | `ImportedSkill`（新規追加/既存追加済みの両ケースで返却） |
-| 失敗判定 | `result.errors.length > 0` または `getSkillByName` 取得失敗時に `IMPORT_ERROR` |
-| 冪等性 | Renderer 側で既存インポート判定時は IPC 呼び出しをスキップし、状態のみ同期する |
-
-### 実装境界
-
-| レイヤー | 実装ファイル | 役割 |
-| --- | --- | --- |
-| Main IPC | `apps/desktop/src/main/ipc/skillHandlers.ts` | 成功判定を `errors.length===0` に統一し、既存ケースも `ImportedSkill` を返却 |
-| Service | `apps/desktop/src/main/services/skill/SkillService.ts` | `getImportedSkills()` で import manager キーを `id/name` 両対応で復元 |
-| Renderer Store | `apps/desktop/src/renderer/store/slices/agentSlice.ts` | `importSkill` の事前ガード（既存時 IPC 呼び出しなし）で二重追加を防止 |
-
----
-
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
-| TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001 | imported state 復元整合修正 | 2026-03-04 | `getImportedSkills()` を id/name 互換に更新し、旧保存データ（nameキー）混在時でも `skill:getImported` が正しく復元されるよう是正 |
-| TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 | `skill:import` 冪等ガード修正 | 2026-03-04 | `skill:import` の成功判定を `errors.length===0` 基準へ更新。既存インポート時（`importedCount=0`）も `ImportedSkill` を返却し、Renderer 側の重複追加を防止 |
 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 | skill:chain:list ハンドラ登録漏れ修正 | 2026-03-03 | `registerSkillChainHandlers` を `registerAllIpcHandlers` へ追加し、`ipc-double-registration` 回帰テストで登録漏れを検出可能化。関連未タスクとしてバレル公開整合タスクを登録 |
+| TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `skill:execute` 認証 preflight ガード | 2026-03-04 | `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬を明文化。`auth-key:exists` の store+env 判定順と Preload `Error.code` 転写を同期 |
 | TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
@@ -907,7 +916,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
-| v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を同期。`skill:import` 成功判定を `errors.length===0` 基準へ固定し、既存追加済みケースの `ImportedSkill` 返却契約を追補。`getImported` の id/name 互換復元（Service）と Renderer 側 idempotency guard（重複追加防止）を実装境界テーブルで明文化 |
+| v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 契約セクションを追加し、失敗レスポンス `errorCode`・Renderer preflight・`auth-key:exists` store+env 判定順・Preload `Error.code` 転写を同期 |
 | v1.16.3    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 の苦戦箇所と4ステップ簡潔解決手順を追記。完了タスク台帳に同タスクを追加し、登録漏れ修正と未タスク移管（バレル公開整合）を同期 |
 | v1.16.2    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001: `skill:chain:*` の備考を実装実態へ同期（`registerAllIpcHandlers` での登録保証を明記） |
 | v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |

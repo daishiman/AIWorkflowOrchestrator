@@ -89,10 +89,10 @@ Phase 4〜5: 検証 → 完了
 | カテゴリ    | 数  | 詳細参照                                                 |
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
-| references/ | 16  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
+| references/ | 19  | [resource-map.md#references](references/resource-map.md) |
+| scripts/    | 15  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
-| assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
+| assets/     | 10  | [resource-map.md#assets](references/resource-map.md)     |
 
 📖 [references/resource-map.md](references/resource-map.md)
 
@@ -109,6 +109,7 @@ Phase 4〜5: 検証 → 完了
 | システム仕様更新 | agents/update-system-specs.md      |
 | 未タスク生成     | agents/generate-unassigned-task.md |
 | フィードバック   | scripts/log-usage.js               |
+| 証跡バンドル検証 | scripts/evidence-bundle-validator.ts |
 
 ---
 
@@ -128,6 +129,9 @@ Phase 4〜5: 検証 → 完了
 | 技術ドキュメント作成 | [references/technical-documentation-guide.md](references/technical-documentation-guide.md) |
 | 成果物命名規則       | [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)     |
 | 未タスクガイドライン | [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)       |
+| Phase 12 実体チェック | [references/phase12-checklist-definition.md](references/phase12-checklist-definition.md)   |
+| 証跡同期ルール       | [references/evidence-sync-rules.md](references/evidence-sync-rules.md)                     |
+| 画面証跡検証手順     | [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md) |
 | 成功/失敗パターン    | [references/patterns.md](references/patterns.md)                                           |
 | 履歴アーカイブ       | [references/changelog-archive.md](references/changelog-archive.md)                         |
 | 自己改善サイクル     | [references/self-improvement-cycle.md](references/self-improvement-cycle.md)               |
@@ -392,9 +396,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.08.0** | **2026-03-04** | **TASK-FIX-SKILL-IMPORT 3連続是正の再監査を反映**: `01/02/03` workflow を再監査し、`aiworkflow-requirements` 正本6仕様書（api-ipc/interfaces/arch-state/ui-ux-feature/task-workflow/lessons）へ実装内容と苦戦箇所を同期。Phase 12 Task 5 必須の4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を同一ターンで更新し、`verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）/`audit --diff-from HEAD` の証跡を固定 |
-| **v10.07.1** | **2026-03-03** | **TASK-10A-D 再監査追補**: Phase 11 証跡不足を是正し、`outputs/phase-11/screenshots/` に TC-01〜TC-05 を追加。`manual-test-result.md` を証跡列付きへ更新して `validate-phase11-screenshot-coverage` を PASS 化。`task-workflow.md` の未タスクリンク3件を修正し、`verify-unassigned-links` を `ALL_LINKS_EXIST` へ回復。`artifacts.json` と `index.md` を再同期して Phase 13 を `pending`（未実施）へ整合化 |
-| **v10.07.0** | **2026-03-03** | **TASK-10A-D Phase 12 完了同期**: `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` / `arch-state-management.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` に実装内容と苦戦箇所3件（Suggestion型不整合、P40再発、P11パターン）を同期。LOGS.md 2ファイル・SKILL.md 2ファイル同時更新（P1/P25/P29対策）。P43準拠3ファイル以下/エージェントに分割実行 |
+| **v10.08.2** | **2026-03-04** | **Phase 12再監査の数値整合ガードを追加**: `references/patterns.md` に失敗パターン「Phase 9/10/台帳のテスト件数ドリフト（264↔267）」を追加。再発防止として「実測値単一ソース」「Phase 6/9/10+台帳の同一ターン同期」「`rg \"264|7ファイル\"` 旧値残存ゼロ確認」を標準手順に追記 |
+| **v10.08.1** | **2026-03-04** | **TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 再監査反映**: 画面検証を再実行し、`outputs/phase-11/screenshots/TC-03-agent-view-before-execute-recheck-2026-03-04.png` を追加。`manual-test-result.md` / `evidence-index.md` / `phase-11-manual-test.md` を更新して TC-03 の実証跡を単独ファイル化。`complete-phase --phase 11` 再同期で artifacts と参照資料を更新し、`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` の再PASSを確認 |
+| **v10.08.0** | **2026-03-04** | **TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 Phase 1-12 完了反映**: `docs/30-workflows/TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001/` の Phase 1〜12 を `completed` に同期し、`outputs/phase-4..12` 成果物を補完。Phase 11 に画面カバレッジマトリクス + スクリーンショット証跡を反映し、`validate-phase11-screenshot-coverage` をPASS化。Phase 12で `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` を整備し、`complete-phase`・`generate-index`・`verify-all-specs`・`validate-phase-output`・`quick_validate` の再検証運用を固定 |
+| **v10.07.0** | **2026-03-03** | **UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 反映**: `references/evidence-sync-rules.md` / `references/phase12-checklist-definition.md` / `references/screenshot-verification-procedure.md` を追加。`scripts/evidence-bundle-validator.ts` + Vitest群 + `assets/evidence-bundle-template.md` を導線化し、Phase 12 2workflow同時監査の証跡集約ガード運用を固定化 |
 | **v10.06.0** | **2026-03-02** | **TASK-10A-C 再監査パターンを反映**: `phase-11-manual-test.md` / `phase-12-documentation.md` で依存Phase成果物（2/5/6/7/8/9/10）の参照資料補完を必須化し、`verify-all-specs` の依存参照warningをゼロ化する運用を追記。UIタスクでは `screenshot:*` 再実行で証跡鮮度を固定し、Step 1-A の LOGS/SKILL 4点同時更新を完了条件として明文化 |
 | **v10.05.0** | **2026-03-02** | **Phase 13 PR本文セクション連携を強化**: `phase-templates.md` の Phase 13 に `/ai:diff-to-pr` Phase 3.6（`TARGET_WORKFLOW_DIR` 特定）との連携ルールを追加し、PR本文を `.github/pull_request_template.md` 準拠セクションへ同期。UI/UX変更時は `outputs/phase-11/screenshots/*.png` をPR本文 `## スクリーンショット` へ自動挿入する要件を追加。`phase-11-12-guide.md` 完了チェックへ「Phase 13で対象workflow確認」「`## その他` へのPhase 12実装ガイド反映」確認項目を追加 |
 | **v10.04.0** | **2026-03-02** | **Phase 11 画面カバレッジマトリクス改善**: `phase-templates.md` に画面カバレッジマトリクス（4ステップ: 変更コンポーネント洗い出し/UI状態カバレッジ定義/撮影計画JSON作成/カバレッジレポート）を追加。`phase-11-12-guide.md` の実行フローを9ステップに拡張し、撮影コマンドをA.計画ベース一括撮影/B.個別撮影の2構成に再編。`capture-screenshots.js` を拡張版に更新（--plan/--selector/--action/--action-target/--helpオプション追加、テーマ別グループ化、カバレッジレポート自動生成） |

@@ -432,6 +432,26 @@ describe("skillHandlers skill:execute", () => {
       expect(opResult.error).toBeDefined();
     });
 
+    it("should propagate errorCode when AUTHENTICATION_ERROR is thrown", async () => {
+      mockSkillService.executeSkill.mockRejectedValue({
+        code: "AUTHENTICATION_ERROR",
+        message: "Anthropic API Key is not configured",
+      });
+
+      const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
+      if (!handler) {
+        throw new Error("skill:execute handler not registered - Red phase");
+      }
+
+      const result = await handler({}, { skillId: "skill-1" });
+
+      const opResult = result as OperationResult<SkillExecutionResult> & {
+        errorCode?: string;
+      };
+      expect(opResult.success).toBe(false);
+      expect(opResult.errorCode).toBe("AUTHENTICATION_ERROR");
+    });
+
     it("should return error when skill is not found", async () => {
       mockSkillService.executeSkill.mockRejectedValue(
         new Error("スキルが見つかりません"),

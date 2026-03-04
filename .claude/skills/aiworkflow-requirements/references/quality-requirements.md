@@ -1070,10 +1070,25 @@ IPCハンドラファイルのカバレッジ判定は、ファイル全体で�
 
 ---
 
+### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 品質ゲート（2026-03-04）
+
+`AUTHENTICATION_ERROR` の事前検知導入に伴い、契約変更（`errorCode`）と preflight 分岐（execute 抑止）を同時に検証する。
+
+| 検証観点 | 必須コマンド | 合格基準 |
+| --- | --- | --- |
+| 型整合 | `pnpm --filter @repo/desktop typecheck` | Error 0 |
+| 失敗契約伝搬 | `vitest run src/preload/__tests__/skill-api.contract.test.ts src/main/ipc/__tests__/skillHandlers.execute.test.ts` | `errorCode` / `Error.code` 経路が PASS |
+| preflight 実行抑止 | `vitest run src/renderer/hooks/__tests__/useSkillExecution.test.ts src/renderer/views/AgentView/__tests__/AgentView.test.tsx` | `auth-key:exists=false` 時に execute 未呼び出し |
+| UI証跡 | `validate-phase11-screenshot-coverage --workflow ...TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001` | expected TC = covered TC |
+| 仕様整合 | `verify-all-specs --workflow ...` / `validate-phase-output ...` | error 0 / warning 0 |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2.8.2   | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 品質ゲートを追加。`errorCode` 契約伝搬・preflight execute抑止・UI証跡カバレッジ・仕様整合の5観点を必須検証として定義 |
 | 2.8.1   | 2026-03-02 | TASK-UI-05B 実装完了同期: パフォーマンス基準セクションと完了タスク記録を `completed` 状態へ更新（4ビュー実装 + IPC統合 + テスト完了） |
 | 2.8.0   | 2026-03-01 | TASK-UI-05B spec_created を反映: Skill Advanced Views のパフォーマンス基準（4項目）を追加。完了タスクにspec_createdとして記録 |
 | 1.10.2  | 2026-03-01 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 の実行ワークフローを `completed-tasks/ut-imp-ipc-handler-coverage-granular-001` へ移管。派生未タスク `UT-IMP-IPC-HANDLER-COVERAGE-GUARDRAILS-001` も `completed-tasks/unassigned-task/` 参照へ同期 |

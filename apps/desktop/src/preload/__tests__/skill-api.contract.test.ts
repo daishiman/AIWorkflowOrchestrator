@@ -208,6 +208,24 @@ describe("2. IPC Wrapper Selection (safeInvoke vs safeInvokeUnwrap)", () => {
 
       await expect(skillAPI.list()).rejects.toThrow("Something went wrong");
     });
+
+    it("PC-W-UNWRAP-ERR-CODE: safeInvokeUnwrap maps errorCode to thrown Error.code", async () => {
+      mockInvoke.mockResolvedValue({
+        success: false,
+        error: "API Key is not configured",
+        errorCode: "AUTHENTICATION_ERROR",
+      });
+
+      try {
+        await skillAPI.execute({ skillName: "test-skill", prompt: "test" });
+        expect.fail("Expected execute() to throw");
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error & { code?: string }).code).toBe(
+          "AUTHENTICATION_ERROR",
+        );
+      }
+    });
   });
 
   describe("Profile B channels use safeInvoke (pass through)", () => {
@@ -256,7 +274,7 @@ describe("2. IPC Wrapper Selection (safeInvoke vs safeInvokeUnwrap)", () => {
       // This test documents the type inconsistency
       // The result is actually `true` from Main, but Preload says void
       // We test for the ACTUAL behavior: safeInvoke passes through whatever Main returns
-       
+
       expect(result).toBe(true);
     });
 

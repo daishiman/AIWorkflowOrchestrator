@@ -28,6 +28,7 @@ import { SkillCategoryFilter } from "../../components/molecules/SkillCategoryFil
 import { SkillList } from "../../components/organisms/SkillList";
 import { SkillDetailPanel } from "../../components/organisms/SkillDetailPanel";
 import { SkillImportDialog } from "../../components/organisms/SkillImportDialog";
+import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 import type {
   Skill,
   SkillCategory as SkillCategoryType,
@@ -178,6 +179,16 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleExecute = useCallback(
     async (skill: Skill) => {
       try {
+        const preflightResult = await preflightSkillExecutionAuth();
+        if (!preflightResult.ok) {
+          showToast(
+            "error",
+            preflightResult.error?.message ||
+              "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
+          );
+          return;
+        }
+
         await window.electronAPI.skill.execute({
           skillName: skill.name,
           prompt: "",
