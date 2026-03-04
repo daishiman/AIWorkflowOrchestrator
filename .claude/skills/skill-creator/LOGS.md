@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-03-04 - Phase 12テンプレートへ preview preflight 既定手順を同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の「同種課題5ステップ」「検証コマンド」「成果物チェック」に preview preflight（build + 疎通）と失敗時未タスク化分岐を追記
+  - `assets/phase12-spec-sync-subagent-template.md` の検証コマンド/完了チェックへ preflight と `validate-phase11-screenshot-coverage` 必須化を追記
+  - `references/resource-map.md` のテンプレート説明を preflight 分岐対応へ同期
+  - `references/patterns.md` の SkillCenter 成功/失敗パターンへテンプレート転記手順を追記
+  - `SKILL.md` 変更履歴を `v10.36.6` として同期
+
+---
+
+## [2026-03-04 - SkillCenter再撮影 preflight パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）に成功キーワード「UI再撮影前preview preflight + 失敗時未タスク化固定（SkillCenter）」を追加
+  - 同クイックナビに失敗キーワード「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
+  - 成功パターン本文「UI再撮影前 preview preflight + 失敗時未タスク化固定（SkillCenter）」を追加
+  - 失敗パターン本文「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
+  - `SKILL.md` 変更履歴を `v10.36.5` として同期
+
+---
+
 ## [2026-03-04 - 仕様書別SubAgent実行ログのテンプレート標準化]
 
 - **Agent**: skill-creator (update)

@@ -116,6 +116,20 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 
 **スクリプトオプション一覧**: `capture-screenshots.js --help` または `--dry-run` で確認
 
+#### C. 再撮影前 preflight（必須）
+
+```bash
+# 1) preview build の成否を先に確認
+pnpm --filter @repo/desktop preview
+
+# 2) 別ターミナルで疎通確認（preview起動時）
+curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
+```
+
+補足:
+- build失敗または疎通失敗時は再撮影を継続しない。
+- 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
+
 > **before撮影に関する注意**: Phase 11 の時点で実装は完了済みのため、main ブランチに切り替えて before 撮影を行うのは非現実的である。before 撮影が必要な場合は、**Phase 5（実装）開始前に main ブランチのスクリーンショットを事前に撮影しておく**こと。Phase 11 では after 撮影のみを実施する。
 
 > **Phase 2 へのフィードバック（将来改善）**: UI状態マトリクスの根本的な入力源はPhase 2（設計）である。Phase 2テンプレートに「UI状態マトリクス」セクションを追加し、設計時にコンポーネント x 表示状態の組み合わせを定義しておくことで、Phase 11の撮影計画作成を大幅に効率化できる。
@@ -346,6 +360,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
+- [ ] UI/UX変更タスクの場合: 再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録し、失敗時は未タスク化したこと
 - [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
 - [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
@@ -463,6 +478,7 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-04 | SkillCenter再監査の教訓を反映し、UI再撮影前 `preview preflight`（build + 疎通確認）を必須手順へ追加。失敗時は `unassigned-task-detection.md` 記録 + 未タスク化を標準化 |
 | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |
 | 2026-03-01 | `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の完了タスク記録を追加。Phase 11 Worktree代替手順・CI E2Eジョブ追加・deferred-tests追跡を運用ガイドへ同期 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録・関連ドキュメントリンクを追加 |

@@ -1,12 +1,27 @@
-# Phase 1 受け入れ基準
+# Phase 1 受け入れ基準（Given/When/Then）
 
-## Given / When / Then
+更新日: 2026-03-04
 
-1. Given 現行差分を適用した状態、When 対象機能を実行、Then クラッシュ/契約違反が発生しない。
-2. Given 回帰ケース、When 既知不具合シナリオを再実行、Then 期待動作を維持する。
-3. Given 仕様書更新、When 検証スクリプトを実行、Then warning=0 を維持する。
+1. Given 欠損 `description` を含むスキル一覧
+   When `healthy` で検索する
+   Then 例外が発生せず、一致スキルのみ表示される。
 
-## 品質ゲート
+2. Given `agents/references/indexes` が `undefined/null` のスキル
+   When SkillCard が描画される
+   Then ファイル数計算でクラッシュしない。
 
-- ユニット/統合テストがすべてPASS。
-- Phase 1-12成果物が outputs 配下に存在。
+3. Given サブリソースが欠損したスキル
+   When 詳細パネルを開く
+   Then DetailPanel が描画継続し、操作不能にならない。
+
+4. Given 欠損メタデータ混在データ
+   When Featured を算出する
+   Then popularity 計算で例外が出ない。
+
+5. Given 仕様・成果物更新後
+   When `verify-all-specs` と `validate-phase-output` を実行する
+   Then error=0, warning=0 を維持する。
+
+6. Given UI/UX 変更を含むタスク
+   When Phase 11 を実施する
+   Then TC-01〜TC-04 のスクリーンショットが存在し、`validate-phase11-screenshot-coverage` が PASS となる。

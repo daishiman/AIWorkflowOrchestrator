@@ -1,12 +1,23 @@
-# Phase 2 API/IPC仕様
+# Phase 2 API/IPC仕様（再監査版）
 
-## 契約要点
+更新日: 2026-03-04
 
-- 入力: 既存の型/IPCチャネルを維持。
-- 出力: 失敗でないケースを誤ってエラー化しない。
-- エラー: 既存のコード体系（VALIDATION_ERROR/IMPORT_ERROR 等）を保持。
+## 契約サマリー
 
-## 互換性
+- IPC チャンネル追加/変更: なし
+- リクエスト/レスポンス形式の破壊的変更: なし
+- 防御実装位置: Renderer（Hook/Component）
 
-- 既存呼び出し側の引数フォーマットを変更しない。
-- 既存テストケースの期待値を優先し、必要分のみ更新する。
+## 既存契約維持項目
+
+| 項目                | 現状                               | 判定 |
+| ------------------- | ---------------------------------- | ---- |
+| `skill:list`        | 既存通り                           | OK   |
+| `skill:getImported` | 既存通り（依存タスクで互換対応済） | OK   |
+| `skill:import`      | 既存通り（依存タスクで冪等対応済） | OK   |
+| `skill:remove`      | 既存通り                           | OK   |
+
+## 仕様反映先
+
+- `/.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`
+- `/.claude/skills/aiworkflow-requirements/references/task-workflow.md`

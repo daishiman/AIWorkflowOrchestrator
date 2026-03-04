@@ -1,30 +1,46 @@
-# Phase 12 実装ガイド
+# Phase 12 実装ガイド（再監査版）
 
-## Part 1: 概要
+更新日: 2026-03-04
 
-- タスク: SkillCenter メタデータ欠落時の防御実装
-- 解決方針: hooks/componentsに safeLength / normalizeSearchText / nullish default を導入し防御。
+## Part 1（中学生向け）
 
-## Part 2: 実装詳細
+### 何を直したの？
 
-### 変更ファイル
+この修正は「情報が足りないカードが混ざっていても画面が止まらないようにする」作業です。
 
-- `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts`
-- `apps/desktop/src/renderer/views/SkillCenterView/hooks/useFeaturedSkills.ts`
-- `apps/desktop/src/renderer/views/SkillCenterView/components/SkillCard.tsx`
-- `apps/desktop/src/renderer/views/SkillCenterView/components/SkillDetailPanel/SkillDetailPanel.tsx`
-- `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts`
-- `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useFeaturedSkills.test.ts`
-- `apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCard.test.tsx`
-- `apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillDetailPanel.test.tsx`
+例えば、名簿の一部に説明文が空欄でも、名簿アプリ全体が落ちないようにするイメージです。
+空欄は空欄のまま見せて、アプリ自体は使い続けられるようにしました。
 
-### テスト
+### できるようになったこと
 
-- 実行コマンド: `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts src/renderer/views/SkillCenterView/__tests__/useFeaturedSkills.test.ts src/renderer/views/SkillCenterView/__tests__/SkillCard.test.tsx src/renderer/views/SkillCenterView/__tests__/SkillDetailPanel.test.tsx`
-- 結果: 4 files / 78 tests PASS
+| できること             | 説明                           |
+| ---------------------- | ------------------------------ |
+| 検索が止まらない       | 説明文が空でも検索できる       |
+| 詳細画面が落ちない     | 参照データが欠けていても開ける |
+| おすすめ表示が壊れない | 配列が空や欠損でも計算できる   |
 
-### 再現手順（要点）
+## Part 2（技術者向け）
 
-1. 既存不具合シナリオを実行する。
-2. 修正後挙動が安定することを確認する。
-3. 回帰テストを実行して固定する。
+### 防御実装
+
+- Hook
+  - `normalizeSearchText(value: unknown)`
+  - `safeLength(value: unknown)`
+- Component
+  - `String(skill.description ?? "")`
+  - `safeSubResources` / `safeOtherFiles`
+
+### 実行結果（再監査）
+
+```bash
+pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__
+# 9 files / 129 tests PASS
+
+pnpm --filter @repo/desktop exec vitest run --coverage '--coverage.include=src/renderer/views/SkillCenterView/**' src/renderer/views/SkillCenterView/__tests__
+# Line 96.9 / Branch 91.85 / Function 100
+```
+
+### 画面検証
+
+- 4スクリーンショットを 2026-03-04 13:21 JST に再撮影
+- `validate-phase11-screenshot-coverage` PASS（4/4）
