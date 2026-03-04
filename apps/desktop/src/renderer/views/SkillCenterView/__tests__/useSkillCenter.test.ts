@@ -225,6 +225,31 @@ describe("useSkillCenter", () => {
     expect(names).not.toContain("world-skill");
   });
 
+  it("description欠落データが含まれていてもフィルタ処理でクラッシュしない", async () => {
+    const malformedSkill = {
+      ...createMockSkillMetadata({ name: "broken-skill" as SkillName }),
+      description: undefined,
+    } as unknown as SkillMetadata;
+
+    const skills = [
+      createMockSkillMetadata({
+        name: "hello-skill" as SkillName,
+        description: "挨拶スキル",
+      }),
+      malformedSkill,
+    ];
+
+    const store = await import("../../../store");
+    vi.mocked(store.useAvailableSkillsMetadata).mockReturnValue(skills);
+    vi.mocked(store.useSkillFilter).mockReturnValue("hello");
+
+    const { result } = renderHook(() => useSkillCenter());
+
+    expect(result.current.filteredSkills.map((s) => s.name)).toContain(
+      "hello-skill",
+    );
+  });
+
   it("マウント時にfetchSkillsが呼ばれる", () => {
     renderHook(() => useSkillCenter());
     expect(mockFetchSkills).toHaveBeenCalledTimes(1);

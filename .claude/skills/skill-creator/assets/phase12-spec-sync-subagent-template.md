@@ -1,21 +1,16 @@
 # Phase 12 仕様書別SubAgent同期テンプレート
 
-> **制約**: 1仕様書=1SubAgent、1SubAgentあたり3ファイル以下（P43対策）
-> **プロファイル選択**: `P-STD5` / `P-UI6` / `P-RECHECK`（spec-update-summary.md と同一プロファイルを使用）
+## 1. 対象タスク
 
-## メタ情報
-
-| 項目 | 値 |
+| 項目 | 記入内容 |
 | --- | --- |
 | タスクID | `<TASK-ID>` |
-| タスク名 | `<TASK-NAME>` |
 | 実装対象 | `<実装ファイル/機能>` |
-| 実施日 | `YYYY-MM-DD` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons` |
-| プロファイル | `P-STD5` / `P-UI6` / `P-RECHECK` |
+| 実行日 | `<YYYY-MM-DD>` |
 
-## SubAgent分担（仕様書単位）
+## 2. SubAgent分担（仕様書単位）
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
@@ -25,7 +20,7 @@
 | SubAgent-D | `references/task-workflow.md` | 完了記録・成果物・検証証跡・苦戦箇所同期 | 実装内容 + 証跡 + 苦戦箇所が同一ターンで記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 苦戦箇所の再利用可能化 | 再発条件付きで簡潔解決手順が記録済み |
 
-### P-UI6: UI機能6仕様書プロファイル
+### 2.1 UI機能実装プロファイル（TASK-UI-05型）
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
@@ -36,7 +31,7 @@
 | SubAgent-E | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
 
-### P-RECHECK: 再確認プロファイル
+### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
@@ -46,7 +41,7 @@
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
-### Step 2 判定同期チーム（全プロファイル共通・必須）
+### 2.3 Step 2 判定同期プロファイル（仕様更新タスク必須）
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
@@ -54,7 +49,17 @@
 | SubAgent-S2-B | `outputs/phase-12/documentation-changelog.md` | Step 判定（1-A〜2）と理由を同期 | Step 2 判定が実装実体と一致 |
 | SubAgent-S2-C | `outputs/phase-12/spec-update-summary.md` | Step 2 更新仕様書の一覧化と反映内容同期 | changelog の Step 2 判定と更新対象一覧が一致 |
 
-## 各仕様書の必須記載
+### 2.4 仕様書別SubAgent実行ログ（必須）
+
+| SubAgent | 担当仕様書 | 実装内容の反映先 | 苦戦箇所の反映先 | 検証証跡 |
+| --- | --- | --- | --- | --- |
+| SubAgent-A | `<spec-a>` | `<実装内容を反映した見出し>` | `<苦戦箇所を反映した見出し>` | `<verify/validate/links/audit/UI証跡>` |
+| SubAgent-B | `<spec-b>` | `<実装内容を反映した見出し>` | `<苦戦箇所を反映した見出し>` | `<verify/validate/links/audit/UI証跡>` |
+| SubAgent-C | `<spec-c>` | `<実装内容を反映した見出し>` | `<苦戦箇所を反映した見出し>` | `<verify/validate/links/audit/UI証跡>` |
+
+> 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
+
+## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |
 | --- | --- |
@@ -69,7 +74,7 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
 
-## IPC追加時の契約突合（必須）
+## 4. IPC追加時の契約突合（必須）
 
 | 観点 | 確認方法 | 完了条件 |
 | --- | --- | --- |
@@ -79,7 +84,7 @@ UI機能実装時の必須記載（追加）:
 | service 公開境界 | `rg -n "services/<domain>/|export .* from \"./\"|SkillChain(Store|Executor)" apps/desktop/src/main` | 依存サービスのバレル公開（または未タスク移管）が記録されている |
 | 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
 
-## 検証コマンド
+## 5. 検証コマンド
 
 ```bash
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
@@ -95,11 +100,9 @@ rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.m
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ls -la <workflow-path>/outputs/phase-11/screenshots
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
-rg -n '^###\\s+TC-[0-9]+' <workflow-path>/phase-11-manual-test.md ; find <workflow-path>/outputs/phase-11/screenshots -type f | wc -l
 ```
 
-## 完了チェック
+## 6. 完了チェック
 
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
@@ -110,9 +113,9 @@ rg -n '^###\\s+TC-[0-9]+' <workflow-path>/phase-11-manual-test.md ; find <workfl
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
+- [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
-- [ ] UIタスクでは `validate-phase11-screenshot-coverage` を実行し、`expected TC: 0` の場合はフォールバック（screenshots実体確認 + 代表画像確認 + 理由記録）を実施している
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T16:50:48.403Z",
-  "totalKeywords": 1413,
+  "generated": "2026-03-04T01:30:12.849Z",
+  "totalKeywords": 1411,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -747,6 +747,7 @@
       "quality-e2e-testing.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
+      "task-workflow.md",
       "technology-devops.md",
       "testing-component-patterns.md",
       "ui-ux-agent-execution.md",
@@ -774,6 +775,7 @@
       "lessons-learned.md",
       "llm-streaming.md",
       "spec-splitting-guidelines.md",
+      "task-workflow.md",
       "technology-frontend.md",
       "testing-component-patterns.md",
       "ui-history-components.md",
@@ -822,6 +824,20 @@
       "interfaces-agent-sdk-skill.md"
     ],
     "スキル分析・統計": [
+      "api-ipc-agent.md"
+    ],
+    "skill": [
+      "api-ipc-agent.md",
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md"
+    ],
+    "import": [
+      "api-ipc-agent.md",
+      "lessons-learned.md"
+    ],
+    "契約追補": [
       "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
@@ -1137,6 +1153,16 @@
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
     ],
+    "Import": [
+      "arch-state-management.md",
+      "interfaces-agent-sdk-integration.md"
+    ],
+    "SkillCenter": [
+      "arch-state-management.md"
+    ],
+    "防御状態管理": [
+      "arch-state-management.md"
+    ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
     ],
@@ -1174,9 +1200,10 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
-      "arch-ui-components.md",
-      "lessons-learned.md",
-      "ui-ux-feature-components.md"
+      "arch-ui-components.md"
+    ],
+    "ビュー統合アーキテクチャパターン": [
+      "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1336,9 +1363,12 @@
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
       "technology-backend.md",
       "testing-playwright-e2e.md",
       "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "history": [
@@ -1600,15 +1630,12 @@
     "system": [
       "architecture-implementation-patterns.md"
     ],
-    "skill": [
-      "architecture-implementation-patterns.md",
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md"
-    ],
     "creator": [
       "architecture-implementation-patterns.md",
       "quality-e2e-testing.md"
+    ],
+    "共有型インポート標準パターン": [
+      "architecture-implementation-patterns.md"
     ],
     "モノレポ": [
       "architecture-monorepo.md",
@@ -2538,9 +2565,6 @@
     "セッション永続化": [
       "interfaces-agent-sdk-integration.md"
     ],
-    "Import": [
-      "interfaces-agent-sdk-integration.md"
-    ],
     "System": [
       "interfaces-agent-sdk-integration.md"
     ],
@@ -2573,6 +2597,15 @@
     ],
     "スキル分析": [
       "interfaces-agent-sdk-skill.md"
+    ],
+    "スキル作成ウィザード": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "スキルライフサイクル": [
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
@@ -3060,39 +3093,6 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "SUBAGENT": [
-      "lessons-learned.md"
-    ],
-    "ARTIFACT": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
-      "lessons-learned.md"
-    ],
-    "AC": [
-      "lessons-learned.md"
-    ],
-    "FR": [
-      "lessons-learned.md"
-    ],
-    "COMMAND": [
-      "lessons-learned.md"
-    ],
-    "SYNC": [
-      "lessons-learned.md"
-    ],
-    "CHAIN": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
-    "REGISTRATION": [
-      "lessons-learned.md"
-    ],
     "EDITOR": [
       "lessons-learned.md"
     ],
@@ -3102,19 +3102,7 @@
     "再監査": [
       "lessons-learned.md"
     ],
-    "MANAGEMENT": [
-      "lessons-learned.md"
-    ],
-    "PANEL": [
-      "lessons-learned.md"
-    ],
-    "IMPLEMENTATION": [
-      "lessons-learned.md"
-    ],
-    "CLOSURE": [
-      "lessons-learned.md"
-    ],
-    "再確認追補": [
+    "連続是正": [
       "lessons-learned.md"
     ],
     "CENTER": [
@@ -3127,6 +3115,19 @@
       "lessons-learned.md"
     ],
     "高度管理ビュー群再確認": [
+      "lessons-learned.md"
+    ],
+    "SkillAnalysisView": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "SkillCreateWizard": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "実装再監査": [
       "lessons-learned.md"
     ],
     "CALLBACK": [
@@ -3178,6 +3179,9 @@
       "lessons-learned.md"
     ],
     "FIELD": [
+      "lessons-learned.md"
+    ],
+    "GUARD": [
       "lessons-learned.md"
     ],
     "quick": [
@@ -3253,6 +3257,9 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
       "lessons-learned.md"
     ],
     "EVIDENCE": [
@@ -3394,9 +3401,6 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
-      "lessons-learned.md"
-    ],
-    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
@@ -3661,6 +3665,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
@@ -4540,6 +4547,10 @@
     "タスク実行仕様書生成ガイド": [
       "task-workflow.md"
     ],
+    "実装完了記録": [
+      "task-workflow.md",
+      "ui-ux-components.md"
+    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -4957,9 +4968,6 @@
       "ui-ux-components.md"
     ],
     "コンポーネント階層図": [
-      "ui-ux-components.md"
-    ],
-    "実装完了記録": [
       "ui-ux-components.md"
     ],
     "仕様書作成済みタスク": [

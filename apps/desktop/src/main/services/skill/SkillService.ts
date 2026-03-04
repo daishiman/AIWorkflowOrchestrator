@@ -92,14 +92,21 @@ export class SkillService {
    * インポート済みスキルを取得する
    */
   async getImportedSkills(): Promise<Skill[]> {
-    const importedIds = this.importManager.getImportedSkillIds();
+    const importedKeys = this.importManager.getImportedSkillIds();
 
     if (this.cache.size === 0) {
       await this.scanAvailableSkills();
     }
 
-    return importedIds
-      .map((id) => this.cache.get(id))
+    const cachedSkills = Array.from(this.cache.values());
+
+    // 互換性のため、保存キーは id / name の両方を許容する
+    return importedKeys
+      .map((key) => {
+        const byId = this.cache.get(key as SkillId);
+        if (byId) return byId;
+        return cachedSkills.find((skill) => String(skill.name) === key);
+      })
       .filter((skill): skill is Skill => skill !== undefined);
   }
 

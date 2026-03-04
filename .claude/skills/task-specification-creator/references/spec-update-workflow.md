@@ -710,7 +710,7 @@ aiworkflow-requirements/references/{{該当ファイル}}.md を編集
     ↓
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
     ↓
-変更履歴に追記（aiworkflow-requirements/SKILL.md は不要、自動反映）
+変更履歴に追記（aiworkflow-requirements/SKILL.md も必須更新）
 ```
 
 ## 新規仕様の追加手順

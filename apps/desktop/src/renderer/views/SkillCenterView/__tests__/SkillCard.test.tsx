@@ -295,4 +295,29 @@ describe("SkillCard", () => {
 
     expect(screen.queryByText(/ファイル/)).toBeNull();
   });
+
+  it("不完全なメタデータ（配列/description欠落）でもクラッシュしない", () => {
+    const malformedSkill = {
+      ...createMockSkillMetadata({
+        name: "malformed-card-skill" as SkillName,
+      }),
+      description: undefined,
+      agents: undefined,
+      references: undefined,
+      indexes: undefined,
+      otherFiles: undefined,
+    } as unknown as SkillMetadata;
+
+    render(
+      <SkillCard
+        skill={malformedSkill}
+        isAdded={false}
+        onSelect={mockOnSelect}
+        onAdd={mockOnAdd}
+      />,
+    );
+
+    expect(screen.getByText("malformed-card-skill")).toBeInTheDocument();
+    expect(screen.queryByText(/ファイル/)).toBeNull();
+  });
 });

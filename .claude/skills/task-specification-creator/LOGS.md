@@ -26,145 +26,79 @@
 
 ---
 
-## 2026-03-04 - UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 再監査追補（Phase 11/12）
+## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の再監査（Phase 12 Step 1-A/Task 5）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再監査追補）
+- **Phase**: Phase 12（Task 2 + Task 5）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `task-fix-phase12-ac-fr01-command-sync-001.md` を `task-specification-creator` 未タスクテンプレートへ是正（`## メタ情報` + `## 1..9`）
-  - `outputs/phase-12` の `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` に再監査追補を反映
-  - `outputs/phase-11/manual-test-result.md` に TC-01〜TC-10 画面証跡再取得結果を追記
-  - `verify-unassigned-links`（missing=0）と `audit --target-file/--diff-from HEAD`（currentViolations=0）を再確認
+  - `docs/30-workflows/01-TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001/` / `02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/` / `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/` の 3workflow を再監査
+  - 正本6仕様書（`api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `arch-state-management.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md`）へ実装内容と苦戦箇所を同期
+  - Phase 12 Task 5 必須の4ファイル更新を実施（`aiworkflow-requirements/LOGS.md` / `task-specification-creator/LOGS.md` / 両 `SKILL.md` 変更履歴）
+  - UI証跡は workflow03 の `outputs/phase-11/screenshots/TC-01..04` を再確認し、`validate-phase11-screenshot-coverage` PASS（expected=4 / covered=4）を確認
+  - `verify-all-specs` / `validate-phase-output` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current違反0を確認
 
 ---
 
-## 2026-03-03 - UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 Phase 12仕様同期完了
+## 2026-03-03 - TASK-10A-D 再監査追補（Phase 11証跡整合 + リンク整合）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（Task 12-2: システム仕様書更新）
-- **Result**: completed
-- **Duration**: N/A
-- **Notes**:
-  - Phase 12 SubAgent成果物固定ガード完了に伴う仕様書同期
-  - task-workflow.md: 完了タスク記録追加、残課題テーブル完了化、変更履歴 v1.66.0 追加
-  - lessons-learned.md: 教訓3件（P43対策SubAgent分割、テンプレート見出し形式統一、三点突合簡素化）と4ステップ再利用手順追加
-  - LOGS.md 2ファイル・SKILL.md 2ファイル同時更新（P1/P25対策）
-  - topic-map.md 再生成（P2/P27対策）
-
----
-
-## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 最終再確認（スクリーンショット再撮影）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（最終再確認）
+- **Phase**: Phase 11-12（再確認）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - Chain Builder 画面を再撮影し、`chain-builder-evidence.png` と `screenshots/tc-01-chain-builder-view.png` を更新
-  - `validate-phase11-screenshot-coverage` を再実行し、TC単位証跡の欠落なしを再確認
-  - `task-workflow.md` の検証証跡表にスクリーンショットカバレッジ検証コマンドを追加
+  - `outputs/phase-11/screenshots/` に TC-01〜TC-05 の証跡画像を追加
+  - `outputs/phase-11/manual-test-result.md` にテストケース別の証跡列を追加し、`validate-phase11-screenshot-coverage` を PASS 化
+  - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の未タスクリンク3件を是正
+  - `verify-unassigned-links` の結果を `ALL_LINKS_EXIST`（89/89）へ回復
+  - `artifacts.json` と `index.md` を再同期し、Phase 13 を `pending`（未実施）へ是正
 
 ---
 
-## 2026-03-03 - TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 Phase 11/12 準拠再監査
+## 2026-03-03 - TASK-10A-D Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（システム仕様書更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` に TASK-10A-D 完了記録を追加
+  - `arch-state-management.md` に agentSlice拡張（3状態+5アクション+8セレクタ）を記録
+  - `interfaces-agent-sdk-skill.md` に型契約（Suggestion/SkillAnalysis/CreateOptions）を追記
+  - `task-workflow.md` に TASK-10A-D 完了セクションと検証証跡を追加
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
+## 2026-03-02 - TASK-10A-C Phase 11/12 再監査（依存参照漏れ是正 + 画面証跡再取得）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 11-12（再監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `validate-phase11-screenshot-coverage.js` の要件に合わせ、Phase 11仕様書へ `TC-01..04` テストケースを追加
-  - `manual-test-result.md` に `テストケース` + `証跡` 列を持つ表を追加し、`TC-01` を `screenshots/tc-01-chain-builder-view.png` に紐付け
-  - `outputs/phase-11/screenshots/` を作成し、証跡画像を配置
-  - Step 1-A必須要件（`LOGS.md` 2ファイル更新）を満たすため、`aiworkflow-requirements/LOGS.md` と本ログを同時更新
+  - `phase-11-manual-test.md` / `phase-12-documentation.md` の参照資料へ依存Phase成果物（Phase 2/5/6/7/8/9/10）を補完
+  - `pnpm --filter @repo/desktop run screenshot:skill-create-wizard` を再実行し、TC-01〜TC-08 のスクリーンショットを再取得
+  - システム仕様書4本（`task-workflow.md` / `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `security-electron-ipc.md`）へ `skill:create` 契約を同期
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `validate-phase11-screenshot-coverage` を再実行して PASS を確認
+  - Step 1-A 追補として `LOGS.md` / `SKILL.md` の4ファイル履歴を更新
 
 ---
 
-## 2026-03-03 - Phase 12 implementation-guide 全文PR反映ガード追加
+## 2026-03-02 - TASK-10A-B SkillAnalysisView 実装完了（Phase 12 Step 1-A）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 13（PR作成運用改善）
+- **Phase**: Phase 12（Step 1-A タスク完了記録）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `phase-templates.md` に「implementation-guide全文コメント投稿 + API検証（見出し/Part 1/Part 2）」を必須ルールとして追記
-  - `phase-11-12-guide.md` 完了チェックに「全文コメント存在確認」「スクリーンショット更新時に全文コメントを上書きしない」項目を追加
-  - `/ai:diff-to-pr` 仕様と同期し、Phase 12成果物のPRメッセージ未反映を機械的に検出できるようにした
-
----
-
-## 2026-03-03 - Phase 13 PRスクリーンショット表示不具合の再発防止
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 13（PR作成運用改善）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `phase-templates.md` の PR本文セクション連携ルールを更新し、画像リンクを `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLで生成する要件を追加
-  - `phase-11-12-guide.md` 完了チェックの画像リンク項目を、相対パス許容から絶対URL必須へ更新
-  - `/ai:diff-to-pr` 側の運用更新と整合し、GitHub PR本文/コメントでスクリーンショットが表示されない事象の再発を防止
-
----
-
-## 2026-03-03 - UT-UI-05A Phase 11/12 契約追補（ヘッダ・命名整合）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（ガイド改善 + 準拠監査固定）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/phase-11-12-guide.md` のテスト結果レポート例を `テストケース` ヘッダへ統一し、`TC-ID`/`TC` 互換を明記
-  - `references/phase-templates.md` に証跡ファイル名の意味一致ルール（状態名必須）を追記
-  - `docs/30-workflows/skill-editor-view-closure/outputs/phase-12/phase12-task-spec-compliance-check.md` を新規作成し、Phase 12 準拠監査（13/13, 28項目, expected=8/covered=8, current=0）を固定
-  - `documentation-changelog.md` / `spec-update-summary.md` に再確認追補を同期
-
----
-
-## 2026-03-03 - UT-UI-05A-IMPLEMENTATION-CLOSURE-001 収束再監査（Phase 11-12）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（画面検証 + 仕様同期）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/skill-editor-view-closure/` の Phase 11/12 成果物を再点検し、不足していた `manual-test-result.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を補完
-  - Playwright スクリプトで SkillEditorView の証跡 8 枚を再取得し、`validate-phase11-screenshot-coverage` を PASS へ収束
-  - `phase-12-documentation.md` の成果物ステータス/完了チェックを実態へ同期（全チェック完了）
-  - `UT-UI-05A-PHASE11-SCREENSHOT-NAME-CONSISTENCY-001` を未タスク化し、3ステップ（指示書/残課題/仕様リンク）を完了
-  - Step 1-A 要件として `aiworkflow-requirements` / `task-specification-creator` の LOGS/SKILL 履歴を同時更新
-
----
-
-## 2026-03-02 - TASK-10A-A Phase 12 最終整合（Step判定同期 + 未タスク監査軸固定）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（再整合）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `documentation-changelog.md` の Step 2 判定を `phase-12-documentation.md` の更新対象表と突合し、`該当なし` から `完了` に是正
-  - `spec-update-summary.md` に `arch-ui-components.md` / `lessons-learned.md` の更新と `tc-07-loading.png` を追記し、Task 2 実体を明示
-  - `unassigned-task-detection.md` に `audit --diff-from HEAD` 結果（`currentViolations=0`, `baselineViolations=78`）を追加し、合否軸を固定
-  - `task-workflow.md` / `lessons-learned.md` へ TASK-10A-A 苦戦箇所（Step 2誤判定、台帳/教訓分離、baseline誤読）を同期
-
----
-
-## 2026-03-02 - TASK-10A-A Phase 12 再監査運用追補（機能別仕様漏れガード）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（再監査運用）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `aiworkflow-requirements/references/ui-ux-feature-components.md` に発生していた TASK-10A-A の反映漏れを是正
-  - UI系タスクの再監査チェックへ「`ui-ux-components` と `ui-ux-feature-components` の同時更新確認」を追加
-  - `仕様書作成済みタスク（spec_created）` の重複見出し矛盾を検出・解消する運用を履歴化
-  - 検証:
-    - `verify-all-specs --workflow docs/30-workflows/skill-management-panel`: PASS
-    - `validate-phase-output`（phase 11/12）: PASS
-    - `verify-unassigned-links`: PASS（missing=0）
+  - Phase 1-12 全完了
+  - テスト: 72テスト全PASS
+  - カバレッジ: Line 100% / Branch 95.83% / Function 100%
+  - LOGS.md 2ファイル更新（P1/P25対策）
+  - SKILL.md 2ファイル変更履歴更新（P29対策）
+  - topic-map.md 再生成（P2/P27対策）
 
 ---
 
@@ -5062,56 +4996,33 @@ if (artifactPath) {
 - ステータス: success
 - Phase 11/12 仕様準拠: 完了
 
-## 2026-03-02 - TASK-10A-A SkillManagementPanel Phase 12 仕様運用同期
+## 2026-03-02 - TASK-10A-B Phase 11/12 再監査パターン適用
 
 ### コンテキスト
 
 - スキル: task-specification-creator
-- タスクID: TASK-10A-A-SKILL-MANAGEMENT-PANEL
-- フェーズ: 12（ドキュメント更新）
+- 対象: `docs/30-workflows/completed-tasks/skill-analysis-view/`
+- 目的: Phase 11/12 成果物をテンプレート準拠へ再整形し、検証4点セットを warning/error なしで通過させる
 
 ### 実施内容
 
-- Phase 12 Task 1: 実装ガイド（Part 1 中学生向け + Part 2 技術者向け）作成完了
-- Phase 12 Task 1: コンポーネントドキュメント作成完了
-- Phase 12 Task 2: システム仕様書更新（LOGS.md 2ファイル + SKILL.md 2ファイル + task-workflow.md）
-- Phase 12 Task 3: documentation-changelog.md 作成
-- Phase 12 Task 4: 未タスク検出レポート作成（Phase 11由来MINOR 4件）
-- artifacts.json を全Phase completed に更新
-
-### 苦戦箇所
-
-- なし（Phase 1-11が順調に完了しており、Phase 12は定型作業として実施）
+- Phase 11 修正
+  - `phase-11-manual-test.md` に必須セクション「統合テスト連携」を追加
+  - `outputs/phase-11/manual-test-result.md` をコード分析ベースから実スクリーンショット証跡ベースへ更新
+  - `outputs/phase-11/discovered-issues.md` を新規課題0件へ同期
+- Phase 12 修正
+  - `phase-12-documentation.md` の状態を completed へ更新
+  - `outputs/phase-12/documentation-changelog.md` / `spec-update-summary.md` / `unassigned-task-detection.md` を実績値に同期
+  - 未タスク検出を 7件→5件へ再整理（UT-TASK-10A-B-001〜005）
+- 検証運用
+  - `verify-all-specs` warning=13 を解消（参照資料へ依存Phase 2/5/6/7/8/9/10 を追記）
+  - `validate-phase-output` エラー（統合テスト連携不足）を解消
 
 ### 結果
 
 - ステータス: success
-- テスト: 38件全PASS、カバレッジ全指標100%
-
-## 2026-03-03 - UT-UI-05A-GETFILETREE-001 Phase 11/12 成果物整合の運用反映
-
-### コンテキスト
-
-- スキル: task-specification-creator
-- 対象タスク: UT-UI-05A-GETFILETREE-001
-- 目的: 画面証跡必須要件と Phase 12 必須成果物命名整合の再確認結果を運用へ反映
-
-### 実施内容
-
-- `docs/30-workflows/completed-tasks/getfiletree-ipc/outputs/phase-11` の必須成果物5件を実体化
-  - `auto-test-result.md`
-  - `filetree-display-result.md`
-  - `error-case-result.md`
-  - `api-verification-result.md`
-  - `manual-test-report.md`
-- スクリーンショット検証を `manual-test.md` に明示（対象外扱いを解消）
-- `outputs/phase-12` の必須成果物命名をテンプレート準拠へ補完
-  - `spec-update-summary.md`
-  - `unassigned-task-detection.md`
-  - `skill-feedback-report.md`
-- `documentation-changelog.md` に Step 1-A〜1-D / Step 2 の実行結果を反映
-
-### 結果
-
-- ステータス: success
-- 運用反映: Phase 11 画面証跡必須、Phase 12 命名整合チェックを実案件で適用
+- 検証:
+  - `verify-all-specs --workflow docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（13/13, warning=0）
+  - `validate-phase-output docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（28項目）
+  - `verify-unassigned-links`: PASS（97/97, missing=0）
+  - `audit-unassigned-tasks --json --diff-from HEAD`: `currentViolations=0`

@@ -418,7 +418,7 @@ Zustand Sliceパターンで実装された状態管理。
 | `skill:getImported`       | Renderer → Main | インポート済みスキル取得    | `{ success: true, data: ImportedSkill[] } \| { success: false, error: string }` |
 | `skill:list`              | Renderer → Main | 利用可能スキル取得          | `{ success: true, data: SkillMetadata[] } \| { success: false, error: string }` |
 | `skill:create`            | Renderer → Main | スキル新規作成（TASK-10A-C） | `{ path: string }` |
-| `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
+| `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（新規追加/既存追加済みの両ケースで成功時返却） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
 | `skill:fork`              | Renderer → Main | スキルフォーク（TASK-9E）   | `{ success: true, data: SkillForkResult } \| { success: false, error: string }` |
@@ -484,8 +484,28 @@ Zustand Sliceパターンで実装された状態管理。
 | ---- | ---- |
 | 引数形式 | `skillName: string`（オブジェクトラップなし） |
 | バリデーション | `typeof skillName === "string"` かつ `skillName.trim() !== ""` |
-| 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName） |
+| 成功判定 | `result.success === true` かつ `result.errors.length === 0`（`importedCount` は成功条件に含めない） |
+| 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName。新規/既存どちらでも同一契約） |
 | エラー | `VALIDATION_ERROR` / `IMPORT_ERROR` |
+
+#### `skill:getImported` 互換キー契約（TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 目的 | 過去データ互換のため、import manager へ保存済みキーを `skill.id` / `skill.name` の両方で解決する |
+| Main処理 | `SkillService.getImportedSkills()` で cache の `id` 解決を優先し、未一致時は `skill.name` 一致をフォールバックで探索 |
+| 互換対象 | 旧保存データ（`name` 保存）と現行保存データ（`id` 保存）の混在状態 |
+| 戻り値保証 | `skill:getImported` は互換解決後の `ImportedSkill[]` を返し、空配列時は正常終了 |
+
+#### SkillCenter 欠損メタデータ防御契約（TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 対象 | `description`, `agents`, `references`, `indexes`, `scripts`, `otherFiles` が `undefined/null` のケース |
+| Renderer側ガード | `String(value ?? "")` と `Array.isArray(value)` ベースの `safeLength` / `safeSubResources` で防御 |
+| フィルタリング | `useSkillCenter` / `useFeaturedSkills` で `normalizeSearchText` を使い、欠損値でも `.toLowerCase()` 例外を発生させない |
+| UI要件 | SkillCard/DetailPanel/Featured計算で欠損メタデータを許容し、画面クラッシュを起こさない |
+| 検証証跡 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` |
 
 #### `skill:import` 関連タスク（完了）
 
@@ -2286,6 +2306,7 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-04 | 1.45.1     | TASK-FIX-SKILL-IMPORT 三連続是正（IMPORTED-STATE-RECONCILIATION / IMPORT-IDEMPOTENCY-GUARD / SKILL-CENTER-METADATA-DEFENSIVE-GUARD）を反映。`skill:import` 成功判定を `errors.length===0` 基準へ明文化し、`skill:getImported` の id/name 互換キー契約、SkillCenter 欠損メタデータ防御契約（description/配列 nullish 対応）を追加 |
 | 2026-03-03 | 1.45.0     | TASK-10A-D反映: スキルライフサイクルUI統合の完了タスク記録を追加。agentSlice拡張（3状態+5アクション+8セレクタ）と型契約（Suggestion/SkillAnalysis/CreateOptions）を記録 |
 | 2026-03-02 | 1.44.1     | TASK-10A-C追補: `create` 追加時の実装苦戦箇所（メソッド総数更新漏れ、型契約転記差分、Service委譲記録漏れ）と同種課題向け4ステップ手順を追加 |
 | 2026-03-02 | 1.44.0     | TASK-10A-C反映: 統一APIを13→14メソッドへ更新し、Skill管理APIに `create` を追加。IPCチャンネル表と `skill:create` リクエスト契約、TASK-10A-C 完了タスク記録を同期 |

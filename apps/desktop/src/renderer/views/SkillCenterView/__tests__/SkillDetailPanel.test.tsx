@@ -765,6 +765,33 @@ describe("SkillDetailPanel", () => {
     expect(names.length).toBeGreaterThanOrEqual(1);
   });
 
+  it("不完全なメタデータ（description/配列欠落）でもクラッシュしない", () => {
+    const malformedSkill = {
+      ...createMockSkillMetadata({ name: "broken-skill" as SkillName }),
+      description: undefined,
+      agents: undefined,
+      references: undefined,
+      indexes: undefined,
+      scripts: undefined,
+      otherFiles: undefined,
+    } as unknown as SkillMetadata;
+
+    render(
+      <SkillDetailPanel
+        skillName="broken-skill"
+        isOpen={true}
+        onClose={mockOnClose}
+        onDelete={mockOnDelete}
+        isImported={false}
+        skill={malformedSkill}
+      />,
+    );
+
+    const names = screen.getAllByText("broken-skill");
+    expect(names.length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByTestId("other-files-section")).toBeNull();
+  });
+
   // --- panelStyles export テスト ---
 
   it("panelStyles がオブジェクトとして正しくexportされている", () => {

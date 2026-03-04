@@ -428,8 +428,7 @@ GitHub ActionsでE2Eテストを自動実行する。
 
 #### 手順
 
-1. GitHub Actionsワークフローを作成/更新:
-   2. package.jsonにスクリプト追加:
+1. GitHub Actionsワークフローを作成/更新: 2. package.jsonにスクリプト追加:
 
    ```json
    {

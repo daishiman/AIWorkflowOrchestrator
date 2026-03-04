@@ -79,6 +79,10 @@ const CATEGORY_KEYWORDS: Record<string, string[]> = {
   other: [],
 };
 
+function normalizeSearchText(value: unknown): string {
+  return String(value ?? "").toLowerCase();
+}
+
 /**
  * スキルがカテゴリに一致するか判定する。
  */
@@ -93,13 +97,13 @@ function matchesCategory(skill: SkillMetadata, categoryValue: string): boolean {
     const allKeywords = Object.entries(CATEGORY_KEYWORDS)
       .filter(([key]) => key !== "other")
       .flatMap(([, words]) => words);
-    const desc = skill.description.toLowerCase();
-    const name = String(skill.name).toLowerCase();
+    const desc = normalizeSearchText(skill.description);
+    const name = normalizeSearchText(skill.name);
     return !allKeywords.some((kw) => desc.includes(kw) || name.includes(kw));
   }
 
-  const desc = skill.description.toLowerCase();
-  const name = String(skill.name).toLowerCase();
+  const desc = normalizeSearchText(skill.description);
+  const name = normalizeSearchText(skill.name);
   return keywords.some((kw) => desc.includes(kw) || name.includes(kw));
 }
 
@@ -143,8 +147,8 @@ export interface UseSkillCenterReturn {
  */
 export function useSkillCenter(): UseSkillCenterReturn {
   // --- P31 対策: 個別セレクタ使用 ---
-  const availableSkills = useAvailableSkillsMetadata();
-  const importedSkills = useImportedSkills();
+  const availableSkills = useAvailableSkillsMetadata() ?? [];
+  const importedSkills = useImportedSkills() ?? [];
   const isLoading = useIsLoadingSkills();
   const error = useSkillError();
   const filter = useSkillFilter();
@@ -191,8 +195,8 @@ export function useSkillCenter(): UseSkillCenterReturn {
     if (filter.trim()) {
       const keyword = filter.toLowerCase().trim();
       result = result.filter((skill) => {
-        const name = String(skill.name).toLowerCase();
-        const desc = skill.description.toLowerCase();
+        const name = normalizeSearchText(skill.name);
+        const desc = normalizeSearchText(skill.description);
         return name.includes(keyword) || desc.includes(keyword);
       });
     }

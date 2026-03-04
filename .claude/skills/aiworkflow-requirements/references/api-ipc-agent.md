@@ -841,10 +841,36 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 ---
 
+## `skill:import` IPC 契約追補（2026-03-04）
+
+`TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001` と `TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` の反映として、`skill:import` の成功判定と冪等返却契約を固定する。
+
+### 契約ポイント
+
+| 観点 | 契約 |
+| --- | --- |
+| 引数 | `skillName: string`（P42準拠3段バリデーション） |
+| 成功判定 | `result.success === true` かつ `result.errors.length === 0`（`importedCount` は判定に含めない） |
+| 戻り値 | `ImportedSkill`（新規追加/既存追加済みの両ケースで返却） |
+| 失敗判定 | `result.errors.length > 0` または `getSkillByName` 取得失敗時に `IMPORT_ERROR` |
+| 冪等性 | Renderer 側で既存インポート判定時は IPC 呼び出しをスキップし、状態のみ同期する |
+
+### 実装境界
+
+| レイヤー | 実装ファイル | 役割 |
+| --- | --- | --- |
+| Main IPC | `apps/desktop/src/main/ipc/skillHandlers.ts` | 成功判定を `errors.length===0` に統一し、既存ケースも `ImportedSkill` を返却 |
+| Service | `apps/desktop/src/main/services/skill/SkillService.ts` | `getImportedSkills()` で import manager キーを `id/name` 両対応で復元 |
+| Renderer Store | `apps/desktop/src/renderer/store/slices/agentSlice.ts` | `importSkill` の事前ガード（既存時 IPC 呼び出しなし）で二重追加を防止 |
+
+---
+
 ## 完了タスク
 
 | タスクID   | タスク名                             | 完了日     | 変更内容                                                                         |
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
+| TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001 | imported state 復元整合修正 | 2026-03-04 | `getImportedSkills()` を id/name 互換に更新し、旧保存データ（nameキー）混在時でも `skill:getImported` が正しく復元されるよう是正 |
+| TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 | `skill:import` 冪等ガード修正 | 2026-03-04 | `skill:import` の成功判定を `errors.length===0` 基準へ更新。既存インポート時（`importedCount=0`）も `ImportedSkill` を返却し、Renderer 側の重複追加を防止 |
 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 | skill:chain:list ハンドラ登録漏れ修正 | 2026-03-03 | `registerSkillChainHandlers` を `registerAllIpcHandlers` へ追加し、`ipc-double-registration` 回帰テストで登録漏れを検出可能化。関連未タスクとしてバレル公開整合タスクを登録 |
 | TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
@@ -881,6 +907,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を同期。`skill:import` 成功判定を `errors.length===0` 基準へ固定し、既存追加済みケースの `ImportedSkill` 返却契約を追補。`getImported` の id/name 互換復元（Service）と Renderer 側 idempotency guard（重複追加防止）を実装境界テーブルで明文化 |
 | v1.16.3    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 の苦戦箇所と4ステップ簡潔解決手順を追記。完了タスク台帳に同タスクを追加し、登録漏れ修正と未タスク移管（バレル公開整合）を同期 |
 | v1.16.2    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001: `skill:chain:*` の備考を実装実態へ同期（`registerAllIpcHandlers` での登録保証を明記） |
 | v1.16.0    | 2026-03-01 | TASK-UI-05A監査反映: `skill:getFileTree` チャネル仕様セクション追加（FileNode型定義含む）。UT-UI-05A-GETFILETREE-001 未タスクとして登録 |
