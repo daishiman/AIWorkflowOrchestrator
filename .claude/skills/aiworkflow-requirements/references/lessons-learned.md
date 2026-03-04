@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-04 | 1.29.10 | `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001` を追加。`--coverage.include` パス誤指定で回帰判定が揺れる苦戦箇所を未タスク化し、`task-workflow.md` 残課題テーブル/追加未タスク表と同期 |
+| 2026-03-04 | 1.29.9 | SkillCenter削除導線ホットフィックスの再計測値を確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルに固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を仕様書へ同期。あわせて Phase 12テンプレート最適化へ未タスク配置先判定（未完了/完了移管）を追補 |
+| 2026-03-04 | 1.29.8 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の第2回再確認を追加。Phase 11 証跡を 16:50 JST へ更新し、`verify-unassigned-links`（88/88）/ `audit --diff-from HEAD`（baseline=94）へ同期。`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `completed-tasks/unassigned-task/` へ統一 |
+| 2026-03-04 | 1.29.7 | SkillCenter 削除導線ホットフィックスの教訓を追加。`handleRequestDelete` と確認ダイアログ描画の分離で起きる「押せるが削除されない」不具合を再発条件付きで追記し、5ステップ復旧手順（UI状態→描画→操作→回帰→カバレッジ確認）を標準化 |
 | 2026-03-04 | 1.29.6 | Phase 12テンプレート最適化の教訓を追加。`skill-creator` のテンプレート本体に preview preflight（build + 疎通）と失敗時未タスク化分岐を同期し、テンプレートと運用パターンのドリフトを解消する5ステップを追記 |
 | 2026-03-04 | 1.29.5 | TASK-FIX-SKILL-IMPORT 3連続是正の再監査追補を追加。UI再撮影で `preview` preflight が欠落した苦戦箇所（`ERR_CONNECTION_REFUSED` / module resolve fail）を明記し、未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を関連導線へ追加 |
 | 2026-03-04 | 1.29.4 | TASK-FIX-SKILL-IMPORT 3連続是正の完了移管を反映。関連未タスク3件の参照を `completed-tasks/unassigned-task/` へ更新し、完了日（2026-03-04）を明記 |
@@ -243,7 +247,7 @@
 | --- | --- |
 | 課題 | `capture-skill-center-phase11.mjs` 実行時に `ERR_CONNECTION_REFUSED` が発生し、`Rollup failed to resolve import "@repo/shared/types/skill"` で再撮影が停止した |
 | 再発条件 | `pnpm --filter @repo/desktop preview` の build成否と `127.0.0.1:4173` 疎通確認を省略して撮影を開始する場合 |
-| 対処 | 既存の TC-01〜TC-04 証跡（2026-03-04 13:21 JST）で視覚検証を継続し、運用ギャップを `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` として未タスク化した |
+| 対処 | TC-01〜TC-04 証跡を 2026-03-04 16:50 JST に再取得して視覚検証を継続し、運用ギャップは `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` で管理後に完了移管した |
 | 標準ルール | UI再撮影は「preview preflight（build + 疎通）→再撮影→TCカバレッジ→台帳同期」の4段を必須化する |
 
 ### 同種課題向け簡潔解決手順（5ステップ）
@@ -258,30 +262,58 @@
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
+| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定） | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` |
 | UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 | 3workflow再監査のSubAgent成果物突合を固定し、仕様書別実行ログの欠落を防ぐ（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | `aiworkflow-requirements` からの必要仕様抽出と台帳同期を同一ターンで固定する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
 | UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001 | 3workflow再監査で `scope.currentFiles` / `currentViolations` / `baselineViolations` を分離記録する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
-| UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001 | SkillCenter 再撮影前の preview preflight と失敗時未タスク化を標準化する | `docs/30-workflows/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
+| UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001 | SkillCenter 再撮影前の preview preflight と失敗時未タスク化を標準化する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
+
+### 苦戦箇所: 削除リクエスト状態と確認ダイアログ描画が分離し、削除が実行されなかった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `handleRequestDelete` で状態は更新されるのに、確認ダイアログ未描画のため `handleConfirmDelete` が呼ばれず削除できなかった |
+| 再発条件 | 「削除要求状態（isDeleteConfirmOpen）」を持つ Hook と、実際の確認UI描画コンポーネントが別責務なのに結線確認を省略した場合 |
+| 対処 | `SkillCenterView/index.tsx` に削除確認ダイアログを追加し、`confirm/cancel/Escape` を `useSkillCenter` アクションへ接続 |
+| 標準ルール | 「request 系 state を持つなら、対応する confirm UI と confirm action 呼び出しテストを必須化」する |
+
+### 同種課題向け簡潔解決手順（5ステップ）
+
+1. 不具合を UI層/Hook層/Store層で分解し、「どの層まで呼ばれているか」をログ/テストで切り分ける。  
+2. request state（例: `isDeleteConfirmOpen`）を持つHookは、対応する描画UIの存在を先に確認する。  
+3. confirm action（例: `handleConfirmDelete`）が呼ばれる経路をテストで固定する。  
+4. 既存回帰（関連ビュー + hook）を再実行し、導線追加での退行を確認する。  
+5. 対象範囲カバレッジを再計測し、80%以上を維持できていることを記録する。  
+
+### 苦戦箇所: 対象カバレッジの include path を誤指定すると実測値が歪む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | カバレッジ再計測で `--coverage.include` の対象パスを誤ると、想定3ファイルのうち一部しか計測されず、回帰判断が不安定になった |
+| 再発条件 | `views/SkillCenterView/hooks/*` を `src/renderer/hooks/*` として指定するようなパス取り違えがある場合 |
+| 対処 | `--coverage.include` を `index.tsx` / `hooks/useSkillCenter.ts` / `hooks/useFeaturedSkills.ts` の実在3パスへ固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を再確定した |
+| 標準ルール | 対象カバレッジ計測の前に `rg --files` で include パス実在を確認し、計測対象ファイル数をログへ明記する |
 
 ### 今回実装した内容（Phase 12テンプレート最適化）
 
 - `skill-creator` の `phase12-system-spec-retrospective-template.md` に preview preflight と失敗時未タスク化を追加。
 - `phase12-spec-sync-subagent-template.md` に preflight と screenshot coverage 検証の必須化を追加。
+- 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）をテンプレートへ追補。
 - `resource-map.md` と `patterns.md` の説明をテンプレート更新に合わせて同期。
 
 ### 苦戦箇所: パターンとテンプレート本体が同期しないと再利用時に漏れが出る
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 成功/失敗パターンには preflight 失敗時の対処があるのに、テンプレート本体のチェック項目に同条件がないため、仕様更新時に転記漏れが発生しやすかった |
+| 課題 | 成功/失敗パターンには preflight 失敗時の対処があるのに、テンプレート本体のチェック項目に同条件と未タスク配置先判定がなく、仕様更新時に転記漏れが発生しやすかった |
 | 再発条件 | `patterns.md` のみ更新して `assets/phase12-*.md` のコマンド・完了チェックを更新しない場合 |
-| 対処 | template本体（2ファイル） + resource-map + patterns を同一ターンで更新し、UI再撮影の前提条件を一貫化した |
+| 対処 | template本体（2ファイル） + resource-map + patterns を同一ターンで更新し、UI再撮影の前提条件と未タスク配置先判定を一貫化した |
 | 標準ルール | 「パターン更新時はテンプレート本体と資源マップも同時更新」を必須にする |
 
 ### 同種課題向け簡潔解決手順（5ステップ・テンプレート同期版）
 
 1. まず `patterns.md` の成功/失敗パターンから再発条件を抽出する。  
-2. `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の「手順・コマンド・完了チェック」を同時更新する。  
+2. `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の「手順・コマンド・完了チェック（未タスク配置先判定を含む）」を同時更新する。  
 3. `resource-map.md` のテンプレート説明を同一ターンで同期し、参照面のドリフトを防ぐ。  
 4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時転記する。  
 5. `quick_validate` で `aiworkflow-requirements` と `skill-creator` の両方を検証し、失敗時は未タスクへ分離する。  

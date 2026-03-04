@@ -82,4 +82,4 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 ---
 
 _このファイルは `generate-index.js` によって自動生成されました。_
-_最終更新: 2026-03-04T05:17:59.585Z_
+_最終更新: 2026-03-04T08:04:01.613Z_

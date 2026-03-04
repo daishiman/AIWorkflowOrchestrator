@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-04 - Phase 12テンプレートへ未タスク配置先判定ガードを追補]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の同種課題手順/検証コマンド/完了チェックへ「未完了は `docs/30-workflows/unassigned-task/`、完了移管済みは `docs/30-workflows/completed-tasks/unassigned-task/`」判定を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 分担・検証コマンド・完了チェックへ同判定を追加
+  - `references/resource-map.md` のテンプレート説明を未タスク配置先判定対応へ同期
+  - `SKILL.md` 変更履歴を `v10.36.7` として同期
+
+---
+
 ## [2026-03-04 - Phase 12テンプレートへ preview preflight 既定手順を同期]
 
 - **Agent**: skill-creator (update)

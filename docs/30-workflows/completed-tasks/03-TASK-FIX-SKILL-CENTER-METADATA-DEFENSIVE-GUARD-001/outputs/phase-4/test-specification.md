@@ -17,5 +17,5 @@ pnpm --filter @repo/desktop exec vitest run --coverage '--coverage.include=src/r
 
 ## 成功条件
 
-- 9 files / 129 tests PASS
+- 10 files / 132 tests PASS
 - Coverage: Line>=90, Branch>=80, Function>=90

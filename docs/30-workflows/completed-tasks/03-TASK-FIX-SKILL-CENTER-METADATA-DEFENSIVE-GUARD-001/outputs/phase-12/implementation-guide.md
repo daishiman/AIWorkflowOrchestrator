@@ -34,7 +34,7 @@
 
 ```bash
 pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__
-# 9 files / 129 tests PASS
+# 10 files / 132 tests PASS
 
 pnpm --filter @repo/desktop exec vitest run --coverage '--coverage.include=src/renderer/views/SkillCenterView/**' src/renderer/views/SkillCenterView/__tests__
 # Line 96.9 / Branch 91.85 / Function 100
@@ -42,5 +42,21 @@ pnpm --filter @repo/desktop exec vitest run --coverage '--coverage.include=src/r
 
 ### 画面検証
 
-- 4スクリーンショットを 2026-03-04 13:21 JST に再撮影
+- 4スクリーンショットを 2026-03-04 16:50 JST に再撮影
 - `validate-phase11-screenshot-coverage` PASS（4/4）
+
+### 追補: 「ツールを削除」が実行されない不具合の修正（2026-03-04）
+
+- 症状:
+  - SkillCenter 詳細パネルで「ツールを削除」を押下しても削除されない。
+- 原因:
+  - `handleRequestDelete` は呼ばれていたが、`isDeleteConfirmOpen` を表示する確認ダイアログが `SkillCenterView` で未描画だった。
+- 修正:
+  - `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` に削除確認ダイアログを追加。
+  - `handleConfirmDelete` / `handleCancelDelete` を接続。
+  - `Escape` キーでキャンセルできるように導線を追加。
+- テスト:
+  - `SkillCenterView.delete-confirm.test.tsx` を追加（表示/確認/キャンセルの3ケース）。
+  - `useSkillCenter.test.ts` / `useFeaturedSkills.test.ts` と合わせて 30テスト PASS。
+- カバレッジ:
+  - Hotfix 対象範囲で `Stmts/Lines 86.89`, `Branch 84.61`, `Functions 88.88`（いずれも 80% 以上）。

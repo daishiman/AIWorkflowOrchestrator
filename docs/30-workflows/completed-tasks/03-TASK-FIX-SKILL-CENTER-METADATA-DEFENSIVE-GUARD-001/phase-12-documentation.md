@@ -155,11 +155,11 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 
 ## Phase実行記録
 
-| 項目         | 記録                                                                                                                                                                    |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 実行タスク   | Task 1〜5、Step 1-A〜1-E、Step 2 を実施し、必須5成果物を `outputs/phase-12/` に出力した                                                                                 |
-| 発見事項     | Phase 11 再撮影で `preview` 事前確認不足を検出（`ERR_CONNECTION_REFUSED` / module resolve fail）。未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を新規登録した |
-| 引き継ぎ事項 | `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を実装し、再撮影前 preflight（build成功 + 疎通確認）を標準化する                                                          |
+| 項目         | 記録                                                                                                                                                                                                                                |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 実行タスク   | Task 1〜5、Step 1-A〜1-E、Step 2 を実施し、必須5成果物を `outputs/phase-12/` に出力した                                                                                                                                             |
+| 発見事項     | Phase 11 再撮影で `preview` 事前確認不足を検出（`ERR_CONNECTION_REFUSED` / module resolve fail）。加えて SkillCenter の削除導線で「確認ダイアログ未描画」の不具合を検出し、`SkillCenterView/index.tsx` にホットフィックスを反映した |
+| 引き継ぎ事項 | なし（`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` は完了済み。再撮影 preflight は標準化して `completed-tasks/unassigned-task` へ移管済み）                                                                                        |
 
 ## 次のPhase
 
