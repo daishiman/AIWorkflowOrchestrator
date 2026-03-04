@@ -10,9 +10,10 @@ category: 改善
 target_feature: Phase 11/12 UI証跡の再取得運用（apps/desktop scripts）
 priority: 中
 scale: 小規模
-status: 未実施
+status: 完了（2026-03-04）
 source_phase: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 Phase 12 再確認
 created_date: 2026-03-04
+completed_date: 2026-03-04
 ```
 
 | 項目         | 内容                                                        |
@@ -23,7 +24,7 @@ created_date: 2026-03-04
 | 対象機能     | UI証跡の再取得コマンド運用                                  |
 | 優先度       | 中                                                          |
 | 見積もり規模 | 小規模                                                      |
-| ステータス   | 未実施                                                      |
+| ステータス   | 完了（2026-03-04）                                          |
 | 発見元       | TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 Phase 12 再確認 |
 | 発見日       | 2026-03-04                                                  |
 
@@ -190,21 +191,21 @@ Phase 12 手順を再利用可能にする。
 
 ### 機能要件
 
-- [ ] screenshot コマンドが scripts に登録されている
-- [ ] コマンド名が feature 単位で識別可能
-- [ ] 文書内コマンドが統一されている
+- [x] screenshot コマンドが scripts に登録されている
+- [x] コマンド名が feature 単位で識別可能
+- [x] 文書内コマンドが統一されている
 
 ### 品質要件
 
-- [ ] 実行経路が一意（`run screenshot:*`）になっている
-- [ ] 手動コマンド依存が排除されている
-- [ ] 検証ログが同一ターンで記録されている
+- [x] 実行経路が一意（`run screenshot:*`）になっている
+- [x] 手動コマンド依存が排除されている
+- [x] 検証ログが同一ターンで記録されている
 
 ### ドキュメント要件
 
-- [ ] 本未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されている
-- [ ] `task-workflow.md` 残課題テーブルに登録されている
-- [ ] `lessons-learned.md` の関連未タスクに導線がある
+- [x] 本未タスク指示書が `docs/30-workflows/completed-tasks/unassigned-task/` に配置されている
+- [x] `task-workflow.md` 残課題テーブルに登録されている
+- [x] `lessons-learned.md` の関連未タスクに導線がある
 
 ---
 
@@ -264,3 +265,4 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
 ### 補足事項
 
 - 本タスクは UI証跡運用の再現性向上を目的とする運用ガードであり、機能追加そのものは含まない。
+- 2026-03-04 に完了反映済み（`package.json` scripts 登録、Phase 11/12 文書同期、`validate-phase11-screenshot-coverage` 4/4 PASS）。

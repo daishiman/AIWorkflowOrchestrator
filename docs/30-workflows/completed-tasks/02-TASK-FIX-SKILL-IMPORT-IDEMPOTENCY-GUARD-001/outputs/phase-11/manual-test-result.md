@@ -4,7 +4,7 @@
 
 - 実施日: 2026-03-04
 - 実施方法: PlaywrightによるUI操作 + スクリーンショット証跡
-- 実行コマンド: `node apps/desktop/scripts/capture-skill-import-idempotency-guard-screenshots.mjs`
+- 実行コマンド: `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard`
 
 ## テスト結果一覧
 

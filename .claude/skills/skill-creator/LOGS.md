@@ -4,30 +4,43 @@
 
 ---
 
-## [2026-03-04 - TASK-UI-00再追補パターン反映（TC命名互換 + checklistフォールバック）]
+## [2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策をテンプレートへ反映]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` の Phase 12 クイックナビへ成功キーワード「TC命名互換チェック + checklistフォールバック固定（UI screenshot coverage）」を追加
-  - 失敗キーワード「TC命名差/TC ID列名差を未確認のまま coverage失敗扱い」を追加
-  - 成功パターン本文「UI screenshot coverage の TC命名互換 + checklistフォールバック固定（TASK-UI-00-DESIGN-FOUNDATION）」を新設
-  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に TC命名互換チェックと warning理由記録ルールを追記
+  - `assets/phase12-system-spec-retrospective-template.md` に TC証跡記法チェック（`screenshots/*.png` / `NON_VISUAL:`）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の検証コマンド/完了チェックに同ルールを同期
+  - `references/patterns.md` に失敗パターン「別workflow証跡参照のまま coverage validator 実行」を追加
+  - `references/patterns.md` に成功パターン「対象workflow配下への証跡正規配置 + NON_VISUAL 記法固定」を追加
+  - `SKILL.md` 変更履歴を `v10.36.9` として同期
+
+---
+
+## [2026-03-04 - workflow02 screenshot Port競合ガードを Phase 12 パターンへ追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` のクイックナビ（📋 Phase 12）へ成功キーワード「UI再撮影前ポート競合preflight（5174）+ 分岐記録固定」を追加
+  - 同クイックナビへ失敗キーワード「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
+  - 失敗パターン本文「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
+  - 成功パターン本文「UI再撮影前ポート競合 preflight + 分岐記録固定（workflow02）」を追加
   - `SKILL.md` 変更履歴を `v10.36.8` として同期
 
 ---
 
-## [2026-03-04 - TASK-UI-00再監査パターン反映（MINOR即時未タスク化）]
+## [2026-03-04 - Phase 12テンプレートへ未タスク配置先判定ガードを追補]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` のクイックナビ（📋 Phase 12）重複行を整理
-  - 成功キーワードへ「Phase 11 MINOR 2件の即時未タスク化（TASK-UI-00）」を追加
-  - 失敗キーワードへ「Phase 11 MINORを発見メモ止まりで未タスク化しない」を追加
-  - 成功パターン本文「UI Phase 11 MINOR の即時未タスク化 + Apple UI再検証固定（TASK-UI-00-DESIGN-FOUNDATION）」を新設
+  - `assets/phase12-system-spec-retrospective-template.md` の同種課題手順/検証コマンド/完了チェックへ「未完了は `docs/30-workflows/unassigned-task/`、完了移管済みは `docs/30-workflows/completed-tasks/unassigned-task/`」判定を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 分担・検証コマンド・完了チェックへ同判定を追加
+  - `references/resource-map.md` のテンプレート説明を未タスク配置先判定対応へ同期
   - `SKILL.md` 変更履歴を `v10.36.7` として同期
 
 ---
@@ -56,39 +69,6 @@
   - 同クイックナビに失敗キーワード「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
   - 成功パターン本文「UI再撮影前 preview preflight + 失敗時未タスク化固定（SkillCenter）」を追加
   - 失敗パターン本文「preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）」を追加
-  - `SKILL.md` 変更履歴を `v10.36.5` として同期
-
----
-
-## [2026-03-04 - Phase 12 監査カウンタ再同期ガード追補]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン「未タスク監査カウンタ再同期（links/audit値の再計測固定）」を追加
-  - クイックナビ（📋 Phase 12）へ成功/失敗キーワードを追記
-    - 成功: 未タスク監査カウンタ再同期
-    - 失敗: 検証後の数値再同期漏れ（旧links/baseline値残置）
-  - `assets/phase12-system-spec-retrospective-template.md` に `current/baseline` 抽出コマンド（jq）を追加
-  - 同テンプレートの完了チェックに「`task-workflow` + `outputs/phase-12` への同値転記」を必須化
-  - `SKILL.md` 変更履歴を `v10.36.6` として同期
-
----
-
-## [2026-03-04 - Phase 12 運用ガード追補（実体探索 + Vitest非watch固定）]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン2件を追加
-    - 検証スクリプト実体探索先行（`rg --files` 固定）
-    - Vitest再確認の非watch固定（`pnpm --filter @repo/desktop exec vitest run`）
-  - 同ファイルのクイックナビ（Phase 12）へ成功/失敗キーワードを反映
-    - 失敗: 記憶ベース実行、`pnpm test` watch残留
-  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに `vitest run` 行を追加
-  - 同テンプレートの完了チェックへ「非watch実行確認」を追加
   - `SKILL.md` 変更履歴を `v10.36.5` として同期
 
 ---

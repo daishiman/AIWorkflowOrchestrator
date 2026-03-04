@@ -26,7 +26,6 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
-| UI Design Foundation         | TASK-UI-00-DESIGN-FOUNDATION | SearchBar, CodeViewer, TabSwitcher, SlideInPanel, ConfirmDialog, CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/task-050-ui-00-ui-design-foundation/` |
 
 ### 共通仕様
 
@@ -778,7 +777,7 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | --- | --- | --- |
 | ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | 実装コード | ✅ 完了 | `apps/desktop/src/renderer/views/SkillCenterView/` |
-| テスト資産 | ✅ 完了（9ファイル / 125テストケース定義） | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/` |
+| テスト資産 | ✅ 完了（10ファイル / 132テストケース定義） | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/` |
 | Phase 12成果物 | ✅ 完了（5必須 + 補助1） | `outputs/phase-12/*.md` |
 
 ### 状態管理・IPC依存
@@ -828,16 +827,30 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
-| UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 | Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
-| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
+| ~~UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001~~ | ~~Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード~~ **完了: 2026-03-04（scripts 登録 + 文書同期 + coverage 4/4 PASS）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
+| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
+| UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001 | screenshot 実行時の `Port 5174` 競合を事前検査し、分岐結果を記録するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
+| UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001 | `phase-11-manual-test.md` の画面カバレッジマトリクス（視覚/非視覚TC区分 + 期待証跡）を必須化するガード | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
 
 ### workflow02 追補の苦戦箇所（再利用用）
 
 | 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
 | --- | --- | --- | --- |
-| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録を必須化 | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
+| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録後に `run` 表示確認 + 文書同期 + coverage 4/4 PASS まで完了化（2026-03-04 反映済み） | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
 | capture script の `page.goto` 待機戦略が環境依存で timeout する | `waitUntil: load` 固定で画面遷移待機するとき | 未タスク `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001` を起票し、`domcontentloaded` 基準 + 補助待機の標準化を追加 | 失敗時ログ（待機段階/URL）を残し、1回目失敗で切り分け可能にする |
+| screenshot 実行時に `Port 5174 is already in use` が混在する | 既存 preview/dev server が残った状態で screenshot コマンドを再実行するとき | `lsof -nP -iTCP:5174 -sTCP:LISTEN` を再確認手順へ追加し、競合時分岐を未タスク `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` として切り出した | 再撮影は「ポート検査 → 再撮影 → coverage検証 → 台帳同期」を1セットで完了判定する |
+| Phase 11 証跡を別workflow参照のまま残し coverage validator が失敗する | `manual-test-result.md` の証跡列のみ更新し、対象workflow配下 `outputs/phase-11/screenshots` を未配置のままにするとき | 対象workflow配下へ証跡を正規配置し、視覚TCは `screenshots/*.png`、非視覚TCは `NON_VISUAL:` 記法へ統一して `validate-phase11-screenshot-coverage` PASS を再取得した | UI証跡は「対象workflow配下の実体 + TC証跡記法 + coverage PASS」を同時に満たして完了判定する |
+| `validate-phase11-screenshot-coverage` が PASS でも matrix 未記載 warning が残る | `phase-11-manual-test.md` に画面カバレッジマトリクスを持たないまま運用するとき | 未タスク `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加し、matrix 必須列（TC-ID/区分/期待証跡/理由）を運用ルールへ分離した | UI証跡は「画像実体」だけでなく「Phase 11設計意図（matrix）」まで揃えて完了判定する |
 
+### 2026-03-04 追補: 削除導線ホットフィックス
+
+| 観点 | 追補内容 |
+| --- | --- |
+| 不具合 | 「ツールを削除」押下後に削除が実行されない（`handleRequestDelete` 後の確認UIが未描画） |
+| 修正 | `SkillCenterView/index.tsx` に削除確認ダイアログを追加し、`handleConfirmDelete` / `handleCancelDelete` / `Escape` キー導線を接続 |
+| 追加テスト | `SkillCenterView.delete-confirm.test.tsx`（表示/確認/キャンセルの3ケース） |
+| 回帰検証 | `SkillCenterView.delete-confirm.test.tsx` + `useSkillCenter.test.ts` + `useFeaturedSkills.test.ts` の 3 files / 30 tests PASS |
+| カバレッジ | `index.tsx + useSkillCenter.ts + useFeaturedSkills.ts` で `Stmts/Lines 86.89`, `Branch 84.61`, `Functions 88.88`（全指標80%以上） |
 ### 関連未タスク
 
 | タスクID | 概要 | 仕様書 |
@@ -1097,8 +1110,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
-| TASK-UI-00-DESIGN-FOUNDATION | UI共通デザイン基盤（Molecules/Organisms 8コンポーネント + 47テスト + Phase11証跡5件） | 2026-03-04 | `docs/30-workflows/task-050-ui-00-ui-design-foundation/` |
-| TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
+| TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 10テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | TASK-10A-B | SkillAnalysisView（分析・改善UI、4コンポーネント + 1 Hook） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + IPC `skill:create`） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
@@ -1180,9 +1192,6 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-10A-C SkillCreateWizard仕様](../../../docs/30-workflows/completed-tasks/skill-create-wizard/index.md)
 - [TASK-10A-C 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/manual-test-result.md)
 - [TASK-10A-C 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/)
-- [TASK-UI-00-DESIGN-FOUNDATION ワークフロー仕様](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/index.md)
-- [TASK-UI-00-DESIGN-FOUNDATION 手動検証結果](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/outputs/phase-11/manual-test-result.md)
-- [TASK-UI-00-DESIGN-FOUNDATION 画面検証スクリーンショット](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/outputs/phase-11/screenshots/)
 
 ---
 
@@ -1190,7 +1199,12 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-04 | v1.14.6    | TASK-UI-00-DESIGN-FOUNDATION 完了反映: 収録機能一覧と完了タスクへ UI Design Foundation を追加。Molecules/Organisms 8コンポーネント、テスト47件PASS、Phase 11画面証跡5件（TC-UI-00-301〜305）を同期 |
+| 2026-03-04 | v1.14.9    | workflow02 追補へ `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning を苦戦箇所として追記し、matrix 必須列（TC-ID/区分/期待証跡/理由）を再利用ルールへ反映 |
+| 2026-03-04 | v1.14.8    | workflow02 追補へ「Phase 11証跡の別workflow参照による coverage validator fail」を苦戦箇所として追加。対象workflow配下への証跡正規配置、`NON_VISUAL:` 記法、`validate-phase11-screenshot-coverage` PASS 固定を再利用ルールへ反映 |
+| 2026-03-04 | v1.14.7    | workflow02 追補へ `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` を追加。`Port 5174 is already in use` 混在時の再発条件・対処（`lsof` 事前検査 + 分岐記録）を苦戦箇所テーブルへ追記し、未タスク正本リンクを同期 |
+| 2026-03-04 | v1.14.6    | workflow02 追補の状態同期を実施。`UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を関連未タスク表で完了化（取り消し線 + 完了注記）し、苦戦箇所テーブルへ実施済み対処（scripts 登録 + 文書同期 + coverage 4/4 PASS）を反映 |
+| 2026-03-04 | v1.13.5    | SkillCenter削除導線ホットフィックスの実測値を再確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルへ固定し、再検証値を `3 files / 30 tests`、coverage `86.89/84.61/88.88` へ更新 |
+| 2026-03-04 | v1.13.4    | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 追補: SkillCenter 削除導線ホットフィックス（確認ダイアログ未描画の解消）を追加。テスト資産件数を `10ファイル / 132テスト` に更新し、再検証値（3 files / 30 tests、coverage 86.89/84.61/88.88）を記録 |
 | 2026-03-04 | v1.13.3    | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: SkillStreamDisplay セクションに認証 preflight UX ガード（`auth-key:exists` 事前判定、`AUTHENTICATION_ERROR` 表示、execute抑止）を追加。Phase 11 画面証跡3件を同期 |
 | 2026-03-04 | v1.14.5    | workflow02 追補を反映。`UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` / `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001` を Skill Import Idempotency Guard 節へ追記し、苦戦箇所（コマンド公開不足 / `page.goto` timeout）の再利用ルールを追加 |
 | 2026-03-04 | v1.14.4    | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 を反映。SkillCenterView セクションへ欠損メタデータ防御契約（description nullish、配列 nullish、検索/おすすめ防御）を追加し、Phase 11 画面証跡 TC-01〜TC-04 を同期。完了タスク台帳へ同タスクを登録 |
