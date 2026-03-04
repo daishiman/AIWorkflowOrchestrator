@@ -95,7 +95,9 @@ const SlideInPanelComponent: React.FC<SlideInPanelProps> = ({
   return (
     <div className="fixed inset-0 z-50">
       {showOverlay && (
-        <div
+        <button
+          type="button"
+          aria-label="オーバーレイを閉じる"
           data-testid="slide-in-panel-overlay"
           className="absolute inset-0 bg-black/30"
           onClick={onClose}
