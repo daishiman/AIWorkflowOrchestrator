@@ -276,6 +276,18 @@
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001
 
+### [Phase12] UI再撮影時刻同期 + 未タスクメタ情報単一化（TASK-UI-00-MOLECULES 再確認）
+
+- **状況**: UIスクリーンショットを再取得しても `manual-test-result.md` / `screenshot-coverage.md` の時刻が旧値のまま残りやすく、未タスク指示書では `## メタ情報` 重複が混入しやすい
+- **アプローチ**:
+  - UI再撮影後に `stat` の実時刻を `manual-test-result.md` / `screenshot-coverage.md` / `spec-update-summary.md` へ同一ターンで同期する
+  - `audit-unassigned-tasks --target-file` と `rg -n "^## メタ情報$"` をセットで実行し、未タスクフォーマットを機械確認する
+  - Phase 12 チェックリストへ「`## メタ情報` 1件のみ」の判定項目を追加する
+- **結果**: 画面証跡の鮮度証明と未タスクフォーマット整合が同時に担保され、再監査差し戻しを抑制できる
+- **適用条件**: UIタスクの Phase 11 再撮影を伴う Phase 12 再確認
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-UI-00-MOLECULES / UT-IMP-PHASE12-IMPLEMENTATION-GUIDE-QUALITY-GATE-001
+
 ### [Phase12] 仕様書作成タスクの `spec_created` 状態判定
 
 - **状況**: Phase 12 Step 1-B で、実装未着手タスクまで `completed` と記録しやすい

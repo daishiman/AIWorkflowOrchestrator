@@ -1,3 +1,153 @@
+## 2026-03-04 - 未タスク追加（UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `TASK-UI-00-MOLECULES` Phase 12 再確認で顕在化した時刻同期課題
+- 目的: UI再撮影時刻の同期漏れと system spec 反映漏れを同時防止する未タスクを正本台帳へ登録する
+
+### SubAgent分担
+- SubAgent-A: 未タスク仕様書作成（`docs/30-workflows/completed-tasks/task-imp-phase12-ui-timestamp-system-spec-sync-guard-001.md`）
+- SubAgent-B: `references/task-workflow.md` 残課題テーブル登録
+- SubAgent-C: `references/lessons-learned.md` 関連未タスク導線追加
+- SubAgent-D: 検証（`verify-unassigned-links` / `audit --target-file` / `audit --diff-from HEAD`）
+
+### 実施内容
+- `task-specification-creator` フォーマット（`## メタ情報` + `## 1..9` + `3.5 実装課題と解決策`）で未タスク仕様書を新規作成
+- 苦戦箇所3件（時刻同期漏れ、仕様正本同期遅延、current/baseline誤読）を再利用可能形式で記録
+- `task-workflow.md` の残課題テーブルへ新規未タスクを登録
+- `lessons-learned.md` の TASK-UI-00-MOLECULES 節へ関連未タスクテーブルを追加
+
+### 結果
+- ステータス: success
+- 補足: 未タスクは `docs/30-workflows/unassigned-task/` 正本へ配置済み。検証で `missing=0` / `currentViolations=0` を確認。
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES Phase 12最適化追補（実装内容 + 苦戦箇所 + ファイル形成）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/task-ui-00-molecules/` と `skill-creator` テンプレート
+- 目的: 実装内容・苦戦箇所を system spec 正本へ再利用可能な形で固定し、証跡時刻同期とドキュメント構造の抜け漏れを防止する
+
+### SubAgent分担
+- SubAgent-A: `references/task-workflow.md`（完了台帳 + 苦戦箇所 + 5ステップ手順）
+- SubAgent-B: `references/lessons-learned.md`（再発条件付き教訓の強化）
+- SubAgent-C: `references/ui-ux-components.md`（画面証跡時刻の同期）
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit`）
+
+### 実施内容
+- `task-workflow.md` に「UI再撮影後の時刻記録反映漏れ」を苦戦箇所として追加し、簡潔解決手順を 4→5 ステップへ拡張
+- `lessons-learned.md` に同課題を再発条件付きで追加し、`stat` 実測値同期を標準運用へ昇格
+- `ui-ux-components.md` の TASK-UI-00-MOLECULES 画面証跡へ再撮影時刻（2026-03-04 18:04 JST）を追記
+- `skill-creator` テンプレートに「Task 1内容要件 + UI証跡時刻同期 + メタ情報単一化」チェックを反映済みであることを system spec ログに記録
+
+### 結果
+- ステータス: success
+- 補足: `currentViolations=0` / `verify-unassigned-links missing=0` を維持。baseline は既存課題として分離管理。
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES Phase 12準拠再確認（実装内容 + 苦戦箇所追補）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/task-ui-00-molecules/`
+- 目的: Phase 12 Task 1/2/3/4/5 の準拠を再確認し、system spec に実装内容と苦戦箇所を再利用可能な形式で追補する
+
+### SubAgent分担
+- SubAgent-A: `task-ui-00-molecules` Phase 12成果物の準拠監査（Task 1/3/4/5）
+- SubAgent-B: `references/task-workflow.md` へ実装内容・苦戦箇所・簡潔手順を追記
+- SubAgent-C: `references/lessons-learned.md` へ再発条件付き教訓を追加
+- SubAgent-D: 未タスク監査（`verify-unassigned-links` / `audit --diff-from HEAD` / 対象file監査）
+
+### 実施内容
+- `implementation-guide.md` を Part 1/Part 2 必須要件に合わせて再構成（理由先行 + 日常例え / 型・API・エッジケース・設定項目）
+- `phase12-task-spec-compliance-check.md` を追加し、Task 1/2/3/4/5 の実体確認結果を固定
+- `task-workflow.md` と `lessons-learned.md` に TASK-UI-00-MOLECULES の苦戦箇所と4ステップ手順を追加
+- `ui-ux-components.md` 変更履歴に Phase 12準拠追補を反映
+
+### 結果
+- ステータス: success
+- 補足: 未タスク監査は `currentViolations=0` を維持、baseline（93）は既存課題として分離管理
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES 再確認（SearchBar onSubmit追補 + 数値/証跡同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/task-ui-00-molecules/`
+- 目的: 追加実装（SearchBar Enter確定 `onSubmit`）を仕様正本へ反映し、テスト数値と画面証跡時刻のドリフトを解消する
+
+### SubAgent分担
+- SubAgent-A: 実装実体検証（Molecules 5コンポーネント + 5テストファイル再実行）
+- SubAgent-B: `references/task-workflow.md` の完了記録・検証証跡更新
+- SubAgent-C: `references/ui-ux-components.md` の変更履歴更新
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+
+### 実施内容
+- SearchBar に `onSubmit`（Enter確定）を追加し、`SearchBar.test.tsx` を 14 tests へ更新
+- Molecules対象テストを再実行し `5 files / 69 tests PASS` を確認
+- Phase 11 スクリーンショットを再取得（TC-01〜TC-04, 17:09 JST）し、証跡時刻を更新
+- task-ui-00-molecules の Phase成果物・検証レポート・台帳と system spec の数値整合を再同期
+
+### 結果
+- ステータス: success
+- 補足: `currentViolations=0` を維持、`verify-unassigned-links missing=0` を確認
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES 実装完了再同期（completed化 + 台帳整合）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/task-ui-00-molecules/`
+- 目的: `spec_created` 残存を解消し、実装実体（5コンポーネント + 5テスト + 画面証跡）に合わせてシステム仕様正本を completed 状態へ同期する
+
+### SubAgent分担
+- SubAgent-A: `docs/30-workflows/completed-tasks/task-ui-00-molecules/` の Phase 1〜12 成果物・台帳同期（`artifacts.json` / `outputs/artifacts.json` / `index.md`）
+- SubAgent-B: `references/task-workflow.md` の完了記録・残課題行・変更履歴更新
+- SubAgent-C: `references/ui-ux-components.md` の Molecules 実装状況（5件 completed）更新
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）
+
+### 実施内容
+- Molecules 実装・テスト実体（SearchBar / CodeViewer / TabSwitcher / SlideInPanel / ConfirmDialog, 68 tests）を台帳へ反映
+- `task-workflow.md` の TASK-UI-00-MOLECULES 節を completed 記録へ更新し、残課題テーブル行を完了化
+- `ui-ux-components.md` の Molecules 実装状況を `spec_created` から `completed` に変更し、完了タスクへ登録
+- `docs/30-workflows/completed-tasks/task-ui-00-molecules` の artifacts/index/verification-report を再同期
+
+### 結果
+- ステータス: success
+- 補足: Phase 1〜12 の成果物・実装・画面証跡・仕様正本の整合を確認（Phase 13は未実施）
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES 再監査（spec_created整合 + 画面証跡 + 台帳同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/task-ui-00-molecules/`
+- 目的: 仕様書と実装実体の差分を再監査し、システム仕様正本へ同期する
+
+### SubAgent分担
+- SubAgent-A: `task-ui-00-molecules` Phase 11/12 成果物補完（manual/discovered/spec-update）
+- SubAgent-B: `references/task-workflow.md` 完了台帳・残課題・履歴同期
+- SubAgent-C: `references/ui-ux-components.md` Molecules実装状況（spec_created）同期
+- SubAgent-D: 検証（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage`）
+
+### 実施内容
+- Phase 11 証跡を再取得済みスクリーンショット4件で固定し、`manual-test-result.md` と TC紐付けを作成
+- Phase 12 必須5成果物（implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）を作成
+- `task-053` 参照を `completed-task` 正本へ修正
+- `task-workflow.md` 残課題へ `TASK-UI-00-MOLECULES`（spec_created継続）を追加
+
+### 結果
+- ステータス: success
+- 補足: 構造検証/証跡検証はPASS、実体照合は Molecules 5件 + テスト5件未実装を確認
+
+---
+
 # 実行ログ
 
 このファイルはスキルの使用記録を蓄積します。

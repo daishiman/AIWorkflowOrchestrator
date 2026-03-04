@@ -4,21 +4,25 @@
 
 Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件を検証するためのチェックリスト。
 
-## チェック項目一覧（11項目）
+## チェック項目一覧（15項目）
 
-| #   | Task ID | チェック項目                                             | 確認対象ファイル                                                                       | 検証方法                                       |
-| --- | ------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| 1   | Task 1  | implementation-guide.md Part 1（中学生レベル概念説明）が存在する | outputs/phase-12/implementation-guide.md                                               | ファイル実在 + `## Part 1` セクション存在      |
-| 2   | Task 1  | implementation-guide.md Part 2（開発者向け実装詳細）が存在する   | outputs/phase-12/implementation-guide.md                                               | ファイル実在 + `## Part 2` セクション存在      |
-| 3   | Task 1  | API/IPC/コンポーネントドキュメントが存在する             | outputs/phase-12/api-documentation.md 等                                               | ファイル実在（該当する文書種別のみ）           |
-| 4   | Task 3  | documentation-changelog.md が作成されている               | outputs/phase-12/documentation-changelog.md                                            | ファイル実在                                   |
-| 5   | Task 3  | 全 Step の完了結果が記録されている                        | outputs/phase-12/documentation-changelog.md 内                                         | Step完了セクション存在                         |
-| 6   | Task 4  | unassigned-task-detection.md が作成されている（0件でも必須） | outputs/phase-12/unassigned-task-detection.md                                          | ファイル実在                                   |
-| 7   | Task 4  | 検出した未タスクが3ステップ全完了している                 | unassigned-task/指示書 + task-workflow.mdテーブル + 関連仕様書リンク                    | 3ステップ確認                                  |
-| 8   | Task 5  | aiworkflow-requirements/LOGS.md が更新されている          | .claude/skills/aiworkflow-requirements/LOGS.md                                         | 更新確認                                       |
-| 9   | Task 5  | task-specification-creator/LOGS.md が更新されている        | .claude/skills/task-specification-creator/LOGS.md                                      | 更新確認                                       |
-| 10  | Task 5  | aiworkflow-requirements/SKILL.md 変更履歴が更新されている  | .claude/skills/aiworkflow-requirements/SKILL.md                                        | 変更履歴更新確認                               |
-| 11  | Task 5  | task-specification-creator/SKILL.md 変更履歴が更新されている | .claude/skills/task-specification-creator/SKILL.md                                     | 変更履歴更新確認                               |
+| #   | Task ID | チェック項目                                                                 | 確認対象ファイル                                                                       | 検証方法                                                                                  |
+| --- | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| 1   | Task 1  | implementation-guide.md Part 1（中学生レベル概念説明）が存在する           | outputs/phase-12/implementation-guide.md                                               | ファイル実在 + `## Part 1` セクション存在                                                 |
+| 2   | Task 1  | implementation-guide.md Part 2（開発者向け実装詳細）が存在する             | outputs/phase-12/implementation-guide.md                                               | ファイル実在 + `## Part 2` セクション存在                                                 |
+| 3   | Task 1  | Part 1 で「なぜ必要か」を先に説明している                                   | outputs/phase-12/implementation-guide.md                                               | `## Part 1` 内に `なぜ`/`必要` の説明ブロックがある                                       |
+| 4   | Task 1  | Part 1 に日常生活の例え話が含まれている                                     | outputs/phase-12/implementation-guide.md                                               | `## Part 1` 内に `例え`/`たとえば`/`イメージ` のいずれかを含む                           |
+| 5   | Task 1  | Part 2 に型定義（TypeScript）が含まれている                                | outputs/phase-12/implementation-guide.md                                               | `interface` または `type` を含むコードブロック                                            |
+| 6   | Task 1  | Part 2 に APIシグネチャ/使用例が含まれている                               | outputs/phase-12/implementation-guide.md                                               | `onXxx` などのシグネチャ記述 + 使用例コードブロック                                       |
+| 7   | Task 1  | Part 2 にエラーハンドリング/エッジケース/設定項目が記載されている          | outputs/phase-12/implementation-guide.md                                               | 「エラーハンドリング」「エッジケース」「設定」系見出し or 表の存在                        |
+| 8   | Task 3  | documentation-changelog.md が作成されている                                | outputs/phase-12/documentation-changelog.md                                            | ファイル実在                                                                              |
+| 9   | Task 3  | 全 Step の完了結果が記録されている                                           | outputs/phase-12/documentation-changelog.md 内                                         | Step完了セクション存在                                                                    |
+| 10  | Task 4  | unassigned-task-detection.md が作成されている（0件でも必須）               | outputs/phase-12/unassigned-task-detection.md                                          | ファイル実在                                                                              |
+| 11  | Task 4  | 検出した未タスクが3ステップ全完了している                                    | unassigned-task/指示書 + task-workflow.mdテーブル + 関連仕様書リンク                    | 3ステップ確認                                                                             |
+| 12  | Task 5  | aiworkflow-requirements/LOGS.md が更新されている                             | .claude/skills/aiworkflow-requirements/LOGS.md                                         | 更新確認                                                                                  |
+| 13  | Task 5  | task-specification-creator/LOGS.md が更新されている                           | .claude/skills/task-specification-creator/LOGS.md                                      | 更新確認                                                                                  |
+| 14  | Task 5  | aiworkflow-requirements/SKILL.md / task-specification-creator/SKILL.md 変更履歴が更新されている | .claude/skills/aiworkflow-requirements/SKILL.md / .claude/skills/task-specification-creator/SKILL.md | 変更履歴更新確認                                                                          |
+| 15  | Task 4  | 未タスク指示書で `## メタ情報` が1件のみである（重複なし）                              | docs/30-workflows/unassigned-task/*.md                                                 | `rg -n "^## メタ情報$"` で対象ファイルを確認し、1件であることを検証                     |
 
 ## 機械検証コマンド
 
@@ -44,6 +48,18 @@ GUIDE="$WF_DIR/outputs/phase-12/implementation-guide.md"
 grep -c "## Part 1" "$GUIDE" && grep -c "## Part 2" "$GUIDE"
 ```
 
+### Part 1/2 内容要件の簡易確認
+
+```bash
+GUIDE="$WF_DIR/outputs/phase-12/implementation-guide.md"
+
+# Part 1: 理由先行 + 例え
+rg -n "なぜ|必要|例え|たとえば|イメージ" "$GUIDE"
+
+# Part 2: 型/API/エッジケース/設定
+rg -n "interface|type|API|シグネチャ|エッジケース|エラー|設定" "$GUIDE"
+```
+
 ### LOGS.md 2ファイル更新確認（P1/P25対策）
 
 ```bash
@@ -66,15 +82,19 @@ git diff --name-only HEAD -- \
 チェックリスト検証結果:
 - #1  implementation-guide.md Part 1: OK/NG
 - #2  implementation-guide.md Part 2: OK/NG
-- #3  API/IPC/Component文書: OK/NG/N/A
-- #4  documentation-changelog.md: OK/NG
-- #5  全Step完了結果記録: OK/NG
-- #6  unassigned-task-detection.md: OK/NG
-- #7  未タスク3ステップ完了: OK/NG/N/A(0件)
-- #8  aiworkflow-requirements/LOGS.md: OK/NG
-- #9  task-specification-creator/LOGS.md: OK/NG
-- #10 aiworkflow-requirements/SKILL.md: OK/NG
-- #11 task-specification-creator/SKILL.md: OK/NG
+- #3  Part 1 理由先行: OK/NG
+- #4  Part 1 日常例え: OK/NG
+- #5  Part 2 型定義: OK/NG
+- #6  Part 2 APIシグネチャ/使用例: OK/NG
+- #7  Part 2 エッジケース/設定項目: OK/NG
+- #8  documentation-changelog.md: OK/NG
+- #9  全Step完了結果記録: OK/NG
+- #10 unassigned-task-detection.md: OK/NG
+- #11 未タスク3ステップ完了: OK/NG/N/A(0件)
+- #12 aiworkflow-requirements/LOGS.md: OK/NG
+- #13 task-specification-creator/LOGS.md: OK/NG
+- #14 aiworkflow-requirements/SKILL.md + task-specification-creator/SKILL.md: OK/NG
+- #15 未タスク `## メタ情報` 重複なし: OK/NG
 
-総合判定: PASS / FAIL (NG項目数: X/11)
+総合判定: PASS / FAIL (NG項目数: X/15)
 ```
