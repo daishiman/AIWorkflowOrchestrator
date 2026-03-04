@@ -392,6 +392,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.0** | **2026-03-04** | **TASK-FIX-SKILL-IMPORT 3連続是正の再監査を反映**: `01/02/03` workflow を再監査し、`aiworkflow-requirements` 正本6仕様書（api-ipc/interfaces/arch-state/ui-ux-feature/task-workflow/lessons）へ実装内容と苦戦箇所を同期。Phase 12 Task 5 必須の4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を同一ターンで更新し、`verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）/`audit --diff-from HEAD` の証跡を固定 |
 | **v10.07.1** | **2026-03-03** | **TASK-10A-D 再監査追補**: Phase 11 証跡不足を是正し、`outputs/phase-11/screenshots/` に TC-01〜TC-05 を追加。`manual-test-result.md` を証跡列付きへ更新して `validate-phase11-screenshot-coverage` を PASS 化。`task-workflow.md` の未タスクリンク3件を修正し、`verify-unassigned-links` を `ALL_LINKS_EXIST` へ回復。`artifacts.json` と `index.md` を再同期して Phase 13 を `pending`（未実施）へ整合化 |
 | **v10.07.0** | **2026-03-03** | **TASK-10A-D Phase 12 完了同期**: `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` / `arch-state-management.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` に実装内容と苦戦箇所3件（Suggestion型不整合、P40再発、P11パターン）を同期。LOGS.md 2ファイル・SKILL.md 2ファイル同時更新（P1/P25/P29対策）。P43準拠3ファイル以下/エージェントに分割実行 |
 | **v10.06.0** | **2026-03-02** | **TASK-10A-C 再監査パターンを反映**: `phase-11-manual-test.md` / `phase-12-documentation.md` で依存Phase成果物（2/5/6/7/8/9/10）の参照資料補完を必須化し、`verify-all-specs` の依存参照warningをゼロ化する運用を追記。UIタスクでは `screenshot:*` 再実行で証跡鮮度を固定し、Step 1-A の LOGS/SKILL 4点同時更新を完了条件として明文化 |

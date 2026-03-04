@@ -642,6 +642,17 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   },
 
   importSkill: async (skillName) => {
+    // 冪等化: 既にインポート済みならIPCを呼ばずに終了
+    if (get().importedSkills.some((s) => s.name === skillName)) {
+      set((state) => ({
+        skillError: null,
+        availableSkillsMetadata: state.availableSkillsMetadata.filter(
+          (s) => s.name !== skillName,
+        ),
+      }));
+      return;
+    }
+
     set({ isImporting: true, importingSkillName: skillName, skillError: null });
     try {
       if (!window.electronAPI?.skill) {
@@ -649,7 +660,9 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       }
       const imported = await window.electronAPI.skill.import(skillName);
       set((state) => ({
-        importedSkills: [...state.importedSkills, imported],
+        importedSkills: state.importedSkills.some((s) => s.name === skillName)
+          ? state.importedSkills
+          : [...state.importedSkills, imported],
         availableSkillsMetadata: state.availableSkillsMetadata.filter(
           (s) => s.name !== skillName,
         ),

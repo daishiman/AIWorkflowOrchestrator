@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-03T15:40:39.241Z",
-  "totalKeywords": 1408,
+  "generated": "2026-03-04T01:30:12.849Z",
+  "totalKeywords": 1411,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -826,9 +826,19 @@
     "スキル分析・統計": [
       "api-ipc-agent.md"
     ],
-    "スキル作成ウィザード": [
+    "skill": [
       "api-ipc-agent.md",
-      "interfaces-agent-sdk-skill.md"
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md"
+    ],
+    "import": [
+      "api-ipc-agent.md",
+      "lessons-learned.md"
+    ],
+    "契約追補": [
+      "api-ipc-agent.md"
     ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
@@ -1142,6 +1152,16 @@
       "lessons-learned.md",
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
+    ],
+    "Import": [
+      "arch-state-management.md",
+      "interfaces-agent-sdk-integration.md"
+    ],
+    "SkillCenter": [
+      "arch-state-management.md"
+    ],
+    "防御状態管理": [
+      "arch-state-management.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -1609,12 +1629,6 @@
     ],
     "system": [
       "architecture-implementation-patterns.md"
-    ],
-    "skill": [
-      "architecture-implementation-patterns.md",
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md"
     ],
     "creator": [
       "architecture-implementation-patterns.md",
@@ -2551,9 +2565,6 @@
     "セッション永続化": [
       "interfaces-agent-sdk-integration.md"
     ],
-    "Import": [
-      "interfaces-agent-sdk-integration.md"
-    ],
     "System": [
       "interfaces-agent-sdk-integration.md"
     ],
@@ -2585,6 +2596,9 @@
       "lessons-learned.md"
     ],
     "スキル分析": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "スキル作成ウィザード": [
       "interfaces-agent-sdk-skill.md"
     ],
     "スキルライフサイクル": [
@@ -3088,6 +3102,9 @@
     "再監査": [
       "lessons-learned.md"
     ],
+    "連続是正": [
+      "lessons-learned.md"
+    ],
     "CENTER": [
       "lessons-learned.md"
     ],
@@ -3384,9 +3401,6 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
-      "lessons-learned.md"
-    ],
-    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
@@ -4279,9 +4293,6 @@
       "security-electron-ipc.md"
     ],
     "skillFileAPI": [
-      "security-electron-ipc.md"
-    ],
-    "skillCreateAPI": [
       "security-electron-ipc.md"
     ],
     "skillShareAPI": [

@@ -774,6 +774,25 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | IPC利用 | Rendererは Store アクション経由で利用（`skill:list`, `skill:import`, `skill:remove`） |
 | 契約変更 | 新規IPCチャンネル追加なし（既存契約の再利用） |
 
+### 欠損メタデータ防御（TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001）
+
+| 観点 | 実装 |
+| --- | --- |
+| 文字列防御 | `String(skill.description ?? "")` を `SkillCard` / `SkillDetailPanel` / Hook検索で統一し、null/undefined 表示クラッシュを防止 |
+| 配列防御 | `safeLength` / `safeSubResources` / `safeOtherFiles` で `agents/references/indexes/scripts/otherFiles` の nullish を空配列扱い |
+| 検索防御 | `normalizeSearchText` を導入し、フィルタ・カテゴリ推論で `.toLowerCase()` 例外を防止 |
+| Featured 防御 | `useFeaturedSkills` の入力既定値を `allSkills=[]` / `importedSkillNames=[]` に固定 |
+| 結果 | 欠損メタデータを含むスキルでも SkillCenterView の一覧/詳細/おすすめ表示が継続可能 |
+
+### 画面検証証跡（2026-03-04）
+
+| TC | 証跡 | ファイル |
+| --- | --- | --- |
+| TC-01 | 欠損説明文ありカード表示（通常表示） | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/TC-01-skill-center-initial.png` |
+| TC-02 | 欠損説明文でフィルタ遷移 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/TC-02-search-with-missing-description.png` |
+| TC-03 | 欠損サブリソースを含む詳細パネル | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/TC-03-detail-panel-malformed-metadata.png` |
+| TC-04 | 欠損データ混在でのおすすめ表示 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/TC-04-featured-and-category.png` |
+
 ### 関連未タスク
 
 | タスクID | 概要 | 仕様書 |
@@ -1150,6 +1169,7 @@ SkillManagementPanelの「準備中」プレースホルダーを実コンポー
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 | SkillCenter 欠損メタデータ防御（description/配列 nullish ガード） | 2026-03-04 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/` |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | TASK-10A-B | SkillAnalysisView（分析・改善UI、4コンポーネント + 1 Hook） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
@@ -1241,6 +1261,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-04 | v1.14.4    | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 を反映。SkillCenterView セクションへ欠損メタデータ防御契約（description nullish、配列 nullish、検索/おすすめ防御）を追加し、Phase 11 画面証跡 TC-01〜TC-04 を同期。完了タスク台帳へ同タスクを登録 |
 | 2026-03-04 | v1.14.3    | TASK-10A-D の再確認苦戦箇所から未タスク2件を追加。`UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001`（仕様書別SubAgent実行ログ必須化）と `UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001`（画面証跡の状態名+検証目的分離）を関連未タスクへ登録 |
 | 2026-03-04 | v1.14.2    | TASK-10A-D 仕様書別SubAgent反映ログを追加。`ui-ux-feature-components` / `task-workflow` / `lessons-learned` の3仕様書分担で実装内容と苦戦箇所を同一ターン同期する運用を明文化し、5ステップの簡潔解決手順へ再編 |
 | 2026-03-04 | v1.14.1    | TASK-10A-D 再確認追補: Phase 12再検証値（13/13, 28項目, TC 5/5, current=0/baseline=85）を追加。TC-02（analysis遷移時フォールバック）とTC-05（意図的エラー検証）の証跡意図を分離し、画面証跡レビューの運用ルールを明文化 |

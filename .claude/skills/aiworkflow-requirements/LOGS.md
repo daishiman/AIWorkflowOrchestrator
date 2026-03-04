@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の仕様同期（再監査）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `01/02/03`（imported state復元 / import冪等ガード / SkillCenter欠損メタデータ防御）
+- 目的: 実装済み変更を正本6仕様書へ漏れなく同期し、Phase 12 Task 5 の SKILL/LOGS 同時更新要件を充足
+
+### 仕様書別SubAgent分担
+- SubAgent-A: `references/api-ipc-agent.md`（`skill:import` 成功判定と冪等返却契約）
+- SubAgent-B: `references/interfaces-agent-sdk-skill.md`（`getImported` id/name互換キー、SkillCenter防御契約）
+- SubAgent-C: `references/arch-state-management.md`（`agentSlice.importSkill` 事前ガード）
+- SubAgent-D: `references/ui-ux-feature-components.md`（欠損メタデータ防御 + TC-01〜TC-04画面証跡）
+- SubAgent-E: `references/task-workflow.md` / `references/lessons-learned.md`（完了台帳・教訓・再利用手順）
+
+### 実施内容
+- `api-ipc-agent.md` に `skill:import` 契約追補を追加（`errors.length===0` 成功判定、既存ケース返却契約）
+- `interfaces-agent-sdk-skill.md` に `skill:getImported` 互換キー契約（id/name）と nullish 防御契約を追記
+- `arch-state-management.md` に `importSkill` 冪等早期終了と SkillCenter Hook nullish 防御を追記
+- `ui-ux-feature-components.md` に欠損メタデータ防御仕様とスクリーンショット証跡4件を追記
+- `task-workflow.md` / `lessons-learned.md` に 3連続是正タスクの完了台帳と再利用手順を追加
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）を再実行し、すべて PASS
+
+---
+
 ## 2026-03-04 - TASK-10A-D 苦戦箇所の未タスク分離（2件）
 
 ### コンテキスト

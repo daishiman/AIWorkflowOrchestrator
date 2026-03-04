@@ -432,4 +432,38 @@ describe("useFeaturedSkills", () => {
     expect(result.current[0].name).toBe("high-pop");
     expect(result.current[1].name).toBe("low-pop");
   });
+
+  it("不完全なメタデータ（配列/description欠落）でもクラッシュしない", () => {
+    const malformedSkill = {
+      ...createMockSkillMetadata({
+        name: "malformed-skill" as SkillName,
+      }),
+      description: undefined,
+      agents: undefined,
+      references: undefined,
+      indexes: undefined,
+    } as unknown as SkillMetadata;
+
+    const healthySkill = createMockSkillMetadata({
+      name: "healthy-skill" as SkillName,
+      description: "テストを補助するスキル",
+      agents: [
+        { filename: "a.md", relativePath: "agents/a.md", size: 100 },
+        { filename: "b.md", relativePath: "agents/b.md", size: 100 },
+      ],
+    });
+
+    const { result } = renderHook(() =>
+      useFeaturedSkills({
+        allSkills: [malformedSkill, healthySkill],
+        importedSkillNames: [],
+        maxCount: 2,
+      }),
+    );
+
+    expect(result.current).toHaveLength(2);
+    expect(result.current.map((s) => s.name)).toEqual(
+      expect.arrayContaining(["malformed-skill", "healthy-skill"]),
+    );
+  });
 });

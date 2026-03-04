@@ -110,7 +110,7 @@ interface MockElectronAPIOptions {
   skillAbort?: () => void;
 }
 
-function setupMockElectronAPI(options: MockElectronAPIOptions = {}): void {
+function setupMockElectronAPI(options: MockElectronAPIOptions = {}) {
   const mockSkillAPI = {
     list: options.skillListError
       ? vi.fn().mockRejectedValue(options.skillListError)
@@ -153,6 +153,8 @@ function setupMockElectronAPI(options: MockElectronAPIOptions = {}): void {
       skill: mockSkillAPI,
     },
   };
+
+  return mockSkillAPI;
 }
 
 // ==========================================================================
@@ -379,15 +381,17 @@ describe("agentSlice - スキル統合テスト（Phase 6）", () => {
         expect(store.isImporting).toBe(false);
       });
 
-      it("TS-6-1-69: 既にインポート済みのスキルを再インポート", async () => {
+      it("TS-6-1-69: 既にインポート済みのスキルは再インポートAPIを呼ばない", async () => {
         store.importedSkills = [...mockImportedSkills];
-        setupMockElectronAPI({
+        const skillApi = setupMockElectronAPI({
           skillImportError: new Error("Already imported"),
         });
 
         await store.importSkill("test-skill-1");
 
-        expect(store.skillError).toContain("スキルのインポートに失敗");
+        expect(skillApi.import).not.toHaveBeenCalled();
+        expect(store.skillError).toBeNull();
+        expect(store.importedSkills).toEqual(mockImportedSkills);
       });
     });
 

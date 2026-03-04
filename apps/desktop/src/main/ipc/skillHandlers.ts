@@ -188,8 +188,8 @@ export function registerSkillHandlers(
       // Step 1: インポート実行
       const result = await skillService.importSkills([skillName]);
 
-      // Step 2: インポート成功時、ImportedSkill を取得して返す
-      if (result.success && result.importedCount > 0) {
+      // Step 2: インポート成功時（新規/既存問わず）、ImportedSkill を取得して返す
+      if (result.success && result.errors.length === 0) {
         const importedSkill = await skillService.getSkillByName(skillName);
         if (importedSkill) {
           return importedSkill;
