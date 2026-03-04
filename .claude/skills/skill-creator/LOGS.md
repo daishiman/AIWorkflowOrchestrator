@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-04 - TASK-UI-00-MOLECULES 再確認テンプレート改善（時刻同期 + Task 1要件チェック）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに Task 1 要件機械確認（Part 1/Part 2）を追加
+  - 同テンプレートの完了チェックに `manual-test-result.md` / `screenshot-coverage.md` と `stat` の時刻整合確認を追加
+  - `SKILL.md` 変更履歴を `v10.36.8` として同期
+
+---
+
 ## [2026-03-04 - Phase 12テンプレートへ未タスク配置先判定ガードを追補]
 
 - **Agent**: skill-creator (update)
