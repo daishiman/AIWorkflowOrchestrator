@@ -1,5 +1,14 @@
 # TASK-UI-00-DESIGN-FOUNDATION: UI共通デザイン基盤
 
+## 0. タスク実行仕様書ディレクトリ（task-specification-creator準拠）
+
+本ファイルは要件正本（単一仕様）として維持し、13Phaseの実行仕様書は以下へ分離した。
+
+- 仕様書ディレクトリ: `docs/30-workflows/completed-tasks/task-050-ui-00-ui-design-foundation/`
+- メインインデックス: `docs/30-workflows/completed-tasks/task-050-ui-00-ui-design-foundation/index.md`
+- Phase仕様書: `phase-1-requirements.md` 〜 `phase-13-pr-creation.md`
+- 成果物台帳: `artifacts.json`
+
 ## 1. メタ情報
 
 | 項目         | 値                                                                                                 |

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-04T11:52:22.523Z",
-  "totalKeywords": 1412,
+  "generated": "2026-03-04T12:46:45.998Z",
+  "totalKeywords": 1418,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1086,6 +1086,31 @@
     "状態管理パターン": [
       "arch-state-management.md"
     ],
+    "Design": [
+      "arch-state-management.md",
+      "arch-ui-components.md",
+      "interfaces-chat-history.md",
+      "ui-ux-design-system.md"
+    ],
+    "Foundation": [
+      "arch-state-management.md",
+      "arch-ui-components.md"
+    ],
+    "状態管理方針": [
+      "arch-state-management.md"
+    ],
+    "DESIGN": [
+      "arch-state-management.md",
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-components.md"
+    ],
+    "FOUNDATION": [
+      "arch-state-management.md",
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-components.md"
+    ],
     "Zustand": [
       "arch-state-management.md",
       "testing-component-patterns.md",
@@ -1229,6 +1254,9 @@
       "arch-ui-components.md"
     ],
     "ビュー統合アーキテクチャパターン": [
+      "arch-ui-components.md"
+    ],
+    "アーキテクチャ反映": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -2745,10 +2773,6 @@
     "Atomic": [
       "interfaces-chat-history.md"
     ],
-    "Design": [
-      "interfaces-chat-history.md",
-      "ui-ux-design-system.md"
-    ],
     "アクセシビリティ対応": [
       "interfaces-chat-history.md",
       "ui-ux-file-selector.md",
@@ -3100,6 +3124,9 @@
       "lessons-learned.md"
     ],
     "教訓集": [
+      "lessons-learned.md"
+    ],
+    "共通デザイン基盤の再監査": [
       "lessons-learned.md"
     ],
     "EDITOR": [

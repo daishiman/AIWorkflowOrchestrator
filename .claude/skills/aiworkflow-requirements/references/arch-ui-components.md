@@ -371,6 +371,7 @@ SkillSelectorはスキル選択用ドロップダウンコンポーネント。W
 | TASK-7A  | SkillSelector コンポーネント実装 | 2026-01-30 |
 | TASK-7D  | ChatPanel統合パターン             | 2026-01-30 |
 | TASK-8B  | コンポーネントテスト（全4コンポーネント） | 2026-02-02 |
+| TASK-UI-00-DESIGN-FOUNDATION | UI共通デザイン基盤（Molecules/Organisms 8コンポーネント） | 2026-03-04 |
 
 #### タスク: TASK-8B コンポーネントテスト（2026-02-02完了）
 
@@ -760,10 +761,39 @@ TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中
 
 ---
 
+## UI Design Foundation アーキテクチャ反映（TASK-UI-00-DESIGN-FOUNDATION）
+
+TASK-UI-00-DESIGN-FOUNDATION では、Atomic Design の Molecules / Organisms 層に不足していた8コンポーネントを追加し、UI基盤を統一した。`UIDesignFoundationPreview` を用いて単一画面で構成確認できる構成にした。
+
+### 追加コンポーネント（レイヤー別）
+
+| レイヤー | コンポーネント | 主要責務 |
+| --- | --- | --- |
+| molecules | SearchBar | 検索入力、Enter送信、クリア操作 |
+| molecules | CodeViewer | 行番号付きコード表示、コピー操作 |
+| molecules | TabSwitcher | キーボード操作対応タブ切替 |
+| molecules | SlideInPanel | 右側パネル開閉、フォーカストラップ |
+| molecules | ConfirmDialog | 危険操作の確認導線 |
+| organisms | CardGrid | loading/empty/data の3状態表示 |
+| organisms | MasterDetailLayout | 2ペイン構成とモバイル時の1ペイン切替 |
+| organisms | SearchFilterList | 検索バー + フィルタ + 一覧統合 |
+
+### 検証証跡
+
+| 項目 | 値 |
+| --- | --- |
+| 自動テスト | 47ケース PASS（8テストファイル） |
+| 型チェック | `@repo/desktop typecheck` PASS |
+| 画面証跡 | Phase 11: TC-UI-00-301〜305（5枚） |
+| ワークフロー | `docs/30-workflows/task-050-ui-00-ui-design-foundation/` |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.9.1   | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: Molecules/Organisms 8コンポーネントのアーキテクチャ責務を追加し、完了タスク表へ登録。`UIDesignFoundationPreview` を使った基盤検証導線と Phase 11 証跡（TC-UI-00-301〜305）を同期 |
 | 2.9.0   | 2026-03-03 | TASK-10A-D 反映: SkillManagementPanel ビュー統合アーキテクチャ（レイヤー構成、コンポーネント関係図、状態遷移差分、Store拡張、IPC境界、品質指標、苦戦箇所）を追加 |
 | 2.8.3   | 2026-03-02 | TASK-10A-A 反映: SkillManagementPanel のアーキテクチャ節（レイヤー構成、状態遷移、IPC境界、品質指標、苦戦箇所）を追加し、Step 2 判定漏れの再発防止ルールを追記 |
 | 2.8.2   | 2026-03-02 | TASK-UI-05B 追補: SubAgent-C 観点の苦戦箇所（依存成果物参照不足/画面証跡同期）と標準化ルールを追加 |
@@ -786,3 +816,5 @@ TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中
 - [SkillSelector実装ガイド](../../../docs/30-workflows/TASK-7A-skill-selector/outputs/phase-12/implementation-guide.md)
 - [TASK-8Bコンポーネントテスト実装ガイド](../../../docs/30-workflows/TASK-8B-component-tests/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05 SkillCenterView 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
+- [TASK-UI-00-DESIGN-FOUNDATION ワークフロー仕様](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/index.md)
+- [TASK-UI-00-DESIGN-FOUNDATION 手動検証結果](../../../docs/30-workflows/task-050-ui-00-ui-design-foundation/outputs/phase-11/manual-test-result.md)

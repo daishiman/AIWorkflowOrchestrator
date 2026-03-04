@@ -15,7 +15,11 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const TC_ID_PATTERN = /^TC-\d{1,3}[A-Z]?$/i;
+// Supports both classic IDs (e.g. TC-01, TC-101A) and UI IDs
+// (e.g. TC-UI-00-301). Requires at least one digit to avoid matching
+// header labels like "TC-ID".
+const TC_ID_PATTERN = /\bTC-(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*\b/i;
+const TC_ID_EXACT_PATTERN = /^TC-(?=[A-Z0-9-]*\d)[A-Z0-9]+(?:-[A-Z0-9]+)*$/i;
 
 function parseArgs(argv) {
   const options = {
@@ -147,6 +151,11 @@ function normalizeTc(tc) {
   return tc.trim().toUpperCase();
 }
 
+function extractTcIdsFromText(text) {
+  const matches = text.match(new RegExp(TC_ID_PATTERN.source, "gi")) || [];
+  return matches.map((tc) => normalizeTc(tc));
+}
+
 function extractExpectedTestCases(phase11Content) {
   const section = extractSection(phase11Content, "テストケース");
   const targets = section || phase11Content;
@@ -170,8 +179,7 @@ function extractExpectedTestCases(phase11Content) {
     return [...tcSet];
   }
 
-  const fallbackMatches = phase11Content.match(/\bTC-\d{1,3}[A-Z]?\b/gi) || [];
-  fallbackMatches.forEach((tc) => tcSet.add(normalizeTc(tc)));
+  extractTcIdsFromText(phase11Content).forEach((tc) => tcSet.add(tc));
   return [...tcSet];
 }
 
@@ -185,6 +193,14 @@ function findHeaderIndex(headerCells, patterns) {
   return -1;
 }
 
+function readExpectedTestCasesFromChecklist(checklistPath) {
+  if (!fs.existsSync(checklistPath)) {
+    return [];
+  }
+  const checklistContent = readUtf8(checklistPath);
+  return extractExpectedTestCases(checklistContent);
+}
+
 function extractResultEvidence(manualResultContent) {
   const evidenceMap = new Map();
   const blocks = parseTableBlocks(manualResultContent);
@@ -195,6 +211,7 @@ function extractResultEvidence(manualResultContent) {
 
     const tcIndex = findHeaderIndex(table.header, [
       /^TC-ID$/i,
+      /^TC[-\s]*ID$/i,
       /^TC$/i,
       /テストケース/i,
       /^NO$/i,
@@ -269,6 +286,7 @@ function extractCoverageMatrix(phase11Content) {
 
   const idIndex = findHeaderIndex(table.header, [
     /^TC$/i,
+    /^TC[-\s]*ID$/i,
     /テストケース/i,
     /^NO$/i,
     /^ID$/i,
@@ -289,7 +307,7 @@ function extractCoverageMatrix(phase11Content) {
     const idCell = (row[idIndex] ?? "").trim();
     if (!idCell) continue;
     const normalizedId = idCell.toUpperCase();
-    if (!/^TC-\d{1,3}[A-Z]?$/i.test(normalizedId) && !/^SUP-\d+/i.test(normalizedId)) {
+    if (!TC_ID_EXACT_PATTERN.test(normalizedId) && !/^SUP-\d+/i.test(normalizedId)) {
       continue;
     }
 
@@ -306,6 +324,12 @@ function extractCoverageMatrix(phase11Content) {
 function runCoverageValidation(options) {
   const workflowPath = path.resolve(options.workflow);
   const phase11Path = path.join(workflowPath, "phase-11-manual-test.md");
+  const manualChecklistPath = path.join(
+    workflowPath,
+    "outputs",
+    "phase-11",
+    "manual-test-checklist.md",
+  );
   const manualResultPath = path.join(
     workflowPath,
     "outputs",
@@ -317,6 +341,7 @@ function runCoverageValidation(options) {
   const report = {
     workflow: options.workflow,
     phase11Path,
+    manualChecklistPath,
     manualResultPath,
     screenshotDir,
     expectedTestCases: [],
@@ -338,12 +363,20 @@ function runCoverageValidation(options) {
 
   const phase11Content = readUtf8(phase11Path);
   const manualResultContent = readUtf8(manualResultPath);
-  const expectedCases = extractExpectedTestCases(phase11Content);
+  let expectedCases = extractExpectedTestCases(phase11Content);
+  if (expectedCases.length === 0) {
+    expectedCases = readExpectedTestCasesFromChecklist(manualChecklistPath);
+    if (expectedCases.length > 0) {
+      report.warnings.push(
+        "phase-11-manual-test.md から TC 抽出不可のため、manual-test-checklist.md を代替ソースとして使用しました",
+      );
+    }
+  }
   report.expectedTestCases = expectedCases;
 
   if (expectedCases.length === 0) {
     report.errors.push(
-      "Phase 11仕様書からテストケース（TC-XX）を抽出できませんでした",
+      "Phase 11仕様書/チェックリストからテストケース（TC-XX）を抽出できませんでした",
     );
     return report;
   }

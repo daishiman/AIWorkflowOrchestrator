@@ -1,137 +1,121 @@
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { memo, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { Search, X } from "lucide-react";
 
 export interface SearchBarProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit?: (value: string) => void;
   onDebouncedChange?: (value: string) => void;
+  onSubmit?: (value: string) => void;
   debounceMs?: number;
   placeholder?: string;
   shortcutHint?: string;
   autoFocus?: boolean;
-  className?: string;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({
+const SearchBarComponent: React.FC<SearchBarProps> = ({
   value,
   onChange,
-  onSubmit,
   onDebouncedChange,
+  onSubmit,
   debounceMs = 300,
-  placeholder = "検索...",
+  placeholder = "検索",
   shortcutHint,
   autoFocus = false,
-  className,
 }) => {
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const hasMountedRef = useRef(false);
-
-  const ariaLabel = useMemo(() => placeholder || "検索", [placeholder]);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const didMountRef = useRef(false);
 
   useEffect(() => {
     if (!onDebouncedChange) {
-      return;
+      return undefined;
     }
 
-    if (!hasMountedRef.current) {
-      hasMountedRef.current = true;
-      return;
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
-    if (debounceTimerRef.current) {
-      clearTimeout(debounceTimerRef.current);
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return undefined;
     }
 
-    debounceTimerRef.current = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       onDebouncedChange(value);
     }, debounceMs);
 
     return () => {
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current);
-        debounceTimerRef.current = null;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
       }
     };
   }, [value, onDebouncedChange, debounceMs]);
 
-  const handleClear = () => {
-    onChange("");
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && onSubmit) {
-      event.preventDefault();
-      onSubmit(value);
-      return;
-    }
-
-    if (event.key === "Escape" && value.length > 0) {
-      event.preventDefault();
-      onChange("");
-      event.currentTarget.blur();
-    }
-  };
-
-  const rightPaddingClass =
-    value.length > 0 ? "pr-10" : shortcutHint ? "pr-14" : "pr-3";
-
   return (
     <div
       className={clsx(
-        "relative flex items-center min-h-[44px] rounded-[var(--radius-md)]",
-        "border border-[var(--border-subtle)] bg-[var(--bg-tertiary)] text-[var(--text-primary)]",
-        "transition-colors focus-within:border-[var(--status-primary)]",
-        className,
+        "flex items-center gap-2 rounded-[var(--radius-md)] border px-3 py-2",
+        "bg-[var(--bg-tertiary)] border-[var(--border-subtle)]",
+        "focus-within:border-[var(--status-primary)]",
+        "transition-colors duration-[var(--duration-fast)]",
       )}
     >
       <Search
         size={16}
+        className="text-[var(--text-secondary)]"
         aria-hidden="true"
-        className="pointer-events-none absolute left-3 text-[var(--text-secondary)]"
       />
       <input
-        type="search"
         role="searchbox"
+        aria-label="検索"
         value={value}
-        autoFocus={autoFocus}
         onChange={(event) => onChange(event.target.value)}
-        onKeyDown={handleKeyDown}
+        onKeyDown={(event) => {
+          if (event.key === "Escape" && value.length > 0) {
+            event.preventDefault();
+            onChange("");
+            return;
+          }
+
+          if (event.key === "Enter") {
+            onSubmit?.(value);
+          }
+        }}
         placeholder={placeholder}
-        aria-label={ariaLabel}
+        autoFocus={autoFocus}
         className={clsx(
-          "w-full bg-transparent py-2 pl-10 text-sm text-[var(--text-primary)]",
-          "placeholder:text-[var(--text-muted)]",
-          "focus:outline-none focus-visible:outline-2 focus-visible:outline-[var(--status-primary)] focus-visible:outline-offset-2",
-          rightPaddingClass,
+          "w-full bg-transparent outline-none",
+          "text-[var(--text-primary)] placeholder:text-[var(--text-muted)]",
         )}
       />
       {value.length > 0 && (
         <button
           type="button"
-          onClick={handleClear}
+          onClick={() => onChange("")}
           aria-label="クリア"
+          title="検索をクリア"
           className={clsx(
-            "absolute right-2 inline-flex h-7 w-7 items-center justify-center rounded-md",
-            "text-[var(--text-secondary)] transition-colors",
-            "hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]",
-            "focus:outline-none focus-visible:outline-2 focus-visible:outline-[var(--status-primary)]",
+            "inline-flex h-8 w-8 items-center justify-center rounded-full",
+            "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)]",
+            "transition-colors duration-[var(--duration-fast)]",
           )}
         >
           <X size={14} aria-hidden="true" />
         </button>
       )}
-      {value.length === 0 && shortcutHint && (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute right-3 text-xs text-[var(--text-muted)]"
+      {shortcutHint && value.length === 0 && (
+        <kbd
+          className={clsx(
+            "rounded px-1.5 py-0.5 text-xs",
+            "text-[var(--text-secondary)] bg-[var(--bg-secondary)]",
+          )}
         >
           {shortcutHint}
-        </span>
+        </kbd>
       )}
     </div>
   );
 };
 
+export const SearchBar = memo(SearchBarComponent);
 SearchBar.displayName = "SearchBar";
