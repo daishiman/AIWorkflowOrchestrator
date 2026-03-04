@@ -20,13 +20,15 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-04 | 1.29.11 | UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001 の完了移管後同期を追補。TASK-UI-00-MOLECULES 再確認で顕在化した「UI再撮影時刻と `manual-test-result`/`screenshot-coverage` の更新時刻ドリフト」を再発条件付きで記録し、`task-workflow.md`/`lessons-learned.md`/未タスク仕様書の同一ターン同期手順を固定 |
-| 2026-03-04 | 1.29.10 | `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001` を追加。`--coverage.include` パス誤指定で回帰判定が揺れる苦戦箇所を未タスク化し、`task-workflow.md` 残課題テーブル/追加未タスク表と同期 |
-| 2026-03-04 | 1.29.9 | SkillCenter削除導線ホットフィックスの再計測値を確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルに固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を仕様書へ同期。あわせて Phase 12テンプレート最適化へ未タスク配置先判定（未完了/完了移管）を追補 |
-| 2026-03-04 | 1.29.8 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の第2回再確認を追加。Phase 11 証跡を 16:50 JST へ更新し、`verify-unassigned-links`（88/88）/ `audit --diff-from HEAD`（baseline=94）へ同期。`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `completed-tasks/unassigned-task/` へ統一 |
-| 2026-03-04 | 1.29.7 | SkillCenter 削除導線ホットフィックスの教訓を追加。`handleRequestDelete` と確認ダイアログ描画の分離で起きる「押せるが削除されない」不具合を再発条件付きで追記し、5ステップ復旧手順（UI状態→描画→操作→回帰→カバレッジ確認）を標準化 |
+| 2026-03-04 | 1.30.1 | TASK-UI-00-DESIGN-FOUNDATION の再追補を追加。`phase-11-manual-test.md` の TC一覧/画面カバレッジマトリクス未記載により warning が残留する課題を未タスク `UT-UI-00-003` として分離し、仕様標準化手順を追記 |
+| 2026-03-04 | 1.30.0 | TASK-UI-00-DESIGN-FOUNDATION の再追補を追加。`validate-phase11-screenshot-coverage` の TC命名差（`TC-UI-*`）と `TC ID` ヘッダ抽出失敗を教訓化し、チェックリストフォールバックを含む5ステップへ更新 |
+| 2026-03-04 | 1.29.9 | TASK-UI-00-DESIGN-FOUNDATION の教訓を追加。Phase 11 MINOR 2件（Light境界コントラスト / 390px情報密度）を即時未タスク化し、`verify-unassigned-links` + `audit --target-file` + Apple UI/UX再撮影の4ステップを標準化 |
 | 2026-03-04 | 1.29.6 | Phase 12テンプレート最適化の教訓を追加。`skill-creator` のテンプレート本体に preview preflight（build + 疎通）と失敗時未タスク化分岐を同期し、テンプレートと運用パターンのドリフトを解消する5ステップを追記 |
 | 2026-03-04 | 1.29.5 | TASK-FIX-SKILL-IMPORT 3連続是正の再監査追補を追加。UI再撮影で `preview` preflight が欠落した苦戦箇所（`ERR_CONNECTION_REFUSED` / module resolve fail）を明記し、未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を関連導線へ追加 |
+| 2026-03-04 | 1.29.8 | workflow02 再追補の監査値を同期。`verify-unassigned-links` を 92/92 に更新し、`ui-ux-feature-components.md` 追補節へ未タスク2件と苦戦箇所（コマンド公開不足 / `page.goto` timeout）を同時反映 |
+| 2026-03-04 | 1.29.7 | workflow02 の未タスクを2件追補。UI証跡再取得の苦戦箇所（screenshot コマンド公開不足、capture script の `page.goto` timeout）を追加し、関連未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` / `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001` を導線化 |
+| 2026-03-04 | 1.29.6 | workflow02 Phase 12再確認の最終同期を追補。未タスク監査値を `verify-unassigned-links: 90/90`、`audit --diff-from HEAD: current=0 / baseline=92` へ更新し、workflow03 の screenshot coverage 参照パスを `docs/30-workflows/03-*` 正本へ統一 |
+| 2026-03-04 | 1.29.5 | TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 の Phase 12再確認追補を追加。苦戦箇所2件（検証スクリプト所在誤認、Vitest watch実行残留）を再発条件付きで教訓化し、関連未タスク `UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001` / `UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001` を導線化 |
 | 2026-03-04 | 1.29.4 | TASK-FIX-SKILL-IMPORT 3連続是正の完了移管を反映。関連未タスク3件の参照を `completed-tasks/unassigned-task/` へ更新し、完了日（2026-03-04）を明記 |
 | 2026-03-04 | 1.29.3 | TASK-FIX-SKILL-IMPORT 3連続是正の未タスク追補を追加。`UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` / `UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001` / `UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001` の関連導線を追加し、3workflow再監査の証跡集約・`scope.currentFiles` 判定固定を再利用可能化 |
 | 2026-03-04 | 1.29.2 | TASK-FIX-SKILL-IMPORT 3連続是正のPhase 12再確認追補を追加。3workflow同時監査時の証跡ドリフト防止、`audit-unassigned-tasks --target-file` の判定軸誤読防止（`scope.currentFiles` + `currentViolations` 固定）の苦戦箇所と4ステップ手順を追記 |
@@ -124,6 +126,80 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-UI-00-DESIGN-FOUNDATION: UI共通デザイン基盤の再監査（2026-03-04）
+
+### 苦戦箇所: Lightテーマ境界コントラストが弱く、情報ブロックの分離が曖昧化
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Lightテーマで `border-subtle` の見え方が淡く、カード境界の認知が遅れる |
+| 再発条件 | ダーク基準の視認性評価だけで UI を完了判定する場合 |
+| 対処 | `ISSUE-UI-11-001` を `UT-UI-00-001` として即時未タスク化し、境界トークン調整を独立課題として管理 |
+| 標準ルール | UI MINOR は「発見メモ」で終わらせず、必ず未タスクIDを発行して追跡する |
+
+### 苦戦箇所: 390px幅で情報密度が高く、主情報/副情報の優先度が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | モバイル幅で行間・余白が不足し、カード内情報が詰まって見える |
+| 再発条件 | desktop優先の余白設計を mobile幅へそのまま適用した場合 |
+| 対処 | `ISSUE-UI-11-002` を `UT-UI-00-002` として未タスク化し、可読性最適化を独立タスクへ分離 |
+| 標準ルール | レスポンシブMINORは再撮影証跡とセットで未タスク登録する |
+
+### 苦戦箇所: Phase 11指摘を検出レポート止まりにすると、台帳同期が漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `discovered-issues.md` 更新のみで終えると、`task-workflow.md` と未タスクリンク整合が遅延する |
+| 再発条件 | 指示書作成・台帳登録・機械監査を別ターンで分離する運用 |
+| 対処 | 同一ターンで `unassigned-task` 作成 → `task-workflow` 登録 → `verify-unassigned-links` / `audit --target-file` 実行を固定 |
+| 標準ルール | UI MINOR 対応は「未タスク化 + 参照整合 + 形式監査」まで完了条件に含める |
+
+### 苦戦箇所: `validate-phase11-screenshot-coverage` が TC命名差と列名差で偽失敗する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `TC-UI-00-xxx` 形式や `TC ID` 列名を想定しないと、証跡が揃っていても coverage 検証が失敗する |
+| 再発条件 | workflow により TC命名が `TC-XX` 固定でない、または Phase 11仕様書にケース一覧を持たない場合 |
+| 対処 | 検証スクリプトを `TC-UI-*` 抽出・`TC ID` ヘッダ許容・`manual-test-checklist.md` フォールバック対応へ拡張し、`expected=5 / covered=5` で再確認 |
+| 標準ルール | coverage失敗時は「命名互換（TC抽出）→結果表抽出（列名）→チェックリスト代替」の順で原因切り分けする |
+
+### 苦戦箇所: coverage が PASS でも `phase-11-manual-test.md` の節不足で warning が残留する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-11-manual-test.md` に `テストケース一覧` / `画面カバレッジマトリクス` がなく、warning が恒常化する |
+| 再発条件 | スクリプト互換だけで完了とし、Phase 11 仕様書の節定義を標準化しない場合 |
+| 対処 | 未タスク `UT-UI-00-003` を起票し、Phase 11 仕様へ2節を追加する改善を分離した |
+| 標準ルール | screenshot coverage は PASS と warning 0 の両方を完了条件にする |
+
+### Apple UI/UX再検証結果（スクリーンショット再取得）
+
+| 観点 | 結果 | 判断 |
+| --- | --- | --- |
+| Visual Hierarchy | 見出し→セクション→カードの階層は明確 | 維持 |
+| Color & Contrast | Lightテーマ境界に改善余地 | `UT-UI-00-001` で継続改善 |
+| Spacing & Rhythm | 390px幅で密度過多の兆候 | `UT-UI-00-002` で継続改善 |
+| Interaction Clarity | Panel/Dialog の重なり順と操作導線は良好 | 維持 |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 11 の UI MINOR を Issue ID 付きで確定し、影響範囲を分離する。  
+2. `docs/30-workflows/unassigned-task/` に指示書を作成し、Why/What/How を埋める。  
+3. `task-workflow.md` 登録後に `verify-unassigned-links` と `audit --target-file` で配置・参照・形式を確認する。  
+4. `validate-phase11-screenshot-coverage` 実行前に TC命名（`TC-XX` / `TC-UI-*`）、証跡表ヘッダ（`TC ID`）、`phase-11-manual-test.md` の `テストケース一覧` / `画面カバレッジマトリクス` 節を確認し、欠落時は未タスク化する。  
+5. スクリーンショットを再取得し、Apple UI/UX観点（階層・余白・コントラスト・密度）で再評価して成果物へ記録する。  
+
+### 関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-UI-00-001 | Lightテーマ境界コントラスト改善 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-light-border-contrast-improvement.md` |
+| UT-UI-00-002 | モバイル情報密度最適化 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-mobile-density-optimization.md` |
+| UT-UI-00-003 | Phase 11 画面カバレッジマトリクス標準化 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-phase11-coverage-matrix-standardization.md` |
 
 ---
 
@@ -248,7 +324,7 @@
 | --- | --- |
 | 課題 | `capture-skill-center-phase11.mjs` 実行時に `ERR_CONNECTION_REFUSED` が発生し、`Rollup failed to resolve import "@repo/shared/types/skill"` で再撮影が停止した |
 | 再発条件 | `pnpm --filter @repo/desktop preview` の build成否と `127.0.0.1:4173` 疎通確認を省略して撮影を開始する場合 |
-| 対処 | TC-01〜TC-04 証跡を 2026-03-04 16:50 JST に再取得して視覚検証を継続し、運用ギャップは `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` で管理後に完了移管した |
+| 対処 | 既存の TC-01〜TC-04 証跡（2026-03-04 13:21 JST）で視覚検証を継続し、運用ギャップを `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` として未タスク化した |
 | 標準ルール | UI再撮影は「preview preflight（build + 疎通）→再撮影→TCカバレッジ→台帳同期」の4段を必須化する |
 
 ### 同種課題向け簡潔解決手順（5ステップ）
@@ -259,65 +335,98 @@
 4. UI再撮影前に `preview` preflight（build成功 + `127.0.0.1:4173` 疎通）を実行し、失敗時は未タスク化する。  
 5. `audit-unassigned-tasks --target-file` は `scope.currentFiles` 一致を確認してから記録し、`task-workflow.md` と同時反映する。  
 
+### Phase 12再確認追補（workflow02個別, 2026-03-04）
+
+### 苦戦箇所: 検証スクリプトの所在を記憶ベースで誤認しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify/validate/links/audit` の実行前にスクリプト実体を確認せず、誤パス実行の手戻りが起きやすい |
+| 再発条件 | 複数スキル配下に同名スクリプトがある前提で、探索手順を省略した場合 |
+| 対処 | `rg --files .claude/skills | rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` を先行実行 |
+| 標準ルール | Phase 12再確認は「実体探索 → 実行 → 証跡転記」を固定順序にする |
+
+### 苦戦箇所: `pnpm test` の watch 実行で再確認が停滞しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | watchモードが残留し、Phase 12 の検証証跡取得と台帳同期が遅延する |
+| 再発条件 | ルートで `pnpm test` を実行し、対象パッケージと実行モードを固定しない場合 |
+| 対処 | `pnpm --filter @repo/desktop exec vitest run <target>` を標準コマンドに統一 |
+| 標準ルール | Phase 12 のテスト再確認は常に非watch (`vitest run`) で実行する |
+
+### 苦戦箇所: UI証跡再取得スクリプトの実行コマンドが発見しづらい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `capture-*.mjs` は存在しても `pnpm run screenshot:*` に未登録だと初動時に実行経路を誤りやすい |
+| 再発条件 | screenshot スクリプトを直接 `node scripts/...` で都度実行し、コマンド公開を省略した場合 |
+| 対処 | `apps/desktop/package.json` scripts へ screenshot 実行コマンドを登録し、Phase 11/12 文書へ同一コマンドを転記 |
+| 標準ルール | UI証跡再取得は `pnpm --filter @repo/desktop run screenshot:<feature>` を正本コマンドに固定する |
+
+### 苦戦箇所: capture script の `page.goto` が環境依存でタイムアウトしやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 初回実行で `page.goto`（`waitUntil: load`）が 30秒 timeout となり、再実行が必要になった |
+| 再発条件 | 開発サーバの負荷・初期描画遅延を考慮せず `load` 固定待機にした場合 |
+| 対処 | `waitUntil: "domcontentloaded"` を基準にし、`networkidle` は補助待機（fail-soft）として扱う |
+| 標準ルール | capture script は段階待機（`domcontentloaded` + 補助待機）を共通化し、失敗時診断ログを残す |
+
+### 同種課題向け簡潔解決手順（追補6ステップ）
+
+1. 監査コマンド実行前に `rg --files` で検証スクリプト実体を解決する。  
+2. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を順に実行する。  
+3. テスト再確認は `pnpm --filter @repo/desktop exec vitest run ...` に固定する。  
+4. UI証跡再取得は `pnpm --filter @repo/desktop run screenshot:<feature>` を正本コマンドとして運用する。  
+5. capture script は `domcontentloaded` 基準 + 補助待機で実行し、timeout 発生時の診断情報を保存する。  
+6. `verify-unassigned-links` と `audit --diff-from HEAD` の結果を同一ターンで `task-workflow` と `lessons` へ転記する。  
+
+### 再確認証跡（本ワークツリー確定値）
+
+| コマンド | 結果 |
+| --- | --- |
+| `verify-all-specs --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 --json` | PASS（13/13, error=0, warning=0） |
+| `validate-phase-output docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` | PASS（28項目, error=0, warning=0） |
+| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` | PASS（expected=4 / covered=4） |
+| `verify-unassigned-links` | PASS（existing=92, missing=0） |
+| `audit-unassigned-tasks --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=92） |
+
 ### 関連未タスク（2026-03-04 追補）
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定） | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` |
 | UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001 | 3workflow再監査のSubAgent成果物突合を固定し、仕様書別実行ログの欠落を防ぐ（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001 | `aiworkflow-requirements` からの必要仕様抽出と台帳同期を同一ターンで固定する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
 | UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001 | 3workflow再監査で `scope.currentFiles` / `currentViolations` / `baselineViolations` を分離記録する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
-| UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001 | SkillCenter 再撮影前の preview preflight と失敗時未タスク化を標準化する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
-
-### 苦戦箇所: 削除リクエスト状態と確認ダイアログ描画が分離し、削除が実行されなかった
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `handleRequestDelete` で状態は更新されるのに、確認ダイアログ未描画のため `handleConfirmDelete` が呼ばれず削除できなかった |
-| 再発条件 | 「削除要求状態（isDeleteConfirmOpen）」を持つ Hook と、実際の確認UI描画コンポーネントが別責務なのに結線確認を省略した場合 |
-| 対処 | `SkillCenterView/index.tsx` に削除確認ダイアログを追加し、`confirm/cancel/Escape` を `useSkillCenter` アクションへ接続 |
-| 標準ルール | 「request 系 state を持つなら、対応する confirm UI と confirm action 呼び出しテストを必須化」する |
-
-### 同種課題向け簡潔解決手順（5ステップ）
-
-1. 不具合を UI層/Hook層/Store層で分解し、「どの層まで呼ばれているか」をログ/テストで切り分ける。  
-2. request state（例: `isDeleteConfirmOpen`）を持つHookは、対応する描画UIの存在を先に確認する。  
-3. confirm action（例: `handleConfirmDelete`）が呼ばれる経路をテストで固定する。  
-4. 既存回帰（関連ビュー + hook）を再実行し、導線追加での退行を確認する。  
-5. 対象範囲カバレッジを再計測し、80%以上を維持できていることを記録する。  
-
-### 苦戦箇所: 対象カバレッジの include path を誤指定すると実測値が歪む
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | カバレッジ再計測で `--coverage.include` の対象パスを誤ると、想定3ファイルのうち一部しか計測されず、回帰判断が不安定になった |
-| 再発条件 | `views/SkillCenterView/hooks/*` を `src/renderer/hooks/*` として指定するようなパス取り違えがある場合 |
-| 対処 | `--coverage.include` を `index.tsx` / `hooks/useSkillCenter.ts` / `hooks/useFeaturedSkills.ts` の実在3パスへ固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を再確定した |
-| 標準ルール | 対象カバレッジ計測の前に `rg --files` で include パス実在を確認し、計測対象ファイル数をログへ明記する |
+| UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001 | SkillCenter 再撮影前の preview preflight と失敗時未タスク化を標準化する | `docs/30-workflows/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
 
 ### 今回実装した内容（Phase 12テンプレート最適化）
 
 - `skill-creator` の `phase12-system-spec-retrospective-template.md` に preview preflight と失敗時未タスク化を追加。
 - `phase12-spec-sync-subagent-template.md` に preflight と screenshot coverage 検証の必須化を追加。
-- 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）をテンプレートへ追補。
 - `resource-map.md` と `patterns.md` の説明をテンプレート更新に合わせて同期。
 
 ### 苦戦箇所: パターンとテンプレート本体が同期しないと再利用時に漏れが出る
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 成功/失敗パターンには preflight 失敗時の対処があるのに、テンプレート本体のチェック項目に同条件と未タスク配置先判定がなく、仕様更新時に転記漏れが発生しやすかった |
+| 課題 | 成功/失敗パターンには preflight 失敗時の対処があるのに、テンプレート本体のチェック項目に同条件がないため、仕様更新時に転記漏れが発生しやすかった |
 | 再発条件 | `patterns.md` のみ更新して `assets/phase12-*.md` のコマンド・完了チェックを更新しない場合 |
-| 対処 | template本体（2ファイル） + resource-map + patterns を同一ターンで更新し、UI再撮影の前提条件と未タスク配置先判定を一貫化した |
+| 対処 | template本体（2ファイル） + resource-map + patterns を同一ターンで更新し、UI再撮影の前提条件を一貫化した |
 | 標準ルール | 「パターン更新時はテンプレート本体と資源マップも同時更新」を必須にする |
 
 ### 同種課題向け簡潔解決手順（5ステップ・テンプレート同期版）
 
 1. まず `patterns.md` の成功/失敗パターンから再発条件を抽出する。  
-2. `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の「手順・コマンド・完了チェック（未タスク配置先判定を含む）」を同時更新する。  
+2. `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の「手順・コマンド・完了チェック」を同時更新する。  
 3. `resource-map.md` のテンプレート説明を同一ターンで同期し、参照面のドリフトを防ぐ。  
 4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時転記する。  
 5. `quick_validate` で `aiworkflow-requirements` と `skill-creator` の両方を検証し、失敗時は未タスクへ分離する。  
+| UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001 | Phase 12 検証コマンドの実体探索を必須化し、誤パス実行を防ぐ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-script-path-discovery-guard-001.md` |
+| UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001 | Phase 12 テスト再確認を `vitest run` 固定（非watch）へ統一する | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-vitest-run-mode-guard-001.md` |
+| UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 | Phase 12 UI証跡再取得コマンドを `screenshot:*` として公開し、実行経路を一意化する | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
+| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機方針（`domcontentloaded` 基準 + 補助待機）を標準化し timeout 再発を防ぐ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
 
 ---
 
@@ -4266,7 +4375,7 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 |------|------|
 | **課題** | `task-ui-00-atoms` 配下に旧パス `docs/30-workflows/skill-import-agent-system/tasks/ui-overhaul/00-2-atoms-components.md` が残存し、参照切れ状態だった |
 | **原因** | ワークフローを `completed-tasks/` へ移管した際に、Phase 1-13 / index / Phase 12仕様書内の固定パスを一括更新しきれていなかった |
-| **解決策** | 参照を `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-2-atoms-components.md` に統一し、関連する `00-1-design-tokens.md` / `task-050-ui-00-ui-design-foundation.md` も実在パスへ補正 |
+| **解決策** | 参照を `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-2-atoms-components.md` に統一し、関連する `00-1-design-tokens.md` / `task-050-ui-00-ui-design-foundation.md`（現在は `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-050-ui-00-ui-design-foundation.md` へ移管）も実在パスへ補正 |
 | **教訓** | ワークフロー移管時は「単一ファイル修正」ではなく、同一ワークフロー配下の全Phase・indexを横断置換して参照実在チェックを行う |
 
 #### 3. 生成ミスによる `{outputs` ゴーストディレクトリ

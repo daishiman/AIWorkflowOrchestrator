@@ -229,20 +229,20 @@ Task 8:   atoms/index.ts エクスポート追加（全コンポーネント完�
 
 ## 参照資料
 
-| 参照                    | パス                                                                                                                   |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Atoms仕様書（元タスク） | `../../skill-import-agent-system/tasks/completed-task/00-2-atoms-components.md`                                        |
-| デザイントークン仕様    | `../../skill-import-agent-system/tasks/completed-task/00-1-design-tokens.md`                                           |
-| UI基盤設計              | `../../skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-050-ui-00-ui-design-foundation.md` |
-| デザイントークン実装    | `apps/desktop/src/renderer/styles/tokens.css`                                                                          |
-| UIコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                |
-| デザイン原則            | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                         |
-| デザインシステム        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                             |
-| テストパターン          | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                                      |
-| a11yテスト              | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                           |
-| UIアーキテクチャ        | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                              |
-| 状態管理                | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                           |
-| 品質要件                | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                            |
+| 参照                    | パス                                                                              |
+| ----------------------- | --------------------------------------------------------------------------------- |
+| Atoms仕様書（元タスク） | `../../skill-import-agent-system/tasks/completed-task/00-2-atoms-components.md`   |
+| デザイントークン仕様    | `../../skill-import-agent-system/tasks/completed-task/00-1-design-tokens.md`      |
+| UI基盤設計              | `../../task-050-ui-00-ui-design-foundation/index.md`                              |
+| デザイントークン実装    | `apps/desktop/src/renderer/styles/tokens.css`                                     |
+| UIコンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           |
+| デザイン原則            | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`    |
+| デザインシステム        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`        |
+| テストパターン          | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` |
+| a11yテスト              | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`      |
+| UIアーキテクチャ        | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`         |
+| 状態管理                | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`      |
+| 品質要件                | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       |
 
 ## aiworkflow-requirements 抽出結果（本実装で必須）
 

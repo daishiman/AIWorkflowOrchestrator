@@ -1,6 +1,11 @@
 export { Tooltip, type TooltipProps } from "./Tooltip";
 export { NavIcon, type NavIconProps } from "./NavIcon";
 export { DynamicIsland, type DynamicIslandProps } from "./DynamicIsland";
+export { SearchBar, type SearchBarProps } from "./SearchBar";
+export { CodeViewer, type CodeViewerProps } from "./CodeViewer";
+export { TabSwitcher, type TabSwitcherProps, type Tab } from "./TabSwitcher";
+export { SlideInPanel, type SlideInPanelProps } from "./SlideInPanel";
+export { ConfirmDialog, type ConfirmDialogProps } from "./ConfirmDialog";
 export {
   FileTreeItem,
   type FileTreeItemProps,

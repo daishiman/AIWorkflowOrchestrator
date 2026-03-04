@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.8.3     | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: UI基盤8コンポーネントの状態管理方針を追記。共有Storeを新設せず、ローカル state + コールバック注入で責務分離する設計を明文化 |
 | v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
 | v3.8.1     | 2026-03-03 | TASK-10A-D教訓反映: 個別セレクタの命名規約（ドメインサフィックス必須ルール）を追加。`useIsAnalyzingSkill()` vs `useIsAnalyzing()` の命名判断基準を明文化 |
 | v3.8.0     | 2026-03-03 | TASK-10A-D反映: agentSlice拡張（3状態: currentAnalysis/isAnalyzing/isImproving + 5アクション: analyzeSkill/applySkillImprovements/autoImproveSkill/createSkill/clearAnalysis + 8個別セレクタ）を状態定義・アクション定義テーブルへ追記 |
@@ -34,6 +35,31 @@
 | v1.2.0     | 2026-01-28 | TASK-6-1完了: skillSliceセクション追加                                          |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換                               |
 | v1.0.0     | 2026-01-23 | 初版作成                                                                        |
+
+---
+
+## UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION）
+
+TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプリ全体の永続状態を持たず、表示責務に限定する。そのため新規の Zustand Slice は追加しない。
+
+### コンポーネント別の状態境界
+
+| コンポーネント | 状態の置き場所 | 方針 |
+| --- | --- | --- |
+| SearchBar | 親 + `onSearch` コールバック | 入力値はローカル、検索実行は親へ委譲 |
+| CodeViewer | ローカル（コピー通知など） | ドメイン状態を持たない表示専用 |
+| TabSwitcher | 親（activeTab） | 制御コンポーネントとして状態を外出し |
+| SlideInPanel | 親（isOpen） | 開閉状態は親で一元管理 |
+| ConfirmDialog | 親（isOpen / onConfirm） | 副作用実行は親に限定 |
+| CardGrid | props | 描画専用（loading/empty/data） |
+| MasterDetailLayout | 親（selectedId等） | 選択状態は上位で保持 |
+| SearchFilterList | 親（query/filter）+ローカル（UI補助） | 検索条件は親、UI操作は局所化 |
+
+### 設計判断
+
+- 新規 Slice: **不要**
+- 理由: UI基盤層の再利用性を優先し、ドメイン状態への依存を避けるため
+- 連携方式: props / callback / controlled component パターンを採用
 
 ---
 

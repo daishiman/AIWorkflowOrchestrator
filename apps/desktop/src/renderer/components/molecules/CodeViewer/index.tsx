@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useState } from "react";
 import clsx from "clsx";
 import { Check, Copy } from "lucide-react";
 
@@ -9,140 +9,102 @@ export interface CodeViewerProps {
   maxHeight?: string;
   filePath?: string;
   showCopyButton?: boolean;
-  className?: string;
 }
 
-export const CodeViewer: React.FC<CodeViewerProps> = ({
+const resetDelayMs = 1200;
+
+const CodeViewerComponent: React.FC<CodeViewerProps> = ({
   code,
-  language,
-  showLineNumbers = true,
-  maxHeight = "400px",
+  language = "text",
+  showLineNumbers = false,
+  maxHeight = "360px",
   filePath,
   showCopyButton = true,
-  className,
 }) => {
   const [copied, setCopied] = useState(false);
-  const copiedResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
+  const lines = code.split("\n");
 
-  const lines = useMemo(() => code.split("\n"), [code]);
-  const fileName = useMemo(() => {
-    if (!filePath) {
-      return "";
-    }
-    return filePath.split(/[\\/]/).pop() ?? filePath;
-  }, [filePath]);
-
-  useEffect(() => {
-    return () => {
-      if (copiedResetTimerRef.current) {
-        clearTimeout(copiedResetTimerRef.current);
-      }
-    };
-  }, []);
-
-  const handleCopy = async () => {
+  const handleCopy = async (): Promise<void> => {
     try {
-      if (!navigator.clipboard?.writeText) {
-        throw new Error("Clipboard API is not available");
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(code);
       }
-
-      await navigator.clipboard.writeText(code);
       setCopied(true);
-
-      if (copiedResetTimerRef.current) {
-        clearTimeout(copiedResetTimerRef.current);
-      }
-
-      copiedResetTimerRef.current = setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-    } catch (error) {
-      console.error("Failed to copy code", error);
+      setTimeout(() => setCopied(false), resetDelayMs);
+    } catch {
+      setCopied(false);
     }
   };
 
-  const copyButton = showCopyButton ? (
-    <button
-      type="button"
-      onClick={handleCopy}
-      aria-label={copied ? "コピー完了" : "コードをコピー"}
-      className={clsx(
-        "inline-flex h-8 w-8 items-center justify-center rounded-md",
-        "text-[var(--text-secondary)] transition-colors",
-        "hover:bg-[var(--bg-tertiary)] hover:text-[var(--text-primary)]",
-        "focus:outline-none focus-visible:outline-2 focus-visible:outline-[var(--status-primary)]",
-      )}
-    >
-      {copied ? (
-        <Check
-          size={16}
-          aria-hidden="true"
-          className="text-[var(--status-success)]"
-        />
-      ) : (
-        <Copy size={16} aria-hidden="true" />
-      )}
-    </button>
-  ) : null;
-
   return (
-    <div
-      className={clsx(
-        "relative overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-default)] bg-[var(--bg-tertiary)]",
-        className,
-      )}
+    <section
+      className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-subtle)] bg-[var(--bg-secondary)]"
+      aria-label="コードビューア"
     >
-      {filePath && (
-        <div className="flex items-center justify-between border-b border-[var(--border-default)] bg-[var(--bg-secondary)] px-3 py-2">
-          <div className="min-w-0">
-            <p className="truncate text-sm font-medium text-[var(--text-primary)]">
-              {fileName}
-            </p>
-            {language && (
-              <p className="text-xs text-[var(--text-secondary)]">{language}</p>
-            )}
-          </div>
-          {copyButton}
+      <header className="flex items-center justify-between border-b border-[var(--border-subtle)] px-3 py-2">
+        <div className="flex min-w-0 items-center gap-2">
+          {filePath ? (
+            <span
+              className="truncate text-sm text-[var(--text-primary)]"
+              title={filePath}
+            >
+              {filePath}
+            </span>
+          ) : (
+            <span className="text-sm text-[var(--text-secondary)]">コード</span>
+          )}
+          <span className="text-xs uppercase text-[var(--text-muted)]">
+            {language}
+          </span>
         </div>
-      )}
-
-      {!filePath && showCopyButton && (
-        <div className="absolute right-2 top-2 z-10">{copyButton}</div>
-      )}
+        {showCopyButton && (
+          <button
+            type="button"
+            onClick={handleCopy}
+            aria-label="コードをコピー"
+            className={clsx(
+              "inline-flex items-center gap-1 rounded px-2 py-1 text-xs",
+              "text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]",
+              "transition-colors duration-[var(--duration-fast)]",
+            )}
+          >
+            {copied ? (
+              <Check size={14} aria-hidden="true" />
+            ) : (
+              <Copy size={14} aria-hidden="true" />
+            )}
+            <span>{copied ? "コピー済み" : "コピー"}</span>
+          </button>
+        )}
+      </header>
 
       <div
-        data-testid="code-viewer-scroll"
-        className="overflow-auto"
         style={{ maxHeight }}
+        className="overflow-auto"
+        data-testid="code-viewer-body"
       >
         <pre
-          aria-label="コード表示"
-          className="m-0 p-4 text-sm leading-6 text-[var(--text-primary)]"
+          className="m-0 p-3 text-sm leading-6"
+          style={{ fontFamily: "var(--font-mono)" }}
         >
-          {showLineNumbers ? (
-            lines.map((line, index) => (
-              <div key={`line-${index + 1}`} className="flex">
+          {lines.map((line, index) => (
+            <div key={`${index}-${line}`} className="flex">
+              {showLineNumbers && (
                 <span
+                  className="mr-3 w-8 select-none text-right text-[var(--text-muted)]"
                   data-testid={`line-number-${index + 1}`}
-                  aria-hidden="true"
-                  className="mr-4 w-8 select-none text-right text-[var(--text-muted)]"
                 >
                   {index + 1}
                 </span>
-                <code className="flex-1 whitespace-pre font-mono">
-                  {line.length > 0 ? line : " "}
-                </code>
-              </div>
-            ))
-          ) : (
-            <code className="whitespace-pre font-mono">{code}</code>
-          )}
+              )}
+              <code className="text-[var(--text-primary)]">{line || " "}</code>
+            </div>
+          ))}
         </pre>
       </div>
-    </div>
+    </section>
   );
 };
 
+export const CodeViewer = memo(CodeViewerComponent);
 CodeViewer.displayName = "CodeViewer";
