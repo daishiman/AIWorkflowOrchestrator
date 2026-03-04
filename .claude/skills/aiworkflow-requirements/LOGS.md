@@ -79,6 +79,122 @@
 
 ---
 
+## 2026-03-04 - workflow02 再追補（監査値92/92 + UI仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
+- 目的: 未タスク2件追加後の監査値を正本仕様へ同期し、UI仕様書側の苦戦箇所導線を補完する
+
+### 実施内容
+- `references/task-workflow.md` の workflow02 再確認証跡を更新
+  - `verify-unassigned-links`: `existing=92, missing=0`
+  - 変更履歴 `v1.66.11` を追加
+- `references/lessons-learned.md` の workflow02 再確認証跡を更新
+  - `verify-unassigned-links`: `existing=92, missing=0`
+  - 変更履歴 `1.29.8` を追加
+- `references/ui-ux-feature-components.md` の Skill Import Idempotency Guard 追補へ以下を追加
+  - 未タスク: `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001`
+  - 未タスク: `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001`
+  - 苦戦箇所: コマンド公開不足 / `page.goto` timeout と再利用ルール
+- `docs/30-workflows/02-.../outputs/phase-12/` の監査値とSubAgentログを同期
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md`
+
+### 結果
+- ステータス: success
+- 補足: `audit-unassigned-tasks --json --target-file`（2件）で `currentViolations=0`、`verify-unassigned-links` は `92/92` を確認
+
+---
+
+## 2026-03-04 - workflow02 未タスク2件追加（UI証跡運用ガード）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
+- 目的: Phase 11/12 再確認で判明した UI証跡運用の苦戦箇所を未タスク化し、再発防止導線を固定する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に未タスク2件を新規作成
+  - `task-imp-phase12-screenshot-command-registration-guard-001.md`
+  - `task-imp-phase12-capture-script-navigation-stability-guard-001.md`
+- `references/task-workflow.md` の workflow02 再監査セクションへ個別監査対象7件を反映
+- `references/task-workflow.md` 残課題テーブルへ上記2件を登録
+- `references/lessons-learned.md` に苦戦箇所2件（screenshot コマンド公開不足 / `page.goto` timeout）と再利用6ステップ手順を追記
+- `SKILL.md` 変更履歴を `v9.01.4` として同期
+
+### 結果
+- ステータス: success
+- 補足: 未タスク2件は `## メタ情報` + `## 1..9` + `## 3.5 実装課題と解決策` を満たす構成で作成
+
+---
+
+## 2026-03-04 - workflow02 Phase 12 検証値最終同期（90/90, baseline=92）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
+- 目的: 本ワークツリーの再確認値を正本仕様へ固定し、記録値ドリフトを解消する
+
+### 実施内容
+- `references/task-workflow.md` の workflow03 screenshot coverage 参照を `docs/30-workflows/03-*` へ是正
+- workflow02 再監査値を更新
+  - `verify-unassigned-links`: `existing=90, missing=0`
+  - `audit-unassigned-tasks --json --diff-from HEAD`: `current=0, baseline=92`
+- `references/lessons-learned.md` の workflow02 セクションへ確定値テーブルを追加
+- `SKILL.md` 変更履歴を `v9.01.3` として同期
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 の実装内容・苦戦箇所・監査値が同一ターンで同期済み
+
+---
+
+## 2026-03-04 - workflow02 Phase 12再確認追補（未タスク2件追加）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
+- 目的: 本ワークツリーの再監査結果を正本仕様へ反映し、実装内容と苦戦箇所を再利用可能な形で固定する
+
+### 実施内容
+- `references/task-workflow.md` を更新
+  - workflow `01/03` の検証コマンド参照を `docs/30-workflows/` 正本へ是正
+  - 残課題テーブルへ未タスク2件を追加
+    - `UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001`
+    - `UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001`
+- `references/lessons-learned.md` を更新
+  - 苦戦箇所2件（スクリプト所在誤認、Vitest watch残留）を再発条件付きで追補
+  - 同種課題向け4ステップ手順を追記
+- workflow02 `outputs/phase-12` を更新
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`
+  - `implementation-guide.md` のテストコマンドを `pnpm --filter @repo/desktop exec vitest run ...` に統一
+
+### 結果
+- ステータス: success
+- 補足: 未タスク2件は `docs/30-workflows/unassigned-task/` に正規配置済み。フォーマット・リンク・差分監査を同一ターンで再確認。
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 再監査（Phase 1-12 完了同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
+- 目的: 実装済み差分（Main/Store/UI Hook）と Phase 11 画面証跡を正本仕様へ再同期し、漏れを解消する
+
+### 実施内容
+- `references/arch-state-management.md` に `useSkillCenter.handleAddSkill` の重複実行抑止/アニメーション抑止契約を追記
+- `references/ui-ux-feature-components.md` に TASK-02 の UI証跡（TC-01〜TC-04）と冪等UI契約を追記
+- `references/interfaces-agent-sdk-skill.md` に Hook冪等ガード契約を追記
+- `references/task-workflow.md` の workflow02 参照パス（`completed-tasks` → `docs/30-workflows/02-...`）を是正
+- `generate-index.js` を実行し、topic-map/keywords を再生成
+
+### 結果
+- ステータス: success
+- 補足: `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage`（workflow02）/ `verify-unassigned-links` を再実行し PASS
+
+---
+
 ## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の仕様同期（再監査）
 
 ### コンテキスト

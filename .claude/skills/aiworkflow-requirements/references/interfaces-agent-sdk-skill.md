@@ -497,6 +497,27 @@ Zustand Sliceパターンで実装された状態管理。
 | 戻り値 | `ImportedSkill`（2ステップ変換: importSkills → getSkillByName） |
 | エラー | `VALIDATION_ERROR` / `IMPORT_ERROR` |
 
+#### `skill:getImported` 互換キー契約（TASK-FIX-SKILL-IMPORTED-STATE-RECONCILIATION-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 目的 | 過去データ互換のため、import manager へ保存済みキーを `skill.id` / `skill.name` の両方で解決する |
+| Main処理 | `SkillService.getImportedSkills()` で cache の `id` 解決を優先し、未一致時は `skill.name` 一致をフォールバックで探索 |
+| 互換対象 | 旧保存データ（`name` 保存）と現行保存データ（`id` 保存）の混在状態 |
+| 戻り値保証 | `skill:getImported` は互換解決後の `ImportedSkill[]` を返し、空配列時は正常終了 |
+
+#### SkillCenter 欠損メタデータ防御契約（TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001）
+
+| 項目 | 契約 |
+| ---- | ---- |
+| 対象 | `description`, `agents`, `references`, `indexes`, `scripts`, `otherFiles` が `undefined/null` のケース |
+| Renderer側ガード | `String(value ?? "")` と `Array.isArray(value)` ベースの `safeLength` / `safeSubResources` で防御 |
+| Hook冪等ガード | `handleAddSkill` は `addingSkills.has(skillName)` を先頭評価し、追加中の重複呼び出しを無視する |
+| 追加済み時UX契約 | `importedSkillNames.includes(skillName)` の場合は状態同期のみ実行し、成功アニメーション開始フラグを立てない |
+| フィルタリング | `useSkillCenter` / `useFeaturedSkills` で `normalizeSearchText` を使い、欠損値でも `.toLowerCase()` 例外を発生させない |
+| UI要件 | SkillCard/DetailPanel/Featured計算で欠損メタデータを許容し、画面クラッシュを起こさない |
+| 検証証跡 | `docs/30-workflows/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` + `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/outputs/phase-11/screenshots/` |
+
 #### `skill:import` 関連タスク（完了）
 
 | タスクID | 概要 | ステータス | 完了日 |

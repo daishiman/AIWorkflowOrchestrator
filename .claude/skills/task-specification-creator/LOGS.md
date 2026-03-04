@@ -57,6 +57,58 @@
 
 ---
 
+## 2026-03-04 - workflow02 未タスク仕様書2件追加（UI証跡運用ガード）
+
+- **Agent**: task-specification-creator (detect-unassigned / generate-unassigned-task)
+- **Phase**: Phase 12（Task 4: 未タスク作成）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/` に未タスク2件を新規作成
+    - `task-imp-phase12-screenshot-command-registration-guard-001.md`
+    - `task-imp-phase12-capture-script-navigation-stability-guard-001.md`
+  - 両指示書とも `## メタ情報` + `## 1..9` + `## 3.5 実装課題と解決策` を満たすテンプレート準拠で作成
+  - 親タスクで発生した苦戦箇所（screenshot コマンド公開不足 / `page.goto` timeout）を 3.5 セクションへ反映
+  - `task-workflow.md` / `lessons-learned.md` / `outputs/phase-12/unassigned-task-detection.md` と同一ターン同期を実施
+
+---
+
+## 2026-03-04 - workflow02 Phase 12再確認追補（未タスク2件 + パターン更新）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 2 + Task 4 + Task 5）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/outputs/phase-12/` の4成果物を更新
+    - `spec-update-summary.md`
+    - `documentation-changelog.md`
+    - `unassigned-task-detection.md`
+    - `skill-feedback-report.md`
+  - 未タスク2件を `docs/30-workflows/unassigned-task/` に新規作成し、テンプレート準拠を確認
+    - `task-imp-phase12-script-path-discovery-guard-001.md`
+    - `task-imp-phase12-vitest-run-mode-guard-001.md`
+  - `references/patterns.md` に再発防止パターン2件を追加
+    - 検証スクリプト実体探索先行
+    - Vitest非watch実行固定
+  - `task-workflow.md` / `lessons-learned.md` への反映と同一ターンで監査証跡を同期
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 再実行（Phase 1-12）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/` を `pending/spec_created` 状態から Phase 1-12 実行完了状態へ同期
+  - `phase-11-manual-test.md` に `テストケース` と `画面カバレッジマトリクス` を追加し、`outputs/phase-11/screenshots/TC-01..04` を再取得
+  - `manual-test-result.md` に証跡テーブルと Apple UI/UX 視覚検証を追記
+  - `implementation-guide.md` を Part1（中学生向け）/Part2（技術者向け）要件へ再構成
+  - `artifacts.json` の Phase 1-12 を `completed` 化し、Phase 13 は `pending` を維持
+
+---
+
 ## 2026-03-04 - TASK-FIX-SKILL-IMPORT 3連続是正の再監査（Phase 12 Step 1-A/Task 5）
 
 - **Agent**: task-specification-creator

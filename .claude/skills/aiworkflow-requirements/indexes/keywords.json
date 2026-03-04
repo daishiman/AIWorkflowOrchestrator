@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-04T05:11:28.744Z",
-  "totalKeywords": 1411,
+  "generated": "2026-03-04T07:21:14.068Z",
+  "totalKeywords": 1412,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -681,6 +681,7 @@
     "完了タスク": [
       "api-ipc-agent.md",
       "api-ipc-auth.md",
+      "api-ipc-system.md",
       "architecture-auth-security.md",
       "architecture-chat-history.md",
       "architecture-monorepo.md",
@@ -727,9 +728,21 @@
     "実装パターン参照": [
       "api-ipc-agent.md"
     ],
-    "スキルファイル操作": [
+    "skill": [
       "api-ipc-agent.md",
-      "lessons-learned.md"
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "quality-e2e-testing.md",
+      "security-electron-ipc.md"
+    ],
+    "execute": [
+      "api-ipc-agent.md",
+      "lessons-learned.md",
+      "security-electron-ipc.md"
+    ],
+    "契約": [
+      "api-ipc-agent.md"
     ],
     "TASK": [
       "api-ipc-agent.md",
@@ -756,6 +769,47 @@
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
       "ui-ux-search-panel.md"
+    ],
+    "FIX": [
+      "api-ipc-agent.md",
+      "arch-state-management.md",
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "lessons-learned.md",
+      "security-electron-ipc.md",
+      "testing-component-patterns.md"
+    ],
+    "SKILL": [
+      "api-ipc-agent.md",
+      "architecture-implementation-patterns.md",
+      "claude-code-skills-structure.md",
+      "error-handling.md",
+      "interfaces-agent-sdk-executor.md",
+      "lessons-learned.md",
+      "security-electron-ipc.md"
+    ],
+    "AUTH": [
+      "api-ipc-agent.md",
+      "api-ipc-auth.md",
+      "architecture-auth-security.md",
+      "architecture-implementation-patterns.md",
+      "error-handling.md",
+      "lessons-learned.md",
+      "security-electron-ipc.md"
+    ],
+    "PREFLIGHT": [
+      "api-ipc-agent.md",
+      "security-electron-ipc.md"
+    ],
+    "GUARD": [
+      "api-ipc-agent.md",
+      "lessons-learned.md",
+      "security-electron-ipc.md"
+    ],
+    "スキルファイル操作": [
+      "api-ipc-agent.md",
+      "lessons-learned.md"
     ],
     "スキルファイルツリー取得": [
       "api-ipc-agent.md"
@@ -826,26 +880,13 @@
     "スキル分析・統計": [
       "api-ipc-agent.md"
     ],
-    "skill": [
-      "api-ipc-agent.md",
-      "architecture-implementation-patterns.md",
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "quality-e2e-testing.md"
-    ],
-    "import": [
-      "api-ipc-agent.md",
-      "lessons-learned.md"
-    ],
-    "契約追補": [
-      "api-ipc-agent.md"
-    ],
     "認証・プロフィール": [
       "api-ipc-auth.md",
       "interfaces-auth.md"
     ],
     "認証": [
       "api-ipc-auth.md",
+      "security-electron-ipc.md",
       "ui-ux-forms.md"
     ],
     "プロフィール": [
@@ -897,13 +938,6 @@
     "セッション自動リフレッシュ": [
       "api-ipc-auth.md",
       "architecture-auth-security.md"
-    ],
-    "AUTH": [
-      "api-ipc-auth.md",
-      "architecture-auth-security.md",
-      "architecture-implementation-patterns.md",
-      "error-handling.md",
-      "lessons-learned.md"
     ],
     "SESSION": [
       "api-ipc-auth.md",
@@ -1110,14 +1144,6 @@
     ],
     "統合済み": [
       "arch-state-management.md"
-    ],
-    "FIX": [
-      "arch-state-management.md",
-      "architecture-implementation-patterns.md",
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
     ],
     "STATE": [
       "arch-state-management.md"
@@ -1368,7 +1394,6 @@
       "technology-backend.md",
       "testing-playwright-e2e.md",
       "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "history": [
@@ -1495,13 +1520,6 @@
     ],
     "チャネル名競合予防パターン": [
       "architecture-implementation-patterns.md"
-    ],
-    "SKILL": [
-      "architecture-implementation-patterns.md",
-      "claude-code-skills-structure.md",
-      "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "lessons-learned.md"
     ],
     "IMPORT": [
       "architecture-implementation-patterns.md",
@@ -2598,15 +2616,6 @@
     "スキル分析": [
       "interfaces-agent-sdk-skill.md"
     ],
-    "スキル作成ウィザード": [
-      "interfaces-agent-sdk-skill.md"
-    ],
-    "スキルライフサイクル": [
-      "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "ui-ux-feature-components.md"
-    ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
       "security-skill-ipc.md",
@@ -3130,6 +3139,10 @@
     "実装再監査": [
       "lessons-learned.md"
     ],
+    "スキルライフサイクル": [
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
     "CALLBACK": [
       "lessons-learned.md"
     ],
@@ -3179,9 +3192,6 @@
       "lessons-learned.md"
     ],
     "FIELD": [
-      "lessons-learned.md"
-    ],
-    "GUARD": [
       "lessons-learned.md"
     ],
     "quick": [
@@ -3275,9 +3285,6 @@
       "lessons-learned.md"
     ],
     "INTERFACE": [
-      "lessons-learned.md"
-    ],
-    "execute": [
       "lessons-learned.md"
     ],
     "契約ブリッジ": [
@@ -3383,7 +3390,8 @@
       "lessons-learned.md"
     ],
     "ガード": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "security-electron-ipc.md"
     ],
     "ID": [
       "lessons-learned.md"
@@ -3401,6 +3409,9 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
+      "lessons-learned.md"
+    ],
+    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [
@@ -4311,6 +4322,9 @@
       "security-electron-ipc.md"
     ],
     "skillAnalyticsAPI": [
+      "security-electron-ipc.md"
+    ],
+    "preflight": [
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [
