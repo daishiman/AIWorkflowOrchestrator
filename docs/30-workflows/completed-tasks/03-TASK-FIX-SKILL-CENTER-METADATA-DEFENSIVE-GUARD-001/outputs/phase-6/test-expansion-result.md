@@ -10,9 +10,9 @@ pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/_
 
 ## 結果
 
-- Test Files: 9 passed
-- Tests: 129 passed
-- Duration: 24.83s
+- Test Files: 10 passed
+- Tests: 132 passed
+- Duration: 17.65s
 
 ## 拡充観点
 

@@ -9,11 +9,15 @@
 - カテゴリ切替
 - 詳細パネル開閉
 - 追加ボタン状態遷移
+- 詳細パネルの削除確認ダイアログ表示と確定/キャンセル動線
 
 ## 判定
 
-- PASS（129/129）
+- PASS（10 files / 132 tests + 追補 3 files / 30 tests）
 
 ## 補足
 
 - 欠損メタデータを含むテストデータで回帰確認を実施。
+- 追補の実行コマンド:
+  - `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__/SkillCenterView.delete-confirm.test.tsx src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts src/renderer/views/SkillCenterView/__tests__/useFeaturedSkills.test.ts`
+  - 結果: 3 files / 30 tests PASS

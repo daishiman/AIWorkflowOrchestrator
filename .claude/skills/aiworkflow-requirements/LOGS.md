@@ -5,6 +5,103 @@
 
 ---
 
+## 2026-03-04 - 未タスク仕様書（coverage include pathガード）をシステム仕様へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001`
+- 目的: `task-specification-creator` で作成した未タスク仕様書を、システム仕様（台帳/教訓/履歴）へ漏れなく反映する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（未タスク台帳）: `references/task-workflow.md` の「追加未タスク」表と「残課題（未タスク）」表に登録
+- SubAgent-B（教訓同期）: `references/lessons-learned.md` の関連未タスク節へ登録し、苦戦箇所との導線を固定
+- SubAgent-C（履歴同期）: `SKILL.md` / `task-workflow.md` / `lessons-learned.md` の変更履歴へ同一内容を記録
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` の実体を確認
+- `task-workflow.md` に新規IDを2箇所（追加未タスク表・残課題テーブル）追記
+- `lessons-learned.md` の「関連未タスク（2026-03-04 追補）」へ新規IDを追記
+- `task-workflow.md`（v1.67.2）/ `lessons-learned.md`（v1.29.10）/ `SKILL.md`（v9.01.7）の履歴を同期
+
+### 結果
+- ステータス: success
+- 補足: 未タスク仕様書に記録した苦戦箇所（coverage include path誤指定、対象テスト数揺れ、仕様同期手戻り）と、システム仕様の関連導線が一致
+
+---
+
+## 2026-03-04 - SkillCenter削除導線ホットフィックス実測値の再確定（coverage include path是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`
+- 目的: システム仕様書へ記録済みの hotfix テスト/coverage 値を実測に再同期し、今回実装内容と苦戦箇所を再利用可能に固定する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（検証）: `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行
+- SubAgent-B（実測値確定）: hotfix対象3ファイルの `vitest --coverage` を再計測し、テスト件数・coverageを確定
+- SubAgent-C（仕様同期）: `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `SKILL.md` へ実測値と苦戦箇所を反映
+
+### 実施内容
+- Phase 12検証チェーンを再実行し、`verify-all-specs 13/13`、`validate-phase-output 28項目`、`validate-phase11-screenshot-coverage 4/4`、`verify-unassigned-links 88/88`、`audit current=0 baseline=94` を確認
+- `pnpm --filter @repo/desktop exec vitest run ...delete-confirm...useSkillCenter...useFeaturedSkills --coverage` を実行し、`3 files / 30 tests`、coverage `86.89/84.61/88.88` を確定
+- 苦戦箇所として「coverage include path 誤指定（`views/.../hooks` と `src/renderer/hooks` の取り違え）」を `lessons-learned.md` に追加
+- Phase 12テンプレート最適化の記録へ未タスク配置先判定（未完了/完了移管）を追補
+
+### 結果
+- ステータス: success
+- 補足: hotfix対象の coverage は全指標80%以上を維持し、仕様書・成果物の数値整合を回復
+
+---
+
+## 2026-03-04 - TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 第2回再確認（証跡・未タスク移管の最終同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`
+- 目的: ブランチ上の成果物・仕様・未タスク導線を再点検し、検証値と参照先を最新状態に統一する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（workflow成果物）: `outputs/phase-1/6/11/12` の数値・時刻・リンク整合を更新
+- SubAgent-B（システム仕様）: `references/task-workflow.md` / `references/lessons-learned.md` の再監査証跡を更新
+- SubAgent-C（スキル履歴）: `SKILL.md` / `LOGS.md` / `task-specification-creator` 側履歴へ第2回再確認結果を同期
+
+### 実施内容
+- UI証跡を再取得し、`manual-test-result.md` / `screenshot-index.md` / `implementation-guide.md` の時刻を `2026-03-04 16:50 JST` へ更新
+- `verify-unassigned-links` の結果を `88/88`、`audit-unassigned-tasks --diff-from HEAD` を `current=0 / baseline=94` へ同期
+- `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `docs/30-workflows/completed-tasks/unassigned-task/` に統一
+- `phase-12-documentation.md` の引き継ぎ事項を「なし（完了移管済み）」へ更新
+
+### 結果
+- ステータス: success
+- 補足: 第2回確認でも `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` はすべて PASS
+
+---
+
+## 2026-03-04 - SkillCenter削除導線ホットフィックス再確認（テスト・仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001`
+- 目的: 「削除ボタン押下で削除されない」不具合の修正内容と再検証結果を、システム仕様書・Phase 12成果物・スキル履歴へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（コード/テスト）: SkillCenterViewテスト再実行とカバレッジ再計測
+- SubAgent-B（システム仕様）: `references/task-workflow.md` / `references/ui-ux-feature-components.md` の実装要約・件数表記を更新
+- SubAgent-C（運用履歴）: `outputs/phase-12/*` と `SKILL.md` / `LOGS.md` に反映履歴を記録
+
+### 実施内容
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/__tests__` を実行し、`10 files / 132 tests PASS` を確認
+- `pnpm --filter @repo/desktop exec vitest run ... --coverage`（hotfix対象3ファイル）を再実行し、`Stmts/Lines 86.89` / `Branch 84.61` / `Functions 88.88` を確認
+- `task-workflow.md` / `ui-ux-feature-components.md` に削除導線ホットフィックス追補と最新テスト件数（10/132）を同期
+- `outputs/phase-12/implementation-guide.md` / `spec-update-summary.md` / `documentation-changelog.md` のテスト件数表記を更新
+- `SKILL.md` 変更履歴を `9.01.4` に更新
+
+### 結果
+- ステータス: success
+- 補足: ホットフィックス対象の回帰テスト・対象カバレッジともに 80% 以上を維持
+
+---
+
 ## 2026-03-04 - Phase 12テンプレート最適化の仕様同期（preview preflight分岐）
 
 ### コンテキスト
@@ -76,122 +173,6 @@
 ### 結果
 - ステータス: success
 - 補足: current差分に関する未タスク違反は 0 を維持
-
----
-
-## 2026-03-04 - workflow02 再追補（監査値92/92 + UI仕様同期）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
-- 目的: 未タスク2件追加後の監査値を正本仕様へ同期し、UI仕様書側の苦戦箇所導線を補完する
-
-### 実施内容
-- `references/task-workflow.md` の workflow02 再確認証跡を更新
-  - `verify-unassigned-links`: `existing=92, missing=0`
-  - 変更履歴 `v1.66.11` を追加
-- `references/lessons-learned.md` の workflow02 再確認証跡を更新
-  - `verify-unassigned-links`: `existing=92, missing=0`
-  - 変更履歴 `1.29.8` を追加
-- `references/ui-ux-feature-components.md` の Skill Import Idempotency Guard 追補へ以下を追加
-  - 未タスク: `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001`
-  - 未タスク: `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001`
-  - 苦戦箇所: コマンド公開不足 / `page.goto` timeout と再利用ルール
-- `docs/30-workflows/02-.../outputs/phase-12/` の監査値とSubAgentログを同期
-  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md`
-
-### 結果
-- ステータス: success
-- 補足: `audit-unassigned-tasks --json --target-file`（2件）で `currentViolations=0`、`verify-unassigned-links` は `92/92` を確認
-
----
-
-## 2026-03-04 - workflow02 未タスク2件追加（UI証跡運用ガード）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
-- 目的: Phase 11/12 再確認で判明した UI証跡運用の苦戦箇所を未タスク化し、再発防止導線を固定する
-
-### 実施内容
-- `docs/30-workflows/unassigned-task/` に未タスク2件を新規作成
-  - `task-imp-phase12-screenshot-command-registration-guard-001.md`
-  - `task-imp-phase12-capture-script-navigation-stability-guard-001.md`
-- `references/task-workflow.md` の workflow02 再監査セクションへ個別監査対象7件を反映
-- `references/task-workflow.md` 残課題テーブルへ上記2件を登録
-- `references/lessons-learned.md` に苦戦箇所2件（screenshot コマンド公開不足 / `page.goto` timeout）と再利用6ステップ手順を追記
-- `SKILL.md` 変更履歴を `v9.01.4` として同期
-
-### 結果
-- ステータス: success
-- 補足: 未タスク2件は `## メタ情報` + `## 1..9` + `## 3.5 実装課題と解決策` を満たす構成で作成
-
----
-
-## 2026-03-04 - workflow02 Phase 12 検証値最終同期（90/90, baseline=92）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
-- 目的: 本ワークツリーの再確認値を正本仕様へ固定し、記録値ドリフトを解消する
-
-### 実施内容
-- `references/task-workflow.md` の workflow03 screenshot coverage 参照を `docs/30-workflows/03-*` へ是正
-- workflow02 再監査値を更新
-  - `verify-unassigned-links`: `existing=90, missing=0`
-  - `audit-unassigned-tasks --json --diff-from HEAD`: `current=0, baseline=92`
-- `references/lessons-learned.md` の workflow02 セクションへ確定値テーブルを追加
-- `SKILL.md` 変更履歴を `v9.01.3` として同期
-
-### 結果
-- ステータス: success
-- 補足: Phase 12 の実装内容・苦戦箇所・監査値が同一ターンで同期済み
-
----
-
-## 2026-03-04 - workflow02 Phase 12再確認追補（未タスク2件追加）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
-- 目的: 本ワークツリーの再監査結果を正本仕様へ反映し、実装内容と苦戦箇所を再利用可能な形で固定する
-
-### 実施内容
-- `references/task-workflow.md` を更新
-  - workflow `01/03` の検証コマンド参照を `docs/30-workflows/` 正本へ是正
-  - 残課題テーブルへ未タスク2件を追加
-    - `UT-IMP-PHASE12-SCRIPT-PATH-DISCOVERY-GUARD-001`
-    - `UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001`
-- `references/lessons-learned.md` を更新
-  - 苦戦箇所2件（スクリプト所在誤認、Vitest watch残留）を再発条件付きで追補
-  - 同種課題向け4ステップ手順を追記
-- workflow02 `outputs/phase-12` を更新
-  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md`
-  - `implementation-guide.md` のテストコマンドを `pnpm --filter @repo/desktop exec vitest run ...` に統一
-
-### 結果
-- ステータス: success
-- 補足: 未タスク2件は `docs/30-workflows/unassigned-task/` に正規配置済み。フォーマット・リンク・差分監査を同一ターンで再確認。
-
----
-
-## 2026-03-04 - TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 再監査（Phase 1-12 完了同期）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/`
-- 目的: 実装済み差分（Main/Store/UI Hook）と Phase 11 画面証跡を正本仕様へ再同期し、漏れを解消する
-
-### 実施内容
-- `references/arch-state-management.md` に `useSkillCenter.handleAddSkill` の重複実行抑止/アニメーション抑止契約を追記
-- `references/ui-ux-feature-components.md` に TASK-02 の UI証跡（TC-01〜TC-04）と冪等UI契約を追記
-- `references/interfaces-agent-sdk-skill.md` に Hook冪等ガード契約を追記
-- `references/task-workflow.md` の workflow02 参照パス（`completed-tasks` → `docs/30-workflows/02-...`）を是正
-- `generate-index.js` を実行し、topic-map/keywords を再生成
-
-### 結果
-- ステータス: success
-- 補足: `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage`（workflow02）/ `verify-unassigned-links` を再実行し PASS
 
 ---
 

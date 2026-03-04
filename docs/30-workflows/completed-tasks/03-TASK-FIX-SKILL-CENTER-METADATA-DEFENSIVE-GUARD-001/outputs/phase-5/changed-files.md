@@ -8,6 +8,7 @@
 - `apps/desktop/src/renderer/views/SkillCenterView/hooks/useFeaturedSkills.ts`
 - `apps/desktop/src/renderer/views/SkillCenterView/components/SkillCard.tsx`
 - `apps/desktop/src/renderer/views/SkillCenterView/components/SkillDetailPanel/SkillDetailPanel.tsx`
+- `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`（削除確認ダイアログ導線の復旧）
 
 ## テストコード
 
@@ -20,7 +21,9 @@
 - `apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillEmptyState.test.tsx`
 - `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useFeaturedSkills.test.ts`
 - `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts`
+- `apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCenterView.delete-confirm.test.tsx`
 
 ## 検証補助コード
 
 - `apps/desktop/scripts/capture-skill-center-phase11.mjs`
+- `apps/desktop/scripts/capture-skill-center-metadata-guard-screenshots.mjs`
