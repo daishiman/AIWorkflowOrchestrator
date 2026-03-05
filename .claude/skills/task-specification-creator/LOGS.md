@@ -1,3 +1,134 @@
+## 2026-03-05 - TASK-043A / TASK-10A-E-A Phase 11-12 再監査（Step 2同期ドリフト是正）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `capture-task-043a-phase11-screenshots.mjs` で TC-11-01〜04 を再取得し、Apple UI/UX 観点で目視検証を再実施
+  - `spec-update-summary.md` / `documentation-changelog.md` の Step 2 判定を「更新なし」から「更新あり（正本4ファイル更新）」へ是正
+  - `implementation-guide.md` の sender拒否 `code` 誤記（`VALIDATION_ERROR`）を `IPC_UNAUTHORIZED` へ修正
+  - Step 1-A の同期漏れ防止として `LOGS.md` 2ファイル + `SKILL.md` 2ファイルを同一ターンで更新
+  - 検証を再実行し、Main 34 tests / Preload 60 tests / typecheck / verify-all-specs / validate-phase-output を全PASSで固定
+
+---
+
+## 2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT Phase 12最終再確認（コマンド経路固定）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `validate-phase-output`（28項目）/ `verify-all-specs`（13/13）/ `validate-phase11-screenshot-coverage`（TC 6/6）/ `verify-unassigned-links`（92/92）を再実行
+  - 未タスク `UT-UI-055-001` を `audit-unassigned-tasks --target-file` で再監査し、`currentViolations=0` を確認
+  - `references/phase-11-12-guide.md` に「コマンド実行経路の固定（再監査時必須）」を追加
+  - グローバルCLI未導入時の標準経路を `node .claude/skills/task-specification-creator/scripts/*.js` へ統一
+  - `SKILL.md` 変更履歴を `v10.08.11` として同期
+
+---
+
+## 2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再監査（Phase 11カバレッジ警告0件化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `capture-phase11-screenshots.mjs` を再実行し、TC-055-301〜306 を再取得（2026-03-05 11:43 JST）
+  - `validate-phase11-screenshot-coverage` を再実行し、`expected 6 / covered 6`・警告0件を確認
+  - `phase-11-manual-test.md` に `## テストケース` / `## 画面カバレッジマトリクス` を追記
+  - `references/phase-11-12-guide.md` に同2セクション必須ルールを追加し、再発防止を明文化
+  - 完了済み Phase 1〜11 のチェックリストを `artifacts.json` completed 状態へ同期
+
+---
+
+## 2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT Phase 12実行（指摘是正 + 実装/テスト追加）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ドキュメント更新 + 仕様同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - FND-055-001/002/003 の是正を実施（正本導線修正、Task 5D具体例追記、Task 5B適用境界追記）
+  - `validate-foundation-findings.mjs` と対応テスト `validate-foundation-findings.test.mjs` を追加し、機械検証可能化
+  - `task-workflow.md` / `lessons-learned.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` を Step 1-A/1-B/1-C で同期
+  - `node --test ...traceability-audit.test.mjs ...validate-foundation-findings.test.mjs` を実行してPASSを確認
+  - `outputs/phase-12/finding-validation-report.json` を生成し、FND-055-001/002/003 全PASSを記録
+
+---
+
+## 2026-03-04 - TASK-UI-00-ORGANISMS Phase 12再確認（準拠チェック + 画面証跡同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `verify-all-specs`（13/13）、`validate-phase-output`（28項目）、`validate-phase11-screenshot-coverage`（6/6）を再実行
+  - `pnpm run screenshot:organisms` で TC-01〜TC-06 を再撮影し、`manual-test-result.md` 更新時刻を 23:24 JST へ同期
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md` を追加し、Task 1〜5 / Step 1-A〜1-E / Step 2 の準拠判定を固定
+  - `references/phase-11-12-guide.md` に「再撮影後の `stat` 時刻同期」「coverage PASS 記録」を完了チェックとして追加
+  - `references/patterns.md` に成功パターン「Phase 12 UI再確認の証跡固定（TASK-UI-00-ORGANISMS）」を追加
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES 再確認（Phase 12品質ゲート追補）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `capture-task-ui-00-molecules-screenshots.mjs` を再実行し、TC-01〜TC-04 を 18:04 JST で再取得
+  - `manual-test-result.md` / `screenshot-coverage.md` / `spec-update-summary.md` の時刻情報を最新証跡へ同期
+  - `task-imp-phase12-implementation-guide-quality-gate-001.md` の `## メタ情報` 重複を解消し、フォーマットを正規化
+  - `phase12-checklist-definition.md` を 15項目へ拡張し、未タスク `## メタ情報` 重複チェックを追加
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES Phase 11/12 再確認（実装追補同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - SearchBar `onSubmit` 追加に伴い、Molecules対象テスト実測値を `69 tests` へ再同期
+  - Phase 11 スクリーンショット（TC-01〜TC-04）を再取得し、証跡時刻を 17:09 JST へ更新
+  - `verification-report.md` / `quality-report.md` / `spec-update-summary.md` ほかの数値ドリフトを解消
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行して PASS を確認
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES Phase 1-12 完了同期（実装・テスト・画面証跡）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（完了同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/task-ui-00-molecules/outputs/phase-1..10` を補完し、Phase 1〜12 成果物を充足
+  - `artifacts.json` / `outputs/artifacts.json` を Phase 1〜12 `completed`、Phase 13 `pending` に同期
+  - `generate-index --regenerate` で `index.md` を再生成し、Phase 1〜12 の完了状態を反映
+  - `verification-report.md` を実装完了版へ更新し、実体照合を FAIL から PASS へ更新
+
+---
+
+## 2026-03-04 - TASK-UI-00-MOLECULES Phase 11/12 再監査（spec_created）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/task-ui-00-molecules` の Phase 11/12 成果物不足を補完（manual/discovered/implementation-guide/spec-update-summary ほか）
+  - `phase-11-manual-test.md` に `テストケース` + `画面カバレッジマトリクス` を追加し、TC-01〜TC-04 の証跡を紐付け
+  - `artifacts.json` / `outputs/artifacts.json` を同期し、Phase 12 completed成果物を明示
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を再実行して PASS を確認
+
+---
+
 # task-specification-creator - Usage Logs
 
 > **Self-Improvement Cycle**
@@ -23,105 +154,6 @@
 
 ---
 ```
-
----
-
-## 2026-03-05 - TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再監査）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `artifacts.json` は completed だが `index.md` / `phase-1..10` に pending/未実施が残っていたため、状態同期を実施
-  - `apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` を追加し、`TC-11-01..03` の実画面証跡を再取得
-  - `outputs/phase-11/manual-test-result.md` / `evidence-index.md` / `screenshot-matrix.md` を `SCREENSHOT + NON_VISUAL` 併用運用へ更新
-  - `phase-12/spec-update-summary.md` / `documentation-changelog.md` に再監査追補を記録
-  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` の再実行で整合を確認
-
----
-
-## 2026-03-05 - TASK-UI-01-C Phase 12 完了同期（Notification/HistorySearch）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（Task 12-2/12-3/12-4/12-5）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/task-056c-notification-history-domain/outputs/phase-12/` の5成果物（implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）を整合確認
-  - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` と `lessons-learned.md` へ TASK-UI-01-C の完了記録と教訓を同期
-  - `.claude/skills/aiworkflow-requirements/LOGS.md` と本ファイルへ Step 1-A 実行ログを追記
-  - `generate-index.js` / `verify-all-specs` / `validate-phase-output` の再実行で Phase 12整合を最終確認
-
----
-
-## 2026-03-05 - Phase 12未タスク監査の `--target-file` 適用境界を明文化
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（ガイド改善）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/unassigned-task-guidelines.md` に `--target-file` の適用境界を追記（`docs/30-workflows/unassigned-task/` 配下のみ）
-  - `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` を使用する運用を追記
-  - Phase 12 再監査時のコマンド誤用（対象外ファイル指定）を再発防止ルールとして固定
-  - `SKILL.md` 変更履歴を `v10.08.11` に更新
-
----
-
-## 2026-03-05 - TASK-UI-01-A 再監査（Phase 11 TC-ID 抽出失敗の再発防止）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（ガイド改善 + 実運用是正）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `phase-11-manual-test.md` / `manual-test-result.md` が `MT-xx` 表記のみだと `validate-phase11-screenshot-coverage` の `expected TC=0` 失敗になることを確認
-  - `references/phase-11-12-guide.md` に `TC-xx` 併記必須ルールを追記
-  - 事前検証コマンド `rg -n \"\\bTC-[A-Z0-9-]*[0-9][A-Z0-9-]*\\b\" ...` を追加し、抽出不能の事前検出を可能化
-  - `SKILL.md` 変更履歴を `v10.08.10` に更新
-
----
-
-## 2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策（NON_VISUAL記法追補）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（ガイド改善）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/phase-11-12-guide.md` に「証跡は対象workflow配下 `outputs/phase-11/screenshots` を必須」を追記
-  - 非視覚TCの記録形式として `NON_VISUAL:` 記法を追加
-  - Phase 12チェックリストへ「workflow配下証跡」と「NON_VISUAL記法」確認項目を追加
-  - `SKILL.md` 変更履歴を `v10.08.6` として同期
-
----
-
-## 2026-03-04 - workflow02 再確認追補（screenshot Port 5174 競合ガード）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（ガイド改善）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/phase-11-12-guide.md` の preview preflight へ `lsof -nP -iTCP:5174 -sTCP:LISTEN || true` を追加
-  - チェックリストへ「ポート競合時の停止/再利用分岐を `spec-update-summary.md` に記録」を追記
-  - 自動化コマンドへポート競合確認コマンドを追加し、再撮影前提条件を固定
-  - `SKILL.md` 変更履歴を `v10.08.5` として同期
-
----
-
-## 2026-03-04 - UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 再監査（Step 1-C 状態同期）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（Step 1-C 再確認）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` のステータスを `完了（2026-03-04）` へ更新
-  - `docs/30-workflows/issues/issue-968.md` のステータスと完了条件チェックリストを完了状態へ同期
-  - `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md` の関連未タスク表で同IDを完了表記へ更新
-  - 両スキル `SKILL.md` / `LOGS.md` へ同一ターンで履歴追記し、Phase 12 Task 5 の履歴漏れを防止
 
 ---
 
@@ -5171,48 +5203,42 @@ if (artifactPath) {
   - `verify-unassigned-links`: PASS（97/97, missing=0）
   - `audit-unassigned-tasks --json --diff-from HEAD`: `currentViolations=0`
 
-## 2026-03-05 - UT-TASK-10A-B-001（自動修正可能フィルタボタン）Phase 1-12完了
+## 2026-03-04 - TASK-UI-00-ORGANISMS Phase 8-12 実行完了
 
 ### コンテキスト
-- スキル: task-specification-creator
-- タスクID: UT-TASK-10A-B-001
-- フェーズ: 1-12（13は未実施）
 
-### 成果
-- 実装: `SuggestionList` 導線追加、`useSkillAnalysis` 一括選択ロジック追加、`SkillAnalysisView` 結線
-- テスト: `SuggestionList` / `SkillAnalysisView` 計53テストPASS
-- カバレッジ: Line 100 / Branch 96.22 / Function 100（対象3ファイル）
-- 手動検証: スクリーンショット5件（dark/light/mobile・境界状態）
+- スキル: task-specification-creator
+- 対象: `docs/30-workflows/skill-import-agent-system/tasks/task-054-ui-00-4-organisms-components/`
+- 目的: Phase 8〜12 の必須成果物欠落を補完し、完了ステータスを同期
+
+### 実施内容
+
+- Phase 8 成果物3件を新規作成
+  - `refactor-plan.md`
+  - `refactor-result.md`
+  - `refactor-validation.md`
+- Phase 9 成果物3件を新規作成
+  - `qa-report.md`
+  - `qa-test-summary.md`
+  - `qa-risk-register.md`
+- Phase 10 成果物2件を新規作成
+  - `final-review-report.md`
+  - `review-gate-decision.md`
+- Phase 11 成果物3件を新規作成
+  - `manual-test-result.md`
+  - `discovered-issues.md`
+  - `screenshots-index.md`
+- Phase 12 成果物6件を新規作成
+  - `implementation-guide.md`
+  - `spec-update-summary.md`
+  - `documentation-changelog.md`
+  - `unassigned-task-detection.md`
+  - `skill-feedback-report.md`
+- `complete-phase.js` で Phase 8〜12 を completed 化
+- `generate-index.js --workflow ... --regenerate` で index 状態を同期
 
 ### 結果
+
 - ステータス: success
-- 完了日時: 2026-03-05
-
----
-
-## 2026-03-05 - UT-TASK-10A-B-001 再監査追補（Phase 11証跡のテーマ整合）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再監査）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `capture-ut-task-10a-b-001-screenshots.mjs` の theme mock を `prefers-color-scheme` 連動へ修正し、light証跡ドリフトを是正
-  - `outputs/phase-11/screenshots/TC-11-01..05` を再撮影（2026-03-05 10:28 JST）
-  - `validate-phase11-screenshot-coverage.js --workflow ...ut-task-10a-b-001...` で `expected=5 / covered=5` PASS を確認
-  - `documentation-changelog.md` / `unassigned-task-detection.md` / `spec-update-summary.md` / `skill-feedback-report.md` を再監査内容で追補
-  - `audit-unassigned-tasks --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` で `scope.currentFiles=1`, `currentViolations=0` を確認
-
----
-
-## 2026-03-05 - UT-TASK-10A-B-001 最終再監査（未タスク配置是正とPhase 12成果物再同期）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（再監査）
-- **Result**: ✓ 成功
-- **Notes**:
-  - `UT-TASK-10A-B-001` 指示書を `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` に再配置
-  - `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` の監査値を最新へ更新
-  - スクリーンショット5件（TC-11-01〜05）を 2026-03-05 11:00 JST に再取得し、Apple UI/UX観点で再確認
-  - 監査結果を `verify-unassigned-links` 102/102、`audit --json` current=90、`audit --diff-from HEAD` current=0 baseline=90 に同期
-  - `phase-1-requirements.md` / `phase-10-final-review.md` / `aiworkflow-requirements-extraction-matrix.md` の削除済み参照パスを是正
+- Phase 1〜12: completed
+- Phase 13: pending（コミット/PR未実施）

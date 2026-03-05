@@ -167,6 +167,9 @@ UI機能実装の場合は次を推奨:
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | 未完了は `unassigned-task`、完了済みは `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
+| `rg -n 'Step 2|更新必要|更新なし|更新ファイル' <workflow-path>/outputs/phase-12/spec-update-summary.md <workflow-path>/outputs/phase-12/documentation-changelog.md` | Step 2 判定と更新有無の一致確認 | 2ファイルで Step 2 判定と更新対象が矛盾しない |
+| `rg -n 'ERR_1001|ERR_2004|ERR_5001|IPC_UNAUTHORIZED|VALIDATION_ERROR|INTERNAL_ERROR|errorCode' <workflow-path>/outputs/phase-12/spec-update-summary.md .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` | IPC失敗契約の code/errorCode 二軸整合確認 | `code` と `errorCode` の3分類が揃っている |
+| `rg -n '^### TASK-10A-E-A 実装内容|^### 実装時の苦戦箇所（TASK-10A-E-A）|^### TASK-10A-E-A 実装時の苦戦箇所|^### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）' .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | 仕様書別フォーマット（実装内容/苦戦箇所/5ステップ）の存在確認 | 3仕様書すべてで必要見出しが検出される |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
@@ -175,7 +178,6 @@ UI機能実装の場合は次を推奨:
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
-| `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -193,6 +195,8 @@ UI機能実装の場合は次を推奨:
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
+- [ ] Step 2 を実施した場合、`spec-update-summary.md` と `documentation-changelog.md` の更新有無・更新対象が一致している
+- [ ] IPC契約更新タスクでは `code`（`VALIDATION_ERROR`/`IPC_UNAUTHORIZED`/`INTERNAL_ERROR`）と `errorCode`（`ERR_1001/ERR_2004/ERR_5001`）を二軸で記録している
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
@@ -202,7 +206,6 @@ UI機能実装の場合は次を推奨:
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
-- [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 
 ---
 
@@ -235,6 +238,13 @@ UI機能実装の場合は次を推奨:
 3.
 4.
 5.
+
+### 検証証跡（確定値）
+- verify-all-specs:
+- validate-phase-output:
+- validate-phase11-screenshot-coverage:
+- verify-unassigned-links:
+- audit(current/baseline):
 ```
 
 ### 9.3 ファイル形成チェック
@@ -244,3 +254,5 @@ UI機能実装の場合は次を推奨:
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致する
 - [ ] UIタスクでは `manual-test-result.md` の時刻と `screenshots/*.png` の `stat` が一致する
 - [ ] `currentViolations` を合否、`baselineViolations` を監視値として分離記録している
+- [ ] Step 2 実施時は `spec-update-summary.md` / `documentation-changelog.md` / `task-workflow.md` の3点で更新有無が一致する
+- [ ] domainタスクでは `api-ipc-agent.md` / `security-electron-ipc.md` / `interfaces-agent-sdk-skill.md` に `実装内容 + 苦戦箇所 + 5ステップ` の3ブロックが揃っている

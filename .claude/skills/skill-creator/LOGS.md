@@ -4,83 +4,96 @@
 
 ---
 
-## [2026-03-05 - Phase 12テンプレート最適化（target-file 境界を未実施UTに限定）]
+## [2026-03-05 - TASK-10A-E-A 追補（仕様書別3ブロック固定 + 機械検証）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンド/チェックリストを更新し、`--target-file` を `docs/30-workflows/unassigned-task/` 配下限定へ統一
-  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 完了条件と完了チェックを同条件へ統一
-  - `references/resource-map.md` のテンプレート説明を同一境界へ同期し、テンプレートとガイドのドリフトを解消
+  - `assets/phase12-system-spec-retrospective-template.md` に domain 3仕様書の固定ブロック存在チェック（実装内容/苦戦箇所/5ステップ）を追加
+  - 同テンプレートのコピペブロックへ `検証証跡（確定値）` を追加し、再監査時の数値転記漏れを防止
+  - `references/patterns.md` に成功パターン「仕様書別3ブロック固定（TASK-10A-E-A）」を追加
+  - 同ファイルに失敗パターン「task-workflow のみ更新で domain3仕様書へ苦戦箇所未転記」を追加
+  - `SKILL.md` 変更履歴を `v10.37.4` として同期
+
+---
+
+## [2026-03-05 - TASK-10A-E-A 追補（Step 2一致チェック + IPC失敗契約二軸固定）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドへ Step 2 判定一致確認（`spec-update-summary` / `documentation-changelog`）と IPC失敗契約二軸確認（`code`/`errorCode`）を追加
+  - 同テンプレートの成果物チェック/ファイル形成チェックに Step 2 同期必須項目を追記
+  - `references/patterns.md` に成功パターン「IPC失敗契約の `code` / `errorCode` 二軸固定（TASK-10A-E-A）」を追加
+  - 同ファイルに失敗パターン「`code` と `errorCode` の混同で sender拒否契約がドリフト」を追加し、クイックナビを同期
   - `SKILL.md` 変更履歴を `v10.37.3` として同期
 
 ---
 
-## [2026-03-05 - TASK-UI-01-A Phase 12再監査パターン同期（target-file境界 + current/baseline分離）]
+## [2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 最終追補（5分解決カード同期）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に「`--target-file` は `docs/30-workflows/unassigned-task/` 配下限定」「成果物監査は `--diff-from HEAD`」の成功パターンを追加
-  - `currentViolations` を合否、`baselineViolations` を健全性指標として分離記録する運用を明文化
-  - baseline負債は別未タスクへ切り出して追跡する手順を追記
+  - `assets/phase12-system-spec-retrospective-template.md` に「同種課題の5分解決カード（必須）」を追加し、症状/原因/最短5手順/検証ゲート/同期先3点を固定
+  - `assets/phase12-spec-sync-subagent-template.md` に 3仕様書同一カード同期ルール（task-workflow / lessons / domain-or-ui-spec）を追加
+  - `references/resource-map.md` の2テンプレート説明へ5分解決カード対応を同期
+  - `references/patterns.md` に成功パターン「同種課題の5分解決カード同期（TASK-055）」と失敗パターン「5分解決カードをtask-workflowのみ更新して他仕様へ未同期」を追加
   - `SKILL.md` 変更履歴を `v10.37.2` として同期
 
 ---
 
-## [2026-03-05 - UT-TASK-10A-B-001 再利用最適化テンプレート同期（配置3分類 + target監査境界）]
+## [2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再確認知見のパターン化]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` に配置先3分類（未実施/完了済みUT/legacy）と `target-file` 適用境界、完了済みUT重複チェックを追加
-  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 責務を3分類運用へ更新し、チェックリストへ `target-file` 境界確認を追加
-  - `references/resource-map.md` のテンプレート説明を上記ルールへ同期
-  - `references/patterns.md` に `target-file` 誤用防止の運用追記（成功/失敗パターンの3分類化）
+  - `references/patterns.md` に成功パターン「[Phase12] CLIエイリアス非依存で検証経路を固定する」を追加
+  - 同ファイルに失敗パターン「グローバルCLI前提で `not found` / `MODULE_NOT_FOUND` を誘発」を追加
+  - Phase 12 再監査時の標準手順を `which` + `rg` 実体探索 → `node .claude/skills/task-specification-creator/scripts/*.js` 実行に統一
   - `SKILL.md` 変更履歴を `v10.37.1` として同期
 
 ---
 
-## [2026-03-05 - UT-TASK-10A-B-001 最終再監査パターン同期（配置分離 + target監査誤用防止）]
+## [2026-03-04 - TASK-UI-00-ORGANISMS 追補（テンプレート最適化 + ファイル形成標準化）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に成功パターン「完了済みUT指示書を `completed-tasks` 直下へ移管し、未実施UTを `unassigned-task` へ分離」を追加
-  - 同ファイルに失敗パターン「完了済み指示書へ `--target-file` を誤適用して scoped監査を失敗させる」を追加
-  - UT-TASK-10A-B-001 の再監査実測値（`verify-unassigned-links` 102/102、`audit --diff-from HEAD` current=0 baseline=90）を再利用条件として記録
+  - `assets/phase12-system-spec-retrospective-template.md` に「最適なファイル形成（記述順序/必須ブロック/整合チェック）」を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に仕様書単位の最小構成チェックを追加
+  - `references/patterns.md` に成功パターン「実装内容+苦戦箇所の仕様書統一フォーマット（TASK-UI-00-ORGANISMS追補）」を追加
+  - `references/resource-map.md` のテンプレート説明を更新
   - `SKILL.md` 変更履歴を `v10.37.0` として同期
 
 ---
 
-## [2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策をテンプレートへ反映]
+## [2026-03-04 - TASK-UI-00-ORGANISMS Phase 12再確認の準拠チェック成果物固定]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` に TC証跡記法チェック（`screenshots/*.png` / `NON_VISUAL:`）を追加
-  - `assets/phase12-spec-sync-subagent-template.md` の検証コマンド/完了チェックに同ルールを同期
-  - `references/patterns.md` に失敗パターン「別workflow証跡参照のまま coverage validator 実行」を追加
-  - `references/patterns.md` に成功パターン「対象workflow配下への証跡正規配置 + NON_VISUAL 記法固定」を追加
+  - `references/patterns.md` に成功パターン「[Phase12] UI再確認の準拠チェック成果物固定（TASK-UI-00-ORGANISMS）」を追加
+  - Task 1〜5 + Step 1-A〜1-E + Step 2 を `phase12-task-spec-compliance-check.md` に集約する運用を標準手順化
+  - 検証証跡の固定セット（`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD`）を明記
   - `SKILL.md` 変更履歴を `v10.36.9` として同期
 
 ---
 
-## [2026-03-04 - workflow02 screenshot Port競合ガードを Phase 12 パターンへ追加]
+## [2026-03-04 - TASK-UI-00-MOLECULES 再確認テンプレート改善（時刻同期 + Task 1要件チェック）]
 
 - **Agent**: skill-creator (update)
-- **Phase**: save-patterns
+- **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` のクイックナビ（📋 Phase 12）へ成功キーワード「UI再撮影前ポート競合preflight（5174）+ 分岐記録固定」を追加
-  - 同クイックナビへ失敗キーワード「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
-  - 失敗パターン本文「Port 5174 競合ログ混在を未記録のまま完了判定」を追加
-  - 成功パターン本文「UI再撮影前ポート競合 preflight + 分岐記録固定（workflow02）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンドに Task 1 要件機械確認（Part 1/Part 2）を追加
+  - 同テンプレートの完了チェックに `manual-test-result.md` / `screenshot-coverage.md` と `stat` の時刻整合確認を追加
   - `SKILL.md` 変更履歴を `v10.36.8` として同期
 
 ---
@@ -1568,16 +1581,3 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: 成果物実体と実行仕様書の不一致を再発防止
-
----
-
-## 2026-03-05 - TASK-UI-01-C 再監査パターン追補（対象テスト限定実行ガード）
-
-- **Agent**: skill-creator (update)
-- **Phase**: save-patterns
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に `[Phase12] 対象テスト限定実行の明示（TASK-UI-01-C 再監査）` を追加
-  - 成功パターン: `pnpm exec vitest run <対象ファイル>` で `N files / M tests` を実測固定
-  - 失敗パターン: `pnpm run test:run --` で全体テストへ展開し再監査が遅延
-  - Phase 12 再確認時のテスト実行コマンド選択を標準化

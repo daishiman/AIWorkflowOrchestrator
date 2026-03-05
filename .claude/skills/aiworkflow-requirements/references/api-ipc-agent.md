@@ -501,9 +501,9 @@ interface FileNode {
 
 | チャネル名              | 方向            | 概要                                     | リクエスト型                                           | レスポンス型                              |
 | ----------------------- | --------------- | ---------------------------------------- | ------------------------------------------------------ | ----------------------------------------- |
-| `skill:importFromSource` | Renderer → Main | 外部ソースからスキルをインポート         | `ShareTarget`（`{ type, repo?, branch?, gistId?, localPath?, url? }`） | `ShareResult<ShareImportResult>` |
-| `skill:export`          | Renderer → Main | スキルをエクスポート（Gist/ローカル）    | `{ skillName: string, destination: ShareDestination }` | `ShareResult<ShareExportResult>` |
-| `skill:validateSource`  | Renderer → Main | ソースの到達可能性と SKILL.md 構造を検証 | `ShareTarget`                                          | `ShareResult<ShareValidateSourceResult>` |
+| `skill:importFromSource` | Renderer → Main | 外部ソースからスキルをインポート         | `ShareTarget`（`{ type, repo?, branch?, gistId?, localPath?, url? }`） | `ShareResult<ShareImportResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }` |
+| `skill:export`          | Renderer → Main | スキルをエクスポート（Gist/ローカル）    | `{ skillName: string, destination: ShareDestination }` | `ShareResult<ShareExportResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }` |
+| `skill:validateSource`  | Renderer → Main | ソースの到達可能性と SKILL.md 構造を検証 | `ShareTarget`                                          | `ShareResult<ShareValidateSourceResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }` |
 
 ### 型定義（`packages/shared/src/types/skill-share.ts`）
 
@@ -516,16 +516,16 @@ interface FileNode {
 | `ShareImportResult`         | `{ success, skillName, skillPath, source, importedAt }`     | インポート結果       |
 | `ShareExportResult`         | `{ success, destination, exportedFiles, shareUrl? }`        | エクスポート結果     |
 | `ShareValidateSourceResult` | `{ isReachable, hasSkillMd, skillName?, errors }`           | ソース検証結果       |
-| `ShareResult<T>`            | `{ success, data?, error? }`                                | Result パターン      |
+| `ShareResult<T>`            | `{ success, data?, error?, errorCode? }`                    | Result パターン      |
 | `ShareError`                | `{ code, message, category, isRetryable }`                  | エラー情報           |
 
 ### バリデーションルール
 
 | チャネル                 | バリデーション項目                                          | エラーコード                |
 | ------------------------ | ----------------------------------------------------------- | --------------------------- |
-| `skill:importFromSource` | source がオブジェクト / source.type が P42 準拠3段バリデーション / source.type が `ALLOWED_SOURCE_TYPES` に含まれる / github 時 repo 長さ制限（10000文字） | `VALIDATION_ERROR` |
-| `skill:export`          | args がオブジェクト / args.skillName が P42 準拠3段バリデーション / args.destination がオブジェクト / args.destination.type が P42 準拠3段バリデーション / args.destination.type が `ALLOWED_DESTINATION_TYPES` に含まれる | `VALIDATION_ERROR` |
-| `skill:validateSource`  | source がオブジェクト / source.type が P42 準拠3段バリデーション                                                                                           | `VALIDATION_ERROR` |
+| `skill:importFromSource` | source がオブジェクト / source.type が P42 準拠3段バリデーション / source.type が `ALLOWED_SOURCE_TYPES` に含まれる / github 時 repo 長さ制限（10000文字） | `VALIDATION_ERROR` + `ERR_1001` |
+| `skill:export`          | args がオブジェクト / args.skillName が P42 準拠3段バリデーション / args.destination がオブジェクト / args.destination.type が P42 準拠3段バリデーション / args.destination.type が `ALLOWED_DESTINATION_TYPES` に含まれる | `VALIDATION_ERROR` + `ERR_1001` |
+| `skill:validateSource`  | source がオブジェクト / source.type が P42 準拠3段バリデーション                                                                                           | `VALIDATION_ERROR` + `ERR_1001` |
 
 ### 実装状況
 
@@ -538,6 +538,7 @@ interface FileNode {
 | Sender検証（全3ハンドラー）  | 完了       | TASK-9F    |
 | P42準拠3段バリデーション     | 完了       | TASK-9F    |
 | エラーサニタイズ             | 完了       | TASK-9F    |
+| エラーコード整合（ERR_1001/2004/5001） | 完了 | TASK-10A-E-A |
 
 ### セキュリティ仕様
 
@@ -545,9 +546,43 @@ interface FileNode {
 
 | 対策 | 実装 | 返却仕様 |
 | ---- | ---- | -------- |
-| Sender検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError` |
+| Sender検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError + errorCode: "ERR_2004"` |
 | 引数バリデーション | P42準拠3段バリデーション（型チェック → 空文字列 → trim空文字列） + 許可値チェック | 不正時: `{ success: false, error: { code: "VALIDATION_ERROR", message } }` |
 | 文字列長制限 | github ソースの repo フィールドに `MAX_STRING_LENGTH`（10000文字）制限 | 超過時: バリデーションエラー |
+| 例外正規化 | `sanitizeErrorMessage` / `internalError` | unknown例外時: `{ success: false, error: { code: "INTERNAL_ERROR", message: "Internal error" }, errorCode: "ERR_5001" }` |
+
+### エラーコードマッピング（TASK-10A-E-A）
+
+| 経路 | code | errorCode | message |
+| --- | --- | --- | --- |
+| 入力不正（P42/構造/許可値） | `VALIDATION_ERROR` | `ERR_1001` | フィールド別バリデーション文言 |
+| sender 検証失敗 | `IPC_UNAUTHORIZED` | `ERR_2004` | `Unauthorized IPC sender` |
+| 予期しない例外 | `INTERNAL_ERROR` | `ERR_5001` | `Internal error` |
+
+### TASK-10A-E-A 実装内容（IPC契約）
+
+| 観点 | 内容 | 検証 |
+| --- | --- | --- |
+| チャネル境界 | `skill:importFromSource` / `skill:export` / `skill:validateSource` の3チャネルを `IPC_CHANNELS` 定数参照へ統一 | Main 34 tests |
+| 失敗契約 | `code`（`VALIDATION_ERROR` / `IPC_UNAUTHORIZED` / `INTERNAL_ERROR`）と `errorCode`（`ERR_1001/2004/5001`）を同時返却 | Preload 60 tests |
+| 仕様同期 | `api-ipc` / `security` / `interfaces` / `task-workflow` / `lessons` の5仕様書を同一ターンで更新 | `verify-all-specs` 13/13 |
+| 画面証跡 | Phase 11 で TC-11-01〜04 の4スクリーンショット + diagnostics を再取得 | `validate-phase11-screenshot-coverage` 4/4 |
+
+### 実装時の苦戦箇所（TASK-10A-E-A）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
+| --- | --- | --- | --- |
+| Step 2 更新有無の記録ドリフト | `spec-update-summary` と `documentation-changelog` を別ターンで更新 | Step 2 実施直後に2成果物を同時更新 | Step 2 は「判定 + 2成果物同期」を1工程として扱う |
+| `code` と `errorCode` の混同 | `message` だけを転記して契約を復元する運用 | 失敗契約を `code + errorCode + message` の3列固定でレビュー | 片軸のみの更新を禁止し、二軸同時更新を必須化 |
+| チャネル境界の証跡不足 | スクリーンショットのみで境界検証を完了扱いにする | diagnostics JSON（`importCalls`, `importFromSourceCalls`）を保存 | UI証跡は「画像 + 診断JSON」の2点セットで保管 |
+
+### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）
+
+1. 失敗契約を `code/errorCode/message` の3列で先に固定する。  
+2. Main/Preload/仕様書5点を同一ターンで同期する。  
+3. `verify-all-specs` と `validate-phase-output` で構造整合を確認する。  
+4. Phase 11 証跡（4スクリーンショット + diagnostics）を再取得する。  
+5. Step 2 記録を `spec-update-summary` と `documentation-changelog` で同値化する。  
 
 ### 実装時の苦戦箇所（TASK-9F）
 
@@ -881,6 +916,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 | ---------- | ------------------------------------ | ---------- | -------------------------------------------------------------------------------- |
 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 | skill:chain:list ハンドラ登録漏れ修正 | 2026-03-03 | `registerSkillChainHandlers` を `registerAllIpcHandlers` へ追加し、`ipc-double-registration` 回帰テストで登録漏れを検出可能化。関連未タスクとしてバレル公開整合タスクを登録 |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `skill:execute` 認証 preflight ガード | 2026-03-04 | `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬を明文化。`auth-key:exists` の store+env 判定順と Preload `Error.code` 転写を同期 |
+| TASK-10A-E-A | IPC契約・セキュリティ整合（shareハンドラー） | 2026-03-05 | `skillHandlers.share.ts` で `IPC_CHANNELS` 定数参照へ統一。sender失敗時 `ERR_2004`、validation系 `ERR_1001`、unknown例外 `ERR_5001` を固定し、Preload契約テスト（60件）/Mainテスト（34件）/手動証跡4件を更新 |
 | TASK-9D    | スキルチェーンパイプライン機能       | 2026-02-27 | 5チャンネル追加（skill:chain:list/get/save/delete/execute）、SkillChainStore/SkillChainExecutor追加、共有型 `SkillChainDefinition/Step/Result` 追加。Preload API は TASK-UI-05B（2026-03-02）で実装完了 |
 | TASK-9E    | スキルフォーク機能（Skill API）      | 2026-02-28 | `skill:fork` チャネル追加、`SkillForker` サービス新規実装、`forkSkill(options)` Preload API追加、共有型 `SkillForkOptions/Result/Metadata` 追加。59テスト（SkillForker 34 + IPC 25）で契約を検証 |
 | TASK-9H    | スキルデバッグモード実装             | 2026-02-27 | 7チャンネル追加（invoke 6 + event 1）、`SkillDebugger` / `DebugSession` / `skill-debug.ts` を実装。`skillDebugHandlers` の登録配線を `registerAllIpcHandlers` へ反映し、129テスト全PASS |
@@ -916,6 +952,8 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.6    | 2026-03-05 | TASK-10A-E-A 追補: share IPC セクションへ「実装内容（IPC契約）」「苦戦箇所」「5ステップ手順」を追加し、Step 2同時同期・`code/errorCode` 二軸固定・画像+diagnostics 証跡の3点を標準化 |
+| v1.16.5    | 2026-03-05 | TASK-10A-E-A反映: share IPC（`skill:importFromSource/export/validateSource`）の失敗契約へ `errorCode` を追記。sender失敗 `ERR_2004`、validation `ERR_1001`、unknown例外 `ERR_5001` を明文化し、`IPC_CHANNELS` 定数参照と実装テスト（Main 34 / Preload 60）の整合を記録 |
 | v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 契約セクションを追加し、失敗レスポンス `errorCode`・Renderer preflight・`auth-key:exists` store+env 判定順・Preload `Error.code` 転写を同期 |
 | v1.16.3    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001 の苦戦箇所と4ステップ簡潔解決手順を追記。完了タスク台帳に同タスクを追加し、登録漏れ修正と未タスク移管（バレル公開整合）を同期 |
 | v1.16.2    | 2026-03-03 | TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001: `skill:chain:*` の備考を実装実態へ同期（`registerAllIpcHandlers` での登録保証を明記） |
