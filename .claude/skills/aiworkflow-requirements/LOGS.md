@@ -1,121 +1,102 @@
-## 2026-03-05 - TASK-UI-01-C 実装詳細の system spec 同期（コード境界追補）
+## 2026-03-05 - UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 登録と仕様同期
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/`
-- 目的: `TASK-UI-01-C` の実装内容と苦戦箇所を、コード実体（Main/Preload/Store/UI）に沿って system spec 正本へ追補する
+- 対象: `TASK-10A-E-A` の Phase 12 再監査で顕在化した domain3仕様書転記ドリフト
+- 目的: 未タスク仕様書を正式登録し、system spec 正本へ追跡導線を同期する
 
 ### SubAgent分担
-- SubAgent-IPC: `references/api-ipc-system.md`（push payload / `emitNotificationNew` / onNew契約）
-- SubAgent-STATE: `references/arch-state-management.md`（filter/stats/dedupe の状態遷移）
-- SubAgent-UI: `references/ui-ux-feature-components.md`（NotificationCenter / HistorySearchView の機能仕様）
-- SubAgent-TRACKING: `references/task-workflow.md`（完了台帳 + コード起因の苦戦箇所）
-- SubAgent-LESSONS: `references/lessons-learned.md`（再発条件付き教訓 + 5ステップ）
+- SubAgent-A: 未タスク仕様書作成（`docs/30-workflows/unassigned-task/`）
+- SubAgent-B: `references/task-workflow.md` へ検出未タスクを登録
+- SubAgent-C: `references/interfaces-agent-sdk-skill.md` へ関連未タスクを登録
+- SubAgent-D: `references/lessons-learned.md` の関連未タスクと変更履歴を更新
+- SubAgent-E: `SKILL.md` 変更履歴同期
 
 ### 実施内容
-- `api-ipc-system.md` に `notification:new` push の実装補足（window/webContents 生存確認、timestamp正規化、購読解除契約）を追加。
-- `arch-state-management.md` に `historySearchFilter/historySearchStats` と `notificationSlice.ingestNotification` の責務を追記。
-- `ui-ux-feature-components.md` に TASK-UI-01-C 専用節・完了タスク・Phase 11証跡（TC-01〜03）を追加。
-- `task-workflow.md` / `lessons-learned.md` にコード実装由来の苦戦箇所（push送信ガード不足、履歴重複、filter喪失）と再利用手順を同期。
+- `task-specification-creator` 形式（`## メタ情報` + `## 1..9` + `## 3.5`）で `UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001` を作成。
+- 親タスクの苦戦箇所（Step 2ドリフト / `code`と`errorCode`混同 / domain3仕様書転記粒度揺れ）を 3.5 に転記。
+- task-workflow / interfaces / lessons へ同一IDの導線を同期。
 
 ### 結果
 - ステータス: success
-- 補足: 既存の completed 状態は維持し、実装詳細の不足のみを追補。
+- 補足: `verify-unassigned-links` と `audit --target-file` で整合確認
 
 ---
 
-## 2026-03-05 - TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 実装完了同期（spec_created是正）
+## 2026-03-05 - TASK-10A-E-A 最適化追補（仕様書別フォーマット固定）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/`
-- 目的: `TASK-UI-01-C` の system spec 記録を `spec_created` から実装完了（completed）へ更新し、workflow導線・検証証跡・教訓を現行化する
+- 対象: `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/`
+- 目的: system spec に「実装内容 + 苦戦箇所」を仕様書別に明示し、同種課題を短時間で再利用できる最適フォーマットへ整える
 
 ### SubAgent分担
-- SubAgent-TRACKING: `references/task-workflow.md`（completed化、workflow導線更新、検証証跡更新）
-- SubAgent-LESSONS: `references/lessons-learned.md`（実装完了前提の苦戦箇所/手順へ更新）
-- SubAgent-INDEX: `indexes/topic-map.md` / `indexes/keywords.json`（再生成同期）
+- SubAgent-A: `references/api-ipc-agent.md`（IPC契約の実装内容/苦戦箇所/5ステップ）
+- SubAgent-B: `references/security-electron-ipc.md`（セキュリティ観点の苦戦箇所/5ステップ）
+- SubAgent-C: `references/interfaces-agent-sdk-skill.md`（型/API契約の実装内容/苦戦箇所/5ステップ）
+- SubAgent-D: `references/task-workflow.md`（5仕様書の最適なファイル形成テーブル）
+- SubAgent-E: `references/lessons-learned.md`（フォーマット運用ルール + 変更履歴）
 
 ### 実施内容
-- `task-workflow.md` の `TASK-UI-01-C` セクションを `completed` へ更新し、workflow パスを `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ統一。
-- 検証証跡を `verify-all-specs` 13/13・`validate-phase-output` 28項目・`validate-phase11-screenshot-coverage` TC 3/3・`audit current=0 baseline=92` に更新。
-- `lessons-learned.md` の同セクションを実装完了監査に更新し、Phase状態同期・画面証跡・未タスク監査の5ステップを標準手順化。
+- 3仕様書（api/security/interfaces）に TASK-10A-E-A の「実装内容 + 苦戦箇所 + 5ステップ」を同一形式で追記。
+- `task-workflow.md` に 5仕様書の最適なファイル形成テーブルを追加し、SubAgent責務を固定。
+- `lessons-learned.md` にフォーマット運用ルール（同一ターン更新、Step 2同値同期、画像+diagnostics）を追加。
 
 ### 結果
 - ステータス: success
-- 補足: `api-ipc-system.md` / `security-electron-ipc.md` / `arch-state-management.md` は抽出確認の結果「変更不要」を維持。
+- 補足: 既存の TASK-10A-E-A 記録と矛盾なく統合
 
 ---
 
-## 2026-03-05 - TASK-UI-01 未タスク仕様書の苦戦箇所同期（追加追補）
+## 2026-03-05 - TASK-10A-E-A Phase 12再確認追補（18:07 JST 画面証跡同期）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/unassigned-task/task-ui-01-*.md` / `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/`
-- 目的: 未タスク仕様書へ親タスクの苦戦箇所を反映し、再監査運用ガードを未タスクとして正本化する
+- 対象: `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/`
+- 目的: Phase 11スクリーンショット再取得の時刻同期と、TASK-10A-E-A の苦戦箇所を system spec 正本へ再利用可能形式で固定する
 
 ### SubAgent分担
-- SubAgent-UT-DOC: `task-ui-01-nav-accessibility-polish-001.md` / `task-ui-01-placeholder-guidance-001.md`（`3.5 実装課題と解決策` 追加）
-- SubAgent-UT-NEW: `task-imp-task-ui-01-phase12-evidence-cleanup-guard-001.md`（新規未タスク作成）
-- SubAgent-TRACKING: `references/task-workflow.md`（関連未タスク + 残課題 + 変更履歴）
-- SubAgent-LESSONS: `references/lessons-learned.md`（変更履歴 + 関連未タスク）
+- SubAgent-A: Phase 11証跡再取得（TC-11-01〜04 + diagnostics）
+- SubAgent-B: `manual-test-result.md` / `screenshot-coverage.md` の時刻同期
+- SubAgent-C: `spec-update-summary.md` / `documentation-changelog.md` の再撮影時刻同期
+- SubAgent-D: `references/lessons-learned.md` に TASK-10A-E-A 教訓追記
+- SubAgent-E: `SKILL.md` / `LOGS.md` の変更履歴同期
 
 ### 実施内容
-- 既存未タスク2件に、親タスク由来の苦戦箇所（検証経路固定/証跡時刻同期/再撮影後cleanup）を `3.5` として追記。
-- `UT-IMP-TASK-UI-01-PHASE12-EVIDENCE-CLEANUP-GUARD-001` を `docs/30-workflows/unassigned-task/` に新規作成。
-- `task-workflow.md` / `lessons-learned.md` の関連未タスク導線と変更履歴を同期。
+- `capture-task-043a-phase11-screenshots.mjs` を再実行し、4スクリーンショットと `tc-11-04-channel-boundary-diagnostics.json` を再生成（`importCalls=1`, `importFromSourceCalls=0`）。
+- `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-043a-ipc-contract-and-security-alignment` を再実行し、`TC 4/4` PASS を確認。
+- Phase 11/12成果物の時刻を `2026-03-05 18:07 JST` に同期。
+- `lessons-learned.md` に TASK-10A-E-A セクションを追加し、苦戦箇所3件（Step 2判定ドリフト / `code`と`errorCode`混同 / チャネル境界証跡不足）と5ステップ手順を記録。
 
 ### 結果
 - ステータス: success
-- 補足: 未タスク監査は `currentViolations=0` を維持。
+- 補足: 未タスク監査は `currentViolations=0`（今回差分）を維持
 
 ---
 
-## 2026-03-05 - TASK-UI-01-STORE-IPC-ARCHITECTURE 再追補（18:06 JST）
+## 2026-03-05 - TASK-10A-E-A IPC契約・セキュリティ整合の再監査同期
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/`
-- 目的: Phase 11 再撮影時刻の同期と、実装時苦戦箇所（cleanup 含む）の仕様反映を完了する
+- 対象: `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/`
+- 目的: share IPC 3チャネルの失敗契約（`ERR_1001/2004/5001`）を正本仕様へ再同期し、Phase 12成果物ドリフトを解消する
 
 ### SubAgent分担
-- SubAgent-TRACKING: `references/task-workflow.md`（苦戦箇所 + 5ステップ手順 + 変更履歴）
-- SubAgent-LESSONS: `references/lessons-learned.md`（再発条件付き教訓 + 変更履歴）
-- SubAgent-PHASE11: `outputs/phase-11/manual-test-result.md` / `screenshot-coverage.md`（時刻同期）
+- SubAgent-A: `references/api-ipc-agent.md` の request/response/errorCode 契約同期
+- SubAgent-B: `references/security-electron-ipc.md` の sender失敗返却・内部例外正規化同期
+- SubAgent-C: `references/interfaces-agent-sdk-skill.md` の Preload戻り値契約同期
+- SubAgent-D: `references/task-workflow.md` の完了台帳・検証証跡・変更履歴同期
+- SubAgent-E: Phase 11 画面証跡（4スクリーンショット + diagnostics）再確認
 
 ### 実施内容
-- Phase 11 再撮影を 18:06 JST で再実行し、証跡時刻を成果物へ同期。
-- `task-workflow.md` に「再撮影後の Vite 残留プロセス cleanup」を苦戦箇所として追記。
-- `lessons-learned.md` に同課題を再発条件/標準ルールつきで追記し、同種課題手順へ反映。
+- share 3チャネルの失敗契約を `code + errorCode` の2軸で明文化（入力不正/認可失敗/内部例外）。
+- `task-workflow.md` に `TASK-10A-E-A` 完了記録を追加し、苦戦箇所（Step 2後の成果物ドリフト、code/errorCode混同、境界証跡不足）を固定。
+- `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` を「Step 2更新あり」の実績へ是正。
+- `implementation-guide.md` の sender拒否 `code` を `IPC_UNAUTHORIZED` に補正。
 
 ### 結果
 - ステータス: success
-- 補足: `validate-phase11-screenshot-coverage` は TC 5/5 PASS を維持。
-
----
-
-## 2026-03-05 - TASK-UI-01-STORE-IPC-ARCHITECTURE Phase 12再監査（仕様同期 + 未タスク登録）
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象: `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/`
-- 目的: IPC/Store/UI変更の system spec 同期を完了し、Phase 11 の再撮影証跡と未タスク2件を台帳へ固定する
-
-### SubAgent分担
-- SubAgent-IPC: `references/api-ipc-system.md`（通知IPC/履歴検索IPC契約）
-- SubAgent-STATE-UI: `references/arch-state-management.md` / `references/ui-ux-navigation.md`（ViewType/AppDock/Store同期）
-- SubAgent-SEC: `references/security-electron-ipc.md`（sender/P42/sanitize適用境界）
-- SubAgent-TRACKING: `references/task-workflow.md` / `references/lessons-learned.md`（完了台帳 + 教訓 + 未タスク導線）
-
-### 実施内容
-- Phase 11 スクリーンショットを再取得（2026-03-05 17:49 JST）し、証跡時刻を成果物へ同期。
-- `task-workflow.md` に TASK-UI-01 完了タスク節を追加し、残課題へ `UT-UI-01-*` 2件を登録。
-- `lessons-learned.md` に苦戦箇所（実行経路固定/時刻同期/non-blocking未タスク化）を追記。
-- `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit` の結果を固定。
-
-### 結果
-- ステータス: success
-- 補足: `currentViolations=0`（`baselineViolations=92` は既存負債として分離）。
+- 検証: Main 34 tests PASS / Preload 60 tests PASS / typecheck PASS / verify-all-specs PASS / validate-phase-output PASS / screenshot coverage PASS
 
 ---
 
@@ -6629,24 +6610,6 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 - Task: unknown
 - 結果: success
 - フィードバック: なし
-
----
-
-
-## [実行日時: 2026-03-05T09:14:46.286Z]
-
-- Task: update-spec
-- 結果: success
-- フィードバック: TASK-UI-01: task-workflow/lessonsへ苦戦箇所cleanup追補と時刻18:06同期
-
----
-
-
-## [実行日時: 2026-03-05T09:51:15.430Z]
-
-- Task: update-spec
-- 結果: success
-- フィードバック: TASK-UI-01未タスク導線追補（task-workflow/lessons/変更履歴/index再生成）
 
 ---
 

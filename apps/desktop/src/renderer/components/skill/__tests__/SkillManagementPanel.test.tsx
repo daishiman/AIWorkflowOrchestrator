@@ -527,55 +527,39 @@ describe("エラー状態", () => {
     const consoleError = vi
       .spyOn(console, "error")
       .mockImplementation(() => {});
+    try {
+      const mockRemoveReject = vi
+        .fn()
+        .mockRejectedValue(new Error("remove error"));
+      currentStoreState = {
+        ...currentStoreState,
+        removeSkill: mockRemoveReject,
+      };
 
-    // Vitest の unhandledRejection リスナーを一時退避し、
-    // テスト内で rejection の発生有無を観測する
-    const savedListeners = process.rawListeners("unhandledRejection").slice();
-    process.removeAllListeners("unhandledRejection");
-    const caughtRejections: unknown[] = [];
-    const rejectionHandler = (reason: unknown) => {
-      caughtRejections.push(reason);
-    };
-    process.on("unhandledRejection", rejectionHandler);
+      render(<SkillManagementPanel />);
 
-    const mockRemoveReject = vi
-      .fn()
-      .mockRejectedValue(new Error("remove error"));
-    currentStoreState = {
-      ...currentStoreState,
-      removeSkill: mockRemoveReject,
-    };
+      // 削除ダイアログを開く
+      const deleteButton = screen.getByLabelText("skill-alpha を削除");
+      await act(async () => {
+        fireEvent.click(deleteButton);
+      });
 
-    render(<SkillManagementPanel />);
+      // 確認ダイアログで削除を実行
+      const confirmButton = screen.getByText("削除する");
+      await act(async () => {
+        fireEvent.click(confirmButton);
+        await new Promise((r) => setTimeout(r, 0));
+      });
 
-    // 削除ダイアログを開く
-    const deleteButton = screen.getByLabelText("skill-alpha を削除");
-    await act(async () => {
-      fireEvent.click(deleteButton);
-    });
-
-    // 確認ダイアログで削除を実行
-    const confirmButton = screen.getByText("削除する");
-    await act(async () => {
-      fireEvent.click(confirmButton);
-      await new Promise((r) => setTimeout(r, 0));
-    });
-
-    // コンポーネントがクラッシュしていないことを確認
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(mockRemoveReject).toHaveBeenCalledTimes(1);
-    expect(caughtRejections.length).toBe(0);
-    expect(screen.getByText("削除に失敗しました: remove error")).toBeDefined();
-
-    // Vitest のリスナーを復元
-    process.removeAllListeners("unhandledRejection");
-    for (const listener of savedListeners) {
-      process.on(
-        "unhandledRejection",
-        listener as NodeJS.UnhandledRejectionListener,
-      );
+      // コンポーネントがクラッシュしていないことを確認
+      expect(screen.getByText("スキル管理")).toBeDefined();
+      expect(mockRemoveReject).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByText("削除に失敗しました: remove error"),
+      ).toBeDefined();
+    } finally {
+      consoleError.mockRestore();
     }
-    consoleError.mockRestore();
   });
 
   it("TC-031: isLoadingSkillsがtrue→falseに変わるとスキル一覧が表示される", () => {

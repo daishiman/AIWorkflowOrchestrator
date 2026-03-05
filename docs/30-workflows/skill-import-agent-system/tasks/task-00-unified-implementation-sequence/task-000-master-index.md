@@ -64,6 +64,9 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 23. `task-041b-task-10a-b-analysis-view.md`（並列）
 24. `task-041c-task-10a-c-create-wizard.md`（並列）
 25. `task-042-task-10a-d-integration.md`（最終統合）
+    25a. `task-043-task-10a-e-management-panel-import-integration.md`（042後・25bと並列）
+    25b. `task-044-task-10a-f-store-driven-lifecycle-ui.md`（042後・25aと並列）
+    25c. `task-045-task-10a-g-lifecycle-test-hardening.md`（25a/25b完了後）
 
 ### Phase 6: UI/UX基盤トラック（独立管理）
 
@@ -117,6 +120,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 - `task-023a`〜`task-023f` は同時実行可能。
 - `task-031a` と `task-031b` は同時実行可能（`task-030` 完了後）。
 - `task-041a`〜`task-041c` は同時実行可能。`task-042` は `task-041a/b/c` 完了後。
+- `task-043` と `task-044` は同時実行可能。`task-045` は `task-043/044` 完了後。
 - `task-058a`〜`task-058e` は同時実行可能（`task-057` 完了後）。
 - `task-059a` と `task-059b` は同時実行可能（`task-058b` 完了後）。
 - `task-061` は全UIタスク完了後に実施。
@@ -129,7 +133,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 - バックエンド/IPC契約: `task-010a`〜`task-023f`（`task-011` は `completed-task` 配下参照）
 - UIスキル管理: `task-030`〜`task-031b`
-- 統合: `task-040`〜`task-042`
+- 統合: `task-040`〜`task-045`
 - UI/UX基盤: `task-050`〜`task-061`
 
 ## ファイル命名規約（最適化）
@@ -147,5 +151,6 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ## 更新履歴
 
+- 2026-03-05: TASK-10A残課題（`task-043`〜`task-045`）を追加。管理パネルのImport統合、Store駆動統一、統合テスト強化をPhase 5へ編入。
 - 2026-02-27: Phase 2 の正本参照を `completed-task` へ統一（`task-020a` / `task-020b` / `task-022`）。
 - 2026-02-25: 実行ステータス再同期。`task-014` を完了タスクへ確定し、参照先を `../completed-task/task-014-ut-fix-skill-execute-interface-001.md` に更新。`task-013e-phase12-action-bridge.md` も完了扱いに同期。
