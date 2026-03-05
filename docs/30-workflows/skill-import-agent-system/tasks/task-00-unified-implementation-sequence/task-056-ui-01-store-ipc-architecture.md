@@ -667,12 +667,47 @@ partialize: (state) => ({
 
 ## 8. 参照資料
 
-- `.claude/rules/03-state-management.md` — Zustand設計原則、状態配置基準
-- `.claude/rules/04-electron-security.md` — IPCセキュリティ原則
-- `.claude/rules/06-known-pitfalls.md` — P5, P23, P31, P32, P42, P44, P45
-- `apps/desktop/src/renderer/store/index.ts` — 既存Store構成（713行）
-- `apps/desktop/src/renderer/store/types.ts` — ViewType、ThemeMode定義
-- `apps/desktop/src/preload/channels.ts` — 既存IPCチャネル（553行、291定義）
-- `apps/desktop/src/renderer/store/slices/navigationSlice.ts` — 既存Navigation（52行）
-- `apps/desktop/src/renderer/store/slices/workspaceSlice.ts` — 既存Workspace（391行）
-- `apps/desktop/src/renderer/store/slices/agentSlice.ts` — 既存Agent+Skill統合（766行）
+- `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` — Zustand設計原則、P31対策、Slice境界
+- `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` — レイヤー構成、SoC、IPCデータフロー
+- `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` — P42/P44/P45を含むIPC実装パターン
+- `.claude/skills/aiworkflow-requirements/references/api-endpoints.md` — IPC命名規約、Desktop IPC APIサマリー
+- `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md` — IPC契約、Preload型、チャネル設計
+- `.claude/skills/aiworkflow-requirements/references/security-api-electron.md` — Electron APIセキュリティ設定
+- `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` — sender検証、whitelist、safeInvoke/safeOn
+- `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md` — AppDock/ナビ導線の正本
+- `.claude/skills/aiworkflow-requirements/references/error-handling.md` — エラーコードとResult契約
+- `apps/desktop/src/renderer/store/index.ts` — 既存Store構成
+- `apps/desktop/src/preload/channels.ts` — 既存IPCチャネル定義
+- `apps/desktop/src/main/ipc/` — ハンドラー配置と登録状況
+
+## 9. Atent Team（SubAgent）分割仕様書
+
+本タスクは関心ごとを分離し、以下のSubAgent単位で仕様書を作成する。
+
+| SubAgent | 役割                                   | 仕様書                                                                              |
+| -------- | -------------------------------------- | ----------------------------------------------------------------------------------- |
+| A        | Store棚卸し・状態境界設計              | `task-056-ui-01-store-ipc-architecture/task-056a-a-store-slice-baseline.md`         |
+| B        | IPC契約・Preload・セキュリティ         | `task-056-ui-01-store-ipc-architecture/task-056a-b-ipc-contract-security.md`        |
+| C        | Notification/HistorySearchドメイン統合 | `task-056-ui-01-store-ipc-architecture/task-056c-notification-history-domain.md`    |
+| D        | ViewType拡張・ルーティング・ナビ整合   | `task-056-ui-01-store-ipc-architecture/task-056d-viewtype-routing-nav.md`           |
+| E        | 統合ゲート・仕様同期監査               | `task-056-ui-01-store-ipc-architecture/task-056e-integration-gate-and-spec-sync.md` |
+
+統合インデックス: `task-056-ui-01-store-ipc-architecture/index.md`
+
+## 10. 直列/並列実行マトリクス
+
+| タスク                         | 実行種別 | 依存       | ブロック解除条件               |
+| ------------------------------ | -------- | ---------- | ------------------------------ |
+| A: Store Slice Baseline        | 並列可能 | TASK-UI-00 | Slice境界とP31対策が確定       |
+| B: IPC Contract Security       | 並列可能 | TASK-UI-00 | IPC契約とP42検証順序が確定     |
+| C: Notification/History Domain | 直列     | A, B       | 2ドメイン契約の整合が完了      |
+| D: ViewType Routing Nav        | 直列     | A          | ViewType拡張とswitch網羅が確定 |
+| E: Integration Gate            | 直列     | C, D       | 後続UIタスク参照の正本化が完了 |
+
+## 11. 今回の完了定義（仕様書作成フェーズ）
+
+- [x] ブランチ作成（仕様書作成専用）
+- [x] `task-056` 専用ディレクトリ作成
+- [x] SubAgent分割仕様書5本の作成
+- [x] aiworkflow-requirements正本参照の反映
+- [x] 実装タスクは未着手（仕様書作成のみ）
