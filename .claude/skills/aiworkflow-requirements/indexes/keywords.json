@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T15:13:39.075Z",
-  "totalKeywords": 1442,
+  "generated": "2026-03-05T16:11:57.132Z",
+  "totalKeywords": 1455,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -829,7 +829,6 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
-      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -1135,7 +1134,8 @@
     ],
     "Notification": [
       "arch-state-management.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "HistorySearch": [
       "arch-state-management.md",
@@ -1155,6 +1155,21 @@
     "DOMAIN": [
       "arch-state-management.md",
       "lessons-learned.md"
+    ],
+    "ViewType": [
+      "arch-state-management.md"
+    ],
+    "ナビ導線": [
+      "arch-state-management.md"
+    ],
+    "VIEWTYPE": [
+      "arch-state-management.md"
+    ],
+    "ROUTING": [
+      "arch-state-management.md"
+    ],
+    "NAV": [
+      "arch-state-management.md"
     ],
     "Zustand": [
       "arch-state-management.md",
@@ -1348,7 +1363,8 @@
       "architecture-chat-history.md"
     ],
     "Domain": [
-      "architecture-chat-history.md"
+      "architecture-chat-history.md",
+      "ui-ux-feature-components.md"
     ],
     "Application": [
       "architecture-chat-history.md"
@@ -2530,7 +2546,8 @@
       "error-handling.md"
     ],
     "OAuth": [
-      "error-handling.md"
+      "error-handling.md",
+      "lessons-learned.md"
     ],
     "エラーコードマッピング": [
       "error-handling.md"
@@ -3198,6 +3215,33 @@
       "lessons-learned.md"
     ],
     "経路統一": [
+      "lessons-learned.md"
+    ],
+    "INVESTIGATE": [
+      "lessons-learned.md"
+    ],
+    "ELECTRON": [
+      "lessons-learned.md"
+    ],
+    "SANDBOX": [
+      "lessons-learned.md"
+    ],
+    "ITERABLE": [
+      "lessons-learned.md"
+    ],
+    "ERROR": [
+      "lessons-learned.md"
+    ],
+    "sandbox": [
+      "lessons-learned.md"
+    ],
+    "iterable": [
+      "lessons-learned.md"
+    ],
+    "エラー原因分離": [
+      "lessons-learned.md"
+    ],
+    "追補": [
       "lessons-learned.md"
     ],
     "境界基準化の再監査": [
@@ -4392,9 +4436,6 @@
     "historyAPI": [
       "security-electron-ipc.md"
     ],
-    "notificationAPI": [
-      "security-electron-ipc.md"
-    ],
     "slideSettingsAPI": [
       "security-electron-ipc.md"
     ],
@@ -5201,6 +5242,10 @@
     "REFLECTION": [
       "ui-ux-feature-components.md"
     ],
+    "History": [
+      "ui-ux-feature-components.md",
+      "ui-ux-settings.md"
+    ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
     ],
@@ -5419,9 +5464,6 @@
       "ui-ux-settings.md"
     ],
     "権限要求履歴パネル": [
-      "ui-ux-settings.md"
-    ],
-    "History": [
       "ui-ux-settings.md"
     ],
     "Panel": [

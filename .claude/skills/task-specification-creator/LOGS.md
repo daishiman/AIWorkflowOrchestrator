@@ -55,6 +55,64 @@
 
 ---
 
+## 2026-03-06 - UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 起票
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 4 未タスク生成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` を新規作成（9セクション + `3.5 実装課題と解決策`）
+  - 親タスク（TASK-INVESTIGATE）の苦戦箇所3件を未タスク指示書へ反映
+  - `task-workflow.md` / `api-ipc-system.md` / `lessons-learned.md` に関連未タスクとして同IDを同期
+  - `audit-unassigned-tasks --target-file` / `verify-unassigned-links` を実行し、配置・参照整合を確認
+
+---
+
+## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 Phase 12準拠再確認（タスク仕様書監査）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 12-1〜12-5 準拠監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-12-documentation.md` のステータスを `completed` へ同期し、完了チェックを全件 `x` 化
+  - `outputs/phase-12/implementation-guide.md` の Part 2 を型/API/エラーハンドリング/設定一覧まで補強
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 12-1〜12-5 の準拠証跡を固定
+  - `verify-all-specs --strict` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行して PASS を確認
+
+---
+
+## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 再監査（Phase 11 スクリーンショット化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-11-manual-test.md` に `## テストケース` / `## 画面カバレッジマトリクス` を追加し、TC証跡前提へ更新
+  - `apps/desktop/scripts/capture-electron-sandbox-iterable-phase11.mjs` を整備し、`TC-11-UI-01..03` を再撮影
+  - `outputs/phase-11/manual-test-result.md` / `evidence-index.md` / `screenshot-plan.md` をスクリーンショット実体と同期
+  - `validate-phase11-screenshot-coverage`（3/3）、`verify-all-specs --strict`（error=0/warning=0）、`validate-phase-output`（28項目PASS）を再確認
+  - `audit-unassigned-tasks --diff-from HEAD --json` で `currentViolations=0`, `baselineViolations=92` を記録
+
+---
+
+## 2026-03-05 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（成果物生成 + Task 12-2同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-1..12` の必須成果物を全件作成
+  - `authSlice.ts`/`profileHandlers.ts` の契約整合修正に合わせて Phase 4〜9 のテスト・品質証跡を同期
+  - Task 12-2 Step 1-A/1-B/1-C/Step 2 を実施し、`api-ipc-system.md`/`task-workflow.md`/`LOGS.md`/`topic-map.md` を更新
+  - `complete-phase.js` を Phase 1→12 の順で実行し、`artifacts.json` の完了状態を更新
+  - `validate-phase-output.js` でワークフロー仕様整合を再確認
+
+---
+
 ## 2026-03-05 - TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）
 
 - **Agent**: task-specification-creator

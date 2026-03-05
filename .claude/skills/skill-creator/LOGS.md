@@ -18,6 +18,32 @@
 
 ---
 
+## [2026-03-06 - Phase 12テンプレート整形最適化（重複行ガード）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の「最短5ステップ」重複行を解消
+  - 同テンプレートの検証コマンド表から重複していた `validate-phase11-screenshot-coverage` 行を整理
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に「テンプレート重複行なし」完了チェックを追加
+  - `SKILL.md` 変更履歴を `v10.37.7` として同期
+
+---
+
+## [2026-03-06 - TASK-INVESTIGATE 再監査知見のテンプレート同期（NON_VISUAL→SCREENSHOT 昇格）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「ユーザー要求時の `NON_VISUAL` → `SCREENSHOT` 昇格運用（TASK-INVESTIGATE）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` の完了チェックへ同昇格ルールを追加
+  - `assets/phase12-spec-sync-subagent-template.md` の完了チェックへ同昇格ルールを追加
+  - `SKILL.md` 変更履歴を `v10.37.6` として同期
+
+---
+
 ## [2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 SIGTERMガードをPhase 12テンプレートへ反映]
 
 - **Agent**: skill-creator (update)

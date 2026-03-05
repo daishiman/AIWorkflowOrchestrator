@@ -169,6 +169,8 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `unregisterAllIpcHandlers` で `unregisterAuthKeyHandlers` を解除時に実行 | completed | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
 | `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers` と共有 | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
 | `registerSkillHandlers` が `authKeyService` を `SkillExecutor` へ DI する | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+| `PROFILE_UNLINK_PROVIDER` 成功通知で `AUTH_STATE_CHANGED.user` を `AuthUser` 形状へ統一 | completed | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
+| Renderer `linkedProviders` を契約崩れ時に正規化し `is not iterable` を回避 | completed | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
 
 ### 関連タスク
 
@@ -177,6 +179,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 | SkillExecutor への AuthKeyService 注入経路を単一路化 | 完了 |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `auth-key:exists` 判定契約の env fallback 追加 | 完了 |
 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 | auth-key 4チャネルの Main 登録漏れと解除連携を修正 | 完了 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 | OAuth後の `AUTH_STATE_CHANGED` / `linkedProviders` 契約整合で iterable 障害を分離 | 完了 |
 
 **セキュリティ設計**:
 
@@ -371,6 +374,50 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 ---
 
+### TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001（2026-03-05完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
+| 反映対象 | `AUTH_STATE_CHANGED` payload整合 / `linkedProviders` ランタイム防御 |
+| 主要変更 | `PROFILE_UNLINK_PROVIDER` の通知時に `toAuthUser` を適用し、Renderer `authSlice` へ `normalizeLinkedProviders` を導入 |
+| 契約影響 | なし（既存IPCチャネル、request/response定義は不変） |
+| 関連ドキュメント | `docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-12/spec-update-summary.md` |
+
+#### 実装時の苦戦箇所と再発防止
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所1 | `PROFILE_UNLINK_PROVIDER` 通知時の `AUTH_STATE_CHANGED.user` が profile shape のまま混入し、Renderer 側で iterable 系例外を誘発しやすい |
+| 原因 | Main 通知経路の shape 正規化と Renderer 側の配列防御が片側実装になりやすい |
+| 対処 | Main は `toAuthUser` を必須化し、Renderer は `normalizeLinkedProviders` を導入して契約崩れを吸収 |
+| 標準ルール | 認証契約修正は Main/Renderer の片側のみで完了扱いにしない（送信正規化 + 受信防御を同時適用） |
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所2 | 契約修正中心タスクで UI証跡を省略しやすく、Phase 11 の要求水準とずれやすい |
+| 原因 | 「非視覚修正=NON_VISUALのみ可」という運用慣性で、ユーザー追加要求への昇格を見落としやすい |
+| 対処 | TC-11-UI-01〜03 の実画面証跡を再取得し、coverage validator 3/3 を証跡化 |
+| 標準ルール | ユーザーが画面検証を求めた時点で `NON_VISUAL` 運用を `SCREENSHOT` へ切り替える |
+
+#### 同種課題の5分解決カード（IPC契約境界）
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | `AUTH_STATE_CHANGED` 通知後に Renderer で `is not iterable` が発生する |
+| 根本原因 | Main通知 shape と Renderer受信 shape の契約境界が揃っていない |
+| 最短5手順 | 1) Main通知 payload を `AuthUser` 形状へ正規化 2) Renderer で `linkedProviders` を正規化 3) Main/Renderer/UI の対象回帰を明示実行 4) UI要求時は `SCREENSHOT` 昇格で証跡を再取得 5) 3仕様書へ同値転記 |
+| 検証ゲート | `typecheck` PASS、対象テスト PASS（3 files / 169 tests）、`validate-phase11-screenshot-coverage` PASS（3/3）、`verify-all-specs` PASS |
+| 同期先3点 | `references/api-ipc-system.md` / `references/task-workflow.md` / `references/lessons-learned.md` |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/順序/検証ゲート）を機械検証し、契約系タスクの再利用性を安定化する | `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
+
+---
+
 ### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
 
 | 項目 | 内容 |
@@ -387,6 +434,10 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
 | v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
+| v1.5.6     | 2026-03-06 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクへ登録。5分解決カードの3仕様書同期を機械検証する改善タスクを明示し、契約系タスクの再発防止導線を追加 |
+| v1.5.5     | 2026-03-06 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補2: 「同種課題の5分解決カード（IPC契約境界）」を追加し、症状/根本原因/最短5手順/検証ゲート/同期先3点を固定して再利用性を向上 |
+| v1.5.4     | 2026-03-06 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補: 当該タスク節に「実装時の苦戦箇所と再発防止」を追加し、`AUTH_STATE_CHANGED.user` shape 正規化と `NON_VISUAL`→`SCREENSHOT` 昇格ルールを標準化 |
+| v1.5.3     | 2026-03-05 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 反映: `PROFILE_UNLINK_PROVIDER` 成功通知の `AUTH_STATE_CHANGED.user` を `AuthUser` 形状へ統一し、Renderer `linkedProviders` 防御（正規化）を実装状況/関連タスク/完了タスクへ同期 |
 | v1.4.0     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: Notification/HistorySearch IPC（history 2 + notification 5）を追加。sender検証、更新系認証ゲート、入力検証、preload公開境界を契約化 |
 | v1.5.2     | 2026-03-05 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を関連未タスクへ登録。`apps/desktop test:run` の `SIGTERM` 中断時に「失敗ログ固定 + `vitest run <対象>` 分割実行 + 3仕様同期」を標準運用として追跡可能化 |
 | v1.5.1     | 2026-03-05 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補: 「同種課題の簡潔解決チェック（5分）」を追加し、runtime 配線漏れと `SIGTERM` 中断時の分割回帰テスト運用を標準化 |

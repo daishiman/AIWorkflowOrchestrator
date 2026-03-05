@@ -8,6 +8,61 @@ import type {
 import { hasExpiresAt } from "../../components/AuthGuard/types";
 import type { AuthErrorCode } from "../../components/AuthGuard/types";
 
+/**
+ * LinkedProvider の最小ランタイムバリデーション
+ *
+ * IPC境界で契約崩れが起きた場合も Renderer 側で防御する。
+ */
+function isLinkedProvider(value: unknown): value is {
+  provider: OAuthProvider;
+  providerId: string;
+  email: string;
+  displayName: string | null;
+  avatarUrl: string | null;
+  linkedAt: string;
+} {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return (
+    (candidate.provider === "google" ||
+      candidate.provider === "github" ||
+      candidate.provider === "discord") &&
+    typeof candidate.providerId === "string" &&
+    typeof candidate.email === "string" &&
+    (candidate.displayName === null ||
+      typeof candidate.displayName === "string") &&
+    (candidate.avatarUrl === null || typeof candidate.avatarUrl === "string") &&
+    typeof candidate.linkedAt === "string"
+  );
+}
+
+/**
+ * linkedProviders 配列を安全に正規化
+ */
+function normalizeLinkedProviders(
+  value: unknown,
+  source: string,
+): LinkedProvider[] {
+  if (!Array.isArray(value)) {
+    if (value !== undefined && value !== null) {
+      console.warn(
+        `[AuthSlice] Contract violation at ${source}: linkedProviders is not an array`,
+      );
+    }
+    return [];
+  }
+
+  const normalized = value.filter(isLinkedProvider);
+  if (normalized.length !== value.length) {
+    console.warn(
+      `[AuthSlice] Contract violation at ${source}: invalid linkedProviders entries were dropped`,
+    );
+  }
+  return normalized;
+}
+
 // ============================================================
 // リスナー管理（二重登録防止）
 // @see TASK-FIX-GOOGLE-LOGIN-001 Problem 4
@@ -523,8 +578,13 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
 
       const response = await window.electronAPI.profile.getProviders();
 
-      if (response.success && response.data) {
-        set({ linkedProviders: response.data });
+      if (response.success) {
+        set({
+          linkedProviders: normalizeLinkedProviders(
+            response.data,
+            "profile.getProviders",
+          ),
+        });
       }
     } catch (error) {
       console.error("[AuthSlice] Fetch linked providers error:", error);
@@ -535,6 +595,11 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
     set({ isLoading: true, authError: null });
 
     try {
+      const currentLinkedProviders = normalizeLinkedProviders(
+        get().linkedProviders,
+        "authSlice.linkProvider.currentState",
+      );
+
       if (!window.electronAPI?.profile?.linkProvider) {
         set({ isLoading: false });
         return;
@@ -543,13 +608,19 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
       const response = await window.electronAPI.profile.linkProvider({
         provider,
       });
+      const linkedProvider = response.data;
 
-      if (response.success && response.data) {
-        set((state) => ({
-          linkedProviders: [...state.linkedProviders, response.data!],
+      if (response.success && isLinkedProvider(linkedProvider)) {
+        set({
+          linkedProviders: [
+            ...currentLinkedProviders.filter(
+              (entry) => entry.provider !== linkedProvider.provider,
+            ),
+            linkedProvider,
+          ],
           isLoading: false,
           authError: null,
-        }));
+        });
       } else {
         set({
           isLoading: false,
@@ -565,7 +636,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
   },
 
   unlinkProvider: async (provider: OAuthProvider) => {
-    const { linkedProviders } = get();
+    const linkedProviders = normalizeLinkedProviders(
+      get().linkedProviders,
+      "authSlice.unlinkProvider.currentState",
+    );
 
     // 最後のプロバイダーは連携解除できない
     if (linkedProviders.length <= 1) {
@@ -590,9 +664,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
 
       if (response.success) {
         set((state) => ({
-          linkedProviders: state.linkedProviders.filter(
-            (p) => p.provider !== provider,
-          ),
+          linkedProviders: normalizeLinkedProviders(
+            state.linkedProviders,
+            "authSlice.unlinkProvider.reducerState",
+          ).filter((p) => p.provider !== provider),
           isLoading: false,
           authError: null,
         }));
@@ -647,7 +722,10 @@ export const createAuthSlice: StateCreator<AuthSlice, [], [], AuthSlice> = (
   },
 
   useProviderAvatar: async (provider: OAuthProvider) => {
-    const { linkedProviders } = get();
+    const linkedProviders = normalizeLinkedProviders(
+      get().linkedProviders,
+      "authSlice.useProviderAvatar.currentState",
+    );
 
     // 連携していないプロバイダーは使用できない
     const linkedProvider = linkedProviders.find((p) => p.provider === provider);

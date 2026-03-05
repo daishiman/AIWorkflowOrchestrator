@@ -25,6 +25,9 @@
 | 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
 | 2026-03-05 | 1.29.29 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12再確認を追補。成果物実体は完了しているのに `phase-12-documentation.md` が `pending` のまま残る台帳ドリフトを苦戦箇所として追加し、`verify-all-specs` / `validate-phase-output` / Task 12-1〜12-5実在チェックの3点突合で同期する手順を標準化 |
 | 2026-03-05 | 1.29.28 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査追補。`SkillExecutor` DIコード例の旧シグネチャ（`new SkillExecutor(mainWindow)`）を現行実装（`new SkillExecutor(mainWindow, undefined, authKeyService)`）へ同期し、文書内の実装ドリフトを解消 |
+| 2026-03-06 | 1.29.30 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクとして追加。5分解決カードの3仕様書同期（存在/順序/検証ゲート）を機械検証する改善導線を TASK-INVESTIGATE 教訓セクションへ反映 |
+| 2026-03-06 | 1.29.29 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補2: 教訓セクションへ「同種課題の5分解決カード（契約境界 + 画面証跡）」を追加し、症状/根本原因/最短5手順/検証ゲート/同期先3点を固定 |
+| 2026-03-06 | 1.29.28 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 の教訓を追加。`AUTH_STATE_CHANGED.user` shape 混在、`linkedProviders` 契約崩れ、`NON_VISUAL` 証跡残置の3課題を再発条件付きで整理し、同種課題向け4ステップ手順を標準化 |
 | 2026-03-05 | 1.29.27 | TASK-UI-01-C および UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 の完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動し、同UTを `completed-tasks/unassigned-task/` へ移管したため、関連導線を完了表記へ更新 |
 | 2026-03-05 | 1.29.26 | UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を追加。TASK-UI-01-C 再監査で再発した `pnpm run test:run --` の全体テスト誤起動リスクと、監査スクリプト所在誤認（`scripts/` 直下想定）を未タスク化し、`pnpm exec vitest run` 直指定 + `test -f` preflight を標準手順として固定 |
 | 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
@@ -338,6 +341,69 @@
 | --- | --- | --- |
 | ~~UT-IMP-PHASE11-AUTHKEY-SCREENSHOT-SELECTOR-DRIFT-GUARD-001~~ | ~~auth-key Phase 11 スクリーンショット取得スクリプトのセレクタドリフト防止~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md` |
 | ~~UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001~~ | ~~`skillHandlers.ts` の DI境界整理ガード（composition root 集約 + 回帰テスト固定）~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skillhandlers-authkey-di-boundary-guard-001.md` |
+
+---
+
+## TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
+| 目的 | `AUTH_STATE_CHANGED` payload と `linkedProviders` 契約崩れによる `is not iterable` 障害を再発防止する |
+| 完了日 | 2026-03-05（再監査追補: 2026-03-06） |
+| ステータス | **完了** |
+
+### 苦戦箇所: Main通知 shape と Renderer state shape の境界が揺れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | unlink 後通知で `AUTH_STATE_CHANGED.user` が profile shape のまま流れ、Renderer 側の前提とずれた |
+| 再発条件 | Main 側の通知 payload を既存オブジェクトのまま通過させる場合 |
+| 対処 | Main 通知直前に `toAuthUser(updatedUser)` を適用し、AuthUser 形状へ正規化 |
+| 標準ルール | 認証イベント payload は送信境界で正規化してから IPC 通知する |
+
+### 苦戦箇所: `linkedProviders` の契約崩れが UI 層まで伝播しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `response.data` が配列以外の場合に `is not iterable` を誘発し、画面が停止する |
+| 再発条件 | Renderer 側で API 応答を信頼し、配列・要素検証を省略する場合 |
+| 対処 | `isLinkedProvider` / `normalizeLinkedProviders` を導入し、非配列は `[]` へフォールバック |
+| 標準ルール | 外部境界入力は `type guard + normalize` を必須化する |
+
+### 苦戦箇所: 非視覚タスクでもユーザー要求があると画面証跡不足になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 初回 Phase 11 が `NON_VISUAL` 記録中心で、UI検証要求に対して証跡不足となった |
+| 再発条件 | 「契約修正中心タスクだから画面証跡は不要」と固定運用する場合 |
+| 対処 | `TC-11-UI-01..03` の実画面証跡を再取得し、`validate-phase11-screenshot-coverage` 3/3 を固定 |
+| 標準ルール | ユーザーが UI 検証を要求した時点で `NON_VISUAL` から `SCREENSHOT` へ昇格する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Main 通知 payload と Renderer state の契約境界を先に切り分け、どちらが不整形でも崩れない設計にする。  
+2. 送信側正規化（Main）と受信側正規化（Renderer）を同時実装し、片側だけで完了扱いにしない。  
+3. 回帰は対象テストを明示実行し、`3 files / 169 tests` のように件数を証跡化する。  
+4. Phase 11/12 は `TC-ID ↔ png` の機械検証を通し、`task-workflow` / `api-ipc-system` / `lessons-learned` を同時同期する。  
+
+### 同種課題の5分解決カード（契約境界 + 画面証跡）
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | OAuth後に `is not iterable` が発生し、同時に画面証跡不足で再監査が必要になる |
+| 根本原因 | Main/Renderer の契約境界が片側のみ修正され、`NON_VISUAL` 固定で証跡昇格が遅れる |
+| 最短5手順 | 1) Main送信 shape を正規化 2) Renderer受信 shape を `type guard + normalize` で防御 3) 対象テストを件数付きで固定実行 4) UI要求時は `SCREENSHOT` 昇格で TC証跡を再取得 5) `task-workflow`/`api-ipc-system`/`lessons-learned` を同一ターンで同期 |
+| 検証ゲート | `verify-all-specs` PASS（13/13）、`validate-phase-output` PASS（28項目）、`validate-phase11-screenshot-coverage` PASS（3/3）、対象テスト PASS（3 files / 169 tests） |
+| 同期先3点 | `references/task-workflow.md` / `references/api-ipc-system.md` / `references/lessons-learned.md` |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/手順順序/検証ゲート）を機械検証する運用ガードを追加する | `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
 
 ---
 

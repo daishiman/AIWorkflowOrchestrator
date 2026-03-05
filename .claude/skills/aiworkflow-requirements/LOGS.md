@@ -150,6 +150,151 @@
 
 ---
 
+## 2026-03-06 - UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 起票同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001`
+- 目的: TASK-INVESTIGATE で判明した「5分解決カードの3仕様書同期ドリフト」を未タスク化し、再利用可能な運用ガードとして追跡する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳）: `references/task-workflow.md` に関連未タスク登録（`1.67.23`）
+- SubAgent-B（IPC）: `references/api-ipc-system.md` に関連未タスク登録（`v1.5.6`）
+- SubAgent-C（教訓）: `references/lessons-learned.md` に関連未タスク登録（`1.29.30`）
+- SubAgent-D（指示書）: `docs/30-workflows/unassigned-task/` に9セクション指示書を作成
+
+### 実施内容
+- 未タスク指示書を `task-specification-creator` テンプレート準拠（9セクション + 3.5 実装課題と解決策）で新規作成。
+- 親タスクの苦戦箇所（3仕様書同期漏れ、`NON_VISUAL`→`SCREENSHOT` 昇格遅延、テンプレート重複行）を同指示書へ転記。
+- `task-workflow` / `api-ipc-system` / `lessons-learned` の3仕様書へ同IDを同期して追跡開始。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` → PASS（`currentViolations=0`）
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS
+
+### 結果
+- ステータス: success
+- 補足: 同種課題向けの「5分解決カード同期検証」を未実施改善タスクとして正式管理開始。
+
+---
+
+## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補2（5分解決カード同期 + 仕様書整形最適化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001`
+- 目的: 同種課題を短時間で再現可能にするため、実装内容/苦戦箇所に加えて「5分解決カード」を3仕様書へ統一反映する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳）: `references/task-workflow.md` に5分解決カードと変更履歴（`1.67.22`）を追加
+- SubAgent-B（IPC仕様）: `references/api-ipc-system.md` に5分解決カードと変更履歴（`v1.5.5`）を追加
+- SubAgent-C（教訓）: `references/lessons-learned.md` に5分解決カードと変更履歴（`1.29.29`）を追加
+- SubAgent-D（テンプレート最適化）: `skill-creator` テンプレート重複行を解消し、完了チェックへ重複ガードを追加
+
+### 実施内容
+- `task-workflow` / `api-ipc-system` / `lessons-learned` の当該タスク節へ、同一形式の「症状/根本原因/最短5手順/検証ゲート/同期先3点」を追記。
+- `phase12-system-spec-retrospective-template.md` の重複手順・重複コマンドを除去し、再利用時の記述ドリフトを防止。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 --strict` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator` → PASS（error=0, warning=26）
+
+### 結果
+- ステータス: success
+- 補足: 5分解決カードの同期先3点（task-workflow/api-ipc-system/lessons-learned）を固定し、類似障害での初動短縮を可能化。
+
+---
+
+## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 Phase 12準拠再確認（実装内容+苦戦箇所同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001`
+- 目的: Phase 12 Task 12-1〜12-5 準拠を再確認し、実装内容と苦戦箇所を正本仕様へ再利用可能な形で固定する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（Phase 12準拠）: `phase-12-documentation.md` を `completed` 同期し、`phase12-task-spec-compliance-check.md` を追加
+- SubAgent-B（IPC仕様）: `references/api-ipc-system.md` の当該タスク節へ苦戦箇所・標準ルールを追補
+- SubAgent-C（台帳）: `references/task-workflow.md` へ苦戦箇所・4ステップ手順・変更履歴を追補
+- SubAgent-D（教訓）: `references/lessons-learned.md` に再発条件付き教訓を追加
+
+### 実施内容
+- `outputs/phase-12/implementation-guide.md` の Part 2 に型/API/エラーハンドリング/設定一覧を補強。
+- `outputs/phase-12/*`（summary/changelog/unassigned/feedback/step-log）へ再監査結果を同期。
+- `task-workflow` / `api-ipc-system` / `lessons-learned` を同一ターンで更新。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 --strict` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS（103/103）
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --diff-from HEAD --json` → `currentViolations=0`
+
+### 結果
+- ステータス: success
+- 補足: 未タスクは指定ディレクトリ `docs/30-workflows/unassigned-task/` の運用境界（`--target-file`）に沿って再確認し、今回差分で追加不要と判定。
+
+---
+
+## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 再監査（Phase 11 実画面証跡）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001`
+- 目的: `NON_VISUAL` 記録を実画面証跡に更新し、仕様・成果物・監査結果の整合を再固定する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（画面証跡）: `apps/desktop/scripts/capture-electron-sandbox-iterable-phase11.mjs` で TC-11-UI-01〜03 を再取得
+- SubAgent-B（workflow仕様同期）: `references/task-workflow.md` の当該タスク節を `SCREENSHOT` 前提に更新
+- SubAgent-C（成果物同期）: `phase-11-manual-test.md` / `outputs/phase-11/*` を TC証跡形式へ更新
+- SubAgent-D（監査）: `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を再実行
+
+### 実施内容
+- `outputs/phase-11/screenshots/TC-11-UI-01..03` を再生成し、Apple UI/UX観点で視覚回帰を判定。
+- `task-workflow.md` の SubAgent-C 記述を `NON_VISUAL` から `SCREENSHOT` へ更新。
+- `phase-12` 成果物へ再監査結果（検証コマンド・未タスク監査）を追補。
+
+### 検証
+- `node apps/desktop/scripts/capture-electron-sandbox-iterable-phase11.mjs` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS（3/3）
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 --strict` → PASS（error=0, warning=0）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS
+
+### 結果
+- ステータス: success
+- 補足: `audit-unassigned-tasks --diff-from HEAD` は `currentViolations=0`, `baselineViolations=92`（既存負債）を再確認。
+
+---
+
+## 2026-03-05 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 Phase 12同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001`
+- 目的: OAuth後 `is not iterable` 障害の根因分離（Main通知shape + Renderer正規化）を正本仕様へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（IPC仕様同期）: `references/api-ipc-system.md` へ実装状況・関連タスク・完了タスクを追加
+- SubAgent-B（台帳同期）: `references/task-workflow.md` へ完了記録と検証証跡を追加
+- SubAgent-C（証跡同期）: `docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-1..12` を生成
+- SubAgent-D（監査）: テスト/型検査/カバレッジ結果を成果物へ固定
+
+### 実施内容
+- Main: `PROFILE_UNLINK_PROVIDER` 通知で `toAuthUser` を適用する契約整合を記録。
+- Renderer: `normalizeLinkedProviders` による契約崩れ防御を記録。
+- Phase 12 Task2 Step 1-A/1-B/1-C/Step 2 の実施結果を `outputs/phase-12/*` に反映。
+
+### 検証
+- `pnpm --filter @repo/desktop test:run src/renderer/store/slices/authSlice.test.ts src/main/ipc/profileHandlers.test.ts src/renderer/components/organisms/AccountSection/AccountSection.portal.test.tsx` → PASS（3 files / 169 tests）
+- `pnpm --filter @repo/desktop typecheck` → PASS
+- 対象カバレッジ計測（`authSlice.ts` / `profileHandlers.ts` / `AccountSection/index.tsx`）→ PASS
+
+### 結果
+- ステータス: success
+- 補足: 新規I/F追加はなく、Step 2は「更新不要」と判定。
+
+---
+
 ## 2026-03-05 - TASK-UI-01-C 再監査追補（phase/index整合 + 実画面証跡）
 
 ### コンテキスト
