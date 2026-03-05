@@ -5113,3 +5113,49 @@ if (artifactPath) {
   - `validate-phase-output docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（28項目）
   - `verify-unassigned-links`: PASS（97/97, missing=0）
   - `audit-unassigned-tasks --json --diff-from HEAD`: `currentViolations=0`
+
+## 2026-03-05 - UT-TASK-10A-B-001（自動修正可能フィルタボタン）Phase 1-12完了
+
+### コンテキスト
+- スキル: task-specification-creator
+- タスクID: UT-TASK-10A-B-001
+- フェーズ: 1-12（13は未実施）
+
+### 成果
+- 実装: `SuggestionList` 導線追加、`useSkillAnalysis` 一括選択ロジック追加、`SkillAnalysisView` 結線
+- テスト: `SuggestionList` / `SkillAnalysisView` 計53テストPASS
+- カバレッジ: Line 100 / Branch 96.22 / Function 100（対象3ファイル）
+- 手動検証: スクリーンショット5件（dark/light/mobile・境界状態）
+
+### 結果
+- ステータス: success
+- 完了日時: 2026-03-05
+
+---
+
+## 2026-03-05 - UT-TASK-10A-B-001 再監査追補（Phase 11証跡のテーマ整合）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `capture-ut-task-10a-b-001-screenshots.mjs` の theme mock を `prefers-color-scheme` 連動へ修正し、light証跡ドリフトを是正
+  - `outputs/phase-11/screenshots/TC-11-01..05` を再撮影（2026-03-05 10:28 JST）
+  - `validate-phase11-screenshot-coverage.js --workflow ...ut-task-10a-b-001...` で `expected=5 / covered=5` PASS を確認
+  - `documentation-changelog.md` / `unassigned-task-detection.md` / `spec-update-summary.md` / `skill-feedback-report.md` を再監査内容で追補
+  - `audit-unassigned-tasks --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` で `scope.currentFiles=1`, `currentViolations=0` を確認
+
+---
+
+## 2026-03-05 - UT-TASK-10A-B-001 最終再監査（未タスク配置是正とPhase 12成果物再同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `UT-TASK-10A-B-001` 指示書を `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` に再配置
+  - `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` の監査値を最新へ更新
+  - スクリーンショット5件（TC-11-01〜05）を 2026-03-05 11:00 JST に再取得し、Apple UI/UX観点で再確認
+  - 監査結果を `verify-unassigned-links` 102/102、`audit --json` current=90、`audit --diff-from HEAD` current=0 baseline=90 に同期
+  - `phase-1-requirements.md` / `phase-10-final-review.md` / `aiworkflow-requirements-extraction-matrix.md` の削除済み参照パスを是正

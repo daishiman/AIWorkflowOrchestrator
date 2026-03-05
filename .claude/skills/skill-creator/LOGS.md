@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-03-05 - UT-TASK-10A-B-001 再利用最適化テンプレート同期（配置3分類 + target監査境界）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に配置先3分類（未実施/完了済みUT/legacy）と `target-file` 適用境界、完了済みUT重複チェックを追加
+  - `assets/phase12-spec-sync-subagent-template.md` の SubAgent-C 責務を3分類運用へ更新し、チェックリストへ `target-file` 境界確認を追加
+  - `references/resource-map.md` のテンプレート説明を上記ルールへ同期
+  - `references/patterns.md` に `target-file` 誤用防止の運用追記（成功/失敗パターンの3分類化）
+  - `SKILL.md` 変更履歴を `v10.37.1` として同期
+
+---
+
+## [2026-03-05 - UT-TASK-10A-B-001 最終再監査パターン同期（配置分離 + target監査誤用防止）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「完了済みUT指示書を `completed-tasks` 直下へ移管し、未実施UTを `unassigned-task` へ分離」を追加
+  - 同ファイルに失敗パターン「完了済み指示書へ `--target-file` を誤適用して scoped監査を失敗させる」を追加
+  - UT-TASK-10A-B-001 の再監査実測値（`verify-unassigned-links` 102/102、`audit --diff-from HEAD` current=0 baseline=90）を再利用条件として記録
+  - `SKILL.md` 変更履歴を `v10.37.0` として同期
+
+---
+
 ## [2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策をテンプレートへ反映]
 
 - **Agent**: skill-creator (update)

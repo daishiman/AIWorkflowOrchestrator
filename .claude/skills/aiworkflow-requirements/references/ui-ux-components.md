@@ -206,7 +206,10 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得して表示崩れ/状態遷移を確認 |
 | a11y対応 | `SuggestionList` / `RiskPanel` の `role=\"list\"` に `aria-label` を追加 |
 | デザイン整合 | `text-white` を `text-[var(--text-inverse)]` に統一 |
-| 残課題 | Phase 10 MINOR 起点の未タスク 5 件（UT-TASK-10A-B-001〜005）を `docs/30-workflows/unassigned-task/` に登録 |
+| 残課題 | Phase 10 MINOR 起点の未タスク 4 件（UT-TASK-10A-B-002〜005）を `docs/30-workflows/unassigned-task/` に登録 |
+| 派生完了 | `UT-TASK-10A-B-001`（自動修正可能フィルタボタン実装）を 2026-03-05 に完了。成果物: `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` |
+| 配置整合 | `UT-TASK-10A-B-001` 指示書は `completed-tasks` 直下、未実施 `UT-TASK-10A-B-002〜008` は `unassigned-task` へ分離配置し、参照ドリフトを是正 |
+| クイック再現手順 | 配置判定（未実施/完了）→ `target-file` 適用境界確認 → 画面証跡5/5確認 → `current/baseline` 分離判定の順に固定 |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` の TASK-10A-B 節 |
 
 ---
@@ -302,6 +305,10 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.14.5  | 2026-03-05 | UT-TASK-10A-B-001 再利用最適化: TASK-10A-B サマリーへクイック再現手順（配置判定→target監査境界→画面証跡5/5→current/baseline分離）を追加し、関連仕様参照の導線を短縮 |
+| 2.14.4  | 2026-03-05 | UT-TASK-10A-B-001 最終再監査追補: 完了済み指示書（001）を `completed-tasks` 直下へ移管し、未実施指示書（002〜008）を `unassigned-task` へ再配置。スクリーンショット5件を 11:00 JST に再取得して Apple UI/UX 視点で視覚確認し、`verify-unassigned-links` 102/102 と `audit --diff-from HEAD`（current=0, baseline=90）を反映 |
+| 2.14.3  | 2026-03-05 | UT-TASK-10A-B-001 再監査追補: Phase 11 の light証跡再取得（10:28 JST）とスクリーンショット検証5/5 PASS を反映し、dark/light/mobile の視覚確認結果を最新化 |
+| 2.14.2  | 2026-03-05 | UT-TASK-10A-B-001 完了同期: TASK-10A-B 実装内容サマリーの残課題件数を `5件→4件` に更新し、派生完了行（成果物リンク付き）を追加 |
 | 2.14.1  | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 完了反映: 主要UI一覧に `UIDesignFoundationPreview` を追加、molecules/organisms一覧へ 8コンポーネントを同期。完了タスク表へ本タスクを追加し、Phase 11 画面証跡（TC-UI-00-301〜305）を記録 |
 | 2.14.0  | 2026-03-03 | TASK-10A-D 完了反映: 完了タスクへ SkillManagementPanel ビュー統合を追加し、実装完了記録（SkillAnalysisView/SkillCreateWizard統合、ChatPanel導線、agentSlice拡張、苦戦箇所3件）を同期 |
 | 2.13.9  | 2026-03-02 | TASK-10A-C 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillCreateWizard を追加し、実装完了記録（4ステップUI、`skill:create` 契約、Phase 11 画面証跡 TC-01〜08、未タスク0件）を同期 |

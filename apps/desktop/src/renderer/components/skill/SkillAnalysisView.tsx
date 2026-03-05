@@ -48,6 +48,7 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
     error,
     handleAnalyze,
     handleToggleSuggestion,
+    handleSelectAutoFixable,
     handleApplySelected,
     handleAutoImprove,
   } = useSkillAnalysis(skillName);
@@ -107,6 +108,7 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
               suggestions={analysis.suggestions}
               selected={selectedSuggestions}
               onToggle={handleToggleSuggestion}
+              onSelectAutoFixable={handleSelectAutoFixable}
             />
             <RiskPanel risks={analysis.risks} />
           </>

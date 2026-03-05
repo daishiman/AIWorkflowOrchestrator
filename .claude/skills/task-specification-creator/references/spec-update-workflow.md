@@ -550,6 +550,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 - `baseline`: 着手前から存在する違反。スコープ外として記録し、別途改善対象化
 - `current`: 今回変更で新規発生した違反。今回タスク内で修正必須
 - `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。判定は `currentViolations.total` を使う
+- `--target-file` の有効範囲: `docs/30-workflows/unassigned-task/` または `docs/30-workflows/completed-tasks/unassigned-task/` 配下のみ。`docs/30-workflows/completed-tasks/*.md`（完了済み指示書直下）は対象外のため、scoped監査には未実施指示書を指定する
 
 記録フォーマット:
 

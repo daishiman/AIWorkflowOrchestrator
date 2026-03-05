@@ -392,6 +392,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.9** | **2026-03-05** | **UT-TASK-10A-B-001 最終再監査（未タスク配置是正）を反映**: Phase 12の未タスク監査を最新値（`verify-unassigned-links` 102/102、`audit --json` current=90、`audit --diff-from HEAD` current=0 baseline=90）へ更新。完了済み指示書（001）は `completed-tasks` 直下、未実施指示書（002〜008）は `unassigned-task` へ分離配置する運用を追補し、スクリーンショット5件を 11:00 JST に再取得した視覚検証ログと成果物3点（`spec-update-summary` / `documentation-changelog` / `unassigned-task-detection`）を同期 |
+| **v10.08.8** | **2026-03-05** | **UT-TASK-10A-B-001 再監査追補を反映**: Phase 11 の light/dark 証跡整合チェックを強化し、`capture-ut-task-10a-b-001-screenshots.mjs` のテーマモックを `prefers-color-scheme` 連動へ修正。`documentation-changelog.md` / `unassigned-task-detection.md` に `--target-file` 監査と screenshot coverage（5/5）を追記する運用を追加 |
+| **v10.08.7** | **2026-03-05** | **UT-TASK-10A-B-001 Phase 1-12 実行を反映**: UI追加タスクの実行実績（Red→Green、53テストPASS、対象カバレッジ 100/96.22/100、Phase 11 スクリーンショット5件）を運用記録へ追加。`outputs/phase-1`〜`phase-12` 成果物生成と `artifacts.json` 同期、Step 1-A〜1-G 実行ログ反映を標準手順に再適用 |
 | **v10.08.6** | **2026-03-04** | **Phase 11証跡の workflow 配置ドリフト対策をガイドへ追加**: `references/phase-11-12-guide.md` に「証跡は対象workflow配下 `outputs/phase-11/screenshots` を必須」「非視覚TCは `NON_VISUAL:` 記法を必須」を追記。Phase 12チェックリストへ同条件を追加し、`validate-phase11-screenshot-coverage` 失敗（別workflow参照のみ）を再発防止 |
 | **v10.08.5** | **2026-03-04** | **UI再撮影の Port 5174 競合ガードを Phase 11/12 ガイドへ追加**: `references/phase-11-12-guide.md` の preview preflight に `lsof -nP -iTCP:5174 -sTCP:LISTEN` を追加し、`Port 5174 is already in use` 発生時の分岐（停止/再利用）を `spec-update-summary.md` へ記録する完了条件を明文化。自動化コマンドとチェックリストにも同要件を同期 |
 | **v10.08.4** | **2026-03-04** | **Phase 12 Step 1-C（関連タスク表の完了同期）を再確認運用へ追加**: `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を対象に、`ui-ux-feature-components.md` の関連未タスク表、未タスク指示書、issue の3点ステータスを同一ターンで完了化する是正例を記録。完了状態の条件として「status更新 + チェックリスト同期 + 完了注記」を明文化 |
