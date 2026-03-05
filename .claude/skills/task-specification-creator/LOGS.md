@@ -55,6 +55,36 @@
 
 ---
 
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 再監査（Phase 11 TCカバレッジ是正）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（成果物再整合 + 監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` を追加し、`expected TC=0` 失敗を解消
+  - `outputs/phase-11/manual-test-result.md` を `テストケース + 証跡` 形式へ更新し、3枚のスクリーンショット証跡を紐付け
+  - Apple UI/UX観点レビュー（情報階層/余白/コントラスト/導線/一貫性）を記録
+  - `validate-phase11-screenshot-coverage` を PASS（3/3）化し、Phase 12成果物へ結果を同期
+  - `quick_validate`（3スキル）を再実行し、error 0件・warning分類（要監視）を `spec-update-summary.md` に反映
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 Phase 8-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 8-12（リファクタ/品質保証/最終レビュー/手動検証/ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/outputs/phase-8..12` の必須成果物を作成
+  - `complete-phase.js` を Phase 8→12 の順で実行し、`artifacts.json` を同期
+  - Phase 11は UI差分なしを判定し、非視覚手動検証（テスト/コードレビュー証跡）として記録
+  - Phase 12 Task 2 Step 1-A/1-B/1-C の実作業として `task-workflow.md` / `api-ipc-system.md` / `LOGS.md` を更新
+  - `validate-phase-output.js` を再実行し、workflow仕様整合を確認
+
+---
+
 ## 2026-03-05 - Phase 12未タスク監査の `--target-file` 適用境界を明文化
 
 - **Agent**: task-specification-creator

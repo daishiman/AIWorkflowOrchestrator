@@ -478,6 +478,39 @@ describe("authKeyHandlers", () => {
 
       consoleSpy.mockRestore();
     });
+
+    it("unregister後に再登録できる", () => {
+      // Arrange
+      registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
+
+      // Act
+      unregisterAuthKeyHandlers();
+      registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
+
+      // Assert
+      expect(mockIpcMain.removeHandler).toHaveBeenCalledTimes(4);
+      expect(mockIpcMain.handle).toHaveBeenCalledTimes(8);
+    });
+
+    it("未登録状態でunregisterしても安全に終了する", () => {
+      // Act
+      unregisterAuthKeyHandlers();
+
+      // Assert
+      expect(mockIpcMain.removeHandler).not.toHaveBeenCalled();
+    });
+
+    it("register/unregisterを複数回繰り返しても状態が壊れない", () => {
+      // Act
+      for (let i = 0; i < 3; i++) {
+        registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
+        unregisterAuthKeyHandlers();
+      }
+
+      // Assert
+      expect(mockIpcMain.handle).toHaveBeenCalledTimes(12);
+      expect(mockIpcMain.removeHandler).toHaveBeenCalledTimes(12);
+    });
   });
 
   describe("セキュリティ", () => {

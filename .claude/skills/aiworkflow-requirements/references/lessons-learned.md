@@ -25,6 +25,9 @@
 | 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
 | 2026-03-05 | 1.29.24 | TASK-UI-01-C 再監査追補。`artifacts.json` と `index/phase` の状態不一致（completed vs pending）を同一ターンで是正する運用と、Phase 11 スクリーンショット灰色化（初期化リロード競合）を回避する preflight（`debug-clear-storage` / `dev-skip-auth` 固定）を追加 |
 | 2026-03-05 | 1.29.23 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 教訓を追加。Notification/HistorySearch 実装で発生しやすい「Main/Preload/型定義の3層同期漏れ」「更新系IPCの認証ゲート漏れ」「UI変更なし時のPhase 11証跡曖昧化」を再発条件付きで整理し、4ステップの再利用手順を固定 |
+| 2026-03-05 | 1.29.25 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を追補。`apps/desktop test:run` の `SIGTERM` 中断時フォールバック（失敗ログ固定 + 分割実行 + 3仕様同期）を未タスク導線として追加 |
+| 2026-03-05 | 1.29.24 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の追補。`apps/desktop test:run` が `SIGTERM` で中断した苦戦箇所を追加し、長時間fixtureテストの分割実行ガードを同種課題の手順へ統合 |
+| 2026-03-05 | 1.29.23 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の教訓を追加。auth-key 既存チャネルで発生した runtime 登録漏れと unregister 非対称更新の苦戦箇所を整理し、再利用4ステップ手順を標準化 |
 | 2026-03-05 | 1.29.22 | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録 |
 | 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
 | 2026-03-05 | 1.29.20 | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化 |
@@ -193,6 +196,69 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
+
+---
+
+## TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+| 目的 | `auth-key:exists` の `No handler registered` を解消し、auth-key 4チャネルのライフサイクル整合を回復する |
+| 完了日 | 2026-03-05 |
+| ステータス | **完了** |
+
+### 苦戦箇所: 既存チャネルと誤認して runtime 配線確認を後回しにしやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `auth-key:set/exists/validate/delete` の型・契約は存在していたため、`ipc/index.ts` 配線漏れの検出が遅れた |
+| 再発条件 | 「チャネル定義がある=実行可能」と解釈し、`registerAllIpcHandlers` を確認しない場合 |
+| 対処 | `registerAuthKeyHandlers(mainWindow, authKeyService)` を `registerAllIpcHandlers` に追加 |
+| 標準ルール | IPC修正は `channels/handlers` だけでなく `register` までを完了条件に含める |
+
+### 苦戦箇所: register 側のみ修正して unregister 側が取り残されやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 起動直後は動作しても、再初期化サイクルで古いハンドラ状態が残るリスクがあった |
+| 再発条件 | register のみ更新し、終了・再登録シナリオの検証を省略する場合 |
+| 対処 | `unregisterAuthKeyHandlers()` を `unregisterAllIpcHandlers` に追加し、複数サイクル回帰テストを実施 |
+| 標準ルール | lifecycle 系変更は register/unregister を対称更新し、同一ターンで回帰テストを追加する |
+
+### 苦戦箇所: 完了台帳は更新したのに教訓化が漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装内容だけを `task-workflow.md` へ反映し、再利用可能な苦戦箇所が残りにくい |
+| 再発条件 | Phase 12 Step 2 を「仕様同期のみ」と解釈して `lessons-learned.md` を後回しにする場合 |
+| 対処 | 本セクションを追加し、課題/再発条件/対処/標準ルールを固定 |
+| 標準ルール | Phase 12 完了判定は「実装同期 + 教訓同期 + 検証証跡」の三点同時成立に限定する |
+
+### 苦戦箇所: `apps/desktop test:run` が `SIGTERM` で中断し、回帰証跡が不安定になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-creator.fixture.test.ts` を含む全量実行でプロセスが `SIGTERM` 終了し、成功/失敗判定が確定しない |
+| 再発条件 | 長時間 fixture テストを常に1コマンド全量実行し、失敗時の分割実行ルールを持たない場合 |
+| 対処 | 失敗ログを証跡化し、`pnpm --filter @repo/desktop exec vitest run <対象>` で分割回帰を実施して合否を確定 |
+| 標準ルール | 回帰運用は「全量1本 + 失敗時の分割実行」をセットで定義し、どちらの結果も台帳に残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 変更対象IPCの `register/unregister` 呼び出し有無を `ipc/index.ts` で最初に棚卸しする。  
+2. runtime 配線修正と lifecycle 回帰テスト追加を同一ターンで実施する。  
+3. `pnpm --filter @repo/desktop test:run` が `SIGTERM` の場合は失敗ログを保存し、`vitest run <対象>` 分割実行で回帰範囲を確定する。  
+4. Phase 11 の TC証跡を確認し、`validate-phase11-screenshot-coverage` を PASS させる。  
+5. `task-workflow.md` と `lessons-learned.md` と `api-ipc-system.md` に同じ苦戦箇所を同期して完了判定する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 | `apps/desktop test:run` の `SIGTERM` 中断時フォールバック運用（失敗ログ固定 + 分割実行 + 3仕様同期）を標準化 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md` |
 
 ---
 

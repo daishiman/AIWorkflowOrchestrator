@@ -4,6 +4,20 @@
 
 ---
 
+## [2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 SIGTERMガードをPhase 12テンプレートへ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に失敗パターン「長時間fixtureテスト一括実行でSIGTERMを再発させる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `test:run` 全量実行 + `SIGTERM` 時 `vitest run` 分割フォールバック記録を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の IPC契約突合・完了チェックへ同ガードを追加
+  - `references/resource-map.md` のテンプレート説明へ `SIGTERM` フォールバック運用を同期
+  - `SKILL.md` 変更履歴を `v10.37.5` として同期
+
+---
+
 ## [2026-03-05 - Phase 12テンプレート最適化（target-file 境界を未実施UTに限定）]
 
 - **Agent**: skill-creator (update)
@@ -1581,3 +1595,28 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - 成功パターン: `pnpm exec vitest run <対象ファイル>` で `N files / M tests` を実測固定
   - 失敗パターン: `pnpm run test:run --` で全体テストへ展開し再監査が遅延
   - Phase 12 再確認時のテスト実行コマンド選択を標準化
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 パターン追補
+
+### コンテキスト
+
+- スキル: skill-creator
+- 対象: Phase 12 パターン更新（IPC runtime 配線漏れ防止）
+- 目的: auth-key 既存チャネルで発生した `No handler registered` の再発条件を標準パターン化
+
+### 実施内容
+
+- `references/patterns.md` に新規パターンを追加
+  - 見出し: `auth-key既存チャネルで register/unregister 対称性を崩す`
+  - 追加要素:
+    - 再発条件（既存チャネル=配線済み誤認）
+    - 完了条件（handler + register + unregister + lifecycleテスト）
+    - Step 2同期ルール（`task-workflow` + `lessons` 同時更新）
+- `SKILL.md` 変更履歴に `v10.37.4` を追記
+
+### 結果
+
+- ステータス: success
+- 効果: IPC修正タスクで起きやすい runtime 未登録バグを、Phase 12 完了前に検知しやすくなった
