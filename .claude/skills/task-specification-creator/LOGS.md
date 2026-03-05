@@ -26,6 +26,35 @@
 
 ---
 
+## 2026-03-05 - TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `artifacts.json` は completed だが `index.md` / `phase-1..10` に pending/未実施が残っていたため、状態同期を実施
+  - `apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` を追加し、`TC-11-01..03` の実画面証跡を再取得
+  - `outputs/phase-11/manual-test-result.md` / `evidence-index.md` / `screenshot-matrix.md` を `SCREENSHOT + NON_VISUAL` 併用運用へ更新
+  - `phase-12/spec-update-summary.md` / `documentation-changelog.md` に再監査追補を記録
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` の再実行で整合を確認
+
+---
+
+## 2026-03-05 - TASK-UI-01-C Phase 12 完了同期（Notification/HistorySearch）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 12-2/12-3/12-4/12-5）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/task-056c-notification-history-domain/outputs/phase-12/` の5成果物（implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）を整合確認
+  - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` と `lessons-learned.md` へ TASK-UI-01-C の完了記録と教訓を同期
+  - `.claude/skills/aiworkflow-requirements/LOGS.md` と本ファイルへ Step 1-A 実行ログを追記
+  - `generate-index.js` / `verify-all-specs` / `validate-phase-output` の再実行で Phase 12整合を最終確認
+
+---
+
 ## 2026-03-05 - Phase 12未タスク監査の `--target-file` 適用境界を明文化
 
 - **Agent**: task-specification-creator

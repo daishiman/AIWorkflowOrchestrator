@@ -1568,3 +1568,16 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: 成果物実体と実行仕様書の不一致を再発防止
+
+---
+
+## 2026-03-05 - TASK-UI-01-C 再監査パターン追補（対象テスト限定実行ガード）
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[Phase12] 対象テスト限定実行の明示（TASK-UI-01-C 再監査）` を追加
+  - 成功パターン: `pnpm exec vitest run <対象ファイル>` で `N files / M tests` を実測固定
+  - 失敗パターン: `pnpm run test:run --` で全体テストへ展開し再監査が遅延
+  - Phase 12 再確認時のテスト実行コマンド選択を標準化

@@ -104,6 +104,25 @@ export const SKILL_CHANNELS = {
 } as const;
 
 /**
+ * 通知関連のIPCチャネル
+ */
+export const NOTIFICATION_CHANNELS = {
+  NOTIFICATION_GET_HISTORY: "notification:get-history",
+  NOTIFICATION_MARK_READ: "notification:mark-read",
+  NOTIFICATION_MARK_ALL_READ: "notification:mark-all-read",
+  NOTIFICATION_CLEAR: "notification:clear",
+  NOTIFICATION_NEW: "notification:new",
+} as const;
+
+/**
+ * 履歴検索関連のIPCチャネル
+ */
+export const HISTORY_SEARCH_CHANNELS = {
+  HISTORY_SEARCH: "history:search",
+  HISTORY_GET_STATS: "history:get-stats",
+} as const;
+
+/**
  * スキルチャネル型
  */
 export type SkillChannel = (typeof SKILL_CHANNELS)[keyof typeof SKILL_CHANNELS];
@@ -115,6 +134,8 @@ export const IPC_CHANNELS = {
   ...CHAT_EXPORT_CHANNELS,
   ...FILE_SYSTEM_CHANNELS,
   ...SKILL_CHANNELS,
+  ...NOTIFICATION_CHANNELS,
+  ...HISTORY_SEARCH_CHANNELS,
 } as const;
 
 /**

@@ -132,6 +132,90 @@
 
 ## 完了タスク
 
+### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN |
+| 完了日 | 2026-03-05 |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト）** |
+| 対象 | Notification履歴管理 / HistorySearch状態管理 / IPC-Preload公開契約 |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/arch-state-management.md` | `notificationSlice` / `historySearchSlice` の状態責務・永続化契約同期 | Slice責務/保持件数/selector 契約が仕様化される |
+| SubAgent-B | `references/api-ipc-system.md` / `references/api-endpoints.md` | IPC 7チャネル（history 2 + notification 5）の契約同期 | Main/Preload/Renderer 契約が3層で一致する |
+| SubAgent-C | `references/task-workflow.md` | 完了台帳、検証証跡、未タスク判定の同期 | Phase 1-12 の実行証跡が追跡可能になる |
+| SubAgent-D | `references/lessons-learned.md` | 実装苦戦箇所と再利用手順の固定 | 同種タスクの再発防止手順が再利用可能になる |
+| SubAgent-E | `outputs/phase-11/*` | 実画面3件 + 非視覚3件の証跡設計と Apple UI/UX 視点判定 | `SCREENSHOT` と `NON_VISUAL` の判定境界が明確化される |
+
+#### 実装反映（要点）
+
+- Store Sliceを追加:
+  - `apps/desktop/src/renderer/store/slices/notificationSlice.ts`
+  - `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`
+- Main IPC ハンドラを追加:
+  - `apps/desktop/src/main/ipc/notificationHandlers.ts`
+  - `apps/desktop/src/main/ipc/historySearchHandlers.ts`
+- Preload公開境界を拡張:
+  - `apps/desktop/src/preload/channels.ts`
+  - `apps/desktop/src/preload/types.ts`
+  - `apps/desktop/src/preload/index.ts`
+- Store統合と永続化キー同期:
+  - `apps/desktop/src/renderer/store/index.ts`
+- テストを追加:
+  - `notificationSlice.test.ts` / `historySearchSlice.test.ts`
+  - `notificationHandlers.test.ts` / `historySearchHandlers.test.ts`
+  - `channels.test.ts` 拡張
+
+#### 検証証跡（2026-03-05）
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/slices/notificationSlice.test.ts src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/notificationHandlers.test.ts src/main/ipc/historySearchHandlers.test.ts src/preload/channels.test.ts` | PASS（5 files / 37 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` | PASS（TC-11-01〜03 実画面証跡を再取得） |
+| `pnpm --filter @repo/desktop exec vitest run --coverage.enabled true --coverage.provider v8 --coverage.reportsDirectory coverage-task-056c --coverage.include \"src/renderer/store/slices/notificationSlice.ts\" --coverage.include \"src/renderer/store/slices/historySearchSlice.ts\" --coverage.include \"src/main/ipc/notificationHandlers.ts\" --coverage.include \"src/main/ipc/historySearchHandlers.ts\" --coverage.include \"src/preload/channels.ts\" src/renderer/store/slices/notificationSlice.test.ts src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/notificationHandlers.test.ts src/main/ipc/historySearchHandlers.test.ts src/preload/channels.test.ts` | PASS（Statements 87.45 / Branch 65.11 / Functions 80.39 / Lines 87.45） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（28項目, error=0） |
+
+#### Phase 12 タスク仕様準拠の追加確認（2026-03-05 21:04 JST）
+
+| 観点 | コマンド | 結果 |
+| --- | --- | --- |
+| Phase 12 必須要件 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain --phase 12` | PASS（Task 12-1〜12-5 / 完了条件5件を再確認） |
+| 画面証跡再採取 | `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` | PASS（TC-11-01〜03 再撮影） |
+| 画面証跡カバレッジ | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（expected 6 / covered 6） |
+| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=92` |
+| 未タスク配置差分 | `git diff --name-only HEAD -- docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 0件（今回タスク起因の未タスク追加/移動なし） |
+
+#### Phase 11（UI/UX 判定）
+
+- 実画面証跡: `TC-11-01`（Dashboard）, `TC-11-02`（Chat History空状態）, `TC-11-03`（History一覧）を再取得。
+- 非視覚証跡: `TC-11-04..06` は契約テスト起点で `NON_VISUAL` を維持。
+- Apple UI/UX 観点では、情報階層・可読性・空状態の優先度に視覚的退行なしと判定。
+
+#### 未タスク判定
+
+- 実装差分として新規未タスク化が必要な項目は **0件**。
+- 追加した要件（Slice/IPC/Preload/テスト）はすべて `outputs/phase-1..12` と仕様正本へ同期済み。
+- ただし再監査運用で再発した「対象テスト実行の誤起動リスク（`pnpm run test:run --`）」は運用改善対象として未タスク化し、同ターンで完了タスクへ移管した。
+
+#### 関連タスク（2026-03-05 追補・完了移管）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. Store/IPC/Preload を先に責務分離し、仕様書別SubAgentへ担当を固定する。  
+2. 新規チャネル追加時は `main handler` / `preload channels` / `preload types` の3点を同一ターンで同期する。  
+3. Phase 11 は UI導線（`SCREENSHOT`）と契約検証（`NON_VISUAL`）を分離して証跡化する。  
+4. Phase 12 は `arch-state-management` / `api-ipc-system` / `api-endpoints` / `task-workflow` / `lessons-learned` を同時更新し、`verify` + `validate` で閉じる。  
+
 ### タスク: TASK-UI-01-A-STORE-SLICE-BASELINE Store Slice棚卸しと状態境界の基準化（2026-03-05）
 
 | 項目 | 内容 |
@@ -2698,6 +2782,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジ include path ガード導入（実在パス検証 + `3 files / 30 tests` 固定） | 中 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 Phase 12 再確認（coverage include path誤指定・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` |
 | UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001 | screenshot 再取得時の `Port 5174` 競合ガード（実行前ポート検査 + 競合分岐記録） | 中 | TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 Phase 12 再確認（画面証跡再取得運用・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
 | UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001 | Phase 11 画面カバレッジマトリクス必須化ガード（視覚/非視覚TCの設計意図固定 + warning常態化防止） | 中 | UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 Phase 12 再確認（coverage matrix warning・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
+| ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | ~~中~~ | ~~TASK-UI-01-C Phase 12 準拠再確認（実装苦戦箇所・2026-03-05）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
 | ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~    | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合の機械判定）~~               | ~~中~~     | ~~TASK-9J-skill-analytics Phase 12再確認（実装苦戦箇所・2026-02-28）~~ **完了: 2026-02-28（Phase 12完了移管）**           | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md`                                                        |
 | UT-IMP-AIWORKFLOW-UNASSIGNED-TABLE-DEDUP-001      | Phase 12 残課題テーブル重複・状態矛盾検知強化（同一ID一意性監査 + 完了/未完了矛盾検知）                           | 中     | TASK-9F Phase 12 再監査（仕様台帳再確認・2026-02-27）                         | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-unassigned-table-dedup-001.md`                                                          |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
@@ -2724,6 +2809,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.18** | **2026-03-05** | **TASK-UI-01-C と UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を completed-tasks へ移管**: Phase 12 完了条件（`outputs/phase-12` 実体 + `validate-phase-output --phase 12` PASS）を確認後、workflow本体を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動。併せて同UTを `completed-tasks/unassigned-task/` へ移管し、残課題テーブルを完了表記へ更新 |
+| **1.67.17** | **2026-03-05** | **UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を残課題へ追加**: TASK-UI-01-C Phase 12 再監査で再発した `pnpm run test:run --` 起因の全体テスト誤起動リスクを未タスク化。TASK-UI-01-C 節の未タスク判定を運用改善1件へ更新し、`pnpm exec vitest run` 直指定 + `test -f` preflight の再利用手順を台帳へ同期 |
+| **1.67.16** | **2026-03-05** | **TASK-UI-01-C Phase 12 準拠再確認（指定ディレクトリ未タスク監査）を追補**: `validate-phase-output --phase 12` で Task 12-1〜12-5 を再検証し、`capture-task-056c-notification-history-screenshots.mjs` で TC-11-01〜03 を再撮影。`audit-unassigned-tasks --diff-from HEAD` は `currentViolations=0` / `baselineViolations=92`、`docs/30-workflows/unassigned-task/` 差分は0件で、今回実装起因の未タスク追加不要を台帳へ明記 |
+| **1.67.15** | **2026-03-05** | **TASK-UI-01-C 再監査追補（phase/index整合 + 実画面証跡）**: `artifacts.json` と不整合だった `index.md` / `phase-1..10` の pending表記を `completed` へ同期。Phase 11 は `capture-task-056c-notification-history-screenshots.mjs` で Dashboard/Chat History/History Page の3証跡を再取得し、`SCREENSHOT + NON_VISUAL` 併用ルールへ更新 |
+| **1.67.14** | **2026-03-05** | **TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN を完了タスクへ追加**: Notification/HistorySearch の Slice実装、IPC 7チャネル、Preload公開契約、テスト37件PASS、Phase 11 `NON_VISUAL` 判定、Phase 12 仕様同期（arch/api/task/lessons + LOGS + topic-map）を台帳へ反映 |
 | **1.67.13** | **2026-03-05** | **Phase 12 未タスクを追加（workflowパス正規化ガード）**: `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を `docs/30-workflows/unassigned-task/` に登録。苦戦箇所（workflow実体パス取り違え、`--target-file` 境界誤用、`current/baseline` 混在）を再利用可能な手順へ分解し、`task-056a` の再監査運用を安定化 |
 | **1.67.12** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補**: `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行し、実装差分未タスクは0件であることを再確認。あわせて baseline負債（90件）の段階削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/unassigned-task/` に追加し、運用改善を追跡可能化 |
 | **1.67.11** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE を完了タスクへ追加**: Renderer Store baseline（型定義 + inventory 16行 + 境界マトリクス + セレクタ規約）を同期し、Phase 11 の TC証跡を `TC-11-01〜03` へ統一。`validate-phase11-screenshot-coverage` を expected=3/covered=3 で PASS 化し、Phase 12 のシステム仕様同期漏れを解消 |

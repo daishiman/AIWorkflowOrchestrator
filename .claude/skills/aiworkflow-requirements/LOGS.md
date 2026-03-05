@@ -5,6 +5,66 @@
 
 ---
 
+## 2026-03-05 - TASK-UI-01-C 再監査追補（phase/index整合 + 実画面証跡）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN`
+- 目的: `artifacts.json` と `index/phase` の状態不一致を是正し、Phase 11 を実画面証跡込みで再同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳同期）: `references/task-workflow.md` に再監査追補（`1.67.15`）を追加
+- SubAgent-B（教訓同期）: `references/lessons-learned.md` に灰色スクリーンショット回避手順（`1.29.24`）を追加
+- SubAgent-C（workflow同期）: `docs/30-workflows/task-056c-notification-history-domain/index.md` と `phase-1..10` を `completed` へ同期
+- SubAgent-D（証跡同期）: `outputs/phase-11/*` を `SCREENSHOT + NON_VISUAL` 併用形式へ更新
+
+### 実施内容
+- `index.md` の `spec_created`/未実施表記を実績値へ更新。
+- `apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` を追加し、`TC-11-01..03` の実画面証跡を再取得。
+- `phase-11-manual-test.md`, `manual-test-result.md`, `evidence-index.md`, `screenshot-matrix.md` を再同期。
+
+### 検証
+- `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-056c-notification-history-domain` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-056c-notification-history-domain` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-056c-notification-history-domain` → PASS
+
+### 結果
+- ステータス: success
+- 補足: 実画面3件の視覚検証を Apple UI/UX 観点で記録し、異常系3件は `NON_VISUAL` 証跡で維持。
+
+---
+
+## 2026-03-05 - TASK-UI-01-C Notification/HistorySearch 実装の Phase 12仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN`
+- 目的: Notification/HistorySearch 実装（Store/IPC/Preload/テスト）を正本仕様と Phase 12成果物へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（状態管理同期）: `references/arch-state-management.md` に `notificationSlice` / `historySearchSlice` 契約を反映
+- SubAgent-B（IPC同期）: `references/api-ipc-system.md` / `references/api-endpoints.md` に Notification 5ch + HistorySearch 2ch を反映
+- SubAgent-C（台帳同期）: `references/task-workflow.md` に完了記録・検証証跡・変更履歴（`1.67.14`）を追加
+- SubAgent-D（教訓同期）: `references/lessons-learned.md` に実装苦戦箇所と4ステップ再利用手順（`1.29.23`）を追加
+
+### 実施内容
+- Store Slice 2件、Main IPC handler 2件、Preload契約（channels/types/index）を実装済み状態に同期。
+- 対象テスト 5ファイル（37テスト）と型検査 PASS を確認し、coverage計測値を台帳へ固定。
+- Phase 11 は UI差分なしのため `NON_VISUAL` で証跡化し、Apple UI/UX 視点の N/A 判定を記録。
+
+### 検証
+- `pnpm --filter @repo/desktop exec vitest run ...`（5 files / 37 tests）→ PASS
+- `pnpm --filter @repo/desktop typecheck` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-056c-notification-history-domain` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-056c-notification-history-domain` → PASS
+
+### 結果
+- ステータス: success
+- 補足: 実装差分の未タスク化は 0 件。Phase 1〜12 の成果物は `outputs/` 配下へ出力済み。
+
+---
+
 ## 2026-03-05 - TASK-UI-01-A Phase 12追補（workflowパス正規化ガード）
 
 ### コンテキスト
@@ -7252,3 +7312,34 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 補足: UI証跡の完了条件を「テーマ整合 + TC証跡 + coverage PASS」の3点で再固定
+
+## 2026-03-05 - TASK-UI-01-C Phase 12準拠の再確認（指定ディレクトリ未タスク監査）
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN
+- 目的: Phase 12 がタスク仕様書どおり実行されているか再確認し、未タスク配置の適合性を明文化する
+
+### 実施内容
+
+- `references/task-workflow.md`
+  - TASK-UI-01-C セクションに「Phase 12 タスク仕様準拠の追加確認（2026-03-05 21:04 JST）」を追記
+  - `validate-phase-output --phase 12` / screenshot再撮影 / 未タスク差分監査を証跡化
+  - 未タスク判定へ `currentViolations=0` の再確認を追記
+- `references/lessons-learned.md`
+  - 変更履歴 `v1.29.25` を追加
+  - 苦戦箇所として `pnpm run test:run --` の全体テスト誤起動リスクを追記
+
+### 検証結果
+
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-056c-notification-history-domain --phase 12`: PASS
+- `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-056c-notification-history-domain`: PASS（expected=6 / covered=6）
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: `currentViolations=0`, `baselineViolations=92`
+- `git diff --name-only HEAD -- docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task`: 0件
+
+### 結果
+
+- ステータス: success
+- 判定: 今回タスク起因の未タスク追加は不要（差分起因違反0件）

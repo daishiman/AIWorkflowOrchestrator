@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
 | v3.8.4     | 2026-03-05 | TASK-UI-01-A-STORE-SLICE-BASELINE 反映: `store/types.ts` の baseline 型定義と `store/sliceBaseline.ts` の棚卸し定数（16行 inventory / 境界マトリクス / セレクタ規約）を追加。Notification/HistorySearch/SkillCenter/ViewType の責務境界を仕様化し、Phase 11 TC証跡（3件）と整合する検証手順を追記 |
 | v3.8.3     | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: UI基盤8コンポーネントの状態管理方針を追記。共有Storeを新設せず、ローカル state + コールバック注入で責務分離する設計を明文化 |
 | v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
@@ -116,8 +117,45 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | --- | --- | --- |
 | TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
 | TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | 後続 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | 後続 |
+
+---
+
+## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
+
+### 追加したSlice
+
+| Slice | 実装ファイル | 役割 |
+| --- | --- | --- |
+| `notificationSlice` | `apps/desktop/src/renderer/store/slices/notificationSlice.ts` | 通知履歴・未読管理・フィルタ管理 |
+| `historySearchSlice` | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts` | 検索条件・結果・統計・ページング管理 |
+
+### Notification 契約
+
+| 項目 | 内容 |
+| --- | --- |
+| 上限 | `MAX_NOTIFICATION_HISTORY = 100` |
+| 削除戦略 | 上限超過時は既読最古を優先削除。既読が無い場合は未読最古を削除 |
+| 既読管理 | `readAt: string | null` |
+| 永続化 | `persist.partialize` で `notifications` を保持 |
+
+### HistorySearch 契約
+
+| 項目 | 内容 |
+| --- | --- |
+| フィルタ | type/date/includeArchived |
+| 結果管理 | `results`, `stats`, `pagination` |
+| 検索前処理 | `query.trim()` を必須化 |
+| エラー管理 | `historySearchError` に明示保持 |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（対象5ファイル） | PASS（37 tests） |
+| `typecheck` | PASS |
+| coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
 
 ---
 
@@ -161,6 +199,8 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
 | `skillSlice`             | **統合済み→agentSlice** | ~~`store/slices/skillSlice.ts`~~（削除済み）  | TASK-FIX-6-1（統合完了） |
 | `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
+| `notificationSlice`      | 通知履歴/未読管理        | `store/slices/notificationSlice.ts`      | TASK-UI-01-C（完了）            |
+| `historySearchSlice`     | 履歴検索状態管理         | `store/slices/historySearchSlice.ts`     | TASK-UI-01-C（完了）            |
 
 ### authSlice詳細（TASK-AUTH-SESSION-REFRESH-001更新）
 

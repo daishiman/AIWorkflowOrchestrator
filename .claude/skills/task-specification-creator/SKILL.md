@@ -392,6 +392,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.12** | **2026-03-05** | **TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）を反映**: `artifacts.json` が completed でも `index.md` / `phase-1..10` に pending が残るドリフトを是正する運用を追加。`apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` で `TC-11-01..03` を再取得し、`manual-test-result` / `evidence-index` / `screenshot-matrix` を `SCREENSHOT + NON_VISUAL` 併用形式へ更新する再監査手順を固定 |
 | **v10.08.11** | **2026-03-05** | **未タスク監査の `--target-file` 適用境界を明文化**: `references/unassigned-task-guidelines.md` に「`--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ指定可能」「`outputs/phase-12/*.md` 監査は `--diff-from HEAD` を使う」を追記し、Phase 12 再監査時のコマンド誤用を予防 |
 | **v10.08.10** | **2026-03-05** | **Phase 11 TC-ID検証の明確化を反映**: `references/phase-11-12-guide.md` に「`MT-xx` などシナリオIDのみは coverage validator 対象外」「`TC-xx` 併記必須」を追記し、`rg` で事前にTC抽出可否を確認する手順を追加。`validate-phase11-screenshot-coverage` の取りこぼし（expected TC=0）を事前に防止 |
 | **v10.08.9** | **2026-03-05** | **UT-TASK-10A-B-001 最終再監査（未タスク配置是正）を反映**: Phase 12の未タスク監査を最新値（`verify-unassigned-links` 102/102、`audit --json` current=90、`audit --diff-from HEAD` current=0 baseline=90）へ更新。完了済み指示書（001）は `completed-tasks` 直下、未実施指示書（002〜008）は `unassigned-task` へ分離配置する運用を追補し、スクリーンショット5件を 11:00 JST に再取得した視覚検証ログと成果物3点（`spec-update-summary` / `documentation-changelog` / `unassigned-task-detection`）を同期 |

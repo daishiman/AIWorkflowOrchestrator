@@ -10,6 +10,14 @@
 デスクトップアプリにおけるナビゲーションUI設計を定義する。
 AppDockによるメインナビゲーションと、各View内のサブナビゲーションを提供する。
 
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+| --- | --- | --- |
+| v1.4.0 | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: AppDock の 9 項目ナビ（workspace/skillCenter/historySearch 追加）と `ViewType` 拡張を同期。実装パスを `components/organisms/AppDock` へ修正 |
+| v1.3.0 | 2026-02-12 | Agent ナビ導線追加（`agent` ViewType） |
+| v1.0.0 | 2026-01-26 | 初版 |
+
 ---
 
 ## AppDockナビゲーション
@@ -18,48 +26,41 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 
 左サイドバーに配置されたメインナビゲーション。ViewType切り替えによる画面遷移を提供する。
 
-**実装場所**: `apps/desktop/src/renderer/components/AppDock/index.tsx`
+**実装場所**: `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`
 
 ### メニュー項目一覧
 
-| 項目       | ViewType     | アイコン       | 説明                     |
-| ---------- | ------------ | -------------- | ------------------------ |
-| Dashboard  | `dashboard`  | `LayoutDashboard` | ダッシュボード        |
-| Editor     | `editor`     | `FileText`     | ファイルエディター       |
-| Chat       | `chat`       | `MessageSquare`| AIチャット               |
-| Graph      | `graph`      | `Network`      | ナレッジグラフ           |
-| Agent      | `agent`      | `Bot`          | スキル管理・エージェント実行 |
-| Settings   | `settings`   | `Settings`     | 設定画面                 |
+| 項目 | ViewType | アイコン | ショートカット | 説明 |
+| --- | --- | --- | --- | --- |
+| Dashboard | `dashboard` | `layout-dashboard` | Cmd+1 | ダッシュボード |
+| Workspace | `workspace` | `folder-tree` | Cmd+2 | ワークスペース導線 |
+| Chat | `chat` | `message-circle` | Cmd+3 | AIチャット |
+| Agent | `agent` | `bot` | Cmd+4 | エージェント実行 |
+| Skills | `skillCenter` | `sparkles` | Cmd+5 | スキルセンター |
+| History | `historySearch` | `search` | Cmd+6 | 履歴検索 |
+| Graph | `graph` | `network` | Cmd+7 | ナレッジグラフ |
+| Editor | `editor` | `file-text` | Cmd+8 | エディタ |
+| Settings | `settings` | `settings` | Cmd+, | 設定画面 |
 
-### Agent メニュー仕様
+### レイアウトモード
 
-| 要素             | 仕様                        |
-| ---------------- | --------------------------- |
-| 配置             | AppDock メインメニュー      |
-| アイコン         | Lucide Icons `Bot`          |
-| ラベル           | "Agent"                     |
-| ViewType         | `agent`                     |
-| 遷移先コンポーネント | `AgentView`             |
-| 実装ファイル     | `views/AgentView/index.tsx` |
-
-**実装箇所**:
-
-| ファイル                      | 変更内容                         |
-| ----------------------------- | -------------------------------- |
-| `components/AppDock/index.tsx`| navItemsにAgent項目追加          |
-| `store/slices/uiSlice.ts`     | ViewTypeに"agent"追加            |
-| `App.tsx`                     | renderViewにAgentViewケース追加  |
-| `views/AgentView/index.tsx`   | AgentViewコンポーネント実装      |
+| モード | 仕様 |
+| --- | --- |
+| Desktop | 左サイド固定（縦並び） |
+| Mobile | 下部固定（横並び） |
 
 ### ViewType型定義
 
 | ViewType     | 説明                     |
 | ------------ | ------------------------ |
 | `dashboard`  | ダッシュボード画面       |
+| `workspace`  | ワークスペース画面       |
 | `editor`     | エディター画面           |
 | `chat`       | チャット画面             |
 | `graph`      | グラフ画面               |
 | `agent`      | エージェント画面         |
+| `skillCenter`| スキルセンター画面       |
+| `historySearch` | 履歴検索画面          |
 | `settings`   | 設定画面                 |
 
 ### navItems配列構造
@@ -67,9 +68,9 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 | プロパティ | 型         | 説明                   |
 | ---------- | ---------- | ---------------------- |
 | `id`       | `ViewType` | 一意識別子             |
-| `icon`     | `LucideIcon` | Lucideアイコン       |
+| `icon`     | `IconName` | アイコン識別子         |
 | `label`    | `string`   | メニューラベル         |
-| `onClick`  | `function` | クリック時のsetView呼び出し |
+| `shortcut` | `string`   | キーボードショートカット |
 
 ---
 

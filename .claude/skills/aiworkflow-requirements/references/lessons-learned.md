@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-05 | 1.29.27 | TASK-UI-01-C および UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 の完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動し、同UTを `completed-tasks/unassigned-task/` へ移管したため、関連導線を完了表記へ更新 |
+| 2026-03-05 | 1.29.26 | UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を追加。TASK-UI-01-C 再監査で再発した `pnpm run test:run --` の全体テスト誤起動リスクと、監査スクリプト所在誤認（`scripts/` 直下想定）を未タスク化し、`pnpm exec vitest run` 直指定 + `test -f` preflight を標準手順として固定 |
+| 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
+| 2026-03-05 | 1.29.24 | TASK-UI-01-C 再監査追補。`artifacts.json` と `index/phase` の状態不一致（completed vs pending）を同一ターンで是正する運用と、Phase 11 スクリーンショット灰色化（初期化リロード競合）を回避する preflight（`debug-clear-storage` / `dev-skip-auth` 固定）を追加 |
+| 2026-03-05 | 1.29.23 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 教訓を追加。Notification/HistorySearch 実装で発生しやすい「Main/Preload/型定義の3層同期漏れ」「更新系IPCの認証ゲート漏れ」「UI変更なし時のPhase 11証跡曖昧化」を再発条件付きで整理し、4ステップの再利用手順を固定 |
 | 2026-03-05 | 1.29.22 | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録 |
 | 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
 | 2026-03-05 | 1.29.20 | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化 |
@@ -135,6 +140,59 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05）
+
+### 苦戦箇所: IPC追加時に Main / Preload / 型定義の3層同期が崩れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | チャネル定数だけ更新しても、Preload API定義・型契約が追従せず実行時/型検査でドリフトが発生しやすい |
+| 再発条件 | `ipcMain.handle` 追加後に `channels.ts` / `types.ts` / `preload/index.ts` を同一ターンで更新しない場合 |
+| 対処 | Notification 5チャネル + HistorySearch 2チャネルを 3層同時に追加し、`channels.test.ts` で公開境界を固定 |
+| 標準ルール | 新規IPCは「Main定義→Preload定数→Preload型→公開API→テスト」の順で1セット更新する |
+
+### 苦戦箇所: 更新系IPCの認証ゲートが読み取り系と混在しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Notification更新系（mark/delete）と取得系（history/getUnreadCount）で認証要件が異なり、ガード漏れが起きやすい |
+| 再発条件 | `safeHandle` 登録時に「読み取り/更新」の区分を明示せず、共通実装で処理する場合 |
+| 対処 | 更新系のみ `validateIpcSenderAndContext(..., { requireAuth: true })` を必須化し、異常系テストで `AUTH_REQUIRED` を固定 |
+| 標準ルール | IPC設計時に「認証要否」をチャネル単位で先にテーブル化してから実装する |
+
+### 苦戦箇所: Phase 11 スクリーンショット採取で初期化リロードが干渉し灰色画像になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 認証初期化と `window.location.reload()` が競合すると、実画面ではなく灰色単色の証跡が生成される |
+| 再発条件 | キャプチャ前に `sessionStorage.debug-clear-storage` と `localStorage.dev-skip-auth` を固定しない場合 |
+| 対処 | `capture-task-056c-notification-history-screenshots.mjs` で init script を注入し、`SCREENSHOT` 3件 + `NON_VISUAL` 3件を分離記録 |
+| 標準ルール | Phase 11 は「UI導線=SCREENSHOT」「契約検証=NON_VISUAL」を分離し、同じTC表で管理する |
+
+### 苦戦箇所: `pnpm run test:run --` で全体テストが起動し、対象再確認が遅延しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 対象5ファイルだけ再検証する意図でも、`run test:run --` 経由だと設定によって全体テストへ展開される |
+| 再発条件 | npm script経由で引数の透過先を確認せず、`--` を使ってテストを絞り込む場合 |
+| 対処 | `pnpm exec vitest run <対象ファイル>` を直接実行し、`5 files / 37 tests` を固定値で再確認した |
+| 標準ルール | 再監査時の対象テスト実行は script ラッパーを使わず、`pnpm exec vitest run` で明示ファイル指定する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 追加するIPCを「読み取り/更新」に先に分類し、認証要件テーブルを作る。  
+2. 実装は Main→Preload定数→Preload型→公開API の順で連続実施し、途中で止めない。  
+3. 異常系テストで `VALIDATION_ERROR` / `INVALID_SENDER` / `AUTH_REQUIRED` を最低1件ずつ固定する。  
+4. Phase 11 は `SCREENSHOT` と `NON_VISUAL` を混在運用し、証跡の種類と根拠を同一テーブルで固定する。  
+
+### 関連タスク（2026-03-05 追補・完了移管）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
 
 ---
 

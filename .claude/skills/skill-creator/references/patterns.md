@@ -2196,6 +2196,18 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 
+### [Phase12] UI再撮影後の残留プロセス cleanup 固定（TASK-UI-01）
+
+- **状況**: スクリーンショット再取得完了後に `vite` / `capture-*` プロセスが残留し、後続の検証コマンドや再撮影でポート競合が起きやすい
+- **アプローチ**:
+  - 再撮影と `validate-phase11-screenshot-coverage` 実行後に `ps -ef | rg "capture-.*phase11|vite" | rg -v rg` を必須実行
+  - 残留がある場合は停止し、`documentation-changelog.md` に cleanup 実施を記録
+  - 同時に `manual-test-result.md` / `screenshot-coverage.md` の時刻を同期し、証跡と実行環境の両方を固定する
+- **結果**: UI証跡更新後の実行環境が安定し、Phase 12 再監査でのポート競合・判定揺れを抑止できる
+- **適用条件**: UI再撮影を含む Phase 11/12 再確認タスク全般
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-UI-01-STORE-IPC-ARCHITECTURE
+
 ### [Phase12] 対象workflow配下への証跡正規配置 + `NON_VISUAL` 記法固定（UT workflow）
 
 - **状況**: Phase 11手動結果に別workflow参照が混在し、対象workflowで coverage validator が失敗した
@@ -2342,3 +2354,17 @@ interface BadgeProps extends Omit<
 - **対策**: テスト仕様書の期待値は `>=N` 形式で記述し、Phase 5 実行後に実測値で更新
 - **発見日**: 2026-02-24
 - **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+
+### [Phase12] 対象テスト限定実行の明示（TASK-UI-01-C 再監査）
+
+- **状況**: Phase 12 再監査で「対象5ファイルのみ再検証」したい場面
+- **成功パターン**:
+  - `pnpm exec vitest run <file1> <file2> ...` で対象を明示し、`N files / M tests` を成果物へ固定
+  - 監査ログに「対象ファイル列挙 + 実測件数」を残し、再実行時の比較可能性を確保
+- **失敗パターン**:
+  - `pnpm run test:run -- <files...>` を使い、script側の設定で全体テストへ展開されて長時間化・中断を招く
+- **標準ルール**:
+  - 再監査時の限定テストは script ラッパーを経由せず `pnpm exec vitest run` を正とする
+  - 目的が「再確認」の場合は coverage を同時実行せず、まず対象テストのPASSを確定する
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN

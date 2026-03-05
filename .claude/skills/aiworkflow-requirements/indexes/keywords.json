@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T08:16:55.610Z",
-  "totalKeywords": 1422,
+  "generated": "2026-03-05T12:32:04.238Z",
+  "totalKeywords": 1432,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -260,6 +260,7 @@
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
       "ui-ux-history-panel.md",
+      "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -828,6 +829,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
+      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -1092,18 +1094,18 @@
       "ui-ux-design-system.md"
     ],
     "Foundation": [
-      "arch-state-management.md"
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
     ],
     "状態管理方針": [
       "arch-state-management.md"
     ],
     "DESIGN": [
-      "arch-state-management.md",
-      "ui-ux-components.md"
+      "arch-state-management.md"
     ],
     "FOUNDATION": [
       "arch-state-management.md",
-      "ui-ux-components.md"
+      "ui-ux-feature-components.md"
     ],
     "Store": [
       "arch-state-management.md",
@@ -1128,6 +1130,29 @@
       "lessons-learned.md"
     ],
     "BASELINE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "Notification": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HistorySearch": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "実装同期": [
+      "arch-state-management.md"
+    ],
+    "NOTIFICATION": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HISTORY": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "DOMAIN": [
       "arch-state-management.md",
       "lessons-learned.md"
     ],
@@ -1267,7 +1292,8 @@
       "arch-ui-components.md"
     ],
     "ORGANISMS": [
-      "arch-ui-components.md"
+      "arch-ui-components.md",
+      "ui-ux-feature-components.md"
     ],
     "アーキテクチャ記録": [
       "arch-ui-components.md"
@@ -1640,7 +1666,8 @@
     ],
     "AUDIT": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "実施": [
       "architecture-implementation-patterns.md"
@@ -4334,6 +4361,9 @@
     "historyAPI": [
       "security-electron-ipc.md"
     ],
+    "notificationAPI": [
+      "security-electron-ipc.md"
+    ],
     "slideSettingsAPI": [
       "security-electron-ipc.md"
     ],
@@ -5007,7 +5037,8 @@
       "ui-ux-atoms-patterns.md"
     ],
     "Organisms": [
-      "ui-ux-atoms-patterns.md"
+      "ui-ux-atoms-patterns.md",
+      "ui-ux-feature-components.md"
     ],
     "実装への推奨事項": [
       "ui-ux-atoms-patterns.md"
@@ -5129,6 +5160,15 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "Reflection": [
+      "ui-ux-feature-components.md"
+    ],
+    "Audit": [
+      "ui-ux-feature-components.md"
+    ],
+    "REFLECTION": [
+      "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"

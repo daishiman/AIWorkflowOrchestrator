@@ -171,6 +171,37 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | フォーマット検証 | `sk-ant-api` プレフィックスパターン              |
 | ログ出力       | キー値は一切ログに出力しない                      |
 
+### Notification / HistorySearch IPC チャネル（TASK-UI-01-C）
+
+Notification ドメインと HistorySearch ドメインの統合で追加したIPC契約。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/notificationHandlers.ts`, `apps/desktop/src/main/ipc/historySearchHandlers.ts`
+- 登録: `apps/desktop/src/main/ipc/index.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload API: `apps/desktop/src/preload/index.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+| チャネル | メソッド | 引数 | 戻り値 | 備考 |
+| --- | --- | --- | --- | --- |
+| `notification:get-history` | invoke | `{ limit?: number, offset?: number }` | `NotificationGetHistoryResponse` | sender検証必須 |
+| `notification:mark-read` | invoke | `{ id: string }` | `NotificationMutationResponse` | 認証必須 |
+| `notification:mark-all-read` | invoke | なし | `NotificationMutationResponse` | 認証必須 |
+| `notification:clear` | invoke | `{ onlyRead?: boolean }` | `NotificationMutationResponse` | 認証必須 |
+| `notification:new` | on | `NotificationHistoryItem` | event | Main -> Renderer |
+| `history:search` | invoke | `HistorySearchRequest` | `HistorySearchResponse` | `query` 必須 |
+| `history:get-stats` | invoke | なし | `HistorySearchStatsResponse` | 集計返却 |
+
+**セキュリティ契約**:
+
+| 項目 | 契約 |
+| --- | --- |
+| sender検証 | `event.sender === mainWindow.webContents` かつ URL を検証 |
+| 更新系認証 | `notification:mark-read` / `mark-all-read` / `clear` は未認証時 `AUTH_REQUIRED` |
+| 入力検証 | `notification id` と `history query` を必須化 |
+| 公開境界 | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` に明示登録 |
+
 ### IPC エラーコード
 
 | コード               | 説明                 | 対処                         |
@@ -264,6 +295,17 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 ## 完了タスク
 
+### TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN（2026-03-05完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN |
+| 反映対象 | Notification / HistorySearch IPC契約 |
+| 主要変更 | history 2チャネル + notification 5チャネルを追加し、sender検証・認証ゲート・入力検証を標準化 |
+| 関連ドキュメント | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-12/spec-update-summary.md` |
+
+---
+
 ### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
 
 | 項目 | 内容 |
@@ -279,6 +321,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.4.0     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: Notification/HistorySearch IPC（history 2 + notification 5）を追加。sender検証、更新系認証ゲート、入力検証、preload公開境界を契約化 |
 | v1.3.0     | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `auth-key:exists` 判定契約に env fallback（`ANTHROPIC_API_KEY`）を追加。Renderer preflight と Main 実行時判定の整合方針を明文化 |
 | v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |
