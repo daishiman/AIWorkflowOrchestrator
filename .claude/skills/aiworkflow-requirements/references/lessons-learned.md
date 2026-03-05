@@ -20,10 +20,13 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-04 | 1.29.14 | UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 を追補。TASK-UI-00-ORGANISMS の苦戦箇所（時刻同期/監査判定軸/Step 1-A 同時更新）を未タスク仕様書へ分離し、再利用導線を固定 |
-| 2026-03-04 | 1.29.13 | TASK-UI-00-ORGANISMS 最適化追補: 同種課題向けコピペテンプレート（実装内容/苦戦箇所/検証証跡/5ステップ）を追加し、再確認時の記録粒度を統一 |
-| 2026-03-04 | 1.29.12 | TASK-UI-00-ORGANISMS の教訓を追加。Organisms再撮影時の時刻同期、未タスク監査の current/baseline 分離、Phase 12 Step 1-A での台帳/教訓同時更新を再発条件付きで記録し、5ステップの再利用手順を固定 |
-| 2026-03-04 | 1.29.11 | UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001 の完了移管後同期を追補。TASK-UI-00-MOLECULES 再確認で顕在化した「UI再撮影時刻と `manual-test-result`/`screenshot-coverage` の更新時刻ドリフト」を再発条件付きで記録し、`task-workflow.md`/`lessons-learned.md`/未タスク仕様書の同一ターン同期手順を固定 |
+| 2026-03-05 | 1.29.17 | UT-TASK-10A-B-010 完了移管を反映。`task-10a-b-reanalysis-unmount-guard.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動し、関連未タスク表を完了参照へ同期 |
+| 2026-03-05 | 1.29.16 | UT-TASK-10A-B-010 を追加。改善適用後再分析で `analyze` 呼び出しが期待2回/実測4回へ増加した苦戦箇所を記録し、`useSkillAnalysis` のアンマウント安全化（`isMountedRef`）を再発防止ルールへ追記 |
+| 2026-03-05 | 1.29.15 | TASK-10A-B 再確認追補を追加。`TC-11-01〜05` の再撮影（10:34 JST）と `validate-phase11-screenshot-coverage` PASS（5/5）を固定し、未実施 `UT-TASK-10A-B-001/002/004/005/006/007/008` の正本配置を `docs/30-workflows/unassigned-task/` へ正規化。あわせて `UI-11-001` を `UT-TASK-10A-B-009` として未タスク化 |
+| 2026-03-04 | 1.29.14 | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`validate-phase11-screenshot-coverage` が PASS でも `phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning が残る苦戦箇所を記録し、視覚/非視覚TCの設計意図を固定する4ステップ手順を標準化 |
+| 2026-03-04 | 1.29.13 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` 追補を追加。Phase 11証跡を別workflow参照のまま残したことで coverage validator が失敗した苦戦箇所を記録し、対象workflow配下への証跡正規配置 + `NON_VISUAL:` 記法固定の4ステップ手順を標準化 |
+| 2026-03-04 | 1.29.12 | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` の教訓を追加。screenshot再取得時の `Port 5174 is already in use` 混在を再発条件付きで記録し、実行前ポート検査（`lsof`）と競合分岐記録を標準化 |
+| 2026-03-04 | 1.29.11 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` の教訓を追加。screenshot再取得スクリプトの実体と `pnpm run screenshot:*` 公開経路の不一致を再発条件付きで記録し、文書同期・検証ログ固定手順を標準化 |
 | 2026-03-04 | 1.29.10 | `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001` を追加。`--coverage.include` パス誤指定で回帰判定が揺れる苦戦箇所を未タスク化し、`task-workflow.md` 残課題テーブル/追加未タスク表と同期 |
 | 2026-03-04 | 1.29.9 | SkillCenter削除導線ホットフィックスの再計測値を確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルに固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を仕様書へ同期。あわせて Phase 12テンプレート最適化へ未タスク配置先判定（未完了/完了移管）を追補 |
 | 2026-03-04 | 1.29.8 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の第2回再確認を追加。Phase 11 証跡を 16:50 JST へ更新し、`verify-unassigned-links`（88/88）/ `audit --diff-from HEAD`（baseline=94）へ同期。`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `completed-tasks/unassigned-task/` へ統一 |
@@ -127,79 +130,6 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
-
----
-
-## TASK-UI-00-ORGANISMS: Phase 12再確認（2026-03-04）
-
-### 苦戦箇所: UI再撮影後の時刻同期漏れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | スクリーンショットを再取得しても、`manual-test-result.md` や仕様台帳の時刻が旧値のまま残りやすい |
-| 再発条件 | 画面証跡更新と Phase 12 文書更新を別ターンで実施する場合 |
-| 対処 | `stat` で `TC-01..TC-06` の実時刻（2026-03-04 23:24 JST）を取得し、`manual-test-result.md` と仕様書へ同時反映 |
-| 標準ルール | UI再撮影後は「再撮影→時刻同期→coverage検証→台帳更新」を同一ターンで完了する |
-
-### 苦戦箇所: 未タスク監査の baseline 誤読
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `audit-unassigned-tasks --diff-from HEAD` の baseline を今回差分違反と誤認しやすい |
-| 再発条件 | `currentViolations` と `baselineViolations` を分離せずに合否判定する場合 |
-| 対処 | 合否を `currentViolations=0` のみに固定し、`baseline=98` は既存課題として別管理 |
-| 標準ルール | 未タスク監査は `current`（合否）/`baseline`（監視）を必ず二軸で記録する |
-
-### 苦戦箇所: Step 1-A で台帳/教訓の同時更新漏れ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | UI仕様書だけ更新して、`task-workflow.md` / `lessons-learned.md` 反映を後回しにしやすい |
-| 再発条件 | 仕様書更新担当と台帳更新担当を分けたまま統合確認を省略する場合 |
-| 対処 | 仕様書別SubAgent分担を固定し、Step 1-A 完了条件に「台帳 + 教訓同時更新」を追加 |
-| 標準ルール | Phase 12 完了判定は「仕様同期 + 台帳同期 + 教訓同期」の3点同時成立で行う |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `verify-all-specs --workflow` と `validate-phase-output` を先に実行し、Phase 12構造合否を確定する。  
-2. UIタスクは `pnpm run screenshot:<feature>` を再実行し、`validate-phase11-screenshot-coverage` を必ず通す。  
-3. `stat` で証跡時刻を取得し、`manual-test-result.md` と関連仕様書へ同一値を反映する。  
-4. `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否基準にする。  
-5. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 検証値」を同一ターンで転記する。  
-
-### 関連未タスク（2026-03-04 追補）
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 | TASK-UI-00-ORGANISMS の Phase 12 証跡・台帳同期ガード（時刻同期/`current`判定固定/Step 1-A 同時更新） | 中 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/unassigned-task/task-imp-task-ui-00-organisms-phase12-sync-guard-001.md` |
-
-### 同種課題向けコピペテンプレート（最短版）
-
-```markdown
-#### 実装内容（要点）
-- 変更範囲:
-- 実装した要点:
-- 完了根拠:
-
-#### 苦戦箇所（再利用形式）
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-|  |  |  |  |
-
-#### 検証証跡
-- verify-all-specs:
-- validate-phase-output:
-- screenshot-coverage:
-- verify-unassigned-links:
-- audit(current/baseline):
-
-#### 最短手順（5ステップ）
-1. 構造検証（verify/validate）
-2. UI証跡更新（再撮影/coverage）
-3. 時刻同期（stat -> manual-test-result）
-4. 未タスク監査（current/baseline分離）
-5. 台帳同期（task-workflow + lessons）
-```
 
 ---
 
@@ -395,6 +325,70 @@
 4. `task-workflow.md` と `lessons-learned.md` に「実装内容 + 苦戦箇所 + 再利用手順」を同時転記する。  
 5. `quick_validate` で `aiworkflow-requirements` と `skill-creator` の両方を検証し、失敗時は未タスクへ分離する。  
 
+### 苦戦箇所: screenshot再取得スクリプトが `run` 一覧へ公開されていないと運用が人依存になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `capture-skill-import-idempotency-guard-screenshots.mjs` は存在していたが、`apps/desktop/package.json` scripts 未登録のため実行経路が統一されていなかった |
+| 再発条件 | 「スクリプト実体がある」ことのみを完了扱いにして、`pnpm run screenshot:*` 公開を省略した場合 |
+| 対処 | `screenshot:skill-import-idempotency-guard` を scripts へ追加し、workflow02 Phase 11/12 文書の実行コマンドを同一表記へ統一した |
+| 標準ルール | UI証跡運用は「スクリプト実体 + run公開 + 文書同期 + coverage検証」の4点が揃って初めて完了扱いにする |
+
+### 同種課題向け簡潔解決手順（4ステップ・screenshot公開版）
+
+1. `pnpm --filter @repo/desktop run | rg screenshot` で公開コマンド有無を先に確認する。  
+2. 未公開なら `package.json` scripts に `screenshot:<feature>` を追加して実体スクリプトへ接続する。  
+3. Phase 11/12 文書の実行例を `pnpm --filter @repo/desktop run screenshot:<feature>` へ統一し、旧コマンド残存を `rg` で検査する。  
+4. `validate-phase11-screenshot-coverage` と `verify-all-specs` を同一ターンで実行して結果を台帳へ転記する。  
+
+### 苦戦箇所: screenshot 実行時の `Port 5174` 競合で成功/警告が混在する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `screenshot:skill-import-idempotency-guard` 実行で証跡は取得できるが、`Port 5174 is already in use` が同時出力され判定が揺れた |
+| 再発条件 | 並列作業で既存 dev server が残った状態で screenshot コマンドを再実行する場合 |
+| 対処 | 実行前に `lsof -nP -iTCP:5174 -sTCP:LISTEN` を固定実行し、競合時は停止/再利用の分岐結果を `spec-update-summary.md` へ記録した |
+| 標準ルール | UI再撮影は「ポート検査→再撮影→coverage検証→台帳同期」を1セットで完了する |
+
+### 同種課題向け簡潔解決手順（4ステップ・port競合版）
+
+1. `lsof -nP -iTCP:5174 -sTCP:LISTEN || true` で占有有無を先に確定する。  
+2. 競合ありの場合は「既存プロセス停止」か「既存サーバー再利用」のどちらかに分岐し、選択理由を記録する。  
+3. `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard` 実行後に `validate-phase11-screenshot-coverage` を実施する。  
+4. 実行結果を `task-workflow.md` と `spec-update-summary.md` へ同一ターンで転記し、未解決なら未タスク化する。  
+
+### 苦戦箇所: Phase 11 証跡を別workflow参照のまま残すと coverage validator が失敗する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` の証跡列が別workflowのパスのみを参照し、対象workflow配下に `outputs/phase-11/screenshots` が存在しなかったため、`validate-phase11-screenshot-coverage` が `covered=0` で失敗した |
+| 再発条件 | 画面証跡を「参照文字列の更新のみ」で完了扱いにし、対象workflow配下へ証跡実体を配置しない場合 |
+| 対処 | 対象workflow配下へ screenshot 証跡を正規配置し、視覚TCは `screenshots/*.png` で明示。非視覚TCは `NON_VISUAL:` 記法へ統一して validator の許容条件を固定した |
+| 標準ルール | UI証跡は「対象workflow配下の実体 + TC証跡記法 + validator PASS」の3点を同時に満たして完了判定する |
+
+### 同種課題向け簡潔解決手順（4ステップ・証跡配置版）
+
+1. `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` を先に実行して欠落を検知する。  
+2. `outputs/phase-11/screenshots` が空なら、再取得または同一証跡を対象workflow配下へ正規配置する。  
+3. `manual-test-result.md` の視覚TCは `screenshots/*.png`、非視覚TCは `NON_VISUAL:` を必須化する。  
+4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` と合わせて結果を `task-workflow.md` と `spec-update-summary.md` へ同一ターンで転記する。  
+
+### 苦戦箇所: `phase-11-manual-test.md` の画面カバレッジマトリクス欠落 warning が残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `validate-phase11-screenshot-coverage` の判定は PASS でも、`phase-11-manual-test.md` に画面カバレッジマトリクスがなく warning が継続し、設計意図の確認が人依存になった |
+| 再発条件 | `manual-test-result.md` の証跡記法のみ更新し、Phase 11 仕様書側へ TC設計（視覚/非視覚区分）を記録しない場合 |
+| 対処 | 未タスク `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加し、matrix 必須列（TC-ID/区分/期待証跡/理由）の標準化を分離して管理する方針へ変更 |
+| 標準ルール | UI証跡は「画像実体」「証跡記法」「カバレッジマトリクス」の3層を同時に満たして完了判定する |
+
+### 同種課題向け簡潔解決手順（4ステップ・matrix版）
+
+1. `phase-11-manual-test.md` に「画面カバレッジマトリクス」節があるか `rg` で機械確認する。  
+2. matrix へ `TC-ID` / `視覚or非視覚` / `期待証跡` / `理由` を必須列として記録する。  
+3. `manual-test-result.md` の `screenshots/*.png` / `NON_VISUAL:` 記法と matrix の行対応を突合する。  
+4. `validate-phase11-screenshot-coverage` の結果と合わせて `task-workflow.md` / `ui-ux-feature-components.md` に同一ターンで同期する。  
+
 ---
 
 ## TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01）
@@ -513,21 +507,53 @@
 | 対処 | 未タスクを UT-TASK-10A-B-001〜005 の5件へ再同期し、台帳・仕様書・成果物を同一ターンで更新 |
 | 今後の標準ルール | 未タスクは「修正反映後に有効件数を再計算」し、検出レポートと台帳を同時更新する |
 
+### 苦戦箇所: `executedAt` 表示の視認性課題が見送り扱いになりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 改善結果カードの実行日時が小さく、離れた距離で判読しづらい（UI-11-001） |
+| 再発条件 | 機能要件PASSを優先し、視認性課題を Issue 化せずに終了する場合 |
+| 原因 | 手動テストの発見課題と未タスク台帳の連携が弱い |
+| 対処 | UI-11-001 を `UT-TASK-10A-B-009` として起票し、`docs/30-workflows/unassigned-task/` 正本に登録 |
+| 今後の標準ルール | 手動検証で見つかった未解決UI課題は「見送り理由 + 未タスクID」を同時に残す |
+
+### 苦戦箇所: 改善適用後の再分析がテスト間でリークする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillAnalysisView` テストで `analyze` 呼び出し回数が期待2回に対して実測4回となり、再分析処理が不安定化した |
+| 再発条件 | `applyImprovements` 完了前後でコンポーネントをアンマウントし、非同期更新が後続テストへ持ち越される場合 |
+| 原因 | `useSkillAnalysis` でアンマウント後の `setState` / 再分析呼び出しを抑止するガードが不足していた |
+| 対処 | `isMountedRef` と cleanup を導入し、`handleAnalyze` / `handleApplySelected` / `handleAutoImprove` の更新経路をガードした |
+| 今後の標準ルール | 再分析を伴う非同期フローは「成功判定 + マウント状態」の二重ガードを標準実装し、呼び出し回数テストで固定する |
+
+### 苦戦箇所: 未実施タスクの配置先ドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未実施 `UT-TASK-10A-B-*` が `completed-tasks/unassigned-task/` 側に残り、指定配置先と不一致になった |
+| 再発条件 | 完了済み未タスクと未実施未タスクを同じディレクトリ運用にした場合 |
+| 原因 | Phase 12 Step 1-C で「ステータス判定」と「物理配置確認」を分離して実施した |
+| 対処 | 未実施 7 件を `docs/30-workflows/unassigned-task/` へ移動し、参照パスを一括更新 |
+| 今後の標準ルール | 未タスク同期は「台帳更新・物理配置・リンク検証」を1セットで完了させる |
+
 ### 同種課題の簡潔解決手順（5ステップ）
 
 1. `capture-*.mjs` などで画面証跡を再取得し、状態別ファイルを確定する。  
 2. `manual-test-result.md` と `discovered-issues.md` を実証跡ベースへ更新する。  
 3. `verify-all-specs` と `validate-phase-output` を連続実行し、warning/error をゼロ化する。  
-4. 未タスク件数を再計算し、`unassigned-task-detection.md` と `task-workflow.md` を同一ターン同期する。  
+4. 未タスク件数と配置先を再計算し、`unassigned-task-detection.md` / `task-workflow.md` / 関連仕様書を同一ターン同期する。  
 5. 苦戦箇所を `lessons-learned.md` に再発条件付きで残し、次回の初動手順を固定する。  
 
 ### 関連未タスク（再発防止ガード）
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-009 | 改善結果実行日時の視認性改善（`executedAt` 可読性） | `docs/30-workflows/unassigned-task/task-10a-b-improvement-result-timestamp-readability.md` |
+| ~~UT-TASK-10A-B-010~~ | ~~改善適用後再分析のアンマウント安全化ガード（`analyze` 呼び出しリーク防止）~~ **完了: 2026-03-05** | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` |
 
 ---
 

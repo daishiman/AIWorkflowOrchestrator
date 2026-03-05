@@ -11,6 +11,7 @@ import type { Suggestion } from "@repo/shared/types/skill-improver";
 describe("SuggestionList", () => {
   let defaultProps: SuggestionListProps;
   let mockOnToggle: ReturnType<typeof vi.fn>;
+  let mockOnSelectAutoFixable: ReturnType<typeof vi.fn>;
 
   const suggestions: Suggestion[] = [
     createMockSuggestion({
@@ -36,10 +37,12 @@ describe("SuggestionList", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockOnToggle = vi.fn();
+    mockOnSelectAutoFixable = vi.fn();
     defaultProps = {
       suggestions,
       selected: new Set<number>(),
       onToggle: mockOnToggle,
+      onSelectAutoFixable: mockOnSelectAutoFixable,
     };
   });
 
@@ -89,6 +92,59 @@ describe("SuggestionList", () => {
     expect(autoFixBadges).toHaveLength(2);
   });
 
+  it("自動修正可能を選択ボタンを表示する", () => {
+    render(<SuggestionList {...defaultProps} />);
+
+    expect(
+      screen.getByRole("button", { name: "自動修正可能を選択" }),
+    ).toBeInTheDocument();
+  });
+
+  it("自動修正可能を選択ボタン押下で onSelectAutoFixable を呼ぶ", () => {
+    render(<SuggestionList {...defaultProps} />);
+
+    fireEvent.click(screen.getByRole("button", { name: "自動修正可能を選択" }));
+
+    expect(mockOnSelectAutoFixable).toHaveBeenCalledTimes(1);
+  });
+
+  it("autoFixable が0件のとき自動修正可能ボタンは disabled", () => {
+    const nonAutoFixableSuggestions: Suggestion[] = [
+      createMockSuggestion({
+        type: "security",
+        priority: "high",
+        description: "非自動修正A",
+        autoFixable: false,
+      }),
+      createMockSuggestion({
+        type: "structure",
+        priority: "medium",
+        description: "非自動修正B",
+        autoFixable: false,
+      }),
+    ];
+
+    render(
+      <SuggestionList
+        suggestions={nonAutoFixableSuggestions}
+        selected={new Set<number>()}
+        onToggle={mockOnToggle}
+        onSelectAutoFixable={mockOnSelectAutoFixable}
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: "自動修正可能を選択" });
+    expect(button).toBeDisabled();
+  });
+
+  it("自動修正可能を選択ボタンに aria-label がある", () => {
+    render(<SuggestionList {...defaultProps} />);
+
+    expect(
+      screen.getByRole("button", { name: "自動修正可能を選択" }),
+    ).toHaveAttribute("aria-label", "自動修正可能を選択");
+  });
+
   it("タイプバッジを表示する", () => {
     render(<SuggestionList {...defaultProps} />);
 
@@ -122,10 +178,14 @@ describe("SuggestionList", () => {
         suggestions={[]}
         selected={new Set<number>()}
         onToggle={mockOnToggle}
+        onSelectAutoFixable={mockOnSelectAutoFixable}
       />,
     );
 
     expect(screen.getByText("改善提案はありません")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "自動修正可能を選択" }),
+    ).not.toBeInTheDocument();
   });
 
   it("提案の説明テキストを表示する", () => {
@@ -158,6 +218,7 @@ describe("SuggestionList", () => {
         suggestions={singleSuggestion}
         selected={new Set<number>()}
         onToggle={mockOnToggle}
+        onSelectAutoFixable={mockOnSelectAutoFixable}
       />,
     );
 
@@ -198,6 +259,7 @@ describe("SuggestionList", () => {
         suggestions={samePrioritySuggestions}
         selected={new Set<number>()}
         onToggle={mockOnToggle}
+        onSelectAutoFixable={mockOnSelectAutoFixable}
       />,
     );
 
