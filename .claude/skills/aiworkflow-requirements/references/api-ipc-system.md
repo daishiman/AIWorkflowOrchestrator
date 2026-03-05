@@ -167,11 +167,14 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | --- | --- | --- |
 | `registerAllIpcHandlers` で `registerAuthKeyHandlers` を起動時/再登録時に実行 | completed | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
 | `unregisterAllIpcHandlers` で `unregisterAuthKeyHandlers` を解除時に実行 | completed | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+| `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers` と共有 | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+| `registerSkillHandlers` が `authKeyService` を `SkillExecutor` へ DI する | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
 
 ### 関連タスク
 
 | タスクID | 概要 | ステータス |
 | --- | --- | --- |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 | SkillExecutor への AuthKeyService 注入経路を単一路化 | 完了 |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `auth-key:exists` 判定契約の env fallback 追加 | 完了 |
 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 | auth-key 4チャネルの Main 登録漏れと解除連携を修正 | 完了 |
 
@@ -309,6 +312,18 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 ## 完了タスク
 
+### TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001（2026-03-05完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+| 反映対象 | AuthKeyService 生成/注入ライフサイクル |
+| 主要変更 | `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers` へ第3引数として注入。`registerAuthKeyHandlers` と同一インスタンスを共有 |
+| 検証 | `ipc-double-registration` で第3引数注入と同一インスタンス共有を検証。関連回帰148 tests PASS |
+| 関連ドキュメント | `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/outputs/phase-12/spec-update-summary.md` |
+
+---
+
 ### TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN（2026-03-05完了）
 
 | 項目 | 内容 |
@@ -371,6 +386,7 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
 | v1.4.0     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: Notification/HistorySearch IPC（history 2 + notification 5）を追加。sender検証、更新系認証ゲート、入力検証、preload公開境界を契約化 |
 | v1.5.2     | 2026-03-05 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を関連未タスクへ登録。`apps/desktop test:run` の `SIGTERM` 中断時に「失敗ログ固定 + `vitest run <対象>` 分割実行 + 3仕様同期」を標準運用として追跡可能化 |
 | v1.5.1     | 2026-03-05 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補: 「同種課題の簡潔解決チェック（5分）」を追加し、runtime 配線漏れと `SIGTERM` 中断時の分割回帰テスト運用を標準化 |

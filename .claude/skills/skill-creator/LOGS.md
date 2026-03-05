@@ -4,6 +4,20 @@
 
 ---
 
+## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に `phase-12-documentation.md` の `ステータス=completed` / Task 12-1〜12-5 `[x]` 同期チェックを追加
+  - 同テンプレートの 6.2 手順番号重複（`5` が2件）を修正し、UI/SIGTERM分岐を `6` として明確化
+  - `assets/phase12-spec-sync-subagent-template.md` に同チェックのコマンド・完了条件を追加
+  - `references/resource-map.md` の重複テンプレート行（`phase12-system-spec-retrospective` / `phase12-spec-sync-subagent`）を統合し、1資産1行へ整理
+  - `SKILL.md` 変更履歴を `v10.37.7` として同期
+
+---
+
 ## [2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 SIGTERMガードをPhase 12テンプレートへ反映]
 
 - **Agent**: skill-creator (update)
@@ -1620,3 +1634,15 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: IPC修正タスクで起きやすい runtime 未登録バグを、Phase 12 完了前に検知しやすくなった
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12台帳ドリフト対策
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン `[Phase12] 成果物実体と phase-12-documentation.md 状態の二重突合` を追加
+  - 完了判定を「Task 12-1〜12-5 実体確認 + verify/validate PASS + 仕様書ステータス同期」の3点セットへ固定
+  - `SKILL.md` 変更履歴へ `v10.37.6` を追記

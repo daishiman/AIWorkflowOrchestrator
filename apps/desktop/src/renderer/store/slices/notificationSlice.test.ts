@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   createNotificationSlice,
   type NotificationSlice,
-  type Notification,
 } from "./notificationSlice";
+import type { Notification } from "../types";
 
 function buildNotification(
   overrides: Partial<Omit<Notification, "id" | "isRead">> = {},
@@ -122,5 +122,64 @@ describe("notificationSlice", () => {
     expect(store.notifications).toEqual([]);
     expect(store.unreadCount).toBe(0);
     expect(store.expandedNotificationId).toBeNull();
+  });
+
+  it("ingestNotificationで外部通知をID維持で取り込む", () => {
+    store.ingestNotification({
+      id: "external-1",
+      type: "success",
+      title: "imported",
+      detail: "from main process",
+      timestamp: "2026-03-05T12:00:00.000Z",
+      isRead: false,
+      source: { kind: "system", eventType: "import" },
+    });
+
+    expect(store.notifications).toHaveLength(1);
+    expect(store.notifications[0].id).toBe("external-1");
+    expect(store.unreadCount).toBe(1);
+  });
+
+  it("ingestNotificationで同一ID通知は重複しない", () => {
+    const base: Notification = {
+      id: "dup-1",
+      type: "info",
+      title: "before",
+      timestamp: "2026-03-05T12:00:00.000Z",
+      isRead: false,
+      source: { kind: "system", eventType: "base" },
+    };
+
+    store.ingestNotification(base);
+    store.ingestNotification({ ...base, title: "after", isRead: true });
+
+    expect(store.notifications).toHaveLength(1);
+    expect(store.notifications[0].title).toBe("after");
+    expect(store.notifications[0].isRead).toBe(true);
+    expect(store.unreadCount).toBe(0);
+  });
+
+  it("setNotificationHistoryで時刻降順に履歴を同期する", () => {
+    store.setNotificationHistory([
+      {
+        id: "n-old",
+        type: "info",
+        title: "old",
+        timestamp: "2026-03-05T10:00:00.000Z",
+        isRead: false,
+        source: { kind: "system", eventType: "old" },
+      },
+      {
+        id: "n-new",
+        type: "warning",
+        title: "new",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: true,
+        source: { kind: "system", eventType: "new" },
+      },
+    ]);
+
+    expect(store.notifications.map((n) => n.id)).toEqual(["n-new", "n-old"]);
+    expect(store.unreadCount).toBe(1);
   });
 });

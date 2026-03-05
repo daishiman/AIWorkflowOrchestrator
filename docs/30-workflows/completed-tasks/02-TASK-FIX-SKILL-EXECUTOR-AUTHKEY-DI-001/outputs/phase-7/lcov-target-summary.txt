@@ -1,0 +1,12 @@
+src/main/ipc/skillHandlers.ts
+  lines: 188/1121 (16.77%)
+  functions: 4/13 (30.77%)
+  branches: 26/29 (89.66%)
+src/preload/skill-api.ts
+  lines: 137/252 (54.37%)
+  functions: 21/58 (36.21%)
+  branches: 25/28 (89.29%)
+src/renderer/hooks/useSkillExecution.ts
+  lines: 112/123 (91.06%)
+  functions: 1/1 (100.00%)
+  branches: 26/32 (81.25%)

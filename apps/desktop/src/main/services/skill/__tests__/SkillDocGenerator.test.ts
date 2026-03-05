@@ -208,39 +208,25 @@ describe("SkillDocGenerator", () => {
 
     it("G-16: handles LLM timeout", async () => {
       vi.useFakeTimers();
+      try {
+        const neverResolve = vi
+          .fn()
+          .mockReturnValue(new Promise(() => {})) as unknown as LLMQueryFn;
+        const gen = new SkillDocGenerator(
+          neverResolve,
+          mockSkillFileManager as never,
+        );
+        const assertion = expect(gen.generate(validRequest)).rejects.toThrow(
+          "LLM query timeout",
+        );
 
-      // unhandled rejection を抑制するため、エラーリスナーを追加
-      const unhandledErrors: Error[] = [];
-      const errorHandler = (event: PromiseRejectionEvent | Error) => {
-        if (event instanceof Error) {
-          unhandledErrors.push(event);
-        }
-      };
-      process.on(
-        "unhandledRejection",
-        errorHandler as NodeJS.UnhandledRejectionListener,
-      );
+        // analyzeSkillStructure の async を解決させるため flush
+        await vi.advanceTimersByTimeAsync(30_001);
 
-      const neverResolve = vi
-        .fn()
-        .mockReturnValue(new Promise(() => {})) as unknown as LLMQueryFn;
-      const gen = new SkillDocGenerator(
-        neverResolve,
-        mockSkillFileManager as never,
-      );
-      const promise = gen.generate(validRequest);
-
-      // analyzeSkillStructure の async を解決させるため flush
-      await vi.advanceTimersByTimeAsync(30_001);
-
-      await expect(promise).rejects.toThrow("LLM query timeout");
-
-      // クリーンアップ
-      process.removeListener(
-        "unhandledRejection",
-        errorHandler as NodeJS.UnhandledRejectionListener,
-      );
-      vi.useRealTimers();
+        await assertion;
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 

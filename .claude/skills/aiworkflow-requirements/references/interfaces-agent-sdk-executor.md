@@ -38,7 +38,7 @@ SkillExecutor は `BrowserWindow` を必要とするため、ハンドラー登�
 
 | ステップ | 処理 | 実装ファイル |
 |----------|------|-------------|
-| 1 | `registerSkillHandlers(mainWindow, skillService)` | `main/index.ts` |
+| 1 | `registerSkillHandlers(mainWindow, skillService, authKeyService)` | `main/ipc/index.ts` |
 | 2 | `new SkillExecutor(mainWindow, permissionStore, authKeyService)` | `skillHandlers.ts` |
 | 3 | `skillService.setSkillExecutor(executor)` | `skillHandlers.ts` |
 | 4 | IPC ハンドラー登録（`skill:execute` 等） | `skillHandlers.ts` |
@@ -311,6 +311,18 @@ SkillExecutor は Claude Agent SDK の `query()` 呼び出し時に、Anthropic 
 3. キーが null の場合 → `process.env.ANTHROPIC_API_KEY` をフォールバック
 4. 環境変数も未設定の場合 → `AUTHENTICATION_ERROR` をスロー
 
+### AuthKeyService DI配線契約（TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001）
+
+`SkillExecutor` への `AuthKeyService` 注入経路を Main composition root で単一路化し、preflight と実行時判定の不一致を防止する。
+
+| 項目 | 契約 |
+| --- | --- |
+| 生成責務 | `registerAllIpcHandlers` が `AuthKeyService` を1回だけ生成する |
+| 注入責務 | `registerSkillHandlers(mainWindow, skillService, authKeyService)` で同一インスタンスを渡す |
+| 実行責務 | `new SkillExecutor(mainWindow, undefined, authKeyService)` で DI する |
+| 一貫性 | `registerAuthKeyHandlers` / `registerSkillHandlers` は同一 `authKeyService` を共有する |
+| 後方互換 | `registerSkillHandlers` の第3引数は optional とし、既存2引数呼び出しを維持する |
+
 ---
 
 ## リトライ機構（TASK-SKILL-RETRY-001）
@@ -546,6 +558,37 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 ## 完了タスク
 
+### タスク: TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 AuthKeyService注入経路統一（2026-03-05完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001                              |
+| 完了日       | 2026-03-05                                                           |
+| ステータス   | **完了**                                                             |
+| テスト数     | 148（回帰セット）                                                    |
+| 発見課題     | 0件                                                                  |
+| ドキュメント | `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/`      |
+
+#### 変更内容
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| Main composition root | `AuthKeyService` を先行単一生成し、Skill/Auth 系ハンドラへ共有注入 |
+| Skillハンドラ | `registerSkillHandlers` が `authKeyService?: IAuthKeyService` を受理 |
+| Executor生成 | `new SkillExecutor(mainWindow, undefined, authKeyService)` へ統一 |
+| テスト | `ipc-double-registration` に第3引数注入・同一インスタンス検証を追加 |
+
+#### 検証結果
+
+- `src/main/ipc/__tests__/ipc-double-registration.test.ts`
+- `src/main/ipc/__tests__/skillHandlers.execute.test.ts`
+- `src/preload/__tests__/skill-api.contract.test.ts`
+- `src/renderer/hooks/__tests__/useSkillExecution.test.ts`
+- `src/main/services/skill/__tests__/SkillExecutor.auth.test.ts`
+- 5 files / 148 tests PASS
+
+---
+
 ### タスク: TASK-FIX-11-1-SDK-TEST-ENABLEMENT SDK統合テスト有効化（2026-02-13完了）
 
 | 項目         | 内容                                                        |
@@ -735,6 +778,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | interfaces-agent-sdk.md             | 親ファイル（インデックス） |
 | interfaces-agent-sdk-integration.md | 統合機能仕様               |
 | interfaces-agent-sdk-history.md     | 完了タスク履歴             |
+| [TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 実装ガイド](../../../docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/outputs/phase-12/implementation-guide.md) | AuthKeyService DI 統一路の実装・検証記録 |
 | [SDKテスト有効化 実装ガイド](../../../docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md) | TASK-FIX-11-1 のテスト実装パターン |
 | [実装ガイドPart1](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part1.md) | リトライ機構 初学者向け概念説明 |
 | [実装ガイドPart2](../../../docs/30-workflows/skillexecutor-retry-mechanism/outputs/phase-12/implementation-guide-part2.md) | リトライ機構 技術者向け詳細 |
@@ -745,6 +789,8 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-03-05 | 1.7.3      | DI初期化フロー表のシグネチャを実装に同期（`registerSkillHandlers(mainWindow, skillService, authKeyService)` / `main/ipc/index.ts`）。旧2引数表記を更新 |
+| 2026-03-05 | 1.7.2      | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: AuthKeyService DI配線契約（単一生成 + Skill/Auth同一注入）を追加。完了タスク記録と関連ドキュメントリンクを同期 |
 | 2026-02-13 | 1.7.1      | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: 「実装上の課題と教訓」追記（Step 1-A/1-D誤判定、未タスクraw誤検知、Vitestモック再初期化） |
 | 2026-02-13 | 1.7.0      | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: 完了タスク追加（SDK統合テスト17件有効化、P9対策モック再初期化、タイムアウト検証パターン） |
 | 2026-02-12 | 1.6.1      | TASK-9B-I-SDK-FORMAL-INTEGRATION: 完了タスクセクションに「実装上の課題と教訓」サブセクション追加（TypeScriptモジュール解決、SDKパラメータ発見、PermissionMode不一致、テスト数乖離、P3再発） |

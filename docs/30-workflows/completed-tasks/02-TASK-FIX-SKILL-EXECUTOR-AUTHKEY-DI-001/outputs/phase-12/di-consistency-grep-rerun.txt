@@ -1,0 +1,19 @@
+apps/desktop/src/main/ipc/skillHandlers.ts:91:  authKeyService?: IAuthKeyService,
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:170:| `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers` と共有 | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:171:| `registerSkillHandlers` が `authKeyService` を `SkillExecutor` へ DI する | completed | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:177:| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 | SkillExecutor への AuthKeyService 注入経路を単一路化 | 完了 |
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:315:### TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001（2026-03-05完了）
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:319:| タスクID | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 |
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:323:| 関連ドキュメント | `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/outputs/phase-12/spec-update-summary.md` |
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md:389:| v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
+apps/desktop/src/main/ipc/index.ts:516:  registerSkillHandlers(mainWindow, skillService, authKeyService);
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:314:### AuthKeyService DI配線契約（TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001）
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:321:| 注入責務 | `registerSkillHandlers(mainWindow, skillService, authKeyService)` で同一インスタンスを渡す |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:322:| 実行責務 | `new SkillExecutor(mainWindow, undefined, authKeyService)` で DI する |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:561:### タスク: TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 AuthKeyService注入経路統一（2026-03-05完了）
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:565:| タスクID     | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001                              |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:570:| ドキュメント | `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/`      |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:577:| Skillハンドラ | `registerSkillHandlers` が `authKeyService?: IAuthKeyService` を受理 |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:578:| Executor生成 | `new SkillExecutor(mainWindow, undefined, authKeyService)` へ統一 |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:781:| [TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 実装ガイド](../../../docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/outputs/phase-12/implementation-guide.md) | AuthKeyService DI 統一路の実装・検証記録 |
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md:792:| 2026-03-05 | 1.7.2      | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: AuthKeyService DI配線契約（単一生成 + Skill/Auth同一注入）を追加。完了タスク記録と関連ドキュメントリンクを同期 |

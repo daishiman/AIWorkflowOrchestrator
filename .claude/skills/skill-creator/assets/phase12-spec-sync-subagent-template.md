@@ -103,6 +103,8 @@ node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --wor
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
+rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
+rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
@@ -144,6 +146,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
 - [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
+- [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 が `[x]` で同期されている
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

@@ -11,7 +11,7 @@
 | A: Store Architect       | `task-056a-a-store-slice-baseline.md`         | 既存Slice棚卸し、追加/不追加判断、Store境界定義 | 並列可能        |
 | B: IPC Contract Guardian | `task-056a-b-ipc-contract-security.md`        | IPCチャネル契約、Preload境界、Security要件定義  | 並列可能        |
 | C: Domain Integrator     | `task-056c-notification-history-domain.md`    | Notification/HistorySearchドメイン仕様統合      | 直列（A/B依存） |
-| D: Navigation Integrator | `task-056d-viewtype-routing-nav.md`           | ViewType拡張、ルーティング、ナビゲーション整合  | 直列（A依存）   |
+| D: Navigation Integrator | `task-056d-viewtype-routing-nav/index.md`     | ViewType拡張、ルーティング、ナビゲーション整合  | 直列（A依存）   |
 | E: Review Gate Auditor   | `task-056e-integration-gate-and-spec-sync.md` | 統合ゲート、完了条件、仕様同期チェック          | 直列（C/D依存） |
 
 ## 依存関係（直列/並列）

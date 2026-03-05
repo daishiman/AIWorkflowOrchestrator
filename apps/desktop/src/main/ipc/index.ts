@@ -488,6 +488,10 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register Agent Execution handlers (AGENT-005)
   registerAgentExecutionHandlers(mainWindow);
 
+  // Initialize Auth Key service once and share across handlers
+  const authKeyStorage = createAuthKeyStorage();
+  const authKeyService = new AuthKeyService(authKeyStorage);
+
   // Register Skill Management handlers (SKILL-IPC-001)
   // Use home directory for skills (where Claude CLI stores them)
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
@@ -509,7 +513,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     skillParser,
     skillImportManager,
   );
-  registerSkillHandlers(mainWindow, skillService);
+  registerSkillHandlers(mainWindow, skillService, authKeyService);
 
   // Register Skill File handlers (TASK-9A-B)
   const skillFileManager = new SkillFileManager();
@@ -645,8 +649,6 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   registerPermissionStoreHandlers(permissionStore);
 
   // Register Auth Mode handlers (TASK-AUTH-MODE-SELECTION-001)
-  const authKeyStorage = createAuthKeyStorage();
-  const authKeyService = new AuthKeyService(authKeyStorage);
   registerAuthKeyHandlers(mainWindow, authKeyService);
   const authModeService = createAuthModeService(authKeyService);
   registerAuthModeHandlers(mainWindow, authModeService);

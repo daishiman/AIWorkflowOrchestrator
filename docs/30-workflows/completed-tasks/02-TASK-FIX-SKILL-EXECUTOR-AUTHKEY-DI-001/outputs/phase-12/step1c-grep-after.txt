@@ -1,0 +1,2 @@
+.claude/skills/aiworkflow-requirements/references/api-ipc-system.md
+.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md

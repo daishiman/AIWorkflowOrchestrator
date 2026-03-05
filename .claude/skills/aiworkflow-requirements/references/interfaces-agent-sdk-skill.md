@@ -154,7 +154,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | ステップ | 処理 | 説明 |
 |----------|------|------|
 | 1 | `new SkillService()` | Facade サービス生成（skillExecutor は未設定） |
-| 2 | `new SkillExecutor(mainWindow, authKeyService)` | 実行エンジン生成（mainWindow 依存） |
+| 2 | `new SkillExecutor(mainWindow, undefined, authKeyService)` | 実行エンジン生成（mainWindow 依存 + AuthKeyService注入） |
 | 3 | `skillService.setSkillExecutor(executor)` | Setter Injection で注入 |
 | 4 | `skillService.executeSkill(skill, args)` | 内部で型変換後に `skillExecutor.execute()` に委譲 |
 
@@ -2298,6 +2298,7 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-05 | 1.43.4     | SkillService/SkillExecutor DIフロー表を実装に同期。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ更新し、AuthKeyService注入経路を明示 |
 | 2026-03-04 | 1.43.3     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬と Renderer preflight（`auth-key:exists`）の境界を追加。完了タスク記録と苦戦箇所・再利用手順を追記 |
 | 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
 | 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |

@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
+| 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
+| 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
+| 2026-03-05 | 1.29.29 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12再確認を追補。成果物実体は完了しているのに `phase-12-documentation.md` が `pending` のまま残る台帳ドリフトを苦戦箇所として追加し、`verify-all-specs` / `validate-phase-output` / Task 12-1〜12-5実在チェックの3点突合で同期する手順を標準化 |
+| 2026-03-05 | 1.29.28 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査追補。`SkillExecutor` DIコード例の旧シグネチャ（`new SkillExecutor(mainWindow)`）を現行実装（`new SkillExecutor(mainWindow, undefined, authKeyService)`）へ同期し、文書内の実装ドリフトを解消 |
 | 2026-03-05 | 1.29.27 | TASK-UI-01-C および UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 の完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動し、同UTを `completed-tasks/unassigned-task/` へ移管したため、関連導線を完了表記へ更新 |
 | 2026-03-05 | 1.29.26 | UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を追加。TASK-UI-01-C 再監査で再発した `pnpm run test:run --` の全体テスト誤起動リスクと、監査スクリプト所在誤認（`scripts/` 直下想定）を未タスク化し、`pnpm exec vitest run` 直指定 + `test -f` preflight を標準手順として固定 |
 | 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
@@ -237,6 +242,15 @@
 | 対処 | 本セクションを追加し、課題/再発条件/対処/標準ルールを固定 |
 | 標準ルール | Phase 12 完了判定は「実装同期 + 教訓同期 + 検証証跡」の三点同時成立に限定する |
 
+### 苦戦箇所: 成果物が揃っていても `phase-12-documentation.md` が `pending` のまま残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` の成果物が全件存在していても、Phase仕様書本体のステータス/チェックリスト更新が後回しになりやすい |
+| 再発条件 | 成果物生成を完了条件と誤認し、`phase-12-documentation.md` のメタ情報と完了チェックリストを最終突合しない場合 |
+| 対処 | Task 12-1〜12-5 の成果物実在を確認後、`verify-all-specs`/`validate-phase-output` を再実行し、仕様書本体を `completed` + `[x]` へ同期 |
+| 標準ルール | Phase 12完了判定は「成果物実在 + 機械検証PASS + phase-12-documentation同期」の3点が揃うまで確定しない |
+
 ### 苦戦箇所: `apps/desktop test:run` が `SIGTERM` で中断し、回帰証跡が不安定になる
 
 | 項目 | 内容 |
@@ -259,6 +273,71 @@
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 | `apps/desktop test:run` の `SIGTERM` 中断時フォールバック運用（失敗ログ固定 + 分割実行 + 3仕様同期）を標準化 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md` |
+
+---
+
+## TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05）
+
+### 実装内容
+
+| 項目 | 内容 |
+| --- | --- |
+| 目的 | `AuthKeyService` の生成責務と注入責務を1経路へ統一し、preflight判定と実行時判定の差分を排除する |
+| 実装範囲 | `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/ipc/skillHandlers.ts` / `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` |
+| 実装要点 | `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers(mainWindow, skillService, authKeyService)` で注入。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ統一 |
+| 完了根拠 | `verify-all-specs` 13/13 PASS、`validate-phase-output` 28項目 PASS、Task 12-1〜12-5成果物実在確認、`phase-12-documentation.md` completed 同期 |
+
+### 苦戦箇所と解決策
+
+#### 苦戦箇所: DIシグネチャの更新漏れで仕様と実装が乖離しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillExecutor` 生成シグネチャが旧記法のまま文書へ残り、実装と転記内容がずれやすかった |
+| 再発条件 | Main配線変更時に `interfaces` と `task-workflow` のコード例を同一ターンで更新しない場合 |
+| 対処 | `registerSkillHandlers(..., authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を正本へ同期 |
+| 標準ルール | DI変更は「Main配線 + 実装コード例 + 型契約」の3点同時更新を必須化する |
+
+#### 苦戦箇所: 成果物完了後も `phase-12-documentation.md` が `pending` 残置しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` が揃っていても、仕様書本体のステータス/チェック更新が後回しになりやすい |
+| 再発条件 | 成果物実体確認のみで完了判定し、Task 12-1〜12-5 と `phase-12-documentation.md` の相互突合を省略する場合 |
+| 対処 | Task 12-1〜12-5 実在チェック → `verify-all-specs`/`validate-phase-output` 再実行 → `phase-12-documentation.md` completed 同期を固定 |
+| 標準ルール | Phase 12完了は「成果物実体 + 機械検証PASS + 仕様書ステータス同期」の3点セットで判定する |
+
+#### 苦戦箇所: 実装内容だけ先に反映され、教訓化が遅延しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 完了台帳には反映済みでも、再発条件付きの教訓が不足し再利用性が下がった |
+| 再発条件 | `task-workflow` 更新を完了扱いにし、`lessons-learned` 反映を別ターンへ持ち越す場合 |
+| 対処 | 本セクションを追加し、課題/再発条件/対処/標準ルールを固定した |
+| 標準ルール | 仕様同期タスクは `task-workflow` と `lessons-learned` を同一ターンで更新する |
+
+#### 苦戦箇所: `skillHandlers.ts` の責務肥大化でDI境界調整コストが上がる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | DI統一後も `skillHandlers.ts` 内に実行器生成責務が残り、handler登録責務との境界が曖昧で差分追跡が重くなる |
+| 再発条件 | DI改善を「注入引数追加」で止め、composition root への責務集約を後回しにする場合 |
+| 対処 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` として未タスク化し、責務分離 + 回帰テスト固定 + 仕様同期を同時実施する導線を作成 |
+| 標準ルール | DI修正は「注入経路統一」と「責務境界整理」をセットで計画し、未対応分は即時未タスク登録する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Main composition root で依存生成責務を固定し、注入先シグネチャを先に確定する。  
+2. `ipc/index.ts` / `skillHandlers.ts` / `interfaces` の3点を同一ターンで同期する。  
+3. `verify-all-specs` と `validate-phase-output` を再実行し、Task 12-1〜12-5 実体を突合する。  
+4. `phase-12-documentation.md` を `completed` へ同期し、台帳と教訓を同時更新して完了判定する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE11-AUTHKEY-SCREENSHOT-SELECTOR-DRIFT-GUARD-001~~ | ~~auth-key Phase 11 スクリーンショット取得スクリプトのセレクタドリフト防止~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md` |
+| ~~UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001~~ | ~~`skillHandlers.ts` の DI境界整理ガード（composition root 集約 + 回帰テスト固定）~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skillhandlers-authkey-di-boundary-guard-001.md` |
 
 ---
 
@@ -3580,8 +3659,12 @@ class SkillService {
 }
 
 // skillHandlers.ts（DI設定）
-function registerSkillHandlers(mainWindow: BrowserWindow, skillService: SkillService): void {
-  const skillExecutor = new SkillExecutor(mainWindow);
+function registerSkillHandlers(
+  mainWindow: BrowserWindow,
+  skillService: SkillService,
+  authKeyService?: IAuthKeyService,
+): void {
+  const skillExecutor = new SkillExecutor(mainWindow, undefined, authKeyService);
   skillService.setSkillExecutor(skillExecutor);
   // ハンドラー登録...
 }

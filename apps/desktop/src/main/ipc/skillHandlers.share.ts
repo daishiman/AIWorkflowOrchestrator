@@ -8,6 +8,7 @@
  */
 import { ipcMain } from "electron";
 import type { BrowserWindow } from "electron";
+import { IPC_CHANNELS } from "../../preload/channels";
 import {
   validateIpcSender,
   toIPCValidationError,
@@ -20,13 +21,6 @@ interface SkillShareManagerInterface {
   validateSource(source: unknown): Promise<unknown>;
 }
 
-/** スキル共有 IPC チャネル名（定数） */
-const CHANNELS = {
-  IMPORT_FROM_SOURCE: "skill:importFromSource",
-  EXPORT: "skill:export",
-  VALIDATE_SOURCE: "skill:validateSource",
-} as const;
-
 /** 許可されたインポートソース種別 */
 const ALLOWED_SOURCE_TYPES = ["github", "gist", "url", "local"] as const;
 
@@ -35,6 +29,9 @@ const ALLOWED_DESTINATION_TYPES = ["gist", "local"] as const;
 
 /** 文字列フィールドの最大長 */
 const MAX_STRING_LENGTH = 10000;
+const DEFAULT_INTERNAL_ERROR_MESSAGE = "Internal error";
+
+type ShareIpcErrorCode = "ERR_1001" | "ERR_2004" | "ERR_5001";
 
 /**
  * VALIDATION_ERROR レスポンスを生成する
@@ -43,6 +40,57 @@ function validationError(message: string) {
   return {
     success: false,
     error: { code: "VALIDATION_ERROR", message },
+    errorCode: "ERR_1001" as ShareIpcErrorCode,
+  };
+}
+
+/**
+ * sender 検証エラーを生成する
+ */
+function senderValidationError(
+  validation: ReturnType<typeof validateIpcSender>,
+) {
+  return {
+    ...toIPCValidationError(validation),
+    errorCode: "ERR_2004" as ShareIpcErrorCode,
+  };
+}
+
+/**
+ * エラーメッセージをサニタイズする
+ */
+function sanitizeErrorMessage(error: unknown): string {
+  if (!(error instanceof Error)) {
+    return DEFAULT_INTERNAL_ERROR_MESSAGE;
+  }
+
+  const message = error.message.trim();
+  if (!message) {
+    return DEFAULT_INTERNAL_ERROR_MESSAGE;
+  }
+
+  // 内部パスや機密語を含む場合は内部エラーへ丸める
+  if (
+    /(?:\/|\\|[A-Z]:\\)/i.test(message) ||
+    /(token|key|password|secret)/i.test(message)
+  ) {
+    return DEFAULT_INTERNAL_ERROR_MESSAGE;
+  }
+
+  return message;
+}
+
+/**
+ * INTERNAL_ERROR レスポンスを生成する
+ */
+function internalError(error: unknown) {
+  return {
+    success: false,
+    error: {
+      code: "INTERNAL_ERROR",
+      message: sanitizeErrorMessage(error),
+    },
+    errorCode: "ERR_5001" as ShareIpcErrorCode,
   };
 }
 
@@ -84,14 +132,18 @@ export function registerSkillShareHandlers(
   // skill:importFromSource
   // =========================================================================
   ipcMain.handle(
-    CHANNELS.IMPORT_FROM_SOURCE,
+    IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
     async (event, source: unknown) => {
       // Sender 検証
-      const validation = validateIpcSender(event, CHANNELS.IMPORT_FROM_SOURCE, {
-        getAllowedWindows: () => [mainWindow],
-      });
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
       if (!validation.valid) {
-        throw toIPCValidationError(validation);
+        throw senderValidationError(validation);
       }
 
       // source がオブジェクトであることを検証
@@ -126,20 +178,24 @@ export function registerSkillShareHandlers(
         }
       }
 
-      return skillShareManager.importFromSource(source);
+      try {
+        return await skillShareManager.importFromSource(source);
+      } catch (error) {
+        return internalError(error);
+      }
     },
   );
 
   // =========================================================================
   // skill:export
   // =========================================================================
-  ipcMain.handle(CHANNELS.EXPORT, async (event, args: unknown) => {
+  ipcMain.handle(IPC_CHANNELS.SKILL_EXPORT, async (event, args: unknown) => {
     // Sender 検証
-    const validation = validateIpcSender(event, CHANNELS.EXPORT, {
+    const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_EXPORT, {
       getAllowedWindows: () => [mainWindow],
     });
     if (!validation.valid) {
-      throw toIPCValidationError(validation);
+      throw senderValidationError(validation);
     }
 
     // args がオブジェクトであることを検証
@@ -181,44 +237,59 @@ export function registerSkillShareHandlers(
       );
     }
 
-    return skillShareManager.exportSkill(
-      (args.skillName as string).trim(),
-      args.destination,
-    );
+    try {
+      return await skillShareManager.exportSkill(
+        (args.skillName as string).trim(),
+        args.destination,
+      );
+    } catch (error) {
+      return internalError(error);
+    }
   });
 
   // =========================================================================
   // skill:validateSource
   // =========================================================================
-  ipcMain.handle(CHANNELS.VALIDATE_SOURCE, async (event, source: unknown) => {
-    // Sender 検証
-    const validation = validateIpcSender(event, CHANNELS.VALIDATE_SOURCE, {
-      getAllowedWindows: () => [mainWindow],
-    });
-    if (!validation.valid) {
-      throw toIPCValidationError(validation);
-    }
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
+    async (event, source: unknown) => {
+      // Sender 検証
+      const validation = validateIpcSender(
+        event,
+        IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
+        {
+          getAllowedWindows: () => [mainWindow],
+        },
+      );
+      if (!validation.valid) {
+        throw senderValidationError(validation);
+      }
 
-    // source がオブジェクトであることを検証（配列を除外）
-    if (!isPlainObject(source)) {
-      return validationError("source must be a non-null object");
-    }
+      // source がオブジェクトであることを検証（配列を除外）
+      if (!isPlainObject(source)) {
+        return validationError("source must be a non-null object");
+      }
 
-    // source.type の P42 準拠 3 段バリデーション
-    const typeError = validateStringField(source.type, "source.type");
-    if (typeError !== null) {
-      return validationError(typeError);
-    }
+      // source.type の P42 準拠 3 段バリデーション
+      const typeError = validateStringField(source.type, "source.type");
+      if (typeError !== null) {
+        return validationError(typeError);
+      }
 
-    return skillShareManager.validateSource(source);
-  });
+      try {
+        return await skillShareManager.validateSource(source);
+      } catch (error) {
+        return internalError(error);
+      }
+    },
+  );
 }
 
 /**
  * スキル共有 IPC ハンドラを解除する
  */
 export function unregisterSkillShareHandlers(): void {
-  ipcMain.removeHandler(CHANNELS.IMPORT_FROM_SOURCE);
-  ipcMain.removeHandler(CHANNELS.EXPORT);
-  ipcMain.removeHandler(CHANNELS.VALIDATE_SOURCE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXPORT);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_VALIDATE_SOURCE);
 }

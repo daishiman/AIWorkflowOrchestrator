@@ -26,6 +26,35 @@
 
 ---
 
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査（漏れ検知対応）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再検証 + 証跡再生成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - ユーザー追加要求に基づき、`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行
+  - Phase 11 にスクリーンショット回帰を追加実施（`TC-11-01..03`）し、`outputs/phase-11/screenshots/` を新規作成
+  - `phase-11-manual-test.md` へ `テストケース` と `画面カバレッジマトリクス` を追記、`manual-test-result.md` を `TC + 証跡` 形式へ更新
+  - システム仕様書側のDIシグネチャ旧表記を再同期（`interfaces-agent-sdk-executor` / `arch-electron-services` / `interfaces-agent-sdk-skill` / `lessons-learned`）
+  - `quick_validate.js`（`skill-creator`, `task-specification-creator`, `aiworkflow-requirements`）を再実行し、error 0 を確認
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 タスク完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 1〜12 を順次完了し、各Phase成果物を `outputs/phase-*` に出力
+  - Task 12-2 Step 1-A/1-B/1-C を実施し、`interfaces-agent-sdk-executor.md` / `api-ipc-system.md` / LOGS 2ファイルを同期
+  - `verify-all-specs` / `validate-phase-output` / `complete-phase` をフェーズ単位で実行し、`artifacts.json` を Phase 12 まで completed 化
+  - UI変更なし判定のため Phase 11 は `NON_VISUAL` 運用で証跡を固定（スクリーンショット計画は N/A 記録）
+
+---
+
 ## 2026-03-05 - TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）
 
 - **Agent**: task-specification-creator
@@ -5246,3 +5275,15 @@ if (artifactPath) {
   - スクリーンショット5件（TC-11-01〜05）を 2026-03-05 11:00 JST に再取得し、Apple UI/UX観点で再確認
   - 監査結果を `verify-unassigned-links` 102/102、`audit --json` current=90、`audit --diff-from HEAD` current=0 baseline=90 に同期
   - `phase-1-requirements.md` / `phase-10-final-review.md` / `aiworkflow-requirements-extraction-matrix.md` の削除済み参照パスを是正
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12再確認の運用追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再確認）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
+  - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
+  - `SKILL.md` 変更履歴へ `v10.08.15` を追記

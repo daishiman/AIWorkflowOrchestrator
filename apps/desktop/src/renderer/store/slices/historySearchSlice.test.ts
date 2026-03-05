@@ -69,11 +69,19 @@ describe("historySearchSlice", () => {
 
   it("初期状態を持つ", () => {
     expect(store.historySearchQuery).toBe("");
+    expect(store.historySearchFilter).toBe("all");
     expect(store.historySearchResults).toEqual([]);
     expect(store.historySearchTotalCount).toBe(0);
     expect(store.historySearchHasMore).toBe(false);
     expect(store.isHistorySearching).toBe(false);
     expect(store.historySearchError).toBeNull();
+    expect(store.historySearchStats).toEqual({
+      chat: 0,
+      file: 0,
+      skill: 0,
+      total: 0,
+    });
+    expect(store.historySearchStatsError).toBeNull();
     expect(store.expandedItemId).toBeNull();
   });
 
@@ -82,12 +90,18 @@ describe("historySearchSlice", () => {
     expect(store.historySearchQuery).toBe("react");
   });
 
+  it("setHistorySearchFilterでフィルタ更新", () => {
+    store.setHistorySearchFilter("chat");
+    expect(store.historySearchFilter).toBe("chat");
+  });
+
   it("searchHistoryで結果を取得する", async () => {
+    store.setHistorySearchFilter("chat");
     await store.searchHistory("react", 0);
 
     expect(mockSearch).toHaveBeenCalledWith({
       query: "react",
-      filter: "all",
+      filter: "chat",
       limit: 30,
       offset: 0,
     });
@@ -97,6 +111,7 @@ describe("historySearchSlice", () => {
   });
 
   it("loadMoreHistoryで追補検索する", async () => {
+    store.setHistorySearchFilter("file");
     await store.searchHistory("react", 0);
     store.historySearchHasMore = true;
 
@@ -127,6 +142,12 @@ describe("historySearchSlice", () => {
 
     expect(store.historySearchResults).toHaveLength(2);
     expect(store.historySearchTotalCount).toBe(2);
+    expect(mockSearch).toHaveBeenLastCalledWith({
+      query: "react",
+      filter: "file",
+      limit: 30,
+      offset: 1,
+    });
   });
 
   it("search失敗時にエラーを保持する", async () => {
@@ -151,15 +172,48 @@ describe("historySearchSlice", () => {
 
   it("resetHistorySearchで状態初期化", () => {
     store.setHistorySearchQuery("react");
+    store.setHistorySearchFilter("skill");
     store.toggleItemExpanded("h-1");
 
     store.resetHistorySearch();
 
     expect(store.historySearchQuery).toBe("");
+    expect(store.historySearchFilter).toBe("all");
     expect(store.historySearchResults).toEqual([]);
     expect(store.historySearchTotalCount).toBe(0);
     expect(store.historySearchHasMore).toBe(false);
     expect(store.historySearchError).toBeNull();
+    expect(store.historySearchStats).toEqual({
+      chat: 0,
+      file: 0,
+      skill: 0,
+      total: 0,
+    });
+    expect(store.historySearchStatsError).toBeNull();
     expect(store.expandedItemId).toBeNull();
+  });
+
+  it("loadHistorySearchStatsで統計を更新する", async () => {
+    await store.loadHistorySearchStats();
+
+    expect(mockGetStats).toHaveBeenCalledTimes(1);
+    expect(store.historySearchStats).toEqual({
+      chat: 1,
+      file: 0,
+      skill: 0,
+      total: 1,
+    });
+    expect(store.historySearchStatsError).toBeNull();
+  });
+
+  it("loadHistorySearchStats失敗時にエラーを保持する", async () => {
+    mockGetStats.mockResolvedValueOnce({
+      success: false,
+      error: { code: "UNKNOWN_ERROR", message: "stats failed" },
+    });
+
+    await store.loadHistorySearchStats();
+
+    expect(store.historySearchStatsError).toBe("stats failed");
   });
 });
