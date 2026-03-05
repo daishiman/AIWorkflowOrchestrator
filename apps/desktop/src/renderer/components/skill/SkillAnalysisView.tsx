@@ -19,6 +19,7 @@ import { X } from "lucide-react";
 import { ScoreDisplay } from "./ScoreDisplay";
 import { SuggestionList } from "./SuggestionList";
 import { RiskPanel } from "./RiskPanel";
+import { ImprovementResultBreakdown } from "./ImprovementResultBreakdown";
 import { useSkillAnalysis } from "./hooks/useSkillAnalysis";
 
 // ============================================
@@ -46,6 +47,7 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
     isImproving,
     selectedSuggestions,
     error,
+    improvementResult,
     handleAnalyze,
     handleToggleSuggestion,
     handleSelectAutoFixable,
@@ -103,6 +105,9 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
         {/* 分析結果 */}
         {analysis && !error && (
           <>
+            {improvementResult && (
+              <ImprovementResultBreakdown result={improvementResult} />
+            )}
             <ScoreDisplay analysis={analysis} />
             <SuggestionList
               suggestions={analysis.suggestions}

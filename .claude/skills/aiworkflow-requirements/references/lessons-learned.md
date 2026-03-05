@@ -20,11 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-05 | 1.29.19 | UT-TASK-10A-B-009 を追加登録。完了済みUT配置ルールの文書間ドリフトと `audit --target-file` 適用境界誤用を未タスク化し、配置3分類（未実施/完了済みUT/legacy）と `current/baseline` 分離判定を再利用ルールとして固定 |
-| 2026-03-05 | 1.29.18 | UT-TASK-10A-B-001 の簡潔解決カードを追補。配置先の3分類（未実施/完了済み/legacy）と `target-file` 適用境界、画面証跡5/5基準、`current/baseline` 分離判定を同一セクションへ固定し、同種課題を短手順で再現できるよう最適化 |
-| 2026-03-05 | 1.29.17 | UT-TASK-10A-B-001 の最終再監査追補を追加。完了済み指示書（001）と未実施指示書（002〜008）の配置混在を苦戦箇所として記録し、`completed-tasks`/`unassigned-task` 分離配置 + 参照一括同期 + 監査2軸（current/baseline）で解消する手順を標準化。画面証跡は 11:00 JST 再取得で再確認 |
-| 2026-03-05 | 1.29.16 | UT-TASK-10A-B-001 再監査追補を追加。Phase 11 の light検証証跡がテーマモック固定値でdark化する苦戦箇所を記録し、`prefers-color-scheme` 連動モック + 再撮影 + coverage validator（5/5）で整合を回復する手順を標準化 |
-| 2026-03-05 | 1.29.15 | UT-TASK-10A-B-001 完了教訓を追加。`SuggestionList` のUI導線追加と `useSkillAnalysis` の状態ロジック追加を分離して実装すると回帰を最小化できる点、Red→Greenで導線未実装を先に固定する有効性、Phase 11 の視覚検証を dark/light/mobile で同時確認する運用を標準化 |
+| 2026-03-05 | 1.29.17 | UT-TASK-10A-B-010 完了移管を反映。`task-10a-b-reanalysis-unmount-guard.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動し、関連未タスク表を完了参照へ同期 |
+| 2026-03-05 | 1.29.16 | UT-TASK-10A-B-010 を追加。改善適用後再分析で `analyze` 呼び出しが期待2回/実測4回へ増加した苦戦箇所を記録し、`useSkillAnalysis` のアンマウント安全化（`isMountedRef`）を再発防止ルールへ追記 |
+| 2026-03-05 | 1.29.15 | TASK-10A-B 再確認追補を追加。`TC-11-01〜05` の再撮影（10:34 JST）と `validate-phase11-screenshot-coverage` PASS（5/5）を固定し、未実施 `UT-TASK-10A-B-001/002/004/005/006/007/008` の正本配置を `docs/30-workflows/unassigned-task/` へ正規化。あわせて `UI-11-001` を `UT-TASK-10A-B-009` として未タスク化 |
 | 2026-03-04 | 1.29.14 | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`validate-phase11-screenshot-coverage` が PASS でも `phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning が残る苦戦箇所を記録し、視覚/非視覚TCの設計意図を固定する4ステップ手順を標準化 |
 | 2026-03-04 | 1.29.13 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` 追補を追加。Phase 11証跡を別workflow参照のまま残したことで coverage validator が失敗した苦戦箇所を記録し、対象workflow配下への証跡正規配置 + `NON_VISUAL:` 記法固定の4ステップ手順を標準化 |
 | 2026-03-04 | 1.29.12 | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` の教訓を追加。screenshot再取得時の `Port 5174 is already in use` 混在を再発条件付きで記録し、実行前ポート検査（`lsof`）と競合分岐記録を標準化 |
@@ -509,12 +507,42 @@
 | 対処 | 未タスクを UT-TASK-10A-B-001〜005 の5件へ再同期し、台帳・仕様書・成果物を同一ターンで更新 |
 | 今後の標準ルール | 未タスクは「修正反映後に有効件数を再計算」し、検出レポートと台帳を同時更新する |
 
+### 苦戦箇所: `executedAt` 表示の視認性課題が見送り扱いになりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 改善結果カードの実行日時が小さく、離れた距離で判読しづらい（UI-11-001） |
+| 再発条件 | 機能要件PASSを優先し、視認性課題を Issue 化せずに終了する場合 |
+| 原因 | 手動テストの発見課題と未タスク台帳の連携が弱い |
+| 対処 | UI-11-001 を `UT-TASK-10A-B-009` として起票し、`docs/30-workflows/unassigned-task/` 正本に登録 |
+| 今後の標準ルール | 手動検証で見つかった未解決UI課題は「見送り理由 + 未タスクID」を同時に残す |
+
+### 苦戦箇所: 改善適用後の再分析がテスト間でリークする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillAnalysisView` テストで `analyze` 呼び出し回数が期待2回に対して実測4回となり、再分析処理が不安定化した |
+| 再発条件 | `applyImprovements` 完了前後でコンポーネントをアンマウントし、非同期更新が後続テストへ持ち越される場合 |
+| 原因 | `useSkillAnalysis` でアンマウント後の `setState` / 再分析呼び出しを抑止するガードが不足していた |
+| 対処 | `isMountedRef` と cleanup を導入し、`handleAnalyze` / `handleApplySelected` / `handleAutoImprove` の更新経路をガードした |
+| 今後の標準ルール | 再分析を伴う非同期フローは「成功判定 + マウント状態」の二重ガードを標準実装し、呼び出し回数テストで固定する |
+
+### 苦戦箇所: 未実施タスクの配置先ドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未実施 `UT-TASK-10A-B-*` が `completed-tasks/unassigned-task/` 側に残り、指定配置先と不一致になった |
+| 再発条件 | 完了済み未タスクと未実施未タスクを同じディレクトリ運用にした場合 |
+| 原因 | Phase 12 Step 1-C で「ステータス判定」と「物理配置確認」を分離して実施した |
+| 対処 | 未実施 7 件を `docs/30-workflows/unassigned-task/` へ移動し、参照パスを一括更新 |
+| 今後の標準ルール | 未タスク同期は「台帳更新・物理配置・リンク検証」を1セットで完了させる |
+
 ### 同種課題の簡潔解決手順（5ステップ）
 
 1. `capture-*.mjs` などで画面証跡を再取得し、状態別ファイルを確定する。  
 2. `manual-test-result.md` と `discovered-issues.md` を実証跡ベースへ更新する。  
 3. `verify-all-specs` と `validate-phase-output` を連続実行し、warning/error をゼロ化する。  
-4. 未タスク件数を再計算し、`unassigned-task-detection.md` と `task-workflow.md` を同一ターン同期する。  
+4. 未タスク件数と配置先を再計算し、`unassigned-task-detection.md` / `task-workflow.md` / 関連仕様書を同一ターン同期する。  
 5. 苦戦箇所を `lessons-learned.md` に再発条件付きで残し、次回の初動手順を固定する。  
 
 ### 関連未タスク（再発防止ガード）
@@ -524,62 +552,8 @@
 | UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
 | UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
 | UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
-
-### 追補: UT-TASK-10A-B-001 完了（2026-03-05）
-
-| 項目 | 内容 |
-| --- | --- |
-| タスク | 自動修正可能フィルタボタン実装 |
-| 実装分離 | UI責務（`SuggestionList`）と状態責務（`useSkillAnalysis`）を分離して変更 |
-| 有効だった進め方 | Phase 4 で Red テストを先に追加し、導線未実装を明示してから Phase 5 で Green 化 |
-| UI検証学び | dark/light/mobile の3観点を同一ターンで撮影すると、見落としが減る |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` |
-
-### 再監査追補（2026-03-05 11:00 JST）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | TC-11-04（light想定）の証跡がdark表示で保存されていた |
-| 原因 | 撮影スクリプトの theme mock が `dark` 固定値を返していた |
-| 対処 | `capture-ut-task-10a-b-001-screenshots.mjs` を `prefers-color-scheme` 連動へ修正し、5枚を再取得 |
-| 検証 | `validate-phase11-screenshot-coverage --workflow ...ut-task-10a-b-001...` で 5/5 PASS |
-| 標準ルール | テーマ検証は「ブラウザ配色設定」と「モックテーマ応答」の整合をセットで確認する |
-
-### 最終再監査追補（2026-03-05）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 完了済み `UT-TASK-10A-B-001` 指示書と未実施 `UT-TASK-10A-B-002〜008` 指示書が `completed-tasks/unassigned-task` に混在し、未タスク管理の配置規則とドリフトした |
-| 原因 | 完了移管と未実施管理の境界をファイル配置ルールで固定せず、参照更新だけで完了判定した |
-| 対処 | `UT-TASK-10A-B-001` は `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置。関連参照を一括修正 |
-| 検証 | `verify-unassigned-links` = 102/102、`audit --json --diff-from HEAD` = `currentViolations=0`, `baselineViolations=90` |
-| 標準ルール | 指示書運用は「完了=completed-tasks」「未実施=unassigned-task」で物理分離し、監査は `current` と `baseline` を分けて記録する |
-
-#### クイック解決カード（UT-TASK-10A-B-001）
-
-1. 配置判定を先に確定する。未実施UTは `docs/30-workflows/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ置く。`completed-tasks/unassigned-task` は legacy のみを許容する。  
-2. `audit-unassigned-tasks --target-file` は未実施UTにのみ適用し、完了済みUT指示書には適用しない。  
-3. UI証跡は `TC-11-01`〜`TC-11-05` を同時刻で再取得し、`validate-phase11-screenshot-coverage` を 5/5 PASS で固定する。  
-4. 監査結果は `verify-unassigned-links`（参照整合）と `audit --diff-from HEAD`（`current`=合否 / `baseline`=監視）を分離して記録する。  
-
-固定コマンド:
-
-```bash
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD | jq '{current: .totals.currentViolations, baseline: .totals.baselineViolations}'
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button
-test -f docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md
-find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc -l
-```
-
-#### 追加未タスク化（UT-TASK-10A-B-009）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 配置先ルール（完了済みUT/未実施UT/legacy）が資料ごとに揺れ、`target-file` 適用境界が誤解される |
-| 未タスク化 | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
-| 目的 | 配置先3分類と監査境界を1つの運用ガードへ統合し、再監査の手戻りを削減する |
-| 完了判定 | `verify-unassigned-links` PASS + `audit --target-file`/`audit --diff-from HEAD` の `currentViolations=0` |
+| UT-TASK-10A-B-009 | 改善結果実行日時の視認性改善（`executedAt` 可読性） | `docs/30-workflows/unassigned-task/task-10a-b-improvement-result-timestamp-readability.md` |
+| ~~UT-TASK-10A-B-010~~ | ~~改善適用後再分析のアンマウント安全化ガード（`analyze` 呼び出しリーク防止）~~ **完了: 2026-03-05** | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` |
 
 ---
 

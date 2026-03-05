@@ -5,87 +5,101 @@
 
 ---
 
-## 2026-03-05 - UT-TASK-10A-B-009 未タスク起票（配置3分類 + target監査境界ガード）
+## 2026-03-05 - UT-TASK-10A-B-010 完了移管（unassigned → completed-tasks）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象タスク: `UT-TASK-10A-B-009`
-- 目的: 完了済みUT配置ルールの文書間ドリフトと `target-file` 誤用を未タスク化し、再利用可能な運用ガードへ固定する
+- 対象: `UT-TASK-10A-B-010`
+- 目的: Phase 12完了後の移管ルールに従い、未タスク指示書を `completed-tasks/unassigned-task` へ移動し、台帳参照を完了状態へ同期する
 
 ### 仕様書別SubAgent分担
-- SubAgent-A（未タスク仕様作成）: `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` を作成（Why/What/How + 3.5教訓）
-- SubAgent-B（台帳同期）: `references/task-workflow.md` の未タスク管理件数と残課題テーブルへ `UT-TASK-10A-B-009` を追加（`1.67.10`）
-- SubAgent-C（UI仕様同期）: `references/ui-ux-feature-components.md` の関連未タスクへ `UT-TASK-10A-B-009` を追加（`v1.15.4`）
-- SubAgent-D（教訓同期）: `references/lessons-learned.md` に追加未タスク化追補を記録（`1.29.19`）
-- SubAgent-E（履歴同期）: `SKILL.md` 変更履歴を `9.01.16` へ更新
+- SubAgent-A（ファイル移管）: `task-10a-b-reanalysis-unmount-guard.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- SubAgent-B（台帳同期）: `references/task-workflow.md` 残課題テーブルを完了表記へ更新
+- SubAgent-C（UI仕様同期）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` の関連未タスク・残課題サマリーを再同期
+- SubAgent-D（教訓同期）: `references/lessons-learned.md` の関連未タスク表を完了表記へ更新
+- SubAgent-E（履歴同期）: `SKILL.md` 変更履歴を `9.01.15` へ更新
 
 ### 実施内容
-- 新規未タスク指示書を `docs/30-workflows/unassigned-task/` に配置
-- 配置先3分類（未実施/完了済みUT/legacy）と `target-file` 境界の苦戦箇所を 3.5 セクションへ記録
-- 仕様書3点（task-workflow/ui-ux-feature/lessons）へ同IDを同一ターンで同期
-
-### 検証
-- `verify-unassigned-links` → `ALL_LINKS_EXIST`
-- `audit-unassigned-tasks --json --target-file docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` → `currentViolations=0`
-- `audit-unassigned-tasks --json --diff-from HEAD` → `currentViolations=0`, `baselineViolations=90`
+- `docs/30-workflows/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` を移動
+- 参照先を `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` へ統一
+- `UT-TASK-10A-B-010` を各台帳で「完了: 2026-03-05」へ更新
 
 ### 結果
 - ステータス: success
-- 補足: 未タスク起票とシステム仕様反映を同一ターンで完了
+- 補足: 移管後も `task-workflow` / `ui-ux-*` / `lessons` / `SKILL` の参照整合を維持
 
 ---
 
-## 2026-03-05 - UT-TASK-10A-B-001 再利用最適化（クイック解決カード同期）
+## 2026-03-05 - UT-TASK-10A-B-010 追加同期（再分析アンマウント安全化ガード）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象タスク: `UT-TASK-10A-B-001`
-- 目的: 実装内容と苦戦箇所を、同種課題で短手順再利用できる形に再編する
+- 対象: `UT-TASK-10A-B-010`
+- 目的: 改善適用後再分析で発生した `analyze` 呼び出しリーク（期待2回/実測4回）を未タスク化し、システム仕様正本へ苦戦箇所と再発防止ルールを同期する
 
 ### 仕様書別SubAgent分担
-- SubAgent-A（台帳最適化）: `references/task-workflow.md` にクイック解決カードと固定コマンドを追加（変更履歴 `1.67.9`）
-- SubAgent-B（UI仕様最適化）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` に再監査クイックカードを追加（`v1.15.3` / `2.14.5`）
-- SubAgent-C（教訓最適化）: `references/lessons-learned.md` に4ステップのクイック解決カードを追加（変更履歴 `1.29.18`）
-- SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.15` へ更新
+- SubAgent-A（未タスク作成）: `docs/30-workflows/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` をテンプレート準拠で作成
+- SubAgent-B（台帳同期）: `references/task-workflow.md` の TASK-10A-B 苦戦箇所・残課題テーブル・変更履歴へ `UT-TASK-10A-B-010` を追加
+- SubAgent-C（UI仕様同期）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` の残課題サマリーを `4件 + 3件 + 2件` へ更新
+- SubAgent-D（教訓同期）: `references/lessons-learned.md` に再発条件付き教訓と関連未タスク導線を追記
+- SubAgent-E（履歴同期）: `SKILL.md` 変更履歴を `9.01.14` へ更新
 
 ### 実施内容
-- 配置判定ルールを明文化（未実施=`unassigned-task` / 完了済みUT=`completed-tasks` 直下 / `completed-tasks/unassigned-task` は legacy）
-- `audit --target-file` の適用境界を明文化（未実施UTのみ）
-- UI証跡の合格基準を固定（TC-11-01〜05 + coverage 5/5）
-- 監査値の記録規則を固定（`current`=合否 / `baseline`=監視）
+- 未タスク仕様書 `UT-TASK-10A-B-010` を `docs/30-workflows/unassigned-task/` 正本へ新規作成
+- `useSkillAnalysis` の実装苦戦箇所（アンマウント後更新/再分析リーク）を `task-workflow` / `ui-ux-feature-components` / `lessons-learned` へ同期
+- `ui-ux-components.md` の TASK-10A-B 残課題サマリーを更新し、台帳件数とIDを一致化
 
 ### 結果
 - ステータス: success
-- 補足: 実装内容・苦戦箇所・解決手順を仕様書4点で同一粒度に統一
+- 補足: 未タスク指示書・残課題テーブル・教訓・スキル履歴の4系統で `UT-TASK-10A-B-010` が整合
 
 ---
 
-## 2026-03-05 - UT-TASK-10A-B-001 最終再監査（未タスク配置是正）
+## 2026-03-05 - TASK-10A-B Phase 12再確認追補（実装内容 + 苦戦箇所 + 未タスク配置是正）
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象タスク: `UT-TASK-10A-B-001`
-- 目的: 完了済み/未実施の指示書配置ドリフトを是正し、システム仕様書へ実装内容・苦戦箇所・再利用手順を最終同期する
+- 対象: `TASK-10A-B`（改善結果内訳表示UI）
+- 目的: 実装内容と苦戦箇所（`executedAt` 視認性 / 未タスク配置ドリフト）をシステム仕様正本へ固定し、未タスク配置先を運用基準どおりに再統一する
 
 ### 仕様書別SubAgent分担
-- SubAgent-A（台帳同期）: `references/task-workflow.md` に苦戦箇所追補と変更履歴 `1.67.8` を追加
-- SubAgent-B（UI仕様同期）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` に配置整合追補を追加
-- SubAgent-C（教訓同期）: `references/lessons-learned.md` に最終再監査追補と変更履歴 `1.29.17` を追加
-- SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.14` へ更新
+- SubAgent-A（台帳同期）: `references/task-workflow.md` の検証証跡・残課題テーブル・変更履歴を再同期
+- SubAgent-B（UI仕様同期）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` の関連未タスク・残課題サマリーを再同期
+- SubAgent-C（教訓同期）: `references/lessons-learned.md` に苦戦箇所と再利用手順を追記
+- SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.13` へ更新
 
 ### 実施内容
-- 完了済み `task-10a-b-autofixable-filter-button.md` を `docs/30-workflows/completed-tasks/` 直下へ移管
-- 未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置
-- 関連参照（workflow成果物/仕様書）を一括更新し、削除済みパス参照を解消
-- スクリーンショット5件（TC-11-01〜05）を 2026-03-05 11:00 JST に再取得し、Apple UI/UX 観点で再確認
-- 検証を再実行
-  - `verify-unassigned-links` → `ALL_LINKS_EXIST (102/102)`
-  - `audit-unassigned-tasks --json` → `currentViolations=90`（既知baseline）
-  - `audit-unassigned-tasks --json --diff-from HEAD` → `currentViolations=0`, `baselineViolations=90`
+- `UI-11-001`（`executedAt` 視認性課題）を `UT-TASK-10A-B-009` として未タスク化し、関連仕様へ登録
+- 未完了 `UT-TASK-10A-B-*` 指示書を `docs/30-workflows/unassigned-task/` 正本へ統一し、旧参照を置換
+- Phase 11 画面証跡（`TC-11-01〜05`, 2026-03-05 10:34 JST）と `validate-phase11-screenshot-coverage`（5/5）を仕様へ固定
 
 ### 結果
 - ステータス: success
-- 補足: 未タスク配置の運用ルールを「完了=completed-tasks / 未実施=unassigned-task」の物理分離へ固定
+- 補足: 実装内容・苦戦箇所・未タスク配置先判定が `task-workflow` / `ui-ux-*` / `lessons` で整合
+
+---
+
+## 2026-03-05 - UT-TASK-10A-B-003 完了同期（残課題表・関連未タスク表・参照整合）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象: `UT-TASK-10A-B-003`（改善結果内訳表示実装）
+- 目的: システム仕様正本での未タスク残存と旧参照パス残りを解消し、Phase 12 Step 1-C を完了状態へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳同期）: `references/task-workflow.md` の残課題テーブルと TASK-10A-B 未タスク管理行を更新
+- SubAgent-B（UI機能仕様同期）: `references/ui-ux-feature-components.md` の関連未タスク表を完了表記へ更新
+- SubAgent-C（UI一覧同期）: `references/ui-ux-components.md` の TASK-10A-B 残課題件数を更新
+- SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.12` へ更新
+
+### 実施内容
+- `UT-TASK-10A-B-003` を残課題テーブルで取り消し線 + 完了日付き表記へ更新
+- `completed-tasks/unassigned-task/...` の旧参照を `completed-tasks/task-10a-b-improvement-result-breakdown-ui.md` へ統一
+- TASK-10A-B 未タスク管理行を `4件 + 3件` に再計算
+
+### 結果
+- ステータス: success
+- 補足: 台帳/機能仕様/UI一覧の3系統で `UT-TASK-10A-B-003` 状態と参照先が一致した
 
 ---
 
@@ -7103,60 +7117,3 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `validate-phase-output docs/30-workflows/completed-tasks/skill-analysis-view`: PASS（28項目）
   - `verify-unassigned-links`: PASS（97/97, missing=0）
   - `audit-unassigned-tasks --json --diff-from HEAD`: `currentViolations=0`（baseline=75）
-
-## 2026-03-05 - UT-TASK-10A-B-001 完了同期（自動修正可能フィルタボタン）
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: UT-TASK-10A-B-001
-- 目的: Task Workflow/UI仕様/教訓台帳へ完了状態を同期
-
-### 実施内容
-
-- `references/task-workflow.md`
-  - TASK-10A-B 節へ派生タスク完了記録を追加
-  - 残課題テーブルの `UT-TASK-10A-B-001` を完了化
-  - 未タスク管理件数を `5件+3件` から `4件+3件` へ更新
-- `references/ui-ux-feature-components.md`
-  - TASK-10A-B 関連未タスク表の `UT-TASK-10A-B-001` を完了化
-  - 派生タスク完了追補（実装要点・テスト53件・画面証跡5件）を追加
-- `references/ui-ux-components.md`
-  - TASK-10A-B 実装内容サマリーの残課題件数を更新
-  - 派生完了行を追加
-- `references/lessons-learned.md`
-  - UT-TASK-10A-B-001 完了教訓を追加
-
-### 結果
-
-- ステータス: success
-- 参照先: `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/`
-
-## 2026-03-05 - UT-TASK-10A-B-001 再監査追補（light証跡ドリフト是正）
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: UT-TASK-10A-B-001
-- 目的: Phase 11 の lightモード証跡が dark表示で保存されるドリフトを是正し、仕様正本と成果物を再同期する
-
-### 仕様書別SubAgent分担
-
-- SubAgent-A（画面証跡）: `capture-ut-task-10a-b-001-screenshots.mjs` を修正し、TC-11-01〜05 を再撮影
-- SubAgent-B（システム仕様）: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-components.md` / `lessons-learned.md` へ再監査追補を反映
-- SubAgent-C（Phase 12成果物）: `documentation-changelog.md` / `unassigned-task-detection.md` / `spec-update-summary.md` / `skill-feedback-report.md` へ追補
-- SubAgent-D（履歴同期）: `SKILL.md` / `LOGS.md`（両スキル）へ変更履歴を記録
-
-### 実施内容
-
-- `apps/desktop/scripts/capture-ut-task-10a-b-001-screenshots.mjs` の theme mock を `prefers-color-scheme` 連動へ修正
-- Phase 11 スクリーンショットを再取得（`2026-03-05 10:28 JST`）
-- `validate-phase11-screenshot-coverage` を再実行し、`expected=5 / covered=5` を確認
-- 未タスク監査を追補
-  - `--diff-from HEAD`: `currentViolations=0`, `baselineViolations=97`
-  - `--target-file task-10a-b-autofixable-filter-button.md`: `scope.currentFiles=1`, `currentViolations=0`
-
-### 結果
-
-- ステータス: success
-- 補足: UI証跡の完了条件を「テーマ整合 + TC証跡 + coverage PASS」の3点で再固定
