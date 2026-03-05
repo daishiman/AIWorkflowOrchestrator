@@ -1299,11 +1299,21 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ## 実行タスク
 
-- 技術ドキュメント作成: 実装ガイドの作成
-- システムドキュメント更新: aiworkflow-requirements等の更新
-- ドキュメント更新履歴作成: 変更履歴の記録
-- 未タスク検出: 残課題の検出と記録
-- スキルフィードバックレポート作成: ワークフロー改善点と技術的教訓の記録
+| Task | 内容 | 主成果物 |
+| ---- | ---- | -------- |
+| Task 12-1 | 技術ドキュメント作成（実装ガイド作成） | `outputs/phase-12/implementation-guide.md` |
+| Task 12-2 | システムドキュメント更新（aiworkflow-requirements 等） | `outputs/phase-12/spec-update-summary.md` |
+| Task 12-3 | ドキュメント更新履歴作成 | `outputs/phase-12/documentation-changelog.md` |
+| Task 12-4 | 未タスク検出（残課題の検出と記録） | `outputs/phase-12/unassigned-task-detection.md` |
+| Task 12-5 | スキルフィードバックレポート作成 | `outputs/phase-12/skill-feedback-report.md` |
+
+- Task 12-1: 技術ドキュメント作成（実装ガイド作成）
+- Task 12-2: システムドキュメント更新（aiworkflow-requirements等の更新）
+- Task 12-3: ドキュメント更新履歴作成（変更履歴の記録）
+- Task 12-4: 未タスク検出（残課題の検出と記録）
+- Task 12-5: スキルフィードバックレポート作成（ワークフロー改善点と技術的教訓の記録）
+
+> **必須**: 実行タスクは「表」と「`- Task 12-X:` 箇条書き」を**両方**残すこと（表のみ・箇条書きのみは不合格）。
 
 ## サブフェーズ
 
@@ -1340,6 +1350,8 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ##### Step 1-C: 関連タスクテーブル更新（該当する場合）
 - [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
+- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] `docs/30-workflows/completed-tasks/unassigned-task/` に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 - [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
@@ -1466,6 +1478,7 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 
 ## 完了条件
 
+- [ ] 実行タスクを「表」と「`- Task 12-X:` 箇条書き」の両方で記載している
 - [ ] 実装ガイド（Part 1: 概念的説明）が作成されている
 - [ ] 実装ガイド（Part 2: 技術的詳細）が作成されている
 - [ ] 実装ガイドのテストカテゴリテーブルがPhase 6後の実測値を反映している
@@ -1485,6 +1498,7 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] 未タスク指示書の物理ファイル存在を確認した（`ls docs/30-workflows/unassigned-task/` で検証）
+- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
 - [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
 - [ ] **artifacts.jsonの全完了Phase（1-12）のステータスがcompletedであること**

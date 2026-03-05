@@ -32,9 +32,9 @@ grep -Ern "TODO|FIXME|HACK" apps/desktop/src/renderer/components/skill/
 
 | 未タスクID        | 概要                                         | 深刻度 | 指示書                                                                              |
 | ----------------- | -------------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
-| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装               | Minor  | `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md`         |
+| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装               | Minor  | `docs/30-workflows/unassigned-task/task-10a-b-autofixable-filter-button.md`         |
 | UT-TASK-10A-B-002 | 改善結果トースト通知実装                     | Minor  | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md`    |
-| UT-TASK-10A-B-003 | 改善結果内訳表示実装                         | Minor  | `docs/30-workflows/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md`   |
+| UT-TASK-10A-B-003 | 改善結果内訳表示実装                         | Minor  | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui.md`   |
 | UT-TASK-10A-B-004 | Props契約整合（`skill` vs `skillName`）      | Minor  | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md`          |
 | UT-TASK-10A-B-005 | molecule分割設計追補（Header/Error/Actions） | Minor  | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
 

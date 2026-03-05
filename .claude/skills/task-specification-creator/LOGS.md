@@ -26,6 +26,35 @@
 
 ---
 
+## 2026-03-05 - Phase 12テンプレート再発防止追補（実行タスク二重記法 + 未タスク配置先判定）
+
+- **Agent**: task-specification-creator
+- **Phase**: phase-template-improvement（Phase 12運用強化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-templates.md` の Phase 12 `実行タスク` を「Task表 + `- Task 12-X:` 箇条書き」の二重記法へ標準化
+  - 同テンプレートの Step 1-C / 完了条件へ、未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）を必須追加
+  - `references/spec-update-workflow.md` の誤判断パターンと Step 1-E チェックリストへ、未完了指示書の `completed-tasks/unassigned-task` 混入防止を追記
+  - `SKILL.md` 変更履歴を `v10.08.8` として同期
+
+---
+
+## 2026-03-05 - UT-TASK-10A-B-003 再監査（Phase 12整合 + 参照パス是正）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A/1-B/1-C 再同期）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `task-10a-b-improvement-result-breakdown-ui` workflow の旧参照 `completed-tasks/unassigned-task/...` を現行パスへ一括更新
+  - `index.md` / `phase-12-documentation.md` / `task指示書` の状態を `completed` 実態へ同期
+  - `artifacts.json` を `taskType: completed` へ更新し、`outputs/artifacts.json` を生成
+  - `outputs/phase-12/*`（spec-update-summary/documentation-changelog/unassigned-task-detection/skill-feedback-report）へ Step 1-A/1-B/1-C 実施結果を反映
+  - `aiworkflow-requirements` 側の `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-components.md` 完了同期と同一ターンで履歴化
+
+---
+
 ## 2026-03-04 - Phase 11証跡の workflow 配置ドリフト対策（NON_VISUAL記法追補）
 
 - **Agent**: task-specification-creator
