@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 996
+```
+
+## メタ情報
+
 | 項目         | 内容                                        |
 | ------------ | ------------------------------------------- |
 | タスクID     | UT-TASK-10A-B-008                           |
@@ -192,7 +198,7 @@ rg -n "UT-TASK-10A-B-00[1-8]" docs/30-workflows/completed-tasks/skill-analysis-v
 rg -n "UT-TASK-10A-B-00[1-8]" .claude/skills/aiworkflow-requirements/references/task-workflow.md
 rg -n "UT-TASK-10A-B-00[1-8]" .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 

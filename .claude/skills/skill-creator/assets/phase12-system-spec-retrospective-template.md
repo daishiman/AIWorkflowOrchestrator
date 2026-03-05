@@ -132,9 +132,9 @@ UI機能実装の場合は次を推奨:
 
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
-3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
+3. `<未実施UTは docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了済みUT指示書は docs/30-workflows/completed-tasks/ 直下へ移管する（completed-tasks/unassigned-task は legacy のみ）>`
 4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
-5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / validate-phase11-screenshot-coverage / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
 
@@ -149,17 +149,19 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
+| `echo <target-file> \| rg '^docs/30-workflows/(unassigned-task|completed-tasks/unassigned-task)/'` | `target-file` 適用境界の機械確認 | 対象が未実施UTディレクトリ配下である |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
-| `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | 未完了は `unassigned-task`、完了済みは `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
-| `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
+| `test -f docs/30-workflows/completed-tasks/<completed-task>.md && test ! -f docs/30-workflows/completed-tasks/unassigned-task/<completed-task>.md` | 完了済みUT指示書の配置重複確認 | `completed-tasks` 直下のみ存在する |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
+| `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（`expected TC = covered TC`。warningが出た場合は理由を記録） |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
+| `rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md` | TC証跡記法の機械確認（UIタスクのみ） | 視覚TCは `.png`、非視覚TCは `NON_VISUAL:` が確認できる |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
@@ -175,55 +177,21 @@ UI機能実装の場合は次を推奨:
 - [ ] 旧名 `unassigned-task-report.md` を新規作成していない（互換用途のみ・非推奨）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
+- [ ] 配置先を3分類で判定済み（未実施=`docs/30-workflows/unassigned-task/` / 完了済みUT=`docs/30-workflows/completed-tasks/` / legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] 完了済みUT指示書は `completed-tasks` 直下に単一配置され、`completed-tasks/unassigned-task` へ重複していない
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
+- [ ] `audit --target-file` に指定したファイルが `unassigned-task` 系ディレクトリ配下である
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
-- [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
+- [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
+- [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` で記録し、対象workflow配下の実体と一致している
+- [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
-- [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
-
----
-
-## 9. 最適なファイル形成（Phase 12 Step 2）
-
-### 9.1 記述順序（固定）
-
-1. `task-workflow.md`（完了台帳・検証証跡・苦戦箇所）
-2. `<domain-spec>.md`（実装仕様と契約差分）
-3. `lessons-learned.md`（再発条件付き教訓）
-
-> UI機能実装では `ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` を 2 と 3 の間に追加する。
-
-### 9.2 各仕様書の必須ブロック（コピペ用）
-
-```markdown
-### 実装内容（要点）
-- 変更範囲:
-- 実装した要点:
-- 完了根拠:
-
-### 苦戦箇所（再利用形式）
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-|  |  |  |  |
-
-### 同種課題の最短手順
-1.
-2.
-3.
-4.
-5.
-```
-
-### 9.3 ファイル形成チェック
-
-- [ ] 仕様書ごとに `実装内容` と `苦戦箇所` の両方が存在する
-- [ ] `task-workflow.md` と `lessons-learned.md` の検証値（verify/validate/links/audit）が一致する
-- [ ] UIタスクでは `manual-test-result.md` の時刻と `screenshots/*.png` の `stat` が一致する
-- [ ] `currentViolations` を合否、`baselineViolations` を監視値として分離記録している
+- [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
+- [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している

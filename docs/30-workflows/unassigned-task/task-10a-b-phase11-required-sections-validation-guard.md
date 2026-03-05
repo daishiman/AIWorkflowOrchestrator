@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 993
+```
+
+## メタ情報
+
 | 項目         | 内容                                      |
 | ------------ | ----------------------------------------- |
 | タスクID     | UT-TASK-10A-B-006                         |
@@ -191,7 +197,7 @@ rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$'
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/skill-analysis-view
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/skill-analysis-view --strict
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md
 ```
 
 ## 7. リスクと対策
