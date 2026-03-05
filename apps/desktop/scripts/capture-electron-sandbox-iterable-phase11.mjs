@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "../../..");
 const outputDir = path.join(
   ROOT,
-  "docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/screenshots",
+  "docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/screenshots",
 );
 const baseUrl = process.env.PHASE11_SCREENSHOT_BASE_URL || "http://localhost:5173";
 
