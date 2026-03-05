@@ -107,7 +107,7 @@
 
 - **状況**: 機能実装完了後も、対応済みの未タスク指示書が `docs/30-workflows/unassigned-task/` に残り、運用上「未完了」と誤認される
 - **アプローチ**:
-  - Phase 12完了時に、完了済みの未タスク指示書を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管
+  - Phase 12完了時に、完了済みUT指示書を `docs/30-workflows/completed-tasks/` 直下へ移管（`completed-tasks/unassigned-task/` は legacy 管理のみ）
   - `task-workflow.md` / 関連interfaces仕様書 / workflow index の参照パスを同時更新
   - `artifacts.json` と phase-12成果物（監査レポート含む）を最終整合チェック
 - **結果**: 未タスク台帳の状態と実ファイル配置が一致し、完了/未完了の判定ミスを抑制
@@ -126,6 +126,19 @@
 - **適用条件**: 未タスク再監査、完了済み移管作業、参照修正を同時に行うPhase 12
 - **発見日**: 2026-02-20
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+
+### [Phase12] 完了済みUT指示書を `completed-tasks` 直下へ移管し、未実施UTを `unassigned-task` へ分離（UT-TASK-10A-B）
+
+- **状況**: 完了済み `UT-TASK-10A-B-001` 指示書と、未実施 `UT-TASK-10A-B-002〜008` 指示書が同一ディレクトリに混在し、運用意図と監査結果が乖離した
+- **アプローチ**:
+  - 完了済み指示書は `docs/30-workflows/completed-tasks/` 直下へ移管し、未実施指示書は `docs/30-workflows/unassigned-task/` へ再配置
+  - 参照先を `phase-*` / `outputs/phase-12/*` / システム仕様書へ同時反映し、削除済みパス参照を一括解消
+  - `audit --target-file` は未実施UT（`unassigned-task` 系）に限定し、完了済み指示書（`completed-tasks/*.md`）には適用しない
+  - `verify-unassigned-links` と `audit --diff-from HEAD` を同一ターンで実行し、`current=0` を固定
+- **結果**: 完了/未実施の運用境界が物理配置で明確化され、再監査時の配置誤判定・`target-file` 誤用・参照ドリフトを同時に抑制
+- **適用条件**: 完了済みUT指示書と未実施UT指示書が同時に存在する Phase 12 再監査
+- **発見日**: 2026-03-05
+- **関連タスク**: UT-TASK-10A-B-001
 
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
@@ -1618,6 +1631,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **対策**: 監査テンプレートに「baseline / scope-of-change」2列を追加し、対象ファイルの個別検証結果を併記する
 - **発見日**: 2026-02-22
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
+
+### [Phase12] 完了済み指示書を `--target-file` 監査へ誤適用
+
+- **状況**: `docs/30-workflows/completed-tasks/` 直下の完了済み指示書を `audit-unassigned-tasks --target-file` に渡して判定した
+- **問題**: 監査対象ディレクトリ外のためコマンドがエラーとなり、Step 1-E の結果記録が実体とずれる
+- **原因**: 配置先の3分類（未実施=`unassigned-task` / 完了済みUT=`completed-tasks` / legacy=`completed-tasks/unassigned-task`）を固定せず、`--target-file` の有効範囲を未確認で運用した
+- **教訓**: 完了済み指示書は `target-file` 監査対象ではない。必要時は未実施指示書を1件選んで scoped 監査する
+- **対策**: Phase 12テンプレートに `target-file` 対象ディレクトリ確認（`unassigned-task` 系のみ）と完了済みUT配置重複チェック（`completed-tasks` 直下のみ）を追加し、エラー時は即時ログ修正する
+- **発見日**: 2026-03-05
+- **関連タスク**: UT-TASK-10A-B-001
 
 ### [Phase12] spec_created/完了workflow混在時の証跡分散
 

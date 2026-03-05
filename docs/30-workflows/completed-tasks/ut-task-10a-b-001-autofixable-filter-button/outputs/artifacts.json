@@ -1,0 +1,253 @@
+{
+  "feature": "ut-task-10a-b-001-autofixable-filter-button",
+  "created": "2026-03-05T00:00:00Z",
+  "lastUpdated": "2026-03-05T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-design.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/state-design.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-readiness.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-gate-decision.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/boundary-case-matrix.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/state-transition-check.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-analysis.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/compatibility-check.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/risk-register.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/fix-instructions.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-index.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "planned artifact"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "planned artifact"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/completion-report.md",
+          "description": "planned artifact"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

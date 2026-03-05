@@ -37,7 +37,7 @@
 | --- | --- | --- | --- |
 | SubAgent-A | `<workflow-a>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-a の検証が全て PASS |
 | SubAgent-B | `<workflow-b>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-b の検証が全て PASS（不要時はN/A理由記録） |
-| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`、未完了は前者/完了移管済みは後者で整合 |
+| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`、未実施は1つ目、完了済みUTは2つ目、3つ目は legacy のみ。`target-file` 監査は1つ目/3つ目に限定 |
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
@@ -99,7 +99,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
-rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task
+rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
@@ -118,7 +118,8 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
-- [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
+- [ ] 未タスクの配置先判定（未実施=`docs/30-workflows/unassigned-task/`、完了済みUT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
+- [ ] `audit --target-file` の対象が `unassigned-task` 系（`unassigned-task/` or `completed-tasks/unassigned-task/`）であることを確認している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
