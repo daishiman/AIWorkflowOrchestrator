@@ -220,10 +220,19 @@ export const IPC_CHANNELS = {
   SKILL_CHAIN_EXECUTE: "skill:chain:execute",
 
   // History operations
+  HISTORY_SEARCH: "history:search",
+  HISTORY_GET_STATS: "history:get-stats",
   HISTORY_GET_FILE_HISTORY: "history:getFileHistory",
   HISTORY_GET_VERSION_DETAIL: "history:getVersionDetail",
   HISTORY_GET_CONVERSION_LOGS: "history:getConversionLogs",
   HISTORY_RESTORE_VERSION: "history:restoreVersion",
+
+  // Notification operations
+  NOTIFICATION_GET_HISTORY: "notification:get-history",
+  NOTIFICATION_MARK_READ: "notification:mark-read",
+  NOTIFICATION_MARK_ALL_READ: "notification:mark-all-read",
+  NOTIFICATION_CLEAR: "notification:clear",
+  NOTIFICATION_NEW: "notification:new",
 
   // Community operations
   COMMUNITY_GET_ALL: "community:getAll",
@@ -503,10 +512,17 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CHAIN_DELETE,
   IPC_CHANNELS.SKILL_CHAIN_EXECUTE,
   // History channels
+  IPC_CHANNELS.HISTORY_SEARCH,
+  IPC_CHANNELS.HISTORY_GET_STATS,
   IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
   IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
   IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,
   IPC_CHANNELS.HISTORY_RESTORE_VERSION,
+  // Notification channels
+  IPC_CHANNELS.NOTIFICATION_GET_HISTORY,
+  IPC_CHANNELS.NOTIFICATION_MARK_READ,
+  IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ,
+  IPC_CHANNELS.NOTIFICATION_CLEAR,
   // Community channels
   IPC_CHANNELS.COMMUNITY_GET_ALL,
   IPC_CHANNELS.COMMUNITY_GET_BY_LEVEL,
@@ -652,4 +668,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
   // Skill debug event channel (TASK-9H)
   IPC_CHANNELS.SKILL_DEBUG_EVENT,
+  // Notification channels
+  IPC_CHANNELS.NOTIFICATION_NEW,
 ];

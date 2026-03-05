@@ -19,15 +19,17 @@ import { ScheduleManager } from "./views/ScheduleManager";
 import { DebugPanel } from "./views/DebugPanel";
 import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
+import { HistorySearchView } from "./views/HistorySearchView";
 import { SkillCenterView } from "./views/SkillCenterView";
 import { SkillEditorView } from "./views/SkillEditorView";
 import { UIDesignFoundationPreview } from "./views/UIDesignFoundationPreview";
+import { WorkspaceView } from "./views/WorkspaceView";
 import { OrganismsShowcaseView } from "./views/OrganismsShowcaseView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
-import type { ViewType } from "./components/organisms/AppDock";
+import type { ViewType } from "./store/types";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
 // Chat History機能はIPC経由でMain Processと連携する形で後続タスクで実装予定
@@ -81,6 +83,8 @@ function App(): JSX.Element {
     switch (currentView) {
       case "dashboard":
         return <DashboardView />;
+      case "workspace":
+        return <WorkspaceView />;
       case "editor":
         return <EditorView />;
       case "chat":
@@ -89,6 +93,11 @@ function App(): JSX.Element {
         return <GraphView />;
       case "agent":
         return <AgentView />;
+      case "skillCenter":
+      case "skill-center":
+        return <SkillCenterView />;
+      case "historySearch":
+        return <HistorySearchView />;
       case "chainBuilder":
         return <SkillChainBuilder />;
       case "scheduleManager":
@@ -97,22 +106,23 @@ function App(): JSX.Element {
         return <DebugPanel />;
       case "analyticsDashboard":
         return <AnalyticsDashboard />;
-      case "skill-center":
-        return <SkillCenterView />;
       case "skill-editor":
         return (
           <SkillEditorView
             skillName={currentSkillName ?? "demo-skill"}
             onClose={() => {
-              setCurrentView("skill-center");
+              setCurrentView("skillCenter");
               setCurrentSkillName(null);
             }}
           />
         );
       case "settings":
         return <SettingsView />;
-      default:
+      default: {
+        const _exhaustive: never = currentView;
+        void _exhaustive;
         return <DashboardView />;
+      }
     }
   };
 

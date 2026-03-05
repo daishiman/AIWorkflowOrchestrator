@@ -3,11 +3,14 @@
 // ビュー型
 export type ViewType =
   | "dashboard"
+  | "workspace"
   | "editor"
   | "chat"
   | "graph"
   | "settings"
   | "agent"
+  | "skillCenter"
+  | "historySearch"
   | "chainBuilder"
   | "scheduleManager"
   | "debugPanel"
@@ -63,6 +66,24 @@ export interface NotificationSettings {
   sound: boolean;
   workflowComplete: boolean;
   workflowError: boolean;
+}
+
+// 通知型（TASK-UI-01 / TASK-UI-08）
+export type NotificationType = "info" | "success" | "warning" | "error";
+
+export type NotificationSource =
+  | { kind: "skill_execution"; skillName: string }
+  | { kind: "file_operation"; fileName: string; operation: string }
+  | { kind: "system"; eventType: string };
+
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  detail?: string;
+  timestamp: string;
+  isRead: boolean;
+  source: NotificationSource;
 }
 
 // ユーザープロフィール型

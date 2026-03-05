@@ -44,6 +44,14 @@ import {
   createAuthModeSlice,
   type AuthModeSlice,
 } from "./slices/authModeSlice";
+import {
+  createNotificationSlice,
+  type NotificationSlice,
+} from "./slices/notificationSlice";
+import {
+  createHistorySearchSlice,
+  type HistorySearchSlice,
+} from "./slices/historySearchSlice";
 
 // Combined store type
 // TASK-FIX-6-1: SkillSliceは削除済み。状態はAgentSliceに統合
@@ -62,7 +70,9 @@ export type AppStore = NavigationSlice &
   LLMSlice &
   AgentSlice &
   ChatEditSlice &
-  PermissionHistorySlice;
+  PermissionHistorySlice &
+  NotificationSlice &
+  HistorySearchSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -119,6 +129,8 @@ export const useAppStore = create<AppStore>()(
         ...createChatEditSlice(...args),
         // TASK-FIX-6-1: skillSliceは削除済み。状態はagentSliceに統合
         ...createPermissionHistorySlice(...args),
+        ...createNotificationSlice(...args),
+        ...createHistorySearchSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -132,6 +144,7 @@ export const useAppStore = create<AppStore>()(
           autoSyncEnabled: state.autoSyncEnabled,
           windowSize: state.windowSize,
           permissionHistory: state.permissionHistory,
+          notifications: state.notifications,
         }),
       },
     ),
@@ -270,6 +283,56 @@ export const useClearFileSelectionError = () =>
   useAppStore((state) => state.clearError);
 export const useResetFileSelection = () =>
   useAppStore((state) => state.resetFileSelection);
+
+// Notification selectors/actions (P31準拠: 個別セレクタのみ)
+export const useNotifications = () =>
+  useAppStore((state) => state.notifications);
+export const useUnreadCount = () => useAppStore((state) => state.unreadCount);
+export const useIsNotificationPopoverOpen = () =>
+  useAppStore((state) => state.isPopoverOpen);
+export const useExpandedNotificationId = () =>
+  useAppStore((state) => state.expandedNotificationId);
+
+export const useAddNotification = () =>
+  useAppStore((state) => state.addNotification);
+export const useMarkAsRead = () => useAppStore((state) => state.markAsRead);
+export const useMarkAllAsRead = () =>
+  useAppStore((state) => state.markAllAsRead);
+export const useDeleteNotification = () =>
+  useAppStore((state) => state.deleteNotification);
+export const useSetNotificationPopoverOpen = () =>
+  useAppStore((state) => state.setPopoverOpen);
+export const useSetExpandedNotificationId = () =>
+  useAppStore((state) => state.setExpandedNotificationId);
+export const useClearAllNotifications = () =>
+  useAppStore((state) => state.clearAllNotifications);
+
+// History search selectors/actions (P31準拠: 個別セレクタのみ)
+export const useHistorySearchQuery = () =>
+  useAppStore((state) => state.historySearchQuery);
+export const useHistorySearchResults = () =>
+  useAppStore((state) => state.historySearchResults);
+export const useHistorySearchTotalCount = () =>
+  useAppStore((state) => state.historySearchTotalCount);
+export const useHistorySearchHasMore = () =>
+  useAppStore((state) => state.historySearchHasMore);
+export const useIsHistorySearching = () =>
+  useAppStore((state) => state.isHistorySearching);
+export const useHistorySearchError = () =>
+  useAppStore((state) => state.historySearchError);
+export const useExpandedHistoryItemId = () =>
+  useAppStore((state) => state.expandedItemId);
+
+export const useSetHistorySearchQuery = () =>
+  useAppStore((state) => state.setHistorySearchQuery);
+export const useSearchHistory = () =>
+  useAppStore((state) => state.searchHistory);
+export const useLoadMoreHistory = () =>
+  useAppStore((state) => state.loadMoreHistory);
+export const useResetHistorySearch = () =>
+  useAppStore((state) => state.resetHistorySearch);
+export const useToggleHistoryItemExpanded = () =>
+  useAppStore((state) => state.toggleItemExpanded);
 
 // ============================================
 // LLM selectors - 合成Store Hook（非推奨）
