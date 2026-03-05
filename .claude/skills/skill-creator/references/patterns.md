@@ -2208,6 +2208,18 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001
 
+### [Phase12] `--target-file` 適用境界固定 + `current/baseline` 分離判定（TASK-UI-01-A）
+
+- **状況**: Phase 12 再監査で `audit-unassigned-tasks --target-file` に `outputs/phase-12/*.md` を指定し、対象外エラーで判定が停止した
+- **アプローチ**:
+  - `--target-file` は `docs/30-workflows/unassigned-task/*.md` に限定し、成果物監査は `--diff-from HEAD` へ切り替える
+  - 合否判定は `currentViolations` のみを使用し、`baselineViolations` は資産健全性指標として別管理する
+  - baseline負債が残る場合は別未タスク（段階削減）へ切り出して追跡する
+- **結果**: 監査コマンド誤用による手戻りを防ぎ、差分合否と既存負債の説明責務を同時に満たせる
+- **適用条件**: 未タスク監査を含む Phase 12 再確認タスク全般
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-UI-01-A-STORE-SLICE-BASELINE
+
 ---
 
 ## ガイドライン

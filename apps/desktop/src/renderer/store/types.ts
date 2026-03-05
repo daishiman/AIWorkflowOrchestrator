@@ -161,3 +161,59 @@ export function getThemeColorScheme(theme: ResolvedTheme): ThemeColorScheme {
       return "dark";
   }
 }
+
+// Store Slice baseline inventory types (TASK-UI-01-A)
+export type StoreBoundaryDecision =
+  | "new"
+  | "extend"
+  | "no-change"
+  | "local-useState";
+
+export type StoreSlicePersistenceStrategy =
+  | "persisted"
+  | "partial-persisted"
+  | "non-persisted";
+
+export interface StoreSlicePersistence {
+  strategy: StoreSlicePersistenceStrategy;
+  keys: readonly string[];
+}
+
+export interface StoreSliceInventoryItem {
+  sliceName: string;
+  state: readonly string[];
+  actions: readonly string[];
+  selectors: readonly string[];
+  persistence: StoreSlicePersistence;
+  ownerView: readonly string[];
+  filePath: string;
+}
+
+export type StoreBoundaryDomain =
+  | "Notification"
+  | "HistorySearch"
+  | "SkillCenter"
+  | "ViewType"
+  | "Workspace";
+
+export interface StoreBoundaryMatrixItem {
+  domain: StoreBoundaryDomain;
+  decision: StoreBoundaryDecision;
+  target: string;
+  rationale: string;
+  handoffTask: string;
+}
+
+export interface StoreSelectorNamingConvention {
+  stateSelectorPattern: string;
+  actionSelectorPattern: string;
+  requireDomainSuffix: boolean;
+}
+
+export interface StoreSelectorPolicy {
+  namingConvention: StoreSelectorNamingConvention;
+  deprecatedCompositeHooks: readonly string[];
+  bannedGenericSelectorNames: readonly string[];
+  requiredDomainSelectors: readonly string[];
+  notes: readonly string[];
+}

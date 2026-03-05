@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.8.4     | 2026-03-05 | TASK-UI-01-A-STORE-SLICE-BASELINE 反映: `store/types.ts` の baseline 型定義と `store/sliceBaseline.ts` の棚卸し定数（16行 inventory / 境界マトリクス / セレクタ規約）を追加。Notification/HistorySearch/SkillCenter/ViewType の責務境界を仕様化し、Phase 11 TC証跡（3件）と整合する検証手順を追記 |
 | v3.8.3     | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: UI基盤8コンポーネントの状態管理方針を追記。共有Storeを新設せず、ローカル state + コールバック注入で責務分離する設計を明文化 |
 | v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
 | v3.8.1     | 2026-03-03 | TASK-10A-D教訓反映: 個別セレクタの命名規約（ドメインサフィックス必須ルール）を追加。`useIsAnalyzingSkill()` vs `useIsAnalyzing()` の命名判断基準を明文化 |
@@ -60,6 +61,63 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - 新規 Slice: **不要**
 - 理由: UI基盤層の再利用性を優先し、ドメイン状態への依存を避けるため
 - 連携方式: props / callback / controlled component パターンを採用
+
+---
+
+## Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE）
+
+### 概要
+
+`task-056a-a-store-slice-baseline` では、後続タスク（`task-056a-b` / `task-056c` / `task-056d`）の前提として、既存Storeの責務境界を型付きで固定した。
+
+### 追加した基準定義
+
+| 種別 | 実装場所 | 内容 |
+| --- | --- | --- |
+| baseline型 | `apps/desktop/src/renderer/store/types.ts` | `StoreSliceInventoryItem` / `StoreBoundaryMatrixItem` / `StoreSelectorPolicy` などを追加 |
+| baseline定数 | `apps/desktop/src/renderer/store/sliceBaseline.ts` | `STORE_SLICE_INVENTORY_BASELINE` / `STORE_BOUNDARY_MATRIX_BASELINE` / `STORE_SELECTOR_POLICY_BASELINE` |
+| 再export | `apps/desktop/src/renderer/store/index.ts` | baseline定数を `store/index.ts` から参照可能に統一 |
+
+### Inventory基準
+
+| 項目 | 基準値 |
+| --- | --- |
+| 行数 | 16行（15 Slice + `ChatEditSlice`） |
+| 永続化キー | `currentView`, `selectedFile`, `expandedFolders`, `userProfile`, `autoSyncEnabled`, `windowSize`, `permissionHistory` |
+| 目的 | Slice責務・永続化・ownerView の判定根拠を固定し、後続タスクの判断ドリフトを防止 |
+
+### 境界マトリクス基準
+
+| ドメイン | 判定 | 根拠 |
+| --- | --- | --- |
+| Notification | `new` | 画面横断で未読/履歴を共有するため独立Slice化 |
+| HistorySearch | `new` | 検索クエリ/結果/統計を一貫管理するため分離 |
+| SkillCenter | `local-useState` | 詳細パネル開閉などは局所状態で完結 |
+| ViewType | `extend` | `NavigationSlice` の責務を維持し型拡張で対応 |
+| Workspace | `no-change` | 既存 `workspaceSlice` の責務で充足 |
+
+### セレクタ規約基準（P31対策）
+
+- 命名規約: `use{State}{Domain}` / `use{Verb}{Domain}`
+- 禁止: 合成Hook再導入（`useLLMStore` / `useSkillStore` / `useAuthModeStore`）
+- 禁止: 汎用セレクタ名（`useError` / `useLoading` / `useData`）
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest run src/renderer/store/__tests__/sliceBaseline.test.ts` | PASS（9/9） |
+| `typecheck` | PASS |
+| `validate-phase11-screenshot-coverage` | PASS（expected=3 / covered=3） |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
+| TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | 後続 |
+| TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | 後続 |
 
 ---
 
