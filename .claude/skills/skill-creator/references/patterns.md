@@ -1540,6 +1540,34 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: 03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 / UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001
 
+### [Phase12] UI再確認の準拠チェック成果物固定（TASK-UI-00-ORGANISMS）
+
+- **状況**: UIタスクの再確認で `verify/validate` はPASSでも、Task 1〜5 / Step 1-A〜1-E / Step 2 の判定根拠が複数ファイルへ分散しやすい
+- **アプローチ**:
+  1. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `audit --diff-from HEAD` を同一ターンで実行する
+  2. UI証跡は `pnpm run screenshot:<feature>` 実行後に `stat` で時刻を取得し、`manual-test-result.md` と同期する
+  3. `outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 1〜5 と Step判定を1ファイルに集約する
+  4. `task-workflow.md` と `lessons-learned.md` に実装内容・苦戦箇所・検証値を同時転記する
+- **結果**: Phase 12 の再監査根拠が一本化され、証跡鮮度ドリフトと判定漏れを同時に防止できる
+- **適用条件**: UI/UX実装タスクのブランチ再確認、または複数文書へ同時同期が必要な Phase 12
+- **教訓**: 再確認タスクでは「成果物作成」よりも「判定根拠の集約」が品質を左右する
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-UI-00-ORGANISMS
+
+### [Phase12] 実装内容+苦戦箇所の仕様書統一フォーマット（TASK-UI-00-ORGANISMS追補）
+
+- **状況**: system spec へ反映するとき、仕様書ごとに記述粒度が異なり「実装内容はあるが苦戦箇所がない」状態が起きやすい
+- **アプローチ**:
+  1. `task-workflow` / `<domain-spec>` / `lessons-learned` の順で更新し、仕様書ごとの責務境界を固定する
+  2. 各仕様書に `実装内容（要点）` と `苦戦箇所（再発条件付き）` を必須ブロックとして同時記載する
+  3. UIタスクは `manual-test-result` と `screenshots/*.png` の時刻整合（`stat`）を必須チェックにする
+  4. 検証値（verify/validate/links/audit）は `task-workflow` と `lessons` で同値転記する
+- **結果**: 仕様書ごとの記録粒度がそろい、同種課題でそのまま再利用できるテンプレート化が可能になる
+- **適用条件**: Phase 12 Step 2 で複数仕様書へ同時反映するタスク
+- **教訓**: 「何を実装したか」と「どこで苦戦したか」は同じ粒度で残すほど再利用性が高い
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-UI-00-ORGANISMS
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。

@@ -290,6 +290,21 @@
 - **発見日**: 2026-02-25
 - **関連タスク**: UT-FIX-SKILL-EXECUTE-INTERFACE-001
 
+### Phase 12 UI再確認の証跡固定（TASK-UI-00-ORGANISMS）
+
+- **状況**: UIコンポーネント実装タスクで、Phase 12再確認時に「成果物存在確認」だけで完了判定しやすい
+- **問題**: 画面証跡時刻や `manual-test-result.md` の更新が同期されず、再監査で証跡鮮度の差し戻しが発生する
+- **解決パターン**:
+  1. `verify-all-specs` + `validate-phase-output` + `validate-phase11-screenshot-coverage` を同一ターンで実行する
+  2. `pnpm run screenshot:<feature>` 実行後、`stat` でスクリーンショット実時刻を取得して `manual-test-result.md` と同期する
+  3. `verify-unassigned-links` + `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否基準に固定する
+  4. `phase12-task-spec-compliance-check.md` を作成し、Task 1〜5 + Step 1-A〜1-E + Step 2 の判定を1ファイルに集約する
+- **効果**:
+  - Phase 12の完了根拠（構造/出力/UI証跡/未タスク監査）を一元化できる
+  - UI再撮影後の時刻ドリフトを抑止できる
+- **発見日**: 2026-03-04
+- **関連タスク**: TASK-UI-00-ORGANISMS
+
 ### `phase-12-documentation.md` 完了同期パターン（TASK-9H）
 
 - **状況**: `outputs/phase-12` の成果物5件が揃っていても、`phase-12-documentation.md` のメタ情報と完了条件チェックが `未実施` のまま残ることがある
@@ -2038,6 +2053,7 @@
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |
 | **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |
 | **2026-02-28** | **TASK-9E 再監査パターン追加**: 成功パターン「Phase 12 テスト件数ドリフト再同期」を追加。正本件数固定→文脈限定抽出→4点検証→未タスク化までの手順を標準化 |
 | **2026-02-27** | **TASK-9H 再監査パターン追加**: 成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件の実体確認→ステータス同期→検証証跡固定の4ステップを標準化 |

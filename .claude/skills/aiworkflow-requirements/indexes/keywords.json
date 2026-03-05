@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-04T13:38:14.551Z",
-  "totalKeywords": 1412,
+  "generated": "2026-03-04T22:17:20.697Z",
+  "totalKeywords": 1415,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1229,6 +1229,14 @@
       "arch-ui-components.md"
     ],
     "ビュー統合アーキテクチャパターン": [
+      "arch-ui-components.md"
+    ],
+    "ORGANISMS": [
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "アーキテクチャ記録": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -3102,6 +3110,9 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
     "EDITOR": [
       "lessons-learned.md"
     ],
@@ -3204,9 +3215,6 @@
       "lessons-learned.md"
     ],
     "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -4970,7 +4978,8 @@
       "ui-ux-atoms-patterns.md"
     ],
     "Organisms": [
-      "ui-ux-atoms-patterns.md"
+      "ui-ux-atoms-patterns.md",
+      "ui-ux-feature-components.md"
     ],
     "実装への推奨事項": [
       "ui-ux-atoms-patterns.md"
@@ -5092,6 +5101,9 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "Foundation": [
+      "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
