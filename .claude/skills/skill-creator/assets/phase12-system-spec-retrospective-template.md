@@ -146,8 +146,9 @@ UI機能実装の場合は次を推奨:
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
-4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）と strictPort preflight（例: lsofで5177確認）を実施し、失敗時は未タスク化へ分離する>`
+4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
 5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+6. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
 
@@ -158,6 +159,7 @@ UI機能実装の場合は次を推奨:
 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
+| `rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md && rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md` | `phase-12-documentation.md` のメタ情報/Task 12-1〜12-5 完了同期を確認 | `ステータス=completed` と Task 12-1〜12-5 が `[x]` で一致する |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
@@ -167,20 +169,18 @@ UI機能実装の場合は次を推奨:
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | 未完了は `unassigned-task`、完了済みは `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
-| `rg -n 'Step 2|更新必要|更新なし|更新ファイル' <workflow-path>/outputs/phase-12/spec-update-summary.md <workflow-path>/outputs/phase-12/documentation-changelog.md` | Step 2 判定と更新有無の一致確認 | 2ファイルで Step 2 判定と更新対象が矛盾しない |
-| `rg -n 'ERR_1001|ERR_2004|ERR_5001|IPC_UNAUTHORIZED|VALIDATION_ERROR|INTERNAL_ERROR|errorCode' <workflow-path>/outputs/phase-12/spec-update-summary.md .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` | IPC失敗契約の code/errorCode 二軸整合確認 | `code` と `errorCode` の3分類が揃っている |
-| `rg -n '^### TASK-10A-E-A 実装内容|^### 実装時の苦戦箇所（TASK-10A-E-A）|^### TASK-10A-E-A 実装時の苦戦箇所|^### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）' .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | 仕様書別フォーマット（実装内容/苦戦箇所/5ステップ）の存在確認 | 3仕様書すべてで必要見出しが検出される |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
-| `lsof -nP -iTCP:5177 -sTCP:LISTEN || true` | UI再撮影時の strictPort 競合確認（例: 5177） | LISTEN有無が取得でき、分岐（停止/再利用/別ポート）を判断できる |
-| `test -d <workflow-path>/outputs/phase-11/screenshots` | UI証跡保存先の workflow 正規パス確認 | 対象workflow配下の保存先が実在する |
-| `node apps/desktop/scripts/<capture-script>.mjs --workflow <workflow-path>` | workflow 引数つき再撮影（対応済みスクリプト時） | 証跡が対象workflow配下へ直接保存される |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
+| `pnpm --filter @repo/desktop test:run` | 回帰の全量実行（ベースライン確認） | `PASS` または `SIGTERM` 失敗ログが記録される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
+| `pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>` | 全量実行が `SIGTERM` の場合の分割フォールバック | 対象回帰の合否が確定できる |
+| `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
+| `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -193,24 +193,22 @@ UI機能実装の場合は次を推奨:
 - [ ] `unassigned-task-detection.md`（標準）
 - [ ] 旧名 `unassigned-task-report.md` を新規作成していない（互換用途のみ・非推奨）
 - [ ] `phase12-task-spec-compliance-check.md`（任意だが推奨）
+- [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 のチェックが `[x]` になっている
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
-- [ ] Step 2 を実施した場合、`spec-update-summary.md` と `documentation-changelog.md` の更新有無・更新対象が一致している
-- [ ] IPC契約更新タスクでは `code`（`VALIDATION_ERROR`/`IPC_UNAUTHORIZED`/`INTERNAL_ERROR`）と `errorCode`（`ERR_1001/ERR_2004/ERR_5001`）を二軸で記録している
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
-- [ ] UIタスクでは strictPort 競合 preflight（例: `lsof -nP -iTCP:5177 -sTCP:LISTEN`）と分岐結果（停止/再利用/別ポート）を記録している
-- [ ] UIタスクでは証跡保存先が対象workflow配下であること（`<workflow>/outputs/phase-11/screenshots`）を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
+- [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 
 ---
 
@@ -243,13 +241,6 @@ UI機能実装の場合は次を推奨:
 3.
 4.
 5.
-
-### 検証証跡（確定値）
-- verify-all-specs:
-- validate-phase-output:
-- validate-phase11-screenshot-coverage:
-- verify-unassigned-links:
-- audit(current/baseline):
 ```
 
 ### 9.3 ファイル形成チェック
@@ -259,5 +250,6 @@ UI機能実装の場合は次を推奨:
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致する
 - [ ] UIタスクでは `manual-test-result.md` の時刻と `screenshots/*.png` の `stat` が一致する
 - [ ] `currentViolations` を合否、`baselineViolations` を監視値として分離記録している
-- [ ] Step 2 実施時は `spec-update-summary.md` / `documentation-changelog.md` / `task-workflow.md` の3点で更新有無が一致する
-- [ ] domainタスクでは `api-ipc-agent.md` / `security-electron-ipc.md` / `interfaces-agent-sdk-skill.md` に `実装内容 + 苦戦箇所 + 5ステップ` の3ブロックが揃っている
+- [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
+- [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している
+- [ ] `apps/desktop` 全量 `test:run` が `SIGTERM` の場合、失敗ログと分割実行結果の両方を記録している

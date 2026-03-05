@@ -251,7 +251,10 @@ vi.mock("../../services/skill/SkillChainExecutor", () => ({
 // --- テスト対象のインポート ---
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
 import { setupThemeWatcher } from "../themeHandlers";
-import { registerSkillChainHandlers } from "../skillHandlers";
+import {
+  registerSkillChainHandlers,
+  registerSkillHandlers,
+} from "../skillHandlers";
 import {
   registerAuthKeyHandlers,
   unregisterAuthKeyHandlers,
@@ -438,6 +441,28 @@ describe("IPC Handler Double Registration Prevention", () => {
         mockWindow,
         expect.anything(),
       );
+    });
+
+    it("registerAllIpcHandlers が registerSkillHandlers に authKeyService を注入する", () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+      registerAllIpcHandlers(mockWindow);
+
+      expect(registerSkillHandlers).toHaveBeenCalledTimes(1);
+      expect(registerSkillHandlers).toHaveBeenCalledWith(
+        mockWindow,
+        expect.anything(),
+        expect.anything(),
+      );
+
+      const skillHandlerAuthService = (
+        registerSkillHandlers as ReturnType<typeof vi.fn>
+      ).mock.calls[0][2];
+      const authHandlerAuthService = (
+        registerAuthKeyHandlers as ReturnType<typeof vi.fn>
+      ).mock.calls[0][1];
+
+      expect(skillHandlerAuthService).toBe(authHandlerAuthService);
     });
 
     it("unregisterAllIpcHandlers が unregisterAuthKeyHandlers を呼び出す", () => {

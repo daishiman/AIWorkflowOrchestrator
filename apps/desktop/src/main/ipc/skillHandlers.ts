@@ -35,6 +35,7 @@ import { SkillChainStore } from "../services/skill/SkillChainStore";
 import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import type { SkillDocGenerator } from "../services/skill/SkillDocGenerator";
 import { DEFAULT_DOC_TEMPLATE } from "../services/skill/SkillDocGenerator";
+import type { IAuthKeyService } from "../services/auth/types";
 import type { SkillChainDefinition } from "@repo/shared";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
@@ -87,9 +88,14 @@ function sanitizeErrorMessage(error: unknown): string {
 export function registerSkillHandlers(
   mainWindow: BrowserWindow,
   skillService: SkillService,
+  authKeyService?: IAuthKeyService,
 ): void {
   // Initialize SkillExecutor instance
-  _skillExecutorInstance = new SkillExecutor(mainWindow);
+  _skillExecutorInstance = new SkillExecutor(
+    mainWindow,
+    undefined,
+    authKeyService,
+  );
 
   // TASK-FIX-7-1: SkillExecutorをSkillServiceに注入
   skillService.setSkillExecutor(_skillExecutorInstance);

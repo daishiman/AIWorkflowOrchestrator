@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.37.1     | 2026-03-05 | SkillService/SkillExecutor 統合フローのDI記述を現行実装へ同期。`registerSkillHandlers(mainWindow, skillService, authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を正本化 |
 | 6.37.0     | 2026-02-28 | TASK-9E反映: `SkillForker` サービスをスキル管理コンポーネントへ追加。`skill:fork` IPC契約、`SkillForkOptions/Result/Metadata` 型、Path境界検証（prefix一致すり抜け防止）を仕様化 |
 | 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
 | 6.35.0     | 2026-02-26 | TASK-9B反映: SkillCreatorService（Facade）APIを12メソッドで明文化し、サブコンポーネント（HearingFacilitator / TaskGenerator / CodeGenerator / ApiIntegrator / SkillValidator）の責務を追加 |
@@ -410,8 +411,8 @@ SkillExecutor は `registerSkillHandlers()` 内で生成され、`setSkillExecut
 
 | ステップ | 処理 | ファイル |
 |----------|------|----------|
-| 1 | `registerSkillHandlers(mainWindow, skillService)` 呼び出し | `main/ipc/index.ts` |
-| 2 | `new SkillExecutor(mainWindow)` でインスタンス生成 | `skillHandlers.ts` |
+| 1 | `registerSkillHandlers(mainWindow, skillService, authKeyService)` 呼び出し | `main/ipc/index.ts` |
+| 2 | `new SkillExecutor(mainWindow, undefined, authKeyService)` でインスタンス生成 | `skillHandlers.ts` |
 | 3 | `skillService.setSkillExecutor(executor)` で注入 | `skillHandlers.ts` |
 | 4 | `skillService.executeSkill()` が内部で `skillExecutor.execute()` を呼び出し | `SkillService.ts` |
 

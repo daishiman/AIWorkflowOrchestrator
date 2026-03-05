@@ -103,6 +103,18 @@
 - **発見日**: 2026-01-22
 - **関連タスク**: SHARED-TYPE-EXPORT-01
 
+### [Phase12] 成果物実体と `phase-12-documentation.md` 状態の二重突合
+
+- **状況**: `outputs/phase-12` の必須成果物は全件存在するが、`phase-12-documentation.md` のステータスが `pending` のまま残るドリフトが発生
+- **アプローチ**:
+  - Task 12-1〜12-5 の成果物実在を先に機械確認
+  - `verify-all-specs` と `validate-phase-output` を再実行し、PASS値を固定
+  - 最後に `phase-12-documentation.md` の `ステータス` と完了チェックリスト2箇所を同期
+- **結果**: 「成果物はあるが仕様書上は未完了」という誤判定を防止し、Phase 12の完了状態を一貫化
+- **適用条件**: 再監査・追補で成果物追加後に仕様書状態が取り残される可能性がある場合
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001
+
 ### [Phase12] 完了済み未タスク指示書の配置整合（残置防止）
 
 - **状況**: 機能実装完了後も、対応済みの未タスク指示書が `docs/30-workflows/unassigned-task/` に残り、運用上「未完了」と誤認される

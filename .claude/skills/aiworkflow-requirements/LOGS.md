@@ -5,6 +5,151 @@
 
 ---
 
+## 2026-03-06 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 completed-tasks 移管（Phase 12完了条件充足）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- 目的: `outputs/phase-12` 実体生成と `phase-12-documentation.md` completed を確認済みのため、workflow本体と関連未タスクを `completed-tasks` へ移管する
+
+### 実施内容
+- workflow本体を移動:
+  - `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+  - → `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- 関連未タスク2件を移動:
+  - `task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md`
+  - `task-imp-skillhandlers-authkey-di-boundary-guard-001.md`
+  - → `docs/30-workflows/completed-tasks/unassigned-task/`
+- `task-workflow.md` / `lessons-learned.md` の参照パスを completed 側へ同期し、完了表記を追記。
+
+### 検証
+- `verify-unassigned-links --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `audit-unassigned-tasks --json --diff-from HEAD`
+
+### 結果
+- ステータス: success
+- 補足: `currentViolations=0` を維持しつつ、移管後のリンク整合を維持。
+
+---
+
+## 2026-03-06 - UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001 追加（未タスク化 + 仕様同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`（Phase 12追補）
+- 目的: 実装時に残存した `skillHandlers.ts` の責務肥大化を未タスク化し、再利用可能な教訓と台帳導線を固定する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（未タスク仕様書）: `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skillhandlers-authkey-di-boundary-guard-001.md` をテンプレート準拠で作成
+- SubAgent-B（完了台帳）: `references/task-workflow.md` の関連未タスク欄・残課題テーブル・変更履歴を同期
+- SubAgent-C（教訓化）: `references/lessons-learned.md` に苦戦箇所（責務肥大化）と関連未タスク表を追加
+- SubAgent-D（監査）: `audit-unassigned-tasks --target-file` / `verify-unassigned-links` で整合性確認
+
+### 実施内容
+- 未タスク仕様書に `3.5 実装課題と解決策（親タスクからの教訓）` を追加し、DIシグネチャドリフト・Phase 12台帳ドリフト・責務肥大化を記録。
+- `task-workflow.md` に新規未タスク `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を登録。
+- `lessons-learned.md` へ同課題の再発条件・標準ルールを追補。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-skillhandlers-authkey-di-boundary-guard-001.md`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+
+### 結果
+- ステータス: success
+- 補足: 新規未タスク指示書は required headings を満たし、task-workflow 参照リンクも解決可能な状態。
+
+---
+
+## 2026-03-06 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 教訓同期強化（実装内容 + 苦戦箇所）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- 目的: システム仕様書へ当該タスクの実装内容と苦戦箇所を専用セクションとして固定し、同種課題の再利用速度を上げる
+
+### 仕様書別SubAgent分担
+- SubAgent-A（完了台帳）: `references/task-workflow.md` に完了セクション（SubAgent分担/実装反映/検証証跡/苦戦箇所）を追加
+- SubAgent-B（教訓化）: `references/lessons-learned.md` に専用節を新設し、再発条件付きの苦戦箇所を構造化
+- SubAgent-C（履歴同期）: `references/task-workflow.md` / `references/lessons-learned.md` / `SKILL.md` の変更履歴を更新
+- SubAgent-D（整合検証）: `verify-all-specs` / `validate-phase-output` / `generate-index` / `quick_validate` を実行
+
+### 実施内容
+- `task-workflow.md` に `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` 専用の完了タスク節を追加。
+- `lessons-learned.md` に同タスクの「実装内容」「苦戦箇所」「4ステップ再利用手順」を追加。
+- Phase 12完了判定ルールを「成果物実体 + 機械検証 + `phase-12-documentation.md` ステータス同期」で明文化。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`
+
+### 結果
+- ステータス: success
+- 補足: 仕様正本上で「実装内容 + 苦戦箇所」の両方がタスク専用節として参照可能になった。
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査（仕様整合 + 画面回帰）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- 目的: 仕様漏れ疑義に対し、コード/仕様/成果物を再検証し、DIシグネチャと画面証跡を再同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（仕様整合）: `interfaces-agent-sdk-executor.md` / `arch-electron-services.md` / `interfaces-agent-sdk-skill.md` のDI記述を実装正本へ同期
+- SubAgent-B（教訓同期）: `lessons-learned.md` のDIコード例を現行シグネチャへ更新
+- SubAgent-C（画面証跡）: Phase 11 スクリーンショット3件を取得し対象workflowへ転記
+- SubAgent-D（統合監査）: `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行
+
+### 実施内容
+- `registerSkillHandlers(mainWindow, skillService, authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を仕様書横断で統一。
+- `outputs/phase-11/screenshots/` に `TC-11-01..03` を追加し、`manual-test-result.md` を TC証跡表 + Apple UI/UXレビュー形式へ更新。
+- `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加して視覚証跡を明示。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` → `ALL_LINKS_EXIST (103/103)`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` → `currentViolations=0, baselineViolations=92`
+- `pnpm --filter @repo/desktop exec node scripts/capture-task-056c-notification-history-screenshots.mjs` → PASS（3枚）
+
+### 結果
+- ステータス: success
+- 補足: `audit --json` 単体は baseline起因で fail だが、差分判定（current）は0件で問題なし。
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 仕様同期（AuthKeyService DI経路統一）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- 目的: SkillExecutor の `AuthKeyService` 注入経路を Main composition root で単一路化した実装を仕様へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（Executor仕様）: `references/interfaces-agent-sdk-executor.md` に DI配線契約と完了タスクを追加
+- SubAgent-B（IPC仕様）: `references/api-ipc-system.md` の auth-key ライフサイクル実装状況/関連タスク/完了タスクを更新
+- SubAgent-C（台帳同期）: `references/api-ipc-system.md` / `references/interfaces-agent-sdk-executor.md` の変更履歴を更新
+- SubAgent-D（索引同期）: `indexes/topic-map.md` の行番号を再生成して同期
+
+### 実施内容
+- `registerAllIpcHandlers` での `AuthKeyService` 単一生成 + `registerSkillHandlers` 第3引数注入を仕様化。
+- `registerAuthKeyHandlers` と `registerSkillHandlers` の同一インスタンス共有契約を明記。
+- Task 12 Step 1-A/1-B/1-C の実行記録（完了タスク、実装状況、関連タスク）を反映。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001`
+- `node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "AuthKeyService" --files-only`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: Step 2（新規I/F追加）は該当なし。既存契約の配線整合のみ更新。
+
+---
+
 ## 2026-03-05 - TASK-UI-01-C 再監査追補（phase/index整合 + 実画面証跡）
 
 ### コンテキスト
@@ -62,6 +207,125 @@
 ### 結果
 - ステータス: success
 - 補足: 実装差分の未タスク化は 0 件。Phase 1〜12 の成果物は `outputs/` 配下へ出力済み。
+
+---
+
+## 2026-03-05 - UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 未タスク登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001`
+- 目的: `apps/desktop test:run` の `SIGTERM` 中断時フォールバック（失敗ログ固定 + 分割実行）を未タスク化し、システム仕様へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（未タスク指示書）: `docs/30-workflows/completed-tasks/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md` を作成（9セクション + 3.5 教訓）
+- SubAgent-B（台帳同期）: `references/task-workflow.md` の関連タスク表・残課題テーブルへ同IDを登録
+- SubAgent-C（教訓同期）: `references/lessons-learned.md` の TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 節へ関連未タスク導線を追加
+- SubAgent-D（IPC運用同期）: `references/api-ipc-system.md` の関連未タスクへ同IDを追加
+- SubAgent-E（履歴同期）: `SKILL.md` の変更履歴を `9.01.23` へ更新
+
+### 実施内容
+- `SIGTERM` 発生時の標準手順を「全量失敗ログ保存 -> `vitest run <対象>` 分割実行 -> 3仕様同時同期」で定義
+- 親タスクの苦戦箇所を未タスク 3.5 セクションへ転記し、再利用手順を固定
+- システム仕様側の導線（task-workflow / lessons / api-ipc）を同一ターンで同期
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md`（移管前に実行）
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
+
+### 結果
+- ステータス: success
+- 補足: 合否判定は `currentViolations` を基準にし、baseline は監視指標として分離記録。Phase 12 完了確認後に `completed-tasks/` へ移管済み
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補（SIGTERM運用ガード + 5分解決カード）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001`
+- 目的: 実装内容・苦戦箇所を「同種課題の最短解決」に最適化し、`SIGTERM` 中断時の回帰判定ドリフトを防止する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳）: `references/task-workflow.md` に `SIGTERM` 証跡と5分解決カードを追補
+- SubAgent-B（IPC仕様）: `references/api-ipc-system.md` に簡潔解決チェック（5分）を追補
+- SubAgent-C（教訓）: `references/lessons-learned.md` に `SIGTERM` 苦戦箇所と5ステップ手順を追補
+- SubAgent-D（履歴）: `SKILL.md` 変更履歴を `9.01.22` へ更新
+
+### 実施内容
+- runtime配線（register/unregister 対称更新）の再発防止ルールを、テスト中断ガードと一体で記録
+- `apps/desktop test:run` の `SIGTERM` ログを苦戦箇所として台帳化
+- 失敗時に `vitest run <対象>` へ分割する運用を簡潔手順へ統合
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 --strict` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` → PASS（expected=3 / covered=3）
+
+### 結果
+- ステータス: success
+- 補足: 仕様同期を「実装内容 + 苦戦箇所 + 分割回帰運用」の3点セットへ最適化
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 再監査（Phase 11画面証跡同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001`
+- 目的: ユーザー要求に基づく画面検証を Phase 11/12 成果物と正本仕様へ同期し、漏れを是正する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（Phase 11仕様）: `phase-11-manual-test.md` に `テストケース` と `画面カバレッジマトリクス` を追加
+- SubAgent-B（証跡同期）: `outputs/phase-11/*` に TC別スクリーンショット3件と Apple UI/UXレビューを同期
+- SubAgent-C（正本同期）: `references/task-workflow.md` の TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 セクションへ画面回帰検証を追記
+- SubAgent-D（監査）: `verify/validate/screenshot-coverage/links/audit` を再実行し、差分判定を固定
+
+### 実施内容
+- `outputs/phase-11/screenshots/TC-11-UI-01..03` の実体を manual-test-result/evidence-index/screenshot-plan に紐付け
+- `validate-phase11-screenshot-coverage` を通るフォーマット（`TC-` 列 + 証跡列）へ是正
+- `task-workflow.md` に画面検証証跡と検証コマンドを追記
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 --strict` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` → PASS（expected=3 / covered=3）
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` → `ALL_LINKS_EXIST (103/103)`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` → `current=0, baseline=92`
+
+### 結果
+- ステータス: success
+- 補足: 新規I/F追加はなく Step 2 判定は「更新不要」のまま維持。画面検証漏れのみ是正して整合を回復。
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 Phase 12同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001`
+- 目的: auth-key IPC登録漏れ修正の実装内容・検証結果をシステム仕様へ同期し、Phase 12 Step 1-A/1-B/1-C を完了させる
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳同期）: `references/task-workflow.md` に完了記録、関連リンク、検証証跡を追加
+- SubAgent-B（IPC仕様同期）: `references/api-ipc-system.md` に auth-key ライフサイクル実装状況/関連タスクを追加
+- SubAgent-C（成果物整備）: `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/outputs/phase-8..12` を作成
+- SubAgent-D（統合監査）: `validate-phase-output` で仕様・成果物整合を確認
+
+### 実施内容
+- Main IPC統合点の修正結果（register/unregister接続）を仕様化
+- 76テストPASSとtypecheck PASSを品質証跡として反映
+- UI差分なしを明示し、Phase 11を非視覚手動検証として記録
+
+### 検証
+- `pnpm --filter @repo/desktop test:run src/main/ipc/__tests__/ipc-double-registration.test.ts src/main/ipc/__tests__/authKeyHandlers.test.ts src/renderer/hooks/__tests__/useSkillExecution.test.ts src/renderer/stores/agent/__tests__/agentSlice.executeSkill.preflight.test.ts` → PASS（76 tests）
+- `pnpm --filter @repo/desktop typecheck` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` → PASS（Phase 8-12作成後に実行）
+
+### 結果
+- ステータス: success
+- 補足: Step 2（新規I/F追加）は「追加なし」のため、契約変更なし判定で記録
 
 ---
 
@@ -7344,104 +7608,56 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - 判定: 今回タスク起因の未タスク追加は不要（差分起因違反0件）
 
-## 2026-03-05 - TASK-UI-01-D Phase 12準拠再確認（Step 1-A同期 + 未タスク起票）
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 教訓同期追補
 
 ### コンテキスト
 
 - スキル: aiworkflow-requirements
-- 対象タスク: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV
-- 目的: Phase 12 が task-specification-creator 要件どおりに実行されていることを再確認し、運用ギャップを未タスク化する
+- 対象タスク: TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001
+- 目的: 実装内容に加えて、苦戦箇所と再利用手順を正本仕様へ同期する
 
 ### 実施内容
 
 - `references/task-workflow.md`
-  - TASK-UI-01-D 節の未タスク判定を更新（機能起因0件 + 運用ガード1件）
-  - 未タスク `UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001` を追加
-  - 変更履歴 `1.67.20` を追記
+  - 完了タスク節に「実装時の苦戦箇所と解決策」テーブルを追加
+  - 同種課題向け4ステップ手順を追加
+- `references/api-ipc-system.md`
+  - 完了タスク節に「実装時の苦戦箇所と再発防止」を追加
+  - 変更履歴に `v1.5.0` を追記
 - `references/lessons-learned.md`
-  - 再撮影運用ギャップ（固定出力先 / `Port 5177` preflight不足）を苦戦箇所として追記
-  - 変更履歴 `1.29.29` を追記
-- `SKILL.md`
-  - 変更履歴 `9.01.22` を追記
-
-### 検証結果
-
-- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`: PASS（ALL_LINKS_EXIST）
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-task-056d-phase11-screenshot-capture-path-guard-001.md`: PASS（currentViolations=0）
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: PASS（currentViolations=0, baselineViolations=92）
+  - 当該タスク専用セクション（苦戦箇所3件 + 4ステップ手順）を追加
+  - 変更履歴に `1.29.23` を追記
 
 ### 結果
 
 - ステータス: success
-- 判定: Phase 12準拠の追加確認を完了し、運用ギャップは未タスクとして追跡可能化
+- 補足: Phase 12 完了判定を「実装同期 + 教訓同期 + 検証証跡」の三点同時成立へ更新
 
-## 2026-03-05 - TASK-UI-01-D system spec 最適化（実装内容+苦戦箇所の同節同期）
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12仕様準拠の再確認
 
 ### コンテキスト
 
 - スキル: aiworkflow-requirements
-- 対象タスク: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV
-- 目的: system spec 単体で再利用できるよう、実装要点と苦戦箇所をテンプレート準拠で再構成する
+- 対象タスク: TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001
+- 目的: Phase 12タスク仕様書どおりに実行済みかを再検証し、実装内容 + 苦戦箇所を正本仕様へ同期
 
 ### 実施内容
 
-- `references/task-workflow.md`
-  - TASK-UI-01-D 節の「同種課題の簡潔解決手順」を 5 ステップへ更新
-  - `Port 5177` preflight（strictPort 競合）と分岐記録を手順へ追加
-  - 変更履歴 `1.67.21` を追記
-- `references/lessons-learned.md`
-  - TASK-UI-01-D 節へ `実装内容（要点）` を追加し、苦戦箇所と1対1で参照できる構成へ再編
-  - 「同種課題の簡潔解決手順」を 5 ステップへ統一し、5分解決カードを追加
-  - 変更履歴 `1.29.30` を追記
-- `references/ui-ux-navigation.md`
-  - TASK-UI-01-D の再利用版セクション（実装要点 + 苦戦箇所 + 5分解決カード）を追加
-  - 変更履歴 `v1.5.1` を追記
-- `references/arch-state-management.md`
-  - TASK-UI-01-D 追補セクション（再発条件付き苦戦箇所 + 5ステップ手順）を追加
-  - 変更履歴 `v3.8.7` を追記
-- `SKILL.md`
-  - 変更履歴 `9.01.23` を追記
-
-### 検証結果
-
-- `rg -n "TASK-UI-01-D|Port 5177|5分解決カード|同種課題の簡潔解決手順（5ステップ）" .claude/skills/aiworkflow-requirements/references/{task-workflow,lessons-learned,ui-ux-navigation,arch-state-management}.md`: 追補セクション検出
-- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-056d-viewtype-routing-nav --json`: PASS（13/13）
-- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-056d-viewtype-routing-nav`: PASS（28項目）
+- Phase 12検証を再実行
+  - `verify-all-specs`: PASS（13/13）
+  - `validate-phase-output`: PASS（28項目）
+  - Task 12-1〜12-5 成果物実在チェック: 全件OK
+- 検出したドリフトを是正
+  - `phase-12-documentation.md` のステータスを `pending` -> `completed`
+  - 同ファイル完了チェックリスト2箇所を `[x]` へ更新
+- 未タスク個別監査
+  - `audit-unassigned-tasks --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md`
+  - `currentViolations=0` を確認
+- 仕様書同期
+  - `task-workflow.md` に再確認結果（v1.67.20）を追記
+  - `lessons-learned.md` に苦戦箇所（Phase 12台帳ドリフト）を追記
 
 ### 結果
 
 - ステータス: success
-- 判定: system spec 4仕様書で「実装内容 + 苦戦箇所 + 最短手順」を再利用可能形式へ最適化完了
-
-## 2026-03-05 - TASK-UI-01-D 追補未タスク作成（system spec 同値同期ガード）
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV
-- 目的: 未タスク仕様書を新規作成し、実装時の苦戦箇所（system spec 同期ドリフト）を再利用可能形式で記録する
-
-### 実施内容
-
-- `docs/30-workflows/unassigned-task/task-imp-task-056d-system-spec-sync-card-guard-001.md`
-  - `task-specification-creator` テンプレート準拠で未タスク仕様書を新規作成
-  - `## メタ情報` 1セクション + `## 1..9` を満たし、`3.5 実装課題と解決策` に親タスク由来の苦戦箇所を反映
-- `references/task-workflow.md`
-  - TASK-UI-01-D 節の関連未タスクへ `UT-IMP-TASK-056D-SYSTEM-SPEC-SYNC-CARD-GUARD-001` を追加
-  - 変更履歴 `1.67.22` を追記
-- `references/lessons-learned.md`
-  - TASK-UI-01-D 節の関連未タスクへ同IDを追加
-  - 変更履歴 `1.29.31` を追記
-- `SKILL.md`
-  - 変更履歴 `9.01.24` を追記
-
-### 検証結果
-
-- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`: PASS（ALL_LINKS_EXIST）
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-task-056d-system-spec-sync-card-guard-001.md`: PASS（currentViolations=0）
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: PASS（currentViolations=0, baselineViolations=92）
-
-### 結果
-
-- ステータス: success
-- 判定: 未タスク指示書作成 + system spec 同期を完了。苦戦箇所は再利用可能な形で台帳化済み。
+- 判定: Phase 12はタスク仕様書どおり実行済み（再確認後のドリフトも解消）

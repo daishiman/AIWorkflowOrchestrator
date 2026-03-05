@@ -1,0 +1,1403 @@
+{
+  "checkedAt": "2026-03-05T14:54:12.209Z",
+  "unassignedDir": "docs/30-workflows/unassigned-task",
+  "completedUnassignedDir": "docs/30-workflows/completed-tasks/unassigned-task",
+  "totals": {
+    "unassignedFiles": 345,
+    "completedUnassignedFiles": 35,
+    "formatViolations": 66,
+    "namingViolations": 5,
+    "misplacedFiles": 21,
+    "currentViolations": 0,
+    "baselineViolations": 92
+  },
+  "formatViolations": [
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-**-architecture-overview-rag-pipeline.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-00-master-task-list.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 5. 完了条件チェックリスト"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-h-skill-creator-ipc-channel.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-agent-00-index.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-api-keys-ui-improvement.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-architecture-improvements.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-auto-save-functionality.md",
+      "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-chat-split-compare.md",
+      "missingHeadings": [
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-chatview-quality-improvements.md",
+      "missingHeadings": [
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-dynamic-title-display.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-e2e-test-expansion.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-editorview-hooks-coverage.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-entity-type-expansion.md",
+      "missingHeadings": [
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-feature-file-search.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-feature-git-integration.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-feature-rag-integration.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-file-rename-functionality.md",
+      "missingHeadings": [
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-filename-search-migration.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-fr011-file-type-icons.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-fr012-folder-drag-drop-reorder.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-history-improvements.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-hybridrag-factory-full-lite.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-abort-ui.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-progress-feedback.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-retry-ux.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-imp-vitest-e2e-config-001.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 8. 参照情報"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-kanagawa-theme-default.md",
+      "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-markdown-syntax-highlight.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-nfr001-virtual-scroll.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-nfr018-file-watcher.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-offline-refresh.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 5. 完了条件チェックリスト",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-perf-claude-cli-concurrent-load.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-perf-claude-cli-large-output.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-rag-core-functionality.md",
+      "missingHeadings": [
+        "## 3. どのように実行するか（How）",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-rag-data-integration.md",
+      "missingHeadings": [
+        "## 3. どのように実行するか（How）",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-rag-module-integration.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-ref-act-warning-elimination-001.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-ref-claude-cli-coverage.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-ref-claude-cli-jsdoc.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-refresh-notification.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 5. 完了条件チェックリスト",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-search-panel-file-navigation.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-search-panel-history.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-search-panel-regex-error-ui.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-search-panel-ui-improvement.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-sec-claude-cli-deps-update.md",
+      "missingHeadings": ["## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-shared-community-types-export-03.md",
+      "missingHeadings": ["## 7. リスクと対策", "## 8. 参照情報", "## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-shared-coverage-improvement.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-skillscanner-file-deletion-race.md",
+      "missingHeadings": [
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-audit-log.md",
+      "missingHeadings": ["## 7. リスクと対策", "## 8. 参照情報", "## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-e2e-test.md",
+      "missingHeadings": ["## 7. リスクと対策", "## 8. 参照情報", "## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-llm-api-integration.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-preset-seeding.md",
+      "missingHeadings": ["## 7. リスクと対策", "## 8. 参照情報", "## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-rate-limit.md",
+      "missingHeadings": ["## 7. リスクと対策", "## 8. 参照情報", "## 9. 備考"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-secret-warning.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-template-export-import.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-vim-mode-keybindings.md",
+      "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-visual-regression-testing.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-workspace-improvements.md",
+      "missingHeadings": [
+        "## メタ情報",
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    },
+    {
+      "filePath": "docs/30-workflows/unassigned-task/task-workspace-tree-toggle.md",
+      "missingHeadings": [
+        "## 1. なぜこのタスクが必要か（Why）",
+        "## 2. 何を達成するか（What）",
+        "## 3. どのように実行するか（How）",
+        "## 4. 実行手順",
+        "## 5. 完了条件チェックリスト",
+        "## 6. 検証方法",
+        "## 7. リスクと対策",
+        "## 8. 参照情報",
+        "## 9. 備考"
+      ]
+    }
+  ],
+  "namingViolations": [
+    "docs/30-workflows/unassigned-task/README.md",
+    "docs/30-workflows/unassigned-task/task-**-architecture-overview-rag-pipeline.md",
+    "docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md",
+    "docs/30-workflows/unassigned-task/task-CONV-08-01-01-vector-similarity-search.md",
+    "docs/30-workflows/unassigned-task/task-CONV-08-01-02-batch-transaction-support.md"
+  ],
+  "misplacedFiles": [
+    "docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase12-ac-fr01-command-sync-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-preflight-phase12-test-count-sync-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-script-path-discovery-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task9e-5spec-artifact-sync-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-vitest-run-mode-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-chain-barrel-export-consistency-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-five-spec-sync-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-ui-055-empty-state-contrast-improvement.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-light-border-contrast-improvement.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-mobile-density-optimization.md",
+    "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-phase11-coverage-matrix-standardization.md"
+  ],
+  "scope": {
+    "mode": "scoped",
+    "targetFiles": [
+      "docs/30-workflows/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md"
+    ],
+    "diffFrom": null,
+    "currentFiles": [
+      "docs/30-workflows/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md"
+    ]
+  },
+  "currentViolations": {
+    "formatViolations": [],
+    "namingViolations": [],
+    "misplacedFiles": [],
+    "total": 0
+  },
+  "baselineViolations": {
+    "formatViolations": [
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-**-architecture-overview-rag-pipeline.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-00-master-task-list.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-h-api-dual-publishing-unification.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 5. 完了条件チェックリスト"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-h-skill-creator-ipc-channel.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-i-skill-creator-sdk-integration.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-j-skill-creator-cache-invalidation.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-k-skill-creator-timeout-config.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-9b-ui-integration-task10a.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-agent-00-index.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-api-keys-ui-improvement.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-architecture-improvements.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-auto-save-functionality.md",
+        "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-chat-split-compare.md",
+        "missingHeadings": [
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-chatview-quality-improvements.md",
+        "missingHeadings": [
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-dynamic-title-display.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-e2e-test-expansion.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-editorview-hooks-coverage.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-entity-type-expansion.md",
+        "missingHeadings": [
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-feature-file-search.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-feature-git-integration.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-feature-rag-integration.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-file-rename-functionality.md",
+        "missingHeadings": [
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-filename-search-migration.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-fr011-file-type-icons.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-fr012-folder-drag-drop-reorder.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-history-improvements.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-hybridrag-factory-full-lite.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-abort-ui.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-progress-feedback.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-imp-claude-cli-retry-ux.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-imp-vitest-e2e-config-001.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 8. 参照情報"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-kanagawa-theme-default.md",
+        "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-markdown-syntax-highlight.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-nfr001-virtual-scroll.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-nfr018-file-watcher.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-offline-refresh.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 5. 完了条件チェックリスト",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-perf-claude-cli-concurrent-load.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-perf-claude-cli-large-output.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-rag-core-functionality.md",
+        "missingHeadings": [
+          "## 3. どのように実行するか（How）",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-rag-data-integration.md",
+        "missingHeadings": [
+          "## 3. どのように実行するか（How）",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-rag-module-integration.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-ref-act-warning-elimination-001.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-ref-claude-cli-coverage.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-ref-claude-cli-jsdoc.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-refresh-notification.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 5. 完了条件チェックリスト",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-search-panel-file-navigation.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-search-panel-history.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-search-panel-regex-error-ui.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-search-panel-ui-improvement.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-sec-claude-cli-deps-update.md",
+        "missingHeadings": ["## 9. 備考"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-shared-community-types-export-03.md",
+        "missingHeadings": [
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-shared-coverage-improvement.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-skillscanner-file-deletion-race.md",
+        "missingHeadings": [
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-audit-log.md",
+        "missingHeadings": [
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-e2e-test.md",
+        "missingHeadings": [
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-llm-api-integration.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-preset-seeding.md",
+        "missingHeadings": [
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-rate-limit.md",
+        "missingHeadings": [
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-secret-warning.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-system-prompt-template-export-import.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-vim-mode-keybindings.md",
+        "missingHeadings": ["## 5. 完了条件チェックリスト", "## 6. 検証方法"]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-visual-regression-testing.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-workspace-improvements.md",
+        "missingHeadings": [
+          "## メタ情報",
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      },
+      {
+        "filePath": "docs/30-workflows/unassigned-task/task-workspace-tree-toggle.md",
+        "missingHeadings": [
+          "## 1. なぜこのタスクが必要か（Why）",
+          "## 2. 何を達成するか（What）",
+          "## 3. どのように実行するか（How）",
+          "## 4. 実行手順",
+          "## 5. 完了条件チェックリスト",
+          "## 6. 検証方法",
+          "## 7. リスクと対策",
+          "## 8. 参照情報",
+          "## 9. 備考"
+        ]
+      }
+    ],
+    "namingViolations": [
+      "docs/30-workflows/unassigned-task/README.md",
+      "docs/30-workflows/unassigned-task/task-**-architecture-overview-rag-pipeline.md",
+      "docs/30-workflows/unassigned-task/task-3-1-B-skillexecutor-ipc-integration.md",
+      "docs/30-workflows/unassigned-task/task-CONV-08-01-01-vector-similarity-search.md",
+      "docs/30-workflows/unassigned-task/task-CONV-08-01-02-batch-transaction-support.md"
+    ],
+    "misplacedFiles": [
+      "docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase12-ac-fr01-command-sync-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-auth-preflight-phase12-test-count-sync-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-ipc-handler-coverage-guardrails-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-script-path-discovery-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task9e-5spec-artifact-sync-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task9e-test-count-sync-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-vitest-run-mode-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-chain-barrel-export-consistency-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-five-spec-sync-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-ui-055-empty-state-contrast-improvement.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-light-border-contrast-improvement.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-mobile-density-optimization.md",
+      "docs/30-workflows/completed-tasks/unassigned-task/task-ui-design-foundation-phase11-coverage-matrix-standardization.md"
+    ],
+    "total": 92
+  }
+}
