@@ -37,11 +37,6 @@ import type {
   HealthCheckResult,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
-import type {
-  HistorySearchRequest as SharedHistorySearchRequest,
-  HistorySearchResult,
-  HistorySearchStats,
-} from "@repo/shared/types";
 
 // LLM Stream Types
 export interface LLMStreamChunkDelta {
@@ -445,89 +440,6 @@ export interface NotificationSettings {
   sound: boolean;
   workflowComplete: boolean;
   workflowError: boolean;
-}
-
-export type AppNotificationType = "info" | "success" | "warning" | "error";
-
-export type AppNotificationSource =
-  | { kind: "skill_execution"; skillName: string }
-  | { kind: "file_operation"; fileName: string; operation: string }
-  | { kind: "system"; eventType: string };
-
-export interface AppNotification {
-  id: string;
-  type: AppNotificationType;
-  title: string;
-  detail?: string;
-  timestamp: string;
-  isRead: boolean;
-  source: AppNotificationSource;
-}
-
-export interface NotificationGetHistoryRequest {
-  limit?: number;
-  offset?: number;
-}
-
-export interface NotificationGetHistoryResponse {
-  success: boolean;
-  data?: {
-    notifications: AppNotification[];
-    totalCount: number;
-  };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-export interface NotificationMarkReadRequest {
-  notificationId: string;
-}
-
-export interface NotificationMarkReadResponse {
-  success: boolean;
-  data?: { updated: boolean };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-export interface NotificationMarkAllReadResponse {
-  success: boolean;
-  data?: { updatedCount: number };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-export interface NotificationClearResponse {
-  success: boolean;
-  data?: { deletedCount: number };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-export interface HistorySearchResponse {
-  success: boolean;
-  data?: HistorySearchResult;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-export interface HistorySearchStatsResponse {
-  success: boolean;
-  data?: HistorySearchStats;
-  error?: {
-    code: string;
-    message: string;
-  };
 }
 
 export interface UserProfile {
@@ -997,6 +909,147 @@ export interface ThemeSystemChangedEvent {
   resolvedTheme: ResolvedTheme;
 }
 
+// Notification/History Search operations (TASK-UI-01-C)
+export type NotificationType =
+  | "info"
+  | "success"
+  | "warning"
+  | "error"
+  | "system";
+
+export interface NotificationHistoryItem {
+  id: string;
+  type: NotificationType;
+  source: {
+    kind: "system" | "skill_execution" | "history_search";
+    [key: string]: unknown;
+  };
+  payload: {
+    title: string;
+    message: string;
+    details?: Record<string, unknown>;
+  };
+  createdAt: string;
+  readAt: string | null;
+}
+
+export interface NotificationGetHistoryRequest {
+  limit?: number;
+  offset?: number;
+}
+
+export interface NotificationGetHistoryResponse {
+  success: boolean;
+  data?: {
+    notifications: NotificationHistoryItem[];
+    totalCount: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationMarkReadRequest {
+  id: string;
+}
+
+export interface NotificationClearRequest {
+  onlyRead?: boolean;
+}
+
+export interface NotificationMutationResponse {
+  success: boolean;
+  data?: {
+    updatedCount?: number;
+    removedCount?: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export type HistorySearchEntityType =
+  | "conversation"
+  | "execution"
+  | "file"
+  | "notification";
+
+export interface HistorySearchResultItem {
+  id: string;
+  type: HistorySearchEntityType;
+  title: string;
+  snippet: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface HistorySearchFilters {
+  types?: HistorySearchEntityType[];
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  includeArchived?: boolean;
+}
+
+export interface HistorySearchRequest {
+  query: string;
+  filters?: HistorySearchFilters;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface HistorySearchResponse {
+  success: boolean;
+  data?: {
+    results: HistorySearchResultItem[];
+    pagination: {
+      page: number;
+      pageSize: number;
+      total: number;
+    };
+    stats: {
+      totalCount: number;
+      byType: Record<HistorySearchEntityType, number>;
+    };
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface HistorySearchStatsResponse {
+  success: boolean;
+  data?: {
+    totalCount: number;
+    byType: Record<HistorySearchEntityType, number>;
+    unreadNotificationCount: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationAPI {
+  getHistory: (
+    request?: NotificationGetHistoryRequest,
+  ) => Promise<NotificationGetHistoryResponse>;
+  markRead: (
+    request: NotificationMarkReadRequest,
+  ) => Promise<NotificationMutationResponse>;
+  markAllRead: () => Promise<NotificationMutationResponse>;
+  clear: (
+    request?: NotificationClearRequest,
+  ) => Promise<NotificationMutationResponse>;
+}
+
+export interface HistorySearchAPI {
+  search: (request: HistorySearchRequest) => Promise<HistorySearchResponse>;
+  getStats: () => Promise<HistorySearchStatsResponse>;
+}
+
 // ElectronAPI interface
 export interface ElectronAPI {
   file: {
@@ -1129,26 +1182,9 @@ export interface ElectronAPI {
     ) => Promise<SearchWorkspaceResponse>;
   };
 
-  notification: {
-    getHistory: (
-      request?: NotificationGetHistoryRequest,
-    ) => Promise<NotificationGetHistoryResponse>;
-    markRead: (
-      request: NotificationMarkReadRequest,
-    ) => Promise<NotificationMarkReadResponse>;
-    markAllRead: () => Promise<NotificationMarkAllReadResponse>;
-    clear: () => Promise<NotificationClearResponse>;
-    onNew: (
-      callback: (event: { notification: AppNotification }) => void,
-    ) => () => void;
-  };
+  notification: NotificationAPI;
 
-  historySearch: {
-    search: (
-      request: SharedHistorySearchRequest,
-    ) => Promise<HistorySearchResponse>;
-    getStats: () => Promise<HistorySearchStatsResponse>;
-  };
+  historySearch: HistorySearchAPI;
 
   replace: {
     fileSingle: (

@@ -2354,3 +2354,17 @@ interface BadgeProps extends Omit<
 - **対策**: テスト仕様書の期待値は `>=N` 形式で記述し、Phase 5 実行後に実測値で更新
 - **発見日**: 2026-02-24
 - **関連タスク**: UT-SKILL-IMPORT-CHANNEL-CONFLICT-001
+
+### [Phase12] 対象テスト限定実行の明示（TASK-UI-01-C 再監査）
+
+- **状況**: Phase 12 再監査で「対象5ファイルのみ再検証」したい場面
+- **成功パターン**:
+  - `pnpm exec vitest run <file1> <file2> ...` で対象を明示し、`N files / M tests` を成果物へ固定
+  - 監査ログに「対象ファイル列挙 + 実測件数」を残し、再実行時の比較可能性を確保
+- **失敗パターン**:
+  - `pnpm run test:run -- <files...>` を使い、script側の設定で全体テストへ展開されて長時間化・中断を招く
+- **標準ルール**:
+  - 再監査時の限定テストは script ラッパーを経由せず `pnpm exec vitest run` を正とする
+  - 目的が「再確認」の場合は coverage を同時実行せず、まず対象テストのPASSを確定する
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN

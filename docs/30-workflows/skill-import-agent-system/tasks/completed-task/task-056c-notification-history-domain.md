@@ -7,7 +7,7 @@ depends_on:
   [TASK-UI-01-A-STORE-SLICE-BASELINE, TASK-UI-01-B-IPC-CONTRACT-SECURITY]
 parallel_with: [TASK-UI-01-D-VIEWTYPE-ROUTING-NAV]
 blocks: [TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC]
-status: pending
+status: spec_created
 priority: high
 estimated_complexity: large
 tags: [frontend, backend, domain, notification, history]
@@ -25,7 +25,9 @@ verification:
 
 artifacts:
   creates:
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture/outputs/task-056c-domain-contract.md
+    - docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md
+    - docs/30-workflows/completed-tasks/task-056c-notification-history-domain/phase-1-requirements.md
+    - docs/30-workflows/completed-tasks/task-056c-notification-history-domain/phase-13-pr-creation.md
   modifies:
     - apps/desktop/src/renderer/store/slices/notificationSlice.ts
     - apps/desktop/src/renderer/store/slices/historySearchSlice.ts
@@ -34,6 +36,17 @@ artifacts:
 ---
 
 # TASK-UI-01-C: Notification/HistorySearchドメイン統合仕様
+
+## 仕様書ディレクトリ（task-specification-creator準拠）
+
+以下のディレクトリに、`index.md` + `phase-1` 〜 `phase-13` のタスク仕様書を作成済み。
+
+- `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/`
+- `index.md`（全体仕様）
+- `phase-1-requirements.md` 〜 `phase-13-pr-creation.md`
+- `artifacts.json`（初期化済み）
+
+本ファイルは親タスクから参照されるエントリ仕様として維持し、実行時の正本は上記ディレクトリ配下を参照する。
 
 ## 概要
 
@@ -48,8 +61,11 @@ Store仕様（A）とIPC仕様（B）を入力に、通知ドメインと履歴�
 
 ## 出力
 
-- `outputs/task-056c-domain-contract.md`: Domain境界、型定義、イベントフロー
-- `outputs/task-056c-persistence-policy.md`: 保存件数、TTL、復元仕様
+- `task-056c-notification-history-domain/index.md`: メインタスク仕様書
+- `task-056c-notification-history-domain/phase-1-requirements.md` 〜 `phase-13-pr-creation.md`: 13Phase仕様書
+- `task-056c-notification-history-domain/outputs/phase-2/aiworkflow-requirements-extract.md`: 正本仕様抽出レポート
+- `task-056c-notification-history-domain/outputs/phase-2/implementation-spec-traceability-matrix.md`: 実装ファイル×正本仕様トレース
+- `task-056c-notification-history-domain/outputs/skill-compliance-audit.md`: 2skill準拠監査レポート
 
 ## システム仕様（aiworkflow-requirements）
 

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T10:06:10.364Z",
-  "totalKeywords": 1424,
+  "generated": "2026-03-05T12:32:04.238Z",
+  "totalKeywords": 1432,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1105,16 +1105,61 @@
     ],
     "FOUNDATION": [
       "arch-state-management.md",
-      "lessons-learned.md",
       "ui-ux-feature-components.md"
+    ],
+    "Store": [
+      "arch-state-management.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "lessons-learned.md",
+      "security-skill-execution.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
+    ],
+    "Slice": [
+      "arch-state-management.md"
+    ],
+    "Baseline": [
+      "arch-state-management.md"
+    ],
+    "STORE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "SLICE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "BASELINE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "Notification": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HistorySearch": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "実装同期": [
+      "arch-state-management.md"
+    ],
+    "NOTIFICATION": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HISTORY": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "DOMAIN": [
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "Zustand": [
       "arch-state-management.md",
       "testing-component-patterns.md",
       "ui-ux-system-prompt.md"
-    ],
-    "Slice": [
-      "arch-state-management.md"
     ],
     "パターン": [
       "arch-state-management.md",
@@ -1126,13 +1171,6 @@
     "対策": [
       "arch-state-management.md",
       "security-input-validation.md"
-    ],
-    "Store": [
-      "arch-state-management.md",
-      "interfaces-rag-knowledge-graph-store.md",
-      "security-skill-execution.md",
-      "testing-component-patterns.md",
-      "testing-fixtures.md"
     ],
     "Hooks": [
       "arch-state-management.md",
@@ -1255,7 +1293,6 @@
     ],
     "ORGANISMS": [
       "arch-ui-components.md",
-      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "アーキテクチャ記録": [
@@ -3129,20 +3166,7 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "STORE": [
-      "lessons-learned.md"
-    ],
-    "ARCHITECTURE": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
-      "lessons-learned.md"
-    ],
-    "REFLECTION": [
-      "lessons-learned.md",
-      "ui-ux-feature-components.md"
-    ],
-    "反映監査": [
+    "境界基準化の再監査": [
       "lessons-learned.md"
     ],
     "EDITOR": [
@@ -3247,6 +3271,9 @@
       "lessons-learned.md"
     ],
     "analytics": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -5138,6 +5165,9 @@
       "ui-ux-feature-components.md"
     ],
     "Audit": [
+      "ui-ux-feature-components.md"
+    ],
+    "REFLECTION": [
       "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
