@@ -736,6 +736,17 @@ describe("authSlice", () => {
       // Should not throw
       expect(store.linkedProviders).toEqual([]);
     });
+
+    it("should normalize non-array provider payload to empty array", async () => {
+      mockProfileGetProviders.mockResolvedValue({
+        success: true,
+        data: { provider: "google" },
+      });
+
+      await store.fetchLinkedProviders();
+
+      expect(store.linkedProviders).toEqual([]);
+    });
   });
 
   describe("linkProvider - edge cases", () => {
@@ -782,6 +793,35 @@ describe("authSlice", () => {
       // handleAuthError converts "Network error" to Japanese message
       expect(store.authError).toBe("ネットワーク接続を確認してください");
       expect(store.isLoading).toBe(false);
+    });
+
+    it("should recover when linkedProviders state is malformed", async () => {
+      store.linkedProviders = {} as unknown as typeof mockLinkedProviders;
+      mockProfileLinkProvider.mockResolvedValue({
+        success: true,
+        data: {
+          provider: "github" as const,
+          providerId: "github-id",
+          email: "test@github.com",
+          displayName: "GitHub User",
+          avatarUrl: "https://github.com/avatar.png",
+          linkedAt: "2024-12-01T00:00:00Z",
+        },
+      });
+
+      await store.linkProvider("github");
+
+      expect(store.linkedProviders).toEqual([
+        {
+          provider: "github",
+          providerId: "github-id",
+          email: "test@github.com",
+          displayName: "GitHub User",
+          avatarUrl: "https://github.com/avatar.png",
+          linkedAt: "2024-12-01T00:00:00Z",
+        },
+      ]);
+      expect(store.authError).toBeNull();
     });
   });
 

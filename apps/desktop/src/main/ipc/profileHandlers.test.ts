@@ -6,6 +6,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 const mockSupabaseAuth = {
   getUser: vi.fn(),
   updateUser: vi.fn(),
+  unlinkIdentity: vi.fn(),
+  signOut: vi.fn(),
 };
 
 const mockSupabaseFrom = vi.fn();
@@ -79,6 +81,19 @@ vi.mock("electron-store", () => ({
 
 // Mock @repo/shared/infrastructure/auth
 vi.mock("@repo/shared/infrastructure/auth", () => ({
+  toAuthUser: vi.fn((user) => {
+    if (!user) return null;
+    return {
+      id: user.id,
+      email: user.email ?? "",
+      displayName: user.user_metadata?.name ?? null,
+      avatarUrl: user.user_metadata?.avatar_url ?? null,
+      provider: user.app_metadata?.provider ?? "google",
+      createdAt: user.created_at ?? "2024-01-01T00:00:00Z",
+      lastSignInAt:
+        user.last_sign_in_at ?? user.created_at ?? "2024-01-01T00:00:00Z",
+    };
+  }),
   toLinkedProvider: vi.fn((identity) => ({
     provider: identity.provider,
     providerId: identity.id,
@@ -261,6 +276,12 @@ describe("profileHandlers", () => {
       data: { user: mockUser },
       error: null,
     });
+    mockSupabaseAuth.unlinkIdentity.mockResolvedValue({
+      error: null,
+    });
+    mockSupabaseAuth.signOut.mockResolvedValue({
+      error: null,
+    });
 
     mockSupabaseSingle.mockResolvedValue({
       data: mockProfileData,
@@ -313,6 +334,10 @@ describe("profileHandlers", () => {
 
     it("should register PROFILE_LINK_PROVIDER handler", () => {
       expect(handlers.has(IPC_CHANNELS.PROFILE_LINK_PROVIDER)).toBe(true);
+    });
+
+    it("should register PROFILE_UNLINK_PROVIDER handler", () => {
+      expect(handlers.has(IPC_CHANNELS.PROFILE_UNLINK_PROVIDER)).toBe(true);
     });
   });
 
@@ -707,6 +732,58 @@ describe("profileHandlers", () => {
 
       expect(result.success).toBe(false);
       expect(result.error?.code).toBe("profile/link-failed");
+    });
+  });
+
+  describe("PROFILE_UNLINK_PROVIDER handler", () => {
+    it("should send normalized auth user payload via AUTH_STATE_CHANGED", async () => {
+      const handler = handlers.get(IPC_CHANNELS.PROFILE_UNLINK_PROVIDER);
+      if (!handler) {
+        throw new Error("PROFILE_UNLINK_PROVIDER handler not registered");
+      }
+
+      const updatedUser = {
+        ...mockUser,
+        user_metadata: {
+          name: "Updated User",
+          avatar_url: "https://example.com/updated-avatar.png",
+        },
+        app_metadata: { provider: "google" },
+        created_at: "2024-01-01T00:00:00Z",
+        last_sign_in_at: "2024-12-10T00:00:00Z",
+      };
+
+      mockSupabaseAuth.getUser
+        .mockResolvedValueOnce({
+          data: { user: mockUser },
+          error: null,
+        })
+        .mockResolvedValueOnce({
+          data: { user: updatedUser },
+          error: null,
+        });
+
+      const result = (await handler(
+        {},
+        { provider: "github" },
+      )) as IPCResponse<void>;
+
+      expect(result.success).toBe(true);
+      expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
+        IPC_CHANNELS.AUTH_STATE_CHANGED,
+        expect.objectContaining({
+          authenticated: true,
+          user: expect.objectContaining({
+            id: "user-123",
+            email: "test@example.com",
+            displayName: "Updated User",
+            avatarUrl: "https://example.com/updated-avatar.png",
+            provider: "google",
+            createdAt: "2024-01-01T00:00:00Z",
+            lastSignInAt: "2024-12-10T00:00:00Z",
+          }),
+        }),
+      );
     });
   });
 

@@ -8,7 +8,7 @@ import { ipcMain, BrowserWindow, dialog } from "electron";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import * as fs from "fs/promises";
 import { IPC_CHANNELS } from "../../preload/channels";
-import { toLinkedProvider } from "@repo/shared/infrastructure/auth";
+import { toAuthUser, toLinkedProvider } from "@repo/shared/infrastructure/auth";
 import {
   type UserProfile,
   type ProfileUpdateFields,
@@ -604,11 +604,12 @@ export function registerProfileHandlers(
           // 成功後に最新のユーザー情報を取得して通知
           const { data: updatedUserData } = await supabase.auth.getUser();
           const updatedUser = updatedUserData?.user ?? user;
+          const normalizedAuthUser = toAuthUser(updatedUser);
 
-          // 成功時は認証状態変更を通知（最新のidentities情報を含む）
+          // 成功時は認証状態変更を通知（Renderer契約に合わせた形状）
           mainWindow.webContents.send(IPC_CHANNELS.AUTH_STATE_CHANGED, {
             authenticated: true,
-            user: updatedUser,
+            ...(normalizedAuthUser ? { user: normalizedAuthUser } : {}),
           });
 
           return { success: true };

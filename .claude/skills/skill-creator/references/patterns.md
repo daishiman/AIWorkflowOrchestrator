@@ -2244,6 +2244,18 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-A-STORE-SLICE-BASELINE
 
+### [Phase12] ユーザー要求時の `NON_VISUAL` → `SCREENSHOT` 昇格運用（TASK-INVESTIGATE）
+
+- **状況**: 契約修正中心タスクで Phase 11 を `NON_VISUAL` で進めた後、ユーザーから画面検証要求が入り証跡不足が発生する
+- **アプローチ**:
+  - UI検証要求を受けた時点で、非視覚タスクでも `SCREENSHOT` モードへ即時昇格する
+  - `phase-11-manual-test.md` に `テストケース` と `画面カバレッジマトリクス` を追加し、`TC-ID ↔ screenshots/*.png` を固定する
+  - `validate-phase11-screenshot-coverage` の `expected=covered` を確認し、`manual-test-result.md` / `evidence-index.md` / `spec-update-summary.md` へ同値転記する
+- **結果**: ユーザー要求と機械検証の両方を満たした証跡に収束し、再監査時の手戻りを削減できる
+- **適用条件**: 非視覚修正中心だが、UI/UX確認要求が追加された Phase 11/12 再監査タスク
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001
+
 ---
 
 ## ガイドライン
