@@ -66,12 +66,14 @@ describe("historyAPI", () => {
         );
       });
 
-      it("API-005: should have all 4 HISTORY channels defined", () => {
+      it("API-005: should have all 6 HISTORY channels defined", () => {
         const historyChannels = Object.entries(IPC_CHANNELS)
           .filter(([key]) => key.startsWith("HISTORY_"))
           .map(([, value]) => value);
 
-        expect(historyChannels).toHaveLength(4);
+        expect(historyChannels).toHaveLength(6);
+        expect(historyChannels).toContain("history:search");
+        expect(historyChannels).toContain("history:get-stats");
         expect(historyChannels).toContain("history:getFileHistory");
         expect(historyChannels).toContain("history:getVersionDetail");
         expect(historyChannels).toContain("history:getConversionLogs");
@@ -151,6 +153,8 @@ describe("historyAPI", () => {
   describe("Security", () => {
     it("SEC-001: all HISTORY channels should be whitelisted", () => {
       const historyChannels = [
+        IPC_CHANNELS.HISTORY_SEARCH,
+        IPC_CHANNELS.HISTORY_GET_STATS,
         IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
         IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
         IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,
@@ -164,6 +168,8 @@ describe("historyAPI", () => {
 
     it("SEC-002: HISTORY channels should follow naming convention", () => {
       const historyChannels = [
+        IPC_CHANNELS.HISTORY_SEARCH,
+        IPC_CHANNELS.HISTORY_GET_STATS,
         IPC_CHANNELS.HISTORY_GET_FILE_HISTORY,
         IPC_CHANNELS.HISTORY_GET_VERSION_DETAIL,
         IPC_CHANNELS.HISTORY_GET_CONVERSION_LOGS,

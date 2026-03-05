@@ -11,6 +11,7 @@ export * from "./rag";
 export * from "./chat-session";
 export * from "./chat-message";
 export * from "./llm-metadata";
+export * from "./history";
 
 // スキル管理型定義
 export * from "./skill";

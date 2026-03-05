@@ -112,6 +112,7 @@ rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
+ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 ```
 
 ## 6. 完了チェック
@@ -136,6 +137,7 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
 - [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している
+- [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
