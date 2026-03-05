@@ -27,7 +27,8 @@ permissions:
 
 # 同時実行制御: 同じブランチの古いワークフローをキャンセル
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # PRの古いqueued実行が詰まっても新しいheadで実行できるようにSHAを含める
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.pull_request.head.sha || github.sha }}
   cancel-in-progress: true
 
 jobs:
