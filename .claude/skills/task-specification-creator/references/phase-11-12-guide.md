@@ -309,7 +309,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 1. `outputs/phase-12/` の必須5成果物が実在する
 2. `artifacts.json` の `phases.12.status` が `completed` である
-3. `phase-12-documentation.md` の完了チェックリストが実体証跡と同期している
+3. `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが実体証跡と同期している
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
 
@@ -373,7 +373,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
-- [ ] `phase-12-documentation.md` の完了チェックリストが成果物実体・検証結果と同期している
+- [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**

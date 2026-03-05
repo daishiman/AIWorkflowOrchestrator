@@ -154,7 +154,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | ステップ | 処理 | 説明 |
 |----------|------|------|
 | 1 | `new SkillService()` | Facade サービス生成（skillExecutor は未設定） |
-| 2 | `new SkillExecutor(mainWindow, authKeyService)` | 実行エンジン生成（mainWindow 依存） |
+| 2 | `new SkillExecutor(mainWindow, undefined, authKeyService)` | 実行エンジン生成（mainWindow 依存 + AuthKeyService注入） |
 | 3 | `skillService.setSkillExecutor(executor)` | Setter Injection で注入 |
 | 4 | `skillService.executeSkill(skill, args)` | 内部で型変換後に `skillExecutor.execute()` に委譲 |
 
@@ -2100,55 +2100,15 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | メソッド名       | 引数                                            | 戻り値                                      | チャネル                  |
 | ---------------- | ----------------------------------------------- | ------------------------------------------- | ------------------------- |
-| `importFromSource` | `source: ShareTarget`                         | `Promise<ShareResult<ShareImportResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }>`   | `skill:importFromSource`  |
-| `exportSkill`    | `skillName: string, destination: ShareDestination` | `Promise<ShareResult<ShareExportResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }>` | `skill:export`            |
-| `validateSource` | `source: ShareTarget`                          | `Promise<ShareResult<ShareValidateSourceResult> & { errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001" }>` | `skill:validateSource` |
-
-### 失敗契約（TASK-10A-E-A）
-
-| 経路 | code | errorCode | 備考 |
-| --- | --- | --- | --- |
-| 入力不正（P42/構造/許可値） | `VALIDATION_ERROR` | `ERR_1001` | share API 共通 |
-| sender 検証失敗 | `IPC_UNAUTHORIZED` | `ERR_2004` | Main で拒否 |
-| 予期しない例外 | `INTERNAL_ERROR` | `ERR_5001` | `Internal error` に正規化 |
-
-### TASK-10A-E-A 実装内容（型/API契約）
-
-| 観点 | 内容 | 検証 |
-| --- | --- | --- |
-| 戻り値契約 | share 3メソッドに `errorCode?: "ERR_1001" \| "ERR_2004" \| "ERR_5001"` を追加 | Preload 60 tests |
-| 契約境界 | `importFromSource` と `import` のチャネル責務を分離し、誤チャネル呼び出しを禁止 | channel boundary diagnostics |
-| 失敗分類 | `code`（意味）と `errorCode`（追跡ID）を二軸で固定 | Main 34 tests |
-| 仕様同期 | interfaces/api-ipc/security/task-workflow/lessons を同一ターンで同期 | `verify-all-specs` 13/13 |
-
-### 実装時の苦戦箇所（TASK-10A-E-A）
-
-| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
-| --- | --- | --- | --- |
-| `code` と `errorCode` の意味境界が曖昧 | 片方だけを仕様へ転記する | 失敗契約テーブルを `code/errorCode/message` の3列固定へ変更 | 型/API仕様は二軸同時更新を必須化 |
-| `importFromSource` と `import` の境界が文書上で薄い | 手動検証だけで境界判定する | diagnostics JSON に `importCalls=1 / importFromSourceCalls=0` を保存 | 境界検証は画像+機械証跡のセット運用 |
-| Step 2 後の成果物更新漏れ | 仕様更新は完了でも summary/changelog が旧状態のまま | Step 2 実施後に2成果物を同時更新し差分確認 | Step 2 完了条件に「更新有無の一致」を追加 |
-
-### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）
-
-1. 型契約に `errorCode` を追加する前に `code/errorCode/message` 3列を確定する。  
-2. Preload API表・失敗契約表・完了タスク表を同一ターンで更新する。  
-3. `import` と `importFromSource` の境界テストを1ケース以上固定する。  
-4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を実行する。  
-5. Step 2 記録を `spec-update-summary` / `documentation-changelog` で同値化する。  
-
-### 関連未タスク（TASK-10A-E-A）
-
-| 未タスクID | 目的 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 | domain3仕様書の必須3ブロック存在チェックと Step 2同値同期を機械検証し、型/API契約同期漏れを完了前に検出する | 中 | `docs/30-workflows/unassigned-task/task-imp-task10a-e-a-domain-spec-block-auto-verify-001.md` |
+| `importFromSource` | `source: ShareTarget`                         | `Promise<ShareResult<ShareImportResult>>`   | `skill:importFromSource`  |
+| `exportSkill`    | `skillName: string, destination: ShareDestination` | `Promise<ShareResult<ShareExportResult>>` | `skill:export`            |
+| `validateSource` | `source: ShareTarget`                          | `Promise<ShareResult<ShareValidateSourceResult>>` | `skill:validateSource` |
 
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
 | TASK-9F | 2026-02-27 | 完了 | 共有型定義10型新規作成、SkillShareManager実装、3チャネルIPCハンドラ、Preload API 3メソッド追加。92テスト全PASS（Line 94-100%, Branch 90-96%, Function 100%） |
-| TASK-10A-E-A | 2026-03-05 | 完了 | `skillHandlers.share.ts` の失敗契約を `ERR_1001/2004/5001` へ整合。Preload契約テストで share 3チャネルの呼び出し境界（import vs importFromSource）と errorCode 透過を固定（Main 34 / Preload 60 テストPASS） |
 
 ### 実装時の苦戦箇所（TASK-9F）
 
@@ -2338,9 +2298,7 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-03-05 | 1.43.6     | UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 を関連未タスクへ追加。TASK-10A-E-A の型/API契約同期における domain3仕様書ブロック存在検証と Step 2同値同期ガードを追跡対象化 |
-| 2026-03-05 | 1.43.5     | TASK-10A-E-A 追補: share API セクションへ「実装内容（型/API契約）」「苦戦箇所」「5ステップ手順」を追加し、`code/errorCode` 二軸固定・チャネル境界診断・Step 2同時同期を標準化 |
-| 2026-03-05 | 1.43.4     | TASK-10A-E-A 反映: スキル共有APIの戻り値契約へ `errorCode`（`ERR_1001/2004/5001`）を追記し、sender失敗/validation/内部例外の3分類を追加。完了タスクへ Main 34 + Preload 60 テスト根拠を同期 |
+| 2026-03-05 | 1.43.4     | SkillService/SkillExecutor DIフロー表を実装に同期。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ更新し、AuthKeyService注入経路を明示 |
 | 2026-03-04 | 1.43.3     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬と Renderer preflight（`auth-key:exists`）の境界を追加。完了タスク記録と苦戦箇所・再利用手順を追記 |
 | 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
 | 2026-03-02 | 1.43.1     | TASK-UI-05B 実装完了同期: TASK-9D スキルチェーンの Preload API（chainList/get/save/delete/execute）を実装済み契約へ更新。TASK-9G セクションと整合化 |

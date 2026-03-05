@@ -4,16 +4,31 @@
 
 ---
 
-## [2026-03-05 - TASK-UI-01-D system spec 同期向けテンプレート最適化（workflow保存先 + strictPort preflight）]
+## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` に strictPort preflight（`lsof -nP -iTCP:5177 -sTCP:LISTEN`）と workflow 保存先確認（`test -d <workflow>/outputs/phase-11/screenshots`）を追加
-  - `assets/phase12-spec-sync-subagent-template.md` の検証コマンドと完了チェックへ同ガードを同期
-  - `references/patterns.md` に成功/失敗パターン「UI再撮影のworkflow保存先固定 + strictPort preflight（5177）記録」を追加し、5分解決カードの3仕様書同期を標準化
-  - `SKILL.md` 変更履歴を `v10.37.6` として同期
+  - `assets/phase12-system-spec-retrospective-template.md` に `phase-12-documentation.md` の `ステータス=completed` / Task 12-1〜12-5 `[x]` 同期チェックを追加
+  - 同テンプレートの 6.2 手順番号重複（`5` が2件）を修正し、UI/SIGTERM分岐を `6` として明確化
+  - `assets/phase12-spec-sync-subagent-template.md` に同チェックのコマンド・完了条件を追加
+  - `references/resource-map.md` の重複テンプレート行（`phase12-system-spec-retrospective` / `phase12-spec-sync-subagent`）を統合し、1資産1行へ整理
+  - `SKILL.md` 変更履歴を `v10.37.7` として同期
+
+---
+
+## [2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 SIGTERMガードをPhase 12テンプレートへ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に失敗パターン「長時間fixtureテスト一括実行でSIGTERMを再発させる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `test:run` 全量実行 + `SIGTERM` 時 `vitest run` 分割フォールバック記録を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の IPC契約突合・完了チェックへ同ガードを追加
+  - `references/resource-map.md` のテンプレート説明へ `SIGTERM` フォールバック運用を同期
+  - `SKILL.md` 変更履歴を `v10.37.5` として同期
 
 ---
 
@@ -1597,13 +1612,37 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 ---
 
-## 2026-03-05 - TASK-UI-01-D 再確認パターン追補（Step 1-A四点同期 + screenshot運用ガード）
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 パターン追補
+
+### コンテキスト
+
+- スキル: skill-creator
+- 対象: Phase 12 パターン更新（IPC runtime 配線漏れ防止）
+- 目的: auth-key 既存チャネルで発生した `No handler registered` の再発条件を標準パターン化
+
+### 実施内容
+
+- `references/patterns.md` に新規パターンを追加
+  - 見出し: `auth-key既存チャネルで register/unregister 対称性を崩す`
+  - 追加要素:
+    - 再発条件（既存チャネル=配線済み誤認）
+    - 完了条件（handler + register + unregister + lifecycleテスト）
+    - Step 2同期ルール（`task-workflow` + `lessons` 同時更新）
+- `SKILL.md` 変更履歴に `v10.37.4` を追記
+
+### 結果
+
+- ステータス: success
+- 効果: IPC修正タスクで起きやすい runtime 未登録バグを、Phase 12 完了前に検知しやすくなった
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12台帳ドリフト対策
 
 - **Agent**: skill-creator (update)
 - **Phase**: save-patterns
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に `[Phase12] Step 1-A四点同期 + Phase 11再撮影運用ガード（TASK-UI-01-D 再確認）` を追加
-  - 成功パターン: `LOGS.md` x2 / `SKILL.md` x2 / `generate-index` を同一ターンで実施
-  - 失敗パターン: 固定workflow出力先のまま再撮影し、ポート競合preflightを記録しない
-  - 未タスク化導線（`docs/30-workflows/unassigned-task/` + `audit --target-file`）を標準化
+  - `references/patterns.md` に成功パターン `[Phase12] 成果物実体と phase-12-documentation.md 状態の二重突合` を追加
+  - 完了判定を「Task 12-1〜12-5 実体確認 + verify/validate PASS + 仕様書ステータス同期」の3点セットへ固定
+  - `SKILL.md` 変更履歴へ `v10.37.6` を追記

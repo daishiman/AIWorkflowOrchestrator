@@ -20,15 +20,19 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-05 | 1.29.31 | TASK-UI-01-D 追補未タスク `UT-IMP-TASK-056D-SYSTEM-SPEC-SYNC-CARD-GUARD-001` を追加。system spec 4仕様書（task/lessons/ui-ux/state）で「実装内容 + 苦戦箇所 + 5分解決カード」を同値同期する運用ガードを未タスク化し、再利用可能な最短手順を固定 |
-| 2026-03-05 | 1.29.30 | TASK-UI-01-D の教訓を再整理。`実装内容（要点）` を同節へ追加し、苦戦箇所と1対1で参照できる構成へ最適化。あわせて「同種課題の簡潔解決手順」を5ステップへ統一し、`Port 5177` preflight と workflow別証跡保存先確認を5分解決カードとして固定 |
-| 2026-03-05 | 1.29.29 | TASK-UI-01-D の Phase 12準拠再確認を追補。Step 1-A の 4ファイル更新（`LOGS.md` x2 / `SKILL.md` x2）と `topic-map` 再生成を固定し、再撮影運用ギャップ（固定出力先・`Port 5177` preflight不足）を未タスク `UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001` として登録する手順を追加 |
-| 2026-03-05 | 1.29.28 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV の教訓を追加。`manual-test-result.md` 欠落と `MT-xx` 形式による Phase 11 カバレッジ失敗、ナビ契約重複定義、Step 2「更新不要」誤判定を是正し、`navContract` 一元化 + `TC-xx` 証跡運用 + system spec 4点同時同期の4ステップ手順を標準化 |
+| 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
+| 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
+| 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
+| 2026-03-05 | 1.29.29 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12再確認を追補。成果物実体は完了しているのに `phase-12-documentation.md` が `pending` のまま残る台帳ドリフトを苦戦箇所として追加し、`verify-all-specs` / `validate-phase-output` / Task 12-1〜12-5実在チェックの3点突合で同期する手順を標準化 |
+| 2026-03-05 | 1.29.28 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査追補。`SkillExecutor` DIコード例の旧シグネチャ（`new SkillExecutor(mainWindow)`）を現行実装（`new SkillExecutor(mainWindow, undefined, authKeyService)`）へ同期し、文書内の実装ドリフトを解消 |
 | 2026-03-05 | 1.29.27 | TASK-UI-01-C および UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 の完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動し、同UTを `completed-tasks/unassigned-task/` へ移管したため、関連導線を完了表記へ更新 |
 | 2026-03-05 | 1.29.26 | UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を追加。TASK-UI-01-C 再監査で再発した `pnpm run test:run --` の全体テスト誤起動リスクと、監査スクリプト所在誤認（`scripts/` 直下想定）を未タスク化し、`pnpm exec vitest run` 直指定 + `test -f` preflight を標準手順として固定 |
 | 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
 | 2026-03-05 | 1.29.24 | TASK-UI-01-C 再監査追補。`artifacts.json` と `index/phase` の状態不一致（completed vs pending）を同一ターンで是正する運用と、Phase 11 スクリーンショット灰色化（初期化リロード競合）を回避する preflight（`debug-clear-storage` / `dev-skip-auth` 固定）を追加 |
 | 2026-03-05 | 1.29.23 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 教訓を追加。Notification/HistorySearch 実装で発生しやすい「Main/Preload/型定義の3層同期漏れ」「更新系IPCの認証ゲート漏れ」「UI変更なし時のPhase 11証跡曖昧化」を再発条件付きで整理し、4ステップの再利用手順を固定 |
+| 2026-03-05 | 1.29.25 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を追補。`apps/desktop test:run` の `SIGTERM` 中断時フォールバック（失敗ログ固定 + 分割実行 + 3仕様同期）を未タスク導線として追加 |
+| 2026-03-05 | 1.29.24 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の追補。`apps/desktop test:run` が `SIGTERM` で中断した苦戦箇所を追加し、長時間fixtureテストの分割実行ガードを同種課題の手順へ統合 |
+| 2026-03-05 | 1.29.23 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の教訓を追加。auth-key 既存チャネルで発生した runtime 登録漏れと unregister 非対称更新の苦戦箇所を整理し、再利用4ステップ手順を標準化 |
 | 2026-03-05 | 1.29.22 | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録 |
 | 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
 | 2026-03-05 | 1.29.20 | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化 |
@@ -200,6 +204,143 @@
 
 ---
 
+## TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+| 目的 | `auth-key:exists` の `No handler registered` を解消し、auth-key 4チャネルのライフサイクル整合を回復する |
+| 完了日 | 2026-03-05 |
+| ステータス | **完了** |
+
+### 苦戦箇所: 既存チャネルと誤認して runtime 配線確認を後回しにしやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `auth-key:set/exists/validate/delete` の型・契約は存在していたため、`ipc/index.ts` 配線漏れの検出が遅れた |
+| 再発条件 | 「チャネル定義がある=実行可能」と解釈し、`registerAllIpcHandlers` を確認しない場合 |
+| 対処 | `registerAuthKeyHandlers(mainWindow, authKeyService)` を `registerAllIpcHandlers` に追加 |
+| 標準ルール | IPC修正は `channels/handlers` だけでなく `register` までを完了条件に含める |
+
+### 苦戦箇所: register 側のみ修正して unregister 側が取り残されやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 起動直後は動作しても、再初期化サイクルで古いハンドラ状態が残るリスクがあった |
+| 再発条件 | register のみ更新し、終了・再登録シナリオの検証を省略する場合 |
+| 対処 | `unregisterAuthKeyHandlers()` を `unregisterAllIpcHandlers` に追加し、複数サイクル回帰テストを実施 |
+| 標準ルール | lifecycle 系変更は register/unregister を対称更新し、同一ターンで回帰テストを追加する |
+
+### 苦戦箇所: 完了台帳は更新したのに教訓化が漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装内容だけを `task-workflow.md` へ反映し、再利用可能な苦戦箇所が残りにくい |
+| 再発条件 | Phase 12 Step 2 を「仕様同期のみ」と解釈して `lessons-learned.md` を後回しにする場合 |
+| 対処 | 本セクションを追加し、課題/再発条件/対処/標準ルールを固定 |
+| 標準ルール | Phase 12 完了判定は「実装同期 + 教訓同期 + 検証証跡」の三点同時成立に限定する |
+
+### 苦戦箇所: 成果物が揃っていても `phase-12-documentation.md` が `pending` のまま残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` の成果物が全件存在していても、Phase仕様書本体のステータス/チェックリスト更新が後回しになりやすい |
+| 再発条件 | 成果物生成を完了条件と誤認し、`phase-12-documentation.md` のメタ情報と完了チェックリストを最終突合しない場合 |
+| 対処 | Task 12-1〜12-5 の成果物実在を確認後、`verify-all-specs`/`validate-phase-output` を再実行し、仕様書本体を `completed` + `[x]` へ同期 |
+| 標準ルール | Phase 12完了判定は「成果物実在 + 機械検証PASS + phase-12-documentation同期」の3点が揃うまで確定しない |
+
+### 苦戦箇所: `apps/desktop test:run` が `SIGTERM` で中断し、回帰証跡が不安定になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-creator.fixture.test.ts` を含む全量実行でプロセスが `SIGTERM` 終了し、成功/失敗判定が確定しない |
+| 再発条件 | 長時間 fixture テストを常に1コマンド全量実行し、失敗時の分割実行ルールを持たない場合 |
+| 対処 | 失敗ログを証跡化し、`pnpm --filter @repo/desktop exec vitest run <対象>` で分割回帰を実施して合否を確定 |
+| 標準ルール | 回帰運用は「全量1本 + 失敗時の分割実行」をセットで定義し、どちらの結果も台帳に残す |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 変更対象IPCの `register/unregister` 呼び出し有無を `ipc/index.ts` で最初に棚卸しする。  
+2. runtime 配線修正と lifecycle 回帰テスト追加を同一ターンで実施する。  
+3. `pnpm --filter @repo/desktop test:run` が `SIGTERM` の場合は失敗ログを保存し、`vitest run <対象>` 分割実行で回帰範囲を確定する。  
+4. Phase 11 の TC証跡を確認し、`validate-phase11-screenshot-coverage` を PASS させる。  
+5. `task-workflow.md` と `lessons-learned.md` と `api-ipc-system.md` に同じ苦戦箇所を同期して完了判定する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 | `apps/desktop test:run` の `SIGTERM` 中断時フォールバック運用（失敗ログ固定 + 分割実行 + 3仕様同期）を標準化 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md` |
+
+---
+
+## TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05）
+
+### 実装内容
+
+| 項目 | 内容 |
+| --- | --- |
+| 目的 | `AuthKeyService` の生成責務と注入責務を1経路へ統一し、preflight判定と実行時判定の差分を排除する |
+| 実装範囲 | `apps/desktop/src/main/ipc/index.ts` / `apps/desktop/src/main/ipc/skillHandlers.ts` / `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` |
+| 実装要点 | `registerAllIpcHandlers` で `AuthKeyService` を単一生成し、`registerSkillHandlers(mainWindow, skillService, authKeyService)` で注入。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ統一 |
+| 完了根拠 | `verify-all-specs` 13/13 PASS、`validate-phase-output` 28項目 PASS、Task 12-1〜12-5成果物実在確認、`phase-12-documentation.md` completed 同期 |
+
+### 苦戦箇所と解決策
+
+#### 苦戦箇所: DIシグネチャの更新漏れで仕様と実装が乖離しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillExecutor` 生成シグネチャが旧記法のまま文書へ残り、実装と転記内容がずれやすかった |
+| 再発条件 | Main配線変更時に `interfaces` と `task-workflow` のコード例を同一ターンで更新しない場合 |
+| 対処 | `registerSkillHandlers(..., authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を正本へ同期 |
+| 標準ルール | DI変更は「Main配線 + 実装コード例 + 型契約」の3点同時更新を必須化する |
+
+#### 苦戦箇所: 成果物完了後も `phase-12-documentation.md` が `pending` 残置しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` が揃っていても、仕様書本体のステータス/チェック更新が後回しになりやすい |
+| 再発条件 | 成果物実体確認のみで完了判定し、Task 12-1〜12-5 と `phase-12-documentation.md` の相互突合を省略する場合 |
+| 対処 | Task 12-1〜12-5 実在チェック → `verify-all-specs`/`validate-phase-output` 再実行 → `phase-12-documentation.md` completed 同期を固定 |
+| 標準ルール | Phase 12完了は「成果物実体 + 機械検証PASS + 仕様書ステータス同期」の3点セットで判定する |
+
+#### 苦戦箇所: 実装内容だけ先に反映され、教訓化が遅延しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 完了台帳には反映済みでも、再発条件付きの教訓が不足し再利用性が下がった |
+| 再発条件 | `task-workflow` 更新を完了扱いにし、`lessons-learned` 反映を別ターンへ持ち越す場合 |
+| 対処 | 本セクションを追加し、課題/再発条件/対処/標準ルールを固定した |
+| 標準ルール | 仕様同期タスクは `task-workflow` と `lessons-learned` を同一ターンで更新する |
+
+#### 苦戦箇所: `skillHandlers.ts` の責務肥大化でDI境界調整コストが上がる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | DI統一後も `skillHandlers.ts` 内に実行器生成責務が残り、handler登録責務との境界が曖昧で差分追跡が重くなる |
+| 再発条件 | DI改善を「注入引数追加」で止め、composition root への責務集約を後回しにする場合 |
+| 対処 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` として未タスク化し、責務分離 + 回帰テスト固定 + 仕様同期を同時実施する導線を作成 |
+| 標準ルール | DI修正は「注入経路統一」と「責務境界整理」をセットで計画し、未対応分は即時未タスク登録する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Main composition root で依存生成責務を固定し、注入先シグネチャを先に確定する。  
+2. `ipc/index.ts` / `skillHandlers.ts` / `interfaces` の3点を同一ターンで同期する。  
+3. `verify-all-specs` と `validate-phase-output` を再実行し、Task 12-1〜12-5 実体を突合する。  
+4. `phase-12-documentation.md` を `completed` へ同期し、台帳と教訓を同時更新して完了判定する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE11-AUTHKEY-SCREENSHOT-SELECTOR-DRIFT-GUARD-001~~ | ~~auth-key Phase 11 スクリーンショット取得スクリプトのセレクタドリフト防止~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-authkey-screenshot-selector-drift-guard-001.md` |
+| ~~UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001~~ | ~~`skillHandlers.ts` の DI境界整理ガード（composition root 集約 + 回帰テスト固定）~~ **完了: 2026-03-06（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skillhandlers-authkey-di-boundary-guard-001.md` |
+
+---
+
 ## TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05）
 
 ### 苦戦箇所: Phase 11 で TC-ID がなく証跡バリデータが失敗
@@ -276,87 +417,6 @@
 | --- | --- | --- |
 | UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001 | baseline 負債削減の段階実行（format/naming/misplaced のカテゴリ別是正、完了済み移管） | `docs/30-workflows/completed-tasks/task-imp-phase12-unassigned-baseline-reduction-001.md` |
 | UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001 | Phase 12 workflowパス正規化ガード（workflow実体確認 + 監査境界固定 + current/baseline分離、完了済み移管） | `docs/30-workflows/completed-tasks/task-imp-phase12-workflow-path-canonicalization-001.md` |
-
----
-
-## TASK-UI-01-D-VIEWTYPE-ROUTING-NAV: ViewType導線統合の再監査（2026-03-05）
-
-### 実装内容（要点）
-
-- `navigation/navContract.ts` を導線契約の正本に統一し、`APP_DOCK_NAV_ITEMS` / `NAV_SHORTCUT_TO_VIEW` の重複定義を排除した。
-- `App.tsx` に Cmd/Ctrl ショートカット導線を実装し、編集要素上の誤発火を `isEditableEventTarget` で抑止した。
-- Phase 11 で `TC-11-01..05` と `screenshots/*.png` の1対1証跡を整備し、coverage validator の成立条件を固定した。
-- Phase 12 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターン同期した。
-
-### 苦戦箇所: AppDockとショートカットの契約が二重管理になりやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `AppDock` の navItems と `App.tsx` のキーボード導線が別管理だと、ViewType 追加時に順序・ショートカットがドリフトする |
-| 再発条件 | ナビ配列とショートカットマップを別ファイルに分散したまま機能追加する場合 |
-| 対処 | `navigation/navContract.ts` に `APP_DOCK_NAV_ITEMS` / `NAV_SECTIONS` / `NAV_SHORTCUT_TO_VIEW` を集約した |
-| 標準ルール | ViewType導線は「1契約ファイル + UI参照のみ」で運用し、直書きを禁止する |
-
-### 苦戦箇所: ショートカットが編集要素上で誤発火しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `input/textarea/contenteditable` で入力中に Cmd/Ctrl+数字が発火すると、入力作業が中断される |
-| 再発条件 | `keydown` を global で受けるだけで、イベントターゲット検査をしない場合 |
-| 対処 | `isEditableEventTarget` を導入し、編集要素上と `alt/shift` 併用時のショートカットを無効化した |
-| 標準ルール | グローバルショートカットは「修飾キー条件 + 編集要素除外 + 単体テスト」を必須にする |
-
-### 苦戦箇所: Phase 11 証跡が `manual-test-result.md` 欠落で機械検証に失敗する
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `manual-test-plan.md` のみで管理すると、`validate-phase11-screenshot-coverage` が必須ファイル欠落で失敗する |
-| 再発条件 | TC設計と実施結果を同一ファイルに集約し、結果表を分離しない場合 |
-| 対処 | `manual-test-result.md` を追加し、`TC-11-01..05` と `.png` 証跡を1対1で紐付けた |
-| 標準ルール | Phase 11 は `phase-11-manual-test.md`（設計）/ `manual-test-result.md`（実績）/ `screenshots/`（証跡）を3点セットで運用する |
-
-### 苦戦箇所: Step 2 を「更新不要」と誤判定しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | IPC/API追加が無いことだけで、system spec 更新をスキップしやすい |
-| 再発条件 | UI導線・状態契約の変更を「ローカル実装」と見なし、正本台帳への反映を後回しにする場合 |
-| 対処 | `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで更新した |
-| 標準ルール | ViewType・導線・契約に変更があれば Step 2 実施対象。最低4仕様書へ同時反映する |
-
-### 苦戦箇所: Phase 11再撮影で workflow 固定出力先とポート競合が再発しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `capture-task-056-phase11-screenshots.mjs` が `task-056` 固定パスへ保存するため、`task-056d` では手動コピーが必要になった |
-| 再発条件 | 再撮影スクリプトが workflow 引数を持たず、`--strictPort` 失敗時の preflight 分岐が未定義のまま実行する場合 |
-| 対処 | まず対象workflowへ証跡を同期して Phase 11 を成立させ、運用ガードを未タスク化して再発防止導線を固定した |
-| 標準ルール | 再撮影は「workflow解決可能な保存先」「ポート競合 preflight」「失敗分岐の記録」を3点セットで運用する |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. ナビ契約を `navContract.ts` へ集約し、UIは契約参照のみへ置換する。  
-2. `keydown` 導線に編集要素除外と修飾キー条件を実装し、単体テストで固定する。  
-3. Phase 11 を `TC-xx` 形式へ統一し、`manual-test-result.md` と `.png` 証跡を必ず用意する。  
-4. Phase 12 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同時更新し、`validate-phase11-screenshot-coverage` を合格させる。  
-5. 再撮影運用のギャップは未タスク化し、`docs/30-workflows/unassigned-task/` に配置してリンク監査を通す。  
-
-### 同種課題の5分解決カード（運用版）
-
-| 項目 | 記入内容 |
-| --- | --- |
-| 症状（1行） | Phase 11再撮影で保存先ドリフトや `Port 5177` 競合が発生し、証跡運用が不安定化する |
-| 根本原因（1行） | 導線契約・再撮影運用・Step 2仕様同期を別工程で扱い、preflight分岐記録が欠落する |
-| 最短手順 | 1) `navContract` 正本化 2) 編集要素除外ショートカット固定 3) TC-xxと証跡1対1 4) 4仕様同時同期 5) `lsof:5177` preflight + 未タスク監査 |
-| 検証ゲート | `verify-all-specs` 13/13, `validate-phase-output` 28項目, `validate-phase11-screenshot-coverage` 5/5, `verify-unassigned-links` missing=0, `audit --diff-from HEAD` current=0 |
-| 同期先3点 | `task-workflow.md` / `lessons-learned.md` / `ui-ux-navigation.md` |
-
-### 関連未タスク（再発防止ガード）
-
-| タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001 | Phase 11再撮影の workflow 固定出力先ドリフトと `Port 5177` 競合preflight不足を防ぐ運用ガード | `docs/30-workflows/completed-tasks/task-imp-task-056d-phase11-screenshot-capture-path-guard-001.md` |
-| UT-IMP-TASK-056D-SYSTEM-SPEC-SYNC-CARD-GUARD-001 | system spec 4仕様書の同値同期（実装内容/苦戦箇所/5分解決カード）を固定し、Phase 12 Step 2 の再利用性を高める運用ガード | `docs/30-workflows/completed-tasks/task-imp-task-056d-system-spec-sync-card-guard-001.md` |
 
 ---
 
@@ -3599,8 +3659,12 @@ class SkillService {
 }
 
 // skillHandlers.ts（DI設定）
-function registerSkillHandlers(mainWindow: BrowserWindow, skillService: SkillService): void {
-  const skillExecutor = new SkillExecutor(mainWindow);
+function registerSkillHandlers(
+  mainWindow: BrowserWindow,
+  skillService: SkillService,
+  authKeyService?: IAuthKeyService,
+): void {
+  const skillExecutor = new SkillExecutor(mainWindow, undefined, authKeyService);
   skillService.setSkillExecutor(skillExecutor);
   // ハンドラー登録...
 }

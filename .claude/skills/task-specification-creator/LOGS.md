@@ -26,6 +26,35 @@
 
 ---
 
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査（漏れ検知対応）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再検証 + 証跡再生成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - ユーザー追加要求に基づき、`verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行
+  - Phase 11 にスクリーンショット回帰を追加実施（`TC-11-01..03`）し、`outputs/phase-11/screenshots/` を新規作成
+  - `phase-11-manual-test.md` へ `テストケース` と `画面カバレッジマトリクス` を追記、`manual-test-result.md` を `TC + 証跡` 形式へ更新
+  - システム仕様書側のDIシグネチャ旧表記を再同期（`interfaces-agent-sdk-executor` / `arch-electron-services` / `interfaces-agent-sdk-skill` / `lessons-learned`）
+  - `quick_validate.js`（`skill-creator`, `task-specification-creator`, `aiworkflow-requirements`）を再実行し、error 0 を確認
+
+---
+
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 タスク完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 1〜12 を順次完了し、各Phase成果物を `outputs/phase-*` に出力
+  - Task 12-2 Step 1-A/1-B/1-C を実施し、`interfaces-agent-sdk-executor.md` / `api-ipc-system.md` / LOGS 2ファイルを同期
+  - `verify-all-specs` / `validate-phase-output` / `complete-phase` をフェーズ単位で実行し、`artifacts.json` を Phase 12 まで completed 化
+  - UI変更なし判定のため Phase 11 は `NON_VISUAL` 運用で証跡を固定（スクリーンショット計画は N/A 記録）
+
+---
+
 ## 2026-03-05 - TASK-UI-01-C 再監査（phase/index整合 + Phase 11 実画面証跡）
 
 - **Agent**: task-specification-creator
@@ -52,6 +81,36 @@
   - `.claude/skills/aiworkflow-requirements/references/task-workflow.md` と `lessons-learned.md` へ TASK-UI-01-C の完了記録と教訓を同期
   - `.claude/skills/aiworkflow-requirements/LOGS.md` と本ファイルへ Step 1-A 実行ログを追記
   - `generate-index.js` / `verify-all-specs` / `validate-phase-output` の再実行で Phase 12整合を最終確認
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 再監査（Phase 11 TCカバレッジ是正）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（成果物再整合 + 監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` を追加し、`expected TC=0` 失敗を解消
+  - `outputs/phase-11/manual-test-result.md` を `テストケース + 証跡` 形式へ更新し、3枚のスクリーンショット証跡を紐付け
+  - Apple UI/UX観点レビュー（情報階層/余白/コントラスト/導線/一貫性）を記録
+  - `validate-phase11-screenshot-coverage` を PASS（3/3）化し、Phase 12成果物へ結果を同期
+  - `quick_validate`（3スキル）を再実行し、error 0件・warning分類（要監視）を `spec-update-summary.md` に反映
+
+---
+
+## 2026-03-05 - TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 Phase 8-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 8-12（リファクタ/品質保証/最終レビュー/手動検証/ドキュメント更新）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/outputs/phase-8..12` の必須成果物を作成
+  - `complete-phase.js` を Phase 8→12 の順で実行し、`artifacts.json` を同期
+  - Phase 11は UI差分なしを判定し、非視覚手動検証（テスト/コードレビュー証跡）として記録
+  - Phase 12 Task 2 Step 1-A/1-B/1-C の実作業として `task-workflow.md` / `api-ipc-system.md` / `LOGS.md` を更新
+  - `validate-phase-output.js` を再実行し、workflow仕様整合を確認
 
 ---
 
@@ -5219,14 +5278,12 @@ if (artifactPath) {
 
 ---
 
-## 2026-03-05 - TASK-UI-01-D Phase 12準拠再確認（Step 1-A四点同期 + 未タスク起票）
+## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 Phase 12再確認の運用追補
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12（再確認）
 - **Result**: ✓ 成功
 - **Notes**:
-  - `outputs/phase-12/phase12-compliance-recheck.md` を追加し、Task 1〜5 / Step 1-A〜1-E / Step 2 の実施状態を証跡化
-  - `spec-update-summary.md` に Step 1-A 必須更新（`LOGS.md` x2 / `SKILL.md` x2 / `topic-map` 再生成）を追記
-  - 再撮影運用ギャップを未タスク `UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001` として `docs/30-workflows/unassigned-task/` に起票
-  - `unassigned-task-detection.md` を「検出1件 + 配置/フォーマット監査PASS」へ更新
-  - `audit --target-file` と `audit --diff-from HEAD` で `currentViolations=0` を確認
+  - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
+  - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
+  - `SKILL.md` 変更履歴へ `v10.08.15` を追記
