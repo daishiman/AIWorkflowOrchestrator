@@ -116,6 +116,17 @@ UI機能実装の場合は次を推奨:
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
 - `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 
+### 4.2 実装差分→仕様更新要否マトリクス（必須）
+
+| 変更境界（`git diff --name-only`） | 代表ファイル例 | 更新必須仕様書 | 判定 |
+| --- | --- | --- | --- |
+| Main IPC | `apps/desktop/src/main/ipc/*.ts` | `api-ipc-*.md` / `security-*.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+| Preload API | `apps/desktop/src/preload/api/*.ts` | `interfaces-*.md` / `api-ipc-*.md` / `task-workflow.md` | `更新必須` |
+| Store Slice | `apps/desktop/src/renderer/store/slices/*.ts` | `arch-state-management.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+| UI/View | `apps/desktop/src/renderer/views/**`, `components/**` | `ui-ux-components.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+
+> `変更不要` を宣言する場合は、対応境界の差分が 0 件である証跡（`git diff --name-only` 出力）を `spec-update-summary.md` に必ず添付する。
+
 ---
 
 ## 5. 苦戦箇所（再利用可能形式）
@@ -148,6 +159,7 @@ UI機能実装の場合は次を推奨:
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
 4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
 5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / validate-phase11-screenshot-coverage / verify-unassigned-links / audit --diff-from HEAD を実行し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
 
@@ -156,6 +168,7 @@ UI機能実装の場合は次を推奨:
 | コマンド | 目的 | 期待結果 |
 | --- | --- | --- |
 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
+| `git diff --name-only` | 実装差分境界（Main/Preload/Store/UI）の抽出 | Step 2 の仕様更新要否マトリクスに転記できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
@@ -170,11 +183,16 @@ UI機能実装の場合は次を推奨:
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
+| `pnpm --filter @repo/desktop test:run` | 回帰の全量実行（ベースライン確認） | `PASS` または `SIGTERM` 失敗ログが記録される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
+| `pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>` | 全量実行が `SIGTERM` の場合の分割フォールバック | 対象回帰の合否が確定できる |
+| `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（`expected TC = covered TC`。warningが出た場合は理由を記録） |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
+| `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -195,12 +213,15 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] Step 2 の判定表に `git diff --name-only` 起点の「実装差分→仕様更新要否マトリクス」を記録している
+- [ ] `変更不要` 判定には diff 0 件の根拠（実ファイル一覧）を添付している
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
+- [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 
 ---
 
@@ -242,3 +263,6 @@ UI機能実装の場合は次を推奨:
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致する
 - [ ] UIタスクでは `manual-test-result.md` の時刻と `screenshots/*.png` の `stat` が一致する
 - [ ] `currentViolations` を合否、`baselineViolations` を監視値として分離記録している
+- [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
+- [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している
+- [ ] `apps/desktop` 全量 `test:run` が `SIGTERM` の場合、失敗ログと分割実行結果の両方を記録している

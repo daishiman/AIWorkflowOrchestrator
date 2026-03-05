@@ -208,6 +208,10 @@ vi.mock("../permission-store-handlers", () => ({
 vi.mock("../authModeHandlers", () => ({
   registerAuthModeHandlers: vi.fn(),
 }));
+vi.mock("../authKeyHandlers", () => ({
+  registerAuthKeyHandlers: vi.fn(),
+  unregisterAuthKeyHandlers: vi.fn(),
+}));
 vi.mock("../../services/auth", () => ({
   AuthKeyService: vi.fn().mockImplementation(() => ({})),
   createAuthKeyStorage: vi.fn().mockReturnValue({}),
@@ -248,6 +252,10 @@ vi.mock("../../services/skill/SkillChainExecutor", () => ({
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
 import { setupThemeWatcher } from "../themeHandlers";
 import { registerSkillChainHandlers } from "../skillHandlers";
+import {
+  registerAuthKeyHandlers,
+  unregisterAuthKeyHandlers,
+} from "../authKeyHandlers";
 
 describe("IPC Handler Double Registration Prevention", () => {
   beforeEach(() => {
@@ -416,6 +424,26 @@ describe("IPC Handler Double Registration Prevention", () => {
         expect.any(Object), // SkillChainStore instance
         expect.any(Object), // SkillChainExecutor instance
       );
+    });
+  });
+
+  describe("auth-key handlers lifecycle", () => {
+    it("registerAllIpcHandlers が registerAuthKeyHandlers を呼び出す", () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+      registerAllIpcHandlers(mockWindow);
+
+      expect(registerAuthKeyHandlers).toHaveBeenCalledTimes(1);
+      expect(registerAuthKeyHandlers).toHaveBeenCalledWith(
+        mockWindow,
+        expect.anything(),
+      );
+    });
+
+    it("unregisterAllIpcHandlers が unregisterAuthKeyHandlers を呼び出す", () => {
+      unregisterAllIpcHandlers();
+
+      expect(unregisterAuthKeyHandlers).toHaveBeenCalledTimes(1);
     });
   });
 

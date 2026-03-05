@@ -171,6 +171,53 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | フォーマット検証 | `sk-ant-api` プレフィックスパターン              |
 | ログ出力       | キー値は一切ログに出力しない                      |
 
+### 通知・履歴検索 IPC チャネル（TASK-UI-01-STORE-IPC-ARCHITECTURE）
+
+UI基盤タスクで追加した通知・履歴検索の IPC 契約。`renderer -> preload -> main` の3層で同一チャンネル名を使用する。
+
+**実装ファイル**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- ハンドラー: `apps/desktop/src/main/ipc/notificationHandlers.ts`, `apps/desktop/src/main/ipc/historySearchHandlers.ts`
+- 登録: `apps/desktop/src/main/ipc/index.ts`
+- Preload API: `apps/desktop/src/preload/api/notification-api.ts`
+- 共有型: `packages/shared/src/types/history.ts`
+
+#### チャンネル一覧
+
+| チャネル | メソッド | 引数 | 戻り値 | 備考 |
+| --- | --- | --- | --- | --- |
+| `notification:get-history` | invoke | `{ limit?: number; offset?: number }` | `{ success, data?: { notifications, totalCount }, error? }` | 通知履歴取得 |
+| `notification:mark-read` | invoke | `{ notificationId: string }` | `{ success, data?: { updated: boolean }, error? }` | 既読化 |
+| `notification:mark-all-read` | invoke | なし | `{ success, data?: { updatedCount: number }, error? }` | 全件既読 |
+| `notification:clear` | invoke | なし | `{ success, data?: { deletedCount: number }, error? }` | 履歴削除 |
+| `notification:new` | on | `{ notification: Notification }` | Event push | Main -> Renderer のみ（購読は unsubscribe を返す） |
+| `history:search` | invoke | `{ query, filter, limit, offset }` | `{ success, data?: { items, totalCount, hasMore }, error? }` | 履歴検索 |
+| `history:get-stats` | invoke | なし | `{ success, data?: { chat, file, skill, total }, error? }` | 統計取得 |
+
+#### 実装反映（TASK-UI-01-C / 2026-03-05）
+
+| 観点 | 実装内容 | 実装ファイル |
+| --- | --- | --- |
+| Push配信の安全化 | `emitNotificationNew(mainWindow, notification)` を追加。`BrowserWindow` / `webContents` の破棄状態を先に検証し、不正状態では `false` を返して送信を抑止 | `apps/desktop/src/main/ipc/notificationHandlers.ts` |
+| timestamp正規化 | `notification:new` 配信前に `timestamp` を ISO 8601 へ正規化（不正値は `new Date().toISOString()` へフォールバック） | `apps/desktop/src/main/ipc/notificationHandlers.ts` |
+| API契約の往復整合 | Preload `notification.onNew()` は `callback` 登録時に unsubscribe 関数を返し、Renderer側の購読解除を可能にする | `apps/desktop/src/preload/api/notification-api.ts` |
+| 主動作の委譲契約 | `notification:mark-all-read` / `notification:clear` の委譲を Main テストで固定化し、戻り値（`updatedCount`/`deletedCount`）を契約化 | `apps/desktop/src/main/ipc/__tests__/notificationHandlers.test.ts` |
+
+#### 入力検証ルール
+
+| 対象 | 検証 |
+| --- | --- |
+| `notificationId` | P42準拠（`typeof` -> 空文字 -> `trim()`） |
+| `query` | `string` 型必須（空/空白は全件検索として許容） |
+| `filter` | `all/chat/file/skill` の許可値 |
+| sender | `validateIpcSender` による許可ウィンドウ検証 |
+
+#### エラーハンドリング
+
+- 送信元不正: `toIPCValidationError` を返却
+- 実行時例外: `sanitizeErrorMessage(error, fallback)` で内部情報（パス/スタック/機密値）をマスク
+
 ### IPC エラーコード
 
 | コード               | 説明                 | 対処                         |
@@ -264,6 +311,15 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 ## 完了タスク
 
+### TASK-UI-01-STORE-IPC-ARCHITECTURE（2026-03-05完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-01-STORE-IPC-ARCHITECTURE |
+| 反映対象 | `notification:*` / `history:search` / `history:get-stats` |
+| 主要変更 | 新規IPC 7チャネル、Preload API追加、Main sender検証・入力検証・エラーサニタイズ適用 |
+| 関連ドキュメント | `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/outputs/phase-12/spec-update-summary.md` |
+
 ### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
 
 | 項目 | 内容 |
@@ -279,6 +335,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.4.0     | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: 通知IPC（`notification:get-history/mark-read/mark-all-read/clear/new`）と履歴検索IPC（`history:search/get-stats`）を追加。P42入力検証・sender検証・`sanitizeErrorMessage` 適用境界を明記 |
 | v1.3.0     | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `auth-key:exists` 判定契約に env fallback（`ANTHROPIC_API_KEY`）を追加。Renderer preflight と Main 実行時判定の整合方針を明文化 |
 | v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |

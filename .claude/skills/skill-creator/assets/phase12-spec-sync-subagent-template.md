@@ -37,7 +37,7 @@
 | --- | --- | --- | --- |
 | SubAgent-A | `<workflow-a>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-a の検証が全て PASS |
 | SubAgent-B | `<workflow-b>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-b の検証が全て PASS（不要時はN/A理由記録） |
-| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`、未実施は1つ目、完了済みUTは2つ目、3つ目は legacy のみ。`target-file` 監査は1つ目/3つ目に限定 |
+| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`、未実施は1つ目、完了済みUTは2つ目、3つ目は legacy のみ。`target-file` 監査は1つ目（未実施UT）に限定 |
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
@@ -58,6 +58,17 @@
 | SubAgent-C | `<spec-c>` | `<実装内容を反映した見出し>` | `<苦戦箇所を反映した見出し>` | `<verify/validate/links/audit/UI証跡>` |
 
 > 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
+
+### 2.5 実装差分→仕様更新要否マトリクス（必須）
+
+| 変更境界（diff） | 更新必須仕様書 | `変更不要` を許可する条件 |
+| --- | --- | --- |
+| Main (`apps/desktop/src/main/**`) | `api-ipc-*` / `security-*` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+| Preload (`apps/desktop/src/preload/**`) | `interfaces-*` / `api-ipc-*` / `task-workflow` | 対象境界の diff が 0 件 |
+| Store (`apps/desktop/src/renderer/store/**`) | `arch-state-management` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+| UI (`apps/desktop/src/renderer/views/**`, `components/**`) | `ui-ux-components` / `ui-ux-feature-components` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+
+> `変更不要` 判定時は diff 根拠（0件）を `spec-update-summary.md` へ必ず添付する。
 
 ## 3. 各仕様書の必須記載
 
@@ -88,11 +99,13 @@ UI機能実装時の必須記載（追加）:
 | register 配線 | `rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts` | 新規ハンドラが `registerAllIpcHandlers` に登録済み |
 | preload 公開 | `rg -n "safeInvoke|safeInvokeUnwrap" apps/desktop/src/preload/skill-api.ts` | 全チャネルに対応する API が公開済み |
 | service 公開境界 | `rg -n "services/<domain>/|export .* from \"./\"|SkillChain(Store|Executor)" apps/desktop/src/main` | 依存サービスのバレル公開（または未タスク移管）が記録されている |
+| 回帰テスト運用 | `pnpm --filter @repo/desktop test:run`（失敗時は `vitest run <target>` 分割） | `SIGTERM` 時も分割実行で対象回帰の合否が確定できる |
 | 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
 
 ## 5. 検証コマンド
 
 ```bash
+git diff --name-only
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
@@ -108,10 +121,13 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
+pnpm --filter @repo/desktop test:run
+pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
+ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 ```
 
 ## 6. 完了チェック
@@ -120,12 +136,14 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
+- [ ] Step 2 判定に実装差分→仕様更新要否マトリクス（Main/Preload/Store/UI）を記録している
+- [ ] `変更不要` 判定に diff 0 件の根拠を添付している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] 未タスクの配置先判定（未実施=`docs/30-workflows/unassigned-task/`、完了済みUT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が `unassigned-task` 系（`unassigned-task/` or `completed-tasks/unassigned-task/`）であることを確認している
+- [ ] `audit --target-file` の対象が `docs/30-workflows/unassigned-task/` 配下であることを確認している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点に同一の「5分解決カード」が同期されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
@@ -136,8 +154,10 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
 - [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している
+- [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
+- [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

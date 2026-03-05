@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 実装反映: `historySearchSlice` の filter/stats 状態を同期し、`NotificationCenter` 連携（`ingestNotification` / `setNotificationHistory`）と `emitNotificationNew` 契約に合わせて状態遷移を更新 |
+| v3.8.4     | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: `notificationSlice` / `historySearchSlice` 追加、`ViewType` 拡張（`workspace`/`skillCenter`/`historySearch`）、`notifications` 永続化、`AppDock`/`App.tsx` の遷移契約を同期 |
 | v3.8.3     | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: UI基盤8コンポーネントの状態管理方針を追記。共有Storeを新設せず、ローカル state + コールバック注入で責務分離する設計を明文化 |
 | v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
 | v3.8.1     | 2026-03-03 | TASK-10A-D教訓反映: 個別セレクタの命名規約（ドメインサフィックス必須ルール）を追加。`useIsAnalyzingSkill()` vs `useIsAnalyzing()` の命名判断基準を明文化 |
@@ -103,6 +105,46 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
 | `skillSlice`             | **統合済み→agentSlice** | ~~`store/slices/skillSlice.ts`~~（削除済み）  | TASK-FIX-6-1（統合完了） |
 | `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
+| `notificationSlice`      | アプリ通知状態（未読数/展開状態） | `store/slices/notificationSlice.ts` | TASK-UI-01（完了） |
+| `historySearchSlice`     | 履歴検索状態（query/filter/results/stats/pagination） | `store/slices/historySearchSlice.ts` | TASK-UI-01-C（完了） |
+
+### TASK-UI-01: Store / ViewType 拡張（2026-03-05）
+
+#### ViewType 契約
+
+`store/types.ts` の `ViewType` は以下を含む。
+
+| 追加値 | 用途 | 主な描画先 |
+| --- | --- | --- |
+| `workspace` | ワークスペース導線 | `WorkspaceView` |
+| `skillCenter` | スキルセンター導線 | `SkillCenterView` |
+| `historySearch` | 履歴検索導線 | `HistorySearchView` |
+
+#### AppStore への追加スライス
+
+| スライス | 主要状態 | 主要アクション |
+| --- | --- | --- |
+| `notificationSlice` | `notifications`, `unreadCount`, `isPopoverOpen`, `expandedNotificationId` | `addNotification`, `ingestNotification`, `setNotificationHistory`, `markAsRead`, `markAllAsRead`, `clearAllNotifications` |
+| `historySearchSlice` | `historySearchQuery`, `historySearchFilter`, `historySearchResults`, `historySearchStats`, `historySearchHasMore`, `historySearchError`, `historySearchStatsError` | `setHistorySearchFilter`, `searchHistory`, `loadMoreHistory`, `loadHistorySearchStats`, `resetHistorySearch`, `toggleItemExpanded` |
+
+#### 永続化ポリシー
+
+`store/index.ts` の `partialize` に `notifications` を追加し、再起動後も通知履歴を保持する。
+
+#### 実装上の補足
+
+- SkillCenter は既存方針どおり新規 Slice を作成せず、ローカル state + 既存 selector を維持。
+- 新規 slice の公開は個別セレクタ方式で実装し、P31（合成Hook由来の再レンダー増幅）を回避。
+- `NotificationCenter` 初期化時に `notification:get-history` を同期し、Main Push（`notification:new`）を `ingestNotification` で重複排除しながら反映する。
+- `HistorySearchView` 初期表示で `searchHistory("", 0, "all")` と `loadHistorySearchStats()` を実行し、アンマウント時に `resetHistorySearch()` で状態リークを防止する。
+
+#### 実装時の苦戦箇所（TASK-UI-01-C）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| Push通知で壊れた `timestamp` が混入し state sort が不安定化 | Main -> Renderer の push payload を未正規化で送る場合 | `emitNotificationNew` と `notificationSlice` 双方で `timestamp` を正規化し、表示順序を安定化 | Push payload は Main/Renderer の両境界で最小正規化する |
+| 履歴検索 filter がページング時に失われる | `loadMore` 時に filter を明示渡ししない場合 | `historySearchFilter` を slice state に保持し、`loadMoreHistory` で必ず再利用 | query/filter/pagination は同一 slice で状態一元化する |
+| 通知履歴の初期同期と push が競合し重複表示 | 初期 `getHistory` 後に同一ID push を受信する場合 | `ingestNotification` で ID 重複排除、`setNotificationHistory` で時刻降順正規化 | 履歴同期 + push 連携は「重複排除」を必須契約にする |
 
 ### authSlice詳細（TASK-AUTH-SESSION-REFRESH-001更新）
 

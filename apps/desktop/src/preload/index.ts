@@ -38,6 +38,11 @@ import type {
   WorkspaceFolderChangedEvent,
   SearchFileRequest,
   SearchWorkspaceRequest,
+  NotificationGetHistoryRequest,
+  NotificationMarkReadRequest,
+  NotificationClearRequest,
+  NotificationNewEvent,
+  HistorySearchRequest,
   ReplaceFileSingleRequest,
   ReplaceFileAllRequest,
   ReplaceWorkspaceAllRequest,
@@ -281,6 +286,24 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.SEARCH_FILE_EXECUTE, request),
     executeWorkspace: (request: SearchWorkspaceRequest) =>
       safeInvoke(IPC_CHANNELS.SEARCH_WORKSPACE_EXECUTE, request),
+  },
+
+  notification: {
+    getHistory: (request?: NotificationGetHistoryRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_GET_HISTORY, request ?? {}),
+    markRead: (request: NotificationMarkReadRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_READ, request),
+    markAllRead: () => safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ),
+    clear: (request?: NotificationClearRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_CLEAR, request ?? {}),
+    onNew: (callback: (event: NotificationNewEvent) => void) =>
+      safeOn<NotificationNewEvent>(IPC_CHANNELS.NOTIFICATION_NEW, callback),
+  },
+
+  historySearch: {
+    search: (request: HistorySearchRequest) =>
+      safeInvoke(IPC_CHANNELS.HISTORY_SEARCH, request),
+    getStats: () => safeInvoke(IPC_CHANNELS.HISTORY_GET_STATS),
   },
 
   replace: {

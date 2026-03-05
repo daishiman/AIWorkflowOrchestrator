@@ -909,6 +909,148 @@ export interface ThemeSystemChangedEvent {
   resolvedTheme: ResolvedTheme;
 }
 
+// Notification/History Search operations (TASK-UI-01-C)
+export type NotificationType = "info" | "success" | "warning" | "error";
+
+export type NotificationSource =
+  | { kind: "skill_execution"; skillName: string }
+  | { kind: "file_operation"; fileName: string; operation: string }
+  | { kind: "system"; eventType: string };
+
+export interface NotificationHistoryItem {
+  id: string;
+  type: NotificationType;
+  title: string;
+  detail?: string;
+  timestamp: string;
+  isRead: boolean;
+  source: NotificationSource;
+}
+
+export interface NotificationGetHistoryRequest {
+  limit?: number;
+  offset?: number;
+}
+
+export interface NotificationGetHistoryResponse {
+  success: boolean;
+  data?: {
+    notifications: NotificationHistoryItem[];
+    totalCount: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationMarkReadRequest {
+  notificationId: string;
+}
+
+export interface NotificationClearRequest {
+  onlyRead?: boolean;
+}
+
+export interface NotificationMutationResponse {
+  success: boolean;
+  data?: {
+    updated?: boolean;
+    updatedCount?: number;
+    removedCount?: number;
+    deletedCount?: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationNewEvent {
+  notification: NotificationHistoryItem;
+}
+
+export type HistorySearchEntityType =
+  | "conversation"
+  | "execution"
+  | "file"
+  | "notification";
+
+export interface HistorySearchResultItem {
+  id: string;
+  type: HistorySearchEntityType;
+  title: string;
+  snippet: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface HistorySearchFilters {
+  types?: HistorySearchEntityType[];
+  dateFrom?: string | null;
+  dateTo?: string | null;
+  includeArchived?: boolean;
+}
+
+export interface HistorySearchRequest {
+  query: string;
+  filters?: HistorySearchFilters;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface HistorySearchResponse {
+  success: boolean;
+  data?: {
+    results: HistorySearchResultItem[];
+    pagination: {
+      page: number;
+      pageSize: number;
+      total: number;
+    };
+    stats: {
+      totalCount: number;
+      byType: Record<HistorySearchEntityType, number>;
+    };
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface HistorySearchStatsResponse {
+  success: boolean;
+  data?: {
+    totalCount: number;
+    byType: Record<HistorySearchEntityType, number>;
+    unreadNotificationCount: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationAPI {
+  getHistory: (
+    request?: NotificationGetHistoryRequest,
+  ) => Promise<NotificationGetHistoryResponse>;
+  markRead: (
+    request: NotificationMarkReadRequest,
+  ) => Promise<NotificationMutationResponse>;
+  markAllRead: () => Promise<NotificationMutationResponse>;
+  clear: (
+    request?: NotificationClearRequest,
+  ) => Promise<NotificationMutationResponse>;
+  onNew: (callback: (event: NotificationNewEvent) => void) => () => void;
+}
+
+export interface HistorySearchAPI {
+  search: (request: HistorySearchRequest) => Promise<HistorySearchResponse>;
+  getStats: () => Promise<HistorySearchStatsResponse>;
+}
+
 // ElectronAPI interface
 export interface ElectronAPI {
   file: {
@@ -1040,6 +1182,10 @@ export interface ElectronAPI {
       request: SearchWorkspaceRequest,
     ) => Promise<SearchWorkspaceResponse>;
   };
+
+  notification: NotificationAPI;
+
+  historySearch: HistorySearchAPI;
 
   replace: {
     fileSingle: (

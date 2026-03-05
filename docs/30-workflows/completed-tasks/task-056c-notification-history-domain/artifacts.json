@@ -1,0 +1,244 @@
+{
+  "feature": "task-056c-notification-history-domain",
+  "created": "2026-03-05T09:31:33.059Z",
+  "lastUpdated": "2026-03-05T10:55:03.465Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/domain-boundary-design.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ipc-contract-design.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/persistence-policy-design.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/aiworkflow-requirements-extract.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/implementation-spec-traceability-matrix.md"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-matrix.md"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/notification-history-domain-contract.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/channel-mapping.md"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-matrix.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-summary.md"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gate-result.md"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/contract-consistency-report.md"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-validation-report.md"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/rework-plan.md"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-matrix.md"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-05T10:55:03.465Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "estimatedPhases": 13,
+    "actualPhases": 12
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T03:40:01.272Z",
-  "totalKeywords": 1422,
+  "generated": "2026-03-05T13:03:41.832Z",
+  "totalKeywords": 1429,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -260,6 +260,7 @@
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
       "ui-ux-history-panel.md",
+      "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -828,6 +829,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
+      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -1309,7 +1311,8 @@
       "architecture-chat-history.md"
     ],
     "Domain": [
-      "architecture-chat-history.md"
+      "architecture-chat-history.md",
+      "ui-ux-feature-components.md"
     ],
     "Application": [
       "architecture-chat-history.md"
@@ -3127,7 +3130,25 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "STORE": [
+      "lessons-learned.md"
+    ],
+    "ARCHITECTURE": [
+      "lessons-learned.md"
+    ],
     "再確認": [
+      "lessons-learned.md"
+    ],
+    "NOTIFICATION": [
+      "lessons-learned.md"
+    ],
+    "HISTORY": [
+      "lessons-learned.md"
+    ],
+    "DOMAIN": [
+      "lessons-learned.md"
+    ],
+    "実装完了監査": [
       "lessons-learned.md"
     ],
     "REFLECTION": [
@@ -3633,9 +3654,6 @@
       "lessons-learned.md"
     ],
     "委譲実装": [
-      "lessons-learned.md"
-    ],
-    "STORE": [
       "lessons-learned.md"
     ],
     "HOOKS": [
@@ -4327,6 +4345,9 @@
       "security-electron-ipc.md"
     ],
     "historyAPI": [
+      "security-electron-ipc.md"
+    ],
+    "notificationAPI": [
       "security-electron-ipc.md"
     ],
     "slideSettingsAPI": [
@@ -5132,6 +5153,13 @@
     "Audit": [
       "ui-ux-feature-components.md"
     ],
+    "Notification": [
+      "ui-ux-feature-components.md"
+    ],
+    "History": [
+      "ui-ux-feature-components.md",
+      "ui-ux-settings.md"
+    ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
     ],
@@ -5350,9 +5378,6 @@
       "ui-ux-settings.md"
     ],
     "権限要求履歴パネル": [
-      "ui-ux-settings.md"
-    ],
-    "History": [
       "ui-ux-settings.md"
     ],
     "Panel": [

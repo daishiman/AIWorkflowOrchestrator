@@ -23,10 +23,10 @@ describe("AppDock", () => {
       );
     });
 
-    it("11個のナビゲーションアイテムを表示する", () => {
+    it("9個のナビゲーションアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(11);
+      expect(buttons).toHaveLength(9);
     });
   });
 
@@ -36,9 +36,9 @@ describe("AppDock", () => {
       expect(screen.getByLabelText("Dashboard")).toBeInTheDocument();
     });
 
-    it("Editorアイテムを表示する", () => {
+    it("Workspaceアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Editor")).toBeInTheDocument();
+      expect(screen.getByLabelText("Workspace")).toBeInTheDocument();
     });
 
     it("Chatアイテムを表示する", () => {
@@ -66,24 +66,9 @@ describe("AppDock", () => {
       expect(screen.getByLabelText("Settings")).toBeInTheDocument();
     });
 
-    it("Chainアイテムを表示する", () => {
+    it("Historyアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Chain")).toBeInTheDocument();
-    });
-
-    it("Scheduleアイテムを表示する", () => {
-      render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Schedule")).toBeInTheDocument();
-    });
-
-    it("Debugアイテムを表示する", () => {
-      render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Debug")).toBeInTheDocument();
-    });
-
-    it("Analyticsアイテムを表示する", () => {
-      render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Analytics")).toBeInTheDocument();
+      expect(screen.getByLabelText("History")).toBeInTheDocument();
     });
   });
 
@@ -91,8 +76,8 @@ describe("AppDock", () => {
     it("ナビゲーションアイテムクリック時にonViewChangeを呼び出す", () => {
       const handleViewChange = vi.fn();
       render(<AppDock {...defaultProps} onViewChange={handleViewChange} />);
-      fireEvent.click(screen.getByLabelText("Editor"));
-      expect(handleViewChange).toHaveBeenCalledWith("editor");
+      fireEvent.click(screen.getByLabelText("Workspace"));
+      expect(handleViewChange).toHaveBeenCalledWith("workspace");
     });
 
     it("各ビューへの切り替えが可能", () => {
@@ -109,19 +94,13 @@ describe("AppDock", () => {
       expect(handleViewChange).toHaveBeenCalledWith("agent");
 
       fireEvent.click(screen.getByLabelText("Skills"));
-      expect(handleViewChange).toHaveBeenCalledWith("skill-center");
+      expect(handleViewChange).toHaveBeenCalledWith("skillCenter");
 
-      fireEvent.click(screen.getByLabelText("Chain"));
-      expect(handleViewChange).toHaveBeenCalledWith("chainBuilder");
+      fireEvent.click(screen.getByLabelText("History"));
+      expect(handleViewChange).toHaveBeenCalledWith("historySearch");
 
-      fireEvent.click(screen.getByLabelText("Schedule"));
-      expect(handleViewChange).toHaveBeenCalledWith("scheduleManager");
-
-      fireEvent.click(screen.getByLabelText("Debug"));
-      expect(handleViewChange).toHaveBeenCalledWith("debugPanel");
-
-      fireEvent.click(screen.getByLabelText("Analytics"));
-      expect(handleViewChange).toHaveBeenCalledWith("analyticsDashboard");
+      fireEvent.click(screen.getByLabelText("Editor"));
+      expect(handleViewChange).toHaveBeenCalledWith("editor");
 
       fireEvent.click(screen.getByLabelText("Settings"));
       expect(handleViewChange).toHaveBeenCalledWith("settings");

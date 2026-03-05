@@ -130,6 +130,20 @@ curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
 - build失敗または疎通失敗時は再撮影を継続しない。
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
 
+#### D. 再撮影後 cleanup（必須）
+
+```bash
+# 1) 残留プロセス確認（例: captureスクリプト / vite）
+ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
+
+# 2) 必要に応じて停止
+kill <PID...> || true
+```
+
+補足:
+- 再撮影完了ログが出ても、Vite が残留するケースがある。
+- cleanup しないまま次工程へ進むと、ポート競合や再監査判定ドリフトの原因になる。
+
 > **before撮影に関する注意**: Phase 11 の時点で実装は完了済みのため、main ブランチに切り替えて before 撮影を行うのは非現実的である。before 撮影が必要な場合は、**Phase 5（実装）開始前に main ブランチのスクリーンショットを事前に撮影しておく**こと。Phase 11 では after 撮影のみを実施する。
 
 > **Phase 2 へのフィードバック（将来改善）**: UI状態マトリクスの根本的な入力源はPhase 2（設計）である。Phase 2テンプレートに「UI状態マトリクス」セクションを追加し、設計時にコンポーネント x 表示状態の組み合わせを定義しておくことで、Phase 11の撮影計画作成を大幅に効率化できる。
@@ -163,6 +177,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
+- UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 ### テスト結果レポート形式
 
 ```markdown

@@ -392,6 +392,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.14** | **2026-03-05** | **TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 最終同期を反映**: `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` の Phase 1〜12 ステータス同期（`completed` + 完了条件 `[x]`）と `outputs/artifacts.json` 生成を標準化。`spec-update-summary.md` に Step 1-A/1-B/1-C、quick_validate warning分類、Step 2（aiworkflow-requirements 抽出）を記録する運用を追補し、Phase 12 Task 5 の `LOGS.md` / `SKILL.md` 4ファイル同時更新を再明文化 |
+| **v10.08.13** | **2026-03-05** | **UI再撮影後 cleanup 手順を標準化**: `references/phase-11-12-guide.md` に「再撮影後 cleanup（残留 `vite` / `capture-*` プロセス確認と停止）」を追加。Phase 11/12 で再撮影後にプロセスを残したまま次工程へ進んでしまう再発を防止し、ポート競合による検証ドリフトを抑止 |
+| **v10.08.12** | **2026-03-05** | **TASK-UI-01-STORE-IPC-ARCHITECTURE 再監査を反映**: Phase 11 画面証跡再取得（17:49 JST）と Phase 12 仕様同期（Step 1-A/1-B/1-C/2）を再実行する運用を記録。`validate-phase-output`（28項目）/ `verify-all-specs`（13/13）/ `validate-phase11-screenshot-coverage`（TC 5/5）/ `verify-unassigned-links`（95/95）/ `audit current=0` の固定セットを完了条件として明文化 |
 | **v10.08.11** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 最終再確認でのコマンド実体探索を標準化**: `references/phase-11-12-guide.md` に「コマンド実行経路の固定（再監査時必須）」を追加。`which` + `rg --files` で検証スクリプト実体を確定し、グローバルCLI未導入時は `node .claude/skills/task-specification-creator/scripts/*.js` へフォールバックする手順を明文化 |
 | **v10.08.10** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再監査追補**: Phase 11 カバレッジ警告再発防止として、`references/phase-11-12-guide.md` に `phase-11-manual-test.md` の必須2節（`テストケース` / `画面カバレッジマトリクス`）を追加。再撮影（2026-03-05 11:43 JST）後に `validate-phase11-screenshot-coverage` を警告0件で通す運用を固定 |
 | **v10.08.9** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT Phase 12実行を反映**: 監査指摘の是正を「仕様修正 + 機械検証コード + テスト」で完了させる運用を追補。`validate-foundation-findings.mjs` 系の追加により、正本導線/Task 5D具体例/Task 5B適用境界を自動検証し、Phase 12成果物へ JSON レポートを出力するフローを固定 |

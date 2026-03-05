@@ -20,6 +20,14 @@ import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import { registerLLMHandlers } from "../handlers/llm";
 import { registerHistoryHandlers } from "./historyHandlers";
+import {
+  createHistorySearchService,
+  registerHistorySearchHandlers,
+} from "./historySearchHandlers";
+import {
+  createNotificationService,
+  registerNotificationHandlers,
+} from "./notificationHandlers";
 import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
@@ -55,6 +63,10 @@ import { AnalyticsStore } from "../services/skill/AnalyticsStore";
 import { SkillAnalytics } from "../services/skill/SkillAnalytics";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import { registerAuthModeHandlers } from "./authModeHandlers";
+import {
+  registerAuthKeyHandlers,
+  unregisterAuthKeyHandlers,
+} from "./authKeyHandlers";
 import {
   AuthKeyService,
   createAuthKeyStorage,
@@ -395,6 +407,9 @@ function createGitHubClient(): GitHubClientAdapter {
  * 未登録チャンネルでもエラーを出さないため安全に全チャンネルを走査できる。
  */
 export function unregisterAllIpcHandlers(): void {
+  // auth-key handlers は内部登録状態を持つため、先に専用解除を実行する
+  unregisterAuthKeyHandlers();
+
   const allChannels = Object.values(IPC_CHANNELS);
   for (const channel of allChannels) {
     ipcMain.removeHandler(channel);
@@ -467,6 +482,8 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     historyLogger,
   );
   registerHistoryHandlers(mainWindow, historyService);
+  registerHistorySearchHandlers(createHistorySearchService(), { mainWindow });
+  registerNotificationHandlers(createNotificationService(), { mainWindow });
 
   // Register Agent Execution handlers (AGENT-005)
   registerAgentExecutionHandlers(mainWindow);
@@ -630,6 +647,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register Auth Mode handlers (TASK-AUTH-MODE-SELECTION-001)
   const authKeyStorage = createAuthKeyStorage();
   const authKeyService = new AuthKeyService(authKeyStorage);
+  registerAuthKeyHandlers(mainWindow, authKeyService);
   const authModeService = createAuthModeService(authKeyService);
   registerAuthModeHandlers(mainWindow, authModeService);
 

@@ -50,6 +50,22 @@ describe("IPC Channels", () => {
       expect(IPC_CHANNELS.APP_GET_VERSION).toBe("app:get-version");
       expect(IPC_CHANNELS.APP_MENU_ACTION).toBe("app:menu-action");
     });
+
+    it("通知・履歴検索チャネルが定義されている", () => {
+      expect(IPC_CHANNELS.NOTIFICATION_GET_HISTORY).toBe(
+        "notification:get-history",
+      );
+      expect(IPC_CHANNELS.NOTIFICATION_MARK_READ).toBe(
+        "notification:mark-read",
+      );
+      expect(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ).toBe(
+        "notification:mark-all-read",
+      );
+      expect(IPC_CHANNELS.NOTIFICATION_CLEAR).toBe("notification:clear");
+      expect(IPC_CHANNELS.NOTIFICATION_NEW).toBe("notification:new");
+      expect(IPC_CHANNELS.HISTORY_SEARCH).toBe("history:search");
+      expect(IPC_CHANNELS.HISTORY_GET_STATS).toBe("history:get-stats");
+    });
   });
 
   describe("ALLOWED_INVOKE_CHANNELS", () => {
@@ -60,6 +76,10 @@ describe("IPC Channels", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.STORE_GET);
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.STORE_SET);
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.AI_CHAT);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.NOTIFICATION_GET_HISTORY,
+      );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.HISTORY_SEARCH);
     });
 
     it("イベントリスナーチャネルは含まれない", () => {
@@ -78,6 +98,7 @@ describe("IPC Channels", () => {
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.FILE_CHANGED);
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.WINDOW_RESIZED);
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APP_MENU_ACTION);
+      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.NOTIFICATION_NEW);
     });
 
     it("invokeチャネルは含まれない", () => {
@@ -120,6 +141,7 @@ describe("IPC Channels", () => {
         IPC_CHANNELS.FILE_CHANGED,
         IPC_CHANNELS.WINDOW_RESIZED,
         IPC_CHANNELS.APP_MENU_ACTION,
+        IPC_CHANNELS.NOTIFICATION_NEW,
       ];
 
       onChannels.forEach((channel) => {

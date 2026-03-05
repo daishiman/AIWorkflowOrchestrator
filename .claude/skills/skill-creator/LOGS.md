@@ -4,6 +4,33 @@
 
 ---
 
+## [2026-03-05 - TASK-UI-01-C: Step 2 判定ガード（実装差分→仕様更新要否マトリクス）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に `git diff --name-only` 起点の要否マトリクス（Main/Preload/Store/UI）を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に同マトリクスと `変更不要` 判定時の diff 根拠必須化を追加
+  - `references/patterns.md` に成功パターン「実装差分→仕様更新要否マトリクス固定（TASK-UI-01-C）」と失敗パターン「実装差分確認なしで api/arch/ui を変更不要誤判定」を追加
+  - `references/resource-map.md` のテンプレート説明へマトリクス運用を同期
+  - `SKILL.md` 変更履歴を `v10.37.4` として同期
+
+---
+
+## [2026-03-05 - TASK-UI-01 再確認: UI再撮影後 cleanup ガード追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の検証コマンド/完了チェックへ「再撮影後の残留プロセス確認（`vite` / `capture-*`）」を追加
+  - `assets/phase12-spec-sync-subagent-template.md` のコマンドセット/完了チェックへ同 cleanup ガードを追加
+  - `references/patterns.md` に成功パターン「[Phase12] UI再撮影後の残留プロセス cleanup 固定（TASK-UI-01）」を追加
+  - `SKILL.md` 変更履歴を `v10.37.3` として同期
+
+---
+
 ## [2026-03-05 - TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 最終追補（5分解決カード同期）]
 
 - **Agent**: skill-creator (update)
@@ -1553,3 +1580,12 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - ステータス: success
 - 効果: 成果物実体と実行仕様書の不一致を再発防止
+
+## [2026-03-05T09:14:45.999Z]
+
+- **Agent**: skill-creator
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: TASK-UI-01: UI再撮影後cleanupガードをテンプレート/patterns/resource-mapへ同期
+
+---

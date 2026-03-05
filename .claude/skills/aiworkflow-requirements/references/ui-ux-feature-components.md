@@ -27,6 +27,7 @@
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
+| Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 
 ### 共通仕様
 
@@ -1189,10 +1190,49 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 ---
 
+## Notification / History Domain（TASK-UI-01-C / completed）
+
+`TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN` では、通知履歴ポップオーバーと履歴検索ビューを実装し、Store + IPC + UI を同時接続した。
+
+### 実装サマリー
+
+| 観点 | 実装内容 | 主なファイル |
+| --- | --- | --- |
+| Notification UI | ヘッダー右上に `NotificationCenter` を追加。未読バッジ、既読化、全件既読、全件削除、詳細展開を実装 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx`, `apps/desktop/src/renderer/App.tsx` |
+| 履歴同期 | 初期 `notification:get-history` 同期 + `notification:new` push 購読を追加し、購読解除を実装 | `apps/desktop/src/preload/api/notification-api.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts` |
+| 履歴検索 UI | `HistorySearchView` を本実装。query/filter、統計カード、結果一覧、load more を実装 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx` |
+| 状態管理 | `historySearchFilter` / `historySearchStats` / `historySearchStatsError` を追加。`notificationSlice` に履歴同期/重複排除を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`, `apps/desktop/src/renderer/store/slices/notificationSlice.ts` |
+| 回帰テスト | Notification handler / notificationSlice / historySearchSlice / HistorySearchView を拡張 | `apps/desktop/src/main/ipc/__tests__/notificationHandlers.test.ts`, `apps/desktop/src/renderer/store/slices/*.test.ts`, `apps/desktop/src/renderer/views/HistorySearchView/HistorySearchView.test.tsx` |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| 通知 push のタイムスタンプ不正値で表示順が乱れる | Main 側で push payload を無検証送信する | `emitNotificationNew` と `notificationSlice` で ISO 正規化を重ね、並び順を固定 | Push payload は Main/Renderer 両境界で正規化する |
+| 初期履歴同期と push の競合で通知が重複する | getHistory 直後に同一IDの push を受信する | `ingestNotification` に ID 重複排除を実装 | 履歴同期 + push の組み合わせは dedupe を必須化する |
+| filter 変更後の追加読込で条件が外れる | `loadMore` が既存 filter を参照しない | `historySearchFilter` を slice に保持し `loadMoreHistory` へ引き継ぎ | 検索系 state は query/filter/pagination を同一スライスで一元管理する |
+
+### 画面証跡（2026-03-05）
+
+| 証跡 | ファイル |
+| --- | --- |
+| Notification popover | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/screenshots/TC-01-notification-popover.png` |
+| History result | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/screenshots/TC-02-history-search-result.png` |
+| History stats | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/screenshots/TC-03-history-stats-panel.png` |
+
+### 関連未タスク（2026-03-05 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001 | Notification/History ドメイン境界の回帰ガード強化（push正規化/dedupe/filter継承） | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/unassigned-task/task-imp-task-ui-01c-notification-history-boundary-guard-001.md` |
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・Task 5D具体例・Task 5B境界の是正） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
 | TASK-UI-00-ORGANISMS | Organisms共通基盤（CardGrid / MasterDetailLayout / SearchFilterList） | 2026-03-04 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 10テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
@@ -1280,6 +1320,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-00-ORGANISMS 仕様](../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/index.md)
 - [TASK-UI-00-ORGANISMS 手動検証結果](../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/manual-test-result.md)
 - [TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 仕様](../../../docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/index.md)
+- [TASK-UI-01-C Notification / History Domain 仕様](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md)
+- [TASK-UI-01-C Notification / History Domain 手動検証結果](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/manual-test-result.md)
 
 ---
 
@@ -1287,6 +1329,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-05 | v1.14.15   | TASK-UI-01-C 追補: `UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001` を関連未タスクへ追加。Notification/History の境界難所（push正規化/dedupe/filter継承）を未タスク導線として固定 |
+| 2026-03-05 | v1.14.14   | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の実装完了内容を反映。収録機能一覧/専用セクション/完了タスクへ `NotificationCenter` と `HistorySearchView` を追加し、実装時の苦戦箇所（timestamp正規化、履歴重複排除、filter一元化）と Phase 11 証跡（TC-01〜03）を同期 |
 | 2026-03-05 | v1.14.13   | UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を追加。Foundation Reflection Audit の関連未タスク表へ同IDを登録し、5分解決カードの3仕様書同時同期（task-workflow/lessons/ui-ux-feature）を再発防止タスクとして接続 |
 | 2026-03-05 | v1.14.12   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（28項目/13-13/TC6-6/92-92/current=0）を同期し、Foundation Reflection Audit 節へ「同種課題の5分解決カード（TASK-055）」を追加して再利用導線を短縮 |
 | 2026-03-05 | v1.14.11   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を反映。Phase 11 証跡を 11:51 JST へ更新し、再確認時の苦戦箇所（検証コマンド実行経路ドリフト / 再撮影時刻ドリフト）と再利用ルールを task-workflow / lessons と同期 |
