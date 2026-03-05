@@ -1,0 +1,288 @@
+{
+  "feature": "task-055-ui-00-foundation-reflection-audit",
+  "created": "2026-03-05T00:04:00.995Z",
+  "lastUpdated": "2026-03-05T02:21:52.353Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-05T01:55:08.777Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-05T01:55:57.989Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/audit-matrix-design.md",
+          "description": "監査マトリクス設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/evidence-plan.md",
+          "description": "証跡取得計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/subagent-plan.md",
+          "description": "SubAgent計画"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-05T01:56:25.143Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-report.md",
+          "description": "設計レビュー報告"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-gate-decision.md",
+          "description": "ゲート判定"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-05T01:57:17.368Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/audit-test-cases.md",
+          "description": "監査テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-check-plan.md",
+          "description": "Redチェック計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/validation-command-sheet.md",
+          "description": "検証コマンド表"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:01:18.186Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/reflection-matrix.md",
+          "description": "反映マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/section-link-map.md",
+          "description": "セクションリンクマップ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/finding-log.md",
+          "description": "指摘ログ"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:01:55.455Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-audit-report.md",
+          "description": "拡張監査レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-checklist.md",
+          "description": "回帰チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/followup-finding-log.md",
+          "description": "追加指摘ログ"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:02:30.157Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-analysis.md",
+          "description": "ギャップ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/improvement-backlog.md",
+          "description": "改善バックログ"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:03:02.638Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/matrix-refactor-plan.md",
+          "description": "リファクタ計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/matrix-refactor-result.md",
+          "description": "リファクタ結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/regression-validation.md",
+          "description": "回帰検証記録"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:03:34.749Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/qa-report.md",
+          "description": "QAレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/qa-risk-register.md",
+          "description": "リスク台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/qa-checklist.md",
+          "description": "QAチェックリスト"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:04:02.620Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-report.md",
+          "description": "最終レビュー報告"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/review-gate-decision.md",
+          "description": "ゲート判定"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:07:47.309Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots-index.md",
+          "description": "証跡一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-05T02:21:52.350Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "estimatedPhases": 13,
+    "actualPhases": 0
+  }
+}

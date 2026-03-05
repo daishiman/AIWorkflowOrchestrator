@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T02:46:36.837Z",
-  "totalKeywords": 1417,
+  "generated": "2026-03-05T03:40:01.272Z",
+  "totalKeywords": 1422,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1088,26 +1088,23 @@
     ],
     "Design": [
       "arch-state-management.md",
-      "arch-ui-components.md",
       "interfaces-chat-history.md",
       "ui-ux-design-system.md"
     ],
     "Foundation": [
       "arch-state-management.md",
-      "arch-ui-components.md"
+      "ui-ux-feature-components.md"
     ],
     "状態管理方針": [
       "arch-state-management.md"
     ],
     "DESIGN": [
-      "arch-state-management.md",
-      "arch-ui-components.md",
-      "ui-ux-components.md"
+      "arch-state-management.md"
     ],
     "FOUNDATION": [
       "arch-state-management.md",
-      "arch-ui-components.md",
-      "ui-ux-components.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "Zustand": [
       "arch-state-management.md",
@@ -1254,7 +1251,12 @@
     "ビュー統合アーキテクチャパターン": [
       "arch-ui-components.md"
     ],
-    "アーキテクチャ反映": [
+    "ORGANISMS": [
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "アーキテクチャ記録": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -1625,7 +1627,8 @@
     ],
     "AUDIT": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "実施": [
       "architecture-implementation-patterns.md"
@@ -3124,6 +3127,16 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
+    "REFLECTION": [
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "反映監査": [
+      "lessons-learned.md"
+    ],
     "EDITOR": [
       "lessons-learned.md"
     ],
@@ -3226,9 +3239,6 @@
       "lessons-learned.md"
     ],
     "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -4992,7 +5002,8 @@
       "ui-ux-atoms-patterns.md"
     ],
     "Organisms": [
-      "ui-ux-atoms-patterns.md"
+      "ui-ux-atoms-patterns.md",
+      "ui-ux-feature-components.md"
     ],
     "実装への推奨事項": [
       "ui-ux-atoms-patterns.md"
@@ -5114,6 +5125,12 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "Reflection": [
+      "ui-ux-feature-components.md"
+    ],
+    "Audit": [
+      "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"

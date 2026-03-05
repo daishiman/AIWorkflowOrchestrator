@@ -7,7 +7,7 @@
 
 ## 正本
 
-- `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-1-design-tokens.md`
+- `docs/30-workflows/completed-tasks/TASK-UI-00-TOKENS/index.md`
 
 ## 目的
 
