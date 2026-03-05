@@ -41,6 +41,7 @@ import type {
   NotificationGetHistoryRequest,
   NotificationMarkReadRequest,
   NotificationClearRequest,
+  NotificationNewEvent,
   HistorySearchRequest,
   ReplaceFileSingleRequest,
   ReplaceFileAllRequest,
@@ -295,6 +296,8 @@ const electronAPI: ElectronAPI = {
     markAllRead: () => safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ),
     clear: (request?: NotificationClearRequest) =>
       safeInvoke(IPC_CHANNELS.NOTIFICATION_CLEAR, request ?? {}),
+    onNew: (callback: (event: NotificationNewEvent) => void) =>
+      safeOn<NotificationNewEvent>(IPC_CHANNELS.NOTIFICATION_NEW, callback),
   },
 
   historySearch: {

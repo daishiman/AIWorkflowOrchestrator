@@ -910,27 +910,21 @@ export interface ThemeSystemChangedEvent {
 }
 
 // Notification/History Search operations (TASK-UI-01-C)
-export type NotificationType =
-  | "info"
-  | "success"
-  | "warning"
-  | "error"
-  | "system";
+export type NotificationType = "info" | "success" | "warning" | "error";
+
+export type NotificationSource =
+  | { kind: "skill_execution"; skillName: string }
+  | { kind: "file_operation"; fileName: string; operation: string }
+  | { kind: "system"; eventType: string };
 
 export interface NotificationHistoryItem {
   id: string;
   type: NotificationType;
-  source: {
-    kind: "system" | "skill_execution" | "history_search";
-    [key: string]: unknown;
-  };
-  payload: {
-    title: string;
-    message: string;
-    details?: Record<string, unknown>;
-  };
-  createdAt: string;
-  readAt: string | null;
+  title: string;
+  detail?: string;
+  timestamp: string;
+  isRead: boolean;
+  source: NotificationSource;
 }
 
 export interface NotificationGetHistoryRequest {
@@ -951,7 +945,7 @@ export interface NotificationGetHistoryResponse {
 }
 
 export interface NotificationMarkReadRequest {
-  id: string;
+  notificationId: string;
 }
 
 export interface NotificationClearRequest {
@@ -961,13 +955,19 @@ export interface NotificationClearRequest {
 export interface NotificationMutationResponse {
   success: boolean;
   data?: {
+    updated?: boolean;
     updatedCount?: number;
     removedCount?: number;
+    deletedCount?: number;
   };
   error?: {
     code: string;
     message: string;
   };
+}
+
+export interface NotificationNewEvent {
+  notification: NotificationHistoryItem;
 }
 
 export type HistorySearchEntityType =
@@ -1043,6 +1043,7 @@ export interface NotificationAPI {
   clear: (
     request?: NotificationClearRequest,
   ) => Promise<NotificationMutationResponse>;
+  onNew: (callback: (event: NotificationNewEvent) => void) => () => void;
 }
 
 export interface HistorySearchAPI {
