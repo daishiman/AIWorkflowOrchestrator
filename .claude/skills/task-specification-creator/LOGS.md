@@ -1,43 +1,15 @@
-## 2026-03-05 - TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN Phase 12最終同期（実装完了）
+## 2026-03-05 - TASK-043A / TASK-10A-E-A Phase 11-12 再監査（Step 2同期ドリフト是正）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（最終同期）
+- **Phase**: Phase 11-12（再監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/phase-1..12` の `ステータス` を `completed` に同期し、完了条件チェックを `[x]` へ統一
-  - `phase-1-requirements.md` の親仕様/関連仕様参照を実在パスへ更新
-  - `outputs/artifacts.json` を `artifacts.json` と同期出力
-  - `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` を Step 1-A/1-B/1-C + Step 2判定 + quick_validate分類を含む内容へ更新
-  - `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` を再実行し、TC 3/3 PASS を確認
-
----
-
-## 2026-03-05 - TASK-UI-01-STORE-IPC-ARCHITECTURE 再撮影後 cleanup ガード追補
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（ガイド更新）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `references/phase-11-12-guide.md` に「再撮影後 cleanup（残留プロセス確認/停止）」を追加
-  - `manual-test-result.md` / `screenshot-coverage.md` の再撮影時刻を 18:06 JST へ同期
-  - `validate-phase11-screenshot-coverage` を再実行し、TC 5/5 PASS を維持
-
----
-
-## 2026-03-05 - TASK-UI-01-STORE-IPC-ARCHITECTURE 再監査（Phase 11再撮影 + Phase 12整合）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認）
-- **Result**: ✓ 成功
-- **Duration**: N/A
-- **Notes**:
-  - `capture-task-056-phase11-screenshots.mjs` を再実行し、TC-056-11-01〜05 を 17:49 JST で再取得
-  - `validate-phase11-screenshot-coverage` を再実行し、TC 5/5 を確認
-  - `phase-12-documentation.md` 完了チェックを同期し、`spec-update-summary.md` / `documentation-changelog.md` を再作成
-  - 未タスク2件（`UT-UI-01-NAV-ACCESSIBILITY-POLISH-001` / `UT-UI-01-PLACEHOLDER-GUIDANCE-001`）を台帳連携
-  - `verify-all-specs`（13/13）/ `validate-phase-output`（28項目）/ `verify-unassigned-links`（95/95）/ `audit current=0` を確認
+  - `capture-task-043a-phase11-screenshots.mjs` で TC-11-01〜04 を再取得し、Apple UI/UX 観点で目視検証を再実施
+  - `spec-update-summary.md` / `documentation-changelog.md` の Step 2 判定を「更新なし」から「更新あり（正本4ファイル更新）」へ是正
+  - `implementation-guide.md` の sender拒否 `code` 誤記（`VALIDATION_ERROR`）を `IPC_UNAUTHORIZED` へ修正
+  - Step 1-A の同期漏れ防止として `LOGS.md` 2ファイル + `SKILL.md` 2ファイルを同一ターンで更新
+  - 検証を再実行し、Main 34 tests / Preload 60 tests / typecheck / verify-all-specs / validate-phase-output を全PASSで固定
 
 ---
 
@@ -5270,21 +5242,3 @@ if (artifactPath) {
 - ステータス: success
 - Phase 1〜12: completed
 - Phase 13: pending（コミット/PR未実施）
-
-## [2026-03-05T09:14:45.986Z]
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12
-- **Result**: ✓ 成功
-- **Notes**: TASK-UI-01: 再撮影18:06同期とphase-11-12-guide cleanup手順を追加
-
----
-
-## [2026-03-05T09:51:15.348Z]
-
-- **Agent**: generate-unassigned-task
-- **Phase**: phase-12-unassigned
-- **Result**: ✓ 成功
-- **Notes**: TASK-UI-01未タスク3件同期（既存2件に3.5追記 + 運用ガード1件新規）
-
----

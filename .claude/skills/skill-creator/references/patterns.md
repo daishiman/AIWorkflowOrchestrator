@@ -11,7 +11,7 @@
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 🔐 認証・セッション       | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新                                                                                                                                                                                                                                                                                                                                                                                                           | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
-| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **target監査 + 10見出し同時検証**, **未タスクメタ情報1セクション運用**, **phase-12仕様書ステータス同期（未実施→完了）**, **5仕様書同期 + IPC三点突合テンプレート**, **IPC追加時の登録配線突合（handler/register/preload）**, **待機API/停止API責務分離の仕様固定**, **仕様書単位SubAgent + N/A判定ログ固定**, **UI機能実装の未タスク6件分解（TASK-UI-05）**, **未タスクtarget監査 + diff監査の二段合否固定**, **UI機能6仕様書SubAgent同期テンプレート**, **Phase 12依存成果物参照補完（warningドリフト防止）**, **UI再確認スクリーンショット再撮影固定（TASK-UI-05B）**, **UI6仕様書の1仕様書1SubAgent固定（TASK-UI-05B）**, **3workflow再監査 + 未タスク個別監査の二段固定（TASK-FIX-SKILL-IMPORT 3連続是正）**, **UI再撮影前preview preflight + 失敗時未タスク化固定（SkillCenter）**, **UI再撮影前ポート競合preflight（5174）+ 分岐記録固定（workflow02）**, **同種課題の5分解決カード同期（TASK-055）**, **実装差分→仕様更新要否マトリクス固定（TASK-UI-01-C）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクメタ情報の二重定義**, **phase-12仕様書ステータス未更新**, **未タスクの存在確認止まり（10見出し未検証）**, **api-ipc仕様を同期対象から除外**, **IPCハンドラ実装のみで登録配線を未確認**, **timeout待機APIへの停止副作用混在**, **非対象仕様（N/A）の記録漏れ**, **task-workflow のみ更新で lessons-learned 同期漏れ**, **UIタスクに5仕様書テンプレートを誤適用**, **verify-all-specs warningドリフトの放置**, **UI再確認で既存スクショ存在確認のみで完了判定**, **UI6仕様書を束ねて責務境界が曖昧**, **preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）**, **Port 5174 競合ログ混在を未記録のまま完了判定**, **5分解決カードをtask-workflowのみ更新して他仕様へ未同期**, **実装差分確認なしで api/arch/ui を「変更不要」と誤判定** |
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **target監査 + 10見出し同時検証**, **未タスクメタ情報1セクション運用**, **phase-12仕様書ステータス同期（未実施→完了）**, **5仕様書同期 + IPC三点突合テンプレート**, **IPC追加時の登録配線突合（handler/register/preload）**, **待機API/停止API責務分離の仕様固定**, **仕様書単位SubAgent + N/A判定ログ固定**, **UI機能実装の未タスク6件分解（TASK-UI-05）**, **未タスクtarget監査 + diff監査の二段合否固定**, **UI機能6仕様書SubAgent同期テンプレート**, **Phase 12依存成果物参照補完（warningドリフト防止）**, **UI再確認スクリーンショット再撮影固定（TASK-UI-05B）**, **UI6仕様書の1仕様書1SubAgent固定（TASK-UI-05B）**, **3workflow再監査 + 未タスク個別監査の二段固定（TASK-FIX-SKILL-IMPORT 3連続是正）**, **UI再撮影前preview preflight + 失敗時未タスク化固定（SkillCenter）**, **UI再撮影前ポート競合preflight（5174）+ 分岐記録固定（workflow02）**, **同種課題の5分解決カード同期（TASK-055）**, **Step 2更新有無の二重同期（spec-update-summary/documentation-changelog）**, **IPC失敗契約の code/errorCode 二軸固定（TASK-10A-E-A）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクメタ情報の二重定義**, **phase-12仕様書ステータス未更新**, **未タスクの存在確認止まり（10見出し未検証）**, **api-ipc仕様を同期対象から除外**, **IPCハンドラ実装のみで登録配線を未確認**, **timeout待機APIへの停止副作用混在**, **非対象仕様（N/A）の記録漏れ**, **task-workflow のみ更新で lessons-learned 同期漏れ**, **UIタスクに5仕様書テンプレートを誤適用**, **verify-all-specs warningドリフトの放置**, **UI再確認で既存スクショ存在確認のみで完了判定**, **UI6仕様書を束ねて責務境界が曖昧**, **preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）**, **Port 5174 競合ログ混在を未記録のまま完了判定**, **5分解決カードをtask-workflowのみ更新して他仕様へ未同期**, **`code` と `errorCode` の混同で sender拒否契約がドリフト** |
 | 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**, **IPC契約ブリッジ（正式契約 + 後方互換）**, **IPC登録後のサービスバレル公開整合チェック**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**, **正式契約切替時の後方互換欠落**, **サービス層バレル公開漏れ（直接import固定化）**                                                                                                                                                                                                                                                                      |
 | 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
@@ -1172,6 +1172,36 @@
 - **関連タスク**: TASK-10A-A-SKILL-MANAGEMENT-PANEL
 - **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
 
+### [Phase 12] IPC失敗契約の `code` / `errorCode` 二軸固定（TASK-10A-E-A）
+
+- **状況**: IPCの失敗契約を `message` 中心で同期すると、`code`（`IPC_UNAUTHORIZED`）と `errorCode`（`ERR_2004`）が混在し、Main/Preload/仕様書で表記ドリフトが起きる
+- **解決策**:
+  1. Step 2 対象仕様を `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` の5仕様書に固定する
+  2. 失敗契約を `code + errorCode + message` の3列で定義し、`ERR_1001` / `ERR_2004` / `ERR_5001` を明文化する
+  3. `spec-update-summary.md` と `documentation-changelog.md` の Step 2 記録を同一ターンで同期し、更新有無を一致させる
+  4. `validate-phase11-screenshot-coverage` と `tc-11-04-channel-boundary-diagnostics.json`（`importFromSourceCalls=0`）で境界証跡を固定する
+  5. `task-workflow.md` と `lessons-learned.md` に苦戦箇所と再利用手順を同時転記する
+- **効果**: 失敗契約の語彙ドリフトと Step 2 記録ドリフトを同時に防止し、再監査時の契約追跡が安定する
+- **適用条件**: IPC契約/セキュリティ仕様を更新する Phase 12 Step 2 タスク
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-10A-E-A
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [api-ipc-agent.md](../../aiworkflow-requirements/references/api-ipc-agent.md), [security-electron-ipc.md](../../aiworkflow-requirements/references/security-electron-ipc.md)
+
+### [Phase 12] 仕様書別3ブロック固定（実装内容/苦戦箇所/5ステップ）（TASK-10A-E-A）
+
+- **状況**: system spec 更新時に `task-workflow.md` へは詳細を残すが、domain仕様（api/security/interfaces）への転記粒度がばらつく
+- **解決策**:
+  1. `api-ipc-agent.md` / `security-electron-ipc.md` / `interfaces-agent-sdk-skill.md` の3仕様書に同一3ブロック（実装内容/苦戦箇所/5ステップ）を配置する
+  2. 各ブロックに「再発条件」を必ず含め、症状だけの記録を禁止する
+  3. `task-workflow.md` に5仕様書の最適なファイル形成テーブルを追加し、SubAgent責務を固定する
+  4. `lessons-learned.md` に運用ルール（同一ターン更新、Step2同値同期、画像+diagnostics）を転記する
+  5. `rg` で3仕様書の見出し存在を機械検証してから完了判定する
+- **効果**: 実装記録の濃淡を抑止し、次回は仕様書ごとに同じ読み順で再利用できる
+- **適用条件**: IPC契約/セキュリティ整合の Step 2 を含む domain タスク
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-10A-E-A
+- **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md), [lessons-learned.md](../../aiworkflow-requirements/references/lessons-learned.md)
+
 ### [Phase 12] UI再撮影 + TCカバレッジ検証の同時固定（TASK-10A-C）
 
 - **状況**: UI証跡を再撮影しても、TCと画像の紐付け検証を省略すると `manual-test-result.md` と実ファイルの対応がずれやすい
@@ -1694,6 +1724,26 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001
 
+### [Phase12] `code` と `errorCode` の混同で sender拒否契約がドリフト
+
+- **状況**: sender拒否の実装は `code: IPC_UNAUTHORIZED` だが、仕様書や成果物で `code: ERR_2004` と誤記される
+- **問題**: Main/Preload/仕様書の契約が不一致となり、回帰時にどちらが正本か判定できなくなる
+- **原因**: 失敗契約を `message` だけで転記し、`code` と `errorCode` を分離して管理していない
+- **教訓**: IPC失敗契約は `code` と `errorCode` を二軸で固定し、どちらか片方のみの記録を禁止する
+- **対策**: Phase 12チェックに `ERR_1001/ERR_2004/ERR_5001` + `VALIDATION_ERROR/IPC_UNAUTHORIZED/INTERNAL_ERROR` の同時確認を追加し、`spec-update-summary.md` と `documentation-changelog.md` のStep 2記録を一致させる
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-10A-E-A
+
+### [Phase12] domain3仕様書へ苦戦箇所を転記せず task-workflow のみ更新
+
+- **状況**: `task-workflow.md` は更新されるが、`api-ipc-agent.md` / `security-electron-ipc.md` / `interfaces-agent-sdk-skill.md` に苦戦箇所が残らない
+- **問題**: 実装と契約は追えるが、再発条件が domain 正本に残らず同種課題で再利用できない
+- **原因**: 仕様書別SubAgent分担を定義しても、完了チェックに「3仕様書の苦戦箇所見出し存在」を入れていない
+- **教訓**: domainタスクは 3仕様書へ同一3ブロック（実装内容/苦戦箇所/5ステップ）を必須化する
+- **対策**: Phase 12テンプレートへ `rg` 見出しチェックを追加し、3仕様書のブロック欠落時は完了判定を停止する
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-10A-E-A
+
 ### [Phase12] SubAgent分担が `spec-update-summary` のみに残る
 
 - **状況**: 分担情報を `spec-update-summary.md` にのみ記録し、`task-workflow.md` の完了節へ転記しない
@@ -2196,30 +2246,6 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
 
-### [Phase12] UI再撮影後の残留プロセス cleanup 固定（TASK-UI-01）
-
-- **状況**: スクリーンショット再取得完了後に `vite` / `capture-*` プロセスが残留し、後続の検証コマンドや再撮影でポート競合が起きやすい
-- **アプローチ**:
-  - 再撮影と `validate-phase11-screenshot-coverage` 実行後に `ps -ef | rg "capture-.*phase11|vite" | rg -v rg` を必須実行
-  - 残留がある場合は停止し、`documentation-changelog.md` に cleanup 実施を記録
-  - 同時に `manual-test-result.md` / `screenshot-coverage.md` の時刻を同期し、証跡と実行環境の両方を固定する
-- **結果**: UI証跡更新後の実行環境が安定し、Phase 12 再監査でのポート競合・判定揺れを抑止できる
-- **適用条件**: UI再撮影を含む Phase 11/12 再確認タスク全般
-- **発見日**: 2026-03-05
-- **関連タスク**: TASK-UI-01-STORE-IPC-ARCHITECTURE
-
-### [Phase12] 実装差分→仕様更新要否マトリクス固定（TASK-UI-01-C）
-
-- **状況**: `task-workflow` と `lessons` は更新したが、`api-ipc-system` / `arch-state-management` / `ui-ux-feature-components` を「変更不要」と誤判定し、実装詳細が正本へ残らない
-- **アプローチ**:
-  - `git diff --name-only` で変更ファイルを `Main / Preload / Store / UI` に分類する
-  - 分類結果を仕様書マトリクスへ写像し、`api-ipc-system` / `arch-state-management` / `ui-ux-feature-components` の要否を機械判定する
-  - Step 2 の「変更不要」を採用する場合は、対応する実装差分が 0 件である証跡（diff出力）を `spec-update-summary.md` に必須記録する
-- **結果**: 仕様更新対象の取りこぼしを抑止し、実装内容と苦戦箇所を system spec 正本へ漏れなく同期できる
-- **適用条件**: UI + Store + IPC が同時に変わるタスク、または `変更不要` 判定を含む Phase 12 Step 2
-- **発見日**: 2026-03-05
-- **関連タスク**: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN
-
 ### [Phase12] 対象workflow配下への証跡正規配置 + `NON_VISUAL` 記法固定（UT workflow）
 
 - **状況**: Phase 11手動結果に別workflow参照が混在し、対象workflowで coverage validator が失敗した
@@ -2231,30 +2257,6 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: UI証跡を複数workflowで流用・再配置する Phase 11/12 再確認タスク
 - **発見日**: 2026-03-04
 - **関連タスク**: UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001
-
-### [Phase12] `--target-file` 適用境界固定 + `current/baseline` 分離判定（TASK-UI-01-A）
-
-- **状況**: Phase 12 再監査で `audit-unassigned-tasks --target-file` に `outputs/phase-12/*.md` を指定し、対象外エラーで判定が停止した
-- **アプローチ**:
-  - `--target-file` は `docs/30-workflows/unassigned-task/*.md` に限定し、成果物監査は `--diff-from HEAD` へ切り替える
-  - 合否判定は `currentViolations` のみを使用し、`baselineViolations` は資産健全性指標として別管理する
-  - baseline負債が残る場合は別未タスク（段階削減）へ切り出して追跡する
-- **結果**: 監査コマンド誤用による手戻りを防ぎ、差分合否と既存負債の説明責務を同時に満たせる
-- **適用条件**: 未タスク監査を含む Phase 12 再確認タスク全般
-- **発見日**: 2026-03-05
-- **関連タスク**: TASK-UI-01-A-STORE-SLICE-BASELINE
-
-### [Phase12] 実装差分確認なしで api/arch/ui を「変更不要」と誤判定
-
-- **状況**: `task-workflow` と `lessons` だけ更新して Step 2 を完了扱いにし、`api-ipc-system` / `arch-state-management` / `ui-ux-feature-components` の更新要否判定を省略した
-- **問題**:
-  - 実装差分は存在するのに仕様書へ反映されず、後続がコードを読まないと契約変更を把握できない
-  - `spec-update-summary.md` の判定表が実装と逆転し、監査時に再修正が必要になる
-- **教訓**: 「変更不要」は明示証跡（差分0件）付きでのみ許可し、推測判定を禁止する
-- **対策**:
-  1. `git diff --name-only` を Step 2 の必須入力にする
-  2. 実装差分→仕様書マトリクスを `phase12-system-spec-retrospective-template` に固定する
-  3. `変更不要` 行には diff根拠（ファイル一覧/0件）を記載しない限り FAIL とする
 
 ---
 

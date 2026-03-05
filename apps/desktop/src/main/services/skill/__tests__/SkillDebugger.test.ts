@@ -301,7 +301,7 @@ describe("SkillDebugger", () => {
 
     it("process/require/fs へのアクセスをブロックする", () => {
       expect(() =>
-        debugger_.evaluateExpression(sessionId, "process.exit()"),
+        debugger_.evaluateExpression(sessionId, "process"),
       ).toThrow();
 
       expect(() =>

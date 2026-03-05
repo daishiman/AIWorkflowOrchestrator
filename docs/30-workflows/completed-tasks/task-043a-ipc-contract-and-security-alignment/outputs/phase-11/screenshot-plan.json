@@ -1,0 +1,26 @@
+{
+  "workflow": "task-043a-ipc-contract-and-security-alignment",
+  "route": "/advanced/skill-center?skipAuth=true",
+  "cases": [
+    {
+      "id": "TC-11-01",
+      "state": "import-success",
+      "output": "outputs/phase-11/screenshots/tc-11-01-import-success.png"
+    },
+    {
+      "id": "TC-11-02",
+      "state": "validation-error",
+      "output": "outputs/phase-11/screenshots/tc-11-02-validation-error.png"
+    },
+    {
+      "id": "TC-11-03",
+      "state": "unauthorized",
+      "output": "outputs/phase-11/screenshots/tc-11-03-unauthorized.png"
+    },
+    {
+      "id": "TC-11-04",
+      "state": "channel-boundary",
+      "output": "outputs/phase-11/screenshots/tc-11-04-channel-boundary.png"
+    }
+  ]
+}

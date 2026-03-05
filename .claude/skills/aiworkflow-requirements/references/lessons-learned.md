@@ -20,13 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-05 | 1.29.26 | TASK-UI-01-C の苦戦箇所を未タスクへ分離。`UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001` を追加し、Main push正規化/Store dedupe/filter継承の境界回帰ガードを再利用可能な指示書として登録。関連未タスク導線を TASK-UI-01-C セクションへ同期 |
-| 2026-03-05 | 1.29.25 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の実装苦戦箇所をコード境界まで追補。`emitNotificationNew` の送信前ガード + timestamp正規化、`notificationSlice` 重複排除、`historySearchFilter` 一元化を教訓化し、同種課題の5ステップを `task-workflow/ui-ux-feature` 同期前提へ更新 |
-| 2026-03-05 | 1.29.24 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の実装完了監査に更新。`spec_created` 前提を解消し、workflow 正本を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` に統一。Phase状態同期（artifacts/index/phase-*）と screenshot coverage（TC 3/3）を運用手順へ反映 |
-| 2026-03-05 | 1.29.23 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の再監査教訓を追加。参照ドリフト（A/B入力パス不一致）、スクリーンショット再撮影の依存欠落（`@rollup/rollup-darwin-x64`）、仕様書作成タスクの合否判定軸（`spec_created` + 13Phase検証 + 未タスク0件）を標準化 |
-| 2026-03-05 | 1.29.22 | TASK-UI-01 の未タスク仕様書を追補。`UT-UI-01-NAV-ACCESSIBILITY-POLISH-001` / `UT-UI-01-PLACEHOLDER-GUIDANCE-001` に `3.5 実装課題と解決策`（検証経路固定/証跡時刻同期/再撮影後cleanup）を追記し、新規未タスク `UT-IMP-TASK-UI-01-PHASE12-EVIDENCE-CLEANUP-GUARD-001` を追加。再監査運用ガードの導線を固定 |
-| 2026-03-05 | 1.29.21 | TASK-UI-01-STORE-IPC-ARCHITECTURE を再追補。Phase 11 再撮影時刻を 18:06 JST へ更新し、再撮影後の Vite 残留プロセス cleanup を苦戦箇所として追加。`phase-11-12-guide` / `skill-creator` テンプレートへ再発防止手順を同期 |
-| 2026-03-05 | 1.29.20 | TASK-UI-01-STORE-IPC-ARCHITECTURE の再監査を追補。Phase 11 再撮影（17:49 JST）を実施し、IPC/Store/UI同期の運用で発生した苦戦箇所（実行経路固定・証跡時刻同期・非blocking改善の未タスク分離）を追加。関連未タスク `UT-UI-01-NAV-ACCESSIBILITY-POLISH-001` / `UT-UI-01-PLACEHOLDER-GUIDANCE-001` を導線化 |
+| 2026-03-05 | 1.29.22 | UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 を追加。TASK-10A-E-A で顕在化した domain3仕様書（api/security/interfaces）のブロック転記ドリフトを未タスク化し、関連導線を task-workflow/interfaces/lessons で同期 |
+| 2026-03-05 | 1.29.21 | TASK-10A-E-A 追補: `api-ipc-agent` / `security-electron-ipc` / `interfaces-agent-sdk-skill` に「実装内容 + 苦戦箇所 + 5ステップ」を同一フォーマットで追記し、5仕様書の最適なファイル形成を標準化 |
+| 2026-03-05 | 1.29.20 | TASK-10A-E-A（TASK-043A）の教訓を追加。Step 2判定ドリフト（`spec-update-summary`/`documentation-changelog` 不一致）、`code`/`errorCode` 混同、チャネル境界証跡不足を再発条件付きで整理し、同種課題向け5ステップ手順を標準化 |
 | 2026-03-05 | 1.29.19 | UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を追補。TASK-055 の苦戦箇所（検証経路ドリフト/再撮影時刻ドリフト/3仕様書同期漏れ）を未タスク仕様書 `3.5` へ分離し、`task-workflow` / `lessons` / `ui-ux-feature` の同一カード同期を再発防止タスクとして固定 |
 | 2026-03-05 | 1.29.18 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（28項目/13-13/TC6-6/92-92/current=0）を固定し、同種課題の即応性を上げる「5分解決カード（実体固定→仕様是正→画面証跡→未タスク監査→台帳同期）」を追加 |
 | 2026-03-05 | 1.29.17 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を追補。検証コマンドの実行経路ドリフト（CLI前提/誤パス）と再撮影時刻ドリフト（11:43→11:51）を苦戦箇所として追加し、「実体探索→固定コマンド→`stat`時刻同期」の6ステップ手順へ更新 |
@@ -142,114 +138,63 @@
 
 ---
 
-## TASK-UI-01-STORE-IPC-ARCHITECTURE: Phase 12再確認（2026-03-05）
+## TASK-10A-E-A: IPC契約・セキュリティ整合（2026-03-05）
 
-### 苦戦箇所: 検証コマンドがグローバルCLI依存になりやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `verify-all-specs` などをグローバルコマンド前提で叩くと、環境差分で再監査が止まりやすい |
-| 再発条件 | `which` / `rg --files` の実体探索を省略して実行する場合 |
-| 対処 | `node .claude/skills/task-specification-creator/scripts/*.js` の実体経路へ固定し、Phase 12成果物へ最終コマンドを記録 |
-| 標準ルール | 再監査は「実体探索→固定コマンド実行→結果転記」を1セットで完了する |
-
-### 苦戦箇所: UI再撮影後の証跡時刻同期を漏らしやすい
+### 苦戦箇所: Step 2更新有無の記録ドリフト
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 画面再取得後、`manual-test-result.md` と system spec 側の時刻情報が古いまま残りやすい |
-| 再発条件 | スクリーンショット更新と文書更新を別ターンで実施する場合 |
-| 対処 | `capture-task-056-phase11-screenshots.mjs` 実行後に `stat` で時刻を取得し、成果物と台帳へ同一ターンで反映した（2026-03-05 18:06 JST） |
-| 標準ルール | UI再撮影は「再取得→時刻固定→coverage検証→台帳同期」を必須化する |
+| 課題 | Step 2 で system spec 更新済みなのに、`spec-update-summary.md` または `documentation-changelog.md` の片方だけが「更新なし」になりやすい |
+| 再発条件 | Step 2 判定と成果物更新を別ターンで処理する場合 |
+| 対処 | Step 2 実施直後に2ファイルを同一ターンで更新し、更新対象リストを一致させる |
+| 標準ルール | Step 2 は「判定」ではなく「判定 + 2成果物同時同期」までを1工程として完了扱いにする |
 
-### 苦戦箇所: non-blocking改善が埋もれて追跡されにくい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Apple UI/UX視覚検証で見つかった改善提案が、未タスク化されないと次サイクルで消えやすい |
-| 再発条件 | `discovered-issues.md` への記録のみで Phase 12 を閉じる場合 |
-| 対処 | 改善提案2件を `task-specification-creator` 形式で未タスク化し、`task-workflow.md` 残課題へ登録 |
-| 標準ルール | non-blocking課題も「未タスク指示書化 + 台帳登録 + 関連仕様リンク」を最低3点セットで処理する |
-
-### 苦戦箇所: 再撮影後に Vite プロセスが残留しやすい
+### 苦戦箇所: `code` と `errorCode` の混同
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | スクリーンショット取得後に Vite/撮影スクリプトが残留すると、次の検証でポート競合や誤判定を招きやすい |
-| 再発条件 | 撮影完了ログのみで処理完了と判断し、プロセス終了確認を省略する場合 |
-| 対処 | `ps -ef` で残留プロセスを確認し、不要な `vite`/`capture-*` プロセスを停止してから次工程へ進めた |
-| 標準ルール | UI再撮影後は「coverage検証 + プロセスcleanup」までを同一ターン完了条件にする |
+| 課題 | sender拒否で `IPC_UNAUTHORIZED`（code）と `ERR_2004`（errorCode）が混同し、Main/Preload/仕様書で表記が揺れた |
+| 再発条件 | 失敗契約を `message` だけで転記する場合 |
+| 対処 | 失敗契約を `code + errorCode + message` の3列固定で管理し、`ERR_1001/2004/5001` を明示した |
+| 標準ルール | IPC失敗契約は必ず `code` と `errorCode` の二軸で記録し、片軸のみの更新を禁止する |
+
+### 苦戦箇所: チャネル境界証跡の不足
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | import導線で `importFromSource` が呼ばれていないことを視覚証跡だけで判断しづらい |
+| 再発条件 | スクリーンショットのみで完了判定する場合 |
+| 対処 | `tc-11-04-channel-boundary-diagnostics.json` に `importCalls=1` / `importFromSourceCalls=0` を保存し、スクリーンショットと対で検証した |
+| 標準ルール | チャネル境界検証は「画像 + 診断JSON」の2点セットで証跡化する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. `validate-phase-output` と `verify-all-specs` で Phase 構造を先に固定する。  
-2. UIタスクはスクリーンショットを再取得し、`validate-phase11-screenshot-coverage` を必ず通す。  
-3. `stat` で証跡時刻を採番し、成果物と仕様台帳へ同時転記する。  
-4. 改善提案は `unassigned-task` へ指示書化し、`verify-unassigned-links` で導線を検証する。  
-5. `audit-unassigned-tasks --diff-from HEAD` で `currentViolations=0` を確認し、残留プロセスを cleanup して完了判定する。  
+1. Step 2 対象仕様（interfaces/api-ipc/security/task-workflow/lessons）を先に固定する。  
+2. `code + errorCode + message` の失敗契約表を実装と仕様書へ同時転記する。  
+3. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を再実行する。  
+4. `tc-11-04-channel-boundary-diagnostics.json` を更新し、`importFromSourceCalls=0` を確認する。  
+5. `spec-update-summary.md` と `documentation-changelog.md` の Step 2 記録を同一値で確定する。  
 
 ### 関連未タスク
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-UI-01-NAV-ACCESSIBILITY-POLISH-001 | AppDock のコントラスト改善とモバイル配置最適化 | 中 | `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/unassigned-task/task-ui-01-nav-accessibility-polish-001.md` |
-| UT-UI-01-PLACEHOLDER-GUIDANCE-001 | Workspace/HistorySearch プレースホルダ導線改善 | 中 | `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/unassigned-task/task-ui-01-placeholder-guidance-001.md` |
-| UT-IMP-TASK-UI-01-PHASE12-EVIDENCE-CLEANUP-GUARD-001 | TASK-UI-01 再監査運用ガード（検証経路固定/証跡時刻同期/再撮影後cleanup） | 中 | `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/unassigned-task/task-imp-task-ui-01-phase12-evidence-cleanup-guard-001.md` |
+| UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 | domain3仕様書（api-ipc/security/interfaces）の必須3ブロック存在チェックと Step 2同値同期を機械検証する再発防止ガード | 中 | `docs/30-workflows/unassigned-task/task-imp-task10a-e-a-domain-spec-block-auto-verify-001.md` |
 
----
+### 最適なファイル形成（TASK-10A-E-A）
 
-## TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: 実装完了監査（2026-03-05）
+| 仕様書 | 必須ブロック（固定順） | 目的 |
+| --- | --- | --- |
+| `api-ipc-agent.md` | 1) 実装内容 2) 苦戦箇所 3) 5ステップ | 契約変更の背景と再利用手順を同時に残す |
+| `security-electron-ipc.md` | 1) エラーコード整合 2) 苦戦箇所 3) 5ステップ | セキュリティ検証順序の再発防止 |
+| `interfaces-agent-sdk-skill.md` | 1) 失敗契約 2) 実装内容 3) 苦戦箇所 4) 5ステップ | 型/API契約の追跡性を固定 |
+| `task-workflow.md` | 1) SubAgent分担 2) 実装内容 3) 苦戦箇所 4) 検証値 | 完了台帳として再監査に耐える形へ統一 |
+| `lessons-learned.md` | 1) 苦戦箇所 2) 5ステップ 3) 関連未タスク | 同種課題の短時間再解決を可能にする |
 
-### 苦戦箇所: Main push / Store同期 / UI検索の境界が同時に崩れやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 通知 push（Main）・履歴同期（Store）・検索UI（Renderer）の3境界が同時に変わるため、どれか1点だけ同期すると挙動が崩れる |
-| 再発条件 | `notification:new` push の送信ガード不足、初期履歴同期と push 競合、load more 時の filter 非保持が同時発生する場合 |
-| 対処 | `emitNotificationNew` で送信前ガード + timestamp 正規化、`ingestNotification` で ID 重複排除、`historySearchFilter` を slice 単一真実源として固定 |
-| 標準ルール | push 系は Main で正規化、Store は dedupe、UI検索は query/filter/pagination を同一 slice で一元管理する |
-
-### 苦戦箇所: workflow配下と正本仕様の状態同期がズレやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `artifacts.json` は completed なのに `phase-*.md` / `index.md` が pending/未実施のまま残りやすい |
-| 再発条件 | 成果物出力と台帳同期を別ターンに分ける場合 |
-| 対処 | Phase 1〜12 の `ステータス` と完了条件チェックを completed/[x] に統一し、`generate-index --regenerate` で再生成 |
-| 標準ルール | 「成果物出力」「phase状態同期」「index再生成」を1バッチで完了する |
-
-### 苦戦箇所: 画面証跡のTCカバレッジ判定が古いID定義に引きずられやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `manual-test-result.md` の `TC-ID` / `証跡` 列が不足すると screenshot coverage がFAILする |
-| 再発条件 | 手順書（phase-11）と結果（outputs/phase-11）のフォーマットを別々に修正する場合 |
-| 対処 | `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加し、`TC-ID` 列で統一 |
-| 標準ルール | UIタスクは `capture-*` 実行後に `validate-phase11-screenshot-coverage` を必須実行し、PASS値を成果物へ転記する |
-
-### 同種課題の簡潔解決手順（5ステップ）
-
-1. `git diff --name-only` で Main/Preload/Store/UI の変更境界を確定し、仕様更新対象を先に決める。  
-2. push 系は Main（`emitNotificationNew`）で送信前ガードと timestamp 正規化を先に実装する。  
-3. Store は `ingestNotification` の重複排除と `historySearchFilter` の一元化を先に固定する。  
-4. `validate-phase-output` / `verify-all-specs` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合格基準にする。  
-5. `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` の3仕様書へ同じ苦戦箇所と手順を同一ターンで転記する。  
-
-### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（13/13） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（28項目） |
-| `node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js --scan docs/30-workflows/completed-tasks/task-056c-notification-history-domain --output /tmp/task-056c-unassigned-candidates.json` | PASS（findings=0） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（TC 3/3） |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0 / baselineViolations=92） |
-
-### 関連未タスク（2026-03-05 追補）
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001 | Notification/History ドメイン境界の回帰ガード強化（push正規化/dedupe/filter継承） | 中 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/unassigned-task/task-imp-task-ui-01c-notification-history-boundary-guard-001.md` |
+固定ルール:
+1. 上記5仕様書は同一ターン更新。  
+2. Step 2 実施時は `spec-update-summary.md` と `documentation-changelog.md` を同値同期。  
+3. UI検証がある場合はスクリーンショットに diagnostics JSON を必ず併設。  
 
 ---
 

@@ -1,0 +1,124 @@
+{
+  "feature": "task-043a-ipc-contract-and-security-alignment",
+  "created": "2026-03-05T00:00:00+09:00",
+  "lastUpdated": "2026-03-05T17:36:00+09:00",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/ipc-contract-design.md",
+        "outputs/phase-2/security-pipeline-design.md",
+        "outputs/phase-2/error-mapping-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/design-gate-decision.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/change-boundary.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/test-expansion-plan.md",
+        "outputs/phase-6/additional-test-cases.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-criteria.md",
+        "outputs/phase-7/coverage-gap-report.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/compatibility-checklist.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-assurance-plan.md",
+        "outputs/phase-9/quality-audit-checklist.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-criteria.md",
+        "outputs/phase-10/handover-criteria.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/evidence-requirements.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshots/tc-11-01-import-success.png",
+        "outputs/phase-11/screenshots/tc-11-02-validation-error.png",
+        "outputs/phase-11/screenshots/tc-11-03-unauthorized.png",
+        "outputs/phase-11/screenshots/tc-11-04-channel-boundary.png",
+        "outputs/phase-11/screenshots/tc-11-04-channel-boundary-diagnostics.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "status": "pending"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

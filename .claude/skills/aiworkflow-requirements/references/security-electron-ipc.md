@@ -11,7 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
-| v1.12.3    | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: `history:search/get-stats` と `notification:*` のセキュリティ契約を追加。`validateIpcSender` + P42検証 + `sanitizeErrorMessage` の適用境界を `historyAPI` セクションへ統合 |
+| v1.12.4    | 2026-03-05 | TASK-10A-E-A 追補: skillShareAPI セクションへ「実装時の苦戦箇所（セキュリティ観点）」と5ステップ手順を追加。sender優先検証、`code/errorCode` 二軸固定、Step 2同時同期を標準化 |
+| v1.12.3    | 2026-03-05 | TASK-10A-E-A 反映: `skill:importFromSource/export/validateSource` の sender失敗を `ERR_2004` で返す契約を追加し、validation `ERR_1001` / unknown例外 `ERR_5001` の3分類を固定。`IPC_CHANNELS` 定数参照と `Internal error` 正規化を追記 |
 | v1.12.2    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` の認証失敗コード伝搬（`errorCode`）と Renderer 側 preflight ガード（`auth-key:exists`）の運用境界を追加。実行前停止と sender検証順序の整合を明文化 |
 | v1.12.1    | 2026-03-03 | UT-UI-05A-GETFILETREE-001 完了同期: skillFileAPI セクションを `skill:getFileTree` 含む 7 invoke チャネルへ更新。ホワイトリスト/4層防御/エラーサニタイズの適用範囲を拡張し、関連タスクを TASK-9A-B + UT-UI-05A-GETFILETREE-001 に更新 |
 | v1.12.0    | 2026-03-02 | TASK-UI-05B仕様整合: skillChainAPI（TASK-9D、5ch、validateIpcSender + P42準拠3段バリデーション + sanitizeErrorMessage）とskillScheduleAPI（TASK-9G、5ch、既存セクション欠落の補完）のセキュリティ実装パターンを追加 |
@@ -149,43 +150,55 @@ IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフ�
 
 ---
 
-## 実装例: historyAPI / notificationAPI（TASK-UI-01）
+## 実装例: historyAPI
 
 **実装場所**:
 
-- チャンネル定義: `apps/desktop/src/preload/channels.ts`
-- preload API: `apps/desktop/src/preload/api/notification-api.ts`
-- preload統合: `apps/desktop/src/preload/index.ts`
-- Mainハンドラー: `apps/desktop/src/main/ipc/historySearchHandlers.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts`
-- エラーサニタイズ: `apps/desktop/src/main/ipc/sanitizeErrorMessage.ts`
+- チャンネル定義: `apps/desktop/src/main/infrastructure/ipc/channels.ts`
+- preload: `apps/desktop/src/preload/index.ts`
+- 型定義: `apps/desktop/src/renderer/components/history/types.ts`
 
-### 対象チャンネル
+**チャンネルホワイトリスト方式**:
 
-| 種別 | チャンネル | 用途 |
-| --- | --- | --- |
-| history | `history:search` | 履歴検索 |
-| history | `history:get-stats` | 履歴統計 |
-| notification | `notification:get-history` | 通知履歴取得 |
-| notification | `notification:mark-read` | 通知既読化 |
-| notification | `notification:mark-all-read` | 通知全既読化 |
-| notification | `notification:clear` | 通知履歴削除 |
-| notification | `notification:new` | Main -> Renderer のイベント通知 |
+`HISTORY_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。定義外のチャンネルは自動的に拒否される。
 
-### セキュリティ要件
+| 定数名              | チャンネル名                 | 用途               |
+| ------------------- | ---------------------------- | ------------------ |
+| GET_FILE_HISTORY    | `history:getFileHistory`     | ファイル履歴取得   |
+| GET_VERSION_DETAIL  | `history:getVersionDetail`   | バージョン詳細取得 |
+| GET_CONVERSION_LOGS | `history:getConversionLogs`  | 変換ログ取得       |
+| RESTORE_VERSION     | `history:restoreVersion`     | バージョン復元     |
 
-| 要件 | 実装 | 確認方法 |
-| --- | --- | --- |
-| sender検証 | `validateIpcSender(event, channel, { getAllowedWindows })` | 不正送信元で `IPC_FORBIDDEN/UNAUTHORIZED` を返却 |
-| invoke/on ホワイトリスト | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` | `channels.ui-01-store-ipc-architecture.test.ts` |
-| P42 入力検証 | `notificationId`, `query` を `typeof -> 空文字 -> trim` で検証 | handler テストで異常系確認 |
-| 許可値検証 | `filter` を `all/chat/file/skill` へ制限 | invalid filter で `VALIDATION_ERROR` |
-| エラー情報保護 | `sanitizeErrorMessage` でパス/スタック/機密値をマスク | 異常系テスト + 手動確認 |
+**実装場所**: `apps/desktop/src/main/infrastructure/ipc/channels.ts`
 
-### 実装時の補足
+**safeInvoke ラッパーによる安全な呼び出し**:
 
-- `notification:new` はイベント専用のため `ALLOWED_ON_CHANNELS` のみ許可する。
-- `history:search` は空/空白クエリを「全件検索」として許容し、`filter` のみ厳格に制限する。
-- ハンドラー登録は `registerAllIpcHandlers` から一元実行し、未登録による機能未有効化を防止する。
+Renderer側からMainプロセスへの安全なIPC呼び出しを実現するため、`createSafeInvoke`ヘルパー関数を使用する。この関数はジェネリック型を受け取り、型安全なPromiseを返す。
+
+**実装パターン**:
+
+1. `createSafeInvoke<T>(channel)`関数でチャンネル名を受け取り、ラッパー関数を生成
+2. ラッパー関数は任意の引数を受け取り、`ipcRenderer.invoke`を呼び出す
+3. `contextBridge.exposeInMainWorld`で`historyAPI`として公開
+
+**公開されるAPI**:
+
+| API名          | 戻り値型                                      | 対応チャンネル             |
+| -------------- | --------------------------------------------- | -------------------------- |
+| getFileHistory | `Promise<Result<PaginatedResult<VersionHistoryItem>>>` | GET_FILE_HISTORY |
+
+**実装場所**: `apps/desktop/src/preload/index.ts`
+
+**IPCセキュリティ要件**:
+
+| 要件               | 実装                         | 確認方法                 |
+| ------------------ | ---------------------------- | ------------------------ |
+| ホワイトリスト     | `HISTORY_CHANNELS`定数で管理 | 定義外チャンネルはエラー |
+| 型安全性           | Result<T>型で統一            | TypeScript型チェック     |
+| サンドボックス分離 | contextBridgeで公開          | contextIsolation=true    |
+| 引数検証           | Main側ハンドラーで実施       | バリデーションテスト     |
+
+**関連タスク**: history-preload-setup（2026-01-13完了）
 
 ---
 
@@ -445,10 +458,34 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 | 層 | 検証項目 | 実装 | 返却仕様 |
 | -- | -------- | ---- | -------- |
-| 1. Sender検証 | 送信元ウィンドウの正当性 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError(validation)` |
+| 1. Sender検証 | 送信元ウィンドウの正当性 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時: `toIPCValidationError(validation)` + `errorCode: "ERR_2004"` |
 | 2. 構造バリデーション | 引数がプレーンオブジェクトであること | `isPlainObject(value)` — `typeof === "object"` かつ `!== null` かつ `!Array.isArray()` | 不正時: `{ success: false, error: { code: "VALIDATION_ERROR" } }` |
 | 3. P42準拠3段バリデーション | 文字列フィールドの型・空文字列・trim空文字列 | `validateStringField(value, fieldName)` | 不正時: バリデーションエラー |
 | 4. 許可値チェック | source.type / destination.type が定義済み値に含まれること | `ALLOWED_SOURCE_TYPES.includes()` / `ALLOWED_DESTINATION_TYPES.includes()` | 不正時: バリデーションエラー |
+
+### TASK-10A-E-A 追補: エラーコード整合
+
+| 経路 | code | errorCode | セキュリティ意図 |
+| --- | --- | --- | --- |
+| 構造/P42/許可値違反 | `VALIDATION_ERROR` | `ERR_1001` | 不正入力を業務処理前に遮断 |
+| sender検証失敗 | `IPC_UNAUTHORIZED` | `ERR_2004` | 未許可window/DevTools経路を遮断 |
+| unknown例外 | `INTERNAL_ERROR` | `ERR_5001` | 内部情報を露出せず `Internal error` へ正規化 |
+
+### TASK-10A-E-A 実装時の苦戦箇所（セキュリティ観点）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
+| --- | --- | --- | --- |
+| sender検証より先に構造/P42検証を実行 | unauthorized 呼び出しが validation 系エラーへ誤分類される | `validateIpcSender` を1層目へ固定 | セキュリティ検証順序は `sender -> 構造 -> P42 -> 許可値` を固定 |
+| `code` と `errorCode` の責務境界が曖昧 | 返却値はあるが監査で契約不一致と判定される | `code`（分類）/`errorCode`（追跡ID）を別列で仕様化 | エラー仕様は二軸同時更新を必須化 |
+| Step 2 判定後の仕様同期漏れ | セキュリティ仕様更新済みでも成果物が「更新なし」で残る | Step 2 実施時に summary/changelog を同時更新 | Step 2 完了条件に「2成果物同値化」を追加 |
+
+### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）
+
+1. チャネルごとの検証順序を `sender -> 構造 -> P42 -> 許可値` で固定する。  
+2. `code` と `errorCode` を分離し、3分類（`ERR_1001/2004/5001`）を先に決める。  
+3. Main/Preload/3仕様書（security/api-ipc/interfaces）の契約文言を同一ターンで同期する。  
+4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` を連続実行する。  
+5. Step 2 記録を `spec-update-summary` と `documentation-changelog` で同値に確定する。  
 
 ### 許可値リスト
 
@@ -480,7 +517,7 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 3. セキュリティ改善項目は完了判定に混在させず、未タスクへ分離して追跡する。  
 4. 仕様更新後に `verify-unassigned-links` と `audit --diff-from HEAD` で台帳整合を確認する。  
 
-**関連タスク**: TASK-9F（2026-02-27完了）
+**関連タスク**: TASK-9F（2026-02-27完了）, TASK-10A-E-A（2026-03-05完了）
 
 ---
 
@@ -764,4 +801,5 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | TASK-9J | 2026-02-28 | 完了 | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
 | TASK-9G | 2026-02-27 | 完了 | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用 |
 | TASK-9F | 2026-02-27 | 完了 | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS |
+| TASK-10A-E-A | 2026-03-05 | 完了 | share 3チャネルの sender失敗を `ERR_2004`、validation失敗を `ERR_1001`、unknown例外を `ERR_5001` へ統一。`skillHandlers.share.ts` の `IPC_CHANNELS` 定数参照化でチャネルドリフトを抑止 |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了 | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持 |
