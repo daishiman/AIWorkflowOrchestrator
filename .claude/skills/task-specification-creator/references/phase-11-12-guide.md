@@ -119,9 +119,6 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 #### C. 再撮影前 preflight（必須）
 
 ```bash
-# 0) screenshot系で使用するポート競合を先に確認（例: 5174）
-lsof -nP -iTCP:5174 -sTCP:LISTEN || true
-
 # 1) preview build の成否を先に確認
 pnpm --filter @repo/desktop preview
 
@@ -130,7 +127,6 @@ curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
 ```
 
 補足:
-- `Port 5174 is already in use` など競合ログが出る場合は、停止/再利用の分岐結果を `spec-update-summary.md` に記録する。
 - build失敗または疎通失敗時は再撮影を継続しない。
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
 
@@ -149,8 +145,6 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
-- 証跡実体は**対象workflow配下** `outputs/phase-11/screenshots/` に配置する（別workflow参照のみで完了扱いにしない）
-- 非視覚TCを記録する場合は証跡列を `NON_VISUAL: <理由/参照>` 形式で統一する
 ### テスト結果レポート形式
 
 ```markdown
@@ -367,9 +361,8 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
 - [ ] UI/UX変更タスクの場合: 再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録し、失敗時は未タスク化したこと
-- [ ] UI/UX変更タスクの場合: screenshot実行前にポート競合（例: `5174`）を確認し、競合時の分岐（停止/再利用）を `spec-update-summary.md` へ記録したこと
-- [ ] UI/UX変更タスクの場合: `outputs/phase-11/screenshots/` が**対象workflow配下**に存在し、別workflow参照のみで完了扱いにしていないこと
-- [ ] UI/UX変更タスクの場合: `manual-test-result.md` の非視覚TC証跡を `NON_VISUAL:` 記法で記録し、許容理由を明記したこと
+- [ ] UI/UX変更タスクの場合: 再撮影後に `stat` 実時刻と `manual-test-result.md`（必要に応じて `screenshot-coverage.md`）の更新時刻が一致していること
+- [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
 - [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
 - [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
@@ -407,9 +400,6 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan apps/desktop/src/main/ipc \
   --output docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/.tmp-unassigned-candidates.json
-
-# UI screenshot 実行前のポート競合確認（例: 5174）
-lsof -nP -iTCP:5174 -sTCP:LISTEN || true
 
 # ESLintキャッシュクリア（Hooksでエラーが残る場合）
 rm -rf node_modules/.cache/eslint-*
@@ -490,8 +480,7 @@ done
 
 | Date | Changes |
 | ---- | ------- |
-| 2026-03-04 | Phase 11証跡の workflow 配置ドリフト対策を追記し、`outputs/phase-11/screenshots` の対象workflow配下必須化と `NON_VISUAL:` 記法ルールを追加 |
-| 2026-03-04 | screenshot再取得で `Port 5174 is already in use` が混在した教訓を反映し、UI再撮影 preflight へポート競合確認（`lsof`）と競合時分岐記録（停止/再利用）を追加 |
+| 2026-03-04 | TASK-UI-00-ORGANISMS 再確認を反映し、Phase 12完了チェックへ「再撮影後の `stat` 時刻同期（manual-test/screenshot-coverage）」「`validate-phase11-screenshot-coverage` PASS 記録」を追加 |
 | 2026-03-04 | SkillCenter再監査の教訓を反映し、UI再撮影前 `preview preflight`（build + 疎通確認）を必須手順へ追加。失敗時は `unassigned-task-detection.md` 記録 + 未タスク化を標準化 |
 | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |
 | 2026-03-01 | `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の完了タスク記録を追加。Phase 11 Worktree代替手順・CI E2Eジョブ追加・deferred-tests追跡を運用ガイドへ同期 |

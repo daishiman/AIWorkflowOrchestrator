@@ -22,6 +22,7 @@ import { ChatHistoryView } from "./views/ChatHistoryView";
 import { SkillCenterView } from "./views/SkillCenterView";
 import { SkillEditorView } from "./views/SkillEditorView";
 import { UIDesignFoundationPreview } from "./views/UIDesignFoundationPreview";
+import { OrganismsShowcaseView } from "./views/OrganismsShowcaseView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
@@ -235,6 +236,10 @@ function App(): JSX.Element {
           <Route
             path="/advanced/ui-design-foundation"
             element={renderStandaloneView(<UIDesignFoundationPreview />)}
+          />
+          <Route
+            path="/advanced/organisms-showcase"
+            element={renderStandaloneView(<OrganismsShowcaseView />)}
           />
           {/* 既存のビューベースUI（デフォルト） */}
           <Route
