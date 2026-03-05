@@ -44,9 +44,9 @@ A〜Dで確定した仕様を統合し、後続タスクが参照できる完了
 
 ## 入力
 
-- `task-056a-a-store-slice-baseline.md` の成果物
-- `task-056a-b-ipc-contract-security.md` の成果物
-- `task-056c-notification-history-domain.md` の成果物
+- `../completed-task/task-056a-a-store-slice-baseline.md` の成果物
+- `../completed-task/task-056a-b-ipc-contract-security.md` の成果物
+- `task-056-ui-01-store-ipc-architecture/task-056c-notification-history-domain/index.md` の成果物
 - `task-056d-viewtype-routing-nav.md` の成果物
 
 ## 出力

@@ -116,6 +116,17 @@ UI機能実装の場合は次を推奨:
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
 - `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 
+### 4.2 実装差分→仕様更新要否マトリクス（必須）
+
+| 変更境界（`git diff --name-only`） | 代表ファイル例 | 更新必須仕様書 | 判定 |
+| --- | --- | --- | --- |
+| Main IPC | `apps/desktop/src/main/ipc/*.ts` | `api-ipc-*.md` / `security-*.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+| Preload API | `apps/desktop/src/preload/api/*.ts` | `interfaces-*.md` / `api-ipc-*.md` / `task-workflow.md` | `更新必須` |
+| Store Slice | `apps/desktop/src/renderer/store/slices/*.ts` | `arch-state-management.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+| UI/View | `apps/desktop/src/renderer/views/**`, `components/**` | `ui-ux-components.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` | `更新必須` |
+
+> `変更不要` を宣言する場合は、対応境界の差分が 0 件である証跡（`git diff --name-only` 出力）を `spec-update-summary.md` に必ず添付する。
+
 ---
 
 ## 5. 苦戦箇所（再利用可能形式）
@@ -157,6 +168,7 @@ UI機能実装の場合は次を推奨:
 | コマンド | 目的 | 期待結果 |
 | --- | --- | --- |
 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
+| `git diff --name-only` | 実装差分境界（Main/Preload/Store/UI）の抽出 | Step 2 の仕様更新要否マトリクスに転記できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
@@ -201,6 +213,8 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] Step 2 の判定表に `git diff --name-only` 起点の「実装差分→仕様更新要否マトリクス」を記録している
+- [ ] `変更不要` 判定には diff 0 件の根拠（実ファイル一覧）を添付している
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である

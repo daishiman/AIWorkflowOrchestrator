@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T13:15:16.738Z",
-  "totalKeywords": 1437,
+  "generated": "2026-03-05T13:03:41.832Z",
+  "totalKeywords": 1429,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1105,61 +1105,16 @@
     ],
     "FOUNDATION": [
       "arch-state-management.md",
-      "ui-ux-feature-components.md"
-    ],
-    "Store": [
-      "arch-state-management.md",
-      "interfaces-rag-knowledge-graph-store.md",
       "lessons-learned.md",
-      "security-skill-execution.md",
-      "testing-component-patterns.md",
-      "testing-fixtures.md"
-    ],
-    "Slice": [
-      "arch-state-management.md"
-    ],
-    "Baseline": [
-      "arch-state-management.md"
-    ],
-    "STORE": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "SLICE": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "BASELINE": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "Notification": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "HistorySearch": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "実装同期": [
-      "arch-state-management.md"
-    ],
-    "NOTIFICATION": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "HISTORY": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "DOMAIN": [
-      "arch-state-management.md",
-      "lessons-learned.md"
+      "ui-ux-feature-components.md"
     ],
     "Zustand": [
       "arch-state-management.md",
       "testing-component-patterns.md",
       "ui-ux-system-prompt.md"
+    ],
+    "Slice": [
+      "arch-state-management.md"
     ],
     "パターン": [
       "arch-state-management.md",
@@ -1171,6 +1126,13 @@
     "対策": [
       "arch-state-management.md",
       "security-input-validation.md"
+    ],
+    "Store": [
+      "arch-state-management.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "security-skill-execution.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
     ],
     "Hooks": [
       "arch-state-management.md",
@@ -1293,6 +1255,7 @@
     ],
     "ORGANISMS": [
       "arch-ui-components.md",
+      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "アーキテクチャ記録": [
@@ -1348,7 +1311,8 @@
       "architecture-chat-history.md"
     ],
     "Domain": [
-      "architecture-chat-history.md"
+      "architecture-chat-history.md",
+      "ui-ux-feature-components.md"
     ],
     "Application": [
       "architecture-chat-history.md"
@@ -3166,25 +3130,32 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "KEY": [
+    "STORE": [
       "lessons-learned.md"
     ],
-    "HANDLER": [
+    "ARCHITECTURE": [
       "lessons-learned.md"
     ],
-    "REGISTRATION": [
+    "再確認": [
       "lessons-learned.md"
     ],
-    "auth": [
+    "NOTIFICATION": [
       "lessons-learned.md"
     ],
-    "key": [
+    "HISTORY": [
       "lessons-learned.md"
     ],
-    "ハンドラ登録漏れ修正": [
+    "DOMAIN": [
       "lessons-learned.md"
     ],
-    "境界基準化の再監査": [
+    "実装完了監査": [
+      "lessons-learned.md"
+    ],
+    "REFLECTION": [
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "反映監査": [
       "lessons-learned.md"
     ],
     "EDITOR": [
@@ -3289,9 +3260,6 @@
       "lessons-learned.md"
     ],
     "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -3758,6 +3726,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
@@ -5182,8 +5153,12 @@
     "Audit": [
       "ui-ux-feature-components.md"
     ],
-    "REFLECTION": [
+    "Notification": [
       "ui-ux-feature-components.md"
+    ],
+    "History": [
+      "ui-ux-feature-components.md",
+      "ui-ux-settings.md"
     ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
@@ -5403,9 +5378,6 @@
       "ui-ux-settings.md"
     ],
     "権限要求履歴パネル": [
-      "ui-ux-settings.md"
-    ],
-    "History": [
       "ui-ux-settings.md"
     ],
     "Panel": [

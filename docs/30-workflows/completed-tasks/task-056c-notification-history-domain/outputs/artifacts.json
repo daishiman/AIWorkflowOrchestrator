@@ -1,0 +1,273 @@
+{
+  "feature": "task-056c-notification-history-domain",
+  "created": "2026-03-05T00:00:00.000Z",
+  "lastUpdated": "2026-03-05T12:16:51.184Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:48.769Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/domain-scope-matrix.md",
+          "description": "ドメインスコープ行列"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:48.985Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/notification-domain-design.md",
+          "description": "Notificationドメイン設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/history-domain-design.md",
+          "description": "HistorySearchドメイン設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/persistence-policy-design.md",
+          "description": "永続化ポリシー設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:49.142Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "レビュー指摘一覧"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:49.293Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-run-plan.md",
+          "description": "テスト実行計画"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:49.446Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/domain-contract.md",
+          "description": "ドメイン契約書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/persistence-policy.md",
+          "description": "永続化ポリシー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:49.604Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-cases.md",
+          "description": "回帰ケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-summary.md",
+          "description": "テスト拡充サマリー"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:49.761Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gate-result.md",
+          "description": "カバレッジゲート結果"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:50.051Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタ報告書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/naming-diff.md",
+          "description": "命名差分一覧"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:50.556Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-checklist.md",
+          "description": "セキュリティチェック表"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:50.866Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/rework-plan.md",
+          "description": "是正計画"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:51.027Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-index.md",
+          "description": "証跡インデックス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-01-notification-popover.png",
+          "description": "画面証跡1"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-02-history-search-result.png",
+          "description": "画面証跡2"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/TC-03-history-stats-panel.png",
+          "description": "画面証跡3"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-05T12:16:51.182Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  }
+}

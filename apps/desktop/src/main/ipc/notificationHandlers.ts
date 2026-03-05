@@ -21,6 +21,10 @@ interface NotificationRecord {
   source: Record<string, unknown>;
 }
 
+export interface NotificationPushPayload {
+  notification: NotificationRecord;
+}
+
 interface NotificationStoreSchema {
   notifications: NotificationRecord[];
 }
@@ -120,6 +124,33 @@ function writeNotifications(
   notifications: NotificationRecord[],
 ): void {
   store.set("notifications", notifications);
+}
+
+export function emitNotificationNew(
+  mainWindow: BrowserWindow | undefined,
+  notification: NotificationRecord,
+): boolean {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return false;
+  }
+
+  if (mainWindow.webContents.isDestroyed()) {
+    return false;
+  }
+
+  const parsed = new Date(notification.timestamp);
+  const normalizedTimestamp = Number.isNaN(parsed.getTime())
+    ? new Date().toISOString()
+    : parsed.toISOString();
+
+  const payload: NotificationPushPayload = {
+    notification: {
+      ...notification,
+      timestamp: normalizedTimestamp,
+    },
+  };
+  mainWindow.webContents.send(IPC_CHANNELS.NOTIFICATION_NEW, payload);
+  return true;
 }
 
 export function createNotificationService(): NotificationService {

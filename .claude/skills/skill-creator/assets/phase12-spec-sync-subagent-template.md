@@ -59,6 +59,17 @@
 
 > 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
 
+### 2.5 実装差分→仕様更新要否マトリクス（必須）
+
+| 変更境界（diff） | 更新必須仕様書 | `変更不要` を許可する条件 |
+| --- | --- | --- |
+| Main (`apps/desktop/src/main/**`) | `api-ipc-*` / `security-*` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+| Preload (`apps/desktop/src/preload/**`) | `interfaces-*` / `api-ipc-*` / `task-workflow` | 対象境界の diff が 0 件 |
+| Store (`apps/desktop/src/renderer/store/**`) | `arch-state-management` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+| UI (`apps/desktop/src/renderer/views/**`, `components/**`) | `ui-ux-components` / `ui-ux-feature-components` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
+
+> `変更不要` 判定時は diff 根拠（0件）を `spec-update-summary.md` へ必ず添付する。
+
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |
@@ -94,6 +105,7 @@ UI機能実装時の必須記載（追加）:
 ## 5. 検証コマンド
 
 ```bash
+git diff --name-only
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
@@ -124,6 +136,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
+- [ ] Step 2 判定に実装差分→仕様更新要否マトリクス（Main/Preload/Store/UI）を記録している
+- [ ] `変更不要` 判定に diff 0 件の根拠を添付している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
