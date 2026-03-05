@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T09:28:56.108Z",
-  "totalKeywords": 1423,
+  "generated": "2026-03-05T14:48:25.809Z",
+  "totalKeywords": 1438,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -260,6 +260,7 @@
       "ui-ux-file-selector.md",
       "ui-ux-forms.md",
       "ui-ux-history-panel.md",
+      "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -828,6 +829,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
+      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -1103,16 +1105,80 @@
     ],
     "FOUNDATION": [
       "arch-state-management.md",
-      "lessons-learned.md",
       "ui-ux-feature-components.md"
+    ],
+    "Store": [
+      "arch-state-management.md",
+      "interfaces-rag-knowledge-graph-store.md",
+      "lessons-learned.md",
+      "security-skill-execution.md",
+      "testing-component-patterns.md",
+      "testing-fixtures.md"
+    ],
+    "Slice": [
+      "arch-state-management.md"
+    ],
+    "Baseline": [
+      "arch-state-management.md"
+    ],
+    "STORE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "SLICE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "BASELINE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "Notification": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HistorySearch": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "実装同期": [
+      "arch-state-management.md"
+    ],
+    "NOTIFICATION": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HISTORY": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "DOMAIN": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ViewType": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ナビ導線": [
+      "arch-state-management.md"
+    ],
+    "VIEWTYPE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ROUTING": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "NAV": [
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "Zustand": [
       "arch-state-management.md",
       "testing-component-patterns.md",
       "ui-ux-system-prompt.md"
-    ],
-    "Slice": [
-      "arch-state-management.md"
     ],
     "パターン": [
       "arch-state-management.md",
@@ -1124,13 +1190,6 @@
     "対策": [
       "arch-state-management.md",
       "security-input-validation.md"
-    ],
-    "Store": [
-      "arch-state-management.md",
-      "interfaces-rag-knowledge-graph-store.md",
-      "security-skill-execution.md",
-      "testing-component-patterns.md",
-      "testing-fixtures.md"
     ],
     "Hooks": [
       "arch-state-management.md",
@@ -1253,7 +1312,6 @@
     ],
     "ORGANISMS": [
       "arch-ui-components.md",
-      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "アーキテクチャ記録": [
@@ -3127,17 +3185,10 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "契約・セキュリティ整合": [
+    "境界基準化の再監査": [
       "lessons-learned.md"
     ],
-    "再確認": [
-      "lessons-learned.md"
-    ],
-    "REFLECTION": [
-      "lessons-learned.md",
-      "ui-ux-feature-components.md"
-    ],
-    "反映監査": [
+    "導線統合の再監査": [
       "lessons-learned.md"
     ],
     "EDITOR": [
@@ -3242,6 +3293,9 @@
       "lessons-learned.md"
     ],
     "analytics": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -3636,9 +3690,6 @@
       "lessons-learned.md"
     ],
     "委譲実装": [
-      "lessons-learned.md"
-    ],
-    "STORE": [
       "lessons-learned.md"
     ],
     "HOOKS": [
@@ -4330,6 +4381,9 @@
       "security-electron-ipc.md"
     ],
     "historyAPI": [
+      "security-electron-ipc.md"
+    ],
+    "notificationAPI": [
       "security-electron-ipc.md"
     ],
     "slideSettingsAPI": [
@@ -5133,6 +5187,9 @@
       "ui-ux-feature-components.md"
     ],
     "Audit": [
+      "ui-ux-feature-components.md"
+    ],
+    "REFLECTION": [
       "ui-ux-feature-components.md"
     ],
     "useSkillExecution": [

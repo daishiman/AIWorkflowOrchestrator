@@ -9,8 +9,10 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 実装反映: `historySearchSlice` の filter/stats 状態を同期し、`NotificationCenter` 連携（`ingestNotification` / `setNotificationHistory`）と `emitNotificationNew` 契約に合わせて状態遷移を更新 |
-| v3.8.4     | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: `notificationSlice` / `historySearchSlice` 追加、`ViewType` 拡張（`workspace`/`skillCenter`/`historySearch`）、`notifications` 永続化、`AppDock`/`App.tsx` の遷移契約を同期 |
+| v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
+| v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
+| v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
+| v3.8.4     | 2026-03-05 | TASK-UI-01-A-STORE-SLICE-BASELINE 反映: `store/types.ts` の baseline 型定義と `store/sliceBaseline.ts` の棚卸し定数（16行 inventory / 境界マトリクス / セレクタ規約）を追加。Notification/HistorySearch/SkillCenter/ViewType の責務境界を仕様化し、Phase 11 TC証跡（3件）と整合する検証手順を追記 |
 | v3.8.3     | 2026-03-04 | TASK-UI-00-DESIGN-FOUNDATION 反映: UI基盤8コンポーネントの状態管理方針を追記。共有Storeを新設せず、ローカル state + コールバック注入で責務分離する設計を明文化 |
 | v3.8.2     | 2026-03-04 | TASK-FIX-SKILL-IMPORT 三連続是正を反映。`agentSlice.importSkill` に既存インポート時の IPC 呼び出しスキップ（idempotency guard）を追加し、`importedSkills` 重複追加を防止。SkillCenter 系 Hook の nullish 防御（`available/imported` の空配列フォールバック、`normalizeSearchText`）を状態管理契約として追記 |
 | v3.8.1     | 2026-03-03 | TASK-10A-D教訓反映: 個別セレクタの命名規約（ドメインサフィックス必須ルール）を追加。`useIsAnalyzingSkill()` vs `useIsAnalyzing()` の命名判断基準を明文化 |
@@ -65,6 +67,137 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 ---
 
+## Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE）
+
+### 概要
+
+`task-056a-a-store-slice-baseline` では、後続タスク（`task-056a-b` / `task-056c` / `task-056d`）の前提として、既存Storeの責務境界を型付きで固定した。
+
+### 追加した基準定義
+
+| 種別 | 実装場所 | 内容 |
+| --- | --- | --- |
+| baseline型 | `apps/desktop/src/renderer/store/types.ts` | `StoreSliceInventoryItem` / `StoreBoundaryMatrixItem` / `StoreSelectorPolicy` などを追加 |
+| baseline定数 | `apps/desktop/src/renderer/store/sliceBaseline.ts` | `STORE_SLICE_INVENTORY_BASELINE` / `STORE_BOUNDARY_MATRIX_BASELINE` / `STORE_SELECTOR_POLICY_BASELINE` |
+| 再export | `apps/desktop/src/renderer/store/index.ts` | baseline定数を `store/index.ts` から参照可能に統一 |
+
+### Inventory基準
+
+| 項目 | 基準値 |
+| --- | --- |
+| 行数 | 16行（15 Slice + `ChatEditSlice`） |
+| 永続化キー | `currentView`, `selectedFile`, `expandedFolders`, `userProfile`, `autoSyncEnabled`, `windowSize`, `permissionHistory` |
+| 目的 | Slice責務・永続化・ownerView の判定根拠を固定し、後続タスクの判断ドリフトを防止 |
+
+### 境界マトリクス基準
+
+| ドメイン | 判定 | 根拠 |
+| --- | --- | --- |
+| Notification | `new` | 画面横断で未読/履歴を共有するため独立Slice化 |
+| HistorySearch | `new` | 検索クエリ/結果/統計を一貫管理するため分離 |
+| SkillCenter | `local-useState` | 詳細パネル開閉などは局所状態で完結 |
+| ViewType | `extend` | `NavigationSlice` の責務を維持し型拡張で対応 |
+| Workspace | `no-change` | 既存 `workspaceSlice` の責務で充足 |
+
+### セレクタ規約基準（P31対策）
+
+- 命名規約: `use{State}{Domain}` / `use{Verb}{Domain}`
+- 禁止: 合成Hook再導入（`useLLMStore` / `useSkillStore` / `useAuthModeStore`）
+- 禁止: 汎用セレクタ名（`useError` / `useLoading` / `useData`）
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest run src/renderer/store/__tests__/sliceBaseline.test.ts` | PASS（9/9） |
+| `typecheck` | PASS |
+| `validate-phase11-screenshot-coverage` | PASS（expected=3 / covered=3） |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
+| TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
+| TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
+
+---
+
+## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
+
+### 追加したSlice
+
+| Slice | 実装ファイル | 役割 |
+| --- | --- | --- |
+| `notificationSlice` | `apps/desktop/src/renderer/store/slices/notificationSlice.ts` | 通知履歴・未読管理・フィルタ管理 |
+| `historySearchSlice` | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts` | 検索条件・結果・統計・ページング管理 |
+
+### Notification 契約
+
+| 項目 | 内容 |
+| --- | --- |
+| 上限 | `MAX_NOTIFICATION_HISTORY = 100` |
+| 削除戦略 | 上限超過時は既読最古を優先削除。既読が無い場合は未読最古を削除 |
+| 既読管理 | `readAt: string | null` |
+| 永続化 | `persist.partialize` で `notifications` を保持 |
+
+### HistorySearch 契約
+
+| 項目 | 内容 |
+| --- | --- |
+| フィルタ | type/date/includeArchived |
+| 結果管理 | `results`, `stats`, `pagination` |
+| 検索前処理 | `query.trim()` を必須化 |
+| エラー管理 | `historySearchError` に明示保持 |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（対象5ファイル） | PASS（37 tests） |
+| `typecheck` | PASS |
+| coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
+
+---
+
+## ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV）
+
+### 変更点（状態管理観点）
+
+| 観点 | 内容 | 実装ファイル |
+| --- | --- | --- |
+| ViewType導線 | `workspace` / `skillCenter` / `historySearch` の導線を `renderView()` で網羅 | `apps/desktop/src/renderer/App.tsx` |
+| 契約一元化 | AppDock ナビ項目を `navContract.ts` へ集約し、重複定義を除去 | `apps/desktop/src/renderer/navigation/navContract.ts` |
+| ショートカット | `Cmd` / `Ctrl` 両対応。`alt` / `shift` 併用時・編集要素上は無効化 | `apps/desktop/src/renderer/navigation/navContract.ts`, `apps/desktop/src/renderer/App.tsx` |
+| AppDock連携 | `APP_DOCK_NAV_ITEMS` を参照し、表示順と ViewType 契約を固定 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest run src/renderer/navigation/navContract.test.ts src/renderer/components/organisms/AppDock/AppDock.test.tsx src/renderer/__tests__/integration/navigation.integration.test.ts` | PASS（49 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/task-056d-viewtype-routing-nav` | PASS（expected=5 / covered=5） |
+
+### 実装時の苦戦箇所（TASK-UI-01-D 追補）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| ナビ契約が二重管理になりドリフト | `AppDock` と `App.tsx` が別定義で更新される | `navContract.ts` へ契約集約し、UIは参照のみへ変更 | ViewType導線は単一契約ファイルを正本とする |
+| 編集中にショートカット誤発火 | global `keydown` でターゲット種別を判定しない | `isEditableEventTarget` を導入し、入力要素上を無効化 | グローバル導線は「修飾キー条件 + 編集要素除外」を必須化 |
+| 再撮影時の保存先/ポート運用が不安定 | workflow固定出力先 + strictPort競合時の分岐未記録 | 運用ガードを未タスク化し、preflight結果を成果物に記録 | `Port 5177` preflight と分岐ログを Step 2 記録に含める |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. ViewType導線契約を `navContract.ts` に集約し、Store/UI境界を固定する。  
+2. `keydown` 導線へ編集要素除外を適用し、誤発火を単体テストで固定する。  
+3. AppDock表示順と `NAV_SHORTCUT_TO_VIEW` の整合を同一PR単位で更新する。  
+4. Phase 11 証跡（`TC-xx` + `.png`）を workflow 配下へ保存し、coverage validator を実行する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
+
+---
+
 ## Zustand Sliceパターン
 
 ### 概要
@@ -105,46 +238,8 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
 | `skillSlice`             | **統合済み→agentSlice** | ~~`store/slices/skillSlice.ts`~~（削除済み）  | TASK-FIX-6-1（統合完了） |
 | `permissionHistorySlice` | 権限要求履歴管理         | `store/slices/permissionHistorySlice.ts` | task-imp-permission-history-001 |
-| `notificationSlice`      | アプリ通知状態（未読数/展開状態） | `store/slices/notificationSlice.ts` | TASK-UI-01（完了） |
-| `historySearchSlice`     | 履歴検索状態（query/filter/results/stats/pagination） | `store/slices/historySearchSlice.ts` | TASK-UI-01-C（完了） |
-
-### TASK-UI-01: Store / ViewType 拡張（2026-03-05）
-
-#### ViewType 契約
-
-`store/types.ts` の `ViewType` は以下を含む。
-
-| 追加値 | 用途 | 主な描画先 |
-| --- | --- | --- |
-| `workspace` | ワークスペース導線 | `WorkspaceView` |
-| `skillCenter` | スキルセンター導線 | `SkillCenterView` |
-| `historySearch` | 履歴検索導線 | `HistorySearchView` |
-
-#### AppStore への追加スライス
-
-| スライス | 主要状態 | 主要アクション |
-| --- | --- | --- |
-| `notificationSlice` | `notifications`, `unreadCount`, `isPopoverOpen`, `expandedNotificationId` | `addNotification`, `ingestNotification`, `setNotificationHistory`, `markAsRead`, `markAllAsRead`, `clearAllNotifications` |
-| `historySearchSlice` | `historySearchQuery`, `historySearchFilter`, `historySearchResults`, `historySearchStats`, `historySearchHasMore`, `historySearchError`, `historySearchStatsError` | `setHistorySearchFilter`, `searchHistory`, `loadMoreHistory`, `loadHistorySearchStats`, `resetHistorySearch`, `toggleItemExpanded` |
-
-#### 永続化ポリシー
-
-`store/index.ts` の `partialize` に `notifications` を追加し、再起動後も通知履歴を保持する。
-
-#### 実装上の補足
-
-- SkillCenter は既存方針どおり新規 Slice を作成せず、ローカル state + 既存 selector を維持。
-- 新規 slice の公開は個別セレクタ方式で実装し、P31（合成Hook由来の再レンダー増幅）を回避。
-- `NotificationCenter` 初期化時に `notification:get-history` を同期し、Main Push（`notification:new`）を `ingestNotification` で重複排除しながら反映する。
-- `HistorySearchView` 初期表示で `searchHistory("", 0, "all")` と `loadHistorySearchStats()` を実行し、アンマウント時に `resetHistorySearch()` で状態リークを防止する。
-
-#### 実装時の苦戦箇所（TASK-UI-01-C）
-
-| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
-| --- | --- | --- | --- |
-| Push通知で壊れた `timestamp` が混入し state sort が不安定化 | Main -> Renderer の push payload を未正規化で送る場合 | `emitNotificationNew` と `notificationSlice` 双方で `timestamp` を正規化し、表示順序を安定化 | Push payload は Main/Renderer の両境界で最小正規化する |
-| 履歴検索 filter がページング時に失われる | `loadMore` 時に filter を明示渡ししない場合 | `historySearchFilter` を slice state に保持し、`loadMoreHistory` で必ず再利用 | query/filter/pagination は同一 slice で状態一元化する |
-| 通知履歴の初期同期と push が競合し重複表示 | 初期 `getHistory` 後に同一ID push を受信する場合 | `ingestNotification` で ID 重複排除、`setNotificationHistory` で時刻降順正規化 | 履歴同期 + push 連携は「重複排除」を必須契約にする |
+| `notificationSlice`      | 通知履歴/未読管理        | `store/slices/notificationSlice.ts`      | TASK-UI-01-C（完了）            |
+| `historySearchSlice`     | 履歴検索状態管理         | `store/slices/historySearchSlice.ts`     | TASK-UI-01-C（完了）            |
 
 ### authSlice詳細（TASK-AUTH-SESSION-REFRESH-001更新）
 
@@ -234,7 +329,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 - `views/{Name}View/index.tsx` を作成
 - `App.tsx` のrenderView関数にcaseを追加
-- `components/AppDock/index.tsx` のnavItemsに追加
+- `navigation/navContract.ts` の契約へ追加し、`components/organisms/AppDock/index.tsx` から参照
 
 **ステップ4: テスト作成**
 

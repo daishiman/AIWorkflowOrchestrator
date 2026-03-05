@@ -684,13 +684,13 @@ partialize: (state) => ({
 
 本タスクは関心ごとを分離し、以下のSubAgent単位で仕様書を作成する。
 
-| SubAgent | 役割                                   | 仕様書                                                                                 |
-| -------- | -------------------------------------- | -------------------------------------------------------------------------------------- |
-| A        | Store棚卸し・状態境界設計              | `../completed-task/task-056a-a-store-slice-baseline.md`                                |
-| B        | IPC契約・Preload・セキュリティ         | `../completed-task/task-056a-b-ipc-contract-security.md`                               |
-| C        | Notification/HistorySearchドメイン統合 | `task-056-ui-01-store-ipc-architecture/task-056c-notification-history-domain/index.md` |
-| D        | ViewType拡張・ルーティング・ナビ整合   | `task-056-ui-01-store-ipc-architecture/task-056d-viewtype-routing-nav.md`              |
-| E        | 統合ゲート・仕様同期監査               | `task-056-ui-01-store-ipc-architecture/task-056e-integration-gate-and-spec-sync.md`    |
+| SubAgent | 役割                                   | 仕様書                                                                              |
+| -------- | -------------------------------------- | ----------------------------------------------------------------------------------- |
+| A        | Store棚卸し・状態境界設計              | `task-056-ui-01-store-ipc-architecture/task-056a-a-store-slice-baseline.md`         |
+| B        | IPC契約・Preload・セキュリティ         | `task-056-ui-01-store-ipc-architecture/task-056a-b-ipc-contract-security.md`        |
+| C        | Notification/HistorySearchドメイン統合 | `task-056-ui-01-store-ipc-architecture/task-056c-notification-history-domain.md`    |
+| D        | ViewType拡張・ルーティング・ナビ整合   | `task-056d-viewtype-routing-nav/index.md`                                           |
+| E        | 統合ゲート・仕様同期監査               | `task-056-ui-01-store-ipc-architecture/task-056e-integration-gate-and-spec-sync.md` |
 
 統合インデックス: `task-056-ui-01-store-ipc-architecture/index.md`
 

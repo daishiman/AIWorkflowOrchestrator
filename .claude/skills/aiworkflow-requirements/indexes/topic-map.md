@@ -288,9 +288,9 @@ node scripts/list-specs.js --topics
 | スキルスケジュール 型定義（TASK-9G） | L1997 |
 | スキルフォーク 型定義（TASK-9E） | L2022 |
 | スキル共有 型定義（TASK-9F） | L2068 |
-| スキルデバッグ 型定義（TASK-9H） | L2168 |
-| スキルドキュメント生成 型定義（TASK-9I） | L2218 |
-| スキル分析 型定義（TASK-9J） | L2282 |
+| スキルデバッグ 型定義（TASK-9H） | L2134 |
+| スキルドキュメント生成 型定義（TASK-9I） | L2184 |
+| スキル分析 型定義（TASK-9J） | L2248 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -588,8 +588,8 @@ node scripts/list-specs.js --topics
 | REST API エンドポイント一覧 | L25 |
 | エンドポイント命名規則 | L81 |
 | Desktop IPC API サマリー | L102 |
-| 変更履歴 | L131 |
-| 関連ドキュメント | L142 |
+| 変更履歴 | L133 |
+| 関連ドキュメント | L145 |
 
 ### references/api-internal-chunk-search.md
 
@@ -651,14 +651,14 @@ node scripts/list-specs.js --topics
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L411 |
 | スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L465 |
 | スキル共有 IPC チャネル（TASK-9F） | L496 |
-| スキルフォーク IPC チャネル（TASK-9E） | L604 |
-| スキルチェーン IPC チャネル（TASK-9D） | L646 |
-| スキルスケジュール IPC チャネル（TASK-9G） | L713 |
-| スキルデバッグ IPC チャネル（TASK-9H） | L762 |
-| スキルドキュメント生成 IPC チャネル（TASK-9I） | L811 |
-| スキル分析・統計 IPC チャネル（TASK-9J） | L867 |
-| 完了タスク | L913 |
-| 変更履歴 | L951 |
+| スキルフォーク IPC チャネル（TASK-9E） | L569 |
+| スキルチェーン IPC チャネル（TASK-9D） | L611 |
+| スキルスケジュール IPC チャネル（TASK-9G） | L678 |
+| スキルデバッグ IPC チャネル（TASK-9H） | L727 |
+| スキルドキュメント生成 IPC チャネル（TASK-9I） | L776 |
+| スキル分析・統計 IPC チャネル（TASK-9J） | L832 |
+| 完了タスク | L878 |
+| 変更履歴 | L915 |
 
 ### references/api-ipc-auth.md
 
@@ -680,11 +680,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| AI/チャット IPC チャネル | L10 |
 | Slide IPC API（スライド同期） | L46 |
 | Electron IPC API設計 | L100 |
-| AIプロバイダーAPI連携 | L186 |
-| エンティティ抽出サービス (NER) | L219 |
-| 関連ドキュメント | L256 |
-| 完了タスク | L265 |
-| 変更履歴 | L278 |
+| AIプロバイダーAPI連携 | L217 |
+| エンティティ抽出サービス (NER) | L250 |
+| 関連ドキュメント | L287 |
+| 完了タスク | L296 |
+| 変更履歴 | L320 |
 
 ---
 
@@ -927,14 +927,15 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
-| AppDockナビゲーション | L15 |
-| ChatViewナビゲーション | L76 |
-| ナビゲーションボタン仕様 | L82 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L98 |
-| テスト検証済み項目 | L112 |
-| アクセシビリティ対応事例 | L127 |
-| ナビゲーションパターンのベストプラクティス | L159 |
-| 関連ドキュメント | L171 |
+| 変更履歴 | L13 |
+| AppDockナビゲーション | L25 |
+| ChatViewナビゲーション | L117 |
+| ナビゲーションボタン仕様 | L123 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L139 |
+| テスト検証済み項目 | L153 |
+| アクセシビリティ対応事例 | L168 |
+| ナビゲーションパターンのベストプラクティス | L200 |
+| 関連ドキュメント | L212 |
 
 ### references/ui-ux-panels.md
 
@@ -1048,23 +1049,23 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L40 |
-| Content Security Policy (CSP) | L54 |
-| IPC通信のセキュリティ | L71 |
-| 実装例: historyAPI | L153 |
-| 実装例: slideSettingsAPI | L205 |
-| 実装例: skillCreatorAPI | L254 |
-| 実装例: skillFileAPI（TASK-9A-B） | L371 |
-| 実装例: skillShareAPI（TASK-9F） | L445 |
-| 実装例: skillChainAPI（TASK-9D） | L524 |
-| 実装例: skillScheduleAPI（TASK-9G） | L563 |
-| 実装例: skillDebugAPI（TASK-9H） | L602 |
-| 実装例: skillDocsAPI（TASK-9I） | L657 |
-| 実装例: skillAnalyticsAPI（TASK-9J） | L714 |
-| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L747 |
-| 自動更新のセキュリティ | L777 |
-| 関連ドキュメント | L788 |
-| 完了タスク | L796 |
+| セキュリティ設定 | L39 |
+| Content Security Policy (CSP) | L53 |
+| IPC通信のセキュリティ | L70 |
+| 実装例: historyAPI / notificationAPI（TASK-UI-01） | L152 |
+| 実装例: slideSettingsAPI | L192 |
+| 実装例: skillCreatorAPI | L241 |
+| 実装例: skillFileAPI（TASK-9A-B） | L358 |
+| 実装例: skillShareAPI（TASK-9F） | L432 |
+| 実装例: skillChainAPI（TASK-9D） | L487 |
+| 実装例: skillScheduleAPI（TASK-9G） | L526 |
+| 実装例: skillDebugAPI（TASK-9H） | L565 |
+| 実装例: skillDocsAPI（TASK-9I） | L620 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L677 |
+| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L710 |
+| 自動更新のセキュリティ | L740 |
+| 関連ドキュメント | L751 |
+| 完了タスク | L759 |
 
 ### references/security-implementation.md
 
@@ -1389,15 +1390,18 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION） | L41 |
-| Zustand Sliceパターン | L66 |
-| P31対策: Store Hooks無限ループ防止パターン | L204 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L677 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L767 |
-| permissionHistorySlice（権限要求履歴管理） | L925 |
-| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1054 |
-| Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1099 |
-| 関連ドキュメント | L1133 |
+| UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION） | L45 |
+| Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE） | L70 |
+| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L127 |
+| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L164 |
+| Zustand Sliceパターン | L201 |
+| P31対策: Store Hooks無限ループ防止パターン | L341 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L814 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L904 |
+| permissionHistorySlice（権限要求履歴管理） | L1062 |
+| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1191 |
+| Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1236 |
+| 関連ドキュメント | L1270 |
 
 ### references/arch-ui-components.md
 
@@ -1589,24 +1593,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-10A-E-A: IPC契約・セキュリティ整合（2026-03-05） | L140 |
-| TASK-UI-00-ORGANISMS: Phase 12再確認（2026-03-04） | L198 |
-| TASK-UI-00-FOUNDATION-REFLECTION-AUDIT: 反映監査（2026-03-05） | L271 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L364 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L422 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L558 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L600 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L642 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L692 |
-| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L741 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L787 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L818 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L876 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L918 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L979 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L1020 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L1079 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L1121 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L150 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L203 |
+| TASK-UI-01-D-VIEWTYPE-ROUTING-NAV: ViewType導線統合の再監査（2026-03-05） | L282 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L363 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L421 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L621 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L663 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L705 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L811 |
+| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L860 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L906 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L937 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L995 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L1037 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L1098 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L1139 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L1198 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L1240 |
 
 ### references/llm-embedding.md
 
@@ -1948,12 +1952,12 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2413 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2461 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2528 |
-| 残課題（未タスク） | L2609 |
-| 関連ドキュメント | L2804 |
-| 変更履歴 | L2814 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2436 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2516 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2583 |
+| 残課題（未タスク） | L2664 |
+| 関連ドキュメント | L2859 |
+| 変更履歴 | L2869 |
 
 ### references/testing-accessibility.md
 

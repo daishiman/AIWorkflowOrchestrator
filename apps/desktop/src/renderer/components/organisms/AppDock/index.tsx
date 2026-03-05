@@ -1,8 +1,9 @@
 import React from "react";
 import clsx from "clsx";
-import { Icon, type IconName } from "../../atoms/Icon";
+import { Icon } from "../../atoms/Icon";
 import { NavIcon } from "../../molecules/NavIcon";
 import type { ViewType as StoreViewType } from "../../../store/types";
+import { APP_DOCK_NAV_ITEMS } from "../../../navigation/navContract";
 
 export type ViewType = StoreViewType;
 
@@ -11,50 +12,6 @@ export interface AppDockProps {
   onViewChange: (view: ViewType) => void;
   mode: "desktop" | "mobile";
 }
-
-interface NavItem {
-  id: ViewType;
-  icon: IconName;
-  label: string;
-  shortcut?: string;
-}
-
-const navItems: NavItem[] = [
-  {
-    id: "dashboard",
-    icon: "layout-grid",
-    label: "Dashboard",
-    shortcut: "Cmd+1",
-  },
-  {
-    id: "workspace",
-    icon: "folder-tree",
-    label: "Workspace",
-    shortcut: "Cmd+2",
-  },
-  { id: "chat", icon: "message-circle", label: "Chat", shortcut: "Cmd+3" },
-  { id: "agent", icon: "bot", label: "Agent", shortcut: "Cmd+4" },
-  {
-    id: "skillCenter",
-    icon: "sparkles",
-    label: "Skills",
-    shortcut: "Cmd+5",
-  },
-  {
-    id: "historySearch",
-    icon: "search",
-    label: "History",
-    shortcut: "Cmd+6",
-  },
-  { id: "graph", icon: "network", label: "Graph", shortcut: "Cmd+7" },
-  {
-    id: "editor",
-    icon: "file-text",
-    label: "Editor",
-    shortcut: "Cmd+8",
-  },
-  { id: "settings", icon: "settings", label: "Settings", shortcut: "Cmd+," },
-];
 
 export const AppDock: React.FC<AppDockProps> = ({
   currentView,
@@ -101,7 +58,7 @@ export const AppDock: React.FC<AppDockProps> = ({
             : ["flex-row flex-1", "px-4 gap-1", "items-center justify-around"],
         )}
       >
-        {navItems.map((item) => (
+        {APP_DOCK_NAV_ITEMS.map((item) => (
           <NavIcon
             key={item.id}
             icon={item.icon}

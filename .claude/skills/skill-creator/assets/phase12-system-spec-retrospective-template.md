@@ -146,7 +146,7 @@ UI機能実装の場合は次を推奨:
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
-4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
+4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）と strictPort preflight（例: lsofで5177確認）を実施し、失敗時は未タスク化へ分離する>`
 5. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 
 ---
@@ -172,6 +172,9 @@ UI機能実装の場合は次を推奨:
 | `rg -n '^### TASK-10A-E-A 実装内容|^### 実装時の苦戦箇所（TASK-10A-E-A）|^### TASK-10A-E-A 実装時の苦戦箇所|^### 同種課題の簡潔解決手順（TASK-10A-E-A / 5ステップ）' .claude/skills/aiworkflow-requirements/references/api-ipc-agent.md .claude/skills/aiworkflow-requirements/references/security-electron-ipc.md .claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | 仕様書別フォーマット（実装内容/苦戦箇所/5ステップ）の存在確認 | 3仕様書すべてで必要見出しが検出される |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
+| `lsof -nP -iTCP:5177 -sTCP:LISTEN || true` | UI再撮影時の strictPort 競合確認（例: 5177） | LISTEN有無が取得でき、分岐（停止/再利用/別ポート）を判断できる |
+| `test -d <workflow-path>/outputs/phase-11/screenshots` | UI証跡保存先の workflow 正規パス確認 | 対象workflow配下の保存先が実在する |
+| `node apps/desktop/scripts/<capture-script>.mjs --workflow <workflow-path>` | workflow 引数つき再撮影（対応済みスクリプト時） | 証跡が対象workflow配下へ直接保存される |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
@@ -202,6 +205,8 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
+- [ ] UIタスクでは strictPort 競合 preflight（例: `lsof -nP -iTCP:5177 -sTCP:LISTEN`）と分岐結果（停止/再利用/別ポート）を記録している
+- [ ] UIタスクでは証跡保存先が対象workflow配下であること（`<workflow>/outputs/phase-11/screenshots`）を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
