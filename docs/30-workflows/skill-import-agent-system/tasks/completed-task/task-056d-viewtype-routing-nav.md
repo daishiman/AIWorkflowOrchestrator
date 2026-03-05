@@ -6,7 +6,7 @@ phase: 6
 depends_on: [TASK-UI-01-A-STORE-SLICE-BASELINE]
 parallel_with: [TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN]
 blocks: [TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC, TASK-UI-02-GLOBAL-NAV-CORE]
-status: pending
+status: spec_created
 priority: high
 estimated_complexity: medium
 tags: [frontend, navigation, routing, viewtype]
@@ -24,7 +24,21 @@ verification:
 
 artifacts:
   creates:
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture/outputs/task-056d-viewtype-routing-map.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/index.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-1-requirements.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-2-design.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-3-design-review.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-4-test-creation.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-5-implementation.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-6-test-expansion.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-7-coverage-check.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-8-refactoring.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-9-quality-assurance.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-10-final-review.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-11-manual-test.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-12-documentation.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/phase-13-pr-creation.md
+    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056d-viewtype-routing-nav/artifacts.json
   modifies:
     - apps/desktop/src/renderer/store/types.ts
     - apps/desktop/src/renderer/App.tsx
@@ -48,6 +62,15 @@ artifacts:
 
 - `outputs/task-056d-viewtype-routing-map.md`: ViewType追加点、switch網羅表、移行ルール
 - `outputs/task-056d-nav-shortcut-contract.md`: ショートカット整合ルール
+- `task-056d-viewtype-routing-nav/`: Phase 1〜13のタスク仕様書一式（仕様書作成フェーズ成果物）
+
+## 仕様書作成ステータス
+
+- [x] ブランチ作成完了（`task/task-ui-01-d-viewtype-routing-nav-spec`）
+- [x] `task-056d-viewtype-routing-nav/` ディレクトリ作成
+- [x] Phase 1〜13仕様書を作成
+- [x] aiworkflow-requirements正本参照を反映
+- [x] 実装、コミット、PRは未実施
 
 ## システム仕様（aiworkflow-requirements）
 

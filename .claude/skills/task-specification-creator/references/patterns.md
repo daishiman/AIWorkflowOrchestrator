@@ -2047,12 +2047,25 @@
 - **発見日**: 2026-03-04
 - **関連タスク**: UT-IMP-PHASE12-VITEST-RUN-MODE-GUARD-001
 
+#### Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化（TASK-UI-01-D 再確認）
+
+- **状況**: `spec-update-summary.md` と system spec 更新は完了しているが、`LOGS.md` x2 / `SKILL.md` x2 / `topic-map` 再生成が抜けることがある。加えて Phase 11 再撮影で固定出力先と `Port 5177` 競合が発生しやすい
+- **解決策**:
+  1. Step 1-A を「`LOGS.md` x2 + `SKILL.md` x2 + `generate-index`」の四点セットで完了判定する
+  2. 再撮影運用で workflow 固定出力先がある場合は、未タスク化して `docs/30-workflows/unassigned-task/` に配置する
+  3. `audit --target-file` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否に使う
+  4. 結果を `spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-compliance-recheck.md` に同時記録する
+- **効果**: Phase 12 の完了判定が再現可能になり、再撮影運用のドリフトを未タスクで追跡できる
+- **発見日**: 2026-03-05
+- **関連タスク**: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV, UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001
+
 ---
 
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-03-05** | **TASK-UI-01-D 再確認パターン追加**: 成功パターン「Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化」を追加。`LOGS/SKILL/topic-map` 同時更新、`docs/30-workflows/unassigned-task/` への配置、`audit --target-file` + `--diff-from HEAD` の `currentViolations=0` 固定を標準化 |
 | **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |
 | **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |
 | **2026-02-28** | **TASK-9E 再監査パターン追加**: 成功パターン「Phase 12 テスト件数ドリフト再同期」を追加。正本件数固定→文脈限定抽出→4点検証→未タスク化までの手順を標準化 |

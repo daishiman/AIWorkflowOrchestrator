@@ -132,181 +132,216 @@
 
 ## 完了タスク
 
-### タスク: TASK-UI-00-FOUNDATION-REFLECTION-AUDIT UI基盤反映監査（2026-03-05）
+### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT |
+| タスクID | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN |
 | 完了日 | 2026-03-05 |
-| ステータス | **completed（Phase 1-12 実行完了）** |
-| 対象workflow | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
-| 目的 | UI基盤仕様の反映監査（正本導線 / Task 5D語彙具体例 / Task 5B適用境界）を是正し、検証を自動化する |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト）** |
+| 対象 | Notification履歴管理 / HistorySearch状態管理 / IPC-Preload公開契約 |
 
 #### 仕様書別SubAgent分担（関心ごと分離）
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-TOKENS | `00-1-design-tokens.md` | 正本リンクの自己参照是正 | completed-tasks 正本リンクへ解決 |
-| SubAgent-UX-EXAMPLE | `task-059a-ui-04b-workspace-chat-panel.md` | Task 5D具体例（Before/After）追加 | 具体例テーブルが3行以上 |
-| SubAgent-SCOPE | `task-061-ui-09-onboarding-wizard.md` | Task 5B適用境界（対象/対象外）明文化 | 対象・対象外の判断表が存在 |
-| SubAgent-VERIFY | `tools/validate-foundation-findings.mjs` | 監査検証コード + テスト実装 | Node test PASS / 監査スクリプト PASS |
-| SubAgent-DOC-SYNC | `task-workflow/lessons/ui-ux-*` | Phase 12 Step 1-A/1-B/1-C 同期 | LOGS/SKILL/topic-map 同期完了 |
+| SubAgent-A | `references/arch-state-management.md` | `notificationSlice` / `historySearchSlice` の状態責務・永続化契約同期 | Slice責務/保持件数/selector 契約が仕様化される |
+| SubAgent-B | `references/api-ipc-system.md` / `references/api-endpoints.md` | IPC 7チャネル（history 2 + notification 5）の契約同期 | Main/Preload/Renderer 契約が3層で一致する |
+| SubAgent-C | `references/task-workflow.md` | 完了台帳、検証証跡、未タスク判定の同期 | Phase 1-12 の実行証跡が追跡可能になる |
+| SubAgent-D | `references/lessons-learned.md` | 実装苦戦箇所と再利用手順の固定 | 同種タスクの再発防止手順が再利用可能になる |
+| SubAgent-E | `outputs/phase-11/*` | 実画面3件 + 非視覚3件の証跡設計と Apple UI/UX 視点判定 | `SCREENSHOT` と `NON_VISUAL` の判定境界が明確化される |
 
-#### 実装内容（要点）
+#### 実装反映（要点）
 
-- `docs/.../00-1-design-tokens.md` の正本リンクを `docs/30-workflows/completed-tasks/TASK-UI-00-TOKENS/index.md` へ修正。
-- `task-059a` に `### 11.1 UX言語の具体例（Task 5D）` を追加し、用語置換の具体例を明文化。
-- `task-061` に `### Task 5B（error/offline）適用境界` を追加し、対象/対象外判断を明文化。
-- `tools/validate-foundation-findings.mjs` と `tools/__tests__/validate-foundation-findings.test.mjs` を追加し、FND-055-001〜003を機械検証化。
+- Store Sliceを追加:
+  - `apps/desktop/src/renderer/store/slices/notificationSlice.ts`
+  - `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`
+- Main IPC ハンドラを追加:
+  - `apps/desktop/src/main/ipc/notificationHandlers.ts`
+  - `apps/desktop/src/main/ipc/historySearchHandlers.ts`
+- Preload公開境界を拡張:
+  - `apps/desktop/src/preload/channels.ts`
+  - `apps/desktop/src/preload/types.ts`
+  - `apps/desktop/src/preload/index.ts`
+- Store統合と永続化キー同期:
+  - `apps/desktop/src/renderer/store/index.ts`
+- テストを追加:
+  - `notificationSlice.test.ts` / `historySearchSlice.test.ts`
+  - `notificationHandlers.test.ts` / `historySearchHandlers.test.ts`
+  - `channels.test.ts` 拡張
 
 #### 検証証跡（2026-03-05）
 
 | コマンド | 結果 |
 | --- | --- |
-| `node --test docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/tools/__tests__/traceability-audit.test.mjs docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/tools/__tests__/validate-foundation-findings.test.mjs` | PASS（7 tests） |
-| `node docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/tools/validate-foundation-findings.mjs --output .../outputs/phase-12/finding-validation-report.json --json` | PASS（FND-055-001/002/003 全件 PASS） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit` | PASS（TC 6/6、警告0件） |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/slices/notificationSlice.test.ts src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/notificationHandlers.test.ts src/main/ipc/historySearchHandlers.test.ts src/preload/channels.test.ts` | PASS（5 files / 37 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` | PASS（TC-11-01〜03 実画面証跡を再取得） |
+| `pnpm --filter @repo/desktop exec vitest run --coverage.enabled true --coverage.provider v8 --coverage.reportsDirectory coverage-task-056c --coverage.include \"src/renderer/store/slices/notificationSlice.ts\" --coverage.include \"src/renderer/store/slices/historySearchSlice.ts\" --coverage.include \"src/main/ipc/notificationHandlers.ts\" --coverage.include \"src/main/ipc/historySearchHandlers.ts\" --coverage.include \"src/preload/channels.ts\" src/renderer/store/slices/notificationSlice.test.ts src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/notificationHandlers.test.ts src/main/ipc/historySearchHandlers.test.ts src/preload/channels.test.ts` | PASS（Statements 87.45 / Branch 65.11 / Functions 80.39 / Lines 87.45） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（28項目, error=0） |
 
-#### 再監査追補（2026-03-05 11:43 JST）
+#### Phase 12 タスク仕様準拠の追加確認（2026-03-05 21:04 JST）
 
-- `capture-phase11-screenshots.mjs` を再実行し、TC-055-301〜306 を再取得。
-- `phase-11-manual-test.md` へ `## テストケース` / `## 画面カバレッジマトリクス` を追記し、カバレッジ検証の警告を解消。
-- 完了済み Phase 1〜11 のチェックリストを `artifacts.json` の completed 状態へ同期。
-
-#### 再監査追補（2026-03-05 11:51 JST / 12:16 JST）
-
-- Phase 11 スクリーンショットを再再取得し、最終更新時刻を `2026-03-05 11:51:28〜11:51:32 JST` で固定。
-- `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit` を再実行し、`TC 6/6` を再確認。
-- Phase 12 タスク仕様準拠を再検証し、`validate-phase-output`（28項目）/ `verify-all-specs`（13/13）/ `verify-unassigned-links`（92/92）を再PASS化。
-- 未タスク `UT-UI-055-001` の正規配置とフォーマットを再確認し、`audit-unassigned-tasks --target-file` で `currentViolations=0` を確認。
-
-#### 再監査追補（2026-03-05 12:21 JST）
-
-- `validate-phase-output`（28項目）/ `verify-all-specs`（13/13）/ `validate-phase11-screenshot-coverage`（TC 6/6）/ `verify-unassigned-links`（92/92）を再実行し、全PASSを再確認。
-- `audit-unassigned-tasks --target-file` と `audit-unassigned-tasks --diff-from HEAD` を再実行し、`currentViolations=0`（`baselineViolations=98` は既存負債）を固定。
-- `validate-foundation-findings.mjs --json` を再実行し、FND-055-001/002/003 の全PASSを再確認。
-
-#### 今回の苦戦箇所（再利用用）
-
-| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
-| --- | --- | --- | --- |
-| 検証コマンドの実行経路ドリフト | `verify-all-specs` などをグローバルCLI前提で実行し、`not found` / `MODULE_NOT_FOUND` が発生 | `which` + `rg --files .claude/skills` で実体を探索し、`node .claude/skills/task-specification-creator/scripts/*.js` に統一 | Phase 12 再監査は「実体探索→固定コマンド実行」を必須化する |
-| 再撮影証跡の時刻ドリフト | 画面再取得後に `manual-test-result.md` / `screenshots-index.md` / 仕様台帳を同時更新しない | `stat` で実ファイル時刻を取得し、Phase 11/12成果物と system spec を同一ターンで同期 | UI再撮影は「再取得→`stat`→成果物更新→仕様台帳更新」を1トランザクションで扱う |
-
-#### 同種課題の5分解決カード（最短）
-
-| 手順 | 実行内容 | 合格条件 |
+| 観点 | コマンド | 結果 |
 | --- | --- | --- |
-| 1. 実体固定 | `which` + `rg --files .claude/skills` で検証スクリプト実体を確定 | `not found` のまま本実行しない |
-| 2. 仕様是正 | 正本リンク / Task 5D具体例 / Task 5B境界を同一ターンで更新 | 3観点すべてに根拠行がある |
-| 3. 画面証跡 | 再撮影 + `validate-phase11-screenshot-coverage` を実行 | `expected TC = covered TC` |
-| 4. 未タスク監査 | `verify-unassigned-links` + `audit --target-file` + `audit --diff-from HEAD` | `currentViolations=0` |
-| 5. 台帳同期 | `task-workflow` / `lessons` / `ui-ux-*` を同時更新 | 検証値と時刻が各仕様書で一致 |
+| Phase 12 必須要件 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain --phase 12` | PASS（Task 12-1〜12-5 / 完了条件5件を再確認） |
+| 画面証跡再採取 | `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs` | PASS（TC-11-01〜03 再撮影） |
+| 画面証跡カバレッジ | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（expected 6 / covered 6） |
+| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=92` |
+| 未タスク配置差分 | `git diff --name-only HEAD -- docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 0件（今回タスク起因の未タスク追加/移動なし） |
 
-#### 関連未タスク（2026-03-05 追補）
+#### Phase 11（UI/UX 判定）
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-UI-055-001 | EmptyState（light）の境界線コントラスト改善 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-055-empty-state-contrast-improvement.md` |
-| UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 | TASK-055 の5分解決カードを3仕様書（task-workflow/lessons/ui-ux-feature）で同一同期する運用ガード | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md` |
+- 実画面証跡: `TC-11-01`（Dashboard）, `TC-11-02`（Chat History空状態）, `TC-11-03`（History一覧）を再取得。
+- 非視覚証跡: `TC-11-04..06` は契約テスト起点で `NON_VISUAL` を維持。
+- Apple UI/UX 観点では、情報階層・可読性・空状態の優先度に視覚的退行なしと判定。
 
-#### 成果物
+#### 未タスク判定
 
-- `outputs/phase-12/implementation-guide.md`
-- `outputs/phase-12/spec-update-summary.md`
-- `outputs/phase-12/documentation-changelog.md`
-- `outputs/phase-12/unassigned-task-detection.md`
-- `outputs/phase-12/skill-feedback-report.md`
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`
+- 実装差分として新規未タスク化が必要な項目は **0件**。
+- 追加した要件（Slice/IPC/Preload/テスト）はすべて `outputs/phase-1..12` と仕様正本へ同期済み。
+- ただし再監査運用で再発した「対象テスト実行の誤起動リスク（`pnpm run test:run --`）」は運用改善対象として未タスク化し、同ターンで完了タスクへ移管した。
 
----
+#### 関連タスク（2026-03-05 追補・完了移管）
 
-### タスク: TASK-10A-E-A IPC契約・セキュリティ整合（2026-03-05完了）
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. Store/IPC/Preload を先に責務分離し、仕様書別SubAgentへ担当を固定する。  
+2. 新規チャネル追加時は `main handler` / `preload channels` / `preload types` の3点を同一ターンで同期する。  
+3. Phase 11 は UI導線（`SCREENSHOT`）と契約検証（`NON_VISUAL`）を分離して証跡化する。  
+4. Phase 12 は `arch-state-management` / `api-ipc-system` / `api-endpoints` / `task-workflow` / `lessons-learned` を同時更新し、`verify` + `validate` で閉じる。  
+
+### タスク: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV ViewType導線統合（2026-03-05）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | TASK-10A-E-A |
+| タスクID | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV |
 | 完了日 | 2026-03-05 |
-| ステータス | **完了** |
-| タスク種別 | 既存機能整合（IPC契約 + セキュリティ + テスト） |
-| Phase | Phase 1-12 完了（Phase 13未実施） |
-| 対象workflow | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/` |
-
-#### 実装内容（要点）
-
-- `apps/desktop/src/main/ipc/skillHandlers.share.ts` を `IPC_CHANNELS` 参照へ統一し、チャネル文字列ハードコードを排除。
-- share 3チャネルの失敗契約を `ERR_1001`（入力不正）/`ERR_2004`（sender拒否）/`ERR_5001`（unknown例外）に統一。
-- sender 検証失敗を `IPC_UNAUTHORIZED` + `errorCode` で返却し、unknown例外は `Internal error` へ正規化。
-- Preload 契約テストにチャネル境界（`import` と `importFromSource` の分離）と `errorCode` 透過検証を追加。
-- Phase 11 でスクリーンショット4件を再取得し、Apple UI/UX観点で表示整合を再確認。
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト + 画面検証）** |
+| 対象 | ViewType拡張導線 / AppDockナビ契約一元化 / Cmd-Ctrlショートカット |
 
 #### 仕様書別SubAgent分担（関心ごと分離）
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-A | `references/api-ipc-agent.md` | share 3チャネルの request/response/errorCode 契約同期 | 3チャネルの失敗契約が `ERR_1001/2004/5001` で一致 |
-| SubAgent-B | `references/security-electron-ipc.md` | sender検証・P42・unknown例外正規化のセキュリティ仕様同期 | 4層防御表と返却仕様が実装と一致 |
-| SubAgent-C | `references/interfaces-agent-sdk-skill.md` | Preload share API 戻り値契約（errorCode含む）同期 | `Promise<ShareResult<...> & { errorCode? }>` が明記 |
-| SubAgent-D | `references/task-workflow.md` | 完了台帳・検証証跡・成果物導線の固定 | 実装内容 + 苦戦箇所 + 証跡が同一ターン反映 |
-| SubAgent-E | `outputs/phase-11/screenshots/*` | UI証跡再取得と視覚検証 | TC-11-01〜04 の証跡4件 + diagnostics が揃う |
+| SubAgent-A | `references/ui-ux-navigation.md` | AppDock 9項目・ショートカット契約の正本同期 | ナビ契約と実装が1対1で一致 |
+| SubAgent-B | `references/arch-state-management.md` | ViewType責務境界と状態管理契約の同期 | NavigationSlice責務拡張が明文化される |
+| SubAgent-C | `references/task-workflow.md` | 完了台帳・検証証跡・未タスク判定の同期 | Phase 1-12 実行証跡が追跡可能になる |
+| SubAgent-D | `references/lessons-learned.md` | 苦戦箇所と再利用手順の固定 | 同種タスクの再発防止手順が再利用可能になる |
 
-#### 最適なファイル形成（TASK-10A-E-A）
+#### 実装反映（要点）
 
-| 仕様書 | 必須ブロック | SubAgent |
+- `apps/desktop/src/renderer/navigation/navContract.ts` を新規追加し、AppDock項目・セクション・ショートカット解決を一元化。
+- `apps/desktop/src/renderer/App.tsx` に `keydown` ナビゲーションを追加し、Cmd/Ctrl + `1..8` と `,` を ViewType にマッピング。
+- `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` は `APP_DOCK_NAV_ITEMS` 参照へ切り替え、重複定義を除去。
+- `apps/desktop/src/renderer/navigation/navContract.test.ts` と既存統合テストを拡張し、導線契約の回帰を固定。
+
+#### 検証証跡（2026-03-05）
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/navigation/navContract.test.ts src/renderer/components/organisms/AppDock/AppDock.test.tsx src/renderer/__tests__/integration/navigation.integration.test.ts` | PASS（3 files / 49 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-056d-viewtype-routing-nav --json` | PASS（13/13, error=0, warning=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-056d-viewtype-routing-nav` | PASS（28項目, error=0, warning=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-056d-viewtype-routing-nav` | PASS（expected=5 / covered=5） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（ALL_LINKS_EXIST） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=92` |
+
+#### Phase 11（Apple UI/UX 視覚検証）
+
+- 実画面証跡: `TC-056D-11-01..05` を `outputs/phase-11/screenshots/` に保存。
+- 判定: Clarity / Deference / Depth / 44px操作性の4観点で **PASS**。
+- 低優先度課題: 表記ゆれ（`Skills` vs `Skill Center`）は TASK-UI-02 で統合予定。
+
+#### 未タスク判定
+
+- 機能実装差分に起因する新規未タスクは **0件**。
+- 再監査運用ガードとして **1件** を未タスク化。
+
+| タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| `references/api-ipc-agent.md` | `実装内容（IPC契約）` / `実装時の苦戦箇所` / `同種課題の簡潔解決手順（5ステップ）` | SubAgent-A |
-| `references/security-electron-ipc.md` | `エラーコード整合` / `実装時の苦戦箇所` / `同種課題の簡潔解決手順（5ステップ）` | SubAgent-B |
-| `references/interfaces-agent-sdk-skill.md` | `失敗契約` / `実装内容（型/API契約）` / `実装時の苦戦箇所` / `同種課題の簡潔解決手順（5ステップ）` | SubAgent-C |
-| `references/task-workflow.md` | `実装内容` / `仕様書別SubAgent分担` / `苦戦箇所` / `5ステップ` / `検証結果` | SubAgent-D |
-| `references/lessons-learned.md` | `苦戦箇所3件` / `5ステップ` / `関連未タスク` | SubAgent-E |
-
-> 上記5仕様書は同一ターンで更新し、Step 2 実施時は `spec-update-summary.md` と `documentation-changelog.md` の更新有無を一致させる。
-
-#### 苦戦箇所と解決策
-
-| 苦戦箇所 | 原因 | 解決策 | 再発防止 |
-| --- | --- | --- | --- |
-| `spec-update-summary.md` が「Step 2更新なし」のまま残存 | 仕様更新後に成果物サマリーを再同期していなかった | Step 2 実施後に Phase 12成果物2件（summary/changelog）を再生成 | 「Step 2実施有無と成果物記述一致」を完了チェックへ追加 |
-| `implementation-guide.md` の sender拒否 `code` 誤記 | `errorCode` 追加時に `code` と混同 | `IPC_UNAUTHORIZED` / `ERR_2004` の組を契約表で固定 | IPC失敗契約は `code` と `errorCode` を別列でレビュー |
-| チャネル境界の挙動が画面証跡のみで追跡しづらい | 呼び出し回数の機械証跡が不足 | diagnostics JSON（`importCalls`, `importFromSourceCalls`）を保存 | UI証跡は画像+診断JSONをセットで保管 |
+| UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001 | Phase 11再撮影の固定出力先ドリフトと `Port 5177` 競合preflight不足を防止する運用ガード | `docs/30-workflows/completed-tasks/task-imp-task-056d-phase11-screenshot-capture-path-guard-001.md` |
+| UT-IMP-TASK-056D-SYSTEM-SPEC-SYNC-CARD-GUARD-001 | system spec 4仕様書（task/lessons/ui-ux/state）の同期粒度と5分解決カード同値転記を固定する運用ガード | `docs/30-workflows/completed-tasks/task-imp-task-056d-system-spec-sync-card-guard-001.md` |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. Main/Preload/テストでIPCチャネル名を `IPC_CHANNELS` 定数に統一し、ハードコードを排除する。
-2. 失敗契約を `code` と `errorCode` の2軸で定義し、3分類（入力/認可/内部）へ割り当てる。
-3. Preload契約テストで「誤チャネル未呼び出し」を1ケース追加し、境界破壊を検出可能にする。
-4. Phase 11でスクリーンショットと診断JSONを同時取得し、目視結果と実測値を一致させる。
-5. Step 2で仕様更新した場合は `spec-update-summary.md` と `documentation-changelog.md` を同時更新し、記述ドリフトを防ぐ。
+1. ナビ定義を `navContract.ts` へ集約し、UIコンポーネントでは契約参照だけを行う。  
+2. キーボード導線は `meta/ctrl` 判定と編集要素除外を先に実装し、誤発火を防ぐ。  
+3. Phase 11 は `TC-xx` と `.png` 証跡を1対1管理し、coverage validator を必ず通す。  
+4. Phase 12 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
+5. UI再撮影前に `lsof -nP -iTCP:5177 -sTCP:LISTEN` で strictPort 競合を確認し、分岐結果（停止/再利用/別ポート）を `unassigned-task-detection.md` に記録する。  
 
-#### 検証結果（2026-03-05）
+### タスク: TASK-UI-01-A-STORE-SLICE-BASELINE Store Slice棚卸しと状態境界の基準化（2026-03-05）
 
-| 検証項目 | コマンド | 結果 |
-| --- | --- | --- |
-| Main share テスト | `pnpm vitest run src/main/ipc/__tests__/skillHandlers.share.test.ts` | PASS（34 tests） |
-| Preload契約テスト | `pnpm vitest run src/preload/__tests__/skill-api.contract.test.ts` | PASS（60 tests） |
-| 型検査 | `pnpm typecheck` | PASS |
-| ワークフロー仕様整合 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-043a-ipc-contract-and-security-alignment --strict --json` | PASS（13/13、errors=0、warnings=0） |
-| Phase出力構造 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-043a-ipc-contract-and-security-alignment` | PASS（28項目） |
-| 画面カバレッジ | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-043a-ipc-contract-and-security-alignment` | PASS（TC 4/4） |
-
-#### 成果物
-
-| 成果物 | パス/内容 |
+| 項目 | 内容 |
 | --- | --- |
-| 実行ワークフロー | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/` |
-| 実装ガイド | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/outputs/phase-12/implementation-guide.md` |
-| 仕様更新サマリー | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/outputs/phase-12/spec-update-summary.md` |
-| ドキュメント更新履歴 | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/outputs/phase-12/documentation-changelog.md` |
-| 未タスク検出レポート | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/outputs/phase-12/unassigned-task-detection.md` |
-| スキルフィードバック | `docs/30-workflows/task-043a-ipc-contract-and-security-alignment/outputs/phase-12/skill-feedback-report.md` |
+| タスクID | TASK-UI-01-A-STORE-SLICE-BASELINE |
+| 完了日 | 2026-03-05 |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト + 画面検証）** |
+| 対象 | Renderer Store baseline（slice inventory / boundary matrix / selector policy） |
 
-#### 検出未タスク（実装苦戦箇所由来）
+#### 仕様書別SubAgent分担（関心ごと分離）
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| UT-IMP-TASK10A-E-A-DOMAIN-SPEC-BLOCK-AUTO-VERIFY-001 | domain3仕様書（api-ipc/security/interfaces）の必須3ブロック（実装内容/苦戦箇所/5ステップ）存在を機械検証し、Step 2同値同期を完了前に検出する運用ガード | 中 | `docs/30-workflows/unassigned-task/task-imp-task10a-e-a-domain-spec-block-auto-verify-001.md` |
+| SubAgent-A | `references/arch-state-management.md` | baseline型・定数・境界判定基準の同期 | 16行 inventory と境界判定5件が仕様化される |
+| SubAgent-B | `references/task-workflow.md` | 完了台帳・検証証跡・再利用手順の固定 | Phase 1-12 実行証跡が追跡可能になる |
+| SubAgent-C | `references/lessons-learned.md` | 苦戦箇所と再発防止手順の同期 | 同種課題向けの短手順が再利用可能になる |
+| SubAgent-D | `outputs/phase-11/*` | TC単位の証跡整合と視覚監査 | `validate-phase11-screenshot-coverage` が PASS になる |
 
----
+#### 実装反映（要点）
+
+- `apps/desktop/src/renderer/store/types.ts` に baseline型（`StoreSliceInventoryItem` など）を追加。
+- `apps/desktop/src/renderer/store/sliceBaseline.ts` を新規作成し、以下を定数化:
+  - `STORE_PERSISTED_KEYS_BASELINE`
+  - `STORE_SLICE_INVENTORY_BASELINE`（16行）
+  - `STORE_BOUNDARY_MATRIX_BASELINE`
+  - `STORE_SELECTOR_POLICY_BASELINE`
+- `apps/desktop/src/renderer/store/index.ts` で baseline定数を再export。
+- `apps/desktop/src/renderer/store/__tests__/sliceBaseline.test.ts` を追加し、unit/integration/regression を固定。
+
+#### 画面検証（Phase 11）
+
+| テストケース | 証跡 | 視覚判定 |
+| --- | --- | --- |
+| TC-11-01 | `.../outputs/phase-11/screenshots/phase11-dashboard.png` | PASS |
+| TC-11-02 | `.../outputs/phase-11/screenshots/phase11-skill-center.png` | PASS |
+| TC-11-03 | `.../outputs/phase-11/screenshots/phase11-history-search.png` | PASS |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .../verify-all-specs.js --workflow <task-056a-dir>` | PASS（13/13, error=0, warning=0） |
+| `node .../validate-phase-output.js <task-056a-dir>` | PASS（28項目, error=0, warning=0） |
+| `node .../validate-phase11-screenshot-coverage.js --workflow <task-056a-dir>` | PASS（expected=3 / covered=3） |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/__tests__/sliceBaseline.test.ts` | PASS（9/9） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+
+#### 未タスク判定
+
+- 実装差分としての未タスク化が必要な項目は **0件**（`task-056a-b` / `task-056c` / `task-056d` は仕様上の後続依存として明示済み）。
+- 再監査で確認した `baselineViolations=90`（既存負債）の段階削減と監査運用安定化を目的に、運用改善未タスクを **2件** 追加した。
+
+#### 関連タスク（完了済み移管）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001 | baseline 負債削減の段階実行（format/naming/misplaced 是正計画、完了済み移管） | `docs/30-workflows/completed-tasks/task-imp-phase12-unassigned-baseline-reduction-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001 | Phase 12 workflowパス正規化ガード（workflow実体確認 + 監査境界固定 + current/baseline分離、完了済み移管） | `docs/30-workflows/completed-tasks/task-imp-phase12-workflow-path-canonicalization-001.md` |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. baseline情報を `types.ts` と専用定数ファイルへ分離し、後続タスクの参照点を固定する。  
+2. テストを unit/integration/regression に分け、台帳行数・境界判定・再export を先に固定する。  
+3. Phase 11 は `TC-xx` 形式で証跡を紐付け、`validate-phase11-screenshot-coverage` を必ず通す。  
+4. Phase 12 で `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
 
 ### タスク: TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04）
 
@@ -401,80 +436,62 @@
 4. UIは `String(value ?? "")` と `Array.isArray` 防御を標準化し、欠損メタデータを許容する。  
 5. UI再撮影がある場合は preview preflight（build + `127.0.0.1:4173` 疎通）を先に通し、未タスク配置先（未完了/完了移管）を判定した上で `verify` / `validate` / `screenshot-coverage` / `audit(current)` を同一ターンで実行して証跡を固定する。  
 
----
-
-### タスク: TASK-UI-00-ORGANISMS Organisms共通基盤実装（2026-03-04）
+#### 追補: UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001（2026-03-04）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | TASK-UI-00-ORGANISMS |
-| 完了日 | 2026-03-04 |
-| ステータス | **completed（Phase 1-12 完了 + 再確認済み）** |
-| タスク種別 | UI Organisms 実装（CardGrid / MasterDetailLayout / SearchFilterList） |
-| 対象workflow | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
+| タスクID | UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 |
+| 対象 | workflow02 の Phase 11/12 UI証跡再取得コマンド運用 |
+| 実装 | `apps/desktop/package.json` に `screenshot:skill-import-idempotency-guard` を追加 |
+| 文書同期 | workflow02 の `outputs/phase-11/manual-test-result.md` と `outputs/phase-12/spec-update-summary.md` の実行コマンド表記を `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard` に統一 |
+| 検証 | `run | rg screenshot` で露出確認、screenshot再取得、coverage validator PASS（4/4） |
 
-#### 仕様書別SubAgent分担（関心ごと分離）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-A | `references/ui-ux-components.md` | 実装状況テーブル・画面証跡・完了タスク同期 | 3 Organisms が completed で記録される |
-| SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様・完了タスク導線同期 | Organisms Foundation 節が実装実体と一致 |
-| SubAgent-C | `references/arch-ui-components.md` | アーキテクチャ責務境界同期 | Atomic Design 境界と品質指標が整合 |
-| SubAgent-D | `references/task-workflow.md` | 完了台帳・検証証跡・苦戦箇所の記録 | 実装内容 + 苦戦箇所 + 証跡が同一ターン反映 |
-| SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓化 | 同種課題向け手順が5ステップで固定 |
-
-#### 実装内容（要点）
-
-- `CardGrid`: ジェネリクス対応のレスポンシブカード表示、loading/empty、Arrowキー移動を実装。
-- `MasterDetailLayout`: desktop/tablet/mobileの2ペイン切替とモバイルオーバーレイを実装。
-- `SearchFilterList`: 検索 + 複数フィルタ + list/grid切替 + 件数表示を統合。
-- `OrganismsShowcaseView` と `screenshot:organisms` を追加し、TC-01〜TC-06 の画面証跡を固定。
-
-#### 今回苦戦した箇所（再利用用）
-
-| 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
-| --- | --- | --- | --- |
-| UI再撮影後に `manual-test-result.md` の時刻が旧値のまま残りやすい | スクリーンショット再取得と文書更新を別ターンで進める場合 | `stat` で実ファイル時刻を取得し、`manual-test-result`/仕様書を同時更新 | UI再撮影後は「証跡取得→時刻同期→coverage検証」を一連で実施 |
-| 未タスク監査で baseline を今回差分と誤認しやすい | `audit --diff-from HEAD` の値を単一指標で読む場合 | 合否を `currentViolations=0` に固定し、baselineは監視値で分離 | 未タスク監査は current/baseline の二軸記録を必須化 |
-| Step 1-A で台帳（workflow/lessons）反映が抜けやすい | UI仕様書のみ更新して完了判定する場合 | `task-workflow.md` と `lessons-learned.md` を同一ターンで更新 | Phase 12完了条件に「台帳 + 教訓の同時更新」を含める |
-
-#### Phase 12で追加した未タスク（2026-03-04 追補）
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 | TASK-UI-00-ORGANISMS の Phase 12 証跡・監査・台帳同期ガード（時刻同期/`current`判定固定/Step 1-A 同時更新） | 中 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/unassigned-task/task-imp-task-ui-00-organisms-phase12-sync-guard-001.md` |
-
-#### 検証証跡（2026-03-04 再確認）
+#### 追補検証証跡（2026-03-04）
 
 | コマンド | 結果 |
 | --- | --- |
-| `verify-all-specs --workflow docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components` | PASS（13/13, error=0, warning=0） |
-| `validate-phase-output.js docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components` | PASS（28項目） |
-| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components` | PASS（expected=6 / covered=6） |
-| `audit-unassigned-tasks --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=98） |
-| `verify-unassigned-links` | PASS（existing=94, missing=0） |
-| `pnpm exec vitest run CardGrid/MasterDetailLayout/SearchFilterList` | PASS（3 files / 41 tests） |
+| `lsof -nP -iTCP:5174 -sTCP:LISTEN || true` | WARN（既存プロセス占有あり。`Port 5174 is already in use` を再現） |
+| `pnpm --filter @repo/desktop run | rg screenshot` | PASS（`screenshot:skill-import-idempotency-guard` を検出） |
+| `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard` | PASS（`TC-01..04` + `import-call-diagnostics.json` を再取得） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` | PASS（expected=4 / covered=4） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001` | PASS（13/13, error=0, warning=0） |
 
-#### 同種課題の5分チェックリスト（TASK-UI-00-ORGANISMS）
+#### 追補課題（再確認で判明）
 
-- [ ] `verify-all-specs` と `validate-phase-output` を先に実行し、構造合否を固定した
-- [ ] UI再撮影（`screenshot:<feature>`）と `validate-phase11-screenshot-coverage` を同一ターンで実行した
-- [ ] `stat` の実時刻を `manual-test-result.md` と仕様書に同値同期した
-- [ ] 未タスク監査は `currentViolations=0` を合否、`baselineViolations` を監視値として分離記録した
-- [ ] `task-workflow.md` / `lessons-learned.md` に実装内容・苦戦箇所・検証値を同時転記した
-
-#### 画面検証証跡（Apple UI/UX観点）
-
-| 観点 | 結果 |
+| 項目 | 内容 |
 | --- | --- |
-| 証跡再取得 | `TC-01..TC-06` を 2026-03-04 23:24 JST に再撮影 |
-| 視覚品質 | 視覚階層・可読性・操作導線・レスポンシブで重大課題なし（PASS） |
-| 証跡リンク | `outputs/phase-11/manual-test-result.md` / `outputs/phase-11/screenshots/*.png` |
+| 苦戦箇所 | screenshot 再取得は成功しても `Port 5174 is already in use` が混在し、失敗判定との切り分けが人依存になりやすい |
+| 対処 | 実行前ポート検査（`lsof`）を証跡へ固定し、競合時の分岐（停止/再利用）を未タスク化 |
+| 関連未タスク | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` |
+| 参照 | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
+| 苦戦箇所 | `validate-phase11-screenshot-coverage` が PASS でも、`phase-11-manual-test.md` に画面カバレッジマトリクスがなく warning が残り、レビュー観点が人依存になった |
+| 対処 | 画面カバレッジマトリクスの必須化（視覚TC/非視覚TC区分 + 期待証跡）を未タスク化し、Phase 11 設計意図を固定する方針へ分離 |
+| 関連未タスク | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` |
+| 参照 | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
 
-#### 参照
+#### 追補2: UT workflow 証跡正規化（2026-03-04）
 
-- [TASK-UI-00-ORGANISMS 仕様書](../../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/index.md)
-- [TASK-UI-00-ORGANISMS Phase 12準拠チェック](../../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-12/phase12-task-spec-compliance-check.md)
+| 項目 | 内容 |
+| --- | --- |
+| 今回実装した内容 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` の `outputs/phase-11/screenshots/` を正規配置し、`manual-test-result.md` の TC-01〜TC-04 をローカル `.png` 参照へ統一。TC-05/06 は `NON_VISUAL:` で明示して coverage validator の判定軸を固定した |
+| 苦戦箇所 | 手動テスト結果が workflow02 側の証跡パスのみを参照しており、UT workflow 自体の `outputs/phase-11/screenshots` が空で `validate-phase11-screenshot-coverage` が失敗した |
+| 対処 | screenshot を UT workflow 配下へ複製し、証跡表を `screenshots/*.png` 形式へ修正。非視覚TCは `NON_VISUAL:` 記法へ統一して `expected=6 / covered=4`（非視覚2件許容）で PASS を確認 |
+| 標準ルール | UI証跡は「対象workflow配下の証跡実体」と「TC証跡表記」の両方が揃って初めて完了扱いにする |
+
+#### 追補2の検証証跡（2026-03-04）
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` | PASS（expected=6 / covered=4、非視覚TC2件許容） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 --json` | PASS（13/13, error=0, warning=0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（total=93, missing=0） |
+
+#### 同種課題の簡潔解決手順（4ステップ・証跡配置版）
+
+1. `validate-phase11-screenshot-coverage` を対象workflowで先に実行し、証跡欠落を検知する。  
+2. `outputs/phase-11/screenshots/` が空なら、再取得または同一証跡を対象workflow配下へ正規配置する。  
+3. `manual-test-result.md` の視覚TCは `screenshots/*.png` を記載し、非視覚TCは `NON_VISUAL:` を必須化する。  
+4. `coverage PASS` 後に `task-workflow.md` と `lessons-learned.md` へ同一ターンで転記する。  
 
 ---
 
@@ -2436,7 +2453,7 @@
 | a11y改善 | `SuggestionList` / `RiskPanel` の `role="list"` に `aria-label` を追加 |
 | デザイントークン統一 | `text-white` を `text-[var(--text-inverse)]` へ置換 |
 | 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得 |
-| 未タスク管理 | Phase 10 MINOR 起点 5 件 + 再監査運用ガード 3 件（UT-TASK-10A-B-006〜008）を `docs/30-workflows/unassigned-task/` へ登録 |
+| 未タスク管理 | Phase 10 MINOR 起点 4 件（UT-TASK-10A-B-002〜005）+ 再監査運用ガード 4 件（UT-TASK-10A-B-006〜009）を `docs/30-workflows/unassigned-task/` へ登録 |
 
 ### 検証証跡
 
@@ -2453,14 +2470,46 @@
 | Phase 11 がコード分析ベースのまま残る | 画面検証を手作業メモのみで完了扱いにする場合 | スクリーンショット取得スクリプトで4状態を再撮影し、Phase 11成果物を再作成 | UIタスクのPhase 11は「実画面証跡 + 結果文書」のセットを必須化 |
 | `phase-11-manual-test.md` の必須節不足 | テンプレート章立てを簡略化した場合 | 「統合テスト連携」節を追加し、`validate-phase-output` を再実行 | Phase 11更新後は `validate-phase-output` を必須実行する |
 | 未タスク件数ドリフト（7件→5件） | 修正済み課題を未タスク台帳に残し続ける場合 | D1/D2 を修正済み化し、UT-TASK-10A-B-001〜005 のみ継続管理へ再同期 | 未タスク台帳は毎回「有効件数」を再計算して更新する |
+| light検証証跡がdarkのまま残る | 撮影スクリプト側のテーマモックを固定値（dark）で返す場合 | `capture-ut-task-10a-b-001-screenshots.mjs` で `prefers-color-scheme` 連動に修正し、TC-11-04を再撮影 | light/dark検証は「色設定 + モック応答」の二重整合を必須化する |
+| 完了済みUT指示書の配置先誤認（001と002〜008の混在） | 完了済み指示書を `completed-tasks/unassigned-task/` に残したまま、未実施指示書と同一運用で扱う場合 | `UT-TASK-10A-B-001` を `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` に再配置。関連参照を一括更新し、`verify-unassigned-links`（102/102）と `audit --diff-from HEAD`（current=0, baseline=90）で再確認 | 指示書配置は「完了=completed-tasks」「未実施=unassigned-task」を厳守し、監査値は `current` と `baseline` を分離記録する |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
 1. 画面証跡を再取得し、`outputs/phase-11/screenshots` の鮮度を確定する。  
 2. `manual-test-result` / `discovered-issues` を実証跡ベースへ更新する。  
 3. `verify-all-specs` と `validate-phase-output` を連続実行し、章立て不備を解消する。  
-4. 未タスク件数を再計算して `unassigned-task-detection` と `task-workflow` を同時同期する。  
+4. 未タスク件数を再計算し、完了済み/未実施の配置先を分離したうえで `unassigned-task-detection` と `task-workflow` を同時同期する。  
 5. 苦戦箇所を `lessons-learned.md` へ転記し、再発条件と標準ルールを固定する。  
+
+### 派生タスク完了記録: UT-TASK-10A-B-001（2026-03-05）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK-10A-B-001 |
+| タスク名 | 自動修正可能フィルタボタン実装 |
+| ステータス | **完了（Phase 1-12）** |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` |
+| 主な変更 | `SuggestionList` に一括選択導線追加、`useSkillAnalysis` に auto-fixable 選択ハンドラ追加、関連テスト追加 |
+| 検証結果 | 関連53テストPASS、対象カバレッジ Line 100 / Branch 96.22 / Function 100、手動UI検証（スクリーンショット5件, 2026-03-05 11:00 JST再撮影, coverage 5/5）PASS |
+
+#### 最終再監査クイック解決カード（UT-TASK-10A-B-001）
+
+| 観点 | 固定ルール |
+| --- | --- |
+| 配置判定 | 未実施UTは `docs/30-workflows/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ配置する |
+| 監査適用境界 | `audit-unassigned-tasks --target-file` は未実施UT（`unassigned-task` 系）のみ適用し、完了済み指示書（`completed-tasks/*.md`）へは適用しない |
+| 画面証跡 | `TC-11-01`〜`TC-11-05` を同一ターンで再取得し、`validate-phase11-screenshot-coverage` 5/5 PASS を確認する |
+| 合否判定 | `verify-unassigned-links` は参照整合、`audit --diff-from HEAD` は `currentViolations` を合否・`baselineViolations` を監視値として分離記録する |
+
+固定実行コマンド:
+
+```bash
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD | jq '{current: .totals.currentViolations, baseline: .totals.baselineViolations}'
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button
+test -f docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md
+find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc -l
+```
 
 ---
 
@@ -2619,20 +2668,18 @@
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
-| UT-UI-055-001 | EmptyState（light）の境界線コントラスト改善 | 中 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT Phase 11 discovered issue `UI-055-011` | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-055-empty-state-contrast-improvement.md` |
-| UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 | TASK-055 の5分解決カードを3仕様書（task-workflow/lessons/ui-ux-feature）で同一同期する運用ガード | 中 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 最終追補監査（2026-03-05 12:21 JST） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md` |
-| UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 | TASK-UI-00-ORGANISMS Phase 12 証跡・台帳同期ガード（時刻同期/監査判定軸/Step 1-A 同時更新） | 中 | TASK-UI-00-ORGANISMS Phase 12再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/unassigned-task/task-imp-task-ui-00-organisms-phase12-sync-guard-001.md` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
 | UT-UI-05A-IMPLEMENTATION-CLOSURE-001 | SkillEditorView 実装残課題収束（導線/UX7件） | 高 | TASK-UI-05A Phase 11 discovered-issues + 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
-| UT-TASK-10A-B-001 | SkillAnalysisView 自動修正可能フィルタボタン実装 | 中 | TASK-10A-B Phase 10 MINOR M1（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
-| UT-TASK-10A-B-002 | SkillAnalysisView 改善結果トースト通知実装 | 中 | TASK-10A-B Phase 10 MINOR M2（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-003 | SkillAnalysisView 改善結果内訳表示実装 | 中 | TASK-10A-B Phase 10 MINOR M3（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
-| UT-TASK-10A-B-004 | SkillAnalysisView Props 契約整合（`skill` vs `skillName`） | 低 | TASK-10A-B Phase 10 MINOR M4（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | SkillAnalysisView molecule 分割設計追補（Header/Error/Actions） | 低 | TASK-10A-B Phase 10 MINOR M5（2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| ~~UT-TASK-10A-B-001~~ | ~~SkillAnalysisView 自動修正可能フィルタボタン実装~~ **完了: 2026-03-05** | ~~中~~ | TASK-10A-B Phase 10 MINOR M1（2026-03-02） | `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` |
+| UT-TASK-10A-B-002 | SkillAnalysisView 改善結果トースト通知実装 | 中 | TASK-10A-B Phase 10 MINOR M2（2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-003 | SkillAnalysisView 改善結果内訳表示実装 | 中 | TASK-10A-B Phase 10 MINOR M3（2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
+| UT-TASK-10A-B-004 | SkillAnalysisView Props 契約整合（`skill` vs `skillName`） | 低 | TASK-10A-B Phase 10 MINOR M4（2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | SkillAnalysisView molecule 分割設計追補（Header/Error/Actions） | 低 | TASK-10A-B Phase 10 MINOR M5（2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | 中 | TASK-10A-B Phase 12 再監査（苦戦箇所・2026-03-02） | `docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | 中 | UT-TASK-10A-B-001 最終再監査（苦戦箇所・2026-03-05） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
 | UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001 | TASK-10A-C の 5仕様書同時同期ガード（api-ipc/interfaces/security/task-workflow/lessons） | 中 | TASK-10A-C Phase 12 最終再確認（苦戦箇所・2026-03-03） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-five-spec-sync-guard-001.md` |
 | UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001 | TASK-10A-C Phase 11 画面証跡ガード（再撮影 + TCカバレッジ + 鮮度確認） | 中 | TASK-10A-C Phase 11/12 最終再確認（苦戦箇所・2026-03-03） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md` |
 | UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001 | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中 | TASK-10A-D Phase 12 再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md` |
@@ -2791,10 +2838,12 @@
 | UT-IMP-PHASE12-SPEC-VERSION-CONSISTENCY-GUARD-001 | Phase 12 仕様更新の版数・手順整合ガード（spec-update-summary / task-workflow / lessons / SKILL / LOGS 同期）     | 中     | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 Phase 12再監査（実装苦戦箇所・2026-02-27） | `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md`                                                     |
 | ~~UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001~~ | ~~Phase 12 3workflow再監査のSubAgent成果物突合ガード（仕様書別実行ログ + 監査証跡固定）~~ **完了: 2026-03-04（Phase 12完了移管）** | ~~中~~ | ~~TASK-FIX-SKILL-IMPORT 3連続是正 Phase 12再確認（苦戦箇所・2026-03-04）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md` |
 | ~~UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001~~ | ~~Phase 12 システム仕様スキル抽出・反映ガード（resource-map起点の必要仕様抽出 + 台帳同時同期）~~ **完了: 2026-03-04（Phase 12完了移管）** | ~~中~~ | ~~TASK-FIX-SKILL-IMPORT 3連続是正 実装追補（苦戦箇所・2026-03-04）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md` |
-| ~~UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001~~ | ~~UI再撮影時刻と system spec 同時同期ガード（manual/screenshot/spec-update + task-workflow/ui-ux-components/lessons）~~ **完了: 2026-03-04（Phase 12完了移管）** | ~~中~~ | ~~TASK-UI-00-MOLECULES Phase 12 再確認（苦戦箇所・2026-03-04）~~ | `docs/30-workflows/completed-tasks/task-imp-phase12-ui-timestamp-system-spec-sync-guard-001.md` |
 | ~~UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001~~ | ~~Phase 12 3workflow再監査スコープ判定ガード（証跡集約 + `scope.currentFiles`/`currentViolations` 固定）~~ **完了: 2026-03-04（Phase 12完了移管）** | ~~中~~ | ~~TASK-FIX-SKILL-IMPORT 3連続是正 実装追補（苦戦箇所・2026-03-04）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
 | ~~UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001~~ | ~~SkillCenter Phase 11再撮影の preview preflight ガード（build疎通確認 + 失敗時未タスク化）~~ **完了: 2026-03-04（Phase 12完了移管）** | ~~中~~ | ~~TASK-FIX-SKILL-IMPORT 3連続是正 Phase 12再確認（preview再撮影ブロッカー・2026-03-04）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
 | UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジ include path ガード導入（実在パス検証 + `3 files / 30 tests` 固定） | 中 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 Phase 12 再確認（coverage include path誤指定・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` |
+| UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001 | screenshot 再取得時の `Port 5174` 競合ガード（実行前ポート検査 + 競合分岐記録） | 中 | TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001 Phase 12 再確認（画面証跡再取得運用・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
+| UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001 | Phase 11 画面カバレッジマトリクス必須化ガード（視覚/非視覚TCの設計意図固定 + warning常態化防止） | 中 | UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 Phase 12 再確認（coverage matrix warning・2026-03-04） | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
+| ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | ~~中~~ | ~~TASK-UI-01-C Phase 12 準拠再確認（実装苦戦箇所・2026-03-05）~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
 | ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~    | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合の機械判定）~~               | ~~中~~     | ~~TASK-9J-skill-analytics Phase 12再確認（実装苦戦箇所・2026-02-28）~~ **完了: 2026-02-28（Phase 12完了移管）**           | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md`                                                        |
 | UT-IMP-AIWORKFLOW-UNASSIGNED-TABLE-DEDUP-001      | Phase 12 残課題テーブル重複・状態矛盾検知強化（同一ID一意性監査 + 完了/未完了矛盾検知）                           | 中     | TASK-9F Phase 12 再監査（仕様台帳再確認・2026-02-27）                         | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-unassigned-table-dedup-001.md`                                                          |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
@@ -2821,19 +2870,30 @@
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.67.12** | **2026-03-05** | **TASK-10A-E-A 完了同期**: `task-043a-ipc-contract-and-security-alignment` を完了タスクセクションへ追加し、share IPC 3チャネルの失敗契約整合（`ERR_1001/ERR_2004/ERR_5001`）、Preload境界テスト（60件）、Mainテスト（34件）、Phase 11 画面証跡（TC 4/4）を台帳へ固定。Step 2 実施後に `spec-update-summary` / `documentation-changelog` を同時同期する再発防止手順を追加 |
-| **1.67.11** | **2026-03-05** | **UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を残課題へ登録**: TASK-055 の「同種課題の5分解決カード」を3仕様書（`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md`）で同一同期する再発防止タスクを `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md` として追加。TASK-055 節の関連未タスク表と残課題テーブルを同時同期し、苦戦箇所（検証経路ドリフト/時刻ドリフト/3仕様書同期漏れ）を未タスク指示書 `3.5` に固定 |
-| **1.67.10** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 最終追補（12:21 JST）**: 追加再検証（`validate-phase-output` 28項目、`verify-all-specs` 13/13、`validate-phase11-screenshot-coverage` TC 6/6、`verify-unassigned-links` 92/92、`audit` current=0）を固定。TASK-055 節へ「同種課題の5分解決カード（最短）」を追加し、実体固定→仕様是正→画面証跡→未タスク監査→台帳同期の最短手順を標準化 |
-| **1.67.9** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再確認の最終同期**: Phase 11 を再再撮影（2026-03-05 11:51 JST）し、`manual-test-result.md` / `screenshots-index.md` の時刻を最新化。あわせて Phase 12 再確認（`validate-phase-output` 28項目、`verify-all-specs` 13/13、`verify-unassigned-links` 92/92、`audit --target-file` current=0）を追記し、苦戦箇所（検証コマンド実行経路ドリフト / 再撮影時刻ドリフト）と再利用ルールを明文化 |
-| **1.67.8** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再監査追補**: Phase 11 を再撮影（2026-03-05 11:43 JST）し、`validate-phase11-screenshot-coverage` を警告0件で再PASS化。`phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追記し、完了済み Phase 1〜11 のチェックリストを台帳状態へ同期 |
-| **1.67.7** | **2026-03-05** | **TASK-UI-00-FOUNDATION-REFLECTION-AUDIT を完了台帳へ追加**: 正本導線修正（`00-1-design-tokens.md`）、Task 5D具体例追記（`task-059a`）、Task 5B適用境界明文化（`task-061`）、検証スクリプト `validate-foundation-findings.mjs` + テスト追加を記録。残課題へ `UT-UI-055-001`（EmptyStateコントラスト改善）を登録 |
-| **1.67.6** | **2026-03-04** | **UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 を残課題へ登録**: TASK-UI-00-ORGANISMS 節に追加未タスクを追補し、残課題テーブルへ `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/unassigned-task/task-imp-task-ui-00-organisms-phase12-sync-guard-001.md` を登録。時刻同期・監査判定軸・Step 1-A 同時更新の再発防止を未タスク正本として固定 |
-| **1.67.5** | **2026-03-04** | **TASK-UI-00-ORGANISMS 最適化追補**: 同タスク節に「同種課題の5分チェックリスト」を追加し、構造検証→UI証跡→時刻同期→未タスク監査（current/baseline分離）→台帳同期の最短フローを固定。再確認時の判定漏れを抑止 |
-| **1.67.4** | **2026-03-04** | **TASK-UI-00-ORGANISMS を完了台帳へ追補**: `task-054-ui-00-4-organisms-components` の実装内容（CardGrid/MasterDetailLayout/SearchFilterList）、苦戦箇所（UI時刻同期・監査判定軸・Step 1-A台帳漏れ防止）、検証証跡（13/13, 28項目, TC 6/6, current=0, 91/91）を追加。`phase12-task-spec-compliance-check.md` への導線を追記し、Phase 12再確認の根拠を固定 |
-| **1.67.3** | **2026-03-04** | **UT-IMP-PHASE12-UI-TIMESTAMP-SYSTEM-SPEC-SYNC-GUARD-001 を完了移管後パスへ同期**: 残課題テーブルに同タスクの完了行を追加し、参照先を `docs/30-workflows/completed-tasks/task-imp-phase12-ui-timestamp-system-spec-sync-guard-001.md` へ固定。TASK-UI-00-MOLECULES の再確認で発生した UI時刻同期ドリフト対策を履歴化 |
+| **1.67.22** | **2026-03-05** | **TASK-UI-01-D 追補未タスクを登録**: `UT-IMP-TASK-056D-SYSTEM-SPEC-SYNC-CARD-GUARD-001` を残課題へ追加。system spec 4仕様書（`task-workflow` / `lessons-learned` / `ui-ux-navigation` / `arch-state-management`）での「実装内容 + 苦戦箇所 + 5分解決カード」同値同期を運用ガード化し、`docs/30-workflows/unassigned-task/` 正本配置を記録 |
+| **1.67.21** | **2026-03-05** | **TASK-UI-01-D の system spec 追補（実装内容 + 苦戦箇所 + 5分解決導線）**: TASK-UI-01-D 節の再利用手順を 5 ステップへ拡張し、Phase 11 再撮影での strictPort 競合（`Port 5177`）preflight と分岐記録を明文化。併せて `ui-ux-navigation.md` / `arch-state-management.md` / `lessons-learned.md` の同内容同期を前提化し、同種課題の初動を短縮 |
+| **1.67.20** | **2026-03-05** | **TASK-UI-01-D の Phase 12準拠再確認を追補**: Step 1-A 必須更新（`LOGS.md` x2 / `SKILL.md` x2 / `topic-map` 再生成）を同期し、再撮影運用ギャップ（固定出力先 + `Port 5177` preflight不足）を `UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001` として未タスク化。`docs/30-workflows/unassigned-task/` 配置と `currentViolations=0` を検証証跡へ固定 |
+| **1.67.19** | **2026-03-05** | **TASK-UI-01-D-VIEWTYPE-ROUTING-NAV を完了タスクへ追加**: `navContract.ts` による導線契約一元化、`App.tsx` の Cmd/Ctrl ショートカット導線、`AppDock` 参照統一、Phase 11 画面証跡5件、`validate-phase11-screenshot-coverage`（expected=5 / covered=5）を同期。併せて system spec 4点（ui-ux/arch/task/lessons）の反映を完了 |
+| **1.67.18** | **2026-03-05** | **TASK-UI-01-C と UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を completed-tasks へ移管**: Phase 12 完了条件（`outputs/phase-12` 実体 + `validate-phase-output --phase 12` PASS）を確認後、workflow本体を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動。併せて同UTを `completed-tasks/unassigned-task/` へ移管し、残課題テーブルを完了表記へ更新 |
+| **1.67.17** | **2026-03-05** | **UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を残課題へ追加**: TASK-UI-01-C Phase 12 再監査で再発した `pnpm run test:run --` 起因の全体テスト誤起動リスクを未タスク化。TASK-UI-01-C 節の未タスク判定を運用改善1件へ更新し、`pnpm exec vitest run` 直指定 + `test -f` preflight の再利用手順を台帳へ同期 |
+| **1.67.16** | **2026-03-05** | **TASK-UI-01-C Phase 12 準拠再確認（指定ディレクトリ未タスク監査）を追補**: `validate-phase-output --phase 12` で Task 12-1〜12-5 を再検証し、`capture-task-056c-notification-history-screenshots.mjs` で TC-11-01〜03 を再撮影。`audit-unassigned-tasks --diff-from HEAD` は `currentViolations=0` / `baselineViolations=92`、`docs/30-workflows/unassigned-task/` 差分は0件で、今回実装起因の未タスク追加不要を台帳へ明記 |
+| **1.67.15** | **2026-03-05** | **TASK-UI-01-C 再監査追補（phase/index整合 + 実画面証跡）**: `artifacts.json` と不整合だった `index.md` / `phase-1..10` の pending表記を `completed` へ同期。Phase 11 は `capture-task-056c-notification-history-screenshots.mjs` で Dashboard/Chat History/History Page の3証跡を再取得し、`SCREENSHOT + NON_VISUAL` 併用ルールへ更新 |
+| **1.67.14** | **2026-03-05** | **TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN を完了タスクへ追加**: Notification/HistorySearch の Slice実装、IPC 7チャネル、Preload公開契約、テスト37件PASS、Phase 11 `NON_VISUAL` 判定、Phase 12 仕様同期（arch/api/task/lessons + LOGS + topic-map）を台帳へ反映 |
+| **1.67.13** | **2026-03-05** | **Phase 12 未タスクを追加（workflowパス正規化ガード）**: `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を `docs/30-workflows/unassigned-task/` に登録。苦戦箇所（workflow実体パス取り違え、`--target-file` 境界誤用、`current/baseline` 混在）を再利用可能な手順へ分解し、`task-056a` の再監査運用を安定化 |
+| **1.67.12** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補**: `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行し、実装差分未タスクは0件であることを再確認。あわせて baseline負債（90件）の段階削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/unassigned-task/` に追加し、運用改善を追跡可能化 |
+| **1.67.11** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE を完了タスクへ追加**: Renderer Store baseline（型定義 + inventory 16行 + 境界マトリクス + セレクタ規約）を同期し、Phase 11 の TC証跡を `TC-11-01〜03` へ統一。`validate-phase11-screenshot-coverage` を expected=3/covered=3 で PASS 化し、Phase 12 のシステム仕様同期漏れを解消 |
+| **1.67.10** | **2026-03-05** | **UT-TASK-10A-B-009 を残課題へ追加**: 完了済みUT配置の3分類（未実施=`unassigned-task` / 完了済みUT=`completed-tasks` / legacy=`completed-tasks/unassigned-task`）と `audit --target-file` 適用境界の誤用再発防止を目的とした未タスクを登録。TASK-10A-B の未タスク管理件数を `4+3` から `4+4` へ更新 |
+| **1.67.9** | **2026-03-05** | **UT-TASK-10A-B-001 の再利用最適化（クイック解決カード）を追加**: TASK-10A-B 節へ「配置判定（未実施=`unassigned-task` / 完了済み=`completed-tasks`）」「`target-file` 監査適用境界」「画面証跡5/5判定」「current/baseline 分離判定」の4観点を固定化。コマンドセットを併記して同種課題を短手順で再現可能化 |
+| **1.67.8** | **2026-03-05** | **UT-TASK-10A-B-001 の最終再監査（未タスク配置是正）を同期**: 完了済み `task-10a-b-autofixable-filter-button.md` を `docs/30-workflows/completed-tasks/` 直下へ移管し、未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置。Apple UI/UX視点でスクリーンショット5件を 11:00 JST に再取得して視覚確認し、`verify-unassigned-links`（102/102）と `audit --diff-from HEAD`（current=0, baseline=90）を検証証跡へ追記 |
+| **1.67.7** | **2026-03-05** | **UT-TASK-10A-B-001 再監査追補を同期**: Phase 11 light証跡ドリフト（theme mock 固定値）を苦戦箇所へ追加し、`capture-ut-task-10a-b-001-screenshots.mjs` の `prefers-color-scheme` 連動修正を反映。再撮影時刻（10:28 JST）と `validate-phase11-screenshot-coverage`（5/5）を検証証跡に追記 |
+| **1.67.6** | **2026-03-05** | **UT-TASK-10A-B-001 完了を同期**: TASK-10A-B 節へ派生タスク完了記録を追加し、残課題テーブルの `UT-TASK-10A-B-001` を完了表記へ更新。参照先を `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` に切替え、未タスク管理件数を `4件+3件` に再計算して整合化 |
+| **1.67.5** | **2026-03-04** | **Phase 11 画面カバレッジマトリクスの未整備を未タスク化**: `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を残課題テーブルへ追加し、`validate-phase11-screenshot-coverage` の warning（matrix未記載）を苦戦箇所へ追記。Phase 11 設計意図（視覚TC/非視覚TC + 期待証跡）を標準化する再発防止導線を記録 |
+| **1.67.4** | **2026-03-04** | **UT workflow の Phase 11証跡配置を正規化して再発防止ルールを追加**: `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` 追補2として、`outputs/phase-11/screenshots` を対象workflow配下で保持する契約と `manual-test-result.md` の `NON_VISUAL:` 記法を明文化。`validate-phase11-screenshot-coverage`（expected=6/covered=4, 非視覚2件許容）を検証証跡へ追加し、同種課題向け4ステップ手順を追記 |
+| **1.67.3** | **2026-03-04** | **workflow02 再確認で判明した Port 5174 競合課題を残課題へ登録**: `screenshot:skill-import-idempotency-guard` 実行時の `Port 5174 is already in use` 混在を苦戦箇所として追記し、未タスク `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` を `docs/30-workflows/unassigned-task/` 正本で追加。追補検証証跡へ `lsof` 事前検査結果を記録し、再利用手順を「ポート検査→再撮影→coverage検証→台帳同期」に更新 |
 | **1.67.2** | **2026-03-04** | **UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 を残課題へ登録**: SkillCenter hotfix 再計測時の `--coverage.include` 誤指定リスクを未タスク化し、`docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` を正本として追加。TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 セクションの追加未タスク表と残課題テーブルを同時同期 |
 | **1.67.1** | **2026-03-04** | **SkillCenter削除導線ホットフィックスの実測値を再確定**: 対象テストを `SkillCenterView.delete-confirm` / `useSkillCenter` / `useFeaturedSkills` の3ファイルへ固定して再計測し、結果を `3 files / 30 tests`・coverage `86.89 / 84.61 / 88.88` へ更新。あわせて Phase 12テンプレート最適化節へ未タスク配置先判定（未完了/完了移管）を追記 |
 | **1.67.0** | **2026-03-04** | **TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 第2回再確認を反映**: workflow03 の参照先を `completed-tasks/03-...` へ統一し、再検証値を最新化（`verify-unassigned-links` 88/88、`audit --diff-from HEAD` baseline=94）。Phase 11 画面証跡の再取得時刻を 16:50 JST に更新し、`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の完了移管状態を台帳へ同期 |
+| **1.66.10** | **2026-03-04** | **UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 完了反映**: workflow02 の screenshot 再取得コマンドを `pnpm --filter @repo/desktop run screenshot:skill-import-idempotency-guard` へ統一し、`package.json` scripts 登録・Phase 11/12 文書同期・coverage validator（4/4）PASS を完了記録へ追記 |
 | **1.66.9** | **2026-03-04** | **SkillCenter削除導線ホットフィックスを追補**: TASK-UI-05 セクションに「削除確認ダイアログ未描画」に起因する不具合の原因/修正/回帰結果（3 files / 30 tests）を追加し、テスト資産件数を最新（10 files / 132 tests）へ更新。対象カバレッジ `86.89 / 84.61 / 88.88`（全指標80%以上）を記録 |
 | **1.66.8** | **2026-03-04** | **TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の再監査追補**: Phase 12再確認の検証値を最新化（`verify-unassigned-links`: 90/90, `audit --diff-from HEAD`: baseline=92）。追加苦戦箇所「UI再撮影 preflight 不足（preview build/疎通未確認）」を記録し、未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を残課題テーブルへ登録 |
 | **1.66.7** | **2026-03-04** | **TASK-FIX-SKILL-IMPORT 3workflowを completed-tasks へ移管**: `01/02/03-TASK-FIX-SKILL-IMPORT-*` を `docs/30-workflows/completed-tasks/` へ移動し、Phase 12完了条件（`outputs/phase-12` 完備 + `phase-12-documentation.md` completed）を満たしたことを確認。関連未タスク3件（SubAgent Artifact / System Spec Extraction / 3workflow Audit Scope）を `completed-tasks/unassigned-task/` へ移動し、残課題テーブルを完了状態へ更新 |

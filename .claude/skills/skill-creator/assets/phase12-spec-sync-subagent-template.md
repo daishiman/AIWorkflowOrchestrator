@@ -59,17 +59,6 @@
 
 > 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
 
-### 2.5 実装差分→仕様更新要否マトリクス（必須）
-
-| 変更境界（diff） | 更新必須仕様書 | `変更不要` を許可する条件 |
-| --- | --- | --- |
-| Main (`apps/desktop/src/main/**`) | `api-ipc-*` / `security-*` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
-| Preload (`apps/desktop/src/preload/**`) | `interfaces-*` / `api-ipc-*` / `task-workflow` | 対象境界の diff が 0 件 |
-| Store (`apps/desktop/src/renderer/store/**`) | `arch-state-management` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
-| UI (`apps/desktop/src/renderer/views/**`, `components/**`) | `ui-ux-components` / `ui-ux-feature-components` / `task-workflow` / `lessons` | 対象境界の diff が 0 件 |
-
-> `変更不要` 判定時は diff 根拠（0件）を `spec-update-summary.md` へ必ず添付する。
-
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |
@@ -99,13 +88,11 @@ UI機能実装時の必須記載（追加）:
 | register 配線 | `rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts` | 新規ハンドラが `registerAllIpcHandlers` に登録済み |
 | preload 公開 | `rg -n "safeInvoke|safeInvokeUnwrap" apps/desktop/src/preload/skill-api.ts` | 全チャネルに対応する API が公開済み |
 | service 公開境界 | `rg -n "services/<domain>/|export .* from \"./\"|SkillChain(Store|Executor)" apps/desktop/src/main` | 依存サービスのバレル公開（または未タスク移管）が記録されている |
-| 回帰テスト運用 | `pnpm --filter @repo/desktop test:run`（失敗時は `vitest run <target>` 分割） | `SIGTERM` 時も分割実行で対象回帰の合否が確定できる |
 | 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
 
 ## 5. 検証コマンド
 
 ```bash
-git diff --name-only
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
@@ -121,8 +108,9 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
-pnpm --filter @repo/desktop test:run
-pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
+lsof -nP -iTCP:5177 -sTCP:LISTEN || true
+test -d <workflow-path>/outputs/phase-11/screenshots
+node apps/desktop/scripts/<capture-script>.mjs --workflow <workflow-path>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
@@ -136,8 +124,6 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
-- [ ] Step 2 判定に実装差分→仕様更新要否マトリクス（Main/Preload/Store/UI）を記録している
-- [ ] `変更不要` 判定に diff 0 件の根拠を添付している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
@@ -149,6 +135,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
+- [ ] UIタスクでは strictPort preflight（例: `lsof -nP -iTCP:5177 -sTCP:LISTEN`）と分岐結果（停止/再利用/別ポート）を記録している
+- [ ] UIタスクでは証跡保存先が対象workflow配下（`<workflow>/outputs/phase-11/screenshots`）であることを記録している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
@@ -157,7 +145,6 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
-- [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

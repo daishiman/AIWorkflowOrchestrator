@@ -30,6 +30,7 @@ import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
+import { getViewFromNavigationShortcut } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
@@ -79,6 +80,21 @@ function App(): JSX.Element {
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);
   };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const view = getViewFromNavigationShortcut(event);
+      if (!view) {
+        return;
+      }
+
+      event.preventDefault();
+      setCurrentView(view);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [setCurrentView]);
 
   const renderView = () => {
     switch (currentView) {
