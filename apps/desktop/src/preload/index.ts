@@ -44,6 +44,10 @@ import type {
   ReplaceUndoRequest,
   ReplaceRedoRequest,
 } from "./types";
+import {
+  createHistorySearchAPI,
+  createNotificationAPI,
+} from "./api/notification-api";
 import type {
   OpenFileDialogRequest,
   GetFileMetadataRequest,
@@ -282,6 +286,9 @@ const electronAPI: ElectronAPI = {
     executeWorkspace: (request: SearchWorkspaceRequest) =>
       safeInvoke(IPC_CHANNELS.SEARCH_WORKSPACE_EXECUTE, request),
   },
+
+  notification: createNotificationAPI(safeInvoke, safeOn),
+  historySearch: createHistorySearchAPI(safeInvoke),
 
   replace: {
     fileSingle: (request: ReplaceFileSingleRequest) =>

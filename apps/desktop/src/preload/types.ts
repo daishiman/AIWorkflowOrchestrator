@@ -37,6 +37,11 @@ import type {
   HealthCheckResult,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
+import type {
+  HistorySearchRequest as SharedHistorySearchRequest,
+  HistorySearchResult,
+  HistorySearchStats,
+} from "@repo/shared/types";
 
 // LLM Stream Types
 export interface LLMStreamChunkDelta {
@@ -440,6 +445,89 @@ export interface NotificationSettings {
   sound: boolean;
   workflowComplete: boolean;
   workflowError: boolean;
+}
+
+export type AppNotificationType = "info" | "success" | "warning" | "error";
+
+export type AppNotificationSource =
+  | { kind: "skill_execution"; skillName: string }
+  | { kind: "file_operation"; fileName: string; operation: string }
+  | { kind: "system"; eventType: string };
+
+export interface AppNotification {
+  id: string;
+  type: AppNotificationType;
+  title: string;
+  detail?: string;
+  timestamp: string;
+  isRead: boolean;
+  source: AppNotificationSource;
+}
+
+export interface NotificationGetHistoryRequest {
+  limit?: number;
+  offset?: number;
+}
+
+export interface NotificationGetHistoryResponse {
+  success: boolean;
+  data?: {
+    notifications: AppNotification[];
+    totalCount: number;
+  };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationMarkReadRequest {
+  notificationId: string;
+}
+
+export interface NotificationMarkReadResponse {
+  success: boolean;
+  data?: { updated: boolean };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationMarkAllReadResponse {
+  success: boolean;
+  data?: { updatedCount: number };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface NotificationClearResponse {
+  success: boolean;
+  data?: { deletedCount: number };
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface HistorySearchResponse {
+  success: boolean;
+  data?: HistorySearchResult;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface HistorySearchStatsResponse {
+  success: boolean;
+  data?: HistorySearchStats;
+  error?: {
+    code: string;
+    message: string;
+  };
 }
 
 export interface UserProfile {
@@ -1039,6 +1127,27 @@ export interface ElectronAPI {
     executeWorkspace: (
       request: SearchWorkspaceRequest,
     ) => Promise<SearchWorkspaceResponse>;
+  };
+
+  notification: {
+    getHistory: (
+      request?: NotificationGetHistoryRequest,
+    ) => Promise<NotificationGetHistoryResponse>;
+    markRead: (
+      request: NotificationMarkReadRequest,
+    ) => Promise<NotificationMarkReadResponse>;
+    markAllRead: () => Promise<NotificationMarkAllReadResponse>;
+    clear: () => Promise<NotificationClearResponse>;
+    onNew: (
+      callback: (event: { notification: AppNotification }) => void,
+    ) => () => void;
+  };
+
+  historySearch: {
+    search: (
+      request: SharedHistorySearchRequest,
+    ) => Promise<HistorySearchResponse>;
+    getStats: () => Promise<HistorySearchStatsResponse>;
   };
 
   replace: {

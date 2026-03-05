@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.12.3    | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: `history:search/get-stats` と `notification:*` のセキュリティ契約を追加。`validateIpcSender` + P42検証 + `sanitizeErrorMessage` の適用境界を `historyAPI` セクションへ統合 |
 | v1.12.2    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` の認証失敗コード伝搬（`errorCode`）と Renderer 側 preflight ガード（`auth-key:exists`）の運用境界を追加。実行前停止と sender検証順序の整合を明文化 |
 | v1.12.1    | 2026-03-03 | UT-UI-05A-GETFILETREE-001 完了同期: skillFileAPI セクションを `skill:getFileTree` 含む 7 invoke チャネルへ更新。ホワイトリスト/4層防御/エラーサニタイズの適用範囲を拡張し、関連タスクを TASK-9A-B + UT-UI-05A-GETFILETREE-001 に更新 |
 | v1.12.0    | 2026-03-02 | TASK-UI-05B仕様整合: skillChainAPI（TASK-9D、5ch、validateIpcSender + P42準拠3段バリデーション + sanitizeErrorMessage）とskillScheduleAPI（TASK-9G、5ch、既存セクション欠落の補完）のセキュリティ実装パターンを追加 |
@@ -148,55 +149,43 @@ IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフ�
 
 ---
 
-## 実装例: historyAPI
+## 実装例: historyAPI / notificationAPI（TASK-UI-01）
 
 **実装場所**:
 
-- チャンネル定義: `apps/desktop/src/main/infrastructure/ipc/channels.ts`
-- preload: `apps/desktop/src/preload/index.ts`
-- 型定義: `apps/desktop/src/renderer/components/history/types.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- preload API: `apps/desktop/src/preload/api/notification-api.ts`
+- preload統合: `apps/desktop/src/preload/index.ts`
+- Mainハンドラー: `apps/desktop/src/main/ipc/historySearchHandlers.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts`
+- エラーサニタイズ: `apps/desktop/src/main/ipc/sanitizeErrorMessage.ts`
 
-**チャンネルホワイトリスト方式**:
+### 対象チャンネル
 
-`HISTORY_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。定義外のチャンネルは自動的に拒否される。
+| 種別 | チャンネル | 用途 |
+| --- | --- | --- |
+| history | `history:search` | 履歴検索 |
+| history | `history:get-stats` | 履歴統計 |
+| notification | `notification:get-history` | 通知履歴取得 |
+| notification | `notification:mark-read` | 通知既読化 |
+| notification | `notification:mark-all-read` | 通知全既読化 |
+| notification | `notification:clear` | 通知履歴削除 |
+| notification | `notification:new` | Main -> Renderer のイベント通知 |
 
-| 定数名              | チャンネル名                 | 用途               |
-| ------------------- | ---------------------------- | ------------------ |
-| GET_FILE_HISTORY    | `history:getFileHistory`     | ファイル履歴取得   |
-| GET_VERSION_DETAIL  | `history:getVersionDetail`   | バージョン詳細取得 |
-| GET_CONVERSION_LOGS | `history:getConversionLogs`  | 変換ログ取得       |
-| RESTORE_VERSION     | `history:restoreVersion`     | バージョン復元     |
+### セキュリティ要件
 
-**実装場所**: `apps/desktop/src/main/infrastructure/ipc/channels.ts`
+| 要件 | 実装 | 確認方法 |
+| --- | --- | --- |
+| sender検証 | `validateIpcSender(event, channel, { getAllowedWindows })` | 不正送信元で `IPC_FORBIDDEN/UNAUTHORIZED` を返却 |
+| invoke/on ホワイトリスト | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` | `channels.ui-01-store-ipc-architecture.test.ts` |
+| P42 入力検証 | `notificationId`, `query` を `typeof -> 空文字 -> trim` で検証 | handler テストで異常系確認 |
+| 許可値検証 | `filter` を `all/chat/file/skill` へ制限 | invalid filter で `VALIDATION_ERROR` |
+| エラー情報保護 | `sanitizeErrorMessage` でパス/スタック/機密値をマスク | 異常系テスト + 手動確認 |
 
-**safeInvoke ラッパーによる安全な呼び出し**:
+### 実装時の補足
 
-Renderer側からMainプロセスへの安全なIPC呼び出しを実現するため、`createSafeInvoke`ヘルパー関数を使用する。この関数はジェネリック型を受け取り、型安全なPromiseを返す。
-
-**実装パターン**:
-
-1. `createSafeInvoke<T>(channel)`関数でチャンネル名を受け取り、ラッパー関数を生成
-2. ラッパー関数は任意の引数を受け取り、`ipcRenderer.invoke`を呼び出す
-3. `contextBridge.exposeInMainWorld`で`historyAPI`として公開
-
-**公開されるAPI**:
-
-| API名          | 戻り値型                                      | 対応チャンネル             |
-| -------------- | --------------------------------------------- | -------------------------- |
-| getFileHistory | `Promise<Result<PaginatedResult<VersionHistoryItem>>>` | GET_FILE_HISTORY |
-
-**実装場所**: `apps/desktop/src/preload/index.ts`
-
-**IPCセキュリティ要件**:
-
-| 要件               | 実装                         | 確認方法                 |
-| ------------------ | ---------------------------- | ------------------------ |
-| ホワイトリスト     | `HISTORY_CHANNELS`定数で管理 | 定義外チャンネルはエラー |
-| 型安全性           | Result<T>型で統一            | TypeScript型チェック     |
-| サンドボックス分離 | contextBridgeで公開          | contextIsolation=true    |
-| 引数検証           | Main側ハンドラーで実施       | バリデーションテスト     |
-
-**関連タスク**: history-preload-setup（2026-01-13完了）
+- `notification:new` はイベント専用のため `ALLOWED_ON_CHANNELS` のみ許可する。
+- `history:search` は空/空白クエリを「全件検索」として許容し、`filter` のみ厳格に制限する。
+- ハンドラー登録は `registerAllIpcHandlers` から一元実行し、未登録による機能未有効化を防止する。
 
 ---
 

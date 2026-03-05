@@ -20,6 +20,14 @@ import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
 import { registerLLMHandlers } from "../handlers/llm";
 import { registerHistoryHandlers } from "./historyHandlers";
+import {
+  createHistorySearchService,
+  registerHistorySearchHandlers,
+} from "./historySearchHandlers";
+import {
+  createNotificationService,
+  registerNotificationHandlers,
+} from "./notificationHandlers";
 import { createHistoryServiceWithDI } from "../services/HistoryService";
 import { registerAgentExecutionHandlers } from "./agentHandlers";
 import { registerCommunityHandlers } from "./communityHandlers";
@@ -467,6 +475,8 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     historyLogger,
   );
   registerHistoryHandlers(mainWindow, historyService);
+  registerHistorySearchHandlers(createHistorySearchService(), { mainWindow });
+  registerNotificationHandlers(createNotificationService(), { mainWindow });
 
   // Register Agent Execution handlers (AGENT-005)
   registerAgentExecutionHandlers(mainWindow);

@@ -4,12 +4,12 @@
   "currentLevel": 2,
   "lastUpdated": "2026-02-02T00:00:00.000Z",
   "metrics": {
-    "totalUsageCount": 45,
-    "successCount": 45,
+    "totalUsageCount": 47,
+    "successCount": 47,
     "failureCount": 0,
     "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": "2026-02-24T08:07:09.414Z"
+    "lastEvaluated": "2026-03-05T09:51:15.356Z"
   },
   "levelHistory": [
     {
@@ -78,9 +78,9 @@
       "commonIssues": []
     },
     "generate-unassigned-task": {
-      "usageCount": 7,
+      "usageCount": 8,
       "avgDuration": 0,
-      "successRate": 0.86,
+      "successRate": 0.8775,
       "commonIssues": [
         "未タスクファイルのunassigned-task/配置漏れ（TASK-8Aで改善: P3全件記録ルール追加）",
         "既存タスク仕様書マッピング文書化漏れ",
