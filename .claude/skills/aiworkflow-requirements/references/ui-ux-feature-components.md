@@ -25,6 +25,7 @@
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
+| Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 
 ### 共通仕様
@@ -827,21 +828,15 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
-| ~~UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001~~ | ~~Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード~~ **完了: 2026-03-04（scripts 登録 + 文書同期 + coverage 4/4 PASS）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
-| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
-| UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001 | screenshot 実行時の `Port 5174` 競合を事前検査し、分岐結果を記録するガード | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` |
-| UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001 | `phase-11-manual-test.md` の画面カバレッジマトリクス（視覚/非視覚TC区分 + 期待証跡）を必須化するガード | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` |
+| UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001 | Phase 12 UI証跡再取得コマンドを `pnpm run screenshot:*` で公開し、実行経路を一意化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-screenshot-command-registration-guard-001.md` |
+| UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001 | capture script の遷移待機（`domcontentloaded` 基準 + 補助待機）を標準化するガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-capture-script-navigation-stability-guard-001.md` |
 
 ### workflow02 追補の苦戦箇所（再利用用）
 
 | 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
 | --- | --- | --- | --- |
-| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録後に `run` 表示確認 + 文書同期 + coverage 4/4 PASS まで完了化（2026-03-04 反映済み） | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
+| screenshot 実行コマンドが scripts 一覧に露出していない | `node scripts/...` 直実行前提で運用し、`pnpm run` 経路へ未登録のとき | 未タスク `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を起票し、`screenshot:*` 命名で登録を必須化 | UI証跡は「スクリプト実体」ではなく「run コマンド公開」まで完了条件にする |
 | capture script の `page.goto` 待機戦略が環境依存で timeout する | `waitUntil: load` 固定で画面遷移待機するとき | 未タスク `UT-IMP-PHASE12-CAPTURE-SCRIPT-NAVIGATION-STABILITY-GUARD-001` を起票し、`domcontentloaded` 基準 + 補助待機の標準化を追加 | 失敗時ログ（待機段階/URL）を残し、1回目失敗で切り分け可能にする |
-| screenshot 実行時に `Port 5174 is already in use` が混在する | 既存 preview/dev server が残った状態で screenshot コマンドを再実行するとき | `lsof -nP -iTCP:5174 -sTCP:LISTEN` を再確認手順へ追加し、競合時分岐を未タスク `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` として切り出した | 再撮影は「ポート検査 → 再撮影 → coverage検証 → 台帳同期」を1セットで完了判定する |
-| Phase 11 証跡を別workflow参照のまま残し coverage validator が失敗する | `manual-test-result.md` の証跡列のみ更新し、対象workflow配下 `outputs/phase-11/screenshots` を未配置のままにするとき | 対象workflow配下へ証跡を正規配置し、視覚TCは `screenshots/*.png`、非視覚TCは `NON_VISUAL:` 記法へ統一して `validate-phase11-screenshot-coverage` PASS を再取得した | UI証跡は「対象workflow配下の実体 + TC証跡記法 + coverage PASS」を同時に満たして完了判定する |
-| `validate-phase11-screenshot-coverage` が PASS でも matrix 未記載 warning が残る | `phase-11-manual-test.md` に画面カバレッジマトリクスを持たないまま運用するとき | 未タスク `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加し、matrix 必須列（TC-ID/区分/期待証跡/理由）を運用ルールへ分離した | UI証跡は「画像実体」だけでなく「Phase 11設計意図（matrix）」まで揃えて完了判定する |
-
 ### 2026-03-04 追補: 削除導線ホットフィックス
 
 | 観点 | 追補内容 |
@@ -981,10 +976,10 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 
 | 項目 | 状態 | 参照 |
 | --- | --- | --- |
-| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/` |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/` |
 | テスト資産 | ✅ 完了 | `apps/desktop/src/renderer/components/skill/__tests__/` |
-| 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/` |
+| 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/` |
 
 ### 状態管理・IPC依存
 
@@ -1003,15 +998,14 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 | 色トークン | `SkillAnalysisView` のボタン文字色を `text-[var(--text-inverse)]` に統一 |
 | テスト補強 | `SuggestionList.test.tsx` / `RiskPanel.test.tsx` に `aria-label` 検証を追加 |
 
-### 画面検証証跡（2026-03-05）
+### 画面検証証跡（2026-03-02）
 
 | 証跡 | ファイル |
 | --- | --- |
-| 初期表示（適用前） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/TC-11-01-default-before-apply-dark.png` |
-| mixed（成功/スキップ/失敗） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/TC-11-02-result-mixed-dark.png` |
-| success only（Light） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/TC-11-03-result-success-light.png` |
-| skipped only | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/TC-11-04-result-skipped-dark.png` |
-| error only（Mobile） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/TC-11-05-result-error-mobile-dark.png` |
+| 初期表示（分析結果） | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-01-analysis-default.png` |
+| 提案選択状態 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-02-analysis-selection.png` |
+| 改善後状態 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-03-analysis-improved.png` |
+| エラー表示 | `docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/TC-04-analysis-error.png` |
 
 ### 実装時の苦戦箇所（TASK-10A-B）
 
@@ -1020,31 +1014,27 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 | Phase 11 がコード分析ベースのまま残りやすい | UI起動制約を理由にスクリーンショット取得を省略する場合 | 専用スクリプトで 4 状態（通常/選択/改善後/エラー）を再撮影し、manual-test-result を実証跡ベースへ更新 | UIタスクのPhase 11は「実画面証跡」を完了条件に固定する |
 | Phase 11 必須セクション欠落で `validate-phase-output` が落ちる | `phase-11-manual-test.md` の章立てを簡略化しすぎる場合 | 「統合テスト連携」節を追加し、Phase 12未タスク連携を明記 | 仕様書更新前にテンプレート必須節を機械検証する |
 | Phase 12 で未タスク件数が古いまま残る | 修正済み課題（D1/D2）を未タスク台帳から除外し忘れる場合 | `unassigned-task-detection.md` を 7件→5件へ再同期し、task-workflow と合わせて更新 | 未タスク台帳は「現状有効件数」で毎回再計算する |
-| `executedAt` 表示の視認性不足 | 機能PASSを優先して可読性課題を見送りやすい場合 | UI-11-001 を `UT-TASK-10A-B-009` として未タスク化し、改善方針を台帳へ記録 | 手動検証で見つかった視認性課題は見送り理由と未タスク化を同時実施する |
-| 改善適用後の再分析がテスト間でリークする | 非同期処理完了前にコンポーネントをアンマウントする場合 | `useSkillAnalysis` に `isMountedRef` ガードを追加し、アンマウント後の状態更新/再分析呼び出しを抑止 | 非同期UIフローは「成功判定 + マウント状態」の二重ガードで固定する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
 1. 画面証跡を先に再取得し、`outputs/phase-11/screenshots` を更新する。  
 2. `manual-test-result` と `discovered-issues` を実証跡ベースに書き換える。  
 3. `verify-all-specs` と `validate-phase-output` を実行し、不足セクションを埋める。  
-4. 未タスク台帳（作成済みID）を再計算し、配置先を `docs/30-workflows/unassigned-task/` へ正規化して `task-workflow.md` と同期する。  
+4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。  
 5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。  
 
 ### 関連未タスク
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装 | `docs/30-workflows/unassigned-task/task-10a-b-autofixable-filter-button.md` |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| ~~UT-TASK-10A-B-003~~ | ~~改善結果内訳表示実装~~ **完了: 2026-03-05** | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
-| UT-TASK-10A-B-009 | 改善結果実行日時の視認性改善（`executedAt` 可読性） | `docs/30-workflows/unassigned-task/task-10a-b-improvement-result-timestamp-readability.md` |
-| ~~UT-TASK-10A-B-010~~ | ~~改善適用後再分析のアンマウント安全化ガード（`analyze` 呼び出しリーク防止）~~ **完了: 2026-03-05** | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` |
+| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
+| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-003 | 改善結果内訳表示実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
+| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
 
 ---
 
@@ -1111,10 +1101,100 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 
 ---
 
+<a id="organisms-foundation-task-ui-00-organisms"></a>
+## Organisms Foundation（TASK-UI-00-ORGANISMS / completed）
+
+TASK-UI-00-ORGANISMS で、Renderer横断で再利用する Organisms 3コンポーネントを実装した。
+対象は `CardGrid`、`MasterDetailLayout`、`SearchFilterList`。
+
+### コンポーネント構成
+
+| コンポーネント | 種類 | 責務 | 実装パス |
+| --- | --- | --- | --- |
+| CardGrid | organisms | 一覧カードのレスポンシブ配置、Arrowキー移動、loading/empty表示 | `apps/desktop/src/renderer/components/organisms/CardGrid/` |
+| MasterDetailLayout | organisms | 一覧+詳細の2ペイン表示、モバイル時のSlideInPanel切替 | `apps/desktop/src/renderer/components/organisms/MasterDetailLayout/` |
+| SearchFilterList | organisms | 検索・複数フィルタ・件数表示・list/grid切替 | `apps/desktop/src/renderer/components/organisms/SearchFilterList/` |
+
+### 品質実測
+
+| 指標 | 値 | 根拠 |
+| --- | --- | --- |
+| テスト | 3 files / 41 tests PASS | `outputs/phase-9/qa-test-summary.md` |
+| カバレッジ | Stmts 97.26 / Branch 92.00 / Func 94.73 / Lines 97.26 | `outputs/phase-8/refactor-validation.md` |
+| 手動検証 | TC-01〜TC-06 PASS | `outputs/phase-11/manual-test-result.md` |
+
+### 実装時の苦戦箇所（TASK-UI-00-ORGANISMS）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| 再撮影後の時刻同期漏れ | スクリーンショット更新と文書更新を別ターンで実施する | `stat` で `TC-01..TC-06` の実時刻を取得し、`manual-test-result.md` と仕様台帳へ同値反映 | UI再撮影は「再撮影→時刻同期→coverage検証→台帳更新」を1セットで固定 |
+| 未タスク監査値の誤読 | `audit --diff-from HEAD` の baseline を今回差分違反として扱う | 合否判定を `currentViolations=0` に固定し、`baselineViolations` を監視値へ分離 | 監査結果は current/baseline の二軸で記録する |
+| Step 1-A で台帳/教訓の片側更新 | UI仕様だけ更新して完了判定する | `task-workflow.md` と `lessons-learned.md` を同一ターンで更新 | Phase 12 完了判定は「仕様同期 + 台帳同期 + 教訓同期」の3点同時成立に限定 |
+
+### 同種課題の最短解決テンプレート（5分）
+
+1. `verify-all-specs` と `validate-phase-output` で構造合否を先に確定する。  
+2. UI再撮影を実行し、`validate-phase11-screenshot-coverage` をPASSさせる。  
+3. `stat` 時刻を `manual-test-result.md` と仕様書へ同期する。  
+4. `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否に使う。  
+5. `task-workflow.md` / `lessons-learned.md` へ実装内容・苦戦箇所・検証値を同時転記する。  
+
+### 関連未タスク（2026-03-04 追補）
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 | TASK-UI-00-ORGANISMS の Phase 12 証跡・台帳同期ガード（時刻同期/`current`判定固定/Step 1-A 同時更新） | 中 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/unassigned-task/task-imp-task-ui-00-organisms-phase12-sync-guard-001.md` |
+
+### 画面証跡
+
+| 証跡 | ファイル |
+| --- | --- |
+| default dark desktop | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-01-organisms-default-dark-desktop.png` |
+| search+filter dark desktop | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-02-search-filter-active-dark-desktop.png` |
+| cardgrid loading | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-03-cardgrid-loading-dark-desktop.png` |
+| cardgrid empty light | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-04-cardgrid-empty-light-desktop.png` |
+| master-detail mobile | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-05-master-detail-mobile-dialog-dark.png` |
+| search grid mobile | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/screenshots/TC-06-search-grid-mobile-dark.png` |
+
+---
+
+## Foundation Reflection Audit（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT / completed）
+
+UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界、および正本導線を再監査・是正した。
+
+| 観点 | 反映内容 | 根拠 |
+| --- | --- | --- |
+| 正本導線（FND-055-001） | `00-1-design-tokens.md` の正本リンクを completed-tasks 正本へ修正 | `validate-foundation-findings.mjs` PASS |
+| 5D語彙具体例（FND-055-002） | `task-059a` に Before/After の具体例テーブルを追加 | 同上 PASS（rows=4） |
+| Task 5B適用境界（FND-055-003） | `task-061` に `error/offline` の対象/対象外基準を追加 | 同上 PASS |
+| 実装品質 | 検証スクリプトと単体テストを追加（Node test） | `tools/__tests__/validate-foundation-findings.test.mjs` PASS |
+| 画面再検証 | Phase 11 スクリーンショット再取得（2026-03-05 11:43 JST / 最終 11:51 JST）と再検証 | `validate-phase11-screenshot-coverage` PASS（TC 6/6, warning 0） |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-UI-055-001 | EmptyState（light）境界線コントラスト改善 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-ui-055-empty-state-contrast-improvement.md` |
+| UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 | TASK-055 の5分解決カードを3仕様書（task-workflow/lessons/ui-ux-feature）で同一同期する運用ガード | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-ui-055-five-minute-card-sync-guard-001.md` |
+
+### 同種課題の5分解決カード（TASK-055）
+
+| 手順 | 実行内容 | 合格条件 |
+| --- | --- | --- |
+| 1. 実体固定 | `which` + `rg` で検証スクリプト実体を確定 | グローバルCLI依存ゼロ |
+| 2. 仕様是正 | 正本リンク / Task 5D具体例 / Task 5B境界を同時反映 | 仕様根拠3点が揃う |
+| 3. 画面証跡 | 再撮影 + coverage validator 実行 | TC 6/6 PASS |
+| 4. 未タスク監査 | `verify-unassigned-links` + `audit` 2種 | `currentViolations=0` |
+| 5. 台帳同期 | `task-workflow` / `lessons` / `ui-ux-*` を同時更新 | 検証値・時刻の整合が取れる |
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・Task 5D具体例・Task 5B境界の是正） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
+| TASK-UI-00-ORGANISMS | Organisms共通基盤（CardGrid / MasterDetailLayout / SearchFilterList） | 2026-03-04 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 10テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
 | TASK-UI-05B | Skill Advanced Views（4ビュー + 共通IPC Hooks + 導線追加） | 2026-03-02 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | TASK-10A-B | SkillAnalysisView（分析・改善UI、4コンポーネント + 1 Hook） | 2026-03-02 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
@@ -1191,12 +1271,15 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-05 SkillCenterView実装](../../../docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/outputs/phase-12/implementation-guide.md)
 - [TASK-UI-05A SkillEditorView仕様（spec_created）](../../../docs/30-workflows/skill-editor-view/index.md)
 - [TASK-UI-05A 画面検証結果](../../../docs/30-workflows/skill-editor-view/outputs/phase-11/manual-test-result.md)
-- [TASK-10A-B SkillAnalysisView仕様](../../../docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/index.md)
-- [TASK-10A-B 手動検証結果](../../../docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/manual-test-result.md)
-- [TASK-10A-B 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui/outputs/phase-11/screenshots/)
+- [TASK-10A-B SkillAnalysisView仕様](../../../docs/30-workflows/completed-tasks/skill-analysis-view/index.md)
+- [TASK-10A-B 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md)
+- [TASK-10A-B 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots/)
 - [TASK-10A-C SkillCreateWizard仕様](../../../docs/30-workflows/completed-tasks/skill-create-wizard/index.md)
 - [TASK-10A-C 手動検証結果](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/manual-test-result.md)
 - [TASK-10A-C 画面検証スクリーンショット](../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/)
+- [TASK-UI-00-ORGANISMS 仕様](../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/index.md)
+- [TASK-UI-00-ORGANISMS 手動検証結果](../../../docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/outputs/phase-11/manual-test-result.md)
+- [TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 仕様](../../../docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/index.md)
 
 ---
 
@@ -1204,14 +1287,14 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-05 | v1.15.3    | UT-TASK-10A-B-010 完了移管。関連未タスク表を完了表記へ更新し、参照先を `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-reanalysis-unmount-guard.md` に変更 |
-| 2026-03-05 | v1.15.2    | UT-TASK-10A-B-010 を追加。改善適用後再分析で `analyze` 呼び出しがリークする課題（期待2回/実測4回）を苦戦箇所へ追記し、`useSkillAnalysis` のアンマウント安全化ガードを関連未タスクへ同期 |
-| 2026-03-05 | v1.15.1    | TASK-10A-B Phase 12 再確認追補: Phase 11 画面証跡を `TC-11-01〜05`（2026-03-05 10:34 JST）へ更新し、未実施 `UT-TASK-10A-B-001/002/004/005/006/007/008` の正本配置を `docs/30-workflows/unassigned-task/` へ統一。`UI-11-001` を `UT-TASK-10A-B-009` として関連未タスクへ追加 |
-| 2026-03-05 | v1.15.0    | UT-TASK-10A-B-003 完了同期: TASK-10A-B 関連未タスク表の `UT-TASK-10A-B-003` を完了表記（取り消し線 + 完了注記）へ更新し、参照先を `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui.md` に統一 |
-| 2026-03-04 | v1.14.9    | workflow02 追補へ `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning を苦戦箇所として追記し、matrix 必須列（TC-ID/区分/期待証跡/理由）を再利用ルールへ反映 |
-| 2026-03-04 | v1.14.8    | workflow02 追補へ「Phase 11証跡の別workflow参照による coverage validator fail」を苦戦箇所として追加。対象workflow配下への証跡正規配置、`NON_VISUAL:` 記法、`validate-phase11-screenshot-coverage` PASS 固定を再利用ルールへ反映 |
-| 2026-03-04 | v1.14.7    | workflow02 追補へ `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` を追加。`Port 5174 is already in use` 混在時の再発条件・対処（`lsof` 事前検査 + 分岐記録）を苦戦箇所テーブルへ追記し、未タスク正本リンクを同期 |
-| 2026-03-04 | v1.14.6    | workflow02 追補の状態同期を実施。`UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` を関連未タスク表で完了化（取り消し線 + 完了注記）し、苦戦箇所テーブルへ実施済み対処（scripts 登録 + 文書同期 + coverage 4/4 PASS）を反映 |
+| 2026-03-05 | v1.14.13   | UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を追加。Foundation Reflection Audit の関連未タスク表へ同IDを登録し、5分解決カードの3仕様書同時同期（task-workflow/lessons/ui-ux-feature）を再発防止タスクとして接続 |
+| 2026-03-05 | v1.14.12   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（28項目/13-13/TC6-6/92-92/current=0）を同期し、Foundation Reflection Audit 節へ「同種課題の5分解決カード（TASK-055）」を追加して再利用導線を短縮 |
+| 2026-03-05 | v1.14.11   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を反映。Phase 11 証跡を 11:51 JST へ更新し、再確認時の苦戦箇所（検証コマンド実行経路ドリフト / 再撮影時刻ドリフト）と再利用ルールを task-workflow / lessons と同期 |
+| 2026-03-05 | v1.14.10   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 再監査追補。Phase 11 再撮影（11:43 JST）と `validate-phase11-screenshot-coverage` 警告0件化（TC 6/6）を反映 |
+| 2026-03-05 | v1.14.9    | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT を反映。正本導線（FND-055-001）、Task 5D具体例（FND-055-002）、Task 5B適用境界（FND-055-003）の是正と、検証スクリプト/テスト追加を完了タスクへ同期 |
+| 2026-03-04 | v1.14.8    | UT-IMP-TASK-UI-00-ORGANISMS-PHASE12-SYNC-GUARD-001 を追補。Organisms Foundation 節に関連未タスク導線を追加し、Phase 12 の時刻同期・監査判定軸・Step 1-A 同時更新を未タスク正本へ接続 |
+| 2026-03-04 | v1.14.7    | TASK-UI-00-ORGANISMS 最適化追補: Organisms Foundation に「苦戦箇所（再発条件付き）」と「同種課題の最短解決テンプレート（5分）」を追加し、記録形式を統一 |
+| 2026-03-04 | v1.14.6    | TASK-UI-00-ORGANISMS 完了反映: 収録機能一覧・専用セクション・完了タスクへ CardGrid / MasterDetailLayout / SearchFilterList を追加し、Phase 11 証跡（TC-01〜TC-06）を同期 |
 | 2026-03-04 | v1.13.5    | SkillCenter削除導線ホットフィックスの実測値を再確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルへ固定し、再検証値を `3 files / 30 tests`、coverage `86.89/84.61/88.88` へ更新 |
 | 2026-03-04 | v1.13.4    | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 追補: SkillCenter 削除導線ホットフィックス（確認ダイアログ未描画の解消）を追加。テスト資産件数を `10ファイル / 132テスト` に更新し、再検証値（3 files / 30 tests、coverage 86.89/84.61/88.88）を記録 |
 | 2026-03-04 | v1.13.3    | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: SkillStreamDisplay セクションに認証 preflight UX ガード（`auth-key:exists` 事前判定、`AUTHENTICATION_ERROR` 表示、execute抑止）を追加。Phase 11 画面証跡3件を同期 |

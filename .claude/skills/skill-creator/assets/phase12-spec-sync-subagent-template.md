@@ -74,6 +74,12 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
 
+### 3.1 同種課題の5分解決カード同期ルール
+
+- `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3仕様書に同一カードを記録する
+- カードは「症状1行」「根本原因1行」「最短5ステップ」「検証ゲート」「同期先3点」を必須項目とする
+- 5ステップは `実体固定→仕様是正→画面証跡→未タスク監査→台帳同期` の順序を固定し、並び替えを禁止する
+
 ## 4. IPC追加時の契約突合（必須）
 
 | 観点 | 確認方法 | 完了条件 |
@@ -121,6 +127,7 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 - [ ] 未タスクの配置先判定（未実施=`docs/30-workflows/unassigned-task/`、完了済みUT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が `unassigned-task` 系（`unassigned-task/` or `completed-tasks/unassigned-task/`）であることを確認している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
+- [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点に同一の「5分解決カード」が同期されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
@@ -141,12 +148,13 @@ rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual
 
 | 仕様書 | 最小構成（必須） |
 | --- | --- |
-| `task-workflow.md` | 実装内容、苦戦箇所、検証証跡、5分チェックリスト |
-| `lessons-learned.md` | 苦戦箇所（再発条件付き）、同種課題テンプレート |
-| `<domain-spec>.md` | 実装差分、契約/責務境界、再利用ルール |
+| `task-workflow.md` | 実装内容、苦戦箇所、検証証跡、5分解決カード |
+| `lessons-learned.md` | 苦戦箇所（再発条件付き）、5分解決カードテンプレート |
+| `<domain-spec>.md` | 実装差分、契約/責務境界、再利用ルール、5分解決カード導線 |
 
 ### 7.2 記録整合チェック
 
 - [ ] SubAgentごとに「実装内容 + 苦戦箇所 + 検証証跡」を同一行で記録している
 - [ ] 仕様書間で検証値（13/13, 28項目, current=0 など）の値が一致している
+- [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致している
 - [ ] UIタスクでは画面証跡の時刻が仕様書間で一致している
