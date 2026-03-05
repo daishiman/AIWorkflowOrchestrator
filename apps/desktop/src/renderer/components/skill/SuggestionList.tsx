@@ -15,6 +15,7 @@ export interface SuggestionListProps {
   suggestions: Suggestion[];
   selected: Set<number>;
   onToggle: (index: number) => void;
+  onSelectAutoFixable: () => void;
 }
 
 // ========================================
@@ -119,9 +120,9 @@ SuggestionItem.displayName = "SuggestionItem";
 // ========================================
 
 export const SuggestionList = memo<SuggestionListProps>(
-  ({ suggestions, selected, onToggle }) => {
-    // 優先度別にグループ化（元のインデックスを保持）
-    const groupedSuggestions = useMemo(() => {
+  ({ suggestions, selected, onToggle, onSelectAutoFixable }) => {
+    // 優先度別のグルーピングと auto-fixable 件数を同時に算出する
+    const { groupedSuggestions, autoFixableCount } = useMemo(() => {
       const groups: Record<
         SuggestionPriority,
         Array<{ suggestion: Suggestion; originalIndex: number }>
@@ -130,15 +131,22 @@ export const SuggestionList = memo<SuggestionListProps>(
         medium: [],
         low: [],
       };
+      let count = 0;
 
       suggestions.forEach((suggestion, index) => {
         groups[suggestion.priority].push({
           suggestion,
           originalIndex: index,
         });
+        if (suggestion.autoFixable) {
+          count += 1;
+        }
       });
 
-      return groups;
+      return {
+        groupedSuggestions: groups,
+        autoFixableCount: count,
+      };
     }, [suggestions]);
 
     if (suggestions.length === 0) {
@@ -158,6 +166,24 @@ export const SuggestionList = memo<SuggestionListProps>(
 
     return (
       <div className="flex flex-col gap-4">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onSelectAutoFixable}
+            disabled={autoFixableCount === 0}
+            aria-label="自動修正可能を選択"
+            className={clsx(
+              "rounded-lg border border-[var(--border-primary)]",
+              "bg-[var(--bg-primary)] px-3 py-1.5 text-xs font-medium",
+              "text-[var(--text-primary)] transition-colors duration-200",
+              "hover:bg-[var(--bg-secondary)]",
+              "disabled:cursor-not-allowed disabled:opacity-50",
+            )}
+          >
+            自動修正可能を選択
+          </button>
+        </div>
+
         {priorityOrder.map((priority) => {
           const items = groupedSuggestions[priority];
           if (items.length === 0) return null;

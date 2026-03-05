@@ -10,7 +10,7 @@
 | 対象機能     | SkillAnalysisView / SuggestionList |
 | 優先度       | 中                                 |
 | 見積もり規模 | 小規模                             |
-| ステータス   | 未実施                             |
+| ステータス   | 完了（2026-03-05）                 |
 | 発見元       | TASK-10A-B Phase 10 MINOR M1       |
 | 発見日       | 2026-03-02                         |
 
@@ -102,15 +102,15 @@ UI導線を追加して回帰なしを確認する。
 
 ### 機能要件
 
-- [ ] autoFixable提案の一括選択ができる
+- [x] autoFixable提案の一括選択ができる
 
 ### 品質要件
 
-- [ ] 関連テストがPASSする
+- [x] 関連テストがPASSする
 
 ### ドキュメント要件
 
-- [ ] `task-workflow.md` の当該行が更新される
+- [x] `task-workflow.md` の当該行が更新される
 
 ## 6. 検証方法
 
@@ -152,3 +152,5 @@ FR-3-2: 自動修正可能フィルタが未実装
 ### 補足事項
 
 選択状態はインデックスベースで維持する。
+実装/テスト/仕様同期の成果物は以下:
+`docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/`

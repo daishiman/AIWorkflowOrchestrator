@@ -36,6 +36,8 @@ export interface UseSkillAnalysisReturn {
   handleAnalyze: () => Promise<void>;
   /** 提案の選択/選択解除をトグルする */
   handleToggleSuggestion: (index: number) => void;
+  /** auto-fixable な提案のみを選択する */
+  handleSelectAutoFixable: () => void;
   /** 選択した提案を適用する */
   handleApplySelected: () => Promise<void>;
   /** 全自動改善を実行する */
@@ -45,6 +47,18 @@ export interface UseSkillAnalysisReturn {
 // ============================================
 // Hook
 // ============================================
+
+export const buildAutoFixableSelection = (
+  suggestions: Suggestion[],
+): Set<number> => {
+  const selected = new Set<number>();
+  suggestions.forEach((suggestion, index) => {
+    if (suggestion.autoFixable) {
+      selected.add(index);
+    }
+  });
+  return selected;
+};
 
 /**
  * スキル分析のビジネスロジックを管理するカスタムフック
@@ -92,6 +106,11 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
       return next;
     });
   }, []);
+
+  const handleSelectAutoFixable = useCallback(() => {
+    if (!analysis) return;
+    setSelectedSuggestions(buildAutoFixableSelection(analysis.suggestions));
+  }, [analysis]);
 
   const handleApplySelected = useCallback(async () => {
     if (!analysis || selectedSuggestions.size === 0) return;
@@ -145,6 +164,7 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
     error,
     handleAnalyze,
     handleToggleSuggestion,
+    handleSelectAutoFixable,
     handleApplySelected,
     handleAutoImprove,
   };

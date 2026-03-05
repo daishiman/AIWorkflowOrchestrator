@@ -227,6 +227,86 @@ describe("SkillAnalysisView", () => {
     ]);
   });
 
+  it("自動修正可能を選択で autoFixable のみ一括選択できる", async () => {
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("button", { name: "自動修正可能を選択" }),
+      );
+    });
+
+    const checkboxes = screen.getAllByRole("checkbox");
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("選択を適用"));
+    });
+
+    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledWith("test-skill", [
+      defaultAnalysis.suggestions[0],
+      defaultAnalysis.suggestions[2],
+    ]);
+  });
+
+  it("自動修正可能を選択は既存選択を上書きする", async () => {
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    const checkboxes = screen.getAllByRole("checkbox");
+    await act(async () => {
+      fireEvent.click(checkboxes[1]);
+    });
+    expect(checkboxes[1]).toBeChecked();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole("button", { name: "自動修正可能を選択" }),
+      );
+    });
+
+    expect(checkboxes[0]).toBeChecked();
+    expect(checkboxes[1]).not.toBeChecked();
+    expect(checkboxes[2]).toBeChecked();
+  });
+
+  it("autoFixable が0件のとき一括選択ボタンは disabled", async () => {
+    mockSkillAPI.analyze.mockResolvedValue(
+      createMockAnalysis({
+        suggestions: [
+          createMockSuggestion({
+            priority: "high",
+            autoFixable: false,
+            description: "非自動修正 1",
+          }),
+          createMockSuggestion({
+            priority: "low",
+            autoFixable: false,
+            description: "非自動修正 2",
+          }),
+        ],
+      }),
+    );
+
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    const button = screen.getByRole("button", { name: "自動修正可能を選択" });
+    expect(button).toBeDisabled();
+  });
+
   // ------------------------------------------
   // 8. 全自動改善を実行する
   // ------------------------------------------

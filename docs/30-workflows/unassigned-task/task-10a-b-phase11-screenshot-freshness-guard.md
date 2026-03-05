@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 994
+```
+
+## メタ情報
+
 | 項目         | 内容                                              |
 | ------------ | ------------------------------------------------- |
 | タスクID     | UT-TASK-10A-B-007                                 |
@@ -190,7 +196,7 @@ TASK-10A-B の再監査で、既存スクリーンショットの存在確認だ
 ls -lt docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots
 rg -n "TC-01|TC-02|TC-03|TC-04" docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/manual-test-result.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md
 ```
 
 ## 7. リスクと対策
