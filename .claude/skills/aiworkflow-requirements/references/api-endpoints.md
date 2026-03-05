@@ -113,6 +113,8 @@ REST API、Desktop IPC APIの詳細は以下の分割ドキュメントで定義
 | Skill管理      | skill:list, skill:get-imported, skill:scan, skill:import, skill:remove | [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md) |
 | Chat Edit      | chat-edit:send-with-context | [api-ipc-agent.md](./api-ipc-agent.md) |
 | AI/チャット    | AI_CHAT, AI_INDEX      | [api-ipc-system.md](./api-ipc-system.md) |
+| Notification   | notification:get-history, notification:mark-read, notification:mark-all-read, notification:clear, notification:new | [api-ipc-system.md](./api-ipc-system.md) |
+| HistorySearch  | history:search, history:get-stats | [api-ipc-system.md](./api-ipc-system.md) |
 | スライド同期   | slide:sync-status      | [api-ipc-system.md](./api-ipc-system.md) |
 | APIキー管理    | apiKey:save, apiKey:validate | [api-ipc-system.md](./api-ipc-system.md) |
 | SDK認証キー    | auth-key:set, auth-key:exists, auth-key:validate, auth-key:delete | [api-ipc-system.md](./api-ipc-system.md) |
@@ -132,6 +134,7 @@ REST API、Desktop IPC APIの詳細は以下の分割ドキュメントで定義
 
 | Version | Date       | Changes                                            |
 | ------- | ---------- | -------------------------------------------------- |
+| 2.3.0   | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification（5チャネル）/ HistorySearch（2チャネル）をDesktop IPC APIサマリーへ追加 |
 | 2.2.0   | 2026-02-08 | TASK-FIX-16-1: SDK認証キーIPCチャンネル4種をDesktop IPC APIサマリーに追加 |
 | 2.1.0   | 2026-02-06 | TASK-FIX-5-1: Skill IPC チャンネル（実行/権限/管理 13チャネル）をDesktop IPC APIサマリーに追加 |
 | 2.0.0   | 2026-01-26 | 3ファイルに分割（875行→インデックス+詳細ファイル） |

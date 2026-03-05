@@ -815,3 +815,69 @@ export const useClearAuthModeError = () =>
  */
 export const useResetAuthMode = () =>
   useAppStore((state) => state.resetAuthMode);
+
+// ==================================================================
+// Notification selectors
+// ==================================================================
+
+export const useNotifications = () =>
+  useAppStore((state) => state.notifications);
+export const useUnreadNotificationCount = () =>
+  useAppStore((state) => state.unreadCount);
+export const useNotificationFilter = () =>
+  useAppStore((state) => state.activeFilter);
+export const useNotificationPopoverOpen = () =>
+  useAppStore((state) => state.isPopoverOpen);
+export const useSetNotifications = () =>
+  useAppStore((state) => state.setNotifications);
+export const useAddNotification = () =>
+  useAppStore((state) => state.addNotification);
+export const useMarkNotificationAsRead = () =>
+  useAppStore((state) => state.markAsRead);
+export const useMarkAllNotificationsAsRead = () =>
+  useAppStore((state) => state.markAllAsRead);
+export const useDeleteNotification = () =>
+  useAppStore((state) => state.deleteNotification);
+export const useClearNotifications = () =>
+  useAppStore((state) => state.clearNotifications);
+export const useSetNotificationFilter = () =>
+  useAppStore((state) => state.setActiveFilter);
+export const useSetNotificationPopoverOpen = () =>
+  useAppStore((state) => state.setPopoverOpen);
+export const useFilteredNotifications = () =>
+  useAppStore((state) => state.getFilteredNotifications());
+
+// ==================================================================
+// History search selectors
+// ==================================================================
+
+export const useHistorySearchQuery = () => useAppStore((state) => state.query);
+export const useHistorySearchFilters = () =>
+  useAppStore((state) => state.filters);
+export const useHistorySearchResults = () =>
+  useAppStore((state) => state.results);
+export const useHistorySearchStats = () => useAppStore((state) => state.stats);
+export const useHistorySearchPagination = () =>
+  useAppStore((state) => state.pagination);
+export const useHistorySearchLoading = () =>
+  useAppStore((state) => state.historySearchIsLoading);
+export const useHistorySearchError = () =>
+  useAppStore((state) => state.historySearchError);
+export const useSetHistorySearchQuery = () =>
+  useAppStore((state) => state.setQuery);
+export const useSetHistorySearchFilters = () =>
+  useAppStore((state) => state.setFilters);
+export const useResetHistorySearchFilters = () =>
+  useAppStore((state) => state.resetFilters);
+export const useSetHistorySearchPagination = () =>
+  useAppStore((state) => state.setPagination);
+export const useStartHistorySearch = () =>
+  useAppStore((state) => state.startSearch);
+export const useApplyHistorySearchResponse = () =>
+  useAppStore((state) => state.applySearchResponse);
+export const useFailHistorySearch = () =>
+  useAppStore((state) => state.failSearch);
+export const useClearHistorySearchResults = () =>
+  useAppStore((state) => state.clearResults);
+export const useGetHistorySearchResultById = () =>
+  useAppStore((state) => state.getResultById);

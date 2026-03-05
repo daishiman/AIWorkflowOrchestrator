@@ -171,43 +171,36 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | フォーマット検証 | `sk-ant-api` プレフィックスパターン              |
 | ログ出力       | キー値は一切ログに出力しない                      |
 
-### 通知・履歴検索 IPC チャネル（TASK-UI-01-STORE-IPC-ARCHITECTURE）
+### Notification / HistorySearch IPC チャネル（TASK-UI-01-C）
 
-UI基盤タスクで追加した通知・履歴検索の IPC 契約。`renderer -> preload -> main` の3層で同一チャンネル名を使用する。
+Notification ドメインと HistorySearch ドメインの統合で追加したIPC契約。
 
 **実装ファイル**:
 
-- チャンネル定義: `apps/desktop/src/preload/channels.ts`
 - ハンドラー: `apps/desktop/src/main/ipc/notificationHandlers.ts`, `apps/desktop/src/main/ipc/historySearchHandlers.ts`
 - 登録: `apps/desktop/src/main/ipc/index.ts`
-- Preload API: `apps/desktop/src/preload/api/notification-api.ts`
-- 共有型: `packages/shared/src/types/history.ts`
-
-#### チャンネル一覧
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- Preload API: `apps/desktop/src/preload/index.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
 
 | チャネル | メソッド | 引数 | 戻り値 | 備考 |
 | --- | --- | --- | --- | --- |
-| `notification:get-history` | invoke | `{ limit?: number; offset?: number }` | `{ success, data?: { notifications, totalCount }, error? }` | 通知履歴取得 |
-| `notification:mark-read` | invoke | `{ notificationId: string }` | `{ success, data?: { updated: boolean }, error? }` | 既読化 |
-| `notification:mark-all-read` | invoke | なし | `{ success, data?: { updatedCount: number }, error? }` | 全件既読 |
-| `notification:clear` | invoke | なし | `{ success, data?: { deletedCount: number }, error? }` | 履歴削除 |
-| `notification:new` | on | `{ notification }` | Event push | Main -> Renderer のみ |
-| `history:search` | invoke | `{ query, filter, limit, offset }` | `{ success, data?: { items, totalCount, hasMore }, error? }` | 履歴検索 |
-| `history:get-stats` | invoke | なし | `{ success, data?: { chat, file, skill, total }, error? }` | 統計取得 |
+| `notification:get-history` | invoke | `{ limit?: number, offset?: number }` | `NotificationGetHistoryResponse` | sender検証必須 |
+| `notification:mark-read` | invoke | `{ id: string }` | `NotificationMutationResponse` | 認証必須 |
+| `notification:mark-all-read` | invoke | なし | `NotificationMutationResponse` | 認証必須 |
+| `notification:clear` | invoke | `{ onlyRead?: boolean }` | `NotificationMutationResponse` | 認証必須 |
+| `notification:new` | on | `NotificationHistoryItem` | event | Main -> Renderer |
+| `history:search` | invoke | `HistorySearchRequest` | `HistorySearchResponse` | `query` 必須 |
+| `history:get-stats` | invoke | なし | `HistorySearchStatsResponse` | 集計返却 |
 
-#### 入力検証ルール
+**セキュリティ契約**:
 
-| 対象 | 検証 |
+| 項目 | 契約 |
 | --- | --- |
-| `notificationId` | P42準拠（`typeof` -> 空文字 -> `trim()`） |
-| `query` | `string` 型必須（空/空白は全件検索として許容） |
-| `filter` | `all/chat/file/skill` の許可値 |
-| sender | `validateIpcSender` による許可ウィンドウ検証 |
-
-#### エラーハンドリング
-
-- 送信元不正: `toIPCValidationError` を返却
-- 実行時例外: `sanitizeErrorMessage(error, fallback)` で内部情報（パス/スタック/機密値）をマスク
+| sender検証 | `event.sender === mainWindow.webContents` かつ URL を検証 |
+| 更新系認証 | `notification:mark-read` / `mark-all-read` / `clear` は未認証時 `AUTH_REQUIRED` |
+| 入力検証 | `notification id` と `history query` を必須化 |
+| 公開境界 | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` に明示登録 |
 
 ### IPC エラーコード
 
@@ -302,14 +295,16 @@ UI基盤タスクで追加した通知・履歴検索の IPC 契約。`renderer 
 
 ## 完了タスク
 
-### TASK-UI-01-STORE-IPC-ARCHITECTURE（2026-03-05完了）
+### TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN（2026-03-05完了）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | TASK-UI-01-STORE-IPC-ARCHITECTURE |
-| 反映対象 | `notification:*` / `history:search` / `history:get-stats` |
-| 主要変更 | 新規IPC 7チャネル、Preload API追加、Main sender検証・入力検証・エラーサニタイズ適用 |
-| 関連ドキュメント | `docs/30-workflows/completed-tasks/task-056-ui-01-store-ipc-architecture/outputs/phase-12/spec-update-summary.md` |
+| タスクID | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN |
+| 反映対象 | Notification / HistorySearch IPC契約 |
+| 主要変更 | history 2チャネル + notification 5チャネルを追加し、sender検証・認証ゲート・入力検証を標準化 |
+| 関連ドキュメント | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-12/spec-update-summary.md` |
+
+---
 
 ### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
 
@@ -326,7 +321,7 @@ UI基盤タスクで追加した通知・履歴検索の IPC 契約。`renderer 
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
-| v1.4.0     | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: 通知IPC（`notification:get-history/mark-read/mark-all-read/clear/new`）と履歴検索IPC（`history:search/get-stats`）を追加。P42入力検証・sender検証・`sanitizeErrorMessage` 適用境界を明記 |
+| v1.4.0     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: Notification/HistorySearch IPC（history 2 + notification 5）を追加。sender検証、更新系認証ゲート、入力検証、preload公開境界を契約化 |
 | v1.3.0     | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `auth-key:exists` 判定契約に env fallback（`ANTHROPIC_API_KEY`）を追加。Renderer preflight と Main 実行時判定の整合方針を明文化 |
 | v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |

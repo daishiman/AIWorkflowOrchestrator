@@ -38,16 +38,16 @@ import type {
   WorkspaceFolderChangedEvent,
   SearchFileRequest,
   SearchWorkspaceRequest,
+  NotificationGetHistoryRequest,
+  NotificationMarkReadRequest,
+  NotificationClearRequest,
+  HistorySearchRequest,
   ReplaceFileSingleRequest,
   ReplaceFileAllRequest,
   ReplaceWorkspaceAllRequest,
   ReplaceUndoRequest,
   ReplaceRedoRequest,
 } from "./types";
-import {
-  createHistorySearchAPI,
-  createNotificationAPI,
-} from "./api/notification-api";
 import type {
   OpenFileDialogRequest,
   GetFileMetadataRequest,
@@ -287,8 +287,21 @@ const electronAPI: ElectronAPI = {
       safeInvoke(IPC_CHANNELS.SEARCH_WORKSPACE_EXECUTE, request),
   },
 
-  notification: createNotificationAPI(safeInvoke, safeOn),
-  historySearch: createHistorySearchAPI(safeInvoke),
+  notification: {
+    getHistory: (request?: NotificationGetHistoryRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_GET_HISTORY, request ?? {}),
+    markRead: (request: NotificationMarkReadRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_READ, request),
+    markAllRead: () => safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ),
+    clear: (request?: NotificationClearRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_CLEAR, request ?? {}),
+  },
+
+  historySearch: {
+    search: (request: HistorySearchRequest) =>
+      safeInvoke(IPC_CHANNELS.HISTORY_SEARCH, request),
+    getStats: () => safeInvoke(IPC_CHANNELS.HISTORY_GET_STATS),
+  },
 
   replace: {
     fileSingle: (request: ReplaceFileSingleRequest) =>
