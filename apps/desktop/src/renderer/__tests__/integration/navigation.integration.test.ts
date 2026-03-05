@@ -190,11 +190,14 @@ describe("Navigation Integration - agent view", () => {
     it("should list agent in all views cycle", () => {
       const allViews = [
         "dashboard",
+        "workspace",
         "editor",
         "chat",
         "graph",
         "settings",
         "agent",
+        "skillCenter",
+        "historySearch",
         "chainBuilder",
         "scheduleManager",
         "debugPanel",

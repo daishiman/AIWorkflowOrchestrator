@@ -369,6 +369,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
+- [ ] 【Step 2】システム仕様を更新した場合、`spec-update-summary.md` と `documentation-changelog.md` の両方が「更新あり」で一致していることを確認した（片方のみ更新禁止）
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
@@ -513,6 +514,7 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |
 | 2026-03-04 | TASK-UI-00-ORGANISMS 再確認を反映し、Phase 12完了チェックへ「再撮影後の `stat` 時刻同期（manual-test/screenshot-coverage）」「`validate-phase11-screenshot-coverage` PASS 記録」を追加 |
 | 2026-03-04 | SkillCenter再監査の教訓を反映し、UI再撮影前 `preview preflight`（build + 疎通確認）を必須手順へ追加。失敗時は `unassigned-task-detection.md` 記録 + 未タスク化を標準化 |
 | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |

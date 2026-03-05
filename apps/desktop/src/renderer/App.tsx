@@ -6,6 +6,7 @@ import "./i18n/config";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
 import { AuthGuard } from "./components/AuthGuard";
 import { AppDock } from "./components/organisms/AppDock";
+import { NotificationCenter } from "./components/organisms/NotificationCenter";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
 import { DashboardView } from "./views/DashboardView";
 import { EditorView } from "./views/EditorView";
@@ -29,6 +30,7 @@ import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
+import { getViewFromNavigationShortcut } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
@@ -78,6 +80,21 @@ function App(): JSX.Element {
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);
   };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const view = getViewFromNavigationShortcut(event);
+      if (!view) {
+        return;
+      }
+
+      event.preventDefault();
+      setCurrentView(view);
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [setCurrentView]);
 
   const renderView = () => {
     switch (currentView) {
@@ -267,13 +284,19 @@ function App(): JSX.Element {
 
                 {/* Main Content Area */}
                 <div className="flex-1 flex flex-col overflow-hidden">
-                  {/* Dynamic Island */}
-                  <div className="flex justify-center pt-4 pb-2">
-                    <DynamicIsland
-                      status={dynamicIsland.status}
-                      message={dynamicIsland.message}
-                      visible={dynamicIsland.visible}
-                    />
+                  {/* Top status area */}
+                  <div className="flex items-start justify-between px-6 pt-4 pb-2">
+                    <div className="flex-1" />
+                    <div className="flex justify-center">
+                      <DynamicIsland
+                        status={dynamicIsland.status}
+                        message={dynamicIsland.message}
+                        visible={dynamicIsland.visible}
+                      />
+                    </div>
+                    <div className="flex flex-1 justify-end">
+                      <NotificationCenter />
+                    </div>
                   </div>
 
                   {/* View Content */}

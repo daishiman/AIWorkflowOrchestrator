@@ -689,7 +689,7 @@ partialize: (state) => ({
 | A        | Store棚卸し・状態境界設計              | `task-056-ui-01-store-ipc-architecture/task-056a-a-store-slice-baseline.md`         |
 | B        | IPC契約・Preload・セキュリティ         | `task-056-ui-01-store-ipc-architecture/task-056a-b-ipc-contract-security.md`        |
 | C        | Notification/HistorySearchドメイン統合 | `task-056-ui-01-store-ipc-architecture/task-056c-notification-history-domain.md`    |
-| D        | ViewType拡張・ルーティング・ナビ整合   | `task-056-ui-01-store-ipc-architecture/task-056d-viewtype-routing-nav.md`           |
+| D        | ViewType拡張・ルーティング・ナビ整合   | `task-056d-viewtype-routing-nav/index.md`                                           |
 | E        | 統合ゲート・仕様同期監査               | `task-056-ui-01-store-ipc-architecture/task-056e-integration-gate-and-spec-sync.md` |
 
 統合インデックス: `task-056-ui-01-store-ipc-architecture/index.md`

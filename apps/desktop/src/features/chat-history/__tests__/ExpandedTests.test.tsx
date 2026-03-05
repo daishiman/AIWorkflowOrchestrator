@@ -399,43 +399,52 @@ describe("Phase 6: Expanded Tests", () => {
     });
 
     it("should handle rapid state changes without memory leaks", async () => {
-      function RapidStateComponent() {
-        const { isReady } = useChatHistory();
-        const [counter, setCounter] = useState(0);
+      vi.useFakeTimers();
+      try {
+        function RapidStateComponent() {
+          const { isReady } = useChatHistory();
+          const [counter, setCounter] = useState(0);
 
-        React.useEffect(() => {
-          if (isReady) {
-            // 高速で状態を変更
-            const interval = setInterval(() => {
-              setCounter((c) => c + 1);
-            }, 10);
+          React.useEffect(() => {
+            if (isReady) {
+              // 高速で状態を変更
+              const interval = setInterval(() => {
+                setCounter((c) => c + 1);
+              }, 10);
 
-            return () => clearInterval(interval);
-          }
-        }, [isReady]);
+              return () => clearInterval(interval);
+            }
+          }, [isReady]);
 
-        return <span data-testid="counter">{counter}</span>;
+          return <span data-testid="counter">{counter}</span>;
+        }
+
+        render(
+          <ChatHistoryProvider
+            sessionRepository={mockSessionRepo}
+            messageRepository={mockMessageRepo}
+          >
+            <RapidStateComponent />
+          </ChatHistoryProvider>,
+        );
+
+        // Provider 初期化(useEffect)を反映
+        await act(async () => {
+          await Promise.resolve();
+        });
+
+        // 実時間依存を避けて決定的にカウンターを進める
+        act(() => {
+          vi.advanceTimersByTime(60);
+        });
+
+        const count = parseInt(
+          screen.getByTestId("counter").textContent || "0",
+        );
+        expect(count).toBeGreaterThanOrEqual(5);
+      } finally {
+        vi.useRealTimers();
       }
-
-      render(
-        <ChatHistoryProvider
-          sessionRepository={mockSessionRepo}
-          messageRepository={mockMessageRepo}
-        >
-          <RapidStateComponent />
-        </ChatHistoryProvider>,
-      );
-
-      // カウンターが増加することを確認（メモリリークなし）
-      await waitFor(
-        () => {
-          const count = parseInt(
-            screen.getByTestId("counter").textContent || "0",
-          );
-          expect(count).toBeGreaterThanOrEqual(5);
-        },
-        { timeout: 200 },
-      );
     });
   });
 

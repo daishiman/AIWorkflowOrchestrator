@@ -219,10 +219,12 @@ describe("skillHandlers.share", () => {
         const result = (await handler(event, undefined)) as {
           success: boolean;
           error?: { code: string };
+          errorCode?: string;
         };
 
         expect(result.success).toBe(false);
         expect(result.error?.code).toBe("VALIDATION_ERROR");
+        expect(result.errorCode).toBe("ERR_1001");
       });
 
       it("SSH-IMP-V02: source.type が string でない場合 VALIDATION_ERROR を返す", async () => {
@@ -312,14 +314,20 @@ describe("skillHandlers.share", () => {
           const err = thrownError as {
             success: boolean;
             error: { code: string };
+            errorCode?: string;
           };
           expect(err.success).toBe(false);
           expect(err.error.code).toBe("IPC_UNAUTHORIZED");
+          expect(err.errorCode).toBe("ERR_2004");
         } else {
-          // 返却パターンの場合
-          const res = result as { success: boolean; error?: { code: string } };
+          const res = result as {
+            success: boolean;
+            error?: { code: string };
+            errorCode?: string;
+          };
           expect(res.success).toBe(false);
           expect(res.error?.code).toBe("IPC_UNAUTHORIZED");
+          expect(res.errorCode).toBe("ERR_2004");
         }
 
         // SkillShareManager が呼ばれていないことを確認
@@ -369,6 +377,28 @@ describe("skillHandlers.share", () => {
           }),
         );
       });
+
+      it("SSH-IMP-E01: SkillShareManager 例外を INTERNAL_ERROR + ERR_5001 に正規化する", async () => {
+        const handler = getHandler(SKILL_SHARE_CHANNELS.IMPORT_FROM_SOURCE);
+        const event = createMockEvent();
+        mockSkillShareManager.importFromSource.mockRejectedValueOnce(
+          new Error("failed at /Users/dev/private token=abc"),
+        );
+
+        const result = (await handler(event, {
+          type: "github",
+          repo: "owner/repo",
+        })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+          errorCode?: string;
+        };
+
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("INTERNAL_ERROR");
+        expect(result.error?.message).toBe("Internal error");
+        expect(result.errorCode).toBe("ERR_5001");
+      });
     });
   });
 
@@ -391,10 +421,12 @@ describe("skillHandlers.share", () => {
         })) as {
           success: boolean;
           error?: { code: string };
+          errorCode?: string;
         };
 
         expect(result.success).toBe(false);
         expect(result.error?.code).toBe("VALIDATION_ERROR");
+        expect(result.errorCode).toBe("ERR_1001");
       });
 
       it("SSH-EXP-V02: skillName が空文字列の場合 VALIDATION_ERROR を返す", async () => {
@@ -491,13 +523,20 @@ describe("skillHandlers.share", () => {
           const err = thrownError as {
             success: boolean;
             error: { code: string };
+            errorCode?: string;
           };
           expect(err.success).toBe(false);
           expect(err.error.code).toBe("IPC_UNAUTHORIZED");
+          expect(err.errorCode).toBe("ERR_2004");
         } else {
-          const res = result as { success: boolean; error?: { code: string } };
+          const res = result as {
+            success: boolean;
+            error?: { code: string };
+            errorCode?: string;
+          };
           expect(res.success).toBe(false);
           expect(res.error?.code).toBe("IPC_UNAUTHORIZED");
+          expect(res.errorCode).toBe("ERR_2004");
         }
 
         expect(mockSkillShareManager.exportSkill).not.toHaveBeenCalled();
@@ -555,10 +594,12 @@ describe("skillHandlers.share", () => {
         const result = (await handler(event, undefined)) as {
           success: boolean;
           error?: { code: string };
+          errorCode?: string;
         };
 
         expect(result.success).toBe(false);
         expect(result.error?.code).toBe("VALIDATION_ERROR");
+        expect(result.errorCode).toBe("ERR_1001");
       });
 
       it("SSH-VAL-V02: source.type が string でない場合 VALIDATION_ERROR を返す", async () => {

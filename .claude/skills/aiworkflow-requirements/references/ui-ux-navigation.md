@@ -14,6 +14,8 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.5.1 | 2026-03-05 | TASK-UI-01-D の追補: 実装内容（契約正本化/ショートカット条件/証跡運用）と苦戦箇所（契約二重管理・編集要素誤発火・再撮影運用ギャップ）を同一節へ追加し、5分解決カードを同期 |
+| v1.5.0 | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `navigation/navContract.ts` を AppDock ナビ契約の正本として明記。ショートカット仕様を `Cmd/Ctrl` 両対応へ更新し、`layout-grid` アイコン・`skill-center` 互換導線・編集要素上のショートカット無効化ルールを追記 |
 | v1.4.0 | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: AppDock の 9 項目ナビ（workspace/skillCenter/historySearch 追加）と `ViewType` 拡張を同期。実装パスを `components/organisms/AppDock` へ修正 |
 | v1.3.0 | 2026-02-12 | Agent ナビ導線追加（`agent` ViewType） |
 | v1.0.0 | 2026-01-26 | 初版 |
@@ -27,20 +29,21 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 左サイドバーに配置されたメインナビゲーション。ViewType切り替えによる画面遷移を提供する。
 
 **実装場所**: `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`
+**契約正本**: `apps/desktop/src/renderer/navigation/navContract.ts`
 
 ### メニュー項目一覧
 
 | 項目 | ViewType | アイコン | ショートカット | 説明 |
 | --- | --- | --- | --- | --- |
-| Dashboard | `dashboard` | `layout-dashboard` | Cmd+1 | ダッシュボード |
-| Workspace | `workspace` | `folder-tree` | Cmd+2 | ワークスペース導線 |
-| Chat | `chat` | `message-circle` | Cmd+3 | AIチャット |
-| Agent | `agent` | `bot` | Cmd+4 | エージェント実行 |
-| Skills | `skillCenter` | `sparkles` | Cmd+5 | スキルセンター |
-| History | `historySearch` | `search` | Cmd+6 | 履歴検索 |
-| Graph | `graph` | `network` | Cmd+7 | ナレッジグラフ |
-| Editor | `editor` | `file-text` | Cmd+8 | エディタ |
-| Settings | `settings` | `settings` | Cmd+, | 設定画面 |
+| Dashboard | `dashboard` | `layout-grid` | Cmd/Ctrl+1 | ダッシュボード |
+| Workspace | `workspace` | `folder-tree` | Cmd/Ctrl+2 | ワークスペース導線 |
+| Chat | `chat` | `message-circle` | Cmd/Ctrl+3 | AIチャット |
+| Agent | `agent` | `bot` | Cmd/Ctrl+4 | エージェント実行 |
+| Skills | `skillCenter` | `sparkles` | Cmd/Ctrl+5 | スキルセンター |
+| History | `historySearch` | `search` | Cmd/Ctrl+6 | 履歴検索 |
+| Graph | `graph` | `network` | Cmd/Ctrl+7 | ナレッジグラフ |
+| Editor | `editor` | `file-text` | Cmd/Ctrl+8 | エディタ |
+| Settings | `settings` | `settings` | Cmd/Ctrl+, | 設定画面 |
 
 ### レイアウトモード
 
@@ -61,6 +64,7 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 | `agent`      | エージェント画面         |
 | `skillCenter`| スキルセンター画面       |
 | `historySearch` | 履歴検索画面          |
+| `skill-center` | 互換エイリアス（legacy導線） |
 | `settings`   | 設定画面                 |
 
 ### navItems配列構造
@@ -71,6 +75,42 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 | `icon`     | `IconName` | アイコン識別子         |
 | `label`    | `string`   | メニューラベル         |
 | `shortcut` | `string`   | キーボードショートカット |
+
+### キーボードショートカット適用条件
+
+| 条件 | 仕様 |
+| --- | --- |
+| 修飾キー | `metaKey` または `ctrlKey` のいずれか必須 |
+| 禁止修飾キー | `altKey` / `shiftKey` が有効な場合は無効 |
+| 入力フォーカス | `input` / `textarea` / `select` / `contenteditable` 上では無効 |
+| 設定ショートカット | `Cmd/Ctrl + ,` は `event.code === "Comma"` を優先判定 |
+
+### TASK-UI-01-D 実装内容と苦戦箇所（再利用版）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| 契約正本化 | AppDockの項目/順序/ショートカットを `navContract.ts` に一元化 | `apps/desktop/src/renderer/navigation/navContract.ts` |
+| ショートカット導線 | Cmd/Ctrl 両対応 + `alt/shift` 無効 + 編集要素除外を実装 | `apps/desktop/src/renderer/App.tsx` |
+| UI参照統一 | `AppDock` は `APP_DOCK_NAV_ITEMS` の参照のみとし、直書きを排除 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
+| 画面証跡 | `TC-056D-11-01..05` を workflow 配下 `outputs/phase-11/screenshots` で固定 | `docs/30-workflows/task-056d-viewtype-routing-nav/outputs/phase-11/` |
+
+#### 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 契約二重管理で導線がドリフト | nav配列とshortcut表を別ファイルで運用 | `navContract.ts` に集約しUIから参照化 | 導線契約は1ファイル正本のみ許可 |
+| 編集要素上でショートカット誤発火 | global keydown でターゲット判定を省略 | `isEditableEventTarget` で入力要素を除外 | グローバルショートカットは編集要素除外を必須 |
+| 再撮影で保存先/ポート運用が揺れる | workflow固定パス未対応 + strictPort競合未記録 | `Port 5177` preflight を記録し、運用ガードを未タスク化 | 再撮影前に preflight 実施、分岐結果を証跡に残す |
+
+#### 同種課題の5分解決カード（最短手順）
+
+1. `navContract.ts` を導線正本にし、UI側の重複定義を削除する。  
+2. `meta/ctrl` 条件 + 編集要素除外 + `alt/shift` 抑止をセットで実装する。  
+3. `TC-xx` と `screenshots/*.png` を1対1で管理し、coverage validator を必ず実行する。  
+4. Step 2 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` の結果と分岐（停止/再利用/別ポート）を成果物へ残し、必要時は未タスク化する。  
 
 ---
 

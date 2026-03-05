@@ -142,6 +142,48 @@ describe("1. IPC Channel Correctness", () => {
       "exec-1",
     );
   });
+
+  it("PC-CH-09: importFromSource() invokes IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE", async () => {
+    const source = { type: "github", repo: "owner/repo" } as const;
+    mockInvoke.mockResolvedValue({ success: true, data: { success: true } });
+
+    await skillAPI.importFromSource(source);
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
+      source,
+    );
+  });
+
+  it("PC-CH-10: exportSkill() invokes IPC_CHANNELS.SKILL_EXPORT", async () => {
+    const destination = { type: "gist", gistId: "abc123" } as const;
+    mockInvoke.mockResolvedValue({ success: true, data: { success: true } });
+
+    await skillAPI.exportSkill("test-skill", destination);
+
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_EXPORT, {
+      skillName: "test-skill",
+      destination,
+    });
+  });
+
+  it("PC-CH-11: validateSource() invokes IPC_CHANNELS.SKILL_VALIDATE_SOURCE", async () => {
+    const source = {
+      type: "url",
+      url: "https://example.com/skill.md",
+    } as const;
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: { isReachable: true },
+    });
+
+    await skillAPI.validateSource(source);
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
+      source,
+    );
+  });
 });
 
 // ============================================================
@@ -240,6 +282,21 @@ describe("2. IPC Wrapper Selection (safeInvoke vs safeInvokeUnwrap)", () => {
       expect(result.name).toBe("test-skill");
     });
 
+    it("PC-W-04-B: import() only calls SKILL_IMPORT (channel boundary guard)", async () => {
+      const mockImported = createMockImportedSkill();
+      mockInvoke.mockResolvedValue(mockImported);
+
+      await skillAPI.import("test-skill");
+
+      expect(mockInvoke).toHaveBeenCalledTimes(1);
+      expect(mockInvoke.mock.calls[0][0]).toBe(IPC_CHANNELS.SKILL_IMPORT);
+      expect(
+        mockInvoke.mock.calls.some(
+          ([channel]) => channel === IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
+        ),
+      ).toBe(false);
+    });
+
     it("PC-W-05: remove() returns raw Main response (not unwrapped)", async () => {
       const mockRemoveResult = { success: true, removed: true };
       mockInvoke.mockResolvedValue(mockRemoveResult);
@@ -248,6 +305,23 @@ describe("2. IPC Wrapper Selection (safeInvoke vs safeInvokeUnwrap)", () => {
 
       // safeInvoke passes through directly — the result IS the RemoveResult
       expect(result).toEqual(mockRemoveResult);
+    });
+
+    it("PC-W-05-B: share handlers keep raw errorCode payload", async () => {
+      const mockErrorResult = {
+        success: false,
+        error: { code: "VALIDATION_ERROR", message: "invalid source.type" },
+        errorCode: "ERR_1001",
+      };
+      mockInvoke.mockResolvedValue(mockErrorResult);
+
+      const result = await skillAPI.importFromSource({
+        type: "github",
+        repo: "",
+      });
+
+      expect(result).toEqual(mockErrorResult);
+      expect((result as { errorCode?: string }).errorCode).toBe("ERR_1001");
     });
   });
 
@@ -328,6 +402,15 @@ describe("3. Channel Whitelist Verification", () => {
     {
       name: "SKILL_RESTORE_BACKUP",
       channel: IPC_CHANNELS.SKILL_RESTORE_BACKUP,
+    },
+    {
+      name: "SKILL_IMPORT_FROM_SOURCE",
+      channel: IPC_CHANNELS.SKILL_IMPORT_FROM_SOURCE,
+    },
+    { name: "SKILL_EXPORT", channel: IPC_CHANNELS.SKILL_EXPORT },
+    {
+      name: "SKILL_VALIDATE_SOURCE",
+      channel: IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
     },
   ];
 

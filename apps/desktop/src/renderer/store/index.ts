@@ -310,6 +310,8 @@ export const useClearAllNotifications = () =>
 // History search selectors/actions (P31準拠: 個別セレクタのみ)
 export const useHistorySearchQuery = () =>
   useAppStore((state) => state.historySearchQuery);
+export const useHistorySearchFilter = () =>
+  useAppStore((state) => state.historySearchFilter);
 export const useHistorySearchResults = () =>
   useAppStore((state) => state.historySearchResults);
 export const useHistorySearchTotalCount = () =>
@@ -320,15 +322,23 @@ export const useIsHistorySearching = () =>
   useAppStore((state) => state.isHistorySearching);
 export const useHistorySearchError = () =>
   useAppStore((state) => state.historySearchError);
+export const useHistorySearchStats = () =>
+  useAppStore((state) => state.historySearchStats);
+export const useHistorySearchStatsError = () =>
+  useAppStore((state) => state.historySearchStatsError);
 export const useExpandedHistoryItemId = () =>
   useAppStore((state) => state.expandedItemId);
 
 export const useSetHistorySearchQuery = () =>
   useAppStore((state) => state.setHistorySearchQuery);
+export const useSetHistorySearchFilter = () =>
+  useAppStore((state) => state.setHistorySearchFilter);
 export const useSearchHistory = () =>
   useAppStore((state) => state.searchHistory);
 export const useLoadMoreHistory = () =>
   useAppStore((state) => state.loadMoreHistory);
+export const useLoadHistorySearchStats = () =>
+  useAppStore((state) => state.loadHistorySearchStats);
 export const useResetHistorySearch = () =>
   useAppStore((state) => state.resetHistorySearch);
 export const useToggleHistoryItemExpanded = () =>

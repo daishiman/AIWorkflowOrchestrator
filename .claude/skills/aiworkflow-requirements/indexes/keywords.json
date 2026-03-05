@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T13:15:16.738Z",
-  "totalKeywords": 1437,
+  "generated": "2026-03-05T14:48:25.809Z",
+  "totalKeywords": 1438,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1153,6 +1153,25 @@
       "lessons-learned.md"
     ],
     "DOMAIN": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ViewType": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ナビ導線": [
+      "arch-state-management.md"
+    ],
+    "VIEWTYPE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ROUTING": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "NAV": [
       "arch-state-management.md",
       "lessons-learned.md"
     ],
@@ -3166,25 +3185,10 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "KEY": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
-    "REGISTRATION": [
-      "lessons-learned.md"
-    ],
-    "auth": [
-      "lessons-learned.md"
-    ],
-    "key": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ登録漏れ修正": [
-      "lessons-learned.md"
-    ],
     "境界基準化の再監査": [
+      "lessons-learned.md"
+    ],
+    "導線統合の再監査": [
       "lessons-learned.md"
     ],
     "EDITOR": [
@@ -3758,6 +3762,9 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
