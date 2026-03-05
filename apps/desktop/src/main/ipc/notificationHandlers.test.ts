@@ -1,6 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import type { BrowserWindow as BrowserWindowType } from "electron";
-
 const { handleMock } = vi.hoisted(() => ({
   handleMock: vi.fn(),
 }));
@@ -12,55 +10,56 @@ vi.mock("electron", () => ({
 }));
 
 import {
-  createInMemoryNotificationService,
   registerNotificationHandlers,
+  type NotificationService,
 } from "./notificationHandlers";
 import { IPC_CHANNELS } from "../../preload/channels";
 
 describe("notificationHandlers", () => {
-  const sender = {
-    isDestroyed: () => false,
-    send: vi.fn(),
-  };
+  const validEvent = {};
 
-  const mainWindow = {
-    webContents: sender,
-    isDestroyed: () => false,
-  } as unknown as BrowserWindowType;
-
-  const validEvent = {
-    sender,
-    senderFrame: {
-      url: "file://renderer/index.html",
-    },
-  };
+  let mockValidateSender: ReturnType<typeof vi.fn>;
 
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
+  let service: NotificationService;
 
   beforeEach(() => {
     vi.clearAllMocks();
     handlers = new Map();
+
+    service = {
+      getHistory: vi.fn(async () => ({
+        notifications: [
+          {
+            id: "n-1",
+            type: "info",
+            title: "title",
+            timestamp: "2026-03-05T10:00:00.000Z",
+            isRead: false,
+            source: { kind: "system" },
+          },
+        ],
+        totalCount: 1,
+      })),
+      markRead: vi.fn(async () => ({ updated: true })),
+      markAllRead: vi.fn(async () => ({ updatedCount: 1 })),
+      clear: vi.fn(async () => ({ deletedCount: 1 })),
+    };
+
+    mockValidateSender = vi.fn().mockReturnValue({ valid: true });
 
     handleMock.mockImplementation(
       (channel: string, handler: (...args: unknown[]) => Promise<unknown>) => {
         handlers.set(channel, handler);
       },
     );
+
+    registerNotificationHandlers(service, {
+      validateSender: mockValidateSender,
+    });
   });
 
   it("notification:get-history が履歴を返す", async () => {
-    const service = createInMemoryNotificationService([
-      {
-        id: "n-1",
-        type: "info",
-        source: { kind: "system" },
-        payload: { title: "title", message: "message" },
-        createdAt: "2026-03-05T10:00:00.000Z",
-        readAt: null,
-      },
-    ]);
-
-    registerNotificationHandlers(mainWindow, service);
     const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_GET_HISTORY);
 
     expect(handler).toBeDefined();
@@ -77,30 +76,9 @@ describe("notificationHandlers", () => {
     expect(result.data?.totalCount).toBe(1);
   });
 
-  it("更新系チャネルは未認証の場合に拒否される", async () => {
-    const service = createInMemoryNotificationService();
-
-    registerNotificationHandlers(mainWindow, service, {
-      isAuthenticated: () => false,
-    });
-
+  it("notification:mark-read はnotificationId未指定を検証エラーにする", async () => {
     const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_MARK_READ);
-    const result = (await handler!(validEvent, {
-      id: "n-1",
-    })) as {
-      success: boolean;
-      error?: { code: string };
-    };
 
-    expect(result.success).toBe(false);
-    expect(result.error?.code).toBe("AUTH_REQUIRED");
-  });
-
-  it("notification:mark-read はID未指定を検証エラーにする", async () => {
-    const service = createInMemoryNotificationService();
-    registerNotificationHandlers(mainWindow, service);
-
-    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_MARK_READ);
     const result = (await handler!(validEvent, {})) as {
       success: boolean;
       error?: { code: string };
@@ -110,66 +88,39 @@ describe("notificationHandlers", () => {
     expect(result.error?.code).toBe("VALIDATION_ERROR");
   });
 
-  it("notification:clear onlyRead が既読のみ削除する", async () => {
-    const service = createInMemoryNotificationService([
-      {
-        id: "unread-1",
-        type: "info",
-        source: { kind: "system" },
-        payload: { title: "title", message: "message" },
-        createdAt: "2026-03-05T10:00:00.000Z",
-        readAt: null,
-      },
-      {
-        id: "read-1",
-        type: "info",
-        source: { kind: "system" },
-        payload: { title: "title", message: "message" },
-        createdAt: "2026-03-05T11:00:00.000Z",
-        readAt: "2026-03-05T11:01:00.000Z",
-      },
-    ]);
+  it("notification:mark-read は更新結果を返す", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_MARK_READ);
 
-    registerNotificationHandlers(mainWindow, service);
-    const clearHandler = handlers.get(IPC_CHANNELS.NOTIFICATION_CLEAR);
-    const clearResult = (await clearHandler!(validEvent, {
-      onlyRead: true,
+    const result = (await handler!(validEvent, {
+      notificationId: "n-1",
     })) as {
       success: boolean;
-      data?: { removedCount?: number };
+      data?: { updated: boolean };
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data?.updated).toBe(true);
+  });
+
+  it("notification:clear が削除件数を返す", async () => {
+    const clearHandler = handlers.get(IPC_CHANNELS.NOTIFICATION_CLEAR);
+    const clearResult = (await clearHandler!(validEvent)) as {
+      success: boolean;
+      data?: { deletedCount?: number };
     };
 
     expect(clearResult.success).toBe(true);
-    expect(clearResult.data?.removedCount).toBe(1);
-
-    const getHandler = handlers.get(IPC_CHANNELS.NOTIFICATION_GET_HISTORY);
-    const historyResult = (await getHandler!(validEvent, {
-      limit: 10,
-      offset: 0,
-    })) as {
-      success: boolean;
-      data?: { totalCount: number };
-    };
-
-    expect(historyResult.success).toBe(true);
-    expect(historyResult.data?.totalCount).toBe(1);
+    expect(clearResult.data?.deletedCount).toBe(1);
   });
 
   it("無効なsenderを拒否する", async () => {
-    const service = createInMemoryNotificationService();
-    registerNotificationHandlers(mainWindow, service);
-
-    const invalidEvent = {
-      sender: {
-        isDestroyed: () => false,
-      },
-      senderFrame: {
-        url: "https://malicious.example.com",
-      },
-    };
-
     const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_GET_HISTORY);
-    const result = (await handler!(invalidEvent, {})) as {
+    mockValidateSender.mockReturnValueOnce({
+      valid: false,
+      errorCode: "INVALID_SENDER",
+      errorMessage: "invalid sender",
+    });
+    const result = (await handler!(validEvent, {})) as {
       success: boolean;
       error?: { code: string };
     };
