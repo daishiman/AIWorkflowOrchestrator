@@ -141,6 +141,7 @@ export const useAppStore = create<AppStore>()(
 
 // Export types
 export * from "./types";
+export * from "./sliceBaseline";
 
 // Alias for tests
 export const useStore = useAppStore;

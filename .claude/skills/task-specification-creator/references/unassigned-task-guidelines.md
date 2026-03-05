@@ -66,6 +66,9 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
+> 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
+> `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
+
 判定ルール:
 
 | モード | fail条件 | 用途 |

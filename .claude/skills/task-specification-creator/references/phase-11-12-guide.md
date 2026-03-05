@@ -141,28 +141,12 @@ node .claude/skills/task-specification-creator/scripts/validate-phase11-screensh
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
-#### コマンド実行経路の固定（再監査時必須）
-
-```bash
-# 1) エイリアス前提を排除（存在しなくても継続）
-which verify-all-specs || true
-which validate-phase-output || true
-which verify-unassigned-links || true
-
-# 2) スクリプト実体を確認
-rg --files .claude/skills/task-specification-creator/scripts \
-  | rg 'verify-all-specs|validate-phase-output|validate-phase11-screenshot-coverage|verify-unassigned-links|audit-unassigned-tasks'
-```
-
-補足:
-- `not found` の場合はグローバルCLIではなく、`node .claude/skills/task-specification-creator/scripts/<script>.js` で実行する。
-- Phase 12成果物には「実際に使った最終コマンド」を記録し、次回再監査で同じ経路を再利用する。
-
 補足:
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
-- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
+- `MT-01` などのシナリオIDのみでは検証対象として抽出されない。**必ず `TC-xx` 形式を併記**する
+- 事前チェック: `rg -n \"\\bTC-[A-Z0-9-]*[0-9][A-Z0-9-]*\\b\" phase-11-manual-test.md outputs/phase-11/manual-test-result.md`
 ### テスト結果レポート形式
 
 ```markdown
