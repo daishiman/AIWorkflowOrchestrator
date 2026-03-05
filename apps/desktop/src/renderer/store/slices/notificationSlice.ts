@@ -14,6 +14,8 @@ export interface NotificationSlice {
   expandedNotificationId: string | null;
 
   addNotification: (notification: Omit<Notification, "id" | "isRead">) => void;
+  ingestNotification: (notification: Notification) => void;
+  setNotificationHistory: (notifications: Notification[]) => void;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   deleteNotification: (id: string) => void;
@@ -49,6 +51,33 @@ function toPersistedTimestamp(timestamp?: string): string {
   return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : timestamp;
 }
 
+function normalizeNotification(notification: Notification): Notification {
+  return {
+    ...notification,
+    id: notification.id || crypto.randomUUID(),
+    timestamp: toPersistedTimestamp(notification.timestamp),
+    isRead: notification.isRead === true,
+  };
+}
+
+function normalizeNotificationList(
+  notifications: Notification[],
+): Notification[] {
+  return notifications
+    .map(normalizeNotification)
+    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
+}
+
+function syncNotificationState(
+  notifications: Notification[],
+): Pick<NotificationSlice, "notifications" | "unreadCount"> {
+  const nextNotifications = trimNotifications(notifications);
+  return {
+    notifications: nextNotifications,
+    unreadCount: calculateUnreadCount(nextNotifications),
+  };
+}
+
 export function createNotification(
   input: Omit<Notification, "id" | "isRead"> & {
     source: NotificationSource;
@@ -80,16 +109,22 @@ export const createNotificationSlice: StateCreator<
   addNotification: (notification) => {
     set((state) => {
       const added = createNotification(notification);
-      const nextNotifications = trimNotifications([
-        added,
-        ...state.notifications,
-      ]);
-
-      return {
-        notifications: nextNotifications,
-        unreadCount: calculateUnreadCount(nextNotifications),
-      };
+      return syncNotificationState([added, ...state.notifications]);
     });
+  },
+
+  ingestNotification: (notification) => {
+    set((state) => {
+      const normalized = normalizeNotification(notification);
+      const deduped = state.notifications.filter(
+        (item) => item.id !== normalized.id,
+      );
+      return syncNotificationState([normalized, ...deduped]);
+    });
+  },
+
+  setNotificationHistory: (notifications) => {
+    set(() => syncNotificationState(normalizeNotificationList(notifications)));
   },
 
   markAsRead: (id) => {
@@ -131,8 +166,7 @@ export const createNotificationSlice: StateCreator<
       );
 
       return {
-        notifications: nextNotifications,
-        unreadCount: calculateUnreadCount(nextNotifications),
+        ...syncNotificationState(nextNotifications),
         expandedNotificationId:
           state.expandedNotificationId === id
             ? null

@@ -7,7 +7,10 @@ vi.mock("electron", () => ({
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ipcMain } from "electron";
 import { IPC_CHANNELS } from "../../../preload/channels";
-import { registerNotificationHandlers } from "../notificationHandlers";
+import {
+  emitNotificationNew,
+  registerNotificationHandlers,
+} from "../notificationHandlers";
 
 describe("notificationHandlers", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -107,5 +110,87 @@ describe("notificationHandlers", () => {
     };
     expect(result3.success).toBe(false);
     expect(result3.error?.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("mark-all-readを委譲する", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ)!;
+
+    const result = await handler({});
+
+    expect(mockService.markAllRead).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({
+      success: true,
+      data: { updatedCount: 1 },
+    });
+  });
+
+  it("clearを委譲する", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_CLEAR)!;
+
+    const result = await handler({});
+
+    expect(mockService.clear).toHaveBeenCalledTimes(1);
+    expect(result).toEqual({
+      success: true,
+      data: { deletedCount: 1 },
+    });
+  });
+
+  it("emitNotificationNewは正常時にイベント配信する", () => {
+    const send = vi.fn();
+    const mainWindow = {
+      isDestroyed: () => false,
+      webContents: {
+        isDestroyed: () => false,
+        send,
+      },
+    };
+
+    const result = emitNotificationNew(mainWindow as never, {
+      id: "n-1",
+      type: "info",
+      title: "hello",
+      detail: "world",
+      timestamp: "2026-03-05T12:00:00.000Z",
+      isRead: false,
+      source: { kind: "system" },
+    });
+
+    expect(result).toBe(true);
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(send).toHaveBeenCalledWith(IPC_CHANNELS.NOTIFICATION_NEW, {
+      notification: {
+        id: "n-1",
+        type: "info",
+        title: "hello",
+        detail: "world",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+    });
+  });
+
+  it("emitNotificationNewは破棄済みwindowで配信しない", () => {
+    const send = vi.fn();
+    const destroyedWindow = {
+      isDestroyed: () => true,
+      webContents: {
+        isDestroyed: () => false,
+        send,
+      },
+    };
+
+    const result = emitNotificationNew(destroyedWindow as never, {
+      id: "n-2",
+      type: "warning",
+      title: "blocked",
+      timestamp: "2026-03-05T12:00:00.000Z",
+      isRead: false,
+      source: { kind: "system" },
+    });
+
+    expect(result).toBe(false);
+    expect(send).not.toHaveBeenCalled();
   });
 });
