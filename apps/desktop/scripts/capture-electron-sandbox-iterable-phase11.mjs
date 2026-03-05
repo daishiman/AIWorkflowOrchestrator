@@ -10,6 +10,7 @@ const outputDir = path.join(
   ROOT,
   "docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/screenshots",
 );
+// Default capture target for local manual validation.
 const baseUrl = process.env.PHASE11_SCREENSHOT_BASE_URL || "http://localhost:5173";
 
 const mockSkills = [
