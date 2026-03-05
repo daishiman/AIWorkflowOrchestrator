@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T12:32:04.238Z",
-  "totalKeywords": 1432,
+  "generated": "2026-03-05T13:15:16.738Z",
+  "totalKeywords": 1437,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3166,6 +3166,24 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "KEY": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "REGISTRATION": [
+      "lessons-learned.md"
+    ],
+    "auth": [
+      "lessons-learned.md"
+    ],
+    "key": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ登録漏れ修正": [
+      "lessons-learned.md"
+    ],
     "境界基準化の再監査": [
       "lessons-learned.md"
     ],
@@ -3740,9 +3758,6 @@
       "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
-      "lessons-learned.md"
-    ],
-    "HANDLER": [
       "lessons-learned.md"
     ],
     "DOUBLE": [

@@ -161,6 +161,20 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | 戻り値 | いずれかが true の場合 `{ exists: true }` |
 | 目的 | Renderer preflight と Main 実行時判定の乖離を防止 |
 
+### 実装状況（auth-key ライフサイクル）
+
+| 実装項目 | ステータス | 関連タスク |
+| --- | --- | --- |
+| `registerAllIpcHandlers` で `registerAuthKeyHandlers` を起動時/再登録時に実行 | completed | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+| `unregisterAllIpcHandlers` で `unregisterAuthKeyHandlers` を解除時に実行 | completed | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+
+### 関連タスク
+
+| タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 | `auth-key:exists` 判定契約の env fallback 追加 | 完了 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 | auth-key 4チャネルの Main 登録漏れと解除連携を修正 | 完了 |
+
 **セキュリティ設計**:
 
 | 項目           | 対策                                              |
@@ -306,6 +320,42 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 ---
 
+### TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001（2026-03-05完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 |
+| 反映対象 | auth-key IPC 登録/解除ライフサイクル |
+| 主要変更 | `registerAllIpcHandlers`/`unregisterAllIpcHandlers` に auth-key ハンドラ接続を追加 |
+| 検証 | `ipc-double-registration` と `authKeyHandlers` の回帰テスト、および Renderer preflight 関連テストが PASS |
+| 関連ドキュメント | `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/outputs/phase-12/spec-update-summary.md` |
+
+#### 実装時の苦戦箇所と再発防止
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所1 | `auth-key:*` 4チャネル自体は定義済みだったため、runtime 配線漏れが発見されにくかった |
+| 原因 | ハンドラ実装の有無と `ipc/index.ts` の登録経路検証を分離して進めた |
+| 対処 | `registerAllIpcHandlers` / `unregisterAllIpcHandlers` を対称更新し、再登録サイクルテストを追加 |
+| 標準ルール | auth 系 IPC は「チャンネル定義・ハンドラ実装・register/unregister 配線・回帰テスト」の4点同時確認を必須化する |
+
+#### 同種課題の簡潔解決チェック（5分）
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | `No handler registered` または `apps/desktop` の全量テストが `SIGTERM` で中断 |
+| 最短対応 | 1) `register/unregister` 対称更新 2) `authKeyHandlers`/`ipc-double-registration` 回帰追加 3) 全量実行が不安定な場合は `vitest run <対象>` へ分割 4) `task-workflow` と `lessons-learned` へ同値転記 |
+| 検証 | `pnpm --filter @repo/desktop test:run <対象テスト>` PASS + `pnpm --filter @repo/desktop typecheck` PASS |
+| 反映先 | `api-ipc-system.md` / `task-workflow.md` / `lessons-learned.md` |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 | `apps/desktop test:run` の `SIGTERM` 中断時フォールバック（失敗ログ固定 + 分割実行 + 3仕様同期）を標準化 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md` |
+
+---
+
 ### TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001（2026-03-04完了）
 
 | 項目 | 内容 |
@@ -322,6 +372,10 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
 | v1.4.0     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: Notification/HistorySearch IPC（history 2 + notification 5）を追加。sender検証、更新系認証ゲート、入力検証、preload公開境界を契約化 |
+| v1.5.2     | 2026-03-05 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を関連未タスクへ登録。`apps/desktop test:run` の `SIGTERM` 中断時に「失敗ログ固定 + `vitest run <対象>` 分割実行 + 3仕様同期」を標準運用として追跡可能化 |
+| v1.5.1     | 2026-03-05 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補: 「同種課題の簡潔解決チェック（5分）」を追加し、runtime 配線漏れと `SIGTERM` 中断時の分割回帰テスト運用を標準化 |
+| v1.5.0     | 2026-03-05 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補: 完了タスク節へ「実装時の苦戦箇所と再発防止」を追加し、auth-key 既存チャネルで発生しやすい runtime 配線漏れの防止手順を明文化 |
+| v1.4.0     | 2026-03-05 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 反映: auth-key ライフサイクル実装状況テーブルを追加し、`registerAllIpcHandlers` / `unregisterAllIpcHandlers` の接続責務を明文化。完了タスク台帳へ同タスクを追加 |
 | v1.3.0     | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `auth-key:exists` 判定契約に env fallback（`ANTHROPIC_API_KEY`）を追加。Renderer preflight と Main 実行時判定の整合方針を明文化 |
 | v1.2.0     | 2026-02-08 | TASK-FIX-16-1: Claude Agent SDK認証キー管理IPCチャネル4種追加（auth-key:set/exists/validate/delete） |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式に変換 |

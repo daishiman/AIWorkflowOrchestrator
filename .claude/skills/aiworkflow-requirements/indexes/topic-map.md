@@ -680,11 +680,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| AI/チャット IPC チャネル | L10 |
 | Slide IPC API（スライド同期） | L46 |
 | Electron IPC API設計 | L100 |
-| AIプロバイダーAPI連携 | L217 |
-| エンティティ抽出サービス (NER) | L250 |
-| 関連ドキュメント | L287 |
-| 完了タスク | L296 |
-| 変更履歴 | L320 |
+| AIプロバイダーAPI連携 | L231 |
+| エンティティ抽出サービス (NER) | L264 |
+| 関連ドキュメント | L301 |
+| 完了タスク | L310 |
+| 変更履歴 | L370 |
 
 ---
 
@@ -1592,24 +1592,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L146 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L199 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L278 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L336 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L536 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L578 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L620 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L726 |
-| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L775 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L821 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L852 |
-| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L910 |
-| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L952 |
-| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L1013 |
-| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L1054 |
-| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L1113 |
-| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L1155 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L1202 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L149 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L202 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L265 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L344 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L402 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L602 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L644 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L686 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L792 |
+| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L841 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L887 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L918 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L976 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L1018 |
+| TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L1079 |
+| TASK-9I-skill-docs: Phase 12再確認（2026-02-28） | L1120 |
+| UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001: Phase 12 再確認証跡・未タスクリンク整合ガード（2026-02-28） | L1179 |
+| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L1221 |
 
 ### references/llm-embedding.md
 
@@ -1951,12 +1951,12 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2375 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2455 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2522 |
-| 残課題（未タスク） | L2603 |
-| 関連ドキュメント | L2798 |
-| 変更履歴 | L2808 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2465 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2545 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2612 |
+| 残課題（未タスク） | L2693 |
+| 関連ドキュメント | L2889 |
+| 変更履歴 | L2899 |
 
 ### references/testing-accessibility.md
 

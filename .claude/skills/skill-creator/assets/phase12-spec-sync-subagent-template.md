@@ -88,6 +88,7 @@ UI機能実装時の必須記載（追加）:
 | register 配線 | `rg -n "register.*Handlers" apps/desktop/src/main/ipc/index.ts` | 新規ハンドラが `registerAllIpcHandlers` に登録済み |
 | preload 公開 | `rg -n "safeInvoke|safeInvokeUnwrap" apps/desktop/src/preload/skill-api.ts` | 全チャネルに対応する API が公開済み |
 | service 公開境界 | `rg -n "services/<domain>/|export .* from \"./\"|SkillChain(Store|Executor)" apps/desktop/src/main` | 依存サービスのバレル公開（または未タスク移管）が記録されている |
+| 回帰テスト運用 | `pnpm --filter @repo/desktop test:run`（失敗時は `vitest run <target>` 分割） | `SIGTERM` 時も分割実行で対象回帰の合否が確定できる |
 | 仕様同期 | interfaces/api-ipc/security の3仕様書を同時更新 | 実装名・契約・検証要件のドリフトゼロ |
 
 ## 5. 検証コマンド
@@ -108,6 +109,8 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
+pnpm --filter @repo/desktop test:run
+pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
@@ -140,6 +143,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
+- [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

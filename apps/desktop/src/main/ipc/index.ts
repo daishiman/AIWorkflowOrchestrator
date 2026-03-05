@@ -64,6 +64,10 @@ import { SkillAnalytics } from "../services/skill/SkillAnalytics";
 import { registerPermissionStoreHandlers } from "./permission-store-handlers";
 import { registerAuthModeHandlers } from "./authModeHandlers";
 import {
+  registerAuthKeyHandlers,
+  unregisterAuthKeyHandlers,
+} from "./authKeyHandlers";
+import {
   AuthKeyService,
   createAuthKeyStorage,
   createAuthModeService,
@@ -403,6 +407,9 @@ function createGitHubClient(): GitHubClientAdapter {
  * 未登録チャンネルでもエラーを出さないため安全に全チャンネルを走査できる。
  */
 export function unregisterAllIpcHandlers(): void {
+  // auth-key handlers は内部登録状態を持つため、先に専用解除を実行する
+  unregisterAuthKeyHandlers();
+
   const allChannels = Object.values(IPC_CHANNELS);
   for (const channel of allChannels) {
     ipcMain.removeHandler(channel);
@@ -640,6 +647,7 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
   // Register Auth Mode handlers (TASK-AUTH-MODE-SELECTION-001)
   const authKeyStorage = createAuthKeyStorage();
   const authKeyService = new AuthKeyService(authKeyStorage);
+  registerAuthKeyHandlers(mainWindow, authKeyService);
   const authModeService = createAuthModeService(authKeyService);
   registerAuthModeHandlers(mainWindow, authModeService);
 
