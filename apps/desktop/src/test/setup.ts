@@ -3,7 +3,23 @@ import { vi, beforeAll, afterEach, afterAll } from "vitest";
 import { server } from "./mocks/server";
 
 // MSWサーバー設定
-beforeAll(() => server.listen({ onUnhandledRequest: "warn" }));
+beforeAll(() =>
+  server.listen({
+    onUnhandledRequest(request, print) {
+      const url = new URL(request.url);
+
+      // ローカルHTTPサーバー実装を検証するテストでは、MSWを経由せず実サーバーへ到達させる
+      if (
+        url.hostname === "127.0.0.1" &&
+        (url.pathname === "/auth/callback" || url.pathname === "/")
+      ) {
+        return;
+      }
+
+      print.warning();
+    },
+  }),
+);
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 

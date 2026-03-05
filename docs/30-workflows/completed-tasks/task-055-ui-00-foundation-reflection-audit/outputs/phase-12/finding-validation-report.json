@@ -1,0 +1,25 @@
+{
+  "generatedAt": "2026-03-05T03:22:59.714Z",
+  "repoRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260305-085914-wt3",
+  "checks": [
+    {
+      "id": "FND-055-001",
+      "status": "PASS",
+      "detail": "正本リンクは実在パスを参照: docs/30-workflows/completed-tasks/TASK-UI-00-TOKENS/index.md",
+      "target": "docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-1-design-tokens.md"
+    },
+    {
+      "id": "FND-055-002",
+      "status": "PASS",
+      "detail": "Task 5D 具体例テーブルを確認: rows=4",
+      "target": "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-059a-ui-04b-workspace-chat-panel.md"
+    },
+    {
+      "id": "FND-055-003",
+      "status": "PASS",
+      "detail": "Task 5B の適用境界（対象/対象外）を確認",
+      "target": "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-061-ui-09-onboarding-wizard.md"
+    }
+  ],
+  "pass": true
+}

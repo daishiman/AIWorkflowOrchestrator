@@ -1,0 +1,268 @@
+{
+  "feature": "task-10a-b-improvement-result-breakdown-ui",
+  "taskId": "UT-TASK-10A-B-003",
+  "title": "改善結果内訳表示実装",
+  "created": "2026-03-05T00:00:00+09:00",
+  "lastUpdated": "2026-03-05T00:11:30Z",
+  "status": "phase_12_completed",
+  "taskType": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ui-specification.md",
+          "description": "UI仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/state-design.md",
+          "description": "状態設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/accessibility-design.md",
+          "description": "a11y設計"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "レビュー指摘一覧"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-case-matrix.md",
+          "description": "テストケースマトリクス"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "description": "実装計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/component-split-plan.md",
+          "description": "コンポーネント分割計画"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-plan.md",
+          "description": "テスト拡充計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-checklist.md",
+          "description": "回帰チェックリスト"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-plan.md",
+          "description": "カバレッジ計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/missing-case-list.md",
+          "description": "未網羅ケース一覧"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタ方針"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/readability-improvement-checklist.md",
+          "description": "可読性改善チェックリスト"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-assurance-plan.md",
+          "description": "品質保証計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/risk-mitigation-log.md",
+          "description": "リスク対策ログ"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-checklist.md",
+          "description": "最終レビューチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果テンプレート"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-scenarios.md",
+          "description": "手動テストシナリオ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.md",
+          "description": "画面証跡計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        }
+      ],
+      "completedAt": "2026-03-04T23:04:19.558Z"
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報テンプレート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/completion-report.md",
+          "description": "完了報告テンプレート"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  }
+}

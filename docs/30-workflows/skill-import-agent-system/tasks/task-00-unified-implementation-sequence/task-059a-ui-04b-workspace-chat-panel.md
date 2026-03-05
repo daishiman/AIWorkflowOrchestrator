@@ -880,6 +880,17 @@ apps/desktop/src/renderer/
 | **P39** | happy-dom 環境 userEvent | `fireEvent` を使用。`userEvent.setup()` は使わない                                                           |
 | **P40** | テスト実行ディレクトリ   | `cd apps/desktop && pnpm vitest run` で実行                                                                  |
 
+### 11.1 UX言語の具体例（Task 5D）
+
+Task 5D は「ガイドライン参照」で終わらせず、画面文言の置換例を仕様へ明示する。
+
+| Before（旧）     | After（新）           | 適用箇所                          |
+| ---------------- | --------------------- | --------------------------------- |
+| エージェント     | AIアシスタント        | ChatPanel ヘッダー・補助説明      |
+| スキル           | ツール                | SuggestionBubble 文言・導線ラベル |
+| メッセージを送信 | 送信                  | 送信ボタンの aria-label / tooltip |
+| プロンプトを入力 | 何でも聞いてみよう... | 入力欄プレースホルダー            |
+
 ## 12. 関連ドキュメント
 
 ### 04 シリーズ分割ドキュメント

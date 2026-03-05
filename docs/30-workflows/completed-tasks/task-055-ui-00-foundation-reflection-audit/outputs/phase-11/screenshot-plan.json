@@ -1,0 +1,71 @@
+{
+  "taskId": "TASK-UI-00-FOUNDATION-REFLECTION-AUDIT",
+  "generatedAt": "2026-03-05T11:05:00+09:00",
+  "scenarios": [
+    {
+      "tcId": "TC-055-301",
+      "label": "organisms-default-desktop-dark",
+      "route": "/advanced/organisms-showcase?card=default&detail=open&view=list",
+      "theme": "dark",
+      "viewport": { "width": 1440, "height": 900 },
+      "selector": "[data-testid='organisms-showcase-view']",
+      "file": "TC-055-301-organisms-default-desktop-dark.png",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-055-302",
+      "label": "organisms-empty-desktop-light",
+      "route": "/advanced/organisms-showcase?card=empty&detail=open&view=list",
+      "theme": "light",
+      "viewport": { "width": 1440, "height": 900 },
+      "selector": "[data-testid='showcase-card-grid']",
+      "file": "TC-055-302-organisms-empty-desktop-light.png",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-055-303",
+      "label": "organisms-loading-desktop-dark",
+      "route": "/advanced/organisms-showcase?card=loading&detail=open&view=list",
+      "theme": "dark",
+      "viewport": { "width": 1440, "height": 900 },
+      "selector": "[data-testid='showcase-card-grid']",
+      "file": "TC-055-303-organisms-loading-desktop-dark.png",
+      "priority": "B"
+    },
+    {
+      "tcId": "TC-055-304",
+      "label": "master-detail-mobile-dark",
+      "route": "/advanced/organisms-showcase?card=default&detail=open&view=list",
+      "theme": "dark",
+      "viewport": { "width": 390, "height": 844 },
+      "selector": "[data-testid='showcase-master-detail']",
+      "file": "TC-055-304-master-detail-mobile-dark.png",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-055-305",
+      "label": "search-grid-mobile-dark",
+      "route": "/advanced/organisms-showcase?card=default&detail=closed&view=grid",
+      "theme": "dark",
+      "viewport": { "width": 390, "height": 844 },
+      "selector": "[data-testid='showcase-search-filter-list']",
+      "file": "TC-055-305-search-grid-mobile-dark.png",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-055-306",
+      "label": "search-filter-desktop-dark",
+      "route": "/advanced/organisms-showcase?card=default&detail=open&view=list",
+      "theme": "dark",
+      "viewport": { "width": 1440, "height": 900 },
+      "selector": "[data-testid='showcase-search-filter-list']",
+      "action": {
+        "type": "fill",
+        "target": "[role='searchbox']",
+        "value": "a"
+      },
+      "file": "TC-055-306-search-filter-desktop-dark.png",
+      "priority": "B"
+    }
+  ]
+}
