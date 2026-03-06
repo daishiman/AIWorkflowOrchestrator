@@ -7,6 +7,16 @@
  * @see type-definitions.md
  */
 
+import type { AuthMode } from "@repo/shared/types/auth-mode";
+import { AUTH_MODE_ERROR_CODES } from "@repo/shared/types/auth-mode";
+
+export type { AuthMode } from "@repo/shared/types/auth-mode";
+export {
+  AUTH_MODE_ERROR_CODES,
+  DEFAULT_AUTH_MODE,
+  VALID_AUTH_MODES,
+} from "@repo/shared/types/auth-mode";
+
 // =================================================================
 // エラーコード定義
 // =================================================================
@@ -279,27 +289,6 @@ export const ANTHROPIC_VALIDATION_MODEL = "claude-3-haiku-20240307";
 // =================================================================
 
 /**
- * 認証モード
- *
- * subscription: Claude Code CLIサブスクリプション認証（Keychain経由）
- * api-key: Anthropic APIキー認証（既存AuthKeyService）
- */
-export type AuthMode = "subscription" | "api-key";
-
-/**
- * 認証モードのデフォルト値
- */
-export const DEFAULT_AUTH_MODE: AuthMode = "subscription";
-
-/**
- * 有効な認証モード一覧
- */
-export const VALID_AUTH_MODES: readonly AuthMode[] = [
-  "subscription",
-  "api-key",
-];
-
-/**
  * 認証状態エラー
  */
 export interface AuthModeStatusError {
@@ -376,33 +365,6 @@ export interface AuthModeStoreSchema {
 // =================================================================
 // AuthMode エラーコード
 // =================================================================
-
-/**
- * 認証モード関連エラーコード
- */
-export const AUTH_MODE_ERROR_CODES = {
-  // === バリデーションエラー (1000番台) ===
-  /** 無効な認証方式が指定された */
-  INVALID_MODE: "auth-mode/invalid-mode",
-
-  // === 認証情報エラー (2000番台) ===
-  /** 認証情報が存在しない */
-  NO_CREDENTIALS: "auth-mode/no-credentials",
-  /** APIキーが設定されていない */
-  NO_API_KEY: "auth-mode/no-api-key",
-  /** サブスクリプショントークンが存在しない */
-  NO_SUBSCRIPTION_TOKEN: "auth-mode/no-subscription-token",
-
-  // === ストレージエラー (5000番台) ===
-  /** 設定の永続化に失敗 */
-  STORAGE_FAILED: "auth-mode/storage-failed",
-  /** 設定の読み込みに失敗 */
-  STORAGE_READ_FAILED: "auth-mode/storage-read-failed",
-
-  // === 内部エラー (9000番台) ===
-  /** 不明なエラー */
-  UNKNOWN_ERROR: "auth-mode/unknown-error",
-} as const;
 
 export type AuthModeErrorCodeType =
   (typeof AUTH_MODE_ERROR_CODES)[keyof typeof AUTH_MODE_ERROR_CODES];

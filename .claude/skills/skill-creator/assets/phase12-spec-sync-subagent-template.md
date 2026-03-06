@@ -7,7 +7,7 @@
 | タスクID | `<TASK-ID>` |
 | 実装対象 | `<実装ファイル/機能>` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
-| 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons` |
+| 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
 
 ## 2. SubAgent分担（仕様書単位）
@@ -30,6 +30,12 @@
 | SubAgent-D | `references/arch-state-management.md` | 状態管理責務の同期 | 状態境界が整合 |
 | SubAgent-E | `references/task-workflow.md` | 完了台帳・検証証跡・残課題同期 | 実装 + 証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓の同期 | 苦戦箇所と簡潔手順が再利用可能 |
+
+#### 2.1.1 UIドメイン追加仕様（必要時）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-G+ | `references/<ui-domain-spec>.md` | ドメイン固有 UI 正本（例: `ui-ux-navigation.md`）の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -73,6 +79,7 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-components`: 完了タスク、関連未タスク、実装導線
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
+- `ui-ux-navigation` などのドメイン固有 UI 正本: その機能に固有な契約・苦戦箇所・再利用手順
 
 ### 3.1 同種課題の5分解決カード同期ルール
 
@@ -105,6 +112,10 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
+diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
+node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
+rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
+rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
@@ -125,6 +136,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
+- [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）がある場合、SubAgent-G+ を追加して同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
@@ -148,6 +160,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
 - [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
 - [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 が `[x]` で同期されている
+- [ ] `artifacts.json` と `outputs/artifacts.json` が同一内容で同期されている
+- [ ] `generate-index.js --workflow <workflow-path> --regenerate` 後の `index.md` が Phase 状態を正しく表示している
+- [ ] completed 扱いの `phase-1..11` 本文仕様書に `pending` が残っていない
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している

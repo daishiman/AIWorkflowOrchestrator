@@ -150,7 +150,7 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result).toEqual({
         success: true,
-        data: "subscription", // デフォルト値
+        data: { mode: "subscription" }, // デフォルト値
       });
     });
 
@@ -168,7 +168,7 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result).toEqual({
         success: true,
-        data: "api-key",
+        data: { mode: "api-key" },
       });
     });
 
@@ -279,10 +279,38 @@ describe("authModeHandlers", () => {
       expect(mockBrowserWindow.webContents.send).toHaveBeenCalledWith(
         IPC_CHANNELS.AUTH_MODE_CHANGED,
         expect.objectContaining({
-          currentMode: "api-key",
-          isAuthenticated: true,
+          previousMode: "subscription",
+          mode: "api-key",
+          status: expect.objectContaining({
+            mode: "api-key",
+            isValid: true,
+            hasCredentials: true,
+            message: "Anthropic APIキーを使用できます",
+          }),
+          changedAt: expect.any(Number),
         }),
       );
+    });
+
+    it("invalid sender が invalid mode より先に reject される", async () => {
+      const invalidEvent = {
+        sender: null,
+        senderFrame: { url: "https://malicious-site.com" },
+      } as unknown as IpcMainInvokeEvent;
+      const handler = mockIpcMain.handle.mock.calls.find(
+        (call) => call[0] === IPC_CHANNELS.AUTH_MODE_SET,
+      )?.[1];
+
+      const result = await handler(invalidEvent, { mode: "invalid-mode" });
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "auth-mode/invalid-sender",
+          message: "Invalid request sender",
+          guidance: undefined,
+        },
+      });
     });
   });
 
@@ -306,8 +334,12 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result.success).toBe(true);
       expect(result.data.mode).toBe("subscription");
-      expect(result.data.isAuthenticated).toBe(true);
-      expect(result.data.details?.hasSubscriptionToken).toBe(true);
+      expect(result.data.isValid).toBe(true);
+      expect(result.data.hasCredentials).toBe(true);
+      expect(result.data.message).toBe(
+        "Claude Code CLI の認証情報を使用できます",
+      );
+      expect(result.data.lastCheckedAt).toEqual(expect.any(Number));
     });
 
     it("未認証の状態をエラー付きで返す", async () => {
@@ -325,9 +357,12 @@ describe("authModeHandlers", () => {
 
       // Assert
       expect(result.success).toBe(true);
-      expect(result.data.isAuthenticated).toBe(false);
-      expect(result.data.error).toBeDefined();
-      expect(result.data.error.code).toBe("auth-mode/no-subscription-token");
+      expect(result.data.isValid).toBe(false);
+      expect(result.data.hasCredentials).toBe(false);
+      expect(result.data.errorCode).toBe("auth-mode/no-subscription-token");
+      expect(result.data.guidance).toBe(
+        "Claude Code CLIでログインしてください",
+      );
     });
 
     it("api-keyモードの認証済み状態を返す", async () => {
@@ -347,8 +382,9 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result.success).toBe(true);
       expect(result.data.mode).toBe("api-key");
-      expect(result.data.isAuthenticated).toBe(true);
-      expect(result.data.details?.hasApiKey).toBe(true);
+      expect(result.data.isValid).toBe(true);
+      expect(result.data.hasCredentials).toBe(true);
+      expect(result.data.message).toBe("Anthropic APIキーを使用できます");
     });
   });
 
@@ -374,6 +410,9 @@ describe("authModeHandlers", () => {
       expect(result.data.isValid).toBe(true);
       expect(result.data.mode).toBe("subscription");
       expect(result.data.hasCredentials).toBe(true);
+      expect(result.data.message).toBe(
+        "Claude Code CLI の認証情報を使用できます",
+      );
     });
 
     it("無効なsubscriptionモードの検証結果を返す", async () => {
@@ -392,7 +431,10 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result.success).toBe(true);
       expect(result.data.isValid).toBe(false);
-      expect(result.data.error).toBeDefined();
+      expect(result.data.errorCode).toBe("auth-mode/no-subscription-token");
+      expect(result.data.guidance).toBe(
+        "Claude Code CLIでログインしてください",
+      );
     });
 
     it("有効なapi-keyモードの検証結果を返す", async () => {
@@ -412,6 +454,8 @@ describe("authModeHandlers", () => {
       expect(result.success).toBe(true);
       expect(result.data.isValid).toBe(true);
       expect(result.data.mode).toBe("api-key");
+      expect(result.data.hasCredentials).toBe(true);
+      expect(result.data.message).toBe("Anthropic APIキーを使用できます");
     });
 
     it("無効なモード値でエラーを返す", async () => {
@@ -445,6 +489,9 @@ describe("authModeHandlers", () => {
       // Assert
       expect(result.success).toBe(true);
       expect(result.data.mode).toBe("subscription"); // デフォルト値
+      expect(result.data.message).toBe(
+        "Claude Code CLI の認証情報を使用できます",
+      );
     });
   });
 

@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
+| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記 |
 | v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
 | v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
 | v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
@@ -170,7 +172,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | ViewType導線 | `workspace` / `skillCenter` / `historySearch` の導線を `renderView()` で網羅 | `apps/desktop/src/renderer/App.tsx` |
 | 契約一元化 | AppDock ナビ項目を `navContract.ts` へ集約し、重複定義を除去 | `apps/desktop/src/renderer/navigation/navContract.ts` |
 | ショートカット | `Cmd` / `Ctrl` 両対応。`alt` / `shift` 併用時・編集要素上は無効化 | `apps/desktop/src/renderer/navigation/navContract.ts`, `apps/desktop/src/renderer/App.tsx` |
-| AppDock連携 | `APP_DOCK_NAV_ITEMS` を参照し、表示順と ViewType 契約を固定 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
+| 新旧ナビ連携 | `APP_DOCK_NAV_ITEMS` を legacy path に残しつつ、`MOBILE_*` 契約を新UIへ供給 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`, `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/index.tsx`, `apps/desktop/src/renderer/components/organisms/MobileNavBar/index.tsx` |
 
 ### 検証証跡
 
@@ -197,6 +199,60 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
 
 ---
+
+## Global Navigation 状態同期（TASK-UI-02-GLOBAL-NAV-CORE）
+
+### `uiSlice` 追加状態
+
+| プロパティ | 型 | 役割 |
+| --- | --- | --- |
+| `isNavExpanded` | `boolean` | desktop で expanded/collapsed を保持 |
+| `isMobileMoreOpen` | `boolean` | mobile More メニュー開閉を保持 |
+
+### action / selector
+
+| 種別 | 名前 | 役割 |
+| --- | --- | --- |
+| action | `setNavExpanded` | 明示 set |
+| action | `toggleNavExpanded` | expand/collapse 切替 |
+| action | `toggleMobileMore` | More の開閉 |
+| action | `closeMobileMore` | 明示 close |
+| hook | `useIsNavExpanded` | 展開状態の読取 |
+| hook | `useToggleNavExpanded` | 展開切替 |
+| hook | `useIsMobileMoreOpen` | More 状態読取 |
+| hook | `useCloseMobileMore` | More close |
+| hook | `useCanGoBack` / `useGoBack` | `viewHistory` ベースの戻り導線 |
+
+### 状態境界
+
+| 境界 | 担当 |
+| --- | --- |
+| current view / history | `navigationSlice` |
+| nav expanded / mobile more / responsive mode | `uiSlice` |
+| shortcut の DOM 条件判定 | `useNavShortcuts.ts` |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `pnpm --dir apps/desktop test:run ...`（nav/AppLayout/MobileNavBar/GlobalNavStrip/useNavShortcuts/uiSlice） | PASS（100 tests） |
+| `pnpm --dir apps/desktop typecheck` | PASS |
+| Phase 11 screenshots | PASS（5 visual states + 2 non-visual TC） |
+
+### 実装時の苦戦箇所（TASK-UI-02）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| `currentView` / `history` と nav UI state の責務が混ざる | routing state と expanded/collapsed / More 開閉を同一 slice で持つ | `navigationSlice` と `uiSlice` を分離し、DOM 条件判定は `useNavShortcuts` へ退避した | View 遷移 state と見た目 state は別境界に分ける |
+| mobile More の close 挙動がレイアウト遷移で揺れる | overlay 側の local state だけで開閉を管理する | `isMobileMoreOpen` と `closeMobileMore` を store action として公開し、レイアウトから明示 close する | overlay の open/close は明示 action を持ち、経路変更時に close できる形にする |
+| rollback 共存で legacy/new nav が別々の state を持ちやすい | feature flag 切替のたびに導線ごとに専用 state を増やす | feature flag は shell 切替だけに限定し、契約と state は共通 slice / contract を参照させた | rollout 中でも state ownership は1系統に固定する |
+
+### 再利用手順（4ステップ）
+
+1. `currentView/history` と presentation state を別 slice に分ける。  
+2. overlay / drawer は local state に閉じず、`close` 系 action を公開する。  
+3. keyboard shortcut は store から切り離し、DOM 条件判定を Hook へ寄せる。  
+4. rollback 導線が残る間も契約と state 正本を一本化し、テストとスクリーンショットで両経路を確認する。  
 
 ## Zustand Sliceパターン
 
@@ -232,7 +288,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | Slice名                  | 責務                     | 実装ファイル                             | タスク                          |
 | ------------------------ | ------------------------ | ---------------------------------------- | ------------------------------- |
-| `uiSlice`                | UI状態（currentView等）  | `store/slices/uiSlice.ts`                | -                               |
+| `uiSlice`                | UI状態（currentView / responsiveMode / isNavExpanded / isMobileMoreOpen）  | `store/slices/uiSlice.ts`                | TASK-UI-02                      |
 | `authSlice`              | 認証状態                 | `store/slices/authSlice.ts`              | -                               |
 | `chatSlice`              | チャット状態             | `store/slices/chatSlice.ts`              | -                               |
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
@@ -329,7 +385,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 - `views/{Name}View/index.tsx` を作成
 - `App.tsx` のrenderView関数にcaseを追加
-- `navigation/navContract.ts` の契約へ追加し、`components/organisms/AppDock/index.tsx` から参照
+- `navigation/navContract.ts` の契約へ追加し、`components/organisms/GlobalNavStrip/index.tsx` / `MobileNavBar/index.tsx` / legacy `AppDock/index.tsx` から参照
 
 **ステップ4: テスト作成**
 

@@ -4,6 +4,46 @@
 
 ---
 
+## [2026-03-06 - TASK-UI-02 UI domain spec 同期ガード追加（UI6+domain add-on）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の UI プロファイルを `6+α` 化し、`ui-ux-navigation.md` のような domain UI spec を追加 SubAgent で扱う運用を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-G+` と domain UI spec 完了チェックを追加
+  - `references/resource-map.md` に UI基本6仕様書 + domain add-on の用途説明を追記
+  - `references/patterns.md` に失敗パターン「UI基本6仕様書だけ更新して domain UI spec を未同期」を追加
+  - `SKILL.md` 変更履歴を `10.37.10` として同期
+
+---
+
+## [2026-03-06 - TASK-UI-02 再々監査パターン追加（workflow 本文 `phase-1..11` completed 同期）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workflow 本文 `phase-1..11` の completed 同期（TASK-UI-02）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `phase-1..11` 本文 pending 残置を検出する `rg` コマンドと完了条件を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の完了チェックへ同確認を追加
+  - `SKILL.md` 変更履歴を `10.37.9` として同期
+
+---
+
+## [2026-03-06 - TASK-UI-02 Phase 12再整合パターン追加（workflow index / artifacts 二重同期）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workflow index / artifacts 二重同期（TASK-UI-02）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `diff -u artifacts.json outputs/artifacts.json` と `generate-index.js --workflow ... --regenerate` を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の完了チェックへ `index.md` 状態確認を追加
+  - `SKILL.md` 変更履歴を `v10.37.8` として同期
+
+---
+
 ## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)

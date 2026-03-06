@@ -455,7 +455,7 @@
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/手順順序/検証ゲート）を機械検証するバリデータを追加し、Phase 12 再発防止を自動化する | `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
+| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/手順順序/検証ゲート）を機械検証するバリデータを追加し、Phase 12 再発防止を自動化する | `docs/30-workflows/completed-tasks/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
 
 ### タスク: TASK-UI-01-A-STORE-SLICE-BASELINE Store Slice棚卸しと状態境界の基準化（2026-03-05）
 
@@ -744,6 +744,68 @@
 2. `validate-phase-output` を同じ2workflowに実行し、Phase 12の必須成果物実体（Task 1/3/4/5）を手動突合する。  
 3. 未タスクは `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合格基準にする。  
 4. 実装内容と苦戦箇所を `task-workflow.md` / `lessons-learned.md` に同一ターン転記して終了する。  
+
+---
+
+### タスク: TASK-UI-02-GLOBAL-NAV-CORE グローバルナビゲーション基盤（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-02-GLOBAL-NAV-CORE |
+| 完了日 | 2026-03-06 |
+| ステータス | **completed（Step 1/2 実装・テスト・画面検証完了、Step 3 は readiness 記録済み）** |
+| タスク種別 | UI基盤実装（GlobalNavStrip / MobileNavBar / AppLayout / Shortcut / State / Rollback） |
+| Phase | Phase 1-12 完了（Phase 13 未実施） |
+
+#### 反映内容（要点）
+
+- `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` に Phase 1〜12 の成果物を出力。
+- `GlobalNavStrip` / `MobileNavBar` / `MoreMenu` / `AppLayout` / `ComingSoonView` / `useNavShortcuts` を実装。
+- `navigation/navContract.ts` に `mobileLabel` を追加し、mobile 下部バーの表示ラベルとアクセシビリティ名を分離した。
+- `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、store hook を個別 selector 化。
+- `App.tsx` に `VITE_USE_GLOBAL_NAV_STRIP` 分岐を追加し、rollback path を保持した。
+- `phase-1..11` 本文仕様書に残っていた `pending` / 未チェック完了条件 / `実行タスク結果=pending` を completed 実態へ同期した。
+
+#### 仕様書別 SubAgent 分担
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `phase-1..4` / `phase-10` | 要件・設計・Gate 統合 | Step 1/2 の Go/No-Go を明文化 |
+| SubAgent-B | `ui-ux-navigation.md` / `ui-ux-components.md` | UI実装と正本同期 | Global Navigation の正式構成が反映される |
+| SubAgent-C | `arch-state-management.md` / Phase 6〜9 | state/coverage/QA | task scope coverage と P31 境界が確認できる |
+| SubAgent-D | Phase 11/12 / `lessons-learned.md` | screenshot・教訓・文書同期 | 画面証跡と再利用手順が残る |
+
+#### 検証証跡
+
+| 観点 | 実行内容 | 結果 |
+| --- | --- | --- |
+| targeted tests | `pnpm --dir apps/desktop test:run ...7 files...` | PASS（100 tests） |
+| typecheck | `pnpm --dir apps/desktop typecheck` | PASS |
+| coverage | `pnpm --dir apps/desktop test:coverage ...` + task scope 抽出 | PASS（min branch 79.17%） |
+| screenshot review | `outputs/phase-11/screenshots/TC-11-01..04` | PASS |
+| preflight | build + preview + `curl` + `lsof` | PASS |
+| screenshot coverage | `validate-phase11-screenshot-coverage` | PASS |
+| workflow spec | `verify-all-specs` / `validate-phase-output` | PASS（13/13, 28項目） |
+| workflow stale guard | `rg -n 'ステータス\\s*\\|\\s*pending' docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/phase-{1,2,3,4,5,6,7,8,9,10,11,12}-*.md` | PASS（0件） |
+| unassigned audit | `verify-unassigned-links` / `audit --diff-from HEAD` | PASS（103/103, current=0, baseline=93） |
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 解決策 |
+| --- | --- |
+| rollback path を残すと責務が `App.tsx` に戻りやすい | `AppLayout` / nav / hook / slice を分離した |
+| repo-wide coverage fail が task scope 品質 fail に見える | `coverage-final.json` 抽出値を正本化した |
+| mobile overlay の品質が自動テストだけでは見えない | Phase 11 screenshot と Apple HIG レビューを追加した |
+| mobile tab bar の正式ラベルが小画面で切れやすい | `mobileLabel` で表示名を短縮し、`aria-label` は正式名称を維持した |
+| Phase 12 完了後も `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` がズレやすい | 4ファイルを同一ターンで同期し、`generate-index.js --workflow ... --regenerate` を標準化した |
+| `artifacts.json` / `index.md` は完了でも workflow 本文 `phase-1..11` が `pending` のまま残りやすい | completed 扱いの Phase 本文は `ステータス` / 完了条件 / 実行タスク結果まで同一ターンで同期した |
+
+#### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 概要 | 優先度 | 仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | UIタスクの Phase 12 で「基本6仕様書 + domain UI spec」まで同期対象を広げるガード | 中 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | `artifacts/index` 完了後も workflow 本文に残る `pending` を検出する同期ガード | 中 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
 
 ---
 
@@ -3053,6 +3115,10 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.27** | **2026-03-06** | **TASK-UI-02 workflow を completed-tasks へ移管**: `task-057-ui-02-global-nav-core/` を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動し、派生未タスク 2 件も `unassigned-task/` 配下へ移管。Task 12 成果物と残課題導線を completed workflow 基準へ統一 |
+| **1.67.26** | **2026-03-06** | **TASK-UI-02 派生未タスク2件を同期**: `TASK-UI-02-GLOBAL-NAV-CORE` 節へ `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` と `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を追加し、domain UI spec 同期漏れと workflow 本文 stale を未タスクとして追跡可能にした |
+| **1.67.25** | **2026-03-06** | **TASK-UI-02 再々監査の workflow 本文 stale 是正を反映**: `TASK-UI-02-GLOBAL-NAV-CORE` 節へ `phase-1..11` 本文仕様書の completed 同期を追記し、検証証跡へ pending 0件確認を追加。苦戦箇所を「成果物 / 台帳 / 本文仕様書」の三層同期へ拡張 |
+| **1.67.24** | **2026-03-06** | **TASK-INVESTIGATE 関連未タスクリンクを再監査基準へ是正**: `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` の参照先を、実体配置済みの `docs/30-workflows/completed-tasks/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` へ更新。`verify-unassigned-links` 失敗要因だった completed 移管後のリンクドリフトを解消 |
 | **1.67.23** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 を completed-tasks へ移管**: `outputs/phase-12` 実体と `phase-12-documentation.md` completed を確認後、workflow本体を `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/` へ移動。関連未タスク2件（`UT-IMP-PHASE11-AUTHKEY-SCREENSHOT-SELECTOR-DRIFT-GUARD-001` / `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001`）を `completed-tasks/unassigned-task/` へ移管し、残課題テーブルを完了表記へ同期 |
 | **1.67.22** | **2026-03-06** | **UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001 を残課題へ登録**: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残存した `skillHandlers.ts` の責務肥大化を未タスク化。DI境界整理（composition root集約）、回帰テスト固定、教訓同期を1セットで実施する導線を追加し、同タスク完了節の「関連未タスク」欄へ追記 |
 | **1.67.21** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の完了台帳を強化**: 完了タスクセクションを新設し、SubAgent分担・実装反映（`AuthKeyService` 単一生成 + `SkillExecutor` DI）・検証証跡（13/13, 28項目, target監査 current=0）・苦戦箇所（DIシグネチャドリフト、`phase-12-documentation` pending残置、教訓同期漏れ）を記録。Phase 12完了判定を「成果物実体 + 機械検証 + 仕様書ステータス同期」で固定 |
@@ -3076,7 +3142,9 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.11** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE を完了タスクへ追加**: Renderer Store baseline（型定義 + inventory 16行 + 境界マトリクス + セレクタ規約）を同期し、Phase 11 の TC証跡を `TC-11-01〜03` へ統一。`validate-phase11-screenshot-coverage` を expected=3/covered=3 で PASS 化し、Phase 12 のシステム仕様同期漏れを解消 |
 | **1.67.10** | **2026-03-05** | **UT-TASK-10A-B-009 を残課題へ追加**: 完了済みUT配置の3分類（未実施=`unassigned-task` / 完了済みUT=`completed-tasks` / legacy=`completed-tasks/unassigned-task`）と `audit --target-file` 適用境界の誤用再発防止を目的とした未タスクを登録。TASK-10A-B の未タスク管理件数を `4+3` から `4+4` へ更新 |
 | **1.67.9** | **2026-03-05** | **UT-TASK-10A-B-001 の再利用最適化（クイック解決カード）を追加**: TASK-10A-B 節へ「配置判定（未実施=`unassigned-task` / 完了済み=`completed-tasks`）」「`target-file` 監査適用境界」「画面証跡5/5判定」「current/baseline 分離判定」の4観点を固定化。コマンドセットを併記して同種課題を短手順で再現可能化 |
+| **1.67.10** | **2026-03-06** | **TASK-UI-02 再監査追補**: `mobileLabel` による mobile tab bar 可読性改善、`verify-unassigned-links` / `audit --diff-from HEAD` の current=0 / baseline=93 記録、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の同時同期ルールを TASK-UI-02 節へ追記 |
 | **1.67.8** | **2026-03-05** | **UT-TASK-10A-B-001 の最終再監査（未タスク配置是正）を同期**: 完了済み `task-10a-b-autofixable-filter-button.md` を `docs/30-workflows/completed-tasks/` 直下へ移管し、未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置。Apple UI/UX視点でスクリーンショット5件を 11:00 JST に再取得して視覚確認し、`verify-unassigned-links`（102/102）と `audit --diff-from HEAD`（current=0, baseline=90）を検証証跡へ追記 |
+| **1.67.9** | **2026-03-06** | **TASK-UI-02 完了同期**: `TASK-UI-02-GLOBAL-NAV-CORE` を completed として追加。`GlobalNavStrip` / `MobileNavBar` / `AppLayout` / `uiSlice` nav state / screenshot evidence / rollback readiness を台帳へ反映 |
 | **1.67.7** | **2026-03-05** | **UT-TASK-10A-B-001 再監査追補を同期**: Phase 11 light証跡ドリフト（theme mock 固定値）を苦戦箇所へ追加し、`capture-ut-task-10a-b-001-screenshots.mjs` の `prefers-color-scheme` 連動修正を反映。再撮影時刻（10:28 JST）と `validate-phase11-screenshot-coverage`（5/5）を検証証跡に追記 |
 | **1.67.6** | **2026-03-05** | **UT-TASK-10A-B-001 完了を同期**: TASK-10A-B 節へ派生タスク完了記録を追加し、残課題テーブルの `UT-TASK-10A-B-001` を完了表記へ更新。参照先を `docs/30-workflows/completed-tasks/ut-task-10a-b-001-autofixable-filter-button/` に切替え、未タスク管理件数を `4件+3件` に再計算して整合化 |
 | **1.67.5** | **2026-03-04** | **Phase 11 画面カバレッジマトリクスの未整備を未タスク化**: `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を残課題テーブルへ追加し、`validate-phase11-screenshot-coverage` の warning（matrix未記載）を苦戦箇所へ追記。Phase 11 設計意図（視覚TC/非視覚TC + 期待証跡）を標準化する再発防止導線を記録 |

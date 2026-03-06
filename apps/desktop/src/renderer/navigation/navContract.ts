@@ -20,7 +20,9 @@ export interface NavItemContract {
   id: DockViewType;
   icon: IconName;
   label: string;
+  mobileLabel?: string;
   shortcut: string;
+  isMobilePrimary?: boolean;
 }
 
 export interface NavSectionContract {
@@ -32,72 +34,86 @@ export interface NavSectionContract {
 export const NAV_SECTIONS = [
   {
     id: "main",
-    label: "Main",
+    label: "主要機能",
     items: [
       {
         id: "dashboard",
         icon: "layout-grid",
-        label: "Dashboard",
+        label: "ダッシュボード",
+        mobileLabel: "ダッシュ",
         shortcut: "Cmd+1",
+        isMobilePrimary: true,
       },
       {
         id: "workspace",
         icon: "folder-tree",
-        label: "Workspace",
+        label: "ワークスペース",
+        mobileLabel: "ワーク",
         shortcut: "Cmd+2",
+        isMobilePrimary: true,
       },
       {
         id: "chat",
         icon: "message-circle",
-        label: "Chat",
+        label: "チャット",
+        mobileLabel: "チャット",
         shortcut: "Cmd+3",
+        isMobilePrimary: true,
       },
       {
         id: "agent",
         icon: "bot",
-        label: "Agent",
+        label: "エージェント",
+        mobileLabel: "実行",
         shortcut: "Cmd+4",
+        isMobilePrimary: true,
       },
       {
         id: "skillCenter",
-        icon: "sparkles",
-        label: "Skills",
+        icon: "puzzle",
+        label: "スキルセンター",
+        mobileLabel: "スキル",
         shortcut: "Cmd+5",
+        isMobilePrimary: true,
       },
       {
         id: "historySearch",
         icon: "search",
-        label: "History",
+        label: "履歴検索",
+        mobileLabel: "履歴",
         shortcut: "Cmd+6",
       },
     ],
   },
   {
     id: "sub",
-    label: "Sub",
+    label: "補助機能",
     items: [
       {
         id: "graph",
         icon: "network",
-        label: "Graph",
+        label: "グラフ",
+        mobileLabel: "グラフ",
         shortcut: "Cmd+7",
       },
       {
         id: "editor",
-        icon: "file-text",
-        label: "Editor",
+        icon: "file-code",
+        label: "エディタ",
+        mobileLabel: "編集",
         shortcut: "Cmd+8",
       },
     ],
   },
   {
     id: "footer",
-    label: "Footer",
+    label: "システム",
     items: [
       {
         id: "settings",
         icon: "settings",
-        label: "Settings",
+        label: "設定",
+        mobileLabel: "設定",
         shortcut: "Cmd+,",
       },
     ],
@@ -109,6 +125,14 @@ export const APP_DOCK_NAV_ITEMS: readonly NavItemContract[] = [
   ...NAV_SECTIONS[1].items,
   ...NAV_SECTIONS[2].items,
 ];
+
+export const MOBILE_PRIMARY_NAV_ITEMS = APP_DOCK_NAV_ITEMS.filter(
+  (item) => item.isMobilePrimary,
+);
+
+export const MOBILE_SECONDARY_NAV_ITEMS = APP_DOCK_NAV_ITEMS.filter(
+  (item) => !item.isMobilePrimary,
+);
 
 export const NAV_SHORTCUT_TO_VIEW: Readonly<Record<string, DockViewType>> = {
   "1": "dashboard",
@@ -132,6 +156,14 @@ interface NavigationShortcutEvent {
   target: EventTarget | null;
 }
 
+function hasNavigationModifier(event: NavigationShortcutEvent): boolean {
+  return event.metaKey || event.ctrlKey;
+}
+
+function hasDisallowedModifier(event: NavigationShortcutEvent): boolean {
+  return event.altKey || event.shiftKey;
+}
+
 export function isEditableEventTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) {
     return false;
@@ -152,11 +184,11 @@ export function isEditableEventTarget(target: EventTarget | null): boolean {
 export function getViewFromNavigationShortcut(
   event: NavigationShortcutEvent,
 ): DockViewType | null {
-  if (!(event.metaKey || event.ctrlKey)) {
+  if (!hasNavigationModifier(event)) {
     return null;
   }
 
-  if (event.altKey || event.shiftKey) {
+  if (hasDisallowedModifier(event)) {
     return null;
   }
 
@@ -170,4 +202,22 @@ export function getViewFromNavigationShortcut(
 
   const normalizedKey = event.key.toLowerCase();
   return NAV_SHORTCUT_TO_VIEW[normalizedKey] ?? null;
+}
+
+export function isGoBackNavigationShortcut(
+  event: NavigationShortcutEvent,
+): boolean {
+  if (!hasNavigationModifier(event)) {
+    return false;
+  }
+
+  if (hasDisallowedModifier(event)) {
+    return false;
+  }
+
+  if (isEditableEventTarget(event.target)) {
+    return false;
+  }
+
+  return event.code === "BracketLeft" || event.key === "[";
 }

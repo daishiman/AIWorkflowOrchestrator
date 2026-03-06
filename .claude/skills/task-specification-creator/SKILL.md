@@ -120,6 +120,9 @@ Phase 4〜5: 検証 → 完了
 | 実行ワークフロー     | [references/execute-workflow.md](references/execute-workflow.md)                           |
 | テストカバレッジ基準 | [references/coverage-standards.md](references/coverage-standards.md)                       |
 | Phase 11/12ガイド    | [references/phase-11-12-guide.md](references/phase-11-12-guide.md)                         |
+| UIスクリーンショット検証 | [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md) |
+| Phase 12 実体確認    | [references/phase12-checklist-definition.md](references/phase12-checklist-definition.md)   |
+| 証跡台帳同期ルール   | [references/evidence-sync-rules.md](references/evidence-sync-rules.md)                     |
 | コマンドリファレンス | [references/commands.md](references/commands.md)                                           |
 | 品質基準             | [references/quality-standards.md](references/quality-standards.md)                         |
 | Phase別テンプレート  | [references/phase-templates.md](references/phase-templates.md)                             |
@@ -317,6 +320,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 2. **成果物確認**: 全ての必須成果物が生成されていることを検証
 3. **artifacts.json更新**: `complete-phase.js` でPhase完了ステータスを更新
 4. **完了条件チェック**: 各タスクを完遂した旨を必ず明記
+5. **変更履歴採番確認**: `## 変更履歴` へ追記する前に既存Version重複がないことを確認し、最新値から一意に採番する
 
 ### PR作成に関する注意
 
@@ -330,22 +334,22 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ```bash
 # 全体整合性検証（Phase 5）
-node scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
 
 # Phase完了処理
-node scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{N}} --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
+node .claude/skills/task-specification-creator/scripts/complete-phase.js --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{N}} --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 
 # 未タスク検出（Phase 12）
-node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp/unassigned-candidates.json
 
 # 未タスク配置・フォーマット監査（Phase 12）
-node scripts/audit-unassigned-tasks.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 # 未タスク参照リンク整合チェック（Phase 12 Step 1-E後）
-node scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 
 # 使用ログ記録
-node scripts/log-usage.js --result success --phase "Phase {{N}}"
+node .claude/skills/task-specification-creator/scripts/log-usage.js --result success --phase "Phase {{N}}"
 ```
 
 📖 [references/commands.md](references/commands.md) - 全コマンド一覧
@@ -392,6 +396,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.18** | **2026-03-06** | **TASK-UI-02 再々監査の workflow 本文 stale 是正を反映**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に「`artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書へ `pending` が残っていないことを確認する」チェックを追加。Phase 12 完了判定を「成果物 / 台帳 / 本文仕様書」の三層同期へ拡張 |
+| **v10.08.17** | **2026-03-06** | **TASK-UI-02 Phase 12 再整合手順を追補**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加し、artifacts 完了済みでも workflow index が stale なまま残る再発を防止 |
+| **v10.08.16** | **2026-03-06** | **TASK-UI-02 再監査の運用知見を反映**: `SKILL.md` に `screenshot-verification-procedure.md` / `phase12-checklist-definition.md` / `evidence-sync-rules.md` の直リンクを追加し、Phase 11/12 の導線不足を解消。あわせてコマンド例を canonical path へ統一し、変更履歴の version 重複を防ぐ採番確認ルールを明文化 |
 | **v10.08.15** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再確認で判明した Phase 12台帳ドリフト対策を反映**: `references/phase-11-12-guide.md` の Task 3.5 と完了チェックへ「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記。成果物実体のみで完了判定しない運用を明文化 |
 | **v10.08.14** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査を反映**: ユーザー追加要求に基づく Phase 11 画面回帰撮影（3スクリーンショット）を workflow 直下へ再証跡化し、`manual-test-result.md` を `TC + 証跡` 形式へ更新。併せて仕様書のDIシグネチャ旧表記を現行実装へ同期し、`validate-phase11-screenshot-coverage` を再実行する運用を追記 |
 | **v10.08.13** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 実行を反映**: `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 1〜12 を完了。Task 12 Step 1-A/1-B/1-C として `interfaces-agent-sdk-executor.md` / `api-ipc-system.md` の完了タスク・実装状況・関連タスクを同期し、`verify-all-specs` / `validate-phase-output` / `complete-phase` をフェーズ単位で実行する運用を記録 |

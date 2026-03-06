@@ -55,7 +55,11 @@ import type {
   GetMultipleFileMetadataRequest,
   ValidateFilePathRequest,
 } from "@repo/shared/schemas";
-import type { AuthModeSetRequest, AuthModeChangedEvent } from "./types";
+import type {
+  AuthModeChangedEvent,
+  AuthModeSetRequest,
+  AuthModeValidateRequest,
+} from "./types";
 import type {
   LLMProviderId,
   LLMChatRequest,
@@ -221,7 +225,8 @@ const electronAPI: ElectronAPI = {
     set: (request: AuthModeSetRequest) =>
       safeInvoke(IPC_CHANNELS.AUTH_MODE_SET, request),
     status: () => safeInvoke(IPC_CHANNELS.AUTH_MODE_STATUS),
-    validate: () => safeInvoke(IPC_CHANNELS.AUTH_MODE_VALIDATE),
+    validate: (request?: AuthModeValidateRequest) =>
+      safeInvoke(IPC_CHANNELS.AUTH_MODE_VALIDATE, request),
     onModeChanged: (callback: (event: AuthModeChangedEvent) => void) =>
       safeOn<AuthModeChangedEvent>(IPC_CHANNELS.AUTH_MODE_CHANGED, callback),
   },

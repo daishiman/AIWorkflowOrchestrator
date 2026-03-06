@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-06T05:36:41.270Z",
+  "baseUrl": "http://localhost:5183",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-initial.png",
+      "note": "初期表示。subscription valid。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075818-wt1/docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-01-settings-initial.png",
+      "capturedAt": "2026-03-06T05:36:34.550Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-api-key-missing.png",
+      "note": "api-key へ切替後、APIキー未設定。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075818-wt1/docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-02-api-key-missing.png",
+      "capturedAt": "2026-03-06T05:36:36.111Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-subscription-missing.png",
+      "note": "subscription へ切替後、subscription token 不在。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075818-wt1/docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-03-subscription-missing.png",
+      "capturedAt": "2026-03-06T05:36:37.528Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-mode-changed.png",
+      "note": "再読込なしの event 反映。api-key valid。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075818-wt1/docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-04-mode-changed.png",
+      "capturedAt": "2026-03-06T05:36:39.200Z"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-restored-mode.png",
+      "note": "再読込後、api-key valid が復元。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075818-wt1/docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-05-restored-mode.png",
+      "capturedAt": "2026-03-06T05:36:41.238Z"
+    }
+  ],
+  "visualDiagnostics": {
+    "selectorRect": {
+      "x": 49,
+      "y": 694,
+      "width": 1342,
+      "height": 46
+    },
+    "statusRect": {
+      "x": 49,
+      "y": 756,
+      "width": 1342,
+      "height": 38
+    },
+    "selectedButton": {
+      "backgroundColor": "rgb(0, 122, 255)",
+      "color": "rgb(255, 255, 255)",
+      "borderRadius": "6px"
+    },
+    "statusCard": {
+      "backgroundColor": "rgb(240, 253, 244)",
+      "color": "rgb(21, 128, 61)",
+      "borderRadius": "6px"
+    }
+  }
+}

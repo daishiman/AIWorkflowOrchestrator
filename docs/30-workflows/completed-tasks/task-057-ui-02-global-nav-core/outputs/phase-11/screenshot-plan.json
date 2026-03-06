@@ -1,0 +1,41 @@
+{
+  "workflow": "docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core",
+  "generatedAt": "2026-03-06",
+  "scenarios": [
+    {
+      "tcId": "TC-11-01",
+      "name": "desktop-expanded-dashboard",
+      "mode": "desktop",
+      "priority": "A",
+      "output": "screenshots/TC-11-01-desktop-expanded-dashboard.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "name": "tablet-collapsed-focus",
+      "mode": "tablet",
+      "priority": "A",
+      "output": "screenshots/TC-11-02-tablet-collapsed-focus.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "name": "mobile-default",
+      "mode": "mobile",
+      "priority": "A",
+      "output": "screenshots/TC-11-03-mobile-default.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "name": "mobile-more-menu",
+      "mode": "mobile",
+      "priority": "A",
+      "output": "screenshots/TC-11-03-mobile-more-menu.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "name": "desktop-history-search-shortcut",
+      "mode": "desktop",
+      "priority": "B",
+      "output": "screenshots/TC-11-04-desktop-history-search-shortcut.png"
+    }
+  ]
+}

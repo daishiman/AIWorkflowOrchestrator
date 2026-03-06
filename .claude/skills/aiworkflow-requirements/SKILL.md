@@ -48,7 +48,7 @@ node scripts/search-spec.js "認証" -C 5
 
 1. `assets/` 配下の該当テンプレートを使用
 2. `references/spec-guidelines.md` の命名規則に従う
-3. 編集後は `node scripts/generate-index.js` を実行
+3. 編集後は `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行
 
 ## ワークフロー
 
@@ -100,14 +100,25 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 **注記**: 18-skills.md（Skill層仕様書）は `skill-creator` スキルで管理。
 
+### 再監査で優先して開く正本
+
+- [references/ui-ux-navigation.md](references/ui-ux-navigation.md)
+- [references/ui-ux-components.md](references/ui-ux-components.md)
+- [references/ui-ux-feature-components.md](references/ui-ux-feature-components.md)
+- [references/arch-state-management.md](references/arch-state-management.md)
+- [references/architecture-overview.md](references/architecture-overview.md)
+- [references/task-workflow.md](references/task-workflow.md)
+- [references/lessons-learned.md](references/lessons-learned.md)
+- [references/directory-structure.md](references/directory-structure.md)
+
 ### scripts/
 
 | スクリプト                  | 用途               | 使用例                                       |
 | --------------------------- | ------------------ | -------------------------------------------- |
 | `search-spec.js`            | キーワード検索     | `node scripts/search-spec.js "認証" -C 5`    |
 | `list-specs.js`             | ファイル一覧       | `node scripts/list-specs.js --topics`        |
-| `generate-index.js`         | インデックス再生成 | `node scripts/generate-index.js`             |
-| `validate-structure.js`     | 構造検証           | `node scripts/validate-structure.js`         |
+| `generate-index.js`         | インデックス再生成 | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`     |
+| `validate-structure.js`     | 構造検証           | `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` |
 | `select-template.js`        | テンプレート選定   | `node scripts/select-template.js "IPC仕様"`  |
 | `split-reference.js`        | 大規模ファイル分割 | `node scripts/split-reference.js <file>`     |
 | `remove-heading-numbers.js` | 見出し番号削除     | `node scripts/remove-heading-numbers.js`     |
@@ -197,6 +208,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.30** | **2026-03-06** | **TASK-UI-02 派生未タスクの system spec 同期を反映**: `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` と `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` へ同一ターンで登録し、Global Navigation 改修の苦戦箇所から未タスク仕様書へ直接たどれる導線を固定 |
+| **9.01.29** | **2026-03-06** | **TASK-UI-02 再監査の正本導線を強化**: `SKILL.md` に再監査で優先参照すべき正本8件（navigation/components/feature-components/arch/task/lessons/directory）を直リンクで追加し、`generate-index.js` / `validate-structure.js` の実行例を canonical path へ統一。Global Navigation 再監査で発見したリンクドリフト・古い `AppDock` 前提表現の是正導線を明確化 |
 | **9.01.28** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓同期を強化**: `references/task-workflow.md` に完了タスク専用セクション（SubAgent分担/実装反映/検証証跡/苦戦箇所）を追加し、`references/lessons-learned.md` に同タスクの実装内容 + 再発条件付き苦戦箇所を新設。Phase 12完了判定を「成果物実体 + 機械検証 + `phase-12-documentation.md` ステータス同期」の3点セットで固定 |
 | **9.01.27** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12準拠再確認を同期**: `phase-12-documentation.md` の `pending` 残置を `completed` へ是正し、Task 12-1〜12-5成果物実在 + `verify-all-specs` + `validate-phase-output` の3点突合を完了条件として固定。`task-workflow.md` / `lessons-learned.md` に苦戦箇所（台帳ドリフト）と再利用手順を追記 |
 | **9.01.26** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査を同期**: 仕様書と実装のDIシグネチャ差分を再点検し、`interfaces-agent-sdk-executor.md` / `arch-electron-services.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の `registerSkillHandlers(..., authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を現行実装へ統一。追加でPhase 11画面回帰スクリーンショット3件を取得し、workflow証跡へ反映 |

@@ -20,6 +20,12 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-06 | 1.29.38 | TASK-UI-02 完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動し、派生未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移管した状態へ教訓導線を同期 |
+| 2026-03-06 | 1.29.37 | lessons 既存リンク欠落を是正。completed へ移管済みの `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` / `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の参照先を実体パスへ更新し、ワイルドカード表現による `verify-unassigned-links` の false fail を避ける文言へ修正 |
+| 2026-03-06 | 1.29.36 | TASK-UI-02 派生未タスクを追加。domain UI spec 同期漏れと workflow 本文 stale を `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` / `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` として登録し、教訓節から直接たどれるようにした |
+| 2026-03-06 | 1.29.35 | TASK-UI-02-GLOBAL-NAV-CORE 再々監査追補。`artifacts.json` / `index.md` が completed でも workflow 本文 `phase-1..11` に `pending` が残る stale を苦戦箇所へ追加し、Phase 12 の三層同期（成果物 / 台帳 / 本文仕様書）を標準手順へ拡張 |
+| 2026-03-06 | 1.29.34 | TASK-UI-02-GLOBAL-NAV-CORE 再監査追補。mobile tab bar のラベル切れを `mobileLabel` + `aria-label` 分離で解消する指針と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを追加 |
+| 2026-03-06 | 1.29.33 | TASK-UI-02-GLOBAL-NAV-CORE の教訓を追加。段階移行で rollback path を維持したまま SoC を守る方法、repo-wide coverage threshold の誤読防止、mobile overlay の画面検証必須化を再利用手順付きで追記 |
 | 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
 | 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
 | 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
@@ -151,6 +157,72 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06）
+
+### 苦戦箇所: rollback path を残したまま新ナビへ責務を寄せると境界が崩れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AppDock` を即削除せず feature flag で共存させるため、`App.tsx` と UIコンポーネントの責務が再び肥大化しやすい |
+| 再発条件 | 「新UI導入」と「旧UI退避」を同一コンポーネント内で抱え込む場合 |
+| 対処 | `AppLayout`、`GlobalNavStrip`、`MobileNavBar`、`useNavShortcuts`、`uiSlice` に責務を分離し、`App.tsx` は feature flag と view wiring のみに絞った |
+| 標準ルール | 段階移行では「rollback 分岐」と「新機能本体」を別コンポーネントへ分離してから統合する |
+
+### 苦戦箇所: repo-wide coverage threshold fail が task scope 品質の失敗に見えやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `vitest --coverage` の終了コードが 1 だと、対象差分が悪いのか全体閾値が高いだけなのか区別しづらい |
+| 再発条件 | 大規模アプリで対象ファイルだけを実行しても全体thresholdが掛かる場合 |
+| 対処 | `coverage-final.json` から task scope の実測値を抽出し、repo-wide 値は環境情報として別記した |
+| 標準ルール | coverage は「task scope 実測」と「repo-wide 閾値」を必ず分離して記録する |
+
+### 苦戦箇所: mobile overlay の品質は自動テストだけでは確定できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `MoreMenu` は role/close/focus を自動テストで確認できても、積層感や混雑回避の品質までは見えない |
+| 再発条件 | portal 系 UI を screenshot なしで完了扱いにする場合 |
+| 対処 | preview build + Playwright capture で `TC-11-03-mobile-more-menu.png` を取得し、Apple HIG 観点で再確認した |
+| 標準ルール | overlay / sheet / menu を含む UIタスクは Phase 11 で必ず実画面証跡を残す |
+
+### 苦戦箇所: mobile tab bar の全文ラベルは小画面で切れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 正式名称をそのまま表示すると、mobile 下部バーで文字が詰まり視認性が落ちる |
+| 再発条件 | desktop / accessibility 用の正式ラベルを mobile 表示にもそのまま流用する場合 |
+| 対処 | `navContract.ts` に `mobileLabel` を追加し、可視ラベルだけ短縮、`aria-label` は正式名称を維持した |
+| 標準ルール | mobile 下部ナビは「表示名」と「支援技術向け名称」を分離して設計する |
+
+### 苦戦箇所: Phase 12 完了後も workflow 台帳が stale になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` が揃っていても、`phase-12-documentation.md` や `index.md` だけでなく workflow 本文 `phase-1..11` に `pending` が残ると監査上は未完了に見える |
+| 再発条件 | `complete-phase.js` 実行後に `outputs/artifacts.json` / workflow `index.md` / completed 扱いの Phase 本文を再同期しない場合 |
+| 対処 | `phase-1..11` / `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を同一ターンで更新し、`generate-index.js --workflow ... --regenerate` と pending 検出 `rg` を実行した |
+| 標準ルール | Phase 12 完了判定は「成果物実体 + 台帳同期 + 本文仕様書同期」で閉じる |
+
+### 同種課題の簡潔解決手順（7ステップ）
+
+1. nav 契約を `navContract.ts` へ集約し、UI側は参照だけにする。  
+2. layout、desktop/tablet nav、mobile nav、shortcut、state を別コンポーネント/Hook/Slice に切り分ける。  
+3. rollback path は feature flag へ隔離し、削除完了とは別ゲートで扱う。  
+4. mobile 下部ナビは `mobileLabel` と `aria-label` を分離し、可読性はスクリーンショットで最終確認する。  
+5. coverage は task scope 抽出値と repo-wide threshold を分離記録する。  
+6. Phase 12 は `phase-1..11` / `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を同一ターンで同期する。  
+7. 最後に `rg -n 'ステータス\\s*\\|\\s*pending' <workflow>/phase-{1..12}-*.md` を実行し、本文 stale が 0 件であることを固定する。  
+
+### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 要旨 | 参照先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | UIタスクの Phase 12 で domain 正本まで同期するガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | `artifacts/index` 完了後も残る workflow 本文 stale を検出するガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
 
 ---
 
@@ -403,7 +475,7 @@
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/手順順序/検証ゲート）を機械検証する運用ガードを追加する | `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
+| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/手順順序/検証ゲート）を機械検証する運用ガードを追加する | `docs/30-workflows/completed-tasks/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
 
 ---
 
@@ -473,7 +545,7 @@
 ### 同種課題の簡潔解決手順（未タスク監査運用 4ステップ）
 
 1. `audit-unassigned-tasks --json --diff-from HEAD` を先に実行し、`currentViolations` を合否に使う。  
-2. `--target-file` を使う場合は `docs/30-workflows/unassigned-task/*.md` だけに限定する。  
+2. `--target-file` は `docs/30-workflows/unassigned-task/` 配下の実体 `.md` ファイルだけに使い、ワイルドカード表記は残さない。  
 3. `baselineViolations` は即時修正対象にせず、別未タスク（段階削減）へ分離する。  
 4. 監査結果を `task-workflow.md` / `unassigned-task-detection.md` / `lessons-learned.md` の3点へ同時反映する。  
 
@@ -1327,7 +1399,7 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `docs/30-workflows/unassigned-task/*.md` の参照は実体があってもリンク監査で missing 扱いになる |
+| 課題 | 未タスクディレクトリ配下を指すワイルドカード参照は、実体があってもリンク監査で missing 扱いになる |
 | 再発条件 | 台帳にワイルドカード参照を残したまま `verify-unassigned-links` を実行した場合 |
 | 原因 | 監査は実体ファイルパス判定であり、ワイルドカード展開を前提にしていない |
 | 対処 | 台帳参照を実体ファイル参照へ置換し、`verify-unassigned-links` を再実行して missing 0 を確認 |
@@ -2684,7 +2756,7 @@ pnpm --filter @repo/shared build && pnpm typecheck
 |---------|---------|--------|--------|
 | ~~UT-FIX-SKILL-VALIDATION-P42-001~~ | ~~skillHandlers P42準拠バリデーション横展開~~ | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）** |
 | UT-FIX-SKILL-IPC-ERROR-RESPONSE-001 | skillHandlers IPCバリデーションエラー応答パターン統一 | 中 | [`docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md) |
-| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-phase11-worktree-testing-protocol-001.md) |
+| UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 | Phase 11 Worktree環境手動テスト実行プロトコル策定 | 中 | [`docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md) |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001 | IPCハンドラ粒度カバレッジ計測インフラ構築 | 中 | [`docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md) |
 | UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード | 中 | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md) |
 

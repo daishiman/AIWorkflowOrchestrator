@@ -7,57 +7,22 @@
  */
 import { ipcMain, BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type { IpcMain } from "electron";
+import type {
+  AuthModeErrorCode,
+  AuthModeChangedEvent,
+  AuthModeResponse,
+  AuthModeSetRequest,
+  AuthModeStatus as AuthModeTransportStatus,
+  AuthModeValidateRequest,
+  IPCResponse,
+} from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
 import type { AuthModeService } from "../services/auth/AuthModeService";
-import type {
-  AuthMode,
-  AuthStatus,
-  AuthModeValidationResult,
-} from "../services/auth/types";
+import type { AuthMode, AuthStatus } from "../services/auth/types";
 import {
   VALID_AUTH_MODES,
   AUTH_MODE_ERROR_CODES,
 } from "../services/auth/types";
-
-// =================================================================
-// 型定義
-// =================================================================
-
-/**
- * IPCレスポンスの基本型
- */
-interface IPCResponse<T = void> {
-  success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-/**
- * auth-mode:set リクエスト
- */
-interface AuthModeSetRequest {
-  mode: AuthMode;
-}
-
-/**
- * auth-mode:validate リクエスト
- */
-interface AuthModeValidateRequest {
-  mode: AuthMode;
-}
-
-/**
- * auth-mode:changed イベントペイロード
- */
-interface AuthModeChangedEvent {
-  previousMode: AuthMode;
-  currentMode: AuthMode;
-  timestamp: number;
-  isAuthenticated: boolean;
-}
 
 /**
  * ハンドラ依存関係（テスト用DI）
@@ -86,6 +51,89 @@ function sanitizeErrorMessage(error: unknown): string {
     return sanitized;
   }
   return "An unknown error occurred";
+}
+
+function buildErrorResponse<T = void>(
+  code: AuthModeErrorCode,
+  message: string,
+  guidance?: string,
+): IPCResponse<T> {
+  return {
+    success: false,
+    error: {
+      code,
+      message,
+      guidance,
+    },
+  };
+}
+
+function getSuccessMessage(mode: AuthMode): string {
+  return mode === "subscription"
+    ? "Claude Code CLI の認証情報を使用できます"
+    : "Anthropic APIキーを使用できます";
+}
+
+function getFailureStatus(mode: AuthMode): AuthModeTransportStatus {
+  const lastCheckedAt = Date.now();
+
+  if (mode === "subscription") {
+    return {
+      mode,
+      isValid: false,
+      hasCredentials: false,
+      message: "サブスクリプションが見つかりません",
+      errorCode: AUTH_MODE_ERROR_CODES.NO_SUBSCRIPTION_TOKEN,
+      guidance: "Claude Code CLIでログインしてください",
+      lastCheckedAt,
+    };
+  }
+
+  return {
+    mode,
+    isValid: false,
+    hasCredentials: false,
+    message: "APIキーが設定されていません",
+    errorCode: AUTH_MODE_ERROR_CODES.NO_API_KEY,
+    guidance: "設定画面でAPIキーを入力してください",
+    lastCheckedAt,
+  };
+}
+
+function mapAuthStatusToTransport(status: AuthStatus): AuthModeTransportStatus {
+  return {
+    mode: status.mode,
+    isValid: status.isAuthenticated,
+    hasCredentials: status.hasCredentials,
+    message: status.error?.message ?? getSuccessMessage(status.mode),
+    errorCode: status.error?.code as AuthModeTransportStatus["errorCode"],
+    guidance: status.error?.guidance,
+    lastCheckedAt: Date.now(),
+  };
+}
+
+async function buildTransportStatus(
+  authModeService: AuthModeService,
+  mode?: AuthMode,
+): Promise<AuthModeTransportStatus> {
+  const currentMode = authModeService.getMode();
+  if (!mode || mode === currentMode) {
+    const status = await authModeService.getStatus();
+    return mapAuthStatusToTransport(status);
+  }
+
+  const hasCredentials = await authModeService.validateMode(mode);
+  if (hasCredentials) {
+    return {
+      mode,
+      isValid: true,
+      hasCredentials: true,
+      message: getSuccessMessage(mode),
+      lastCheckedAt: Date.now(),
+    };
+  }
+
+  return getFailureStatus(mode);
 }
 
 /**
@@ -141,32 +189,26 @@ export function registerAuthModeHandlers(
   // -----------------------------------------------------------------
   main.handle(
     IPC_CHANNELS.AUTH_MODE_GET,
-    async (event): Promise<IPCResponse<AuthMode>> => {
+    async (event): Promise<IPCResponse<AuthModeResponse>> => {
       // Sender検証
       if (!validateSender(event)) {
-        return {
-          success: false,
-          error: {
-            code: "auth-mode/invalid-sender",
-            message: "Invalid request sender",
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_SENDER,
+          "Invalid request sender",
+        );
       }
 
       try {
         const mode = authModeService.getMode();
         return {
           success: true,
-          data: mode,
+          data: { mode },
         };
       } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.STORAGE_READ_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.STORAGE_READ_FAILED,
+          sanitizeErrorMessage(error),
+        );
       }
     },
   );
@@ -179,24 +221,18 @@ export function registerAuthModeHandlers(
     async (event, request: AuthModeSetRequest): Promise<IPCResponse<void>> => {
       // Sender検証
       if (!validateSender(event)) {
-        return {
-          success: false,
-          error: {
-            code: "auth-mode/invalid-sender",
-            message: "Invalid request sender",
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_SENDER,
+          "Invalid request sender",
+        );
       }
 
       // 入力バリデーション
       if (!request || !validateAuthMode(request.mode)) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.INVALID_MODE,
-            message: `Invalid auth mode: ${request?.mode}. Must be one of: ${VALID_AUTH_MODES.join(", ")}`,
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_MODE,
+          `Invalid auth mode: ${request?.mode}. Must be one of: ${VALID_AUTH_MODES.join(", ")}`,
+        );
       }
 
       try {
@@ -204,12 +240,15 @@ export function registerAuthModeHandlers(
         await authModeService.setMode(request.mode);
 
         // 成功時、Rendererに変更を通知
-        const status = await authModeService.getStatus();
+        const status = await buildTransportStatus(
+          authModeService,
+          request.mode,
+        );
         const changedEvent: AuthModeChangedEvent = {
           previousMode,
-          currentMode: request.mode,
-          timestamp: Math.floor(Date.now() / 1000),
-          isAuthenticated: status.isAuthenticated,
+          mode: request.mode,
+          status,
+          changedAt: Date.now(),
         };
 
         if (!mainWindow.isDestroyed()) {
@@ -221,13 +260,10 @@ export function registerAuthModeHandlers(
 
         return { success: true };
       } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.STORAGE_FAILED,
-            message: sanitizeErrorMessage(error),
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.STORAGE_FAILED,
+          sanitizeErrorMessage(error),
+        );
       }
     },
   );
@@ -237,32 +273,26 @@ export function registerAuthModeHandlers(
   // -----------------------------------------------------------------
   main.handle(
     IPC_CHANNELS.AUTH_MODE_STATUS,
-    async (event): Promise<IPCResponse<AuthStatus>> => {
+    async (event): Promise<IPCResponse<AuthModeTransportStatus>> => {
       // Sender検証
       if (!validateSender(event)) {
-        return {
-          success: false,
-          error: {
-            code: "auth-mode/invalid-sender",
-            message: "Invalid request sender",
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_SENDER,
+          "Invalid request sender",
+        );
       }
 
       try {
-        const status = await authModeService.getStatus();
+        const status = await buildTransportStatus(authModeService);
         return {
           success: true,
           data: status,
         };
       } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
-            message: sanitizeErrorMessage(error),
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
+          sanitizeErrorMessage(error),
+        );
       }
     },
   );
@@ -275,16 +305,13 @@ export function registerAuthModeHandlers(
     async (
       event,
       request?: AuthModeValidateRequest,
-    ): Promise<IPCResponse<AuthModeValidationResult>> => {
+    ): Promise<IPCResponse<AuthModeTransportStatus>> => {
       // Sender検証
       if (!validateSender(event)) {
-        return {
-          success: false,
-          error: {
-            code: "auth-mode/invalid-sender",
-            message: "Invalid request sender",
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_SENDER,
+          "Invalid request sender",
+        );
       }
 
       // modeが指定されていない場合は現在のモードを使用
@@ -292,38 +319,22 @@ export function registerAuthModeHandlers(
 
       // 入力バリデーション
       if (!validateAuthMode(modeToValidate)) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.INVALID_MODE,
-            message: `Invalid auth mode: ${modeToValidate}. Must be one of: ${VALID_AUTH_MODES.join(", ")}`,
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.INVALID_MODE,
+          `Invalid auth mode: ${modeToValidate}. Must be one of: ${VALID_AUTH_MODES.join(", ")}`,
+        );
       }
 
       try {
-        const isValid = await authModeService.validateMode(modeToValidate);
-        const status = await authModeService.getStatus();
-
-        const result: AuthModeValidationResult = {
-          isValid,
-          mode: modeToValidate,
-          hasCredentials: status.hasCredentials,
-          error: isValid ? undefined : status.error,
-        };
-
         return {
           success: true,
-          data: result,
+          data: await buildTransportStatus(authModeService, modeToValidate),
         };
       } catch (error) {
-        return {
-          success: false,
-          error: {
-            code: AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
-            message: sanitizeErrorMessage(error),
-          },
-        };
+        return buildErrorResponse(
+          AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
+          sanitizeErrorMessage(error),
+        );
       }
     },
   );

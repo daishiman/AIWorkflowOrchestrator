@@ -16,3 +16,4 @@ export {
 } from "./SuggestionBubble";
 export { EmptyState, type EmptyStateProps } from "./EmptyState";
 export { RelativeTime, type RelativeTimeProps } from "./RelativeTime";
+export { ComingSoonView, type ComingSoonViewProps } from "./ComingSoonView";

@@ -5,6 +5,146 @@
 
 ---
 
+## 2026-03-06 - TASK-UI-02 completed-tasks 移管（workflow + 派生未タスク）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: Phase 12 完了済み workflow と、その実装から派生した残課題 2 件を completed-tasks 基準へ移管し、参照導線を現物へ揃える
+
+### 実施内容
+- workflow 本体を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動。
+- `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` / `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を同 workflow の `unassigned-task/` 配下へ移動。
+- `task-workflow.md` / `lessons-learned.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` の参照パスと変更履歴を completed workflow 基準へ更新。
+- `phase-12-documentation.md` / `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を移管後の実態へ再同期。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --unassigned-dir docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task --target-file ...`
+
+### 結果
+- ステータス: success
+- 補足: completed workflow と残課題 2 件の配置・参照・Phase 12 成果物が同じ completed-tasks 基準へ揃った。
+
+---
+
+## 2026-03-06 - TASK-UI-02 派生未タスク作成（domain UI spec sync / workflow body stale）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: 実装時に苦戦した「domain UI spec 同期漏れ」と「workflow 本文 stale」を未タスク仕様書へ抽象化し、system spec から直接参照できるようにする
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` と `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を追加。
+- `task-workflow.md` / `lessons-learned.md` に関連未タスク表を追加し、TASK-UI-02 の苦戦箇所から新規未タスクへ接続。
+- `ui-ux-feature-components.md` / `ui-ux-navigation.md` にも同じ未タスクIDを反映し、Global Navigation の domain 正本から再発防止タスクへ直接たどれるようにした。
+- あわせて `lessons-learned.md` / `api-ipc-system.md` に残っていた completed 移管済みリンクとワイルドカード誤参照を実体パスへ是正した。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
+
+### 結果
+- ステータス: success
+- 補足: TASK-UI-02 の再監査で見つかった 2 論点が `unassigned-task` と system spec の両方で追跡可能になった。
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE UI正本追補（domain spec / state / summary 同期）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: 実装内容と苦戦箇所を UI正本群へ漏れなく反映し、次回の同種課題で再利用しやすい形にする
+
+### 実施内容
+- `ui-ux-components.md` の TASK-UI-02 サマリーへ workflow 本文 stale と UI仕様同期セットを追記。
+- `ui-ux-feature-components.md` に TASK-UI-02 の入口行、苦戦箇所テーブル、仕様同期セットを追加。
+- `ui-ux-navigation.md` に navigation 固有の苦戦箇所と 5ステップ手順を追加。
+- `arch-state-management.md` に `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界に関する苦戦箇所を追加。
+
+### 検証
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`
+
+### 結果
+- ステータス: success
+- 補足: TASK-UI-02 の実装内容・苦戦箇所・再利用導線が UI index/detail/navigation/state の4面で参照可能になった。
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再々監査（workflow 本文 stale 是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: Phase 12 の完了根拠を台帳だけでなく workflow 本文まで整合させ、再利用可能な苦戦箇所として残す
+
+### 実施内容
+- `task-workflow.md` の TASK-UI-02 節へ `phase-1..11` 本文同期と pending 0件確認を追記。
+- `lessons-learned.md` の Phase 12 stale 教訓を「成果物 / 台帳 / 本文仕様書」の三層同期へ拡張。
+- workflow 本体 `phase-1..11` 仕様書の `ステータス` / 完了条件 / 実行タスク結果を completed 実態へ同期。
+
+### 検証
+- `rg -n 'ステータス\\s*\\|\\s*pending' docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/phase-{1,2,3,4,5,6,7,8,9,10,11,12}-*.md`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core`
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 の完了判定根拠が「成果物実体 + 台帳 + 本文仕様書」の三層で揃った。
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE Phase 12再整合（workflow 台帳 + 苦戦箇所追補）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: Phase 12 実施結果と workflow 台帳のズレを解消し、実装内容と苦戦箇所を system spec 正本へ再同期する
+
+### 実施内容
+- `task-workflow.md` に `mobileLabel`、`verify-unassigned-links` / `audit --diff-from HEAD` の current=0 / baseline=93、四点台帳同期ルールを追記。
+- `lessons-learned.md` に mobile tab bar 可読性と Phase 12 台帳ドリフトの苦戦箇所を追加。
+- `ui-ux-components.md` の TASK-UI-02 サマリーへ `mobileLabel` と四点同期ルールを追補。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core`
+
+### 結果
+- ステータス: success
+- 補足: system spec 上で「実装内容 + 苦戦箇所 + 再利用手順」が TASK-UI-02 の現行状態へ揃った。
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再監査（正本導線とリンクドリフト是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: 再監査で露出した「completed移管後リンクドリフト」「`AppDock` 前提の古い UI表現」「構造仕様の古い `uiSlice` 説明」を是正し、Global Navigation の現行正本導線を補強する
+
+### 実施内容
+- `references/task-workflow.md` の `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` 参照先を実体の `completed-tasks/` 側へ修正。
+- `references/ui-ux-feature-components.md` に `TASK-UI-02` completed 行と Global Navigation Core 節を追加し、TASK-UI-05A のナビ導線表記を `GlobalNavStrip` / `MobileNavBar` 基準へ更新。
+- `references/directory-structure.md` の organisms 例と `uiSlice` 説明を現行実装に合わせて更新。
+- `SKILL.md` に再監査で優先参照する正本8件を直リンクで追加し、canonical command を明記。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: Global Navigation の仕様正本は `ui-ux-navigation` / `ui-ux-components` / `ui-ux-feature-components` / `arch-state-management` / `architecture-overview` の5点セットで追える状態へ整理した。
+
+---
+
 ## 2026-03-06 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 completed-tasks 移管（Phase 12完了条件充足）
 
 ### コンテキスト
@@ -29,6 +169,37 @@
 ### 結果
 - ステータス: success
 - 補足: `currentViolations=0` を維持しつつ、移管後のリンク整合を維持。
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 仕様同期（Phase 12 Step 1-A/1-B/1-C + Step 2）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-02-GLOBAL-NAV-CORE`
+- 目的: Global Navigation 実装完了に合わせて、UI/状態管理/アーキテクチャ/台帳/教訓の正本を実装事実へ同期する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（UI正本）: `references/ui-ux-navigation.md` / `references/ui-ux-components.md`
+- SubAgent-B（状態/構成）: `references/arch-state-management.md` / `references/architecture-overview.md`
+- SubAgent-C（台帳/教訓）: `references/task-workflow.md` / `references/lessons-learned.md`
+- SubAgent-D（索引/監査）: `indexes/topic-map.md` 再生成、workflow outputs 整合、Phase 11証跡確認
+
+### 実施内容
+- `ui-ux-navigation.md` を AppDock 前提から `GlobalNavStrip` / `MobileNavBar` / `AppLayout` 前提へ更新。
+- `ui-ux-components.md` に TASK-UI-02 の completed 記録と organisms 実装状況を追加。
+- `arch-state-management.md` に `uiSlice.isNavExpanded` / `isMobileMoreOpen` と selector 群、Phase 11 証跡を追記。
+- `architecture-overview.md` に Desktop Renderer の新レイアウト構成を追記。
+- `task-workflow.md` / `lessons-learned.md` に完了台帳と再利用手順を同期。
+
+### 検証
+- `pnpm --dir apps/desktop typecheck`
+- `pnpm --dir apps/desktop test:run src/renderer/navigation/navContract.test.ts src/renderer/store/slices/uiSlice.test.ts src/renderer/components/organisms/AppDock/AppDock.test.tsx src/renderer/components/organisms/GlobalNavStrip/GlobalNavStrip.test.tsx src/renderer/components/organisms/MobileNavBar/MobileNavBar.test.tsx src/renderer/components/organisms/AppLayout/AppLayout.test.tsx src/renderer/hooks/useNavShortcuts.test.ts`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: Step 3 の `AppDock` 削除は completed ではなく readiness 管理として明記した。
 
 ---
 

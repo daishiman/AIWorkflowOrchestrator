@@ -113,7 +113,7 @@ describe("authModeSlice エラーハンドリング", () => {
       expect(state().mode).toBe("subscription"); // 変更されない
     });
 
-    it("fetchStatus で IPC 呼び出しが失敗した場合は status が null のまま", async () => {
+    it("fetchStatus で IPC 呼び出しが失敗した場合は fallback status を設定する", async () => {
       // Arrange
       mockElectronAPI.authMode.status.mockRejectedValue(
         new Error("Status fetch failed"),
@@ -125,7 +125,15 @@ describe("authModeSlice エラーハンドリング", () => {
       await state().fetchStatus();
 
       // Assert
-      expect(state().status).toBeNull();
+      expect(state().status).toEqual(
+        expect.objectContaining({
+          mode: "subscription",
+          isValid: false,
+          hasCredentials: false,
+          message: "ネットワーク接続を確認してください",
+          errorCode: "auth-mode/unknown-error",
+        }),
+      );
     });
   });
 
@@ -194,6 +202,7 @@ describe("authModeSlice エラーハンドリング", () => {
 
       // Assert
       expect(result.isValid).toBe(false);
+      expect(result.errorCode).toBe("auth-mode/unknown-error");
     });
   });
 
@@ -415,7 +424,13 @@ describe("authModeSlice エラーハンドリング", () => {
       mockElectronAPI.authMode.set.mockResolvedValue({ success: true });
       mockElectronAPI.authMode.status.mockResolvedValue({
         success: true,
-        data: { mode: "api-key", isValid: true },
+        data: {
+          mode: "api-key",
+          isValid: true,
+          hasCredentials: true,
+          message: "キー設定済み",
+          lastCheckedAt: Date.now(),
+        },
       });
 
       const { state } = createTestSlice();

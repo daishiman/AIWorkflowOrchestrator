@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-05T16:11:57.132Z",
-  "totalKeywords": 1455,
+  "generated": "2026-03-06T09:16:01.651Z",
+  "totalKeywords": 1460,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1169,7 +1169,29 @@
       "arch-state-management.md"
     ],
     "NAV": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "Global": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
+    "Navigation": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
+    "状態同期": [
       "arch-state-management.md"
+    ],
+    "GLOBAL": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "CORE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "Zustand": [
       "arch-state-management.md",
@@ -3182,6 +3204,9 @@
       "lessons-learned.md"
     ],
     "教訓集": [
+      "lessons-learned.md"
+    ],
+    "基盤移行": [
       "lessons-learned.md"
     ],
     "KEY": [
@@ -5323,9 +5348,6 @@
       "ui-ux-system-prompt.md"
     ],
     "ナビゲーション": [
-      "ui-ux-navigation.md"
-    ],
-    "AppDock": [
       "ui-ux-navigation.md"
     ],
     "ChatView": [

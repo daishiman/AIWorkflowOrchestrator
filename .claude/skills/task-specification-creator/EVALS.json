@@ -4,12 +4,12 @@
   "currentLevel": 2,
   "lastUpdated": "2026-02-02T00:00:00.000Z",
   "metrics": {
-    "totalUsageCount": 47,
-    "successCount": 47,
+    "totalUsageCount": 49,
+    "successCount": 49,
     "failureCount": 0,
     "successRate": 1,
     "averageDuration": 0,
-    "lastEvaluated": "2026-03-05T09:51:15.356Z"
+    "lastEvaluated": "2026-03-06T04:42:41.560Z"
   },
   "levelHistory": [
     {
@@ -54,9 +54,9 @@
       "commonIssues": []
     },
     "generate-task-specs": {
-      "usageCount": 7,
+      "usageCount": 8,
       "avgDuration": 0,
-      "successRate": 0.86,
+      "successRate": 0.8775,
       "commonIssues": [
         "Phase 12出力要件の漏れ（phase-11-12-guide.md参照不足）",
         "未タスクファイルのセクション4/6/7省略（v9.13.0で修正）"

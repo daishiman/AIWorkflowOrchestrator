@@ -24,6 +24,7 @@ import {
   RefreshCw,
   Settings,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   ChevronUp,
   Play,
@@ -49,6 +50,8 @@ import {
   Shield,
   MapPin,
   Search,
+  Puzzle,
+  FileCode,
   CaseSensitive,
   Regex,
   WholeWord,
@@ -81,6 +84,7 @@ export type IconName =
   | "refresh-cw"
   | "settings"
   | "chevron-right"
+  | "chevron-left"
   | "chevron-down"
   | "chevron-up"
   | "play"
@@ -106,6 +110,8 @@ export type IconName =
   | "shield"
   | "map-pin"
   | "search"
+  | "puzzle"
+  | "file-code"
   | "case-sensitive"
   | "regex"
   | "whole-word"
@@ -146,6 +152,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   "refresh-cw": RefreshCw,
   settings: Settings,
   "chevron-right": ChevronRight,
+  "chevron-left": ChevronLeft,
   "chevron-down": ChevronDown,
   "chevron-up": ChevronUp,
   play: Play,
@@ -171,6 +178,8 @@ const iconMap: Record<IconName, LucideIcon> = {
   shield: Shield,
   "map-pin": MapPin,
   search: Search,
+  puzzle: Puzzle,
+  "file-code": FileCode,
   "case-sensitive": CaseSensitive,
   regex: Regex,
   "whole-word": WholeWord,

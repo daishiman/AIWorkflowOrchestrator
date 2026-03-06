@@ -10,6 +10,48 @@
 
 ---
 
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE completed-tasks 移管
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 後続整理
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/task-057-ui-02-global-nav-core/` を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動
+  - 派生未タスク 2 件を `completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/` へ移管
+  - 移管後の workflow / outputs / aiworkflow-requirements の参照パスを一括更新
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / scoped `audit-unassigned-tasks` を再実行
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再々監査（phase 本文 completed 同期ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再々監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `artifacts.json` と `index.md` は completed でも `phase-1..11` 本文仕様書に `pending` が残る再発を確認
+  - `references/phase-11-12-guide.md` に本文 stale 確認チェックを追加
+  - `references/spec-update-workflow.md` に「phase 本文 1〜11 は pending のままでよい」を誤判断パターンとして追加
+  - `SKILL.md` 変更履歴を `v10.08.18` として同期
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE Phase 12再整合（workflow index / artifacts sync）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再整合）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-12-documentation.md` が completed でも `index.md` が stale なまま残る再発を確認
+  - `references/phase-11-12-guide.md` に `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加
+  - `references/spec-update-workflow.md` に「`artifacts.json` は完了でも `index.md` は未同期」の誤判断パターンを追加
+  - `SKILL.md` 変更履歴を `v10.08.17` として同期
+
+---
+
 ## ログ形式
 
 ```markdown
@@ -26,6 +68,20 @@
 
 ---
 
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再監査（スキル導線補強）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `quick_validate.js` で `task-specification-creator` の warning 3件（`evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` 未リンク）を検出
+  - `SKILL.md` に3参照の直リンクを追加し、Phase 11/12 の再監査導線を明示
+  - よく使うコマンドを `.claude/skills/task-specification-creator/scripts/...` の canonical path へ統一
+  - 変更履歴の version 重複を防ぐ採番確認ルールを追加し、`phase-11-12-guide.md` / `spec-update-workflow.md` にも同観点を反映
+
+---
+
 ## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査（漏れ検知対応）
 
 - **Agent**: task-specification-creator
@@ -38,6 +94,20 @@
   - `phase-11-manual-test.md` へ `テストケース` と `画面カバレッジマトリクス` を追記、`manual-test-result.md` を `TC + 証跡` 形式へ更新
   - システム仕様書側のDIシグネチャ旧表記を再同期（`interfaces-agent-sdk-executor` / `arch-electron-services` / `interfaces-agent-sdk-skill` / `lessons-learned`）
   - `quick_validate.js`（`skill-creator`, `task-specification-creator`, `aiworkflow-requirements`）を再実行し、error 0 を確認
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/outputs/phase-1..12` の必須成果物を出力
+  - Phase 11 用に `outputs/phase-11/screenshot-plan.json` と screenshot evidence 5件を整備
+  - Phase 12 Task 2 として `ui-ux-navigation` / `ui-ux-components` / `arch-state-management` / `architecture-overview` / `task-workflow` / `lessons-learned` / LOGS を更新
+  - rollback path を保持したため、Step 3 は completed ではなく readiness として記録
 
 ---
 

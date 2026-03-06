@@ -6,13 +6,13 @@
 
 ## SubAgent編成
 
-| SubAgent                 | 担当仕様書                                    | 主要責務                                        | 実行種別        |
-| ------------------------ | --------------------------------------------- | ----------------------------------------------- | --------------- |
-| A: Store Architect       | `task-056a-a-store-slice-baseline.md`         | 既存Slice棚卸し、追加/不追加判断、Store境界定義 | 並列可能        |
-| B: IPC Contract Guardian | `task-056a-b-ipc-contract-security.md`        | IPCチャネル契約、Preload境界、Security要件定義  | 並列可能        |
-| C: Domain Integrator     | `task-056c-notification-history-domain.md`    | Notification/HistorySearchドメイン仕様統合      | 直列（A/B依存） |
-| D: Navigation Integrator | `task-056d-viewtype-routing-nav/index.md`     | ViewType拡張、ルーティング、ナビゲーション整合  | 直列（A依存）   |
-| E: Review Gate Auditor   | `task-056e-integration-gate-and-spec-sync.md` | 統合ゲート、完了条件、仕様同期チェック          | 直列（C/D依存） |
+| SubAgent                 | 正本仕様                                                                                                | 主要責務                                        | 実行種別        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | --------------- |
+| A: Store Architect       | `docs/30-workflows/completed-tasks/task-056a-a-store-slice-baseline/index.md`                           | 既存Slice棚卸し、追加/不追加判断、Store境界定義 | 並列可能        |
+| B: IPC Contract Guardian | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-056a-b-ipc-contract-security.md` | IPCチャネル契約、Preload境界、Security要件定義  | 並列可能        |
+| C: Domain Integrator     | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md`                      | Notification/HistorySearchドメイン仕様統合      | 直列（A/B依存） |
+| D: Navigation Integrator | `docs/30-workflows/completed-tasks/task-056d-viewtype-routing-nav/index.md`                             | ViewType拡張、ルーティング、ナビゲーション整合  | 直列（A依存）   |
+| E: Review Gate Auditor   | `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md`                   | 統合ゲート、完了条件、仕様同期チェック          | 直列（C/D依存） |
 
 ## 依存関係（直列/並列）
 
@@ -47,4 +47,4 @@ C ----------------------┐   │
 1. A/Bは並列で仕様を確定する。
 2. C/Dは依存成果物を入力として直列に進める。
 3. Eで全仕様の矛盾検知と完了条件統合を行う。
-4. 仕様書更新時は `task-056-ui-01-store-ipc-architecture.md` を正本インデックスとして同時更新する。
+4. 仕様書更新時は `task-056-ui-01-store-ipc-architecture/index.md` と `task-056-ui-01-store-ipc-architecture.md` を同時更新する。
