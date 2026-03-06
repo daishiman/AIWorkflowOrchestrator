@@ -7,6 +7,8 @@ export interface UISlice {
   mobileDrawerOpen: boolean;
   windowSize: WindowSize;
   responsiveMode: ResponsiveMode;
+  isNavExpanded: boolean;
+  isMobileMoreOpen: boolean;
 
   // System Prompt UI State
   isSystemPromptPanelExpanded: boolean;
@@ -23,6 +25,10 @@ export interface UISlice {
   setMobileDrawerOpen: (open: boolean) => void;
   toggleMobileDrawer: () => void;
   setWindowSize: (size: WindowSize) => void;
+  setNavExpanded: (expanded: boolean) => void;
+  toggleNavExpanded: () => void;
+  toggleMobileMore: () => void;
+  closeMobileMore: () => void;
 
   // System Prompt UI Actions
   toggleSystemPromptPanel: () => void;
@@ -49,6 +55,8 @@ export const createUISlice: StateCreator<UISlice, [], [], UISlice> = (set) => ({
   mobileDrawerOpen: false,
   windowSize: { width: 1200, height: 800 },
   responsiveMode: "desktop",
+  isNavExpanded: true,
+  isMobileMoreOpen: false,
 
   // System Prompt UI Initial State
   isSystemPromptPanelExpanded: false,
@@ -85,10 +93,31 @@ export const createUISlice: StateCreator<UISlice, [], [], UISlice> = (set) => ({
   },
 
   setWindowSize: (size) => {
-    set({
-      windowSize: size,
-      responsiveMode: calculateResponsiveMode(size.width),
+    set((state) => {
+      const responsiveMode = calculateResponsiveMode(size.width);
+      return {
+        windowSize: size,
+        responsiveMode,
+        isMobileMoreOpen:
+          responsiveMode === "mobile" ? state.isMobileMoreOpen : false,
+      };
     });
+  },
+
+  setNavExpanded: (expanded) => {
+    set({ isNavExpanded: expanded });
+  },
+
+  toggleNavExpanded: () => {
+    set((state) => ({ isNavExpanded: !state.isNavExpanded }));
+  },
+
+  toggleMobileMore: () => {
+    set((state) => ({ isMobileMoreOpen: !state.isMobileMoreOpen }));
+  },
+
+  closeMobileMore: () => {
+    set({ isMobileMoreOpen: false });
   },
 
   // System Prompt UI Actions

@@ -65,6 +65,9 @@
 | CardGrid | TASK-UI-00-ORGANISMS | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/CardGrid/` |
 | MasterDetailLayout | TASK-UI-00-ORGANISMS | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/MasterDetailLayout/` |
 | SearchFilterList | TASK-UI-00-ORGANISMS | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/SearchFilterList/` |
+| AppLayout | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AppLayout/` |
+| GlobalNavStrip | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/` |
+| MobileNavBar | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/MobileNavBar/` |
 
 ### 主要UIコンポーネント一覧
 
@@ -83,6 +86,10 @@
 | SkillAnalysisView | TASK-10A-B | スキル分析ビュー（スコア・改善提案・リスク表示） |
 | SkillCreateWizard | TASK-10A-C | スキル作成ウィザード（説明入力→設定→生成→完了） |
 | SkillAdvancedViews（3A-3D） | TASK-UI-05B | ツール高度管理ビュー群（実装完了） |
+| AppLayout | TASK-UI-02 | グローバルナビと header/main を統合するテンプレート |
+| GlobalNavStrip | TASK-UI-02 | desktop/tablet の global navigation |
+| MobileNavBar | TASK-UI-02 | mobile の下部 global navigation |
+| ComingSoonView | TASK-UI-02 | 未実装ビュー導線の退避表示 |
 | CardGrid / MasterDetailLayout / SearchFilterList | TASK-UI-00-ORGANISMS | 再利用可能な汎用Organisms（カード表示・マスター詳細・検索フィルタ） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
@@ -178,12 +185,37 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-UI-00-MOLECULES | Molecules共通コンポーネント実装（SearchBar / CodeViewer / TabSwitcher / SlideInPanel / ConfirmDialog + 5テストファイル） | 2026-03-04 |
 | TASK-UI-00-ORGANISMS | Organisms共通コンポーネント実装（CardGrid / MasterDetailLayout / SearchFilterList + 41テスト） | 2026-03-04 |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・UX語彙具体例・Task5B境界の監査是正 + 検証スクリプト/テスト追加 + Phase11再検証 + Phase12再確認） | 2026-03-05 |
+| TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout + feature flag 移行） | 2026-03-06 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
 | TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
-| TASK-043B | SkillManagementPanel import list refinement（2セクション + dialog + success/error/focus） | 2026-03-06 |
+
+---
+
+## TASK-UI-02 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-02-GLOBAL-NAV-CORE | グローバルナビゲーション基盤（GlobalNavStrip / MobileNavBar / AppLayout / rollback feature flag） | completed（Step 1/2 実装・テスト・画面検証完了。Step 3 は readiness 管理） | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
+
+### TASK-UI-02 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `GlobalNavStrip` / `MobileNavBar` / `MoreMenu` / `AppLayout` / `ComingSoonView` / `useNavShortcuts` を追加し、`App.tsx` を feature flag で新旧切替可能にした。mobile 下部バーは `mobileLabel` で短縮表示する |
+| 状態管理 | `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、store hooks を個別 selector で公開 |
+| テスト | targeted 7ファイル 100 tests PASS、typecheck PASS、task scope coverage は全基準達成 |
+| 画面検証 | Phase 11 で desktop/tablet/mobile の 5視覚状態 + 2非視覚TC を確認し、再監査で `mobileLabel` 追補後の視覚 Go を再確認 |
+| 苦戦箇所1 | repo-wide coverage threshold が task scope 品質と無関係に fail して見える |
+| 苦戦箇所2 | rollback safety のため `AppDock` を残しつつ SoC を維持する必要があった |
+| 苦戦箇所3 | mobile More の overlay 品質は自動テストだけでは確定できず、画面証跡が必須だった |
+| 苦戦箇所4 | mobile tab bar の正式ラベルは小画面で切れやすく、可視ラベルと `aria-label` の分離が必要だった |
+| 苦戦箇所5 | `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` だけでなく workflow 本文 `phase-1..11` も同一ターンで同期しないと completed 表示後に stale が残る |
+| 仕様同期 | UI系は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで更新する |
+| 簡潔解決 | `navContract` 正本化 → layout/nav/shortcut/state 分離 → `mobileLabel` + screenshot 確認 → repo-wide/task-scope 分離記録 → UI仕様群 + workflow本文同期 の順で閉じる |
+| 詳細参照 | `ui-ux-navigation.md` / `arch-state-management.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-02 節 |
 
 ---
 
@@ -260,23 +292,6 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 ---
 
-## TASK-043B 実装完了記録
-
-| タスクID | 機能名 | 状態 | 参照 |
-| --- | --- | --- | --- |
-| TASK-043B-UI-UX-IMPORT-LIST-DESIGN | SkillManagementPanel import list refinement（imported / available 2セクション + dialog 追加導線 + success/error/focus 契約） | completed（実装・テスト・画面検証完了） | `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design/` |
-
-### TASK-043B 実装内容と要点
-
-| 観点 | 内容 |
-| --- | --- |
-| 実装内容 | list view に imported / available の 2 セクションを追加し、検索、inline/global empty、dialog confirm、success status、error alert、focus return を統合 |
-| テスト | `SkillManagementPanel.test.tsx` 15 tests、`SkillManagementPanel.integration.test.tsx` 6 tests、typecheck PASS |
-| 画面証跡 | Phase 11 の `TC-11-01`〜`TC-11-09` と mobile dark 補助証跡を取得 |
-| 防御要件 | nullish metadata 吸収、duplicate import 非表示、store action 非 throw 契約への追従、dialog open 中の alert 二重表示抑止 |
-
----
-
 ## 仕様書作成済みタスク（spec_created）
 
 | Task ID | 機能名 | 状態 | 仕様書 |
@@ -344,8 +359,11 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.15.3  | 2026-03-06 | TASK-UI-02 移管反映: workflow 参照を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、Phase 12 完了後の正本導線を completed-tasks 基準へ統一 |
+| 2.15.2  | 2026-03-06 | TASK-UI-02 追補: workflow 本文 `phase-1..11` stale と UI仕様同期セット（`ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned`）を TASK-UI-02 サマリーへ追記し、簡潔解決導線を明文化 |
+| 2.15.1  | 2026-03-06 | TASK-UI-02 再監査追補: `mobileLabel` による mobile 可読性改善と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを TASK-UI-02 サマリーへ追加 |
 | 2.14.11 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（`validate-phase-output` 28項目、`verify-all-specs` 13/13、`validate-phase11-screenshot-coverage` TC 6/6、`verify-unassigned-links` 92/92、`currentViolations=0`）を同期し、同種課題の5分解決カード導線を `ui-ux-feature-components.md` と整合 |
-| 2.14.13 | 2026-03-06 | TASK-043B 完了反映: 主要UI一覧へ SkillManagementPanel import list refinement を追加し、2セクション UI、dialog 追加導線、success / error / focus 契約、Phase 11 証跡（TC-11-01〜09 + mobile）を同期 |
+| 2.15.0  | 2026-03-06 | TASK-UI-02 完了反映: Organisms 実装状況へ `AppLayout` / `GlobalNavStrip` / `MobileNavBar` を追加し、主要UI一覧・完了タスク・実装完了記録へ global navigation core を同期 |
 | 2.14.10 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を反映。Phase 11 画面証跡の最終時刻を 11:51 JST へ同期し、Phase 12 再確認（13/13, 28項目, 92/92, `currentViolations=0`）を追記 |
 | 2.14.9  | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の再監査追補を反映。Phase 11 で TC-055-301〜306 を再撮影（11:43 JST）し、`validate-phase11-screenshot-coverage` の警告を0件化した状態を同期 |
 | 2.14.8  | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT を追補: `00-1-design-tokens.md` 正本導線の自己参照を是正し、Task 5D 具体例と Task 5B 適用境界を仕様へ反映。検証スクリプト `validate-foundation-findings.mjs` とテスト追加を完了タスクに同期 |

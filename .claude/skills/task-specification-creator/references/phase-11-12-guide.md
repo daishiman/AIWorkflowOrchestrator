@@ -373,6 +373,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
+- [ ] 【Step 1-A】変更履歴へ追記した Version が既存行と重複していないことを確認した（同日追補時は最大値 + 0.0.1 で採番）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
 - [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`spec-update-summary.md` に「要監視 / 要対応」を記録した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
@@ -390,6 +391,9 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
+- [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
+- [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
@@ -523,6 +527,9 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
+| 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
+| 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
 | 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |
 | 2026-03-06 | TASK-043B 再監査を反映し、`TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離管理を追記。補助 screenshot は coverage validator 上 warning 許容で、blocking 条件へ昇格させない運用を明文化 |
 | 2026-03-04 | TASK-UI-00-ORGANISMS 再確認を反映し、Phase 12完了チェックへ「再撮影後の `stat` 時刻同期（manual-test/screenshot-coverage）」「`validate-phase11-screenshot-coverage` PASS 記録」を追加 |

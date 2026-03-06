@@ -80,6 +80,8 @@ Phase 12 Task 2 開始
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
 | 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須** | 成果物実体と仕様書本体の実行記録が乖離すると監査で不整合になる。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
+| 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
+| 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須4成果物を揃える** | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の4点が揃って初めて再監査可能になる |
 | 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** | `skillHandlers.ts` / `preload/index.ts` の引数・戻り値・エラー契約と一致しないと、API利用者が誤実装する |
@@ -256,6 +258,8 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] 関連する仕様ファイルの実装状況テーブル（該当する場合）を更新した
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
+- [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
 - [ ] IPC契約を更新した場合、`outputs/phase-12/ipc-documentation.md` の引数/戻り値/エラー仕様を実装契約へ同期した
@@ -783,6 +787,9 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 | {{NEXT_VERSION}} | {{DATE}} | {{TASK_NAME}}完了（手動テスト{{N}}項目全PASS、自動テスト{{N}}件全PASS、発見課題{{N}}件） |
 ```
 
+- 追記前に対象ファイルの既存 `Version` 列を確認し、同一番号を再利用しない。
+- 同日に追補が複数回入る場合は、既存最大値に対して `+0.0.1` で採番する。
+
 ### 残課題更新
 
 該当タスクが「残課題」にある場合、取り消し線で完了をマーク:
@@ -888,4 +895,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |
+| 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
+| 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: `quick_validate.js` 手動検証の再現性確認手順を Phase 11/12 の運用実績に合わせて再確認し、曖昧語（「など」表記へ統一）を調整して機械判定の一貫性を向上 |

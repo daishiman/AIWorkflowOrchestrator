@@ -39,6 +39,14 @@ describe("uiSlice", () => {
     it("responsiveModeがdesktopである", () => {
       expect(store.responsiveMode).toBe("desktop");
     });
+
+    it("isNavExpandedがtrueである", () => {
+      expect(store.isNavExpanded).toBe(true);
+    });
+
+    it("isMobileMoreOpenがfalseである", () => {
+      expect(store.isMobileMoreOpen).toBe(false);
+    });
   });
 
   describe("showDynamicIsland", () => {
@@ -125,6 +133,41 @@ describe("uiSlice", () => {
       store.setWindowSize({ width: 500, height: 800 });
       store.setWindowSize({ width: 1440, height: 900 });
       expect(store.responsiveMode).toBe("desktop");
+    });
+
+    it("mobile以外へ切り替わるとMoreメニューを閉じる", () => {
+      store.toggleMobileMore();
+      store.setWindowSize({ width: 1024, height: 768 });
+      expect(store.isMobileMoreOpen).toBe(false);
+    });
+  });
+
+  describe("nav expansion state", () => {
+    it("setNavExpandedで展開状態を更新する", () => {
+      store.setNavExpanded(false);
+      expect(store.isNavExpanded).toBe(false);
+    });
+
+    it("toggleNavExpandedで展開状態を反転する", () => {
+      store.toggleNavExpanded();
+      expect(store.isNavExpanded).toBe(false);
+      store.toggleNavExpanded();
+      expect(store.isNavExpanded).toBe(true);
+    });
+  });
+
+  describe("mobile more state", () => {
+    it("toggleMobileMoreで開閉を反転する", () => {
+      store.toggleMobileMore();
+      expect(store.isMobileMoreOpen).toBe(true);
+      store.toggleMobileMore();
+      expect(store.isMobileMoreOpen).toBe(false);
+    });
+
+    it("closeMobileMoreで閉じる", () => {
+      store.toggleMobileMore();
+      store.closeMobileMore();
+      expect(store.isMobileMoreOpen).toBe(false);
     });
   });
 

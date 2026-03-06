@@ -118,6 +118,17 @@
 | **Apple HIG** | Electron Desktop | macOSネイティブな操作感 |
 | **WCAG 2.1 AA** | 全UI | アクセシビリティ |
 
+### Desktop Renderer レイアウト構成（TASK-UI-02）
+
+| コンポーネント | 役割 | 実装場所 |
+| --- | --- | --- |
+| `AppLayout` | left rail / header / main / mobile bottom nav の統合テンプレート | `apps/desktop/src/renderer/components/organisms/AppLayout/index.tsx` |
+| `GlobalNavStrip` | desktop/tablet の global navigation | `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/index.tsx` |
+| `MobileNavBar` | mobile primary 5 + More 4 の下部ナビ | `apps/desktop/src/renderer/components/organisms/MobileNavBar/index.tsx` |
+| `useNavShortcuts` | global shortcut と戻る導線の統合 | `apps/desktop/src/renderer/hooks/useNavShortcuts.ts` |
+
+`App.tsx` は feature flag により legacy `AppDock` と新構成を切り替える。Step 3 までは rollback path を維持する。
+
 ### Skill Advanced Views（TASK-UI-05B — 実装完了）
 
 | ビュー | 責務 | コンポーネント数 | 配置先 |
@@ -171,7 +182,7 @@
 
 | Slice | 責務 | 実装ファイル |
 |------|-----|------------|
-| uiSlice | UI状態（currentView等） | store/slices/uiSlice.ts |
+| uiSlice | UI状態（currentView / responsiveMode / isNavExpanded / isMobileMoreOpen） | store/slices/uiSlice.ts |
 | authSlice | 認証状態 | store/slices/authSlice.ts |
 | chatSlice | チャット状態 | store/slices/chatSlice.ts |
 | agentSlice | エージェント・スキル管理 | store/slices/agentSlice.ts |
@@ -479,6 +490,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v2.18.3 | 2026-03-06 | TASK-UI-02 反映: Desktop Renderer の標準レイアウトを `AppLayout + GlobalNavStrip + MobileNavBar` へ更新し、`uiSlice` の nav状態、feature flag rollback path、`useNavShortcuts` の戻る導線を追記 |
 | v2.18.2 | 2026-03-02 | TASK-10A-C反映: `registerSkillHandlers` の対応チャネルへ `skill:create` を追加し、Pattern 3 の関連タスクに TASK-10A-C を追記 |
 | v2.18.1 | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `spec_created` から `実装完了` へ更新し、4ビューの実装導線（App navigation + direct routing）を反映 |
 | v2.18.0 | 2026-03-01 | TASK-UI-05B spec_created を反映: UI/UXアーキテクチャにSkill Advanced Views（4ビュー/33コンポーネント）を追加。ディレクトリ構造にビューディレクトリを追記 |

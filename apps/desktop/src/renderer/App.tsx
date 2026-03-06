@@ -5,7 +5,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./i18n/config";
 import { useAppStore, useCurrentView, useResponsiveMode } from "./store";
 import { AuthGuard } from "./components/AuthGuard";
+import { ComingSoonView } from "./components/atoms";
 import { AppDock } from "./components/organisms/AppDock";
+import { AppLayout } from "./components/organisms/AppLayout";
 import { NotificationCenter } from "./components/organisms/NotificationCenter";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
 import { DashboardView } from "./views/DashboardView";
@@ -29,8 +31,9 @@ import { OrganismsShowcaseView } from "./views/OrganismsShowcaseView";
 import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
+import { useNavShortcuts } from "./hooks/useNavShortcuts";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
-import { getViewFromNavigationShortcut } from "./navigation/navContract";
+import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
@@ -66,9 +69,25 @@ function App(): JSX.Element {
   const currentView = useCurrentView();
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const goBack = useAppStore((state) => state.goBack);
+  const canGoBack = useAppStore((state) => state.viewHistory.length > 1);
   const currentSkillName = useAppStore((state) => state.currentSkillName);
   const setCurrentSkillName = useAppStore((state) => state.setCurrentSkillName);
   const dynamicIsland = useAppStore((state) => state.dynamicIsland);
+  const setWindowSize = useAppStore((state) => state.setWindowSize);
+
+  useEffect(() => {
+    const syncWindowSize = (): void => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    syncWindowSize();
+    window.addEventListener("resize", syncWindowSize);
+    return () => window.removeEventListener("resize", syncWindowSize);
+  }, [setWindowSize]);
 
   useEffect(() => {
     // 未認証かつ初期化完了の場合、currentViewをdashboardにリセット
@@ -81,20 +100,17 @@ function App(): JSX.Element {
     setCurrentView(view);
   };
 
-  useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const view = getViewFromNavigationShortcut(event);
-      if (!view) {
-        return;
-      }
+  const handleGoBack = (): void => {
+    if (canGoBack) {
+      goBack();
+    }
+  };
 
-      event.preventDefault();
-      setCurrentView(view);
-    };
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [setCurrentView]);
+  useNavShortcuts({
+    onViewChange: (view) => handleViewChange(view as ViewType),
+    onGoBack: handleGoBack,
+    canGoBack,
+  });
 
   const renderView = () => {
     switch (currentView) {
@@ -136,9 +152,12 @@ function App(): JSX.Element {
       case "settings":
         return <SettingsView />;
       default: {
-        const _exhaustive: never = currentView;
-        void _exhaustive;
-        return <DashboardView />;
+        return (
+          <ComingSoonView
+            title="未接続のビュー"
+            description={`${currentView} はまだレイアウトへ接続されていません。`}
+          />
+        );
       }
     }
   };
@@ -149,7 +168,9 @@ function App(): JSX.Element {
     </div>
   );
 
-  const isDesktop = responsiveMode === "desktop";
+  const useGlobalNavStrip =
+    import.meta.env.VITE_USE_GLOBAL_NAV_STRIP !== "false";
+  const usesSidebar = responsiveMode !== "mobile";
 
   return (
     <BrowserRouter>
@@ -272,50 +293,56 @@ function App(): JSX.Element {
           <Route
             path="*"
             element={
-              <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
-                {/* App Dock - Left side on desktop, bottom on mobile */}
-                {isDesktop ? (
-                  <AppDock
-                    currentView={currentView}
-                    onViewChange={handleViewChange}
-                    mode="desktop"
-                  />
-                ) : null}
-
-                {/* Main Content Area */}
-                <div className="flex-1 flex flex-col overflow-hidden">
-                  {/* Top status area */}
-                  <div className="flex items-start justify-between px-6 pt-4 pb-2">
-                    <div className="flex-1" />
-                    <div className="flex justify-center">
-                      <DynamicIsland
-                        status={dynamicIsland.status}
-                        message={dynamicIsland.message}
-                        visible={dynamicIsland.visible}
-                      />
-                    </div>
-                    <div className="flex flex-1 justify-end">
-                      <NotificationCenter />
-                    </div>
-                  </div>
-
-                  {/* View Content */}
-                  <main className="flex-1 overflow-auto p-6">
-                    {renderView()}
-                  </main>
-                </div>
-
-                {/* Mobile Bottom Navigation */}
-                {!isDesktop ? (
-                  <div className="fixed bottom-0 left-0 right-0">
+              useGlobalNavStrip ? (
+                <AppLayout
+                  currentView={currentView as DockViewType}
+                  onViewChange={(view) => handleViewChange(view as ViewType)}
+                  onGoBack={handleGoBack}
+                  canGoBack={canGoBack}
+                >
+                  {renderView()}
+                </AppLayout>
+              ) : (
+                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
+                  {usesSidebar ? (
                     <AppDock
                       currentView={currentView}
                       onViewChange={handleViewChange}
-                      mode="mobile"
+                      mode="desktop"
                     />
+                  ) : null}
+
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <div className="flex items-start justify-between px-6 pt-4 pb-2">
+                      <div className="flex-1" />
+                      <div className="flex justify-center">
+                        <DynamicIsland
+                          status={dynamicIsland.status}
+                          message={dynamicIsland.message}
+                          visible={dynamicIsland.visible}
+                        />
+                      </div>
+                      <div className="flex flex-1 justify-end">
+                        <NotificationCenter />
+                      </div>
+                    </div>
+
+                    <main className="flex-1 overflow-auto p-6">
+                      {renderView()}
+                    </main>
                   </div>
-                ) : null}
-              </div>
+
+                  {!usesSidebar ? (
+                    <div className="fixed bottom-0 left-0 right-0">
+                      <AppDock
+                        currentView={currentView}
+                        onViewChange={handleViewChange}
+                        mode="mobile"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              )
             }
           />
         </Routes>

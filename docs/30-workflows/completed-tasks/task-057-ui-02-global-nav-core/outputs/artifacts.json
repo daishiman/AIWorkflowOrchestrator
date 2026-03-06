@@ -1,0 +1,380 @@
+{
+  "feature": "task-057-ui-02-global-nav-core",
+  "created": "2026-03-05T23:36:22.395Z",
+  "lastUpdated": "2026-03-06T05:54:00Z",
+  "status": "in_progress",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-06T02:31:44.174Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/migration-boundary-matrix.md",
+          "description": "移行境界マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/subagent-boundary-map.md",
+          "description": "SubAgent分担表"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-06T02:31:44.029Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/nav-contract-design.md",
+          "description": "ナビ契約設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/responsive-layout-design.md",
+          "description": "レスポンシブ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/accessibility-specification.md",
+          "description": "アクセシビリティ仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/aiworkflow-requirements-extraction-matrix.md",
+          "description": "正本仕様抽出マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/migration-sequence-design.md",
+          "description": "移行手順設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-06T02:31:44.153Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/risk-register.md",
+          "description": "リスク登録簿"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/traceability-check.md",
+          "description": "トレーサビリティ監査"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/subagent-boundary-audit.md",
+          "description": "SubAgent境界監査"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-06T02:31:44.067Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-matrix.md",
+          "description": "統合テストマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/accessibility-test-plan.md",
+          "description": "アクセシビリティテスト計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/manual-checkpoint-matrix.md",
+          "description": "手動検証準備表"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:02.347Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files-list.md",
+          "description": "変更ファイル一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/rollback-checklist.md",
+          "description": "ロールバック手順確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/branch-change-reflection-matrix.md",
+          "description": "ブランチ変更反映マトリクス"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:02.528Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-matrix.md",
+          "description": "回帰マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "テスト拡充レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/accessibility-regression-plan.md",
+          "description": "アクセシビリティ回帰計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/migration-state-matrix.md",
+          "description": "移行状態検証表"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:02.666Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-analysis.md",
+          "description": "カバレッジギャップ分析"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/contract-parity-checklist.md",
+          "description": "契約一致チェック"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:02.806Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリングレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactor-diff-summary.md",
+          "description": "差分要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/appdock-removal-readiness.md",
+          "description": "削除準備チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/technical-debt-register.md",
+          "description": "技術負債整理"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:02.950Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-verification.md",
+          "description": "品質検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/qa-checklist.md",
+          "description": "QAチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/responsive-accessibility-audit.md",
+          "description": "レスポンシブアクセシビリティ監査"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:03.084Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/release-decision.md",
+          "description": "リリース判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/rollback-readiness-review.md",
+          "description": "ロールバック準備レビュー"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:03.229Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "スクリーンショットカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/navigation-walkthrough-matrix.md",
+          "description": "ナビ導線ウォークスルー"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:33:03.367Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキル改善レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-matrix.md",
+          "description": "正本仕様更新マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12準拠確認"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-description.md",
+          "description": "pr-description.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/review-request-note.md",
+          "description": "review-request-note.md"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/merge-readiness-checklist.md",
+          "description": "merge-readiness-checklist.md"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  }
+}
