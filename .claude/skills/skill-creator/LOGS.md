@@ -4,6 +4,34 @@
 
 ---
 
+## [2026-03-06 - domain spec 同期ブロックを skill-creator へ追加（Phase 12 file formation 最適化）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-domain-spec-sync-block-template.md` を新規作成し、domain spec へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に同 asset 参照と 3 見出し検証コマンドを追加
+  - `references/resource-map.md` の assets 説明を更新し、domain spec 3 見出しの完了条件をテンプレート説明へ同期
+  - `references/patterns.md` に成功パターン「domain spec に実装内容 / 苦戦箇所 / 5分カードを対称配置する」を追加
+  - `SKILL.md` 変更履歴を `v10.37.9` として同期
+
+---
+
+## [2026-03-06 - auth-mode 再監査知見の skill-creator 反映（cross-cutting doc + harness + テンプレート修復）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の 6.2 重複手順を解消し、IPC transport 契約更新時の `ipc-contract-checklist.md` / `quick-reference.md` 同期要件を追記
+  - 同テンプレートに「専用 harness を使う UI契約検証」と `SCREENSHOT` 昇格条件を明文化
+  - `assets/phase12-spec-sync-subagent-template.md` に cross-cutting doc と harness 記録の完了チェックを追加
+  - `references/patterns.md` に成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）」を追加
+  - `SKILL.md` 変更履歴を `v10.37.8` として同期
+
+---
+
 ## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)

@@ -327,8 +327,8 @@
 
 | 段階 | 方法 | 状態 |
 |------|------|------|
-| 短期（緊急修正） | `useRef` ガード + 空の依存配列 | 適用後、個別セレクタ移行により削除 |
-| 長期（根本解決） | 個別セレクタHook（`useLLMFetchProviders()` 等）に再設計 | 2026-02-12完了 |
+| 旧短期（緊急修正） | `useRef` ガード + 空の依存配列 | 当時の暫定策。現在は新規採用しない |
+| 標準（根本解決） | 個別セレクタHook（`useInitializeAuthMode()`, `useFetchProviders()` 等）に再設計 | 2026-02-12完了 |
 
 ```typescript
 // ❌ 無限ループ（合成Hook）
@@ -350,7 +350,7 @@ useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);
 - **アプローチ**:
   1. `store/index.ts`に30個の個別セレクタHook（LLM:12, Skill:15, AuthMode:3）を追加
   2. 対象コンポーネント3件（LLMSelectorPanel, SkillSelector, SettingsView）を一括移行
-  3. useRefガードパターンを削除し、useEffectの依存配列にアクション関数を直接含める
+  3. useRefガードパターンを削除し、`useEffect` の依存配列に安定した action selector を直接含める
   ```typescript
   // Before: 合成Hook + useRefガード
   const { fetchProviders } = useLLMStore();
@@ -368,6 +368,7 @@ useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);
   - `apps/desktop/src/renderer/store/index.ts`: 個別セレクタHook定義
   - `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`: LLM移行例
   - `apps/desktop/src/renderer/views/SettingsView/index.tsx`: AuthMode移行例
+- **横断確認コマンド**: `rg -n "useAuthModeStore|useInitializeAuthMode|useAuthModeStatus" apps/desktop/src/renderer`
 - **関連**: 06-known-pitfalls.md#P31、arch-state-management.md#P31対策
 
 ##### 実装時の苦戦箇所（UT-STORE-HOOKS-COMPONENT-MIGRATION-001）
@@ -450,7 +451,7 @@ export const useInitializeAuthMode = () => useAppStore((state) => state.initiali
 ##### 7. 参照リンク
 
 - **完了タスク**: UT-STORE-HOOKS-REFACTOR-001
-- **P31対策**: 短期的なuseRefガードと長期的な個別セレクタ再設計の併用
+- **P31対策**: 個別セレクタを標準とし、useRefガードは legacy emergency only とする
 - **後続タスク**: UT-STORE-HOOKS-REFACTOR-002（JSDoc追加）、UT-STORE-HOOKS-REFACTOR-003（合成Hook移行）
 
 ### 非同期処理

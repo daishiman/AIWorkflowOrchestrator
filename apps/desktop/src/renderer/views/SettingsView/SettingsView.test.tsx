@@ -77,7 +77,15 @@ const createMockState = (overrides = {}) => ({
 // Default mock values for AuthMode individual selectors
 const mockAuthModeValues = {
   mode: "subscription" as const,
-  status: null as { isValid: boolean; message: string } | null,
+  status: null as {
+    mode: "subscription" | "api-key";
+    isValid: boolean;
+    hasCredentials: boolean;
+    message: string;
+    errorCode?: string;
+    guidance?: string;
+    lastCheckedAt: number;
+  } | null,
   isLoading: false,
   setMode: vi.fn(),
   initializeAuthMode: vi.fn(),
@@ -98,6 +106,11 @@ vi.mock("../../store", () => ({
 describe("SettingsView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockAuthModeValues.mode = "subscription";
+    mockAuthModeValues.status = null;
+    mockAuthModeValues.isLoading = false;
+    mockAuthModeValues.setMode = vi.fn();
+    mockAuthModeValues.initializeAuthMode = vi.fn();
     const { useAppStore } = await import("../../store");
     vi.mocked(useAppStore).mockImplementation(((
       selector: (state: ReturnType<typeof createMockState>) => unknown,
@@ -285,6 +298,30 @@ describe("SettingsView", () => {
       expect(screen.getByTestId("auth-mode-subscription")).toBeInTheDocument();
       expect(screen.getByTestId("auth-mode-api-key")).toBeInTheDocument();
     });
+
+    it("status message を表示する", () => {
+      mockAuthModeValues.status = {
+        mode: "api-key",
+        isValid: false,
+        hasCredentials: false,
+        message: "APIキーが設定されていません",
+        errorCode: "auth-mode/no-api-key",
+        guidance: "設定画面でAPIキーを入力してください",
+        lastCheckedAt: Date.now(),
+      };
+
+      render(<SettingsView />);
+
+      expect(screen.getByTestId("auth-mode-status-message")).toHaveTextContent(
+        "APIキーが設定されていません",
+      );
+      expect(screen.getByTestId("auth-mode-status-code")).toHaveTextContent(
+        "auth-mode/no-api-key",
+      );
+      expect(screen.getByTestId("auth-mode-status-guidance")).toHaveTextContent(
+        "設定画面でAPIキーを入力してください",
+      );
+    });
   });
 
   describe("無限ループ防止（P31対策）", () => {
@@ -330,8 +367,11 @@ describe("SettingsView", () => {
       // mode が変更された状態をシミュレート
       vi.mocked(useAuthMode).mockReturnValue("api-key");
       vi.mocked(useAuthModeStatus).mockReturnValue({
+        mode: "api-key",
         isValid: true,
+        hasCredentials: true,
         message: "APIキーが設定されています",
+        lastCheckedAt: Date.now(),
       });
 
       rerender(<SettingsView />);

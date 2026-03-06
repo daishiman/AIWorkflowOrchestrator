@@ -37,6 +37,27 @@ import type {
   HealthCheckResult,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
+import type {
+  AuthModeChangedEvent,
+  AuthModeGetResponse,
+  AuthModeSetRequest,
+  AuthModeSetResponse,
+  AuthModeStatusResponse,
+  AuthModeValidateRequest,
+  AuthModeValidateResponse,
+} from "@repo/shared/types/auth-mode";
+export type {
+  AuthMode,
+  AuthModeChangedEvent,
+  AuthModeErrorCode,
+  AuthModeGetResponse,
+  AuthModeSetRequest,
+  AuthModeSetResponse,
+  AuthModeStatus,
+  AuthModeStatusResponse,
+  AuthModeValidateRequest,
+  AuthModeValidateResponse,
+} from "@repo/shared/types/auth-mode";
 
 // LLM Stream Types
 export interface LLMStreamChunkDelta {
@@ -744,110 +765,13 @@ export interface ApiKeyListResponse {
 
 // ===== Auth Mode Types (TASK-AUTH-MODE-SELECTION-001) =====
 
-/**
- * 認証方式
- */
-export type AuthMode = "subscription" | "api-key";
-
-/**
- * 認証方式エラーコード
- */
-export type AuthModeErrorCode =
-  | "NOT_LOGGED_IN"
-  | "TOKEN_EXPIRED"
-  | "KEYCHAIN_ACCESS_DENIED"
-  | "API_KEY_NOT_SET"
-  | "API_KEY_INVALID"
-  | "NETWORK_ERROR"
-  | "UNKNOWN_ERROR";
-
-/**
- * 認証状態
- */
-export interface AuthModeStatus {
-  mode: AuthMode;
-  isValid: boolean;
-  message: string;
-  errorCode?: AuthModeErrorCode;
-  lastCheckedAt: number;
-}
-
-/**
- * 認証方式取得レスポンス
- */
-export interface AuthModeGetResponse {
-  success: boolean;
-  data?: {
-    mode: AuthMode;
-  };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-/**
- * 認証方式設定リクエスト
- */
-export interface AuthModeSetRequest {
-  mode: AuthMode;
-}
-
-/**
- * 認証方式設定レスポンス
- */
-export interface AuthModeSetResponse {
-  success: boolean;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-/**
- * 認証状態取得レスポンス
- */
-export interface AuthModeStatusResponse {
-  success: boolean;
-  data?: AuthModeStatus;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-/**
- * 認証方式バリデーションレスポンス
- */
-export interface AuthModeValidateResponse {
-  success: boolean;
-  data?: {
-    isValid: boolean;
-    message?: string;
-    errorCode?: AuthModeErrorCode;
-  };
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-
-/**
- * 認証方式変更イベント
- */
-export interface AuthModeChangedEvent {
-  mode: AuthMode;
-  status?: AuthModeStatus;
-}
-
-/**
- * 認証方式IPC API
- */
 export interface AuthModeAPI {
   get: () => Promise<AuthModeGetResponse>;
   set: (request: AuthModeSetRequest) => Promise<AuthModeSetResponse>;
   status: () => Promise<AuthModeStatusResponse>;
-  validate: () => Promise<AuthModeValidateResponse>;
+  validate: (
+    request?: AuthModeValidateRequest,
+  ) => Promise<AuthModeValidateResponse>;
   onModeChanged: (
     callback: (event: AuthModeChangedEvent) => void,
   ) => () => void;

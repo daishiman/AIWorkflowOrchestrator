@@ -73,6 +73,9 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-components`: 完了タスク、関連未タスク、実装導線
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
+- IPC transport 契約更新時は `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` を追加で同期する
+
+> 各ドメイン仕様書の書式は `assets/phase12-domain-spec-sync-block-template.md` を使い、`実装内容` と `苦戦箇所` を別ファイルへ逃がさない。
 
 ### 3.1 同種課題の5分解決カード同期ルール
 
@@ -106,6 +109,8 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
+rg -n 'ipc-contract-checklist\\.md|quick-reference\\.md' <workflow-path>/outputs/phase-12/spec-update-summary.md <workflow-path>/outputs/phase-12/documentation-changelog.md
+rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
@@ -124,6 +129,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
+- [ ] 更新した domain spec は `phase12-domain-spec-sync-block-template.md` 準拠で 3 見出しを持つ
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
@@ -150,8 +156,10 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 が `[x]` で同期されている
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
+- [ ] IPC transport 契約更新時は `ipc-contract-checklist.md` / `quick-reference.md` の両方が記録されている
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
 - [ ] 利用テンプレート（retrospective/subagent）の重複行（同一手順番号・同一コマンド）が解消されている
+- [ ] UI契約タスクで専用 harness を使った場合、理由・保存先・再撮影証跡が成果物へ記録されている
 
 ## 7. 最適なファイル形成（仕様書別）
 

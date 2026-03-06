@@ -34,32 +34,76 @@ export const VALID_AUTH_MODES: readonly AuthMode[] = [
 ] as const;
 
 // =============================================================================
-// 認証状態型定義
+// 公開 transport 型定義
 // =============================================================================
 
 /**
- * 認証状態の詳細情報
+ * auth-mode 公開エラーコード
  */
-export interface AuthStatusDetails {
-  /** APIキー認証時: キーが設定されているか */
-  hasApiKey?: boolean;
-  /** サブスクリプション認証時: トークンが存在するか */
-  hasSubscriptionToken?: boolean;
+export const AUTH_MODE_ERROR_CODES = {
+  INVALID_SENDER: "auth-mode/invalid-sender",
+  INVALID_MODE: "auth-mode/invalid-mode",
+  NO_CREDENTIALS: "auth-mode/no-credentials",
+  NO_API_KEY: "auth-mode/no-api-key",
+  NO_SUBSCRIPTION_TOKEN: "auth-mode/no-subscription-token",
+  STORAGE_FAILED: "auth-mode/storage-failed",
+  STORAGE_READ_FAILED: "auth-mode/storage-read-failed",
+  UNKNOWN_ERROR: "auth-mode/unknown-error",
+} as const;
+
+export type AuthModeErrorCode =
+  (typeof AUTH_MODE_ERROR_CODES)[keyof typeof AUTH_MODE_ERROR_CODES];
+
+/**
+ * auth-mode 公開エラー
+ */
+export interface IPCError {
+  code: AuthModeErrorCode;
+  message: string;
+  guidance?: string;
 }
 
 /**
- * 認証状態
+ * auth-mode 公開レスポンス envelope
  */
-export interface AuthStatus {
-  /** 現在の認証モード */
-  mode: AuthMode;
-  /** 認証が有効かどうか */
-  isAuthenticated: boolean;
-  /** エラーメッセージ（認証失敗時） */
-  error?: string;
-  /** 追加情報 */
-  details?: AuthStatusDetails;
+export interface IPCResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: IPCError;
 }
+
+/**
+ * auth-mode 公開 status DTO
+ */
+export interface AuthModeStatus {
+  mode: AuthMode;
+  isValid: boolean;
+  hasCredentials: boolean;
+  message: string;
+  errorCode?: AuthModeErrorCode;
+  guidance?: string;
+  lastCheckedAt: number;
+}
+
+/**
+ * 互換維持用 alias
+ */
+export type AuthStatus = AuthModeStatus;
+
+/**
+ * auth-mode 画面表示で使う標準メッセージ
+ */
+export const AUTH_MODE_ERROR_MESSAGES: Record<AuthModeErrorCode, string> = {
+  [AUTH_MODE_ERROR_CODES.INVALID_SENDER]: "不正な送信元です",
+  [AUTH_MODE_ERROR_CODES.INVALID_MODE]: "認証方式が不正です",
+  [AUTH_MODE_ERROR_CODES.NO_CREDENTIALS]: "認証情報が見つかりません",
+  [AUTH_MODE_ERROR_CODES.NO_API_KEY]: "APIキーが設定されていません",
+  [AUTH_MODE_ERROR_CODES.NO_SUBSCRIPTION_TOKEN]:
+    "サブスクリプションが見つかりません",
+  [AUTH_MODE_ERROR_CODES.STORAGE_FAILED]: "認証方式の保存に失敗しました",
+  [AUTH_MODE_ERROR_CODES.STORAGE_READ_FAILED]: "認証方式の取得に失敗しました",
+  [AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR]: "予期しないエラーが発生しました",
+};
 
 // =============================================================================
 // イベント型定義
@@ -81,48 +125,6 @@ export interface AuthModeChangeEvent {
  * 認証モード変更リスナー型
  */
 export type AuthModeChangeListener = (event: AuthModeChangeEvent) => void;
-
-// =============================================================================
-// エラーコード定義
-// =============================================================================
-
-/**
- * 認証モードエラーコード
- *
- * External Service Error 範囲 (3000-3999) を使用
- */
-export const AUTH_MODE_ERROR_CODES = {
-  /** 認証モード取得エラー */
-  GET_MODE_FAILED: 3010,
-  /** 認証モード設定エラー */
-  SET_MODE_FAILED: 3011,
-  /** 認証状態取得エラー */
-  GET_STATUS_FAILED: 3012,
-  /** バリデーションエラー */
-  VALIDATION_FAILED: 3013,
-  /** サブスクリプション未認証 */
-  SUBSCRIPTION_NOT_AUTHENTICATED: 3014,
-  /** APIキー未設定 */
-  API_KEY_NOT_SET: 3015,
-} as const;
-
-export type AuthModeErrorCode =
-  (typeof AUTH_MODE_ERROR_CODES)[keyof typeof AUTH_MODE_ERROR_CODES];
-
-/**
- * 認証モードエラーメッセージ
- */
-export const AUTH_MODE_ERROR_MESSAGES: Record<AuthModeErrorCode, string> = {
-  [AUTH_MODE_ERROR_CODES.GET_MODE_FAILED]: "認証モードの取得に失敗しました",
-  [AUTH_MODE_ERROR_CODES.SET_MODE_FAILED]: "認証モードの設定に失敗しました",
-  [AUTH_MODE_ERROR_CODES.GET_STATUS_FAILED]: "認証状態の取得に失敗しました",
-  [AUTH_MODE_ERROR_CODES.VALIDATION_FAILED]:
-    "認証モードのバリデーションに失敗しました",
-  [AUTH_MODE_ERROR_CODES.SUBSCRIPTION_NOT_AUTHENTICATED]:
-    "Claude Code CLIでログインしてください",
-  [AUTH_MODE_ERROR_CODES.API_KEY_NOT_SET]:
-    "Anthropic APIキーを設定してください",
-};
 
 // =============================================================================
 // サブスクリプション認証エラーコード定義
@@ -453,6 +455,11 @@ export interface AuthModeResponse {
 }
 
 /**
+ * auth-mode:get IPC レスポンス
+ */
+export type AuthModeGetResponse = IPCResponse<AuthModeResponse>;
+
+/**
  * auth-mode:set リクエスト
  */
 export interface AuthModeSetRequest {
@@ -462,32 +469,31 @@ export interface AuthModeSetRequest {
 /**
  * auth-mode:set レスポンス
  */
-export interface AuthModeSetResponse {
-  success: boolean;
-  error?: string;
-}
+export type AuthModeSetResponse = IPCResponse<void>;
 
 /**
- * auth-mode:status レスポンス
+ * auth-mode:status IPC レスポンス
  */
-export interface AuthStatusResponse {
-  mode: AuthMode;
-  isAuthenticated: boolean;
-  error?: string;
-  details?: AuthStatusDetails;
-}
+export type AuthModeStatusResponse = IPCResponse<AuthModeStatus>;
 
 /**
  * auth-mode:validate リクエスト
  */
 export interface AuthModeValidateRequest {
-  mode: AuthMode;
+  mode?: AuthMode;
 }
 
 /**
- * auth-mode:validate レスポンス
+ * auth-mode:validate IPC レスポンス
  */
-export interface AuthModeValidateResponse {
-  valid: boolean;
-  error?: string;
+export type AuthModeValidateResponse = IPCResponse<AuthModeStatus>;
+
+/**
+ * auth-mode:changed イベント
+ */
+export interface AuthModeChangedEvent {
+  previousMode: AuthMode;
+  mode: AuthMode;
+  status: AuthModeStatus;
+  changedAt: number;
 }

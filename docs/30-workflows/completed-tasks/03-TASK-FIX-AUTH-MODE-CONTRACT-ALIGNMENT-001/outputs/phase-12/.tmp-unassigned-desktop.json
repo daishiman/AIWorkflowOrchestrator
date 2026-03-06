@@ -1,0 +1,168 @@
+{
+  "scannedAt": "2026-03-06T03:24:25.024Z",
+  "scanDir": "apps/desktop/src",
+  "totalFiles": 1285,
+  "totalFindings": 20,
+  "findings": [
+    {
+      "file": "__tests__/skill-stream-integration.test.ts",
+      "line": 79,
+      "type": "TODO",
+      "content": "(UT-FIX-5-1-005): skill-stream統合テスト修正（TASK-FIX-5-1で統一API移行後の残存、旧window.skillAPI参照）",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "features/chat-history/context/ChatHistoryProvider.tsx",
+      "line": 56,
+      "type": "TODO",
+      "content": "デフォルトRepository実装後に有効化",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/handlers/__tests__/llm.test.ts",
+      "line": 290,
+      "type": "TODO",
+      "content": "Implement timeout mechanism in handler",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/handlers/chatEditHandlers.ts",
+      "line": 331,
+      "type": "TODO",
+      "content": "Monaco Editorとの連携を実装",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/handlers/chatEditHandlers.ts",
+      "line": 373,
+      "type": "TODO",
+      "content": "実際のLLM連携を実装",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/ipc/aiHandlers.ts",
+      "line": 134,
+      "type": "TODO",
+      "content": "Replace with actual connection check",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/ipc/aiHandlers.ts",
+      "line": 157,
+      "type": "TODO",
+      "content": "Replace with actual indexing logic",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/ipc/communityHandlers.ts",
+      "line": 25,
+      "type": "TODO",
+      "content": "Replace with actual service implementation",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/ipc/dashboardHandlers.ts",
+      "line": 59,
+      "type": "TODO",
+      "content": "Replace with real data fetching",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/services/auth/AuthModeService.ts",
+      "line": 265,
+      "type": "TODO",
+      "content": "Phase 5で実際の実装に置き換え",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/services/auth/AuthModeService.ts",
+      "line": 270,
+      "type": "TODO",
+      "content": "Phase 5で実際の実装に置き換え",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "main/services/auth/AuthModeService.ts",
+      "line": 275,
+      "type": "TODO",
+      "content": "Phase 5で実際の実装に置き換え",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/__tests__/community-integration.test.tsx",
+      "line": 178,
+      "type": "TODO",
+      "content": "テストがUIコンポーネントの実装と不一致 - CommunityGraph側の修正が必要",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/__tests__/community-integration.test.tsx",
+      "line": 238,
+      "type": "TODO",
+      "content": "テストがUIコンポーネントの実装と不一致 - 詳細パネル表示ロジックの修正が必要",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/__tests__/community-integration.test.tsx",
+      "line": 378,
+      "type": "TODO",
+      "content": "テストがUIコンポーネントの実装と不一致 - 再試行ボタンの実装が必要",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/__tests__/community-integration.test.tsx",
+      "line": 486,
+      "type": "TODO",
+      "content": "テストがUIコンポーネントの実装と不一致 - selectedクラスの適用が必要",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/components/AuthGuard/AuthErrorBoundary.tsx",
+      "line": 108,
+      "type": "TODO",
+      "content": "将来的なエラーレポーティングサービスへの送信",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/components/community/templates/CommunityVisualization/index.tsx",
+      "line": 139,
+      "type": "TODO",
+      "content": "CONV-08-06 でエンティティ詳細画面への遷移を実装",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/hooks/__tests__/useSkillPermission.test.ts",
+      "line": 29,
+      "type": "TODO",
+      "content": "(UT-FIX-5-1-003): useSkillPermissionテストの修正が必要（33テスト失敗、mockSendPermissionResponseが呼ばれない）",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "renderer/views/AgentView/__tests__/SkillManagement.integration.test.tsx",
+      "line": 64,
+      "type": "TODO",
+      "content": "(UT-FIX-5-1-002): SkillManagement統合テストの修正が必要（12テスト失敗、tdd-principlesモックデータが表示されない）",
+      "priority": "medium",
+      "category": "imp"
+    }
+  ]
+}
