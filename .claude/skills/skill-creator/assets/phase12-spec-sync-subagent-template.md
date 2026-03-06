@@ -112,8 +112,9 @@ rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.m
 rg -n 'ipc-contract-checklist\\.md|quick-reference\\.md' <workflow-path>/outputs/phase-12/spec-update-summary.md <workflow-path>/outputs/phase-12/documentation-changelog.md
 rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
@@ -138,8 +139,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] 未タスクの配置先判定（未実施=`docs/30-workflows/unassigned-task/`、完了済みUT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が `docs/30-workflows/unassigned-task/` 配下であることを確認している
-- [ ] `audit --target-file` を実行した場合、`scope.currentFiles=1` を確認している
+- [ ] `audit --diff-from HEAD --target-file` の対象が `docs/30-workflows/unassigned-task/` 配下であることを確認している
+- [ ] `audit --diff-from HEAD --target-file` を実行した場合、`scope.currentFiles=1` を確認している
+- [ ] `audit --json` 単独の `currentViolations` は repo 全体参考値として、今回差分の合否とは分離している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点に同一の「5分解決カード」が同期されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている

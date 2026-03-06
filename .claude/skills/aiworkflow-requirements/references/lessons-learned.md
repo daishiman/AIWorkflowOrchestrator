@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-06 | 1.29.46 | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC の完了移管を反映。workflow 本体を `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/` へ移動し、今回起票した `UT-IMP-PHASE12-TASK-SPEC-RECHECK-ADOPTION-001` を `completed-tasks/unassigned-task/` へ移管した状態へ同期。完了移管時は「移動・親証跡更新・リンク監査」を同一ターンで閉じる運用を追記 |
+| 2026-03-06 | 1.29.45 | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC の残差を未タスク化。`UT-IMP-PHASE12-TASK-SPEC-RECHECK-ADOPTION-001` を追加し、専用 recheck テンプレートを追加しただけでは task-spec skill 側の採用強制と 4点突合監査が残る苦戦箇所を追記。未タスク起票まで含めて system spec と current workflow outputs を同値同期する標準手順へ更新 |
+| 2026-03-06 | 1.29.44 | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC の再利用導線を最適化。`skill-creator` に `phase12-task-spec-recheck-template.md` を追加し、4点突合の責務を retrospective 本体から分離した。テンプレートが大きすぎて再確認手順が埋もれる苦戦箇所と、専用テンプレート→retrospective→subagent の順で適用する標準手順を追記 |
+| 2026-03-06 | 1.29.43 | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC の Phase 12 タスク仕様準拠再確認を追補。`phase-12-documentation` / `outputs/phase-12` / `implementation-guide` / 未タスク10見出しの4点突合、`audit --diff-from HEAD --target-file` を個別合否に使うルール、repo 全体 `--json` を参考値へ分離する運用を追加し、簡潔解決手順を5ステップへ更新 |
+| 2026-03-06 | 1.29.42 | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC の教訓を追加。parent/current/index の canonical path 同期、`spec_created` / docs-heavy task における representative screenshot 再確認、既存未タスク誤配置是正、`current/baseline` 分離監査を4ステップ手順として固定 |
 | 2026-03-06 | 1.29.41 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の完了移管を追補。workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動し、関連未タスク2件も同workflow配下 `unassigned-task/` へ移管した状態に参照パスを同期 |
 | 2026-03-06 | 1.29.40 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2。`interfaces-auth.md` / `api-ipc-system.md` へ追加した domain spec 3ブロック（`実装内容` / `苦戦箇所` / `5分解決カード`）を Phase 12 で機械検証できていない苦戦箇所を教訓化し、未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を関連導線へ追加 |
 | 2026-03-06 | 1.29.39 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を追補。cross-cutting doc（`ipc-contract-checklist.md` / `quick-reference.md`）同期と、`verify-unassigned-links` の原因説明力不足を未タスク `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` へ formalize した導線を追加 |

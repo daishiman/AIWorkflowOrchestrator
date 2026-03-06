@@ -980,7 +980,7 @@
 
 - **状況**: `--target-file` を使っても baseline が出力されるため、対象ファイルも違反と誤読しやすい
 - **解決策**:
-  1. `audit-unassigned-tasks --json --target-file <path>` の `scope.currentFiles` を確認する
+  1. `audit-unassigned-tasks --json --diff-from HEAD --target-file <path>` の `scope.currentFiles` を確認する
   2. 合否は `currentViolations.total` を正本にし、`baselineViolations.total` は別枠で記録する
   3. 報告テンプレートに `current / baseline` を分離して記載する
 - **効果**: 既存負債に引きずられず、今回差分のフォーマット準拠可否を即判定できる
@@ -992,7 +992,7 @@
 
 - **状況**: 未タスク指示書を新規作成した後、配置確認は通るがフォーマット崩れが混入しやすい
 - **解決策**:
-  1. `audit-unassigned-tasks --json --target-file <path>` を対象ファイルごとに実行し、`currentViolations.total` を判定軸に固定する
+  1. `audit-unassigned-tasks --json --diff-from HEAD --target-file <path>` を対象ファイルごとに実行し、`currentViolations.total` を判定軸に固定する
   2. 必須10見出し（`## メタ情報` + `## 1..9`）と `## メタ情報` 件数（1件）を同一ターンで検証する
   3. `verify-unassigned-links` で実体パス整合を確認し、`missing=0` を完了条件に含める
   4. `task-workflow.md` の再確認テーブルへ `current/baseline` を分離して記録する
@@ -2270,6 +2270,32 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: 非視覚修正中心だが、UI/UX確認要求が追加された Phase 11/12 再監査タスク
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001
+
+### [Phase12] タスク仕様準拠の4点突合 + scoped diff監査（TASK-UI-01-E）
+
+- **状況**: `outputs/phase-12/` のファイル存在だけを見て完了判定すると、`implementation-guide.md` 必須要素や未タスク指示書フォーマット、`phase-12-documentation.md` との同期漏れを取りこぼしやすい
+- **アプローチ**:
+  - `phase-12-documentation.md` の `completed` / Task 12-1〜12-5 / Task進捗100% と `outputs/phase-12` 実体を同時確認する
+  - `implementation-guide.md` の `Part 1 / Part 2`、理由先行、日常例え、型/API/エッジケース/設定語を `rg` で機械確認する
+  - 未タスクは `docs/30-workflows/unassigned-task/` への物理配置、`## メタ情報 + ## 1..9` の10見出し、`audit --diff-from HEAD --target-file` と `verify-unassigned-links` を同時に確認する
+  - `task-workflow.md` / `lessons-learned.md` / `spec-update-summary.md` / `phase12-compliance-recheck.md` / `unassigned-task-detection.md` に同一の実測値を転記する
+- **結果**: Phase 12 の「完了しているように見えるが task spec を満たしていない」状態を早期に検出でき、差分合否と baseline 監視値の混同も防げる
+- **適用条件**: docs-heavy task、spec_created task、再監査タスク、既存未タスク是正を含む Phase 12 完了確認全般
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
+- **クロスリファレンス**: [phase12-task-spec-recheck-template.md](../assets/phase12-task-spec-recheck-template.md), [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
+
+### [Phase12] 専用 recheck テンプレートで責務を分離（TASK-UI-01-E）
+
+- **状況**: `phase12-system-spec-retrospective-template` だけで再確認から system spec 同期まで抱えると、task spec 準拠確認の責務が埋もれて適用順がぶれやすい
+- **アプローチ**:
+  - まず `phase12-task-spec-recheck-template.md` で 4点突合と実測値固定を完了する
+  - その後に `phase12-system-spec-retrospective-template.md` で実装内容・苦戦箇所・再利用手順へ展開する
+  - 仕様書ごとの担当と検証証跡は `phase12-spec-sync-subagent-template.md` で固定する
+- **結果**: 再確認と仕様同期の責務が分離され、docs-heavy task でも最小限の順序で機械的に進められる
+- **適用条件**: Phase 12 再監査で「まず合否を確定し、その後に system spec と outputs を同期したい」ケース
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
 
 ---
 

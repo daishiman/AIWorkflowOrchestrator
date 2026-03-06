@@ -89,8 +89,6 @@
 - ステータス: success
 - 補足: auth-mode の domain spec 3枚だけ読んでも、実装要点・難所・最短解決手順まで追える状態に整理できた。
 
----
-
 ## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 12準拠再確認（未タスク診断強化）
 
 ### コンテキスト
@@ -124,8 +122,6 @@
 - ステータス: success
 - 補足: blocking な未タスクは 0 件。再利用性向上の改善バックログ 1 件を追加し、配置・形式・参照はすべて PASS。
 
----
-
 ## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査（横断導線補強）
 
 ### コンテキスト
@@ -152,8 +148,6 @@
 ### 結果
 - ステータス: success
 - 判定: auth-mode 契約は正本仕様だけでなく横断導線 (`ipc-contract-checklist.md` / `quick-reference.md`) まで反映済み
-
----
 
 ## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 仕様同期（auth-mode contract alignment）
 
@@ -187,6 +181,185 @@
 ### 結果
 - ステータス: success
 - 補足: current diff 起因の未タスクは 0 件。Phase 11 は 5/5 スクリーンショットで PASS。
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC completed-tasks 移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: Phase 12 完了後の運用ルールに従い、workflow 本体と今回起票した UT を completed-tasks 正本へ移動し、親証跡とリンクを同期する
+
+### 実施内容
+- workflow 本体を `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/` へ移動。
+- `UT-IMP-PHASE12-TASK-SPEC-RECHECK-ADOPTION-001` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管。
+- `task-workflow.md` / `lessons-learned.md` / `SKILL.md` / Phase 12 成果物 / 親仕様導線 / スクリーンショットスクリプトの path を completed-tasks 正本へ更新。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task-spec-recheck-adoption-001.md`
+
+### 結果
+- ステータス: success
+- 補足:
+  - `verify-all-specs`: PASS（13/13）
+  - `validate-phase-output`: PASS（28項目）
+  - `verify-unassigned-links`: PASS（106/106）
+  - `audit --diff-from HEAD --target-file`: `currentViolations=0`
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC 再利用導線の最適化
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: 今回実装した Phase 12 再確認運用を、同種課題で短手順に再適用できるようテンプレート化された形で system spec に反映する
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-01-E 節へ、`skill-creator` 側の新規テンプレート追加を実装反映として追記。
+- `references/lessons-learned.md` に「retrospective テンプレートが広すぎると task spec 再確認の責務が埋もれる」苦戦箇所を追加し、専用 recheck テンプレート→retrospective→subagent の順序を標準化。
+- Phase 12 成果物へも同じ改善内容を同期し、current workflow の証跡と system spec 正本の差分をなくした。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+
+### 結果
+- ステータス: success
+- 補足:
+  - 4点突合の再利用導線を system spec と skill template の両方へ反映
+  - `TASK-UI-01-E` の実装内容・苦戦箇所・5分解決カードをテンプレート運用と整合させた
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC 残差の未タスク化
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: 専用 recheck テンプレート追加後も残っている採用強制と監査自動化の gap を未タスクとして正本化し、system spec と current workflow outputs の差分をなくす
+
+### 仕様書別SubAgent分担
+- SubAgent-U1（未タスク仕様）: `docs/30-workflows/unassigned-task/` に新規未タスク指示書を作成
+- SubAgent-U2（system spec 正本）: `references/task-workflow.md` / `references/lessons-learned.md` に関連未タスクと苦戦箇所を追記
+- SubAgent-U3（Phase 12 outputs）: `outputs/phase-12/*.md` へ同じ未タスクIDと判定根拠を同期
+
+### 実施内容
+- `UT-IMP-PHASE12-TASK-SPEC-RECHECK-ADOPTION-001` を新規起票し、4点突合専用テンプレートの採用強制、監査導線、system spec 同期を1タスクへ集約した。
+- `references/task-workflow.md` の TASK-UI-01-E 節に新規未タスクを追加し、未タスク判定を 1件追加へ更新した。
+- `references/lessons-learned.md` に「テンプレートを追加しても採用強制が残る」苦戦箇所と、残差を即時未タスク化する標準ルールを追記した。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-task-spec-recheck-adoption-001.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足:
+  - 新規未タスク指示書を正本配置し、system spec 側の関連未タスクと同一IDで追跡できる状態へ更新
+  - `verify-unassigned-links`: PASS（106/106）
+  - `audit --diff-from HEAD --target-file task-imp-phase12-task-spec-recheck-adoption-001.md`: `currentViolations=0`
+  - current workflow `outputs/phase-12` へも同じ判定を同期済み
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC Phase 12 タスク仕様準拠再確認
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: `phase-12-documentation.md` のタスク仕様どおりに実行できているかを再確認し、今回実装した内容と苦戦箇所を `task-workflow.md` / `lessons-learned.md` に再利用可能な形で固定する
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-01-E 節に、Phase 12 タスク仕様準拠再確認（`phase-12-documentation` / `outputs/phase-12` / `implementation-guide` / 未タスク10見出しの4点突合）を追記。
+- `references/lessons-learned.md` に「outputs の存在確認だけでは task spec 未準拠が残る」苦戦箇所と、`audit --diff-from HEAD --target-file` を個別合否に使う四分離ルールを追記。
+- `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/outputs/phase-12/*.md` に同じ実測値と改善内容を逆同期。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md`
+
+### 結果
+- ステータス: success
+- 補足:
+  - `validate-phase11-screenshot-coverage`: PASS（expected=6 / covered=6）
+  - `verify-unassigned-links`: PASS（104/104）
+  - `audit --diff-from HEAD`: `currentViolations=0`, `baselineViolations=93`
+  - `audit --diff-from HEAD --target-file`: 対象未タスク差分 `currentViolations=0`
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC 仕様同期（統合ゲート正本化 + path 正規化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: 統合レビューゲート / 仕様同期台帳 / downstream handoff 条件を docs-only 正本として同期し、parent docs と current workflow の導線不整合を解消する
+
+### 仕様書別SubAgent分担
+- SubAgent-E1（台帳）: `references/task-workflow.md` に spec_created 完了記録、検証証跡、handoff 条件を追加
+- SubAgent-E2（教訓）: `references/lessons-learned.md` に canonical path / Phase 11判定 / 未タスク監査の教訓を追加
+- SubAgent-E3（ガイド改善）: `task-specification-creator` 側 guide へ parent/current/index 同時正規化ルールを追記
+- SubAgent-E4（監査）: `verify-unassigned-links` / `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/outputs/phase-1..12/` の成果物を前提に、`task-workflow.md` と `lessons-learned.md` の正本反映を実施。
+- parent docs の旧 nested workflow 参照を current workflow path へ正規化。
+- existing 未タスク `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` の誤配置を `docs/30-workflows/unassigned-task/` へ是正。
+- 初回同期では Phase 11 screenshot を `N/A` 扱いに固定したが、同日再監査で branch-level integration visual recheck へ更新した。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator`
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`
+
+### 結果
+- ステータス: success
+- 補足:
+- `verify-unassigned-links`: PASS（104/104）
+- `verify-all-specs`: PASS（13/13, error=0, warning=0）
+- `validate-phase-output`: PASS（28項目, error=0, warning=0）
+- `audit --diff-from HEAD`: `currentViolations=0`, `baselineViolations=93`
+- `quick_validate`: 3スキルとも error=0
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC 再監査（branch-level visual smoke 反映）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC`
+- 目的: `spec_created` task でも upstream UI surface の統合再確認が必要なケースを教訓化し、Phase 11/12 の N/A 判定ドリフトを防ぐ
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-01-E セクションを、docs-only `N/A` ではなく branch-level integration visual recheck を含む記録へ更新。
+- `references/lessons-learned.md` に「current workflow に code diff がなくても upstream UI surface の再確認が必要なら representative screenshots を残す」教訓を追記。
+- `task-specification-creator` 側ガイドの例外ルール追加と整合するよう、`SKILL.md` / `LOGS.md` の履歴も更新。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync`
+
+### 結果
+- ステータス: success
+- 補足:
+  - `validate-phase11-screenshot-coverage`: PASS（expected=6 / covered=6）
+  - `verify-all-specs`: PASS（13/13, error=0, warning=0）
+  - `validate-phase-output`: PASS（28項目, error=0, warning=0）
 
 ---
 
@@ -7087,15 +7260,6 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 ---
 
-
-## [実行日時: 2026-03-06T04:42:41.549Z]
-
-- Task: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001
-- 結果: success
-- フィードバック: auth-mode quick-reference and ipc-contract-checklist sync
-
----
-
 （ログエントリはここに追記されます）
 
 ## 2026-02-03: TASK-9B-A完了（skill-creator SKILL.md 作成）
@@ -8000,147 +8164,3 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 判定: Phase 12はタスク仕様書どおり実行済み（再確認後のドリフトも解消）
-
-## 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: UI 正本、workflow 台帳、教訓を task-043b の実装・証跡へ同期する
-
-### 実施内容
-
-- `references/ui-ux-components.md`
-  - 主要UI一覧へ TASK-043B を追加
-  - 完了記録へ 2セクション UI / dialog / success-error-focus 契約を追記
-- `references/ui-ux-feature-components.md`
-  - TASK-043B 専用セクションを追加
-  - 完了タスク表へ task-043b を追加
-- `references/arch-ui-components.md`
-  - Import list アーキテクチャ節を追加
-- `references/task-workflow.md`
-  - 完了タスク節へ task-043b を追加
-- `references/lessons-learned.md`
-  - store action 非 throw 契約と alert 一元化の教訓を追加
-
-### 結果
-
-- ステータス: success
-- 補足: Step 2 判定は `更新なし`（public I/F / IPC 追加なし）
-
-## 2026-03-06 - TASK-043B 再監査の状態契約・参照導線補強
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: 再監査で見つかった state 契約・親仕様参照・テスト追従漏れを正本仕様へ追加反映する
-
-### 実施内容
-
-- `references/arch-state-management.md`
-  - `importSkill` の non-throw failure 契約と post-condition success 判定を追加
-  - dialog open 中の error surface 一元化を状態管理契約として明文化
-  - `SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追記
-- `references/task-workflow.md`
-  - TASK-043B セクションへ dialog unit 31 tests PASS を追記
-  - 親仕様ブリッジ欠落の是正内容を追加
-- `references/lessons-learned.md`
-  - dialog test copy drift と `../task-xxx.md` 親仕様参照漏れを苦戦箇所へ追加
-
-### 結果
-
-- ステータス: success
-- 補足: 実装仕様だけでなく再監査運用の再発防止条件まで正本へ同期した
-
-## 2026-03-06 - TASK-043B Phase 12準拠再確認と skill 改善同期
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: Phase 12 がタスク仕様書どおりに実行されたかを再確認し、その根拠と苦戦箇所を正本仕様へ同期する
-
-### 実施内容
-
-- `references/task-workflow.md`
-  - `SkillImportDialog.test.tsx` をテストファイル一覧へ追加
-  - `phase12-task-spec-compliance-check.md` と未タスク配置監査 PASS を追記
-  - Phase 12 根拠分散の苦戦箇所と、skill 改善による解消を記録
-- `references/ui-ux-feature-components.md`
-  - Phase 12準拠レポート参照と「根拠分散」苦戦箇所を追補
-- `references/lessons-learned.md`
-  - Phase 12 完了根拠の集約と親仕様参照 guard を含む 6 ステップ手順へ更新
-
-### 結果
-
-- ステータス: success
-- 補足: 新規未タスクは 0 件のまま、準拠確認と skill 改善を in-place で同期した
-
-## 2026-03-06 - TASK-043B 由来の legacy 未タスク正規化課題を分離
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: `docs/30-workflows/unassigned-task/` の baseline 負債を feature 差分と切り分け、改善 backlog として正式管理する
-
-### 実施内容
-
-- `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md` を追加
-- `references/task-workflow.md`
-  - TASK-043B 節の未タスク判定を「current=0 を維持しつつ baseline は別UT化」に更新
-  - 残課題テーブルへ `UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001` を追加
-- `references/lessons-learned.md`
-  - `current/baseline` 二層管理を TASK-043B の簡潔手順へ追補
-
-### 結果
-
-- ステータス: success
-- 補足: feature 実装起因の新規未タスクは 0 件のまま、repository legacy 負債だけを独立管理へ分離した
-
-## 2026-03-06 - TASK-043B の簡潔解決手順を UI 機能仕様へ追補
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: 実装内容と苦戦箇所だけでなく、feature 仕様書側からも短手順で再利用できる導線を残す
-
-### 実施内容
-
-- `references/ui-ux-feature-components.md`
-  - TASK-043B セクションへ「同種課題の簡潔解決手順」を追加
-  - `phase12-task-spec-compliance-check.md` による root evidence 集約を明記
-  - `current=0` と `baseline backlog` の分離運用を feature 仕様書側にも反映
-
-### 結果
-
-- ステータス: success
-- 補足: `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` の3点で、実装内容・苦戦箇所・簡潔手順が揃った
-
-## 2026-03-06 - TASK-043B 由来の skill import 契約横展開UTを追加
-
-### コンテキスト
-
-- スキル: aiworkflow-requirements
-- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: `SkillImportDialog` で解消した `importSkill` non-throw 契約を、他の skill import 導線へ横展開する改善タスクを正本へ登録する
-
-### 実施内容
-
-- `docs/30-workflows/unassigned-task/task-imp-skill-import-result-contract-guard-001.md` を追加
-- `references/task-workflow.md`
-  - TASK-043B 節の未タスク欄を「blocking 0 件 + 契約横展開 1 件 + legacy backlog 1 件」に更新
-  - 残課題テーブルへ `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加
-- `references/ui-ux-feature-components.md`
-  - TASK-043B の苦戦箇所に `useSkillCenter` など別導線への未横展開を追加
-  - 関連未タスク表へ `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加
-- `references/lessons-learned.md`
-  - `importSkill()` callsite 棚卸しを簡潔解決手順へ追記
-
-### 結果
-
-- ステータス: success
-- 補足: TASK-043B の実装完了は維持したまま、同種課題を短手順で再解決するための改善導線を別未タスクとして切り出した
