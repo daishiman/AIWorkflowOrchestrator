@@ -184,6 +184,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
+- `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
 ### テスト結果レポート形式
 
 ```markdown
@@ -521,6 +522,7 @@ done
 | Date | Changes |
 | ---- | ------- |
 | 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |
+| 2026-03-06 | TASK-043B 再監査を反映し、`TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離管理を追記。補助 screenshot は coverage validator 上 warning 許容で、blocking 条件へ昇格させない運用を明文化 |
 | 2026-03-04 | TASK-UI-00-ORGANISMS 再確認を反映し、Phase 12完了チェックへ「再撮影後の `stat` 時刻同期（manual-test/screenshot-coverage）」「`validate-phase11-screenshot-coverage` PASS 記録」を追加 |
 | 2026-03-04 | SkillCenter再監査の教訓を反映し、UI再撮影前 `preview preflight`（build + 疎通確認）を必須手順へ追加。失敗時は `unassigned-task-detection.md` 記録 + 未タスク化を標準化 |
 | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |

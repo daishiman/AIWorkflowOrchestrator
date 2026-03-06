@@ -20,11 +20,15 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-06 | 1.29.36 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の完了移管を追補。workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動し、関連未タスク2件も同workflow配下 `unassigned-task/` へ移管した状態に参照パスを同期 |
-| 2026-03-06 | 1.29.35 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2。`interfaces-auth.md` / `api-ipc-system.md` へ追加した domain spec 3ブロック（`実装内容` / `苦戦箇所` / `5分解決カード`）を Phase 12 で機械検証できていない苦戦箇所を教訓化し、未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を関連導線へ追加 |
-| 2026-03-06 | 1.29.34 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を追補。cross-cutting doc（`ipc-contract-checklist.md` / `quick-reference.md`）同期と、`verify-unassigned-links` の原因説明力不足を未タスク `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` へ formalize した導線を追加 |
-| 2026-03-06 | 1.29.33 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の教訓を追加。shared transport DTO 正本化、SettingsView の現行 selector 実装への仕様是正、Phase 11 専用 harness による auth-mode 視覚検証の3点を再利用手順付きで固定 |
+| 2026-03-06 | 1.29.41 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の完了移管を追補。workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動し、関連未タスク2件も同workflow配下 `unassigned-task/` へ移管した状態に参照パスを同期 |
+| 2026-03-06 | 1.29.40 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2。`interfaces-auth.md` / `api-ipc-system.md` へ追加した domain spec 3ブロック（`実装内容` / `苦戦箇所` / `5分解決カード`）を Phase 12 で機械検証できていない苦戦箇所を教訓化し、未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を関連導線へ追加 |
+| 2026-03-06 | 1.29.39 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を追補。cross-cutting doc（`ipc-contract-checklist.md` / `quick-reference.md`）同期と、`verify-unassigned-links` の原因説明力不足を未タスク `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` へ formalize した導線を追加 |
+| 2026-03-06 | 1.29.38 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の教訓を追加。shared transport DTO 正本化、SettingsView の現行 selector 実装への仕様是正、Phase 11 専用 harness による auth-mode 視覚検証の3点を再利用手順付きで固定 |
+| 2026-03-06 | 1.29.37 | TASK-043B 追補。`SkillImportDialog` で解消した post-condition 成功判定を `SkillCenterView` など他の skill import 導線へ横展開する未タスク `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加し、callsite 棚卸しを簡潔解決手順へ組み込んだ |
+| 2026-03-06 | 1.29.36 | TASK-043B 再確認の追補。`currentViolations=0` を保っていても `baselineViolations=93` が残る場合は、feature 差分と切り分けて運用改善未タスクへ分離するルールを追加 |
+| 2026-03-06 | 1.29.35 | TASK-043B 再確認追補。Phase 12 の完了根拠が複数成果物へ分散しやすい課題を追加し、`phase12-task-spec-compliance-check.md` と親仕様参照 guard を使う 6 ステップ手順へ更新 |
 | 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
+| 2026-03-06 | 1.29.34 | TASK-043B の教訓を追加。store action が failure 時に resolve する設計への追従、dialog open 中の error surface 一元化、Phase 11 screenshot validator の補助証跡 warning 扱いを再発条件付きで整理 |
 | 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
 | 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
 | 2026-03-05 | 1.29.29 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12再確認を追補。成果物実体は完了しているのに `phase-12-documentation.md` が `pending` のまま残る台帳ドリフトを苦戦箇所として追加し、`verify-all-specs` / `validate-phase-output` / Task 12-1〜12-5実在チェックの3点突合で同期する手順を標準化 |
@@ -1044,6 +1048,41 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | 原因 | 待機APIとライフサイクルAPIの責務境界が曖昧だった |
 | 対処 | timeout はエラー返却のみへ変更し、停止は呼び出し側の `stop()` 明示実行へ分離した |
 | 今後の標準ルール | timeout系APIは副作用を持たせず、停止責務を分離する |
+
+---
+
+## TASK-043B SkillManagementPanel import list refinement（2026-03-06）
+
+### 実装内容サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装要点 | imported / available 2 セクション、dialog 追加導線、success / error / focus return、nullish metadata 防御 |
+| 検証要点 | panel 21 tests + dialog 31 tests（合計 52 tests PASS）、typecheck PASS、coverage 89.71 / 87.41 / 84.61、TC 9/9 + mobile 補助証跡 |
+
+### 苦戦箇所
+
+| # | 課題 | 再発条件 | 解決策 | 教訓 |
+| --- | --- | --- | --- | --- |
+| 1 | store `importSkill` が failure 時に throw しない | action の resolve を成功と誤解する UI を書いた場合 | dialog で `useAppStore.getState()` を参照し、imported 反映 + error 未残置で判定する | store action の成功契約は return 値ではなく state 変化で確認する |
+| 2 | dialog open 中に error alert が二重表示される | panel と dialog が同じ `skillError` を同時描画する場合 | dialog open 中は panel alert を抑止する | error surface は 1 操作 1 面に限定する |
+| 3 | screenshot validator が補助証跡を warning 扱いする | `TC-xx` 以外の補助 screenshot を追加する場合 | TC 本体と補助証跡を分離記録し、warning を blocking へ昇格させない | Phase 11 は「TC 証跡」と「補助証跡」を別枠で管理する |
+| 4 | `SkillImportDialog` の既存テストが UI copy と `getState()` 契約に追従していない | `追加する` / `追加中...` などの copy 変更、または post-condition 判定を導入した場合 | dialog テストモックに `useAppStore.getState()` を追加し、copy・成功判定・close 条件を現行契約へ更新する | UI copy 変更は見た目だけでなくテスト取得条件と Store モック契約も同時更新する |
+| 5 | Phase 仕様書が `../task-xxx.md` を参照するのに親仕様ブリッジがない | workflow ディレクトリだけを作り、親仕様ファイルを別配置へ移した場合 | `docs/30-workflows/<workflow>.md` を互換ブリッジとして追加するか、Phase 参照を正本へ更新する | workflow 本体と親仕様の 2 導線は Phase 12 で同時に実在確認する |
+| 6 | Phase 12 の完了根拠が `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` に分散する | 再監査時にどのファイルが Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を満たしているか横断確認しない場合 | `phase12-task-spec-compliance-check.md` を追加し、準拠判定を1ファイルへ集約する。加えて `verify-all-specs` を親仕様参照まで検証できる状態に保つ | Phase 12 は「成果物がある」だけでなく「準拠根拠を1ファイルで辿れる」状態まで作る |
+| 7 | `currentViolations=0` だけを見て未タスク置き場全体が健全だと誤解する | feature 差分の監査だけで Phase 12 を閉じ、repository baseline を別管理しない場合 | feature 差分は `current` で合否判定し、`baseline>0` は独立未タスクへ切り出して backlog 化する | 未タスク監査は「差分合否」と「legacy 改善計画」の二層で管理する |
+| 8 | `SkillImportDialog` だけ post-condition 判定へ直し、他の `importSkill()` callsite を見落とす | `useSkillCenter.handleAddSkill()` など別導線が promise resolve だけで success UX を進める場合 | `rg -n "importSkill\\("` で callsite を棚卸しし、共通 helper 化できない箇所は `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` で管理する | store action 契約の修正は 1 画面で終わらせず、全 callsite へ横展開する |
+
+### 同種課題の簡潔解決手順（8ステップ）
+
+1. store action の失敗契約を確認し、throw / resolve のどちらかを先に固定する。  
+2. UI 成功判定は post-condition（state 変化）で定義する。  
+3. dialog / panel で同じ error を描画する場合は 1 surface に集約する。  
+4. unit / integration / screenshot の 3 層で success / error / focus を重ねて確認する。  
+5. Phase 11 では `TC-xx` 本体と補助 screenshot を別テーブルで記録する。  
+6. Phase 12 では `phase12-task-spec-compliance-check.md` を作り、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 の根拠を 1 ファイルへ集約する。  
+7. `audit-unassigned-tasks --json --diff-from HEAD` の `current=0` で feature 差分の合否を確定しつつ、`baseline>0` は別未タスクへ切り出して改善 backlog 化する。  
+8. `importSkill()` の callsite を棚卸しし、post-condition 判定が未適用の導線は `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` のように独立未タスクへ切り出す。  
 
 ### 苦戦箇所: `stop()` の多重実行で終了経路が揺れる
 

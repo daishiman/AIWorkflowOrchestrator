@@ -1,0 +1,366 @@
+{
+  "feature": "task-043b-ui-ux-import-list-design",
+  "created": "2026-03-05T23:36:34.110Z",
+  "lastUpdated": "2026-03-06T09:55:54.220Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:26.079Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/ui-state-inventory.md",
+          "description": "UI状態棚卸し"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:26.232Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/information-architecture.md",
+          "description": "情報アーキテクチャ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/ui-state-matrix.md",
+          "description": "UI状態マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/a11y-interaction-contract.md",
+          "description": "A11y操作契約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/copy-guidelines.md",
+          "description": "文言ガイド"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:26.377Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/open-risk-register.md",
+          "description": "オープンリスク台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/dependency-decision-log.md",
+          "description": "依存関係判断ログ"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:26.519Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/accessibility-test-plan.md",
+          "description": "アクセシビリティテスト計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/interaction-test-matrix.md",
+          "description": "interactionテストマトリクス"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:26.704Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "description": "実装計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/component-boundary-map.md",
+          "description": "コンポーネント境界図"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/selector-action-map.md",
+          "description": "selector-action対応表"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/import-flow-wireframe.md",
+          "description": "import flow wireframe"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.056Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-plan.md",
+          "description": "テスト拡充計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-matrix.md",
+          "description": "回帰マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/edge-case-cases.md",
+          "description": "edge case 一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/screenshot-matrix.md",
+          "description": "スクリーンショットマトリクス"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.318Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-target-report.md",
+          "description": "カバレッジ目標レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gate-criteria.md",
+          "description": "カバレッジゲート基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/selector-stability-checklist.md",
+          "description": "selector安定性チェックリスト"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.483Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタリング計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/copy-token-normalization.md",
+          "description": "文言トークン正規化"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/component-extraction-guideline.md",
+          "description": "コンポーネント抽出ガイド"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.630Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/accessibility-compliance-checklist.md",
+          "description": "アクセシビリティ適合チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/ux-consistency-audit.md",
+          "description": "UX整合監査"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.769Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/go-no-go-checklist.md",
+          "description": "Go/No-Goチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/dependency-review.md",
+          "description": "依存関係レビュー"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:27.915Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-plan.md",
+          "description": "手動テスト計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "スクリーンショット計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "スクリーンショットカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots",
+          "description": "スクリーンショット証跡"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:10:28.065Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-step-log.md",
+          "description": "Phase 12 step log"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-03-06T09:55:24.861Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/handoff-checklist.md",
+          "description": "handoff checklist"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/review-handshake.md",
+          "description": "review handshake"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/release-note-draft.md",
+          "description": "release note draft"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/verification-command-summary.md",
+          "description": "verification command summary"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "estimatedPhases": 13,
+    "actualPhases": 13,
+    "executionState": "phase_13_completed"
+  }
+}

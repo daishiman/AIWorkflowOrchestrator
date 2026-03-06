@@ -8000,3 +8000,147 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 - ステータス: success
 - 判定: Phase 12はタスク仕様書どおり実行済み（再確認後のドリフトも解消）
+
+## 2026-03-06 - TASK-043B SkillManagementPanel import list refinement 完了同期
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: UI 正本、workflow 台帳、教訓を task-043b の実装・証跡へ同期する
+
+### 実施内容
+
+- `references/ui-ux-components.md`
+  - 主要UI一覧へ TASK-043B を追加
+  - 完了記録へ 2セクション UI / dialog / success-error-focus 契約を追記
+- `references/ui-ux-feature-components.md`
+  - TASK-043B 専用セクションを追加
+  - 完了タスク表へ task-043b を追加
+- `references/arch-ui-components.md`
+  - Import list アーキテクチャ節を追加
+- `references/task-workflow.md`
+  - 完了タスク節へ task-043b を追加
+- `references/lessons-learned.md`
+  - store action 非 throw 契約と alert 一元化の教訓を追加
+
+### 結果
+
+- ステータス: success
+- 補足: Step 2 判定は `更新なし`（public I/F / IPC 追加なし）
+
+## 2026-03-06 - TASK-043B 再監査の状態契約・参照導線補強
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: 再監査で見つかった state 契約・親仕様参照・テスト追従漏れを正本仕様へ追加反映する
+
+### 実施内容
+
+- `references/arch-state-management.md`
+  - `importSkill` の non-throw failure 契約と post-condition success 判定を追加
+  - dialog open 中の error surface 一元化を状態管理契約として明文化
+  - `SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追記
+- `references/task-workflow.md`
+  - TASK-043B セクションへ dialog unit 31 tests PASS を追記
+  - 親仕様ブリッジ欠落の是正内容を追加
+- `references/lessons-learned.md`
+  - dialog test copy drift と `../task-xxx.md` 親仕様参照漏れを苦戦箇所へ追加
+
+### 結果
+
+- ステータス: success
+- 補足: 実装仕様だけでなく再監査運用の再発防止条件まで正本へ同期した
+
+## 2026-03-06 - TASK-043B Phase 12準拠再確認と skill 改善同期
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: Phase 12 がタスク仕様書どおりに実行されたかを再確認し、その根拠と苦戦箇所を正本仕様へ同期する
+
+### 実施内容
+
+- `references/task-workflow.md`
+  - `SkillImportDialog.test.tsx` をテストファイル一覧へ追加
+  - `phase12-task-spec-compliance-check.md` と未タスク配置監査 PASS を追記
+  - Phase 12 根拠分散の苦戦箇所と、skill 改善による解消を記録
+- `references/ui-ux-feature-components.md`
+  - Phase 12準拠レポート参照と「根拠分散」苦戦箇所を追補
+- `references/lessons-learned.md`
+  - Phase 12 完了根拠の集約と親仕様参照 guard を含む 6 ステップ手順へ更新
+
+### 結果
+
+- ステータス: success
+- 補足: 新規未タスクは 0 件のまま、準拠確認と skill 改善を in-place で同期した
+
+## 2026-03-06 - TASK-043B 由来の legacy 未タスク正規化課題を分離
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: `docs/30-workflows/unassigned-task/` の baseline 負債を feature 差分と切り分け、改善 backlog として正式管理する
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md` を追加
+- `references/task-workflow.md`
+  - TASK-043B 節の未タスク判定を「current=0 を維持しつつ baseline は別UT化」に更新
+  - 残課題テーブルへ `UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001` を追加
+- `references/lessons-learned.md`
+  - `current/baseline` 二層管理を TASK-043B の簡潔手順へ追補
+
+### 結果
+
+- ステータス: success
+- 補足: feature 実装起因の新規未タスクは 0 件のまま、repository legacy 負債だけを独立管理へ分離した
+
+## 2026-03-06 - TASK-043B の簡潔解決手順を UI 機能仕様へ追補
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: 実装内容と苦戦箇所だけでなく、feature 仕様書側からも短手順で再利用できる導線を残す
+
+### 実施内容
+
+- `references/ui-ux-feature-components.md`
+  - TASK-043B セクションへ「同種課題の簡潔解決手順」を追加
+  - `phase12-task-spec-compliance-check.md` による root evidence 集約を明記
+  - `current=0` と `baseline backlog` の分離運用を feature 仕様書側にも反映
+
+### 結果
+
+- ステータス: success
+- 補足: `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` の3点で、実装内容・苦戦箇所・簡潔手順が揃った
+
+## 2026-03-06 - TASK-043B 由来の skill import 契約横展開UTを追加
+
+### コンテキスト
+
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
+- 目的: `SkillImportDialog` で解消した `importSkill` non-throw 契約を、他の skill import 導線へ横展開する改善タスクを正本へ登録する
+
+### 実施内容
+
+- `docs/30-workflows/unassigned-task/task-imp-skill-import-result-contract-guard-001.md` を追加
+- `references/task-workflow.md`
+  - TASK-043B 節の未タスク欄を「blocking 0 件 + 契約横展開 1 件 + legacy backlog 1 件」に更新
+  - 残課題テーブルへ `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加
+- `references/ui-ux-feature-components.md`
+  - TASK-043B の苦戦箇所に `useSkillCenter` など別導線への未横展開を追加
+  - 関連未タスク表へ `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加
+- `references/lessons-learned.md`
+  - `importSkill()` callsite 棚卸しを簡潔解決手順へ追記
+
+### 結果
+
+- ステータス: success
+- 補足: TASK-043B の実装完了は維持したまま、同種課題を短手順で再解決するための改善導線を別未タスクとして切り出した

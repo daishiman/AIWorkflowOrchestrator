@@ -1,78 +1,155 @@
 /**
  * @vitest-environment happy-dom
- *
- * SkillManagementPanel Integration Tests
- *
- * Tests for TASK-10A-D: SkillAnalysisView and SkillCreateWizard integration
- * with SkillManagementPanel. Verifies view transitions, prop passing,
- * and onClose callbacks between parent panel and child components.
- *
- * P39 compliance: Uses fireEvent instead of userEvent for happy-dom environment.
- *
- * @module @repo/desktop/renderer/components/skill/__tests__/SkillManagementPanel.integration
  */
 
 import React from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  render,
-  screen,
+  act,
   cleanup,
   fireEvent,
-  act,
+  render,
+  screen,
 } from "@testing-library/react";
-import type { ImportedSkill } from "@repo/shared";
+import type { ImportedSkill, SkillMetadata } from "@repo/shared";
 
-// --- Mock functions ---
-const mockFetchSkills = vi.fn().mockResolvedValue(undefined);
-const mockRemoveSkill = vi.fn().mockResolvedValue(undefined);
+function buildImportedSkill(
+  name: string,
+  description: string,
+  overrides: Partial<ImportedSkill> = {},
+): ImportedSkill {
+  return {
+    name: name as ImportedSkill["name"],
+    description,
+    path: `/skills/${name}`,
+    allowedTools: [],
+    updatedAt: new Date("2026-03-01T00:00:00Z"),
+    importedAt: new Date("2026-03-02T00:00:00Z"),
+    status: "active",
+    agents: [],
+    references: [],
+    scripts: [],
+    assets: [],
+    schemas: [],
+    indexes: [],
+    otherFiles: [],
+    ...overrides,
+  };
+}
 
-// --- Test data ---
-const mockSkill: ImportedSkill = {
-  name: "test-skill" as unknown as ImportedSkill["name"],
-  description: "説明",
-  path: "/path",
-  allowedTools: [],
-  updatedAt: new Date("2026-01-01"),
-  importedAt: new Date("2026-02-01"),
-  status: "active" as const,
-  agents: [],
-  references: [],
-  scripts: [],
-  assets: [],
-  schemas: [],
-  indexes: [],
-  otherFiles: [],
-} as ImportedSkill;
+function buildAvailableSkill(
+  name: string,
+  description: string,
+  overrides: Partial<SkillMetadata> = {},
+): SkillMetadata {
+  return {
+    name: name as SkillMetadata["name"],
+    description,
+    path: `/skills/${name}`,
+    allowedTools: [],
+    updatedAt: new Date("2026-03-01T00:00:00Z"),
+    agents: [],
+    references: [],
+    scripts: [],
+    assets: [],
+    schemas: [],
+    indexes: [],
+    otherFiles: [],
+    ...overrides,
+  };
+}
 
-const defaultStoreState = {
-  importedSkills: [mockSkill] as ImportedSkill[],
-  isLoadingSkills: false,
-  skillError: null as string | null,
-  fetchSkills: mockFetchSkills,
-  removeSkill: mockRemoveSkill,
+type MockStoreState = {
+  availableSkillsMetadata: SkillMetadata[];
+  importedSkills: ImportedSkill[];
+  skillError: string | null;
+  isLoadingSkills: boolean;
+  isImporting: boolean;
+  importingSkillName: SkillMetadata["name"] | null;
+  fetchSkills: ReturnType<typeof vi.fn>;
+  importSkill: ReturnType<typeof vi.fn>;
+  removeSkill: ReturnType<typeof vi.fn>;
+  clearSkillError: ReturnType<typeof vi.fn>;
 };
 
-let currentStoreState = { ...defaultStoreState };
+const mockFetchSkills = vi.fn().mockResolvedValue(undefined);
+const mockImportSkill = vi.fn().mockResolvedValue(undefined);
+const mockRemoveSkill = vi.fn().mockResolvedValue(undefined);
+const mockClearSkillError = vi.fn();
 
-// --- Mock store module with individual selectors (P31) ---
-vi.mock("../../../store", () => ({
-  useImportedSkills: () => currentStoreState.importedSkills,
-  useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
-  useSkillError: () => currentStoreState.skillError,
-  useFetchSkills: () => currentStoreState.fetchSkills,
-  useRemoveSkill: () => currentStoreState.removeSkill,
-}));
+const defaultImportedSkills = [
+  buildImportedSkill("skill-alpha", "Alpha skill"),
+];
+const defaultAvailableSkills = [
+  buildAvailableSkill("skill-gamma", "Gamma skill"),
+];
 
-vi.mock("@/renderer/store", () => ({
-  useImportedSkills: () => currentStoreState.importedSkills,
-  useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
-  useSkillError: () => currentStoreState.skillError,
-  useFetchSkills: () => currentStoreState.fetchSkills,
-  useRemoveSkill: () => currentStoreState.removeSkill,
-}));
+const defaultStoreState: MockStoreState = {
+  availableSkillsMetadata: defaultAvailableSkills,
+  importedSkills: defaultImportedSkills,
+  skillError: null,
+  isLoadingSkills: false,
+  isImporting: false,
+  importingSkillName: null,
+  fetchSkills: mockFetchSkills,
+  importSkill: mockImportSkill,
+  removeSkill: mockRemoveSkill,
+  clearSkillError: mockClearSkillError,
+};
 
-// --- Mock SkillEditor ---
+let currentStoreState: MockStoreState = { ...defaultStoreState };
+
+function selectFromStore<T>(selector: (state: MockStoreState) => T): T {
+  return selector(currentStoreState);
+}
+
+vi.mock("../../../store", () => {
+  const useAppStore = Object.assign(
+    <T,>(selector: (state: MockStoreState) => T) => selectFromStore(selector),
+    {
+      getState: () => currentStoreState,
+    },
+  );
+
+  return {
+    useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+    useImportedSkills: () => currentStoreState.importedSkills,
+    useSkillError: () => currentStoreState.skillError,
+    useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
+    useIsImportingSkill: () => currentStoreState.isImporting,
+    useImportingSkillName: () => currentStoreState.importingSkillName,
+    useFetchSkills: () => currentStoreState.fetchSkills,
+    useRemoveSkill: () => currentStoreState.removeSkill,
+    useClearSkillError: () => currentStoreState.clearSkillError,
+    useAppStore,
+  };
+});
+
+vi.mock("@/renderer/store", () => {
+  const useAppStore = Object.assign(
+    <T,>(selector: (state: MockStoreState) => T) => selectFromStore(selector),
+    {
+      getState: () => currentStoreState,
+    },
+  );
+
+  return {
+    useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+    useImportedSkills: () => currentStoreState.importedSkills,
+    useSkillError: () => currentStoreState.skillError,
+    useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
+    useIsImportingSkill: () => currentStoreState.isImporting,
+    useImportingSkillName: () => currentStoreState.importingSkillName,
+    useFetchSkills: () => currentStoreState.fetchSkills,
+    useRemoveSkill: () => currentStoreState.removeSkill,
+    useClearSkillError: () => currentStoreState.clearSkillError,
+    useAppStore,
+  };
+});
+
+let capturedAnalysisProps: Record<string, unknown> = {};
+let capturedCreateWizardProps: Record<string, unknown> = {};
+
 vi.mock("../SkillEditor", () => ({
   SkillEditor: ({
     skill,
@@ -88,8 +165,6 @@ vi.mock("../SkillEditor", () => ({
   ),
 }));
 
-// --- Mock SkillAnalysisView with props capture ---
-let capturedAnalysisProps: Record<string, unknown> = {};
 vi.mock("../SkillAnalysisView", () => ({
   SkillAnalysisView: (props: Record<string, unknown>) => {
     capturedAnalysisProps = props;
@@ -102,15 +177,13 @@ vi.mock("../SkillAnalysisView", () => ({
           data-testid="analysis-close"
           onClick={props.onClose as () => void}
         >
-          分析を閉じる
+          閉じる
         </button>
       </div>
     );
   },
 }));
 
-// --- Mock SkillCreateWizard with props capture ---
-let capturedCreateWizardProps: Record<string, unknown> = {};
 vi.mock("../SkillCreateWizard", () => ({
   SkillCreateWizard: React.forwardRef<HTMLDivElement, Record<string, unknown>>(
     (props, ref) => {
@@ -121,7 +194,7 @@ vi.mock("../SkillCreateWizard", () => ({
             data-testid="wizard-close"
             onClick={props.onClose as () => void}
           >
-            作成を閉じる
+            閉じる
           </button>
         </div>
       );
@@ -129,18 +202,20 @@ vi.mock("../SkillCreateWizard", () => ({
   ),
 }));
 
-// --- Import component under test ---
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
-// --- Setup / Teardown ---
 beforeEach(() => {
   vi.clearAllMocks();
   capturedAnalysisProps = {};
   capturedCreateWizardProps = {};
   currentStoreState = {
     ...defaultStoreState,
+    availableSkillsMetadata: [...defaultAvailableSkills],
+    importedSkills: [...defaultImportedSkills],
     fetchSkills: mockFetchSkills,
+    importSkill: mockImportSkill,
     removeSkill: mockRemoveSkill,
+    clearSkillError: mockClearSkillError,
   };
 });
 
@@ -148,230 +223,159 @@ afterEach(() => {
   cleanup();
 });
 
-// ============================================================
-// TC-SMP-INT-01: Analysis view renders SkillAnalysisView
-// ============================================================
-describe("TC-SMP-INT-01: Analysis view renders SkillAnalysisView", () => {
-  it("currentView='analysis'かつselectedSkillがセットされている場合、SkillAnalysisViewが正しいskillName propで描画される", async () => {
+describe("SkillManagementPanel integration", () => {
+  it("analysis view に遷移し、onClose で list view に戻る", async () => {
     render(<SkillManagementPanel />);
 
-    // 分析ボタンをクリックして analysis ビューに遷移
-    const analyzeButton = screen.getByLabelText("test-skill を分析");
     await act(async () => {
-      fireEvent.click(analyzeButton);
+      fireEvent.click(screen.getByLabelText("skill-alpha を分析"));
     });
 
-    // SkillAnalysisView が描画されていることを確認
     expect(screen.getByTestId("mock-skill-analysis-view")).toBeDefined();
-
-    // data-testid="skill-management-panel-analysis-view" が存在することを確認
     expect(
       screen.getByTestId("skill-management-panel-analysis-view"),
     ).toBeDefined();
+    expect(capturedAnalysisProps.skillName).toBe("skill-alpha");
 
-    // skillName prop が正しく渡されていることを確認
-    expect(capturedAnalysisProps.skillName).toBe("test-skill");
-    expect(screen.getByTestId("analysis-skill-name").textContent).toBe(
-      "test-skill",
-    );
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("analysis-close"));
+    });
 
-    // onClose prop が関数として渡されていることを確認
-    expect(typeof capturedAnalysisProps.onClose).toBe("function");
+    expect(screen.queryByTestId("mock-skill-analysis-view")).toBeNull();
+    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
   });
-});
 
-// ============================================================
-// TC-SMP-INT-02: Analysis view shows null check
-// ============================================================
-describe("TC-SMP-INT-02: Analysis view shows null check", () => {
-  it("currentView='analysis'でもselectedSkillがnullの場合、SkillAnalysisViewは描画されずリストビューにフォールスルーする", () => {
-    // selectedSkill が null の状態を再現: スキル0件でレンダリング
+  it("create view に遷移し、onClose で list view に戻る", async () => {
+    render(<SkillManagementPanel />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("新規作成"));
+    });
+
+    expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-panel-create-view"),
+    ).toBeDefined();
+    expect(typeof capturedCreateWizardProps.onClose).toBe("function");
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("wizard-close"));
+    });
+
+    expect(screen.queryByTestId("mock-skill-create-wizard")).toBeNull();
+    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
+  });
+
+  it("dialog confirm 後に available から imported へ移動し、成功メッセージを出す", async () => {
     currentStoreState = {
       ...currentStoreState,
-      importedSkills: [],
+      importSkill: vi.fn(async (skillName: SkillMetadata["name"]) => {
+        currentStoreState = {
+          ...currentStoreState,
+          importedSkills: [
+            ...currentStoreState.importedSkills,
+            buildImportedSkill(String(skillName), "Imported from dialog"),
+          ],
+          availableSkillsMetadata:
+            currentStoreState.availableSkillsMetadata.filter(
+              (skill) => skill.name !== skillName,
+            ),
+          skillError: null,
+        };
+      }),
     };
-    render(<SkillManagementPanel />);
 
-    // SkillAnalysisView が描画されないことを確認
-    expect(screen.queryByTestId("mock-skill-analysis-view")).toBeNull();
-    expect(
-      screen.queryByTestId("skill-management-panel-analysis-view"),
-    ).toBeNull();
+    const { rerender } = render(<SkillManagementPanel />);
 
-    // リストビュー（空状態）にフォールスルーしていることを確認
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(
-      screen.getByText("インポート済みのスキルはありません"),
-    ).toBeDefined();
+    const addButton = screen.getByLabelText("skill-gamma を追加する");
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "追加する" }));
+    });
+
+    rerender(<SkillManagementPanel />);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(screen.queryByTestId("available-skill-row-skill-gamma")).toBeNull();
+    expect(screen.getByTestId("imported-skill-card-skill-gamma")).toBeDefined();
+    expect(screen.getByTestId("skill-management-success")).toHaveTextContent(
+      "skill-gamma を追加しました",
+    );
+    expect(document.activeElement).toBe(
+      screen.getByTestId("imported-skill-card-skill-gamma"),
+    );
   });
-});
 
-// ============================================================
-// TC-SMP-INT-03: Create view renders SkillCreateWizard
-// ============================================================
-describe("TC-SMP-INT-03: Create view renders SkillCreateWizard", () => {
-  it("currentView='create'の場合、SkillCreateWizardが描画される", async () => {
+  it("dialog cancel で trigger へ focus return する", async () => {
     render(<SkillManagementPanel />);
 
-    // 新規作成ボタンをクリックして create ビューに遷移
-    const createButton = screen.getByText("新規作成");
+    const addButton = screen.getByLabelText("skill-gamma を追加する");
     await act(async () => {
-      fireEvent.click(createButton);
+      fireEvent.click(addButton);
     });
 
-    // SkillCreateWizard が描画されていることを確認
-    expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+    });
 
-    // data-testid="skill-management-panel-create-view" が存在することを確認
-    expect(
-      screen.getByTestId("skill-management-panel-create-view"),
-    ).toBeDefined();
-
-    // onClose prop が関数として渡されていることを確認
-    expect(typeof capturedCreateWizardProps.onClose).toBe("function");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(addButton);
   });
-});
 
-// ============================================================
-// TC-SMP-INT-04: SkillAnalysisView onClose returns to list
-// ============================================================
-describe("TC-SMP-INT-04: SkillAnalysisView onClose returns to list", () => {
-  it("SkillAnalysisViewのonClose呼び出しでリストビューに戻る", async () => {
-    render(<SkillManagementPanel />);
+  it("import failure 時は dialog を開いたまま alert を表示する", async () => {
+    currentStoreState = {
+      ...currentStoreState,
+      importSkill: vi.fn(async () => {
+        currentStoreState = {
+          ...currentStoreState,
+          skillError: "スキルのインポートに失敗: timeout",
+        };
+      }),
+    };
 
-    // 分析ビューに遷移
-    const analyzeButton = screen.getByLabelText("test-skill を分析");
+    const { rerender } = render(<SkillManagementPanel />);
+
     await act(async () => {
-      fireEvent.click(analyzeButton);
+      fireEvent.click(screen.getByLabelText("skill-gamma を追加する"));
     });
 
-    // 分析ビューが表示されていることを確認
-    expect(screen.getByTestId("mock-skill-analysis-view")).toBeDefined();
-    expect(
-      screen.getByTestId("skill-management-panel-analysis-view"),
-    ).toBeDefined();
-
-    // onClose を呼び出す（モックのボタンをクリック）
-    const closeButton = screen.getByTestId("analysis-close");
     await act(async () => {
-      fireEvent.click(closeButton);
+      fireEvent.click(screen.getByRole("button", { name: "追加する" }));
     });
 
-    // 分析ビューが消えていることを確認
-    expect(screen.queryByTestId("mock-skill-analysis-view")).toBeNull();
-    expect(
-      screen.queryByTestId("skill-management-panel-analysis-view"),
-    ).toBeNull();
+    rerender(<SkillManagementPanel />);
 
-    // リストビューに戻っていることを確認
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
-    expect(screen.getByPlaceholderText("スキルを検索...")).toBeDefined();
-    expect(screen.getByText("test-skill")).toBeDefined();
+    expect(screen.getByRole("dialog")).toBeDefined();
+    expect(screen.getByTestId("skill-import-dialog-error")).toHaveTextContent(
+      "スキルのインポートに失敗: timeout もう一度試してみてください。",
+    );
+    expect(screen.getAllByRole("alert")).toHaveLength(1);
   });
-});
 
-// ============================================================
-// TC-SMP-INT-05: SkillCreateWizard onClose returns to list
-// ============================================================
-describe("TC-SMP-INT-05: SkillCreateWizard onClose returns to list", () => {
-  it("SkillCreateWizardのonClose呼び出しでリストビューに戻る", async () => {
+  it("検索クエリは analysis view を往復しても維持される", async () => {
     render(<SkillManagementPanel />);
 
-    // 作成ビューに遷移
-    const createButton = screen.getByText("新規作成");
+    const searchInput = screen.getByLabelText(
+      "スキルを検索",
+    ) as HTMLInputElement;
+    fireEvent.change(searchInput, { target: { value: "alpha" } });
+
     await act(async () => {
-      fireEvent.click(createButton);
+      fireEvent.click(screen.getByLabelText("skill-alpha を分析"));
     });
 
-    // 作成ビューが表示されていることを確認
-    expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
-    expect(
-      screen.getByTestId("skill-management-panel-create-view"),
-    ).toBeDefined();
-
-    // onClose を呼び出す（モックのボタンをクリック）
-    const closeButton = screen.getByTestId("wizard-close");
     await act(async () => {
-      fireEvent.click(closeButton);
+      fireEvent.click(screen.getByTestId("analysis-close"));
     });
 
-    // 作成ビューが消えていることを確認
-    expect(screen.queryByTestId("mock-skill-create-wizard")).toBeNull();
     expect(
-      screen.queryByTestId("skill-management-panel-create-view"),
-    ).toBeNull();
-
-    // リストビューに戻っていることを確認
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
-    expect(screen.getByPlaceholderText("スキルを検索...")).toBeDefined();
-    expect(screen.getByText("test-skill")).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-SMP-INT-06: Clicking analyze button transitions to analysis view
-// ============================================================
-describe("TC-SMP-INT-06: Clicking analyze button transitions to analysis view", () => {
-  it("リストビューで分析ボタンをクリックするとSkillAnalysisViewが表示される", async () => {
-    render(<SkillManagementPanel />);
-
-    // 初期状態ではリストビューが表示されている
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
-    expect(screen.getByText("test-skill")).toBeDefined();
-
-    // 分析ボタンをクリック
-    const analyzeButton = screen.getByLabelText("test-skill を分析");
-    await act(async () => {
-      fireEvent.click(analyzeButton);
-    });
-
-    // 分析ビューが表示されることを確認
-    expect(screen.getByTestId("mock-skill-analysis-view")).toBeDefined();
-    expect(
-      screen.getByTestId("skill-management-panel-analysis-view"),
-    ).toBeDefined();
-
-    // 正しいスキル名が渡されていることを確認
-    expect(capturedAnalysisProps.skillName).toBe("test-skill");
-
-    // リストビューが表示されていないことを確認
-    expect(screen.queryByTestId("skill-management-panel")).toBeNull();
-    expect(screen.queryByPlaceholderText("スキルを検索...")).toBeNull();
-  });
-});
-
-// ============================================================
-// TC-SMP-INT-07: Clicking 新規作成 button transitions to create view
-// ============================================================
-describe("TC-SMP-INT-07: Clicking 新規作成 button transitions to create view", () => {
-  it("リストビューで新規作成ボタンをクリックするとSkillCreateWizardが表示される", async () => {
-    render(<SkillManagementPanel />);
-
-    // 初期状態ではリストビューが表示されている
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
-    expect(screen.getByText("新規作成")).toBeDefined();
-
-    // 新規作成ボタンをクリック
-    const createButton = screen.getByText("新規作成");
-    await act(async () => {
-      fireEvent.click(createButton);
-    });
-
-    // 作成ビューが表示されることを確認
-    expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
-    expect(
-      screen.getByTestId("skill-management-panel-create-view"),
-    ).toBeDefined();
-
-    // onClose が関数として渡されていることを確認
-    expect(typeof capturedCreateWizardProps.onClose).toBe("function");
-
-    // リストビューが表示されていないことを確認
-    expect(screen.queryByTestId("skill-management-panel")).toBeNull();
-    expect(screen.queryByPlaceholderText("スキルを検索...")).toBeNull();
+      (screen.getByLabelText("スキルを検索") as HTMLInputElement).value,
+    ).toBe("alpha");
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
   });
 });

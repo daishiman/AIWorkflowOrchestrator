@@ -26,7 +26,7 @@ artifacts:
   creates:
     - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/index.md
     - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043a-ipc-contract-and-security-alignment.md
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043b-ui-ux-import-list-design.md
+    - docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design.md
     - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043c-store-lifecycle-integration-design.md
     - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043d-test-quality-gate-design.md
   modifies:
@@ -127,7 +127,7 @@ artifacts:
 
 - `task-043-subagent-team/index.md`
 - `task-043-subagent-team/task-043a-ipc-contract-and-security-alignment.md`
-- `task-043-subagent-team/task-043b-ui-ux-import-list-design.md`
+- `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design.md`
 - `task-043-subagent-team/task-043c-store-lifecycle-integration-design.md`
 - `task-043-subagent-team/task-043d-test-quality-gate-design.md`
 

@@ -85,6 +85,7 @@ Phase 12 Task 2 開始
 | 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** | `skillHandlers.ts` / `preload/index.ts` の引数・戻り値・エラー契約と一致しないと、API利用者が誤実装する |
 | 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` は `current/baseline` 分類で使い、合否は `currentViolations.total` を正本に判定する（scope未指定の全体監査は baseline として別記録） |
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
+| 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** | Phase 仕様書が親タスク仕様を相対参照している場合、`docs/30-workflows/<workflow>.md` をブリッジとして残すか、各 Phase の参照先を正本へ更新する |
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
@@ -320,6 +321,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 該当仕様書に「実装状況」テーブルがある場合、該当行を「完了」に更新した
 - [ ] 仕様書作成のみのタスクは、該当行を `spec_created` に更新した（`completed` にしない）
 - [ ] 更新対象として列挙した仕様書が実在することを `test -f <path>` で確認した
+- [ ] `phase-*.md` が `../task-*.md` を参照している場合、ブリッジ仕様の実在または参照修正を確認した
 
 ### Step 1-C: 関連タスクテーブル更新
 - [ ] arch-state-management.md、interfaces-agent-sdk.md、security-api-electron.md、task-workflow.md の「関連タスク」テーブルを確認した

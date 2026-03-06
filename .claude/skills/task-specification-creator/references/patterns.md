@@ -305,6 +305,22 @@
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-UI-00-ORGANISMS
 
+### Phase 12準拠確認と親仕様参照ガード（TASK-043B）
+
+- **状況**: Phase 12 の Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 が複数成果物へ分散し、完了根拠を一目で確認しづらい
+- **問題**:
+  1. `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を横断しないと準拠確認が閉じない
+  2. `verify-all-specs` が `../task-*.md` 参照を見逃すと、親仕様ブリッジ欠落が Phase 12 後半まで残りやすい
+- **解決パターン**:
+  1. `outputs/phase-12/phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を 1 ファイルへ集約する
+  2. `verify-all-specs.js` で `task-*.md` と `../task-*.md` の参照実在も検証し、親仕様ブリッジ欠落を早期検出する
+  3. 未タスクが 0 件でも `verify-unassigned-links` / `audit --diff-from HEAD` の結果を compliance check に明記する
+- **効果**:
+  - Phase 12 準拠確認の入口が 1 ファイルに集約される
+  - workflow ディレクトリと親仕様ファイルの二重導線ドリフトを機械検証で塞げる
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-043B
+
 ### `phase-12-documentation.md` 完了同期パターン（TASK-9H）
 
 - **状況**: `outputs/phase-12` の成果物5件が揃っていても、`phase-12-documentation.md` のメタ情報と完了条件チェックが `未実施` のまま残ることがある

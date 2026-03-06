@@ -9,7 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v3.8.8     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
+| v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
+| v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
 | v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
 | v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
 | v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
@@ -1269,12 +1270,23 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | 検索/カテゴリ判定 | `normalizeSearchText(value)` で `description` 欠損時にも `.toLowerCase()` 例外を回避 |
 | Featured 計算 | `useFeaturedSkills` で `allSkills=[]`, `importedSkillNames=[]` を既定値化し、計算関数の前提を固定 |
 
+### TASK-043B: import dialog の成功判定とエラー面の単一化
+
+| 観点 | 契約 |
+| --- | --- |
+| action failure 契約 | `importSkill(skillName)` は failure 時でも resolve しうる。UI は `catch` の有無ではなく、`await` 後の Store 状態で成否を判定する |
+| post-condition 判定 | 成功条件は `importedSkills.some((s) => s.name === skillName)` が真で、かつ `skillError` が未残置であること。件数差分や throw だけで判定しない |
+| 既存インポート済み | import 前から対象 skill が存在する場合は close 可否を `wasImportedBefore` と `skillError` で判定し、偽失敗を出さない |
+| error surface 調停 | dialog open 中は panel 側の共有 alert を抑止し、失敗理由は dialog 内 `role="alert"` に集約する |
+| テストモック契約 | `SkillImportDialog` 系テストは selector モックに加え `useAppStore.getState()` を必ず提供し、post-condition 更新を再現する |
+
 ### 検証証跡
 
 | 検証 | 結果 |
 | --- | --- |
 | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | PASS（既存インポート時 IPC スキップと重複防止を確認） |
 | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts` | PASS（追加中再実行抑止 + 既存インポート時アニメーション抑止を確認） |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx` | PASS（31 tests、`追加する` / `追加中...` copy と `getState()` 依存成功判定を確認） |
 | `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で冪等状態遷移（追加済み/追加中/追加後/詳細表示）を確認 |
 | `docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で欠損メタデータ時のクラッシュ非発生を確認 |
 

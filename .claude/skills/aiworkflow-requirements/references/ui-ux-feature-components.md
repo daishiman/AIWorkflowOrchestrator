@@ -1232,6 +1232,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-043B | SkillManagementPanel import list refinement（2セクション + dialog + success/error/focus） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・Task 5D具体例・Task 5B境界の是正） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
 | TASK-UI-00-ORGANISMS | Organisms共通基盤（CardGrid / MasterDetailLayout / SearchFilterList） | 2026-03-04 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
@@ -1248,6 +1249,43 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | TASK-3-2   | skillexecutor-ipc-integration                                  | 2026-01-25 | `docs/30-workflows/TASK-3-2-skillexecutor-ipc-integration/`                                         |
 | #468       | workspace-chat-edit-ui (基盤)                                  | 2026-01-25 | `docs/30-workflows/workspace-chat-edit-ui/`                                                         |
 | #494       | workspace-chat-edit-ui (FileAttachmentButton, FileContextList) | 2026-01-27 | `docs/30-workflows/completed-tasks/workspace-chat-edit-ui/outputs/phase-12/implementation-guide.md` |
+
+---
+
+## SkillManagementPanel Import List UI（TASK-043B / 完了）
+
+TASK-043B で、`SkillManagementPanel` の list view に imported / available 2セクションと dialog ベースの追加導線を実装し、Phase 1-12 を完了した。
+
+| 項目 | 内容 |
+| --- | --- |
+| 対象コンポーネント | `SkillManagementPanel`, `SkillImportDialog` |
+| UI追加内容 | imported / available 2セクション、単一検索入力、global empty、inline empty、no-result、success status、error alert |
+| 状態契約 | row importing は対象 1 行のみ disabled、success は imported 反映 + error 未残置 + row 非表示で判定 |
+| A11y契約 | `role="dialog"`, `role="status"`, `role="alert"`, keyboard focus return |
+| テスト | panel unit / integration 21 tests + dialog unit 31 tests（合計 52 tests PASS）、typecheck PASS、Phase 11 screenshots 9 TC + mobile 補助証跡 |
+| Phase 12準拠 | `phase12-task-spec-compliance-check.md` で Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を再確認 |
+
+### 苦戦箇所と解決
+
+| 課題 | 解決 |
+| --- | --- |
+| store `importSkill` が failure 時に throw しない | dialog success 判定を `useAppStore.getState()` の post-condition 判定へ変更 |
+| dialog open 中に error alert が重複しやすい | panel alert を dialog open 中は抑止して 1 surface に統一 |
+| Phase 12 の完了根拠が複数成果物に分散しやすい | `phase12-task-spec-compliance-check.md` を追加し、準拠確認を 1 ファイルへ集約 |
+| 同じ `importSkill` 契約を使う別導線へ判断ルールが横展開されていない | `useSkillCenter` などの callsite を棚卸しし、共通ガードを未タスク `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` として分離 |
+
+### 同種課題の簡潔解決手順
+
+1. store action が throw するか state 変化で成功判定するかを先に固定する。  
+2. dialog / panel の error surface を 1 面へ集約する。  
+3. Phase 12 では `phase12-task-spec-compliance-check.md` を作り、根拠を 1 ファイルへ集約する。  
+4. `audit --diff-from HEAD` の `current=0` を feature 合否に使い、`baseline>0` は別未タスクへ分離する。  
+
+### 関連未タスク（2026-03-06 追補）
+
+| タスクID | 内容 | 参照 |
+| --- | --- | --- |
+| UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001 | skill import 成功判定・error surface 共通ガード（post-condition helper + 横展開） | `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design/unassigned-task/task-imp-skill-import-result-contract-guard-001.md` |
 
 ---
 
@@ -1329,7 +1367,11 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-06 | v1.14.19   | TASK-043B 追補: `useSkillCenter` など他の skill import 導線への横展開不足を苦戦箇所として追加し、関連未タスク `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を登録 |
+| 2026-03-06 | v1.14.18   | TASK-043B 追補: 同種課題の簡潔解決手順を追加し、`current=0` と `baseline backlog` の分離運用を UI機能仕様側からも辿れるよう整理 |
+| 2026-03-06 | v1.14.17   | TASK-043B 再確認追補: `phase12-task-spec-compliance-check.md` を参照追加し、Phase 12準拠確認の集約レポートと「根拠分散」苦戦箇所を同期 |
 | 2026-03-05 | v1.14.15   | TASK-UI-01-C 追補: `UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001` を関連未タスクへ追加。Notification/History の境界難所（push正規化/dedupe/filter継承）を未タスク導線として固定 |
+| 2026-03-06 | v1.14.16   | TASK-043B 完了反映: SkillManagementPanel import list refinement セクションを追加し、2セクション UI、dialog 追加導線、success/error/focus 契約、store action 非 throw 契約への対処と Phase 11 証跡を同期 |
 | 2026-03-05 | v1.14.14   | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の実装完了内容を反映。収録機能一覧/専用セクション/完了タスクへ `NotificationCenter` と `HistorySearchView` を追加し、実装時の苦戦箇所（timestamp正規化、履歴重複排除、filter一元化）と Phase 11 証跡（TC-01〜03）を同期 |
 | 2026-03-05 | v1.14.13   | UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を追加。Foundation Reflection Audit の関連未タスク表へ同IDを登録し、5分解決カードの3仕様書同時同期（task-workflow/lessons/ui-ux-feature）を再発防止タスクとして接続 |
 | 2026-03-05 | v1.14.12   | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（28項目/13-13/TC6-6/92-92/current=0）を同期し、Foundation Reflection Audit 節へ「同種課題の5分解決カード（TASK-055）」を追加して再利用導線を短縮 |
