@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
+| 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
+| 2026-03-06 | 1.29.41 | UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を追補。実装ガイドが Part 1/2 構造だけ満たしても内容不足のまま通り得る苦戦箇所を追加し、`validate-phase12-implementation-guide.js` による内容検証を標準ルール化 |
+| 2026-03-06 | 1.29.40 | UT-TASK-10A-B-008 再監査追補を反映。ユーザー明示の screenshot 要求で `useSkillAnalysis` の StrictMode ローディング固着と light-theme mock 不整合を検出し、`SCREENSHOT + Apple review` 優先ルールを追加 |
+| 2026-03-06 | 1.29.39 | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の current active set を `002 / 004 / 005 / 006 / 007 / 009` に再計算し、completed 集合 `001 / 003 / 008` を別管理へ分離。`validate-task10ab-ledger-sync` による canonical/derived 同期検証を再利用ルールへ追加 |
 | 2026-03-06 | 1.29.38 | TASK-UI-02 完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動し、派生未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移管した状態へ教訓導線を同期 |
 | 2026-03-06 | 1.29.37 | lessons 既存リンク欠落を是正。completed へ移管済みの `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` / `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の参照先を実体パスへ更新し、ワイルドカード表現による `verify-unassigned-links` の false fail を避ける文言へ修正 |
 | 2026-03-06 | 1.29.36 | TASK-UI-02 派生未タスクを追加。domain UI spec 同期漏れと workflow 本文 stale を `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` / `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` として登録し、教訓節から直接たどれるようにした |
@@ -929,8 +934,8 @@
 | 課題 | 修正済み D1/D2（aria-label、text token）が未タスクとして残り、台帳が実態と不一致になった |
 | 再発条件 | 修正実施後に `unassigned-task-detection.md` と `task-workflow.md` を同時更新しない場合 |
 | 原因 | Phase 11修正と Phase 12台帳更新が別ターンで進みやすい |
-| 対処 | 未タスクを UT-TASK-10A-B-001〜005 の5件へ再同期し、台帳・仕様書・成果物を同一ターンで更新 |
-| 今後の標準ルール | 未タスクは「修正反映後に有効件数を再計算」し、検出レポートと台帳を同時更新する |
+| 対処 | 修正完了後の completed 集合（001/003/008）と current active set（002/004/005/006/007/009）を分離し、台帳・仕様書・成果物を同一ターンで更新 |
+| 今後の標準ルール | 未タスクは fixed range でなく canonical ledger から active/completed を再計算し、検出レポートと台帳を同時更新する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
@@ -946,7 +951,7 @@
 | --- | --- | --- |
 | UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
 | UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
 
 ### 追補: UT-TASK-10A-B-001 完了（2026-03-05）
 
@@ -1003,6 +1008,68 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | 未タスク化 | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
 | 目的 | 配置先3分類と監査境界を1つの運用ガードへ統合し、再監査の手戻りを削減する |
 | 完了判定 | `verify-unassigned-links` PASS + `audit --target-file`/`audit --diff-from HEAD` の `currentViolations=0` |
+
+### 追補: UT-TASK-10A-B-008 完了（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `task-workflow` / `ui-ux-feature-components` / parent `unassigned-task-detection` の active/completed 集合が日付更新ごとにずれ、固定レンジ参照が混入した |
+| 原因 | canonical（task-workflow）と derived（ui-ux / detection）の責務分離が弱く、completed 集合を active 集合から除外しきれていなかった |
+| 対処 | completed 集合を `001 / 003 / 008`、current active set を `002 / 004 / 005 / 006 / 007 / 009` として再確定し、3台帳を同一ターンで同期。あわせて `validate-task10ab-ledger-sync` を追加 |
+| 標準ルール | active/completed は固定レンジでなく canonical ledger 起点で求め、derived ledger は必ず機械検証で整合確認する |
+
+#### 追補2: 明示 screenshot 要求時の再監査（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 「ドキュメント修正中心だから UI差分なし」と判断して `NON_VISUAL` のまま閉じると、関連UIの実不具合を取りこぼす |
+| 原因 | ユーザーの明示要求よりタスク種別判定を優先し、Phase 11 証跡方式の切替が遅れた |
+| 対処 | SkillAnalysisView の実スクリーンショット 8 ケースを再取得し、`useSkillAnalysis` の StrictMode ローディング固着と light-theme mock 不整合を修正した |
+| 標準ルール | ユーザーがスクリーンショット検証を明示要求したら、UI差分の大小に関係なく `SCREENSHOT + Apple review` を優先する |
+
+#### 追補3: Phase 12 実装ガイドの内容不足是正（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `implementation-guide.md` が Part 1/Part 2 の見出しだけ満たし、TypeScript 型・API/CLI シグネチャ・設定一覧など Task 12-1 の必須内容が薄いまま完了扱いになりやすい |
+| 原因 | `validate-phase-output` は構造中心で、Task 12-1 の内容要件までは直接検証していなかった |
+| 対処 | `outputs/phase-12/implementation-guide.md` を補強し、`validate-phase12-implementation-guide.js` を追加して理由先行 / 日常例え / 型 / API・CLI / 使用例 / エラー処理 / エッジケース / 設定一覧の 10 項目を機械検証化した |
+| 標準ルール | Phase 12 Task 1 は「Part 1/2 がある」ではなく「内容要件 validator が PASS」で完了判定する |
+
+#### 追補4: skill-creator の参照導線不足是正（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-creator` の reference 群が `resource-map.md` には載っていても `SKILL.md` から直接辿れず、`quick_validate` warning 26件が残っていた |
+| 原因 | 詳細台帳を `resource-map.md` へ寄せた一方で、日常運用の入口である `SKILL.md` の導線更新を同じターンで実施していなかった |
+| 対処 | `SKILL.md` を「基礎設計・更新導線 / ヒアリング・抽象化 / 実装・ランタイム / 統合・オーケストレーション / 品質・運用」の5カテゴリで再編し、未リンク reference を直接参照可能にした |
+| 標準ルール | reference を追加・増補したら `resource-map.md` と `SKILL.md` の両方から辿れることを `quick_validate` warning=0 で確認する |
+
+#### 追補5: aiworkflow-requirements の入口導線未整備（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `aiworkflow-requirements` は `quick_validate` で warning 145件が残るが、これを `SKILL.md` への全 reference 直列挙だけで解消すると 500行制限と Progressive Disclosure を壊しやすい |
+| 原因 | `quick_validate.js` が `SKILL.md` 内の直接リンク文字列だけを見ており、`indexes/quick-reference.md` や `indexes/resource-map.md` を入口とする大規模仕様スキルの設計を評価できない |
+| 対処 | 未タスク `UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001` を作成し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を一体で見直す方針を切り出した |
+| 標準ルール | 大規模 reference スキルでは「warning 0」だけを目的に直列挙せず、入口設計と validator 前提を同時に設計する |
+
+#### クイック解決カード（UT-TASK-10A-B-008）
+
+1. `task-workflow.md` の残課題表を canonical として active/completed 集合を切り出す。  
+2. `ui-ux-feature-components.md` と parent `unassigned-task-detection.md` を同じ集合へ同期する。  
+3. 完了済み指示書は `completed-tasks/`、継続UTは `unassigned-task/` へ物理配置を揃える。  
+4. `validate-task10ab-ledger-sync` と `verify-unassigned-links` と `audit --diff-from HEAD` を順に実行し、`currentViolations=0` だけを合否に使う。  
+5. `validate-phase12-implementation-guide.js` で Task 12-1 の内容要件を確認する。  
+6. ユーザーが画面検証を要求した場合は `outputs/phase-11/screenshots` を再生成し、targeted UI test と Appleレビューを同一ターンで記録する。  
+7. `resource-map.md` だけでなく `skill-creator/SKILL.md` からも関連 reference が辿れるか、`quick_validate .claude/skills/skill-creator` の warning=0 で閉じる。  
+8. 大規模仕様スキルで warning が残る場合は、`SKILL.md` 全列挙で押し切らず、入口設計と validator 整合を独立未タスクとして切り出す。  
+
+### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | `aiworkflow-requirements` の入口三層（`SKILL.md` / `quick-reference` / `resource-map`）と `quick_validate` 判定を両立させる | `docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
 ---
 

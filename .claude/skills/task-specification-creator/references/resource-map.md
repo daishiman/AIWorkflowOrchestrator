@@ -69,7 +69,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 
 ---
 
-## scripts/ （15ファイル）
+## scripts/ （16ファイル）
 
 決定論的処理（100%精度）。
 
@@ -89,6 +89,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | `generate-index.js` | create完了後 | index.md自動生成 |
 | `capture-screenshots.js` | Phase 11実行時 | Playwrightによるスクリーンショット撮影（JSON撮影計画一括撮影/要素単位/インタラクション/カバレッジレポート生成対応） |
 | `validate-phase11-screenshot-coverage.js` | Phase 11監査時 | TC-スクリーンショット網羅性検証 |
+| `validate-phase12-implementation-guide.js` | Phase 12 Task 1監査時 | 実装ガイドの内容要件（理由先行/例え/型/API/設定一覧）検証 |
 | `evidence-bundle-validator.ts` | Phase 12証跡集約時 | 2workflow証跡バンドルのフォーマット/判定検証 |
 
 ---
@@ -118,6 +119,7 @@ LLM Task仕様書。実行直前にそのTask分だけ読み込む。
 | Date | Changes |
 | ---- | ------- |
 | 2026-03-06 | assets/11に更新（phase12-task-spec-compliance-template.md追加）、親仕様ブリッジ監査と Phase 12準拠確認の補助テンプレートを追加 |
+| 2026-03-06 | scripts/16に更新（validate-phase12-implementation-guide.js 追加） |
 | 2026-03-03 | references/19, scripts/15, assets/10に更新（evidence-sync-rules.md, phase12-checklist-definition.md, screenshot-verification-procedure.md, evidence-bundle-validator.ts, evidence-bundle-template.md追加） |
 | 2026-03-02 | references/16に更新（changelog-archive.md追加）、capture-screenshots.js説明を拡張版機能に更新 |
 | 2026-03-01 | scripts/13に更新（capture-screenshots.js追加）、Phase 11スクリーンショット自動撮影 |

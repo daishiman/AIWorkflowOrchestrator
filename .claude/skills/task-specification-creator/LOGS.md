@@ -82,6 +82,33 @@
 
 ---
 
+## 2026-03-06 - Phase 12 実装ガイド内容 validator 追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 1 機械検証強化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `validate-phase12-implementation-guide.js` と `validate-phase12-implementation-guide.test.mjs` を追加し、Task 12-1 の内容要件を機械検証化
+  - `SKILL.md` から未リンクだった `evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` を接続
+  - `references/phase-11-12-guide.md` と `references/resource-map.md` を更新し、Phase 12 自動化コマンドと scripts 一覧に validator を追加
+
+---
+
+## 2026-03-06 - UT-TASK-10A-B-008 再監査追補（明示 screenshot 要求 + ready selector ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（ガイド改善 + 成果物再証跡化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - ユーザーが明示的にスクリーンショット検証を要求した場合、UI差分が主目的でなくても `NON_VISUAL` 単独では閉じないルールを `references/phase-11-12-guide.md` に追記
+  - screenshot 自動化の ready 判定を root shell ではなく loaded-state selector に合わせるルールを追加
+  - light 証跡が dark UI のまま残らないよう、theme mock を撮影シナリオへ追従させる確認観点を追加
+  - workflow `outputs/phase-11/` を screenshot + Apple review 前提へ再整合した
+
+---
+
 ## 2026-03-05 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査（漏れ検知対応）
 
 - **Agent**: task-specification-creator

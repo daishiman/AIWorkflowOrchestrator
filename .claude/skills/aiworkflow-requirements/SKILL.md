@@ -193,6 +193,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - キーワード検索で情報を素早く特定
 - 編集後は `node scripts/generate-index.js` を実行
 - 500行超過時はインデックス+サブファイル形式に手動分割
+- 関連未タスク台帳は active/completed を同一表で維持せず、canonical ledger 起点で別表に分離する
+- Phase 12 の実装ガイドは `validate-phase12-implementation-guide.js` などの validator で内容要件まで閉じる
+- `skill-creator` のような参照型スキルは `resource-map.md` と `SKILL.md` の両方から必要 reference を辿れる状態を維持し、warning付き完了を残さない
+- `aiworkflow-requirements` のような大規模仕様スキルは `SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の三層入口を設計し、warning は「直列挙で隠す」のではなく validator 整合と合わせて管理する
 
 ### 避けるべきこと
 
@@ -208,6 +212,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.36** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を反映**: `references/task-workflow.md` と `references/lessons-learned.md` に、`aiworkflow-requirements` の warning 145件を「大規模 reference スキルの入口設計課題」として切り出した未タスクを追加。`SKILL.md` には `SKILL.md` / `quick-reference` / `resource-map` の三層入口を validator 整合とセットで管理する運用ルールを追記 |
+| **9.01.35** | **2026-03-06** | **UT-TASK-10A-B-008 の追補を skill-creator 導線改善まで同期**: `references/task-workflow.md` と `references/lessons-learned.md` に、repo 内 `skill-creator/SKILL.md` の直接参照導線再編と `quick_validate` warning 26→0 解消を反映。reference 追加時は `resource-map` と `SKILL.md` の両方を同時更新する標準ルールを追加 |
+| **9.01.34** | **2026-03-06** | **UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を同期**: `references/task-workflow.md` と `references/lessons-learned.md` に、実装ガイドの内容不足是正と `validate-phase12-implementation-guide.js` 追加を反映。Phase 12 完了判定を「成果物存在 + 内容 validator PASS」まで引き上げた |
+| **9.01.33** | **2026-03-06** | **UT-TASK-10A-B-008 再監査追補を同期**: `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に、明示的な screenshot 要求で発見した `useSkillAnalysis` の StrictMode ローディング固着修正と 8ケースの画面再検証を追記。`references/ui-ux-components.md` にも再監査追補を反映し、関連未タスク台帳の active/completed 分離ルールをベストプラクティスへ格上げ |
 | **9.01.30** | **2026-03-06** | **TASK-UI-02 派生未タスクの system spec 同期を反映**: `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` と `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` へ同一ターンで登録し、Global Navigation 改修の苦戦箇所から未タスク仕様書へ直接たどれる導線を固定 |
 | **9.01.29** | **2026-03-06** | **TASK-UI-02 再監査の正本導線を強化**: `SKILL.md` に再監査で優先参照すべき正本8件（navigation/components/feature-components/arch/task/lessons/directory）を直リンクで追加し、`generate-index.js` / `validate-structure.js` の実行例を canonical path へ統一。Global Navigation 再監査で発見したリンクドリフト・古い `AppDock` 前提表現の是正導線を明確化 |
 | **9.01.28** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓同期を強化**: `references/task-workflow.md` に完了タスク専用セクション（SubAgent分担/実装反映/検証証跡/苦戦箇所）を追加し、`references/lessons-learned.md` に同タスクの実装内容 + 再発条件付き苦戦箇所を新設。Phase 12完了判定を「成果物実体 + 機械検証 + `phase-12-documentation.md` ステータス同期」の3点セットで固定 |

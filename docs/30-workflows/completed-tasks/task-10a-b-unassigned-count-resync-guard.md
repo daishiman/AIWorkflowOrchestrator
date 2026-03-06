@@ -16,7 +16,7 @@ issue_number: 996
 | 対象機能     | SkillAnalysisView Phase 12 未タスク台帳同期 |
 | 優先度       | 中                                          |
 | 見積もり規模 | 小規模                                      |
-| ステータス   | 未実施                                      |
+| ステータス   | 完了（2026-03-06）                          |
 | 発見元       | TASK-10A-B Phase 12 再監査（苦戦箇所）      |
 | 発見日       | 2026-03-02                                  |
 
@@ -44,9 +44,9 @@ TASK-10A-B の再監査で、修正済み課題（D1/D2）を未タスク台帳�
 
 ### 2.2 最終ゴール
 
-1. `UT-TASK-10A-B-001〜005` の有効IDセットと件数が全台帳で一致する。
-2. 修正済み項目が未タスク台帳に残置しない。
-3. 同期後に `verify-unassigned-links` が安定してPASSする。
+1. `UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009` の active set と件数が全台帳で一致する。
+2. 完了済み `UT-TASK-10A-B-001 / 003 / 008` が未タスク台帳に残置しない。
+3. 同期後に `validate-task10ab-ledger-sync` と `audit --diff-from HEAD` が PASS する。
 
 ### 2.3 スコープ
 
@@ -76,7 +76,8 @@ TASK-10A-B の再監査で、修正済み課題（D1/D2）を未タスク台帳�
 
 ### 3.2 依存タスク
 
-- UT-TASK-10A-B-001〜005（既存未タスク）
+- UT-TASK-10A-B-002 / 004 / 005（継続未タスク）
+- UT-TASK-10A-B-006 / 007 / 009（継続運用ガード）
 - TASK-10A-B（完了）
 
 ### 3.3 必要な知識
@@ -152,8 +153,8 @@ TASK-10A-B の再監査で、修正済み課題（D1/D2）を未タスク台帳�
 
 #### 手順
 
-1. `verify-unassigned-links` を実行する。
-2. `audit --target-file` で本指示書の形式を確認する。
+1. `validate-task10ab-ledger-sync` で canonical/derived の同期を確認する。
+2. `verify-unassigned-links` を実行する。
 3. `audit --diff-from HEAD` で今回差分の current 判定を確認する。
 
 #### 成果物
@@ -168,47 +169,44 @@ TASK-10A-B の再監査で、修正済み課題（D1/D2）を未タスク台帳�
 
 ### 機能要件
 
-- [ ] 有効ID一覧が確定している
-- [ ] 台帳3点のID集合が一致している
+- [x] 有効ID一覧が確定している
+- [x] 台帳3点のID集合が一致している
 
 ### 品質要件
 
-- [ ] `verify-unassigned-links` がPASS
-- [ ] `audit --target-file` が `currentViolations.total=0`
-- [ ] `audit --diff-from HEAD` が `currentViolations.total=0`
+- [x] `verify-unassigned-links` がPASS
+- [x] `validate-task10ab-ledger-sync` がPASS
+- [x] `audit --diff-from HEAD` が `currentViolations.total=0`
 
 ### ドキュメント要件
 
-- [ ] 本指示書が `docs/30-workflows/unassigned-task/` に作成済み
-- [ ] `task-workflow.md` に本タスクが登録済み
-- [ ] `lessons-learned.md` に参照導線が追加済み
+- [x] 本指示書が `docs/30-workflows/completed-tasks/` に移管済み
+- [x] `task-workflow.md` に本タスクの完了が登録済み
+- [x] `lessons-learned.md` に再利用導線が追加済み
 
 ## 6. 検証方法
 
 ### テストケース
 
-- Case 1: 有効ID集合が3台帳で一致する
-- Case 2: 参照リンク切れが0件
+- Case 1: current active set（002/004/005/006/007/009）が3台帳で一致する
+- Case 2: completed set（001/003/008）が active set から除外される
 - Case 3: 今回差分の未タスク監査で current が0件
 
 ### 検証手順
 
 ```bash
-rg -n "UT-TASK-10A-B-00[1-8]" docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/unassigned-task-detection.md
-rg -n "UT-TASK-10A-B-00[1-8]" .claude/skills/aiworkflow-requirements/references/task-workflow.md
-rg -n "UT-TASK-10A-B-00[1-8]" .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md
+node .claude/skills/task-specification-creator/scripts/validate-task10ab-ledger-sync.js
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-10a-b-unassigned-count-resync-guard.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 
 ## 7. リスクと対策
 
-| リスク                             | 影響度 | 発生確率 | 対策                                                |
-| ---------------------------------- | ------ | -------- | --------------------------------------------------- |
-| 件数のみ更新してID同期漏れが残る   | 高     | 中       | 3台帳のID集合を `rg` で同時検証する                 |
-| 旧参照パスが残ってリンク切れになる | 中     | 中       | `verify-unassigned-links` を必須化する              |
-| baseline違反を今回差分と誤認する   | 中     | 中       | 合否は current 固定、baselineは監視値で分離記録する |
+| リスク                             | 影響度 | 発生確率 | 対策                                                                 |
+| ---------------------------------- | ------ | -------- | -------------------------------------------------------------------- |
+| 件数のみ更新してID同期漏れが残る   | 高     | 中       | `validate-task10ab-ledger-sync` で active/completed 両集合を検証する |
+| 旧参照パスが残ってリンク切れになる | 中     | 中       | `verify-unassigned-links` を必須化する                               |
+| baseline違反を今回差分と誤認する   | 中     | 中       | 合否は current 固定、baselineは監視値で分離記録する                  |
 
 ## 8. 参照情報
 
@@ -236,3 +234,9 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 ### 補足事項
 
 本タスクは件数整合の運用改善が目的であり、既存未タスクの技術実装自体は対象外。
+
+## 10. 完了実績
+
+- `UT-TASK-10A-B-001 / 003 / 008` を completed 集合へ移し、current active set を `002 / 004 / 005 / 006 / 007 / 009` に固定
+- `task-workflow.md` / `ui-ux-feature-components.md` / parent `unassigned-task-detection.md` を同一ターンで同期
+- `validate-task10ab-ledger-sync.js` とテストを追加し、固定レンジ依存の再発を機械検証へ置換
