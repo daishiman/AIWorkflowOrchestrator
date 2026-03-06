@@ -32,6 +32,20 @@
 
 ---
 
+## [2026-03-06 - TASK-043B 知見の Phase 12テンプレート同期（root evidence 集約 + baseline backlog分離）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の最短手順を整理し、`phase12-task-spec-compliance-check.md` による root evidence 集約を追加
+  - `currentViolations=0` と `baselineViolations>0` を分離し、必要時は `docs/30-workflows/unassigned-task/` へ運用改善UTを作るルールを追加
+  - `audit --target-file` の期待値を `currentViolations=0` + `scope.currentFiles=1` へ明確化
+  - `references/patterns.md` と `references/resource-map.md` を同一ターンで同期し、再利用開始点をテンプレートとパターンの両方へ固定
+  - `SKILL.md` 変更履歴を `v10.37.8` として同期
+
+---
+
 ## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)

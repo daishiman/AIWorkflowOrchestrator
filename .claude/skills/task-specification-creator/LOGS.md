@@ -114,6 +114,20 @@
 
 ---
 
+## 2026-03-06 - UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001 起票
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 4 未タスク生成）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md` を新規作成（9セクション + `3.5 実装課題と解決策`）
+  - `baselineViolations=93` を feature 差分と切り分け、legacy 未タスク仕様書の format / naming / misplaced 是正タスクとして定義
+  - `task-workflow.md` / `lessons-learned.md` / `aiworkflow-requirements/LOGS.md` に関連導線を同期
+  - `audit-unassigned-tasks --target-file` と `verify-unassigned-links` で配置・参照整合を確認する前提を固定
+
+---
+
 ## 2026-03-06 - TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 再監査（Phase 11 スクリーンショット化）
 
 - **Agent**: task-specification-creator
@@ -5376,7 +5390,6 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
   - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
   - `SKILL.md` 変更履歴へ `v10.08.15` を追記
-
 ## [2026-03-06T03:45:30.597Z]
 
 - **Agent**: generate-task-specs
@@ -5394,3 +5407,39 @@ if (artifactPath) {
 - **Notes**: phase11 harness guidance and cross-cutting spec update workflow sync
 
 ---
+
+## 2026-03-06 - TASK-043B Phase 11/12 運用知見の反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12
+- **Result**: ✓ 成功
+- **Notes**:
+  - `task-043b-ui-ux-import-list-design` の Phase 1〜12 成果物を `outputs/phase-*` へ作成
+  - `manual-test-result.md` を `TC-ID + 証跡 + 非視覚ログ` 形式で出力
+  - `validate-phase11-screenshot-coverage` を再実行し `expected=9 / covered=9` を確認
+  - 補助 screenshot 1件は warning 扱いで、blocking 条件にしない運用を記録
+
+---
+
+## 2026-03-06 - TASK-043B 再監査で検出した親仕様導線と補助証跡ルールの追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/phase-11-12-guide.md` に `TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離運用を追加
+  - `references/spec-update-workflow.md` に `../task-xxx.md` 参照時のブリッジ仕様確認チェックを追加
+  - `docs/30-workflows/task-043b-ui-ux-import-list-design.md` を親仕様ブリッジとして追加し、Phase 仕様書の相対参照切れを是正
+  - `phase-12-documentation.md` の旧 workflow path / 不正 `--target-file` 記述を現行運用へ更新
+
+---
+
+## 2026-03-06 - TASK-043B Phase 12準拠チェック資産化と親仕様参照の自動検証
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-task-spec-compliance-template.md` を追加し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を 1 ファイルで確認するテンプレートを新設
+  - `scripts/verify-all-specs.js` に `task-*.md` / `../task-*.md` の参照存在確認を追加し、親仕様ブリッジ欠落を機械検証対象へ拡張
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md` を出力し、TASK-043B の Phase 12 準拠確認を現在ブランチ上の実体で再検証

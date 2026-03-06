@@ -9,7 +9,7 @@
 | SubAgent | 仕様書                                             | 役割                          | 実行順序        | ステータス |
 | -------- | -------------------------------------------------- | ----------------------------- | --------------- | ---------- |
 | A        | `task-043a-ipc-contract-and-security-alignment.md` | IPC契約・セキュリティ境界定義 | 並列            | pending    |
-| B        | `task-043b-ui-ux-import-list-design.md`            | UI/UX・アクセシビリティ設計   | 並列            | pending    |
+| B        | `task-043b-ui-ux-import-list-design.md`            | UI/UX・アクセシビリティ設計   | 並列            | completed  |
 | C        | `task-043c-store-lifecycle-integration-design.md`  | store駆動の状態遷移設計       | 並列            | pending    |
 | D        | `task-043d-test-quality-gate-design.md`            | テスト/品質ゲート統合         | 直列（A/B/C後） | pending    |
 

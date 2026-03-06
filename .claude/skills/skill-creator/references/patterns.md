@@ -1580,6 +1580,21 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-UI-00-ORGANISMS
 
+### [Phase12] current=0 と baseline backlog の二層管理（TASK-043B）
+
+- **状況**: `audit-unassigned-tasks --diff-from HEAD` では `currentViolations=0` を維持できているが、repository 全体には `baselineViolations>0` が残っており、feature 差分と legacy 負債を混同しやすい
+- **アプローチ**:
+  1. Phase 12 の feature 合否は `currentViolations=0` を正本に固定する
+  2. `baselineViolations>0` が残る場合は、feature バグと混ぜずに `docs/30-workflows/unassigned-task/` 配下へ運用改善未タスクを作成する
+  3. 新規未タスク仕様書は `audit-unassigned-tasks --json --target-file <unassigned-file>` で `currentViolations=0` と `scope.currentFiles=1` を確認する
+  4. 判定根拠が `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` に分散する場合は `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を 1 ファイルへ集約する
+  5. `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` に同一ターンで「実装内容 + 苦戦箇所 + 簡潔手順」を同期する
+- **結果**: feature 実装の完了判定を保ったまま、legacy 負債を隠さず改善 backlog として管理できる
+- **適用条件**: Phase 12 再確認で feature 差分は健全だが、未タスク監査の baseline が残る場合
+- **教訓**: 未タスク監査は「差分合否」と「運用負債の改善導線」を分けて記録すると再利用性が高い
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-043B / UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001
+
 ### [Phase12] 同種課題の5分解決カード同期（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT）
 
 - **状況**: 検証値と苦戦箇所は反映済みでも、再実行時の最短手順が仕様書ごとに分散して再利用しづらい

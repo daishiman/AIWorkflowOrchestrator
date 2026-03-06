@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-06T07:12:02.902Z",
-  "totalKeywords": 1467,
+  "generated": "2026-03-06T09:24:17.835Z",
+  "totalKeywords": 1469,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1258,7 +1258,9 @@
     ],
     "Import": [
       "arch-state-management.md",
-      "interfaces-agent-sdk-integration.md"
+      "arch-ui-components.md",
+      "interfaces-agent-sdk-integration.md",
+      "ui-ux-feature-components.md"
     ],
     "SkillCenter": [
       "arch-state-management.md"
@@ -1303,10 +1305,17 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
-      "arch-ui-components.md"
+      "arch-ui-components.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "ビュー統合アーキテクチャパターン": [
       "arch-ui-components.md"
+    ],
+    "List": [
+      "arch-ui-components.md",
+      "ui-ux-feature-components.md"
     ],
     "ORGANISMS": [
       "arch-ui-components.md",
@@ -1919,7 +1928,9 @@
     ],
     "list": [
       "claude-code-agents-workflow.md",
-      "claude-code-skills-process.md"
+      "claude-code-skills-process.md",
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "md": [
       "claude-code-agents-workflow.md",
@@ -3351,6 +3362,14 @@
     "責務分離": [
       "lessons-learned.md"
     ],
+    "import": [
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "refinement": [
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
     "REFACTOR": [
       "lessons-learned.md"
     ],
@@ -3590,9 +3609,6 @@
       "lessons-learned.md"
     ],
     "契約不整合修正": [
-      "lessons-learned.md"
-    ],
-    "import": [
       "lessons-learned.md"
     ],
     "インターフェース整合修正": [

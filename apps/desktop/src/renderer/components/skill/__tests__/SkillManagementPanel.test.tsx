@@ -1,93 +1,159 @@
 /**
  * @vitest-environment happy-dom
- *
- * SkillManagementPanel Component Tests
- *
- * Tests for TASK-10A-A: SkillManagementPanel component.
- * Covers rendering, search, view transitions, skill operations,
- * loading states, and accessibility.
- *
- * @module @repo/desktop/renderer/components/skill/__tests__/SkillManagementPanel
  */
 
 import React from "react";
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { axe, toHaveNoViolations } from "jest-axe";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  render,
-  screen,
+  act,
   cleanup,
   fireEvent,
-  act,
+  render,
+  screen,
   within,
 } from "@testing-library/react";
-import type { ImportedSkill } from "@repo/shared";
+import type { ImportedSkill, SkillMetadata } from "@repo/shared";
 
-// --- Mock functions ---
-const mockFetchSkills = vi.fn().mockResolvedValue(undefined);
-const mockRemoveSkill = vi.fn().mockResolvedValue(undefined);
+expect.extend(toHaveNoViolations);
 
-// --- Test data ---
-const defaultStoreState = {
-  importedSkills: [
-    {
-      name: "skill-alpha" as unknown as ImportedSkill["name"],
-      description: "Alpha skill for testing",
-      path: "/skills/skill-alpha",
-      allowedTools: ["Read", "Write"],
-      updatedAt: new Date("2026-01-01"),
-      importedAt: new Date("2026-02-01"),
-      status: "active" as const,
-      agents: [],
-      references: [],
-      scripts: [],
-      assets: [],
-      schemas: [],
-      indexes: [],
-      otherFiles: [],
-    },
-    {
-      name: "skill-beta" as unknown as ImportedSkill["name"],
-      description: "Beta skill for search testing",
-      path: "/skills/skill-beta",
-      allowedTools: [],
-      updatedAt: new Date("2026-01-15"),
-      importedAt: new Date("2026-02-10"),
-      status: "active" as const,
-      agents: [],
-      references: [],
-      scripts: [],
-      assets: [],
-      schemas: [],
-      indexes: [],
-      otherFiles: [],
-    },
-  ] as ImportedSkill[],
-  isLoadingSkills: false,
-  skillError: null as string | null,
-  fetchSkills: mockFetchSkills,
-  removeSkill: mockRemoveSkill,
+function buildImportedSkill(
+  name: string,
+  description: string,
+  overrides: Partial<ImportedSkill> = {},
+): ImportedSkill {
+  return {
+    name: name as ImportedSkill["name"],
+    description,
+    path: `/skills/${name}`,
+    allowedTools: [],
+    updatedAt: new Date("2026-03-01T00:00:00Z"),
+    importedAt: new Date("2026-03-02T00:00:00Z"),
+    status: "active",
+    agents: [],
+    references: [],
+    scripts: [],
+    assets: [],
+    schemas: [],
+    indexes: [],
+    otherFiles: [],
+    ...overrides,
+  };
+}
+
+function buildAvailableSkill(
+  name: string,
+  description: string,
+  overrides: Partial<SkillMetadata> = {},
+): SkillMetadata {
+  return {
+    name: name as SkillMetadata["name"],
+    description,
+    path: `/skills/${name}`,
+    allowedTools: [],
+    updatedAt: new Date("2026-03-01T00:00:00Z"),
+    agents: [],
+    references: [],
+    scripts: [],
+    assets: [],
+    schemas: [],
+    indexes: [],
+    otherFiles: [],
+    ...overrides,
+  };
+}
+
+type MockStoreState = {
+  availableSkillsMetadata: SkillMetadata[];
+  importedSkills: ImportedSkill[];
+  skillError: string | null;
+  isLoadingSkills: boolean;
+  isImporting: boolean;
+  importingSkillName: SkillMetadata["name"] | null;
+  fetchSkills: ReturnType<typeof vi.fn>;
+  importSkill: ReturnType<typeof vi.fn>;
+  removeSkill: ReturnType<typeof vi.fn>;
+  clearSkillError: ReturnType<typeof vi.fn>;
 };
 
-let currentStoreState = { ...defaultStoreState };
+const mockFetchSkills = vi.fn().mockResolvedValue(undefined);
+const mockImportSkill = vi.fn().mockResolvedValue(undefined);
+const mockRemoveSkill = vi.fn().mockResolvedValue(undefined);
+const mockClearSkillError = vi.fn();
 
-// --- Mock store module with individual selectors (P31) ---
-vi.mock("../../../store", () => ({
-  useImportedSkills: () => currentStoreState.importedSkills,
-  useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
-  useSkillError: () => currentStoreState.skillError,
-  useFetchSkills: () => currentStoreState.fetchSkills,
-  useRemoveSkill: () => currentStoreState.removeSkill,
-}));
+const defaultImportedSkills = [
+  buildImportedSkill("skill-alpha", "Alpha skill for testing"),
+  buildImportedSkill("skill-beta", "Beta skill for search testing"),
+];
 
-vi.mock("@/renderer/store", () => ({
-  useImportedSkills: () => currentStoreState.importedSkills,
-  useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
-  useSkillError: () => currentStoreState.skillError,
-  useFetchSkills: () => currentStoreState.fetchSkills,
-  useRemoveSkill: () => currentStoreState.removeSkill,
-}));
+const defaultAvailableSkills = [
+  buildAvailableSkill("skill-gamma", "Gamma skill for importing"),
+  buildAvailableSkill("skill-delta", "Delta skill for import list"),
+];
 
-// --- Mock SkillEditor ---
+const defaultStoreState: MockStoreState = {
+  availableSkillsMetadata: defaultAvailableSkills,
+  importedSkills: defaultImportedSkills,
+  skillError: null,
+  isLoadingSkills: false,
+  isImporting: false,
+  importingSkillName: null,
+  fetchSkills: mockFetchSkills,
+  importSkill: mockImportSkill,
+  removeSkill: mockRemoveSkill,
+  clearSkillError: mockClearSkillError,
+};
+
+let currentStoreState: MockStoreState = { ...defaultStoreState };
+
+function selectFromStore<T>(selector: (state: MockStoreState) => T): T {
+  return selector(currentStoreState);
+}
+
+vi.mock("../../../store", () => {
+  const useAppStore = Object.assign(
+    <T,>(selector: (state: MockStoreState) => T) => selectFromStore(selector),
+    {
+      getState: () => currentStoreState,
+    },
+  );
+
+  return {
+    useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+    useImportedSkills: () => currentStoreState.importedSkills,
+    useSkillError: () => currentStoreState.skillError,
+    useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
+    useIsImportingSkill: () => currentStoreState.isImporting,
+    useImportingSkillName: () => currentStoreState.importingSkillName,
+    useFetchSkills: () => currentStoreState.fetchSkills,
+    useRemoveSkill: () => currentStoreState.removeSkill,
+    useClearSkillError: () => currentStoreState.clearSkillError,
+    useAppStore,
+  };
+});
+
+vi.mock("@/renderer/store", () => {
+  const useAppStore = Object.assign(
+    <T,>(selector: (state: MockStoreState) => T) => selectFromStore(selector),
+    {
+      getState: () => currentStoreState,
+    },
+  );
+
+  return {
+    useAvailableSkillsMetadata: () => currentStoreState.availableSkillsMetadata,
+    useImportedSkills: () => currentStoreState.importedSkills,
+    useSkillError: () => currentStoreState.skillError,
+    useIsLoadingSkills: () => currentStoreState.isLoadingSkills,
+    useIsImportingSkill: () => currentStoreState.isImporting,
+    useImportingSkillName: () => currentStoreState.importingSkillName,
+    useFetchSkills: () => currentStoreState.fetchSkills,
+    useRemoveSkill: () => currentStoreState.removeSkill,
+    useClearSkillError: () => currentStoreState.clearSkillError,
+    useAppStore,
+  };
+});
+
 vi.mock("../SkillEditor", () => ({
   SkillEditor: ({
     skill,
@@ -97,13 +163,12 @@ vi.mock("../SkillEditor", () => ({
     onClose: () => void;
   }) => (
     <div data-testid="skill-editor">
-      <span data-testid="editor-skill-name">{String(skill.name)}</span>
+      <span>{String(skill.name)}</span>
       <button onClick={onClose}>閉じる</button>
     </div>
   ),
 }));
 
-// --- Mock SkillAnalysisView ---
 vi.mock("../SkillAnalysisView", () => ({
   SkillAnalysisView: ({
     skillName,
@@ -113,13 +178,12 @@ vi.mock("../SkillAnalysisView", () => ({
     onClose: () => void;
   }) => (
     <div data-testid="skill-analysis-view">
-      <span data-testid="analysis-skill-name">{skillName}</span>
+      <span>{skillName}</span>
       <button onClick={onClose}>閉じる</button>
     </div>
   ),
 }));
 
-// --- Mock SkillCreateWizard ---
 vi.mock("../SkillCreateWizard", () => ({
   SkillCreateWizard: React.forwardRef<HTMLDivElement, { onClose: () => void }>(
     ({ onClose }, ref) => (
@@ -130,16 +194,18 @@ vi.mock("../SkillCreateWizard", () => ({
   ),
 }));
 
-// --- Import component under test ---
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
-// --- Setup / Teardown ---
 beforeEach(() => {
   vi.clearAllMocks();
   currentStoreState = {
     ...defaultStoreState,
+    availableSkillsMetadata: [...defaultAvailableSkills],
+    importedSkills: [...defaultImportedSkills],
     fetchSkills: mockFetchSkills,
+    importSkill: mockImportSkill,
     removeSkill: mockRemoveSkill,
+    clearSkillError: mockClearSkillError,
   };
 });
 
@@ -147,582 +213,216 @@ afterEach(() => {
   cleanup();
 });
 
-// ============================================================
-// TC-001 ~ TC-006: レンダリング
-// ============================================================
-describe("レンダリング", () => {
-  it("TC-001: パネルタイトル「スキル管理」が表示される", () => {
+describe("SkillManagementPanel list UI", () => {
+  it("mixed stateで imported / available の2セクションを表示する", () => {
     render(<SkillManagementPanel />);
-    expect(screen.getByText("スキル管理")).toBeDefined();
+
+    expect(screen.getByText("インポート済み")).toBeDefined();
+    expect(screen.getByText("利用可能なスキル")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-imported-count"),
+    ).toHaveTextContent("2件");
+    expect(
+      screen.getByTestId("skill-management-available-count"),
+    ).toHaveTextContent("2件");
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
   });
 
-  it("TC-002: 「新規作成」ボタンが表示される", () => {
+  it("両セクション0件かつ検索なしなら単一の global empty state を表示する", () => {
+    currentStoreState = {
+      ...currentStoreState,
+      availableSkillsMetadata: [],
+      importedSkills: [],
+    };
+
     render(<SkillManagementPanel />);
-    expect(screen.getByText("新規作成")).toBeDefined();
+
+    expect(screen.getByTestId("skill-management-global-empty")).toBeDefined();
+    expect(
+      screen.queryByTestId("skill-management-imported-section"),
+    ).toBeNull();
+    expect(
+      screen.queryByTestId("skill-management-available-section"),
+    ).toBeNull();
   });
 
-  it("TC-003: 検索入力フィールドが表示される", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    expect(searchInput).toBeDefined();
-  });
-
-  it("TC-004: インポート済みスキルがカードとして表示される", () => {
-    render(<SkillManagementPanel />);
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.getByText("skill-beta")).toBeDefined();
-  });
-
-  it("TC-005: スキルの説明文が表示される", () => {
-    render(<SkillManagementPanel />);
-    expect(screen.getByText("Alpha skill for testing")).toBeDefined();
-    expect(screen.getByText("Beta skill for search testing")).toBeDefined();
-  });
-
-  it("TC-006: スキルが0件の場合、空状態メッセージが表示される", () => {
+  it("available だけ存在する場合は imported の inline empty state を表示する", () => {
     currentStoreState = {
       ...currentStoreState,
       importedSkills: [],
     };
+
     render(<SkillManagementPanel />);
-    expect(
-      screen.getByText("インポート済みのスキルはありません"),
-    ).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-007 ~ TC-010: 検索機能
-// ============================================================
-describe("検索機能", () => {
-  it("TC-007: スキル名で検索フィルタリングできる", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, { target: { value: "alpha" } });
-
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.queryByText("skill-beta")).toBeNull();
-  });
-
-  it("TC-008: 説明文で検索フィルタリングできる", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, { target: { value: "search testing" } });
-
-    expect(screen.queryByText("skill-alpha")).toBeNull();
-    expect(screen.getByText("skill-beta")).toBeDefined();
-  });
-
-  it("TC-009: 大文字小文字を区別せずに検索できる", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, { target: { value: "ALPHA" } });
-
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.queryByText("skill-beta")).toBeNull();
-  });
-
-  it("TC-010: 一致するスキルがない場合、検索結果なしメッセージが表示される", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, {
-      target: { value: "nonexistent-skill" },
-    });
 
     expect(
-      screen.getByText("検索条件に一致するスキルはありません"),
-    ).toBeDefined();
+      screen.getByTestId("skill-management-imported-empty"),
+    ).toHaveTextContent("まだ追加済みのスキルはありません。");
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
   });
-});
 
-// ============================================================
-// TC-011 ~ TC-015: ビュー遷移
-// ============================================================
-describe("ビュー遷移", () => {
-  it("TC-011: 編集ボタンクリックでエディタービューに遷移する", async () => {
+  it("1つの検索入力で imported / available の両セクションを同時に絞り込む", () => {
     render(<SkillManagementPanel />);
 
-    const editButton = screen.getByLabelText("skill-alpha を編集");
-    await act(async () => {
-      fireEvent.click(editButton);
+    fireEvent.change(screen.getByLabelText("スキルを検索"), {
+      target: { value: "delta" },
     });
 
-    const editor = screen.getByTestId("skill-editor");
-    expect(editor).toBeDefined();
-    expect(screen.getByTestId("editor-skill-name").textContent).toBe(
-      "skill-alpha",
+    expect(screen.queryByTestId("imported-skill-card-skill-alpha")).toBeNull();
+    expect(screen.getByTestId("available-skill-row-skill-delta")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-imported-empty"),
+    ).toHaveTextContent("検索条件に一致する追加済みスキルはありません。");
+  });
+
+  it("検索結果が両セクション0件なら global no-result state を表示する", () => {
+    render(<SkillManagementPanel />);
+
+    fireEvent.change(screen.getByLabelText("スキルを検索"), {
+      target: { value: "nonexistent" },
+    });
+
+    expect(screen.getByTestId("skill-management-no-result")).toHaveTextContent(
+      "検索条件に一致するスキルはありません。",
     );
   });
 
-  it("TC-012: 分析ボタンクリックで分析ビューに遷移する", async () => {
+  it("追加するボタンで確認ダイアログを開く", async () => {
     render(<SkillManagementPanel />);
 
-    const analyzeButton = screen.getByLabelText("skill-alpha を分析");
     await act(async () => {
-      fireEvent.click(analyzeButton);
+      fireEvent.click(screen.getByLabelText("skill-gamma を追加する"));
     });
 
-    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toBeDefined();
+    expect(within(dialog).getByText("スキルを追加する")).toBeDefined();
+    expect(within(dialog).getByText("skill-gamma")).toBeDefined();
   });
 
-  it("TC-013: 新規作成ボタンクリックで作成ビューに遷移する", async () => {
+  it("インポート中は対象 row だけ disabled にする", () => {
+    currentStoreState = {
+      ...currentStoreState,
+      isImporting: true,
+      importingSkillName: "skill-gamma" as SkillMetadata["name"],
+    };
+
     render(<SkillManagementPanel />);
 
-    const createButton = screen.getByText("新規作成");
-    await act(async () => {
-      fireEvent.click(createButton);
-    });
-
-    expect(screen.getByTestId("skill-create-wizard")).toBeDefined();
+    expect(screen.getByLabelText("skill-gamma を追加する")).toBeDisabled();
+    expect(screen.getByLabelText("skill-delta を追加する")).not.toBeDisabled();
   });
 
-  it("TC-014: エディターの閉じるボタンでリストビューに戻る", async () => {
+  it("skillError は alert と retry copy で表示する", () => {
+    currentStoreState = {
+      ...currentStoreState,
+      skillError: "スキルのインポートに失敗: network",
+    };
+
     render(<SkillManagementPanel />);
 
-    // エディタービューへ遷移
-    const editButton = screen.getByLabelText("skill-alpha を編集");
-    await act(async () => {
-      fireEvent.click(editButton);
-    });
-    expect(screen.getByTestId("skill-editor")).toBeDefined();
-
-    // 閉じるボタンでリストに戻る
-    const closeButton = screen.getByText("閉じる");
-    await act(async () => {
-      fireEvent.click(closeButton);
-    });
-
-    expect(screen.queryByTestId("skill-editor")).toBeNull();
-    expect(screen.getByText("スキル管理")).toBeDefined();
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "スキルのインポートに失敗: network もう一度試してみてください。",
+    );
   });
 
-  it("TC-015: 分析/作成ビューの閉じるボタンでリストビューに戻る", async () => {
+  it("nullish metadata を含んでも一覧と dialog がクラッシュしない", async () => {
+    currentStoreState = {
+      ...currentStoreState,
+      availableSkillsMetadata: [
+        buildAvailableSkill("skill-nullish", "", {
+          description: undefined as unknown as string,
+          allowedTools: undefined,
+          agents: undefined as unknown as SkillMetadata["agents"],
+          references: undefined as unknown as SkillMetadata["references"],
+          scripts: undefined as unknown as SkillMetadata["scripts"],
+          assets: undefined as unknown as SkillMetadata["assets"],
+          schemas: undefined as unknown as SkillMetadata["schemas"],
+          indexes: undefined as unknown as SkillMetadata["indexes"],
+          otherFiles: undefined as unknown as SkillMetadata["otherFiles"],
+        }),
+      ],
+      importedSkills: [],
+    };
+
     render(<SkillManagementPanel />);
 
-    // 分析ビューへ遷移
-    const analyzeButton = screen.getByLabelText("skill-alpha を分析");
-    await act(async () => {
-      fireEvent.click(analyzeButton);
-    });
-    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
-
-    // 閉じるボタンでリストに戻る
-    const closeButton = screen.getByText("閉じる");
-    await act(async () => {
-      fireEvent.click(closeButton);
-    });
-
-    expect(screen.queryByTestId("skill-analysis-view")).toBeNull();
-    expect(screen.getByText("スキル管理")).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-016 ~ TC-018: スキル操作
-// ============================================================
-describe("スキル操作", () => {
-  it("TC-016: 削除ボタンで確認ダイアログが表示される", async () => {
-    render(<SkillManagementPanel />);
-
-    const deleteButton = screen.getByLabelText("skill-alpha を削除");
-    await act(async () => {
-      fireEvent.click(deleteButton);
-    });
-
-    expect(screen.getByText("削除確認")).toBeDefined();
     expect(
-      screen.getByText(/skill-alpha を削除してもよろしいですか？/),
-    ).toBeDefined();
-  });
+      screen.getByTestId("available-skill-row-skill-nullish"),
+    ).toHaveTextContent("説明はありません");
 
-  it("TC-017: 確認ダイアログで削除を実行するとremoveSkillが呼ばれる", async () => {
-    render(<SkillManagementPanel />);
-
-    // 削除ボタンクリック
-    const deleteButton = screen.getByLabelText("skill-alpha を削除");
     await act(async () => {
-      fireEvent.click(deleteButton);
+      fireEvent.click(screen.getByLabelText("skill-nullish を追加する"));
     });
 
-    // 確認ダイアログで「削除」をクリック
-    const confirmButton = screen.getByText("削除する");
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toBeDefined();
+    expect(within(dialog).getByText("説明はありません")).toBeDefined();
+  });
+
+  it("削除ダイアログで削除を確定すると removeSkill が呼ばれる", async () => {
+    render(<SkillManagementPanel />);
+
     await act(async () => {
-      fireEvent.click(confirmButton);
+      fireEvent.click(screen.getByLabelText("skill-alpha を削除"));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByText("削除する"));
     });
 
     expect(mockRemoveSkill).toHaveBeenCalledWith("skill-alpha");
   });
 
-  it("TC-018: 確認ダイアログでキャンセルすると削除されない", async () => {
-    render(<SkillManagementPanel />);
-
-    // 削除ボタンクリック
-    const deleteButton = screen.getByLabelText("skill-alpha を削除");
-    await act(async () => {
-      fireEvent.click(deleteButton);
-    });
-
-    // キャンセルクリック
-    const cancelButton = screen.getByText("キャンセル");
-    await act(async () => {
-      fireEvent.click(cancelButton);
-    });
-
-    expect(mockRemoveSkill).not.toHaveBeenCalled();
-    expect(screen.queryByText("削除確認")).toBeNull();
-  });
-});
-
-// ============================================================
-// TC-019 ~ TC-020: ローディング状態
-// ============================================================
-describe("ローディング状態", () => {
-  it("TC-019: ローディング中はローディング表示がされる", () => {
-    currentStoreState = {
-      ...currentStoreState,
-      isLoadingSkills: true,
-    };
-    render(<SkillManagementPanel />);
-
-    expect(screen.getByText("読み込み中...")).toBeDefined();
-  });
-
-  it("TC-020: マウント時にfetchSkillsが呼ばれる", () => {
-    render(<SkillManagementPanel />);
-    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
-  });
-});
-
-// ============================================================
-// TC-021 ~ TC-023: アクセシビリティ
-// ============================================================
-describe("アクセシビリティ", () => {
-  it("TC-021: スキルリストにrole='list'が設定されている", () => {
-    render(<SkillManagementPanel />);
-    const list = screen.getByRole("list");
-    expect(list).toBeDefined();
-  });
-
-  it("TC-022: 各スキルカードにrole='listitem'が設定されている", () => {
-    render(<SkillManagementPanel />);
-    const listItems = screen.getAllByRole("listitem");
-    expect(listItems.length).toBe(2);
-  });
-
-  it("TC-023: 各操作ボタンにaria-labelが設定されている", () => {
-    render(<SkillManagementPanel />);
-
-    // 編集ボタン
-    expect(screen.getByLabelText("skill-alpha を編集")).toBeDefined();
-    expect(screen.getByLabelText("skill-beta を編集")).toBeDefined();
-
-    // 分析ボタン
-    expect(screen.getByLabelText("skill-alpha を分析")).toBeDefined();
-    expect(screen.getByLabelText("skill-beta を分析")).toBeDefined();
-
-    // 削除ボタン
-    expect(screen.getByLabelText("skill-alpha を削除")).toBeDefined();
-    expect(screen.getByLabelText("skill-beta を削除")).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-024 ~ TC-028: エッジケース
-// ============================================================
-describe("エッジケース", () => {
-  it("TC-024: スキル0件で空状態メッセージが表示され、リストは非表示", () => {
-    currentStoreState = {
-      ...currentStoreState,
-      importedSkills: [],
-    };
-    render(<SkillManagementPanel />);
-
-    expect(
-      screen.getByText("インポート済みのスキルはありません"),
-    ).toBeDefined();
-    expect(screen.queryByRole("list")).toBeNull();
-  });
-
-  it("TC-025: 検索結果0件で「該当なし」メッセージが表示され、リストは非表示", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, { target: { value: "nonexistent" } });
-
-    expect(
-      screen.getByText("検索条件に一致するスキルはありません"),
-    ).toBeDefined();
-    expect(screen.queryByRole("list")).toBeNull();
-  });
-
-  it("TC-026: 100文字の長いスキル名でもレイアウトが崩れない", () => {
-    const longName = "a".repeat(100);
-    currentStoreState = {
-      ...currentStoreState,
-      importedSkills: [
-        {
-          ...currentStoreState.importedSkills[0],
-          name: longName as unknown as ImportedSkill["name"],
-        },
-      ] as ImportedSkill[],
-    };
-    render(<SkillManagementPanel />);
-
-    expect(screen.getByText(longName)).toBeDefined();
-    expect(screen.getByRole("listitem")).toBeDefined();
-  });
-
-  it("TC-027: descriptionが空文字列のスキルが正常表示される", () => {
-    currentStoreState = {
-      ...currentStoreState,
-      importedSkills: [
-        {
-          ...currentStoreState.importedSkills[0],
-          description: "",
-        },
-      ] as ImportedSkill[],
-    };
-    render(<SkillManagementPanel />);
-
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.getByRole("listitem")).toBeDefined();
-  });
-
-  it("TC-028: 検索クエリに特殊文字(.*+?)を含めてもエラーが発生しない", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-
-    // 正規表現の特殊文字を含むクエリ — エラーが発生しないことを確認
-    fireEvent.change(searchInput, { target: { value: ".*+?" } });
-
-    expect(
-      screen.getByText("検索条件に一致するスキルはありません"),
-    ).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-029 ~ TC-031: エラー状態
-// ============================================================
-describe("エラー状態", () => {
-  it("TC-029: fetchSkillsがrejectしてもクラッシュしない", async () => {
-    const consoleError = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-    const mockFetchReject = vi.fn().mockRejectedValue(new Error("fetch error"));
-    currentStoreState = {
-      ...currentStoreState,
-      fetchSkills: mockFetchReject,
-    };
-
-    await act(async () => {
-      render(<SkillManagementPanel />);
-    });
-
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(mockFetchReject).toHaveBeenCalledTimes(1);
-    consoleError.mockRestore();
-  });
-
-  it("TC-030: removeSkillがrejectしてもクラッシュしない", async () => {
-    const consoleError = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-    try {
-      const mockRemoveReject = vi
-        .fn()
-        .mockRejectedValue(new Error("remove error"));
-      currentStoreState = {
-        ...currentStoreState,
-        removeSkill: mockRemoveReject,
-      };
-
-      render(<SkillManagementPanel />);
-
-      // 削除ダイアログを開く
-      const deleteButton = screen.getByLabelText("skill-alpha を削除");
-      await act(async () => {
-        fireEvent.click(deleteButton);
-      });
-
-      // 確認ダイアログで削除を実行
-      const confirmButton = screen.getByText("削除する");
-      await act(async () => {
-        fireEvent.click(confirmButton);
-        await new Promise((r) => setTimeout(r, 0));
-      });
-
-      // コンポーネントがクラッシュしていないことを確認
-      expect(screen.getByText("スキル管理")).toBeDefined();
-      expect(mockRemoveReject).toHaveBeenCalledTimes(1);
-      expect(
-        screen.getByText("削除に失敗しました: remove error"),
-      ).toBeDefined();
-    } finally {
-      consoleError.mockRestore();
-    }
-  });
-
-  it("TC-031: isLoadingSkillsがtrue→falseに変わるとスキル一覧が表示される", () => {
+  it("読み込み中は loading state を表示する", () => {
     currentStoreState = {
       ...currentStoreState,
       isLoadingSkills: true,
     };
 
-    const { rerender } = render(<SkillManagementPanel />);
-    expect(screen.getByText("読み込み中...")).toBeDefined();
-    expect(screen.queryByRole("list")).toBeNull();
-
-    // ローディング完了をシミュレート
-    currentStoreState = {
-      ...currentStoreState,
-      isLoadingSkills: false,
-    };
-
-    rerender(<SkillManagementPanel />);
-    expect(screen.queryByText("読み込み中...")).toBeNull();
-    expect(screen.getByRole("list")).toBeDefined();
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-  });
-});
-
-// ============================================================
-// TC-032 ~ TC-034: 統合テスト
-// ============================================================
-describe("統合テスト", () => {
-  it("TC-032: SkillCardのonEditが正しいスキル情報を渡す", async () => {
     render(<SkillManagementPanel />);
 
-    // 2番目のスキル（skill-beta）の編集ボタンをクリック
-    const editButton = screen.getByLabelText("skill-beta を編集");
-    await act(async () => {
-      fireEvent.click(editButton);
-    });
-
-    const editor = screen.getByTestId("skill-editor");
-    expect(editor).toBeDefined();
-    expect(screen.getByTestId("editor-skill-name").textContent).toBe(
-      "skill-beta",
+    expect(screen.getByTestId("skill-management-loading")).toHaveTextContent(
+      "読み込み中...",
     );
   });
 
-  it("TC-033: 削除確認後にリストビューが維持される", async () => {
+  it("mount 時に fetchSkills を呼ぶ", () => {
     render(<SkillManagementPanel />);
-
-    // 削除ダイアログを開く
-    const deleteButton = screen.getByLabelText("skill-alpha を削除");
-    await act(async () => {
-      fireEvent.click(deleteButton);
-    });
-
-    // 確認ダイアログで削除を実行
-    const confirmButton = screen.getByText("削除する");
-    await act(async () => {
-      fireEvent.click(confirmButton);
-    });
-
-    // リストビューが維持されていることを確認
-    expect(screen.getByText("スキル管理")).toBeDefined();
-    expect(screen.getByPlaceholderText("スキルを検索...")).toBeDefined();
+    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
   });
 
-  it("TC-034: 検索後にビュー遷移して戻ると検索クエリが維持される", async () => {
-    render(<SkillManagementPanel />);
-
-    // 検索クエリを入力
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    fireEvent.change(searchInput, { target: { value: "alpha" } });
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.queryByText("skill-beta")).toBeNull();
-
-    // 分析ビューへ遷移
-    const analyzeButton = screen.getByLabelText("skill-alpha を分析");
-    await act(async () => {
-      fireEvent.click(analyzeButton);
-    });
-    expect(screen.getByTestId("skill-analysis-view")).toBeDefined();
-
-    // 閉じるボタンでリストに戻る
-    const closeButton = screen.getByText("閉じる");
-    await act(async () => {
-      fireEvent.click(closeButton);
-    });
-
-    // 検索クエリが維持されていることを確認
-    const searchInputAfter = screen.getByPlaceholderText("スキルを検索...");
-    expect((searchInputAfter as HTMLInputElement).value).toBe("alpha");
-    expect(screen.getByText("skill-alpha")).toBeDefined();
-    expect(screen.queryByText("skill-beta")).toBeNull();
-  });
-});
-
-// ============================================================
-// TC-035 ~ TC-037: アクセシビリティ拡充
-// ============================================================
-describe("アクセシビリティ拡充", () => {
-  it("TC-035: 各スキルカードのlistitemにスキル情報が含まれる", () => {
-    render(<SkillManagementPanel />);
-    const listItems = screen.getAllByRole("listitem");
-    expect(listItems.length).toBe(2);
-
-    // 各listitemに正しいスキルコンテンツが含まれることを確認
-    expect(within(listItems[0]).getByText("skill-alpha")).toBeDefined();
-    expect(
-      within(listItems[0]).getByText("Alpha skill for testing"),
-    ).toBeDefined();
-    expect(within(listItems[1]).getByText("skill-beta")).toBeDefined();
-    expect(
-      within(listItems[1]).getByText("Beta skill for search testing"),
-    ).toBeDefined();
+  it("jest-axe で重大な a11y violation が出ない", async () => {
+    const { container } = render(<SkillManagementPanel />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  it("TC-036: 削除ボタンのaria-labelにスキル名が含まれる", () => {
-    render(<SkillManagementPanel />);
-
-    const deleteAlpha = screen.getByLabelText("skill-alpha を削除");
-    const deleteBeta = screen.getByLabelText("skill-beta を削除");
-
-    expect(deleteAlpha.tagName.toLowerCase()).toBe("button");
-    expect(deleteBeta.tagName.toLowerCase()).toBe("button");
-    expect(deleteAlpha.textContent).toBe("削除");
-    expect(deleteBeta.textContent).toBe("削除");
-  });
-
-  it("TC-037: 検索入力フィールドにtype=textが設定されている", () => {
-    render(<SkillManagementPanel />);
-    const searchInput = screen.getByPlaceholderText("スキルを検索...");
-    expect((searchInput as HTMLInputElement).type).toBe("text");
-  });
-});
-
-// ============================================================
-// TC-038: パフォーマンス
-// ============================================================
-describe("パフォーマンス", () => {
-  it("TC-038: 100件のスキルでエラーなくレンダリングされる", () => {
-    const manySkills = Array.from({ length: 100 }, (_, i) => ({
-      name: `skill-${String(i).padStart(3, "0")}` as unknown as ImportedSkill["name"],
-      description: `Description for skill ${i}`,
-      path: `/skills/skill-${i}`,
-      allowedTools: [],
-      updatedAt: new Date("2026-01-01"),
-      importedAt: new Date("2026-02-01"),
-      status: "active" as const,
-      agents: [],
-      references: [],
-      scripts: [],
-      assets: [],
-      schemas: [],
-      indexes: [],
-      otherFiles: [],
-    })) as ImportedSkill[];
-
+  it("既に imported 済みの skill は available 側に再表示しない", () => {
     currentStoreState = {
       ...currentStoreState,
-      importedSkills: manySkills,
+      availableSkillsMetadata: [
+        ...defaultAvailableSkills,
+        buildAvailableSkill("skill-alpha", "duplicate row"),
+      ],
     };
 
     render(<SkillManagementPanel />);
-    const listItems = screen.getAllByRole("listitem");
-    expect(listItems.length).toBe(100);
+
+    expect(screen.queryByTestId("available-skill-row-skill-alpha")).toBeNull();
+  });
+
+  it("section 内の listitem 数が期待どおりになる", () => {
+    render(<SkillManagementPanel />);
+
+    const importedSection = screen.getByTestId(
+      "skill-management-imported-section",
+    );
+    const availableSection = screen.getByTestId(
+      "skill-management-available-section",
+    );
+
+    expect(within(importedSection).getAllByRole("listitem")).toHaveLength(2);
+    expect(within(availableSection).getAllByRole("listitem")).toHaveLength(2);
   });
 });

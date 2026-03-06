@@ -89,10 +89,10 @@ Phase 4〜5: 検証 → 完了
 | カテゴリ    | 数  | 詳細参照                                                 |
 | ----------- | --- | -------------------------------------------------------- |
 | agents/     | 9   | [resource-map.md#agents](references/resource-map.md)     |
-| references/ | 16  | [resource-map.md#references](references/resource-map.md) |
-| scripts/    | 13  | [resource-map.md#scripts](references/resource-map.md)    |
+| references/ | 19  | [resource-map.md#references](references/resource-map.md) |
+| scripts/    | 15  | [resource-map.md#scripts](references/resource-map.md)    |
 | schemas/    | 8   | [resource-map.md#schemas](references/resource-map.md)    |
-| assets/     | 9   | [resource-map.md#assets](references/resource-map.md)     |
+| assets/     | 11  | [resource-map.md#assets](references/resource-map.md)     |
 
 📖 [references/resource-map.md](references/resource-map.md)
 
@@ -131,6 +131,7 @@ Phase 4〜5: 検証 → 完了
 | 成功/失敗パターン    | [references/patterns.md](references/patterns.md)                                           |
 | 履歴アーカイブ       | [references/changelog-archive.md](references/changelog-archive.md)                         |
 | 自己改善サイクル     | [references/self-improvement-cycle.md](references/self-improvement-cycle.md)               |
+| Phase 12準拠チェック | [assets/phase12-task-spec-compliance-template.md](assets/phase12-task-spec-compliance-template.md) |
 
 ### システム開発観点チェック
 
@@ -392,8 +393,11 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.08.17** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の運用穴をガイドへ反映**: `references/phase-11-12-guide.md` に専用 harness を用いた Phase 11 再撮影条件、`phase11-capture-metadata.json` と `manual-test-result.md` の同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を追記。`references/spec-update-workflow.md` には IPC transport 契約変更時に `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` まで確認する cross-cutting doc 更新ルールを追加 |
-| **v10.08.16** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行を反映**: `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を実行し、Phase 11 は `TC-11-01..05` のスクリーンショット5件と Apple UI/UXレビューを必須証跡として固定。Phase 12 は 6成果物生成、`complete-phase.js` による台帳同期、`artifacts.json` / `outputs/artifacts.json` 整合、`phase-1..12*.md` completed 同期、`verify-unassigned-links` broken link 修復、`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` 再実行を標準運用として記録 |
+| **v10.08.20** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の運用穴をガイドへ反映**: `references/phase-11-12-guide.md` に専用 harness を用いた Phase 11 再撮影条件、`phase11-capture-metadata.json` と `manual-test-result.md` の同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を追記。`references/spec-update-workflow.md` には IPC transport 契約変更時に `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` まで確認する cross-cutting doc 更新ルールを追加 |
+| **v10.08.19** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行を反映**: `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を実行し、Phase 11 は `TC-11-01..05` のスクリーンショット5件と Apple UI/UXレビューを必須証跡として固定。Phase 12 は 6成果物生成、`complete-phase.js` による台帳同期、`artifacts.json` / `outputs/artifacts.json` 整合、`phase-1..12*.md` completed 同期、`verify-unassigned-links` broken link 修復、`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` 再実行を標準運用として記録 |
+| **v10.08.18** | **2026-03-06** | **Phase 12準拠チェックと親仕様参照ガードを追加**: `assets/phase12-task-spec-compliance-template.md` を新設し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 の判定を1ファイルへ集約するテンプレートを追加。あわせて `scripts/verify-all-specs.js` で `task-*.md` / `../task-*.md` の参照実在も検証対象に拡張し、親仕様ブリッジ欠落を自動検出できるよう更新 |
+| **v10.08.17** | **2026-03-06** | **TASK-043B 再監査の導線修復ルールを反映**: `references/phase-11-12-guide.md` に `TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離運用を追加し、`references/spec-update-workflow.md` に `../task-xxx.md` 親仕様参照のブリッジ確認チェックを追記。Phase 12で workflow ディレクトリと親仕様ファイルの両方を実在確認する手順を明文化 |
+| **v10.08.16** | **2026-03-06** | **TASK-043B の Phase 11/12 実行知見を反映**: `manual-test-result.md` の `TC-ID + 証跡 + 非視覚ログ` 形式、補助 screenshot warning の扱い、`validate-phase11-screenshot-coverage` を 9 TC ベースで通す運用を LOGS と合わせて追記 |
 | **v10.08.15** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再確認で判明した Phase 12台帳ドリフト対策を反映**: `references/phase-11-12-guide.md` の Task 3.5 と完了チェックへ「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記。成果物実体のみで完了判定しない運用を明文化 |
 | **v10.08.14** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査を反映**: ユーザー追加要求に基づく Phase 11 画面回帰撮影（3スクリーンショット）を workflow 直下へ再証跡化し、`manual-test-result.md` を `TC + 証跡` 形式へ更新。併せて仕様書のDIシグネチャ旧表記を現行実装へ同期し、`validate-phase11-screenshot-coverage` を再実行する運用を追記 |
 | **v10.08.13** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 実行を反映**: `docs/30-workflows/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 1〜12 を完了。Task 12 Step 1-A/1-B/1-C として `interfaces-agent-sdk-executor.md` / `api-ipc-system.md` の完了タスク・実装状況・関連タスクを同期し、`verify-all-specs` / `validate-phase-output` / `complete-phase` をフェーズ単位で実行する運用を記録 |
