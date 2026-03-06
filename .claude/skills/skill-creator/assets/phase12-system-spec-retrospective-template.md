@@ -158,10 +158,11 @@ UI機能実装の場合は次を推奨:
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
 4. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
-5. `<outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の根拠を1ファイルへ集約する>`
-6. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
-7. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、ユーザーが画面検証を要求した場合は対象 view 専用 harness + SCREENSHOT へ昇格する。全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
-8. `<currentViolations=0` でも `baselineViolations>0` が残る場合は、feature差分と切り分けて `docs/30-workflows/unassigned-task/` に運用改善未タスクを作成し、`audit --target-file` の `scope.currentFiles=1` まで記録する>`
+5. `<task spec 再確認が必要な場合は phase12-task-spec-recheck-template.md を使い、phase-12-documentation / outputs/phase-12 / implementation-guide / 未タスク10見出しの4点突合を先に完了する>`
+6. `<outputs/phase-12/phase12-task-spec-compliance-check.md` を作成し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の根拠を1ファイルへ集約する>`
+7. `<verify-all-specs / validate-phase-output / phase-11-manual-test必須節grep / verify-unassigned-links / audit --diff-from HEAD を実行し、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+8. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、ユーザーが画面検証を要求した場合は対象 view 専用 harness + SCREENSHOT へ昇格する。全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+9. `<currentViolations=0` でも `baselineViolations>0` が残る場合は、feature差分と切り分けて `docs/30-workflows/unassigned-task/` に運用改善未タスクを作成し、`audit --diff-from HEAD --target-file` の `scope.currentFiles=1` と `audit --json` 単独の repo 全体参考値を分離記録する>`
 
 ---
 
@@ -178,9 +179,10 @@ UI機能実装の場合は次を推奨:
 | `rg -n 'ipc-contract-checklist\\.md|quick-reference\\.md' <workflow-path>/outputs/phase-12/spec-update-summary.md <workflow-path>/outputs/phase-12/documentation-changelog.md` | IPC transport 契約変更時の cross-cutting doc 同期確認 | checklist / quick-reference の両方が検出される |
 | `rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>` | 対象ドメイン仕様書が標準ブロックを持つことを確認 | 3見出しが検出される |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` かつ `scope.currentFiles: 1` |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>` | 対象未タスクの今回差分に対する形式/命名/配置監査 | `currentViolations: 0` かつ `scope.currentFiles: 1` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` | repo 全体の baseline 監視値を確認 | `currentViolations` は参考値として扱う |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | 未完了は `unassigned-task`、完了済みは `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
@@ -212,8 +214,9 @@ UI機能実装の場合は次を推奨:
 - [ ] IPC transport 契約更新時は `references/ipc-contract-checklist.md` と `indexes/quick-reference.md` を同一ターンで同期している
 - [ ] 更新したドメイン仕様書は `assets/phase12-domain-spec-sync-block-template.md` 準拠で `実装内容` / `苦戦箇所` / `5分解決カード` を持つ
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
-- [ ] `audit --target-file` の `currentViolations: 0` を確認
-- [ ] `audit --target-file` を実行した場合、`scope.currentFiles: 1` まで確認している
+- [ ] `audit --diff-from HEAD --target-file` の `currentViolations: 0` を確認
+- [ ] `audit --diff-from HEAD --target-file` を実行した場合、`scope.currentFiles: 1` まで確認している
+- [ ] `audit --json` 単独実行の `currentViolations` は repo 全体参考値として分離記録している
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] `currentViolations=0` かつ `baselineViolations>0` の場合、feature差分とは別の運用改善未タスクを作成するか、作成不要理由を明記している
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している

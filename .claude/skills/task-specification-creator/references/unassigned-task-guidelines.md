@@ -52,12 +52,13 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 `audit-unassigned-tasks.js` は **対象監査（current）** と **全体監査（baseline）** を分離して扱う。
 
 ```bash
-# 1) 対象監査（今回変更分の合否判定）
+# 1) 対象未タスクの今回差分監査（推奨）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
+  --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
 
-# 2) 差分監査（git差分ベースの current 判定）
+# 2) 差分監査（workflow全体の current 判定）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
@@ -68,13 +69,16 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 > 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
 > `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
+> `--target-file` 単独実行は repo 全体の既存違反が `current` 側へ見える場合があるため、今回差分の合否には使わない。
 
 判定ルール:
 
 | モード | fail条件 | 用途 |
 | --- | --- | --- |
-| `--target-file` / `--diff-from` 指定あり | `currentViolations.total > 0` | 今回タスクの合否判定 |
-| scope指定なし | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
+| `--diff-from HEAD --target-file` | `currentViolations.total > 0` | 対象未タスク指示書の今回差分判定 |
+| `--diff-from HEAD` | `currentViolations.total > 0` | 今回タスク全体の合否判定 |
+| `--target-file` のみ | 参考値 | repo 全体の既存違反が current 側へ寄る場合があるため合否には使わない |
+| scope指定なし `--json` | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
 
 ### raw検出の誤検知対策（推奨）
 

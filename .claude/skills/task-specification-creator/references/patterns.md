@@ -336,6 +336,21 @@
 - **発見日**: 2026-02-27
 - **関連タスク**: TASK-9H
 
+### Phase 12 タスク仕様準拠の4点突合（TASK-UI-01-E）
+
+- **状況**: `outputs/phase-12` とシステム仕様更新が揃っていても、`phase-12-documentation.md` の完了同期、実装ガイド必須要件、未タスク指示書フォーマット、監査値転記のどれかが後追いでずれやすい
+- **問題**: 「Phase 12 実行済み」と報告しても、Task 12-1〜12-5 の要件と実績値が1ファイルに閉じず、再監査で数値や配置先の差し戻しが起こる
+- **解決パターン**:
+  1. `phase-12-documentation.md` の `ステータス=completed`、Task 12-1〜12-5、Task 100% 実行確認を `outputs/phase-12` の7成果物と1対1で突合する
+  2. `implementation-guide.md` は `## Part 1` / `## Part 2`、理由先行、日常例え、TypeScript 型/API/エッジケース/設定語を `rg` で確認する
+  3. 未タスクは `docs/30-workflows/unassigned-task/` の物理配置、`## メタ情報 + ## 1..9` の10見出し、`audit --json --diff-from HEAD --target-file`、`verify-unassigned-links` を同一ターンで確認する
+  4. `spec-update-summary.md` / `phase12-compliance-recheck.md` / `unassigned-task-detection.md` / `task-workflow.md` に同一の実測値を転記する
+- **効果**:
+  - Phase 12 完了判定の根拠を「仕様書・成果物・未タスク・検証値」の4面で固定できる
+  - follow-up 更新後の warning 件数や `current/baseline` の誤記を防止できる
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
+
 ### `validate-phase-output` の引数仕様固定（位置引数）
 
 - **状況**: Phase検証時に `verify-all-specs` と同形式のオプション（`--phase` など）を想定しやすい
