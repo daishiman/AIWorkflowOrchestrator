@@ -1,0 +1,64 @@
+{
+  "scannedAt": "2026-03-06T03:24:24.808Z",
+  "scanDir": "packages/shared/src",
+  "totalFiles": 439,
+  "totalFindings": 7,
+  "findings": [
+    {
+      "file": "db/env.ts",
+      "line": 23,
+      "type": "XXX",
+      "content": "(クラウド)",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "features/chat-history/application/use-cases/SearchSessionsUseCase.ts",
+      "line": 48,
+      "type": "TODO",
+      "content": "実際の総件数を返す場合はリポジトリを拡張",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "services/graph/__tests__/knowledge-graph-store.test.ts",
+      "line": 1773,
+      "type": "TODO",
+      "content": "Transaction rollback is not implemented yet",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "services/graph/knowledge-graph-store.ts",
+      "line": 355,
+      "type": "TODO",
+      "content": "Implement vector similarity search with DiskANN",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "services/search/__tests__/keyword-search-strategy.integration.test.ts",
+      "line": 117,
+      "type": "TODO",
+      "content": "実際のテストDBセットアップ",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "services/search/__tests__/keyword-search-strategy.integration.test.ts",
+      "line": 123,
+      "type": "TODO",
+      "content": "テストDB クリーンアップ",
+      "priority": "medium",
+      "category": "imp"
+    },
+    {
+      "file": "types/rag/graph/__tests__/utils.test.ts",
+      "line": 791,
+      "type": "TODO",
+      "content": "パフォーマンス基準を環境差を考慮して再検討する (UT-PERF-001)",
+      "priority": "medium",
+      "category": "perf"
+    }
+  ]
+}

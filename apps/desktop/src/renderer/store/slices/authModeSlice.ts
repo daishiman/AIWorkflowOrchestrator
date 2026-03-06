@@ -11,66 +11,33 @@
  * @see docs/30-workflows/TASK-AUTH-MODE-SELECTION-001/outputs/phase-2/state-management-design.md
  */
 import { StateCreator } from "zustand";
+import {
+  AUTH_MODE_ERROR_CODES,
+  DEFAULT_AUTH_MODE,
+} from "@repo/shared/types/auth-mode";
+import type {
+  AuthMode,
+  AuthModeErrorCode,
+  AuthModeStatus,
+} from "@repo/shared/types/auth-mode";
 
 // ============================================================
 // 型定義
 // ============================================================
 
 /**
- * 認証方式
- * @description Claude Agent SDKの認証に使用する方式
- */
-export type AuthMode = "subscription" | "api-key";
-
-/**
- * 認証方式エラーコード
- */
-export type AuthModeErrorCode =
-  | "NOT_LOGGED_IN"
-  | "TOKEN_EXPIRED"
-  | "KEYCHAIN_ACCESS_DENIED"
-  | "API_KEY_NOT_SET"
-  | "API_KEY_INVALID"
-  | "NETWORK_ERROR"
-  | "UNKNOWN_ERROR";
-
-/**
- * 認証状態
- * @description 現在の認証方式での認証有効性
- */
-export interface AuthModeStatus {
-  /** 認証方式 */
-  mode: AuthMode;
-  /** 認証が有効か */
-  isValid: boolean;
-  /** 詳細メッセージ */
-  message: string;
-  /** エラーコード（エラー時のみ） */
-  errorCode?: AuthModeErrorCode;
-  /** 最終確認日時 */
-  lastCheckedAt: number;
-}
-
-/**
  * 認証方式バリデーション結果
  */
-export interface AuthModeValidationResult {
-  isValid: boolean;
-  message?: string;
-  errorCode?: AuthModeErrorCode;
-}
+export type AuthModeValidationResult = AuthModeStatus;
 
 /**
  * 認証方式エラーメッセージマッピング
  */
-export const AUTH_MODE_ERROR_MESSAGES: Record<AuthModeErrorCode, string> = {
-  NOT_LOGGED_IN: "Claude Code CLIでログインしてください",
-  TOKEN_EXPIRED: "認証の有効期限が切れました。再度ログインしてください",
-  KEYCHAIN_ACCESS_DENIED: "Keychainへのアクセスが拒否されました",
-  API_KEY_NOT_SET: "APIキーを設定してください",
-  API_KEY_INVALID: "APIキーの形式が正しくありません",
-  NETWORK_ERROR: "ネットワーク接続を確認してください",
-  UNKNOWN_ERROR: "予期しないエラーが発生しました",
+const AUTH_MODE_RUNTIME_ERROR_MESSAGES = {
+  NETWORK: "ネットワーク接続を確認してください",
+  KEYCHAIN: "Keychainへのアクセスが拒否されました",
+  UNKNOWN: "予期しないエラーが発生しました",
+  VALIDATION: "認証状態を確認できませんでした",
 };
 
 // ============================================================
@@ -136,7 +103,7 @@ export interface AuthModeSlice {
   fetchStatus: () => Promise<void>;
 
   /** 認証方式のバリデーション */
-  validate: () => Promise<AuthModeValidationResult>;
+  validate: (mode?: AuthMode) => Promise<AuthModeValidationResult>;
 
   /** 確認ダイアログを表示 */
   openConfirmDialog: (targetMode: AuthMode) => void;
@@ -166,20 +133,35 @@ export interface AuthModeSlice {
  */
 function handleAuthModeError(error: unknown): string {
   if (!(error instanceof Error)) {
-    return AUTH_MODE_ERROR_MESSAGES.UNKNOWN_ERROR;
+    return AUTH_MODE_RUNTIME_ERROR_MESSAGES.UNKNOWN;
   }
 
   const message = error.message.toLowerCase();
 
   if (message.includes("network") || message.includes("fetch")) {
-    return AUTH_MODE_ERROR_MESSAGES.NETWORK_ERROR;
+    return AUTH_MODE_RUNTIME_ERROR_MESSAGES.NETWORK;
   }
 
   if (message.includes("keychain") || message.includes("access")) {
-    return AUTH_MODE_ERROR_MESSAGES.KEYCHAIN_ACCESS_DENIED;
+    return AUTH_MODE_RUNTIME_ERROR_MESSAGES.KEYCHAIN;
   }
 
-  return AUTH_MODE_ERROR_MESSAGES.UNKNOWN_ERROR;
+  return AUTH_MODE_RUNTIME_ERROR_MESSAGES.UNKNOWN;
+}
+
+function createFallbackStatus(
+  mode: AuthMode,
+  overrides: Partial<AuthModeStatus> = {},
+): AuthModeStatus {
+  return {
+    mode,
+    isValid: false,
+    hasCredentials: false,
+    message: overrides.message ?? AUTH_MODE_RUNTIME_ERROR_MESSAGES.VALIDATION,
+    errorCode: overrides.errorCode ?? AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
+    guidance: overrides.guidance,
+    lastCheckedAt: overrides.lastCheckedAt ?? Date.now(),
+  };
 }
 
 // ============================================================
@@ -196,7 +178,7 @@ export const createAuthModeSlice: StateCreator<
   // Initial State
   // ============================================================
 
-  mode: "subscription", // デフォルトはサブスクリプション認証
+  mode: DEFAULT_AUTH_MODE,
   status: null,
   isLoading: false,
   error: null,
@@ -227,7 +209,7 @@ export const createAuthModeSlice: StateCreator<
         });
 
         // 認証状態も取得
-        get().fetchStatus();
+        await get().fetchStatus();
       } else {
         set({
           isLoading: false,
@@ -264,7 +246,7 @@ export const createAuthModeSlice: StateCreator<
         });
 
         // 新しい認証方式の状態を取得
-        get().fetchStatus();
+        await get().fetchStatus();
       } else {
         set({
           isLoading: false,
@@ -289,35 +271,56 @@ export const createAuthModeSlice: StateCreator<
 
       const response = await window.electronAPI.authMode.status();
 
-      if (response.success && response.data) {
+      if (response?.success && response.data) {
         set({ status: response.data });
+      } else {
+        set({
+          status: createFallbackStatus(get().mode, {
+            message: response?.error?.message,
+            errorCode:
+              (response?.error?.code as AuthModeErrorCode | undefined) ??
+              AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
+            guidance: response?.error?.guidance,
+          }),
+        });
       }
     } catch (error) {
       console.error("[AuthModeSlice] fetchStatus error:", error);
+      set({
+        status: createFallbackStatus(get().mode, {
+          message: handleAuthModeError(error),
+        }),
+      });
     }
   },
 
-  validate: async (): Promise<AuthModeValidationResult> => {
+  validate: async (mode?: AuthMode): Promise<AuthModeValidationResult> => {
     try {
       if (!window.electronAPI?.authMode?.validate) {
         console.warn("[AuthModeSlice] authMode.validate not available");
-        return { isValid: false };
+        return createFallbackStatus(mode ?? get().mode);
       }
 
-      const response = await window.electronAPI.authMode.validate();
+      const response = await window.electronAPI.authMode.validate(
+        mode ? { mode } : undefined,
+      );
 
-      if (response.success && response.data) {
-        return {
-          isValid: response.data.isValid,
-          message: response.data.message,
-          errorCode: response.data.errorCode,
-        };
+      if (response?.success && response.data) {
+        return response.data;
       }
 
-      return { isValid: false };
+      return createFallbackStatus(mode ?? get().mode, {
+        message: response?.error?.message,
+        errorCode:
+          (response?.error?.code as AuthModeErrorCode | undefined) ??
+          AUTH_MODE_ERROR_CODES.UNKNOWN_ERROR,
+        guidance: response?.error?.guidance,
+      });
     } catch (error) {
       console.error("[AuthModeSlice] validate error:", error);
-      return { isValid: false };
+      return createFallbackStatus(mode ?? get().mode, {
+        message: handleAuthModeError(error),
+      });
     }
   },
 
@@ -353,7 +356,7 @@ export const createAuthModeSlice: StateCreator<
     resetAuthModeListenerFlag();
 
     set({
-      mode: "subscription",
+      mode: DEFAULT_AUTH_MODE,
       status: null,
       isLoading: false,
       error: null,
@@ -364,10 +367,10 @@ export const createAuthModeSlice: StateCreator<
 
   initializeAuthMode: () => {
     // 現在の認証方式を取得
-    get().fetchMode();
+    void get().fetchMode();
 
     // リスナーを設定（二重登録防止付き）
-    setupAuthModeListener(set, get);
+    setupAuthModeListener(set);
   },
 });
 
@@ -387,7 +390,6 @@ export const createAuthModeSlice: StateCreator<
  */
 function setupAuthModeListener(
   set: (state: Partial<AuthModeSlice>) => void,
-  get: () => AuthModeSlice,
 ): void {
   // 二重登録チェック
   if (authModeListenerRegistered) {
@@ -410,10 +412,7 @@ function setupAuthModeListener(
 
     set({
       mode: event.mode,
-      status: event.status ?? null,
+      status: event.status,
     });
-
-    // 認証状態を更新
-    get().fetchStatus();
   });
 }

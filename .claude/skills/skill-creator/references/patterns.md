@@ -2422,3 +2422,38 @@ interface BadgeProps extends Omit<
   - preflight失敗時は再撮影を継続せず未タスク化し、再発条件を `lessons-learned` に固定する
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV, UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001
+
+### [Phase12] shared transport DTO + cross-cutting doc + 専用 harness 同期（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
+
+- **状況**: IPC transport 契約をコード上は是正したが、`ipc-contract-checklist.md` / `quick-reference.md` の横断導線や、画面検証の対象 view 専用 harness 条件が後追いになりやすい
+- **成功パターン**:
+  - shared transport DTO を `packages/shared` に集約し、Main / Preload / Renderer は import / re-export のみで追従する
+  - Step 2 で `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` に加えて `ipc-contract-checklist.md` / `indexes/quick-reference.md` を同一ターンで同期する
+  - UI契約だけを確認したい場合は対象 view 専用 harness を追加し、`SCREENSHOT` 証跡と `validate-phase11-screenshot-coverage` をセットで固定する
+  - 運用ギャップがスクリプト改善領域なら未タスク化し、`audit --target-file` で `currentViolations=0` を確認する
+- **失敗パターン**:
+  - `interfaces` / `api-ipc` だけ更新して、cross-cutting doc が古いまま残る
+  - App 全体起動のノイズを抱えたまま画面検証し、対象 contract の変化点が読み取れない
+  - `verify-unassigned-links` の `missing` だけを見て原因を手で辿り、改善バックログへ formalize しない
+- **標準ルール**:
+  - IPC transport 契約修正は「shared DTO」「cross-cutting doc」「画面検証方針」の3点を同一ターンで閉じる
+  - ユーザーが画面検証を要求した場合、初期方針が非視覚でも `SCREENSHOT` へ昇格し、必要なら専用 harness を許可する
+  - 監査ツールの説明力不足は `docs/30-workflows/unassigned-task/` へ未タスク化し、配置・形式・参照を機械検証してから完了扱いにする
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001, UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001
+
+### [Phase12] domain spec に `実装内容` / `苦戦箇所` / `5分カード` を対称配置する（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補）
+
+- **状況**: `task-workflow` と `lessons-learned` には知見があるのに、`interfaces` / `api-ipc` の domain spec 側は契約表だけで終わり、再利用時に背景と難所が読めない
+- **成功パターン**:
+  - `assets/phase12-domain-spec-sync-block-template.md` を使い、更新した domain spec に `### 実装内容（要点）` / `### 苦戦箇所（再利用形式）` / `### 同種課題の5分解決カード` を同居させる
+  - `interfaces` と `api-ipc` の両方で、shared DTO 正本化・UI表示契約・Phase 11 画面検証方針を同じ粒度で記録する
+  - `task-workflow` / `lessons-learned` / domain spec の 3 点で 5 ステップ順序をそろえる
+- **失敗パターン**:
+  - domain spec をチャネル表や型表の更新だけで終え、苦戦箇所を lessons のみに押し込む
+  - `task-workflow` と domain spec で 5 分解決カードの順序や検証値が異なる
+- **標準ルール**:
+  - Phase 12 Step 2 で触る domain spec は、契約表だけでなく「実装内容」「苦戦箇所」「5分カード」の3点を最小セットとする
+  - `rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>` を完了前に必ず実行する
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001

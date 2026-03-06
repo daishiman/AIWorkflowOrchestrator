@@ -237,8 +237,8 @@
 
 | パターン             | 説明                                                 | 推奨度  |
 | -------------------- | ---------------------------------------------------- | ------- |
-| useRefガード         | 初期化フラグを`useRef`で管理し、依存配列を空にする   | 短期    |
-| 個別セレクタ         | `useAuthMode()`, `useSetAuthMode()`等の個別Hookを使用 | **長期** |
+| 個別セレクタ         | `useAuthMode()`, `useSetAuthMode()`, `useInitializeAuthMode()` 等の個別Hookを使用 | **標準** |
+| useRefガード         | 旧実装の緊急回避策。個別セレクタ未移行箇所のみで一時利用 | 例外的    |
 | 安定した関数参照     | Store外部で定義した関数を渡すか、useCallbackで安定化 | 状況次第 |
 
 **問題のあるパターン**:
@@ -253,8 +253,15 @@
 | 優先度 | 解決策                                                       |
 | ------ | ------------------------------------------------------------ |
 | 1      | 個別セレクタベースに再設計（`useAuthMode()`, `useSetAuthMode()`等）|
-| 2      | 既存コードは`useRef`でガードし、依存配列を空にする           |
+| 2      | 既存コードの緊急回避が必要な場合のみ`useRef`でガードする     |
 | 3      | 初期化処理はコンポーネント外またはStoreの初期化時に移動      |
+
+**現行 AuthMode 実装ルール**:
+
+- `SettingsView` は `useAuthMode()`, `useAuthModeStatus()`, `useAuthModeLoading()`, `useSetAuthMode()`, `useInitializeAuthMode()` を使用する
+- 初期化は `useEffect(() => { initializeAuthMode(); }, [initializeAuthMode])` を標準とする
+- `useAuthModeStore()` は `store/index.ts` に互換用で残るが、新規利用は禁止
+- transport DTO は `@repo/shared/types/auth-mode` から直接参照する
 
 詳細: `.claude/rules/06-known-pitfalls.md#P31`
 
@@ -695,6 +702,7 @@
 
 | Version | Date       | Changes                                                                                   |
 | ------- | ---------- | ----------------------------------------------------------------------------------------- |
+| 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: AuthMode の現行P31対策を更新。`useEffect([initializeAuthMode])` を標準とし、`useAuthModeStore()` は互換用 deprecated hook として扱う運用へ改訂 |
 | 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス追加時の同期手順を追加（`exports`/`paths`/`alias`/`tsup entry` 同時更新、補助型宣言取り込みルール） |
 | 1.7.0   | 2026-02-14 | TASK-FIX-14-1: Skill系Main Processログ規約を追加（electron-log必須、プレフィックス、テスト方針、TASK-FIX-14-2継続管理） |
 | 1.6.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Hook テスト戦略（renderHookパターン）セクション追加 |

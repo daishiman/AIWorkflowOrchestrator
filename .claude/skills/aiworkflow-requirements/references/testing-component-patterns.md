@@ -492,7 +492,7 @@ expect(result.current).toBe(firstRef);
 | テスト環境ディレクティブ | `@vitest-environment happy-dom` |
 | localStorage | `Object.defineProperty(window, 'localStorage', {...})` でポリフィル |
 | electronAPI | `window.electronAPI` を `Object.defineProperty` で完全モック設定 |
-| electronAPIモック範囲 | `authMode`（`getAuthMode`, `setAuthMode`）、`llm`（`getProviders`, `setLLM`, `getLLM`）、`skill`（`getSkills`, `rescanSkills`, `importSkill`, `removeSkill`, `executeSkill`, `abortExecution`, `respondToPermission`, `onStream`, `onComplete`, `onError`, `onPermissionRequest`） |
+| electronAPIモック範囲 | `authMode`（`get`, `set`, `status`, `validate`, `onModeChanged`）、`llm`（`getProviders`, `setLLM`, `getLLM`）、`skill`（`getSkills`, `rescanSkills`, `importSkill`, `removeSkill`, `executeSkill`, `abortExecution`, `respondToPermission`, `onStream`, `onComplete`, `onError`, `onPermissionRequest`） |
 | ストア | `useAppStore` 統合ストア使用（モック不要） |
 | beforeEach | `vi.clearAllMocks()` + electronAPI設定 + `resetStore()` |
 | afterEach | `cleanup()` + `vi.restoreAllMocks()` |
@@ -507,8 +507,26 @@ function createMockElectronAPI() {
     authMode: {
       get: vi.fn().mockResolvedValue({ success: true, data: { mode: "subscription" } }),
       set: vi.fn().mockResolvedValue({ success: true }),
-      status: vi.fn().mockResolvedValue({ success: true, data: null }),
-      validate: vi.fn().mockResolvedValue({ success: true, data: { isValid: true } }),
+      status: vi.fn().mockResolvedValue({
+        success: true,
+        data: {
+          mode: "subscription",
+          isValid: true,
+          hasCredentials: true,
+          message: "Claude Code CLI の認証情報を使用できます",
+          lastCheckedAt: Date.now(),
+        },
+      }),
+      validate: vi.fn().mockResolvedValue({
+        success: true,
+        data: {
+          mode: "subscription",
+          isValid: true,
+          hasCredentials: true,
+          message: "Claude Code CLI の認証情報を使用できます",
+          lastCheckedAt: Date.now(),
+        },
+      }),
       onModeChanged: vi.fn(),
     },
     llm: {
@@ -555,6 +573,59 @@ function createMockElectronAPI() {
 | `agentSlice.selectors.test.ts` | 114 | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
 
 **関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001, UT-STORE-HOOKS-REFACTOR-001
+
+---
+
+## 9.1 AuthMode 契約テストパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
+
+auth-mode 契約テストでは shared transport DTO を正本とし、Main / Preload / Renderer / Phase 11 harness の4層で同じ shape を検証する。
+
+### テスト観点
+
+| レイヤー | テスト対象 | 固定する契約 |
+| --- | --- | --- |
+| Main IPC | `authModeHandlers.test.ts`, `authModeHandlers.error.test.ts` | `get/status/validate` の `IPCResponse<T>`、`changed` event payload、`auth-mode/invalid-sender` |
+| Preload | `authModeApi.contract.test.ts`, `channels.test.ts` | `authMode.get/set/status/validate/onModeChanged` の公開 shape |
+| Renderer Store | `authModeSlice*.test.ts`, `infinite-loop-prevention.test.tsx` | `AuthModeStatus` fallback、`validate(request?)`、selector 安定性 |
+| View | `SettingsView.test.tsx`, `AuthModeSelector.test.tsx` | `message/errorCode/guidance` 表示、選択 UI、disabled 状態 |
+
+### `window.electronAPI.authMode` モック規約
+
+| API | 返却値 / payload |
+| --- | --- |
+| `get` | `Promise.resolve({ success: true, data: { mode: "subscription" } })` |
+| `set` | `Promise.resolve({ success: true })` |
+| `status` | `Promise.resolve({ success: true, data: { mode: "subscription", isValid: true, hasCredentials: true, message: "...", lastCheckedAt: 0 } })` |
+| `validate` | `Promise.resolve({ success: true, data: AuthModeStatus })` |
+| `onModeChanged` | `vi.fn().mockImplementation((cb) => unsubscribe)` |
+
+**注意**: `getAuthMode` / `setAuthMode` の旧命名モックは使用しない。公開 API 名は `get`, `set`, `status`, `validate`, `onModeChanged` に固定する。
+
+### Renderer テストの実装パターン
+
+| パターン | 目的 |
+| --- | --- |
+| `renderHook(() => useValidateAuthMode())` | `validate(request?)` の optional request 契約を検証する |
+| `renderHook(() => useInitializeAuthMode())` + `rerender()` | `initializeAuthMode` 参照安定性を検証する |
+| `window.electronAPI.authMode.onModeChanged` のコールバック直接発火 | `event.mode` / `event.status` が store に反映されることを検証する |
+| `response?.success` を返す失敗ケース | `AuthModeStatus` fallback が UI で描画可能な shape を維持することを確認する |
+
+### Phase 11 視覚検証用 harness
+
+| 項目 | 内容 |
+| --- | --- |
+| 目的 | App 全体初期化ノイズを避け、`SettingsView` 単体で auth-mode 表示契約を視覚確認する |
+| 実装 | `apps/desktop/src/renderer/phase11-auth-mode.html`, `phase11-auth-mode.tsx` |
+| 撮影スクリプト | `apps/desktop/scripts/capture-auth-mode-contract-alignment-phase11.mjs` |
+| 検証対象 | 初期表示、API Key 未設定、subscription 未設定、mode 変更、復帰の 5 ケース |
+
+### テスト実績
+
+| コマンド / 対象 | 結果 |
+| --- | --- |
+| AuthMode 関連 10 test files | PASS（252 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` | PASS（5/5） |
 
 ---
 
@@ -843,6 +914,7 @@ it("自動更新される", () => {
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 契約テストパターンを追加し、`window.electronAPI.authMode` モックを現行API（`get/set/status/validate/onModeChanged`）と `AuthModeStatus` DTO に同期 |
 | 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期 |
 | 1.7.0   | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネントテストパターンセクション追加（Props駆動テスト、CSS変数アサーション、テーマ横断テスト、displayName検証、7コンポーネント必須テストケース、タイマーテストパターン、後方互換性テストパターン、テスト実績） |
 | 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点） |

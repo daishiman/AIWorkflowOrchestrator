@@ -51,6 +51,14 @@ describe("IPC Channels", () => {
       expect(IPC_CHANNELS.APP_MENU_ACTION).toBe("app:menu-action");
     });
 
+    it("auth-mode チャネルが定義されている", () => {
+      expect(IPC_CHANNELS.AUTH_MODE_GET).toBe("auth-mode:get");
+      expect(IPC_CHANNELS.AUTH_MODE_SET).toBe("auth-mode:set");
+      expect(IPC_CHANNELS.AUTH_MODE_STATUS).toBe("auth-mode:status");
+      expect(IPC_CHANNELS.AUTH_MODE_VALIDATE).toBe("auth-mode:validate");
+      expect(IPC_CHANNELS.AUTH_MODE_CHANGED).toBe("auth-mode:changed");
+    });
+
     it("通知・履歴検索チャネルが定義されている", () => {
       expect(IPC_CHANNELS.NOTIFICATION_GET_HISTORY).toBe(
         "notification:get-history",
@@ -76,6 +84,12 @@ describe("IPC Channels", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.STORE_GET);
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.STORE_SET);
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.AI_CHAT);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.AUTH_MODE_GET);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.AUTH_MODE_SET);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.AUTH_MODE_STATUS);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.AUTH_MODE_VALIDATE,
+      );
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.NOTIFICATION_GET_HISTORY,
       );
@@ -98,6 +112,7 @@ describe("IPC Channels", () => {
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.FILE_CHANGED);
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.WINDOW_RESIZED);
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APP_MENU_ACTION);
+      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.AUTH_MODE_CHANGED);
       expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.NOTIFICATION_NEW);
     });
 
