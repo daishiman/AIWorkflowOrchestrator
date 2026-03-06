@@ -8,12 +8,17 @@
 ## 概要
 
 デスクトップアプリにおけるナビゲーションUI設計を定義する。
-AppDockによるメインナビゲーションと、各View内のサブナビゲーションを提供する。
+Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各View内のサブナビゲーションを提供する。
 
 ## 変更履歴
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.6.4 | 2026-03-06 | TASK-UI-02 移管反映。Global Navigation Core の workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスクの配置先も completed workflow 配下へ統一 |
+| v1.6.3 | 2026-03-06 | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation 改修後の再監査導線を task spec へ接続 |
+| v1.6.2 | 2026-03-06 | TASK-UI-02 追補: 実装時の苦戦箇所（rollback 共存、`mobileLabel`、UI仕様同期漏れ、workflow 本文 stale）と簡潔解決手順を追加し、ナビ変更時は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` の同時同期を明文化 |
+| v1.6.1 | 2026-03-06 | TASK-UI-02 再監査追補: mobile tab bar の可読性改善として `mobileLabel` を導入。アクセシビリティ用 `aria-label` は正式名称のまま保持しつつ、表示ラベルを `ダッシュ` / `ワーク` / `実行` / `スキル` などの短縮形へ統一 |
+| v1.6.0 | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `GlobalNavStrip` / `MobileNavBar` / `AppLayout` を正式ナビ構成へ更新。9項目/3セクション、desktop expanded 200px、tablet collapsed 56px、mobile primary 5 + More 4、`Cmd/Ctrl+[` 戻る導線、feature flag rollback path を同期 |
 | v1.5.1 | 2026-03-05 | TASK-UI-01-D の追補: 実装内容（契約正本化/ショートカット条件/証跡運用）と苦戦箇所（契約二重管理・編集要素誤発火・再撮影運用ギャップ）を同一節へ追加し、5分解決カードを同期 |
 | v1.5.0 | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `navigation/navContract.ts` を AppDock ナビ契約の正本として明記。ショートカット仕様を `Cmd/Ctrl` 両対応へ更新し、`layout-grid` アイコン・`skill-center` 互換導線・編集要素上のショートカット無効化ルールを追記 |
 | v1.4.0 | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: AppDock の 9 項目ナビ（workspace/skillCenter/historySearch 追加）と `ViewType` 拡張を同期。実装パスを `components/organisms/AppDock` へ修正 |
@@ -22,35 +27,47 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 
 ---
 
-## AppDockナビゲーション
+## Global Navigation
 
 ### 概要
 
-左サイドバーに配置されたメインナビゲーション。ViewType切り替えによる画面遷移を提供する。
+desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下部 `MobileNavBar` を使って ViewType 切り替えを提供する。
 
-**実装場所**: `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`
+**実装場所**:
+
+- `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/index.tsx`
+- `apps/desktop/src/renderer/components/organisms/MobileNavBar/index.tsx`
+- `apps/desktop/src/renderer/components/organisms/AppLayout/index.tsx`
+- `apps/desktop/src/renderer/App.tsx`
+
 **契約正本**: `apps/desktop/src/renderer/navigation/navContract.ts`
+
+### legacy note
+
+- `AppDock` は rollback path と比較用に残している。
+- 新規導線の正式UIは `GlobalNavStrip` / `MobileNavBar` とする。
 
 ### メニュー項目一覧
 
 | 項目 | ViewType | アイコン | ショートカット | 説明 |
 | --- | --- | --- | --- | --- |
-| Dashboard | `dashboard` | `layout-grid` | Cmd/Ctrl+1 | ダッシュボード |
-| Workspace | `workspace` | `folder-tree` | Cmd/Ctrl+2 | ワークスペース導線 |
-| Chat | `chat` | `message-circle` | Cmd/Ctrl+3 | AIチャット |
-| Agent | `agent` | `bot` | Cmd/Ctrl+4 | エージェント実行 |
-| Skills | `skillCenter` | `sparkles` | Cmd/Ctrl+5 | スキルセンター |
-| History | `historySearch` | `search` | Cmd/Ctrl+6 | 履歴検索 |
-| Graph | `graph` | `network` | Cmd/Ctrl+7 | ナレッジグラフ |
-| Editor | `editor` | `file-text` | Cmd/Ctrl+8 | エディタ |
-| Settings | `settings` | `settings` | Cmd/Ctrl+, | 設定画面 |
+| ダッシュボード | `dashboard` | `layout-grid` | Cmd/Ctrl+1 | main |
+| ワークスペース | `workspace` | `folder-tree` | Cmd/Ctrl+2 | main |
+| チャット | `chat` | `message-circle` | Cmd/Ctrl+3 | main |
+| エージェント | `agent` | `bot` | Cmd/Ctrl+4 | main |
+| スキルセンター | `skillCenter` | `puzzle` | Cmd/Ctrl+5 | main |
+| 履歴検索 | `historySearch` | `search` | Cmd/Ctrl+6 | secondary（mobile は More） |
+| グラフ | `graph` | `network` | Cmd/Ctrl+7 | secondary（mobile は More） |
+| エディタ | `editor` | `file-code` | Cmd/Ctrl+8 | secondary（mobile は More） |
+| 設定 | `settings` | `settings` | Cmd/Ctrl+, | footer / More |
 
 ### レイアウトモード
 
 | モード | 仕様 |
 | --- | --- |
-| Desktop | 左サイド固定（縦並び） |
-| Mobile | 下部固定（横並び） |
+| Desktop | 左サイド固定、expanded/collapsed 切替可、expanded 幅 200px |
+| Tablet | 左サイド固定、collapsed 56px 固定 |
+| Mobile | 下部固定、primary 5項目 + More 4項目 |
 
 ### ViewType型定義
 
@@ -74,7 +91,9 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 | `id`       | `ViewType` | 一意識別子             |
 | `icon`     | `IconName` | アイコン識別子         |
 | `label`    | `string`   | メニューラベル         |
+| `mobileLabel` | `string` | mobile 下部バー用の短縮ラベル |
 | `shortcut` | `string`   | キーボードショートカット |
+| `isMobilePrimary` | `boolean` | mobile 下部バーへ直接表示するか |
 
 ### キーボードショートカット適用条件
 
@@ -84,8 +103,44 @@ AppDockによるメインナビゲーションと、各View内のサブナビゲ
 | 禁止修飾キー | `altKey` / `shiftKey` が有効な場合は無効 |
 | 入力フォーカス | `input` / `textarea` / `select` / `contenteditable` 上では無効 |
 | 設定ショートカット | `Cmd/Ctrl + ,` は `event.code === "Comma"` を優先判定 |
+| 戻るショートカット | `Cmd/Ctrl + [` は `viewHistory` がある場合のみ有効 |
 
-### TASK-UI-01-D 実装内容と苦戦箇所（再利用版）
+### TASK-UI-02 実装同期（2026-03-06）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| desktop/tablet ナビ | `GlobalNavStrip` が 9項目/3セクション、expanded/collapsed、keyboard roving を提供 | `components/organisms/GlobalNavStrip/` |
+| mobile ナビ | `MobileNavBar` が primary 5項目と `MoreMenu` 4項目を提供し、下部バー表示名は `mobileLabel` で短縮する | `components/organisms/MobileNavBar/` |
+| レイアウト | `AppLayout` が left rail / header / main / bottom nav を統合 | `components/organisms/AppLayout/index.tsx` |
+| state | `uiSlice` が `isNavExpanded` / `isMobileMoreOpen` を保持 | `store/slices/uiSlice.ts` |
+| rollback | `VITE_USE_GLOBAL_NAV_STRIP=false` で `AppDock` 経路へ戻せる | `App.tsx` |
+
+### TASK-UI-02 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| rollback 共存で責務が `App.tsx` に戻る | 旧 `AppDock` を残したまま新 nav の state/shortcut まで親に持たせる | `AppLayout` / nav / hook / slice に責務を分離し、`VITE_USE_GLOBAL_NAV_STRIP` は shell 切替だけに限定 | rollback は feature flag に隔離し、契約と state の正本を二重化しない |
+| mobile 下部バーの正式ラベルが小画面で切れる | desktop 用ラベルを mobile 表示へそのまま流用する | `mobileLabel` を追加し、`aria-label` は正式名称のまま維持した | mobile では表示ラベルとアクセシビリティ名を分離してよい |
+| More overlay の品質が自動テストだけでは確定しない | safe-area / overlay / 文字量を unit test だけで判定する | Phase 11 で 5視覚状態を再撮影し、Apple UI/UX 観点レビューを追加した | nav 変更は `SCREENSHOT` 証跡と目視レビューを完了条件に含める |
+| UI仕様同期が `task-workflow` / `lessons` 側に偏る | 台帳は更新したが navigation 正本や UI index/detail を後回しにする | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期した | ナビ変更は「基本6仕様書 + ドメイン正本」の同時同期を必須にする |
+| `artifacts.json` / `index.md` 完了後も workflow 本文が stale 化する | `phase-1..11` / `phase-12-documentation.md` の `pending` を見落とす | workflow 本文と二重台帳を同一ターンで同期し、pending grep を追加した | Phase 12 完了判定は「成果物 / 台帳 / 本文仕様書」の三層同期で閉じる |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `navContract.ts` を導線正本にし、`AppLayout` / nav / shortcut / state の責務を先に分離する。  
+2. `navigationSlice` は current view/history、`uiSlice` は nav UI state、`useNavShortcuts` は DOM 条件判定に限定する。  
+3. rollback path は feature flag に閉じ、legacy/new の両導線で同じ契約と状態を参照させる。  
+4. mobile は `mobileLabel` と `aria-label` を分離し、Phase 11 スクリーンショットで可読性を最終確認する。  
+5. `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` と workflow 本文を同一ターンで同期する。  
+
+### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 概要 | 参照先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | navigation 正本を含む domain UI spec の同期漏れを防ぐ | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | navigation 変更後の workflow 本文 stale を Phase 12 で検出する | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
+
+### TASK-UI-01-D 実装内容と苦戦箇所（履歴）
 
 #### 実装内容（要点）
 
