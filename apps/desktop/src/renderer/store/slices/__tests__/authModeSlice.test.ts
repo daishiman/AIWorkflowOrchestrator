@@ -144,6 +144,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "api-key",
           isValid: true,
+          hasCredentials: true,
           message: "APIキー設定済み",
           lastCheckedAt: Date.now(),
         },
@@ -195,6 +196,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "api-key",
           isValid: true,
+          hasCredentials: true,
           message: "キー設定済み",
           lastCheckedAt: Date.now(),
         },
@@ -217,6 +219,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "subscription",
           isValid: true,
+          hasCredentials: true,
           message: "認証済み",
           lastCheckedAt: Date.now(),
         },
@@ -252,6 +255,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "api-key",
           isValid: true,
+          hasCredentials: true,
           message: "キー設定済み",
           lastCheckedAt: Date.now(),
         },
@@ -280,6 +284,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "subscription",
           isValid: true,
+          hasCredentials: true,
           message: "認証済み",
           lastCheckedAt: now,
         },
@@ -292,6 +297,7 @@ describe("authModeSlice", () => {
       expect(state().status).toEqual({
         mode: "subscription",
         isValid: true,
+        hasCredentials: true,
         message: "認証済み",
         lastCheckedAt: now,
       });
@@ -316,7 +322,13 @@ describe("authModeSlice", () => {
     it("有効な認証方式の場合はisValid=trueを返す", async () => {
       mockElectronAPI.authMode.validate.mockResolvedValue({
         success: true,
-        data: { isValid: true },
+        data: {
+          mode: "subscription",
+          isValid: true,
+          hasCredentials: true,
+          message: "認証済み",
+          lastCheckedAt: Date.now(),
+        },
       });
 
       const { state } = createTestSlice();
@@ -329,7 +341,15 @@ describe("authModeSlice", () => {
     it("無効な認証方式の場合はisValid=falseを返す", async () => {
       mockElectronAPI.authMode.validate.mockResolvedValue({
         success: true,
-        data: { isValid: false },
+        data: {
+          mode: "subscription",
+          isValid: false,
+          hasCredentials: false,
+          message: "サブスクリプションが見つかりません",
+          errorCode: "auth-mode/no-subscription-token",
+          guidance: "Claude Code CLIでログインしてください",
+          lastCheckedAt: Date.now(),
+        },
       });
 
       const { state } = createTestSlice();
@@ -393,6 +413,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "api-key",
           isValid: true,
+          hasCredentials: true,
           message: "キー設定済み",
           lastCheckedAt: Date.now(),
         },
@@ -449,6 +470,7 @@ describe("authModeSlice", () => {
         data: {
           mode: "api-key",
           isValid: true,
+          hasCredentials: true,
           message: "キー設定済み",
           lastCheckedAt: Date.now(),
         },
@@ -476,6 +498,71 @@ describe("authModeSlice", () => {
   // リスナー二重登録防止テスト
   // ===========================================================================
   describe("Listener Registration", () => {
+    it("changed event の status をそのまま state に反映する", async () => {
+      let capturedListener:
+        | ((event: {
+            previousMode: "subscription";
+            mode: "api-key";
+            status: {
+              mode: "api-key";
+              isValid: false;
+              hasCredentials: false;
+              message: "APIキーが設定されていません";
+              errorCode: "auth-mode/no-api-key";
+              guidance: "設定画面でAPIキーを入力してください";
+              lastCheckedAt: number;
+            };
+            changedAt: number;
+          }) => void)
+        | undefined;
+      mockElectronAPI.authMode.onModeChanged = vi.fn((listener) => {
+        capturedListener = listener;
+        return () => {};
+      });
+      mockElectronAPI.authMode.get.mockResolvedValue({
+        success: true,
+        data: { mode: "subscription" },
+      });
+      mockElectronAPI.authMode.status.mockResolvedValue({
+        success: true,
+        data: {
+          mode: "subscription",
+          isValid: true,
+          hasCredentials: true,
+          message: "認証済み",
+          lastCheckedAt: Date.now(),
+        },
+      });
+
+      const { state } = createTestSlice();
+      state().initializeAuthMode();
+      await Promise.resolve();
+
+      capturedListener?.({
+        previousMode: "subscription",
+        mode: "api-key",
+        status: {
+          mode: "api-key",
+          isValid: false,
+          hasCredentials: false,
+          message: "APIキーが設定されていません",
+          errorCode: "auth-mode/no-api-key",
+          guidance: "設定画面でAPIキーを入力してください",
+          lastCheckedAt: Date.now(),
+        },
+        changedAt: Date.now(),
+      });
+
+      expect(state().mode).toBe("api-key");
+      expect(state().status).toEqual(
+        expect.objectContaining({
+          mode: "api-key",
+          errorCode: "auth-mode/no-api-key",
+          guidance: "設定画面でAPIキーを入力してください",
+        }),
+      );
+    });
+
     it("リスナーは1回だけ登録される（二重登録防止）", () => {
       const mockOnModeChanged = vi.fn();
       mockElectronAPI.authMode.onModeChanged = mockOnModeChanged;

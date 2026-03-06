@@ -59,6 +59,11 @@
 | Playwright非対応環境 | NOTE.txt で代替（後述の実行フロー Step 5 参照） |
 | 完了基準 | 必須項目（優先度[A][B]）の**100%撮影**が完了していること。推奨[C]・任意[D]はN/A理由の記録で代替可 |
 
+補足:
+- App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
+- ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、差し替えた mock 境界を `manual-test-result.md` に明記する。
+- 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
+
 ### スクリーンショット撮影コマンド（UI/UX変更タスク）
 
 #### A. 撮影計画ベースの一括撮影（推奨）
@@ -177,6 +182,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
+- `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 ### テスト結果レポート形式
 

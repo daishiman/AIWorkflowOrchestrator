@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.12.5    | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: `auth-mode:*` の sender 検証順序、許可 origin、error envelope、`safeInvoke` / `safeOn` 公開境界、token/API Key マスキング方針を追加 |
 | v1.12.4    | 2026-03-05 | TASK-10A-E-A 追補: skillShareAPI セクションへ「実装時の苦戦箇所（セキュリティ観点）」と5ステップ手順を追加。sender優先検証、`code/errorCode` 二軸固定、Step 2同時同期を標準化 |
 | v1.12.3    | 2026-03-05 | TASK-10A-E-A 反映: `skill:importFromSource/export/validateSource` の sender失敗を `ERR_2004` で返す契約を追加し、validation `ERR_1001` / unknown例外 `ERR_5001` の3分類を固定。`IPC_CHANNELS` 定数参照と `Internal error` 正規化を追記 |
 | v1.12.2    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` の認証失敗コード伝搬（`errorCode`）と Renderer 側 preflight ガード（`auth-key:exists`）の運用境界を追加。実行前停止と sender検証順序の整合を明文化 |
@@ -91,6 +92,39 @@
 - nodeモジュールの直接公開
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
+
+### AuthMode IPC セキュリティパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
+
+`auth-mode:*` は sender 検証、mode 検証、error envelope を Main / Preload / Renderer で共通 transport に固定する。
+
+| セキュリティ観点 | 実装 | 確認ポイント |
+| --- | --- | --- |
+| sender 検証順序 | `authModeHandlers.ts` は各 handler の先頭で `validateSender(event)` を実行し、失敗時は直ちに `auth-mode/invalid-sender` を返す | 入力検証より先に unauthorized request を拒否する |
+| 許可 origin | `file://`, `http://localhost`, `https://localhost` のみ許可 | DevTools/不正 window の URL を通さない |
+| mode 検証 | sender 合格後に `VALID_AUTH_MODES` で `subscription` / `api-key` のみ許可 | `auth-mode/invalid-mode` が返ること |
+| エラー情報の最小化 | `sanitizeErrorMessage()` で `token=`, `key=`, `sk-ant-*` をマスク | 認証トークンや API Key を露出しない |
+| 公開 envelope | `IPCResponse<T>` + `IPCError { code, message, guidance? }` | Renderer は `message` 表示、`guidance` 補助表示のみに限定 |
+| Preload 公開境界 | `safeInvoke()` で `get/set/status/validate`、`safeOn()` で `auth-mode:changed` を公開 | invoke/on のホワイトリスト外チャンネルは拒否する |
+
+#### auth-mode 用の標準エラーコード
+
+| コード | 用途 |
+| --- | --- |
+| `auth-mode/invalid-sender` | sender 検証失敗 |
+| `auth-mode/invalid-mode` | request payload 不正 |
+| `auth-mode/no-api-key` | API Key mode の資格情報なし |
+| `auth-mode/no-subscription-token` | subscription mode の資格情報なし |
+| `auth-mode/storage-failed` / `auth-mode/storage-read-failed` | 永続化層の失敗 |
+| `auth-mode/unknown-error` | 想定外例外のサニタイズ後返却 |
+
+#### Renderer 側の安全な受信境界
+
+| 公開 API | 返却 / payload | セキュリティ意図 |
+| --- | --- | --- |
+| `window.electronAPI.authMode.get()` | `AuthModeGetResponse` | mode のみ公開 |
+| `window.electronAPI.authMode.status()` | `AuthModeStatusResponse` | `message/errorCode/guidance` までに限定 |
+| `window.electronAPI.authMode.validate(request?)` | `AuthModeValidateResponse` | 現在 mode か指定 mode の検証結果のみ公開 |
+| `window.electronAPI.authMode.onModeChanged(cb)` | `AuthModeChangedEvent` | `status` を含むが資格情報そのものは含めない |
 
 ### Skill API 引数検証パターン（UT-FIX-SKILL-IMPORT-INTERFACE-001）
 

@@ -462,6 +462,69 @@ OAuth認証コールバックで発生するエラーコードを日本語メッ
 
 ---
 
+## AuthMode IPC エラー envelope（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
+
+auth-mode の invoke チャネルは `IPCResponse<T>` を共通 envelope とし、Renderer に資格情報本体を返さず、状態とガイダンスだけを返す。
+
+### 基本構造
+
+| フィールド | 型 | 必須 | 説明 |
+| ---------- | --- | ---- | ---- |
+| `success` | boolean | 必須 | 成功時 `true`、失敗時 `false` |
+| `data` | `T` | 任意 | `get/status/validate` の payload |
+| `error` | `IPCError` | 任意 | 失敗時の公開エラー |
+
+### `IPCError`
+
+| フィールド | 型 | 必須 | 説明 |
+| ---------- | --- | ---- | ---- |
+| `code` | `AuthModeErrorCode` | 必須 | `auth-mode/*` 名前空間の公開エラーコード |
+| `message` | string | 必須 | UI に表示可能な要約メッセージ |
+| `guidance` | string | 任意 | 次に取るべき行動 |
+
+### `AuthModeStatus`
+
+| フィールド | 型 | 必須 | 説明 |
+| ---------- | --- | ---- | ---- |
+| `mode` | `AuthMode` | 必須 | `subscription` または `api-key` |
+| `isValid` | boolean | 必須 | 現在 mode で実行可能か |
+| `hasCredentials` | boolean | 必須 | 資格情報の存在有無 |
+| `message` | string | 必須 | 成功/失敗の表示文言 |
+| `errorCode` | `AuthModeErrorCode` | 任意 | 失敗時の分類 |
+| `guidance` | string | 任意 | 追加案内 |
+| `lastCheckedAt` | number | 必須 | 検証実行時刻（Unix ms） |
+
+### 標準エラーコード
+
+| コード | 代表的な guidance |
+| ------ | ----------------- |
+| `auth-mode/invalid-sender` | なし（内部拒否） |
+| `auth-mode/invalid-mode` | 有効な認証方式を選択する |
+| `auth-mode/no-api-key` | 設定画面で API キーを入力する |
+| `auth-mode/no-subscription-token` | Claude Code CLI でログインする |
+| `auth-mode/storage-failed` | 再試行する |
+| `auth-mode/storage-read-failed` | 再起動後に再試行する |
+| `auth-mode/unknown-error` | 時間を置いて再試行する |
+
+### 返却パターン
+
+| シナリオ | 返却 |
+| -------- | ---- |
+| `auth-mode:get` 成功 | `{ success: true, data: { mode } }` |
+| `auth-mode:status` 成功 | `{ success: true, data: AuthModeStatus }` |
+| `auth-mode:validate` 失敗 | `{ success: false, error: { code, message, guidance? } }` |
+| sender 検証失敗 | `{ success: false, error: { code: "auth-mode/invalid-sender", message: "Invalid request sender" } }` |
+
+### 実装上のルール
+
+| ルール | 理由 |
+| ------ | ---- |
+| Main / Preload / Renderer で同じ `AuthModeErrorCode` を使う | 層ごとの独自 union による契約ドリフトを防ぐ |
+| `status` と `validate` は同じ `AuthModeStatus` を返す | 画面側の分岐を最小化する |
+| 実行時例外は `sanitizeErrorMessage()` を通す | token / key / `sk-ant-*` の露出防止 |
+
+---
+
 ## 認証フォールバックパターン（AUTH-UI-001）
 
 認証プロフィール操作におけるフォールバック処理パターン。
@@ -666,6 +729,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-03-06 | v1.8.0     | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: `IPCResponse<T>` / `IPCError` / `AuthModeStatus` ベースの auth-mode error envelope を追加し、`message` / `errorCode` / `guidance` / `lastCheckedAt` の公開契約を明文化 |
 | 2026-02-07 | v1.7.0     | TASK-FIX-4-2: 外部ストレージ取得フォールバックパターンセクション追加（フォールバックマトリクス・実装パターン・セキュリティ考慮事項） |
 | 2026-02-06 | v1.6.0     | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshSchedulerリトライ戦略セクション追加（Exponential Backoff with Jitter、リトライ対象/非対象エラー分類、Supabase SDK競合防止） |
 | 2026-02-05 | v1.5.0     | TASK-FIX-GOOGLE-LOGIN-001: OAuthエラーコードマッピングセクション追加（9エラーコード、parseOAuthError、mapOAuthErrorToMessage関数仕様） |

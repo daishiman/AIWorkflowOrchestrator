@@ -117,14 +117,32 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
               {authModeStatus && (
                 <div
                   className={clsx(
-                    "text-sm px-3 py-2 rounded-md",
+                    "space-y-1 text-sm px-3 py-2 rounded-md",
                     authModeStatus.isValid
                       ? "bg-green-50 text-green-700 border border-green-200"
                       : "bg-amber-50 text-amber-700 border border-amber-200",
                   )}
                   data-testid="auth-mode-status"
                 >
-                  {authModeStatus.message}
+                  <p data-testid="auth-mode-status-message">
+                    {authModeStatus.message}
+                  </p>
+                  {authModeStatus.errorCode && (
+                    <p
+                      className="text-xs font-medium opacity-90"
+                      data-testid="auth-mode-status-code"
+                    >
+                      コード: {authModeStatus.errorCode}
+                    </p>
+                  )}
+                  {authModeStatus.guidance && (
+                    <p
+                      className="text-xs opacity-90"
+                      data-testid="auth-mode-status-guidance"
+                    >
+                      {authModeStatus.guidance}
+                    </p>
+                  )}
                 </div>
               )}
             </div>

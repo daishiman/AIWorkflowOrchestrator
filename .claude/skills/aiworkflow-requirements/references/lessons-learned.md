@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-06 | 1.29.36 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の完了移管を追補。workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動し、関連未タスク2件も同workflow配下 `unassigned-task/` へ移管した状態に参照パスを同期 |
+| 2026-03-06 | 1.29.35 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2。`interfaces-auth.md` / `api-ipc-system.md` へ追加した domain spec 3ブロック（`実装内容` / `苦戦箇所` / `5分解決カード`）を Phase 12 で機械検証できていない苦戦箇所を教訓化し、未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を関連導線へ追加 |
+| 2026-03-06 | 1.29.34 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を追補。cross-cutting doc（`ipc-contract-checklist.md` / `quick-reference.md`）同期と、`verify-unassigned-links` の原因説明力不足を未タスク `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` へ formalize した導線を追加 |
+| 2026-03-06 | 1.29.33 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の教訓を追加。shared transport DTO 正本化、SettingsView の現行 selector 実装への仕様是正、Phase 11 専用 harness による auth-mode 視覚検証の3点を再利用手順付きで固定 |
 | 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
 | 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
 | 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
@@ -4004,6 +4008,93 @@ useEffect(() => {
 | [task-workflow.md](../../task-specification-creator/references/task-workflow.md) | 完了タスクセクション追加 |
 | [patterns.md](./patterns.md) | P31対策パターンに個別セレクタ移行パターン追加 |
 | [03-state-management.md](../../../rules/03-state-management.md) | 個別セレクタDOルール追加 |
+
+---
+
+## TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 公開契約整合
+
+### タスク概要
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
+| 目的 | Main / Preload / Renderer で分裂していた auth-mode の公開 contract を shared transport DTO へ統一する |
+| 完了日 | 2026-03-06 |
+| ステータス | **完了** |
+
+### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+|----------|----------|------|
+| shared transport DTO 正本化 | `packages/shared/src/types/auth-mode.ts` | `IPCResponse<T>`, `AuthModeStatus`, `AuthModeChangedEvent`, `AUTH_MODE_ERROR_CODES` を追加 |
+| Main IPC 契約整合 | `apps/desktop/src/main/ipc/authModeHandlers.ts` | `get/status/validate` を canonical DTO に統一し、`changed` event を `previousMode/mode/status/changedAt` へ更新 |
+| Preload bridge 整合 | `apps/desktop/src/preload/types.ts`, `apps/desktop/src/preload/index.ts` | shared 型再export、`validate(request?)` optional request 化 |
+| Renderer slice 整合 | `apps/desktop/src/renderer/store/slices/authModeSlice.ts` | `response?.success` ガード、`AuthModeStatus` fallback、event.status 直接反映 |
+| 視覚証跡固定 | `apps/desktop/src/renderer/phase11-auth-mode.tsx`, `apps/desktop/scripts/capture-auth-mode-contract-alignment-phase11.mjs` | `SettingsView` 単体 harness で 5 ケースのスクリーンショットを生成 |
+
+### 苦戦箇所と解決策
+
+#### 1. shared / main / preload / renderer の型名は近いが payload shape が異なる
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `AuthStatus` / `AuthModeStatus` / UI期待値が似た名前で並存し、`get`・`validate`・`changed` の shape が層ごとにずれていた |
+| **原因** | shared 正本が不十分な状態で、Main と Renderer が局所型を育ててしまった |
+| **解決策** | `packages/shared/src/types/auth-mode.ts` に transport DTO を集約し、Main/Preload/Renderer は再定義ではなく import / re-export に切り替えた |
+| **教訓** | IPC契約の修正では「型名一致」ではなく「payload shape 一致」を確認する。`get/status/validate/changed` の実 payload を4層で見比べること |
+
+#### 2. P31対策の旧説明が現行 SettingsView 実装と逆転していた
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 仕様書には `useRef` ガード前提が残っていたが、実装はすでに `useInitializeAuthMode()` + `useEffect([initializeAuthMode])` に移行済みだった |
+| **原因** | UT-STORE-HOOKS-COMPONENT-MIGRATION-001 以降の state management 正本が一部更新漏れのままだった |
+| **解決策** | `arch-state-management.md` / `development-guidelines.md` / `patterns.md` を同一ターンで更新し、`store/index.ts` を selector 正本として明記した |
+| **教訓** | 過去の暫定策（useRef guard）が残る文書は、現行コードのサンプルで必ず上書きする。歴史説明を残す場合も「現在は非推奨」を明示する |
+
+#### 3. Phase 11 で App 全体起動を使うと auth 初期化ノイズが多い
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | 全体 App shell で撮影すると、認証初期化や周辺依存のノイズで auth-mode の視覚契約だけを安定検証しづらい |
+| **原因** | 今回確認したいのは `SettingsView` の `message/errorCode/guidance` 表示契約だが、画面外の起動処理まで同時に載っていた |
+| **解決策** | `SettingsView` 単体 harness を追加し、Phase 11 は `TC-11-01..05` を専用スクリプトで再現した |
+| **教訓** | UI契約修正だがアプリ全体を起動する必要がない場合は、視覚検証専用 harness を作る方が証跡の解釈が安定する |
+
+#### 4. domain spec の標準3ブロックはテンプレート化だけでは抜けが残る
+
+| 項目 | 内容 |
+|------|------|
+| **課題** | `interfaces-auth.md` / `api-ipc-system.md` に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を追加できても、現行の Phase 12 検証では欠落を機械検知できない |
+| **原因** | `phase12-domain-spec-sync-block-template.md` で書き方は定義したが、更新対象 domain spec に対する validator が存在しなかった |
+| **解決策** | auth-mode では手動で3ブロックを揃えたうえで、残る運用ギャップを `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` として formalize した |
+| **教訓** | Phase 12 は `task-workflow` / `lessons-learned` だけでなく、更新した domain spec が標準3ブロックを持つことを検証できるまで完了扱いにしない |
+
+### 再利用手順（4ステップ）
+
+1. shared に `IPCResponse<T>` / event / status DTO を集約し、Main / Preload / Renderer の再定義を削る。
+2. `rg -n "auth-mode|get\\(|status\\(|validate\\(|onModeChanged"` と `rg -n "useAuthModeStore|useInitializeAuthMode"` で契約と selector の残存箇所を横断確認する。
+3. Main/Preload/Renderer の対象テストを分割実行し、`typecheck` と coverage 対象値を固定する。
+4. Phase 11 は対象 view 専用 harness を優先し、スクリーンショット、coverage validator、`ipc-contract-checklist.md` / `quick-reference.md` と更新対象 domain spec の標準3ブロック確認を同一ターンで完了させる。
+
+### 関連ドキュメント更新
+
+| ドキュメント | 更新内容 |
+|--------------|----------|
+| [interfaces-auth.md](./interfaces-auth.md) | auth-mode transport DTO と error code union を追記 |
+| [api-ipc-system.md](./api-ipc-system.md) | `auth-mode:get/set/status/validate/changed` 契約を追加 |
+| [security-electron-ipc.md](./security-electron-ipc.md) | sender 検証順序 / error envelope / `safeInvoke` 境界を追記 |
+| [arch-state-management.md](./arch-state-management.md) | `store/index.ts` 正本、SettingsView 現行 selector 実装へ更新 |
+| [testing-component-patterns.md](./testing-component-patterns.md) | auth-mode contract テストパターンと Phase 11 harness を追記 |
+| [ipc-contract-checklist.md](./ipc-contract-checklist.md) | shared transport DTO / event payload / quick-reference 同期手順を追記 |
+| [../indexes/quick-reference.md](../indexes/quick-reference.md) | auth-mode channel / DTO / error code 早見表を追記 |
+
+### 関連未タスク
+
+| 未タスクID | 目的 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001 | 更新対象 domain spec に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` が揃っているかを機械検証し、Phase 12 の後追い文書修正を防ぐ | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-domain-spec-sync-block-validator-001.md` |
+| UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001 | `verify-unassigned-links` が `unassigned-task/` 参照と実体配置ずれの原因を即時説明できるようにし、Phase 12 の切り分け時間を短縮する | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-unassigned-link-diagnostics-001.md` |
 
 ---
 

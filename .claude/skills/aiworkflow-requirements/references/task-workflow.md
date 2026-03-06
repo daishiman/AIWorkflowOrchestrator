@@ -2267,6 +2267,84 @@
 
 ---
 
+### タスク: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 auth-mode 公開契約整合（2026-03-06完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
+| 完了日 | 2026-03-06 |
+| ステータス | **完了** |
+| Phase | Phase 1-12完了 |
+| テスト数 | 252（自動）+ 5（Phase 11 手動テストケース） |
+| カバレッジ | `authModeHandlers.ts` 93.62 / `authModeSlice.ts` 98.19 / `SettingsView` 98.06（Line） |
+
+#### SubAgent分担
+
+| SubAgent | 主担当 | 結果 |
+| --- | --- | --- |
+| SubAgent-Contract-Main | `packages/shared/src/types/auth-mode.ts`, `main/ipc/authModeHandlers.ts` | shared transport DTO、error code union、`changed` event を統一 |
+| SubAgent-Bridge-Preload | `preload/types.ts`, `preload/index.ts` | shared 型の再exportと `validate(request?)` 契約を同期 |
+| SubAgent-Renderer-State | `authModeSlice.ts`, `SettingsView`, `AuthModeSelector` | `AuthModeStatus` 表示、event 反映、P31安全な selector 使用へ統一 |
+| SubAgent-Spec-Sync | `interfaces-auth.md`, `api-ipc-system.md`, `security-electron-ipc.md`, `arch-state-management.md`, `error-handling.md`, `development-guidelines.md`, `patterns.md`, `testing-component-patterns.md`, `ipc-contract-checklist.md`, `indexes/quick-reference.md`, `lessons-learned.md` | Phase 12 正本仕様と cross-cutting doc を更新し、LOGS / topic-map / 成果物台帳を同期 |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| shared transport DTO | `packages/shared/src/types/auth-mode.ts`（`IPCResponse<T>`, `AuthModeStatus`, `AuthModeChangedEvent`, `AUTH_MODE_ERROR_CODES`） |
+| Main IPC整合 | `apps/desktop/src/main/ipc/authModeHandlers.ts`（`get/status/validate/changed` を canonical shape へ統一） |
+| Preload整合 | `apps/desktop/src/preload/types.ts`, `apps/desktop/src/preload/index.ts` |
+| Renderer整合 | `apps/desktop/src/renderer/store/slices/authModeSlice.ts`, `apps/desktop/src/renderer/views/SettingsView/index.tsx`, `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx` |
+| Phase 11 証跡 | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/` |
+| Phase 12 証跡 | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-12/` |
+| Phase 12 準拠監査 | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 変更理由
+
+- `auth-mode:get` / `status` / `validate` / `changed` の payload shape が Main / Preload / Renderer で乖離していたため、shared transport DTO を正本として再統一した
+- `SettingsView` が参照する `message` / `errorCode` / `guidance` を contract へ昇格し、Phase 11 で 5 ケースの画面証跡を固定した
+- `useAuthModeStore()` 前提の古い仕様を、`store/index.ts` の個別セレクタ + `useEffect([initializeAuthMode])` の現行実装へ是正した
+
+#### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run ...authMode...` | PASS（10 files / 252 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` | PASS（5/5） |
+| `verify-all-specs --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` | PASS（13/13, error=0, warning=0） |
+| `verify-unassigned-links --source .claude/skills/aiworkflow-requirements/references/task-workflow.md` | PASS（105/105） |
+| `audit-unassigned-tasks --json --diff-from HEAD` | PASS（`currentViolations=0`, `baselineViolations=93`） |
+
+#### 関連タスク / 未タスク判断
+
+| 項目 | 内容 |
+| --- | --- |
+| 関連完了タスク | `TASK-AUTH-MODE-SELECTION-001`, `UT-STORE-HOOKS-COMPONENT-MIGRATION-001` |
+| 改善バックログ | `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001`（`verify-unassigned-links` が `unassigned-task/` 参照と実体配置ずれの原因を即時説明できるようにする）, `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001`（更新対象 domain spec に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックが揃っているかを機械検証する） |
+| 未タスク配置確認 | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-unassigned-link-diagnostics-001.md` と `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-domain-spec-sync-block-validator-001.md` を追加し、`audit --target-file` で `currentViolations=0` を確認 |
+
+#### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| auth-mode 契約が shared / main / preload / renderer で分裂しやすい | invoke と event を別タスクのように扱い、shared DTO への集約を後回しにする場合 | `packages/shared/src/types/auth-mode.ts` を唯一の transport 正本へ昇格し、3層を import / re-export に揃えた | IPC transport 契約修正は `shared DTO → handler → preload → renderer → spec` の順で同一ターンに閉じる |
+| 現行 selector 実装と古い P31 対策文書が共存して仕様が逆転する | `useRef` ガード時代の説明を残したまま、`store/index.ts` 正本への移行を文書化しない場合 | `store/index.ts` / `useInitializeAuthMode()` 前提へ仕様を是正し、旧説明を残さない形へ整理した | 状態管理の暫定策は、正式パターンへ移行したら同一ターンで仕様書から退役させる |
+| Phase 12 で domain spec 更新だけして cross-cutting doc と診断ギャップが残る | `interfaces` / `api-ipc` 更新時点で完了扱いにし、`ipc-contract-checklist` / `quick-reference` / 未タスク formalize を省略する場合 | cross-cutting doc を同期し、`UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` を追加して運用ギャップを formalize した | Phase 12 完了判定は `domain spec + cross-cutting doc + audit結果 + 改善バックログ要否判定` の4点同時成立に限定する |
+| Phase 12 の domain spec に標準3ブロックを入れても欠落を機械検証できない | template 追加だけで運用完了と見なし、更新した domain spec に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の存在確認をゲート化しない場合 | `interfaces-auth.md` と `api-ipc-system.md` は手動同期で補完しつつ、`UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を追加して validator 導入を backlog 化した | Phase 12 は `task-workflow + lessons + domain spec` の3仕様同期に加え、更新対象 domain spec が標準3ブロックを持つことを機械検証できるまで閉じない |
+
+#### 同種課題の5分解決カード
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状（1行） | IPC 契約を直したはずなのに、Renderer 表示・event 反映・仕様書が層ごとに食い違う |
+| 根本原因（1行） | shared DTO 正本化、cross-cutting doc 同期、Phase 11 視覚証跡の3点が別タイミングで進みやすい |
+| 最短手順 | `1) shared DTO 集約 2) handler/preload/renderer 同時更新 3) interfaces/api-ipc/task-workflow 同期 4) 専用 harness で再撮影 5) links/audit で未タスク要否を確定` |
+| 検証ゲート | `typecheck PASS`, `vitest PASS`, `coverage PASS`, `verify-all-specs PASS`, `validate-phase-output PASS`, `verify-unassigned-links missing=0`, `audit currentViolations=0` |
+| 同期先3点 | `task-workflow.md` / `interfaces-auth.md` / `api-ipc-system.md` |
+
+---
+
 ### タスク: TASK-9B-I-SDK-FORMAL-INTEGRATION Claude Agent SDK型安全統合（2026-02-12完了）
 
 | 項目       | 内容                                       |
@@ -3053,6 +3131,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.28** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を completed-tasks へ移管**: Phase 12 完了条件（`outputs/phase-12` 実体 + `phase-12-documentation.md` completed + strict検証 PASS）を確認後、workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動。関連未タスク2件（`UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` / `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001`）は同workflow配下 `unassigned-task/` へ移し、参照パスと検証コマンドを新パスへ同期 |
+| **1.67.27** | **2026-03-06** | **UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001 を残課題登録**: auth-mode 完了節の改善バックログへ追加し、`interfaces-auth.md` / `api-ipc-system.md` など更新対象 domain spec に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` が揃っているかを機械検証する改善導線を同期。親タスクで苦戦した「domain spec は契約表だけで終わりやすい」問題を未タスク化 |
+| **1.67.26** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の system spec 最適化を追補**: auth-mode 完了節へ「苦戦箇所と再発防止」「同種課題の5分解決カード」を追加し、shared DTO 正本化・selector 文書是正・cross-cutting doc 同期の完了条件を明文化 |
+| **1.67.25** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を追補**: auth-mode 完了節へ `phase12-task-spec-compliance-check.md`、`verify-unassigned-links` 105/105、`audit --diff-from HEAD` current=0 baseline=93 を追記し、関連改善バックログ `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` を `docs/30-workflows/unassigned-task/` へ登録。cross-cutting doc と未タスク診断強化を同一ターンで同期 |
+| **1.67.24** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 完了記録を追加**: shared auth-mode transport DTO（`IPCResponse<T>`, `AuthModeStatus`, `AuthModeChangedEvent`）を正本化し、Main / Preload / Renderer の `get/status/validate/changed` 契約を統一。Phase 11 画面証跡（5件）と Phase 12 system spec 同期を完了台帳へ反映 |
 | **1.67.23** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 を completed-tasks へ移管**: `outputs/phase-12` 実体と `phase-12-documentation.md` completed を確認後、workflow本体を `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001/` へ移動。関連未タスク2件（`UT-IMP-PHASE11-AUTHKEY-SCREENSHOT-SELECTOR-DRIFT-GUARD-001` / `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001`）を `completed-tasks/unassigned-task/` へ移管し、残課題テーブルを完了表記へ同期 |
 | **1.67.22** | **2026-03-06** | **UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001 を残課題へ登録**: `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残存した `skillHandlers.ts` の責務肥大化を未タスク化。DI境界整理（composition root集約）、回帰テスト固定、教訓同期を1セットで実施する導線を追加し、同タスク完了節の「関連未タスク」欄へ追記 |
 | **1.67.21** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の完了台帳を強化**: 完了タスクセクションを新設し、SubAgent分担・実装反映（`AuthKeyService` 単一生成 + `SkillExecutor` DI）・検証証跡（13/13, 28項目, target監査 current=0）・苦戦箇所（DIシグネチャドリフト、`phase-12-documentation` pending残置、教訓同期漏れ）を記録。Phase 12完了判定を「成果物実体 + 機械検証 + 仕様書ステータス同期」で固定 |

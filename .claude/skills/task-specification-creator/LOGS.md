@@ -10,6 +10,20 @@
 
 ---
 
+## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査ガイド追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に、App shell のノイズが大きい場合は対象コンポーネント専用 harness を使って撮影してよい条件を追記
+  - `phase11-capture-metadata.json` と `manual-test-result.md` の再撮影時刻同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を明文化
+  - `references/spec-update-workflow.md` に IPC transport 契約変更時の cross-cutting doc 確認（`references/ipc-contract-checklist.md` / `indexes/quick-reference.md`）を追加
+  - `SKILL.md` 変更履歴を `v10.08.17` に更新
+
+---
+
 ## ログ形式
 
 ```markdown
@@ -23,6 +37,23 @@
 
 ---
 ```
+
+---
+
+## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を順次実行し、各 Phase 成果物を `outputs/phase-*` に出力
+  - auth-mode 契約整合の実装に合わせて shared / main / preload / renderer / test を更新し、対象テスト 252 件 PASS、typecheck PASS を確認
+  - Phase 11 は `SettingsView` 単体 harness で `TC-11-01..05` を撮影し、Apple UI/UX engineer 観点の視覚レビューを記録
+  - Phase 12 では `implementation-guide` / `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` / `phase12-task2-step-log` を作成
+  - `complete-phase.js` による Phase 1〜12 完了登録、`artifacts.json` / `outputs/artifacts.json` 同期、`index.md` 再生成、Phase 文書 `completed` 同期を実施
+  - `verify-unassigned-links` で検出した既存 broken link は、未タスク実体を `unassigned-task/` に戻して解消
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を再実行し、完了状態を固定
 
 ---
 
@@ -5345,3 +5376,21 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
   - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
   - `SKILL.md` 変更履歴へ `v10.08.15` を追記
+
+## [2026-03-06T03:45:30.597Z]
+
+- **Agent**: generate-task-specs
+- **Phase**: Phase 12
+- **Result**: ✓ 成功
+- **Notes**: auth-mode contract alignment spec sync
+
+---
+
+## [2026-03-06T04:42:41.553Z]
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12 re-audit
+- **Result**: ✓ 成功
+- **Notes**: phase11 harness guidance and cross-cutting spec update workflow sync
+
+---

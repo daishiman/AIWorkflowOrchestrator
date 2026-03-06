@@ -161,6 +161,7 @@ Phase 12 Task 2 開始
 | 変更種別           | 更新対象                                  |
 | ------------------ | ----------------------------------------- |
 | APIエンドポイント  | `references/api-*.md`                     |
+| IPC契約横断ガイド  | `references/ipc-contract-checklist.md`, `indexes/quick-reference.md` |
 | データベース       | `references/database-*.md`                |
 | UI/UX              | `references/ui-ux-*.md`                   |
 | アーキテクチャ     | `references/architecture-*.md`            |
@@ -227,6 +228,7 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 | 実装内容                       | 更新対象ファイル                         | 更新内容                         |
 | ------------------------------ | ---------------------------------------- | -------------------------------- |
 | サービスメソッドシグネチャ変更 | `interfaces-*.md`                        | メソッド表のシグネチャ更新       |
+| shared transport DTO / IPC envelope 追加 | `api-ipc-*.md`, `interfaces-*.md`, `error-handling.md`, `references/ipc-contract-checklist.md`, `indexes/quick-reference.md` | request / response / event / error / cross-cutting guide を同期 |
 | 新規カスタムエラークラス追加   | `error-handling.md`                      | エラーコード・クラス定義追加     |
 | 新規ビジネスルール追加         | `interfaces-*.md`                        | ビジネスルール表に追加           |
 | 認可/認証ロジック追加          | `interfaces-*.md` または `security-*.md` | 認可セクション追加               |
@@ -249,6 +251,7 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] エラー分類/リトライ戦略を追加した場合、error-handling.mdのリトライ対象判定セクションを更新した
 - [ ] 残課題テーブルに該当タスクがある場合、取り消し線+✅完了マークで更新した
 - [ ] 関連する仕様ファイルの実装状況テーブル（該当する場合）を更新した
+- [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
