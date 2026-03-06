@@ -2,19 +2,45 @@
 
 ## メタ情報
 
-| 項目           | 内容                                                |
-| -------------- | --------------------------------------------------- |
-| Phase          | 13                                                  |
-| タスクID       | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC             |
-| ブランチ       | `task/task-ui-01-e-integration-gate-spec-sync-spec` |
-| ベースブランチ | `main`                                              |
-| ステータス     | PR作成前                                            |
+| 項目           | 内容                                                            |
+| -------------- | --------------------------------------------------------------- |
+| Phase          | 13                                                              |
+| タスクID       | TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC                         |
+| ブランチ       | `task/task-ui-01-e-integration-gate-spec-sync-spec`             |
+| ベースブランチ | `main`                                                          |
+| PR番号         | `#1019`                                                         |
+| PR URL         | `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1019` |
+| ステータス     | OPEN                                                            |
 
 ## PRタイトル
 
 ```text
 docs(task-ui-01-e): 統合レビューゲート仕様同期と Phase 13 PR整備
 ```
+
+## 実行結果
+
+| 項目                   | 内容                                                                                    |
+| ---------------------- | --------------------------------------------------------------------------------------- |
+| 作成commit             | `9fd2cea0f701f8650020ec9e754602caea308829`                                              |
+| レビュー観点コメント   | `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1019#issuecomment-4011121788` |
+| 実装ガイド全文コメント | `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1019#issuecomment-4011122615` |
+| スクリーンショット節   | docs-only 変更のため PR 本文から削除                                                    |
+
+## PR作成直後の checks スナップショット
+
+| check                         | 状態        |
+| ----------------------------- | ----------- |
+| `Build macOS (Apple Silicon)` | IN_PROGRESS |
+| `Lint`                        | IN_PROGRESS |
+| `Build Shared`                | IN_PROGRESS |
+| `Module Sync Check`           | IN_PROGRESS |
+| `Security Audit`              | IN_PROGRESS |
+| `E2E Test (desktop)`          | SUCCESS     |
+| `Detect Changes`              | SUCCESS     |
+| `Validate Build`              | SUCCESS     |
+| `label`                       | SUCCESS     |
+| `Deploy to Railway`           | SKIPPED     |
 
 ## PR本文に必ず入れる要点
 

@@ -1,7 +1,7 @@
 {
   "feature": "task-056e-integration-gate-and-spec-sync",
   "created": "2026-03-06T00:00:00.000Z",
-  "lastUpdated": "2026-03-06T03:06:50.456Z",
+  "lastUpdated": "2026-03-06T11:17:13.578Z",
   "status": "spec_created",
   "phases": {
     "1": {
@@ -267,8 +267,45 @@
       ]
     },
     "13": {
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-03-06T11:17:13.572Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-description.md",
+          "description": "PR本文草案"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/review-request-note.md",
+          "description": "レビュー依頼文"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/review-handshake.md",
+          "description": "レビュー合意事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/verification-command-summary.md",
+          "description": "検証コマンド要約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/handoff-checklist.md",
+          "description": "引き継ぎチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/release-note-draft.md",
+          "description": "リリースノート草案"
+        }
+      ]
     }
   },
   "dependencies": {

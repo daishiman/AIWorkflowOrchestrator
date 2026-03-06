@@ -20,6 +20,16 @@
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`                                                                                         | unassigned-task 導線の確認  |
 | `gh pr checks <PR番号>`                                                                                                                                                     | PR 作成後の CI 状態確認     |
 
+## 実行結果
+
+| コマンド                                                                                | 結果                                                                                                                           |
+| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `git push -u origin task/task-ui-01-e-integration-gate-spec-sync-spec`                  | PASS。pre-push で `lint` / `shared build` / `typecheck` / `pnpm test --testTimeout=900000` が再実行され、すべて成功            |
+| `gh pr create --base main --head task/task-ui-01-e-integration-gate-spec-sync-spec ...` | PASS。PR `#1019` を作成                                                                                                        |
+| `gh pr comment 1019 ...`                                                                | PASS。レビュー観点コメントを投稿                                                                                               |
+| `gh pr comment 1019 ... implementation-guide.md`                                        | PASS。`implementation-guide.md` 全文コメントを投稿                                                                             |
+| `gh pr checks 1019`                                                                     | 実行時点で `Build macOS` / `Lint` / `Build Shared` / `Module Sync Check` / `Security Audit` が pending、他は success / skipped |
+
 ## 再テストを省略する理由
 
 - full suite はユーザーが直前実行済み。
