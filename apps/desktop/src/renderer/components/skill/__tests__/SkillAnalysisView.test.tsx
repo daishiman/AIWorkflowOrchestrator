@@ -15,6 +15,7 @@ import {
   act,
   waitFor,
 } from "@testing-library/react";
+import { StrictMode } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   createMockSkillAPI,
@@ -112,6 +113,21 @@ describe("SkillAnalysisView", () => {
     expect(
       screen.getByText("中程度のパフォーマンスリスク"),
     ).toBeInTheDocument();
+  });
+
+  it("StrictMode 下でも初回分析が完了してローディングが解除される", async () => {
+    await act(async () => {
+      render(
+        <StrictMode>
+          <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />
+        </StrictMode>,
+      );
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("72")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("分析中...")).not.toBeInTheDocument();
   });
 
   // ------------------------------------------

@@ -145,6 +145,119 @@
 
 ---
 
+## 2026-03-06 - UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 起票同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001`
+- 目的: `skill-creator` の warning 0 化後に残った `aiworkflow-requirements` の warning 145 件を、未管理ノイズではなく「入口設計 + validator 整合」の未タスクとして正本管理する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（未タスク正本）: `docs/30-workflows/unassigned-task/` に 9 セクション形式の未タスク指示書を作成
+- SubAgent-B（完了台帳）: `references/task-workflow.md` の残課題テーブルと変更履歴へ同IDを登録
+- SubAgent-C（教訓）: `references/lessons-learned.md` に苦戦箇所と関連未タスクを追加
+- SubAgent-D（運用方針）: `SKILL.md` に大規模仕様スキルの三層入口ルールを追記
+
+### 実施内容
+- `UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001` を `docs/30-workflows/unassigned-task/` に新規作成し、3.5 に今回の苦戦箇所（145 warning、直接リンク前提、500行制限との衝突）を反映した。
+- `task-workflow.md` に残課題行を追加し、`1.67.28` として登録理由を記録した。
+- `lessons-learned.md` の UT-TASK-10A-B-008 追補へ本課題と関連未タスクを追加した。
+- `SKILL.md` に `aiworkflow-requirements` 向けの三層入口 + validator 整合ルールを追記した。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: warning 自体は未解消のため残るが、未管理状態ではなく正式な未タスクとして追跡可能になった。
+
+---
+
+## 2026-03-06 - UT-TASK-10A-B-008 追補4（skill-creator 直接参照導線の是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-TASK-10A-B-008`
+- 目的: 今回の実装と苦戦箇所を system spec へ残すだけでなく、再発要因だった repo 内 `skill-creator` の参照導線不足も同一ターンで是正する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（完了台帳）: `references/task-workflow.md` の完了記録へ `skill-creator` 導線改善と検証結果を追記
+- SubAgent-B（教訓）: `references/lessons-learned.md` に `resource-map` 偏重で warning が残った苦戦箇所を追加
+- SubAgent-C（運用方針）: `SKILL.md` のベストプラクティスと変更履歴へ「`resource-map` + `SKILL.md` 二重導線維持」ルールを反映
+
+### 実施内容
+- repo 内 `skill-creator/SKILL.md` に 5カテゴリの直接参照導線を追加し、未リンクだった 26 reference を `SKILL.md` から直接参照可能にした。
+- `task-workflow.md` の UT-TASK-10A-B-008 完了記録へ同改善を追加し、`quick_validate .claude/skills/skill-creator` を検証結果へ追記。
+- `lessons-learned.md` に `SKILL.md` と `resource-map.md` の同期漏れを苦戦箇所として追加し、標準ルールを明文化した。
+
+### 検証
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: `skill-creator` の `quick_validate` は 45項目 PASS、warning 0 件になった。
+
+---
+
+## 2026-03-06 - UT-TASK-10A-B-008 Phase 12 Task 1 内容準拠の再確認
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-TASK-10A-B-008`
+- 目的: system spec 側へ、実装ガイドの内容不足是正と validator 追加を反映し、次回の Phase 12 再監査を短手順化する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（完了台帳）: `references/task-workflow.md` の UT-TASK-10A-B-008 完了記録へ validator 追加を追記
+- SubAgent-B（教訓）: `references/lessons-learned.md` に「Part 1/2 はあるが内容不足」の苦戦箇所を追加
+- SubAgent-C（運用方針）: `SKILL.md` のベストプラクティスと変更履歴へ Task 12-1 validator ルールを反映
+
+### 実施内容
+- `task-workflow.md` の UT-TASK-10A-B-008 節へ `validate-phase12-implementation-guide.js` を追加し、検証結果へ 10/10 PASS を追記。
+- `lessons-learned.md` に Phase 12 実装ガイド内容不足の苦戦箇所、原因、対処、標準ルールを追加。
+- `SKILL.md` に「Phase 12 の実装ガイドは validator で内容要件まで閉じる」を追記し、変更履歴 `9.01.30` を追加。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard --json`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 完了判定を「成果物実体 + 内容 validator PASS」まで引き上げた。
+
+---
+
+## 2026-03-06 - UT-TASK-10A-B-008 再監査追補（StrictMode 修正 + 画面再検証）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-TASK-10A-B-008`
+- 目的: ユーザーの明示的なスクリーンショット検証要求に基づき、SkillAnalysisView 関連UIの再監査結果と system spec 反映漏れを補完する
+
+### 仕様書別SubAgent分担
+- SubAgent-A（台帳）: `references/task-workflow.md` の UT-TASK-10A-B-008 完了記録へ再監査追補を追加
+- SubAgent-B（UI仕様）: `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` に StrictMode 修正と画面証跡8件を反映
+- SubAgent-C（教訓）: `references/lessons-learned.md` に「明示 screenshot 要求時は \`NON_VISUAL\` 不可」と `useSkillAnalysis` 再マウント注意点を追記
+- SubAgent-D（整合検証）: `verify-unassigned-links` 既存 fail 1件の物理配置ドリフトを解消し、再検証する
+
+### 実施内容
+- `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` の `isMountedRef` を再マウント時に再初期化し、StrictMode での無限ローディングを解消。
+- `apps/desktop/scripts/capture-skill-analysis-view-screenshots.mjs` を loaded-state selector 待機 + `--output-dir` + `prefers-color-scheme` 追従へ強化。
+- `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` を `completed-tasks/` 直下から `unassigned-task/` へ戻し、既存リンク負債を解消。
+
+### 検証
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx`
+- `pnpm --filter @repo/desktop run screenshot:skill-analysis -- --output-dir ../../docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/outputs/phase-11/screenshots`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+
+### 結果
+- ステータス: success
+- 補足: 画面証跡は dark/light/mobile/error/loading を含む 8 ケースで再取得し、repo 既存の未タスクリンク fail も解消した。
+
+---
+
 ## 2026-03-06 - TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 completed-tasks 移管（Phase 12完了条件充足）
 
 ### コンテキスト

@@ -1015,7 +1015,8 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 | --- | --- | --- | --- |
 | Phase 11 がコード分析ベースのまま残りやすい | UI起動制約を理由にスクリーンショット取得を省略する場合 | 専用スクリプトで 4 状態（通常/選択/改善後/エラー）を再撮影し、manual-test-result を実証跡ベースへ更新 | UIタスクのPhase 11は「実画面証跡」を完了条件に固定する |
 | Phase 11 必須セクション欠落で `validate-phase-output` が落ちる | `phase-11-manual-test.md` の章立てを簡略化しすぎる場合 | 「統合テスト連携」節を追加し、Phase 12未タスク連携を明記 | 仕様書更新前にテンプレート必須節を機械検証する |
-| Phase 12 で未タスク件数が古いまま残る | 修正済み課題（D1/D2）を未タスク台帳から除外し忘れる場合 | `unassigned-task-detection.md` を 7件→5件へ再同期し、task-workflow と合わせて更新 | 未タスク台帳は「現状有効件数」で毎回再計算する |
+| Phase 12 で active set が stale のまま残る | 完了済みUT（001/003/008）と継続UT（002/004/005/006/007/009）を同一表で更新しない場合 | `task-workflow.md` を canonical、`unassigned-task-detection.md` を derived として current active set 6件へ再同期し、`validate-task10ab-ledger-sync` を追加 | 未タスク台帳は固定レンジでなく canonical ledger から毎回再計算する |
+| React StrictMode で分析画面がローディングのまま固着する | `useEffect` cleanup で `isMountedRef=false` にしたまま再マウントし、初回 `setIsAnalyzing(true)` だけが残る場合 | `useSkillAnalysis` で mount 時に `isMountedRef.current = true` を再設定し、Phase 11 screenshot 再監査で 8 ケースを再取得した | 画面証跡再監査で perpetual loading が出たら selector ではなく Hook の mount/unmount 制御も疑い、StrictMode を含む targeted test を追加する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
@@ -1025,18 +1026,24 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。  
 5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。  
 
-### 関連未タスク
+### 関連未タスク（active set）
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-003 | 改善結果内訳表示実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
+
+### 完了済み派生タスク
+
+| タスクID | 状態 | タスク仕様書 |
+| --- | --- | --- |
+| UT-TASK-10A-B-001 | 完了（2026-03-05） | `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` |
+| UT-TASK-10A-B-003 | 完了（2026-03-05） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui.md` |
+| UT-TASK-10A-B-008 | 完了（2026-03-06） | `docs/30-workflows/completed-tasks/task-10a-b-unassigned-count-resync-guard.md` |
 
 ---
 
@@ -1374,6 +1381,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
+| 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |
 | 2026-03-06 | v1.14.19   | TASK-UI-02 移管反映。workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移した状態に同期 |
 | 2026-03-06 | v1.14.18   | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation Core の再発防止導線を task spec へ接続 |
 | 2026-03-06 | v1.14.17   | TASK-UI-02 追補: 収録機能一覧へ Global Navigation Core の入口行を追加し、専用セクションへ苦戦箇所テーブルと仕様同期セット（index/detail/navigation/state/task/lessons）を追記 |

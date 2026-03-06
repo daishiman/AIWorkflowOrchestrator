@@ -248,10 +248,11 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 観点 | 内容 |
 | --- | --- |
 | 実装内容 | `SkillAnalysisView`・`ScoreDisplay`・`SuggestionList`・`RiskPanel`・`useSkillAnalysis` を実装し、分析/改善フローをUIへ統合 |
-| 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得して表示崩れ/状態遷移を確認 |
+| 画面検証 | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得し、2026-03-06 再監査で dark/light/mobile/error/loading を含む 8 ケースへ拡張確認 |
 | a11y対応 | `SuggestionList` / `RiskPanel` の `role=\"list\"` に `aria-label` を追加 |
 | デザイン整合 | `text-white` を `text-[var(--text-inverse)]` に統一 |
-| 残課題 | Phase 10 MINOR 起点の未タスク 5 件（UT-TASK-10A-B-001〜005）を `docs/30-workflows/unassigned-task/` に登録 |
+| 再監査追補 | `useSkillAnalysis` の mount/unmount 制御を補正し、React StrictMode でも分析完了後にローディングが解除されることを確認 |
+| 残課題 | current active set 6 件（UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009）を `docs/30-workflows/unassigned-task/` に維持し、完了済み 3 件（001 / 003 / 008）は `completed-tasks` へ移管 |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` の TASK-10A-B 節 |
 
 ---
@@ -363,6 +364,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 2.15.2  | 2026-03-06 | TASK-UI-02 追補: workflow 本文 `phase-1..11` stale と UI仕様同期セット（`ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned`）を TASK-UI-02 サマリーへ追記し、簡潔解決導線を明文化 |
 | 2.15.1  | 2026-03-06 | TASK-UI-02 再監査追補: `mobileLabel` による mobile 可読性改善と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを TASK-UI-02 サマリーへ追加 |
 | 2.14.11 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（`validate-phase-output` 28項目、`verify-all-specs` 13/13、`validate-phase11-screenshot-coverage` TC 6/6、`verify-unassigned-links` 92/92、`currentViolations=0`）を同期し、同種課題の5分解決カード導線を `ui-ux-feature-components.md` と整合 |
+| 2.15.1  | 2026-03-06 | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView の Phase 11 画面証跡を 8 ケースへ拡張し、`useSkillAnalysis` の StrictMode ローディング固着修正を実装完了記録へ追記 |
 | 2.15.0  | 2026-03-06 | TASK-UI-02 完了反映: Organisms 実装状況へ `AppLayout` / `GlobalNavStrip` / `MobileNavBar` を追加し、主要UI一覧・完了タスク・実装完了記録へ global navigation core を同期 |
 | 2.14.10 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を反映。Phase 11 画面証跡の最終時刻を 11:51 JST へ同期し、Phase 12 再確認（13/13, 28項目, 92/92, `currentViolations=0`）を追記 |
 | 2.14.9  | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の再監査追補を反映。Phase 11 で TC-055-301〜306 を再撮影（11:43 JST）し、`validate-phase11-screenshot-coverage` の警告を0件化した状態を同期 |

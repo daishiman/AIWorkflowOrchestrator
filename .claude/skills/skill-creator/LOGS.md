@@ -44,6 +44,20 @@
 
 ---
 
+## [2026-03-06 - SKILL.md 直接参照導線の再編（warning 26件解消）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `SKILL.md` に「基礎設計・更新導線 / ヒアリング・抽象化 / 実装・ランタイム / 統合・オーケストレーション / 品質・運用」の5カテゴリを追加
+  - `references/overview.md` / `core-principles.md` / `creation-process.md` / `update-process.md` / `quality-standards.md` / `integration-patterns-*.md` / `parallel-execution-guide.md` など、未リンクだった 26 reference を `SKILL.md` から直接辿れるよう再編
+  - `resource-map.md` を詳細台帳、`SKILL.md` を最短導線という役割で分離し、Progressive Disclosure の入り口を整理
+  - `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator` の warning を 26 → 0 へ解消
+  - `SKILL.md` 変更履歴を `v10.37.8` として同期
+
+---
+
 ## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)
