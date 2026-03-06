@@ -150,6 +150,61 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | 自己改善サイクル             | references/self-improvement-cycle.md         |
 | ライブラリ管理               | references/library-management.md             |
 
+### 基礎設計・更新導線
+
+| 判断場面                     | 参照先                            |
+| ---------------------------- | --------------------------------- |
+| スキル全体像を最初に掴む     | references/overview.md            |
+| 設計原則を確認する           | references/core-principles.md     |
+| 新規作成フローを辿る         | references/creation-process.md    |
+| 既存更新フローを辿る         | references/update-process.md      |
+| 構造仕様を確認する           | references/skill-structure.md     |
+| 命名規則を確認する           | references/naming-conventions.md  |
+| 品質ゲートを確認する         | references/quality-standards.md   |
+| Phase完了条件を確認する      | references/phase-completion-checklist.md |
+
+### ヒアリング・抽象化
+
+| 判断場面                     | 参照先                                |
+| ---------------------------- | ------------------------------------- |
+| インタビューの深掘り順を確認 | references/interview-guide.md         |
+| 抽象度レベルを揃える         | references/abstraction-levels.md      |
+| 目的からAPI候補を逆引きする  | references/goal-to-api-mapping.md     |
+| 公式情報の参照先を特定する   | references/official-docs-registry.md  |
+
+### 実装・ランタイム
+
+| 判断場面                         | 参照先                                  |
+| -------------------------------- | --------------------------------------- |
+| ランタイムを選ぶ                 | references/runtime-guide.md             |
+| API連携コードの雛形を選ぶ        | references/api-integration-patterns.md  |
+| 変数テンプレートを設計する       | references/variable-template-guide.md   |
+| 実行コマンドを確認する           | references/script-commands.md           |
+| Codexへ委譲する前提を整理する    | references/codex-best-practices.md      |
+
+### 統合・オーケストレーション
+
+| 判断場面                     | 参照先                                  |
+| ---------------------------- | --------------------------------------- |
+| 統合方式の全体像を選ぶ       | references/integration-patterns.md      |
+| Electron IPCを設計する       | references/integration-patterns-ipc.md  |
+| REST API契約を設計する       | references/integration-patterns-rest.md |
+| GraphQL契約を設計する        | references/integration-patterns-graphql.md |
+| Webhook契約を設計する        | references/integration-patterns-webhook.md |
+| 並列実行を設計する           | references/parallel-execution-guide.md  |
+| スキルチェーンを設計する     | references/skill-chain-patterns.md      |
+| スケジューリングを設計する   | references/scheduler-guide.md           |
+| イベントトリガーを設計する   | references/event-trigger-guide.md       |
+
+### 品質・運用
+
+| 判断場面                         | 参照先                           |
+| -------------------------------- | -------------------------------- |
+| 公式ドキュメントを引用する       | references/official-docs-registry.md |
+| フィードバックループを設計する    | references/feedback-loop.md      |
+| 成功/失敗パターンを保存する      | references/patterns.md           |
+| 自己改善サイクルを回す           | references/self-improvement-cycle.md |
+
 ---
 
 ## フィードバック（必須）
@@ -185,8 +240,10 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **10.37.9** | **2026-03-06** | **domain spec 同期ブロックを新設し Phase 12 テンプレートへ接続**: `assets/phase12-domain-spec-sync-block-template.md` を新規追加し、`interfaces` / `api-ipc` / `security` / `ui-ux-feature` などの仕様書へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義。`phase12-system-spec-retrospective-template.md` / `phase12-spec-sync-subagent-template.md` / `references/resource-map.md` / `references/patterns.md` を更新し、domain spec 側の記述漏れを完了チェックへ組み込んだ |
-| **10.37.8** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査知見を skill-creator へ反映**: `assets/phase12-system-spec-retrospective-template.md` の重複手順（6.2）を修正し、IPC transport 契約更新時の `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` 同期要件を追加。`assets/phase12-spec-sync-subagent-template.md` へ同 cross-cutting doc / 専用 harness 記録の完了条件を追記し、`references/patterns.md` に auth-mode 由来の成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期」を追加 |
+| **10.37.10** | **2026-03-06** | **UI Phase 12 を基本6+domain add-on 同期へ拡張**: `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-navigation.md` のような domain UI spec を追加 SubAgent で扱う運用を追記。`references/resource-map.md` と `references/patterns.md` に「UI基本6仕様書だけ更新して domain UI spec を未同期」失敗パターンを追加し、UI仕様同期漏れの再発を防止 |
+| **10.37.9** | **2026-03-06** | **TASK-UI-02 再々監査の workflow 本文 stale 是正パターンを追加**: `references/patterns.md` に「workflow 本文 `phase-1..11` の completed 同期（TASK-UI-02）」を追加。`assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に completed 扱いの Phase 本文へ `pending` が残っていないことを確認する `rg` コマンドと完了チェックを追記し、Phase 12 の三層同期（成果物 / 台帳 / 本文仕様書）を標準化 |
+| **10.37.8** | **2026-03-06** | **TASK-UI-02 の Phase 12 再整合パターンを追加**: `references/patterns.md` に「workflow index / artifacts 二重同期」を追加。`assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `outputs/artifacts.json` 同期、`generate-index.js --workflow ... --regenerate`、`index.md` 状態確認を追記し、workflow 表示ドリフトを再発防止 |
+| **10.37.8** | **2026-03-06** | **SKILL.md の直接参照導線を最適化**: `references/overview.md` / `core-principles.md` / `creation-process.md` / `update-process.md` / `skill-structure.md` / `naming-conventions.md` / `quality-standards.md` など未リンクだった reference 群を、基礎設計・ヒアリング・実装・統合・運用の5カテゴリへ再編して `SKILL.md` から直接辿れる構造へ更新。`resource-map.md` 依存だけでは残っていた `quick_validate` warning 26件を解消し、Progressive Disclosure と validator の整合を取った |
 | **10.37.7** | **2026-03-06** | **Phase 12テンプレートを台帳二重突合前提へ最適化**: `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `phase-12-documentation.md` の `ステータス=completed` + Task 12-1〜12-5 `[x]` 確認コマンド/完了チェックを追加。`references/resource-map.md` の重複テンプレート行を統合し、参照導線を1資産1行へ整理してファイル形成を最適化 |
 | **10.37.6** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12台帳ドリフト防止を追加**: `references/patterns.md` に「成果物実体と `phase-12-documentation.md` 状態の二重突合」成功パターンを追加。Task 12-1〜12-5 実体確認 + `verify-all-specs`/`validate-phase-output` 再実行 + 仕様書ステータス同期を1セットで完了判定する運用を標準化 |
 | **10.37.7** | **2026-03-06** | **Phase 12テンプレートのファイル形成を最適化（TASK-INVESTIGATE追補）**: `assets/phase12-system-spec-retrospective-template.md` の重複手順（6.2の手順5重複）と重複検証コマンド（`validate-phase11-screenshot-coverage` 重複）を解消。`assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に「テンプレート重複行なし」完了チェックを追加し、再利用時の記述ドリフトを防止 |

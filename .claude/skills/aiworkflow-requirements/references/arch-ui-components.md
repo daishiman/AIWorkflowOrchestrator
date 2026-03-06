@@ -760,6 +760,41 @@ TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中
 
 ---
 
+## SkillManagementPanel Import List アーキテクチャパターン（TASK-043B / completed）
+
+> ステータス: **completed**（実装・テスト・画面検証完了）
+
+TASK-043B は、TASK-10A-D で統合済みの `SkillManagementPanel` list branch を、imported / available の 2 セクション一覧へ再設計した UI refinement タスクである。
+
+### レイヤー構成
+
+| レイヤー | 要素 | 役割 |
+| --- | --- | --- |
+| Panel Root | `SkillManagementPanel` | search、state priority、dialog state、focus return |
+| Imported Section | imported cards | edit / analyze / remove を維持 |
+| Available Section | available rows | request import trigger |
+| Modal | `SkillImportDialog` | metadata preview、confirm / cancel、dialog-local alert |
+| Store Bridge | selector / action hooks | data source / error / import state |
+
+### 状態境界
+
+| 状態 | 判定 |
+| --- | --- |
+| success | imported 反映 + `skillError === null` + available row 非表示 |
+| error | dialog open 中は dialog alert のみ、close 後は panel alert |
+| empty | global empty と inline empty を分離 |
+
+### 品質指標
+
+| 指標 | 値 |
+| --- | --- |
+| テストファイル | 2 |
+| テストケース | 21（全PASS） |
+| 対象カバレッジ | Statements 89.71 / Branches 87.41 / Functions 84.61 / Lines 89.71 |
+| 画面証跡 | TC-11-01〜09 + mobile dark |
+
+---
+
 ## TASK-UI-00-ORGANISMS アーキテクチャ記録
 
 ### 対象コンポーネント
@@ -811,6 +846,7 @@ TASK-10A-D は、TASK-10A-A で構築した SkillManagementPanel の「準備中
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
 | 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |
+| 2.9.4   | 2026-03-06 | TASK-043B 反映: SkillManagementPanel import list refinement のアーキテクチャ節を追加し、2セクション構成、dialog/state 境界、success/error 判定、品質指標を同期 |
 | 2.9.1   | 2026-03-04 | TASK-UI-00-ORGANISMS 反映: CardGrid/MasterDetailLayout/SearchFilterList のアーキテクチャ記録を追加（責務分離、Atomic Design整合、品質メトリクス、参照導線） |
 | 2.9.0   | 2026-03-03 | TASK-10A-D 反映: SkillManagementPanel ビュー統合アーキテクチャ（レイヤー構成、コンポーネント関係図、状態遷移差分、Store拡張、IPC境界、品質指標、苦戦箇所）を追加 |
 | 2.8.3   | 2026-03-02 | TASK-10A-A 反映: SkillManagementPanel のアーキテクチャ節（レイヤー構成、状態遷移、IPC境界、品質指標、苦戦箇所）を追加し、Step 2 判定漏れの再発防止ルールを追記 |

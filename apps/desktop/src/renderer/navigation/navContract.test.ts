@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   APP_DOCK_NAV_ITEMS,
+  MOBILE_PRIMARY_NAV_ITEMS,
+  MOBILE_SECONDARY_NAV_ITEMS,
   NAV_SECTIONS,
   NAV_SHORTCUT_TO_VIEW,
   getViewFromNavigationShortcut,
+  isGoBackNavigationShortcut,
   isEditableEventTarget,
 } from "./navContract";
 
@@ -66,6 +69,22 @@ describe("navContract", () => {
         "Cmd+,",
       ]);
     });
+
+    it("モバイルの主要5項目とMore内4項目が仕様通りに分割される", () => {
+      expect(MOBILE_PRIMARY_NAV_ITEMS.map((item) => item.id)).toEqual([
+        "dashboard",
+        "workspace",
+        "chat",
+        "agent",
+        "skillCenter",
+      ]);
+      expect(MOBILE_SECONDARY_NAV_ITEMS.map((item) => item.id)).toEqual([
+        "historySearch",
+        "graph",
+        "editor",
+        "settings",
+      ]);
+    });
   });
 
   describe("getViewFromNavigationShortcut", () => {
@@ -117,6 +136,45 @@ describe("navContract", () => {
           createEvent({ key: "2", metaKey: true, target: input }),
         ),
       ).toBeNull();
+    });
+  });
+
+  describe("isGoBackNavigationShortcut", () => {
+    it("Cmd/Ctrl + [ を戻るショートカットとして判定する", () => {
+      expect(
+        isGoBackNavigationShortcut(
+          createEvent({ key: "[", code: "BracketLeft", metaKey: true }),
+        ),
+      ).toBe(true);
+      expect(
+        isGoBackNavigationShortcut(
+          createEvent({ key: "[", code: "BracketLeft", ctrlKey: true }),
+        ),
+      ).toBe(true);
+    });
+
+    it("編集可能要素上や修飾キー違反では戻るショートカットを無効化する", () => {
+      const textarea = document.createElement("textarea");
+      expect(
+        isGoBackNavigationShortcut(
+          createEvent({
+            key: "[",
+            code: "BracketLeft",
+            metaKey: true,
+            target: textarea,
+          }),
+        ),
+      ).toBe(false);
+      expect(
+        isGoBackNavigationShortcut(
+          createEvent({
+            key: "[",
+            code: "BracketLeft",
+            metaKey: true,
+            shiftKey: true,
+          }),
+        ),
+      ).toBe(false);
     });
   });
 

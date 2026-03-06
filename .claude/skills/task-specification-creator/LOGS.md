@@ -10,17 +10,45 @@
 
 ---
 
-## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査ガイド追補
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE completed-tasks 移管
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再監査）
+- **Phase**: Phase 12 後続整理
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `references/phase-11-12-guide.md` に、App shell のノイズが大きい場合は対象コンポーネント専用 harness を使って撮影してよい条件を追記
-  - `phase11-capture-metadata.json` と `manual-test-result.md` の再撮影時刻同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を明文化
-  - `references/spec-update-workflow.md` に IPC transport 契約変更時の cross-cutting doc 確認（`references/ipc-contract-checklist.md` / `indexes/quick-reference.md`）を追加
-  - `SKILL.md` 変更履歴を `v10.08.17` に更新
+  - `docs/30-workflows/task-057-ui-02-global-nav-core/` を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動
+  - 派生未タスク 2 件を `completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/` へ移管
+  - 移管後の workflow / outputs / aiworkflow-requirements の参照パスを一括更新
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / scoped `audit-unassigned-tasks` を再実行
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再々監査（phase 本文 completed 同期ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再々監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `artifacts.json` と `index.md` は completed でも `phase-1..11` 本文仕様書に `pending` が残る再発を確認
+  - `references/phase-11-12-guide.md` に本文 stale 確認チェックを追加
+  - `references/spec-update-workflow.md` に「phase 本文 1〜11 は pending のままでよい」を誤判断パターンとして追加
+  - `SKILL.md` 変更履歴を `v10.08.18` として同期
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE Phase 12再整合（workflow index / artifacts sync）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再整合）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `phase-12-documentation.md` が completed でも `index.md` が stale なまま残る再発を確認
+  - `references/phase-11-12-guide.md` に `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加
+  - `references/spec-update-workflow.md` に「`artifacts.json` は完了でも `index.md` は未同期」の誤判断パターンを追加
+  - `SKILL.md` 変更履歴を `v10.08.17` として同期
 
 ---
 
@@ -40,20 +68,44 @@
 
 ---
 
-## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行完了
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE 再監査（スキル導線補強）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-12
+- **Phase**: Phase 11-12（再監査）
 - **Result**: ✓ 成功
 - **Duration**: N/A
 - **Notes**:
-  - `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を順次実行し、各 Phase 成果物を `outputs/phase-*` に出力
-  - auth-mode 契約整合の実装に合わせて shared / main / preload / renderer / test を更新し、対象テスト 252 件 PASS、typecheck PASS を確認
-  - Phase 11 は `SettingsView` 単体 harness で `TC-11-01..05` を撮影し、Apple UI/UX engineer 観点の視覚レビューを記録
-  - Phase 12 では `implementation-guide` / `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` / `phase12-task2-step-log` を作成
-  - `complete-phase.js` による Phase 1〜12 完了登録、`artifacts.json` / `outputs/artifacts.json` 同期、`index.md` 再生成、Phase 文書 `completed` 同期を実施
-  - `verify-unassigned-links` で検出した既存 broken link は、未タスク実体を `unassigned-task/` に戻して解消
-  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を再実行し、完了状態を固定
+  - `quick_validate.js` で `task-specification-creator` の warning 3件（`evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` 未リンク）を検出
+  - `SKILL.md` に3参照の直リンクを追加し、Phase 11/12 の再監査導線を明示
+  - よく使うコマンドを `.claude/skills/task-specification-creator/scripts/...` の canonical path へ統一
+  - 変更履歴の version 重複を防ぐ採番確認ルールを追加し、`phase-11-12-guide.md` / `spec-update-workflow.md` にも同観点を反映
+
+---
+
+## 2026-03-06 - Phase 12 実装ガイド内容 validator 追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Task 1 機械検証強化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `validate-phase12-implementation-guide.js` と `validate-phase12-implementation-guide.test.mjs` を追加し、Task 12-1 の内容要件を機械検証化
+  - `SKILL.md` から未リンクだった `evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` を接続
+  - `references/phase-11-12-guide.md` と `references/resource-map.md` を更新し、Phase 12 自動化コマンドと scripts 一覧に validator を追加
+
+---
+
+## 2026-03-06 - UT-TASK-10A-B-008 再監査追補（明示 screenshot 要求 + ready selector ガード）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（ガイド改善 + 成果物再証跡化）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - ユーザーが明示的にスクリーンショット検証を要求した場合、UI差分が主目的でなくても `NON_VISUAL` 単独では閉じないルールを `references/phase-11-12-guide.md` に追記
+  - screenshot 自動化の ready 判定を root shell ではなく loaded-state selector に合わせるルールを追加
+  - light 証跡が dark UI のまま残らないよう、theme mock を撮影シナリオへ追従させる確認観点を追加
+  - workflow `outputs/phase-11/` を screenshot + Apple review 前提へ再整合した
 
 ---
 
@@ -69,6 +121,20 @@
   - `phase-11-manual-test.md` へ `テストケース` と `画面カバレッジマトリクス` を追記、`manual-test-result.md` を `TC + 証跡` 形式へ更新
   - システム仕様書側のDIシグネチャ旧表記を再同期（`interfaces-agent-sdk-executor` / `arch-electron-services` / `interfaces-agent-sdk-skill` / `lessons-learned`）
   - `quick_validate.js`（`skill-creator`, `task-specification-creator`, `aiworkflow-requirements`）を再実行し、error 0 を確認
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/outputs/phase-1..12` の必須成果物を出力
+  - Phase 11 用に `outputs/phase-11/screenshot-plan.json` と screenshot evidence 5件を整備
+  - Phase 12 Task 2 として `ui-ux-navigation` / `ui-ux-components` / `arch-state-management` / `architecture-overview` / `task-workflow` / `lessons-learned` / LOGS を更新
+  - rollback path を保持したため、Step 3 は completed ではなく readiness として記録
 
 ---
 
@@ -5376,21 +5442,3 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
   - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
   - `SKILL.md` 変更履歴へ `v10.08.15` を追記
-
-## [2026-03-06T03:45:30.597Z]
-
-- **Agent**: generate-task-specs
-- **Phase**: Phase 12
-- **Result**: ✓ 成功
-- **Notes**: auth-mode contract alignment spec sync
-
----
-
-## [2026-03-06T04:42:41.553Z]
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 re-audit
-- **Result**: ✓ 成功
-- **Notes**: phase11 harness guidance and cross-cutting spec update workflow sync
-
----

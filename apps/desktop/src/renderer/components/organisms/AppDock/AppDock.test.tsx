@@ -33,42 +33,42 @@ describe("AppDock", () => {
   describe("ナビゲーションアイテム", () => {
     it("Dashboardアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Dashboard")).toBeInTheDocument();
+      expect(screen.getByLabelText("ダッシュボード")).toBeInTheDocument();
     });
 
     it("Workspaceアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Workspace")).toBeInTheDocument();
+      expect(screen.getByLabelText("ワークスペース")).toBeInTheDocument();
     });
 
     it("Chatアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Chat")).toBeInTheDocument();
+      expect(screen.getByLabelText("チャット")).toBeInTheDocument();
     });
 
     it("Graphアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Graph")).toBeInTheDocument();
+      expect(screen.getByLabelText("グラフ")).toBeInTheDocument();
     });
 
     it("Agentアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Agent")).toBeInTheDocument();
+      expect(screen.getByLabelText("エージェント")).toBeInTheDocument();
     });
 
     it("Skillsアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Skills")).toBeInTheDocument();
+      expect(screen.getByLabelText("スキルセンター")).toBeInTheDocument();
     });
 
     it("Settingsアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("Settings")).toBeInTheDocument();
+      expect(screen.getByLabelText("設定")).toBeInTheDocument();
     });
 
     it("Historyアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
-      expect(screen.getByLabelText("History")).toBeInTheDocument();
+      expect(screen.getByLabelText("履歴検索")).toBeInTheDocument();
     });
   });
 
@@ -76,7 +76,7 @@ describe("AppDock", () => {
     it("ナビゲーションアイテムクリック時にonViewChangeを呼び出す", () => {
       const handleViewChange = vi.fn();
       render(<AppDock {...defaultProps} onViewChange={handleViewChange} />);
-      fireEvent.click(screen.getByLabelText("Workspace"));
+      fireEvent.click(screen.getByLabelText("ワークスペース"));
       expect(handleViewChange).toHaveBeenCalledWith("workspace");
     });
 
@@ -84,25 +84,25 @@ describe("AppDock", () => {
       const handleViewChange = vi.fn();
       render(<AppDock {...defaultProps} onViewChange={handleViewChange} />);
 
-      fireEvent.click(screen.getByLabelText("Chat"));
+      fireEvent.click(screen.getByLabelText("チャット"));
       expect(handleViewChange).toHaveBeenCalledWith("chat");
 
-      fireEvent.click(screen.getByLabelText("Graph"));
+      fireEvent.click(screen.getByLabelText("グラフ"));
       expect(handleViewChange).toHaveBeenCalledWith("graph");
 
-      fireEvent.click(screen.getByLabelText("Agent"));
+      fireEvent.click(screen.getByLabelText("エージェント"));
       expect(handleViewChange).toHaveBeenCalledWith("agent");
 
-      fireEvent.click(screen.getByLabelText("Skills"));
+      fireEvent.click(screen.getByLabelText("スキルセンター"));
       expect(handleViewChange).toHaveBeenCalledWith("skillCenter");
 
-      fireEvent.click(screen.getByLabelText("History"));
+      fireEvent.click(screen.getByLabelText("履歴検索"));
       expect(handleViewChange).toHaveBeenCalledWith("historySearch");
 
-      fireEvent.click(screen.getByLabelText("Editor"));
+      fireEvent.click(screen.getByLabelText("エディタ"));
       expect(handleViewChange).toHaveBeenCalledWith("editor");
 
-      fireEvent.click(screen.getByLabelText("Settings"));
+      fireEvent.click(screen.getByLabelText("設定"));
       expect(handleViewChange).toHaveBeenCalledWith("settings");
     });
   });
@@ -110,7 +110,7 @@ describe("AppDock", () => {
   describe("現在のビュー", () => {
     it("現在のビューがアクティブ状態になる", () => {
       render(<AppDock {...defaultProps} currentView="dashboard" />);
-      expect(screen.getByLabelText("Dashboard")).toHaveAttribute(
+      expect(screen.getByLabelText("ダッシュボード")).toHaveAttribute(
         "aria-pressed",
         "true",
       );
@@ -118,7 +118,7 @@ describe("AppDock", () => {
 
     it("他のビューは非アクティブ状態", () => {
       render(<AppDock {...defaultProps} currentView="dashboard" />);
-      expect(screen.getByLabelText("Editor")).toHaveAttribute(
+      expect(screen.getByLabelText("エディタ")).toHaveAttribute(
         "aria-pressed",
         "false",
       );

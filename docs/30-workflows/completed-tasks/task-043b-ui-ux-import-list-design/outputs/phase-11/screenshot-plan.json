@@ -1,0 +1,77 @@
+{
+  "feature": "task-043b-ui-ux-import-list-design",
+  "generatedAt": "2026-03-06T11:47:00+09:00",
+  "route": "/advanced/skill-management-panel",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "file": "outputs/phase-11/screenshots/TC-11-01-mixed-state-light.png",
+      "scenario": "mixed",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "outputs/phase-11/screenshots/TC-11-02-imported-empty-light.png",
+      "scenario": "importedEmpty",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "outputs/phase-11/screenshots/TC-11-03-no-result-light.png",
+      "scenario": "mixed+query",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "outputs/phase-11/screenshots/TC-11-04-fetch-error-light.png",
+      "scenario": "shared-skillError-alert",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "outputs/phase-11/screenshots/TC-11-05-dialog-open-light.png",
+      "scenario": "dialog-open",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "outputs/phase-11/screenshots/TC-11-06-import-success-light.png",
+      "scenario": "import-success",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-07",
+      "file": "outputs/phase-11/screenshots/TC-11-07-keyboard-dialog-light.png",
+      "scenario": "keyboard",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-08",
+      "file": "outputs/phase-11/screenshots/TC-11-08-mixed-state-dark.png",
+      "scenario": "mixed+dialog",
+      "theme": "dark",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "TC-11-09",
+      "file": "outputs/phase-11/screenshots/TC-11-09-nullish-metadata-light.png",
+      "scenario": "nullish",
+      "theme": "light",
+      "viewport": "desktop"
+    },
+    {
+      "tcId": "VIS-11-MOBILE",
+      "file": "outputs/phase-11/screenshots/VIS-11-mobile-dark.png",
+      "scenario": "mixed",
+      "theme": "dark",
+      "viewport": "mobile"
+    }
+  ]
+}

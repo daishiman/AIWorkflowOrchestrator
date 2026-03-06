@@ -1,0 +1,10 @@
+# Phase 11 証跡インデックス
+
+| 証跡ID   | コマンド / 根拠                                                                                                 | 結果                                                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------- | ---------- | ------------- | -------- | ------------ | -------- | ---------- | ---------- | ----------------- | --------------------------------------------------------------------------- |
+| EV-11-01 | `node apps/desktop/scripts/capture-task-056e-integration-gate-screenshots.mjs`                                  | current workflow 配下へ 6 枚の representative screenshots を生成                                |
+| EV-11-02 | `ls -1 outputs/phase-11/screenshots && stat .../*.png`                                                          | `TC-11-01..06` の 6 ファイルと 2026-03-06 12:29:50-53 の生成時刻を確認                          |
+| EV-11-03 | `rg -n "docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md" parent docs index` | parent docs と統合 index が current workflow path を参照することを確認                          |
+| EV-11-04 | `for f in ...; do test -f \"$f\" && echo PASS; done`                                                            | A/B/C/D、downstream 3件、`task-workflow.md`、`lessons-learned.md`、current outputs の実在を確認 |
+| EV-11-05 | `rg -n "state                                                                                                   | ipc                                                                                             | security | navigation | documentation | 常時更新 | 条件付き更新 | 更新不要 | TASK-UI-02 | TASK-UI-03 | TASK-UI-04A" ...` | `review-gate.md` の 5軸、`spec-sync-targets.md` の 3区分、handoff 3件を確認 |
+| EV-11-06 | `manual-test-result.md` / `screenshot-matrix.md` の Apple UI/UX 視覚監査記録                                    | 情報階層、余白、操作明瞭性、空状態、mobile density を PASS 判定                                 |

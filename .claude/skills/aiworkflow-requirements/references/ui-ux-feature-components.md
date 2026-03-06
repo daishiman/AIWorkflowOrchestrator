@@ -26,6 +26,7 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
+| Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 
@@ -1014,7 +1015,8 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 | --- | --- | --- | --- |
 | Phase 11 がコード分析ベースのまま残りやすい | UI起動制約を理由にスクリーンショット取得を省略する場合 | 専用スクリプトで 4 状態（通常/選択/改善後/エラー）を再撮影し、manual-test-result を実証跡ベースへ更新 | UIタスクのPhase 11は「実画面証跡」を完了条件に固定する |
 | Phase 11 必須セクション欠落で `validate-phase-output` が落ちる | `phase-11-manual-test.md` の章立てを簡略化しすぎる場合 | 「統合テスト連携」節を追加し、Phase 12未タスク連携を明記 | 仕様書更新前にテンプレート必須節を機械検証する |
-| Phase 12 で未タスク件数が古いまま残る | 修正済み課題（D1/D2）を未タスク台帳から除外し忘れる場合 | `unassigned-task-detection.md` を 7件→5件へ再同期し、task-workflow と合わせて更新 | 未タスク台帳は「現状有効件数」で毎回再計算する |
+| Phase 12 で active set が stale のまま残る | 完了済みUT（001/003/008）と継続UT（002/004/005/006/007/009）を同一表で更新しない場合 | `task-workflow.md` を canonical、`unassigned-task-detection.md` を derived として current active set 6件へ再同期し、`validate-task10ab-ledger-sync` を追加 | 未タスク台帳は固定レンジでなく canonical ledger から毎回再計算する |
+| React StrictMode で分析画面がローディングのまま固着する | `useEffect` cleanup で `isMountedRef=false` にしたまま再マウントし、初回 `setIsAnalyzing(true)` だけが残る場合 | `useSkillAnalysis` で mount 時に `isMountedRef.current = true` を再設定し、Phase 11 screenshot 再監査で 8 ケースを再取得した | 画面証跡再監査で perpetual loading が出たら selector ではなく Hook の mount/unmount 制御も疑い、StrictMode を含む targeted test を追加する |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
@@ -1024,18 +1026,24 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。  
 5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。  
 
-### 関連未タスク
+### 関連未タスク（active set）
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-001 | 自動修正可能フィルタボタン実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-autofixable-filter-button.md` |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-003 | 改善結果内訳表示実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-improvement-result-breakdown-ui.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-008 | 未タスク件数再計算同期ガード（detection/task-workflow/ui-ux-feature） | `docs/30-workflows/completed-tasks/unassigned-task/task-10a-b-unassigned-count-resync-guard.md` |
+| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
+
+### 完了済み派生タスク
+
+| タスクID | 状態 | タスク仕様書 |
+| --- | --- | --- |
+| UT-TASK-10A-B-001 | 完了（2026-03-05） | `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` |
+| UT-TASK-10A-B-003 | 完了（2026-03-05） | `docs/30-workflows/completed-tasks/task-10a-b-improvement-result-breakdown-ui.md` |
+| UT-TASK-10A-B-008 | 完了（2026-03-06） | `docs/30-workflows/completed-tasks/task-10a-b-unassigned-count-resync-guard.md` |
 
 ---
 
@@ -1233,6 +1241,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
+| TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・Task 5D具体例・Task 5B境界の是正） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
 | TASK-UI-00-ORGANISMS | Organisms共通基盤（CardGrid / MasterDetailLayout / SearchFilterList） | 2026-03-04 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | TASK-UI-05 | SkillCenterView（ツール探索UI、7コンポーネント + 2フック + 10テストファイル） | 2026-03-01 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/` |
@@ -1251,6 +1260,49 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 ---
 
+### Global Navigation Core（TASK-UI-02 / completed）
+
+TASK-UI-02-GLOBAL-NAV-CORE は、Desktop/Tablet/Mobile を跨ぐ正式なグローバルナビ基盤を実装し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` / `useNavShortcuts` / `uiSlice` nav state を現行標準へ引き上げた。
+legacy `AppDock` は rollback path と比較検証のために残存するが、正系の UI 仕様は `ui-ux-navigation.md` と本節の Global Navigation Core を参照する。
+
+| 項目 | 内容 |
+| --- | --- |
+| ワークフロー仕様 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
+| 実装コア | `GlobalNavStrip` / `MobileNavBar` / `MoreMenu` / `AppLayout` / `ComingSoonView` / `useNavShortcuts` |
+| 状態同期 | `uiSlice.currentView` / `responsiveMode` / `isNavExpanded` / `isMobileMoreOpen` |
+| ロールバック | `VITE_USE_GLOBAL_NAV_STRIP=false` で legacy `AppDock` 経路へ切り戻し可能 |
+| 画面検証 | Phase 11 スクリーンショット 5件 + Apple UI/UX 観点レビュー |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| repo-wide coverage threshold が task scope 品質と混線する | coverage の全体結果だけで UI基盤タスクの合否を判断する | `coverage-final.json` から task scope 値を抽出して別記録にした | UI基盤タスクは repo-wide と task scope を別メトリクスとして残す |
+| rollback path と新レイアウトの責務が `App.tsx` に戻りやすい | 旧 `AppDock` と新 nav を同居させたまま state/shortcut も親で持つ | `AppLayout` / `GlobalNavStrip` / `MobileNavBar` / `useNavShortcuts` / `uiSlice` に責務を分離し、切替は feature flag に閉じた | rollback は shell 切替だけに留め、契約と状態の正本を二重化しない |
+| mobile More / 下部バー品質が自動テストだけでは確定しない | overlay / safe-area / ラベル切れを unit test だけで判断する | Phase 11 で desktop/tablet/mobile 5状態を再撮影し、`mobileLabel` で表示名を短縮、`aria-label` は正式名を維持した | mobile ナビ変更は `SCREENSHOT` 証跡と視覚レビューを完了条件に含める |
+| UI仕様書の同期先が task/lessons に偏りやすい | `task-workflow` / `lessons` だけ更新して UI正本を後回しにする | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで更新した | UIタスクは「基本6仕様書 + ドメイン追加仕様」を 1仕様書=1担当で同期する |
+| completed 表示でも workflow 本文 `phase-1..11` が stale 化する | `artifacts.json` / `index.md` だけを完了同期し、本文の `pending` を見落とす | `phase-1..11` / `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を同一ターンで更新し、pending grep を追加した | Phase 12 完了判定は「成果物 / 台帳 / 本文仕様書」の三層同期で閉じる |
+
+### 仕様同期セット
+
+| 同期レイヤー | 更新先 |
+| --- | --- |
+| UI index | `ui-ux-components.md` |
+| UI detail | `ui-ux-feature-components.md` |
+| navigation 正本 | `ui-ux-navigation.md` |
+| state 正本 | `arch-state-management.md` |
+| 台帳 | `task-workflow.md` |
+| 教訓 | `lessons-learned.md` |
+
+### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 概要 | 参照先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | UIタスクで domain UI spec が同期漏れしないようにするガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | Phase 12 完了後の workflow 本文 stale を検出するガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
+
+---
+
 ## 仕様書作成済みタスク（spec_created）
 
 ### SkillEditorView UI（TASK-UI-05A / 統合未完了）
@@ -1262,7 +1314,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | --- | --- | --- |
 | ワークフロー仕様（Phase 1-13） | ✅ 作成済み | `docs/30-workflows/skill-editor-view/` |
 | 実装コード（`views/SkillEditorView`） | ⚠️ 実装済み（統合未完了） | `apps/desktop/src/renderer/views/SkillEditorView/` |
-| ナビゲーション導線（`ViewType` / `AppDock`） | ❌ 未配線 | `apps/desktop/src/renderer/store/types.ts`, `App.tsx` |
+| ナビゲーション導線（`ViewType` / `GlobalNavStrip` / `MobileNavBar`） | ❌ 未配線 | `apps/desktop/src/renderer/store/slices/uiSlice.ts`, `apps/desktop/src/renderer/navigation/navContract.ts`, `App.tsx` |
 | 画面検証証跡 | ✅ 取得済み | `docs/30-workflows/skill-editor-view/outputs/phase-11/` |
 | `skill:getFileTree` IPCチャネル | ❌ 未実装 | UT-UI-05A-GETFILETREE-001 で対応予定。`api-ipc-agent.md` に仕様追加済み |
 | 実装残課題の統合管理 | ✅ 正式登録済み | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-editor-view-implementation-closure.md` |
@@ -1329,6 +1381,12 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
+| 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |
+| 2026-03-06 | v1.14.19   | TASK-UI-02 移管反映。workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移した状態に同期 |
+| 2026-03-06 | v1.14.18   | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation Core の再発防止導線を task spec へ接続 |
+| 2026-03-06 | v1.14.17   | TASK-UI-02 追補: 収録機能一覧へ Global Navigation Core の入口行を追加し、専用セクションへ苦戦箇所テーブルと仕様同期セット（index/detail/navigation/state/task/lessons）を追記 |
+| 2026-03-06 | v1.14.16   | TASK-UI-02 再監査追補: 完了タスク表へ Global Navigation Core を追加し、`GlobalNavStrip` / `MobileNavBar` / `AppLayout` / `uiSlice` nav state / rollback path / Phase 11 視覚検証を feature catalog へ同期。あわせて TASK-UI-05A のナビ導線表記を `AppDock` 前提から現行の `GlobalNavStrip` / `MobileNavBar` 基準へ更新 |
 | 2026-03-05 | v1.14.15   | TASK-UI-01-C 追補: `UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001` を関連未タスクへ追加。Notification/History の境界難所（push正規化/dedupe/filter継承）を未タスク導線として固定 |
 | 2026-03-05 | v1.14.14   | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN の実装完了内容を反映。収録機能一覧/専用セクション/完了タスクへ `NotificationCenter` と `HistorySearchView` を追加し、実装時の苦戦箇所（timestamp正規化、履歴重複排除、filter一元化）と Phase 11 証跡（TC-01〜03）を同期 |
 | 2026-03-05 | v1.14.13   | UT-IMP-TASK-UI-055-FIVE-MINUTE-CARD-SYNC-GUARD-001 を追加。Foundation Reflection Audit の関連未タスク表へ同IDを登録し、5分解決カードの3仕様書同時同期（task-workflow/lessons/ui-ux-feature）を再発防止タスクとして接続 |

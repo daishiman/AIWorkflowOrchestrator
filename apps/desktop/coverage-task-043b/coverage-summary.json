@@ -1,0 +1,21 @@
+{
+  "total": {
+    "lines": { "total": 797, "covered": 715, "skipped": 0, "pct": 89.71 },
+    "statements": { "total": 797, "covered": 715, "skipped": 0, "pct": 89.71 },
+    "functions": { "total": 26, "covered": 22, "skipped": 0, "pct": 84.61 },
+    "branches": { "total": 143, "covered": 125, "skipped": 0, "pct": 87.41 },
+    "branchesTrue": { "total": 0, "covered": 0, "skipped": 0, "pct": "Unknown" }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075820-wt2/apps/desktop/src/renderer/components/skill/SkillImportDialog.tsx": {
+    "lines": { "total": 233, "covered": 174, "skipped": 0, "pct": 74.67 },
+    "functions": { "total": 6, "covered": 4, "skipped": 0, "pct": 66.66 },
+    "statements": { "total": 233, "covered": 174, "skipped": 0, "pct": 74.67 },
+    "branches": { "total": 33, "covered": 26, "skipped": 0, "pct": 78.78 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-075820-wt2/apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx": {
+    "lines": { "total": 564, "covered": 541, "skipped": 0, "pct": 95.92 },
+    "functions": { "total": 20, "covered": 18, "skipped": 0, "pct": 90 },
+    "statements": { "total": 564, "covered": 541, "skipped": 0, "pct": 95.92 },
+    "branches": { "total": 110, "covered": 99, "skipped": 0, "pct": 90 }
+  }
+}

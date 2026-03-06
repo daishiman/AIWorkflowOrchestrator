@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-06T07:12:02.902Z",
-  "totalKeywords": 1467,
+  "generated": "2026-03-06T09:16:01.651Z",
+  "totalKeywords": 1460,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -482,7 +482,6 @@
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
       "architecture-implementation-patterns.md",
-      "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk.md",
       "interfaces-llm.md",
@@ -798,8 +797,7 @@
       "architecture-implementation-patterns.md",
       "error-handling.md",
       "lessons-learned.md",
-      "security-electron-ipc.md",
-      "testing-component-patterns.md"
+      "security-electron-ipc.md"
     ],
     "PREFLIGHT": [
       "api-ipc-agent.md",
@@ -1171,7 +1169,29 @@
       "arch-state-management.md"
     ],
     "NAV": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "Global": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
+    "Navigation": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
+    "状態同期": [
       "arch-state-management.md"
+    ],
+    "GLOBAL": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "CORE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "Zustand": [
       "arch-state-management.md",
@@ -2560,31 +2580,6 @@
     "LOGIN": [
       "error-handling.md"
     ],
-    "AuthMode": [
-      "error-handling.md",
-      "testing-component-patterns.md"
-    ],
-    "エラー": [
-      "error-handling.md"
-    ],
-    "envelope": [
-      "error-handling.md"
-    ],
-    "MODE": [
-      "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
-    "CONTRACT": [
-      "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
-    "ALIGNMENT": [
-      "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
     "認証フォールバックパターン": [
       "error-handling.md"
     ],
@@ -3148,19 +3143,7 @@
     "ハンドラーと": [
       "ipc-contract-checklist.md"
     ],
-    "で同一チャネルの": [
-      "ipc-contract-checklist.md"
-    ],
-    "request": [
-      "ipc-contract-checklist.md"
-    ],
-    "response": [
-      "ipc-contract-checklist.md"
-    ],
-    "event": [
-      "ipc-contract-checklist.md"
-    ],
-    "が異なるか確認": [
+    "で同一チャネルの引数名が異なるか確認": [
       "ipc-contract-checklist.md"
     ],
     "safeInvoke": [
@@ -3221,6 +3204,9 @@
       "lessons-learned.md"
     ],
     "教訓集": [
+      "lessons-learned.md"
+    ],
+    "基盤移行": [
       "lessons-learned.md"
     ],
     "KEY": [
@@ -3528,6 +3514,9 @@
     "SPEC": [
       "lessons-learned.md"
     ],
+    "ALIGNMENT": [
+      "lessons-learned.md"
+    ],
     "仕様差分の統合是正": [
       "lessons-learned.md"
     ],
@@ -3794,12 +3783,6 @@
       "lessons-learned.md"
     ],
     "個別セレクタ": [
-      "lessons-learned.md"
-    ],
-    "mode": [
-      "lessons-learned.md"
-    ],
-    "公開契約整合": [
       "lessons-learned.md"
     ],
     "ハンドラー登録": [
@@ -4923,9 +4906,6 @@
     "テストパターン": [
       "testing-component-patterns.md"
     ],
-    "契約テストパターン": [
-      "testing-component-patterns.md"
-    ],
     "テスト有効化パターン": [
       "testing-component-patterns.md"
     ],
@@ -5368,9 +5348,6 @@
       "ui-ux-system-prompt.md"
     ],
     "ナビゲーション": [
-      "ui-ux-navigation.md"
-    ],
-    "AppDock": [
       "ui-ux-navigation.md"
     ],
     "ChatView": [
