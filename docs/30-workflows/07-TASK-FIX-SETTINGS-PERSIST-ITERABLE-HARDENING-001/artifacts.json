@@ -1,0 +1,123 @@
+{
+  "feature": "07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001",
+  "created": "2026-03-06T10:30:00.000Z",
+  "lastUpdated": "2026-03-06T10:30:00.000Z",
+  "status": "spec_created",
+  "phases": {
+    "1": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-boundary.md"
+      ]
+    },
+    "2": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-2/design-decisions.md",
+        "outputs/phase-2/ownership-matrix.md",
+        "outputs/phase-2/execution-plan.md"
+      ]
+    },
+    "3": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "4": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-4/red-test-plan.md",
+        "outputs/phase-4/integration-test-cases.md"
+      ]
+    },
+    "5": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-5/implementation-sequence.md",
+        "outputs/phase-5/changed-files-plan.md"
+      ]
+    },
+    "6": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-6/regression-expansion-plan.md",
+        "outputs/phase-6/fixture-plan.md"
+      ]
+    },
+    "7": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-7/coverage-targets.md",
+        "outputs/phase-7/gap-log.md"
+      ]
+    },
+    "8": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-8/refactor-guardrails.md",
+        "outputs/phase-8/simplification-log.md"
+      ]
+    },
+    "9": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/risk-register.md"
+      ]
+    },
+    "10": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/release-decision.md"
+      ]
+    },
+    "11": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-11/manual-test-matrix.md",
+        "outputs/phase-11/evidence-plan.md"
+      ]
+    },
+    "12": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/pr-plan.md",
+        "outputs/phase-13/handoff-checklist.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "specification",
+    "estimatedPhases": 13,
+    "actualPhases": 13,
+    "executionNote": "仕様書作成のみ完了。実装・commit・PR は未実施。"
+  }
+}
