@@ -17,6 +17,16 @@ vi.mock("../../../store", () => ({
   useAppStore: vi.fn(),
 }));
 
+type MockImportedSkill = Pick<SkillMetadata, "name">;
+
+type MockStoreState = {
+  importSkill: ReturnType<typeof vi.fn>;
+  isImporting: boolean;
+  importingSkillName: string | null;
+  importedSkills: MockImportedSkill[];
+  skillError: string | null;
+};
+
 // テスト用スキルデータ
 const mockSkill: SkillMetadata = {
   name: "test-skill",
@@ -104,7 +114,27 @@ const defaultMockState = {
   importSkill: vi.fn().mockResolvedValue(undefined),
   isImporting: false,
   importingSkillName: null,
+  importedSkills: [],
+  skillError: null,
 };
+
+let currentMockState: MockStoreState;
+
+function applyMockState(overrides: Partial<MockStoreState> = {}): void {
+  currentMockState = {
+    ...defaultMockState,
+    ...overrides,
+  };
+
+  vi.mocked(useAppStore).mockImplementation(
+    (selector: (state: MockStoreState) => unknown) =>
+      selector(currentMockState) as unknown,
+  );
+
+  Object.assign(useAppStore, {
+    getState: () => currentMockState,
+  });
+}
 
 describe("SkillImportDialog", () => {
   let mockImportSkill: ReturnType<typeof vi.fn>;
@@ -112,13 +142,9 @@ describe("SkillImportDialog", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockImportSkill = vi.fn().mockResolvedValue(undefined);
-    const mockState = {
-      ...defaultMockState,
+    applyMockState({
       importSkill: mockImportSkill,
-    };
-    vi.mocked(useAppStore).mockImplementation(
-      (selector: any) => selector(mockState) as unknown,
-    );
+    });
   });
 
   describe("表示制御", () => {
@@ -208,7 +234,7 @@ describe("SkillImportDialog", () => {
       );
 
       const importButton = screen.getByRole("button", {
-        name: /インポート/,
+        name: "追加する",
       });
       await user.click(importButton);
 
@@ -218,40 +244,31 @@ describe("SkillImportDialog", () => {
     });
 
     it("TC-409: インポート中にローディング状態が表示される", () => {
-      const mockState = {
+      applyMockState({
         importSkill: vi.fn(),
         isImporting: true,
         importingSkillName: "test-skill",
-      };
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: any) => selector(mockState) as unknown,
-      );
+      });
 
       render(
         <SkillImportDialog skill={mockSkill} isOpen={true} onClose={vi.fn()} />,
       );
 
-      expect(screen.getByText(/インポート中/)).toBeInTheDocument();
+      expect(screen.getByText("追加中...")).toBeInTheDocument();
     });
 
     it("TC-414: インポート中はボタンがdisabled", () => {
-      const mockState = {
+      applyMockState({
         importSkill: vi.fn(),
         isImporting: true,
         importingSkillName: "test-skill",
-      };
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: any) => selector(mockState) as unknown,
-      );
+      });
 
       render(
         <SkillImportDialog skill={mockSkill} isOpen={true} onClose={vi.fn()} />,
       );
 
-      const buttons = screen.getAllByRole("button");
-      const importButton = buttons.find((btn) =>
-        btn.textContent?.includes("インポート中"),
-      );
+      const importButton = screen.getByRole("button", { name: "追加中..." });
       expect(importButton).toBeDisabled();
     });
   });
@@ -439,14 +456,11 @@ describe("SkillImportDialog", () => {
       const failingImport = vi
         .fn()
         .mockRejectedValue(new Error("import failed"));
-      const mockState = {
+      applyMockState({
         importSkill: failingImport,
         isImporting: false,
         importingSkillName: null,
-      };
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: any) => selector(mockState) as unknown,
-      );
+      });
 
       const onClose = vi.fn();
       render(
@@ -454,7 +468,7 @@ describe("SkillImportDialog", () => {
       );
 
       const importButton = screen.getByRole("button", {
-        name: /インポート/,
+        name: "追加する",
       });
       await user.click(importButton);
 
@@ -467,14 +481,11 @@ describe("SkillImportDialog", () => {
     });
 
     it("TC-612: インポート中はESCキーでcloseされない", () => {
-      const mockState = {
+      applyMockState({
         importSkill: vi.fn(),
         isImporting: true,
         importingSkillName: "test-skill",
-      };
-      vi.mocked(useAppStore).mockImplementation(
-        (selector: any) => selector(mockState) as unknown,
-      );
+      });
 
       const onClose = vi.fn();
       render(
@@ -490,12 +501,26 @@ describe("SkillImportDialog", () => {
     it("TC-621: インポート成功後にダイアログが閉じる", async () => {
       const user = userEvent.setup();
       const onClose = vi.fn();
+
+      applyMockState({
+        importSkill: vi.fn(async (skillName: string) => {
+          currentMockState = {
+            ...currentMockState,
+            importedSkills: [
+              ...currentMockState.importedSkills,
+              { name: skillName },
+            ],
+            skillError: null,
+          };
+        }),
+      });
+
       render(
         <SkillImportDialog skill={mockSkill} isOpen={true} onClose={onClose} />,
       );
 
       const importButton = screen.getByRole("button", {
-        name: /インポート/,
+        name: "追加する",
       });
       await user.click(importButton);
 

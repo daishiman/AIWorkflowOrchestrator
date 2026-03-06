@@ -13,7 +13,7 @@
  */
 import React, { useCallback, useRef } from "react";
 import clsx from "clsx";
-import type { AuthMode } from "../../../store/slices/authModeSlice";
+import type { AuthMode } from "@repo/shared/types/auth-mode";
 
 // ============================================================
 // 型定義

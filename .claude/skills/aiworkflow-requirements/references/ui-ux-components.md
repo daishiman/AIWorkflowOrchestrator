@@ -183,6 +183,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
+| TASK-043B | SkillManagementPanel import list refinement（2セクション + dialog + success/error/focus） | 2026-03-06 |
 
 ---
 
@@ -259,6 +260,23 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 ---
 
+## TASK-043B 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-043B-UI-UX-IMPORT-LIST-DESIGN | SkillManagementPanel import list refinement（imported / available 2セクション + dialog 追加導線 + success/error/focus 契約） | completed（実装・テスト・画面検証完了） | `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design/` |
+
+### TASK-043B 実装内容と要点
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | list view に imported / available の 2 セクションを追加し、検索、inline/global empty、dialog confirm、success status、error alert、focus return を統合 |
+| テスト | `SkillManagementPanel.test.tsx` 15 tests、`SkillManagementPanel.integration.test.tsx` 6 tests、typecheck PASS |
+| 画面証跡 | Phase 11 の `TC-11-01`〜`TC-11-09` と mobile dark 補助証跡を取得 |
+| 防御要件 | nullish metadata 吸収、duplicate import 非表示、store action 非 throw 契約への追従、dialog open 中の alert 二重表示抑止 |
+
+---
+
 ## 仕様書作成済みタスク（spec_created）
 
 | Task ID | 機能名 | 状態 | 仕様書 |
@@ -327,6 +345,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
 | 2.14.11 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終追補（12:21 JST）を反映。追加再検証値（`validate-phase-output` 28項目、`verify-all-specs` 13/13、`validate-phase11-screenshot-coverage` TC 6/6、`verify-unassigned-links` 92/92、`currentViolations=0`）を同期し、同種課題の5分解決カード導線を `ui-ux-feature-components.md` と整合 |
+| 2.14.13 | 2026-03-06 | TASK-043B 完了反映: 主要UI一覧へ SkillManagementPanel import list refinement を追加し、2セクション UI、dialog 追加導線、success / error / focus 契約、Phase 11 証跡（TC-11-01〜09 + mobile）を同期 |
 | 2.14.10 | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の最終再確認を反映。Phase 11 画面証跡の最終時刻を 11:51 JST へ同期し、Phase 12 再確認（13/13, 28項目, 92/92, `currentViolations=0`）を追記 |
 | 2.14.9  | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT の再監査追補を反映。Phase 11 で TC-055-301〜306 を再撮影（11:43 JST）し、`validate-phase11-screenshot-coverage` の警告を0件化した状態を同期 |
 | 2.14.8  | 2026-03-05 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT を追補: `00-1-design-tokens.md` 正本導線の自己参照を是正し、Task 5D 具体例と Task 5B 適用境界を仕様へ反映。検証スクリプト `validate-foundation-findings.mjs` とテスト追加を完了タスクに同期 |

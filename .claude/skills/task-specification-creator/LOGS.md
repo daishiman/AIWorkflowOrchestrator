@@ -10,6 +10,37 @@
 
 ---
 
+## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査ガイド追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に、App shell のノイズが大きい場合は対象コンポーネント専用 harness を使って撮影してよい条件を追記
+  - `phase11-capture-metadata.json` と `manual-test-result.md` の再撮影時刻同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を明文化
+  - `references/spec-update-workflow.md` に IPC transport 契約変更時の cross-cutting doc 確認（`references/ipc-contract-checklist.md` / `indexes/quick-reference.md`）を追加
+  - `SKILL.md` 変更履歴を `v10.08.20` に更新
+
+---
+
+## 2026-03-06 - TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を順次実行し、各 Phase 成果物を `outputs/phase-*` に出力
+  - auth-mode 契約整合の実装に合わせて shared / main / preload / renderer / test を更新し、対象テスト 252 件 PASS、typecheck PASS を確認
+  - Phase 11 は `SettingsView` 単体 harness で `TC-11-01..05` を撮影し、Apple UI/UX engineer 観点の視覚レビューを記録
+  - Phase 12 では `implementation-guide` / `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` / `phase12-task2-step-log` を作成
+  - `complete-phase.js` による Phase 1〜12 完了登録、`artifacts.json` / `outputs/artifacts.json` 同期、`index.md` 再生成、Phase 文書 `completed` 同期を実施
+  - `verify-unassigned-links` で検出した既存 broken link は、未タスク実体を `unassigned-task/` に戻して解消
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を再実行し、完了状態を固定
+
+---
+
 ## ログ形式
 
 ```markdown
@@ -23,6 +54,48 @@
 
 ---
 ```
+
+---
+
+## 2026-03-06 - TASK-UI-01-E Phase 12再確認ルールを更新（task spec 4点突合 + scoped diff監査）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（ガイド改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` / `references/phase-11-12-guide.md` / `references/spec-update-workflow.md` を更新し、個別未タスクの合否判定を `audit-unassigned-tasks --json --diff-from HEAD --target-file <unassigned-file>` に統一
+  - `references/patterns.md` に「Phase 12 タスク仕様準拠の4点突合（TASK-UI-01-E）」を追加し、`phase-12-documentation` / `outputs/phase-12` / `implementation-guide` / 未タスク10見出しの同時確認を標準化
+  - `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` の検証方法を現行ルールへ同期
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC Phase 1-12 実行（docs-only 統合ゲート）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12（成果物生成 + Phase 12再監査）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/task-056e-integration-gate-and-spec-sync/outputs/phase-1..12` の必須成果物を生成
+  - parent docs / current workflow / verification-report の canonical path を同一ターンで正規化
+  - 初回実行では Phase 11 を docs-only `N/A` と記録したが、同日再監査で branch-level integration visual recheck へ置き換えた（本ログの後続エントリ参照）
+  - Phase 12 で `task-workflow.md` / `lessons-learned.md` / `LOGS.md` x2 / `SKILL.md` x2 を更新し、`generate-index` と `quick_validate` を再実行
+  - `verify-unassigned-links` / `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行し、既存未タスク誤配置1件を是正後に `currentViolations=0` を確認
+
+---
+
+## 2026-03-06 - TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC 再監査（integration visual recheck 反映）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査 + ガイド改善）
+- **Result**: ✓ 成功
+- **Duration**: N/A
+- **Notes**:
+  - `apps/desktop/scripts/capture-task-056e-integration-gate-screenshots.mjs` を追加し、current workflow 配下 `outputs/phase-11/screenshots/TC-11-01..06` を生成
+  - `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加し、`manual-test-result.md` / `screenshot-matrix.md` / `evidence-index.md` を Apple UI/UX 視覚監査前提へ更新
+  - `references/phase-11-12-guide.md` / `references/phase-templates.md` / `references/screenshot-verification-procedure.md` / `references/spec-update-workflow.md` に「spec_created/docs-heavy task でも upstream UI surface の統合再確認が必要なら Phase 11 screenshot 必須」を追記
+  - `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-056e-integration-gate-and-spec-sync` を PASS 化
 
 ---
 

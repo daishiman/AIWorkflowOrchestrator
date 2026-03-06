@@ -26,6 +26,25 @@ const result = await window.xxxAPI.action(request);
 
 **詳細**: architecture-patterns.md L620-905, security-api-electron.md
 
+### IPC transport DTO 正本化パターン
+
+```typescript
+// shared transport DTO を唯一の正本にする
+export type IPCResponse<T> =
+  | { success: true; data?: T }
+  | { success: false; error: { code: string; message: string } };
+
+// Main / Preload / Renderer は再定義せず import / re-export する
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| request / response / event | `packages/shared/src/types/*` の DTO と一致 |
+| Preload 公開型 | local 再定義ではなく shared 型の import / re-export |
+| error envelope | `success` / `data` / `error.code` / `error.message` / `guidance?` が一致 |
+
+**詳細**: api-ipc-system.md, interfaces-auth.md, ipc-contract-checklist.md
+
 ### IPC ハンドラライフサイクル管理パターン（P5 Main Process 対策）
 
 macOS `activate` イベントでウィンドウ再作成時の二重登録防止:
@@ -132,6 +151,8 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 | 用途               | 型名                          | ファイル                   |
 | ------------------ | ----------------------------- | -------------------------- |
 | API結果            | `OperationResult<T>`          | interfaces-core.md         |
+| IPC transport      | `IPCResponse<T>`              | interfaces-auth.md         |
+| 認証方式状態       | `AuthModeStatus`              | interfaces-auth.md         |
 | スキル情報         | `Skill`, `SkillMetadata`      | interfaces-agent-sdk.md    |
 | チャットメッセージ | `ChatMessage`                 | interfaces-llm.md          |
 | 会話セッション     | `ChatSession`                 | interfaces-chat-history.md |
@@ -148,6 +169,11 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 | ------------------ | -------------- |
 | `auth:get-session` | セッション取得 |
 | `auth:sign-out`    | ログアウト     |
+| `auth-mode:get`    | 現在の認証方式取得 |
+| `auth-mode:set`    | 認証方式の切替 |
+| `auth-mode:status` | 現在 mode の資格情報状態取得 |
+| `auth-mode:validate` | 対象 mode の有効性検証 |
+| `auth-mode:changed` | Main→Renderer の認証方式変更通知 |
 
 ### スキル管理
 

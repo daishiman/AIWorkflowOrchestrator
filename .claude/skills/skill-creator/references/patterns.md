@@ -980,7 +980,7 @@
 
 - **状況**: `--target-file` を使っても baseline が出力されるため、対象ファイルも違反と誤読しやすい
 - **解決策**:
-  1. `audit-unassigned-tasks --json --target-file <path>` の `scope.currentFiles` を確認する
+  1. `audit-unassigned-tasks --json --diff-from HEAD --target-file <path>` の `scope.currentFiles` を確認する
   2. 合否は `currentViolations.total` を正本にし、`baselineViolations.total` は別枠で記録する
   3. 報告テンプレートに `current / baseline` を分離して記載する
 - **効果**: 既存負債に引きずられず、今回差分のフォーマット準拠可否を即判定できる
@@ -992,7 +992,7 @@
 
 - **状況**: 未タスク指示書を新規作成した後、配置確認は通るがフォーマット崩れが混入しやすい
 - **解決策**:
-  1. `audit-unassigned-tasks --json --target-file <path>` を対象ファイルごとに実行し、`currentViolations.total` を判定軸に固定する
+  1. `audit-unassigned-tasks --json --diff-from HEAD --target-file <path>` を対象ファイルごとに実行し、`currentViolations.total` を判定軸に固定する
   2. 必須10見出し（`## メタ情報` + `## 1..9`）と `## メタ情報` 件数（1件）を同一ターンで検証する
   3. `verify-unassigned-links` で実体パス整合を確認し、`missing=0` を完了条件に含める
   4. `task-workflow.md` の再確認テーブルへ `current/baseline` を分離して記録する
@@ -1579,6 +1579,21 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **教訓**: 「何を実装したか」と「どこで苦戦したか」は同じ粒度で残すほど再利用性が高い
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-UI-00-ORGANISMS
+
+### [Phase12] current=0 と baseline backlog の二層管理（TASK-043B）
+
+- **状況**: `audit-unassigned-tasks --diff-from HEAD` では `currentViolations=0` を維持できているが、repository 全体には `baselineViolations>0` が残っており、feature 差分と legacy 負債を混同しやすい
+- **アプローチ**:
+  1. Phase 12 の feature 合否は `currentViolations=0` を正本に固定する
+  2. `baselineViolations>0` が残る場合は、feature バグと混ぜずに `docs/30-workflows/unassigned-task/` 配下へ運用改善未タスクを作成する
+  3. 新規未タスク仕様書は `audit-unassigned-tasks --json --target-file <unassigned-file>` で `currentViolations=0` と `scope.currentFiles=1` を確認する
+  4. 判定根拠が `spec-update-summary` / `documentation-changelog` / `unassigned-task-detection` / `skill-feedback-report` に分散する場合は `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を 1 ファイルへ集約する
+  5. `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` に同一ターンで「実装内容 + 苦戦箇所 + 簡潔手順」を同期する
+- **結果**: feature 実装の完了判定を保ったまま、legacy 負債を隠さず改善 backlog として管理できる
+- **適用条件**: Phase 12 再確認で feature 差分は健全だが、未タスク監査の baseline が残る場合
+- **教訓**: 未タスク監査は「差分合否」と「運用負債の改善導線」を分けて記録すると再利用性が高い
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-043B / UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001
 
 ### [Phase12] 同種課題の5分解決カード同期（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT）
 
@@ -2256,6 +2271,32 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001
 
+### [Phase12] タスク仕様準拠の4点突合 + scoped diff監査（TASK-UI-01-E）
+
+- **状況**: `outputs/phase-12/` のファイル存在だけを見て完了判定すると、`implementation-guide.md` 必須要素や未タスク指示書フォーマット、`phase-12-documentation.md` との同期漏れを取りこぼしやすい
+- **アプローチ**:
+  - `phase-12-documentation.md` の `completed` / Task 12-1〜12-5 / Task進捗100% と `outputs/phase-12` 実体を同時確認する
+  - `implementation-guide.md` の `Part 1 / Part 2`、理由先行、日常例え、型/API/エッジケース/設定語を `rg` で機械確認する
+  - 未タスクは `docs/30-workflows/unassigned-task/` への物理配置、`## メタ情報 + ## 1..9` の10見出し、`audit --diff-from HEAD --target-file` と `verify-unassigned-links` を同時に確認する
+  - `task-workflow.md` / `lessons-learned.md` / `spec-update-summary.md` / `phase12-compliance-recheck.md` / `unassigned-task-detection.md` に同一の実測値を転記する
+- **結果**: Phase 12 の「完了しているように見えるが task spec を満たしていない」状態を早期に検出でき、差分合否と baseline 監視値の混同も防げる
+- **適用条件**: docs-heavy task、spec_created task、再監査タスク、既存未タスク是正を含む Phase 12 完了確認全般
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
+- **クロスリファレンス**: [phase12-task-spec-recheck-template.md](../assets/phase12-task-spec-recheck-template.md), [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
+
+### [Phase12] 専用 recheck テンプレートで責務を分離（TASK-UI-01-E）
+
+- **状況**: `phase12-system-spec-retrospective-template` だけで再確認から system spec 同期まで抱えると、task spec 準拠確認の責務が埋もれて適用順がぶれやすい
+- **アプローチ**:
+  - まず `phase12-task-spec-recheck-template.md` で 4点突合と実測値固定を完了する
+  - その後に `phase12-system-spec-retrospective-template.md` で実装内容・苦戦箇所・再利用手順へ展開する
+  - 仕様書ごとの担当と検証証跡は `phase12-spec-sync-subagent-template.md` で固定する
+- **結果**: 再確認と仕様同期の責務が分離され、docs-heavy task でも最小限の順序で機械的に進められる
+- **適用条件**: Phase 12 再監査で「まず合否を確定し、その後に system spec と outputs を同期したい」ケース
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
+
 ---
 
 ## ガイドライン
@@ -2422,3 +2463,38 @@ interface BadgeProps extends Omit<
   - preflight失敗時は再撮影を継続せず未タスク化し、再発条件を `lessons-learned` に固定する
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV, UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001
+
+### [Phase12] shared transport DTO + cross-cutting doc + 専用 harness 同期（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
+
+- **状況**: IPC transport 契約をコード上は是正したが、`ipc-contract-checklist.md` / `quick-reference.md` の横断導線や、画面検証の対象 view 専用 harness 条件が後追いになりやすい
+- **成功パターン**:
+  - shared transport DTO を `packages/shared` に集約し、Main / Preload / Renderer は import / re-export のみで追従する
+  - Step 2 で `interfaces` / `api-ipc` / `security` / `task-workflow` / `lessons` に加えて `ipc-contract-checklist.md` / `indexes/quick-reference.md` を同一ターンで同期する
+  - UI契約だけを確認したい場合は対象 view 専用 harness を追加し、`SCREENSHOT` 証跡と `validate-phase11-screenshot-coverage` をセットで固定する
+  - 運用ギャップがスクリプト改善領域なら未タスク化し、`audit --target-file` で `currentViolations=0` を確認する
+- **失敗パターン**:
+  - `interfaces` / `api-ipc` だけ更新して、cross-cutting doc が古いまま残る
+  - App 全体起動のノイズを抱えたまま画面検証し、対象 contract の変化点が読み取れない
+  - `verify-unassigned-links` の `missing` だけを見て原因を手で辿り、改善バックログへ formalize しない
+- **標準ルール**:
+  - IPC transport 契約修正は「shared DTO」「cross-cutting doc」「画面検証方針」の3点を同一ターンで閉じる
+  - ユーザーが画面検証を要求した場合、初期方針が非視覚でも `SCREENSHOT` へ昇格し、必要なら専用 harness を許可する
+  - 監査ツールの説明力不足は `docs/30-workflows/unassigned-task/` へ未タスク化し、配置・形式・参照を機械検証してから完了扱いにする
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001, UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001
+
+### [Phase12] domain spec に `実装内容` / `苦戦箇所` / `5分カード` を対称配置する（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補）
+
+- **状況**: `task-workflow` と `lessons-learned` には知見があるのに、`interfaces` / `api-ipc` の domain spec 側は契約表だけで終わり、再利用時に背景と難所が読めない
+- **成功パターン**:
+  - `assets/phase12-domain-spec-sync-block-template.md` を使い、更新した domain spec に `### 実装内容（要点）` / `### 苦戦箇所（再利用形式）` / `### 同種課題の5分解決カード` を同居させる
+  - `interfaces` と `api-ipc` の両方で、shared DTO 正本化・UI表示契約・Phase 11 画面検証方針を同じ粒度で記録する
+  - `task-workflow` / `lessons-learned` / domain spec の 3 点で 5 ステップ順序をそろえる
+- **失敗パターン**:
+  - domain spec をチャネル表や型表の更新だけで終え、苦戦箇所を lessons のみに押し込む
+  - `task-workflow` と domain spec で 5 分解決カードの順序や検証値が異なる
+- **標準ルール**:
+  - Phase 12 Step 2 で触る domain spec は、契約表だけでなく「実装内容」「苦戦箇所」「5分カード」の3点を最小セットとする
+  - `rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>` を完了前に必ず実行する
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001

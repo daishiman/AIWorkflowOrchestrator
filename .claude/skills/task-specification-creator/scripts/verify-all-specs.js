@@ -302,8 +302,11 @@ function verifyConsistency(phaseNum, content, workflowDir) {
 
   // 参照パスの存在確認
   // インラインコード内のパスのみを対象にする（改行をまたぐ誤検出を防止）
+  // `../task-*.md` の親仕様参照も検証し、ブリッジ欠落を早期検出する。
   const pathMatches =
-    content.match(/`[^`\n]*(?:outputs|phase-\d+)[^`\n]*`/g) || [];
+    content.match(
+      /`[^`\n]*(?:outputs\/|phase-\d+|(?:\.\.\/)+task-[^`\n]+\.md|task-[^`\n]+\.md)[^`\n]*`/g
+    ) || [];
   for (const pathMatch of pathMatches) {
     const cleanPath = pathMatch.replace(/`/g, "");
     // outputsディレクトリ内のパスは生成前なのでスキップ

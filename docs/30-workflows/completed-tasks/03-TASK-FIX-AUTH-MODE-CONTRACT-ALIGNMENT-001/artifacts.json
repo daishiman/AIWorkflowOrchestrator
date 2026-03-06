@@ -1,0 +1,380 @@
+{
+  "taskId": "03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001",
+  "taskName": "auth-mode Main / Preload / Renderer 公開契約の整合",
+  "feature": "TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001",
+  "workflowPath": "docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001",
+  "branch": "docs/task-fix-auth-mode-contract-alignment-001-specs-20260306",
+  "created": "2026-03-06T08:10:00+09:00",
+  "lastUpdated": "2026-03-06T08:11:47.751Z",
+  "status": "completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.109Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/drift-inventory.md",
+          "description": "契約ドリフト台帳"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/source-of-truth-map.md",
+          "description": "公開型正本マップ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-boundary.md",
+          "description": "スコープ境界"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.446Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/canonical-contract-design.md",
+          "description": "canonical contract設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/layer-responsibility-matrix.md",
+          "description": "層責務マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/error-envelope-design.md",
+          "description": "error envelope設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/shared-type-migration-plan.md",
+          "description": "shared型移行計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/test-strategy.md",
+          "description": "テスト戦略"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.598Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-checklist.md",
+          "description": "レビュー観点チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/open-questions.md",
+          "description": "オープンクエスチョン"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.733Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-test-matrix.md",
+          "description": "Redテストマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/main-ipc-red-tests.md",
+          "description": "Main IPC Redテスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/preload-bridge-red-tests.md",
+          "description": "Preload bridge Redテスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/renderer-slice-red-tests.md",
+          "description": "Renderer slice Redテスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-red-tests.md",
+          "description": "Integration Redテスト"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.793Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "description": "実装計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/changed-files-plan.md",
+          "description": "変更ファイル計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/migration-order.md",
+          "description": "移行順序"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/rollback-plan.md",
+          "description": "ロールバック計画"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.839Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-test-expansion.md",
+          "description": "回帰テスト拡充"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/contract-fixtures.md",
+          "description": "contract fixture"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/event-regression-checklist.md",
+          "description": "event回帰チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/cross-layer-test-result.md",
+          "description": "クロスレイヤーテスト結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.881Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-targets.md",
+          "description": "coverage目標"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/contract-coverage-matrix.md",
+          "description": "contract coverage matrix"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/gap-log.md",
+          "description": "gap log"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.923Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "リファクタリング計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/type-source-consolidation.md",
+          "description": "型正本集約"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/adapter-review.md",
+          "description": "adapter review"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/post-refactor-checklist.md",
+          "description": "post-refactor checklist"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:49.966Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-audit-checklist.md",
+          "description": "セキュリティ監査チェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/risk-register.md",
+          "description": "リスク登録簿"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/error-code-alignment-audit.md",
+          "description": "error code整合監査"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:50.007Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/release-risk-checklist.md",
+          "description": "リリースリスクチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/gate-decision.md",
+          "description": "ゲート判定"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:50.052Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-matrix.md",
+          "description": "証跡マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.md",
+          "description": "スクリーンショット計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項一覧"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-06T03:40:50.096Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task2-step-log.md",
+          "description": "Task2実行ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 タスク仕様準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-03-06T08:11:19.462Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/handoff-checklist.md",
+          "description": "handoff checklist"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/review-handshake.md",
+          "description": "review handshake"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "taskType": "fix",
+    "executionState": "phase_13_completed",
+    "estimatedPhases": 13,
+    "actualPhases": 13,
+    "contractSurface": [
+      "auth-mode:get",
+      "auth-mode:set",
+      "auth-mode:status",
+      "auth-mode:validate",
+      "auth-mode:changed"
+    ],
+    "sourceOfTruthTarget": "packages/shared/src/types/auth-mode.ts"
+  }
+}

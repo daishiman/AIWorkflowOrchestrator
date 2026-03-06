@@ -135,13 +135,20 @@ describe("Infinite Loop Prevention Tests", () => {
       data: {
         mode: "subscription",
         isValid: true,
+        hasCredentials: true,
         message: "認証有効",
         lastCheckedAt: Date.now(),
       },
     });
     mockElectronAPI.authMode.validate.mockResolvedValue({
       success: true,
-      data: { isValid: true },
+      data: {
+        mode: "subscription",
+        isValid: true,
+        hasCredentials: true,
+        message: "認証有効",
+        lastCheckedAt: Date.now(),
+      },
     });
     mockElectronAPI.authMode.onModeChanged.mockReturnValue(() => {});
 

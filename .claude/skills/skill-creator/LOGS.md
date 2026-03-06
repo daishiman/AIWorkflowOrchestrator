@@ -4,6 +4,74 @@
 
 ---
 
+## [2026-03-06 - domain spec 同期ブロックを skill-creator へ追加（Phase 12 file formation 最適化）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-domain-spec-sync-block-template.md` を新規作成し、domain spec へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に同 asset 参照と 3 見出し検証コマンドを追加
+  - `references/resource-map.md` の assets 説明を更新し、domain spec 3 見出しの完了条件をテンプレート説明へ同期
+  - `references/patterns.md` に成功パターン「domain spec に実装内容 / 苦戦箇所 / 5分カードを対称配置する」を追加
+  - `SKILL.md` 変更履歴を `10.37.11` として同期
+
+---
+
+## [2026-03-06 - auth-mode 再監査知見の skill-creator 反映（cross-cutting doc + harness + テンプレート修復）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の 6.2 重複手順を解消し、IPC transport 契約更新時の `ipc-contract-checklist.md` / `quick-reference.md` 同期要件を追記
+  - 同テンプレートに「専用 harness を使う UI契約検証」と `SCREENSHOT` 昇格条件を明文化
+  - `assets/phase12-spec-sync-subagent-template.md` に cross-cutting doc と harness 記録の完了チェックを追加
+  - `references/patterns.md` に成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）」を追加
+  - `SKILL.md` 変更履歴を `10.37.10` として同期
+
+---
+
+## [2026-03-06 - TASK-043B 知見の Phase 12テンプレート同期（root evidence 集約 + baseline backlog分離）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の最短手順を整理し、`phase12-task-spec-compliance-check.md` による root evidence 集約を追加
+  - `currentViolations=0` と `baselineViolations>0` を分離し、必要時は `docs/30-workflows/unassigned-task/` へ運用改善UTを作るルールを追加
+  - `audit --target-file` の期待値を `currentViolations=0` + `scope.currentFiles=1` へ明確化
+  - `references/patterns.md` と `references/resource-map.md` を同一ターンで同期し、再利用開始点をテンプレートとパターンの両方へ固定
+  - `SKILL.md` 変更履歴を `10.37.9` として同期
+
+---
+
+## [2026-03-06 - Phase 12 task spec 再確認専用テンプレートを追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-task-spec-recheck-template.md` を新規追加し、4点突合、scoped diff監査、system spec / outputs 同値同期、最適なファイル形成順を 1 枚に集約
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に新テンプレートへの導線を追加
+  - `references/resource-map.md` に新 asset を登録し、`references/patterns.md` に成功パターン「専用 recheck テンプレートで責務を分離（TASK-UI-01-E）」を追加
+  - `SKILL.md` 変更履歴を `10.37.13` として同期
+
+---
+
+## [2026-03-06 - Phase 12テンプレートを task spec 4点突合 + scoped diff監査へ更新]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` の未タスク監査コマンドを `audit-unassigned-tasks --json --diff-from HEAD --target-file <unassigned-file>` へ更新し、`--json` 単独は参考値として分離
+  - `assets/phase12-spec-sync-subagent-template.md` に同コマンドと完了チェックを追加し、個別未タスクの合否判定を scoped diff で固定
+  - `references/patterns.md` に成功パターン「Phase 12 タスク仕様準拠の4点突合 + scoped diff監査（TASK-UI-01-E）」を追加
+  - `SKILL.md` 変更履歴を `10.37.12` として同期
+
+---
+
 ## [2026-03-06 - Phase 12テンプレート最適化（`phase-12-documentation` 二重突合 + resource-map整理）]
 
 - **Agent**: skill-creator (update)
