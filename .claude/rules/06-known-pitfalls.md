@@ -210,6 +210,24 @@ import { variantStyles } from "./Badge";
 expect(element.className).toContain(variantStyles.primary);
 ```
 
+### P48: Non-null assertion (!) による Preload レスポンス安全性偽装
+
+- **教訓**: `result.data!.providers` のような non-null assertion は TypeScript の型チェックを通過させるが、実行時の安全性を保証しない。contextBridge 経由のレスポンスは structured clone の制約により、型定義と実際の shape が乖離する可能性がある
+- **症状**: TypeCheck は PASS するが、ランタイムで `TypeError: Cannot read properties of undefined` が発生
+- **解決策**: non-null assertion を `Array.isArray()` / optional chaining による実行時型検証に置換する
+- **関連パターン**: P19（型キャストによる実行時検証バイパス）
+- **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+
+```typescript
+// ❌ non-null assertion（コンパイル通過、ランタイム危険）
+const providers = result.data!.providers;
+
+// ✅ 実行時型検証
+const providers = Array.isArray(result.data?.providers)
+  ? result.data.providers
+  : [];
+```
+
 ## Claude Code Hooks
 
 ### P11: PostToolUse フックによる Edit 失敗

@@ -596,19 +596,46 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const result = await window.electronAPI.apiKey.list();
-
-      if (result.success && result.data) {
+      // 防御レイヤー1: window.electronAPI の存在確認（AuthKeySection パターン準拠）
+      const apiKeyApi = window.electronAPI?.apiKey;
+      if (!apiKeyApi?.list) {
+        console.warn(
+          "[ApiKeysSection] window.electronAPI.apiKey.list is not available",
+        );
         setState((prev) => ({
           ...prev,
-          providers: result.data!.providers,
+          providers: [],
+          isLoading: false,
+          error: "APIキー機能が利用できません",
+        }));
+        return;
+      }
+
+      const result = await apiKeyApi.list();
+
+      // 防御レイヤー2: result shape の正規化
+      if (result?.success && result?.data) {
+        const providers = Array.isArray(result.data.providers)
+          ? result.data.providers
+          : [];
+
+        if (!Array.isArray(result.data.providers)) {
+          console.warn(
+            "[ApiKeysSection] apiKey.list returned non-array providers, falling back to empty array:",
+            typeof result.data.providers,
+          );
+        }
+
+        setState((prev) => ({
+          ...prev,
+          providers,
           isLoading: false,
         }));
       } else {
         setState((prev) => ({
           ...prev,
           isLoading: false,
-          error: result.error?.message || "Failed to load API keys",
+          error: result?.error?.message || "Failed to load API keys",
         }));
       }
     } catch {

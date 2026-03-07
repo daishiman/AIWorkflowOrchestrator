@@ -697,6 +697,27 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 | インフラ層         | 外部サービスエラーのキャッチと変換               |
 | ドメイン層         | ドメイン固有のエラー定義                         |
 
+### Renderer 境界防御パターン（Preload Response Shape Guard）
+
+**適用条件**: Renderer コンポーネントが `window.electronAPI` 経由で IPC レスポンスを受け取る場合
+
+**防御レイヤー**:
+
+| レイヤー | チェック内容 | 失敗時の動作 |
+| --- | --- | --- |
+| 1 | `window.electronAPI?.namespace` 存在確認 | console.warn + fallback state |
+| 2 | `namespace?.targetMethod` メソッド存在確認 | console.warn + fallback state |
+| 3 | `result?.success && result?.data` shape 検証 | エラーメッセージ表示 |
+| 4 | `Array.isArray(result.data.items)` iterable ガード | 空配列フォールバック |
+
+**背景**: contextBridge の structured clone 制約により、Preload スクリプトの部分的な初期化失敗が発生すると、API の一部が undefined になる。TypeScript の型定義は存在を保証するが、実行時の shape 崩壊は検出できない。non-null assertion (!) は型チェックを通過させるだけで実行時保護にならないため、必ず実行時型検証を行う。
+
+**実装例**: `ApiKeysSection/index.tsx:loadProviders`、`AuthKeySection`
+**参照タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+**関連Pitfall**: P48（non-null assertion による安全性偽装）、P19（型キャストによる実行時検証バイパス）
+
+---
+
 ### エラー変換の原則
 
 | 原則         | 説明                                                   |
@@ -729,6 +750,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-03-07 | v1.9.0     | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Renderer 境界防御パターン（Preload Response Shape Guard）セクション追加（4層防御レイヤー、non-null assertion 禁止、P48参照） |
 | 2026-03-06 | v1.8.0     | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: `IPCResponse<T>` / `IPCError` / `AuthModeStatus` ベースの auth-mode error envelope を追加し、`message` / `errorCode` / `guidance` / `lastCheckedAt` の公開契約を明文化 |
 | 2026-02-07 | v1.7.0     | TASK-FIX-4-2: 外部ストレージ取得フォールバックパターンセクション追加（フォールバックマトリクス・実装パターン・セキュリティ考慮事項） |
 | 2026-02-06 | v1.6.0     | TASK-AUTH-SESSION-REFRESH-001: TokenRefreshSchedulerリトライ戦略セクション追加（Exponential Backoff with Jitter、リトライ対象/非対象エラー分類、Supabase SDK競合防止） |
