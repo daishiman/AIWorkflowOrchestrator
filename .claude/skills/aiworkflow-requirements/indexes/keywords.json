@@ -1,9 +1,6 @@
 {
-  "generated": "2026-03-06T14:33:22.738Z",
-  "totalKeywords": 1470,
-  "generated": "2026-03-07T05:36:48.209Z",
-  "totalKeywords": 1476,
-
+  "generated": "2026-03-07T10:17:19.096Z",
+  "totalKeywords": 1481,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1119,7 +1116,8 @@
       "lessons-learned.md",
       "security-skill-execution.md",
       "testing-component-patterns.md",
-      "testing-fixtures.md"
+      "testing-fixtures.md",
+      "ui-ux-feature-components.md"
     ],
     "Slice": [
       "arch-state-management.md"
@@ -1176,7 +1174,8 @@
       "arch-state-management.md"
     ],
     "NAV": [
-      "arch-state-management.md"
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "Zustand": [
       "arch-state-management.md",
@@ -1185,6 +1184,7 @@
     ],
     "パターン": [
       "arch-state-management.md",
+      "architecture-implementation-patterns.md",
       "claude-code-skills-resources.md",
       "testing-dialog-patterns.md",
       "testing-playwright-e2e.md",
@@ -1264,8 +1264,7 @@
     "Import": [
       "arch-state-management.md",
       "arch-ui-components.md",
-      "interfaces-agent-sdk-integration.md",
-      "ui-ux-feature-components.md"
+      "interfaces-agent-sdk-integration.md"
     ],
     "SkillCenter": [
       "arch-state-management.md"
@@ -1275,6 +1274,24 @@
     ],
     "駆動ライフサイクル統合": [
       "arch-state-management.md"
+    ],
+    "駆動ライフサイクル": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
+    ],
+    "統合": [
+      "arch-state-management.md",
+      "architecture-file-conversion.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "testing-playwright-e2e.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -1313,22 +1330,14 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
-      "arch-ui-components.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "ui-ux-feature-components.md"
+      "arch-ui-components.md"
     ],
     "ビュー統合アーキテクチャパターン": [
       "arch-ui-components.md"
     ],
     "List": [
-      "arch-ui-components.md",
-      "ui-ux-feature-components.md"
-    ],
-    "List": [
       "arch-ui-components.md"
     ],
-
     "ORGANISMS": [
       "arch-ui-components.md",
       "ui-ux-feature-components.md"
@@ -1506,18 +1515,6 @@
     "履歴管理サービス": [
       "architecture-file-conversion.md"
     ],
-    "統合": [
-      "architecture-file-conversion.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "technology-backend.md",
-      "testing-playwright-e2e.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-skill-stream.md"
-    ],
     "history": [
       "architecture-file-conversion.md",
       "ui-history-integration.md"
@@ -1640,6 +1637,18 @@
     "解決": [
       "architecture-implementation-patterns.md"
     ],
+    "useShallow": [
+      "architecture-implementation-patterns.md"
+    ],
+    "派生": [
+      "architecture-implementation-patterns.md"
+    ],
+    "selector": [
+      "architecture-implementation-patterns.md"
+    ],
+    "策定": [
+      "architecture-implementation-patterns.md"
+    ],
     "チャネル名競合予防パターン": [
       "architecture-implementation-patterns.md"
     ],
@@ -1654,9 +1663,6 @@
     "CONFLICT": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
-    ],
-    "策定": [
-      "architecture-implementation-patterns.md"
     ],
     "準拠バリデーション一括移行パターン": [
       "architecture-implementation-patterns.md"
@@ -1956,9 +1962,7 @@
     ],
     "list": [
       "claude-code-agents-workflow.md",
-      "claude-code-skills-process.md",
-      "lessons-learned.md",
-      "task-workflow.md"
+      "claude-code-skills-process.md"
     ],
     "md": [
       "claude-code-agents-workflow.md",
@@ -2611,31 +2615,6 @@
     ],
     "MODE": [
       "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
-    "CONTRACT": [
-      "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
-    "ALIGNMENT": [
-      "error-handling.md",
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
-    "AuthMode": [
-      "error-handling.md",
-      "testing-component-patterns.md"
-    ],
-    "エラー": [
-      "error-handling.md"
-    ],
-    "envelope": [
-      "error-handling.md"
-    ],
-    "MODE": [
-      "error-handling.md",
       "testing-component-patterns.md"
     ],
     "CONTRACT": [
@@ -2647,7 +2626,6 @@
       "lessons-learned.md",
       "testing-component-patterns.md"
     ],
-
     "認証フォールバックパターン": [
       "error-handling.md"
     ],
@@ -3293,10 +3271,23 @@
     "ENHANCEMENT": [
       "lessons-learned.md"
     ],
+    "GLOBAL": [
+      "lessons-learned.md"
+    ],
+    "CORE": [
+      "lessons-learned.md"
+    ],
+    "Global": [
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
+    "Navigation": [
+      "lessons-learned.md",
+      "ui-ux-navigation.md"
+    ],
     "基盤移行": [
       "lessons-learned.md"
     ],
-
     "KEY": [
       "lessons-learned.md"
     ],
@@ -3421,14 +3412,6 @@
     ],
     "責務分離": [
       "lessons-learned.md"
-    ],
-    "import": [
-      "lessons-learned.md",
-      "task-workflow.md"
-    ],
-    "refinement": [
-      "lessons-learned.md",
-      "task-workflow.md"
     ],
     "REFACTOR": [
       "lessons-learned.md"
@@ -3671,6 +3654,9 @@
     "契約不整合修正": [
       "lessons-learned.md"
     ],
+    "import": [
+      "lessons-learned.md"
+    ],
     "インターフェース整合修正": [
       "lessons-learned.md"
     ],
@@ -3872,12 +3858,6 @@
     "個別セレクタ": [
       "lessons-learned.md"
     ],
-    "mode": [
-      "lessons-learned.md"
-    ],
-    "公開契約整合": [
-      "lessons-learned.md"
-    ],
     "ハンドラー登録": [
       "lessons-learned.md"
     ],
@@ -3984,6 +3964,9 @@
       "lessons-learned.md"
     ],
     "品質チェックリスト": [
+      "lessons-learned.md"
+    ],
+    "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [
@@ -5444,9 +5427,6 @@
       "ui-ux-system-prompt.md"
     ],
     "ナビゲーション": [
-      "ui-ux-navigation.md"
-    ],
-    "AppDock": [
       "ui-ux-navigation.md"
     ],
     "ChatView": [
