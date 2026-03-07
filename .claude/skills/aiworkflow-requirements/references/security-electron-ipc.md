@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                       |
 | ---------- | ---------- | ---------------------------------------------- |
+| v1.13.0    | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer 境界での Preload Payload 防御パターン（namespace/メソッド/iterable/エラー安全アクセスの4層）を追加。task-04（safeInvoke）との責務分離を明文化 |
 | v1.12.5    | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: `auth-mode:*` の sender 検証順序、許可 origin、error envelope、`safeInvoke` / `safeOn` 公開境界、token/API Key マスキング方針を追加 |
 | v1.12.4    | 2026-03-05 | TASK-10A-E-A 追補: skillShareAPI セクションへ「実装時の苦戦箇所（セキュリティ観点）」と5ステップ手順を追加。sender優先検証、`code/errorCode` 二軸固定、Step 2同時同期を標準化 |
 | v1.12.3    | 2026-03-05 | TASK-10A-E-A 反映: `skill:importFromSource/export/validateSource` の sender失敗を `ERR_2004` で返す契約を追加し、validation `ERR_1001` / unknown例外 `ERR_5001` の3分類を固定。`IPC_CHANNELS` 定数参照と `Internal error` 正規化を追記 |
@@ -92,6 +93,25 @@
 - nodeモジュールの直接公開
 - ファイルシステムへの無制限アクセス
 - シェルコマンドの無制限実行
+
+### Renderer 境界での Preload Payload 防御（2026-03-07追加）
+
+contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（sandbox 環境の遅延初期化、preload スクリプトの部分エラー等）に対応するための Renderer 側防御パターン。
+
+| 防御層 | 実装 | セキュリティ意図 |
+| --- | --- | --- |
+| namespace 存在確認 | `window.electronAPI?.namespace` で optional chaining | sandbox/preload 障害時にクラッシュせずフォールバック |
+| メソッド存在確認 | `api?.method` + `console.warn` で不在時に警告ログ | contextBridge 公開不完全を検出・記録 |
+| iterable 安全性検証 | `Array.isArray(result.data.items)` でレスポンスの iterable 性を保証 | 非配列レスポンスによる `for...of` / `map()` クラッシュを防止 |
+| エラーメッセージ安全アクセス | `result?.error?.message` で null-safe アクセス | 部分的レスポンス構造でのプロパティアクセスエラーを回避 |
+
+**責務分離**:
+- 本パターンは Renderer 境界での受信防御を担当する
+- Preload 層の safeInvoke 防御（task-04）とは独立した防御層として機能する
+- Main Process 側のバリデーション（sender 検証 + 引数検証）とは別レイヤーの多層防御
+
+**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+**関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
 
 ### AuthMode IPC セキュリティパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
 

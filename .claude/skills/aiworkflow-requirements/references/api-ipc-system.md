@@ -232,6 +232,21 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | `STORAGE_ERROR`      | ストレージ操作失敗   | safeStorage利用可否確認      |
 | `NETWORK_ERROR`      | ネットワーク障害     | 接続状態を確認               |
 
+### Renderer 側 Response Shape Fallback パターン（2026-03-07追加）
+
+Renderer コンポーネントが IPC レスポンスを受け取る際、Preload 層の contextBridge 公開が部分的に失敗するケースに備え、3段階の防御パターンを適用する。
+
+**標準パターン: 3段階防御**
+
+| 段階 | 防御内容 | コード例 |
+| --- | --- | --- |
+| 1. API存在確認 | `window.electronAPI?.namespace` で namespace レベルの存在を確認 | `const api = window.electronAPI?.apiKey;` |
+| 2. メソッド存在確認 | `api?.method` でメソッドレベルの存在を確認し、不在時は warn + fallback | `if (!api?.list) { console.warn(...); return; }` |
+| 3. レスポンス形状検証 | `Array.isArray(result.data.items)` で iterable 安全性を検証 | `const items = Array.isArray(result.data.providers) ? result.data.providers : [];` |
+
+**適用箇所**: ApiKeysSection loadProviders
+**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+
 ---
 
 ## AIプロバイダーAPI連携
@@ -433,6 +448,7 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.6.0     | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer側 Response Shape Fallback パターン（3段階防御）を追加。ApiKeysSection loadProviders での適用を明文化 |
 | v1.5.7     | 2026-03-06 | completed 移管済み未タスクリンクを是正。`UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` の参照先を `completed-tasks/` 実体へ更新し、`verify-unassigned-links` での false missing を防止 |
 | v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
 | v1.5.6     | 2026-03-06 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクへ登録。5分解決カードの3仕様書同期を機械検証する改善タスクを明示し、契約系タスクの再発防止導線を追加 |

@@ -910,10 +910,67 @@ it("自動更新される", () => {
 
 ---
 
+## 14. Preload Shape 異常系テストパターン（2026-03-07追加）
+
+> **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+> **適用箇所**: ApiKeysSection 6テストケース
+
+### 概要
+
+`window.electronAPI` の部分的欠損（sandbox 障害、preload 部分エラー等）をテストするパターン。`Object.defineProperty` で `window.electronAPI` を差し替え、コンポーネントがクラッシュせずフォールバック動作することを検証する。
+
+### 基本パターン: electronAPI 差し替え
+
+```typescript
+let originalElectronAPI: typeof window.electronAPI;
+
+beforeEach(() => {
+  originalElectronAPI = window.electronAPI;
+});
+
+afterEach(() => {
+  Object.defineProperty(window, "electronAPI", {
+    value: originalElectronAPI,
+    writable: true,
+  });
+});
+
+it("electronAPI undefined でクラッシュしない", async () => {
+  Object.defineProperty(window, "electronAPI", {
+    value: undefined,
+    writable: true,
+  });
+  render(<Component />);
+  await waitFor(() => {
+    expect(screen.getByText(/エラーメッセージ/)).toBeInTheDocument();
+  });
+});
+```
+
+### テストケースマトリクス
+
+| テストケース | electronAPI の状態 | 期待動作 |
+| --- | --- | --- |
+| namespace undefined | `window.electronAPI = undefined` | エラーメッセージ表示 + 再試行ボタン |
+| メソッド namespace undefined | `window.electronAPI = { ...省略, apiKey: undefined }` | エラーメッセージ表示 + 再試行ボタン |
+| メソッド undefined | `window.electronAPI = { apiKey: {} }` （list メソッドなし） | エラーメッセージ表示 + 再試行ボタン |
+| レスポンス形状不正 | `list` が `{ success: true, data: { providers: "not-array" } }` を返却 | 空配列フォールバック |
+| 正常レスポンス | `list` が正常な providers 配列を返却 | 正常描画 |
+| エラーレスポンス | `list` が `{ success: false, error: { message: "..." } }` を返却 | null-safe でエラー表示 |
+
+### 注意点
+
+- `Object.defineProperty` で差し替えた `electronAPI` は `afterEach` で必ず復元する
+- happy-dom 環境では `fireEvent` を使用する（P39 準拠）
+- テスト間で状態がリークしないよう、各テストで独立した electronAPI モックを設定する
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |
 | 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 契約テストパターンを追加し、`window.electronAPI.authMode` モックを現行API（`get/set/status/validate/onModeChanged`）と `AuthModeStatus` DTO に同期 |
 | 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期 |
 | 1.7.0   | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネントテストパターンセクション追加（Props駆動テスト、CSS変数アサーション、テーマ横断テスト、displayName検証、7コンポーネント必須テストケース、タイマーテストパターン、後方互換性テストパターン、テスト実績） |
