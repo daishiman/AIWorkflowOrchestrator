@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` にスキルフィードバックレポートの4セクション標準テンプレート（ワークフロー改善点/技術的教訓/スキル改善提案/新規Pitfall候補）を追加
+  - `references/feedback-loop.md` に Phase 12 → lessons-learned → Phase 2 テンプレート改善のフィードバック反映プロセス（5ステップ）を追加
+  - TASK-UI-03 での適用例（Phase 10 MINOR 4件 → Phase 4 a11y テスト推奨）を具体的に記録
+  - `SKILL.md` 変更履歴を `10.37.11` として同期
+
+---
+
 ## [2026-03-06 - TASK-UI-02 UI domain spec 同期ガード追加（UI6+domain add-on）]
 
 - **Agent**: skill-creator (update)

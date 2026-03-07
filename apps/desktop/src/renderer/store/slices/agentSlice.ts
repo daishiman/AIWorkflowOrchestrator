@@ -30,6 +30,21 @@ import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPrefl
 // Re-export for backward compatibility
 export type { AgentExecutionStatus } from "@repo/shared/types/agent";
 
+/**
+ * 実行サマリ型（TASK-UI-03: 実行履歴管理用）
+ */
+export interface ExecutionSummary {
+  executionId: string;
+  skillName: string;
+  skillDisplayName: string;
+  status: "completed" | "failed" | "executing" | "cancelled";
+  startedAt: Date;
+  completedAt: Date | null;
+  duration: number | null;
+}
+
+const MAX_EXECUTION_HISTORY = 10;
+
 // ============================================
 // エラーメッセージ定数（skillSliceから統合）
 // ============================================
@@ -149,6 +164,12 @@ export interface AgentState {
   isAnalyzing: boolean;
   /** 改善適用処理中フラグ */
   isImproving: boolean;
+
+  // === TASK-UI-03: 実行履歴・詳細設定 ===
+  /** 最近の実行履歴（最大10件、新しい順） */
+  recentExecutions: ExecutionSummary[];
+  /** 詳細設定パネルの開閉状態 */
+  isAdvancedSettingsOpen: boolean;
 }
 
 /**
@@ -284,6 +305,14 @@ export interface AgentActions {
   /** 分析結果をクリアする */
   clearAnalysis: () => void;
 
+  // === TASK-UI-03: 実行履歴・詳細設定アクション ===
+  /** 実行履歴に追加（先頭に挿入、MAX_EXECUTION_HISTORY件制限） */
+  addExecutionToHistory: (execution: ExecutionSummary) => void;
+  /** 実行履歴を全クリア */
+  clearExecutionHistory: () => void;
+  /** 詳細設定パネルの開閉制御 */
+  setAdvancedSettingsOpen: (isOpen: boolean) => void;
+
   // === 内部アクション（IPCイベントハンドラ用） ===
   _handleStreamMessage: (msg: SkillStreamMessage) => void;
   _handleComplete: (executionId: string) => void;
@@ -356,6 +385,10 @@ const initialAgentState: AgentState = {
   currentAnalysis: null,
   isAnalyzing: false,
   isImproving: false,
+
+  // === TASK-UI-03: 実行履歴・詳細設定初期状態 ===
+  recentExecutions: [],
+  isAdvancedSettingsOpen: false,
 };
 
 /**
@@ -928,6 +961,20 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   clearAnalysis: () => {
     set({ currentAnalysis: null });
   },
+
+  // === TASK-UI-03: 実行履歴・詳細設定アクション ===
+
+  addExecutionToHistory: (execution) =>
+    set((state) => ({
+      recentExecutions: [execution, ...state.recentExecutions].slice(
+        0,
+        MAX_EXECUTION_HISTORY,
+      ),
+    })),
+
+  clearExecutionHistory: () => set({ recentExecutions: [] }),
+
+  setAdvancedSettingsOpen: (isOpen) => set({ isAdvancedSettingsOpen: isOpen }),
 
   // === 内部ハンドラ（IPCイベント用） ===
 

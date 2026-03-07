@@ -2737,11 +2737,122 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 
 ---
 
+## AgentView Enhancement 実装パターン（TASK-UI-03 2026-03-07実装）
+
+### S23: CSS変数定数抽出パターン（TASK-UI-03-AGENT-VIEW-ENHANCEMENT）
+
+**問題**: Tailwind arbitrary values（`bg-[var(--status-primary)]`）をテスト内でハードコード文字列として比較していたため、トークン名変更時に全テストの修正が必要になる（P47派生）。
+
+**解決パターン**: スタイル定数とアニメーション定数をモジュールスコープの `styles.ts` / `animations.ts` に抽出し、コンポーネントとテストの両方から import する。
+
+| ファイル | 責務 | 内容例 |
+| --- | --- | --- |
+| `styles.ts` | スペーシング・インタラクティブスタイル定数 | `spacing.sectionGap`, `interactiveStyles.iconButton` |
+| `animations.ts` | トランジション・アニメーション定数 | `transitions.hover`, `transitions.slideIn` |
+
+**定数定義の設計原則**:
+
+- `as const` アサーションで型を狭める
+- 8px グリッド準拠のスペーシング値を使用（`gap-4` = 16px, `gap-6` = 24px）
+- Tailwind arbitrary values（`bg-[var(--xxx)]`）はトークン名と1:1対応させる
+
+```typescript
+// styles.ts - コンポーネント外部で定数管理
+export const spacing = {
+  sectionGap: "gap-6",      // 24px (8px x 3)
+  chipGap: "gap-4",         // 16px (8px x 2)
+  containerPadding: "p-6",  // 24px
+} as const;
+
+export const interactiveStyles = {
+  iconButton: "p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors duration-200",
+} as const;
+
+// animations.ts - アニメーション定数管理
+export const transitions = {
+  hover: "transition-transform duration-200 ease",
+  tap: "transition-transform duration-100 ease-in",
+  slideIn: "transition-transform duration-300 ease-out",
+  slideOut: "transition-transform duration-200 ease-in",
+} as const;
+```
+
+**テスト側での利用**:
+
+```typescript
+// テスト側 - 定数を import して期待値に使用
+import { spacing } from "./styles";
+expect(container.className).toContain(spacing.sectionGap);
+// トークン名変更時は styles.ts の1箇所だけ修正すれば完結
+```
+
+**適用タイミング**: UIコンポーネント追加時、Phase 5 実装直後に抽出する（Phase 8 リファクタリングでは遅い — テストが既にハードコード文字列で書かれてしまう）
+
+**関連Pitfall**: P47（CSS変数ベースのスタイルテストアサーション戦略）
+
+---
+
+### S24: backward-compatible fallback パターン（TASK-UI-03-AGENT-VIEW-ENHANCEMENT）
+
+**問題**: 新規 Zustand セレクタを追加した際、既存テストのモックが新セレクタを含んでおらず、テストが一斉に壊れる。大規模リファクタリング時に段階的移行が困難になる。
+
+**解決パターン**: `typeof === "function"` ガード付きフォールバックで、新セレクタが存在しない環境でも安全にデフォルト値を返す。
+
+```typescript
+// 段階的移行: 新セレクタ未定義の環境でもクラッシュしない
+const recentExecutions = typeof useRecentExecutions === "function"
+  ? useRecentExecutions()
+  : [];
+```
+
+**適用判断基準**:
+
+| 条件 | フォールバック使用 | 直接セレクタ使用 |
+| --- | --- | --- |
+| 既存テストモックが多数存在 | 推奨 | 全モック更新が必要 |
+| セレクタが段階的に追加される | 推奨 | 移行完了まで使えない |
+| セレクタが確実に存在する | 不要 | 推奨 |
+
+**注意**: フォールバックは移行期間の一時的措置。移行完了後は `typeof` ガードを除去し、直接セレクタ使用に切り替える。
+
+**適用タイミング**: Zustand Store 拡張時、大規模リファクタリング時
+
+**関連Pitfall**: P31（Zustand Store Hooks 無限ループ）
+
+---
+
+### S25: z-index Phase 2 事前設計パターン（TASK-UI-03-AGENT-VIEW-ENHANCEMENT）
+
+**問題**: UIコンポーネント追加時に z-index 衝突が発生し、オーバーレイやフローティング要素が意図しない表示順序になる。Phase 5 実装中に場当たり的に z-index を調整すると、既存コンポーネントとの衝突が連鎖する。
+
+**解決パターン**: Phase 2（アーキテクチャ設計）で z-index 管理テーブルを事前定義し、全レイヤーの表示順序を確定させる。
+
+| レイヤー | z-index | コンポーネント例 |
+| --- | --- | --- |
+| ベース | z-0 〜 z-10 | ページコンテンツ、カードレイアウト |
+| ナビゲーション | z-20 | GlobalNavStrip |
+| パネル | z-40 | AdvancedSettingsPanel |
+| フローティング | z-50 | FloatingExecutionBar |
+
+**設計時のルール**:
+
+1. z-index は10刻みで割り当てる（中間値の挿入余地を確保）
+2. 同一レイヤー内のコンポーネントは同じ z-index を使用し、DOM 順序で制御する
+3. 新規コンポーネント追加時は管理テーブルに追記してからコーディングを開始する
+
+**結果**: TASK-UI-03 では z-index 衝突 0 件を達成。
+
+**適用タイミング**: UIコンポーネント追加タスクの Phase 2 設計レビュー時。Phase 2 テンプレートに z-index 管理テーブルを必須項目として含める。
+
+**関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
+
+---
 
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v1.36.0 | 2026-03-07 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement実装パターン追加（S23: CSS変数定数抽出パターン — styles.ts/animations.ts分離、S24: backward-compatible fallbackパターン — typeofガード付きZustandセレクタ段階的移行、S25: z-index Phase 2事前設計パターン — 管理テーブル事前定義で衝突0件達成） |
 | v1.35.0 | 2026-03-03 | TASK-10A-D: 共有型インポート標準パターン追加（@repo/shared起点の型配置ルール、禁止パターン3件、新規型追加チェックリスト） |
 | v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
 | v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |

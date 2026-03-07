@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-06
+> 自動生成: 2026-03-07
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -803,6 +803,19 @@ node scripts/list-specs.js --topics
 | SkillCenterView 関連未タスク | L329 |
 | 変更履歴 | L343 |
 | 関連ドキュメント | L392 |
+| デザイン原則サマリー | L109 |
+| コンポーネント階層図 | L131 |
+| 完了タスク | L180 |
+| TASK-UI-02 実装完了記録 | L213 |
+| TASK-UI-05B 実装完了記録 | L238 |
+| TASK-10A-B 実装完了記録 | L256 |
+| TASK-10A-C 実装完了記録 | L276 |
+| TASK-10A-D 実装完了記録 | L295 |
+| 仕様書作成済みタスク（spec_created） | L312 |
+| SkillCenterView 関連未タスク | L361 |
+| 変更履歴 | L375 |
+| 関連ドキュメント | L429 |
+
 
 ### references/ui-ux-design-principles.md
 
@@ -810,12 +823,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| コンポーネント設計原則 | L10 |
 | Apple HIG 準拠（Electron向け） | L78 |
 | インタラクション設計 | L133 |
-| アクセシビリティ（WCAG 2.1 AA準拠） | L223 |
-| UXデザイン法則 | L284 |
-| 認知負荷の軽減 | L409 |
-| Tap & Discover 哲学 | L430 |
-| 関連ドキュメント | L562 |
-| 変更履歴 | L572 |
+| アクセシビリティ（WCAG 2.1 AA準拠） | L264 |
+| UXデザイン法則 | L325 |
+| 認知負荷の軽減 | L450 |
+| Tap & Discover 哲学 | L471 |
+| 関連ドキュメント | L603 |
+| 変更履歴 | L613 |
 
 ### references/ui-ux-design-system.md
 
@@ -852,6 +865,26 @@ node scripts/list-specs.js --topics
 | 完了タスク | L1231 |
 | SkillManagementPanel Import List UI（TASK-043B / 完了） | L1255 |
 | 仕様書作成済みタスク（spec_created） | L1292 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L46 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L153 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L220 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L368 |
+| i18n対応（TASK-3-2-B） | L419 |
+| コピー履歴機能（TASK-3-2-D） | L468 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L577 |
+| SkillStreamingView コンポーネント（TASK-7D） | L588 |
+| SkillEditor UI（TASK-9A / 完了） | L633 |
+| SkillCenterView UI（TASK-UI-05 / 完了） | L761 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L889 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L963 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L1052 |
+| Organisms Foundation（TASK-UI-00-ORGANISMS / completed） | L1115 |
+| Foundation Reflection Audit（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT / completed） | L1171 |
+| Notification / History Domain（TASK-UI-01-C / completed） | L1202 |
+| 完了タスク | L1240 |
+| 仕様書作成済みタスク（spec_created） | L1307 |
+| 仕様書作成済みタスク（spec_created） | L1337 |
+
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -937,6 +970,15 @@ node scripts/list-specs.js --topics
 | アクセシビリティ対応事例 | L168 |
 | ナビゲーションパターンのベストプラクティス | L200 |
 | 関連ドキュメント | L212 |
+| Global Navigation | L30 |
+| ChatViewナビゲーション | L172 |
+| ナビゲーションボタン仕様 | L178 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L194 |
+| テスト検証済み項目 | L208 |
+| アクセシビリティ対応事例 | L223 |
+| ナビゲーションパターンのベストプラクティス | L255 |
+| 関連ドキュメント | L267 |
+
 
 ### references/ui-ux-panels.md
 
@@ -1404,6 +1446,20 @@ node scripts/list-specs.js --topics
 | Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1251 |
 | 関連ドキュメント | L1296 |
 | TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L1306 |
+| UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION） | L48 |
+| Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE） | L73 |
+| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L130 |
+| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L167 |
+| Global Navigation 状態同期（TASK-UI-02-GLOBAL-NAV-CORE） | L204 |
+| Zustand Sliceパターン | L258 |
+| P31対策: Store Hooks無限ループ防止パターン | L425 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L899 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L989 |
+| permissionHistorySlice（権限要求履歴管理） | L1147 |
+| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1276 |
+| Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1321 |
+| 関連ドキュメント | L1355 |
+
 
 ### references/arch-ui-components.md
 
@@ -1419,6 +1475,12 @@ node scripts/list-specs.js --topics
 | TASK-UI-00-ORGANISMS アーキテクチャ記録 | L798 |
 | 変更履歴 | L844 |
 | 関連ドキュメント | L866 |
+| SkillManagementPanel Import List アーキテクチャパターン（TASK-043B / completed） | L763 |
+| TASK-UI-00-ORGANISMS アーキテクチャ記録 | L798 |
+| AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / in-progress） | L844 |
+| 変更履歴 | L935 |
+| 関連ドキュメント | L958 |
+
 
 ### references/csrf-state-parameter.md
 
@@ -1615,6 +1677,25 @@ node scripts/list-specs.js --topics
 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L1164 |
 | TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L1206 |
 | TASK-9G-skill-schedule: Phase 12再確認（2026-02-27） | L1267 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L169 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L227 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L293 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L346 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L418 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L483 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L546 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L625 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L683 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L883 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L925 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L967 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1135 |
+| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L1184 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L1230 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L1261 |
+| UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001: quick_validate 空フィールドガード | L1319 |
+| TASK-9J-skill-analytics: Phase 12再確認（2026-02-28） | L1361 |
+
 
 ### references/llm-embedding.md
 
@@ -1907,7 +1988,8 @@ node scripts/list-specs.js --topics
 | すべきこと | L78 |
 | 避けるべきこと | L87 |
 | 新規仕様の追加手順 | L96 |
-| ファイルサイズ管理 | L104 |
+| 完了タスクセクション標準化 | L104 |
+| ファイルサイズ管理 | L152 |
 
 ### references/spec-splitting-guidelines.md
 
@@ -1963,6 +2045,13 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L3004 |
 | 関連ドキュメント | L3204 |
 | 変更履歴 | L3214 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2678 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2780 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L2847 |
+| 残課題（未タスク） | L2928 |
+| 関連ドキュメント | L3132 |
+| 変更履歴 | L3142 |
+
 
 ### references/testing-accessibility.md
 
