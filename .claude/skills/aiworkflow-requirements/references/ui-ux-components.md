@@ -68,6 +68,11 @@
 | AppLayout | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AppLayout/` |
 | GlobalNavStrip | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/` |
 | MobileNavBar | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/MobileNavBar/` |
+| SkillChip | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/SkillChip.tsx` |
+| ExecuteButton | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` |
+| FloatingExecutionBar | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/FloatingExecutionBar.tsx` |
+| AdvancedSettingsPanel | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/AdvancedSettingsPanel.tsx` |
+| RecentExecutionList | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/RecentExecutionList.tsx` |
 
 ### 主要UIコンポーネント一覧
 
@@ -91,6 +96,11 @@
 | MobileNavBar | TASK-UI-02 | mobile の下部 global navigation |
 | ComingSoonView | TASK-UI-02 | 未実装ビュー導線の退避表示 |
 | CardGrid / MasterDetailLayout / SearchFilterList | TASK-UI-00-ORGANISMS | 再利用可能な汎用Organisms（カード表示・マスター詳細・検索フィルタ） |
+| SkillChip | TASK-UI-03 | AIツール選択用丸型チップ（role="radio"、80x80px） |
+| ExecuteButton | TASK-UI-03 | 選択ツール実行ボタン（未選択時disabled） |
+| FloatingExecutionBar | TASK-UI-03 | 実行中フローティングステータスバー（z-index: 50） |
+| AdvancedSettingsPanel | TASK-UI-03 | 右スライドイン詳細設定パネル（z-index: 40、ESC閉じ） |
+| RecentExecutionList | TASK-UI-03 | 最近の実行履歴表示（最大3件、相対時間・ステータスアイコン） |
 
 📖 詳細: [ui-ux-agent-execution.md](./ui-ux-agent-execution.md), [ui-ux-feature-components.md](./ui-ux-feature-components.md)
 
@@ -144,6 +154,11 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | SkillImportDialog      | スキルインポート確認ダイアログ |
 | SkillAnalysisView      | スキル分析結果表示（ScoreDisplay / SuggestionList / RiskPanel） |
 | SkillCreateWizard      | スキル作成ウィザード（4ステップ） |
+| SkillChip              | AIツール選択用丸型チップ（80x80px、role="radio"） |
+| ExecuteButton          | 選択ツール実行ボタン             |
+| FloatingExecutionBar   | 実行中フローティングステータスバー |
+| AdvancedSettingsPanel  | 右スライドイン詳細設定パネル     |
+| RecentExecutionList    | 最近の実行履歴表示（最大3件）    |
 
 ### components/molecules/
 
@@ -191,6 +206,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
+| TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、58テスト） | 2026-03-07 |
 
 ---
 
@@ -360,6 +376,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.16.0  | 2026-03-07 | TASK-UI-03 完了反映: Organisms実装状況へ SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList を追加。主要UI一覧・organisms階層図・完了タスクへ AgentView Enhancement 5コンポーネント（58テスト）を同期 |
 | 2.15.3  | 2026-03-06 | TASK-UI-02 移管反映: workflow 参照を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、Phase 12 完了後の正本導線を completed-tasks 基準へ統一 |
 | 2.15.2  | 2026-03-06 | TASK-UI-02 追補: workflow 本文 `phase-1..11` stale と UI仕様同期セット（`ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned`）を TASK-UI-02 サマリーへ追記し、簡潔解決導線を明文化 |
 | 2.15.1  | 2026-03-06 | TASK-UI-02 再監査追補: `mobileLabel` による mobile 可読性改善と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを TASK-UI-02 サマリーへ追加 |

@@ -154,7 +154,55 @@ node scripts/log_usage.js \
 
 ---
 
+## 7.7 Phase 12 からのフィードバック反映プロセス
+
+Phase 12 で作成したスキルフィードバックレポートを、スキル改善に確実に反映するサイクル。
+
+### 反映フロー
+
+```
+Phase 12 Task 5               Phase 2 テンプレート改善
+  (フィードバックレポート作成)        (次タスクの設計品質向上)
+        │                              ▲
+        ▼                              │
+  lessons-learned.md  ──────→  patterns.md / phase-templates.md
+        │                              ▲
+        ▼                              │
+  06-known-pitfalls.md ────────────────┘
+  (新規Pitfall登録)
+```
+
+### 反映ステップ
+
+| Step | 内容 | 入力 | 出力 |
+| --- | --- | --- | --- |
+| 1 | フィードバックレポートのセクション2（技術的教訓）を精査 | `skill-feedback-report.md` | Pitfall候補リスト |
+| 2 | 新規Pitfall候補を `06-known-pitfalls.md` へ登録 | Pitfall候補リスト | `P{{N}}` エントリ |
+| 3 | セクション3（スキル改善提案）を対象スキルの `patterns.md` / `phase-templates.md` へ反映 | 改善提案リスト | 更新済みテンプレート |
+| 4 | セクション1（ワークフロー改善点）を `phase-11-12-guide.md` や `spec-update-workflow.md` へ反映 | 改善点リスト | 更新済みガイド |
+| 5 | 反映結果を `LOGS.md`（2ファイル）と `SKILL.md`（2ファイル）へ記録 | 更新結果 | 変更履歴エントリ |
+
+### TASK-UI-03 での適用例
+
+| Step | 入力 | 出力 | 結果 |
+| --- | --- | --- | --- |
+| 1 | Phase 10 MINOR 4件（a11y属性不足） | a11y テスト早期検出の教訓 | Phase 4 テンプレート改善候補 |
+| 2 | a11y 属性不足が Phase 10 まで検出されなかった | 既存Pitfall P47 の拡張候補 | N/A（独立Pitfall化せず Phase 4 で対応） |
+| 3 | Phase 4 に WCAG テストケース推奨を追加 | `phase-templates.md` 更新 | UIタスクで a11y テストが標準化 |
+| 4 | フィードバックレポートテンプレートの標準化 | `patterns.md` 更新 | Task 5 の記載粒度が統一 |
+| 5 | LOGS.md / SKILL.md 更新 | 変更履歴 | トレーサビリティ確保 |
+
+### タイミング
+
+| トリガー | 実行者 | 頻度 |
+| --- | --- | --- |
+| Phase 12 Task 5 完了直後 | タスク実行者（同一セッション推奨） | 毎タスク |
+| スキル改善セッション開始時 | skill-creator update モード | 蓄積した知見の一括反映 |
+
+---
+
 ## 関連リソース
 
 - **作成プロセス**: See [creation-process.md](creation-process.md) / [update-process.md](update-process.md)
 - **品質基準**: See [quality-standards.md](quality-standards.md) - §8
+- **フィードバックテンプレート**: See [patterns.md](patterns.md) - スキルフィードバックレポートテンプレート（TASK-UI-03）

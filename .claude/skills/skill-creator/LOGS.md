@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` にスキルフィードバックレポートの4セクション標準テンプレート（ワークフロー改善点/技術的教訓/スキル改善提案/新規Pitfall候補）を追加
+  - `references/feedback-loop.md` に Phase 12 → lessons-learned → Phase 2 テンプレート改善のフィードバック反映プロセス（5ステップ）を追加
+  - TASK-UI-03 での適用例（Phase 10 MINOR 4件 → Phase 4 a11y テスト推奨）を具体的に記録
+  - `SKILL.md` 変更履歴を `10.37.11` として同期
+
+---
+
 ## [2026-03-06 - TASK-UI-02 UI domain spec 同期ガード追加（UI6+domain add-on）]
 
 - **Agent**: skill-creator (update)
@@ -1726,3 +1739,16 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `references/patterns.md` に成功パターン `[Phase12] 成果物実体と phase-12-documentation.md 状態の二重突合` を追加
   - 完了判定を「Task 12-1〜12-5 実体確認 + verify/validate PASS + 仕様書ステータス同期」の3点セットへ固定
   - `SKILL.md` 変更履歴へ `v10.37.6` を追記
+
+## [2026-03-06 - TASK-10A-E-C 再監査知見の pattern 同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に Phase 12 向け成功/失敗パターンを2件追加
+  - 追加1: `documentation-changelog.md` の計画記述残置を排除して実更新ログへ昇格する手順
+  - 追加2: 未タスク指示書の9見出しテンプレート準拠 + `audit --target-file` 個別検証手順
+  - `SKILL.md` 変更履歴を `10.37.12` に更新
+
+---

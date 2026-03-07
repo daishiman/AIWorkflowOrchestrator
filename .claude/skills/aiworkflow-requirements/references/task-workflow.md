@@ -132,6 +132,39 @@
 
 ## 完了タスク
 
+### タスク: TASK-10A-E-C Store駆動ライフサイクル統合設計（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-10A-E-C |
+| 完了日 | 2026-03-06 |
+| ステータス | **完了（Phase 1-12 出力 + 実画面検証 + 仕様同期）** |
+| 対象 | `SkillManagementPanel` の import lifecycle state/selectors/actions |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/arch-state-management.md` | selector/action と P31派生ルール同期 | `useShallow` 適用条件と状態遷移契約が明文化される |
+| SubAgent-B | `references/task-workflow.md` | 完了台帳と未タスク導線同期 | 完了記録と残課題IDが一致する |
+| SubAgent-C | `outputs/phase-11/*` | 画面証跡取得と TC ひも付け | `TC-01..08` の証跡が揃う |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec node scripts/capture-task-043c-store-lifecycle-screenshots.mjs` | PASS（TC-01..08 screenshot 取得） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS（expected=8 / covered=8） |
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-10A-E-C-001 | SkillImportDialog の inline selector を個別 selector へ移行 | `docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design/unassigned-task/task-10a-e-c-selector-migration-001.md` |
+| UT-10A-E-C-002 | create/analyze 導線の直接 IPC 呼び出しを store action 経由へ移行 | `docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design/unassigned-task/task-10a-e-c-create-analyze-store-action-migration-002.md` |
+
 ### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
 
 | 項目 | 内容 |
@@ -2966,6 +2999,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
 | UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001 | Phase 12 仕様書別SubAgent N/A判定ログガード | 中 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 Phase 12 実行監査（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-na-log-guard-001.md` |
+| UT-UI-03-A11Y-RADIOGROUP-001 | SkillChip群コンテナに role="radiogroup" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #1（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-radiogroup-001.md` |
+| UT-UI-03-A11Y-DIALOG-001 | AdvancedSettingsPanel に role="dialog" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #2（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-dialog-001.md` |
+| UT-UI-03-A11Y-LABEL-001 | 停止ボタン aria-label 不一致修正 | 低 | TASK-UI-03 Phase 10 MINOR #3（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-label-001.md` |
+| UT-UI-03-TYPE-ASSERTION-001 | as unknown as Skill[] 型アサーション解消 | 低 | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md` |
+| UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001 | Phase 11証跡表のTC網羅不足を解消（TC-02/03/04/05/07/10追補 + validator PASS化） | 中 | TASK-UI-03 Phase 11 再検証（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-phase11-screenshot-coverage-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
 | ~~UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001~~   | ~~UT-SKILL-IPC-PRELOAD-EXTENSION-001で検出した仕様差分（参照切れ/パス差分/命名差分）の統合是正~~                   | ~~中~~     | **2026-02-25完了** UT-SKILL-IPC-PRELOAD-EXTENSION-001 Phase 10/12（Open Item）                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-013-ut-imp-ipc-preload-extension-spec-alignment-001.md`                                                          |

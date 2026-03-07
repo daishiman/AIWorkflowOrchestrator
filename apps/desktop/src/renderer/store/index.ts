@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
+import { useShallow } from "zustand/react/shallow";
 import {
   createNavigationSlice,
   type NavigationSlice,
@@ -648,6 +649,48 @@ export const useClearAnalysis = () =>
   useAppStore((state) => state.clearAnalysis);
 
 // ==========================================================================
+// スキルインポートライフサイクル派生セレクタ（TASK-10A-E-C）
+// Phase 2設計: imported除外 + フィルタ適用の2段派生
+// ==========================================================================
+
+/**
+ * import可能なスキル一覧（imported除外済み）
+ * useShallow: .filter()が毎回新しい配列参照を返すため、shallow比較で
+ * 内容が同一なら再レンダリングを抑制（P31派生パターン防止）
+ */
+export const useAvailableSkillsForImport = () =>
+  useAppStore(
+    useShallow((state) =>
+      state.availableSkillsMetadata.filter(
+        (a) => !state.importedSkills.some((i) => i.name === a.name),
+      ),
+    ),
+  );
+
+/**
+ * フィルタ適用済みの利用可能スキル一覧
+ * useShallow: .filter()が毎回新しい配列参照を返すため、shallow比較で
+ * 内容が同一なら再レンダリングを抑制（P31派生パターン防止）
+ */
+export const useFilteredAvailableSkills = () =>
+  useAppStore(
+    useShallow((state) => {
+      const available = state.availableSkillsMetadata.filter(
+        (a) => !state.importedSkills.some((i) => i.name === a.name),
+      );
+      const filter = state.skillFilter.trim().toLowerCase();
+      if (!filter) return available;
+      return available.filter(
+        (s) =>
+          String(s.name).toLowerCase().includes(filter) ||
+          String(s.description ?? "")
+            .toLowerCase()
+            .includes(filter),
+      );
+    }),
+  );
+
+// ==========================================================================
 // AgentView用 個別セレクタ（UT-FIX-AGENTVIEW-INFINITE-LOOP-001）
 // P31対策: AgentViewのインラインセレクタを個別Hookに移行
 // ==========================================================================
@@ -694,6 +737,26 @@ export const useCloseImportDialog = () =>
 export const useShowToast = () => useAppStore((state) => state.showToast);
 /** トーストクリア */
 export const useClearToast = () => useAppStore((state) => state.clearToast);
+
+// ==========================================================================
+// TASK-UI-03: 実行履歴・詳細設定セレクタ
+// ==========================================================================
+
+/** 最近の実行履歴 */
+export const useRecentExecutions = () =>
+  useAppStore((state) => state.recentExecutions);
+/** 実行履歴に追加 */
+export const useAddExecutionToHistory = () =>
+  useAppStore((state) => state.addExecutionToHistory);
+/** 詳細設定パネル開閉状態 */
+export const useIsAdvancedSettingsOpen = () =>
+  useAppStore((state) => state.isAdvancedSettingsOpen);
+/** 詳細設定パネル開閉制御 */
+export const useSetAdvancedSettingsOpen = () =>
+  useAppStore((state) => state.setAdvancedSettingsOpen);
+/** 実行履歴クリア */
+export const useClearExecutionHistory = () =>
+  useAppStore((state) => state.clearExecutionHistory);
 
 /**
  * AuthMode selectors - single hook for all AuthMode-related state and actions

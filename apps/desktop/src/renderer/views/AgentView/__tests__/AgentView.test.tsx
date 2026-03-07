@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, within, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { act } from "@testing-library/react";
 import { AgentView } from "../index";
 
@@ -26,6 +26,9 @@ const mockClearToast = vi.fn();
 const mockImportSkill = vi.fn();
 const mockRemoveSkill = vi.fn();
 
+const mockSetAdvancedSettingsOpen = vi.fn();
+const mockAbortExecution = vi.fn();
+
 vi.mock("../../../store", () => ({
   useAppStore: vi.fn(),
   // State selectors
@@ -40,6 +43,14 @@ vi.mock("../../../store", () => ({
   useSkillCategory: vi.fn(() => null),
   useIsImportDialogOpen: vi.fn(() => false),
   useToastMessage: vi.fn(() => null),
+  // TASK-UI-03: 新セレクタ
+  useRecentExecutions: vi.fn(() => []),
+  useIsAdvancedSettingsOpen: vi.fn(() => false),
+  useSetAdvancedSettingsOpen: vi.fn(() => mockSetAdvancedSettingsOpen),
+  useSelectedSkillName: vi.fn(() => null),
+  useIsSkillExecuting: vi.fn(() => false),
+  useSkillExecutionId: vi.fn(() => null),
+  useAbortSkillExecution: vi.fn(() => mockAbortExecution),
   // Action selectors
   useSelectSkill: vi.fn(() => mockSelectSkill),
   useSetSkillFilter: vi.fn(() => mockSetSkillFilter),
@@ -79,6 +90,8 @@ describe("AgentView", () => {
     vi.mocked(store.useClearToast).mockReturnValue(mockClearToast);
     vi.mocked(store.useImportSkill).mockReturnValue(mockImportSkill);
     vi.mocked(store.useRemoveSkill).mockReturnValue(mockRemoveSkill);
+    vi.mocked(store.useIsSkillExecuting).mockReturnValue(false);
+    vi.mocked(store.useAbortSkillExecution).mockReturnValue(mockAbortExecution);
   });
 
   describe("レンダリング", () => {
@@ -87,39 +100,29 @@ describe("AgentView", () => {
       expect(screen.getByTestId("agent-view")).toBeInTheDocument();
     });
 
-    it("should display 'Agent' header", () => {
+    it("should display 'AIアシスタント' header", () => {
       render(<AgentView />);
-      expect(screen.getByText("Agent")).toBeInTheDocument();
+      expect(screen.getByText("AIアシスタント")).toBeInTheDocument();
     });
 
-    it("should display description text", () => {
-      render(<AgentView />);
-      expect(screen.getByText("スキルの管理と実行")).toBeInTheDocument();
-    });
-
-    it("should have h1 heading", () => {
+    it("should have h1 heading with AIアシスタント", () => {
       render(<AgentView />);
       const heading = screen.getByRole("heading", { level: 1 });
-      expect(heading).toHaveTextContent("Agent");
-    });
-  });
-
-  describe("ローディング状態", () => {
-    it("should display loading state when isLoadingSkills is true", async () => {
-      const { useIsLoadingSkills } = await import("../../../store");
-      vi.mocked(useIsLoadingSkills).mockReturnValue(true);
-
-      render(<AgentView />);
-      expect(screen.getByText("スキルを読み込み中...")).toBeInTheDocument();
+      expect(heading).toHaveTextContent("AIアシスタント");
     });
   });
 
   describe("空状態", () => {
-    it("should display placeholder message when not loading", () => {
+    it("should display SkillCenter導線 when no skills imported", () => {
       render(<AgentView />);
       expect(
-        screen.getByText("スキルがインポートされていません"),
+        screen.getByText(/Skill Center|ツールをインポート/),
       ).toBeInTheDocument();
+    });
+
+    it("should display ツールを追加 button in empty state", () => {
+      render(<AgentView />);
+      expect(screen.getByText("ツールを追加")).toBeInTheDocument();
     });
   });
 
@@ -153,23 +156,24 @@ describe("AgentView", () => {
       expect(heading).toBeInTheDocument();
     });
 
-    it("should have proper semantic structure", () => {
+    it("should have proper semantic structure with sections", () => {
       render(<AgentView />);
-      // Header section should contain the title
-      const header = screen.getByRole("banner");
-      expect(header).toBeInTheDocument();
+      const regions = screen.getAllByRole("region");
+      // できること + 最近の実行 = 2 regions minimum
+      expect(regions.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("should have main content section", () => {
+    it("should have radiogroup for ツール選択", () => {
       render(<AgentView />);
-      // Using section element for main content
-      const section = screen.getByRole("region");
-      expect(section).toBeInTheDocument();
+      const radiogroup = screen.getByRole("radiogroup", {
+        name: "ツール選択",
+      });
+      expect(radiogroup).toBeInTheDocument();
     });
   });
 
   describe("スキル一覧表示", () => {
-    it("should display skills when available", async () => {
+    it("should display skills as SkillChip when available", async () => {
       const mockSkills = [
         {
           id: "skill-1",
@@ -184,7 +188,9 @@ describe("AgentView", () => {
       vi.mocked(useImportedSkills).mockReturnValue(mockSkills as never);
 
       render(<AgentView />);
-      expect(screen.getByText("Test Skill")).toBeInTheDocument();
+      expect(screen.getAllByText("Test Skill").length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
   });
 
@@ -204,7 +210,9 @@ describe("AgentView", () => {
       ] as never);
 
       render(<AgentView />);
-      expect(screen.getByText("Skill Without Category")).toBeInTheDocument();
+      expect(
+        screen.getAllByText("Skill Without Category").length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it("should render skill with empty triggers array", async () => {
@@ -222,7 +230,9 @@ describe("AgentView", () => {
       ] as never);
 
       render(<AgentView />);
-      expect(screen.getByText("Skill With Empty Triggers")).toBeInTheDocument();
+      expect(
+        screen.getAllByText("Skill With Empty Triggers").length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -243,26 +253,7 @@ describe("AgentView", () => {
       ] as never);
 
       render(<AgentView />);
-      expect(screen.getByText(longName)).toBeInTheDocument();
-    });
-
-    it("should handle very long skill description", async () => {
-      const longDescription = "B".repeat(500);
-      const skillWithLongDescription = {
-        id: "skill-long-desc",
-        name: "Skill With Long Description",
-        description: longDescription,
-        path: "/path",
-        triggers: ["test"],
-      };
-
-      const { useImportedSkills } = await import("../../../store");
-      vi.mocked(useImportedSkills).mockReturnValue([
-        skillWithLongDescription,
-      ] as never);
-
-      render(<AgentView />);
-      expect(screen.getByText(longDescription)).toBeInTheDocument();
+      expect(screen.getAllByText(longName).length).toBeGreaterThanOrEqual(1);
     });
 
     it("should handle long error message", async () => {
@@ -293,8 +284,8 @@ describe("AgentView", () => {
 
       render(<AgentView />);
       expect(
-        screen.getByText("Skill With Empty Description"),
-      ).toBeInTheDocument();
+        screen.getAllByText("Skill With Empty Description").length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 
@@ -312,66 +303,40 @@ describe("AgentView", () => {
       vi.mocked(useImportedSkills).mockReturnValue(manySkills as never);
 
       render(<AgentView />);
-      expect(screen.getByText("Skill 0")).toBeInTheDocument();
-      expect(screen.getByText("Skill 99")).toBeInTheDocument();
+      expect(screen.getAllByText("Skill 0").length).toBeGreaterThanOrEqual(1);
+      expect(screen.getAllByText("Skill 99").length).toBeGreaterThanOrEqual(1);
     });
   });
 
   describe("アクセシビリティ拡張", () => {
     it("should have proper ARIA labels on main sections", () => {
       render(<AgentView />);
-      const region = screen.getByRole("region");
-      expect(region).toHaveAttribute("aria-label");
-    });
-
-    it("should have banner role for header", () => {
-      render(<AgentView />);
-      const banner = screen.getByRole("banner");
-      expect(banner).toBeInTheDocument();
+      const regions = screen.getAllByRole("region");
+      regions.forEach((region) => {
+        expect(region).toHaveAttribute("aria-label");
+      });
     });
 
     it("should have heading hierarchy", () => {
       render(<AgentView />);
       const heading = screen.getByRole("heading", { level: 1 });
-      expect(heading).toHaveTextContent("Agent");
+      expect(heading).toHaveTextContent("AIアシスタント");
     });
 
-    it("should show error with proper styling", async () => {
-      const { useSkillError } = await import("../../../store");
-      vi.mocked(useSkillError).mockReturnValue("Test error");
-
+    it("should have region for できること section", () => {
       render(<AgentView />);
-      const errorElement = screen.getByText("Test error");
-      expect(errorElement).toHaveClass("text-red-400");
-    });
-
-    it("should have region for error state", async () => {
-      const { useSkillError } = await import("../../../store");
-      vi.mocked(useSkillError).mockReturnValue("Error message");
-
-      render(<AgentView />);
-      const region = screen.getByRole("region");
-      expect(region).toHaveAttribute("aria-label", "エラー");
-    });
-
-    it("should have region for main content", () => {
-      render(<AgentView />);
-      const region = screen.getByRole("region");
-      expect(region).toHaveAttribute("aria-label", "メインコンテンツ");
+      const regions = screen.getAllByRole("region");
+      const dekiruRegion = regions.find(
+        (r) => r.getAttribute("aria-label") === "できること",
+      );
+      expect(dekiruRegion).toBeInTheDocument();
     });
   });
 
   describe("状態遷移", () => {
-    it("should display loading then content", async () => {
+    it("should display skills when loaded", async () => {
       const store = await import("../../../store");
 
-      // First render with loading
-      vi.mocked(store.useIsLoadingSkills).mockReturnValue(true);
-
-      const { rerender } = render(<AgentView />);
-      expect(screen.getByText("スキルを読み込み中...")).toBeInTheDocument();
-
-      // Rerender with content
       const mockSkills = [
         {
           id: "skill-1",
@@ -382,11 +347,12 @@ describe("AgentView", () => {
         },
       ];
 
-      vi.mocked(store.useIsLoadingSkills).mockReturnValue(false);
       vi.mocked(store.useImportedSkills).mockReturnValue(mockSkills as never);
 
-      rerender(<AgentView />);
-      expect(screen.getByText("Loaded Skill")).toBeInTheDocument();
+      render(<AgentView />);
+      expect(screen.getAllByText("Loaded Skill").length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
   });
 
@@ -404,10 +370,9 @@ describe("AgentView", () => {
       vi.mocked(useImportedSkills).mockReturnValue([japaneseSkill] as never);
 
       render(<AgentView />);
-      expect(screen.getByText("テストスキル")).toBeInTheDocument();
-      expect(
-        screen.getByText("これはテスト用のスキルです"),
-      ).toBeInTheDocument();
+      expect(screen.getAllByText("テストスキル").length).toBeGreaterThanOrEqual(
+        1,
+      );
     });
   });
 
@@ -428,21 +393,11 @@ describe("AgentView", () => {
   describe("ハンドラ動作", () => {
     it("should call fetchSkills and openImportDialog on import click", () => {
       render(<AgentView />);
-      // ヘッダー内のインポートボタンを特定（SkillList内にも同名ボタンが存在するため）
-      const header = screen.getByRole("banner");
-      const importButton = within(header).getByText("インポート");
-      fireEvent.click(importButton);
+      // ヘッダー内のインポートボタンをクリック
+      const importButtons = screen.getAllByText("インポート");
+      fireEvent.click(importButtons[0]);
       expect(mockFetchSkills).toHaveBeenCalledTimes(2); // mount + click
       expect(mockOpenImportDialog).toHaveBeenCalledTimes(1);
-    });
-
-    it("should call fetchSkills on retry click", async () => {
-      const { useSkillError } = await import("../../../store");
-      vi.mocked(useSkillError).mockReturnValue("テストエラー");
-      render(<AgentView />);
-      const retryButton = screen.getByText("再試行");
-      fireEvent.click(retryButton);
-      expect(mockFetchSkills).toHaveBeenCalledTimes(2); // mount + retry
     });
   });
 
@@ -464,8 +419,8 @@ describe("AgentView", () => {
     });
   });
 
-  describe("カテゴリ抽出", () => {
-    it("should extract categories from imported skills with category field", async () => {
+  describe("スキル表示", () => {
+    it("should display skills with category field", async () => {
       const skillsWithCategory = [
         {
           id: "skill-cat-1",
@@ -483,55 +438,14 @@ describe("AgentView", () => {
       );
 
       render(<AgentView />);
-      // カテゴリフィルタにカテゴリが反映されていることを確認
-      expect(screen.getByText("Skill With Category")).toBeInTheDocument();
+      expect(
+        screen.getAllByText("Skill With Category").length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 
-  describe("レスポンシブレイアウト", () => {
-    it("should render detail panel with mobile layout when window is narrow", async () => {
-      // windowWidthを小さく設定
-      Object.defineProperty(window, "innerWidth", {
-        writable: true,
-        configurable: true,
-        value: 800,
-      });
-
-      const mockSkill = {
-        id: "skill-mobile",
-        name: "Mobile Skill",
-        description: "Test mobile layout",
-        path: "/path/mobile",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      // レンダリング後に resize イベントを発火して handleResize をカバー
-      await act(() => {
-        window.dispatchEvent(new Event("resize"));
-      });
-
-      // モバイルレイアウトのオーバーレイが表示されることを確認
-      const detailPanel = screen.getByRole("complementary");
-      expect(detailPanel).toBeInTheDocument();
-
-      // windowWidthを元に戻す
-      Object.defineProperty(window, "innerWidth", {
-        writable: true,
-        configurable: true,
-        value: 1024,
-      });
-    });
-  });
-
-  describe("スキル選択ハンドラ", () => {
-    it("should call selectSkill when a skill is clicked in the list", async () => {
+  describe("スキルチップ選択", () => {
+    it("should display skill chips when skills are available", async () => {
       const mockSkills = [
         {
           id: "skill-click",
@@ -547,319 +461,9 @@ describe("AgentView", () => {
 
       render(<AgentView />);
 
-      // SkillList 内のスキルをクリック
-      const skillItem = screen.getByText("Clickable Skill");
-      fireEvent.click(skillItem);
-
-      expect(mockSelectSkill).toHaveBeenCalledWith(
-        expect.objectContaining({ id: "skill-click", name: "Clickable Skill" }),
-      );
-    });
-  });
-
-  describe("スキル詳細パネル表示", () => {
-    it("should display SkillDetailPanel when a skill is selected", async () => {
-      const mockSkill = {
-        id: "skill-selected",
-        name: "Selected Skill",
-        description: "A selected skill",
-        path: "/path/selected",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-      // SkillDetailPanel がレンダリングされることを確認（complementary role）
-      const detailPanel = screen.getByRole("complementary");
-      expect(detailPanel).toBeInTheDocument();
       expect(
-        within(detailPanel).getByText("Selected Skill"),
-      ).toBeInTheDocument();
-    });
-
-    it("should not display SkillDetailPanel when no skill is selected", () => {
-      render(<AgentView />);
-      // selectedSkill が null のとき、詳細パネルは非表示
-      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
-    });
-
-    it("should call showToast on successful execute", async () => {
-      const mockSkill = {
-        id: "skill-exec",
-        name: "Exec Skill",
-        description: "Test execution",
-        path: "/path/exec",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      // 詳細パネルの実行ボタンをクリック
-      const detailPanel = screen.getByRole("complementary");
-      const executeButton = within(detailPanel).getByText("実行");
-      await act(async () => {
-        fireEvent.click(executeButton);
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "success",
-        "Exec Skill を実行しました",
-      );
-    });
-
-    it("should call removeSkill and showToast on successful delete", async () => {
-      const mockSkill = {
-        id: "skill-delete",
-        name: "Delete Skill",
-        description: "Test deletion",
-        path: "/path/delete",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      mockRemoveSkill.mockResolvedValue(undefined);
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      // 詳細パネルの削除ボタンをクリック
-      const detailPanel = screen.getByRole("complementary");
-      const deleteButton = within(detailPanel).getByText("削除");
-      fireEvent.click(deleteButton);
-
-      // 確認ダイアログの「はい」をクリック
-      const confirmButton = screen.getByText("はい");
-      await act(async () => {
-        fireEvent.click(confirmButton);
-      });
-
-      expect(mockRemoveSkill).toHaveBeenCalledWith("Delete Skill");
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "success",
-        "Delete Skill を削除しました",
-      );
-      expect(mockSelectSkill).toHaveBeenCalledWith(null);
-    });
-
-    it("should show error toast when execute fails with Error", async () => {
-      const mockSkill = {
-        id: "skill-exec-fail",
-        name: "Exec Fail Skill",
-        description: "Test execution failure",
-        path: "/path/exec-fail",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      // window.electronAPI.skill.execute をエラーに設定
-      const execMock = vi.fn().mockRejectedValue(new Error("Exec error"));
-      (
-        window as unknown as {
-          electronAPI: { skill: { execute: typeof execMock } };
-        }
-      ).electronAPI.skill.execute = execMock;
-
-      render(<AgentView />);
-
-      const detailPanel = screen.getByRole("complementary");
-      const executeButton = within(detailPanel).getByText("実行");
-      await act(async () => {
-        fireEvent.click(executeButton);
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        "スキル実行に失敗しました: Exec error",
-      );
-    });
-
-    it("should show settings guidance and skip execute when auth preflight fails", async () => {
-      const mockSkill = {
-        id: "skill-auth-preflight",
-        name: "Auth Preflight Skill",
-        description: "Test auth preflight",
-        path: "/path/auth-preflight",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      const executeMock = vi.fn();
-      const existsMock = vi.fn().mockResolvedValue({ exists: false });
-      (
-        window as unknown as {
-          electronAPI: {
-            skill: { execute: typeof executeMock };
-            authKey: { exists: typeof existsMock };
-          };
-        }
-      ).electronAPI = {
-        skill: { execute: executeMock },
-        authKey: { exists: existsMock },
-      };
-
-      render(<AgentView />);
-
-      const detailPanel = screen.getByRole("complementary");
-      const executeButton = within(detailPanel).getByText("実行");
-      await act(async () => {
-        fireEvent.click(executeButton);
-      });
-
-      expect(existsMock).toHaveBeenCalledTimes(1);
-      expect(executeMock).not.toHaveBeenCalled();
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        expect.stringContaining("設定画面でAPIキーを登録"),
-      );
-    });
-
-    it("should show generic error toast when execute fails with non-Error", async () => {
-      const mockSkill = {
-        id: "skill-exec-fail-generic",
-        name: "Exec Fail Generic",
-        description: "Test execution failure with non-Error",
-        path: "/path/exec-fail-generic",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      // window.electronAPI.skill.execute を非Errorで reject
-      const execMock = vi.fn().mockRejectedValue("string error");
-      (
-        window as unknown as {
-          electronAPI: {
-            skill: { execute: typeof execMock };
-            authKey: { exists: () => Promise<{ exists: boolean }> };
-          };
-        }
-      ).electronAPI = {
-        skill: { execute: execMock },
-        authKey: { exists: vi.fn().mockResolvedValue({ exists: true }) },
-      };
-
-      render(<AgentView />);
-
-      const detailPanel = screen.getByRole("complementary");
-      const executeButton = within(detailPanel).getByText("実行");
-      await act(async () => {
-        fireEvent.click(executeButton);
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        "スキル実行に失敗しました",
-      );
-    });
-
-    it("should show generic error toast when delete fails with non-Error", async () => {
-      const mockSkill = {
-        id: "skill-delete-fail-generic",
-        name: "Delete Fail Generic",
-        description: "Test deletion failure with non-Error",
-        path: "/path/delete-fail-generic",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      mockRemoveSkill.mockRejectedValue("string error");
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      const detailPanel = screen.getByRole("complementary");
-      const deleteButton = within(detailPanel).getByText("削除");
-      fireEvent.click(deleteButton);
-
-      const confirmButton = screen.getByText("はい");
-      await act(async () => {
-        fireEvent.click(confirmButton);
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith("error", "削除に失敗しました");
-    });
-
-    it("should show error toast when delete fails", async () => {
-      const mockSkill = {
-        id: "skill-delete-fail",
-        name: "Delete Fail Skill",
-        description: "Test deletion failure",
-        path: "/path/delete-fail",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      mockRemoveSkill.mockRejectedValue(new Error("Delete error"));
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      const detailPanel = screen.getByRole("complementary");
-      const deleteButton = within(detailPanel).getByText("削除");
-      fireEvent.click(deleteButton);
-
-      const confirmButton = screen.getByText("はい");
-      await act(async () => {
-        fireEvent.click(confirmButton);
-      });
-
-      expect(mockRemoveSkill).toHaveBeenCalledWith("Delete Fail Skill");
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        "削除に失敗しました: Delete error",
-      );
-    });
-
-    it("should call selectSkill(null) when close button is clicked on detail panel", async () => {
-      const mockSkill = {
-        id: "skill-close-test",
-        name: "Close Test Skill",
-        description: "Test closing detail panel",
-        path: "/path/close",
-        triggers: ["test"],
-        anchors: [],
-      };
-
-      const store = await import("../../../store");
-      vi.mocked(store.useSelectedSkill).mockReturnValue(mockSkill as never);
-      vi.mocked(store.useImportedSkills).mockReturnValue([mockSkill] as never);
-
-      render(<AgentView />);
-
-      // 詳細パネルの閉じるボタンをクリック
-      const closeButton = screen.getByLabelText("閉じる");
-      fireEvent.click(closeButton);
-
-      expect(mockSelectSkill).toHaveBeenCalledWith(null);
+        screen.getAllByText("Clickable Skill").length,
+      ).toBeGreaterThanOrEqual(1);
     });
   });
 

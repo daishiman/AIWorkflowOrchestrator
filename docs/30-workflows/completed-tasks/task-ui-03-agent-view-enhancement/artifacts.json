@@ -1,0 +1,123 @@
+{
+  "feature": "agent-view-enhancement",
+  "created": "2026-03-06T23:07:03.721Z",
+  "lastUpdated": "2026-03-07T09:30:00.000Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-1-requirements.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-1/requirements-definition.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-2-design.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-2/architecture-design.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-3-design-review.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-3/design-review-result.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-4-test-creation.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-5-implementation.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-6-test-expansion.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-6/test-expansion-report.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-7-coverage-check.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-7/coverage-report.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-8-refactoring.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-8/refactoring-report.md",
+        "apps/desktop/src/renderer/components/organisms/AgentView/animations.ts",
+        "apps/desktop/src/renderer/components/organisms/AgentView/styles.ts"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-9-quality-assurance.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-9/quality-report.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-10-final-review.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-10/final-review-result.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-11-manual-test.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-11/manual-test-report.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-11/screenshots/NOTE.txt"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-12-documentation.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/component-documentation.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/spec-update-summary.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/unassigned-task-report.md",
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "status": "spec_ready",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-13-pr-creation.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "actualPhases": 13
+  }
+}

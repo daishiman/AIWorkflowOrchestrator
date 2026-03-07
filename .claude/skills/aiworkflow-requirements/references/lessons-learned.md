@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
 | 2026-03-06 | 1.29.41 | UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を追補。実装ガイドが Part 1/2 構造だけ満たしても内容不足のまま通り得る苦戦箇所を追加し、`validate-phase12-implementation-guide.js` による内容検証を標準ルール化 |
@@ -162,6 +163,64 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
+
+### 苦戦箇所: z-index 事前設計の必要性
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UIコンポーネント追加時に GlobalNavStrip（z-20）、AdvancedSettingsPanel（z-40）、FloatingExecutionBar（z-50）の z-index が衝突するリスクがあった |
+| 再発条件 | 複数のオーバーレイ・フローティング要素を持つ画面に新規コンポーネントを追加する場合 |
+| 対処 | Phase 2 のアーキテクチャ設計で「z-index 管理テーブル」を事前定義し、全コンポーネントの積層順序を確定させた。結果として Phase 5 実装時に z-index 衝突 0 件を達成 |
+| 標準ルール | UI追加タスクの Phase 2 テンプレートに z-index 管理テーブルを必須欄として含める。新規コンポーネント追加時は既存の z-index 割り当てを `grep -rn 'z-[0-9]' apps/desktop/src/` で事前調査する |
+
+### 苦戦箇所: CSS変数ベースの定数抽出タイミング（P47派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Tailwind arbitrary values（`bg-[var(--status-primary)]`）を使用した場合、テストで長い className 文字列をハードコードしていた。P47 と同様のパターンだが、定数抽出のタイミングが遅れたことで修正コストが増加した |
+| 再発条件 | CSS変数ベースのスタイリングを採用し、Phase 5 実装時に定数抽出を行わず、Phase 8 リファクタリングまで先送りする場合 |
+| 対処 | Phase 8 で `styles.ts` と `animations.ts` を抽出し定数管理に統一。テスト側も定数を import して期待値を生成するパターンに移行した |
+| 標準ルール | UIコンポーネント追加時は Phase 5 実装直後に CSS変数ベースのスタイル定数抽出を検討する。Phase 8 時点ではテストが多く修正コストが増加するため、早期抽出を推奨する |
+
+**関連パターン**: [06-known-pitfalls.md#P47](../../rules/06-known-pitfalls.md) — CSS変数ベースのスタイルテストアサーション戦略
+
+```typescript
+// ❌ Phase 5 でハードコード（修正コスト増）
+expect(element).toHaveClass("bg-[var(--status-primary)]");
+
+// ✅ Phase 5 で早期に定数抽出
+// styles.ts
+export const statusStyles = {
+  primary: "bg-[var(--status-primary)] text-[var(--text-inverse)]",
+};
+
+// テスト側
+import { statusStyles } from "./styles";
+expect(element.className).toContain(statusStyles.primary);
+```
+
+### 苦戦箇所: アクセシビリティ属性の段階的検出パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 5 実装時点で `role="radiogroup"`、`role="dialog"`、`aria-label` 不整合などのアクセシビリティ属性が不足していた |
+| 再発条件 | UIコンポーネント実装時にアクセシビリティを「後から追加する」前提で進め、Phase 4 テスト設計に WCAG 準拠テストケースを含めない場合 |
+| 対処 | Phase 10 最終レビューで MINOR 指摘 3 件として検出し、未タスク化（UT-UI-03-A11Y-DIALOG-001、UT-UI-03-A11Y-LABEL-001、UT-UI-03-A11Y-RADIOGROUP-001） |
+| 標準ルール | Phase 4 テスト設計時に WCAG 2.1 AA 準拠のテストケースを含める。具体的には `role` 属性、`aria-label`/`aria-labelledby`、キーボード操作、コントラスト比の4項目を必須チェック対象とする |
+
+**参照**: [01-architecture.md#アクセシビリティ](../../rules/01-architecture.md) — WCAG 2.1 AA 準拠要件
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 2 設計時に z-index 管理テーブルを作成し、既存コンポーネントの z-index を `grep -rn 'z-[0-9]' apps/desktop/src/` で調査する。
+2. Phase 4 テスト設計時に WCAG 2.1 AA 準拠テストケース（role、aria-label、キーボード操作、コントラスト比）を含める。
+3. Phase 5 実装直後に CSS変数ベースのスタイル定数を `styles.ts` / `animations.ts` に抽出し、テストは定数を import して期待値を生成する。
+4. Phase 9 品質検証で `aria-label` / `role` 属性の網羅性を確認し、不足があれば Phase 10 前に修正する。
+5. Phase 10 MINOR 指摘はアクセシビリティ関連を含め全て未タスク仕様書に変換し、3ステップ（指示書作成 → 残課題テーブル → 関連仕様書リンク）を完了する。
 
 ---
 
@@ -5358,3 +5417,66 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | [ ] 06-known-pitfalls.md と整合 | 汎用的な教訓は pitfalls にも追加 |
 | [ ] 変更履歴を更新 | 本ドキュメント上部の変更履歴テーブルを更新 |
 | [ ] 目次を更新 | 新規タスクを目次に追加 |
+
+## TASK-10A-E-C: Store駆動ライフサイクル統合設計（2026-03-06）
+
+### 苦戦箇所: Phase 12成果物の「計画」記述が残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec-update-summary.md` を更新しても `documentation-changelog.md` が「仕様策定のみ」のまま残存しやすい |
+| 再発条件 | 複数成果物の同期を分離実行し、最終突合を省略する |
+| 対処 | Phase 12の最終段で `documentation-changelog` を正本として再生成し、Task 1〜5 を明示記録 |
+| 標準ルール | 「計画」文言（予定/実行待ち/仕様策定のみ）を完了前に `rg` で全件排除する |
+
+### 苦戦箇所: 未タスク指示書のフォーマット逸脱
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 最小構成で作成すると `unassigned-task` 監査で必須見出し不足が発生 |
+| 再発条件 | `## 1..9` セクションを省略して作成する |
+| 対処 | `assets/unassigned-task-template.md` を必ず適用し、Why/What/How/検証/リスクを明示 |
+| 標準ルール | 未タスク作成後に `audit-unassigned-tasks --target-file` で個別検証する |
+
+### 苦戦箇所: P31派生パターン（useShallow未適用による無限ループ）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `.filter()` を使う派生selectorがZustandの `Object.is` 比較で毎回新参照と判定され、`renderHook` テストで無限ループ発生 |
+| 再発条件 | 配列を返す派生セレクタに `useShallow` を適用しない |
+| 対処 | `zustand/react/shallow` の `useShallow` でセレクタをラップし、shallow比較で内容同一時の再レンダリングを抑制 |
+| 標準ルール | `.filter()` / `.map()` / スプレッド構文で新しい参照を返すセレクタには `useShallow` を必ず適用する |
+
+### 苦戦箇所: worktree環境でのrollup native module不足
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree環境で `Cannot find module @rollup/rollup-darwin-x64` が発生し vitest 実行不可 |
+| 再発条件 | worktreeの `node_modules` がシンボリックリンクではなく実体コピーされた場合、native moduleが欠落する |
+| 対処 | worktreeディレクトリで `pnpm install --frozen-lockfile` を実行し、native moduleを再生成 |
+| 標準ルール | worktreeでのテスト実行前に必ず `pnpm install --frozen-lockfile` を実行する |
+
+### 苦戦箇所: 既存実装が設計の大半を満たしていた場合の差分分析
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 2で設計した要件の大半が既存の `agentSlice` に実装済みだったため、新規実装範囲が派生セレクタ2件のみに縮小 |
+| 再発条件 | 仕様策定タスクで既存コードの事前調査なしに設計を開始する |
+| 対処 | Phase 1-2の初期段階で既存実装をコードレベルで確認し、差分（未実装部分）のみを設計対象とする |
+| 標準ルール | 仕様策定タスクでは必ず既存コードの `grep` / `Read` を先行し、設計前に差分分析を完了させる |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Phase 12の必須成果物5件を先に作成し、`Task 1〜5` の実施ログを埋める。
+2. `phase-12-documentation.md` のチェックボックスを実績に合わせて同期する。
+3. 未タスクはテンプレート準拠で `docs/30-workflows/unassigned-task/` に作成する。
+4. `verify-all-specs` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` を再実行し、結果を changelog に固定する。
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| 派生selectorで無限ループ | `import { useShallow } from "zustand/react/shallow"` → セレクタを `useShallow()` でラップ |
+| worktreeでnative module不足 | `cd <worktree-dir> && pnpm install --frozen-lockfile` |
+| Phase 12の「計画」文言残存 | `rg "予定\|実行待ち\|仕様策定のみ" outputs/phase-12/` で全件排除 |
+| 未タスク9見出し不足 | `audit-unassigned-tasks --target-file <path>` で個別検証 |
