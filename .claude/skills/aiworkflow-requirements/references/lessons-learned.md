@@ -21,6 +21,10 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
+||||||| Stash base
+| 2026-03-08 | 1.29.47 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 のコード例と関連Pitfall参照を追加。customStorage 3段ガードパターンを標準手順として明文化 |
+| 2026-03-07 | 1.29.46 | branch横断 Phase 12 再監査の教訓を追加。単体workflow PASS だけでは見逃す欠落（他workflowの実装ガイド未作成・統合テスト連携欠落）を未タスク3件へ分離し、`docs/30-workflows/unassigned-task/` へ正規配置する運用を標準化 |
+| 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の教訓を追加。破損persist入力の復旧境界（Set/Array検証）と、UI差分が小さいタスクでも screenshot 証跡を先に固定する運用を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
@@ -204,6 +208,84 @@
 4. Phase 12 は Step完了後に changelog を更新し、計画表現を残さない。  
 
 ---
+
+||||||| Stash base
+
+## TASK-PHASE12-BRANCH-CROSS-AUDIT: branch横断 Phase 12 再監査（2026-03-07）
+
+### 苦戦箇所: 単一workflowの完了感で branch 全体の未準拠を見落としやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 07 workflow をPASS化した時点で、10/11/12のPhase 12不足（実装ガイド未作成、必須セクション欠落）を見落としやすかった |
+| 再発条件 | 「今回修正したworkflow」だけを検証対象にした場合 |
+| 対処 | branch横断で `validate-phase-output` / `validate-phase12-implementation-guide` を一括実行し、未タスク3件へ分離して登録 |
+| 標準ルール | Phase 12完了判定は `current workflow + 同時変更workflow` をセットで監査する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 変更中workflow一覧を `git status --short` から抽出する。  
+2. 各workflowへ `validate-phase-output` と `validate-phase12-implementation-guide` を実行する。  
+3. 欠落を未タスクへ分離し、`docs/30-workflows/unassigned-task/` に配置する。  
+4. `audit-unassigned-tasks --diff-from HEAD` で current違反0を確認する。  
+
+## TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001: persist iterable hardening（2026-03-07）
+
+### 苦戦箇所: 永続化データを信頼しすぎると hydrate でクラッシュする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `expandedFolders` が配列でない値（`null` / `number` / `object`）を持つと `new Set(...)` で `object is not iterable` が発生した |
+| 再発条件 | localStorageに壊れた値が残った状態で hydrate する場合 |
+| 対処 | `Array.isArray` + `typeof === "string"` で入力検証し、非配列は空 `Set` にフォールバック |
+| 標準ルール | persist復元時は「型検証→フィルタ→安全既定値」の3段を必須化する |
+
+### 苦戦箇所: UI差分が小さいタスクで screenshot 証跡が抜けやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 初期計画を「非視覚のみ」にすると、再監査で証跡不足と判定されやすい |
+| 再発条件 | ユーザーが後から screenshot 検証を要求した場合 |
+| 対処 | Phase 11 で light/dark 2ケースを撮影し、`manual-test-result.md` に TC-ID と png を紐付けた |
+| 標準ルール | UI差分が小さくても、ユーザー要求があれば screenshot を優先して残す |
+
+### コード例: customStorage の3段ガードパターン
+
+```typescript
+// getItem での iterable guard (DD-01)
+const raw = parsed.state.expandedFolders;
+if (Array.isArray(raw)) {
+  // 型検証: 配列の各要素が string であることを確認
+  parsed.state.expandedFolders = new Set(
+    raw.filter((v: unknown) => typeof v === "string"),
+  );
+} else {
+  // 安全既定値: 非配列は空 Set にフォールバック
+  if (raw !== undefined && raw !== null) {
+    console.warn("[customStorage] expandedFolders is not an array:", typeof raw);
+  }
+  parsed.state.expandedFolders = new Set<string>();
+}
+```
+
+**3段ガードの構造:**
+
+1. **型検証** — `Array.isArray(raw)` で配列であることを確認（`as Set<string>` のような型キャストを排除）
+2. **要素フィルタ** — `.filter((v: unknown) => typeof v === "string")` で各要素の型を検証
+3. **安全既定値** — 非配列・`null`・`undefined` はすべて空 `Set<string>()` にフォールバック
+
+### 関連Pitfall
+
+- **[P19](../../rules/06-known-pitfalls.md#P19)**: 型キャスト（`as`）による実行時検証バイパス — 本タスクでは `as Set<string>` を `Array.isArray` + `instanceof Set` による実行時型検証に置換した。永続化データは JSON.parse 後の shape が保証されないため、型キャストではなく実行時検証が必須
+- **[P48 (non-null assertion)](../../rules/06-known-pitfalls.md#P48)**: `result.data!.providers` と同様に、永続化データも実行時型検証が必須。localStorage から復元した値に対して `!` や `as` で型安全を偽装すると、破損データでランタイムクラッシュする
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. persist復元対象に `Array.isArray` / `instanceof Set` ガードを入れる。
+2. 非正常値は warning を出して安全既定値にフォールバックする。
+3. テストで破損値5パターン以上を固定し、回帰を先に防ぐ。
+4. Phase 11 で最低2枚（light/dark）の画面証跡を残し、TC-IDで紐付ける。
+
 
 ## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
 

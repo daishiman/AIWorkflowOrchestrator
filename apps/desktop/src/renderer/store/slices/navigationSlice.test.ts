@@ -104,4 +104,61 @@ describe("navigationSlice", () => {
       expect(store.canGoBack()).toBe(false);
     });
   });
+
+  describe("iterable hardening (TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001)", () => {
+    describe("setCurrentView - viewHistory破損時", () => {
+      it.each([
+        ["null", null],
+        ["undefined", undefined],
+        ["number", 42],
+        ["string", "dashboard"],
+        ["object", { view: "editor" }],
+      ])(
+        "viewHistoryが%sでもcrashせず[view]にフォールバックする",
+        (_label, corruptValue) => {
+          // viewHistoryを破損値に手動設定
+          (store as Record<string, unknown>).viewHistory = corruptValue;
+
+          // setCurrentViewがcrashしないことを確認
+          expect(() => store.setCurrentView("settings")).not.toThrow();
+          expect(store.currentView).toBe("settings");
+          expect(store.viewHistory).toEqual(["settings"]);
+        },
+      );
+    });
+
+    describe("goBack - viewHistory破損時", () => {
+      it.each([
+        ["null", null],
+        ["undefined", undefined],
+        ["number", 42],
+        ["string", "dashboard"],
+        ["object", { view: "editor" }],
+      ])(
+        "viewHistoryが%sでもcrashせず現在のビューを維持する",
+        (_label, corruptValue) => {
+          (store as Record<string, unknown>).viewHistory = corruptValue;
+
+          expect(() => store.goBack()).not.toThrow();
+          // currentViewは変更されない
+          expect(store.currentView).toBe("dashboard");
+        },
+      );
+    });
+
+    describe("canGoBack - viewHistory破損時", () => {
+      it.each([
+        ["null", null],
+        ["undefined", undefined],
+        ["number", 42],
+        ["string", "dashboard"],
+        ["object", { view: "editor" }],
+      ])("viewHistoryが%sでもcrashせずfalseを返す", (_label, corruptValue) => {
+        (store as Record<string, unknown>).viewHistory = corruptValue;
+
+        expect(() => store.canGoBack()).not.toThrow();
+        expect(store.canGoBack()).toBe(false);
+      });
+    });
+  });
 });

@@ -8,23 +8,24 @@
 
 ## メタ情報
 
-| 項目 | 値 |
-|------|---|
-| 正本 | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` |
-| 目的 | IPC修正時のインターフェース不整合（契約ドリフト）を防止するチェックリスト |
-| スコープ | Main Process ハンドラー、Preload API、型定義、テスト、仕様書の同時更新 |
-| 対象読者 | AIWorkflowOrchestrator 開発者 |
-| 統合パターン | P23, P32, P42, P44 |
+| 項目         | 値                                                                            |
+| ------------ | ----------------------------------------------------------------------------- |
+| 正本         | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` |
+| 目的         | IPC修正時のインターフェース不整合（契約ドリフト）を防止するチェックリスト     |
+| スコープ     | Main Process ハンドラー、Preload API、型定義、テスト、仕様書の同時更新        |
+| 対象読者     | AIWorkflowOrchestrator 開発者                                                 |
+| 統合パターン | P23, P32, P42, P44                                                            |
 
 ---
 
 ## 変更履歴
 
-| 日付 | バージョン | 変更内容 |
-|------|-----------|----------|
-| 2026-03-06 | 1.2.0 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を反映。shared transport DTO 正本化、`IPCResponse<T>` envelope、event payload と quick-reference 同期の確認項目を追加 |
-| 2026-02-25 | 1.1.0 | AUTH IPC登録一元化（UT-IPC-AUTH-HANDLE-DUPLICATE-001）を反映。通常経路とfallback経路の二重登録監査チェックを追加 |
-| 2026-02-20 | 1.0.0 | 初版作成（UT-FIX-SKILL-REMOVE-INTERFACE-001 の教訓から抽出） |
+| 日付       | バージョン | 変更内容                                                                                                                                                        |
+| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-07 | 1.3.0      | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 を反映。CC-7（レスポンス配列フィールドの防御検証）を追加                                                         |
+| 2026-03-06 | 1.2.0      | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を反映。shared transport DTO 正本化、`IPCResponse<T>` envelope、event payload と quick-reference 同期の確認項目を追加 |
+| 2026-02-25 | 1.1.0      | AUTH IPC登録一元化（UT-IPC-AUTH-HANDLE-DUPLICATE-001）を反映。通常経路とfallback経路の二重登録監査チェックを追加                                                |
+| 2026-02-20 | 1.0.0      | 初版作成（UT-FIX-SKILL-REMOVE-INTERFACE-001 の教訓から抽出）                                                                                                    |
 
 ---
 
@@ -34,12 +35,12 @@ IPC（Inter-Process Communication）のインターフェース変更では、Ma
 
 本チェックリストは以下の4つの Pitfall パターンを統合し、IPC修正時の品質ゲートとして機能する。
 
-| Pitfall | パターン名 | 概要 |
-|---------|-----------|------|
-| P23 | API二重定義の型管理複雑性 | 型定義ファイルの同時更新漏れ |
-| P32 | 型定義の二箇所同時更新必須 | `packages/shared` と `apps/desktop/src/preload` の型乖離 |
-| P42 | `.trim()` バリデーション漏れ | 文字列引数のスペースのみ入力がバリデーション通過 |
-| P44 | IPC契約ドリフト | ハンドラーとPreloadの引数形式不整合（オブジェクト vs 文字列） |
+| Pitfall | パターン名                   | 概要                                                          |
+| ------- | ---------------------------- | ------------------------------------------------------------- |
+| P23     | API二重定義の型管理複雑性    | 型定義ファイルの同時更新漏れ                                  |
+| P32     | 型定義の二箇所同時更新必須   | `packages/shared` と `apps/desktop/src/preload` の型乖離      |
+| P42     | `.trim()` バリデーション漏れ | 文字列引数のスペースのみ入力がバリデーション通過              |
+| P44     | IPC契約ドリフト              | ハンドラーとPreloadの引数形式不整合（オブジェクト vs 文字列） |
 
 ---
 
@@ -119,6 +120,14 @@ if (
 - [ ] **5-6**: `lessons-learned.md` に苦戦箇所を記録（該当する場合）
 - [ ] **5-7**: 戻り値型がRendererの期待する型と一致することを確認（例: `skill:import` は `ImportedSkill` を返すこと。`ImportResult` ではない）
 
+### CC-7: レスポンス配列フィールドの防御検証（06-TASK 追加）
+
+| チェック | 確認事項                                                                             |
+| -------- | ------------------------------------------------------------------------------------ |
+| CC-7a    | Main ハンドラのレスポンス生成前に配列フィールドが `Array.isArray` で検証されているか |
+| CC-7b    | Renderer 側で配列要素の shape が type predicate でフィルタされているか               |
+| CC-7c    | type predicate で `in` 演算子を使用しているか（`as` キャストではなく）               |
+
 ### Phase 6: テスト検証
 
 - [ ] **6-1**: 変更対象のテストファイルを実行し全PASS確認
@@ -164,24 +173,24 @@ rg -n "typeof .*string|=== \\\"\\\"" apps/desktop/src/main/ipc | rg -v "trim"
 
 ## 関連ドキュメント
 
-| ドキュメント | 関連性 |
-|-------------|--------|
-| [security-skill-ipc.md](./security-skill-ipc.md) | IPCチャネル検証テーブル（正本） |
-| [security-electron-ipc.md](./security-electron-ipc.md) | IPC全般のセキュリティ原則 |
-| [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md) | SkillAPI型定義・統一API仕様 |
-| [lessons-learned.md](./lessons-learned.md) | 実装苦戦箇所の詳細記録 |
+| ドキュメント                                                                         | 関連性                            |
+| ------------------------------------------------------------------------------------ | --------------------------------- |
+| [security-skill-ipc.md](./security-skill-ipc.md)                                     | IPCチャネル検証テーブル（正本）   |
+| [security-electron-ipc.md](./security-electron-ipc.md)                               | IPC全般のセキュリティ原則         |
+| [interfaces-agent-sdk-skill.md](./interfaces-agent-sdk-skill.md)                     | SkillAPI型定義・統一API仕様       |
+| [lessons-learned.md](./lessons-learned.md)                                           | 実装苦戦箇所の詳細記録            |
 | [architecture-implementation-patterns.md](./architecture-implementation-patterns.md) | 実装パターン集（S1: API二重定義） |
-| [skill-creator patterns.md](../../skill-creator/references/patterns.md) | IPC契約ドリフト防止パターン |
-| [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md) | P23/P32/P42/P44 の詳細と解決策 |
+| [skill-creator patterns.md](../../skill-creator/references/patterns.md)              | IPC契約ドリフト防止パターン       |
+| [06-known-pitfalls.md](../../../rules/06-known-pitfalls.md)                          | P23/P32/P42/P44 の詳細と解決策    |
 
 ---
 
 ## 適用事例
 
-| タスクID | チャネル | ドリフト内容 | 解決方法 |
-|----------|---------|-------------|---------|
-| UT-FIX-SKILL-REMOVE-INTERFACE-001 | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一 |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001 | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string` | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化 |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待 | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001 | `auth:*` | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化 | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定 |
-| TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 | `auth-mode:*` | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂 | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一 |
+| タスクID                                  | チャネル       | ドリフト内容                                                                                  | 解決方法                                                                                                                                                                                                          |
+| ----------------------------------------- | -------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001         | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string`                                       | ハンドラーを `skillName: string` に統一                                                                                                                                                                           |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001         | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string`                            | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化                                                                                                                                              |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001       | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待                             | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001          | `auth:*`       | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化                          | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定                                                                                                                                   |
+| TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 | `auth-mode:*`  | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂 | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一                                                                             |

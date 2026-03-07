@@ -13,6 +13,7 @@
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記 |
 | v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
 | v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
+| v3.11.0    | 2026-03-08 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 反映: `customStorage` の getItem/setItem に iterable guard（DD-01/DD-02）を追加。`expandedFolders` の `Array.isArray` + `typeof === "string"` フィルタリング、非配列入力時の `Set<string>()` フォールバック、`setItem` での `Set`/`Array` 二重対応を persist 復旧契約として明文化。`useCanGoBack` に `Array.isArray(state.viewHistory)` ガードを追加。branch横断 Phase 12 再監査で workflow 10/11/12 の Phase 12 不足を検出し未タスク3件へ分離 |
 | v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加 |
 | v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
 | v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記 |
@@ -1392,3 +1393,43 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 - `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
 - `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
 - 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。
+||||||| Stash base
+
+
+## Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001）
+
+### 目的
+
+`expandedFolders` / `viewHistory` の永続化破損で `object is not iterable` が発生する経路を遮断する。
+
+### 契約
+
+| 対象 | 入力検証 | フォールバック |
+| --- | --- | --- |
+| `expandedFolders` hydrate | `Array.isArray(raw)` | `new Set<string>()` |
+| `expandedFolders` persist | `instanceof Set` or `Array.isArray` | `[]` |
+| `viewHistory` setCurrentView | `Array.isArray(state.viewHistory)` | `[view]` |
+| `viewHistory` goBack/canGoBack | `Array.isArray(history)` | return / `false` |
+
+### persist 復旧契約（DD-01〜DD-05）
+
+`customStorage`（`apps/desktop/src/renderer/store/index.ts`）は Zustand `persist` ミドルウェアのカスタムストレージ実装であり、`localStorage` からの復元時に破損データを安全に処理する。
+
+| ID | 対象 | ガード内容 |
+| --- | --- | --- |
+| DD-01 | `getItem` / `expandedFolders` | `Array.isArray(raw)` → `raw.filter(v => typeof v === "string")` → `new Set(...)`. 非配列は `new Set<string>()` にフォールバック |
+| DD-02 | `setItem` / `expandedFolders` | `instanceof Set` → `Array.from()`、`Array.isArray` → `.filter(string)` の二段対応。それ以外は空配列 |
+| DD-03 | `useCanGoBack` | `Array.isArray(state.viewHistory)` を前提条件に追加（破損時は `false` 返却） |
+
+#### 設計原則
+
+- persist 復元時は「型検証→フィルタ→安全既定値」の3段を必須化する
+- `console.warn` で破損検出をロギング（`process.env.NODE_ENV !== 'test'` でガード不要、persist 問題は全環境で可視化すべき）
+- テストでは破損値5パターン以上（`null`, `undefined`, `number`, `object`, `string[]` with non-string elements）を固定
+
+### 実装ガイドライン
+
+- 永続化復元点では型検証を最優先し、異常値を直接spread/iterateしない。
+- フォールバック時は診断可能な warning を出し、アプリ継続を優先する。
+- 破損入力テスト（`null`/`undefined`/`number`/`string`/`object`）を標準テストセットに含める。
+

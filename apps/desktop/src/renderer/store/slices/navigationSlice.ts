@@ -34,13 +34,15 @@ export const createNavigationSlice: StateCreator<
 
     set((state) => ({
       currentView: view,
-      viewHistory: [...state.viewHistory, view],
+      viewHistory: Array.isArray(state.viewHistory)
+        ? [...state.viewHistory, view]
+        : [view],
     }));
   },
 
   goBack: () => {
     const history = get().viewHistory;
-    if (history.length <= 1) return;
+    if (!Array.isArray(history) || history.length <= 1) return;
 
     const newHistory = history.slice(0, -1);
     const previousView = newHistory[newHistory.length - 1];
@@ -52,7 +54,8 @@ export const createNavigationSlice: StateCreator<
   },
 
   canGoBack: () => {
-    return get().viewHistory.length > 1;
+    const history = get().viewHistory;
+    return Array.isArray(history) && history.length > 1;
   },
 
   setCurrentSkillName: (name) => {

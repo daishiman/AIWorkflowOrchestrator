@@ -12,138 +12,122 @@
 
 ## 目的
 
-apiKey.list 契約が壊れた場合でも SettingsView が継続表示されるように、Renderer / Preload / Main の response shape と fallback を設計し、実装できる仕様へ落とす。
-
-## 背景
-
-task-04 では linkedProviders だけを防御したが、SettingsView 固有の `ApiKeysSection` 側には response 正規化が入っていない。`result.data.providers` の shape が崩れるだけで renderer 側が落ちる経路が残っている。
-
-## Atent Team編成
-
-| SubAgent                | 関心ごと                         | 実行モード | Phase 11 の責務                             |
-| ----------------------- | -------------------------------- | ---------- | ------------------------------------------- |
-| SubAgent-Renderer-Guard | Renderer defensive normalization | 並列       | providers shape の正規化ポイントを設計する  |
-| SubAgent-Contract-IPC   | Main / Preload / Shared contract | 並列       | response envelope と shared type を確認する |
-| SubAgent-Test-Fallback  | 異常系テスト / fallback UX       | 並列       | malformed response ケースと文言を設計する   |
-| SubAgent-Lead-Sync      | 仕様統合 / aiworkflow 同期       | 直列統合   | task-04 の調査結果と本タスク境界を統合する  |
+自動テストではカバーできない UI 操作・視覚的フィードバック・E2E シナリオを手動で検証する。
 
 ## 実行タスク
 
-- 手動シナリオ 1: malformed response を返す dev harness で SettingsView を開く
-- 手動シナリオ 2: provider 一覧が空配列 fallback で表示されることを確認する
-- 手動シナリオ 3: 画面全体が継続操作できることを確認する
-- 手動シナリオ 4: ログに shape 異常の記録が残ることを確認する
+- テストマトリクス実行: MT-01〜MT-07 の全シナリオを手動実行し証跡を記録する
+- DevTools 確認: electronAPI 存在確認、console.warn ログ出力、メモリリークチェック
+- 証跡管理: スクリーンショット / ログ抜粋を outputs/phase-11/ に保存する
 
-## 参照資料
+## テストマトリクス
 
-### 実装・証跡
+## テストケース
 
-| 資料名              | パス                                                                                                                               | 用途                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Renderer Component  | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                                                          | providers 正規化の主対象                        |
-| Renderer Tests      | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx`                                  | shape 異常系の固定先                            |
-| Main IPC            | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                                                      | list / validate 契約の確認先                    |
-| Main IPC            | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                                                     | profile linked providers 側の防御との整合確認   |
-| Shared Types        | `packages/shared/types/api-keys.ts`                                                                                                | transport 型の確認先                            |
-| Validator           | `packages/shared/infrastructure/ai/apiKeyValidator.ts`                                                                             | validation の責務境界確認                       |
-| investigation index | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/index.md`                               | settings 側の残存リスクを確認する               |
-| task-04 manual      | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/manual-test-result.md` | SettingsView 自体が未検証だった事実を確認する   |
-| task-03 manual      | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/manual-test-result.md`            | 専用 harness と settings shell の差分を確認する |
+| TC-ID    | 内容                                           |
+| -------- | ---------------------------------------------- |
+| TC-11-01 | 正常系: providers が表示される                 |
+| TC-11-02 | 異常系: providers 非配列で空配列フォールバック |
+| TC-11-03 | 異常系: malformed 要素を除外して表示継続       |
 
-### システム仕様（aiworkflow-requirements / task-specification-creator）
+## 画面カバレッジマトリクス
 
-| 資料名                     | パス                                                                                 | 用途                                              |
-| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| task-spec workflow         | `.claude/skills/task-specification-creator/references/create-workflow.md`            | create モードの直列/並列ルールを確認する          |
-| phase templates            | `.claude/skills/task-specification-creator/references/phase-templates.md`            | Phase 文書の構造を揃える                          |
-| unassigned task guidelines | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | Phase 12 の残課題検出ルールを揃える               |
-| resource-map               | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                     | 読むべきシステム正本を固定する                    |
-| quick-reference            | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                  | IPC / Store / Electron の既存パターンを再確認する |
-| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | Phase 12 の完了記録先を確認する                   |
-| quality-requirements       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`          | TDD と coverage 条件を揃える                      |
-| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`               | 既知の再発パターンを再確認する                    |
-| api-ipc-system             | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                | システム IPC の response パターンを確認する       |
-| api-ipc-auth               | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`                  | 認証系 IPC と API key 契約の境界を確認する        |
-| ipc-contract-checklist     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`        | shape drift を検査する項目を固定する              |
-| security-electron-ipc      | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`         | Preload 経由で不正 shape を通さない前提を確認する |
-| ui-ux-settings             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | 設定画面の異常時表示方針を確認する                |
-| ui-ux-components           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`              | セクション責務とエラー表示の配置を確認する        |
-| ui-ux-design-system        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | 異常状態ラベル/色トークンの一貫性を確認する       |
-| ui-ux-design-principles    | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`       | 異常系導線の可読性と説明順序を確認する            |
-| testing-accessibility      | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`         | fallback表示のa11y検証観点を確認する              |
-| testing-component-patterns | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`    | malformed response の component test を組む       |
-| development-guidelines     | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`        | 正規化 helper の配置規則を確認する                |
-| error-handling             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                | malformed response 時の復旧方針を確認する         |
-| security-input-validation  | `.claude/skills/aiworkflow-requirements/references/security-input-validation.md`     | 受信データの型検証境界を確認する                  |
-| ipc-type-resolution-guide  | `.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md`     | payload shape drift の診断手順を確認する          |
-| known-pitfalls             | `.claude/rules/06-known-pitfalls.md`                                                 | iterable / shape drift 再発防止を確認する         |
-| interfaces-auth            | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`               | 共通 IPCResponse envelope の扱いを確認する        |
+| TC-ID    | 証跡                                                                           |
+| -------- | ------------------------------------------------------------------------------ |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-settings-apikey-normal.png`             |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-settings-apikey-nonarray-providers.png` |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-settings-apikey-malformed-items.png`    |
 
-### 前提Phase成果物
+### 正常系
 
-| 資料名          | パス                | 用途                                |
-| --------------- | ------------------- | ----------------------------------- |
-| Phase 1 成果物  | `outputs/phase-1/`  | Phase 1 の出力を入力として参照する  |
-| Phase 2 成果物  | `outputs/phase-2/`  | Phase 2 の出力を入力として参照する  |
-| Phase 5 成果物  | `outputs/phase-5/`  | Phase 5 の出力を入力として参照する  |
-| Phase 6 成果物  | `outputs/phase-6/`  | Phase 6 の出力を入力として参照する  |
-| Phase 7 成果物  | `outputs/phase-7/`  | Phase 7 の出力を入力として参照する  |
-| Phase 8 成果物  | `outputs/phase-8/`  | Phase 8 の出力を入力として参照する  |
-| Phase 9 成果物  | `outputs/phase-9/`  | Phase 9 の出力を入力として参照する  |
-| Phase 10 成果物 | `outputs/phase-10/` | Phase 10 の出力を入力として参照する |
+| ID    | シナリオ                  | 操作手順                            | 期待結果                                             | 証跡  |
+| ----- | ------------------------- | ----------------------------------- | ---------------------------------------------------- | ----- |
+| MT-01 | 4 プロバイダー正常表示    | 設定画面 → API キーセクションを開く | OpenAI, Anthropic, Google, Azure の 4 行が表示される | SS-01 |
+| MT-02 | 登録/未登録ステータス切替 | API キーを登録 → 一覧を再読込       | ステータスが「未登録」→「登録済み」に変化する        | SS-02 |
+
+### 異常系
+
+| ID    | シナリオ                       | 操作手順                                                       | 期待結果                                          | 証跡  |
+| ----- | ------------------------------ | -------------------------------------------------------------- | ------------------------------------------------- | ----- |
+| MT-03 | electronAPI undefined          | DevTools で `delete window.electronAPI` → 設定画面再開         | エラーメッセージ表示 + 再試行ボタン               | SS-03 |
+| MT-04 | apiKey.list() エラーレスポンス | Main Process でエラーを返すように設定 → 設定画面を開く         | エラーメッセージ + 再試行ボタン、画面は操作可能   | SS-04 |
+| MT-05 | providers 非配列               | Main Process で `providers: "invalid"` を返す → 設定画面を開く | 空一覧にフォールバック、console.warn が出力される | SS-05 |
+
+### Edge ケース
+
+| ID    | シナリオ       | 操作手順                                | 期待結果                                     | 証跡  |
+| ----- | -------------- | --------------------------------------- | -------------------------------------------- | ----- |
+| MT-06 | ネットワーク断 | ネットワークを切断 → API キー検証を実行 | タイムアウト後にエラー表示、再試行で回復可能 | SS-06 |
+| MT-07 | 高速連続操作   | 設定画面を素早く開閉を 5 回繰り返す     | メモリリーク・二重リスナーが発生しない       | SS-07 |
+
+## DevTools 確認項目
+
+手動テスト実施時に DevTools で以下を確認する。
+
+| 確認項目                    | コマンド / 操作                           | 期待結果                               |
+| --------------------------- | ----------------------------------------- | -------------------------------------- |
+| `electronAPI.apiKey` の存在 | `typeof window.electronAPI?.apiKey`       | `"object"`                             |
+| `apiKey.list` の存在        | `typeof window.electronAPI?.apiKey?.list` | `"function"`                           |
+| 異常時の console.warn ログ  | Console タブを監視                        | `"providers is not iterable"` 等の警告 |
+| メモリリーク                | Performance タブ → Heap snapshot 比較     | 開閉前後で大幅な増加なし               |
+
+## 証跡管理
+
+| 証跡 ID | 形式                              | 保存先                                   |
+| ------- | --------------------------------- | ---------------------------------------- |
+| SS-01   | スクリーンショット                | `outputs/phase-11/screenshots/ss-01.png` |
+| SS-02   | スクリーンショット                | `outputs/phase-11/screenshots/ss-02.png` |
+| SS-03   | スクリーンショット                | `outputs/phase-11/screenshots/ss-03.png` |
+| SS-04   | スクリーンショット                | `outputs/phase-11/screenshots/ss-04.png` |
+| SS-05   | スクリーンショット + console ログ | `outputs/phase-11/screenshots/ss-05.png` |
+| SS-06   | スクリーンショット                | `outputs/phase-11/screenshots/ss-06.png` |
+| SS-07   | Heap snapshot                     | `outputs/phase-11/screenshots/ss-07.png` |
 
 ## 実行手順
 
-1. malformed response を返す dev harness で SettingsView を開く を起点にシナリオを実行する。
-2. provider 一覧が空配列 fallback で表示されることを確認する と 画面全体が継続操作できることを確認する を連続で確認する。
-3. ログに shape 異常の記録が残ることを確認する。
-4. 証跡 ID、スクリーンショット、ログ断面を evidence-plan に記録する。
+1. `pnpm --filter @repo/desktop dev` で開発サーバーを起動する
+2. MT-01 → MT-02 の正常系シナリオを順次実行する
+3. MT-03 → MT-05 の異常系シナリオを実行する（DevTools 操作含む）
+4. MT-06 → MT-07 の Edge ケースを実行する
+5. 各シナリオの証跡を取得し、結果を手動テスト行列に記録する
+6. 発見した不具合は不具合リストに起票する
 
-## 統合テスト連携
+## 参照資料
 
-- malformed response を返す dev harness で SettingsView を開く
-- provider 一覧が空配列 fallback で表示されることを確認する
-- 画面全体が継続操作できることを確認する
-- ログに shape 異常の記録が残ることを確認する
-
-## 多角的チェック観点
-
-| 観点     | 確認内容                                                             |
-| -------- | -------------------------------------------------------------------- |
-| 防御境界 | normalize が 1 箇所に集まり、各 render branch が配列前提を持たないか |
-| 契約監査 | shared type と actual runtime shape の差分が記録されているか         |
-| UX       | fallback 表示が silent failure ではなく原因追跡可能か                |
-| 回帰耐性 | task-04 で守った linkedProviders と責務が重複していないか            |
+| 資料名              | パス                                                                       | 用途                       |
+| ------------------- | -------------------------------------------------------------------------- | -------------------------- |
+| ui-ux-settings      | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`      | 異常系表示仕様（v1.5.0）   |
+| ui-ux-design-system | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md` | Error 色 = red-600/red-500 |
+| Phase 10 成果物     | `outputs/phase-10/`                                                        | レビュー結果の確認         |
 
 ## 成果物
 
-| 成果物         | パス                                     | 説明                     |
-| -------------- | ---------------------------------------- | ------------------------ |
-| 手動テスト行列 | `outputs/phase-11/manual-test-matrix.md` | 画面操作と期待結果の一覧 |
-| 証跡計画       | `outputs/phase-11/evidence-plan.md`      | 取得する証跡の定義       |
+| 成果物         | パス                                     | 説明                              |
+| -------------- | ---------------------------------------- | --------------------------------- |
+| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` | 全シナリオの PASS/FAIL 結果       |
+| 証跡一覧       | `outputs/phase-11/screenshots/`          | スクリーンショットと console ログ |
+| 不具合リスト   | `outputs/phase-11/bug-list.md`           | 発見された不具合の一覧            |
 
 ## 完了条件
 
-- [ ] manual シナリオが Settings shell または対象導線を通る手順で記述されている
-- [ ] 証跡 ID と期待結果が 1 対 1 で対応している
-- [ ] 再現した不具合と修正確認を同じ行列で比較できる
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] MT-01〜MT-07 の全シナリオが実行されている
+- [ ] 各シナリオに対応する証跡が取得されている
+- [ ] DevTools 確認項目が全て検証されている
+- [ ] 発見された不具合が不具合リストに記録されている
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 
-## サブタスク管理
+## タスク 100% 実行確認【必須】
 
-1. 参照資料の確認
-2. 実行タスクの実施
-3. 統合テスト連携の更新
-4. 成果物の作成・配置
-5. 完了条件の検証
-
-## タスク100%実行確認【必須】
-
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 - [ ] 各タスクの成果物が生成されている
 - [ ] artifacts.json が更新されている
 - [ ] Phase 末端で完了内容を実行記録へ残している
 
-## 次のPhase
+## 次の Phase
 
 Phase 12: ドキュメント更新
+
+## 統合テスト連携
+
+- 本Phaseの結果は `apps/desktop` の対象Vitest実行（`apiKeyHandlers.list` / `profileHandlers.identities` / `ApiKeysSection`）と連動して判定する。
+- Phase 11 ではスクリーンショット証跡（TC-11-01〜03）を統合テスト結果と同じ実装リビジョンで取得する。

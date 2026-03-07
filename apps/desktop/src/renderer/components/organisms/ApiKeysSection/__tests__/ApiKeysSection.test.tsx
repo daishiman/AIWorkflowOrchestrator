@@ -830,5 +830,218 @@ describe("ApiKeysSection", () => {
         ).toBeInTheDocument();
       });
     });
+
+    // === GAP Coverage Tests ===
+
+    it("GAP-01: result.data が undefined の場合、エラーメッセージにフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({ success: true, data: undefined }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Failed to load API keys/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("GAP-01b: result.data が null の場合、エラーメッセージにフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({ success: true, data: null }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Failed to load API keys/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("GAP-02: providers が空配列の場合、全プロバイダーが未登録として表示される", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: { providers: [], registeredCount: 0, totalCount: 0 },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        // ALL_PROVIDERS フォールバックにより4つのプロバイダーが表示される
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
+        expect(screen.getByText("Anthropic")).toBeInTheDocument();
+        expect(screen.getByText("Google AI")).toBeInTheDocument();
+        expect(screen.getByText("xAI")).toBeInTheDocument();
+      });
+
+      // 全て未登録バッジが表示される
+      const notRegisteredBadges = screen.getAllByText("未登録");
+      expect(notRegisteredBadges.length).toBeGreaterThanOrEqual(4);
+    });
+
+    it("GAP-03: providers 配列要素の provider フィールドが欠損した場合、該当要素をスキップする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: {
+                providers: [
+                  { status: "registered", displayName: "Test" },
+                  {
+                    provider: "openai",
+                    displayName: "OpenAI",
+                    status: "registered",
+                    lastValidatedAt: null,
+                  },
+                ],
+                registeredCount: 1,
+                totalCount: 2,
+              },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/APIキー設定/i)).toBeInTheDocument();
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
+      });
+    });
+
+    it("GAP-03b: providers 配列要素の status フィールドが欠損した場合、該当要素をスキップする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: {
+                providers: [
+                  { provider: "anthropic", displayName: "Anthropic" },
+                  {
+                    provider: "openai",
+                    displayName: "OpenAI",
+                    status: "registered",
+                    lastValidatedAt: null,
+                  },
+                ],
+                registeredCount: 1,
+                totalCount: 2,
+              },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/APIキー設定/i)).toBeInTheDocument();
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
+      });
+    });
+
+    it("GAP-03c: 正常要素と malformed 要素が混在する場合、正常要素のみ使用される", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: {
+                providers: [
+                  null,
+                  undefined,
+                  42,
+                  "string",
+                  {
+                    provider: "openai",
+                    displayName: "OpenAI",
+                    status: "registered",
+                    lastValidatedAt: "2026-03-06T00:00:00Z",
+                  },
+                ],
+                registeredCount: 1,
+                totalCount: 5,
+              },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/APIキー設定/i)).toBeInTheDocument();
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
+      });
+    });
+
+    it("GAP-04: apiKey.list() が reject した場合、エラー表示して画面は継続描画される", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockRejectedValue(new Error("Network error")),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/APIキーの取得に失敗しました/i),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole("button", { name: /再試行/i }),
+        ).toBeInTheDocument();
+      });
+    });
   });
 });

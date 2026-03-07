@@ -33,6 +33,43 @@
 
 ---
 
+||||||| Stash base
+## 2026-03-08 - branch横断 Phase 12 再監査 + persist iterable hardening 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`, branch横断再監査
+- 目的: 実装内容と苦戦箇所をシステム仕様書に反映し、スキルパターン集を改善
+
+### 実施内容
+- `references/arch-state-management.md` に persist 復旧契約（DD-01〜DD-03）を追記
+- `references/lessons-learned.md` にコード例と関連Pitfall参照を追加
+- `references/task-workflow.md` に完了タスクと5分解決カードを追記
+- `skill-creator/references/patterns.md` に persist 3段ガード + branch横断監査パターンを追加
+- 4仕様書を5並列SubAgentで同時更新
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-07 - TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`
+- 目的: persist iterable hardening 実装を system spec 正本へ同期し、Phase 11 screenshot 証跡まで固定する
+
+### 実施内容
+- `references/task-workflow.md` に完了台帳と検証証跡を追加
+- `references/lessons-learned.md` に苦戦箇所と4ステップ解決手順を追加
+- `references/arch-state-management.md` に persist復旧契約（DD-01..DD-05）を追加
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-07 - TASK-10A-E-C Store駆動ライフサイクル統合設計の仕様同期
 ## 2026-03-07 - TASK-UI-03-AGENT-VIEW-ENHANCEMENT Phase 12 完了
 

@@ -564,3 +564,24 @@ async removeSkill(skillName: string): Promise<RemoveResult> {
 - **関連パターン**: P3（未タスク管理の3ステップ不完全）
 - **チェックリスト**: [05-task-execution.md#Task 4](./05-task-execution.md)
 - **関連タスク**: TASK-9B-I-SDK-FORMAL-INTEGRATION
+
+### P49: type predicate 内での `as` キャスト vs `in` 演算子
+
+- **教訓**: type predicate 内で `(item as Record<string, unknown>).provider` を使用すると、P19（型キャストバイパス）と同じリスクがある。TypeScript の型チェックは通過するが、`item` が実際にオブジェクトでない場合に実行時エラーが発生する
+- **症状**: Phase 8 リファクタリングで TS2352 エラー（型キャスト不可）が発生
+- **解決策**: `in` 演算子で実行時にプロパティ存在を検証してから `typeof` で型チェック
+- **関連パターン**: P19（型キャストバイパス）、S27（Renderer 境界5層防御）
+- **関連タスク**: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+```typescript
+// ❌ P49: as キャストで実行時検証バイパス
+const isValid = (item: unknown): item is Target =>
+  typeof (item as Record<string, unknown>).field === "string";
+
+// ✅ in 演算子で実行時検証 + 型ナロイング
+const isValid = (item: unknown): item is Target =>
+  item != null &&
+  typeof item === "object" &&
+  "field" in item &&
+  typeof item.field === "string";
+```
