@@ -25,6 +25,7 @@
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
+| Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
@@ -1111,6 +1112,26 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 
 ---
 
+## Store駆動ライフサイクルUI統合（TASK-10A-F / completed）
+
+TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を再確認し、Renderer コンポーネントからの直接 `window.electronAPI.skill.*` 呼び出しを排除した。
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| 実画面検証（スクリーンショット） | ✅ 11件取得 | `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` |
+| Phase 12成果物 | ✅ 5成果物 + changelog | `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-12/` |
+
+### UI観点の要点
+
+- `useSkillAnalysis` は Store 個別セレクタ経由で `analysis/isAnalyzing/isImproving/skillError` を参照する。
+- `SkillCreateWizard` は `useCreateSkill()` で作成 action を実行し、生成進捗をUIに反映する。
+- 画面検証は dark/light/mobile と error/loading を含む 11ケースで確認済み。
+
+---
+
 <a id="organisms-foundation-task-ui-00-organisms"></a>
 ## Organisms Foundation（TASK-UI-00-ORGANISMS / completed）
 
@@ -1382,6 +1403,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
 | 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |
 | 2026-03-06 | v1.14.19   | TASK-UI-02 移管反映。workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移した状態に同期 |

@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記 |
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記 |
 | v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
 | v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
@@ -1375,3 +1376,19 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。  
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。  
 5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。  
+
+## TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07）
+
+### 責務境界の最終同期
+
+| タスク | 責務 |
+| --- | --- |
+| TASK-10A-D | agentSlice へ lifecycle state/action を追加する |
+| TASK-10A-E-C | import lifecycle（`isImporting` 系）を安定化する |
+| TASK-10A-F | Renderer 直接IPCを排除し Store action 経由へ統一する |
+
+### UI側契約
+
+- `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
+- `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
+- 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。
