@@ -1,0 +1,10 @@
+2026-03-07 再検証で Playwright によるスクリーンショット撮影を実施済み。
+
+取得ファイル:
+- TC-01-main-view-light.png
+- TC-06-panel-open-light.png
+- TC-08-empty-state-light.png
+- TC-09-with-search-light.png
+- TC-11-main-view-dark.png
+
+詳細は `manual-test-report.md` を参照。

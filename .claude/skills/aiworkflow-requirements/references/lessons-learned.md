@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
+| 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
 | 2026-03-06 | 1.29.41 | UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を追補。実装ガイドが Part 1/2 構造だけ満たしても内容不足のまま通り得る苦戦箇所を追加し、`validate-phase12-implementation-guide.js` による内容検証を標準ルール化 |
@@ -162,6 +164,102 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07）
+
+### 苦戦箇所: Phase 11 文書名が validator 期待値と不一致
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-11-manual-testing.md` のみ存在し、validator は `phase-11-manual-test.md` を参照して失敗した |
+| 再発条件 | workflow ごとに Phase 11 文書名が揺れる場合 |
+| 対処 | `phase-11-manual-test.md` を正本として追加し、TC一覧と証跡リンクを明示した |
+| 標準ルール | Phase 11 は `phase-11-manual-test.md` + `manual-test-result.md` の2ファイルを必須にする |
+
+### 苦戦箇所: スクリーンショット実体があるのに TC 紐付け不足で未参照扱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 11枚撮影済みでも、TC-11-08〜11 が文書に未記載で warning が出た |
+| 再発条件 | 画面撮影後に manual test 文書の TC テーブル更新を後回しにする場合 |
+| 対処 | `phase-11-manual-test.md` に TC-11-01〜11 と証跡マトリクスを追加して一致させた |
+| 標準ルール | 「撮影完了→TCテーブル更新→coverage validator 実行」を1セットで運用する |
+
+### 苦戦箇所: Phase 12 changelog が計画表現（対象/予定）に偏る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実更新の有無が不明瞭で Step 完了判定が曖昧化した |
+| 再発条件 | 実作業前に changelog を先行記述する場合 |
+| 対処 | Step 1-A/1-B/1-C/1-D/Step 2 を完了ベースで書き直し、実更新対象へ限定した |
+| 標準ルール | `documentation-changelog.md` は「完了済み変更のみ」記述し、予定は記載しない |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Phase 11 文書名を `phase-11-manual-test.md` に統一する。  
+2. スクリーンショット取得後に TC-ID と証跡を 1:1 で記載する。  
+3. `validate-phase11-screenshot-coverage` を PASS にしてから Phase 12 を進める。  
+4. Phase 12 は Step完了後に changelog を更新し、計画表現を残さない。  
+
+---
+
+## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
+
+### 苦戦箇所: z-index 事前設計の必要性
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UIコンポーネント追加時に GlobalNavStrip（z-20）、AdvancedSettingsPanel（z-40）、FloatingExecutionBar（z-50）の z-index が衝突するリスクがあった |
+| 再発条件 | 複数のオーバーレイ・フローティング要素を持つ画面に新規コンポーネントを追加する場合 |
+| 対処 | Phase 2 のアーキテクチャ設計で「z-index 管理テーブル」を事前定義し、全コンポーネントの積層順序を確定させた。結果として Phase 5 実装時に z-index 衝突 0 件を達成 |
+| 標準ルール | UI追加タスクの Phase 2 テンプレートに z-index 管理テーブルを必須欄として含める。新規コンポーネント追加時は既存の z-index 割り当てを `grep -rn 'z-[0-9]' apps/desktop/src/` で事前調査する |
+
+### 苦戦箇所: CSS変数ベースの定数抽出タイミング（P47派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Tailwind arbitrary values（`bg-[var(--status-primary)]`）を使用した場合、テストで長い className 文字列をハードコードしていた。P47 と同様のパターンだが、定数抽出のタイミングが遅れたことで修正コストが増加した |
+| 再発条件 | CSS変数ベースのスタイリングを採用し、Phase 5 実装時に定数抽出を行わず、Phase 8 リファクタリングまで先送りする場合 |
+| 対処 | Phase 8 で `styles.ts` と `animations.ts` を抽出し定数管理に統一。テスト側も定数を import して期待値を生成するパターンに移行した |
+| 標準ルール | UIコンポーネント追加時は Phase 5 実装直後に CSS変数ベースのスタイル定数抽出を検討する。Phase 8 時点ではテストが多く修正コストが増加するため、早期抽出を推奨する |
+
+**関連パターン**: [06-known-pitfalls.md#P47](../../rules/06-known-pitfalls.md) — CSS変数ベースのスタイルテストアサーション戦略
+
+```typescript
+// ❌ Phase 5 でハードコード（修正コスト増）
+expect(element).toHaveClass("bg-[var(--status-primary)]");
+
+// ✅ Phase 5 で早期に定数抽出
+// styles.ts
+export const statusStyles = {
+  primary: "bg-[var(--status-primary)] text-[var(--text-inverse)]",
+};
+
+// テスト側
+import { statusStyles } from "./styles";
+expect(element.className).toContain(statusStyles.primary);
+```
+
+### 苦戦箇所: アクセシビリティ属性の段階的検出パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 5 実装時点で `role="radiogroup"`、`role="dialog"`、`aria-label` 不整合などのアクセシビリティ属性が不足していた |
+| 再発条件 | UIコンポーネント実装時にアクセシビリティを「後から追加する」前提で進め、Phase 4 テスト設計に WCAG 準拠テストケースを含めない場合 |
+| 対処 | Phase 10 最終レビューで MINOR 指摘 3 件として検出し、未タスク化（UT-UI-03-A11Y-DIALOG-001、UT-UI-03-A11Y-LABEL-001、UT-UI-03-A11Y-RADIOGROUP-001） |
+| 標準ルール | Phase 4 テスト設計時に WCAG 2.1 AA 準拠のテストケースを含める。具体的には `role` 属性、`aria-label`/`aria-labelledby`、キーボード操作、コントラスト比の4項目を必須チェック対象とする |
+
+**参照**: [01-architecture.md#アクセシビリティ](../../rules/01-architecture.md) — WCAG 2.1 AA 準拠要件
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 2 設計時に z-index 管理テーブルを作成し、既存コンポーネントの z-index を `grep -rn 'z-[0-9]' apps/desktop/src/` で調査する。
+2. Phase 4 テスト設計時に WCAG 2.1 AA 準拠テストケース（role、aria-label、キーボード操作、コントラスト比）を含める。
+3. Phase 5 実装直後に CSS変数ベースのスタイル定数を `styles.ts` / `animations.ts` に抽出し、テストは定数を import して期待値を生成する。
+4. Phase 9 品質検証で `aria-label` / `role` 属性の網羅性を確認し、不足があれば Phase 10 前に修正する。
+5. Phase 10 MINOR 指摘はアクセシビリティ関連を含め全て未タスク仕様書に変換し、3ステップ（指示書作成 → 残課題テーブル → 関連仕様書リンク）を完了する。
 
 ---
 

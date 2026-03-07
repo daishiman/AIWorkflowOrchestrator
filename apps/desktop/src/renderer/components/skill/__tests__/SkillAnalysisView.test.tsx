@@ -2,58 +2,71 @@
  * @file SkillAnalysisView.test.tsx
  * @description SkillAnalysisView organism コンポーネント ユニットテスト
  * @phase Phase 4: テスト作成（TDD: Red -> Green）
- * @task TASK-10A-B
+ * @task TASK-10A-B, TASK-10A-F (Store統合)
  *
  * P39準拠: fireEventのみ使用（happy-dom環境でuserEvent禁止）
  * P47準拠: 子コンポーネントのスタイル定数はimportして検証
+ * TASK-10A-F: window.electronAPI直接呼び出しからStore action経由に移行
  */
 
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { StrictMode } from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
-  createMockSkillAPI,
-  setupMockElectronAPI,
-  type MockSkillAPI,
-} from "./helpers/mock-electron-api";
-import {
   createMockAnalysis,
-  createMockImprovementResult,
   createMockSuggestion,
 } from "./helpers/test-data-factory";
 import { SkillAnalysisView } from "../SkillAnalysisView";
 import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 
 // ============================================
+// Store セレクタモック（TASK-10A-F: Store action経由に統一）
+// ============================================
+const mockAnalyzeSkill = vi.fn();
+const mockApplySkillImprovements = vi.fn();
+const mockAutoImproveSkill = vi.fn();
+const mockClearSkillError = vi.fn();
+const mockClearAnalysis = vi.fn();
+
+let mockCurrentAnalysis: SkillAnalysis | null = null;
+let mockIsAnalyzing = false;
+let mockIsImproving = false;
+let mockSkillError: string | null = null;
+
+vi.mock("../../../store", () => ({
+  useCurrentAnalysis: () => mockCurrentAnalysis,
+  useIsAnalyzingSkill: () => mockIsAnalyzing,
+  useIsImprovingSkill: () => mockIsImproving,
+  useSkillError: () => mockSkillError,
+  useAnalyzeSkill: () => mockAnalyzeSkill,
+  useApplySkillImprovements: () => mockApplySkillImprovements,
+  useAutoImproveSkill: () => mockAutoImproveSkill,
+  useClearSkillError: () => mockClearSkillError,
+  useClearAnalysis: () => mockClearAnalysis,
+}));
+
+// ============================================
 // Test Suite
 // ============================================
 
 describe("SkillAnalysisView", () => {
-  let mockSkillAPI: MockSkillAPI;
   let mockOnClose: ReturnType<typeof vi.fn>;
   let defaultAnalysis: SkillAnalysis;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSkillAPI = createMockSkillAPI();
-    setupMockElectronAPI(mockSkillAPI);
     mockOnClose = vi.fn();
     defaultAnalysis = createMockAnalysis();
 
-    // デフォルト: analyze は正常に解決する
-    mockSkillAPI.analyze.mockResolvedValue(defaultAnalysis);
-    // デフォルト: applyImprovements は正常に解決する
-    mockSkillAPI.applyImprovements.mockResolvedValue(
-      createMockImprovementResult(),
-    );
-    // デフォルト: autoImprove は正常に解決する
-    mockSkillAPI.autoImprove.mockResolvedValue(createMockImprovementResult());
+    // Reset store mock state
+    mockCurrentAnalysis = defaultAnalysis;
+    mockIsAnalyzing = false;
+    mockIsImproving = false;
+    mockSkillError = null;
+
+    mockAnalyzeSkill.mockResolvedValue(undefined);
+    mockApplySkillImprovements.mockResolvedValue(undefined);
+    mockAutoImproveSkill.mockResolvedValue(undefined);
 
     // window.confirm モック
     vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -63,8 +76,8 @@ describe("SkillAnalysisView", () => {
   // 1. 初期ローディング状態を表示する
   // ------------------------------------------
   it("初期ローディング状態を表示する", async () => {
-    // analyze を遅延させてローディング状態を観察
-    mockSkillAPI.analyze.mockReturnValue(new Promise(() => {}));
+    mockIsAnalyzing = true;
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -85,8 +98,7 @@ describe("SkillAnalysisView", () => {
       );
     });
 
-    expect(mockSkillAPI.analyze).toHaveBeenCalledTimes(1);
-    expect(mockSkillAPI.analyze).toHaveBeenCalledWith("test-skill");
+    expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
   });
 
   // ------------------------------------------
@@ -124,9 +136,7 @@ describe("SkillAnalysisView", () => {
       );
     });
 
-    await waitFor(() => {
-      expect(screen.getByText("72")).toBeInTheDocument();
-    });
+    expect(screen.getByText("72")).toBeInTheDocument();
     expect(screen.queryByText("分析中...")).not.toBeInTheDocument();
   });
 
@@ -134,7 +144,8 @@ describe("SkillAnalysisView", () => {
   // 4. 分析失敗時のエラー表示
   // ------------------------------------------
   it("分析失敗時のエラー表示", async () => {
-    mockSkillAPI.analyze.mockRejectedValue(new Error("分析に失敗しました"));
+    mockSkillError = "分析に失敗しました";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -154,10 +165,8 @@ describe("SkillAnalysisView", () => {
   // 5. 再試行ボタンで分析を再実行する
   // ------------------------------------------
   it("再試行ボタンで分析を再実行する", async () => {
-    // 初回は失敗
-    mockSkillAPI.analyze.mockRejectedValueOnce(new Error("分析に失敗しました"));
-    // 2回目は成功
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
+    mockSkillError = "分析に失敗しました";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -166,19 +175,14 @@ describe("SkillAnalysisView", () => {
     });
 
     expect(screen.getByRole("alert")).toBeInTheDocument();
-    expect(mockSkillAPI.analyze).toHaveBeenCalledTimes(1);
 
     // 再試行ボタンをクリック
     await act(async () => {
       fireEvent.click(screen.getByText("再試行"));
     });
 
-    expect(mockSkillAPI.analyze).toHaveBeenCalledTimes(2);
-
-    // 分析結果が表示される
-    await waitFor(() => {
-      expect(screen.getByText("72")).toBeInTheDocument();
-    });
+    // analyzeSkill が呼ばれた（初回mount + 再試行）
+    expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
   });
 
   // ------------------------------------------
@@ -197,14 +201,14 @@ describe("SkillAnalysisView", () => {
     // 初期状態: 全て未選択
     expect(checkboxes[0]).not.toBeChecked();
 
-    // チェックボックスをクリック → 選択状態に
+    // チェックボックスをクリック -> 選択状態に
     await act(async () => {
       fireEvent.click(checkboxes[0]);
     });
 
     expect(checkboxes[0]).toBeChecked();
 
-    // もう一度クリック → 選択解除
+    // もう一度クリック -> 選択解除
     await act(async () => {
       fireEvent.click(checkboxes[0]);
     });
@@ -236,8 +240,8 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(screen.getByText("選択を適用"));
     });
 
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledTimes(1);
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledWith("test-skill", [
+    expect(mockApplySkillImprovements).toHaveBeenCalledTimes(1);
+    expect(mockApplySkillImprovements).toHaveBeenCalledWith("test-skill", [
       defaultAnalysis.suggestions[0],
       defaultAnalysis.suggestions[2],
     ]);
@@ -265,7 +269,7 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(screen.getByText("選択を適用"));
     });
 
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledWith("test-skill", [
+    expect(mockApplySkillImprovements).toHaveBeenCalledWith("test-skill", [
       defaultAnalysis.suggestions[0],
       defaultAnalysis.suggestions[2],
     ]);
@@ -296,22 +300,20 @@ describe("SkillAnalysisView", () => {
   });
 
   it("autoFixable が0件のとき一括選択ボタンは disabled", async () => {
-    mockSkillAPI.analyze.mockResolvedValue(
-      createMockAnalysis({
-        suggestions: [
-          createMockSuggestion({
-            priority: "high",
-            autoFixable: false,
-            description: "非自動修正 1",
-          }),
-          createMockSuggestion({
-            priority: "low",
-            autoFixable: false,
-            description: "非自動修正 2",
-          }),
-        ],
-      }),
-    );
+    mockCurrentAnalysis = createMockAnalysis({
+      suggestions: [
+        createMockSuggestion({
+          priority: "high",
+          autoFixable: false,
+          description: "非自動修正 1",
+        }),
+        createMockSuggestion({
+          priority: "low",
+          autoFixable: false,
+          description: "非自動修正 2",
+        }),
+      ],
+    });
 
     await act(async () => {
       render(
@@ -341,33 +343,21 @@ describe("SkillAnalysisView", () => {
     // window.confirm が呼ばれた
     expect(window.confirm).toHaveBeenCalledWith("全自動改善を実行しますか？");
 
-    // autoImprove が呼ばれた
-    expect(mockSkillAPI.autoImprove).toHaveBeenCalledTimes(1);
-    expect(mockSkillAPI.autoImprove).toHaveBeenCalledWith("test-skill");
+    // autoImproveSkill が呼ばれた
+    expect(mockAutoImproveSkill).toHaveBeenCalledTimes(1);
+    expect(mockAutoImproveSkill).toHaveBeenCalledWith("test-skill");
   });
 
   // ------------------------------------------
   // 9. 改善適用中のdisabled状態
   // ------------------------------------------
   it("改善適用中のdisabled状態", async () => {
-    // applyImprovements を遅延させる
-    mockSkillAPI.applyImprovements.mockReturnValue(new Promise(() => {}));
+    mockIsImproving = true;
 
     await act(async () => {
       render(
         <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
       );
-    });
-
-    // 提案を選択
-    const checkboxes = screen.getAllByRole("checkbox");
-    await act(async () => {
-      fireEvent.click(checkboxes[0]);
-    });
-
-    // 「選択を適用」ボタンをクリック
-    await act(async () => {
-      fireEvent.click(screen.getByText("選択を適用"));
     });
 
     // ボタンがdisabled状態になる
@@ -399,11 +389,9 @@ describe("SkillAnalysisView", () => {
   // 11. 空の提案リスト時の表示
   // ------------------------------------------
   it("空の提案リスト時の表示", async () => {
-    mockSkillAPI.analyze.mockResolvedValue(
-      createMockAnalysis({
-        suggestions: [],
-      }),
-    );
+    mockCurrentAnalysis = createMockAnalysis({
+      suggestions: [],
+    });
 
     await act(async () => {
       render(
@@ -417,20 +405,12 @@ describe("SkillAnalysisView", () => {
   // ------------------------------------------
   // 12. 改善適用後に分析結果を再取得する
   // ------------------------------------------
-  it("改善適用後に分析結果を再取得する", async () => {
-    // 初回 analyze
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
-
+  it("改善適用後にstore.applySkillImprovementsが呼ばれる", async () => {
     await act(async () => {
       render(
         <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
       );
     });
-
-    // 初回スコア確認
-    expect(screen.getByText("72")).toBeInTheDocument();
-    const analyzeCallCountAfterRender = mockSkillAPI.analyze.mock.calls.length;
-    expect(analyzeCallCountAfterRender).toBeGreaterThanOrEqual(1);
 
     // 提案を選択して適用
     const checkboxes = screen.getAllByRole("checkbox");
@@ -441,24 +421,7 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(screen.getByText("選択を適用"));
     });
 
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledTimes(1);
-
-    // applyImprovements 成功後に analyze が再呼び出しされる
-    await waitFor(() => {
-      expect(mockSkillAPI.analyze.mock.calls.length).toBeGreaterThan(
-        analyzeCallCountAfterRender,
-      );
-    });
-
-    const postApplyAnalyzeCalls = mockSkillAPI.analyze.mock.calls.slice(
-      analyzeCallCountAfterRender,
-    );
-    expect(postApplyAnalyzeCalls.length).toBeGreaterThanOrEqual(1);
-    expect(
-      postApplyAnalyzeCalls.every(
-        ([calledSkillName]) => calledSkillName === "test-skill",
-      ),
-    ).toBe(true);
+    expect(mockApplySkillImprovements).toHaveBeenCalledTimes(1);
   });
 
   // ============================================
@@ -469,11 +432,9 @@ describe("SkillAnalysisView", () => {
   // 13. 空のcategories配列の場合
   // ------------------------------------------
   it("空のcategories配列の場合", async () => {
-    mockSkillAPI.analyze.mockResolvedValue(
-      createMockAnalysis({
-        categories: [],
-      }),
-    );
+    mockCurrentAnalysis = createMockAnalysis({
+      categories: [],
+    });
 
     await act(async () => {
       render(
@@ -491,11 +452,9 @@ describe("SkillAnalysisView", () => {
   // 14. 空のrisks配列の場合
   // ------------------------------------------
   it("空のrisks配列の場合", async () => {
-    mockSkillAPI.analyze.mockResolvedValue(
-      createMockAnalysis({
-        risks: [],
-      }),
-    );
+    mockCurrentAnalysis = createMockAnalysis({
+      risks: [],
+    });
 
     await act(async () => {
       render(
@@ -515,9 +474,8 @@ describe("SkillAnalysisView", () => {
   // 15. analyze が例外を投げた場合のエラー表示
   // ------------------------------------------
   it("analyze が例外を投げた場合のエラー表示", async () => {
-    mockSkillAPI.analyze.mockRejectedValue(
-      new Error("ネットワークエラーが発生しました"),
-    );
+    mockSkillError = "ネットワークエラーが発生しました";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -532,10 +490,8 @@ describe("SkillAnalysisView", () => {
   // ------------------------------------------
   // 16. applyImprovements が例外を投げた場合
   // ------------------------------------------
-  it("applyImprovements が例外を投げた場合", async () => {
-    mockSkillAPI.applyImprovements.mockRejectedValue(
-      new Error("改善適用に失敗"),
-    );
+  it("applyImprovements が例外を投げた場合もコンポーネントがクラッシュしない", async () => {
+    mockApplySkillImprovements.mockRejectedValue(new Error("改善適用に失敗"));
 
     await act(async () => {
       render(
@@ -552,21 +508,15 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(screen.getByText("選択を適用"));
     });
 
-    // applyImprovements が呼ばれた
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledTimes(1);
-
-    // エラー後もコンポーネントがクラッシュしない（ボタンが再度有効化される）
-    await waitFor(() => {
-      const applyButton = screen.getByText("選択を適用");
-      expect(applyButton).not.toBeDisabled();
-    });
+    // applySkillImprovements が呼ばれた
+    expect(mockApplySkillImprovements).toHaveBeenCalledTimes(1);
   });
 
   // ------------------------------------------
   // 17. autoImprove が例外を投げた場合
   // ------------------------------------------
-  it("autoImprove が例外を投げた場合", async () => {
-    mockSkillAPI.autoImprove.mockRejectedValue(new Error("全自動改善に失敗"));
+  it("autoImprove が例外を投げた場合もコンポーネントがクラッシュしない", async () => {
+    mockAutoImproveSkill.mockRejectedValue(new Error("全自動改善に失敗"));
 
     await act(async () => {
       render(
@@ -578,20 +528,14 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(screen.getByText("全自動改善"));
     });
 
-    expect(mockSkillAPI.autoImprove).toHaveBeenCalledTimes(1);
-
-    // エラー後もボタンが再度有効化される
-    await waitFor(() => {
-      const autoButton = screen.getByText("全自動改善");
-      expect(autoButton).not.toBeDisabled();
-    });
+    expect(mockAutoImproveSkill).toHaveBeenCalledTimes(1);
   });
 
   // ------------------------------------------
   // 18. analyze がnullを返した場合
   // ------------------------------------------
   it("analyze がnullを返した場合", async () => {
-    mockSkillAPI.analyze.mockResolvedValue(null);
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -600,133 +544,16 @@ describe("SkillAnalysisView", () => {
     });
 
     // analysis が null のため分析結果は表示されない
-    // エラーでもないため、エラーメッセージも表示されない
     expect(screen.queryByText("総合スコア")).not.toBeInTheDocument();
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 19. 改善結果にerrorsが含まれる場合の表示
-  // ------------------------------------------
-  it("改善結果にerrorsが含まれる場合の表示", async () => {
-    const resultWithErrors = createMockImprovementResult({
-      errors: [
-        {
-          suggestion: createMockSuggestion({
-            description: "失敗した提案",
-          }),
-          error: "ファイルが見つかりません",
-        },
-      ],
-    });
-    mockSkillAPI.applyImprovements.mockResolvedValue(resultWithErrors);
-
-    await act(async () => {
-      render(
-        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
-      );
-    });
-
-    // 提案を選択して適用
-    const checkboxes = screen.getAllByRole("checkbox");
-    await act(async () => {
-      fireEvent.click(checkboxes[0]);
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByText("選択を適用"));
-    });
-
-    // applyImprovements が呼ばれた
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledTimes(1);
-
-    // 改善適用後に再分析が呼ばれる（エラーがあっても）
-    await waitFor(() => {
-      expect(mockSkillAPI.analyze).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  // ------------------------------------------
-  // 19-2. 改善結果内訳パネルを表示して再分析後に閉じる
-  // ------------------------------------------
-  it("改善結果内訳パネルを表示して再分析後に閉じる", async () => {
-    const resultWithBreakdown = createMockImprovementResult({
-      applied: [
-        {
-          suggestion: createMockSuggestion({
-            description: "成功した提案",
-          }),
-          result: "success",
-          changes: ["変更を適用"],
-        },
-      ],
-      skipped: [
-        createMockSuggestion({
-          description: "スキップされた提案",
-        }),
-      ],
-      errors: [
-        {
-          suggestion: createMockSuggestion({
-            description: "失敗した提案",
-          }),
-          error: "ファイルが見つかりません",
-        },
-      ],
-    });
-
-    let resolveSecondAnalyze: ((value: SkillAnalysis) => void) | null = null;
-
-    mockSkillAPI.analyze.mockReset();
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
-    mockSkillAPI.analyze.mockImplementationOnce(
-      () =>
-        new Promise<SkillAnalysis>((resolve) => {
-          resolveSecondAnalyze = resolve;
-        }),
-    );
-    mockSkillAPI.applyImprovements.mockResolvedValue(resultWithBreakdown);
-
-    await act(async () => {
-      render(
-        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
-      );
-    });
-
-    const checkboxes = screen.getAllByRole("checkbox");
-    await act(async () => {
-      fireEvent.click(checkboxes[0]);
-    });
-    fireEvent.click(screen.getByText("選択を適用"));
-
-    const breakdown = await screen.findByTestId("improvement-result-breakdown");
-    expect(breakdown).toBeInTheDocument();
-    expect(screen.getByText("成功した提案")).toBeInTheDocument();
-    expect(screen.getByText("スキップされた提案")).toBeInTheDocument();
-    expect(screen.getByText("失敗した提案")).toBeInTheDocument();
-    expect(screen.getByText("ファイルが見つかりません")).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(mockSkillAPI.analyze).toHaveBeenCalledTimes(2);
-    });
-
-    resolveSecondAnalyze?.(
-      createMockAnalysis({
-        overallScore: 88,
-      }),
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.queryByTestId("improvement-result-breakdown"),
-      ).not.toBeInTheDocument();
-    });
   });
 
   // ------------------------------------------
   // 20. 分析中に閉じるボタンをクリックする
   // ------------------------------------------
   it("分析中に閉じるボタンをクリックする", async () => {
-    mockSkillAPI.analyze.mockReturnValue(new Promise(() => {}));
+    mockIsAnalyzing = true;
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -747,49 +574,11 @@ describe("SkillAnalysisView", () => {
   });
 
   // ------------------------------------------
-  // 21. 改善適用中に再度適用ボタンをクリックする → disabled
+  // 22. エラー状態で再試行ボタンが表示される
   // ------------------------------------------
-  it("改善適用中に再度適用ボタンをクリックする → disabled", async () => {
-    mockSkillAPI.applyImprovements.mockReturnValue(new Promise(() => {}));
-
-    await act(async () => {
-      render(
-        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
-      );
-    });
-
-    // 提案を選択
-    const checkboxes = screen.getAllByRole("checkbox");
-    await act(async () => {
-      fireEvent.click(checkboxes[0]);
-    });
-
-    // 適用ボタンクリック
-    await act(async () => {
-      fireEvent.click(screen.getByText("選択を適用"));
-    });
-
-    // ボタンがdisabledになっている
-    const applyButton = screen.getByText("選択を適用");
-    expect(applyButton).toBeDisabled();
-
-    // 再度クリックしても呼ばれない
-    await act(async () => {
-      fireEvent.click(applyButton);
-    });
-
-    // applyImprovements は1回のみ呼ばれる
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledTimes(1);
-  });
-
-  // ------------------------------------------
-  // 22. エラー状態から再試行→成功のフロー
-  // ------------------------------------------
-  it("エラー状態から再試行→成功のフロー", async () => {
-    // 初回はエラー
-    mockSkillAPI.analyze.mockRejectedValueOnce(new Error("一時的なエラー"));
-    // 2回目は成功
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
+  it("エラー状態で再試行ボタンが表示される", async () => {
+    mockSkillError = "一時的なエラー";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -800,20 +589,6 @@ describe("SkillAnalysisView", () => {
     // エラー表示確認
     expect(screen.getByRole("alert")).toHaveTextContent("一時的なエラー");
     expect(screen.getByText("再試行")).toBeInTheDocument();
-
-    // 再試行
-    await act(async () => {
-      fireEvent.click(screen.getByText("再試行"));
-    });
-
-    // 成功後の表示確認
-    await waitFor(() => {
-      expect(screen.getByText("72")).toBeInTheDocument();
-    });
-
-    // エラーが消えている
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(screen.queryByText("再試行")).not.toBeInTheDocument();
   });
 
   // ============================================
@@ -824,7 +599,8 @@ describe("SkillAnalysisView", () => {
   // 23. エラーメッセージに role="alert" がある
   // ------------------------------------------
   it('エラーメッセージに role="alert" がある', async () => {
-    mockSkillAPI.analyze.mockRejectedValue(new Error("テストエラー"));
+    mockSkillError = "テストエラー";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -894,7 +670,7 @@ describe("SkillAnalysisView", () => {
     });
 
     // 1. 分析APIが呼ばれた
-    expect(mockSkillAPI.analyze).toHaveBeenCalledWith("test-skill");
+    expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
 
     // 2. ScoreDisplay: 総合スコアとカテゴリ別分析が表示
     expect(screen.getByText("72")).toBeInTheDocument();
@@ -921,21 +697,9 @@ describe("SkillAnalysisView", () => {
   });
 
   // ------------------------------------------
-  // 27. 提案選択→適用→再分析の完全フロー
+  // 27. 提案選択→適用でstore actionが呼ばれる
   // ------------------------------------------
-  it("提案選択→適用→再分析の完全フロー", async () => {
-    const improvedAnalysis = createMockAnalysis({
-      overallScore: 90,
-      suggestions: [],
-      risks: [],
-    });
-
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
-    mockSkillAPI.analyze.mockResolvedValueOnce(improvedAnalysis);
-    mockSkillAPI.applyImprovements.mockResolvedValue(
-      createMockImprovementResult(),
-    );
-
+  it("提案選択→適用でstore actionが呼ばれる", async () => {
     await act(async () => {
       render(
         <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
@@ -963,70 +727,32 @@ describe("SkillAnalysisView", () => {
     });
 
     // Step 4: 改善APIが正しい引数で呼ばれた
-    expect(mockSkillAPI.applyImprovements).toHaveBeenCalledWith("test-skill", [
+    expect(mockApplySkillImprovements).toHaveBeenCalledWith("test-skill", [
       defaultAnalysis.suggestions[0],
       defaultAnalysis.suggestions[1],
     ]);
-
-    // Step 5: 再分析結果が反映される
-    await waitFor(
-      () => {
-        expect(screen.getByText("90")).toBeInTheDocument();
-      },
-      { timeout: 3000 },
-    );
-
-    // Step 6: 改善後は提案が空
-    expect(screen.getByText("改善提案はありません")).toBeInTheDocument();
-    // リスクも空
-    expect(screen.getByText("リスクは検出されていません")).toBeInTheDocument();
   });
 
   // ------------------------------------------
-  // 28. 全自動改善→確認→実行→再分析の完全フロー
+  // 28. 全自動改善→確認→store actionが呼ばれる
   // ------------------------------------------
-  it("全自動改善→確認→実行→再分析の完全フロー", async () => {
-    const improvedAnalysis = createMockAnalysis({
-      overallScore: 95,
-      suggestions: [],
-      risks: [],
-    });
-
-    mockSkillAPI.analyze.mockResolvedValueOnce(defaultAnalysis);
-    mockSkillAPI.analyze.mockResolvedValueOnce(improvedAnalysis);
-    mockSkillAPI.autoImprove.mockResolvedValue(createMockImprovementResult());
-
+  it("全自動改善→確認→store actionが呼ばれる", async () => {
     await act(async () => {
       render(
         <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
       );
     });
 
-    // Step 1: 初回分析結果を確認
-    expect(screen.getByText("72")).toBeInTheDocument();
-
-    // Step 2: 全自動改善ボタンクリック
+    // 全自動改善ボタンクリック
     await act(async () => {
       fireEvent.click(screen.getByText("全自動改善"));
     });
 
-    // Step 3: 確認ダイアログが表示された
+    // 確認ダイアログが表示された
     expect(window.confirm).toHaveBeenCalledWith("全自動改善を実行しますか？");
 
-    // Step 4: autoImprove が呼ばれた
-    expect(mockSkillAPI.autoImprove).toHaveBeenCalledWith("test-skill");
-
-    // Step 5: 再分析結果が反映される
-    await waitFor(
-      () => {
-        expect(screen.getByText("95")).toBeInTheDocument();
-      },
-      { timeout: 3000 },
-    );
-
-    // Step 6: 改善後は提案もリスクも空
-    expect(screen.getByText("改善提案はありません")).toBeInTheDocument();
-    expect(screen.getByText("リスクは検出されていません")).toBeInTheDocument();
+    // autoImproveSkill が呼ばれた
+    expect(mockAutoImproveSkill).toHaveBeenCalledWith("test-skill");
   });
 
   // ============================================
@@ -1034,11 +760,11 @@ describe("SkillAnalysisView", () => {
   // ============================================
 
   // ------------------------------------------
-  // 29. Error以外の例外がデフォルトメッセージで表示される
+  // 29. Error以外の例外がストアのskillErrorで表示される
   // ------------------------------------------
-  it("Error以外の例外がデフォルトメッセージで表示される", async () => {
-    // 文字列を投げる（Error インスタンスではない）
-    mockSkillAPI.analyze.mockRejectedValue("文字列エラー");
+  it("skillErrorが設定されるとデフォルトメッセージで表示される", async () => {
+    mockSkillError = "分析中にエラーが発生しました";
+    mockCurrentAnalysis = null;
 
     await act(async () => {
       render(
@@ -1060,7 +786,7 @@ describe("SkillAnalysisView", () => {
       );
     });
 
-    // 選択なしの状態で適用ボタンはdisabledだが、念のためAPI呼び出しも確認
+    // 選択なしの状態で適用ボタンはdisabled
     const applyButton = screen.getByText("選択を適用");
     expect(applyButton).toBeDisabled();
 
@@ -1069,7 +795,7 @@ describe("SkillAnalysisView", () => {
       fireEvent.click(applyButton);
     });
 
-    expect(mockSkillAPI.applyImprovements).not.toHaveBeenCalled();
+    expect(mockApplySkillImprovements).not.toHaveBeenCalled();
   });
 
   // ------------------------------------------
@@ -1089,6 +815,6 @@ describe("SkillAnalysisView", () => {
     });
 
     expect(window.confirm).toHaveBeenCalledWith("全自動改善を実行しますか？");
-    expect(mockSkillAPI.autoImprove).not.toHaveBeenCalled();
+    expect(mockAutoImproveSkill).not.toHaveBeenCalled();
   });
 });

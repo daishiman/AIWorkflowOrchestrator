@@ -841,10 +841,102 @@ TASK-043B は、TASK-10A-D で統合済みの `SkillManagementPanel` list branch
 
 ---
 
+## AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / in-progress）
+
+> ステータス: **in-progress**（コンポーネント設計・レイアウト変更仕様策定中）
+
+TASK-UI-03 は、既存の `AgentView`（`views/AgentView/index.tsx`）をシングルカラム・3セマンティックリージョン構成に再設計し、Atomic Design の organisms 配下にサブコンポーネント群を新設するUIエンハンスメントタスクである。
+
+### コンポーネント構成
+
+| 階層 | コンポーネント | 分類 | 説明 |
+|------|----------------|------|------|
+| 1 | AgentView | views | メインビュー（max-w-600px シングルカラム） |
+| 1-1 | SkillChip | organisms | ツール選択チップ |
+| 1-2 | ExecuteButton | organisms | 実行ボタン |
+| 1-3 | RecentExecutionList | organisms | 最近の実行履歴 |
+| 1-4 | FloatingExecutionBar | organisms | 実行状況フローティングバー（オーバーレイ） |
+| 1-5 | AdvancedSettingsPanel | organisms | 詳細設定スライドインパネル（オーバーレイ） |
+
+### ファイル配置
+
+| ディレクトリ | 内容 |
+| --- | --- |
+| `apps/desktop/src/renderer/components/organisms/AgentView/` | サブコンポーネント群 |
+| `apps/desktop/src/renderer/views/AgentView/` | メインビュー（既存、レイアウト変更） |
+
+```
+components/organisms/AgentView/
+├── SkillChip.tsx            [新規] ツール選択チップ
+├── ExecuteButton.tsx        [新規] 実行ボタン
+├── FloatingExecutionBar.tsx [新規] 実行状況フローティングバー
+├── AdvancedSettingsPanel.tsx [新規] 詳細設定スライドインパネル
+├── RecentExecutionList.tsx  [新規] 最近の実行履歴
+├── animations.ts            [新規] アニメーション定数
+├── styles.ts                [新規] 共通スタイル定数
+└── __tests__/
+    ├── SkillChip.test.tsx
+    ├── ExecuteButton.test.tsx
+    ├── FloatingExecutionBar.test.tsx
+    ├── AdvancedSettingsPanel.test.tsx
+    └── RecentExecutionList.test.tsx
+```
+
+### レイアウト構成（AgentView）
+
+シングルカラム（`max-w-600px`）の3セマンティックリージョン + オーバーレイ構成。
+
+| リージョン | 内容 | 表示条件 |
+| --- | --- | --- |
+| 「できること」セクション | SkillChip群 + 条件付き検索バー | 常時表示（検索バーは11件以上で表示） |
+| 「実行」セクション | ExecuteButton | 常時表示 |
+| 「最近の実行」セクション | RecentExecutionList | 常時表示 |
+| オーバーレイ | FloatingExecutionBar | 実行中に表示 |
+| オーバーレイ | AdvancedSettingsPanel | 詳細設定開閉時に表示 |
+
+### レイヤー設計（Atomic Design整合）
+
+| レイヤー | 構成要素 | 依存方向 |
+| --- | --- | --- |
+| Views | `AgentView` | Organismsに依存 |
+| Organisms | `SkillChip`, `ExecuteButton`, `FloatingExecutionBar`, `AdvancedSettingsPanel`, `RecentExecutionList` | 共通スタイル・アニメーション定数に依存 |
+| 共通定数 | `animations.ts`, `styles.ts` | 末端レイヤー |
+
+### Store連携（agentSlice拡張）
+
+| ファイル | 変更内容 |
+| --- | --- |
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | AgentView Enhancement 用の状態・アクション追加 |
+| `apps/desktop/src/renderer/store/index.ts` | 新規セレクタのエクスポート追加 |
+
+### テスト構成
+
+| テストファイル | テスト件数 | 対象 |
+| --- | --- | --- |
+| `SkillChip.test.tsx` | 15 | ツール選択チップの表示・操作 |
+| `ExecuteButton.test.tsx` | 8 | 実行ボタンの状態・操作 |
+| `FloatingExecutionBar.test.tsx` | 11 | フローティングバーの表示・進捗 |
+| `AdvancedSettingsPanel.test.tsx` | 13 | 詳細設定パネルの開閉・操作 |
+| `RecentExecutionList.test.tsx` | 11 | 実行履歴の表示・操作 |
+| `AgentView.layout.test.tsx` | - | 統合レイアウトテスト |
+| `agentSlice.extension.test.ts` | - | Store拡張テスト |
+| **合計** | **58+** | |
+
+### 関連タスク
+
+- **TASK-UI-03-AGENT-VIEW-ENHANCEMENT**: AgentView Enhancement（進行中）
+
+### 参照
+
+- [AgentView Enhancement ワークフロー仕様](../../../../docs/30-workflows/agent-view-enhancement/)
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.10.0  | 2026-03-07 | TASK-UI-03 反映: AgentView Enhancement アーキテクチャパターン（コンポーネント階層、ファイル配置、レイアウト構成、Atomic Design整合、Store連携、テスト構成）を追加 |
 | 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |
 | 2.9.4   | 2026-03-06 | TASK-043B 反映: SkillManagementPanel import list refinement のアーキテクチャ節を追加し、2セクション構成、dialog/state 境界、success/error 判定、品質指標を同期 |
 | 2.9.1   | 2026-03-04 | TASK-UI-00-ORGANISMS 反映: CardGrid/MasterDetailLayout/SearchFilterList のアーキテクチャ記録を追加（責務分離、Atomic Design整合、品質メトリクス、参照導線） |

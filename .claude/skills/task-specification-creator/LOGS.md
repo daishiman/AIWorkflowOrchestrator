@@ -10,7 +10,52 @@
 
 ---
 
+## 2026-03-07 - TASK-10A-F Phase 12 再確認（スクリーンショット証跡 + 仕様同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` に 11件の証跡を取得し、`manual-test-result.md` を `TC-ID + 証跡` 形式へ更新
+  - `outputs/phase-12` の不足成果物（`unassigned-task-detection.md` / `skill-feedback-report.md` / `spec-update-summary.md`）を補完
+  - Step 1-A/1-B/1-C/1-D/Step 2 の実更新として `aiworkflow-requirements` 正本3仕様書と LOGS/SKILL 4ファイルを同期
+  - `verify-all-specs` と `validate-phase11-screenshot-coverage` の再実行を記録
+
+---
+
 ## 2026-03-07 - TASK-10A-E-C Store駆動ライフサイクル統合設計の仕様同期
+## 2026-03-07 - TASK-UI-03 スキル最適化（Phase 4 a11y テスト推奨追加）
+
+- **Agent**: task-specification-creator
+- **Phase**: cross-skill-improvement
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-templates.md` の Phase 4 テンプレートにアクセシビリティテスト（WCAG 2.1 AA）推奨セクションを追加
+  - UIタスクで ARIA ラベル / ロール属性 / キーボード操作 / コントラスト比 / 状態通知の5観点を Phase 4 で早期テスト設計するよう標準化
+  - 根拠: TASK-UI-03 で Phase 10 まで a11y 属性不足が検出されず、4件の未タスク化が発生した教訓
+  - `SKILL.md` 変更履歴を `v10.08.21` として同期
+
+---
+
+## 2026-03-07 - TASK-UI-03-AGENT-VIEW-ENHANCEMENT Phase 12 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - AIアシスタント画面リデザイン（Tap & Discover）の Phase 12 ドキュメント更新を完了
+  - 実装ガイド（Part 1/2）、コンポーネントドキュメント、スキルフィードバックレポートを作成
+  - Phase 10 MINOR 指摘4件を未タスク化（UT-UI-03-A11Y-RADIOGROUP-001 / A11Y-DIALOG-001 / A11Y-LABEL-001 / TYPE-ASSERTION-001）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+  - テスト: 117 PASS、カバレッジ Line 99.68% / Branch 96% / Function 100%
+
+---
+
+## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE completed-tasks 移管
+
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12（仕様同期）

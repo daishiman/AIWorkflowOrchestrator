@@ -4,6 +4,32 @@
 
 ---
 
+## [2026-03-07 - TASK-10A-F Phase 12再監査知見のテンプレート化]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「Phase11文書名固定 + TC証跡1:1 + changelog完了記述の三点同期（TASK-10A-F）」を追加
+  - 同ファイルに失敗パターン「Phase11文書名ドリフトとTC証跡未同期を放置（TASK-10A-F）」を追加
+  - 再発防止の最小手順を `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` / `audit --target-file` の3点セットで固定
+  - `SKILL.md` 変更履歴を `10.37.13` として同期
+
+---
+
+## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` にスキルフィードバックレポートの4セクション標準テンプレート（ワークフロー改善点/技術的教訓/スキル改善提案/新規Pitfall候補）を追加
+  - `references/feedback-loop.md` に Phase 12 → lessons-learned → Phase 2 テンプレート改善のフィードバック反映プロセス（5ステップ）を追加
+  - TASK-UI-03 での適用例（Phase 10 MINOR 4件 → Phase 4 a11y テスト推奨）を具体的に記録
+  - `SKILL.md` 変更履歴を `10.37.11` として同期
+
+---
+
 ## [2026-03-06 - TASK-UI-02 UI domain spec 同期ガード追加（UI6+domain add-on）]
 
 - **Agent**: skill-creator (update)

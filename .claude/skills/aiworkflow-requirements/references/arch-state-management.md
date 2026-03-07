@@ -9,9 +9,14 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
+| v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記 |
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記 |
 | v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
 | v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
+| v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加 |
+| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
+| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記 |
+
 | v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
 | v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
 | v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
@@ -296,6 +301,8 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `currentAnalysis`    | `SkillAnalysis \| null` | 分析結果（TASK-10A-D追加） |
 | `isAnalyzing`        | `boolean`               | 分析中フラグ（TASK-10A-D追加） |
 | `isImproving`        | `boolean`               | 改善中フラグ（TASK-10A-D追加） |
+| `recentExecutions`       | `ExecutionSummary[]`    | 実行履歴（最大10件、`MAX_EXECUTION_HISTORY`定数）（TASK-UI-03追加） |
+| `isAdvancedSettingsOpen`  | `boolean`               | 詳細設定パネル開閉状態（TASK-UI-03追加） |
 
 **アクション定義**:
 
@@ -314,6 +321,31 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `autoImproveSkill`       | `skillName: string`                                  | 全自動改善（TASK-10A-D追加）   |
 | `createSkill`            | `description: string, options: CreateOptions`         | スキル作成（TASK-10A-D追加）   |
 | `clearAnalysis`          | -                                                     | 分析結果クリア（TASK-10A-D追加） |
+| `addExecutionToHistory`      | `summary: ExecutionSummary`                           | 実行履歴に先頭追加、10件超で末尾削除（TASK-UI-03追加） |
+| `clearExecutionHistory`      | -                                                     | 実行履歴全クリア（TASK-UI-03追加） |
+| `setAdvancedSettingsOpen`    | `isOpen: boolean`                                     | 詳細設定パネル開閉制御（TASK-UI-03追加） |
+
+**ExecutionSummary型（TASK-UI-03追加）**:
+
+| プロパティ         | 型                                                      | 説明                   |
+| ------------------ | ------------------------------------------------------- | ---------------------- |
+| `executionId`      | `string`                                                | 実行ID                 |
+| `skillName`        | `string`                                                | スキル名               |
+| `skillDisplayName` | `string`                                                | スキル表示名           |
+| `status`           | `"completed" \| "failed" \| "executing" \| "cancelled"` | 実行ステータス         |
+| `startedAt`        | `Date`                                                  | 開始日時               |
+| `completedAt`      | `Date \| null`                                          | 完了日時（未完了はnull） |
+| `duration`         | `number \| null`                                        | 実行時間（ミリ秒、未完了はnull） |
+
+**個別セレクタ一覧（TASK-UI-03追加）**:
+
+| セレクタ                        | 種別     | 返却型                                          |
+| ------------------------------- | -------- | ----------------------------------------------- |
+| `useRecentExecutions()`         | 状態     | `ExecutionSummary[]`                             |
+| `useAddExecutionToHistory()`    | アクション | `(summary: ExecutionSummary) => void`           |
+| `useIsAdvancedSettingsOpen()`   | 状態     | `boolean`                                        |
+| `useSetAdvancedSettingsOpen()`  | アクション | `(isOpen: boolean) => void`                     |
+| `useClearExecutionHistory()`    | アクション | `() => void`                                    |
 
 ### 新規Slice追加手順
 
@@ -447,6 +479,10 @@ export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProv
 
 **現行 AuthMode セレクタ**: `apps/desktop/src/renderer/store/index.ts` に状態 7 個 + アクション 10 個を配置し、`useAuthModeStore()` は互換用 deprecated helper として残す。
 （UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け個別セレクタも追加し、P31適用範囲を拡張）
+**提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個、AgentView Enhancement系5個（計35個）
+（UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け15個を追加し、P31適用範囲を拡張）
+（TASK-UI-03で実行履歴・詳細設定パネル向け5個を追加: `useRecentExecutions`, `useAddExecutionToHistory`, `useIsAdvancedSettingsOpen`, `useSetAdvancedSettingsOpen`, `useClearExecutionHistory`）
+
 
 ### 長期解決策: 個別セレクタベースの再設計
 
@@ -1340,3 +1376,19 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。  
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。  
 5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。  
+
+## TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07）
+
+### 責務境界の最終同期
+
+| タスク | 責務 |
+| --- | --- |
+| TASK-10A-D | agentSlice へ lifecycle state/action を追加する |
+| TASK-10A-E-C | import lifecycle（`isImporting` 系）を安定化する |
+| TASK-10A-F | Renderer 直接IPCを排除し Store action 経由へ統一する |
+
+### UI側契約
+
+- `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
+- `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
+- 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。

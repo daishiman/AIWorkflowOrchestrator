@@ -1636,6 +1636,21 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-00-FOUNDATION-REFLECTION-AUDIT
 
+### [Phase12] Phase11文書名固定 + TC証跡1:1 + changelog完了記述の三点同期（TASK-10A-F）
+
+- **状況**: Phase 12再監査で、Phase11文書名ドリフト・TC証跡リンク漏れ・`documentation-changelog.md` の計画文残置が同時に発生しやすい
+- **アプローチ**:
+  1. `validate-phase12-implementation-guide` で Part 1/2、型定義、エッジケース、設定一覧の必須要件を機械検証する
+  2. `validate-phase11-screenshot-coverage` と `manual-test-result.md` を突合し、TCごとに証跡を 1:1 固定する（`screenshots/*.png` または `NON_VISUAL:`）
+  3. `documentation-changelog.md` は「実更新ログのみ」にし、`予定/計画` の文言を残さない
+  4. `task-workflow.md` / `lessons-learned.md` / `<domain-spec>` に「実装内容 + 苦戦箇所 + 検証値」を同一ターンで同期する
+  5. 未実施項目は `docs/30-workflows/unassigned-task/` に10見出しテンプレートで起票し、`audit --target-file` で個別検証する
+- **結果**: Phase 12の完了判定根拠が揃い、文書名・証跡・進捗表現のドリフトを同時に防止できる
+- **適用条件**: 再監査で「実装は完了しているが文書運用に差分」が残るタスク
+- **教訓**: Phase 12は「作ること」より「同期を崩さないこと」を完了条件に置く
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-10A-F
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1683,6 +1698,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **問題**: 本来不要な大規模修正を誘発し、今回タスクの完了判断が遅延する
 - **原因**: 監査スコープ（repo-wide）とレビュー対象（今回差分）の境界を定義していない
 - **教訓**: Phase 12報告では「全体件数」と「対象ファイル件数」を必ず別指標で提示する
+
+### [Phase12] Phase11文書名ドリフトとTC証跡未同期を放置（TASK-10A-F）
+
+- **状況**: `phase-11-execution.md` と実体ドキュメント名がずれたまま、TC証跡が `manual-test-result.md` とリンクしない状態で完了判定した
+- **問題**: `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は通るが、実運用で参照追跡が困難になる
+- **原因**: 実装要件の検証結果だけを見て、文書間参照と changelog の完了記述まで確認しなかった
+- **教訓**: Phase 12完了前に「文書名固定」「TC証跡1:1」「changelog完了記述」の三点を機械検証 + 目視確認する
+- **対策**: 未解決項目は即時に `docs/30-workflows/unassigned-task/` へ起票し、`task-workflow/lessons` へ同ターン反映する
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-10A-F
 - **対策**: 監査テンプレートに「baseline / scope-of-change」2列を追加し、対象ファイルの個別検証結果を併記する
 - **発見日**: 2026-02-22
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
@@ -2568,3 +2593,46 @@ interface BadgeProps extends Omit<
   - 未タスク新規作成時は「テンプレート適用→個別監査PASS→台帳同期」の3点を同一ターンで完了する
 - **発見日**: 2026-03-06
 - **関連タスク**: UT-10A-E-C-001, UT-10A-E-C-002
+
+### [Phase12] スキルフィードバックレポートテンプレート（TASK-UI-03）
+
+- **状況**: Phase 12 Task 5（スキルフィードバックレポート）の記載粒度がタスクごとにばらつき、後続のスキル改善で活用しにくい
+- **成功パターン**:
+  - 以下の4セクション構成を標準テンプレートとして使用する:
+
+```markdown
+# スキルフィードバックレポート
+
+## 1. ワークフロー改善点
+
+| 改善対象 | 現状の問題 | 改善提案 | 優先度 |
+| --- | --- | --- | --- |
+| {{Phase/Step名}} | {{具体的な問題}} | {{改善内容}} | HIGH/MEDIUM/LOW |
+
+## 2. 技術的教訓
+
+| 教訓 | 再発条件 | 防止策 | 新規Pitfall候補 |
+| --- | --- | --- | --- |
+| {{教訓の要約}} | {{再現手順/条件}} | {{具体的な対策}} | P{{番号}}候補 or N/A |
+
+## 3. スキル改善提案
+
+| 対象スキル | 対象ファイル | 改善内容 | 根拠タスク |
+| --- | --- | --- | --- |
+| {{skill-creator/task-specification-creator}} | {{references/xxx.md}} | {{追加/変更内容}} | {{TASK-ID}} |
+
+## 4. 新規Pitfall候補
+
+| ID候補 | タイトル | 症状 | 解決策 | 関連P |
+| --- | --- | --- | --- | --- |
+| P{{N}} | {{タイトル}} | {{症状}} | {{解決策}} | {{関連する既存Pitfall}} |
+```
+
+  - 改善点が0件のセクションでも「該当なし」と明記して省略しない
+  - Phase 10 MINOR指摘から抽出した教訓は必ずセクション2に記載する
+- **失敗パターン**:
+  - 自由記述で書き、後続タスクで構造化データとして活用できない
+  - 「改善点なし」の一文で済ませ、Phase 10の指摘事項を教訓化しない
+- **適用条件**: Phase 12 Task 5 実行時（全タスクで必須）
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
