@@ -1636,6 +1636,21 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-00-FOUNDATION-REFLECTION-AUDIT
 
+### [Phase12] Phase11文書名固定 + TC証跡1:1 + changelog完了記述の三点同期（TASK-10A-F）
+
+- **状況**: Phase 12再監査で、Phase11文書名ドリフト・TC証跡リンク漏れ・`documentation-changelog.md` の計画文残置が同時に発生しやすい
+- **アプローチ**:
+  1. `validate-phase12-implementation-guide` で Part 1/2、型定義、エッジケース、設定一覧の必須要件を機械検証する
+  2. `validate-phase11-screenshot-coverage` と `manual-test-result.md` を突合し、TCごとに証跡を 1:1 固定する（`screenshots/*.png` または `NON_VISUAL:`）
+  3. `documentation-changelog.md` は「実更新ログのみ」にし、`予定/計画` の文言を残さない
+  4. `task-workflow.md` / `lessons-learned.md` / `<domain-spec>` に「実装内容 + 苦戦箇所 + 検証値」を同一ターンで同期する
+  5. 未実施項目は `docs/30-workflows/unassigned-task/` に10見出しテンプレートで起票し、`audit --target-file` で個別検証する
+- **結果**: Phase 12の完了判定根拠が揃い、文書名・証跡・進捗表現のドリフトを同時に防止できる
+- **適用条件**: 再監査で「実装は完了しているが文書運用に差分」が残るタスク
+- **教訓**: Phase 12は「作ること」より「同期を崩さないこと」を完了条件に置く
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-10A-F
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1683,6 +1698,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **問題**: 本来不要な大規模修正を誘発し、今回タスクの完了判断が遅延する
 - **原因**: 監査スコープ（repo-wide）とレビュー対象（今回差分）の境界を定義していない
 - **教訓**: Phase 12報告では「全体件数」と「対象ファイル件数」を必ず別指標で提示する
+
+### [Phase12] Phase11文書名ドリフトとTC証跡未同期を放置（TASK-10A-F）
+
+- **状況**: `phase-11-execution.md` と実体ドキュメント名がずれたまま、TC証跡が `manual-test-result.md` とリンクしない状態で完了判定した
+- **問題**: `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は通るが、実運用で参照追跡が困難になる
+- **原因**: 実装要件の検証結果だけを見て、文書間参照と changelog の完了記述まで確認しなかった
+- **教訓**: Phase 12完了前に「文書名固定」「TC証跡1:1」「changelog完了記述」の三点を機械検証 + 目視確認する
+- **対策**: 未解決項目は即時に `docs/30-workflows/unassigned-task/` へ起票し、`task-workflow/lessons` へ同ターン反映する
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-10A-F
 - **対策**: 監査テンプレートに「baseline / scope-of-change」2列を追加し、対象ファイルの個別検証結果を併記する
 - **発見日**: 2026-02-22
 - **関連タスク**: TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001
@@ -2611,4 +2636,3 @@ interface BadgeProps extends Omit<
 - **適用条件**: Phase 12 Task 5 実行時（全タスクで必須）
 - **発見日**: 2026-03-07
 - **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
-

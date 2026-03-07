@@ -2,22 +2,23 @@
  * @file SkillCreateWizard.test.tsx
  * @description SkillCreateWizard 統合コンポーネント ユニットテスト
  * @phase Phase 4: テスト作成（TDD: Red -> Green）
- * @task TASK-10A-C
+ * @task TASK-10A-C, TASK-10A-F (Store統合)
  *
  * P39準拠: fireEventのみ使用（happy-dom環境でuserEvent禁止）
  * P9準拠: beforeEachで状態リセット
- * P27準拠: IPC_CHANNELS定数経由（ハードコード文字列禁止）
+ * TASK-10A-F: window.electronAPI直接呼び出しからStore action経由に移行
  */
 
-import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { SkillCreateWizard } from "../SkillCreateWizard";
 
-// electronAPI.skill.create のモック
-const mockCreate = vi.fn();
+// Store セレクタモック（TASK-10A-F: Store action経由に統一）
+const mockCreateSkill = vi.fn();
 
-// window.electronAPI の元の値を保持
-const originalElectronAPI = (window as Record<string, unknown>).electronAPI;
+vi.mock("../../../store", () => ({
+  useCreateSkill: () => mockCreateSkill,
+}));
 
 describe("SkillCreateWizard", () => {
   let mockOnClose: ReturnType<typeof vi.fn>;
@@ -25,21 +26,7 @@ describe("SkillCreateWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
-    mockCreate.mockResolvedValue({ path: "/path/to/new-skill" });
-
-    // window.electronAPI.skill.create をプロパティ代入でモック
-    // happy-dom 環境で vi.stubGlobal("window", ...) は window 全体を置換し
-    // DOM 内部オブジェクトが破壊されるため使用不可
-    (window as Record<string, unknown>).electronAPI = {
-      skill: {
-        create: mockCreate,
-      },
-    };
-  });
-
-  afterEach(() => {
-    // 元の値を復元
-    (window as Record<string, unknown>).electronAPI = originalElectronAPI;
+    mockCreateSkill.mockResolvedValue("/path/to/new-skill");
   });
 
   // ============================================================
@@ -108,7 +95,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
     it("IPC 成功後に Step 4（完了）に遷移する", async () => {
@@ -125,7 +112,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
       await act(async () => {
-        await mockCreate.mock.results[0]?.value;
+        await mockCreateSkill.mock.results[0]?.value;
       });
 
       expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
@@ -145,7 +132,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
       await act(async () => {
-        await mockCreate.mock.results[0]?.value;
+        await mockCreateSkill.mock.results[0]?.value;
       });
 
       expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
@@ -170,18 +157,15 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreate).toHaveBeenCalledWith({
-        description: "テストスキル説明",
-        options: {
-          generateTasks: true,
-          addAgents: false,
-          addReferences: false,
-        },
+      expect(mockCreateSkill).toHaveBeenCalledWith("テストスキル説明", {
+        generateTasks: true,
+        addAgents: false,
+        addReferences: false,
       });
     });
 
     it("IPC 失敗時にエラーメッセージが表示される", async () => {
-      mockCreate.mockRejectedValue(new Error("生成失敗"));
+      mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
@@ -197,7 +181,7 @@ describe("SkillCreateWizard", () => {
       });
       await act(async () => {
         try {
-          await mockCreate.mock.results[0]?.value;
+          await mockCreateSkill.mock.results[0]?.value;
         } catch {
           // 期待されるエラー
         }
@@ -207,7 +191,7 @@ describe("SkillCreateWizard", () => {
     });
 
     it("IPC 失敗時に Error 以外のオブジェクトでもフォールバックメッセージが表示される", async () => {
-      mockCreate.mockRejectedValue("unknown error");
+      mockCreateSkill.mockRejectedValue("unknown error");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
@@ -223,7 +207,7 @@ describe("SkillCreateWizard", () => {
       });
       await act(async () => {
         try {
-          await mockCreate.mock.results[0]?.value;
+          await mockCreateSkill.mock.results[0]?.value;
         } catch {
           // 期待されるエラー
         }
@@ -251,7 +235,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
       await act(async () => {
-        await mockCreate.mock.results[0]?.value;
+        await mockCreateSkill.mock.results[0]?.value;
       });
 
       // Step 4: 閉じる
@@ -336,13 +320,10 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreate).toHaveBeenCalledWith({
-        description: "テスト",
-        options: {
-          generateTasks: false,
-          addAgents: false,
-          addReferences: false,
-        },
+      expect(mockCreateSkill).toHaveBeenCalledWith("テスト", {
+        generateTasks: false,
+        addAgents: false,
+        addReferences: false,
       });
     });
 
@@ -364,7 +345,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -385,11 +366,11 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreate).toHaveBeenCalledTimes(1);
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
     it("IPC 完了後に生成されたカスタムパスが CompleteStep に渡される", async () => {
-      mockCreate.mockResolvedValue({ path: "/custom/generated/path" });
+      mockCreateSkill.mockResolvedValue("/custom/generated/path");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
@@ -403,7 +384,7 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
       await act(async () => {
-        await mockCreate.mock.results[0]?.value;
+        await mockCreateSkill.mock.results[0]?.value;
       });
 
       expect(screen.getByText("/custom/generated/path")).toBeInTheDocument();
