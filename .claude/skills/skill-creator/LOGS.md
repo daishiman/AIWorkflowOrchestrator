@@ -4,6 +4,19 @@
 
 ---
 
+## [2026-03-07 - TASK-10A-F Phase 12再監査知見のテンプレート化]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「Phase11文書名固定 + TC証跡1:1 + changelog完了記述の三点同期（TASK-10A-F）」を追加
+  - 同ファイルに失敗パターン「Phase11文書名ドリフトとTC証跡未同期を放置（TASK-10A-F）」を追加
+  - 再発防止の最小手順を `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` / `audit --target-file` の3点セットで固定
+  - `SKILL.md` 変更履歴を `10.37.13` として同期
+
+---
+
 ## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
 
 - **Agent**: skill-creator (update)

@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
@@ -163,6 +164,44 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07）
+
+### 苦戦箇所: Phase 11 文書名が validator 期待値と不一致
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-11-manual-testing.md` のみ存在し、validator は `phase-11-manual-test.md` を参照して失敗した |
+| 再発条件 | workflow ごとに Phase 11 文書名が揺れる場合 |
+| 対処 | `phase-11-manual-test.md` を正本として追加し、TC一覧と証跡リンクを明示した |
+| 標準ルール | Phase 11 は `phase-11-manual-test.md` + `manual-test-result.md` の2ファイルを必須にする |
+
+### 苦戦箇所: スクリーンショット実体があるのに TC 紐付け不足で未参照扱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 11枚撮影済みでも、TC-11-08〜11 が文書に未記載で warning が出た |
+| 再発条件 | 画面撮影後に manual test 文書の TC テーブル更新を後回しにする場合 |
+| 対処 | `phase-11-manual-test.md` に TC-11-01〜11 と証跡マトリクスを追加して一致させた |
+| 標準ルール | 「撮影完了→TCテーブル更新→coverage validator 実行」を1セットで運用する |
+
+### 苦戦箇所: Phase 12 changelog が計画表現（対象/予定）に偏る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実更新の有無が不明瞭で Step 完了判定が曖昧化した |
+| 再発条件 | 実作業前に changelog を先行記述する場合 |
+| 対処 | Step 1-A/1-B/1-C/1-D/Step 2 を完了ベースで書き直し、実更新対象へ限定した |
+| 標準ルール | `documentation-changelog.md` は「完了済み変更のみ」記述し、予定は記載しない |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Phase 11 文書名を `phase-11-manual-test.md` に統一する。  
+2. スクリーンショット取得後に TC-ID と証跡を 1:1 で記載する。  
+3. `validate-phase11-screenshot-coverage` を PASS にしてから Phase 12 を進める。  
+4. Phase 12 は Step完了後に changelog を更新し、計画表現を残さない。  
 
 ---
 

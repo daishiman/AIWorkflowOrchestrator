@@ -2,21 +2,32 @@
  * @file useSkillAnalysis.ts
  * @description スキル分析ビューのビジネスロジック・状態管理カスタムフック
  * @feature skill-improver
- * @task TASK-10A-B (Phase 8 リファクタリング)
+ * @task TASK-10A-F (Phase 5: Store駆動ライフサイクルUI統合)
  *
  * SkillAnalysisView.tsx から状態管理ロジックを抽出。
- * - 分析実行・結果管理
- * - 提案選択トグル
- * - 選択適用
- * - 全自動改善
+ * - 分析実行・結果管理 → Zustand store action 経由
+ * - 提案選択トグル → ローカル state
+ * - 選択適用 → Zustand store action 経由
+ * - 全自動改善 → Zustand store action 経由
+ *
+ * TASK-10A-F: window.electronAPI 直接呼び出しを排除し、
+ * agentSlice の store action 経由に統一。
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type {
   ImprovementResult,
-  SkillAnalysis,
   Suggestion,
 } from "@repo/shared/types/skill-improver";
+import {
+  useCurrentAnalysis,
+  useIsAnalyzingSkill,
+  useIsImprovingSkill,
+  useSkillError,
+  useAnalyzeSkill,
+  useApplySkillImprovements,
+  useAutoImproveSkill,
+} from "../../../store";
 
 // ============================================
 // Types
@@ -24,7 +35,7 @@ import type {
 
 export interface UseSkillAnalysisReturn {
   /** 分析結果（未取得時はnull） */
-  analysis: SkillAnalysis | null;
+  analysis: ReturnType<typeof useCurrentAnalysis>;
   /** 分析中フラグ */
   isAnalyzing: boolean;
   /** 改善適用中フラグ */
@@ -46,8 +57,6 @@ export interface UseSkillAnalysisReturn {
   /** 全自動改善を実行する */
   handleAutoImprove: () => Promise<void>;
 }
-
-const IMPROVEMENT_RESULT_PREVIEW_MS = 250;
 
 // ============================================
 // Hook
@@ -72,41 +81,34 @@ export const buildAutoFixableSelection = (
  * @returns 分析状態とハンドラ関数
  */
 export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
-  // ---- State ----
-  const [analysis, setAnalysis] = useState<SkillAnalysis | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
-  const [isImproving, setIsImproving] = useState<boolean>(false);
+  // ---- Store state (P31対策: 個別セレクタで取得) ----
+  const analysis = useCurrentAnalysis();
+  const isAnalyzing = useIsAnalyzingSkill();
+  const isImproving = useIsImprovingSkill();
+  const error = useSkillError();
+
+  // ---- Store actions (P31対策: 個別セレクタで取得) ----
+  const analyzeSkill = useAnalyzeSkill();
+  const applySkillImprovements = useApplySkillImprovements();
+  const autoImproveSkill = useAutoImproveSkill();
+
+  // ---- Local state (ローカルUI状態は引き続きuseState) ----
   const [selectedSuggestions, setSelectedSuggestions] = useState<Set<number>>(
     new Set(),
   );
-  const [error, setError] = useState<string | null>(null);
   const [improvementResult, setImprovementResult] =
     useState<ImprovementResult | null>(null);
-  const isMountedRef = useRef(true);
 
   // ---- Handlers ----
 
   const handleAnalyze = useCallback(async () => {
-    if (!isMountedRef.current) return;
-    setIsAnalyzing(true);
-    setError(null);
     try {
-      const result = await window.electronAPI.skill.analyze(skillName);
-      if (!isMountedRef.current) return;
-      setAnalysis(result);
+      await analyzeSkill(skillName);
       setSelectedSuggestions(new Set());
-    } catch (err) {
-      if (!isMountedRef.current) return;
-      const message =
-        err instanceof Error ? err.message : "分析中にエラーが発生しました";
-      setError(message);
-      setAnalysis(null);
-    } finally {
-      if (isMountedRef.current) {
-        setIsAnalyzing(false);
-      }
+    } catch {
+      // Store側でskillErrorに設定済み。UIクラッシュ防止
     }
-  }, [skillName]);
+  }, [analyzeSkill, skillName]);
 
   const handleToggleSuggestion = useCallback((index: number) => {
     setSelectedSuggestions((prev) => {
@@ -135,69 +137,27 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
       }
     }
 
-    setIsImproving(true);
     try {
-      const result = await window.electronAPI.skill.applyImprovements(
-        skillName,
-        selected,
-      );
-      if (!isMountedRef.current) return;
-      setImprovementResult(result);
-
-      await new Promise((resolve) =>
-        window.setTimeout(resolve, IMPROVEMENT_RESULT_PREVIEW_MS),
-      );
-      if (!isMountedRef.current) return;
-      // 改善適用成功後に分析結果を再取得
-      await handleAnalyze();
-      if (isMountedRef.current) {
-        setImprovementResult(null);
-      }
+      await applySkillImprovements(skillName, selected);
+      setImprovementResult(null);
     } catch {
-      // エラー処理: 既存挙動を維持し、UIクラッシュのみ防止
-    } finally {
-      if (isMountedRef.current) {
-        setIsImproving(false);
-      }
+      // store action 内部でエラーをskillErrorに格納済み。UIクラッシュ防止
     }
-  }, [analysis, selectedSuggestions, skillName, handleAnalyze]);
+  }, [analysis, selectedSuggestions, skillName, applySkillImprovements]);
 
   const handleAutoImprove = useCallback(async () => {
     const isConfirmed = window.confirm("全自動改善を実行しますか？");
     if (!isConfirmed) return;
 
-    setIsImproving(true);
     try {
-      const result = await window.electronAPI.skill.autoImprove(skillName);
-      if (!isMountedRef.current) return;
-      setImprovementResult(result);
-
-      await new Promise((resolve) =>
-        window.setTimeout(resolve, IMPROVEMENT_RESULT_PREVIEW_MS),
-      );
-      if (!isMountedRef.current) return;
-      // 全自動改善成功後に分析結果を再取得
-      await handleAnalyze();
-      if (isMountedRef.current) {
-        setImprovementResult(null);
-      }
+      await autoImproveSkill(skillName);
+      setImprovementResult(null);
     } catch {
-      // エラー処理: 既存挙動を維持し、UIクラッシュのみ防止
-    } finally {
-      if (isMountedRef.current) {
-        setIsImproving(false);
-      }
+      // store action 内部でエラーをskillErrorに格納済み。UIクラッシュ防止
     }
-  }, [skillName, handleAnalyze]);
+  }, [skillName, autoImproveSkill]);
 
   // ---- Effects ----
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
   useEffect(() => {
     handleAnalyze();

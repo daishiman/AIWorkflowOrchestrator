@@ -393,6 +393,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.24** | **2026-03-07** | **TASK-10A-F 再確認を反映**: ユーザー要求に基づく画面検証を `SCREENSHOT` 必須運用で再実行し、`store-driven-lifecycle-ui` の Phase 11 証跡を11件へ更新。Phase 12 の不足成果物（`unassigned-task-detection.md` / `skill-feedback-report.md` / `spec-update-summary.md`）を補完し、Step 1-A〜Step 2 実更新を同ターンで完了する運用を追記 |
 | **v10.08.23** | **2026-03-07** | **TASK-10A-E-C の実装知見をシステム仕様へ資産化**: `architecture-implementation-patterns.md` S18追加、`lessons-learned.md` 苦戦箇所3件追記、`06-known-pitfalls.md` P48追加。431テスト全PASS、Phase 1-12完了の実装結果を4ファイル（LOGS.md x2 + SKILL.md x2）に反映 |
 | **v10.08.22** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認テンプレート適合を反映**: `phase-12-documentation.md` の完了チェック同期、`documentation-changelog.md` の実更新化、未タスク2件の9見出しテンプレート準拠化を再監査手順として追記。`validate-phase11-screenshot-coverage` と `audit --target-file` をセットで回す運用を標準化 |
 | **v10.08.21** | **2026-03-06** | **TASK-10A-E-C の Phase 11/12運用を反映**: `manual-test-result.md` を `TC-ID + 証跡` 形式へ更新し、`validate-phase11-screenshot-coverage` が expected=8/covered=8 で通る証跡設計を追加。`spec-update-summary.md` の「更新予定のみ」記述を実更新結果へ置換し、未タスク2件の3ステップ登録（指示書作成/台帳同期/関連仕様参照）を標準手順に反映 |
