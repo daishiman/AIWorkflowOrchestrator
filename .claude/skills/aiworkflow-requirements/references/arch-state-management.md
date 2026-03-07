@@ -9,8 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                        |
 | ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
-| v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
+| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
+| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記 |
 | v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
 | v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
 | v3.8.5     | 2026-03-05 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 反映: `notificationSlice` / `historySearchSlice` 実装を同期。通知100件保持ルール、history検索状態、Main/Preload連携契約、テスト37件PASSを追記し、関連タスクステータスを完了へ更新 |
@@ -172,7 +172,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | ViewType導線 | `workspace` / `skillCenter` / `historySearch` の導線を `renderView()` で網羅 | `apps/desktop/src/renderer/App.tsx` |
 | 契約一元化 | AppDock ナビ項目を `navContract.ts` へ集約し、重複定義を除去 | `apps/desktop/src/renderer/navigation/navContract.ts` |
 | ショートカット | `Cmd` / `Ctrl` 両対応。`alt` / `shift` 併用時・編集要素上は無効化 | `apps/desktop/src/renderer/navigation/navContract.ts`, `apps/desktop/src/renderer/App.tsx` |
-| AppDock連携 | `APP_DOCK_NAV_ITEMS` を参照し、表示順と ViewType 契約を固定 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
+| 新旧ナビ連携 | `APP_DOCK_NAV_ITEMS` を legacy path に残しつつ、`MOBILE_*` 契約を新UIへ供給 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx`, `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/index.tsx`, `apps/desktop/src/renderer/components/organisms/MobileNavBar/index.tsx` |
 
 ### 検証証跡
 
@@ -199,6 +199,60 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
 
 ---
+
+## Global Navigation 状態同期（TASK-UI-02-GLOBAL-NAV-CORE）
+
+### `uiSlice` 追加状態
+
+| プロパティ | 型 | 役割 |
+| --- | --- | --- |
+| `isNavExpanded` | `boolean` | desktop で expanded/collapsed を保持 |
+| `isMobileMoreOpen` | `boolean` | mobile More メニュー開閉を保持 |
+
+### action / selector
+
+| 種別 | 名前 | 役割 |
+| --- | --- | --- |
+| action | `setNavExpanded` | 明示 set |
+| action | `toggleNavExpanded` | expand/collapse 切替 |
+| action | `toggleMobileMore` | More の開閉 |
+| action | `closeMobileMore` | 明示 close |
+| hook | `useIsNavExpanded` | 展開状態の読取 |
+| hook | `useToggleNavExpanded` | 展開切替 |
+| hook | `useIsMobileMoreOpen` | More 状態読取 |
+| hook | `useCloseMobileMore` | More close |
+| hook | `useCanGoBack` / `useGoBack` | `viewHistory` ベースの戻り導線 |
+
+### 状態境界
+
+| 境界 | 担当 |
+| --- | --- |
+| current view / history | `navigationSlice` |
+| nav expanded / mobile more / responsive mode | `uiSlice` |
+| shortcut の DOM 条件判定 | `useNavShortcuts.ts` |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `pnpm --dir apps/desktop test:run ...`（nav/AppLayout/MobileNavBar/GlobalNavStrip/useNavShortcuts/uiSlice） | PASS（100 tests） |
+| `pnpm --dir apps/desktop typecheck` | PASS |
+| Phase 11 screenshots | PASS（5 visual states + 2 non-visual TC） |
+
+### 実装時の苦戦箇所（TASK-UI-02）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| `currentView` / `history` と nav UI state の責務が混ざる | routing state と expanded/collapsed / More 開閉を同一 slice で持つ | `navigationSlice` と `uiSlice` を分離し、DOM 条件判定は `useNavShortcuts` へ退避した | View 遷移 state と見た目 state は別境界に分ける |
+| mobile More の close 挙動がレイアウト遷移で揺れる | overlay 側の local state だけで開閉を管理する | `isMobileMoreOpen` と `closeMobileMore` を store action として公開し、レイアウトから明示 close する | overlay の open/close は明示 action を持ち、経路変更時に close できる形にする |
+| rollback 共存で legacy/new nav が別々の state を持ちやすい | feature flag 切替のたびに導線ごとに専用 state を増やす | feature flag は shell 切替だけに限定し、契約と state は共通 slice / contract を参照させた | rollout 中でも state ownership は1系統に固定する |
+
+### 再利用手順（4ステップ）
+
+1. `currentView/history` と presentation state を別 slice に分ける。  
+2. overlay / drawer は local state に閉じず、`close` 系 action を公開する。  
+3. keyboard shortcut は store から切り離し、DOM 条件判定を Hook へ寄せる。  
+4. rollback 導線が残る間も契約と state 正本を一本化し、テストとスクリーンショットで両経路を確認する。  
 
 ## Zustand Sliceパターン
 
@@ -234,7 +288,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | Slice名                  | 責務                     | 実装ファイル                             | タスク                          |
 | ------------------------ | ------------------------ | ---------------------------------------- | ------------------------------- |
-| `uiSlice`                | UI状態（currentView等）  | `store/slices/uiSlice.ts`                | -                               |
+| `uiSlice`                | UI状態（currentView / responsiveMode / isNavExpanded / isMobileMoreOpen）  | `store/slices/uiSlice.ts`                | TASK-UI-02                      |
 | `authSlice`              | 認証状態                 | `store/slices/authSlice.ts`              | -                               |
 | `chatSlice`              | チャット状態             | `store/slices/chatSlice.ts`              | -                               |
 | `agentSlice`             | エージェント・スキル管理 | `store/slices/agentSlice.ts`             | AGENT-002                       |
@@ -331,7 +385,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 - `views/{Name}View/index.tsx` を作成
 - `App.tsx` のrenderView関数にcaseを追加
-- `navigation/navContract.ts` の契約へ追加し、`components/organisms/AppDock/index.tsx` から参照
+- `navigation/navContract.ts` の契約へ追加し、`components/organisms/GlobalNavStrip/index.tsx` / `MobileNavBar/index.tsx` / legacy `AppDock/index.tsx` から参照
 
 **ステップ4: テスト作成**
 
@@ -358,15 +412,15 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | コンポーネント     | ファイルパス                                                              | 影響するHook         |
 | ------------------ | ------------------------------------------------------------------------- | -------------------- |
-| `SettingsView`     | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                  | `useInitializeAuthMode()`（現行は個別セレクタへ移行済み） |
-| `LLMSelectorPanel` | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`           | `useFetchProviders()` / `useCheckLLMHealth()`（個別セレクタ） |
-| `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useRescanSkills()`（個別セレクタ） |
+| `SettingsView`     | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                  | `useAuthModeStore()` |
+| `LLMSelectorPanel` | `apps/desktop/src/renderer/components/settings/LLMSelectorPanel.tsx`      | `useAuthModeStore()` |
+| `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useSkillStore()`    |
 | `AgentView`        | `apps/desktop/src/renderer/views/AgentView/index.tsx`                     | `useAppStore()` のインラインセレクタ + ローカル `fetchSkills` |
 | `SkillCenterView`  | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`               | `useAvailableSkillsMetadata()` など個別セレクタ + `useSkillCenter` ローカル状態 |
 
-### 歴史的な短期回避策: useRefガードパターン
+### 短期解決策: useRefガードパターン
 
-初期リリースでは useRef ガードを一時的に採用したが、現在の標準実装は個別セレクタ + 安定参照の依存配列である。
+初期化処理を一度だけ実行するためのガードパターン。
 
 **アンチパターン（無限ループ発生）**:
 
@@ -377,7 +431,7 @@ useEffect(() => {
 }, [initializeAuthMode]); // 毎回新しい関数参照 → 無限ループ
 ```
 
-**旧パターン（現在は非推奨）**:
+**推奨パターン（useRefガード）**:
 
 ```typescript
 const { initializeAuthMode } = useAuthModeStore();
@@ -394,9 +448,9 @@ useEffect(() => {
 
 | ケース                         | 依存配列                     | 備考                                   |
 | ------------------------------ | ---------------------------- | -------------------------------------- |
-| 初期化処理（一度だけ実行）     | `[stableAction]`             | 個別セレクタの安定参照を前提とする     |
+| 初期化処理（一度だけ実行）     | `[]`                         | useRefガードと併用                     |
 | プリミティブ値の変化で再実行   | `[primitiveValue]`           | 安全                                   |
-| 合成Hookから取り出した関数     | 使用禁止                     | 毎回新しい参照となり無限ループの原因   |
+| Store関数の変化で再実行        | 使用禁止                     | 無限ループの原因                       |
 | 外部から受け取ったコールバック | `[callback]`                 | useCallbackでメモ化されていれば安全    |
 
 ### 個別セレクタHookパターン（推奨）
@@ -444,8 +498,8 @@ export const useLLMFetchProviders = () => useAppStore((state) => state.fetchProv
 
 > **TASK-10A-D教訓**: agentSlice に `isAnalyzing` / `isImproving` を追加した際、LLMSlice の `useIsLLMLoading()` と類似する汎用名になるリスクがあった。ドメインサフィックス（`Skill`）を付与して衝突を防止。
 
-**現行 AuthMode セレクタ**: `apps/desktop/src/renderer/store/index.ts` に状態 7 個 + アクション 10 個を配置し、`useAuthModeStore()` は互換用 deprecated helper として残す。
-（UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け個別セレクタも追加し、P31適用範囲を拡張）
+**提供済み個別セレクタ**: LLM系12個、Skill系15個、AuthMode系3個（計30個）
+（UT-FIX-AGENTVIEW-INFINITE-LOOP-001でAgentView向け15個を追加し、P31適用範囲を拡張）
 
 ### 長期解決策: 個別セレクタベースの再設計
 
@@ -481,16 +535,13 @@ Store Hookを分解し、個別セレクタを提供することで、関数の�
 **推奨実装パターン**:
 
 ```typescript
-// store/index.ts
-export const useAuthMode = () => useAppStore((state) => state.mode);
-export const useAuthModeStatus = () => useAppStore((state) => state.status);
-export const useSetAuthMode = () => useAppStore((state) => state.setMode);
-export const useInitializeAuthMode = () =>
-  useAppStore((state) => state.initializeAuthMode);
+// store/authModeStore.ts
+export const useAuthMode = () => useStore((state) => state.authMode);
+export const useSetAuthMode = () => useStore((state) => state.setAuthMode);
+export const useInitializeAuthMode = () => useStore((state) => state.initializeAuthMode);
 
 // コンポーネント側
 const authMode = useAuthMode();
-const authModeStatus = useAuthModeStatus();
 const initializeAuthMode = useInitializeAuthMode();
 
 useEffect(() => {
@@ -500,29 +551,23 @@ useEffect(() => {
 
 ### 実装済み個別セレクタ一覧（UT-STORE-HOOKS-REFACTOR-001）
 
-個別セレクタは `apps/desktop/src/renderer/store/index.ts` を正本とする。
+53個の個別セレクタを3つのStore Hookファイルに追加。
 
-**AuthMode Store（現行 17 + 互換 helper 1）**: `apps/desktop/src/renderer/store/index.ts`
+**AuthMode Store（12個）**: `apps/desktop/src/renderer/store/hooks/useAuthModeStore.ts`
 
 | カテゴリ | セレクタ名 | 戻り値型 |
 | -------- | ---------- | -------- |
 | 状態 | `useAuthMode` | `AuthMode` |
-| 状態 | `useAuthModeStatus` | `AuthModeStatus \| null` |
-| 状態 | `useAuthModeLoading` | `boolean` |
-| 状態 | `useAuthModeError` | `string \| null` |
-| 派生 | `useIsAuthModeValid` | `boolean` |
-| 状態 | `useIsConfirmDialogOpen` | `boolean` |
-| 状態 | `usePendingMode` | `AuthMode \| null` |
+| 状態 | `useIsAuthModeLoading` | `boolean` |
+| 状態 | `useIsAuthModeInitialized` | `boolean` |
 | アクション | `useSetAuthMode` | `(mode: AuthMode) => Promise<void>` |
 | アクション | `useInitializeAuthMode` | `() => Promise<void>` |
-| アクション | `useFetchAuthMode` | `() => Promise<void>` |
-| アクション | `useFetchAuthModeStatus` | `() => Promise<void>` |
-| アクション | `useValidateAuthMode` | `(mode?: AuthMode) => Promise<AuthModeStatus>` |
-| アクション | `useOpenConfirmDialog` | `(targetMode: AuthMode) => void` |
-| アクション | `useCloseConfirmDialog` | `() => void` |
-| アクション | `useConfirmModeChange` | `() => Promise<void>` |
-| アクション | `useClearAuthModeError` | `() => void` |
-| アクション | `useResetAuthMode` | `() => void` |
+| 状態 | `useIsGoogleAuthenticated` | `boolean` |
+| 状態 | `useIsGoogleLoading` | `boolean` |
+| 状態 | `useGoogleAuthError` | `string \| null` |
+| アクション | `useLoginWithGoogle` | `() => Promise<void>` |
+| アクション | `useLogoutFromGoogle` | `() => Promise<void>` |
+| アクション | `useClearGoogleAuthError` | `() => void` |
 | 非推奨 | `useAuthModeStore` | 合成オブジェクト（**非推奨**） |
 
 **LLM Store（16個）**: `apps/desktop/src/renderer/store/hooks/useLLMStore.ts`
@@ -613,7 +658,7 @@ const initializeAuthMode = useInitializeAuthMode();
 
 ### 実装詳細（TASK-UT-AUTH-MODE-UI-INTEGRATION）
 
-当初は useRef ガードで暫定回避したが、現行実装では個別セレクタ + 安定参照の依存配列へ移行済みである。
+P31対策として以下のコンポーネントにuseRefガードパターンを適用した。
 
 #### SettingsView
 
@@ -621,25 +666,23 @@ const initializeAuthMode = useInitializeAuthMode();
 
 **変更内容**:
 
-| 観点 | 現行実装 |
-| ---- | -------- |
-| 状態取得 | `useAuthMode()`, `useAuthModeStatus()`, `useAuthModeLoading()` |
-| アクション取得 | `useSetAuthMode()`, `useInitializeAuthMode()` |
-| 初期化 | `useEffect(() => { initializeAuthMode(); }, [initializeAuthMode])` |
-| 表示契約 | `status.message`, `status.errorCode`, `status.guidance` をそのまま描画 |
+| 行番号  | 変更前                                                      | 変更後                                                                              |
+| ------- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 34      | なし                                                        | `const authModeInitRef = useRef(false);`                                           |
+| 35-40   | `useEffect(() => { initializeAuthMode(); }, [initializeAuthMode]);` | useRefガードで1回のみ実行、空の依存配列                                             |
+| 40      | なし                                                        | P31対策コメント追加                                                                 |
 
 **適用パターン**:
 
 ```typescript
-const authMode = useAuthMode();
-const authModeStatus = useAuthModeStatus();
-const authModeLoading = useAuthModeLoading();
-const setAuthMode = useSetAuthMode();
-const initializeAuthMode = useInitializeAuthMode();
-
+// P31対策: useRefガードパターン
+const authModeInitRef = useRef(false);
 useEffect(() => {
-  initializeAuthMode();
-}, [initializeAuthMode]);
+  if (!authModeInitRef.current) {
+    authModeInitRef.current = true;
+    initializeAuthMode();
+  }
+}, []); // 意図的に空の依存配列: initializeAuthModeは1回だけ実行（P31対策）
 ```
 
 #### SkillSelector
@@ -648,18 +691,17 @@ useEffect(() => {
 
 **変更内容**:
 
-| 観点 | 現行実装 |
-| ---- | -------- |
-| 状態取得 | `useAvailableSkillsMetadata()` など個別セレクタ |
-| 再読込 | `useRescanSkills()` |
-| 依存配列 | `useCallback(..., [rescanSkills])` を維持可能（参照安定） |
+| 行番号  | 変更前                                                        | 変更後                                                                            |
+| ------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 287-290 | `const handleRescan = useCallback(() => { rescanSkills(); }, [rescanSkills]);` | 空の依存配列 + P31対策コメント追加                                                |
 
 **適用パターン**:
 
 ```typescript
+// P31対策: rescanSkillsは参照が不安定なため依存配列から除外
 const handleRescan = useCallback(() => {
   rescanSkills();
-}, [rescanSkills]);
+}, []); // 意図的に空の依存配列（P31対策）
 ```
 
 ### 実装時の課題と解決策
@@ -695,7 +737,7 @@ rm -rf node_modules/.cache/eslint
 | 個別関数セレクタ             | 安定       | 安全                 |
 | オブジェクト全体返却（現行） | 不安定     | 無限ループ発生       |
 
-**旧短期解決策**: useRefガード + 空の依存配列（現在は新規採用しない）
+**短期解決策**: useRefガード + 空の依存配列
 
 **長期解決策**: 個別セレクタベースの再設計（UT-STORE-HOOKS-REFACTOR-001）
 
@@ -718,8 +760,8 @@ rm -rf node_modules/.cache/eslint
 
 | ケース                               | 推奨対応                                                    |
 | ------------------------------------ | ----------------------------------------------------------- |
-| 初期化処理（マウント時1回のみ）      | 個別セレクタを使い、安定した action を依存配列に含める      |
-| 合成Hookから取り出した関数を使用中   | まず個別セレクタへ移行。移行完了までのみ暫定ガードを検討    |
+| 初期化処理（マウント時1回のみ）      | 空の依存配列 + useRefガード + eslint-disable コメント      |
+| Store関数の変化で再実行が必要        | 個別セレクタに移行するまで空の依存配列                      |
 | プリミティブ値の変化で再実行が必要   | 通常どおり依存配列に含める                                  |
 
 **eslint-disableコメントの書き方**:
@@ -1270,23 +1312,12 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | 検索/カテゴリ判定 | `normalizeSearchText(value)` で `description` 欠損時にも `.toLowerCase()` 例外を回避 |
 | Featured 計算 | `useFeaturedSkills` で `allSkills=[]`, `importedSkillNames=[]` を既定値化し、計算関数の前提を固定 |
 
-### TASK-043B: import dialog の成功判定とエラー面の単一化
-
-| 観点 | 契約 |
-| --- | --- |
-| action failure 契約 | `importSkill(skillName)` は failure 時でも resolve しうる。UI は `catch` の有無ではなく、`await` 後の Store 状態で成否を判定する |
-| post-condition 判定 | 成功条件は `importedSkills.some((s) => s.name === skillName)` が真で、かつ `skillError` が未残置であること。件数差分や throw だけで判定しない |
-| 既存インポート済み | import 前から対象 skill が存在する場合は close 可否を `wasImportedBefore` と `skillError` で判定し、偽失敗を出さない |
-| error surface 調停 | dialog open 中は panel 側の共有 alert を抑止し、失敗理由は dialog 内 `role="alert"` に集約する |
-| テストモック契約 | `SkillImportDialog` 系テストは selector モックに加え `useAppStore.getState()` を必ず提供し、post-condition 更新を再現する |
-
 ### 検証証跡
 
 | 検証 | 結果 |
 | --- | --- |
 | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | PASS（既存インポート時 IPC スキップと重複防止を確認） |
 | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts` | PASS（追加中再実行抑止 + 既存インポート時アニメーション抑止を確認） |
-| `apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx` | PASS（31 tests、`追加する` / `追加中...` copy と `getState()` 依存成功判定を確認） |
 | `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で冪等状態遷移（追加済み/追加中/追加後/詳細表示）を確認 |
 | `docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で欠損メタデータ時のクラッシュ非発生を確認 |
 

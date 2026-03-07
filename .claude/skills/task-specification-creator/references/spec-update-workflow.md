@@ -80,6 +80,8 @@ Phase 12 Task 2 開始
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
 | 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須** | 成果物実体と仕様書本体の実行記録が乖離すると監査で不整合になる。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
+| 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
+| 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須4成果物を揃える** | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の4点が揃って初めて再監査可能になる |
 | 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** | `skillHandlers.ts` / `preload/index.ts` の引数・戻り値・エラー契約と一致しないと、API利用者が誤実装する |
@@ -87,6 +89,8 @@ Phase 12 Task 2 開始
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
 | 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** | Phase 仕様書が親タスク仕様を相対参照している場合、`docs/30-workflows/<workflow>.md` をブリッジとして残すか、各 Phase の参照先を正本へ更新する |
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
+| 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
+| 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
@@ -254,6 +258,8 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] 関連する仕様ファイルの実装状況テーブル（該当する場合）を更新した
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
+- [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
 - [ ] IPC契約を更新した場合、`outputs/phase-12/ipc-documentation.md` の引数/戻り値/エラー仕様を実装契約へ同期した
@@ -338,7 +344,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
-- [ ] `audit-unassigned-tasks.js --json --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
+- [ ] `audit-unassigned-tasks.js --json --diff-from <ref> --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
 
@@ -539,8 +545,9 @@ comm -3 \
 # 1) 全体監査（既存違反を含む）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
-# 1.5) 対象ファイル監査（currentを抽出）
+# 1.5) 対象ファイル監査（今回差分の current を抽出）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+  --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/<task>.md | \
   jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
 
@@ -558,7 +565,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 
 - `baseline`: 着手前から存在する違反。スコープ外として記録し、別途改善対象化
 - `current`: 今回変更で新規発生した違反。今回タスク内で修正必須
-- `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。判定は `currentViolations.total` を使う
+- `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。**今回差分の合否判定には `--diff-from HEAD --target-file` の組み合わせ**を使う
 - `--target-file` の有効範囲: `docs/30-workflows/unassigned-task/` または `docs/30-workflows/completed-tasks/unassigned-task/` 配下のみ。`docs/30-workflows/completed-tasks/*.md`（完了済み指示書直下）は対象外のため、scoped監査には未実施指示書を指定する
 
 記録フォーマット:
@@ -780,6 +787,9 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 | {{NEXT_VERSION}} | {{DATE}} | {{TASK_NAME}}完了（手動テスト{{N}}項目全PASS、自動テスト{{N}}件全PASS、発見課題{{N}}件） |
 ```
 
+- 追記前に対象ファイルの既存 `Version` 列を確認し、同一番号を再利用しない。
+- 同日に追補が複数回入る場合は、既存最大値に対して `+0.0.1` で採番する。
+
 ### 残課題更新
 
 該当タスクが「残課題」にある場合、取り消し線で完了をマーク:
@@ -885,4 +895,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |
+| 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
+| 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: `quick_validate.js` 手動検証の再現性確認手順を Phase 11/12 の運用実績に合わせて再確認し、曖昧語（「など」表記へ統一）を調整して機械判定の一貫性を向上 |

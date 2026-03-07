@@ -191,90 +191,6 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | フォーマット検証 | `sk-ant-api` プレフィックスパターン              |
 | ログ出力       | キー値は一切ログに出力しない                      |
 
-### Auth Mode IPC チャネル（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
-
-auth-mode は Main / Preload / Renderer の 3 層で同じ transport DTO を共有し、`packages/shared/src/types/auth-mode.ts` を唯一の正本とする。
-
-**実装ファイル**:
-
-- ハンドラー: `apps/desktop/src/main/ipc/authModeHandlers.ts`
-- サービス: `apps/desktop/src/main/services/auth/AuthModeService.ts`
-- shared 型: `packages/shared/src/types/auth-mode.ts`
-- Preload API: `apps/desktop/src/preload/index.ts`
-- Preload 型: `apps/desktop/src/preload/types.ts`
-- Renderer Store: `apps/desktop/src/renderer/store/slices/authModeSlice.ts`
-
-| チャネル | メソッド | 引数 | 戻り値 / イベント | 備考 |
-| --- | --- | --- | --- | --- |
-| `auth-mode:get` | invoke | なし | `AuthModeGetResponse` | `data: { mode }` を返す |
-| `auth-mode:set` | invoke | `AuthModeSetRequest` | `AuthModeSetResponse` | 成功時に `auth-mode:changed` を送信 |
-| `auth-mode:status` | invoke | なし | `AuthModeStatusResponse` | 現在 mode の `AuthModeStatus` |
-| `auth-mode:validate` | invoke | `AuthModeValidateRequest \| undefined` | `AuthModeValidateResponse` | request 未指定時は現在 mode を検証 |
-| `auth-mode:changed` | on | `AuthModeChangedEvent` | event | Main -> Renderer の状態変更通知 |
-
-#### 公開 DTO
-
-| 型 | フィールド | 用途 |
-| --- | --- | --- |
-| `AuthModeResponse` | `mode` | `auth-mode:get` の `data` |
-| `AuthModeStatus` | `mode`, `isValid`, `hasCredentials`, `message`, `errorCode?`, `guidance?`, `lastCheckedAt` | `status` / `validate` / `changed.status` 共通 |
-| `AuthModeChangedEvent` | `previousMode`, `mode`, `status`, `changedAt` | Renderer での live update |
-| `IPCResponse<T>` | `success`, `data?`, `error?` | 全 invoke 共通 envelope |
-
-#### 公開エラーコード
-
-| コード | 発生条件 |
-| --- | --- |
-| `auth-mode/invalid-sender` | sender 検証失敗 |
-| `auth-mode/invalid-mode` | mode が `VALID_AUTH_MODES` 外 |
-| `auth-mode/no-api-key` | API Key mode の資格情報なし |
-| `auth-mode/no-subscription-token` | subscription mode の資格情報なし |
-| `auth-mode/storage-failed` | mode 保存失敗 |
-| `auth-mode/storage-read-failed` | mode 読み出し失敗 |
-| `auth-mode/unknown-error` | status / validate の想定外エラー |
-
-#### 実装状況（auth-mode 契約整合）
-
-| 実装項目 | ステータス | 関連タスク |
-| --- | --- | --- |
-| `auth-mode:get` が `data: { mode }` を返し、Preload/Renderer と一致 | completed | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
-| `auth-mode:status` / `validate` が `AuthModeStatus` transport DTO を返す | completed | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
-| `auth-mode:validate` が request 省略時に current mode を検証する | completed | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
-| `auth-mode:changed` が `previousMode/mode/status/changedAt` を送信する | completed | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
-| Main / Preload / Renderer が `AUTH_MODE_ERROR_CODES` を共有する | completed | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 |
-
-#### 関連タスク
-
-| タスクID | 概要 | ステータス |
-| --- | --- | --- |
-| TASK-AUTH-MODE-SELECTION-001 | auth-mode 初期実装（mode 切り替え UI / service / IPC） | 完了 |
-| TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 | Main / Preload / Renderer の公開契約を shared transport DTO に統一 | 完了 |
-
-#### 関連未タスク
-
-| 未タスクID | 概要 | 参照 | ステータス |
-| --- | --- | --- | --- |
-| UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001 | 更新対象 domain spec に標準3ブロックが揃っているかを機械検証し、auth-mode IPC 仕様の後追い追記を防ぐ | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-domain-spec-sync-block-validator-001.md` | 未実施 |
-
-#### 実装上の苦戦箇所と解決策（auth-mode）
-
-| 苦戦箇所 | 原因 | 解決策 | 標準ルール |
-| --- | --- | --- | --- |
-| `get/status/validate/changed` の payload shape が層ごとにずれた | Main / Preload / Renderer が local 型を別々に育て、shared 正本が transport DTO まで届いていなかった | `packages/shared/src/types/auth-mode.ts` に `IPCResponse<T>` / `AuthModeStatus` / `AuthModeChangedEvent` / `AUTH_MODE_ERROR_CODES` を集約し、各層を import / re-export へ切り替えた | IPC 契約修正では「型名一致」ではなく「request / response / event payload 一致」を4層で確認する |
-| App 全体起動だと auth-mode の視覚契約だけを安定検証しづらい | 認証初期化と周辺依存のノイズが `SettingsView` の `message/errorCode/guidance` 変化点を埋もれさせた | `SettingsView` 専用 harness と capture script を追加し、Phase 11 の 5 TC を `SCREENSHOT` で固定した | UI 契約だけを検証する場合は対象 view 専用 harness を許可し、保存先・理由・coverage を同時記録する |
-| Phase 12 で domain spec だけ更新して横断導線が後追いになりやすい | `api-ipc` / `interfaces` 更新で安心し、`ipc-contract-checklist.md` / `quick-reference.md` / 未タスク診断改善まで閉じなかった | cross-cutting doc を同一ターンで同期し、`UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` を formalize した | IPC transport 契約修正は「domain spec + cross-cutting doc + 運用ギャップ formalize」の3点セットで完了判定する |
-| domain spec の標準3ブロックが Phase 12 の検証ゲートに入っていない | `api-ipc-system.md` へ契約表だけ反映して完了扱いにし、`実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の存在確認を自動化しない | auth-mode IPC 節では3ブロックを手動で揃えつつ、`UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を追加して validator 導入を backlog 化した | IPC domain spec 更新は template 追加だけで閉じず、標準3ブロックの存在確認まで自動化して完了扱いにする |
-
-#### 同種課題の5分解決カード（auth-mode IPC）
-
-| 項目 | 記入内容 |
-| --- | --- |
-| 症状（1行） | invoke は通るが Renderer 表示や event 反映の shape が揃わず、IPC 契約が層ごとにずれる |
-| 根本原因（1行） | shared transport DTO が唯一の正本になっておらず、Main / Preload / Renderer が局所型を持ち続けた |
-| 最短手順 | `1) shared DTO 集約 2) handler/preload/renderer 同時更新 3) domain spec + cross-cutting doc 同期 4) 対象 view 専用 harness で再撮影 5) verify/validate/links/audit を同一ターンで固定` |
-| 検証ゲート | `typecheck PASS`, `vitest PASS`, `validate-phase11-screenshot-coverage PASS`, `verify-unassigned-links missing=0`, `audit currentViolations=0` |
-| 同期先3点 | `api-ipc-system.md` / `interfaces-auth.md` / `task-workflow.md` |
-
 ### Notification / HistorySearch IPC チャネル（TASK-UI-01-C）
 
 Notification ドメインと HistorySearch ドメインの統合で追加したIPC契約。
@@ -498,7 +414,7 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 | タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/順序/検証ゲート）を機械検証し、契約系タスクの再利用性を安定化する | `docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
+| UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 | 5分解決カードの3仕様書同期（存在/順序/検証ゲート）を機械検証し、契約系タスクの再利用性を安定化する | `docs/30-workflows/completed-tasks/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` | 未実施 |
 
 ---
 
@@ -517,9 +433,7 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
-| v1.5.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2: auth-mode IPC 節へ「domain spec の標準3ブロックが Phase 12 の検証ゲートに入っていない」苦戦箇所と関連未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を追加し、IPC仕様の後追い追記防止ルールを明文化 |
-| v1.5.8     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補: auth-mode IPC 節に「実装上の苦戦箇所と解決策」「同種課題の5分解決カード」を追加し、shared DTO 正本化・専用 harness・cross-cutting doc 同期の再利用ルールを明文化 |
-| v1.5.7     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: `auth-mode:get/set/status/validate/changed` の channel 契約、shared DTO、公開エラーコード、実装状況テーブルを追加し、Main/Preload/Renderer の公開 shape を統一 |
+| v1.5.7     | 2026-03-06 | completed 移管済み未タスクリンクを是正。`UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` の参照先を `completed-tasks/` 実体へ更新し、`verify-unassigned-links` での false missing を防止 |
 | v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
 | v1.5.6     | 2026-03-06 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクへ登録。5分解決カードの3仕様書同期を機械検証する改善タスクを明示し、契約系タスクの再発防止導線を追加 |
 | v1.5.5     | 2026-03-06 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補2: 「同種課題の5分解決カード（IPC契約境界）」を追加し、症状/根本原因/最短5手順/検証ゲート/同期先3点を固定して再利用性を向上 |

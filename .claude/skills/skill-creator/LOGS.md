@@ -4,44 +4,56 @@
 
 ---
 
-## [2026-03-06 - domain spec 同期ブロックを skill-creator へ追加（Phase 12 file formation 最適化）]
+## [2026-03-06 - TASK-UI-02 UI domain spec 同期ガード追加（UI6+domain add-on）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-domain-spec-sync-block-template.md` を新規作成し、domain spec へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義
-  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に同 asset 参照と 3 見出し検証コマンドを追加
-  - `references/resource-map.md` の assets 説明を更新し、domain spec 3 見出しの完了条件をテンプレート説明へ同期
-  - `references/patterns.md` に成功パターン「domain spec に実装内容 / 苦戦箇所 / 5分カードを対称配置する」を追加
-  - `SKILL.md` 変更履歴を `v10.37.9` として同期
+  - `assets/phase12-system-spec-retrospective-template.md` の UI プロファイルを `6+α` 化し、`ui-ux-navigation.md` のような domain UI spec を追加 SubAgent で扱う運用を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-G+` と domain UI spec 完了チェックを追加
+  - `references/resource-map.md` に UI基本6仕様書 + domain add-on の用途説明を追記
+  - `references/patterns.md` に失敗パターン「UI基本6仕様書だけ更新して domain UI spec を未同期」を追加
+  - `SKILL.md` 変更履歴を `10.37.10` として同期
 
 ---
 
-## [2026-03-06 - auth-mode 再監査知見の skill-creator 反映（cross-cutting doc + harness + テンプレート修復）]
+## [2026-03-06 - TASK-UI-02 再々監査パターン追加（workflow 本文 `phase-1..11` completed 同期）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` の 6.2 重複手順を解消し、IPC transport 契約更新時の `ipc-contract-checklist.md` / `quick-reference.md` 同期要件を追記
-  - 同テンプレートに「専用 harness を使う UI契約検証」と `SCREENSHOT` 昇格条件を明文化
-  - `assets/phase12-spec-sync-subagent-template.md` に cross-cutting doc と harness 記録の完了チェックを追加
-  - `references/patterns.md` に成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）」を追加
+  - `references/patterns.md` に成功パターン「workflow 本文 `phase-1..11` の completed 同期（TASK-UI-02）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `phase-1..11` 本文 pending 残置を検出する `rg` コマンドと完了条件を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の完了チェックへ同確認を追加
+  - `SKILL.md` 変更履歴を `10.37.9` として同期
+
+---
+
+## [2026-03-06 - TASK-UI-02 Phase 12再整合パターン追加（workflow index / artifacts 二重同期）]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workflow index / artifacts 二重同期（TASK-UI-02）」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `diff -u artifacts.json outputs/artifacts.json` と `generate-index.js --workflow ... --regenerate` を追加
+  - `assets/phase12-spec-sync-subagent-template.md` の完了チェックへ `index.md` 状態確認を追加
   - `SKILL.md` 変更履歴を `v10.37.8` として同期
 
 ---
 
-## [2026-03-06 - TASK-043B 知見の Phase 12テンプレート同期（root evidence 集約 + baseline backlog分離）]
+## [2026-03-06 - SKILL.md 直接参照導線の再編（warning 26件解消）]
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` の最短手順を整理し、`phase12-task-spec-compliance-check.md` による root evidence 集約を追加
-  - `currentViolations=0` と `baselineViolations>0` を分離し、必要時は `docs/30-workflows/unassigned-task/` へ運用改善UTを作るルールを追加
-  - `audit --target-file` の期待値を `currentViolations=0` + `scope.currentFiles=1` へ明確化
-  - `references/patterns.md` と `references/resource-map.md` を同一ターンで同期し、再利用開始点をテンプレートとパターンの両方へ固定
+  - `SKILL.md` に「基礎設計・更新導線 / ヒアリング・抽象化 / 実装・ランタイム / 統合・オーケストレーション / 品質・運用」の5カテゴリを追加
+  - `references/overview.md` / `core-principles.md` / `creation-process.md` / `update-process.md` / `quality-standards.md` / `integration-patterns-*.md` / `parallel-execution-guide.md` など、未リンクだった 26 reference を `SKILL.md` から直接辿れるよう再編
+  - `resource-map.md` を詳細台帳、`SKILL.md` を最短導線という役割で分離し、Progressive Disclosure の入り口を整理
+  - `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator` の warning を 26 → 0 へ解消
   - `SKILL.md` 変更履歴を `v10.37.8` として同期
 
 ---

@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-03-06T14:26:33.012Z",
+  "baseUrl": "http://localhost:5178",
+  "harnessPath": "/phase11-auth-mode.html",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-authkey-not-set.png",
+      "note": "api-keyモードでAuthKeySection表示、未設定バッジ。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-184551-wt1/docs/30-workflows/05-TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-01-authkey-not-set.png",
+      "capturedAt": "2026-03-06T14:26:30.051Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-authkey-save-success.png",
+      "note": "APIキー保存操作後、保存成功メッセージ表示。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-184551-wt1/docs/30-workflows/05-TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-02-authkey-save-success.png",
+      "capturedAt": "2026-03-06T14:26:31.522Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-authkey-env-fallback.png",
+      "note": "環境変数fallback時、環境変数で設定済みバッジ。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260306-184551-wt1/docs/30-workflows/05-TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001/outputs/phase-11/screenshots/TC-11-03-authkey-env-fallback.png",
+      "capturedAt": "2026-03-06T14:26:33.012Z"
+    }
+  ]
+}

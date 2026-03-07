@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
-const screenshotDir = path.join(
+const defaultScreenshotDir = path.join(
   repoRoot,
   "docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-11/screenshots",
 );
@@ -21,16 +21,17 @@ const defaultViewport = { width: 1440, height: 900 };
 const scenarios = [
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: '[data-testid="skill-analysis-view"]',
+    selector: 'text=総合スコア',
     file: "TC-01-analysis-default-dark.png",
     waitAfterReadyMs: 600,
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: '[data-testid="skill-analysis-view"]',
+    selector: 'text=総合スコア',
     file: "TC-02-analysis-selection-dark.png",
     preCapture: async (page) => {
-      await page.click('input[type="checkbox"]:first-of-type');
+      await page.waitForSelector('input[type="checkbox"]', { timeout: 15_000 });
+      await page.locator('input[type="checkbox"]').first().click();
       await page.waitForTimeout(200);
     },
   },
@@ -60,19 +61,35 @@ const scenarios = [
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: '[data-testid="skill-analysis-view"]',
+    selector: 'text=総合スコア',
     file: "TC-07-analysis-default-light.png",
     colorScheme: "light",
     waitAfterReadyMs: 600,
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: '[data-testid="skill-analysis-view"]',
+    selector: 'text=総合スコア',
     file: "TC-08-analysis-default-mobile-dark.png",
     viewport: { width: 390, height: 844 },
     waitAfterReadyMs: 600,
   },
 ];
+
+function parseArgs(argv) {
+  const options = {
+    screenshotDir: defaultScreenshotDir,
+  };
+
+  for (let i = 2; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--output-dir" && argv[i + 1]) {
+      options.screenshotDir = path.resolve(process.cwd(), argv[i + 1]);
+      i += 1;
+    }
+  }
+
+  return options;
+}
 
 async function waitForServer(url, timeoutMs = 60_000) {
   const start = Date.now();
@@ -93,6 +110,10 @@ function createMockScript() {
     const now = new Date().toISOString();
     let applyTriggered = false;
     let autoTriggered = false;
+    const resolveTheme = () =>
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
 
     const defaultAnalysis = {
       skillName: "demo-skill",
@@ -186,10 +207,22 @@ function createMockScript() {
       theme: {
         get: async () => ({
           success: true,
-          data: { mode: "dark", resolvedTheme: "dark" },
+          data: { mode: "system", resolvedTheme: resolveTheme() },
         }),
-        set: async () => ({ success: true, data: {} }),
-        getSystem: async () => ({ success: true, data: { theme: "dark" } }),
+        set: async ({ mode }) => ({
+          success: true,
+          data: {
+            mode,
+            resolvedTheme: mode === "system" ? resolveTheme() : mode,
+          },
+        }),
+        getSystem: async () => ({
+          success: true,
+          data: {
+            isDark: resolveTheme() === "dark",
+            resolvedTheme: resolveTheme(),
+          },
+        }),
         onSystemChanged: () => () => {},
       },
       skill: {
@@ -232,6 +265,8 @@ function createMockScript() {
 }
 
 async function main() {
+  const options = parseArgs(process.argv);
+  const screenshotDir = options.screenshotDir;
   await fs.mkdir(screenshotDir, { recursive: true });
 
   const server = spawn(

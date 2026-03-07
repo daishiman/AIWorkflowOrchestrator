@@ -193,6 +193,7 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
   // ---- Effects ----
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };

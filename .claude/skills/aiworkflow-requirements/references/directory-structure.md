@@ -346,7 +346,7 @@
 | molecules/                                        | 複合要素（Tooltip、NavIcon、FileTreeItem等）                         |
 | molecules/LLMSelector/                            | **LLMプロバイダー/モデル選択ドロップダウン（100%テストカバレッジ）** |
 | molecules/ChatMessage/                            | チャットメッセージ表示コンポーネント                                 |
-| organisms/                                        | 機能単位（AppDock、Sidebar、GlassPanel等）                           |
+| organisms/                                        | 機能単位（GlobalNavStrip、MobileNavBar、AppLayout、AppDock等）       |
 | AuthGuard/                                        | **認証ガード（HOC）**                                                |
 | AuthGuard/index.tsx                               | 認証状態による表示制御                                               |
 | AuthGuard/LoadingScreen.tsx                       | ローディング画面                                                     |
@@ -380,7 +380,7 @@
 | index.ts              | 統合ストア（createAppStore）                                                    |
 | slices/               | 機能別スライス                                                                  |
 | slices/authSlice      | **認証状態（ログイン、トークン、セッション）**                                  |
-| slices/uiSlice        | UI状態（ビュー、ウィンドウサイズ）                                              |
+| slices/uiSlice        | UI状態（ビュー、レスポンシブ種別、ナビ開閉、ウィンドウサイズ）                  |
 | slices/editorSlice    | エディタ状態（ファイル、フォルダ）                                              |
 | slices/chatSlice      | **チャット状態（メッセージ、入力、LLM選択、システムプロンプト、テンプレート）** |
 | slices/workspaceSlice | ワークスペース状態（複数フォルダ管理）                                          |

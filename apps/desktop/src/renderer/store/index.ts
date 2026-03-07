@@ -143,6 +143,7 @@ export const useAppStore = create<AppStore>()(
           userProfile: state.userProfile,
           autoSyncEnabled: state.autoSyncEnabled,
           windowSize: state.windowSize,
+          isNavExpanded: state.isNavExpanded,
           permissionHistory: state.permissionHistory,
           notifications: state.notifications,
         }),
@@ -174,8 +175,23 @@ export const useDynamicIsland = () =>
   useAppStore((state) => state.dynamicIsland);
 export const useResponsiveMode = () =>
   useAppStore((state) => state.responsiveMode);
+export const useWindowSize = () => useAppStore((state) => state.windowSize);
+export const useSetWindowSize = () =>
+  useAppStore((state) => state.setWindowSize);
 export const useMobileDrawerOpen = () =>
   useAppStore((state) => state.mobileDrawerOpen);
+export const useIsNavExpanded = () =>
+  useAppStore((state) => state.isNavExpanded);
+export const useToggleNavExpanded = () =>
+  useAppStore((state) => state.toggleNavExpanded);
+export const useSetNavExpanded = () =>
+  useAppStore((state) => state.setNavExpanded);
+export const useIsMobileMoreOpen = () =>
+  useAppStore((state) => state.isMobileMoreOpen);
+export const useToggleMobileMore = () =>
+  useAppStore((state) => state.toggleMobileMore);
+export const useCloseMobileMore = () =>
+  useAppStore((state) => state.closeMobileMore);
 export const useDashboardStats = () =>
   useAppStore((state) => state.dashboardStats);
 export const useActivityFeed = () => useAppStore((state) => state.activityFeed);
@@ -208,6 +224,9 @@ export const useIsDesktop = () =>
   useAppStore((state) => state.responsiveMode === "desktop");
 export const useIsMobile = () =>
   useAppStore((state) => state.responsiveMode === "mobile");
+export const useCanGoBack = () =>
+  useAppStore((state) => state.viewHistory.length > 1);
+export const useGoBack = () => useAppStore((state) => state.goBack);
 export const useStoragePercentage = () =>
   useAppStore((state) =>
     state.dashboardStats.storageTotal > 0
