@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-03-07T07:22:43.861Z",
+  "baseUrl": "http://localhost:5179",
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-apikey-normal.png",
+      "note": "正常系: providers配列を表示",
+      "capturedAt": "2026-03-07T07:22:37.232Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-settings-apikey-api-missing.png",
+      "note": "異常系: apiKey APIなしでエラー表示",
+      "capturedAt": "2026-03-07T07:22:41.169Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-settings-apikey-nonarray-providers.png",
+      "note": "異常系: providers非配列でフォールバック",
+      "capturedAt": "2026-03-07T07:22:43.802Z"
+    }
+  ]
+}

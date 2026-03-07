@@ -687,4 +687,148 @@ describe("ApiKeysSection", () => {
       expect(container.firstChild).toHaveClass("custom-class");
     });
   });
+
+  // === Preload Sandbox Guard (防御的レンダリング) ===
+
+  describe("Preload Sandbox Guard（防御的レンダリング）", () => {
+    let originalElectronAPI: typeof window.electronAPI;
+
+    beforeEach(() => {
+      originalElectronAPI = window.electronAPI;
+    });
+
+    afterEach(() => {
+      // モックを元に戻す
+      Object.defineProperty(window, "electronAPI", {
+        value: originalElectronAPI,
+        writable: true,
+      });
+    });
+
+    it("RED-01: window.electronAPI が undefined の場合、クラッシュせずエラー表示する", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: undefined,
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/APIキー機能が利用できません/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("RED-02: apiKey.list() が undefined を返した場合、エラーメッセージにフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue(undefined),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Failed to load API keys/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("RED-02b: apiKey.list() が null を返した場合、エラーメッセージにフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue(null),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/Failed to load API keys/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it("RED-03: result.data.providers が配列でない場合、空のプロバイダー一覧にフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: { providers: "not-array" },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      // ローディングが終了し、プロバイダーカードが表示されないこと（空の一覧）
+      await waitFor(() => {
+        expect(screen.queryByText("OpenAI")).not.toBeInTheDocument();
+        expect(screen.queryByText("Anthropic")).not.toBeInTheDocument();
+        // APIキー設定ヘッダーは表示されること（コンポーネント自体はクラッシュしていない）
+        expect(screen.getByText(/APIキー設定/i)).toBeInTheDocument();
+      });
+    });
+
+    it("RED-03b: result.data.providers が undefined の場合、空のプロバイダー一覧にフォールバックする", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: {
+          apiKey: {
+            save: mockApiKeySave,
+            delete: mockApiKeyDelete,
+            validate: mockApiKeyValidate,
+            list: vi.fn().mockResolvedValue({
+              success: true,
+              data: { providers: undefined },
+            }),
+          },
+        },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(screen.queryByText("OpenAI")).not.toBeInTheDocument();
+        expect(screen.queryByText("Anthropic")).not.toBeInTheDocument();
+        expect(screen.getByText(/APIキー設定/i)).toBeInTheDocument();
+      });
+    });
+
+    it("RED-01b: window.electronAPI.apiKey が undefined の場合、クラッシュせずエラー表示する", async () => {
+      Object.defineProperty(window, "electronAPI", {
+        value: { apiKey: undefined },
+        writable: true,
+      });
+
+      render(<ApiKeysSection />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(/APIキー機能が利用できません/i),
+        ).toBeInTheDocument();
+      });
+    });
+  });
 });

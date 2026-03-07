@@ -321,6 +321,41 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ---
 
+## ApiKeysSection 異常系表示仕様（2026-03-07追加）
+
+**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+**実装ファイル**: `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`
+
+loadProviders における Preload 境界の防御ガードにより、以下の異常状態を安全に処理する。
+
+| 異常状態 | 表示内容 | UI要素 |
+| --- | --- | --- |
+| window.electronAPI 未定義 | 「APIキー機能が利用できません」 | text-red-400 + 再試行ボタン |
+| apiKey.list() 不正レスポンス | 「Failed to load API keys」 | text-red-400 + 再試行ボタン |
+| providers 非配列 | 空のプロバイダー一覧（4プロバイダー「未登録」表示） | 正常UIフォールバック |
+
+### 防御パターン
+
+| 防御層 | 実装 | 目的 |
+| --- | --- | --- |
+| 1. API存在確認 | `window.electronAPI?.apiKey` optional chaining | sandbox/preload 部分失敗時のクラッシュ防止 |
+| 2. メソッド存在確認 | `apiKeyApi?.list` + console.warn | contextBridge 公開不完全の検出 |
+| 3. レスポンス形状検証 | `Array.isArray(result.data.providers)` | 非iterable レスポンスの安全処理 |
+| 4. エラーメッセージ安全アクセス | `result?.error?.message` null-safe | 部分的レスポンス構造への耐性 |
+
+### テストケース
+
+| テストID | テスト内容 | 検証結果 |
+| --- | --- | --- |
+| RED-01 | electronAPI undefined でクラッシュしない | エラーメッセージ表示 + 再試行ボタン表示 |
+| RED-02 | apiKey namespace undefined でクラッシュしない | エラーメッセージ表示 + 再試行ボタン表示 |
+| RED-03 | apiKey.list undefined でクラッシュしない | エラーメッセージ表示 + 再試行ボタン表示 |
+| RED-03b | providers 非配列で空一覧にフォールバック | 4プロバイダー「未登録」表示 |
+| RED-success | 正常レスポンスで providers を正しく表示 | プロバイダー一覧正常描画 |
+| RED-error-msg | result.error.message を安全に表示 | null-safe アクセスでクラッシュなし |
+
+---
+
 ## 関連ドキュメント
 
 - [security-api-electron.md](./security-api-electron.md) - IPCセキュリティ詳細
@@ -360,6 +395,7 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 1.5.0   | 2026-03-07 | ApiKeysSection 異常系表示仕様追加（09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）: Preload境界の4段防御ガード、6テストケース |
 | 1.4.0   | 2026-02-02 | 実装詳細拡充: フィルタUI説明を3ドロップダウン化、テストカバレッジ72件反映、実装ファイル3件追加 |
 | 1.3.0   | 2026-02-02 | 期間フィルタ追加（task-imp-permission-date-filter: DatePreset/DateRangeFilter型追加）|
 | 1.2.0   | 2026-02-01 | PermissionHistoryPanel追加（task-imp-permission-history-001）                        |
