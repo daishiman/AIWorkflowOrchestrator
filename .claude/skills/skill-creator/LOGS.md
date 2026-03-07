@@ -16,7 +16,13 @@
   - `SKILL.md` 変更履歴を `10.37.13` として同期
 
 ---
-
+## [2026-03-07 - TASK-10A-F Store駆動スキルライフサイクルUI統合の仕様同期]
+- **Phase**: cross-skill-improvement
+  - `arch-state-management.md` に TASK-10A-F セクション追加（Case B方式、状態分類テーブル、isMountedRef廃止）
+  - `lessons-learned.md` に苦戦箇所5件と簡潔解決カードを追加
+  - `architecture-implementation-patterns.md` に S19（直接IPC→Store移行パターン）を追加
+  - `task-workflow.md` に完了記録を追加
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 ## [2026-03-07 - TASK-UI-03 スキルフィードバックレポートテンプレート + フィードバックループ改善]
 
 - **Agent**: skill-creator (update)
@@ -463,6 +469,7 @@
 - **Notes**: `references/patterns.md` に成功パターン「IPC追加時の登録配線突合（handler/register/preload）」と失敗パターン「IPCハンドラ実装のみで登録配線を未確認」を追加。Phase 12クイックナビへ反映し、実装済みでも登録漏れで機能が起動しない再発を防止。
 
 ---
+
 ## [2026-02-27 - Phase 12/IPC クイックナビ重複整理]
 
 - **Agent**: skill-creator (update)
@@ -1765,3 +1772,12 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `SKILL.md` 変更履歴を `10.37.12` に更新
 
 ---
+
+## 2026-03-07 - TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 Phase 12ゲート改善
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
+  - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化

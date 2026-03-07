@@ -8,126 +8,240 @@
 | 機能名     | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001   |
 | タスク名   | 設定画面 apiKey.list 契約防御と providers 正規化 |
 | 作成日     | 2026-03-06                                       |
+| 更新日     | 2026-03-07                                       |
 | ステータス | 未実施                                           |
 
 ## 目的
 
-apiKey.list 契約が壊れた場合でも SettingsView が継続表示されるように、Renderer / Preload / Main の response shape と fallback を設計し、実装できる仕様へ落とす。
+Phase 4 の Red テスト（GAP-TEST-01〜09）を Green にするための実装を行い、GAP-01〜06 の残存カバレッジ gap を充填する。
 
 ## 背景
 
-task-04 では linkedProviders だけを防御したが、SettingsView 固有の `ApiKeysSection` 側には response 正規化が入っていない。`result.data.providers` の shape が崩れるだけで renderer 側が落ちる経路が残っている。
+PR #1036/#1038 で基本防御は実装済み。本 Phase では残存 gap に対する追加実装を、テストファーストの原則に従い Red → Green で進める。
 
-## Atent Team編成
+## Agent Team 編成
 
-| SubAgent                | 関心ごと                         | 実行モード | Phase 5 の責務                              |
-| ----------------------- | -------------------------------- | ---------- | ------------------------------------------- |
-| SubAgent-Renderer-Guard | Renderer defensive normalization | 並列       | providers shape の正規化ポイントを設計する  |
-| SubAgent-Contract-IPC   | Main / Preload / Shared contract | 並列       | response envelope と shared type を確認する |
-| SubAgent-Test-Fallback  | 異常系テスト / fallback UX       | 並列       | malformed response ケースと文言を設計する   |
-| SubAgent-Lead-Sync      | 仕様統合 / aiworkflow 同期       | 直列統合   | task-04 の調査結果と本タスク境界を統合する  |
+| SubAgent                | 関心ごと                         | 実行モード | Phase 5 の責務                                    |
+| ----------------------- | -------------------------------- | ---------- | ------------------------------------------------- |
+| SubAgent-Renderer-Guard | Renderer defensive normalization | 並列       | GAP-01〜04 の Renderer 実装                       |
+| SubAgent-Contract-IPC   | Main / Preload / Shared contract | 並列       | GAP-05 の Main バリデーション実装                 |
+| SubAgent-Test-Fallback  | 異常系テスト / fallback UX       | 並列       | GAP-06 の profileHandlers パターン統一実装        |
+| SubAgent-Lead-Sync      | 仕様統合 / aiworkflow 同期       | 直列統合   | 実装の整合性確認と Red → Green 全テスト PASS 確認 |
 
 ## 実行タスク
 
-- 実装分割: `ApiKeysSection` に providers 正規化関数を導入する
-- 実装分割: Main / Preload / Shared の response shape を確認し、崩れた入力の fallback を 1 つに定義する
-- 実装分割: ユーザー通知とログ記録をクラッシュ回避の経路に統合する
-- 委譲境界: SubAgent が AC を固定し、Codex がコード編集を担当する手順を定義する
+### Task 1: 実装順序（依存関係ベース）
+
+```
+Step 1: Main 側バリデーション追加（GAP-05）
+  → apiKeyHandlers.ts の handleApiKeyList 関数
+  → 他の変更に依存しない独立した変更
+
+Step 2: Renderer 層 normalizeProviders 追加（GAP-01, GAP-03）
+  → ApiKeysSection/index.tsx に正規化関数を追加
+  → result.data の nullish チェック + 要素フィルタ
+
+Step 3: 空配列 UI フィードバック（GAP-02）
+  → ApiKeysSection/index.tsx の render 部に条件分岐追加
+  → Step 2 の normalizeProviders に依存
+
+Step 4: Promise rejection ハンドリング（GAP-04）
+  → ApiKeysSection/index.tsx の fetchProviders に try-catch 追加
+  → Step 2 と独立（並列可能）
+
+Step 5: profileHandlers パターン統一（GAP-06）
+  → profileHandlers.ts の identities ?? [] → Array.isArray に変更
+  → 他の変更に依存しない独立した変更
+```
+
+### Task 2: 変更ファイル計画
+
+| 順序 | ファイル                                                                                          | 変更内容                                          | Gap ID         | 関数/箇所                                                                          |
+| ---- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------- | ---------------------------------------------------------------------------------- |
+| 1    | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                     | providers 配列バリデーション追加                  | GAP-05         | `handleApiKeyList` — レスポンス生成前に `Array.isArray(result.providers)` チェック |
+| 2    | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                         | `normalizeProviders` 正規化関数追加               | GAP-01, GAP-03 | 新規関数 `normalizeProviders(data: unknown): ProviderStatus[]`                     |
+| 3    | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                         | 空配列時の UI フィードバック                      | GAP-02         | render 部 — `providers.length === 0` 判定と「未登録」メッセージ表示                |
+| 4    | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                         | `fetchProviders` に try-catch 追加                | GAP-04         | `fetchProviders` 関数 — rejection 時にエラー state 遷移                            |
+| 5    | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                    | `identities ?? []` → `Array.isArray` パターン統一 | GAP-06         | identities 取得箇所                                                                |
+| T1   | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx` | GAP-TEST-01〜07 テスト追加                        | GAP-01〜04     | 既存テストファイルに追加                                                           |
+| T2   | Main テストファイル（`apiKeyHandlers.test.ts` / `profileHandlers.test.ts`）                       | GAP-TEST-08〜09 テスト追加                        | GAP-05〜06     | 対応テストファイルに追加                                                           |
+
+### Task 3: 実装詳細
+
+#### Step 1: Main 側バリデーション（`apiKeyHandlers.ts`）
+
+```typescript
+// handleApiKeyList 内 — レスポンス生成前
+const rawProviders = result.providers;
+const providers = Array.isArray(rawProviders) ? rawProviders : [];
+return {
+  success: true,
+  data: {
+    providers,
+    registeredCount: providers.length,
+    totalCount,
+  },
+};
+```
+
+#### Step 2: normalizeProviders 関数（`ApiKeysSection/index.tsx`）
+
+```typescript
+/**
+ * IPCResponse.data から安全に ProviderStatus 配列を抽出する。
+ * P48 準拠: non-null assertion を使わず実行時検証。
+ */
+function normalizeProviders(data: unknown): ProviderStatus[] {
+  if (data == null || typeof data !== "object") return [];
+  const raw = (data as Record<string, unknown>).providers;
+  if (!Array.isArray(raw)) return [];
+  return raw.filter(
+    (item): item is ProviderStatus =>
+      item != null &&
+      typeof (item as Record<string, unknown>).provider === "string" &&
+      typeof (item as Record<string, unknown>).status === "string",
+  );
+}
+```
+
+#### Step 3: 空配列 UI フィードバック
+
+```tsx
+{
+  providers.length === 0 && (
+    <p className="text-[var(--text-secondary)] text-sm">
+      プロバイダーが登録されていません
+    </p>
+  );
+}
+```
+
+#### Step 4: Promise rejection ハンドリング
+
+```typescript
+// fetchProviders 内
+try {
+  const result = await window.electronAPI.apiKey.list();
+  const providers = normalizeProviders(result?.data);
+  setProviders(providers);
+} catch (error) {
+  console.error("apiKey.list() failed:", error);
+  setError("APIキー情報の取得に失敗しました");
+  setProviders([]);
+}
+```
+
+#### Step 5: profileHandlers パターン統一
+
+```typescript
+// Before: identities ?? []
+// After:
+const identities = Array.isArray(rawIdentities) ? rawIdentities : [];
+```
+
+### Task 4: Red → Green 確認手順
+
+```bash
+# Step 1: Red テスト確認（全 GAP-TEST が FAIL であること）
+cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx
+
+# Step 2: 実装適用後の Green 確認
+cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx
+
+# Step 3: 既存テスト回帰確認（RED-01〜RED-03b が引き続き PASS）
+cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/
+
+# Step 4: Main テスト確認
+cd apps/desktop && pnpm vitest run src/main/ipc/
+
+# Step 5: 型チェック
+pnpm --filter @repo/desktop exec tsc --noEmit
+```
 
 ## 参照資料
 
 ### 実装・証跡
 
-| 資料名              | パス                                                                                                                               | 用途                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Renderer Component  | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                                                          | providers 正規化の主対象                        |
-| Renderer Tests      | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx`                                  | shape 異常系の固定先                            |
-| Main IPC            | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                                                      | list / validate 契約の確認先                    |
-| Main IPC            | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                                                     | profile linked providers 側の防御との整合確認   |
-| Shared Types        | `packages/shared/types/api-keys.ts`                                                                                                | transport 型の確認先                            |
-| Validator           | `packages/shared/infrastructure/ai/apiKeyValidator.ts`                                                                             | validation の責務境界確認                       |
-| investigation index | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/index.md`                               | settings 側の残存リスクを確認する               |
-| task-04 manual      | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/manual-test-result.md` | SettingsView 自体が未検証だった事実を確認する   |
-| task-03 manual      | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/manual-test-result.md`            | 専用 harness と settings shell の差分を確認する |
+| 資料名             | パス                                                                                              | 用途                    |
+| ------------------ | ------------------------------------------------------------------------------------------------- | ----------------------- |
+| Renderer Component | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                         | GAP-01〜04 実装対象     |
+| Renderer Tests     | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx` | GAP-TEST-01〜07 追加先  |
+| Main IPC           | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                     | GAP-05 実装対象         |
+| Main IPC           | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                    | GAP-06 実装対象         |
+| Shared Types       | `packages/shared/types/api-keys.ts`                                                               | `ProviderStatus` 型参照 |
 
-### システム仕様（aiworkflow-requirements / task-specification-creator）
+### システム仕様
 
-| 資料名                     | パス                                                                                 | 用途                                              |
-| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| task-spec workflow         | `.claude/skills/task-specification-creator/references/create-workflow.md`            | create モードの直列/並列ルールを確認する          |
-| phase templates            | `.claude/skills/task-specification-creator/references/phase-templates.md`            | Phase 文書の構造を揃える                          |
-| unassigned task guidelines | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | Phase 12 の残課題検出ルールを揃える               |
-| resource-map               | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                     | 読むべきシステム正本を固定する                    |
-| quick-reference            | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                  | IPC / Store / Electron の既存パターンを再確認する |
-| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | Phase 12 の完了記録先を確認する                   |
-| quality-requirements       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`          | TDD と coverage 条件を揃える                      |
-| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`               | 既知の再発パターンを再確認する                    |
-| api-ipc-system             | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                | システム IPC の response パターンを確認する       |
-| api-ipc-auth               | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`                  | 認証系 IPC と API key 契約の境界を確認する        |
-| ipc-contract-checklist     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`        | shape drift を検査する項目を固定する              |
-| security-electron-ipc      | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`         | Preload 経由で不正 shape を通さない前提を確認する |
-| ui-ux-settings             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | 設定画面の異常時表示方針を確認する                |
-| ui-ux-components           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`              | セクション責務とエラー表示の配置を確認する        |
-| ui-ux-design-system        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | 異常状態ラベル/色トークンの一貫性を確認する       |
-| ui-ux-design-principles    | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`       | 異常系導線の可読性と説明順序を確認する            |
-| testing-accessibility      | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`         | fallback表示のa11y検証観点を確認する              |
-| testing-component-patterns | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`    | malformed response の component test を組む       |
-| development-guidelines     | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`        | 正規化 helper の配置規則を確認する                |
-| error-handling             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                | malformed response 時の復旧方針を確認する         |
-| security-input-validation  | `.claude/skills/aiworkflow-requirements/references/security-input-validation.md`     | 受信データの型検証境界を確認する                  |
-| ipc-type-resolution-guide  | `.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md`     | payload shape drift の診断手順を確認する          |
-| known-pitfalls             | `.claude/rules/06-known-pitfalls.md`                                                 | iterable / shape drift 再発防止を確認する         |
-| interfaces-auth            | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`               | 共通 IPCResponse envelope の扱いを確認する        |
+| 資料名                 | パス                                                                          | 用途                            |
+| ---------------------- | ----------------------------------------------------------------------------- | ------------------------------- |
+| ipc-contract-checklist | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` | 6段チェック CC-1〜CC-6 準拠確認 |
+| security-electron-ipc  | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`  | 4層防御パターン準拠             |
+| ui-ux-settings         | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`         | 空配列・エラー表示テキスト      |
+| known-pitfalls         | `.claude/rules/06-known-pitfalls.md`                                          | P42/P48 実装準拠                |
 
 ### 前提Phase成果物
 
-| 資料名         | パス               | 用途                               |
-| -------------- | ------------------ | ---------------------------------- |
-| Phase 4 成果物 | `outputs/phase-4/` | Phase 4 の出力を入力として参照する |
+| 資料名         | パス               | 用途                                               |
+| -------------- | ------------------ | -------------------------------------------------- |
+| Phase 4 成果物 | `outputs/phase-4/` | GAP-TEST-01〜09 テスト計画、フィクスチャ設計を参照 |
 
 ## 実行手順
 
-1. Phase 4 の Red テストと design-decisions を入力にして変更順序を決める。
-2. `ApiKeysSection` に providers 正規化関数を導入する を起点に変更ファイルを列挙する。
-3. Main / Preload / Shared の response shape を確認し、崩れた入力の fallback を 1 つに定義する と ユーザー通知とログ記録をクラッシュ回避の経路に統合する を順に実装する。
-4. commit / PR を行わず、ローカル変更とテスト結果だけで Phase 完了条件を満たす。
+1. Phase 4 の Red テスト計画とフィクスチャを入力にして、Step 1〜5 の変更順序を確認する。
+2. Step 1（Main バリデーション）を実装し、GAP-TEST-08 が Green になることを確認する。
+3. Step 2（normalizeProviders）を実装し、GAP-TEST-01〜02, 04〜06 が Green になることを確認する。
+4. Step 3（空配列 UI）を実装し、GAP-TEST-03 が Green になることを確認する。
+5. Step 4（try-catch）を実装し、GAP-TEST-07 が Green になることを確認する。
+6. Step 5（profileHandlers 統一）を実装し、GAP-TEST-09 が Green になることを確認する。
+7. 既存 RED-01〜RED-03b テストの回帰確認（全 PASS）。
+8. 型チェック（`tsc --noEmit`）PASS を確認する。
+9. commit / PR を行わず、ローカル変更とテスト結果だけで Phase 完了条件を満たす。
 
 ## 統合テスト連携
 
-- `window.electronAPI.apiKey.list()` の戻り値 shape と UI fallback を同じ fixture で確認する
-- `profileHandlers.ts` 側の linked provider 正規化と `ApiKeysSection` の provider 正規化を別責務として確認する
-- SettingsView mount 時に malformed response が来ても view 全体が継続表示されることを確認する
+- Step 2 の `normalizeProviders` が適用された状態で、既存 RED-01〜RED-03b テストが引き続き PASS することを確認する
+- Step 1（Main）と Step 2-4（Renderer）は独立した変更であり、並列実装が可能
+- Step 5（profileHandlers）は他の変更と完全に独立しており、並列実装が可能
 
 ## 多角的チェック観点
 
-| 観点     | 確認内容                                                             |
-| -------- | -------------------------------------------------------------------- |
-| 防御境界 | normalize が 1 箇所に集まり、各 render branch が配列前提を持たないか |
-| 契約監査 | shared type と actual runtime shape の差分が記録されているか         |
-| UX       | fallback 表示が silent failure ではなく原因追跡可能か                |
-| 回帰耐性 | task-04 で守った linkedProviders と責務が重複していないか            |
+| 観点     | 確認内容                                                                               |
+| -------- | -------------------------------------------------------------------------------------- |
+| 防御境界 | `normalizeProviders` が唯一の正規化ポイントであり、render 部が配列前提を直接持たないか |
+| 契約監査 | Main 側バリデーション（Step 1）と Renderer 側正規化（Step 2）の責務が重複していないか  |
+| UX       | 空配列（Step 3）・rejection（Step 4）の fallback テキストが ui-ux-settings.md 準拠か   |
+| 回帰耐性 | 既存 RED-01〜RED-03b テスト + 新規 GAP-TEST-01〜09 が全て PASS か                      |
+| P48 準拠 | `normalizeProviders` 内で non-null assertion (`!`) を使っていないか                    |
 
 ## 成果物
 
-| 成果物           | パス                                         | 説明                   |
-| ---------------- | -------------------------------------------- | ---------------------- |
-| 実装順序         | `outputs/phase-5/implementation-sequence.md` | 変更順序と責務境界     |
-| 変更ファイル計画 | `outputs/phase-5/changed-files-plan.md`      | 更新対象ファイルと目的 |
+| 成果物           | パス                                         | 説明                                      |
+| ---------------- | -------------------------------------------- | ----------------------------------------- |
+| 実装順序         | `outputs/phase-5/implementation-sequence.md` | Step 1〜5 の依存関係と並列可能性          |
+| 変更ファイル計画 | `outputs/phase-5/changed-files-plan.md`      | 更新対象ファイル・関数名・Gap ID の対応表 |
 
 ## 完了条件
 
-- [ ] 変更ファイルと変更目的が列挙されている
-- [ ] SubAgent と Codex の担当境界が明記されている
-- [ ] commit / PR 非実行ポリシーが明記されている
+- [ ] GAP-TEST-01〜09 が全て Green（PASS）
+- [ ] 既存 RED-01〜RED-03b テストが全て PASS（回帰なし）
+- [ ] 型チェック（`tsc --noEmit`）が PASS
+- [ ] 変更ファイルと GAP-ID が対応表で紐づけられている
+- [ ] `normalizeProviders` が P48 準拠（non-null assertion 不使用）
+- [ ] commit / PR 非実行ポリシーが守られている
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
 
-1. 参照資料の確認
-2. 実行タスクの実施
-3. 統合テスト連携の更新
-4. 成果物の作成・配置
-5. 完了条件の検証
+1. Phase 4 テスト計画の確認
+2. Step 1: Main バリデーション実装 + GAP-TEST-08 Green 確認
+3. Step 2: normalizeProviders 実装 + GAP-TEST-01〜02, 04〜06 Green 確認
+4. Step 3: 空配列 UI フィードバック実装 + GAP-TEST-03 Green 確認
+5. Step 4: try-catch 追加 + GAP-TEST-07 Green 確認
+6. Step 5: profileHandlers パターン統一 + GAP-TEST-09 Green 確認
+7. 既存テスト回帰確認（RED-01〜RED-03b PASS）
+8. 型チェック PASS 確認
+9. 成果物の作成・配置
+10. 完了条件の検証
 
 ## タスク100%実行確認【必須】
 

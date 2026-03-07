@@ -323,7 +323,7 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ## ApiKeysSection 異常系表示仕様（2026-03-07追加）
 
-**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **実装ファイル**: `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`
 
 loadProviders における Preload 境界の防御ガードにより、以下の異常状態を安全に処理する。
@@ -396,6 +396,7 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
 | 1.5.0   | 2026-03-07 | ApiKeysSection 異常系表示仕様追加（09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）: Preload境界の4段防御ガード、6テストケース |
+| 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記 |
 | 1.4.0   | 2026-02-02 | 実装詳細拡充: フィルタUI説明を3ドロップダウン化、テストカバレッジ72件反映、実装ファイル3件追加 |
 | 1.3.0   | 2026-02-02 | 期間フィルタ追加（task-imp-permission-date-filter: DatePreset/DateRangeFilter型追加）|
 | 1.2.0   | 2026-02-01 | PermissionHistoryPanel追加（task-imp-permission-history-001）                        |

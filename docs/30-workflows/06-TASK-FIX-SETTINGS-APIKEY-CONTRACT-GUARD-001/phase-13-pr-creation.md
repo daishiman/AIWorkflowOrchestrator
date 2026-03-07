@@ -1,4 +1,4 @@
-# Phase 13: PR作成
+# Phase 13: PR 作成
 
 ## メタ情報
 
@@ -12,106 +12,98 @@
 
 ## 目的
 
-apiKey.list 契約が壊れた場合でも SettingsView が継続表示されるように、Renderer / Preload / Main の response shape と fallback を設計し、実装できる仕様へ落とす。
-
-## 背景
-
-task-04 では linkedProviders だけを防御したが、SettingsView 固有の `ApiKeysSection` 側には response 正規化が入っていない。`result.data.providers` の shape が崩れるだけで renderer 側が落ちる経路が残っている。
-
-## Atent Team編成
-
-| SubAgent                | 関心ごと                         | 実行モード | Phase 13 の責務                             |
-| ----------------------- | -------------------------------- | ---------- | ------------------------------------------- |
-| SubAgent-Renderer-Guard | Renderer defensive normalization | 並列       | providers shape の正規化ポイントを設計する  |
-| SubAgent-Contract-IPC   | Main / Preload / Shared contract | 並列       | response envelope と shared type を確認する |
-| SubAgent-Test-Fallback  | 異常系テスト / fallback UX       | 並列       | malformed response ケースと文言を設計する   |
-| SubAgent-Lead-Sync      | 仕様統合 / aiworkflow 同期       | 直列統合   | task-04 の調査結果と本タスク境界を統合する  |
+Phase 1-12 の全成果物を統合し、PR 作成に必要な情報を整理する。実際の commit / push / PR 実行はユーザー指示後に限る。
 
 ## 実行タスク
 
-- PR 情報整理: 実際の PR 作成前に本文案と review 観点を整理する
-- handoff 整備: 実装者、レビュア、次タスク担当への引き継ぎを整理する
-- 実行制約確認: commit / push / PR 実行はユーザー指示後に限ることを明記する
+### Task 1: PR 計画
+
+#### ブランチ名
+
+```
+fix/settings-apikey-contract-guard-001
+```
+
+#### PR タイトル（70 文字以内）
+
+```
+fix(settings): ApiKeysSection 契約防御ガードとテスト拡充
+```
+
+#### PR 本文テンプレート
+
+```markdown
+## Summary
+
+- ApiKeysSection に Renderer 4 層防御（electronAPI 存在チェック / success チェック / Array.isArray / フォールバック UI）を実装
+- 残存 gap テスト（EXP-01〜EXP-04）を追加し、カバレッジ基準を充足
+- profileHandlers の identities 防御パターン統一を検討し、未タスク化
+
+## Test Plan
+
+- [ ] `cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx` が全 PASS
+- [ ] `cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/apiKeyHandlers.test.ts` が全 PASS
+- [ ] `pnpm lint` がエラー 0 件
+- [ ] `pnpm typecheck` がエラー 0 件
+- [ ] ApiKeysSection Line Coverage 90%+, Branch 70%+, Function 90%+
+
+## 関連 Issue
+
+- Closes #<issue-number>
+
+## Pitfall チェック
+
+- [x] P42: .trim() バリデーション確認済み
+- [x] P48: Non-null assertion 未使用確認済み
+- [x] P1/P25: LOGS.md 2 ファイル更新済み
+```
+
+### Task 2: handoff checklist
+
+| #   | チェック項目                                  | 完了 |
+| --- | --------------------------------------------- | ---- |
+| 1   | `pnpm lint` エラー 0 件                       | [ ]  |
+| 2   | `pnpm typecheck` エラー 0 件                  | [ ]  |
+| 3   | `pnpm --filter @repo/desktop test` 全 PASS    | [ ]  |
+| 4   | カバレッジ基準充足（Phase 7 結果参照）        | [ ]  |
+| 5   | Phase 10 ゲート判定が PASS or MINOR           | [ ]  |
+| 6   | Phase 11 手動テスト全シナリオ PASS            | [ ]  |
+| 7   | Phase 12 LOGS.md 2 ファイル更新済み           | [ ]  |
+| 8   | Phase 12 topic-map.md 再生成済み              | [ ]  |
+| 9   | Phase 12 未タスク検出（0 件でも出力済み）     | [ ]  |
+| 10  | Phase 12 スキルフィードバックレポート作成済み | [ ]  |
+| 11  | artifacts.json 全 Phase ステータス更新済み    | [ ]  |
+
+### Task 3: 実行制約の確認
+
+> **重要**: 実際の commit / push / PR 実行は行わない。ユーザーの明示的な指示を待つ。
+
+- commit: ユーザー指示後に `git add` + `git commit` を実行
+- push: ユーザー指示後に `git push -u origin fix/settings-apikey-contract-guard-001` を実行
+- PR: ユーザー指示後に `gh pr create` を実行
+- `--no-verify` は**絶対禁止**（CLAUDE.md 準拠）
+
+### Task 4: CI 確認計画
+
+PR 作成後に以下を確認する（実行はユーザー指示後）。
+
+```bash
+# CI ステータス確認
+gh pr checks <pr-number>
+
+# CI 失敗時の対応
+# 1. 失敗したジョブのログを確認
+# 2. ローカルで再現・修正
+# 3. 新しいコミットで push（amend ではなく新規コミット）
+```
 
 ## 参照資料
 
-### 実装・証跡
-
-| 資料名              | パス                                                                                                                               | 用途                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Renderer Component  | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                                                          | providers 正規化の主対象                        |
-| Renderer Tests      | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx`                                  | shape 異常系の固定先                            |
-| Main IPC            | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                                                      | list / validate 契約の確認先                    |
-| Main IPC            | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                                                     | profile linked providers 側の防御との整合確認   |
-| Shared Types        | `packages/shared/types/api-keys.ts`                                                                                                | transport 型の確認先                            |
-| Validator           | `packages/shared/infrastructure/ai/apiKeyValidator.ts`                                                                             | validation の責務境界確認                       |
-| investigation index | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/index.md`                               | settings 側の残存リスクを確認する               |
-| task-04 manual      | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/manual-test-result.md` | SettingsView 自体が未検証だった事実を確認する   |
-| task-03 manual      | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/manual-test-result.md`            | 専用 harness と settings shell の差分を確認する |
-
-### システム仕様（aiworkflow-requirements / task-specification-creator）
-
-| 資料名                     | パス                                                                                 | 用途                                              |
-| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| task-spec workflow         | `.claude/skills/task-specification-creator/references/create-workflow.md`            | create モードの直列/並列ルールを確認する          |
-| phase templates            | `.claude/skills/task-specification-creator/references/phase-templates.md`            | Phase 文書の構造を揃える                          |
-| unassigned task guidelines | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | Phase 12 の残課題検出ルールを揃える               |
-| resource-map               | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                     | 読むべきシステム正本を固定する                    |
-| quick-reference            | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                  | IPC / Store / Electron の既存パターンを再確認する |
-| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | Phase 12 の完了記録先を確認する                   |
-| quality-requirements       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`          | TDD と coverage 条件を揃える                      |
-| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`               | 既知の再発パターンを再確認する                    |
-| api-ipc-system             | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                | システム IPC の response パターンを確認する       |
-| api-ipc-auth               | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`                  | 認証系 IPC と API key 契約の境界を確認する        |
-| ipc-contract-checklist     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`        | shape drift を検査する項目を固定する              |
-| security-electron-ipc      | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`         | Preload 経由で不正 shape を通さない前提を確認する |
-| ui-ux-settings             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | 設定画面の異常時表示方針を確認する                |
-| ui-ux-components           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`              | セクション責務とエラー表示の配置を確認する        |
-| ui-ux-design-system        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | 異常状態ラベル/色トークンの一貫性を確認する       |
-| ui-ux-design-principles    | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`       | 異常系導線の可読性と説明順序を確認する            |
-| testing-accessibility      | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`         | fallback表示のa11y検証観点を確認する              |
-| testing-component-patterns | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`    | malformed response の component test を組む       |
-| development-guidelines     | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`        | 正規化 helper の配置規則を確認する                |
-| error-handling             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                | malformed response 時の復旧方針を確認する         |
-| security-input-validation  | `.claude/skills/aiworkflow-requirements/references/security-input-validation.md`     | 受信データの型検証境界を確認する                  |
-| ipc-type-resolution-guide  | `.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md`     | payload shape drift の診断手順を確認する          |
-| known-pitfalls             | `.claude/rules/06-known-pitfalls.md`                                                 | iterable / shape drift 再発防止を確認する         |
-| interfaces-auth            | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`               | 共通 IPCResponse envelope の扱いを確認する        |
-
-### 前提Phase成果物
-
-| 資料名          | パス                | 用途                                |
-| --------------- | ------------------- | ----------------------------------- |
-| Phase 1 成果物  | `outputs/phase-1/`  | Phase 1 の出力を入力として参照する  |
-| Phase 2 成果物  | `outputs/phase-2/`  | Phase 2 の出力を入力として参照する  |
-| Phase 5 成果物  | `outputs/phase-5/`  | Phase 5 の出力を入力として参照する  |
-| Phase 6 成果物  | `outputs/phase-6/`  | Phase 6 の出力を入力として参照する  |
-| Phase 7 成果物  | `outputs/phase-7/`  | Phase 7 の出力を入力として参照する  |
-| Phase 8 成果物  | `outputs/phase-8/`  | Phase 8 の出力を入力として参照する  |
-| Phase 9 成果物  | `outputs/phase-9/`  | Phase 9 の出力を入力として参照する  |
-| Phase 10 成果物 | `outputs/phase-10/` | Phase 10 の出力を入力として参照する |
-| Phase 11 成果物 | `outputs/phase-11/` | Phase 11 の出力を入力として参照する |
-| Phase 12 成果物 | `outputs/phase-12/` | Phase 12 の出力を入力として参照する |
-
-## 実行手順
-
-1. PR 本文案、review 観点、handoff 項目を成果物として整理する。
-2. 実際の commit / push / PR 実行は行わず、ユーザー指示待ちの状態にする。
-3. 次の担当者がそのまま実行できる粒度で handoff checklist を完成させる。
-
-## 統合テスト連携
-
-- Phase 1-12 の成果物が 1 つの受け入れ基準集合に戻ることを確認する。
-- 05 / 06 / 07 / 08 の依存関係と review handoff を齟齬なく引き継ぐ。
-
-## 多角的チェック観点
-
-| 観点     | 確認内容                                                             |
-| -------- | -------------------------------------------------------------------- |
-| 防御境界 | normalize が 1 箇所に集まり、各 render branch が配列前提を持たないか |
-| 契約監査 | shared type と actual runtime shape の差分が記録されているか         |
-| UX       | fallback 表示が silent failure ではなく原因追跡可能か                |
-| 回帰耐性 | task-04 で守った linkedProviders と責務が重複していないか            |
+| 資料名             | パス                                      | 用途             |
+| ------------------ | ----------------------------------------- | ---------------- |
+| Phase 1-12 成果物  | `outputs/phase-1/` 〜 `outputs/phase-12/` | PR 情報の統合元  |
+| CLAUDE.md          | `CLAUDE.md`                               | git 操作禁止事項 |
+| 07-git-and-tooling | `.claude/rules/07-git-and-tooling.md`     | PR 作成ルール    |
 
 ## 成果物
 
@@ -122,26 +114,19 @@ task-04 では linkedProviders だけを防御したが、SettingsView 固有の
 
 ## 完了条件
 
-- [ ] PR 本文案と handoff checklist が作成対象に入っている
+- [ ] PR 本文案が Summary + Test Plan + 関連 Issue を含んでいる
+- [ ] handoff checklist の全項目が確認可能な状態になっている
 - [ ] 実際の commit / push / PR を行わない制約が明記されている
-- [ ] 後続担当者がそのまま実行できる粒度で handoff が整理されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] CI 確認計画が記載されている
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 
-## サブタスク管理
+## タスク 100% 実行確認【必須】
 
-1. 参照資料の確認
-2. 実行タスクの実施
-3. 統合テスト連携の更新
-4. 成果物の作成・配置
-5. 完了条件の検証
-
-## タスク100%実行確認【必須】
-
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 - [ ] 各タスクの成果物が生成されている
 - [ ] artifacts.json が更新されている
 - [ ] Phase 末端で完了内容を実行記録へ残している
 
-## 次のPhase
+## 次の Phase
 
 タスク完了
