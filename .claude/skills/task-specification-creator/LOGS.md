@@ -25,6 +25,7 @@
 ---
 
 ## 2026-03-07 - TASK-10A-E-C Store駆動ライフサイクル統合設計の仕様同期
+
 ## 2026-03-07 - TASK-UI-03 スキル最適化（Phase 4 a11y テスト推奨追加）
 
 - **Agent**: task-specification-creator
@@ -55,7 +56,6 @@
 ---
 
 ## 2026-03-06 - TASK-UI-02-GLOBAL-NAV-CORE completed-tasks 移管
-
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12（仕様同期）
@@ -594,6 +594,7 @@
   - `LOGS.md` / `SKILL.md`（task-specification-creator + aiworkflow-requirements）の4ファイル更新を実施
 
 ---
+
 ## 2026-02-28 - TASK-9J スキル使用統計・分析機能 Phase 1-12 完了
 
 - **Agent**: task-specification-creator
@@ -1018,6 +1019,7 @@ node scripts/log-usage.js \
 - **Notes**: @repo/shared 3層整合CIガード完了反映。quality-requirements.md v1.9.0、architecture-monorepo.md v1.3.0、technology-devops.md更新。LOGS.md 2ファイル + SKILL.md 2ファイル同期更新（P1/P25/P29対策）
 
 ---
+
 ## [2026-02-22 - 未タスク監査自動化（audit-unassigned-tasks.js 追加）]
 
 - **Agent**: task-specification-creator
@@ -1075,6 +1077,7 @@ node scripts/log-usage.js \
   - `docs/30-workflows/ut-fix-skill-import-interface-001/` で再検証し、`--strict --json` で `errors=0/warnings=0/info=0` を確認
 
 ---
+
 ## 2026-02-21: UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 未タスク検出・登録（3件）
 
 - **Agent**: detect-unassigned
@@ -1161,6 +1164,7 @@ node scripts/log-usage.js \
   - `skill-feedback-report.md`（三層整合パターンのスキル改善提案）
 
 ---
+
 ## [2026-02-19 - TASK-9A-C Phase 12準拠監査・運用追補]
 
 - **Agent**: task-specification-creator
@@ -1177,38 +1181,39 @@ node scripts/log-usage.js \
 
 ## 2026-02-19: TASK-9A-B Phase 12再監査（Step 1-Dコマンド是正）
 
-| 項目         | 内容 |
-| ------------ | ---- |
-| タスクID     | TASK-9A-B |
-| Agent        | task-specification-creator |
-| 操作         | Phase 12ガイド修正（topic-map再生成コマンドを実パスへ修正） |
-| 対象ファイル | references/phase-11-12-guide.md, SKILL.md |
-| 結果         | success |
+| 項目         | 内容                                                                                                                                                                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-9A-B                                                                                                                                                                                                                                   |
+| Agent        | task-specification-creator                                                                                                                                                                                                                  |
+| 操作         | Phase 12ガイド修正（topic-map再生成コマンドを実パスへ修正）                                                                                                                                                                                 |
+| 対象ファイル | references/phase-11-12-guide.md, SKILL.md                                                                                                                                                                                                   |
+| 結果         | success                                                                                                                                                                                                                                     |
 | 備考         | `generate-index.js が存在しない` 誤判定を防ぐため、`node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow ... --regenerate` を明記 |
 
 ---
 
 ## 2026-02-19: TASK-FIX-10-1-VITEST-ERROR-HANDLING Phase 12完了
 
-| 項目         | 内容 |
-| ------------ | ---- |
-| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING |
-| Agent        | task-specification-creator |
-| 操作         | Phase 12 ドキュメント更新（実装ガイド作成、システム仕様書更新、未タスク検出、スキルフィードバック） |
-| 対象ファイル | LOGS.md, SKILL.md, implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md |
-| 結果         | success |
+| 項目         | 内容                                                                                                                                                                                                                                                                                                                 |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-10-1-VITEST-ERROR-HANDLING                                                                                                                                                                                                                                                                                  |
+| Agent        | task-specification-creator                                                                                                                                                                                                                                                                                           |
+| 操作         | Phase 12 ドキュメント更新（実装ガイド作成、システム仕様書更新、未タスク検出、スキルフィードバック）                                                                                                                                                                                                                  |
+| 対象ファイル | LOGS.md, SKILL.md, implementation-guide.md, documentation-changelog.md, unassigned-task-detection.md, skill-feedback-report.md                                                                                                                                                                                       |
+| 結果         | success                                                                                                                                                                                                                                                                                                              |
 | 備考         | `dangerouslyIgnoreUnhandledErrors: true` 削除、18個の `@repo/shared` サブパスエイリアス追加、リグレッション防止テスト13件新規作成。全テスト10,189件 ALL PASS。Phase 10 PASS（MINOR/MAJOR/CRITICAL 0件）。Phase 11手動テスト 5/5 PASS。未タスクは再監査で1件検出し `task-imp-vitest-alias-sync-automation-001` を登録 |
 
 ---
+
 ## 2026-02-14: UT-FIX-IPC-RESPONSE-UNWRAP-001 実装知見記録
 
-| 項目         | 内容 |
-| ------------ | ---- |
-| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001 |
-| Agent        | task-specification-creator |
-| 操作         | 実装苦戦箇所・パターンの仕様書反映記録（aiworkflow-requirements と同期） |
-| 対象ファイル | LOGS.md, SKILL.md |
-| 結果         | success |
+| 項目         | 内容                                                                                                                                                            |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID     | UT-FIX-IPC-RESPONSE-UNWRAP-001                                                                                                                                  |
+| Agent        | task-specification-creator                                                                                                                                      |
+| 操作         | 実装苦戦箇所・パターンの仕様書反映記録（aiworkflow-requirements と同期）                                                                                        |
+| 対象ファイル | LOGS.md, SKILL.md                                                                                                                                               |
+| 結果         | success                                                                                                                                                         |
 | 備考         | safeInvokeUnwrap パターン導入に伴う実装知見（type erasure、ハンドラ応答形式不統一、テストモック波及修正19箇所）を aiworkflow-requirements の3ファイルに反映完了 |
 
 ---
@@ -1238,14 +1243,14 @@ node scripts/log-usage.js \
 
 ## 2026-02-14: TASK-FIX-14-1 実装パターン体系化（aiworkflow-requirements更新）
 
-| 項目         | 内容 |
-| ------------ | ---- |
-| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION |
-| Agent        | aiworkflow-requirements |
-| 操作         | ログ移行パターンの体系化、スキル仕様書最適化 |
+| 項目         | 内容                                                                                                     |
+| ------------ | -------------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION                                                                      |
+| Agent        | aiworkflow-requirements                                                                                  |
+| 操作         | ログ移行パターンの体系化、スキル仕様書最適化                                                             |
 | 対象ファイル | logging-migration-guide.md（新規）, patterns.md, development-guidelines.md, lessons-learned.md, SKILL.md |
-| 結果         | success |
-| 備考         | P1/P25対策として task-specification-creator LOGS.md も同時更新 |
+| 結果         | success                                                                                                  |
+| 備考         | P1/P25対策として task-specification-creator LOGS.md も同時更新                                           |
 
 ---
 
@@ -1262,6 +1267,7 @@ node scripts/log-usage.js \
   - LOGS.md / SKILL.md の4ファイル同時更新を実施
 
 ---
+
 ## [2026-02-13 - TASK-FIX-11-1-SDK-TEST-ENABLEMENT スキル改善（パターン追記）]
 
 - **Agent**: task-specification-creator
@@ -1302,11 +1308,11 @@ node scripts/log-usage.js \
 
 ### 成果物
 
-| 成果物 | パス |
-| ------ | ---- |
-| 実装ガイド | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md` |
-| ドキュメント更新履歴 | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md` |
-| スキルフィードバック | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/skill-feedback-report.md` |
+| 成果物               | パス                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------- |
+| 実装ガイド           | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/implementation-guide.md`      |
+| ドキュメント更新履歴 | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/documentation-changelog.md`   |
+| スキルフィードバック | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/skill-feedback-report.md`     |
 | 未タスク検出レポート | `docs/30-workflows/sdk-test-enablement/outputs/phase-12/unassigned-task-detection.md` |
 
 ---
@@ -1360,6 +1366,7 @@ node scripts/log-usage.js \
   - `verify-unassigned-links.js` を実行し `ALL_LINKS_EXIST` を確認
 
 ---
+
 ## [2026-02-13 - UT-FIX-AGENTVIEW-INFINITE-LOOP-001 テスト環境教訓追記]
 
 - **Agent**: task-specification-creator
@@ -1425,6 +1432,7 @@ node scripts/log-usage.js \
   - `docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/` の整合性を更新
 
 ---
+
 ## [2026-02-12 - TASK-9B-H-SKILL-CREATOR-IPC完了]
 
 - **Agent**: task-specification-creator
@@ -1440,21 +1448,21 @@ node scripts/log-usage.js \
 
 ### 変更内容
 
-| 変更箇所                                              | 変更内容                              |
-| ----------------------------------------------------- | ------------------------------------- |
-| `skillCreatorHandlers.ts`                             | 5つのipcMain.handleハンドラー + 進捗通知 + unregister |
-| `skill-creator-api.ts`                                | SkillCreatorAPI interface + safeInvoke/safeOn |
-| `channels.ts`                                         | 6チャンネル定数 + ホワイトリスト登録 |
-| `preload/index.ts`                                    | skillCreatorAPI統合                   |
-| `ipc/index.ts`                                        | registerAllIpcHandlers連携            |
+| 変更箇所                  | 変更内容                                              |
+| ------------------------- | ----------------------------------------------------- |
+| `skillCreatorHandlers.ts` | 5つのipcMain.handleハンドラー + 進捗通知 + unregister |
+| `skill-creator-api.ts`    | SkillCreatorAPI interface + safeInvoke/safeOn         |
+| `channels.ts`             | 6チャンネル定数 + ホワイトリスト登録                  |
+| `preload/index.ts`        | skillCreatorAPI統合                                   |
+| `ipc/index.ts`            | registerAllIpcHandlers連携                            |
 
 ### 成果物
 
-| 成果物                   | パス                                                                              |
-| ------------------------ | --------------------------------------------------------------------------------- |
-| 実装ガイド               | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md`    |
-| ドキュメント更新履歴     | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/documentation-changelog.md` |
-| 未タスク検出レポート     | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/unassigned-task-detection.md` |
+| 成果物               | パス                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------- |
+| 実装ガイド           | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/implementation-guide.md`      |
+| ドキュメント更新履歴 | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/documentation-changelog.md`   |
+| 未タスク検出レポート | `docs/30-workflows/skill-creator-ipc/outputs/phase-12/unassigned-task-detection.md` |
 
 ---
 
@@ -1504,7 +1512,6 @@ node scripts/log-usage.js \
 
 ---
 
-
 ## [2026-02-12 - スキル最適化（TASK-FIX-7-1事後）]
 
 - **Agent**: task-specification-creator
@@ -1522,6 +1529,7 @@ node scripts/log-usage.js \
 - **Notes**: Phase 12未タスク管理チェックリスト強化（指示書物理ファイル存在確認追加）、テスト数記載基準明確化（実測値のみ使用ルール追加）。phase-11-12-guide.md・phase-templates.md・coverage-standards.md・unassigned-task-guidelines.md更新
 
 ---
+
 ## [2026-02-11 - TASK-FIX-7-1システム仕様書更新（Phase 12）]
 
 - **Agent**: aiworkflow-requirements
@@ -1546,22 +1554,22 @@ node scripts/log-usage.js \
 
 ### 変更内容
 
-| 変更箇所                                              | 変更内容                              |
-| ----------------------------------------------------- | ------------------------------------- |
-| `SkillService.ts`                                     | `setSkillExecutor()`, `executeSkill()` 委譲実装 |
-| `skillHandlers.ts`                                    | SkillExecutor注入処理追加             |
-| `skillHandlers.execute.test.ts`                       | SkillExecutor委譲テスト追加           |
-| `skillHandlers.delegate.test.ts`                      | 新規: 注入と委譲の統合テスト          |
-| `SkillService.delegate.test.ts`                       | 新規: SkillService委譲テスト          |
+| 変更箇所                         | 変更内容                                        |
+| -------------------------------- | ----------------------------------------------- |
+| `SkillService.ts`                | `setSkillExecutor()`, `executeSkill()` 委譲実装 |
+| `skillHandlers.ts`               | SkillExecutor注入処理追加                       |
+| `skillHandlers.execute.test.ts`  | SkillExecutor委譲テスト追加                     |
+| `skillHandlers.delegate.test.ts` | 新規: 注入と委譲の統合テスト                    |
+| `SkillService.delegate.test.ts`  | 新規: SkillService委譲テスト                    |
 
 ### 成果物
 
-| 成果物                   | パス                                                              |
-| ------------------------ | ----------------------------------------------------------------- |
-| 要件定義書               | `docs/30-workflows/skill-execute-delegation/outputs/phase-1/`     |
-| 設計書                   | `docs/30-workflows/skill-execute-delegation/outputs/phase-2/`     |
-| 実装ガイド               | `docs/30-workflows/skill-execute-delegation/outputs/phase-12/`    |
-| 未タスク検出レポート     | `docs/30-workflows/skill-execute-delegation/outputs/phase-12/`    |
+| 成果物               | パス                                                           |
+| -------------------- | -------------------------------------------------------------- |
+| 要件定義書           | `docs/30-workflows/skill-execute-delegation/outputs/phase-1/`  |
+| 設計書               | `docs/30-workflows/skill-execute-delegation/outputs/phase-2/`  |
+| 実装ガイド           | `docs/30-workflows/skill-execute-delegation/outputs/phase-12/` |
+| 未タスク検出レポート | `docs/30-workflows/skill-execute-delegation/outputs/phase-12/` |
 
 ---
 
@@ -1588,7 +1596,7 @@ node scripts/log-usage.js \
 
 ### 成果
 
-- 変更ファイル: store/index.ts, slices/*.ts, SettingsView/index.tsx, LLMSelectorPanel.tsx
+- 変更ファイル: store/index.ts, slices/\*.ts, SettingsView/index.tsx, LLMSelectorPanel.tsx
 - 変更箇所:
   - 53個の個別セレクタ追加
   - 合成Hook 3種に@deprecatedタグ追加
@@ -1599,13 +1607,14 @@ node scripts/log-usage.js \
 
 ### Phase 12 成果物
 
-| 成果物               | パス                                                                                      |
-| -------------------- | ----------------------------------------------------------------------------------------- |
-| 実装ガイド           | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/implementation-guide.md    |
-| ドキュメント更新履歴 | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/documentation-changelog.md |
+| 成果物               | パス                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/implementation-guide.md      |
+| ドキュメント更新履歴 | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/documentation-changelog.md   |
 | 未タスクレポート     | docs/30-workflows/UT-STORE-HOOKS-REFACTOR-001/outputs/phase-12/unassigned-task-detection.md |
 
 ---
+
 ## [2026-02-10 - TASK-FIX-6-1-STATE-CENTRALIZATION完了]
 
 - **Agent**: task-specification-creator
@@ -1648,29 +1657,31 @@ node scripts/log-usage.js \
 ### 変更理由
 
 P23パターン（API二重定義の型管理）準拠:
+
 - 実装（safeInvoke）の戻り値は`Promise<void>`
 - 型定義を実装に合わせて`Promise<void>`に統一
 - TypeScript開発者が`.then()`や`await`を正しく使用可能に
 
 ### Phase 12 成果物
 
-| 成果物               | パス                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| 実装ガイド           | docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/implementation-guide.md |
-| ドキュメント更新履歴 | docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/documentation-changelog.md |
+| 成果物               | パス                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| 実装ガイド           | docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/implementation-guide.md      |
+| ドキュメント更新履歴 | docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/documentation-changelog.md   |
 | 未タスクレポート     | docs/30-workflows/UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH/outputs/phase-12/unassigned-task-detection.md |
 
 ---
+
 ## 2026-02-10: UT-FIX-5-4未タスク仕様書作成
 
-| 項目         | 内容                                                            |
-| ------------ | --------------------------------------------------------------- |
-| タスクID     | UT-FIX-5-4                                                      |
-| Agent        | task-specification-creator                                      |
-| 操作         | 未タスク仕様書作成                                              |
+| 項目         | 内容                                                                             |
+| ------------ | -------------------------------------------------------------------------------- |
+| タスクID     | UT-FIX-5-4                                                                       |
+| Agent        | task-specification-creator                                                       |
+| 操作         | 未タスク仕様書作成                                                               |
 | 対象ファイル | docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md |
-| 結果         | success                                                         |
-| 備考         | UT-FIX-5-3 Phase 12追加検証で発見、型定義と実装の不一致         |
+| 結果         | success                                                                          |
+| 備考         | UT-FIX-5-3 Phase 12追加検証で発見、型定義と実装の不一致                          |
 
 ---
 
@@ -1703,17 +1714,18 @@ P23パターン（API二重定義の型管理）準拠:
 ### 変更理由
 
 04-electron-security.md の IPC セキュリティ原則に準拠:
+
 - チャンネル名はホワイトリストで管理し、定数で参照
 - 他のAPI（stop, getStatus等）と同一パターンに統一
 - ハードコード文字列でチャンネル名を指定しない
 
 ### Phase 12 成果物
 
-| 成果物               | パス                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| 実装ガイド           | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/implementation-guide.md         |
-| ドキュメント更新履歴 | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/documentation-changelog.md      |
-| 未タスクレポート     | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/unassigned-task-report.md       |
+| 成果物               | パス                                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/implementation-guide.md    |
+| ドキュメント更新履歴 | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/documentation-changelog.md |
+| 未タスクレポート     | docs/30-workflows/UT-FIX-5-3-PRELOAD-AGENT-ABORT/outputs/phase-12/unassigned-task-report.md  |
 
 ---
 
@@ -1783,16 +1795,17 @@ P23パターン（API二重定義の型管理）準拠:
 ### 変更理由
 
 04-electron-security.md の IPC セキュリティ原則に準拠:
+
 - チャンネル名はホワイトリストで管理し、定数で参照
 - ハードコード文字列でチャンネル名を指定しない
 
 ### Phase 12 成果物
 
-| 成果物               | パス                                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| 実装ガイド           | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/implementation-guide.md         |
-| ドキュメント更新履歴 | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/documentation-changelog.md      |
-| 未タスクレポート     | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/unassigned-task-report.md       |
+| 成果物               | パス                                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| 実装ガイド           | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/implementation-guide.md    |
+| ドキュメント更新履歴 | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/documentation-changelog.md |
+| 未タスクレポート     | docs/30-workflows/task-fix-12-1-ipc-hardcode-fix/outputs/phase-12/unassigned-task-report.md  |
 
 ---
 
@@ -1821,12 +1834,12 @@ P23パターン（API二重定義の型管理）準拠:
 
 ### 更新した仕様書
 
-| ファイル                          | 追加内容                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| security-principles.md            | SDK認証キー管理セクション追加                                             |
-| api-ipc-system.md                 | auth-key IPCチャンネル仕様追加                                           |
-| api-endpoints.md                  | SDK認証キーカテゴリ追加                                                  |
-| interfaces-agent-sdk-executor.md  | AUTHENTICATION_ERROR追加、AuthKeyService統合                             |
+| ファイル                         | 追加内容                                     |
+| -------------------------------- | -------------------------------------------- |
+| security-principles.md           | SDK認証キー管理セクション追加                |
+| api-ipc-system.md                | auth-key IPCチャンネル仕様追加               |
+| api-endpoints.md                 | SDK認証キーカテゴリ追加                      |
+| interfaces-agent-sdk-executor.md | AUTHENTICATION_ERROR追加、AuthKeyService統合 |
 
 ---
 
@@ -1847,19 +1860,19 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 解決策
 
-| 対策                         | 実施内容                                                       |
-| ---------------------------- | -------------------------------------------------------------- |
-| LOGS.md詳細フォーマット化    | 問題/根本原因/解決策/苦戦箇所/成果の5セクション構造を導入       |
-| known-pitfalls.md追加        | P19（型アサーション失敗）、P20（ログ出力汚染）追加              |
-| patterns.md追加              | vi.doMock動的モジュール再読み込みパターン追加                   |
+| 対策                      | 実施内容                                                  |
+| ------------------------- | --------------------------------------------------------- |
+| LOGS.md詳細フォーマット化 | 問題/根本原因/解決策/苦戦箇所/成果の5セクション構造を導入 |
+| known-pitfalls.md追加     | P19（型アサーション失敗）、P20（ログ出力汚染）追加        |
+| patterns.md追加           | vi.doMock動的モジュール再読み込みパターン追加             |
 
 ### 記録先
 
-| 記録先                                              | 追加内容                                            |
-| --------------------------------------------------- | --------------------------------------------------- |
-| .claude/rules/06-known-pitfalls.md                  | P19（型アサーション失敗）、P20（ログ出力汚染）       |
-| .claude/skills/task-specification-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン |
-| .claude/skills/aiworkflow-requirements/LOGS.md      | 詳細フォーマット化（5セクション構造）               |
+| 記録先                                                           | 追加内容                                       |
+| ---------------------------------------------------------------- | ---------------------------------------------- |
+| .claude/rules/06-known-pitfalls.md                               | P19（型アサーション失敗）、P20（ログ出力汚染） |
+| .claude/skills/task-specification-creator/references/patterns.md | vi.doMock動的モジュール再読み込みパターン      |
+| .claude/skills/aiworkflow-requirements/LOGS.md                   | 詳細フォーマット化（5セクション構造）          |
 
 ---
 
@@ -1892,7 +1905,6 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - apps/desktop/src/main/services/skill/SkillService.ts（修正: DEBUGログ削除）
 
 ---
-
 
 ## [2026-02-06 - DEBT-SEC-001タスク完了（OAuth State Parameter検証実装）]
 
@@ -1988,6 +2000,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
   - packages/shared/types/auth.ts: sessionExpiresAt追加
 
 ---
+
 ## [2026-02-05 - ENV-INFRA-001タスク完了（better-sqlite3バージョン不一致修正）]
 
 - **Agent**: execute-task / generate-task-specs
@@ -1997,6 +2010,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - **Notes**: better-sqlite3のNODE_MODULE_VERSION不一致（127 vs 131）を解決。pnpm store prune + install --forceパターンを確立。CONTRIBUTING.md新規作成、patterns.mdに失敗パターン追加、UT-ENV-001（CI node-version .nvmrc参照化）を未タスクとして登録。
 
 ---
+
 ## [2026-02-05 - TASK-FIX-4-1-IPC-CONSOLIDATION完了（IPCチャンネル統合）]
 
 - **Agent**: execute-workflow (Phase 1-12)
@@ -2026,6 +2040,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 3. ホワイトリスト更新漏れ防止: テストで検証
 
 ---
+
 ## [2026-02-04 - AUTH-UI-001タスク完了（認証UIバグ修正）]
 
 - **Agent**: generate-task-specs / execute-task
@@ -2063,18 +2078,18 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 成果物
 
-| 成果物       | パス                                                   |
-| ------------ | ------------------------------------------------------ |
-| 型定義修正   | `packages/shared/types/auth.ts`                        |
-| 関数修正     | `packages/shared/infrastructure/auth/supabase-client.ts` |
-| 仕様書更新   | `interfaces-auth.md`                                   |
+| 成果物     | パス                                                     |
+| ---------- | -------------------------------------------------------- |
+| 型定義修正 | `packages/shared/types/auth.ts`                          |
+| 関数修正   | `packages/shared/infrastructure/auth/supabase-client.ts` |
+| 仕様書更新 | `interfaces-auth.md`                                     |
 
 ### 技術ポイント
 
-| ポイント                 | 内容                                           |
-| ------------------------ | ---------------------------------------------- |
-| プロバイダー別キー名対応 | Google=picture, GitHub/Discord=avatar_url      |
-| フォールバックパターン   | `avatar_url ?? picture ?? null` の優先順位     |
+| ポイント                 | 内容                                       |
+| ------------------------ | ------------------------------------------ |
+| プロバイダー別キー名対応 | Google=picture, GitHub/Discord=avatar_url  |
+| フォールバックパターン   | `avatar_url ?? picture ?? null` の優先順位 |
 
 ---
 
@@ -2087,19 +2102,19 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### 成果物
 
-| Phase | 成果物               | パス                                                                       |
-| ----- | -------------------- | -------------------------------------------------------------------------- |
-| 1     | 要件定義書           | outputs/phase-1/requirements-definition.md                                 |
-| 2     | 型統合設計書         | outputs/phase-2/type-integration-design.md                                 |
-| 3     | 設計レビュー結果     | outputs/phase-3/design-review-result.md                                    |
-| 4     | テスト仕様書         | outputs/phase-4/test-specification.md                                      |
-| 5     | 統合済み型定義       | packages/shared/src/types/skill.ts                                         |
-| 6-7   | カバレッジレポート   | outputs/phase-6/, outputs/phase-7/                                         |
-| 8     | リファクタリング結果 | outputs/phase-8/refactoring-report.md                                      |
-| 9     | 品質レポート         | outputs/phase-9/quality-report.md                                          |
-| 10    | 最終レビュー結果     | outputs/phase-10/final-review-result.md                                    |
-| 11    | 手動テスト結果       | outputs/phase-11/manual-test-result.md                                     |
-| 12    | 実装ガイド           | outputs/phase-12/implementation-guide.md                                   |
+| Phase | 成果物               | パス                                       |
+| ----- | -------------------- | ------------------------------------------ |
+| 1     | 要件定義書           | outputs/phase-1/requirements-definition.md |
+| 2     | 型統合設計書         | outputs/phase-2/type-integration-design.md |
+| 3     | 設計レビュー結果     | outputs/phase-3/design-review-result.md    |
+| 4     | テスト仕様書         | outputs/phase-4/test-specification.md      |
+| 5     | 統合済み型定義       | packages/shared/src/types/skill.ts         |
+| 6-7   | カバレッジレポート   | outputs/phase-6/, outputs/phase-7/         |
+| 8     | リファクタリング結果 | outputs/phase-8/refactoring-report.md      |
+| 9     | 品質レポート         | outputs/phase-9/quality-report.md          |
+| 10    | 最終レビュー結果     | outputs/phase-10/final-review-result.md    |
+| 11    | 手動テスト結果       | outputs/phase-11/manual-test-result.md     |
+| 12    | 実装ガイド           | outputs/phase-12/implementation-guide.md   |
 
 ---
 
@@ -2122,13 +2137,14 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 
 ### テスト結果
 
-| カテゴリ       | 件数 | 結果 |
-| -------------- | ---- | ---- |
+| カテゴリ       | 件数 | 結果                           |
+| -------------- | ---- | ------------------------------ |
 | E2Eテスト      | 17   | 定義済み（Playwright環境必要） |
-| ユニットテスト | 100+ | PASS |
-| 統合テスト     | 80+  | PASS |
+| ユニットテスト | 100+ | PASS                           |
+| 統合テスト     | 80+  | PASS                           |
 
 ---
+
 ## [2026-02-03 - 未タスク仕様書への実装課題セクション追加]
 
 - **Agent**: generate-unassigned-task (update)
@@ -2238,6 +2254,7 @@ Phase 12完了時のLOGS.md更新テンプレートが詳細項目を明示的�
 - **Notes**: TASK-9B-G「SkillCreatorService実装」Phase 1-12全工程完了。50テスト全PASS。カバレッジ: Line 94.59%、Branch 88.63%、Function 100%。Script First/Progressive Disclosureパターン採用。未タスク5件検出（IPC通信、UI統合、SDK統合等）。
 
 ---
+
 ## [2026-02-02 - 未タスク仕様書3件新規作成（コードベースTODOスキャン）]
 
 - **Agent**: generate-unassigned-task
@@ -4863,6 +4880,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+
 ## 2026-02-04 - better-sqlite3バージョン不一致修正（ENV-INFRA-001）タスク完了
 
 ### コンテキスト
@@ -4893,6 +4911,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-04
 
 ---
+
 ## 2026-02-05 - TASK-FIX-GOOGLE-LOGIN-001 Phase 1-12完了
 
 ### コンテキスト
@@ -4914,22 +4933,22 @@ if (artifactPath) {
 
 ### 変更ファイル
 
-| ファイル                                              | 変更内容                       |
-| ----------------------------------------------------- | ------------------------------ |
+| ファイル                                              | 変更内容                              |
+| ----------------------------------------------------- | ------------------------------------- |
 | `packages/shared/types/auth.ts`                       | AUTH_ERROR_CODES拡張(9コード)、型拡張 |
-| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                       |
-| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正         |
-| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善               |
+| `apps/desktop/src/main/auth/oauth-error-handler.ts`   | 新規作成                              |
+| `apps/desktop/src/main/index.ts`                      | handleAuthCallback修正                |
+| `apps/desktop/src/renderer/store/slices/authSlice.ts` | リスナー管理改善                      |
 
 ### テストファイル
 
-| ファイル                                                                      | 内容                     |
-| ----------------------------------------------------------------------------- | ------------------------ |
-| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング  |
-| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト       |
-| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト               |
-| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト           |
-| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト           |
+| ファイル                                                                      | 内容                    |
+| ----------------------------------------------------------------------------- | ----------------------- |
+| `apps/desktop/src/main/__tests__/auth-callback.test.ts`                       | OAuthエラーハンドリング |
+| `apps/desktop/src/main/__tests__/auth-callback.edge-cases.test.ts`            | エッジケーステスト      |
+| `apps/desktop/src/main/__tests__/auth-flow.integration.test.ts`               | 統合テスト              |
+| `packages/shared/types/__tests__/auth.test.ts`                                | 型・定数テスト          |
+| `apps/desktop/src/renderer/store/slices/__tests__/authSlice.listener.test.ts` | リスナーテスト          |
 
 ### 結果
 
@@ -4937,6 +4956,7 @@ if (artifactPath) {
 - 完了日時: 2026-02-05
 
 ---
+
 ## 2026-02-06 - DEBT-SEC-001 OAuth State Parameter検証実装 Phase 12完了
 
 ### コンテキスト
@@ -5395,17 +5415,20 @@ if (artifactPath) {
 ## 2026-03-05 - UT-TASK-10A-B-001（自動修正可能フィルタボタン）Phase 1-12完了
 
 ### コンテキスト
+
 - スキル: task-specification-creator
 - タスクID: UT-TASK-10A-B-001
 - フェーズ: 1-12（13は未実施）
 
 ### 成果
+
 - 実装: `SuggestionList` 導線追加、`useSkillAnalysis` 一括選択ロジック追加、`SkillAnalysisView` 結線
 - テスト: `SuggestionList` / `SkillAnalysisView` 計53テストPASS
 - カバレッジ: Line 100 / Branch 96.22 / Function 100（対象3ファイル）
 - 手動検証: スクリーンショット5件（dark/light/mobile・境界状態）
 
 ### 結果
+
 - ステータス: success
 - 完了日時: 2026-03-05
 
@@ -5449,6 +5472,7 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記
   - 成果物実体だけで完了判定しない運用を Task 3.5 / 完了チェックの両方へ同期
   - `SKILL.md` 変更履歴へ `v10.08.15` を追記
+
 ## [2026-03-06T03:45:30.597Z]
 
 - **Agent**: generate-task-specs
@@ -5517,6 +5541,7 @@ if (artifactPath) {
   - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新。
 
 ---
+
 ## 2026-03-06 - TASK-10A-E-C Phase 12準拠再確認（テンプレート整形）
 
 - **Agent**: task-specification-creator
@@ -5528,5 +5553,26 @@ if (artifactPath) {
   - `documentation-changelog.md` を実更新状態へ再作成（計画文言を除去）。
   - 未タスク2件（UT-10A-E-C-001/002）を9見出しテンプレート準拠へ再作成。
   - `validate-phase11-screenshot-coverage` と `audit-unassigned-tasks --target-file` により再検証。
+
+---
+
+## 2026-03-07 - 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+### コンテキスト
+
+- スキル: task-specification-creator
+- 対象タスク: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+- 目的: Phase 1-12 仕様書の実行と成果物生成
+
+### 実施内容
+
+- Phase 1-12 の全仕様書を実行し、outputs/ に30ファイルの成果物を生成
+- 並列サブエージェント編成（最大4エージェント同時実行）でPhase 間の待ち時間を最小化
+- Phase 3 ゲート: PASS、Phase 10 ゲート: MINOR（P48 残存 → 未タスク化）
+
+### 結果
+
+- ステータス: success
+- 補足: 並列実行により Phase 1-12 を効率的に完了。Main テスト新規作成パターン（ipcMain.handle モック → コールバック取得）を確立
 
 ---

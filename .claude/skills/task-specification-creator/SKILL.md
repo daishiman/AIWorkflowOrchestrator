@@ -114,23 +114,23 @@ Phase 4〜5: 検証 → 完了
 
 ## 機能別ガイド
 
-| 機能                 | 参照先                                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------ |
-| 作成ワークフロー     | [references/create-workflow.md](references/create-workflow.md)                             |
-| 実行ワークフロー     | [references/execute-workflow.md](references/execute-workflow.md)                           |
-| テストカバレッジ基準 | [references/coverage-standards.md](references/coverage-standards.md)                       |
-| Phase 11/12ガイド    | [references/phase-11-12-guide.md](references/phase-11-12-guide.md)                         |
-| コマンドリファレンス | [references/commands.md](references/commands.md)                                           |
-| 品質基準             | [references/quality-standards.md](references/quality-standards.md)                         |
-| Phase別テンプレート  | [references/phase-templates.md](references/phase-templates.md)                             |
-| レビューゲート基準   | [references/review-gate-criteria.md](references/review-gate-criteria.md)                   |
-| 仕様更新フロー       | [references/spec-update-workflow.md](references/spec-update-workflow.md)                   |
-| 技術ドキュメント作成 | [references/technical-documentation-guide.md](references/technical-documentation-guide.md) |
-| 成果物命名規則       | [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)     |
-| 未タスクガイドライン | [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)       |
-| 成功/失敗パターン    | [references/patterns.md](references/patterns.md)                                           |
-| 履歴アーカイブ       | [references/changelog-archive.md](references/changelog-archive.md)                         |
-| 自己改善サイクル     | [references/self-improvement-cycle.md](references/self-improvement-cycle.md)               |
+| 機能                 | 参照先                                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------------- |
+| 作成ワークフロー     | [references/create-workflow.md](references/create-workflow.md)                                     |
+| 実行ワークフロー     | [references/execute-workflow.md](references/execute-workflow.md)                                   |
+| テストカバレッジ基準 | [references/coverage-standards.md](references/coverage-standards.md)                               |
+| Phase 11/12ガイド    | [references/phase-11-12-guide.md](references/phase-11-12-guide.md)                                 |
+| コマンドリファレンス | [references/commands.md](references/commands.md)                                                   |
+| 品質基準             | [references/quality-standards.md](references/quality-standards.md)                                 |
+| Phase別テンプレート  | [references/phase-templates.md](references/phase-templates.md)                                     |
+| レビューゲート基準   | [references/review-gate-criteria.md](references/review-gate-criteria.md)                           |
+| 仕様更新フロー       | [references/spec-update-workflow.md](references/spec-update-workflow.md)                           |
+| 技術ドキュメント作成 | [references/technical-documentation-guide.md](references/technical-documentation-guide.md)         |
+| 成果物命名規則       | [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)             |
+| 未タスクガイドライン | [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)               |
+| 成功/失敗パターン    | [references/patterns.md](references/patterns.md)                                                   |
+| 履歴アーカイブ       | [references/changelog-archive.md](references/changelog-archive.md)                                 |
+| 自己改善サイクル     | [references/self-improvement-cycle.md](references/self-improvement-cycle.md)                       |
 | Phase 12準拠チェック | [assets/phase12-task-spec-compliance-template.md](assets/phase12-task-spec-compliance-template.md) |
 
 ### システム開発観点チェック
@@ -183,12 +183,12 @@ Phase 4〜5: 検証 → 完了
 
 ### 必須タスク（5タスク - 全て完了必須）
 
-| Task | 名称                            | 必須 | 詳細参照                                    |
-| ---- | ------------------------------- | ---- | ------------------------------------------- |
-| 1    | 実装ガイド作成（2パート構成）   | ✅   | 下記参照                                    |
-| 2    | システム仕様書更新（2ステップ） | ✅   | 下記参照                                    |
-| 3    | ドキュメント更新履歴作成        | ✅   | scripts/generate-documentation-changelog.js |
-| 4    | 未タスク検出レポート作成        | ✅   | **0件でも出力必須**                         |
+| Task | 名称                             | 必須 | 詳細参照                                    |
+| ---- | -------------------------------- | ---- | ------------------------------------------- |
+| 1    | 実装ガイド作成（2パート構成）    | ✅   | 下記参照                                    |
+| 2    | システム仕様書更新（2ステップ）  | ✅   | 下記参照                                    |
+| 3    | ドキュメント更新履歴作成         | ✅   | scripts/generate-documentation-changelog.js |
+| 4    | 未タスク検出レポート作成         | ✅   | **0件でも出力必須**                         |
 | 5    | スキルフィードバックレポート作成 | ✅   | **改善点なしでも出力必須**                  |
 
 ---
@@ -220,7 +220,7 @@ Phase 4〜5: 検証 → 完了
 | Step     | 必須 | 内容                                                                                                          |
 | -------- | ---- | ------------------------------------------------------------------------------------------------------------- |
 | Step 1-A | ✅   | タスク完了記録（「完了タスク」セクション追加 + 関連ドキュメントリンク + 変更履歴 + LOGS.md×2 + topic-map.md） |
-| Step 1-B | ✅   | 実装状況テーブル更新（実装完了:「未実装」→「完了」 / 仕様書作成のみ: `spec_created`）                       |
+| Step 1-B | ✅   | 実装状況テーブル更新（実装完了:「未実装」→「完了」 / 仕様書作成のみ: `spec_created`）                         |
 | Step 1-C | ✅   | 関連タスクテーブル更新（仕様書内の「関連タスク」「未タスク候補」テーブルのステータス更新）                    |
 | Step 2   | 条件 | システム仕様更新（新規インターフェース追加時のみ）                                                            |
 
@@ -270,42 +270,43 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ### Task 5: スキルフィードバックレポート（改善点なしでも出力必須）
 
-| 観点 | 記録内容 |
-| --- | --- |
-| テンプレート改善 | Phaseテンプレートの漏れや曖昧さ |
-| ワークフロー改善 | 機械検証や手順分岐の改善余地 |
+| 観点             | 記録内容                               |
+| ---------------- | -------------------------------------- |
+| テンプレート改善 | Phaseテンプレートの漏れや曖昧さ        |
+| ワークフロー改善 | 機械検証や手順分岐の改善余地           |
 | ドキュメント改善 | 再利用しやすい横断ガイドライン化の候補 |
 
 出力:
+
 - `outputs/phase-12/skill-feedback-report.md`
 
 ---
 
 ### Phase 12 実行時によくある漏れ
 
-| 漏れパターン                              | 防止方法                                                                                        |
-| ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Step 1-C（関連タスクテーブル）を未実行    | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                            |
-| topic-map.md 未更新                       | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                                |
-| documentation-changelog.md が不完全       | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）                        |
-| `spec-update-summary.md` を未作成で完了扱い | Phase 12成果物一覧と `outputs/phase-12/` 実体を1対1で突合し、不足ファイルは完了前に作成する        |
-| LOGS.md が1ファイルのみ更新               | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方               |
-| 完了タスクセクションが簡略形式            | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
-| `artifacts.json` と `outputs/artifacts.json` が不一致 | Phase 12完了前に2ファイルを同期し、completed成果物の参照切れを0件にする |
-| Phase 10 MINOR指摘を未タスク化せず進行    | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
-| 未タスク検出レポートで0件判定のまま未修正 | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
-| `task-workflow.md` の未タスクリンクが参照切れ | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                |
+| 漏れパターン                                          | 防止方法                                                                                        |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Step 1-C（関連タスクテーブル）を未実行                | spec-update-workflow.md の「確認すべきファイル」表を実行前に必ず読む                            |
+| topic-map.md 未更新                                   | 仕様書に新規セクション追加時は必ず topic-map.md のエントリも追加                                |
+| documentation-changelog.md が不完全                   | 全Step（1-A/1-B/1-C/Step 2）の結果を個別に明記する（「該当なし」も記録）                        |
+| `spec-update-summary.md` を未作成で完了扱い           | Phase 12成果物一覧と `outputs/phase-12/` 実体を1対1で突合し、不足ファイルは完了前に作成する     |
+| LOGS.md が1ファイルのみ更新                           | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方               |
+| 完了タスクセクションが簡略形式                        | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
+| `artifacts.json` と `outputs/artifacts.json` が不一致 | Phase 12完了前に2ファイルを同期し、completed成果物の参照切れを0件にする                         |
+| Phase 10 MINOR指摘を未タスク化せず進行                | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
+| 未タスク検出レポートで0件判定のまま未修正             | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
+| `task-workflow.md` の未タスクリンクが参照切れ         | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する               |
 
 ### Phase 12 苦戦防止Tips
 
 > UT-STORE-HOOKS-COMPONENT-MIGRATION-001の経験に基づく（2026-02-12）
 
-| Tips | 説明 |
-| ---- | ---- |
-| **事前に空欄チェックリストを作成** | documentation-changelog.mdにStep 1-A〜1-D + Step 2の各欄を空欄で事前作成し、逐次消化する |
-| **spec-update-workflow.mdを常に参照** | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認 |
-| **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする |
-| **LOGS.md/SKILL.md は4ファイル更新** | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md |
+| Tips                                       | 説明                                                                                                                                                                                                                                                                 |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **事前に空欄チェックリストを作成**         | documentation-changelog.mdにStep 1-A〜1-D + Step 2の各欄を空欄で事前作成し、逐次消化する                                                                                                                                                                             |
+| **spec-update-workflow.mdを常に参照**      | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認                                                                                                                                                      |
+| **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
+| **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
 
 ---
@@ -398,18 +399,25 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v10.08.22** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認テンプレート適合を反映**: `phase-12-documentation.md` の完了チェック同期、`documentation-changelog.md` の実更新化、未タスク2件の9見出しテンプレート準拠化を再監査手順として追記。`validate-phase11-screenshot-coverage` と `audit --target-file` をセットで回す運用を標準化 |
 | **v10.08.21** | **2026-03-06** | **TASK-10A-E-C の Phase 11/12運用を反映**: `manual-test-result.md` を `TC-ID + 証跡` 形式へ更新し、`validate-phase11-screenshot-coverage` が expected=8/covered=8 で通る証跡設計を追加。`spec-update-summary.md` の「更新予定のみ」記述を実更新結果へ置換し、未タスク2件の3ステップ登録（指示書作成/台帳同期/関連仕様参照）を標準手順に反映 |
 | **v10.08.20** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の運用穴をガイドへ反映**: `references/phase-11-12-guide.md` に専用 harness を用いた Phase 11 再撮影条件、`phase11-capture-metadata.json` と `manual-test-result.md` の同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を追記。`references/spec-update-workflow.md` には IPC transport 契約変更時に `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` まで確認する cross-cutting doc 更新ルールを追加 |
+| Version       | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **v10.08.24** | **2026-03-07** | **06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 実行完了**: Phase 1-12 全実行、30成果物生成、並列サブエージェント4体編成                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| **v10.08.23** | **2026-03-07** | **TASK-10A-E-C の実装知見をシステム仕様へ資産化**: `architecture-implementation-patterns.md` S18追加、`lessons-learned.md` 苦戦箇所3件追記、`06-known-pitfalls.md` P48追加。431テスト全PASS、Phase 1-12完了の実装結果を4ファイル（LOGS.md x2 + SKILL.md x2）に反映                                                                                                                                                                                                                                                                                                                         |
+| **v10.08.22** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認テンプレート適合を反映**: `phase-12-documentation.md` の完了チェック同期、`documentation-changelog.md` の実更新化、未タスク2件の9見出しテンプレート準拠化を再監査手順として追記。`validate-phase11-screenshot-coverage` と `audit --target-file` をセットで回す運用を標準化                                                                                                                                                                                                                                                                                |
+| **v10.08.21** | **2026-03-06** | **TASK-10A-E-C の Phase 11/12運用を反映**: `manual-test-result.md` を `TC-ID + 証跡` 形式へ更新し、`validate-phase11-screenshot-coverage` が expected=8/covered=8 で通る証跡設計を追加。`spec-update-summary.md` の「更新予定のみ」記述を実更新結果へ置換し、未タスク2件の3ステップ登録（指示書作成/台帳同期/関連仕様参照）を標準手順に反映                                                                                                                                                                                                                                                |
+| **v10.08.20** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の運用穴をガイドへ反映**: `references/phase-11-12-guide.md` に専用 harness を用いた Phase 11 再撮影条件、`phase11-capture-metadata.json` と `manual-test-result.md` の同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を追記。`references/spec-update-workflow.md` には IPC transport 契約変更時に `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` まで確認する cross-cutting doc 更新ルールを追加                                                                                                      |
 | **v10.08.19** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 Phase 1-12 実行を反映**: `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` の Phase 1〜12 を実行し、Phase 11 は `TC-11-01..05` のスクリーンショット5件と Apple UI/UXレビューを必須証跡として固定。Phase 12 は 6成果物生成、`complete-phase.js` による台帳同期、`artifacts.json` / `outputs/artifacts.json` 整合、`phase-1..12*.md` completed 同期、`verify-unassigned-links` broken link 修復、`verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` 再実行を標準運用として記録 |
-| **v10.08.18** | **2026-03-06** | **Phase 12準拠チェックと親仕様参照ガードを追加**: `assets/phase12-task-spec-compliance-template.md` を新設し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 の判定を1ファイルへ集約するテンプレートを追加。あわせて `scripts/verify-all-specs.js` で `task-*.md` / `../task-*.md` の参照実在も検証対象に拡張し、親仕様ブリッジ欠落を自動検出できるよう更新 |
-| **v10.08.17** | **2026-03-06** | **TASK-043B 再監査の導線修復ルールを反映**: `references/phase-11-12-guide.md` に `TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離運用を追加し、`references/spec-update-workflow.md` に `../task-xxx.md` 親仕様参照のブリッジ確認チェックを追記。Phase 12で workflow ディレクトリと親仕様ファイルの両方を実在確認する手順を明文化 |
-| **v10.08.16** | **2026-03-06** | **TASK-043B の Phase 11/12 実行知見を反映**: `manual-test-result.md` の `TC-ID + 証跡 + 非視覚ログ` 形式、補助 screenshot warning の扱い、`validate-phase11-screenshot-coverage` を 9 TC ベースで通す運用を LOGS と合わせて追記 |
-| **v10.08.21** | **2026-03-07** | **TASK-UI-03 Phase 4 a11y テスト推奨を追加**: `references/phase-templates.md` の Phase 4 テンプレートにアクセシビリティテスト（WCAG 2.1 AA）推奨セクションを追加。ARIA ラベル / ロール属性 / キーボード操作 / コントラスト比 / 状態通知の5観点を UIタスクの Phase 4 で早期テスト設計するよう標準化。根拠: TASK-UI-03 で Phase 10 まで a11y 属性不足が検出されず4件の未タスク化が発生した教訓 |
-| **v10.08.20** | **2026-03-07** | **TASK-UI-03 スキルフィードバック改善を反映**: Phase 2テンプレートにUIタスク向け「z-index管理テーブル」セクションを追加（条件付き）。Phase 12テンプレート Step 1-Cに関連タスク検索コマンド例を追加し、自動化ヒントを強化 |
-| **v10.08.19** | **2026-03-07** | **TASK-UI-03-AGENT-VIEW-ENHANCEMENT Phase 12 完了を反映**: AIアシスタント画面リデザイン（Tap & Discover）の実装ガイド・コンポーネントドキュメント・未タスク4件・スキルフィードバックレポートを作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
-| **v10.08.18** | **2026-03-06** | **TASK-UI-02 再々監査の workflow 本文 stale 是正を反映**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に「`artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書へ `pending` が残っていないことを確認する」チェックを追加。Phase 12 完了判定を「成果物 / 台帳 / 本文仕様書」の三層同期へ拡張 |
-| **v10.08.17** | **2026-03-06** | **TASK-UI-02 Phase 12 再整合手順を追補**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加し、artifacts 完了済みでも workflow index が stale なまま残る再発を防止 |
-| **v10.08.16** | **2026-03-06** | **TASK-UI-02 再監査の運用知見を反映**: `SKILL.md` に `screenshot-verification-procedure.md` / `phase12-checklist-definition.md` / `evidence-sync-rules.md` の直リンクを追加し、Phase 11/12 の導線不足を解消。あわせてコマンド例を canonical path へ統一し、変更履歴の version 重複を防ぐ採番確認ルールを明文化 |
-| **v10.08.17** | **2026-03-06** | **Phase 12 実装ガイド内容 validator を追加**: `validate-phase12-implementation-guide.js` とテストを追加し、Task 12-1 の理由先行 / 日常例え / TypeScript型 / API・CLI シグネチャ / 使用例 / エラー処理 / 設定一覧を機械検証できるようにした。あわせて `evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` を SKILL 導線へ接続 |
-| **v10.08.16** | **2026-03-06** | **UT-TASK-10A-B-008 再監査の教訓を反映**: `references/phase-11-12-guide.md` に「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root ではなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加。Phase 12 の漏れパターンにも同条件を追記 |
+| **v10.08.18** | **2026-03-06** | **Phase 12準拠チェックと親仕様参照ガードを追加**: `assets/phase12-task-spec-compliance-template.md` を新設し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 の判定を1ファイルへ集約するテンプレートを追加。あわせて `scripts/verify-all-specs.js` で `task-*.md` / `../task-*.md` の参照実在も検証対象に拡張し、親仕様ブリッジ欠落を自動検出できるよう更新                                                                                                                                                                                                                                      |
+| **v10.08.17** | **2026-03-06** | **TASK-043B 再監査の導線修復ルールを反映**: `references/phase-11-12-guide.md` に `TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離運用を追加し、`references/spec-update-workflow.md` に `../task-xxx.md` 親仕様参照のブリッジ確認チェックを追記。Phase 12で workflow ディレクトリと親仕様ファイルの両方を実在確認する手順を明文化                                                                                                                                                                                                                                                                 |
+| **v10.08.16** | **2026-03-06** | **TASK-043B の Phase 11/12 実行知見を反映**: `manual-test-result.md` の `TC-ID + 証跡 + 非視覚ログ` 形式、補助 screenshot warning の扱い、`validate-phase11-screenshot-coverage` を 9 TC ベースで通す運用を LOGS と合わせて追記                                                                                                                                                                                                                                                                                                                                                            |
+| **v10.08.21** | **2026-03-07** | **TASK-UI-03 Phase 4 a11y テスト推奨を追加**: `references/phase-templates.md` の Phase 4 テンプレートにアクセシビリティテスト（WCAG 2.1 AA）推奨セクションを追加。ARIA ラベル / ロール属性 / キーボード操作 / コントラスト比 / 状態通知の5観点を UIタスクの Phase 4 で早期テスト設計するよう標準化。根拠: TASK-UI-03 で Phase 10 まで a11y 属性不足が検出されず4件の未タスク化が発生した教訓                                                                                                                                                                                               |
+| **v10.08.20** | **2026-03-07** | **TASK-UI-03 スキルフィードバック改善を反映**: Phase 2テンプレートにUIタスク向け「z-index管理テーブル」セクションを追加（条件付き）。Phase 12テンプレート Step 1-Cに関連タスク検索コマンド例を追加し、自動化ヒントを強化                                                                                                                                                                                                                                                                                                                                                                   |
+| **v10.08.19** | **2026-03-07** | **TASK-UI-03-AGENT-VIEW-ENHANCEMENT Phase 12 完了を反映**: AIアシスタント画面リデザイン（Tap & Discover）の実装ガイド・コンポーネントドキュメント・未タスク4件・スキルフィードバックレポートを作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）                                                                                                                                                                                                                                                                                                                       |
+| **v10.08.18** | **2026-03-06** | **TASK-UI-02 再々監査の workflow 本文 stale 是正を反映**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に「`artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書へ `pending` が残っていないことを確認する」チェックを追加。Phase 12 完了判定を「成果物 / 台帳 / 本文仕様書」の三層同期へ拡張                                                                                                                                                                                                                                               |
+| **v10.08.17** | **2026-03-06** | **TASK-UI-02 Phase 12 再整合手順を追補**: `references/phase-11-12-guide.md` と `references/spec-update-workflow.md` に `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加し、artifacts 完了済みでも workflow index が stale なまま残る再発を防止                                                                                                                                                                                                                                                                               |
+| **v10.08.16** | **2026-03-06** | **TASK-UI-02 再監査の運用知見を反映**: `SKILL.md` に `screenshot-verification-procedure.md` / `phase12-checklist-definition.md` / `evidence-sync-rules.md` の直リンクを追加し、Phase 11/12 の導線不足を解消。あわせてコマンド例を canonical path へ統一し、変更履歴の version 重複を防ぐ採番確認ルールを明文化                                                                                                                                                                                                                                                                             |
+| **v10.08.17** | **2026-03-06** | **Phase 12 実装ガイド内容 validator を追加**: `validate-phase12-implementation-guide.js` とテストを追加し、Task 12-1 の理由先行 / 日常例え / TypeScript型 / API・CLI シグネチャ / 使用例 / エラー処理 / 設定一覧を機械検証できるようにした。あわせて `evidence-sync-rules.md` / `phase12-checklist-definition.md` / `screenshot-verification-procedure.md` を SKILL 導線へ接続                                                                                                                                                                                                             |
+| **v10.08.16** | **2026-03-06** | **UT-TASK-10A-B-008 再監査の教訓を反映**: `references/phase-11-12-guide.md` に「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root ではなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加。Phase 12 の漏れパターンにも同条件を追記                                                                                                                                                                                                                                                           |
 
 | **v10.08.15** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再確認で判明した Phase 12台帳ドリフト対策を反映**: `references/phase-11-12-guide.md` の Task 3.5 と完了チェックへ「`phase-12-documentation.md` は `ステータス=completed` とチェックリスト同期の両方が必須」を追記。成果物実体のみで完了判定しない運用を明文化 |
 | **v10.08.14** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査を反映**: ユーザー追加要求に基づく Phase 11 画面回帰撮影（3スクリーンショット）を workflow 直下へ再証跡化し、`manual-test-result.md` を `TC + 証跡` 形式へ更新。併せて仕様書のDIシグネチャ旧表記を現行実装へ同期し、`validate-phase11-screenshot-coverage` を再実行する運用を追記 |
