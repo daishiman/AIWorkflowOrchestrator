@@ -1,6 +1,9 @@
 {
   "generated": "2026-03-06T14:33:22.738Z",
   "totalKeywords": 1470,
+  "generated": "2026-03-07T05:36:48.209Z",
+  "totalKeywords": 1476,
+
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -702,6 +705,7 @@
       "security-api-electron.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
+      "spec-guidelines.md",
       "task-workflow.md",
       "technology-backend.md",
       "technology-devops.md",
@@ -822,6 +826,7 @@
       "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-chat-history.md",
+      "architecture-implementation-patterns.md",
       "architecture-overview.md",
       "error-handling.md",
       "glossary.md",
@@ -1320,11 +1325,31 @@
       "arch-ui-components.md",
       "ui-ux-feature-components.md"
     ],
+    "List": [
+      "arch-ui-components.md"
+    ],
+
     "ORGANISMS": [
       "arch-ui-components.md",
       "ui-ux-feature-components.md"
     ],
     "アーキテクチャ記録": [
+      "arch-ui-components.md"
+    ],
+    "AgentView": [
+      "arch-ui-components.md",
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "Enhancement": [
+      "arch-ui-components.md",
+      "architecture-implementation-patterns.md",
+      "lessons-learned.md"
+    ],
+    "in": [
+      "arch-ui-components.md"
+    ],
+    "progress": [
       "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
@@ -2599,6 +2624,30 @@
       "lessons-learned.md",
       "testing-component-patterns.md"
     ],
+    "AuthMode": [
+      "error-handling.md",
+      "testing-component-patterns.md"
+    ],
+    "エラー": [
+      "error-handling.md"
+    ],
+    "envelope": [
+      "error-handling.md"
+    ],
+    "MODE": [
+      "error-handling.md",
+      "testing-component-patterns.md"
+    ],
+    "CONTRACT": [
+      "error-handling.md",
+      "testing-component-patterns.md"
+    ],
+    "ALIGNMENT": [
+      "error-handling.md",
+      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+
     "認証フォールバックパターン": [
       "error-handling.md"
     ],
@@ -2716,6 +2765,7 @@
     "AGENT": [
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
+      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "SkillImportStore": [
@@ -3237,6 +3287,16 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "VIEW": [
+      "lessons-learned.md"
+    ],
+    "ENHANCEMENT": [
+      "lessons-learned.md"
+    ],
+    "基盤移行": [
+      "lessons-learned.md"
+    ],
+
     "KEY": [
       "lessons-learned.md"
     ],
@@ -3301,9 +3361,6 @@
       "lessons-learned.md"
     ],
     "EDITOR": [
-      "lessons-learned.md"
-    ],
-    "VIEW": [
       "lessons-learned.md"
     ],
     "再監査": [
@@ -3842,9 +3899,6 @@
       "lessons-learned.md"
     ],
     "LOOP": [
-      "lessons-learned.md"
-    ],
-    "AgentView": [
       "lessons-learned.md"
     ],
     "無限ループ修正テスト": [
@@ -4656,6 +4710,9 @@
       "spec-guidelines.md"
     ],
     "新規仕様の追加手順": [
+      "spec-guidelines.md"
+    ],
+    "完了タスクセクション標準化": [
       "spec-guidelines.md"
     ],
     "ファイルサイズ管理": [

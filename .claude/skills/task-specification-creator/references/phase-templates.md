@@ -309,6 +309,26 @@ Phase 2: 設計
 | Preload                    | contextBridge設計、API公開          | `aiworkflow-requirements: security-api-electron.md`    |
 | データ                     | スキーマ設計、リポジトリパターン    | `aiworkflow-requirements: database-*.md`               |
 
+## z-index管理テーブル（UIタスクの場合のみ）
+
+> **条件**: UIコンポーネントの追加・変更を含むタスクの場合に記載する。非UIタスクでは省略可。
+
+新規・変更するコンポーネントのz-indexを既存レイヤーとの整合性を確認して定義する。
+
+| レイヤー名 | z-index範囲 | 用途 | 本タスクでの使用 |
+| --- | --- | --- | --- |
+| ベースコンテンツ | 0-9 | 通常のコンテンツ | — |
+| フローティング要素 | 10-19 | ツールチップ、ドロップダウン | — |
+| オーバーレイ | 20-29 | モーダル背景、サイドパネル | — |
+| モーダル | 30-39 | ダイアログ、確認モーダル | — |
+| トースト通知 | 40-49 | 通知、スナックバー | — |
+| グローバルUI | 50+ | ローディングオーバーレイ | — |
+
+**記載ルール**:
+- 「本タスクでの使用」列に、該当レイヤーを使用するコンポーネント名を記載する
+- 既存コンポーネントとの競合がないことを確認する
+- カスタムz-index値を使用する場合は、その理由を明記する
+
 ## 成果物
 
 | 成果物         | パス                                     | 説明         |
@@ -323,6 +343,7 @@ Phase 2: 設計
 - [ ] 要件との整合性が確認されている
 - [ ] 統合ポイント/契約が設計に反映されている
 - [ ] アーキテクチャ層別の設計が完了している
+- [ ] UIタスクの場合: z-index管理テーブルが定義され、既存レイヤーとの競合がないこと
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
@@ -437,6 +458,21 @@ Phase 4: テスト作成（TDD: Red）
 ### 4. 境界値テスト
 
 エッジケース（境界値、null、空文字列等）のテストを追加する。
+
+### 5. アクセシビリティテスト（UIタスクの場合）
+
+UIコンポーネントを含むタスクでは、WCAG 2.1 AA 準拠のテストケースを Phase 4 で設計する。
+Phase 10 以降での a11y 指摘検出を防ぐため、以下の観点を早期にテストへ組み込む。
+
+| 観点 | テスト内容 | 検証方法 |
+| --- | --- | --- |
+| ARIA ラベル | インタラクティブ要素に `aria-label` / `aria-labelledby` が付与されている | `getByRole` + `name` オプション |
+| ロール属性 | セマンティックロール（`radiogroup`, `dialog`, `tab` 等）が正しい | `getByRole` で要素取得可能か |
+| キーボード操作 | Tab / Enter / Escape で全機能にアクセス可能 | `fireEvent.keyDown` でフォーカス遷移検証 |
+| コントラスト比 | テキスト 4.5:1 以上、大テキスト/UI部品 3:1 以上 | CSS変数の値検証（デザイントークン準拠） |
+| 状態通知 | 動的変更が `aria-live` / `aria-expanded` で通知される | 状態変更後の属性値検証 |
+
+> **根拠**: TASK-UI-03 で Phase 10 まで a11y 属性不足（`radiogroup` ロール、`dialog` ロール、`aria-label` 欠落）が検出されず、4件の未タスク化が発生した。Phase 4 での早期テスト設計により、手戻りコストを削減する。
 
 ## 統合テスト連携【必須】
 
@@ -1352,6 +1388,21 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 - [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
 - [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
 - [ ] `docs/30-workflows/completed-tasks/unassigned-task/` に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
+
+**検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
+```bash
+# 関連仕様書の検索（references/配下）
+grep -rn "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/
+
+# 残課題テーブルでの参照検索（task-workflow.md）
+grep -n "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/task-workflow.md
+
+# 未タスク指示書の関連検索
+grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
+
+# 完了タスク配下の関連検索
+grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
+```
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 - [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成

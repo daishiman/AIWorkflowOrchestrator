@@ -738,6 +738,26 @@ export const useShowToast = () => useAppStore((state) => state.showToast);
 /** トーストクリア */
 export const useClearToast = () => useAppStore((state) => state.clearToast);
 
+// ==========================================================================
+// TASK-UI-03: 実行履歴・詳細設定セレクタ
+// ==========================================================================
+
+/** 最近の実行履歴 */
+export const useRecentExecutions = () =>
+  useAppStore((state) => state.recentExecutions);
+/** 実行履歴に追加 */
+export const useAddExecutionToHistory = () =>
+  useAppStore((state) => state.addExecutionToHistory);
+/** 詳細設定パネル開閉状態 */
+export const useIsAdvancedSettingsOpen = () =>
+  useAppStore((state) => state.isAdvancedSettingsOpen);
+/** 詳細設定パネル開閉制御 */
+export const useSetAdvancedSettingsOpen = () =>
+  useAppStore((state) => state.setAdvancedSettingsOpen);
+/** 実行履歴クリア */
+export const useClearExecutionHistory = () =>
+  useAppStore((state) => state.clearExecutionHistory);
+
 /**
  * AuthMode selectors - single hook for all AuthMode-related state and actions
  *
