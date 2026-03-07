@@ -117,10 +117,18 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | `apiKey:save`     | invoke   | `{ provider, apiKey }` | `IPCResponse<void>`             | Renderer  |
 | `apiKey:delete`   | invoke   | `{ provider }`         | `IPCResponse<void>`             | Renderer  |
 | `apiKey:validate` | invoke   | `{ provider, apiKey }` | `IPCResponse<ValidationResult>` | Renderer  |
-| `apiKey:list`     | invoke   | なし                   | `IPCResponse<ProviderStatus[]>` | Renderer  |
+| `apiKey:list`     | invoke   | なし                   | `IPCResponse<ProviderListResult>` | Renderer  |
 | `apiKey:get`      | invoke   | `{ provider }`         | `string \| null`                | Main Only |
 
 **セキュリティ注意**: `apiKey:get` はRenderer Processに公開しない（Main Process内部使用のみ）
+
+`ProviderListResult`:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `providers` | `ProviderStatus[]` | プロバイダー状態一覧（shape検証後） |
+| `registeredCount` | `number` | `status === "registered"` 件数 |
+| `totalCount` | `number` | `providers.length` |
 
 ### Claude Agent SDK 認証キー管理 IPC チャネル（TASK-FIX-16-1）
 
@@ -330,6 +338,17 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 ## 完了タスク
 
+### TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001（2026-03-07完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 |
+| 反映対象 | `apiKey:list` の契約防御と providers 正規化 |
+| 主要変更 | Main 側で `Array.isArray(result?.providers)` によりレスポンスを検証し `ProviderListResult` へ正規化。Renderer 側で要素 shape フィルタ（`provider/status` 必須）を追加 |
+| 検証 | `apiKeyHandlers.list` 7件 + `profileHandlers.identities` 6件 + `ApiKeysSection` 46件、計59件 PASS |
+| 画面証跡 | `docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001/outputs/phase-11/screenshots/TC-11-01..03` |
+| 関連ドキュメント | `docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001/outputs/phase-12/documentation-changelog.md` |
+
 ### TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001（2026-03-05完了）
 
 | 項目 | 内容 |
@@ -449,6 +468,7 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
 | v1.6.0     | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer側 Response Shape Fallback パターン（3段階防御）を追加。ApiKeysSection loadProviders での適用を明文化 |
+| v1.6.1     | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: `apiKey:list` 戻り値を `IPCResponse<ProviderListResult>` へ更新し、Main/Renderer 双方の providers 形状防御と画面証跡（TC-11-01..03）を完了タスクへ同期 |
 | v1.5.7     | 2026-03-06 | completed 移管済み未タスクリンクを是正。`UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` の参照先を `completed-tasks/` 実体へ更新し、`verify-unassigned-links` での false missing を防止 |
 | v1.5.3     | 2026-03-05 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: auth-key ライフサイクル実装状況へ「単一生成 + SkillExecutor注入」2項目を追加。関連タスク/完了タスク台帳を同期 |
 | v1.5.6     | 2026-03-06 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクへ登録。5分解決カードの3仕様書同期を機械検証する改善タスクを明示し、契約系タスクの再発防止導線を追加 |

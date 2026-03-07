@@ -432,7 +432,9 @@ export function registerProfileHandlers(
             };
           }
 
-          const identities = user.identities ?? [];
+          const identities = Array.isArray(user.identities)
+            ? user.identities
+            : [];
           const providers: LinkedProvider[] = identities.map((identity) =>
             toLinkedProvider({
               id: identity.id,
@@ -561,7 +563,9 @@ export function registerProfileHandlers(
             };
           }
 
-          const identities = user.identities ?? [];
+          const identities = Array.isArray(user.identities)
+            ? user.identities
+            : [];
 
           // 最後のプロバイダーは解除できない
           if (identities.length <= 1) {
@@ -1251,7 +1255,9 @@ export function registerProfileHandlers(
           }
 
           // 連携プロバイダー情報を取得
-          const identities = user.identities ?? [];
+          const identities = Array.isArray(user.identities)
+            ? user.identities
+            : [];
           const linkedProviders = identities.map((identity) => ({
             provider: identity.provider as "google" | "github" | "discord",
             linkedAt: identity.created_at ?? new Date().toISOString(),

@@ -5569,6 +5569,7 @@ if (artifactPath) {
 - Phase 1-12 の全仕様書を実行し、outputs/ に30ファイルの成果物を生成
 - 並列サブエージェント編成（最大4エージェント同時実行）でPhase 間の待ち時間を最小化
 - Phase 3 ゲート: PASS、Phase 10 ゲート: MINOR（P48 残存 → 未タスク化）
+- 2026-03-07: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査で validate-phase11-screenshot-coverage / validate-phase12-implementation-guide の必須化運用を追記。
 
 ### 結果
 

@@ -615,7 +615,7 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
 
       // 防御レイヤー2: result shape の正規化
       if (result?.success && result?.data) {
-        const providers = Array.isArray(result.data.providers)
+        const rawProviders = Array.isArray(result.data.providers)
           ? result.data.providers
           : [];
 
@@ -623,6 +623,25 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
           console.warn(
             "[ApiKeysSection] apiKey.list returned non-array providers, falling back to empty array:",
             typeof result.data.providers,
+          );
+        }
+
+        // GAP-03: 要素 shape の防御的フィルタ
+        const providers = rawProviders.filter(
+          (item): item is ProviderStatus =>
+            item != null &&
+            typeof item === "object" &&
+            "provider" in item &&
+            typeof item.provider === "string" &&
+            "status" in item &&
+            typeof item.status === "string",
+        );
+
+        if (rawProviders.length !== providers.length) {
+          console.warn(
+            "[ApiKeysSection] Some provider entries were malformed and filtered out:",
+            rawProviders.length - providers.length,
+            "entries removed",
           );
         }
 
