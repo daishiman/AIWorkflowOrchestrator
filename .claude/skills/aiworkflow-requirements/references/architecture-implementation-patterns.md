@@ -119,12 +119,12 @@
 
 Atoms層はprops駆動を徹底し、Store依存を排除することで、P31（Store Hooks無限ループ）を根本的に防止する。
 
-| 要素         | 実装                                                                 |
-| ------------ | -------------------------------------------------------------------- |
-| 必須Props    | 最小限（通常1つのみ）、省略不可                                      |
-| オプション   | デフォルト値を提供し、省略可能にする                                 |
-| Store使用    | **禁止** — 全てprops経由でデータを受け取る                           |
-| 再利用性     | コンテキスト依存ゼロ、どこでも使える                                 |
+| 要素       | 実装                                       |
+| ---------- | ------------------------------------------ |
+| 必須Props  | 最小限（通常1つのみ）、省略不可            |
+| オプション | デフォルト値を提供し、省略可能にする       |
+| Store使用  | **禁止** — 全てprops経由でデータを受け取る |
+| 再利用性   | コンテキスト依存ゼロ、どこでも使える       |
 
 ```typescript
 // ✅ Props最小化パターン
@@ -150,12 +150,12 @@ interface StatusIndicatorProps {
 
 バリアント（variant, size等）のスタイル定義をモジュールスコープの`Record`型として抽出し、React.memoの効果を最大化する。
 
-| 要素             | 実装                                                         |
-| ---------------- | ------------------------------------------------------------ |
-| 型安全性         | `Record<NonNullable<Props["variant"]>, string>`で網羅性保証 |
-| 配置             | モジュールスコープ（コンポーネント外）                       |
-| 新規バリアント   | 追加漏れはコンパイルエラーで検出                             |
-| React.memo効果   | 不変オブジェクトにより再レンダー最小化                       |
+| 要素           | 実装                                                        |
+| -------------- | ----------------------------------------------------------- |
+| 型安全性       | `Record<NonNullable<Props["variant"]>, string>`で網羅性保証 |
+| 配置           | モジュールスコープ（コンポーネント外）                      |
+| 新規バリアント | 追加漏れはコンパイルエラーで検出                            |
+| React.memo効果 | 不変オブジェクトにより再レンダー最小化                      |
 
 ```typescript
 // ✅ モジュールスコープに定数抽出
@@ -185,13 +185,13 @@ const Badge = ({ variant }) => {
 
 HTML標準属性名（`content`, `color`, `translate`, `hidden`, `title`等）とコンポーネント独自propsが衝突する場合、`Omit`で明示的に除外する。
 
-| 衝突しやすい属性 | HTML標準型          | よくある独自型          | 対策                   |
-| ---------------- | ------------------- | ----------------------- | ---------------------- |
-| content          | `string`            | `string \| number`      | `Omit<..., "content">` |
-| color            | `string`            | `"primary" \| "error"`  | `Omit<..., "color">`   |
-| translate        | `"yes" \| "no"`     | `boolean`               | `Omit<..., "translate">` |
-| hidden           | `boolean`           | `boolean \| "loading"`  | `Omit<..., "hidden">`  |
-| title            | `string`            | `ReactNode`             | `Omit<..., "title">`   |
+| 衝突しやすい属性 | HTML標準型      | よくある独自型         | 対策                     |
+| ---------------- | --------------- | ---------------------- | ------------------------ |
+| content          | `string`        | `string \| number`     | `Omit<..., "content">`   |
+| color            | `string`        | `"primary" \| "error"` | `Omit<..., "color">`     |
+| translate        | `"yes" \| "no"` | `boolean`              | `Omit<..., "translate">` |
+| hidden           | `boolean`       | `boolean \| "loading"` | `Omit<..., "hidden">`    |
+| title            | `string`        | `ReactNode`            | `Omit<..., "title">`     |
 
 ```typescript
 // ❌ TS2430: content は HTML標準属性（string）と衝突
@@ -200,7 +200,10 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 // ✅ Omit で衝突する属性を除外
-interface BadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "content"> {
+interface BadgeProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  "content"
+> {
   content?: string | number; // OK
 }
 ```
@@ -211,12 +214,12 @@ interface BadgeProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "conten
 
 既存のchildren APIを残しつつ、新しいprops APIを追加する場合、children優先フォールバックで後方互換性を維持する。
 
-| 要素             | 実装                                                     |
-| ---------------- | -------------------------------------------------------- |
-| 既存API          | `<Badge>New</Badge>` — children で表示                   |
-| 新規API          | `<Badge content={42} variant="primary" />` — props で表示 |
-| フォールバック   | `children ?? (content !== undefined ? String(content) : null)` |
-| 移行期間         | 両API共存、段階的に新APIへ移行                           |
+| 要素           | 実装                                                           |
+| -------------- | -------------------------------------------------------------- |
+| 既存API        | `<Badge>New</Badge>` — children で表示                         |
+| 新規API        | `<Badge content={42} variant="primary" />` — props で表示      |
+| フォールバック | `children ?? (content !== undefined ? String(content) : null)` |
+| 移行期間       | 両API共存、段階的に新APIへ移行                                 |
 
 ```typescript
 // ✅ 後方互換性維持
@@ -237,12 +240,12 @@ const Badge = ({ children, content, variant = "default" }: BadgeProps) => {
 
 ハードコードカラーを完全排除し、CSS変数（`--status-primary`等）とTailwind Arbitrary Values（`bg-[var(...)]`）を組み合わせる。テーマ切替はCSS変数値の差し替えのみで実現する。
 
-| 要素               | 実装                                                     |
-| ------------------ | -------------------------------------------------------- |
-| カラー定義         | `:root` および `[data-theme="dark"]` でCSS変数定義       |
-| Tailwind使用       | `bg-[var(--status-primary)]` 形式のArbitrary Values      |
-| ハードコード       | **0件** — TS/TSXコードにテーマ固有ロジックが存在しない   |
-| テーマ切替         | CSS変数値の差し替えのみ（JavaScriptコード変更不要）     |
+| 要素         | 実装                                                   |
+| ------------ | ------------------------------------------------------ |
+| カラー定義   | `:root` および `[data-theme="dark"]` でCSS変数定義     |
+| Tailwind使用 | `bg-[var(--status-primary)]` 形式のArbitrary Values    |
+| ハードコード | **0件** — TS/TSXコードにテーマ固有ロジックが存在しない |
+| テーマ切替   | CSS変数値の差し替えのみ（JavaScriptコード変更不要）    |
 
 ```typescript
 // ✅ CSS変数＋Tailwind Arbitrary Values
@@ -256,14 +259,15 @@ const Badge = ({ children, content, variant = "default" }: BadgeProps) => {
 ```
 
 **CSS変数定義例**:
+
 ```css
 :root {
-  --status-primary: #007AFF; /* Apple systemBlue Light */
+  --status-primary: #007aff; /* Apple systemBlue Light */
   --text-muted: rgba(60, 60, 67, 0.6);
 }
 
 [data-theme="dark"] {
-  --status-primary: #0A84FF; /* Apple systemBlue Dark */
+  --status-primary: #0a84ff; /* Apple systemBlue Dark */
   --text-muted: rgba(235, 235, 245, 0.6);
 }
 ```
@@ -272,20 +276,22 @@ const Badge = ({ children, content, variant = "default" }: BadgeProps) => {
 
 React DevToolsでの表示名を統一し、デバッグ効率を向上させる。`memo(forwardRef(...))`の場合、`Memo(ForwardRef(...))`ではなくコンポーネント名を表示する。
 
-| 要素          | 実装                                                     |
-| ------------- | -------------------------------------------------------- |
-| displayName   | `ComponentName.displayName = "ComponentName"`            |
-| 配置          | コンポーネント定義直後（export前）                       |
-| DevTools表示  | `Badge` ではなく `Memo(ForwardRef(...))` を回避          |
-| デバッグ      | コンポーネントツリーで即座に識別可能                     |
+| 要素         | 実装                                            |
+| ------------ | ----------------------------------------------- |
+| displayName  | `ComponentName.displayName = "ComponentName"`   |
+| 配置         | コンポーネント定義直後（export前）              |
+| DevTools表示 | `Badge` ではなく `Memo(ForwardRef(...))` を回避 |
+| デバッグ     | コンポーネントツリーで即座に識別可能            |
 
 ```typescript
 // ✅ displayName統一パターン
-export const Badge = memo(forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ children, content, variant = "default", ...props }, ref) => {
-    // 実装
-  }
-));
+export const Badge = memo(
+  forwardRef<HTMLSpanElement, BadgeProps>(
+    ({ children, content, variant = "default", ...props }, ref) => {
+      // 実装
+    },
+  ),
+);
 Badge.displayName = "Badge";
 
 // React DevToolsでの表示:
@@ -386,36 +392,36 @@ Badge.displayName = "Badge";
 
 **問題**: `preload/channels.ts` と `shared/ipc/channels.ts` に同じチャンネル定義が存在し、変更時に不整合が発生する。
 
-| 課題                     | 問題                                                        | 解決策                                       |
-| ------------------------ | ----------------------------------------------------------- | -------------------------------------------- |
-| ハードコード文字列の発見 | `"skill:complete" as string` で型チェックをバイパス         | Grepで `as string` パターンを検索し定数に置換 |
-| 重複定義の整理           | preload/channels.ts と shared/ipc/channels.ts の重複        | Single Source of Truth（preload側）に集約    |
-| ホワイトリスト更新漏れ   | 旧チャンネル名が ALLOWED_INVOKE_CHANNELS に残存             | テストで旧チャンネルが含まれないことを検証   |
+| 課題                     | 問題                                                 | 解決策                                        |
+| ------------------------ | ---------------------------------------------------- | --------------------------------------------- |
+| ハードコード文字列の発見 | `"skill:complete" as string` で型チェックをバイパス  | Grepで `as string` パターンを検索し定数に置換 |
+| 重複定義の整理           | preload/channels.ts と shared/ipc/channels.ts の重複 | Single Source of Truth（preload側）に集約     |
+| ホワイトリスト更新漏れ   | 旧チャンネル名が ALLOWED_INVOKE_CHANNELS に残存      | テストで旧チャンネルが含まれないことを検証    |
 
 **Single Source of Truth パターン**:
 
-| ステップ | 処理内容                               | 成果物                                      |
-| -------- | -------------------------------------- | ------------------------------------------- |
-| 1        | Grep で重複チャンネル定義を検出        | 重複箇所リスト                              |
-| 2        | 正規のソース（preload/channels.ts）を特定 | IPC_CHANNELS オブジェクト定義               |
-| 3        | ハードコード文字列を定数参照に置換     | 型安全な import 使用                        |
-| 4        | ホワイトリスト更新                     | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS 更新 |
-| 5        | テスト追加                             | チャンネル存在検証、旧名称排除検証          |
+| ステップ | 処理内容                                  | 成果物                                             |
+| -------- | ----------------------------------------- | -------------------------------------------------- |
+| 1        | Grep で重複チャンネル定義を検出           | 重複箇所リスト                                     |
+| 2        | 正規のソース（preload/channels.ts）を特定 | IPC_CHANNELS オブジェクト定義                      |
+| 3        | ハードコード文字列を定数参照に置換        | 型安全な import 使用                               |
+| 4        | ホワイトリスト更新                        | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS 更新 |
+| 5        | テスト追加                                | チャンネル存在検証、旧名称排除検証                 |
 
 **チャンネルマイグレーション例**:
 
-| 旧チャンネル          | 新チャンネル       | 理由                       |
-| --------------------- | ------------------ | -------------------------- |
-| skill:list-available  | skill:list         | 冗長なサフィックス削除     |
-| skill:list-imported   | skill:getImported  | 命名規則統一（動詞:対象）  |
+| 旧チャンネル         | 新チャンネル      | 理由                      |
+| -------------------- | ----------------- | ------------------------- |
+| skill:list-available | skill:list        | 冗長なサフィックス削除    |
+| skill:list-imported  | skill:getImported | 命名規則統一（動詞:対象） |
 
 **効果**:
 
-| 観点       | 効果                                           |
-| ---------- | ---------------------------------------------- |
-| 保守性     | 変更箇所が1箇所に集約され、不整合リスク排除    |
-| 型安全性   | TypeScript の型チェックでチャンネル名を検証    |
-| セキュリティ | ホワイトリスト更新漏れをテストで防止         |
+| 観点         | 効果                                        |
+| ------------ | ------------------------------------------- |
+| 保守性       | 変更箇所が1箇所に集約され、不整合リスク排除 |
+| 型安全性     | TypeScript の型チェックでチャンネル名を検証 |
+| セキュリティ | ホワイトリスト更新漏れをテストで防止        |
 
 **関連仕様書**: [security-skill-ipc.md](./security-skill-ipc.md)
 
@@ -425,35 +431,35 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 
 **問題**: Main Process 内で IPC チャンネル名がハードコードされており、タイポや不整合のリスクがある。
 
-| 問題 | 例 | リスク |
-|------|---|--------|
-| ハードコード文字列 | `this.mainWindow.webContents.send("skill:stream", message)` | タイポがコンパイル時に検出されない |
-| 定数との不整合 | Preload側は定数、Main側はハードコード | 変更時に片方だけ更新される |
-| セキュリティ原則違反 | 04-electron-security.md「ハードコード文字列でチャンネル名を指定しない」 | レビューで見落とされやすい |
+| 問題                 | 例                                                                      | リスク                             |
+| -------------------- | ----------------------------------------------------------------------- | ---------------------------------- |
+| ハードコード文字列   | `this.mainWindow.webContents.send("skill:stream", message)`             | タイポがコンパイル時に検出されない |
+| 定数との不整合       | Preload側は定数、Main側はハードコード                                   | 変更時に片方だけ更新される         |
+| セキュリティ原則違反 | 04-electron-security.md「ハードコード文字列でチャンネル名を指定しない」 | レビューで見落とされやすい         |
 
 **解決策: 定数参照への置換**
 
-| 修正前（NG） | 修正後（OK） |
-|-------------|-------------|
+| 修正前（NG）                                | 修正後（OK）                                             |
+| ------------------------------------------- | -------------------------------------------------------- |
 | `webContents.send("skill:stream", message)` | `webContents.send(SKILL_CHANNELS.SKILL_STREAM, message)` |
 
 **実装ステップ**:
 
-| ステップ | 処理内容 | 成果物 |
-|---------|---------|--------|
-| 1 | `grep -rn '"skill:' src/` でハードコード箇所を検出 | 対象箇所リスト |
-| 2 | 対応する定数が `@repo/shared/src/ipc/channels.ts` に存在するか確認 | 定数マッピング |
-| 3 | ハードコード文字列を定数参照に置換 | コード修正 |
-| 4 | テスト実行で動作確認 | 品質検証 |
+| ステップ | 処理内容                                                           | 成果物         |
+| -------- | ------------------------------------------------------------------ | -------------- |
+| 1        | `grep -rn '"skill:' src/` でハードコード箇所を検出                 | 対象箇所リスト |
+| 2        | 対応する定数が `@repo/shared/src/ipc/channels.ts` に存在するか確認 | 定数マッピング |
+| 3        | ハードコード文字列を定数参照に置換                                 | コード修正     |
+| 4        | テスト実行で動作確認                                               | 品質検証       |
 
 **メリット**:
 
-| 観点 | 効果 |
-|------|------|
-| 型安全性 | タイポがコンパイル時に検出される |
-| 保守性 | チャンネル名変更が1箇所で済む |
-| セキュリティ | IPC セキュリティ原則準拠 |
-| コードレビュー | 定数参照は意図が明確 |
+| 観点           | 効果                             |
+| -------------- | -------------------------------- |
+| 型安全性       | タイポがコンパイル時に検出される |
+| 保守性         | チャンネル名変更が1箇所で済む    |
+| セキュリティ   | IPC セキュリティ原則準拠         |
+| コードレビュー | 定数参照は意図が明確             |
 
 **関連タスク**: TASK-FIX-12-1-IPC-HARDCODE-FIX（2026-02-09完了）
 
@@ -472,29 +478,29 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 
 遅延初期化が必要な依存オブジェクトを、コンストラクタではなく Setter メソッドで注入するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 目的 | 初期化タイミングが異なる依存オブジェクトの注入 |
-| 構成 | `setXxx(dependency)` メソッドでオブジェクトを受け取り、内部フィールドに保持 |
+| 要素     | 説明                                                                                           |
+| -------- | ---------------------------------------------------------------------------------------------- |
+| 目的     | 初期化タイミングが異なる依存オブジェクトの注入                                                 |
+| 構成     | `setXxx(dependency)` メソッドでオブジェクトを受け取り、内部フィールドに保持                    |
 | 適用場面 | 依存オブジェクトが外部リソース（BrowserWindow等）を必要とし、Facade よりも後で初期化される場合 |
-| 検証 | `executeXxx()` 呼び出し時に依存オブジェクトの存在を検証（未設定時はエラー） |
+| 検証     | `executeXxx()` 呼び出し時に依存オブジェクトの存在を検証（未設定時はエラー）                    |
 
 **適用例: SkillService と SkillExecutor**
 
-| ステップ | 処理 | 説明 |
-|----------|------|------|
-| 1 | `new SkillService()` | Facade サービス生成（skillExecutor は null） |
-| 2 | `new SkillExecutor(mainWindow, ...)` | 実行エンジン生成（mainWindow 依存） |
-| 3 | `skillService.setSkillExecutor(executor)` | Setter で注入 |
-| 4 | `skillService.executeSkill(...)` | 内部で `skillExecutor.execute()` に委譲 |
+| ステップ | 処理                                      | 説明                                         |
+| -------- | ----------------------------------------- | -------------------------------------------- |
+| 1        | `new SkillService()`                      | Facade サービス生成（skillExecutor は null） |
+| 2        | `new SkillExecutor(mainWindow, ...)`      | 実行エンジン生成（mainWindow 依存）          |
+| 3        | `skillService.setSkillExecutor(executor)` | Setter で注入                                |
+| 4        | `skillService.executeSkill(...)`          | 内部で `skillExecutor.execute()` に委譲      |
 
 **使い分け基準**:
 
-| パターン | 適用場面 | 例 |
-|----------|----------|-----|
-| Constructor Injection | 依存オブジェクトが生成時点で利用可能 | DB接続、設定オブジェクト |
-| Setter Injection | 依存オブジェクトの生成に外部リソースが必要 | BrowserWindow、IPC ハンドラー |
-| Factory Pattern | 依存オブジェクトを動的に生成する必要がある | プラグインシステム |
+| パターン              | 適用場面                                   | 例                            |
+| --------------------- | ------------------------------------------ | ----------------------------- |
+| Constructor Injection | 依存オブジェクトが生成時点で利用可能       | DB接続、設定オブジェクト      |
+| Setter Injection      | 依存オブジェクトの生成に外部リソースが必要 | BrowserWindow、IPC ハンドラー |
+| Factory Pattern       | 依存オブジェクトを動的に生成する必要がある | プラグインシステム            |
 
 #### IPC ハンドラー登録パターン（TASK-9B-H 2026-02-12実装）
 
@@ -502,53 +508,53 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 
 BrowserWindow とサービスインスタンスを受け取り、IPC ハンドラーを登録するパターン。既存の registerAuthHandlers、registerSkillHandlers と同一構成。
 
-| 要素 | 説明 |
-|------|------|
-| 目的 | Main Process で IPC ハンドラーを登録し、Renderer からの要求を処理 |
-| 構成 | `registerXxxHandlers(mainWindow, service)` 関数で登録、`unregisterXxxHandlers()` で解除 |
-| 適用場面 | 新規 IPC チャンネルグループの追加時 |
-| 適用例 | `registerSkillCreatorHandlers(mainWindow, skillCreatorService)` |
+| 要素     | 説明                                                                                    |
+| -------- | --------------------------------------------------------------------------------------- |
+| 目的     | Main Process で IPC ハンドラーを登録し、Renderer からの要求を処理                       |
+| 構成     | `registerXxxHandlers(mainWindow, service)` 関数で登録、`unregisterXxxHandlers()` で解除 |
+| 適用場面 | 新規 IPC チャンネルグループの追加時                                                     |
+| 適用例   | `registerSkillCreatorHandlers(mainWindow, skillCreatorService)`                         |
 
 **構成要素**:
 
-| 要素 | 数量 | 説明 |
-|------|------|------|
-| `ipcMain.handle()` | 5チャンネル | Renderer からの invoke リクエストを処理 |
-| `sendXxxProgress()` | 1チャンネル | Main → Renderer への進捗通知送信 |
-| `unregisterXxxHandlers()` | 1関数 | ハンドラー解除（テスト用） |
+| 要素                      | 数量        | 説明                                    |
+| ------------------------- | ----------- | --------------------------------------- |
+| `ipcMain.handle()`        | 5チャンネル | Renderer からの invoke リクエストを処理 |
+| `sendXxxProgress()`       | 1チャンネル | Main → Renderer への進捗通知送信        |
+| `unregisterXxxHandlers()` | 1関数       | ハンドラー解除（テスト用）              |
 
 **セキュリティ層（4層防御）**:
 
 > セキュリティ仕様の正本: [security-electron-ipc.md - skillCreatorAPI](./security-electron-ipc.md)
 
-| 層 | 実装 | 説明 |
-|----|------|------|
-| L1 | channels.ts ホワイトリスト | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS に登録 |
-| L2 | validateIpcSender | 送信元BrowserWindowの正当性検証、DevToolsからの呼び出し検出・拒否 |
-| L3 | 引数バリデーション | typeof手動チェックによる型検証（文字列型・オブジェクト型）をMain側で実施 |
-| L4 | エラーサニタイズ | error.messageのみ返却。error.stack・ファイルパス等の内部情報は非露出 |
+| 層  | 実装                       | 説明                                                                     |
+| --- | -------------------------- | ------------------------------------------------------------------------ |
+| L1  | channels.ts ホワイトリスト | ALLOWED_INVOKE_CHANNELS / ALLOWED_ON_CHANNELS に登録                     |
+| L2  | validateIpcSender          | 送信元BrowserWindowの正当性検証、DevToolsからの呼び出し検出・拒否        |
+| L3  | 引数バリデーション         | typeof手動チェックによる型検証（文字列型・オブジェクト型）をMain側で実施 |
+| L4  | エラーサニタイズ           | error.messageのみ返却。error.stack・ファイルパス等の内部情報は非露出     |
 
 **Preload統合（4箇所更新必須）**:
 
-| 更新箇所 | ファイル | 内容 |
-|----------|----------|------|
-| 1. API実装 | `preload/skill-creator-api.ts` | safeInvoke/safeOn でホワイトリスト検証付き API 実装 |
-| 2. import追加 | `preload/index.ts` | API実装モジュールの import |
-| 3. electronAPIオブジェクト | `preload/index.ts` | `electronAPI.skillCreator` として追加 |
-| 4. contextBridge統合 | `preload/index.ts` | `contextBridge.exposeInMainWorld` で公開 + non-isolated フォールバック |
+| 更新箇所                   | ファイル                       | 内容                                                                   |
+| -------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| 1. API実装                 | `preload/skill-creator-api.ts` | safeInvoke/safeOn でホワイトリスト検証付き API 実装                    |
+| 2. import追加              | `preload/index.ts`             | API実装モジュールの import                                             |
+| 3. electronAPIオブジェクト | `preload/index.ts`             | `electronAPI.skillCreator` として追加                                  |
+| 4. contextBridge統合       | `preload/index.ts`             | `contextBridge.exposeInMainWorld` で公開 + non-isolated フォールバック |
 
 **既存の同パターン実装**:
 
-| ハンドラー | ファイル | チャンネル数 |
-|-----------|----------|------------|
-| registerAuthHandlers | `authHandlers.ts` | 認証関連チャンネル |
-| registerSkillHandlers | `skillHandlers.ts` | スキル管理・実行チャンネル |
+| ハンドラー                   | ファイル                  | チャンネル数                            |
+| ---------------------------- | ------------------------- | --------------------------------------- |
+| registerAuthHandlers         | `authHandlers.ts`         | 認証関連チャンネル                      |
+| registerSkillHandlers        | `skillHandlers.ts`        | スキル管理・実行チャンネル              |
 | registerSkillCreatorHandlers | `skillCreatorHandlers.ts` | スキル作成チャンネル（5 invoke + 1 on） |
 
 **実装時の注意点**:
 
-| 注意点 | 対策 |
-|--------|------|
+| 注意点                                                   | 対策                                     |
+| -------------------------------------------------------- | ---------------------------------------- |
 | IpcResult型の重複定義（Main側とPreload側で独立に型定義） | @repo/shared/typesに共通型として配置する |
 
 **プロセス面の教訓（苦戦箇所の詳細）**: [lessons-learned.md - TASK-9B-H 教訓1-8](./lessons-learned.md#task-9b-h-skillcreatorservice-ipcハンドラー登録) を参照。Preload統合漏れ、並列Phase実行、設計-実装乖離、仕様書更新漏れの教訓を記録。
@@ -637,32 +643,32 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 
 #### 問題
 
-| 問題 | 原因 | 症状 |
-|------|------|------|
-| ドロップダウンが他要素に隠れる | CSSスタッキングコンテキスト | z-[9999]でも親要素の範囲内に制限 |
-| モーダルの重なり順が不正 | position指定の親要素存在 | 新しいスタッキングコンテキスト生成 |
+| 問題                           | 原因                        | 症状                               |
+| ------------------------------ | --------------------------- | ---------------------------------- |
+| ドロップダウンが他要素に隠れる | CSSスタッキングコンテキスト | z-[9999]でも親要素の範囲内に制限   |
+| モーダルの重なり順が不正       | position指定の親要素存在    | 新しいスタッキングコンテキスト生成 |
 
 #### 解決策：React Portal + createPortal
 
-| 要素 | 実装 |
-|------|------|
-| インポート | `import { createPortal } from "react-dom"` |
+| 要素         | 実装                                                                    |
+| ------------ | ----------------------------------------------------------------------- |
+| インポート   | `import { createPortal } from "react-dom"`                              |
 | レンダリング | `createPortal(<DropdownContent className="z-[9999]" />, document.body)` |
-| 位置計算 | `getBoundingClientRect()` でトリガー要素の位置を取得 |
-| SSR対応 | `typeof document !== "undefined"` でガード |
+| 位置計算     | `getBoundingClientRect()` でトリガー要素の位置を取得                    |
+| SSR対応      | `typeof document !== "undefined"` でガード                              |
 
 #### 実装ファイル
 
-| ファイル | 行番号 | 内容 |
-|----------|--------|------|
-| AccountSection/index.tsx | 501 | ドロップダウンメニューをPortalでbody直下にレンダリング |
+| ファイル                 | 行番号 | 内容                                                   |
+| ------------------------ | ------ | ------------------------------------------------------ |
+| AccountSection/index.tsx | 501    | ドロップダウンメニューをPortalでbody直下にレンダリング |
 
 #### 適用基準
 
-| 適用する | 適用しない |
-|----------|------------|
-| ドロップダウンメニュー | インライン展開コンテンツ |
-| モーダルダイアログ | 親要素内に収まるポップオーバー |
+| 適用する                           | 適用しない                       |
+| ---------------------------------- | -------------------------------- |
+| ドロップダウンメニュー             | インライン展開コンテンツ         |
+| モーダルダイアログ                 | 親要素内に収まるポップオーバー   |
 | ツールチップ（オーバーフロー防止） | トースト通知（専用コンテナ使用） |
 
 ---
@@ -673,43 +679,43 @@ CSSスタッキングコンテキストによりz-indexが親要素の範囲内�
 
 #### 問題
 
-| 問題 | 原因 |
-|------|------|
-| OAuth連携後にUIが更新されない | `onAuthStateChange`後にプロバイダー情報を再取得していない |
-| 連携解除後も連携中と表示される | 状態更新がイベントハンドラ内で完結していない |
+| 問題                           | 原因                                                      |
+| ------------------------------ | --------------------------------------------------------- |
+| OAuth連携後にUIが更新されない  | `onAuthStateChange`後にプロバイダー情報を再取得していない |
+| 連携解除後も連携中と表示される | 状態更新がイベントハンドラ内で完結していない              |
 
 #### 解決策：明示的なデータ再取得
 
-| 要素 | 実装 |
-|------|------|
-| トリガー | `supabase.auth.onAuthStateChange((event, session) => ...)` |
-| 再取得関数 | `fetchLinkedProviders()` |
-| 呼び出し位置 | 認証状態変更イベントハンドラ内（コールバック直後） |
+| 要素         | 実装                                                       |
+| ------------ | ---------------------------------------------------------- |
+| トリガー     | `supabase.auth.onAuthStateChange((event, session) => ...)` |
+| 再取得関数   | `fetchLinkedProviders()`                                   |
+| 呼び出し位置 | 認証状態変更イベントハンドラ内（コールバック直後）         |
 
 #### 実装ファイル
 
-| ファイル | 行番号 | 内容 |
-|----------|--------|------|
+| ファイル     | 行番号  | 内容                                               |
+| ------------ | ------- | -------------------------------------------------- |
 | authSlice.ts | 342-345 | 認証状態変更時に`fetchLinkedProviders()`を呼び出し |
 
 #### Zustandとの統合
 
-| ステップ | 処理 |
-|----------|------|
-| 1 | `onAuthStateChange`イベント発火 |
-| 2 | セッション情報をZustandストアに保存 |
-| 3 | `fetchLinkedProviders()`を呼び出し |
-| 4 | プロバイダー情報をZustandストアに保存 |
-| 5 | React コンポーネントが自動再レンダリング |
+| ステップ | 処理                                     |
+| -------- | ---------------------------------------- |
+| 1        | `onAuthStateChange`イベント発火          |
+| 2        | セッション情報をZustandストアに保存      |
+| 3        | `fetchLinkedProviders()`を呼び出し       |
+| 4        | プロバイダー情報をZustandストアに保存    |
+| 5        | React コンポーネントが自動再レンダリング |
 
 #### 認証イベント種別
 
-| イベント | 再取得要否 | 理由 |
-|----------|------------|------|
-| SIGNED_IN | 必要 | OAuth連携が追加された可能性 |
-| TOKEN_REFRESHED | 不要 | プロバイダー情報は変更なし |
-| SIGNED_OUT | 必要 | 全連携情報をクリア |
-| USER_UPDATED | 必要 | プロバイダー連携/解除の可能性 |
+| イベント        | 再取得要否 | 理由                          |
+| --------------- | ---------- | ----------------------------- |
+| SIGNED_IN       | 必要       | OAuth連携が追加された可能性   |
+| TOKEN_REFRESHED | 不要       | プロバイダー情報は変更なし    |
+| SIGNED_OUT      | 必要       | 全連携情報をクリア            |
+| USER_UPDATED    | 必要       | プロバイダー連携/解除の可能性 |
 
 ### IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）
 
@@ -745,12 +751,12 @@ async function safeInvokeUnwrap<T>(
 
 #### 使い分け基準
 
-| ハンドラの return 文 | 使用する関数 | 例 |
-|---|---|---|
-| `return { success: true, data: result }` | `safeInvokeUnwrap` | list(), getImported(), rescan() |
-| `return service.method()` (直接返却) | `safeInvoke` | import(), execute() |
-| `return { success: boolean }` (ステータスのみ) | `safeInvoke` | sendPermissionResponse() |
-| `void` (戻り値なし) | `safeInvoke` | abort(), remove() |
+| ハンドラの return 文                           | 使用する関数       | 例                              |
+| ---------------------------------------------- | ------------------ | ------------------------------- |
+| `return { success: true, data: result }`       | `safeInvokeUnwrap` | list(), getImported(), rescan() |
+| `return service.method()` (直接返却)           | `safeInvoke`       | import(), execute()             |
+| `return { success: boolean }` (ステータスのみ) | `safeInvoke`       | sendPermissionResponse()        |
+| `void` (戻り値なし)                            | `safeInvoke`       | abort(), remove()               |
 
 #### データフロー
 
@@ -850,21 +856,21 @@ IPCハンドラーの3層防御モデルにおけるL3（ドメイン固有検�
 
 #### 3層防御モデル
 
-| レイヤー | 検証内容 | 実装 |
-|----------|---------|------|
-| L1 | 送信元ウィンドウ検証 | `validateIpcSender(event)` |
-| L2 | 引数の型チェック | `typeof arg === "string"` |
-| L3 | ドメイン固有検証 | `validatePath()`, `ALLOWED_SCHEMA_NAMES`, `sanitizeErrorMessage()` |
+| レイヤー | 検証内容             | 実装                                                               |
+| -------- | -------------------- | ------------------------------------------------------------------ |
+| L1       | 送信元ウィンドウ検証 | `validateIpcSender(event)`                                         |
+| L2       | 引数の型チェック     | `typeof arg === "string"`                                          |
+| L3       | ドメイン固有検証     | `validatePath()`, `ALLOWED_SCHEMA_NAMES`, `sanitizeErrorMessage()` |
 
 #### パストラバーサル防止（validatePath）
 
 ```typescript
 function validatePath(inputPath: string, _paramName: string): string | null {
-  if (!inputPath) return null;                    // 空文字列
-  if (inputPath.includes("\0")) return null;      // NULLバイト
-  if (inputPath.startsWith("\\\\")) return null;  // UNCパス
-  if (inputPath.includes("../")) return null;     // Unixトラバーサル
-  if (inputPath.includes("..\\")) return null;    // Windowsトラバーサル
+  if (!inputPath) return null; // 空文字列
+  if (inputPath.includes("\0")) return null; // NULLバイト
+  if (inputPath.startsWith("\\\\")) return null; // UNCパス
+  if (inputPath.includes("../")) return null; // Unixトラバーサル
+  if (inputPath.includes("..\\")) return null; // Windowsトラバーサル
   return path.normalize(inputPath);
 }
 ```
@@ -897,7 +903,11 @@ function sanitizeErrorMessage(error: unknown): string {
 const ALLOWED_SCHEMA_NAMES = ["task-spec", "skill-spec", "mode"] as const;
 
 // 使用例（ハンドラー内）
-if (!ALLOWED_SCHEMA_NAMES.includes(schemaName as typeof ALLOWED_SCHEMA_NAMES[number])) {
+if (
+  !ALLOWED_SCHEMA_NAMES.includes(
+    schemaName as (typeof ALLOWED_SCHEMA_NAMES)[number],
+  )
+) {
   return { success: false, error: `Invalid schema name: ${schemaName}` };
 }
 ```
@@ -906,13 +916,13 @@ if (!ALLOWED_SCHEMA_NAMES.includes(schemaName as typeof ALLOWED_SCHEMA_NAMES[num
 
 #### 適用チェックリスト
 
-| チェック項目 | 対象 |
-|-------------|------|
-| L1: sender検証 | 全ハンドラー |
-| L2: 型チェック | 全引数 |
-| L3a: パス検証 | ファイルパス引数 |
-| L3b: ホワイトリスト | 列挙値引数 |
-| L3c: エラーサニタイズ | 全catchブロック |
+| チェック項目          | 対象             |
+| --------------------- | ---------------- |
+| L1: sender検証        | 全ハンドラー     |
+| L2: 型チェック        | 全引数           |
+| L3a: パス検証         | ファイルパス引数 |
+| L3b: ホワイトリスト   | 列挙値引数       |
+| L3c: エラーサニタイズ | 全catchブロック  |
 
 **関連仕様書**: [security-electron-ipc.md](./security-electron-ipc.md)
 **関連タスク**: UT-9B-H-003
@@ -961,15 +971,16 @@ catch (error) {
 
 **エラークラス一覧**:
 
-| エラークラス | 発生条件 | クライアント向けメッセージ例 |
-|-------------|----------|---------------------------|
-| SkillNotFoundError | スキルディレクトリが存在しない | "Skill not found: my-skill" |
+| エラークラス       | 発生条件                                           | クライアント向けメッセージ例             |
+| ------------------ | -------------------------------------------------- | ---------------------------------------- |
+| SkillNotFoundError | スキルディレクトリが存在しない                     | "Skill not found: my-skill"              |
 | ReadonlySkillError | claude-skills 配下の読み取り専用スキルへの書き込み | "Cannot modify readonly skill: my-skill" |
-| PathTraversalError | `../` 等を含む不正パス | "Path traversal detected: ../etc/passwd" |
-| FileExistsError | createFile で既存ファイルに対して実行 | "File already exists: SKILL.md" |
-| FileNotFoundError | readFile/deleteFile で存在しないファイル指定 | "File not found: SKILL.md" |
+| PathTraversalError | `../` 等を含む不正パス                             | "Path traversal detected: ../etc/passwd" |
+| FileExistsError    | createFile で既存ファイルに対して実行              | "File already exists: SKILL.md"          |
+| FileNotFoundError  | readFile/deleteFile で存在しないファイル指定       | "File not found: SKILL.md"               |
 
 **関連**:
+
 - 実装ファイル: `apps/desktop/src/main/ipc/skillFileHandlers.ts:34-49`
 - テスト: `skillFileHandlers.security.test.ts` S-09〜S-11
 - 関連パターン: [security-electron-ipc.md](./security-electron-ipc.md) の skillFileAPI セキュリティ実装パターン
@@ -1005,11 +1016,11 @@ catch (error) {
 
 **グローバルモック設計（setup.ts）**:
 
-| モック対象           | 設定タイミング | 用途                      |
-| -------------------- | -------------- | ------------------------- |
-| Clipboard API        | beforeAll      | コピー/ペースト機能テスト |
+| モック対象               | 設定タイミング | 用途                                            |
+| ------------------------ | -------------- | ----------------------------------------------- |
+| Clipboard API            | beforeAll      | コピー/ペースト機能テスト                       |
 | window.electronAPI.skill | beforeAll      | useSkillExecution等のHook（TASK-FIX-5-1で統一） |
-| IntersectionObserver | トップレベル   | 無限スクロール等          |
+| IntersectionObserver     | トップレベル   | 無限スクロール等                                |
 
 **モック上書きパターン**:
 
@@ -1024,25 +1035,25 @@ catch (error) {
 
 ### fireEvent vs userEvent 使い分けパターン（UT-FIX-AGENTVIEW-INFINITE-LOOP-001 2026-02-12実装）
 
-| ライブラリ | 特徴 | 適用ケース | テスト環境 |
-| ---------- | ---- | ---------- | ---------- |
-| `fireEvent` | 同期的、低レベルDOMイベント発火 | happy-dom環境の標準テスト | happy-dom（推奨） |
-| `userEvent` | 非同期、ユーザー操作シミュレーション | アクセシビリティ検証、複合入力 | jsdom（必須） |
+| ライブラリ  | 特徴                                 | 適用ケース                     | テスト環境        |
+| ----------- | ------------------------------------ | ------------------------------ | ----------------- |
+| `fireEvent` | 同期的、低レベルDOMイベント発火      | happy-dom環境の標準テスト      | happy-dom（推奨） |
+| `userEvent` | 非同期、ユーザー操作シミュレーション | アクセシビリティ検証、複合入力 | jsdom（必須）     |
 
 **環境別推奨パターン**:
 
-| テスト環境 | イベント発火 | 非同期ハンドラ |
-| ---------- | ------------ | -------------- |
-| happy-dom | `fireEvent.click(el)` | `await act(async () => { fireEvent.click(el) })` |
-| jsdom | `await user.click(el)` | `await user.click(el)`（自動でact wrap） |
+| テスト環境 | イベント発火           | 非同期ハンドラ                                   |
+| ---------- | ---------------------- | ------------------------------------------------ |
+| happy-dom  | `fireEvent.click(el)`  | `await act(async () => { fireEvent.click(el) })` |
+| jsdom      | `await user.click(el)` | `await user.click(el)`（自動でact wrap）         |
 
 **注意点**:
 
-| 状況 | 問題 | 解決策 |
-| ---- | ---- | ------ |
-| happy-domで`userEvent.setup()` | `Symbol(Node prepared...)` エラー | `fireEvent`に切り替え |
-| `fireEvent`でPromiseハンドラ | microtask未flush | `await act(async () => {...})` で包む |
-| jsdomディレクティブ追加 | `toBeInTheDocument`動作不良、DOM重複 | happy-dom + fireEventに戻す |
+| 状況                           | 問題                                 | 解決策                                |
+| ------------------------------ | ------------------------------------ | ------------------------------------- |
+| happy-domで`userEvent.setup()` | `Symbol(Node prepared...)` エラー    | `fireEvent`に切り替え                 |
+| `fireEvent`でPromiseハンドラ   | microtask未flush                     | `await act(async () => {...})` で包む |
+| jsdomディレクティブ追加        | `toBeInTheDocument`動作不良、DOM重複 | happy-dom + fireEventに戻す           |
 
 ### モック戦略
 
@@ -1098,26 +1109,26 @@ SDK統合テスト有効化時に発見された、`vi.clearAllMocks()` では�
 
 #### 問題
 
-| 状況                                           | 結果                                                                   |
-| ---------------------------------------------- | ---------------------------------------------------------------------- |
-| `beforeEach` で `vi.clearAllMocks()` のみ使用  | `mockImplementation()` で設定した実装が残存し、後続テストが失敗        |
-| `mockRejectedValue()` でエラーモック設定       | 永続的なモックのため、次のテストケースにもエラーが漏洩                 |
+| 状況                                          | 結果                                                            |
+| --------------------------------------------- | --------------------------------------------------------------- |
+| `beforeEach` で `vi.clearAllMocks()` のみ使用 | `mockImplementation()` で設定した実装が残存し、後続テストが失敗 |
+| `mockRejectedValue()` でエラーモック設定      | 永続的なモックのため、次のテストケースにもエラーが漏洩          |
 
 #### Vitest モックリセット API の挙動差異
 
-| API                      | `.mock.calls` クリア | `mockImplementation` リセット | `mockReturnValue` リセット |
-| ------------------------ | :------------------: | :---------------------------: | :------------------------: |
-| `vi.clearAllMocks()`     |          ✅          |              ❌               |             ❌             |
-| `vi.resetAllMocks()`     |          ✅          |              ✅               |             ✅             |
-| `vi.restoreAllMocks()`   |          ✅          |        ✅（元に戻す）         |       ✅（元に戻す）       |
+| API                    | `.mock.calls` クリア | `mockImplementation` リセット | `mockReturnValue` リセット |
+| ---------------------- | :------------------: | :---------------------------: | :------------------------: |
+| `vi.clearAllMocks()`   |          ✅          |              ❌               |             ❌             |
+| `vi.resetAllMocks()`   |          ✅          |              ✅               |             ✅             |
+| `vi.restoreAllMocks()` |          ✅          |        ✅（元に戻す）         |       ✅（元に戻す）       |
 
 #### 解決策：2段階リセット + Once サフィックス
 
-| 手順 | 処理                                             | 目的                                       |
-| ---- | ------------------------------------------------ | ------------------------------------------ |
-| 1    | `vi.clearAllMocks()`                             | 呼び出し履歴クリア                         |
-| 2    | `mock.mockResolvedValue(defaultResponse)`        | デフォルト正常応答を再設定                 |
-| 3    | エラーテストでは `mockRejectedValueOnce()` を使用 | 1回限りのエラーで次テストに影響しない      |
+| 手順 | 処理                                              | 目的                                  |
+| ---- | ------------------------------------------------- | ------------------------------------- |
+| 1    | `vi.clearAllMocks()`                              | 呼び出し履歴クリア                    |
+| 2    | `mock.mockResolvedValue(defaultResponse)`         | デフォルト正常応答を再設定            |
+| 3    | エラーテストでは `mockRejectedValueOnce()` を使用 | 1回限りのエラーで次テストに影響しない |
 
 #### コード例
 
@@ -1134,20 +1145,18 @@ beforeEach(() => {
 
 // エラーテストでは "Once" を使用
 it("SDK障害をハンドリング", async () => {
-  mockAgentAPI.query.mockRejectedValueOnce(
-    new Error("SDK call failed")
-  );
+  mockAgentAPI.query.mockRejectedValueOnce(new Error("SDK call failed"));
   // テスト実行...
 });
 ```
 
 #### 適用条件
 
-| 条件     | 説明                                                                                   |
-| -------- | -------------------------------------------------------------------------------------- |
-| 対象     | `vi.mock()` でモジュール全体をモック化しているテスト                                   |
-| トリガー | テスト実行順序により結果が変わる場合                                                   |
-| 関連     | P9（モジュールスコープ変数のテスト間リーク）、P13（タイマーテスト無限ループ）          |
+| 条件     | 説明                                                                          |
+| -------- | ----------------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化しているテスト                          |
+| トリガー | テスト実行順序により結果が変わる場合                                          |
+| 関連     | P9（モジュールスコープ変数のテスト間リーク）、P13（タイマーテスト無限ループ） |
 
 ### モジュールレベルモックのタイムアウトテストパターン（TASK-FIX-11-1 2026-02-13実装）
 
@@ -1155,28 +1164,26 @@ it("SDK障害をハンドリング", async () => {
 
 #### 問題
 
-| 状況                                                          | 結果                                                                     |
-| ------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| `vi.mock("../agent-client")` でモジュール全体をモック         | 内部の `setTimeout` + `AbortController` ロジックが消失                   |
-| `vi.advanceTimersByTimeAsync(30000)` でタイムアウト再現を試行 | モジュール内のタイマーが存在しないため、タイムアウトが発生しない         |
+| 状況                                                          | 結果                                                             |
+| ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `vi.mock("../agent-client")` でモジュール全体をモック         | 内部の `setTimeout` + `AbortController` ロジックが消失           |
+| `vi.advanceTimersByTimeAsync(30000)` でタイムアウト再現を試行 | モジュール内のタイマーが存在しないため、タイムアウトが発生しない |
 
 #### 解決策：外部インターフェースでのタイムアウトシミュレーション
 
 モジュール内部のタイマーロジックを再現するのではなく、モック関数の応答としてタイムアウトエラーを注入する。
 
-| アプローチ       | 手法                                                                                                | 利点                               |
-| ---------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| 直接エラー注入   | `mockRejectedValueOnce(new Error("Request timeout"))`                                               | シンプル、タイマー不要             |
-| タイマー付きモック | `mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(...), 30000)))`       | タイマーテストとの組み合わせ可能   |
+| アプローチ         | 手法                                                                                         | 利点                             |
+| ------------------ | -------------------------------------------------------------------------------------------- | -------------------------------- |
+| 直接エラー注入     | `mockRejectedValueOnce(new Error("Request timeout"))`                                        | シンプル、タイマー不要           |
+| タイマー付きモック | `mockImplementation(() => new Promise((_, reject) => setTimeout(() => reject(...), 30000)))` | タイマーテストとの組み合わせ可能 |
 
 #### コード例
 
 ```typescript
 // アプローチ1: 直接エラー注入（推奨）
 it("タイムアウトエラーをハンドリング", async () => {
-  mockAgentAPI.query.mockRejectedValueOnce(
-    new Error("Request timeout")
-  );
+  mockAgentAPI.query.mockRejectedValueOnce(new Error("Request timeout"));
   const result = await skillExecutor.execute(request, metadata);
   expect(result.error).toContain("timeout");
 });
@@ -1185,24 +1192,27 @@ it("タイムアウトエラーをハンドリング", async () => {
 it("30秒タイムアウト", async () => {
   vi.useFakeTimers();
   mockAgentAPI.query.mockImplementation(
-    () => new Promise((_, reject) => {
-      setTimeout(() => reject(new Error("Request timeout")), 30000);
-    })
+    () =>
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error("Request timeout")), 30000);
+      }),
   );
   const promise = skillExecutor.execute(request, metadata);
   await vi.advanceTimersByTimeAsync(30000);
-  await expect(promise).resolves.toMatchObject({ error: expect.stringContaining("timeout") });
+  await expect(promise).resolves.toMatchObject({
+    error: expect.stringContaining("timeout"),
+  });
   vi.useRealTimers();
 });
 ```
 
 #### 適用条件
 
-| 条件     | 説明                                                                                    |
-| -------- | --------------------------------------------------------------------------------------- |
-| 対象     | `vi.mock()` でモジュール全体をモック化し、かつタイムアウトテストが必要                  |
-| トリガー | fake timer を使ってもタイムアウトが発生しない場合                                       |
-| 関連     | P13（タイマーテスト無限ループ）、ESModuleモッキング制約パターン                         |
+| 条件     | 説明                                                                   |
+| -------- | ---------------------------------------------------------------------- |
+| 対象     | `vi.mock()` でモジュール全体をモック化し、かつタイムアウトテストが必要 |
+| トリガー | fake timer を使ってもタイムアウトが発生しない場合                      |
+| 関連     | P13（タイマーテスト無限ループ）、ESModuleモッキング制約パターン        |
 
 ### バックアップファイルテストパターン（TASK-9A-A 2026-02-03実装）
 
@@ -1294,11 +1304,11 @@ Electron IPC ハンドラーの統合テストにおいて、Main Process のハ
 
 **テスト構成**:
 
-| テスト層 | ファイル | テスト数 | 責務 |
-|---------|----------|---------|------|
-| Unit | `skillFileHandlers.test.ts` | 38 | 引数バリデーション、正常系レスポンス、ハンドラー登録/解除、境界値、エッジケース |
-| Security | `skillFileHandlers.security.test.ts` | 14 | Sender検証、パストラバーサル、エラーサニタイズ、XSSコンテンツ |
-| Integration | `skillFileHandlers.integration.test.ts` | 13 | 実SkillFileManagerとの統合、ファイル操作サイクル、バックアップ/復元 |
+| テスト層    | ファイル                                | テスト数 | 責務                                                                            |
+| ----------- | --------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| Unit        | `skillFileHandlers.test.ts`             | 38       | 引数バリデーション、正常系レスポンス、ハンドラー登録/解除、境界値、エッジケース |
+| Security    | `skillFileHandlers.security.test.ts`    | 14       | Sender検証、パストラバーサル、エラーサニタイズ、XSSコンテンツ                   |
+| Integration | `skillFileHandlers.integration.test.ts` | 13       | 実SkillFileManagerとの統合、ファイル操作サイクル、バックアップ/復元             |
 
 **テストレイヤー間の責務分離**:
 
@@ -1311,6 +1321,7 @@ Integration（実装） → 実ファイルシステムでの一連操作フロ�
 **カバレッジ結果**: Line 91.14% / Branch 93.93% / Function 100%（65テスト全PASS）
 
 **関連**:
+
 - Handler Map 方式: 3テストファイル共通で `Map<string, Function>` によるハンドラーキャプチャを使用
 - 実装: `apps/desktop/src/main/ipc/__tests__/skillFileHandlers*.test.ts`
 - **未タスク**: UT-9A-B-003（IPCテストhandlerMapモックユーティリティ共通化）— Handler Map 方式のセットアップコードを共通ユーティリティに抽出
@@ -1466,36 +1477,36 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 決定論的処理をスクリプトに委譲し、予測可能な結果を保証するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 目的 | AI推論に依存しない決定論的処理の実現 |
+| 要素 | 説明                                                  |
+| ---- | ----------------------------------------------------- |
+| 目的 | AI推論に依存しない決定論的処理の実現                  |
 | 構成 | ScriptExecutorがchild_process.spawnでスクリプトを実行 |
-| 利点 | テスト容易性、予測可能性、高速実行 |
-| 適用 | モード判定、検証処理、スキル初期化 |
+| 利点 | テスト容易性、予測可能性、高速実行                    |
+| 適用 | モード判定、検証処理、スキル初期化                    |
 
 **実装構成**:
 
-| コンポーネント | ファイル | 責務 |
-|----------------|----------|------|
-| ScriptExecutor | `services/skill/ScriptExecutor.ts` | スクリプト実行、JSON出力パース |
-| scripts/ | `~/.aiworkflow/skills/skill-creator/scripts/*.js` | 決定論的処理（detect_mode.js等） |
+| コンポーネント | ファイル                                          | 責務                             |
+| -------------- | ------------------------------------------------- | -------------------------------- |
+| ScriptExecutor | `services/skill/ScriptExecutor.ts`                | スクリプト実行、JSON出力パース   |
+| scripts/       | `~/.aiworkflow/skills/skill-creator/scripts/*.js` | 決定論的処理（detect_mode.js等） |
 
 **使い分け基準**:
 
-| 基準 | Script First | AI推論 |
-|------|-------------|--------|
-| 処理特性 | 決定論的（同じ入力→同じ出力） | 非決定論的（柔軟な応答） |
-| 速度要件 | 高速応答必須 | 多少の遅延許容 |
-| テスト | 単純なアサーション | 出力のバリエーション検証 |
-| 例 | バリデーション、フォーマット変換 | 自然言語解釈、創造的生成 |
+| 基準     | Script First                     | AI推論                   |
+| -------- | -------------------------------- | ------------------------ |
+| 処理特性 | 決定論的（同じ入力→同じ出力）    | 非決定論的（柔軟な応答） |
+| 速度要件 | 高速応答必須                     | 多少の遅延許容           |
+| テスト   | 単純なアサーション               | 出力のバリエーション検証 |
+| 例       | バリデーション、フォーマット変換 | 自然言語解釈、創造的生成 |
 
 **セキュリティ考慮**:
 
-| 対策 | 実装 |
-|------|------|
+| 対策                 | 実装                                         |
+| -------------------- | -------------------------------------------- |
 | パストラバーサル防止 | スクリプト名に`..`, `/`, `\`を含む場合は拒否 |
-| 実行ディレクトリ制限 | skill-creator/scripts/配下のみ実行許可 |
-| shell: false | コマンドインジェクション防止 |
+| 実行ディレクトリ制限 | skill-creator/scripts/配下のみ実行許可       |
+| shell: false         | コマンドインジェクション防止                 |
 
 ---
 
@@ -1503,35 +1514,35 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 リソースを必要時に遅延読み込みし、メモリ効率とレスポンス速度を向上させるパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 目的 | 必要なリソースのみを読み込み、効率化 |
+| 要素 | 説明                                             |
+| ---- | ------------------------------------------------ |
+| 目的 | 必要なリソースのみを読み込み、効率化             |
 | 構成 | ResourceLoaderがキャッシュ付き遅延読み込みを提供 |
-| 利点 | メモリ効率、起動時間短縮、柔軟なリソース管理 |
-| 適用 | エージェントプロンプト、スキーマ、参照資料 |
+| 利点 | メモリ効率、起動時間短縮、柔軟なリソース管理     |
+| 適用 | エージェントプロンプト、スキーマ、参照資料       |
 
 **実装構成**:
 
-| コンポーネント | ファイル | 責務 |
-|----------------|----------|------|
-| ResourceLoader | `services/skill/ResourceLoader.ts` | リソース読み込み、キャッシュ管理 |
-| リソースディレクトリ | `skill-creator/{agents,references,assets,schemas}/` | カテゴリ別リソース配置 |
+| コンポーネント       | ファイル                                            | 責務                             |
+| -------------------- | --------------------------------------------------- | -------------------------------- |
+| ResourceLoader       | `services/skill/ResourceLoader.ts`                  | リソース読み込み、キャッシュ管理 |
+| リソースディレクトリ | `skill-creator/{agents,references,assets,schemas}/` | カテゴリ別リソース配置           |
 
 **キャッシュ戦略**:
 
-| 戦略 | 実装 |
-|------|------|
-| キャッシュキー | `{category}/{filename}` 形式 |
-| キャッシュ格納 | `Map<string, string>` |
+| 戦略             | 実装                                |
+| ---------------- | ----------------------------------- |
+| キャッシュキー   | `{category}/{filename}` 形式        |
+| キャッシュ格納   | `Map<string, string>`               |
 | キャッシュヒット | 同一キーの2回目以降はメモリから返却 |
-| キャッシュクリア | `clearCache()` で全キャッシュ削除 |
+| キャッシュクリア | `clearCache()` で全キャッシュ削除   |
 
 **読み込み優先順位**:
 
-| 順位 | ソース | 条件 |
-|------|--------|------|
-| 1 | キャッシュ | キャッシュにキーが存在する場合 |
-| 2 | ファイルシステム | キャッシュミス時にfs.readFileで読み込み |
+| 順位 | ソース           | 条件                                    |
+| ---- | ---------------- | --------------------------------------- |
+| 1    | キャッシュ       | キャッシュにキーが存在する場合          |
+| 2    | ファイルシステム | キャッシュミス時にfs.readFileで読み込み |
 
 ---
 
@@ -1539,27 +1550,27 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 複雑なスキル作成処理を統合し、シンプルなAPIを提供するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 目的 | 複雑なサブシステムへの単純なインターフェース提供 |
+| 要素 | 説明                                                      |
+| ---- | --------------------------------------------------------- |
+| 目的 | 複雑なサブシステムへの単純なインターフェース提供          |
 | 構成 | SkillCreatorServiceがScriptExecutor、ResourceLoaderを統合 |
-| 利点 | 利用者は内部実装を意識せず、高レベルAPIで操作可能 |
-| 適用 | スキル作成、タスク実行、検証処理 |
+| 利点 | 利用者は内部実装を意識せず、高レベルAPIで操作可能         |
+| 適用 | スキル作成、タスク実行、検証処理                          |
 
 **統合サービス構成**:
 
-| サービス | 依存コンポーネント | 統合内容 |
-|----------|-------------------|----------|
+| サービス            | 依存コンポーネント             | 統合内容                                 |
+| ------------------- | ------------------------------ | ---------------------------------------- |
 | SkillCreatorService | ScriptExecutor, ResourceLoader | モード判定、スキル作成、タスク実行、検証 |
 
 **公開API**:
 
-| メソッド | 説明 | 内部で使用するコンポーネント |
-|----------|------|------------------------------|
-| detectMode | モード判定 | ScriptExecutor |
-| createSkill | スキル作成 | ScriptExecutor, ResourceLoader |
-| executeTasks | タスク実行 | ScriptExecutor |
-| validateSkill | スキル検証 | ScriptExecutor |
+| メソッド      | 説明       | 内部で使用するコンポーネント   |
+| ------------- | ---------- | ------------------------------ |
+| detectMode    | モード判定 | ScriptExecutor                 |
+| createSkill   | スキル作成 | ScriptExecutor, ResourceLoader |
+| executeTasks  | タスク実行 | ScriptExecutor                 |
+| validateSkill | スキル検証 | ScriptExecutor                 |
 
 ---
 
@@ -1569,18 +1580,18 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 **アルゴリズム**:
 
-| アルゴリズム | 用途 | 実装 |
-|--------------|------|------|
-| トポロジカルソート（Kahn's） | 実行順序決定 | 入次数0のタスクをキューで処理 |
-| DFS循環検出 | 循環依存検出 | recursion stackで訪問中ノードを追跡 |
+| アルゴリズム                 | 用途         | 実装                                |
+| ---------------------------- | ------------ | ----------------------------------- |
+| トポロジカルソート（Kahn's） | 実行順序決定 | 入次数0のタスクをキューで処理       |
+| DFS循環検出                  | 循環依存検出 | recursion stackで訪問中ノードを追跡 |
 
 **実行モード**:
 
-| モード | 説明 | 用途 |
-|--------|------|------|
-| dry-run | 実行計画のみ返却 | 事前確認、見積もり |
-| execution | 実際にタスクを実行 | 本番実行 |
-| parallel | 独立タスクを並列実行 | 高速化（将来実装） |
+| モード    | 説明                 | 用途               |
+| --------- | -------------------- | ------------------ |
+| dry-run   | 実行計画のみ返却     | 事前確認、見積もり |
+| execution | 実際にタスクを実行   | 本番実行           |
+| parallel  | 独立タスクを並列実行 | 高速化（将来実装） |
 
 ---
 
@@ -1592,19 +1603,19 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 
 **問題**: Supabase Authの`identity_data`でアバターURLのキー名がプロバイダーごとに異なる
 
-| プロバイダー | キー名       | 備考                     |
-| ------------ | ------------ | ------------------------ |
-| Google       | `picture`    | OAuth 2.0標準のclaim名   |
-| GitHub       | `avatar_url` | GitHub API準拠           |
-| Discord      | `avatar_url` | GitHub互換               |
+| プロバイダー | キー名       | 備考                   |
+| ------------ | ------------ | ---------------------- |
+| Google       | `picture`    | OAuth 2.0標準のclaim名 |
+| GitHub       | `avatar_url` | GitHub API準拠         |
+| Discord      | `avatar_url` | GitHub互換             |
 
 **実装パターン**:
 
-| 要素           | 実装                                                         |
-| -------------- | ------------------------------------------------------------ |
+| 要素           | 実装                                                          |
+| -------------- | ------------------------------------------------------------- |
 | フォールバック | `identity_data?.avatar_url ?? identity_data?.picture ?? null` |
-| 優先順位       | 既存プロバイダー（avatar_url）を優先、Googleを後続           |
-| 安全性         | 未知のプロバイダーはnullにフォールバック                     |
+| 優先順位       | 既存プロバイダー（avatar_url）を優先、Googleを後続            |
+| 安全性         | 未知のプロバイダーはnullにフォールバック                      |
 
 **型定義の拡張**:
 
@@ -1614,6 +1625,7 @@ Renderer Process のコンテキストで JavaScript を実行し、Electron API
 | picture    | string \| undefined | Google用に追加         |
 
 **適用場面**:
+
 - 複数OAuthプロバイダーのデータ統合
 - 外部APIのレスポンス正規化
 - 後方互換性を維持した機能拡張
@@ -1629,29 +1641,29 @@ SkillAPIの二重定義（`window.skillAPI` + `window.electronAPI.skill`）を�
 
 ### 問題: IPC Bridge API二重公開
 
-| 要素 | 説明 |
-|------|------|
+| 要素   | 説明                                                                                 |
+| ------ | ------------------------------------------------------------------------------------ |
 | 旧状態 | `window.skillAPI`（直接公開）+ `window.electronAPI.skill`（contextBridge経由）が共存 |
-| 問題 | 呼び出し側で参照先が分散し、テストモックも二重管理が必要 |
-| 解決 | `window.electronAPI.skill` に一本化、旧 `window.skillAPI` を完全削除 |
+| 問題   | 呼び出し側で参照先が分散し、テストモックも二重管理が必要                             |
+| 解決   | `window.electronAPI.skill` に一本化、旧 `window.skillAPI` を完全削除                 |
 
 ### 統一後のAPI構成（13メソッド）
 
-| カテゴリ | メソッド | パターン | 戻り値 |
-|----------|----------|----------|--------|
-| Skill実行 | execute, onStream, abort, getExecutionStatus, onComplete, onError | safeInvoke/safeOn | 直接型（OperationResult不使用） |
-| Permission | onPermissionRequest, sendPermissionResponse | safeOn/safeInvoke | 直接型 |
-| Skill管理 | list, getImported, rescan, import, remove | safeInvoke | 直接型 |
+| カテゴリ   | メソッド                                                          | パターン          | 戻り値                          |
+| ---------- | ----------------------------------------------------------------- | ----------------- | ------------------------------- |
+| Skill実行  | execute, onStream, abort, getExecutionStatus, onComplete, onError | safeInvoke/safeOn | 直接型（OperationResult不使用） |
+| Permission | onPermissionRequest, sendPermissionResponse                       | safeOn/safeInvoke | 直接型                          |
+| Skill管理  | list, getImported, rescan, import, remove                         | safeInvoke        | 直接型                          |
 
 ### テスト結果
 
-| カテゴリ | テスト数 | 結果 |
-|----------|----------|------|
-| skill-api.test.ts | 37 | PASS |
-| skill-api.permission.test.ts | 30 | PASS |
-| skillSlice.test.ts | 59 | PASS |
-| SkillExecutor統合テスト | 12 | PASS |
-| **合計** | **138** | **PASS** |
+| カテゴリ                     | テスト数 | 結果     |
+| ---------------------------- | -------- | -------- |
+| skill-api.test.ts            | 37       | PASS     |
+| skill-api.permission.test.ts | 30       | PASS     |
+| skillSlice.test.ts           | 59       | PASS     |
+| SkillExecutor統合テスト      | 12       | PASS     |
+| **合計**                     | **138**  | **PASS** |
 
 **カバレッジ**: skill-api.ts で Statements 91.23%、Branches 85.71%、Functions 100%、Lines 91.23% を達成（平均91%）。
 
@@ -1659,29 +1671,29 @@ SkillAPIの二重定義（`window.skillAPI` + `window.electronAPI.skill`）を�
 
 #### 型アサーション残存（S1）
 
-| 要素 | 説明 |
-|------|------|
+| 要素 | 説明                                                                                                 |
+| ---- | ---------------------------------------------------------------------------------------------------- |
 | 問題 | `AgentView/index.tsx` で `as unknown as Skill[]` 型アサーション残存（agentSliceが旧 `Skill` 型使用） |
-| 対処 | 未タスク UT-FIX-5-1-001 として登録、TASK-FIX-6-1（状態管理変更）で包含予定 |
-| 教訓 | API統一時は呼び出し側のStore型定義まで影響範囲を調査し、スコープに含めるか明示的に判断する |
+| 対処 | 未タスク UT-FIX-5-1-001 として登録、TASK-FIX-6-1（状態管理変更）で包含予定                           |
+| 教訓 | API統一時は呼び出し側のStore型定義まで影響範囲を調査し、スコープに含めるか明示的に判断する           |
 
 #### OperationResult廃止の影響波及（S4）
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | `OperationResult<T>` ラッパー廃止で8ファイルに影響波及。使用箇所が分散していた |
-| 対処 | Preload層では直接型に統一し、旧定義は後方互換のため残置 |
+| 要素 | 説明                                                                                   |
+| ---- | -------------------------------------------------------------------------------------- |
+| 問題 | `OperationResult<T>` ラッパー廃止で8ファイルに影響波及。使用箇所が分散していた         |
+| 対処 | Preload層では直接型に統一し、旧定義は後方互換のため残置                                |
 | 教訓 | 型ラッパー廃止時は `grep -rn` で全使用箇所をリストアップし、段階的置換プランを策定する |
 
 #### テストモック設計・仕様書参照・編集永続化（S2/S3/S5）
 
 以下の実行プロセス上の課題は [skill-creator/references/patterns.md](.claude/skills/skill-creator/references/patterns.md) に成功パターンとして詳細を記録:
 
-| ID | 課題 | 対応パターン |
-|----|------|-------------|
-| S2 | パスエイリアス対応でテスト623→1092行に膨張 | IPC Bridge API統一時のテストモック設計パターン |
-| S3 | Phase 1で仕様書参照19件が不足し後付け修正 | Phase 1仕様書作成時の依存仕様書マトリクスパターン |
-| S5 | PostToolUseフックで8件が未永続化 | セッション間での仕様書編集永続化検証パターン |
+| ID  | 課題                                       | 対応パターン                                      |
+| --- | ------------------------------------------ | ------------------------------------------------- |
+| S2  | パスエイリアス対応でテスト623→1092行に膨張 | IPC Bridge API統一時のテストモック設計パターン    |
+| S3  | Phase 1で仕様書参照19件が不足し後付け修正  | Phase 1仕様書作成時の依存仕様書マトリクスパターン |
+| S5  | PostToolUseフックで8件が未永続化           | セッション間での仕様書編集永続化検証パターン      |
 
 ---
 
@@ -1691,49 +1703,49 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 ### 問題: 型定義変更時のシステム仕様書更新漏れ
 
-| 問題 | 原因 | 症状 |
-|------|------|------|
-| 仕様書と実装の乖離 | Phase 12で複数ファイル更新が必要だが一部漏れ | ドキュメントが古いまま残る |
-| 関連仕様書の更新漏れ | 該当する仕様書が分散している | interfaces, api-ipc, security等が不整合 |
-| topic-map再生成漏れ | 仕様書追加/更新後の再生成忘れ | インデックスが古いまま |
+| 問題                 | 原因                                         | 症状                                    |
+| -------------------- | -------------------------------------------- | --------------------------------------- |
+| 仕様書と実装の乖離   | Phase 12で複数ファイル更新が必要だが一部漏れ | ドキュメントが古いまま残る              |
+| 関連仕様書の更新漏れ | 該当する仕様書が分散している                 | interfaces, api-ipc, security等が不整合 |
+| topic-map再生成漏れ  | 仕様書追加/更新後の再生成忘れ                | インデックスが古いまま                  |
 
 ### 解決策: 型定義修正時のシステム仕様書更新チェックリスト
 
 #### Step 1: 型定義ファイルの同時更新
 
-| ファイル | 内容 | 更新タイミング |
-|----------|------|---------------|
-| `packages/shared/src/agent/types.ts` | 共有型定義 | 常に |
-| `apps/desktop/src/preload/types.ts` | Preload層型定義 | IPC関連の場合 |
+| ファイル                             | 内容            | 更新タイミング |
+| ------------------------------------ | --------------- | -------------- |
+| `packages/shared/src/agent/types.ts` | 共有型定義      | 常に           |
+| `apps/desktop/src/preload/types.ts`  | Preload層型定義 | IPC関連の場合  |
 
 #### Step 2: システム仕様書の更新
 
-| 仕様書 | 更新内容 | 該当条件 |
-|--------|----------|----------|
-| `interfaces-agent-sdk.md` | 型定義の変更内容記録 | Agent SDK型変更時 |
-| `interfaces-agent-sdk-skill.md` | 完了タスクセクション追加 | Skill関連型変更時 |
-| `api-ipc-agent.md` | 完了タスクセクション追加 | Agent IPC変更時 |
-| `security-api-electron.md` | 完了タスクテーブル追加 | セキュリティ関連変更時 |
-| `task-workflow.md` | 残課題テーブル・完了タスク記録 | 常に |
-| `LOGS.md`（2ファイル） | タスク完了記録 | 常に |
-| `SKILL.md`（2ファイル） | 変更履歴更新 | 常に |
-| `topic-map.md` | 再生成 | 常に |
+| 仕様書                          | 更新内容                       | 該当条件               |
+| ------------------------------- | ------------------------------ | ---------------------- |
+| `interfaces-agent-sdk.md`       | 型定義の変更内容記録           | Agent SDK型変更時      |
+| `interfaces-agent-sdk-skill.md` | 完了タスクセクション追加       | Skill関連型変更時      |
+| `api-ipc-agent.md`              | 完了タスクセクション追加       | Agent IPC変更時        |
+| `security-api-electron.md`      | 完了タスクテーブル追加         | セキュリティ関連変更時 |
+| `task-workflow.md`              | 残課題テーブル・完了タスク記録 | 常に                   |
+| `LOGS.md`（2ファイル）          | タスク完了記録                 | 常に                   |
+| `SKILL.md`（2ファイル）         | 変更履歴更新                   | 常に                   |
+| `topic-map.md`                  | 再生成                         | 常に                   |
 
 #### Step 3: 検証
 
-| 検証項目 | コマンド | 期待結果 |
-|----------|----------|----------|
-| 型整合性 | `pnpm typecheck` | エラーなし |
-| テスト | `pnpm test` | 全テストPASS |
+| 検証項目     | コマンド                               | 期待結果           |
+| ------------ | -------------------------------------- | ------------------ |
+| 型整合性     | `pnpm typecheck`                       | エラーなし         |
+| テスト       | `pnpm test`                            | 全テストPASS       |
 | 仕様書整合性 | Phase 12仕様書チェックリスト全項目確認 | 全項目チェック済み |
 
 ### 関連Pitfall
 
-| Pitfall ID | タイトル | 関連 |
-|------------|----------|------|
-| P23 | API二重定義の型管理複雑性 | 型定義ファイルの分散 |
-| P31 | Phase 12のシステム仕様書更新漏れ | 本パターンの教訓元 |
-| P32 | 型定義の二箇所同時更新必須 | Step 1の根拠 |
+| Pitfall ID | タイトル                         | 関連                 |
+| ---------- | -------------------------------- | -------------------- |
+| P23        | API二重定義の型管理複雑性        | 型定義ファイルの分散 |
+| P31        | Phase 12のシステム仕様書更新漏れ | 本パターンの教訓元   |
+| P32        | 型定義の二箇所同時更新必須       | Step 1の根拠         |
 
 **関連タスク**: UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH（2026-02-10完了）
 
@@ -1745,19 +1757,19 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 カスタム `declare module` ファイルと `node_modules` 内の実 SDK 型が共存する場合に発生する型解決の優先順位問題。
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` にカスタム `declare module` を作成していたが、SDK が `node_modules` にインストールされると TypeScript は `node_modules` 配下の実型定義を優先する |
-| 原因 | TypeScript のモジュール解決アルゴリズムでは、`node_modules` 配下にパッケージ実体が存在する場合、ambient declaration（`declare module`）よりも実型定義が優先される |
-| 影響 | カスタム `.d.ts` で定義した `PermissionMode`（`'auto' \| 'ask' \| 'deny'`）が無視され、実 SDK の型（`'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'delegate' \| 'dontAsk'`）が使用される。カスタム型は「ゴースト型」となり、仕様書にも誤った値が記載される |
-| 解決策 | SDK をインストールした時点でカスタム `.d.ts` を削除する。SDK 未インストール環境でのみ使用する場合はフラグで管理する |
+| 要素   | 説明                                                                                                                                                                                                                                                                         |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題   | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` にカスタム `declare module` を作成していたが、SDK が `node_modules` にインストールされると TypeScript は `node_modules` 配下の実型定義を優先する                                                             |
+| 原因   | TypeScript のモジュール解決アルゴリズムでは、`node_modules` 配下にパッケージ実体が存在する場合、ambient declaration（`declare module`）よりも実型定義が優先される                                                                                                            |
+| 影響   | カスタム `.d.ts` で定義した `PermissionMode`（`'auto' \| 'ask' \| 'deny'`）が無視され、実 SDK の型（`'default' \| 'acceptEdits' \| 'bypassPermissions' \| 'plan' \| 'delegate' \| 'dontAsk'`）が使用される。カスタム型は「ゴースト型」となり、仕様書にも誤った値が記載される |
+| 解決策 | SDK をインストールした時点でカスタム `.d.ts` を削除する。SDK 未インストール環境でのみ使用する場合はフラグで管理する                                                                                                                                                          |
 
 **モジュール解決の優先順位**:
 
-| 優先度 | ソース | 条件 |
-|--------|--------|------|
-| 1 | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` | SDK がインストール済みの場合 |
-| 2 | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` | SDK が未インストールの場合のみ有効 |
+| 優先度 | ソース                                                          | 条件                               |
+| ------ | --------------------------------------------------------------- | ---------------------------------- |
+| 1      | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts`   | SDK がインストール済みの場合       |
+| 2      | `packages/shared/src/agent/@anthropic-ai-claude-agent-sdk.d.ts` | SDK が未インストールの場合のみ有効 |
 
 **教訓**: SDK 型との重複を避けるため、`declare module` は SDK 未インストール環境でのみ使用する。SDK インストール後にカスタム `.d.ts` が残存すると、仕様書やコードレビューで誤った型情報を参照するリスクがある。
 
@@ -1769,26 +1781,26 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 外部 SDK の公式ドキュメントが限定的な場合に、API パラメータの正確な型情報を取得するためのパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | Claude Agent SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の公式ドキュメントが限定的で、`query({ prompt, options })` の `options` の全フィールドを正確に把握するのに時間がかかった |
-| 特に困難だった点 | `env: { ANTHROPIC_API_KEY }` パターン（API キーを環境変数として渡す）と `abortController` オプションは公式ドキュメントでは明示されていなかった |
+| 要素             | 説明                                                                                                                                                                                |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題             | Claude Agent SDK (`@anthropic-ai/claude-agent-sdk@0.2.30`) の公式ドキュメントが限定的で、`query({ prompt, options })` の `options` の全フィールドを正確に把握するのに時間がかかった |
+| 特に困難だった点 | `env: { ANTHROPIC_API_KEY }` パターン（API キーを環境変数として渡す）と `abortController` オプションは公式ドキュメントでは明示されていなかった                                      |
 
 **情報源の信頼性順位**:
 
-| 順位 | 情報源 | 信頼性 | 具体的なパス |
-|------|--------|--------|-------------|
-| 1 | SDK の TypeScript 型定義ファイル | 最も信頼できる | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` |
-| 2 | SDK の GitHub リポジトリのテストコード | 実用例として参考 | リポジトリの `test/` ディレクトリ |
-| 3 | SDK の公式ドキュメント | 概要把握には有用だが詳細が不足する場合がある | README.md、公式サイト |
+| 順位 | 情報源                                 | 信頼性                                       | 具体的なパス                                                  |
+| ---- | -------------------------------------- | -------------------------------------------- | ------------------------------------------------------------- |
+| 1    | SDK の TypeScript 型定義ファイル       | 最も信頼できる                               | `node_modules/@anthropic-ai/claude-agent-sdk/dist/index.d.ts` |
+| 2    | SDK の GitHub リポジトリのテストコード | 実用例として参考                             | リポジトリの `test/` ディレクトリ                             |
+| 3    | SDK の公式ドキュメント                 | 概要把握には有用だが詳細が不足する場合がある | README.md、公式サイト                                         |
 
 **発見された重要なパラメータ**:
 
-| パラメータ | 用途 | 発見元 |
-|-----------|------|--------|
+| パラメータ                           | 用途                                | 発見元         |
+| ------------------------------------ | ----------------------------------- | -------------- |
 | `env: { ANTHROPIC_API_KEY: string }` | API キーを環境変数として SDK に渡す | 型定義ファイル |
-| `abortController: AbortController` | SDK 実行の中断制御 | 型定義ファイル |
-| `permissionMode: PermissionMode` | パーミッション制御モード | 型定義ファイル |
+| `abortController: AbortController`   | SDK 実行の中断制御                  | 型定義ファイル |
+| `permissionMode: PermissionMode`     | パーミッション制御モード            | 型定義ファイル |
 
 **教訓**: 公式ドキュメントより型定義ファイル（`node_modules/<package>/dist/index.d.ts`）が最も信頼できる情報源である。新しい SDK を統合する際は、まず型定義ファイルを直接読み、全パラメータと型を把握してから実装に着手する。
 
@@ -1800,47 +1812,47 @@ IPC/Agent SDK関連の型定義を修正する際のシステム仕様書更新�
 
 IPC ハンドラの戻り値型がサービス層の戻り値型と一致しない場合に、2ステップ呼び出しで型を変換するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | `skill:import` ハンドラが `importSkills()` の戻り値 `ImportResult`（`{ success, importedCount, errors }`）をそのまま返していたが、Renderer 側は `ImportedSkill`（`{ name, description, path, importedAt, status, agents }`）を期待していた。2つの型は共有フィールドがゼロであり、型変換が必須 |
-| 発生条件 | サービス層の「操作結果型」と Renderer が必要とする「データ表現型」が異なる場合。特に POST 系操作（import/create/update）で操作結果ではなくリソース表現が必要な場合 |
-| 検出の困難さ | Preload 層がモック化されているためコンパイル時に検出不可。ランタイムで `args?.skillIds` が `undefined` となり、バリデーションエラーとして初めて顕在化する |
-| 解決策 | 2ステップ呼び出し: ①操作実行（`importSkills([skillName])`） → ②データ取得（`getSkillByName(skillName)`）で期待型のオブジェクトを返却 |
-| 不採用案 | A案: ImportResult→ImportedSkill の手動マッピング（importSkills が返さないフィールドが多すぎる）。B案: importSkills の内部変更（他の呼び出し元への影響が大きい） |
+| 要素         | 説明                                                                                                                                                                                                                                                                                          |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題         | `skill:import` ハンドラが `importSkills()` の戻り値 `ImportResult`（`{ success, importedCount, errors }`）をそのまま返していたが、Renderer 側は `ImportedSkill`（`{ name, description, path, importedAt, status, agents }`）を期待していた。2つの型は共有フィールドがゼロであり、型変換が必須 |
+| 発生条件     | サービス層の「操作結果型」と Renderer が必要とする「データ表現型」が異なる場合。特に POST 系操作（import/create/update）で操作結果ではなくリソース表現が必要な場合                                                                                                                            |
+| 検出の困難さ | Preload 層がモック化されているためコンパイル時に検出不可。ランタイムで `args?.skillIds` が `undefined` となり、バリデーションエラーとして初めて顕在化する                                                                                                                                     |
+| 解決策       | 2ステップ呼び出し: ①操作実行（`importSkills([skillName])`） → ②データ取得（`getSkillByName(skillName)`）で期待型のオブジェクトを返却                                                                                                                                                          |
+| 不採用案     | A案: ImportResult→ImportedSkill の手動マッピング（importSkills が返さないフィールドが多すぎる）。B案: importSkills の内部変更（他の呼び出し元への影響が大きい）                                                                                                                               |
 
 **2ステップ変換のデータフロー**:
 
-| ステップ | API呼び出し | 入力 | 出力型 | 目的 |
-|----------|------------|------|--------|------|
-| 1 | `skillService.importSkills([skillName])` | `string[]` | `ImportResult` | スキルファイルのインポート実行 |
-| 2 | `skillService.getSkillByName(skillName)` | `string` | `ImportedSkill \| undefined` | インポート済みスキルのデータ表現取得 |
+| ステップ | API呼び出し                              | 入力       | 出力型                       | 目的                                 |
+| -------- | ---------------------------------------- | ---------- | ---------------------------- | ------------------------------------ |
+| 1        | `skillService.importSkills([skillName])` | `string[]` | `ImportResult`               | スキルファイルのインポート実行       |
+| 2        | `skillService.getSkillByName(skillName)` | `string`   | `ImportedSkill \| undefined` | インポート済みスキルのデータ表現取得 |
 
 **P42準拠3段バリデーション**（ハンドラ入口で実施）:
 
-| 段階 | チェック内容 | エラー |
-|------|-------------|--------|
-| 1 | `typeof skillName !== "string"` | 型不一致 |
-| 2 | `skillName === ""` | 空文字列 |
-| 3 | `skillName.trim() === ""` | スペースのみ |
+| 段階 | チェック内容                    | エラー       |
+| ---- | ------------------------------- | ------------ |
+| 1    | `typeof skillName !== "string"` | 型不一致     |
+| 2    | `skillName === ""`              | 空文字列     |
+| 3    | `skillName.trim() === ""`       | スペースのみ |
 
 **苦戦箇所と解決策**:
 
-| # | 苦戦ポイント | 原因 | 解決策 | 教訓 |
-|---|-------------|------|--------|------|
-| 1 | IPC インターフェース不整合がランタイムまで検出不可 | Preload がモック化されるため、Main handler の引数型と Preload の送信型の不一致がコンパイル時に検出されない | E2E統合テスト、または IPC 契約テスト（Mock を使わず実際の IPC を通す）の導入を検討 | IPC 境界は「型安全ではない」と認識し、ランタイム型チェックを必ず入れる |
-| 2 | ImportResult と ImportedSkill の型形状が完全に異なる | サービス層は「操作の成否」を返し、UI 層は「リソースのデータ表現」を必要とする。関心事の違い | 2ステップ変換パターン: 操作実行 → データ再取得 | POST 系操作の IPC ハンドラは「操作 + 取得」の2ステップを標準化する |
-| 3 | 引数名の契約ドリフト（skillId vs skillName） | ハンドラ設計時に ID ベースで命名したが、実際の値はスキル名 | 全レイヤーで引数名を `skillName` に統一 | 引数名は「実際の値のセマンティクス」に合致させる |
-| 4 | 3層同時更新の必要性（Main・Preload・Test） | P23/P32 パターン: IPC 関連の型変更は必ず複数ファイルに波及する | 変更前に `grep` で全影響箇所を特定し、1コミットで同時更新 | IPC 変更時は「影響範囲リスト」を事前に作成する |
-| 5 | getSkillByName が null を返す場合のエラーハンドリング | importSkills 成功後でも、内部キャッシュのタイミングにより null が返る可能性がある | IMPORT_ERROR を throw し、Renderer 側で適切にエラー表示 | 2ステップ目の「取得失敗」は独立したエラーケースとして設計する |
+| #   | 苦戦ポイント                                          | 原因                                                                                                       | 解決策                                                                             | 教訓                                                                   |
+| --- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 1   | IPC インターフェース不整合がランタイムまで検出不可    | Preload がモック化されるため、Main handler の引数型と Preload の送信型の不一致がコンパイル時に検出されない | E2E統合テスト、または IPC 契約テスト（Mock を使わず実際の IPC を通す）の導入を検討 | IPC 境界は「型安全ではない」と認識し、ランタイム型チェックを必ず入れる |
+| 2   | ImportResult と ImportedSkill の型形状が完全に異なる  | サービス層は「操作の成否」を返し、UI 層は「リソースのデータ表現」を必要とする。関心事の違い                | 2ステップ変換パターン: 操作実行 → データ再取得                                     | POST 系操作の IPC ハンドラは「操作 + 取得」の2ステップを標準化する     |
+| 3   | 引数名の契約ドリフト（skillId vs skillName）          | ハンドラ設計時に ID ベースで命名したが、実際の値はスキル名                                                 | 全レイヤーで引数名を `skillName` に統一                                            | 引数名は「実際の値のセマンティクス」に合致させる                       |
+| 4   | 3層同時更新の必要性（Main・Preload・Test）            | P23/P32 パターン: IPC 関連の型変更は必ず複数ファイルに波及する                                             | 変更前に `grep` で全影響箇所を特定し、1コミットで同時更新                          | IPC 変更時は「影響範囲リスト」を事前に作成する                         |
+| 5   | getSkillByName が null を返す場合のエラーハンドリング | importSkills 成功後でも、内部キャッシュのタイミングにより null が返る可能性がある                          | IMPORT_ERROR を throw し、Renderer 側で適切にエラー表示                            | 2ステップ目の「取得失敗」は独立したエラーケースとして設計する          |
 
 **適用判断基準**:
 
-| 条件 | 判断 |
-|------|------|
-| サービス戻り値と UI 期待型が一致する | 直接返却（変換不要） |
-| 戻り値から UI 期待型への機械的マッピングが可能 | マッピング関数で変換 |
-| 戻り値と UI 期待型に共有フィールドがない | **2ステップ変換パターン** |
-| 操作結果ではなくリソース表現が必要 | **2ステップ変換パターン** |
+| 条件                                           | 判断                      |
+| ---------------------------------------------- | ------------------------- |
+| サービス戻り値と UI 期待型が一致する           | 直接返却（変換不要）      |
+| 戻り値から UI 期待型への機械的マッピングが可能 | マッピング関数で変換      |
+| 戻り値と UI 期待型に共有フィールドがない       | **2ステップ変換パターン** |
+| 操作結果ではなくリソース表現が必要             | **2ステップ変換パターン** |
 
 **関連 Pitfall**: P23（API二重定義の型管理）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P44（IPC ハンドラと Preload のインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
 
@@ -1852,20 +1864,20 @@ IPC ハンドラの戻り値型がサービス層の戻り値型と一致しな�
 
 Renderer コンポーネントが内部識別子（`skill.id`＝SHA-256ハッシュ）と外部識別子（`skill.name`＝人間可読名）を混同する問題を、境界変換で解決するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | `SkillImportDialog` の `handleImport` が `selectedIds`（Set に格納された `skill.id`）をそのまま `onImport` コールバックに渡していた。IPC ハンドラ側は `skillName`（人間可読名）を期待しており、`getSkillByName(hashValue)` が常に `null` を返すため、インポートが 100% 失敗 |
-| 発生条件 | 同じ `string` 型の識別子が複数種類（id, name, slug 等）あるコンポーネントで、UI が内部選択状態と外部 API 引数を直接結合している場合 |
-| 検出の困難さ | TypeScript は `string` 型同士の代入を許容するため、コンパイル時に検出不可。IPC ハンドラの修正（IMPORT-INTERFACE-001）完了後も Renderer 側が未修正のまま残り、E2E でのみ検出可能 |
-| 解決策 | 境界変換を1箇所に集約: `availableSkills.filter(s => selectedIds.has(s.id)).map(s => s.name)` |
+| 要素         | 説明                                                                                                                                                                                                                                                                        |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題         | `SkillImportDialog` の `handleImport` が `selectedIds`（Set に格納された `skill.id`）をそのまま `onImport` コールバックに渡していた。IPC ハンドラ側は `skillName`（人間可読名）を期待しており、`getSkillByName(hashValue)` が常に `null` を返すため、インポートが 100% 失敗 |
+| 発生条件     | 同じ `string` 型の識別子が複数種類（id, name, slug 等）あるコンポーネントで、UI が内部選択状態と外部 API 引数を直接結合している場合                                                                                                                                         |
+| 検出の困難さ | TypeScript は `string` 型同士の代入を許容するため、コンパイル時に検出不可。IPC ハンドラの修正（IMPORT-INTERFACE-001）完了後も Renderer 側が未修正のまま残り、E2E でのみ検出可能                                                                                             |
+| 解決策       | 境界変換を1箇所に集約: `availableSkills.filter(s => selectedIds.has(s.id)).map(s => s.name)`                                                                                                                                                                                |
 
 **境界変換のデータフロー**:
 
-| 段階 | 変数 | 型 | 値の例 | 用途 |
-|------|------|-----|--------|------|
-| UI選択状態 | `selectedIds` | `Set<string>` | `"a1b2c3..."` (SHA-256) | チェックボックスのON/OFF管理 |
-| 変換処理 | `filter + map` | `Skill[] → string[]` | - | id→name の契約変換 |
-| コールバック引数 | `skillNames` | `string[]` | `["my-skill"]` | IPC ハンドラへの入力値 |
+| 段階             | 変数           | 型                   | 値の例                  | 用途                         |
+| ---------------- | -------------- | -------------------- | ----------------------- | ---------------------------- |
+| UI選択状態       | `selectedIds`  | `Set<string>`        | `"a1b2c3..."` (SHA-256) | チェックボックスのON/OFF管理 |
+| 変換処理         | `filter + map` | `Skill[] → string[]` | -                       | id→name の契約変換           |
+| コールバック引数 | `skillNames`   | `string[]`           | `["my-skill"]`          | IPC ハンドラへの入力値       |
 
 **コード例**:
 
@@ -1888,27 +1900,27 @@ const handleImport = () => {
 
 **苦戦箇所と解決策**:
 
-| # | 苦戦ポイント | 原因 | 解決策 | 教訓 |
-|---|-------------|------|--------|------|
-| 1 | 同名ファイルの修正対象特定 | `SkillImportDialog` が複数配置されており、ファイル名検索だけでは対象を特定できない | `AgentView` の import 文から逆引きし、`organisms/SkillImportDialog/index.tsx` を固定 | UI不具合は「利用箇所 → import先 → 実装本体」の順で特定する |
-| 2 | `skill.id` / `skill.name` の型的区別不可 | 両方 `string` 型のため TypeScript が警告しない | 変数名を `skillNames` に統一し、テストで否定条件（id が渡されない）を追加 | 文字列識別子は「命名」「変換点」「否定条件テスト」の3点で守る |
-| 3 | 偽成功ログによる障害点の誤認 | `importSkills` 関数単位のログだけ確認し、IPC ハンドラの最終戻り値まで追跡しなかった | Renderer入力値 → IPC引数 → `getSkillByName()` 照合を一連で確認 | IPC系は「最終レスポンス契約」を真実源として扱う |
+| #   | 苦戦ポイント                             | 原因                                                                                | 解決策                                                                               | 教訓                                                          |
+| --- | ---------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| 1   | 同名ファイルの修正対象特定               | `SkillImportDialog` が複数配置されており、ファイル名検索だけでは対象を特定できない  | `AgentView` の import 文から逆引きし、`organisms/SkillImportDialog/index.tsx` を固定 | UI不具合は「利用箇所 → import先 → 実装本体」の順で特定する    |
+| 2   | `skill.id` / `skill.name` の型的区別不可 | 両方 `string` 型のため TypeScript が警告しない                                      | 変数名を `skillNames` に統一し、テストで否定条件（id が渡されない）を追加            | 文字列識別子は「命名」「変換点」「否定条件テスト」の3点で守る |
+| 3   | 偽成功ログによる障害点の誤認             | `importSkills` 関数単位のログだけ確認し、IPC ハンドラの最終戻り値まで追跡しなかった | Renderer入力値 → IPC引数 → `getSkillByName()` 照合を一連で確認                       | IPC系は「最終レスポンス契約」を真実源として扱う               |
 
 **P44 三層修正の全体像**:
 
-| レイヤー | タスク | 修正内容 | 完了日 |
-|----------|--------|----------|--------|
-| IPC Handler | UT-FIX-SKILL-IMPORT-INTERFACE-001 | 引数を `{ skillIds: string[] }` → `skillName: string` に変更 | 2026-02-21 |
+| レイヤー        | タスク                              | 修正内容                                                          | 完了日     |
+| --------------- | ----------------------------------- | ----------------------------------------------------------------- | ---------- |
+| IPC Handler     | UT-FIX-SKILL-IMPORT-INTERFACE-001   | 引数を `{ skillIds: string[] }` → `skillName: string` に変更      | 2026-02-21 |
 | IPC Return Type | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 | 戻り値を `ImportResult` → `ImportedSkill` に変更（2ステップ変換） | 2026-02-21 |
-| Renderer | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | `skill.id` → `skill.name` への変換処理を追加 | 2026-02-22 |
+| Renderer        | UT-FIX-SKILL-IMPORT-ID-MISMATCH-001 | `skill.id` → `skill.name` への変換処理を追加                      | 2026-02-22 |
 
 **適用判断基準**:
 
-| 条件 | 判断 |
-|------|------|
-| コンポーネントの内部状態IDとAPI引数の識別子が一致 | 変換不要 |
-| 内部状態IDとAPI引数が異なる `string` 型で分離可能 | **境界変換パターン適用** |
-| 識別子が `number` や Branded Type で型的に区別可能 | 型チェックで防止可能 |
+| 条件                                               | 判断                     |
+| -------------------------------------------------- | ------------------------ |
+| コンポーネントの内部状態IDとAPI引数の識別子が一致  | 変換不要                 |
+| 内部状態IDとAPI引数が異なる `string` 型で分離可能  | **境界変換パターン適用** |
+| 識別子が `number` や Branded Type で型的に区別可能 | 型チェックで防止可能     |
 
 **関連 Pitfall**: P44（IPC ハンドラと Preload のインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
 
@@ -1920,27 +1932,27 @@ const handleImport = () => {
 
 macOS の `activate` イベントでウィンドウを再作成する際に、`ipcMain.handle()` の二重登録例外を防止するパターン。
 
-| 要素 | 説明 |
-|------|------|
-| 問題 | `ipcMain.handle()` は同一チャンネルに2つ目のハンドラ登録を試みると例外を送出する。`ipcMain.on()` とは異なり、暗黙的な多重登録ができない |
-| 発生条件 | macOS でドックアイコンクリック → `activate` イベント → `registerAllIpcHandlers()` 再実行 |
-| 解決策 | `unregisterAllIpcHandlers()` で全チャンネルを一括解除してから再登録する（A案: unregister→register） |
-| 不採用案 | B案: フラグガード（stale参照リスク）、C案: 全ハンドラファイルリファクタ（影響範囲大） |
+| 要素     | 説明                                                                                                                                    |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 問題     | `ipcMain.handle()` は同一チャンネルに2つ目のハンドラ登録を試みると例外を送出する。`ipcMain.on()` とは異なり、暗黙的な多重登録ができない |
+| 発生条件 | macOS でドックアイコンクリック → `activate` イベント → `registerAllIpcHandlers()` 再実行                                                |
+| 解決策   | `unregisterAllIpcHandlers()` で全チャンネルを一括解除してから再登録する（A案: unregister→register）                                     |
+| 不採用案 | B案: フラグガード（stale参照リスク）、C案: 全ハンドラファイルリファクタ（影響範囲大）                                                   |
 
 **一括解除の3ステップ**:
 
-| ステップ | API | 目的 |
-|----------|-----|------|
-| 1 | `ipcMain.removeHandler(channel)` | `ipcMain.handle()` で登録したハンドラを解除 |
-| 2 | `ipcMain.removeAllListeners(channel)` | `ipcMain.on()` で登録したリスナーを解除 |
-| 3 | `themeWatcherUnsubscribe()` | `nativeTheme.on("updated")` リスナーを解除 |
+| ステップ | API                                   | 目的                                        |
+| -------- | ------------------------------------- | ------------------------------------------- |
+| 1        | `ipcMain.removeHandler(channel)`      | `ipcMain.handle()` で登録したハンドラを解除 |
+| 2        | `ipcMain.removeAllListeners(channel)` | `ipcMain.on()` で登録したリスナーを解除     |
+| 3        | `themeWatcherUnsubscribe()`           | `nativeTheme.on("updated")` リスナーを解除  |
 
 **ipcMain.handle() vs ipcMain.on() の動作差異**:
 
-| API | 二重登録時の動作 | 解除API |
-|-----|-----------------|---------|
-| `ipcMain.handle()` | 例外を送出 | `ipcMain.removeHandler()` |
-| `ipcMain.on()` | 暗黙的に追加（リスナー増殖） | `ipcMain.removeAllListeners()` |
+| API                | 二重登録時の動作             | 解除API                        |
+| ------------------ | ---------------------------- | ------------------------------ |
+| `ipcMain.handle()` | 例外を送出                   | `ipcMain.removeHandler()`      |
+| `ipcMain.on()`     | 暗黙的に追加（リスナー増殖） | `ipcMain.removeAllListeners()` |
 
 **セキュリティ考慮事項**: 全チャンネルは `IPC_CHANNELS` 定数から `Object.values()` で取得し、ホワイトリストの網羅性を保証する。4層防御（L1-L4）は個別ハンドラ側で維持されるため、unregister/register では影響を受けない。
 
@@ -1948,10 +1960,10 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 **関連未タスク（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 から派生）**:
 
-| タスクID                             | タスク名                                          | 優先度 |
-| ------------------------------------ | ------------------------------------------------- | ------ |
+| タスクID                             | タスク名                                             | 優先度 |
+| ------------------------------------ | ---------------------------------------------------- | ------ |
 | task-sec-ipc-lifecycle-audit-001     | Electron ライフサイクルイベント IPC リスナー管理監査 | 中     |
-| task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト               | 中     |
+| task-imp-ipc-registration-verify-001 | IPC ハンドラ登録整合性自動検証テスト                 | 中     |
 
 ---
 
@@ -1962,12 +1974,12 @@ macOS の `activate` イベントでウィンドウを再作成する際に、`i
 
 ### 問題: Main Processハンドラの引数型とPreload側実引数の不一致
 
-| レイヤー | 修正前（不整合） | 修正後（統一） |
-|----------|-----------------|----------------|
-| Main Handler (skill:import) | `args: { skillIds: string[] }` | `skillName: string` |
-| Main Handler (skill:remove) | `args: { skillId: string }` | `skillName: string` |
-| Preload (skill-api.ts) | `safeInvoke(channel, skillName)` | 変更なし |
-| Renderer (呼び出し元) | `importSkill(skillName)` | 変更なし |
+| レイヤー                    | 修正前（不整合）                 | 修正後（統一）      |
+| --------------------------- | -------------------------------- | ------------------- |
+| Main Handler (skill:import) | `args: { skillIds: string[] }`   | `skillName: string` |
+| Main Handler (skill:remove) | `args: { skillId: string }`      | `skillName: string` |
+| Preload (skill-api.ts)      | `safeInvoke(channel, skillName)` | 変更なし            |
+| Renderer (呼び出し元)       | `importSkill(skillName)`         | 変更なし            |
 
 ### 修正テンプレート: P42準拠3段バリデーション
 
@@ -1996,27 +2008,28 @@ ipcMain.handle("skill:import", async (event, skillName: string) => {
 
 ### 修正判断基準: 「呼び出し元が多い側を変更しない」
 
-| 判断条件 | 変更側 | 理由 |
-|----------|--------|------|
-| Preload/Rendererの呼び出し箇所が多い | Main Handler | 影響範囲の最小化 |
-| Main Handlerの利用箇所が多い | Preload | 変更コストの最小化 |
-| 両方同数 | ドキュメント/仕様書の定義に合わせる | 正本基準 |
+| 判断条件                             | 変更側                              | 理由               |
+| ------------------------------------ | ----------------------------------- | ------------------ |
+| Preload/Rendererの呼び出し箇所が多い | Main Handler                        | 影響範囲の最小化   |
+| Main Handlerの利用箇所が多い         | Preload                             | 変更コストの最小化 |
+| 両方同数                             | ドキュメント/仕様書の定義に合わせる | 正本基準           |
 
 ### 3箇所同時更新チェックリスト（P23/P32準拠）
 
-| チェック | ファイル | 更新内容 |
-|----------|----------|----------|
-| [ ] | Main Handler (`skillHandlers.ts`) | 引数型を `string` に変更 + 3段バリデーション追加 |
-| [ ] | Preload API (`skill-api.ts`) | 通常は変更不要（確認のみ） |
-| [ ] | テスト (`skillHandlers.test.ts`) | 新引数形式に合わせたテストケース更新 |
-| [ ] | `pnpm typecheck` | 型整合性の検証 |
-| [ ] | `pnpm vitest run` (apps/desktop) | テスト全件PASS確認 |
+| チェック | ファイル                          | 更新内容                                         |
+| -------- | --------------------------------- | ------------------------------------------------ |
+| [ ]      | Main Handler (`skillHandlers.ts`) | 引数型を `string` に変更 + 3段バリデーション追加 |
+| [ ]      | Preload API (`skill-api.ts`)      | 通常は変更不要（確認のみ）                       |
+| [ ]      | テスト (`skillHandlers.test.ts`)  | 新引数形式に合わせたテストケース更新             |
+| [ ]      | `pnpm typecheck`                  | 型整合性の検証                                   |
+| [ ]      | `pnpm vitest run` (apps/desktop)  | テスト全件PASS確認                               |
 
 **関連Pitfall**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P42（.trim()バリデーション漏れ）、P44（skill:import/remove IPCインターフェース不整合）、P45（IPC引数命名の契約ドリフト）
 
 **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001, UT-FIX-SKILL-REMOVE-INTERFACE-001
 
 > **参照**:
+>
 > - IPCインターフェース契約検証の詳細チェックリスト: [ipc-contract-checklist.md](./ipc-contract-checklist.md)
 > - 既知の落とし穴 P44: [06-known-pitfalls.md](../../rules/06-known-pitfalls.md#p44-skillimportremove-ipcハンドラとpreloadのインターフェース不整合)
 
@@ -2031,12 +2044,12 @@ ipcMain.handle("skill:import", async (event, skillName: string) => {
 
 外部ライブラリ（Monaco, CodeMirror等）を使用せず、HTML textarea要素でコード編集UIを実現するパターン。
 
-| 設定項目       | 値                 | 目的                               |
-| -------------- | ------------------ | ---------------------------------- |
-| `spellCheck`   | `false`            | コード入力時のスペルチェック抑制   |
-| `font-family`  | `monospace`        | 等幅フォントでコード可読性向上     |
-| `white-space`  | `pre`              | 空白文字・改行の保持               |
-| `tab-size`     | `2`                | インデント幅統一                   |
+| 設定項目      | 値          | 目的                             |
+| ------------- | ----------- | -------------------------------- |
+| `spellCheck`  | `false`     | コード入力時のスペルチェック抑制 |
+| `font-family` | `monospace` | 等幅フォントでコード可読性向上   |
+| `white-space` | `pre`       | 空白文字・改行の保持             |
+| `tab-size`    | `2`         | インデント幅統一                 |
 
 **Tab→2スペース挿入**: `onKeyDown` で `key === 'Tab'` を検知し、`e.preventDefault()` 後にカーソル位置にスペース2個を挿入する。`selectionStart` / `selectionEnd` で挿入位置を制御。
 
@@ -2044,12 +2057,12 @@ ipcMain.handle("skill:import", async (event, skillName: string) => {
 
 Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開状態を管理するパターン。
 
-| 状態               | 型                    | 管理方法   | 理由                                           |
-| ------------------ | --------------------- | ---------- | ---------------------------------------------- |
-| カテゴリ展開状態   | `Set<string>`         | `useState` | コンポーネント固有UI、P31無限ループ事前対策    |
-| 選択ファイルパス   | `string \| null`      | `useState` | エディター内ローカル状態                       |
-| ファイル内容       | `string`              | `useState` | IPC読み込み結果の一時保持                      |
-| 未保存フラグ       | `boolean`             | `useState` | 保存ボタンの有効/無効制御                      |
+| 状態             | 型               | 管理方法   | 理由                                        |
+| ---------------- | ---------------- | ---------- | ------------------------------------------- |
+| カテゴリ展開状態 | `Set<string>`    | `useState` | コンポーネント固有UI、P31無限ループ事前対策 |
+| 選択ファイルパス | `string \| null` | `useState` | エディター内ローカル状態                    |
+| ファイル内容     | `string`         | `useState` | IPC読み込み結果の一時保持                   |
+| 未保存フラグ     | `boolean`        | `useState` | 保存ボタンの有効/無効制御                   |
 
 **設計判断**: P31（Zustand Store Hooks無限ループ）の事前対策として、SkillEditorのすべての状態を `useState` で管理する。SkillEditorはモーダル的なコンポーネントであり、グローバル共有の必要がないため、この選択は妥当。
 
@@ -2057,16 +2070,16 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 
 ファイルの読み込み・編集・保存・作成・削除・復元をIPC経由で行うデータフローパターン。
 
-| ステップ | 処理                    | データフロー                        |
-| -------- | ----------------------- | ----------------------------------- |
-| 1        | ファイル選択            | ユーザークリック → setState(path)   |
-| 2        | ファイル読み込み        | readFile(skillName, path) → content |
-| 3        | コンテンツ表示          | setState(content) → textarea表示    |
-| 4        | 編集検知                | onChange → setState(newContent) + hasChanges=true |
-| 5        | 保存                    | writeFile(skillName, path, content) → hasChanges=false |
-| 6        | 新規作成                | createFile(skillName, path, "") → fileTree更新 + loadFile(path) |
-| 7        | 削除                    | deleteFile(skillName, path) → fileTree更新 + fallback選択 |
-| 8        | バックアップ復元        | restoreBackup(skillName, backupPath) → fileTree更新 + loadFile(originalPath) |
+| ステップ | 処理             | データフロー                                                                 |
+| -------- | ---------------- | ---------------------------------------------------------------------------- |
+| 1        | ファイル選択     | ユーザークリック → setState(path)                                            |
+| 2        | ファイル読み込み | readFile(skillName, path) → content                                          |
+| 3        | コンテンツ表示   | setState(content) → textarea表示                                             |
+| 4        | 編集検知         | onChange → setState(newContent) + hasChanges=true                            |
+| 5        | 保存             | writeFile(skillName, path, content) → hasChanges=false                       |
+| 6        | 新規作成         | createFile(skillName, path, "") → fileTree更新 + loadFile(path)              |
+| 7        | 削除             | deleteFile(skillName, path) → fileTree更新 + fallback選択                    |
+| 8        | バックアップ復元 | restoreBackup(skillName, backupPath) → fileTree更新 + loadFile(originalPath) |
 
 **未保存検出**: `hasChanges` フラグで編集状態を追跡し、保存ボタンの有効/無効制御とEscape閉じる時の確認ダイアログ表示に使用。
 
@@ -2074,11 +2087,11 @@ Zustand Storeを使用せず、`useState` + `Set<string>` でカテゴリ展開�
 
 仕様書段階で既知のPitfallを対策として組み込むアプローチ。
 
-| Pitfall | 対策                                          | 組み込み箇所                     |
-| ------- | --------------------------------------------- | -------------------------------- |
-| P31     | Zustand不使用、useState のみで状態管理        | 状態管理設計                     |
-| P39     | happy-dom環境では fireEvent を使用            | テスト設計                       |
-| P40     | `apps/desktop` ディレクトリからテスト実行     | テスト実行手順                   |
+| Pitfall | 対策                                      | 組み込み箇所   |
+| ------- | ----------------------------------------- | -------------- |
+| P31     | Zustand不使用、useState のみで状態管理    | 状態管理設計   |
+| P39     | happy-dom環境では fireEvent を使用        | テスト設計     |
+| P40     | `apps/desktop` ディレクトリからテスト実行 | テスト実行手順 |
 
 **関連タスク**: TASK-9A（completed）
 **関連ドキュメント**: [SkillEditor UIコンポーネント仕様](./ui-ux-feature-components.md#skill-editor-ui-task-9a)
@@ -2100,11 +2113,11 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 
 ### 実装苦戦箇所と対策
 
-| 苦戦箇所 | 原因 | 対策 |
-|----------|------|------|
-| Phase依存順序違反 | 5エージェント並列ディスパッチでPhase 1-3完了前にPhase 4-7が先行 | Phase依存チェーンを尊重し、ゲートPhase（3, 10）前後で並列化区間を分離 |
-| worktree環境でのPhase 11 | Electron起動不可 | 自動テスト（vitest）で代替し、制約を明記 |
-| カバレッジ閾値解釈 | skillHandlers.ts全体のLine 45%は低いが修正対象は全分岐カバー | ハンドラ固有の分岐カバー率を別途記録し、ファイル全体の数値と区別 |
+| 苦戦箇所                 | 原因                                                            | 対策                                                                  |
+| ------------------------ | --------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Phase依存順序違反        | 5エージェント並列ディスパッチでPhase 1-3完了前にPhase 4-7が先行 | Phase依存チェーンを尊重し、ゲートPhase（3, 10）前後で並列化区間を分離 |
+| worktree環境でのPhase 11 | Electron起動不可                                                | 自動テスト（vitest）で代替し、制約を明記                              |
+| カバレッジ閾値解釈       | skillHandlers.ts全体のLine 45%は低いが修正対象は全分岐カバー    | ハンドラ固有の分岐カバー率を別途記録し、ファイル全体の数値と区別      |
 
 ### 関連Pitfall・タスク
 
@@ -2157,13 +2170,13 @@ export const useAvailableSkillsForImport = () =>
 
 ### 適用判断基準
 
-| 条件 | useShallow 必要 | 理由 |
-|------|----------------|------|
-| `.filter()` で配列を返すセレクタ | **必須** | 毎回新しい配列参照 |
-| `.map()` で変換配列を返すセレクタ | **必須** | 同上 |
-| `{ ...state, computed }` でオブジェクトを返すセレクタ | **必須** | 毎回新しいオブジェクト参照 |
-| `state.singleField` でプリミティブを返すセレクタ | 不要 | `Object.is` で正しく比較可能 |
-| `state.actionFunction` でアクション関数を返すセレクタ | 不要 | Zustand のクロージャで安定参照 |
+| 条件                                                  | useShallow 必要 | 理由                           |
+| ----------------------------------------------------- | --------------- | ------------------------------ |
+| `.filter()` で配列を返すセレクタ                      | **必須**        | 毎回新しい配列参照             |
+| `.map()` で変換配列を返すセレクタ                     | **必須**        | 同上                           |
+| `{ ...state, computed }` でオブジェクトを返すセレクタ | **必須**        | 毎回新しいオブジェクト参照     |
+| `state.singleField` でプリミティブを返すセレクタ      | 不要            | `Object.is` で正しく比較可能   |
+| `state.actionFunction` でアクション関数を返すセレクタ | 不要            | Zustand のクロージャで安定参照 |
 
 ### パフォーマンス特性
 
@@ -2191,32 +2204,32 @@ export const useAvailableSkillsForImport = () =>
 
 ### IPCチャネル命名規則
 
-| パターン | 用途 | 例 |
-|---------|------|-----|
-| `skill:{動詞}` | 既存ローカル操作 | `skill:import`, `skill:remove`, `skill:list` |
-| `skill:{動詞}FromSource` | 外部ソース経由の操作 | `skill:importFromSource` |
-| `skill:{動詞}Source` | ソース自体への操作（検証等） | `skill:validateSource` |
+| パターン                 | 用途                         | 例                                           |
+| ------------------------ | ---------------------------- | -------------------------------------------- |
+| `skill:{動詞}`           | 既存ローカル操作             | `skill:import`, `skill:remove`, `skill:list` |
+| `skill:{動詞}FromSource` | 外部ソース経由の操作         | `skill:importFromSource`                     |
+| `skill:{動詞}Source`     | ソース自体への操作（検証等） | `skill:validateSource`                       |
 
 ### チャネル名の既存/新規対応表
 
-| チャネル名 | 引数型 | 用途 | 状態 |
-|-----------|--------|------|------|
-| `skill:list` | なし | ローカルスキル一覧 | 既存 |
-| `skill:import` | `skillName: string` | ローカルスキル読込 | 既存（変更不要） |
-| `skill:remove` | `skillName: string` | ローカルスキル削除 | 既存 |
-| `skill:get-detail` | `{ skillId: string }` | スキル詳細取得 | 既存 |
-| `skill:readFile` | `{ skillName: string, relativePath: string }` | ファイル読み取り（`SKILL.md` 含む） | 既存 |
-| `skill:importFromSource` | `ShareTarget` | 外部ソースインポート | TASK-9F新規 |
-| `skill:validateSource` | `ShareTarget` | インポート元の検証 | TASK-9F新規 |
-| `skill:export` | `{ skillName: string, destination: ShareTarget }` | スキルエクスポート | TASK-9F新規 |
+| チャネル名               | 引数型                                            | 用途                                | 状態             |
+| ------------------------ | ------------------------------------------------- | ----------------------------------- | ---------------- |
+| `skill:list`             | なし                                              | ローカルスキル一覧                  | 既存             |
+| `skill:import`           | `skillName: string`                               | ローカルスキル読込                  | 既存（変更不要） |
+| `skill:remove`           | `skillName: string`                               | ローカルスキル削除                  | 既存             |
+| `skill:get-detail`       | `{ skillId: string }`                             | スキル詳細取得                      | 既存             |
+| `skill:readFile`         | `{ skillName: string, relativePath: string }`     | ファイル読み取り（`SKILL.md` 含む） | 既存             |
+| `skill:importFromSource` | `ShareTarget`                                     | 外部ソースインポート                | TASK-9F新規      |
+| `skill:validateSource`   | `ShareTarget`                                     | インポート元の検証                  | TASK-9F新規      |
+| `skill:export`           | `{ skillName: string, destination: ShareTarget }` | スキルエクスポート                  | TASK-9F新規      |
 
 ### 命名の判断基準
 
-| 条件 | 命名パターン | 理由 |
-|------|------------|------|
+| 条件                                           | 命名パターン             | 理由                                               |
+| ---------------------------------------------- | ------------------------ | -------------------------------------------------- |
 | 既存チャネルと同じ動詞だが用途・引数型が異なる | `skill:{動詞}FromSource` | P5（二重登録例外）を回避しつつ、操作の意図を明確化 |
-| 既存チャネルと名前衝突のリスクがない新規操作 | `skill:{動詞}` | 簡潔さを優先 |
-| 操作対象がソース自体（検証、一覧等） | `skill:{動詞}Source` | 「何に対する操作か」を名前で表現 |
+| 既存チャネルと名前衝突のリスクがない新規操作   | `skill:{動詞}`           | 簡潔さを優先                                       |
+| 操作対象がソース自体（検証、一覧等）           | `skill:{動詞}Source`     | 「何に対する操作か」を名前で表現                   |
 
 ### 実装チェックリスト（TASK-9F実装時）
 
@@ -2241,29 +2254,32 @@ export enum IPC_CHANNELS {
 ### 苦戦箇所と教訓
 
 #### 1. Phase 4 での修正箇所数の見積もり誤差
+
 - **問題**: Phase 4 仕様書で task-022 の修正箇所を「3箇所」と記載したが、実際は1箇所のみだった
 - **原因**: 仕様書設計時にファイル内容を精査せず、概算で修正箇所数を決定
 - **教訓**: Phase 4 テスト設計時は、対象ファイルを `grep` で事前検証し、期待値を「N件以上」のような柔軟な基準で設計する
 
 #### 2. 仕様書修正のみタスクの Phase 6-8 ハンドリング
+
 - **問題**: コード変更がないため、Phase 6（テスト拡充）・7（カバレッジ）・8（リファクタリング）が不要
 - **解決策**: 各 Phase に `not-applicable.md` を作成し、N/A 理由を明記
 - **教訓**: `taskType: "spec-only"` タスクでは、Phase 6-8 を明示的に N/A 記録する運用が有効。Phase 4 の grep 検証が唯一のテスト手段となる
 
 #### 3. 仕様書間のチャネル名重複検出
+
 - **問題**: skill-import-agent-system 配下の複数仕様書（task-022, task-030）に同じチャネル名が散在
 - **解決策**: `grep -rn "skill:import" docs/30-workflows/skill-import-agent-system/` で全仕様書横断検索
 - **教訓**: 新規 IPC チャネル追加時は、既存チャネルとの名前衝突を仕様書レベルで事前検証する
 
 ### 関連Pitfall
 
-| Pitfall | 概要 | 本パターンでの対応 |
-|---------|------|-------------------|
-| P5 | `ipcMain.handle()` 二重登録例外 | 同名チャネルを分離してリスクを排除 |
-| P44 | IPC ハンドラと Preload の不整合 | チャネル名明確化により引数の曖昧性を解消 |
-| P45 | IPC 引数命名の契約ドリフト | 新チャネルで `ShareTarget` 型を明示的に使用 |
-| P32 | 型定義の2箇所同時更新必須 | チェックリストで `channels.ts` と `preload/types.ts` を明記 |
-| P42 | .trim() バリデーション漏れ | 3段バリデーションをチェックリストに含有 |
+| Pitfall | 概要                            | 本パターンでの対応                                          |
+| ------- | ------------------------------- | ----------------------------------------------------------- |
+| P5      | `ipcMain.handle()` 二重登録例外 | 同名チャネルを分離してリスクを排除                          |
+| P44     | IPC ハンドラと Preload の不整合 | チャネル名明確化により引数の曖昧性を解消                    |
+| P45     | IPC 引数命名の契約ドリフト      | 新チャネルで `ShareTarget` 型を明示的に使用                 |
+| P32     | 型定義の2箇所同時更新必須       | チェックリストで `channels.ts` と `preload/types.ts` を明記 |
+| P42     | .trim() バリデーション漏れ      | 3段バリデーションをチェックリストに含有                     |
 
 ### 参照
 
@@ -2284,33 +2300,40 @@ IPCハンドラ群のバリデーション応答形式を一括でP42準拠に�
 
 IPCハンドラのバリデーションが4種類の応答形式で混在しており、エラーハンドリングの一貫性がなく、セキュリティ上のリスク（スペースのみ入力 `"   "` の通過）がある。
 
-| パターン | 応答形式 | 該当ハンドラ | セキュリティリスク |
-|----------|---------|-------------|------------------|
-| A | `return { code: "VALIDATION_ERROR" }` | skill:get-detail, skill:execute | `.trim()` 未適用 |
-| B | `return false` | skill:abort | 型チェックのみ |
-| C | `return null` | skill:get-status | 型チェックのみ |
-| D | `return { success: false }` | skill:analyze, skill:improve | `.trim()` 未適用 |
+| パターン | 応答形式                              | 該当ハンドラ                    | セキュリティリスク |
+| -------- | ------------------------------------- | ------------------------------- | ------------------ |
+| A        | `return { code: "VALIDATION_ERROR" }` | skill:get-detail, skill:execute | `.trim()` 未適用   |
+| B        | `return false`                        | skill:abort                     | 型チェックのみ     |
+| C        | `return null`                         | skill:get-status                | 型チェックのみ     |
+| D        | `return { success: false }`           | skill:analyze, skill:improve    | `.trim()` 未適用   |
 
 #### 解決策
 
 P42準拠の3段バリデーション + throw形式に統一:
 
-| ステップ | チェック内容 | 目的 |
-|----------|------------|------|
-| 1 | `typeof !== "string"` | 型チェック（null, undefined, number等を拒否） |
-| 2 | `.trim() === ""` | スペースのみ入力の拒否（P42の核心） |
-| 3 | `throw { code: "VALIDATION_ERROR" }` | 統一エラー応答（safeInvokeが自動キャッチ） |
+| ステップ | チェック内容                         | 目的                                          |
+| -------- | ------------------------------------ | --------------------------------------------- |
+| 1        | `typeof !== "string"`                | 型チェック（null, undefined, number等を拒否） |
+| 2        | `.trim() === ""`                     | スペースのみ入力の拒否（P42の核心）           |
+| 3        | `throw { code: "VALIDATION_ERROR" }` | 統一エラー応答（safeInvokeが自動キャッチ）    |
 
 ```typescript
 // ❌ 修正前: 4種類のバリデーションパターンが混在
 // パターンA
 if (typeof args?.skillId !== "string" || args.skillId === "") {
-  return { code: "VALIDATION_ERROR", message: "skillId must be a non-empty string" };
+  return {
+    code: "VALIDATION_ERROR",
+    message: "skillId must be a non-empty string",
+  };
 }
 // パターンB
-if (!executionId) { return false; }
+if (!executionId) {
+  return false;
+}
 // パターンC
-if (!executionId) { return null; }
+if (!executionId) {
+  return null;
+}
 // パターンD
 if (typeof args?.skillName !== "string" || args.skillName === "") {
   return { success: false, error: "スキル名が指定されていません" };
@@ -2319,28 +2342,34 @@ if (typeof args?.skillName !== "string" || args.skillName === "") {
 // ✅ 修正後: P42準拠統一パターン（全ハンドラ共通）
 // オブジェクト引数型
 if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
-  throw { code: "VALIDATION_ERROR", message: "skillName must be a non-empty string" };
+  throw {
+    code: "VALIDATION_ERROR",
+    message: "skillName must be a non-empty string",
+  };
 }
 // 直接引数型
 if (typeof executionId !== "string" || executionId.trim() === "") {
-  throw { code: "VALIDATION_ERROR", message: "executionId must be a non-empty string" };
+  throw {
+    code: "VALIDATION_ERROR",
+    message: "executionId must be a non-empty string",
+  };
 }
 ```
 
 #### 後方互換性
 
-| レイヤー | 影響 | 理由 |
-|----------|------|------|
-| Main Process | **変更あり** | return → throw に変更 |
+| レイヤー             | 影響         | 理由                                                                                                            |
+| -------------------- | ------------ | --------------------------------------------------------------------------------------------------------------- |
+| Main Process         | **変更あり** | return → throw に変更                                                                                           |
 | Preload (safeInvoke) | **変更なし** | Main Processのthrowを自動キャッチしてPromise rejectionに変換（Electron仕様: `ipcRenderer.invoke()` が自動変換） |
-| Renderer | **変更なし** | safeInvokeのエラーハンドリングパスで既にキャッチ済み |
+| Renderer             | **変更なし** | safeInvokeのエラーハンドリングパスで既にキャッチ済み                                                            |
 
 #### 引数形式別の適用パターン
 
-| 引数形式 | バリデーション対象 | 該当ハンドラ | チェック式 |
-|---------|------------------|------------|-----------|
-| オブジェクト型 | `args?.fieldName` | skill:get-detail, skill:execute, skill:analyze, skill:improve | `typeof args?.fieldName !== "string" \|\| args.fieldName.trim() === ""` |
-| 直接引数型 | `argName` | skill:abort, skill:get-status | `typeof argName !== "string" \|\| argName.trim() === ""` |
+| 引数形式       | バリデーション対象 | 該当ハンドラ                                                  | チェック式                                                              |
+| -------------- | ------------------ | ------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| オブジェクト型 | `args?.fieldName`  | skill:get-detail, skill:execute, skill:analyze, skill:improve | `typeof args?.fieldName !== "string" \|\| args.fieldName.trim() === ""` |
+| 直接引数型     | `argName`          | skill:abort, skill:get-status                                 | `typeof argName !== "string" \|\| argName.trim() === ""`                |
 
 #### 移行チェックリスト
 
@@ -2353,13 +2382,13 @@ if (typeof executionId !== "string" || executionId.trim() === "") {
 
 #### テスト戦略: describe.eachマトリクステスト
 
-| 要素 | 説明 |
-|------|------|
-| テスト手法 | `describe.each` で全ハンドラ × 入力パターンのマトリクスを自動生成 |
-| 入力パターン | `null`, `undefined`, 空文字列 `""`, スペースのみ `"   "`, 正常値 |
-| アサーション | `rejects.toMatchObject({ code: "VALIDATION_ERROR" })` |
-| テスト件数 | 59件の新規テスト（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001実績） |
-| 全テスト | 181件PASS（既存テスト含む） |
+| 要素         | 説明                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| テスト手法   | `describe.each` で全ハンドラ × 入力パターンのマトリクスを自動生成 |
+| 入力パターン | `null`, `undefined`, 空文字列 `""`, スペースのみ `"   "`, 正常値  |
+| アサーション | `rejects.toMatchObject({ code: "VALIDATION_ERROR" })`             |
+| テスト件数   | 59件の新規テスト（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001実績）   |
+| 全テスト     | 181件PASS（既存テスト含む）                                       |
 
 #### 注意事項
 
@@ -2397,9 +2426,9 @@ ISO 8601文字列を統一基準として採用し、Main Process側で明示的
 ```typescript
 // Main Process（ハンドラ戻り値）
 interface SkillScheduleResponse {
-  nextRun: string;         // ISO 8601
-  lastRun: string | null;  // ISO 8601, nullable
-  createdAt: string;       // ISO 8601
+  nextRun: string; // ISO 8601
+  lastRun: string | null; // ISO 8601, nullable
+  createdAt: string; // ISO 8601
 }
 
 const response: SkillScheduleResponse = {
@@ -2415,11 +2444,11 @@ const lastRun = response.lastRun ? new Date(response.lastRun) : null;
 
 #### 適用基準
 
-| 条件 | 適用 |
-|------|------|
-| IPC境界を越えるDate型フィールド | 必須 |
-| 同一プロセス内のDate型 | 不要（Date型のまま使用） |
-| nullable な Date フィールド | `string \| null; // ISO 8601` と定義 |
+| 条件                            | 適用                                 |
+| ------------------------------- | ------------------------------------ |
+| IPC境界を越えるDate型フィールド | 必須                                 |
+| 同一プロセス内のDate型          | 不要（Date型のまま使用）             |
+| nullable な Date フィールド     | `string \| null; // ISO 8601` と定義 |
 
 #### 仕様書での型注記
 
@@ -2427,11 +2456,11 @@ const lastRun = response.lastRun ? new Date(response.lastRun) : null;
 
 ```typescript
 interface BackendType {
-  scheduledAt: Date;           // バックエンド側の型
+  scheduledAt: Date; // バックエンド側の型
 }
 
 interface IPCResponseType {
-  scheduledAt: string;         // ISO 8601（IPC送信用）
+  scheduledAt: string; // ISO 8601（IPC送信用）
 }
 ```
 
@@ -2450,7 +2479,7 @@ positional形式（`safeInvoke(channel, arg1, arg2)`）のIPC引数は、引数�
 
 ```typescript
 // ❌ positional形式（P44リスク）
-safeInvoke('skill:editor:read', skillName, relativePath);
+safeInvoke("skill:editor:read", skillName, relativePath);
 
 // ✅ object形式 + Args型定義
 interface SkillEditorReadArgs {
@@ -2458,19 +2487,34 @@ interface SkillEditorReadArgs {
   relativePath: string;
 }
 
-safeInvoke('skill:editor:read', { skillName, relativePath } satisfies SkillEditorReadArgs);
+safeInvoke("skill:editor:read", {
+  skillName,
+  relativePath,
+} satisfies SkillEditorReadArgs);
 
 // ハンドラ側（P42準拠3段バリデーション）
-ipcMain.handle('skill:editor:read', async (event, args: SkillEditorReadArgs) => {
-  // フィールドごとに3段バリデーション
-  if (typeof args?.skillName !== 'string' || args.skillName.trim() === '') {
-    throw { code: 'VALIDATION_ERROR', message: 'skillName must be a non-empty string' };
-  }
-  if (typeof args?.relativePath !== 'string' || args.relativePath.trim() === '') {
-    throw { code: 'VALIDATION_ERROR', message: 'relativePath must be a non-empty string' };
-  }
-  return service.readFile(args.skillName.trim(), args.relativePath.trim());
-});
+ipcMain.handle(
+  "skill:editor:read",
+  async (event, args: SkillEditorReadArgs) => {
+    // フィールドごとに3段バリデーション
+    if (typeof args?.skillName !== "string" || args.skillName.trim() === "") {
+      throw {
+        code: "VALIDATION_ERROR",
+        message: "skillName must be a non-empty string",
+      };
+    }
+    if (
+      typeof args?.relativePath !== "string" ||
+      args.relativePath.trim() === ""
+    ) {
+      throw {
+        code: "VALIDATION_ERROR",
+        message: "relativePath must be a non-empty string",
+      };
+    }
+    return service.readFile(args.skillName.trim(), args.relativePath.trim());
+  },
+);
 ```
 
 #### Args型定義テンプレート
@@ -2499,14 +2543,14 @@ interface {Channel}Args {
 
 バックエンド型定義（task-9a〜task-9j）とフロントエンドProps定義（task-030, task-031b）の間に、以下のカテゴリの型ギャップが潜在する：
 
-| ギャップカテゴリ | 説明 | 検出方法 |
-|-----------------|------|---------|
-| Date型シリアライズ | IPC境界でのDate→string変換未定義 | `grep -c "Date" task-*.md` |
-| 状態値セット不一致 | バックエンドとフロントエンドのenum値セットが異なる | 型定義の目視比較 |
-| コールバック引数不明確 | UIコンポーネントのコールバック引数が仕様書で未定義 | Props定義とイベントハンドラの照合 |
-| 変換ロジック未記載 | バックエンド戻り値→UI表示の変換ロジックが不在 | データフローの端点追跡 |
-| 購読パターン未定義 | safeOnのcleanupやStrictMode対策が未記載 | useEffect内のIPC購読パターン検索 |
-| 引数形式不整合 | positional vs object形式の不一致 | `grep -c "safeInvoke.*," task-*.md` |
+| ギャップカテゴリ       | 説明                                               | 検出方法                            |
+| ---------------------- | -------------------------------------------------- | ----------------------------------- |
+| Date型シリアライズ     | IPC境界でのDate→string変換未定義                   | `grep -c "Date" task-*.md`          |
+| 状態値セット不一致     | バックエンドとフロントエンドのenum値セットが異なる | 型定義の目視比較                    |
+| コールバック引数不明確 | UIコンポーネントのコールバック引数が仕様書で未定義 | Props定義とイベントハンドラの照合   |
+| 変換ロジック未記載     | バックエンド戻り値→UI表示の変換ロジックが不在      | データフローの端点追跡              |
+| 購読パターン未定義     | safeOnのcleanupやStrictMode対策が未記載            | useEffect内のIPC購読パターン検索    |
+| 引数形式不整合         | positional vs object形式の不一致                   | `grep -c "safeInvoke.*," task-*.md` |
 
 #### 検出手順
 
@@ -2553,18 +2597,28 @@ const registerValidatedAuthHandler = <TArgs extends unknown[]>(
   channel: AuthInvokeChannel,
   handler: (event: IpcMainInvokeEvent, ...args: TArgs) => Promise<unknown>,
 ): void => {
-  ipcMain.handle(channel, withValidation(channel, handler, { getAllowedWindows: () => [mainWindow] }));
+  ipcMain.handle(
+    channel,
+    withValidation(channel, handler, { getAllowedWindows: () => [mainWindow] }),
+  );
 };
 
-registerValidatedAuthHandler(IPC_CHANNELS.AUTH_LOGIN, async (_event, args) => { /* ... */ });
+registerValidatedAuthHandler(IPC_CHANNELS.AUTH_LOGIN, async (_event, args) => {
+  /* ... */
+});
 
 // fallback経路: ipc/index.ts
-const fallbackAuthHandlers: ReadonlyArray<readonly [string, () => Promise<unknown>]> = [
+const fallbackAuthHandlers: ReadonlyArray<
+  readonly [string, () => Promise<unknown>]
+> = [
   [IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse],
   [IPC_CHANNELS.AUTH_LOGOUT, async () => notConfiguredResponse],
   [IPC_CHANNELS.AUTH_GET_SESSION, async () => ({ success: true, data: null })],
   [IPC_CHANNELS.AUTH_REFRESH, async () => notConfiguredResponse],
-  [IPC_CHANNELS.AUTH_CHECK_ONLINE, async () => ({ success: true, data: { online: net.isOnline() } })],
+  [
+    IPC_CHANNELS.AUTH_CHECK_ONLINE,
+    async () => ({ success: true, data: { online: net.isOnline() } }),
+  ],
 ];
 
 for (const [channel, handler] of fallbackAuthHandlers) {
@@ -2591,17 +2645,17 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 #### 再利用テンプレート（目的/場所/検証）
 
-| Step | 目的 | 場所 | 実行 | 成功基準 |
-| --- | --- | --- | --- | --- |
-| 1 | 対象固定 | `apps/desktop/src/main/ipc/` | AUTH 5チャネルを2経路（通常/fallback）で列挙 | 対象漏れ0件 |
-| 2 | 実装修正 | `authHandlers.ts`, `index.ts` | 通常=共通登録ヘルパー、fallback=配列/ループ登録へ統一 | `ipcMain.handle(IPC_CHANNELS.AUTH_*)` 直書き0件 |
-| 3 | 回帰検証 | `__tests__/ipc-double-registration.test.ts` | fallback含む重複登録防止テスト実行 | PASS |
-| 4 | 仕様同期 | `references/` + `task-workflow.md` | 実装内容/苦戦箇所/完了記録を同一ターンで更新 | リンク切れ0件 |
+| Step | 目的     | 場所                                        | 実行                                                  | 成功基準                                        |
+| ---- | -------- | ------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| 1    | 対象固定 | `apps/desktop/src/main/ipc/`                | AUTH 5チャネルを2経路（通常/fallback）で列挙          | 対象漏れ0件                                     |
+| 2    | 実装修正 | `authHandlers.ts`, `index.ts`               | 通常=共通登録ヘルパー、fallback=配列/ループ登録へ統一 | `ipcMain.handle(IPC_CHANNELS.AUTH_*)` 直書き0件 |
+| 3    | 回帰検証 | `__tests__/ipc-double-registration.test.ts` | fallback含む重複登録防止テスト実行                    | PASS                                            |
+| 4    | 仕様同期 | `references/` + `task-workflow.md`          | 実装内容/苦戦箇所/完了記録を同一ターンで更新          | リンク切れ0件                                   |
 
-| 監査の落とし穴 | 対処 |
-| --- | --- |
+| 監査の落とし穴                       | 対処                                             |
+| ------------------------------------ | ------------------------------------------------ |
 | 全体監査FAILをそのまま差分FAILと扱う | baseline（全体）と current（変更範囲）を分離判定 |
-| 完了移管後の参照更新漏れ | `verify-unassigned-links.js` を完了条件に固定 |
+| 完了移管後の参照更新漏れ             | `verify-unassigned-links.js` を完了条件に固定    |
 
 ---
 
@@ -2615,10 +2669,10 @@ rg -n "ipcMain\\.handle\\(\\s*IPC_CHANNELS\\.AUTH_" \
 
 #### 1. 監査結果を 3 区分で分類する
 
-| 区分 | 判定 | 対応 |
-| --- | --- | --- |
-| 対象内・重大 | 仕様/実装ブロッカー | 現タスクで即時是正 |
-| 対象内・軽微 | 命名揺れ/記述不足 | リネーム計画に登録 |
+| 区分         | 判定                   | 対応               |
+| ------------ | ---------------------- | ------------------ |
+| 対象内・重大 | 仕様/実装ブロッカー    | 現タスクで即時是正 |
+| 対象内・軽微 | 命名揺れ/記述不足      | リネーム計画に登録 |
 | 対象外・軽微 | 別ドメイン由来のノイズ | 未タスクへ分離登録 |
 
 #### 2. 台帳更新を同一ターンで実施する
@@ -2656,22 +2710,22 @@ jq '[.duplicateHandlers[] | select(.expr | test("SKILL"))] | length' /tmp/ut-ipc
 
 #### 1. 判定軸を current / baseline に分離する
 
-| 監査モード | コマンド | 用途 | fail条件 |
-| --- | --- | --- | --- |
-| 対象監査 | `audit-unassigned-tasks.js --json --target-file <path>` | 今回変更の合否判定 | `currentViolations.total > 0` |
-| 差分監査 | `audit-unassigned-tasks.js --json --diff-from <ref>` | 複数変更ファイルの合否判定 | `currentViolations.total > 0` |
-| 全体監査 | `audit-unassigned-tasks.js --json` | 既存資産健全性の監視 | 全体違反 > 0 |
+| 監査モード | コマンド                                                | 用途                       | fail条件                      |
+| ---------- | ------------------------------------------------------- | -------------------------- | ----------------------------- |
+| 対象監査   | `audit-unassigned-tasks.js --json --target-file <path>` | 今回変更の合否判定         | `currentViolations.total > 0` |
+| 差分監査   | `audit-unassigned-tasks.js --json --diff-from <ref>`    | 複数変更ファイルの合否判定 | `currentViolations.total > 0` |
+| 全体監査   | `audit-unassigned-tasks.js --json`                      | 既存資産健全性の監視       | 全体違反 > 0                  |
 
 #### 2. Phase 12 の記録を2段構成で固定する
 
-1. `unassigned-task-detection.md` に current/baseline を分離記録する  
-2. baseline違反は未タスク化の候補として管理し、今回タスクの完了判定とは分離する  
+1. `unassigned-task-detection.md` に current/baseline を分離記録する
+2. baseline違反は未タスク化の候補として管理し、今回タスクの完了判定とは分離する
 
 #### 3. 完了済み未タスク指示書の移管を同一ターンで実施する
 
-1. `unassigned-task/` → `completed-tasks/unassigned-task/` へ物理移動  
-2. `task-workflow.md` の参照パスを同期更新  
-3. `verify-unassigned-links.js` で参照整合を確認  
+1. `unassigned-task/` → `completed-tasks/unassigned-task/` へ物理移動
+2. `task-workflow.md` の参照パスを同期更新
+3. `verify-unassigned-links.js` で参照整合を確認
 
 #### 4. Phase 12 準拠確認チェーン（skill-creator連携）を固定する
 
@@ -2690,9 +2744,9 @@ node /Users/dm/dev/dev/ObsidianMemo/.claude/skills/skill-creator/scripts/quick_v
 
 ### 適用指針
 
-- full監査結果をそのまま「今回差分fail」と解釈しない。  
-- 完了判定は current、負債管理は baseline に責務分離する。  
-- 台帳更新と物理移管を同一ターンで処理し、運用ドリフトを防止する。  
+- full監査結果をそのまま「今回差分fail」と解釈しない。
+- 完了判定は current、負債管理は baseline に責務分離する。
+- 台帳更新と物理移管を同一ターンで処理し、運用ドリフトを防止する。
 
 ---
 
@@ -2706,12 +2760,12 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 
 #### 1. 型定義の配置ルール
 
-| 型の種類 | 配置先 | 例 |
-| --- | --- | --- |
-| ドメインモデル型 | `@repo/shared` (`packages/shared/src/`) | `Skill`, `SkillLifecycleState`, `Suggestion` |
-| Store Slice 状態型 | `@repo/shared` からimport + Slice固有の拡張 | `AgentSliceState extends { skills: Skill[] }` |
-| Preload API 型 | `apps/desktop/src/preload/types.ts` | `ElectronSkillAPI`, `SkillBridgeAPI` |
-| IPC ハンドラ引数型 | Main Process 内で定義、`@repo/shared` の型を参照 | `handler(event, skillName: string)` |
+| 型の種類           | 配置先                                           | 例                                            |
+| ------------------ | ------------------------------------------------ | --------------------------------------------- |
+| ドメインモデル型   | `@repo/shared` (`packages/shared/src/`)          | `Skill`, `SkillLifecycleState`, `Suggestion`  |
+| Store Slice 状態型 | `@repo/shared` からimport + Slice固有の拡張      | `AgentSliceState extends { skills: Skill[] }` |
+| Preload API 型     | `apps/desktop/src/preload/types.ts`              | `ElectronSkillAPI`, `SkillBridgeAPI`          |
+| IPC ハンドラ引数型 | Main Process 内で定義、`@repo/shared` の型を参照 | `handler(event, skillName: string)`           |
 
 #### 2. 新規型追加時のチェックリスト
 
@@ -2723,11 +2777,11 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 
 #### 3. 禁止パターン
 
-| 禁止パターン | 理由 | 正しいパターン |
-| --- | --- | --- |
-| `unknown[]` プレースホルダ型 | 型安全性が失われ、実行時エラーの発見が遅延 | `@repo/shared` から具体型をimport |
-| Slice 内での独自型定義 | Store と Preload で型が乖離する | `@repo/shared` の型をre-export |
-| `as unknown as TargetType` キャスト | 型不整合を隠蔽する | 共有型を統一してキャスト不要にする |
+| 禁止パターン                        | 理由                                       | 正しいパターン                     |
+| ----------------------------------- | ------------------------------------------ | ---------------------------------- |
+| `unknown[]` プレースホルダ型        | 型安全性が失われ、実行時エラーの発見が遅延 | `@repo/shared` から具体型をimport  |
+| Slice 内での独自型定義              | Store と Preload で型が乖離する            | `@repo/shared` の型をre-export     |
+| `as unknown as TargetType` キャスト | 型不整合を隠蔽する                         | 共有型を統一してキャスト不要にする |
 
 ### 適用指針
 
@@ -2745,10 +2799,10 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 
 **解決パターン**: スタイル定数とアニメーション定数をモジュールスコープの `styles.ts` / `animations.ts` に抽出し、コンポーネントとテストの両方から import する。
 
-| ファイル | 責務 | 内容例 |
-| --- | --- | --- |
-| `styles.ts` | スペーシング・インタラクティブスタイル定数 | `spacing.sectionGap`, `interactiveStyles.iconButton` |
-| `animations.ts` | トランジション・アニメーション定数 | `transitions.hover`, `transitions.slideIn` |
+| ファイル        | 責務                                       | 内容例                                               |
+| --------------- | ------------------------------------------ | ---------------------------------------------------- |
+| `styles.ts`     | スペーシング・インタラクティブスタイル定数 | `spacing.sectionGap`, `interactiveStyles.iconButton` |
+| `animations.ts` | トランジション・アニメーション定数         | `transitions.hover`, `transitions.slideIn`           |
 
 **定数定義の設計原則**:
 
@@ -2759,13 +2813,14 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 ```typescript
 // styles.ts - コンポーネント外部で定数管理
 export const spacing = {
-  sectionGap: "gap-6",      // 24px (8px x 3)
-  chipGap: "gap-4",         // 16px (8px x 2)
-  containerPadding: "p-6",  // 24px
+  sectionGap: "gap-6", // 24px (8px x 3)
+  chipGap: "gap-4", // 16px (8px x 2)
+  containerPadding: "p-6", // 24px
 } as const;
 
 export const interactiveStyles = {
-  iconButton: "p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors duration-200",
+  iconButton:
+    "p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors duration-200",
 } as const;
 
 // animations.ts - アニメーション定数管理
@@ -2800,18 +2855,17 @@ expect(container.className).toContain(spacing.sectionGap);
 
 ```typescript
 // 段階的移行: 新セレクタ未定義の環境でもクラッシュしない
-const recentExecutions = typeof useRecentExecutions === "function"
-  ? useRecentExecutions()
-  : [];
+const recentExecutions =
+  typeof useRecentExecutions === "function" ? useRecentExecutions() : [];
 ```
 
 **適用判断基準**:
 
-| 条件 | フォールバック使用 | 直接セレクタ使用 |
-| --- | --- | --- |
-| 既存テストモックが多数存在 | 推奨 | 全モック更新が必要 |
-| セレクタが段階的に追加される | 推奨 | 移行完了まで使えない |
-| セレクタが確実に存在する | 不要 | 推奨 |
+| 条件                         | フォールバック使用 | 直接セレクタ使用     |
+| ---------------------------- | ------------------ | -------------------- |
+| 既存テストモックが多数存在   | 推奨               | 全モック更新が必要   |
+| セレクタが段階的に追加される | 推奨               | 移行完了まで使えない |
+| セレクタが確実に存在する     | 不要               | 推奨                 |
 
 **注意**: フォールバックは移行期間の一時的措置。移行完了後は `typeof` ガードを除去し、直接セレクタ使用に切り替える。
 
@@ -2827,12 +2881,12 @@ const recentExecutions = typeof useRecentExecutions === "function"
 
 **解決パターン**: Phase 2（アーキテクチャ設計）で z-index 管理テーブルを事前定義し、全レイヤーの表示順序を確定させる。
 
-| レイヤー | z-index | コンポーネント例 |
-| --- | --- | --- |
-| ベース | z-0 〜 z-10 | ページコンテンツ、カードレイアウト |
-| ナビゲーション | z-20 | GlobalNavStrip |
-| パネル | z-40 | AdvancedSettingsPanel |
-| フローティング | z-50 | FloatingExecutionBar |
+| レイヤー       | z-index     | コンポーネント例                   |
+| -------------- | ----------- | ---------------------------------- |
+| ベース         | z-0 〜 z-10 | ページコンテンツ、カードレイアウト |
+| ナビゲーション | z-20        | GlobalNavStrip                     |
+| パネル         | z-40        | AdvancedSettingsPanel              |
+| フローティング | z-50        | FloatingExecutionBar               |
 
 **設計時のルール**:
 
@@ -2846,52 +2900,216 @@ const recentExecutions = typeof useRecentExecutions === "function"
 
 **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
 
+### S26: 直接IPC→Store個別セレクタ移行パターン（TASK-10A-F 2026-03-07策定）
+
+Custom Hookが `window.electronAPI` を直接呼び出している場合の、Store個別セレクタへの移行手順。
+
+#### 移行チェックリスト
+
+| ステップ | 内容                                             | 検証方法                                                         |
+| -------- | ------------------------------------------------ | ---------------------------------------------------------------- |
+| 1        | Store actionが agentSlice に定義済みか確認       | `grep -n "analyzeSkill\|createSkill" store/slices/agentSlice.ts` |
+| 2        | 個別セレクタが store/index.ts にexport済みか確認 | `grep -n "useAnalyzeSkill\|useCreateSkill" store/index.ts`       |
+| 3        | ローカル useState を Store セレクタに置換        | State: `useCurrentAnalysis()`, Action: `useAnalyzeSkill()`       |
+| 4        | 直接IPC呼び出しを削除                            | `window.electronAPI.skill.*` → Store action 経由                 |
+| 5        | try/catch を全ハンドラに追加                     | Store側error処理済みでも UIクラッシュ防止で必須                  |
+| 6        | isMountedRef パターンを削除                      | Store action内部で状態更新するため不要                           |
+| 7        | テストを Store mock パターンに移行               | `vi.mock("../../../store")` で個別セレクタをmock                 |
+
+#### テスト mock 標準パターン
+
+```typescript
+// State用セレクタ: 値を直接返す
+// Action用セレクタ: mock関数を返す
+const mockAnalyzeSkill = vi.fn();
+
+vi.mock("../../../store", () => ({
+  useCurrentAnalysis: () => null, // State
+  useIsAnalyzingSkill: () => false, // State
+  useAnalyzeSkill: () => mockAnalyzeSkill, // Action
+}));
+
+// beforeEach で mockReset
+beforeEach(() => {
+  mockAnalyzeSkill.mockReset();
+});
+```
+
+#### 状態分類の判断基準
+
+| 判断基準                         | Store移行 | ローカル維持 |
+| -------------------------------- | --------- | ------------ |
+| 複数画面で共有される             | ✅        |              |
+| Store action 内部で管理される    | ✅        |              |
+| UI一時状態（選択状態等）         |           | ✅           |
+| コンポーネント固有の表示ロジック |           | ✅           |
+
+#### P31/P48 適用判定
+
+- スカラー値（string, boolean, null）を返すセレクタ → `useShallow` 不要
+- `.filter()` / `.map()` で配列を返すセレクタ → `useShallow` 必須（P48）
+- 全セレクタは個別セレクタで取得（合成Hook禁止、P31）
+
+#### 関連パターン
+
+- [S18: useShallow 適用条件](同ファイル内)
+- P31: Zustand Store Hooks 無限ループ（06-known-pitfalls.md）
+- P42: 文字列引数の .trim() バリデーション漏れ（06-known-pitfalls.md）
+
+**関連タスク**: TASK-10A-F
+
+---
+
+### S27: Renderer 境界 5層防御パターン（06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 2026-03-07実装）
+
+> 追加: 2026-03-07 / 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+**問題**: IPC レスポンスの shape が期待と異なる場合、Renderer 側でクラッシュする
+
+**パターン**:
+
+| 層  | 防御内容               | コード例                                     |
+| --- | ---------------------- | -------------------------------------------- |
+| L1  | API namespace 存在確認 | `window.electronAPI?.apiKey?.list`           |
+| L2  | result shape 正規化    | `result?.success && result?.data`            |
+| L3  | 配列保証               | `Array.isArray(result.data.providers)`       |
+| L4  | 要素 shape フィルタ    | type predicate で必須フィールド検証          |
+| L5  | 例外キャッチ           | try-catch でPromise rejection をハンドリング |
+
+**適用基準**: IPC レスポンスを Renderer 側で消費するすべてのコンポーネント
+
+**関連 Pitfall**: P48（non-null assertion）, P19（型キャスト）, P49（type predicate 内 as キャスト）
+
+**type predicate の推奨パターン（`in` 演算子）**:
+
+```typescript
+// ✅ 推奨: in 演算子で実行時検証 + 型ナロイング
+const isValidItem = (item: unknown): item is ProviderStatus =>
+  item != null &&
+  typeof item === "object" &&
+  "provider" in item &&
+  typeof item.provider === "string" &&
+  "status" in item &&
+  typeof item.status === "string";
+
+// ❌ 非推奨: as キャストで実行時検証バイパス
+const isValidItem = (item: unknown): item is ProviderStatus =>
+  typeof (item as Record<string, unknown>).provider === "string";
+```
+
+**5層防御の完全コード例**:
+
+```typescript
+// L1: API namespace 存在確認
+if (!window.electronAPI?.apiKey?.list) {
+  return [];
+}
+try {
+  // L5: 例外キャッチ
+  const result = await window.electronAPI.apiKey.list();
+  // L2: result shape 正規化
+  if (!result?.success || !result?.data) {
+    return [];
+  }
+  // L3: 配列保証
+  const providers = Array.isArray(result.data.providers)
+    ? result.data.providers
+    : [];
+  // L4: 要素 shape フィルタ
+  return providers.filter(isValidItem);
+} catch {
+  return [];
+}
+```
+
+---
+
+### S28: Main ハンドラ間接テストパターン（ipcMain.handle モック）（06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 2026-03-07実装）
+
+> 追加: 2026-03-07 / 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+**問題**: `ipcMain.handle` + `withValidation` でラップされたハンドラを直接テストできない
+
+**パターン**:
+
+```typescript
+// 1. electron をモック
+vi.mock("electron", () => ({
+  ipcMain: {
+    handle: vi.fn(),
+    on: vi.fn(),
+    removeHandler: vi.fn(),
+  },
+}));
+
+// 2. ハンドラ登録関数を呼び出し
+registerApiKeyHandlers(mockMainWindow, mockApiKeyStorage);
+
+// 3. 登録されたコールバックを取得
+const handleCalls = vi.mocked(ipcMain.handle).mock.calls;
+const listHandler = handleCalls.find(
+  ([channel]) => channel === "apiKey:list",
+)?.[1];
+
+// 4. コールバックを直接呼び出してテスト
+const result = await listHandler(mockEvent);
+expect(result.data.providers).toEqual([]);
+```
+
+**適用基準**: `withValidation` ラッパーを使用する IPC ハンドラのユニットテスト
+
+**制約**: `withValidation` 内の sender 検証ロジックはこのパターンではテストされない。sender 検証は Security テスト層で別途検証する（IPC ハンドラー3層テスト分離パターン参照）。
+
+**関連パターン**: IPC ハンドラー3層テスト分離パターン（本ファイル内）
+
 ---
 
 ## 変更履歴
 
-| Version | Date | Changes |
-|---------|------|---------|
+| Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.38.0 | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: S27 Renderer境界5層防御パターン追加（L1-L5防御層、type predicate in演算子推奨、完全コード例）、S28 Mainハンドラ間接テストパターン追加（ipcMain.handleモック経由のコールバック直接呼び出し）                                                             |
+| v1.37.0 | 2026-03-07 | TASK-10A-F: 直接IPC→Store個別セレクタ移行パターン追加（S26: 移行チェックリスト7ステップ、テストmock標準パターン、状態分類判断基準、P31/P48適用判定）                                                                                                                                                    |
 | v1.36.0 | 2026-03-07 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement実装パターン追加（S23: CSS変数定数抽出パターン — styles.ts/animations.ts分離、S24: backward-compatible fallbackパターン — typeofガード付きZustandセレクタ段階的移行、S25: z-index Phase 2事前設計パターン — 管理テーブル事前定義で衝突0件達成） |
-| v1.35.0 | 2026-03-03 | TASK-10A-D: 共有型インポート標準パターン追加（@repo/shared起点の型配置ルール、禁止パターン3件、新規型追加チェックリスト） |
-| v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期 |
-| v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化 |
-| v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施） |
-| v1.33.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22に再利用テンプレートを追加（目的/場所/検証/落とし穴対処）。同種課題の初動手順を標準化 |
-| v1.32.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22 AUTH IPC登録一元化パターンを追加（通常/fallback二経路の宣言的集約、回帰テスト固定、監査コマンド標準化） |
-| v1.31.0 | 2026-02-25 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の運用パターンを追加（対象内/対象外の3区分判定、未タスク分離、リンク検証、重複式ノイズの再発防止コマンド固定化） |
-| v1.30.0 | 2026-02-24 | UT-IPC-DATA-FLOW-TYPE-GAPS-001: IPCデータフロー型ギャップパターン追加（S19: IPC Date型シリアライズ、S20: IPC引数object形式統一、S21: 仕様書間型ギャップ検出）。S18が既存のため番号をS19-S21にシフト |
-| v1.29.0 | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件 |
-| v1.28.0 | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション一括移行パターン（S18）追加。移行チェックリスト・引数形式別適用パターン・後方互換性注記・describe.eachマトリクステスト戦略を含む |
-| v1.27.0 | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一） |
-| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録 |
-| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル） |
-| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録、適用判断基準テーブル、P42/P44/P45準拠） |
-| v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み） |
-| v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%） |
-| v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19） |
-| v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項） |
-| v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES） |
-| 1.21.0 | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握） |
-| 1.20.0 | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス） |
-| 1.19.0 | 2026-02-12 | TASK-9B-H: IPC ハンドラー登録パターン追加（3層セキュリティ、Preload統合4箇所更新チェックリスト、既存同パターンとの対応表） |
-| 1.18.0 | 2026-02-11 | TASK-FIX-7-1: Setter Injection パターン詳細追加（SkillService と SkillExecutor の統合、使い分け基準テーブル） |
-| 1.17.0 | 2026-02-10 | UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH: 型定義修正タスクパターン追加（システム仕様書更新チェックリスト、関連Pitfall P31/P32との相互参照） |
-| 1.16.0 | 2026-02-09 | TASK-FIX-12-1-IPC-HARDCODE-FIX: IPCチャンネル名定数化パターン追加（ハードコード検出、定数参照置換、セキュリティ原則準拠） |
-| 1.15.0 | 2026-02-06 | TASK-FIX-5-1リファクタリング: S1-S5苦戦箇所を最適化（S1/S4は実装パターンとして保持、S2/S3/S5はskill-creator/patterns.mdへクロスリファレンス化で重複解消） |
-| 1.14.0 | 2026-02-06 | TASK-FIX-5-1-SKILL-API-UNIFICATION: SkillAPI統一パターン追加（API二重公開解消、苦戦箇所5件記録） |
-| 1.13.0 | 2026-02-05 | TASK-FIX-4-1-IPC-CONSOLIDATION: IPCチャンネル統合パターン追加（Single Source of Truth、ハードコード検出、ホワイトリスト検証） |
-| 1.12.0 | 2026-02-04 | AUTH-UI-001: React Portal オーバーレイUI最前面表示パターン、Supabase認証状態変更時の即時UI更新パターン追加 |
-| 1.11.0 | 2026-02-04 | AUTH-UI-004: 外部APIデータ正規化パターン追加（プロバイダー別フォールバック） |
-| 1.10.0 | 2026-02-03 | マージ統合: TASK-9B-G + TASK-9C/9A-A |
-| 1.9.0 | 2026-02-03 | TASK-9C: SDK連携パターン追加（Graceful SDK Fallback, queryFn DI, スキル名バリデーション） |
-| 1.8.0 | 2026-02-03 | TASK-9A-A: ESModuleモッキング制約パターン、バックアップファイルテストパターン追加 |
-| 1.7.0 | 2026-02-03 | TASK-9B-G: スキル作成実装パターン追加（Script First、Progressive Disclosure、Facade、タスク依存関係解決） |
-| 1.6.0 | 2026-02-03 | TASK-WCE-MONACO-001スキル最適化: Main→Rendererパターン再構成（Problem Statement追加、課題IDテーブル、汎用チェックリスト、セキュリティ考慮事項表追加）、api-ipc-agent.md相互リンク追加 |
-| 1.5.0 | 2026-02-03 | TASK-WCE-MONACO-001: Main→Renderer逆方向クエリパターン追加（webContents.executeJavaScript、グローバルブリッジ、苦戦ポイントと対処法） |
-| 1.4.0 | 2026-02-02 | TASK-8C-C: E2Eテストパターン追加（Electron E2Eセットアップ、セレクタ定数、タイムアウト定数、ヘルパー関数、テストグループ構成、page.evaluate） |
-| 1.3.0 | 2026-02-02 | TASK-8C-A: IPC通信テストパターン追加（Handler Map方式、SkillService Partial Mock、invokeOptionalHandler、validateIpcSender失敗検証） |
-| 1.2.0 | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加 |
-| 1.1.0 | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン） |
-| 1.0.0 | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更 |
-| 0.1.0 | 2026-01-26 | 初版作成 |
+| v1.35.0 | 2026-03-03 | TASK-10A-D: 共有型インポート標準パターン追加（@repo/shared起点の型配置ルール、禁止パターン3件、新規型追加チェックリスト）                                                                                                                                                                               |
+| v1.34.2 | 2026-02-26 | TASK-9A完了反映: SkillEditor実装パターンを `spec_created` から `completed` へ更新。IPC連携フローに create/delete/restore を追加し、関連参照を `TASK-9A-skill-editor` 正本へ同期                                                                                                                         |
+| v1.34.1 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再確認追補: Phase 12 準拠確認チェーン（verify-all-specs / validate-phase-output / verify-unassigned-links / skill-creator quick_validate.js）を追加し、検証経路を固定化                                                                                       |
+| v1.34.0 | 2026-02-25 | UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査スコープ分離パターンを追加（target/diff/fullの判定責務分離、Phase 12記録2段構成、完了済み未タスク移管の同一ターン実施）                                                                                                                          |
+| v1.33.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22に再利用テンプレートを追加（目的/場所/検証/落とし穴対処）。同種課題の初動手順を標準化                                                                                                                                                                              |
+| v1.32.0 | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: S22 AUTH IPC登録一元化パターンを追加（通常/fallback二経路の宣言的集約、回帰テスト固定、監査コマンド標準化）                                                                                                                                                           |
+| v1.31.0 | 2026-02-25 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の運用パターンを追加（対象内/対象外の3区分判定、未タスク分離、リンク検証、重複式ノイズの再発防止コマンド固定化）                                                                                                                                    |
+| v1.30.0 | 2026-02-24 | UT-IPC-DATA-FLOW-TYPE-GAPS-001: IPCデータフロー型ギャップパターン追加（S19: IPC Date型シリアライズ、S20: IPC引数object形式統一、S21: 仕様書間型ギャップ検出）。S18が既存のため番号をS19-S21にシフト                                                                                                     |
+| v1.29.0 | 2026-02-24 | IPCチャネル名競合予防パターン追加（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001）: チャネル命名規則（skill:{動詞}FromSource）、既存/新規対応表、判断基準、実装チェックリスト、苦戦箇所3件                                                                                                                       |
+| v1.28.0 | 2026-02-24 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: P42準拠バリデーション一括移行パターン（S18）追加。移行チェックリスト・引数形式別適用パターン・後方互換性注記・describe.eachマトリクステスト戦略を含む                                                                                                          |
+| v1.27.0 | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネント設計パターン追加（S12: Props最小化、S13: Record型バリアント定義、S14: HTMLAttributes Props型衝突回避、S15: 後方互換性維持、S16: CSS変数＋Tailwind Arbitrary Values、S17: displayName統一）                                                                         |
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-REMOVE-INTERFACE-001: IPCインターフェース不整合修正パターン（P44/P45解決）追加。Phase依存順序・worktree制約・カバレッジスコープの苦戦箇所を記録                                                                                                                                            |
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001: IPCインターフェース不整合修正パターン追加（P44修正テンプレート、P42準拠3段バリデーション、3箇所同時更新チェックリスト、修正判断基準テーブル）                                                                                                                        |
+| v1.26.0 | 2026-02-21 | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001: S13 IPC戻り値型2ステップ変換パターン追加（苦戦箇所5件記録、適用判断基準テーブル、P42/P44/P45準拠）                                                                                                                                                                 |
+| v1.25.0 | 2026-02-19 | TASK-9A-C: SkillEditor実装パターン追加（textareaベースコードエディター、FileTree内部状態管理、IPC連携ファイル編集、Pitfall事前組み込み）                                                                                                                                                                |
+| v1.24.0 | 2026-02-19 | TASK-9A-B: isKnownSkillFileError型ガードパターン追加、IPC3層テスト分離パターン追加（Unit 38 / Security 14 / Integration 13、カバレッジ Line 91.14% / Branch 93.93% / Function 100%）                                                                                                                    |
+| v1.24.0 | 2026-02-14 | UT-FIX-IPC-RESPONSE-UNWRAP-001: IPC レスポンスラッパー展開パターン（safeInvokeUnwrap）追加（使い分け基準、データフロー図、関連Pitfall P19）                                                                                                                                                             |
+| v1.23.0 | 2026-02-14 | UT-FIX-IPC-HANDLER-DOUBLE-REG-001: IPC ハンドラ二重登録防止パターン追加（unregister→register、ipcMain.handle() vs on() 動作差異、セキュリティ考慮事項）                                                                                                                                                 |
+| v1.22.0 | 2026-02-13 | UT-9B-H-003: IPC L3ドメイン検証パターン追加（validatePath, sanitizeErrorMessage, ALLOWED_SCHEMA_NAMES）                                                                                                                                                                                                 |
+| 1.21.0  | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION: SDK型統合パターン追加（S11: TypeScriptモジュール解決の優先順位、S12: SDK APIパラメータの正確な把握）                                                                                                                                                                  |
+| 1.20.0  | 2026-02-12 | TASK-9B-H: IPCハンドラー登録パターンに「実装時の注意点・苦戦箇所」テーブル追加（5件の苦戦箇所と解決策、lessons-learned.mdへのクロスリファレンス）                                                                                                                                                       |
+| 1.19.0  | 2026-02-12 | TASK-9B-H: IPC ハンドラー登録パターン追加（3層セキュリティ、Preload統合4箇所更新チェックリスト、既存同パターンとの対応表）                                                                                                                                                                              |
+| 1.18.0  | 2026-02-11 | TASK-FIX-7-1: Setter Injection パターン詳細追加（SkillService と SkillExecutor の統合、使い分け基準テーブル）                                                                                                                                                                                           |
+| 1.17.0  | 2026-02-10 | UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH: 型定義修正タスクパターン追加（システム仕様書更新チェックリスト、関連Pitfall P31/P32との相互参照）                                                                                                                                                               |
+| 1.16.0  | 2026-02-09 | TASK-FIX-12-1-IPC-HARDCODE-FIX: IPCチャンネル名定数化パターン追加（ハードコード検出、定数参照置換、セキュリティ原則準拠）                                                                                                                                                                               |
+| 1.15.0  | 2026-02-06 | TASK-FIX-5-1リファクタリング: S1-S5苦戦箇所を最適化（S1/S4は実装パターンとして保持、S2/S3/S5はskill-creator/patterns.mdへクロスリファレンス化で重複解消）                                                                                                                                               |
+| 1.14.0  | 2026-02-06 | TASK-FIX-5-1-SKILL-API-UNIFICATION: SkillAPI統一パターン追加（API二重公開解消、苦戦箇所5件記録）                                                                                                                                                                                                        |
+| 1.13.0  | 2026-02-05 | TASK-FIX-4-1-IPC-CONSOLIDATION: IPCチャンネル統合パターン追加（Single Source of Truth、ハードコード検出、ホワイトリスト検証）                                                                                                                                                                           |
+| 1.12.0  | 2026-02-04 | AUTH-UI-001: React Portal オーバーレイUI最前面表示パターン、Supabase認証状態変更時の即時UI更新パターン追加                                                                                                                                                                                              |
+| 1.11.0  | 2026-02-04 | AUTH-UI-004: 外部APIデータ正規化パターン追加（プロバイダー別フォールバック）                                                                                                                                                                                                                            |
+| 1.10.0  | 2026-02-03 | マージ統合: TASK-9B-G + TASK-9C/9A-A                                                                                                                                                                                                                                                                    |
+| 1.9.0   | 2026-02-03 | TASK-9C: SDK連携パターン追加（Graceful SDK Fallback, queryFn DI, スキル名バリデーション）                                                                                                                                                                                                               |
+| 1.8.0   | 2026-02-03 | TASK-9A-A: ESModuleモッキング制約パターン、バックアップファイルテストパターン追加                                                                                                                                                                                                                       |
+| 1.7.0   | 2026-02-03 | TASK-9B-G: スキル作成実装パターン追加（Script First、Progressive Disclosure、Facade、タスク依存関係解決）                                                                                                                                                                                               |
+| 1.6.0   | 2026-02-03 | TASK-WCE-MONACO-001スキル最適化: Main→Rendererパターン再構成（Problem Statement追加、課題IDテーブル、汎用チェックリスト、セキュリティ考慮事項表追加）、api-ipc-agent.md相互リンク追加                                                                                                                   |
+| 1.5.0   | 2026-02-03 | TASK-WCE-MONACO-001: Main→Renderer逆方向クエリパターン追加（webContents.executeJavaScript、グローバルブリッジ、苦戦ポイントと対処法）                                                                                                                                                                   |
+| 1.4.0   | 2026-02-02 | TASK-8C-C: E2Eテストパターン追加（Electron E2Eセットアップ、セレクタ定数、タイムアウト定数、ヘルパー関数、テストグループ構成、page.evaluate）                                                                                                                                                           |
+| 1.3.0   | 2026-02-02 | TASK-8C-A: IPC通信テストパターン追加（Handler Map方式、SkillService Partial Mock、invokeOptionalHandler、validateIpcSender失敗検証）                                                                                                                                                                    |
+| 1.2.0   | 2026-01-30 | TASK-7D: forwardRef + useImperativeHandleパターン、React.memo + Exclude型パターン追加                                                                                                                                                                                                                   |
+| 1.1.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン）                                                                                                                                                                                               |
+| 1.0.0   | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更                                                                                                                                                                                                                                                  |
+| 0.1.0   | 2026-01-26 | 初版作成                                                                                                                                                                                                                                                                                                |
