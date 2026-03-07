@@ -1,14 +1,14 @@
-# Phase 11: 手動テスト検証
+# Phase 12: ドキュメント更新
 
 ## メタ情報
 
 | 項目       | 内容                                                             |
 | ---------- | ---------------------------------------------------------------- |
-| Phase      | 11                                                               |
+| Phase      | 12                                                               |
 | 機能名     | 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001              |
 | タスク名   | settings 遷移に関わる persist / navigation iterable ハードニング |
 | 作成日     | 2026-03-06                                                       |
-| ステータス | 未実施                                                           |
+| ステータス | 完了                                                             |
 
 ## 目的
 
@@ -20,7 +20,7 @@
 
 ## Atent Team編成
 
-| SubAgent                  | 関心ごと                       | 実行モード | Phase 11 の責務                                |
+| SubAgent                  | 関心ごと                       | 実行モード | Phase 12 の責務                                |
 | ------------------------- | ------------------------------ | ---------- | ---------------------------------------------- |
 | SubAgent-Store-Hydrate    | persist / hydration            | 並列       | expandedFolders 正規化と復旧戦略を設計する     |
 | SubAgent-Navigation-Slice | navigation state update        | 並列       | viewHistory 更新と fallback を設計する         |
@@ -29,10 +29,10 @@
 
 ## 実行タスク
 
-- 手動シナリオ 1: 破損した persist snapshot を投入した状態でアプリを起動する
-- 手動シナリオ 2: 初期 hydrate 完了後に SettingsView を開く
-- 手動シナリオ 3: settings と他 view の往復が継続できることを確認する
-- 手動シナリオ 4: 復旧後の state が再保存され、次回起動でも落ちないことを確認する
+- 実装ガイド作成: Part 1 と Part 2 の 2 パート構成で記述する
+- 仕様同期: persist 正規化と migration の方針を `arch-state-management.md` へ同期する / 既知の iterable crash 条件を `lessons-learned.md` へ記録する / 追加の persist migration 候補を未タスク検出へ残す
+- 未タスク検出: scope 外、review 指摘、manual 発見事項を洗い出す
+- スキル改善: task-specification-creator と aiworkflow 正本への改善提案を残す
 
 ## 参照資料
 
@@ -63,6 +63,7 @@
 | quality-requirements                 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | TDD と coverage 条件を揃える                      |
 | lessons-learned                      | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                      | 既知の再発パターンを再確認する                    |
 | arch-state-management                | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | Zustand persist と selector 責務を確認する        |
+| arch-ipc-persistence                 | `.claude/skills/aiworkflow-requirements/references/arch-ipc-persistence.md`                 | persist 復元と永続化境界の責務を確認する          |
 | architecture-patterns                | `.claude/skills/aiworkflow-requirements/references/architecture-patterns.md`                | store 分割と helper 配置の規則を確認する          |
 | architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | state migration と test pattern を確認する        |
 | patterns                             | `.claude/skills/aiworkflow-requirements/references/patterns.md`                             | P31 系の成功パターンを確認する                    |
@@ -75,6 +76,7 @@
 | ui-ux-settings                       | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                       | settings遷移時の表示責務を確認する                |
 | testing-accessibility                | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                | settings遷移時のa11y回帰観点を確認する            |
 | testing-component-patterns           | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`           | store と view の統合試験構成を確認する            |
+| task-workflow-rules                  | `.claude/skills/aiworkflow-requirements/references/task-workflow-rules.md`                  | Phase 12 の完了条件と品質ゲートを再確認する       |
 
 ### 前提Phase成果物
 
@@ -88,20 +90,21 @@
 | Phase 8 成果物  | `outputs/phase-8/`  | Phase 8 の出力を入力として参照する  |
 | Phase 9 成果物  | `outputs/phase-9/`  | Phase 9 の出力を入力として参照する  |
 | Phase 10 成果物 | `outputs/phase-10/` | Phase 10 の出力を入力として参照する |
+| Phase 11 成果物 | `outputs/phase-11/` | Phase 11 の出力を入力として参照する |
 
 ## 実行手順
 
-1. 破損した persist snapshot を投入した状態でアプリを起動する を起点にシナリオを実行する。
-2. 初期 hydrate 完了後に SettingsView を開く と settings と他 view の往復が継続できることを確認する を連続で確認する。
-3. 復旧後の state が再保存され、次回起動でも落ちないことを確認する。
-4. 証跡 ID、スクリーンショット、ログ断面を evidence-plan に記録する。
+1. Task 12-1 として Part 1（中学生レベル）/ Part 2（技術者向け）の 2 パート実装ガイドを作成する。
+2. Task 12-2 Step 1-A として完了記録を `task-workflow.md` に追記し、`aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md`、`indexes/topic-map.md` の更新要否を確認して記録する。
+3. Task 12-2 Step 1-B/1-C として実装状況テーブルと関連タスクテーブルを更新し、`spec_created` と `完了` を混同しない。
+4. Task 12-2 Step 2 として persist 正規化と migration の方針を `arch-state-management.md` へ同期し、既知の iterable crash 条件を `lessons-learned.md` へ反映する。
+5. Task 12-4/12-5 として未タスク検出結果とスキル改善提案を出力し、追加の persist migration 候補を `unassigned-task-detection.md` へ残す。
 
 ## 統合テスト連携
 
-- 破損した persist snapshot を投入した状態でアプリを起動する
-- 初期 hydrate 完了後に SettingsView を開く
-- settings と他 view の往復が継続できることを確認する
-- 復旧後の state が再保存され、次回起動でも落ちないことを確認する
+- persist 正規化と migration の方針を `arch-state-management.md` へ同期する
+- 既知の iterable crash 条件を `lessons-learned.md` へ記録する
+- 追加の persist migration 候補を未タスク検出へ残す
 
 ## 多角的チェック観点
 
@@ -114,16 +117,20 @@
 
 ## 成果物
 
-| 成果物         | パス                                     | 説明                     |
-| -------------- | ---------------------------------------- | ------------------------ |
-| 手動テスト行列 | `outputs/phase-11/manual-test-matrix.md` | 画面操作と期待結果の一覧 |
-| 証跡計画       | `outputs/phase-11/evidence-plan.md`      | 取得する証跡の定義       |
+| 成果物             | パス                                            | 説明                         |
+| ------------------ | ----------------------------------------------- | ---------------------------- |
+| 実装ガイド         | `outputs/phase-12/implementation-guide.md`      | Part 1 / Part 2 のガイド     |
+| 更新履歴           | `outputs/phase-12/documentation-changelog.md`   | 変更履歴                     |
+| 未タスク検出       | `outputs/phase-12/unassigned-task-detection.md` | 残課題の抽出結果             |
+| スキル改善レポート | `outputs/phase-12/skill-feedback-report.md`     | task-spec skill への改善提案 |
 
 ## 完了条件
 
-- [ ] manual シナリオが Settings shell または対象導線を通る手順で記述されている
-- [ ] 証跡 ID と期待結果が 1 対 1 で対応している
-- [ ] 再現した不具合と修正確認を同じ行列で比較できる
+- [ ] implementation-guide が Part 1 / Part 2 の 2 構成で定義されている
+- [ ] documentation-changelog と unassigned-task-detection が作成対象に入っている
+- [ ] Step 1-A で `LOGS.md` 2ファイルと `indexes/topic-map.md` の更新判定が記録されている
+- [ ] aiworkflow 正本へ反映する更新先が具体名で記述されている
+- [ ] task-specification-creator と aiworkflow-requirements の改善点が skill-feedback-report に残る
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## サブタスク管理
@@ -143,4 +150,4 @@
 
 ## 次のPhase
 
-Phase 12: ドキュメント更新
+Phase 13: PR作成

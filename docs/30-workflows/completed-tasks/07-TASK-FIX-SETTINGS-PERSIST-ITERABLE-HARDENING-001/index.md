@@ -8,7 +8,7 @@
 | タスク名     | settings 遷移に関わる persist / navigation iterable ハードニング |
 | 分類         | 不具合修正                                                       |
 | 作成日       | 2026-03-06                                                       |
-| ステータス   | 仕様書作成完了（未実施）                                         |
+| ステータス   | Phase 12完了（実装・テスト完了、commit/PR未実施）                |
 | 優先度       | 高                                                               |
 | 見積もり規模 | 中規模                                                           |
 | 発見元       | 2026-03-06 の設定画面遷移不具合調査                              |
@@ -90,6 +90,15 @@ persist された `viewHistory` と `expandedFolders` が iterable でない値�
 | ui-ux-settings                       | .claude/skills/aiworkflow-requirements/references/ui-ux-settings.md                       | settings遷移時の表示責務を確認する         |
 | testing-accessibility                | .claude/skills/aiworkflow-requirements/references/testing-accessibility.md                | settings遷移時のa11y回帰観点を確認する     |
 | testing-component-patterns           | .claude/skills/aiworkflow-requirements/references/testing-component-patterns.md           | store と view の統合試験構成を確認する     |
+| arch-ipc-persistence                 | .claude/skills/aiworkflow-requirements/references/arch-ipc-persistence.md                 | persist 復元と永続化境界の責務を確認する   |
+| task-workflow-rules                  | .claude/skills/aiworkflow-requirements/references/task-workflow-rules.md                  | Phase 12 完了条件と品質ゲートを確認する    |
+
+### 抽出根拠（resource-map 準拠）
+
+- `indexes/resource-map.md` の「バグ修正（一般）」を起点に `error-handling.md` + 関連 `interfaces-*` を最低集合として採用する。
+- 本タスク固有の persist / hydration を扱うため、最低集合に `arch-state-management.md` と `arch-ipc-persistence.md` を追加する。
+- settings 遷移回帰を扱うため、UI観点として `ui-ux-navigation.md` と `ui-ux-settings.md` を追加する。
+- Phase 12 同期漏れ防止として `task-workflow.md` と `task-workflow-rules.md` を追加する。
 
 ---
 

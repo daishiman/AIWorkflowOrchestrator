@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-07T10:17:19.096Z",
-  "totalKeywords": 1481,
+  "generated": "2026-03-07T15:05:50.830Z",
+  "totalKeywords": 1496,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1043,6 +1043,7 @@
       "interfaces-chat-history.md",
       "ipc-contract-checklist.md",
       "security-skill-ipc.md",
+      "testing-component-patterns.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "サービス": [
@@ -1116,8 +1117,7 @@
       "lessons-learned.md",
       "security-skill-execution.md",
       "testing-component-patterns.md",
-      "testing-fixtures.md",
-      "ui-ux-feature-components.md"
+      "testing-fixtures.md"
     ],
     "Slice": [
       "arch-state-management.md"
@@ -1275,23 +1275,30 @@
     "駆動ライフサイクル統合": [
       "arch-state-management.md"
     ],
-    "駆動ライフサイクル": [
-      "arch-state-management.md",
-      "ui-ux-feature-components.md"
+    "Persist": [
+      "arch-state-management.md"
     ],
-    "統合": [
+    "Iterable": [
+      "arch-state-management.md"
+    ],
+    "Hardening": [
+      "arch-state-management.md"
+    ],
+    "SETTINGS": [
       "arch-state-management.md",
-      "architecture-file-conversion.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "technology-backend.md",
-      "testing-playwright-e2e.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md"
+      "lessons-learned.md"
+    ],
+    "PERSIST": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "ITERABLE": [
+      "arch-state-management.md",
+      "lessons-learned.md"
+    ],
+    "HARDENING": [
+      "arch-state-management.md",
+      "lessons-learned.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -1514,6 +1521,18 @@
     ],
     "履歴管理サービス": [
       "architecture-file-conversion.md"
+    ],
+    "統合": [
+      "architecture-file-conversion.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "testing-playwright-e2e.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-skill-stream.md"
     ],
     "history": [
       "architecture-file-conversion.md",
@@ -3265,6 +3284,33 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "PHASE": [
+      "lessons-learned.md"
+    ],
+    "BRANCH": [
+      "lessons-learned.md"
+    ],
+    "CROSS": [
+      "lessons-learned.md"
+    ],
+    "branch": [
+      "lessons-learned.md"
+    ],
+    "横断": [
+      "lessons-learned.md"
+    ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
+    "persist": [
+      "lessons-learned.md"
+    ],
+    "iterable": [
+      "lessons-learned.md"
+    ],
+    "hardening": [
+      "lessons-learned.md"
+    ],
     "VIEW": [
       "lessons-learned.md"
     ],
@@ -3330,16 +3376,10 @@
     "SANDBOX": [
       "lessons-learned.md"
     ],
-    "ITERABLE": [
-      "lessons-learned.md"
-    ],
     "ERROR": [
       "lessons-learned.md"
     ],
     "sandbox": [
-      "lessons-learned.md"
-    ],
-    "iterable": [
       "lessons-learned.md"
     ],
     "エラー原因分離": [
@@ -3352,9 +3392,6 @@
       "lessons-learned.md"
     ],
     "EDITOR": [
-      "lessons-learned.md"
-    ],
-    "再監査": [
       "lessons-learned.md"
     ],
     "連続是正": [
@@ -3513,9 +3550,6 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
-      "lessons-learned.md"
-    ],
-    "PHASE": [
       "lessons-learned.md"
     ],
     "EVIDENCE": [
@@ -4879,7 +4913,9 @@
       "technology-devops.md"
     ],
     "追加": [
-      "technology-devops.md"
+      "technology-devops.md",
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "フロントエンド技術スタック": [
       "technology-frontend.md"
@@ -5006,6 +5042,12 @@
       "ui-ux-atoms-patterns.md"
     ],
     "ATOMS": [
+      "testing-component-patterns.md"
+    ],
+    "Shape": [
+      "testing-component-patterns.md"
+    ],
+    "異常系テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
@@ -5568,6 +5610,12 @@
       "ui-ux-settings.md"
     ],
     "Panel": [
+      "ui-ux-settings.md"
+    ],
+    "ApiKeysSection": [
+      "ui-ux-settings.md"
+    ],
+    "異常系表示仕様": [
       "ui-ux-settings.md"
     ],
     "実装ファイル": [
