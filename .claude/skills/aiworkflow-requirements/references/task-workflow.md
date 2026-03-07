@@ -132,6 +132,39 @@
 
 ## 完了タスク
 
+### タスク: TASK-10A-E-C Store駆動ライフサイクル統合設計（2026-03-06）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-10A-E-C |
+| 完了日 | 2026-03-06 |
+| ステータス | **完了（Phase 1-12 出力 + 実画面検証 + 仕様同期）** |
+| 対象 | `SkillManagementPanel` の import lifecycle state/selectors/actions |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/arch-state-management.md` | selector/action と P31派生ルール同期 | `useShallow` 適用条件と状態遷移契約が明文化される |
+| SubAgent-B | `references/task-workflow.md` | 完了台帳と未タスク導線同期 | 完了記録と残課題IDが一致する |
+| SubAgent-C | `outputs/phase-11/*` | 画面証跡取得と TC ひも付け | `TC-01..08` の証跡が揃う |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec node scripts/capture-task-043c-store-lifecycle-screenshots.mjs` | PASS（TC-01..08 screenshot 取得） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design` | PASS（expected=8 / covered=8） |
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-10A-E-C-001 | SkillImportDialog の inline selector を個別 selector へ移行 | `docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design/unassigned-task/task-10a-e-c-selector-migration-001.md` |
+| UT-10A-E-C-002 | create/analyze 導線の直接 IPC 呼び出しを store action 経由へ移行 | `docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design/unassigned-task/task-10a-e-c-create-analyze-store-action-migration-002.md` |
+
 ### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
 
 | 項目 | 内容 |

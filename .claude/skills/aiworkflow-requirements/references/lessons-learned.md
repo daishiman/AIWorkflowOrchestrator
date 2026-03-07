@@ -5358,3 +5358,66 @@ async function safeInvokeUnwrap<T>(channel: string, ...args: unknown[]): Promise
 | [ ] 06-known-pitfalls.md と整合 | 汎用的な教訓は pitfalls にも追加 |
 | [ ] 変更履歴を更新 | 本ドキュメント上部の変更履歴テーブルを更新 |
 | [ ] 目次を更新 | 新規タスクを目次に追加 |
+
+## TASK-10A-E-C: Store駆動ライフサイクル統合設計（2026-03-06）
+
+### 苦戦箇所: Phase 12成果物の「計画」記述が残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec-update-summary.md` を更新しても `documentation-changelog.md` が「仕様策定のみ」のまま残存しやすい |
+| 再発条件 | 複数成果物の同期を分離実行し、最終突合を省略する |
+| 対処 | Phase 12の最終段で `documentation-changelog` を正本として再生成し、Task 1〜5 を明示記録 |
+| 標準ルール | 「計画」文言（予定/実行待ち/仕様策定のみ）を完了前に `rg` で全件排除する |
+
+### 苦戦箇所: 未タスク指示書のフォーマット逸脱
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 最小構成で作成すると `unassigned-task` 監査で必須見出し不足が発生 |
+| 再発条件 | `## 1..9` セクションを省略して作成する |
+| 対処 | `assets/unassigned-task-template.md` を必ず適用し、Why/What/How/検証/リスクを明示 |
+| 標準ルール | 未タスク作成後に `audit-unassigned-tasks --target-file` で個別検証する |
+
+### 苦戦箇所: P31派生パターン（useShallow未適用による無限ループ）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `.filter()` を使う派生selectorがZustandの `Object.is` 比較で毎回新参照と判定され、`renderHook` テストで無限ループ発生 |
+| 再発条件 | 配列を返す派生セレクタに `useShallow` を適用しない |
+| 対処 | `zustand/react/shallow` の `useShallow` でセレクタをラップし、shallow比較で内容同一時の再レンダリングを抑制 |
+| 標準ルール | `.filter()` / `.map()` / スプレッド構文で新しい参照を返すセレクタには `useShallow` を必ず適用する |
+
+### 苦戦箇所: worktree環境でのrollup native module不足
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree環境で `Cannot find module @rollup/rollup-darwin-x64` が発生し vitest 実行不可 |
+| 再発条件 | worktreeの `node_modules` がシンボリックリンクではなく実体コピーされた場合、native moduleが欠落する |
+| 対処 | worktreeディレクトリで `pnpm install --frozen-lockfile` を実行し、native moduleを再生成 |
+| 標準ルール | worktreeでのテスト実行前に必ず `pnpm install --frozen-lockfile` を実行する |
+
+### 苦戦箇所: 既存実装が設計の大半を満たしていた場合の差分分析
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 2で設計した要件の大半が既存の `agentSlice` に実装済みだったため、新規実装範囲が派生セレクタ2件のみに縮小 |
+| 再発条件 | 仕様策定タスクで既存コードの事前調査なしに設計を開始する |
+| 対処 | Phase 1-2の初期段階で既存実装をコードレベルで確認し、差分（未実装部分）のみを設計対象とする |
+| 標準ルール | 仕様策定タスクでは必ず既存コードの `grep` / `Read` を先行し、設計前に差分分析を完了させる |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Phase 12の必須成果物5件を先に作成し、`Task 1〜5` の実施ログを埋める。
+2. `phase-12-documentation.md` のチェックボックスを実績に合わせて同期する。
+3. 未タスクはテンプレート準拠で `docs/30-workflows/unassigned-task/` に作成する。
+4. `verify-all-specs` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` を再実行し、結果を changelog に固定する。
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| 派生selectorで無限ループ | `import { useShallow } from "zustand/react/shallow"` → セレクタを `useShallow()` でラップ |
+| worktreeでnative module不足 | `cd <worktree-dir> && pnpm install --frozen-lockfile` |
+| Phase 12の「計画」文言残存 | `rg "予定\|実行待ち\|仕様策定のみ" outputs/phase-12/` で全件排除 |
+| 未タスク9見出し不足 | `audit-unassigned-tasks --target-file <path>` で個別検証 |

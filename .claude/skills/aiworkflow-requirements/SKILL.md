@@ -48,7 +48,7 @@ node scripts/search-spec.js "認証" -C 5
 
 1. `assets/` 配下の該当テンプレートを使用
 2. `references/spec-guidelines.md` の命名規則に従う
-3. 編集後は `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行
+3. 編集後は `node scripts/generate-index.js` を実行
 
 ## ワークフロー
 
@@ -100,25 +100,14 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 **注記**: 18-skills.md（Skill層仕様書）は `skill-creator` スキルで管理。
 
-### 再監査で優先して開く正本
-
-- [references/ui-ux-navigation.md](references/ui-ux-navigation.md)
-- [references/ui-ux-components.md](references/ui-ux-components.md)
-- [references/ui-ux-feature-components.md](references/ui-ux-feature-components.md)
-- [references/arch-state-management.md](references/arch-state-management.md)
-- [references/architecture-overview.md](references/architecture-overview.md)
-- [references/task-workflow.md](references/task-workflow.md)
-- [references/lessons-learned.md](references/lessons-learned.md)
-- [references/directory-structure.md](references/directory-structure.md)
-
 ### scripts/
 
 | スクリプト                  | 用途               | 使用例                                       |
 | --------------------------- | ------------------ | -------------------------------------------- |
 | `search-spec.js`            | キーワード検索     | `node scripts/search-spec.js "認証" -C 5`    |
 | `list-specs.js`             | ファイル一覧       | `node scripts/list-specs.js --topics`        |
-| `generate-index.js`         | インデックス再生成 | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`     |
-| `validate-structure.js`     | 構造検証           | `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` |
+| `generate-index.js`         | インデックス再生成 | `node scripts/generate-index.js`             |
+| `validate-structure.js`     | 構造検証           | `node scripts/validate-structure.js`         |
 | `select-template.js`        | テンプレート選定   | `node scripts/select-template.js "IPC仕様"`  |
 | `split-reference.js`        | 大規模ファイル分割 | `node scripts/split-reference.js <file>`     |
 | `remove-heading-numbers.js` | 見出し番号削除     | `node scripts/remove-heading-numbers.js`     |
@@ -193,10 +182,6 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - キーワード検索で情報を素早く特定
 - 編集後は `node scripts/generate-index.js` を実行
 - 500行超過時はインデックス+サブファイル形式に手動分割
-- 関連未タスク台帳は active/completed を同一表で維持せず、canonical ledger 起点で別表に分離する
-- Phase 12 の実装ガイドは `validate-phase12-implementation-guide.js` などの validator で内容要件まで閉じる
-- `skill-creator` のような参照型スキルは `resource-map.md` と `SKILL.md` の両方から必要 reference を辿れる状態を維持し、warning付き完了を残さない
-- `aiworkflow-requirements` のような大規模仕様スキルは `SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の三層入口を設計し、warning は「直列挙で隠す」のではなく validator 整合と合わせて管理する
 
 ### 避けるべきこと
 
@@ -212,12 +197,19 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.01.36** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を反映**: `references/task-workflow.md` と `references/lessons-learned.md` に、`aiworkflow-requirements` の warning 145件を「大規模 reference スキルの入口設計課題」として切り出した未タスクを追加。`SKILL.md` には `SKILL.md` / `quick-reference` / `resource-map` の三層入口を validator 整合とセットで管理する運用ルールを追記 |
-| **9.01.35** | **2026-03-06** | **UT-TASK-10A-B-008 の追補を skill-creator 導線改善まで同期**: `references/task-workflow.md` と `references/lessons-learned.md` に、repo 内 `skill-creator/SKILL.md` の直接参照導線再編と `quick_validate` warning 26→0 解消を反映。reference 追加時は `resource-map` と `SKILL.md` の両方を同時更新する標準ルールを追加 |
-| **9.01.34** | **2026-03-06** | **UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を同期**: `references/task-workflow.md` と `references/lessons-learned.md` に、実装ガイドの内容不足是正と `validate-phase12-implementation-guide.js` 追加を反映。Phase 12 完了判定を「成果物存在 + 内容 validator PASS」まで引き上げた |
-| **9.01.33** | **2026-03-06** | **UT-TASK-10A-B-008 再監査追補を同期**: `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に、明示的な screenshot 要求で発見した `useSkillAnalysis` の StrictMode ローディング固着修正と 8ケースの画面再検証を追記。`references/ui-ux-components.md` にも再監査追補を反映し、関連未タスク台帳の active/completed 分離ルールをベストプラクティスへ格上げ |
-| **9.01.30** | **2026-03-06** | **TASK-UI-02 派生未タスクの system spec 同期を反映**: `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` と `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` を `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` へ同一ターンで登録し、Global Navigation 改修の苦戦箇所から未タスク仕様書へ直接たどれる導線を固定 |
-| **9.01.29** | **2026-03-06** | **TASK-UI-02 再監査の正本導線を強化**: `SKILL.md` に再監査で優先参照すべき正本8件（navigation/components/feature-components/arch/task/lessons/directory）を直リンクで追加し、`generate-index.js` / `validate-structure.js` の実行例を canonical path へ統一。Global Navigation 再監査で発見したリンクドリフト・古い `AppDock` 前提表現の是正導線を明確化 |
+| **9.01.41** | **2026-03-07** | **TASK-10A-E-C の実装知見をシステム仕様へ資産化**: `architecture-implementation-patterns.md` に S18 useShallow派生selectorパターンを追加し、`.filter()` が毎回新参照を返す問題と解決策を体系化。`lessons-learned.md` に苦戦箇所3件（P31派生/worktree rollup/差分分析）と5分解決カードを追記。`06-known-pitfalls.md` に P48（useShallow未適用による無限ループ）を追加 |
+| **9.01.40** | **2026-03-06** | **TASK-10A-E-C の Phase 12準拠再確認を同期**: `documentation-changelog.md` の「仕様策定のみ」残置を是正し、実更新ログへ統一。`references/arch-state-management.md` と `references/lessons-learned.md` に実装時の苦戦箇所（`useShallow` 派生、Phase 12同期漏れ、未タスクフォーマット逸脱）と5分解決カードを追記。未タスク2件をテンプレート準拠へ更新し `docs/30-workflows/unassigned-task/` 配下に正規配置した状態を反映 |
+| **9.01.39** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認を同期**: `references/arch-state-management.md` に import lifecycle selector/action 契約（`useAvailableSkillsForImport` / `useFilteredAvailableSkills` / `useShallow`）を追記し、`references/task-workflow.md` に完了台帳と未タスク2件（UT-10A-E-C-001/002）を登録。Phase 11 は `TC-01..08` の実画面証跡を取得し `manual-test-result.md` を証跡列付きへ更新 |
+| **9.01.38** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の completed-tasks 移管を同期**: workflow本体を `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/` へ移動し、関連未タスク2件を同workflow配下 `unassigned-task/` へ移管。`references/task-workflow.md` / `references/lessons-learned.md` / `references/interfaces-auth.md` / `references/api-ipc-system.md` / Phase 12成果物の参照パスを新配置へ更新 |
+| **9.01.37** | **2026-03-06** | **auth-mode 由来の domain spec 同期ブロック残課題を仕様同期**: `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-domain-spec-sync-block-validator-001.md` を追加し、`references/task-workflow.md` / `references/lessons-learned.md` / `references/interfaces-auth.md` / `references/api-ipc-system.md` に関連未タスクと苦戦箇所を反映。Phase 12 で更新対象 domain spec の3ブロック存在検証を次の改善導線として明文化 |
+| **9.01.36** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の system spec 記述粒度を最適化**: `references/interfaces-auth.md` / `references/api-ipc-system.md` / `references/task-workflow.md` に auth-mode の `実装内容` だけでなく `苦戦箇所` と `同種課題の5分解決カード` を追加し、domain spec 単体でも再利用可能な記録形式へ整理 |
+| **9.01.35** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 の Phase 12準拠再確認を反映**: `references/task-workflow.md` と `references/lessons-learned.md` に `phase12-task-spec-compliance-check.md`、cross-cutting doc 同期、`verify-unassigned-links` 105/105、`audit --diff-from HEAD` current=0 baseline=93 を追記。あわせて改善バックログ `UT-IMP-PHASE12-UNASSIGNED-LINK-DIAGNOSTICS-001` を `docs/30-workflows/unassigned-task/` に登録し、未タスク導線まで system spec に同期 |
+| **9.01.34** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の横断導線補強を反映**: `references/ipc-contract-checklist.md` に shared transport DTO 正本化 / `IPCResponse<T>` / event payload / quick-reference 同期の確認項目を追加し、`indexes/quick-reference.md` に `auth-mode:get/set/status/validate/changed` と `AuthModeStatus` / `IPCResponse<T>` 早見表を追記。再監査で見落としやすい cross-cutting doc 更新を標準化 |
+| **9.01.33** | **2026-03-06** | **TASK-043B 由来の skill import 契約横展開UTを同期**: `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加し、`importSkill` の post-condition 成功判定と error surface 一元化を他導線へ横展開する改善導線を正本へ登録 |
+| **9.01.32** | **2026-03-06** | **TASK-043B の再利用導線を UI 機能仕様へ追補**: `references/ui-ux-feature-components.md` に同種課題の簡潔解決手順を追加し、`phase12-task-spec-compliance-check.md` による root evidence 集約と `current=0 / baseline backlog` 分離運用を UI 機能仕様側からも辿れるようにした |
+| **9.01.31** | **2026-03-06** | **legacy 未タスク正規化課題の分離を同期**: `references/task-workflow.md` に `UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001` を追加し、TASK-043B の未タスク判定を `current=0` と `baseline backlog` の二層管理へ更新。`references/lessons-learned.md` にも同ルールを反映し、未タスク監査の誤読を防ぐ運用を標準化 |
+| **9.01.30** | **2026-03-06** | **TASK-043B の Phase 12準拠再確認を同期**: `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に `phase12-task-spec-compliance-check.md`、未タスク配置監査 PASS、Phase 12根拠分散の苦戦箇所を追記。再利用時は「準拠根拠を1ファイルに集約する」運用を標準化 |
+| **9.01.29** | **2026-03-06** | **TASK-043B 再監査の状態契約と参照導線を補強**: `references/arch-state-management.md` に non-throw action failure / post-condition success / dialog error surface 一元化 / `useAppStore.getState()` モック契約を追加。併せて `references/task-workflow.md` / `references/lessons-learned.md` に親仕様ブリッジ欠落と dialog test copy drift の教訓を追記 |
 | **9.01.28** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓同期を強化**: `references/task-workflow.md` に完了タスク専用セクション（SubAgent分担/実装反映/検証証跡/苦戦箇所）を追加し、`references/lessons-learned.md` に同タスクの実装内容 + 再発条件付き苦戦箇所を新設。Phase 12完了判定を「成果物実体 + 機械検証 + `phase-12-documentation.md` ステータス同期」の3点セットで固定 |
 | **9.01.27** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12準拠再確認を同期**: `phase-12-documentation.md` の `pending` 残置を `completed` へ是正し、Task 12-1〜12-5成果物実在 + `verify-all-specs` + `validate-phase-output` の3点突合を完了条件として固定。`task-workflow.md` / `lessons-learned.md` に苦戦箇所（台帳ドリフト）と再利用手順を追記 |
 | **9.01.26** | **2026-03-05** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査を同期**: 仕様書と実装のDIシグネチャ差分を再点検し、`interfaces-agent-sdk-executor.md` / `arch-electron-services.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の `registerSkillHandlers(..., authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を現行実装へ統一。追加でPhase 11画面回帰スクリーンショット3件を取得し、workflow証跡へ反映 |
@@ -344,6 +336,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.63.0** | **2026-02-23** | **TASK-UI-00-ATOMS 実装知見・苦戦箇所の仕様書体系化**: `ui-ux-atoms-patterns.md` v1.0.0 新規作成（7 Atoms実装パターン・苦戦箇所6件・テスト戦略）。`architecture-implementation-patterns.md` にS12-S17 Atoms設計パターン追加。`testing-component-patterns.md` v1.7.0（Atomsテストパターンセクション13追加）。`ui-ux-design-system.md` v1.4.0（StatusIndicatorカラー定義追加）。`ui-ux-design-principles.md`（HIG準拠パターンテーブル追加）。`06-known-pitfalls.md` にP46/P47追加。`skill-creator/patterns.md` に成功3件+失敗2件追加。topic-map.md再生成 |
 | **8.62.0** | **2026-02-23** | **TASK-UI-00-ATOMS Phase 12完了反映**: `ui-ux-components.md` v2.11.0（TASK-UI-00-ATOMS完了タスク追加 + Atoms実装状況テーブル追加）、`ui-ux-design-system.md` v1.3.0（デザイントークン使用パターン追加）。LOGS.md完了記録追加 |
 | **8.61.0** | **2026-02-23** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 教訓追加**: lessons-learned.md に苦戦箇所4件（正規表現パース、キー変換設計、typesVersionsスキップ、process.exitCodeテスタビリティ）を追記 |
+| **8.61.0** | **2026-03-06** | **TASK-043B 完了反映**: `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` / `task-workflow.md` / `lessons-learned.md` に SkillManagementPanel import list refinement を同期。2セクション UI、dialog 追加導線、store action 非 throw 契約への対処、Phase 11 証跡（TC 9/9 + mobile 補助）を記録 |
 | **8.60.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 教訓追補**: `architecture-monorepo.md` に実装時の苦戦箇所と対処（MINOR未タスク化、Phase 12証跡同期、未タスク監査ベースライン分離）を追加。`lessons-learned.md` v1.18.3 に苦戦箇所3件と5ステップ簡潔解決手順を追記 |
 | **8.59.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001再監査是正**: `technology-devops.md` に主要CIジョブ構成テーブルを追加し、Step 1-B の実装状況反映を仕様実体化。`SKILL.md` / `LOGS.md` の競合痕跡文字列を除去し、`generate-index.js` 再実行で `topic-map.md` / `keywords.json` を再同期 |
 | **8.58.0** | **2026-02-22** | **TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001完了反映**: @repo/shared 3層整合CIガードスクリプト追加。check-module-syncジョブCI統合。43テスト全PASS。quality-requirements.md/architecture-monorepo.md/technology-devops.md更新。LOGS.md完了記録追加 |

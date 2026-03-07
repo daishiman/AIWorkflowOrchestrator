@@ -6,12 +6,12 @@
 
 ## チーム構成
 
-| SubAgent | 仕様書                                             | 役割                          | 実行順序        | ステータス |
-| -------- | -------------------------------------------------- | ----------------------------- | --------------- | ---------- |
-| A        | `task-043a-ipc-contract-and-security-alignment.md` | IPC契約・セキュリティ境界定義 | 並列            | pending    |
-| B        | `task-043b-ui-ux-import-list-design.md`            | UI/UX・アクセシビリティ設計   | 並列            | completed  |
-| C        | `task-043c-store-lifecycle-integration-design.md`  | store駆動の状態遷移設計       | 並列            | pending    |
-| D        | `task-043d-test-quality-gate-design.md`            | テスト/品質ゲート統合         | 直列（A/B/C後） | pending    |
+| SubAgent | 仕様書                                                                           | 役割                          | 実行順序        | ステータス |
+| -------- | -------------------------------------------------------------------------------- | ----------------------------- | --------------- | ---------- |
+| A        | `task-043a-ipc-contract-and-security-alignment.md`                               | IPC契約・セキュリティ境界定義 | 並列            | pending    |
+| B        | `task-043b-ui-ux-import-list-design.md`                                          | UI/UX・アクセシビリティ設計   | 並列            | completed  |
+| C        | `../../../completed-tasks/task-043c-store-lifecycle-integration-design/index.md` | store駆動の状態遷移設計       | 並列            | completed  |
+| D        | `task-043d-test-quality-gate-design.md`                                          | テスト/品質ゲート統合         | 直列（A/B/C後） | pending    |
 
 ## 並列・直列フロー
 
@@ -57,6 +57,23 @@ C (Store)        ┘
 - `task-043a-ipc-contract-and-security-alignment/phase-11-manual-test.md`
 - `task-043a-ipc-contract-and-security-alignment/phase-12-documentation.md`
 - `task-043a-ipc-contract-and-security-alignment/phase-13-pr-creation.md`
+
+## task-043c 13フェーズ仕様書
+
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/index.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-1-requirements.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-2-design.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-3-design-review.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-4-test-creation.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-5-implementation.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-6-test-expansion.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-7-coverage-check.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-8-refactoring.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-9-quality-assurance.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-10-final-review.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-11-manual-test.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-12-documentation.md`
+- `../../../completed-tasks/task-043c-store-lifecycle-integration-design/phase-13-pr-creation.md`
 
 ## 実行ポリシー
 

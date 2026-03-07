@@ -138,6 +138,27 @@ useEffect(() => {
 }, [initializeAuthMode]); // Zustandアクション参照は安定しているため安全
 ```
 
+### P48: useShallow未適用による派生セレクタ無限ループ（P31派生）
+
+- **教訓**: `.filter()` / `.map()` で配列を返す派生セレクタは、Zustandの `Object.is` 比較で毎回新しい参照と判定される。`useShallow` を適用しないと `useSyncExternalStore` が無限ループに陥る。P31（合成Hook）とは異なり、個別セレクタでも発生する
+- **症状**: `renderHook` テストがタイムアウト、コンポーネントが無限再レンダー
+- **解決策**: `zustand/react/shallow` の `useShallow` で派生セレクタをラップする
+- **適用基準**: セレクタが `.filter()` / `.map()` / スプレッド構文で新しい参照を返す場合は必須
+- **関連パターン**: P31（Zustand Store Hooks無限ループ）
+- **関連タスク**: TASK-10A-E-C
+- **参照**: [architecture-implementation-patterns.md#S18](../skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+
+```typescript
+// ❌ P48: 毎回新しい配列参照 → 無限ループ
+export const useFilteredItems = () =>
+  useAppStore((state) => state.items.filter((i) => i.active));
+
+// ✅ useShallow で shallow 比較を適用
+import { useShallow } from "zustand/react/shallow";
+export const useFilteredItems = () =>
+  useAppStore(useShallow((state) => state.items.filter((i) => i.active)));
+```
+
 ## ビルド / 環境
 
 ### P7: ネイティブモジュールのバイナリ不一致
