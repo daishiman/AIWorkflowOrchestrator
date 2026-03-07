@@ -21,6 +21,7 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
+| 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
@@ -5769,6 +5770,18 @@ async function safeInvokeUnwrap<T>(
   2. 外部データ由来の箇所を `Array.isArray` に置換
   3. 内部コード由来（確実に null/undefined のみ）は `?? []` を維持
 
+#### S4: IPC契約ドリフト（仕様表の旧値残存）
+- **症状**: API仕様書は更新済みだが、実装変更後に戻り値型テーブルだけ旧値が残るドリフトが発生
+- **根本原因**: 「実装コード」と「仕様表」の両方を同時に検証する手順を固定していなかった
+- **解決策**: `api-ipc-system.md` の `apiKey:list` を `IPCResponse<ProviderListResult>` へ更新し、フィールド表 (`providers/registeredCount/totalCount`) を追加
+- **標準ルール**: IPC契約変更時は「型名 + フィールド表 + 完了タスク台帳」を同一コミット単位で更新する
+
+#### S5: Phase 11 実画面証跡不足
+- **症状**: Phase 11 が自動テスト代替に寄り、実画面証跡が不足しやすい
+- **根本原因**: UI構造変更なしという前提で screenshot を省略する運用が残っていた
+- **解決策**: `capture-task-06-settings-apikey-contract-guard-phase11.mjs` を追加し、TC-11-01〜03 を取得して manual-test-result へ証跡リンクを記録
+- **標準ルール**: ユーザーが画面検証を要求した場合、`SCREENSHOT` を必須に切り替える
+
 ### 同種課題の5分解決カード
 
 | ステップ | 操作 | 目的 |
@@ -5787,4 +5800,3 @@ async function safeInvokeUnwrap<T>(
 - `references/security-electron-ipc.md`: apiKeyAPI セクション追加
 - `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
 - `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
-```

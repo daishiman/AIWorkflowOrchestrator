@@ -12,127 +12,110 @@
 
 ## 目的
 
-apiKey.list 契約が壊れた場合でも SettingsView が継続表示されるように、Renderer / Preload / Main の response shape と fallback を設計し、実装できる仕様へ落とす。
-
-## 背景
-
-task-04 では linkedProviders だけを防御したが、SettingsView 固有の `ApiKeysSection` 側には response 正規化が入っていない。`result.data.providers` の shape が崩れるだけで renderer 側が落ちる経路が残っている。
-
-## Atent Team編成
-
-| SubAgent                | 関心ごと                         | 実行モード | Phase 9 の責務                              |
-| ----------------------- | -------------------------------- | ---------- | ------------------------------------------- |
-| SubAgent-Renderer-Guard | Renderer defensive normalization | 並列       | providers shape の正規化ポイントを設計する  |
-| SubAgent-Contract-IPC   | Main / Preload / Shared contract | 並列       | response envelope と shared type を確認する |
-| SubAgent-Test-Fallback  | 異常系テスト / fallback UX       | 並列       | malformed response ケースと文言を設計する   |
-| SubAgent-Lead-Sync      | 仕様統合 / aiworkflow 同期       | 直列統合   | task-04 の調査結果と本タスク境界を統合する  |
+Phase 5-8 の全成果物に対して品質チェックを実施し、Phase 10（最終レビュー）に進行可能か判断する。
 
 ## 実行タスク
 
-- 品質監査: 防御境界 / 契約監査 / UX / 回帰耐性 を再点検する
-- リスク評価: 残存リスクの再発条件と回避策を登録簿へ残す
-- リリース前確認: 手動テスト前に blockers が無いことを確認する
+### Task 1: 品質チェックの実行
+
+以下のコマンドを順次実行し、全 PASS を確認する。
+
+```bash
+# 1. Lint チェック
+pnpm lint
+
+# 2. TypeScript 型チェック
+pnpm typecheck
+
+# 3. 関連テストの実行
+cd apps/desktop && pnpm vitest run \
+  src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx \
+  src/main/ipc/__tests__/apiKeyHandlers.test.ts
+
+# 4. 全テスト実行（回帰確認）
+pnpm --filter @repo/desktop test
+```
+
+**合格基準**:
+
+| チェック項目     | 合格条件                        |
+| ---------------- | ------------------------------- |
+| `pnpm lint`      | エラー 0 件                     |
+| `pnpm typecheck` | エラー 0 件                     |
+| 関連テスト       | 全 PASS                         |
+| 全テスト         | 全 PASS（既存テストの回帰なし） |
+
+### Task 2: Pitfall 再発チェック
+
+以下の既知パターンが再発していないか確認する。
+
+| Pitfall | チェック内容                                    | 確認コマンド / 方法                                                                            |
+| ------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| P42     | 文字列引数の `.trim()` バリデーション漏れ       | `grep -rn "typeof.*string.*===" apps/desktop/src/main/ipc/apiKeyHandlers.ts` で `.trim()` 確認 |
+| P44     | IPC ハンドラと Preload のインターフェース不整合 | ハンドラ引数形式と `skill-api.ts` の呼び出し形式を照合                                         |
+| P45     | IPC 引数命名の契約ドリフト                      | 引数名のセマンティクスが実際の値と一致するか確認                                               |
+| P48     | Non-null assertion (`!`) による安全性偽装       | `grep -rn "\.data\!" apps/desktop/src/renderer/` で `!` 使用箇所を確認                         |
+
+### Task 3: IPC 契約チェックリスト（Phase 5-6）の実行
+
+`ipc-contract-checklist.md` の以下の Phase を実行する。
+
+**Phase 5: ランタイム検証**
+
+- [ ] `apiKey:list` ハンドラの戻り値が `IPCResponse<ProviderListResult>` の envelope に準拠
+- [ ] `result.success === false` 時の `error` フィールドが `IPCError { code, message }` 形式
+- [ ] `result.data.providers` が `ProviderStatus[]` 型の配列
+
+**Phase 6: 回帰防止**
+
+- [ ] Phase 4-6 のテストが防御ガードの全分岐をカバー
+- [ ] テストデータファクトリが正常系・異常系の両方を生成可能
+- [ ] malformed response ケースが regression fixture として固定されている
+
+### Task 4: リスク登録簿の作成
+
+| リスク ID | リスク内容                                       | 発生条件                                    | 影響度 | 回避策                           |
+| --------- | ------------------------------------------------ | ------------------------------------------- | ------ | -------------------------------- |
+| RSK-001   | Main 側 providers 配列要素バリデーション未実施   | apiKeyValidator が不正な shape を返した場合 | MEDIUM | 未タスク化して後続対応           |
+| RSK-002   | profileHandlers の identities 防御パターン不統一 | identities が非配列値の場合                 | LOW    | Phase 8 で統一方針決定済み       |
+| RSK-003   | structured clone による型情報欠落                | contextBridge 経由でメソッドが消失する場合  | LOW    | P48 準拠の実行時型検証で防御済み |
 
 ## 参照資料
 
-### 実装・証跡
-
-| 資料名              | パス                                                                                                                               | 用途                                            |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Renderer Component  | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                                                          | providers 正規化の主対象                        |
-| Renderer Tests      | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx`                                  | shape 異常系の固定先                            |
-| Main IPC            | `apps/desktop/src/main/ipc/apiKeyHandlers.ts`                                                                                      | list / validate 契約の確認先                    |
-| Main IPC            | `apps/desktop/src/main/ipc/profileHandlers.ts`                                                                                     | profile linked providers 側の防御との整合確認   |
-| Shared Types        | `packages/shared/types/api-keys.ts`                                                                                                | transport 型の確認先                            |
-| Validator           | `packages/shared/infrastructure/ai/apiKeyValidator.ts`                                                                             | validation の責務境界確認                       |
-| investigation index | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/index.md`                               | settings 側の残存リスクを確認する               |
-| task-04 manual      | `docs/30-workflows/completed-tasks/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001/outputs/phase-11/manual-test-result.md` | SettingsView 自体が未検証だった事実を確認する   |
-| task-03 manual      | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/outputs/phase-11/manual-test-result.md`            | 専用 harness と settings shell の差分を確認する |
-
-### システム仕様（aiworkflow-requirements / task-specification-creator）
-
-| 資料名                     | パス                                                                                 | 用途                                              |
-| -------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| task-spec workflow         | `.claude/skills/task-specification-creator/references/create-workflow.md`            | create モードの直列/並列ルールを確認する          |
-| phase templates            | `.claude/skills/task-specification-creator/references/phase-templates.md`            | Phase 文書の構造を揃える                          |
-| unassigned task guidelines | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | Phase 12 の残課題検出ルールを揃える               |
-| resource-map               | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                     | 読むべきシステム正本を固定する                    |
-| quick-reference            | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                  | IPC / Store / Electron の既存パターンを再確認する |
-| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | Phase 12 の完了記録先を確認する                   |
-| quality-requirements       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`          | TDD と coverage 条件を揃える                      |
-| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`               | 既知の再発パターンを再確認する                    |
-| api-ipc-system             | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                | システム IPC の response パターンを確認する       |
-| api-ipc-auth               | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`                  | 認証系 IPC と API key 契約の境界を確認する        |
-| ipc-contract-checklist     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`        | shape drift を検査する項目を固定する              |
-| security-electron-ipc      | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`         | Preload 経由で不正 shape を通さない前提を確認する |
-| ui-ux-settings             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | 設定画面の異常時表示方針を確認する                |
-| ui-ux-components           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`              | セクション責務とエラー表示の配置を確認する        |
-| ui-ux-design-system        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | 異常状態ラベル/色トークンの一貫性を確認する       |
-| ui-ux-design-principles    | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`       | 異常系導線の可読性と説明順序を確認する            |
-| testing-accessibility      | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`         | fallback表示のa11y検証観点を確認する              |
-| testing-component-patterns | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`    | malformed response の component test を組む       |
-| development-guidelines     | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`        | 正規化 helper の配置規則を確認する                |
-| error-handling             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                | malformed response 時の復旧方針を確認する         |
-| security-input-validation  | `.claude/skills/aiworkflow-requirements/references/security-input-validation.md`     | 受信データの型検証境界を確認する                  |
-| ipc-type-resolution-guide  | `.claude/skills/aiworkflow-requirements/references/ipc-type-resolution-guide.md`     | payload shape drift の診断手順を確認する          |
-| known-pitfalls             | `.claude/rules/06-known-pitfalls.md`                                                 | iterable / shape drift 再発防止を確認する         |
-| interfaces-auth            | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`               | 共通 IPCResponse envelope の扱いを確認する        |
-
-### 前提Phase成果物
-
-| 資料名         | パス               | 用途                               |
-| -------------- | ------------------ | ---------------------------------- |
-| Phase 5 成果物 | `outputs/phase-5/` | Phase 5 の出力を入力として参照する |
-
-## 実行手順
-
-1. Phase 5-8 の成果物を品質観点ごとに監査する。
-2. 残存リスクを risk-register に分類し、blocking / non-blocking を分ける。
-3. Phase 10 へ進める条件をチェックリスト化する。
-
-## 統合テスト連携
-
-- Phase 1-12 の成果物が 1 つの受け入れ基準集合に戻ることを確認する。
-- 05 / 06 / 07 / 08 の依存関係と review handoff を齟齬なく引き継ぐ。
-
-## 多角的チェック観点
-
-| 観点     | 確認内容                                                             |
-| -------- | -------------------------------------------------------------------- |
-| 防御境界 | normalize が 1 箇所に集まり、各 render branch が配列前提を持たないか |
-| 契約監査 | shared type と actual runtime shape の差分が記録されているか         |
-| UX       | fallback 表示が silent failure ではなく原因追跡可能か                |
-| 回帰耐性 | task-04 で守った linkedProviders と責務が重複していないか            |
+| 資料名                 | パス                                                                          | 用途                   |
+| ---------------------- | ----------------------------------------------------------------------------- | ---------------------- |
+| ipc-contract-checklist | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` | IPC 契約チェックリスト |
+| known-pitfalls         | `.claude/rules/06-known-pitfalls.md`                                          | P42/P44/P45/P48 確認   |
+| quality-requirements   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`   | 品質基準               |
+| Phase 5-8 成果物       | `outputs/phase-5/` 〜 `outputs/phase-8/`                                      | 品質チェックの入力     |
 
 ## 成果物
 
-| 成果物             | パス                                   | 説明               |
-| ------------------ | -------------------------------------- | ------------------ |
-| 品質チェックリスト | `outputs/phase-9/quality-checklist.md` | 品質確認項目       |
-| リスク登録簿       | `outputs/phase-9/risk-register.md`     | 残存リスクと対応策 |
+| 成果物             | パス                                   | 説明                 |
+| ------------------ | -------------------------------------- | -------------------- |
+| 品質チェックリスト | `outputs/phase-9/quality-checklist.md` | 全チェック項目と結果 |
+| リスク登録簿       | `outputs/phase-9/risk-register.md`     | 残存リスクと回避策   |
 
 ## 完了条件
 
-- [ ] 前Phaseの成果物を参照した追加作業が定義されている
-- [ ] gap または risk が文書化されている
-- [ ] 次Phaseへ渡す判断材料が成果物に残っている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] `pnpm lint` / `pnpm typecheck` / 全テストが PASS
+- [ ] P42/P44/P45/P48 の再発チェックが実施されている
+- [ ] IPC 契約チェックリスト Phase 5-6 が完了している
+- [ ] リスク登録簿に残存リスクが分類されている（blocking / non-blocking）
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 
-## サブタスク管理
+## タスク 100% 実行確認【必須】
 
-1. 参照資料の確認
-2. 実行タスクの実施
-3. 統合テスト連携の更新
-4. 成果物の作成・配置
-5. 完了条件の検証
-
-## タスク100%実行確認【必須】
-
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
 - [ ] 各タスクの成果物が生成されている
 - [ ] artifacts.json が更新されている
 - [ ] Phase 末端で完了内容を実行記録へ残している
 
-## 次のPhase
+## 次の Phase
 
 Phase 10: 最終レビューゲート
+
+## 統合テスト連携
+
+- 本Phaseの結果は `apps/desktop` の対象Vitest実行（`apiKeyHandlers.list` / `profileHandlers.identities` / `ApiKeysSection`）と連動して判定する。
+- Phase 11 ではスクリーンショット証跡（TC-11-01〜03）を統合テスト結果と同じ実装リビジョンで取得する。

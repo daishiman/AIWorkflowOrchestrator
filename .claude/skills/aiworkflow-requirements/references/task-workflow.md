@@ -137,8 +137,9 @@
 | 項目       | 値                                                                          |
 | ---------- | --------------------------------------------------------------------------- |
 | タスクID   | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001                              |
-| ステータス | **完了**                                                                    |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + 実画面検証 + 仕様同期）**                  |
 | 完了日     | 2026-03-07                                                                  |
+| 対象       | 設定画面 `ApiKeysSection` の `apiKey:list` 契約防御・providers 正規化       |
 | 成果物     | `docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001/outputs/` |
 
 #### 実施内容
@@ -146,6 +147,23 @@
 - ApiKeysSection normalizeProviders + apiKeyHandlers Array.isArray + profileHandlers パターン統一
 - 20テスト追加、全122件PASS
 - Phase 3 ゲート: PASS、Phase 10 ゲート: MINOR（P48 残存 → 未タスク化）
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec node scripts/capture-task-06-settings-apikey-contract-guard-phase11.mjs` | PASS（TC-11-01〜03） |
+| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/apiKeyHandlers.list.test.ts src/main/ipc/__tests__/profileHandlers.identities.test.ts src/renderer/components/organisms/ApiKeysSection/__tests__/ApiKeysSection.test.tsx` | PASS（3 files / 59 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001` | PASS |
+
+#### 関連未タスク（Phase 12で起票）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-SETTINGS-APIKEY-001 | `Array.isArray` 防御の共通ユーティリティ化 | `docs/30-workflows/unassigned-task/task-imp-settings-ensure-array-utility-001.md` |
+| UT-SETTINGS-APIKEY-002 | Settings画面 ErrorBoundary 導入 | `docs/30-workflows/unassigned-task/task-imp-settings-error-boundary-guard-001.md` |
+| UT-SETTINGS-APIKEY-003 | ApiKeysSection E2E統合テスト追加 | `docs/30-workflows/unassigned-task/task-imp-settings-apikey-e2e-integration-001.md` |
 
 ### タスク: TASK-10A-F スキルライフサイクルUI Store移行（2026-03-07）
 

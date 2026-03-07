@@ -2636,3 +2636,20 @@ interface BadgeProps extends Omit<
 - **適用条件**: Phase 12 Task 5 実行時（全タスクで必須）
 - **発見日**: 2026-03-07
 - **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
+
+
+
+### [Phase12] `validate-phase-output --phase 12` を完了前に必須化する（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
+
+- **状況**: `verify-all-specs` はPASSでも、Phase別要件（例: 「統合テスト連携」必須セクション）が不足していることがある
+- **成功パターン**:
+  - Phase 12 完了前に `validate-phase-output <workflow> --phase 12` を必ず実行する
+  - エラーに出た必須セクション欠落を先に埋め、その後 `verify-all-specs` を再実行する
+- **失敗パターン**:
+  - `verify-all-specs` PASS のみで Phase 12 完了判定する
+  - Phase 11/12 の必須セクションを後追いで更新し、台帳に不整合を残す
+- **標準ルール**:
+  - Phase 12 の完了ゲートは `validate-phase-output --phase 12` PASS を優先条件にする
+  - 画面タスクは `validate-phase11-screenshot-coverage` をセットで実行する
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001

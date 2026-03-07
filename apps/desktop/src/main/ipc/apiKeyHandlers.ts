@@ -296,9 +296,21 @@ export function registerApiKeyHandlers(
         try {
           const result = await apiKeyStorage.listProviders();
 
+          // GAP-05: providers 配列バリデーション — P48 準拠
+          const providers = Array.isArray(result?.providers)
+            ? result.providers
+            : [];
+          const registeredCount = providers.filter(
+            (p) => p?.status === "registered",
+          ).length;
+
           return {
             success: true,
-            data: result,
+            data: {
+              providers,
+              registeredCount,
+              totalCount: providers.length,
+            },
           };
         } catch (error) {
           return {

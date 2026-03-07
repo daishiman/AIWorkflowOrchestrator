@@ -8783,6 +8783,7 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - ステータス: success
 - 補足: Phase 12 の実施証跡・system spec 同期・未タスクフォーマット準拠を同一ターンで固定。
 
+
 ---
 
 ## 2026-03-07 - 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
@@ -8798,6 +8799,7 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - `references/lessons-learned.md` に教訓セクション追加（苦戦箇所3件 + 5分解決カード）
 - `references/security-electron-ipc.md` に apiKeyAPI セクション変更履歴追加（v1.14.0）
 - `references/ui-ux-settings.md` に ApiKeysSection 異常系表示仕様の反映確認
+- 2026-03-07: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査で Phase 11 screenshot coverage と Phase 12 implementation-guide validator を同時適用し、仕様同期漏れ（apiKey:list 契約型）を是正。
 
 ### 結果
 

@@ -12,6 +12,7 @@
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
+| v1.13.1    | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: ApiKeysSection の providers 要素 shape 検証（`provider/status` 必須）を Renderer 境界防御パターンへ追記。非配列防御に加えて malformed 要素混在時の継続表示を明文化 |
 | v1.13.0    | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer 境界での Preload Payload 防御パターン（namespace/メソッド/iterable/エラー安全アクセスの4層）を追加。task-04（safeInvoke）との責務分離を明文化                                                                                                                                         |
 | v1.12.5    | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: `auth-mode:*` の sender 検証順序、許可 origin、error envelope、`safeInvoke` / `safeOn` 公開境界、token/API Key マスキング方針を追加                                                                                                                                                                          |
 | v1.12.4    | 2026-03-05 | TASK-10A-E-A 追補: skillShareAPI セクションへ「実装時の苦戦箇所（セキュリティ観点）」と5ステップ手順を追加。sender優先検証、`code/errorCode` 二軸固定、Step 2同時同期を標準化                                                                                                                                                                                |
@@ -112,7 +113,7 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - Preload 層の safeInvoke 防御（task-04）とは独立した防御層として機能する
 - Main Process 側のバリデーション（sender 検証 + 引数検証）とは別レイヤーの多層防御
 
-**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
+**関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
 
 ### AuthMode IPC セキュリティパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）

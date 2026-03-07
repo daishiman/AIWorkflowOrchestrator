@@ -1772,3 +1772,12 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `SKILL.md` 変更履歴を `10.37.12` に更新
 
 ---
+
+## 2026-03-07 - TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 Phase 12ゲート改善
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
+  - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
