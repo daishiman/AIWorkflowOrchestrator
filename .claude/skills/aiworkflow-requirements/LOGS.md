@@ -5,6 +5,34 @@
 
 ---
 
+## 2026-03-07 - TASK-10A-F Store駆動ライフサイクルUI統合の仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-10A-F`
+- 目的: `docs/30-workflows/store-driven-lifecycle-ui/` の Phase 11/12 再検証結果を system spec 正本へ同期
+
+### 仕様書別SubAgent分担
+- SubAgent-A: `references/arch-state-management.md`（TASK-10A-D/E-C/F の責務境界同期）
+- SubAgent-B: `references/ui-ux-feature-components.md`（UI統合完了記録 + screenshot導線）
+- SubAgent-C: `references/task-workflow.md`（完了台帳 + 検証証跡 + 未タスク判定）
+
+### 実施内容
+- TASK-10A-F 完了記録を `task-workflow.md` に追加。
+- `ui-ux-feature-components.md` に Store-Driven Lifecycle Integration 行と専用セクションを追加。
+- `arch-state-management.md` に direct IPC 排除の境界仕様を追記。
+- LOGS/SKILL 2ファイルずつを更新し、Phase 12 Step 1-A を完了化。
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/store-driven-lifecycle-ui --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/store-driven-lifecycle-ui --json`
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-07 - TASK-10A-E-C Store駆動ライフサイクル統合設計の仕様同期
 ## 2026-03-07 - TASK-UI-03-AGENT-VIEW-ENHANCEMENT Phase 12 完了
 

@@ -14,6 +14,7 @@ import {
 } from "./wizard";
 import type { WizardOptions } from "./wizard";
 import { useWizardStep } from "./hooks/useWizardStep";
+import { useCreateSkill } from "../../store";
 
 const STEPS = ["説明入力", "設定", "生成", "完了"];
 
@@ -32,6 +33,7 @@ export const SkillCreateWizard = React.forwardRef<
   SkillCreateWizardProps
 >(({ onClose }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
+  const createSkill = useCreateSkill();
   const [description, setDescription] = useState("");
   const [options, setOptions] = useState<WizardOptions>(DEFAULT_OPTIONS);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -43,12 +45,13 @@ export const SkillCreateWizard = React.forwardRef<
     setIsGenerating(true);
     setError(null);
     try {
-      const result = await window.electronAPI.skill.create({
-        description,
-        options,
-      });
-      setSkillPath(result.path);
-      goToStep(3);
+      const path = await createSkill(description, options);
+      if (path) {
+        setSkillPath(path);
+        goToStep(3);
+      } else {
+        setError(new Error("スキル生成に失敗しました"));
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err : new Error("スキル生成に失敗しました"),
