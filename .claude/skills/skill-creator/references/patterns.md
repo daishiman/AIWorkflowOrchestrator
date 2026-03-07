@@ -2538,3 +2538,33 @@ interface BadgeProps extends Omit<
   - `rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^### 同種課題の5分解決カード$' <domain-spec-file>` を完了前に必ず実行する
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001
+
+### [Phase12] 「更新予定のみ」残置を排除し、実更新ログへ昇格する（TASK-10A-E-C）
+
+- **状況**: Phase 12 で `spec-update-summary.md` は更新されているが、`documentation-changelog.md` や `phase-12-documentation.md` が「仕様策定のみ」「実行中」のまま残る
+- **成功パターン**:
+  - `documentation-changelog.md` を最終正本として再作成し、Task 1〜5 の実施結果を確定値で記録する
+  - `phase-12-documentation.md` のチェックボックスを実績へ同期する
+  - `verify-all-specs` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` の結果を changelog に固定する
+- **失敗パターン**:
+  - `spec-update-summary.md` だけ更新して完了扱いにする
+  - 「更新予定」「実行待ち」記述を残したまま Phase 12 を閉じる
+- **標準ルール**:
+  - Phase 12 完了前に `rg -n "仕様策定のみ|実行中|実行待ち|更新が必要" outputs/phase-12` を実行し、残置文言をゼロにする
+  - Task 1〜5 の実施証跡を 1 ファイル（`documentation-changelog.md`）で追跡可能にする
+- **発見日**: 2026-03-06
+- **関連タスク**: TASK-10A-E-C
+
+### [Phase12] 未タスク指示書は 9見出しテンプレート準拠で作成する（TASK-10A-E-C）
+
+- **状況**: 未タスクを短縮形式で作成すると、`audit-unassigned-tasks` の format violation が発生
+- **成功パターン**:
+  - `assets/unassigned-task-template.md` を適用し、`## 1..9` を全て埋める
+  - 作成直後に `audit-unassigned-tasks --target-file` で個別検証する
+- **失敗パターン**:
+  - メタ情報 + 背景 + 受け入れ条件だけで未タスクを作る
+  - 参照情報/リスク/検証手順を省略する
+- **標準ルール**:
+  - 未タスク新規作成時は「テンプレート適用→個別監査PASS→台帳同期」の3点を同一ターンで完了する
+- **発見日**: 2026-03-06
+- **関連タスク**: UT-10A-E-C-001, UT-10A-E-C-002

@@ -5,7 +5,7 @@ title: TASK-10A-E Store駆動ライフサイクル統合設計
 depends_on: [TASK-10A-E]
 parallel_with: [TASK-10A-E-A, TASK-10A-E-B]
 blocks: [TASK-10A-E-D]
-status: pending
+status: spec_created
 priority: high
 estimated_complexity: small
 tags: [docs, store, lifecycle, renderer]
@@ -63,9 +63,9 @@ import 操作後に一覧が即時再計算される状態遷移を定義し、`
 
 ## 成果物
 
-| 成果物          | パス                                              | 説明                     |
-| --------------- | ------------------------------------------------- | ------------------------ |
-| Store統合仕様書 | `task-043c-store-lifecycle-integration-design.md` | 状態遷移と責務境界の定義 |
+| 成果物          | パス                                                                             | 説明                     |
+| --------------- | -------------------------------------------------------------------------------- | ------------------------ |
+| Store統合仕様書 | `../../../completed-tasks/task-043c-store-lifecycle-integration-design/index.md` | 状態遷移と責務境界の定義 |
 
 ## 完了条件
 

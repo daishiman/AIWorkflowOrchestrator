@@ -2113,6 +2113,72 @@ Main ProcessのIPCハンドラがオブジェクト形式（`{ skillId: string }
 
 ---
 
+## useShallow派生selectorパターン（S18: TASK-10A-E-C 2026-03-06策定）
+
+### 問題
+
+Zustand の派生セレクタで `.filter()` を使用すると、毎回新しい配列参照が生成される。Zustand のデフォルト比較（`Object.is`）では内容が同一でも異なる参照と判定され、React の `useSyncExternalStore` が無限ループに陥る。これは P31（Zustand Store Hooks無限ループ）の派生パターンである。
+
+### 症状
+
+- `renderHook` テストで無限ループが発生し、テストがタイムアウト
+- コンポーネントが無限再レンダーを繰り返す
+- `useEffect` の依存配列にセレクタ結果を含めると永続実行
+
+### 根本原因
+
+```typescript
+// ❌ 毎回新しい配列参照を返す → Object.is で常に false
+export const useAvailableSkillsForImport = () =>
+  useAppStore((state) =>
+    state.availableSkillsMetadata.filter(
+      (a) => !state.importedSkills.some((i) => i.name === a.name),
+    ),
+  );
+```
+
+`.filter()` は常に新しい配列を生成する。`[1, 2, 3].filter(x => true) !== [1, 2, 3].filter(x => true)` が常に `true` であるのと同じ原理。
+
+### 解決パターン: useShallow の適用
+
+```typescript
+import { useShallow } from "zustand/react/shallow";
+
+// ✅ useShallow で shallow 比較を適用 → 内容同一なら同一参照と判定
+export const useAvailableSkillsForImport = () =>
+  useAppStore(
+    useShallow((state) =>
+      state.availableSkillsMetadata.filter(
+        (a) => !state.importedSkills.some((i) => i.name === a.name),
+      ),
+    ),
+  );
+```
+
+### 適用判断基準
+
+| 条件 | useShallow 必要 | 理由 |
+|------|----------------|------|
+| `.filter()` で配列を返すセレクタ | **必須** | 毎回新しい配列参照 |
+| `.map()` で変換配列を返すセレクタ | **必須** | 同上 |
+| `{ ...state, computed }` でオブジェクトを返すセレクタ | **必須** | 毎回新しいオブジェクト参照 |
+| `state.singleField` でプリミティブを返すセレクタ | 不要 | `Object.is` で正しく比較可能 |
+| `state.actionFunction` でアクション関数を返すセレクタ | 不要 | Zustand のクロージャで安定参照 |
+
+### パフォーマンス特性
+
+- `useShallow` は配列要素の参照を `===` で比較するのみ（O(n)）
+- 100件規模の配列でも 1ms 未満で完了
+- Deep equality よりも軽量で、ほとんどのユースケースで十分
+
+### 関連Pitfall・タスク
+
+- **関連Pitfall**: P31（Zustand Store Hooks無限ループ）
+- **関連タスク**: TASK-10A-E-C（Store駆動ライフサイクル統合設計）
+- **適用箇所**: `apps/desktop/src/renderer/store/index.ts` の `useAvailableSkillsForImport` / `useFilteredAvailableSkills`
+
+---
+
 ## IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定）
 
 ### 問題
