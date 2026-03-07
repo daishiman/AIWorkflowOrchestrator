@@ -24,6 +24,36 @@
 
 ---
 
+||||||| Stash base
+## 2026-03-08 - branch横断 Phase 12 再監査 + persist iterable hardening 仕様同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（仕様同期）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/arch-state-management.md` に persist 復旧契約（DD-01〜DD-03）を追記
+  - `references/lessons-learned.md` にコード例と関連Pitfall参照を追加
+  - `references/task-workflow.md` に完了タスクと5分解決カードを追記
+  - `skill-creator/references/patterns.md` に persist 3段ガード + branch横断監査パターンを追加
+  - 4仕様書を5並列SubAgentで同時更新
+  - 対象タスク: `TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`, branch横断再監査
+
+---
+
+## 2026-03-07 - TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 Phase 11/12 準拠改善
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `manual-test-result.md` を生成し、TC-ID と screenshot を必須紐付け
+  - `unassigned-task-detection.md` / `skill-feedback-report.md` を追加し、Phase 12 必須5タスクを充足
+  - `validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` の PASS を完了条件へ反映
+
+---
+
 ## 2026-03-07 - TASK-10A-E-C Store駆動ライフサイクル統合設計の仕様同期
 
 ## 2026-03-07 - TASK-UI-03 スキル最適化（Phase 4 a11y テスト推奨追加）

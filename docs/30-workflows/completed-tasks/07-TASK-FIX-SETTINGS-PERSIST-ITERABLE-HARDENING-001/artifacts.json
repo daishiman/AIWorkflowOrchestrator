@@ -1,11 +1,11 @@
 {
   "feature": "07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001",
   "created": "2026-03-06T10:30:00.000Z",
-  "lastUpdated": "2026-03-06T10:30:00.000Z",
-  "status": "spec_created",
+  "lastUpdated": "2026-03-07T22:35:00.000Z",
+  "status": "phase_12_complete",
   "phases": {
     "1": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-1/requirements-definition.md",
         "outputs/phase-1/acceptance-criteria.md",
@@ -13,7 +13,7 @@
       ]
     },
     "2": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-2/design-decisions.md",
         "outputs/phase-2/ownership-matrix.md",
@@ -21,73 +21,65 @@
       ]
     },
     "3": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-3/design-review-result.md",
         "outputs/phase-3/gate-decision.md"
       ]
     },
     "4": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-4/red-test-plan.md",
         "outputs/phase-4/integration-test-cases.md"
       ]
     },
     "5": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-5/implementation-sequence.md",
         "outputs/phase-5/changed-files-plan.md"
       ]
     },
     "6": {
-      "status": "pending",
-      "artifacts": [
-        "outputs/phase-6/regression-expansion-plan.md",
-        "outputs/phase-6/fixture-plan.md"
-      ]
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/regression-expansion-plan.md"]
     },
     "7": {
-      "status": "pending",
-      "artifacts": [
-        "outputs/phase-7/coverage-targets.md",
-        "outputs/phase-7/gap-log.md"
-      ]
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
     },
     "8": {
-      "status": "pending",
-      "artifacts": [
-        "outputs/phase-8/refactor-guardrails.md",
-        "outputs/phase-8/simplification-log.md"
-      ]
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactor-assessment.md"]
     },
     "9": {
-      "status": "pending",
-      "artifacts": [
-        "outputs/phase-9/quality-checklist.md",
-        "outputs/phase-9/risk-register.md"
-      ]
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-checklist.md"]
     },
     "10": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
-        "outputs/phase-10/final-review-result.md",
-        "outputs/phase-10/release-decision.md"
+        "outputs/phase-10/final-review.md",
+        "outputs/phase-10/gate-decision.md"
       ]
     },
     "11": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
-        "outputs/phase-11/manual-test-matrix.md",
-        "outputs/phase-11/evidence-plan.md"
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshots/TC-11-01-settings-light.png",
+        "outputs/phase-11/screenshots/TC-11-02-settings-dark.png",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
       ]
     },
     "12": {
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
         "outputs/phase-12/unassigned-task-detection.md",
         "outputs/phase-12/skill-feedback-report.md"
       ]
@@ -115,9 +107,14 @@
     "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
   },
   "metadata": {
-    "taskType": "specification",
+    "taskType": "implementation",
     "estimatedPhases": 13,
     "actualPhases": 13,
-    "executionNote": "仕様書作成のみ完了。実装・commit・PR は未実施。"
+    "executionNote": "Phase 1-12完了。実装・テスト全PASS。commit・PRは未実施。",
+    "testResults": {
+      "navigationSlice": "27/27 PASS",
+      "customStorage": "15/15 PASS",
+      "total": "42/42 PASS"
+    }
   }
 }

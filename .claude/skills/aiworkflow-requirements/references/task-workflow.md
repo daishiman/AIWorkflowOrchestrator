@@ -267,6 +267,52 @@
 | `phase-11-manual-testing.md` と validator 期待名 `phase-11-manual-test.md` の不一致 | 手動テスト文書名が workflow ごとに揺れる | `phase-11-manual-test.md` を正本として固定し、証跡11件を TC と1:1で同期 |
 | Phase 12 changelog が「対象/予定」表現のまま残る | 実更新前に changelog を先行記述する | Step 1-A〜Step 2 を完了ベースで再記録し、予定表現を削除 |
 
+||||||| Stash base
+
+### タスク: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 settings persist iterable hardening（2026-03-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 |
+| 完了日 | 2026-03-07 |
+| ステータス | **完了（Phase 1-12 出力 + 画面証跡 + 仕様同期）** |
+| 対象 | `expandedFolders` / `viewHistory` の iterable 崩れ耐性 |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/arch-state-management.md` | persist 復旧契約を追記 | DD-01..DD-05 の防御境界が明文化される |
+| SubAgent-B | `references/lessons-learned.md` | 再発条件と5分解決カードを追記 | 同種課題へ再利用できる手順が残る |
+| SubAgent-C | `outputs/phase-11/*` | screenshot 2件とTC紐付け | `validate-phase11-screenshot-coverage` で証跡確認 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/slices/navigationSlice.test.ts src/renderer/store/__tests__/customStorage.test.ts` | PASS（42 tests） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001` | PASS |
+
+#### Phase 12で検出した関連未タスク（branch横断）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001 | Workflow10 の Phase 7/12 準拠不足是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md` |
+| UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001 | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md` |
+| UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001 | Workflow12 の実装ガイド欠落是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md` |
+
+#### 同種課題の5分解決カード（persist hydrate 破損入力）
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | persist 復元後に `is not iterable` / `has no method forEach` 等が発生し、Settings や Navigation が初期化に失敗する |
+| 根本原因 | `zustand/middleware` の `persist` が localStorage/electron-store から復元した値が `Set` / `Array` ではなく `null` / `object` / `number` 等に破損している |
+| 最短4手順 | 1) persist 復元対象に `Array.isArray` / `instanceof Set` ガードを入れる 2) 非正常値は `console.warn` を出して安全既定値にフォールバックする 3) テストで破損値5パターン以上を固定し、回帰を先に防ぐ 4) Phase 11 で最低2枚（light/dark）の画面証跡を残し、TC-ID で紐付ける |
+| 検証ゲート | `validate-phase-output` PASS、`validate-phase11-screenshot-coverage` PASS、`validate-phase12-implementation-guide` PASS、対象テスト PASS（42 tests） |
+| 同期先3点 | `references/task-workflow.md` / `references/lessons-learned.md` / `references/arch-state-management.md` |
+
 ### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
 
 | 項目       | 内容                                                               |
@@ -3476,6 +3522,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.34** | **2026-03-08** | **TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の5分解決カード追加**: 完了タスク節へ「同種課題の5分解決カード（persist hydrate 破損入力）」を追記。症状/根本原因/最短4手順/検証ゲート/同期先3点を固定化し、persist iterable 崩れの再発時に短手順で対処可能化 |
 | **1.67.33** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を登録**: `aiworkflow-requirements` の `quick_validate` warning 145件を「SKILL.md 全列挙」で雑に解消せず、`SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の入口設計と validator 判定を両立させる未タスクを残課題テーブルへ追加。苦戦箇所と再利用方針を `lessons-learned.md` / `SKILL.md` / `LOGS.md` へ同期 |
 | **1.67.33** | **2026-03-07** | **TASK-10A-F 完了同期**: `docs/30-workflows/store-driven-lifecycle-ui/` の Phase 1-12 完了、Phase 11 スクリーンショット11件、Step 1-A〜Step 2 の仕様同期（`arch-state-management` / `ui-ux-feature-components` / `task-workflow` / LOGS / SKILL / topic-map再生成）を記録 |
 | **1.67.32** | **2026-03-06** | **UT-TASK-10A-B-008 追補3を skill-creator 導線改善まで拡張**: repo 内 `skill-creator/SKILL.md` に未リンク reference 群の直接参照導線を追加し、`resource-map` 偏重で残っていた `quick_validate` warning 26件を 0 件へ解消。system spec には「Task本体の実装 + 再発防止スキル改善」を同一ターンで残す運用を追記 |
