@@ -1,0 +1,49 @@
+{
+  "skill_name": "aiworkflow-requirements",
+  "current_level": 3,
+  "levels": {
+    "1": {
+      "name": "Novice",
+      "description": "基本的な仕様検索と参照",
+      "unlocked": true,
+      "requirements": {
+        "min_usage_count": 0,
+        "min_success_rate": 0
+      }
+    },
+    "2": {
+      "name": "Practitioner",
+      "description": "仕様の作成・更新・検証",
+      "unlocked": true,
+      "requirements": {
+        "min_usage_count": 5,
+        "min_success_rate": 0.7
+      }
+    },
+    "3": {
+      "name": "Expert",
+      "description": "大規模仕様管理とインデックス最適化",
+      "unlocked": true,
+      "requirements": {
+        "min_usage_count": 20,
+        "min_success_rate": 0.8
+      }
+    },
+    "4": {
+      "name": "Master",
+      "description": "仕様体系設計と品質管理",
+      "unlocked": false,
+      "requirements": {
+        "min_usage_count": 50,
+        "min_success_rate": 0.9
+      }
+    }
+  },
+  "metrics": {
+    "total_usage_count": 40,
+    "success_count": 40,
+    "failure_count": 0,
+    "average_satisfaction": 4.5,
+    "last_evaluated": "2026-03-06T04:42:41.549Z"
+  }
+}

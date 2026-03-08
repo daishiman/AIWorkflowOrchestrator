@@ -1,0 +1,137 @@
+{
+  "skillName": "task-specification-creator",
+  "version": "2.0.0",
+  "currentLevel": 2,
+  "lastUpdated": "2026-02-02T00:00:00.000Z",
+  "metrics": {
+    "totalUsageCount": 49,
+    "successCount": 49,
+    "failureCount": 0,
+    "successRate": 1,
+    "averageDuration": 0,
+    "lastEvaluated": "2026-03-06T04:42:41.560Z"
+  },
+  "levelHistory": [
+    {
+      "level": 2,
+      "achievedAt": "2026-01-30T00:00:00.000Z",
+      "trigger": "TASK-7D完了時点でusageCount=29、successRate=1.0によりLevel 2維持"
+    }
+  ],
+  "patterns": {
+    "commonErrors": [
+      "Phase 12出力要件の漏れ（implementation-guide Part 1/Part 2、documentation-changelog.md、unassigned-task-detection.md）",
+      "artifacts.json同期漏れ（Phase完了後のstatus更新忘れ）",
+      "Step 1-C関連タスクテーブル更新漏れ（arch-state-management.md等）",
+      "topic-map.md再生成漏れ（Step 1-Aチェックリスト見落とし）"
+    ],
+    "slowPhases": [
+      "Phase 12（4タスク並列が必要、システム仕様書14ファイル更新）"
+    ],
+    "frequentAgents": [
+      "execute-workflow",
+      "Explore（Phase 1要件調査）",
+      "Plan（Phase 2設計）"
+    ]
+  },
+  "phaseMetrics": {
+    "decompose-task": {
+      "usageCount": 7,
+      "avgDuration": 0,
+      "successRate": 1,
+      "commonIssues": []
+    },
+    "identify-scope": {
+      "usageCount": 7,
+      "avgDuration": 0,
+      "successRate": 1,
+      "commonIssues": []
+    },
+    "design-phases": {
+      "usageCount": 7,
+      "avgDuration": 0,
+      "successRate": 1,
+      "commonIssues": []
+    },
+    "generate-task-specs": {
+      "usageCount": 8,
+      "avgDuration": 0,
+      "successRate": 0.8775,
+      "commonIssues": [
+        "Phase 12出力要件の漏れ（phase-11-12-guide.md参照不足）",
+        "未タスクファイルのセクション4/6/7省略（v9.13.0で修正）"
+      ]
+    },
+    "output-phase-files": {
+      "usageCount": 7,
+      "avgDuration": 0,
+      "successRate": 0.86,
+      "commonIssues": [
+        "artifacts.json同期漏れ",
+        "Phase 12 documentation-changelog.mdステータス更新漏れ"
+      ]
+    },
+    "update-dependencies": {
+      "usageCount": 7,
+      "avgDuration": 0,
+      "successRate": 1,
+      "commonIssues": []
+    },
+    "generate-unassigned-task": {
+      "usageCount": 8,
+      "avgDuration": 0,
+      "successRate": 0.8775,
+      "commonIssues": [
+        "未タスクファイルのunassigned-task/配置漏れ（TASK-8Aで改善: P3全件記録ルール追加）",
+        "既存タスク仕様書マッピング文書化漏れ",
+        "P3低優先度候補の最終テーブル除外（TASK-8Aで改善: generate-unassigned-task.mdにP3全件記録制約追加）"
+      ]
+    }
+  },
+  "qualityInsights": {
+    "patternAdoptionRate": 0.6,
+    "coverageTargetHitRate": 0.875,
+    "unassignedTaskDetectionRate": 1,
+    "notes": "TASK-8A実行知見によるスキル改善完了。patterns.md成功パターン4件追加（カバレッジ閾値免除判定, ギャップ分析ベースTDD, vi.doMock動的再読み込み, P3全件記録パターン）。generate-unassigned-task.mdにP3全件記録ルール追加。spec-update-workflow.md Step 1-D改善（topic-map.md再生成明示化）。TASK-8A: 5モジュール231テスト全PASS、4/5モジュール80%以上、SkillExecutor.ts統合テスト免除適用、未タスク1件（task-skillscanner-file-deletion-race: P3）。システム仕様8ファイル更新（quality-requirements.md, interfaces-agent-sdk-skill.md, interfaces-agent-sdk-executor.md, error-handling.md + topic-map.md再生成）。前回知見: TASK-7D forwardRef+useImperativeHandle, Exclude型設定マップ, Store個別セレクタ, 並列バックグラウンドエージェント。",
+    "taskMetrics": {
+      "TASK-8A": {
+        "completedPhases": 12,
+        "totalTests": 231,
+        "avgCoverage": 85.7,
+        "systemSpecsUpdated": 7,
+        "unassignedTasksDetected": 1
+      },
+      "TASK-7D": {
+        "completedPhases": 12,
+        "totalTests": 48,
+        "avgCoverage": 99.6,
+        "systemSpecsUpdated": 14,
+        "unassignedTasksDetected": 7
+      },
+      "TASK-7C": {
+        "completedPhases": 12,
+        "totalTests": 57,
+        "avgCoverage": 98.5,
+        "systemSpecsUpdated": 4,
+        "unassignedTasksDetected": 3
+      },
+      "TASK-SKILL-RETRY-001": {
+        "completedPhases": 12,
+        "totalTests": 73,
+        "avgCoverage": 97.2,
+        "systemSpecsUpdated": 6,
+        "unassignedTasksDetected": 4
+      }
+    }
+  },
+  "levelCriteria": {
+    "level2": {
+      "usageCount": 10,
+      "successRate": 0.8
+    },
+    "level3": {
+      "usageCount": 50,
+      "successRate": 0.9
+    }
+  }
+}

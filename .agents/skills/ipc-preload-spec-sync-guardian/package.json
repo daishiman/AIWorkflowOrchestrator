@@ -1,0 +1,25 @@
+{
+  "name": "@skills/ipc-preload-spec-sync-guardian",
+  "version": "1.0.0",
+  "description": "Claude Code skill: ipc-preload-spec-sync-guardian",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "validate": "node scripts/validate_all.js",
+    "log": "node scripts/log_usage.js",
+    "deps:install": "pnpm install",
+    "deps:add": "pnpm add"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "claude-code",
+    "skill"
+  ],
+  "author": "AIWorkflowOrchestrator",
+  "license": "UNLICENSED",
+  "created": "2026-02-25"
+}
