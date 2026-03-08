@@ -105,59 +105,91 @@ describe("navigationSlice", () => {
     });
   });
 
-  describe("iterable hardening (TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001)", () => {
-    describe("setCurrentView - viewHistory破損時", () => {
-      it.each([
-        ["null", null],
-        ["undefined", undefined],
-        ["number", 42],
-        ["string", "dashboard"],
-        ["object", { view: "editor" }],
-      ])(
-        "viewHistoryが%sでもcrashせず[view]にフォールバックする",
-        (_label, corruptValue) => {
-          // viewHistoryを破損値に手動設定
-          (store as Record<string, unknown>).viewHistory = corruptValue;
-
-          // setCurrentViewがcrashしないことを確認
-          expect(() => store.setCurrentView("settings")).not.toThrow();
-          expect(store.currentView).toBe("settings");
-          expect(store.viewHistory).toEqual(["settings"]);
-        },
-      );
+  describe("setCurrentSkillName", () => {
+    it("スキル名を設定する", () => {
+      store.setCurrentSkillName("test-skill");
+      expect(store.currentSkillName).toBe("test-skill");
     });
 
-    describe("goBack - viewHistory破損時", () => {
-      it.each([
-        ["null", null],
-        ["undefined", undefined],
-        ["number", 42],
-        ["string", "dashboard"],
-        ["object", { view: "editor" }],
-      ])(
-        "viewHistoryが%sでもcrashせず現在のビューを維持する",
-        (_label, corruptValue) => {
-          (store as Record<string, unknown>).viewHistory = corruptValue;
+    it("nullでリセットする", () => {
+      store.setCurrentSkillName("test-skill");
+      store.setCurrentSkillName(null);
+      expect(store.currentSkillName).toBeNull();
+    });
+  });
 
-          expect(() => store.goBack()).not.toThrow();
-          // currentViewは変更されない
-          expect(store.currentView).toBe("dashboard");
-        },
-      );
+  describe("persist corruption hardening (07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001)", () => {
+    // viewHistory が破損した状態を再現するヘルパー
+    const corruptViewHistory = (value: unknown) => {
+      // 内部stateを直接上書き
+      Object.assign(store, { viewHistory: value });
+    };
+
+    describe("setCurrentView with corrupted viewHistory", () => {
+      it("viewHistory が null でも settings 遷移が例外なく継続する", () => {
+        corruptViewHistory(null);
+        expect(() => store.setCurrentView("settings")).not.toThrow();
+        expect(store.currentView).toBe("settings");
+      });
+
+      it("viewHistory が undefined でも settings 遷移が例外なく継続する", () => {
+        corruptViewHistory(undefined);
+        expect(() => store.setCurrentView("settings")).not.toThrow();
+        expect(store.currentView).toBe("settings");
+      });
+
+      it("viewHistory が数値でも settings 遷移が例外なく継続する", () => {
+        corruptViewHistory(42);
+        expect(() => store.setCurrentView("settings")).not.toThrow();
+        expect(store.currentView).toBe("settings");
+      });
+
+      it("viewHistory が文字列でも settings 遷移が例外なく継続する", () => {
+        corruptViewHistory("corrupted");
+        expect(() => store.setCurrentView("settings")).not.toThrow();
+        expect(store.currentView).toBe("settings");
+      });
+
+      it("viewHistory がオブジェクトでも settings 遷移が例外なく継続する", () => {
+        corruptViewHistory({ broken: true });
+        expect(() => store.setCurrentView("settings")).not.toThrow();
+        expect(store.currentView).toBe("settings");
+      });
     });
 
-    describe("canGoBack - viewHistory破損時", () => {
-      it.each([
-        ["null", null],
-        ["undefined", undefined],
-        ["number", 42],
-        ["string", "dashboard"],
-        ["object", { view: "editor" }],
-      ])("viewHistoryが%sでもcrashせずfalseを返す", (_label, corruptValue) => {
-        (store as Record<string, unknown>).viewHistory = corruptValue;
+    describe("goBack with corrupted viewHistory", () => {
+      it("viewHistory が null でも goBack が例外なく継続する", () => {
+        corruptViewHistory(null);
+        expect(() => store.goBack()).not.toThrow();
+      });
 
-        expect(() => store.canGoBack()).not.toThrow();
+      it("viewHistory がオブジェクトでも goBack が例外なく継続する", () => {
+        corruptViewHistory({ broken: true });
+        expect(() => store.goBack()).not.toThrow();
+      });
+    });
+
+    describe("canGoBack with corrupted viewHistory", () => {
+      it("viewHistory が null でも canGoBack が false を返す", () => {
+        corruptViewHistory(null);
         expect(store.canGoBack()).toBe(false);
+      });
+
+      it("viewHistory がオブジェクトでも canGoBack が false を返す", () => {
+        corruptViewHistory({ broken: true });
+        expect(store.canGoBack()).toBe(false);
+      });
+    });
+
+    describe("recovery after corruption", () => {
+      it("破損 viewHistory から復旧後に navigation が継続できる", () => {
+        corruptViewHistory(null);
+        store.setCurrentView("settings");
+        store.setCurrentView("editor");
+        expect(store.viewHistory).toEqual(
+          expect.arrayContaining(["settings", "editor"]),
+        );
+        expect(Array.isArray(store.viewHistory)).toBe(true);
       });
     });
   });

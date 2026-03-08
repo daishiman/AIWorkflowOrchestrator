@@ -3789,3 +3789,23 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | 1.34.0 | 2026-02-13 | TASK-FIX-13-1完了記録追加。deprecated型プロパティ（Anchor.name, Skill.lastUpdated）削除、型回帰テスト追加、関連タスク仕様書への参照を反映 |
 | 1.35.0 | 2026-02-13 | 未タスク追加: UT-PERF-001（グラフユーティリティ性能ベンチマーク基準再設計）。TODO検出結果を未タスク指示書へ登録 |
 | 1.36.0 | 2026-02-13 | TASK-FIX-13-1 苦戦箇所と解決策を完了タスクセクションへ追記。削除対象境界・参照置換安全性・Phase 12同期手順を明文化 |
+
+## 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08）
+
+- 実装: `navigationSlice.ts` / `store/index.ts` に iterable/type guard を追加
+- テスト: `navigationSlice.test.ts` に破損 persist 再現ケースを追加
+- Phase 11: `outputs/phase-11/screenshots/TC-11-01..03` を取得して画面検証を実施
+- Phase 12: 実装ガイド・changelog・未タスク検出・スキル改善レポートを更新
+
+### 関連未タスク
+
+- `docs/30-workflows/unassigned-task/task-imp-persist-migration-versioning-001.md`
+- `docs/30-workflows/unassigned-task/task-imp-persist-typed-validation-expansion-001.md`
+
+### 苦戦箇所（TASK-07）
+
+| 項目 | 内容 | 対処 |
+| --- | --- | --- |
+| Phase 12 Task 1 不足 | `implementation-guide.md` が見出しのみで内容要件不足 | `validate-phase12-implementation-guide` を通るまで補完 |
+| worktree 依存欠損 | `@rollup/rollup-darwin-x64` 欠損で vitest/screenshot 失敗 | `pnpm install --frozen-lockfile` で復旧後に再実行 |
+| テスト対象の誤実行 | `test:run --` で全体実行になりやすい | `cd apps/desktop && pnpm exec vitest run <target>` に固定 |

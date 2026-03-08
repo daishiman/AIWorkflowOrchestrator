@@ -32,17 +32,21 @@ export const createNavigationSlice: StateCreator<
     const current = get().currentView;
     if (current === view) return;
 
-    set((state) => ({
-      currentView: view,
-      viewHistory: Array.isArray(state.viewHistory)
-        ? [...state.viewHistory, view]
-        : [view],
-    }));
+    set((state) => {
+      const safeHistory = Array.isArray(state.viewHistory)
+        ? state.viewHistory
+        : [];
+      return {
+        currentView: view,
+        viewHistory: [...safeHistory, view],
+      };
+    });
   },
 
   goBack: () => {
-    const history = get().viewHistory;
-    if (!Array.isArray(history) || history.length <= 1) return;
+    const rawHistory = get().viewHistory;
+    const history = Array.isArray(rawHistory) ? rawHistory : [];
+    if (history.length <= 1) return;
 
     const newHistory = history.slice(0, -1);
     const previousView = newHistory[newHistory.length - 1];
