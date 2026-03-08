@@ -1,6 +1,6 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-06T15:29:01.635Z
+> 検証日時: 2026-03-08T08:52:03.514Z
 > 対象: docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design
 
 ## サマリー
@@ -18,7 +18,7 @@
 
 ### Phase 1: 要件定義 ✅
 
-- ℹ️ [consistency] 参照パス「../skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043c-store-lifecycle-integration-design.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「../skill-import-agent-system/tasks/completed-task/task-043c-store-lifecycle-integration-design.md」の存在を確認してください
 
 ### Phase 2: 設計 ✅
 

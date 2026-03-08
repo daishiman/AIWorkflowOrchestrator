@@ -350,6 +350,43 @@ describe("SkillCreateWizard", () => {
   });
 
   // ============================================================
+  // Phase 6: 境界値・異常系テスト
+  // ============================================================
+  describe("境界値・異常系テスト", () => {
+    it("TC-CW-S01: 生成中（isGenerating=true）にスピナーと「生成中...」テキストが表示される", async () => {
+      // createSkill を解決しないまま保留して isGenerating=true 状態をキャプチャ
+      let resolvePromise: (value: string) => void;
+      mockCreateSkill.mockReturnValue(
+        new Promise<string>((resolve) => {
+          resolvePromise = resolve;
+        }),
+      );
+
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 -> Step 2
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テストスキル" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      // Step 2 -> 生成開始（Promiseは未解決のまま）
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+
+      // GenerateStep が表示される
+      expect(screen.getByText("生成中...")).toBeInTheDocument();
+      expect(screen.getByRole("status")).toBeInTheDocument();
+
+      // テスト終了のためPromiseを解決
+      await act(async () => {
+        resolvePromise!("/path/to/skill");
+      });
+    });
+  });
+
+  // ============================================================
   // Phase 6: IPC パラメータ詳細検証
   // ============================================================
   describe("IPC パラメータ詳細検証", () => {

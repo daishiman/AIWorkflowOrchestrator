@@ -99,9 +99,9 @@ tags: [docs, test, quality, integration]
 
 ### 3. 画面検証（スクリーンショット）
 
-| TC            | 対象                     | 証跡                                                                     |
-| ------------- | ------------------------ | ------------------------------------------------------------------------ |
-| TC-RECHECK-01 | `http://localhost:3001/` | `task-043d-evidence/phase-11-screenshots/TC-RECHECK-01-backend-home.png` |
+| TC            | 対象                     | 証跡                                                                                              |
+| ------------- | ------------------------ | ------------------------------------------------------------------------------------------------- |
+| TC-RECHECK-01 | `http://localhost:3001/` | `../../../completed-tasks/task-043d-evidence/phase-11-screenshots/TC-RECHECK-01-backend-home.png` |
 
 補足:
 

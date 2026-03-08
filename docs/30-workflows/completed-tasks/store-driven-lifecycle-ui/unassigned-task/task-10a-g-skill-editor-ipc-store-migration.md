@@ -6,8 +6,6 @@
 issue_number: 1041
 ```
 
-## メタ情報
-
 | 項目         | 内容                                       |
 | ------------ | ------------------------------------------ |
 | タスクID     | UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION  |
@@ -210,14 +208,14 @@ pnpm typecheck
 
 ### 関連ドキュメント
 
-- `arch-state-management.md` - TASK-10A-F セクション（Case B方式、状態分類テーブル）
-- `architecture-implementation-patterns.md` - S26（直接IPC→Store移行パターン）
-- `lessons-learned.md` - TASK-10A-F 教訓（Store mock統一、try/catch欠落対策）
+- `arch-state-management.md` - TASK-10A-F セクション（統合検証結果920/920 PASS、個別セレクタ使用一覧17件（State/Action分類）、Store/ローカル状態の分類基準テーブル6件、実装時の苦戦箇所サマリ5件）
+- `architecture-implementation-patterns.md` - S26（直接IPC→Store移行パターン、7ステップチェックリスト）
+- `lessons-learned.md` - TASK-10A-F 苦戦箇所（実装系）#1-5（Store mock統一、try/catch欠落、Case B判断、非同期テスト、タイポ）、再利用手順（Store移行共通）
 - `06-known-pitfalls.md` - P31（Zustand無限ループ）、P42（.trim()バリデーション）、P48（useShallow）
 
 ### 参考資料
 
-- TASK-10A-F 完了成果物: `docs/30-workflows/store-driven-lifecycle-ui/outputs/`
+- TASK-10A-F 完了成果物: `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/`
 
 ---
 

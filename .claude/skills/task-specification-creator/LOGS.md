@@ -34,6 +34,47 @@
 
 ---
 
+## 2026-03-08 - TASK-10A-F final sync（current/completed 2workflow 正規化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（final sync）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow の screenshot 11件を 2026-03-08 18:07-18:15 JST に再取得し、Phase 11 結果文書の時刻と証跡を同期
+  - `completed-tasks/store-driven-lifecycle-ui` の `phase-7-coverage-verification.md` / `phase-11-manual-testing.md` / Phase 11 artifact registry を正規化し、`verify-all-specs --strict` と `validate-phase-output` を PASS 化
+  - `capture-skill-create-wizard-screenshots.mjs` の error 待機を Store UI のフォールバック文言へ補正し、scenario 単位の failure diagnostics を追加
+  - `phase-12-documentation.md` Step 1-D の `generate-index.js` パス誤りを是正し、Phase 12 summary/changelog/feedback を final 状態へ更新
+
+---
+
+## 2026-03-08 - TASK-10A-F current workflow 再確認追補（Phase 11/12 実体同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認追補）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow に screenshot 11件を再取得し、`manual-test-result.md` を screenshot evidence + targeted tests 111件へ更新
+  - `implementation-guide.md` を validator 要件に合わせて補強し、`validate-phase12-implementation-guide` を PASS 化
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を実更新ベースへ書換
+  - TASK-10A-F 由来の未タスク3件は canonical backlog として維持し、legacy 正規化ガードの `## メタ情報` 重複のみを是正した
+
+---
+
+## 2026-03-08 - TASK-10A-F Phase 12タスク仕様再確認ガード追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再確認）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に comparison baseline の completed workflow も strict validator PASS へ揃える手順を追加
+  - `references/unassigned-task-guidelines.md` に `current=合否 / baseline=legacy 負債監視` の二層報告ルールを追加
+  - `task-imp-unassigned-task-legacy-normalization-001.md` の `## メタ情報` 重複を是正し、legacy 改善タスク自体をガイドライン準拠へ戻した
+
+---
+
 ## 2026-03-07 - TASK-10A-F Phase 12 再確認（スクリーンショット証跡 + 仕様同期）
 
 - **Agent**: task-specification-creator
@@ -5581,18 +5622,5 @@ if (artifactPath) {
   - SubAgent-D: `skill-creator/references/patterns.md` に新パターン5件を追加
   - SubAgent-E: LOGS.md 2ファイル + SKILL.md 2ファイルの4ファイル同時更新（P1/P25対策）
   - SubAgent-F: インデックス再生成（topic-map.md/keywords.json）
-
----
-
-## 2026-03-08 - workflow11 Phase 11/12 再確認（harness screenshot 運用を再利用）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認）
-- **Result**: ✓ 成功
-- **Notes**:
-  - `apps/desktop/src/renderer/phase11-auth-mode.html` を入口にした harness で `SettingsView` を直描画し、`TC-11-UI-01..03` の screenshot を再取得
-  - `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` を追加し、`manual-test-result.md` を証跡列付きへ更新
-  - `discovered-issues.md` で英語 fallback error 露出を記録し、未タスク 1 件の 4 ステップ登録を完了
-  - `artifacts.json` / `index.md` / Phase 12 成果物 stale を是正し、workflow11 の再確認を PASS 状態へ戻す
 
 ---

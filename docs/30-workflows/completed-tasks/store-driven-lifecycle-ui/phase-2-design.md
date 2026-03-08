@@ -2,262 +2,90 @@
 
 ## メタ情報
 
-| 項目   | 値                                       |
-| ------ | ---------------------------------------- |
-| Phase  | 2                                        |
-| 機能名 | TASK-10A-F Store駆動ライフサイクルUI統合 |
-| 作成日 | 2026-03-07                               |
-| 状態   | 未着手                                   |
+| 項目   | 値                                               |
+| ------ | ------------------------------------------------ |
+| Phase  | 2                                                |
+| 機能名 | TASK-10A-F スキルライフサイクルUIのStore駆動統合 |
+| 作成日 | 2026-03-08                                       |
+| 状態   | 未着手                                           |
 
 ## 目的
 
-Phase 1 で定義された機能要件 FR-1〜FR-6 と非機能要件 NFR-1〜NFR-5 に基づき、直接 IPC 呼び出しを store action 経由に置換するための具体的な設計を行う。useSkillAnalysis フックと SkillCreateWizard コンポーネントの修正方針、テストのモック戦略を決定する。
+Phase 1 で定義された機能要件 FR-1〜FR-6 と非機能要件 NFR-1〜NFR-5 に基づき、SkillCreateWizard と useSkillAnalysis フックの Store 駆動統合設計を行い、状態遷移表と P31 再発防止条件を確定する。
 
 ## 実行タスク
 
-- useSkillAnalysis フックのリファクタリング設計: 案A/案Bの比較評価と最終方針決定
-- SkillCreateWizard のリファクタリング設計: store action 注入の具体的なコード設計
-- 状態遷移設計: store action 経由の状態遷移フロー
-- テストモック戦略設計: store action モック方式の決定
-- P31/P48 対策設計: 個別セレクタ使用の具体的な実装パターン
+- CreateWizard Store 経由設計: `useCreateSkill` 経由のスキル作成フローを設計する。
+- AnalysisView Store 経由設計: `useSkillAnalysis` フック内の analyze/improve 経路を store action 経由に統一する設計を行う。
+- 状態遷移表: 各 action の成功/失敗/再試行時の状態遷移を定義する。
+- P31 再発防止条件: 個別 selector と安定参照のルールを設計に組み込む。
+- 回帰観点統合: TASK-10A-G へ渡す回帰テスト観点を設計に反映する。
 
 ## 参照資料
 
-| 資料名                  | パス                                                                   |
-| ----------------------- | ---------------------------------------------------------------------- |
-| Phase 1 要件定義        | `docs/30-workflows/store-driven-lifecycle-ui/phase-1-requirements.md`  |
-| SkillCreateWizard 実装  | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`     |
-| useSkillAnalysis フック | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` |
-| agentSlice 定義         | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                 |
-| Store index（セレクタ） | `apps/desktop/src/renderer/store/index.ts`                             |
-| P31 対策ルール          | `.claude/rules/06-known-pitfalls.md#P31`                               |
-| P48 対策ルール          | `.claude/rules/06-known-pitfalls.md#P48`                               |
-| 状態管理ルール          | `.claude/rules/03-state-management.md`                                 |
+| 資料名                   | パス                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| Phase 1 要件定義         | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-1-requirements.md`       |
+| SkillCreateWizard 実装   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                          |
+| useSkillAnalysis フック  | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`                      |
+| SkillManagementPanel     | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`                       |
+| agentSlice 定義          | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                      |
+| Store index（セレクタ）  | `apps/desktop/src/renderer/store/index.ts`                                                  |
+| 状態管理仕様             | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                |
+| 実装パターン             | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` |
+| Skill インターフェース   | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`           |
+| IPC API 仕様             | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        |
+| IPC セキュリティ         | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                |
+| エラー仕様               | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       |
+| UI 設計原則              | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`              |
+| 品質要件                 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 |
+| P31 対策ルール           | `.claude/rules/06-known-pitfalls.md#P31`                                                    |
+| P42 バリデーションルール | `.claude/rules/06-known-pitfalls.md#P42`                                                    |
+| P48 useShallow ルール    | `.claude/rules/06-known-pitfalls.md#P48`                                                    |
+| 状態管理ルール           | `.claude/rules/03-state-management.md`                                                      |
 
 ## 設計方針
 
 ### 採用する設計
 
-1. **案B（内部セレクタ方式）**: useSkillAnalysis 内部で `useAnalyzeSkill()` 等の個別セレクタを直接呼び出す
-2. **SkillCreateWizard 直接セレクタ方式**: コンポーネント内で `useCreateSkill()` を直接呼び出す
-3. **store action + ローカルステート共存方式**: store action の結果をローカルステートに反映する
-4. **store action モック方式**: テストで store セレクタをモック化する
+1. **Store Action 一元化方式**: コンポーネント/フックから `window.electronAPI` を直接呼び出さず、agentSlice の store action 内部でのみ Preload API を呼び出す
+2. **個別セレクタ方式**: store 状態と action の取得には `useAppStore((state) => state.xxx)` パターンの個別セレクタを使用する（P31 対策）
+3. **ローカル/Store 状態分離方式**: ビジネスロジックに関わる状態（分析結果、処理中フラグ、エラー）は Store に、UI 操作に関わる状態（提案選択、改善結果表示）はローカル `useState` に配置する
+4. **改善後自動再分析方式**: `applySkillImprovements` / `autoImproveSkill` の action 内部で改善適用後に `analyzeSkill` を自動呼び出しする
 
 ### 判断根拠
 
-#### 案A vs 案B の比較
-
-| 観点                 | 案A（Props注入方式）                                          | 案B（内部セレクタ方式）                                        |
-| -------------------- | ------------------------------------------------------------- | -------------------------------------------------------------- |
-| 変更範囲             | useSkillAnalysis の引数変更 + 呼び出し元の修正が必要          | useSkillAnalysis 内部のみの変更で完結                          |
-| テスト容易性         | DI でモック注入可能（テストしやすい）                         | store セレクタのモックが必要（vi.mock で対応可能）             |
-| P31 対策             | 個別セレクタを呼び出し元で使用 → useEffect 依存配列に渡す必要 | useSkillAnalysis 内部で個別セレクタを使用 → 内部で完結         |
-| 後方互換性           | `UseSkillAnalysisReturn` は維持できるが、フック引数が変わる   | フック引数もインターフェースも変更不要                         |
-| 既存パターンとの整合 | 既存コードに Props 注入パターンは少ない                       | SkillImportDialog 等と同じ「内部セレクタ」パターンに統一される |
-
-**結論**: 案B を採用する。理由は以下の3点:
-
-1. **変更範囲の最小化**: useSkillAnalysis の呼び出し元（SkillAnalysisView）の修正が不要
-2. **既存パターンとの統一**: SkillImportDialog が `useAppStore((state) => state.importSkill)` を内部で使用しているパターンと一致する
-3. **後方互換性の完全維持**: フック引数の型を変更しないため、TypeScript コンパイルエラーが発生しない
+1. **Store Action 一元化**: `window.electronAPI` 呼び出しを store action に集約することで、IPC 通信の呼び出し元が一箇所に固定される。テスト時のモック対象が明確になり、エラーハンドリングの一貫性が保証される
+2. **個別セレクタ**: P31（Zustand 無限ループ）対策として、合成 Hook ではなく個別セレクタを使用する。Zustand の action 参照は安定しているため、`useEffect` の依存配列に含めても無限ループが発生しない
+3. **ローカル/Store 分離**: `selectedSuggestions`（提案選択）は SkillAnalysisView 固有の UI 状態であり、他のコンポーネントから参照されない。状態管理ルール（03-state-management.md）の「コンポーネント固有 UI → useState」に該当する
+4. **改善後自動再分析**: コンポーネント側で `useEffect` を使って「改善完了 → 再分析」の連鎖を実装すると、P31 の影響を受けやすい。action 内部で逐次実行することで、コンポーネントの依存配列を増やさずに済む
 
 ## コンポーネント設計
 
-### 1. useSkillAnalysis フックのリファクタリング設計
+### 1. SkillCreateWizard の Store 駆動設計
 
-#### 変更前のデータフロー
+#### 現在の実装状態
 
-```
-useSkillAnalysis(skillName)
-  └── handleAnalyze()
-        └── window.electronAPI.skill.analyze(skillName)  ← 直接IPC
-  └── handleApplySelected()
-        └── window.electronAPI.skill.applyImprovements(skillName, selected)  ← 直接IPC
-  └── handleAutoImprove()
-        └── window.electronAPI.skill.autoImprove(skillName)  ← 直接IPC
-```
+SkillCreateWizard は TASK-10A-D で既に `useCreateSkill()` 個別セレクタ経由で store action を使用している:
 
-#### 変更後のデータフロー
+```tsx
+// SkillCreateWizard.tsx（現在の実装）
+import { useCreateSkill } from "../../store";
 
-```
-useSkillAnalysis(skillName)
-  ├── useAnalyzeSkill()  ← 個別セレクタ
-  ├── useApplySkillImprovements()  ← 個別セレクタ
-  ├── useAutoImproveSkill()  ← 個別セレクタ
-  ├── useCurrentAnalysis()  ← 個別セレクタ（store の分析結果を参照）
-  ├── useIsAnalyzingSkill()  ← 個別セレクタ
-  └── useIsImprovingSkill()  ← 個別セレクタ
-  │
-  └── handleAnalyze()
-        └── analyzeSkill(skillName)  ← store action 経由
-  └── handleApplySelected()
-        └── applySkillImprovements(skillName, selected)  ← store action 経由
-  └── handleAutoImprove()
-        └── autoImproveSkill(skillName)  ← store action 経由
-```
+const createSkill = useCreateSkill();
 
-#### 状態管理方針: store 状態とローカル状態の統合
-
-useSkillAnalysis はローカル `useState` で `analysis`, `isAnalyzing`, `isImproving` を管理している。store にも同名の状態がある。以下の方針で統合する:
-
-| 状態                  | 変更前（ローカル useState）   | 変更後（store 参照）                          |
-| --------------------- | ----------------------------- | --------------------------------------------- |
-| `analysis`            | `useState<SkillAnalysis>`     | `useCurrentAnalysis()` セレクタで store 参照  |
-| `isAnalyzing`         | `useState<boolean>`           | `useIsAnalyzingSkill()` セレクタで store 参照 |
-| `isImproving`         | `useState<boolean>`           | `useIsImprovingSkill()` セレクタで store 参照 |
-| `selectedSuggestions` | `useState<Set<number>>`       | ローカル `useState` を維持（UIのみの状態）    |
-| `error`               | `useState<string>`            | `useSkillError()` セレクタで store 参照       |
-| `improvementResult`   | `useState<ImprovementResult>` | ローカル `useState` を維持（一時的なUI状態）  |
-
-#### useSkillAnalysis 変更後のコード設計
-
-```typescript
-import {
-  useAnalyzeSkill,
-  useApplySkillImprovements,
-  useAutoImproveSkill,
-  useCurrentAnalysis,
-  useIsAnalyzingSkill,
-  useIsImprovingSkill,
-  useSkillError,
-} from "../../../store";
-
-export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
-  // ---- Store Selectors (P31対策: 個別セレクタ使用) ----
-  const analyzeSkill = useAnalyzeSkill();
-  const applySkillImprovements = useApplySkillImprovements();
-  const autoImproveSkill = useAutoImproveSkill();
-  const currentAnalysis = useCurrentAnalysis();
-  const isAnalyzing = useIsAnalyzingSkill();
-  const isImproving = useIsImprovingSkill();
-  const skillError = useSkillError();
-
-  // ---- Local State (UIのみの状態) ----
-  const [selectedSuggestions, setSelectedSuggestions] = useState<Set<number>>(
-    new Set(),
-  );
-  const [improvementResult, setImprovementResult] =
-    useState<ImprovementResult | null>(null);
-  const isMountedRef = useRef(true);
-
-  // ---- Handlers ----
-
-  const handleAnalyze = useCallback(async () => {
-    if (!isMountedRef.current) return;
-    await analyzeSkill(skillName);
-    if (isMountedRef.current) {
-      setSelectedSuggestions(new Set());
-    }
-  }, [analyzeSkill, skillName]);
-
-  const handleToggleSuggestion = useCallback((index: number) => {
-    setSelectedSuggestions((prev) => {
-      const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
-      } else {
-        next.add(index);
-      }
-      return next;
-    });
-  }, []);
-
-  const handleSelectAutoFixable = useCallback(() => {
-    if (!currentAnalysis) return;
-    setSelectedSuggestions(
-      buildAutoFixableSelection(currentAnalysis.suggestions),
-    );
-  }, [currentAnalysis]);
-
-  const handleApplySelected = useCallback(async () => {
-    if (!currentAnalysis || selectedSuggestions.size === 0) return;
-
-    const selected: Suggestion[] = [];
-    for (const index of selectedSuggestions) {
-      if (currentAnalysis.suggestions[index]) {
-        selected.push(currentAnalysis.suggestions[index]);
-      }
-    }
-
-    await applySkillImprovements(skillName, selected);
-    if (!isMountedRef.current) return;
-
-    // 改善適用結果のプレビュー表示
-    // NOTE: improvementResult は store action 内で管理されないため、
-    // Preload API 戻り値を直接取得する必要がある。
-    // store action は void を返すため、結果のプレビュー表示は
-    // store の currentAnalysis 更新を検知して判定する。
-    setImprovementResult(null);
-    setSelectedSuggestions(new Set());
-  }, [currentAnalysis, selectedSuggestions, skillName, applySkillImprovements]);
-
-  const handleAutoImprove = useCallback(async () => {
-    const isConfirmed = window.confirm("全自動改善を実行しますか？");
-    if (!isConfirmed) return;
-
-    await autoImproveSkill(skillName);
-    if (isMountedRef.current) {
-      setImprovementResult(null);
-    }
-  }, [skillName, autoImproveSkill]);
-
-  // ---- Effects ----
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    handleAnalyze();
-  }, [handleAnalyze]);
-
-  return {
-    analysis: currentAnalysis,
-    isAnalyzing,
-    isImproving,
-    selectedSuggestions,
-    error: skillError,
-    improvementResult,
-    handleAnalyze,
-    handleToggleSuggestion,
-    handleSelectAutoFixable,
-    handleApplySelected,
-    handleAutoImprove,
-  };
-};
-```
-
-#### 設計上の注意点
-
-1. **`analysis` プロパティ**: ローカル useState を削除し、`useCurrentAnalysis()` の値を直接返す。store action (`analyzeSkill`) が `currentAnalysis` を更新するため、フック利用側では自動的に最新の分析結果を受け取れる
-
-2. **`isAnalyzing` / `isImproving`**: ローカル useState を削除し、store セレクタの値を直接返す。store action が `isAnalyzing` / `isImproving` の true/false を管理するため、フック側での制御は不要
-
-3. **`error` プロパティ**: ローカル `error` useState を削除し、`useSkillError()` の値を直接返す。store action のエラーハンドリングで `skillError` に格納されるため
-
-4. **`improvementResult`**: store action は改善結果を直接返さず void を返す。改善結果のプレビュー表示は簡略化し、store の `currentAnalysis` 更新に基づいて判定する。`improvementResult` はローカル useState で維持するが、Preload API の直接戻り値は取得できないため、改善成功時は `null` として扱う
-
-5. **`selectedSuggestions`**: UI のみの状態であるため、ローカル useState を維持する
-
-### 2. SkillCreateWizard のリファクタリング設計
-
-#### 変更前のコード（handleGenerate 関数）
-
-```typescript
 const handleGenerate = async () => {
   goToStep(2);
   setIsGenerating(true);
   setError(null);
   try {
-    const result = await window.electronAPI.skill.create({
-      description,
-      options,
-    });
-    setSkillPath(result.path);
-    goToStep(3);
+    const path = await createSkill(description, options);
+    if (path) {
+      setSkillPath(path);
+      goToStep(3);
+    } else {
+      setError(new Error("スキル生成に失敗しました"));
+    }
   } catch (err) {
     setError(
       err instanceof Error ? err : new Error("スキル生成に失敗しました"),
@@ -268,263 +96,312 @@ const handleGenerate = async () => {
 };
 ```
 
-#### 変更後のコード設計
+#### 設計ポイント
 
-```typescript
-import { useCreateSkill } from "../../../store";
+- SkillCreateWizard は `window.electronAPI` を直接呼び出していない（FR-1 充足）
+- `createSkill` action 内部で Preload API を呼び出し、成功時に `fetchSkills()` で一覧同期する（FR-1、AC-6 充足）
+- `isGenerating` と `error` はローカル `useState` で管理する（FR-6 充足）。store の `skillError` とは独立して動作する
+- `skillPath` はウィザード完了ステップで使用するローカル状態（FR-6 充足）
 
-export const SkillCreateWizard = React.forwardRef<
-  HTMLDivElement,
-  SkillCreateWizardProps
->(({ onClose }, ref) => {
-  const createSkill = useCreateSkill(); // P31対策: 個別セレクタ
-  const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
-  const [description, setDescription] = useState("");
-  const [options, setOptions] = useState<WizardOptions>(DEFAULT_OPTIONS);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [skillPath, setSkillPath] = useState<string | null>(null);
+#### 変更不要の確認
 
-  const handleGenerate = async () => {
-    goToStep(2);
-    setIsGenerating(true);
-    setError(null);
-    try {
-      const resultPath = await createSkill(description, options);
-      if (resultPath) {
-        setSkillPath(resultPath);
-        goToStep(3);
-      } else {
-        setError(new Error("スキル生成に失敗しました"));
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error("スキル生成に失敗しました"),
-      );
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-  // ... 残りは変更なし
+SkillCreateWizard は TASK-10A-D で store 駆動統合が完了しているため、本タスクでの変更は不要である。テストのみ追加/拡充する。
+
+### 2. useSkillAnalysis フックの Store 駆動設計
+
+#### 現在の実装状態
+
+useSkillAnalysis フックは TASK-10A-F Phase 5 で既に store action 経由に統一されている:
+
+```tsx
+// useSkillAnalysis.ts（現在の実装）
+import {
+  useCurrentAnalysis,
+  useIsAnalyzingSkill,
+  useIsImprovingSkill,
+  useSkillError,
+  useAnalyzeSkill,
+  useApplySkillImprovements,
+  useAutoImproveSkill,
+} from "../../../store";
+
+export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
+  // Store state (P31対策: 個別セレクタで取得)
+  const analysis = useCurrentAnalysis();
+  const isAnalyzing = useIsAnalyzingSkill();
+  const isImproving = useIsImprovingSkill();
+  const error = useSkillError();
+
+  // Store actions (P31対策: 個別セレクタで取得)
+  const analyzeSkill = useAnalyzeSkill();
+  const applySkillImprovements = useApplySkillImprovements();
+  const autoImproveSkill = useAutoImproveSkill();
+
+  // Local state (UI状態は引き続きuseState)
+  const [selectedSuggestions, setSelectedSuggestions] = useState<Set<number>>(new Set());
+  const [improvementResult, setImprovementResult] = useState<ImprovementResult | null>(null);
+
+  // ...ハンドラ定義...
+
+  useEffect(() => {
+    handleAnalyze();
+  }, [handleAnalyze]);
+
+  return { analysis, isAnalyzing, isImproving, selectedSuggestions, error, improvementResult, ... };
+};
 ```
 
 #### 設計ポイント
 
-1. **`useCreateSkill()` から取得した `createSkill` 関数**: agentSlice の `createSkill` アクションは `Promise<string>` を返す（成功時はスキルパス、失敗時は空文字列 `""`）
-2. **戻り値の判定**: `resultPath` が truthy（空文字列でない）の場合に `setSkillPath` と `goToStep(3)` を実行。falsy の場合はエラー扱い
-3. **`isGenerating` ローカルステート維持**: ウィザードのステップ遷移制御に使用するため、store の状態には移動しない
-4. **`error` ローカルステート維持**: SkillCreateWizard 固有のエラー表示に使用。store の `skillError` とは独立して管理する
+- `window.electronAPI.skill` への直接呼び出しは排除済み（FR-2、FR-3 充足）
+- 全 store 状態/action は個別セレクタで取得（NFR-1 P31 対策充足）
+- `handleAnalyze` は `useCallback` でメモ化され、依存配列は `[analyzeSkill, skillName]`。`analyzeSkill` は Zustand action 参照で安定しているため無限ループリスクなし
+- `handleApplySelected` は `useCallback` で依存配列 `[analysis, selectedSuggestions, skillName, applySkillImprovements]`。`applySkillImprovements` は安定参照
+- `handleAutoImprove` は `useCallback` で依存配列 `[skillName, autoImproveSkill]`。`autoImproveSkill` は安定参照
+- `useEffect(() => { handleAnalyze(); }, [handleAnalyze])` でマウント時に自動分析実行。`handleAnalyze` が安定参照であるため、`skillName` 変更時のみ再実行される
 
-#### インポート変更
+#### 変更不要の確認
 
-```diff
-+ import { useCreateSkill } from "../../../store";
+useSkillAnalysis フックは store 駆動統合が完了しているため、本タスクでの変更は不要である。テストのみ追加/拡充する。
+
+### 3. SkillManagementPanel の統合コンテキスト
+
+#### 現在の実装状態
+
+SkillManagementPanel は TASK-10A-D で SkillAnalysisView と SkillCreateWizard のビュー統合が完了している:
+
+```tsx
+// SkillManagementPanel.tsx（関連箇所）
+if (currentView === "editor" && selectedSkill) {
+  return <SkillEditor skill={selectedSkill} onClose={handleBackToList} />;
+}
+if (currentView === "analysis" && selectedSkill) {
+  return (
+    <SkillAnalysisView
+      skillName={String(selectedSkill.name)}
+      onClose={handleBackToList}
+    />
+  );
+}
+if (currentView === "create") {
+  return <SkillCreateWizard onClose={handleBackToList} />;
+}
 ```
 
-## 状態遷移設計
+#### 設計ポイント
 
-### useSkillAnalysis の状態遷移
+- SkillManagementPanel 自体は store 個別セレクタ経由で状態を取得している（`useImportedSkills`, `useFetchSkills`, `useRemoveSkill` 等）
+- SkillAnalysisView / SkillCreateWizard への遷移は SkillManagementPanel のローカル `currentView` 状態で制御される
+- SkillAnalysisView / SkillCreateWizard 内部の IPC 通信は store action 経由で実行される
 
-```
-[初期状態]
-  analysis=null, isAnalyzing=false, isImproving=false, error=null
-    │
-    ├─ マウント時 useEffect → handleAnalyze()
-    │    │
-    │    └─ analyzeSkill(skillName) 呼び出し
-    │         │
-    │         ├─ store: isAnalyzing=true, currentAnalysis=null
-    │         │
-    │         ├─ 成功: store: currentAnalysis=結果, isAnalyzing=false
-    │         │    └─ フック: selectedSuggestions=new Set()
-    │         │
-    │         └─ 失敗: store: skillError=メッセージ, isAnalyzing=false
-    │
-    ├─ 「選択改善適用」
-    │    └─ applySkillImprovements(skillName, selected) 呼び出し
-    │         │
-    │         ├─ store: isImproving=true
-    │         ├─ 成功: store: currentAnalysis=再分析結果, isImproving=false
-    │         │    └─ フック: improvementResult=null, selectedSuggestions=new Set()
-    │         └─ 失敗: store: skillError=メッセージ, isImproving=false
-    │
-    └─ 「全自動改善」
-         └─ autoImproveSkill(skillName) 呼び出し
-              │
-              ├─ store: isImproving=true
-              ├─ 成功: store: currentAnalysis=再分析結果, isImproving=false
-              │    └─ フック: improvementResult=null
-              └─ 失敗: store: skillError=メッセージ, isImproving=false
-```
+## 状態遷移表
 
-### SkillCreateWizard の状態遷移
+### analyzeSkill action
 
-```
-[Step 0: 説明入力]
-  │
-  └─ 「生成」ボタン → handleGenerate()
-       │
-       ├─ ローカル: goToStep(2), isGenerating=true, error=null
-       │
-       ├─ createSkill(description, options) 呼び出し
-       │    │
-       │    ├─ 成功（resultPath が truthy）:
-       │    │    ├─ ローカル: setSkillPath(resultPath), goToStep(3)
-       │    │    └─ store: fetchSkills() 再取得
-       │    │
-       │    └─ 失敗（resultPath が falsy または例外）:
-       │         └─ ローカル: setError(Error)
-       │
-       └─ ローカル: isGenerating=false
-```
+| 現在の状態                              | トリガー                         | 遷移後の状態                                                 |
+| --------------------------------------- | -------------------------------- | ------------------------------------------------------------ |
+| `isAnalyzing: false, skillError: null`  | `analyzeSkill(skillName)` 呼出   | `isAnalyzing: true, skillError: null, currentAnalysis: null` |
+| `isAnalyzing: true`                     | Preload API 成功                 | `isAnalyzing: false, currentAnalysis: {結果}`                |
+| `isAnalyzing: true`                     | Preload API 失敗                 | `isAnalyzing: false, skillError: "スキル分析に失敗..."`      |
+| `isAnalyzing: false, skillError: "..."` | `analyzeSkill(skillName)` 再呼出 | `isAnalyzing: true, skillError: null, currentAnalysis: null` |
 
-## テストモック戦略設計
+### applySkillImprovements action
 
-### モック方針
+| 現在の状態                             | トリガー                                         | 遷移後の状態                                          |
+| -------------------------------------- | ------------------------------------------------ | ----------------------------------------------------- |
+| `isImproving: false, skillError: null` | `applySkillImprovements(skillName, suggestions)` | `isImproving: true, skillError: null`                 |
+| `isImproving: true`                    | Preload API 成功 + 再分析成功                    | `isImproving: false, currentAnalysis: {更新結果}`     |
+| `isImproving: true`                    | Preload API 失敗                                 | `isImproving: false, skillError: "改善適用に失敗..."` |
 
-store セレクタをモジュールレベルでモック化し、各テストケースで戻り値を制御する:
+### autoImproveSkill action
+
+| 現在の状態                             | トリガー                      | 遷移後の状態                                            |
+| -------------------------------------- | ----------------------------- | ------------------------------------------------------- |
+| `isImproving: false, skillError: null` | `autoImproveSkill(skillName)` | `isImproving: true, skillError: null`                   |
+| `isImproving: true`                    | Preload API 成功 + 再分析成功 | `isImproving: false, currentAnalysis: {更新結果}`       |
+| `isImproving: true`                    | Preload API 失敗              | `isImproving: false, skillError: "全自動改善に失敗..."` |
+
+### createSkill action
+
+| 現在の状態         | トリガー                                 | 遷移後の状態                                           |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------ |
+| `skillError: null` | `createSkill(description, options)` 呼出 | `skillError: null`（ローカル `isGenerating` は別管理） |
+| 処理中             | Preload API 成功                         | `skillError: null` + `fetchSkills()` 呼出 + パス返却   |
+| 処理中             | Preload API 失敗                         | `skillError: "スキル作成に失敗..."` + 空文字列返却     |
+
+### バリデーション失敗時
+
+| 現在の状態 | トリガー                                                        | 遷移後の状態                                         |
+| ---------- | --------------------------------------------------------------- | ---------------------------------------------------- |
+| 任意       | `typeof skillName !== "string"`                                 | `skillError: "スキル名が無効です"` + 早期 return     |
+| 任意       | `skillName === ""`                                              | `skillError: "スキル名が無効です"` + 早期 return     |
+| 任意       | `skillName.trim() === ""`                                       | `skillError: "スキル名が無効です"` + 早期 return     |
+| 任意       | `typeof description !== "string"` / `description.trim() === ""` | `skillError: "スキルの説明が無効です"` + 早期 return |
+
+## P31 再発防止条件
+
+### ルール 1: 個別セレクタパターンの強制
+
+全ての store 状態と action は個別セレクタで取得する:
 
 ```typescript
-// SkillCreateWizard.test.tsx
-import { vi } from "vitest";
+// P31対策準拠パターン
+const analysis = useCurrentAnalysis(); // state
+const isAnalyzing = useIsAnalyzingSkill(); // state
+const analyzeSkill = useAnalyzeSkill(); // action
 
-const mockCreateSkill = vi.fn();
-
-vi.mock("../../../store", () => ({
-  useCreateSkill: () => mockCreateSkill,
-}));
-
-beforeEach(() => {
-  mockCreateSkill.mockReset();
-});
+// 禁止パターン（合成Hook）
+const { analysis, isAnalyzing, analyzeSkill } = useAnalysisStore(); // 禁止
 ```
+
+### ルール 2: action 参照の安定性保証
+
+Zustand の action 参照は Store 作成時に固定されるため、`useEffect` の依存配列に含めても安全:
 
 ```typescript
-// SkillAnalysisView.test.tsx
-import { vi } from "vitest";
+// 安全: analyzeSkill は安定参照
+const handleAnalyze = useCallback(async () => {
+  await analyzeSkill(skillName);
+}, [analyzeSkill, skillName]);
 
-const mockAnalyzeSkill = vi.fn();
-const mockApplySkillImprovements = vi.fn();
-const mockAutoImproveSkill = vi.fn();
-const mockCurrentAnalysis = {
-  /* テスト用分析結果 */
-};
-
-vi.mock("../../../store", () => ({
-  useAnalyzeSkill: () => mockAnalyzeSkill,
-  useApplySkillImprovements: () => mockApplySkillImprovements,
-  useAutoImproveSkill: () => mockAutoImproveSkill,
-  useCurrentAnalysis: () => mockCurrentAnalysis,
-  useIsAnalyzingSkill: () => false,
-  useIsImprovingSkill: () => false,
-  useSkillError: () => null,
-}));
+useEffect(() => {
+  handleAnalyze();
+}, [handleAnalyze]); // skillName 変更時のみ再実行
 ```
+
+### ルール 3: 派生セレクタの useShallow 適用基準
+
+本タスクの個別セレクタはプリミティブ値（`boolean`, `string | null`）またはオブジェクト参照（`SkillAnalysis | null`）を返すため、`useShallow` は不要:
+
+| セレクタ                    | 戻り値型                | useShallow |
+| --------------------------- | ----------------------- | ---------- |
+| `useCurrentAnalysis`        | `SkillAnalysis \| null` | 不要       |
+| `useIsAnalyzingSkill`       | `boolean`               | 不要       |
+| `useIsImprovingSkill`       | `boolean`               | 不要       |
+| `useSkillError`             | `string \| null`        | 不要       |
+| `useAnalyzeSkill`           | `Function`              | 不要       |
+| `useApplySkillImprovements` | `Function`              | 不要       |
+| `useAutoImproveSkill`       | `Function`              | 不要       |
+| `useCreateSkill`            | `Function`              | 不要       |
+
+### ルール 4: ローカル状態と Store 状態の境界
+
+| 状態                  | 配置先 | 理由                                                             |
+| --------------------- | ------ | ---------------------------------------------------------------- |
+| `currentAnalysis`     | Store  | 分析結果は改善 action と連携するためアプリ全体で共有             |
+| `isAnalyzing`         | Store  | 複数コンポーネントが分析中状態を参照する可能性がある             |
+| `isImproving`         | Store  | 同上                                                             |
+| `skillError`          | Store  | エラー表示が複数コンポーネントで共有される                       |
+| `selectedSuggestions` | Local  | SkillAnalysisView 固有の UI 操作状態                             |
+| `improvementResult`   | Local  | SkillAnalysisView 固有の UI 表示状態                             |
+| `description`         | Local  | SkillCreateWizard 固有のフォーム入力状態                         |
+| `options`             | Local  | SkillCreateWizard 固有の設定状態                                 |
+| `isGenerating`        | Local  | SkillCreateWizard 固有の生成中表示（store の action 完了と独立） |
+| `error`               | Local  | SkillCreateWizard 固有のエラー表示                               |
+| `skillPath`           | Local  | SkillCreateWizard 固有の完了ステップ表示                         |
+
+## TASK-10A-G 回帰テスト観点
+
+### 回帰テストマトリクス
+
+| ID    | 観点                   | 前提条件                                     | 操作                                  | 期待結果                                                              | 関連 FR |
+| ----- | ---------------------- | -------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------- | ------- |
+| RT-01 | 作成後一覧同期         | スキル一覧にスキルが0件                      | SkillCreateWizard でスキルを作成する  | 一覧に作成したスキルが表示される                                      | FR-1    |
+| RT-02 | 改善後再分析           | 分析結果にスコア 60 が表示されている         | 提案を選択して改善を適用する          | 再分析が実行され、更新されたスコアが表示される                        | FR-3    |
+| RT-03 | 全自動改善後再分析     | 分析結果が表示されている                     | 全自動改善を実行する                  | 再分析が実行され、更新された分析結果が表示される                      | FR-3    |
+| RT-04 | エラー回復             | 分析でネットワークエラーが発生した           | 再度分析を実行する                    | エラーがクリアされ、正常に分析が完了する                              | FR-5    |
+| RT-05 | 状態初期化             | SkillAnalysisView で分析結果が表示されている | ビューを閉じて別のスキルで再度開く    | 前回の分析結果がクリアされ、新しいスキルの分析が実行される            | FR-2    |
+| RT-06 | 分析→改善→再分析フロー | SkillAnalysisView が表示されている           | 分析 → 提案選択 → 改善適用 → 結果確認 | 全フローが store action 経由で実行され、状態遷移が正常に完了する      | FR-2, 3 |
+| RT-07 | 並行操作防止           | 分析が実行中（`isAnalyzing: true`）          | 改善適用を試みる                      | `isAnalyzing` 中は改善ボタンが無効化されている（UI レベルの排他制御） | FR-4    |
+
+## テスト戦略
 
 ### テストファイル構成
 
-| テストファイル               | テスト対象                                                        | テスト数（推定） |
-| ---------------------------- | ----------------------------------------------------------------- | ---------------- |
-| `SkillCreateWizard.test.tsx` | createSkill store action 呼び出し、エラーハンドリング             | 既存テスト数維持 |
-| `SkillAnalysisView.test.tsx` | analyzeSkill / applySkillImprovements / autoImproveSkill 呼び出し | 既存テスト数維持 |
+| テストファイル                             | テスト対象                                                       | テスト数（推定） |
+| ------------------------------------------ | ---------------------------------------------------------------- | ---------------- |
+| `SkillCreateWizard.test.tsx`（既存拡充）   | `useCreateSkill` 経由のスキル作成、エラーハンドリング            | 8                |
+| `SkillAnalysisView.test.tsx`（既存拡充）   | store action 経由の分析/改善、状態遷移                           | 12               |
+| `useSkillAnalysis.test.ts`（新規）         | フック単体テスト、P31 対策検証、状態遷移検証                     | 15               |
+| `agentSlice.lifecycle.test.ts`（既存拡充） | analyzeSkill/applySkillImprovements/autoImproveSkill/createSkill | 16               |
 
-### テスト設計上の注意
+### モック方針
 
-- `window.electronAPI` のモック設定を削除し、store セレクタモックに統一する
-- テスト間で `mockReset()` を呼び出し、状態リークを防止する（P9 対策）
-- happy-dom 環境では `userEvent` は使用禁止、`fireEvent` を使用する（P39 対策）
-- テスト実行は `apps/desktop/` ディレクトリから行う（P40 対策）
-
-## P31/P48 対策設計
-
-### P31 対策: 個別セレクタの使用
-
-useSkillAnalysis 内で使用する全ての store 参照:
-
-| セレクタ                      | 返却型                                                            | useCallback 依存配列             |
-| ----------------------------- | ----------------------------------------------------------------- | -------------------------------- |
-| `useAnalyzeSkill()`           | `(skillName: string) => Promise<void>`                            | `handleAnalyze` に含める         |
-| `useApplySkillImprovements()` | `(skillName: string, suggestions: Suggestion[]) => Promise<void>` | `handleApplySelected` に含める   |
-| `useAutoImproveSkill()`       | `(skillName: string) => Promise<void>`                            | `handleAutoImprove` に含める     |
-| `useCurrentAnalysis()`        | `SkillAnalysis \| null`                                           | `handleSelectAutoFixable` で参照 |
-| `useIsAnalyzingSkill()`       | `boolean`                                                         | 戻り値に直接使用                 |
-| `useIsImprovingSkill()`       | `boolean`                                                         | 戻り値に直接使用                 |
-| `useSkillError()`             | `string \| null`                                                  | 戻り値に直接使用                 |
-
-Zustand のアクション参照は安定（immutable）であるため、`useCallback` の依存配列に含めても無限ループは発生しない。これは P31 の「個別セレクタからの関数参照は安定している」という解決策に準拠する。
-
-### P48 対策: useShallow 適用基準
-
-useSkillAnalysis が返すプロパティのうち、`.filter()` / `.map()` で新しい配列参照を返すものはない:
-
-| プロパティ            | 型                          | P48 該当 |
-| --------------------- | --------------------------- | -------- |
-| `analysis`            | `SkillAnalysis \| null`     | 非該当   |
-| `isAnalyzing`         | `boolean`                   | 非該当   |
-| `isImproving`         | `boolean`                   | 非該当   |
-| `selectedSuggestions` | `Set<number>`               | 非該当   |
-| `error`               | `string \| null`            | 非該当   |
-| `improvementResult`   | `ImprovementResult \| null` | 非該当   |
-
-**結論**: P48 対策の `useShallow` 適用は不要。
-
-## z-index 管理テーブル
-
-本タスクでは新規 UI 要素の追加はなく、既存コンポーネントの内部データフロー変更のみであるため、z-index の変更はない。
-
-| 要素                 | z-index | 変更 |
-| -------------------- | ------- | ---- |
-| SkillAnalysisView    | 既存    | なし |
-| SkillCreateWizard    | 既存    | なし |
-| SkillManagementPanel | 既存    | なし |
-
-## 統合テスト連携
-
-### store action 経由の API 契約
-
-| 呼び出し元        | store action             | Preload API（agentSlice 内部）                    | 検証ポイント                                             |
-| ----------------- | ------------------------ | ------------------------------------------------- | -------------------------------------------------------- |
-| useSkillAnalysis  | `analyzeSkill`           | `window.electronAPI.skill.analyze(skillName)`     | `currentAnalysis` に分析結果が格納される                 |
-| useSkillAnalysis  | `applySkillImprovements` | `window.electronAPI.skill.applyImprovements(...)` | 改善適用後に再分析が自動実行される                       |
-| useSkillAnalysis  | `autoImproveSkill`       | `window.electronAPI.skill.autoImprove(skillName)` | 全自動改善後に再分析が自動実行される                     |
-| SkillCreateWizard | `createSkill`            | `window.electronAPI.skill.create({...})`          | スキルパス文字列が返され、`fetchSkills()` が再実行される |
+- `window.electronAPI.skill` は `vi.fn()` で各メソッドをモック化する
+- agentSlice テストでは `useAppStore.getState()` / `useAppStore.setState()` で直接状態を検証する
+- コンポーネントテストでは `@testing-library/react` の `renderHook` / `render` + `fireEvent` を使用する
+- happy-dom 環境で実行する（P39 対策: userEvent 不使用）
 
 ## アーキテクチャ層別設計
 
 ### Renderer 層の変更一覧
 
-| ファイル                               | 変更種別 | 変更内容                                                                                                                       |
-| -------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `hooks/useSkillAnalysis.ts`            | 修正     | import 8行変更、ローカル useState 3個削除、store セレクタ7個追加、handleAnalyze/handleApplySelected/handleAutoImprove 書き換え |
-| `SkillCreateWizard.tsx`                | 修正     | import 1行追加、`useCreateSkill()` 呼び出し1行追加、handleGenerate 内の IPC 呼び出しを store action に置換（5行変更）          |
-| `__tests__/SkillCreateWizard.test.tsx` | 修正     | `window.electronAPI` モック削除、store セレクタモック追加、テストケースの assertion 調整                                       |
-| `__tests__/SkillAnalysisView.test.tsx` | 修正     | `window.electronAPI` モック削除、store セレクタモック追加、テストケースの assertion 調整                                       |
+| ファイル                                           | 変更種別 | 変更内容                                                 |
+| -------------------------------------------------- | -------- | -------------------------------------------------------- |
+| `SkillCreateWizard.tsx`                            | 変更なし | 既に `useCreateSkill` 経由。テストのみ拡充               |
+| `hooks/useSkillAnalysis.ts`                        | 変更なし | 既に store action 経由。テストのみ拡充                   |
+| `SkillManagementPanel.tsx`                         | 変更なし | 既に SkillAnalysisView/SkillCreateWizard 統合済み        |
+| `__tests__/SkillCreateWizard.test.tsx`             | 修正     | store action 経由の検証テスト追加（約8テスト）           |
+| `__tests__/SkillAnalysisView.test.tsx`             | 修正     | store action 経由の分析/改善検証テスト追加（約12テスト） |
+| `hooks/__tests__/useSkillAnalysis.test.ts`（新規） | 新規     | フック単体テスト、P31 対策検証（約15テスト）             |
+
+### Store 層（変更なし）
+
+agentSlice の `analyzeSkill`, `applySkillImprovements`, `autoImproveSkill`, `createSkill` action と対応する個別セレクタは TASK-10A-D で実装済み。
 
 ### IPC 通信層（変更なし）
 
-本タスクで IPC ハンドラおよび Preload API の変更は不要。
+IPC ハンドラおよび Preload API の変更は不要。以下の既存 API を使用する:
+
+| Preload API                                       | IPC チャンネル                         | 用途           |
+| ------------------------------------------------- | -------------------------------------- | -------------- |
+| `skill.analyze(skillName)`                        | `skill:analyze`                        | スキル分析     |
+| `skill.applyImprovements(skillName, suggestions)` | `skill:improve`                        | 選択改善適用   |
+| `skill.autoImprove(skillName)`                    | `skill:improve` (options.autoFix=true) | 全自動改善     |
+| `skill.create({ description, options })`          | `skill:create`                         | スキル新規作成 |
+
+## 統合テスト連携
+
+### テスト対象の store action 連携
+
+| テストシナリオ   | store action 呼出順序                             | 検証ポイント                                    |
+| ---------------- | ------------------------------------------------- | ----------------------------------------------- |
+| スキル作成フロー | `createSkill` → `fetchSkills`                     | 一覧にスキルが追加される                        |
+| 分析フロー       | `analyzeSkill`                                    | `currentAnalysis` に結果が格納される            |
+| 選択改善フロー   | `applySkillImprovements` → `analyzeSkill`（自動） | `currentAnalysis` が更新結果で上書きされる      |
+| 全自動改善フロー | `autoImproveSkill` → `analyzeSkill`（自動）       | `currentAnalysis` が更新結果で上書きされる      |
+| エラー回復フロー | `analyzeSkill`（失敗） → `analyzeSkill`（成功）   | `skillError` がクリアされ、正常結果が格納される |
+
+### TASK-10A-G への引き渡し情報
+
+Phase 2 で定義した回帰テストマトリクス（RT-01〜RT-07）を TASK-10A-G の統合テスト仕様に引き渡す。各 RT 項目は以下の形式で TASK-10A-G テストケースに対応付ける:
+
+| RT-ID | TASK-10A-G テストケース名（推定）               |
+| ----- | ----------------------------------------------- |
+| RT-01 | `IT-CREATE-SYNC: 作成後一覧同期`                |
+| RT-02 | `IT-IMPROVE-REANALYZE: 選択改善後再分析`        |
+| RT-03 | `IT-AUTO-IMPROVE-REANALYZE: 全自動改善後再分析` |
+| RT-04 | `IT-ERROR-RECOVERY: エラー後リトライ`           |
+| RT-05 | `IT-STATE-RESET: ビュー再開時状態初期化`        |
+| RT-06 | `IT-FULL-FLOW: 分析→改善→再分析フルフロー`      |
+| RT-07 | `IT-CONCURRENT-GUARD: 並行操作排他制御`         |
 
 ## 成果物
 
-| 成果物 | パス                                                            | 説明           |
-| ------ | --------------------------------------------------------------- | -------------- |
-| 設計書 | `docs/30-workflows/store-driven-lifecycle-ui/phase-2-design.md` | 本ドキュメント |
+| 成果物 | パス                | 説明           |
+| ------ | ------------------- | -------------- |
+| 設計書 | `phase-2-design.md` | 本ドキュメント |
 
 ## 完了条件
 
-- [ ] useSkillAnalysis フックの書き換え方針（案B）の採用根拠が記載されている
-- [ ] useSkillAnalysis の変更前・変更後のデータフローが図示されている
-- [ ] 状態管理方針（store 状態とローカル状態の統合テーブル）が定義されている
-- [ ] useSkillAnalysis の変更後コード設計が全メソッドを含んで記載されている
-- [ ] SkillCreateWizard の変更前・変更後のコードが記載されている
-- [ ] 状態遷移図が useSkillAnalysis と SkillCreateWizard の両方を網羅している
-- [ ] テストモック戦略（vi.mock パターン）が具体的なコードを含めて記載されている
-- [ ] P31 対策の個別セレクタ一覧テーブルが記載されている
-- [ ] P48 対策の適用判定テーブルが記載されている
-- [ ] z-index 管理テーブルが記載されている
-- [ ] 統合テスト連携の API 契約テーブルが記載されている
-- [ ] アーキテクチャ層別の変更一覧が全ファイルの変更内容を含めて記載されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] SkillCreateWizard の store 駆動設計が、現在の実装との差分分析を含めて記載されている
+- [ ] useSkillAnalysis フックの store 駆動設計が、現在の実装との差分分析を含めて記載されている
+- [ ] 状態遷移表が全 action（analyzeSkill, applySkillImprovements, autoImproveSkill, createSkill）の成功/失敗/再試行/バリデーション失敗を網羅している
+- [ ] P31 再発防止条件（ルール 1〜4）が明文化されている
+- [ ] ローカル/Store 状態の境界が全状態変数について定義されている
+- [ ] TASK-10A-G 回帰テストマトリクス（RT-01〜RT-07）が定義されている
+- [ ] テスト戦略（ファイル構成・テスト数推定・モック方針）が記載されている
+- [ ] アーキテクチャ層別の変更一覧が全ファイルについて記載されている
 
 ## 次のPhase
 

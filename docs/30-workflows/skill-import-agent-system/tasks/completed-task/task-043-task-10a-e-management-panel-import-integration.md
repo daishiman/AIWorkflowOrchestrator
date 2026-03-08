@@ -24,11 +24,11 @@ verification:
 
 artifacts:
   creates:
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/index.md
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043a-ipc-contract-and-security-alignment.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-043-index.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-043a-ipc-contract-and-security-alignment.md
     - docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design.md
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043c-store-lifecycle-integration-design.md
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043-subagent-team/task-043d-test-quality-gate-design.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-043c-store-lifecycle-integration-design.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-043d-test-quality-gate-design.md
   modifies:
     - apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx
     - apps/desktop/src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx
@@ -125,11 +125,11 @@ artifacts:
 
 ## 成果物
 
-- `task-043-subagent-team/index.md`
-- `task-043-subagent-team/task-043a-ipc-contract-and-security-alignment.md`
+- `task-043-index.md`
+- `task-043a-ipc-contract-and-security-alignment.md`
 - `docs/30-workflows/completed-tasks/task-043b-ui-ux-import-list-design.md`
-- `task-043-subagent-team/task-043c-store-lifecycle-integration-design.md`
-- `task-043-subagent-team/task-043d-test-quality-gate-design.md`
+- `task-043c-store-lifecycle-integration-design.md`
+- `task-043d-test-quality-gate-design.md`
 
 ## 完了条件
 

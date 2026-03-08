@@ -58,7 +58,7 @@ issue_number: 1054
 
 ## 8. 参照情報
 
-- `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043d-test-quality-gate-design.md`
+- `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-043d-test-quality-gate-design.md`
 - `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
 
 ## 9. 備考

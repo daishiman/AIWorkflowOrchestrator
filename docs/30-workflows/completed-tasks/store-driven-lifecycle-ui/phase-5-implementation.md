@@ -1,83 +1,84 @@
-# Phase 5: 実装（TDD: Green） — Store駆動ライフサイクルUI統合
+# Phase 5: 実装（TDD Green）
 
 ## メタ情報
 
-| 項目      | 値                                |
-| --------- | --------------------------------- |
-| Phase     | 5                                 |
-| 機能名    | store-driven-lifecycle-ui         |
-| タスクID  | TASK-10A-F                        |
-| 作成日    | 2026-03-07                        |
-| 前提Phase | Phase 4 完了（全テスト Red 状態） |
-| 次Phase   | Phase 6（テスト拡充）             |
+| 項目     | 値                        |
+| -------- | ------------------------- |
+| Phase    | 5                         |
+| タスクID | TASK-10A-F                |
+| 機能名   | store-driven-lifecycle-ui |
+| 作成日   | 2026-03-08                |
 
 ## 目的
 
-Phase 4 で作成した全テストを Green にするための最小限のコード変更を行う。SkillCreateWizard と useSkillAnalysis から `window.electronAPI` の直接呼び出しを排除し、Zustand agentSlice の store action と個別セレクタ経由に置換する。
-
-## 参照資料
-
-| 資料                                                                              | 用途                                                                                     |
-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Phase 4 成果物（テストファイル4本）                                               | Green にすべきテスト一覧                                                                 |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts:849-959`                    | 既存 store action（analyzeSkill, applySkillImprovements, autoImproveSkill, createSkill） |
-| `apps/desktop/src/renderer/store/index.ts:625-649`                                | 既存個別セレクタ（useAnalyzeSkill 等）                                                   |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx:46`             | 排除対象: `window.electronAPI.skill.create({...})`                                       |
-| `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts:94,140,171` | 排除対象: `window.electronAPI.skill.analyze`, `.applyImprovements`, `.autoImprove`       |
-
-## 既知のPitfall対策
-
-| Pitfall | 対策                                                                                                          | 適用箇所                            |
-| ------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| P5      | リスナー二重登録防止: `useEffect` 内のイベント登録はクリーンアップ関数で解除                                  | useSkillAnalysis                    |
-| P31     | 合成Store Hookの戻り値関数を `useEffect` 依存配列に含めない。個別セレクタ（`useAnalyzeSkill()` 等）を使用する | useSkillAnalysis, SkillCreateWizard |
-| P39     | happy-dom環境では `userEvent` 使用禁止。`fireEvent` を使用する                                                | テスト実行時                        |
-| P40     | テスト実行は `cd apps/desktop && pnpm vitest run` で行う                                                      | テスト実行時                        |
-| P48     | `.filter()` / `.map()` で新しい配列参照を返す派生セレクタには `useShallow` を適用する                         | 新規派生セレクタ追加時              |
+Phase 4 で作成した Red テストを全て PASS させるために、SkillCreateWizard / SkillAnalysisView / useSkillAnalysis の直接 IPC 呼び出しを store action 経由に書き換える（Green Phase）。
 
 ## 実行タスク
 
-### Task 1: SkillCreateWizard の直接IPC呼び出しを store action に置換
+- SkillCreateWizard: `window.electronAPI.skill.createSkill` → `useCreateSkill` hook 経由に変更（既に完了済みの場合は確認のみ）
+- SkillAnalysisView / useSkillAnalysis: analyze / improve の直接 IPC 呼び出し → store action 経由（既に完了済みの場合は確認のみ）
+- 個別セレクタ実装の確認（P31 対策）
+- SkillManagementPanel の直接 IPC 呼び出し排除確認
+
+## 参照資料
+
+| 資料名                 | パス                                                                                        | 説明                        |
+| ---------------------- | ------------------------------------------------------------------------------------------- | --------------------------- |
+| Phase 4 テスト         | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-4-test-creation.md`      | テストケース一覧            |
+| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | action/selector 責務分離    |
+| 実装パターン           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Store 駆動 UI パターン      |
+| Skill インターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`           | create/analyze/improve 契約 |
+| IPC API 仕様           | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        | チャネル責務境界            |
+| エラー仕様             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       | エラーカテゴリとコード範囲  |
+
+### 前 Phase 成果物
+
+| 資料名         | パス                                                                                   | 用途               |
+| -------------- | -------------------------------------------------------------------------------------- | ------------------ |
+| Phase 4 成果物 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-4-test-creation.md` | テストケースを参照 |
+
+## 実行手順
+
+### ステップ 1: 現在の実装状態を確認
+
+1. 以下のファイルで `window.electronAPI` の直接呼び出しが残っていないか確認する:
+
+```bash
+cd apps/desktop && grep -rn "window\.electronAPI" src/renderer/components/skill/
+```
+
+2. 確認対象ファイル:
+   - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
+   - `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx`
+   - `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`
+   - `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`
+
+3. 各ファイルが store セレクタ（`useCreateSkill`, `useAnalyzeSkill` 等）を import しているか確認する
+
+### ステップ 2: SkillCreateWizard の Store 統合確認・修正
 
 **対象ファイル**: `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 
-#### 変更内容
+**確認項目**:
 
-1. `useCreateSkill` セレクタを `../../store` から import する
-2. コンポーネント内で `const createSkill = useCreateSkill();` を呼び出す
-3. `handleGenerate` 関数内の `window.electronAPI.skill.create({description, options})` を `createSkill(description, options)` に置換する
-4. `createSkill` の戻り値（生成パス文字列）を `setSkillPath` に設定する
-5. `createSkill` が空文字列を返した場合（= store 内部でエラー発生）をエラーとして処理する
+| 項目                        | 期待する状態                                                                 |
+| --------------------------- | ---------------------------------------------------------------------------- |
+| `useCreateSkill` の import  | `../../store` から import されている                                         |
+| `createSkill` の呼び出し    | `handleGenerate` 内で `const path = await createSkill(description, options)` |
+| `window.electronAPI` の不在 | ファイル内に `window.electronAPI` が存在しない                               |
+| エラーハンドリング          | `try/catch` で Error を catch し、Error 以外は フォールバックメッセージ      |
+| 状態遷移                    | `isGenerating` のローカル state で生成中を管理                               |
 
-#### 変更前後の対比
+**修正が必要な場合のコード変更**:
+
+`window.electronAPI.skill.create(description, options)` を以下に置き換える:
 
 ```typescript
-// ❌ 変更前（SkillCreateWizard.tsx:41-58）
-const handleGenerate = async () => {
-  goToStep(2);
-  setIsGenerating(true);
-  setError(null);
-  try {
-    const result = await window.electronAPI.skill.create({
-      description,
-      options,
-    });
-    setSkillPath(result.path);
-    goToStep(3);
-  } catch (err) {
-    setError(
-      err instanceof Error ? err : new Error("スキル生成に失敗しました"),
-    );
-  } finally {
-    setIsGenerating(false);
-  }
-};
+import { useCreateSkill } from "../../store";
 
-// ✅ 変更後
 const createSkill = useCreateSkill();
 
 const handleGenerate = async () => {
-  goToStep(2);
   setIsGenerating(true);
   setError(null);
   try {
@@ -98,128 +99,141 @@ const handleGenerate = async () => {
 };
 ```
 
-### Task 2: useSkillAnalysis の直接IPC呼び出しを store action に置換
+### ステップ 3: useSkillAnalysis の Store 統合確認・修正
 
 **対象ファイル**: `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`
 
-#### 変更内容
+**確認項目**:
 
-1. 以下の個別セレクタを `../../../store` から import する:
-   - `useAnalyzeSkill`
-   - `useApplySkillImprovements`
-   - `useAutoImproveSkill`
-   - `useCurrentAnalysis`
-   - `useIsAnalyzingSkill`
-   - `useIsImprovingSkill`
-   - `useSkillError`
-   - `useClearSkillError`
-   - `useClearAnalysis`
+| 項目                        | 期待する状態                                                                                                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 個別セレクタ import         | `useCurrentAnalysis`, `useIsAnalyzingSkill`, `useIsImprovingSkill`, `useSkillError`, `useAnalyzeSkill`, `useApplySkillImprovements`, `useAutoImproveSkill` が `../../../store` から import |
+| `window.electronAPI` の不在 | ファイル内に `window.electronAPI` が存在しない                                                                                                                                             |
+| `handleAnalyze`             | `analyzeSkill(skillName)` を呼び出し、catch 内で UIクラッシュ防止                                                                                                                          |
+| `handleApplySelected`       | `applySkillImprovements(skillName, selected)` を呼び出す                                                                                                                                   |
+| `handleAutoImprove`         | `window.confirm` で確認後 `autoImproveSkill(skillName)` を呼び出す                                                                                                                         |
+| P31 対策                    | action セレクタは個別セレクタ（`useAnalyzeSkill()` 等）で取得                                                                                                                              |
+| `useCallback` 依存配列      | `[analyzeSkill, skillName]` のように個別セレクタ参照のみ含む                                                                                                                               |
+| `useEffect` 依存配列        | `[handleAnalyze]` で初回マウント時に分析を実行                                                                                                                                             |
 
-2. Hook 内で各セレクタを呼び出して store の状態・アクションを取得する
-
-3. `handleAnalyze` 内の `window.electronAPI.skill.analyze(skillName)` を `analyzeSkill(skillName)` に置換する
-
-4. `handleApplySelected` 内の `window.electronAPI.skill.applyImprovements(skillName, selected)` を `applySkillImprovements(skillName, selected)` に置換する
-
-5. `handleAutoImprove` 内の `window.electronAPI.skill.autoImprove(skillName)` を `autoImproveSkill(skillName)` に置換する
-
-6. ローカル state（`analysis`, `isAnalyzing`, `isImproving`, `error`）を store の状態に置換する:
-   - `useState<SkillAnalysis | null>(null)` → `useCurrentAnalysis()`
-   - `useState<boolean>(false)` (isAnalyzing) → `useIsAnalyzingSkill()`
-   - `useState<boolean>(false)` (isImproving) → `useIsImprovingSkill()`
-   - `useState<string | null>(null)` (error) → `useSkillError()`
-
-7. `selectedSuggestions` と `improvementResult` はローカル state のまま維持する（UI固有の選択状態であり store で管理する必要がない）
-
-8. `isMountedRef` によるアンマウント後の setState ガードは、store action が store 内部で状態管理するため不要になる。`selectedSuggestions` と `improvementResult` のローカル state 更新のみガードする
-
-#### P31対策の実装
+**修正が必要な場合の重要ポイント**:
 
 ```typescript
-// ✅ 個別セレクタで取得（安定参照が保証される）
-const analyzeSkill = useAnalyzeSkill();
-const applySkillImprovements = useApplySkillImprovements();
-const autoImproveSkill = useAutoImproveSkill();
-
-// ✅ useEffect 依存配列に含めても安全
-useEffect(() => {
-  analyzeSkill(skillName);
-}, [analyzeSkill, skillName]);
+// P31 対策: 合成 Hook（useAgentStore()）ではなく個別セレクタを使用
+const analyzeSkill = useAnalyzeSkill(); // 安定参照
+const applySkillImprovements = useApplySkillImprovements(); // 安定参照
+const autoImproveSkill = useAutoImproveSkill(); // 安定参照
 ```
 
-### Task 3: SkillManagementPanel の作成完了後一覧同期を store action 経由に統一
+### ステップ 4: SkillManagementPanel の確認
 
 **対象ファイル**: `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`
 
-#### 変更内容
+**確認項目**:
 
-SkillManagementPanel 自体は既に store セレクタ（`useFetchSkills` 等）を使用している。store の `createSkill` action 内部で `fetchSkills()` が呼ばれるため（agentSlice.ts:951）、SkillManagementPanel 側での追加変更は不要。
+| 項目                        | 期待する状態                                                        |
+| --------------------------- | ------------------------------------------------------------------- |
+| store セレクタ import       | `useImportedSkills`, `useFetchSkills`, `useRemoveSkill` 等が import |
+| `window.electronAPI` の不在 | ファイル内に `window.electronAPI` が存在しない                      |
+| `removeSkill` の呼び出し    | store action 経由で `removeSkill(skillName)` を呼び出す             |
+| `fetchSkills` の呼び出し    | `useEffect` 内で `fetchSkills()` を呼び出す                         |
 
-確認事項:
+### ステップ 5: store/index.ts のセレクタエクスポート確認
 
-1. `SkillCreateWizard` の `onClose` コールバック経由で `setCurrentView("list")` が呼ばれる
-2. store の `createSkill` action 内部で `fetchSkills()` が自動実行される
-3. SkillManagementPanel は store の `importedSkills` と `availableSkillsMetadata` を購読しているため、`fetchSkills()` 完了後に自動で再レンダリングされる
+**対象ファイル**: `apps/desktop/src/renderer/store/index.ts`
 
-### Task 4: 既存テストの更新
+以下の個別セレクタが export されていることを確認する:
 
-**対象ファイル**:
+| セレクタ名                  | 型                                                                               | 説明                   |
+| --------------------------- | -------------------------------------------------------------------------------- | ---------------------- |
+| `useCreateSkill`            | `() => (description: string, options: WizardOptions) => Promise<string \| null>` | スキル作成 action      |
+| `useAnalyzeSkill`           | `() => (skillName: string) => Promise<void>`                                     | スキル分析 action      |
+| `useApplySkillImprovements` | `() => (skillName: string, suggestions: Suggestion[]) => Promise<void>`          | 改善適用 action        |
+| `useAutoImproveSkill`       | `() => (skillName: string) => Promise<void>`                                     | 全自動改善 action      |
+| `useCurrentAnalysis`        | `() => SkillAnalysis \| null`                                                    | 現在の分析結果         |
+| `useIsAnalyzingSkill`       | `() => boolean`                                                                  | 分析中フラグ           |
+| `useIsImprovingSkill`       | `() => boolean`                                                                  | 改善中フラグ           |
+| `useSkillError`             | `() => string \| null`                                                           | スキルエラーメッセージ |
 
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx`
+### ステップ 6: テスト実行と Green 確認
 
-#### 変更方針
+1. Phase 4 で作成した全テストを実行し、PASS することを確認する:
 
-既存テストは直接 `window.electronAPI` をモックしているため、store action 経由に変更した後は以下の対応が必要:
+```bash
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts
+```
 
-1. **SkillCreateWizard.test.tsx**: store の `useCreateSkill` をモックするように変更する。`window.electronAPI.skill.create` のモックを `vi.mock("../../store", ...)` 経由の `useCreateSkill` モックに置換する
-2. **SkillAnalysisView.test.tsx**: store の各セレクタをモックするように変更する。`mock-electron-api.ts` の `setupMockElectronAPI` から store セレクタモックに移行する
+2. 既存テストも含めた全テスト実行:
+
+```bash
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/
+```
+
+3. TypeScript 型チェック:
+
+```bash
+pnpm --filter @repo/desktop typecheck
+```
+
+### ステップ 7: 直接 IPC 呼び出し排除の最終検証
+
+以下のコマンドで `window.electronAPI` の直接呼び出しが skill コンポーネント内に残っていないことを最終確認する:
+
+```bash
+cd apps/desktop && grep -rn "window\.electronAPI" src/renderer/components/skill/ --include="*.tsx" --include="*.ts" | grep -v "__tests__" | grep -v "\.test\."
+```
+
+このコマンドの出力が空であることを確認する。テストファイル内のスパイ定義は除外する。
 
 ## 統合テスト連携
 
-### store → IPC → Main Process のデータフロー確認
+### TASK-10A-G への引き渡し確認
 
-```
-[Renderer]                              [Main Process]
-SkillCreateWizard
-  └─ useCreateSkill() ─── store.createSkill()
-       └─ window.electronAPI.skill.create() ─── IPC ─── skill:create handler
-            └─ store.fetchSkills() ─── window.electronAPI.skill.getImported() ─── IPC ─── skill:getImported handler
+Phase 5 完了時点で以下が保証される:
 
-useSkillAnalysis
-  └─ useAnalyzeSkill() ─── store.analyzeSkill()
-       └─ window.electronAPI.skill.analyze() ─── IPC ─── skill:analyze handler
-  └─ useApplySkillImprovements() ─── store.applySkillImprovements()
-       └─ window.electronAPI.skill.applyImprovements() ─── IPC ─── skill:applyImprovements handler
-       └─ window.electronAPI.skill.analyze() ─── IPC ─── skill:analyze handler（再分析）
-  └─ useAutoImproveSkill() ─── store.autoImproveSkill()
-       └─ window.electronAPI.skill.autoImprove() ─── IPC ─── skill:autoImprove handler
-       └─ window.electronAPI.skill.analyze() ─── IPC ─── skill:analyze handler（再分析）
-```
+| 保証事項                                 | 検証方法                                       |
+| ---------------------------------------- | ---------------------------------------------- |
+| 全 UI コンポーネントが store action 経由 | `grep` で `window.electronAPI` 不在を確認      |
+| 個別セレクタが P31 対策済み              | TC-P31-01 〜 TC-P31-05 が PASS                 |
+| 状態遷移が store state で一元管理        | TC-AV-07, TC-AV-08, TC-CW-03, TC-CW-04 が PASS |
+| エラーハンドリングが store 経由          | `skillError` state 経由でエラー表示            |
+
+## 多角的チェック観点
+
+| 観点             | 確認事項                                                                     |
+| ---------------- | ---------------------------------------------------------------------------- |
+| 直接 IPC 排除    | `grep` で skill コンポーネント内に `window.electronAPI` が不在               |
+| P31 安定参照     | 個別セレクタ使用、合成 Hook 不使用                                           |
+| P42 トリム検証   | store action 内部で引数の `.trim()` 検証が行われている                       |
+| レイヤー依存方向 | Renderer → Store → (IPC) の一方向依存                                        |
+| 型安全           | `pnpm typecheck` が PASS                                                     |
+| エラーカテゴリ   | store action 内部で ERR_3001/ERR_4004 等のエラーコードを `skillError` に格納 |
 
 ## 成果物
 
-| 成果物                            | パス                                                                              |
-| --------------------------------- | --------------------------------------------------------------------------------- |
-| 変更済み SkillCreateWizard        | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                |
-| 変更済み useSkillAnalysis         | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`            |
-| 更新済み SkillCreateWizard テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx` |
-| 更新済み SkillAnalysisView テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx` |
+| 成果物                        | パス                                                                   | 説明                                |
+| ----------------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
+| SkillCreateWizard（修正確認） | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`     | store action 経由に統一済み         |
+| useSkillAnalysis（修正確認）  | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` | 個別セレクタ経由に統一済み          |
+| SkillAnalysisView（修正不要） | `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx`     | useSkillAnalysis 経由のため変更不要 |
+| SkillManagementPanel（確認）  | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`  | store セレクタ経由を確認            |
 
 ## 完了条件
 
-- [ ] Task 1: SkillCreateWizard.tsx から `window.electronAPI.skill.create` の直接呼び出しが排除されている
-- [ ] Task 2: useSkillAnalysis.ts から `window.electronAPI.skill.analyze`, `.applyImprovements`, `.autoImprove` の直接呼び出しが排除されている
-- [ ] Task 3: SkillManagementPanel の作成完了後一覧同期が store action 経由で動作することを確認済み
-- [ ] Task 4: 既存テスト（SkillCreateWizard.test.tsx, SkillAnalysisView.test.tsx）が store モックに更新されている
-- [ ] Phase 4 で作成した全テスト（Store統合テスト、P31回帰テスト、P48回帰テスト）が Green 状態
-- [ ] 既存テストが全て Green 状態（回帰なし）
-- [ ] `grep -rn "window\.electronAPI\.skill\." apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` の結果が空（直接呼び出しゼロ）
-- [ ] `cd apps/desktop && pnpm vitest run` で全テスト PASS
-- [ ] `pnpm lint` が通ること
-- [ ] `pnpm typecheck` が通ること
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] `SkillCreateWizard.tsx` 内に `window.electronAPI` の直接呼び出しが存在しない
+- [ ] `useSkillAnalysis.ts` 内に `window.electronAPI` の直接呼び出しが存在しない
+- [ ] `SkillAnalysisView.tsx` 内に `window.electronAPI` の直接呼び出しが存在しない
+- [ ] `SkillManagementPanel.tsx` 内に `window.electronAPI` の直接呼び出しが存在しない
+- [ ] 全個別セレクタ（`useCreateSkill`, `useAnalyzeSkill`, `useApplySkillImprovements`, `useAutoImproveSkill`, `useCurrentAnalysis`, `useIsAnalyzingSkill`, `useIsImprovingSkill`, `useSkillError`）が `store/index.ts` から export されている
+- [ ] Phase 4 のテスト TC-CW-01 〜 TC-CW-07 が全て PASS
+- [ ] Phase 4 のテスト TC-AV-01 〜 TC-AV-11 が全て PASS
+- [ ] Phase 4 のテスト TC-UA-01 〜 TC-UA-09 が全て PASS
+- [ ] Phase 4 のテスト TC-P31-01 〜 TC-P31-05, TC-P48-01 が全て PASS
+- [ ] `pnpm --filter @repo/desktop typecheck` が PASS
+- [ ] `grep -rn "window\.electronAPI" src/renderer/components/skill/ --include="*.tsx" --include="*.ts" | grep -v "__tests__"` の出力が空
 
-## 次Phase
+## 次の Phase
 
-Phase 6: テスト拡充へ進む。
+Phase 6: テスト拡充（`docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-6-test-expansion.md`）

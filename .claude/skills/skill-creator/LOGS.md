@@ -28,6 +28,18 @@
 
 ---
 
+## [2026-03-08 - TASK-10A-F Phase 12 branch 再確認パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「comparison baseline 正規化つき branch 再監査（TASK-10A-F）」を追加
+  - 同ファイルに失敗パターン「current workflow PASS だけで comparison baseline を放置」を追加
+  - Phase 12 クイックナビへ comparison baseline 正規化を反映し、`currentViolations=0` と `baselineViolations>0` の二層報告を branch 判定前提として固定
+
+---
+
 ## [2026-03-07 - TASK-10A-F Phase 12再監査知見のテンプレート化]
 
 - **Agent**: skill-creator (update)

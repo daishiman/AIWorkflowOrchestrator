@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-07T08:42:12.504Z
-> 対象: docs/30-workflows/store-driven-lifecycle-ui
+> 検証日時: 2026-03-08T11:08:54.220Z
+> 対象: docs/30-workflows/completed-tasks/store-driven-lifecycle-ui
 
 ## サマリー
 
@@ -11,7 +11,7 @@
 | 検証済みPhase | 13          |
 | エラー        | 0           |
 | 警告          | 0           |
-| 情報          | 0           |
+| 情報          | 8           |
 | **結果**      | **✅ PASS** |
 
 ## Phase別検証結果
@@ -62,8 +62,14 @@
 
 ### Phase 12: ドキュメント更新 ✅
 
-問題なし
+- ℹ️ [consistency] 参照パス「unassigned-task-detection.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「task-workflow.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「task-workflow.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「unassigned-task-detection.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「task-workflow.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「task-workflow.md」の存在を確認してください
 
 ### Phase 13: PR作成 ✅
 
-問題なし
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-13/pr-body.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-13/pr-body.md」の存在を確認してください

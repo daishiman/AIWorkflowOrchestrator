@@ -2,312 +2,216 @@
 
 ## メタ情報
 
-| 項目           | 値                                                                                                                                                                                                                                                                                                                    |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスク ID      | TASK-10A-F                                                                                                                                                                                                                                                                                                            |
-| タスク名       | スキルライフサイクル UI の Store 駆動統合                                                                                                                                                                                                                                                                             |
-| 機能名         | store-driven-lifecycle-ui                                                                                                                                                                                                                                                                                             |
-| Phase          | 9                                                                                                                                                                                                                                                                                                                     |
-| 作成日         | 2026-03-07                                                                                                                                                                                                                                                                                                            |
-| 前 Phase       | Phase 8（リファクタリング）                                                                                                                                                                                                                                                                                           |
-| 次 Phase       | Phase 10（最終レビュー）                                                                                                                                                                                                                                                                                              |
-| 対象ファイル   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`, `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`, `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`, `apps/desktop/src/renderer/store/slices/agentSlice.ts`, `apps/desktop/src/renderer/store/index.ts` |
-| テストファイル | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.test.ts`, `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`, `apps/desktop/src/renderer/components/skill/hooks/__tests__/useSkillAnalysis.test.ts`                                                                       |
-| 状態           | 未着手                                                                                                                                                                                                                                                                                                                |
+| 項目     | 値                        |
+| -------- | ------------------------- |
+| Phase    | 9                         |
+| タスクID | TASK-10A-F                |
+| 機能名   | store-driven-lifecycle-ui |
+| 作成日   | 2026-03-08                |
 
 ## 目的
 
-ESLint・TypeScript 型チェック・Prettier・全テスト実行・カバレッジ確認の 5 項目を実行し、品質基準の充足を検証する。全項目で基準を満たさない限り Phase 10 に進めない。
-
----
+Lint・TypeScript 型チェック・全テスト実行を行い、Store 駆動統合の実装がプロジェクトの品質基準を満たしていることを検証する。直接 IPC 呼び出しが完全に排除されていることを grep で最終確認する。
 
 ## 実行タスク
 
-- Gate 1（ESLint）: lint エラー/警告の閾値を確認する
-- Gate 2（TypeScript）: 型エラー 0 件を確認する（P32 対策: shared/types と preload/types の型整合性を含む）
-- Gate 3（Prettier）: フォーマット不整合 0 件を確認する
-- Gate 4（テスト）: 関連テストの全件 PASS を確認する（P40 対策: apps/desktop ディレクトリから実行する）
-- Gate 5（カバレッジ）: Line/Branch/Function 基準達成を確認する
-- Gate 6（any 型排除）: 対象ファイルに `any` 型が存在しないことを確認する
-
----
+- ESLint 実行: 変更ファイルに対する Lint 検証
+- TypeScript 型チェック: プロジェクト全体の型整合性確認
+- 全テスト実行: skill コンポーネント関連テストおよびプロジェクト全体のテスト実行
+- 直接 IPC 呼び出し残存の grep 最終検証
+- P31/P48 再発防止の最終確認
 
 ## 参照資料
 
-| 参照資料                 | パス                                                                                        | 内容                     |
-| ------------------------ | ------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 5 実装             | `phase-5-implementation.md`                                                                 | 実装品質の基準確認       |
-| Phase 7 カバレッジ確認   | `phase-7-coverage-verification.md`                                                          | カバレッジ基準確認       |
-| Phase 8 リファクタリング | `phase-8-refactoring.md`                                                                    | リファクタリング結果確認 |
-| UI コンポーネント仕様    | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                     | UI 仕様                  |
-| UI 機能仕様              | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | 機能単位の品質確認       |
-| UI デザインシステム      | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                  | デザイントークン準拠確認 |
-| IPC API 契約             | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        | API 契約逸脱の確認       |
-| コード品質               | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | 品質基準                 |
-| セキュリティ             | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                | IPC セキュリティ         |
-| スキル IPC セキュリティ  | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`                   | スキル操作の防御観点     |
-| 実装パターン             | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | 実装パターン集           |
-| 開発ガイドライン         | `.claude/skills/aiworkflow-requirements/references/development-guidelines.md`               | コーディング規約         |
-| 状態管理アーキテクチャ   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | Zustand 設計原則         |
-| レビューゲート基準       | `.claude/skills/task-specification-creator/references/review-gate-criteria.md`              | レビュー判定基準         |
+| 資料名               | パス                                  | 説明                |
+| -------------------- | ------------------------------------- | ------------------- |
+| コード品質ルール     | `.claude/rules/02-code-quality.md`    | Lint/型チェック基準 |
+| Git/ツーリングルール | `.claude/rules/07-git-and-tooling.md` | コミット前チェック  |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`  | P31/P48 対策        |
 
----
+### システム仕様（aiworkflow-requirements）
 
-## 品質ゲートテーブル
+| 資料名   | パス                                                                        | 使用目的       |
+| -------- | --------------------------------------------------------------------------- | -------------- |
+| 品質要件 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | カバレッジ基準 |
 
-| #   | ゲート     | 合格基準                                    | コマンド                                        |
-| --- | ---------- | ------------------------------------------- | ----------------------------------------------- |
-| 1   | ESLint     | エラー 0 件、警告 5 件以下                  | `cd apps/desktop && pnpm lint`                  |
-| 2   | TypeScript | 型エラー 0 件                               | `cd apps/desktop && pnpm typecheck`             |
-| 3   | Prettier   | フォーマット不整合 0 件                     | `cd apps/desktop && pnpm format:check`          |
-| 4   | テスト     | 対象テスト全 PASS、既存テスト破壊なし       | `cd apps/desktop && pnpm vitest run`            |
-| 5   | カバレッジ | Line >= 80%, Branch >= 60%, Function >= 80% | `cd apps/desktop && pnpm vitest run --coverage` |
-| 6   | any 型排除 | 対象ファイルに `any` 型 0 件                | `grep -rn ": any\|as any" <対象ファイル>`       |
+### 前提 Phase 成果物
 
----
+| 資料名       | パス                                                                                    | 用途                       |
+| ------------ | --------------------------------------------------------------------------------------- | -------------------------- |
+| Phase 5 実装 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-5-implementation.md` | 実装内容の確認             |
+| Phase 8 記録 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-8-refactoring.md`    | リファクタリング結果の確認 |
 
 ## 実行手順
 
-### Gate 1: ESLint 検証
+### ステップ 1: ESLint 実行
 
 ```bash
 cd apps/desktop && pnpm lint
 ```
 
-**合格基準**:
+**確認事項:**
 
-- エラー: 0 件（1 件でも存在する場合は修正必須）
-- 警告: 5 件以下（6 件以上の場合は修正必須）
+| チェック項目                                    | 期待結果              |
+| ----------------------------------------------- | --------------------- |
+| SkillCreateWizard.tsx に Lint エラーがない      | エラー 0 件           |
+| useSkillAnalysis.ts に Lint エラーがない        | エラー 0 件           |
+| SkillManagementPanel.tsx に Lint エラーがない   | エラー 0 件           |
+| SkillCreateWizard.test.tsx に Lint エラーがない | エラー 0 件           |
+| SkillAnalysisView.test.tsx に Lint エラーがない | エラー 0 件           |
+| 未使用 import が残っていない                    | `no-unused-vars` 0 件 |
 
-**不合格時の対応**:
-
-1. エラー内容を確認し、対象ファイルを修正する
-2. `any` 型の使用が検出された場合は、正しい型定義に置き換える
-3. 修正後に再度 `pnpm lint` を実行して 0 エラーを確認する
-4. 修正内容を Gate 結果テーブルの「備考」欄に記録する
-
-### Gate 2: TypeScript 型チェック
-
-```bash
-cd apps/desktop && pnpm typecheck
-```
-
-**合格基準**:
-
-- 型エラー: 0 件
-
-**P32 対策（型定義の二箇所同時更新確認）**:
-
-agentSlice.ts で追加した新規アクション（`analyzeSkill`, `applyImprovements`, `autoImproveSkill`, `createSkill`）が以下の型と整合していることを確認する:
-
-1. `apps/desktop/src/preload/types.ts` の Preload 層型定義に `skill.analyze`, `skill.applyImprovements`, `skill.autoImprove`, `skill.create` メソッドが定義されている
-2. `packages/shared/src/types/` 配下の共有型が存在する場合、戻り値型が一致している
+### ステップ 2: TypeScript 型チェック
 
 ```bash
-grep -n "analyze\|applyImprovements\|autoImprove\|create" apps/desktop/src/preload/types.ts
+pnpm typecheck
 ```
 
-**不合格時の対応**:
+**確認事項:**
 
-1. エラー箇所を特定し、型定義を修正する
-2. `any` 型の使用箇所がある場合は正しい型に置き換える
-3. `@ts-ignore` / `@ts-expect-error` は使用禁止（使用する場合は理由コメント必須）
-4. 型アサーション（`as`）でバリデーションを回避していないことを確認する
-5. 修正後に再度 `pnpm typecheck` を実行して 0 エラーを確認する
+| チェック項目                                          | 期待結果      |
+| ----------------------------------------------------- | ------------- |
+| 個別セレクタの戻り値型が正しい                        | 型エラー 0 件 |
+| `as` キャスト除去後に型エラーが発生していない         | 型エラー 0 件 |
+| `useShallow` 適用後のセレクタ型が正しい               | 型エラー 0 件 |
+| Store action の引数型がコンポーネント側と一致している | 型エラー 0 件 |
+| `any` 型が新規に導入されていない                      | `any` 0 件    |
 
-### Gate 3: Prettier フォーマット検証
+### ステップ 3: 直接 IPC 呼び出し残存の最終検証
+
+修正対象ファイル 5 件全てで `window.electronAPI` の実行コード呼び出しが 0 件であることを確認する。
 
 ```bash
-cd apps/desktop && pnpm format:check
+grep -rn "window\.electronAPI" \
+  apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx \
+  apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts \
+  apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx \
+  apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx \
+  apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx
 ```
 
-**合格基準**:
+**結果判定:**
 
-- フォーマット不整合: 0 件
+| 検出パターン                                                 | 判定 |
+| ------------------------------------------------------------ | ---- |
+| 実行コードとしての `window.electronAPI` 呼び出し             | NG   |
+| コメント内の参照（`// TASK-10A-F: window.electronAPI ...`）  | OK   |
+| テスト内のスパイ設定（直接呼び出しがないことを検証するため） | OK   |
 
-**不合格時の対応**:
+NG の場合は Phase 5 に差し戻す。
 
-1. `pnpm format` を実行して自動修正する
-2. 修正後に再度 `pnpm format:check` を実行して 0 件を確認する
+### ステップ 4: P31/P48 再発防止の最終確認
 
-### Gate 4: 全テスト実行
-
-**P40 対策**: テスト実行は `apps/desktop` ディレクトリから行う（プロジェクトルートからの実行は `vitest.config.ts` の environment 設定が適用されず `document is not defined` エラーが発生するため禁止）。
-
-#### 4-1: 対象テスト実行
+#### P31 確認: 合成 Store Hook の直接使用がないこと
 
 ```bash
-cd apps/desktop && pnpm vitest run src/renderer/store/slices/__tests__/agentSlice.test.ts
+grep -rn "useAgentStore()" \
+  apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx \
+  apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts \
+  apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx
 ```
+
+**期待結果:** 0 件
+
+#### P48 確認: 派生セレクタに `useShallow` が適用されていること
 
 ```bash
-cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx
+grep -rn "\.filter\|\.map" \
+  apps/desktop/src/renderer/store/index.ts | grep -i "skill\|analysis"
 ```
+
+検出された各セレクタが `useShallow` でラップされていることを目視確認する。
+
+#### non-null assertion 確認（P48 派生）
 
 ```bash
-cd apps/desktop && pnpm vitest run src/renderer/components/skill/hooks/__tests__/useSkillAnalysis.test.ts
+grep -n "!" \
+  apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx \
+  apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts \
+  apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx | grep -v "!=\|!=="
 ```
 
-**合格基準**:
+non-null assertion（`!.` / `!` 単独）が残存している場合は `?.` または `Array.isArray()` に置換する。
 
-- 3 ファイル全てで全テスト PASS
-
-#### 4-2: 既存テスト破壊確認
+### ステップ 5: skill コンポーネント関連テスト実行
 
 ```bash
-cd apps/desktop && pnpm vitest run --reporter=verbose 2>&1 | tail -20
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/
 ```
 
-**合格基準**:
+**確認事項:**
 
-- TASK-10A-F のテスト以外に新たな FAIL が発生していないこと
-- 出力末尾の「Tests」行で FAIL 件数が 0 であること
+| チェック項目                                           | 期待結果 |
+| ------------------------------------------------------ | -------- |
+| SkillCreateWizard.test.tsx が全 PASS                   | 全 PASS  |
+| SkillAnalysisView.test.tsx が全 PASS                   | 全 PASS  |
+| SkillCreateWizard.store-integration.test.tsx が全 PASS | 全 PASS  |
+| SkillAnalysisView.store-integration.test.tsx が全 PASS | 全 PASS  |
+| テスト実行時間が 60 秒以内（無限ループの兆候なし）     | < 60 秒  |
 
-**不合格時の対応**:
-
-1. FAIL したテストのエラーメッセージを確認する
-2. テストコードまたは実装コードを修正する
-3. 修正後に再度テストを実行して全件 PASS を確認する
-
-### Gate 5: カバレッジ最終確認
+### ステップ 6: agentSlice 関連テスト実行
 
 ```bash
-cd apps/desktop && pnpm vitest run src/renderer/store/slices/__tests__/agentSlice.test.ts --coverage
+cd apps/desktop && pnpm vitest run src/renderer/store/slices/__tests__/agentSlice
 ```
+
+**確認事項:**
+
+| チェック項目               | 期待結果  |
+| -------------------------- | --------- |
+| agentSlice 全テストが PASS | 全 PASS   |
+| P31 回帰テストが PASS      | 全 PASS   |
+| セレクタテストが PASS      | 全 PASS   |
+| 既存テストに回帰がない     | 回帰 0 件 |
+
+### ステップ 7: プロジェクト全体テスト実行
 
 ```bash
-cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx --coverage
+cd apps/desktop && pnpm vitest run
 ```
 
-```bash
-cd apps/desktop && pnpm vitest run src/renderer/components/skill/hooks/__tests__/useSkillAnalysis.test.ts --coverage
-```
+**確認事項:**
 
-**合格基準**（Phase 7 と同一基準）:
+| チェック項目                        | 期待結果  |
+| ----------------------------------- | --------- |
+| 全テストが PASS                     | 全 PASS   |
+| 他の Slice/コンポーネントに回帰なし | 回帰 0 件 |
 
-| 指標              | 最低基準 | 推奨基準 |
-| ----------------- | -------- | -------- |
-| Line Coverage     | 80%      | 90%      |
-| Branch Coverage   | 60%      | 70%      |
-| Function Coverage | 80%      | 90%      |
+## 統合テスト連携（Phase 1-11 は必須）
 
-**不合格時の対応**:
+- Store 統合テスト（`*.store-integration.test.tsx`）で `window.electronAPI` スパイの呼び出し回数が 0 であることを確認
+- agentSlice の全テストファイル（boundary/combination/edge-cases/error-cases/extension/import-lifecycle/p31-regression/selectors）が実行対象に含まれることを確認
+- UI コンポーネントテスト（SkillCreateWizard / SkillAnalysisView）も実行対象に含まれることを確認
 
-- Phase 6 に戻り、不足テストを追加する
+## 多角的チェック観点
 
-### Gate 6: any 型排除確認
-
-```bash
-grep -rn ": any\|as any" apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts apps/desktop/src/renderer/store/slices/agentSlice.ts apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx
-```
-
-**合格基準**:
-
-- 出力 0 件
-
-**追加確認（@ts-ignore / @ts-expect-error）**:
-
-```bash
-grep -rn "@ts-ignore\|@ts-expect-error" apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts apps/desktop/src/renderer/store/slices/agentSlice.ts apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx
-```
-
-**合格基準**:
-
-- 出力 0 件（使用する場合は理由コメント必須、その場合は理由を記録する）
-
-### Step 7: 品質レポートの作成
-
-全 6 ゲートの結果を `outputs/phase-9/quality-verification-result.md` に記録する:
-
-```markdown
-# Phase 9 品質検証レポート
-
-## 品質ゲート結果サマリ
-
-| #   | ゲート     | 結果      | 詳細                            |
-| --- | ---------- | --------- | ------------------------------- |
-| 1   | ESLint     | PASS/FAIL | エラーX件, 警告X件              |
-| 2   | TypeScript | PASS/FAIL | エラーX件                       |
-| 3   | Prettier   | PASS/FAIL | 不整合X件                       |
-| 4   | テスト     | PASS/FAIL | X件中X件PASS                    |
-| 5   | カバレッジ | PASS/FAIL | Line X%, Branch X%, Function X% |
-| 6   | any型排除  | PASS/FAIL | any型X件, @ts-ignoreX件         |
-
-## Gate 1: ESLint 詳細
-
-（コマンド出力を貼り付け）
-
-## Gate 2: TypeScript 型チェック詳細
-
-（コマンド出力を貼り付け）
-
-### P32 型整合性確認
-
-| 確認項目                                               | 結果 |
-| ------------------------------------------------------ | ---- |
-| preload/types.ts に skill.analyze 定義がある           | Y/N  |
-| preload/types.ts に skill.applyImprovements 定義がある | Y/N  |
-| preload/types.ts に skill.autoImprove 定義がある       | Y/N  |
-| preload/types.ts に skill.create 定義がある            | Y/N  |
-| 共有型（packages/shared）との戻り値型一致              | Y/N  |
-
-## Gate 3: Prettier 詳細
-
-（コマンド出力を貼り付け）
-
-## Gate 4: テスト実行結果
-
-| テストファイル             | テスト件数 | PASS | FAIL |
-| -------------------------- | ---------- | ---- | ---- |
-| agentSlice.test.ts         | X          | X    | 0    |
-| SkillCreateWizard.test.tsx | X          | X    | 0    |
-| useSkillAnalysis.test.ts   | X          | X    | 0    |
-
-### 既存テスト破壊確認
-
-（コマンド出力末尾を貼り付け）
-
-## Gate 5: カバレッジ詳細
-
-| ファイル              | Line | Branch | Function | 基準達成 |
-| --------------------- | ---- | ------ | -------- | -------- |
-| agentSlice.ts         | X%   | X%     | X%       | Y/N      |
-| SkillCreateWizard.tsx | X%   | X%     | X%       | Y/N      |
-| useSkillAnalysis.ts   | X%   | X%     | X%       | Y/N      |
-
-## Gate 6: any 型排除詳細
-
-（コマンド出力を貼り付け。0 件の場合は「検出なし」）
-```
-
----
-
-## 統合テスト連携
-
-- 仕様契約確認: `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` と `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md` を参照し、analyze/applyImprovements/autoImprove/create の入力・戻り値契約を一致させる
-- セキュリティ観点: `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` と `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md` の sender 検証・入力検証方針を適用する
-- テスト接続: Phase 4/6/7 のテスト成果物を Phase 10/11 の判定基準へ接続し、差分が出た場合は Phase 2（設計）または Phase 5（実装）へ戻して再検証する
+| チェック観点   | 確認内容                                          |
+| -------------- | ------------------------------------------------- |
+| Lint 完全性    | 変更ファイル全件で ESLint エラー 0 件             |
+| 型整合性       | `pnpm typecheck` エラー 0 件、`any` 新規導入 0 件 |
+| IPC 排除完全性 | `window.electronAPI` 実行コード呼び出し 0 件      |
+| P31 非抵触     | 合成 Store Hook の直接使用 0 件                   |
+| P48 非抵触     | 派生セレクタに `useShallow` 適用済み              |
+| テスト網羅性   | Phase 4-6 の全テストが PASS                       |
+| 回帰安全性     | プロジェクト全体テストで回帰 0 件                 |
 
 ## 成果物
 
-| 成果物       | パス                                             | 説明                     |
-| ------------ | ------------------------------------------------ | ------------------------ |
-| 品質レポート | `outputs/phase-9/quality-verification-result.md` | 6 ゲートの検証結果を記録 |
-
----
+| 成果物       | パス                                                                                       | 説明           |
+| ------------ | ------------------------------------------------------------------------------------------ | -------------- |
+| 品質検証記録 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-9-quality-assurance.md` | 本ドキュメント |
 
 ## 完了条件
 
-- [ ] ESLint エラー 0 件（警告 5 件以下）
-- [ ] TypeScript 型エラー 0 件
-- [ ] P32 対策: preload/types.ts と agentSlice.ts の新規アクション型が整合している
-- [ ] Prettier フォーマット不整合 0 件
-- [ ] 対象 3 テストファイルが全件 PASS
-- [ ] 既存テスト破壊なし（TASK-10A-F のテスト以外に FAIL が発生していない）
-- [ ] カバレッジ基準達成（Line >= 80%, Branch >= 60%, Function >= 80%）
-- [ ] any 型 0 件（対象ファイル内）
-- [ ] @ts-ignore / @ts-expect-error 0 件（または理由コメント付き）
-- [ ] `outputs/phase-9/quality-verification-result.md` を作成した
+- [ ] ESLint が変更ファイル全件でエラーなしで通過する
+- [ ] TypeScript 型チェックがプロジェクト全体でエラーなしで通過する
+- [ ] `window.electronAPI` の実行コード呼び出しが修正対象ファイル内で 0 件
+- [ ] P31 再発防止: 合成 Store Hook の直接使用が 0 件
+- [ ] P48 再発防止: 派生セレクタに `useShallow` が適用済み
+- [ ] non-null assertion が理由コメントなしで残存していない
+- [ ] skill コンポーネント関連テストが全 PASS
+- [ ] agentSlice 関連テストが全 PASS
+- [ ] プロジェクト全体テストが PASS（回帰なし）
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
 ## 次の Phase

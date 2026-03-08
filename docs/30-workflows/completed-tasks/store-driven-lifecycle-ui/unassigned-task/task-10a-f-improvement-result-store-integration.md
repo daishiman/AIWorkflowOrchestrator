@@ -6,8 +6,6 @@
 issue_number: 1039
 ```
 
-## メタ情報
-
 | 項目         | 内容                                                  |
 | ------------ | ----------------------------------------------------- |
 | タスクID     | UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION         |
@@ -189,9 +187,9 @@ cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/Skill
 
 ### 関連ドキュメント
 
-- `arch-state-management.md` - TASK-10A-F セクション（Case B方式の設計判断記録）
-- `architecture-implementation-patterns.md` - S26（Store移行パターン）
-- `lessons-learned.md` - TASK-10A-F 苦戦箇所#3（improvementResult Store化見送り判断）
+- `arch-state-management.md` - TASK-10A-F セクション（Case B方式の設計判断記録、Store/ローカル状態の分類基準テーブル6件、個別セレクタ使用一覧17件）
+- `architecture-implementation-patterns.md` - S26（直接IPC→Store移行パターン、7ステップチェックリスト）
+- `lessons-learned.md` - TASK-10A-F 苦戦箇所（実装系）#3（improvementResult Store化見送り判断）、再利用手順（Store移行共通）
 
 ### 参考資料
 

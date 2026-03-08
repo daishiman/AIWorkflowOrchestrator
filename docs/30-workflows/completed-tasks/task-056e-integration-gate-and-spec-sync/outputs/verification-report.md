@@ -1,6 +1,6 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-06T11:17:44.299Z
+> 検証日時: 2026-03-08T08:52:02.489Z
 > 対象: docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync
 
 ## サマリー
@@ -11,13 +11,15 @@
 | 検証済みPhase | 13          |
 | エラー        | 0           |
 | 警告          | 0           |
-| 情報          | 17          |
+| 情報          | 20          |
 | **結果**      | **✅ PASS** |
 
 ## Phase別検証結果
 
 ### Phase 1: 要件定義 ✅
 
+- ℹ️ [consistency] 参照パス「docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture/index.md」の存在を確認してください
 - ℹ️ [consistency] 参照パス「task-workflow.md」の存在を確認してください
 - ℹ️ [consistency] 参照パス「aiworkflow-requirements: task-workflow.md」の存在を確認してください
 
@@ -27,7 +29,7 @@
 
 ### Phase 3: 設計レビューゲート ✅
 
-問題なし
+- ℹ️ [consistency] 参照パス「docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture/index.md」の存在を確認してください
 
 ### Phase 4: テスト作成 ✅
 
