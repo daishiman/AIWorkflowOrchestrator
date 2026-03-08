@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.6.0
-> **更新日**: 2026-02-22
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS
+> **バージョン**: 1.11.0
+> **更新日**: 2026-03-08
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 
 ---
 
@@ -348,50 +348,50 @@ fireEvent.change(input, { target: { value: "text" } });
 
 ### ファイル分類
 
-| ファイル種別 | 命名規則 | テスト内容 |
-|-------------|----------|-----------|
+| ファイル種別 | 命名規則                | テスト内容                                             |
+| ------------ | ----------------------- | ------------------------------------------------------ |
 | 永続化テスト | `*.persistence.test.ts` | ストア保存・復元、再起動シミュレーション、データ整合性 |
-| エラーテスト | `*.error.test.ts` | 異常系、例外処理、フォールバック動作、エラーメッセージ |
-| 境界値テスト | `*.boundary.test.ts` | null、空配列、最大長、Unicode、特殊文字 |
-| 基本テスト | `*.test.ts` | 正常系、基本的なCRUD操作 |
+| エラーテスト | `*.error.test.ts`       | 異常系、例外処理、フォールバック動作、エラーメッセージ |
+| 境界値テスト | `*.boundary.test.ts`    | null、空配列、最大長、Unicode、特殊文字                |
+| 基本テスト   | `*.test.ts`             | 正常系、基本的なCRUD操作                               |
 
 ### 利点
 
-| 利点 | 詳細 |
-|------|------|
-| 責務の明確化 | 各ファイルが単一の観点に集中 |
-| 可読性向上 | テストケースを探しやすい |
-| 並列実行 | Vitestでファイル単位の並列実行が容易 |
-| 選択的実行 | 特定カテゴリのテストのみ実行可能 |
-| チーム分担 | 異なるメンバーが異なるファイルを担当可能 |
+| 利点         | 詳細                                     |
+| ------------ | ---------------------------------------- |
+| 責務の明確化 | 各ファイルが単一の観点に集中             |
+| 可読性向上   | テストケースを探しやすい                 |
+| 並列実行     | Vitestでファイル単位の並列実行が容易     |
+| 選択的実行   | 特定カテゴリのテストのみ実行可能         |
+| チーム分担   | 異なるメンバーが異なるファイルを担当可能 |
 
 ### 実行コマンド例
 
-| コマンド | 実行対象 |
-|----------|----------|
-| `vitest SkillImportManager.test.ts` | 基本テストのみ |
-| `vitest SkillImportManager.persistence.test.ts` | 永続化テストのみ |
-| `vitest SkillImportManager.*.test.ts` | 全カテゴリ |
-| `vitest --grep "boundary"` | 全ファイルの境界値テスト |
+| コマンド                                        | 実行対象                 |
+| ----------------------------------------------- | ------------------------ |
+| `vitest SkillImportManager.test.ts`             | 基本テストのみ           |
+| `vitest SkillImportManager.persistence.test.ts` | 永続化テストのみ         |
+| `vitest SkillImportManager.*.test.ts`           | 全カテゴリ               |
+| `vitest --grep "boundary"`                      | 全ファイルの境界値テスト |
 
 ### 適用基準
 
-| 条件 | 推奨 |
-|------|------|
-| テストケースが50件以上 | 分離を強く推奨 |
-| テストケースが20-50件 | 分離を検討 |
+| 条件                   | 推奨               |
+| ---------------------- | ------------------ |
+| テストケースが50件以上 | 分離を強く推奨     |
+| テストケースが20-50件  | 分離を検討         |
 | テストケースが20件未満 | 単一ファイルで十分 |
 
 ### 実装例
 
 SkillImportManagerのテストファイル構成:
 
-| ファイル | ケース数 | 内容 |
-|----------|----------|------|
-| `SkillImportManager.test.ts` | 基本 | インポート・削除・リスト取得 |
-| `SkillImportManager.persistence.test.ts` | 永続化 | ストア保存・復元・アプリ再起動 |
-| `SkillImportManager.error.test.ts` | エラー | 無効な値・型エラー・フォールバック |
-| `SkillImportManager.boundary.test.ts` | 境界値 | 空配列・大量データ・Unicode |
+| ファイル                                 | ケース数 | 内容                               |
+| ---------------------------------------- | -------- | ---------------------------------- |
+| `SkillImportManager.test.ts`             | 基本     | インポート・削除・リスト取得       |
+| `SkillImportManager.persistence.test.ts` | 永続化   | ストア保存・復元・アプリ再起動     |
+| `SkillImportManager.error.test.ts`       | エラー   | 無効な値・型エラー・フォールバック |
+| `SkillImportManager.boundary.test.ts`    | 境界値   | 空配列・大量データ・Unicode        |
 
 ---
 
@@ -463,11 +463,13 @@ renderHook(() => {
   const action = useFetchSkills();
   const initRef = useRef(false);
   useEffect(() => {
-    if (!initRef.current) { initRef.current = true; }
+    if (!initRef.current) {
+      initRef.current = true;
+    }
   }, [action]);
 });
 await act(async () => {
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise((r) => setTimeout(r, 100));
 });
 expect(renderCount.current).toBeLessThan(5);
 ```
@@ -487,15 +489,15 @@ expect(result.current).toBe(firstRef);
 
 ### テスト環境要件
 
-| 要件 | 設定値 |
-|---|---|
-| テスト環境ディレクティブ | `@vitest-environment happy-dom` |
-| localStorage | `Object.defineProperty(window, 'localStorage', {...})` でポリフィル |
-| electronAPI | `window.electronAPI` を `Object.defineProperty` で完全モック設定 |
-| electronAPIモック範囲 | `authMode`（`get`, `set`, `status`, `validate`, `onModeChanged`）、`llm`（`getProviders`, `setLLM`, `getLLM`）、`skill`（`getSkills`, `rescanSkills`, `importSkill`, `removeSkill`, `executeSkill`, `abortExecution`, `respondToPermission`, `onStream`, `onComplete`, `onError`, `onPermissionRequest`） |
-| ストア | `useAppStore` 統合ストア使用（モック不要） |
-| beforeEach | `vi.clearAllMocks()` + electronAPI設定 + `resetStore()` |
-| afterEach | `cleanup()` + `vi.restoreAllMocks()` |
+| 要件                     | 設定値                                                                                                                                                                                                                                                                                                    |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| テスト環境ディレクティブ | `@vitest-environment happy-dom`                                                                                                                                                                                                                                                                           |
+| localStorage             | `Object.defineProperty(window, 'localStorage', {...})` でポリフィル                                                                                                                                                                                                                                       |
+| electronAPI              | `window.electronAPI` を `Object.defineProperty` で完全モック設定                                                                                                                                                                                                                                          |
+| electronAPIモック範囲    | `authMode`（`get`, `set`, `status`, `validate`, `onModeChanged`）、`llm`（`getProviders`, `setLLM`, `getLLM`）、`skill`（`getSkills`, `rescanSkills`, `importSkill`, `removeSkill`, `executeSkill`, `abortExecution`, `respondToPermission`, `onStream`, `onComplete`, `onError`, `onPermissionRequest`） |
+| ストア                   | `useAppStore` 統合ストア使用（モック不要）                                                                                                                                                                                                                                                                |
+| beforeEach               | `vi.clearAllMocks()` + electronAPI設定 + `resetStore()`                                                                                                                                                                                                                                                   |
+| afterEach                | `cleanup()` + `vi.restoreAllMocks()`                                                                                                                                                                                                                                                                      |
 
 #### electronAPI モック実装例
 
@@ -505,7 +507,9 @@ expect(result.current).toBe(firstRef);
 function createMockElectronAPI() {
   return {
     authMode: {
-      get: vi.fn().mockResolvedValue({ success: true, data: { mode: "subscription" } }),
+      get: vi
+        .fn()
+        .mockResolvedValue({ success: true, data: { mode: "subscription" } }),
       set: vi.fn().mockResolvedValue({ success: true }),
       status: vi.fn().mockResolvedValue({
         success: true,
@@ -556,21 +560,21 @@ function createMockElectronAPI() {
 
 ### 選択基準
 
-| テスト対象 | 推奨パターン | 理由 |
-|---|---|---|
-| 状態セレクタ（プリミティブ値） | パターン1 + パターン2 | 初期値と変更後の値を検証 |
-| 状態セレクタ（配列・オブジェクト） | パターン1 + パターン2 + パターン6 | 加えて参照安定性を検証 |
-| アクションセレクタ（同期） | パターン2 + パターン4 | 状態変更と参照安定性を検証 |
-| アクションセレクタ（非同期） | パターン3 + パターン4 + パターン5 | 非同期完了、参照安定性、無限ループ防止を検証 |
-| 派生セレクタ | パターン1 + パターン2 | 計算結果の正確性を検証 |
+| テスト対象                         | 推奨パターン                      | 理由                                         |
+| ---------------------------------- | --------------------------------- | -------------------------------------------- |
+| 状態セレクタ（プリミティブ値）     | パターン1 + パターン2             | 初期値と変更後の値を検証                     |
+| 状態セレクタ（配列・オブジェクト） | パターン1 + パターン2 + パターン6 | 加えて参照安定性を検証                       |
+| アクションセレクタ（同期）         | パターン2 + パターン4             | 状態変更と参照安定性を検証                   |
+| アクションセレクタ（非同期）       | パターン3 + パターン4 + パターン5 | 非同期完了、参照安定性、無限ループ防止を検証 |
+| 派生セレクタ                       | パターン1 + パターン2             | 計算結果の正確性を検証                       |
 
 ### テスト実績
 
-| テストファイル | テスト数 | パターン | 関連タスク |
-|---|---|---|---|
-| `authModeSlice.selectors.test.ts` | 70+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
-| `llmSlice.selectors.test.ts` | 60+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
-| `agentSlice.selectors.test.ts` | 114 | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
+| テストファイル                    | テスト数 | パターン   | 関連タスク                                   |
+| --------------------------------- | -------- | ---------- | -------------------------------------------- |
+| `authModeSlice.selectors.test.ts` | 70+      | renderHook | UT-STORE-HOOKS-REFACTOR-001                  |
+| `llmSlice.selectors.test.ts`      | 60+      | renderHook | UT-STORE-HOOKS-REFACTOR-001                  |
+| `agentSlice.selectors.test.ts`    | 114      | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
 
 **関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001, UT-STORE-HOOKS-REFACTOR-001
 
@@ -582,50 +586,50 @@ auth-mode 契約テストでは shared transport DTO を正本とし、Main / Pr
 
 ### テスト観点
 
-| レイヤー | テスト対象 | 固定する契約 |
-| --- | --- | --- |
-| Main IPC | `authModeHandlers.test.ts`, `authModeHandlers.error.test.ts` | `get/status/validate` の `IPCResponse<T>`、`changed` event payload、`auth-mode/invalid-sender` |
-| Preload | `authModeApi.contract.test.ts`, `channels.test.ts` | `authMode.get/set/status/validate/onModeChanged` の公開 shape |
-| Renderer Store | `authModeSlice*.test.ts`, `infinite-loop-prevention.test.tsx` | `AuthModeStatus` fallback、`validate(request?)`、selector 安定性 |
-| View | `SettingsView.test.tsx`, `AuthModeSelector.test.tsx` | `message/errorCode/guidance` 表示、選択 UI、disabled 状態 |
+| レイヤー       | テスト対象                                                    | 固定する契約                                                                                   |
+| -------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Main IPC       | `authModeHandlers.test.ts`, `authModeHandlers.error.test.ts`  | `get/status/validate` の `IPCResponse<T>`、`changed` event payload、`auth-mode/invalid-sender` |
+| Preload        | `authModeApi.contract.test.ts`, `channels.test.ts`            | `authMode.get/set/status/validate/onModeChanged` の公開 shape                                  |
+| Renderer Store | `authModeSlice*.test.ts`, `infinite-loop-prevention.test.tsx` | `AuthModeStatus` fallback、`validate(request?)`、selector 安定性                               |
+| View           | `SettingsView.test.tsx`, `AuthModeSelector.test.tsx`          | `message/errorCode/guidance` 表示、選択 UI、disabled 状態                                      |
 
 ### `window.electronAPI.authMode` モック規約
 
-| API | 返却値 / payload |
-| --- | --- |
-| `get` | `Promise.resolve({ success: true, data: { mode: "subscription" } })` |
-| `set` | `Promise.resolve({ success: true })` |
-| `status` | `Promise.resolve({ success: true, data: { mode: "subscription", isValid: true, hasCredentials: true, message: "...", lastCheckedAt: 0 } })` |
-| `validate` | `Promise.resolve({ success: true, data: AuthModeStatus })` |
-| `onModeChanged` | `vi.fn().mockImplementation((cb) => unsubscribe)` |
+| API             | 返却値 / payload                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `get`           | `Promise.resolve({ success: true, data: { mode: "subscription" } })`                                                                        |
+| `set`           | `Promise.resolve({ success: true })`                                                                                                        |
+| `status`        | `Promise.resolve({ success: true, data: { mode: "subscription", isValid: true, hasCredentials: true, message: "...", lastCheckedAt: 0 } })` |
+| `validate`      | `Promise.resolve({ success: true, data: AuthModeStatus })`                                                                                  |
+| `onModeChanged` | `vi.fn().mockImplementation((cb) => unsubscribe)`                                                                                           |
 
 **注意**: `getAuthMode` / `setAuthMode` の旧命名モックは使用しない。公開 API 名は `get`, `set`, `status`, `validate`, `onModeChanged` に固定する。
 
 ### Renderer テストの実装パターン
 
-| パターン | 目的 |
-| --- | --- |
-| `renderHook(() => useValidateAuthMode())` | `validate(request?)` の optional request 契約を検証する |
-| `renderHook(() => useInitializeAuthMode())` + `rerender()` | `initializeAuthMode` 参照安定性を検証する |
-| `window.electronAPI.authMode.onModeChanged` のコールバック直接発火 | `event.mode` / `event.status` が store に反映されることを検証する |
-| `response?.success` を返す失敗ケース | `AuthModeStatus` fallback が UI で描画可能な shape を維持することを確認する |
+| パターン                                                           | 目的                                                                        |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------- |
+| `renderHook(() => useValidateAuthMode())`                          | `validate(request?)` の optional request 契約を検証する                     |
+| `renderHook(() => useInitializeAuthMode())` + `rerender()`         | `initializeAuthMode` 参照安定性を検証する                                   |
+| `window.electronAPI.authMode.onModeChanged` のコールバック直接発火 | `event.mode` / `event.status` が store に反映されることを検証する           |
+| `response?.success` を返す失敗ケース                               | `AuthModeStatus` fallback が UI で描画可能な shape を維持することを確認する |
 
 ### Phase 11 視覚検証用 harness
 
-| 項目 | 内容 |
-| --- | --- |
-| 目的 | App 全体初期化ノイズを避け、`SettingsView` 単体で auth-mode 表示契約を視覚確認する |
-| 実装 | `apps/desktop/src/renderer/phase11-auth-mode.html`, `phase11-auth-mode.tsx` |
-| 撮影スクリプト | `apps/desktop/scripts/capture-auth-mode-contract-alignment-phase11.mjs` |
-| 検証対象 | 初期表示、API Key 未設定、subscription 未設定、mode 変更、復帰の 5 ケース |
+| 項目           | 内容                                                                               |
+| -------------- | ---------------------------------------------------------------------------------- |
+| 目的           | App 全体初期化ノイズを避け、`SettingsView` 単体で auth-mode 表示契約を視覚確認する |
+| 実装           | `apps/desktop/src/renderer/phase11-auth-mode.html`, `phase11-auth-mode.tsx`        |
+| 撮影スクリプト | `apps/desktop/scripts/capture-auth-mode-contract-alignment-phase11.mjs`            |
+| 検証対象       | 初期表示、API Key 未設定、subscription 未設定、mode 変更、復帰の 5 ケース          |
 
 ### テスト実績
 
-| コマンド / 対象 | 結果 |
-| --- | --- |
-| AuthMode 関連 10 test files | PASS（252 tests） |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` | PASS（5/5） |
+| コマンド / 対象                                                                                                                  | 結果              |
+| -------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| AuthMode 関連 10 test files                                                                                                      | PASS（252 tests） |
+| `pnpm --filter @repo/desktop typecheck`                                                                                          | PASS              |
+| `validate-phase11-screenshot-coverage --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001` | PASS（5/5）       |
 
 ---
 
@@ -681,11 +685,11 @@ await Promise.all([
 
 ### 適用ファイル
 
-| ファイル | 主な適用パターン |
-| --- | --- |
-| `apps/desktop/src/main/slide/__tests__/agent-client.test.ts` | パターン1, 2, 3 |
-| `apps/desktop/src/main/slide/__tests__/sdk-integration.test.ts` | パターン1, 2, 3 |
-| `apps/desktop/src/main/slide/__tests__/skill-executor.test.ts` | パターン1, 2, 4 |
+| ファイル                                                        | 主な適用パターン |
+| --------------------------------------------------------------- | ---------------- |
+| `apps/desktop/src/main/slide/__tests__/agent-client.test.ts`    | パターン1, 2, 3  |
+| `apps/desktop/src/main/slide/__tests__/sdk-integration.test.ts` | パターン1, 2, 3  |
+| `apps/desktop/src/main/slide/__tests__/skill-executor.test.ts`  | パターン1, 2, 4  |
 
 ---
 
@@ -698,61 +702,61 @@ await Promise.all([
 
 textarea要素の値変更テストでは `fireEvent.change` を使用する（P39: happy-dom環境でのuserEvent非互換対策）。
 
-| テスト対象 | イベント | パターン |
-|-----------|----------|---------|
-| テキスト入力 | `fireEvent.change(textarea, { target: { value: 'new content' } })` | 値の直接設定 |
-| Tab挿入 | `fireEvent.keyDown(textarea, { key: 'Tab' })` | preventDefault確認 + スペース挿入 |
-| 読み取り専用 | `render(<SkillCodeEditor isReadOnly={true} />)` | textarea の `readOnly` 属性確認 |
+| テスト対象   | イベント                                                           | パターン                          |
+| ------------ | ------------------------------------------------------------------ | --------------------------------- |
+| テキスト入力 | `fireEvent.change(textarea, { target: { value: 'new content' } })` | 値の直接設定                      |
+| Tab挿入      | `fireEvent.keyDown(textarea, { key: 'Tab' })`                      | preventDefault確認 + スペース挿入 |
+| 読み取り専用 | `render(<SkillCodeEditor isReadOnly={true} />)`                    | textarea の `readOnly` 属性確認   |
 
 ### IPC mockパターン
 
 `window.electronAPI.skill.readFile` / `writeFile` をモックし、IPC通信結果をシミュレートする。
 
-| モック対象 | 設定例 | 用途 |
-|-----------|--------|------|
-| `readFile` | `vi.fn().mockResolvedValue('file content')` | ファイル読み込み成功 |
-| `readFile`（エラー） | `vi.fn().mockRejectedValue(new Error('ENOENT'))` | ファイル未存在 |
-| `writeFile` | `vi.fn().mockResolvedValue(undefined)` | ファイル保存成功 |
-| `writeFile`（エラー） | `vi.fn().mockRejectedValue(new Error('EACCES'))` | 権限エラー |
+| モック対象            | 設定例                                           | 用途                 |
+| --------------------- | ------------------------------------------------ | -------------------- |
+| `readFile`            | `vi.fn().mockResolvedValue('file content')`      | ファイル読み込み成功 |
+| `readFile`（エラー）  | `vi.fn().mockRejectedValue(new Error('ENOENT'))` | ファイル未存在       |
+| `writeFile`           | `vi.fn().mockResolvedValue(undefined)`           | ファイル保存成功     |
+| `writeFile`（エラー） | `vi.fn().mockRejectedValue(new Error('EACCES'))` | 権限エラー           |
 
 ### ファイルツリーテスト
 
 `role="treeitem"` セレクタでツリーノードを検証する。
 
-| テスト対象 | セレクタ | 検証内容 |
-|-----------|---------|---------|
-| ツリー全体 | `screen.getByRole('tree')` | ツリー構造の存在確認 |
-| ファイルノード | `screen.getAllByRole('treeitem')` | ノード数・テキスト内容 |
-| ファイル選択 | `fireEvent.click(screen.getByRole('treeitem', { name: 'SKILL.md' }))` | 選択状態 + readFile呼び出し |
+| テスト対象     | セレクタ                                                              | 検証内容                    |
+| -------------- | --------------------------------------------------------------------- | --------------------------- |
+| ツリー全体     | `screen.getByRole('tree')`                                            | ツリー構造の存在確認        |
+| ファイルノード | `screen.getAllByRole('treeitem')`                                     | ノード数・テキスト内容      |
+| ファイル選択   | `fireEvent.click(screen.getByRole('treeitem', { name: 'SKILL.md' }))` | 選択状態 + readFile呼び出し |
 
 ### キーボードショートカットテスト
 
 `fireEvent.keyDown` でキーボードショートカットの動作を検証する。
 
-| ショートカット | テストコード | 検証内容 |
-|---------------|-------------|---------|
-| Cmd+S（保存） | `fireEvent.keyDown(document, { key: 's', metaKey: true })` | writeFile 呼び出し |
-| Escape（閉じる） | `fireEvent.keyDown(document, { key: 'Escape' })` | onClose コールバック |
-| Tab（スペース挿入） | `fireEvent.keyDown(textarea, { key: 'Tab' })` | 2スペース挿入 |
+| ショートカット      | テストコード                                               | 検証内容             |
+| ------------------- | ---------------------------------------------------------- | -------------------- |
+| Cmd+S（保存）       | `fireEvent.keyDown(document, { key: 's', metaKey: true })` | writeFile 呼び出し   |
+| Escape（閉じる）    | `fireEvent.keyDown(document, { key: 'Escape' })`           | onClose コールバック |
+| Tab（スペース挿入） | `fireEvent.keyDown(textarea, { key: 'Tab' })`              | 2スペース挿入        |
 
 ### 非同期テスト
 
 IPC呼び出しの完了を待機するには `await act(async () => {...})` パターンを使用する（P39準拠）。
 
-| パターン | 用途 | 注意点 |
-|---------|------|--------|
-| `await act(async () => { fireEvent.click(el) })` | IPC呼び出しトリガー後の状態更新待機 | happy-dom環境必須 |
-| `await waitFor(() => { expect(mockReadFile).toHaveBeenCalled() })` | IPC呼び出し完了確認 | タイムアウト設定に注意 |
-| `await act(async () => { fireEvent.keyDown(document, { key: 's', metaKey: true }) })` | 保存ショートカット後の状態更新 | hasChanges フラグ確認 |
+| パターン                                                                              | 用途                                | 注意点                 |
+| ------------------------------------------------------------------------------------- | ----------------------------------- | ---------------------- |
+| `await act(async () => { fireEvent.click(el) })`                                      | IPC呼び出しトリガー後の状態更新待機 | happy-dom環境必須      |
+| `await waitFor(() => { expect(mockReadFile).toHaveBeenCalled() })`                    | IPC呼び出し完了確認                 | タイムアウト設定に注意 |
+| `await act(async () => { fireEvent.keyDown(document, { key: 's', metaKey: true }) })` | 保存ショートカット後の状態更新      | hasChanges フラグ確認  |
 
 ### テスト環境要件
 
-| 要件 | 設定値 |
-|------|--------|
-| テスト環境 | `@vitest-environment happy-dom` |
-| イベント発火 | `fireEvent`（`userEvent` 使用禁止、P39） |
-| 実行ディレクトリ | `apps/desktop/` 配下（P40対策） |
-| IPC mock | `window.electronAPI.skill.readFile` / `writeFile` を `vi.fn()` でモック |
+| 要件             | 設定値                                                                  |
+| ---------------- | ----------------------------------------------------------------------- |
+| テスト環境       | `@vitest-environment happy-dom`                                         |
+| イベント発火     | `fireEvent`（`userEvent` 使用禁止、P39）                                |
+| 実行ディレクトリ | `apps/desktop/` 配下（P40対策）                                         |
+| IPC mock         | `window.electronAPI.skill.readFile` / `writeFile` を `vi.fn()` でモック |
 
 **関連タスク**: TASK-9A（completed）
 
@@ -764,10 +768,10 @@ IPC呼び出しの完了を待機するには `await act(async () => {...})` パ
 
 ### 推奨ヘルパー
 
-| ヘルパー | 用途 | 備考 |
-| --- | --- | --- |
-| `renderWithTheme(ui, { theme })` | 単一テーマの検証 | `data-theme` を都度設定 |
-| `renderWithAllThemes(ui)` | 3テーマ横断の検証 | 回帰テストの網羅性向上 |
+| ヘルパー                         | 用途              | 備考                    |
+| -------------------------------- | ----------------- | ----------------------- |
+| `renderWithTheme(ui, { theme })` | 単一テーマの検証  | `data-theme` を都度設定 |
+| `renderWithAllThemes(ui)`        | 3テーマ横断の検証 | 回帰テストの網羅性向上  |
 
 ### 実装パターン
 
@@ -816,24 +820,24 @@ expect(dragon.getByRole("status")).toBeInTheDocument();
 
 Atoms層（基本UIコンポーネント）は外部状態（Zustand Store等）に依存せず、propsのみで動作するため、テストが簡素化される。以下の共通パターンを適用する。
 
-| パターン | 説明 | 例 |
-|---|---|---|
-| **Props駆動テスト** | Atoms層はZustand Storeに依存せず、propsのみで動作するため、モッキング不要で純粋な入出力検証が可能 | `render(<StatusIndicator status="success" />)` |
-| **CSS変数テストアサーション** | `bg-[var(--status-primary)]` のようなTailwind arbitrary valuesのクラス名検証方法 | `expect(el).toHaveClass("bg-[var(--status-primary)]")` |
-| **テーマ横断テスト** | `describe.each(["light", "dark", "kanagawa-dragon"])` パターンで全テーマを自動検証 | セクション 12 の `renderWithAllThemes` 参照 |
-| **displayName検証** | React DevTools用のコンポーネント識別子を検証 | `expect(Component.displayName).toBe("ComponentName")` |
+| パターン                      | 説明                                                                                              | 例                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **Props駆動テスト**           | Atoms層はZustand Storeに依存せず、propsのみで動作するため、モッキング不要で純粋な入出力検証が可能 | `render(<StatusIndicator status="success" />)`         |
+| **CSS変数テストアサーション** | `bg-[var(--status-primary)]` のようなTailwind arbitrary valuesのクラス名検証方法                  | `expect(el).toHaveClass("bg-[var(--status-primary)]")` |
+| **テーマ横断テスト**          | `describe.each(["light", "dark", "kanagawa-dragon"])` パターンで全テーマを自動検証                | セクション 12 の `renderWithAllThemes` 参照            |
+| **displayName検証**           | React DevTools用のコンポーネント識別子を検証                                                      | `expect(Component.displayName).toBe("ComponentName")`  |
 
 ### 13.2 コンポーネント別必須テストケース
 
-| コンポーネント | 必須テストケース | テスト数 |
-|---|---|---|
-| **StatusIndicator** | status色（success/warning/error/info/pending/idle）、pulseアニメーション、サイズVariant（sm/md/lg）、aria-label | 25 |
-| **FilterChip** | isSelected切替、disabled、count表示、icon、キーボード操作（Enter/Space） | 25 |
-| **Badge** | variant 6種（primary/secondary/success/warning/error/info）、size（sm/md/lg）、content（string/number）、後方互換children | 23（新規）+ 17（後方互換）= 40 |
-| **SkeletonCard** | variant 3種（default/compact/detailed）、animate制御、aria-busy、role="status" | 18 |
-| **SuggestionBubble** | size 3種（sm/md/lg）、ホバー色変化、disabled、キーボード操作（Enter/Space） | 21 |
-| **EmptyState** | mood 5種（neutral/confused/sad/encouraged/sleepy）、suggestions配列、compact、action（Node/Object両形式）、後方互換onActionClick | 20（新規）+ 6（後方互換）= 26 |
-| **RelativeTime** | フォーマット精度（秒/分/時/日/週/月/年）、自動更新（setInterval）、locale、prefix | 27 |
+| コンポーネント       | 必須テストケース                                                                                                                 | テスト数                       |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| **StatusIndicator**  | status色（success/warning/error/info/pending/idle）、pulseアニメーション、サイズVariant（sm/md/lg）、aria-label                  | 25                             |
+| **FilterChip**       | isSelected切替、disabled、count表示、icon、キーボード操作（Enter/Space）                                                         | 25                             |
+| **Badge**            | variant 6種（primary/secondary/success/warning/error/info）、size（sm/md/lg）、content（string/number）、後方互換children        | 23（新規）+ 17（後方互換）= 40 |
+| **SkeletonCard**     | variant 3種（default/compact/detailed）、animate制御、aria-busy、role="status"                                                   | 18                             |
+| **SuggestionBubble** | size 3種（sm/md/lg）、ホバー色変化、disabled、キーボード操作（Enter/Space）                                                      | 21                             |
+| **EmptyState**       | mood 5種（neutral/confused/sad/encouraged/sleepy）、suggestions配列、compact、action（Node/Object両形式）、後方互換onActionClick | 20（新規）+ 6（後方互換）= 26  |
+| **RelativeTime**     | フォーマット精度（秒/分/時/日/週/月/年）、自動更新（setInterval）、locale、prefix                                                | 27                             |
 
 **合計**: 156 Unit Tests + 7 Theme Tests = 163 Tests
 
@@ -876,25 +880,27 @@ it("自動更新される", () => {
 
 既存のPropsを非推奨化する際は、新規Propsと並行動作させ、既存テストを全て維持する。
 
-| コンポーネント | 後方互換Props | 新規Props | 戦略 |
-|---|---|---|---|
-| **Badge** | `children` → `content` | `content: string \| number` | `children` があれば優先、なければ `content` 使用 |
+| コンポーネント | 後方互換Props              | 新規Props                                 | 戦略                                                 |
+| -------------- | -------------------------- | ----------------------------------------- | ---------------------------------------------------- |
+| **Badge**      | `children` → `content`     | `content: string \| number`               | `children` があれば優先、なければ `content` 使用     |
 | **EmptyState** | `onActionClick` → `action` | `action: ReactNode \| { label, onClick }` | `onActionClick` があれば優先、なければ `action` 使用 |
 
 **テスト戦略**:
+
 - 既存テスト（Badge 17件、EmptyState 6件）を変更せず全PASS維持
 - 新規Props追加時: デフォルト値で既存動作を保持するテスト追加
 - `@deprecated` JSDocタグで移行期間を明示
 
 ### 13.5 テスト実績
 
-| カテゴリ | PASS | FAIL | 備考 |
-|---|---|---|---|
-| **Unit Tests** | 156 | 0 | 7コンポーネント × 平均22テスト |
-| **Theme Tests** | 7 | 0 | 全コンポーネント × 1テーマ横断テスト |
-| **Manual Tests** | 20 PASS + 31 CONDITIONAL | 0 | Phase 11手動テスト（条件付き31件は実装後に検証） |
+| カテゴリ         | PASS                     | FAIL | 備考                                             |
+| ---------------- | ------------------------ | ---- | ------------------------------------------------ |
+| **Unit Tests**   | 156                      | 0    | 7コンポーネント × 平均22テスト                   |
+| **Theme Tests**  | 7                        | 0    | 全コンポーネント × 1テーマ横断テスト             |
+| **Manual Tests** | 20 PASS + 31 CONDITIONAL | 0    | Phase 11手動テスト（条件付き31件は実装後に検証） |
 
 **条件付きテスト（CONDITIONAL）の内訳**:
+
 - StatusIndicator: pulse速度確認（3件）
 - FilterChip: ホバー色変化確認（5件）
 - Badge: variant色表示確認（6件）
@@ -904,6 +910,7 @@ it("自動更新される", () => {
 - RelativeTime: 自動更新確認（4件）
 
 **参照**:
+
 - **Atoms仕様**: [ui-ux-atoms-specs.md](ui-ux-atoms-specs.md)
 - **テーマ横断テスト**: セクション 12（テーマ横断テストヘルパー）
 - **タイマーテスト**: セクション 10（Main Process SDKテスト有効化パターン）
@@ -949,14 +956,14 @@ it("electronAPI undefined でクラッシュしない", async () => {
 
 ### テストケースマトリクス
 
-| テストケース | electronAPI の状態 | 期待動作 |
-| --- | --- | --- |
-| namespace undefined | `window.electronAPI = undefined` | エラーメッセージ表示 + 再試行ボタン |
-| メソッド namespace undefined | `window.electronAPI = { ...省略, apiKey: undefined }` | エラーメッセージ表示 + 再試行ボタン |
-| メソッド undefined | `window.electronAPI = { apiKey: {} }` （list メソッドなし） | エラーメッセージ表示 + 再試行ボタン |
-| レスポンス形状不正 | `list` が `{ success: true, data: { providers: "not-array" } }` を返却 | 空配列フォールバック |
-| 正常レスポンス | `list` が正常な providers 配列を返却 | 正常描画 |
-| エラーレスポンス | `list` が `{ success: false, error: { message: "..." } }` を返却 | null-safe でエラー表示 |
+| テストケース                 | electronAPI の状態                                                     | 期待動作                            |
+| ---------------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
+| namespace undefined          | `window.electronAPI = undefined`                                       | エラーメッセージ表示 + 再試行ボタン |
+| メソッド namespace undefined | `window.electronAPI = { ...省略, apiKey: undefined }`                  | エラーメッセージ表示 + 再試行ボタン |
+| メソッド undefined           | `window.electronAPI = { apiKey: {} }` （list メソッドなし）            | エラーメッセージ表示 + 再試行ボタン |
+| レスポンス形状不正           | `list` が `{ success: true, data: { providers: "not-array" } }` を返却 | 空配列フォールバック                |
+| 正常レスポンス               | `list` が正常な providers 配列を返却                                   | 正常描画                            |
+| エラーレスポンス             | `list` が `{ success: false, error: { message: "..." } }` を返却       | null-safe でエラー表示              |
 
 ### 注意点
 
@@ -966,18 +973,146 @@ it("electronAPI undefined でクラッシュしない", async () => {
 
 ---
 
+## 15. IPC レスポンス異常値テストパターン（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
+
+> **実装完了**: 2026-03-08（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
+> **適用箇所**: ApiKeysSection コンポーネント
+
+### 概要
+
+IPC境界を超えるレスポンスの異常値を網羅的にテストするパターン。structured clone により TypeScript 型が消失するため、実行時バリデーションの正しさをテストで保証する必要がある。セクション14（Preload Shape 異常系）が `electronAPI` 自体の欠損を扱うのに対し、本パターンはレスポンスの**中身**の異常値を4カテゴリで網羅する。
+
+### テストカテゴリ
+
+#### カテゴリ1: レスポンスエンベロープ異常（result自体の問題）
+
+| テストケース             | モック設定                                                         | 期待動作             |
+| ------------------------ | ------------------------------------------------------------------ | -------------------- |
+| result が undefined      | `mockResolvedValue(undefined)`                                     | フォールバックUI表示 |
+| result.success が false  | `mockResolvedValue({ success: false, error: { message: "..." } })` | エラーメッセージ表示 |
+| result.data が undefined | `mockResolvedValue({ success: true, data: undefined })`            | 空状態表示           |
+| result.data が null      | `mockResolvedValue({ success: true, data: null })`                 | 空状態表示           |
+
+#### カテゴリ2: 配列フィールド異常（result.data.providers等の問題）
+
+| テストケース        | モック設定                                            | 期待動作             |
+| ------------------- | ----------------------------------------------------- | -------------------- |
+| providers が string | `{ success: true, data: { providers: "not-array" } }` | 空配列フォールバック |
+| providers が number | `{ success: true, data: { providers: 42 } }`          | 空配列フォールバック |
+| providers が object | `{ success: true, data: { providers: {} } }`          | 空配列フォールバック |
+| providers が null   | `{ success: true, data: { providers: null } }`        | 空配列フォールバック |
+| providers が空配列  | `{ success: true, data: { providers: [] } }`          | 空状態表示           |
+
+#### カテゴリ3: 配列要素異常（個別要素の問題）
+
+| テストケース       | モック設定                                              | 期待動作                         |
+| ------------------ | ------------------------------------------------------- | -------------------------------- |
+| 要素が null        | `providers: [validItem, null, validItem2]`              | null要素を除外し正常要素のみ表示 |
+| 要素が undefined   | `providers: [validItem, undefined]`                     | undefined要素を除外              |
+| フィールド欠損     | `providers: [{ status: "registered" }]`（provider欠損） | 不正要素を除外                   |
+| フィールド型不一致 | `providers: [{ provider: 123, status: "registered" }]`  | 不正要素を除外                   |
+| 正常・異常混在     | 正常要素と異常要素を混ぜた配列                          | 正常要素のみ表示                 |
+
+#### カテゴリ4: API 利用不可
+
+| テストケース             | モック設定                                          | 期待動作                        |
+| ------------------------ | --------------------------------------------------- | ------------------------------- |
+| electronAPI が undefined | `window.electronAPI = undefined`                    | エラーメッセージ + 再試行ボタン |
+| namespace が undefined   | `apiKey: undefined`                                 | エラーメッセージ + 再試行ボタン |
+| メソッドが undefined     | `apiKey: {}` (list なし)                            | エラーメッセージ + 再試行ボタン |
+| メソッドが reject        | `list: vi.fn().mockRejectedValue(new Error("..."))` | try-catch でエラーハンドリング  |
+
+### 実装例: malformed要素フィルタ
+
+```typescript
+it("should filter out malformed provider entries", async () => {
+  mockApiKeyApi.list.mockResolvedValue({
+    success: true,
+    data: {
+      providers: [
+        {
+          provider: "openai",
+          displayName: "OpenAI",
+          status: "registered",
+          lastValidatedAt: null,
+        },
+        null,
+        { status: "registered" }, // provider フィールド欠損
+        { provider: 123, status: "registered" }, // provider が number
+        {
+          provider: "anthropic",
+          displayName: "Anthropic",
+          status: "registered",
+          lastValidatedAt: null,
+        },
+      ],
+      registeredCount: 2,
+      totalCount: 5,
+    },
+  });
+  // ...render & assert
+  // 正常要素（openai, anthropic）のみ表示されることを検証
+});
+```
+
+### type predicate 実装パターン（P49準拠）
+
+配列要素のフィルタリングには `in` 演算子による type predicate を使用する。`as` キャストは禁止。
+
+```typescript
+// P49準拠: in 演算子で実行時検証
+function isValidProvider(item: unknown): item is ProviderInfo {
+  return (
+    item != null &&
+    typeof item === "object" &&
+    "provider" in item &&
+    typeof item.provider === "string" &&
+    "status" in item &&
+    typeof item.status === "string"
+  );
+}
+
+// 使用例
+const safeProviders = Array.isArray(result?.data?.providers)
+  ? result.data.providers.filter(isValidProvider)
+  : [];
+```
+
+### 適用ガイドライン
+
+| 条件                                                  | 必須カテゴリ    | 推奨カテゴリ |
+| ----------------------------------------------------- | --------------- | ------------ |
+| IPC経由で配列を含むレスポンスを受け取るコンポーネント | カテゴリ1, 3, 4 | カテゴリ2    |
+| IPC経由でプリミティブ値のみ受け取るコンポーネント     | カテゴリ1, 4    | -            |
+| Preload Shape 異常系（セクション14）との併用          | カテゴリ1-4     | -            |
+
+### セクション14との使い分け
+
+| 観点         | セクション14（Preload Shape異常系）             | セクション15（本パターン）         |
+| ------------ | ----------------------------------------------- | ---------------------------------- |
+| テスト対象   | `window.electronAPI` 自体の欠損                 | レスポンス値の中身の異常           |
+| 障害シナリオ | sandbox障害、preload部分エラー                  | structured clone型消失、Main側バグ |
+| モック手法   | `Object.defineProperty` で electronAPI 差し替え | 個別メソッドの `mockResolvedValue` |
+| 併用         | 必須（両方適用）                                | 必須（両方適用）                   |
+
+**関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+**関連Pitfall**: P48（non-null assertion禁止）、P49（type predicate の `in` 演算子使用）
+
+---
+
 ## 変更履歴
 
-| Version | Date       | Changes                                                            |
-| ------- | ---------- | ------------------------------------------------------------------ |
-| 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |
-| 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 契約テストパターンを追加し、`window.electronAPI.authMode` モックを現行API（`get/set/status/validate/onModeChanged`）と `AuthModeStatus` DTO に同期 |
-| 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期 |
+| Version | Date       | Changes                                                                                                                                                                                                                                     |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.11.0  | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: IPC レスポンス異常値テストパターン追加（4カテゴリ網羅、type predicate P49準拠、セクション14との使い分け）                                                                                      |
+| 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール）                                                                       |
+| 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 契約テストパターンを追加し、`window.electronAPI.authMode` モックを現行API（`get/set/status/validate/onModeChanged`）と `AuthModeStatus` DTO に同期                                     |
+| 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期                                                                                                                      |
 | 1.7.0   | 2026-02-23 | TASK-UI-00-ATOMS: Atomsコンポーネントテストパターンセクション追加（Props駆動テスト、CSS変数アサーション、テーマ横断テスト、displayName検証、7コンポーネント必須テストケース、タイマーテストパターン、後方互換性テストパターン、テスト実績） |
-| 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点） |
-| 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記 |
-| 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入） |
-| 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績） |
-| 1.2.0   | 2026-02-07 | TASK-FIX-4-2: テストファイル分離パターンセクション追加（永続化・エラー・境界値テスト分離） |
-| 1.1.0   | 2026-02-03 | TASK-9A-A: 関連未タスクセクション追加（TASK-IMP-VITEST-UTILS-001） |
-| 1.0.0   | 2026-02-02 | TASK-8Bパターンから初版作成（280テスト知見統合）                   |
+| 1.6.0   | 2026-02-22 | TASK-UI-00-TOKENS: テーマ横断テストヘルパーパターンを追加（`renderWithTheme`/`renderWithAllThemes`、`data-theme` 後始末ルール、P39準拠注意点）                                                                                              |
+| 1.5.0   | 2026-02-19 | TASK-9A-C: SkillEditorテストパターン追加（textareaテスト、IPC mockパターン、ファイルツリーテスト、キーボードショートカットテスト、非同期テスト）。spec_created（実装未着手）を明記                                                          |
+| 1.4.0   | 2026-02-13 | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: Main Process SDKテスト有効化パターンを追加（mockRejectedValueOnce、beforeEach再設定、Fake Timersタイムアウト検証、モジュールモック時の直接エラー注入）                                                   |
+| 1.3.0   | 2026-02-12 | UT-STORE-HOOKS-TEST-REFACTOR-001: Zustand Store Hooksテストパターンセクション追加（renderHook 6パターン、テスト環境要件、選択基準、テスト実績）                                                                                             |
+| 1.2.0   | 2026-02-07 | TASK-FIX-4-2: テストファイル分離パターンセクション追加（永続化・エラー・境界値テスト分離）                                                                                                                                                  |
+| 1.1.0   | 2026-02-03 | TASK-9A-A: 関連未タスクセクション追加（TASK-IMP-VITEST-UTILS-001）                                                                                                                                                                          |
+| 1.0.0   | 2026-02-02 | TASK-8Bパターンから初版作成（280テスト知見統合）                                                                                                                                                                                            |

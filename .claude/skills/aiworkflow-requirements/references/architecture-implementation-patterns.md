@@ -3064,10 +3064,71 @@ expect(result.data.providers).toEqual([]);
 
 ---
 
+### S29: Renderer 境界 providers 正規化パターン（06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 2026-03-08完了）
+
+> 追加: 2026-03-08 / 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+**問題**: IPC 境界を超えたレスポンスでは structured clone により TypeScript 型が消失する。`apiKey.list()` の戻り値 `IPCResponse<ProviderListResult>` は型上 `providers: ProviderStatus[]` だが、実行時には null/undefined/非配列/malformed 要素が混入する可能性がある。
+
+**パターン**: 4層防御
+
+```typescript
+// Layer 1: API 存在確認
+const apiKeyApi = window.electronAPI?.apiKey;
+if (!apiKeyApi?.list) {
+  // フォールバック UI
+  return;
+}
+
+// Layer 2: レスポンス成功確認
+const result = await apiKeyApi.list();
+if (!result?.success || !result?.data) {
+  // エラー UI
+  return;
+}
+
+// Layer 3: 配列正規化 + type predicate フィルタ（P49準拠）
+const rawProviders = Array.isArray(result.data.providers)
+  ? result.data.providers
+  : [];
+const providers = rawProviders.filter(
+  (item): item is ProviderStatus =>
+    item != null &&
+    typeof item === "object" &&
+    "provider" in item &&
+    typeof item.provider === "string" &&
+    "status" in item &&
+    typeof item.status === "string",
+);
+
+// Layer 4: 正常データで UI 更新
+setState((prev) => ({ ...prev, providers, isLoading: false }));
+```
+
+**S27（5層防御）との関係**: S27 は汎用的な Renderer 境界防御の全体構造（L1-L5）を定義する。S29 は S27 の L3（配列保証）+ L4（要素フィルタ）を `providers` 配列に特化し、`type predicate` + `.filter()` による正規化の具体的な実装パターンを示す。
+
+**Main 側 配列正規化パターン（補足）**:
+
+Main ハンドラ側でも IPC レスポンスに含める配列を正規化する。外部ストレージや SDK から取得したデータが非配列の場合にも安全にレスポンスを構築する。
+
+```typescript
+// Main ハンドラ内での配列正規化
+const rawProviders = storageResult?.providers;
+const providers = Array.isArray(rawProviders) ? rawProviders : [];
+return { success: true, data: { providers } };
+```
+
+**適用基準**: IPC 経由で配列を含むオブジェクトを受け取る全コンポーネント
+
+**関連パターン**: S27 Renderer 境界 5層防御、P48 non-null assertion 禁止、P49 type predicate 内 as キャスト禁止
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.39.0 | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: S29 Renderer境界providers正規化パターン追加（4層防御: API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新、Main側配列正規化補足）                                                                                          |
 | v1.38.0 | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: S27 Renderer境界5層防御パターン追加（L1-L5防御層、type predicate in演算子推奨、完全コード例）、S28 Mainハンドラ間接テストパターン追加（ipcMain.handleモック経由のコールバック直接呼び出し）                                                             |
 | v1.37.0 | 2026-03-07 | TASK-10A-F: 直接IPC→Store個別セレクタ移行パターン追加（S26: 移行チェックリスト7ステップ、テストmock標準パターン、状態分類判断基準、P31/P48適用判定）                                                                                                                                                    |
 | v1.36.0 | 2026-03-07 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement実装パターン追加（S23: CSS変数定数抽出パターン — styles.ts/animations.ts分離、S24: backward-compatible fallbackパターン — typeofガード付きZustandセレクタ段階的移行、S25: z-index Phase 2事前設計パターン — 管理テーブル事前定義で衝突0件達成） |

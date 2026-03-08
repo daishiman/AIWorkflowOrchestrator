@@ -76,6 +76,38 @@ tags: [docs, test, quality, integration]
 - [ ] 検証コマンドと判定基準が定義されている
 - [ ] 仕様書作成のみで実装未実施であることが明記されている
 
+## 再確認結果（2026-03-08）
+
+### 1. 仕様漏れ・矛盾の再監査
+
+- 判定: **要改善あり（1件）**
+- 内容: Phase 10 MINOR の `lint` コマンドパス不整合が「自然解決」扱いで独立未タスク未登録だった。
+- 対応: `UT-10A-E-D-001` を新規登録して追跡対象に昇格。
+
+### 2. 未タスク登録（P3/P38対策）
+
+| 項目                  | 状態 |
+| --------------------- | ---- |
+| 指示書作成            | 完了 |
+| task-workflow.md 登録 | 完了 |
+| 関連仕様リンク        | 完了 |
+
+関連ファイル:
+
+- `docs/30-workflows/unassigned-task/task-10a-e-d-lint-command-path-alignment-001.md`
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
+
+### 3. 画面検証（スクリーンショット）
+
+| TC            | 対象                     | 証跡                                                                     |
+| ------------- | ------------------------ | ------------------------------------------------------------------------ |
+| TC-RECHECK-01 | `http://localhost:3001/` | `task-043d-evidence/phase-11-screenshots/TC-RECHECK-01-backend-home.png` |
+
+補足:
+
+- `@repo/desktop` は本ワークツリーで `@repo/shared` 解決エラーにより起動失敗を確認。
+- 起動不能は別途修正対象として扱い、今回の画面証跡は実行可能なアプリ面（backend）で取得。
+
 ## 検証コマンド（実装フェーズで使用）
 
 ```bash

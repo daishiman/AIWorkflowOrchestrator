@@ -164,6 +164,24 @@
 | UT-SETTINGS-APIKEY-001 | `Array.isArray` 防御の共通ユーティリティ化 | `docs/30-workflows/unassigned-task/task-imp-settings-ensure-array-utility-001.md` |
 | UT-SETTINGS-APIKEY-002 | Settings画面 ErrorBoundary 導入 | `docs/30-workflows/unassigned-task/task-imp-settings-error-boundary-guard-001.md` |
 | UT-SETTINGS-APIKEY-003 | ApiKeysSection E2E統合テスト追加 | `docs/30-workflows/unassigned-task/task-imp-settings-apikey-e2e-integration-001.md` |
+| UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動取得基盤 | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-automation-001.md` |
+
+#### 2026-03-08 再確認（Phase 12仕様準拠監査）
+
+| 項目 | 結果 |
+| --- | --- |
+| `phase-12-documentation.md` の Task 1-5 実行状態 | 実績同期済み（完了） |
+| `verify-all-specs` | PASS（error=0, warning=0, info=0） |
+| `validate-phase-output` | PASS（28項目） |
+| `validate-phase11-screenshot-coverage` | PASS（expected=3 / covered=3） |
+| `verify-unassigned-links` | PASS（missing=0） |
+
+#### 再確認時の苦戦箇所（2026-03-08）
+
+| 苦戦箇所 | 再発条件 | 解決策 |
+| --- | --- | --- |
+| `manual-test-result.md` の証跡表ヘッダが validator 仕様と不一致 | `テストケース` / `証跡` 列がない独自表を使う | Phase 11成果物に validator互換表を明示追加し、`validate-phase11-screenshot-coverage` で固定 |
+| screenshot 再取得時に Rollup optional dependency 欠落でキャプチャ失敗 | worktreeの依存が不完全なまま capture script を起動 | `pnpm install` で依存補完後に再撮影し、metadata を更新してから検証 |
 
 ### タスク: TASK-10A-F スキルライフサイクルUI Store移行（2026-03-07）
 
@@ -266,6 +284,61 @@
 | --- | --- | --- |
 | `phase-11-manual-testing.md` と validator 期待名 `phase-11-manual-test.md` の不一致 | 手動テスト文書名が workflow ごとに揺れる | `phase-11-manual-test.md` を正本として固定し、証跡11件を TC と1:1で同期 |
 | Phase 12 changelog が「対象/予定」表現のまま残る | 実更新前に changelog を先行記述する | Step 1-A〜Step 2 を完了ベースで再記録し、予定表現を削除 |
+
+### タスク: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 settings persist iterable hardening（2026-03-07）
+
+| 項目       | 内容                                                   |
+| ---------- | ------------------------------------------------------ |
+| タスクID   | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001       |
+| 完了日     | 2026-03-07                                             |
+| ステータス | **完了（Phase 1-12 出力 + 画面証跡 + 仕様同期）**      |
+| 対象       | `expandedFolders` / `viewHistory` の iterable 崩れ耐性 |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent   | 担当仕様書                            | 主担当作業                    | 完了条件                                          |
+| ---------- | ------------------------------------- | ----------------------------- | ------------------------------------------------- |
+| SubAgent-A | `references/arch-state-management.md` | persist 復旧契約を追記        | DD-01..DD-05 の防御境界が明文化される             |
+| SubAgent-B | `references/lessons-learned.md`       | 再発条件と5分解決カードを追記 | 同種課題へ再利用できる手順が残る                  |
+| SubAgent-C | `outputs/phase-11/*`                  | screenshot 2件とTC紐付け      | `validate-phase11-screenshot-coverage` で証跡確認 |
+
+#### 検証証跡
+
+| コマンド                                                                                                                                                                           | 結果             |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/store/slices/navigationSlice.test.ts src/renderer/store/__tests__/customStorage.test.ts`                                 | PASS（42 tests） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`                            | PASS             |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`  | PASS             |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001` | PASS             |
+
+#### Phase 12で検出した関連未タスク（branch横断）
+
+| タスクID                                           | 概要                                                 | 参照                                                                                        |
+| -------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001       | Workflow10 の Phase 7/12 準拠不足是正                | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md`       |
+| UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001       | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`       |
+| UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001 | Workflow12 の実装ガイド欠落是正                      | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md` |
+
+#### branch横断再確認（2026-03-08）
+
+| workflow                                                | `verify-all-specs` | `validate-phase-output --phase 12` | `validate-phase12-implementation-guide` |
+| ------------------------------------------------------- | ------------------ | ---------------------------------- | --------------------------------------- |
+| `07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`   | PASS               | PASS                               | PASS                                    |
+| `10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`      | PASS               | FAIL（Phase 7 必須節欠落）         | FAIL（implementation-guide 欠落）       |
+| `11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`      | PASS               | FAIL（Phase 1-11 必須節欠落）      | FAIL（implementation-guide 欠落）       |
+| `12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001` | PASS               | PASS                               | FAIL（implementation-guide 欠落）       |
+
+> 完了判定は `verify-all-specs` 単独ではなく、Phase 12 2検証を含む3点セットを必須とする。
+
+#### 同種課題の5分解決カード（persist hydrate 破損入力）
+
+| 項目       | 内容                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 症状       | persist 復元後に `is not iterable` / `has no method forEach` 等が発生し、Settings や Navigation が初期化に失敗する                                                                                                                                                       |
+| 根本原因   | `zustand/middleware` の `persist` が localStorage/electron-store から復元した値が `Set` / `Array` ではなく `null` / `object` / `number` 等に破損している                                                                                                                 |
+| 最短4手順  | 1) persist 復元対象に `Array.isArray` / `instanceof Set` ガードを入れる 2) 非正常値は `console.warn` を出して安全既定値にフォールバックする 3) テストで破損値5パターン以上を固定し、回帰を先に防ぐ 4) Phase 11 で最低2枚（light/dark）の画面証跡を残し、TC-ID で紐付ける |
+| 検証ゲート | `validate-phase-output` PASS、`validate-phase11-screenshot-coverage` PASS、`validate-phase12-implementation-guide` PASS、対象テスト PASS（42 tests）                                                                                                                     |
+| 同期先3点  | `references/task-workflow.md` / `references/lessons-learned.md` / `references/arch-state-management.md`                                                                                                                                                                  |
 
 ### タスク: TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 通知履歴・履歴検索ドメイン実装（2026-03-05）
 
@@ -3086,7 +3159,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001 | TASK-10A-C Phase 11 画面証跡ガード（再撮影 + TCカバレッジ + 鮮度確認） | 中 | TASK-10A-C Phase 11/12 最終再確認（苦戦箇所・2026-03-03） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-c-phase11-screenshot-coverage-guard-001.md` |
 | UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001 | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中 | TASK-10A-D Phase 12 再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md` |
 | UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡の状態名+検証目的分離ガード（TC意図混同防止） | 中 | TASK-10A-D Phase 11/12 再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
-| UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC証跡同期の自動ガード | 中 | TASK-10A-F Phase 12 再確認（苦戦箇所・2026-03-07） | `docs/30-workflows/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
+| UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC証跡同期の自動ガード | 中 | TASK-10A-F Phase 12 再確認（苦戦箇所・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
 | UT-UI-05-001 | CategoryId / SkillCategory 型統一 | 低 | TASK-UI-05 Phase 10 MINOR-1 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-categoryid-skillcategory-type-unification.md` |
 | UT-UI-05-002 | SkillDetailPanel 内部 Molecule 分離 | 中 | TASK-UI-05 Phase 10 MINOR-2 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-detail-panel-molecule-split.md` |
 | UT-UI-05-003 | ローディングスケルトン実装 | 低 | TASK-UI-05 Phase 10 MINOR-3 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-loading-skeleton-implementation.md` |
@@ -3454,6 +3527,12 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001          | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合）                                                         | 中       | UT-TASK-10A-B-008 Phase 12 追補4-5（system spec 再同期・2026-03-06）                                                                 | `docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md`                         |
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~                  | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                                                                               | ~~中~~   | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**                    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                                                                     |
 
+| UT-10A-E-D-001                                                 | quality gate lint コマンドパス整合                                                                                                                                           | 中       | TASK-10A-E-D Phase 10 MINOR（2026-03-08）                                                                                            | `docs/30-workflows/unassigned-task/task-10a-e-d-lint-command-path-alignment-001.md`                                                                                                    |
+| UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001                   | Workflow10 の Phase 7/12 準拠不足是正                                                                                                                                        | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md`                                                                                                  |
+| UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001                   | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正                                                                                                                         | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`                                                                                                  |
+| UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001             | Workflow12 の実装ガイド欠落是正                                                                                                                                              | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md`                                                                                            |
+| UT-PERSIST-MIGRATION-001                                       | Zustand Persist バージョニングとマイグレーション機構                                                                                                                         | 中       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`                                                                                                               |
+| UT-PERSIST-VALIDATION-002                                      | Zustand Persist 全フィールド iterable ガード拡張                                                                                                                             | 低       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`                                                                                                             |
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置
@@ -3491,6 +3570,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.21** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の完了台帳を強化**: 完了タスクセクションを新設し、SubAgent分担・実装反映（`AuthKeyService` 単一生成 + `SkillExecutor` DI）・検証証跡（13/13, 28項目, target監査 current=0）・苦戦箇所（DIシグネチャドリフト、`phase-12-documentation` pending残置、教訓同期漏れ）を記録。Phase 12完了判定を「成果物実体 + 機械検証 + 仕様書ステータス同期」で固定 |
 | バージョン  | 日付           | 変更内容                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.35** | **2026-03-08** | **未タスク4件を残課題テーブルへ登録**: `UT-10A-E-D-001`（lint コマンドパス整合）、`UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001`（Workflow 10 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001`（Workflow 11 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001`（Workflow 12 実装ガイド作成）を残課題テーブルへ追加。完了タスクセクション内の関連未タスク表に記載済みだったが残課題テーブルへの登録が未実施だったため同期                                   |
+| **1.67.34** | **2026-03-08** | **TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の5分解決カード追加**: 完了タスク節へ「同種課題の5分解決カード（persist hydrate 破損入力）」を追記。症状/根本原因/最短4手順/検証ゲート/同期先3点を固定化し、persist iterable 崩れの再発時に短手順で対処可能化                                                                                                                                                                                                                                   |
 | **1.67.34** | **2026-03-07** | **TASK-10A-F 完了同期**: スキルライフサイクルUI Store移行（useSkillAnalysis.ts 直接IPC 3箇所排除、Case B方式、52テスト全PASS）の完了記録を追加。仕様書同期4件（arch-state-management/lessons-learned/architecture-implementation-patterns/task-workflow）を実施                                                                                                                                                                                                                                    |
 | **1.67.33** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を登録**: `aiworkflow-requirements` の `quick_validate` warning 145件を「SKILL.md 全列挙」で雑に解消せず、`SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の入口設計と validator 判定を両立させる未タスクを残課題テーブルへ追加。苦戦箇所と再利用方針を `lessons-learned.md` / `SKILL.md` / `LOGS.md` へ同期                                                                                                         |
 | **1.67.32** | **2026-03-06** | **UT-TASK-10A-B-008 追補3を skill-creator 導線改善まで拡張**: repo 内 `skill-creator/SKILL.md` に未リンク reference 群の直接参照導線を追加し、`resource-map` 偏重で残っていた `quick_validate` warning 26件を 0 件へ解消。system spec には「Task本体の実装 + 再発防止スキル改善」を同一ターンで残す運用を追記                                                                                                                                                                                      |
@@ -3708,3 +3789,23 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | 1.34.0 | 2026-02-13 | TASK-FIX-13-1完了記録追加。deprecated型プロパティ（Anchor.name, Skill.lastUpdated）削除、型回帰テスト追加、関連タスク仕様書への参照を反映 |
 | 1.35.0 | 2026-02-13 | 未タスク追加: UT-PERF-001（グラフユーティリティ性能ベンチマーク基準再設計）。TODO検出結果を未タスク指示書へ登録 |
 | 1.36.0 | 2026-02-13 | TASK-FIX-13-1 苦戦箇所と解決策を完了タスクセクションへ追記。削除対象境界・参照置換安全性・Phase 12同期手順を明文化 |
+
+## 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08）
+
+- 実装: `navigationSlice.ts` / `store/index.ts` に iterable/type guard を追加
+- テスト: `navigationSlice.test.ts` に破損 persist 再現ケースを追加
+- Phase 11: `outputs/phase-11/screenshots/TC-11-01..03` を取得して画面検証を実施
+- Phase 12: 実装ガイド・changelog・未タスク検出・スキル改善レポートを更新
+
+### 関連未タスク
+
+- `docs/30-workflows/unassigned-task/task-imp-persist-migration-versioning-001.md`
+- `docs/30-workflows/unassigned-task/task-imp-persist-typed-validation-expansion-001.md`
+
+### 苦戦箇所（TASK-07）
+
+| 項目 | 内容 | 対処 |
+| --- | --- | --- |
+| Phase 12 Task 1 不足 | `implementation-guide.md` が見出しのみで内容要件不足 | `validate-phase12-implementation-guide` を通るまで補完 |
+| worktree 依存欠損 | `@rollup/rollup-darwin-x64` 欠損で vitest/screenshot 失敗 | `pnpm install --frozen-lockfile` で復旧後に再実行 |
+| テスト対象の誤実行 | `test:run --` で全体実行になりやすい | `cd apps/desktop && pnpm exec vitest run <target>` に固定 |

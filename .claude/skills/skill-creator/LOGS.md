@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-08 - TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「Phase12 証跡テーブル互換 + screenshot preflight 固定」を追加
+  - `validate-phase11-screenshot-coverage` の表形式要件（`テストケース`/`証跡`）を再発防止ルールとして明文化
+  - screenshot 再取得時の依存不足（Rollup optional dependency）に対する `pnpm install` preflight を標準化
+
+---
+
 ## [2026-03-07 - TASK-10A-F Phase 12再監査知見のテンプレート化]
 
 - **Agent**: skill-creator (update)

@@ -82,9 +82,22 @@ const customStorage = {
     if (!str) return null;
 
     const parsed = JSON.parse(str);
-    // Convert expandedFolders array back to Set
-    if (parsed.state?.expandedFolders) {
-      parsed.state.expandedFolders = new Set(parsed.state.expandedFolders);
+    // Convert expandedFolders array back to Set (persist-hardening: iterable guard)
+    if (parsed.state && "expandedFolders" in parsed.state) {
+      const raw = parsed.state.expandedFolders;
+      if (Array.isArray(raw)) {
+        parsed.state.expandedFolders = new Set(
+          raw.filter((v: unknown) => typeof v === "string"),
+        );
+      } else if (raw instanceof Set) {
+        parsed.state.expandedFolders = raw;
+      } else {
+        console.warn(
+          "[persist-hardening] expandedFolders is not iterable, resetting to empty Set. Received:",
+          typeof raw,
+        );
+        parsed.state.expandedFolders = new Set<string>();
+      }
     }
     return parsed;
   },
@@ -96,11 +109,16 @@ const customStorage = {
           string,
           unknown
         >),
-        // Convert Set to array for JSON serialization
-        expandedFolders: Array.from(
-          ((value as Record<string, unknown>).state as Record<string, unknown>)
-            .expandedFolders as Set<string>,
-        ),
+        // Convert Set to array for JSON serialization (persist-hardening: type guard)
+        expandedFolders: (() => {
+          const folders = (
+            (value as Record<string, unknown>).state as Record<string, unknown>
+          )?.expandedFolders;
+          if (folders instanceof Set) return Array.from(folders);
+          if (Array.isArray(folders))
+            return folders.filter((v: unknown) => typeof v === "string");
+          return [];
+        })(),
       },
     };
     localStorage.setItem(name, JSON.stringify(valueWithSerializedSet));
@@ -226,7 +244,9 @@ export const useIsDesktop = () =>
 export const useIsMobile = () =>
   useAppStore((state) => state.responsiveMode === "mobile");
 export const useCanGoBack = () =>
-  useAppStore((state) => state.viewHistory.length > 1);
+  useAppStore(
+    (state) => Array.isArray(state.viewHistory) && state.viewHistory.length > 1,
+  );
 export const useGoBack = () => useAppStore((state) => state.goBack);
 export const useStoragePercentage = () =>
   useAppStore((state) =>

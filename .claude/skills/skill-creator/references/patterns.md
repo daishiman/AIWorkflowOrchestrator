@@ -2653,3 +2653,35 @@ interface BadgeProps extends Omit<
   - 画面タスクは `validate-phase11-screenshot-coverage` をセットで実行する
 - **発見日**: 2026-03-07
 - **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+### [Phase12] 実装ガイドの形式だけ充足を禁止し、Task 1内容要件を機械検証する（TASK-07 再監査）
+
+- **状況**: `implementation-guide.md` が Part 1/Part 2 の見出しは満たしていても、Part 1 の「なぜ先行説明」や Part 2 の型/API/使用例/エラーハンドリング/定数一覧が不足しやすい
+- **成功パターン**:
+  1. `validate-phase12-implementation-guide.js` を Phase 12 完了ゲートに含める
+  2. Part 1 は「なぜ必要か → 何をするか」の順序を固定する
+  3. Part 2 は `TypeScript型定義 / APIシグネチャ / 使用例 / エッジケース / 設定項目` の5点を必須化する
+- **失敗パターン**:
+  - 見出しだけ埋めて Task 1 完了と判定する
+  - `verify-all-specs` PASS のみで実装ガイド内容検証を省略する
+- **標準ルール**:
+  - Phase 12 の Task 1 完了判定は `validate-phase12-implementation-guide` PASS を必須とする
+  - FAIL時は `documentation-changelog` へ修正内容を明記してから再検証する
+- **発見日**: 2026-03-08
+- **関連タスク**: 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+
+### [Phase12] worktree依存欠損時の screenshot/テスト復旧手順を標準化（TASK-07）
+
+- **状況**: worktree 環境で `@rollup/rollup-darwin-x64` 欠損により `vitest` と screenshot capture が失敗しやすい
+- **成功パターン**:
+  1. `pnpm install --frozen-lockfile` を先行実行して依存復旧
+  2. screenshot は `--host 127.0.0.1` と preflight 待機を固定
+  3. 対象テストは `cd apps/desktop && pnpm exec vitest run <file>` で限定実行
+- **失敗パターン**:
+  - 欠損状態のまま再試行を繰り返す
+  - `pnpm --filter ... test:run --` で意図せず全体テストを走らせる
+- **標準ルール**:
+  - worktree で native module エラー発生時は依存復旧を先に完了させる
+  - UI証跡再取得時は port/host を固定し、metadata を同時出力する
+- **発見日**: 2026-03-08
+- **関連タスク**: 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001

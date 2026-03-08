@@ -1452,3 +1452,20 @@ Store action が内部で状態更新を行うため、アンマウント後の 
 | TASK-10A-E-C | import lifecycle の Store 駆動設計            | **完了**（2026-03-06） |
 | TASK-10A-F   | スキルライフサイクルUI Store移行（本タスク）  | **完了**（2026-03-07） |
 | TASK-10A-G   | 残存直接IPC呼び出し排除（後続）               | 後続                   |
+
+## 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001（2026-03-08）
+
+### 追加した防御契約
+
+| 対象 | 契約 |
+| --- | --- |
+| `navigationSlice.setCurrentView` | `viewHistory` は `Array.isArray` で検証し、非配列は `[]` にフォールバックしてから push する |
+| `navigationSlice.goBack` | `viewHistory` が非配列なら `[]` 扱いで早期 return する |
+| `navigationSlice.canGoBack` | `Array.isArray(history) && history.length > 1` のみ true |
+| `customStorage.getItem` | `expandedFolders` は `string[]` のみ `Set<string>` に復元し、それ以外は空 Set |
+| `customStorage.setItem` | `expandedFolders` が Set/配列以外なら `[]` で永続化 |
+
+### 検証証跡
+
+- `apps/desktop/src/renderer/store/slices/navigationSlice.test.ts`: 破損入力の回帰テストを追加
+- `docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001/outputs/phase-11/screenshots/`: TC-11-01〜03 の画面証跡

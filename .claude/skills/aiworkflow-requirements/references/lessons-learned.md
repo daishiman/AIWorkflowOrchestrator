@@ -5800,3 +5800,20 @@ async function safeInvokeUnwrap<T>(
 - `references/security-electron-ipc.md`: apiKeyAPI セクション追加
 - `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
 - `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
+
+## persist iterable ハードニングでの教訓（2026-03-08）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `viewHistory` / `expandedFolders` を永続化データとして信頼しすぎると、復元時に iterable 例外で画面遷移が停止する |
+| 再発条件 | `Array.isArray` / `instanceof Set` の境界検証をせずに spread / `new Set(raw)` を実行する |
+| 対処 | hydrate と action の両方で防御し、非期待型は空配列/空Setへフォールバックする |
+| 標準ルール | UI変更が小さくても、ユーザーが画面検証を要求した場合は Phase 11 のスクリーンショット証跡を必須にする |
+
+### 5分解決カード
+
+1. 破損 persist を localStorage に注入して再現する。  
+2. hydrate 側（復元）で型ガード + フォールバックを入れる。  
+3. action 側（更新）でも同じガードを入れて二重防御にする。  
+4. 破損ケースのユニットテストを固定する。  
+5. Phase 11 の TC-ID とスクリーンショットを `manual-test-result.md` に同期する。

@@ -841,9 +841,9 @@ TASK-043B は、TASK-10A-D で統合済みの `SkillManagementPanel` list branch
 
 ---
 
-## AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / in-progress）
+## AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / completed）
 
-> ステータス: **in-progress**（コンポーネント設計・レイアウト変更仕様策定中）
+> ステータス: **completed**（実装・テスト・レイアウト検証完了）
 
 TASK-UI-03 は、既存の `AgentView`（`views/AgentView/index.tsx`）をシングルカラム・3セマンティックリージョン構成に再設計し、Atomic Design の organisms 配下にサブコンポーネント群を新設するUIエンハンスメントタスクである。
 
@@ -911,20 +911,42 @@ components/organisms/AgentView/
 
 ### テスト構成
 
-| テストファイル | テスト件数 | 対象 |
-| --- | --- | --- |
-| `SkillChip.test.tsx` | 15 | ツール選択チップの表示・操作 |
-| `ExecuteButton.test.tsx` | 8 | 実行ボタンの状態・操作 |
-| `FloatingExecutionBar.test.tsx` | 11 | フローティングバーの表示・進捗 |
-| `AdvancedSettingsPanel.test.tsx` | 13 | 詳細設定パネルの開閉・操作 |
-| `RecentExecutionList.test.tsx` | 11 | 実行履歴の表示・操作 |
-| `AgentView.layout.test.tsx` | - | 統合レイアウトテスト |
-| `agentSlice.extension.test.ts` | - | Store拡張テスト |
-| **合計** | **58+** | |
+| テストファイル | テスト件数 | 行数 | 対象 |
+| --- | --- | --- | --- |
+| `SkillChip.test.tsx` | 15 | 203 | ツール選択チップの表示・操作 |
+| `ExecuteButton.test.tsx` | 8 | 120 | 実行ボタンの状態・操作 |
+| `FloatingExecutionBar.test.tsx` | 12 | 130 | フローティングバーの表示・進捗 |
+| `AdvancedSettingsPanel.test.tsx` | 13 | 235 | 詳細設定パネルの開閉・操作 |
+| `RecentExecutionList.test.tsx` | 11 | 229 | 実行履歴の表示・操作 |
+| `AgentView.layout.test.tsx` | 12 | 272 | 統合レイアウトテスト（3リージョン構成検証） |
+| `agentSlice.p31-regression.test.ts` | 7 | - | Store拡張 P31回帰テスト |
+| **合計** | **78** | **1,189+** | |
 
 ### 関連タスク
 
-- **TASK-UI-03-AGENT-VIEW-ENHANCEMENT**: AgentView Enhancement（進行中）
+- **TASK-UI-03-AGENT-VIEW-ENHANCEMENT**: AgentView Enhancement（completed）
+
+### 実装ファイルサマリー
+
+| ファイル | 行数 | 責務 |
+| --- | --- | --- |
+| `AdvancedSettingsPanel.tsx` | 144 | 詳細設定スライドインパネル |
+| `ExecuteButton.tsx` | 39 | 実行ボタン（disabled/loading対応） |
+| `FloatingExecutionBar.tsx` | 110 | 実行状況フローティングバー |
+| `RecentExecutionList.tsx` | 98 | 最近の実行履歴リスト |
+| `SkillChip.tsx` | 66 | ツール選択チップ（トグル操作） |
+| `animations.ts` | 20 | アニメーション定義（フェード/スライド） |
+| `styles.ts` | 31 | 共通スタイル定数 |
+| **合計** | **508** | |
+
+### Settings AuthKeySection（09-TASK-FIX 関連）
+
+AgentView Enhancement と同時期に実装された Settings 画面の新規コンポーネント。
+
+| ファイル | 行数 | 責務 |
+| --- | --- | --- |
+| `AuthKeySection/index.tsx` | 295 | APIキー管理セクション |
+| `AuthKeySection/AuthKeySection.test.tsx` | 317 | テスト（13ケース） |
 
 ### 参照
 
@@ -936,6 +958,7 @@ components/organisms/AgentView/
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.11.0  | 2026-03-08 | TASK-UI-03 完了同期: AgentView Enhancement を `in-progress` から `completed` へ更新。テスト構成を実測値（78テスト）で更新、実装ファイルサマリー（508行）追加、Settings AuthKeySection（295行/13テスト）を追記 |
 | 2.10.0  | 2026-03-07 | TASK-UI-03 反映: AgentView Enhancement アーキテクチャパターン（コンポーネント階層、ファイル配置、レイアウト構成、Atomic Design整合、Store連携、テスト構成）を追加 |
 | 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |
 | 2.9.4   | 2026-03-06 | TASK-043B 反映: SkillManagementPanel import list refinement のアーキテクチャ節を追加し、2セクション構成、dialog/state 境界、success/error 判定、品質指標を同期 |

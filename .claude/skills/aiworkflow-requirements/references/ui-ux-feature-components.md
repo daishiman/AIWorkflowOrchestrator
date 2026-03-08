@@ -1262,6 +1262,8 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウトテスト） | 2026-03-07 | `docs/30-workflows/agent-view-enhancement/` |
+| 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・Task 5D具体例・Task 5B境界の是正） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/` |
@@ -1322,6 +1324,81 @@ legacy `AppDock` は rollback path と比較検証のために残存するが、
 | --- | --- | --- |
 | UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | UIタスクで domain UI spec が同期漏れしないようにするガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
 | UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | Phase 12 完了後の workflow 本文 stale を検出するガード | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
+
+---
+
+### AgentView Enhancement — Tap & Discover リデザイン（TASK-UI-03 / completed）
+
+TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンティックリージョン構成に再設計し、Atomic Design の organisms 配下に5つのサブコンポーネントを新設した UIエンハンスメントタスクである。
+
+#### コンポーネント構成
+
+| 階層 | コンポーネント | 分類 | 行数 | 説明 |
+| --- | --- | --- | --- | --- |
+| 1 | AgentView | views | - | メインビュー（max-w-600px シングルカラム） |
+| 1-1 | SkillChip | organisms | 66 | ツール選択チップ（選択/解除/トグル） |
+| 1-2 | ExecuteButton | organisms | 39 | 実行ボタン（disabled/loading状態対応） |
+| 1-3 | RecentExecutionList | organisms | 98 | 最近の実行履歴リスト |
+| 1-4 | FloatingExecutionBar | organisms | 110 | 実行状況フローティングバー（オーバーレイ） |
+| 1-5 | AdvancedSettingsPanel | organisms | 144 | 詳細設定スライドインパネル（オーバーレイ） |
+| - | animations.ts | 共通定数 | 20 | アニメーション定義 |
+| - | styles.ts | 共通定数 | 31 | 共通スタイル定義 |
+
+#### ファイル配置
+
+| ディレクトリ | 内容 |
+| --- | --- |
+| `apps/desktop/src/renderer/components/organisms/AgentView/` | 5サブコンポーネント + 共通定数 |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/` | 5コンポーネントテスト |
+| `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx` | 統合レイアウトテスト |
+
+#### レイアウト構成
+
+| リージョン | 内容 | 表示条件 |
+| --- | --- | --- |
+| 「できること」セクション | SkillChip群 + 条件付き検索バー | 常時表示（検索バーは11件以上で表示） |
+| 「実行」セクション | ExecuteButton | 常時表示 |
+| 「最近の実行」セクション | RecentExecutionList | 常時表示 |
+| オーバーレイ | FloatingExecutionBar | 実行中に表示 |
+| オーバーレイ | AdvancedSettingsPanel | 詳細設定開閉時に表示 |
+
+#### テスト構成
+
+| テストファイル | テスト件数 | 行数 | 対象 |
+| --- | --- | --- | --- |
+| `SkillChip.test.tsx` | 15 | 203 | ツール選択チップの表示・操作 |
+| `ExecuteButton.test.tsx` | 8 | 120 | 実行ボタンの状態・操作 |
+| `FloatingExecutionBar.test.tsx` | 12 | 130 | フローティングバーの表示・進捗 |
+| `AdvancedSettingsPanel.test.tsx` | 13 | 235 | 詳細設定パネルの開閉・操作 |
+| `RecentExecutionList.test.tsx` | 11 | 229 | 実行履歴の表示・操作 |
+| `AgentView.layout.test.tsx` | 12 | 272 | 統合レイアウト（3リージョン構成検証） |
+| **合計** | **71** | **1,189** | |
+
+---
+
+### Settings AuthKeySection（09-TASK-FIX / completed）
+
+09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 により、Settings 画面に新規 `AuthKeySection` コンポーネントを追加し、既存の `ApiKeysSection` に preload/sandbox iterable ガードを追加した。
+
+#### コンポーネント構成
+
+| コンポーネント | 分類 | 行数 | 説明 |
+| --- | --- | --- | --- |
+| `AuthKeySection/index.tsx` | organisms | 295 | APIキー管理セクション（CRUD + バリデーション） |
+| `ApiKeysSection` | organisms | - | preload/sandbox iterable ガード追加（既存コンポーネント改修） |
+
+#### テスト構成
+
+| テストファイル | テスト件数 | 行数 | 対象 |
+| --- | --- | --- | --- |
+| `AuthKeySection.test.tsx` | 13 | 317 | AuthKeySection の CRUD・バリデーション・エラーハンドリング |
+| `ApiKeysSection` 関連テスト | 6 | - | Preload Shape 異常系テスト（セクション 14 パターン準拠） |
+
+#### ファイル配置
+
+| ディレクトリ | 内容 |
+| --- | --- |
+| `apps/desktop/src/renderer/components/settings/AuthKeySection/` | AuthKeySection コンポーネント + テスト |
 
 ---
 
@@ -1396,6 +1473,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 仕様](../../../docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/index.md)
 - [TASK-UI-01-C Notification / History Domain 仕様](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md)
 - [TASK-UI-01-C Notification / History Domain 手動検証結果](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/manual-test-result.md)
+- [TASK-UI-03 AgentView Enhancement 仕様](../../../docs/30-workflows/agent-view-enhancement/)
 
 ---
 
@@ -1403,6 +1481,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-08 | v1.14.23   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
 | 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |
