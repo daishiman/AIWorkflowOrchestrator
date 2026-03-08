@@ -82,54 +82,43 @@ const customStorage = {
     if (!str) return null;
 
     const parsed = JSON.parse(str);
-    // Convert expandedFolders array back to Set (DD-01: iterable guard)
-    if (parsed.state) {
+    // Convert expandedFolders array back to Set (persist-hardening: iterable guard)
+    if (parsed.state && "expandedFolders" in parsed.state) {
       const raw = parsed.state.expandedFolders;
       if (Array.isArray(raw)) {
         parsed.state.expandedFolders = new Set(
           raw.filter((v: unknown) => typeof v === "string"),
         );
+      } else if (raw instanceof Set) {
+        parsed.state.expandedFolders = raw;
       } else {
-        if (raw !== undefined && raw !== null) {
-          console.warn(
-            "[customStorage] expandedFolders is not an array, resetting to empty Set:",
-            typeof raw,
-          );
-        }
+        console.warn(
+          "[persist-hardening] expandedFolders is not iterable, resetting to empty Set. Received:",
+          typeof raw,
+        );
         parsed.state.expandedFolders = new Set<string>();
       }
     }
     return parsed;
   },
   setItem: (name: string, value: unknown) => {
-    const stateObj = (value as Record<string, unknown>).state as
-      | Record<string, unknown>
-      | undefined;
-    const folders = stateObj?.expandedFolders;
-
-    // DD-02: expandedFolders setItem guard
-    let serializedFolders: string[];
-    if (folders instanceof Set) {
-      serializedFolders = Array.from(folders);
-    } else if (Array.isArray(folders)) {
-      serializedFolders = folders.filter(
-        (v: unknown): v is string => typeof v === "string",
-      );
-    } else {
-      if (folders !== undefined && folders !== null) {
-        console.warn(
-          "[customStorage] expandedFolders is not Set or Array on setItem, using empty array:",
-          typeof folders,
-        );
-      }
-      serializedFolders = [];
-    }
-
     const valueWithSerializedSet = {
       ...(value as Record<string, unknown>),
       state: {
-        ...(stateObj ?? {}),
-        expandedFolders: serializedFolders,
+        ...((value as Record<string, unknown>).state as Record<
+          string,
+          unknown
+        >),
+        // Convert Set to array for JSON serialization (persist-hardening: type guard)
+        expandedFolders: (() => {
+          const folders = (
+            (value as Record<string, unknown>).state as Record<string, unknown>
+          )?.expandedFolders;
+          if (folders instanceof Set) return Array.from(folders);
+          if (Array.isArray(folders))
+            return folders.filter((v: unknown) => typeof v === "string");
+          return [];
+        })(),
       },
     };
     localStorage.setItem(name, JSON.stringify(valueWithSerializedSet));

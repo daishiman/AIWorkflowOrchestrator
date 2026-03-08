@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T00:34:44.905Z",
-  "totalKeywords": 1497,
+  "generated": "2026-03-08T00:50:38.053Z",
+  "totalKeywords": 1493,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -497,7 +497,6 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
-      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-ux-feature-skill-stream.md",
@@ -782,6 +781,7 @@
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
       "security-electron-ipc.md",
+      "task-workflow.md",
       "testing-component-patterns.md"
     ],
     "SKILL": [
@@ -810,8 +810,7 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "security-electron-ipc.md",
-      "testing-component-patterns.md"
+      "security-electron-ipc.md"
     ],
     "スキルファイル操作": [
       "api-ipc-agent.md",
@@ -1304,6 +1303,24 @@
     ],
     "移行完了": [
       "arch-state-management.md"
+    ],
+    "SETTINGS": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "PERSIST": [
+      "arch-state-management.md",
+      "task-workflow.md"
+    ],
+    "ITERABLE": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "HARDENING": [
+      "arch-state-management.md",
+      "task-workflow.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -3197,30 +3214,6 @@
       "ipc-contract-checklist.md",
       "testing-accessibility.md"
     ],
-    "non": [
-      "ipc-contract-checklist.md"
-    ],
-    "null": [
-      "ipc-contract-checklist.md"
-    ],
-    "assertion": [
-      "ipc-contract-checklist.md"
-    ],
-    "の使用箇所を検出": [
-      "ipc-contract-checklist.md"
-    ],
-    "CC": [
-      "ipc-contract-checklist.md"
-    ],
-    "Array": [
-      "ipc-contract-checklist.md"
-    ],
-    "isArray": [
-      "ipc-contract-checklist.md"
-    ],
-    "ガード漏れの検出": [
-      "ipc-contract-checklist.md"
-    ],
     "契約ドリフト検出コマンド": [
       "ipc-contract-checklist.md"
     ],
@@ -3371,9 +3364,6 @@
       "lessons-learned.md"
     ],
     "SANDBOX": [
-      "lessons-learned.md"
-    ],
-    "ITERABLE": [
       "lessons-learned.md"
     ],
     "ERROR": [
@@ -4002,13 +3992,14 @@
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
-    "SETTINGS": [
-      "lessons-learned.md",
-      "testing-component-patterns.md"
-    ],
     "APIKEY": [
-      "lessons-learned.md",
-      "testing-component-patterns.md"
+      "lessons-learned.md"
+    ],
+    "persist": [
+      "lessons-learned.md"
+    ],
+    "ハードニングでの教訓": [
+      "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4846,6 +4837,9 @@
       "task-workflow.md",
       "ui-ux-components.md"
     ],
+    "完了記録": [
+      "task-workflow.md"
+    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -5055,9 +5049,6 @@
       "testing-component-patterns.md"
     ],
     "異常系テストパターン": [
-      "testing-component-patterns.md"
-    ],
-    "レスポンス異常値テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
