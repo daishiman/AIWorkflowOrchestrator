@@ -1,0 +1,130 @@
+{
+  "captureMethod": "playwright-harness-and-targeted-tests",
+  "captureDate": "2026-03-08",
+  "taskId": "TASK-10A-F",
+  "environment": {
+    "platform": "darwin",
+    "shell": "zsh",
+    "nodeVersion": "v22.21.1",
+    "pnpmVersion": "10.9.0",
+    "testRunner": "vitest"
+  },
+  "preflight": [
+    "pnpm install --frozen-lockfile",
+    "pnpm --filter @repo/desktop exec playwright install chromium"
+  ],
+  "commands": {
+    "analysisCapture": "pnpm --filter @repo/desktop exec node scripts/capture-skill-analysis-view-screenshots.mjs --output-dir ../../docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-11/screenshots",
+    "wizardCapture": "pnpm --filter @repo/desktop exec node scripts/capture-skill-create-wizard-screenshots.mjs --output-dir ../../.tmp/task-10a-f-wizard-screenshots",
+    "targetedTests": "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts",
+    "directIpcGrep": "rg -n \"window\\\\.electronAPI\\\\.skill\\\\.(create|analyze|applyImprovements|autoImprove)\" apps/desktop/src/renderer/components/skill --glob '!**/__tests__/**'"
+  },
+  "testResults": {
+    "totalFiles": 6,
+    "totalTests": 111,
+    "passed": 111,
+    "failed": 0
+  },
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-01-analysis-default-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "default-dark",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-02-analysis-selection-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "selection",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-03-analysis-apply-improved-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "apply-improved",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-04-analysis-auto-improved-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "auto-improved",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-05-analysis-error-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "error",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-06-analysis-loading-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "loading",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-07",
+      "file": "TC-07-analysis-default-light.png",
+      "screen": "SkillAnalysisView",
+      "state": "default-light",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-08",
+      "file": "TC-08-analysis-default-mobile-dark.png",
+      "screen": "SkillAnalysisView",
+      "state": "mobile-dark",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "tcId": "TC-11-09",
+      "file": "TC-09-create-step1-dark.png",
+      "screen": "SkillCreateWizard",
+      "state": "step1",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-10",
+      "file": "TC-10-create-step2-dark.png",
+      "screen": "SkillCreateWizard",
+      "state": "step2",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "tcId": "TC-11-11",
+      "file": "TC-11-create-complete-dark.png",
+      "screen": "SkillCreateWizard",
+      "state": "complete",
+      "width": 1440,
+      "height": 900
+    }
+  ],
+  "storeIntegrationVerification": {
+    "windowElectronAPIDirectCalls": {
+      "SkillAnalysisView": 0,
+      "SkillCreateWizard": 0,
+      "SkillManagementPanel": 0,
+      "useSkillAnalysis": 0
+    }
+  },
+  "notes": [
+    "Wizard 用の補助キャプチャでは current workflow が必要とする Step1/Step2/complete の3状態を抽出し、TC-09..11 名へ正規化した",
+    "画像寸法は desktop 10件が 1440x900、mobile 1件が 390x844 で確認した"
+  ]
+}

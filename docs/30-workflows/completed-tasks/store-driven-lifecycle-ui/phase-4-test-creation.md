@@ -1,330 +1,260 @@
-# Phase 4: テスト作成（TDD: Red） — Store駆動ライフサイクルUI統合
+# Phase 4: テスト作成（TDD Red）
 
 ## メタ情報
 
-| 項目      | 値                         |
-| --------- | -------------------------- |
-| Phase     | 4                          |
-| 機能名    | store-driven-lifecycle-ui  |
-| タスクID  | TASK-10A-F                 |
-| 作成日    | 2026-03-07                 |
-| 前提Phase | Phase 1-3 完了             |
-| 次Phase   | Phase 5（実装: TDD Green） |
+| 項目     | 値                        |
+| -------- | ------------------------- |
+| Phase    | 4                         |
+| タスクID | TASK-10A-F                |
+| 機能名   | store-driven-lifecycle-ui |
+| 作成日   | 2026-03-08                |
 
 ## 目的
 
-SkillCreateWizard と SkillAnalysisView（useSkillAnalysis）の直接 `window.electronAPI` 呼び出しを排除し、Zustand agentSlice の store action 経由に統一するためのテストをテストファーストで作成する。全テストが Red（失敗）状態であることを確認する。
-
-## 参照資料
-
-| 資料                                                                                            | 用途                                                                                                   |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts:849-959`                                  | store action 定義（analyzeSkill, applySkillImprovements, autoImproveSkill, createSkill）               |
-| `apps/desktop/src/renderer/store/index.ts:625-649`                                              | 個別セレクタ定義（useAnalyzeSkill, useApplySkillImprovements, useAutoImproveSkill, useCreateSkill 等） |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                              | 現行実装（直接IPC呼び出し: L46）                                                                       |
-| `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`                          | 現行実装（直接IPC呼び出し: L94, L140, L171）                                                           |
-| `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`                           | 親コンポーネント（作成完了後の一覧同期）                                                               |
-| `apps/desktop/src/renderer/components/skill/__tests__/helpers/mock-electron-api.ts`             | 既存モックヘルパー                                                                                     |
-| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle.test.ts`           | store action 単体テスト（既存）                                                                        |
-| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle-selectors.test.ts` | セレクタ安定参照テスト（既存）                                                                         |
-
-### 前提Phase成果物
-
-| 資料名         | パス               | 用途                       |
-| -------------- | ------------------ | -------------------------- |
-| Phase 1 成果物 | `outputs/phase-1/` | 要件定義の出力を参照する   |
-| Phase 2 成果物 | `outputs/phase-2/` | 設計の出力を参照する       |
-| Phase 3 成果物 | `outputs/phase-3/` | 設計レビュー結果を参照する |
+SkillCreateWizard と SkillAnalysisView が store action 経由で動作し、`window.electronAPI` を直接呼び出さないことを検証するテストを先行作成する（Red Phase）。P31/P48 対策の回帰テストも含む。
 
 ## 実行タスク
 
-### Task 1: SkillCreateWizard Store統合テスト作成
+- Store action 経由テストケースの設計（createSkill / analyzeSkill / applySkillImprovements / autoImproveSkill）
+- 直接 IPC 呼び出し排除検証テストの設計
+- P31 対策テスト: 個別セレクタが安定参照を返すことの検証
+- P48 対策テスト: `useShallow` が必要な派生セレクタの無限ループ防止テスト
+- 状態遷移テスト（idle → loading → success/error → idle）
+- アクセシビリティテスト（ARIA 属性、disabled 状態管理）
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx`
+## 参照資料
 
-既存の `SkillCreateWizard.test.tsx` は直接 `window.electronAPI.skill.create` をモックしている。新テストファイルでは store の `createSkill` action 経由でスキル作成が行われることを検証する。
+| 資料名               | パス                                                                                        | 説明                             |
+| -------------------- | ------------------------------------------------------------------------------------------- | -------------------------------- |
+| Phase 2 設計         | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-2-design.md`             | Store 統合設計詳細               |
+| Phase 3 設計レビュー | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-3-design-review.md`      | 設計レビュー結果                 |
+| 状態管理仕様         | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | action/selector 責務分離         |
+| 実装パターン         | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Store 駆動 UI パターン、P48 対策 |
+| エラー仕様           | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       | エラーステート定義               |
+| 品質要件             | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | テスト・品質ゲート基準           |
+| IPC セキュリティ     | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                | sender/P42/境界検証              |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                        | P31/P39/P40/P48                  |
 
-#### テストケース一覧
+### 前 Phase 成果物
+
+| 資料名         | パス                                                                                   | 用途               |
+| -------------- | -------------------------------------------------------------------------------------- | ------------------ |
+| Phase 1 成果物 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-1-requirements.md`  | 要件定義を参照     |
+| Phase 2 成果物 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-2-design.md`        | 設計を参照         |
+| Phase 3 成果物 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-3-design-review.md` | レビュー指摘を反映 |
+
+## 実行手順
+
+### ステップ 1: 既存テスト構造の確認
+
+1. 以下の既存テストファイルを確認し、モックパターンと `beforeEach` 構造を把握する:
+   - `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`
+   - `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx`
+   - `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx`
+   - `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx`
+2. 既存テストが store セレクタモック経由で動作していることを確認する
+3. `window.electronAPI` のスパイパターン（afterEach で delete）を確認する
+
+### ステップ 2: SkillCreateWizard Store 統合テストの拡充
+
+**テストファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx`
+
+以下のテストケースを追加する:
+
+| テストID | テスト内容                                                                          | 対応要件           |
+| -------- | ----------------------------------------------------------------------------------- | ------------------ |
+| TC-CW-01 | `useCreateSkill` から返される関数が store action 経由で呼ばれる                     | 直接 IPC 排除      |
+| TC-CW-02 | `window.electronAPI.skill.create` が直接呼ばれないことを検証                        | 直接 IPC 排除      |
+| TC-CW-03 | 生成成功時: Step 0 → Step 1 → Step 2（生成中）→ Step 3（完了）の状態遷移            | 状態遷移           |
+| TC-CW-04 | 生成失敗時: Step 2（生成中）に留まりエラーメッセージが表示される                    | エラーハンドリング |
+| TC-CW-05 | `createSkill` が null/undefined を返した場合にフォールバックエラーが表示される      | エラーハンドリング |
+| TC-CW-06 | 生成中（isGenerating === true）に「スキルを生成」ボタンが非活性になる               | UI 制御            |
+| TC-CW-07 | `useCreateSkill` が安定参照を返すこと（P31 対策: 再レンダーで関数参照が変わらない） | P31 回帰テスト     |
+
+**テスト骨格（TC-CW-02 の例）**:
 
 ```typescript
-describe("SkillCreateWizard Store統合", () => {
-  describe("store action 経由のスキル作成", () => {
-    it(
-      "「スキルを生成」クリックで store.createSkill が呼ばれる（window.electronAPI.skill.create は直接呼ばれない）",
-    );
-    it("store.createSkill に description と options が正しく渡される");
-    it(
-      "store.createSkill 成功後に Step 4（完了）に遷移し、生成パスが表示される",
-    );
-    it(
-      "store.createSkill 失敗時にエラーメッセージが GenerateStep に表示される",
-    );
-    it(
-      "store.createSkill 失敗時に Error 以外のオブジェクトでもフォールバックメッセージが表示される",
-    );
-    it(
-      "生成中は isGenerating が true で GenerateStep にローディング状態が表示される",
+it("window.electronAPI.skill.create が直接呼ばれない", async () => {
+  render(<SkillCreateWizard onClose={mockOnClose} />);
+  fireEvent.change(screen.getByRole("textbox"), {
+    target: { value: "テスト" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+  });
+  expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+  expect(spySkillCreate).not.toHaveBeenCalled();
+});
+```
+
+### ステップ 3: SkillAnalysisView Store 統合テストの拡充
+
+**テストファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx`
+
+以下のテストケースを追加する:
+
+| テストID | テスト内容                                                                                                        | 対応要件       |
+| -------- | ----------------------------------------------------------------------------------------------------------------- | -------------- |
+| TC-AV-01 | マウント時に `analyzeSkill` が store action 経由で呼ばれる                                                        | 直接 IPC 排除  |
+| TC-AV-02 | `window.electronAPI.skill.analyze` が直接呼ばれないことを検証                                                     | 直接 IPC 排除  |
+| TC-AV-03 | `applySkillImprovements` が store action 経由で呼ばれる                                                           | 直接 IPC 排除  |
+| TC-AV-04 | `window.electronAPI.skill.applyImprovements` が直接呼ばれないことを検証                                           | 直接 IPC 排除  |
+| TC-AV-05 | `autoImproveSkill` が store action 経由で呼ばれる                                                                 | 直接 IPC 排除  |
+| TC-AV-06 | `window.electronAPI.skill.autoImprove` が直接呼ばれないことを検証                                                 | 直接 IPC 排除  |
+| TC-AV-07 | 状態遷移: idle（`isAnalyzing=false`, `analysis=null`）→ loading（`isAnalyzing=true`）→ success（`analysis` 設定） | 状態遷移       |
+| TC-AV-08 | 状態遷移: loading → error（`skillError` 設定）→ 再試行 → success                                                  | エラー回復     |
+| TC-AV-09 | `isImproving=true` のとき「選択を適用」「全自動改善」ボタンが disabled                                            | UI 制御        |
+| TC-AV-10 | `isAnalyzing=true` のとき「選択を適用」「全自動改善」ボタンが disabled                                            | UI 制御        |
+| TC-AV-11 | `useAnalyzeSkill` / `useApplySkillImprovements` / `useAutoImproveSkill` が安定参照を返すこと（P31 対策）          | P31 回帰テスト |
+
+**テスト骨格（TC-AV-08 の例）**:
+
+```typescript
+it("エラー状態から再試行で分析成功に遷移する", async () => {
+  mockSkillError = "一時的なエラー";
+  mockCurrentAnalysis = null;
+  await act(async () => {
+    render(
+      <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
     );
   });
+  expect(screen.getByRole("alert")).toHaveTextContent("一時的なエラー");
 
-  describe("作成完了後の一覧同期", () => {
-    it(
-      "store.createSkill 成功後に store.fetchSkills が呼ばれてスキル一覧が更新される",
-    );
+  // 再試行ボタンクリック
+  mockSkillError = null;
+  mockCurrentAnalysis = defaultAnalysis;
+  await act(async () => {
+    fireEvent.click(screen.getByText("再試行"));
   });
+  expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
 });
 ```
 
-#### モック設計
+### ステップ 4: useSkillAnalysis フック単体テストの作成
 
-- `useCreateSkill` セレクタをモックし、返り値として `vi.fn()` を設定する
-- `window.electronAPI.skill.create` が直接呼ばれないことを `expect(...).not.toHaveBeenCalled()` で検証する
-- store action のモックは `vi.mock("../../store", ...)` で行い、個別セレクタ単位でモック関数を返す
+**テストファイル（新規）**: `apps/desktop/src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts`
 
-### Task 2: SkillAnalysisView Store統合テスト作成
+| テストID | テスト内容                                                                            | 対応要件           |
+| -------- | ------------------------------------------------------------------------------------- | ------------------ |
+| TC-UA-01 | `renderHook` で初期化時に `analyzeSkill` が呼ばれる                                   | 自動分析           |
+| TC-UA-02 | `handleToggleSuggestion` で選択/選択解除がトグルする                                  | ローカル状態管理   |
+| TC-UA-03 | `handleSelectAutoFixable` で `autoFixable=true` の提案のみ選択される                  | 一括選択           |
+| TC-UA-04 | `handleApplySelected` で選択済み提案が `applySkillImprovements` に渡される            | 改善適用           |
+| TC-UA-05 | `handleAutoImprove` で `window.confirm(true)` のとき `autoImproveSkill` が呼ばれる    | 全自動改善         |
+| TC-UA-06 | `handleAutoImprove` で `window.confirm(false)` のとき `autoImproveSkill` が呼ばれない | キャンセル         |
+| TC-UA-07 | `handleApplySelected` で `selectedSuggestions.size === 0` のとき早期リターンする      | バリデーション     |
+| TC-UA-08 | `handleApplySelected` で `analysis === null` のとき早期リターンする                   | null ガード        |
+| TC-UA-09 | `buildAutoFixableSelection` が `autoFixable=true` のインデックスのみ含む Set を返す   | ユーティリティ関数 |
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx`
-
-既存の `SkillAnalysisView.test.tsx` は `window.electronAPI.skill.analyze` 等を直接モックしている。新テストファイルでは store action 経由で分析・改善が行われることを検証する。
-
-#### テストケース一覧
+**テスト骨格（TC-UA-01 の例）**:
 
 ```typescript
-describe("SkillAnalysisView Store統合", () => {
-  describe("store action 経由の分析", () => {
-    it(
-      "マウント時に store.analyzeSkill が呼ばれる（window.electronAPI.skill.analyze は直接呼ばれない）",
-    );
-    it("store.analyzeSkill に skillName が正しく渡される");
-    it("store の isAnalyzing が true のとき「分析中...」が表示される");
-    it(
-      "store の currentAnalysis が設定されると分析結果（スコア・提案・リスク）が表示される",
-    );
-    it(
-      "store の skillError が設定されるとエラーメッセージが role='alert' で表示される",
-    );
+import { renderHook, act } from "@testing-library/react";
+import { useSkillAnalysis } from "../hooks/useSkillAnalysis";
+
+it("初期化時に analyzeSkill が呼ばれる", async () => {
+  await act(async () => {
+    renderHook(() => useSkillAnalysis("test-skill"));
   });
-
-  describe("store action 経由の改善適用", () => {
-    it(
-      "「選択を適用」クリックで store.applySkillImprovements が呼ばれる（window.electronAPI.skill.applyImprovements は直接呼ばれない）",
-    );
-    it(
-      "store.applySkillImprovements に skillName と選択された suggestions が渡される",
-    );
-    it(
-      "store の isImproving が true のとき適用ボタンと全自動改善ボタンが disabled になる",
-    );
-  });
-
-  describe("store action 経由の全自動改善", () => {
-    it(
-      "「全自動改善」クリックで window.confirm 後に store.autoImproveSkill が呼ばれる（window.electronAPI.skill.autoImprove は直接呼ばれない）",
-    );
-    it("store.autoImproveSkill に skillName が渡される");
-    it(
-      "window.confirm でキャンセルした場合 store.autoImproveSkill は呼ばれない",
-    );
-  });
-
-  describe("再試行フロー", () => {
-    it("エラー表示後「再試行」クリックで store.analyzeSkill が再度呼ばれる");
-    it("再試行成功後にエラーが消えて分析結果が表示される");
-  });
-
-  describe("提案選択のローカル状態管理", () => {
-    it(
-      "提案チェックボックスのトグルがローカル state で管理される（store を経由しない）",
-    );
-    it("「自動修正可能を選択」で autoFixable な提案のみが選択される");
-  });
+  expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
 });
 ```
 
-#### モック設計
+### ステップ 5: P31/P48 回帰テスト
 
-- `useAnalyzeSkill`, `useApplySkillImprovements`, `useAutoImproveSkill`, `useCurrentAnalysis`, `useIsAnalyzingSkill`, `useIsImprovingSkill`, `useSkillError`, `useClearSkillError`, `useClearAnalysis` をモックする
-- `window.electronAPI.skill.analyze`, `window.electronAPI.skill.applyImprovements`, `window.electronAPI.skill.autoImprove` が直接呼ばれないことを検証する
+**テストファイル**: 各既存テストファイルに `describe("P31/P48 回帰テスト")` ブロックを追加
 
-### Task 3: 状態遷移テスト作成
+| テストID  | テスト内容                                                                     | 対応 Pitfall |
+| --------- | ------------------------------------------------------------------------------ | ------------ |
+| TC-P31-01 | `useCreateSkill` が複数レンダー間で同一参照を返す                              | P31          |
+| TC-P31-02 | `useAnalyzeSkill` が複数レンダー間で同一参照を返す                             | P31          |
+| TC-P31-03 | `useApplySkillImprovements` が複数レンダー間で同一参照を返す                   | P31          |
+| TC-P31-04 | `useAutoImproveSkill` が複数レンダー間で同一参照を返す                         | P31          |
+| TC-P31-05 | `useCurrentAnalysis` が同一オブジェクト参照を返す（state 未変更時）            | P31          |
+| TC-P48-01 | 派生セレクタ（フィルタリング結果を返すセレクタ）が `useShallow` 適用で安定する | P48          |
 
-**ファイル**: Task 1・Task 2 の各テストファイル内に含める
-
-#### テストケース一覧
+**テスト骨格（TC-P31-01 の例）**:
 
 ```typescript
-// SkillCreateWizard.store-integration.test.tsx 内
-describe("状態遷移: idle → loading → success/error", () => {
-  it("初期状態は idle（isGenerating: false, error: null）");
-  it("生成開始で loading 状態（isGenerating: true）に遷移する");
-  it("生成成功で success 状態（Step 4 表示）に遷移する");
-  it("生成失敗で error 状態（エラーメッセージ表示）に遷移する");
-});
-
-// SkillAnalysisView.store-integration.test.tsx 内
-describe("状態遷移: idle → analyzing → analyzed/error", () => {
-  it("マウント直後に analyzing 状態に遷移する");
-  it("分析完了で analyzed 状態（スコア表示）に遷移する");
-  it("分析失敗で error 状態（アラート表示）に遷移する");
-  it("改善適用中は improving 状態（ボタン disabled）に遷移する");
-  it("改善完了で analyzed 状態に戻る（再分析結果が反映される）");
+it("useCreateSkill が複数レンダー間で同一参照を返す（P31 対策）", () => {
+  const { result, rerender } = renderHook(() => useCreateSkill());
+  const firstRef = result.current;
+  rerender();
+  const secondRef = result.current;
+  expect(firstRef).toBe(secondRef);
 });
 ```
 
-### Task 4: P31回帰テスト作成
+### ステップ 6: テスト実行と Red 確認
 
-**ファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.p31-regression.test.tsx`
+1. 以下のコマンドでテストを実行し、新規テストが Red（失敗）であることを確認する:
 
-個別セレクタ（`useAnalyzeSkill` 等）の関数参照が安定しており、`useEffect` 依存配列に含めても無限ループしないことを検証する。
-
-#### テストケース一覧
-
-```typescript
-describe("P31回帰: 個別セレクタの安定参照", () => {
-  it("useAnalyzeSkill の返り値参照が re-render 間で同一（Object.is で true）");
-  it("useApplySkillImprovements の返り値参照が re-render 間で同一");
-  it("useAutoImproveSkill の返り値参照が re-render 間で同一");
-  it("useCreateSkill の返り値参照が re-render 間で同一");
-  it(
-    "useAnalyzeSkill を useEffect 依存配列に含めた場合に無限ループしない（renderCount <= 3）",
-  );
-});
+```bash
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts
 ```
 
-#### テスト手法
+2. 既存テストが引き続き PASS であることを確認する:
 
-- `renderHook` でセレクタを呼び出し、`rerender()` 後に `result.current` の参照が前回と `===` で一致することを検証する
-- `useEffect` 内のカウンタで renderCount をカウントし、3回以下であることを確認する（React StrictMode の2回 + 初回の1回 = 最大3回）
-
-### Task 5: P48回帰テスト作成
-
-**ファイル**: `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.p48-regression.test.tsx`
-
-`useShallow` が必要な派生セレクタ（`.filter()` / `.map()` で新しい配列を返すセレクタ）が無限ループしないことを検証する。
-
-#### テストケース一覧
-
-```typescript
-describe("P48回帰: useShallow 適用の派生セレクタが無限ループしない", () => {
-  it(
-    "useCurrentAnalysis が毎回新しいオブジェクト参照を返しても re-render が収束する",
-  );
-  it(
-    "分析結果の suggestions 配列を .filter() で絞り込む派生セレクタが無限ループしない",
-  );
-});
+```bash
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx
+cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx
 ```
 
-#### テスト手法
+**P40 準拠**: テストは `apps/desktop` ディレクトリから実行する。プロジェクトルートからの実行は禁止。
 
-- `renderHook` で派生セレクタを呼び出し、store を更新（`set({ currentAnalysis: ... })`）しても renderCount が有限回（10回以下）で収束することを `vi.useFakeTimers` + `advanceTimersByTime` で検証する（P13準拠: `runAllTimers` は使用しない）
+**P39 準拠**: `happy-dom` 環境では `userEvent` を使用しない。`fireEvent` と `act` のみ使用する。
 
-### Task 6: アクセシビリティテスト作成
+## 統合テスト連携
 
-**ファイル**: Task 1・Task 2 の各テストファイル内に含める
+### TASK-10A-G への引き渡し観点
 
-#### テストケース一覧
+Phase 4 で作成するテストは、TASK-10A-G（統合テスト）の基盤となる。以下の観点を Phase 6（テスト拡充）で追加する:
 
-```typescript
-// SkillCreateWizard.store-integration.test.tsx 内
-describe("アクセシビリティ", () => {
-  it("StepIndicator に aria-label='ウィザードの進捗' が設定されている");
-  it("生成中のステップに aria-busy='true' が設定される");
-  it("エラーメッセージに role='alert' が設定される");
-  it("「次へ」ボタンが disabled のとき aria-disabled 属性が反映される");
-});
+| 観点                 | 検証内容                                                        |
+| -------------------- | --------------------------------------------------------------- |
+| 作成後一覧同期       | `createSkill` 成功後に `fetchSkills` が呼ばれ一覧が更新される   |
+| 改善後再分析         | `applySkillImprovements` 成功後に `analyzeSkill` が再実行される |
+| 削除後一覧更新       | `removeSkill` 成功後に一覧から該当スキルが消える                |
+| インポート後一覧同期 | `importSkill` 成功後に一覧に新スキルが表示される                |
 
-// SkillAnalysisView.store-integration.test.tsx 内
-describe("アクセシビリティ", () => {
-  it("エラーメッセージに role='alert' が設定される");
-  it("閉じるボタンに aria-label='閉じる' が設定される");
-  it("改善適用中のボタンに disabled 属性が設定される");
-  it("チェックボックスに適切な aria-label が設定される");
-  it("ローディング状態に aria-busy='true' が設定される");
-});
-```
+## 多角的チェック観点
 
-## テスト環境設定
-
-| 項目                 | 値                                                    |
-| -------------------- | ----------------------------------------------------- |
-| テストフレームワーク | Vitest                                                |
-| UIテスト             | @testing-library/react + happy-dom                    |
-| イベント発火         | fireEvent（P39準拠: userEvent 使用禁止）              |
-| テスト実行           | `cd apps/desktop && pnpm vitest run`（P40準拠）       |
-| カバレッジ           | v8 プロバイダ                                         |
-| タイマー             | `vi.useFakeTimers` + `advanceTimersByTime`（P13準拠） |
-
-## store モック戦略
-
-### アプローチ: 個別セレクタモック
-
-`vi.mock("../../store", ...)` で store モジュール全体をモックし、各セレクタが返す値を `beforeEach` で制御する。
-
-```typescript
-// モック例
-const mockAnalyzeSkill = vi.fn();
-const mockApplySkillImprovements = vi.fn();
-const mockAutoImproveSkill = vi.fn();
-const mockCreateSkill = vi.fn();
-
-vi.mock("../../../store", () => ({
-  useAnalyzeSkill: () => mockAnalyzeSkill,
-  useApplySkillImprovements: () => mockApplySkillImprovements,
-  useAutoImproveSkill: () => mockAutoImproveSkill,
-  useCreateSkill: () => mockCreateSkill,
-  useCurrentAnalysis: () => mockCurrentAnalysis,
-  useIsAnalyzingSkill: () => mockIsAnalyzing,
-  useIsImprovingSkill: () => mockIsImproving,
-  useSkillError: () => mockSkillError,
-  useClearSkillError: () => mockClearSkillError,
-  useClearAnalysis: () => mockClearAnalysis,
-}));
-```
-
-### 直接IPC呼び出し検証
-
-各テストファイルで `window.electronAPI` をスパイし、直接呼び出しがないことを検証する。
-
-```typescript
-const spyAnalyze = vi.fn();
-beforeEach(() => {
-  (window as Record<string, unknown>).electronAPI = {
-    skill: {
-      analyze: spyAnalyze,
-      applyImprovements: vi.fn(),
-      autoImprove: vi.fn(),
-      create: vi.fn(),
-    },
-  };
-});
-
-// テスト内
-expect(spyAnalyze).not.toHaveBeenCalled();
-```
+| 観点                 | 確認事項                                                                  |
+| -------------------- | ------------------------------------------------------------------------- |
+| 直接 IPC 排除        | `window.electronAPI` のスパイが 0 回呼び出しであることを全テストで検証    |
+| P31 安定参照         | action セレクタが再レンダー間で `===` 同一参照を保つ                      |
+| P48 派生セレクタ     | `useShallow` が必要なセレクタに適用されていることを無限ループテストで検証 |
+| P39 テスト環境       | `happy-dom` 環境で `userEvent` を使用していないこと                       |
+| P40 実行ディレクトリ | テスト実行コマンドが `apps/desktop` から実行されること                    |
+| P9 状態リセット      | `beforeEach` で全モック状態がリセットされること                           |
+| エラーカテゴリ       | ERR_3001（AI API Error）、ERR_4004（Network Error）の表示テスト           |
+| a11y                 | `role="alert"` / `aria-label` / `disabled` 状態の検証                     |
 
 ## 成果物
 
-| 成果物                            | パス                                                                                                |
-| --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| SkillCreateWizard Store統合テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` |
-| SkillAnalysisView Store統合テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx` |
-| P31回帰テスト                     | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.p31-regression.test.tsx`    |
-| P48回帰テスト                     | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.p48-regression.test.tsx`    |
+| 成果物                                    | パス                                                                                                | 説明                              |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------- |
+| SkillCreateWizard Store統合テスト（拡充） | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | TC-CW-01 〜 TC-CW-07              |
+| SkillAnalysisView Store統合テスト（拡充） | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx` | TC-AV-01 〜 TC-AV-11              |
+| useSkillAnalysis フック単体テスト（新規） | `apps/desktop/src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts`                     | TC-UA-01 〜 TC-UA-09              |
+| P31/P48 回帰テスト                        | 各既存テストファイル内に追加                                                                        | TC-P31-01 〜 TC-P31-05, TC-P48-01 |
 
 ## 完了条件
 
-- [ ] Task 1: SkillCreateWizard Store統合テスト（7テストケース）が作成されている
-- [ ] Task 2: SkillAnalysisView Store統合テスト（14テストケース）が作成されている
-- [ ] Task 3: 状態遷移テスト（9テストケース）が Task 1・Task 2 内に含まれている
-- [ ] Task 4: P31回帰テスト（5テストケース）が作成されている
-- [ ] Task 5: P48回帰テスト（2テストケース）が作成されている
-- [ ] Task 6: アクセシビリティテスト（9テストケース）が Task 1・Task 2 内に含まれている
-- [ ] 全テストが Red 状態（実装が未変更のため失敗する）であることを `cd apps/desktop && pnpm vitest run` で確認済み
-- [ ] `window.electronAPI` の直接呼び出しを検証するスパイが全テストに含まれている
-- [ ] テストファイル冒頭に P39/P40/P9/P13 準拠コメントが記載されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] TC-CW-01 〜 TC-CW-07 のテストコードが作成されている
+- [ ] TC-AV-01 〜 TC-AV-11 のテストコードが作成されている
+- [ ] TC-UA-01 〜 TC-UA-09 のテストコードが作成されている
+- [ ] TC-P31-01 〜 TC-P31-05, TC-P48-01 のテストコードが作成されている
+- [ ] 全テストに `window.electronAPI` スパイが設定され、直接呼び出し 0 回を検証している
+- [ ] P39 準拠: `userEvent` を使用していない（`fireEvent` + `act` のみ）
+- [ ] P40 準拠: テスト実行コマンドが `apps/desktop` ディレクトリから実行される
+- [ ] P9 準拠: `beforeEach` で全モック状態がリセットされている
+- [ ] 新規テストが Red（失敗）状態で Phase 5 に引き渡される（TDD Red Phase 完了）
+- [ ] 既存テストが引き続き PASS している
 
-## 次Phase
+## 次の Phase
 
-Phase 5: 実装（TDD: Green）へ進む。
+Phase 5: 実装（`docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-5-implementation.md`）

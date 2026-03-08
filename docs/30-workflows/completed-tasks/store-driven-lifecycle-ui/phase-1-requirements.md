@@ -5,302 +5,272 @@
 | 項目       | 値                                                      |
 | ---------- | ------------------------------------------------------- |
 | Phase      | 1                                                       |
-| 機能名     | TASK-10A-F Store駆動ライフサイクルUI統合                |
-| 作成日     | 2026-03-07                                              |
+| 機能名     | TASK-10A-F スキルライフサイクルUIのStore駆動統合        |
+| 作成日     | 2026-03-08                                              |
 | 状態       | 未着手                                                  |
 | 依存タスク | TASK-10A-B (完了), TASK-10A-C (完了), TASK-10A-D (完了) |
 
 ## 目的
 
-SkillCreateWizard と useSkillAnalysis フック内の直接 `window.electronAPI` 呼び出し（4箇所）を排除し、agentSlice の store action 経由に統一する。TASK-10A-D で agentSlice に追加済みの `analyzeSkill`, `applySkillImprovements`, `autoImproveSkill`, `createSkill` アクションと個別セレクタ（`useAnalyzeSkill`, `useCreateSkill` 等）を、コンポーネント/フック側で使用するように書き換える。
+`SkillCreateWizard` と `SkillAnalysisView` の直接 `window.electronAPI` 呼び出しを排除し、`agentSlice` の store action 経由に統一する。作成完了後の一覧同期と分析/改善状態の一貫性を確保し、`TASK-10A-G` の統合テスト基盤を固定する。
 
 ## 実行タスク
 
-- 直接IPC呼び出しの特定と排除: 4箇所の `window.electronAPI` 直接呼び出しを store action に置換する
-- useSkillAnalysis フックのリファクタリング: store action を注入可能な設計に変更する
-- SkillCreateWizard のリファクタリング: `window.electronAPI.skill.create()` を `useCreateSkill()` セレクタ経由に変更する
-- テストファイルの更新: モック対象を `window.electronAPI` から store action に変更する
-- P31/P48 対策の検証: 個別セレクタ使用と useShallow 適用基準の確認
+- CreateWizard 経路統一: `useCreateSkill` store action 経由でスキル作成を実行する設計を定義する。
+- AnalysisView 経路統一: `useSkillAnalysis` フック内の analyze/improve 経路を store action（`useAnalyzeSkill`, `useApplySkillImprovements`, `useAutoImproveSkill`）経由に統一する設計を定義する。
+- 状態遷移定義: 成功/失敗/再試行時の状態遷移表を定義する。
+- P31 対策定義: 個別 selector・安定参照・依存配列ガードのルールを明文化する。
+- 回帰観点定義: `TASK-10A-G` へ引き渡す回帰テスト観点（作成後一覧同期、改善後再分析）を定義する。
 
 ## 参照資料
 
-| 資料名                      | パス                                                                                                  |
-| --------------------------- | ----------------------------------------------------------------------------------------------------- |
-| SkillCreateWizard 実装      | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                    |
-| useSkillAnalysis フック     | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`                                |
-| SkillManagementPanel 実装   | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`                                 |
-| agentSlice 定義             | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                |
-| Store index（セレクタ）     | `apps/desktop/src/renderer/store/index.ts`                                                            |
-| SkillCreateWizard テスト    | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                     |
-| SkillAnalysisView テスト    | `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx`                     |
-| arch-state-management       | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                          |
-| architecture-implementation | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`           |
-| ui-ux-feature-components    | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                       |
-| interfaces-agent-sdk-skill  | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                     |
-| api-ipc-agent               | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                                  |
-| error-handling              | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                                 |
-| quality-requirements        | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                           |
-| P31 対策ルール              | `.claude/rules/06-known-pitfalls.md#P31`                                                              |
-| P48 対策ルール              | `.claude/rules/06-known-pitfalls.md#P48`                                                              |
-| P42 バリデーションルール    | `.claude/rules/06-known-pitfalls.md#P42`                                                              |
-| 状態管理ルール              | `.claude/rules/03-state-management.md`                                                                |
-| TASK-10A-D Phase 1          | `docs/30-workflows/completed-tasks/TASK-10A-D-SKILL-LIFECYCLE-UI-INTEGRATION/phase-1-requirements.md` |
+| 資料名                    | パス                                                                                                                                         | 使用目的                     |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| 元タスク仕様書            | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-044-task-10a-f-store-driven-lifecycle-ui.md` | タスク全体要件               |
+| 状態管理仕様              | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                                 | action/selector 責務分離     |
+| 実装パターン              | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                                                  | store 駆動 UI パターン       |
+| UI 機能仕様               | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                              | 作成/分析/改善の UI 遷移整合 |
+| Skill インターフェース    | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                                                            | create/analyze/improve 契約  |
+| IPC API 仕様              | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                                                                         | チャネル責務境界             |
+| IPC セキュリティ          | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                                                                 | sender/P42/境界検証          |
+| エラー仕様                | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                                                                        | エラーステート定義           |
+| UI 設計原則               | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                               | a11y・操作一貫性             |
+| 品質要件                  | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                                  | テスト・品質ゲート基準       |
+| SkillCreateWizard 実装    | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                                                                           | 現在の IPC 依存調査          |
+| useSkillAnalysis フック   | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`                                                                       | 現在の IPC 依存調査          |
+| SkillManagementPanel 実装 | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`                                                                        | 統合コンテキスト確認         |
+| agentSlice 定義           | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                                                       | 既存 action/state 確認       |
+| Store index（セレクタ）   | `apps/desktop/src/renderer/store/index.ts`                                                                                                   | 既存個別セレクタ確認         |
+| P31 対策ルール            | `.claude/rules/06-known-pitfalls.md#P31`                                                                                                     | 無限ループ防止パターン       |
+| P42 バリデーションルール  | `.claude/rules/06-known-pitfalls.md#P42`                                                                                                     | 3段バリデーション            |
+| P48 useShallow ルール     | `.claude/rules/06-known-pitfalls.md#P48`                                                                                                     | 派生セレクタの shallow 比較  |
+| 状態管理ルール            | `.claude/rules/03-state-management.md`                                                                                                       | Zustand 設計原則             |
 
 ## 実行手順
 
-### Step 1: 直接IPC呼び出し箇所の特定
-
-以下の4箇所が排除対象である:
-
-| #   | ファイル                    | 行  | 呼び出し内容                                                      | 置換先 store action                           |
-| --- | --------------------------- | --- | ----------------------------------------------------------------- | --------------------------------------------- |
-| 1   | `SkillCreateWizard.tsx`     | 46  | `window.electronAPI.skill.create({ description, options })`       | `createSkill(description, options)`           |
-| 2   | `hooks/useSkillAnalysis.ts` | 94  | `window.electronAPI.skill.analyze(skillName)`                     | `analyzeSkill(skillName)`                     |
-| 3   | `hooks/useSkillAnalysis.ts` | 140 | `window.electronAPI.skill.applyImprovements(skillName, selected)` | `applySkillImprovements(skillName, selected)` |
-| 4   | `hooks/useSkillAnalysis.ts` | 171 | `window.electronAPI.skill.autoImprove(skillName)`                 | `autoImproveSkill(skillName)`                 |
-
-### Step 2: store action の要件定義
-
-agentSlice に既に実装済みの以下のアクションを使用する（新規追加は不要）:
-
-| アクション名             | セレクタ名                  | シグネチャ                                                        |
-| ------------------------ | --------------------------- | ----------------------------------------------------------------- |
-| `analyzeSkill`           | `useAnalyzeSkill`           | `(skillName: string) => Promise<void>`                            |
-| `applySkillImprovements` | `useApplySkillImprovements` | `(skillName: string, suggestions: Suggestion[]) => Promise<void>` |
-| `autoImproveSkill`       | `useAutoImproveSkill`       | `(skillName: string) => Promise<void>`                            |
-| `createSkill`            | `useCreateSkill`            | `(description: string, options: {...}) => Promise<string>`        |
-
-### Step 3: useSkillAnalysis フックの書き換え要件
-
-useSkillAnalysis フック内の3箇所の直接IPC呼び出しを、store action の関数参照を受け取る形に変更する。変更方針は以下の2案から選択する:
-
-- **案A（Props注入方式）**: useSkillAnalysis の引数に store action 関数を追加する
-- **案B（内部セレクタ方式）**: useSkillAnalysis 内部で `useAnalyzeSkill()` 等の個別セレクタを直接呼び出す
-
-いずれの方式でも、以下の要件を満たすこと:
-
-- `window.electronAPI` への直接参照が useSkillAnalysis 内に残らない
-- P31 対策として個別セレクタパターンを使用する
-- 既存の `UseSkillAnalysisReturn` インターフェースの戻り値型は変更しない（後方互換性維持）
-
-### Step 4: SkillCreateWizard の書き換え要件
-
-`handleGenerate` 関数内の `window.electronAPI.skill.create()` を `useCreateSkill()` セレクタ経由に変更する:
-
-- `useCreateSkill()` から取得した `createSkill` 関数を使用する
-- `createSkill` の戻り値（スキルパス文字列）を `setSkillPath` に設定する
-- エラーハンドリングは agentSlice の `skillError` と SkillCreateWizard ローカルの `error` ステートの両方で管理する
-- `isGenerating` ローカルステートは維持する（ウィザードのステップ遷移制御に必要）
-
-### Step 5: P31/P48 対策要件の定義
-
-- P31: useSkillAnalysis 内で store action を使用する場合、個別セレクタ（`useAnalyzeSkill()` 等）で取得した関数参照を useCallback の依存配列に含める。合成 Hook は使用しない
-- P48: useSkillAnalysis の戻り値に `.filter()` / `.map()` で配列を返す派生セレクタがある場合、`useShallow` を適用する。現状の `UseSkillAnalysisReturn` では `selectedSuggestions` が `Set<number>` 型であり配列ではないため、P48 適用は不要と判断する
-
-### Step 6: TASK-10A-G 回帰テスト基盤への引き渡し要件
-
-TASK-10A-G（回帰テスト基盤）で以下を検証できるようにデータフロー要件を定義する:
-
-| データフロー                                          | 検証内容                                                                   |
-| ----------------------------------------------------- | -------------------------------------------------------------------------- |
-| `useAnalyzeSkill()` → `agentSlice.analyzeSkill` → IPC | store action 経由で IPC が呼び出され、`currentAnalysis` に結果が格納される |
-| `useCreateSkill()` → `agentSlice.createSkill` → IPC   | store action 経由で IPC が呼び出され、スキルパスが返される                 |
-| `useApplySkillImprovements()` → `agentSlice` → IPC    | store action 経由で改善が適用され、再分析が自動実行される                  |
-| `useAutoImproveSkill()` → `agentSlice` → IPC          | store action 経由で全自動改善が実行され、再分析が自動実行される            |
+1. SkillCreateWizard の現在のスキル作成呼び出し経路を特定する（`useCreateSkill` store action 経由であることを確認する）
+2. useSkillAnalysis フックの現在の分析/改善呼び出し経路を特定する（`window.electronAPI.skill` を直接呼び出している箇所があれば列挙する）
+3. 各呼び出し経路を store action 経由に統一する要件を定義する
+4. 成功/失敗/再試行時の状態遷移表を作成する
+5. P31 再発防止条件（個別 selector、安定参照、useEffect 依存配列ガード）を明文化する
+6. TASK-10A-G に渡す回帰テスト観点を定義する
 
 ## 機能要件
 
-### FR-1: SkillCreateWizard の直接IPC呼び出し排除
+### FR-1: SkillCreateWizard が store action 経由でスキル作成を実行する
 
-- `SkillCreateWizard.tsx` の `handleGenerate` 関数（行46）で `window.electronAPI.skill.create()` を呼び出している箇所を、`useCreateSkill()` セレクタから取得した `createSkill` 関数に置換する
-- `createSkill` の戻り値からスキルパスを取得し、`setSkillPath` に設定する
-- 置換後、`SkillCreateWizard.tsx` 内に `window.electronAPI` への参照が0箇所であることを `grep` で検証する
+- SkillCreateWizard は `useCreateSkill()` 個別セレクタから取得した `createSkill` アクションを使用してスキルを作成する
+- `createSkill` アクション内部で `window.electronAPI.skill.create()` を呼び出す（コンポーネントからの直接 IPC 呼び出しは禁止）
+- 作成成功時に `fetchSkills()` を呼び出してスキル一覧を同期する
+- 作成結果（スキルパス）は `createSkill` の戻り値として返す
 
-### FR-2: useSkillAnalysis の分析呼び出し排除
+### FR-2: useSkillAnalysis フックが store action 経由で分析を実行する
 
-- `useSkillAnalysis.ts` の `handleAnalyze` 関数（行94）で `window.electronAPI.skill.analyze()` を呼び出している箇所を、store action の `analyzeSkill` に置換する
-- store action 呼び出し後、`currentAnalysis` セレクタから分析結果を取得して `analysis` ローカルステートを更新する
+- `useSkillAnalysis` フックは `useAnalyzeSkill()` 個別セレクタから取得した `analyzeSkill` アクションを使用してスキル分析を実行する
+- `analyzeSkill` アクション内部で `window.electronAPI.skill.analyze()` を呼び出す
+- 分析結果は `currentAnalysis` store 状態に格納される
+- `useCurrentAnalysis()` 個別セレクタで分析結果を取得する
 
-### FR-3: useSkillAnalysis の改善適用呼び出し排除
+### FR-3: useSkillAnalysis フックが store action 経由で改善を適用する
 
-- `useSkillAnalysis.ts` の `handleApplySelected` 関数（行140）で `window.electronAPI.skill.applyImprovements()` を呼び出している箇所を、store action の `applySkillImprovements` に置換する
-- 改善適用後の再分析は store action 内で自動実行されるため、明示的な再分析呼び出しは不要
+- 選択改善適用は `useApplySkillImprovements()` 個別セレクタ経由の `applySkillImprovements` アクションを使用する
+- 全自動改善は `useAutoImproveSkill()` 個別セレクタ経由の `autoImproveSkill` アクションを使用する
+- 改善適用後は自動的に再分析を実行し、`currentAnalysis` を更新する
 
-### FR-4: useSkillAnalysis の全自動改善呼び出し排除
+### FR-4: 処理中フラグが store 状態で一元管理される
 
-- `useSkillAnalysis.ts` の `handleAutoImprove` 関数（行171）で `window.electronAPI.skill.autoImprove()` を呼び出している箇所を、store action の `autoImproveSkill` に置換する
-- 全自動改善後の再分析は store action 内で自動実行されるため、明示的な再分析呼び出しは不要
+- 分析中は `isAnalyzing: true` が store に設定される
+- 改善適用中は `isImproving: true` が store に設定される
+- エラー発生時は `skillError` に格納され、処理中フラグは `false` にリセットされる
+- `useIsAnalyzingSkill()` と `useIsImprovingSkill()` 個別セレクタでフラグを取得する
 
-### FR-5: テストファイルのモック対象変更
+### FR-5: エラー状態が store で一元管理される
 
-- `SkillCreateWizard.test.tsx` のモック対象を `window.electronAPI.skill.create` から store action の `createSkill` に変更する
-- `SkillAnalysisView.test.tsx` のモック対象を `window.electronAPI.skill.analyze` / `applyImprovements` / `autoImprove` から store action の対応アクションに変更する
-- テストで store action をモック化する際は `vi.fn()` で個別にモックし、`useAppStore` の部分モックまたは `zustand` のテストユーティリティを使用する
+- 分析/改善/作成で発生したエラーは全て `skillError` store 状態に格納される
+- エラーメッセージは `formatErrorMessage()` でフォーマットする
+- `useSkillError()` 個別セレクタでエラー状態を取得する
+- `useClearSkillError()` 個別セレクタでエラーをクリアする
 
-### FR-6: 直接IPC呼び出しゼロの検証
+### FR-6: ローカル UI 状態はコンポーネント/フック内に保持する
 
-- 修正完了後、以下のコマンドで直接IPC呼び出しが0件であることを検証する:
-  ```
-  grep -rn "window\.electronAPI" apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx
-  grep -rn "window\.electronAPI" apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts
-  ```
-- 両方のコマンドの出力が0行であること
+- `useSkillAnalysis` フック内の `selectedSuggestions`（選択された提案インデックス）は `useState` で管理する
+- `useSkillAnalysis` フック内の `improvementResult`（改善適用結果）は `useState` で管理する
+- SkillCreateWizard 内の `description`, `options`, `isGenerating`, `error`, `skillPath` は `useState` で管理する
 
 ## 非機能要件
 
-### NFR-1: P31（Zustand無限ループ）対策
+### NFR-1: P31（Zustand 無限ループ）対策
 
-- useSkillAnalysis 内で store action を取得する際、個別セレクタパターン（`useAnalyzeSkill()`, `useApplySkillImprovements()` 等）を使用する
+- store 状態と action の取得には個別セレクタパターン（`useAppStore((state) => state.xxx)`）を使用する
 - 合成 Store Hook（オブジェクトを返す形式）は使用しない
-- `useEffect` の依存配列には個別セレクタから取得した関数参照のみを含める
-- Zustand のアクション参照は安定しているため、依存配列に含めても無限ループは発生しない
+- `useEffect` の依存配列には個別セレクタから取得したアクション関数参照のみを含める
+- Zustand action 参照は安定しているため、依存配列に含めても無限ループは発生しない
 
-### NFR-2: P48（useShallow）対策
+### NFR-2: P42 準拠の 3段バリデーション
 
-- useSkillAnalysis 内で `.filter()` / `.map()` によって新しい配列参照を返す派生セレクタを使用する場合、`useShallow` を適用する
-- 現時点では P48 適用対象のセレクタは存在しないが、将来の拡張時に備えて本要件を定義する
+agentSlice の各 store action 内で Preload API を呼び出す前に、文字列引数に対して以下の 3段バリデーションを実施する:
 
-### NFR-3: 後方互換性
+1. `typeof skillName !== "string"` → `skillError` に設定して早期 return
+2. `skillName === ""` → `skillError` に設定して早期 return
+3. `skillName.trim() === ""` → `skillError` に設定して早期 return
 
-- `UseSkillAnalysisReturn` インターフェースの全プロパティ型を変更しない
-- `SkillCreateWizardProps` インターフェースを変更しない
-- `SkillAnalysisView` の Props インターフェース（`skillName: string, onClose: () => void`）を変更しない
-- 既存の SkillManagementPanel からの呼び出しコードは変更しない
+### NFR-3: P48（useShallow）対策
+
+- `.filter()` / `.map()` で新しい配列を返す派生セレクタには `useShallow` を適用する
+- 本タスクの個別セレクタ（`useCurrentAnalysis`, `useIsAnalyzingSkill` 等）はプリミティブ値またはオブジェクト参照を返すため `useShallow` は不要
 
 ### NFR-4: エラーハンドリング
 
-- store action 内のエラーは `skillError` 状態に格納される（既存実装を維持）
-- useSkillAnalysis のローカル `error` ステートは、store の `skillError` を参照するか、store action の try/catch エラーを反映する
-- SkillCreateWizard のローカル `error` ステートは維持し、store action のエラーをキャッチして設定する
+- 各 store action 内で try/catch を使用し、エラーは `skillError` 状態に格納する
+- Preload API 呼び出し前に `window.electronAPI?.skill` の存在チェックを行う
+- Preload API 呼び出しエラー時は `isAnalyzing` / `isImproving` を `false` にリセットする
+- エラーメッセージに内部情報（スタックトレース、ファイルパス）を含めない
 
-### NFR-5: テスト品質
+### NFR-5: パフォーマンス
 
-- 修正後のテストが全て PASS すること
-- テスト内で `window.electronAPI` への直接モックが残らないこと（store action モックに統一）
-- happy-dom 環境で実行すること（P39 対策）
-- テスト実行は `apps/desktop/` ディレクトリから行うこと（P40 対策）
+- 個別セレクタは不要な再レンダーを防止する（プリミティブ値の比較で差分検知）
+- 改善適用後の再分析は `applySkillImprovements` / `autoImproveSkill` 内で自動実行する（コンポーネント側で追加の useEffect を不要にする）
 
 ## 受け入れ基準
 
-### AC-1: SkillCreateWizard の直接IPC排除
+### AC-1: CreateWizard の store action 経由スキル作成
 
-- **Given**: SkillCreateWizard が表示され、スキル説明が入力済みである
-- **When**: 「生成」ボタンをクリックする
-- **Then**: `useCreateSkill()` から取得した `createSkill` 関数が呼び出され、`window.electronAPI.skill.create()` は呼び出されない
+- **Given**: SkillCreateWizard がレンダリングされている
+- **When**: 説明入力 → 設定 → 生成ステップを進行する
+- **Then**: `useCreateSkill()` から取得した `createSkill` action が呼び出され、`window.electronAPI.skill.create()` はコンポーネントから直接呼び出されない
 
-### AC-2: useSkillAnalysis の分析呼び出し排除
+### AC-2: AnalysisView の store action 経由分析
 
-- **Given**: SkillAnalysisView が `skillName="test-skill"` でマウントされる
-- **When**: `useSkillAnalysis` フックが初期化される
-- **Then**: `useAnalyzeSkill()` から取得した `analyzeSkill` 関数が呼び出され、`window.electronAPI.skill.analyze()` は呼び出されない
+- **Given**: SkillAnalysisView がスキル名 "test-skill" でレンダリングされている
+- **When**: コンポーネントがマウントされる
+- **Then**: `useAnalyzeSkill()` から取得した `analyzeSkill` action が呼び出され、結果が `useCurrentAnalysis()` で取得できる
 
-### AC-3: useSkillAnalysis の改善適用排除
+### AC-3: 改善適用後の自動再分析
 
-- **Given**: 分析結果が表示され、1件以上の提案が選択されている
-- **When**: 「選択した改善を適用」ボタンをクリックする
-- **Then**: `useApplySkillImprovements()` から取得した `applySkillImprovements` 関数が呼び出され、`window.electronAPI.skill.applyImprovements()` は呼び出されない
+- **Given**: 分析結果が `currentAnalysis` に格納されている
+- **When**: `applySkillImprovements` action を呼び出して改善を適用する
+- **Then**: 改善適用完了後に自動的に再分析が実行され、`currentAnalysis` が更新される
 
-### AC-4: useSkillAnalysis の全自動改善排除
+### AC-4: エラー時の状態リセット
 
-- **Given**: 分析結果が表示されている
-- **When**: 「全自動改善」ボタンをクリックし、確認ダイアログで「OK」を選択する
-- **Then**: `useAutoImproveSkill()` から取得した `autoImproveSkill` 関数が呼び出され、`window.electronAPI.skill.autoImprove()` は呼び出されない
+- **Given**: `analyzeSkill` action を実行中（`isAnalyzing === true`）
+- **When**: Preload API 呼び出しでエラーが発生する
+- **Then**: `isAnalyzing` が `false` にリセットされ、`skillError` にエラーメッセージが格納される
 
-### AC-5: 直接IPC呼び出しゼロ
+### AC-5: P31 対策の準拠
 
-- **Given**: 全ての修正が完了している
-- **When**: `grep -rn "window\.electronAPI" SkillCreateWizard.tsx useSkillAnalysis.ts` を実行する
-- **Then**: 出力が0行である
+- **Given**: `useSkillAnalysis` フック内で store action を使用している
+- **When**: フックが再レンダーされる
+- **Then**: 個別セレクタから取得した action 参照が安定しており、`useEffect` の無限ループが発生しない
 
-### AC-6: 既存テスト全PASS
+### AC-6: 作成後の一覧同期
 
-- **Given**: テストファイルのモック対象が store action に変更されている
-- **When**: `cd apps/desktop && pnpm vitest run src/renderer/components/skill/` を実行する
-- **Then**: 全テストが PASS する
+- **Given**: SkillCreateWizard でスキル作成が成功した
+- **When**: `createSkill` action が完了する
+- **Then**: `fetchSkills()` が呼び出され、SkillManagementPanel のスキル一覧が最新状態に同期される
 
-### AC-7: 後方互換性維持
+### AC-7: ローカル UI 状態の独立性
 
-- **Given**: SkillManagementPanel から SkillAnalysisView と SkillCreateWizard が呼び出されている
-- **When**: SkillManagementPanel のコードを変更せずにビルドする
-- **Then**: TypeScript コンパイルエラーが発生しない
+- **Given**: `useSkillAnalysis` フック内の `selectedSuggestions` が `useState` で管理されている
+- **When**: 提案を選択/選択解除する
+- **Then**: store 状態に影響を与えず、ローカル状態のみが更新される
 
 ## スコープ定義
 
 ### 含む
 
-- `SkillCreateWizard.tsx` の `window.electronAPI.skill.create()` を store action に置換
-- `useSkillAnalysis.ts` の `window.electronAPI.skill.analyze()` を store action に置換
-- `useSkillAnalysis.ts` の `window.electronAPI.skill.applyImprovements()` を store action に置換
-- `useSkillAnalysis.ts` の `window.electronAPI.skill.autoImprove()` を store action に置換
-- `SkillCreateWizard.test.tsx` のモック対象変更
-- `SkillAnalysisView.test.tsx` のモック対象変更
+- SkillCreateWizard の `useCreateSkill` store action 経由統一
+- useSkillAnalysis フックの analyze/improve 経路を store action 経由に統一
+- agentSlice の `analyzeSkill`, `applySkillImprovements`, `autoImproveSkill`, `createSkill` action の内部で `window.electronAPI.skill.*` を呼び出す設計
+- 状態遷移表（成功/失敗/再試行）の定義
+- P31 対策（個別 selector、安定参照）の明文化
+- TASK-10A-G へ引き渡す回帰テスト観点の定義
+- 修正対象ファイル: `SkillCreateWizard.tsx`, `useSkillAnalysis.ts`, `SkillManagementPanel.tsx` と対応テストファイル
 
 ### 含まない
 
-- agentSlice への新規アクション追加（TASK-10A-D で追加済み）
-- store/index.ts への新規セレクタ追加（TASK-10A-D で追加済み）
-- IPC ハンドラの変更
-- Preload API の変更
-- SkillManagementPanel の変更
-- ChatPanel の変更
+- agentSlice の状態/アクション追加（TASK-10A-D で完了済み）
+- 個別セレクタの store/index.ts へのエクスポート追加（TASK-10A-D で完了済み）
+- IPC ハンドラの変更（skill:analyze, skill:create, skill:improve は実装済み）
+- Preload API の変更（skill.analyze, skill.create, skill.applyImprovements, skill.autoImprove は実装済み）
 - 新規 IPC チャンネルの追加
+- SkillManagementPanel のビュー切替ロジック変更（TASK-10A-D で完了済み）
 
 ## 統合テスト連携
 
-### テスト対象のデータフロー
+### テスト対象のコンポーネント間連携
 
-| 連携元            | 連携先                            | 検証内容                                                                               |
-| ----------------- | --------------------------------- | -------------------------------------------------------------------------------------- |
-| SkillCreateWizard | agentSlice.createSkill            | `useCreateSkill()` セレクタ経由で `createSkill` が呼び出される                         |
-| useSkillAnalysis  | agentSlice.analyzeSkill           | `useAnalyzeSkill()` セレクタ経由で `analyzeSkill` が呼び出される                       |
-| useSkillAnalysis  | agentSlice.applySkillImprovements | `useApplySkillImprovements()` セレクタ経由で `applySkillImprovements` が呼び出される   |
-| useSkillAnalysis  | agentSlice.autoImproveSkill       | `useAutoImproveSkill()` セレクタ経由で `autoImproveSkill` が呼び出される               |
-| agentSlice        | Preload API                       | store action 内部で `window.electronAPI.skill.*` を呼び出す（agentSlice 側は変更なし） |
+| 連携元             | 連携先       | 検証内容                                                                          |
+| ------------------ | ------------ | --------------------------------------------------------------------------------- |
+| SkillCreateWizard  | agentSlice   | `useCreateSkill` 経由で `createSkill` action が呼び出される                       |
+| useSkillAnalysis   | agentSlice   | `useAnalyzeSkill` 経由で `analyzeSkill` action が呼び出される                     |
+| useSkillAnalysis   | agentSlice   | `useApplySkillImprovements` 経由で `applySkillImprovements` action が呼び出される |
+| useSkillAnalysis   | agentSlice   | `useAutoImproveSkill` 経由で `autoImproveSkill` action が呼び出される             |
+| agentSlice         | Preload API  | 各 action 内部で `window.electronAPI.skill.*` が呼び出される                      |
+| createSkill action | fetchSkills  | 作成成功後に `fetchSkills()` が呼び出されてスキル一覧が同期される                 |
+| improve actions    | analyzeSkill | 改善適用成功後に自動再分析が実行されて `currentAnalysis` が更新される             |
 
 ### テスト環境の制約
 
 - happy-dom 環境で実行する（P39 対策: userEvent は使用禁止、fireEvent を使用）
 - テスト実行は `apps/desktop/` ディレクトリから行う（P40 対策）
-- store action のモック化には `vi.fn()` を使用する
-- `window.electronAPI` のモックはテストから除去する（store action レベルでモック化するため）
+- `window.electronAPI.skill` のモック化が必要
+- agentSlice テストは `useAppStore.getState()` / `useAppStore.setState()` で直接状態検証
 
-## アーキテクチャ層別要件
+## 多角的チェック観点
 
-### Renderer 層
+### セキュリティ
 
-| 対象ファイル                           | 変更内容                                                                                    |
-| -------------------------------------- | ------------------------------------------------------------------------------------------- |
-| `SkillCreateWizard.tsx`                | `useCreateSkill()` インポート追加、`handleGenerate` 内の IPC 呼び出しを store action に置換 |
-| `hooks/useSkillAnalysis.ts`            | `useAnalyzeSkill()` 等のインポート追加、3箇所の IPC 呼び出しを store action に置換          |
-| `__tests__/SkillCreateWizard.test.tsx` | モック対象を `window.electronAPI` から store action に変更                                  |
-| `__tests__/SkillAnalysisView.test.tsx` | モック対象を `window.electronAPI` から store action に変更                                  |
+- agentSlice の各 action で `window.electronAPI?.skill` の存在チェックがある
+- P42 準拠 3段バリデーションが全文字列引数に適用されている
+- エラーメッセージに内部情報が含まれない
+- IPC ハンドラの変更がないため既存の sender 検証が維持される
 
-### IPC 通信層（変更なし）
+### UI/UX
 
-本タスクでは IPC ハンドラおよび Preload API の変更は不要。agentSlice 内の既存 store action が IPC を呼び出す構造は維持する。
+- 処理中状態（`isAnalyzing`, `isImproving`）がユーザーに視覚的にフィードバックされる
+- エラー発生時にエラーメッセージが表示される
+- ローカル UI 状態（提案選択等）が store 変更の影響を受けない
+
+### アーキテクチャ
+
+- レイヤー依存方向: Renderer（コンポーネント/フック）→ Store（agentSlice action）→ Preload API の一方向
+- コンポーネントから `window.electronAPI` への直接呼び出しが排除される
+- store action が IPC 通信の唯一の呼び出し元として機能する
+
+### エラーハンドリング
+
+- 全 store action に try/catch が実装されている
+- エラーは `skillError` store 状態に一元格納される
+- 処理中フラグ（`isAnalyzing`, `isImproving`）がエラー時に確実にリセットされる
+
+## TASK-10A-G 回帰テスト観点
+
+| 観点                   | 検証内容                                                                                              |
+| ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| 作成後一覧同期         | `createSkill` 成功後に `fetchSkills()` が呼ばれ、SkillManagementPanel の一覧に新スキルが表示される    |
+| 改善後再分析           | `applySkillImprovements` / `autoImproveSkill` 成功後に `analyzeSkill` が自動呼び出しされる            |
+| 分析→改善→再分析フロー | 分析結果から提案を選択 → 改善適用 → 再分析で更新された結果が表示される                                |
+| エラー回復             | エラー発生後にリトライ（再度 action 呼び出し）で正常に処理が再開される                                |
+| 状態初期化             | SkillAnalysisView を閉じて再度開いた場合、前回の `currentAnalysis` がクリアされ新たに分析が実行される |
 
 ## 成果物
 
-| 成果物     | パス                                                                  | 説明           |
-| ---------- | --------------------------------------------------------------------- | -------------- |
-| 要件定義書 | `docs/30-workflows/store-driven-lifecycle-ui/phase-1-requirements.md` | 本ドキュメント |
+| 成果物     | パス                      | 説明           |
+| ---------- | ------------------------- | -------------- |
+| 要件定義書 | `phase-1-requirements.md` | 本ドキュメント |
 
 ## 完了条件
 
-- [ ] 直接IPC呼び出し4箇所が全て特定されている（Step 1 テーブル）
-- [ ] store action の要件が定義されている（Step 2 テーブル）
-- [ ] useSkillAnalysis の書き換え方針が2案提示されている（Step 3）
-- [ ] SkillCreateWizard の書き換え要件が定義されている（Step 4）
-- [ ] P31/P48 対策要件が定義されている（Step 5）
-- [ ] TASK-10A-G 引き渡し要件が定義されている（Step 6）
-- [ ] 機能要件 FR-1 〜 FR-6 が全て定義されている
-- [ ] 非機能要件 NFR-1 〜 NFR-5 が全て定義されている
-- [ ] 受け入れ基準 AC-1 〜 AC-7 が Given/When/Then 形式で記載されている
+- [ ] 機能要件 FR-1〜FR-6 が全て定義されている
+- [ ] 非機能要件 NFR-1〜NFR-5 が全て定義されている
+- [ ] 受け入れ基準 AC-1〜AC-7 が Given/When/Then 形式で記載されている
 - [ ] スコープ定義（含む/含まない）が明確に記載されている
-- [ ] 統合テスト連携のデータフローが列挙されている
-- [ ] アーキテクチャ層別要件が定義されている
+- [ ] 統合テスト連携の検証対象が列挙されている
+- [ ] 多角的チェック観点（セキュリティ/UI/UX/アーキテクチャ/エラーハンドリング）が記載されている
+- [ ] TASK-10A-G 回帰テスト観点が定義されている
 - [ ] 参照資料パスが全て正確である
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 依存タスク（TASK-10A-B, TASK-10A-C, TASK-10A-D）の完了状態が確認されている
 
 ## 次のPhase
 

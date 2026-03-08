@@ -23,9 +23,9 @@
 
 ### 修正
 
-- parent docs の workflow 導線を nested path から current workflow path へ正規化
-  - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture.md`
-  - `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-0560-index.md`
+- parent docs の workflow 導線を `tasks/completed-task/` path へ正規化
+  - `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-056-ui-01-store-ipc-architecture.md`
+  - `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-0560-index.md`
 - current workflow 内の親エントリ参照を deleted `.md` から `index.md` 正本へ修正
   - `phase-1-requirements.md`
   - `phase-2-design.md`

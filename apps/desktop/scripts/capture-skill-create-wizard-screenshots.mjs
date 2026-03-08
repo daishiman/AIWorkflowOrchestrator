@@ -17,6 +17,22 @@ const screenshotDir = path.join(
 
 const baseRoute = "http://localhost:5173/advanced/skill-create-wizard";
 
+function parseArgs(argv) {
+  const options = {
+    screenshotDir,
+  };
+
+  for (let i = 2; i < argv.length; i += 1) {
+    const arg = argv[i];
+    if (arg === "--output-dir" && argv[i + 1]) {
+      options.screenshotDir = path.resolve(process.cwd(), argv[i + 1]);
+      i += 1;
+    }
+  }
+
+  return options;
+}
+
 const scenarios = [
   {
     file: "TC-01-step1-initial-dark.png",
@@ -101,7 +117,7 @@ const scenarios = [
       );
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector('text=スクリーンショット検証用エラー');
+      await page.waitForSelector('text=スキル生成に失敗しました');
       await page.waitForTimeout(150);
     },
   },
@@ -208,35 +224,45 @@ function createMockScript() {
   };
 }
 
-async function captureScenario(browser, scenario) {
+async function captureScenario(browser, scenario, outputDir) {
   const context = await browser.newContext({
     viewport: scenario.viewport,
     colorScheme: scenario.colorScheme,
   });
 
-  await context.addInitScript(createMockScript());
-  const page = await context.newPage();
+  try {
+    await context.addInitScript(createMockScript());
+    const page = await context.newPage();
 
-  await page.goto(scenario.url, { waitUntil: "domcontentloaded" });
-  await page.waitForSelector('[data-testid="skill-create-wizard"]');
+    await page.goto(scenario.url, { waitUntil: "domcontentloaded" });
+    await page.waitForSelector('[data-testid="skill-create-wizard"]', {
+      timeout: 15_000,
+    });
 
-  if (scenario.preCapture) {
-    await scenario.preCapture(page);
+    if (scenario.preCapture) {
+      await scenario.preCapture(page);
+    }
+
+    await page.waitForSelector(scenario.selector, { timeout: 15_000 });
+    await page.waitForTimeout(150);
+
+    await page.screenshot({
+      path: path.join(outputDir, scenario.file),
+      fullPage: true,
+    });
+  } catch (error) {
+    throw new Error(
+      `Screenshot capture failed for ${scenario.file} (${scenario.url})`,
+      { cause: error },
+    );
+  } finally {
+    await context.close();
   }
-
-  await page.waitForSelector(scenario.selector);
-  await page.waitForTimeout(150);
-
-  await page.screenshot({
-    path: path.join(screenshotDir, scenario.file),
-    fullPage: true,
-  });
-
-  await context.close();
 }
 
 async function main() {
-  await fs.mkdir(screenshotDir, { recursive: true });
+  const options = parseArgs(process.argv);
+  await fs.mkdir(options.screenshotDir, { recursive: true });
 
   const server = spawn(
     "pnpm",
@@ -263,8 +289,10 @@ async function main() {
 
     const browser = await chromium.launch({ headless: true });
     for (const scenario of scenarios) {
-      await captureScenario(browser, scenario);
-      process.stdout.write(`Captured ${scenario.file}\n`);
+      await captureScenario(browser, scenario, options.screenshotDir);
+      process.stdout.write(
+        `Captured ${path.join(options.screenshotDir, scenario.file)}\n`,
+      );
     }
     await browser.close();
   } finally {

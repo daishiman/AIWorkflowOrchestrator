@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T10:31:06.304Z",
-  "totalKeywords": 1519,
+  "generated": "2026-03-08T11:41:56.418Z",
+  "totalKeywords": 1520,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1294,7 +1294,6 @@
     ],
     "駆動ライフサイクル": [
       "arch-state-management.md",
-      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "統合": [
@@ -1311,12 +1310,13 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
-    "スキルライフサイクル": [
-      "arch-state-management.md",
-      "lessons-learned.md",
-      "task-workflow.md"
+    "Persist": [
+      "arch-state-management.md"
     ],
-    "移行完了": [
+    "Iterable": [
+      "arch-state-management.md"
+    ],
+    "Hardening": [
       "arch-state-management.md"
     ],
     "SETTINGS": [
@@ -1336,6 +1336,9 @@
     "HARDENING": [
       "arch-state-management.md",
       "task-workflow.md"
+    ],
+    "テスト品質ゲート設計": [
+      "arch-state-management.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -3341,8 +3344,30 @@
     "統合回帰強化": [
       "lessons-learned.md"
     ],
-    "再確認": [
+    "SUPABASE": [
       "lessons-learned.md"
+    ],
+    "FALLBACK": [
+      "lessons-learned.md"
+    ],
+    "PROFILE": [
+      "lessons-learned.md"
+    ],
+    "AVATAR": [
+      "lessons-learned.md"
+    ],
+    "Profile": [
+      "lessons-learned.md"
+    ],
+    "Avatar": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ追加": [
+      "lessons-learned.md"
+    ],
+    "スキルライフサイクル": [
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "移行": [
       "lessons-learned.md"
@@ -3525,6 +3550,9 @@
       "lessons-learned.md"
     ],
     "analytics": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -4038,34 +4066,7 @@
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
-    "SUPABASE": [
-      "lessons-learned.md"
-    ],
-    "FALLBACK": [
-      "lessons-learned.md"
-    ],
-    "PROFILE": [
-      "lessons-learned.md"
-    ],
-    "AVATAR": [
-      "lessons-learned.md"
-    ],
-    "Profile": [
-      "lessons-learned.md"
-    ],
-    "Avatar": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ追加": [
-      "lessons-learned.md"
-    ],
     "APIKEY": [
-      "lessons-learned.md"
-    ],
-    "persist": [
-      "lessons-learned.md"
-    ],
-    "ハードニングでの教訓": [
       "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [

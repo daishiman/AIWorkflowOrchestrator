@@ -6,8 +6,6 @@
 issue_number: 1040
 ```
 
-## メタ情報
-
 | 項目         | 内容                                              |
 | ------------ | ------------------------------------------------- |
 | タスクID     | UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD |
@@ -204,8 +202,9 @@ cd apps/desktop && pnpm vitest run src/renderer/components/skill/__tests__/
 
 ### 関連ドキュメント
 
-- `architecture-implementation-patterns.md` - S26（Store mockテスト標準パターン）
-- `lessons-learned.md` - TASK-10A-F 苦戦箇所#5（テスト変数名タイポ）
+- `architecture-implementation-patterns.md` - S26（Store mockテスト標準パターン、State用:値返却/Action用:関数返却の使い分け）
+- `lessons-learned.md` - TASK-10A-F 苦戦箇所（実装系）#1（mockCreateSkillSkillタイポで11テスト一斉失敗）、#5（vi.mock関数のスコープ分離）
+- `arch-state-management.md` - TASK-10A-F セクション（統合検証結果920/920 PASS、個別セレクタ使用一覧17件）
 - `06-known-pitfalls.md` - P9（テスト間状態リーク）、P39（happy-dom userEvent非互換）
 
 ### 参考資料

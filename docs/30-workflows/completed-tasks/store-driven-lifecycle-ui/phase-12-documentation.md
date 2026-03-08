@@ -2,238 +2,283 @@
 
 ## メタ情報
 
-| 項目       | 内容                                  |
-| ---------- | ------------------------------------- |
-| Phase      | 12                                    |
-| 機能名     | store-driven-lifecycle-ui             |
-| タスクID   | TASK-10A-F                            |
-| タスク名   | スキルライフサイクルUIのStore駆動統合 |
-| 作成日     | 2026-03-07                            |
-| ステータス | completed                             |
+| 項目       | 値                        |
+| ---------- | ------------------------- |
+| Phase      | 12                        |
+| タスクID   | TASK-10A-F                |
+| 機能名     | store-driven-lifecycle-ui |
+| 作成日     | 2026-03-08                |
+| ステータス | 完了                      |
 
 ## 目的
 
-TASK-10A-F の実装成果を文書化し、システム仕様書を最新状態に同期する。未タスクの検出とスキル改善提案を行い、知見を資産化する。
-
-## 修正対象ファイル
-
-| ファイル                                                               | 変更内容                                                            |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`     | `window.electronAPI` 直接呼び出しを agentSlice アクション経由に変更 |
-| `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` | `window.electronAPI` 直接呼び出しを agentSlice アクション経由に変更 |
-| `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`  | Store駆動に統一された API 呼び出しパターンへの整合                  |
+実装ガイドを作成し、`aiworkflow-requirements` / `task-specification-creator` / ワークフロー成果物を同期し、未タスクと教訓を漏れなく記録する。特に移管前 2workflow 監査で確定した Phase 11 の証跡整合、Step 1-A〜1-G / Step 2、`spec-update-summary.md`、`unassigned-task-detection.md` を completed 正本へ矛盾なく集約する。
 
 ## 実行タスク
 
-### Task 1: 実装ガイド作成
+- Task 1: 実装ガイド作成（Part 1 + Part 2）
+- Task 2: システム仕様書更新（Step 1-A〜1-G / Step 2）
+- Task 3: documentation-changelog.md 作成
+- Task 4: 未タスク検出レポート作成（0件でも必須）
+- Task 5: スキルフィードバックレポート作成（改善点なしでも必須）
 
-`outputs/phase-12/implementation-guide.md` を以下の2パート構成で作成する。
+## 参照資料
+
+| 資料名                    | パス                                                                                        | 説明                                    |
+| ------------------------- | ------------------------------------------------------------------------------------------- | --------------------------------------- |
+| 仕様書更新ワークフロー    | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`              | Step 1-A〜1-G / Step 2 の正本           |
+| Phase 11/12 ガイド        | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                 | Phase 11/12 の必須成果物と validator    |
+| Phase 12 準拠テンプレート | `.claude/skills/task-specification-creator/assets/phase12-task-spec-compliance-template.md` | Phase 12 集約監査の補助                 |
+| 2workflow証跡テンプレート | `.claude/skills/task-specification-creator/assets/evidence-bundle-template.md`              | 移管前 2workflow 監査観点の確認         |
+| コマンド参照              | `.claude/skills/task-specification-creator/references/commands.md`                          | verify / validate / generate 系コマンド |
+| 既知の落とし穴            | `.claude/rules/06-known-pitfalls.md`                                                        | P1-P4, P23-P29, P43 対策                |
+
+### システム仕様（aiworkflow-requirements）
+
+| 資料名                 | パス                                                                                        | 更新/確認内容                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| 抽出入口               | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                         | 必要仕様の初期抽出                             |
+| リソースマップ         | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                            | 抽出漏れ防止                                   |
+| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | Store駆動UIパターン、TASK-10A-D/E-C/F 責務境界 |
+| 実装パターン           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | S26 直接IPC→Store個別セレクタ移行              |
+| UI機能仕様             | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | Analysis/Create の UI 状態と workflow 導線     |
+| UIアーキテクチャ       | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                   | SkillManagementPanel 配下の view 境界          |
+| Skill インターフェース | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`           | create/analyze/apply/autoImprove 契約確認      |
+| IPC API 仕様           | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                        | IPC 契約差分の有無判断                         |
+| エラー仕様             | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       | error state / retry / user message             |
+| タスク運用台帳         | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                        | 完了記録、未タスク、検証証跡の同期             |
+| タスク運用ルール       | `.claude/skills/aiworkflow-requirements/references/task-workflow-rules.md`                  | Phase 12 判定条件                              |
+| 教訓                   | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                      | 文書名ドリフト、TC証跡同期、mock標準化         |
+
+### 前提Phase成果物
+
+| 資料名              | パス                                                                                                  | 用途                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------- |
+| Index               | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/index.md`                                | 抽出方針と補助成果物の確認  |
+| requirements matrix | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/requirements-coverage-matrix.md` | aiworkflow 抽出網羅性の確認 |
+| Phase 1 要件        | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-1-requirements.md`                 | FR/NFR要件の参照            |
+| Phase 2 設計        | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-2-design.md`                       | 設計方針の参照              |
+| Phase 5 実装        | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-5-implementation.md`               | 実装内容の参照              |
+| Phase 6 テスト      | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-6-test-expansion.md`               | テスト拡充結果の参照        |
+| Phase 7 カバレッジ  | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-7-coverage-check.md`               | カバレッジ結果の参照        |
+| Phase 8 リファクタ  | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-8-refactoring.md`                  | リファクタリング結果の参照  |
+| Phase 9 品質        | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-9-quality-assurance.md`            | 品質検証結果の参照          |
+| Phase 10 レビュー   | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-10-final-review.md`                | レビュー結果の参照          |
+| Phase 11 手動テスト | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-11-manual-test.md`                 | 証跡同期の参照              |
+
+## 2Workflow監査と移管結果
+
+| Workflow         | パス                                                           | 役割                                                                               | Phase 12での扱い            |
+| ---------------- | -------------------------------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------- |
+| unified workflow | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/` | 移管前 current workflow の再監査結果と completed baseline 正規化結果を統合した正本 | Phase 12 完了後の公式参照先 |
+
+- 移管前は current / completed の 2workflow で監査し、完了判定後に本ディレクトリへ統合した
+
+## 仕様書別 SubAgent 分担
+
+| SubAgent   | 担当仕様書                                                            | 主担当作業                                   | 完了条件                                 |
+| ---------- | --------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------- |
+| SubAgent-A | `arch-state-management.md`, `architecture-implementation-patterns.md` | Store責務境界と S26 の同期                   | action/state/selector の責務が競合しない |
+| SubAgent-B | `ui-ux-feature-components.md`, `arch-ui-components.md`                | UI完了記録と Phase 11 証跡導線の同期         | workflow と画面証跡が追跡可能            |
+| SubAgent-C | `task-workflow.md`, `lessons-learned.md`                              | 完了台帳、未タスク、苦戦箇所、検証証跡の同期 | Step 1-A〜1-G / Step 2 の反映漏れがない  |
+
+## 実行手順
+
+### Task 1: 実装ガイド
+
+**配置先:** `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/implementation-guide.md`
 
 #### Part 1: 概念説明（中学生レベル）
 
-- **日常の例え話**: 「お店の注文システム」に例えて説明する
-  - 変更前（直接呼び出し）: お客さん（画面）が注文係（Store）を通さずに直接厨房（electronAPI）に行って「カレー作って！」と言う。他の店員（他の画面）はお客さんが何を注文したか分からない
-  - 変更後（Store経由）: お客さん（画面）が注文係（Store）に「カレーお願い」と伝え、注文係が厨房（electronAPI）に伝達する。注文票（Store状態）に全注文が記録されるので、全店員が状況を把握できる
-- **なぜ必要か**: 全画面で同じ情報を共有するため。1つの画面でスキルを作成したら、他の画面にも自動で反映される
-- **何をするか**: SkillCreateWizard と SkillAnalysisView の2つの画面で、注文係（Store）を通すように変更する
+- 日常の例え話を必ず含める
 - 専門用語は使わず、「なぜ必要か → 何をするか」の順で説明する
+- `SkillCreateWizard` は既に Store 経由で動いていること、`useSkillAnalysis` に残る直接呼び出しを統一することを区別して説明する
 
-#### Part 2: 技術者向け実装詳細
+例え話の軸:
 
-以下の項目を記述する:
+- 画面 = お客さん
+- Store = 注文係
+- `window.electronAPI` = 厨房への連絡窓口
+- なぜ必要か = 他の店員も注文状況を共有できるようにするため
+- 何をするか = 注文係を通さない直通電話をやめる
 
-- **TypeScript型定義**: `CreateSkillAction`, `AnalyzeSkillAction`, `ImproveSkillAction`, `AutoImproveSkillAction` の型シグネチャ
-- **APIシグネチャと使用例**:
-  - agentSlice に追加されたアクション関数のシグネチャ
-  - 各アクションの呼び出し例（Before/After コード比較）
-  - 個別セレクタ（`useCreateSkill()`, `useAnalyzeSkill()` 等）の使用方法
-- **エラーハンドリング**:
-  - Store アクション内でのエラーキャッチとstate更新パターン
-  - Renderer側でのerror状態の表示方法
-  - リトライ可能なエラーと不可能なエラーの区別
-- **設定可能なパラメータ一覧**:
-  - スキル作成時のパラメータ（スキル名、説明、設定オブジェクト）
-  - 分析実行時のパラメータ（対象スキルID、分析オプション）
-  - 改善適用時のパラメータ（改善提案ID、適用オプション）
+#### Part 2: 技術詳細（開発者向け）
+
+必須記載項目:
+
+1. 直接IPC排除パターン
+2. `useCreateSkill` / `useAnalyzeSkill` / `useApplySkillImprovements` / `useAutoImproveSkill` の API シグネチャ
+3. `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` の selector 利用例
+4. Before / After コード例
+5. try/catch と `skillError` 更新パターン
+6. UI ローカル状態と Store 状態の切り分け理由
+
+実装実態に合わせた注意点:
+
+- `SkillCreateWizard.tsx` は TASK-10A-C で Store 経由化済みなので、TASK-10A-F では「契約維持 + 作成後一覧同期確認」の観点で記述する
+- `useSkillAnalysis.ts` が今回の直接 IPC 排除の主対象であることを明記する
+- `improvementResult` は現行設計ではローカル state 維持であることを明記する
+
+ガイド作成後の必須検証:
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
+  --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui
+```
 
 ### Task 2: システム仕様書更新
 
 #### Step 1-A: タスク完了記録
 
-以下のファイルを全て更新する:
-
-| 更新対象ファイル                                     | 更新内容                                                               |
-| ---------------------------------------------------- | ---------------------------------------------------------------------- |
-| 該当する `ui-ux-*.md` 仕様書                         | TASK-10A-F の完了タスクセクションを追加する                            |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`     | TASK-10A-F の完了記録を追加する                                        |
-| `.claude/skills/task-specification-creator/LOGS.md`  | TASK-10A-F の完了記録を追加する（**P1/P25対策: 2ファイル両方を更新**） |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`    | 変更履歴テーブルに TASK-10A-F のエントリを追加する                     |
-| `.claude/skills/task-specification-creator/SKILL.md` | 変更履歴テーブルに TASK-10A-F のエントリを追加する                     |
+- `ui-ux-feature-components.md` に TASK-10A-F の完了タスク記録を追加する
+- `.claude/skills/aiworkflow-requirements/LOGS.md` と `.claude/skills/task-specification-creator/LOGS.md` を両方更新する
+- `.claude/skills/aiworkflow-requirements/SKILL.md` と `.claude/skills/task-specification-creator/SKILL.md` の変更履歴を両方更新する
 
 #### Step 1-B: 実装状況テーブル更新
 
-- `arch-state-management.md` の agentSlice アクション一覧に、新規追加されたスキルライフサイクル系アクションのステータスを「実装済み」に更新する
+- `arch-state-management.md` / `ui-ux-feature-components.md` / `task-workflow.md` の実装状況または完了テーブルを更新する
+- `test -f` で参照パスの実在確認を先に行い、誤パス更新を防ぐ
+- 移管前 2workflow 監査で確定した差分を保持しつつ、Phase 12 完了後は completed 正本へ統合する
 
 #### Step 1-C: 関連タスクテーブル更新
 
-- `grep -rn "TASK-10A-F" references/` を実行し、TASK-10A-F に言及している全仕様書のステータスを更新する
-- `grep -rn "TASK-10A" references/` を実行し、TASK-10A シリーズの進捗テーブルで TASK-10A-F を「完了」に更新する
+```bash
+rg -n "TASK-10A-F|store-driven-lifecycle-ui" \
+  .claude/skills/aiworkflow-requirements/references \
+  .claude/skills/task-specification-creator/references
+```
 
-#### Step 1-D: topic-map.md 再生成
+- 関連タスク、未タスク候補、完了記録の全表を検索して同期する
 
-- `node generate-index.js` を実行して `topic-map.md` を再生成する（**P2/P27対策: 仕様書に変更があれば必ず再生成**）
+#### Step 1-D: index / topic-map 再生成
 
-#### Step 2: システム仕様更新
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+node .claude/skills/task-specification-creator/scripts/generate-index.js \
+  --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --regenerate
+```
 
-Store に新規アクションを追加したため、以下のシステム仕様を更新する:
+#### Step 1-E: 未タスク指示書作成・登録
 
-| 更新対象ファイル                        | 更新内容                                                                                                                             |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `arch-state-management.md`              | agentSlice のアクション定義にスキルライフサイクル系アクション（createSkill, analyzeSkill, improveSkill, autoImproveSkill）を追加する |
-| `ui-ux-skill-center.md`（該当する場合） | SkillCreateWizard と SkillAnalysisView の状態管理方式を「Store駆動」に更新する                                                       |
+- `unassigned-task-detection.md` で 1 件以上検出した場合、親 workflow 配下 `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/` へ指示書を移管または作成する
+- `task-workflow.md` の残課題テーブルへ登録する
+- 関連仕様書に参照リンクを追加する
 
-### Task 3: documentation-changelog.md 作成
+#### Step 1-F: DevOps関連ファイル更新
 
-`outputs/phase-12/documentation-changelog.md` を作成し、以下を記録する:
+- 今回の対象は Renderer / Store / docs 中心のため、CI/CD 変更がなければ `N/A` と `spec-update-summary.md` に明記する
 
-- 更新した全仕様書のファイルパスと変更内容
-- Step 1-A の完了結果（2つのLOGS.md、2つのSKILL.md、ui-ux仕様書の更新内容）
-- Step 1-B の完了結果（実装状況テーブルの変更箇所）
-- Step 1-C の完了結果（grep結果と更新した関連タスクテーブル）
-- Step 1-D の完了結果（topic-map.md 再生成の実行結果）
-- Step 2 の完了結果（システム仕様の変更箇所）
-- **P4対策: 全Stepの確認が完了するまで「完了」と記載しない**
+#### Step 1-G: 検証コマンド順次実行
 
-### Task 4: 未タスク検出レポート作成
+```bash
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
+  --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --strict
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/completed-tasks/store-driven-lifecycle-ui
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json --diff-from HEAD
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+```
 
-`outputs/phase-12/unassigned-task-detection.md` を作成する。検出件数が0件でも必ず出力する。
+- `quick_validate.js` の Warning は `spec-update-summary.md` に `要監視 / 要対応` で記録する
+- 2workflow監査を行う場合は、以下を追加で実行し、completed workflow 側の legacy drift を baseline として分離記録する
 
-検出した未タスクがある場合は、以下の3ステップを全て完了する（**P3対策**）:
+```bash
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
+  --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --strict
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/completed-tasks/store-driven-lifecycle-ui
+```
 
-| ステップ | 作業内容                                                                                        | 成果物                                  |
-| -------- | ----------------------------------------------------------------------------------------------- | --------------------------------------- |
-| 1        | `tasks/unassigned-task/` に指示書を作成する                                                     | `tasks/unassigned-task/UT-10A-F-XXX.md` |
-| 2        | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の残課題テーブルに登録する | task-workflow.md の該当テーブル行       |
-| 3        | 関連仕様書に参照リンクを追加する                                                                | 該当仕様書内のリンク                    |
+- 移管前 2workflow 監査で baseline 側に差分があった場合も、統合前に `two-workflow-audit-summary.md` または `spec-update-summary.md` へ根拠を残す
 
-### Task 5: スキルフィードバックレポート作成
+#### Step 2: システム仕様更新判断
 
-`outputs/phase-12/skill-feedback-report.md` を作成する。改善点がない場合でも「改善点なし」として出力する（**P28対策**）。
+- 新規 interface / shared DTO / IPC channel を追加していない場合は `更新なし` を `spec-update-summary.md` と `documentation-changelog.md` の両方に記録する
+- 仕様更新が必要な場合は `arch-state-management.md` / `architecture-implementation-patterns.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで更新する
 
-以下の観点でフィードバックを記録する:
+### Task 3: documentation-changelog.md
 
-| 観点                       | 確認内容                                                                                |
-| -------------------------- | --------------------------------------------------------------------------------------- |
-| task-specification-creator | Phase 仕様書のテンプレートに Store 駆動統合パターンの記述例を追加すべきか               |
-| aiworkflow-requirements    | agentSlice の設計パターンドキュメントに「直接呼び出し排除」のガイドラインを追加すべきか |
-| 既知の落とし穴             | 新たに発見された pitfall パターンがあるか                                               |
+**配置先:** `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/documentation-changelog.md`
 
-## 参照資料
+- Step 1-A〜1-G / Step 2 の実施結果を完了ベースで記録する
+- **計画表現や予定表現を残さない**
+- 仕様更新なしの場合も、判断根拠を明記する
 
-### 実装・証跡
+### Task 4: 未タスク検出
 
-| 資料名               | パス                                                                   | 用途                            |
-| -------------------- | ---------------------------------------------------------------------- | ------------------------------- |
-| SkillCreateWizard    | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`     | Before/After コード比較の参照先 |
-| useSkillAnalysis     | `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts` | Before/After コード比較の参照先 |
-| SkillManagementPanel | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`  | 統合パターンの参照先            |
-| agentSlice           | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                 | Store アクション定義の参照先    |
-| Phase 11 成果物      | `outputs/phase-11/`                                                    | 手動テスト結果の参照先          |
+**配置先:** `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/unassigned-task-detection.md`
 
-### システム仕様
+- `outputs/phase-12/unassigned-task-detection.md` を 0 件でも必ず作成する
+- 未タスクを検出した場合は Step 1-E の 3 ステップを全て完了する
 
-| 資料名                     | パス                                                                                 | 用途                                     |
-| -------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------- |
-| phase templates            | `.claude/skills/task-specification-creator/references/phase-templates.md`            | Phase 文書の構造を揃える                 |
-| spec-update-workflow       | `.claude/skills/aiworkflow-requirements/references/spec-update-workflow.md`          | 仕様書更新の手順を確認する               |
-| unassigned task guidelines | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md` | 未タスク検出のルールを確認する           |
-| arch-state-management      | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`         | Store 構成と agentSlice の設計を確認する |
-| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                 | Phase 12 の記録先を確認する              |
-| task-workflow-rules        | `.claude/skills/aiworkflow-requirements/references/task-workflow-rules.md`           | 未タスク化する判定基準を確認する         |
-| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`               | 再発防止カードを確認する                 |
+**想定される未タスク候補:**
 
-### 前提Phase成果物
+| 候補                                           | 判断基準                                                               |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| SkillManagementPanel の残存直接IPC呼び出し排除 | TASK-10A-F のスコープ外だが同種の直接IPC呼び出しが残存する可能性       |
+| Store mock パターン標準化                      | State selector / Action selector の mock 流儀が乱れていないか          |
+| improvementResult の Store 統合要否            | 将来 shared state に寄せる必要があるか                                 |
+| 他の UI コンポーネントの store 駆動統合        | SkillCreateWizard / SkillAnalysisView 以外のコンポーネントでの同種問題 |
 
-| 資料名          | パス                | 用途                           |
-| --------------- | ------------------- | ------------------------------ |
-| Phase 1 成果物  | `outputs/phase-1/`  | 要件定義の出力を参照する       |
-| Phase 2 成果物  | `outputs/phase-2/`  | 設計の出力を参照する           |
-| Phase 5 成果物  | `outputs/phase-5/`  | 実装の出力を参照する           |
-| Phase 6 成果物  | `outputs/phase-6/`  | テスト拡充の出力を参照する     |
-| Phase 7 成果物  | `outputs/phase-7/`  | カバレッジ確認の出力を参照する |
-| Phase 8 成果物  | `outputs/phase-8/`  | リファクタリング出力を参照する |
-| Phase 9 成果物  | `outputs/phase-9/`  | 品質保証の出力を参照する       |
-| Phase 10 成果物 | `outputs/phase-10/` | 最終レビューの出力を参照する   |
-| Phase 11 成果物 | `outputs/phase-11/` | 手動テスト結果を参照する       |
+### Task 5: スキルフィードバックレポート
 
-## 実行手順
+**配置先:** `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/skill-feedback-report.md`
 
-1. Task 1: `outputs/phase-12/implementation-guide.md` を Part 1（概念説明）→ Part 2（技術詳細）の順で作成する
-2. Task 2: Step 1-A → Step 1-B → Step 1-C → Step 1-D → Step 2 の順でシステム仕様書を更新する
-3. Task 3: `outputs/phase-12/documentation-changelog.md` に全 Step の結果を記録する。**全 Step 完了前に「完了」と記載しない**
-4. Task 4: `outputs/phase-12/unassigned-task-detection.md` を作成する。検出された未タスクがある場合は3ステップ全てを完了する
-5. Task 5: `outputs/phase-12/skill-feedback-report.md` を作成する
+- `task-specification-creator` / `aiworkflow-requirements` / pitfall 運用の 3 観点で記録する
+- 改善点がない場合でも `改善点なし` として出力する
 
-## Phase 12 漏れパターン対策チェックリスト
+### 追加成果物: spec-update-summary.md
 
-| 対策ID | 対象Pitfall | チェック内容                                                                                                                      | 確認 |
-| ------ | ----------- | --------------------------------------------------------------------------------------------------------------------------------- | ---- |
-| L-01   | P1/P25      | `.claude/skills/aiworkflow-requirements/LOGS.md` と `.claude/skills/task-specification-creator/LOGS.md` の2ファイルを両方更新した | [x]  |
-| L-02   | P2/P27      | `node generate-index.js` を実行して `topic-map.md` を再生成した                                                                   | [x]  |
-| L-03   | P3          | 未タスクの3ステップ（指示書作成 → 残課題テーブル登録 → 関連仕様書リンク追加）を全て完了した                                       | [x]  |
-| L-04   | P4          | documentation-changelog に全 Step の確認結果を記録してから「完了」と記載した                                                      | [x]  |
-| L-05   | P26         | システム仕様書を Phase 12 完了時点で更新した（PRマージを待たない）                                                                | [x]  |
-| L-06   | P28         | スキルフィードバックレポートを作成した（改善点なしでも出力）                                                                      | [x]  |
-| L-07   | P29         | SKILL.md の変更履歴テーブルを2ファイル両方更新した                                                                                | [x]  |
-| L-08   | P43         | 仕様書更新は3ファイル以下/エージェントに分割した                                                                                  | [x]  |
+**配置先:** `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/spec-update-summary.md`
 
-## 統合テスト連携
+- Step 1-A〜1-G / Step 2 の結果を 1 ファイルに集約する
+- validator / audit / quick_validate の結果もここに集約する
 
-- Task 1 の実装ガイドが Phase 5 の実装内容と整合していることを確認する
-- Task 2 のシステム仕様更新が Phase 10 のレビュー指摘を反映していることを確認する
-- Task 4 の未タスク検出が Phase 10 の MINOR 指摘を全て未タスク仕様書に変換していることを確認する
+## 多角的チェック観点
+
+| 観点             | 確認内容                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| 抽出網羅性       | `quick-reference` / `resource-map` / `requirements-coverage-matrix` が整合している    |
+| LOGS/SKILL 同期  | aiworkflow-requirements と task-specification-creator の両方を更新している            |
+| Phase 11証跡整合 | `manual-test-result.md`、`screenshots/`、Phase 12 成果物の記述が一致する              |
+| 2workflow移管    | 移管前 2workflow 監査結果と移管後 completed 正本の関係が崩れていない                  |
+| P4防止           | `documentation-changelog.md` に予定表現が残っていない                                 |
+| Step 1-E 完遂    | 未タスクがある場合、指示書 / 台帳 / 仕様リンクの 3 ステップを完了している             |
+| Step 1-G 検証    | validator / audit / quick_validate の結果が `spec-update-summary.md` に集約されている |
 
 ## 成果物
 
-| 成果物               | パス                                            | 説明                                   |
-| -------------------- | ----------------------------------------------- | -------------------------------------- |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | Part 1（概念説明）/ Part 2（技術詳細） |
-| 更新履歴             | `outputs/phase-12/documentation-changelog.md`   | 全仕様書の変更内容記録                 |
-| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md` | 未タスクの検出結果（0件でも出力）      |
-| スキル改善レポート   | `outputs/phase-12/skill-feedback-report.md`     | task-spec / aiworkflow への改善提案    |
-| 仕様更新サマリ       | `outputs/phase-12/spec-update-summary.md`       | Step 1-A 〜 Step 2 の更新結果サマリ    |
+| 成果物                  | パス                                                                                                                 | 説明                            |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| ドキュメント更新仕様書  | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/phase-12-documentation.md`                              | 本ドキュメント                  |
+| 実装ガイド              | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/implementation-guide.md`               | Part 1 + Part 2                 |
+| 仕様更新サマリ          | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/spec-update-summary.md`                | Step 1-A〜1-G / Step 2 集約     |
+| 2workflow監査サマリ     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/two-workflow-audit-summary.md`                  | 移管前 2workflow 監査と統合結果 |
+| documentation-changelog | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/documentation-changelog.md`            | 変更記録                        |
+| 未タスク検出            | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/unassigned-task-detection.md`          | 未タスク検出結果                |
+| スキルフィードバック    | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/skill-feedback-report.md`              | ワークフロー改善点              |
+| Phase 12 準拠チェック   | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-12/phase12-task-spec-compliance-check.md` | 任意の集約監査                  |
 
 ## 完了条件
 
-- [x] implementation-guide.md が Part 1（中学生レベル概念説明、日常例え話含む）/ Part 2（技術詳細）の2構成で作成されている
-- [x] documentation-changelog.md に全 Step（1-A, 1-B, 1-C, 1-D, 2）の完了結果が記録されている
-- [x] LOGS.md が `.claude/skills/aiworkflow-requirements/LOGS.md` と `.claude/skills/task-specification-creator/LOGS.md` の2ファイル両方で更新されている
-- [x] SKILL.md が `.claude/skills/aiworkflow-requirements/SKILL.md` と `.claude/skills/task-specification-creator/SKILL.md` の2ファイル両方で更新されている
-- [x] `topic-map.md` が `node generate-index.js` で再生成されている
-- [x] unassigned-task-detection.md が作成されている（0件でも出力）
-- [x] 検出された未タスクがある場合、3ステップ（指示書・残課題テーブル・関連仕様書リンク）が全て完了している
-- [x] skill-feedback-report.md が作成されている（改善点なしでも出力）
-- [x] aiworkflow 正本へ反映する更新先が具体ファイル名で記述されている
-- [x] Phase 12 漏れパターン対策チェックリスト（L-01 〜 L-08）が全項目チェック済みである
-- [x] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. Task 1: 実装ガイド作成
-3. Task 2: システム仕様書更新（Step 1-A → 1-B → 1-C → 1-D → Step 2）
-4. Task 3: documentation-changelog.md 作成
-5. Task 4: 未タスク検出レポート作成
-6. Task 5: スキルフィードバックレポート作成
-7. Phase 12 漏れパターン対策チェックリストの全項目確認
-8. 完了条件の検証
-
-## タスク100%実行確認【必須】
-
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.json が更新されている
-- [x] Phase 末端で完了内容を実行記録へ残している
+- [x] `outputs/phase-12/implementation-guide.md` が Part 1 / Part 2 の 2 部構成で作成されている
+- [x] `validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui` が PASS している
+- [x] `outputs/phase-12/spec-update-summary.md` が作成されている
+- [x] Step 1-A として LOGS.md / SKILL.md の 2 ファイルずつが両方更新されている
+- [x] Step 1-B / 1-C / 1-D の結果が `spec-update-summary.md` と `documentation-changelog.md` に記録されている
+- [x] 移管前 2workflow 監査と移管後 completed 正本への統合判断が記録されている
+- [x] Step 1-E の未タスク 3 ステップが必要時に全完了している
+- [x] Step 1-F が実施済みまたは N/A 理由付きで記録されている
+- [x] Step 1-G の validator / audit / quick_validate 結果が `spec-update-summary.md` に記録されている
+- [x] `outputs/phase-12/documentation-changelog.md` が計画表現なしで記録されている
+- [x] `outputs/phase-12/unassigned-task-detection.md` が 0 件でも作成されている
+- [x] `outputs/phase-12/skill-feedback-report.md` が改善点なしでも作成されている
+- [x] `outputs/phase-11/manual-test-result.md` / `screenshots/` / Phase 12 記録の内容が整合している
+- [x] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

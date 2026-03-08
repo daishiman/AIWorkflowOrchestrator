@@ -330,6 +330,15 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
 
+#### Task 3.6: comparison baseline 正規化【2workflow比較時必須】
+
+current workflow を `spec_created` のまま再監査し、completed workflow を comparison baseline として使う場合は、**current だけでなく baseline 側も validator PASS まで揃えてから** Phase 12 判定を書く。
+
+1. current workflow に対して `verify-all-specs --strict` / `validate-phase-output` / `validate-phase12-implementation-guide` を実行する
+2. comparison baseline の completed workflow に対しても `verify-all-specs --strict` / `validate-phase-output` を実行する
+3. completed workflow に legacy 名称や補助成果物欠落（例: `phase-11-manual-testing.md`, `phase-7-coverage-verification.md`, `outputs/artifacts.json` 欠落）がある場合は、同一ターンで正規化する
+4. current workflow の合否と baseline workflow の正規化結果を `spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `task-workflow.md` に分離記録する
+
 ---
 
 #### Task 4: 未タスク検出レポート作成【0件でも出力必須】
@@ -441,6 +450,13 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
 node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
+
+# comparison baseline を使う場合の strict 検証
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
+  --workflow docs/30-workflows/completed-tasks/{{FEATURE_NAME}} \
+  --strict
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/completed-tasks/{{FEATURE_NAME}}
 
 # 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \

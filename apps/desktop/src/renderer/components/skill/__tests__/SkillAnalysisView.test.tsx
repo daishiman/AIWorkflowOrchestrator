@@ -760,6 +760,73 @@ describe("SkillAnalysisView", () => {
   // ============================================
 
   // ------------------------------------------
+  // TC-AV-B04: analysis.score が 0 の場合に正しく表示される
+  // ------------------------------------------
+  it("TC-AV-B04: analysis.score が 0 の場合に正しく表示される", async () => {
+    mockCurrentAnalysis = createMockAnalysis({
+      overallScore: 0,
+    });
+
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getByText("総合スコア")).toBeInTheDocument();
+  });
+
+  // ------------------------------------------
+  // TC-AV-B05: analysis.score が 100 の場合に正しく表示される
+  // ------------------------------------------
+  it("TC-AV-B05: analysis.score が 100 の場合に正しく表示される", async () => {
+    mockCurrentAnalysis = createMockAnalysis({
+      overallScore: 100,
+    });
+
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    expect(screen.getByText("100")).toBeInTheDocument();
+    expect(screen.getByText("総合スコア")).toBeInTheDocument();
+  });
+
+  // ------------------------------------------
+  // TC-AV-E05: 再試行ボタンクリック後に clearSkillError が呼ばれる
+  // ------------------------------------------
+  it("TC-AV-E05: 再試行ボタンクリック後にanalyzeSkillが再実行される", async () => {
+    mockSkillError = "分析に失敗しました";
+    mockCurrentAnalysis = null;
+
+    await act(async () => {
+      render(
+        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
+      );
+    });
+
+    // エラーが表示されていることを確認
+    expect(screen.getByRole("alert")).toHaveTextContent("分析に失敗しました");
+
+    // 再試行前の呼び出し回数を記録
+    const callCountBefore = mockAnalyzeSkill.mock.calls.length;
+
+    // 再試行ボタンをクリック
+    await act(async () => {
+      fireEvent.click(screen.getByText("再試行"));
+    });
+
+    // analyzeSkill が再度呼ばれた
+    expect(mockAnalyzeSkill.mock.calls.length).toBeGreaterThan(callCountBefore);
+    expect(
+      mockAnalyzeSkill.mock.calls[mockAnalyzeSkill.mock.calls.length - 1][0],
+    ).toBe("test-skill");
+  });
+
+  // ------------------------------------------
   // 29. Error以外の例外がストアのskillErrorで表示される
   // ------------------------------------------
   it("skillErrorが設定されるとデフォルトメッセージで表示される", async () => {

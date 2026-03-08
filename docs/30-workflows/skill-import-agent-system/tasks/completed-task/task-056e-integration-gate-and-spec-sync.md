@@ -49,8 +49,8 @@ artifacts:
     - docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/outputs/verification-report.md
     - docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/outputs/elegant-solution-review.md
   modifies:
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture.md
-    - docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-0560-index.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-056-ui-01-store-ipc-architecture.md
+    - docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-0560-index.md
 ---
 
 # TASK-UI-01-E: 統合レビューゲートとシステム仕様同期要件
