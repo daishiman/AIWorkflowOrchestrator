@@ -56,4 +56,4 @@ import操作後に一覧が即時再計算される状態遷移を定義し、`T
 
 ## 親タスク仕様書
 
-`../skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043c-store-lifecycle-integration-design.md`
+`../skill-import-agent-system/tasks/completed-task/task-043c-store-lifecycle-integration-design.md`

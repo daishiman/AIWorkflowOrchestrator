@@ -6,7 +6,7 @@
 | -------- | ---------- |
 | タスクID | TASK-10A-F |
 | Phase    | 12         |
-| 作成日   | 2026-03-07 |
+| 作成日   | 2026-03-08 |
 
 ---
 
@@ -16,7 +16,7 @@
 
 **変更前（直接呼び出し）**:
 
-お客さん（画面）が注文係（Store）を通さずに、直接厨房（electronAPI）に行って「カレー作って！」と言っていました。このやり方だと、他の店員（他の画面）はお客さんが何を注文したか分かりません。注文が被ったり、在庫の確認ができなかったりします。
+たとえば、お客さん（画面）が注文係（Store）を通さずに、直接厨房（electronAPI）に行って「カレー作って！」と言っていた状態です。このやり方だと、他の店員（他の画面）はお客さんが何を注文したか分かりません。注文が被ったり、在庫の確認ができなかったりします。
 
 **変更後（Store経由）**:
 
@@ -69,6 +69,21 @@ applySkillImprovements: (skillName: string, suggestions: Suggestion[]) =>
 autoImproveSkill: (skillName: string) => Promise<void>;
 createSkill: (description: string, options: CreateSkillOptions) =>
   Promise<string>;
+```
+
+```typescript
+interface SkillLifecycleStoreContract {
+  currentAnalysis: SkillAnalysis | null;
+  isAnalyzing: boolean;
+  isImproving: boolean;
+  skillError: string | null;
+  analyzeSkill: (skillName: string) => Promise<void>;
+  applySkillImprovements: (
+    skillName: string,
+    suggestions: Suggestion[],
+  ) => Promise<void>;
+  autoImproveSkill: (skillName: string) => Promise<void>;
+}
 ```
 
 ### 個別セレクタ一覧
@@ -188,6 +203,7 @@ await analyzeSkill("test-skill");
 - `skillName` が空文字/空白のみの場合: Store action で reject し `skillError` を設定する。
 - analyze 後に apply/autoImprove が失敗した場合: UIはクラッシュさせず前回分析結果を維持する。
 - 連打による多重実行: `isAnalyzingSkill` / `isImprovingSkill` フラグでボタンをdisableし二重送信を防ぐ。
+- `createSkill()` が `null` / `undefined` を返した場合: `SkillCreateWizard` は完了画面へ進まず、フォールバックエラーを表示する。
 
 ### 設定可能なパラメータ一覧
 

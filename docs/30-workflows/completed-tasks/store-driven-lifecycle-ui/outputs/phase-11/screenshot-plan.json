@@ -1,0 +1,71 @@
+{
+  "workflow": "store-driven-lifecycle-ui",
+  "testCases": [
+    {
+      "tcId": "TC-11-01",
+      "screen": "SkillAnalysisView",
+      "state": "default-dark",
+      "file": "TC-01-analysis-default-dark.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "screen": "SkillAnalysisView",
+      "state": "selection",
+      "file": "TC-02-analysis-selection-dark.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "screen": "SkillAnalysisView",
+      "state": "apply-improved",
+      "file": "TC-03-analysis-apply-improved-dark.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "screen": "SkillAnalysisView",
+      "state": "auto-improved",
+      "file": "TC-04-analysis-auto-improved-dark.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "screen": "SkillAnalysisView",
+      "state": "error",
+      "file": "TC-05-analysis-error-dark.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "screen": "SkillAnalysisView",
+      "state": "loading",
+      "file": "TC-06-analysis-loading-dark.png"
+    },
+    {
+      "tcId": "TC-11-07",
+      "screen": "SkillAnalysisView",
+      "state": "default-light",
+      "file": "TC-07-analysis-default-light.png"
+    },
+    {
+      "tcId": "TC-11-08",
+      "screen": "SkillAnalysisView",
+      "state": "mobile",
+      "file": "TC-08-analysis-default-mobile-dark.png"
+    },
+    {
+      "tcId": "TC-11-09",
+      "screen": "SkillCreateWizard",
+      "state": "step1",
+      "file": "TC-09-create-step1-dark.png"
+    },
+    {
+      "tcId": "TC-11-10",
+      "screen": "SkillCreateWizard",
+      "state": "step2",
+      "file": "TC-10-create-step2-dark.png"
+    },
+    {
+      "tcId": "TC-11-11",
+      "screen": "SkillCreateWizard",
+      "state": "complete",
+      "file": "TC-11-create-complete-dark.png"
+    }
+  ]
+}

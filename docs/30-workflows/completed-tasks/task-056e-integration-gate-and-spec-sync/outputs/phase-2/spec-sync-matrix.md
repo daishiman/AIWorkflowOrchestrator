@@ -2,17 +2,17 @@
 
 ## 常時更新対象
 
-| 対象                                                                                                                                 | 区分     | Step | 更新理由                                       | 根拠              |
-| ------------------------------------------------------------------------------------------------------------------------------------ | -------- | ---- | ---------------------------------------------- | ----------------- |
-| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/artifacts.json`                                          | 常時更新 | 1-B  | Phase 実行状態を持つ正本                       | workflow 実行台帳 |
-| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md`                                                | 常時更新 | 1-B  | Phase ステータスと成果物を最新化する           | workflow 導線     |
-| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/phase-*.md`                                              | 常時更新 | 1-B  | 実行ステータスと完了条件を同期する             | workflow 本文     |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-056-ui-01-store-ipc-architecture.md` | 常時更新 | 1-C  | E の正本導線を parent へ反映する               | 056 親タスク      |
-| `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-0560-index.md`                       | 常時更新 | 1-C  | 056 系一覧から E へ到達できるようにする        | 056 index         |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                                 | 常時更新 | 1-A  | `spec_created` / 完了記録 / 残課題台帳の更新先 | Phase 12 必須     |
-| `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                                               | 常時更新 | 1-A  | 統合ゲート運用の教訓反映先                     | Phase 12 必須     |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`                                                                                     | 常時更新 | 1-A  | aiworkflow 側の実行ログ                        | Phase 12 必須     |
-| `.claude/skills/task-specification-creator/LOGS.md`                                                                                  | 常時更新 | 1-A  | task-spec 側の実行ログ                         | Phase 12 必須     |
+| 対象                                                                                                        | 区分     | Step | 更新理由                                       | 根拠              |
+| ----------------------------------------------------------------------------------------------------------- | -------- | ---- | ---------------------------------------------- | ----------------- |
+| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/artifacts.json`                 | 常時更新 | 1-B  | Phase 実行状態を持つ正本                       | workflow 実行台帳 |
+| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md`                       | 常時更新 | 1-B  | Phase ステータスと成果物を最新化する           | workflow 導線     |
+| `docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/phase-*.md`                     | 常時更新 | 1-B  | 実行ステータスと完了条件を同期する             | workflow 本文     |
+| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-056-ui-01-store-ipc-architecture.md` | 常時更新 | 1-C  | E の正本導線を parent へ反映する               | 056 親タスク      |
+| `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-0560-index.md`                       | 常時更新 | 1-C  | 056 系一覧から E へ到達できるようにする        | 056 index         |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                        | 常時更新 | 1-A  | `spec_created` / 完了記録 / 残課題台帳の更新先 | Phase 12 必須     |
+| `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                      | 常時更新 | 1-A  | 統合ゲート運用の教訓反映先                     | Phase 12 必須     |
+| `.claude/skills/aiworkflow-requirements/LOGS.md`                                                            | 常時更新 | 1-A  | aiworkflow 側の実行ログ                        | Phase 12 必須     |
+| `.claude/skills/task-specification-creator/LOGS.md`                                                         | 常時更新 | 1-A  | task-spec 側の実行ログ                         | Phase 12 必須     |
 
 ## 条件付き更新対象
 

@@ -63,6 +63,7 @@
 補足:
 - App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
 - ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、差し替えた mock 境界を `manual-test-result.md` に明記する。
+- App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
@@ -329,6 +330,15 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
 
+#### Task 3.6: comparison baseline 正規化【2workflow比較時必須】
+
+current workflow を `spec_created` のまま再監査し、completed workflow を comparison baseline として使う場合は、**current だけでなく baseline 側も validator PASS まで揃えてから** Phase 12 判定を書く。
+
+1. current workflow に対して `verify-all-specs --strict` / `validate-phase-output` / `validate-phase12-implementation-guide` を実行する
+2. comparison baseline の completed workflow に対しても `verify-all-specs --strict` / `validate-phase-output` を実行する
+3. completed workflow に legacy 名称や補助成果物欠落（例: `phase-11-manual-testing.md`, `phase-7-coverage-verification.md`, `outputs/artifacts.json` 欠落）がある場合は、同一ターンで正規化する
+4. current workflow の合否と baseline workflow の正規化結果を `spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `task-workflow.md` に分離記録する
+
 ---
 
 #### Task 4: 未タスク検出レポート作成【0件でも出力必須】
@@ -418,6 +428,8 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] UI/UX変更タスクの場合: 再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録し、失敗時は未タスク化したこと
 - [ ] UI/UX変更タスクの場合: 再撮影後に `stat` 実時刻と `manual-test-result.md`（必要に応じて `screenshot-coverage.md`）の更新時刻が一致していること
 - [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
+- [ ] `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
+- [ ] Step 2 で domain spec を更新した場合、少なくとも 1 つの正本仕様書に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード`、またはそれと等価な lessons 参照が記録されている
 - [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
 - [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
@@ -438,6 +450,13 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
 node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
+
+# comparison baseline を使う場合の strict 検証
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
+  --workflow docs/30-workflows/completed-tasks/{{FEATURE_NAME}} \
+  --strict
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+  docs/30-workflows/completed-tasks/{{FEATURE_NAME}}
 
 # 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \

@@ -7,8 +7,8 @@
 | current workflow `artifacts.json`                 | 常時更新     | 1-B  | Phase 状態の正本                            | 更新対象           |
 | current workflow `index.md`                       | 常時更新     | 1-B  | 進捗導線の正本                              | 更新対象           |
 | current workflow `phase-*.md`                     | 常時更新     | 1-B  | ステータスと完了条件の同期                  | 更新対象           |
-| parent `task-056-ui-01-store-ipc-architecture.md` | 常時更新     | 1-C  | E の参照導線を正規化                        | 更新対象           |
-| parent `task-0560-index.md`                       | 常時更新     | 1-C  | 056 系 index と正本導線を一致させる         | 更新対象           |
+| parent `task-056-ui-01-store-ipc-architecture.md` | 常時更新     | 1-C  | `tasks/completed-task/` 側へ導線を正規化    | 更新対象           |
+| parent `task-0560-index.md`                       | 常時更新     | 1-C  | `tasks/completed-task/` 側へ導線を正規化    | 更新対象           |
 | `task-workflow.md`                                | 常時更新     | 1-A  | `spec_created` / 完了記録 / 残課題導線      | Phase 12 で判定    |
 | `lessons-learned.md`                              | 常時更新     | 1-A  | path 正規化と downstream handoff の教訓     | Phase 12 で判定    |
 | aiworkflow / task-spec `LOGS.md`                  | 常時更新     | 1-A  | 実行ログ                                    | Phase 12 で判定    |

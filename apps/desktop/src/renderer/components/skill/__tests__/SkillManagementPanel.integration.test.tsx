@@ -357,6 +357,49 @@ describe("SkillManagementPanel integration", () => {
     expect(screen.getAllByRole("alert")).toHaveLength(1);
   });
 
+  it("TC-RT-05: 分析ビューから一覧に戻った際に一覧表示が維持される", async () => {
+    render(<SkillManagementPanel />);
+
+    // 一覧表示の初期状態を確認（imported + available 両セクション）
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-imported-section"),
+    ).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-available-section"),
+    ).toBeDefined();
+
+    // 分析ビューに遷移
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText("skill-alpha を分析"));
+    });
+
+    expect(screen.getByTestId("mock-skill-analysis-view")).toBeDefined();
+    expect(screen.queryByTestId("skill-management-panel")).toBeNull();
+
+    // 分析ビューを閉じて一覧に戻る
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("analysis-close"));
+    });
+
+    // 一覧表示が維持されている（imported + available 両セクションとデータ）
+    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-imported-section"),
+    ).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-available-section"),
+    ).toBeDefined();
+    // セクションのカウント表示も維持される
+    expect(screen.getByTestId("skill-management-imported-count")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-available-count"),
+    ).toBeDefined();
+  });
+
   it("検索クエリは analysis view を往復しても維持される", async () => {
     render(<SkillManagementPanel />);
 

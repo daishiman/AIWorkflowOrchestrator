@@ -10,6 +10,71 @@
 
 ---
 
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了条件の明文化
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（guide update）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` の完了チェックへ、`phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックを実績同期する要件を追加
+  - system spec を更新した場合は、domain spec 側にも `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` か等価な lessons 参照を残す条件を追加
+  - Phase 12 を「成果物がある」だけで閉じず、再利用知見まで仕様へ固定する運用を明文化
+
+---
+
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - `api-ipc-auth.md` に完了タスクセクション追加（Profile 11ch / Avatar 3ch fallback ハンドラ）と変更履歴 v1.7.0 追記
+  - `error-handling.md` に変更履歴 v1.10.0 追記（PROFILE_ERROR_CODES.NOT_CONFIGURED / AVATAR_ERROR_CODES.NOT_CONFIGURED）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-08 - TASK-10A-F final sync（current/completed 2workflow 正規化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（final sync）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow の screenshot 11件を 2026-03-08 18:07-18:15 JST に再取得し、Phase 11 結果文書の時刻と証跡を同期
+  - `completed-tasks/store-driven-lifecycle-ui` の `phase-7-coverage-verification.md` / `phase-11-manual-testing.md` / Phase 11 artifact registry を正規化し、`verify-all-specs --strict` と `validate-phase-output` を PASS 化
+  - `capture-skill-create-wizard-screenshots.mjs` の error 待機を Store UI のフォールバック文言へ補正し、scenario 単位の failure diagnostics を追加
+  - `phase-12-documentation.md` Step 1-D の `generate-index.js` パス誤りを是正し、Phase 12 summary/changelog/feedback を final 状態へ更新
+
+---
+
+## 2026-03-08 - TASK-10A-F current workflow 再確認追補（Phase 11/12 実体同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認追補）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow に screenshot 11件を再取得し、`manual-test-result.md` を screenshot evidence + targeted tests 111件へ更新
+  - `implementation-guide.md` を validator 要件に合わせて補強し、`validate-phase12-implementation-guide` を PASS 化
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を実更新ベースへ書換
+  - TASK-10A-F 由来の未タスク3件は canonical backlog として維持し、legacy 正規化ガードの `## メタ情報` 重複のみを是正した
+
+---
+
+## 2026-03-08 - TASK-10A-F Phase 12タスク仕様再確認ガード追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再確認）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に comparison baseline の completed workflow も strict validator PASS へ揃える手順を追加
+  - `references/unassigned-task-guidelines.md` に `current=合否 / baseline=legacy 負債監視` の二層報告ルールを追加
+  - `task-imp-unassigned-task-legacy-normalization-001.md` の `## メタ情報` 重複を是正し、legacy 改善タスク自体をガイドライン準拠へ戻した
+
+---
+
 ## 2026-03-07 - TASK-10A-F Phase 12 再確認（スクリーンショット証跡 + 仕様同期）
 
 - **Agent**: task-specification-creator

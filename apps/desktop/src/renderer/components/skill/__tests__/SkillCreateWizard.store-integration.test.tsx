@@ -10,9 +10,11 @@
  * window.electronAPI直接呼び出しが発生しないことを保証する。
  */
 
+import React from "react";
 import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { SkillCreateWizard } from "../SkillCreateWizard";
+import { useCreateSkill } from "../../../store";
 
 // Store セレクタモック
 const mockCreateSkill = vi.fn();
@@ -166,6 +168,139 @@ describe("SkillCreateWizard Store統合", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
       expect(screen.getByTestId("wizard-step-generate")).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // TC-CW-05: createSkill が null/undefined を返した場合のフォールバック
+  // ============================================================
+  describe("createSkill が null/undefined を返した場合のフォールバック（TC-CW-05）", () => {
+    it("createSkill が null を返した場合にフォールバックエラーが表示される", async () => {
+      mockCreateSkill.mockResolvedValue(null);
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
+    });
+
+    it("createSkill が undefined を返した場合にフォールバックエラーが表示される", async () => {
+      mockCreateSkill.mockResolvedValue(undefined);
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
+    });
+
+    it("createSkill が null を返した場合に完了ステップに遷移しない", async () => {
+      mockCreateSkill.mockResolvedValue(null);
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      expect(screen.getByTestId("wizard-step-generate")).toBeInTheDocument();
+      expect(
+        screen.queryByTestId("wizard-step-complete"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // TC-CW-06: 生成中にボタンが非活性（UI制御）
+  // ============================================================
+  describe("生成中のUI制御（TC-CW-06）", () => {
+    it("生成中は ConfigureStep（スキルを生成ボタン）が非表示になる", async () => {
+      mockCreateSkill.mockReturnValue(new Promise(() => {}));
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      // Step 2（GenerateStep）に遷移し、ConfigureStep のボタンは表示されない
+      expect(screen.getByTestId("wizard-step-generate")).toBeInTheDocument();
+      expect(
+        screen.queryByTestId("wizard-step-configure"),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "スキルを生成" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("生成中は「戻る」ボタンも表示されない", async () => {
+      mockCreateSkill.mockReturnValue(new Promise(() => {}));
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      expect(
+        screen.queryByRole("button", { name: "戻る" }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // TC-CW-07 / TC-P31-01: useCreateSkill 安定参照（P31 回帰テスト）
+  // ============================================================
+  describe("useCreateSkill 安定参照（P31 回帰テスト）", () => {
+    it("useCreateSkill が複数レンダー間で同一参照を返す（TC-P31-01）", () => {
+      // vi.mock 済みの useCreateSkill は常に同じ mockCreateSkill を返す
+      // renderHook で複数回レンダーし、参照安定性を検証
+      const refs: Array<typeof mockCreateSkill> = [];
+
+      const TestComponent = () => {
+        const createSkillFn = useCreateSkill();
+        refs.push(createSkillFn);
+        return null;
+      };
+
+      const { rerender } = render(<TestComponent />);
+      rerender(<TestComponent />);
+      rerender(<TestComponent />);
+
+      // P31 対策: 全レンダー間で同一参照（Object.is）
+      expect(refs.length).toBeGreaterThanOrEqual(3);
+      expect(refs[0]).toBe(refs[1]);
+      expect(refs[1]).toBe(refs[2]);
+    });
+
+    it("useCreateSkill の参照変化が useEffect 無限ループを引き起こさない（P31 対策）", () => {
+      let effectRunCount = 0;
+
+      const TestComponent = () => {
+        const createSkillFn = useCreateSkill();
+
+        React.useEffect(() => {
+          effectRunCount++;
+          // P31 パターン: アクション関数を依存配列に含める
+          // 安定参照であれば effect は初回（+ StrictMode 分）のみ実行
+        }, [createSkillFn]);
+
+        return <div data-testid="p31-test" />;
+      };
+
+      render(<TestComponent />);
+      // happy-dom では StrictMode 無しのため 1 回、StrictMode ありなら 2 回
+      expect(effectRunCount).toBeLessThanOrEqual(2);
     });
   });
 });

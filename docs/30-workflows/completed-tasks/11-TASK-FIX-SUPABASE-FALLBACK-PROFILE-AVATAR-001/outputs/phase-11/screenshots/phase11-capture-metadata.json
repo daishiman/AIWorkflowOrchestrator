@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-03-08T08:58:51.538Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "captures": [
+    {
+      "id": "TC-11-UI-01",
+      "route": "http://127.0.0.1:5173/phase11-auth-mode.html",
+      "output": "outputs/phase-11/screenshots/TC-11-UI-01-settings-overview.png",
+      "target": "settings-view"
+    },
+    {
+      "id": "TC-11-UI-02",
+      "route": "http://127.0.0.1:5173/phase11-auth-mode.html",
+      "output": "outputs/phase-11/screenshots/TC-11-UI-02-profile-fallback-error.png",
+      "target": "profile-section"
+    },
+    {
+      "id": "TC-11-UI-03",
+      "route": "http://127.0.0.1:5173/phase11-auth-mode.html",
+      "output": "outputs/phase-11/screenshots/TC-11-UI-03-avatar-fallback-error.png",
+      "target": "account-section"
+    }
+  ]
+}

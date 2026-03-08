@@ -1,0 +1,524 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "interview-result.json",
+  "title": "Interview Result",
+  "description": "ユーザーインタビューの結果を格納するスキーマ",
+  "type": "object",
+  "required": ["interviewDepth", "abstractionLevel", "goal", "features", "structure"],
+  "properties": {
+    "interviewDepth": {
+      "type": "string",
+      "enum": ["quick", "standard", "detailed"],
+      "description": "インタビュー深度（quick: 最小限の質問で素早く作成, standard: バランスの取れたヒアリング, detailed: 全Phase網羅的に実行）",
+      "default": "standard"
+    },
+    "abstractionLevel": {
+      "type": "string",
+      "enum": ["L1", "L2", "L3"],
+      "description": "抽象度レベル（L1: Concept, L2: Capability, L3: Implementation）"
+    },
+    "goal": {
+      "type": "string",
+      "description": "ユーザーが達成したいこと"
+    },
+    "domain": {
+      "type": "string",
+      "description": "対象領域・コンテキスト"
+    },
+    "frequency": {
+      "type": "string",
+      "enum": ["daily", "weekly", "monthly", "on-demand"],
+      "description": "使用頻度"
+    },
+    "scale": {
+      "type": "string",
+      "enum": ["personal", "team", "organization"],
+      "description": "使用規模"
+    },
+    "features": {
+      "type": "array",
+      "description": "必要な機能リスト",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "priority"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "機能名"
+          },
+          "description": {
+            "type": "string",
+            "description": "機能の説明"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["must", "should", "could"],
+            "description": "優先度（MoSCoW準拠・3段階: Won'tは対象外機能として扱い記録しない）"
+          }
+        }
+      }
+    },
+    "integrations": {
+      "type": "array",
+      "description": "外部連携リスト",
+      "items": {
+        "type": "object",
+        "required": ["service", "purpose"],
+        "properties": {
+          "service": {
+            "type": "string",
+            "description": "サービス名"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "連携目的"
+          },
+          "authType": {
+            "type": "string",
+            "enum": ["api-key", "oauth", "basic", "token", "none"],
+            "description": "認証方式"
+          }
+        }
+      }
+    },
+    "scripts": {
+      "type": "array",
+      "description": "必要なスクリプトリスト",
+      "items": {
+        "type": "object",
+        "required": ["purpose"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "スクリプトタイプ（定義済みタイプまたはcustom）"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "スクリプトの目的"
+          },
+          "runtime": {
+            "type": "string",
+            "enum": ["node", "python", "bash", "bun", "deno"],
+            "description": "実行ランタイム"
+          },
+          "isCustom": {
+            "type": "boolean",
+            "description": "カスタムスクリプトかどうか",
+            "default": false
+          }
+        }
+      }
+    },
+    "structure": {
+      "type": "string",
+      "enum": ["simple", "standard", "full", "custom"],
+      "description": "スキルの構成タイプ"
+    },
+    "priorities": {
+      "type": "array",
+      "description": "設計の優先事項",
+      "items": {
+        "type": "string",
+        "enum": ["speed", "maintainability", "extensibility", "simplicity"]
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "description": "制約条件リスト",
+      "items": {
+        "type": "string"
+      }
+    },
+    "orchestration": {
+      "type": "object",
+      "description": "オーケストレーション設定",
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "enum": ["chain", "parallel", "conditional", "single"],
+          "description": "実行パターン（chain: 順次実行, parallel: 並列実行, conditional: 条件分岐, single: 単一処理）"
+        },
+        "chainOrder": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "チェーン実行時の処理順序"
+        },
+        "parallelTasks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "並列実行するタスク一覧"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "if": { "type": "string" },
+              "then": { "type": "string" },
+              "else": { "type": "string" }
+            }
+          },
+          "description": "条件分岐ルール"
+        }
+      }
+    },
+    "scheduling": {
+      "type": "object",
+      "description": "スケジュール・トリガー設定",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["manual", "cron", "event-driven", "manual-and-schedule"],
+          "description": "実行タイミング"
+        },
+        "cronExpression": {
+          "type": "string",
+          "description": "cron式（cron/manual-and-schedule時）",
+          "pattern": "^[0-9*,/-]+ [0-9*,/-]+ [0-9*,/-]+ [0-9*,/-]+ [0-9*,/-]+$"
+        },
+        "triggerType": {
+          "type": "string",
+          "enum": ["webhook", "file-watch", "git", "none"],
+          "description": "イベントトリガータイプ（event-driven時）"
+        },
+        "triggerConfig": {
+          "type": "object",
+          "description": "トリガー固有の設定"
+        }
+      }
+    },
+    "documentation": {
+      "type": "object",
+      "description": "ドキュメント生成設定",
+      "properties": {
+        "needsApiGuide": {
+          "type": "boolean",
+          "description": "API連携セットアップガイドが必要か",
+          "default": false
+        },
+        "needsEnvGuide": {
+          "type": "boolean",
+          "description": "環境構築ガイドが必要か",
+          "default": false
+        },
+        "apiServices": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "APIセットアップが必要なサービス一覧"
+        },
+        "envVariables": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "必要な環境変数一覧"
+        }
+      }
+    },
+    "skillDependencies": {
+      "type": "object",
+      "description": "他スキルとの依存関係設定（存在しない場合または空オブジェクトの場合は依存関係なしとして扱う）",
+      "properties": {
+        "dependsOn": {
+          "type": "array",
+          "description": "このスキルが呼び出す他スキル",
+          "items": {
+            "type": "object",
+            "required": ["skillName", "purpose"],
+            "properties": {
+              "skillName": {
+                "type": "string",
+                "description": "参照するスキル名（.claude/skills/ 配下のディレクトリ名）"
+              },
+              "purpose": {
+                "type": "string",
+                "description": "参照目的"
+              },
+              "referenceType": {
+                "type": "string",
+                "enum": ["read-only", "execute-script", "invoke-agent", "chain-step"],
+                "description": "参照タイプ（読み取り専用 / スクリプト実行 / エージェント呼出 / チェーンステップ）"
+              },
+              "required": {
+                "type": "boolean",
+                "description": "必須依存かオプショナルか",
+                "default": true
+              }
+            }
+          }
+        },
+        "dependedBy": {
+          "type": "array",
+          "description": "このスキルを呼び出す他スキル（被依存）",
+          "items": {
+            "type": "object",
+            "required": ["skillName", "exposedInterface"],
+            "properties": {
+              "skillName": {
+                "type": "string",
+                "description": "呼び出し元スキル名"
+              },
+              "exposedInterface": {
+                "type": "string",
+                "enum": ["script", "agent", "reference", "schema", "asset"],
+                "description": "公開するインターフェースの種類"
+              },
+              "exposedPaths": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "公開するファイルパス一覧"
+              }
+            }
+          }
+        },
+        "sharedResources": {
+          "type": "array",
+          "description": "複数スキル間で共有するリソース",
+          "items": {
+            "type": "object",
+            "required": ["resourcePath", "owner"],
+            "properties": {
+              "resourcePath": {
+                "type": "string",
+                "description": "共有リソースのパス"
+              },
+              "owner": {
+                "type": "string",
+                "description": "リソースのオーナースキル名"
+              },
+              "consumers": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "リソースを利用するスキル名一覧"
+              }
+            }
+          }
+        }
+      }
+    },
+    "externalCliAgents": {
+      "type": "array",
+      "description": "外部CLIエージェント連携設定",
+      "items": {
+        "type": "object",
+        "required": ["agentName", "purpose"],
+        "properties": {
+          "agentName": {
+            "type": "string",
+            "enum": ["codex", "gemini", "aider", "claude-code", "custom"],
+            "description": "外部CLIエージェント名"
+          },
+          "customCommand": {
+            "type": "string",
+            "description": "カスタムエージェントの実行コマンド名（agentName='custom'時に必須）"
+          },
+          "purpose": {
+            "type": "string",
+            "description": "利用目的"
+          },
+          "invocationPattern": {
+            "type": "string",
+            "enum": ["delegate", "parallel-review", "fallback", "pipeline"],
+            "description": "呼び出しパターン（委譲 / 並列レビュー / フォールバック / パイプライン）"
+          },
+          "inputFormat": {
+            "type": "string",
+            "enum": ["prompt-string", "context-file", "stdin-pipe"],
+            "description": "入力形式"
+          },
+          "outputFormat": {
+            "type": "string",
+            "enum": ["text", "json", "stream-json", "markdown"],
+            "description": "出力形式"
+          },
+          "timeout": {
+            "type": "integer",
+            "description": "タイムアウト（秒）",
+            "default": 1200
+          }
+        }
+      }
+    },
+    "multiSkillPlan": {
+      "type": "object",
+      "description": "複数スキル同時作成プラン（マルチスキル作成時のみ）",
+      "properties": {
+        "skills": {
+          "type": "array",
+          "description": "作成するスキル一覧",
+          "items": {
+            "type": "object",
+            "required": ["name", "role"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "スキル名"
+              },
+              "role": {
+                "type": "string",
+                "description": "このスキルの役割"
+              },
+              "creationOrder": {
+                "type": "integer",
+                "description": "作成順序（依存関係に基づく）"
+              }
+            }
+          }
+        },
+        "dependencyGraph": {
+          "type": "object",
+          "description": "スキル間の依存関係グラフ",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "additionalNotes": {
+      "type": "string",
+      "description": "その他の要望・補足"
+    },
+    "suggestedSkillName": {
+      "type": "string",
+      "description": "推奨スキル名",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "interviewTimestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "インタビュー実施日時"
+    }
+  },
+  "examples": [
+    {
+      "interviewDepth": "standard",
+      "abstractionLevel": "L2",
+      "goal": "PRを自動作成したい",
+      "domain": "開発ワークフロー",
+      "frequency": "daily",
+      "scale": "team",
+      "features": [
+        {
+          "name": "差分分析",
+          "description": "コミット差分を分析してPR本文を生成",
+          "priority": "must"
+        },
+        {
+          "name": "品質チェック",
+          "description": "lint/typecheck/testを実行",
+          "priority": "should"
+        }
+      ],
+      "integrations": [
+        {
+          "service": "GitHub",
+          "purpose": "PR作成、ブランチ操作",
+          "authType": "token"
+        }
+      ],
+      "scripts": [
+        {
+          "type": "git-ops",
+          "purpose": "ブランチ作成、コミット",
+          "runtime": "bash"
+        }
+      ],
+      "structure": "standard",
+      "priorities": ["speed", "maintainability"],
+      "constraints": ["Node.js 18以上", "pnpmを使用"],
+      "orchestration": {
+        "pattern": "chain",
+        "chainOrder": ["品質チェック", "差分分析", "PR作成"]
+      },
+      "scheduling": {
+        "type": "manual",
+        "triggerType": "none"
+      },
+      "documentation": {
+        "needsApiGuide": true,
+        "needsEnvGuide": true,
+        "apiServices": ["GitHub"],
+        "envVariables": ["GITHUB_TOKEN"]
+      },
+      "suggestedSkillName": "pr-creator"
+    },
+    {
+      "interviewDepth": "detailed",
+      "abstractionLevel": "L3",
+      "goal": "複数のAIエージェントを連携させてコードレビューを多角化したい",
+      "domain": "コードレビュー",
+      "frequency": "daily",
+      "scale": "team",
+      "features": [
+        {
+          "name": "マルチエージェントレビュー",
+          "description": "Claude Code + Gemini CLIで並列レビューし結果を統合",
+          "priority": "must"
+        }
+      ],
+      "integrations": [
+        {
+          "service": "GitHub",
+          "purpose": "PR差分取得",
+          "authType": "token"
+        }
+      ],
+      "scripts": [
+        {
+          "type": "custom",
+          "purpose": "レビュー結果の統合・レポート生成",
+          "runtime": "node",
+          "isCustom": true
+        }
+      ],
+      "structure": "full",
+      "priorities": ["maintainability", "extensibility"],
+      "constraints": [],
+      "orchestration": {
+        "pattern": "parallel",
+        "parallelTasks": ["claude-review", "gemini-review"]
+      },
+      "scheduling": {
+        "type": "event-driven",
+        "triggerType": "webhook"
+      },
+      "documentation": {
+        "needsApiGuide": true,
+        "needsEnvGuide": true,
+        "apiServices": ["GitHub"],
+        "envVariables": ["GITHUB_TOKEN"]
+      },
+      "skillDependencies": {
+        "dependsOn": [
+          {
+            "skillName": "context-optimization",
+            "purpose": "レビュー対象コードの圧縮・最適化",
+            "referenceType": "execute-script",
+            "required": false
+          }
+        ],
+        "dependedBy": [],
+        "sharedResources": []
+      },
+      "externalCliAgents": [
+        {
+          "agentName": "gemini",
+          "purpose": "セカンドオピニオンとしてのコードレビュー",
+          "invocationPattern": "parallel-review",
+          "inputFormat": "context-file",
+          "outputFormat": "markdown",
+          "timeout": 300
+        },
+        {
+          "agentName": "custom",
+          "customCommand": "my-review-tool",
+          "purpose": "社内カスタムレビューツールによる追加チェック",
+          "invocationPattern": "pipeline",
+          "inputFormat": "stdin-pipe",
+          "outputFormat": "json",
+          "timeout": 600
+        }
+      ],
+      "suggestedSkillName": "multi-agent-reviewer"
+    }
+  ]
+}

@@ -10,20 +10,33 @@
 | ドメイン                  | 成功パターン                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | 失敗パターン                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 🔐 認証・セッション       | Supabase SDK競合防止, setTimeout方式選択, Callback DI, Zustandリスナー二重登録防止, IPC経由エラー伝達, OAuthコールバックエラー抽出, React Portal z-index, Supabase認証状態即時更新                                                                                                                                                                                                                                                                                                                                                                                                           | -                                                                                                                                                                                                                                                                                                                                                                                  |
-| ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化                                                                                                                                                                                                                                                                    |
-| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **target監査 + 10見出し同時検証**, **未タスクメタ情報1セクション運用**, **phase-12仕様書ステータス同期（未実施→完了）**, **5仕様書同期 + IPC三点突合テンプレート**, **IPC追加時の登録配線突合（handler/register/preload）**, **待機API/停止API責務分離の仕様固定**, **仕様書単位SubAgent + N/A判定ログ固定**, **UI機能実装の未タスク6件分解（TASK-UI-05）**, **未タスクtarget監査 + diff監査の二段合否固定**, **UI機能6仕様書SubAgent同期テンプレート**, **UI基本6+ドメイン追加仕様同期（TASK-UI-02）**, **Phase 12依存成果物参照補完（warningドリフト防止）**, **UI再確認スクリーンショット再撮影固定（TASK-UI-05B）**, **UI6仕様書の1仕様書1SubAgent固定（TASK-UI-05B）**, **3workflow再監査 + 未タスク個別監査の二段固定（TASK-FIX-SKILL-IMPORT 3連続是正）**, **UI再撮影前preview preflight + 失敗時未タスク化固定（SkillCenter）**, **UI再撮影前ポート競合preflight（5174）+ 分岐記録固定（workflow02）**, **UI再撮影のworkflow保存先固定 + strictPort preflight（5177）分岐記録**, **同種課題の5分解決カード同期（TASK-055）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクメタ情報の二重定義**, **phase-12仕様書ステータス未更新**, **未タスクの存在確認止まり（10見出し未検証）**, **api-ipc仕様を同期対象から除外**, **IPCハンドラ実装のみで登録配線を未確認**, **timeout待機APIへの停止副作用混在**, **非対象仕様（N/A）の記録漏れ**, **task-workflow のみ更新で lessons-learned 同期漏れ**, **UIタスクに5仕様書テンプレートを誤適用**, **UI6仕様書だけ更新して domain UI spec を未同期**, **verify-all-specs warningドリフトの放置**, **UI再確認で既存スクショ存在確認のみで完了判定**, **UI6仕様書を束ねて責務境界が曖昧**, **preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）**, **Port 5174 競合ログ混在を未記録のまま完了判定**, **Port 5177 preflight未記録のまま再撮影を継続**, **5分解決カードをtask-workflowのみ更新して他仕様へ未同期** |
-| 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**, **IPC契約ブリッジ（正式契約 + 後方互換）**, **IPC登録後のサービスバレル公開整合チェック**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**, **正式契約切替時の後方互換欠落**, **サービス層バレル公開漏れ（直接import固定化）**                                                                                                                                                                                                                                                                      |
+| ⏱️ テスト                 | vi.useFakeTimers+flushPromises, ARIA属性ベースセレクタ, E2Eヘルパー関数分離, E2E安定性対策3層, mockReturnValueOnceテスト間リーク防止, 統合テスト依存サービスモック漏れ防止, DIテストモック大規模修正, Store Hook renderHookパターン, **テスト環境別イベント発火選択**, **モノレポテスト実行ディレクトリ**, **SDKテスト有効化モック2段階リセット**, **Vitest未処理Promise拒否の可視化運用**, **整合性テスト駆動の設定管理**, **grepベース仕様書TDD（spec-onlyタスク）**, **引数形式差異の共通化判断（YAGNI）**, **コンポーネント分割テスト戦略**, **P31回帰テスト（renderHook参照安定性）**, **Store統合テスト分離（UI/Store/セレクタ3層）**, **品質ゲート仕様先行（テストマトリクス事前定義）**, **証跡先行固定（SettingsView回帰）**                                                                                | テスト環境問題の実装問題誤認, モジュールモック下タイマーテスト失敗, dangerouslyIgnoreUnhandledErrors 常時有効化, **screenshot取得失敗を後追い修正で放置**                                                                                                                                                                                                                                                                    |
+| 📋 Phase 12               | 成果物名厳密化, サブタスク完了チェックリスト, Step 1完了チェックリスト, Phase 12 Task 2クイックリファレンス, 横断的問題追加検証, 未タスク2段階判定（raw→精査）, **仕様書参照パス実在チェック**, 実装差分ベース文書化, **実装-仕様ドリフト再監査（数値・パス・文言）**, **仕様更新三点セット（quality/task-workflow/lessons-learned）**, **`spec_created` 状態判定**, **未実施タスク配置ドリフト是正（completed-tasks/unassigned-task → unassigned-task）**, **成果物ログとStep判定の同期（先送り禁止）**, **全体監査と対象差分の分離報告**, **仕様書修正タスクPhaseテンプレート（N/A記録）**, **spec-update-summary + artifacts二重台帳同期**, **仕様書修正タスク簡略Phase適用**, **実装ガイド2パート要件ギャップの即時是正**, **監査結果→次アクションブリッジ**, **Task 1〜5証跡突合レポート固定化**, **実装内容+苦戦箇所テンプレート適用**, **仕様書別SubAgent同期テンプレート**, **target監査 + 10見出し同時検証**, **未タスクメタ情報1セクション運用**, **phase-12仕様書ステータス同期（未実施→完了）**, **5仕様書同期 + IPC三点突合テンプレート**, **IPC追加時の登録配線突合（handler/register/preload）**, **待機API/停止API責務分離の仕様固定**, **仕様書単位SubAgent + N/A判定ログ固定**, **UI機能実装の未タスク6件分解（TASK-UI-05）**, **未タスクtarget監査 + diff監査の二段合否固定**, **UI機能6仕様書SubAgent同期テンプレート**, **UI基本6+ドメイン追加仕様同期（TASK-UI-02）**, **Phase 12依存成果物参照補完（warningドリフト防止）**, **UI再確認スクリーンショット再撮影固定（TASK-UI-05B）**, **UI6仕様書の1仕様書1SubAgent固定（TASK-UI-05B）**, **3workflow再監査 + 未タスク個別監査の二段固定（TASK-FIX-SKILL-IMPORT 3連続是正）**, **comparison baseline 正規化つき branch 再監査（TASK-10A-F）**, **並列エージェント台帳同期パターン（TASK-10A-F）**, **Store駆動移行の仕様書更新チェックリスト（TASK-10A-F）**, **fallback error の transport/UI localized 分離 + 画面起点未タスク formalization**, **UI再撮影前preview preflight + 失敗時未タスク化固定（SkillCenter）**, **UI再撮影前ポート競合preflight（5174）+ 分岐記録固定（workflow02）**, **UI再撮影のworkflow保存先固定 + strictPort preflight（5177）分岐記録**, **同種課題の5分解決カード同期（TASK-055）**, **branch横断 Phase 12 一括監査（workflow複数同時検証）**, **P50パターン既実装→検証モード切替（TASK-FIX-SUPABASE-FALLBACK）** | 成果物名暗黙解釈, サブタスク暗黙省略, Step 1-A更新漏れ, 未タスクraw検出の誤読, 実装ガイドへの誤ファイル名混入, **仕様書タスクのcompleted誤判定**, **未実施タスクの completed-tasks 配置混入**, **Step2「該当なし」誤判定/Phase 13先送り記載**, **全体ベースライン違反の今回起因誤判定**, **Phase4修正箇所数の事前ファイル検証不足**, **Phase 10/11サブエージェント出力の非永続化**, **spec-update-summary未作成/artifacts台帳非同期**, **仕様書修正タスクでのPhaseテンプレート誤適用**, **Part 1/Part 2必須要件の欠落**, **監査結果の棚卸し止まり（次アクション未定義）**, **成果物実体とphase-12実行記録の乖離放置**, **苦戦箇所が症状のみで再発条件が未記載**, **仕様書更新の単独進行による同期漏れ**, **未タスクメタ情報の二重定義**, **phase-12仕様書ステータス未更新**, **未タスクの存在確認止まり（10見出し未検証）**, **api-ipc仕様を同期対象から除外**, **IPCハンドラ実装のみで登録配線を未確認**, **timeout待機APIへの停止副作用混在**, **非対象仕様（N/A）の記録漏れ**, **task-workflow のみ更新で lessons-learned 同期漏れ**, **UIタスクに5仕様書テンプレートを誤適用**, **UI6仕様書だけ更新して domain UI spec を未同期**, **verify-all-specs warningドリフトの放置**, **UI再確認で既存スクショ存在確認のみで完了判定**, **UI6仕様書を束ねて責務境界が曖昧**, **preview成否確認なしで再撮影開始（ERR_CONNECTION_REFUSED）**, **Port 5174 競合ログ混在を未記録のまま完了判定**, **Port 5177 preflight未記録のまま再撮影を継続**, **5分解決カードをtask-workflowのみ更新して他仕様へ未同期**, **current workflow PASS だけで comparison baseline を放置**, **単一workflow PASSで branch 全体を完了判定する誤り**, **Phase 1で既実装チェックせず新規実装モードで進行（P50未検出）**, **テスト正規表現がエラーコード内/をパスと誤検出** |
+| 🔌 IPC・アーキテクチャ    | IPCチャンネル統合, コンポーネント同階層ユーティリティ配置, 順次フィルタパイプライン, 横断的セキュリティバイパス検出, 入力バリデーション統一(whitespace対策), IPC/サービス層型変換, **IPC機能開発ワークフロー6段階**, **IPCハンドラライフサイクル管理（unregister→register）**, **IPC L3セキュリティハードニング**, **IPC契約ドリフト防止（3箇所同時更新）**, **Renderer層id→name契約変換**, **IPCチャネル名競合予防（仕様書段階分離）**, **P42準拠バリデーション一括移行（return→throw統一）**, **IPC Date→ISO 8601統一（仕様書段階）**, **positional→object引数統一（仕様書段階）**, **IPC契約ブリッジ（正式契約 + 後方互換）**, **IPC登録後のサービスバレル公開整合チェック**, **IPC Fallback DRYヘルパーパターン（createNotConfiguredResponse + registerFallbackHandlers）**                                                                                               | ハードコード文字列発見, **IPC契約ドリフト（Handler/Preload不整合）**, **Renderer層での識別子混同（id/name）**, **正式契約切替時の後方互換欠落**, **サービス層バレル公開漏れ（直接import固定化）**                                                                                                                                                                                                                                                                      |
 | 🏗️ DI・設計               | Setter Injection遅延初期化                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -                                                                                                                                                                                                                                                                                                                                                                                  |
+| 💾 永続化・復旧            | **persist復旧の3段ガード（Set/Array二方向シリアライズ）**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🛡️ セキュリティ           | TDDセキュリティテスト分類体系, YAGNI共通化判断記録                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | 正規表現パターンPrettier干渉                                                                                                                                                                                                                                                                                                                                                       |
 | 📦 スキル設計             | Collaborative First, Script Firstメトリクス, 詳細情報分離, 大規模DRYリファクタリング, **クロススキル・マルチスキル・外部CLI 3軸同時設計**                                                                                                                                                                                                                                                                                                                                                                                                                                                    | -                                                                                                                                                                                                                                                                                                                                                                                  |
 | 🔗 SDK統合                | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同                                                                                                                                                                                                                                                                                                                  |
-| 🔧 ビルド・環境           | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー**                                                                                                                                                                                                                                                                                                                                                               | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行**                                                                                                                                                                                                                                                                  |
+| 🔧 ビルド・環境           | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー**, **Worktree環境初期化プロトコル**                                                                                                                                                                                                                                                                                                                               | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行**                                                                                                                                                                                                                                                                  |
 | 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | ドキュメント偏重による実装検証省略                                                                                                                                                                                                                                                                                                                                                 |
 | 🎨 UI/フロントエンド      | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト**                                                                                                                                                                                                                                                                                                                 |
 
 ## 成功パターン
 
 成功した実行から学んだベストプラクティス。
+
+### [Phase12] 証跡テーブル互換 + screenshot preflight 固定（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
+
+- **状況**: `validate-phase11-screenshot-coverage` が `manual-test-result.md` から証跡列を抽出できず失敗し、さらに screenshot 再取得時に optional dependency 欠落で停止
+- **アプローチ**:
+  - Phase 11 成果物に validator互換ヘッダ（`テストケース` / `証跡`）を固定
+  - screenshot 再取得前に `pnpm install` を preflight 実行
+  - 取得後に `validate-phase11-screenshot-coverage` を再実行し、`expected=covered` を確認
+- **結果**: screenshot 証跡監査を PASS 化し、Phase 12 の再確認を機械判定できる状態へ復帰
+- **適用条件**: Phase 11で手動テスト証跡を運用する全 workflow
+- **発見日**: 2026-03-08
+- **関連タスク**: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 
 ### [Skill] Collaborative First による要件明確化
 
@@ -596,6 +609,20 @@
 - **発見日**: 2026-02-11
 - **関連タスク**: TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION
 - **クロスリファレンス**: [architecture-implementation-patterns.md](../../aiworkflow-requirements/references/architecture-implementation-patterns.md#setter-injection-パターンtask-fix-7-1-2026-02-11実装)
+
+### [Persist] persist復旧の3段ガード（Set/Array二方向シリアライズ）（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001）
+
+- **状況**: Zustand `persist` ミドルウェアで `localStorage` から復元する際、破損データ（null/undefined/number/object）により `object is not iterable` エラーが発生する。`Set` を `JSON.stringify` すると `{}` になり、復元時に `new Set(storedValue)` で空オブジェクトを展開しようとして失敗する
+- **アプローチ**:
+  - Step 1: `Array.isArray(value)` で配列であることを確認（null/undefined/number/object を排除）
+  - Step 2: `.filter(v => typeof v === "string")` で各要素が文字列であることを検証（混在型を排除）
+  - Step 3: 上記いずれかで失敗した場合、安全な既定値（空配列 `[]` / 空Set `new Set()`）にフォールバック
+  - シリアライズ: `Set` → `Array.from(set)` で保存、復元時は `new Set(validatedArray)` で復元
+- **結果**: 破損値（null/undefined/number/object/空オブジェクト `{}`）を全て安全にフォールバックし、Set/Array の二方向シリアライズを統一。`customStorage` アダプターで復旧ロジックを一元管理
+- **適用条件**: `persist` で `Set` / `Map` / カスタム型を `JSON.stringify` する場合。特に `electron-store` や `localStorage` から復元するケース
+- **発見日**: 2026-03-07
+- **関連タスク**: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+- **関連Pitfall**: P19（型キャストによる実行時検証バイパス）、P48（non-null assertionによる安全性偽装）
 
 ### [IPC/Type] IPC層とサービス層の型変換パターン（TASK-FIX-7-1）
 
@@ -1651,6 +1678,51 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-07
 - **関連タスク**: TASK-10A-F
 
+### [Phase12] comparison baseline 正規化つき branch 再監査（TASK-10A-F）
+
+- **状況**: current workflow は PASS でも、comparison baseline の completed workflow に legacy 名称・欠落補助成果物・古い artifact registry が残ると branch 全体の結論がぶれる
+- **アプローチ**:
+  1. current workflow に `verify-all-specs --strict` / `validate-phase-output` / `validate-phase12-implementation-guide` を実行する
+  2. comparison baseline の completed workflow にも `verify-all-specs --strict` / `validate-phase-output` を実行する
+  3. completed workflow に `phase-7-coverage-check.md` / `phase-11-manual-test.md` / `outputs/artifacts.json` / `screenshot-plan.json` / `discovered-issues.md` などの不足があれば同一ターンで補完する
+  4. `spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `task-workflow.md` に current 合格値と baseline 正規化結果を分離記録する
+  5. 未タスク監査は `currentViolations=0` を合否、`baselineViolations>0` を legacy 負債として扱い、必要なら正規化ガード未タスクを参照する
+- **結果**: 「current は通るが baseline が壊れていて branch verdict が不安定」という状態を防止できる
+- **適用条件**: `spec_created` workflow と completed workflow を同時に再監査する Phase 12 タスク
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-10A-F
+
+### [Phase12] 並列エージェント台帳同期パターン（TASK-10A-F）
+
+- **状況**: 複数サブエージェントが `artifacts.json` や `outputs/artifacts.json` を独立に更新する
+- **問題**: サブエージェントA が Phase 1-3 を completed に更新、メインが Phase 4-10 を更新すると、`outputs/artifacts.json` の Phase 4-10 が pending のまま残る
+- **解決策**:
+  1. サブエージェントには **読み取り + 検証レポート出力** のみを委譲
+  2. 台帳ファイル（`artifacts.json`, `outputs/artifacts.json`, `index.md`）の更新はメインエージェントが一括実行
+  3. 更新後に `cp artifacts.json outputs/artifacts.json` で強制同期
+  4. `diff artifacts.json outputs/artifacts.json` で同期確認
+- **適用条件**: Phase 12 で複数サブエージェントを並列運用する場合
+- **教訓**: 台帳ファイルの更新権限を1箇所に集約しないと、並列更新による上書き競合が発生する
+- **発見日**: 2026-03-08
+- **関連パターン**: P43（サブエージェント rate limit 中断）、S8（lessons-learned.md）
+- **関連タスク**: TASK-10A-F
+
+### [Phase12] Store駆動移行の仕様書更新チェックリスト（TASK-10A-F）
+
+- **状況**: 直接IPC呼び出し → Store action 経由への移行完了後の仕様同期
+- **チェックリスト**:
+  1. `arch-state-management.md` に個別セレクタ一覧と検証結果を追記
+  2. `task-workflow.md` の完了台帳を更新（テスト件数・IPC残存0件）
+  3. `lessons-learned.md` に苦戦箇所と再利用手順を追加
+  4. LOGS.md x2 + SKILL.md x2 の4ファイル更新（P1/P25 準拠）
+  5. `generate-index.js` で topic-map / keywords 再生成（P2/P27 準拠）
+  6. SubAgent分担: references 仕様書別に独立エージェントで並列更新
+- **適用条件**: Store駆動移行タスク（直接IPC → Zustand Store action）の Phase 12 実行時
+- **教訓**: Store移行はコード変更より仕様同期の方が工数がかかる。チェックリストで漏れを防止する
+- **発見日**: 2026-03-08
+- **関連パターン**: S10（P31/P48 標準パターン）、Phase 12 テンプレート
+- **関連タスク**: TASK-10A-F
+
 ## 失敗パターン（避けるべきこと）
 
 失敗から学んだアンチパターン。
@@ -1707,6 +1779,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **教訓**: Phase 12完了前に「文書名固定」「TC証跡1:1」「changelog完了記述」の三点を機械検証 + 目視確認する
 - **対策**: 未解決項目は即時に `docs/30-workflows/unassigned-task/` へ起票し、`task-workflow/lessons` へ同ターン反映する
 - **発見日**: 2026-03-07
+- **関連タスク**: TASK-10A-F
+
+### [Phase12] current workflow PASS だけで comparison baseline を放置
+
+- **状況**: current workflow の validator だけ通し、comparison baseline の completed workflow は未確認のまま branch 全体の結論を書く
+- **問題**: baseline 側の legacy drift が比較結果へ混入し、再監査ごとに結論が変わる
+- **原因**: 「履歴保管先だから strict 検証不要」という誤判断で completed workflow の正規化を省略する
+- **教訓**: comparison baseline を使うなら current と同じ粒度で validator を通してから比較する
+- **対策**: `verify-all-specs --strict` / `validate-phase-output` を current と completed の両workflowへ実行し、結果を分離記録する
+- **発見日**: 2026-03-08
 - **関連タスク**: TASK-10A-F
 - **対策**: 監査テンプレートに「baseline / scope-of-change」2列を追加し、対象ファイルの個別検証結果を併記する
 - **発見日**: 2026-02-22
@@ -2639,49 +2721,200 @@ interface BadgeProps extends Omit<
 
 
 
-### [Phase12] `validate-phase-output --phase 12` を完了前に必須化する（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
 
-- **状況**: `verify-all-specs` はPASSでも、Phase別要件（例: 「統合テスト連携」必須セクション）が不足していることがある
-- **成功パターン**:
-  - Phase 12 完了前に `validate-phase-output <workflow> --phase 12` を必ず実行する
-  - エラーに出た必須セクション欠落を先に埋め、その後 `verify-all-specs` を再実行する
-- **失敗パターン**:
-  - `verify-all-specs` PASS のみで Phase 12 完了判定する
-  - Phase 11/12 の必須セクションを後追いで更新し、台帳に不整合を残す
-- **標準ルール**:
-  - Phase 12 の完了ゲートは `validate-phase-output --phase 12` PASS を優先条件にする
-  - 画面タスクは `validate-phase11-screenshot-coverage` をセットで実行する
+### [Phase12] branch横断 Phase 12 一括監査（workflow複数同時検証）
+
+- **状況**: 1つのworkflowをPASS化しても、同じブランチで更新された他workflowに未準拠が残る
+- **アプローチ**:
+  - `git status --short` で今回変更workflowを列挙
+  - 各workflowに `validate-phase-output` と `validate-phase12-implementation-guide` を実行
+  - 欠落は未タスクへ分離し `docs/30-workflows/unassigned-task/` に正規配置
+- **結果**: 単体PASSと branch全体PASSを分離して判定できる
+- **適用条件**: 同一ブランチで複数workflowを並行更新している場合
 - **発見日**: 2026-03-07
-- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+- **関連タスク**: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 再監査
 
-### [Phase12] 実装ガイドの形式だけ充足を禁止し、Task 1内容要件を機械検証する（TASK-07 再監査）
+### [Phase12] `verify-all-specs` PASS と Phase 12 完了は同義ではない（dual validator gate）
 
-- **状況**: `implementation-guide.md` が Part 1/Part 2 の見出しは満たしていても、Part 1 の「なぜ先行説明」や Part 2 の型/API/使用例/エラーハンドリング/定数一覧が不足しやすい
+- **状況**: workflow 10/11/12 で `verify-all-specs` は PASS だが、Phase 12 実装ガイド欠落や必須セクション欠落が残存した。
 - **成功パターン**:
-  1. `validate-phase12-implementation-guide.js` を Phase 12 完了ゲートに含める
-  2. Part 1 は「なぜ必要か → 何をするか」の順序を固定する
-  3. Part 2 は `TypeScript型定義 / APIシグネチャ / 使用例 / エッジケース / 設定項目` の5点を必須化する
+  - 完了ゲートを `verify-all-specs` + `validate-phase-output --phase 12` + `validate-phase12-implementation-guide` の3点セットに固定する
+  - FAIL項目は workflow 別に未タスクへ分離し、`docs/30-workflows/unassigned-task/` へ即時配置する
+  - 未タスクは `audit-unassigned-tasks --target-file` と `verify-unassigned-links` で当日検証する
 - **失敗パターン**:
-  - 見出しだけ埋めて Task 1 完了と判定する
-  - `verify-all-specs` PASS のみで実装ガイド内容検証を省略する
-- **標準ルール**:
-  - Phase 12 の Task 1 完了判定は `validate-phase12-implementation-guide` PASS を必須とする
-  - FAIL時は `documentation-changelog` へ修正内容を明記してから再検証する
+  - `verify-all-specs` PASS のみで「Phase 12 完了」と判断する
+  - 未タスクを作成しても配置/フォーマット監査を省略する
+- **適用条件**: branch 内で複数workflowを同時更新・同時監査する場合
 - **発見日**: 2026-03-08
-- **関連タスク**: 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+- **関連タスク**: TASK-PHASE12-BRANCH-CROSS-AUDIT（再確認）
 
-### [Phase12] worktree依存欠損時の screenshot/テスト復旧手順を標準化（TASK-07）
+### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
-- **状況**: worktree 環境で `@rollup/rollup-darwin-x64` 欠損により `vitest` と screenshot capture が失敗しやすい
-- **成功パターン**:
-  1. `pnpm install --frozen-lockfile` を先行実行して依存復旧
-  2. screenshot は `--host 127.0.0.1` と preflight 待機を固定
-  3. 対象テストは `cd apps/desktop && pnpm exec vitest run <file>` で限定実行
-- **失敗パターン**:
-  - 欠損状態のまま再試行を繰り返す
-  - `pnpm --filter ... test:run --` で意図せず全体テストを走らせる
-- **標準ルール**:
-  - worktree で native module エラー発生時は依存復旧を先に完了させる
-  - UI証跡再取得時は port/host を固定し、metadata を同時出力する
+- **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する
+- **アプローチ**:
+  1. 各分割コンポーネントに独立テストファイルを新設（`AdvancedSettingsPanel.test.tsx`, `ExecuteButton.test.tsx` 等）
+  2. レイアウトテスト（`.layout.test.tsx`）を親コンポーネントに残し、子コンポーネントの配置・表示条件を検証
+  3. Store統合テスト（`.store-integration.test.tsx`）を別ファイルで管理し、Store操作とIPC連携を分離
+- **テストファイル命名規則**:
+
+| ファイル種別 | 命名パターン | 責務 |
+| --- | --- | --- |
+| UIテスト | `{Component}.test.tsx` | レンダリング、ユーザー操作 |
+| レイアウトテスト | `{Parent}.layout.test.tsx` | 子コンポーネント配置・表示条件 |
+| Store統合テスト | `{Component}.store-integration.test.tsx` | Store操作・IPC連携 |
+| セレクタテスト | `{slice}.selectors.test.ts` | 純粋なセレクタロジック |
+
+- **結果**: 分割後の各コンポーネントが独立してテスト可能になり、テストの実行速度向上と保守性改善を実現
+- **適用条件**: コンポーネントが300行以上、または3つ以上の子コンポーネントに分割する場合
 - **発見日**: 2026-03-08
-- **関連タスク**: 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+- **関連タスク**: TASK-043D-TEST-QUALITY-GATE-DESIGN
+- **適用例**: AgentView → AdvancedSettingsPanel, ExecuteButton, FloatingExecutionBar, RecentExecutionList, SkillChip
+
+### [Testing] P31回帰テストパターン（renderHook参照安定性検証）（TASK-043D）
+
+- **状況**: Zustand Store Hooks無限ループ（P31/P48）の修正後、回帰検証パターンが未確立で再発リスクが残る
+- **アプローチ**:
+  - `renderHook` + `act` で個別セレクタの参照安定性を検証する独立テストファイルを作成
+  - テストファイル命名: `{slice}.p31-regression.test.ts`
+  - 検証ポイント:
+    1. セレクタが `rerender()` 後も同一参照（`===`）を返すこと
+    2. `useShallow` 適用の派生セレクタが `.filter()` / `.map()` 後も安定すること
+    3. `useEffect` 依存配列にアクション関数を含めた場合に `renderCount < 10` であること
+- **テスト構造**:
+
+```typescript
+// agentSlice.p31-regression.test.ts
+describe("P31回帰テスト: セレクタ参照安定性", () => {
+  it("アクションセレクタが rerender 後も同一参照を返す", () => {
+    const { result, rerender } = renderHook(() => useSetAgentConfig());
+    const ref1 = result.current;
+    rerender();
+    expect(result.current).toBe(ref1); // 同一参照
+  });
+
+  it("useShallow派生セレクタがshallow比較で安定する", () => {
+    const { result, rerender } = renderHook(() => useFilteredSkills());
+    const ref1 = result.current;
+    rerender();
+    expect(result.current).toEqual(ref1); // shallow equal
+  });
+});
+```
+
+- **結果**: P31/P48の回帰を自動検出可能になり、Store Hook変更時の安全ネットとして機能
+- **適用条件**: Zustand個別セレクタHookを追加・変更した場合。特に `.filter()` / `.map()` を含む派生セレクタ
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-043D-TEST-QUALITY-GATE-DESIGN
+- **クロスリファレンス**: [06-known-pitfalls.md#P31](../../.claude/rules/06-known-pitfalls.md), [06-known-pitfalls.md#P48](../../.claude/rules/06-known-pitfalls.md)
+
+### [Testing] Store統合テスト分離パターン（UI/Store/セレクタ3層）（TASK-043D）
+
+- **状況**: hook内でStore操作・IPC呼び出し・localStateが混在するとモック境界が不明確になり、テストの信頼性が低下する
+- **アプローチ**:
+  1. **UIテスト**（`.test.tsx`）: レンダリングとユーザー操作のみ検証。Storeはモック化
+  2. **Store統合テスト**（`.store-integration.test.tsx`）: Store操作とIPC連携を検証。UIレンダリングは不要
+  3. **セレクタテスト**（`.selectors.test.ts`）: 純粋なセレクタロジックのみ。副作用なし
+- **モック境界の明確化**:
+
+| テスト層 | Storeモック | IPCモック | DOMレンダリング |
+| --- | --- | --- | --- |
+| UIテスト | する | する | する |
+| Store統合テスト | しない（実Store使用） | する | しない |
+| セレクタテスト | しない（実Store使用） | 不要 | しない |
+
+- **結果**: テスト失敗時の原因特定が容易になり、モック設定の複雑性が分散。各層が独立して実行可能
+- **適用条件**: コンポーネントがZustand Storeと密結合し、IPC経由でデータ取得する場合
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-043D-TEST-QUALITY-GATE-DESIGN
+- **適用例**: SkillAnalysisView, SkillCreateWizard
+
+### [ビルド・環境] Worktree環境初期化プロトコル（TASK-043D）
+
+- **状況**: git worktreeで作業ブランチを作成した直後、`@repo/shared` の解決エラーによりdesktopアプリが起動不能になる
+- **原因**: worktreeは `.git` ディレクトリを共有するが `node_modules` は共有しないため、依存関係が未解決の状態で起動を試みる
+- **アプローチ**: worktree作成直後に以下の初期化プロトコルを実行する
+
+```bash
+# 1. worktreeディレクトリに移動
+cd .worktrees/<name>
+
+# 2. 依存関係インストール
+pnpm install
+
+# 3. 共有パッケージビルド（@repo/shared が未ビルドだとdesktop/webが参照不能）
+pnpm --filter @repo/shared build
+
+# 4. 動作確認
+pnpm --filter @repo/desktop dev
+```
+
+- **結果**: worktree環境での開発開始までの手順が標準化され、`MODULE_NOT_FOUND` エラーを予防
+- **適用条件**: git worktreeで新しい作業ブランチを作成する場合
+- **P7派生**: ネイティブモジュールのバイナリ不一致問題（P7）と同根。Node.jsバージョンが異なる場合は `pnpm store prune && pnpm install --force` も追加
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-043D-TEST-QUALITY-GATE-DESIGN
+
+### [Testing] 品質ゲート仕様先行パターン（テストマトリクス事前定義）（TASK-043D）
+
+- **状況**: 実装後にテスト戦略を設計すると、テストの網羅性が低下し、重要な検証観点が漏れる
+- **アプローチ**: 実装前にテスト基準を定義し、品質ゲートとして機能させる
+  1. **A/B/C観点の統合テストマトリクス定義**: 機能軸（A）、非機能軸（B）、回帰軸（C）の3観点でテストケースを分類
+  2. **unit/integration/regressionの分類**: 各テストケースにテストレベルを付与
+  3. **検証コマンドと判定基準の固定**: `pnpm vitest run --coverage` のカバレッジ基準を事前に定義（Line 80%、Branch 60%、Function 80%）
+  4. **後続タスクへの引き渡し観点の明示**: テスト設計で検出した未カバー領域を後続タスクの入力として記録
+- **テストマトリクス例**:
+
+| 観点 | テストケース | レベル | 判定基準 |
+| --- | --- | --- | --- |
+| A: 機能 | 各コンポーネント独立テスト | unit | 全ケースPASS |
+| B: 非機能 | P31回帰テスト、参照安定性 | regression | renderCount < 10 |
+| C: 統合 | Store-IPC連携テスト | integration | モック境界明確 |
+
+- **結果**: テスト設計が実装の品質ゲートとして機能し、「テストがあるから安心」ではなく「テスト基準を満たしたから安心」への転換を実現
+- **適用条件**: 新機能開発・リファクタリング・コンポーネント分割など、テスト戦略の再設計が必要な場合
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-043D-TEST-QUALITY-GATE-DESIGN
+- **クロスリファレンス**: [02-code-quality.md#カバレッジ基準](../../.claude/rules/02-code-quality.md)
+
+### [IPC] IPC Fallback Handler DRYヘルパーパターン（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+- **状況**: Supabase未設定時にProfile 11ch + Avatar 3ch のIPCハンドラが未登録でクラッシュする問題。既存の`registerAuthFallbackHandlers()`と同一構造で追加が必要
+- **アプローチ**:
+  1. `createNotConfiguredResponse(code, message)` でレスポンス生成を共通化
+  2. `registerFallbackHandlers(handlers: ReadonlyArray<FallbackHandler>)` で登録ループを共通化
+  3. Auth/Profile/Avatar の3ドメインが同一パターン（ヘルパー共有 + ReadonlyArray タプル + for...of）
+  4. エラーコードは `packages/shared/types/auth.ts` で `as const` 定義し型安全に
+- **結果**: 3関数の構造的一貫性を達成。共通ヘルパーにより将来のドメイン追加も最小コスト
+- **適用条件**: 外部サービス未設定時に複数IPCチャンネルのフォールバックが必要な場合
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
+
+### [Phase 12] P50パターン: 既実装→検証モード切替の全Phase適応（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+- **状況**: Phase 1でソースコードを読んだ際、`registerProfileFallbackHandlers()`と`registerAvatarFallbackHandlers()`が既に実装済みであることを発見。Phase 1-13のワークフローが「新規実装」前提で設計されていた
+- **アプローチ**:
+  1. Phase 1: 要件の「検証」に転換（既存コードとの照合）
+  2. Phase 2-3: 設計の「検証」（既存実装との設計一致確認）
+  3. Phase 4-5: テストを新規作成し、既存実装に対してGREEN確認
+  4. Phase 6-12: テスト拡充・品質検証・ドキュメントは通常通り実行
+- **結果**: 19テスト全GREEN、仕様書13ファイル+391行更新、全AC 6/6 PASS
+- **標準ルール**:
+  - Phase 1 開始時に `git log --oneline -20 -- <対象ファイル>` で実装状況を確認
+  - 既実装の場合は各Phase成果物に「P50パターン該当」を明記
+  - テスト作成（Phase 4）は既実装でも必ず実施（回帰検知のため）
+- **発見日**: 2026-03-08
+
+### [Phase 12] 失敗パターン: Phase 1で既実装チェックせず新規実装モードで進行
+
+- **症状**: Phase 4でテストを書こうとした際に対応する実装が既に存在し、Phase 5の実装が不要になる。不要なコード重複作成リスクがある
+- **回避策**: Phase 1（要件定義）で「現在の実装状態の調査」を必須ステップとして含める
+- **発見日**: 2026-03-08
+
+### [テスト] テスト正規表現がエラーコード内/をパスと誤検出
+
+- **状況**: セキュリティテスト（T-P5）でエラーメッセージに内部パスが含まれないことを検証。エラーコードが`profile/not-configured`のように`/`を含む
+- **症状**: `/\//`（スラッシュ検出）正規表現が`profile/not-configured`の`/`にマッチし、テストが偽陽性で失敗
+- **解決策**: パス検出用正規表現を`/\/(src|apps|node_modules)\//`に変更
+- **標準ルール**: セキュリティテストのパス検出は「ディレクトリ名を含むパスパターン」で検出する
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001

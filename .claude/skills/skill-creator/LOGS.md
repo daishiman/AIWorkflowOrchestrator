@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「fallback error の transport message / UI localized message 分離 + 画面起点の未タスク formalization」を追加
+  - `discovered-issues.md` → `unassigned-task-detection.md` → `docs/30-workflows/unassigned-task/` → `task-workflow.md` / 関連 domain spec の同一ターン同期を標準化
+  - App shell が不安定な場合の専用 harness route 許可と、`currentViolations=0` まで確認して閉じる運用を明文化
+
+---
+
 ## [2026-03-08 - TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査パターン同期]
 
 - **Agent**: skill-creator (update)
@@ -13,6 +25,18 @@
   - `references/patterns.md` に成功パターン「Phase12 証跡テーブル互換 + screenshot preflight 固定」を追加
   - `validate-phase11-screenshot-coverage` の表形式要件（`テストケース`/`証跡`）を再発防止ルールとして明文化
   - screenshot 再取得時の依存不足（Rollup optional dependency）に対する `pnpm install` preflight を標準化
+
+---
+
+## [2026-03-08 - TASK-10A-F Phase 12 branch 再確認パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「comparison baseline 正規化つき branch 再監査（TASK-10A-F）」を追加
+  - 同ファイルに失敗パターン「current workflow PASS だけで comparison baseline を放置」を追加
+  - Phase 12 クイックナビへ comparison baseline 正規化を反映し、`currentViolations=0` と `baselineViolations>0` の二層報告を branch 判定前提として固定
 
 ---
 

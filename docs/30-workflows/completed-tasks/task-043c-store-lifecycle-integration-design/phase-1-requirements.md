@@ -23,20 +23,20 @@ SkillManagementPanel における import 操作後の一覧即時再計算を実
 
 ## 参照資料
 
-| 参照資料                  | パス                                                                                                                         | 使用目的                        |
-| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| 状態管理仕様              | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                 | selector/action 分離と P31 対策 |
-| Skill API                 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                                            | store action の戻り値契約       |
-| 実装パターン              | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                                  | React + store の責務分離        |
-| エラー仕様                | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                                                        | UI 表示に渡すエラー分類         |
-| 品質要件                  | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                  | 状態遷移回帰を防ぐ品質ゲート    |
-| タスク指示書              | `../skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-043c-store-lifecycle-integration-design.md` | スコープと完了条件の正本        |
-| リソースマップ            | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                                                             | 必要仕様の抽出起点              |
-| クイックリファレンス      | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                                                          | IPC/Store/品質基準の即時確認    |
-| UI機能仕様                | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                              | SkillManagementPanelの責務境界  |
-| IPC仕様                   | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                                                         | import/remove関連IPC契約確認    |
-| Electron API セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-api-electron.md`                                                 | preload公開とIPC安全境界        |
-| コンポーネントテスト指針  | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                                            | selector/action回帰テスト観点   |
+| 参照資料                  | パス                                                                                                | 使用目的                        |
+| ------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------- |
+| 状態管理仕様              | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                        | selector/action 分離と P31 対策 |
+| Skill API                 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`                   | store action の戻り値契約       |
+| 実装パターン              | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`         | React + store の責務分離        |
+| エラー仕様                | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                               | UI 表示に渡すエラー分類         |
+| 品質要件                  | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                         | 状態遷移回帰を防ぐ品質ゲート    |
+| タスク指示書              | `../skill-import-agent-system/tasks/completed-task/task-043c-store-lifecycle-integration-design.md` | スコープと完了条件の正本        |
+| リソースマップ            | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                                    | 必要仕様の抽出起点              |
+| クイックリファレンス      | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                                 | IPC/Store/品質基準の即時確認    |
+| UI機能仕様                | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                     | SkillManagementPanelの責務境界  |
+| IPC仕様                   | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                                | import/remove関連IPC契約確認    |
+| Electron API セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-api-electron.md`                        | preload公開とIPC安全境界        |
+| コンポーネントテスト指針  | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                   | selector/action回帰テスト観点   |
 
 ## 実行手順
 

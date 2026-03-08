@@ -21,13 +21,13 @@ const defaultViewport = { width: 1440, height: 900 };
 const scenarios = [
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: 'text=総合スコア',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-01-analysis-default-dark.png",
     waitAfterReadyMs: 600,
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: 'text=総合スコア',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-02-analysis-selection-dark.png",
     preCapture: async (page) => {
       await page.waitForSelector('input[type="checkbox"]', { timeout: 15_000 });
@@ -37,13 +37,13 @@ const scenarios = [
   },
   {
     url: `${baseUrl}/advanced/skill-analysis?mode=improved`,
-    selector: 'text=改善提案はありません',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-03-analysis-apply-improved-dark.png",
     waitAfterReadyMs: 800,
   },
   {
     url: `${baseUrl}/advanced/skill-analysis?mode=improved&flow=auto`,
-    selector: 'text=改善提案はありません',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-04-analysis-auto-improved-dark.png",
     waitAfterReadyMs: 800,
   },
@@ -61,14 +61,14 @@ const scenarios = [
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: 'text=総合スコア',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-07-analysis-default-light.png",
     colorScheme: "light",
     waitAfterReadyMs: 600,
   },
   {
     url: `${baseUrl}/advanced/skill-analysis`,
-    selector: 'text=総合スコア',
+    selector: '[data-testid="skill-analysis-view"]',
     file: "TC-08-analysis-default-mobile-dark.png",
     viewport: { width: 390, height: 844 },
     waitAfterReadyMs: 600,
@@ -307,18 +307,25 @@ async function main() {
       const page = await context.newPage();
 
       await page.goto(scenario.url, { waitUntil: "domcontentloaded" });
-      await page.waitForSelector(scenario.selector, { timeout: 15_000 });
-      if (scenario.preCapture) {
-        await scenario.preCapture(page);
+      try {
         await page.waitForSelector(scenario.selector, { timeout: 15_000 });
+        if (scenario.preCapture) {
+          await scenario.preCapture(page);
+          await page.waitForSelector(scenario.selector, { timeout: 15_000 });
+        }
+        await page.waitForTimeout(scenario.waitAfterReadyMs ?? 300);
+
+        const screenshotPath = path.join(screenshotDir, scenario.file);
+        await page.screenshot({ path: screenshotPath, fullPage: true });
+        process.stdout.write(`Captured: ${screenshotPath}\n`);
+      } catch (error) {
+        const scenarioLabel = `${scenario.file} (${scenario.url})`;
+        throw new Error(`Screenshot capture failed for ${scenarioLabel}`, {
+          cause: error,
+        });
+      } finally {
+        await context.close();
       }
-      await page.waitForTimeout(scenario.waitAfterReadyMs ?? 300);
-
-      const screenshotPath = path.join(screenshotDir, scenario.file);
-      await page.screenshot({ path: screenshotPath, fullPage: true });
-      process.stdout.write(`Captured: ${screenshotPath}\n`);
-
-      await context.close();
     }
   } finally {
     if (browser) {
