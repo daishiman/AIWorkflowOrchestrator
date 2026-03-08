@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-08 | 1.29.46 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
@@ -253,6 +254,43 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08）
+
+### 実装内容
+
+- `SettingsView.integration.test.tsx` を 18 テストへ拡張し、auth-mode 切替・provider fallback・status 表示条件・保存導線を回帰対象へ統合
+- `settings-test-harness.ts` で store mock と `window.electronAPI` mock を一本化し、ケース差分を options で注入
+- Phase 11 実画面検証として `TC-11-03-settings-shell.png` / `TC-11-04-authmode-apikey.png` を取得し、manual test 証跡へ同期
+
+### 苦戦箇所
+
+#### 1. screenshot 検証の初回失敗（ポート競合 + 操作タイムアウト）
+
+- **再発条件**: 既存 dev サーバーが残った状態で Playwright を直接実行する場合
+- **症状**: 画面遷移前に timeout し、証跡が欠落する
+- **解決策**: 専用 E2E spec を用意し、スクリーンショット取得責務を分離して再実行
+
+#### 2. `act()` warning の残存
+
+- **再発条件**: `apiKey.list()` の非同期更新完了を待たずに assertion を終える場合
+- **症状**: テストは PASS でも warning が混在し、ノイズになる
+- **解決策**: warning 0件化を未タスク（UT-08-001）へ切り出し、待機パターン標準化を継続
+
+#### 3. Phase 12 changelog に「予定」表現が残る
+
+- **再発条件**: 作業前に changelog を先行記述する場合
+- **症状**: 実績と文書が乖離し、完了判定が曖昧化
+- **解決策**: 完了済み変更のみ記載し、予定は排除する運用へ統一
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. UI証跡が必要なタスクは専用 screenshot spec を先に用意する。
+2. 統合テストは harness で state/API 境界を集約し、子コンポーネントの過剰モックを避ける。
+3. `act()` warning は「既知」として放置せず未タスク化し、解消期限を管理する。
+4. Phase 12 changelog は実績ベースで更新し、`verify-all-specs` で最終突合する。
 
 ---
 

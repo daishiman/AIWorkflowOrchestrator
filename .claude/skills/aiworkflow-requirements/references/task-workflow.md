@@ -132,6 +132,45 @@
 
 ## 完了タスク
 
+### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + 実画面検証 + 仕様同期）** |
+| 完了日 | 2026-03-08 |
+| 対象 | `SettingsView.integration.test.tsx` / `settings-test-harness.ts` / Phase 11-12 証跡更新 |
+| 成果物 | `docs/30-workflows/08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001/outputs/` |
+
+#### 実施内容
+
+- SettingsView 統合テストを 18 件へ拡張（auth-mode 切替、provider fallback、status 表示条件、RAG/保存操作）
+- `settings-test-harness.ts` に store + electronAPI 境界を集約し、過剰モックを抑制
+- Phase 11 の画面検証を実施し、スクリーンショット 2 件を証跡化（TC-11-03/04）
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+- Playwright 実行時のポート競合で初回撮影失敗（専用 spec へ切り出して再実行）
+- `act()` warning が INT-05 系で残存（機能影響はないがノイズとして未タスク化）
+- Phase 12 で「予定」表現が残りやすく、実績ベース記述への差し替えが必要
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm vitest run src/renderer/views/SettingsView/__tests__/SettingsView.integration.test.tsx` | PASS（18 tests） |
+| `cd apps/desktop && pnpm test:e2e -- e2e/settings-integration-regression-screenshots.spec.ts` | PASS（2 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 --json` | PASS |
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | `docs/30-workflows/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
+| UT-08-002 | SettingsView 画面導線の E2E カバレッジ拡張 | `docs/30-workflows/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
+| UT-08-003 | Phase 6 残件（INT-11〜13）の再評価と必要分実装 | `docs/30-workflows/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
+| UT-08-004 | settings harness パターンの仕様標準化を継続強化 | `docs/30-workflows/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
+
 ### タスク: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 設定画面 apiKey.list 契約防御と providers 正規化（2026-03-07）
 
 | 項目       | 値                                                                          |
@@ -3334,6 +3373,10 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 | タスクID                                                       | タスク名                                                                                                                                                                     | 優先度   | 発見元                                                                                                                               | タスク仕様書                                                                                                                                                                           |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | 低 | 08-TASK Phase 11/12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
+| UT-08-002 | SettingsView 画面導線の Playwright E2E 拡張 | 中 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
+| UT-08-003 | Phase 6 残件 INT-11〜13 の再評価と必要分実装 | 中 | 08-TASK Phase 6/12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
+| UT-08-004 | Settings integration harness パターン仕様同期の継続改善 | 低 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW                                  | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了）                                                                                                             | 高       | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02）                                                                        | `docs/30-workflows/skill-editor-view/`                                                                                                                                                 |
 | UT-UI-05A-GETFILETREE-001                                      | skill:getFileTree IPCチャネル追加                                                                                                                                            | CRITICAL | TASK-UI-05A FR-1前提                                                                                                                 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`                                                            |
 | UT-UI-05A-SPEC-CONSISTENCY-001                                 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree）                                                                                                               | 中       | TASK-UI-05A 再監査（2026-03-02）                                                                                                     | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md`                                                        |

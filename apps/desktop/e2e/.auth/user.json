@@ -1,0 +1,22 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "knowledge-studio-store",
+          "value": "{\"state\":{\"currentView\":\"dashboard\",\"selectedFile\":null,\"expandedFolders\":[],\"userProfile\":{\"name\":\"ユーザー\",\"email\":\"\",\"avatar\":\"\",\"plan\":\"free\"},\"autoSyncEnabled\":true,\"windowSize\":{\"width\":1280,\"height\":720},\"isNavExpanded\":true,\"permissionHistory\":[],\"notifications\":[]},\"version\":0}"
+        },
+        {
+          "name": "auth-storage",
+          "value": "{\"isAuthenticated\":true,\"isLoading\":false,\"user\":{\"id\":\"e2e-test-user\",\"email\":\"e2e@test.com\",\"user_metadata\":{\"full_name\":\"E2E Test User\"}},\"session\":{\"access_token\":\"mock-e2e-access-token\",\"refresh_token\":\"mock-e2e-refresh-token\",\"expires_at\":1772933778925}}"
+        },
+        {
+          "name": "claude-auth-token",
+          "value": "mock-e2e-access-token"
+        }
+      ]
+    }
+  ]
+}
