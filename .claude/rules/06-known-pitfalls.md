@@ -159,6 +159,32 @@ export const useFilteredItems = () =>
   useAppStore(useShallow((state) => state.items.filter((i) => i.active)));
 ```
 
+### P54: safeRegister パターン不適合（戻り値キャプチャ必要なハンドラ）
+
+- **教訓**: `safeRegister(name, fn)` は戻り値を破棄するため、`setupThemeWatcher` のように unsubscribe 関数をモジュールスコープ変数にキャプチャする必要があるハンドラには使えない。設計時に「戻り値の要否」を明確にしないと、実装時にパターン不適合が判明して手戻りが発生する
+- **症状**: `safeRegister` で囲んだ後に戻り値が取得できないことに気付き、個別 try-catch に書き直す必要が発生
+- **解決策**: ハンドラ登録関数の設計時に以下を判断する: (1) 戻り値不要 → `safeRegister`、(2) 戻り値必要 → 個別 try-catch。`track()` クロージャで両方の成功/失敗を統一管理する
+- **関連パターン**: P5（リスナー二重登録）、S30（Graceful Degradation パターン）
+- **関連タスク**: TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001
+
+### P55: エラーメッセージ中のパスに正規表現メタ文字が含まれる
+
+- **教訓**: `os.homedir()` が返すパス（例: `/Users/user.name`）をそのまま `new RegExp()` に渡すと、`.` がワイルドカードとして扱われ、意図しないマッチが発生する。`sanitizeRegistrationErrorMessage` でパスマスクする際に、正規表現メタ文字のエスケープを忘れるとセキュリティホールになる
+- **症状**: パスマスクが正しく機能しない、または意図しない文字列までマスクされる
+- **解決策**: `escapeRegExp()` でメタ文字をエスケープしてから `RegExp` 生成する
+- **関連タスク**: TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001
+
+```typescript
+// ❌ メタ文字未エスケープ
+const pattern = new RegExp(os.homedir(), "g");
+
+// ✅ escapeRegExp でエスケープ後にパターン生成
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+const pattern = new RegExp(escapeRegExp(os.homedir()), "g");
+```
+
 ## ビルド / 環境
 
 ### P7: ネイティブモジュールのバイナリ不一致

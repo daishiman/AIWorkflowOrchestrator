@@ -293,6 +293,58 @@ declare global {
 }
 ```
 
+## ハンドラ登録の Graceful Degradation
+
+### 問題
+
+`registerAllIpcHandlers()` で複数のハンドラ登録関数を順次呼び出す際、1つが例外を投げると後続が全て未登録になる。
+
+### 解決パターン
+
+| パターン | 適用場面 | 実装 |
+|---|---|---|
+| `safeRegister(name, fn)` | 戻り値不要のハンドラ登録 | 個別 try-catch でラップ。失敗を `HandlerRegistrationFailure` として記録 |
+| 個別 try-catch | 戻り値のキャプチャが必要な場合 | `setupThemeWatcher` のように unsubscribe 関数を保持する必要がある場合 |
+| `track()` クロージャ | 成功/失敗カウントの自動管理 | `registerAllIpcHandlers` 内のクロージャで状態を閉じ込める |
+
+### 型定義
+
+```typescript
+interface HandlerRegistrationFailure {
+  handlerName: string;
+  errorMessage: string;
+  errorCode: number; // 4001 = Infrastructure Error
+}
+
+interface IpcHandlerRegistrationResult {
+  successCount: number;
+  failureCount: number;
+  failures: HandlerRegistrationFailure[];
+}
+```
+
+### エラーメッセージのサニタイズ
+
+NFR-02（プライバシー保護）準拠。`os.homedir()` パスを `~` にマスクする。
+
+```typescript
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function sanitizeRegistrationErrorMessage(message: string): string {
+  const homeDir = os.homedir();
+  const escaped = escapeRegExp(homeDir);
+  return message.replace(new RegExp(escaped, "g"), "~");
+}
+```
+
+### 設計時の判断基準
+
+1. ハンドラ登録関数の戻り値が必要か？ → 必要: 個別 try-catch / 不要: safeRegister
+2. 複数ハンドラの成功/失敗を集約する必要があるか？ → あり: track() クロージャ
+3. エラーメッセージにファイルパスが含まれるか？ → あり: sanitize 必須
+
 ## 検証チェックリスト
 
 ```markdown
