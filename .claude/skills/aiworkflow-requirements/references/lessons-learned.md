@@ -20,7 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-08 | 1.29.46 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の再監査教訓を追補。Phase 11証跡表ヘッダ不一致による validator 失敗と、screenshot 再取得時の Rollup optional dependency 欠落を苦戦箇所として追加し、preflight + 機械検証の標準手順を固定 |
+| 2026-03-08 | 1.29.47 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
+| 2026-03-08 | 1.29.46 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
@@ -254,6 +255,43 @@
 | 2026-02-12 | 1.2.0 | TASK-FIX-7-1 追加苦戦箇所2件記録（Phase間テスト数整合性問題、未タスク指示書作成漏れ） |
 | 2026-02-11 | 1.1.0 | テンプレート準拠、目次・コード例追加 |
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
+
+---
+
+## 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08）
+
+### 実装内容
+
+- `SettingsView.integration.test.tsx` を 18 テストへ拡張し、auth-mode 切替・provider fallback・status 表示条件・保存導線を回帰対象へ統合
+- `settings-test-harness.ts` で store mock と `window.electronAPI` mock を一本化し、ケース差分を options で注入
+- Phase 11 実画面検証として `TC-11-03-settings-shell.png` / `TC-11-04-authmode-apikey.png` を取得し、manual test 証跡へ同期
+
+### 苦戦箇所
+
+#### 1. screenshot 検証の初回失敗（ポート競合 + 操作タイムアウト）
+
+- **再発条件**: 既存 dev サーバーが残った状態で Playwright を直接実行する場合
+- **症状**: 画面遷移前に timeout し、証跡が欠落する
+- **解決策**: 専用 E2E spec を用意し、スクリーンショット取得責務を分離して再実行
+
+#### 2. `act()` warning の残存
+
+- **再発条件**: `apiKey.list()` の非同期更新完了を待たずに assertion を終える場合
+- **症状**: テストは PASS でも warning が混在し、ノイズになる
+- **解決策**: warning 0件化を未タスク（UT-08-001）へ切り出し、待機パターン標準化を継続
+
+#### 3. Phase 12 changelog に「予定」表現が残る
+
+- **再発条件**: 作業前に changelog を先行記述する場合
+- **症状**: 実績と文書が乖離し、完了判定が曖昧化
+- **解決策**: 完了済み変更のみ記載し、予定は排除する運用へ統一
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. UI証跡が必要なタスクは専用 screenshot spec を先に用意する。
+2. 統合テストは harness で state/API 境界を集約し、子コンポーネントの過剰モックを避ける。
+3. `act()` warning は「既知」として放置せず未タスク化し、解消期限を管理する。
+4. Phase 12 changelog は実績ベースで更新し、`verify-all-specs` で最終突合する。
 
 ---
 
@@ -5724,6 +5762,53 @@ async function safeInvokeUnwrap<T>(
 
 ---
 
+## TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08）
+
+### 苦戦箇所: Profile / Avatar fallback の追加漏れで `No handler registered` が再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Auth fallback があっても `profile:*` / `avatar:*` が未登録だと Renderer 側で runtime 例外が続く |
+| 再発条件 | Supabase 依存チャネル追加時に Auth だけを fallback 化し、Profile / Avatar の群登録を後回しにする |
+| 対処 | `channels.ts` の件数を正本にし、Profile 11 / Avatar 3 を `ReadonlyArray` + `for...of` で宣言的登録して integration test で固定する |
+| 標準ルール | Supabase 依存 handler の追加は Auth / Profile / Avatar の fallback 群を同一ターンで点検する |
+
+### 苦戦箇所: transport message と UI localized message の責務が混ざる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | fallback 実装は正しくても、Renderer が `error.message` をそのまま表示すると日本語 UI の中で英語 message が露出する |
+| 再発条件 | state や component props で `error.code` を捨て、文字列 message だけを保持する |
+| 対処 | Main は `code + message` を返す transport に徹し、Renderer は `error.code` を正本として localized message を決定する。未実装分は未タスク化する |
+| 標準ルール | error envelope の `message` は transport default、最終 UI 文言は Renderer の責務と明記する |
+
+### 苦戦箇所: App shell 起点の screenshot が不安定
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 画面検証時に App shell の初期化ノイズで対象 view に安定到達できず、契約差分の確認が難しい |
+| 再発条件 | ナビゲーション経路全体を毎回通し、対象 view の直描画 harness を持たない |
+| 対処 | 本番コンポーネント / Store / 公開 contract を保った `phase11-auth-mode` harness で対象状態を注入し、証跡を取得する |
+| 標準ルール | 画面契約の確認は「contract を壊さない最短導線」の harness route を優先する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `channels.ts` から対象チャネル件数を確定し、fallback 登録配列と突合する。
+2. `registerAllIpcHandlers()` を通常経路 / fallback 経路の if/else 排他へ揃える。
+3. `error.code` を正本にする UI 責務線を仕様へ書き、足りない分は未タスク化する。
+4. 専用 harness で screenshot を取り、validator / tests / 未タスク監査を同一ターンで回す。
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| fallback 件数ずれ | `rg -n \"PROFILE_|AVATAR_\" apps/desktop/src/preload/channels.ts` で定義数を確認し、fallback 配列件数と揃える |
+| runtime 登録漏れ | `pnpm vitest run apps/desktop/src/main/ipc/__tests__/fallback-handlers.test.ts apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` |
+| UI 文言責務混同 | `error.code` を保持し、localized message は Renderer で決定する。未対応は未タスクへ切り出す |
+| 画面証跡の不安定化 | App shell ではなく harness route で再現し、`validate-phase11-screenshot-coverage` まで実行する |
+
+---
+
 ## 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 
 ### コンテキスト
@@ -5783,20 +5868,6 @@ async function safeInvokeUnwrap<T>(
 - **解決策**: `capture-task-06-settings-apikey-contract-guard-phase11.mjs` を追加し、TC-11-01〜03 を取得して manual-test-result へ証跡リンクを記録
 - **標準ルール**: ユーザーが画面検証を要求した場合、`SCREENSHOT` を必須に切り替える
 
-#### S6: Phase 11 証跡表ヘッダの validator 不一致
-- **症状**: `validate-phase11-screenshot-coverage` が `manual-test-result.md` の証跡列を抽出できず失敗
-- **根本原因**: 証跡テーブルが validator 期待ヘッダ（`テストケース` / `証跡`）を満たしていなかった
-- **解決策**: Phase 11成果物に validator互換テーブルを追加し、TC-11-01〜03 の `.png` を1:1で紐付け
-- **再発条件**: 手動テスト結果の表形式を独自変更した場合
-- **標準ルール**: Phase 11完了前に `validate-phase11-screenshot-coverage` を必ず実行し、表形式を機械検証で固定
-
-#### S7: screenshot 再取得時の依存欠落（Rollup optional dependency）
-- **症状**: capture script 実行時に `Cannot find module @rollup/rollup-darwin-x64` で停止
-- **根本原因**: worktree の optional dependency が欠落したまま Vite 起動を試行した
-- **解決策**: `pnpm install` 後に capture script を再実行し、`phase11-capture-metadata.json` を更新
-- **再発条件**: worktree切替直後や node_modules 再構成後に preview/capture を即実行する場合
-- **標準ルール**: screenshot 再取得前に依存解決（`pnpm install`）と preflight（preview疎通）を先に実施
-
 ### 同種課題の5分解決カード
 
 | ステップ | 操作 | 目的 |
@@ -5815,3 +5886,20 @@ async function safeInvokeUnwrap<T>(
 - `references/security-electron-ipc.md`: apiKeyAPI セクション追加
 - `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
 - `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
+
+## persist iterable ハードニングでの教訓（2026-03-08）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `viewHistory` / `expandedFolders` を永続化データとして信頼しすぎると、復元時に iterable 例外で画面遷移が停止する |
+| 再発条件 | `Array.isArray` / `instanceof Set` の境界検証をせずに spread / `new Set(raw)` を実行する |
+| 対処 | hydrate と action の両方で防御し、非期待型は空配列/空Setへフォールバックする |
+| 標準ルール | UI変更が小さくても、ユーザーが画面検証を要求した場合は Phase 11 のスクリーンショット証跡を必須にする |
+
+### 5分解決カード
+
+1. 破損 persist を localStorage に注入して再現する。  
+2. hydrate 側（復元）で型ガード + フォールバックを入れる。  
+3. action 側（更新）でも同じガードを入れて二重防御にする。  
+4. 破損ケースのユニットテストを固定する。  
+5. Phase 11 の TC-ID とスクリーンショットを `manual-test-result.md` に同期する。

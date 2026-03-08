@@ -92,12 +92,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L28 |
 | 変更履歴 | L95 |
-| 認証アーキテクチャ（Supabase + Electron） | L108 |
-| セキュリティアーキテクチャ | L233 |
-| RAGパイプラインアーキテクチャ | L272 |
-| 完了タスク | L387 |
-| 実装時の苦戦した箇所・知見 | L509 |
-| 関連ドキュメント | L553 |
+| 認証アーキテクチャ（Supabase + Electron） | L109 |
+| セキュリティアーキテクチャ | L276 |
+| RAGパイプラインアーキテクチャ | L315 |
+| 完了タスク | L430 |
+| 実装時の苦戦した箇所・知見 | L552 |
+| 関連ドキュメント | L596 |
 
 ### references/architecture-chat-history.md
 
@@ -324,9 +324,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L8 |
-| 完了タスク | L256 |
-| ワークスペース型定義 | L404 |
-| 変更履歴 | L458 |
+| 完了タスク | L276 |
+| ワークスペース型定義 | L425 |
+| 変更履歴 | L479 |
 
 ### references/interfaces-chat-history.md
 
@@ -665,14 +665,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証 IPC チャネル | L10 |
 | プロフィール IPC チャネル | L71 |
-| イベントチャネル（Main → Renderer） | L82 |
-| 型定義 | L109 |
-| 認証状態管理 | L167 |
-| IPCセキュリティ実装 | L198 |
-| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L225 |
-| 関連ドキュメント | L279 |
-| 完了タスク | L289 |
-| 変更履歴 | L303 |
+| アバター IPC チャネル | L87 |
+| Supabase 未設定時の fallback 契約 | L95 |
+| イベントチャネル（Main → Renderer） | L115 |
+| 型定義 | L142 |
+| 認証状態管理 | L200 |
+| IPCセキュリティ実装 | L231 |
+| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L258 |
+| 関連ドキュメント | L312 |
+| 完了タスク | L322 |
+| 変更履歴 | L388 |
 
 ### references/api-ipc-system.md
 
@@ -851,7 +853,7 @@ node scripts/list-specs.js --topics
 | Foundation Reflection Audit（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT / completed） | L1192 |
 | Notification / History Domain（TASK-UI-01-C / completed） | L1223 |
 | 完了タスク | L1261 |
-| 仕様書作成済みタスク（spec_created） | L1328 |
+| 仕様書作成済みタスク（spec_created） | L1405 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1051,23 +1053,23 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L45 |
-| Content Security Policy (CSP) | L59 |
-| IPC通信のセキュリティ | L76 |
-| 実装例: historyAPI | L230 |
-| 実装例: slideSettingsAPI | L282 |
-| 実装例: skillCreatorAPI | L331 |
-| 実装例: skillFileAPI（TASK-9A-B） | L448 |
-| 実装例: skillShareAPI（TASK-9F） | L522 |
-| 実装例: skillChainAPI（TASK-9D） | L601 |
-| 実装例: skillScheduleAPI（TASK-9G） | L641 |
-| 実装例: skillDebugAPI（TASK-9H） | L681 |
-| 実装例: skillDocsAPI（TASK-9I） | L736 |
-| 実装例: skillAnalyticsAPI（TASK-9J） | L793 |
-| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L826 |
-| 自動更新のセキュリティ | L856 |
-| 関連ドキュメント | L867 |
-| 完了タスク | L875 |
+| セキュリティ設定 | L46 |
+| Content Security Policy (CSP) | L60 |
+| IPC通信のセキュリティ | L77 |
+| 実装例: historyAPI | L231 |
+| 実装例: slideSettingsAPI | L283 |
+| 実装例: skillCreatorAPI | L332 |
+| 実装例: skillFileAPI（TASK-9A-B） | L473 |
+| 実装例: skillShareAPI（TASK-9F） | L547 |
+| 実装例: skillChainAPI（TASK-9D） | L626 |
+| 実装例: skillScheduleAPI（TASK-9G） | L666 |
+| 実装例: skillDebugAPI（TASK-9H） | L706 |
+| 実装例: skillDocsAPI（TASK-9I） | L761 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L818 |
+| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L851 |
+| 自動更新のセキュリティ | L881 |
+| 関連ドキュメント | L892 |
+| 完了タスク | L900 |
 
 ### references/security-implementation.md
 
@@ -1407,6 +1409,7 @@ node scripts/list-specs.js --topics
 | TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L1353 |
 | TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07） | L1391 |
 | スキルライフサイクルUI Store移行完了（TASK-10A-F） | L1411 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001（2026-03-08） | L1456 |
 
 ### references/arch-ui-components.md
 
@@ -1420,9 +1423,9 @@ node scripts/list-specs.js --topics
 | SkillManagementPanel ビュー統合アーキテクチャパターン（TASK-10A-D / completed） | L661 |
 | SkillManagementPanel Import List アーキテクチャパターン（TASK-043B / completed） | L763 |
 | TASK-UI-00-ORGANISMS アーキテクチャ記録 | L798 |
-| AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / in-progress） | L844 |
-| 変更履歴 | L935 |
-| 関連ドキュメント | L958 |
+| AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / completed） | L844 |
+| 変更履歴 | L957 |
+| 関連ドキュメント | L981 |
 
 ### references/csrf-state-parameter.md
 
@@ -1556,22 +1559,22 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| エラー分類 | L8 |
-| 認可エラー（UnauthorizedError） | L145 |
-| 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L210 |
-| リトライ戦略 | L254 |
-| SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L296 |
-| TokenRefreshScheduler リトライ戦略（TASK-AUTH-SESSION-REFRESH-001） | L333 |
-| SkillExecutor 実行エラーコード（TASK-8A） | L384 |
-| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L423 |
-| AuthMode IPC エラー envelope（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001） | L465 |
-| 認証フォールバックパターン（AUTH-UI-001） | L528 |
-| サーキットブレーカー（将来対応） | L570 |
-| エラーレスポンス形式 | L598 |
-| エラーログ出力 | L629 |
-| ユーザー向けエラーメッセージ | L666 |
-| エラーハンドリングの実装指針 | L689 |
-| 関連ドキュメント | L740 |
-| 変更履歴 | L749 |
+| 認可エラー（UnauthorizedError） | L176 |
+| 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L241 |
+| リトライ戦略 | L285 |
+| SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L327 |
+| TokenRefreshScheduler リトライ戦略（TASK-AUTH-SESSION-REFRESH-001） | L364 |
+| SkillExecutor 実行エラーコード（TASK-8A） | L415 |
+| OAuthエラーコードマッピング（TASK-FIX-GOOGLE-LOGIN-001） | L454 |
+| AuthMode IPC エラー envelope（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001） | L496 |
+| 認証フォールバックパターン（AUTH-UI-001） | L559 |
+| サーキットブレーカー（将来対応） | L601 |
+| エラーレスポンス形式 | L629 |
+| エラーログ出力 | L660 |
+| ユーザー向けエラーメッセージ | L697 |
+| エラーハンドリングの実装指針 | L720 |
+| 関連ドキュメント | L771 |
+| 変更履歴 | L780 |
 
 ### references/ipc-contract-checklist.md
 
@@ -1601,24 +1604,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L260 |
-| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L297 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L355 |
-| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L413 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L479 |
-| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L532 |
-| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L604 |
-| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L669 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L732 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L811 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L869 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1069 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1111 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1153 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1321 |
-| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L1370 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L1416 |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001: Phase 12実行監査（2026-02-28） | L1447 |
+| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L261 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L298 |
+| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L335 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L393 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L451 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L517 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L570 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L642 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L707 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L770 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L849 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L907 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1107 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1149 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1191 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1359 |
+| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L1408 |
+| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L1454 |
 
 ### references/llm-embedding.md
 
@@ -1961,12 +1964,13 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2833 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L2935 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3002 |
-| 残課題（未タスク） | L3083 |
-| 関連ドキュメント | L3482 |
-| 変更履歴 | L3492 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2934 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3036 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3103 |
+| 残課題（未タスク） | L3184 |
+| 関連ドキュメント | L3593 |
+| 変更履歴 | L3603 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L3842 |
 
 ### references/testing-accessibility.md
 
@@ -1995,16 +1999,16 @@ node scripts/list-specs.js --topics
 | 7. userEvent vs fireEvent | L320 |
 | 8. テストファイル分離パターン（TASK-FIX-4-2） | L343 |
 | 9. Zustand Store Hooks テストパターン | L398 |
-| 9.1 AuthMode 契約テストパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001） | L583 |
-| 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L636 |
-| 11. SkillEditor テストパターン（TASK-9A completed） | L696 |
-| 12. テーマ横断テストヘルパー（TASK-UI-00-TOKENS） | L765 |
-| 参照 | L796 |
-| 関連未タスク | L805 |
-| 13. Atoms コンポーネントテストパターン（TASK-UI-00-ATOMS） | L815 |
-| 14. Preload Shape 異常系テストパターン（2026-03-07追加） | L920 |
-| 15. IPC レスポンス異常値テストパターン（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001） | L976 |
-| 変更履歴 | L1103 |
+| 9.1 AuthMode 契約テストパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001） | L579 |
+| 10. Main Process SDKテスト有効化パターン（TASK-FIX-11-1-SDK-TEST-ENABLEMENT） | L632 |
+| 11. SkillEditor テストパターン（TASK-9A completed） | L692 |
+| 12. テーマ横断テストヘルパー（TASK-UI-00-TOKENS） | L761 |
+| 参照 | L792 |
+| 関連未タスク | L801 |
+| 13. Atoms コンポーネントテストパターン（TASK-UI-00-ATOMS） | L811 |
+| 14. Preload Shape 異常系テストパターン（2026-03-07追加） | L913 |
+| 15. SettingsView 統合ハーネスパターン（2026-03-08追加） | L969 |
+| 16. 統合テストハーネスパターン | L1003 |
 
 ### references/testing-dialog-patterns.md
 
@@ -2032,8 +2036,9 @@ node scripts/list-specs.js --topics
 | 5. Providerラッパー | L251 |
 | 6. フィクスチャファイル構成 | L308 |
 | 7. ベストプラクティス | L349 |
-| 参照 | L371 |
-| 変更履歴 | L379 |
+| 8. electronAPI Mock ファクトリ | L371 |
+| 参照 | L438 |
+| 変更履歴 | L446 |
 
 ### references/testing-playwright-e2e.md
 

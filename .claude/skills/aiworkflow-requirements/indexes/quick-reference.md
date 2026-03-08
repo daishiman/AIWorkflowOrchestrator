@@ -74,6 +74,31 @@ app.on("activate", () => {
 **詳細**: security-electron-ipc.md（IPC ハンドラライフサイクル管理）, architecture-implementation-patterns.md（二重登録防止パターン）
 **関連 Pitfall**: 06-known-pitfalls.md#P5
 
+### Supabase 未設定 fallback handler パターン
+
+```typescript
+if (getSupabaseClient()) {
+  registerAuthHandlers(mainWindow, supabase, secureStorage);
+  registerProfileHandlers(mainWindow, supabase, profileCache);
+  registerAvatarHandlers(mainWindow, supabase);
+} else {
+  registerAuthFallbackHandlers();
+  registerProfileFallbackHandlers();
+  registerAvatarFallbackHandlers();
+}
+```
+
+| 確認項目 | 期待値 |
+| -------- | ------ |
+| Profile channels | `profile:*` 11チャネルを fallback 配列へ全件登録 |
+| Avatar channels | `avatar:*` 3チャネルを fallback 配列へ全件登録 |
+| error envelope | `{ success: false, error: { code, message } }` に統一し、`PROFILE_ERROR_CODES.NOT_CONFIGURED` / `AVATAR_ERROR_CODES.NOT_CONFIGURED` を返す |
+| registration | `ReadonlyArray` + `for...of` で宣言的登録 |
+| lifecycle | 通常経路と fallback 経路を if/else 排他にする |
+
+**詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
+**完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
+
 ### Result Pattern
 
 ```typescript

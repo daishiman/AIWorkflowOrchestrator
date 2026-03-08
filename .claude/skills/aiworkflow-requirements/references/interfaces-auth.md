@@ -166,6 +166,26 @@ TASK-FIX-GOOGLE-LOGIN-001で追加されたOAuth認証エラーコード。
 
 **実装場所**: `packages/shared/types/auth.ts`
 
+### PROFILE_ERROR_CODES
+
+Profile IPC のエラーコード。Supabase 未設定 fallback では `NOT_CONFIGURED` を返す。
+
+| コード                         | 値                         | 説明                           |
+| ------------------------------ | -------------------------- | ------------------------------ |
+| PROFILE_ERROR_CODES.NOT_CONFIGURED | `profile/not-configured` | Supabase が設定されていない    |
+
+**実装場所**: `packages/shared/types/auth.ts`
+
+### AVATAR_ERROR_CODES
+
+Avatar IPC のエラーコード。Supabase 未設定 fallback では `NOT_CONFIGURED` を返す。
+
+| コード                        | 値                        | 説明                        |
+| ----------------------------- | ------------------------- | --------------------------- |
+| AVATAR_ERROR_CODES.NOT_CONFIGURED | `avatar/not-configured` | Supabase が設定されていない |
+
+**実装場所**: `packages/shared/types/auth.ts`
+
 ### AuthSession
 
 認証セッション情報。
@@ -280,7 +300,7 @@ Supabase Auth から取得するプロバイダー識別情報。
 | 問題 | 修正内容                                                            |
 | ---- | ------------------------------------------------------------------- |
 | 1    | OAuthコールバックのerrorパラメータ検出（parseOAuthError関数追加）   |
-| 2    | Supabase未設定時エラー（AUTH_NOT_CONFIGUREDコード追加）             |
+| 2    | Supabase未設定時エラー（`AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` 追加） |
 | 3    | セッション管理（refreshTokenExpiresAtフィールド追加）               |
 | 4    | リスナー二重登録防止（authListenerRegisteredフラグ追加）            |
 
@@ -398,6 +418,7 @@ Supabase Auth から取得するプロバイダー識別情報。
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
 | UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001 | 更新対象 domain spec に標準3ブロックが揃っているかを機械検証し、interface 仕様の後追い追記を防ぐ | `docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001/unassigned-task/task-imp-phase12-domain-spec-sync-block-validator-001.md` | 未実施 |
+| UT-IMP-PROFILE-AVATAR-FALLBACK-ERROR-LOCALIZATION-001 | `profile/not-configured` / `avatar/not-configured` を Renderer で code ベースに日本語化する | `docs/30-workflows/completed-tasks/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001/unassigned-task/task-imp-profile-avatar-fallback-error-localization-001.md` | 未実施 |
 
 ---
 

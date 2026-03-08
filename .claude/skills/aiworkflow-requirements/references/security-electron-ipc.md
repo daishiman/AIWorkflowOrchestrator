@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.16.0    | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 完了記録: Profile/Avatar fallback 登録パターンセクション（v1.15.0で追加済み）の完了タスク反映。`registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` の検証基準（チャネル数一致・排他分岐・error envelope統一）を確定 |
 | v1.15.0    | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: ApiKeysSection 契約防御ガードセクション追加（GAP-01〜GAP-06テーブル、59テスト全PASS、カバレッジ実績値）。完了タスクテーブルに追加。architecture-implementation-patterns.md S29 との相互参照を設定                                                                                                   |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
 | v1.13.1    | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: ApiKeysSection の providers 要素 shape 検証（`provider/status` 必須）を Renderer 境界防御パターンへ追記。非配列防御に加えて malformed 要素混在時の継続表示を明文化                                                                                                                                         |
@@ -435,13 +436,37 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | 対象                         | 実装方針                                            | セキュリティ要件                            |
 | ---------------------------- | --------------------------------------------------- | ------------------------------------------- |
 | 通常経路（Supabaseあり）     | `authHandlers.ts` で共通登録ヘルパーを経由して登録  | `withValidation` を必須適用                 |
-| fallback経路（Supabaseなし） | `ipc/index.ts` で fallback ハンドラ配列をループ登録 | 既存エラー契約（AUTH_NOT_CONFIGURED）を維持 |
+| fallback経路（Supabaseなし） | `ipc/index.ts` で fallback ハンドラ配列をループ登録 | 既存エラー契約（`AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` / `auth/not-configured`）を維持 |
 
 検証基準:
 
 - 5チャネル（login/logout/get-session/refresh/check-online）が過不足なく登録される
 - `IPC_CHANNELS.AUTH_*` を直接 `ipcMain.handle` に重複記述しない
 - 既存戻り値・エラーコードを変更しない
+
+#### Profile / Avatar fallback 登録パターン（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと Renderer 側で `No handler registered` が発生するため、Auth と同様に fallback 登録を行う。
+
+推奨実装は、shared error code 定義を参照する `createNotConfiguredResponse()` と、`ReadonlyArray` を登録する `registerFallbackHandlers()` を介した宣言的構成とする。
+
+| 対象 | 実装方針 | セキュリティ要件 |
+| ---- | -------- | ---------------- |
+| `profile:*` 11チャネル | `registerProfileFallbackHandlers()` で `ReadonlyArray` をループ登録 | `success: false` の error envelope に正規化し、内部情報を返さない |
+| `avatar:*` 3チャネル | `registerAvatarFallbackHandlers()` で `ReadonlyArray` をループ登録 | 通常経路と if/else 排他にし、二重登録を防ぐ |
+
+検証基準:
+
+- `channels.ts` の Profile 11 / Avatar 3 定義と fallback 配列件数が一致する
+- `registerAllIpcHandlers()` の if/else 分岐で通常経路と fallback 経路が排他的である
+- Renderer / Preload 側が `success: false` を安全に扱える
+
+#### 実装時の苦戦箇所（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
+| --- | --- | --- | --- |
+| fallback 登録自体は安全でも、画面検証が不安定で問題露出を見落とす | App shell の初期化ノイズで対象エラー状態へ安定到達できない | 専用 harness で対象 view を直描画し、security 観点では `public contract` を維持したまま証跡を取る | 画面検証要求がある IPC タスクでは screenshot と contract test をセットで実施する |
+| `error.message` を安全な transport 文言にしても UI 一貫性までは保証できない | Renderer が `error.code` を捨てて英語 message を直接表示する | Main では内部情報を出さない envelope を返し、UI 側の localized mapping 不足は未タスク化して追跡する | セキュリティ完了と UX 完了は別軸で管理し、責務を混同しない |
 
 ---
 

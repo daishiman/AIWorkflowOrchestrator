@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T00:34:44.905Z",
-  "totalKeywords": 1497,
+  "generated": "2026-03-08T10:31:06.304Z",
+  "totalKeywords": 1519,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -497,7 +497,6 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
-      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-ux-feature-skill-stream.md",
@@ -746,7 +745,8 @@
       "security-electron-ipc.md"
     ],
     "契約": [
-      "api-ipc-agent.md"
+      "api-ipc-agent.md",
+      "api-ipc-auth.md"
     ],
     "TASK": [
       "api-ipc-agent.md",
@@ -782,6 +782,7 @@
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
       "security-electron-ipc.md",
+      "task-workflow.md",
       "testing-component-patterns.md"
     ],
     "SKILL": [
@@ -810,8 +811,7 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "security-electron-ipc.md",
-      "testing-component-patterns.md"
+      "security-electron-ipc.md"
     ],
     "スキルファイル操作": [
       "api-ipc-agent.md",
@@ -898,6 +898,20 @@
     ],
     "プロフィール": [
       "api-ipc-auth.md"
+    ],
+    "アバター": [
+      "api-ipc-auth.md"
+    ],
+    "Supabase": [
+      "api-ipc-auth.md",
+      "architecture-auth-security.md"
+    ],
+    "未設定時の": [
+      "api-ipc-auth.md"
+    ],
+    "fallback": [
+      "api-ipc-auth.md",
+      "lessons-learned.md"
     ],
     "イベントチャネル": [
       "api-ipc-auth.md"
@@ -1305,6 +1319,24 @@
     "移行完了": [
       "arch-state-management.md"
     ],
+    "SETTINGS": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "PERSIST": [
+      "arch-state-management.md",
+      "task-workflow.md"
+    ],
+    "ITERABLE": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "HARDENING": [
+      "arch-state-management.md",
+      "task-workflow.md"
+    ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
     ],
@@ -1367,12 +1399,6 @@
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
     ],
-    "in": [
-      "arch-ui-components.md"
-    ],
-    "progress": [
-      "arch-ui-components.md"
-    ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
     ],
@@ -1383,9 +1409,6 @@
       "architecture-rag.md"
     ],
     "認証アーキテクチャ": [
-      "architecture-auth-security.md"
-    ],
-    "Supabase": [
       "architecture-auth-security.md"
     ],
     "セキュリティアーキテクチャ": [
@@ -3302,6 +3325,22 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "INTEGRATION": [
+      "lessons-learned.md"
+    ],
+    "REGRESSION": [
+      "lessons-learned.md"
+    ],
+    "COVERAGE": [
+      "lessons-learned.md"
+    ],
+    "SettingsView": [
+      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+    "統合回帰強化": [
+      "lessons-learned.md"
+    ],
     "再確認": [
       "lessons-learned.md"
     ],
@@ -3371,9 +3410,6 @@
       "lessons-learned.md"
     ],
     "SANDBOX": [
-      "lessons-learned.md"
-    ],
-    "ITERABLE": [
       "lessons-learned.md"
     ],
     "ERROR": [
@@ -4002,13 +4038,35 @@
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
-    "SETTINGS": [
-      "lessons-learned.md",
-      "testing-component-patterns.md"
+    "SUPABASE": [
+      "lessons-learned.md"
+    ],
+    "FALLBACK": [
+      "lessons-learned.md"
+    ],
+    "PROFILE": [
+      "lessons-learned.md"
+    ],
+    "AVATAR": [
+      "lessons-learned.md"
+    ],
+    "Profile": [
+      "lessons-learned.md"
+    ],
+    "Avatar": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ追加": [
+      "lessons-learned.md"
     ],
     "APIKEY": [
-      "lessons-learned.md",
-      "testing-component-patterns.md"
+      "lessons-learned.md"
+    ],
+    "persist": [
+      "lessons-learned.md"
+    ],
+    "ハードニングでの教訓": [
+      "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4846,6 +4904,9 @@
       "task-workflow.md",
       "ui-ux-components.md"
     ],
+    "完了記録": [
+      "task-workflow.md"
+    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -5057,7 +5118,10 @@
     "異常系テストパターン": [
       "testing-component-patterns.md"
     ],
-    "レスポンス異常値テストパターン": [
+    "統合ハーネスパターン": [
+      "testing-component-patterns.md"
+    ],
+    "統合テストハーネスパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
@@ -5115,6 +5179,15 @@
     "ベストプラクティス": [
       "testing-fixtures.md",
       "ui-ux-portal-patterns.md"
+    ],
+    "electronAPI": [
+      "testing-fixtures.md"
+    ],
+    "Mock": [
+      "testing-fixtures.md"
+    ],
+    "ファクトリ": [
+      "testing-fixtures.md"
     ],
     "Playwright": [
       "testing-playwright-e2e.md"

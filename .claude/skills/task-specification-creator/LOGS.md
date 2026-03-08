@@ -10,6 +10,30 @@
 
 ---
 
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了条件の明文化
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（guide update）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` の完了チェックへ、`phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックを実績同期する要件を追加
+  - system spec を更新した場合は、domain spec 側にも `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` か等価な lessons 参照を残す条件を追加
+  - Phase 12 を「成果物がある」だけで閉じず、再利用知見まで仕様へ固定する運用を明文化
+
+---
+
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - `api-ipc-auth.md` に完了タスクセクション追加（Profile 11ch / Avatar 3ch fallback ハンドラ）と変更履歴 v1.7.0 追記
+  - `error-handling.md` に変更履歴 v1.10.0 追記（PROFILE_ERROR_CODES.NOT_CONFIGURED / AVATAR_ERROR_CODES.NOT_CONFIGURED）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
 ## 2026-03-07 - TASK-10A-F Phase 12 再確認（スクリーンショット証跡 + 仕様同期）
 
 - **Agent**: task-specification-creator
@@ -5557,5 +5581,18 @@ if (artifactPath) {
   - SubAgent-D: `skill-creator/references/patterns.md` に新パターン5件を追加
   - SubAgent-E: LOGS.md 2ファイル + SKILL.md 2ファイルの4ファイル同時更新（P1/P25対策）
   - SubAgent-F: インデックス再生成（topic-map.md/keywords.json）
+
+---
+
+## 2026-03-08 - workflow11 Phase 11/12 再確認（harness screenshot 運用を再利用）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認）
+- **Result**: ✓ 成功
+- **Notes**:
+  - `apps/desktop/src/renderer/phase11-auth-mode.html` を入口にした harness で `SettingsView` を直描画し、`TC-11-UI-01..03` の screenshot を再取得
+  - `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` を追加し、`manual-test-result.md` を証跡列付きへ更新
+  - `discovered-issues.md` で英語 fallback error 露出を記録し、未タスク 1 件の 4 ステップ登録を完了
+  - `artifacts.json` / `index.md` / Phase 12 成果物 stale を是正し、workflow11 の再確認を PASS 状態へ戻す
 
 ---

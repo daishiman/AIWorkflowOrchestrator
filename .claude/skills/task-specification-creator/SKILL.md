@@ -394,6 +394,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.27** | **2026-03-08** | **workflow11 再確認運用を反映**: `references/phase-11-12-guide.md` に「App shell 遷移が不安定な場合は同一 view を直描画する harness route を優先してよい」を追記。workflow11 で `TC-11-UI-01..03` screenshot, `テストケース`, `画面カバレッジマトリクス`, follow-up issue 登録までを一連運用として固定 |
+| **v10.08.28** | **2026-03-08** | **TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12完了条件を補強**: `references/phase-11-12-guide.md` に `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックを実績同期する要件と、system spec 更新時に domain spec 側へ `実装内容 / 苦戦箇所 / 5分カード` または等価な lessons 参照を残す条件を追加。Phase 12 を成果物存在だけで閉じない運用へ補強 |
+| **v10.08.26** | **2026-03-08** | **TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 完了同期**: `api-ipc-auth.md` に Profile/Avatar fallback ハンドラ完了タスクセクション追加。`error-handling.md` に変更履歴追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.08.25** | **2026-03-08** | **TASK-10A-E-D/TASK-UI-03/TASK-10A-F 仕様同期**: 5教訓・5パターン・5完了タスク・5未タスクを6並列SubAgentで仕様書正本へ同期。lessons-learned/arch-state-management/task-workflow/patterns/LOGS/SKILLを同時更新。P1/P25対策で4ファイル同時更新 |
 | **v10.08.24** | **2026-03-07** | **TASK-10A-F 再確認を反映**: ユーザー要求に基づく画面検証を `SCREENSHOT` 必須運用で再実行し、`store-driven-lifecycle-ui` の Phase 11 証跡を11件へ更新。Phase 12 の不足成果物（`unassigned-task-detection.md` / `skill-feedback-report.md` / `spec-update-summary.md`）を補完し、Step 1-A〜Step 2 実更新を同ターンで完了する運用を追記 |
 ||||||| Stash base

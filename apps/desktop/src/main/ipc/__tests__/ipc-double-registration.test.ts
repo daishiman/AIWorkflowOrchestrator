@@ -13,6 +13,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import {
+  AUTH_ERROR_CODES,
+  PROFILE_ERROR_CODES,
+  AVATAR_ERROR_CODES,
+} from "@repo/shared/types/auth";
 
 // --- vi.hoisted でモック変数を定義（ホイスティング対応） ---
 const {
@@ -91,6 +96,20 @@ vi.mock("../../../preload/channels", () => ({
     AUTH_GET_SESSION: "auth:get-session",
     AUTH_REFRESH: "auth:refresh",
     AUTH_CHECK_ONLINE: "auth:check-online",
+    PROFILE_GET: "profile:get",
+    PROFILE_UPDATE: "profile:update",
+    PROFILE_DELETE: "profile:delete",
+    PROFILE_GET_PROVIDERS: "profile:get-providers",
+    PROFILE_LINK_PROVIDER: "profile:link-provider",
+    PROFILE_UNLINK_PROVIDER: "profile:unlink-provider",
+    PROFILE_UPDATE_TIMEZONE: "profile:update-timezone",
+    PROFILE_UPDATE_LOCALE: "profile:update-locale",
+    PROFILE_UPDATE_NOTIFICATIONS: "profile:update-notifications",
+    PROFILE_EXPORT: "profile:export",
+    PROFILE_IMPORT: "profile:import",
+    AVATAR_UPLOAD: "avatar:upload",
+    AVATAR_USE_PROVIDER: "avatar:use-provider",
+    AVATAR_REMOVE: "avatar:remove",
   },
 }));
 
@@ -260,6 +279,26 @@ import {
   unregisterAuthKeyHandlers,
 } from "../authKeyHandlers";
 
+const PROFILE_FALLBACK_CHANNELS = [
+  "profile:get",
+  "profile:update",
+  "profile:delete",
+  "profile:get-providers",
+  "profile:link-provider",
+  "profile:unlink-provider",
+  "profile:update-timezone",
+  "profile:update-locale",
+  "profile:update-notifications",
+  "profile:export",
+  "profile:import",
+] as const;
+
+const AVATAR_FALLBACK_CHANNELS = [
+  "avatar:upload",
+  "avatar:use-provider",
+  "avatar:remove",
+] as const;
+
 describe("IPC Handler Double Registration Prevention", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -359,19 +398,54 @@ describe("IPC Handler Double Registration Prevention", () => {
     });
   });
 
-  describe("auth fallback handlers", () => {
-    it("Supabase未設定時にAUTH 5チャネルをfallback登録する", () => {
+  describe("auth/profile/avatar fallback handlers", () => {
+    it("Supabase未設定時にAUTH/Profile/Avatarの全fallbackチャネルを登録する", () => {
       const mockWindow =
         mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
 
       registerAllIpcHandlers(mockWindow);
 
       const channels = mockIpcMainHandle.mock.calls.map((call) => call[0]);
+      // フォールバック 19ch を含む全チャンネルが登録されていること
+      expect(channels.length).toBeGreaterThanOrEqual(19);
       expect(channels).toContain("auth:login");
       expect(channels).toContain("auth:logout");
       expect(channels).toContain("auth:get-session");
       expect(channels).toContain("auth:refresh");
       expect(channels).toContain("auth:check-online");
+      expect(channels).toEqual(
+        expect.arrayContaining([...PROFILE_FALLBACK_CHANNELS]),
+      );
+      expect(channels).toEqual(
+        expect.arrayContaining([...AVATAR_FALLBACK_CHANNELS]),
+      );
+    });
+
+    it("fallbackのAUTH_LOGINはshared constのAUTH_NOT_CONFIGUREDを返す", async () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      const loginCall = mockIpcMainHandle.mock.calls.find(
+        (call) => call[0] === "auth:login",
+      );
+      expect(loginCall).toBeDefined();
+
+      const handler = loginCall?.[1] as () => Promise<{
+        success: boolean;
+        error: { code: string; message: string };
+      }>;
+      const result = await handler();
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED,
+          message:
+            "Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
+        },
+      });
     });
 
     it("fallbackのAUTH_GET_SESSIONはnullセッションを返す", async () => {
@@ -412,6 +486,60 @@ describe("IPC Handler Double Registration Prevention", () => {
       const result = await handler();
 
       expect(result).toEqual({ success: true, data: { online: true } });
+    });
+
+    it("Profile fallback群はshared constのNOT_CONFIGUREDを返す", async () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      for (const channel of PROFILE_FALLBACK_CHANNELS) {
+        const profileCall = mockIpcMainHandle.mock.calls.find(
+          (call) => call[0] === channel,
+        );
+        expect(profileCall).toBeDefined();
+
+        const handler = profileCall?.[1] as () => Promise<{
+          success: boolean;
+          error: { code: string; message: string };
+        }>;
+        await expect(handler()).resolves.toEqual({
+          success: false,
+          error: {
+            code: PROFILE_ERROR_CODES.NOT_CONFIGURED,
+            message:
+              "Profile service is not configured. Supabase environment variables are required.",
+          },
+        });
+      }
+    });
+
+    it("Avatar fallback群はshared constのNOT_CONFIGUREDを返す", async () => {
+      const mockWindow =
+        mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+
+      registerAllIpcHandlers(mockWindow);
+
+      for (const channel of AVATAR_FALLBACK_CHANNELS) {
+        const avatarCall = mockIpcMainHandle.mock.calls.find(
+          (call) => call[0] === channel,
+        );
+        expect(avatarCall).toBeDefined();
+
+        const handler = avatarCall?.[1] as () => Promise<{
+          success: boolean;
+          error: { code: string; message: string };
+        }>;
+        await expect(handler()).resolves.toEqual({
+          success: false,
+          error: {
+            code: AVATAR_ERROR_CODES.NOT_CONFIGURED,
+            message:
+              "Avatar service is not configured. Supabase environment variables are required.",
+          },
+        });
+      }
     });
   });
 
