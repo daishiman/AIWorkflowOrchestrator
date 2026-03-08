@@ -7,17 +7,29 @@
 
 ## 変更履歴
 
-| バージョン | 日付       | 変更内容                                                                        |
-| ---------- | ---------- | ------------------------------------------------------------------------------- |
-| v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記 |
-| v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記 |
-| v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
-| v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
+| バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | v3.12.0    | 2026-03-08 | TASK-043D テスト品質ゲート設計反映: agentSlice責務境界拡張テスト8ファイル（boundary/combination/edge-cases/error-cases/extension/import-lifecycle/p31-regression/selectors）追加。customStorage 3段ガードパターンのテスト新規作成（184行）。navigationSlice に viewHistory 破損時の iterable hardening テスト追加。SkillAnalysisView/SkillCreateWizard の Store統合テスト追加。store/index.ts に新規セレクタエクスポート63行追加 |
 | v3.11.0    | 2026-03-08 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 反映: `customStorage` の getItem/setItem に iterable guard（DD-01/DD-02）を追加。`expandedFolders` の `Array.isArray` + `typeof === "string"` フィルタリング、非配列入力時の `Set<string>()` フォールバック、`setItem` での `Set`/`Array` 二重対応を persist 復旧契約として明文化。`useCanGoBack` に `Array.isArray(state.viewHistory)` ガードを追加。branch横断 Phase 12 再監査で workflow 10/11/12 の Phase 12 不足を検出し未タスク3件へ分離 |
-| v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加 |
-| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
-| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記 |
+| v3.11.0    | 2026-03-07 | TASK-10A-F 反映: useSkillAnalysis.ts の直接IPC呼び出し3箇所（analyze/applyImprovements/autoImprove）をStore個別セレクタ経由に移行。ローカルstate（analysis/isAnalyzing/isImproving/error）をStore参照に置換し、selectedSuggestions/improvementResult はローカル維持（Case B方式）。isMountedRef パターン廃止 |
+| バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記                                                                                                                                   |
+| v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記                                                  |
+| v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正                                                                              |
+| v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加                                                                                          |
+| v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加                                                       |
+| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加                                                                                                                                       |
+| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記                                            |
+| バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.11.0    | 2026-03-07 | TASK-10A-F 反映: useSkillAnalysis.ts の直接IPC呼び出し3箇所（analyze/applyImprovements/autoImprove）をStore個別セレクタ経由に移行。ローカルstate（analysis/isAnalyzing/isImproving/error）をStore参照に置換し、selectedSuggestions/improvementResult はローカル維持（Case B方式）。isMountedRef パターン廃止 |
+| v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記                                                  |
+| v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正                                                                              |
+| v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加                                                                                          |
+| v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加                                                       |
+| v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加                                                                                                                                       |
+| v3.9.0     | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `uiSlice` に `isNavExpanded` / `isMobileMoreOpen` を追加し、`AppLayout` / `GlobalNavStrip` / `MobileNavBar` の状態同期と rollback feature flag を記録。`Cmd/Ctrl+[` 戻る導線、tablet collapsed 固定、Phase 11 手動検証証跡を追記                                            |
 
 | v3.8.7     | 2026-03-05 | TASK-UI-01-D 追補: ViewType導線の実装要点と苦戦箇所（契約二重管理、編集要素誤発火、再撮影運用ギャップ）を再発条件付きで追加。`Port 5177` preflight を含む 5 ステップ手順を明文化 |
 | v3.8.6     | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `App.tsx` の ViewType ルーティング網羅、`navigation/navContract.ts` による AppDock 契約一元化、Cmd/Ctrl ショートカット解決ロジック、Phase 11 画面証跡（5件）を同期。関連タスクを完了へ更新 |
@@ -1384,27 +1396,47 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 
 ### 同種課題の5分解決カード（TASK-10A-E-C）
 
-1. `rg` で inline selector / direct IPC の残存箇所を棚卸しする。  
-2. `.filter()` / `.map()` 派生 selector は `useShallow` 適用を先に固定する。  
-3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。  
-4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。  
-5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。  
+1. `rg` で inline selector / direct IPC の残存箇所を棚卸しする。
+2. `.filter()` / `.map()` 派生 selector は `useShallow` 適用を先に固定する。
+3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。
+4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。
+5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
 
 ## TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07）
 
 ### 責務境界の最終同期
 
-| タスク | 責務 |
-| --- | --- |
-| TASK-10A-D | agentSlice へ lifecycle state/action を追加する |
-| TASK-10A-E-C | import lifecycle（`isImporting` 系）を安定化する |
-| TASK-10A-F | Renderer 直接IPCを排除し Store action 経由へ統一する |
+| タスク       | 責務                                                 |
+| ------------ | ---------------------------------------------------- |
+| TASK-10A-D   | agentSlice へ lifecycle state/action を追加する      |
+| TASK-10A-E-C | import lifecycle（`isImporting` 系）を安定化する     |
+| TASK-10A-F   | Renderer 直接IPCを排除し Store action 経由へ統一する |
 
 ### UI側契約
 
 - `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
 - `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
 - 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。
+### 苦戦箇所と再利用手順
+| 課題                                  | 再発条件                                                       | 解決策                                                                                              |
+| ------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Store移行後のテストmockパターン不統一 | Store個別セレクタをmockする際、vi.mockの戻り値構造が不一致     | `vi.mock("../../../store", () => ({ useSelectorName: () => mockValue }))` パターンを標準化          |
+| handleAnalyze の try/catch 欠落       | Store action が例外をthrowした場合、Unhandled Rejection が発生 | 全ハンドラに try/catch を追加（Store側でerror処理済みでも、UIクラッシュ防止のため必須）             |
+| improvementResult のStore化見送り     | applySkillImprovements の戻り値がStore stateに含まれていない   | 設計判断（Case B）として明文化。将来必要になれば agentSlice に `lastImprovementResult` state を追加 |
+### 検証証跡
+| 検証        | 結果                                                                                                              |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| テスト      | 52テスト全PASS（SkillCreateWizard: 19, SkillAnalysisView: 33）                                                    |
+| カバレッジ  | SkillCreateWizard: Line 97.18%, Branch 90.9%, Func 100% / useSkillAnalysis: Line 98.85%, Branch 86.95%, Func 100% |
+| 直接IPC残存 | 実行コード内 0件（grep検証済み）                                                                                  |
+| TypeScript  | `tsc --noEmit` PASS                                                                                               |
+### 関連タスク
+| タスクID     | 内容                                          | ステータス             |
+| ------------ | --------------------------------------------- | ---------------------- |
+| TASK-10A-D   | agentSlice スキルライフサイクルアクション追加 | **完了**（2026-03-03） |
+| TASK-10A-E-C | import lifecycle の Store 駆動設計            | **完了**（2026-03-06） |
+| TASK-10A-F   | スキルライフサイクルUI Store移行（本タスク）  | **完了**（2026-03-07） |
+| TASK-10A-G   | 残存直接IPC呼び出し排除（後続）               | 後続                   |
 
 ### 統合検証結果
 
@@ -1501,6 +1533,16 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 - 永続化復元点では型検証を最優先し、異常値を直接spread/iterateしない。
 - フォールバック時は診断可能な warning を出し、アプリ継続を優先する。
 - 破損入力テスト（`null`/`undefined`/`number`/`string`/`object`）を標準テストセットに含める。
+
+### 追加した防御契約
+
+| 対象                             | 契約                                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------- |
+| `navigationSlice.setCurrentView` | `viewHistory` は `Array.isArray` で検証し、非配列は `[]` にフォールバックしてから push する |
+| `navigationSlice.goBack`         | `viewHistory` が非配列なら `[]` 扱いで早期 return する                                      |
+| `navigationSlice.canGoBack`      | `Array.isArray(history) && history.length > 1` のみ true                                    |
+| `customStorage.getItem`          | `expandedFolders` は `string[]` のみ `Set<string>` に復元し、それ以外は空 Set               |
+| `customStorage.setItem`          | `expandedFolders` が Set/配列以外なら `[]` で永続化                                         |
 
 ### 検証証跡
 

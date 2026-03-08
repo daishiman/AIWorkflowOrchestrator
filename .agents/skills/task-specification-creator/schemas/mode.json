@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "mode.json",
+  "title": "Task Specification Creator Mode",
+  "description": "モード判定結果のスキーマ",
+  "type": "object",
+  "required": ["mode", "reason"],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": ["create", "execute", "update", "detect-unassigned"],
+      "description": "検出されたモード"
+    },
+    "reason": {
+      "type": "string",
+      "description": "モード判定の理由"
+    },
+    "workflowPath": {
+      "type": "string",
+      "description": "ワークフローディレクトリのパス"
+    },
+    "phase": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 13,
+      "description": "対象Phase番号"
+    },
+    "request": {
+      "type": "string",
+      "description": "元のリクエストテキスト"
+    },
+    "artifacts": {
+      "type": "object",
+      "description": "既存のartifacts.json内容"
+    }
+  },
+  "additionalProperties": false
+}

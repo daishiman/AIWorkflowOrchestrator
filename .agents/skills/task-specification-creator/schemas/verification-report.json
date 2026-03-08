@@ -1,0 +1,189 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "verification-report.json",
+  "title": "Verification Report",
+  "description": "タスク仕様書の検証レポートスキーマ",
+  "type": "object",
+  "required": ["timestamp", "workflowDir", "summary", "phases"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "検証実行日時（ISO 8601）"
+    },
+    "workflowDir": {
+      "type": "string",
+      "description": "対象ワークフローディレクトリのパス"
+    },
+    "summary": {
+      "type": "object",
+      "description": "検証結果サマリー",
+      "required": ["totalPhases", "verifiedPhases", "errors", "warnings", "passed"],
+      "properties": {
+        "totalPhases": {
+          "type": "integer",
+          "description": "総Phase数",
+          "minimum": 1,
+          "maximum": 13
+        },
+        "verifiedPhases": {
+          "type": "integer",
+          "description": "検証済みPhase数",
+          "minimum": 0,
+          "maximum": 13
+        },
+        "errors": {
+          "type": "integer",
+          "description": "エラー数",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "integer",
+          "description": "警告数",
+          "minimum": 0
+        },
+        "info": {
+          "type": "integer",
+          "description": "情報数",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "検証パス判定"
+        }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "description": "Phase別検証結果",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "object",
+          "required": ["file", "status", "issues"],
+          "properties": {
+            "file": {
+              "type": "string",
+              "description": "Phase仕様書ファイルパス"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["pass", "warning", "error"],
+              "description": "Phase検証ステータス"
+            },
+            "issues": {
+              "type": "array",
+              "description": "検出された問題リスト",
+              "items": {
+                "$ref": "#/definitions/issue"
+              }
+            }
+          }
+        }
+      }
+    },
+    "globalIssues": {
+      "type": "array",
+      "description": "グローバル問題（Phase横断）",
+      "items": {
+        "$ref": "#/definitions/issue"
+      }
+    },
+    "llmVerification": {
+      "type": "object",
+      "description": "LLM品質検証結果（オプション）",
+      "properties": {
+        "judgment": {
+          "type": "string",
+          "enum": ["PASS", "NEEDS_IMPROVEMENT"],
+          "description": "最終判定"
+        },
+        "completionCriteriaScores": {
+          "type": "object",
+          "description": "Phase別完了条件検証可能性スコア",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "description": "検証可能性スコア（%）"
+                },
+                "problematicCriteria": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "問題のある完了条件"
+                }
+              }
+            }
+          }
+        },
+        "executabilityScores": {
+          "type": "object",
+          "description": "Phase別実行可能性スコア",
+          "patternProperties": {
+            "^[0-9]+$": {
+              "type": "string",
+              "enum": ["pass", "warning", "fail"],
+              "description": "実行可能性評価"
+            }
+          }
+        },
+        "improvements": {
+          "type": "array",
+          "description": "改善提案リスト",
+          "items": {
+            "type": "object",
+            "required": ["phase", "location", "current", "suggestion"],
+            "properties": {
+              "phase": {
+                "type": "integer",
+                "description": "対象Phase番号"
+              },
+              "location": {
+                "type": "string",
+                "description": "問題箇所（セクション名等）"
+              },
+              "current": {
+                "type": "string",
+                "description": "現状の記述"
+              },
+              "suggestion": {
+                "type": "string",
+                "description": "改善案"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "issue": {
+      "type": "object",
+      "required": ["type", "category", "message"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["error", "warning", "info"],
+          "description": "問題の深刻度"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["completeness", "structure", "quality", "consistency", "read"],
+          "description": "問題カテゴリ"
+        },
+        "phase": {
+          "type": ["integer", "null"],
+          "description": "対象Phase番号（グローバル問題はnull）"
+        },
+        "message": {
+          "type": "string",
+          "description": "問題の説明"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

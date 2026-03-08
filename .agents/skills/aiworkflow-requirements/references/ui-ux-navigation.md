@@ -1,0 +1,272 @@
+# ナビゲーションUI設計
+
+> 本ドキュメントは統合システム設計仕様書の一部です。
+> 管理: .claude/skills/aiworkflow-requirements/
+
+---
+
+## 概要
+
+デスクトップアプリにおけるナビゲーションUI設計を定義する。
+Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各View内のサブナビゲーションを提供する。
+
+## 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+| --- | --- | --- |
+| v1.6.4 | 2026-03-06 | TASK-UI-02 移管反映。Global Navigation Core の workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスクの配置先も completed workflow 配下へ統一 |
+| v1.6.3 | 2026-03-06 | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation 改修後の再監査導線を task spec へ接続 |
+| v1.6.2 | 2026-03-06 | TASK-UI-02 追補: 実装時の苦戦箇所（rollback 共存、`mobileLabel`、UI仕様同期漏れ、workflow 本文 stale）と簡潔解決手順を追加し、ナビ変更時は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` の同時同期を明文化 |
+| v1.6.1 | 2026-03-06 | TASK-UI-02 再監査追補: mobile tab bar の可読性改善として `mobileLabel` を導入。アクセシビリティ用 `aria-label` は正式名称のまま保持しつつ、表示ラベルを `ダッシュ` / `ワーク` / `実行` / `スキル` などの短縮形へ統一 |
+| v1.6.0 | 2026-03-06 | TASK-UI-02-GLOBAL-NAV-CORE 反映: `GlobalNavStrip` / `MobileNavBar` / `AppLayout` を正式ナビ構成へ更新。9項目/3セクション、desktop expanded 200px、tablet collapsed 56px、mobile primary 5 + More 4、`Cmd/Ctrl+[` 戻る導線、feature flag rollback path を同期 |
+| v1.5.1 | 2026-03-05 | TASK-UI-01-D の追補: 実装内容（契約正本化/ショートカット条件/証跡運用）と苦戦箇所（契約二重管理・編集要素誤発火・再撮影運用ギャップ）を同一節へ追加し、5分解決カードを同期 |
+| v1.5.0 | 2026-03-05 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV 反映: `navigation/navContract.ts` を AppDock ナビ契約の正本として明記。ショートカット仕様を `Cmd/Ctrl` 両対応へ更新し、`layout-grid` アイコン・`skill-center` 互換導線・編集要素上のショートカット無効化ルールを追記 |
+| v1.4.0 | 2026-03-05 | TASK-UI-01-STORE-IPC-ARCHITECTURE 反映: AppDock の 9 項目ナビ（workspace/skillCenter/historySearch 追加）と `ViewType` 拡張を同期。実装パスを `components/organisms/AppDock` へ修正 |
+| v1.3.0 | 2026-02-12 | Agent ナビ導線追加（`agent` ViewType） |
+| v1.0.0 | 2026-01-26 | 初版 |
+
+---
+
+## Global Navigation
+
+### 概要
+
+desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下部 `MobileNavBar` を使って ViewType 切り替えを提供する。
+
+**実装場所**:
+
+- `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/index.tsx`
+- `apps/desktop/src/renderer/components/organisms/MobileNavBar/index.tsx`
+- `apps/desktop/src/renderer/components/organisms/AppLayout/index.tsx`
+- `apps/desktop/src/renderer/App.tsx`
+
+**契約正本**: `apps/desktop/src/renderer/navigation/navContract.ts`
+
+### legacy note
+
+- `AppDock` は rollback path と比較用に残している。
+- 新規導線の正式UIは `GlobalNavStrip` / `MobileNavBar` とする。
+
+### メニュー項目一覧
+
+| 項目 | ViewType | アイコン | ショートカット | 説明 |
+| --- | --- | --- | --- | --- |
+| ダッシュボード | `dashboard` | `layout-grid` | Cmd/Ctrl+1 | main |
+| ワークスペース | `workspace` | `folder-tree` | Cmd/Ctrl+2 | main |
+| チャット | `chat` | `message-circle` | Cmd/Ctrl+3 | main |
+| エージェント | `agent` | `bot` | Cmd/Ctrl+4 | main |
+| スキルセンター | `skillCenter` | `puzzle` | Cmd/Ctrl+5 | main |
+| 履歴検索 | `historySearch` | `search` | Cmd/Ctrl+6 | secondary（mobile は More） |
+| グラフ | `graph` | `network` | Cmd/Ctrl+7 | secondary（mobile は More） |
+| エディタ | `editor` | `file-code` | Cmd/Ctrl+8 | secondary（mobile は More） |
+| 設定 | `settings` | `settings` | Cmd/Ctrl+, | footer / More |
+
+### レイアウトモード
+
+| モード | 仕様 |
+| --- | --- |
+| Desktop | 左サイド固定、expanded/collapsed 切替可、expanded 幅 200px |
+| Tablet | 左サイド固定、collapsed 56px 固定 |
+| Mobile | 下部固定、primary 5項目 + More 4項目 |
+
+### ViewType型定義
+
+| ViewType     | 説明                     |
+| ------------ | ------------------------ |
+| `dashboard`  | ダッシュボード画面       |
+| `workspace`  | ワークスペース画面       |
+| `editor`     | エディター画面           |
+| `chat`       | チャット画面             |
+| `graph`      | グラフ画面               |
+| `agent`      | エージェント画面         |
+| `skillCenter`| スキルセンター画面       |
+| `historySearch` | 履歴検索画面          |
+| `skill-center` | 互換エイリアス（legacy導線） |
+| `settings`   | 設定画面                 |
+
+### navItems配列構造
+
+| プロパティ | 型         | 説明                   |
+| ---------- | ---------- | ---------------------- |
+| `id`       | `ViewType` | 一意識別子             |
+| `icon`     | `IconName` | アイコン識別子         |
+| `label`    | `string`   | メニューラベル         |
+| `mobileLabel` | `string` | mobile 下部バー用の短縮ラベル |
+| `shortcut` | `string`   | キーボードショートカット |
+| `isMobilePrimary` | `boolean` | mobile 下部バーへ直接表示するか |
+
+### キーボードショートカット適用条件
+
+| 条件 | 仕様 |
+| --- | --- |
+| 修飾キー | `metaKey` または `ctrlKey` のいずれか必須 |
+| 禁止修飾キー | `altKey` / `shiftKey` が有効な場合は無効 |
+| 入力フォーカス | `input` / `textarea` / `select` / `contenteditable` 上では無効 |
+| 設定ショートカット | `Cmd/Ctrl + ,` は `event.code === "Comma"` を優先判定 |
+| 戻るショートカット | `Cmd/Ctrl + [` は `viewHistory` がある場合のみ有効 |
+
+### TASK-UI-02 実装同期（2026-03-06）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| desktop/tablet ナビ | `GlobalNavStrip` が 9項目/3セクション、expanded/collapsed、keyboard roving を提供 | `components/organisms/GlobalNavStrip/` |
+| mobile ナビ | `MobileNavBar` が primary 5項目と `MoreMenu` 4項目を提供し、下部バー表示名は `mobileLabel` で短縮する | `components/organisms/MobileNavBar/` |
+| レイアウト | `AppLayout` が left rail / header / main / bottom nav を統合 | `components/organisms/AppLayout/index.tsx` |
+| state | `uiSlice` が `isNavExpanded` / `isMobileMoreOpen` を保持 | `store/slices/uiSlice.ts` |
+| rollback | `VITE_USE_GLOBAL_NAV_STRIP=false` で `AppDock` 経路へ戻せる | `App.tsx` |
+
+### TASK-UI-02 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| rollback 共存で責務が `App.tsx` に戻る | 旧 `AppDock` を残したまま新 nav の state/shortcut まで親に持たせる | `AppLayout` / nav / hook / slice に責務を分離し、`VITE_USE_GLOBAL_NAV_STRIP` は shell 切替だけに限定 | rollback は feature flag に隔離し、契約と state の正本を二重化しない |
+| mobile 下部バーの正式ラベルが小画面で切れる | desktop 用ラベルを mobile 表示へそのまま流用する | `mobileLabel` を追加し、`aria-label` は正式名称のまま維持した | mobile では表示ラベルとアクセシビリティ名を分離してよい |
+| More overlay の品質が自動テストだけでは確定しない | safe-area / overlay / 文字量を unit test だけで判定する | Phase 11 で 5視覚状態を再撮影し、Apple UI/UX 観点レビューを追加した | nav 変更は `SCREENSHOT` 証跡と目視レビューを完了条件に含める |
+| UI仕様同期が `task-workflow` / `lessons` 側に偏る | 台帳は更新したが navigation 正本や UI index/detail を後回しにする | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期した | ナビ変更は「基本6仕様書 + ドメイン正本」の同時同期を必須にする |
+| `artifacts.json` / `index.md` 完了後も workflow 本文が stale 化する | `phase-1..11` / `phase-12-documentation.md` の `pending` を見落とす | workflow 本文と二重台帳を同一ターンで同期し、pending grep を追加した | Phase 12 完了判定は「成果物 / 台帳 / 本文仕様書」の三層同期で閉じる |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `navContract.ts` を導線正本にし、`AppLayout` / nav / shortcut / state の責務を先に分離する。  
+2. `navigationSlice` は current view/history、`uiSlice` は nav UI state、`useNavShortcuts` は DOM 条件判定に限定する。  
+3. rollback path は feature flag に閉じ、legacy/new の両導線で同じ契約と状態を参照させる。  
+4. mobile は `mobileLabel` と `aria-label` を分離し、Phase 11 スクリーンショットで可読性を最終確認する。  
+5. `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` と workflow 本文を同一ターンで同期する。  
+
+### 関連未タスク（2026-03-06 追補）
+
+| 未タスクID | 概要 | 参照先 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | navigation 正本を含む domain UI spec の同期漏れを防ぐ | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
+| UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | navigation 変更後の workflow 本文 stale を Phase 12 で検出する | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
+
+### TASK-UI-01-D 実装内容と苦戦箇所（履歴）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| 契約正本化 | AppDockの項目/順序/ショートカットを `navContract.ts` に一元化 | `apps/desktop/src/renderer/navigation/navContract.ts` |
+| ショートカット導線 | Cmd/Ctrl 両対応 + `alt/shift` 無効 + 編集要素除外を実装 | `apps/desktop/src/renderer/App.tsx` |
+| UI参照統一 | `AppDock` は `APP_DOCK_NAV_ITEMS` の参照のみとし、直書きを排除 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
+| 画面証跡 | `TC-056D-11-01..05` を workflow 配下 `outputs/phase-11/screenshots` で固定 | `docs/30-workflows/task-056d-viewtype-routing-nav/outputs/phase-11/` |
+
+#### 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 契約二重管理で導線がドリフト | nav配列とshortcut表を別ファイルで運用 | `navContract.ts` に集約しUIから参照化 | 導線契約は1ファイル正本のみ許可 |
+| 編集要素上でショートカット誤発火 | global keydown でターゲット判定を省略 | `isEditableEventTarget` で入力要素を除外 | グローバルショートカットは編集要素除外を必須 |
+| 再撮影で保存先/ポート運用が揺れる | workflow固定パス未対応 + strictPort競合未記録 | `Port 5177` preflight を記録し、運用ガードを未タスク化 | 再撮影前に preflight 実施、分岐結果を証跡に残す |
+
+#### 同種課題の5分解決カード（最短手順）
+
+1. `navContract.ts` を導線正本にし、UI側の重複定義を削除する。  
+2. `meta/ctrl` 条件 + 編集要素除外 + `alt/shift` 抑止をセットで実装する。  
+3. `TC-xx` と `screenshots/*.png` を1対1で管理し、coverage validator を必ず実行する。  
+4. Step 2 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` の結果と分岐（停止/再利用/別ポート）を成果物へ残し、必要時は未タスク化する。  
+
+---
+
+## ChatViewナビゲーション
+
+ChatViewには履歴ページへの導線として、ヘッダー右上にナビゲーションボタンを配置する。
+
+**実装場所**: `apps/desktop/src/renderer/views/ChatView/index.tsx:136-143`
+
+## ナビゲーションボタン仕様
+
+| 要素 | 仕様 |
+|------|------|
+| 配置 | ChatViewヘッダー右上 |
+| アイコン | Lucide Icons `History`（20px×20px） |
+| ラベル | なし（アイコンのみ、`aria-label`で補完） |
+| type属性 | `type="button"`（フォーム誤送信防止） |
+| aria-label | `"チャット履歴"`（スクリーンリーダー対応） |
+| 遷移先 | `/chat/history`（React Router） |
+| 色 | `text-gray-400`（通常時）、`text-white`（ホバー時） |
+| 背景 | 透明（通常時）、`bg-white/10`（ホバー時） |
+| パディング | `p-2`（8px） |
+| 角丸 | `rounded-lg`（8px） |
+| トランジション | `transition-colors`（200ms ease） |
+
+## ボタンスタイルガイドライン（アイコンのみボタン）
+
+アイコンのみのボタン（テキストラベルなし）は以下の原則に従う：
+
+| 原則 | 説明 |
+|------|------|
+| aria-labelは必須 | スクリーンリーダーが読み上げるラベルを提供 |
+| type="button"を明示 | フォーム内で誤ってsubmitされることを防止 |
+| タッチターゲット44px | モバイル対応（最小タッチサイズ） |
+| ホバーフィードバック | 色変化と背景色変化の両方を提供 |
+| アイコンサイズ20px | 視認性を確保しつつコンパクトに |
+| フォーカス表示 | キーボードフォーカス時に明確なリング表示 |
+| 色のコントラスト比 | gray-400（通常）→ white（ホバー）で4.5:1以上を確保 |
+
+## テスト検証済み項目
+
+| テスト項目 | 結果 | 詳細 |
+|------------|------|------|
+| ボタン表示 | ✅ | ヘッダー右上に正しく配置 |
+| クリックナビゲーション | ✅ | `/chat/history`に遷移 |
+| キーボード操作 | ✅ | Tab→Enterで操作可能 |
+| ブラウザ履歴 | ✅ | ブラウザバック・フォワードで正常動作 |
+| aria-label | ✅ | `aria-label="チャット履歴"`が設定済み |
+| type属性 | ✅ | `type="button"`が設定済み |
+| レスポンシブ | ✅ | 375px（モバイル）〜1920px（デスクトップ）対応 |
+| ホバー状態 | ✅ | `hover:text-white hover:bg-white/10`動作確認 |
+
+**参考**: Phase 8 (T-08-1) 手動テスト結果 - 2025-12-25実施
+
+## アクセシビリティ対応事例
+
+### 事例1: アイコンのみボタンのラベリング
+
+**問題**: アイコンのみのボタンは視覚的には理解できるが、スクリーンリーダーユーザーには機能が伝わらない。
+
+**解決策**: `aria-label`属性で機能を明示する。
+
+### 事例2: type属性の明示
+
+**問題**: フォーム内のボタンで`type`属性を省略すると、デフォルトで`type="submit"`となり誤送信が発生する。
+
+**解決策**: `type="button"`を明示する。
+
+### 事例3: キーボードナビゲーション対応
+
+**問題**: クリックイベントのみでは、キーボードユーザーが操作できない。
+
+**解決策**: `<button>`要素を使用する（自動的にEnter/Spaceキーで動作）。`<div onClick>`パターンは避ける。
+
+### 事例4: フォーカス表示の確保
+
+**問題**: `:focus { outline: none }`でフォーカスリングを消すと、キーボードユーザーがフォーカス位置を見失う。
+
+**解決策**: `:focus-visible`でキーボードフォーカスのみ表示する。
+
+### 事例5: レスポンシブデザインとタッチターゲット
+
+**問題**: 小さいボタンはモバイルで押しにくい。
+
+**解決策**: パディングを確保して44px以上のタッチターゲットを確保。`p-2`（8px）+ アイコン20px = 36px（最小）、`p-3`で44px（推奨）。
+
+## ナビゲーションパターンのベストプラクティス
+
+| 原則 | 説明 |
+|------|------|
+| 一貫性のある配置 | ナビゲーションボタンは常にヘッダー右上に配置 |
+| 視覚的フィードバック | ホバー・フォーカス・アクティブ状態を明確に表現 |
+| ブラウザ履歴との統合 | React Routerでブラウザバック・フォワードに対応 |
+| プログレッシブ・エンハンスメント | JavaScriptなしでもアクセス可能な設計 |
+| エラーハンドリング | ナビゲーション失敗時のフォールバックを提供 |
+
+---
+
+## 関連ドキュメント
+
+- [Portal実装パターン](./ui-ux-portal-patterns.md)
+- [システムプロンプト設定UI](./ui-ux-system-prompt.md)
+- [LLM選択機能](./ui-ux-llm-selector.md)
+- [UI/UXパネル設計](./ui-ux-panels.md)

@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "unassigned-task.json",
+  "title": "Unassigned Task",
+  "description": "未完了タスク指示書のスキーマ",
+  "type": "object",
+  "required": ["taskId", "category", "priority", "why", "what", "how"],
+  "properties": {
+    "taskId": {
+      "type": "string",
+      "description": "タスクID",
+      "pattern": "^task-[a-z]+-[a-z0-9-]+-[0-9]+$"
+    },
+    "category": {
+      "type": "string",
+      "description": "タスク分類",
+      "enum": ["req", "imp", "bug", "ref", "sec", "perf"]
+    },
+    "categoryName": {
+      "type": "string",
+      "description": "分類名（日本語）",
+      "enum": ["要件", "改善", "バグ修正", "リファクタリング", "セキュリティ", "パフォーマンス"]
+    },
+    "priority": {
+      "type": "string",
+      "description": "優先度",
+      "enum": ["high", "medium", "low"]
+    },
+    "size": {
+      "type": "string",
+      "description": "見積もり規模",
+      "enum": ["large", "medium", "small"]
+    },
+    "source": {
+      "type": "object",
+      "description": "発見元情報",
+      "properties": {
+        "phase": {
+          "type": "integer",
+          "description": "発見Phase"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["review", "manual-test", "code-comment", "document"],
+          "description": "発見タイプ"
+        },
+        "file": {
+          "type": "string",
+          "description": "発見ファイル"
+        },
+        "line": {
+          "type": "integer",
+          "description": "発見行番号"
+        }
+      }
+    },
+    "why": {
+      "type": "object",
+      "description": "なぜ必要か",
+      "required": ["background", "problem"],
+      "properties": {
+        "background": {
+          "type": "string",
+          "description": "背景",
+          "minLength": 20
+        },
+        "problem": {
+          "type": "string",
+          "description": "問題点",
+          "minLength": 20
+        },
+        "impact": {
+          "type": "string",
+          "description": "放置した場合の影響"
+        }
+      }
+    },
+    "what": {
+      "type": "object",
+      "description": "何を達成するか",
+      "required": ["objective", "goal", "scope"],
+      "properties": {
+        "objective": {
+          "type": "string",
+          "description": "目的",
+          "minLength": 10
+        },
+        "goal": {
+          "type": "string",
+          "description": "最終ゴール",
+          "minLength": 10
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "includes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "含む項目",
+              "minItems": 1
+            },
+            "excludes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "含まない項目"
+            }
+          },
+          "required": ["includes"]
+        },
+        "deliverables": {
+          "type": "array",
+          "description": "成果物",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "how": {
+      "type": "object",
+      "description": "どのように実行するか",
+      "required": ["steps", "completionCriteria"],
+      "properties": {
+        "prerequisites": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "前提条件"
+        },
+        "recommendedCommands": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "推奨コマンド"
+        },
+        "steps": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "実行手順",
+          "minItems": 1
+        },
+        "completionCriteria": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "完了条件",
+          "minItems": 1
+        },
+        "verification": {
+          "type": "string",
+          "description": "検証方法"
+        },
+        "risks": {
+          "type": "array",
+          "description": "リスクと対策",
+          "items": {
+            "type": "object",
+            "properties": {
+              "risk": { "type": "string" },
+              "mitigation": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "作成日時"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,9 @@
+{
+  "skill_name": "skill-fixture-runner",
+  "current_level": 1,
+  "metrics": {
+    "total_usage_count": 0,
+    "success_count": 0,
+    "failure_count": 0
+  }
+}
