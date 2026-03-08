@@ -156,8 +156,8 @@ Workflow11 の Phase 1-11 を仕様テンプレートに準拠させ、Phase 12 
 ## 6. 検証方法
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
+node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
 ```
 
 ---
@@ -176,7 +176,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase12-implemen
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001/` — 対象ワークフロー
+- `docs/30-workflows/completed-tasks/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001/` — 対象ワークフロー
 - `.claude/skills/task-specification-creator/references/phase-templates.md` — Phase テンプレート
 
 ### システム仕様書参照

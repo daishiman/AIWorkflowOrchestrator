@@ -87,6 +87,11 @@ import {
   FileService,
   ContextBuilder,
 } from "../services/chat-edit";
+import {
+  AUTH_ERROR_CODES,
+  PROFILE_ERROR_CODES,
+  AVATAR_ERROR_CODES,
+} from "@repo/shared/types/auth";
 import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
@@ -94,6 +99,10 @@ let themeWatcherUnsubscribe: (() => void) | null = null;
 
 type ShareCategory = ShareError["category"];
 type GitHubClientAdapter = ConstructorParameters<typeof SkillShareManager>[0];
+type FallbackHandler = readonly [
+  channel: string,
+  handler: () => Promise<unknown>,
+];
 
 interface RepoContentEntry {
   type?: string;
@@ -466,6 +475,8 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     );
     // Register fallback handlers when Supabase is not configured
     registerAuthFallbackHandlers();
+    registerProfileFallbackHandlers();
+    registerAvatarFallbackHandlers();
   }
 
   // Register API Key handlers (always available - local storage only)
@@ -676,21 +687,36 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
 }
 
 /**
+ * Shared error envelope for Supabase未設定時の fallback 応答を生成する
+ */
+function createNotConfiguredResponse(code: string, message: string) {
+  return {
+    success: false,
+    error: {
+      code,
+      message,
+    },
+  };
+}
+
+function registerFallbackHandlers(
+  handlers: ReadonlyArray<FallbackHandler>,
+): void {
+  for (const [channel, handler] of handlers) {
+    ipcMain.handle(channel, handler);
+  }
+}
+
+/**
  * Register fallback auth handlers when Supabase is not configured
  * These handlers return appropriate "not configured" responses
  */
 function registerAuthFallbackHandlers(): void {
-  const notConfiguredResponse = {
-    success: false,
-    error: {
-      code: "AUTH_NOT_CONFIGURED",
-      message:
-        "Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
-    },
-  };
-  const fallbackAuthHandlers: ReadonlyArray<
-    readonly [string, () => Promise<unknown>]
-  > = [
+  const notConfiguredResponse = createNotConfiguredResponse(
+    AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED,
+    "Authentication is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY environment variables.",
+  );
+  const fallbackAuthHandlers: ReadonlyArray<FallbackHandler> = [
     // auth:login - Return not configured error
     [IPC_CHANNELS.AUTH_LOGIN, async () => notConfiguredResponse],
     // auth:logout - Return not configured error
@@ -715,9 +741,54 @@ function registerAuthFallbackHandlers(): void {
     ],
   ];
 
-  for (const [channel, handler] of fallbackAuthHandlers) {
-    ipcMain.handle(channel, handler);
-  }
+  registerFallbackHandlers(fallbackAuthHandlers);
+}
+
+/**
+ * Register fallback profile handlers when Supabase is not configured
+ * These handlers return appropriate "not configured" responses
+ */
+function registerProfileFallbackHandlers(): void {
+  const notConfiguredResponse = createNotConfiguredResponse(
+    PROFILE_ERROR_CODES.NOT_CONFIGURED,
+    "Profile service is not configured. Supabase environment variables are required.",
+  );
+  const fallbackProfileHandlers: ReadonlyArray<FallbackHandler> = [
+    [IPC_CHANNELS.PROFILE_GET, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_UPDATE, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_DELETE, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_GET_PROVIDERS, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_LINK_PROVIDER, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_UNLINK_PROVIDER, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_UPDATE_TIMEZONE, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_UPDATE_LOCALE, async () => notConfiguredResponse],
+    [
+      IPC_CHANNELS.PROFILE_UPDATE_NOTIFICATIONS,
+      async () => notConfiguredResponse,
+    ],
+    [IPC_CHANNELS.PROFILE_EXPORT, async () => notConfiguredResponse],
+    [IPC_CHANNELS.PROFILE_IMPORT, async () => notConfiguredResponse],
+  ];
+
+  registerFallbackHandlers(fallbackProfileHandlers);
+}
+
+/**
+ * Register fallback avatar handlers when Supabase is not configured
+ * These handlers return appropriate "not configured" responses
+ */
+function registerAvatarFallbackHandlers(): void {
+  const notConfiguredResponse = createNotConfiguredResponse(
+    AVATAR_ERROR_CODES.NOT_CONFIGURED,
+    "Avatar service is not configured. Supabase environment variables are required.",
+  );
+  const fallbackAvatarHandlers: ReadonlyArray<FallbackHandler> = [
+    [IPC_CHANNELS.AVATAR_UPLOAD, async () => notConfiguredResponse],
+    [IPC_CHANNELS.AVATAR_USE_PROVIDER, async () => notConfiguredResponse],
+    [IPC_CHANNELS.AVATAR_REMOVE, async () => notConfiguredResponse],
+  ];
+
+  registerFallbackHandlers(fallbackAvatarHandlers);
 }
 
 // Re-export for menu actions

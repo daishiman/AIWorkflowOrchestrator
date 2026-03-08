@@ -387,6 +387,7 @@ export const AUTH_ERROR_CODES = {
 } as const;
 
 export const PROFILE_ERROR_CODES = {
+  NOT_CONFIGURED: "profile/not-configured",
   GET_FAILED: "profile/get-failed",
   UPDATE_FAILED: "profile/update-failed",
   DELETE_FAILED: "profile/delete-failed",
@@ -398,6 +399,7 @@ export const PROFILE_ERROR_CODES = {
 } as const;
 
 export const AVATAR_ERROR_CODES = {
+  NOT_CONFIGURED: "avatar/not-configured",
   UPLOAD_FAILED: "avatar/upload-failed",
   UPLOAD_CANCELLED: "avatar/upload-cancelled",
   USE_PROVIDER_FAILED: "avatar/use-provider-failed",

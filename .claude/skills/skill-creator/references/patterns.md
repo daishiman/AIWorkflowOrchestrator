@@ -2564,6 +2564,23 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001
 
+### [Phase12] fallback error の transport message / UI localized message を分離し、画面起点の発見事項を未タスクまで閉じる（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+- **状況**: Main 側の fallback 契約を整えても、Renderer が transport `message` をそのまま表示すると日本語 UI の中で英語 error が露出する。さらに App shell 起点の screenshot が不安定だと、問題自体を見落としやすい
+- **成功パターン**:
+  - `error-handling.md` / `api-ipc-auth.md` / `architecture-auth-security.md` に「transport `message` は既定文言、UI は `error.code` を正本に localized message を決める」と明記する
+  - 画面検証で発見した issue は `discovered-issues.md` → `unassigned-task-detection.md` → `docs/30-workflows/unassigned-task/` → `task-workflow.md` / 関連 domain spec の順に同一ターンで formalize する
+  - App shell のナビゲーションが不安定なら、公開 contract を維持した専用 harness route を許可し、`validate-phase11-screenshot-coverage` までセットで固定する
+- **失敗パターン**:
+  - Main の fallback handler 追加だけで完了扱いにし、UI 文言責務を仕様へ残さない
+  - screenshot を取得しただけで目視せず、英語 error 露出を未検出のまま閉じる
+  - open item を `skill-feedback-report` だけに書いて、未タスク指示書と関連仕様書へ落とさない
+- **標準ルール**:
+  - fallback 系の Phase 12 Step 2 は「contract 追記」「UI message 責務線」「画面検証起点の未タスク formalization」の3点を最小セットとする
+  - screen issue を見つけたら、`currentViolations=0` を確認できる未タスク指示書まで作ってから完了判定する
+- **発見日**: 2026-03-08
+- **関連タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001, UT-IMP-PROFILE-AVATAR-FALLBACK-ERROR-LOCALIZATION-001
+
 ### [Phase12] 「更新予定のみ」残置を排除し、実更新ログへ昇格する（TASK-10A-E-C）
 
 - **状況**: Phase 12 で `spec-update-summary.md` は更新されているが、`documentation-changelog.md` や `phase-12-documentation.md` が「仕様策定のみ」「実行中」のまま残る

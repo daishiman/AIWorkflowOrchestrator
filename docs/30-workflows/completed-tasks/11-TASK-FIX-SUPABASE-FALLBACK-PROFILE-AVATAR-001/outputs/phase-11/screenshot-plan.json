@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-03-08T08:58:15.212Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-UI-01",
+      "description": "Settings 全体の正常表示",
+      "route": "/phase11-auth-mode.html",
+      "output": "screenshots/TC-11-UI-01-settings-overview.png",
+      "target": "settings-view",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-UI-02",
+      "description": "Profile 通知設定更新で fallback エラーを表示",
+      "route": "/phase11-auth-mode.html",
+      "output": "screenshots/TC-11-UI-02-profile-fallback-error.png",
+      "target": "profile-section",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-UI-03",
+      "description": "Avatar アップロードで fallback エラーを表示",
+      "route": "/phase11-auth-mode.html",
+      "output": "screenshots/TC-11-UI-03-avatar-fallback-error.png",
+      "target": "account-section",
+      "priority": "A"
+    }
+  ]
+}

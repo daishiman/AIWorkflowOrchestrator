@@ -166,10 +166,10 @@
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | `docs/30-workflows/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
-| UT-08-002 | SettingsView 画面導線の E2E カバレッジ拡張 | `docs/30-workflows/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
-| UT-08-003 | Phase 6 残件（INT-11〜13）の再評価と必要分実装 | `docs/30-workflows/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
-| UT-08-004 | settings harness パターンの仕様標準化を継続強化 | `docs/30-workflows/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
+| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
+| UT-08-002 | SettingsView 画面導線の E2E カバレッジ拡張 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
+| UT-08-003 | Phase 6 残件（INT-11〜13）の再評価と必要分実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
+| UT-08-004 | settings harness パターンの仕様標準化を継続強化 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
 
 ### タスク: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 設定画面 apiKey.list 契約防御と providers 正規化（2026-03-07）
 
@@ -364,10 +364,16 @@
 | ------------------------------------------------------- | ------------------ | ---------------------------------- | --------------------------------------- |
 | `07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`   | PASS               | PASS                               | PASS                                    |
 | `10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`      | PASS               | FAIL（Phase 7 必須節欠落）         | FAIL（implementation-guide 欠落）       |
-| `11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`      | PASS               | FAIL（Phase 1-11 必須節欠落）      | FAIL（implementation-guide 欠落）       |
+| `11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`      | PASS               | PASS                               | PASS                                    |
 | `12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001` | PASS               | PASS                               | FAIL（implementation-guide 欠落）       |
 
 > 完了判定は `verify-all-specs` 単独ではなく、Phase 12 2検証を含む3点セットを必須とする。
+
+#### Workflow11 再確認で登録した関連未タスク（2026-03-08）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PROFILE-AVATAR-FALLBACK-ERROR-LOCALIZATION-001 | Settings の Profile / Avatar fallback error を code ベースで日本語化する | `docs/30-workflows/completed-tasks/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001/unassigned-task/task-imp-profile-avatar-fallback-error-localization-001.md` |
 
 #### 同種課題の5分解決カード（persist hydrate 破損入力）
 
@@ -3373,10 +3379,10 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~         | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                       | ~~中~~     | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                              |
 | タスクID                                                       | タスク名                                                                                                                                                                     | 優先度   | 発見元                                                                                                                               | タスク仕様書                                                                                                                                                                           |
 | -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | 低 | 08-TASK Phase 11/12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
-| UT-08-002 | SettingsView 画面導線の Playwright E2E 拡張 | 中 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
-| UT-08-003 | Phase 6 残件 INT-11〜13 の再評価と必要分実装 | 中 | 08-TASK Phase 6/12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
-| UT-08-004 | Settings integration harness パターン仕様同期の継続改善 | 低 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
+| UT-08-001 | SettingsView 統合テストの `act()` warning 解消 | 低 | 08-TASK Phase 11/12（2026-03-08） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-001-settings-act-warning-guard.md` |
+| UT-08-002 | SettingsView 画面導線の Playwright E2E 拡張 | 中 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
+| UT-08-003 | Phase 6 残件 INT-11〜13 の再評価と必要分実装 | 中 | 08-TASK Phase 6/12（2026-03-08） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
+| UT-08-004 | Settings integration harness パターン仕様同期の継続改善 | 低 | 08-TASK Phase 12（2026-03-08） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW                                  | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了）                                                                                                             | 高       | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02）                                                                        | `docs/30-workflows/skill-editor-view/`                                                                                                                                                 |
 | UT-UI-05A-GETFILETREE-001                                      | skill:getFileTree IPCチャネル追加                                                                                                                                            | CRITICAL | TASK-UI-05A FR-1前提                                                                                                                 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md`                                                            |
 | UT-UI-05A-SPEC-CONSISTENCY-001                                 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree）                                                                                                               | 中       | TASK-UI-05A 再監査（2026-03-02）                                                                                                     | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md`                                                        |
@@ -3842,8 +3848,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 ### 関連未タスク
 
-- `docs/30-workflows/unassigned-task/task-imp-persist-migration-versioning-001.md`
-- `docs/30-workflows/unassigned-task/task-imp-persist-typed-validation-expansion-001.md`
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-persist-migration-versioning-001.md`
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-persist-typed-validation-expansion-001.md`
 
 ### 苦戦箇所（TASK-07）
 
