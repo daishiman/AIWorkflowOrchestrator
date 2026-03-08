@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T11:41:56.418Z",
-  "totalKeywords": 1520,
+  "generated": "2026-03-08T14:12:11.844Z",
+  "totalKeywords": 1525,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1294,6 +1294,7 @@
     ],
     "駆動ライフサイクル": [
       "arch-state-management.md",
+      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "統合": [
@@ -3328,6 +3329,21 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "GRACEFUL": [
+      "lessons-learned.md"
+    ],
+    "DEGRADATION": [
+      "lessons-learned.md"
+    ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
     "INTEGRATION": [
       "lessons-learned.md"
     ],
@@ -3398,9 +3414,6 @@
     "KEY": [
       "lessons-learned.md"
     ],
-    "HANDLER": [
-      "lessons-learned.md"
-    ],
     "REGISTRATION": [
       "lessons-learned.md"
     ],
@@ -3456,9 +3469,6 @@
       "lessons-learned.md"
     ],
     "EDITOR": [
-      "lessons-learned.md"
-    ],
-    "再監査": [
       "lessons-learned.md"
     ],
     "連続是正": [
@@ -3550,9 +3560,6 @@
       "lessons-learned.md"
     ],
     "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -4067,6 +4074,15 @@
       "lessons-learned.md"
     ],
     "APIKEY": [
+      "lessons-learned.md"
+    ],
+    "persist": [
+      "lessons-learned.md"
+    ],
+    "ハードニングでの教訓": [
+      "lessons-learned.md"
+    ],
+    "教訓": [
       "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [

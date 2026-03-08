@@ -1,0 +1,121 @@
+# Phase 10: 最終レビュー
+
+## メタ情報
+
+| 項目     | 値                                            |
+| -------- | --------------------------------------------- |
+| Phase    | 10                                            |
+| タスクID | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 |
+| 機能名   | ipc-handler-graceful-degradation              |
+| 作成日   | 2026-03-07                                    |
+
+## 目的
+
+実装全体を多角的に検証し、品質・整合性・セキュリティの観点から最終確認を行う。
+
+## 実行タスク
+
+- 要件充足確認: 全FR/NFR/ACが満たされているかを検証する
+- セキュリティレビュー: ログ出力に内部情報が含まれていないかを検証する
+- 落とし穴照合: 既知の落とし穴（P5, P44）との整合性を最終確認する
+- コードレビュー: 実装コードの品質を最終検証する
+
+## 参照資料
+
+| 資料名               | パス                                                                         | 説明              |
+| -------------------- | ---------------------------------------------------------------------------- | ----------------- |
+| 要件定義書           | `outputs/phase-1/requirements-definition.md`                                 | 要件一覧          |
+| 設計書               | `outputs/phase-2/design-document.md`                                         | 設計内容          |
+| 実装コード           | `apps/desktop/src/main/ipc/index.ts`                                         | 最終実装          |
+| IPC セキュリティ     | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` | Main Process 基準 |
+| エラー基準           | `.claude/skills/aiworkflow-requirements/references/error-handling.md`        | ログ/エラー基準   |
+| 受け入れ基準         | `outputs/phase-1/acceptance-criteria.md`                                     | Phase 1 成果物    |
+| スコープ定義         | `outputs/phase-1/scope-definition.md`                                        | Phase 1 成果物    |
+| 型定義設計           | `outputs/phase-2/type-definitions.md`                                        | Phase 2 成果物    |
+| シーケンス図         | `outputs/phase-2/sequence-diagram.md`                                        | Phase 2 成果物    |
+| 実装レポート         | `outputs/phase-5/implementation-report.md`                                   | Phase 5 成果物    |
+| カバレッジ結果       | `outputs/phase-7/coverage-result.md`                                         | Phase 7 成果物    |
+| リファクタリングログ | `outputs/phase-8/refactoring-log.md`                                         | Phase 8 成果物    |
+| 品質検証結果         | `outputs/phase-9/quality-report.md`                                          | Phase 9 成果物    |
+
+### 前提Phase成果物
+
+| 資料名          | パス                | 用途                                |
+| --------------- | ------------------- | ----------------------------------- |
+| Phase 1 成果物  | `outputs/phase-1/`  | Phase 1 の出力を入力として参照する  |
+| Phase 2 成果物  | `outputs/phase-2/`  | Phase 2 の出力を入力として参照する  |
+| Phase 3 成果物  | `outputs/phase-3/`  | Phase 3 の出力を入力として参照する  |
+| Phase 4 成果物  | `outputs/phase-4/`  | Phase 4 の出力を入力として参照する  |
+| Phase 5 成果物  | `outputs/phase-5/`  | Phase 5 の出力を入力として参照する  |
+| Phase 6 成果物  | `outputs/phase-6/`  | Phase 6 の出力を入力として参照する  |
+| Phase 7 成果物  | `outputs/phase-7/`  | Phase 7 の出力を入力として参照する  |
+| Phase 8 成果物  | `outputs/phase-8/`  | Phase 8 の出力を入力として参照する  |
+| Phase 9 成果物  | `outputs/phase-9/`  | Phase 9 の出力を入力として参照する  |
+| Phase 10 成果物 | `outputs/phase-10/` | Phase 10 の出力を入力として参照する |
+| Phase 11 成果物 | `outputs/phase-11/` | Phase 11 の出力を入力として参照する |
+| Phase 12 成果物 | `outputs/phase-12/` | Phase 12 の出力を入力として参照する |
+
+## 実行手順
+
+### ステップ1: 要件充足マトリクス
+
+| 要件ID | 要件概要                   | 検証方法                                         | 充足状態 |
+| ------ | -------------------------- | ------------------------------------------------ | -------- |
+| FR-01  | 個別失敗が後続を阻害しない | T-03, T-07, T-08 のテスト結果                    | -        |
+| FR-02  | 失敗情報のログ出力         | T-10 のテスト結果                                | -        |
+| FR-03  | 失敗一覧の戻り値返却       | T-04, T-05 のテスト結果                          | -        |
+| FR-04  | unregister の安全な動作    | T-12 のテスト結果                                | -        |
+| NFR-01 | 実行時間増加 10% 以内      | try-catch のオーバーヘッドは無視可能（計測不要） | -        |
+| NFR-02 | ログに内部情報を含めない   | T-18 のテスト結果 + コードレビュー               | -        |
+| NFR-03 | エラーカテゴリ 4001        | T-05 のテスト結果                                | -        |
+
+### ステップ2: セキュリティレビュー
+
+| チェック項目                                                             | 判定 |
+| ------------------------------------------------------------------------ | ---- |
+| `error.message` 以外の情報（スタックトレース等）をログに出力していないか | -    |
+| ファイルパスやホームディレクトリがログに含まれていないか                 | -    |
+| 環境変数の値がログに含まれていないか                                     | -    |
+| `IpcHandlerRegistrationResult` を Renderer に送信していないか            | -    |
+
+### ステップ3: 落とし穴照合
+
+| Pitfall | 関連性           | 確認内容                                                    | 判定 |
+| ------- | ---------------- | ----------------------------------------------------------- | ---- |
+| P5      | リスナー二重登録 | `unregisterAllIpcHandlers` が正しく全チャンネルを解除するか | -    |
+| P44     | IPC不整合        | `safeRegister` が既存のIPC契約を変更していないか            | -    |
+| P9      | テスト間リーク   | テスト間で `failures` 配列が共有されていないか              | -    |
+
+### ステップ4: レビューゲート判定
+
+| 判定     | 対応                                           |
+| -------- | ---------------------------------------------- |
+| PASS     | Phase 11 へ進む                                |
+| MINOR    | 未タスク仕様書に変換後 Phase 11 へ（省略不可） |
+| MAJOR    | 影響範囲に応じて Phase 1-5 へ戻る              |
+| CRITICAL | Phase 1 へ戻り要件再確認                       |
+
+## 統合テスト連携
+
+- 全テストスイートの最終実行結果を確認する
+- 既存のIPC関連テストとの整合性を最終確認する
+
+## 成果物
+
+| 成果物             | パス                                      | 説明            |
+| ------------------ | ----------------------------------------- | --------------- |
+| 最終レビュー結果   | `outputs/phase-10/final-review.md`        | レビュー判定    |
+| 要件充足マトリクス | `outputs/phase-10/requirements-matrix.md` | 要件-実装の対応 |
+
+## 完了条件
+
+- [ ] 全FR/NFR/ACの充足状態が確認されている
+- [ ] セキュリティレビューの全項目がチェック済み
+- [ ] P5, P44 との整合性が最終確認されている
+- [ ] レビューゲート判定が PASS または MINOR（未タスク化済み）
+- [ ] MINOR 指摘がある場合、全て未タスク仕様書に変換されている
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## 次のPhase
+
+Phase 11: 手動テスト

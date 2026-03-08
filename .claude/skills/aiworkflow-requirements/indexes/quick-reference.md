@@ -99,6 +99,24 @@ if (getSupabaseClient()) {
 **詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
 **完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
 
+### IPC Handler Registration Graceful Degradation
+
+`registerAllIpcHandlers()` 内で一部ハンドラ登録が失敗しても、無関係なハンドラ登録を継続させるときの参照順序。
+
+| まず読む | 理由 |
+| -------- | ---- |
+| `security-electron-ipc.md` | register / unregister 対称性、非IPCリスナー解除 |
+| `architecture-implementation-patterns.md` | Main Process 側の graceful degradation / 部分失敗パターン |
+| `arch-electron-services.md` | サービス初期化グループをどこで失敗境界にするか |
+
+| 必要に応じて読む | 理由 |
+| ---------------- | ---- |
+| `arch-ipc-persistence.md` | `registerAllIpcHandlers` を単一入口として維持するため |
+| `error-handling.md` | Infrastructure Error とログ最小化 |
+| `api-ipc-system.md` | runtime contract 変更の有無 |
+| `task-workflow.md`, `lessons-learned.md` | P5、解除漏れ、監査順序の教訓 |
+
+**検索キーワード例**: `ipc handler registration graceful degradation`, `IPC 部分失敗`, `registerAllIpcHandlers failure boundary`
 ### Result Pattern
 
 ```typescript

@@ -682,11 +682,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| AI/チャット IPC チャネル | L10 |
 | Slide IPC API（スライド同期） | L46 |
 | Electron IPC API設計 | L100 |
-| AIプロバイダーAPI連携 | L302 |
-| エンティティ抽出サービス (NER) | L335 |
-| 関連ドキュメント | L372 |
-| 完了タスク | L381 |
-| 変更履歴 | L509 |
+| AIプロバイダーAPI連携 | L305 |
+| エンティティ抽出サービス (NER) | L338 |
+| 関連ドキュメント | L375 |
+| 完了タスク | L384 |
+| 変更履歴 | L569 |
 
 ---
 
@@ -1053,23 +1053,23 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| セキュリティ設定 | L46 |
-| Content Security Policy (CSP) | L60 |
-| IPC通信のセキュリティ | L77 |
-| 実装例: historyAPI | L231 |
-| 実装例: slideSettingsAPI | L283 |
-| 実装例: skillCreatorAPI | L332 |
-| 実装例: skillFileAPI（TASK-9A-B） | L473 |
-| 実装例: skillShareAPI（TASK-9F） | L547 |
-| 実装例: skillChainAPI（TASK-9D） | L626 |
-| 実装例: skillScheduleAPI（TASK-9G） | L666 |
-| 実装例: skillDebugAPI（TASK-9H） | L706 |
-| 実装例: skillDocsAPI（TASK-9I） | L761 |
-| 実装例: skillAnalyticsAPI（TASK-9J） | L818 |
-| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L851 |
-| 自動更新のセキュリティ | L881 |
-| 関連ドキュメント | L892 |
-| 完了タスク | L900 |
+| セキュリティ設定 | L49 |
+| Content Security Policy (CSP) | L63 |
+| IPC通信のセキュリティ | L80 |
+| 実装例: historyAPI | L234 |
+| 実装例: slideSettingsAPI | L286 |
+| 実装例: skillCreatorAPI | L335 |
+| 実装例: skillFileAPI（TASK-9A-B） | L509 |
+| 実装例: skillShareAPI（TASK-9F） | L583 |
+| 実装例: skillChainAPI（TASK-9D） | L662 |
+| 実装例: skillScheduleAPI（TASK-9G） | L702 |
+| 実装例: skillDebugAPI（TASK-9H） | L742 |
+| 実装例: skillDocsAPI（TASK-9I） | L797 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L854 |
+| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L887 |
+| 自動更新のセキュリティ | L917 |
+| 関連ドキュメント | L928 |
+| 完了タスク | L936 |
 
 ### references/security-implementation.md
 
@@ -1394,22 +1394,22 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION） | L55 |
-| Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE） | L80 |
-| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L137 |
-| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L174 |
-| Zustand Sliceパターン | L211 |
-| P31対策: Store Hooks無限ループ防止パターン | L378 |
-| chatEditSlice（Workspace Chat Edit状態管理） | L878 |
-| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L968 |
-| permissionHistorySlice（権限要求履歴管理） | L1126 |
-| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1255 |
-| Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1300 |
-| 関連ドキュメント | L1345 |
-| TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L1355 |
-| TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07） | L1393 |
-| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L1468 |
-| TASK-043D: テスト品質ゲート設計（2026-03-08） | L1512 |
+| UI Design Foundation 状態管理方針（TASK-UI-00-DESIGN-FOUNDATION） | L67 |
+| Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE） | L92 |
+| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L149 |
+| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L186 |
+| Zustand Sliceパターン | L223 |
+| P31対策: Store Hooks無限ループ防止パターン | L390 |
+| chatEditSlice（Workspace Chat Edit状態管理） | L890 |
+| skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L980 |
+| permissionHistorySlice（権限要求履歴管理） | L1138 |
+| Skill Advanced Views 状態管理設計（TASK-UI-05B / completed） | L1267 |
+| Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1312 |
+| 関連ドキュメント | L1357 |
+| TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L1367 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07） | L1405 |
+| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L1500 |
+| TASK-043D: テスト品質ゲート設計（2026-03-08） | L1554 |
 
 ### references/arch-ui-components.md
 
@@ -1604,24 +1604,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L263 |
-| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L300 |
-| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L347 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L495 |
-| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L553 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L619 |
-| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L672 |
-| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L744 |
-| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L809 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L872 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L951 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1009 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1209 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1251 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1293 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1461 |
-| TASK-10A-D スキルライフサイクルUI統合（2026-03-03） | L1510 |
-| TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L1556 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08） | L266 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L304 |
+| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L306 |
+| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L343 |
+| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L390 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L538 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L596 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L662 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L715 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L787 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L852 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L915 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L994 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1052 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1252 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1294 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1336 |
+| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1504 |
 
 ### references/llm-embedding.md
 
@@ -1964,13 +1964,13 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2969 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3071 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3138 |
-| 残課題（未タスク） | L3219 |
-| 関連ドキュメント | L3630 |
-| 変更履歴 | L3640 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L3880 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3034 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3136 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3203 |
+| 残課題（未タスク） | L3284 |
+| 関連ドキュメント | L3696 |
+| 変更履歴 | L3706 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L3947 |
 
 ### references/testing-accessibility.md
 

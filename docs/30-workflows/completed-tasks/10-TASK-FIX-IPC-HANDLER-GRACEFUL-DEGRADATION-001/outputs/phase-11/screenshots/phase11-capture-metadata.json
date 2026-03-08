@@ -1,0 +1,31 @@
+{
+  "capturedAt": "2026-03-08T08:57:15.328Z",
+  "baseUrl": "http://localhost:5186",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-dashboard-root-2026-03-08.png",
+      "url": "http://localhost:5186/?skipAuth=true",
+      "note": "Graceful Degradation 導入後も、ルート画面でダッシュボードが安定表示されることを確認。",
+      "capturedAt": "2026-03-08T08:56:41.339Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-settings-auth-surfaces-2026-03-08.png",
+      "url": "http://localhost:5186/phase11-auth-mode.html?skipAuth=true",
+      "note": "Settings 画面で認証方式・API Key・プロフィール関連 surface が描画されることを確認。",
+      "capturedAt": "2026-03-08T08:56:43.135Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-skill-center-standalone-2026-03-08.png",
+      "url": "http://localhost:5186/advanced/skill-center?skipAuth=true",
+      "note": "Standalone Skill Center 画面が描画され、Graceful Degradation の影響で renderer が崩れていないことを確認。",
+      "capturedAt": "2026-03-08T08:56:45.298Z"
+    }
+  ]
+}
