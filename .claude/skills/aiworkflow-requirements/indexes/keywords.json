@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-07T15:57:40.771Z",
-  "totalKeywords": 1503,
+  "generated": "2026-03-08T00:34:44.905Z",
+  "totalKeywords": 1497,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -497,6 +497,7 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
+      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-ux-feature-skill-stream.md",
@@ -809,7 +810,8 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "testing-component-patterns.md"
     ],
     "スキルファイル操作": [
       "api-ipc-agent.md",
@@ -1295,32 +1297,12 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
-    "Persist": [
-      "arch-state-management.md"
-    ],
-    "Iterable": [
-      "arch-state-management.md"
-    ],
-    "Hardening": [
-      "arch-state-management.md"
-    ],
-    "SETTINGS": [
+    "スキルライフサイクル": [
       "arch-state-management.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
-    "PERSIST": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "ITERABLE": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "HARDENING": [
-      "arch-state-management.md",
-      "lessons-learned.md"
-    ],
-    "テスト品質ゲート設計": [
+    "移行完了": [
       "arch-state-management.md"
     ],
     "コンポーネントパターン": [
@@ -1384,6 +1366,12 @@
       "arch-ui-components.md",
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
+    ],
+    "in": [
+      "arch-ui-components.md"
+    ],
+    "progress": [
+      "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -2643,6 +2631,7 @@
     ],
     "CONTRACT": [
       "error-handling.md",
+      "lessons-learned.md",
       "testing-component-patterns.md"
     ],
     "ALIGNMENT": [
@@ -3208,6 +3197,30 @@
       "ipc-contract-checklist.md",
       "testing-accessibility.md"
     ],
+    "non": [
+      "ipc-contract-checklist.md"
+    ],
+    "null": [
+      "ipc-contract-checklist.md"
+    ],
+    "assertion": [
+      "ipc-contract-checklist.md"
+    ],
+    "の使用箇所を検出": [
+      "ipc-contract-checklist.md"
+    ],
+    "CC": [
+      "ipc-contract-checklist.md"
+    ],
+    "Array": [
+      "ipc-contract-checklist.md"
+    ],
+    "isArray": [
+      "ipc-contract-checklist.md"
+    ],
+    "ガード漏れの検出": [
+      "ipc-contract-checklist.md"
+    ],
     "契約ドリフト検出コマンド": [
       "ipc-contract-checklist.md"
     ],
@@ -3289,58 +3302,10 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "docs": [
-      "lessons-learned.md"
-    ],
-    "task": [
-      "lessons-learned.md"
-    ],
-    "test": [
-      "lessons-learned.md"
-    ],
-    "quality": [
-      "lessons-learned.md"
-    ],
-    "gate": [
-      "lessons-learned.md"
-    ],
-    "design": [
-      "lessons-learned.md"
-    ],
-    "ブランチ総括教訓": [
-      "lessons-learned.md"
-    ],
     "再確認": [
       "lessons-learned.md"
     ],
-    "PHASE": [
-      "lessons-learned.md"
-    ],
-    "BRANCH": [
-      "lessons-learned.md"
-    ],
-    "CROSS": [
-      "lessons-learned.md"
-    ],
-    "branch": [
-      "lessons-learned.md"
-    ],
-    "横断": [
-      "lessons-learned.md"
-    ],
-    "再監査": [
-      "lessons-learned.md"
-    ],
-    "RECHECK": [
-      "lessons-learned.md"
-    ],
-    "persist": [
-      "lessons-learned.md"
-    ],
-    "iterable": [
-      "lessons-learned.md"
-    ],
-    "hardening": [
+    "移行": [
       "lessons-learned.md"
     ],
     "VIEW": [
@@ -3408,10 +3373,16 @@
     "SANDBOX": [
       "lessons-learned.md"
     ],
+    "ITERABLE": [
+      "lessons-learned.md"
+    ],
     "ERROR": [
       "lessons-learned.md"
     ],
     "sandbox": [
+      "lessons-learned.md"
+    ],
+    "iterable": [
       "lessons-learned.md"
     ],
     "エラー原因分離": [
@@ -3424,6 +3395,9 @@
       "lessons-learned.md"
     ],
     "EDITOR": [
+      "lessons-learned.md"
+    ],
+    "再監査": [
       "lessons-learned.md"
     ],
     "連続是正": [
@@ -3453,10 +3427,6 @@
     ],
     "実装再監査": [
       "lessons-learned.md"
-    ],
-    "スキルライフサイクル": [
-      "lessons-learned.md",
-      "task-workflow.md"
     ],
     "CALLBACK": [
       "lessons-learned.md"
@@ -3524,6 +3494,9 @@
     "schedule": [
       "lessons-learned.md"
     ],
+    "docs": [
+      "lessons-learned.md"
+    ],
     "仕様・成果物整合": [
       "lessons-learned.md"
     ],
@@ -3534,6 +3507,9 @@
       "lessons-learned.md"
     ],
     "tasks": [
+      "lessons-learned.md"
+    ],
+    "task": [
       "lessons-learned.md"
     ],
     "unassigned": [
@@ -3573,6 +3549,9 @@
       "lessons-learned.md"
     ],
     "今回変更のみ": [
+      "lessons-learned.md"
+    ],
+    "PHASE": [
       "lessons-learned.md"
     ],
     "EVIDENCE": [
@@ -3864,9 +3843,6 @@
       "lessons-learned.md",
       "logging-migration-guide.md"
     ],
-    "移行": [
-      "lessons-learned.md"
-    ],
     "カバレッジ": [
       "lessons-learned.md"
     ],
@@ -4025,6 +4001,14 @@
     ],
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
+    ],
+    "SETTINGS": [
+      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+    "APIKEY": [
+      "lessons-learned.md",
+      "testing-component-patterns.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -5056,9 +5040,6 @@
     "TOKENS": [
       "testing-component-patterns.md"
     ],
-    "テストファイル拡張分離パターン": [
-      "testing-component-patterns.md"
-    ],
     "関連未タスク": [
       "testing-component-patterns.md",
       "ui-ux-components.md"
@@ -5074,6 +5055,9 @@
       "testing-component-patterns.md"
     ],
     "異常系テストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "レスポンス異常値テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
