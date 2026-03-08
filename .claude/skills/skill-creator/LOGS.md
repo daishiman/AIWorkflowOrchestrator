@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「fallback error の transport message / UI localized message 分離 + 画面起点の未タスク formalization」を追加
+  - `discovered-issues.md` → `unassigned-task-detection.md` → `docs/30-workflows/unassigned-task/` → `task-workflow.md` / 関連 domain spec の同一ターン同期を標準化
+  - App shell が不安定な場合の専用 harness route 許可と、`currentViolations=0` まで確認して閉じる運用を明文化
+
+---
+
 ## [2026-03-08 - TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査パターン同期]
 
 - **Agent**: skill-creator (update)

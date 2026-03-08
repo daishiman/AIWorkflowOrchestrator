@@ -5,6 +5,61 @@
 
 ---
 
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12 実績同期と教訓追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`
+- 目的: Phase 12 仕様書どおりの実施状況を再確認し、system spec に実装内容と苦戦箇所を再利用可能な形で固定する
+
+### 実施内容
+- `references/api-ipc-auth.md` に fallback 契約の実装要点、苦戦箇所、5分解決カードを追加
+- `references/architecture-auth-security.md` と `references/security-electron-ipc.md` に fallback ルーティング / 運用上の苦戦箇所を追記
+- `references/lessons-learned.md` に今回の教訓 3 件と 4 ステップ解決手順を追加
+- `references/task-workflow.md` / `references/interfaces-auth.md` / `references/error-handling.md` と未タスク指示書の整合を再確認
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`
+- 目的: Profile(11ch)/Avatar(3ch)フォールバックハンドラ追加の完了記録をシステム仕様書正本へ同期
+
+### 実施内容
+- `references/api-ipc-auth.md` に完了タスクセクション追加（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）と変更履歴 v1.7.0 追記
+- `references/error-handling.md` に変更履歴 v1.10.0 追記（PROFILE_ERROR_CODES.NOT_CONFIGURED / AVATAR_ERROR_CODES.NOT_CONFIGURED）
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+### 結果
+- ステータス: success
+
+## 2026-03-08 - workflow11 再確認反映（画面証跡 + 未タスク + broken link 是正）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`
+- 目的: workflow11 の stale 成果物と system spec の未同期を是正し、画面証跡ベースで follow-up task を formalize する
+
+### 実施内容
+- `references/error-handling.md` に transport message と UI localized message の責務線を追記
+- `references/interfaces-auth.md` の関連未タスクへ `UT-IMP-PROFILE-AVATAR-FALLBACK-ERROR-LOCALIZATION-001` を追加
+- `references/task-workflow.md` の workflow11 行を PASS / PASS / PASS へ更新し、Phase 12 で検出した関連未タスク 1 件を登録
+- `task-workflow.md` 内の completed-tasks 移管済み unassigned-task 参照 6件を現行パスへ修正
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md`
+
+### 結果
+- ステータス: success
+- 補足: workflow11 で見つかった英語 error 露出は未タスク化し、現タスクの fallback 実装完了とは分離して管理した
+
+---
+
 ## 2026-03-08 - 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査同期
 
 ### コンテキスト

@@ -96,6 +96,7 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 | バージョン | 日付       | 変更内容                                                                                                                       |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| v1.5.0     | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001完了: Supabase未設定時のProfile/Avatar fallbackルーティング詳細テーブル追加。registerProfileFallbackHandlers/registerAvatarFallbackHandlers の設計原則を明文化 |
 | v1.4.1     | 2026-02-06 | DEBT-SEC-001完了: State parameter検証実装、StateManager追加、認証フローにCSRF対策ステップ追加                                  |
 | v1.4.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: TokenRefreshSchedulerアーキテクチャ、リフレッシュフロー、リトライ戦略、セキュリティ設計追加 |
 | v1.3.0     | 2026-02-05 | TASK-FIX-GOOGLE-LOGIN-001完了: OAuthエラーハンドリング、リスナー管理追加                                                       |
@@ -178,8 +179,50 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 | `auth:state-changed`    | Main → Renderer | 認証状態変更通知     |
 | `profile:get`           | Renderer → Main | プロフィール取得     |
 | `profile:update`        | Renderer → Main | プロフィール更新     |
+| `profile:delete`        | Renderer → Main | プロフィール削除     |
 | `profile:get-providers` | Renderer → Main | 連携プロバイダー一覧 |
 | `profile:link-provider` | Renderer → Main | 新規プロバイダー連携 |
+| `profile:unlink-provider` | Renderer → Main | プロバイダー連携解除 |
+| `profile:update-timezone` | Renderer → Main | タイムゾーン更新   |
+| `profile:update-locale` | Renderer → Main | ロケール更新         |
+| `profile:update-notifications` | Renderer → Main | 通知設定更新 |
+| `profile:export`        | Renderer → Main | プロフィールエクスポート |
+| `profile:import`        | Renderer → Main | プロフィールインポート |
+| `avatar:upload`         | Renderer → Main | アバター画像アップロード |
+| `avatar:use-provider`   | Renderer → Main | Provider 画像採用 |
+| `avatar:remove`         | Renderer → Main | アバター削除 |
+
+### Supabase 未設定時の fallback ルーティング
+
+| 条件 | Main Process の動作 | Renderer への影響 |
+| ---- | ------------------- | ----------------- |
+| Supabase 設定あり | `registerAuthHandlers` / `registerProfileHandlers` / `registerAvatarHandlers` を登録 | 通常の認証・プロフィール操作が利用可能 |
+| Supabase 設定なし | `registerAuthFallbackHandlers` / `registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` を登録 | `success: false` の error envelope を受け取り、画面クラッシュを防止 |
+
+この fallback ルーティングは `ipcMain.handle()` の二重登録を避けるため、`getSupabaseClient()` の if/else 分岐で排他的に扱う。
+
+#### fallback ハンドラ詳細（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+| ハンドラグループ | チャネル数 | error code | 実装関数 |
+| ---------------- | ---------- | ---------- | -------- |
+| Auth fallback | 5 | `AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` | `registerAuthFallbackHandlers()` |
+| Profile fallback | 11 | `PROFILE_ERROR_CODES.NOT_CONFIGURED` | `registerProfileFallbackHandlers()` |
+| Avatar fallback | 3 | `AVATAR_ERROR_CODES.NOT_CONFIGURED` | `registerAvatarFallbackHandlers()` |
+
+**共通設計原則**:
+
+- `ReadonlyArray` でチャネル一覧を宣言し、`for...of` でループ登録する
+- 全チャネルが `{ success: false, error: { code, message } }` 形式の error envelope を返す
+- `channels.ts` のチャネル定義数と fallback 配列件数が一致することをテストで保証する
+- `registerAllIpcHandlers()` 内の if/else で通常経路と排他にし、二重登録を防止する
+
+#### 苦戦箇所と再利用指針（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
+| --- | --- | --- | --- |
+| fallback 対象が Auth に偏り、Profile / Avatar が runtime で抜ける | `registerAllIpcHandlers()` の fallback 分岐をチャネル群単位で見ず、個別修正で終える | Auth / Profile / Avatar を同じ宣言的登録パターンへ揃え、総チャネル数 19 を integration test で固定する | Supabase 依存 handler 追加時は fallback 群をドメイン単位で同時確認する |
+| 画面契約の確認が App shell 初期化に引きずられる | ナビゲーション経路の不安定さを抱えたまま screenshot を取得する | 同一 view を直描画する harness route を用意し、本番 Store / 公開 contract を維持したまま撮影する | アーキテクチャ確認でも「contract を壊さない最短導線」を優先する |
+| transport message と UI message の責務が混ざる | Main の fallback 文言を Renderer がそのまま表示する | `error.code` を UI 分岐の正本にし、localized message は Renderer で決定する。transport `message` は fallback 文言に限定する | error envelope は transport 用、最終文言は UI 用と責務分離する |
 
 ### 認証UIコンポーネント
 

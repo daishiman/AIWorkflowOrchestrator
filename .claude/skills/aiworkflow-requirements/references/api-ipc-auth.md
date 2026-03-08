@@ -74,8 +74,41 @@ Electron Desktop アプリでは、IPC 通信で認証機能を提供する。
 | ----------------------- | -------------------- | ---------------------------------- | ------------------------------- |
 | `profile:get`           | プロフィール取得     | なし                               | `IPCResponse<UserProfile>`      |
 | `profile:update`        | プロフィール更新     | `{ updates: ProfileUpdateFields }` | `IPCResponse<UserProfile>`      |
+| `profile:delete`        | プロフィール削除     | `{ confirmEmail: string }`         | `IPCResponse<void>`             |
 | `profile:get-providers` | 連携プロバイダー一覧 | なし                               | `IPCResponse<LinkedProvider[]>` |
 | `profile:link-provider` | 新規プロバイダー連携 | `{ provider: OAuthProvider }`      | `IPCResponse<LinkedProvider>`   |
+| `profile:unlink-provider` | プロバイダー連携解除 | `{ provider: OAuthProvider }`    | `IPCResponse<void>`             |
+| `profile:update-timezone` | タイムゾーン更新   | `{ timezone: Timezone }`           | `IPCResponse<ExtendedUserProfile>` |
+| `profile:update-locale` | ロケール更新         | `{ locale: Locale }`               | `IPCResponse<ExtendedUserProfile>` |
+| `profile:update-notifications` | 通知設定更新 | `{ notificationSettings: Partial<NotificationSettings> }` | `IPCResponse<ExtendedUserProfile>` |
+| `profile:export`        | プロフィールエクスポート | なし                            | `IPCResponse<ProfileExportResponse>` |
+| `profile:import`        | プロフィールインポート | `{ filePath: string }`           | `IPCResponse<ProfileImportResponse>` |
+
+## アバター IPC チャネル
+
+| チャネル | 用途 | Request | Response |
+| -------- | ---- | ------- | -------- |
+| `avatar:upload` | 画像アップロード | なし | `IPCResponse<{ avatarUrl: string }>` |
+| `avatar:use-provider` | Provider 画像採用 | `{ provider: OAuthProvider }` | `IPCResponse<{ avatarUrl: string }>` |
+| `avatar:remove` | アバター削除 | なし | `IPCResponse<void>` |
+
+## Supabase 未設定時の fallback 契約
+
+`ipc/index.ts` は Supabase 未設定時に AUTH だけでなく Profile / Avatar も fallback で応答させる。目的は Renderer 側の `No handler registered` 例外を防ぎ、`success: false` の error envelope に正規化すること。
+
+| ドメイン | 対象チャネル数 | 登録方式 | 期待レスポンス |
+| -------- | -------------- | -------- | -------------- |
+| Auth | 5 | fallback 配列を `for...of` で `ipcMain.handle()` 登録 | `AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` (`auth/not-configured`) または成功系 fallback |
+| Profile | 11 | `registerProfileFallbackHandlers()` で宣言的登録 | `{ success: false, error: { code: PROFILE_ERROR_CODES.NOT_CONFIGURED, message } }` |
+| Avatar | 3 | `registerAvatarFallbackHandlers()` で宣言的登録 | `{ success: false, error: { code: AVATAR_ERROR_CODES.NOT_CONFIGURED, message } }` |
+
+**レビュー観点**:
+
+- `channels.ts` に定義された件数と fallback 配列の件数が一致していること
+- shared error code 定義を使い、生文字列の `*_NOT_CONFIGURED` を増やさないこと
+- `createNotConfiguredResponse()` / `registerFallbackHandlers()` で fallback 実装の重複を抑えていること
+- 通常経路と fallback 経路が if/else で排他になっていること
+- Renderer / Preload が `success: false` を UI 分岐できること
 
 ---
 
@@ -288,6 +321,58 @@ Main Process上で動作するセッション自動リフレッシュスケジ�
 
 ## 完了タスク
 
+### タスク: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Profile/Avatar fallback ハンドラ追加（2026-03-08完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 |
+| 完了日 | 2026-03-08 |
+| ステータス | **完了** |
+| 変更概要 | Supabase 未設定時に Profile 11チャネル・Avatar 3チャネルの fallback ハンドラを `registerProfileFallbackHandlers()` / `registerAvatarFallbackHandlers()` で宣言的に登録。`PROFILE_ERROR_CODES.NOT_CONFIGURED` / `AVATAR_ERROR_CODES.NOT_CONFIGURED` を共有エラーコードとして定義し、Renderer への `No handler registered` 例外露出を防止 |
+| 契約影響 | なし（新規 fallback 経路追加のみ、既存通常経路は不変） |
+
+---
+
+### 実装内容（要点）
+
+- Auth fallback と同じ構造で、Profile 11チャネル / Avatar 3チャネルを `ReadonlyArray` + ループ登録へ統一した
+- fallback 応答は `{ success: false, error: { code, message } }` に固定し、Preload / Renderer 側の既存 envelope 契約を崩していない
+- `registerAllIpcHandlers()` では通常経路と fallback 経路を if/else 排他にし、二重登録と runtime drift を防いだ
+
+### 苦戦箇所（再利用形式）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Auth fallback だけ整っていても、Profile / Avatar が未登録だと Renderer 側で `No handler registered` が再発する |
+| 再発条件 | `channels.ts` にチャネルが存在するのに、`ipc/index.ts` の fallback 追加が Auth のみで止まる |
+| 対処 | `channels.ts` の定義数を正本にして fallback 配列を宣言的に列挙し、件数一致をテストで固定する |
+| 教訓 | IPC handler の追加は実装単体ではなく、`channels.ts` / 登録関数 / テスト件数の三点突合で閉じる |
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | transport `message` を UI 文言として直接使うと、fallback 自体は成功しても画面に英語 message が露出する |
+| 再発条件 | Renderer が `error.code` を保持せず `error.message` だけを banner 表示する |
+| 対処 | transport では `code + message` を維持し、UI は `error.code` を正本に localized message を決定する。未実装分は未タスクへ分離する |
+| 教訓 | IPC 契約の `message` は transport default であり、最終 UI 文言の正本ではない |
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | App shell 経由の Phase 11 再現は初期化ノイズで不安定になりやすく、対象 contract の確認が難しい |
+| 再発条件 | 画面検証で全体ナビゲーションを毎回通し、対象 view の状態注入を持たない |
+| 対処 | 本番コンポーネント / Store / 公開 contract を保った専用 harness route で対象 view を直描画する |
+| 教訓 | 画面契約の検証は「最短導線で同一 contract を再現する harness」を優先する |
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 最短手順 |
+| --- | --- |
+| fallback 追加漏れの確認 | `channels.ts` の件数を数え、`register*FallbackHandlers()` の配列件数と一致させる |
+| runtime 例外の封じ込み | `registerAllIpcHandlers()` を通常 / fallback の if/else 排他にする |
+| UI message の責務分離 | `error.code` で localized message、`error.message` は fallback 文言に限定する |
+| 画面証跡の安定化 | App shell ではなく対象 view 専用 harness で screenshot を取り、Phase 11 証跡へ固定する |
+
+---
+
 ### タスク: UT-IPC-AUTH-HANDLE-DUPLICATE-001 AUTH IPC handle重複式の登録一元化（2026-02-25完了）
 
 | 項目 | 内容 |
@@ -304,6 +389,7 @@ Main Process上で動作するセッション自動リフレッシュスケジ�
 
 | バージョン | 日付       | 変更内容                                                                |
 | ---------- | ---------- | ----------------------------------------------------------------------- |
+| v1.7.0     | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile 11ch / Avatar 3ch の fallback ハンドラ仕様と完了タスクセクションを追加。Supabase 未設定時の fallback 契約テーブルに詳細を追記 |
 | v1.6.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001 の再利用性強化: AUTH IPC登録一元化のクイック解決ガイド（目的/前提/ステップ/検証/トラブルシューティング）を追加 |
 | v1.5.0     | 2026-02-25 | チャンネル一覧の実装箇所表記を行番号依存から関数依存へ更新（`registerAuthHandlers` 基準）。ドキュメント追従性を改善 |
 | v1.4.0     | 2026-02-25 | UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化戦略と完了タスクを追記。関連ドキュメントに実装ガイドを追加 |

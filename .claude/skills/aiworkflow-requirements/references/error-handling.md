@@ -70,6 +70,37 @@
 
 ---
 
+### Auth / Profile / Avatar の fallback エラーコード
+
+Supabase 未設定環境では、IPC ハンドラー未登録による例外を直接出さず、Main Process 側で fallback error envelope を返す。
+
+| コード | 発生条件 | 返却レイヤー | 期待される UI 対応 |
+| ------ | -------- | ------------ | ------------------ |
+| `AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` (`auth/not-configured`) | `auth:login` / `auth:logout` / `auth:refresh` などを Supabase 未設定で呼ぶ | Main IPC fallback | 認証設定が必要であることを表示する |
+| `PROFILE_ERROR_CODES.NOT_CONFIGURED` (`profile/not-configured`) | `profile:*` を Supabase 未設定で呼ぶ | Main IPC fallback | Profile 画面でクラッシュせず設定不足を表示する |
+| `AVATAR_ERROR_CODES.NOT_CONFIGURED` (`avatar/not-configured`) | `avatar:*` を Supabase 未設定で呼ぶ | Main IPC fallback | Avatar 操作 UI で未設定状態を表示する |
+
+**error envelope**:
+
+```ts
+type FallbackErrorResponse = {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+  };
+};
+```
+
+**注意**:
+
+- stack trace や内部パスは返さない
+- `No handler registered` のような Electron 生例外を Renderer へ露出しない
+- `ipc-contract-checklist.md` の fallback 経路監査と合わせて確認する
+- `error.message` は transport の既定文言であり、Renderer UI は `error.code` を正本として localized message を決定する。直接表示で十分でない場合は `UT-IMP-PROFILE-AVATAR-FALLBACK-ERROR-LOCALIZATION-001` を参照する
+
+---
+
 ### RAG固有エラーコード
 
 RAGパイプライン実装で使用するエラーコード。
@@ -750,6 +781,7 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-03-08 | v1.10.0    | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Auth/Profile/Avatar fallback エラーコードテーブルに `PROFILE_ERROR_CODES.NOT_CONFIGURED` / `AVATAR_ERROR_CODES.NOT_CONFIGURED` の詳細を追記（既存テーブル拡充） |
 | 2026-03-07 | v1.9.0     | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Renderer 境界防御パターン（Preload Response Shape Guard）セクション追加（4層防御レイヤー、non-null assertion 禁止、P48参照） |
 | 2026-03-06 | v1.8.0     | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: `IPCResponse<T>` / `IPCError` / `AuthModeStatus` ベースの auth-mode error envelope を追加し、`message` / `errorCode` / `guidance` / `lastCheckedAt` の公開契約を明文化 |
 | 2026-02-07 | v1.7.0     | TASK-FIX-4-2: 外部ストレージ取得フォールバックパターンセクション追加（フォールバックマトリクス・実装パターン・セキュリティ考慮事項） |

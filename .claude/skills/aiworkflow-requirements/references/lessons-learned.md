@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-08 | 1.29.47 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
 | 2026-03-08 | 1.29.46 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
@@ -5758,6 +5759,53 @@ async function safeInvokeUnwrap<T>(
 | worktreeでnative module不足 | `cd <worktree-dir> && pnpm install --frozen-lockfile` |
 | Phase 12の「計画」文言残存 | `rg "予定\|実行待ち\|仕様策定のみ" outputs/phase-12/` で全件排除 |
 | 未タスク9見出し不足 | `audit-unassigned-tasks --target-file <path>` で個別検証 |
+
+---
+
+## TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08）
+
+### 苦戦箇所: Profile / Avatar fallback の追加漏れで `No handler registered` が再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Auth fallback があっても `profile:*` / `avatar:*` が未登録だと Renderer 側で runtime 例外が続く |
+| 再発条件 | Supabase 依存チャネル追加時に Auth だけを fallback 化し、Profile / Avatar の群登録を後回しにする |
+| 対処 | `channels.ts` の件数を正本にし、Profile 11 / Avatar 3 を `ReadonlyArray` + `for...of` で宣言的登録して integration test で固定する |
+| 標準ルール | Supabase 依存 handler の追加は Auth / Profile / Avatar の fallback 群を同一ターンで点検する |
+
+### 苦戦箇所: transport message と UI localized message の責務が混ざる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | fallback 実装は正しくても、Renderer が `error.message` をそのまま表示すると日本語 UI の中で英語 message が露出する |
+| 再発条件 | state や component props で `error.code` を捨て、文字列 message だけを保持する |
+| 対処 | Main は `code + message` を返す transport に徹し、Renderer は `error.code` を正本として localized message を決定する。未実装分は未タスク化する |
+| 標準ルール | error envelope の `message` は transport default、最終 UI 文言は Renderer の責務と明記する |
+
+### 苦戦箇所: App shell 起点の screenshot が不安定
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 画面検証時に App shell の初期化ノイズで対象 view に安定到達できず、契約差分の確認が難しい |
+| 再発条件 | ナビゲーション経路全体を毎回通し、対象 view の直描画 harness を持たない |
+| 対処 | 本番コンポーネント / Store / 公開 contract を保った `phase11-auth-mode` harness で対象状態を注入し、証跡を取得する |
+| 標準ルール | 画面契約の確認は「contract を壊さない最短導線」の harness route を優先する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `channels.ts` から対象チャネル件数を確定し、fallback 登録配列と突合する。
+2. `registerAllIpcHandlers()` を通常経路 / fallback 経路の if/else 排他へ揃える。
+3. `error.code` を正本にする UI 責務線を仕様へ書き、足りない分は未タスク化する。
+4. 専用 harness で screenshot を取り、validator / tests / 未タスク監査を同一ターンで回す。
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| fallback 件数ずれ | `rg -n \"PROFILE_|AVATAR_\" apps/desktop/src/preload/channels.ts` で定義数を確認し、fallback 配列件数と揃える |
+| runtime 登録漏れ | `pnpm vitest run apps/desktop/src/main/ipc/__tests__/fallback-handlers.test.ts apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts` |
+| UI 文言責務混同 | `error.code` を保持し、localized message は Renderer で決定する。未対応は未タスクへ切り出す |
+| 画面証跡の不安定化 | App shell ではなく harness route で再現し、`validate-phase11-screenshot-coverage` まで実行する |
 
 ---
 
