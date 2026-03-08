@@ -5,6 +5,29 @@
 
 ---
 
+## 2026-03-08 - 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001`
+- 目的: Phase 12仕様準拠の再確認結果と苦戦箇所を system spec 正本へ反映
+
+### 実施内容
+- `references/task-workflow.md` に再確認結果（error=0/warning=0/info=0）を追記
+- `references/task-workflow.md` に再確認時の苦戦箇所2件（証跡表ヘッダ不一致、screenshot依存欠落）を追記
+- `references/lessons-learned.md` に S6/S7 を追加し、再利用手順を標準化
+- `indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --workflow docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001`
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-07 - TASK-10A-F Store駆動ライフサイクルUI統合の仕様同期
 
 ### コンテキスト

@@ -20,12 +20,13 @@
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                                                                                                                        |
-| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-07 | 1.3.0      | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 を反映。CC-7（レスポンス配列フィールドの防御検証）を追加                                                         |
-| 2026-03-06 | 1.2.0      | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を反映。shared transport DTO 正本化、`IPCResponse<T>` envelope、event payload と quick-reference 同期の確認項目を追加 |
-| 2026-02-25 | 1.1.0      | AUTH IPC登録一元化（UT-IPC-AUTH-HANDLE-DUPLICATE-001）を反映。通常経路とfallback経路の二重登録監査チェックを追加                                                |
-| 2026-02-20 | 1.0.0      | 初版作成（UT-FIX-SKILL-REMOVE-INTERFACE-001 の教訓から抽出）                                                                                                    |
+| 日付       | バージョン | 変更内容                                                                                                                                                                                                                                          |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-08 | 1.4.0      | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: CC-7 を7項目に拡充（CC-7-1〜CC-7-7）。Renderer側の存在確認・二重チェック・Array.isArray・type predicate・フォールバックUI・try-catch・non-null assertion禁止。検出コマンドとテストパターン参照を追加 |
+| 2026-03-07 | 1.3.0      | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 を反映。CC-7（レスポンス配列フィールドの防御検証）を追加                                                                                                                                           |
+| 2026-03-06 | 1.2.0      | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を反映。shared transport DTO 正本化、`IPCResponse<T>` envelope、event payload と quick-reference 同期の確認項目を追加                                                                                   |
+| 2026-02-25 | 1.1.0      | AUTH IPC登録一元化（UT-IPC-AUTH-HANDLE-DUPLICATE-001）を反映。通常経路とfallback経路の二重登録監査チェックを追加                                                                                                                                  |
+| 2026-02-20 | 1.0.0      | 初版作成（UT-FIX-SKILL-REMOVE-INTERFACE-001 の教訓から抽出）                                                                                                                                                                                      |
 
 ---
 
@@ -120,13 +121,37 @@ if (
 - [ ] **5-6**: `lessons-learned.md` に苦戦箇所を記録（該当する場合）
 - [ ] **5-7**: 戻り値型がRendererの期待する型と一致することを確認（例: `skill:import` は `ImportedSkill` を返すこと。`ImportResult` ではない）
 
-### CC-7: レスポンス配列フィールドの防御検証（06-TASK 追加）
+### CC-7: Renderer コンポーネントの IPC レスポンス防御（06-TASK 追加・拡充）
 
-| チェック | 確認事項                                                                             |
-| -------- | ------------------------------------------------------------------------------------ |
-| CC-7a    | Main ハンドラのレスポンス生成前に配列フィールドが `Array.isArray` で検証されているか |
-| CC-7b    | Renderer 側で配列要素の shape が type predicate でフィルタされているか               |
-| CC-7c    | type predicate で `in` 演算子を使用しているか（`as` キャストではなく）               |
+IPC経由で配列を含むオブジェクトを受け取る全 Renderer コンポーネントに適用する。
+
+| チェック | 確認事項                                                                                      |
+| -------- | --------------------------------------------------------------------------------------------- |
+| CC-7-1   | `window.electronAPI?.xxx` の存在確認がある                                                    |
+| CC-7-2   | `result?.success` と `result?.data` の二重チェックがある                                      |
+| CC-7-3   | 配列フィールドに `Array.isArray()` ガードがある                                               |
+| CC-7-4   | 配列要素に type predicate + `.filter()` がある（P49準拠: `in` 演算子使用、`as` キャスト禁止） |
+| CC-7-5   | フォールバック UI（エラーメッセージ/空状態表示）がある                                        |
+| CC-7-6   | try-catch で reject をハンドリングしている                                                    |
+| CC-7-7   | non-null assertion (`!`) を使用していない（P48準拠）                                          |
+
+**適用条件**: IPC経由で配列を含むオブジェクトを受け取る全 Renderer コンポーネント
+
+**検出コマンド**:
+
+```bash
+# non-null assertion の使用箇所を検出（CC-7-7）
+rg -n "result\.data!" apps/desktop/src/renderer
+rg -n "\.data!\." apps/desktop/src/renderer
+
+# Array.isArray ガード漏れの検出（CC-7-3）
+rg -n "\.providers|\.items|\.skills" apps/desktop/src/renderer | rg -v "Array\.isArray"
+```
+
+**テストパターン**: [testing-component-patterns.md セクション15](./testing-component-patterns.md#15-ipc-レスポンス異常値テストパターンtask-fix-settings-apikey-contract-guard-001) の4カテゴリで検証
+
+**関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+**関連Pitfall**: P48（non-null assertion禁止）、P49（type predicate の `in` 演算子使用）
 
 ### Phase 6: テスト検証
 
@@ -187,10 +212,11 @@ rg -n "typeof .*string|=== \\\"\\\"" apps/desktop/src/main/ipc | rg -v "trim"
 
 ## 適用事例
 
-| タスクID                                  | チャネル       | ドリフト内容                                                                                  | 解決方法                                                                                                                                                                                                          |
-| ----------------------------------------- | -------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UT-FIX-SKILL-REMOVE-INTERFACE-001         | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string`                                       | ハンドラーを `skillName: string` に統一                                                                                                                                                                           |
-| UT-FIX-SKILL-IMPORT-INTERFACE-001         | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string`                            | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化                                                                                                                                              |
-| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001       | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待                             | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001          | `auth:*`       | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化                          | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定                                                                                                                                   |
-| TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 | `auth-mode:*`  | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂 | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一                                                                             |
+| タスクID                                    | チャネル       | ドリフト内容                                                                                       | 解決方法                                                                                                                                                                                                          |
+| ------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-FIX-SKILL-REMOVE-INTERFACE-001           | `skill:remove` | ハンドラー `{ skillId }` vs Preload `skillName: string`                                            | ハンドラーを `skillName: string` に統一                                                                                                                                                                           |
+| UT-FIX-SKILL-IMPORT-INTERFACE-001           | `skill:import` | ハンドラー `{ skillIds: string[] }` vs Preload `skillName: string`                                 | ハンドラーを `skillName: string` に統一、内部で `[skillName]` 配列化                                                                                                                                              |
+| UT-FIX-SKILL-IMPORT-RETURN-TYPE-001         | `skill:import` | 戻り値型が `ImportResult` だが Renderer は `ImportedSkill` を期待                                  | 完了（2026-02-21）: ハンドラーを2ステップ変換（`importSkills` → `getSkillByName`）に修正。記録: `docs/30-workflows/skill-import-agent-system/tasks/completed-task/00-task-ut-fix-skill-import-return-type-001.md` |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001            | `auth:*`       | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化                               | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定                                                                                                                                   |
+| TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001   | `auth-mode:*`  | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂      | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一                                                                             |
+| TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | `api-key:list` | Renderer側で `result.data!.providers` の non-null assertion 使用、配列要素の type predicate 未実装 | CC-7 を3項目→7項目に拡充。`Array.isArray` + P49準拠 type predicate + P48準拠 non-null assertion 禁止でRendererの防御を標準化                                                                                      |
