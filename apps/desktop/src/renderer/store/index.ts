@@ -82,25 +82,54 @@ const customStorage = {
     if (!str) return null;
 
     const parsed = JSON.parse(str);
-    // Convert expandedFolders array back to Set
-    if (parsed.state?.expandedFolders) {
-      parsed.state.expandedFolders = new Set(parsed.state.expandedFolders);
+    // Convert expandedFolders array back to Set (DD-01: iterable guard)
+    if (parsed.state) {
+      const raw = parsed.state.expandedFolders;
+      if (Array.isArray(raw)) {
+        parsed.state.expandedFolders = new Set(
+          raw.filter((v: unknown) => typeof v === "string"),
+        );
+      } else {
+        if (raw !== undefined && raw !== null) {
+          console.warn(
+            "[customStorage] expandedFolders is not an array, resetting to empty Set:",
+            typeof raw,
+          );
+        }
+        parsed.state.expandedFolders = new Set<string>();
+      }
     }
     return parsed;
   },
   setItem: (name: string, value: unknown) => {
+    const stateObj = (value as Record<string, unknown>).state as
+      | Record<string, unknown>
+      | undefined;
+    const folders = stateObj?.expandedFolders;
+
+    // DD-02: expandedFolders setItem guard
+    let serializedFolders: string[];
+    if (folders instanceof Set) {
+      serializedFolders = Array.from(folders);
+    } else if (Array.isArray(folders)) {
+      serializedFolders = folders.filter(
+        (v: unknown): v is string => typeof v === "string",
+      );
+    } else {
+      if (folders !== undefined && folders !== null) {
+        console.warn(
+          "[customStorage] expandedFolders is not Set or Array on setItem, using empty array:",
+          typeof folders,
+        );
+      }
+      serializedFolders = [];
+    }
+
     const valueWithSerializedSet = {
       ...(value as Record<string, unknown>),
       state: {
-        ...((value as Record<string, unknown>).state as Record<
-          string,
-          unknown
-        >),
-        // Convert Set to array for JSON serialization
-        expandedFolders: Array.from(
-          ((value as Record<string, unknown>).state as Record<string, unknown>)
-            .expandedFolders as Set<string>,
-        ),
+        ...(stateObj ?? {}),
+        expandedFolders: serializedFolders,
       },
     };
     localStorage.setItem(name, JSON.stringify(valueWithSerializedSet));
@@ -226,7 +255,9 @@ export const useIsDesktop = () =>
 export const useIsMobile = () =>
   useAppStore((state) => state.responsiveMode === "mobile");
 export const useCanGoBack = () =>
-  useAppStore((state) => state.viewHistory.length > 1);
+  useAppStore(
+    (state) => Array.isArray(state.viewHistory) && state.viewHistory.length > 1,
+  );
 export const useGoBack = () => useAppStore((state) => state.goBack);
 export const useStoragePercentage = () =>
   useAppStore((state) =>

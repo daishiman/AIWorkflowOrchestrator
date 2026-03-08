@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-08 | 1.29.48 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。既実装防御の発見による Phase 転換（P50）、サブエージェントの documentation-changelog 早期完了記載（P51/P4/P43 複合再発）、non-null assertion 残存（P52/P48 派生）、CLI 環境でのスクリーンショット取得制約（P53）の4課題と再発防止手順を追記 |
+| 2026-03-08 | 1.29.48 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の苦戦箇所3件（canGoBackセレクタ防御漏れ・getItem/setItem対称性・多層防御設計判断）と実装サマリー・5ステップ解決カードを追補。関連未タスク UT-PERSIST-MIGRATION-001, UT-PERSIST-VALIDATION-002 を明記 |
+| 2026-03-08 | 1.29.47 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 のコード例と関連Pitfall参照を追加。customStorage 3段ガードパターンを標準手順として明文化 |
+| 2026-03-08 | 1.29.46 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の再監査教訓を追補。Phase 11証跡表ヘッダ不一致による validator 失敗と、screenshot 再取得時の Rollup optional dependency 欠落を苦戦箇所として追加し、preflight + 機械検証の標準手順を固定 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
@@ -351,6 +355,117 @@ vi.mock("../../../store", () => ({
 2. **状態分類**: 各useStateをStore移行/ローカル維持に分類し、設計書に記録
 3. **テストmock統一**: State用（値返却）/ Action用（関数返却）の標準パターンで `vi.mock` を作成
 4. **防御コード**: 全Store action呼び出しに try/catch を追加（Store側error処理済みでも必須）
+## TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001: persist iterable hardening（2026-03-07）
+
+### 苦戦箇所: 永続化データを信頼しすぎると hydrate でクラッシュする
+
+| 項目       | 内容                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `expandedFolders` が配列でない値（`null` / `number` / `object`）を持つと `new Set(...)` で `object is not iterable` が発生した |
+| 再発条件   | localStorageに壊れた値が残った状態で hydrate する場合                                                                          |
+| 対処       | `Array.isArray` + `typeof === "string"` で入力検証し、非配列は空 `Set` にフォールバック                                        |
+| 標準ルール | persist復元時は「型検証→フィルタ→安全既定値」の3段を必須化する                                                                 |
+
+### 苦戦箇所: UI差分が小さいタスクで screenshot 証跡が抜けやすい
+
+| 項目       | 内容                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| 課題       | 初期計画を「非視覚のみ」にすると、再監査で証跡不足と判定されやすい                         |
+| 再発条件   | ユーザーが後から screenshot 検証を要求した場合                                             |
+| 対処       | Phase 11 で light/dark 2ケースを撮影し、`manual-test-result.md` に TC-ID と png を紐付けた |
+| 標準ルール | UI差分が小さくても、ユーザー要求があれば screenshot を優先して残す                         |
+
+### コード例: customStorage の3段ガードパターン
+
+```typescript
+// getItem での iterable guard (DD-01)
+const raw = parsed.state.expandedFolders;
+if (Array.isArray(raw)) {
+  // 型検証: 配列の各要素が string であることを確認
+  parsed.state.expandedFolders = new Set(
+    raw.filter((v: unknown) => typeof v === "string"),
+  );
+} else {
+  // 安全既定値: 非配列は空 Set にフォールバック
+  if (raw !== undefined && raw !== null) {
+    console.warn(
+      "[customStorage] expandedFolders is not an array:",
+      typeof raw,
+    );
+  }
+  parsed.state.expandedFolders = new Set<string>();
+}
+```
+
+**3段ガードの構造:**
+
+1. **型検証** — `Array.isArray(raw)` で配列であることを確認（`as Set<string>` のような型キャストを排除）
+2. **要素フィルタ** — `.filter((v: unknown) => typeof v === "string")` で各要素の型を検証
+3. **安全既定値** — 非配列・`null`・`undefined` はすべて空 `Set<string>()` にフォールバック
+
+### 関連Pitfall
+
+- **[P19](../../rules/06-known-pitfalls.md#P19)**: 型キャスト（`as`）による実行時検証バイパス — 本タスクでは `as Set<string>` を `Array.isArray` + `instanceof Set` による実行時型検証に置換した。永続化データは JSON.parse 後の shape が保証されないため、型キャストではなく実行時検証が必須
+- **[P48 (non-null assertion)](../../rules/06-known-pitfalls.md#P48)**: `result.data!.providers` と同様に、永続化データも実行時型検証が必須。localStorage から復元した値に対して `!` や `as` で型安全を偽装すると、破損データでランタイムクラッシュする
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. persist復元対象に `Array.isArray` / `instanceof Set` ガードを入れる。
+2. 非正常値は warning を出して安全既定値にフォールバックする。
+3. テストで破損値5パターン以上を固定し、回帰を先に防ぐ。
+4. Phase 11 で最低2枚（light/dark）の画面証跡を残し、TC-IDで紐付ける。
+
+### 実装内容サマリー（2026-03-08 追補）
+
+- `navigationSlice` の `setCurrentView`, `goBack`, `canGoBack` に `Array.isArray` ガードを追加
+- `customStorage.getItem` に `expandedFolders` の Set/Array 検証ガードを追加
+- `customStorage.setItem` に Set→Array 変換ガードを追加
+- `useCanGoBack` セレクタに `Array.isArray` ガードを追加
+- テスト12件追加（破損状態テスト10件 + setCurrentSkillName 2件）
+
+### 苦戦箇所: canGoBack セレクタの防御漏れ
+
+| 項目     | 内容                                                                                                                                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題     | SubAgent が `navigationSlice` 内の `setCurrentView`, `goBack`, `canGoBack` のガードを実装したが、`store/index.ts` の `useCanGoBack` セレクタ（`state.viewHistory.length > 1`）に `Array.isArray` ガードを追加しなかった |
+| 発見経緯 | メインエージェントが SubAgent 完了後に `store/index.ts` を読み、セレクタ経由のアクセスパスを発見                                                                                                                        |
+| 解決策   | `useCanGoBack` を `Array.isArray(state.viewHistory) && state.viewHistory.length > 1` に修正                                                                                                                             |
+| 再発条件 | Zustand state フィールドに slice 外からアクセスするセレクタ Hook が存在する場合                                                                                                                                         |
+| 再発防止 | `grep -rn "フィールド名" apps/desktop/src/renderer/` で全アクセスパスを検出し、ガード漏れを確認                                                                                                                         |
+
+### 苦戦箇所: customStorage の getItem/setItem 対称性
+
+| 項目     | 内容                                                                                                                                                    |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題     | `expandedFolders` の getItem（JSON Array→Set 変換）と setItem（Set→JSON Array 変換）が対称に実装されていないと、保存→復元サイクルでデータ損失が発生する |
+| 発見経緯 | Phase 5 実装時に getItem だけガードして setItem 側の Set→Array 変換を忘れかけた                                                                         |
+| 解決策   | getItem では `Array.isArray` + `instanceof Set` で入力を判別して Set 化、setItem では `instanceof Set` で `Array.from` に変換                           |
+| 再発条件 | JSON シリアライズ非対応の型（Set, Map, Date 等）を persist 対象にする場合                                                                               |
+| 再発防止 | customStorage の変換ロジックは getItem/setItem をペアで実装・テストする                                                                                 |
+
+### 苦戦箇所: 多層防御の設計判断
+
+| 項目     | 内容                                                                                                                                                                              |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題     | ガードを「Store Hydrate 層（customStorage.getItem）」「Store Serialize 層（customStorage.setItem）」「Navigation Action 層（navigationSlice）」のどの層に配置すべきか判断に迷った |
+| 発見経緯 | Phase 2 設計時に、単一層のみのガードでは不十分と判断                                                                                                                              |
+| 解決策   | 3層全てにガードを配置（Defense in Depth）。各層が独立して安全性を保証                                                                                                             |
+| 再発条件 | persist state 破損の入口が複数ある場合（ストレージ破損、アプリ更新、手動編集等）                                                                                                  |
+| 再発防止 | persist 対象フィールドには必ず「復元時ガード」「保存時ガード」「使用時ガード」の3層を設計する                                                                                     |
+
+### 同種課題の5ステップ解決カード（2026-03-08 追補）
+
+| ステップ                        | 作業内容                                                                    | 検証ゲート                                                       |
+| ------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 1. 影響フィールド特定           | `grep -rn "フィールド名" apps/desktop/src/renderer/` で全アクセスパスを列挙 | アクセスパスが0件でないこと                                      |
+| 2. customStorage.getItem ガード | `Array.isArray` / `instanceof Set` で型検証、フォールバック値設定           | 破損入力テスト（null/undefined/数値/文字列/オブジェクト）が PASS |
+| 3. customStorage.setItem ガード | Set→Array 変換等のシリアライズ対応                                          | `JSON.stringify` が正常に完了すること                            |
+| 4. セレクタ Hook ガード         | `store/index.ts` の該当セレクタに型検証を追加                               | セレクタテストが PASS                                            |
+| 5. 仕様同期                     | `arch-state-management.md`, `lessons-learned.md`, `task-workflow.md` を更新 | `verify-unassigned-links` が PASS                                |
+
+**関連 Pitfall**: P19（型キャストバイパス）、P48（non-null assertion）
+**関連未タスク**: UT-PERSIST-MIGRATION-001, UT-PERSIST-VALIDATION-002
+
 ## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
 
 ### 苦戦箇所: z-index 事前設計の必要性
@@ -5723,80 +5838,51 @@ async function safeInvokeUnwrap<T>(
 
 ---
 
-## 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+## TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: ApiKeysSection 契約ガード（2026-03-08）
 
-### コンテキスト
-- 対象: ApiKeysSection `apiKey.list()` 戻り値の契約防御
-- 期間: 2026-03-07
-- カテゴリ: Renderer 境界防御 / Main バリデーション / パターン統一
+### 苦戦箇所: 既実装防御の発見による Phase 転換（P50）
 
-### 実装内容
-1. **Renderer 層（ApiKeysSection/index.tsx）**: `normalizeProviders` type predicate フィルタ追加。`result.data?.providers` の nullish チェック + 要素 shape 検証（`provider`/`status` フィールド必須）
-2. **Main 層（apiKeyHandlers.ts）**: `apiKey:list` ハンドラのレスポンス生成前に `Array.isArray(result?.providers)` バリデーション追加
-3. **パターン統一（profileHandlers.ts）**: 3箇所の `identities ?? []` → `Array.isArray(user.identities) ? user.identities : []` に統一
-4. **テスト**: 20件追加（Renderer 7件 + apiKeyHandlers 7件 + profileHandlers 6件）、全122件 PASS
-5. **カバレッジ**: Statements 93.17% / Branches 86.23% / Functions 91.66%
+| 項目       | 内容                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | GAP-01〜06 の全防御が既に実装済みだった。Phase 4-5（テスト作成→実装）のワークフローが「新規実装」前提で進み、対応する実装が既に存在しテストも全 PASS だった |
+| 再発条件   | Phase 1 で「現在の実装状態の調査」を行わず、新規実装を前提に Phase 4 を開始する場合                                                                         |
+| 対処       | Phase 4 開始前に対象ファイルの `git log` と現在のコードを確認し、既に実装済みかどうかを判定。既実装の場合は Phase 4-5 を「検証・補完」モードに切り替えた    |
+| 標準ルール | Phase 1（要件定義）で「現在の実装状態の調査」を必須ステップとして含める。差分がゼロの場合は Phase 4-5 を検証・文書化モードに転換する                        |
 
-### 苦戦箇所
+### 苦戦箇所: サブエージェントの documentation-changelog 早期完了記載（P51/P4/P43 複合再発）
 
-#### S1: type predicate 内での型キャスト vs in 演算子
-- **症状**: `normalizeProviders` 内で `(item as Record<string, unknown>).provider` を使用したが、Phase 8 で P19（型キャストバイパス）違反と判定
-- **根本原因**: `as Record<string, unknown>` は実行時検証をバイパスする型アサーション。`in` 演算子は実行時チェックを伴う型ナロイング
-- **解決策**: `"provider" in item && typeof item.provider === "string"` に変更。`in` 演算子で TypeScript の型ナロイングと実行時検証を同時に実現
-- **再発条件**: type predicate でオブジェクトプロパティの存在を検証する場合
-- **再利用手順**:
-  1. `as` キャストの代わりに `in` 演算子を使用
-  2. `in` 演算子の後に `typeof` で型検証
-  3. P19 準拠を ESLint rule で強制（将来）
+| 項目       | 内容                                                                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 12 サブエージェントが documentation-changelog.md に「Step 1-A 〜 Step 2 完了」と記載したが、実際には topic-map.md 再生成が未実行だった        |
+| 再発条件   | サブエージェントが Step 実行前に完了記録を書き、途中で中断（rate limit 等）した場合                                                                 |
+| 対処       | `git diff --stat -- .claude/skills/` で実際の変更ファイル数を検証し、topic-map.md 再生成の未実行を発見。手動で再実行した                            |
+| 標準ルール | documentation-changelog には各 Step の実行結果を「事後記録」する。サブエージェント完了後にメインエージェントが `git diff --stat` で実変更を検証する |
 
-#### S2: Main ハンドラの直接テスト困難性
-- **症状**: `apiKeyHandlers.ts` の list ハンドラは `ipcMain.handle` + `withValidation` でラップされており、ハンドラ関数を直接テストできない
-- **根本原因**: ハンドラ登録が `registerApiKeyHandlers()` 関数内にカプセル化されており、個別のハンドラ関数をエクスポートしていない
-- **解決策**: `ipcMain.handle` をモックし、登録時のコールバック関数を取得してテストする間接テストパターンを採用
-- **再発条件**: `withValidation` ラッパーを使う IPC ハンドラの新規テスト作成時
-- **再利用手順**:
-  1. `vi.mock("electron")` で ipcMain をモック
-  2. `registerXxxHandlers()` を呼び出し
-  3. `ipcMain.handle.mock.calls` から対象チャネルのコールバックを取得
-  4. コールバックを直接呼び出してバリデーションロジックをテスト
+**関連パターン**: [06-known-pitfalls.md#P4](../../rules/06-known-pitfalls.md)（早期完了記載）、[06-known-pitfalls.md#P43](../../rules/06-known-pitfalls.md)（サブエージェント中断）、[06-known-pitfalls.md#P2](../../rules/06-known-pitfalls.md)（topic-map 再生成忘れ）
 
-#### S3: `?? []` vs `Array.isArray` の防御力の差
-- **症状**: `profileHandlers.ts` で `identities ?? []` が使われていたが、`identities` が文字列やオブジェクト等の非配列値の場合に防御できない
-- **根本原因**: Nullish coalescing (`??`) は `null`/`undefined` のみ防御。P48 では全型に対する実行時検証が求められる
-- **解決策**: `Array.isArray(user.identities) ? user.identities : []` に統一
-- **再発条件**: 外部データ（IPC レスポンス、DB クエリ結果）から配列を取得する場合
-- **再利用手順**:
-  1. `grep -rn "?? \[\]" apps/desktop/src/` で全箇所を検出
-  2. 外部データ由来の箇所を `Array.isArray` に置換
-  3. 内部コード由来（確実に null/undefined のみ）は `?? []` を維持
+### 苦戦箇所: Phase 10 MINOR 指摘の non-null assertion 残存（P52）
 
-#### S4: IPC契約ドリフト（仕様表の旧値残存）
-- **症状**: API仕様書は更新済みだが、実装変更後に戻り値型テーブルだけ旧値が残るドリフトが発生
-- **根本原因**: 「実装コード」と「仕様表」の両方を同時に検証する手順を固定していなかった
-- **解決策**: `api-ipc-system.md` の `apiKey:list` を `IPCResponse<ProviderListResult>` へ更新し、フィールド表 (`providers/registeredCount/totalCount`) を追加
-- **標準ルール**: IPC契約変更時は「型名 + フィールド表 + 完了タスク台帳」を同一コミット単位で更新する
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 防御ガードを追加した同ファイル内の別箇所（L305-306）に `result.data!` という non-null assertion が残存していた。タスクスコープ内は P48 準拠で修正済みだったが、スコープ外コードに同パターンが残っていた |
+| 再発条件   | 防御ガード実装時に対象ファイル全体をスキャンせず、スコープ内のみ修正する場合                                                                                                                            |
+| 対処       | 対象ファイル全体を `!` でスキャンし、non-null assertion の残存箇所をリストアップ。スコープ内は修正、スコープ外は未タスク化した                                                                          |
+| 標準ルール | 防御ガード実装時は対象ファイル全体を `grep -n '!' ファイル名` でスキャンし、同パターンの残存を検出する                                                                                                  |
 
-#### S5: Phase 11 実画面証跡不足
-- **症状**: Phase 11 が自動テスト代替に寄り、実画面証跡が不足しやすい
-- **根本原因**: UI構造変更なしという前提で screenshot を省略する運用が残っていた
-- **解決策**: `capture-task-06-settings-apikey-contract-guard-phase11.mjs` を追加し、TC-11-01〜03 を取得して manual-test-result へ証跡リンクを記録
-- **標準ルール**: ユーザーが画面検証を要求した場合、`SCREENSHOT` を必須に切り替える
+**関連パターン**: [06-known-pitfalls.md#P48](../../rules/06-known-pitfalls.md)（non-null assertion 禁止）
 
-### 同種課題の5分解決カード
+### 苦戦箇所: CLI 環境でのスクリーンショット取得制約（P53）
 
-| ステップ | 操作 | 目的 |
-|----------|------|------|
-| 1 | `grep -rn "result.data\." apps/desktop/src/renderer/` で Renderer 側の data アクセスを検索 | 未防御の shape アクセスを発見 |
-| 2 | `result?.data` + `Array.isArray(result.data.xxx)` の2段チェックを追加 | nullish + 非配列を同時に防御 |
-| 3 | type predicate フィルタで要素 shape を検証（`in` 演算子 + `typeof`） | malformed 要素を安全に除外 |
-| 4 | Main ハンドラ側にも `Array.isArray` バリデーションを追加 | 多層防御の実現 |
-| 5 | テスト追加（undefined/null/空配列/malformed/reject の5パターン） | 回帰防止 |
+| 項目       | 内容                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | Phase 11（手動テスト）でスクリーンショット取得が指示されたが、CLI 環境では Electron アプリの実画面キャプチャができない                                 |
+| 再発条件   | CLI 専用環境で Phase 11 を実行し、スクリーンショットが必要な場合                                                                                       |
+| 対処       | 自動テスト結果を「間接的な視覚検証」として代替記録した                                                                                                 |
+| 標準ルール | Phase 11 にスクリーンショットが必要な場合、Playwright の `page.screenshot()` または Electron の `webContents.capturePage()` をスクリプト化して取得する |
 
-### 検証ゲート
-- `cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/`
-- `cd apps/desktop && pnpm exec tsc --noEmit`
+### 同種課題の簡潔解決手順（4ステップ）
 
-### 同期先
-- `references/security-electron-ipc.md`: apiKeyAPI セクション追加
-- `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
-- `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
+1. Phase 1 で `git log` と現在のコードを確認し、既実装状態を判定する。差分ゼロなら Phase 4-5 を検証モードに転換する。
+2. Phase 12 の documentation-changelog は Step 完了後に「事後記録」する。サブエージェント完了後に `git diff --stat` で実変更を検証する。
+3. 防御ガード実装時は対象ファイル全体を `grep -n '!'` でスキャンし、non-null assertion の残存を検出する。スコープ外は未タスク化する。
+4. CLI 環境での Phase 11 は `page.screenshot()` / `webContents.capturePage()` のスクリプト化で対応する。

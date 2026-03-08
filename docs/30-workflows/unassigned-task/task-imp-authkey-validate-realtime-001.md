@@ -10,7 +10,7 @@ source_phase: Phase 10
 created_date: 2026-03-06
 dependencies:
   - UT-IMP-AUTHKEY-EXISTS-SOURCE-FIELD-001
-issue_number: 1025
+issue_number: 1065
 ---
 
 # AuthKeySection に保存前リアルタイムAPIキー検証を統合 - タスク指示書

@@ -585,3 +585,53 @@ const isValid = (item: unknown): item is Target =>
   "field" in item &&
   typeof item.field === "string";
 ```
+
+## タスクワークフロー
+
+### P50: 既実装防御の発見による Phase 転換
+
+- **教訓**: GAP-01〜06 の全防御が既に実装済みだった。Phase 4-5（テスト作成→実装）のワークフローが「新規実装」前提で進み、対応する実装が既に存在しテストも全 PASS だった。この発見が遅れると、不要なコードを重複作成するリスクがある
+- **症状**: Phase 4 でテストを書こうとした際、対応する実装が既に存在しテストも全 PASS だった
+- **解決策**: Phase 4 開始前に対象ファイルの `git log` と現在のコードを確認し、既に実装済みかどうかを判定する。既実装の場合は Phase 4-5 を「検証・補完」モードに切り替える
+- **再発防止**: Phase 1（要件定義）で「現在の実装状態の調査」を必須ステップとして含める
+- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+### P51: サブエージェントの documentation-changelog 早期完了記載（P4/P43 複合再発）
+
+- **教訓**: Phase 12 サブエージェントが documentation-changelog.md に「Step 1-A 〜 Step 2 完了」と記載したが、実際には topic-map.md 再生成が未実行だった。P4（早期完了記載）と P43（サブエージェント中断）の複合パターン
+- **症状**: `git diff --stat -- .claude/skills/` で indexes/ ディレクトリに変更がないことで発見
+- **解決策**:
+  1. documentation-changelog には各 Step の実行結果を「事後記録」する（実行前に完了と書かない）
+  2. サブエージェント完了後にメインエージェントが `git diff --stat -- .claude/skills/` で実際の変更ファイル数を検証
+  3. topic-map.md 再生成は `node scripts/generate-index.js` の実行ログで確認
+- **関連パターン**: P4（早期完了記載）、P43（サブエージェント中断）、P2（topic-map 再生成忘れ）
+- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+### P52: 防御ガード実装時の同ファイル内 non-null assertion 残存
+
+- **教訓**: 防御ガードを追加した同ファイル内の別箇所（L305-306）に `result.data!` という non-null assertion が残存していた。タスクスコープ内のコードは P48 準拠で修正済みだったが、同ファイル内の**スコープ外コード**に同パターンが残っていた
+- **症状**: Phase 10 最終レビューで MINOR 判定。`result.data!.providers` が P48 違反として検出された
+- **解決策**: 防御ガード実装時に、対象ファイル全体を `grep -n '!' ファイル名` でスキャンし、non-null assertion の残存箇所をリストアップする。スコープ内は修正、スコープ外は未タスク化
+- **関連パターン**: P48（non-null assertion 禁止）、P19（型キャストバイパス）
+- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
+```typescript
+// ❌ P52: スコープ外に残存した non-null assertion
+const providers = result.data!.providers;
+
+// ✅ P48 準拠: 実行時型検証
+const providers = Array.isArray(result.data?.providers)
+  ? result.data.providers
+  : [];
+```
+
+### P53: CLI 環境でのスクリーンショット取得制約
+
+- **教訓**: Phase 11（手動テスト）でスクリーンショット取得が指示されたが、CLI 環境では Electron アプリの実画面キャプチャができない。自動テスト結果を「間接的な視覚検証」として代替記録する方式を採用したが、Apple UI/UX エンジニアとしての視覚検証は不完全
+- **症状**: Phase 11 手動テスト仕様書でスクリーンショット撮影が指示されるが、CLI 環境では実行不可能
+- **解決策**: Phase 11 にスクリーンショットが必要な場合、以下のいずれかで対応する:
+  1. Playwright の `page.screenshot()` をスクリプト化して取得
+  2. Electron の `webContents.capturePage()` をスクリプト化して取得
+  3. CLI 環境でも `xvfb-run`（Linux）や headless モードで対応可能
+- **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+- **未タスク候補**: UT-FIX-PHASE11-SCREENSHOT-AUTOMATION（スクリーンショット取得自動化）

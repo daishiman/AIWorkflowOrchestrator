@@ -41,6 +41,9 @@ const LOCAL_MAX_OLD_SPACE_SIZE_MB = process.env.VITEST_MAX_OLD_SPACE_SIZE
 const enableFileParallelism =
   process.env.VITEST_FILE_PARALLELISM === "true" ||
   (process.env.VITEST_FILE_PARALLELISM !== "false" && !process.env.CI);
+const shouldEnforceCoverageThresholds = !(
+  process.env.CI === "true" && process.env.VITEST_SHARDED_COVERAGE === "true"
+);
 
 export default defineConfig({
   plugins: [react(), tsconfigPaths()],
@@ -77,12 +80,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html", "lcov"],
-      thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 60,
-        statements: 80,
-      },
+      thresholds: shouldEnforceCoverageThresholds
+        ? {
+            lines: 80,
+            functions: 80,
+            branches: 60,
+            statements: 80,
+          }
+        : undefined,
       exclude: [
         "node_modules/",
         "out/",

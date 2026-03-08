@@ -11,8 +11,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.15.0    | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: ApiKeysSection 契約防御ガードセクション追加（GAP-01〜GAP-06テーブル、59テスト全PASS、カバレッジ実績値）。完了タスクテーブルに追加。architecture-implementation-patterns.md S29 との相互参照を設定                                                                                                   |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
-| v1.13.1    | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: ApiKeysSection の providers 要素 shape 検証（`provider/status` 必須）を Renderer 境界防御パターンへ追記。非配列防御に加えて malformed 要素混在時の継続表示を明文化 |
+| v1.13.1    | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: ApiKeysSection の providers 要素 shape 検証（`provider/status` 必須）を Renderer 境界防御パターンへ追記。非配列防御に加えて malformed 要素混在時の継続表示を明文化                                                                                                                                         |
 | v1.13.0    | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer 境界での Preload Payload 防御パターン（namespace/メソッド/iterable/エラー安全アクセスの4層）を追加。task-04（safeInvoke）との責務分離を明文化                                                                                                                                         |
 | v1.12.5    | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: `auth-mode:*` の sender 検証順序、許可 origin、error envelope、`safeInvoke` / `safeOn` 公開境界、token/API Key マスキング方針を追加                                                                                                                                                                          |
 | v1.12.4    | 2026-03-05 | TASK-10A-E-A 追補: skillShareAPI セクションへ「実装時の苦戦箇所（セキュリティ観点）」と5ステップ手順を追加。sender優先検証、`code/errorCode` 二軸固定、Step 2同時同期を標準化                                                                                                                                                                                |
@@ -115,6 +116,24 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
+
+### ApiKeysSection 契約防御ガード（2026-03-08完了）
+
+06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。
+
+| GAP ID | 防御対象                   | 実装箇所                     | テスト数 |
+| ------ | -------------------------- | ---------------------------- | -------- |
+| GAP-01 | result.data undefined/null | ApiKeysSection loadProviders | 2        |
+| GAP-02 | providers 空配列           | ApiKeysSection loadProviders | 1        |
+| GAP-03 | malformed 要素フィルタ     | type predicate + .filter()   | 3        |
+| GAP-04 | apiKey.list() reject       | try-catch + エラーUI         | 1        |
+| GAP-05 | Main側 providers 非配列    | apiKeyHandlers.ts            | 7        |
+| GAP-06 | identities 非配列          | profileHandlers.ts (3箇所)   | 6        |
+
+**合計テスト**: 59件（Renderer 46 + Main 13）全PASS
+**カバレッジ**: Stmts 93.17%, Branch 86.23%, Fn 91.66%
+
+**関連パターン**: [architecture-implementation-patterns.md S29](./architecture-implementation-patterns.md)（Renderer 境界 providers 正規化パターン）
 
 ### AuthMode IPC セキュリティパターン（TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001）
 
@@ -855,11 +874,12 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 
 ## 完了タスク
 
-| タスクID                         | 完了日     | ステータス | 概要                                                                                                                                                                                          |
-| -------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TASK-9I                          | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |
-| TASK-9J                          | 2026-02-28 | 完了       | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
-| TASK-9G                          | 2026-02-27 | 完了       | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用                                                             |
-| TASK-9F                          | 2026-02-27 | 完了       | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS                                         |
-| TASK-10A-E-A                     | 2026-03-05 | 完了       | share 3チャネルの sender失敗を `ERR_2004`、validation失敗を `ERR_1001`、unknown例外を `ERR_5001` へ統一。`skillHandlers.share.ts` の `IPC_CHANNELS` 定数参照化でチャネルドリフトを抑止        |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001 | 2026-02-25 | 完了       | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持                                                                                                                                |
+| タスクID                                       | 完了日     | ステータス | 概要                                                                                                                                                                                          |
+| ---------------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TASK-9I                                        | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |
+| TASK-9J                                        | 2026-02-28 | 完了       | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
+| TASK-9G                                        | 2026-02-27 | 完了       | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用                                                             |
+| TASK-9F                                        | 2026-02-27 | 完了       | スキル共有3チャネルのセキュリティ実装。validateIpcSender + isPlainObject構造検証 + P42準拠3段バリデーション + 許可値チェックの4層構造。92テスト全PASS                                         |
+| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | 2026-03-08 | 完了       | ApiKeysSection Renderer 4層防御（API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新）+ Main側 providers/identities 配列正規化。59テスト全PASS、Stmts 93.17%              |
+| TASK-10A-E-A                                   | 2026-03-05 | 完了       | share 3チャネルの sender失敗を `ERR_2004`、validation失敗を `ERR_1001`、unknown例外を `ERR_5001` へ統一。`skillHandlers.share.ts` の `IPC_CHANNELS` 定数参照化でチャネルドリフトを抑止        |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001               | 2026-02-25 | 完了       | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持                                                                                                                                |

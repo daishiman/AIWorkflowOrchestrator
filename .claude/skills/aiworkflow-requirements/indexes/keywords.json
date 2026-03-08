@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-07T10:17:19.096Z",
-  "totalKeywords": 1481,
+  "generated": "2026-03-08T00:34:44.905Z",
+  "totalKeywords": 1497,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -497,6 +497,7 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
+      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-ux-feature-skill-stream.md",
@@ -809,7 +810,8 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "testing-component-patterns.md"
     ],
     "スキルファイル操作": [
       "api-ipc-agent.md",
@@ -1043,6 +1045,7 @@
       "interfaces-chat-history.md",
       "ipc-contract-checklist.md",
       "security-skill-ipc.md",
+      "testing-component-patterns.md",
       "ui-ux-feature-skill-stream.md"
     ],
     "サービス": [
@@ -1277,6 +1280,7 @@
     ],
     "駆動ライフサイクル": [
       "arch-state-management.md",
+      "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
     "統合": [
@@ -1292,6 +1296,14 @@
       "ui-ux-agent-execution.md",
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "スキルライフサイクル": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md"
+    ],
+    "移行完了": [
+      "arch-state-management.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -2619,6 +2631,7 @@
     ],
     "CONTRACT": [
       "error-handling.md",
+      "lessons-learned.md",
       "testing-component-patterns.md"
     ],
     "ALIGNMENT": [
@@ -3184,6 +3197,30 @@
       "ipc-contract-checklist.md",
       "testing-accessibility.md"
     ],
+    "non": [
+      "ipc-contract-checklist.md"
+    ],
+    "null": [
+      "ipc-contract-checklist.md"
+    ],
+    "assertion": [
+      "ipc-contract-checklist.md"
+    ],
+    "の使用箇所を検出": [
+      "ipc-contract-checklist.md"
+    ],
+    "CC": [
+      "ipc-contract-checklist.md"
+    ],
+    "Array": [
+      "ipc-contract-checklist.md"
+    ],
+    "isArray": [
+      "ipc-contract-checklist.md"
+    ],
+    "ガード漏れの検出": [
+      "ipc-contract-checklist.md"
+    ],
     "契約ドリフト検出コマンド": [
       "ipc-contract-checklist.md"
     ],
@@ -3263,6 +3300,12 @@
       "lessons-learned.md"
     ],
     "教訓集": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
+    "移行": [
       "lessons-learned.md"
     ],
     "VIEW": [
@@ -3385,10 +3428,6 @@
     "実装再監査": [
       "lessons-learned.md"
     ],
-    "スキルライフサイクル": [
-      "lessons-learned.md",
-      "task-workflow.md"
-    ],
     "CALLBACK": [
       "lessons-learned.md"
     ],
@@ -3450,9 +3489,6 @@
       "lessons-learned.md"
     ],
     "analytics": [
-      "lessons-learned.md"
-    ],
-    "再確認": [
       "lessons-learned.md"
     ],
     "schedule": [
@@ -3807,9 +3843,6 @@
       "lessons-learned.md",
       "logging-migration-guide.md"
     ],
-    "移行": [
-      "lessons-learned.md"
-    ],
     "カバレッジ": [
       "lessons-learned.md"
     ],
@@ -3968,6 +4001,14 @@
     ],
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
+    ],
+    "SETTINGS": [
+      "lessons-learned.md",
+      "testing-component-patterns.md"
+    ],
+    "APIKEY": [
+      "lessons-learned.md",
+      "testing-component-patterns.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4879,7 +4920,9 @@
       "technology-devops.md"
     ],
     "追加": [
-      "technology-devops.md"
+      "technology-devops.md",
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "フロントエンド技術スタック": [
       "technology-frontend.md"
@@ -5006,6 +5049,15 @@
       "ui-ux-atoms-patterns.md"
     ],
     "ATOMS": [
+      "testing-component-patterns.md"
+    ],
+    "Shape": [
+      "testing-component-patterns.md"
+    ],
+    "異常系テストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "レスポンス異常値テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
@@ -5568,6 +5620,12 @@
       "ui-ux-settings.md"
     ],
     "Panel": [
+      "ui-ux-settings.md"
+    ],
+    "ApiKeysSection": [
+      "ui-ux-settings.md"
+    ],
+    "異常系表示仕様": [
       "ui-ux-settings.md"
     ],
     "実装ファイル": [
