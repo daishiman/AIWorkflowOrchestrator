@@ -368,6 +368,73 @@ export { mockSkills, mockPermissions } from "../fixtures/mocks/";
 
 ---
 
+## 8. electronAPI Mock ファクトリ
+
+### F-ELECTRON-01: electronAPI Mock ファクトリ
+
+#### 概要
+
+`window.electronAPI` を `Object.defineProperty` でテスト環境に注入するファクトリ関数。contextBridge 経由の IPC 通信をモックし、Renderer コンポーネントのテストを可能にする。
+
+#### コード例
+
+```typescript
+export interface MockElectronApiKey {
+  list: ReturnType<typeof vi.fn>;
+  save: ReturnType<typeof vi.fn>;
+  delete: ReturnType<typeof vi.fn>;
+  validate: ReturnType<typeof vi.fn>;
+}
+
+export const createDefaultElectronApiKey = (
+  overrides: Partial<MockElectronApiKey> = {},
+  listResult?: unknown,
+): MockElectronApiKey => ({
+  list: vi.fn().mockResolvedValue(listResult ?? {
+    success: true,
+    data: {
+      providers: [
+        { provider: "openai", displayName: "OpenAI", status: "registered", lastValidatedAt: "2026-03-01T00:00:00Z" },
+        { provider: "anthropic", displayName: "Anthropic", status: "not_registered", lastValidatedAt: null },
+      ],
+    },
+  }),
+  save: vi.fn().mockResolvedValue({ success: true }),
+  delete: vi.fn().mockResolvedValue({ success: true }),
+  validate: vi.fn().mockResolvedValue({ success: true, data: { status: "valid", errorMessage: null } }),
+  ...overrides,
+});
+
+// テスト内での使用
+const setupElectronApi = (apiKey: MockElectronApiKey) => {
+  Object.defineProperty(window, "electronAPI", {
+    value: { apiKey },
+    writable: true,
+    configurable: true,
+  });
+};
+```
+
+#### 適用基準
+
+- Renderer コンポーネントが `window.electronAPI` 経由で IPC 通信を行う場合
+- ApiKeysSection 等の electronAPI 依存コンポーネントのテスト
+
+#### 注意事項
+
+- `Object.defineProperty` で `writable: true, configurable: true` を設定し、テスト間でのリセットを可能にする
+- P48（non-null assertion）対策: `result.data!.providers` ではなく `Array.isArray(result.data?.providers)` で実行時型検証すること
+
+#### 実装例
+
+- `apps/desktop/src/renderer/views/SettingsView/__tests__/settings-test-harness.ts`
+
+#### 関連タスク
+
+- 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001
+
+---
+
 ## 参照
 
 - **テストパターン**: [testing-component-patterns.md](testing-component-patterns.md)
