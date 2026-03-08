@@ -1,0 +1,358 @@
+# リソースマップ
+
+> 自動生成元: topic-map.md
+> 作成日: 2026-01-26
+> 目的: Progressive Disclosure原則に基づき、タスクに応じた仕様読み込み判断を支援
+
+このファイルは**タスク種別→必要リソース**の逆引きインデックスです。
+詳細なセクション・行番号は [topic-map.md](topic-map.md) を参照してください。
+
+---
+
+## クイックルックアップ
+
+### タスク種別別リソース選択ガイド
+
+| タスク種別                  | 最初に読む                                                    | 必要に応じて読む                                                      |
+| --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
+| バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
+| バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
+| バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
+| UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
+| API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
+| セキュリティ実装            | security-implementation.md, security-principles.md            | security-\* 全般                                                      |
+| データベース操作            | database-schema.md, database-implementation.md                | database-\*, architecture-database.md                                 |
+| RAG/検索機能                | interfaces-rag.md, architecture-rag.md                        | interfaces-rag-\* 詳細ファイル                                        |
+| Agent SDK統合               | interfaces-agent-sdk.md（インデックス）                       | interfaces-agent-sdk-\* 分割ファイル                                  |
+| LLM連携                     | interfaces-llm.md                                             | api-endpoints.md (AI Provider)                                        |
+| デプロイ・CI/CD             | deployment.md                                                 | deployment-\*, technology-devops.md                                   |
+| テスト実装                  | quality-requirements.md (TDD)                                 | 機能に応じたinterfaces-\*                                             |
+| コンポーネントテスト        | testing-component-patterns.md                                 | testing-fixtures.md, testing-accessibility.md                         |
+| アクセシビリティテスト      | testing-accessibility.md                                      | ui-ux-design-principles.md (WCAG)                                     |
+| テストフィクスチャ設計      | testing-fixtures.md                                           | quality-e2e-testing.md                                                |
+| Claude Code スキル作成      | claude-code-skills-overview.md                                | claude-code-skills-\*, claude-code-agents-\*                          |
+| 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
+| 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
+| Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
+| ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
+| 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
+| 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
+
+---
+
+## カテゴリ別リソースガイド
+
+### 1. 概要・品質
+
+| ファイル                | 読み込み条件                                                 | 主要コンテンツ                      |
+| ----------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| overview.md             | プロジェクト理解、新規参加者オンボーディング、設計原則確認時 | 目的、設計原則、スコープ、成功基準  |
+| master-design.md        | 全体像把握、クイックリファレンス参照時                       | 目次、クイックリファレンス          |
+| quality-requirements.md | TDD実践、パフォーマンス要件確認、テストカバレッジ目標確認時  | パフォーマンス要件、TDD、カバレッジ |
+| glossary.md             | 用語確認、ドメイン言語統一時                                 | システム用語、AI用語、RAG用語       |
+
+### 2. アーキテクチャ
+
+| ファイル                                | 読み込み条件                                               | 主要コンテンツ                             |
+| --------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| architecture-patterns.md                | 新機能追加、パターン確認、Zustand Slice実装時              | 機能追加パターン、IPC Handler、Zustand     |
+| architecture-monorepo.md                | モノレポ構成理解、型エクスポート方法確認時                 | pnpm workspace、型エクスポート             |
+| architecture-rag.md                     | RAG機能実装、Knowledge Graph設計、検索アーキテクチャ確認時 | Knowledge Graph、DiskANN、HybridRAG        |
+| architecture-chat-history.md            | 会話履歴機能実装、Repository Pattern適用時                 | レイヤー構成、Domain Layer、Infrastructure |
+| architecture-database.md                | データベース設計原則確認、ベクトル検索設計時               | 設計原則、workflowsテーブル                |
+| architecture-embedding-pipeline.md      | 埋め込み処理実装、チャンキング戦略確認時                   | チャンキング、埋め込みプロバイダー         |
+| architecture-file-conversion.md         | ファイル変換機能実装、新規コンバーター追加時               | ConversionLogger、HistoryService           |
+| architecture-auth-security.md           | 認証アーキテクチャ確認、Supabase統合時                     | Supabase + Electron、セキュリティ          |
+| arch-feature-addition.md                | 機能追加パターン詳細、Zustand Slice追加手順時              | 詳細手順、サンプルコード                   |
+| arch-claude-cli.md                      | Claude CLI統合、セッション管理アーキテクチャ時             | CLIプロセス、セッションライフサイクル      |
+| arch-electron-services.md               | Electronサービス層設計、Main Process実装時                 | サービス層、依存関係注入                   |
+| arch-ipc-persistence.md                 | IPC永続化パターン、Store設計時                             | 永続化戦略、ファイル保存                   |
+| arch-state-management.md                | 状態管理設計、Zustand詳細、skillSlice実装時                | Zustand Store、状態分離、skillSlice        |
+| architecture-overview.md                | アーキテクチャ全体像把握、プロジェクト構造理解時           | 全体構成、レイヤー概要                     |
+| architecture-implementation-patterns.md | 実装パターン確認、forwardRef/memo/テスト設計パターン時     | フロントエンド/バックエンド/テストパターン |
+| arch-ui-components.md                   | UIコンポーネントアーキテクチャ、Atomic Design時            | コンポーネント階層、責務分離               |
+
+### 3. インターフェース
+
+#### 3-1. コア・基盤
+
+| ファイル               | 読み込み条件                           | 主要コンテンツ              |
+| ---------------------- | -------------------------------------- | --------------------------- |
+| interfaces-core.md     | Repository、Result型、Logger実装時     | IRepository、Result、Logger |
+| interfaces-auth.md     | 認証・プロフィール型定義確認時         | Auth型、Workspace型         |
+| interfaces-workflow.md | ワークフロー実行インターフェース確認時 | IWorkflowExecutor           |
+
+#### 3-2. Agent SDK（分割ファイル構成）
+
+| ファイル                            | 読み込み条件                                      | 主要コンテンツ                    |
+| ----------------------------------- | ------------------------------------------------- | --------------------------------- |
+| interfaces-agent-sdk.md             | Agent SDK全体像把握、どのファイルを読むか判断時   | インデックス、アーキテクチャ概要  |
+| interfaces-agent-sdk-skill.md       | スキル管理UI実装、SkillImportStore実装時          | Skill Dashboard、SkillImportStore |
+| interfaces-agent-sdk-ui.md          | 実行画面UI実装、AgentSDKPage実装時                | Agent Execution UI、AgentSDKPage  |
+| interfaces-agent-sdk-integration.md | Claude CLI統合、Session永続化、Skill Import実装時 | CLI統合、Session Persistence      |
+| interfaces-agent-sdk-executor.md    | 実行エンジン、権限確認機能実装時                  | SkillExecutor、PermissionResolver |
+| interfaces-agent-sdk-history.md     | 実装履歴確認、完了タスク参照時                    | 完了タスク一覧、変更履歴          |
+
+#### 3-3. LLM・チャット
+
+| ファイル                    | 読み込み条件                                       | 主要コンテンツ                          |
+| --------------------------- | -------------------------------------------------- | --------------------------------------- |
+| interfaces-llm.md           | LLMチャット実装全体像把握時（インデックス）        | 概要、ドキュメント構成、設計原則        |
+| llm-ipc-types.md            | LLM IPC型定義、Request/Response型確認時            | LLMChatRequest、Response型、設定型      |
+| llm-streaming.md            | ストリーミング実装、SSEレスポンス処理時            | StreamingResponse、Parser、Hooks        |
+| llm-embedding.md            | 埋め込み生成、EmbeddingProvider実装時              | EmbeddingRequest、Provider、バッチ処理  |
+| llm-workspace-chat-edit.md  | Workspace/Chat/Edit機能、ファイルI/O、IPC統合、workspacePath検証時 | FileService、ContextBuilder、ChatEditService、workspacePath |
+| interfaces-chat-history.md  | 会話履歴機能実装、Repositoryインターフェース定義時 | Schema、Entity、Repository、IPC         |
+| interfaces-system-prompt.md | システムプロンプト管理、永続化実装時               | Repository、Entity、IPC、バリデーション |
+
+#### 3-4. RAG（分割ファイル構成）
+
+| ファイル                                  | 読み込み条件                               | 主要コンテンツ                        |
+| ----------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| interfaces-rag.md                         | RAG全体像把握、共通型確認時                | Branded Types、RAGエラー型、共通IF    |
+| interfaces-rag-search.md                  | 検索戦略全体像把握時（インデックス）       | 検索概要、ドキュメント構成            |
+| rag-search-types.md                       | 検索型定義、SearchQuery/Result型確認時     | SearchQuery、SearchResult、列挙型     |
+| rag-search-vector.md                      | DiskANNベクトル検索戦略実装時              | VectorSearchStrategy、キャッシュ      |
+| rag-search-graph.md                       | Knowledge Graphグラフ検索実装時            | GraphSearchStrategy、スコアリング     |
+| rag-search-crag.md                        | Corrective RAG実装、関連性評価時           | RelevanceEvaluator、CorrectionAction  |
+| rag-search-hybrid.md                      | HybridRAG統合エンジン、RRF実装時           | HybridRAGEngine、4段階パイプライン    |
+| interfaces-rag-chunk-embedding.md         | チャンク・埋め込み処理実装時               | ChunkEntity、EmbeddingEntity          |
+| interfaces-rag-entity-extraction.md       | エンティティ抽出（NER）実装時              | NERインターフェース、52エンティティ型 |
+| interfaces-rag-community-detection.md     | コミュニティ検出（Leiden）実装時           | Leiden Algorithm、Community型         |
+| interfaces-rag-community-summarization.md | コミュニティ要約実装時                     | 要約生成、Summary型                   |
+| interfaces-rag-knowledge-graph-store.md   | Knowledge Graphストア実装時                | Entity/Relation CRUD、グラフ探索      |
+| interfaces-rag-graphrag-query.md          | GraphRAGクエリサービス実装時               | GraphRAG Query、検索戦略              |
+| interfaces-rag-file-selection.md          | ファイル選択UI実装時                       | IPC、セキュリティ、UI                 |
+| rag-search-keyword.md                     | FTS5/BM25キーワード検索実装時              | BM25スコアリング、FTS5テーブル        |
+| rag-knowledge-graph.md                    | Knowledge Graph詳細設計、Entity/Relation時 | グラフ構造、探索アルゴリズム          |
+| rag-query-pipeline.md                     | RAGクエリパイプライン設計時                | パイプライン構成、最適化              |
+| rag-services.md                           | RAGサービス層実装時                        | サービスインターフェース              |
+| rag-vector-search.md                      | ベクトル検索詳細、DiskANN設定時            | インデックス設定、検索パラメータ      |
+| rag-desktop-state.md                      | Desktop RAG状態管理、Zustand設計時         | RAG Store、状態遷移                   |
+
+#### 3-5. 変換
+
+| ファイル                                | 読み込み条件                                 | 主要コンテンツ               |
+| --------------------------------------- | -------------------------------------------- | ---------------------------- |
+| interfaces-converter.md                 | 変換機能全体像把握時                         | IConverter、Logger、History  |
+| interfaces-converter-implementations.md | 既存コンバーター確認、新規コンバーター追加時 | HTML/CSV/JSON/Markdown等     |
+| interfaces-converter-extension.md       | BaseConverter継承、カスタム実装時            | 継承パターン、テストパターン |
+
+### 4. API設計
+
+| ファイル                     | 読み込み条件                      | 主要コンテンツ                    |
+| ---------------------------- | --------------------------------- | --------------------------------- |
+| api-core.md                  | API設計方針確認、認証・認可設計時 | 設計方針、認証、レート制限        |
+| api-endpoints.md             | エンドポイント実装、IPC API追加時 | REST/IPC一覧、命名規則            |
+| api-chat-history.md          | 会話履歴API実装、DTO設計時        | Use Cases、DTOs、Repository       |
+| api-internal.md              | 内部API全体像把握時               | API一覧、概要                     |
+| api-internal-search.md       | 検索サービスAPI実装時             | SearchService、エラーコード       |
+| api-internal-embedding.md    | 埋め込み生成API実装時             | Embedding API、エラーコード       |
+| api-internal-conversion.md   | 変換サービスAPI実装時             | ConversionService、HistoryService |
+| api-internal-chunk-search.md | チャンク検索API実装時             | 検索エンドポイント、性能目標      |
+| api-ipc-agent.md             | Agent SDK IPC API実装時           | Agent実行、結果取得               |
+| api-ipc-auth.md              | 認証IPC API実装時                 | 認証フロー、セッション管理        |
+| api-ipc-system.md            | システムIPC API実装時             | システム設定、環境情報取得        |
+
+### 5. データベース
+
+| ファイル                   | 読み込み条件                                          | 主要コンテンツ                      |
+| -------------------------- | ----------------------------------------------------- | ----------------------------------- |
+| database-schema.md         | テーブル設計確認、マイグレーション作成時              | テーブル一覧、インデックス設計      |
+| database-implementation.md | 型安全クエリ実装、オフライン対応、DiskANN実装時       | Drizzle、Embedded Replicas、DiskANN |
+| database-operations.md     | Turso運用、セキュリティ設定、ローカルストレージ確認時 | 無料枠、セキュリティ、Electron      |
+| database-architecture.md   | DB技術選定理由確認、環境別設定確認時                  | Turso、SQLite、接続設定             |
+
+### 6. UI/UX
+
+| ファイル                      | 読み込み条件                                         | 主要コンテンツ                     |
+| ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
+| ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
+| ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
+| ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
+| ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |
+| ui-history-data-types.md      | 履歴データ型、IPC通信チャンネル定義時                | VersionHistoryItem、IPC API        |
+| ui-history-design.md          | 履歴UIデザイン、WCAG対応、エラーハンドリング時       | アクセシビリティ、エラー表示       |
+| ui-history-integration.md     | 履歴機能統合、タスク依存関係確認時                   | 統合手順、タスク状態               |
+| ui-ux-settings.md             | 設定画面UI実装、Permission Settings実装時            | 設定アーキテクチャ、IPC、権限設定  |
+| ui-ux-search-panel.md         | 検索パネルUI実装、ファイル/ワークスペース検索時      | タブバー、各検索パネル             |
+| ui-ux-file-selector.md        | ファイルセレクタUI実装時                             | モーダル、ドロップゾーン           |
+| ui-ux-llm-selector.md         | LLMセレクタUI実装時                                  | プロバイダー切替、状態管理         |
+| ui-ux-system-prompt.md        | システムプロンプトUI実装時                           | パネル展開、テンプレート管理       |
+| ui-ux-navigation.md           | ナビゲーションUI実装、AppDock設計時                  | AppDock、ChatView                  |
+| ui-ux-forms.md                | フォームUI実装、認証UI、APIキー設定UI時              | フォーム設計、認証UI               |
+| ui-ux-panels.md               | パネル共通ガイドライン確認時                         | アイコン、パネルガイドライン       |
+| ui-ux-portal-patterns.md      | Portal/Stacking Context問題解決時                    | Portal、WAI-ARIA Menu              |
+| ui-ux-advanced.md             | 高度なUI機能確認時（インデックス）                   | ドキュメント一覧                   |
+| ui-ux-agent-execution.md      | Agent実行UI詳細、進捗表示実装時                      | 実行状態、ログ表示                 |
+| ui-ux-design-principles.md    | UI設計原則詳細、HIG/WCAG準拠時                       | デザイン原則、ガイドライン         |
+| ui-ux-feature-components.md   | 機能別コンポーネント実装時（インデックス）           | 機能コンポーネント一覧、共通仕様   |
+| ui-ux-feature-skill-stream.md | SkillStreamDisplay詳細、i18n対応、タイムスタンプ更新 | TASK-3-2シリーズ完全仕様、IPC API  |
+
+### 7. セキュリティ
+
+| ファイル                     | 読み込み条件                                     | 主要コンテンツ                    |
+| ---------------------------- | ------------------------------------------------ | --------------------------------- |
+| security-implementation.md   | セキュリティ実装全体像把握時（インデックス）     | 構成、原則                        |
+| security-principles.md       | セキュリティ設計原則確認、認証・認可設計時       | 設計原則、認証、データ保護        |
+| security-api-electron.md     | API/IPC セキュリティ全体像把握時（インデックス） | 概要、ドキュメント構成、設定一覧  |
+| security-api.md              | API認証・認可、レート制限、CORS設計時            | 認証フロー、レート制限、依存関係  |
+| security-electron-ipc.md     | Electron IPC、CSP、BrowserWindow設定時           | contextIsolation、CSP、historyAPI |
+| security-skill-ipc.md        | スキルIPC、Claude CLI連携セキュリティ時          | CLI統合、Preload API、Permission  |
+| security-input-validation.md | 入力バリデーション実装、SQLi/XSS対策時           | Zod、SQLi、XSS                    |
+| security-operations.md       | ログ・監査実装、インシデント対応フロー確認時     | ログ、ファイル選択、インシデント  |
+| security-skill-execution.md  | スキル実行セキュリティ、Permission Store実装時   | 危険パターン、許可ツール、永続化  |
+
+### 8. 技術スタック
+
+| ファイル               | 読み込み条件                                    | 主要コンテンツ               |
+| ---------------------- | ----------------------------------------------- | ---------------------------- |
+| technology-core.md     | コアランタイム、フロントエンド技術確認時        | Node.js、TypeScript、React   |
+| technology-frontend.md | フロントエンド技術スタック詳細確認時            | React、Next.js、Tailwind CSS |
+| technology-desktop.md  | デスクトップ技術スタック詳細確認時              | Electron、IPC、ビルド        |
+| technology-backend.md  | バックエンド技術、AI統合技術確認時              | Drizzle、AI、開発ツール      |
+| technology-devops.md   | CI/CD、依存関係管理、マイグレーション計画確認時 | pnpm、CI/CD、学習リソース    |
+
+### 9. Claude Code
+
+| ファイル                        | 読み込み条件                                      | 主要コンテンツ                |
+| ------------------------------- | ------------------------------------------------- | ----------------------------- |
+| claude-code-overview.md         | Claude Code全体像把握、3層アーキテクチャ確認時    | 3層構造、用語定義             |
+| claude-code-skills-overview.md  | Skill作成開始時、コア原則確認時                   | コア原則、概要                |
+| claude-code-skills-structure.md | SKILL.md構造確認、ディレクトリ構成時              | Skill構造、SKILL.md仕様       |
+| claude-code-skills-process.md   | Skill作成・更新プロセス確認時                     | 作成プロセス、フィードバック  |
+| claude-code-skills-resources.md | scripts/references/assets/設計時                  | ディレクトリ仕様、Progressive |
+| claude-code-skills-agents.md    | agents/ディレクトリ設計、Task仕様書テンプレート時 | agents/\_.md フォーマット     |
+| claude-code-agents.md           | Agent層理解時（インデックス）                     | 役割、責務境界                |
+| claude-code-agents-spec.md      | Agent仕様書作成、YAML Frontmatter確認時           | YAML仕様、本文セクション      |
+| claude-code-agents-workflow.md  | Agentワークフロー設計、Phase記述時                | Phase記述、エラーハンドリング |
+| claude-code-commands.md         | Command作成時                                     | Command仕様、品質基準         |
+
+### 10. その他（デプロイ・運用）
+
+| ファイル                 | 読み込み条件                               | 主要コンテンツ                    |
+| ------------------------ | ------------------------------------------ | --------------------------------- |
+| deployment.md            | デプロイ全体像把握時（インデックス）       | 戦略概要、チェックリスト          |
+| deployment-electron.md   | Electronアプリリリース、自動更新設定時     | ビルド、リリースフロー、署名      |
+| deployment-gha.md        | GitHub Actions CI/CD設定時                 | ワークフロー、キャッシュ、Secrets |
+| deployment-railway.md    | Railway デプロイ設定時                     | 無料枠、スリープ対策              |
+| environment-variables.md | 環境変数設定、チーム開発運用時             | 分類、セキュリティ、必須一覧      |
+| directory-structure.md   | ディレクトリ構成理解、新規ファイル配置時   | 設計方針、パッケージ構造          |
+| error-handling.md        | エラーハンドリング実装、エラーコード追加時 | 分類、リトライ、レスポンス形式    |
+| plugin-development.md    | プラグイン開発、IWorkflowExecutor実装時    | アーキテクチャ、実装ガイド        |
+| discord-bot.md           | Discord Bot機能実装時                      | イベント、コマンド、通知          |
+| local-agent.md           | ローカルエージェント機能実装時             | ファイル監視、クラウド同期        |
+| workflow-skill-identifier-branded-type-resolution.md | Skill識別子の型境界是正、Phase 12再監査時 | SubAgent分担、4フェーズ実行、監査コマンド |
+
+### 11. ガイドライン
+
+| ファイル                     | 読み込み条件                               | 主要コンテンツ                              |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------- |
+| spec-guidelines.md           | 仕様書作成、命名規則確認時                 | 命名規則、記述形式                          |
+| spec-splitting-guidelines.md | 大規模ファイル分割時                       | 分割基準、カテゴリ別パターン                |
+| development-guidelines.md    | 開発ガイドライン確認、命名規則、デバッグ時 | ロギング、キャッシング、i18n                |
+| task-workflow.md             | タスクワークフロー確認時（インデックス）   | 概要、フェーズ構造                          |
+| task-workflow-phases.md      | Phase詳細確認時                            | フェーズ構造、出力テンプレート              |
+| task-workflow-rules.md       | 品質ゲート、分解ルール確認時               | 品質ゲート、タスク分解                      |
+| patterns.md                  | 実装パターン集（成功/失敗）                | 成功パターン、失敗パターン（P23-P28）、ガイドライン |
+
+---
+
+## 読み込み判断フローチャート
+
+```
+タスク開始
+    │
+    ├─ 新機能追加？
+    │   └─→ overview.md → architecture-patterns.md → 機能別 interfaces-*
+    │
+    ├─ バグ修正？
+    │   └─→ error-handling.md → 関連 interfaces-* → security-*
+    │
+    ├─ UI実装？
+    │   └─→ ui-ux-components.md → ui-ux-design-system.md → 個別 ui-ux-*
+    │
+    ├─ API追加？
+    │   └─→ api-core.md → api-endpoints.md → interfaces-*
+    │
+    ├─ セキュリティ？
+    │   └─→ security-implementation.md → security-principles.md → 個別 security-*
+    │
+    ├─ DB操作？
+    │   └─→ database-schema.md → database-implementation.md
+    │
+    ├─ RAG/検索？
+    │   └─→ interfaces-rag.md → architecture-rag.md → 個別 interfaces-rag-*
+    │
+    ├─ Agent SDK？
+    │   └─→ interfaces-agent-sdk.md（インデックス）→ 必要な分割ファイル
+    │
+    └─ その他
+        └─→ master-design.md → 関連カテゴリへ
+```
+
+---
+
+## 関連ドキュメント
+
+| ドキュメント       | 用途                               |
+| ------------------ | ---------------------------------- |
+| topic-map.md       | セクション・行番号詳細インデックス |
+| keywords.json      | キーワード検索用インデックス       |
+| spec-guidelines.md | 仕様書作成ガイドライン             |
+| SKILL.md           | スキルエントリポイント             |
+
+---
+
+## タスク別リソースマップ
+
+### TASK-FIX-5-1: SkillAPI統一
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| patterns.md | 成功/失敗パターン集 | パターン適用・学習時 |
+| architecture-implementation-patterns.md | safeInvoke/safeOnパターン詳細 | 実装時 |
+| interfaces-agent-sdk-skill.md | API型定義・実装ノート | 型定義確認時 |
+| 06-known-pitfalls.md | 苦戦パターン正本（P23-P28） | 問題解決時 |
+
+### TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile/Avatar fallback
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| api-ipc-auth.md | Profile/Avatar IPC チャネル定義・fallback error envelope | 実装時・契約確認時 |
+| architecture-auth-security.md | fallback ルーティング設計・ハンドラグループ詳細 | アーキテクチャ確認時 |
+| security-electron-ipc.md | fallback 登録パターン・検証基準 | セキュリティ確認時 |
+| interfaces-auth.md | error code 型定義（PROFILE_ERROR_CODES / AVATAR_ERROR_CODES） | 型定義確認時 |
+| ipc-contract-checklist.md | IPC 契約整合チェック | 新規ハンドラ追加時 |
+
+### 検索クエリ例
+
+```bash
+# SkillAPI統一に関する全パターン
+node scripts/search-spec.js "SkillAPI" -C 5
+
+# 苦戦パターンの学習
+node scripts/search-spec.js "苦戦パターン"
+
+# safeInvokeパターン
+node scripts/search-spec.js "safeInvoke"
+```
+
+---
+
+## 変更履歴
+
+| 日付       | バージョン | 変更内容                                                                                                                                                         |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
+| 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |
+| 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |
+| 2026-02-01 | 1.7.0      | task-imp-permission-history-001: 権限/Permission実装行に参照先追加、権限履歴/Permission History行新設                                                            |
+| 2026-01-31 | 1.6.0      | TASK-7D追加更新: architecture-overview.md, architecture-implementation-patterns.md, technology-frontend.md, technology-desktop.md, development-guidelines.md追加 |
+| 2026-01-28 | 1.5.0      | ui-ux-feature-skill-stream.md追加（ui-ux-feature-components.mdより分割）                                                                                         |
+| 2026-01-28 | 1.4.0      | TASK-6-1 SkillSlice追加: arch-state-management.md/interfaces-agent-sdk-skill.md更新                                                                              |
+| 2026-01-27 | 1.3.0      | TASK-3-2-A UX改善追加: ui-ux-feature-components.md読み込み条件・主要コンテンツ更新                                                                               |
+| 2026-01-26 | 1.2.0      | 未登録ファイル18件追加: arch-6件、rag-6件、api-ipc-3件、ui-ux-3件                                                                                                |
+| 2026-01-26 | 1.1.0      | 分割ファイル追加: llm-4件、rag-search-5件、ui-history-4件、security-3件                                                                                          |
+| 2026-01-26 | 1.0.0      | 初版作成（topic-map.mdから派生）                                                                                                                                 |

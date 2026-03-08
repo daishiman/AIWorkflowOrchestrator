@@ -16,6 +16,7 @@ export default tseslint.config(
       "**/.next/**",
       "**/build/**",
       ".claude/**",
+      ".agents/**",
       ".kamui/**",
       ".husky/**",
       ".worktrees/**",

@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "review-gate-result.json",
+  "title": "Review Gate Result",
+  "description": "Phase 3/10 レビューゲート結果のスキーマ",
+  "type": "object",
+  "required": ["phase", "timestamp", "judgment", "reviewItems"],
+  "properties": {
+    "phase": {
+      "type": "integer",
+      "description": "レビューPhase番号",
+      "enum": [3, 10]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "レビュー実施日時（ISO 8601）"
+    },
+    "judgment": {
+      "type": "string",
+      "description": "最終判定",
+      "enum": ["PASS", "MINOR", "MAJOR", "CRITICAL"]
+    },
+    "returnTarget": {
+      "type": "integer",
+      "description": "戻り先Phase番号（MAJOR/CRITICAL時のみ）",
+      "minimum": 1,
+      "maximum": 10
+    },
+    "reviewItems": {
+      "type": "array",
+      "description": "レビュー項目一覧",
+      "items": {
+        "type": "object",
+        "required": ["category", "item", "status"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "レビューカテゴリ",
+            "enum": ["requirements", "design", "implementation", "test", "quality", "security"]
+          },
+          "item": {
+            "type": "string",
+            "description": "レビュー項目"
+          },
+          "status": {
+            "type": "string",
+            "description": "項目ステータス",
+            "enum": ["pass", "minor", "major", "critical"]
+          },
+          "comment": {
+            "type": "string",
+            "description": "指摘内容・コメント"
+          },
+          "suggestion": {
+            "type": "string",
+            "description": "改善提案"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "summary": {
+      "type": "object",
+      "description": "レビュー結果サマリー",
+      "properties": {
+        "passCount": {
+          "type": "integer",
+          "description": "PASS項目数",
+          "minimum": 0
+        },
+        "minorCount": {
+          "type": "integer",
+          "description": "MINOR指摘数",
+          "minimum": 0
+        },
+        "majorCount": {
+          "type": "integer",
+          "description": "MAJOR指摘数",
+          "minimum": 0
+        },
+        "criticalCount": {
+          "type": "integer",
+          "description": "CRITICAL指摘数",
+          "minimum": 0
+        }
+      }
+    },
+    "nextActions": {
+      "type": "array",
+      "description": "次のアクション",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reviewer": {
+      "type": "string",
+      "description": "レビュアー（LLM/Human）"
+    }
+  },
+  "additionalProperties": false
+}
