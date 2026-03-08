@@ -394,6 +394,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.25** | **2026-03-08** | **TASK-10A-E-D/TASK-UI-03/TASK-10A-F 仕様同期**: 5教訓・5パターン・5完了タスク・5未タスクを6並列SubAgentで仕様書正本へ同期。lessons-learned/arch-state-management/task-workflow/patterns/LOGS/SKILLを同時更新。P1/P25対策で4ファイル同時更新 |
 | **v10.08.24** | **2026-03-07** | **TASK-10A-F 再確認を反映**: ユーザー要求に基づく画面検証を `SCREENSHOT` 必須運用で再実行し、`store-driven-lifecycle-ui` の Phase 11 証跡を11件へ更新。Phase 12 の不足成果物（`unassigned-task-detection.md` / `skill-feedback-report.md` / `spec-update-summary.md`）を補完し、Step 1-A〜Step 2 実更新を同ターンで完了する運用を追記 |
 ||||||| Stash base
 | **v10.08.24** | **2026-03-08** | **branch横断 Phase 12 再監査 + persist iterable hardening 仕様同期を完了**: `arch-state-management.md` に persist 復旧契約（DD-01〜DD-03）追記、`lessons-learned.md` にコード例と関連Pitfall参照追加、`task-workflow.md` に完了タスクと5分解決カード追記、`skill-creator/references/patterns.md` に persist 3段ガード + branch横断監査パターン追加。4仕様書を5並列SubAgentで同時更新 |

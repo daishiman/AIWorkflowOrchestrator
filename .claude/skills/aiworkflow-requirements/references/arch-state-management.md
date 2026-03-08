@@ -13,6 +13,7 @@
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記 |
 | v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正 |
 | v3.8.8     | 2026-03-06 | TASK-043B 再監査を反映: `importSkill` の non-throw failure 契約に追従する post-condition 成功判定、dialog open 中の error surface 一元化、`SkillImportDialog.test.tsx` の `useAppStore.getState()` モック契約を追加 |
+| v3.12.0    | 2026-03-08 | TASK-043D テスト品質ゲート設計反映: agentSlice責務境界拡張テスト8ファイル（boundary/combination/edge-cases/error-cases/extension/import-lifecycle/p31-regression/selectors）追加。customStorage 3段ガードパターンのテスト新規作成（184行）。navigationSlice に viewHistory 破損時の iterable hardening テスト追加。SkillAnalysisView/SkillCreateWizard の Store統合テスト追加。store/index.ts に新規セレクタエクスポート63行追加 |
 | v3.11.0    | 2026-03-08 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 反映: `customStorage` の getItem/setItem に iterable guard（DD-01/DD-02）を追加。`expandedFolders` の `Array.isArray` + `typeof === "string"` フィルタリング、非配列入力時の `Set<string>()` フォールバック、`setItem` での `Set`/`Array` 二重対応を persist 復旧契約として明文化。`useCanGoBack` に `Array.isArray(state.viewHistory)` ガードを追加。branch横断 Phase 12 再監査で workflow 10/11/12 の Phase 12 不足を検出し未タスク3件へ分離 |
 | v3.10.0    | 2026-03-07 | TASK-UI-03 反映: agentSlice拡張（2状態: recentExecutions/isAdvancedSettingsOpen + 3アクション: addExecutionToHistory/clearExecutionHistory/setAdvancedSettingsOpen + 5個別セレクタ）を状態定義・アクション定義テーブルへ追記。ExecutionSummary型を追加 |
 | v3.9.1     | 2026-03-06 | TASK-UI-02 追補: `navigationSlice` / `uiSlice` / `useNavShortcuts` の責務境界、mobile More close、rollback 共存時の state ownership に関する苦戦箇所と再利用手順を追加 |
@@ -825,8 +826,19 @@ rm -rf node_modules/.cache/eslint
 | `authModeSlice.selectors.test.ts` | 70+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
 | `llmSlice.selectors.test.ts` | 60+ | renderHook | UT-STORE-HOOKS-REFACTOR-001 |
 | `agentSlice.selectors.test.ts` | 114 | renderHook | UT-STORE-HOOKS-TEST-REFACTOR-001（移行完了） |
+| `agentSlice.boundary.test.ts` | 203行 | 境界値テスト | TASK-043D |
+| `agentSlice.combination.test.ts` | 321行 | 組み合わせテスト | TASK-043D |
+| `agentSlice.edge-cases.test.ts` | 305行 | エッジケーステスト | TASK-043D |
+| `agentSlice.error-cases.test.ts` | 283行 | エラーケーステスト | TASK-043D |
+| `agentSlice.extension.test.ts` | 188行 | 拡張テスト | TASK-043D |
+| `agentSlice.import-lifecycle.test.ts` | 283行 | インポートライフサイクルテスト | TASK-043D |
+| `agentSlice.p31-regression.test.ts` | 303行 | P31回帰テスト | TASK-043D |
+| `customStorage.test.ts` | 184行 | persist復旧3段ガードテスト | TASK-043D |
+| `navigationSlice.test.ts`（iterable hardening追加分） | 57行追加 | viewHistory破損時ガードテスト | TASK-043D |
+| `SkillAnalysisView.store-integration.test.tsx` | 221行 | Store統合テスト（hook+Store+IPC分離） | TASK-043D |
+| `SkillCreateWizard.store-integration.test.tsx` | 171行 | Store統合テスト（hook+Store+IPC分離） | TASK-043D |
 
-**関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001（agentSliceテスト移行）, UT-STORE-HOOKS-REFACTOR-001（個別セレクタ設計）
+**関連タスク**: UT-STORE-HOOKS-TEST-REFACTOR-001（agentSliceテスト移行）, UT-STORE-HOOKS-REFACTOR-001（個別セレクタ設計）, TASK-043D（テスト品質ゲート設計）
 
 ### 将来の開発者向けガイダンス
 
@@ -1432,4 +1444,70 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 - 永続化復元点では型検証を最優先し、異常値を直接spread/iterateしない。
 - フォールバック時は診断可能な warning を出し、アプリ継続を優先する。
 - 破損入力テスト（`null`/`undefined`/`number`/`string`/`object`）を標準テストセットに含める。
+
+---
+
+## TASK-043D: テスト品質ゲート設計（2026-03-08）
+
+### 概要
+
+agentSlice / navigationSlice / customStorage / Store統合テストの品質ゲートとして、責務境界テスト・P31回帰テスト・persist復旧テストを体系的に追加した。
+
+### agentSlice 責務境界テスト拡張
+
+agentSlice の責務範囲（import lifecycle、アクション組み合わせ、境界値、エッジケース、エラーケース、P31回帰）を網羅するテストファイル群を新規追加。
+
+| テストファイル | 行数 | テスト観点 |
+| --- | --- | --- |
+| `agentSlice.boundary.test.ts` | 203 | 境界値（配列上限、文字列長、数値境界） |
+| `agentSlice.combination.test.ts` | 321 | アクション組み合わせ（状態遷移の順序依存性） |
+| `agentSlice.edge-cases.test.ts` | 305 | エッジケース（同時操作、状態矛盾、再入防止） |
+| `agentSlice.error-cases.test.ts` | 283 | エラーケース（IPC失敗、タイムアウト、不正入力） |
+| `agentSlice.extension.test.ts` | 188 | 拡張テスト（TASK-UI-03追加分: recentExecutions/isAdvancedSettingsOpen） |
+| `agentSlice.import-lifecycle.test.ts` | 283 | インポートライフサイクル（isImporting/importingSkillName/skillError の遷移） |
+| `agentSlice.p31-regression.test.ts` | 303 | P31回帰テスト（個別セレクタの参照安定性、useEffect無限ループ非発生） |
+
+**実装場所**: `apps/desktop/src/renderer/store/slices/__tests__/`
+
+### navigationSlice のページ状態管理 iterable hardening
+
+`navigationSlice` の `setCurrentView` / `goBack` / `canGoBack` に `Array.isArray(state.viewHistory)` ガードを追加し、persist 復旧時に `viewHistory` が破損（`null`/`undefined`/`number`/`string`/`object`）していても crash しないように強化。
+
+| メソッド | ガード内容 |
+| --- | --- |
+| `setCurrentView` | `Array.isArray(state.viewHistory)` が偽なら `[view]` にフォールバック |
+| `goBack` | `!Array.isArray(history)` なら即座に return（currentView を維持） |
+| `canGoBack` | `Array.isArray(history) && history.length > 1` で安全判定 |
+
+テストは `navigationSlice.test.ts` に `iterable hardening` describe ブロック（57行）として追加。5パターンの破損値（`null`/`undefined`/`number`/`string`/`object`）を `it.each` で網羅。
+
+### customStorage 3段ガードパターンのテスト正式化
+
+`apps/desktop/src/renderer/store/__tests__/customStorage.test.ts`（184行）を新規作成し、DD-01〜DD-03 の persist 復旧契約をテストで固定。
+
+| テスト対象 | 検証内容 |
+| --- | --- |
+| DD-01: `getItem` / `expandedFolders` | 正常配列→Set変換、非string要素フィルタ、非配列（null/undefined/number/object/string）→空Setフォールバック |
+| DD-02: `setItem` / `expandedFolders` | Set→Array変換、Array→stringフィルタ、非Set非Array→空配列フォールバック |
+| DD-03: `useCanGoBack` | `Array.isArray(state.viewHistory)` ガードによる破損時 `false` 返却 |
+
+### Store統合テストパターン（hook + Store + IPC 分離）
+
+SkillAnalysisView / SkillCreateWizard の Store統合テストを追加し、「hook → Store action → IPC 呼び出し」の3層を分離してテストする戦略を確立。
+
+| テストファイル | 行数 | テスト対象 |
+| --- | --- | --- |
+| `SkillAnalysisView.store-integration.test.tsx` | 221 | `useSkillAnalysis` hook が Store 個別セレクタ経由で `analyzeSkill`/`autoImproveSkill`/`applySkillImprovements` を呼び出す統合テスト |
+| `SkillCreateWizard.store-integration.test.tsx` | 171 | `useCreateSkill` hook が Store action 経由で `createSkill` を呼び出す統合テスト |
+
+**実装場所**: `apps/desktop/src/renderer/components/skill/__tests__/`
+
+**テスト設計原則**:
+- hook のテストは `renderHook` で Store 操作のみを検証（UI レンダリング不要）
+- IPC モック（`window.electronAPI`）は `beforeEach` で設定し、テスト間で状態を共有しない
+- Store の状態変化を `useAppStore.getState()` で直接検証し、セレクタの正確性を確認
+
+### store/index.ts セレクタエクスポート拡張
+
+`apps/desktop/src/renderer/store/index.ts` に63行を追加し、新規個別セレクタのエクスポートを追加。`useCanGoBack` セレクタに `Array.isArray` ガードを適用（DD-03対応）。
 
