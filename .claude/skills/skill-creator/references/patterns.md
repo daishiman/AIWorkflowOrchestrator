@@ -26,6 +26,18 @@
 
 成功した実行から学んだベストプラクティス。
 
+### [Phase12] 証跡テーブル互換 + screenshot preflight 固定（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
+
+- **状況**: `validate-phase11-screenshot-coverage` が `manual-test-result.md` から証跡列を抽出できず失敗し、さらに screenshot 再取得時に optional dependency 欠落で停止
+- **アプローチ**:
+  - Phase 11 成果物に validator互換ヘッダ（`テストケース` / `証跡`）を固定
+  - screenshot 再取得前に `pnpm install` を preflight 実行
+  - 取得後に `validate-phase11-screenshot-coverage` を再実行し、`expected=covered` を確認
+- **結果**: screenshot 証跡監査を PASS 化し、Phase 12 の再確認を機械判定できる状態へ復帰
+- **適用条件**: Phase 11で手動テスト証跡を運用する全 workflow
+- **発見日**: 2026-03-08
+- **関連タスク**: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+
 ### [Skill] Collaborative First による要件明確化
 
 - **状況**: ユーザーの要求が抽象的（L1/L2レベル）
