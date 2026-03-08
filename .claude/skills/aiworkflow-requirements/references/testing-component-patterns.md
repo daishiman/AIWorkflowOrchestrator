@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.6.0
-> **更新日**: 2026-02-22
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS
+> **バージョン**: 1.7.0
+> **更新日**: 2026-03-08
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, TASK-UI-03, 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001
 
 ---
 
@@ -789,6 +789,78 @@ expect(dragon.getByRole("status")).toBeInTheDocument();
 
 ---
 
+## 15. テストファイル拡張分離パターン（TASK-UI-03 / 09-TASK-FIX 追加）
+
+> **実装完了**: 2026-03-08（TASK-UI-03, 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）
+
+セクション 8 のテストファイル分離パターンに加え、以下の拡張分離パターンを追加する。
+
+### 15.1 Store統合テスト分離パターン
+
+Store（Zustand）とコンポーネントの統合テストを、ユニットテストとは別ファイルに分離するパターン。
+
+| ファイル種別 | 命名規則 | テスト内容 |
+| --- | --- | --- |
+| Store統合テスト | `*.store-integration.test.tsx` | Store state変更に対するコンポーネント描画の統合検証 |
+
+**適用実績**:
+
+| ファイル | テスト数 | 対象コンポーネント |
+| --- | --- | --- |
+| `SkillAnalysisView.store-integration.test.tsx` | 11 | SkillAnalysisView + agentSlice |
+| `SkillCreateWizard.store-integration.test.tsx` | 10 | SkillCreateWizard + agentSlice |
+
+**使い分け基準**: コンポーネントが Zustand Store の状態変更に連動して描画を変更する場合、ユニットテスト（props駆動）とは分離して `.store-integration.test.tsx` に配置する。
+
+### 15.2 P31回帰テストパターン
+
+Zustand Store Hooks の無限ループ（P31）再発防止のための専用テストファイル。
+
+| ファイル種別 | 命名規則 | テスト内容 |
+| --- | --- | --- |
+| P31回帰テスト | `*.p31-regression.test.ts` | セレクタ安定性、レンダー回数制限、useEffect依存配列安全性 |
+
+**適用実績**:
+
+| ファイル | テスト数 | 対象 |
+| --- | --- | --- |
+| `agentSlice.p31-regression.test.ts` | 7 | agentSlice拡張セレクタのP31非発生検証 |
+
+**テスト観点**:
+- `renderHook` でセレクタを取得し、`rerender()` 後の参照安定性を `toBe()` で検証
+- レンダー回数カウンターが閾値（5回）未満であることを `toBeLessThan()` で検証
+- `useEffect` 依存配列にアクション関数を含めても無限ループしないことを検証
+
+### 15.3 カスタムストレージテストパターン
+
+Zustand `persist` ミドルウェアのカスタムストレージ（`customStorage`）を検証する専用テスト。
+
+| ファイル種別 | 命名規則 | テスト内容 |
+| --- | --- | --- |
+| ストレージテスト | `customStorage.test.ts` | localStorage ラッパーの getItem/setItem/removeItem + エラーハンドリング |
+
+**適用実績**:
+
+| ファイル | テスト数 | 対象 |
+| --- | --- | --- |
+| `customStorage.test.ts` | 5 | customStorage の基本動作 + JSON parse エラー耐性 |
+
+### 15.4 テストファイル分類体系（統合版）
+
+セクション 8 の基本分類に上記を加えた統合版。
+
+| ファイル種別 | 命名規則 | テスト観点 | 追加タスク |
+| --- | --- | --- | --- |
+| 基本テスト | `*.test.ts(x)` | 正常系、基本操作 | TASK-FIX-4-2 |
+| 永続化テスト | `*.persistence.test.ts` | ストア保存・復元 | TASK-FIX-4-2 |
+| エラーテスト | `*.error.test.ts` | 異常系、フォールバック | TASK-FIX-4-2 |
+| 境界値テスト | `*.boundary.test.ts` | null、空配列、特殊文字 | TASK-FIX-4-2 |
+| Store統合テスト | `*.store-integration.test.tsx` | Store連動描画 | TASK-UI-03 |
+| P31回帰テスト | `*.p31-regression.test.ts` | セレクタ安定性・無限ループ防止 | TASK-UI-03 |
+| レイアウトテスト | `*.layout.test.tsx` | 統合レイアウト・リージョン構成 | TASK-UI-03 |
+
+---
+
 ## 参照
 
 - **テストフィクスチャ**: [testing-fixtures.md](testing-fixtures.md)
@@ -970,6 +1042,7 @@ it("electronAPI undefined でクラッシュしない", async () => {
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.11.0  | 2026-03-08 | TASK-UI-03 / 09-TASK-FIX: テストファイル拡張分離パターン追加（Store統合テスト `.store-integration.test.tsx`、P31回帰テスト `.p31-regression.test.ts`、カスタムストレージテスト、レイアウトテスト `.layout.test.tsx`）。テストファイル分類体系を統合版へ拡張 |
 | 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |
 | 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode 契約テストパターンを追加し、`window.electronAPI.authMode` モックを現行API（`get/set/status/validate/onModeChanged`）と `AuthModeStatus` DTO に同期 |
 | 1.8.0   | 2026-02-26 | TASK-9A完了反映: SkillEditorテストパターンを `spec_created` から `completed` に更新。関連タスク表記を `TASK-9A` に同期 |

@@ -9,7 +9,7 @@ status: 未実施
 source_phase: Phase 5
 created_date: 2026-03-06
 dependencies: [TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001]
-issue_number: 1024
+issue_number: 1064
 ---
 
 # auth-key:exists レスポンスに source フィールドを追加 - タスク指示書

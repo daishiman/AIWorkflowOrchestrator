@@ -33,26 +33,6 @@
 
 ---
 
-||||||| Stash base
-## 2026-03-08 - branch横断 Phase 12 再監査 + persist iterable hardening 仕様同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`, branch横断再監査
-- 目的: 実装内容と苦戦箇所をシステム仕様書に反映し、スキルパターン集を改善
-
-### 実施内容
-- `references/arch-state-management.md` に persist 復旧契約（DD-01〜DD-03）を追記
-- `references/lessons-learned.md` にコード例と関連Pitfall参照を追加
-- `references/task-workflow.md` に完了タスクと5分解決カードを追記
-- `skill-creator/references/patterns.md` に persist 3段ガード + branch横断監査パターンを追加
-- 4仕様書を5並列SubAgentで同時更新
-
-### 結果
-- ステータス: success
-
----
-
 ## 2026-03-07 - TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 仕様同期
 
 ### コンテキスト
@@ -8304,3 +8284,29 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 ### 結果
 - ステータス: success
 - 補足: Phase 12 の実施証跡・system spec 同期・未タスクフォーマット準拠を同一ターンで固定。
+
+## 2026-03-08 - TASK-10A-E-D/TASK-UI-03/TASK-10A-F 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: TASK-10A-E-D（品質ゲート設計）, TASK-UI-03（AgentView Enhancement）, TASK-10A-F（Store駆動ライフサイクル）, TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+- 目的: 5ドメインの実装内容と苦戦箇所をシステム仕様書正本へ同期
+
+### 仕様書別SubAgent分担
+- SubAgent-A: `references/lessons-learned.md`（苦戦箇所5件の教訓追記）
+- SubAgent-B: `references/arch-state-management.md`（agentSlice/navigationSlice拡張・Store統合テストパターン）
+- SubAgent-C: `references/task-workflow.md`（完了タスク5件・未タスク5件の台帳更新）
+- SubAgent-D: `skill-creator/references/patterns.md`（新パターン5件の追記）
+- SubAgent-E: LOGS.md/SKILL.md 4ファイル更新（本エージェント）
+- SubAgent-F: インデックス再生成（topic-map.md/keywords.json）
+
+### 実施内容
+- 6並列SubAgentで仕様書を同時更新
+- lessons-learned: worktreeエラー、コンポーネント分割テスト戦略、Store統合テスト設計、P31回帰テスト、lintパス不整合の5教訓を追記
+- arch-state-management: agentSlice拡張、customStorage 3段ガード、navigationSlice追加を仕様化
+- task-workflow: 完了タスク5件と未タスク5件を台帳に追記
+- patterns: コンポーネント分割テスト戦略、P31回帰テスト、Store統合テスト分離、worktee環境プロトコル、品質ゲート先行の5パターンを追加
+- LOGS/SKILL: P1/P25準拠で4ファイル同時更新
+
+### 結果
+- ステータス: success

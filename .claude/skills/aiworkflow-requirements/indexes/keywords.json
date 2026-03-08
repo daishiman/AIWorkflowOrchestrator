@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-07T15:05:50.830Z",
-  "totalKeywords": 1496,
+  "generated": "2026-03-07T15:57:40.771Z",
+  "totalKeywords": 1503,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1117,7 +1117,8 @@
       "lessons-learned.md",
       "security-skill-execution.md",
       "testing-component-patterns.md",
-      "testing-fixtures.md"
+      "testing-fixtures.md",
+      "ui-ux-feature-components.md"
     ],
     "Slice": [
       "arch-state-management.md"
@@ -1275,6 +1276,25 @@
     "駆動ライフサイクル統合": [
       "arch-state-management.md"
     ],
+    "駆動ライフサイクル": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "統合": [
+      "arch-state-management.md",
+      "architecture-file-conversion.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "testing-playwright-e2e.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
+    ],
     "Persist": [
       "arch-state-management.md"
     ],
@@ -1299,6 +1319,9 @@
     "HARDENING": [
       "arch-state-management.md",
       "lessons-learned.md"
+    ],
+    "テスト品質ゲート設計": [
+      "arch-state-management.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -1361,12 +1384,6 @@
       "arch-ui-components.md",
       "architecture-implementation-patterns.md",
       "lessons-learned.md"
-    ],
-    "in": [
-      "arch-ui-components.md"
-    ],
-    "progress": [
-      "arch-ui-components.md"
     ],
     "認証・セキュリティ": [
       "architecture-auth-security.md"
@@ -1521,18 +1538,6 @@
     ],
     "履歴管理サービス": [
       "architecture-file-conversion.md"
-    ],
-    "統合": [
-      "architecture-file-conversion.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "technology-backend.md",
-      "testing-playwright-e2e.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-skill-stream.md"
     ],
     "history": [
       "architecture-file-conversion.md",
@@ -3284,6 +3289,30 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "docs": [
+      "lessons-learned.md"
+    ],
+    "task": [
+      "lessons-learned.md"
+    ],
+    "test": [
+      "lessons-learned.md"
+    ],
+    "quality": [
+      "lessons-learned.md"
+    ],
+    "gate": [
+      "lessons-learned.md"
+    ],
+    "design": [
+      "lessons-learned.md"
+    ],
+    "ブランチ総括教訓": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
     "PHASE": [
       "lessons-learned.md"
     ],
@@ -3300,6 +3329,9 @@
       "lessons-learned.md"
     ],
     "再監査": [
+      "lessons-learned.md"
+    ],
+    "RECHECK": [
       "lessons-learned.md"
     ],
     "persist": [
@@ -3489,13 +3521,7 @@
     "analytics": [
       "lessons-learned.md"
     ],
-    "再確認": [
-      "lessons-learned.md"
-    ],
     "schedule": [
-      "lessons-learned.md"
-    ],
-    "docs": [
       "lessons-learned.md"
     ],
     "仕様・成果物整合": [
@@ -3508,9 +3534,6 @@
       "lessons-learned.md"
     ],
     "tasks": [
-      "lessons-learned.md"
-    ],
-    "task": [
       "lessons-learned.md"
     ],
     "unassigned": [
@@ -5031,6 +5054,9 @@
       "testing-component-patterns.md"
     ],
     "TOKENS": [
+      "testing-component-patterns.md"
+    ],
+    "テストファイル拡張分離パターン": [
       "testing-component-patterns.md"
     ],
     "関連未タスク": [

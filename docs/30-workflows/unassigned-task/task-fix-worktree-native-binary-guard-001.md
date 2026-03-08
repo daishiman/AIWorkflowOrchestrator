@@ -9,7 +9,7 @@ status: 未実施
 source_phase: Phase 11
 created_date: 2026-03-06
 dependencies: []
-issue_number: 1023
+issue_number: 1063
 ---
 
 # worktree環境でのネイティブバイナリ不整合自動検出ガード - タスク指示書

@@ -20,8 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-08 | 1.29.49 | ブランチ総括教訓を追加。Worktree `@repo/shared` 解決エラー、AgentViewコンポーネント分割テスト戦略、SkillAnalysisView Store統合テスト設計複雑性、agentSlice P31回帰テスト設計、lint コマンドパス不整合の5課題を記録 |
+| 2026-03-08 | 1.29.48 | Phase 12 再確認（branch横断）を追記。workflow 10/11/12 の準拠差分、`verify-all-specs` と `validate-phase-output` の判定差、未タスクテンプレート監査運用を追加 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
-||||||| Stash base
 | 2026-03-08 | 1.29.47 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 のコード例と関連Pitfall参照を追加。customStorage 3段ガードパターンを標準手順として明文化 |
 | 2026-03-07 | 1.29.46 | branch横断 Phase 12 再監査の教訓を追加。単体workflow PASS だけでは見逃す欠落（他workflowの実装ガイド未作成・統合テスト連携欠落）を未タスク3件へ分離し、`docs/30-workflows/unassigned-task/` へ正規配置する運用を標準化 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の教訓を追加。破損persist入力の復旧境界（Set/Array検証）と、UI差分が小さいタスクでも screenshot 証跡を先に固定する運用を標準化 |
@@ -171,6 +172,112 @@
 
 ---
 
+## docs/task-043d-test-quality-gate-design ブランチ総括教訓（2026-03-08）
+
+### 苦戦箇所: Worktree での `@repo/shared` 解決エラー
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `@repo/desktop` が worktree 環境で `@repo/shared` 解決エラーにより起動失敗。Phase 11 の画面証跡（screenshot）取得が desktop アプリで不可能になった |
+| 再発条件 | `git worktree add` でブランチを切り出した直後に `pnpm install` を再実行しない場合。シンボリックリンクや `node_modules` の解決パスが本体リポジトリと異なるために発生する |
+| 対処 | backend アプリで代替証跡を取得。worktree 作成直後に `pnpm install && pnpm --filter @repo/shared build` を実行して解決 |
+| 標準ルール | worktree 作成直後に `pnpm install && pnpm --filter @repo/shared build` を実行するプロトコルを標準化する。Phase 11 で desktop アプリ起動不可の場合は backend / web で代替証跡を取得し、理由を `manual-test-result.md` に明記する |
+
+**関連パターン**: [06-known-pitfalls.md#P7](../../rules/06-known-pitfalls.md) — ネイティブモジュールのバイナリ不一致（P7派生）
+
+### 苦戦箇所: AgentView コンポーネント分割時のテスト戦略が後手に回った
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 元の `AgentView.test.tsx` が556行の巨大テストファイルで統合テスト的に書かれており、コンポーネント分割（AdvancedSettingsPanel, ExecuteButton, FloatingExecutionBar, RecentExecutionList, SkillChip）後にテスト責務境界が曖昧化した |
+| 再発条件 | 大規模コンポーネントの分割タスクで、分割前にテスト戦略を先に設計しない場合 |
+| 対処 | 各分割コンポーネントに独立したテストファイルを新設し、レイアウトテスト（`AgentView.layout.test.tsx`）と分離。品質ゲート設計（TASK-10A-E-D）を後追いで実施 |
+| 標準ルール | コンポーネント分割タスクでは Phase 2 設計時に「分割後テストファイルの責務マトリクス」を必ず定義する。分割前の統合テストをそのまま残さず、単体テスト/レイアウトテスト/統合テストの3層に再構成する |
+
+### 苦戦箇所: SkillAnalysisView Store統合テストの設計複雑性
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `useSkillAnalysis` hook が Store state 読み取り・IPC 呼び出し・ローカル state 管理を1つで混在させており、テスト時のモック境界が不明確だった |
+| 再発条件 | カスタム hook 内で Zustand Store / IPC / `useState` を同時に扱い、責務分離せずに実装する場合 |
+| 対処 | `store-integration.test.tsx` を別ファイルとして新設し、Store 操作テストと UI レンダリングテストを分離した |
+| 標準ルール | hook レベルでも関心の分離を適用する。具体的には (1) Store アクセス hook、(2) IPC 通信 hook、(3) UI 状態 hook を分離し、コンポジション hook で組み合わせる。テストは各 hook 層に対して独立したファイルで記述する |
+
+```typescript
+// ❌ 責務混在 hook（テスタビリティ低下）
+function useSkillAnalysis() {
+  const skills = useAppStore((s) => s.skills);  // Store
+  const [loading, setLoading] = useState(false); // UI state
+  const analyze = async () => {
+    setLoading(true);
+    await window.electronAPI.skill.analyze();    // IPC
+    setLoading(false);
+  };
+  return { skills, loading, analyze };
+}
+
+// ✅ 責務分離 hook（各層を独立テスト可能）
+function useSkillStoreData() {
+  return useAppStore((s) => s.skills);           // Store のみ
+}
+function useSkillIpc() {
+  return { analyze: () => window.electronAPI.skill.analyze() }; // IPC のみ
+}
+function useSkillAnalysis() {
+  const skills = useSkillStoreData();
+  const { analyze } = useSkillIpc();
+  const [loading, setLoading] = useState(false);
+  // コンポジションのみ
+}
+```
+
+### 苦戦箇所: agentSlice の P31 回帰テスト設計パターンが未確立
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Zustand Store Hooks 無限ループ（P31）の回帰を検証するテストパターンが確立されておらず、`agentSlice.p31-regression.test.ts`（303行）を一から設計する必要があった |
+| 再発条件 | 既知の Pitfall（P31, P48）に対する回帰テストを実装完了時点で作成しない場合 |
+| 対処 | `renderHook` + `act` で個別セレクタの参照安定性を検証するパターンを確立し、リグレッションテストファイルを新設 |
+| 標準ルール | 既知 Pitfall の修正タスク完了時に、そのPitfallの回帰テストを必ず作成する。回帰テストファイル名は `{slice名}.p{番号}-regression.test.ts` とし、`renderHook` + `act` で参照安定性を検証する |
+
+**関連パターン**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md) — Zustand Store Hooks無限ループ、[06-known-pitfalls.md#P48](../../rules/06-known-pitfalls.md) — useShallow未適用による派生セレクタ無限ループ
+
+```typescript
+// P31 回帰テストの標準パターン
+import { renderHook, act } from "@testing-library/react";
+
+describe("P31 regression: 個別セレクタの参照安定性", () => {
+  it("アクション関数の参照が安定している", () => {
+    const { result, rerender } = renderHook(() => useSetAgentConfig());
+    const firstRef = result.current;
+    rerender();
+    // Zustand アクション参照は再レンダー後も同一であること
+    expect(result.current).toBe(firstRef);
+  });
+});
+```
+
+### 苦戦箇所: 仕様書内の検証コマンドパスが実態と不整合
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | TASK-10A-E-D の Phase 10 レビューで、仕様書内の lint コマンドパスがモノレポ構造と一致していない MINOR 指摘が発生した |
+| 再発条件 | 仕様書に検証コマンドを記載する際に実際に実行して確認しない場合 |
+| 対処 | 未タスク UT-10A-E-D-001 として登録し追跡 |
+| 標準ルール | 仕様書に記載する検証コマンドは、記載時に必ず実際に実行して出力を確認する。特にモノレポ環境では `pnpm --filter @repo/desktop exec ...` と `cd apps/desktop && pnpm exec ...` のパス解決が異なるため、両方の表記を併記するか、推奨形式を1つに固定する |
+
+**関連パターン**: [06-known-pitfalls.md#P40](../../rules/06-known-pitfalls.md) — テスト実行ディレクトリ依存（モノレポ）
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. worktree 作成直後に `pnpm install && pnpm --filter @repo/shared build` を実行し、モジュール解決を確認する。
+2. コンポーネント分割タスクの Phase 2 で「分割後テストファイル責務マトリクス」を定義し、単体/レイアウト/統合の3層テスト構成を先に設計する。
+3. hook レベルで Store / IPC / UI state の関心を分離し、各層に独立したテストファイルを配置する。
+4. 既知 Pitfall の修正完了時に回帰テスト（`{slice名}.p{番号}-regression.test.ts`）を作成し、`renderHook` + `act` で参照安定性を検証する。
+5. 仕様書に記載する検証コマンドは記載時に実際に実行して出力を確認し、モノレポのパス解決差異を考慮する。
+
+---
+
 ## TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07）
 
 ### 苦戦箇所: Phase 11 文書名が validator 期待値と不一致
@@ -209,8 +316,6 @@
 
 ---
 
-||||||| Stash base
-
 ## TASK-PHASE12-BRANCH-CROSS-AUDIT: branch横断 Phase 12 再監査（2026-03-07）
 
 ### 苦戦箇所: 単一workflowの完了感で branch 全体の未準拠を見落としやすい
@@ -228,6 +333,42 @@
 2. 各workflowへ `validate-phase-output` と `validate-phase12-implementation-guide` を実行する。  
 3. 欠落を未タスクへ分離し、`docs/30-workflows/unassigned-task/` に配置する。  
 4. `audit-unassigned-tasks --diff-from HEAD` で current違反0を確認する。  
+
+## TASK-PHASE12-BRANCH-CROSS-AUDIT-RECHECK: branch横断 Phase 12 再確認（2026-03-08）
+
+### 今回実装した内容（仕様同期）
+
+| 項目 | 内容 |
+| --- | --- |
+| 対象workflow | `07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`, `10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`, `11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`, `12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001` |
+| 実施検証 | `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` |
+| 判定 | workflow 07 は Phase 12準拠 PASS、workflow 10/11/12 は Phase 12不足を検知（未タスク化済み） |
+| 未タスク配置 | `docs/30-workflows/unassigned-task/` 配下 3件を確認（currentViolations=0） |
+
+### 苦戦箇所: `verify-all-specs` が PASS でも Phase 12 不足を見落とす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 10/11/12 は `verify-all-specs` PASS でも、Phase 12 実装ガイド欠落や必須セクション欠落が残っていた |
+| 再発条件 | 構造検証のみで完了判定した場合 |
+| 対処 | `validate-phase-output` と `validate-phase12-implementation-guide` を完了ゲートに追加 |
+| 標準ルール | Phase 12判定は「構造PASS + Phase出力PASS + implementation-guide PASS」の3点セット |
+
+### 苦戦箇所: 未タスク監査で baseline ノイズに引きずられる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | repo既存の baseline 違反が多く、今回追加タスクの合否判定が曖昧になりやすい |
+| 再発条件 | `audit-unassigned-tasks --json` の全体値だけを見て判定する場合 |
+| 対処 | `--target-file` と `--diff-from HEAD` で `currentViolations` のみを合否基準に固定 |
+| 標準ルール | 未タスク判定は `current=0` を合格、`baseline` は別管理 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 変更中workflowを列挙し、`verify-all-specs` を全workflowへ実行。  
+2. 直後に `validate-phase-output --phase 12` と `validate-phase12-implementation-guide` を必ず実行。  
+3. 不足は `docs/30-workflows/unassigned-task/` に 9見出しテンプレートで分離。  
+4. `verify-unassigned-links` と `audit --diff-from HEAD` で `currentViolations=0` を確認。  
 
 ## TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001: persist iterable hardening（2026-03-07）
 
