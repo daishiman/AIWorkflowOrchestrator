@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-06T13:29:27.083Z
-> 対象: docs/30-workflows/07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001
+> 検証日時: 2026-03-07T12:59:31.273Z
+> 対象: docs/30-workflows/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
 
 ## サマリー
 
@@ -11,7 +11,7 @@
 | 検証済みPhase | 13          |
 | エラー        | 0           |
 | 警告          | 0           |
-| 情報          | 0           |
+| 情報          | 1           |
 | **結果**      | **✅ PASS** |
 
 ## Phase別検証結果
@@ -62,7 +62,7 @@
 
 ### Phase 12: ドキュメント更新 ✅
 
-問題なし
+- ℹ️ [consistency] 参照パス「docs/30-workflows/11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001/outputs/phase-12/unassigned-task-report.md」の存在を確認してください
 
 ### Phase 13: PR作成 ✅
 

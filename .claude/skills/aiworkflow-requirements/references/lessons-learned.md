@@ -18,98 +18,14 @@
 
 ## 変更履歴
 
-| 日付 | バージョン | 変更内容 |
-|------|-----------|----------|
-| 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
-| 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
-| 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
-| 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
-| 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
-| 2026-03-06 | 1.29.41 | UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を追補。実装ガイドが Part 1/2 構造だけ満たしても内容不足のまま通り得る苦戦箇所を追加し、`validate-phase12-implementation-guide.js` による内容検証を標準ルール化 |
-| 2026-03-06 | 1.29.40 | UT-TASK-10A-B-008 再監査追補を反映。ユーザー明示の screenshot 要求で `useSkillAnalysis` の StrictMode ローディング固着と light-theme mock 不整合を検出し、`SCREENSHOT + Apple review` 優先ルールを追加 |
-| 2026-03-06 | 1.29.39 | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の current active set を `002 / 004 / 005 / 006 / 007 / 009` に再計算し、completed 集合 `001 / 003 / 008` を別管理へ分離。`validate-task10ab-ledger-sync` による canonical/derived 同期検証を再利用ルールへ追加 |
-| 2026-03-06 | 1.29.38 | TASK-UI-02 完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ移動し、派生未タスク 2 件を同 workflow の `unassigned-task/` 配下へ移管した状態へ教訓導線を同期 |
-| 2026-03-06 | 1.29.37 | lessons 既存リンク欠落を是正。completed へ移管済みの `UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001` / `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の参照先を実体パスへ更新し、ワイルドカード表現による `verify-unassigned-links` の false fail を避ける文言へ修正 |
-| 2026-03-06 | 1.29.36 | TASK-UI-02 派生未タスクを追加。domain UI spec 同期漏れと workflow 本文 stale を `UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001` / `UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001` として登録し、教訓節から直接たどれるようにした |
-| 2026-03-06 | 1.29.35 | TASK-UI-02-GLOBAL-NAV-CORE 再々監査追補。`artifacts.json` / `index.md` が completed でも workflow 本文 `phase-1..11` に `pending` が残る stale を苦戦箇所へ追加し、Phase 12 の三層同期（成果物 / 台帳 / 本文仕様書）を標準手順へ拡張 |
-| 2026-03-06 | 1.29.34 | TASK-UI-02-GLOBAL-NAV-CORE 再監査追補。mobile tab bar のラベル切れを `mobileLabel` + `aria-label` 分離で解消する指針と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを追加 |
-| 2026-03-06 | 1.29.33 | TASK-UI-02-GLOBAL-NAV-CORE の教訓を追加。段階移行で rollback path を維持したまま SoC を守る方法、repo-wide coverage threshold の誤読防止、mobile overlay の画面検証必須化を再利用手順付きで追記 |
-| 2026-03-06 | 1.29.32 | `TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の Phase 12 完了移管を追補。workflow本体を `completed-tasks/02-TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` へ移動し、関連未タスク2件（selector drift / skillHandlers DI boundary）を `completed-tasks/unassigned-task` へ移管した状態に同期 |
-| 2026-03-06 | 1.29.31 | `UT-IMP-SKILLHANDLERS-AUTHKEY-DI-BOUNDARY-GUARD-001` を追補。`TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001` の再確認で残った `skillHandlers.ts` の責務肥大化を苦戦箇所として追加し、DI境界整理（composition root集約）を未タスク導線へ固定 |
-| 2026-03-06 | 1.29.30 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の教訓セクションを新設。実装内容（AuthKeyService 単一生成 + SkillExecutor DI統一）と苦戦箇所（DIシグネチャドリフト、Phase 12台帳ドリフト、教訓反映漏れ）を再発条件付きで固定し、4ステップ再利用手順を追加 |
-| 2026-03-05 | 1.29.29 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の Phase 12再確認を追補。成果物実体は完了しているのに `phase-12-documentation.md` が `pending` のまま残る台帳ドリフトを苦戦箇所として追加し、`verify-all-specs` / `validate-phase-output` / Task 12-1〜12-5実在チェックの3点突合で同期する手順を標準化 |
-| 2026-03-05 | 1.29.28 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 再監査追補。`SkillExecutor` DIコード例の旧シグネチャ（`new SkillExecutor(mainWindow)`）を現行実装（`new SkillExecutor(mainWindow, undefined, authKeyService)`）へ同期し、文書内の実装ドリフトを解消 |
-| 2026-03-06 | 1.29.30 | UT-IMP-PHASE12-TASK-INVESTIGATE-FIVE-MINUTE-CARD-SYNC-VALIDATOR-001 を関連未タスクとして追加。5分解決カードの3仕様書同期（存在/順序/検証ゲート）を機械検証する改善導線を TASK-INVESTIGATE 教訓セクションへ反映 |
-| 2026-03-06 | 1.29.29 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 追補2: 教訓セクションへ「同種課題の5分解決カード（契約境界 + 画面証跡）」を追加し、症状/根本原因/最短5手順/検証ゲート/同期先3点を固定 |
-| 2026-03-06 | 1.29.28 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 の教訓を追加。`AUTH_STATE_CHANGED.user` shape 混在、`linkedProviders` 契約崩れ、`NON_VISUAL` 証跡残置の3課題を再発条件付きで整理し、同種課題向け4ステップ手順を標準化 |
-| 2026-03-05 | 1.29.27 | TASK-UI-01-C および UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 の完了移管を反映。workflow を `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` へ移動し、同UTを `completed-tasks/unassigned-task/` へ移管したため、関連導線を完了表記へ更新 |
-| 2026-03-05 | 1.29.26 | UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001 を追加。TASK-UI-01-C 再監査で再発した `pnpm run test:run --` の全体テスト誤起動リスクと、監査スクリプト所在誤認（`scripts/` 直下想定）を未タスク化し、`pnpm exec vitest run` 直指定 + `test -f` preflight を標準手順として固定 |
-| 2026-03-05 | 1.29.25 | TASK-UI-01-C の Phase 12準拠再確認を追補。`validate-phase-output --phase 12` と未タスク差分監査（`current=0` / `baseline=92`）を同時実行する運用、ならびに `pnpm run test:run --` による全体テスト誤起動リスクを苦戦箇所へ追加 |
-| 2026-03-05 | 1.29.24 | TASK-UI-01-C 再監査追補。`artifacts.json` と `index/phase` の状態不一致（completed vs pending）を同一ターンで是正する運用と、Phase 11 スクリーンショット灰色化（初期化リロード競合）を回避する preflight（`debug-clear-storage` / `dev-skip-auth` 固定）を追加 |
-| 2026-03-05 | 1.29.23 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN 教訓を追加。Notification/HistorySearch 実装で発生しやすい「Main/Preload/型定義の3層同期漏れ」「更新系IPCの認証ゲート漏れ」「UI変更なし時のPhase 11証跡曖昧化」を再発条件付きで整理し、4ステップの再利用手順を固定 |
-| 2026-03-05 | 1.29.25 | `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を追補。`apps/desktop test:run` の `SIGTERM` 中断時フォールバック（失敗ログ固定 + 分割実行 + 3仕様同期）を未タスク導線として追加 |
-| 2026-03-05 | 1.29.24 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の追補。`apps/desktop test:run` が `SIGTERM` で中断した苦戦箇所を追加し、長時間fixtureテストの分割実行ガードを同種課題の手順へ統合 |
-| 2026-03-05 | 1.29.23 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の教訓を追加。auth-key 既存チャネルで発生した runtime 登録漏れと unregister 非対称更新の苦戦箇所を整理し、再利用4ステップ手順を標準化 |
-| 2026-03-05 | 1.29.22 | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録 |
-| 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
-| 2026-03-05 | 1.29.20 | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化 |
-| 2026-03-05 | 1.29.19 | UT-TASK-10A-B-009 を追加登録。完了済みUT配置ルールの文書間ドリフトと `audit --target-file` 適用境界誤用を未タスク化し、配置3分類（未実施/完了済みUT/legacy）と `current/baseline` 分離判定を再利用ルールとして固定 |
-| 2026-03-05 | 1.29.18 | UT-TASK-10A-B-001 の簡潔解決カードを追補。配置先の3分類（未実施/完了済み/legacy）と `target-file` 適用境界、画面証跡5/5基準、`current/baseline` 分離判定を同一セクションへ固定し、同種課題を短手順で再現できるよう最適化 |
-| 2026-03-05 | 1.29.17 | UT-TASK-10A-B-001 の最終再監査追補を追加。完了済み指示書（001）と未実施指示書（002〜008）の配置混在を苦戦箇所として記録し、`completed-tasks`/`unassigned-task` 分離配置 + 参照一括同期 + 監査2軸（current/baseline）で解消する手順を標準化。画面証跡は 11:00 JST 再取得で再確認 |
-| 2026-03-05 | 1.29.16 | UT-TASK-10A-B-001 再監査追補を追加。Phase 11 の light検証証跡がテーマモック固定値でdark化する苦戦箇所を記録し、`prefers-color-scheme` 連動モック + 再撮影 + coverage validator（5/5）で整合を回復する手順を標準化 |
-| 2026-03-05 | 1.29.15 | UT-TASK-10A-B-001 完了教訓を追加。`SuggestionList` のUI導線追加と `useSkillAnalysis` の状態ロジック追加を分離して実装すると回帰を最小化できる点、Red→Greenで導線未実装を先に固定する有効性、Phase 11 の視覚検証を dark/light/mobile で同時確認する運用を標準化 |
-| 2026-03-04 | 1.29.14 | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001` を追加。`validate-phase11-screenshot-coverage` が PASS でも `phase-11-manual-test.md` の画面カバレッジマトリクス未記載 warning が残る苦戦箇所を記録し、視覚/非視覚TCの設計意図を固定する4ステップ手順を標準化 |
-| 2026-03-04 | 1.29.13 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` 追補を追加。Phase 11証跡を別workflow参照のまま残したことで coverage validator が失敗した苦戦箇所を記録し、対象workflow配下への証跡正規配置 + `NON_VISUAL:` 記法固定の4ステップ手順を標準化 |
-| 2026-03-04 | 1.29.12 | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` の教訓を追加。screenshot再取得時の `Port 5174 is already in use` 混在を再発条件付きで記録し、実行前ポート検査（`lsof`）と競合分岐記録を標準化 |
-| 2026-03-04 | 1.29.11 | `UT-IMP-PHASE12-SCREENSHOT-COMMAND-REGISTRATION-GUARD-001` の教訓を追加。screenshot再取得スクリプトの実体と `pnpm run screenshot:*` 公開経路の不一致を再発条件付きで記録し、文書同期・検証ログ固定手順を標準化 |
-| 2026-03-04 | 1.29.10 | `UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001` を追加。`--coverage.include` パス誤指定で回帰判定が揺れる苦戦箇所を未タスク化し、`task-workflow.md` 残課題テーブル/追加未タスク表と同期 |
-| 2026-03-04 | 1.29.9 | SkillCenter削除導線ホットフィックスの再計測値を確定。対象テストを `delete-confirm/useSkillCenter/useFeaturedSkills` の3ファイルに固定し、`3 files / 30 tests`・coverage `86.89/84.61/88.88` を仕様書へ同期。あわせて Phase 12テンプレート最適化へ未タスク配置先判定（未完了/完了移管）を追補 |
-| 2026-03-04 | 1.29.8 | TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 の第2回再確認を追加。Phase 11 証跡を 16:50 JST へ更新し、`verify-unassigned-links`（88/88）/ `audit --diff-from HEAD`（baseline=94）へ同期。`UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` の参照先を `completed-tasks/unassigned-task/` へ統一 |
-| 2026-03-04 | 1.29.7 | SkillCenter 削除導線ホットフィックスの教訓を追加。`handleRequestDelete` と確認ダイアログ描画の分離で起きる「押せるが削除されない」不具合を再発条件付きで追記し、5ステップ復旧手順（UI状態→描画→操作→回帰→カバレッジ確認）を標準化 |
-| 2026-03-04 | 1.29.6 | Phase 12テンプレート最適化の教訓を追加。`skill-creator` のテンプレート本体に preview preflight（build + 疎通）と失敗時未タスク化分岐を同期し、テンプレートと運用パターンのドリフトを解消する5ステップを追記 |
-| 2026-03-04 | 1.29.5 | TASK-FIX-SKILL-IMPORT 3連続是正の再監査追補を追加。UI再撮影で `preview` preflight が欠落した苦戦箇所（`ERR_CONNECTION_REFUSED` / module resolve fail）を明記し、未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を関連導線へ追加 |
-| 2026-03-04 | 1.29.4 | TASK-FIX-SKILL-IMPORT 3連続是正の完了移管を反映。関連未タスク3件の参照を `completed-tasks/unassigned-task/` へ更新し、完了日（2026-03-04）を明記 |
-| 2026-03-04 | 1.29.3 | TASK-FIX-SKILL-IMPORT 3連続是正の未タスク追補を追加。`UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001` / `UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001` / `UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001` の関連導線を追加し、3workflow再監査の証跡集約・`scope.currentFiles` 判定固定を再利用可能化 |
-| 2026-03-04 | 1.29.2 | TASK-FIX-SKILL-IMPORT 3連続是正のPhase 12再確認追補を追加。3workflow同時監査時の証跡ドリフト防止、`audit-unassigned-tasks --target-file` の判定軸誤読防止（`scope.currentFiles` + `currentViolations` 固定）の苦戦箇所と4ステップ手順を追記 |
-| 2026-03-04 | 1.29.1 | TASK-FIX-SKILL-IMPORT 3連続是正の教訓を追加。`skill:getImported` 互換復元（id/name混在）、`skill:import` 成功判定（`importedCount`依存の誤り）、SkillCenter欠損メタデータ防御（nullishクラッシュ）を再発条件付きで標準化 |
-| 2026-03-04 | 1.29.0 | TASK-10A-D 追補: 再確認で抽出した運用課題を未タスク2件として分離（SubAgent実行ログ必須化 / 画面証跡の状態名+検証目的分離）。`task-workflow` / `ui-ux-feature-components` / `lessons-learned` 同期を前提にした再利用手順を更新 |
-| 2026-03-04 | 1.28.9 | TASK-10A-D を仕様書別SubAgent運用へ再編。実装内容サマリー・仕様書別SubAgent分担（task-workflow/ui-ux-feature/lessons/skill-creator）・同種課題向け5ステップを追加し、実装内容と苦戦箇所の同時記録を標準化 |
-| 2026-03-04 | 1.28.8 | TASK-10A-D 再確認追補を追加。`audit-unassigned-tasks` の current/baseline 判定分離、TC-02/TC-05 スクリーンショット解釈の曖昧さ解消、再確認5ステップ（verify/validate/links/audit/目視）を標準化 |
-| 2026-03-03 | 1.28.7 | TASK-10A-D 教訓を追加。IPC境界の型定義不整合（`unknown[]` vs `Suggestion`型）、P40テスト実行ディレクトリ依存の再発、P11フック起因のEdit失敗の3課題と5ステップ手順を標準化 |
-| 2026-03-03 | 1.28.6 | TASK-10A-C 追補: 苦戦箇所を未タスク2件へ分離（UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001, UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001）。5仕様書同時同期ガードとUI証跡3点セット（再撮影/TCカバレッジ/鮮度確認）を再利用導線として固定 |
-| 2026-03-02 | 1.28.5 | TASK-10A-C 教訓を追加。UI再撮影後のTC紐付け検証不足、`skill:create` 契約の4仕様書同期漏れ、Phase 11/12 依存成果物参照漏れを防ぐ5ステップ手順を標準化 |
-| 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
-| 2026-03-02 | 1.28.3 | TASK-10A-B 再監査教訓を追加。Phase 11 のコード分析ベース残置、`phase-11-manual-test.md` 必須節欠落、未タスク件数ドリフト（7→5）を解消する5ステップ手順を標準化 |
-| 2026-03-02 | 1.28.2 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定 |
-| 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
-| 2026-03-02 | 1.28.0 | TASK-UI-05A 再監査教訓を追加。`spec_created` 台帳と実装実体（未追跡ファイル含む）の乖離、未タスクの非正規配置（workflow配下）、画面証跡の鮮度不足を同時に解消する運用を標準化 |
-| 2026-03-01 | 1.27.9 | completed-tasks 移管後の参照整合を補正。`UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` と `UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001` の仕様書リンクを実体パスへ更新 |
-| 2026-03-02 | 1.27.10 | TASK-UI-05B 追補: 仕様書ごとSubAgent分割（6責務）を教訓手順へ組み込み、再利用手順を5ステップへ拡張 |
-| 2026-03-02 | 1.27.9 | TASK-UI-05B の再確認教訓を追加。Phase 12 参照不足による warning ドリフト、画面証跡の再撮影運用、未タスク監査の current/baseline 分離記録を標準化 |
-| 2026-03-01 | 1.27.8 | TASK-UI-05 の教訓を追加。型境界（CategoryId/SkillCategory）、詳細パネル責務集中、Phase 12 三点同期の3課題と5ステップ再利用手順を標準化 |
-| 2026-02-28 | 1.27.7 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の派生未タスク `UT-IMP-PHASE12-SUBAGENT-NA-LOG-GUARD-001` を記録。仕様書別SubAgent運用での N/A 判定ログ固定と三点突合運用の継続改善タスク化を追記 |
-| 2026-02-28 | 1.27.6 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 追補教訓を追加。仕様書単位SubAgent分離時の N/A 記録漏れを新規課題として追記し、解決手順を5ステップに更新 |
-| 2026-02-28 | 1.27.5 | TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 の Phase 12 実行監査教訓を追加。成果物実体と `artifacts.json` ステータス不一致、`audit-unassigned-tasks` の current/baseline 誤読、チェックリスト未同期の3課題と4ステップ解決手順を標準化 |
-| 2026-02-28 | 1.27.2 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001 教訓追加。`waitForCallback` と `stop` の責務分離、timeout時の副作用排除、呼び出し側明示停止の再発防止手順（4ステップ）を反映 |
-| 2026-02-27 | 1.27.1 | TASK-9H 教訓を追加。苦戦箇所3件（IPC配線漏れ、Phase 12成果物不足、phase-12仕様書ステータス未同期）と同種課題向け簡潔解決手順（4ステップ）を反映。task-workflow/spec-update-summary/lessons の三点同期を標準化 |
-| 2026-02-28 | 1.27.4 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 の教訓を追加。未タスクリンクのワイルドカード参照による false fail、`--target-file` の current/baseline 誤読、再確認証跡値ドリフトを防ぐ5ステップ手順を標準化 |
-| 2026-02-28 | 1.27.3 | TASK-9I Phase 12再確認の再利用性を最適化。4ステップ手順に加えて「即時実行コマンドセット（verify/validate/links/target監査/diff監査）」を追加し、同種課題の初動を短縮 |
-| 2026-02-28 | 1.27.2 | TASK-9I Phase 12再確認の教訓を追加。`--target-file` 監査の current/baseline 誤読、再確認証跡の分散、未タスクの存在確認止まりを解消する4ステップ手順を標準化 |
-| 2026-02-28 | 1.27.3 | TASK-9J 教訓セクションをテンプレート準拠へ再整形。仕様書別SubAgent分担（interfaces/api-ipc/security/task-workflow/lessons）と5仕様書同期マトリクスを追加し、再利用導線を強化 |
-| 2026-02-28 | 1.27.2 | TASK-9J Phase 12再確認の教訓を追加。IPC登録配線漏れ・責務重複・Preload API命名ドリフトの3課題と、同種課題向け簡潔解決手順（4ステップ）を標準化 |
-| 2026-02-27 | 1.27.1 | TASK-9G Phase 12再確認の教訓を追加。検証スクリプト実体探索、`currentViolations`基準判定、UT-9G未タスク5件の配置/フォーマット同時検証を標準手順化 |
-| 2026-02-27 | 1.26.3 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の教訓セクションをテンプレート準拠へ最適化。各苦戦箇所に「再発条件」「今後の標準ルール」を追加し、再利用性を向上 |
-| 2026-02-27 | 1.26.2 | UT-IMP-QUICK-VALIDATE-EMPTY-FIELD-GUARD-001 の再監査教訓を追加。苦戦箇所3件（Phase 12チェック同期漏れ、完了移管後の親証跡旧参照、検証スクリプト所在誤認）と同種課題向け簡潔解決手順（5ステップ）を反映 |
-| 2026-02-27 | 1.27.0 | TASK-9F 再監査追補: 仕様書別SubAgent分担（interfaces/api-ipc/security/task/lessons）と検証証跡（13/13, 28項目, 95/95, current=0）を追加。`spec-update-summary.md` を成果物に追加して再利用手順を強化 |
-| 2026-02-26 | 1.26.1 | TASK-9B SkillCreator IPC拡張同期の再監査教訓を追加。苦戦箇所3件（13チャンネル仕様ドリフト、P42 create未完了、current/baseline監査誤読）と同種課題向け簡潔解決手順（5ステップ）を反映 |
-| 2026-02-26 | 1.26.3 | TASK-9A-skill-editor Phase 12 再確認の教訓を追加: 実装ガイド2パート要件不足、`audit-unassigned-tasks --target-file` の current/baseline 誤読、未タスク指示書メタ情報重複を再発防止する4ステップ手順を追記 |
-| 2026-02-26 | 1.26.2 | TASK-9A 完了同期の教訓を反映: `spec_created` 表記の残存と未タスク台帳の状態ドリフト（実装済みなのに未実施表示）が再発しやすいため、Phase 12で「仕様状態・台帳状態・実装状態」の3点同時照合を必須化 |
-| 2026-02-26 | 1.26.1 | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 教訓追加: `quick_validate.js` 実行経路統一後でも Phase 11 でリンク整合と曖昧語検出が詰まりポイントになる事例を追記。`verify-unassigned-links` と grep 判定を先行実行する4ステップ手順を追加 |
-| 2026-02-25 | 1.25.9 | UT-UI-THEME-DYNAMIC-SWITCH-001 の再利用性を強化: 同種課題向け「転記テンプレート（5分版）」を追加し、苦戦箇所を再発条件ベースで記録する運用を標準化 |
-| 2026-02-25 | 1.25.8 | UT-UI-THEME-DYNAMIC-SWITCH-001 教訓追加: テーマ動的切替実装での苦戦箇所3件（`themeMode`/`resolvedTheme`責務分離、Store Hook再実行ループ、Phase 12証跡同期漏れ）と同種課題向け簡潔解決手順（4ステップ）を追加 |
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                       |
-| ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-07 | 1.29.45    | TASK-10A-F の教訓を追加。Store移行時のテストmock統一パターン、handleAnalyze try/catch欠落によるUnhandled Rejection、improvementResult Store化見送りの設計判断、グローバルカバレッジ閾値の誤読防止を再発条件付きで記録し、4ステップ再利用手順を標準化                                                           |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | --- | --- | ---------- |
+| 2026-03-08 | 1.29.48    | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。既実装防御の発見による Phase 転換（P50）、サブエージェントの documentation-changelog 早期完了記載（P51/P4/P43 複合再発）、non-null assertion 残存（P52/P48 派生）、CLI 環境でのスクリーンショット取得制約（P53）の4課題と再発防止手順を追記          |
+| 2026-03-07 | 1.29.45    | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記                                                                                                     |
+|            |            |                                                                                                                                                                                                                                                                                                                |     |     |     | Stash base |
+| 2026-03-08 | 1.29.47    | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 のコード例と関連Pitfall参照を追加。customStorage 3段ガードパターンを標準手順として明文化                                                                                                                                                                      |
+| 2026-03-07 | 1.29.46    | branch横断 Phase 12 再監査の教訓を追加。単体workflow PASS だけでは見逃す欠落（他workflowの実装ガイド未作成・統合テスト連携欠落）を未タスク3件へ分離し、`docs/30-workflows/unassigned-task/` へ正規配置する運用を標準化                                                                                         |
+| 2026-03-07 | 1.29.45    | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の教訓を追加。破損persist入力の復旧境界（Set/Array検証）と、UI差分が小さいタスクでも screenshot 証跡を先に固定する運用を標準化                                                                                                                                |
 | 2026-03-07 | 1.29.44    | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記                                                                                                                         |
 | 2026-03-06 | 1.29.43    | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した               |
 | 2026-03-06 | 1.29.42    | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化                                                                               |
@@ -260,97 +176,120 @@
 
 ### 苦戦箇所: Phase 11 文書名が validator 期待値と不一致
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `phase-11-manual-testing.md` のみ存在し、validator は `phase-11-manual-test.md` を参照して失敗した |
-| 再発条件 | workflow ごとに Phase 11 文書名が揺れる場合 |
-| 対処 | `phase-11-manual-test.md` を正本として追加し、TC一覧と証跡リンクを明示した |
-| 標準ルール | Phase 11 は `phase-11-manual-test.md` + `manual-test-result.md` の2ファイルを必須にする |
+| 項目       | 内容                                                                                               |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| 課題       | `phase-11-manual-testing.md` のみ存在し、validator は `phase-11-manual-test.md` を参照して失敗した |
+| 再発条件   | workflow ごとに Phase 11 文書名が揺れる場合                                                        |
+| 対処       | `phase-11-manual-test.md` を正本として追加し、TC一覧と証跡リンクを明示した                         |
+| 標準ルール | Phase 11 は `phase-11-manual-test.md` + `manual-test-result.md` の2ファイルを必須にする            |
 
 ### 苦戦箇所: スクリーンショット実体があるのに TC 紐付け不足で未参照扱い
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 11枚撮影済みでも、TC-11-08〜11 が文書に未記載で warning が出た |
-| 再発条件 | 画面撮影後に manual test 文書の TC テーブル更新を後回しにする場合 |
-| 対処 | `phase-11-manual-test.md` に TC-11-01〜11 と証跡マトリクスを追加して一致させた |
-| 標準ルール | 「撮影完了→TCテーブル更新→coverage validator 実行」を1セットで運用する |
+| 項目       | 内容                                                                           |
+| ---------- | ------------------------------------------------------------------------------ |
+| 課題       | 11枚撮影済みでも、TC-11-08〜11 が文書に未記載で warning が出た                 |
+| 再発条件   | 画面撮影後に manual test 文書の TC テーブル更新を後回しにする場合              |
+| 対処       | `phase-11-manual-test.md` に TC-11-01〜11 と証跡マトリクスを追加して一致させた |
+| 標準ルール | 「撮影完了→TCテーブル更新→coverage validator 実行」を1セットで運用する         |
 
 ### 苦戦箇所: Phase 12 changelog が計画表現（対象/予定）に偏る
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 実更新の有無が不明瞭で Step 完了判定が曖昧化した |
-| 再発条件 | 実作業前に changelog を先行記述する場合 |
-| 対処 | Step 1-A/1-B/1-C/1-D/Step 2 を完了ベースで書き直し、実更新対象へ限定した |
+| 項目       | 内容                                                                        |
+| ---------- | --------------------------------------------------------------------------- |
+| 課題       | 実更新の有無が不明瞭で Step 完了判定が曖昧化した                            |
+| 再発条件   | 実作業前に changelog を先行記述する場合                                     |
+| 対処       | Step 1-A/1-B/1-C/1-D/Step 2 を完了ベースで書き直し、実更新対象へ限定した    |
 | 標準ルール | `documentation-changelog.md` は「完了済み変更のみ」記述し、予定は記載しない |
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. Phase 11 文書名を `phase-11-manual-test.md` に統一する。  
-2. スクリーンショット取得後に TC-ID と証跡を 1:1 で記載する。  
-3. `validate-phase11-screenshot-coverage` を PASS にしてから Phase 12 を進める。  
-4. Phase 12 は Step完了後に changelog を更新し、計画表現を残さない。  
+1. Phase 11 文書名を `phase-11-manual-test.md` に統一する。
+2. スクリーンショット取得後に TC-ID と証跡を 1:1 で記載する。
+3. `validate-phase11-screenshot-coverage` を PASS にしてから Phase 12 を進める。
+4. Phase 12 は Step完了後に changelog を更新し、計画表現を残さない。
 
 ---
-## TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07）
-### 実装内容
-`useSkillAnalysis.ts` の直接IPC呼び出し3箇所（analyze/applyImprovements/autoImprove）をZustand Store個別セレクタ経由に移行。`SkillCreateWizard.tsx` はTASK-10A-Cで移行済みのため変更不要だった。
-### 苦戦箇所
-#### 1. Store移行後のテストmockパターン不統一
-- **再発条件**: `vi.mock("../../../store")` でStore個別セレクタをmockする際、State用とAction用で戻り値構造が異なる
-- **症状**: テストファイル間でmockパターンが不一致になり、テスト追加時に混乱
-- **解決策**: 以下の標準パターンを確立
-  - State用: `useSelectorName: () => mockValue`（値を直接返す）
-  - Action用: `useActionName: () => mockFunction`（関数を返す）
-  - `beforeEach` で `mockFunction.mockReset()` を実行
+
+||||||| Stash base
+
+## TASK-PHASE12-BRANCH-CROSS-AUDIT: branch横断 Phase 12 再監査（2026-03-07）
+
+### 苦戦箇所: 単一workflowの完了感で branch 全体の未準拠を見落としやすい
+
+| 項目       | 内容                                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 07 workflow をPASS化した時点で、10/11/12のPhase 12不足（実装ガイド未作成、必須セクション欠落）を見落としやすかった     |
+| 再発条件   | 「今回修正したworkflow」だけを検証対象にした場合                                                                       |
+| 対処       | branch横断で `validate-phase-output` / `validate-phase12-implementation-guide` を一括実行し、未タスク3件へ分離して登録 |
+| 標準ルール | Phase 12完了判定は `current workflow + 同時変更workflow` をセットで監査する                                            |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 変更中workflow一覧を `git status --short` から抽出する。
+2. 各workflowへ `validate-phase-output` と `validate-phase12-implementation-guide` を実行する。
+3. 欠落を未タスクへ分離し、`docs/30-workflows/unassigned-task/` に配置する。
+4. `audit-unassigned-tasks --diff-from HEAD` で current違反0を確認する。
+
+## TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001: persist iterable hardening（2026-03-07）
+
+### 苦戦箇所: 永続化データを信頼しすぎると hydrate でクラッシュする
+
+| 項目       | 内容                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `expandedFolders` が配列でない値（`null` / `number` / `object`）を持つと `new Set(...)` で `object is not iterable` が発生した |
+| 再発条件   | localStorageに壊れた値が残った状態で hydrate する場合                                                                          |
+| 対処       | `Array.isArray` + `typeof === "string"` で入力検証し、非配列は空 `Set` にフォールバック                                        |
+| 標準ルール | persist復元時は「型検証→フィルタ→安全既定値」の3段を必須化する                                                                 |
+
+### 苦戦箇所: UI差分が小さいタスクで screenshot 証跡が抜けやすい
+
+| 項目       | 内容                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| 課題       | 初期計画を「非視覚のみ」にすると、再監査で証跡不足と判定されやすい                         |
+| 再発条件   | ユーザーが後から screenshot 検証を要求した場合                                             |
+| 対処       | Phase 11 で light/dark 2ケースを撮影し、`manual-test-result.md` に TC-ID と png を紐付けた |
+| 標準ルール | UI差分が小さくても、ユーザー要求があれば screenshot を優先して残す                         |
+
+### コード例: customStorage の3段ガードパターン
+
 ```typescript
-// ✅ 標準Store mockパターン
-const mockAnalyzeSkill = vi.fn();
-const mockApplySkillImprovements = vi.fn();
-vi.mock("../../../store", () => ({
-  // State selectors - return values
-  useCurrentAnalysis: () => null,
-  useIsAnalyzingSkill: () => false,
-  useIsImprovingSkill: () => false,
-  useSkillError: () => null,
-  // Action selectors - return functions
-  useAnalyzeSkill: () => mockAnalyzeSkill,
-  useApplySkillImprovements: () => mockApplySkillImprovements,
-  useAutoImproveSkill: () => vi.fn(),
-}));
+// getItem での iterable guard (DD-01)
+const raw = parsed.state.expandedFolders;
+if (Array.isArray(raw)) {
+  // 型検証: 配列の各要素が string であることを確認
+  parsed.state.expandedFolders = new Set(
+    raw.filter((v: unknown) => typeof v === "string"),
+  );
+} else {
+  // 安全既定値: 非配列は空 Set にフォールバック
+  if (raw !== undefined && raw !== null) {
+    console.warn(
+      "[customStorage] expandedFolders is not an array:",
+      typeof raw,
+    );
+  }
+  parsed.state.expandedFolders = new Set<string>();
+}
 ```
-#### 2. handleAnalyze の try/catch 欠落
-- **再発条件**: Store action に処理を委譲した後、Hook側の try/catch を省略
-- **症状**: Store action が例外をthrowした場合、Unhandled Promise Rejection が発生し、テストで2件の warning
-- **解決策**: Store側でerror処理済みでも、Hook側は必ず try/catch で包む（UIクラッシュ防止の防御コード）
-- **ルール**: Store action 呼び出しは常に `try { await storeAction(); } catch { /* Store handles error */ }` パターンで包む
-#### 3. improvementResult のStore化見送り判断
-- **再発条件**: Store action の戻り値をコンポーネント側で利用したい場合
-- **症状**: `applySkillImprovements` Store action はPromise<void>を返すが、実際の改善結果（ImprovementResult）はStore stateに含まれていない
-- **解決策**: 設計判断として Case B 方式（ローカルstate維持）を採用。将来必要になれば agentSlice に state を追加
-- **教訓**: Store移行時は「何をStoreに入れ、何をローカルに残すか」を明示的に設計書に記録すること
-#### 4. グローバルカバレッジ閾値の誤読
-- **再発条件**: `pnpm vitest run --coverage` でディレクトリ全体を対象にした場合
-- **症状**: 変更対象外のファイル（SkillCenterView等）が0%カバレッジのため、グローバル閾値（Line 80%）が不合格に見える
-- **解決策**: 対象ファイルの個別カバレッジを確認（grep で該当行を抽出）。グローバル閾値エラーは変更範囲外のファイルが原因
-#### 5. テスト変数名のタイポ（mockCreateSkillSkill）
-- **再発条件**: vi.mock内の変数定義と、テスト本文の変数参照で名前が不一致
-- **症状**: `ReferenceError: mockCreateSkill is not defined` で11テストが一斉失敗
-- **解決策**: mock変数名は `mock{ActionName}` で統一。定義後すぐにテスト本文で参照確認
-### 同種課題の簡潔解決カード
-| 項目           | 内容                                                                                                                                            |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **症状**       | Store移行後にテストが大量失敗、または Unhandled Rejection                                                                                       |
-| **根本原因**   | mockパターン不統一 / try/catch欠落 / 変数名タイポ                                                                                               |
-| **最短手順**   | 1. `vi.mock` の State/Action パターン確認 → 2. 全ハンドラに try/catch 追加 → 3. mock変数名の定義-参照一致確認 → 4. `pnpm vitest run` で回帰確認 |
-| **検証ゲート** | テスト全PASS + Unhandled Rejection 0件                                                                                                          |
-| **同期先**     | `arch-state-management.md` / `task-workflow.md` / `architecture-implementation-patterns.md`                                                     |
-### 再利用手順（Store移行タスク共通）
-1. **対象特定**: `grep -rn "window.electronAPI" src/renderer/components/<対象>/` で直接IPC呼び出しを列挙
-2. **状態分類**: 各useStateをStore移行/ローカル維持に分類し、設計書に記録
-3. **テストmock統一**: State用（値返却）/ Action用（関数返却）の標準パターンで `vi.mock` を作成
-4. **防御コード**: 全Store action呼び出しに try/catch を追加（Store側error処理済みでも必須）
+
+**3段ガードの構造:**
+
+1. **型検証** — `Array.isArray(raw)` で配列であることを確認（`as Set<string>` のような型キャストを排除）
+2. **要素フィルタ** — `.filter((v: unknown) => typeof v === "string")` で各要素の型を検証
+3. **安全既定値** — 非配列・`null`・`undefined` はすべて空 `Set<string>()` にフォールバック
+
+### 関連Pitfall
+
+- **[P19](../../rules/06-known-pitfalls.md#P19)**: 型キャスト（`as`）による実行時検証バイパス — 本タスクでは `as Set<string>` を `Array.isArray` + `instanceof Set` による実行時型検証に置換した。永続化データは JSON.parse 後の shape が保証されないため、型キャストではなく実行時検証が必須
+- **[P48 (non-null assertion)](../../rules/06-known-pitfalls.md#P48)**: `result.data!.providers` と同様に、永続化データも実行時型検証が必須。localStorage から復元した値に対して `!` や `as` で型安全を偽装すると、破損データでランタイムクラッシュする
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. persist復元対象に `Array.isArray` / `instanceof Set` ガードを入れる。
+2. 非正常値は warning を出して安全既定値にフォールバックする。
+3. テストで破損値5パターン以上を固定し、回帰を先に防ぐ。
+4. Phase 11 で最低2枚（light/dark）の画面証跡を残し、TC-IDで紐付ける。
+
 ## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
 
 ### 苦戦箇所: z-index 事前設計の必要性
@@ -5720,83 +5659,53 @@ async function safeInvokeUnwrap<T>(
 | worktreeでnative module不足 | `cd <worktree-dir> && pnpm install --frozen-lockfile` |
 | Phase 12の「計画」文言残存 | `rg "予定\|実行待ち\|仕様策定のみ" outputs/phase-12/` で全件排除 |
 | 未タスク9見出し不足 | `audit-unassigned-tasks --target-file <path>` で個別検証 |
+```
 
----
+## TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: ApiKeysSection 契約ガード（2026-03-08）
 
-## 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
+### 苦戦箇所: 既実装防御の発見による Phase 転換（P50）
 
-### コンテキスト
-- 対象: ApiKeysSection `apiKey.list()` 戻り値の契約防御
-- 期間: 2026-03-07
-- カテゴリ: Renderer 境界防御 / Main バリデーション / パターン統一
+| 項目       | 内容                                                                                                                                                        |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | GAP-01〜06 の全防御が既に実装済みだった。Phase 4-5（テスト作成→実装）のワークフローが「新規実装」前提で進み、対応する実装が既に存在しテストも全 PASS だった |
+| 再発条件   | Phase 1 で「現在の実装状態の調査」を行わず、新規実装を前提に Phase 4 を開始する場合                                                                         |
+| 対処       | Phase 4 開始前に対象ファイルの `git log` と現在のコードを確認し、既に実装済みかどうかを判定。既実装の場合は Phase 4-5 を「検証・補完」モードに切り替えた    |
+| 標準ルール | Phase 1（要件定義）で「現在の実装状態の調査」を必須ステップとして含める。差分がゼロの場合は Phase 4-5 を検証・文書化モードに転換する                        |
 
-### 実装内容
-1. **Renderer 層（ApiKeysSection/index.tsx）**: `normalizeProviders` type predicate フィルタ追加。`result.data?.providers` の nullish チェック + 要素 shape 検証（`provider`/`status` フィールド必須）
-2. **Main 層（apiKeyHandlers.ts）**: `apiKey:list` ハンドラのレスポンス生成前に `Array.isArray(result?.providers)` バリデーション追加
-3. **パターン統一（profileHandlers.ts）**: 3箇所の `identities ?? []` → `Array.isArray(user.identities) ? user.identities : []` に統一
-4. **テスト**: 20件追加（Renderer 7件 + apiKeyHandlers 7件 + profileHandlers 6件）、全122件 PASS
-5. **カバレッジ**: Statements 93.17% / Branches 86.23% / Functions 91.66%
+### 苦戦箇所: サブエージェントの documentation-changelog 早期完了記載（P51/P4/P43 複合再発）
 
-### 苦戦箇所
+| 項目       | 内容                                                                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 12 サブエージェントが documentation-changelog.md に「Step 1-A 〜 Step 2 完了」と記載したが、実際には topic-map.md 再生成が未実行だった        |
+| 再発条件   | サブエージェントが Step 実行前に完了記録を書き、途中で中断（rate limit 等）した場合                                                                 |
+| 対処       | `git diff --stat -- .claude/skills/` で実際の変更ファイル数を検証し、topic-map.md 再生成の未実行を発見。手動で再実行した                            |
+| 標準ルール | documentation-changelog には各 Step の実行結果を「事後記録」する。サブエージェント完了後にメインエージェントが `git diff --stat` で実変更を検証する |
 
-#### S1: type predicate 内での型キャスト vs in 演算子
-- **症状**: `normalizeProviders` 内で `(item as Record<string, unknown>).provider` を使用したが、Phase 8 で P19（型キャストバイパス）違反と判定
-- **根本原因**: `as Record<string, unknown>` は実行時検証をバイパスする型アサーション。`in` 演算子は実行時チェックを伴う型ナロイング
-- **解決策**: `"provider" in item && typeof item.provider === "string"` に変更。`in` 演算子で TypeScript の型ナロイングと実行時検証を同時に実現
-- **再発条件**: type predicate でオブジェクトプロパティの存在を検証する場合
-- **再利用手順**:
-  1. `as` キャストの代わりに `in` 演算子を使用
-  2. `in` 演算子の後に `typeof` で型検証
-  3. P19 準拠を ESLint rule で強制（将来）
+**関連パターン**: [06-known-pitfalls.md#P4](../../rules/06-known-pitfalls.md)（早期完了記載）、[06-known-pitfalls.md#P43](../../rules/06-known-pitfalls.md)（サブエージェント中断）、[06-known-pitfalls.md#P2](../../rules/06-known-pitfalls.md)（topic-map 再生成忘れ）
 
-#### S2: Main ハンドラの直接テスト困難性
-- **症状**: `apiKeyHandlers.ts` の list ハンドラは `ipcMain.handle` + `withValidation` でラップされており、ハンドラ関数を直接テストできない
-- **根本原因**: ハンドラ登録が `registerApiKeyHandlers()` 関数内にカプセル化されており、個別のハンドラ関数をエクスポートしていない
-- **解決策**: `ipcMain.handle` をモックし、登録時のコールバック関数を取得してテストする間接テストパターンを採用
-- **再発条件**: `withValidation` ラッパーを使う IPC ハンドラの新規テスト作成時
-- **再利用手順**:
-  1. `vi.mock("electron")` で ipcMain をモック
-  2. `registerXxxHandlers()` を呼び出し
-  3. `ipcMain.handle.mock.calls` から対象チャネルのコールバックを取得
-  4. コールバックを直接呼び出してバリデーションロジックをテスト
+### 苦戦箇所: Phase 10 MINOR 指摘の non-null assertion 残存（P52）
 
-#### S3: `?? []` vs `Array.isArray` の防御力の差
-- **症状**: `profileHandlers.ts` で `identities ?? []` が使われていたが、`identities` が文字列やオブジェクト等の非配列値の場合に防御できない
-- **根本原因**: Nullish coalescing (`??`) は `null`/`undefined` のみ防御。P48 では全型に対する実行時検証が求められる
-- **解決策**: `Array.isArray(user.identities) ? user.identities : []` に統一
-- **再発条件**: 外部データ（IPC レスポンス、DB クエリ結果）から配列を取得する場合
-- **再利用手順**:
-  1. `grep -rn "?? \[\]" apps/desktop/src/` で全箇所を検出
-  2. 外部データ由来の箇所を `Array.isArray` に置換
-  3. 内部コード由来（確実に null/undefined のみ）は `?? []` を維持
+| 項目       | 内容                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 防御ガードを追加した同ファイル内の別箇所（L305-306）に `result.data!` という non-null assertion が残存していた。タスクスコープ内は P48 準拠で修正済みだったが、スコープ外コードに同パターンが残っていた |
+| 再発条件   | 防御ガード実装時に対象ファイル全体をスキャンせず、スコープ内のみ修正する場合                                                                                                                            |
+| 対処       | 対象ファイル全体を `!` でスキャンし、non-null assertion の残存箇所をリストアップ。スコープ内は修正、スコープ外は未タスク化した                                                                          |
+| 標準ルール | 防御ガード実装時は対象ファイル全体を `grep -n '!' ファイル名` でスキャンし、同パターンの残存を検出する                                                                                                  |
 
-#### S4: IPC契約ドリフト（仕様表の旧値残存）
-- **症状**: API仕様書は更新済みだが、実装変更後に戻り値型テーブルだけ旧値が残るドリフトが発生
-- **根本原因**: 「実装コード」と「仕様表」の両方を同時に検証する手順を固定していなかった
-- **解決策**: `api-ipc-system.md` の `apiKey:list` を `IPCResponse<ProviderListResult>` へ更新し、フィールド表 (`providers/registeredCount/totalCount`) を追加
-- **標準ルール**: IPC契約変更時は「型名 + フィールド表 + 完了タスク台帳」を同一コミット単位で更新する
+**関連パターン**: [06-known-pitfalls.md#P48](../../rules/06-known-pitfalls.md)（non-null assertion 禁止）
 
-#### S5: Phase 11 実画面証跡不足
-- **症状**: Phase 11 が自動テスト代替に寄り、実画面証跡が不足しやすい
-- **根本原因**: UI構造変更なしという前提で screenshot を省略する運用が残っていた
-- **解決策**: `capture-task-06-settings-apikey-contract-guard-phase11.mjs` を追加し、TC-11-01〜03 を取得して manual-test-result へ証跡リンクを記録
-- **標準ルール**: ユーザーが画面検証を要求した場合、`SCREENSHOT` を必須に切り替える
+### 苦戦箇所: CLI 環境でのスクリーンショット取得制約（P53）
 
-### 同種課題の5分解決カード
+| 項目       | 内容                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | Phase 11（手動テスト）でスクリーンショット取得が指示されたが、CLI 環境では Electron アプリの実画面キャプチャができない                                 |
+| 再発条件   | CLI 専用環境で Phase 11 を実行し、スクリーンショットが必要な場合                                                                                       |
+| 対処       | 自動テスト結果を「間接的な視覚検証」として代替記録した                                                                                                 |
+| 標準ルール | Phase 11 にスクリーンショットが必要な場合、Playwright の `page.screenshot()` または Electron の `webContents.capturePage()` をスクリプト化して取得する |
 
-| ステップ | 操作 | 目的 |
-|----------|------|------|
-| 1 | `grep -rn "result.data\." apps/desktop/src/renderer/` で Renderer 側の data アクセスを検索 | 未防御の shape アクセスを発見 |
-| 2 | `result?.data` + `Array.isArray(result.data.xxx)` の2段チェックを追加 | nullish + 非配列を同時に防御 |
-| 3 | type predicate フィルタで要素 shape を検証（`in` 演算子 + `typeof`） | malformed 要素を安全に除外 |
-| 4 | Main ハンドラ側にも `Array.isArray` バリデーションを追加 | 多層防御の実現 |
-| 5 | テスト追加（undefined/null/空配列/malformed/reject の5パターン） | 回帰防止 |
+### 同種課題の簡潔解決手順（4ステップ）
 
-### 検証ゲート
-- `cd apps/desktop && pnpm vitest run src/renderer/components/organisms/ApiKeysSection/__tests__/`
-- `cd apps/desktop && pnpm exec tsc --noEmit`
-
-### 同期先
-- `references/security-electron-ipc.md`: apiKeyAPI セクション追加
-- `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
-- `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
+1. Phase 1 で `git log` と現在のコードを確認し、既実装状態を判定する。差分ゼロなら Phase 4-5 を検証モードに転換する。
+2. Phase 12 の documentation-changelog は Step 完了後に「事後記録」する。サブエージェント完了後に `git diff --stat` で実変更を検証する。
+3. 防御ガード実装時は対象ファイル全体を `grep -n '!'` でスキャンし、non-null assertion の残存を検出する。スコープ外は未タスク化する。
+4. CLI 環境での Phase 11 は `page.screenshot()` / `webContents.capturePage()` のスクリプト化で対応する。

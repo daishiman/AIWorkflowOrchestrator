@@ -1,0 +1,7 @@
+{
+  "capturedAt": "2026-03-08T00:39:00+09:00",
+  "url": "http://localhost:3001/",
+  "testCase": "TC-RECHECK-01",
+  "output": "TC-RECHECK-01-backend-home.png",
+  "note": "画面検証再確認"
+}
