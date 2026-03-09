@@ -1534,7 +1534,7 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | TASK-10A-D   | agentSlice スキルライフサイクルアクション追加 | **完了**（2026-03-03） |
 | TASK-10A-E-C | import lifecycle の Store 駆動設計            | **完了**（2026-03-06） |
 | TASK-10A-F   | スキルライフサイクルUI Store移行（本タスク）  | **完了**（2026-03-07） |
-| TASK-10A-G   | 残存直接IPC呼び出し排除（後続）               | 後続                   |
+| TASK-10A-G   | スキルライフサイクル統合テスト強化             | **完了**（2026-03-09） |
 
 ### 統合検証結果
 

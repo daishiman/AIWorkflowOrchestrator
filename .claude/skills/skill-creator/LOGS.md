@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-09 - TASK-10A-G Phase 12 追補パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に 3層テストハードニング戦略、並列エージェント分割、coverage スコープ不一致パターンを追加
+  - 同ファイルに supporting artifact 実測値同期と open backlog の状態別 canonical path 切替ルールを追加
+  - `audit-unassigned-tasks --target-file` の completed workflow 対応を前提に、Phase 12 の未タスク監査手順を更新
+
+---
+
 ## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
 
 - **Agent**: skill-creator (update)

@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.12.0
-> **更新日**: 2026-03-08
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001
+> **バージョン**: 1.12.2
+> **更新日**: 2026-03-09
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001, TASK-10A-G
 
 ---
 
@@ -1090,10 +1090,72 @@ beforeEach(() => {
 
 ---
 
+## 17. スキルライフサイクル統合テストパターン（TASK-10A-G planning guide）
+
+`skill:create` 契約、ChatPanel 起点の UI 遷移、Store 駆動ライフサイクルを同時に守る統合テストを設計する場合の探索起点。
+
+### 最初に読む仕様
+
+| 観点 | 最初に読む | 理由 |
+| --- | --- | --- |
+| Main IPC 契約 | `api-ipc-agent.md` | `skill:create` の request / response / validation を確認する |
+| Renderer 契約 | `interfaces-agent-sdk-skill.md` | `SkillCreateWizard` / `ChatPanel` / preload shape を確認する |
+| Store 状態遷移 | `arch-state-management.md` | `useShallow` 条件と selector/action 境界を確認する |
+| 既存 UI 統合 | `architecture-implementation-patterns.md` | ChatPanel / forwardRef / 個別selector パターンを確認する |
+| テスト構成 | `testing-component-patterns.md` | happy-dom / electronAPI mock / Store mock パターンを確認する |
+| セキュリティ | `security-electron-ipc.md` | sender 検証と P42 バリデーション観点を確認する |
+| 品質・教訓 | `quality-requirements.md`, `lessons-learned.md` | カバレッジ基準と再発防止ルールを確認する |
+
+### 推奨する3層分割
+
+| レイヤー | 主対象 | 代表ファイル | 仕様の主な読み先 |
+| --- | --- | --- | --- |
+| Layer 1 | Main IPC 契約 | `src/main/ipc/__tests__/skillHandlers.create.test.ts` | `api-ipc-agent.md`, `security-electron-ipc.md` |
+| Layer 2 | Renderer 統合 | `src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx` | `interfaces-agent-sdk-skill.md`, `arch-state-management.md` |
+| Layer 3 | 既存導線回帰 | `src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | `architecture-implementation-patterns.md`, `lessons-learned.md` |
+
+### 固定済み前提
+
+| 依存元 | 固定済み観点 | TASK-10A-G で守る内容 |
+| --- | --- | --- |
+| TASK-10A-E | sender / P42 / エラーサニタイズ | Layer 1 の契約テストで再保証する |
+| TASK-10A-F | RT-01〜RT-07 回帰観点 | Layer 2 の状態遷移テストへ落とし込む |
+| TASK-10A-B/C/D/F | direct `window.electronAPI.skill.*` 排除 | Renderer では store action 境界を守る |
+
+### Layer 2 方針
+
+- `testing-component-patterns.md` セクション16の real composition ハーネスを優先する
+- Renderer から direct `window.electronAPI.skill.*` を期待値にしない
+- `store action` 呼び出しと `state transition` を主アサーションにする
+- `window.electronAPI` は store action の下位依存としてのみ差し替える
+
+### 既存 seed テスト
+
+| ファイル | 用途 |
+| --- | --- |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | `useCreateSkill` 境界の既存保証 |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx` | analyze / improve / autoImprove の既存保証 |
+| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | store 下位の electronAPI 契約確認 |
+
+### 検索キーワードの推奨セット
+
+- `skill:create`
+- `ChatPanel`
+- `SkillCreateWizard`
+- `useShallow`
+- `testing-component-patterns`
+- `task-workflow-rules`
+
+複合語で見つからない場合は、上記を2語以下に分割して `search-spec.js` を順番に実行する。
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.12.2  | 2026-03-09 | TASK-10A-G planning guide を拡張し、依存タスクからの固定済み前提、real composition ハーネス方針、既存 seed テストを追記 |
+| 1.12.1  | 2026-03-09 | TASK-10A-G planning guide を追加し、`skill:create` + ChatPanel + Store 駆動ライフサイクル統合テストの探索起点と3層分割を明文化 |
 | 1.12.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: S-INT-01 View レベル統合テストハーネスパターンを追加（real composition、vi.mock hoisting、モジュールスコープ変数、M-01 網羅的デフォルト値） |
 | 1.11.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合ハーネスパターンを追加（store+electronAPI 一本化、HarnessOptions、非同期安定化ルール） |
 | 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |
