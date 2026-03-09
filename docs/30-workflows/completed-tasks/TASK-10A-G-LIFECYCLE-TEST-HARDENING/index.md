@@ -7,7 +7,7 @@
 | タスクID   | TASK-10A-G                                                         |
 | 機能名     | LifecycleTestHardening                                             |
 | 作成日     | 2026-03-09                                                         |
-| ステータス | Phase 1-12 完了 / Phase 13 保留                                    |
+| ステータス | Phase 1-13 完了                                                    |
 | 総Phase数  | 13                                                                 |
 | 依存タスク | TASK-10A-E（IPC契約定義）, TASK-10A-F（Store駆動ライフサイクルUI） |
 | 優先度     | high                                                               |
@@ -38,7 +38,7 @@ TASK-10A-E と TASK-10A-F で定義された契約・状態遷移を、Main IPC�
 | 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | PASS       |
 | 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
 | 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
-| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 保留       |
+| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 完了       |
 
 ---
 
