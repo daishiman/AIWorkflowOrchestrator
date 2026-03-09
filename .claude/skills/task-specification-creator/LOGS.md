@@ -10,6 +10,30 @@
 
 ---
 
+## 2026-03-09 - UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001 テンプレート準拠監査ルールを追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned task formalization）
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し `currentViolations=0` を確認する」ルールを追加
+  - 配置済みとテンプレート準拠を別判定にする運用を明文化
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md` を9セクションテンプレート準拠へ再構成
+
+---
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - `arch-state-management.md` に executeSkill 並行実行ガードパターンと二重防御アーキテクチャを追記
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+  - 未タスク2件: UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001, UT-FIX-CHATPANEL-SELECTOR-MIGRATION-001
+
+---
+
 ## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所記録
 
 - **Agent**: task-specification-creator
@@ -5666,3 +5690,14 @@ if (artifactPath) {
   - SubAgent-F: インデックス再生成（topic-map.md/keywords.json）
 
 ---
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
+- **Notes**:
+  - `validate-phase-output` の誤用例 `--phase` を `assets/main-task-template.md` / `assets/common-footer-template.md` / `agents/output-phase-files.md` から除去
+  - `references/phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加
+  - workflow12 の Phase 11 screenshot 証跡と Phase 12 実装ガイドを validator 準拠へ再同期
+  - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新

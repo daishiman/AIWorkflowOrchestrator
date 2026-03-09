@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.13.1    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補: `ChatPanel` の現行実装が `useIsSkillExecuting()` 個別セレクタへ移行済みであることを仕様へ是正。あわせて execute 側ガード実装時の苦戦箇所（CLI drift / Router 二重化 / workflow 本文 stale）と 5分解決カードへの導線を追加し、残未タスクは `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` の 1 件へ整理 |
+| v3.13.0    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 反映: `executeSkill` に `isExecuting` 同期ガード（FR-01）を追加。`get().isExecuting` チェックを async 操作前に配置し、microtask 境界を跨がない同期的ガードで二重実行を防止。Store層ガード + 既存UIガード（ExecuteButton null render / AgentExecutionView disabled / ChatPanel toggle disabled）の二重防御アーキテクチャを確立。テスト9件（T-01〜T-05, T-09〜T-12）全PASS、Line Coverage 95.37% |
 | v3.12.1    | 2026-03-09 | TASK-10A-F Phase 12 再同期を追補。current workflow に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再配置した実装内容と、P53 placeholder 除去・implementation-guide literal 見出し・unassigned legacy baseline 分離報告の苦戦箇所を追加 |
 | v3.12.0    | 2026-03-08 | TASK-043D テスト品質ゲート設計反映: agentSlice責務境界拡張テスト8ファイル（boundary/combination/edge-cases/error-cases/extension/import-lifecycle/p31-regression/selectors）追加。customStorage 3段ガードパターンのテスト新規作成（184行）。navigationSlice に viewHistory 破損時の iterable hardening テスト追加。SkillAnalysisView/SkillCreateWizard の Store統合テスト追加。store/index.ts に新規セレクタエクスポート63行追加 |
 | v3.11.0    | 2026-03-08 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 反映: `customStorage` の getItem/setItem に iterable guard（DD-01/DD-02）を追加。`expandedFolders` の `Array.isArray` + `typeof === "string"` フィルタリング、非配列入力時の `Set<string>()` フォールバック、`setItem` での `Set`/`Array` 二重対応を persist 復旧契約として明文化。`useCanGoBack` に `Array.isArray(state.viewHistory)` ガードを追加。branch横断 Phase 12 再監査で workflow 10/11/12 の Phase 12 不足を検出し未タスク3件へ分離 |
@@ -1002,6 +1004,82 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 | フィルタリング | _handleStreamMessage等でexecutionIdを検証 |
 | 目的 | ストリームイベント到着時の状態不整合を防止 |
 
+### 並行実行ガードパターン（Concurrency Guard）（TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001で追加）
+
+`executeSkill` アクション内で `get().isExecuting` による同期的チェックを行い、実行中の再呼び出しを早期リターンでブロックする。
+
+#### 設計原則
+
+| 項目 | 内容 |
+|------|------|
+| ガード方式 | 同期的 `get().isExecuting` チェック（async 操作前に配置） |
+| 配置位置 | `executeSkill` 関数冒頭、`selectedSkillName` チェック直後 |
+| 防御層 | Store層ガード（FR-01）+ UIガード面3箇所の二重防御 |
+| 状態復元 | `_handleComplete` / `_handleError` で `isExecuting: false` に復元 |
+| `get()` の安全性 | Zustand `get()` は React レンダーサイクル非依存の同期取得のため、ミリ秒単位の連打でも確実にガード |
+| P31対策 | UI層では個別セレクタ `useIsSkillExecuting()` を使用（ChatPanel も移行済み） |
+| Phase 11証跡 | `TC-11-01..03` の screenshot で AgentView / AgentExecutionView / ChatPanel の実行中状態を確認 |
+
+#### 実装コード
+
+```typescript
+executeSkill: async (prompt) => {
+  const { selectedSkillName, isExecuting } = get();
+  if (!selectedSkillName) return;
+
+  // 並行実行ガード: 既に実行中の場合は即座に拒否（FR-01）
+  if (isExecuting) return;
+
+  // ここから先は isExecuting = true に設定してから async 操作
+  set({ isExecuting: true, skillExecutionStatus: "running", ... });
+  // ...
+};
+```
+
+#### UIガード面（既存・回帰確認済み）
+
+| コンポーネント | ファイル | ガード方式 | P31安全性 |
+|----------------|----------|------------|-----------|
+| ExecuteButton | `components/organisms/AgentView/ExecuteButton.tsx` | `if (isExecuting) return null` — null render | Props経由（安全） |
+| AgentExecutionView | `views/AgentExecutionView/AgentExecutionView.tsx` | `disabled={isExecuting}` on AgentMessageInput | ローカル派生（安全） |
+| ChatPanel | `components/chat/ChatPanel.tsx` | `useIsSkillExecuting()` で toggle disabled を制御 | 個別セレクタ（P31安全） |
+
+#### ガード保証テスト
+
+| テストID | 検証内容 | AC |
+|----------|----------|-----|
+| T-01 | isExecuting=false で正常実行 | AC-01 |
+| T-02 | isExecuting=true で即座に return | AC-01 |
+| T-03 | ガード拒否時 streamingMessages 不変 | AC-02 |
+| T-04 | ガード拒否時 executionId 不変 | AC-03 |
+| T-05 | 連続2回呼び出しで2回目がガード | AC-01 |
+| T-09 | エラー後 isExecuting=false に復元 | - |
+| T-10 | 完了後に再実行可能 | - |
+| T-11 | selectedSkillName 未設定で早期 return | - |
+| T-12 | 3回連続で2回目・3回目がガード | AC-01 |
+
+**関連未タスク**:
+- UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001: `abortExecution` にも同様のガードが必要な可能性（`docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md`）
+- UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001: `createStore` / `mockElectronAPI` / `flushMicrotasks` の共通ヘルパー抽出（`docs/30-workflows/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md`）
+- UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001: agentSlice 既存テスト13ファイルの環境依存エラー修復（`docs/30-workflows/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md`）
+- UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001: Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加（`docs/30-workflows/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`）
+
+#### 実装時の苦戦箇所と短縮手順
+
+| 苦戦箇所 | 再発条件 | 標準対処 |
+|----------|----------|----------|
+| `validate-phase-output --phase` の誤案内 | template / system spec / workflow 本文の例が実スクリプトより古い | `validate-phase-output.js <workflow-dir>` を正本とし、関連 docs を同一ターンで修正する |
+| BrowserRouter 配下の harness に `MemoryRouter` を重ねる | screenshot review 用 route を急いで作るとき | 既存 Router の descendant route として描画し、harness 内で Router を再生成しない |
+| Phase 11/12 成果物だけ更新し workflow 本文や index を置き去りにする | validator PASS 後に文書同期を後回しにするとき | `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を同ターンで更新する |
+
+#### 同種課題の5分解決カード
+
+1. Store の async action 冒頭に同期 guard を置く。
+2. UI 側は既存 selector を流用し、Store guard を最終防衛線にする。
+3. review harness は既存 Router 配下で描画し、二重 Router を避ける。
+4. `validate-phase-output` / `validate-phase12-implementation-guide` / `verify-all-specs` を連続実行する。
+5. 成果物、workflow 本文、system spec、未タスク台帳を同一ターンで同期する。
+
 ---
 
 <details>
@@ -1057,7 +1135,7 @@ AIによるコード編集機能の状態管理Slice。ファイルコンテキ�
 | `importSkill`            | `(skillName: string) => Promise<void>`            | スキルインポート               |
 | `removeSkill`            | `(skillName: string) => Promise<void>`            | スキル削除                     |
 | `selectSkill`            | `(skillName: string \| null) => void`             | スキル選択                     |
-| `executeSkill`           | `(prompt: string) => Promise<void>`               | スキル実行                     |
+| `executeSkill`           | `(prompt: string) => Promise<void>`               | スキル実行（並行実行ガード付き: `isExecuting` 同期チェック、FR-01） |
 | `abortExecution`         | `() => void`                                      | 実行中断                       |
 | `respondToPermission`    | `(approved: boolean, remember?: boolean) => void` | 権限リクエスト応答             |
 | `clearError`             | `() => void`                                      | エラークリア                   |

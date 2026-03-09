@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-09T03:05:04.087Z",
-  "totalKeywords": 1531,
+  "generated": "2026-03-09T03:44:50.858Z",
+  "totalKeywords": 1532,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4103,6 +4103,9 @@
       "lessons-learned.md"
     ],
     "検証実行": [
+      "lessons-learned.md"
+    ],
+    "CONCURRENCY": [
       "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [

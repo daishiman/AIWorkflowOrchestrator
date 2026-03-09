@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-09 | 1.29.55 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補。未タスク指示書の9セクション逸脱、`validate-phase-output --phase` ドキュメント drift、BrowserRouter 配下の screenshot harness での Router 二重化を同一系統の苦戦箇所として整理し、4ステップ解決手順を追加 |
+| 2026-03-09 | 1.29.54 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の教訓を追加。executeSkill 並行実行ガードの実装で遭遇した3つの苦戦箇所（テスト実行ディレクトリ依存、flushMicrotasks タイミング制御、createStore パターンでの set/get 再現）と、5分解決カードを追記 |
 | 2026-03-09 | 1.29.53 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
 | 2026-03-08 | 1.29.52 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 の実装教訓を追加。`safeRegister` パターンと戻り値必要ハンドラの使い分け、`track()` クロージャによる成功カウント管理、`sanitizeRegistrationErrorMessage` のパスマスク、既存テスト失敗との分離手法を苦戦箇所として整理し、5ステップの再利用手順を標準化 |
 | 2026-03-08 | 1.29.51 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査の教訓を追加。Phase 1 正本と outputs の FR ドリフト、Phase 11 の TC/証跡不足、`validate-phase-output` の引数誤用、`artifacts.json` / `index.md` stale を同時是正し、4ステップの再監査手順を標準化 |
@@ -6123,3 +6125,111 @@ async function safeInvokeUnwrap<T>(
 - P42: 文字列引数の .trim() バリデーション漏れ（06-known-pitfalls.md）
 - P48: useShallow未適用による派生セレクタ無限ループ（06-known-pitfalls.md）
 - P50: 既実装防御の発見による Phase 転換（06-known-pitfalls.md）
+
+---
+
+## TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+
+### 実装内容
+
+- `agentSlice.executeSkill` に `if (isExecuting) return;` ガードを追加（2行の変更）
+- Store層ガード + 既存UIガード面3箇所の二重防御アーキテクチャ
+- テスト9件（T-01〜T-05, T-09〜T-12）作成、全PASS
+
+### 苦戦箇所
+
+#### 1. テスト実行ディレクトリ依存（P40再発）
+
+- **症状**: プロジェクトルートから `pnpm vitest run --coverage` を実行すると `ReferenceError: window is not defined` で全テスト失敗
+- **原因**: `apps/desktop/vitest.config.ts` の `environment: "happy-dom"` 設定がカレントディレクトリの config を優先読み込みするため適用されない
+- **解決**: `cd apps/desktop && pnpm vitest run` で対象パッケージのディレクトリから実行
+- **再発条件**: モノレポ環境でサブエージェントにテスト実行を委譲する際に発生しやすい
+
+#### 2. flushMicrotasks によるタイミング制御
+
+- **症状**: `executeSkill` 内の `await preflightSkillExecutionAuth()` を通過させないと `isExecuting = true` に到達しない
+- **原因**: `executeSkill` は async 関数で、preflight auth の await 前に `isExecuting` を set する前にガードチェックが必要
+- **解決**: `flushMicrotasks()` ヘルパー（`setTimeout(resolve, 0)`）で microtask を1つ進め、preflight 通過後の `set({ isExecuting: true })` に到達させてからガードをテスト
+- **再発条件**: Zustand Store の async アクション内で複数の await がある場合のテスト設計時
+
+```typescript
+// flushMicrotasks パターン
+function flushMicrotasks(): Promise<void> {
+  return new Promise((resolve) => { setTimeout(resolve, 0); });
+}
+
+// 使用例: preflight を通過させてから isExecuting をテスト
+const firstCall = getState().executeSkill("first");
+await flushMicrotasks(); // preflight 通過
+expect(getState().isExecuting).toBe(true); // ガード有効
+```
+
+#### 3. createStore パターンでの Zustand set/get 再現
+
+- **症状**: `createAgentSlice(set, get, store)` でテスト用 Store を作成する際、`set` の型と動作の再現が難しい
+- **原因**: Zustand の `set` は関数とオブジェクトの両方を受け付け、且つ shallow merge する。テスト用の `set` 実装でこの動作を正確に再現する必要がある
+- **解決**: `Object.assign(state, partial)` + `store = { ...store, ...state }` で shallow merge を再現
+
+```typescript
+function createStore(): { getState: () => AgentSlice } {
+  let store = {} as AgentSlice;
+  const state = {} as Partial<AgentSlice>;
+  const set = (fn: ((current: AgentSlice) => Partial<AgentSlice>) | Partial<AgentSlice>) => {
+    const partial = typeof fn === "function" ? fn(store) : fn;
+    Object.assign(state, partial);
+    store = { ...store, ...state } as AgentSlice;
+  };
+  const get = () => store;
+  store = createAgentSlice(set as never, get as never, {} as never);
+  return { getState: () => store };
+}
+```
+
+#### 4. 既存テストファイルの環境依存エラー
+
+- **症状**: agentSlice の18テストファイル中13ファイルが `window is not defined` または `Failed to load @repo/shared/types/auth-mode` で失敗
+- **原因**: 既存テストの一部が happy-dom 環境やモノレポの shared パッケージビルドに依存
+- **解決**: 新規テストは `createStore()` + `mockElectronAPI()` パターンで環境依存を最小化。既存テスト失敗は本タスクのスコープ外として切り分け
+
+### 同種課題の5分解決カード
+
+| ステップ | アクション |
+|----------|-----------|
+| 1 | `agentSlice.ts` の対象 async アクション冒頭で `get().isExecuting` チェックを追加 |
+| 2 | `_handleComplete` / `_handleError` で `isExecuting: false` 復元を確認 |
+| 3 | テストは `createStore()` + `mockElectronAPI()` + `flushMicrotasks()` パターンで作成 |
+| 4 | `cd apps/desktop && pnpm vitest run` で実行（P40準拠） |
+| 5 | UIガード面3箇所（ExecuteButton / AgentExecutionView / ChatPanel）の回帰確認 |
+
+### 検証ゲート
+
+- [ ] T-01〜T-12 全PASS
+- [ ] Line Coverage ≥ 80%
+- [ ] UIガード面3箇所の `isExecuting` 参照が props または個別セレクタHook で安定している
+
+### 再監査追補
+
+#### 5. 未タスク指示書の9セクション逸脱
+
+- **症状**: `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` を作成した時点では、メタ情報と短い要約だけがあり、`Why/What/How/実行手順/検証方法` が欠落していた
+- **原因**: `unassigned-task-detection.md` の3ステップ完了を、指示書品質そのものと混同した
+- **解決**: `unassigned-task-template.md` を正本として 9セクションへ書き直し、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で `currentViolations=0` を確認する
+
+#### 6. `validate-phase-output --phase` のドキュメント drift
+
+- **症状**: workflow 本文や template は `--phase 12` 付きの例を残していたが、実スクリプトは workflow path の位置引数のみを受け付ける
+- **原因**: validator 実装変更後に template / system spec / workflow 本文が同時更新されていなかった
+- **解決**: `validate-phase-output.js <workflow-dir>` を正本コマンドとして統一し、skill / system spec / outputs を同一ターンで修正する
+
+#### 7. BrowserRouter 配下の screenshot harness で Router を二重化
+
+- **症状**: review harness 内に `MemoryRouter` を重ねたため、対象 view が描画前に落ちて screenshot 取得が止まった
+- **原因**: 「isolated harness を作る」意図が「Router を再定義する」に置き換わった
+- **解決**: 既存 Router の descendant route として harness を追加し、pageerror ログで route 崩れを早期検知する
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. current workflow の成果物実体と未タスク指示書を確認し、配置済みとテンプレート準拠を分けて判定する。
+2. `validate-phase-output.js <workflow-dir>`、`validate-phase12-implementation-guide.js --workflow <workflow-dir>`、`audit-unassigned-tasks --diff-from HEAD --target-file <file>` を実行する。
+3. review harness を使う場合は既存 Router 配下で描画し、画面証跡を撮ってから system spec を更新する。
+4. system spec、skill docs、workflow 本文、未タスク台帳を同一ターンで同期する。

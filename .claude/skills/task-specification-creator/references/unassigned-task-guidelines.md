@@ -129,6 +129,10 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 > 重要: branch横断再監査などで workflow 固有の compliance 未タスクを起票した後、対象 workflow 側で validator PASS まで解消した場合は、**同じターンで**未タスク指示書のステータスを `再評価クローズ` に更新し、`task-workflow.md` の残課題テーブルも完了表記へ同期すること。
 
+> 追加ルール: 指示書を新規作成・全面更新した直後に、対象ファイル単体で  
+> `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、  
+> `currentViolations.total = 0` を確認すること。配置済みでもテンプレート逸脱なら未完了扱いとする。
+
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。
 
 ---

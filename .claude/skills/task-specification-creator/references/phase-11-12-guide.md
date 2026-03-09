@@ -65,6 +65,7 @@
 - App shell から目的画面へ安定遷移できない、または deep-link がない場合も dedicated harness を優先してよい。
 - ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、entry HTML / 起動スクリプトのパス、再利用した本番コンポーネント、差し替えた mock 境界を `manual-test-result.md` に明記する。
 - App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
+- 既存アプリが `BrowserRouter` 配下で動いている場合、harness 内で `MemoryRouter` / `BrowserRouter` を重ねない。Router が必要なら既存 Router の descendant route として描画するか、route param 依存を mock state で外す。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
