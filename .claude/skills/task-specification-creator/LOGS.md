@@ -5701,3 +5701,16 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加
   - workflow12 の Phase 11 screenshot 証跡と Phase 12 実装ガイドを validator 準拠へ再同期
   - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新
+
+---
+
+## 2026-03-09 - TASK-10A-G スキルライフサイクル統合テスト強化
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + completed 移管）
+- **Result**: success
+- **Notes**:
+  - Layer 1/2/3 の 3 ファイル 55 tests（25/14/16）と representative screenshots を Phase 11-12 成果物へ同期
+  - `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を集約
+  - workflow を `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ移管し、関連 backlog も同 workflow 配下 `unassigned-task/` へ移した
+  - `audit-unassigned-tasks.js` を completed workflow 配下の `--target-file` 監査へ対応

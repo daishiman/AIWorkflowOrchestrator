@@ -18,6 +18,7 @@
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
+| バグ修正（スキル実行並行ガード） | arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md | ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
@@ -327,6 +328,16 @@
 | interfaces-auth.md | error code 型定義（PROFILE_ERROR_CODES / AVATAR_ERROR_CODES） | 型定義確認時 |
 | ipc-contract-checklist.md | IPC 契約整合チェック | 新規ハンドラ追加時 |
 
+### TASK-10A-F: Store駆動スキルライフサイクルUI統合
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| arch-state-management.md | Case B方式の状態管理設計（Store駆動UI） | Store設計・selector migration時 |
+| architecture-implementation-patterns.md | S19: 直接IPC→Store移行パターン | renderer direct IPC removal 実装時 |
+| lessons-learned.md | Store mock統一パターン等の苦戦箇所 | テスト設計・問題解決時 |
+| task-workflow.md | TASK-10A-F 完了記録・P50検証モード適用事例 | ワークフロー確認時 |
+| ui-ux-feature-components.md | SkillAnalysisView / SkillCreateWizard 仕様 | UI実装・スコープ確認時 |
+
 ### 検索クエリ例
 
 ```bash
@@ -346,6 +357,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-09 | 1.11.0     | TASK-10A-F: タスク別リソースマップに Store駆動スキルライフサイクルUI統合の導線を追加 |
 | 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
 | 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |
 | 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |

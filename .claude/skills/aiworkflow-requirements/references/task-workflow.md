@@ -132,6 +132,46 @@
 
 ## 完了タスク
 
+### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-09）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-10A-G |
+| ステータス | **完了（Phase 1-12 出力 + テスト55件 + 画面証跡 + 仕様同期）** |
+| 完了日 | 2026-03-09 |
+| 対象 | `skillHandlers.create.test.ts` / `SkillLifecycle.integration.test.tsx` / `ChatPanel.skill-management.test.tsx` / Phase 11-12 再監査 |
+| 成果物 | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/outputs/` |
+
+#### 実施内容
+
+- Layer 1 `skill:create` IPC 契約テスト 25件、Layer 2 Store 統合 14件、Layer 3 ChatPanel 回帰 16件を整備し、3ファイル合計 55 tests を PASS 化
+- `skill:create` handler-scope coverage を Line 96.9% / Branch 88.9% / Function 100% で確認
+- Phase 11 で representative screenshots 14件を取得し、SkillCreateWizard / SkillAnalysisView / SkillManagementPanel を目視検証
+- Phase 12 で `task-workflow.md` / `testing-component-patterns.md` / `lessons-learned.md` と LOGS/SKILL 4ファイルを同期
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+- `pnpm vitest run --coverage` をそのまま使うと global threshold に衝突し、handler-scope coverage の意図とずれる
+- Phase 12 で `spec-update-summary.md` に「実行予定」表現が残りやすい
+- screenshot harness を並列起動すると固定ポート `5173` が競合する
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillHandlers.create.test.ts src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | PASS（3 files / 55 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（211/211 existing） |
+
+#### Phase 12で継続確認した関連 backlog
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
+
+- Phase 12 追補: `test-documentation.md` を 55 tests 表記へ補正し、UT-10A-G open backlog を Phase 12 再監査時の正規化後、完了移管に合わせて workflow 配下 `unassigned-task/` へ同梱
+
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
 | 項目 | 値 |
@@ -409,7 +449,7 @@
 
 | タスクID | 概要 | 優先度 | 参照 |
 | --- | --- | --- | --- |
-| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
+| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
 | UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` |
 | UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION | improvementResult Store統合（条件付き） | 低 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md` |
 | UT-10A-F-SCREENSHOT-HARNESS-HARDENING | Screenshot Harness の data-testid ベース待機条件標準化 | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md` |
@@ -1236,7 +1276,7 @@
 
 1. `verify-all-specs --workflow` と `validate-phase-output` で Phase 12 の前提整合を先に固定する。
 2. `task-workflow.md` に実装要点・未タスク・検証証跡を先に記録し、参照IDを固定する。
-3. `docs/30-workflows/unassigned-task/` へ未タスク指示書を配置し、`audit-unassigned-tasks --target-file` で各ファイル形式を確認する。
+3. Phase 12 中は `docs/30-workflows/unassigned-task/`、workflow 完了後は `docs/30-workflows/completed-tasks/<task>/unassigned-task/` へ未タスク指示書を配置し、`audit-unassigned-tasks --target-file` で各ファイル形式を確認する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD` を実行し、`currentViolations=0` を合否基準にする。
 5. 同一ターンで `lessons-learned.md` に苦戦箇所を転記し、再発条件と標準ルールをペアで残す。
 
@@ -3099,8 +3139,8 @@
 
 | 観点         | 固定ルール                                                                                                                                    |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 配置判定     | 未実施UTは `docs/30-workflows/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ配置する                       |
-| 監査適用境界 | `audit-unassigned-tasks --target-file` は未実施UT（`unassigned-task` 系）のみ適用し、完了済み指示書（`completed-tasks/*.md`）へは適用しない   |
+| 配置判定     | Phase 12 中の未実施UTは `docs/30-workflows/unassigned-task/`、workflow 完了後の継続UTは `docs/30-workflows/completed-tasks/<task>/unassigned-task/` へ配置する |
+| 監査適用境界 | `audit-unassigned-tasks --target-file` は `unassigned-task` 系に適用する。root `unassigned-task/` と `completed-tasks/<task>/unassigned-task/` の両方を監査対象とする |
 | 画面証跡     | `TC-11-01`〜`TC-11-05` を同一ターンで再取得し、`validate-phase11-screenshot-coverage` 5/5 PASS を確認する                                     |
 | 合否判定     | `verify-unassigned-links` は参照整合、`audit --diff-from HEAD` は `currentViolations` を合否・`baselineViolations` を監視値として分離記録する |
 

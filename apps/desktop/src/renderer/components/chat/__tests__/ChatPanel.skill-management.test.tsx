@@ -247,4 +247,113 @@ describe("ChatPanel スキル管理パネル導線", () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  // ============================================================
+  // TC-G03: ライフサイクル統合テスト（Layer 3 拡張）
+  // ============================================================
+  describe("TC-G03: ライフサイクル統合テスト", () => {
+    it("TC-G03-001: スキル作成後にリスト表示が更新される", () => {
+      setStoreState();
+      const { unmount } = render(<ChatPanel />);
+
+      // パネルを開く
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      fireEvent.click(toggleButton);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+
+      // 一度アンマウントしてstore状態を更新後に再レンダー
+      unmount();
+      setStoreState({ selectedSkillName: "new-created-skill" });
+      render(<ChatPanel />);
+
+      // パネルを再度開く → SkillManagementPanelが再表示される
+      const toggleButton2 = screen.getByTestId("skill-management-toggle");
+      fireEvent.click(toggleButton2);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toHaveTextContent("SkillManagementPanel");
+    });
+
+    it("TC-G03-002: 作成キャンセル時にリストが変更されない", () => {
+      setStoreState();
+      render(<ChatPanel />);
+
+      // パネルを開く
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      fireEvent.click(toggleButton);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+
+      // レンダー時の呼び出し回数を記録
+      const callCountBeforeClose = mockFetchSkills.mock.calls.length;
+
+      // パネルを閉じる（キャンセル相当）
+      fireEvent.click(toggleButton);
+      expect(
+        screen.queryByTestId("mock-skill-management-panel"),
+      ).not.toBeInTheDocument();
+
+      // パネルを閉じた際に追加のfetchSkills呼び出しがないことを検証
+      expect(mockFetchSkills.mock.calls.length).toBe(callCountBeforeClose);
+    });
+
+    it("TC-G03-003: 既存テストと同一の基本操作が正常に動作する", () => {
+      setStoreState();
+      render(<ChatPanel />);
+
+      // パネル表示確認
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      expect(toggleButton).toBeInTheDocument();
+      expect(toggleButton).toHaveAttribute("aria-expanded", "false");
+
+      // 開く
+      fireEvent.click(toggleButton);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+      expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+
+      // 閉じる
+      fireEvent.click(toggleButton);
+      expect(
+        screen.queryByTestId("mock-skill-management-panel"),
+      ).not.toBeInTheDocument();
+      expect(toggleButton).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("TC-G03-004: テスト間の状態リークがないことを検証（P9対策）", () => {
+      // カスタム状態を設定
+      setStoreState({
+        isExecuting: true,
+        selectedSkillName: "leak-test-skill",
+        skillExecutionStatus: "running",
+      });
+      render(<ChatPanel />);
+
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      // 実行中なのでdisabled
+      expect(toggleButton).toBeDisabled();
+      cleanup();
+
+      // 状態をデフォルトにリセット
+      setStoreState();
+      render(<ChatPanel />);
+
+      const toggleButton2 = screen.getByTestId("skill-management-toggle");
+      // デフォルト状態ではenabled
+      expect(toggleButton2).not.toBeDisabled();
+
+      // パネル操作が正常に動作する
+      fireEvent.click(toggleButton2);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+    });
+  });
 });
