@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-09 | 1.29.57 | TASK-10A-G task-045 苦戦箇所に個別再利用手順を追補。screenshot 再実行コマンド（4ステップ）、open backlog 旧テンプレート監査（3ステップ）、`audit --diff-from HEAD` / `--target-file` 役割分離（3ステップ）の具体的手順を各苦戦箇所へ直接追記 |
 | 2026-03-09 | 1.29.56 | TASK-10A-G の教訓を追加。テスト専用タスクの Phase 4/5 境界曖昧さ、巨大ファイルのカバレッジ計測誤解、3層テスト構成の Layer 間モック整合性、並列エージェントの Phase 12 分割戦略、`--sequence.shuffle` 検証、supporting artifact / open backlog 配置ドリフトを追記 |
 | 2026-03-09 | 1.29.55 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補。未タスク指示書の9セクション逸脱、`validate-phase-output --phase` ドキュメント drift、BrowserRouter 配下の screenshot harness での Router 二重化を同一系統の苦戦箇所として整理し、4ステップ解決手順を追加 |
 | 2026-03-09 | 1.29.54 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の教訓を追加。executeSkill 並行実行ガードの実装で遭遇した3つの苦戦箇所（テスト実行ディレクトリ依存、flushMicrotasks タイミング制御、createStore パターンでの set/get 再現）と、5分解決カードを追記 |
@@ -6368,3 +6369,46 @@ function createStore(): { getState: () => AgentSlice } {
 | feature coverage の scope 誤読 | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
 | supporting artifact の件数ドリフト | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` |
 | open backlog の canonical path ドリフト | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` と `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/<task>/unassigned-task/<task>.md` |
+
+---
+
+## TASK-10A-G task-045 再確認追補
+
+### 実装内容
+
+- `apps/desktop/package.json` に `screenshot:task-045-lifecycle-test-hardening` を追加し、Phase 11 screenshot を task 単位で再取得できるようにした
+- `outputs/phase-11/screenshots/phase11-capture-metadata.json` を証跡化し、capture 時刻・route・page error を workflow 成果物へ固定した
+- 継続利用していた open backlog `task-10a-g-skilleditor-fileops-store-migration.md` を、`docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/` 配下で 9 セクション + メタ情報1セクション形式へ再整形した
+
+### 苦戦箇所
+
+#### 1. screenshot 実体はあるのに task 単位の再実行経路が無い
+
+- **症状**: 既存画像は残っているが、再監査のたびに component 単位 script を手作業で組み合わせる必要があった
+- **原因**: 「証跡ファイルの存在」を完了条件にしており、「同じ証跡を当日再取得できること」を仕様化していなかった
+- **解決**: `screenshot:<workflow>` を package script として公開し、Phase 11 / Phase 12 / system spec に同じコマンドを固定した
+- **再発条件**: tests-hardening や spec-only タスクで UI 変更が少ないことを理由に screenshot 運用を後回しにする場合
+- **再利用手順**: (1) `scripts/capture-task-xxx-phase11.mjs` を作成 (2) `package.json` に `screenshot:task-xxx` を追加 (3) `phase-11-manual-test.md` に同コマンドを記載 (4) `validate-phase11-screenshot-coverage` で検証
+
+#### 2. 継続利用 open backlog の指示書が旧テンプレートのまま残る
+
+- **症状**: `task-workflow.md` 上は backlog 継続管理に見えるが、実ファイルは `## メタ情報` 重複と 9 セクション欠落を含み、そのままでは次回着手の仕様として使いにくかった
+- **原因**: Phase 12 Task 4 で「重複起票しないこと」と「再利用可能な品質に保つこと」を分離していなかった
+- **解決**: 既存 file を task-spec 形式へ全面更新し、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で `currentViolations=0` を確認した
+- **再発条件**: open backlog を新規作成しないケースで、単に「既存あり」とだけ記録して終了する場合
+- **再利用手順**: (1) `audit --target-file <path>` で `currentViolations=0` を確認 (2) 不足セクションがあれば補完 (3) 補完後に再監査で PASS を確認
+
+#### 3. `audit --diff-from HEAD` PASS だけでは対象 backlog の単体品質が確定しない
+
+- **症状**: branch 全体の `currentViolations=0` を見て安心すると、継続利用している backlog 個別のフォーマット崩れを見落としやすい
+- **原因**: current/baseline の二層判定と、`--target-file` による単体確認の目的が混ざっていた
+- **解決**: branch 全体監査と target-file 監査を分離し、報告にも両方を明記する
+- **再発条件**: 未タスク新規作成がない Phase 12 で、既存 open backlog を参照だけして終了する場合
+- **再利用手順**: (1) `--diff-from HEAD` で今回追加分の violations=0 を確認 (2) `--target-file` で継続利用ファイルの violations=0 を確認 (3) baseline violations は別管理として記録のみ
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. UI を含む再監査では screenshot ファイルだけでなく task 単位の再実行コマンド有無も確認する。
+2. 継続利用する open backlog がある場合は、配置確認に加えて `audit-unassigned-tasks --target-file` で単体合格を確認する。
+3. `task-workflow.md` と `lessons-learned.md` に実装内容と苦戦箇所を同一ターンで反映する。
+4. `quick_validate`、`verify-unassigned-links`、`audit --diff-from HEAD`、target-file 監査をまとめて実行し、Phase 12 出力へ結果を固定する。

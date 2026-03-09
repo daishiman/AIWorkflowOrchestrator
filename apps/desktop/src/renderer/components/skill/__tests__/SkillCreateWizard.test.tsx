@@ -350,6 +350,93 @@ describe("SkillCreateWizard", () => {
   });
 
   // ============================================================
+  // RT-05: ウィザード再マウント時の状態初期化
+  // ============================================================
+  describe("ウィザード再マウント時の状態初期化", () => {
+    it("ウィザードを閉じて再マウントすると Step 1 に戻り description が空になる", async () => {
+      const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1: 説明入力して Step 2 へ進む
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "再マウントテスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      expect(screen.getByText("タスク生成")).toBeInTheDocument();
+
+      // アンマウント（ウィザードを閉じる操作に相当）
+      unmount();
+
+      // 再マウント
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 に戻り、description は空
+      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
+      const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+      expect(textarea.value).toBe("");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
+    });
+
+    it("エラー発生後に再マウントするとエラー状態がクリアされる", async () => {
+      mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
+
+      const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 -> Step 2 -> 生成（失敗）
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      await act(async () => {
+        try {
+          await mockCreateSkill.mock.results[0]?.value;
+        } catch {
+          // 期待されるエラー
+        }
+      });
+
+      expect(screen.getByText("生成失敗")).toBeInTheDocument();
+
+      // 再マウント
+      unmount();
+      mockCreateSkill.mockResolvedValue("/path/to/new-skill");
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // エラーは表示されず、Step 1 に戻っている
+      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
+      expect(screen.queryByText("生成失敗")).not.toBeInTheDocument();
+    });
+
+    it("完了後に再マウントするとスキルパスがリセットされ Step 1 に戻る", async () => {
+      const { unmount } = render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 -> Step 2 -> 生成 -> 完了
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+      await act(async () => {
+        await mockCreateSkill.mock.results[0]?.value;
+      });
+
+      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
+
+      // 再マウント
+      unmount();
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      // Step 1 に戻り、前回のパスは表示されない
+      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
+      expect(screen.queryByText("/path/to/new-skill")).not.toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
   // Phase 6: 境界値・異常系テスト
   // ============================================================
   describe("境界値・異常系テスト", () => {

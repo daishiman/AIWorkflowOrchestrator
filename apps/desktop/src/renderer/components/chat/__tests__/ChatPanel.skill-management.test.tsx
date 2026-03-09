@@ -246,6 +246,56 @@ describe("ChatPanel スキル管理パネル導線", () => {
         screen.queryByTestId("mock-skill-management-panel"),
       ).not.toBeInTheDocument();
     });
+
+    it("isExecuting解除後にボタンが再有効化される", () => {
+      // isExecuting=true で初期描画
+      setStoreState({ isExecuting: true, selectedSkillName: "test-skill" });
+      const { rerender } = render(<ChatPanel />);
+
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      expect(toggleButton).toBeDisabled();
+
+      // isExecuting=false に遷移して再レンダー
+      setStoreState({ isExecuting: false, selectedSkillName: "test-skill" });
+      rerender(<ChatPanel />);
+
+      expect(toggleButton).not.toBeDisabled();
+      // 再有効化後にクリックでパネルが開くことを確認
+      fireEvent.click(toggleButton);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // TC-CP-04: 再マウント時のスキル管理パネル状態初期化 (RT-05)
+  // ============================================================
+  describe("TC-CP-04: 再マウント時の状態初期化", () => {
+    it("パネル表示中にアンマウント→再マウントするとパネルが閉じた状態に戻る", () => {
+      const { unmount } = render(<ChatPanel />);
+
+      // パネルを開く
+      const toggleButton = screen.getByTestId("skill-management-toggle");
+      fireEvent.click(toggleButton);
+      expect(
+        screen.getByTestId("mock-skill-management-panel"),
+      ).toBeInTheDocument();
+
+      // アンマウント→再マウント
+      unmount();
+      render(<ChatPanel />);
+
+      // 再マウント後はパネルが閉じた初期状態
+      expect(
+        screen.queryByTestId("mock-skill-management-panel"),
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+      expect(screen.getByTestId("skill-management-toggle")).toHaveAttribute(
+        "aria-expanded",
+        "false",
+      );
+    });
   });
 
   // ============================================================

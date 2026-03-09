@@ -21,7 +21,6 @@ allowed-tools:
 ---
 
 # Task Specification Creator
-
 開発タスクをPhase 1〜13の実行可能な仕様書に分解・生成。
 
 ## 設計原則
@@ -397,6 +396,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.39** | **2026-03-09** | **TASK-10A-G の screenshot コマンド公開を標準化**: `execute-workflow.md` の hardening/spec-only ガードに、Phase 11 screenshot 必須タスクでは `apps/desktop/package.json` へ `screenshot:<workflow>` を登録し、Phase 11/12 文書へ同じコマンドを残すルールを追加。task-045 の再監査を再実行可能な形で固定 |
+| **v10.08.38** | **2026-03-09** | **TASK-10A-G 漏れゼロ再監査を運用へ昇格**: `execute-workflow.md` の hardening/spec-only ガードを前提に、Phase 12 Step 1-A の必須証跡（`LOGS.md x2 + SKILL.md x2 + topic-map`）を欠落不可とする運用を明文化。あわせて `task-045` で aiworkflow 必要仕様抽出（`interfaces-agent-sdk-skill` / `api-ipc-agent` / `ui-ux-agent-execution` / `ui-ux-feature-skill-stream`）を追加し、仕様抽出漏れを防ぐ監査パターンを確立 |
 | **v10.08.37** | **2026-03-09** | **未タスク指示書の差分監査タイミングを明文化**: `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、`currentViolations=0` まで閉じない」ルールを追加。配置済みとテンプレート準拠を分離して判定する運用へ補強 |
 | **v10.08.36** | **2026-03-09** | **TASK-FIX-CONCURRENCY-GUARD フィードバック反映**: Phase 4 テスト仕様にモノレポテスト実行ディレクトリ注意書き（P40）を標準追加。Phase 2 設計テンプレートに「並行実行ガード検討」チェックポイントを追加 |
 | **v10.08.35** | **2026-03-09** | **TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補**: `validate-phase-output` の誤 CLI 例（`--phase`）を template / guide / agent docs から除去し、`phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加。workflow12 の Phase 11 screenshot / Phase 12 実装ガイド再同期を前提にした運用へ補強 |
@@ -416,7 +417,6 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v10.08.22** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認テンプレート適合を反映**: `phase-12-documentation.md` の完了チェック同期、`documentation-changelog.md` の実更新化、未タスク2件の9見出しテンプレート準拠化を再監査手順として追記。`validate-phase11-screenshot-coverage` と `audit --target-file` をセットで回す運用を標準化 |
 | **v10.08.21** | **2026-03-06** | **TASK-10A-E-C の Phase 11/12運用を反映**: `manual-test-result.md` を `TC-ID + 証跡` 形式へ更新し、`validate-phase11-screenshot-coverage` が expected=8/covered=8 で通る証跡設計を追加。`spec-update-summary.md` の「更新予定のみ」記述を実更新結果へ置換し、未タスク2件の3ステップ登録（指示書作成/台帳同期/関連仕様参照）を標準手順に反映 |
 | **v10.08.20** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査の運用穴をガイドへ反映**: `references/phase-11-12-guide.md` に専用 harness を用いた Phase 11 再撮影条件、`phase11-capture-metadata.json` と `manual-test-result.md` の同期、`画面カバレッジマトリクス` の `テストケース` 列必須化を追記。`references/spec-update-workflow.md` には IPC transport 契約変更時に `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` まで確認する cross-cutting doc 更新ルールを追加 |
-| **v10.08.24** | **2026-03-07** | **06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 実行完了**: Phase 1-12 全実行、30成果物生成、並列サブエージェント4体編成                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | **v10.08.23** | **2026-03-07** | **TASK-10A-E-C の実装知見をシステム仕様へ資産化**: `architecture-implementation-patterns.md` S18追加、`lessons-learned.md` 苦戦箇所3件追記、`06-known-pitfalls.md` P48追加。431テスト全PASS、Phase 1-12完了の実装結果を4ファイル（LOGS.md x2 + SKILL.md x2）に反映                                                                                                                                                                                                                                                                                                                         |
 | **v10.08.22** | **2026-03-06** | **TASK-10A-E-C の Phase 12再確認テンプレート適合を反映**: `phase-12-documentation.md` の完了チェック同期、`documentation-changelog.md` の実更新化、未タスク2件の9見出しテンプレート準拠化を再監査手順として追記。`validate-phase11-screenshot-coverage` と `audit --target-file` をセットで回す運用を標準化                                                                                                                                                                                                                                                                                |
 | **v10.08.21** | **2026-03-06** | **TASK-10A-E-C の Phase 11/12運用を反映**: `manual-test-result.md` を `TC-ID + 証跡` 形式へ更新し、`validate-phase11-screenshot-coverage` が expected=8/covered=8 で通る証跡設計を追加。`spec-update-summary.md` の「更新予定のみ」記述を実更新結果へ置換し、未タスク2件の3ステップ登録（指示書作成/台帳同期/関連仕様参照）を標準手順に反映                                                                                                                                                                                                                                                |

@@ -1854,3 +1854,13 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
   - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
+
+## 2026-03-09 - TASK-10A-G Phase 12再利用パターン追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[Phase 12] task単位 screenshot command + metadata 固定（TASK-10A-G）` を追加
+  - `references/patterns.md` に `[Phase 12] 継続利用 open backlog も template 準拠へ戻す（TASK-10A-G）` を追加
+  - `SKILL.md` 変更履歴へ `10.37.19` を追記
