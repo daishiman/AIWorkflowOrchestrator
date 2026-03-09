@@ -3028,3 +3028,61 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: React Router 利用中の画面検証、preview harness 追加、Phase 11 screenshot 再取得
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+
+### [Testing] 3層テストハードニング戦略（TASK-10A-G）
+
+- **状況**: IPCハンドラの品質保証を Main 単体だけで閉じると、Store 統合や既存 UI テストとの整合が検証されない
+- **アプローチ**:
+  - Layer 1（IPC契約）: Main Process 側の入力バリデーション・エラーサニタイズを Node.js 環境で検証する
+  - Layer 2（Store統合）: Store action → `window.electronAPI.skill` → 状態遷移の一連フローを happy-dom で検証する
+  - Layer 3（既存テスト拡張）: 既存 `ChatPanel` テストへ新ケースを足し、既存モック構成を壊さず回帰を確認する
+- **標準ルール**:
+  - Layer ごとにモックを自己完結させ、グローバルモック共有を避ける
+  - Layer 3 は既存 `describe` 末尾へ追加し、既存前提を変えない
+  - coverage は `handler-scope` か `feature 全体` かを必ず明記する
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-G
+
+### [Testing] 並列エージェント分割によるPhase実行効率化（TASK-10A-G）
+
+- **状況**: テストファイルや Phase 12 成果物が複数ある場合、順次実行では時間が伸び、1エージェント集中では中断リスクが上がる
+- **アプローチ**:
+  - Phase 4-5: Layer 1/2/3 の独立したテストファイルを関心ごとで分離して並列化する
+  - Phase 12: 実装ガイド、仕様書更新、レポート群の 3 系統へ分割する
+  - 相互依存がある LOGS/SKILL や workflow 台帳更新は同一担当へ集約する
+- **標準ルール**:
+  - 1エージェントあたり 3 ファイル以下を目安にする
+  - 完了判定は「実装物」「仕様物」「証跡」を最後に単一ターンで集約する
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-G
+
+### [Testing] カバレッジ計測のスコープ不一致（TASK-10A-G）
+
+- **状況**: `vitest --coverage` はファイル全体を計測するため、テスト対象ハンドラ以外が Line/Function Coverage を押し下げる
+- **症状**: `skill:create` テストなのに `skillHandlers.ts` 全体の未実行コードが混ざり、値が誤読されやすい
+- **解決策**:
+  - coverage 文書に `handler-scope coverage` を明記する
+  - Branch Coverage を主判定にし、必要なら `coverage-by-handler.ts` で対象範囲を切り出す
+- **標準ルール**: 巨大ファイルの coverage は「対象ハンドラ」と「ファイル全体」を分けて報告する
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-G
+
+### [Phase12] supporting artifact の実測値を summary 文書と同値に固定する（TASK-10A-G）
+
+- **状況**: `spec-update-summary.md` だけ直っていても `test-documentation.md` など supporting artifact が旧件数のまま残ることがある
+- **標準ルール**:
+  - Phase 12 完了前に `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` を実行する
+  - summary 文書、supporting artifact、system spec の 3 点で同じ実測値を揃える
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-G
+
+### [Phase12] open backlog はタスク状態に応じた canonical path へ同期してから閉じる（TASK-10A-G）
+
+- **状況**: 未実施 backlog の参照先が、Phase 12 中の root 配置と完了移管後の archive 配置で揺れると探索導線がぶれる
+- **成功パターン**:
+  - Phase 12 中は `docs/30-workflows/unassigned-task/` に配置する
+  - workflow 完了後は `docs/30-workflows/completed-tasks/<task>/unassigned-task/` へ移して archive 側の参照へ張り替える
+  - `verify-unassigned-links.js` と `audit-unassigned-tasks --json --diff-from HEAD --target-file ...` を続けて実行する
+- **標準ルール**: 未実施 backlog はタスク状態に応じて canonical path を切り替え、関連参照も同一ターンで更新する
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-G

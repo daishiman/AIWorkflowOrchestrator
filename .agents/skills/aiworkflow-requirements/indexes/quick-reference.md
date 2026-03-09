@@ -7,12 +7,6 @@
 
 ## よく使うパターン
 
-### 仕様検索の分割ルール
-
-- `search-spec.js` は **1概念1クエリ** で分割して使う
-- 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
-- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
-
 ### Electron IPC パターン
 
 ```typescript
@@ -126,6 +120,30 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 
 **詳細**: architecture-patterns.md L141-234
 
+### S31: executeSkill 並行実行ガード
+
+async アクション内で `isExecuting` による二重実行防止。microtask 境界前に同期チェックを配置する。
+
+```typescript
+// ✅ async 操作前の同期ガード
+executeSkill: async (prompt) => {
+  const { selectedSkillName, isExecuting } = get();
+  if (!selectedSkillName) return;
+  if (isExecuting) return; // 同期チェック — microtask 境界前
+  set({ isExecuting: true, ... });
+  // await ... async operations
+};
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| ガード位置 | 最初の `await` より前（同期領域） |
+| `isExecuting` リセット | finally または catch で `false` に復元 |
+| テスト手法 | `flushMicrotasks()` で preflight 通過後にガード検証 |
+
+**詳細**: architecture-implementation-patterns.md S31
+**関連 Pitfall**: 06-known-pitfalls.md#P31
+
 ### P31対策: Store Hooks無限ループ防止
 
 合成Store Hook（`useAuthModeStore()`等）が毎回新しいオブジェクトを返すため、関数を`useEffect`依存配列に含めると無限ループ発生。
@@ -152,25 +170,6 @@ useEffect(() => {
 - 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
 - 落とし穴: 06-known-pitfalls.md#P31
 
-### Store selector migration / renderer direct IPC removal
-
-```typescript
-// before
-const result = await window.electronAPI.skill.analyze(skillName);
-
-// after
-const analyzeSkill = useAnalyzeSkill();
-await analyzeSkill(skillName);
-```
-
-| 確認項目 | 期待値 |
-|---------|--------|
-| 対象 | Renderer 直呼び出しを Store action / 個別セレクタへ寄せる |
-| state 境界 | 共有 state は Store、UI 一時 state は local |
-| 検索語 | `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal` |
-
-**詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
-
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript
@@ -193,6 +192,41 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 ```
 
 **詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
+
+### スキル実行並行ガード監査パターン
+
+```typescript
+// Store 層: executeSkill 冒頭で再入を拒否
+const { selectedSkillName, isExecuting } = get();
+if (!selectedSkillName) return;
+if (isExecuting) return;
+
+// UI 層: 既存ガード面を回帰確認
+// - ExecuteButton: isExecuting=true で null render
+// - AgentExecutionView: AgentMessageInput disabled
+// - ChatPanel: skill-management-toggle disabled + SkillStreamingView render
+```
+
+| まず読む | 目的 |
+|---------|------|
+| `arch-state-management.md` | `isExecuting` / `skillExecutionStatus` の状態遷移確認 |
+| `interfaces-agent-sdk-skill.md` | `executeSkill` / `pendingPermission` / streaming 型契約確認 |
+| `api-ipc-agent.md` | `skill:execute` request / response / error 契約確認 |
+| `ui-ux-agent-execution.md` | 実行中UIの disabled / hidden 契約確認 |
+| `ui-ux-feature-skill-stream.md` | ChatPanel / SkillStreamingView の表示契約確認 |
+| `quality-requirements.md` | TDD / coverage /性能下限確認 |
+| `testing-fixtures.md` | Store / component test の fixture 再利用方針確認 |
+
+| 実体ファイル | 確認観点 |
+|-------------|----------|
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Store guard の有無 |
+| `apps/desktop/src/renderer/store/index.ts` | `useIsSkillExecuting` export |
+| `apps/desktop/src/renderer/store/setupSkillListeners.ts` | 完了 / エラー後の `isExecuting` 復元経路 |
+| `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` | 実行中 null render |
+| `apps/desktop/src/renderer/views/AgentExecutionView/AgentExecutionView.tsx` | 入力 disabled |
+| `apps/desktop/src/renderer/components/chat/ChatPanel.tsx` | toggle disabled + stream 表示 |
+
+**詳細**: arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md, ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md
 
 ---
 

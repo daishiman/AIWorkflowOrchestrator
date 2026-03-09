@@ -34,6 +34,48 @@ async function waitForServer(url, timeoutMs = 60_000) {
 function createMockScript() {
   return () => {
     const now = new Date().toISOString();
+    const defaultAnalysis = {
+      skillName: "skill-alpha",
+      overallScore: 72,
+      categories: [
+        {
+          name: "Code Quality",
+          score: 78,
+          details: "可読性と保守性に改善余地があります",
+          issues: ["重複ロジック", "命名の一貫性"],
+        },
+        {
+          name: "Security",
+          score: 65,
+          details: "入力検証の強化が必要です",
+          issues: ["境界値チェック不足"],
+        },
+      ],
+      suggestions: [
+        {
+          type: "security",
+          priority: "high",
+          description: "入力値検証を追加",
+          autoFixable: true,
+        },
+        {
+          type: "structure",
+          priority: "medium",
+          description: "責務分離のためにフックを抽出",
+          autoFixable: false,
+        },
+      ],
+      risks: [
+        {
+          category: "security",
+          level: "high",
+          description: "入力値の想定外形式により例外が発生する可能性",
+          impact: "ランタイム障害と品質低下",
+          mitigation: "入力スキーマと境界値テストを追加",
+        },
+      ],
+      analyzedAt: now,
+    };
     const defaultImportedSkills = [
       {
         name: "skill-alpha",
@@ -142,6 +184,21 @@ function createMockScript() {
           }
           return importedSkills;
         },
+        analyze: async () => defaultAnalysis,
+        applyImprovements: async () => ({
+          skillName: "skill-alpha",
+          applied: [],
+          skipped: [],
+          errors: [],
+          executedAt: now,
+        }),
+        autoImprove: async () => ({
+          skillName: "skill-alpha",
+          applied: [],
+          skipped: [],
+          errors: [],
+          executedAt: now,
+        }),
         remove: async (skillName) => {
           importedSkills = importedSkills.filter((s) => s.name !== skillName);
         },

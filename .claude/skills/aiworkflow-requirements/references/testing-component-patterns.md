@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.12.0
-> **更新日**: 2026-03-08
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001
+> **バージョン**: 1.14.0
+> **更新日**: 2026-03-09
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001, TASK-10A-G
 
 ---
 
@@ -1090,10 +1090,219 @@ beforeEach(() => {
 
 ---
 
+## 17. スキルライフサイクル統合テストパターン（TASK-10A-G 実装完了）
+
+`skill:create` 契約、ChatPanel 起点の UI 遷移、Store 駆動ライフサイクルを同時に守る3層統合テスト。**実測 55 tests**（Layer 1: 25 / Layer 2: 14 / Layer 3: 16）が PASS し、Layer 1 の handler-scope coverage は Line 96.9% / Branch 88.9% / Function 100% を達成した。
+
+### 最初に読む仕様
+
+| 観点 | 最初に読む | 理由 |
+| --- | --- | --- |
+| Main IPC 契約 | `api-ipc-agent.md` | `skill:create` の request / response / validation を確認する |
+| Renderer 契約 | `interfaces-agent-sdk-skill.md` | `SkillCreateWizard` / `ChatPanel` / preload shape を確認する |
+| Store 状態遷移 | `arch-state-management.md` | `useShallow` 条件と selector/action 境界を確認する |
+| 既存 UI 統合 | `architecture-implementation-patterns.md` | ChatPanel / forwardRef / 個別selector パターンを確認する |
+| テスト構成 | `testing-component-patterns.md` | happy-dom / electronAPI mock / Store mock パターンを確認する |
+| セキュリティ | `security-electron-ipc.md` | sender 検証と P42 バリデーション観点を確認する |
+| 品質・教訓 | `quality-requirements.md`, `lessons-learned.md` | カバレッジ基準と再発防止ルールを確認する |
+
+### 推奨する3層分割
+
+| レイヤー | 主対象 | 代表ファイル | 仕様の主な読み先 |
+| --- | --- | --- | --- |
+| Layer 1 | Main IPC 契約 | `src/main/ipc/__tests__/skillHandlers.create.test.ts` | `api-ipc-agent.md`, `security-electron-ipc.md` |
+| Layer 2 | Renderer 統合 | `src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx` | `interfaces-agent-sdk-skill.md`, `arch-state-management.md` |
+| Layer 3 | 既存導線回帰 | `src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | `architecture-implementation-patterns.md`, `lessons-learned.md` |
+
+### 固定済み前提
+
+| 依存元 | 固定済み観点 | TASK-10A-G で守る内容 |
+| --- | --- | --- |
+| TASK-10A-E | sender / P42 / エラーサニタイズ | Layer 1 の契約テストで再保証する |
+| TASK-10A-F | RT-01〜RT-07 回帰観点 | Layer 2 の状態遷移テストへ落とし込む |
+| TASK-10A-B/C/D/F | direct `window.electronAPI.skill.*` 排除 | Renderer では store action 境界を守る |
+
+### Layer 2 方針
+
+- `testing-component-patterns.md` セクション16の real composition ハーネスを優先する
+- Renderer から direct `window.electronAPI.skill.*` を期待値にしない
+- `store action` 呼び出しと `state transition` を主アサーションにする
+- `window.electronAPI` は store action の下位依存としてのみ差し替える
+
+### 既存 seed テスト
+
+| ファイル | 用途 |
+| --- | --- |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.store-integration.test.tsx` | `useCreateSkill` 境界の既存保証 |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.store-integration.test.tsx` | analyze / improve / autoImprove の既存保証 |
+| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | store 下位の electronAPI 契約確認 |
+
+### 検索キーワードの推奨セット
+
+- `skill:create`
+- `ChatPanel`
+- `SkillCreateWizard`
+- `useShallow`
+- `testing-component-patterns`
+- `task-workflow-rules`
+
+複合語で見つからない場合は、上記を2語以下に分割して `search-spec.js` を順番に実行する。
+
+### 実装完了の実績（2026-03-09）
+
+#### テスト実績
+
+| レイヤー | テストファイル | テスト件数 | カバレッジ/判定 |
+| --- | --- | --- | --- |
+| Layer 1 | `skillHandlers.create.test.ts` | 25件 | handler-scope Line 96.9%, Branch 88.9%, Function 100% |
+| Layer 2 | `SkillLifecycle.integration.test.tsx` | 14件 | Store駆動状態遷移を網羅 |
+| Layer 3 | `ChatPanel.skill-management.test.tsx` | 16件 | 既存導線の回帰保証を強化 |
+| **合計** | | **55件** | 全PASS |
+
+#### モック戦略の概要
+
+| レイヤー | モック対象 | 検証対象 | 環境 |
+| --- | --- | --- | --- |
+| Layer 1（Main IPC契約） | `SkillService` / `validateIpcSender` / `electron` | ハンドラ関数の入力バリデーション・エラーハンドリング | Node.js |
+| Layer 2（Store統合） | `window.electronAPI.skill.*` | Store action経由の状態遷移フロー全体 | happy-dom |
+| Layer 3（既存テスト拡張） | 既存モック構成を維持 | ChatPanel起点の導線・agentSlice統合 | happy-dom |
+
+#### Layer 1 モック戦略（Main IPC契約テスト）
+
+Node.js 環境で `vi.mock("electron")` により `ipcMain` をモック化し、ハンドラ関数を直接キャプチャして呼び出す。サービス内部ロジックには依存しない。
+
+```typescript
+// skillHandlers.create.test.ts パターン
+vi.mock("electron", () => ({
+  ipcMain: { handle: vi.fn() },
+  BrowserWindow: { fromWebContents: vi.fn() },
+}));
+vi.mock("../infrastructure/security/ipc-validator", () => ({
+  validateIpcSender: vi.fn(),
+  toIPCValidationError: vi.fn(),
+}));
+
+// ハンドラ関数キャプチャパターン
+let capturedHandlers: Record<string, Function> = {};
+const mockIpcMain = vi.mocked(ipcMain);
+mockIpcMain.handle.mockImplementation((channel: string, handler: Function) => {
+  capturedHandlers[channel] = handler;
+});
+
+// テスト内でハンドラ直接呼び出し
+const result = await capturedHandlers["skill:create"](mockEvent, description, options);
+```
+
+**ポイント**:
+- `capturedHandlers` でチャンネル名→ハンドラ関数のマッピングを保持する
+- `mockEvent` は `{ sender: { id: 1 } }` 等の最小構造で十分
+- P42準拠: 引数バリデーション（型チェック→空文字列→トリム空文字列）の3段階を検証する
+
+#### Layer 2 モック戦略（Renderer Store統合テスト）
+
+happy-dom 環境で `createAgentSlice` により Store を直接生成し、コンポーネントをレンダリングせずに Store action 経由の状態遷移を検証する。`window.electronAPI.skill` は下位依存としてのみモック化する。
+
+```typescript
+// SkillLifecycle.integration.test.tsx パターン
+import { createAgentSlice } from "../../store/slices/agentSlice";
+
+const mockElectronAPI = {
+  skill: {
+    create: vi.fn().mockResolvedValue({ name: "test-skill" }),
+    analyze: vi.fn().mockResolvedValue({ score: 80 }),
+    list: vi.fn().mockResolvedValue([]),
+  },
+};
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  (window as any).electronAPI = mockElectronAPI;
+});
+```
+
+**ポイント**:
+- Renderer から direct `window.electronAPI.skill.*` を期待値にしない
+- `store action` 呼び出しと `state transition` を主アサーションにする
+- セクション16の real composition ハーネスパターンとの併用を推奨する
+
+#### Layer 3 追加ルール（既存テスト拡張）
+
+既存テストファイルのモック構成を一切変更せず、新規テストを `describe` ブロック末尾に追加する。
+
+```typescript
+// ChatPanel.skill-management.test.tsx — 既存ブロック末尾に追加
+describe("スキル管理導線", () => {
+  // 既存テスト ... (変更しない)
+
+  // ▼ 新規追加（末尾に配置）
+  describe("SkillCreateWizard連携", () => {
+    it("スキル作成ボタンからウィザード遷移がトリガーされる", () => {
+      // 既存モック構成をそのまま使用
+    });
+  });
+});
+```
+
+**ルール**:
+- 既存テストのモック構成・import を一切変更しない
+- 新規テストは既存 `describe` ブロック末尾に追加する
+- 既存テストとの実行順序非依存を `--sequence.shuffle` で検証する
+- 既存モック構成への依存があるため、既存テストの変更時は Layer 3 も確認する
+
+#### 適用判断基準
+
+| 条件 | 適用パターン |
+| --- | --- |
+| IPCハンドラの入力バリデーション・エラーハンドリングをテスト | Layer 1 |
+| Store action経由のフロー全体（作成→分析→改善）をテスト | Layer 2 |
+| 既存UIコンポーネントテストとの整合性を確認 | Layer 3 |
+| IPC契約からUI導線まで全層を保証する必要がある | 3層構成 |
+
+#### 3層間の独立性
+
+- Layer 1 と Layer 2 のモック戦略は**完全に独立**（相互依存なし）
+- Layer 3 は既存モック構成への依存があるため、既存テスト変更時は Layer 3 も確認が必要
+- 各レイヤーは単独でも実行可能であり、特定レイヤーのみの適用も有効
+
+#### 注意事項
+
+- **P39準拠**: happy-dom環境（Layer 2 / Layer 3）では `userEvent` 使用禁止、`fireEvent` のみ使用する
+- **P40準拠**: テスト実行は `cd apps/desktop && pnpm vitest run` で対象パッケージのディレクトリから行う
+- **P9準拠**: モジュールスコープ変数のテスト間リークを防ぐため、`beforeEach` で必ずリセットする
+- **P42準拠**: Layer 1 の引数バリデーションテストでは `.trim() === ""` チェックを含める
+
+#### カバレッジ解釈の注意
+
+- `96.9 / 88.9 / 100` は **TASK-10A-G 全体** ではなく、`skill:create` + `sanitizeErrorMessage` + `getAllowedWindows` の handler-scope 値
+- Layer 2 / Layer 3 はモック境界の性質上、カバレッジ値よりもテスト件数・状態遷移・回帰PASSを主判定とする
+- feature 全体の説明で coverage を記載する場合は、必ず `handler-scope coverage` と明記する
+
+#### Phase 12 supporting artifact 同期
+
+- `outputs/phase-12/test-documentation.md` は **追加したテスト件数だけ** でなく、実際に Phase 11/12 で再実行したスイート件数（TASK-10A-G では 55 tests）に合わせて更新する
+- Layer 3 は `ChatPanel.skill-management.test.tsx` の **既存12 + 新規4 = 16 tests** を実行対象として扱い、`+4` だけを最終合計に流用しない
+- open backlog は Phase 12 実行中は `docs/30-workflows/unassigned-task/`、完了移管後は `docs/30-workflows/completed-tasks/<task>/unassigned-task/` を canonical path とし、`task-workflow.md` と関連レポートの参照を同一ターンで揃える
+
+#### ChatPanel起点の統合テストパターン
+
+ChatPanelからスキル管理機能へ遷移するシナリオでは、以下の観点を検証する:
+
+1. **ナビゲーション**: ChatPanelのスキル管理ボタンからSkillCreateWizardへの遷移が正しくトリガーされること
+2. **Store連携**: `useCreateSkill` / `useAnalyzeSkill` 等のStore actionが正しい引数で呼ばれること
+3. **状態反映**: Store状態の変更がUI（SkillCreateWizard/SkillAnalysisView）に正しく反映されること
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.14.0  | 2026-03-09 | TASK-10A-G 3層テストパターン詳細追記: Layer 1/2/3 のモック戦略コード例、適用判断基準テーブル、3層間の独立性、P39/P40/P9/P42 準拠の注意事項を追加 |
+| 1.13.2  | 2026-03-09 | TASK-10A-G Phase 12追補: supporting artifact 同期ルールを追加し、`test-documentation.md` は実行スイート 55 tests を記録、open backlog は Phase 12 中と完了移管後で canonical path を切り替える運用を明文化 |
+| 1.13.1  | 2026-03-09 | TASK-10A-G 再監査反映: 実績テーブルを 55 tests（25/14/16）へ補正し、`96.9/88.9/100` を handler-scope coverage として明示。Layer 3 の実績対象を `ChatPanel.skill-management.test.tsx` に統一 |
+| 1.13.0  | 2026-03-09 | TASK-10A-G 実装完了: planning guide を実績ベースに更新。3層テスト43件の実績テーブル、モック戦略（Layer 1: SkillService/validateIpcSender、Layer 2: electronAPI.skill、Layer 3: 既存テスト拡張）、ChatPanel起点の統合テストパターンを追記 |
+| 1.12.2  | 2026-03-09 | TASK-10A-G planning guide を拡張し、依存タスクからの固定済み前提、real composition ハーネス方針、既存 seed テストを追記 |
+| 1.12.1  | 2026-03-09 | TASK-10A-G planning guide を追加し、`skill:create` + ChatPanel + Store 駆動ライフサイクル統合テストの探索起点と3層分割を明文化 |
 | 1.12.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: S-INT-01 View レベル統合テストハーネスパターンを追加（real composition、vi.mock hoisting、モジュールスコープ変数、M-01 網羅的デフォルト値） |
 | 1.11.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合ハーネスパターンを追加（store+electronAPI 一本化、HarnessOptions、非同期安定化ルール） |
 | 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |

@@ -1,0 +1,113 @@
+{
+  "taskId": "TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001",
+  "title": "AuthGuard タイムアウトフォールバック + Settings認証除外",
+  "type": "fix",
+  "priority": 3,
+  "status": "pending",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-1-requirements.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-2-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-3-design-review.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-4-test-creation.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-5-implementation.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-6-test-expansion.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-7-coverage-check.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-8-refactoring.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-9-quality-assurance.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-10-final-review.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-11-manual-test.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-12-documentation.md"
+      ]
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-13-completion.md"
+      ]
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/AuthGuard/types.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/utils/getAuthState.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/hooks/useAuthState.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/AuthTimeoutFallback.tsx",
+    "apps/desktop/src/renderer/components/AuthGuard/index.tsx",
+    "apps/desktop/src/renderer/App.tsx"
+  ],
+  "relatedPitfalls": ["P31", "P48", "P13", "P39"],
+  "relatedTasks": [
+    "TASK-FIX-SAFEINVOKE-TIMEOUT-001",
+    "TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001"
+  ]
+}
