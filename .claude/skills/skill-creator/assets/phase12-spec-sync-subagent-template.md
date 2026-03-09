@@ -154,6 +154,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
 - [ ] ユーザーが画面検証を要求した場合、初期方針が `NON_VISUAL` でも `SCREENSHOT` へ昇格し、`TC-ID ↔ png` を再同期している
+- [ ] persist/auth 初期化バグでは bug path の metadata 証跡と screenshot harness 証跡を分離し、`skipAuth=true` を唯一経路にしていない
 - [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している

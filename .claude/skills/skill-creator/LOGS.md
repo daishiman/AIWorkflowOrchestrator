@@ -4,6 +4,18 @@
 
 ---
 
+## [2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の Phase 12再確認パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「persist/auth bug は bug path metadata と screenshot harness を分離する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `skipAuth=true` を唯一経路にしないチェックを追加
+  - workflow 側 `skill-feedback-report.md` / `documentation-changelog.md` に更新した skill 名を残す運用を今回 task で実証
+
+---
+
 ## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
 
 - **Agent**: skill-creator (update)

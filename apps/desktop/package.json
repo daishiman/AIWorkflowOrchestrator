@@ -17,6 +17,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
+    "screenshot:app-debug-localstorage-clear": "node scripts/capture-task-fix-app-debug-localstorage-clear-phase11.mjs",
     "screenshot:skill-analysis": "node scripts/capture-skill-analysis-view-screenshots.mjs",
     "screenshot:skill-create-wizard": "node scripts/capture-skill-create-wizard-screenshots.mjs",
     "screenshot:skill-import-idempotency-guard": "node scripts/capture-skill-import-idempotency-guard-screenshots.mjs",

@@ -42,24 +42,6 @@ import type { ViewType } from "./store/types";
 // See: UT-009 (Chat History Additional Use Cases)
 
 function App(): JSX.Element {
-  // 🔧 デバッグ用: 初回起動時にストレージをクリア（TODO: テスト完了後に削除）
-  useEffect(() => {
-    if (
-      import.meta.env.VITE_E2E_MODE === "true" ||
-      window.location.search.includes("skipAuth=true")
-    ) {
-      return;
-    }
-
-    const shouldClear = sessionStorage.getItem("debug-clear-storage");
-    if (!shouldClear) {
-      console.log("🔧 [DEBUG] Clearing all storage for clean auth test...");
-      localStorage.clear();
-      sessionStorage.setItem("debug-clear-storage", "done");
-      window.location.reload();
-    }
-  }, []);
-
   // Initialize theme on app startup (restores from electron-store)
   useThemeInitializer();
 

@@ -132,6 +132,47 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 App.tsx debug storage clear 削除（2026-03-09）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 |
+| ステータス | **実装・Phase 1-12 完了 / Phase 13 未実施** |
+| 完了日 | 2026-03-09 |
+| 対象 | `apps/desktop/src/renderer/App.tsx` の debug-only `localStorage.clear()` / `window.location.reload()` 除去 |
+| 成果物 | `docs/30-workflows/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/outputs/` |
+
+#### 実施内容
+
+- `App.tsx` から debug storage clear `useEffect` を削除
+- `App.debug-removal.test.tsx` を追加し、debug code 非残存と reload 不再発を固定
+- Phase 11 では通常ルート metadata 確認 + dedicated harness screenshot 3件で persist 保持を検証
+- system spec / task-spec guide / skill 文書を同一ターンで同期
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| `skipAuth=true` で screenshot は安定するが bug path を bypass して false negative になる | auth / persist / App shell 初期化順序が原因の不具合を screenshot 導線だけで確認しようとする | 通常ルートで `navigation.type` / debug log absence / storage snapshot を metadata 取得し、画面証跡だけ dedicated harness へ分離した |
+| App shell 直下の画面検証は初期化ノイズで不安定 | 目的画面への遷移や preload 依存が強く、同一 view の状態固定が難しい | SettingsView 専用 harness を追加し、本番コンポーネントをそのまま使って screenshot を安定取得した |
+| repo-wide に残る `debug-clear-storage` 前提は current task の責務外まで波及する | current workflow だけ直しても、古い comment / script / e2e setup が別箇所に残る | `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` として未タスクへ分離し、current task は実装修正と Phase 12 同期に集中した |
+
+#### 同種課題の5分解決カード
+
+1. まず通常ルートで bug path を再現し、metadata で副作用の有無を固定する。
+2. 画面証跡が不安定なら dedicated harness を作り、screenshot path を bug path から分離する。
+3. `task-workflow.md` / `lessons-learned.md` / 関連 domain spec を同一ターンで更新する。
+4. repo-wide cleanup は未タスクへ切り出し、`audit --target-file` で current=0 を確認して閉じる。
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop run screenshot:app-debug-localstorage-clear` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/__tests__/App.debug-removal.test.tsx` | PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001` | PASS |
+
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
 | 項目 | 値 |
@@ -3292,6 +3333,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -3692,6 +3734,9 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001~~        | ~~Workflow12 の実装ガイド欠落是正~~                                                                                                                                          | ~~中~~   | ~~TASK-10A-E-D branch横断再監査（2026-03-08）~~ **完了: 2026-03-09（workflow12 implementation-guide 同期）**                       | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md`                                                                           |
 | UT-PERSIST-MIGRATION-001                                       | Zustand Persist バージョニングとマイグレーション機構                                                                                                                         | 中       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`                                                                                                               |
 | UT-PERSIST-VALIDATION-002                                      | Zustand Persist 全フィールド iterable ガード拡張                                                                                                                             | 低       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`                                                                                                             |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001                    | repo-wide に残る debug-clear-storage 前提の comment / script / e2e setup のクリーンアップ                                                                                    | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md`                                                                                                   |
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                            | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                                                                                          |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                         | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                                                                                       |
 
 ### 未タスク管理ルール
 
@@ -3715,6 +3760,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.37** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を同期**: `App.tsx` の debug storage clear / forced reload 除去、Phase 11 screenshot 3件 + metadata 検証、repo-wide cleanup 未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` の登録、system spec / skill 文書同期を完了台帳と残課題へ反映 |
 | **1.67.36** | **2026-03-09** | **TASK-10A-F Phase 12 再同期を追補**: completed workflow `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/` に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再同期した実装内容を台帳化。苦戦箇所として P53 placeholder 残置、implementation-guide literal 見出し不足、未タスク current/baseline と legacy directory 健全性の混同を追記し、新規未タスク 0件・既存後続 TASK-10A-G 集約・legacy remediation task 継続を明記 |
 | **1.67.33** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を登録**: `aiworkflow-requirements` の `quick_validate` warning 145件を「SKILL.md 全列挙」で雑に解消せず、`SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の入口設計と validator 判定を両立させる未タスクを残課題テーブルへ追加。苦戦箇所と再利用方針を `lessons-learned.md` / `SKILL.md` / `LOGS.md` へ同期 |
 | **1.67.33** | **2026-03-07** | **TASK-10A-F 完了同期**: `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/` の Phase 1-12 完了、Phase 11 スクリーンショット11件、Step 1-A〜Step 2 の仕様同期（`arch-state-management` / `ui-ux-feature-components` / `task-workflow` / LOGS / SKILL / topic-map再生成）を記録 |

@@ -120,6 +120,24 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 
 **詳細**: architecture-patterns.md L141-234
 
+### Persist / localStorage 破壊バグの調査パターン
+
+`localStorage.clear()` や `window.location.reload()` が絡むバグは、1回の broad query では取りこぼしやすい。`persist` / `localStorage` / `window.location.reload` / `WebContents` を**1概念1クエリ**で分割検索する。
+
+| 検索語 | 最初に読む | 目的 |
+| ------ | ---------- | ---- |
+| `persist` | `arch-state-management.md`, `arch-ipc-persistence.md` | Zustand persist 契約と永続化破壊の影響確認 |
+| `localStorage` | `testing-component-patterns.md`, `development-guidelines.md` | happy-dom polyfill とデバッグコード管理確認 |
+| `window.location.reload` | `lessons-learned.md` | reload 競合の再発条件確認 |
+| `WebContents` | `security-electron-ipc.md`, `error-handling.md` | BrowserWindow/WebContents ライフサイクルとエラー分類確認 |
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "persist" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "localStorage" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "window.location.reload" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "WebContents" -C 3
+```
+
 ### S31: executeSkill 並行実行ガード
 
 async アクション内で `isExecuting` による二重実行防止。microtask 境界前に同期チェックを配置する。

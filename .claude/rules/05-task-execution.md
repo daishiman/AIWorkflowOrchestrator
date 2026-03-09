@@ -102,6 +102,7 @@
   3. 関連仕様書に参照リンク追加
 - [ ] `unassigned-task-detection.md` の件数・ステータス更新
 - [ ] `artifacts.json` の Phase 12 ステータスを更新
+- [ ] 再評価クローズした未タスクの GitHub Issue を `gh issue close` で同時に Close
 
 ## 仕様書品質基準
 

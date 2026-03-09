@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-09 | 1.29.56 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の教訓を追加。`skipAuth=true` が storage clear bug path を guard して false negative になりうる点、通常ルート metadata 検証と dedicated harness screenshot を分離する運用、repo-wide `debug-clear-storage` 残骸は未タスクへ分離する判断を標準化 |
 | 2026-03-09 | 1.29.55 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補。未タスク指示書の9セクション逸脱、`validate-phase-output --phase` ドキュメント drift、BrowserRouter 配下の screenshot harness での Router 二重化を同一系統の苦戦箇所として整理し、4ステップ解決手順を追加 |
 | 2026-03-09 | 1.29.54 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の教訓を追加。executeSkill 並行実行ガードの実装で遭遇した3つの苦戦箇所（テスト実行ディレクトリ依存、flushMicrotasks タイミング制御、createStore パターンでの set/get 再現）と、5分解決カードを追記 |
 | 2026-03-09 | 1.29.53 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
@@ -286,6 +287,15 @@
 | 解決策 | current workflow 配下へ専用 screenshot script を追加し、Dashboard / Settings / Skill Center の代表 surface 3件を再取得した |
 | 標準ルール | 画面検証要求がある場合、UI差分の有無に関わらず `TC-ID + SCREENSHOT + S-1〜S-4` を current workflow 配下へ残す |
 
+### 苦戦箇所: `skipAuth=true` が persist bug の再現経路を殺して false negative になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skipAuth=true` は screenshot 取得を安定化できる一方、auth / App shell 初期化順序由来の bug path を bypass し、`localStorage.clear()` や forced reload の再発確認には使えない場合がある |
+| 影響 | screenshot が PASS でも、通常ルートでは debug side effect が残っている可能性を見落とす |
+| 解決策 | bug path の確認は通常ルートで `navigation.type` / debug log absence / persist snapshot を metadata 記録し、画面証跡だけ dedicated harness へ分離した |
+| 標準ルール | 「bug path 検証」と「screenshot path」は分離して設計する。`skipAuth=true` は screenshot 安定化の補助手段であり、唯一の検証経路にしない |
+
 ### 苦戦箇所: `validate-phase-output` の呼び方がテンプレートと正本でずれていた
 
 | 項目 | 内容 |
@@ -301,6 +311,13 @@
 2. Phase 11 は `TC-ID` / `画面カバレッジマトリクス` / `manual-test-result` / `screenshots/` の4点を current workflow 配下へ揃える。
 3. `artifacts.json` / `index.md` / Phase 12 changelog を同一ターンで同期する。
 4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を連続実行し、結果を system spec へ反映する。
+
+### 関連未タスク（TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 から派生）
+
+| タスクID | 概要 | 指示書パス |
+|---|---|---|
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001 | Phase 11 harness ファイルのライフサイクル管理（作成・削除・本番混入防止） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-phase11-harness-lifecycle-001.md` |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001 | App.tsx テスト共有モックファクトリ集約（テスト間の重複モック排除） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-app-test-mock-centralization-001.md` |
 
 ---
 

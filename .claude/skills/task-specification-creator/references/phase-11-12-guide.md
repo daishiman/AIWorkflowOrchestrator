@@ -196,6 +196,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - screenshot 必須タスクでは `P53` / `代替` / `スクリーンショット不可` を最終成果物へ残さない。実撮影へ昇格した時点で placeholder を除去する
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
+- persist / auth 初期化バグでは `skipAuth=true` が bug path を guard して false negative になる場合がある。bug path の確認は通常ルート metadata、screenshot は dedicated harness に分離してよい
 ### テスト結果レポート形式
 
 ```markdown
@@ -568,6 +569,7 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |
 | 2026-03-08 | Workflow10 再確認の教訓を反映し、dedicated harness 利用条件を「App shell 遷移不安定 / deep-link 不可」まで明文化し、`manual-test-result.md` に harness entry path・本番コンポーネント・mock 境界を記録する完了チェックを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |

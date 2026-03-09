@@ -5,6 +5,42 @@
 
 ---
 
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001`
+- 目的: Phase 11 screenshot 要求・system spec・未タスク formalization を実装事実へ再同期する
+
+### 実施内容
+- `references/arch-state-management.md` に DD-04/DD-05 と dedicated harness 検証ルールを追加
+- `references/development-guidelines.md` に shared App shell の debug-only storage clear / forced reload 禁止を追記
+- `references/lessons-learned.md` に `skipAuth=true` false negative と repo-wide cleanup 分離の教訓を追加
+- `references/task-workflow.md` に完了タスク節と未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` を追加
+- `references/phase-11-12-guide.md` に bug path 検証と screenshot path 分離ルールを追記
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 完了
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001`
+- 目的: App.tsx のデバッグ用 useEffect（localStorage.clear + window.location.reload）を削除
+
+### 実施内容
+- `apps/desktop/src/renderer/App.tsx` L45-61 のデバッグコード削除（17行）
+- テストファイル作成: `App.debug-removal.test.tsx`（TC-1〜TC-5）
+- 全品質チェック PASS（ESLint, TypeScript, Prettier, Vitest）
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 仕様反映
 
 ### コンテキスト

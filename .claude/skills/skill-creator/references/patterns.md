@@ -3028,3 +3028,16 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: React Router 利用中の画面検証、preview harness 追加、Phase 11 screenshot 再取得
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+
+### [Phase 12] persist/auth bug は bug path metadata と screenshot harness を分離する
+
+- **状況**: `skipAuth=true` のような補助導線で screenshot は取得できても、auth / persist / App shell 初期化由来の bug path は bypass され、false negative になりうる
+- **アプローチ**:
+  1. bug path の確認は通常ルートで行い、`navigation.type` / debug log absence / storage snapshot を metadata に保存する
+  2. 画面証跡は dedicated harness へ分離し、本番コンポーネント + 公開 contract をそのまま使って状態固定する
+  3. `task-workflow.md` / `lessons-learned.md` / `documentation-changelog.md` に「bug path と screenshot path を分離した」事実を同一ターンで記録する
+  4. repo-wide に残る workaround は current task へ抱え込まず、`docs/30-workflows/unassigned-task/` へ未タスク化して `audit --target-file` で閉じる
+- **結果**: screenshot PASS だけで不具合再発を見逃すリスクを減らし、current task の責務も守れる
+- **適用条件**: persist / auth / initialization bug の Phase 11-12 再監査、App shell が不安定な UI 検証、`skipAuth=true` や `dev-skip-auth` を使う撮影導線
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001

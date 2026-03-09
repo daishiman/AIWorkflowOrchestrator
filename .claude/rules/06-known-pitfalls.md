@@ -661,3 +661,12 @@ const providers = Array.isArray(result.data?.providers)
   3. CLI 環境でも `xvfb-run`（Linux）や headless モードで対応可能
 - **関連タスク**: TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 - **未タスク候補**: UT-FIX-PHASE11-SCREENSHOT-AUTOMATION（スクリーンショット取得自動化）
+
+### P56: 再評価クローズ時の GitHub Issue Close 漏れ
+
+- **教訓**: タスク仕様書を「再評価クローズ」した際に、対応する GitHub Issue を Close する操作が漏れた。`auto-create-issue.sh` が Issue 作成を自動化しているが、Close は手動のまま。3つの台帳（タスク仕様書 / task-workflow.md / GitHub Issue）のうち Issue だけが不整合を起こし、初見の開発者が不要な作業に着手するリスクがある
+- **症状**: タスク仕様書は再評価クローズ、task-workflow.md は取消線でクローズ記録済みだが、GitHub Issue が OPEN + `status:unassigned` のまま残存。バックログが汚染され、priority:high ラベルのため誤って着手されるリスクが高い
+- **解決策**: タスク仕様書を「再評価クローズ」する際は、対応する GitHub Issue を `gh issue close <number> --comment "再評価クローズ: ..."` で同時に Close する。Close コメントにはバリデーション PASS の証跡とクローズ理由を含める
+- **再発防止**: Phase 12 Task 4 チェックリストに「再評価クローズ時の Issue Close」ステップを追加
+- **関連パターン**: P4（documentation-changelog への早期「完了」記載）、P51（サブエージェントの早期完了記載）
+- **関連タスク**: UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001
