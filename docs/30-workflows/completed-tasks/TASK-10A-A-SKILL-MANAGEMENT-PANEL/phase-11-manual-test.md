@@ -158,23 +158,6 @@ pnpm dev
 
 ---
 
-## 画面カバレッジマトリクス
-
-| テストケース | 対象画面/状態        | 証跡ファイル                                              |
-| ------------ | -------------------- | --------------------------------------------------------- |
-| TC-01        | スキル一覧表示       | `outputs/phase-11/screenshots/tc-01-skill-list.png`       |
-| TC-02        | 検索フィルタ（0件）  | `outputs/phase-11/screenshots/tc-02-search-no-result.png` |
-| TC-03        | 編集画面遷移         | `outputs/phase-11/screenshots/tc-03-editor-view.png`      |
-| TC-04        | 分析画面遷移         | `outputs/phase-11/screenshots/tc-04-analysis-view.png`    |
-| TC-05        | 削除確認ダイアログ   | `outputs/phase-11/screenshots/tc-05-delete-dialog.png`    |
-| TC-06        | 新規作成導線         | `outputs/phase-11/screenshots/tc-06-create-view.png`      |
-| TC-07        | ローディング状態     | `outputs/phase-11/screenshots/tc-07-loading.png`          |
-| TC-08        | 空状態表示           | `outputs/phase-11/screenshots/tc-08-empty-state.png`      |
-| TC-09        | キーボードフォーカス | `outputs/phase-11/screenshots/tc-09-keyboard-focus.png`   |
-| TC-10        | ダークモード表示     | `outputs/phase-11/screenshots/tc-10-dark-mode.png`        |
-
----
-
 ## DevTools 確認
 
 | No  | 確認項目             | 操作手順                                                | 期待結果                   | 実行結果 | 備考 |
@@ -218,8 +201,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-A-SKILL-MANAGEMENT-PANEL --phase 11
 ```
 
 ## 次のPhase

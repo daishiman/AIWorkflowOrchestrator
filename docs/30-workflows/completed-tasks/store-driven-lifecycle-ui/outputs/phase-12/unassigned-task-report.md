@@ -14,13 +14,13 @@
 
 ### 検出した未タスク一覧
 
-| #   | タスクID                                          | 概要                                            | 優先度 | 指示書パス                                                                                                                             |
-| --- | ------------------------------------------------- | ----------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION         | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中     | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
-| 2   | UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード            | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md`   |
-| 3   | UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION     | improvementResult Store統合（条件付き）         | 低     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md`       |
-| 4   | UT-10A-F-SCREENSHOT-HARNESS-HARDENING             | Screenshot Harness の待機条件標準化             | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md`               |
-| 5   | UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION         | 2workflow baseline 正規化自動化                 | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md`           |
+| #   | タスクID                                          | 概要                                            | 優先度 | 指示書パス                                                                                                                           |
+| --- | ------------------------------------------------- | ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION         | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md`         |
+| 2   | UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード            | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` |
+| 3   | UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION     | improvementResult Store統合（条件付き）         | 低     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md`     |
+| 4   | UT-10A-F-SCREENSHOT-HARNESS-HARDENING             | Screenshot Harness の待機条件標準化             | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md`             |
+| 5   | UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION         | 2workflow baseline 正規化自動化                 | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md`         |
 
 ## 検出方法
 

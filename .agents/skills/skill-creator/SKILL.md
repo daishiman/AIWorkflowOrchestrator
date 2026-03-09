@@ -4,7 +4,7 @@ description: |
   スキルを作成・更新・プロンプト改善するためのメタスキル。
   **collaborative**モードでユーザーと対話しながら共創し、
   抽象的なアイデアから具体的な実装まで柔軟に対応する。
-  **orchestrate**モードでタスクの実行エンジン（Claude Code / Codex / 連携）を選択。
+  **orchestrate**モードでタスクの実行エンジン（Codex / Codex / 連携）を選択。
 
   Anchors:
   • Continuous Delivery (Jez Humble) / 適用: 自動化パイプライン / 目的: 決定論的実行
@@ -87,16 +87,16 @@ Phase 3: 構造計画 → Phase 4: 生成
 Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 ```
 
-📖 [agents/discover-problem.md](.claude/skills/skill-creator/agents/discover-problem.md) — 根本原因分析
-📖 [agents/model-domain.md](.claude/skills/skill-creator/agents/model-domain.md) — DDD/Clean Architecture
-📖 [agents/interview-user.md](.claude/skills/skill-creator/agents/interview-user.md)
-📖 [agents/select-resources.md](.claude/skills/skill-creator/agents/select-resources.md)
+📖 [agents/discover-problem.md](.Codex/skills/skill-creator/agents/discover-problem.md) — 根本原因分析
+📖 [agents/model-domain.md](.Codex/skills/skill-creator/agents/model-domain.md) — DDD/Clean Architecture
+📖 [agents/interview-user.md](.Codex/skills/skill-creator/agents/interview-user.md)
+📖 [agents/select-resources.md](.Codex/skills/skill-creator/agents/select-resources.md)
 
 ### Orchestrate モード
 
-実行エンジン選択: `claude` | `codex` | `gemini` | `claude-to-codex`
+実行エンジン選択: `Codex` | `codex` | `gemini` | `Codex-to-codex`
 
-📖 [references/execution-mode-guide.md](.claude/skills/skill-creator/references/execution-mode-guide.md)
+📖 [references/execution-mode-guide.md](.Codex/skills/skill-creator/references/execution-mode-guide.md)
 
 ---
 
@@ -110,7 +110,7 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | assets/     | [resource-map.md#assets]     |
 | schemas/    | [resource-map.md#schemas]    |
 
-📖 [references/resource-map.md](.claude/skills/skill-creator/references/resource-map.md)
+📖 [references/resource-map.md](.Codex/skills/skill-creator/references/resource-map.md)
 
 ---
 
@@ -185,12 +185,8 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **10.37.19** | **2026-03-09** | **TASK-10A-G の Phase 12再利用パターンを追加**: `references/patterns.md` に「task単位 screenshot command + metadata 固定」と「継続利用 open backlog も template 準拠へ戻す」を追加。Phase 12 での screenshot 再実行経路の仕様化と、既存未タスク指示書の target-file 監査まで含めた閉じ方を標準化 |
-| **10.37.18** | **2026-03-09** | **TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の再監査知見を skill-creator へ反映**: `references/patterns.md` に「current workflow 再監査で CLI drift / 未タスク9セクション / skill同期を同時に閉じる」成功パターンと、「BrowserRouter 配下の screenshot harness は descendant route で作る」パターンを追加。workflow 側の `documentation-changelog` / `skill-feedback-report` へ更新した skill 名を残す運用を標準化 |
-| **10.37.17** | **2026-03-08** | **TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12教訓をパターン化**: `references/patterns.md` に「fallback error の transport message / UI localized message 分離 + 画面起点の未タスク formalization」を追加。domain spec への責務線追記、`discovered-issues` から未タスク指示書/関連仕様への同一ターン同期、専用 harness route と `currentViolations=0` までの閉じ方を標準化 |
-| **10.37.16** | **2026-03-08** | **08-TASK の再発防止パターンを反映**: `references/patterns.md` に「SettingsView 回帰での証跡先行固定（08-TASK）」と失敗パターン「screenshot取得失敗を後追い修正で放置」を追加。Phase 11証跡1:1同期・Phase 12実績記述固定・3仕様同時同期（task-workflow/testing-patterns/lessons）を標準化 |
-| **10.37.15** | **2026-03-08** | **TASK-10A-F Phase 12 branch 再確認パターンを追加**: `references/patterns.md` に成功パターン「comparison baseline 正規化つき branch 再監査（TASK-10A-F）」と失敗パターン「current workflow PASS だけで comparison baseline を放置」を追加。あわせてクイックナビの Phase 12 行へ同観点を反映し、`currentViolations=0` と `baselineViolations>0` の二層報告を dual validator gate の前提として固定 |
-| **10.37.14** | **2026-03-08** | **Phase 12 branch横断再確認の dual validator gate を標準化**: `references/patterns.md` に「`verify-all-specs` PASS と Phase 12 完了は同義ではない」パターンを追加。完了ゲートを `verify-all-specs` + `validate-phase-output --phase 12` + `validate-phase12-implementation-guide` の3点セットへ固定し、FAIL時は未タスクを `docs/30-workflows/unassigned-task/` へ分離して `audit --target-file` まで同一ターンで実施する運用を明文化 |
+| **10.37.14** | **2026-03-08** | **08-TASK の再発防止パターンを反映**: `references/patterns.md` に「SettingsView 回帰での証跡先行固定（08-TASK）」と失敗パターン「screenshot取得失敗を後追い修正で放置」を追加。Phase 11証跡1:1同期・Phase 12実績記述固定・3仕様同時同期（task-workflow/testing-patterns/lessons）を標準化 |
+| **10.37.15** | **2026-03-08** | **TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12教訓をパターン化**: `references/patterns.md` に「fallback error の transport message / UI localized message 分離 + 画面起点の未タスク formalization」を追加。domain spec への責務線追記、`discovered-issues` から未タスク指示書/関連仕様への同一ターン同期、専用 harness route と `currentViolations=0` までの閉じ方を標準化 |
 | **10.37.13** | **2026-03-07** | **TASK-10A-F の Phase 12再監査知見をパターン化**: `references/patterns.md` に成功パターン「Phase11文書名固定 + TC証跡1:1 + changelog完了記述の三点同期（TASK-10A-F）」と失敗パターン「Phase11文書名ドリフトとTC証跡未同期を放置（TASK-10A-F）」を追加。`validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` / `audit --target-file` を再発防止の最小検証セットとして標準化 |
 | **10.37.12** | **2026-03-06** | **TASK-10A-E-C の Phase 12再監査知見をパターン化**: `references/patterns.md` に「`documentation-changelog.md` の計画記述残置を排除して実更新ログへ昇格する」パターンと、「未タスク指示書を9見出しテンプレート準拠で作成し `audit --target-file` で個別検証する」パターンを追加。Phase 12 での完了誤判定と未タスクフォーマット逸脱の再発防止を標準化 |
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |

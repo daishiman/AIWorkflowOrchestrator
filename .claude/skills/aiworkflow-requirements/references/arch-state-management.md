@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.13.2    | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映。App shell mount 時の debug-only `localStorage.clear()` / `window.location.reload()` を persist 契約違反として明文化し、DD-04/DD-05（shared shell 副作用禁止 / bug path検証と screenshot path 分離）を追加。Phase 11 は通常ルート metadata 確認 + dedicated harness screenshot の二段構成を標準化 |
 | v3.13.1    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補: `ChatPanel` の現行実装が `useIsSkillExecuting()` 個別セレクタへ移行済みであることを仕様へ是正。あわせて execute 側ガード実装時の苦戦箇所（CLI drift / Router 二重化 / workflow 本文 stale）と 5分解決カードへの導線を追加し、残未タスクは `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` の 1 件へ整理 |
 | v3.13.0    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 反映: `executeSkill` に `isExecuting` 同期ガード（FR-01）を追加。`get().isExecuting` チェックを async 操作前に配置し、microtask 境界を跨がない同期的ガードで二重実行を防止。Store層ガード + 既存UIガード（ExecuteButton null render / AgentExecutionView disabled / ChatPanel toggle disabled）の二重防御アーキテクチャを確立。テスト9件（T-01〜T-05, T-09〜T-12）全PASS、Line Coverage 95.37% |
 | v3.12.1    | 2026-03-09 | TASK-10A-F Phase 12 再同期を追補。current workflow に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再配置した実装内容と、P53 placeholder 除去・implementation-guide literal 見出し・unassigned legacy baseline 分離報告の苦戦箇所を追加 |
@@ -1534,7 +1535,7 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | TASK-10A-D   | agentSlice スキルライフサイクルアクション追加 | **完了**（2026-03-03） |
 | TASK-10A-E-C | import lifecycle の Store 駆動設計            | **完了**（2026-03-06） |
 | TASK-10A-F   | スキルライフサイクルUI Store移行（本タスク）  | **完了**（2026-03-07） |
-| TASK-10A-G   | スキルライフサイクル統合テスト強化             | **完了**（2026-03-09） |
+| TASK-10A-G   | 残存直接IPC呼び出し排除（後続）               | 後続                   |
 
 ### 統合検証結果
 
@@ -1619,12 +1620,15 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | DD-01 | `getItem` / `expandedFolders` | `Array.isArray(raw)` → `raw.filter(v => typeof v === "string")` → `new Set(...)`. 非配列は `new Set<string>()` にフォールバック |
 | DD-02 | `setItem` / `expandedFolders` | `instanceof Set` → `Array.from()`、`Array.isArray` → `.filter(string)` の二段対応。それ以外は空配列 |
 | DD-03 | `useCanGoBack` | `Array.isArray(state.viewHistory)` を前提条件に追加（破損時は `false` 返却） |
+| DD-04 | shared App shell mount effect | debug-only `localStorage.clear()` / `window.location.reload()` を禁止。persist 復旧と WebContents 安定性を壊す副作用は feature-flag 付き harness または専用 script へ隔離する |
+| DD-05 | Phase 11 persist bug 検証 | bug path の確認は通常ルート metadata（navigation type / debug log absence）で行い、画面証跡は dedicated harness へ分離して false negative を避ける |
 
 #### 設計原則
 
 - persist 復元時は「型検証→フィルタ→安全既定値」の3段を必須化する
 - `console.warn` で破損検出をロギング（`process.env.NODE_ENV !== 'test'` でガード不要、persist 問題は全環境で可視化すべき）
 - テストでは破損値5パターン以上（`null`, `undefined`, `number`, `object`, `string[]` with non-string elements）を固定
+- shared App shell の mount effect に debug cleanup を残さず、検証用副作用は dedicated harness / capture script へ分離する
 
 ### 実装ガイドライン
 

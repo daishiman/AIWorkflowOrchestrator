@@ -4,15 +4,15 @@
 
 ---
 
-## [2026-03-09 - TASK-10A-G Phase 12 追補パターン同期]
+## [2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の Phase 12再確認パターン同期]
 
 - **Agent**: skill-creator (update)
-- **Phase**: save-patterns
+- **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に 3層テストハードニング戦略、並列エージェント分割、coverage スコープ不一致パターンを追加
-  - 同ファイルに supporting artifact 実測値同期と open backlog の状態別 canonical path 切替ルールを追加
-  - `audit-unassigned-tasks --target-file` の completed workflow 対応を前提に、Phase 12 の未タスク監査手順を更新
+  - `references/patterns.md` に成功パターン「persist/auth bug は bug path metadata と screenshot harness を分離する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `skipAuth=true` を唯一経路にしないチェックを追加
+  - workflow 側 `skill-feedback-report.md` / `documentation-changelog.md` に更新した skill 名を残す運用を今回 task で実証
 
 ---
 
@@ -1854,13 +1854,3 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
   - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
-
-## 2026-03-09 - TASK-10A-G Phase 12再利用パターン追補
-
-- **Agent**: skill-creator (update)
-- **Phase**: save-patterns
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に `[Phase 12] task単位 screenshot command + metadata 固定（TASK-10A-G）` を追加
-  - `references/patterns.md` に `[Phase 12] 継続利用 open backlog も template 準拠へ戻す（TASK-10A-G）` を追加
-  - `SKILL.md` 変更履歴へ `10.37.19` を追記

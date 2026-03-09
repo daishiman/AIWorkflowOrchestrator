@@ -5,6 +5,42 @@
 
 ---
 
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001`
+- 目的: Phase 11 screenshot 要求・system spec・未タスク formalization を実装事実へ再同期する
+
+### 実施内容
+- `references/arch-state-management.md` に DD-04/DD-05 と dedicated harness 検証ルールを追加
+- `references/development-guidelines.md` に shared App shell の debug-only storage clear / forced reload 禁止を追記
+- `references/lessons-learned.md` に `skipAuth=true` false negative と repo-wide cleanup 分離の教訓を追加
+- `references/task-workflow.md` に完了タスク節と未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` を追加
+- `references/phase-11-12-guide.md` に bug path 検証と screenshot path 分離ルールを追記
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 完了
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001`
+- 目的: App.tsx のデバッグ用 useEffect（localStorage.clear + window.location.reload）を削除
+
+### 実施内容
+- `apps/desktop/src/renderer/App.tsx` L45-61 のデバッグコード削除（17行）
+- テストファイル作成: `App.debug-removal.test.tsx`（TC-1〜TC-5）
+- 全品質チェック PASS（ESLint, TypeScript, Prettier, Vitest）
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 仕様反映
 
 ### コンテキスト
@@ -8588,28 +8624,3 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 ### 結果
 - ステータス: success
 - 補足: current workflow の残課題は `abortExecution` guard の 1 件のみ
-
-## 2026-03-09 - TASK-10A-G ライフサイクル統合テスト hardening と Phase 12再監査
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-10A-G`
-- 目的: `skill:create` の3層テスト、Phase 11画面証跡、Phase 12仕様同期、completed-tasks 移管までを一貫して閉じる
-
-### 実施内容
-- `testing-component-patterns.md` に 3層テスト構成、handler-scope coverage、supporting artifact 同期ルールを追記
-- `task-workflow.md` に TASK-10A-G 完了記録と、完了移管後の未タスク canonical path を反映
-- `lessons-learned.md` に TEST/Phase 12/未タスク配置の苦戦箇所を追加
-- `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ workflow 本体を移管し、関連 backlog を `unassigned-task/` 配下へ同梱
-- `audit-unassigned-tasks.js` を completed workflow 配下の `unassigned-task/` も `--target-file` 監査できるよう更新
-
-### 検証
-- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
-- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
-- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
-- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md`
-
-### 結果
-- ステータス: success
-- 補足: Phase 12 中の root `unassigned-task/` 配置と、完了移管後の `completed-tasks/<task>/unassigned-task/` 配置を分けて扱う運用へ更新

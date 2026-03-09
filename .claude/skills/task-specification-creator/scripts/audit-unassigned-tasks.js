@@ -8,7 +8,6 @@
  *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
  *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
  *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/example.md
- *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/TASK-XXX/unassigned-task/example.md
  *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD~1
  */
 
@@ -139,16 +138,9 @@ function asRepoRelative(filePath) {
 
 function isTargetWithinAuditDirs(filePath, unassignedDir, completedUnassignedDir) {
   const normalized = normalizePath(filePath);
-  const normalizedUnassignedDir = normalizePath(unassignedDir);
-  const normalizedCompletedDir = normalizePath(completedUnassignedDir);
-  const completedRoot = normalizedCompletedDir.replace(/\/unassigned-task$/, "");
-
-  return (
-    normalized === normalizedUnassignedDir ||
-    normalized.startsWith(`${normalizedUnassignedDir}/`) ||
-    normalized === normalizedCompletedDir ||
-    normalized.startsWith(`${normalizedCompletedDir}/`) ||
-    (normalized.startsWith(`${completedRoot}/`) && normalized.includes("/unassigned-task/"))
+  const auditRoots = [normalizePath(unassignedDir), normalizePath(completedUnassignedDir)];
+  return auditRoots.some(
+    (root) => normalized === root || normalized.startsWith(`${root}/`),
   );
 }
 
@@ -157,8 +149,7 @@ function shellEscapeSingleQuotes(value) {
 }
 
 function getScopedFilesFromDiff(diffFrom, unassignedDir, completedUnassignedDir) {
-  const completedRoot = normalizePath(completedUnassignedDir).replace(/\/unassigned-task$/, "");
-  const dirs = [unassignedDir, completedRoot];
+  const dirs = [unassignedDir, completedUnassignedDir];
   const command =
     `git diff --name-only ${shellEscapeSingleQuotes(diffFrom)} -- ` +
     dirs.map((dir) => shellEscapeSingleQuotes(dir)).join(" ");
@@ -173,11 +164,7 @@ function getScopedFilesFromDiff(diffFrom, unassignedDir, completedUnassignedDir)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => normalizePath(line))
-    .filter(
-      (line) =>
-        line.endsWith(".md") &&
-        (line.startsWith(`${normalizePath(unassignedDir)}/`) || line.includes("/unassigned-task/")),
-    );
+    .filter((line) => line.endsWith(".md"));
 }
 
 function resolveScope(args) {

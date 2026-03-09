@@ -10,6 +10,31 @@
 
 ---
 
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 11/12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
+- **Notes**:
+  - `pnpm --filter @repo/desktop run screenshot:app-debug-localstorage-clear` で screenshot 3件と metadata を再取得
+  - `phase-11-manual-test.md` / `manual-test-result.md` を validator 準拠の TC + 証跡形式へ更新
+  - `index.md` / `artifacts.json` / `phase-1..12` status を実績同期
+  - `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` を formalize し、system spec / skill 文書を同一ターンで更新
+
+---
+
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - App.tsx L45-61 デバッグコード削除（localStorage.clear + window.location.reload）
+  - TDD Red-Green 完了: 5テスト全PASS
+  - Phase 1-12 全完了、PR作成待ち
+
+---
+
 ## 2026-03-09 - UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001 テンプレート準拠監査ルールを追補
 
 - **Agent**: task-specification-creator
@@ -5701,16 +5726,3 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加
   - workflow12 の Phase 11 screenshot 証跡と Phase 12 実装ガイドを validator 準拠へ再同期
   - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新
-
----
-
-## 2026-03-09 - TASK-10A-G スキルライフサイクル統合テスト強化
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（タスク完了記録 + completed 移管）
-- **Result**: success
-- **Notes**:
-  - Layer 1/2/3 の 3 ファイル 55 tests（25/14/16）と representative screenshots を Phase 11-12 成果物へ同期
-  - `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を集約
-  - workflow を `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ移管し、関連 backlog も同 workflow 配下 `unassigned-task/` へ移した
-  - `audit-unassigned-tasks.js` を completed workflow 配下の `--target-file` 監査へ対応

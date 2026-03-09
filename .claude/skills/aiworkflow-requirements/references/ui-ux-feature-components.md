@@ -1134,7 +1134,7 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 | タスクID | 内容 | 優先度 | 仕様書 |
 | --- | --- | --- | --- |
-| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
 | TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
 | TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
 

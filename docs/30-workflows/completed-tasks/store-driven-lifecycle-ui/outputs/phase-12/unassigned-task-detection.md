@@ -15,13 +15,13 @@
 
 ## open backlog（今回も継続して有効）
 
-| タスクID                                            | 概要                                                                                | 優先度 | 指示書                                                                                                                                 | 物理ファイル |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION`         | `SkillEditor.tsx` に残る 6 箇所の直接IPCを Store action へ移行する                  | 中     | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` | 存在確認済み |
-| `UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD` | Store 個別セレクタ mock の標準ヘルパーを導入し、テストパターンを統一する            | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md`   | 存在確認済み |
-| `UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION`     | `improvementResult` を画面横断共有が必要になった時点で Store 統合する               | 低     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md`       | 存在確認済み |
-| `UT-10A-F-SCREENSHOT-HARNESS-HARDENING`             | Screenshot Harness の待機条件を `data-testid` 基準で標準化し、UI 文言差分に強くする | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md`               | 存在確認済み |
-| `UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION`         | 移管前 2workflow と移管後 completed 正本の正規化手順を自動化する                    | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md`           | 存在確認済み |
+| タスクID                                            | 概要                                                                                | 優先度 | 指示書                                                                                                                               | 物理ファイル |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| `UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION`         | `SkillEditor.tsx` に残る 6 箇所の直接IPCを Store action へ移行する                  | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md`         | 存在確認済み |
+| `UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD` | Store 個別セレクタ mock の標準ヘルパーを導入し、テストパターンを統一する            | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` | 存在確認済み |
+| `UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION`     | `improvementResult` を画面横断共有が必要になった時点で Store 統合する               | 低     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md`     | 存在確認済み |
+| `UT-10A-F-SCREENSHOT-HARNESS-HARDENING`             | Screenshot Harness の待機条件を `data-testid` 基準で標準化し、UI 文言差分に強くする | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md`             | 存在確認済み |
+| `UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION`         | 移管前 2workflow と移管後 completed 正本の正規化手順を自動化する                    | 中     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md`         | 存在確認済み |
 
 ---
 

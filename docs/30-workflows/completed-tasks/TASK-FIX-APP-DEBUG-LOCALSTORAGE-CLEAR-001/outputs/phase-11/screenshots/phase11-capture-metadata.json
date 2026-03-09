@@ -1,0 +1,199 @@
+{
+  "generatedAt": "2026-03-09T13:20:45.847Z",
+  "baseUrl": "http://localhost:5181",
+  "appUrl": "http://localhost:5181/",
+  "harnessUrl": "http://localhost:5181/phase11-app-debug-localstorage-clear.html",
+  "screenshots": [
+    {
+      "tc": "TC-11-UI-01",
+      "file": "TC-11-UI-01-settings-initial.png",
+      "note": "AppDock から SettingsView を開き、autoSyncEnabled=false の初期状態を確認する。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-164044-wt2/docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/outputs/phase-11/screenshots/TC-11-UI-01-settings-initial.png",
+      "capturedAt": "2026-03-09T13:20:42.667Z"
+    },
+    {
+      "tc": "TC-11-UI-02",
+      "file": "TC-11-UI-02-autosync-enabled.png",
+      "note": "SettingsView 上で自動同期チェックを有効化した直後。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-164044-wt2/docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/outputs/phase-11/screenshots/TC-11-UI-02-autosync-enabled.png",
+      "capturedAt": "2026-03-09T13:20:44.075Z"
+    },
+    {
+      "tc": "TC-11-UI-03",
+      "file": "TC-11-UI-03-autosync-persisted-after-reload.png",
+      "note": "reload 後に SettingsView を再度開いても autoSyncEnabled=true が保持される。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-164044-wt2/docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/outputs/phase-11/screenshots/TC-11-UI-03-autosync-persisted-after-reload.png",
+      "capturedAt": "2026-03-09T13:20:45.838Z"
+    }
+  ],
+  "initialNavigationType": "navigate",
+  "storageSnapshot": {
+    "state": {
+      "currentView": "settings",
+      "selectedFile": null,
+      "expandedFolders": [],
+      "userProfile": {
+        "name": "ユーザー",
+        "email": "",
+        "avatar": "",
+        "plan": "free"
+      },
+      "autoSyncEnabled": true,
+      "windowSize": {
+        "width": 1200,
+        "height": 800
+      },
+      "isNavExpanded": true,
+      "permissionHistory": [],
+      "notifications": []
+    },
+    "version": 0
+  },
+  "skipAuthCompatibility": "PASS",
+  "debugLogDetected": false,
+  "repeatedConsoleMessageCounts": {
+    "[vite] connecting...": 3,
+    "[vite] connected.": 3,
+    "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold": 3,
+    "[AuthGuard] 🔧 Development mode: auto-login with mock user": 2,
+    "[DevMockAuth] Development Mode Active": 2,
+    "🔧 Authentication is bypassed": 2,
+    "👤 Mock User: {id: 34d1ff23-db41-4201-9ede-4ba55b6ea202, email: daishimanju@gmail.com, displayName: Daishi Manju, avatarUrl: null, provider: google}": 2,
+    "🔑 Mock Session: {access_token: mock-dev-access-token, expires_at: 3/10/2026, 10:20:40 PM}": 2,
+    "💡 To disable: run `localStorage.removeItem('dev-skip-auth')` and reload": 2,
+    "console.groupEnd": 2,
+    "🔍 [App] Initializing auth...": 2,
+    "[AuthModeSlice] Registering auth mode change listener": 2,
+    "[AuthModeSlice] Listener already registered, skipping": 2
+  },
+  "consoleMessages": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "info",
+      "text": "🌐 i18next is maintained with support from Locize — consider powering your project with managed localization (AI, CDN, integrations): https://locize.com 💙"
+    },
+    {
+      "type": "log",
+      "text": "[AuthGuard] 🔧 Development mode: auto-login with mock user"
+    },
+    {
+      "type": "startGroup",
+      "text": "[DevMockAuth] Development Mode Active"
+    },
+    {
+      "type": "log",
+      "text": "🔧 Authentication is bypassed"
+    },
+    {
+      "type": "log",
+      "text": "👤 Mock User: {id: 34d1ff23-db41-4201-9ede-4ba55b6ea202, email: daishimanju@gmail.com, displayName: Daishi Manju, avatarUrl: null, provider: google}"
+    },
+    {
+      "type": "log",
+      "text": "🔑 Mock Session: {access_token: mock-dev-access-token, expires_at: 3/10/2026, 10:20:40 PM}"
+    },
+    {
+      "type": "log",
+      "text": "💡 To disable: run `localStorage.removeItem('dev-skip-auth')` and reload"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [App] Initializing auth..."
+    },
+    {
+      "type": "log",
+      "text": "[AuthGuard] 🔧 Development mode: auto-login with mock user"
+    },
+    {
+      "type": "startGroup",
+      "text": "[DevMockAuth] Development Mode Active"
+    },
+    {
+      "type": "log",
+      "text": "🔧 Authentication is bypassed"
+    },
+    {
+      "type": "log",
+      "text": "👤 Mock User: {id: 34d1ff23-db41-4201-9ede-4ba55b6ea202, email: daishimanju@gmail.com, displayName: Daishi Manju, avatarUrl: null, provider: google}"
+    },
+    {
+      "type": "log",
+      "text": "🔑 Mock Session: {access_token: mock-dev-access-token, expires_at: 3/10/2026, 10:20:40 PM}"
+    },
+    {
+      "type": "log",
+      "text": "💡 To disable: run `localStorage.removeItem('dev-skip-auth')` and reload"
+    },
+    {
+      "type": "endGroup",
+      "text": "console.groupEnd"
+    },
+    {
+      "type": "log",
+      "text": "🔍 [App] Initializing auth..."
+    },
+    {
+      "type": "log",
+      "text": "[AuthSlice] Registering auth state change listener"
+    },
+    {
+      "type": "log",
+      "text": "[AuthSlice] Auth state changed: {authenticated: true, user: Object, isOffline: false}"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "[AuthModeSlice] Registering auth mode change listener"
+    },
+    {
+      "type": "log",
+      "text": "[AuthModeSlice] Listener already registered, skipping"
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "log",
+      "text": "[AuthModeSlice] Registering auth mode change listener"
+    },
+    {
+      "type": "log",
+      "text": "[AuthModeSlice] Listener already registered, skipping"
+    }
+  ]
+}

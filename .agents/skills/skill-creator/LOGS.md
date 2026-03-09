@@ -4,31 +4,6 @@
 
 ---
 
-## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に Zustand Store 並行実行ガードパターンを追加
-  - Phase 4 テスト仕様テンプレートにモノレポテスト実行ディレクトリ注意書きを追加推奨
-  - Phase 2 設計テンプレートに並行実行ガード検討チェックポイントを追加推奨
-
----
-
-## [2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査パターン同期]
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン「current workflow 再監査で CLI drift / 未タスク9セクション / skill同期を同時に閉じる」を追加
-  - 同ファイルに成功パターン「BrowserRouter 配下の screenshot harness は descendant route で作る」を追加
-  - workflow の `documentation-changelog.md` と `skill-feedback-report.md` に更新した skill 名を記録する運用を標準化
-  - `SKILL.md` 変更履歴を `10.37.18` として同期
-
----
-
 ## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
 
 - **Agent**: skill-creator (update)
@@ -50,18 +25,6 @@
   - `references/patterns.md` に成功パターン「Phase12 証跡テーブル互換 + screenshot preflight 固定」を追加
   - `validate-phase11-screenshot-coverage` の表形式要件（`テストケース`/`証跡`）を再発防止ルールとして明文化
   - screenshot 再取得時の依存不足（Rollup optional dependency）に対する `pnpm install` preflight を標準化
-
----
-
-## [2026-03-08 - TASK-10A-F Phase 12 branch 再確認パターン追加]
-
-- **Agent**: skill-creator (update)
-- **Phase**: save-patterns
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に成功パターン「comparison baseline 正規化つき branch 再監査（TASK-10A-F）」を追加
-  - 同ファイルに失敗パターン「current workflow PASS だけで comparison baseline を放置」を追加
-  - Phase 12 クイックナビへ comparison baseline 正規化を反映し、`currentViolations=0` と `baselineViolations>0` の二層報告を branch 判定前提として固定
 
 ---
 
@@ -1842,13 +1805,3 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
   - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
-
-## 2026-03-09 - TASK-10A-G Phase 12再利用パターン追補
-
-- **Agent**: skill-creator (update)
-- **Phase**: save-patterns
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に `[Phase 12] task単位 screenshot command + metadata 固定（TASK-10A-G）` を追加
-  - `references/patterns.md` に `[Phase 12] 継続利用 open backlog も template 準拠へ戻す（TASK-10A-G）` を追加
-  - `SKILL.md` 変更履歴へ `10.37.19` を追記

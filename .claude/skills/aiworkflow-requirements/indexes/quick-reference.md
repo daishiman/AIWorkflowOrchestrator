@@ -7,12 +7,6 @@
 
 ## よく使うパターン
 
-### 仕様検索の分割ルール
-
-- `search-spec.js` は 1概念1クエリで分割して使う
-- 例: `TASK-10A-G useSkillAnalysis SkillCreateWizard` とまとめず、`TASK-10A-G` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
-- broad query が 0 件でも、`resource-map.md` / `quick-reference.md` / `topic-map.md` から再入場して取りこぼしを防ぐ
-
 ### Electron IPC パターン
 
 ```typescript
@@ -126,6 +120,24 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 
 **詳細**: architecture-patterns.md L141-234
 
+### Persist / localStorage 破壊バグの調査パターン
+
+`localStorage.clear()` や `window.location.reload()` が絡むバグは、1回の broad query では取りこぼしやすい。`persist` / `localStorage` / `window.location.reload` / `WebContents` を**1概念1クエリ**で分割検索する。
+
+| 検索語 | 最初に読む | 目的 |
+| ------ | ---------- | ---- |
+| `persist` | `arch-state-management.md`, `arch-ipc-persistence.md` | Zustand persist 契約と永続化破壊の影響確認 |
+| `localStorage` | `testing-component-patterns.md`, `development-guidelines.md` | happy-dom polyfill とデバッグコード管理確認 |
+| `window.location.reload` | `lessons-learned.md` | reload 競合の再発条件確認 |
+| `WebContents` | `security-electron-ipc.md`, `error-handling.md` | BrowserWindow/WebContents ライフサイクルとエラー分類確認 |
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "persist" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "localStorage" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "window.location.reload" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "WebContents" -C 3
+```
+
 ### S31: executeSkill 並行実行ガード
 
 async アクション内で `isExecuting` による二重実行防止。microtask 境界前に同期チェックを配置する。
@@ -233,40 +245,6 @@ if (isExecuting) return;
 | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx` | toggle disabled + stream 表示 |
 
 **詳細**: arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md, ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md
-
-### TASK-10A-G: Store駆動ライフサイクル後続テスト hardening
-
-`TASK-10A-G` は **P50（既存実装の検証・補完）前提** で扱う。  
-新規 test file を先に想定せず、既存 suite の棚卸しから始める。
-
-| まず読む | 目的 |
-| --- | --- |
-| `arch-state-management.md` | RT-01〜RT-07 の状態遷移根拠 |
-| `ui-ux-feature-components.md` | SkillManagementPanel / SkillAnalysisView / ChatPanel の view 契約 |
-| `testing-component-patterns.md` | 既存 suite 追記パターン |
-| `task-workflow.md` | 依存タスクと既存 backlog の確認 |
-
-| 先に棚卸しする既存 suite | 役割 |
-| --- | --- |
-| `SkillCreateWizard.test.tsx` | create action / success / error |
-| `SkillAnalysisView.test.tsx` | analyze / retry / improve |
-| `useSkillAnalysis.test.ts` | hook 委譲 / confirm 分岐 |
-| `SkillManagementPanel.integration.test.tsx` | create / analysis view 往復、一覧維持 |
-| `agentSlice.skill-lifecycle.test.ts` | slice state/action の成功・失敗 |
-| `ChatPanel.skill-management.test.tsx` | top-level toggle / `isExecuting` 回帰 |
-
-| 検索語 | 用途 |
-| --- | --- |
-| `TASK-10A-G` | 後続タスクの台帳追跡 |
-| `store-driven lifecycle` | TASK-10A-F 引き渡し元の逆引き |
-| `RT-01` `RT-07` | 回帰観点の直接参照 |
-| `TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION` | 別 backlog の重複起票防止 |
-
-補足:
-
-- 旧draftのように `skillHandlers.create.test.ts` や `SkillLifecycle.integration.test.tsx` を先に捏造しない。
-- `vitest` 起動失敗は product failure ではなく環境 blocker の可能性があるため、Phase 9 / 11 で preflight を先に行う。
-- Phase 11 の screenshot は `pnpm --filter @repo/desktop run screenshot:task-045-lifecycle-test-hardening` で task 単位に再取得する。
 
 ---
 

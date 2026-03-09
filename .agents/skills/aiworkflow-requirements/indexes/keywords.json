@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-09T13:30:12.672Z",
-  "totalKeywords": 1934,
+  "generated": "2026-03-09T02:07:05.114Z",
+  "totalKeywords": 1523,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -28,7 +28,6 @@
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "interfaces-rag-file-selection.md",
-      "logs-archive.md",
       "security-api-electron.md",
       "security-api.md",
       "security-skill-execution.md",
@@ -495,7 +494,6 @@
       "lessons-learned.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
-      "logs-archive.md",
       "rag-desktop-state.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
@@ -655,7 +653,6 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
-      "logs-archive.md",
       "ui-ux-agent-execution.md"
     ],
     "Dashboard": [
@@ -665,21 +662,18 @@
     "Workspace": [
       "api-ipc-agent.md",
       "arch-state-management.md",
-      "llm-workspace-chat-edit.md",
-      "logs-archive.md"
+      "llm-workspace-chat-edit.md"
     ],
     "Chat": [
       "api-ipc-agent.md",
       "arch-state-management.md",
       "llm-workspace-chat-edit.md",
-      "logs-archive.md",
       "ui-ux-llm-selector.md"
     ],
     "Edit": [
       "api-ipc-agent.md",
       "arch-state-management.md",
-      "llm-workspace-chat-edit.md",
-      "logs-archive.md"
+      "llm-workspace-chat-edit.md"
     ],
     "チャネル": [
       "api-ipc-agent.md",
@@ -743,7 +737,6 @@
       "architecture-implementation-patterns.md",
       "claude-code-skills-process.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "quality-e2e-testing.md",
       "security-electron-ipc.md"
     ],
@@ -769,7 +762,6 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "quality-e2e-testing.md",
       "security-electron-ipc.md",
       "security-skill-ipc.md",
@@ -790,7 +782,6 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "security-electron-ipc.md",
       "task-workflow.md",
       "testing-component-patterns.md"
@@ -802,7 +793,6 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "security-electron-ipc.md"
     ],
     "AUTH": [
@@ -812,7 +802,6 @@
       "architecture-implementation-patterns.md",
       "error-handling.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "security-electron-ipc.md",
       "testing-component-patterns.md"
     ],
@@ -823,7 +812,6 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "security-electron-ipc.md"
     ],
     "スキルファイル操作": [
@@ -848,7 +836,6 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
-      "logs-archive.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -907,7 +894,6 @@
     ],
     "認証": [
       "api-ipc-auth.md",
-      "logs-archive.md",
       "security-electron-ipc.md",
       "ui-ux-forms.md"
     ],
@@ -945,7 +931,6 @@
       "arch-state-management.md",
       "arch-ui-components.md",
       "interfaces-chat-history.md",
-      "logs-archive.md",
       "technology-desktop.md"
     ],
     "型定義": [
@@ -979,14 +964,12 @@
     "SESSION": [
       "api-ipc-auth.md",
       "architecture-auth-security.md",
-      "error-handling.md",
-      "logs-archive.md"
+      "error-handling.md"
     ],
     "REFRESH": [
       "api-ipc-auth.md",
       "architecture-auth-security.md",
-      "error-handling.md",
-      "logs-archive.md"
+      "error-handling.md"
     ],
     "システム": [
       "api-ipc-system.md"
@@ -1043,7 +1026,6 @@
       "claude-code-overview.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk.md",
-      "logs-archive.md",
       "security-skill-ipc.md",
       "spec-splitting-guidelines.md"
     ],
@@ -1059,7 +1041,6 @@
     "CLI": [
       "arch-claude-cli.md",
       "interfaces-agent-sdk-integration.md",
-      "logs-archive.md",
       "security-skill-ipc.md"
     ],
     "連携パターン": [
@@ -1078,7 +1059,6 @@
       "interfaces-agent-sdk.md",
       "interfaces-chat-history.md",
       "ipc-contract-checklist.md",
-      "logs-archive.md",
       "security-skill-ipc.md",
       "testing-component-patterns.md",
       "ui-ux-feature-skill-stream.md"
@@ -1114,7 +1094,6 @@
     ],
     "Handler": [
       "arch-ipc-persistence.md",
-      "logs-archive.md",
       "security-skill-ipc.md"
     ],
     "Registration": [
@@ -1153,7 +1132,6 @@
       "arch-state-management.md",
       "interfaces-rag-knowledge-graph-store.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "security-skill-execution.md",
       "testing-component-patterns.md",
       "testing-fixtures.md",
@@ -1167,29 +1145,24 @@
     ],
     "STORE": [
       "arch-state-management.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SLICE": [
       "arch-state-management.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "BASELINE": [
       "arch-state-management.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "Notification": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "ui-ux-feature-components.md"
     ],
     "HistorySearch": [
       "arch-state-management.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "実装同期": [
       "arch-state-management.md"
@@ -1224,7 +1197,6 @@
     ],
     "Zustand": [
       "arch-state-management.md",
-      "logs-archive.md",
       "testing-component-patterns.md",
       "ui-ux-system-prompt.md"
     ],
@@ -1243,7 +1215,6 @@
     "Hooks": [
       "arch-state-management.md",
       "interfaces-chat-history.md",
-      "logs-archive.md",
       "testing-component-patterns.md"
     ],
     "無限ループ防止パターン": [
@@ -1275,12 +1246,10 @@
       "arch-state-management.md"
     ],
     "STATE": [
-      "arch-state-management.md",
-      "logs-archive.md"
+      "arch-state-management.md"
     ],
     "CENTRALIZATION": [
-      "arch-state-management.md",
-      "logs-archive.md"
+      "arch-state-management.md"
     ],
     "permissionHistorySlice": [
       "arch-state-management.md"
@@ -1307,7 +1276,6 @@
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
     ],
@@ -1317,8 +1285,7 @@
       "interfaces-agent-sdk-integration.md"
     ],
     "SkillCenter": [
-      "arch-state-management.md",
-      "logs-archive.md"
+      "arch-state-management.md"
     ],
     "防御状態管理": [
       "arch-state-management.md"
@@ -1338,7 +1305,6 @@
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "task-workflow.md",
       "technology-backend.md",
       "testing-playwright-e2e.md",
@@ -1365,7 +1331,6 @@
     "スキルライフサイクル": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "task-workflow.md"
     ],
     "移行完了": [
@@ -1383,7 +1348,6 @@
     "ITERABLE": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "task-workflow.md"
     ],
     "HARDENING": [
@@ -1407,13 +1371,11 @@
       "ui-ux-panels.md"
     ],
     "SkillSelector": [
-      "arch-ui-components.md",
-      "logs-archive.md"
+      "arch-ui-components.md"
     ],
     "ChatPanel": [
       "arch-ui-components.md",
       "interfaces-agent-sdk-skill.md",
-      "logs-archive.md",
       "ui-ux-agent-execution.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md"
@@ -1429,8 +1391,7 @@
       "architecture-file-conversion.md"
     ],
     "SkillManagementPanel": [
-      "arch-ui-components.md",
-      "logs-archive.md"
+      "arch-ui-components.md"
     ],
     "ビュー統合アーキテクチャパターン": [
       "arch-ui-components.md"
@@ -1608,7 +1569,6 @@
     ],
     "history": [
       "architecture-file-conversion.md",
-      "logs-archive.md",
       "ui-history-integration.md"
     ],
     "service": [
@@ -1682,7 +1642,6 @@
     ],
     "SkillAPI": [
       "architecture-implementation-patterns.md",
-      "logs-archive.md",
       "security-skill-ipc.md"
     ],
     "統一パターン": [
@@ -1691,7 +1650,6 @@
     "実装": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc.md",
@@ -1702,8 +1660,7 @@
     ],
     "UT": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SDK": [
       "architecture-implementation-patterns.md",
@@ -1714,7 +1671,6 @@
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "testing-component-patterns.md"
     ],
     "型統合パターン": [
@@ -1727,7 +1683,6 @@
       "architecture-implementation-patterns.md",
       "interfaces-agent-sdk-skill.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "testing-component-patterns.md",
       "ui-ux-feature-components.md"
     ],
@@ -1748,54 +1703,45 @@
     ],
     "IMPORT": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "CHANNEL": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "CONFLICT": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "準拠バリデーション一括移行パターン": [
       "architecture-implementation-patterns.md"
     ],
     "VALIDATION": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "CONSISTENCY": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "データフロー型ギャップパターン": [
       "architecture-implementation-patterns.md"
     ],
     "DATA": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "FLOW": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "TYPE": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "GAPS": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "Date": [
       "architecture-implementation-patterns.md"
@@ -1826,13 +1772,11 @@
     ],
     "NAMING": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "AUDIT": [
       "architecture-implementation-patterns.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "ui-ux-feature-components.md"
     ],
     "実施": [
@@ -1855,23 +1799,19 @@
     ],
     "IMP": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SCOPE": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "CONTROL": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "仕様準拠": [
       "architecture-implementation-patterns.md"
@@ -1884,12 +1824,10 @@
       "architecture-implementation-patterns.md"
     ],
     "system": [
-      "architecture-implementation-patterns.md",
-      "logs-archive.md"
+      "architecture-implementation-patterns.md"
     ],
     "creator": [
       "architecture-implementation-patterns.md",
-      "logs-archive.md",
       "quality-e2e-testing.md"
     ],
     "共有型インポート標準パターン": [
@@ -1916,7 +1854,6 @@
     ],
     "UX": [
       "architecture-overview.md",
-      "logs-archive.md",
       "master-design.md",
       "spec-splitting-guidelines.md",
       "ui-ux-advanced.md",
@@ -2015,8 +1952,7 @@
       "spec-guidelines.md"
     ],
     "description": [
-      "claude-code-agents-spec.md",
-      "logs-archive.md"
+      "claude-code-agents-spec.md"
     ],
     "フィールドの詳細記述規則": [
       "claude-code-agents-spec.md"
@@ -2052,7 +1988,6 @@
     "Phase": [
       "claude-code-agents-workflow.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
@@ -2076,16 +2011,14 @@
     ],
     "list": [
       "claude-code-agents-workflow.md",
-      "claude-code-skills-process.md",
-      "logs-archive.md"
+      "claude-code-skills-process.md"
     ],
     "md": [
       "claude-code-agents-workflow.md",
       "claude-code-skills-agents.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "品質基準": [
       "claude-code-agents-workflow.md",
@@ -2153,12 +2086,10 @@
       "claude-code-skills-resources.md"
     ],
     "Task": [
-      "claude-code-skills-agents.md",
-      "logs-archive.md"
+      "claude-code-skills-agents.md"
     ],
     "仕様書": [
-      "claude-code-skills-agents.md",
-      "logs-archive.md"
+      "claude-code-skills-agents.md"
     ],
     "目的": [
       "claude-code-skills-agents.md"
@@ -2235,12 +2166,10 @@
     ],
     "State": [
       "csrf-state-parameter.md",
-      "logs-archive.md",
       "security-implementation.md"
     ],
     "Parameter": [
-      "csrf-state-parameter.md",
-      "logs-archive.md"
+      "csrf-state-parameter.md"
     ],
     "CSRF": [
       "csrf-state-parameter.md"
@@ -2447,7 +2376,6 @@
       "deployment-gha.md",
       "deployment.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "technology-devops.md",
       "testing-playwright-e2e.md"
     ],
@@ -2595,7 +2523,6 @@
     ],
     "js": [
       "directory-structure.md",
-      "logs-archive.md",
       "technology-core.md"
     ],
     "desktop": [
@@ -2621,12 +2548,10 @@
     "pnpm": [
       "directory-structure.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "ui-ux-atoms-patterns.md"
     ],
     "workspace": [
       "directory-structure.md",
-      "logs-archive.md",
       "ui-ux-feature-components.md"
     ],
     "Discord": [
@@ -2702,13 +2627,11 @@
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "skill-executor-type-migration.md"
     ],
     "RETRY": [
       "error-handling.md",
-      "interfaces-agent-sdk-executor.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-executor.md"
     ],
     "TokenRefreshScheduler": [
       "error-handling.md"
@@ -2718,19 +2641,16 @@
     ],
     "OAuth": [
       "error-handling.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "エラーコードマッピング": [
       "error-handling.md"
     ],
     "GOOGLE": [
-      "error-handling.md",
-      "logs-archive.md"
+      "error-handling.md"
     ],
     "LOGIN": [
-      "error-handling.md",
-      "logs-archive.md"
+      "error-handling.md"
     ],
     "AuthMode": [
       "error-handling.md",
@@ -2744,19 +2664,16 @@
     ],
     "MODE": [
       "error-handling.md",
-      "logs-archive.md",
       "testing-component-patterns.md"
     ],
     "CONTRACT": [
       "error-handling.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "testing-component-patterns.md"
     ],
     "ALIGNMENT": [
       "error-handling.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "testing-component-patterns.md"
     ],
     "認証フォールバックパターン": [
@@ -2836,12 +2753,10 @@
       "lessons-learned.md"
     ],
     "リトライ機構": [
-      "interfaces-agent-sdk-executor.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-executor.md"
     ],
     "PermissionResolver": [
-      "interfaces-agent-sdk-executor.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-executor.md"
     ],
     "完了タスク・履歴": [
       "interfaces-agent-sdk-history.md"
@@ -2856,14 +2771,12 @@
     ],
     "未タスク": [
       "interfaces-agent-sdk-history.md",
-      "logs-archive.md",
       "quality-e2e-testing.md",
       "task-workflow.md",
       "ui-ux-search-panel.md"
     ],
     "Integration": [
-      "interfaces-agent-sdk-integration.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-integration.md"
     ],
     "Session": [
       "interfaces-agent-sdk-integration.md"
@@ -2881,15 +2794,13 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "lessons-learned.md",
-      "logs-archive.md",
       "ui-ux-feature-components.md"
     ],
     "SkillImportStore": [
       "interfaces-agent-sdk-skill.md"
     ],
     "SkillSlice": [
-      "interfaces-agent-sdk-skill.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-skill.md"
     ],
     "ModifierSkill": [
       "interfaces-agent-sdk-skill.md"
@@ -2898,16 +2809,14 @@
       "interfaces-agent-sdk-skill.md"
     ],
     "SkillFileManager": [
-      "interfaces-agent-sdk-skill.md",
-      "logs-archive.md"
+      "interfaces-agent-sdk-skill.md"
     ],
     "テストアーキテクチャ": [
       "interfaces-agent-sdk-skill.md"
     ],
     "SkillCreatorService": [
       "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "スキル分析": [
       "interfaces-agent-sdk-skill.md"
@@ -3430,27 +3339,8 @@
     "教訓集": [
       "lessons-learned.md"
     ],
-    "HANDLER": [
-      "lessons-learned.md",
-      "logs-archive.md"
-    ],
-    "GRACEFUL": [
-      "lessons-learned.md"
-    ],
-    "DEGRADATION": [
-      "lessons-learned.md"
-    ],
-    "再監査": [
-      "lessons-learned.md",
-      "logs-archive.md"
-    ],
-    "再確認": [
-      "lessons-learned.md",
-      "logs-archive.md"
-    ],
     "INTEGRATION": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "REGRESSION": [
       "lessons-learned.md"
@@ -3465,35 +3355,14 @@
     "統合回帰強化": [
       "lessons-learned.md"
     ],
-    "SUPABASE": [
-      "lessons-learned.md"
-    ],
-    "FALLBACK": [
-      "lessons-learned.md",
-      "logs-archive.md"
-    ],
-    "PROFILE": [
-      "lessons-learned.md"
-    ],
-    "AVATAR": [
-      "lessons-learned.md"
-    ],
-    "Profile": [
-      "lessons-learned.md"
-    ],
-    "Avatar": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ追加": [
+    "再確認": [
       "lessons-learned.md"
     ],
     "移行": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "VIEW": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "ENHANCEMENT": [
       "lessons-learned.md"
@@ -3516,16 +3385,16 @@
       "lessons-learned.md"
     ],
     "KEY": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
     ],
     "REGISTRATION": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "auth": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "key": [
       "lessons-learned.md"
@@ -3534,40 +3403,31 @@
       "lessons-learned.md"
     ],
     "EXECUTOR": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "AUTHKEY": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "DI": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "AuthKeyService": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "経路統一": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "INVESTIGATE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "ELECTRON": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SANDBOX": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "ERROR": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "sandbox": [
       "lessons-learned.md"
@@ -3579,8 +3439,7 @@
       "lessons-learned.md"
     ],
     "追補": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "境界基準化の再監査": [
       "lessons-learned.md"
@@ -3588,12 +3447,14 @@
     "EDITOR": [
       "lessons-learned.md"
     ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
     "連続是正": [
       "lessons-learned.md"
     ],
     "CENTER": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "ADVANCED": [
       "lessons-learned.md"
@@ -3606,13 +3467,11 @@
     ],
     "SkillAnalysisView": [
       "lessons-learned.md",
-      "logs-archive.md",
       "task-workflow.md",
       "ui-ux-feature-components.md"
     ],
     "SkillCreateWizard": [
       "lessons-learned.md",
-      "logs-archive.md",
       "task-workflow.md",
       "ui-ux-feature-components.md"
     ],
@@ -3620,20 +3479,16 @@
       "lessons-learned.md"
     ],
     "CALLBACK": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SERVER": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "WORKER": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "EXIT": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "authCallbackServer": [
       "lessons-learned.md"
@@ -3648,12 +3503,10 @@
       "lessons-learned.md"
     ],
     "REFACTOR": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SHARED": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SOURCE": [
       "lessons-learned.md"
@@ -3665,28 +3518,22 @@
       "lessons-learned.md"
     ],
     "QUICK": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "VALIDATE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "EMPTY": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "FIELD": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "quick": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "validate": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "空フィールドガード": [
       "lessons-learned.md"
@@ -3710,12 +3557,10 @@
       "lessons-learned.md"
     ],
     "tasks": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "task": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "unassigned": [
       "lessons-learned.md"
@@ -3724,8 +3569,7 @@
       "lessons-learned.md"
     ],
     "target": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "file": [
       "lessons-learned.md"
@@ -3737,8 +3581,7 @@
       "lessons-learned.md"
     ],
     "Step": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "diff": [
       "lessons-learned.md"
@@ -3759,38 +3602,31 @@
       "lessons-learned.md"
     ],
     "PHASE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "EVIDENCE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "LINK": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "再確認証跡・未タスクリンク整合ガード": [
       "lessons-learned.md"
     ],
     "EXECUTE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "INTERFACE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "契約ブリッジ": [
       "lessons-learned.md"
     ],
     "HANDLE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "DUPLICATE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "登録一元化": [
       "lessons-learned.md"
@@ -3805,16 +3641,13 @@
       "lessons-learned.md"
     ],
     "THEME": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "DYNAMIC": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SWITCH": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "settingsSlice": [
       "lessons-learned.md"
@@ -3835,35 +3668,28 @@
       "lessons-learned.md"
     ],
     "PRELOAD": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "EXTENSION": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SPEC": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "仕様差分の統合是正": [
       "lessons-learned.md"
     ],
     "TS": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "VITEST": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "TSCONFIG": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "PATHS": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "Vitest": [
       "lessons-learned.md"
@@ -3881,12 +3707,10 @@
       "lessons-learned.md"
     ],
     "MODULE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "RESOLUTION": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "repo": [
       "lessons-learned.md"
@@ -3896,20 +3720,16 @@
     ],
     "ガード": [
       "lessons-learned.md",
-      "logs-archive.md",
       "security-electron-ipc.md"
     ],
     "ID": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "MISMATCH": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "SkillImportDialog": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "id": [
       "lessons-learned.md"
@@ -3921,15 +3741,13 @@
       "lessons-learned.md"
     ],
     "import": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "インターフェース整合修正": [
       "lessons-learned.md"
     ],
     "REMOVE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "remove": [
       "lessons-learned.md"
@@ -3973,7 +3791,6 @@
     ],
     "filter": [
       "lessons-learned.md",
-      "logs-archive.md",
       "ui-ux-atoms-patterns.md"
     ],
     "を使用": [
@@ -3999,7 +3816,6 @@
     ],
     "workflow": [
       "lessons-learned.md",
-      "logs-archive.md",
       "spec-splitting-guidelines.md"
     ],
     "の参照整合を検証": [
@@ -4071,8 +3887,7 @@
     ],
     "console": [
       "lessons-learned.md",
-      "logging-migration-guide.md",
-      "logs-archive.md"
+      "logging-migration-guide.md"
     ],
     "log": [
       "lessons-learned.md",
@@ -4103,8 +3918,7 @@
       "lessons-learned.md"
     ],
     "deprecated": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "プロパティ正式移行": [
       "lessons-learned.md"
@@ -4116,16 +3930,13 @@
       "lessons-learned.md"
     ],
     "HOOKS": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "COMPONENT": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "MIGRATION": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "個別セレクタ": [
       "lessons-learned.md"
@@ -4135,29 +3946,23 @@
     ],
     "TEST": [
       "lessons-learned.md",
-      "logs-archive.md",
       "technology-devops.md",
       "testing-component-patterns.md"
     ],
     "renderHook": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "パターン移行": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "AGENTVIEW": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "INFINITE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "LOOP": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "無限ループ修正テスト": [
       "lessons-learned.md"
@@ -4179,30 +3984,25 @@
       "ui-ux-atoms-patterns.md"
     ],
     "SkillCreator": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "セキュリティ強化": [
       "lessons-learned.md"
     ],
     "RESPONSE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "UNWRAP": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "レスポンスラッパー未展開修正": [
       "lessons-learned.md"
     ],
     "DOUBLE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "REG": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "ハンドラ二重登録防止": [
       "lessons-learned.md"
@@ -4217,15 +4017,13 @@
       "lessons-learned.md"
     ],
     "GATE": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "検証ゲート整合化": [
       "lessons-learned.md"
     ],
     "スキル共有・インポート機能": [
-      "lessons-learned.md",
-      "logs-archive.md"
+      "lessons-learned.md"
     ],
     "スキルデバッグモード実装": [
       "lessons-learned.md"
@@ -4254,6 +4052,27 @@
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
+    "SUPABASE": [
+      "lessons-learned.md"
+    ],
+    "FALLBACK": [
+      "lessons-learned.md"
+    ],
+    "PROFILE": [
+      "lessons-learned.md"
+    ],
+    "AVATAR": [
+      "lessons-learned.md"
+    ],
+    "Profile": [
+      "lessons-learned.md"
+    ],
+    "Avatar": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ追加": [
+      "lessons-learned.md"
+    ],
     "APIKEY": [
       "lessons-learned.md"
     ],
@@ -4262,23 +4081,6 @@
     ],
     "ハードニングでの教訓": [
       "lessons-learned.md"
-    ],
-    "教訓": [
-      "lessons-learned.md"
-    ],
-    "ワークフロー教訓": [
-      "lessons-learned.md"
-    ],
-    "検証実行": [
-      "lessons-learned.md"
-    ],
-    "CONCURRENCY": [
-      "lessons-learned.md",
-      "logs-archive.md"
-    ],
-    "再確認追補": [
-      "lessons-learned.md",
-      "logs-archive.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4419,1318 +4221,6 @@
     "注意事項・ピットフォール": [
       "logging-migration-guide.md"
     ],
-    "実行ログ": [
-      "logs-archive.md"
-    ],
-    "アーカイブ": [
-      "logs-archive.md"
-    ],
-    "移管": [
-      "logs-archive.md"
-    ],
-    "派生未タスク": [
-      "logs-archive.md"
-    ],
-    "mode": [
-      "logs-archive.md"
-    ],
-    "由来の": [
-      "logs-archive.md"
-    ],
-    "domain": [
-      "logs-archive.md"
-    ],
-    "spec": [
-      "logs-archive.md",
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md"
-    ],
-    "同期ブロック残課題を仕様同期": [
-      "logs-archive.md"
-    ],
-    "記述粒度最適化": [
-      "logs-archive.md"
-    ],
-    "準拠再確認": [
-      "logs-archive.md"
-    ],
-    "未タスク診断強化": [
-      "logs-archive.md"
-    ],
-    "横断導線補強": [
-      "logs-archive.md"
-    ],
-    "仕様同期": [
-      "logs-archive.md"
-    ],
-    "contract": [
-      "logs-archive.md"
-    ],
-    "alignment": [
-      "logs-archive.md"
-    ],
-    "完了条件充足": [
-      "logs-archive.md"
-    ],
-    "SKILLHANDLERS": [
-      "logs-archive.md"
-    ],
-    "BOUNDARY": [
-      "logs-archive.md"
-    ],
-    "追加": [
-      "logs-archive.md",
-      "technology-devops.md",
-      "testing-component-patterns.md",
-      "ui-ux-settings.md"
-    ],
-    "未タスク化": [
-      "logs-archive.md"
-    ],
-    "教訓同期強化": [
-      "logs-archive.md"
-    ],
-    "実装内容": [
-      "logs-archive.md",
-      "skill-executor-type-migration.md"
-    ],
-    "苦戦箇所": [
-      "logs-archive.md"
-    ],
-    "仕様整合": [
-      "logs-archive.md"
-    ],
-    "画面回帰": [
-      "logs-archive.md"
-    ],
-    "FIVE": [
-      "logs-archive.md"
-    ],
-    "MINUTE": [
-      "logs-archive.md"
-    ],
-    "CARD": [
-      "logs-archive.md"
-    ],
-    "SYNC": [
-      "logs-archive.md"
-    ],
-    "VALIDATOR": [
-      "logs-archive.md"
-    ],
-    "起票同期": [
-      "logs-archive.md"
-    ],
-    "分解決カード同期": [
-      "logs-archive.md"
-    ],
-    "仕様書整形最適化": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所同期": [
-      "logs-archive.md"
-    ],
-    "実画面証跡": [
-      "logs-archive.md"
-    ],
-    "同期": [
-      "logs-archive.md"
-    ],
-    "再監査追補": [
-      "logs-archive.md"
-    ],
-    "phase": [
-      "logs-archive.md"
-    ],
-    "index": [
-      "logs-archive.md"
-    ],
-    "整合": [
-      "logs-archive.md"
-    ],
-    "実装の": [
-      "logs-archive.md"
-    ],
-    "DESKTOP": [
-      "logs-archive.md"
-    ],
-    "TESTRUN": [
-      "logs-archive.md"
-    ],
-    "SIGTERM": [
-      "logs-archive.md"
-    ],
-    "未タスク登録": [
-      "logs-archive.md"
-    ],
-    "運用ガード": [
-      "logs-archive.md"
-    ],
-    "分解決カード": [
-      "logs-archive.md"
-    ],
-    "画面証跡同期": [
-      "logs-archive.md"
-    ],
-    "パス正規化ガード": [
-      "logs-archive.md"
-    ],
-    "未タスク運用追補": [
-      "logs-archive.md"
-    ],
-    "仕様同期漏れ是正": [
-      "logs-archive.md"
-    ],
-    "未タスク起票": [
-      "logs-archive.md"
-    ],
-    "配置": [
-      "logs-archive.md"
-    ],
-    "分類": [
-      "logs-archive.md"
-    ],
-    "監査境界ガード": [
-      "logs-archive.md"
-    ],
-    "再利用最適化": [
-      "logs-archive.md"
-    ],
-    "クイック解決カード同期": [
-      "logs-archive.md"
-    ],
-    "最終再監査": [
-      "logs-archive.md"
-    ],
-    "未タスク配置是正": [
-      "logs-archive.md"
-    ],
-    "画面カバレッジマトリクス未記載": [
-      "logs-archive.md"
-    ],
-    "warning": [
-      "logs-archive.md"
-    ],
-    "の未タスク化": [
-      "logs-archive.md"
-    ],
-    "証跡正規化": [
-      "logs-archive.md"
-    ],
-    "coverage": [
-      "logs-archive.md"
-    ],
-    "validator": [
-      "logs-archive.md"
-    ],
-    "fail": [
-      "logs-archive.md"
-    ],
-    "是正": [
-      "logs-archive.md"
-    ],
-    "screenshot": [
-      "logs-archive.md"
-    ],
-    "Port": [
-      "logs-archive.md"
-    ],
-    "競合ガード同期": [
-      "logs-archive.md"
-    ],
-    "SCREENSHOT": [
-      "logs-archive.md"
-    ],
-    "COMMAND": [
-      "logs-archive.md"
-    ],
-    "完了状態の再同期": [
-      "logs-archive.md"
-    ],
-    "未タスク仕様書": [
-      "logs-archive.md"
-    ],
-    "include": [
-      "logs-archive.md"
-    ],
-    "path": [
-      "logs-archive.md"
-    ],
-    "をシステム仕様へ同期": [
-      "logs-archive.md"
-    ],
-    "削除導線ホットフィックス実測値の再確定": [
-      "logs-archive.md"
-    ],
-    "METADATA": [
-      "logs-archive.md"
-    ],
-    "DEFENSIVE": [
-      "logs-archive.md"
-    ],
-    "回再確認": [
-      "logs-archive.md"
-    ],
-    "証跡・未タスク移管の最終同期": [
-      "logs-archive.md"
-    ],
-    "削除導線ホットフィックス再確認": [
-      "logs-archive.md"
-    ],
-    "テスト・仕様同期": [
-      "logs-archive.md"
-    ],
-    "テンプレート最適化の仕様同期": [
-      "logs-archive.md"
-    ],
-    "preview": [
-      "logs-archive.md"
-    ],
-    "preflight": [
-      "logs-archive.md",
-      "security-electron-ipc.md"
-    ],
-    "分岐": [
-      "logs-archive.md"
-    ],
-    "課題の分離": [
-      "logs-archive.md"
-    ],
-    "漏れ補完": [
-      "logs-archive.md"
-    ],
-    "連続是正の仕様同期": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所の未タスク分離": [
-      "logs-archive.md"
-    ],
-    "仕様書別": [
-      "logs-archive.md"
-    ],
-    "SubAgent": [
-      "logs-archive.md"
-    ],
-    "運用の最適化": [
-      "logs-archive.md"
-    ],
-    "再検証": [
-      "logs-archive.md"
-    ],
-    "画面証跡解釈同期": [
-      "logs-archive.md"
-    ],
-    "証跡再取得": [
-      "logs-archive.md"
-    ],
-    "未タスクリンク是正": [
-      "logs-archive.md"
-    ],
-    "完了同期": [
-      "logs-archive.md"
-    ],
-    "件の追加": [
-      "logs-archive.md"
-    ],
-    "再発防止ガード": [
-      "logs-archive.md"
-    ],
-    "最終再確認": [
-      "logs-archive.md"
-    ],
-    "仕様反映": [
-      "logs-archive.md"
-    ],
-    "画面証跡": [
-      "logs-archive.md"
-    ],
-    "責務分離の仕様固定": [
-      "logs-archive.md"
-    ],
-    "教訓追補": [
-      "logs-archive.md"
-    ],
-    "lessons": [
-      "logs-archive.md"
-    ],
-    "learned": [
-      "logs-archive.md"
-    ],
-    "再監査と仕様同期": [
-      "logs-archive.md"
-    ],
-    "実装完了": [
-      "logs-archive.md"
-    ],
-    "TWO": [
-      "logs-archive.md"
-    ],
-    "WORKFLOW": [
-      "logs-archive.md"
-    ],
-    "BUNDLE": [
-      "logs-archive.md"
-    ],
-    "実装実体同期": [
-      "logs-archive.md"
-    ],
-    "未タスク正本化": [
-      "logs-archive.md"
-    ],
-    "包括的監査・": [
-      "logs-archive.md"
-    ],
-    "getFileTree": [
-      "logs-archive.md"
-    ],
-    "仕様追加": [
-      "logs-archive.md"
-    ],
-    "created": [
-      "logs-archive.md",
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md"
-    ],
-    "画面証跡付き": [
-      "logs-archive.md"
-    ],
-    "最適化": [
-      "logs-archive.md"
-    ],
-    "仕様書分割": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所の再資産化": [
-      "logs-archive.md"
-    ],
-    "実装完了再同期": [
-      "logs-archive.md"
-    ],
-    "残存解消": [
-      "logs-archive.md"
-    ],
-    "画面証跡再取得": [
-      "logs-archive.md"
-    ],
-    "アーキテクチャ層仕様書追補": [
-      "logs-archive.md"
-    ],
-    "多角的検証で検出": [
-      "logs-archive.md"
-    ],
-    "参照切れ是正": [
-      "logs-archive.md"
-    ],
-    "仕様同期ガード": [
-      "logs-archive.md"
-    ],
-    "仕様書追補": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所テンプレート追補": [
-      "logs-archive.md"
-    ],
-    "完了移管反映": [
-      "logs-archive.md"
-    ],
-    "LIFECYCLE": [
-      "logs-archive.md"
-    ],
-    "テンプレート最適化追補": [
-      "logs-archive.md"
-    ],
-    "仕様再同期": [
-      "logs-archive.md"
-    ],
-    "仕様再監査": [
-      "logs-archive.md"
-    ],
-    "最終同期": [
-      "logs-archive.md"
-    ],
-    "登録・仕様同期": [
-      "logs-archive.md"
-    ],
-    "ドキュメント最適化": [
-      "logs-archive.md"
-    ],
-    "テンプレート準拠": [
-      "logs-archive.md"
-    ],
-    "最終整合": [
-      "logs-archive.md"
-    ],
-    "再監査反映": [
-      "logs-archive.md"
-    ],
-    "スキルドキュメント生成仕様同期": [
-      "logs-archive.md"
-    ],
-    "完了移管": [
-      "logs-archive.md"
-    ],
-    "完了条件に基づく成果物移動": [
-      "logs-archive.md"
-    ],
-    "未タスク仕様書登録": [
-      "logs-archive.md"
-    ],
-    "同期自動検証ガード": [
-      "logs-archive.md"
-    ],
-    "仕様同期テンプレート最適化": [
-      "logs-archive.md"
-    ],
-    "分担": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所追補": [
-      "logs-archive.md"
-    ],
-    "未タスク整合確認": [
-      "logs-archive.md"
-    ],
-    "スキル使用統計・分析機能": [
-      "logs-archive.md"
-    ],
-    "未タスク登録同期追補": [
-      "logs-archive.md"
-    ],
-    "完了化": [
-      "logs-archive.md"
-    ],
-    "VERSION": [
-      "logs-archive.md"
-    ],
-    "完了反映": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所の仕様反映": [
-      "logs-archive.md"
-    ],
-    "チャンネル化": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所反映": [
-      "logs-archive.md"
-    ],
-    "スキルエディター完了同期": [
-      "logs-archive.md"
-    ],
-    "ROBUSTNESS": [
-      "logs-archive.md"
-    ],
-    "テンプレート最適化": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所追記": [
-      "logs-archive.md"
-    ],
-    "SUBAGENT": [
-      "logs-archive.md"
-    ],
-    "仕様同期・再監査": [
-      "logs-archive.md"
-    ],
-    "完了済み成果物の": [
-      "logs-archive.md"
-    ],
-    "への移管": [
-      "logs-archive.md"
-    ],
-    "再発防止スキル新設": [
-      "logs-archive.md"
-    ],
-    "AIWORKFLOW": [
-      "logs-archive.md"
-    ],
-    "REFERENCE": [
-      "logs-archive.md"
-    ],
-    "適用": [
-      "logs-archive.md"
-    ],
-    "再監査補完": [
-      "logs-archive.md"
-    ],
-    "実装パターン追補": [
-      "logs-archive.md"
-    ],
-    "再監査是正": [
-      "logs-archive.md"
-    ],
-    "件を登録": [
-      "logs-archive.md"
-    ],
-    "要件再適合": [
-      "logs-archive.md"
-    ],
-    "再監査整合": [
-      "logs-archive.md"
-    ],
-    "未タスク監査スコープ分離タスク登録": [
-      "logs-archive.md"
-    ],
-    "フロントマター": [
-      "logs-archive.md"
-    ],
-    "制約準拠化": [
-      "logs-archive.md"
-    ],
-    "全完了": [
-      "logs-archive.md"
-    ],
-    "完了記録": [
-      "logs-archive.md",
-      "task-workflow.md"
-    ],
-    "ui": [
-      "logs-archive.md",
-      "spec-splitting-guidelines.md",
-      "ui-ux-feature-components.md"
-    ],
-    "atoms": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所と": [
-      "logs-archive.md"
-    ],
-    "DevOps": [
-      "logs-archive.md",
-      "technology-devops.md"
-    ],
-    "更新": [
-      "logs-archive.md"
-    ],
-    "ATOMS": [
-      "logs-archive.md",
-      "testing-component-patterns.md"
-    ],
-    "教訓追加": [
-      "logs-archive.md"
-    ],
-    "文書整合": [
-      "logs-archive.md"
-    ],
-    "実行": [
-      "logs-archive.md"
-    ],
-    "追加監査": [
-      "logs-archive.md"
-    ],
-    "未タスク配置": [
-      "logs-archive.md"
-    ],
-    "フォーマット": [
-      "logs-archive.md"
-    ],
-    "仕様準拠再監査": [
-      "logs-archive.md"
-    ],
-    "リンク整合": [
-      "logs-archive.md"
-    ],
-    "テスト仕様補強": [
-      "logs-archive.md"
-    ],
-    "TOKENS": [
-      "logs-archive.md",
-      "testing-component-patterns.md"
-    ],
-    "完了": [
-      "logs-archive.md",
-      "ui-history-integration.md",
-      "ui-ux-feature-components.md"
-    ],
-    "未タスク参照リンク整合の再修正": [
-      "logs-archive.md"
-    ],
-    "未実施タスク誤配置の是正": [
-      "logs-archive.md"
-    ],
-    "実装苦戦箇所追記": [
-      "logs-archive.md"
-    ],
-    "反映": [
-      "logs-archive.md"
-    ],
-    "契約同期": [
-      "logs-archive.md"
-    ],
-    "RETURN": [
-      "logs-archive.md"
-    ],
-    "未タスク検出・登録": [
-      "logs-archive.md"
-    ],
-    "スキル改善": [
-      "logs-archive.md"
-    ],
-    "実装パターン・苦戦箇所文書化": [
-      "logs-archive.md"
-    ],
-    "未タスク配置整合": [
-      "logs-archive.md"
-    ],
-    "教訓追記": [
-      "logs-archive.md"
-    ],
-    "仕様書作成反映": [
-      "logs-archive.md"
-    ],
-    "準拠監査・教訓反映": [
-      "logs-archive.md"
-    ],
-    "ファイル編集": [
-      "logs-archive.md"
-    ],
-    "ハンドラー追加": [
-      "logs-archive.md"
-    ],
-    "HANDLING": [
-      "logs-archive.md"
-    ],
-    "教訓最適化": [
-      "logs-archive.md"
-    ],
-    "実装苦戦箇所・パターン追記": [
-      "logs-archive.md"
-    ],
-    "MINOR": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所記録": [
-      "logs-archive.md"
-    ],
-    "参照整合性是正": [
-      "logs-archive.md"
-    ],
-    "ハンドラ二重登録防止修正": [
-      "logs-archive.md"
-    ],
-    "実装パターンの体系化・スキル最適化": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所のシステム仕様書反映": [
-      "logs-archive.md"
-    ],
-    "移行タスクの": [
-      "logs-archive.md"
-    ],
-    "再監査・仕様同期": [
-      "logs-archive.md"
-    ],
-    "未タスク仕様書作成": [
-      "logs-archive.md"
-    ],
-    "DATETIME": [
-      "logs-archive.md"
-    ],
-    "DOC": [
-      "logs-archive.md"
-    ],
-    "再検証セッション分": [
-      "logs-archive.md"
-    ],
-    "patterns": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所の体系化": [
-      "logs-archive.md"
-    ],
-    "再発防止": [
-      "logs-archive.md"
-    ],
-    "プロパティ正式移行の仕様反映": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所・テスト環境教訓追記": [
-      "logs-archive.md"
-    ],
-    "ENABLEMENT": [
-      "logs-archive.md",
-      "testing-component-patterns.md"
-    ],
-    "技術詳細追記": [
-      "logs-archive.md"
-    ],
-    "教訓反映": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所記録・未タスク配置整合": [
-      "logs-archive.md"
-    ],
-    "完了タスク移動": [
-      "logs-archive.md"
-    ],
-    "未タスク参照整合の是正": [
-      "logs-archive.md"
-    ],
-    "仕様整合追補": [
-      "logs-archive.md"
-    ],
-    "未タスク残置・返却仕様の是正": [
-      "logs-archive.md"
-    ],
-    "セキュリティ強化完了": [
-      "logs-archive.md"
-    ],
-    "CREATOR": [
-      "logs-archive.md"
-    ],
-    "テスト": [
-      "logs-archive.md",
-      "technology-frontend.md"
-    ],
-    "FORMAL": [
-      "logs-archive.md"
-    ],
-    "型安全正式統合": [
-      "logs-archive.md"
-    ],
-    "スキル最適化": [
-      "logs-archive.md"
-    ],
-    "事後": [
-      "logs-archive.md"
-    ],
-    "スキルクリエーター経由": [
-      "logs-archive.md"
-    ],
-    "システム仕様書更新": [
-      "logs-archive.md"
-    ],
-    "DELEGATION": [
-      "logs-archive.md"
-    ],
-    "無限ループ修正": [
-      "logs-archive.md"
-    ],
-    "AgentSDKAPI": [
-      "logs-archive.md"
-    ],
-    "abort": [
-      "logs-archive.md"
-    ],
-    "型定義不一致修正": [
-      "logs-archive.md"
-    ],
-    "知見によるシステム仕様書・スキル改善": [
-      "logs-archive.md"
-    ],
-    "スキル状態管理集約": [
-      "logs-archive.md"
-    ],
-    "Abort": [
-      "logs-archive.md"
-    ],
-    "セキュリティ修正": [
-      "logs-archive.md"
-    ],
-    "対策実装とスキル最適化": [
-      "logs-archive.md"
-    ],
-    "構造最適化": [
-      "logs-archive.md"
-    ],
-    "HARDCODE": [
-      "logs-archive.md"
-    ],
-    "チャネル名定数化": [
-      "logs-archive.md"
-    ],
-    "INFRASTRUCTURE": [
-      "logs-archive.md"
-    ],
-    "用認証キー管理基盤": [
-      "logs-archive.md"
-    ],
-    "PERSISTENCE": [
-      "logs-archive.md"
-    ],
-    "スキル永続化バグ修正": [
-      "logs-archive.md"
-    ],
-    "未タスク指示書作成": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所からの知見展開": [
-      "logs-archive.md"
-    ],
-    "DEBT": [
-      "logs-archive.md"
-    ],
-    "SEC": [
-      "logs-archive.md"
-    ],
-    "仕様書更新": [
-      "logs-archive.md"
-    ],
-    "ドキュメント・未タスク管理": [
-      "logs-archive.md"
-    ],
-    "検証実装": [
-      "logs-archive.md"
-    ],
-    "二重定義の統一": [
-      "logs-archive.md"
-    ],
-    "セッション自動リフレッシュ実装": [
-      "logs-archive.md"
-    ],
-    "ENV": [
-      "logs-archive.md"
-    ],
-    "INFRA": [
-      "logs-archive.md"
-    ],
-    "better": [
-      "logs-archive.md"
-    ],
-    "sqlite": [
-      "logs-archive.md"
-    ],
-    "Node": [
-      "logs-archive.md"
-    ],
-    "バージョン不一致修正": [
-      "logs-archive.md"
-    ],
-    "store": [
-      "logs-archive.md"
-    ],
-    "に古い": [
-      "logs-archive.md"
-    ],
-    "用バイナリがキャッシュされる問題の解決": [
-      "logs-archive.md"
-    ],
-    "CONSOLIDATION": [
-      "logs-archive.md"
-    ],
-    "チャンネル統合": [
-      "logs-archive.md"
-    ],
-    "バグ修正": [
-      "logs-archive.md"
-    ],
-    "Google": [
-      "logs-archive.md"
-    ],
-    "アバター取得修正": [
-      "logs-archive.md"
-    ],
-    "スキル型定義の統一": [
-      "logs-archive.md"
-    ],
-    "imp": [
-      "logs-archive.md"
-    ],
-    "search": [
-      "logs-archive.md"
-    ],
-    "検索・置換機能": [
-      "logs-archive.md"
-    ],
-    "スキル改善・自動修正機能": [
-      "logs-archive.md"
-    ],
-    "苦戦箇所・教訓追記": [
-      "logs-archive.md"
-    ],
-    "WCE": [
-      "logs-archive.md"
-    ],
-    "WORKSPACE": [
-      "logs-archive.md"
-    ],
-    "管理統合": [
-      "logs-archive.md"
-    ],
-    "両ブランチ統合マージ": [
-      "logs-archive.md"
-    ],
-    "OPT": [
-      "logs-archive.md",
-      "technology-devops.md"
-    ],
-    "PARALLEL": [
-      "logs-archive.md",
-      "technology-devops.md"
-    ],
-    "テスト並列実行最適化": [
-      "logs-archive.md"
-    ],
-    "permission": [
-      "logs-archive.md"
-    ],
-    "date": [
-      "logs-archive.md"
-    ],
-    "権限履歴の期間別フィルタリング": [
-      "logs-archive.md"
-    ],
-    "統合テスト": [
-      "logs-archive.md"
-    ],
-    "スキル管理モジュール単体テスト": [
-      "logs-archive.md"
-    ],
-    "コンポーネントテスト": [
-      "logs-archive.md"
-    ],
-    "quality": [
-      "logs-archive.md"
-    ],
-    "testing": [
-      "logs-archive.md",
-      "ui-history-integration.md"
-    ],
-    "Permission": [
-      "logs-archive.md",
-      "security-skill-execution.md",
-      "security-skill-ipc.md",
-      "ui-ux-settings.md"
-    ],
-    "履歴トラッキング": [
-      "logs-archive.md"
-    ],
-    "仕様更新": [
-      "logs-archive.md"
-    ],
-    "システム仕様書": [
-      "logs-archive.md"
-    ],
-    "Gap": [
-      "logs-archive.md"
-    ],
-    "分析": [
-      "logs-archive.md"
-    ],
-    "件作成": [
-      "logs-archive.md"
-    ],
-    "tool": [
-      "logs-archive.md"
-    ],
-    "icons": [
-      "logs-archive.md"
-    ],
-    "仕様詳細追記": [
-      "logs-archive.md"
-    ],
-    "追加仕様書更新": [
-      "logs-archive.md"
-    ],
-    "完了タスク・インデックス更新": [
-      "logs-archive.md"
-    ],
-    "PermissionDialog": [
-      "logs-archive.md"
-    ],
-    "ツール別アイコン表示": [
-      "logs-archive.md"
-    ],
-    "統合のシステム仕様書更新": [
-      "logs-archive.md"
-    ],
-    "permissionDescriptions": [
-      "logs-archive.md"
-    ],
-    "モジュール仕様追加": [
-      "logs-archive.md"
-    ],
-    "readable": [
-      "logs-archive.md"
-    ],
-    "詳細完了記録・スキル改善": [
-      "logs-archive.md"
-    ],
-    "人間可読": [
-      "logs-archive.md"
-    ],
-    "改善完了": [
-      "logs-archive.md"
-    ],
-    "テスト環境改善知見のシステム仕様書追加": [
-      "logs-archive.md"
-    ],
-    "コンポーネント完了": [
-      "logs-archive.md"
-    ],
-    "コンポーネント実装完了": [
-      "logs-archive.md"
-    ],
-    "コードベース": [
-      "logs-archive.md"
-    ],
-    "TODO": [
-      "logs-archive.md"
-    ],
-    "スキャン未タスク新規作成": [
-      "logs-archive.md"
-    ],
-    "未タスク指示書テンプレート最適化": [
-      "logs-archive.md"
-    ],
-    "fix": [
-      "logs-archive.md"
-    ],
-    "backend": [
-      "logs-archive.md"
-    ],
-    "lint": [
-      "logs-archive.md"
-    ],
-    "next": [
-      "logs-archive.md"
-    ],
-    "stream": [
-      "logs-archive.md"
-    ],
-    "コピー履歴機能": [
-      "logs-archive.md",
-      "ui-ux-feature-components.md"
-    ],
-    "ux": [
-      "logs-archive.md",
-      "spec-splitting-guidelines.md"
-    ],
-    "feature": [
-      "logs-archive.md"
-    ],
-    "components": [
-      "logs-archive.md"
-    ],
-    "分割": [
-      "logs-archive.md"
-    ],
-    "システム仕様更新": [
-      "logs-archive.md"
-    ],
-    "improvements": [
-      "logs-archive.md"
-    ],
-    "chat": [
-      "logs-archive.md",
-      "ui-ux-feature-components.md"
-    ],
-    "edit": [
-      "logs-archive.md",
-      "ui-ux-feature-components.md"
-    ],
-    "Issue": [
-      "logs-archive.md",
-      "ui-ux-feature-components.md"
-    ],
-    "dialog": [
-      "logs-archive.md"
-    ],
-    "multi": [
-      "logs-archive.md"
-    ],
-    "llm": [
-      "logs-archive.md"
-    ],
-    "switching": [
-      "logs-archive.md"
-    ],
-    "community": [
-      "logs-archive.md"
-    ],
-    "detection": [
-      "logs-archive.md"
-    ],
-    "leiden": [
-      "logs-archive.md"
-    ],
-    "summarization": [
-      "logs-archive.md"
-    ],
-    "実行日時": [
-      "logs-archive.md"
-    ],
-    "services": [
-      "logs-archive.md"
-    ],
-    "graph": [
-      "logs-archive.md"
-    ],
-    "型エクスポートパターン文書化": [
-      "logs-archive.md"
-    ],
-    "DEP": [
-      "logs-archive.md"
-    ],
-    "依存解決ルール追加": [
-      "logs-archive.md"
-    ],
-    "Handlers": [
-      "logs-archive.md"
-    ],
-    "チャネル定義": [
-      "logs-archive.md"
-    ],
-    "topic": [
-      "logs-archive.md"
-    ],
-    "map": [
-      "logs-archive.md"
-    ],
-    "補完": [
-      "logs-archive.md"
-    ],
-    "rememberChoice": [
-      "logs-archive.md"
-    ],
-    "機能永続化": [
-      "logs-archive.md"
-    ],
-    "SkillStreamDisplay": [
-      "logs-archive.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md"
-    ],
-    "改善": [
-      "logs-archive.md"
-    ],
-    "タイムスタンプ自動更新": [
-      "logs-archive.md"
-    ],
-    "テスト環境改善": [
-      "logs-archive.md"
-    ],
-    "作成": [
-      "logs-archive.md"
-    ],
-    "スキル型定義統一": [
-      "logs-archive.md"
-    ],
-    "ログイン修正": [
-      "logs-archive.md"
-    ],
-    "認証コールバック": [
-      "logs-archive.md"
-    ],
-    "PKCE": [
-      "logs-archive.md",
-      "security-implementation.md"
-    ],
-    "変更履歴アーカイブ": [
-      "logs-archive.md"
-    ],
-    "ut": [
-      "logs-archive.md"
-    ],
-    "channel": [
-      "logs-archive.md"
-    ],
-    "conflict": [
-      "logs-archive.md"
-    ],
-    "統一": [
-      "logs-archive.md"
-    ],
-    "STANDARDIZATION": [
-      "logs-archive.md"
-    ],
-    "登録": [
-      "logs-archive.md",
-      "plugin-development.md"
-    ],
-    "完了タスクの": [
-      "logs-archive.md"
-    ],
-    "実行反映": [
-      "logs-archive.md"
-    ],
-    "再確認反映": [
-      "logs-archive.md"
-    ],
-    "教訓同期追補": [
-      "logs-archive.md"
-    ],
-    "画面証跡ベース": [
-      "logs-archive.md"
-    ],
-    "と仕様同期": [
-      "logs-archive.md"
-    ],
-    "自動修正可能フィルタボタン": [
-      "logs-archive.md"
-    ],
-    "light": [
-      "logs-archive.md"
-    ],
-    "証跡ドリフト是正": [
-      "logs-archive.md"
-    ],
-    "準拠の再確認": [
-      "logs-archive.md"
-    ],
-    "指定ディレクトリ未タスク監査": [
-      "logs-archive.md"
-    ],
-    "仕様準拠の再確認": [
-      "logs-archive.md"
-    ],
-    "refinement": [
-      "logs-archive.md"
-    ],
-    "再監査の状態契約・参照導線補強": [
-      "logs-archive.md"
-    ],
-    "準拠再確認と": [
-      "logs-archive.md"
-    ],
-    "改善同期": [
-      "logs-archive.md"
-    ],
-    "legacy": [
-      "logs-archive.md"
-    ],
-    "未タスク正規化課題を分離": [
-      "logs-archive.md"
-    ],
-    "の簡潔解決手順を": [
-      "logs-archive.md"
-    ],
-    "機能仕様へ追補": [
-      "logs-archive.md"
-    ],
-    "契約横展開": [
-      "logs-archive.md"
-    ],
-    "を追加": [
-      "logs-archive.md"
-    ],
-    "画面証跡補完": [
-      "logs-archive.md"
-    ],
-    "未タスク整形": [
-      "logs-archive.md"
-    ],
-    "検証ワークフロー実行": [
-      "logs-archive.md"
-    ],
-    "エレガント再監査": [
-      "logs-archive.md"
-    ],
-    "漏れゼロ化": [
-      "logs-archive.md"
-    ],
-    "再実行経路の固定": [
-      "logs-archive.md"
-    ],
-    "open": [
-      "logs-archive.md"
-    ],
-    "backlog": [
-      "logs-archive.md"
-    ],
-    "正規化と教訓同期": [
-      "logs-archive.md"
-    ],
     "統合システム設計仕様書": [
       "master-design.md"
     ],
@@ -5817,6 +4307,9 @@
       "plugin-development.md"
     ],
     "Registry": [
+      "plugin-development.md"
+    ],
+    "登録": [
       "plugin-development.md"
     ],
     "実装チェックリスト": [
@@ -6181,10 +4674,16 @@
     "skillAnalyticsAPI": [
       "security-electron-ipc.md"
     ],
+    "preflight": [
+      "security-electron-ipc.md"
+    ],
     "自動更新のセキュリティ": [
       "security-electron-ipc.md"
     ],
     "セキュリティ実装仕様": [
+      "security-implementation.md"
+    ],
+    "PKCE": [
       "security-implementation.md"
     ],
     "parameter": [
@@ -6265,6 +4764,11 @@
     "リファレンス": [
       "security-skill-execution.md"
     ],
+    "Permission": [
+      "security-skill-execution.md",
+      "security-skill-ipc.md",
+      "ui-ux-settings.md"
+    ],
     "権限永続化": [
       "security-skill-execution.md"
     ],
@@ -6281,6 +4785,9 @@
       "security-skill-ipc.md"
     ],
     "型統一リファクタリング": [
+      "skill-executor-type-migration.md"
+    ],
+    "実装内容": [
       "skill-executor-type-migration.md"
     ],
     "苦戦した箇所と解決策": [
@@ -6329,6 +4836,13 @@
       "spec-splitting-guidelines.md"
     ],
     "api": [
+      "spec-splitting-guidelines.md"
+    ],
+    "ui": [
+      "spec-splitting-guidelines.md",
+      "ui-ux-feature-components.md"
+    ],
+    "ux": [
       "spec-splitting-guidelines.md"
     ],
     "security": [
@@ -6404,6 +4918,9 @@
       "task-workflow.md",
       "ui-ux-components.md"
     ],
+    "完了記録": [
+      "task-workflow.md"
+    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -6444,6 +4961,9 @@
     "固有": [
       "technology-desktop.md"
     ],
+    "DevOps": [
+      "technology-devops.md"
+    ],
     "パッケージ管理・": [
       "technology-devops.md"
     ],
@@ -6468,6 +4988,17 @@
     "最適化パターン": [
       "technology-devops.md"
     ],
+    "OPT": [
+      "technology-devops.md"
+    ],
+    "PARALLEL": [
+      "technology-devops.md"
+    ],
+    "追加": [
+      "technology-devops.md",
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
+    ],
     "フロントエンド技術スタック": [
       "technology-frontend.md"
     ],
@@ -6489,6 +5020,9 @@
     "アニメーション": [
       "technology-frontend.md",
       "ui-ux-file-selector.md"
+    ],
+    "テスト": [
+      "technology-frontend.md"
     ],
     "ビルド・バンドル": [
       "technology-frontend.md"
@@ -6572,7 +5106,13 @@
     "テスト有効化パターン": [
       "testing-component-patterns.md"
     ],
+    "ENABLEMENT": [
+      "testing-component-patterns.md"
+    ],
     "テーマ横断テストヘルパー": [
+      "testing-component-patterns.md"
+    ],
+    "TOKENS": [
       "testing-component-patterns.md"
     ],
     "関連未タスク": [
@@ -6582,6 +5122,9 @@
     "Atoms": [
       "testing-component-patterns.md",
       "ui-ux-atoms-patterns.md"
+    ],
+    "ATOMS": [
+      "testing-component-patterns.md"
     ],
     "Shape": [
       "testing-component-patterns.md"
@@ -6593,15 +5136,6 @@
       "testing-component-patterns.md"
     ],
     "統合テストハーネスパターン": [
-      "testing-component-patterns.md"
-    ],
-    "スキルライフサイクル統合テストパターン": [
-      "testing-component-patterns.md"
-    ],
-    "planning": [
-      "testing-component-patterns.md"
-    ],
-    "guide": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
@@ -6754,7 +5288,14 @@
     "setup": [
       "ui-history-integration.md"
     ],
+    "完了": [
+      "ui-history-integration.md",
+      "ui-ux-feature-components.md"
+    ],
     "manual": [
+      "ui-history-integration.md"
+    ],
+    "testing": [
       "ui-history-integration.md"
     ],
     "高度な": [
@@ -6830,6 +5371,14 @@
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
     ],
+    "spec": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
+    "created": [
+      "ui-ux-components.md",
+      "ui-ux-feature-components.md"
+    ],
     "デザイン原則": [
       "ui-ux-design-principles.md"
     ],
@@ -6902,6 +5451,22 @@
       "ui-ux-feature-components.md"
     ],
     "Custom": [
+      "ui-ux-feature-components.md"
+    ],
+    "chat": [
+      "ui-ux-feature-components.md"
+    ],
+    "edit": [
+      "ui-ux-feature-components.md"
+    ],
+    "Issue": [
+      "ui-ux-feature-components.md"
+    ],
+    "SkillStreamDisplay": [
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "コピー履歴機能": [
       "ui-ux-feature-components.md"
     ],
     "全コンポーネント共通": [

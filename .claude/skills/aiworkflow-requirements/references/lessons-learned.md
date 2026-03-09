@@ -20,8 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-09 | 1.29.57 | TASK-10A-G task-045 苦戦箇所に個別再利用手順を追補。screenshot 再実行コマンド（4ステップ）、open backlog 旧テンプレート監査（3ステップ）、`audit --diff-from HEAD` / `--target-file` 役割分離（3ステップ）の具体的手順を各苦戦箇所へ直接追記 |
-| 2026-03-09 | 1.29.56 | TASK-10A-G の教訓を追加。テスト専用タスクの Phase 4/5 境界曖昧さ、巨大ファイルのカバレッジ計測誤解、3層テスト構成の Layer 間モック整合性、並列エージェントの Phase 12 分割戦略、`--sequence.shuffle` 検証、supporting artifact / open backlog 配置ドリフトを追記 |
+| 2026-03-09 | 1.29.56 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の教訓を追加。`skipAuth=true` が storage clear bug path を guard して false negative になりうる点、通常ルート metadata 検証と dedicated harness screenshot を分離する運用、repo-wide `debug-clear-storage` 残骸は未タスクへ分離する判断を標準化 |
 | 2026-03-09 | 1.29.55 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補。未タスク指示書の9セクション逸脱、`validate-phase-output --phase` ドキュメント drift、BrowserRouter 配下の screenshot harness での Router 二重化を同一系統の苦戦箇所として整理し、4ステップ解決手順を追加 |
 | 2026-03-09 | 1.29.54 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の教訓を追加。executeSkill 並行実行ガードの実装で遭遇した3つの苦戦箇所（テスト実行ディレクトリ依存、flushMicrotasks タイミング制御、createStore パターンでの set/get 再現）と、5分解決カードを追記 |
 | 2026-03-09 | 1.29.53 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
@@ -288,6 +287,15 @@
 | 解決策 | current workflow 配下へ専用 screenshot script を追加し、Dashboard / Settings / Skill Center の代表 surface 3件を再取得した |
 | 標準ルール | 画面検証要求がある場合、UI差分の有無に関わらず `TC-ID + SCREENSHOT + S-1〜S-4` を current workflow 配下へ残す |
 
+### 苦戦箇所: `skipAuth=true` が persist bug の再現経路を殺して false negative になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skipAuth=true` は screenshot 取得を安定化できる一方、auth / App shell 初期化順序由来の bug path を bypass し、`localStorage.clear()` や forced reload の再発確認には使えない場合がある |
+| 影響 | screenshot が PASS でも、通常ルートでは debug side effect が残っている可能性を見落とす |
+| 解決策 | bug path の確認は通常ルートで `navigation.type` / debug log absence / persist snapshot を metadata 記録し、画面証跡だけ dedicated harness へ分離した |
+| 標準ルール | 「bug path 検証」と「screenshot path」は分離して設計する。`skipAuth=true` は screenshot 安定化の補助手段であり、唯一の検証経路にしない |
+
 ### 苦戦箇所: `validate-phase-output` の呼び方がテンプレートと正本でずれていた
 
 | 項目 | 内容 |
@@ -303,6 +311,13 @@
 2. Phase 11 は `TC-ID` / `画面カバレッジマトリクス` / `manual-test-result` / `screenshots/` の4点を current workflow 配下へ揃える。
 3. `artifacts.json` / `index.md` / Phase 12 changelog を同一ターンで同期する。
 4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を連続実行し、結果を system spec へ反映する。
+
+### 関連未タスク（TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 から派生）
+
+| タスクID | 概要 | 指示書パス |
+|---|---|---|
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001 | Phase 11 harness ファイルのライフサイクル管理（作成・削除・本番混入防止） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-phase11-harness-lifecycle-001.md` |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001 | App.tsx テスト共有モックファクトリ集約（テスト間の重複モック排除） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-app-test-mock-centralization-001.md` |
 
 ---
 
@@ -6235,180 +6250,3 @@ function createStore(): { getState: () => AgentSlice } {
 2. `validate-phase-output.js <workflow-dir>`、`validate-phase12-implementation-guide.js --workflow <workflow-dir>`、`audit-unassigned-tasks --diff-from HEAD --target-file <file>` を実行する。
 3. review harness を使う場合は既存 Router 配下で描画し、画面証跡を撮ってから system spec を更新する。
 4. system spec、skill docs、workflow 本文、未タスク台帳を同一ターンで同期する。
-
----
-
-## TASK-10A-G: ライフサイクルテストハードニング（2026-03-09）
-
-### タスク概要
-
-| 項目       | 内容                                                                 |
-| ---------- | -------------------------------------------------------------------- |
-| タスクID   | TASK-10A-G                                                           |
-| 目的       | `skillHandlers.ts` の `skill:create` ハンドラに対する3層テスト構成の追加 |
-| 完了日     | 2026-03-09                                                           |
-| ステータス | **完了**                                                             |
-
-### 苦戦箇所と解決策
-
-#### 1. テスト専用タスクにおける Phase 4/5 境界の曖昧さ
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| **課題**   | TASK-10A-G はテストコードのみの追加タスクで、Phase 4（テスト作成/Red）と Phase 5（実装/Green）の区分が通常の実装タスクと異なる |
-| **原因**   | テスト対象のプロダクションコードは TASK-10A-E/F で既に実装済みで、Phase 4 で書いたテストが最初から Green になり得る |
-| **解決策** | Phase 4-5 を統合実行し、テスト作成とモック調整で Green 確認までを一続きの工程として扱った |
-| **教訓**   | テスト専用タスクでは Phase 4-5 を「テスト作成 + Green 確認」の統合ステップとして運用してよい |
-
-- **再発条件**: 既実装コードに対するテスト追加タスク
-- **関連Pitfall**: P50（既実装防御の発見による Phase 転換）
-
-#### 2. skillHandlers.ts の巨大ファイルによるカバレッジ計測の誤解
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| **課題**   | Layer 1 テストは `skill:create` のみが対象なのに、coverage は `skillHandlers.ts` 全体の未実行コードにも引きずられる |
-| **原因**   | v8 coverage はファイル単位で集計され、他ハンドラが Line/Function Coverage を押し下げる |
-| **解決策** | workflow / system spec に `handler-scope coverage` を明記し、対象範囲付きで記録した |
-| **教訓**   | coverage 数値を残すときは「対象範囲」と「ファイル全体」を分けて書く |
-
-- **再発条件**: 巨大ファイルの一部ハンドラのみを対象とするテストタスク
-
-#### 3. 3層テスト構成における Layer 間のモック整合性維持
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| **課題**   | Layer 1/2/3 で異なるモック戦略を使うため、一方の変更が他方を壊しやすい |
-| **原因**   | Main IPC、Store 統合、既存 UI テスト拡張で前提と責務が異なる |
-| **解決策** | 各テストファイルでモックを自己完結させ、Layer 3 は既存 `describe` ブロック末尾へ追記するだけに留めた |
-| **教訓**   | 多層テストでは Layer ごとにモック責務を明示し、グローバルモック汚染を避ける |
-
-#### 4. 並列エージェントによる Phase 12 仕様書更新の分割戦略
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| **課題**   | Phase 12 で更新対象ファイルが多く、1エージェントに集約すると中断リスクが高い |
-| **原因**   | LOGS/SKILL 4ファイル同時更新や supporting artifact 群の同期が必要だった |
-| **解決策** | 実装ガイド、仕様書更新、レポート群の 3 系統に分け、依存するファイルだけ同一担当へ集約した |
-| **教訓**   | Phase 12 は「3ファイル以下/エージェント」を目安に分割し、相互依存ファイルは同一エージェントへ集約する |
-
-#### 5. テスト独立性検証（`--sequence.shuffle`）の有効性
-
-| 項目       | 内容 |
-| ---------- | ---- |
-| **課題**   | テスト追加後、Store 状態やモジュールスコープ変数の依存が混入していないか確認が必要だった |
-| **原因**   | Layer 2 / Layer 3 は状態保持や既存モックに依存しやすい |
-| **解決策** | `beforeEach` のモック初期化に加え、`--sequence.shuffle` と単独実行でランダム順序を確認した |
-| **教訓**   | 状態を扱うテスト追加後は、shuffle 実行で順序依存を必ず検証する |
-
-### 同種課題の5分解決カード
-
-| 課題パターン | 解決コマンド/手順 |
-| --- | --- |
-| テスト専用タスクの Phase 4-5 境界 | Phase 4-5 を統合実行し、テスト作成→モック調整→Green 確認を 1 ステップで閉じる |
-| 巨大ファイルの handler-scope coverage | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
-| Layer 間モック汚染の防止 | 各テストファイルでモックを自己完結させ、Layer 3 は既存 `describe` 末尾へ追加する |
-| Phase 12 並列分割 | 3ファイル以下/エージェント + 相互依存ファイルは同一エージェントに集約 |
-| テスト独立性検証 | `pnpm exec vitest run --sequence.shuffle <test-file>` でランダム順序を確認する |
-
----
-
-## TASK-10A-G 再監査教訓（2026-03-09）
-
-### 苦戦箇所: feature 全体 coverage と handler-scope coverage の混同
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `96.9 / 88.9 / 100` を TASK-10A-G 全体の coverage と読める記述が残った |
-| 再発条件 | 大規模ファイルの一部だけを gating 対象にしたのに、scope 注記を省略する |
-| 対処 | `handler-scope coverage` を workflow / system spec に明記した |
-| 標準ルール | coverage 数値は対象範囲付きで記録する |
-
-### 苦戦箇所: Phase 12 成果物に「実行予定」表現が残る
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `spec-update-summary.md` に完了後も `予定` 文言が残った |
-| 再発条件 | 実施前の叩き台をそのまま Phase 12 最終成果物へ残す |
-| 対処 | `予定` 表現を除去し、実更新したファイル名と結果へ置換した |
-| 標準ルール | `rg "予定|実行待ち|後続タスク" docs/30-workflows/<task>/outputs/phase-12/` を最終チェックに入れる |
-
-### 苦戦箇所: screenshot harness の固定ポート競合
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | create / analysis / management panel の capture script を完全並列で回すと `5173` が競合した |
-| 再発条件 | port 指定なしの screenshot harness を同時起動する |
-| 対処 | 直列再実行へ切り替え、analysis mock を追加して証跡を再取得した |
-| 標準ルール | `--port` がない screenshot harness は直列実行し、取得時刻も記録する |
-
-### 苦戦箇所: supporting artifact の件数が summary 文書とずれる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `test-documentation.md` だけが旧件数 `43` のまま残った |
-| 再発条件 | summary 文書だけを補正し、supporting artifact を横断確認しない |
-| 対処 | Layer 3 を `16`、合計を `55 tests` へ補正した |
-| 標準ルール | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` を実行して実測値を揃える |
-
-### 苦戦箇所: open backlog の canonical path がタスク状態とズレる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION` の参照先が、Phase 12 中の配置と archive 後の配置でずれやすかった |
-| 再発条件 | Phase 12 中の root 配置と、完了移管後の completed workflow 配下配置を同じルールで扱う |
-| 対処 | completed workflow 配下 `unassigned-task/` へ再配置し、関連参照を同一ターンで張り替えた |
-| 標準ルール | Phase 12 中は root `unassigned-task/`、完了移管後は `completed-tasks/<task>/unassigned-task/` を canonical path とする |
-
-### 同種課題の5分解決カード
-
-| 課題パターン | 解決コマンド/手順 |
-| --- | --- |
-| worktree で Rollup optional dependency 欠落 | `pnpm install --frozen-lockfile` |
-| Phase 12 の planned wording 残存 | `rg "予定|実行待ち|後続タスク" docs/30-workflows/<task>/outputs/phase-12/` |
-| feature coverage の scope 誤読 | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
-| supporting artifact の件数ドリフト | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` |
-| open backlog の canonical path ドリフト | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` と `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/<task>/unassigned-task/<task>.md` |
-
----
-
-## TASK-10A-G task-045 再確認追補
-
-### 実装内容
-
-- `apps/desktop/package.json` に `screenshot:task-045-lifecycle-test-hardening` を追加し、Phase 11 screenshot を task 単位で再取得できるようにした
-- `outputs/phase-11/screenshots/phase11-capture-metadata.json` を証跡化し、capture 時刻・route・page error を workflow 成果物へ固定した
-- 継続利用していた open backlog `task-10a-g-skilleditor-fileops-store-migration.md` を、`docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/` 配下で 9 セクション + メタ情報1セクション形式へ再整形した
-
-### 苦戦箇所
-
-#### 1. screenshot 実体はあるのに task 単位の再実行経路が無い
-
-- **症状**: 既存画像は残っているが、再監査のたびに component 単位 script を手作業で組み合わせる必要があった
-- **原因**: 「証跡ファイルの存在」を完了条件にしており、「同じ証跡を当日再取得できること」を仕様化していなかった
-- **解決**: `screenshot:<workflow>` を package script として公開し、Phase 11 / Phase 12 / system spec に同じコマンドを固定した
-- **再発条件**: tests-hardening や spec-only タスクで UI 変更が少ないことを理由に screenshot 運用を後回しにする場合
-- **再利用手順**: (1) `scripts/capture-task-xxx-phase11.mjs` を作成 (2) `package.json` に `screenshot:task-xxx` を追加 (3) `phase-11-manual-test.md` に同コマンドを記載 (4) `validate-phase11-screenshot-coverage` で検証
-
-#### 2. 継続利用 open backlog の指示書が旧テンプレートのまま残る
-
-- **症状**: `task-workflow.md` 上は backlog 継続管理に見えるが、実ファイルは `## メタ情報` 重複と 9 セクション欠落を含み、そのままでは次回着手の仕様として使いにくかった
-- **原因**: Phase 12 Task 4 で「重複起票しないこと」と「再利用可能な品質に保つこと」を分離していなかった
-- **解決**: 既存 file を task-spec 形式へ全面更新し、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で `currentViolations=0` を確認した
-- **再発条件**: open backlog を新規作成しないケースで、単に「既存あり」とだけ記録して終了する場合
-- **再利用手順**: (1) `audit --target-file <path>` で `currentViolations=0` を確認 (2) 不足セクションがあれば補完 (3) 補完後に再監査で PASS を確認
-
-#### 3. `audit --diff-from HEAD` PASS だけでは対象 backlog の単体品質が確定しない
-
-- **症状**: branch 全体の `currentViolations=0` を見て安心すると、継続利用している backlog 個別のフォーマット崩れを見落としやすい
-- **原因**: current/baseline の二層判定と、`--target-file` による単体確認の目的が混ざっていた
-- **解決**: branch 全体監査と target-file 監査を分離し、報告にも両方を明記する
-- **再発条件**: 未タスク新規作成がない Phase 12 で、既存 open backlog を参照だけして終了する場合
-- **再利用手順**: (1) `--diff-from HEAD` で今回追加分の violations=0 を確認 (2) `--target-file` で継続利用ファイルの violations=0 を確認 (3) baseline violations は別管理として記録のみ
-
-### 同種課題の簡潔解決手順（4ステップ）
-
-1. UI を含む再監査では screenshot ファイルだけでなく task 単位の再実行コマンド有無も確認する。
-2. 継続利用する open backlog がある場合は、配置確認に加えて `audit-unassigned-tasks --target-file` で単体合格を確認する。
-3. `task-workflow.md` と `lessons-learned.md` に実装内容と苦戦箇所を同一ターンで反映する。
-4. `quick_validate`、`verify-unassigned-links`、`audit --diff-from HEAD`、target-file 監査をまとめて実行し、Phase 12 出力へ結果を固定する。

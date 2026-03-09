@@ -315,7 +315,7 @@
 | タスクID | 概要 | 優先度 | 参照 |
 | --- | --- | --- | --- |
 | UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11証跡ファイル名同期ガード | 中 | `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-12/unassigned-task-detection.md` |
-| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
+| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
 | UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード | 中 | `docs/30-workflows/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` |
 | UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION | improvementResult Store統合（条件付き） | 低 | `docs/30-workflows/unassigned-task/task-10a-f-improvement-result-store-integration.md` |
 

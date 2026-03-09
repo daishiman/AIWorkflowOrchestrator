@@ -158,6 +158,7 @@ UI機能実装の場合は次を推奨:
 5. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
 6. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
 7. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+8. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
 
 ---
 
@@ -224,6 +225,7 @@ UI機能実装の場合は次を推奨:
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
 - [ ] ユーザーが画面検証を要求した場合、初期方針が `NON_VISUAL` でも `SCREENSHOT` へ昇格し、`TC-ID ↔ png` を再同期している
+- [ ] persist/auth 初期化バグでは bug path の metadata 証跡と screenshot harness 証跡を分離し、`skipAuth=true` を唯一経路にしていない
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
