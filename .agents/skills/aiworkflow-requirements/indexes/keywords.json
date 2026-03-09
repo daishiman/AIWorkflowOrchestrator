@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T10:31:06.304Z",
-  "totalKeywords": 1519,
+  "generated": "2026-03-09T02:07:05.114Z",
+  "totalKeywords": 1523,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -481,6 +481,7 @@
       "api-ipc-auth.md",
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
+      "arch-state-management.md",
       "architecture-implementation-patterns.md",
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
@@ -1311,6 +1312,22 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
+    "selector": [
+      "arch-state-management.md",
+      "architecture-implementation-patterns.md"
+    ],
+    "migration": [
+      "arch-state-management.md"
+    ],
+    "renderer": [
+      "arch-state-management.md"
+    ],
+    "direct": [
+      "arch-state-management.md"
+    ],
+    "removal": [
+      "arch-state-management.md"
+    ],
     "スキルライフサイクル": [
       "arch-state-management.md",
       "lessons-learned.md",
@@ -1676,9 +1693,6 @@
       "architecture-implementation-patterns.md"
     ],
     "派生": [
-      "architecture-implementation-patterns.md"
-    ],
-    "selector": [
       "architecture-implementation-patterns.md"
     ],
     "策定": [

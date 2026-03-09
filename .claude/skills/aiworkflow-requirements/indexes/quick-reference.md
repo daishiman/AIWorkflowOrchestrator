@@ -7,6 +7,12 @@
 
 ## よく使うパターン
 
+### 仕様検索の分割ルール
+
+- `search-spec.js` は **1概念1クエリ** で分割して使う
+- 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
+- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
+
 ### Electron IPC パターン
 
 ```typescript
@@ -164,6 +170,25 @@ useEffect(() => {
 - 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
 - 落とし穴: 06-known-pitfalls.md#P31
 
+### Store selector migration / renderer direct IPC removal
+
+```typescript
+// before
+const result = await window.electronAPI.skill.analyze(skillName);
+
+// after
+const analyzeSkill = useAnalyzeSkill();
+await analyzeSkill(skillName);
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| 対象 | Renderer 直呼び出しを Store action / 個別セレクタへ寄せる |
+| state 境界 | 共有 state は Store、UI 一時 state は local |
+| 検索語 | `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal` |
+
+**詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
+
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript
@@ -186,6 +211,19 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 ```
 
 **詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
+
+### P50 検証・補完モード（既実装タスクへのPhase適用）
+
+Phase仕様書の対象機能が既に実装済みの場合、Phase 4-5 を「新規実装」ではなく「検証・補完」モードに切り替える。
+
+| ステップ | 内容 | 判断基準 |
+|---------|------|---------|
+| Phase 1 Step 0 | 既存実装の調査 | `git log` + 現在のコードで実装済みか判定 |
+| Phase 4-5 | テスト/実装の検証・補完 | 既存テストの PASS 確認 → 不足分のみ追加 |
+| Phase 12 | 差分更新のみ | 新規実装がないため仕様書更新は最小限 |
+
+**検索語**: `P50検証モード`, `既実装タスク`, `検証補完モード`
+**詳細**: task-workflow.md (TASK-10A-F), 06-known-pitfalls.md#P50
 
 ---
 

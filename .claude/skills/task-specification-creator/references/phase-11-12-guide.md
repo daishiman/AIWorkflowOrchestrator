@@ -192,6 +192,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
+- screenshot 必須タスクでは `P53` / `代替` / `スクリーンショット不可` を最終成果物へ残さない。実撮影へ昇格した時点で placeholder を除去する
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
 ### テスト結果レポート形式
@@ -367,6 +368,11 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 **検出タスクなし**
 
 すべてのテストがPASSし、発見課題もないため、未タスクとして記録すべき項目はありません。
+
+## legacy baseline の扱い
+
+- 新規未タスクが 0 件でも、`docs/30-workflows/unassigned-task/` 全体の legacy 違反有無は別行で記録する
+- 例: `今回差分: currentViolations=0 / legacy baseline: 127件（既存 remediation task で追跡）`
 ```
 
 ---

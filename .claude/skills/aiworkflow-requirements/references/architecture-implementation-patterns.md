@@ -2900,7 +2900,7 @@ const recentExecutions =
 
 **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
 
-### S26: 直接IPC→Store個別セレクタ移行パターン（TASK-10A-F 2026-03-07策定）
+### S26: 直接IPC→Store個別セレクタ移行パターン（selector migration / TASK-10A-F 2026-03-07策定）
 
 Custom Hookが `window.electronAPI` を直接呼び出している場合の、Store個別セレクタへの移行手順。
 
@@ -2957,6 +2957,41 @@ beforeEach(() => {
 - P42: 文字列引数の .trim() バリデーション漏れ（06-known-pitfalls.md）
 
 **関連タスク**: TASK-10A-F
+
+#### 問題の詳細（TASK-10A-F 2026-03-09 追記）
+
+Rendererコンポーネントが `window.electronAPI.skill.*` を直接呼び出すと以下の問題が発生する:
+
+| 問題 | 影響 |
+|---|---|
+| IPCチャネルの詳細がUI層に漏洩する | Preload変更時にRenderer全体への波及が発生 |
+| エラー状態の管理が分散する | 各コンポーネントが個別にtry/catchとstate管理を実装 |
+| テストでwindow.electronAPIのモックが必要になる | テストの複雑性増大・Preload依存の密結合 |
+| P31（無限ループ）リスクが増大する | 合成Hookの不安定参照がuseEffect依存配列に入る |
+
+```typescript
+// ❌ Before: Direct IPC（問題パターン）
+const result = await window.electronAPI.skill.analyze(skillName);
+
+// ✅ After: Store個別セレクタ経由（解決パターン）
+const analyzeSkill = useAnalyzeSkill();  // 個別セレクタ（安定参照）
+await analyzeSkill(skillName);           // Store action内部でIPCを呼ぶ
+```
+
+#### State境界（Case B方式）
+
+| 状態 | 配置先 | 理由 |
+|---|---|---|
+| currentAnalysis, isAnalyzing, isImproving, skillError | Store | 共有状態（複数コンポーネントから参照） |
+| selectedSuggestions, improvementResult | local useState | 画面固有の一時UI状態 |
+
+#### 適用事例（TASK-10A-F）
+
+- **移行対象**: useSkillAnalysis.ts → agentSlice
+- **移行API**: analyze, applyImprovements, autoImprove, create の4 API
+- **P31対策**: 個別セレクタで安定参照を取得（`useAnalyzeSkill()`, `useAutoImproveSkill()` 等）
+- **P42準拠**: Store action内で3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+- **P48対策**: `.filter()` / `.map()` で配列を返すセレクタには `useShallow` を適用
 
 ---
 
@@ -3305,6 +3340,7 @@ interface IpcHandlerRegistrationResult {
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
 | v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |
 | v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化 |
 | v1.39.0 | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: S29 Renderer境界providers正規化パターン追加（4層防御: API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新、Main側配列正規化補足）                                                                                          |

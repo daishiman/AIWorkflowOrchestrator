@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.12.1    | 2026-03-09 | TASK-10A-F Phase 12 再同期を追補。current workflow に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再配置した実装内容と、P53 placeholder 除去・implementation-guide literal 見出し・unassigned legacy baseline 分離報告の苦戦箇所を追加 |
 | v3.12.0    | 2026-03-08 | TASK-043D テスト品質ゲート設計反映: agentSlice責務境界拡張テスト8ファイル（boundary/combination/edge-cases/error-cases/extension/import-lifecycle/p31-regression/selectors）追加。customStorage 3段ガードパターンのテスト新規作成（184行）。navigationSlice に viewHistory 破損時の iterable hardening テスト追加。SkillAnalysisView/SkillCreateWizard の Store統合テスト追加。store/index.ts に新規セレクタエクスポート63行追加 |
 | v3.11.0    | 2026-03-08 | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 反映: `customStorage` の getItem/setItem に iterable guard（DD-01/DD-02）を追加。`expandedFolders` の `Array.isArray` + `typeof === "string"` フィルタリング、非配列入力時の `Set<string>()` フォールバック、`setItem` での `Set`/`Array` 二重対応を persist 復旧契約として明文化。`useCanGoBack` に `Array.isArray(state.viewHistory)` ガードを追加。branch横断 Phase 12 再監査で workflow 10/11/12 の Phase 12 不足を検出し未タスク3件へ分離 |
 | v3.11.0    | 2026-03-07 | TASK-10A-F 反映: useSkillAnalysis.ts の直接IPC呼び出し3箇所（analyze/applyImprovements/autoImprove）をStore個別セレクタ経由に移行。ローカルstate（analysis/isAnalyzing/isImproving/error）をStore参照に置換し、selectedSuggestions/improvementResult はローカル維持（Case B方式）。isMountedRef パターン廃止 |
@@ -1402,7 +1403,9 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。
 5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
 
-## TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07）
+## TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07）
+
+**検索キーワード**: `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal`
 
 ### 責務境界の最終同期
 
@@ -1417,6 +1420,23 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 - `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
 - `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
 - 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。
+
+### Phase 12 再同期追補（2026-03-09）
+
+| 区分 | 今回反映した内容 |
+| --- | --- |
+| current workflow 証跡 | `TC-11-01`〜`TC-11-08` を満たす実スクリーンショット11件へ再同期し、`manual-test-result.md` を validator 互換の `テストケース / 証跡` 形式へ更新 |
+| 実装ガイド | `implementation-guide.md` を `## Part 1` / `## Part 2` と `型定義` / `APIシグネチャ` / `使用例` / `エラーハンドリング` / `エッジケース` / `設定項目と定数一覧` を持つ構造へ再編 |
+| 状態設計の維持 | `analysis` / `isAnalyzing` / `isImproving` / `skillError` は Store、`selectedSuggestions` / `improvementResult` / `wizardStep` はローカル、という Case B 判断を再確認 |
+| 後続境界 | `SkillEditor.tsx` に残る file operation 系 direct IPC は TASK-10A-G の受け皿を維持し、新規未タスクは追加しない |
+
+### 再同期で苦戦した箇所（2026-03-09）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| Phase 11 placeholder の残置 | `P53` / `代替` / `スクリーンショット不可` を current workflow に残したまま validator だけ再実行する | 実スクリーンショット取得後に placeholder 文言を除去し、`TC-ID ↔ png` へ置換 | screenshot 必須タスクでは placeholder を成果物へ残さない |
+| implementation-guide の literal 見出し不足 | Part 1/2 はあるが validator が要求する見出し語が欠ける | テンプレートと実成果物の両方に `APIシグネチャ` / `エラーハンドリング` / `設定項目と定数一覧` を明示 | Phase 12 はテンプレート段階で validator 必須語を先置きする |
+| unassigned-task の directory 全体と今回差分の混同 | `currentViolations=0` のみ見て「指定ディレクトリは完全準拠」と書いてしまう | `current` と `baseline` を分離し、legacy 正規化タスクを参照して報告 | 未タスク確認は「今回差分」「legacy baseline」の2軸で書く |
 ### 苦戦箇所と再利用手順
 | 課題                                  | 再発条件                                                       | 解決策                                                                                              |
 | ------------------------------------- | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |

@@ -2771,6 +2771,19 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-08
 - **関連タスク**: TASK-PHASE12-BRANCH-CROSS-AUDIT（再確認）
 
+### [Phase12] current workflow placeholder 排除 + legacy baseline 二軸報告（TASK-10A-F 再同期）
+
+- **状況**: current workflow の `manual-test-result.md` や `screenshots/README.md` に `P53` / `代替` / `スクリーンショット不可` が残ったままでも、system spec 側が更新済みだと「全体としては揃っている」と誤認しやすい
+- **アプローチ**:
+  - screenshot 必須タスクでは current workflow から placeholder 文言を除去し、`TC-ID ↔ png` の実証跡だけを残す
+  - `implementation-guide.md` はテンプレート段階で `## Part 1` / `## Part 2`、`APIシグネチャ`、`エラーハンドリング`、`設定項目と定数一覧` を先置きする
+  - 未タスク確認は `新規未タスク` と `legacy baseline` を分離し、`currentViolations=0` と `baselineViolations>0` を同時に報告する
+  - Phase 12 では workflow outputs と system spec を同ターンで更新し、`更新済みを確認` と `今回更新` を書き分ける
+- **結果**: 「正本は正しいが current workflow が stale」「今回差分は合格だが directory 全体には legacy 負債が残る」を混同せず報告できる
+- **適用条件**: current workflow 再監査、UI screenshot 再取得、legacy unassigned backlog を抱えた docs-heavy task
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-10A-F
+
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する
