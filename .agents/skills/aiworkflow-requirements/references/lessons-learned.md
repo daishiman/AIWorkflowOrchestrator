@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-09 | 1.29.48 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
 | 2026-03-08 | 1.29.47 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
 | 2026-03-08 | 1.29.46 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
@@ -377,6 +378,14 @@ vi.mock("../../../store", () => ({
 - **再発条件**: vi.mock内の変数定義と、テスト本文の変数参照で名前が不一致
 - **症状**: `ReferenceError: mockCreateSkill is not defined` で11テストが一斉失敗
 - **解決策**: mock変数名は `mock{ActionName}` で統一。定義後すぐにテスト本文で参照確認
+#### 6. Phase 11 placeholder を current workflow に残してしまう
+- **再発条件**: screenshot 必須へ昇格した後も、初回 docs-only 前提の `P53` / `代替` / `スクリーンショット不可` を削除しない
+- **症状**: system spec が正しくても current workflow が stale のままになり、目視と validator の結論がずれる
+- **解決策**: 実スクリーンショット 11 件へ置換し、`テストケース` / `証跡` 列を持つ validator 互換表へ統一する
+#### 7. implementation-guide は構造があっても validator literal が足りない
+- **再発条件**: Part 1/Part 2 の2部構成だけを満たし、`APIシグネチャ` / `エラーハンドリング` / `設定項目と定数一覧` を書かない
+- **症状**: 実装ガイドは読めても `validate-phase12-implementation-guide` が FAIL する
+- **解決策**: 実成果物とテンプレートの両方に validator 最小骨格を追加する
 ### 同種課題の簡潔解決カード
 | 項目           | 内容                                                                                                                                            |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -390,6 +399,7 @@ vi.mock("../../../store", () => ({
 2. **状態分類**: 各useStateをStore移行/ローカル維持に分類し、設計書に記録
 3. **テストmock統一**: State用（値返却）/ Action用（関数返却）の標準パターンで `vi.mock` を作成
 4. **防御コード**: 全Store action呼び出しに try/catch を追加（Store側error処理済みでも必須）
+5. **再同期**: current workflow から placeholder を除去し、implementation-guide の validator 必須見出しを確認する
 ## TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07）
 
 ### 苦戦箇所: z-index 事前設計の必要性

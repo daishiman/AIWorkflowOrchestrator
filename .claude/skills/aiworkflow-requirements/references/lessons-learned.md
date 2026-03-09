@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-09 | 1.29.53 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
 | 2026-03-08 | 1.29.52 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 の実装教訓を追加。`safeRegister` パターンと戻り値必要ハンドラの使い分け、`track()` クロージャによる成功カウント管理、`sanitizeRegistrationErrorMessage` のパスマスク、既存テスト失敗との分離手法を苦戦箇所として整理し、5ステップの再利用手順を標準化 |
 | 2026-03-08 | 1.29.51 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査の教訓を追加。Phase 1 正本と outputs の FR ドリフト、Phase 11 の TC/証跡不足、`validate-phase-output` の引数誤用、`artifacts.json` / `index.md` stale を同時是正し、4ステップの再監査手順を標準化 |
 | 2026-03-08 | 1.29.50 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
@@ -514,6 +515,24 @@ vi.mock("../../../store", () => ({
 | 対処 | レポートに「今回差分合格」と「legacy 負債残存」を分離記録し、legacy 正規化ガード未タスクを参照させた |
 | 標準ルール | 未タスク確認は「今回差分の配置・形式」「ディレクトリ全体の legacy 負債」の2軸で報告する |
 
+#### 15. Phase 11 placeholder を current workflow に残してしまう
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` / `screenshots/README.md` に `P53` / `代替` / `スクリーンショット不可` が残ったままだと、system spec が正しくても current workflow は stale のままになる |
+| 再発条件 | screenshot 必須へ昇格した後も、初回 docs-only 前提の文言を削除しない場合 |
+| 対処 | 実スクリーンショット 11 件へ置換し、`テストケース` / `証跡` 列を持つ validator 互換表へ統一した |
+| 標準ルール | current workflow に実証跡が入った時点で placeholder 文言は除去し、`TC-ID ↔ png` のみを残す |
+
+#### 16. implementation-guide は構造があっても validator literal が足りない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Part 1/Part 2 の2部構成でも、`APIシグネチャ` / `エラーハンドリング` / `設定項目と定数一覧` が無いと validator が落ちる |
+| 再発条件 | 実装ガイドを自由記述中心で作り、validator が要求する見出し語をテンプレートへ戻さない場合 |
+| 対処 | 実成果物を修正すると同時に `implementation-guide-template.md` 側へ validator 最小骨格を追加した |
+| 標準ルール | Phase 12 テンプレート段階で validator 必須見出しを先置きし、空欄でも骨格は削らない |
+
 ### 簡潔解決カード
 | 項目           | 内容                                                                                                                                            |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -530,8 +549,9 @@ vi.mock("../../../store", () => ({
 ### 再利用手順（2workflow監査共通）
 1. current/completed 両方の validator を先に PASS 化する
 2. screenshot harness は `data-testid` を ready 条件にする
-3. 未タスクは `## メタ情報` 1回 + canonical ID で管理する
-4. changelog は完了済み変更のみ記述する
+3. screenshot 必須へ昇格したら current workflow から placeholder 文言を除去する
+4. 未タスクは `## メタ情報` 1回 + canonical ID で管理し、current/baseline を分離報告する
+5. changelog は完了済み変更のみ記述し、`更新済みを確認` と `今回更新` を書き分ける
 
 ---
 
@@ -6073,3 +6093,33 @@ async function safeInvokeUnwrap<T>(
 | UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
 | UT-IMP-WORKFLOW-STALE-VALIDATOR-001 | index.md / artifacts.json / phase-*.md stale 状態一括検出バリデータ | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-workflow-stale-validator.md` |
 | UT-IMP-SKILL-CONFLICT-MARKER-LINT-001 | SKILL.md / LOGS.md conflict marker 検出 lint | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-skill-conflict-marker-lint.md` |
+
+---
+
+## TASK-10A-F ワークフロー教訓（2026-03-09 P50検証実行）
+
+### 苦戦箇所テーブル
+
+| # | 苦戦箇所 | 再発条件 | 対処 |
+|---|---|---|---|
+| 1 | P50モード判定の遅延 | 実装済みタスクのPhase仕様書がP50を前提としていない場合、Phase 4-5で初めて「既存テストが全て存在する」と気付く | Phase 1のStep 0でgit log + コード確認を必須化。既実装発見時はPhase全体を「検証・補完」モードに切り替え |
+| 2 | カバレッジ計測のP40再発 | `pnpm vitest run --coverage` をプロジェクトルートから実行するとhappy-dom設定が読み込まれない | `cd apps/desktop && pnpm vitest run --coverage` で必ずパッケージディレクトリから実行 |
+| 3 | SkillImportDialogとuseSkillAnalysisの責務混同 | 仕様書がSkillImportDialogのSelector移行をTASK-10A-Fの責務として誤記 | API系統（ライフサイクル系 vs ファイル操作系 vs インポート系）で明確にスコープを分離 |
+| 4 | Phase 12の仕様書更新が「既に完了済み」のケース | completed-tasks workflowに成果物が集約済みで、current workflowのoutputs/が空 | Phase 12開始前にcompleted-tasks workflowの存在を確認し、差分更新のみ実施 |
+| 5 | グローバルカバレッジ閾値の誤判定 | --coverage実行時にグローバル閾値が全ファイルに適用され、対象外ファイルの0%でERRORになる | 対象ファイル個別のカバレッジ行を確認し、グローバル閾値のERRORは対象外ファイル由来として判定 |
+
+### 再利用手順
+
+1. **P50チェック**: `rg -n 'window\.electronAPI' 対象ディレクトリ` で移行済みか確認
+2. **テスト棚卸し**: `ls */__tests__/*.test.{ts,tsx}` + `grep -c 'it(' *.test.*` でテスト数を把握
+3. **カバレッジ計測**: `cd apps/desktop && pnpm vitest run --coverage` でパッケージ内から実行
+4. **Store移行確認**: `grep -n 'use[A-Z].*Skill' store/index.ts` で個別セレクタの公開を確認
+
+### 関連パターン
+
+- [S26: 直接IPC→Store個別セレクタ移行パターン](./architecture-implementation-patterns.md#s26)
+- P31: Zustand Store Hooks 無限ループ（06-known-pitfalls.md）
+- P40: テスト実行ディレクトリ依存（06-known-pitfalls.md）
+- P42: 文字列引数の .trim() バリデーション漏れ（06-known-pitfalls.md）
+- P48: useShallow未適用による派生セレクタ無限ループ（06-known-pitfalls.md）
+- P50: 既実装防御の発見による Phase 転換（06-known-pitfalls.md）

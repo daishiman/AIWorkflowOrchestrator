@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-08
+> 自動生成: 2026-03-09
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1407,9 +1407,9 @@ node scripts/list-specs.js --topics
 | Skill Import / SkillCenter 防御状態管理（2026-03-04） | L1298 |
 | 関連ドキュメント | L1343 |
 | TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L1353 |
-| TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07） | L1391 |
-| スキルライフサイクルUI Store移行完了（TASK-10A-F） | L1411 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001（2026-03-08） | L1456 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07） | L1391 |
+| スキルライフサイクルUI Store移行完了（TASK-10A-F） | L1416 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001（2026-03-08） | L1498 |
 
 ### references/arch-ui-components.md
 
@@ -1964,13 +1964,13 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2934 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3036 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3103 |
-| 残課題（未タスク） | L3184 |
-| 関連ドキュメント | L3593 |
-| 変更履歴 | L3603 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L3842 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L2936 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3038 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3105 |
+| 残課題（未タスク） | L3186 |
+| 関連ドキュメント | L3595 |
+| 変更履歴 | L3605 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L3844 |
 
 ### references/testing-accessibility.md
 
@@ -2097,6 +2097,27 @@ node scripts/list-specs.js --topics
 | タスク: history-manual-testing（2026-01-17完了） | L163 |
 | 残課題 | L211 |
 | 関連ドキュメント | L225 |
+
+---
+
+## TASK-10A-F クロスリファレンス（Store駆動ライフサイクルUI統合）
+
+> 手動追加: 2026-03-09（generate-index.js では見出し行ベースのみ抽出されるため補完）
+
+| キーワード | 参照先 | 行 | 説明 |
+|------------|--------|-----|------|
+| TASK-10A-F | `arch-state-management.md` | L14 | Store駆動ライフサイクルUI統合の変更履歴 |
+| TASK-10A-F | `lessons-learned.md` | L349 | useSkillAnalysis 直接IPC排除の教訓 |
+| TASK-10A-F | `task-workflow.md` | L3664 | タスク完了記録 |
+| TASK-10A-F | `ui-ux-components.md` | L205 | SkillAnalysisView 実装記録 |
+| S19 | `architecture-implementation-patterns.md` | L2413 | IPC Date型シリアライズパターン |
+| P50 | `architecture-implementation-patterns.md` | L3230 | 既実装防御の発見による検証・補完モード適用 |
+| useSkillAnalysis | `arch-state-management.md` | L1419 | Store移行済みhook（個別セレクタ使用） |
+| useSkillAnalysis | `arch-state-management.md` | L1460 | セレクタマッピングテーブル |
+| useSkillAnalysis | `lessons-learned.md` | L349 | 直接IPC呼び出し3箇所のStore移行教訓 |
+| Case B | `arch-state-management.md` | L1478 | ローカルstate + Store state のハイブリッド方式（分類基準） |
+| Case B | `arch-state-management.md` | L1495 | improvementResult のStore化見送り設計判断 |
+| Case B | `lessons-learned.md` | L382 | Case B方式の採用根拠 |
 
 ---
 

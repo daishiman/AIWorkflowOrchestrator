@@ -7,6 +7,12 @@
 
 ## よく使うパターン
 
+### 仕様検索の分割ルール
+
+- `search-spec.js` は **1概念1クエリ** で分割して使う
+- 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
+- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
+
 ### Electron IPC パターン
 
 ```typescript
@@ -145,6 +151,25 @@ useEffect(() => {
 - 設計原則: arch-state-management.md L156-245
 - 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
 - 落とし穴: 06-known-pitfalls.md#P31
+
+### Store selector migration / renderer direct IPC removal
+
+```typescript
+// before
+const result = await window.electronAPI.skill.analyze(skillName);
+
+// after
+const analyzeSkill = useAnalyzeSkill();
+await analyzeSkill(skillName);
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| 対象 | Renderer 直呼び出しを Store action / 個別セレクタへ寄せる |
+| state 境界 | 共有 state は Store、UI 一時 state は local |
+| 検索語 | `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal` |
+
+**詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
 
 ### ChatPanel統合パターン（TASK-7D）
 

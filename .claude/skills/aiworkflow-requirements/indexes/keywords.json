@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-08T14:12:11.844Z",
-  "totalKeywords": 1525,
+  "generated": "2026-03-09T03:05:04.087Z",
+  "totalKeywords": 1531,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -481,6 +481,7 @@
       "api-ipc-auth.md",
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
+      "arch-state-management.md",
       "architecture-implementation-patterns.md",
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
@@ -1311,6 +1312,22 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
     ],
+    "selector": [
+      "arch-state-management.md",
+      "architecture-implementation-patterns.md"
+    ],
+    "migration": [
+      "arch-state-management.md"
+    ],
+    "renderer": [
+      "arch-state-management.md"
+    ],
+    "direct": [
+      "arch-state-management.md"
+    ],
+    "removal": [
+      "arch-state-management.md"
+    ],
     "Persist": [
       "arch-state-management.md"
     ],
@@ -1680,9 +1697,6 @@
       "architecture-implementation-patterns.md"
     ],
     "派生": [
-      "architecture-implementation-patterns.md"
-    ],
-    "selector": [
       "architecture-implementation-patterns.md"
     ],
     "策定": [
@@ -4083,6 +4097,12 @@
       "lessons-learned.md"
     ],
     "教訓": [
+      "lessons-learned.md"
+    ],
+    "ワークフロー教訓": [
+      "lessons-learned.md"
+    ],
+    "検証実行": [
       "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [

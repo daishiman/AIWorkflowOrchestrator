@@ -1130,6 +1130,14 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 - `SkillCreateWizard` は `useCreateSkill()` で作成 action を実行し、生成進捗をUIに反映する。
 - 画面検証は dark/light/mobile と error/loading を含む 11ケースで確認済み。
 
+### 後続未タスク（TASK-10A-F 由来）
+
+| タスクID | 内容 | 優先度 | 仕様書 |
+| --- | --- | --- | --- |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
+| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
+| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
+
 ---
 
 <a id="organisms-foundation-task-ui-00-organisms"></a>

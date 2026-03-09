@@ -423,6 +423,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.55.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 未タスク検出**: skillHandlers.ts全14ハンドラ調査→3件検出（IPC応答形式統一・P45引数名ドリフト・P42バリデーション統一）。task-workflow.md残課題3エントリ追加、interfaces-agent-sdk-skill.md関連テーブル追加 |
 | **8.54.0** | **2026-02-10** | **SKILL.md最適化**: skill-creatorテンプレート準拠。変更履歴を最新20件に圧縮（古い19件をLOGS.mdに移動）。500行以内維持 |
 | **8.53.0** | **2026-02-10** | **P31対策スキル改善**: topic-map.md再生成、quick-reference.mdにP31対策早見パターン追加、SKILL.md Triggerキーワード追加、keywords.json再生成 |
+| **8.53.0** | **2026-03-09** | TASK-10A-F P50検証完了: S19パターン追加、教訓5件追加 |
 | **8.52.0** | **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001完了**: 06-known-pitfalls.md P31追加（Zustand Store Hooks無限ループ）。useRefガード実装 |
 | **8.51.0** | **2026-02-10** | **UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH完了**: AgentSDKAPI abort()型定義修正。`abort(): void` → `abort(): Promise<void>`に変更（2箇所: shared/types.ts, preload/types.ts）。P23パターン準拠。実装（safeInvoke）と型定義の整合性確保。24テストPASS、未タスク0件 |
 | **8.50.0** | **2026-02-10** | **UT-FIX-5-3-PRELOAD-AGENT-ABORT完了**: Agent Abort IPCセキュリティ修正。preload/index.ts `ipcRenderer.send` → `safeInvoke(IPC_CHANNELS.AGENT_ABORT)` 変更、agent-handler.ts `ipcMain.on` → `ipcMain.handle` 変更、dispose()に`removeHandler`追加。04-electron-security.md IPC原則準拠。21テストPASS、未タスク0件 |

@@ -2900,7 +2900,7 @@ const recentExecutions =
 
 **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
 
-### S26: 直接IPC→Store個別セレクタ移行パターン（TASK-10A-F 2026-03-07策定）
+### S26: 直接IPC→Store個別セレクタ移行パターン（selector migration / TASK-10A-F 2026-03-07策定）
 
 Custom Hookが `window.electronAPI` を直接呼び出している場合の、Store個別セレクタへの移行手順。
 

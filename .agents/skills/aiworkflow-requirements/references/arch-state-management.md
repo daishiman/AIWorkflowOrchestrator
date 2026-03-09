@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.12.1    | 2026-03-09 | TASK-10A-F Phase 12 再同期を追補。current workflow に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再配置した実装内容と、P53 placeholder 除去・implementation-guide literal 見出し・unassigned legacy baseline 分離報告の苦戦箇所を追加 |
 | v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記                                                                                                                                   |
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記                                                  |
 | v3.8.9     | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 反映: AuthMode の現行 selector 実装（`store/index.ts` 正本、`useEffect([initializeAuthMode])`、`AuthModeStatus` 表示契約）へ更新し、旧 `useRef` ガード前提と削除済み hook path を是正                                                                              |
@@ -1388,7 +1389,9 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。
 5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
 
-## TASK-10A-F: Store駆動ライフサイクルUI統合（2026-03-07）
+## TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07）
+
+**検索キーワード**: `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal`
 
 ### 責務境界の最終同期
 
@@ -1403,6 +1406,23 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 - `useSkillAnalysis` は `useCurrentAnalysis` / `useIsAnalyzingSkill` / `useIsImprovingSkill` / `useSkillError` と action selector を使用する。
 - `SkillCreateWizard` は `useCreateSkill()` を使用し、UIから `window.electronAPI.skill.create` を直接呼ばない。
 - 画面検証は `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots/` の 11証跡で確認する。
+
+### Phase 12 再同期追補（2026-03-09）
+
+| 区分 | 今回反映した内容 |
+| --- | --- |
+| current workflow 証跡 | `TC-11-01`〜`TC-11-08` を満たす実スクリーンショット11件へ再同期し、`manual-test-result.md` を validator 互換の `テストケース / 証跡` 形式へ更新 |
+| 実装ガイド | `implementation-guide.md` を `## Part 1` / `## Part 2` と `型定義` / `APIシグネチャ` / `使用例` / `エラーハンドリング` / `エッジケース` / `設定項目と定数一覧` を持つ構造へ再編 |
+| 状態設計の維持 | `analysis` / `isAnalyzing` / `isImproving` / `skillError` は Store、`selectedSuggestions` / `improvementResult` / `wizardStep` はローカル、という Case B 判断を再確認 |
+| 後続境界 | `SkillEditor.tsx` に残る file operation 系 direct IPC は TASK-10A-G の受け皿を維持し、新規未タスクは追加しない |
+
+### 再同期で苦戦した箇所（2026-03-09）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| Phase 11 placeholder の残置 | `P53` / `代替` / `スクリーンショット不可` を current workflow に残したまま validator だけ再実行する | 実スクリーンショット取得後に placeholder 文言を除去し、`TC-ID ↔ png` へ置換 | screenshot 必須タスクでは placeholder を成果物へ残さない |
+| implementation-guide の literal 見出し不足 | Part 1/2 はあるが validator が要求する見出し語が欠ける | テンプレートと実成果物の両方に `APIシグネチャ` / `エラーハンドリング` / `設定項目と定数一覧` を明示 | Phase 12 はテンプレート段階で validator 必須語を先置きする |
+| unassigned-task の directory 全体と今回差分の混同 | `currentViolations=0` のみ見て「指定ディレクトリは完全準拠」と書いてしまう | `current` と `baseline` を分離し、legacy 正規化タスクを参照して報告 | 未タスク確認は「今回差分」「legacy baseline」の2軸で書く |
 
 1. `rg` で inline selector / direct IPC の残存箇所を棚卸しする。
 2. `.filter()` / `.map()` 派生 selector は `useShallow` 適用を先に固定する。
