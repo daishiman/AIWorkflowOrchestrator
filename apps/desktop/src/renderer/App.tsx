@@ -24,6 +24,7 @@ import { AnalyticsDashboard } from "./views/AnalyticsDashboard";
 import { ChatHistoryView } from "./views/ChatHistoryView";
 import { HistorySearchView } from "./views/HistorySearchView";
 import { SkillCenterView } from "./views/SkillCenterView";
+import { ConcurrencyGuardReviewHarness } from "./views/ConcurrencyGuardReviewHarness";
 import { SkillEditorView } from "./views/SkillEditorView";
 import { UIDesignFoundationPreview } from "./views/UIDesignFoundationPreview";
 import { WorkspaceView } from "./views/WorkspaceView";
@@ -43,6 +44,13 @@ import type { ViewType } from "./store/types";
 function App(): JSX.Element {
   // 🔧 デバッグ用: 初回起動時にストレージをクリア（TODO: テスト完了後に削除）
   useEffect(() => {
+    if (
+      import.meta.env.VITE_E2E_MODE === "true" ||
+      window.location.search.includes("skipAuth=true")
+    ) {
+      return;
+    }
+
     const shouldClear = sessionStorage.getItem("debug-clear-storage");
     if (!shouldClear) {
       console.log("🔧 [DEBUG] Clearing all storage for clean auth test...");
@@ -255,6 +263,10 @@ function App(): JSX.Element {
           <Route
             path="/advanced/skill-center"
             element={renderStandaloneView(<SkillCenterView />)}
+          />
+          <Route
+            path="/advanced/concurrency-guard-review"
+            element={renderStandaloneView(<ConcurrencyGuardReviewHarness />)}
           />
           <Route
             path="/advanced/skill-editor"

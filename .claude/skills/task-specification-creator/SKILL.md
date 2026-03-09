@@ -397,6 +397,10 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.37** | **2026-03-09** | **未タスク指示書の差分監査タイミングを明文化**: `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、`currentViolations=0` まで閉じない」ルールを追加。配置済みとテンプレート準拠を分離して判定する運用へ補強 |
+| **v10.08.36** | **2026-03-09** | **TASK-FIX-CONCURRENCY-GUARD フィードバック反映**: Phase 4 テスト仕様にモノレポテスト実行ディレクトリ注意書き（P40）を標準追加。Phase 2 設計テンプレートに「並行実行ガード検討」チェックポイントを追加 |
+| **v10.08.35** | **2026-03-09** | **TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補**: `validate-phase-output` の誤 CLI 例（`--phase`）を template / guide / agent docs から除去し、`phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加。workflow12 の Phase 11 screenshot / Phase 12 実装ガイド再同期を前提にした運用へ補強 |
+| **v10.08.34** | **2026-03-09** | **TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 完了同期**: `arch-state-management.md` に executeSkill 並行実行ガードパターン追記。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）。未タスク2件検出 |
 | **v10.08.33** | **2026-03-08** | **TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追補**: skill-creator によるテンプレート最適化 + 4仕様書への苦戦箇所記録 |
 | **v10.08.32** | **2026-03-08** | **TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 仕様同期**: `api-ipc-system.md` / `architecture-implementation-patterns.md` / `security-electron-ipc.md` / `task-workflow.md` に Graceful Degradation 完了記録を同期。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.08.31** | **2026-03-08** | **TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12完了条件を補強**: `references/phase-11-12-guide.md` に `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックを実績同期する要件と、system spec 更新時に domain spec 側へ `実装内容 / 苦戦箇所 / 5分カード` または等価な lessons 参照を残す条件を追加。Phase 12 を成果物存在だけで閉じない運用へ補強 |

@@ -7,12 +7,6 @@
 
 ## よく使うパターン
 
-### 仕様検索の分割ルール
-
-- `search-spec.js` は **1概念1クエリ** で分割して使う
-- 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
-- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
-
 ### Electron IPC パターン
 
 ```typescript
@@ -105,24 +99,6 @@ if (getSupabaseClient()) {
 **詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
 **完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
 
-### IPC Handler Registration Graceful Degradation
-
-`registerAllIpcHandlers()` 内で一部ハンドラ登録が失敗しても、無関係なハンドラ登録を継続させるときの参照順序。
-
-| まず読む | 理由 |
-| -------- | ---- |
-| `security-electron-ipc.md` | register / unregister 対称性、非IPCリスナー解除 |
-| `architecture-implementation-patterns.md` | Main Process 側の graceful degradation / 部分失敗パターン |
-| `arch-electron-services.md` | サービス初期化グループをどこで失敗境界にするか |
-
-| 必要に応じて読む | 理由 |
-| ---------------- | ---- |
-| `arch-ipc-persistence.md` | `registerAllIpcHandlers` を単一入口として維持するため |
-| `error-handling.md` | Infrastructure Error とログ最小化 |
-| `api-ipc-system.md` | runtime contract 変更の有無 |
-| `task-workflow.md`, `lessons-learned.md` | P5、解除漏れ、監査順序の教訓 |
-
-**検索キーワード例**: `ipc handler registration graceful degradation`, `IPC 部分失敗`, `registerAllIpcHandlers failure boundary`
 ### Result Pattern
 
 ```typescript
@@ -143,6 +119,30 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 ```
 
 **詳細**: architecture-patterns.md L141-234
+
+### S31: executeSkill 並行実行ガード
+
+async アクション内で `isExecuting` による二重実行防止。microtask 境界前に同期チェックを配置する。
+
+```typescript
+// ✅ async 操作前の同期ガード
+executeSkill: async (prompt) => {
+  const { selectedSkillName, isExecuting } = get();
+  if (!selectedSkillName) return;
+  if (isExecuting) return; // 同期チェック — microtask 境界前
+  set({ isExecuting: true, ... });
+  // await ... async operations
+};
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| ガード位置 | 最初の `await` より前（同期領域） |
+| `isExecuting` リセット | finally または catch で `false` に復元 |
+| テスト手法 | `flushMicrotasks()` で preflight 通過後にガード検証 |
+
+**詳細**: architecture-implementation-patterns.md S31
+**関連 Pitfall**: 06-known-pitfalls.md#P31
 
 ### P31対策: Store Hooks無限ループ防止
 
@@ -170,25 +170,6 @@ useEffect(() => {
 - 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
 - 落とし穴: 06-known-pitfalls.md#P31
 
-### Store selector migration / renderer direct IPC removal
-
-```typescript
-// before
-const result = await window.electronAPI.skill.analyze(skillName);
-
-// after
-const analyzeSkill = useAnalyzeSkill();
-await analyzeSkill(skillName);
-```
-
-| 確認項目 | 期待値 |
-|---------|--------|
-| 対象 | Renderer 直呼び出しを Store action / 個別セレクタへ寄せる |
-| state 境界 | 共有 state は Store、UI 一時 state は local |
-| 検索語 | `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal` |
-
-**詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
-
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript
@@ -212,18 +193,40 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 
 **詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
 
-### P50 検証・補完モード（既実装タスクへのPhase適用）
+### スキル実行並行ガード監査パターン
 
-Phase仕様書の対象機能が既に実装済みの場合、Phase 4-5 を「新規実装」ではなく「検証・補完」モードに切り替える。
+```typescript
+// Store 層: executeSkill 冒頭で再入を拒否
+const { selectedSkillName, isExecuting } = get();
+if (!selectedSkillName) return;
+if (isExecuting) return;
 
-| ステップ | 内容 | 判断基準 |
-|---------|------|---------|
-| Phase 1 Step 0 | 既存実装の調査 | `git log` + 現在のコードで実装済みか判定 |
-| Phase 4-5 | テスト/実装の検証・補完 | 既存テストの PASS 確認 → 不足分のみ追加 |
-| Phase 12 | 差分更新のみ | 新規実装がないため仕様書更新は最小限 |
+// UI 層: 既存ガード面を回帰確認
+// - ExecuteButton: isExecuting=true で null render
+// - AgentExecutionView: AgentMessageInput disabled
+// - ChatPanel: skill-management-toggle disabled + SkillStreamingView render
+```
 
-**検索語**: `P50検証モード`, `既実装タスク`, `検証補完モード`
-**詳細**: task-workflow.md (TASK-10A-F), 06-known-pitfalls.md#P50
+| まず読む | 目的 |
+|---------|------|
+| `arch-state-management.md` | `isExecuting` / `skillExecutionStatus` の状態遷移確認 |
+| `interfaces-agent-sdk-skill.md` | `executeSkill` / `pendingPermission` / streaming 型契約確認 |
+| `api-ipc-agent.md` | `skill:execute` request / response / error 契約確認 |
+| `ui-ux-agent-execution.md` | 実行中UIの disabled / hidden 契約確認 |
+| `ui-ux-feature-skill-stream.md` | ChatPanel / SkillStreamingView の表示契約確認 |
+| `quality-requirements.md` | TDD / coverage /性能下限確認 |
+| `testing-fixtures.md` | Store / component test の fixture 再利用方針確認 |
+
+| 実体ファイル | 確認観点 |
+|-------------|----------|
+| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Store guard の有無 |
+| `apps/desktop/src/renderer/store/index.ts` | `useIsSkillExecuting` export |
+| `apps/desktop/src/renderer/store/setupSkillListeners.ts` | 完了 / エラー後の `isExecuting` 復元経路 |
+| `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` | 実行中 null render |
+| `apps/desktop/src/renderer/views/AgentExecutionView/AgentExecutionView.tsx` | 入力 disabled |
+| `apps/desktop/src/renderer/components/chat/ChatPanel.tsx` | toggle disabled + stream 表示 |
+
+**詳細**: arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md, ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md
 
 ---
 

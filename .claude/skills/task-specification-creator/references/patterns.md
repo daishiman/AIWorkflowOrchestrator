@@ -67,6 +67,20 @@
 - **修正ファイル**: `.claude/skills/task-specification-creator/scripts/validate-phase-output.js`
 - **発見日**: 2026-02-24
 
+### validate-phase-output の `--phase` 引数ドリフト（TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査）
+
+- **状況**: template / guide / system spec が `validate-phase-output.js <workflow> --phase 12` を案内していた
+- **問題**: 実スクリプトは workflow path の位置引数しか受け付けず、`--phase` を渡すと失敗する
+- **原因**:
+  1. 旧運用例がテンプレートへ残存した
+  2. system spec 側の説明が template 側へ逆流した
+  3. 再監査時に help 出力との突合を省略した
+- **教訓**:
+  1. CLI 例は `--help` 出力と同じターンで確認する
+  2. template / guide / system spec の3点を同時更新する
+  3. `validate-phase-output` は `node .../validate-phase-output.js <workflow-dir>` を正本とする
+- **発見日**: 2026-03-09
+
 ### 未タスク検出後のtask-workflow.md登録漏れ（TASK-9B-G）
 
 - **状況**: Phase 12で5件の未タスクを検出し、指示書を作成した

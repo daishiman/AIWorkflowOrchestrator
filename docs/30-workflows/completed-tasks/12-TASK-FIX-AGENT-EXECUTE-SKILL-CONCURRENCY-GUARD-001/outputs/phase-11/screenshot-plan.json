@@ -1,0 +1,24 @@
+{
+  "workflow": "12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001",
+  "route": "/advanced/concurrency-guard-review",
+  "testCases": [
+    {
+      "tcId": "TC-11-01",
+      "screen": "AgentView",
+      "state": "executing",
+      "file": "TC-11-01-agent-view-executing.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "screen": "AgentExecutionView",
+      "state": "executing",
+      "file": "TC-11-02-agent-execution-disabled-input.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "screen": "ChatPanel",
+      "state": "executing",
+      "file": "TC-11-03-chat-panel-disabled-toggle.png"
+    }
+  ]
+}

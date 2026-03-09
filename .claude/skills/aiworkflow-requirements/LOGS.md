@@ -5,6 +5,59 @@
 
 ---
 
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 仕様反映
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- 目的: 並行実行ガード実装で得た知見のシステム仕様書反映
+
+### 実施内容
+- `arch-state-management.md` に並行実行ガードパターン（v3.13.0）を追記
+- `architecture-implementation-patterns.md` に S32 パターンを追加
+- `lessons-learned.md` に苦戦箇所4件と5分解決カードを追記
+- `topic-map.md` / `keywords.json` / `quick-reference.md` にインデックスエントリ追加
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査の教訓固定
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- 目的: system spec に実装内容だけでなく、苦戦箇所と再利用手順を残す
+
+### 実施内容
+- `references/arch-state-management.md` の ChatPanel 行を現行実装 `useIsSkillExecuting()` へ是正
+- 同ファイルへ CLI drift / Router 二重化 / workflow 本文 stale の短縮手順を追加
+- `references/lessons-learned.md` に未タスク9セクション逸脱、Router 二重化、4ステップ解決手順を追記
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 Phase 12 完了同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- 目的: agentSlice.executeSkill の並行実行ガード追加に伴う Phase 12 タスク完了記録と仕様書更新
+
+### 実施内容
+- `references/arch-state-management.md` に executeSkill 並行実行ガードパターン（`if (get().isExecuting) return;`）と二重防御アーキテクチャ（Store層 + UI層）を追記
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+- `indexes/topic-map.md` 再生成（P2/P27対策）
+- 未タスク2件検出: UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001, UT-FIX-CHATPANEL-SELECTOR-MIGRATION-001
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所記録
 
 ### コンテキスト
@@ -8512,3 +8565,26 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 ### 結果
 - ステータス: success
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- 目的: workflow 本文 / Phase 11 証跡 / Phase 12 実装ガイド / system spec のドリフトを是正する
+
+### 実施内容
+- `arch-state-management.md` から解消済みの ChatPanel selector 未タスクを除去し、残課題を `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` に整理
+- `task-workflow.md` の workflow12 判定を PASS へ更新し、`validate-phase-output --phase` 誤記を修正
+- `system-investigation-report.md` を現状ベースへ更新
+- `LOGS.md` / `SKILL.md` を両スキルで同時更新
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --workflow docs/30-workflows/completed-tasks/12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001`
+
+### 結果
+- ステータス: success
+- 補足: current workflow の残課題は `abortExecution` guard の 1 件のみ

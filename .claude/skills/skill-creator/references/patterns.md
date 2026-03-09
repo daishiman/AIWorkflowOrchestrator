@@ -2954,3 +2954,77 @@ pnpm --filter @repo/desktop dev
 - **標準ルール**: セキュリティテストのパス検出は「ディレクトリ名を含むパスパターン」で検出する
 - **発見日**: 2026-03-08
 - **関連タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001
+
+### [状態管理] Zustand Store 並行実行ガードパターン（TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001）
+
+- **状況**: Store の async アクション（executeSkill 等）がIPC呼び出しを含み、ユーザー操作（ボタン連打等）で二重実行される可能性がある
+- **アプローチ**:
+  1. Store層: async 操作前に `if (get().isExecuting) return;` で同期チェック
+  2. UI層: `isExecuting` 状態を参照してボタンの `disabled` 属性を制御（二重防御）
+  3. `isExecuting` フラグは `set({ isExecuting: true })` で即時設定し、完了/エラー時は listener 経由でクリーンアップ
+- **実装テンプレート**:
+
+```typescript
+// Store層ガード
+actionName: async (param) => {
+  const { isExecuting } = get();
+  if (isExecuting) return; // 同期チェック — async 操作前に配置
+  set({ isExecuting: true });
+  try {
+    await ipcCall(param);
+  } finally {
+    // 完了/エラー時のクリーンアップは listener 経由で実施
+  }
+};
+```
+
+- **テストテンプレート**:
+
+```typescript
+// flushMicrotasks で async 操作を進める
+function flushMicrotasks(): Promise<void> {
+  return new Promise((resolve) => { setTimeout(resolve, 0); });
+}
+
+// ガードテスト
+const firstCall = getState().action("first");
+await flushMicrotasks();
+expect(getState().isExecuting).toBe(true);
+await getState().action("second"); // ガードされるべき
+expect(mockIpc).toHaveBeenCalledTimes(1);
+```
+
+- **注意事項**:
+  - テスト実行は `cd apps/desktop && pnpm vitest run` で対象パッケージから実行する（P40準拠）
+  - UI側は `isExecuting` をプリミティブ直接セレクタで参照する（P31準拠）
+  - `useShallow` は不要（boolean はプリミティブ型のため P48 非該当）
+- **適用条件**: Store の async アクションが IPC 呼び出しやネットワークリクエストを含み、ユーザー操作で二重実行される可能性がある場合
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+- **クロスリファレンス**: [06-known-pitfalls.md#P31](../../.claude/rules/06-known-pitfalls.md), [06-known-pitfalls.md#P40](../../.claude/rules/06-known-pitfalls.md)
+
+### [Phase 12] current workflow 再監査で CLI drift / 未タスクフォーマット / skill同期を同時に閉じる
+
+- **状況**: 実装は完了しているが、Phase 12 再監査で `validate-phase-output` のCLI例、未タスク指示書フォーマット、skill側パターン知見がずれていることがある
+- **アプローチ**:
+  1. `validate-phase-output.js <workflow-dir>` を正本コマンドとして workflow / template / system spec の記述を一括照合する
+  2. 新規未タスクは 9セクションテンプレートで作成し、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` が `currentViolations=0` になるまで閉じない
+  3. `documentation-changelog.md` / `skill-feedback-report.md` に「どの skill を更新したか」を明記する
+  4. `phase-12-documentation.md`、`artifacts.json`、`outputs/artifacts.json`、`index.md` を同一ターンで同期する
+- **結果**: current workflow の PASS 判定と、再利用知見の skill 反映が分断されなくなる
+- **適用条件**: Phase 12 再監査、branch 再確認、current workflow の stale 修正
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+
+### [Phase 11] BrowserRouter 配下の screenshot harness は descendant route で作る
+
+- **状況**: 既存アプリが `BrowserRouter` 配下で動作しているのに、review harness 内で `MemoryRouter` を重ねると描画が落ちる
+- **アプローチ**:
+  1. App ルートに review 用 path を追加する
+  2. harness コンポーネントは既存 Router の子として描画し、Router を再生成しない
+  3. route param が不要なら props / store mock で依存を外す
+  4. screenshot スクリプトには pageerror 出力を入れて route 構成の崩れを早期検知する
+- **結果**: 画面検証用導線を足しても App shell を壊さず、TC 証跡を安定取得できる
+- **適用条件**: React Router 利用中の画面検証、preview harness 追加、Phase 11 screenshot 再取得
+- **発見日**: 2026-03-09
+- **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001

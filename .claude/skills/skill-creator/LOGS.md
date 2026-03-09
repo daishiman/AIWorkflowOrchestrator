@@ -4,6 +4,31 @@
 
 ---
 
+## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に Zustand Store 並行実行ガードパターンを追加
+  - Phase 4 テスト仕様テンプレートにモノレポテスト実行ディレクトリ注意書きを追加推奨
+  - Phase 2 設計テンプレートに並行実行ガード検討チェックポイントを追加推奨
+
+---
+
+## [2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「current workflow 再監査で CLI drift / 未タスク9セクション / skill同期を同時に閉じる」を追加
+  - 同ファイルに成功パターン「BrowserRouter 配下の screenshot harness は descendant route で作る」を追加
+  - workflow の `documentation-changelog.md` と `skill-feedback-report.md` に更新した skill 名を記録する運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.18` として同期
+
+---
+
 ## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
 
 - **Agent**: skill-creator (update)

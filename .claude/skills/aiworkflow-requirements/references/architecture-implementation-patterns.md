@@ -3336,10 +3336,40 @@ interface IpcHandlerRegistrationResult {
 | 合計 | 19 | 同上 | 全PASS |
 
 ---
+### S32: executeSkill 並行実行ガードパターン
+
+- **課題**: `executeSkill` が async 関数のため、`preflightSkillExecutionAuth()` の await 中に2回目の呼び出しが可能。ストリーミングメッセージの混在と `executionId` の上書きが発生する
+- **解決策**: async 操作前に同期的な `get().isExecuting` チェックを配置し、microtask 境界を跨がずにガードする
+- **適用条件**: Zustand Store の async アクション（IPC呼び出しを含む）で二重実行を防止する必要がある場合
+- **関連Pitfall**: P31（個別セレクタ使用）、P40（テスト実行ディレクトリ）
+
+```typescript
+// ✅ 推奨: async 操作前の同期ガード
+executeSkill: async (prompt) => {
+  const { selectedSkillName, isExecuting } = get();
+  if (!selectedSkillName) return;
+  if (isExecuting) return; // 同期チェック — microtask 境界前
+
+  set({ isExecuting: true, ... }); // ここから先は排他実行
+  // await ... async operations
+};
+
+// ❌ 非推奨: async 操作後のガード（race condition あり）
+executeSkill: async (prompt) => {
+  await someAsyncPrecheck(); // この await 中に2回目が入る
+  if (get().isExecuting) return; // 遅すぎる
+};
+```
+
+- **テストパターン**: `flushMicrotasks()` で preflight await を通過させ、`isExecuting=true` 到達後にガードをテスト
+- **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.42.0 | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001: S32 executeSkill並行実行ガードパターンを追加。async操作前の同期的isExecutingチェックによるmicrotask境界前ガード、flushMicrotasksテストパターンを標準化 |
 | v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
 | v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |
 | v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化 |

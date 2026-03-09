@@ -740,8 +740,11 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
 
   // race condition対策版 executeSkill
   executeSkill: async (prompt) => {
-    const { selectedSkillName } = get();
+    const { selectedSkillName, isExecuting } = get();
     if (!selectedSkillName) return;
+
+    // 並行実行ガード: 既に実行中の場合は即座に拒否（FR-01）
+    if (isExecuting) return;
 
     const hasAuthPreflightAPI =
       typeof window !== "undefined" &&

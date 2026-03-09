@@ -22,6 +22,7 @@ vi.mock("../../../store", () => ({
   useAppStore: vi.fn((selector: (s: Record<string, unknown>) => unknown) => {
     return selector(mockStoreState);
   }),
+  useIsSkillExecuting: vi.fn(() => Boolean(mockStoreState.isExecuting)),
   useSkillStore: vi.fn(() => ({
     availableSkills: [],
     importedSkills: [],

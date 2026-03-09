@@ -13,7 +13,7 @@ import React, {
   forwardRef,
 } from "react";
 import type { SkillMetadata } from "@repo/shared";
-import { useAppStore } from "../../store";
+import { useAppStore, useIsSkillExecuting } from "../../store";
 import { SkillSelector } from "../skill/SkillSelector";
 import { SkillImportDialog } from "../skill/SkillImportDialog";
 import { PermissionDialog } from "../skill/PermissionDialog";
@@ -57,7 +57,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
     // Store state
     const selectedSkillName = useAppStore((s) => s.selectedSkillName);
     const streamingMessages = useAppStore((s) => s.streamingMessages);
-    const isExecuting = useAppStore((s) => s.isExecuting);
+    const isExecuting = useIsSkillExecuting();
     const skillExecutionStatus = useAppStore((s) => s.skillExecutionStatus);
     const fetchSkills = useAppStore((s) => s.fetchSkills);
 
