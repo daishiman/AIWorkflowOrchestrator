@@ -400,6 +400,116 @@ describe("SkillManagementPanel integration", () => {
     ).toBeDefined();
   });
 
+  it("TC-RT-05: create view から一覧に戻った際に一覧表示・カウントが維持される", async () => {
+    render(<SkillManagementPanel />);
+
+    // 一覧表示の初期状態を確認
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
+    expect(screen.getByTestId("skill-management-imported-count")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-available-count"),
+    ).toBeDefined();
+
+    // create view に遷移
+    await act(async () => {
+      fireEvent.click(screen.getByText("新規作成"));
+    });
+
+    expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
+    expect(screen.queryByTestId("skill-management-panel")).toBeNull();
+
+    // create view を閉じて一覧に戻る
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("wizard-close"));
+    });
+
+    // 一覧表示が維持されている
+    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("available-skill-row-skill-gamma")).toBeDefined();
+    expect(screen.getByTestId("skill-management-imported-count")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-available-count"),
+    ).toBeDefined();
+  });
+
+  it("検索クエリは create view を往復しても維持される", async () => {
+    render(<SkillManagementPanel />);
+
+    const searchInput = screen.getByLabelText(
+      "スキルを検索",
+    ) as HTMLInputElement;
+    fireEvent.change(searchInput, { target: { value: "alpha" } });
+
+    // create view に遷移
+    await act(async () => {
+      fireEvent.click(screen.getByText("新規作成"));
+    });
+
+    // create view を閉じて一覧に戻る
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("wizard-close"));
+    });
+
+    expect(
+      (screen.getByLabelText("スキルを検索") as HTMLInputElement).value,
+    ).toBe("alpha");
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+  });
+
+  it("TC-RT-01: import 成功後に create view へ遷移し、戻っても一覧が正しく反映される", async () => {
+    currentStoreState = {
+      ...currentStoreState,
+      importSkill: vi.fn(async (skillName: SkillMetadata["name"]) => {
+        currentStoreState = {
+          ...currentStoreState,
+          importedSkills: [
+            ...currentStoreState.importedSkills,
+            buildImportedSkill(String(skillName), "Imported skill"),
+          ],
+          availableSkillsMetadata:
+            currentStoreState.availableSkillsMetadata.filter(
+              (skill) => skill.name !== skillName,
+            ),
+          skillError: null,
+        };
+      }),
+    };
+
+    const { rerender } = render(<SkillManagementPanel />);
+
+    // import を実行
+    const addButton = screen.getByLabelText("skill-gamma を追加する");
+    await act(async () => {
+      fireEvent.click(addButton);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "追加する" }));
+    });
+    rerender(<SkillManagementPanel />);
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    // import 後の一覧を確認
+    expect(screen.getByTestId("imported-skill-card-skill-gamma")).toBeDefined();
+    expect(screen.queryByTestId("available-skill-row-skill-gamma")).toBeNull();
+
+    // create view に遷移して戻る
+    await act(async () => {
+      fireEvent.click(screen.getByText("新規作成"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("wizard-close"));
+    });
+
+    // import 結果が維持されている
+    expect(screen.getByTestId("imported-skill-card-skill-alpha")).toBeDefined();
+    expect(screen.getByTestId("imported-skill-card-skill-gamma")).toBeDefined();
+    expect(screen.queryByTestId("available-skill-row-skill-gamma")).toBeNull();
+  });
+
   it("検索クエリは analysis view を往復しても維持される", async () => {
     render(<SkillManagementPanel />);
 

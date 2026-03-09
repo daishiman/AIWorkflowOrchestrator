@@ -1,0 +1,70 @@
+{
+  "capturedAt": "2026-03-09T12:29:49.187Z",
+  "baseUrl": "http://localhost:5183",
+  "workflowRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-164041-wt1/docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening",
+  "scenarios": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-create-wizard-initial-dark.png",
+      "url": "http://localhost:5183/advanced/skill-create-wizard",
+      "capturedAt": "2026-03-09T12:29:41.426Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-create-wizard-error-dark.png",
+      "url": "http://localhost:5183/advanced/skill-create-wizard?mode=error",
+      "capturedAt": "2026-03-09T12:29:42.653Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-analysis-default-dark.png",
+      "url": "http://localhost:5183/advanced/skill-analysis",
+      "capturedAt": "2026-03-09T12:29:43.492Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-analysis-selection-dark.png",
+      "url": "http://localhost:5183/advanced/skill-analysis",
+      "capturedAt": "2026-03-09T12:29:44.696Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-analysis-error-dark.png",
+      "url": "http://localhost:5183/advanced/skill-analysis?mode=error",
+      "capturedAt": "2026-03-09T12:29:45.517Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06-analysis-loading-dark.png",
+      "url": "http://localhost:5183/advanced/skill-analysis?mode=loading",
+      "capturedAt": "2026-03-09T12:29:46.324Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-07",
+      "file": "TC-11-07-skill-management-list.png",
+      "url": "http://localhost:5183/advanced/skill-management-panel",
+      "capturedAt": "2026-03-09T12:29:47.195Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-08",
+      "file": "TC-11-08-skill-management-create-view.png",
+      "url": "http://localhost:5183/advanced/skill-management-panel",
+      "capturedAt": "2026-03-09T12:29:48.316Z",
+      "pageErrors": []
+    },
+    {
+      "tcId": "TC-11-09",
+      "file": "TC-11-09-chat-panel-disabled-toggle.png",
+      "url": "http://localhost:5183/advanced/concurrency-guard-review?skipAuth=true&scenario=chat-panel",
+      "capturedAt": "2026-03-09T12:29:49.184Z",
+      "pageErrors": []
+    }
+  ]
+}

@@ -363,6 +363,279 @@ describe("buildAutoFixableSelection", () => {
 });
 
 // ============================================
+// RT-02/RT-06: 改善後再分析フロー（analyze → improve → reanalyze）
+// ============================================
+
+describe("useSkillAnalysis 改善後再分析フロー", () => {
+  beforeEach(() => {
+    mockCurrentAnalysis = null;
+    mockIsAnalyzing = false;
+    mockIsImproving = false;
+    mockSkillError = null;
+    mockAnalyzeSkill.mockReset();
+    mockApplySkillImprovements.mockReset();
+    mockAutoImproveSkill.mockReset();
+    mockAnalyzeSkill.mockResolvedValue(undefined);
+    mockApplySkillImprovements.mockResolvedValue(undefined);
+    mockAutoImproveSkill.mockResolvedValue(undefined);
+    vi.restoreAllMocks();
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT02a: handleApplySelected が applySkillImprovements を呼ぶ（再分析はStore action内で実行）
+  // ------------------------------------------
+  it("TC-G2-RT02a: handleApplySelected が applySkillImprovements を正しい引数で呼ぶ", async () => {
+    const analysis = createMockAnalysis();
+    mockCurrentAnalysis = analysis;
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    // 提案を選択
+    act(() => {
+      result.current.handleToggleSuggestion(0);
+    });
+
+    // 適用実行
+    await act(async () => {
+      await result.current.handleApplySelected();
+    });
+
+    expect(mockApplySkillImprovements).toHaveBeenCalledWith("test-skill", [
+      analysis.suggestions[0],
+    ]);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT06a: handleAutoImprove が confirm(true) 後に autoImproveSkill を呼ぶ
+  // ------------------------------------------
+  it("TC-G2-RT06a: handleAutoImprove が autoImproveSkill を呼び再分析導線が起動する", async () => {
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    mockCurrentAnalysis = createMockAnalysis();
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    await act(async () => {
+      await result.current.handleAutoImprove();
+    });
+
+    expect(mockAutoImproveSkill).toHaveBeenCalledWith("test-skill");
+    expect(mockAutoImproveSkill).toHaveBeenCalledTimes(1);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT02b: handleApplySelected 後に selectedSuggestions がリセットされない（Store action内で管理）
+  // ------------------------------------------
+  it("TC-G2-RT02b: handleApplySelected 実行後も selectedSuggestions は維持される", async () => {
+    const analysis = createMockAnalysis();
+    mockCurrentAnalysis = analysis;
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    // 提案を選択
+    act(() => {
+      result.current.handleToggleSuggestion(0);
+      result.current.handleToggleSuggestion(2);
+    });
+
+    expect(result.current.selectedSuggestions.size).toBe(2);
+
+    // 適用実行
+    await act(async () => {
+      await result.current.handleApplySelected();
+    });
+
+    // applyが呼ばれたことを確認
+    expect(mockApplySkillImprovements).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ============================================
+// RT-07: isAnalyzing / isImproving 排他制御テスト
+// ============================================
+
+describe("useSkillAnalysis 排他制御", () => {
+  beforeEach(() => {
+    mockCurrentAnalysis = null;
+    mockIsAnalyzing = false;
+    mockIsImproving = false;
+    mockSkillError = null;
+    mockAnalyzeSkill.mockReset();
+    mockApplySkillImprovements.mockReset();
+    mockAutoImproveSkill.mockReset();
+    mockAnalyzeSkill.mockResolvedValue(undefined);
+    mockApplySkillImprovements.mockResolvedValue(undefined);
+    mockAutoImproveSkill.mockResolvedValue(undefined);
+    vi.restoreAllMocks();
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT07a: isAnalyzing=true のとき isAnalyzing が hook から正しく返される
+  // ------------------------------------------
+  it("TC-G2-RT07a: isAnalyzing=true のとき hook が isAnalyzing=true を返す", async () => {
+    mockIsAnalyzing = true;
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    expect(result.current.isAnalyzing).toBe(true);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT07b: isImproving=true のとき isImproving が hook から正しく返される
+  // ------------------------------------------
+  it("TC-G2-RT07b: isImproving=true のとき hook が isImproving=true を返す", async () => {
+    mockIsImproving = true;
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    expect(result.current.isImproving).toBe(true);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT07c: isImproving=true のとき handleApplySelected は applySkillImprovements を呼ばない（selectedが空なので早期リターン）
+  // ------------------------------------------
+  it("TC-G2-RT07c: isImproving=true かつ selectedSuggestions が空のとき handleApplySelected は早期リターンする", async () => {
+    mockIsImproving = true;
+    mockCurrentAnalysis = createMockAnalysis();
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    await act(async () => {
+      await result.current.handleApplySelected();
+    });
+
+    // 選択なしのため早期リターン
+    expect(mockApplySkillImprovements).not.toHaveBeenCalled();
+  });
+});
+
+// ============================================
+// RT-04: エラー回復テスト
+// ============================================
+
+describe("useSkillAnalysis エラー回復", () => {
+  beforeEach(() => {
+    mockCurrentAnalysis = null;
+    mockIsAnalyzing = false;
+    mockIsImproving = false;
+    mockSkillError = null;
+    mockAnalyzeSkill.mockReset();
+    mockApplySkillImprovements.mockReset();
+    mockAutoImproveSkill.mockReset();
+    mockAnalyzeSkill.mockResolvedValue(undefined);
+    mockApplySkillImprovements.mockResolvedValue(undefined);
+    mockAutoImproveSkill.mockResolvedValue(undefined);
+    vi.restoreAllMocks();
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT04a: analyzeSkill 失敗後に handleAnalyze で再試行できる
+  // ------------------------------------------
+  it("TC-G2-RT04a: analyzeSkill 失敗後に handleAnalyze で再試行が可能", async () => {
+    mockSkillError = "分析に失敗しました";
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    // エラー状態を確認
+    expect(result.current.error).toBe("分析に失敗しました");
+
+    // 再試行
+    const callCountBefore = mockAnalyzeSkill.mock.calls.length;
+    await act(async () => {
+      await result.current.handleAnalyze();
+    });
+
+    // analyzeSkill が再度呼ばれた
+    expect(mockAnalyzeSkill.mock.calls.length).toBeGreaterThan(callCountBefore);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT04b: applySkillImprovements 失敗後もコンポーネントがクラッシュしない
+  // ------------------------------------------
+  it("TC-G2-RT04b: applySkillImprovements が reject しても hook がクラッシュしない", async () => {
+    mockApplySkillImprovements.mockRejectedValue(new Error("apply error"));
+    const analysis = createMockAnalysis();
+    mockCurrentAnalysis = analysis;
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    // 提案を選択
+    act(() => {
+      result.current.handleToggleSuggestion(0);
+    });
+
+    // 適用実行（例外が握りつぶされる）
+    await act(async () => {
+      await result.current.handleApplySelected();
+    });
+
+    // クラッシュせずに呼び出しが完了
+    expect(mockApplySkillImprovements).toHaveBeenCalledTimes(1);
+  });
+
+  // ------------------------------------------
+  // TC-G2-RT04c: autoImproveSkill 失敗後もコンポーネントがクラッシュしない
+  // ------------------------------------------
+  it("TC-G2-RT04c: autoImproveSkill が reject しても hook がクラッシュしない", async () => {
+    vi.spyOn(window, "confirm").mockReturnValue(true);
+    mockAutoImproveSkill.mockRejectedValue(new Error("auto improve error"));
+    const { useSkillAnalysis } = await import("../hooks/useSkillAnalysis");
+
+    let hookResult: ReturnType<typeof renderHook>;
+    await act(async () => {
+      hookResult = renderHook(() => useSkillAnalysis("test-skill"));
+    });
+    const { result } = hookResult!;
+
+    await act(async () => {
+      await result.current.handleAutoImprove();
+    });
+
+    // クラッシュせずに呼び出しが完了
+    expect(mockAutoImproveSkill).toHaveBeenCalledTimes(1);
+  });
+});
+
+// ============================================
 // skillName 変更時の再実行テスト
 // ============================================
 

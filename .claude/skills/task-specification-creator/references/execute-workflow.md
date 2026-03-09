@@ -132,6 +132,15 @@ Phase 1 開始前に以下を実行し、既実装かどうかを判定する:
 - 既実装であってもテストカバレッジ基準（Phase 7）は通常どおり適用する
 - Phase 10 最終レビューでは「検証・補完で追加した差分」のみをスコープとする
 
+### hardening / spec-only タスクの追加ガード
+
+- Phase 1 着手前に `rg --files` と `git log -- <対象ファイル>` で **既存成果物の実在確認** を行う
+- 既存 suite がある場合、`artifacts.json` は `creates` ではなく `modifies` を既定にする
+- Main IPC / Renderer / docs の関心ごとは分離しても、Phase 依存を飛ばして並列化しない
+- `vitest` などの起動失敗は、まず環境 blocker か product failure かを分離する
+- Phase 11 で screenshot が必須のタスクは `apps/desktop/package.json` に `screenshot:<workflow>` を追加し、Phase 11/12 に同じコマンドを記録する
+- user がコミット / PR 禁止を明示した場合、Phase 13 は **完了確認 / handoff のみ** を記述し、PR テンプレートを出さない
+
 ---
 
 ## マルチセッション実行ガイド
@@ -167,6 +176,7 @@ Phase 1 開始前に以下を実行し、既実装かどうかを判定する:
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-09 | TASK-10A-G: hardening / spec-only タスク向けの既存成果物実在確認ガードを追加 |
 | 2026-03-09 | TASK-10A-F: P50検証・補完モードセクションを追加 |
 | 2026-03-03 | TASK-10A-D: マルチセッション実行ガイドを追加 |
 | 2026-01-26 | SKILL.mdから分離・作成 |

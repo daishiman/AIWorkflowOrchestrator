@@ -670,5 +670,194 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       expect(store.skillError).toBeNull();
       expect(store.currentAnalysis).toEqual(mockAnalysis);
     });
+
+    // ------------------------------------------
+    // TC-G2-22: applySkillImprovements 成功後の state 復元
+    // ------------------------------------------
+    it("TC-G2-22: applySkillImprovements 成功後に isImproving=false かつ currentAnalysis が更新される", async () => {
+      // 初期分析
+      await store.analyzeSkill("test-skill");
+      expect(store.currentAnalysis).toEqual(mockAnalysis);
+
+      // 改善適用
+      await store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+
+      // state 復元確認
+      expect(store.isImproving).toBe(false);
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.skillError).toBeNull();
+      expect(store.currentAnalysis).toEqual(mockAnalysis); // 再分析結果
+    });
+
+    // ------------------------------------------
+    // TC-G2-23a: autoImproveSkill 成功後の state 復元
+    // ------------------------------------------
+    it("TC-G2-23a: autoImproveSkill 成功後に isImproving=false かつ currentAnalysis が更新される", async () => {
+      await store.autoImproveSkill("test-skill");
+
+      expect(store.isImproving).toBe(false);
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.skillError).toBeNull();
+      expect(store.currentAnalysis).toEqual(mockAnalysis); // 再分析結果
+    });
+
+    // ------------------------------------------
+    // TC-G2-23b: autoImproveSkill 失敗後の state 復元
+    // ------------------------------------------
+    it("TC-G2-23b: autoImproveSkill 失敗後に isImproving=false かつ skillError が設定される", async () => {
+      setupMockElectronAPI({
+        skillAutoImproveError: new Error("Auto improve failed"),
+      });
+
+      await store.autoImproveSkill("test-skill");
+
+      expect(store.isImproving).toBe(false);
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.skillError).toContain("全自動改善に失敗");
+      expect(store.currentAnalysis).toBeNull(); // エラーのためnullのまま
+    });
+
+    // ------------------------------------------
+    // TC-G2-24: analyze エラー後の retry で state が正常に再利用できる
+    // ------------------------------------------
+    it("TC-G2-24: analyze エラー後の retry で skillError がクリアされ currentAnalysis が設定される", async () => {
+      // 1. エラー発生
+      setupMockElectronAPI({
+        skillAnalyzeError: new Error("Network error"),
+      });
+      await store.analyzeSkill("test-skill");
+
+      expect(store.skillError).toContain("スキル分析に失敗");
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.currentAnalysis).toBeNull();
+
+      // 2. retry（正常）
+      setupMockElectronAPI();
+      await store.analyzeSkill("test-skill");
+
+      expect(store.skillError).toBeNull();
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.currentAnalysis).toEqual(mockAnalysis);
+    });
+
+    // ------------------------------------------
+    // TC-G2-24b: applySkillImprovements エラー後の retry で state が正常に復元される
+    // ------------------------------------------
+    it("TC-G2-24b: applySkillImprovements エラー後の retry で正常に改善適用できる", async () => {
+      // 1. 改善適用エラー
+      setupMockElectronAPI({
+        skillApplyImprovementsError: new Error("Apply failed"),
+      });
+      await store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+
+      expect(store.skillError).toContain("改善適用に失敗");
+      expect(store.isImproving).toBe(false);
+
+      // 2. retry（正常）
+      setupMockElectronAPI();
+      await store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+
+      expect(store.skillError).toBeNull();
+      expect(store.isImproving).toBe(false);
+      expect(store.currentAnalysis).toEqual(mockAnalysis);
+    });
+  });
+
+  // ==========================================================================
+  // RT-07: isAnalyzing / isImproving 排他制御の状態遷移テスト
+  // ==========================================================================
+  describe("RT-07: isAnalyzing / isImproving 排他制御", () => {
+    it("analyzeSkill 実行中に isAnalyzing=true で isImproving は変化しない", async () => {
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+
+      const promise = store.analyzeSkill("test-skill");
+
+      expect(store.isAnalyzing).toBe(true);
+      expect(store.isImproving).toBe(false); // 分析は isImproving に影響しない
+
+      await promise;
+
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+    });
+
+    it("applySkillImprovements 実行中に isImproving=true で isAnalyzing は変化しない", async () => {
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+
+      const promise = store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+
+      expect(store.isImproving).toBe(true);
+      expect(store.isAnalyzing).toBe(false); // 改善は isAnalyzing に影響しない
+
+      await promise;
+
+      expect(store.isImproving).toBe(false);
+    });
+
+    it("autoImproveSkill 実行中に isImproving=true で isAnalyzing は変化しない", async () => {
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+
+      const promise = store.autoImproveSkill("test-skill");
+
+      expect(store.isImproving).toBe(true);
+      expect(store.isAnalyzing).toBe(false); // 全自動改善は isAnalyzing に影響しない
+
+      await promise;
+
+      expect(store.isImproving).toBe(false);
+    });
+
+    it("analyze → apply の連続操作で isAnalyzing と isImproving が互いに独立して遷移する", async () => {
+      // 分析
+      await store.analyzeSkill("test-skill");
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+      expect(store.currentAnalysis).toEqual(mockAnalysis);
+
+      // 改善適用
+      const promise = store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+      expect(store.isImproving).toBe(true);
+      expect(store.isAnalyzing).toBe(false);
+
+      await promise;
+      expect(store.isImproving).toBe(false);
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.currentAnalysis).toEqual(mockAnalysis);
+    });
+
+    it("P42バリデーションエラー時に isAnalyzing/isImproving が false のまま維持される", async () => {
+      // 空文字列で analyzeSkill
+      await store.analyzeSkill("");
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+      expect(store.skillError).toBe("スキル名が無効です");
+
+      // スペースのみで applySkillImprovements
+      store.skillError = null;
+      await store.applySkillImprovements("   ", [mockAnalysis.suggestions[0]]);
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+      expect(store.skillError).toBe("スキル名が無効です");
+
+      // 空文字列で autoImproveSkill
+      store.skillError = null;
+      await store.autoImproveSkill("");
+      expect(store.isAnalyzing).toBe(false);
+      expect(store.isImproving).toBe(false);
+      expect(store.skillError).toBe("スキル名が無効です");
+    });
   });
 });

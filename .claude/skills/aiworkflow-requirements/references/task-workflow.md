@@ -466,6 +466,52 @@
 | `phase-11-manual-testing.md` と validator 期待名 `phase-11-manual-test.md` の不一致 | 手動テスト文書名が workflow ごとに揺れる | `phase-11-manual-test.md` を正本として固定し、証跡11件を TC と1:1で同期 |
 | Phase 12 changelog が「対象/予定」表現のまま残る | 実更新前に changelog を先行記述する | Step 1-A〜Step 2 を完了ベースで再記録し、予定表現を削除 |
 
+### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-09）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-10A-G |
+| 完了日 | 2026-03-09 |
+| ステータス | **完了（Phase 1-13 再監査 + 画面証跡 + 仕様同期）** |
+| 対象 | 既存6 suite の回帰 hardening（RT-01〜RT-07）、Phase 11 screenshot 証跡、Phase 12 仕様同期 |
+| 参照 | `docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/` |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `phase-1`〜`phase-13` | validator準拠（必須セクション/実行タスク/完了条件）へ再整形 | `verify-all-specs` / `validate-phase-output` で error 0 |
+| SubAgent-B | `outputs/phase-11/*` | `TC-11-01..09` screenshot の取得と `TC-ID ↔ 証跡` 紐付け | `validate-phase11-screenshot-coverage` で TC 欠落なし |
+| SubAgent-C | `outputs/phase-12/*` + system spec | Part 1/2 実装ガイド整形、task-workflow/quick-reference/resource-map/execute-workflow同期 | `validate-phase12-implementation-guide` PASS + 台帳反映 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop run screenshot:task-045-lifecycle-test-hardening` | PASS（TC-11-01..09 再取得 + metadata 記録） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx src/renderer/components/skill/__tests__/useSkillAnalysis.test.ts src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle.test.ts src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | PASS（6 files / 170 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening --json` | PASS（error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening` | PASS（error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening` | PASS（expected=9 / covered=9） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening` | PASS |
+
+#### Phase 12 判定（未タスク）
+
+- 新規未タスク: **0件**
+- 既存継続: `TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION`（重複起票なし）
+- 配置/形式: `docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` を 9 セクション + メタ情報1セクション形式へ正規化し、target 監査で `currentViolations=0` を確認
+
+#### 実装時の苦戦箇所（TASK-10A-G）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| tests-hardening を理由に screenshot を `N/A` 扱いしやすい | user が画面検証を要求しているのに non-visual 前提で進める | `TC-11-01..09` を定義し screenshot を workflow 直下へ証跡化 |
+| screenshot 実体はあるが task 単位の再実行コマンドが無い | component 単位 script の寄せ集めに依存し、再監査が属人化する | `apps/desktop/package.json` に `screenshot:task-045-lifecycle-test-hardening` を追加し、Phase 11/12 文書へ同じコマンドを固定 |
+| 継続利用する open backlog 指示書が旧テンプレートのまま残る | 「既存 backlog がある」ことだけで Phase 12 を閉じる | `docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` を task-spec 形式へ全面更新し、`audit-unassigned-tasks --target-file` で単体合格を確認 |
+| `phase-1-requirements.md` の `完了条件` 欠落 | `受入基準` のみで Phase 1 を閉じる | Phase 1 に `完了条件` を明示し checklist 化 |
+| implementation-guide の Part 2 必須項目不足 | 型/API/使用例/エラーハンドリング/エッジケース/設定一覧が抜ける | validator 必須見出しを先に配置してから内容を埋める |
+
 ### タスク: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 settings persist iterable hardening（2026-03-07）
 
 | 項目       | 内容                                                   |
@@ -3608,7 +3654,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001~~                      | ~~TASK-9B 仕様契約再監査ガード強化（13ch同期/P42 create/current-baseline判定）~~                                                                                             | ~~中~~   | **2026-02-26完了** TASK-9B 再監査 Phase 12（実装苦戦箇所・2026-02-26）                                                               | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9b-spec-contract-guard-001.md`                                                                                         |
 | TASK-10A-UI-SKILL-IMPROVE                                      | スキル改善UI表示機能                                                                                                                                                         | 中       | TASK-9C Phase 11（手動テスト発見）                                                                                                   | `docs/30-workflows/unassigned-task/task-10a-ui-skill-improve.md`                                                                                                                       |
 | TASK-10B-IMPROVE-HISTORY                                       | 改善履歴の永続化                                                                                                                                                             | 低       | TASK-9C Phase 12（スコープ外候補）                                                                                                   | `docs/30-workflows/unassigned-task/task-10b-improve-history.md`                                                                                                                        |
-| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION                 | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（readFile/writeFile/listBackups/createFile/deleteFile/restoreBackup 6API）                                            | 中       | TASK-10A-F Phase 12（後続タスク・2026-03-09）                                                                                        | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`                                                                                                  |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION                 | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（readFile/writeFile/listBackups/createFile/deleteFile/restoreBackup 6API）                                            | 中       | TASK-10A-F Phase 12（後続タスク・2026-03-09）                                                                                        | `docs/30-workflows/completed-tasks/task-045-lifecycle-test-hardening/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`                                                                                                  |
 | TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK                  | SkillAnalysisView 成功フィードバックの視覚強化（インライン成功バナー + ImprovementResultBreakdown フェードイン + ボタン内スピナー）                                           | 低       | TASK-10A-F Phase 11（手動テスト発見・2026-03-09）                                                                                    | `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md`                                           |
 | TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY                   | SkillCreateWizard GenerateStep のリカバリ導線追加（エラー時「戻る」「再試行」ボタン）                                                                                        | 低       | TASK-10A-F Phase 11（手動テスト発見・2026-03-09）                                                                                    | `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md`                                            |
 | TASK-10C-AB-TEST                                               | A/Bテスト実行・結果比較機能                                                                                                                                                  | 低       | TASK-9C Phase 12（スコープ外候補）                                                                                                   | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                                                                                                                |
