@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-10 | 1.29.58 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓を追加。App.tsx AuthGuard構造変換、useAuthState タイマー管理（P13準拠）、getAuthState 判定優先順位設計、Settings bypass セキュリティ境界、サブエージェント exit code 144 の5苦戦箇所と5分解決カード・4ステップ再利用手順を追記 |
+| 2026-03-10 | 1.29.57 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査の教訓を追加。Settings bypass と未認証 reset の相殺、明示 screenshot 要求時の P53 代替禁止、worktree の `pnpm install --frozen-lockfile` preflight を 4 ステップ解決手順つきで追記 |
+| 2026-03-09 | 1.29.56 | TASK-10A-G の教訓を追加。テスト専用タスクの Phase 4/5 境界曖昧さ、巨大ファイルのカバレッジ計測誤解、3層テスト構成の Layer 間モック整合性、並列エージェントの Phase 12 分割戦略、`--sequence.shuffle` 検証、supporting artifact / open backlog 配置ドリフトを追記 |
 | 2026-03-09 | 1.29.56 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の教訓を追加。`skipAuth=true` が storage clear bug path を guard して false negative になりうる点、通常ルート metadata 検証と dedicated harness screenshot を分離する運用、repo-wide `debug-clear-storage` 残骸は未タスクへ分離する判断を標準化 |
 | 2026-03-09 | 1.29.55 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補。未タスク指示書の9セクション逸脱、`validate-phase-output --phase` ドキュメント drift、BrowserRouter 配下の screenshot harness での Router 二重化を同一系統の苦戦箇所として整理し、4ステップ解決手順を追加 |
 | 2026-03-09 | 1.29.54 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 の教訓を追加。executeSkill 並行実行ガードの実装で遭遇した3つの苦戦箇所（テスト実行ディレクトリ依存、flushMicrotasks タイミング制御、createStore パターンでの set/get 再現）と、5分解決カードを追記 |
@@ -6250,3 +6253,279 @@ function createStore(): { getState: () => AgentSlice } {
 2. `validate-phase-output.js <workflow-dir>`、`validate-phase12-implementation-guide.js --workflow <workflow-dir>`、`audit-unassigned-tasks --diff-from HEAD --target-file <file>` を実行する。
 3. review harness を使う場合は既存 Router 配下で描画し、画面証跡を撮ってから system spec を更新する。
 4. system spec、skill docs、workflow 本文、未タスク台帳を同一ターンで同期する。
+---
+
+## TASK-10A-G: ライフサイクルテストハードニング（2026-03-09）
+
+### タスク概要
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | TASK-10A-G                                                           |
+| 目的       | `skillHandlers.ts` の `skill:create` ハンドラに対する3層テスト構成の追加 |
+| 完了日     | 2026-03-09                                                           |
+| ステータス | **完了**                                                             |
+
+### 苦戦箇所と解決策
+
+#### 1. テスト専用タスクにおける Phase 4/5 境界の曖昧さ
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | TASK-10A-G はテストコードのみの追加タスクで、Phase 4（テスト作成/Red）と Phase 5（実装/Green）の区分が通常の実装タスクと異なる |
+| **原因**   | テスト対象のプロダクションコードは TASK-10A-E/F で既に実装済みで、Phase 4 で書いたテストが最初から Green になり得る |
+| **解決策** | Phase 4-5 を統合実行し、テスト作成とモック調整で Green 確認までを一続きの工程として扱った |
+| **教訓**   | テスト専用タスクでは Phase 4-5 を「テスト作成 + Green 確認」の統合ステップとして運用してよい |
+
+- **再発条件**: 既実装コードに対するテスト追加タスク
+- **関連Pitfall**: P50（既実装防御の発見による Phase 転換）
+
+#### 2. skillHandlers.ts の巨大ファイルによるカバレッジ計測の誤解
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Layer 1 テストは `skill:create` のみが対象なのに、coverage は `skillHandlers.ts` 全体の未実行コードにも引きずられる |
+| **原因**   | v8 coverage はファイル単位で集計され、他ハンドラが Line/Function Coverage を押し下げる |
+| **解決策** | workflow / system spec に `handler-scope coverage` を明記し、対象範囲付きで記録した |
+| **教訓**   | coverage 数値を残すときは「対象範囲」と「ファイル全体」を分けて書く |
+
+- **再発条件**: 巨大ファイルの一部ハンドラのみを対象とするテストタスク
+
+#### 3. 3層テスト構成における Layer 間のモック整合性維持
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Layer 1/2/3 で異なるモック戦略を使うため、一方の変更が他方を壊しやすい |
+| **原因**   | Main IPC、Store 統合、既存 UI テスト拡張で前提と責務が異なる |
+| **解決策** | 各テストファイルでモックを自己完結させ、Layer 3 は既存 `describe` ブロック末尾へ追記するだけに留めた |
+| **教訓**   | 多層テストでは Layer ごとにモック責務を明示し、グローバルモック汚染を避ける |
+
+#### 4. 並列エージェントによる Phase 12 仕様書更新の分割戦略
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Phase 12 で更新対象ファイルが多く、1エージェントに集約すると中断リスクが高い |
+| **原因**   | LOGS/SKILL 4ファイル同時更新や supporting artifact 群の同期が必要だった |
+| **解決策** | 実装ガイド、仕様書更新、レポート群の 3 系統に分け、依存するファイルだけ同一担当へ集約した |
+| **教訓**   | Phase 12 は「3ファイル以下/エージェント」を目安に分割し、相互依存ファイルは同一エージェントへ集約する |
+
+#### 5. テスト独立性検証（`--sequence.shuffle`）の有効性
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | テスト追加後、Store 状態やモジュールスコープ変数の依存が混入していないか確認が必要だった |
+| **原因**   | Layer 2 / Layer 3 は状態保持や既存モックに依存しやすい |
+| **解決策** | `beforeEach` のモック初期化に加え、`--sequence.shuffle` と単独実行でランダム順序を確認した |
+| **教訓**   | 状態を扱うテスト追加後は、shuffle 実行で順序依存を必ず検証する |
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| テスト専用タスクの Phase 4-5 境界 | Phase 4-5 を統合実行し、テスト作成→モック調整→Green 確認を 1 ステップで閉じる |
+| 巨大ファイルの handler-scope coverage | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
+| Layer 間モック汚染の防止 | 各テストファイルでモックを自己完結させ、Layer 3 は既存 `describe` 末尾へ追加する |
+| Phase 12 並列分割 | 3ファイル以下/エージェント + 相互依存ファイルは同一エージェントに集約 |
+| テスト独立性検証 | `pnpm exec vitest run --sequence.shuffle <test-file>` でランダム順序を確認する |
+
+---
+
+## TASK-10A-G 再監査教訓（2026-03-09）
+
+### 苦戦箇所: feature 全体 coverage と handler-scope coverage の混同
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `96.9 / 88.9 / 100` を TASK-10A-G 全体の coverage と読める記述が残った |
+| 再発条件 | 大規模ファイルの一部だけを gating 対象にしたのに、scope 注記を省略する |
+| 対処 | `handler-scope coverage` を workflow / system spec に明記した |
+| 標準ルール | coverage 数値は対象範囲付きで記録する |
+
+### 苦戦箇所: Phase 12 成果物に「実行予定」表現が残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec-update-summary.md` に完了後も `予定` 文言が残った |
+| 再発条件 | 実施前の叩き台をそのまま Phase 12 最終成果物へ残す |
+| 対処 | `予定` 表現を除去し、実更新したファイル名と結果へ置換した |
+| 標準ルール | `rg "予定|実行待ち|後続タスク" docs/30-workflows/<task>/outputs/phase-12/` を最終チェックに入れる |
+
+### 苦戦箇所: screenshot harness の固定ポート競合
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | create / analysis / management panel の capture script を完全並列で回すと `5173` が競合した |
+| 再発条件 | port 指定なしの screenshot harness を同時起動する |
+| 対処 | 直列再実行へ切り替え、analysis mock を追加して証跡を再取得した |
+| 標準ルール | `--port` がない screenshot harness は直列実行し、取得時刻も記録する |
+
+### 苦戦箇所: supporting artifact の件数が summary 文書とずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `test-documentation.md` だけが旧件数 `43` のまま残った |
+| 再発条件 | summary 文書だけを補正し、supporting artifact を横断確認しない |
+| 対処 | Layer 3 を `16`、合計を `55 tests` へ補正した |
+| 標準ルール | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` を実行して実測値を揃える |
+
+### 苦戦箇所: open backlog の canonical path がタスク状態とズレる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION` の参照先が、Phase 12 中の配置と archive 後の配置でずれやすかった |
+| 再発条件 | Phase 12 中の root 配置と、完了移管後の completed workflow 配下配置を同じルールで扱う |
+| 対処 | completed workflow 配下 `unassigned-task/` へ再配置し、関連参照を同一ターンで張り替えた |
+| 標準ルール | Phase 12 中は root `unassigned-task/`、完了移管後は `completed-tasks/<task>/unassigned-task/` を canonical path とする |
+
+### 同種課題の5分解決カード
+
+| 課題パターン | 解決コマンド/手順 |
+| --- | --- |
+| worktree で Rollup optional dependency 欠落 | `pnpm install --frozen-lockfile` |
+| Phase 12 の planned wording 残存 | `rg "予定|実行待ち|後続タスク" docs/30-workflows/<task>/outputs/phase-12/` |
+| feature coverage の scope 誤読 | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
+| supporting artifact の件数ドリフト | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` |
+| open backlog の canonical path ドリフト | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` と `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/<task>/unassigned-task/<task>.md` |
+
+---
+
+## TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10）
+
+### 概要
+
+AuthGuard タイムアウトフォールバック + Settings 認証除外の実装。認証初期化がハングした場合に10秒タイムアウトでフォールバック UI を表示し、Settings 画面は AuthGuard をバイパスしてアクセス可能にする。
+
+### 苦戦箇所
+
+#### 1. App.tsx の AuthGuard 構造変換の複雑さ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既存の `<AuthGuard>` が全ルートを一括ラップしていたため、Settings だけをバイパスするにはルート構造全体のリファクタリングが必要だった |
+| 再発条件 | 認証除外ビューを追加する際に、catch-all route の構造を変更する必要がある場合 |
+| 解決策 | catch-all route の `renderCatchAllElement()` を抽出し、`currentView === "settings"` の条件分岐で AuthGuard バイパスを実現。直接 URL ルート（`/agent`, `/chat/*`, `/advanced/*`）は個別に `<AuthGuard>` でラップ |
+| 標準ルール | 認証除外ビューを追加するときは、catch-all route と直接 URL route の両方で AuthGuard の適用範囲を確認する |
+
+```typescript
+// catch-all route での条件分岐パターン
+if (currentView === "settings") {
+  return viewContent; // AuthGuard バイパス
+}
+return <AuthGuard>{viewContent}</AuthGuard>;
+```
+
+#### 2. useAuthState タイマー管理と P13 準拠
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | setTimeout + Promise + 再スケジュールパターンでテストが無限ループする P13 問題。`vi.runAllTimers()` を使うと無限ループする |
+| 再発条件 | タイムアウト機構をテストする際に `vi.runAllTimers()` 系の API を使用する場合 |
+| 解決策 | `vi.advanceTimersByTime(10_000)` で1ステップずつ進める。useEffect のクリーンアップで `clearTimeout` を確実に呼ぶ |
+| 標準ルール | タイマーテストでは `vi.advanceTimersByTime()` を使用し、`vi.runAllTimers()` は避ける（P13 準拠） |
+
+```typescript
+// P13 準拠のタイマーテストパターン
+vi.useFakeTimers();
+act(() => {
+  vi.advanceTimersByTime(10_000);
+});
+// タイムアウト後の状態を検証
+expect(result.current.authState).toBe("timed-out");
+```
+
+#### 3. getAuthState の判定優先順位設計
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `isTimedOut` と `isLoading` の組み合わせ条件の優先順位を間違えると、タイムアウト後に認証完了しても自動遷移しない |
+| 再発条件 | 複数の boolean フラグの組み合わせで状態を決定するロジックを設計する場合 |
+| 解決策 | `isTimedOut && isLoading` を最優先に判定。`isLoading=false` になれば自動的に `authenticated` or `unauthenticated` に遷移 |
+| 標準ルール | 状態判定は「最も特殊な条件」から順に評価する。タイムアウトは「ローディング中のみ有効」という制約を明示する |
+
+```typescript
+// 判定優先順位（上から順に評価）
+function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: boolean): AuthState {
+  if (isTimedOut && isLoading) return "timed-out";   // (1) 最優先: タイムアウト中
+  if (isLoading) return "checking";                   // (2) ローディング中
+  if (isAuthenticated) return "authenticated";         // (3) 認証済み
+  return "unauthenticated";                            // (4) 未認証
+}
+```
+
+#### 4. Settings bypass のセキュリティ境界
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Settings を AuthGuard 外に出すと、未認証状態で API キー設定画面にアクセス可能になるセキュリティ考慮が必要 |
+| 再発条件 | 認証ガードから特定ビューを除外する設計判断を行う場合 |
+| 解決策 | API キー操作はすべて IPC 経由で Main Process 管理。Renderer 側に機密データは直接保持されない。direct URL routes は全て AuthGuard 配下に維持 |
+| 標準ルール | 最小権限（Settings shell のみバイパス）+ 多層防御（IPC + Main Process バリデーション維持）を徹底する |
+
+#### 5. バックグラウンドテスト実行のタイムアウト（exit code 144）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | サブエージェントで Vitest 実行すると exit code 144（SIGTERM）で中断される |
+| 再発条件 | サブエージェントにテスト実行を委譲し、タイムアウトが不十分な場合 |
+| 解決策 | メインフローでテスト実行する。サブエージェントにテスト実行を委譲する場合はタイムアウトを十分に確保するか、テスト対象を限定する |
+| 標準ルール | 104件以上のテストスイートはサブエージェントではなくメインフローで実行する |
+
+### 同種課題の5分解決カード
+
+```
+症状: AuthGuard（または類似のブロッキングコンポーネント）が無限ローディング状態
+根本原因: 認証初期化のハング（IPC/ネットワーク）
+5手順:
+  1. useAuthState にタイムアウト state を追加（useState + useEffect + setTimeout）
+  2. getAuthState の判定ロジックに isTimedOut 条件を最優先で追加
+  3. フォールバック UI（リトライ + 代替導線）を作成
+  4. ブロッキング対象から除外すべきビューを条件分岐で bypass
+  5. テスト: vi.advanceTimersByTime() でタイマーを制御（P13準拠）
+検証ゲート: 104テスト全PASS、AC-1〜AC-8全達成
+同期先: architecture-auth-security.md, ui-ux-navigation.md, arch-state-management.md
+```
+
+### 再利用手順（4ステップ）
+
+1. 対象コンポーネントの状態遷移図を作成し、タイムアウト状態を追加する。
+2. 純粋関数（getAuthState 相当）で判定ロジックをテスタブルに実装する。
+3. bypass 対象のビューを条件分岐で分離する（catch-all route パターン）。
+4. P13/P39/P31 準拠でテストを実装する（fake timers + fireEvent + 個別セレクタ）。
+
+---
+
+## TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10）
+
+### 苦戦箇所: Settings bypass と未認証 reset が相殺する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `currentView === "settings"` の bypass を入れても、未認証時 `setCurrentView("dashboard")` が残ると Settings へ到達しても即座に戻される |
+| 再発条件 | bypass 判定と navigation reset 判定を別々の層で更新する |
+| 対処 | `shouldResetUnauthenticatedView` を追加し、公開ビュー配列で `settings` を除外した |
+| 標準ルール | 認証除外ビューを追加するときは「描画条件」と「reset 条件」を同時に監査する |
+
+### 苦戦箇所: ユーザー明示の screenshot 要求に P53 代替を残してしまう
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既存成果物に「CLI なのでコード検証で代替」と残っていた |
+| 再発条件 | screenshot 制約を一般ルールで処理し、ユーザー要求の優先度を下げる |
+| 対処 | 専用 harness route と capture script で screenshot 4件を実取得し、Phase 11 文書を差し替えた |
+| 標準ルール | ユーザーが screenshot を要求したら `screenshot-plan.json` / capture metadata / coverage validator まで完了させる |
+
+### 苦戦箇所: worktree で optional dependency が欠ける
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | vitest / Playwright 起動前に Rollup optional dependency 欠損で失敗しうる |
+| 再発条件 | 新しい worktree で install を省略する |
+| 対処 | `pnpm install --frozen-lockfile` を先に実行した |
+| 標準ルール | Phase 11/12 の再監査を始める前に install preflight を入れる |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. bypass 対象ビューがあるなら、描画条件と reset 条件を両方 `rg` で洗う。
+2. screenshot 要求があるなら、専用 harness と capture metadata を先に作る。
+3. worktree では `pnpm install --frozen-lockfile` を preflight として実行する。
+4. workflow outputs、system spec、LOGS/SKILL を同一ターンで閉じる。

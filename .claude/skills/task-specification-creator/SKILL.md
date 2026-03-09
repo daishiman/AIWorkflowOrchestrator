@@ -396,6 +396,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.39** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査運用を反映**: 明示 screenshot 要求時は P53 代替を使わず、専用 harness route + `screenshot-plan.json` + capture metadata + `validate-phase11-screenshot-coverage` まで完了させる運用を追加。あわせて bypass view は reset 除外条件まで仕様化するルールと、worktree preflight `pnpm install --frozen-lockfile` を追記 |
+| **v10.08.38** | **2026-03-09** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 完了同期**: `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加・Settings bypass セキュリティ記録。`arch-state-management.md` に AUTH_TIMEOUT_MS タイムアウト機構記録。`ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.08.38** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の screenshot ルールを追補**: `phase-11-12-guide.md` に「persist bug では bug path 検証（通常ルート metadata）と screenshot path（dedicated harness）を分離し、`skipAuth=true` を唯一経路にしない」運用を追加。current workflow stale status / placeholder 除去と未タスク formalization の再監査手順も補強 |
 | **v10.08.37** | **2026-03-09** | **未タスク指示書の差分監査タイミングを明文化**: `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、`currentViolations=0` まで閉じない」ルールを追加。配置済みとテンプレート準拠を分離して判定する運用へ補強 |
 | **v10.08.36** | **2026-03-09** | **TASK-FIX-CONCURRENCY-GUARD フィードバック反映**: Phase 4 テスト仕様にモノレポテスト実行ディレクトリ注意書き（P40）を標準追加。Phase 2 設計テンプレートに「並行実行ガード検討」チェックポイントを追加 |

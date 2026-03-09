@@ -2,6 +2,7 @@ import type { FC } from "react";
 import { useEffect } from "react";
 import { AuthView } from "../../views/AuthView";
 import { LoadingScreen } from "./LoadingScreen";
+import { AuthTimeoutFallback } from "./AuthTimeoutFallback";
 import { useAuthState } from "./hooks/useAuthState";
 import type { AuthGuardProps } from "./types";
 import {
@@ -38,6 +39,8 @@ import { useAppStore } from "../../store";
 export const AuthGuard: FC<AuthGuardProps> = ({ children, fallback }) => {
   const authState = useAuthState();
   const setDevModeAuth = useAppStore((state) => state.setDevModeAuth);
+  const initializeAuth = useAppStore((state) => state.initializeAuth);
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
 
   // 開発モードでの自動ログイン
   useEffect(() => {
@@ -55,6 +58,14 @@ export const AuthGuard: FC<AuthGuardProps> = ({ children, fallback }) => {
   switch (authState) {
     case "checking":
       return fallback ?? <LoadingScreen />;
+
+    case "timed-out":
+      return (
+        <AuthTimeoutFallback
+          onRetry={() => initializeAuth()}
+          onNavigateSettings={() => setCurrentView("settings")}
+        />
+      );
 
     case "authenticated":
       return children;
@@ -92,6 +103,9 @@ export {
   hasExpiresAt,
   assertNever,
 } from "./types";
+
+// コンポーネントの再エクスポート
+export { AuthTimeoutFallback } from "./AuthTimeoutFallback";
 
 // ユーティリティ・フックの再エクスポート
 export { useAuthState } from "./hooks/useAuthState";

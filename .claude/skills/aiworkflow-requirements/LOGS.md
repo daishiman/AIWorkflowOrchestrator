@@ -4,6 +4,43 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装完了
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001`
+- 目的: AuthGuard タイムアウトフォールバック + Settings認証除外の実装完了。教訓・仕様書同期実施
+
+### 実施内容
+- AuthGuardDisplayState に "timed-out" 状態を追加し、認証チェックの無限ブロックを防止
+- 10秒タイムアウト機構を useAuthState フックに実装
+- AuthTimeoutFallback UI コンポーネントを新規作成
+- Settings 画面を AuthGuard バイパス対象に追加
+- 104テスト全PASS
+- 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001`
+- 目的: Settings bypass と未認証 reset の矛盾を解消し、Phase 11 screenshot 証跡と system spec を実績ベースへ同期する
+
+### 実施内容
+- `architecture-auth-security.md` に Settings bypass の reset 除外要件と screenshot 4件を追記
+- `arch-state-management.md` に `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当契約を追記
+- `ui-ux-navigation.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` を再監査内容へ同期
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+### 結果
+- ステータス: success
+
+---
 
 ## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 再監査同期
 
@@ -40,7 +77,6 @@
 - ステータス: success
 
 ---
-
 ## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 仕様反映
 
 ### コンテキスト
@@ -8624,3 +8660,44 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 ### 結果
 - ステータス: success
 - 補足: current workflow の残課題は `abortExecution` guard の 1 件のみ
+
+## 2026-03-09 - TASK-10A-G ライフサイクル統合テスト hardening と Phase 12再監査
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-10A-G`
+- 目的: `skill:create` の3層テスト、Phase 11画面証跡、Phase 12仕様同期、completed-tasks 移管までを一貫して閉じる
+
+### 実施内容
+- `testing-component-patterns.md` に 3層テスト構成、handler-scope coverage、supporting artifact 同期ルールを追記
+- `task-workflow.md` に TASK-10A-G 完了記録と、完了移管後の未タスク canonical path を反映
+- `lessons-learned.md` に TEST/Phase 12/未タスク配置の苦戦箇所を追加
+- `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ workflow 本体を移管し、関連 backlog を `unassigned-task/` 配下へ同梱
+- `audit-unassigned-tasks.js` を completed workflow 配下の `unassigned-task/` も `--target-file` 監査できるよう更新
+
+### 検証
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md`
+
+### 結果
+- ステータス: success
+- 補足: Phase 12 中の root `unassigned-task/` 配置と、完了移管後の `completed-tasks/<task>/unassigned-task/` 配置を分けて扱う運用へ更新
+
+---
+
+## 2026-03-09 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - AuthGuard タイムアウトフォールバック + Settings認証除外を実装
+  - 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+- テスト: 104テスト全PASS、カバレッジ Line 95.59%, Branch 89.65%, Function 100%
+- `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加、Settings bypass セキュリティ記録
+- `arch-state-management.md` に AUTH_TIMEOUT_MS = 10_000 タイムアウト機構記録
+- `ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

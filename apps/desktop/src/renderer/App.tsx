@@ -36,6 +36,7 @@ import { useNavShortcuts } from "./hooks/useNavShortcuts";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
+import { shouldResetUnauthenticatedView } from "./utils/shouldResetUnauthenticatedView";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
 // Chat History機能はIPC経由でMain Processと連携する形で後続タスクで実装予定
@@ -80,8 +81,13 @@ function App(): JSX.Element {
   }, [setWindowSize]);
 
   useEffect(() => {
-    // 未認証かつ初期化完了の場合、currentViewをdashboardにリセット
-    if (!isAuthenticated && !isLoading && currentView !== "dashboard") {
+    if (
+      shouldResetUnauthenticatedView({
+        isAuthenticated,
+        isLoading,
+        currentView,
+      })
+    ) {
       setCurrentView("dashboard");
     }
   }, [isAuthenticated, isLoading, currentView, setCurrentView]);
@@ -162,32 +168,95 @@ function App(): JSX.Element {
     import.meta.env.VITE_USE_GLOBAL_NAV_STRIP !== "false";
   const usesSidebar = responsiveMode !== "mobile";
 
+  const renderCatchAllElement = () => {
+    const viewContent = useGlobalNavStrip ? (
+      <AppLayout
+        currentView={currentView as DockViewType}
+        onViewChange={(view) => handleViewChange(view as ViewType)}
+        onGoBack={handleGoBack}
+        canGoBack={canGoBack}
+      >
+        {renderView()}
+      </AppLayout>
+    ) : (
+      <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
+        {usesSidebar ? (
+          <AppDock
+            currentView={currentView}
+            onViewChange={handleViewChange}
+            mode="desktop"
+          />
+        ) : null}
+
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex items-start justify-between px-6 pt-4 pb-2">
+            <div className="flex-1" />
+            <div className="flex justify-center">
+              <DynamicIsland
+                status={dynamicIsland.status}
+                message={dynamicIsland.message}
+                visible={dynamicIsland.visible}
+              />
+            </div>
+            <div className="flex flex-1 justify-end">
+              <NotificationCenter />
+            </div>
+          </div>
+
+          <main className="flex-1 overflow-auto p-6">{renderView()}</main>
+        </div>
+
+        {!usesSidebar ? (
+          <div className="fixed bottom-0 left-0 right-0">
+            <AppDock
+              currentView={currentView}
+              onViewChange={handleViewChange}
+              mode="mobile"
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+
+    // Settings画面はAuthGuardをバイパスして直接表示
+    // 理由: 認証確認がハングした場合でもAPI Key等の設定変更を可能にするため
+    if (currentView === "settings") {
+      return viewContent;
+    }
+
+    return <AuthGuard>{viewContent}</AuthGuard>;
+  };
+
   return (
     <BrowserRouter>
-      <AuthGuard>
-        <Routes>
-          {/* Agent SDK E2E Test Page */}
-          <Route
-            path="/agent"
-            element={
+      <Routes>
+        {/* Agent SDK E2E Test Page */}
+        <Route
+          path="/agent"
+          element={
+            <AuthGuard>
               <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
                 <AgentSDKPage />
               </div>
-            }
-          />
-          {/* チャット履歴詳細ページ（URLルーティング） */}
-          <Route
-            path="/chat/history/:sessionId"
-            element={
+            </AuthGuard>
+          }
+        />
+        {/* チャット履歴詳細ページ（URLルーティング） */}
+        <Route
+          path="/chat/history/:sessionId"
+          element={
+            <AuthGuard>
               <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
                 <ChatHistoryView />
               </div>
-            }
-          />
-          {/* チャット履歴一覧ページ（セッション未選択時） */}
-          <Route
-            path="/chat/history"
-            element={
+            </AuthGuard>
+          }
+        />
+        {/* チャット履歴一覧ページ（セッション未選択時） */}
+        <Route
+          path="/chat/history"
+          element={
+            <AuthGuard>
               <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex items-center justify-center">
                 <div className="text-center text-hig-text-secondary">
                   <p className="mb-2">セッションが選択されていません</p>
@@ -201,146 +270,138 @@ function App(): JSX.Element {
                   </button>
                 </div>
               </div>
-            }
-          />
-          {/* バージョン履歴ページ */}
-          <Route
-            path="/history/:fileId"
-            element={
+            </AuthGuard>
+          }
+        />
+        {/* バージョン履歴ページ */}
+        <Route
+          path="/history/:fileId"
+          element={
+            <AuthGuard>
               <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)]">
                 <HistoryPage />
               </div>
-            }
-          />
-          {/* Skill Advanced Views（直接ルーティング） */}
-          <Route
-            path="/advanced/chain-builder"
-            element={renderStandaloneView(<SkillChainBuilder />)}
-          />
-          <Route
-            path="/advanced/schedule-manager"
-            element={renderStandaloneView(<ScheduleManager />)}
-          />
-          <Route
-            path="/advanced/debug-panel"
-            element={renderStandaloneView(<DebugPanel />)}
-          />
-          <Route
-            path="/advanced/analytics-dashboard"
-            element={renderStandaloneView(<AnalyticsDashboard />)}
-          />
-          <Route
-            path="/advanced/skill-management-panel"
-            element={renderStandaloneView(<SkillManagementPanel />)}
-          />
-          <Route
-            path="/advanced/skill-analysis"
-            element={renderStandaloneView(
-              <SkillAnalysisView
-                skillName="demo-skill"
-                onClose={() => window.history.back()}
-              />,
-            )}
-          />
-          <Route
-            path="/advanced/skill-center"
-            element={renderStandaloneView(<SkillCenterView />)}
-          />
-          <Route
-            path="/advanced/concurrency-guard-review"
-            element={renderStandaloneView(<ConcurrencyGuardReviewHarness />)}
-          />
-          <Route
-            path="/advanced/skill-editor"
-            element={renderStandaloneView(
-              <SkillEditorView
-                skillName="demo-skill"
-                onClose={() => window.history.back()}
-              />,
-            )}
-          />
-          <Route
-            path="/advanced/skill-editor-readonly"
-            element={renderStandaloneView(
-              <SkillEditorView
-                skillName="demo-skill"
-                isReadOnly
-                onClose={() => window.history.back()}
-              />,
-            )}
-          />
-          <Route
-            path="/advanced/skill-create-wizard"
-            element={renderStandaloneView(
-              <SkillCreateWizard onClose={() => window.history.back()} />,
-            )}
-          />
-          <Route
-            path="/advanced/ui-design-foundation"
-            element={renderStandaloneView(<UIDesignFoundationPreview />)}
-          />
-          <Route
-            path="/advanced/organisms-showcase"
-            element={renderStandaloneView(<OrganismsShowcaseView />)}
-          />
-          {/* 既存のビューベースUI（デフォルト） */}
-          <Route
-            path="*"
-            element={
-              useGlobalNavStrip ? (
-                <AppLayout
-                  currentView={currentView as DockViewType}
-                  onViewChange={(view) => handleViewChange(view as ViewType)}
-                  onGoBack={handleGoBack}
-                  canGoBack={canGoBack}
-                >
-                  {renderView()}
-                </AppLayout>
-              ) : (
-                <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
-                  {usesSidebar ? (
-                    <AppDock
-                      currentView={currentView}
-                      onViewChange={handleViewChange}
-                      mode="desktop"
-                    />
-                  ) : null}
-
-                  <div className="flex-1 flex flex-col overflow-hidden">
-                    <div className="flex items-start justify-between px-6 pt-4 pb-2">
-                      <div className="flex-1" />
-                      <div className="flex justify-center">
-                        <DynamicIsland
-                          status={dynamicIsland.status}
-                          message={dynamicIsland.message}
-                          visible={dynamicIsland.visible}
-                        />
-                      </div>
-                      <div className="flex flex-1 justify-end">
-                        <NotificationCenter />
-                      </div>
-                    </div>
-
-                    <main className="flex-1 overflow-auto p-6">
-                      {renderView()}
-                    </main>
-                  </div>
-
-                  {!usesSidebar ? (
-                    <div className="fixed bottom-0 left-0 right-0">
-                      <AppDock
-                        currentView={currentView}
-                        onViewChange={handleViewChange}
-                        mode="mobile"
-                      />
-                    </div>
-                  ) : null}
-                </div>
-              )
-            }
-          />
-        </Routes>
-      </AuthGuard>
+            </AuthGuard>
+          }
+        />
+        {/* Skill Advanced Views（直接ルーティング） */}
+        <Route
+          path="/advanced/chain-builder"
+          element={
+            <AuthGuard>{renderStandaloneView(<SkillChainBuilder />)}</AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/schedule-manager"
+          element={
+            <AuthGuard>{renderStandaloneView(<ScheduleManager />)}</AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/debug-panel"
+          element={
+            <AuthGuard>{renderStandaloneView(<DebugPanel />)}</AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/analytics-dashboard"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(<AnalyticsDashboard />)}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-management-panel"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(<SkillManagementPanel />)}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-analysis"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(
+                <SkillAnalysisView
+                  skillName="demo-skill"
+                  onClose={() => window.history.back()}
+                />,
+              )}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-center"
+          element={
+            <AuthGuard>{renderStandaloneView(<SkillCenterView />)}</AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/concurrency-guard-review"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(<ConcurrencyGuardReviewHarness />)}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-editor"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(
+                <SkillEditorView
+                  skillName="demo-skill"
+                  onClose={() => window.history.back()}
+                />,
+              )}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-editor-readonly"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(
+                <SkillEditorView
+                  skillName="demo-skill"
+                  isReadOnly
+                  onClose={() => window.history.back()}
+                />,
+              )}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/skill-create-wizard"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(
+                <SkillCreateWizard onClose={() => window.history.back()} />,
+              )}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/ui-design-foundation"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(<UIDesignFoundationPreview />)}
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="/advanced/organisms-showcase"
+          element={
+            <AuthGuard>
+              {renderStandaloneView(<OrganismsShowcaseView />)}
+            </AuthGuard>
+          }
+        />
+        {/* 既存のビューベースUI（デフォルト） - settings のみ AuthGuard バイパス */}
+        <Route path="*" element={renderCatchAllElement()} />
+      </Routes>
     </BrowserRouter>
   );
 }

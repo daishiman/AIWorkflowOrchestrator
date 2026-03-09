@@ -1,5 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  render,
+  screen,
+  waitFor,
+  fireEvent,
+  act,
+} from "@testing-library/react";
 import { AuthGuard } from "./index";
 
 // Mock AuthView component
@@ -19,6 +25,8 @@ const createMockState = (overrides = {}) => ({
   isAuthenticated: false,
   isLoading: true,
   setDevModeAuth: vi.fn(),
+  initializeAuth: vi.fn(),
+  setCurrentView: vi.fn(),
   ...overrides,
 });
 
@@ -294,6 +302,228 @@ describe("AuthGuard", () => {
 
       const loadingElement = screen.getByRole("status");
       expect(loadingElement).toHaveAttribute("aria-label", "認証確認中");
+    });
+  });
+
+  describe("AG-07: タイムアウト状態", () => {
+    let mockInitializeAuth: ReturnType<typeof vi.fn>;
+    let mockSetCurrentView: ReturnType<typeof vi.fn>;
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+      mockInitializeAuth = vi.fn();
+      mockSetCurrentView = vi.fn();
+
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            isLoading: true,
+            isAuthenticated: false,
+            initializeAuth: mockInitializeAuth,
+            setCurrentView: mockSetCurrentView,
+          }),
+        )) as never);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("10秒タイムアウト後に AuthTimeoutFallback が表示される", () => {
+      render(
+        <AuthGuard>
+          <div data-testid="protected-content">Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // 初期状態ではローディング画面
+      expect(screen.getByRole("status")).toBeInTheDocument();
+
+      // 10秒経過
+      act(() => {
+        vi.advanceTimersByTime(10_000);
+      });
+
+      // タイムアウトフォールバックが表示される
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(
+        screen.getByText("認証の確認に時間がかかっています"),
+      ).toBeInTheDocument();
+      // 子コンポーネントは表示されない
+      expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
+    });
+
+    it("リトライボタンクリックで initializeAuth が呼ばれる", () => {
+      render(
+        <AuthGuard>
+          <div>Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // タイムアウト発生
+      act(() => {
+        vi.advanceTimersByTime(10_000);
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "リトライ" }));
+      expect(mockInitializeAuth).toHaveBeenCalledTimes(1);
+    });
+
+    it("Settings遷移ボタンクリックで setCurrentView('settings') が呼ばれる", () => {
+      render(
+        <AuthGuard>
+          <div>Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // タイムアウト発生
+      act(() => {
+        vi.advanceTimersByTime(10_000);
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "設定画面へ" }));
+      expect(mockSetCurrentView).toHaveBeenCalledWith("settings");
+    });
+  });
+
+  // ============================================================
+  // Phase 6: 統合テスト追加
+  // ============================================================
+
+  describe("AG-08: タイムアウト→リトライ→認証成功の全フロー", () => {
+    let mockInitializeAuth: ReturnType<typeof vi.fn>;
+    let mockSetCurrentView: ReturnType<typeof vi.fn>;
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+      mockInitializeAuth = vi.fn();
+      mockSetCurrentView = vi.fn();
+
+      const { useAppStore } = await import("../../store");
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            isLoading: true,
+            isAuthenticated: false,
+            initializeAuth: mockInitializeAuth,
+            setCurrentView: mockSetCurrentView,
+          }),
+        )) as never);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("isLoading=true → 10秒タイムアウト → リトライ → initializeAuth呼び出し確認", async () => {
+      const { useAppStore } = await import("../../store");
+
+      render(
+        <AuthGuard>
+          <div data-testid="protected-content">Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // Step 1: 初期状態はローディング画面
+      expect(screen.getByRole("status")).toBeInTheDocument();
+      expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
+
+      // Step 2: 10秒待機 → AuthTimeoutFallback 表示
+      act(() => {
+        vi.advanceTimersByTime(10_000);
+      });
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(
+        screen.getByText("認証の確認に時間がかかっています"),
+      ).toBeInTheDocument();
+
+      // Step 3: リトライクリック → initializeAuth 呼び出し確認
+      fireEvent.click(screen.getByRole("button", { name: "リトライ" }));
+      expect(mockInitializeAuth).toHaveBeenCalledTimes(1);
+
+      // Step 4: リトライ後に認証成功（storeが認証済みに変化）
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            isLoading: false,
+            isAuthenticated: true,
+            initializeAuth: mockInitializeAuth,
+            setCurrentView: mockSetCurrentView,
+          }),
+        )) as never);
+    });
+  });
+
+  describe("AG-09: 回帰テスト - タイムアウトなしの既存認証フロー", () => {
+    let mockInitializeAuth: ReturnType<typeof vi.fn>;
+
+    beforeEach(async () => {
+      vi.useFakeTimers();
+      mockInitializeAuth = vi.fn();
+
+      const { useAppStore } = await import("../../store");
+      // 初期状態: ローディング中
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            isLoading: true,
+            isAuthenticated: false,
+            initializeAuth: mockInitializeAuth,
+          }),
+        )) as never);
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("isLoading=true → isLoading=false + isAuthenticated=true の通常フローが正常動作", async () => {
+      const { useAppStore } = await import("../../store");
+
+      const { rerender } = render(
+        <AuthGuard>
+          <div data-testid="protected-content">Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // ローディング画面が表示
+      expect(screen.getByRole("status")).toBeInTheDocument();
+      expect(screen.queryByTestId("protected-content")).not.toBeInTheDocument();
+
+      // 3秒後（タイムアウト前）に認証完了
+      act(() => {
+        vi.advanceTimersByTime(3_000);
+      });
+
+      vi.mocked(useAppStore).mockImplementation(((
+        selector: (state: ReturnType<typeof createMockState>) => unknown,
+      ) =>
+        selector(
+          createMockState({
+            isLoading: false,
+            isAuthenticated: true,
+            initializeAuth: mockInitializeAuth,
+          }),
+        )) as never);
+
+      rerender(
+        <AuthGuard>
+          <div data-testid="protected-content">Protected Content</div>
+        </AuthGuard>,
+      );
+
+      // 子コンポーネントが表示される（タイムアウトUIは表示されない）
+      expect(screen.getByTestId("protected-content")).toBeInTheDocument();
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     });
   });
 });

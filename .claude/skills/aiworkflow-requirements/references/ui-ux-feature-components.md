@@ -1270,6 +1270,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
 | TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウトテスト） | 2026-03-07 | `docs/30-workflows/agent-view-enhancement/` |
 | 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
@@ -1410,6 +1411,37 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 
 ---
 
+### AuthTimeoutFallback / Settings 公開シェル（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 / completed）
+
+`AuthTimeoutFallback` は、AuthGuard の認証確認が `AUTH_TIMEOUT_MS = 10_000` を超えた場合に表示するフォールバック UI である。再監査では `settings` 公開シェルが AuthGuard bypass だけでなく未認証 reset 除外も満たしていることまで確認した。
+
+#### コンポーネント構成
+
+| コンポーネント | 分類 | 実装ファイル | 役割 |
+| --- | --- | --- | --- |
+| `AuthTimeoutFallback` | molecules | `apps/desktop/src/renderer/components/AuthGuard/AuthTimeoutFallback.tsx` | timeout 時の warning + retry + settings 導線 |
+| `SettingsView` | view | `apps/desktop/src/renderer/views/SettingsView/index.tsx` | 認証不能時でも操作可能な公開シェル |
+| `shouldResetUnauthenticatedView` | util | `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` | `settings` を公開ビューとして reset 対象外にする |
+
+#### UI 契約
+
+| 観点 | 契約 |
+| --- | --- |
+| timeout fallback | warning icon、見出し、説明文、`リトライ`、`設定画面へ` を表示する |
+| settings shell | 未認証でも `AccountSection` のログイン CTA、認証方式、APIキー、テーマ、RAG を表示できる |
+| safety | 保護ビューは reset 対象のまま維持し、公開するのは `settings` のみ |
+
+#### 画面証跡
+
+| TC | 証跡 |
+| --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` |
+| TC-11-02 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` |
+| TC-11-03 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` |
+| TC-11-04 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` |
+
+---
+
 ## 仕様書作成済みタスク（spec_created）
 
 ### SkillEditorView UI（TASK-UI-05A / 統合未完了）
@@ -1489,6 +1521,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-10 | v1.14.24   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
 | 2026-03-08 | v1.14.23   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |

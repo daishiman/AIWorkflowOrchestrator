@@ -20,11 +20,13 @@ import type { AuthUser } from "../../../preload/types";
  * - `checking`: 認証状態を確認中（ローディング表示）
  * - `authenticated`: 認証済み（子コンポーネントを表示）
  * - `unauthenticated`: 未認証（ログイン画面を表示）
+ * - `timed-out`: 認証確認がタイムアウト（フォールバックUIを表示）
  */
 export type AuthGuardDisplayState =
   | "checking"
   | "authenticated"
-  | "unauthenticated";
+  | "unauthenticated"
+  | "timed-out";
 
 /**
  * AuthGuardコンポーネントのProps

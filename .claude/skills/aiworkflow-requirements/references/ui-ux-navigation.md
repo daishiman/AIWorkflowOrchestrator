@@ -14,6 +14,8 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.1 | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `settings` は AuthGuard bypass だけでなく未認証 reset 対象外であることを明文化し、Phase 11 screenshot 4件を証跡として同期 |
+| v1.7.0 | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: Settings 画面は AuthGuard 外からアクセス可能に変更。currentView === "settings" の場合、App.tsx で AuthGuard をバイパスして直接レンダリングする設計を追記 |
 | v1.6.4 | 2026-03-06 | TASK-UI-02 移管反映。Global Navigation Core の workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスクの配置先も completed workflow 配下へ統一 |
 | v1.6.3 | 2026-03-06 | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation 改修後の再監査導線を task spec へ接続 |
 | v1.6.2 | 2026-03-06 | TASK-UI-02 追補: 実装時の苦戦箇所（rollback 共存、`mobileLabel`、UI仕様同期漏れ、workflow 本文 stale）と簡潔解決手順を追加し、ナビ変更時は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` の同時同期を明文化 |
@@ -82,7 +84,24 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | `skillCenter`| スキルセンター画面       |
 | `historySearch` | 履歴検索画面          |
 | `skill-center` | 互換エイリアス（legacy導線） |
-| `settings`   | 設定画面                 |
+| `settings`   | 設定画面（AuthGuard 外 + 未認証 reset 対象外: 認証前でもアクセス可能） |
+
+### Settings 公開シェル到達性（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| shell bypass | `currentView === "settings"` のとき `SettingsView` を AuthGuard 外で描画する |
+| reset exclusion | 未認証時 view reset は `settings` を除外し、設定作業中に dashboard へ戻さない |
+| 導線 | `Cmd/Ctrl+,` と timeout fallback の `設定画面へ` の両方で到達可能 |
+
+### 画面証跡
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` | ライトテーマ fallback |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` | ダークテーマ fallback |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` | timeout -> settings |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` | 未認証 settings shell |
 
 ### navItems配列構造
 

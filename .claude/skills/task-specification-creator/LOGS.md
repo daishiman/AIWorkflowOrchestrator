@@ -9,6 +9,30 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13（完了）
+- **Result**: success
+- **Notes**:
+  - AuthGuard タイムアウトフォールバック + Settings認証除外の実装完了。教訓・仕様書同期実施
+  - AuthGuardDisplayState に "timed-out" 追加、10秒タイムアウト機構、AuthTimeoutFallback UI、Settings AuthGuardバイパス
+  - 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+  - 104テスト全PASS
+
+---
+
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査運用の反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - ユーザーが screenshot を明示要求した場合は P53 代替で閉じず、専用 harness route + `screenshot-plan.json` + capture metadata + coverage validator まで完了させる運用を固定
+  - bypass view を追加するタスクでは「AuthGuard bypass 条件」と「未認証 reset 除外条件」を Phase 2/11/12 の確認項目に含める
+  - worktree の Phase 11/12 は `pnpm install --frozen-lockfile` を preflight に含める
+
+---
 
 ## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 11/12 再監査完了
 
@@ -34,7 +58,6 @@
   - Phase 1-12 全完了、PR作成待ち
 
 ---
-
 ## 2026-03-09 - UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001 テンプレート準拠監査ルールを追補
 
 - **Agent**: task-specification-creator
@@ -5726,3 +5749,32 @@ if (artifactPath) {
   - `references/phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加
   - workflow12 の Phase 11 screenshot 証跡と Phase 12 実装ガイドを validator 準拠へ再同期
   - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新
+
+---
+
+## 2026-03-09 - TASK-10A-G スキルライフサイクル統合テスト強化
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + completed 移管）
+- **Result**: success
+- **Notes**:
+  - Layer 1/2/3 の 3 ファイル 55 tests（25/14/16）と representative screenshots を Phase 11-12 成果物へ同期
+  - `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を集約
+  - workflow を `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ移管し、関連 backlog も同 workflow 配下 `unassigned-task/` へ移した
+  - `audit-unassigned-tasks.js` を completed workflow 配下の `--target-file` 監査へ対応
+
+---
+
+## 2026-03-09 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - AuthGuard タイムアウトフォールバック + Settings認証除外を実装
+  - 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+  - テスト: 104テスト全PASS、カバレッジ Line 95.59%, Branch 89.65%, Function 100%
+  - `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加、Settings bypass セキュリティ記録
+  - `arch-state-management.md` に AUTH_TIMEOUT_MS = 10_000 タイムアウト機構記録
+  - `ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

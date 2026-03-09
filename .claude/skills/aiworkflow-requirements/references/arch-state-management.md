@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
+| v3.14.0    | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: useAuthState に AUTH_TIMEOUT_MS = 10,000ms タイムアウト機構追加。AuthState 型に "timed-out" 状態追加。getAuthState 純粋関数で isTimedOut 判定。Settings bypass で currentView === "settings" 時は AuthGuard 外レンダリング |
 | v3.13.2    | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映。App shell mount 時の debug-only `localStorage.clear()` / `window.location.reload()` を persist 契約違反として明文化し、DD-04/DD-05（shared shell 副作用禁止 / bug path検証と screenshot path 分離）を追加。Phase 11 は通常ルート metadata 確認 + dedicated harness screenshot の二段構成を標準化 |
 | v3.13.1    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補: `ChatPanel` の現行実装が `useIsSkillExecuting()` 個別セレクタへ移行済みであることを仕様へ是正。あわせて execute 側ガード実装時の苦戦箇所（CLI drift / Router 二重化 / workflow 本文 stale）と 5分解決カードへの導線を追加し、残未タスクは `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` の 1 件へ整理 |
 | v3.13.0    | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 反映: `executeSkill` に `isExecuting` 同期ガード（FR-01）を追加。`get().isExecuting` チェックを async 操作前に配置し、microtask 境界を跨がない同期的ガードで二重実行を防止。Store層ガード + 既存UIガード（ExecuteButton null render / AgentExecutionView disabled / ChatPanel toggle disabled）の二重防御アーキテクチャを確立。テスト9件（T-01〜T-05, T-09〜T-12）全PASS、Line Coverage 95.37% |
@@ -300,6 +302,21 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | UT-STORE-HOOKS-REFACTOR-002      | 状態セレクタのJSDoc追加       | 未実施     |
 | UT-STORE-HOOKS-REFACTOR-003      | 合成Hook移行                  | 未実施     |
 | UT-FIX-APP-INITAUTH-CHECK-001    | App.tsx initializeAuth確認    | 未実施     |
+
+### AuthGuard timeout / public unauthenticated view 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| timeout state | `useAuthState` と `getAuthState` が `"timed-out"` を返し、UI は `AuthTimeoutFallback` を表示する |
+| public unauthenticated views | `settings` は未認証でも表示維持してよい公開ビューとして扱う |
+| reset rule | 未認証かつ初期化完了後に `currentView` を reset する場合、公開ビューは reset 対象から除外する |
+| helper | `shouldResetUnauthenticatedView({ isAuthenticated, isLoading, currentView })` 相当の純粋関数で判定する |
+
+**標準ルール**:
+
+- `PUBLIC_UNAUTHENTICATED_VIEWS` のような単一配列で公開ビューを管理する
+- `settings` のような bypass view を追加した場合は、AuthGuard 条件と reset 条件を同時更新する
+- 公開ビュー追加時は `AuthGuard` テストだけでなく、view reset テストも追加する
 
 ### agentSlice詳細
 
