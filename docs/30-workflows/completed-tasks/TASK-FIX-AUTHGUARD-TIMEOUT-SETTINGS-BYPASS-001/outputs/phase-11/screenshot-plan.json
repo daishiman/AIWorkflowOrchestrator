@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-03-09T15:36:02.087Z",
+  "baseUrl": "http://localhost:5182",
+  "viewport": {
+    "width": 1440,
+    "height": 1600
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "ライトテーマで 10 秒経過後の AuthTimeoutFallback を確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-01-timeout-fallback-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "ダークテーマで 10 秒経過後の AuthTimeoutFallback を確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-02-timeout-fallback-dark.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "timeout fallback から設定画面へ遷移した公開シェルを確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-03-timeout-to-settings.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "未認証状態での Settings 公開シェルを直接確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-04-settings-shell-unauthenticated.png",
+      "priority": "A"
+    }
+  ]
+}

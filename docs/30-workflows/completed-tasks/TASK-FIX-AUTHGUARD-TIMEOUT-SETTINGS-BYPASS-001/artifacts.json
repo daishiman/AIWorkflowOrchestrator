@@ -1,0 +1,139 @@
+{
+  "taskId": "TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001",
+  "title": "AuthGuard タイムアウトフォールバック + Settings認証除外",
+  "type": "fix",
+  "priority": 3,
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-1-requirements.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-2-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-3-design-review.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-4-test-creation.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-5-implementation.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-6-test-expansion.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-7-coverage-check.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-8-refactoring.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-9-quality-assurance.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-10-final-review.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-11-manual-test.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-12-documentation.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/component-documentation.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/spec-update-summary.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md",
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-13-pr-creation.md"
+      ]
+    },
+    "verification": {
+      "name": "整合性検証",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/verification-report.md"
+      ]
+    }
+  },
+  "targetFiles": [
+    "apps/desktop/src/renderer/components/AuthGuard/types.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/utils/getAuthState.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/hooks/useAuthState.ts",
+    "apps/desktop/src/renderer/components/AuthGuard/AuthTimeoutFallback.tsx",
+    "apps/desktop/src/renderer/components/AuthGuard/index.tsx",
+    "apps/desktop/src/renderer/App.tsx"
+  ],
+  "relatedPitfalls": ["P31", "P48", "P13", "P39"],
+  "relatedTasks": [
+    "TASK-FIX-SAFEINVOKE-TIMEOUT-001",
+    "TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001"
+  ],
+  "systemSpecReferences": [
+    ".claude/skills/aiworkflow-requirements/references/arch-state-management.md",
+    ".claude/skills/aiworkflow-requirements/references/architecture-auth-security.md",
+    ".claude/skills/aiworkflow-requirements/references/api-ipc-auth.md",
+    ".claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md",
+    ".claude/skills/aiworkflow-requirements/references/ui-ux-settings.md",
+    ".claude/skills/aiworkflow-requirements/references/security-principles.md",
+    ".claude/skills/aiworkflow-requirements/references/security-electron-ipc.md",
+    ".claude/skills/aiworkflow-requirements/references/lessons-learned.md",
+    ".claude/skills/aiworkflow-requirements/references/error-handling.md",
+    ".claude/skills/aiworkflow-requirements/references/interfaces-auth.md",
+    ".claude/skills/aiworkflow-requirements/references/task-workflow.md"
+  ]
+}

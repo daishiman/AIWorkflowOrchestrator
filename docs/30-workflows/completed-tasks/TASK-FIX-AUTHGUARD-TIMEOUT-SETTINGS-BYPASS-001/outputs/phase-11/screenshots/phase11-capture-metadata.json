@@ -1,0 +1,39 @@
+{
+  "generatedAt": "2026-03-09T15:36:41.037Z",
+  "baseUrl": "http://localhost:5182",
+  "harnessPath": "/phase11-authguard-timeout.html",
+  "viewport": {
+    "width": 1440,
+    "height": 1600
+  },
+  "captures": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-timeout-fallback-light.png",
+      "note": "ライトテーマで 10 秒経過後の AuthTimeoutFallback を確認",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-212903-wt3/docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png",
+      "capturedAt": "2026-03-09T15:36:18.351Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-timeout-fallback-dark.png",
+      "note": "ダークテーマで 10 秒経過後の AuthTimeoutFallback を確認",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-212903-wt3/docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png",
+      "capturedAt": "2026-03-09T15:36:28.979Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-timeout-to-settings.png",
+      "note": "timeout fallback から設定画面へ遷移した公開シェルを確認",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-212903-wt3/docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png",
+      "capturedAt": "2026-03-09T15:36:39.943Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-settings-shell-unauthenticated.png",
+      "note": "未認証状態での Settings 公開シェルを直接確認",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260309-212903-wt3/docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png",
+      "capturedAt": "2026-03-09T15:36:40.494Z"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-09T13:33:21.249Z",
-  "totalKeywords": 1532,
+  "generated": "2026-03-09T17:07:03.174Z",
+  "totalKeywords": 1541,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -773,7 +773,8 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md"
     ],
     "FIX": [
       "api-ipc-agent.md",
@@ -784,7 +785,8 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md",
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "SKILL": [
       "api-ipc-agent.md",
@@ -1340,7 +1342,8 @@
     "SETTINGS": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "PERSIST": [
       "arch-state-management.md",
@@ -4108,6 +4111,27 @@
     "CONCURRENCY": [
       "lessons-learned.md"
     ],
+    "ライフサイクルテストハードニング": [
+      "lessons-learned.md"
+    ],
+    "再監査教訓": [
+      "lessons-learned.md"
+    ],
+    "AUTHGUARD": [
+      "lessons-learned.md",
+      "ui-ux-settings.md"
+    ],
+    "TIMEOUT": [
+      "lessons-learned.md",
+      "ui-ux-settings.md"
+    ],
+    "BYPASS": [
+      "lessons-learned.md",
+      "ui-ux-settings.md"
+    ],
+    "実装教訓": [
+      "lessons-learned.md"
+    ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
     ],
@@ -5733,6 +5757,15 @@
       "ui-ux-settings.md"
     ],
     "Panel": [
+      "ui-ux-settings.md"
+    ],
+    "画面の": [
+      "ui-ux-settings.md"
+    ],
+    "AuthGuard": [
+      "ui-ux-settings.md"
+    ],
+    "非依存アクセス": [
       "ui-ux-settings.md"
     ],
     "ApiKeysSection": [

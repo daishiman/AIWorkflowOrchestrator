@@ -54,8 +54,17 @@ cat artifacts.json | jq .phase12.status
 ### P3: documentation-changelog.md が「同期状態」である
 
 ```bash
-# 確認コマンド
+# 確認コマンド1: changelog自体の変更確認
 git diff --stat -- docs/30-workflows/*/outputs/phase-12/documentation-changelog.md
+
+# 確認コマンド2: SubAgent完了後の仕様書変更実態確認（P51対策）
+git diff --stat -- .claude/skills/
+
+# 確認コマンド3: LOGS.md 2ファイル更新確認（P25対策）
+git diff --stat -- */LOGS.md
+
+# 確認コマンド4: topic-map.md 再生成確認（P2/P27対策）
+git diff --stat -- .claude/skills/*/indexes/topic-map.md
 ```
 
 期待結果: 変更があれば、その変更がすべて `documentation-changelog.md` に記録されていること
@@ -64,10 +73,13 @@ git diff --stat -- docs/30-workflows/*/outputs/phase-12/documentation-changelog.
 - [ ] 本タスク実施中に変更した全ファイルが「Task 1: 実装ガイド」セクションに記録されている
 - [ ] 本タスク実施中に変更した全ファイルが「Task 2: システム仕様書更新」セクションに記録されている
 - [ ] **重要**: P4 対策として、各セクションで「全て確認完了」と記載する前に、実際にファイルが更新されたことを確認
+- [ ] **P51対策**: SubAgent完了報告の直後に `git diff --stat -- .claude/skills/` で実際の変更ファイル一覧を取得し、changelog記録と突合済み
+- [ ] **P25対策**: `git diff --stat -- */LOGS.md` で LOGS.md 2ファイルの変更を確認済み
+- [ ] **P2/P27対策**: `git diff --stat -- .claude/skills/*/indexes/topic-map.md` で topic-map.md の再生成を確認済み
 
-**失敗時の対応**: `git diff` で未記録の変更がないか確認。あれば `documentation-changelog.md` に追加。
+**失敗時の対応**: `git diff` で未記録の変更がないか確認。あれば `documentation-changelog.md` に追加。SubAgent の自己申告だけでは信頼性が不十分なため、必ず git diff による実態確認を行う。
 
-**参考**: `06-known-pitfalls.md` P4「documentation-changelog への早期「完了」記載」
+**参考**: `06-known-pitfalls.md` P4「documentation-changelog への早期「完了」記載」、P51「サブエージェントの documentation-changelog 早期完了記載」
 
 ---
 

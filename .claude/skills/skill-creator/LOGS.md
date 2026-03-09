@@ -16,6 +16,20 @@
 
 ---
 
+## [2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 の Phase 12再監査知見を skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「明示 screenshot 要求では plan / metadata / reset guard まで閉じる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に worktree preflight `pnpm install --frozen-lockfile`、`screenshot-plan.json` / `phase11-capture-metadata.json` 実在確認、公開ビュー bypass 時の reset guard 同期チェックを追加
+  - 未タスク 0件判定でも `verify-unassigned-links` / `audit --diff-from HEAD` の確定値を outputs へ転記し、legacy baseline と今回差分を分離して記録する運用を固定
+  - `SKILL.md` に直接参照導線を補完し、`quick_validate.js .claude/skills/skill-creator` を 0 warning へ復帰
+  - `SKILL.md` 変更履歴を `10.37.20` として同期
+
+---
+
 ## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
 
 - **Agent**: skill-creator (update)

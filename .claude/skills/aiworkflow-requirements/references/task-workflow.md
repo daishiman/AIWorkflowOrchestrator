@@ -173,6 +173,78 @@
 | `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001` | PASS |
 
+### タスク: TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 AuthGuard タイムアウトフォールバック + Settings認証除外（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 |
+| ステータス | **完了（Phase 1-13 出力 + 実装 + テスト104件全PASS + 仕様同期）** |
+| タイプ | fix |
+| 優先度 | P3 |
+| 完了日 | 2026-03-10 |
+| 対象 | `types.ts` / `getAuthState.ts` / `useAuthState.ts` / `AuthTimeoutFallback.tsx` / `index.tsx` / `App.tsx` |
+| 成果物 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/` |
+
+#### 実施内容
+
+- AuthGuardDisplayState に "timed-out" 状態を追加し、認証チェックの無限ブロックを防止
+- 10秒タイムアウト機構を useAuthState フックに実装（認証確認が10秒以内に完了しない場合にフォールバック）
+- AuthTimeoutFallback UI コンポーネントを新規作成（タイムアウト時のユーザーガイダンス表示）
+- Settings 画面を AuthGuard バイパス対象に追加（未認証状態でも設定画面にアクセス可能）
+- 104テスト全PASS
+
+#### 変更ファイル
+
+| ファイル | 変更内容 |
+| --- | --- |
+| `types.ts` | AuthGuardDisplayState に "timed-out" を追加 |
+| `getAuthState.ts` | タイムアウト判定ロジックの追加 |
+| `useAuthState.ts` | 10秒タイムアウト機構の実装 |
+| `AuthTimeoutFallback.tsx` | タイムアウト時フォールバック UI コンポーネント新規作成 |
+| `index.tsx` | AuthGuard コンポーネントへのタイムアウト状態ハンドリング追加 |
+| `App.tsx` | Settings 画面の AuthGuard バイパス設定 |
+
+### タスク: TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 |
+| ステータス | **完了（Phase 11 screenshot 再取得 + reset guard 修正 + system spec 同期）** |
+| 完了日 | 2026-03-10 |
+| 対象 | `App.tsx` / `shouldResetUnauthenticatedView.ts` / Phase 11-12 成果物 / auth-state system spec |
+
+#### 実施内容
+
+- `settings` を未認証 reset 対象外にする `shouldResetUnauthenticatedView` を追加
+- Phase 11 専用 harness route で screenshot 4件を再取得
+- workflow 成果物、system spec 6件、LOGS/SKILL 4件を同一ターンで再同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/utils/__tests__/shouldResetUnauthenticatedView.test.ts src/renderer/components/AuthGuard/AuthGuard.test.tsx src/renderer/components/AuthGuard/utils/getAuthState.test.ts src/renderer/components/AuthGuard/hooks/__tests__/useAuthState.test.ts src/renderer/components/AuthGuard/__tests__/AuthTimeoutFallback.test.tsx src/renderer/components/organisms/AccountSection/AccountSection.test.tsx` | PASS（6 files / 110 tests） |
+| `node apps/desktop/scripts/capture-task-authguard-timeout-phase11.mjs` | PASS（4 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+
+#### 画面証跡
+
+| TC | 証跡 |
+| --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` |
+| TC-11-02 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` |
+| TC-11-03 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` |
+| TC-11-04 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` |
+
+#### Phase 12 判定
+
+- open 未タスク: **0件**
+- screenshot 要求: **実画面証跡で充足**
+- 再発防止ポイント: bypass 実装時は reset 条件も同時確認する
+
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
 | 項目 | 値 |
@@ -3735,8 +3807,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-PERSIST-MIGRATION-001                                       | Zustand Persist バージョニングとマイグレーション機構                                                                                                                         | 中       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`                                                                                                               |
 | UT-PERSIST-VALIDATION-002                                      | Zustand Persist 全フィールド iterable ガード拡張                                                                                                                             | 低       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`                                                                                                             |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001                    | repo-wide に残る debug-clear-storage 前提の comment / script / e2e setup のクリーンアップ                                                                                    | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md`                                                                                                   |
-| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                            | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                                                                                          |
-| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                         | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                                                                                       |
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                           | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                                                                                          |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                        | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                                                                                       |
+| ~~UT-AUTHGUARD-004~~                                           | ~~App.tsx の currentView リセット条件で settings が除外されていない問題~~                                                                                                    | ~~P2~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **完了: 2026-03-10（本タスク内で修正）**                | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
+| ~~UT-AUTHGUARD-001~~                                           | ~~Settings画面内のプロファイルセクション未認証状態表示~~                                                                                                                     | ~~P3~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（既存 degrade 実装で不要）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
+| ~~UT-AUTHGUARD-002~~                                           | ~~AuthTimeoutFallback のアニメーション追加（保留）~~                                                                                                                         | ~~P4~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（品質改善候補であり defect ではない）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
 
 ### 未タスク管理ルール
 
@@ -3778,6 +3853,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.21** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の完了台帳を強化**: 完了タスクセクションを新設し、SubAgent分担・実装反映（`AuthKeyService` 単一生成 + `SkillExecutor` DI）・検証証跡（13/13, 28項目, target監査 current=0）・苦戦箇所（DIシグネチャドリフト、`phase-12-documentation` pending残置、教訓同期漏れ）を記録。Phase 12完了判定を「成果物実体 + 機械検証 + 仕様書ステータス同期」で固定 |
 | バージョン  | 日付           | 変更内容                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.37** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補を同期**: 完了タスクへ `shouldResetUnauthenticatedView` による `settings` reset 除外、Phase 11 screenshot 4件、targeted tests 110件、open 未タスク0件を追加。画面要求がある場合は P53 代替で閉じず screenshot 証跡へ更新する運用を明文化 |
 | **1.67.36** | **2026-03-08** | **TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追補**: 完了記録セクションに S-GD-1〜S-GD-4（`setupThemeWatcher` safeRegister 不適合、`track()` クロージャ成功カウント、`sanitizeRegistrationErrorMessage` 正規表現メタ文字、既存テスト失敗混同）と関連仕様書更新テーブルを追記 |
 | **1.67.35** | **2026-03-08** | **未タスク4件を残課題テーブルへ登録**: `UT-10A-E-D-001`（lint コマンドパス整合）、`UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001`（Workflow 10 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001`（Workflow 11 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001`（Workflow 12 実装ガイド作成）を残課題テーブルへ追加。完了タスクセクション内の関連未タスク表に記載済みだったが残課題テーブルへの登録が未実施だったため同期                                   |
 | **1.67.34** | **2026-03-08** | **TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の5分解決カード追加**: 完了タスク節へ「同種課題の5分解決カード（persist hydrate 破損入力）」を追記。症状/根本原因/最短4手順/検証ゲート/同期先3点を固定化し、persist iterable 崩れの再発時に短手順で対処可能化                                                                                                                                                                                                                                   |

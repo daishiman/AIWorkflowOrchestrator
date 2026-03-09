@@ -21,6 +21,7 @@
 | バグ修正（persist / localStorage 破壊） | arch-state-management.md, arch-ipc-persistence.md | testing-component-patterns.md, development-guidelines.md, lessons-learned.md, security-electron-ipc.md |
 | バグ修正（スキル実行並行ガード） | arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md | ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
+| バグ修正（AuthGuard timeout / Settings認証除外 / currentView settings bypass） | architecture-auth-security.md, arch-state-management.md, ui-ux-navigation.md, ui-ux-settings.md | security-electron-ipc.md, api-ipc-auth.md, interfaces-auth.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |

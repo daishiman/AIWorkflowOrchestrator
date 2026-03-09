@@ -17,6 +17,8 @@ export interface AuthStateInput {
   isLoading: boolean;
   /** 認証済みかどうか */
   isAuthenticated: boolean;
+  /** タイムアウトしたかどうか */
+  isTimedOut: boolean;
 }
 
 /**
@@ -40,7 +42,11 @@ export interface AuthStateInput {
 export const getAuthState = ({
   isLoading,
   isAuthenticated,
+  isTimedOut,
 }: AuthStateInput): AuthGuardDisplayState => {
+  // タイムアウト＋ローディング中はtimed-out状態
+  if (isTimedOut && isLoading) return "timed-out";
+
   // ローディング中は常にchecking状態を優先
   if (isLoading) return "checking";
 

@@ -99,6 +99,33 @@ if (getSupabaseClient()) {
 **詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
 **完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
 
+### AuthGuard timeout / Settings認証除外 / currentView settings bypass 調査導線
+
+`AuthGuard timeout` / `Settings認証除外` / `timeout fallback` / `Settings bypass` / `currentView settings` / `navContract settings` / `AppDock settings` で検索したときに最初に当たるべき導線。
+
+| まず読む | 目的 |
+|---------|------|
+| `architecture-auth-security.md` | AuthGuard / LoadingScreen / 認証状態遷移 / 認証UI責務を確認 |
+| `arch-state-management.md` | `isLoading` / `isAuthenticated` / selector 設計と P31/P48 対策を確認 |
+| `ui-ux-navigation.md` | `settings` ViewType / `navContract.ts` / AppDock / shortcut 導線を確認 |
+| `ui-ux-settings.md` | Settings 画面で未認証時も残すべき UI と認証依存セクションを確認 |
+| `security-electron-ipc.md` | AuthGuard 外に出す route の最小公開面と既存 IPC 防御を確認 |
+| `api-ipc-auth.md` | 認証ハング時に影響する IPC 契約と Renderer 表示責務を確認 |
+| `lessons-learned.md` | P13 / P31 / P39 / P48 の再発防止手順を確認 |
+
+**検索補助キーワード**:
+- `AuthGuard timeout Settings bypass`
+- `currentView settings navigation`
+- `navContract settings`
+- `AppDock settings`
+- `settings ViewType`
+
+**検索キーワード例**:
+- `AuthGuard timeout`
+- `Settings認証除外`
+- `timeout fallback`
+- `Settings bypass`
+
 ### Result Pattern
 
 ```typescript
