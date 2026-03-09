@@ -3,7 +3,7 @@
   "title": "App.tsx デバッグコード削除",
   "type": "fix",
   "priority": "P1",
-  "status": "in_progress",
+  "status": "completed",
   "targetFile": "apps/desktop/src/renderer/App.tsx",
   "targetLines": "L46-61",
   "phases": [
@@ -103,7 +103,7 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
       "file": "phase-13-pr-creation.md",
       "artifacts": ["outputs/phase-13/pr-info.md"]
     }
