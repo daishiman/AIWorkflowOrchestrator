@@ -97,14 +97,14 @@
     },
     "phase-13": {
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/phase-13-pr-creation.md"
       ]
     },
     "verification": {
       "name": "整合性検証",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         "docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/verification-report.md"
       ]

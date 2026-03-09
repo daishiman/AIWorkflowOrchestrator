@@ -11,7 +11,7 @@
 
 ## 概要
 
-AuthGuard が `isLoading` で停滞したときのフォールバック UI と、認証不能時でも Settings 公開シェルへ到達できる導線を追加した。再監査では、Settings bypass を成立させるために未認証 reset から `settings` を除外する必要があることを確認し、コードと仕様を合わせて是正した。
+AuthGuard が `isLoading` で停滞したときのフォールバック UI と、認証不能時でも Settings 公開シェルへ到達できる導線を追加した。再監査では、Settings bypass を成立させるために未認証 reset から `settings` を除外する必要があることを確認し、コードと仕様を合わせて是正した。Phase 13 では PR #1123 を作成し、実装ガイド全文コメントと screenshot コメントまで投稿した。
 
 ## Phase 一覧
 
@@ -29,18 +29,19 @@ AuthGuard が `isLoading` で停滞したときのフォールバック UI と�
 | 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
 | 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
 | 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
-| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | pending    |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | completed  |
 
 ## 主要成果物
 
-| 成果物                  | パス                                            |
-| ----------------------- | ----------------------------------------------- |
-| Phase 11 手動テスト結果 | `outputs/phase-11/manual-test-result.md`        |
-| screenshot              | `outputs/phase-11/screenshots/`                 |
-| implementation guide    | `outputs/phase-12/implementation-guide.md`      |
-| spec update summary     | `outputs/phase-12/spec-update-summary.md`       |
-| changelog               | `outputs/phase-12/documentation-changelog.md`   |
-| unassigned detection    | `outputs/phase-12/unassigned-task-detection.md` |
+| 成果物                  | パス                                                            |
+| ----------------------- | --------------------------------------------------------------- |
+| Phase 11 手動テスト結果 | `outputs/phase-11/manual-test-result.md`                        |
+| screenshot              | `outputs/phase-11/screenshots/`                                 |
+| implementation guide    | `outputs/phase-12/implementation-guide.md`                      |
+| spec update summary     | `outputs/phase-12/spec-update-summary.md`                       |
+| changelog               | `outputs/phase-12/documentation-changelog.md`                   |
+| unassigned detection    | `outputs/phase-12/unassigned-task-detection.md`                 |
+| PR                      | `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1123` |
 
 ## 実装の要点
 
@@ -48,3 +49,4 @@ AuthGuard が `isLoading` で停滞したときのフォールバック UI と�
 2. `currentView === "settings"` を AuthGuard 外へ出した。
 3. `shouldResetUnauthenticatedView` を追加し、未認証時 reset から `settings` を除外した。
 4. Phase 11 は専用 harness で screenshot 4 件を取得し、Phase 12 は system spec を再同期した。
+5. Phase 13 で PR #1123 を作成し、pre-push validation PASS と implementation-guide / screenshot コメント投稿まで完了した。
