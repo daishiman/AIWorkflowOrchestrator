@@ -11,6 +11,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
+| v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
+| v1.16.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: IPC ハンドラライフサイクル管理セクションに `IpcHandlerRegistrationResult` 戻り値契約と `safeRegister` による個別 try-catch の Graceful Degradation 仕様を追記。フェイルセキュア考慮事項を明文化 |
 | v1.16.0    | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 完了記録: Profile/Avatar fallback 登録パターンセクション（v1.15.0で追加済み）の完了タスク反映。`registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` の検証基準（チャネル数一致・排他分岐・error envelope統一）を確定 |
 | v1.15.0    | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: ApiKeysSection 契約防御ガードセクション追加（GAP-01〜GAP-06テーブル、59テスト全PASS、カバレッジ実績値）。完了タスクテーブルに追加。architecture-implementation-patterns.md S29 との相互参照を設定                                                                                                   |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
@@ -421,6 +424,39 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | ------------------ | ------------------------------------- | ------------------------------------- |
 | `ipcMain.handle()` | 例外送出（同一チャンネルに2つ目不可） | `ipcMain.removeHandler(channel)`      |
 | `ipcMain.on()`     | 許可（リスナーが複数登録される）      | `ipcMain.removeAllListeners(channel)` |
+
+**Graceful Degradation 戻り値契約**（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001）:
+
+`registerAllIpcHandlers(mainWindow)` は `IpcHandlerRegistrationResult` を返却する。各 `registerXxxHandlers` を `safeRegister()` で個別 try-catch し、1つの失敗が後続の登録を阻害しない。
+
+| フィールド     | 型                              | 説明                                         |
+| -------------- | ------------------------------- | -------------------------------------------- |
+| `successCount` | `number`                        | 登録成功したハンドラグループ数               |
+| `failureCount` | `number`                        | 登録失敗したハンドラグループ数               |
+| `failures`     | `HandlerRegistrationFailure[]`  | 失敗詳細（`handlerName` / `errorMessage` / `errorCode: 4001`） |
+
+**セキュリティ上の考慮**: 失敗したハンドラグループのチャンネルは未登録状態となる。そのチャンネルへの Renderer からのリクエストは `Error: No handler registered` が返され、フェイルセキュアとして機能する。失敗情報は `console.error` でログ出力されるが、ユーザーホーム配下の絶対パスは `~` にマスクして記録する。
+
+#### Graceful Degradation 実装時の苦戦箇所（セキュリティ観点）
+
+| ID | 課題 | セキュリティリスク | 解決策 |
+|---|---|---|---|
+| SEC-GD-1 | エラーメッセージにユーザーのホームディレクトリパスが含まれる | ログ経由でファイルシステム構造が漏洩する可能性 | `sanitizeRegistrationErrorMessage()` で `os.homedir()` パスを `~` にマスク。`escapeRegExp()` で正規表現メタ文字をエスケープ後にパターン生成 |
+| SEC-GD-2 | `safeRegister` の失敗情報が `IpcHandlerRegistrationResult.failures` に蓄積される | 失敗情報に機密パスや内部構造が含まれる可能性 | 全失敗メッセージを `sanitizeRegistrationErrorMessage()` 経由で正規化してから `failures` 配列に格納 |
+| SEC-GD-3 | 部分的なハンドラ登録失敗時に、未登録チャネルへの IPC 呼び出しが発生する | 未登録チャネルへの `ipcMain.handle` 呼び出しは「No handler registered」エラーを返すが、Renderer 側でのエラーハンドリングが必要 | Renderer 側の `safeInvoke` パターンが未登録チャネルエラーもキャッチするため、フェイルセキュア原則を維持 |
+
+#### 同種課題向け4ステップ手順
+
+1. **パスマスク**: エラーログに含まれるファイルパスを `sanitize` 関数で正規化する
+2. **メタ文字エスケープ**: `os.homedir()` 等のパスを正規表現に使う前に `escapeRegExp()` を適用する
+3. **フェイルセキュア確認**: ハンドラ未登録時に Renderer 側のエラーハンドリングが機能することを確認する
+4. **ログレベル制御**: Infrastructure Error (4001) のログ出力を `electron-log` の `warn` レベルに制限し、ユーザーコンソールへの不要な出力を抑制する
+
+**関連未タスク（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 から派生）**:
+
+| タスクID | 概要 | 優先度 | 指示書パス |
+|---|---|---|---|
+| UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
 
 **関連未タスク（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 から派生）**:
 
@@ -908,3 +944,4 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | 2026-03-08 | 完了       | ApiKeysSection Renderer 4層防御（API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新）+ Main側 providers/identities 配列正規化。59テスト全PASS、Stmts 93.17%              |
 | TASK-10A-E-A                                   | 2026-03-05 | 完了       | share 3チャネルの sender失敗を `ERR_2004`、validation失敗を `ERR_1001`、unknown例外を `ERR_5001` へ統一。`skillHandlers.share.ts` の `IPC_CHANNELS` 定数参照化でチャネルドリフトを抑止        |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001               | 2026-02-25 | 完了       | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持                                                                                                                                |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001  | 2026-03-08 | 完了       | registerAllIpcHandlers に safeRegister ヘルパーを導入し、1ハンドラ例外時も後続ハンドラを登録継続する Graceful Degradation を実装。19テスト全PASS、Phase 11 スクリーンショット 3/3 PASS、ログサニタイズ反映済み |

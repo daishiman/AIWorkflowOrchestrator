@@ -10,6 +10,36 @@
 
 ---
 
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所記録
+
+- **Agent**: task-specification-creator
+- **Phase**: 追補（苦戦箇所記録）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - Graceful Degradation 実装時の苦戦箇所4件（S-GD-1〜S-GD-4）を `lessons-learned.md` に記録
+  - セキュリティ観点の苦戦箇所3件（SEC-GD-1〜SEC-GD-3）を `security-electron-ipc.md` に記録
+  - `api-ipc-system.md` と `architecture-implementation-patterns.md` S31 に実装パターン詳細を追記
+  - skill-creator によるテンプレート最適化（Phase 11 ハンドラ登録パターンの標準化）
+
+---
+
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 Phase 12 仕様同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（システム仕様書更新）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `registerAllIpcHandlers()` に Graceful Degradation（`safeRegister` + `IpcHandlerRegistrationResult`）を追加した実装を system spec 4仕様書へ同期
+  - `api-ipc-system.md`: 実装状況テーブルと完了タスク追加
+  - `task-workflow.md`: 完了タスクセクション追加
+  - `architecture-implementation-patterns.md`: S31 Graceful Degradation パターン追加
+  - `security-electron-ipc.md`: ライフサイクル管理に戻り値契約追記
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
 ## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了条件の明文化
 
 - **Agent**: task-specification-creator

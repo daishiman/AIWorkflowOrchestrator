@@ -97,6 +97,20 @@ import type { ShareError, ShareResult } from "@repo/shared";
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
 
+/** ハンドラ登録失敗情報 */
+export interface HandlerRegistrationFailure {
+  handlerName: string;
+  errorMessage: string;
+  errorCode: number;
+}
+
+/** registerAllIpcHandlers の戻り値 */
+export interface IpcHandlerRegistrationResult {
+  successCount: number;
+  failureCount: number;
+  failures: HandlerRegistrationFailure[];
+}
+
 type ShareCategory = ShareError["category"];
 type GitHubClientAdapter = ConstructorParameters<typeof SkillShareManager>[0];
 type FallbackHandler = readonly [
@@ -433,78 +447,193 @@ export function unregisterAllIpcHandlers(): void {
 }
 
 /**
+ * 個別ハンドラ登録を try-catch で囲み、失敗時にログ出力と記録を行う
+ */
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function sanitizeRegistrationErrorMessage(message: string): string {
+  if (message.length === 0) {
+    return message;
+  }
+
+  let sanitized = message;
+  const homeDir = process.env.HOME || process.env.USERPROFILE || "";
+  const normalizedHomeDir = homeDir.replace(/\\/g, "/");
+  const homeRoots = new Set<string>();
+
+  if (homeDir) {
+    homeRoots.add(homeDir);
+  }
+  if (normalizedHomeDir) {
+    homeRoots.add(normalizedHomeDir);
+  }
+
+  const inferredHomeRoot = normalizedHomeDir.match(
+    /^(?:[A-Za-z]:\/Users\/[^/]+|\/Users\/[^/]+|\/home\/[^/]+)/,
+  );
+  if (inferredHomeRoot?.[0]) {
+    homeRoots.add(inferredHomeRoot[0]);
+  }
+
+  for (const homeRoot of [...homeRoots].sort(
+    (left, right) => right.length - left.length,
+  )) {
+    sanitized = sanitized.replace(new RegExp(escapeRegExp(homeRoot), "g"), "~");
+  }
+
+  return sanitized.replace(
+    /(?:[A-Za-z]:\\Users\\[^\\/\s]+|[A-Za-z]:\/Users\/[^/\s]+|\/Users\/[^/\s]+|\/home\/[^/\s]+)/g,
+    "~",
+  );
+}
+
+function safeRegister(
+  handlerName: string,
+  registerFn: () => void,
+  failures: HandlerRegistrationFailure[],
+): boolean {
+  try {
+    registerFn();
+    return true;
+  } catch (error: unknown) {
+    const errorMessage = sanitizeRegistrationErrorMessage(
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    console.error(`[IPC] Failed to register ${handlerName}: ${errorMessage}`);
+    failures.push({
+      handlerName,
+      errorMessage,
+      errorCode: 4001,
+    });
+    return false;
+  }
+}
+
+/**
  * Register all IPC handlers
  * Call this after the main window is created
  */
-export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
-  // Register handlers that don't need window reference
-  registerFileHandlers();
-  registerStoreHandlers();
-  registerDashboardHandlers();
-  registerGraphHandlers();
-  registerAIHandlers();
-  registerThemeHandlers();
-  registerWorkspaceHandlers();
-  registerSearchHandlers();
-  registerFileSelectionHandlers();
-  registerLLMHandlers();
-  registerCommunityHandlers();
+export function registerAllIpcHandlers(
+  mainWindow: BrowserWindow,
+): IpcHandlerRegistrationResult {
+  const failures: HandlerRegistrationFailure[] = [];
+  let successCount = 0;
 
-  // Register handlers that need window reference
-  registerWindowHandlers(mainWindow);
-  registerDialogHandlers(mainWindow);
+  const track = (name: string, fn: () => void): void => {
+    if (safeRegister(name, fn, failures)) {
+      successCount++;
+    }
+  };
 
-  // Setup theme watcher to broadcast system theme changes
-  // 再登録時は既存のリスナーを解除してから再設定する
-  themeWatcherUnsubscribe = setupThemeWatcher(nativeTheme, () =>
-    BrowserWindow.getAllWindows(),
-  );
+  // --- 1. 依存なしハンドラ ---
+  const independentHandlers: ReadonlyArray<readonly [string, () => void]> = [
+    ["registerFileHandlers", () => registerFileHandlers()],
+    ["registerStoreHandlers", () => registerStoreHandlers()],
+    ["registerDashboardHandlers", () => registerDashboardHandlers()],
+    ["registerGraphHandlers", () => registerGraphHandlers()],
+    ["registerAIHandlers", () => registerAIHandlers()],
+    ["registerThemeHandlers", () => registerThemeHandlers()],
+    ["registerWorkspaceHandlers", () => registerWorkspaceHandlers()],
+    ["registerSearchHandlers", () => registerSearchHandlers()],
+    ["registerFileSelectionHandlers", () => registerFileSelectionHandlers()],
+    ["registerLLMHandlers", () => registerLLMHandlers()],
+    ["registerCommunityHandlers", () => registerCommunityHandlers()],
+  ];
+  for (const [name, fn] of independentHandlers) {
+    track(name, fn);
+  }
 
-  // Register auth, profile, and avatar handlers (only if Supabase is configured)
+  // --- 2. mainWindow 依存ハンドラ ---
+  track("registerWindowHandlers", () => registerWindowHandlers(mainWindow));
+  track("registerDialogHandlers", () => registerDialogHandlers(mainWindow));
+
+  // --- 3. Theme watcher ---
+  // setupThemeWatcher は unsubscribe 関数を返すため個別に扱う
+  try {
+    themeWatcherUnsubscribe = setupThemeWatcher(nativeTheme, () =>
+      BrowserWindow.getAllWindows(),
+    );
+    successCount++;
+  } catch (error: unknown) {
+    const errorMessage = sanitizeRegistrationErrorMessage(
+      error instanceof Error ? error.message : "Unknown error",
+    );
+    console.error(
+      `[IPC] Failed to register setupThemeWatcher: ${errorMessage}`,
+    );
+    failures.push({
+      handlerName: "setupThemeWatcher",
+      errorMessage,
+      errorCode: 4001,
+    });
+  }
+
+  // --- 4. Supabase 条件分岐 ---
   const supabase = getSupabaseClient();
   if (supabase) {
     const secureStorage = createSecureStorage();
     const profileCache = createProfileCache();
 
-    registerAuthHandlers(mainWindow, supabase, secureStorage);
-    registerProfileHandlers(mainWindow, supabase, profileCache);
-    registerAvatarHandlers(mainWindow, supabase);
+    track("registerAuthHandlers", () =>
+      registerAuthHandlers(mainWindow, supabase, secureStorage),
+    );
+    track("registerProfileHandlers", () =>
+      registerProfileHandlers(mainWindow, supabase, profileCache),
+    );
+    track("registerAvatarHandlers", () =>
+      registerAvatarHandlers(mainWindow, supabase),
+    );
   } else {
     console.warn(
       "[IPC] Auth, profile, and avatar handlers not registered - Supabase not configured",
     );
     // Register fallback handlers when Supabase is not configured
-    registerAuthFallbackHandlers();
-    registerProfileFallbackHandlers();
-    registerAvatarFallbackHandlers();
+    track("registerAuthFallbackHandlers", () => registerAuthFallbackHandlers());
+    track("registerProfileFallbackHandlers", () =>
+      registerProfileFallbackHandlers(),
+    );
+    track("registerAvatarFallbackHandlers", () =>
+      registerAvatarFallbackHandlers(),
+    );
   }
 
-  // Register API Key handlers (always available - local storage only)
+  // --- 5. API Key handlers ---
   const apiKeyStorage = createApiKeyStorage();
-  registerApiKeyHandlers(mainWindow, apiKeyStorage);
-
-  // Register History handlers (using stubs until full DB integration)
-  const sharedHistoryService = createStubSharedHistoryService();
-  const logRepository = createStubLogRepository();
-  const historyLogger = createStubLogger();
-  const historyService = createHistoryServiceWithDI(
-    sharedHistoryService,
-    logRepository,
-    historyLogger,
+  track("registerApiKeyHandlers", () =>
+    registerApiKeyHandlers(mainWindow, apiKeyStorage),
   );
-  registerHistoryHandlers(mainWindow, historyService);
-  registerHistorySearchHandlers(createHistorySearchService(), { mainWindow });
-  registerNotificationHandlers(createNotificationService(), { mainWindow });
 
-  // Register Agent Execution handlers (AGENT-005)
-  registerAgentExecutionHandlers(mainWindow);
+  // --- 6. History handlers ---
+  track("registerHistoryHandlers", () => {
+    const sharedHistoryService = createStubSharedHistoryService();
+    const logRepository = createStubLogRepository();
+    const historyLogger = createStubLogger();
+    const historyService = createHistoryServiceWithDI(
+      sharedHistoryService,
+      logRepository,
+      historyLogger,
+    );
+    registerHistoryHandlers(mainWindow, historyService);
+  });
+  track("registerHistorySearchHandlers", () =>
+    registerHistorySearchHandlers(createHistorySearchService(), { mainWindow }),
+  );
+  track("registerNotificationHandlers", () =>
+    registerNotificationHandlers(createNotificationService(), { mainWindow }),
+  );
 
-  // Initialize Auth Key service once and share across handlers
+  // --- 7. Agent Execution handlers ---
+  track("registerAgentExecutionHandlers", () =>
+    registerAgentExecutionHandlers(mainWindow),
+  );
+
+  // --- 8. Auth Key service + Skill 系ハンドラ ---
   const authKeyStorage = createAuthKeyStorage();
   const authKeyService = new AuthKeyService(authKeyStorage);
 
-  // Register Skill Management handlers (SKILL-IPC-001)
-  // Use home directory for skills (where Claude CLI stores them)
+  // Skill Management handlers (SKILL-IPC-001)
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
   const skillBasePath = path.join(homeDir, ".claude", "skills");
   interface SkillStoreSchema {
@@ -524,166 +653,208 @@ export function registerAllIpcHandlers(mainWindow: BrowserWindow): void {
     skillParser,
     skillImportManager,
   );
-  registerSkillHandlers(mainWindow, skillService, authKeyService);
 
-  // Register Skill File handlers (TASK-9A-B)
+  track("registerSkillHandlers", () =>
+    registerSkillHandlers(mainWindow, skillService, authKeyService),
+  );
+
+  // Skill File handlers (TASK-9A-B)
   const skillFileManager = new SkillFileManager();
-  registerSkillFileHandlers(mainWindow, skillFileManager, skillService);
+  track("registerSkillFileHandlers", () =>
+    registerSkillFileHandlers(mainWindow, skillFileManager, skillService),
+  );
 
-  // Register Skill Share handlers (TASK-9F)
-  const skillValidator = new SkillValidator();
-  const skillShareManager = new SkillShareManager(
-    createGitHubClient(),
-    {
-      readFile: (targetPath: string) => fs.readFile(targetPath, "utf-8"),
-      writeFile: async (targetPath: string, content: string) => {
-        await fs.mkdir(path.dirname(targetPath), { recursive: true });
-        await fs.writeFile(targetPath, content, "utf-8");
+  // Skill Share handlers (TASK-9F)
+  track("registerSkillShareHandlers", () => {
+    const skillValidator = new SkillValidator();
+    const skillShareManager = new SkillShareManager(
+      createGitHubClient(),
+      {
+        readFile: (targetPath: string) => fs.readFile(targetPath, "utf-8"),
+        writeFile: async (targetPath: string, content: string) => {
+          await fs.mkdir(path.dirname(targetPath), { recursive: true });
+          await fs.writeFile(targetPath, content, "utf-8");
+        },
+        readdir: (targetPath: string) => fs.readdir(targetPath),
+        stat: (targetPath: string) => fs.stat(targetPath),
+        mkdir: async (targetPath: string) => {
+          await fs.mkdir(targetPath, { recursive: true });
+        },
+        cp: (src: string, dest: string) =>
+          fs.cp(src, dest, { recursive: true }),
+        exists: async (targetPath: string) => {
+          try {
+            await fs.access(targetPath);
+            return true;
+          } catch {
+            return false;
+          }
+        },
+        resolveRealPath: (targetPath: string) => fs.realpath(targetPath),
       },
-      readdir: (targetPath: string) => fs.readdir(targetPath),
-      stat: (targetPath: string) => fs.stat(targetPath),
-      mkdir: async (targetPath: string) => {
-        await fs.mkdir(targetPath, { recursive: true });
+      {
+        validateStructure: async (targetPath: string) => {
+          const isValid = await skillValidator.validateStructure(targetPath);
+          return {
+            isValid,
+            errors: isValid ? [] : ["SKILL.md not found"],
+          };
+        },
+        validateSkillMd: (content: string) =>
+          skillValidator.validateSkillMd(content),
       },
-      cp: (src: string, dest: string) => fs.cp(src, dest, { recursive: true }),
-      exists: async (targetPath: string) => {
-        try {
-          await fs.access(targetPath);
-          return true;
-        } catch {
-          return false;
-        }
+      {
+        scanAvailableSkills: () => skillService.scanAvailableSkills(),
+        getSkillByName: async (name: string) => {
+          const skill = await skillService.getSkillByName(name as never);
+          if (!skill) {
+            return shareFailure(
+              createShareError(
+                2003,
+                `Skill not found: ${name}`,
+                "business",
+                false,
+              ),
+            );
+          }
+          return shareSuccess({
+            name: skill.name,
+            path: path.dirname(skill.path),
+          });
+        },
+        importManager: {
+          importSkills: (names: string[]) =>
+            skillService.importManager.importSkills(names as never),
+        },
       },
-      resolveRealPath: (targetPath: string) => fs.realpath(targetPath),
-    },
-    {
-      validateStructure: async (targetPath: string) => {
-        const isValid = await skillValidator.validateStructure(targetPath);
+    );
+    registerSkillShareHandlers(mainWindow, skillShareManager);
+  });
+
+  track("registerSkillDebugHandlers", () =>
+    registerSkillDebugHandlers(mainWindow),
+  );
+
+  // Skill Schedule handlers (TASK-9G)
+  track("registerSkillScheduleHandlers", () => {
+    const scheduleStore = new ScheduleStore();
+    const schedulerExecutorAdapter = {
+      async execute(
+        request: { prompt: string; skillId: string },
+        _skill: {
+          id: string;
+          name: string;
+          description: string;
+          path: string;
+          anchors: unknown[];
+          allowedTools?: string[];
+        },
+      ) {
+        const result = await skillService.executeSkill(request.skillId, {
+          prompt: request.prompt,
+        });
         return {
-          isValid,
-          errors: isValid ? [] : ["SKILL.md not found"],
+          executionId: result.executionId,
+          success: result.success,
+          error: result.error,
         };
       },
-      validateSkillMd: (content: string) =>
-        skillValidator.validateSkillMd(content),
-    },
-    {
-      scanAvailableSkills: () => skillService.scanAvailableSkills(),
-      getSkillByName: async (name: string) => {
-        const skill = await skillService.getSkillByName(name as never);
-        if (!skill) {
-          return shareFailure(
-            createShareError(
-              2003,
-              `Skill not found: ${name}`,
-              "business",
-              false,
-            ),
-          );
-        }
-        return shareSuccess({
-          name: skill.name,
-          path: path.dirname(skill.path),
-        });
-      },
-      importManager: {
-        importSkills: (names: string[]) =>
-          skillService.importManager.importSkills(names as never),
-      },
-    },
-  );
-  registerSkillShareHandlers(mainWindow, skillShareManager);
-  registerSkillDebugHandlers(mainWindow);
-
-  // Register Skill Schedule handlers (TASK-9G)
-  const scheduleStore = new ScheduleStore();
-  const schedulerExecutorAdapter = {
-    async execute(
-      request: { prompt: string; skillId: string },
-      _skill: {
-        id: string;
-        name: string;
-        description: string;
-        path: string;
-        anchors: unknown[];
-        allowedTools?: string[];
-      },
-    ) {
-      const result = await skillService.executeSkill(request.skillId, {
-        prompt: request.prompt,
-      });
-      return {
-        executionId: result.executionId,
-        success: result.success,
-        error: result.error,
-      };
-    },
-  };
-  const skillScheduler = new SkillScheduler(
-    scheduleStore,
-    schedulerExecutorAdapter,
-  );
-  // initialize は非同期だが、起動時にブロックしない
-  void skillScheduler.initialize();
-  registerSkillScheduleHandlers(mainWindow, skillScheduler, scheduleStore);
-
-  // Register Skill Docs handlers (TASK-9I)
-  const stubQueryFn = async (prompt: string) => ({
-    content: `Generated content for: ${prompt.slice(0, 50)}`,
+    };
+    const skillScheduler = new SkillScheduler(
+      scheduleStore,
+      schedulerExecutorAdapter,
+    );
+    // initialize は非同期だが、起動時にブロックしない
+    void skillScheduler.initialize();
+    registerSkillScheduleHandlers(mainWindow, skillScheduler, scheduleStore);
   });
-  const skillDocGenerator = new SkillDocGeneratorCls(
-    stubQueryFn,
-    skillFileManager,
+
+  // Skill Docs handlers (TASK-9I)
+  track("registerSkillDocsHandlers", () => {
+    const stubQueryFn = async (prompt: string) => ({
+      content: `Generated content for: ${prompt.slice(0, 50)}`,
+    });
+    const skillDocGenerator = new SkillDocGeneratorCls(
+      stubQueryFn,
+      skillFileManager,
+    );
+    registerSkillDocsHandlers(mainWindow, skillDocGenerator);
+  });
+
+  // Skill Analytics handlers (TASK-9J)
+  track("registerSkillAnalyticsHandlers", () => {
+    const analyticsStore = new AnalyticsStore();
+    const skillAnalytics = new SkillAnalytics(analyticsStore);
+    registerSkillAnalyticsHandlers(mainWindow, skillAnalytics);
+  });
+
+  // Skill Chain handlers (TASK-9D / TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001)
+  track("registerSkillChainHandlers", () => {
+    const chainStoragePath = path.join(homeDir, ".claude", "skill-chains.json");
+    const chainStore = new SkillChainStore(chainStoragePath);
+    const chainExecutor = new SkillChainExecutor(
+      async (skillName: string, input: unknown) => {
+        const result = await skillService.executeSkill(skillName, {
+          prompt: typeof input === "string" ? input : JSON.stringify(input),
+        });
+        return result;
+      },
+    );
+    registerSkillChainHandlers(mainWindow, chainStore, chainExecutor);
+  });
+
+  // Permission Store handlers (TASK-3-1-E)
+  track("registerPermissionStoreHandlers", () => {
+    const permissionStore = new PermissionStore();
+    registerPermissionStoreHandlers(permissionStore);
+  });
+
+  // --- 9. Auth Mode handlers ---
+  track("registerAuthKeyHandlers", () =>
+    registerAuthKeyHandlers(mainWindow, authKeyService),
   );
-  registerSkillDocsHandlers(mainWindow, skillDocGenerator);
+  track("registerAuthModeHandlers", () => {
+    const authModeService = createAuthModeService(authKeyService);
+    registerAuthModeHandlers(mainWindow, authModeService);
+  });
 
-  // Register Skill Analytics handlers (TASK-9J)
-  const analyticsStore = new AnalyticsStore();
-  const skillAnalytics = new SkillAnalytics(analyticsStore);
-  registerSkillAnalyticsHandlers(mainWindow, skillAnalytics);
+  // --- 10. Skill Creator handlers ---
+  track("registerSkillCreatorHandlers", () => {
+    const skillCreatorService = new SkillCreatorService();
+    registerSkillCreatorHandlers(mainWindow, skillCreatorService);
+  });
 
-  // Register Skill Chain handlers (TASK-9D / TASK-FIX-SKILL-CHAIN-HANDLER-REGISTRATION-001)
-  const chainStoragePath = path.join(homeDir, ".claude", "skill-chains.json");
-  const chainStore = new SkillChainStore(chainStoragePath);
-  const chainExecutor = new SkillChainExecutor(
-    async (skillName: string, input: unknown) => {
-      const result = await skillService.executeSkill(skillName, {
-        prompt: typeof input === "string" ? input : JSON.stringify(input),
-      });
-      return result;
-    },
+  // --- 11. Claude CLI handlers ---
+  track("registerClaudeCliHandlers", () =>
+    registerClaudeCliHandlers(mainWindow),
   );
-  registerSkillChainHandlers(mainWindow, chainStore, chainExecutor);
 
-  // Register Permission Store handlers (TASK-3-1-E)
-  const permissionStore = new PermissionStore();
-  registerPermissionStoreHandlers(permissionStore);
+  // --- 12. Chat Edit handlers ---
+  track("registerChatEditHandlers", () => {
+    const fileService = new FileService();
+    const contextBuilder = new ContextBuilder();
+    const stubLLMAdapter = {
+      sendMessage: async () => ({
+        success: false,
+        error: { message: "LLM adapter not configured for chat-edit" },
+      }),
+    };
+    const chatEditService = new ChatEditService(stubLLMAdapter, contextBuilder);
+    registerChatEditHandlers(mainWindow, chatEditService, fileService);
+  });
 
-  // Register Auth Mode handlers (TASK-AUTH-MODE-SELECTION-001)
-  registerAuthKeyHandlers(mainWindow, authKeyService);
-  const authModeService = createAuthModeService(authKeyService);
-  registerAuthModeHandlers(mainWindow, authModeService);
+  // --- サマリーログ ---
+  if (failures.length > 0) {
+    console.error(
+      `[IPC] Handler registration completed with ${failures.length} failure(s): ${failures.map((f) => f.handlerName).join(", ")}`,
+    );
+  }
 
-  // Register Skill Creator handlers (TASK-9B-H)
-  const skillCreatorService = new SkillCreatorService();
-  registerSkillCreatorHandlers(mainWindow, skillCreatorService);
-
-  // Register Claude CLI handlers (for skill discovery via Claude CLI)
-  registerClaudeCliHandlers(mainWindow);
-
-  // Register Chat Edit handlers (TASK-WCE-MONACO-001)
-  // Note: ChatEditService requires an LLM adapter, using stub for now
-  // as the primary use case is get-selection which doesn't need LLM
-  const fileService = new FileService();
-  const contextBuilder = new ContextBuilder();
-  const stubLLMAdapter = {
-    sendMessage: async () => ({
-      success: false,
-      error: { message: "LLM adapter not configured for chat-edit" },
-    }),
+  return {
+    successCount,
+    failureCount: failures.length,
+    failures,
   };
-  const chatEditService = new ChatEditService(stubLLMAdapter, contextBuilder);
-  registerChatEditHandlers(mainWindow, chatEditService, fileService);
 }
 
 /**

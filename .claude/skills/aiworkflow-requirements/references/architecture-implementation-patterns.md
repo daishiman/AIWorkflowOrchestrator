@@ -3230,12 +3230,83 @@ expect(result).toEqual({
 | P50      | 既実装防御の発見（本パターンはP50該当で検証モード適用） |
 
 ---
+### S31: IPC ハンドラ Graceful Degradation パターン（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 2026-03-08実装）
 
+**問題**: `registerAllIpcHandlers()` 内の各 `registerXxxHandlers()` 呼び出しが1つでも例外を投げると、後続の全ハンドラが未登録のまま残り、アプリの大部分が機能しなくなる。
+
+**解決策**: 各ハンドラ登録を個別 try-catch で囲み、失敗を記録しつつ続行する。
+
+| ステップ | 処理内容                                | 成果物                                     |
+| -------- | --------------------------------------- | ------------------------------------------ |
+| 1        | `safeRegister(name, fn, failures)` で登録 | 成功: true / 失敗: false + failures に追加 |
+| 2        | `track(name, fn)` で成功カウント         | `successCount` インクリメント               |
+| 3        | 全グループ登録後に結果を返却             | `IpcHandlerRegistrationResult`              |
+
+**戻り値型**:
+
+```typescript
+interface HandlerRegistrationFailure {
+  handlerName: string;
+  errorMessage: string;
+  errorCode: number; // 4001 (Infrastructure Error)
+}
+
+interface IpcHandlerRegistrationResult {
+  successCount: number;
+  failureCount: number;
+  failures: HandlerRegistrationFailure[];
+}
+```
+
+**登録グループ分類**:
+
+| グループ       | 依存関係       | 例                                                     |
+| -------------- | -------------- | ------------------------------------------------------ |
+| 独立ハンドラ   | なし           | file, store, dashboard, graph, AI, theme, workspace 等 |
+| mainWindow依存 | BrowserWindow  | window, dialog                                         |
+| ThemeWatcher   | nativeTheme    | setupThemeWatcher（unsubscribe関数を保持）             |
+| Supabase条件分岐 | getSupabaseClient() | auth, profile, avatar（未設定時はfallback）       |
+| APIKey         | apiKeyStorage  | apiKeyHandlers                                         |
+| History        | DI生成         | history, historySearch, notification                   |
+| AgentExecution | mainWindow     | agentHandlers                                          |
+| AuthKey+Skill  | authKeyService | skill全系統 + authMode + claudeCli + permissionStore   |
+
+**設計上の注意**:
+- `setupThemeWatcher` は戻り値（unsubscribe関数）を保持する必要があるため、`safeRegister` ラッパーではなく個別の try-catch ブロックで処理する
+- エラーコードは `4001`（Infrastructure Error カテゴリ）を使用
+- ログ出力前にユーザーホーム配下パスを `~` へマスクし、ローカル環境依存情報の漏洩を防ぐ
+- 失敗したグループのチャンネルは未登録状態のまま残り、リクエスト到達時は `Error: No handler registered` でフェイルセキュア
+
+**適用基準**: Main Process の初期化で複数の独立したハンドラグループを登録する場面
+
+**関連パターン**: P5 リスナー二重登録防止、S22 AUTH IPC登録一元化
+
+#### 実装時の苦戦箇所
+
+| ID | 課題 | 解決策 | 再発防止 |
+|---|---|---|---|
+| S31-W1 | `setupThemeWatcher` は `safeRegister` パターンに適合しない。戻り値（unsubscribe 関数）をモジュールスコープ変数にキャプチャする必要がある | 個別 try-catch で囲み、戻り値を `themeWatcherUnsubscribe` に代入 | ハンドラ登録関数の設計時に「戻り値の要否」を明確にし、戻り値必要な場合は safeRegister ではなく個別 try-catch を使用 |
+| S31-W2 | `track()` クロージャの成功カウント管理。複数ハンドラの登録関数を個別にカウントするとカウント漏れが発生しやすい | `track()` 内部クロージャで `safeRegister` の結果を自動追跡し、`IpcHandlerRegistrationResult` として集約 | 複数の独立操作の成功/失敗を集約する場面ではクロージャパターンを適用 |
+| S31-W3 | エラーメッセージ中のパスに正規表現メタ文字が含まれる可能性。`os.homedir()` が返すパスをそのまま `new RegExp()` に渡すと予期しないマッチが発生する | `escapeRegExp()` でメタ文字をエスケープ後に `RegExp` 生成 | ログ出力にパスを含む場合は必ずサニタイズ処理を適用。NFR-02（プライバシー保護）準拠 |
+| S31-W4 | `unregisterAllIpcHandlers()` は変更不要。`ipcMain.removeHandler()` は未登録チャネルへの呼び出しでもエラーにならない | 解除側は現行のまま維持。登録側のみ Graceful Degradation を適用 | 登録/解除の対称性を維持しつつ、変更スコープを最小化 |
+
+#### テスト戦略
+
+| テスト観点 | テスト数 | ファイル | 手法 |
+|---|---|---|---|
+| 正常系（全成功） | 1 | `ipc-graceful-degradation.test.ts` | 全モック関数が成功 → `failureCount === 0` |
+| 異常系（部分失敗） | 5 | 同上 | 特定ハンドラモックを throw → `failures` に記録されることを検証 |
+| sanitize | 2 | 同上 | ホームディレクトリパスが `~` にマスクされることを検証 |
+| 再登録フロー | 1 | 同上 | `unregisterAll → registerAll` の連続実行で成功 |
+| 合計 | 19 | 同上 | 全PASS |
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化                                                                               |
+| v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |
+| v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化 |
 | v1.39.0 | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: S29 Renderer境界providers正規化パターン追加（4層防御: API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新、Main側配列正規化補足）                                                                                          |
 | v1.38.0 | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: S27 Renderer境界5層防御パターン追加（L1-L5防御層、type predicate in演算子推奨、完全コード例）、S28 Mainハンドラ間接テストパターン追加（ipcMain.handleモック経由のコールバック直接呼び出し）                                                             |
 | v1.37.0 | 2026-03-07 | TASK-10A-F: 直接IPC→Store個別セレクタ移行パターン追加（S26: 移行チェックリスト7ステップ、テストmock標準パターン、状態分類判断基準、P31/P48適用判定）                                                                                                                                                    |

@@ -139,7 +139,7 @@
 | スクリプト | 用途 | コマンド |
 | ---------- | ---- | -------- |
 | `init-artifacts.js` | ワークフロー初期化 | `node scripts/init-artifacts.js --workflow {{PATH}}` |
-| `validate-phase-output.js` | 出力検証 | `node scripts/validate-phase-output.js {{PATH}} --phase {{N}}` |
+| `validate-phase-output.js` | 出力検証 | `node scripts/validate-phase-output.js {{PATH}}` |
 
 ```bash
 # ワークフロー初期化（ディレクトリ作成 + artifacts.json生成）

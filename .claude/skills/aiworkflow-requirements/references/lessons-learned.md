@@ -20,11 +20,14 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-08 | 1.29.52 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 の実装教訓を追加。`safeRegister` パターンと戻り値必要ハンドラの使い分け、`track()` クロージャによる成功カウント管理、`sanitizeRegistrationErrorMessage` のパスマスク、既存テスト失敗との分離手法を苦戦箇所として整理し、5ステップの再利用手順を標準化 |
+| 2026-03-08 | 1.29.51 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査の教訓を追加。Phase 1 正本と outputs の FR ドリフト、Phase 11 の TC/証跡不足、`validate-phase-output` の引数誤用、`artifacts.json` / `index.md` stale を同時是正し、4ステップの再監査手順を標準化 |
 | 2026-03-08 | 1.29.50 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
 | 2026-03-08 | 1.29.49 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-08 | 1.29.48 | TASK-10A-F Phase 12 タスク仕様再確認の教訓を追補。comparison baseline を validator PASS に揃えずに branch 判定すると結論がぶれる点と、未タスク current/baseline の二層報告を system spec / workflow outputs / skill files に同時同期する必要を追加 |
 | 2026-03-08 | 1.29.47 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の再監査教訓を追補。Phase 11証跡表ヘッダ不一致による validator 失敗と、screenshot 再取得時の Rollup optional dependency 欠落を苦戦箇所として追加し、preflight + 機械検証の標準手順を固定 |
 | 2026-03-07 | 1.29.46 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |
+| 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
@@ -259,6 +262,46 @@
 | 2026-02-11 | 1.0.0 | 初版作成（TASK-FIX-7-1 苦戦箇所記録） |
 
 ---
+
+## TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08）
+
+### 苦戦箇所: Phase 1 正本と outputs の FR がずれていると、未タスク判定まで連鎖して壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-1-requirements.md` では FR-04 が unregister 安全性なのに、`outputs/phase-1/requirements-definition.md` では成功ログ要件へ変質していた |
+| 影響 | Phase 10 の MINOR 判定、未タスク起票、Phase 12 レポート、security spec の残課題リンクまで誤誘導された |
+| 解決策 | Phase 1 正本を基準に outputs/Phase 10/Phase 12/system spec を再同期し、success log 候補は close、ログサニタイズだけを親タスク内で解消した |
+| 標準ルール | 仕様ずれを見つけたら、要件正本 → レビュー結果 → 未タスク → system spec の順で連鎖確認する |
+
+### 苦戦箇所: ユーザーが画面検証を要求したのに Phase 11 が CLI代替検証のまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` がなく、`manual-test-result.md` も `TC-ID + 証跡` 形式でなかった |
+| 影響 | `validate-phase11-screenshot-coverage` が失敗し、画面検証要求に対して実証跡を返せなかった |
+| 解決策 | current workflow 配下へ専用 screenshot script を追加し、Dashboard / Settings / Skill Center の代表 surface 3件を再取得した |
+| 標準ルール | 画面検証要求がある場合、UI差分の有無に関わらず `TC-ID + SCREENSHOT + S-1〜S-4` を current workflow 配下へ残す |
+
+### 苦戦箇所: `validate-phase-output` の呼び方がテンプレートと正本でずれていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `references/commands.md` は位置引数指定なのに、テンプレートと一部 task doc は `--phase 12` を付けた誤った例を残していた |
+| 影響 | branch横断監査表や task doc に誤検証の前提が残り、実態と違う FAIL 記録が残った |
+| 解決策 | task-specification-creator の template / agent / phase-template を canonical call に統一し、current task と task-workflow の現行表記も修正した |
+| 標準ルール | 検証コマンドは `references/commands.md` を唯一の正本とし、テンプレート側の例も同一ターンで更新する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. 要件正本と outputs の FR/AC/NFR を最初に突合し、ドリフトを先に潰す。
+2. Phase 11 は `TC-ID` / `画面カバレッジマトリクス` / `manual-test-result` / `screenshots/` の4点を current workflow 配下へ揃える。
+3. `artifacts.json` / `index.md` / Phase 12 changelog を同一ターンで同期する。
+4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を連続実行し、結果を system spec へ反映する。
+
+---
+
+## TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07）
 
 ## 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08）
 
@@ -5955,3 +5998,78 @@ async function safeInvokeUnwrap<T>(
 - `references/security-electron-ipc.md`: apiKeyAPI セクション追加
 - `references/ui-ux-settings.md`: ApiKeysSection 異常系表示仕様
 - `.claude/rules/06-known-pitfalls.md`: P49 候補（type predicate の `as` vs `in`）
+
+## persist iterable ハードニングでの教訓（2026-03-08）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `viewHistory` / `expandedFolders` を永続化データとして信頼しすぎると、復元時に iterable 例外で画面遷移が停止する |
+| 再発条件 | `Array.isArray` / `instanceof Set` の境界検証をせずに spread / `new Set(raw)` を実行する |
+| 対処 | hydrate と action の両方で防御し、非期待型は空配列/空Setへフォールバックする |
+| 標準ルール | UI変更が小さくても、ユーザーが画面検証を要求した場合は Phase 11 のスクリーンショット証跡を必須にする |
+
+### 5分解決カード
+
+1. 破損 persist を localStorage に注入して再現する。
+2. hydrate 側（復元）で型ガード + フォールバックを入れる。
+3. action 側（更新）でも同じガードを入れて二重防御にする。
+4. 破損ケースのユニットテストを固定する。
+5. Phase 11 の TC-ID とスクリーンショットを `manual-test-result.md` に同期する。
+
+## TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓
+
+### 実装内容サマリー
+
+`registerAllIpcHandlers()` の個別ハンドラ登録が例外を投げた場合でも、後続のハンドラ登録を継続する Graceful Degradation パターンを導入。`safeRegister()` 内部ヘルパーで個別 try-catch を行い、失敗情報を `IpcHandlerRegistrationResult` として構造化して返却する。
+
+| 変更ファイル | 変更内容 |
+|---|---|
+| `apps/desktop/src/main/ipc/index.ts` | `safeRegister()`, `sanitizeRegistrationErrorMessage()`, `track()` 追加。戻り値を `IpcHandlerRegistrationResult` に変更 |
+| `apps/desktop/src/main/ipc/__tests__/ipc-graceful-degradation.test.ts` | 19テスト新規作成（全PASS） |
+
+### 苦戦箇所
+
+#### S-GD-1: setupThemeWatcher が safeRegister パターンに適合しない
+
+- **再発条件**: ハンドラ登録関数の戻り値（unsubscribe function 等）をモジュールスコープ変数に保持する必要がある場合
+- **症状**: `safeRegister()` は戻り値を破棄するため、`setupThemeWatcher` の unsubscribe 関数をキャプチャできない
+- **解決策**: `setupThemeWatcher` は個別の try-catch で囲み、戻り値を `themeWatcherUnsubscribe` に代入する。`safeRegister` との使い分けを設計書で明示する
+- **再利用**: 戻り値が必要なハンドラ登録は `safeRegister` ではなく個別 try-catch を使用する。設計時に戻り値の要否を明確にする
+
+#### S-GD-2: track() クロージャの成功カウント管理
+
+- **再発条件**: 複数のハンドラを一括で登録する関数（例: `registerSkillHandlers` 1関数で複数チャネルを登録）の成功カウント
+- **症状**: `safeRegister` 呼び出し元で成功数を手動管理するとカウント漏れが発生しやすい
+- **解決策**: `track()` 内部クロージャで `safeRegister` の成功/失敗を自動追跡し、最終的に `IpcHandlerRegistrationResult` として集約する
+- **再利用**: 複数の独立操作の成功/失敗を集約する場合、クロージャで状態を閉じ込めるパターンを適用する
+
+#### S-GD-3: sanitizeRegistrationErrorMessage でのパスマスク
+
+- **再発条件**: エラーメッセージにユーザーのホームディレクトリパスが含まれる場合（NFR-02 プライバシー保護）
+- **症状**: `os.homedir()` が `/Users/username` を返すが、エラーメッセージ中のパスは正規表現のメタ文字を含む可能性がある
+- **解決策**: `escapeRegExp()` でホームディレクトリパスをエスケープしてから `RegExp` で置換。`~` にマスクする
+- **再利用**: ログ出力にファイルパスが含まれる場合は必ず `sanitize` 処理を適用する。P20（テスト環境ログ汚染）と組み合わせて運用する
+
+#### S-GD-4: agentHandlers.test.ts の既存テスト失敗との分離
+
+- **再発条件**: IPC テストスイート全体実行時に、変更と無関係なテストファイルが Vite 依存解決エラーで失敗する
+- **症状**: `agentHandlers.test.ts` の 16 テストが `resolvePackageEntry` エラーで失敗。Graceful Degradation 変更とは無関係
+- **解決策**: 変更対象のテストファイルを `--testPathPattern` で絞って実行し、無関係な失敗を分離する。全体テスト失敗はベースブランチでも再現することを確認し、変更起因でないことを証明する
+- **再利用**: IPC テスト追加時は対象テストファイルのみを先に実行し、全体テスト失敗との混同を避ける
+
+### 同種課題向け再利用手順
+
+1. **設計時**: 各ハンドラ登録関数の「戻り値の要否」と「失敗時の影響範囲」を明確にする
+2. **実装時**: 戻り値不要 → `safeRegister`、戻り値必要 → 個別 try-catch の使い分けを適用
+3. **テスト時**: `vi.hoisted()` でモック変数を宣言し、30+ のハンドラ登録関数を網羅的にモック化
+4. **検証時**: 対象テストファイルのみを先に実行し、既存テスト失敗との混同を回避
+5. **ログ検証**: `sanitizeRegistrationErrorMessage` のパスマスク動作を専用テスト（T-18相当）で確認
+
+### 関連未タスク（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 から派生）
+
+| タスクID | 概要 | 優先度 | 指示書パス |
+|---|---|---|---|
+| UT-FIX-AGENT-HANDLERS-VITE-RESOLVE-001 | agentHandlers.test.ts 16テスト失敗（Vite resolvePackageEntry エラー）修正 | 高 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-fix-agent-handlers-vite-resolve.md` |
+| UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
+| UT-IMP-WORKFLOW-STALE-VALIDATOR-001 | index.md / artifacts.json / phase-*.md stale 状態一括検出バリデータ | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-workflow-stale-validator.md` |
+| UT-IMP-SKILL-CONFLICT-MARKER-LINT-001 | SKILL.md / LOGS.md conflict marker 検出 lint | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-skill-conflict-marker-lint.md` |

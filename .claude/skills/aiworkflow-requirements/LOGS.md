@@ -5,6 +5,44 @@
 
 ---
 
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所記録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`
+- 目的: Graceful Degradation 実装時の苦戦箇所を system spec 正本へ記録し、同種課題の簡潔な解決に役立てる
+
+### 実施内容
+- `references/lessons-learned.md` に教訓セクション（S-GD-1〜S-GD-4）を追加
+- `references/api-ipc-system.md` に Graceful Degradation 実装パターン詳細を追記
+- `references/architecture-implementation-patterns.md` に S31 として苦戦箇所テーブルとテスト戦略を追記
+- `references/security-electron-ipc.md` にセキュリティ観点の苦戦箇所（SEC-GD-1〜SEC-GD-3）を追記
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+### 結果
+- ステータス: success
+
+---
+
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`
+- 目的: `registerAllIpcHandlers()` の Graceful Degradation 実装を system spec 正本へ反映
+
+### 実施内容
+- `references/api-ipc-system.md` に Graceful Degradation の登録契約（`safeRegister` / `IpcHandlerRegistrationResult`）を追記し、実装状況テーブルを更新
+- `references/task-workflow.md` に完了タスクセクションを追加
+- `references/architecture-implementation-patterns.md` に S31 IPC ハンドラ Graceful Degradation パターンを追加
+- `references/security-electron-ipc.md` の IPC ハンドラライフサイクル管理セクションに Graceful Degradation 戻り値契約を追記
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+### 結果
+- ステータス: success
+
+---
+
 ## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12 実績同期と教訓追加
 
 ### コンテキスト
