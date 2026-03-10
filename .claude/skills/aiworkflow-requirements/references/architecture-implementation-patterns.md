@@ -3364,8 +3364,60 @@ executeSkill: async (prompt) => {
 - **テストパターン**: `flushMicrotasks()` で preflight await を通過させ、`isExecuting=true` 到達後にガードをテスト
 - **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
 
+### S33: 3層テストアーキテクチャパターン（TASK-10A-G）
+
+IPC ハンドラ + Store アクション + UI コンポーネントの3層にまたがる機能のテスト構造パターン。障害切り分けの明確化と並列テスト開発を可能にする。
+
+**適用条件**: Main Process → Preload → Renderer の3プロセスにまたがるフィーチャーのテスト強化
+
+| 層 | スコープ | テスト粒度 | モック戦略 | 並列性 |
+| --- | --- | --- | --- | --- |
+| G1 (IPC契約) | Main handler | handler capture | SkillService, validateIpcSender | G2と並列可 |
+| G2 (Store統合) | Zustand action + Preload | renderHook + Store直接操作 | window.electronAPI | G1と並列可 |
+| G3 (UI結線) | Component toggle/visibility | render + fireEvent | Store state + Preload | G1/G2完了後 |
+
+**障害切り分け順序**: G1 → G2 → G3（Main → Store → UI の順で確認）
+
+**カバレッジ戦略**:
+- G1: handler-scope coverage（対象 handler の行範囲のみ。P41 exemption: Function Coverage はインライン関数カウントで 0% になり得るため Line/Branch を主判定）
+- G2: targeted coverage（Store アクションのバリデーション分岐 + API ガード分岐を網羅）
+- G3: 結線確認（toggle/visibility/disable の3観点。カバレッジは補助指標）
+
+**2段階テスト設計**:
+1. Phase 4: 正常系テスト中心（G2: CL/LA/AI/SD 各3件 = 12件）
+2. Phase 6: カバレッジ不足分岐の追加（G2: VAL 6件 + GUARD 3件 = 9件追加）
+
+**関連 Pitfall**: P9（テスト間リーク）, P39（fireEvent）, P40（実行ディレクトリ）, P41（v8 Function Coverage）, P42（trim バリデーション）
+
+**関連タスク**: TASK-10A-G
+
+### S34: テスト専用タスクの Phase 4-5 統合パターン（TASK-10A-G）
+
+プロダクションコードの変更を伴わないテスト専用タスクでは、Phase 4（テスト作成）と Phase 5（実装）の境界が曖昧になる。既存実装に対するテスト仕様の補強では、Phase 4 で Red テストを書いても既存実装で Green になるケースが多発する。
+
+**適用条件**:
+- 新規機能実装ではなく、既存実装のテスト補強
+- プロダクションコードの変更がゼロまたは最小限
+
+**運用ルール**:
+
+| 従来（実装タスク） | テスト専用タスク |
+| --- | --- |
+| Phase 4: Red テスト作成 | Phase 4: テスト作成（Red/Green 混在許容） |
+| Phase 5: Green にする実装 | Phase 5: テスト修正のみ（mock 調整等） |
+| Red → Green が明確 | 即 Green のテストも正当 |
+
+**Phase 5 で行うこと**:
+1. モック設定の微調整（型不整合、戻り値の形式修正）
+2. テスト間の状態リーク修正（P9 対策）
+3. 非同期テストのタイミング調整（act + vi.waitFor）
+
+**判断基準**: Phase 4 終了時点で全テストが Green なら Phase 5 は「確認のみ」として最小限の作業で完了とする。Phase 4 で一部 Red の場合のみ Phase 5 で修正を行う。
+
+**関連タスク**: TASK-10A-G
+
 ---
-### S33: Preload invoke timeout + timer cleanup パターン
+### S35: Preload invoke timeout + timer cleanup パターン
 
 - **課題**: `ipcRenderer.invoke()` をそのまま返す `safeInvoke` は、Main 側ハンドラが応答しない場合に Promise が永続 pending となり、Auth 初期化や preload API 呼び出しが全体停滞する。
 - **解決策**: `invokeWithTimeout<T>()` に timeout 契約を集約し、allowlist fail-fast、`setTimeout` による timeout、成功/失敗双方での `clearTimeout(timeoutId)` cleanup を 1 箇所で維持する。
@@ -3435,7 +3487,8 @@ export function invokeWithTimeout<T>(
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| v1.43.0 | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001: S33 Preload invoke timeout + timer cleanup パターンを追加。`invokeWithTimeout()` の fail-fast / timeout / `clearTimeout` cleanup / screenshot 検証 / Phase 12 planned wording 排除を標準化 |
+| v1.43.0 | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001: S35 Preload invoke timeout + timer cleanup パターンを追加。`invokeWithTimeout()` の fail-fast / timeout / `clearTimeout` cleanup / screenshot 検証 / Phase 12 planned wording 排除を標準化 |
+| v1.44.0 | 2026-03-10 | TASK-10A-G: S33 3層テストアーキテクチャパターン追加（G1/G2/G3の障害切り分け・並列性・カバレッジ戦略・2段階テスト設計）、S34 テスト専用タスクのPhase 4-5統合パターン追加（Red/Green混在許容・Phase 5判断基準） |
 | v1.42.0 | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001: S32 executeSkill並行実行ガードパターンを追加。async操作前の同期的isExecutingチェックによるmicrotask境界前ガード、flushMicrotasksテストパターンを標準化 |
 | v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
 | v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |

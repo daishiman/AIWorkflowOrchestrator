@@ -1,0 +1,301 @@
+{
+  "taskId": "TASK-10A-G",
+  "title": "スキルライフサイクル統合テスト強化",
+  "createdAt": "2026-03-10",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-1/requirements-analysis.md",
+          "type": "document",
+          "operation": "create",
+          "description": "既存実装調査結果・FR/NFR/AC検証可能性確認"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-2/design-verification.md",
+          "type": "document",
+          "operation": "create",
+          "description": "テストアーキテクチャ設計検証・モック構成妥当性確認"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-3/design-review-result.md",
+          "type": "document",
+          "operation": "create",
+          "description": "設計レビュー結果（MINOR判定）・Phase 4申し送り事項"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "apps/desktop/src/main/ipc/__tests__/skillHandlers.create.test.ts",
+          "type": "test",
+          "operation": "create",
+          "description": "Main IPC skill:create 契約テスト（G1: 14テストケース）"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx",
+          "type": "test",
+          "operation": "create",
+          "description": "Store駆動ライフサイクル統合テスト（G2: 21テストケース、Phase 6で9件拡充）"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx",
+          "type": "test",
+          "operation": "modify",
+          "description": "既存テスト整合修正（G3: 5テストケース追加、既存12件含む計17件）"
+        },
+        {
+          "path": "outputs/phase-4/g1-test-result.md",
+          "type": "document",
+          "operation": "create",
+          "description": "G1テスト実行結果レポート"
+        },
+        {
+          "path": "outputs/phase-4/g2-test-result.md",
+          "type": "document",
+          "operation": "create",
+          "description": "G2テスト実行結果レポート"
+        },
+        {
+          "path": "outputs/phase-4/g3-test-result.md",
+          "type": "document",
+          "operation": "create",
+          "description": "G3テスト実行結果レポート"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-5/g1-g2-g3-green-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "G1/G2/G3全体Green化レポート"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-6/coverage-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "カバレッジ測定結果・ギャップ分析・9件追加テスト"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-7/coverage-final-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "最終カバレッジレポート"
+        },
+        {
+          "path": "outputs/phase-7/gate-decision.md",
+          "type": "document",
+          "operation": "create",
+          "description": "PASS判定と根拠"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-8/refactoring-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "リファクタリング実施内容・ヘルパー抽出・テスト数不変確認"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "file": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-9/quality-verification-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "QG-1〜QG-7全PASS品質検証レポート"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-10/final-review-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "6観点レビュー結果・総合判定PASS"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document",
+          "operation": "create",
+          "description": "targeted suite・代表UI 5ケース・責務境界レビューの総合判定PASS"
+        },
+        {
+          "path": "outputs/phase-11/test-run-log.txt",
+          "type": "document",
+          "operation": "create",
+          "description": "テスト実行ログ要約"
+        },
+        {
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "type": "document",
+          "operation": "create",
+          "description": "画面証跡TCとpng対応の撮影計画"
+        },
+        {
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "type": "document",
+          "operation": "create",
+          "description": "visual TC 5件のカバレッジ 100% レポート"
+        },
+        {
+          "path": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+          "type": "document",
+          "operation": "create",
+          "description": "route / viewport / capturedAt を記録した撮影メタデータ"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document",
+          "operation": "create",
+          "description": "実装ガイド（Part 1: 中学生レベル概念説明 + Part 2: 開発者向け）"
+        },
+        {
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "type": "document",
+          "operation": "create",
+          "description": "仕様更新サマリー（Step 1-A〜Step 2 の結果要約）"
+        },
+        {
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document",
+          "operation": "create",
+          "description": "ドキュメント変更ログ"
+        },
+        {
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document",
+          "operation": "create",
+          "description": "未タスク検出レポート（0件）"
+        },
+        {
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document",
+          "operation": "create",
+          "description": "スキル改善提案（改善不要・次回再利用知見5件）"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "pending",
+      "note": "ユーザー明示許可待ち。コミット・PR作成は行わない。"
+    }
+  },
+  "testCases": {
+    "total": 52,
+    "note": "初期設計31件 + Phase 6拡充21件（G2にVAL:6件+GUARD:3件追加）",
+    "breakdown": {
+      "G1_MainIPC": {
+        "count": 14,
+        "categories": {
+          "VAL": 6,
+          "DEL": 3,
+          "ERR": 3,
+          "SEC": 2
+        }
+      },
+      "G2_RendererIntegration": {
+        "count": 21,
+        "categories": {
+          "CL": 3,
+          "LA": 3,
+          "AI": 3,
+          "SD": 3,
+          "VAL": 6,
+          "GUARD": 3
+        }
+      },
+      "G3_ExistingTestAlignment": {
+        "count": 17,
+        "note": "既存12件 + 追加5件",
+        "categories": {
+          "INT": 3,
+          "ISO": 2,
+          "existing": 12
+        }
+      }
+    }
+  },
+  "qualityGates": {
+    "QG-1": { "name": "TypeScript型チェック", "result": "PASS" },
+    "QG-2": { "name": "ESLint", "result": "PASS" },
+    "QG-3": { "name": "G1テスト（14件全PASS）", "result": "PASS" },
+    "QG-4": { "name": "G2テスト（21件全PASS）", "result": "PASS" },
+    "QG-5": { "name": "G3テスト（17件全PASS）", "result": "PASS" },
+    "QG-6": { "name": "回帰テスト（既存テスト全PASS）", "result": "PASS" },
+    "QG-7": { "name": "カバレッジ基準充足", "result": "PASS" }
+  },
+  "pitfallMitigations": ["P9", "P13", "P31", "P39", "P40", "P41", "P42", "P48"],
+  "finalReview": "PASS",
+  "manualTest": "PASS"
+}

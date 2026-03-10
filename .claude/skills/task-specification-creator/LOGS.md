@@ -20,6 +20,19 @@
   - `.claude/skills/...` 正本 5件 + `SKILL.md` / `LOGS.md` 4件を同一ターンで更新し、未タスク `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` を formalize
 
 ---
+
+## 2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見をスキルに反映
+
+- **Agent**: task-specification-creator (skill-improvement)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-templates.md` に「テスト専用タスク向け Phase 4-5 統合ルール」セクションを追加（3層テストパターン、Red/Green混在許容、2段階テスト設計）
+  - `references/coverage-standards.md` に P41 Exemption ルール（v8 Function Coverage特例）、2段階テスト設計パターン、handler-scope vs file-scope カバレッジ使い分けを追加
+  - `references/phase-11-12-guide.md` に Phase 12 サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）と3層テストパターン再利用ガイドを追加
+  - 知見の出典: TASK-10A-G（G1: 14件、G2: 21件、G3: 17件、計52件テスト全PASS）
+
+---
 ## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装完了
 
 - **Agent**: task-specification-creator
@@ -5771,7 +5784,7 @@ if (artifactPath) {
 - **Notes**:
   - Layer 1/2/3 の 3 ファイル 55 tests（25/14/16）と representative screenshots を Phase 11-12 成果物へ同期
   - `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を集約
-  - workflow を `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ移管し、関連 backlog も同 workflow 配下 `unassigned-task/` へ移した
+- provisional に completed workflow 化を想定したが、この branch では `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/` を canonical workflow として維持した
   - `audit-unassigned-tasks.js` を completed workflow 配下の `--target-file` 監査へ対応
 
 ---
@@ -5788,4 +5801,19 @@ if (artifactPath) {
   - `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加、Settings bypass セキュリティ記録
   - `arch-state-management.md` に AUTH_TIMEOUT_MS = 10_000 タイムアウト機構記録
   - `ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-10 - TASK-10A-G
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）
+  - カバレッジ基準充足、回帰287件PASS
+  - `arch-state-management.md` 関連タスクステータスを「完了（2026-03-10）」に更新
+  - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
+  - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

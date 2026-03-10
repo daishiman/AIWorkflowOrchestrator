@@ -4,15 +4,19 @@ import type {
   SkillMetadata,
   SkillStreamMessage,
 } from "@repo/shared";
-import { toSkillId, toSkillName, type Skill } from "@repo/shared/types/skill";
+import type { Skill } from "@repo/shared/types/skill";
 import ChatPanel from "../components/chat/ChatPanel";
 import { useAppStore } from "../store";
 import { AgentExecutionView } from "./AgentExecutionView";
 import { AgentView } from "./AgentView";
 
+const toMockSkillId = (value: string): Skill["id"] => value as Skill["id"];
+const toMockSkillName = (value: string): Skill["name"] =>
+  value as Skill["name"];
+
 const DEMO_SKILL = {
-  id: toSkillId("demo-skill-id"),
-  name: toSkillName("demo-skill"),
+  id: toMockSkillId("demo-skill-id"),
+  name: toMockSkillName("demo-skill"),
   slug: "demo-skill",
   description: "並行実行ガード検証用のデモスキル",
   path: "/mock/demo-skill",

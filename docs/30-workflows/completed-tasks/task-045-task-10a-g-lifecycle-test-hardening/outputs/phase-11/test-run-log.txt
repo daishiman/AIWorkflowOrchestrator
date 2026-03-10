@@ -1,0 +1,71 @@
+======================================================================
+TASK-10A-G Phase 11: テスト実行ログ要約
+実施日: 2026-03-10
+環境: macOS Darwin 24.6.0, Node.js, Vitest 2.1.9
+======================================================================
+
+----------------------------------------------------------------------
+[1] G1/G2/G3 統合テスト実行
+----------------------------------------------------------------------
+コマンド:
+  cd apps/desktop && pnpm vitest run \
+    src/main/ipc/__tests__/skillHandlers.create.test.ts \
+    src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx \
+    src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx
+
+結果:
+  Test Files  3 passed (3)
+       Tests  52 passed (52)
+    Start at  11:15:27
+    Duration  4.73s (transform 343ms, setup 781ms, collect 378ms, tests 672ms, environment 715ms, prepare 333ms)
+
+内訳:
+  - skillHandlers.create.test.ts:              14 tests PASS (599ms)
+  - SkillLifecycle.integration.test.tsx:       21 tests PASS (34ms)
+  - ChatPanel.skill-management.test.tsx:       17 tests PASS (39ms)
+
+stderr (情報のみ、エラーではない):
+  - [PermissionStore] Invalid schema, resetting to defaults (x14回, MockElectronStore初期化)
+  - [skillHandlers] skill:create failed: Error: ... (x3回, エラー系テストG1-ERR-1/2/3の意図的出力)
+
+----------------------------------------------------------------------
+[2] 回帰テスト: skillHandlers 関連
+----------------------------------------------------------------------
+コマンド:
+  cd apps/desktop && pnpm vitest run \
+    src/main/ipc/__tests__/skillHandlers.test.ts \
+    src/main/ipc/__tests__/skillHandlers.contract.test.ts \
+    src/main/ipc/__tests__/skillHandlers.validation.test.ts
+
+結果:
+  Test Files  3 passed (3)
+       Tests  185 passed (185)
+    Start at  11:16:46
+    Duration  4.46s
+
+内訳:
+  - skillHandlers.test.ts:              77 tests PASS
+  - skillHandlers.contract.test.ts:     54 tests PASS
+  - skillHandlers.validation.test.ts:   54 tests PASS
+
+----------------------------------------------------------------------
+[3] 回帰テスト: agentSlice skill-lifecycle
+----------------------------------------------------------------------
+コマンド:
+  cd apps/desktop && pnpm vitest run \
+    src/renderer/store/slices/__tests__/agentSlice.skill-lifecycle.test.ts
+
+結果:
+  Test Files  1 passed (1)
+       Tests  50 passed (50)
+    Start at  11:17:15
+    Duration  753ms
+
+----------------------------------------------------------------------
+[SUMMARY]
+----------------------------------------------------------------------
+Total Test Files: 7 passed (7)
+Total Tests:      287 passed (287), 0 failed
+Total Duration:   ~10s
+
+判定: 全テスト PASS, 回帰なし

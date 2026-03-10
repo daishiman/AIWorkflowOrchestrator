@@ -132,6 +132,54 @@
 
 ## 完了タスク
 
+### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-10A-G |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | test |
+| 優先度 | 中 |
+| 完了日 | 2026-03-10 |
+| 対象 | スキルライフサイクル3層テスト（IPC契約 / Store駆動 / ChatPanel結線） |
+| 成果物 | `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/outputs/` |
+
+#### 実施内容
+
+- G1: IPC契約テスト14件（`skill:create` の入力検証・sender検証・正常委譲・異常系）
+- G2: Store駆動テスト21件（`create -> list -> analyze -> improve` の状態遷移・guard・trim バリデーション）
+- G3: ChatPanel結線テスト17件（スキル管理トグル、実行中 disabled、SkillManagementPanel 切替の統合フロー）
+- 合計52テスト全PASS、カバレッジ基準充足、回帰287件PASS
+- Phase 11 では代表 UI 5ケースの screenshot を current workflow 配下へ追加し、`validate-phase11-screenshot-coverage` PASS まで確認
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| テスト専用タスクで Phase 4/5 の境界が曖昧 | テストコードのみ追加するタスクで Red/Green 区分が不明確 | Phase 4 でテスト作成（Red）→ Phase 5 でモック/スタブ修正（Green）と整理 |
+| 巨大ファイルのカバレッジ計測が個別ファイル単位と全体で乖離 | v8 プロバイダが大規模ファイルをインライン関数単位でカウント | Layer 別にカバレッジを報告し、全体値は weighted average として扱う |
+| 3層テスト間のモック整合性 | Layer 1 のモックと Layer 2 のストア実装が異なる前提で動作 | 各 Layer のモック境界を明示的にドキュメント化 |
+
+#### 同種課題の5分解決カード
+
+1. テスト専用タスクでは Phase 4 = テスト作成（Red）、Phase 5 = モック/環境修正（Green）と読み替える。
+2. カバレッジは Layer 別に計測し、全体値との乖離を仕様書に明記する。
+3. `--sequence.shuffle` でテスト順序依存がないことを確認する。
+4. `task-workflow.md` / `lessons-learned.md` / 関連 domain spec を同一ターンで更新する。
+
+#### 関連未タスク（再監査追補）
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-TASK-SPEC-GENERATE-INDEX-SCHEMA-COMPAT-001 | `generate-index.js` と workflow `artifacts.json` の schema 互換改善 | 中 | `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/unassigned-task/task-imp-task-spec-generate-index-schema-compat-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run` (回帰テスト) | 287 PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
+
 ### タスク: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 App.tsx debug storage clear 削除（2026-03-09）
 
 | 項目 | 値 |
@@ -3880,6 +3928,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.38** | **2026-03-10** | **TASK-10A-G 完了同期**: スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）。`arch-state-management.md` 関連タスクステータス更新、`ui-ux-feature-components.md` 確認、LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **1.67.37** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を同期**: `App.tsx` の debug storage clear / forced reload 除去、Phase 11 screenshot 3件 + metadata 検証、repo-wide cleanup 未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` の登録、system spec / skill 文書同期を完了台帳と残課題へ反映 |
 | **1.67.36** | **2026-03-09** | **TASK-10A-F Phase 12 再同期を追補**: completed workflow `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/` に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再同期した実装内容を台帳化。苦戦箇所として P53 placeholder 残置、implementation-guide literal 見出し不足、未タスク current/baseline と legacy directory 健全性の混同を追記し、新規未タスク 0件・既存後続 TASK-10A-G 集約・legacy remediation task 継続を明記 |
 | **1.67.33** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を登録**: `aiworkflow-requirements` の `quick_validate` warning 145件を「SKILL.md 全列挙」で雑に解消せず、`SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の入口設計と validator 判定を両立させる未タスクを残課題テーブルへ追加。苦戦箇所と再利用方針を `lessons-learned.md` / `SKILL.md` / `LOGS.md` へ同期 |
