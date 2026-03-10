@@ -97,6 +97,37 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ---
 
+## Workspace File Watch IPC API（TASK-UI-04A）
+
+### 概要
+
+workspace layout 04A では、selected file の preview と status bar を最新化するために file watch IPC を使う。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/fileHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+### チャンネル一覧
+
+| チャネル | 方向 | 用途 | Payload |
+| --- | --- | --- | --- |
+| `file:watch-start` | Renderer → Main | selected file の監視開始 | `{ watchPath: string }` |
+| `file:watch-stop` | Renderer → Main | watch 停止 | `watchId: string` |
+| `file:changed` | Main → Renderer | file change 通知 | `{ watchId, eventType, filePath, timestamp }` |
+
+### 運用契約
+
+| 項目 | 契約 |
+| --- | --- |
+| watch scope | selected file のみ |
+| watch start response | `{ success: boolean, watchId?: string, error?: string }` |
+| push 受信後 | Renderer は path 一致時のみ `file.read` を再実行 |
+| cleanup | file switch / unmount で `file:watch-stop` を必ず実行 |
+
+---
+
 ## Electron IPC API設計
 
 デスクトップアプリでは、Renderer Process と Main Process 間の通信に IPC（Inter-Process Communication）を使用する。
@@ -570,6 +601,7 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                  |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.2     | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `file:watch-start` / `file:watch-stop` / `file:changed` の workspace file watch API を追加し、selected file 単位の watch 契約と cleanup 条件を明文化 |
 | v1.8.1     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 追補: 完了タスク節へ「Graceful Degradation 実装パターン詳細」（型定義・内部ヘルパー関数・ハンドラグループ登録パターン）と「実装時の苦戦箇所と再発防止」を追加 |
 | v1.8.0     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: `registerAllIpcHandlers` の Graceful Degradation（`safeRegister` + `IpcHandlerRegistrationResult` 戻り値）を実装状況テーブル・関連タスク・完了タスクへ追加 |
 | v1.7.0     | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 仕様拡充: `apiKey:list` レスポンス詳細（IPCResponse/ProviderStatus 構造）、Main側バリデーション（GAP-05）、Renderer側 normalizeProviders（P49準拠）を追記。完了タスク日付を 2026-03-08 に更新 |

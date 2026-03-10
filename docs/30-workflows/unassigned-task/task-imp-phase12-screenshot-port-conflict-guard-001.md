@@ -3,8 +3,8 @@
 ## メタ情報
 
 ```yaml
-issue_number: 972
-task_id: UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001
+issue_number:
+1142
 task_name: Phase 12 スクリーンショット実行時ポート競合ガード
 category: 改善
 target_feature: Phase 11/12 UI証跡再取得運用（apps/desktop scripts）

@@ -47,6 +47,18 @@
   - UI再監査で見つかった light theme 所見を design system 未タスクへ formalize する導線を再利用可能な形で残した
 
 ---
+## [2026-03-10 - TASK-UI-04A Workspace UI 再監査パターンを skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workspace UI 再監査では current build static serve と 4観点の目視/挙動検証をセットにする」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に current worktree `out/renderer` の static serve、right preview panel reverse resize、watcher callback ref 分離、light theme contrast 確認を追加
+  - worktree の Vite preview source drift を静的配信で切り離し、UI screenshot 再監査を 1 セットで閉じる運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.22` として同期
+
+---
 ## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]
 
 - **Agent**: skill-creator (update)

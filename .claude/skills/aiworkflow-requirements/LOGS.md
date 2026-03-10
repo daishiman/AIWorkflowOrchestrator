@@ -100,6 +100,41 @@
 - ステータス: success
 
 ---
+## 2026-03-10 - UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001`
+- 目的: TASK-UI-04A の苦戦箇所から派生した Workspace UI capture 運用改善を active unassigned task として system spec 正本へ登録する
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-04A 節へ active 未タスクを追加し、0件表記を是正
+- `references/ui-ux-feature-components.md` の Workspace Layout Foundation 節へ current build source pinning の未タスク導線を追加
+- `references/lessons-learned.md` に関連未タスクを追加し、static serve / reverse resize / watcher callback ref / light theme contrast の4観点を再利用導線へ接続
+- workflow `outputs/phase-12/unassigned-task-detection.md` / `documentation-changelog.md` / `skill-feedback-report.md` を 1件ベースへ同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-10 - TASK-UI-04A-WORKSPACE-LAYOUT 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04A-WORKSPACE-LAYOUT`
+- 目的: Workspace layout 04A の実装・Phase 11 screenshot・system spec 正本・task workflow 台帳を実績ベースへ同期する
+
+### 実施内容
+- `references/ui-ux-feature-components.md` に Workspace Layout Foundation セクションを追加し、`WorkspaceView` / `FileBrowserPanel` / `PanelToggleBar` / `WorkspaceStatusBar` / screenshot 8件を同期
+- `references/arch-state-management.md` に `workspace-layout-mode` / `workspace-panel-sizes` persist、`useFileWatcher` guard、preview reverse resize を追加
+- `references/ui-ux-navigation.md` / `references/security-electron-ipc.md` / `references/api-ipc-system.md` に workspace layout / file watch IPC 契約を追加
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、苦戦箇所、5分解決カード、未タスク0件を同期
+- `scripts/generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を更新
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
 
 ### コンテキスト

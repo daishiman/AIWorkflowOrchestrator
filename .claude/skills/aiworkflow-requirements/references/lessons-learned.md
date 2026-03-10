@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-10 | 1.29.62 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
 | 2026-03-10 | 1.29.61 | TASK-10A-G 実装知見追補。IPC ハンドラキャプチャパターン、Store 統合テストの Promise 解決タイミング制御、Phase 6 カバレッジ不足の2段階テスト設計、P41 v8 Function Coverage exemption 判断、Phase 12 並列エージェント分割戦略の5苦戦箇所と5分解決カードを追記 |
 | 2026-03-10 | 1.29.60 | TASK-10A-G 再監査追補の教訓を追加。`generate-index.js --workflow ... --regenerate` が workflow `artifacts.json` スキーマ差で `index.md` を `undefined` / 全Phase未実施へ崩しうる点、実行直後に `verify-all-specs --strict` / `validate-phase-output` で確認し、必要なら未タスク化する運用を追記 |
 | 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、`clearTimeout` cleanup 採用の判断根拠、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
@@ -6721,3 +6722,55 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 4. 影響 UI があるなら、内部修正でも screenshot 対象を先に決める。
 5. Phase 12 では system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する。
 6. 再監査で見つかった別責務の差分は未タスク化し、主タスクの完了判定と分離する。
+
+## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
+
+### 苦戦箇所: right preview panel の resize 方向が逆転する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 左 panel 用の drag 計算を右 panel に流用すると、ドラッグ方向と幅変化が逆に感じられる |
+| 再発条件 | split view の左右 panel に同一 resize hook をそのまま使う |
+| 対処 | `usePanelResize` に `direction: "reverse"` を追加し、preview panel だけ反転計算へ切り替えた |
+| 標準ルール | 右 panel の resize は「カーソル移動方向と panel 幅変化が一致するか」を screenshot 前に確認する |
+
+### 苦戦箇所: watch hook が callback identity 変更で再登録する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `onFileChanged` を effect dependency に置くと、Render ごとに watch start / stop が揺れる |
+| 再発条件 | watch lifecycle と UI callback を同一 dependency で管理する |
+| 対処 | callback を `ref` に退避し、effect dependency は `enabled` / `filePath` に限定した |
+| 標準ルール | watch / subscription hook は callback ref と lifecycle dependency を分離する |
+
+### 苦戦箇所: worktree preview が別 source を指す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Vite dev server が別 worktree source を見て、current branch の harness が表示されないことがある |
+| 再発条件 | 複数 worktree で同一 repo の HMR / preview を使い回す |
+| 対処 | `pnpm build` 後の `apps/desktop/out/renderer` を static server で配信し、asset hash を current build と一致させた |
+| 標準ルール | worktree screenshot は「current build artifact を static 配信」を第一候補にする |
+
+### 苦戦箇所: light theme の補助テキストが screenshot で沈む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装中は読めても、証跡画像では補助情報が背景に溶けやすい |
+| 再発条件 | dark theme を基準に text-secondary を設計し、そのまま light へ流す |
+| 対処 | Workspace 04A の chip / 補助テキスト / status bar を局所調整し、再撮影で確認した |
+| 標準ルール | Apple UI/UX 目視レビューでは light theme の階層性とコントラストを別途判定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. split view では左右 panel の resize 方向を個別に検証する。
+2. watch hook は callback ref 化して再登録の揺れを止める。
+3. worktree screenshot は build artifact の hash を確認して current source を固定する。
+4. light / dark の両テーマで補助テキストの視認性を screenshot で比較する。
+5. 問題を修正したら、その場で再撮影して Phase 11 証跡を更新する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | current build source pinning と Workspace UI 再監査 checklist をスクリプト/運用として共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |

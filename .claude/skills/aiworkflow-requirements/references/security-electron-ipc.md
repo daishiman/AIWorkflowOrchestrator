@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.1    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: file watch IPC lifecycle（`file:watch-start` / `file:watch-stop` / `file:changed`）の sender push、Renderer cleanup、module scope guard、`FILE_CHANGED` を subscribe 専用に保つ allowlist 契約を追加 |
 | v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
 | v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
 | v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
@@ -121,6 +122,25 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
+
+### Workspace file watch lifecycle（TASK-UI-04A）
+
+`WorkspaceView` は selected file の再読込に限って watch を使う。watch 契約は file read/write の一般契約とは分けて扱う。
+
+| 項目 | 契約 |
+| --- | --- |
+| invoke channel | `file:watch-start`, `file:watch-stop` |
+| event channel | `file:changed` |
+| sender | Main は `event.sender.send(IPC_CHANNELS.FILE_CHANGED, payload)` で push する |
+| Renderer cleanup | file switch / unmount のたびに `watchStop` を呼ぶ |
+| allowlist | `FILE_CHANGED` は subscribe 専用で invoke allowlist には入れない |
+| duplicate guard | Renderer は module scope guard で selected file 同一時の再登録を避ける |
+
+**セキュリティ意図**:
+
+- watch 対象を selected file に限定し、広域監視を行わない。
+- Main 側は watchId 単位で watcher を保持し、stop 後は map から削除する。
+- Renderer は preload 公開 API だけを使い、 chokidar や Node FS へ直接触れない。
 
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 

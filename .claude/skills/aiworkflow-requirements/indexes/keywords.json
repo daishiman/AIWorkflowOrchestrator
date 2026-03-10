@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-10T14:45:16.445Z",
-  "totalKeywords": 1551,
+  "generated": "2026-03-10T22:52:46.322Z",
+  "totalKeywords": 1556,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -662,8 +662,10 @@
     ],
     "Workspace": [
       "api-ipc-agent.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
-      "llm-workspace-chat-edit.md"
+      "llm-workspace-chat-edit.md",
+      "ui-ux-feature-components.md"
     ],
     "Chat": [
       "api-ipc-agent.md",
@@ -754,6 +756,7 @@
     "TASK": [
       "api-ipc-agent.md",
       "api-ipc-auth.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-auth-security.md",
@@ -827,6 +830,7 @@
     ],
     "UI": [
       "api-ipc-agent.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-chat-history.md",
@@ -1001,6 +1005,12 @@
     "スライド同期": [
       "api-ipc-system.md"
     ],
+    "File": [
+      "api-ipc-system.md"
+    ],
+    "Watch": [
+      "api-ipc-system.md"
+    ],
     "設計": [
       "api-ipc-system.md",
       "interfaces-rag-community-detection.md",
@@ -1158,6 +1168,24 @@
     "BASELINE": [
       "arch-state-management.md",
       "lessons-learned.md"
+    ],
+    "Layout": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
+    ],
+    "基盤": [
+      "arch-state-management.md",
+      "database-implementation.md"
+    ],
+    "WORKSPACE": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "LAYOUT": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "Notification": [
       "arch-state-management.md",
@@ -2288,9 +2316,6 @@
       "database-implementation.md",
       "interfaces-rag-graphrag-query.md",
       "rag-query-pipeline.md"
-    ],
-    "基盤": [
-      "database-implementation.md"
     ],
     "運用・": [
       "database-operations.md"
