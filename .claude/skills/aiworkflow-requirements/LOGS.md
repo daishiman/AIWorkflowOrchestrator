@@ -4,6 +4,23 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SAFEINVOKE-TIMEOUT-001`
+- 目的: safeInvoke timeout 実装・Phase 11 screenshot・未タスク 1 件・system spec 正本を実績ベースへ同期する
+
+### 実施内容
+- `security-electron-ipc.md` に `IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup 契約を追加
+- `architecture-implementation-patterns.md` に S33 Preload timeout + timer cleanup パターンを追加
+- `task-workflow.md` に完了台帳、検証証跡、未タスク `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` を登録
+- `lessons-learned.md` と `ui-ux-feature-components.md` に screenshot 再監査で得た教訓と UI follow-up を追加
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装完了
 
 ### コンテキスト

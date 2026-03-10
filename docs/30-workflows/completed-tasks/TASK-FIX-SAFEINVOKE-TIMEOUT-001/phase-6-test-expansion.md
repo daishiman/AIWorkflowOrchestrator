@@ -1,0 +1,106 @@
+# Phase 6: テスト拡充 - タスク仕様書
+
+## メタ情報
+
+| 項目       | 内容                            |
+| ---------- | ------------------------------- |
+| タスクID   | TASK-FIX-SAFEINVOKE-TIMEOUT-001 |
+| Phase      | 6                               |
+| Phase名    | テスト拡充                      |
+| カテゴリ   | fix                             |
+| ステータス | completed                       |
+| 前提Phase  | Phase 5                         |
+| 後続Phase  | Phase 7                         |
+
+## 目的
+
+Phase 5 の実装後のカバレッジを確認し、不足箇所のテストを追加する。境界値・異常系・組み合わせを網羅的にテストする。
+
+## 実行タスク
+
+- タスク1: helper と wrapper の coverage 差分を計測する
+- タスク2: 境界値と遅延応答の追加ケースを設計する
+- タスク3: 追加テストを実装して全体回帰を確認する
+
+### タスク1: カバレッジ計測
+
+**目的**: 現在のカバレッジを計測し、不足箇所を特定する
+
+**手順**:
+
+1. `cd apps/desktop && pnpm vitest run --coverage <テストファイルパス>`
+2. Line / Branch / Function Coverage を確認
+3. 未カバー行・分岐を特定
+
+### タスク2: 追加テストケース設計
+
+**目的**: カバレッジ不足箇所と追加のエッジケースをカバーするテストを設計する
+
+**追加テストケース候補**:
+
+| #   | テストケース                                    | 目的                          |
+| --- | ----------------------------------------------- | ----------------------------- |
+| T9  | タイムアウトエラーにタイムアウト値が含まれる    | AC-2 の補完                   |
+| T10 | IPC_TIMEOUT_MS 定数値の検証                     | AC-5: 5000ms であることを確認 |
+| T11 | タイムアウト後に遅延 resolve が来ても無視される | メモリリーク対策の検証        |
+| T12 | IPC が 0ms で resolve                           | 最小境界値                    |
+
+### タスク3: 追加テスト実装
+
+**目的**: 追加テストケースを実装する
+
+**実装方針**:
+
+- 既存テストファイルに追加
+- P13 準拠を維持（`advanceTimersByTime` 使用）
+- テスト間の独立性を確保（`beforeEach` / `afterEach`）
+
+### タスク4: 全テスト実行
+
+**目的**: 新規・既存テストが全て PASS することを確認する
+
+**手順**:
+
+1. タイムアウトテスト実行: `cd apps/desktop && pnpm vitest run <テストファイルパス>`
+2. 全テスト実行: `cd apps/desktop && pnpm vitest run`
+3. 全 PASS を確認
+
+## 参照資料
+
+| 参照資料       | パス                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| Phase 4 テスト | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/phase-4-test-creation.md`  |
+| Phase 5 実装   | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/phase-5-implementation.md` |
+| カバレッジ基準 | `.claude/rules/02-code-quality.md#カバレッジ基準`                                             |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料       | パス                                                                                        | 内容                                                    |
+| -------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| 品質要件       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | カバレッジ基準（Line 80%+, Branch 60%+, Function 80%+） |
+| 実装パターン集 | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | エッジケーステストパターン                              |
+
+## 統合テスト連携
+
+- Phase 7 でカバレッジ基準（Line 80%+, Branch 60%+, Function 80%+）の充足を確認
+- 未達の場合は本 Phase に戻る
+
+## 成果物
+
+| 成果物           | パス                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------- |
+| 拡充テストコード | `apps/desktop/src/preload/__tests__/safeInvoke-timeout.test.ts`（既存テストファイル） |
+
+## 完了条件
+
+- [ ] カバレッジ計測が完了
+- [ ] 不足箇所の追加テストを設計
+- [ ] 追加テストを実装
+- [ ] 全テストが PASS
+- [ ] 本Phase内の全タスクを100%実行完了
+
+## 次Phase
+
+Phase 7: カバレッジ確認へ進む。カバレッジ基準の充足を確認する。

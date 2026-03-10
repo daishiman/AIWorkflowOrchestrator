@@ -483,6 +483,19 @@ Phase 4: テスト作成（TDD: Red）
 
 エッジケース（境界値、null、空文字列等）のテストを追加する。
 
+### 4.5. タイマー・非同期テスト設計（P13対策）
+
+`setTimeout` / `setInterval` / `Promise.race` を使用する実装のテストでは、以下の注意事項を必ず適用する：
+
+| 注意事項 | 対策 | 理由 |
+| -------- | ---- | ---- |
+| `vi.runAllTimers()` の無限ループ | `vi.advanceTimersByTime(ms)` で1ステップずつ進める | setTimeout + Promise + 再スケジュールのパターンで runAllTimers が無限ループする（P13） |
+| `Promise.race` のタイムアウトテスト | resolve 側と reject 側を個別にテストし、`clearTimeout` cleanup も検証する | タイマーリーク防止 |
+| `vi.useFakeTimers()` のスコープ | `beforeEach` で設定、`afterEach` で `vi.useRealTimers()` にリセット | テスト間の状態汚染防止（P9） |
+| Pending Promise のフラッシュ | タイマー進行後に `await vi.advanceTimersByTimeAsync(ms)` または `await Promise.resolve()` を挟む | Promise microtask がフラッシュされないと期待値が検証できない |
+
+> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `invokeWithTimeout()` のタイマーテスト実装時に、`runAllTimers` による無限ループと cleanup 検証漏れが発生した。Phase 4 での早期設計により手戻りを防止する。
+
 ### 5. アクセシビリティテスト（UIタスクの場合）
 
 UIコンポーネントを含むタスクでは、WCAG 2.1 AA 準拠のテストケースを Phase 4 で設計する。
@@ -621,8 +634,21 @@ Phase 5: 実装（TDD: Green）
 | P31 | Zustand Store Hooks無限ループ | 合成Store Hook（`useAuthModeStore()`等）の関数を`useEffect`依存配列に含めない。`useRef`でガードするか、個別セレクタを使用 |
 | P5 | リスナー二重登録 | React StrictModeで`useEffect`が2回実行される。モジュールレベルでガードするか`useRef`で初期化フラグを管理 |
 | P12 | 外部SDK自動処理との競合 | カスタム実装で置き換える場合、元の自動処理を必ず無効化 |
+| P13 | タイマーテスト無限ループ | `vi.runAllTimers()` ではなく `vi.advanceTimersByTime(ms)` を使用。Promise.race + setTimeout パターンでは cleanup（`clearTimeout`）も検証必須 |
 
 📖 詳細: `.claude/rules/06-known-pitfalls.md`、`references/patterns.md`
+
+## DRY統合パターン（重複実装の統合）
+
+既存コードに同等の機能が複数箇所に分散している場合、以下の手順で統合する：
+
+1. **重複検出**: `grep -rn "対象パターン" apps/desktop/src/` で同等実装の全箇所を特定
+2. **共通ユーティリティ抽出**: 重複ロジックを専用ユーティリティファイル（例: `ipc-utils.ts`）に抽出
+3. **呼び出し元の書き換え**: 全呼び出し元を共通ユーティリティ経由に変更
+4. **型シグネチャの維持**: 公開APIのシグネチャを変更しない（後方互換性）
+5. **回帰テスト**: 統合後に全テストがPASSすることを確認
+
+> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `safeInvoke` と `invokeWithTimeout` の重複を `ipc-utils.ts` に統合し、タイムアウト機構を一箇所で管理可能にした。DRY違反を放置すると、修正漏れや動作不整合が発生する。
 
 ## 成果物
 
@@ -801,6 +827,24 @@ pnpm test:e2e
 ### 3. 未達の場合の対応
 
 カバレッジ未達や統合テスト失敗がある場合、Phase 6へ戻って拡充する。
+
+#### 小規模ユーティリティの100%カバレッジ達成パターン
+
+小規模なユーティリティファイル（例: `ipc-utils.ts`、`helpers.ts` 等、関数5個以下・100行以下）では、推奨基準ではなく **100% カバレッジ** を目標にする：
+
+| 指標 | 通常基準 | 小規模ユーティリティ基準 | 理由 |
+| ---- | -------- | ------------------------ | ---- |
+| Line Coverage | 80% | **100%** | コード量が少ないため全行カバー可能 |
+| Branch Coverage | 60% | **100%** | 分岐が少ないため全分岐カバー可能 |
+| Function Coverage | 80% | **100%** | エクスポート関数が少ないため全関数カバー可能 |
+
+**達成手順**:
+1. `pnpm vitest run --coverage -- <対象ファイルのテスト>` で対象ファイルのみカバレッジ測定
+2. 未到達行をレポートから特定（通常はエラーパス・タイムアウトパス・cleanup パス）
+3. 各未到達パスに対応するテストケースを追加
+4. 特に `clearTimeout` / `finally` ブロック等の cleanup パスを見落としやすいため注意
+
+> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `ipc-utils.ts`（3関数・40行）の100%カバレッジを15テストで達成した。小規模ファイルは全パスの検証が現実的であり、未テストのエッジケースが本番障害の原因になりやすい。
 
 #### ハンドラ単位カバレッジレポート（IPCハンドラファイル対象時）
 

@@ -3365,10 +3365,77 @@ executeSkill: async (prompt) => {
 - **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
 
 ---
+### S33: Preload invoke timeout + timer cleanup パターン
+
+- **課題**: `ipcRenderer.invoke()` をそのまま返す `safeInvoke` は、Main 側ハンドラが応答しない場合に Promise が永続 pending となり、Auth 初期化や preload API 呼び出しが全体停滞する。
+- **解決策**: `invokeWithTimeout<T>()` に timeout 契約を集約し、allowlist fail-fast、`setTimeout` による timeout、成功/失敗双方での `clearTimeout(timeoutId)` cleanup を 1 箇所で維持する。
+- **適用条件**: Preload 層の request-response 型 API で、公開シグネチャを変えずにハング耐性を追加したい場合。
+- **関連Pitfall**: P13（タイマーテスト）、P40（実行ディレクトリ）、P4（planned wording 残置）
+
+```typescript
+export function invokeWithTimeout<T>(
+  allowedChannels: readonly string[],
+  channel: string,
+  ...args: unknown[]
+): Promise<T> {
+  if (!allowedChannels.includes(channel)) {
+    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
+  }
+
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(
+        new Error(
+          `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`,
+        ),
+      );
+    }, IPC_TIMEOUT_MS);
+
+    ipcRenderer
+      .invoke(channel, ...args)
+      .then((result) => {
+        clearTimeout(timeoutId);
+        resolve(result as T);
+      })
+      .catch((error: unknown) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+  });
+}
+```
+
+#### 判断基準
+
+| 観点 | 採用理由 |
+| --- | --- |
+| 契約維持 | `safeInvoke<T>(channel, ...args): Promise<T>` を変えずに timeout を追加できる |
+| 保守性 | `index.ts` / `skill-api.ts` / `skill-creator-api.ts` の3 wrapper を1行委譲へ統一できる |
+| 安全性 | timeout error は channel 名と固定 timeout 値のみで、内部情報を露出しない |
+| 再現性 | cleanup を入れることで fake timer テストで `vi.getTimerCount() === 0` を保証できる |
+
+#### 検証パターン
+
+| テスト観点 | 期待結果 |
+| --- | --- |
+| 無応答 | `IPC_TIMEOUT_MS` 経過後に timeout error で reject |
+| 正常応答 | timeout 前に resolve し、timer が残留しない |
+| Main reject | IPC エラーをそのまま reject し、timer が残留しない |
+| 遅延応答 | timeout 後の遅延 resolve は状態再遷移を起こさない |
+| 回帰 | `pnpm vitest run src/preload` で preload 全体が PASS |
+
+#### 運用メモ
+
+- timeout 影響が UI に現れるタスクでは、非UIタスクでも代表 UI を screenshot で検証する。
+- screenshot で見つかった別責務の品質差分は、主タスク完了を止めずに未タスクへ分離する。
+- Phase 12 では「PR マージ時に反映予定」を残さず、その場で system spec / SKILL / LOGS を更新する。
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.43.0 | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001: S33 Preload invoke timeout + timer cleanup パターンを追加。`invokeWithTimeout()` の fail-fast / timeout / `clearTimeout` cleanup / screenshot 検証 / Phase 12 planned wording 排除を標準化 |
 | v1.42.0 | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001: S32 executeSkill並行実行ガードパターンを追加。async操作前の同期的isExecutingチェックによるmicrotask境界前ガード、flushMicrotasksテストパターンを標準化 |
 | v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
 | v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |
