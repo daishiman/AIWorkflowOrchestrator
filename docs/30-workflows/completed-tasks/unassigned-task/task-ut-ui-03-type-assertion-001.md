@@ -10,9 +10,17 @@
 | 分類         | コード品質/型安全性               |
 | 優先度       | 中                                |
 | 見積もり規模 | 中規模                            |
-| ステータス   | 未実施                            |
+| ステータス   | 完了                              |
 | 発見元       | Phase 10 最終レビュー MINOR #4    |
 | 発見日       | 2026-03-07                        |
+| 完了日       | 2026-03-10                        |
+
+### 完了メモ
+
+- `apps/desktop/src/renderer/views/AgentView/index.tsx` の `importedSkills as unknown as Skill[]` / `availableSkillsMetadata as unknown as Skill[]` は除去済み
+- `apps/desktop/src/renderer/views/AgentView/index.tsx` に `toViewSkill()` を追加し、`ImportedSkill` / `SkillMetadata` を view 用 `Skill` へ明示変換する形に整理
+- `apps/desktop/src/renderer/phase11-agent-view.tsx` でも `toImportedSkill()` を追加し、harness 側の型アサーションを除去
+- `pnpm --filter @repo/desktop typecheck` で型整合を再確認済み
 
 ---
 

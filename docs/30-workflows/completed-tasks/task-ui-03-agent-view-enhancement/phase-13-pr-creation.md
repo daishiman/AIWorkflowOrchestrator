@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 13                     |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -35,6 +35,12 @@
 | ドキュメント更新履歴           | `outputs/phase-12/documentation-changelog.md`                        | Phase 12成果物             |
 | 実装ガイド                     | `outputs/phase-12/implementation-guide.md`                           | Phase 12成果物（PR添付用） |
 | PR運用仕様                     | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` | PR前提の完了条件確認       |
+| 発見課題一覧                   | `outputs/phase-11/discovered-issues.md`                              | Phase 11 成果物            |
+| 撮影計画                       | `outputs/phase-11/screenshot-plan.json`                              | Phase 11 成果物            |
+| 画面カバレッジレポート         | `outputs/phase-11/screenshot-coverage.md`                            | Phase 11 成果物            |
+| 未タスク検出レポート           | `outputs/phase-12/unassigned-task-detection.md`                      | Phase 12 成果物            |
+| スキルフィードバックレポート   | `outputs/phase-12/skill-feedback-report.md`                          | Phase 12 成果物            |
+| 仕様書更新サマリー             | `outputs/phase-12/spec-update-summary.md`                            | Phase 12 成果物            |
 
 ## 依存Phase成果物参照
 

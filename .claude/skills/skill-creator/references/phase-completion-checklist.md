@@ -389,10 +389,10 @@ node scripts/validate_all.js --skill .claude/skills/<skill-name>
 node scripts/quick_validate.js .claude/skills/<skill-name>
 
 # （必要時）未タスク差分監査
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 
 # （必要時）未タスク全体監視
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 </details>

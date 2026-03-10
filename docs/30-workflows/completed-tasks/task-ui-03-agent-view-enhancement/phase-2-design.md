@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 2                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -22,16 +22,23 @@ Phase 1 で定義した要件を実現可能なコンポーネント構造・状
 
 ## 参照資料
 
-| 資料名                         | パス                                                                                                                                  | 説明                       |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| Phase 1 要件定義書             | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-1-requirements.md`                                         | 機能・非機能要件           |
-| 元タスク仕様書                 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | 画面構成図・スタイルガイド |
-| UI/UXコンポーネント仕様        | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | コンポーネント設計基準     |
-| 機能コンポーネント仕様         | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                       | 機能コンポーネント定義     |
-| デザイン原則                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                        | Apple HIG準拠デザイン原則  |
-| UIコンポーネントアーキテクチャ | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | コンポーネント階層         |
-| 状態管理アーキテクチャ         | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand Store設計          |
-| ナビゲーション仕様             | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                                                               | GlobalNavStrip連携         |
+| 資料名                         | パス                                                                                                         | 説明                            |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| Phase 1 要件定義書             | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-1-requirements.md`                | 機能・非機能要件                |
+| 元タスク仕様書                 | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md` | 画面構成図・スタイルガイド      |
+| UI/UXコンポーネント仕様        | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                      | コンポーネント設計基準          |
+| 機能コンポーネント仕様         | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                              | 機能コンポーネント定義          |
+| デザイン原則                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                               | Apple HIG準拠デザイン原則       |
+| デザインシステム               | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                   | トークン・8px grid・配色        |
+| UIコンポーネントアーキテクチャ | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                    | コンポーネント階層              |
+| 状態管理アーキテクチャ         | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                 | Zustand Store設計               |
+| ナビゲーション仕様             | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                                      | GlobalNavStrip連携              |
+| 実行UI仕様                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                 | 実行中/完了/失敗の表示契約      |
+| モデル選択UI                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                    | モデル選択カードの基準          |
+| 許可設定UI                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                        | Permission settings の基準      |
+| スキル実行セキュリティ         | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`                              | PermissionMode と allowed tools |
+| 実装パターン                   | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                  | P24/P31/P47 の設計基準          |
+| 要件定義書                     | `outputs/phase-1/requirements-definition.md`                                                                 | Phase 1 成果物                  |
 
 ---
 

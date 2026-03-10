@@ -796,15 +796,16 @@ node scripts/list-specs.js --topics
 | デザイン原則サマリー | L109 |
 | コンポーネント階層図 | L131 |
 | 完了タスク | L180 |
-| TASK-UI-02 実装完了記録 | L213 |
-| TASK-UI-05B 実装完了記録 | L238 |
-| TASK-10A-B 実装完了記録 | L256 |
-| TASK-10A-C 実装完了記録 | L276 |
-| TASK-10A-D 実装完了記録 | L295 |
-| 仕様書作成済みタスク（spec_created） | L312 |
-| SkillCenterView 関連未タスク | L361 |
-| 変更履歴 | L375 |
-| 関連ドキュメント | L429 |
+| TASK-UI-03 実装完了記録 | L213 |
+| TASK-UI-02 実装完了記録 | L236 |
+| TASK-UI-05B 実装完了記録 | L261 |
+| TASK-10A-B 実装完了記録 | L279 |
+| TASK-10A-C 実装完了記録 | L299 |
+| TASK-10A-D 実装完了記録 | L318 |
+| 仕様書作成済みタスク（spec_created） | L335 |
+| SkillCenterView 関連未タスク | L384 |
+| 変更履歴 | L398 |
+| 関連ドキュメント | L454 |
 
 ### references/ui-ux-design-principles.md
 
@@ -829,7 +830,7 @@ node scripts/list-specs.js --topics
 | スペーシングとレイアウト | L161 |
 | Tap & Discover デザイントークン拡張 | L211 |
 | 完了タスク | L246 |
-| 変更履歴 | L305 |
+| 変更履歴 | L306 |
 
 ### references/ui-ux-feature-components.md
 
@@ -853,7 +854,7 @@ node scripts/list-specs.js --topics
 | Foundation Reflection Audit（TASK-UI-00-FOUNDATION-REFLECTION-AUDIT / completed） | L1200 |
 | Notification / History Domain（TASK-UI-01-C / completed） | L1231 |
 | 完了タスク | L1269 |
-| 仕様書作成済みタスク（spec_created） | L1452 |
+| 仕様書作成済みタスク（spec_created） | L1482 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1426,8 +1427,8 @@ node scripts/list-specs.js --topics
 | SkillManagementPanel Import List アーキテクチャパターン（TASK-043B / completed） | L763 |
 | TASK-UI-00-ORGANISMS アーキテクチャ記録 | L798 |
 | AgentView Enhancement アーキテクチャパターン（TASK-UI-03 / completed） | L844 |
-| 変更履歴 | L957 |
-| 関連ドキュメント | L981 |
+| 変更履歴 | L977 |
+| 関連ドキュメント | L1003 |
 
 ### references/csrf-state-parameter.md
 
@@ -1613,17 +1614,17 @@ node scripts/list-specs.js --topics
 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L377 |
 | TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L424 |
 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L591 |
-| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L649 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L715 |
-| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L768 |
-| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L840 |
-| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L905 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L968 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1047 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1105 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1305 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1347 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1389 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L665 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L731 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L784 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L856 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L921 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L984 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1063 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1121 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1321 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1363 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1405 |
 
 ### references/llm-embedding.md
 
@@ -1969,11 +1970,12 @@ node scripts/list-specs.js --topics
 | TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3245 |
 | TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3347 |
 | TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3414 |
-| 残課題（未タスク） | L3495 |
-| 関連ドキュメント | L3917 |
-| 変更履歴 | L3927 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4173 |
-| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4193 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L3495 |
+| 残課題（未タスク） | L3530 |
+| 関連ドキュメント | L3954 |
+| 変更履歴 | L3964 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4210 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4230 |
 
 ### references/testing-accessibility.md
 

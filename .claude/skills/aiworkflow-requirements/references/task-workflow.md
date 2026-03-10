@@ -3492,6 +3492,41 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 ---
 
+## TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-03-AGENT-VIEW-ENHANCEMENT |
+| 対象workflow | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| 目的 | current workflow / outputs / `.claude/skills/...` 正本のドリフトを再確認し、実行コマンドと仕様同期漏れを解消する |
+
+### 再監査で反映した内容
+
+- `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` を current workflow 導線、`types.ts`、Phase 11 dedicated harness、136 tests に同期
+- `architecture-implementation-patterns.md` に dedicated harness + review scope 分離パターンを追加し、UI再監査での state 固定と token 由来所見の切り分けを標準化
+- `.claude/skills/task-specification-creator` 正本と current workflow の task-spec script 参照を `.agents/skills/task-specification-creator/scripts/` に統一
+- `AgentView/index.tsx` / `phase11-agent-view.tsx` の `as unknown as Skill[]` を adapter helper (`toViewSkill` / `toImportedSkill`) へ置換し、型アサーション残存を解消
+
+### 検証証跡
+
+| 種別 | 結果 | 証跡 |
+| --- | --- | --- |
+| workflow 構造検証 | PASS | `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --strict` |
+| workflow phase 検証 | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement` |
+| Phase 11 coverage | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --allow-non-visual-tc TC-10 --json` |
+| Phase 12 implementation guide | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --json` |
+| 未タスクリンク | PASS | `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` |
+
+### 残課題
+
+- `UT-UI-03-TYPE-ASSERTION-001` は 2026-03-10 の再監査で解消済み。completed unassigned 側へ正規化した
+- light theme の副次テキスト所見は global token scope の改善余地として `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を新規作成し、`docs/30-workflows/unassigned-task/` に配置した
+- `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` の未タスク仕様書には、親タスクで苦戦した component/token 切り分け、dedicated harness 前提、`audit --diff-from HEAD --target-file` による品質判定を追補した
+
+---
+
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
@@ -3540,7 +3575,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-UI-03-A11Y-RADIOGROUP-001 | SkillChip群コンテナに role="radiogroup" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #1（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-radiogroup-001.md` |
 | UT-UI-03-A11Y-DIALOG-001 | AdvancedSettingsPanel に role="dialog" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #2（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-dialog-001.md` |
 | UT-UI-03-A11Y-LABEL-001 | 停止ボタン aria-label 不一致修正 | 低 | TASK-UI-03 Phase 10 MINOR #3（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-label-001.md` |
-| UT-UI-03-TYPE-ASSERTION-001 | as unknown as Skill[] 型アサーション解消 | 低 | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md` |
+| ~~UT-UI-03-TYPE-ASSERTION-001~~ | ~~as unknown as Skill[] 型アサーション解消~~ **完了: 2026-03-10** | ~~低~~ | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md` |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 | light theme の副次テキスト token コントラスト改善 | 低 | TASK-UI-03 Phase 11 Apple UI/UX レビュー（2026-03-10） | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md` |
 | UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001 | Phase 11証跡表のTC網羅不足を解消（TC-02/03/04/05/07/10追補 + validator PASS化） | 中 | TASK-UI-03 Phase 11 再検証（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-phase11-screenshot-coverage-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
@@ -3738,7 +3774,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-UI-03-A11Y-RADIOGROUP-001                                   | SkillChip群コンテナに role="radiogroup" 追加                                                                                                                                 | 低       | TASK-UI-03 Phase 10 MINOR #1（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-radiogroup-001.md`                                                                                               |
 | UT-UI-03-A11Y-DIALOG-001                                       | AdvancedSettingsPanel に role="dialog" 追加                                                                                                                                  | 低       | TASK-UI-03 Phase 10 MINOR #2（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-dialog-001.md`                                                                                                   |
 | UT-UI-03-A11Y-LABEL-001                                        | 停止ボタン aria-label 不一致修正                                                                                                                                             | 低       | TASK-UI-03 Phase 10 MINOR #3（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-label-001.md`                                                                                                    |
-| UT-UI-03-TYPE-ASSERTION-001                                    | as unknown as Skill[] 型アサーション解消                                                                                                                                     | 低       | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07）                                                                                  | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md`                                                                                                |
+| ~~UT-UI-03-TYPE-ASSERTION-001~~                                | ~~as unknown as Skill[] 型アサーション解消~~ **完了: 2026-03-10**                                                                                                          | ~~低~~   | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07）                                                                                  | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md`                                                                                                |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001                     | light theme の副次テキスト token コントラスト改善                                                                                                                           | 低       | TASK-UI-03 Phase 11 Apple UI/UX レビュー（2026-03-10）                                                                               | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md`                                                                                                 |
 | UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001                       | Phase 11証跡表のTC網羅不足を解消（TC-02/03/04/05/07/10追補 + validator PASS化）                                                                                              | 中       | TASK-UI-03 Phase 11 再検証（2026-03-07）                                                                                             | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-phase11-screenshot-coverage-001.md`                                                                                   |
 | ~~TASK-9A-C~~                                                  | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                                       | ~~高~~   | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                                                                                 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                                                                                              |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION              | SkillExecutor の console ログを electron-log に移行                                                                                                                          | 低       | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）                                                                       | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                                                               |

@@ -1,4 +1,4 @@
-# Phase 9: 品質保証レポート
+# Phase 9: 品質レポート
 
 ## メタ情報
 
@@ -6,135 +6,80 @@
 | ------ | ---------------------- |
 | Phase  | 9                      |
 | 機能名 | agent-view-enhancement |
-| 実施日 | 2026-03-07             |
+| 実施日 | 2026-03-10             |
 
-## Task 1: TypeScript 型チェック
+## TypeScript
 
 ```bash
 pnpm --filter @repo/desktop typecheck
 ```
 
-**結果: PASS** - エラー 0
+結果: PASS
 
-| 確認項目                      | 結果     |
-| ----------------------------- | -------- |
-| strict: true コンパイル       | PASS     |
-| any 型の使用（AgentView内）   | 0件      |
-| @ts-ignore / @ts-expect-error | 0件      |
-| P46対策: HTMLAttributes衝突   | 該当なし |
+## Lint
 
-## Task 2: ESLint
+仕様上の想定コマンド:
 
 ```bash
-pnpm lint
+pnpm --filter @repo/desktop lint
 ```
 
-**結果: PASS**（修正後）
+結果: `apps/desktop/package.json` に `lint` script がなく失敗
 
-### 修正した項目
+代替検証:
 
-| ファイル                  | エラー内容                            | 修正内容            |
-| ------------------------- | ------------------------------------- | ------------------- |
-| AdvancedSettingsPanel.tsx | `transitions` 未使用import            | import削除          |
-| AgentView/index.tsx       | `setSkillCategory` 未使用             | import/変数削除     |
-| AgentView/index.tsx       | `availableCategories` 未使用          | useMemoブロック削除 |
-| AgentView/index.tsx       | `useMemo`, `SkillCategoryType` 未使用 | import削除          |
-| AgentView.test.tsx        | `within` 未使用import                 | import削除          |
-
-修正後: エラー 0、AgentView関連の警告 0
-
-## Task 3: 全テスト実行
-
-### コンポーネントテスト
-
-```
-Test Files  5 passed (5)
-     Tests  58 passed (58)
+```bash
+cd apps/desktop && pnpm exec eslint \
+  src/renderer/views/AgentView/index.tsx \
+  src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx \
+  src/renderer/components/organisms/AgentView/AdvancedSettingsPanel.tsx \
+  src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx \
+  src/renderer/phase11-agent-view.tsx
 ```
 
-| テストファイル                 | テスト数 | 結果 |
-| ------------------------------ | -------- | ---- |
-| SkillChip.test.tsx             | 15       | PASS |
-| ExecuteButton.test.tsx         | 8        | PASS |
-| FloatingExecutionBar.test.tsx  | 11       | PASS |
-| AdvancedSettingsPanel.test.tsx | 13       | PASS |
-| RecentExecutionList.test.tsx   | 11       | PASS |
+結果: PASS
 
-### ビューテスト
+## テスト
 
-```
-Test Files  2 passed | 1 skipped (3)
-     Tests  49 passed | 12 skipped (61)
+```bash
+cd apps/desktop && pnpm vitest run \
+  src/renderer/components/organisms/AgentView/__tests__/*.test.tsx \
+  src/renderer/views/AgentView/__tests__/*.test.tsx \
+  src/renderer/store/slices/__tests__/agentSlice*.test.ts
 ```
 
-| テストファイル                       | テスト数 | 結果                 |
-| ------------------------------------ | -------- | -------------------- |
-| AgentView.test.tsx                   | 37       | PASS                 |
-| AgentView.layout.test.tsx            | 12       | PASS                 |
-| SkillManagement.integration.test.tsx | 12       | SKIP（既存、非対象） |
+結果: PASS
 
-### agentSlice拡張テスト
+## アクセシビリティ監査
 
+| 観点                                                       | 結果 |
+| ---------------------------------------------------------- | ---- |
+| SkillChip 群 `role="radiogroup"`                           | PASS |
+| AdvancedSettingsPanel `role="dialog"`, `aria-modal="true"` | PASS |
+| 歯車ボタン `aria-label="詳細設定を開く"`                   | PASS |
+| 停止ボタン `aria-label="実行を停止"`                       | PASS |
+| キーボード操作                                             | PASS |
+
+## セキュリティ監査
+
+```bash
+grep -rn "dangerouslySetInnerHTML" apps/desktop/src/renderer/components/organisms/AgentView apps/desktop/src/renderer/views/AgentView/index.tsx
+grep -rn "eval(" apps/desktop/src/renderer/components/organisms/AgentView apps/desktop/src/renderer/views/AgentView/index.tsx
+grep -rn "Function(" apps/desktop/src/renderer/components/organisms/AgentView apps/desktop/src/renderer/views/AgentView/index.tsx
+grep -rn "TODO\\|FIXME\\|HACK\\|XXX" apps/desktop/src/renderer/components/organisms/AgentView apps/desktop/src/renderer/views/AgentView/index.tsx
 ```
-Test Files  1 passed (1)
-     Tests  10 passed (10)
-```
 
-**合計: 117 passed, 12 skipped**
+結果: 該当なし
 
-## Task 4: アクセシビリティ検証（WCAG 2.1 AA）
+## パフォーマンス / 状態管理
 
-### ARIA属性
+| 観点                         | 結果     |
+| ---------------------------- | -------- |
+| `useAppStore()` 一括分割代入 | 該当なし |
+| `useAgentStore()`            | 該当なし |
+| list key / selector 粒度     | 問題なし |
 
-| コンポーネント        | 必須属性                                       | 実装状態 |
-| --------------------- | ---------------------------------------------- | -------- |
-| 各SkillChip           | `role="radio"` + `aria-checked` + `aria-label` | 実装済み |
-| ExecuteButton         | disabled属性 + テキスト切替                    | 実装済み |
-| FloatingExecutionBar  | 停止ボタン `aria-label="停止"`                 | 実装済み |
-| FloatingExecutionBar  | progressbar `role` + `aria-valuenow/min/max`   | 実装済み |
-| AdvancedSettingsPanel | 閉じるボタン `aria-label="閉じる"`             | 実装済み |
-| AdvancedSettingsPanel | リセットボタン `aria-label="リセット"`         | 実装済み |
-| AdvancedSettingsPanel | モデル選択 `role="radio"` + `aria-checked`     | 実装済み |
-| RecentExecutionList   | 各項目 `role="button"` + `tabIndex={0}`        | 実装済み |
+## 判定
 
-### キーボード操作
-
-| 操作対象              | Enter/Space           | Escape | Tab  |
-| --------------------- | --------------------- | ------ | ---- |
-| SkillChip             | 選択トグル            | -      | 移動 |
-| ExecuteButton         | `<button>` ネイティブ | -      | 移動 |
-| AdvancedSettingsPanel | ESCで閉じる           | 閉じる | -    |
-| RecentExecutionList   | 選択                  | -      | 移動 |
-
-### MINOR指摘
-
-- SkillChip群コンテナに `role="radiogroup"` + `aria-label` が未設定
-- AdvancedSettingsPanel に `role="dialog"` + `aria-modal="true"` が未設定
-- FloatingExecutionBar 停止ボタンの `aria-label` が「停止」（仕様では「実行を停止」）
-
-## Task 5: セキュリティ検証
-
-| 確認項目                    | 結果                                                               |
-| --------------------------- | ------------------------------------------------------------------ |
-| dangerouslySetInnerHTML使用 | 0件                                                                |
-| eval() 使用                 | 0件                                                                |
-| Function() 使用             | 0件                                                                |
-| インラインスタイル          | FloatingExecutionBar のprogressバーのwidthのみ（動的値、許容範囲） |
-
-**結果: PASS**
-
-## Task 6: パフォーマンス検証
-
-| 確認項目                              | 結果                                                        |
-| ------------------------------------- | ----------------------------------------------------------- |
-| P31対策: `useAppStore()` 一括分割代入 | AgentViewコンポーネント群: 0件                              |
-| 個別セレクタ使用                      | 全新規セレクタが個別パターンで実装                          |
-| useCallback使用                       | AgentView内のハンドラで適切に使用                           |
-| key属性                               | SkillChip, RecentExecutionList で適切に設定                 |
-| React.memo                            | 子コンポーネントは関数コンポーネントで`displayName`設定済み |
-
-**結果: PASS**
-
-## 総合判定: PASS（MINOR指摘3件あり → Phase 10で処理）
-
-全品質ゲートをクリア。MINOR指摘はPhase 10最終レビューで処理。
+- 品質ゲート: PASS
+- 補足: lint script 不在は workflow/パッケージ設定の差分であり、対象ソースへの直接 ESLint 実行で代替検証した

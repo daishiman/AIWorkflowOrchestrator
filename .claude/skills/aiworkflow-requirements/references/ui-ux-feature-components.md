@@ -30,7 +30,7 @@
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
-| AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/agent-view-enhancement/` |
+| AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 
 ### 共通仕様
 
@@ -1271,7 +1271,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
-| TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウトテスト） | 2026-03-07 | `docs/30-workflows/agent-view-enhancement/` |
+| TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 | 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
@@ -1352,14 +1352,16 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | 1-5 | AdvancedSettingsPanel | organisms | 144 | 詳細設定スライドインパネル（オーバーレイ） |
 | - | animations.ts | 共通定数 | 20 | アニメーション定義 |
 | - | styles.ts | 共通定数 | 31 | 共通スタイル定義 |
+| - | types.ts | 共通型 | 15 | AgentView 専用の状態/permission/model 型 |
 
 #### ファイル配置
 
 | ディレクトリ | 内容 |
 | --- | --- |
-| `apps/desktop/src/renderer/components/organisms/AgentView/` | 5サブコンポーネント + 共通定数 |
+| `apps/desktop/src/renderer/components/organisms/AgentView/` | 5サブコンポーネント + 共通定数 + 共通型 |
 | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/` | 5コンポーネントテスト |
 | `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx` | 統合レイアウトテスト |
+| `apps/desktop/src/renderer/phase11-agent-view.{html,tsx}` | Phase 11 dedicated harness |
 
 #### レイアウト構成
 
@@ -1378,10 +1380,38 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | `SkillChip.test.tsx` | 15 | 203 | ツール選択チップの表示・操作 |
 | `ExecuteButton.test.tsx` | 8 | 120 | 実行ボタンの状態・操作 |
 | `FloatingExecutionBar.test.tsx` | 12 | 130 | フローティングバーの表示・進捗 |
-| `AdvancedSettingsPanel.test.tsx` | 13 | 235 | 詳細設定パネルの開閉・操作 |
+| `AdvancedSettingsPanel.test.tsx` | 15 | 235 | 詳細設定パネルの開閉・操作 |
 | `RecentExecutionList.test.tsx` | 11 | 229 | 実行履歴の表示・操作 |
-| `AgentView.layout.test.tsx` | 12 | 272 | 統合レイアウト（3リージョン構成検証） |
-| **合計** | **71** | **1,189** | |
+| `AgentView.layout.test.tsx` | 13 | 272 | 統合レイアウト（3リージョン構成検証） |
+| `AgentView.test.tsx` | 45 | - | 統合動作・アクセシビリティ・Permission 連携 |
+| `agentSlice.extension.test.ts` | 10 | - | recent history / advanced settings |
+| `agentSlice.p31-regression.test.ts` | 7 | - | P31 回帰 |
+| **合計** | **136** | **1,189+** | |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 仕様書 |
+| --- | --- | --- |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 | light theme の副次テキスト token コントラスト改善 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md` |
+
+#### 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | AgentView を「できること / 実行 / 最近の実行」の 3 リージョンへ再構成し、5 organisms と Phase 11 dedicated harness を追加した |
+| テスト/検証 | renderer targeted tests 136 件、typecheck、Phase 11 screenshot、Phase 12 validators を通し current workflow へ同期した |
+| 苦戦箇所1 | `ImportedSkill` / `SkillMetadata` / view `Skill` の境界が曖昧だと view 実装が `as unknown as Skill[]` に流れやすかった |
+| 苦戦箇所2 | 実画面導線では screenshot ごとの state 固定が難しく、panel/floating/recent list を dedicated harness 側で再現する必要があった |
+| 苦戦箇所3 | light theme の副次テキスト所見は layout 完了判定と別責務で、component 修正ではなく design token 改善として切り出す必要があった |
+| 再利用ルール | UIタスクでは「view 型変換」「画面 state 固定」「token scope 判定」を別 concern として分離し、1 仕様書に混ぜ込まない |
+
+#### 同種課題の5分解決カード
+
+1. view 層の型ずれは `adapter helper` を追加して閉じ、`unknown as` を残さない。
+2. 画面証跡は App shell に依存させず、dedicated harness で `scenario` / `theme` を固定する。
+3. screenshot 所見は component scope と token scope に分離し、token 起因なら `ui-ux-design-system.md` と未タスクへ送る。
+4. `task-workflow.md` / `lessons-learned.md` / 本仕様書に同じ task ID と検証値を同期する。
+5. Phase 12 は `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file` まで閉じる。
 
 ---
 
@@ -1520,7 +1550,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 仕様](../../../docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/index.md)
 - [TASK-UI-01-C Notification / History Domain 仕様](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md)
 - [TASK-UI-01-C Notification / History Domain 手動検証結果](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/manual-test-result.md)
-- [TASK-UI-03 AgentView Enhancement 仕様](../../../docs/30-workflows/agent-view-enhancement/)
+- [TASK-UI-03 AgentView Enhancement 仕様](../../../docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/)
 
 ---
 
@@ -1528,7 +1558,10 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |
+| 2026-03-10 | v1.14.26   | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に「実装内容と苦戦箇所サマリー」と「同種課題の5分解決カード」を追加し、adapter helper・dedicated harness・token scope 分離を feature 正本から直接参照できるよう再編 |
 | 2026-03-10 | v1.14.24   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
+| 2026-03-10 | v1.14.25   | TASK-UI-03 current workflow 同期: AgentView Enhancement の workflow 導線を `docs/30-workflows/task-ui-03-agent-view-enhancement/` に修正し、`types.ts` と Phase 11 dedicated harness、実測 136 tests を反映 |
 | 2026-03-08 | v1.14.23   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |

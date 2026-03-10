@@ -644,6 +644,22 @@ expect(element.className).toContain(statusStyles.primary);
 4. Phase 9 品質検証で `aria-label` / `role` 属性の網羅性を確認し、不足があれば Phase 10 前に修正する。
 5. Phase 10 MINOR 指摘はアクセシビリティ関連を含め全て未タスク仕様書に変換し、3ステップ（指示書作成 → 残課題テーブル → 関連仕様書リンク）を完了する。
 
+### 追補（2026-03-10）: dedicated harness と review scope の切り分け
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | App shell 経由だと Phase 11 の状態再現が不安定で、main view / recent list / floating states の証跡が取りづらかった |
+| 対処 | `phase11-agent-view.html` + `phase11-agent-view.tsx` の dedicated harness を追加し、`scenario` / `theme` クエリで状態固定した |
+| 教訓 | UI再監査では「コンポーネント固有の不具合」と「global token の視認性差分」を分けて扱う。今回の light theme 副次テキスト所見は token 側の改善余地として `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` に切り出し、AgentView 自体の blocker とは分離した |
+
+### 追補（2026-03-10）: 型アサーション残課題の実コード追随
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 10 MINOR として起票した `UT-UI-03-TYPE-ASSERTION-001` が、current branch の再監査時点では既にコード側で解消されていた |
+| 対処 | `AgentView/index.tsx` の `toViewSkill()` と `phase11-agent-view.tsx` の `toImportedSkill()` で adapter 変換に置き換え、未タスクは completed unassigned へ正規化した |
+| 教訓 | Phase 12 再監査では backlog の継続判定を文章だけで決めず、`rg -n "as unknown as Skill\\[\\]"` のような現物確認を先に行う |
+
 ---
 
 ## TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06）

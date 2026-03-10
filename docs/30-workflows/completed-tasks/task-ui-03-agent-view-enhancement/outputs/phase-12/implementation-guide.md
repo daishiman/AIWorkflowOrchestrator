@@ -1,111 +1,47 @@
 # AIアシスタント画面リデザイン 実装ガイド
 
-## Part 1: 中学生向けのやさしい説明
+## Part 1: 中学生でもわかる説明
 
-まず「なぜ必要か」から説明します。前の画面は、最初から設定や細かい情報が多く、最初の一歩で迷いやすい構造でした。そこで、最初に触る場所をはっきりさせるために、このリデザインが必要でした。
-次に「何をするか」を説明します。最初の画面は選択と実行だけにし、詳しい設定は必要なときだけ開く形に分けます。
+まず、なぜ必要かを先に説明します。前の AgentView は、最初に見える情報が多くて「どこから触ればいいか」が少しわかりにくい状態でした。最初の一歩で迷う画面は、機能があっても使われにくくなります。だからこの画面は、最初にやることを絞って、必要なときだけ詳しい設定を見せる形に変えました。
 
-### なぜ画面を作り直したのか
+次に何をするかというと、AI にやってほしいことを選んで、実行して、最近の履歴を見るための画面にすることです。たとえばお店のショーケースを想像するとわかりやすいです。ショーケースには人気の商品だけが見やすく並び、詳しい相談は店員さんに聞きにいきます。この画面でも、最初の見た目は「できること」と「実行する」を中心にして、細かい設定は歯車ボタンの中にしまっています。
 
-前の画面は、最初から設定や細かい情報がたくさん出ていて、どこから触ればよいか分かりにくい状態でした。
-たとえば、スマートフォンのホーム画面を想像してください。ホーム画面にはアプリのアイコンだけがきれいに並んでいて、使いたいアプリをタップするだけですぐ使えます。設定画面は「設定」アイコンを開いたときだけ出てきます。
+### Tap & Discover とは何か
 
-この「最初はシンプルに、詳しいことは必要なときだけ」という考え方を「Tap & Discover（タップして発見する）」と呼んでいます。
+Tap & Discover は、「まず軽く触って、必要になったら次の深さへ進む」考え方です。教室のロッカーでたとえると、表にはよく使う道具だけを置いて、細かいものは引き出しの中に入れておく感じです。毎回全部広げないので、使う人が迷いにくくなります。
 
-### 3つの大事な部品
+### 画面の3つの主役
 
-新しい画面には、大きく分けて3つの部品があります。
+1つ目は「できること」の丸いチップです。これはショーケースの商品札のようなもので、AI が何をできるかを大きく見せます。  
+2つ目は実行ボタンです。これはレジのような役割で、選んだものを本当に動かします。何も選んでいないときは押せません。  
+3つ目は最近の実行です。これはレシートのようなもので、何をいつやって、成功したか失敗したかがひと目でわかります。
 
-#### 1. できること（ツールのチップ）
+### 詳細設定パネル
 
-お店のショーケースを思い浮かべてください。ショーケースには人気の商品だけが大きく並んでいます。この画面でも、AIができること（「検索する」「文章を作る」など）が大きな丸いアイコンで並んでいます。使いたいものをタップして選ぶだけです。
-
-#### 2. 実行ボタン
-
-選んだツールを動かすためのボタンです。お店でいうとレジのようなものです。商品（ツール）を選んだあと、このボタンを押すと実行が始まります。まだ何も選んでいないときは、ボタンは薄い色になっていて押せません。
-
-#### 3. 最近の実行
-
-レシートのように、最近やったことの記録が表示されます。「検索ツール - 2分前 - 成功」のように、何をいつやって、うまくいったかどうかが分かります。
-
-### 詳細設定パネル（裏側の設定）
-
-画面の右上にある歯車のボタンを押すと、詳細設定パネルが横からスライドして出てきます。これはお店でいうと「裏のカウンター」のようなものです。ふだんは見えないけど、AIの種類を変えたり、許可の設定を変えたりするときだけ開きます。普段は隠れているので、画面がすっきりして迷いにくくなります。
+右上の歯車ボタンを押すと、横から設定パネルが出ます。これは本棚の表紙の裏ポケットのようなものです。普段は見えませんが、AI の種類や許可の設定を変えたいときだけ開きます。だから、ふだんの画面はすっきり保てます。
 
 ### まとめ
 
-| 要素           | 日常の例え         | 役割                     |
-| -------------- | ------------------ | ------------------------ |
-| ツールのチップ | ショーケースの商品 | できることを選ぶ         |
-| 実行ボタン     | レジ               | 選んだものを実行する     |
-| 最近の実行     | レシート           | 最近やったことを確認する |
-| 詳細設定パネル | 裏のカウンター     | AIの種類や許可を変える   |
+| 要素                  | たとえ             | 役割                    |
+| --------------------- | ------------------ | ----------------------- |
+| SkillChip             | ショーケースの商品 | できることを選ぶ        |
+| ExecuteButton         | レジ               | 選んだものを動かす      |
+| RecentExecutionList   | レシート           | 最近やったことを見返す  |
+| AdvancedSettingsPanel | 裏ポケット         | AI の種類や許可を変える |
 
----
-
-## Part 2: 開発者向けの技術詳細
-
-### コンポーネント階層図
-
-```
-AgentView (views/AgentView/index.tsx) [修正]
-+-- header
-|   +-- h1 "Agent / AIアシスタント"
-|   +-- GearIconButton -> AdvancedSettingsPanel 開閉トリガー
-+-- section "できること"
-|   +-- SkillSearchBar (条件付き表示: 11個以上)
-|   +-- SkillChip[] (organisms/AgentView/SkillChip.tsx) [新規]
-|   +-- EmptyState (条件付き表示: 0件)
-+-- ExecuteButton (organisms/AgentView/ExecuteButton.tsx) [新規]
-+-- RecentExecutionList (organisms/AgentView/RecentExecutionList.tsx) [新規]
-+-- AdvancedSettingsPanel (organisms/AgentView/AdvancedSettingsPanel.tsx) [新規]
-|   +-- ModelSelector (カード型ラジオ)
-|   +-- PermissionSettings (モード + リセット)
-+-- FloatingExecutionBar (organisms/AgentView/FloatingExecutionBar.tsx) [新規]
-    +-- ProgressBar
-    +-- StopButton
-```
+## Part 2: 技術的な実装詳細
 
 ### TypeScript 型定義
 
-#### SkillChip
+```ts
+export type AgentFloatingStatus = "executing" | "completed" | "failed" | "idle";
 
-```typescript
-export interface SkillChipProps {
-  skillName: string;
-  displayName: string;
-  icon?: string;
-  isSelected: boolean;
-  onSelect: () => void;
-  isDisabled?: boolean;
-}
-```
+export type AgentPermissionMode =
+  | "default"
+  | "acceptEdits"
+  | "bypassPermissions"
+  | "plan";
 
-#### ExecuteButton
-
-```typescript
-export interface ExecuteButtonProps {
-  selectedSkillName: string | null;
-  onExecute: () => void;
-  isExecuting: boolean;
-}
-```
-
-#### FloatingExecutionBar
-
-```typescript
-export interface FloatingExecutionBarProps {
-  skillName: string;
-  status: "executing" | "completed" | "failed" | "idle";
-  startedAt: Date | null;
-  progress?: number; // 0-100
-  onStop: () => void;
-}
-```
-
-#### AdvancedSettingsPanel
-
-```typescript
 export interface ModelCardItem {
   providerId: string;
   modelId: string;
@@ -114,204 +50,110 @@ export interface ModelCardItem {
   healthStatus: "healthy" | "degraded" | "unavailable" | "unknown";
   isSelected: boolean;
 }
-
-export interface AdvancedSettingsPanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  models: ModelCardItem[];
-  selectedProviderId: string | null;
-  selectedModelId: string | null;
-  onSelectModel: (providerId: string, modelId: string) => void;
-  permissionMode: string;
-  onModeChange: (mode: string) => void;
-  rememberedCount: number;
-  onResetRemembered: () => void;
-}
 ```
 
-#### RecentExecutionList
-
-```typescript
-export interface ExecutionSummary {
-  executionId: string;
+```ts
+export interface FloatingExecutionBarProps {
   skillName: string;
-  skillDisplayName: string;
-  status: "completed" | "failed" | "executing" | "cancelled";
-  startedAt: Date;
-  completedAt: Date | null;
-  duration: number | null; // ミリ秒
-}
-
-export interface RecentExecutionListProps {
-  executions: ExecutionSummary[];
-  onSelectExecution: (executionId: string) => void;
-  maxItems?: number; // デフォルト: 3
+  status: AgentFloatingStatus;
+  startedAt: Date | null;
+  progress?: number;
+  onStop: () => void;
 }
 ```
 
-### コンポーネント API シグネチャと使用例
+### APIシグネチャ
+
+`AgentView` は Renderer から直接 IPC を叩かず、store selector と `window.electronAPI.permissions` を経由する。
+
+```ts
+type PermissionApi = {
+  getMode?: () => Promise<string>;
+  getRemembered?: () => Promise<unknown[]>;
+  setMode?: (mode: AgentPermissionMode) => Promise<unknown>;
+  clearRemembered?: () => Promise<unknown>;
+};
+```
+
+主な store シグネチャ:
+
+```ts
+const fetchSkills = useFetchSkills();
+const executeSkill = useExecuteSkill();
+const abortExecution = useAbortSkillExecution();
+const setAdvancedSettingsOpen = useSetAdvancedSettingsOpen();
+const addExecutionToHistory = useAddExecutionToHistory();
+```
+
+### 使用例
+
+使用例として、AgentView 内では以下のように部品を構成する。
 
 ```tsx
-// SkillChip - ツール選択チップ
-<SkillChip
-  skillName="search"
-  displayName="検索"
-  isSelected={selectedSkillName === "search"}
-  onSelect={() => selectSkill("search")}
-/>
+<div role="radiogroup" aria-label="ツール選択">
+  {filteredSkills.map((skill) => (
+    <SkillChip
+      key={skill.name}
+      skillName={skill.name}
+      displayName={skill.displayName ?? skill.name}
+      isSelected={selectedSkill?.name === skill.name}
+      onSelect={() => handleSkillSelect(skill)}
+    />
+  ))}
+</div>
 
-// ExecuteButton - 実行ボタン（未選択時は無効化）
 <ExecuteButton
   selectedSkillName={selectedSkillName}
-  isExecuting={executionState.status === "executing"}
-  onExecute={executeSelectedSkill}
-/>
-
-// FloatingExecutionBar - 実行中フローティングバー
-<FloatingExecutionBar
-  skillName="検索ツール"
-  status="executing"
-  startedAt={new Date()}
-  progress={45}
-  onStop={handleAbort}
-/>
-
-// AdvancedSettingsPanel - 詳細設定パネル
-<AdvancedSettingsPanel
-  isOpen={isAdvancedSettingsOpen}
-  onClose={() => setAdvancedSettingsOpen(false)}
-  models={modelList}
-  selectedProviderId={providerId}
-  selectedModelId={modelId}
-  onSelectModel={handleSelectModel}
-  permissionMode="default"
-  onModeChange={handleModeChange}
-  rememberedCount={3}
-  onResetRemembered={handleReset}
-/>
-
-// RecentExecutionList - 最近の実行履歴
-<RecentExecutionList
-  executions={recentExecutions}
-  onSelectExecution={handleSelectExecution}
-  maxItems={3}
+  onExecute={handleExecute}
+  isExecuting={isExecuting}
 />
 ```
-
-### 状態管理パターン（agentSlice 拡張）
-
-既存の agentSlice に以下のフィールドとアクションを追加した。14個のスライス統合パターンを維持。
-
-```typescript
-// 新規フィールド
-recentExecutions: ExecutionSummary[];   // 実行履歴（最大10件）
-isAdvancedSettingsOpen: boolean;        // 詳細設定パネル開閉
-
-// 新規アクション
-addExecutionToHistory: (summary: ExecutionSummary) => void;  // 先頭追加、10件超で末尾削除
-clearExecutionHistory: () => void;                            // 全クリア
-setAdvancedSettingsOpen: (isOpen: boolean) => void;           // 開閉制御
-```
-
-#### 個別セレクタパターン（P31対策）
-
-合成Store Hookの無限ループ問題（P31）を回避するため、個別セレクタを使用:
-
-```typescript
-export const useRecentExecutions = () =>
-  useAppStore((state) => state.recentExecutions);
-export const useAddExecutionToHistory = () =>
-  useAppStore((state) => state.addExecutionToHistory);
-export const useIsAdvancedSettingsOpen = () =>
-  useAppStore((state) => state.isAdvancedSettingsOpen);
-export const useSetAdvancedSettingsOpen = () =>
-  useAppStore((state) => state.setAdvancedSettingsOpen);
-```
-
-### マイクロインタラクション実装詳細
-
-共通アニメーション定数は `animations.ts` で管理:
-
-```typescript
-export const transitions = {
-  hover: "transition-transform duration-200 ease", // ホバー: 200ms
-  tap: "transition-transform duration-100 ease-in", // タップ: 100ms
-  slideIn: "transition-transform duration-300 ease-out", // スライドイン: 300ms
-  slideOut: "transition-transform duration-200 ease-in", // スライドアウト: 200ms
-  colorFade: "transition-colors duration-200 ease", // 色変化: 200ms
-  all: "transition-all duration-200 ease", // 全プロパティ: 200ms
-} as const;
-```
-
-共通スタイル定数は `styles.ts` で管理:
-
-```typescript
-export const spacing = {
-  sectionGap: "gap-6", // 24px (8px x 3)
-  chipGap: "gap-4", // 16px (8px x 2)
-  containerPadding: "p-6", // 24px
-  sectionHeader: "mb-3", // 12px
-} as const;
-
-export const interactiveStyles = {
-  iconButton:
-    "p-1.5 rounded-lg hover:bg-[var(--bg-tertiary)] transition-colors duration-200",
-  cardHover: "cursor-pointer transition-colors duration-200",
-} as const;
-```
-
-### エラーハンドリングとエッジケース
-
-| エッジケース                 | 挙動                                                                 |
-| ---------------------------- | -------------------------------------------------------------------- |
-| `selectedSkillName === null` | ExecuteButton を `disabled` にし、「ツールを選んでください」を表示   |
-| 実行失敗時                   | FloatingExecutionBar を赤色の失敗状態で表示し、3秒後にスライドアウト |
-| スキル0件                    | EmptyState を表示し「ツールがありません」メッセージ                  |
-| スキル11件以上               | 検索バーを表示して絞り込み可能に                                     |
-| `isExecuting === true`       | ExecuteButton を非表示にし、FloatingExecutionBar を表示              |
-| ESCキー押下                  | AdvancedSettingsPanel を閉じる                                       |
-
-### 設定項目・定数一覧
-
-| 項目                             | 値                                               |
-| -------------------------------- | ------------------------------------------------ |
-| レイアウト最大幅                 | `max-width: 600px`                               |
-| SkillChipアイコンサイズ          | `80x80px`                                        |
-| ExecuteButton高さ                | `py-3`（約48px）                                 |
-| FloatingExecutionBar最小幅       | `300px`                                          |
-| 実行履歴最大保持件数             | `10件`（MAX_EXECUTION_HISTORY）                  |
-| 実行履歴表示件数                 | `3件`（RecentExecutionList.maxItems デフォルト） |
-| hover時間                        | `200ms ease`                                     |
-| tap時間                          | `100ms ease-in`                                  |
-| slide-in時間                     | `300ms ease-out`                                 |
-| slide-out時間                    | `200ms ease-in`                                  |
-| z-index（GlobalNavStrip）        | `z-20`                                           |
-| z-index（AdvancedSettingsPanel） | `z-40`                                           |
-| z-index（FloatingExecutionBar）  | `z-50`                                           |
-
-### テスト実行方法
 
 ```bash
-# AgentView関連テスト全実行
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/
-
-# 個別コンポーネントテスト
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/__tests__/SkillChip.test.tsx
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/__tests__/ExecuteButton.test.tsx
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/__tests__/FloatingExecutionBar.test.tsx
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx
-cd apps/desktop && pnpm exec vitest run src/renderer/components/organisms/AgentView/__tests__/RecentExecutionList.test.tsx
-
-# レイアウト統合テスト
-cd apps/desktop && pnpm exec vitest run src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx
-
-# AgentSlice拡張テスト
-cd apps/desktop && pnpm exec vitest run src/renderer/store/slices/__tests__/agentSlice.extension.test.ts
+cd apps/desktop && pnpm vitest run src/renderer/views/AgentView/__tests__/AgentView.test.tsx
 ```
 
-### 実装の整合確認コマンド
+### 状態管理パターン
 
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
-  --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
-```
+- `recentExecutions`: 実行履歴を最大10件保持
+- `isAdvancedSettingsOpen`: 詳細設定パネルの開閉状態
+- P31 対策として、AgentView 配下では一括 store 取得を避け、個別 selector を使う
+
+### マイクロインタラクション
+
+`animations.ts` と `styles.ts` に共通定数を置いている。
+
+| 項目           | 値        |
+| -------------- | --------- |
+| ホバー         | 200ms     |
+| タップ         | 100-150ms |
+| スライドイン   | 300ms     |
+| スライドアウト | 200ms     |
+
+### 設定項目と定数一覧
+
+| 項目                         | 内容                                                     |
+| ---------------------------- | -------------------------------------------------------- |
+| `MAX_EXECUTION_HISTORY`      | recent history の上限                                    |
+| `permissionMode`             | `default` / `acceptEdits` / `bypassPermissions` / `plan` |
+| `rememberedCount === 0`      | reset button を disabled にする条件                      |
+| `importedSkills.length > 10` | 検索バー表示条件                                         |
+
+### エラーハンドリング
+
+エラーハンドリングは 2 層で行う。
+
+1. 権限 API が使えない環境では `try/catch` で握り、既定値のまま UI を表示する。
+2. 実行失敗時は `FloatingExecutionBar` を `failed` state で表示し、ユーザーに失敗を見せる。
+
+### エッジケース
+
+- エッジケース: `rememberedCount=0` のとき reset を押せない
+- エッジケース: `startedAt=null` のとき経過時間は `"00:00"` を表示する
+- エッジケース: スキルが 0 件のときは EmptyState を出す
+- エッジケース: スキルが 11 件以上のときだけ検索バーを出す
+
+### 補足
+
+- 型アサーション課題 `UT-UI-03-TYPE-ASSERTION-001` は再監査時点で解消済み。残課題は global token 改善 `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` のみ
+- Phase 11 の dedicated harness により、main shell 依存を持たず安定してスクリーンショットを撮影できる

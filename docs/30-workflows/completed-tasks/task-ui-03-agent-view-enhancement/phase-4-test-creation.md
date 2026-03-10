@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 4                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -24,17 +24,26 @@ AIアシスタント画面リデザイン（Tap & Discover + Apple HIG準拠）�
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                                                                  | 説明                                         |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| 元タスク仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | セクション9テスト計画、セクション5実行タスク |
-| Phase 1 要件定義       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-1-requirements.md`                                         | 要件・受入基準                               |
-| Phase 2 設計           | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-2-design.md`                                               | アーキテクチャ・インターフェース設計         |
-| Phase 3 設計レビュー   | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-3-design-review.md`                                        | レビュー結果                                 |
-| UIコンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | UIコンポーネント設計仕様                     |
-| 機能コンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                       | 機能コンポーネント仕様                       |
-| UIアーキテクチャ仕様   | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | UIアーキテクチャ設計                         |
-| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand状態管理設計                          |
-| 既知の落とし穴         | `.claude/rules/06-known-pitfalls.md`                                                                                                  | P39/P40/P31/P47 テスト関連の教訓             |
+| 資料名                   | パス                                                                                                         | 説明                                         |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| 元タスク仕様書           | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md` | セクション9テスト計画、セクション5実行タスク |
+| Phase 1 要件定義         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-1-requirements.md`                | 要件・受入基準                               |
+| Phase 2 設計             | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-2-design.md`                      | アーキテクチャ・インターフェース設計         |
+| Phase 3 設計レビュー     | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-3-design-review.md`               | レビュー結果                                 |
+| UIコンポーネント仕様     | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                      | UIコンポーネント設計仕様                     |
+| 機能コンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                              | 機能コンポーネント仕様                       |
+| UIアーキテクチャ仕様     | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                    | UIアーキテクチャ設計                         |
+| 状態管理仕様             | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                 | Zustand状態管理設計                          |
+| 実行UI仕様               | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                 | 実行状態・Permission テスト観点              |
+| モデル選択UI             | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                    | AdvancedSettingsPanel のモデル選択テスト     |
+| 許可設定UI               | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                        | Permission settings テスト観点               |
+| テストパターン           | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                            | Storeモック・act・happy-dom パターン         |
+| テストフィクスチャ       | `.claude/skills/aiworkflow-requirements/references/testing-fixtures.md`                                      | Props / Store factory / 境界値フィクスチャ   |
+| アクセシビリティ試験仕様 | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                 | ARIA / keyboard test 観点                    |
+| 既知の落とし穴           | `.claude/rules/06-known-pitfalls.md`                                                                         | P39/P40/P31/P47 テスト関連の教訓             |
+| 要件定義書               | `outputs/phase-1/requirements-definition.md`                                                                 | Phase 1 成果物                               |
+| アーキテクチャ設計書     | `outputs/phase-2/architecture-design.md`                                                                     | Phase 2 成果物                               |
+| 設計レビュー結果         | `outputs/phase-3/design-review-result.md`                                                                    | Phase 3 成果物                               |
 
 ## 実行手順
 
@@ -319,7 +328,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 4
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase

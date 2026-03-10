@@ -24,7 +24,7 @@ export const ExecuteButton: React.FC<ExecuteButtonProps> = ({
       type="button"
       disabled={isDisabled}
       onClick={isDisabled ? undefined : onExecute}
-      className={`w-full py-3 px-6 rounded-xl font-medium text-base ${transitions.colorFade} flex items-center justify-center gap-2 ${
+      className={`h-14 w-full px-6 rounded-[12px] font-medium text-base ${transitions.colorFade} flex items-center justify-center gap-2 ${
         isDisabled
           ? "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] cursor-not-allowed"
           : "bg-[var(--status-primary)] text-[var(--text-inverse)] hover:opacity-90"

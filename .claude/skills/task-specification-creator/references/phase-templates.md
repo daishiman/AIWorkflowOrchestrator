@@ -155,7 +155,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}}
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}}
 ```
 ````
 
@@ -1194,7 +1194,7 @@ Phase 11: 手動テスト検証
 
 ```bash
 # 推奨: 撮影計画から一括撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 ```
@@ -1205,14 +1205,14 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 ### 網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
 非視覚TCのみ例外許可する場合:
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --allow-non-visual-tc TC-08
 ```

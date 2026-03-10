@@ -17,6 +17,7 @@
 > - `references/task-workflow.md`（完了台帳）
 > - `references/lessons-learned.md`（再発防止知見）
 > - `references/<ui-domain-spec>.md`（必要時。例: `ui-ux-navigation.md` のようなドメイン固有 UI 正本）
+> - `references/ui-ux-design-system.md`（token / theme / contrast 所見がある場合）
 
 ---
 
@@ -121,8 +122,23 @@ UI機能実装の場合は次を推奨:
 - `ui-ux-components.md`（実装内容・完了タスク・未タスク導線）
 - `ui-ux-feature-components.md`（機能仕様・苦戦箇所）
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
+- `ui-ux-design-system.md`（token / contrast / theme 改善がある場合）
 - `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 - `ui-ux-navigation.md` などのドメイン固有 UI 正本（存在する場合）
+
+### 4.2 UI current workflow 反映先マトリクス（最適ファイル形成）
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| 追加コンポーネント一覧、完了タスク、導線 | `ui-ux-components.md` | UI カタログとして一覧性が高い |
+| 画面の振る舞い、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | 機能単位で再利用しやすい |
+| 専用型、adapter helper、harness、責務境界 | `arch-ui-components.md` | 構造上の判断理由を残せる |
+| selector / store / reset 条件 | `arch-state-management.md` | 状態責務の正本に集約できる |
+| token / contrast / theme 所見 | `ui-ux-design-system.md` | component 修正と token 改善を分離できる |
+| 検証値、残課題、完了記録 | `task-workflow.md` | 台帳として追跡できる |
+| 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | 次回の短時間解決に直結する |
+
+> 迷った場合は「複数仕様書に同じ段落を貼る」のではなく、最初にこのマトリクスで責務を決めてから SubAgent 分担へ落とす。
 
 ---
 
@@ -166,19 +182,19 @@ UI機能実装の場合は次を推奨:
 | コマンド | 目的 | 期待結果 |
 | --- | --- | --- |
 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
+| `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
+| `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md && rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md` | `phase-12-documentation.md` のメタ情報/Task 12-1〜12-5 完了同期を確認 | `ステータス=completed` と Task 12-1〜12-5 が `[x]` で一致する |
 | `diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json` | artifacts 二重台帳の同期確認 | 差分なし |
-| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` | workflow index 再生成 | `index.md` が再生成される |
+| `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` | workflow index 再生成 | `index.md` が再生成される |
 | `rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md && rg -n '^\\| 13 \\| .* \\| .*未実施' <workflow-path>/index.md` | workflow index 状態確認 | Phase 12=完了、Phase 13=未実施 |
 | `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` | workflow 本文 stale 確認 | 0件 |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
+| `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
+| `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
+| `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
+| `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
+| `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
+| `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | 未完了は `unassigned-task`、完了済みは `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
@@ -187,7 +203,7 @@ UI機能実装の場合は次を推奨:
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
 | `pnpm --filter @repo/desktop test:run` | 回帰の全量実行（ベースライン確認） | `PASS` または `SIGTERM` 失敗ログが記録される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
+| `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>` | TC単位の証跡紐付け検証（UIタスクのみ） | `PASS`（expected TC = covered TC） |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>` | 全量実行が `SIGTERM` の場合の分割フォールバック | 対象回帰の合否が確定できる |
 | `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |

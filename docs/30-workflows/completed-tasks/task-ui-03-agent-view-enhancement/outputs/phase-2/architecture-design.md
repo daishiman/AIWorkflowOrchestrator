@@ -7,7 +7,7 @@
 | タスクID   | TASK-UI-03-AGENT-VIEW-ENHANCEMENT |
 | Phase      | 2                                 |
 | 成果物種別 | アーキテクチャ設計書              |
-| 作成日     | 2026-03-07                        |
+| 作成日     | 2026-03-10                        |
 | 入力仕様書 | phase-2-design.md                 |
 
 ---

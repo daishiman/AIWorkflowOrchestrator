@@ -73,16 +73,16 @@
 ## 4. 検証コマンド
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
+node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --json
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 rg -n '^\| ステータス \| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \[x\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 rg -n '^## メタ情報$|^## [1-9]\. ' <unassigned-file>
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator

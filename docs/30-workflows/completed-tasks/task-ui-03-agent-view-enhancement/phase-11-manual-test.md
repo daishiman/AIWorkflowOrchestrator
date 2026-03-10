@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 11                     |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -22,22 +22,25 @@
 
 ## 参照資料
 
-| 資料名                         | パス                                                                                                                                  | 説明                                          |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| タスク仕様書                   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | 元タスク仕様書（画面構成図・完了条件含む）    |
-| Phase 5 実装成果物             | `outputs/phase-5/implementation-summary.md`                                                                                           | 依存Phase 5成果物                             |
-| Phase 6 テスト拡充成果物       | `outputs/phase-6/test-expansion-report.md`                                                                                            | 依存Phase 6成果物                             |
-| Phase 7 カバレッジ成果物       | `outputs/phase-7/coverage-report.md`                                                                                                  | 依存Phase 7成果物                             |
-| Phase 8 リファクタリング成果物 | `outputs/phase-8/refactoring-report.md`                                                                                               | 依存Phase 8成果物                             |
-| Phase 9 品質成果物             | `outputs/phase-9/quality-report.md`                                                                                                   | 依存Phase 9成果物                             |
-| 最終レビュー                   | `outputs/phase-10/final-review-result.md`                                                                                             | Phase 10成果物（判定結果）                    |
-| 設計書                         | `outputs/phase-2/architecture-design.md`                                                                                              | Phase 2成果物（画面設計・コンポーネント設計） |
-| 実行ガイダンス                 | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                                           | 撮影コマンド詳細・レポート形式                |
-| Apple HIG デザイン原則         | `.claude/rules/01-architecture.md`（UI/UXデザイン哲学セクション）                                                                     | カラーパレット・スペーシング基準              |
-| UIコンポーネント仕様           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | コンポーネント設計仕様                        |
-| 状態管理仕様                   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand Store設計                             |
-| アクセシビリティ試験仕様       | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                          | WCAG 2.1 AA 検証基準                          |
-| UI実行仕様                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                                          | 実行中/完了/失敗状態の期待仕様                |
+| 資料名                         | パス                                                                                                         | 説明                                          |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| タスク仕様書                   | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md` | 元タスク仕様書（画面構成図・完了条件含む）    |
+| Phase 5 実装成果物             | `outputs/phase-5/implementation-summary.md`                                                                  | 依存Phase 5成果物                             |
+| Phase 6 テスト拡充成果物       | `outputs/phase-6/test-expansion-report.md`                                                                   | 依存Phase 6成果物                             |
+| Phase 7 カバレッジ成果物       | `outputs/phase-7/coverage-report.md`                                                                         | 依存Phase 7成果物                             |
+| Phase 8 リファクタリング成果物 | `outputs/phase-8/refactoring-report.md`                                                                      | 依存Phase 8成果物                             |
+| Phase 9 品質成果物             | `outputs/phase-9/quality-report.md`                                                                          | 依存Phase 9成果物                             |
+| 最終レビュー                   | `outputs/phase-10/final-review-result.md`                                                                    | Phase 10成果物（判定結果）                    |
+| 設計書                         | `outputs/phase-2/architecture-design.md`                                                                     | Phase 2成果物（画面設計・コンポーネント設計） |
+| 実行ガイダンス                 | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                  | 撮影コマンド詳細・レポート形式                |
+| Apple HIG デザイン原則         | `.claude/rules/01-architecture.md`（UI/UXデザイン哲学セクション）                                            | カラーパレット・スペーシング基準              |
+| UIコンポーネント仕様           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                      | コンポーネント設計仕様                        |
+| 状態管理仕様                   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                 | Zustand Store設計                             |
+| アクセシビリティ試験仕様       | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                 | WCAG 2.1 AA 検証基準                          |
+| UI実行仕様                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                 | 実行中/完了/失敗状態の期待仕様                |
+| モデル選択UI                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                    | AdvancedSettingsPanel のモデル選択期待仕様    |
+| 許可設定UI                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                        | remembered permissions / reset の期待仕様     |
+| スキル実行セキュリティ         | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`                              | permission mode と allowed tools の前提       |
 
 ## 依存Phase成果物参照
 
@@ -118,7 +121,7 @@
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
 # Step 2: screenshot-plan.json から全状態を一括撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement \
   --plan outputs/phase-11/screenshot-plan.json
 
@@ -132,7 +135,7 @@ kill %1 2>/dev/null
 ### 網羅性検証コマンド
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement \
   --allow-non-visual-tc TC-10
 ```

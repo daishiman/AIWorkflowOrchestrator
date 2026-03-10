@@ -74,6 +74,16 @@ vi.mock("../../../store", () => ({
   useIsSkillExecuting: vi.fn(() => false),
   useSkillExecutionId: vi.fn(() => null),
   useAbortSkillExecution: vi.fn(() => vi.fn()),
+  useExecuteSkill: vi.fn(() => vi.fn()),
+  useSkillExecutionStatus: vi.fn(() => null),
+  useAddExecutionToHistory: vi.fn(() => vi.fn()),
+  useLLMProviders: vi.fn(() => []),
+  useSelectedProviderId: vi.fn(() => null),
+  useSelectedModelId: vi.fn(() => null),
+  useLLMHealthStatus: vi.fn(() => ({})),
+  useFetchProviders: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
 }));
 
 // AgentView をインポート
@@ -267,6 +277,32 @@ describe("AgentView レイアウト", () => {
 
       // リセット
       vi.mocked(store.useImportedSkills).mockReturnValue([]);
+    });
+
+    it("skillFilter がある場合は SkillChip 一覧が絞り込まれる", async () => {
+      const store = await import("../../../store");
+      const skills = Array.from({ length: 12 }, (_, i) => ({
+        id: `skill-${i}`,
+        name: `Skill ${i}`,
+        slug: `skill-${i}`,
+        description: `Description ${i}`,
+        path: `/path/${i}`,
+        triggers: [],
+        anchors: [],
+        lastModified: new Date(),
+      }));
+      vi.mocked(store.useImportedSkills).mockReturnValue(skills);
+      vi.mocked(store.useSkillFilter).mockReturnValue("Skill 1");
+
+      render(<AgentView />);
+
+      expect(screen.queryByText("Skill 0")).not.toBeInTheDocument();
+      expect(screen.getByText("Skill 1")).toBeInTheDocument();
+      expect(screen.getByText("Skill 10")).toBeInTheDocument();
+      expect(screen.getByText("Skill 11")).toBeInTheDocument();
+
+      vi.mocked(store.useImportedSkills).mockReturnValue([]);
+      vi.mocked(store.useSkillFilter).mockReturnValue("");
     });
   });
 });
