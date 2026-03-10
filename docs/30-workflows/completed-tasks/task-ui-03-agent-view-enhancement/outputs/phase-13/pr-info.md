@@ -10,7 +10,7 @@
 | PR URL         | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1146 |
 | ベースブランチ | `main`                                                        |
 | 作業ブランチ   | `feature/task-ui-03-agent-view-enhancement`                   |
-| HEAD           | `5a6cdac778209da094176766fcc5f96a2a820f97`                    |
+| PR作成時HEAD   | `0222fdc5c1493a19b0d2912fc1da285f5faf08d3`                    |
 | 作成日         | 2026-03-10                                                    |
 
 ## PR本文反映内容
@@ -37,4 +37,4 @@
 ## 補足
 
 - push hook で lint / shared build / typecheck / tests は再実行済み
-- PR 作成後に `pr-info.md` と workflow status を追加 push 済み
+- PR 作成後に `pr-info.md` と workflow status を docs-only push で追補した
