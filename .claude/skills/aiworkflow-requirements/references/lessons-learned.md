@@ -22,7 +22,7 @@
 |------|-----------|----------|
 | 2026-03-10 | 1.29.61 | TASK-10A-G 実装知見追補。IPC ハンドラキャプチャパターン、Store 統合テストの Promise 解決タイミング制御、Phase 6 カバレッジ不足の2段階テスト設計、P41 v8 Function Coverage exemption 判断、Phase 12 並列エージェント分割戦略の5苦戦箇所と5分解決カードを追記 |
 | 2026-03-10 | 1.29.60 | TASK-10A-G 再監査追補の教訓を追加。`generate-index.js --workflow ... --regenerate` が workflow `artifacts.json` スキーマ差で `index.md` を `undefined` / 全Phase未実施へ崩しうる点、実行直後に `verify-all-specs --strict` / `validate-phase-output` で確認し、必要なら未タスク化する運用を追記 |
-| 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、clearTimeout 不要の判断根拠（Timer は IPC_TIMEOUT_MS 後に自動 GC）、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
+| 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、`clearTimeout` cleanup 採用の判断根拠、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
 | 2026-03-10 | 1.29.58 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓を追加。App.tsx AuthGuard構造変換、useAuthState タイマー管理（P13準拠）、getAuthState 判定優先順位設計、Settings bypass セキュリティ境界、サブエージェント exit code 144 の5苦戦箇所と5分解決カード・4ステップ再利用手順を追記 |
 | 2026-03-10 | 1.29.57 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査の教訓を追加。Settings bypass と未認証 reset の相殺、明示 screenshot 要求時の P53 代替禁止、worktree の `pnpm install --frozen-lockfile` preflight を 4 ステップ解決手順つきで追記 |
 | 2026-03-09 | 1.29.56 | TASK-10A-G の教訓を追加。テスト専用タスクの Phase 4/5 境界曖昧さ、巨大ファイルのカバレッジ計測誤解、3層テスト構成の Layer 間モック整合性、並列エージェントの Phase 12 分割戦略、`--sequence.shuffle` 検証、supporting artifact / open backlog 配置ドリフトを追記 |
@@ -6651,14 +6651,14 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 対処 | current workflow 配下へ screenshot 4件を取得し、timeout fallback と Settings shell の実影響を証跡化した |
 | 標準ルール | ユーザーが screenshot を明示要求したら、非UIタスクでも影響 UI を代表画面として撮影する |
 
-### 実装教訓: Promise.race パターンのシンプルさと clearTimeout 不要の判断
+### 実装教訓: Promise.race パターンのシンプルさと clearTimeout cleanup の判断
 
 | 項目 | 内容 |
 | --- | --- |
 | 発見 | IPC タイムアウトは `Promise.race([ipcRenderer.invoke(ch, args), timeoutPromise])` で驚くほどシンプルに実装できた。複雑な AbortController やカスタムキャンセル機構は不要 |
-| clearTimeout 判断 | 設計段階で clearTimeout の要否を検討した。結論: 不要。reject された Promise の Timer は `IPC_TIMEOUT_MS`（5秒）後に自然に GC される。Node.js/Electron の GC が未参照 Timer を処理するため、明示的な cleanup はオーバーエンジニアリング |
-| 判断根拠 | (1) Timer は5秒で自動消滅、(2) IPC 呼び出し頻度は高々数十回/秒で Timer 蓄積リスクは無視可能、(3) clearTimeout を入れると success/error 両分岐への追加が必要になりコードが複雑化 |
-| 標準ルール | timeout 導入タスクでは「発火条件」「エラーメッセージ文言」「GC 安全性の根拠」の3点を設計時に確認する |
+| clearTimeout 判断 | 設計段階で cleanup の要否を検討した。結論: 採用。成功/失敗の両分岐で `clearTimeout(timeoutId)` を実行し、短命 timer の残留を防いだ |
+| 判断根拠 | (1) fake timers テストで pending timer が残らず再現性が上がる、(2) 高頻度 invoke 時の不要 timer 残留を避けられる, (3) `invokeWithTimeout()` に閉じ込めれば呼び出し側の複雑さは増えない |
+| 標準ルール | timeout 導入タスクでは「発火条件」「エラーメッセージ文言」「cleanup 責務の配置」の3点を設計時に確認する |
 
 ### 実装教訓: 3ファイル重複 safeInvoke の DRY 統合
 
@@ -6678,6 +6678,15 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | P13 遵守 | `vi.runAllTimers()` は `Promise.race` + `setTimeout` の再スケジュールで無限ループするため使用禁止。必ず `advanceTimersByTime` で1ステップずつ進める |
 | テストパターン | `ipcRenderer.invoke` を未解決の Promise で制御し、`advanceTimersByTime(IPC_TIMEOUT_MS)` でタイマーを進行させ、タイムアウトエラーの発火を検証。正常応答テストでは Timer 進行前に Promise を resolve して成功パスを確認 |
 | 標準ルール | Promise.race + setTimeout のテストでは `runAllTimers` / `runAllTimersAsync` を絶対に使わず、`advanceTimersByTime` で必要な時間だけ進める |
+
+### 実装補遺: Preload タイマーテストと contextBridge capture
+
+| 項目 | 内容 |
+| --- | --- |
+| contextBridge capture | `preload/index.ts` 単体では `contextBridge.exposeInMainWorld` に公開された API を capture して評価すると、Renderer 実利用形に近い形で回帰を確認しやすい |
+| fake timer 順序 | fake timers は `invokeWithTimeout()` 呼び出し前に有効化し、Promise 作成後に `advanceTimersByTime` で進めると timeout 分岐を安定再現できる |
+| Promise.race helper 判断 | timeout 制御は各 API ごとに書かず、共通 helper に閉じ込めて `safeInvoke` / `safeInvokeUnwrap` から再利用させると rollout 漏れを減らせる |
+| カバレッジ判定 | timeout helper は file-scope 100% を狙い、Preload API 側は representative route の回帰で閉じると責務境界がぶれにくい |
 
 ### 苦戦箇所: Phase 12 の planned wording が system spec 同期漏れを招く
 

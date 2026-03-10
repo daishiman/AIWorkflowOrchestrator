@@ -3979,6 +3979,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.16** | **2026-03-05** | **TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 を completed-tasks へ移管**: `outputs/phase-12` 実体と `phase-12-documentation.md` completed を確認後、workflow本体を `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/` へ移動。併せて `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を `completed-tasks/unassigned-task/` へ移管し、関連タスク/残課題テーブルのステータスを完了化                                                                             |
 | **1.67.15** | **2026-03-05** | **UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 を残課題へ登録**: `apps/desktop test:run` の `SIGTERM` 中断に対するフォールバック運用（失敗ログ固定 + `vitest run <対象>` 分割実行 + 3仕様同期）を未タスク化し、`TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` の関連タスク表と残課題テーブルへ同時反映                                                                                                                                                                                          |
 | **1.67.14** | **2026-03-05** | **TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補（SIGTERM運用ガード + 5分解決カード）**: 同タスク節へ `apps/desktop test:run` の `SIGTERM` 失敗証跡と分割実行運用を追加し、runtime配線修正とテスト中断ガードを一体化した「同種課題の5分解決カード」を追記。`task-workflow/lessons/api-ipc` の3点同時同期ルールを明文化                                                                                                                                                                            |
+| **1.67.14** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査追補**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 節へ苦戦箇所3件、4ステップ解決カード、検証証跡（verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD）を追加。Phase 12 の current/baseline 分離と representative screenshot 起点の backlog formalization を台帳へ固定 |
 | **1.67.13** | **2026-03-05** | **Phase 12 未タスクを追加（workflowパス正規化ガード）**: `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を `docs/30-workflows/unassigned-task/` に登録。苦戦箇所（workflow実体パス取り違え、`--target-file` 境界誤用、`current/baseline` 混在）を再利用可能な手順へ分解し、`task-056a` の再監査運用を安定化                                                                                                                                                                                   |
 | **1.67.12** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補**: `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行し、実装差分未タスクは0件であることを再確認。あわせて baseline負債（90件）の段階削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/unassigned-task/` に追加し、運用改善を追跡可能化                                                                                                                        |
 | **1.67.11** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE を完了タスクへ追加**: Renderer Store baseline（型定義 + inventory 16行 + 境界マトリクス + セレクタ規約）を同期し、Phase 11 の TC証跡を `TC-11-01〜03` へ統一。`validate-phase11-screenshot-coverage` を expected=3/covered=3 で PASS 化し、Phase 12 のシステム仕様同期漏れを解消                                                                                                                                                                               |
@@ -4188,3 +4189,40 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | Phase 12 Task 1 不足 | `implementation-guide.md` が見出しのみで内容要件不足 | `validate-phase12-implementation-guide` を通るまで補完 |
 | worktree 依存欠損 | `@rollup/rollup-darwin-x64` 欠損で vitest/screenshot 失敗 | `pnpm install --frozen-lockfile` で復旧後に再実行 |
 | テスト対象の誤実行 | `test:run --` で全体実行になりやすい | `cd apps/desktop && pnpm exec vitest run <target>` に固定 |
+
+## TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10）
+
+- 対象: `apps/desktop/src/preload/index.ts` の safeInvoke timeout、Phase 11 screenshot、Phase 12 仕様同期
+- branch diff: `origin/main...HEAD` は 0 件
+- current worktree diff: `git diff HEAD` では safeInvoke 実装差分あり
+- Phase 11: dedicated harness で `TC-11-01/02` を再取得
+- Phase 12: workflow / system spec / skill refs / 未タスク 4件を同期
+
+### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| branch diff と current worktree diff を混同しやすい | `origin/main...HEAD` だけで completed / spec_created を判定する | `origin/main...HEAD` と `git diff HEAD` を分離記録した |
+| representative screenshot が scope 外不具合を露出する | screenshot を current task の合否判定だけに使う | `discovered-issues.md` に記録し、未タスクへ formalize した |
+| safeInvoke rollout scope を helper 名だけで言い切りやすい | 同名 helper の派生実装を洗わずに「preload 全体対応済み」と書く | `skill-api.ts` / `skill-creator-api.ts` を別 backlog として切り出した |
+
+### 同種課題の4ステップ解決カード
+
+1. `origin/main...HEAD` と `git diff HEAD` を分離し、branch と current worktree の結論を別々に固定する。
+2. representative screenshot を light/dark で取得し、画面不具合と console warning の両方を backlog 判定する。
+3. 共通 helper 改修は「どのファイルの helper か」を仕様書へ明記し、派生 helper は未タスクへ分離する。
+4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` を同一ターンで実行し、`missing=0` と `currentViolations=0` を両方確認する。
+
+### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-FIX-SAFEINVOKE-TIMEOUT-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-FIX-SAFEINVOKE-TIMEOUT-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` → existing 221 / missing 0
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` → currentViolations 0 / baselineViolations 130
+
+### 関連未タスク
+
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-api-safeinvoke-timeout-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-settings-light-theme-contrast-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-accountsection-linked-provider-key-warning-001.md`

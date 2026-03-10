@@ -3,6 +3,28 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 パターン反映
+
+- **Agent**: skill-creator
+- **Phase**: Phase 12（仕様同期）
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に safeInvoke timeout 実装パターンを追加
+  - contextBridge mock capture テストパターン、Promise.race タイムアウト適用基準を新規パターンとして記録
+  - クイックナビゲーション IPC ドメインを更新
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12 再監査テンプレート追補
+
+- **Agent**: skill-creator
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「画面検証で露出した副次不具合の即時未タスク化 + 3.5 節継承」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に screenshot 由来未タスク化と `### 3.5 実装課題と解決策` 継承チェックを追加
+  - `verify-unassigned-links` を `missing=0` まで閉じ、exact counts を outputs/task-workflow へ同値転記する運用を再強化
+
+---
 
 ## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]
 

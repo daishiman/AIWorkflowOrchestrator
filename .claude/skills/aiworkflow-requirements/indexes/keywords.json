@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-10T06:09:08.053Z",
-  "totalKeywords": 1548,
+  "generated": "2026-03-10T07:45:04.670Z",
+  "totalKeywords": 1549,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4133,6 +4133,7 @@
     "TIMEOUT": [
       "lessons-learned.md",
       "security-electron-ipc.md",
+      "task-workflow.md",
       "ui-ux-settings.md"
     ],
     "BYPASS": [
@@ -4144,7 +4145,8 @@
     ],
     "SAFEINVOKE": [
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "task-workflow.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4989,6 +4991,9 @@
       "ui-ux-components.md"
     ],
     "完了記録": [
+      "task-workflow.md"
+    ],
+    "再監査同期": [
       "task-workflow.md"
     ],
     "バックエンド技術スタック": [

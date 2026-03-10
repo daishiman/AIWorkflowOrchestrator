@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.17.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 監査反映: Preload `safeInvoke` の invoke hang containment パターンを追加。`Promise.race` + `IPC_TIMEOUT_MS` + channel 名付き error 文言 + `current diff=0` 時の仕様更新停止判断を明文化 |
 | v1.16.0    | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 完了記録: Profile/Avatar fallback 登録パターンセクション（v1.15.0で追加済み）の完了タスク反映。`registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` の検証基準（チャネル数一致・排他分岐・error envelope統一）を確定 |
 | v1.15.0    | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: ApiKeysSection 契約防御ガードセクション追加（GAP-01〜GAP-06テーブル、59テスト全PASS、カバレッジ実績値）。完了タスクテーブルに追加。architecture-implementation-patterns.md S29 との相互参照を設定                                                                                                   |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
@@ -277,6 +278,25 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 | 引数検証           | Main側ハンドラーで実施       | バリデーションテスト     |
 
 **関連タスク**: history-preload-setup（2026-01-13完了）
+
+### Preload `safeInvoke` タイムアウトガード
+
+`ipcRenderer.invoke()` は Main Process が返らない場合に永続 pending になるため、Preload 層で待機上限を持たせる。これは sender 検証や whitelist とは別の、Renderer 側停止回避の責務である。
+
+| 観点 | 契約 |
+| ---- | ---- |
+| 適用箇所 | `apps/desktop/src/preload/index.ts` の `safeInvoke` |
+| 方式 | `Promise.race([ipcRenderer.invoke(...), timeoutPromise])` |
+| 定数 | `IPC_TIMEOUT_MS` をファイルスコープ定数で保持する |
+| エラー文言 | `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms` |
+| 既存契約 | whitelist 拒否 (`Channel ${channel} is not allowed`) は維持する |
+| 呼び出し元要件 | Renderer 側で `catch` し、`isLoading=false` などの復旧処理を必ず実行する |
+
+**実装判断**:
+
+- timeout は Preload 共通ラッパーで一括適用し、各 API ごとのシグネチャは変えない
+- `channel` 名は whitelist 済み文字列のみを error 文言へ出す
+- 実装差分が `origin/main...HEAD` で 0 件のときは、system spec を completed に更新せず監査メモだけ残す
 
 ---
 

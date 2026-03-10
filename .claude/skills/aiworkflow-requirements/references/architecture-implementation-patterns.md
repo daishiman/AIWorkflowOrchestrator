@@ -782,6 +782,92 @@ Renderer          Preload (safeInvokeUnwrap)        Main Process
 
 ---
 
+### Preload invoke hang containment パターン（safeInvoke timeout）
+
+> **導入タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
+
+#### 問題
+
+Preload の `safeInvoke()` が `ipcRenderer.invoke()` をそのまま返すと、Main Process 側の未応答や外部 API ハング時に Renderer が永続 pending になる。認証初期化や設定ロードの loading state が落ちず、画面遷移が止まる。
+
+#### 解決パターン
+
+```typescript
+const IPC_TIMEOUT_MS = 5000;
+
+function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
+    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
+  }
+
+  return Promise.race([
+    ipcRenderer.invoke(channel, ...args),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(
+          new Error(
+            `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`,
+          ),
+        );
+      }, IPC_TIMEOUT_MS);
+    }),
+  ]);
+}
+```
+
+#### 適用基準
+
+| 条件 | 判断 |
+| ---- | ---- |
+| Preload 共通ラッパーで多数の `invoke` を集約している | timeout を共通化する |
+| 戻り値シグネチャを変えたくない | `Promise<T>` を維持したまま `Promise.race` を使う |
+| Renderer 側に loading state がある | timeout エラーを catch して復旧パスを明示する |
+| 実装差分がまだ存在しない | spec は pending / spec_created に留め、completed としない |
+
+#### 注意事項
+
+- timeout 追加は `safeOn` へ機械的に横展開しない
+- channel 名は whitelist 通過済み値のみ error 文言へ出す
+- テストは fake timer + `advanceTimersByTime` 系を使い、永続 pending mock で再現する
+- 2026-03-10 時点の rollout は `apps/desktop/src/preload/index.ts` に限定。`preload/skill-api.ts` と `preload/skill-creator-api.ts` は別実装の `safeInvoke` を持つため、自動的には保護されない
+
+#### 関連未タスク
+
+- `docs/30-workflows/unassigned-task/task-imp-preload-skill-api-safeinvoke-timeout-001.md`
+- `docs/30-workflows/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 原因 | 解決策 | 教訓 |
+| --- | --- | --- | --- |
+| branch diff と current worktree diff の判定がずれる | `origin/main...HEAD` だけで実装有無を判定した | branch と current worktree を別軸で記録した | Phase 12 の completed 判定は 2軸で残す |
+| representative screenshot で task 外 defect が露出した | dedicated harness を作っても UI 全体の品質問題は見える | `discovered-issues.md` と未タスクへ formalize した | screenshot は current task の合否判定と backlog 発見を兼ねる |
+| 同名 helper の派生実装が rollout から漏れる | `safeInvoke` という名前だけで横展開済みと思い込んだ | `skill-api.ts` / `skill-creator-api.ts` を別 backlog にした | 共通 helper 改修は派生 helper の棚卸しとセットで行う |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. branch と current worktree の diff を分離し、status を混同しない。
+2. representative screenshot を light/dark 両方で取得し、画面不具合と warning を同時に確認する。
+3. helper 改修はファイル境界を明記し、派生 helper の棚卸しを同時に行う。
+4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` で backlog の実体と current=0 を固定する。
+
+#### 実装時の苦戦箇所（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
+
+| # | 課題 | 再発条件 | 対処 |
+| --- | --- | --- | --- |
+| 1 | `contextBridge.exposeInMainWorld` 経由でしかアクセスできない `safeInvoke` のテスト | `process.contextIsolated` 未設定で contextBridge パスに入らない | mock capture パターン: `exposeInMainWorld` の第2引数を `exposedAPIs[name] = api` でキャプチャし、`process.contextIsolated = true` を `Object.defineProperty` で設定 |
+| 2 | `vi.useFakeTimers()` + dynamic `import()` でモジュール内 `setTimeout` が fake timer 管理下に入る | `vi.resetModules()` 未実行でテスト間状態リーク | `useFakeTimers` → `resetModules` → API キャプチャ変数リセット → `await import("../index")` の4ステップ順序を厳守 |
+| 3 | `Promise.race` の負け Promise が GC されるか判断が必要 | `clearTimeout` パターンを過剰に適用してコード複雑化 | `setTimeout` は最大5秒で自動実行→GC。UI 起点の IPC（秒間数回以下）では `clearTimeout` 不要 |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. **テストインフラ**: `vi.mock("electron")` + `contextBridge.exposeInMainWorld` キャプチャ + `process.contextIsolated = true`
+2. **タイマーテスト**: `vi.useFakeTimers()` → `vi.resetModules()` → fresh import（P13準拠: `advanceTimersByTime` のみ使用）
+3. **Promise.race 適用**: whitelist チェック前段を維持 → `Promise.race([invoke, timeoutPromise])` → channel 名を error に含める
+4. **横展開判断**: 同名 helper が別ファイルにある場合（`skill-api.ts`, `skill-creator-api.ts`）は別タスクへ分離
+
+---
+
 ## パフォーマンス最適化パターン
 
 ### React最適化

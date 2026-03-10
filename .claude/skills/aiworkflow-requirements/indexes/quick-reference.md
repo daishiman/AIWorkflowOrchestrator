@@ -7,6 +7,30 @@
 
 ## よく使うパターン
 
+### 仕様検索の分割ルール
+
+- `search-spec.js` は **1概念1クエリ** で分割して使う
+- 例: `TASK-FIX-SAFEINVOKE-TIMEOUT-001 safeInvoke IPC timeout` のようにまとめず、`TASK-FIX-SAFEINVOKE-TIMEOUT-001` → `safeInvoke` → `IPC timeout` → `preload invoke hang` の順で個別検索する
+- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
+
+### Preload safeInvoke timeout を探すとき
+
+```bash
+node scripts/search-spec.js "TASK-FIX-SAFEINVOKE-TIMEOUT-001" -C 2
+node scripts/search-spec.js "safeInvoke" -C 3
+node scripts/search-spec.js "IPC timeout" -C 3
+node scripts/search-spec.js "preload invoke hang" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Preload safeInvoke timeout / invoke hang）」を見る
+2. `references/security-electron-ipc.md` の Preload `safeInvoke` timeout セクションを見る
+3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
+4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
+5. `references/error-handling.md` で timeout エラー表示責務を確認する
+6. `references/testing-component-patterns.md` の fake timer / `advanceTimersByTime` パターンを確認する
+
 ### Electron IPC パターン
 
 ```typescript
@@ -73,6 +97,24 @@ app.on("activate", () => {
 
 **詳細**: security-electron-ipc.md（IPC ハンドラライフサイクル管理）, architecture-implementation-patterns.md（二重登録防止パターン）
 **関連 Pitfall**: 06-known-pitfalls.md#P5
+
+### Preload timeout テストパターン
+
+```typescript
+vi.useFakeTimers();
+const pending = window.electronAPI.auth.getSession();
+await vi.advanceTimersByTimeAsync(5000);
+await expect(pending).rejects.toThrow(/IPC timeout/);
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| タイマー進行 | `advanceTimersByTime` / `advanceTimersByTimeAsync` を使う |
+| モック | `ipcRenderer.invoke` は never-resolving Promise で再現する |
+| 競合回避 | タイムアウト検証と Promise 検証を同じ await 連鎖で完了させる |
+| 回帰確認 | whitelist 拒否と Main reject の既存挙動を壊さない |
+
+**詳細**: testing-component-patterns.md, error-handling.md
 
 ### Supabase 未設定 fallback handler パターン
 

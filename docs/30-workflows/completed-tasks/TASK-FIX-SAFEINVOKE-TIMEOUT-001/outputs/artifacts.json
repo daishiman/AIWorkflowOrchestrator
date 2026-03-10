@@ -1,0 +1,77 @@
+{
+  "taskId": "TASK-FIX-SAFEINVOKE-TIMEOUT-001",
+  "title": "safeInvoke タイムアウト追加",
+  "type": "fix",
+  "priority": "P2",
+  "status": "in_progress",
+  "targetFile": "apps/desktop/src/preload/index.ts",
+  "createdAt": "2026-03-09",
+  "updatedAt": "2026-03-10",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifact": "outputs/phase-1/requirements-analysis.md"
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifact": "outputs/phase-2/design-document.md"
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifact": "outputs/phase-3/design-review-result.md"
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifact": "apps/desktop/src/preload/__tests__/safeInvoke-timeout.test.ts"
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifact": "outputs/phase-5/implementation-result.md"
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifact": "outputs/phase-6/test-expansion-result.md"
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifact": "outputs/phase-7/coverage-report.md"
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifact": "outputs/phase-8/refactoring-result.md"
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifact": "outputs/phase-9/quality-report.md"
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifact": "outputs/phase-10/final-review-result.md"
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifact": "outputs/phase-11/manual-test-result.md"
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifact": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifact": "phase-13-pr-creation.md"
+    }
+  }
+}
