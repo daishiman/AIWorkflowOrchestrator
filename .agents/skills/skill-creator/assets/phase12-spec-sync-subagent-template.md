@@ -35,7 +35,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-G+ | `references/<ui-domain-spec>.md` | ドメイン固有 UI 正本（例: `ui-ux-navigation.md`）の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
+| SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-design-system.md` | ドメイン固有 UI 正本または token/theme 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -79,7 +79,20 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-components`: 完了タスク、関連未タスク、実装導線
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
+- `ui-ux-design-system`: token / contrast / theme 起因の改善余地と未タスク導線
 - `ui-ux-navigation` などのドメイン固有 UI 正本: その機能に固有な契約・苦戦箇所・再利用手順
+
+### 3.1 UI current workflow 反映先マトリクス
+
+| 関心ごと | 最適な担当仕様書 | SubAgent |
+| --- | --- | --- |
+| コンポーネント一覧、完了タスク | `ui-ux-components.md` | A |
+| 機能の振る舞い、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | B |
+| 専用型、adapter、harness、責務境界 | `arch-ui-components.md` | C |
+| selector / reset / store 契約 | `arch-state-management.md` | D |
+| token / theme / contrast 所見 | `ui-ux-design-system.md` | G+ |
+| 検証値、残課題、完了記録 | `task-workflow.md` | E |
+| 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | F |
 
 ### 3.1 同種課題の5分解決カード同期ルール
 
@@ -104,28 +117,28 @@ UI機能実装時の必須記載（追加）:
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
+node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
+node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
+node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
-node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
+node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
 rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
 rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 curl -I http://127.0.0.1:4173
 pnpm --filter @repo/desktop test:run
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
 ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true

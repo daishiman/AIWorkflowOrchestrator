@@ -1,0 +1,48 @@
+{
+  "taskId": "TASK-UI-03-AGENT-VIEW-ENHANCEMENT",
+  "components": [
+    {
+      "name": "AgentView",
+      "route": "/phase11-agent-view.html?scenario=main-view&theme=light",
+      "states": [
+        { "id": "TC-01", "label": "main-view", "theme": "light" },
+        { "id": "TC-11", "label": "main-view", "theme": "dark" },
+        { "id": "TC-08", "label": "empty-state", "theme": "light" },
+        { "id": "TC-09A", "label": "no-search", "theme": "light" },
+        { "id": "TC-09B", "label": "with-search", "theme": "light" }
+      ]
+    },
+    {
+      "name": "SkillChip",
+      "route": "/phase11-agent-view.html?scenario=chip-selected&theme=light",
+      "states": [{ "id": "TC-02", "label": "chip-selected", "theme": "light" }]
+    },
+    {
+      "name": "ExecuteButton",
+      "route": "/phase11-agent-view.html?theme=light",
+      "states": [
+        { "id": "TC-03A", "label": "button-disabled", "theme": "light" },
+        { "id": "TC-03B", "label": "button-enabled", "theme": "light" }
+      ]
+    },
+    {
+      "name": "FloatingExecutionBar",
+      "route": "/phase11-agent-view.html?theme=light",
+      "states": [
+        { "id": "TC-04A", "label": "floating-executing", "theme": "light" },
+        { "id": "TC-04B", "label": "floating-completed", "theme": "light" },
+        { "id": "TC-05", "label": "floating-error", "theme": "light" }
+      ]
+    },
+    {
+      "name": "AdvancedSettingsPanel",
+      "route": "/phase11-agent-view.html?scenario=panel-open&theme=light",
+      "states": [{ "id": "TC-06", "label": "panel-open", "theme": "light" }]
+    },
+    {
+      "name": "RecentExecutionList",
+      "route": "/phase11-agent-view.html?scenario=recent-list&theme=light",
+      "states": [{ "id": "TC-07", "label": "recent-list", "theme": "light" }]
+    }
+  ]
+}

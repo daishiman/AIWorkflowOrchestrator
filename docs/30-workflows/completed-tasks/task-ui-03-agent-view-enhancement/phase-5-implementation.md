@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 5                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -24,17 +24,24 @@ Phase 4 で作成したテストを通すための最小限の実装を行い、
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                                                                  | 説明                                              |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| 元タスク仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | セクション5実行タスク、セクション10スタイルガイド |
-| Phase 4 テスト作成     | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-4-test-creation.md`                                        | テストケース定義・Props インターフェース          |
-| UIコンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | UIコンポーネント設計仕様                          |
-| 機能コンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                       | 機能コンポーネント仕様                            |
-| UIアーキテクチャ仕様   | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | UIアーキテクチャ設計                              |
-| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand状態管理設計                               |
-| 既存 AgentView         | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                                                 | 現行実装（修正対象）                              |
-| 既存 agentSlice        | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                                                | 現行状態管理（修正対象）                          |
-| Apple HIG デザイン原則 | `.claude/rules/01-architecture.md` UI/UXデザイン哲学セクション                                                                        | カラー・スペーシング・インタラクション            |
+| 資料名                 | パス                                                                                                         | 説明                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| 元タスク仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md` | セクション5実行タスク、セクション10スタイルガイド |
+| Phase 4 テスト作成     | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-4-test-creation.md`               | テストケース定義・Props インターフェース          |
+| UIコンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                      | UIコンポーネント設計仕様                          |
+| 機能コンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                              | 機能コンポーネント仕様                            |
+| UIアーキテクチャ仕様   | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                    | UIアーキテクチャ設計                              |
+| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                 | Zustand状態管理設計                               |
+| デザインシステム       | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                   | トークン・8px grid・配色                          |
+| 実行UI仕様             | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                 | 実行状態表示・Permission 導線                     |
+| モデル選択UI           | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                    | モデルカード選択のUI契約                          |
+| 許可設定UI             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                        | Permission settings のUI契約                      |
+| スキル実行セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`                              | allowed tools / permission mode の前提            |
+| 実装パターン           | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                  | P24/P31/P47の実装基準                             |
+| 既存 AgentView         | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                        | 現行実装（修正対象）                              |
+| 既存 agentSlice        | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                       | 現行状態管理（修正対象）                          |
+| Apple HIG デザイン原則 | `.claude/rules/01-architecture.md` UI/UXデザイン哲学セクション                                               | カラー・スペーシング・インタラクション            |
+| テスト作成レポート     | `outputs/phase-4/test-creation-report.md`                                                                    | Phase 4 成果物                                    |
 
 ## 実行手順
 
@@ -508,7 +515,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 5
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase

@@ -6,47 +6,50 @@
 | ------ | ---------------------- |
 | Phase  | 7                      |
 | 機能名 | agent-view-enhancement |
-| 実施日 | 2026-03-07             |
+| 実施日 | 2026-03-10             |
 
-## ファイル別カバレッジ表
+## 実行コマンド
 
-### organisms/AgentView コンポーネント
-
-| ファイル                  | Stmts      | Branch  | Funcs    | Lines      | 未カバー行                  |
-| ------------------------- | ---------- | ------- | -------- | ---------- | --------------------------- |
-| **全体**                  | **99.68%** | **96%** | **100%** | **99.68%** | -                           |
-| AdvancedSettingsPanel.tsx | 100%       | 94.11%  | 100%     | 100%       | L79 (description非表示分岐) |
-| ExecuteButton.tsx         | 100%       | 100%    | 100%     | 100%       | -                           |
-| FloatingExecutionBar.tsx  | 98.59%     | 100%    | 100%     | 98.59%     | L33 (interval内部)          |
-| RecentExecutionList.tsx   | 100%       | 89.47%  | 100%     | 100%       | L18,75 (時間分岐)           |
-| SkillChip.tsx             | 100%       | 100%    | 100%     | 100%       | -                           |
-
-### agentSlice（TASK-UI-03拡張部分のみ）
-
-| アクション                   | カバレッジ | テストケース数 |
-| ---------------------------- | ---------- | -------------- |
-| addExecutionToHistory        | 100%       | 4              |
-| clearExecutionHistory        | 100%       | 1              |
-| setAdvancedSettingsOpen      | 100%       | 2              |
-| resetAgentState (UI-03関連)  | 100%       | 1              |
-| recentExecutions初期値       | 100%       | 1              |
-| isAdvancedSettingsOpen初期値 | 100%       | 1              |
-
-## 基準判定
-
-| 指標              | 基準 | 実績   | 判定     |
-| ----------------- | ---- | ------ | -------- |
-| Line Coverage     | 80%  | 99.68% | **PASS** |
-| Branch Coverage   | 60%  | 96%    | **PASS** |
-| Function Coverage | 80%  | 100%   | **PASS** |
-
-## 全テスト実行結果
-
-```
-Test Files  8 passed | 1 skipped (9)
-     Tests  117 passed | 12 skipped (129)
+```bash
+cd apps/desktop && pnpm vitest run \
+  src/renderer/components/organisms/AgentView/__tests__/*.test.tsx \
+  src/renderer/views/AgentView/__tests__/*.test.tsx \
+  src/renderer/store/slices/__tests__/agentSlice*.test.ts \
+  src/renderer/store/__tests__/setupSkillListeners.test.ts \
+  --coverage.enabled true \
+  --coverage.provider v8 \
+  --coverage.reportsDirectory ../../docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-7/coverage-full \
+  --coverage.reporter=json-summary \
+  --coverage.reporter=text-summary \
+  --coverage.include='src/renderer/components/organisms/AgentView/**/*.tsx' \
+  --coverage.include='src/renderer/views/AgentView/index.tsx' \
+  --coverage.include='src/renderer/store/slices/agentSlice.ts'
 ```
 
-## 判定: PASS
+結果: `579 passed | 12 skipped`
 
-全カバレッジ基準を達成。Phase 8（リファクタリング）へ進行可能。
+## 全体判定
+
+| 指標       | 最低基準 | 実測値 | 判定 |
+| ---------- | -------: | -----: | ---- |
+| Statements |      80% | 95.02% | PASS |
+| Branches   |      60% | 91.37% | PASS |
+| Functions  |      80% | 88.50% | PASS |
+| Lines      |      80% | 95.02% | PASS |
+
+## ファイル別抜粋
+
+| ファイル                    |   Lines | Branches | Functions | Statements |
+| --------------------------- | ------: | -------: | --------: | ---------: |
+| `SkillChip.tsx`             | 100.00% |  100.00% |   100.00% |    100.00% |
+| `ExecuteButton.tsx`         | 100.00% |  100.00% |   100.00% |    100.00% |
+| `FloatingExecutionBar.tsx`  |  98.76% |  100.00% |   100.00% |     98.76% |
+| `AdvancedSettingsPanel.tsx` | 100.00% |   94.44% |   100.00% |    100.00% |
+| `RecentExecutionList.tsx`   | 100.00% |   89.47% |   100.00% |    100.00% |
+| `views/AgentView/index.tsx` |  90.74% |   78.48% |    63.63% |     90.74% |
+| `agentSlice.ts`             |  95.37% |   95.51% |    90.00% |     95.37% |
+
+## 判定
+
+- Line / Branch / Function の全基準を満たした
+- Phase 8 へ進行可能

@@ -77,7 +77,7 @@ describe("AdvancedSettingsPanel", () => {
     const onClose = vi.fn();
     render(<AdvancedSettingsPanel {...defaultProps} onClose={onClose} />);
 
-    const closeButton = screen.getByRole("button", { name: /閉じる/i });
+    const closeButton = screen.getByRole("button", { name: /^閉じる$/i });
     await act(async () => {
       fireEvent.click(closeButton);
     });
@@ -143,6 +143,17 @@ describe("AdvancedSettingsPanel", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("オーバーレイクリックで onClose 発火", async () => {
+    const onClose = vi.fn();
+    render(<AdvancedSettingsPanel {...defaultProps} onClose={onClose} />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("advanced-settings-overlay"));
+    });
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   // === Phase 6: テスト拡充 ===
 
   describe("境界値テスト", () => {
@@ -170,13 +181,11 @@ describe("AdvancedSettingsPanel", () => {
       });
     });
 
-    it("rememberedCount=0 でもリセットボタンは表示される", () => {
+    it("rememberedCount=0 の場合はリセットボタンが無効化される", () => {
       render(<AdvancedSettingsPanel {...defaultProps} rememberedCount={0} />);
 
       expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /リセット/i }),
-      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /リセット/i })).toBeDisabled();
     });
   });
 
@@ -223,6 +232,14 @@ describe("AdvancedSettingsPanel", () => {
   });
 
   describe("アクセシビリティテスト", () => {
+    it("AIの種類 radiogroup が存在する", () => {
+      render(<AdvancedSettingsPanel {...defaultProps} />);
+
+      expect(
+        screen.getByRole("radiogroup", { name: "AIの種類" }),
+      ).toBeInTheDocument();
+    });
+
     it("モデルリストのradio要素にtabIndex=0がある", () => {
       render(<AdvancedSettingsPanel {...defaultProps} />);
 

@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 7                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -20,16 +20,16 @@ Phase 6 で拡充したテスト結果を検証し、カバレッジ基準を満
 
 ## 参照資料
 
-| 資料名                     | パス                                                                                                     | 説明                     |
-| -------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 5 実装仕様書         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-5-implementation.md`          | 依存Phase 5の仕様        |
-| Phase 6 テスト拡充         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-6-test-expansion.md`          | 追加テストケース定義     |
-| Phase 6 カバレッジレポート | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-6/coverage-report.md` | Phase 6 のカバレッジ結果 |
-| UIコンポーネント仕様       | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                  | UIコンポーネント設計仕様 |
-| 機能コンポーネント仕様     | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                          | 機能コンポーネント仕様   |
-| UIアーキテクチャ仕様       | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                | UIアーキテクチャ設計     |
-| 状態管理仕様               | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                             | Zustand状態管理設計      |
-| テスト戦略仕様             | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                        | コンポーネントテスト方針 |
+| 資料名                   | パス                                                                                                           | 説明                         |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| Phase 5 実装仕様書       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-5-implementation.md`                | 依存Phase 5の仕様            |
+| Phase 6 テスト拡充       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-6-test-expansion.md`                | 追加テストケース定義         |
+| Phase 6 テスト拡充成果物 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-6/test-expansion-report.md` | 追加テスト・ギャップ分析結果 |
+| UIコンポーネント仕様     | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                        | UIコンポーネント設計仕様     |
+| 機能コンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                | 機能コンポーネント仕様       |
+| UIアーキテクチャ仕様     | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                      | UIアーキテクチャ設計         |
+| 状態管理仕様             | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                   | Zustand状態管理設計          |
+| テスト戦略仕様           | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`                              | コンポーネントテスト方針     |
 
 ## 依存Phase成果物参照
 
@@ -177,7 +177,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 7
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase

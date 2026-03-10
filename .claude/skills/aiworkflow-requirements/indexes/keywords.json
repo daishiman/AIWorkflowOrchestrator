@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-10T07:45:04.670Z",
-  "totalKeywords": 1549,
+  "generated": "2026-03-10T14:45:16.445Z",
+  "totalKeywords": 1551,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2803,6 +2803,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "lessons-learned.md",
+      "task-workflow.md",
       "ui-ux-feature-components.md"
     ],
     "SkillImportStore": [
@@ -3412,10 +3413,12 @@
       "lessons-learned.md"
     ],
     "VIEW": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "ENHANCEMENT": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "GLOBAL": [
       "lessons-learned.md"
@@ -3860,7 +3863,8 @@
     ],
     "workflow": [
       "lessons-learned.md",
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "task-workflow.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"
@@ -4989,6 +4993,12 @@
     "実装完了記録": [
       "task-workflow.md",
       "ui-ux-components.md"
+    ],
+    "current": [
+      "task-workflow.md"
+    ],
+    "再監査記録": [
+      "task-workflow.md"
     ],
     "完了記録": [
       "task-workflow.md"

@@ -2,11 +2,11 @@
 id: TASK-10A-G
 tier: 2
 title: スキルライフサイクル統合テスト強化
-phase: 12
+phase: 10
 depends_on: [TASK-10A-E, TASK-10A-F]
 parallel_with: []
 blocks: []
-status: in_progress
+status: pending
 priority: high
 estimated_complexity: medium
 tags: [frontend, backend, integration, test, ipc]
@@ -37,7 +37,7 @@ artifacts:
 | 項目       | 値                                                    |
 | ---------- | ----------------------------------------------------- |
 | 担当       | SubAgent-G（品質ゲート統合）                          |
-| 実行モード | 実装・検証完了（コミット・PRなし）                    |
+| 実行モード | 仕様書作成のみ（実装・コミット・PRなし）              |
 | 関心ごと   | `create/analyze/improve` の回帰防止テストを統合で固定 |
 
 ## 目的

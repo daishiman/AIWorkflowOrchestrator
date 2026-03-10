@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 6                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -30,15 +30,18 @@ Phase 5 の実装に対してテストを拡充し、カバレッジ目標を達
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                                                                  | 説明                     |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 4 テスト作成     | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-4-test-creation.md`                                        | 既存テストケース定義     |
-| Phase 5 実装           | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-5-implementation.md`                                       | 実装コード・Props定義    |
-| 元タスク仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | テスト計画・完了条件     |
-| UIコンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | UIコンポーネント設計仕様 |
-| 機能コンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                       | 機能コンポーネント仕様   |
-| UIアーキテクチャ仕様   | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | UIアーキテクチャ設計     |
-| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand状態管理設計      |
+| 資料名                 | パス                                                                                                         | 説明                     |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------ |
+| Phase 4 テスト作成     | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-4-test-creation.md`               | 既存テストケース定義     |
+| Phase 5 実装           | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-5-implementation.md`              | 実装コード・Props定義    |
+| 元タスク仕様書         | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md` | テスト計画・完了条件     |
+| UIコンポーネント仕様   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                      | UIコンポーネント設計仕様 |
+| 機能コンポーネント仕様 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                              | 機能コンポーネント仕様   |
+| UIアーキテクチャ仕様   | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                    | UIアーキテクチャ設計     |
+| 状態管理仕様           | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                 | Zustand状態管理設計      |
+| テスト作成レポート     | `outputs/phase-4/test-creation-report.md`                                                                    | Phase 4 成果物           |
+| 実装サマリー           | `outputs/phase-5/implementation-summary.md`                                                                  | Phase 5 成果物           |
+| 設計差分記録           | `outputs/phase-5/design-changes.md`                                                                          | Phase 5 成果物           |
 
 ## 実行手順
 
@@ -169,16 +172,16 @@ cd apps/desktop && pnpm vitest run --coverage src/renderer/components/organisms/
 
 ## 成果物
 
-| 成果物                     | パス                                                                                                     | 説明                         |
-| -------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| カバレッジレポート         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-6/coverage-report.md` | カバレッジ分析結果           |
-| SkillChip 追加テスト       | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/SkillChip.test.tsx`                  | 境界値・組み合わせテスト追加 |
-| ExecuteButton 追加テスト   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/ExecuteButton.test.tsx`              | 境界値・エラーテスト追加     |
-| FloatingExecutionBar 追加  | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/FloatingExecutionBar.test.tsx`       | 境界値テスト追加             |
-| AdvancedSettingsPanel 追加 | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx`      | 境界値・組み合わせテスト追加 |
-| RecentExecutionList 追加   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/RecentExecutionList.test.tsx`        | 境界値テスト追加             |
-| AgentView 連携テスト       | `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx`                          | コンポーネント間連携テスト   |
-| agentSlice 追加テスト      | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.extension.test.ts`                          | 境界値・エラーテスト追加     |
+| 成果物                     | パス                                                                                                           | 説明                         |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| テスト拡充レポート         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-6/test-expansion-report.md` | 追加テストとギャップ分析結果 |
+| SkillChip 追加テスト       | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/SkillChip.test.tsx`                        | 境界値・組み合わせテスト追加 |
+| ExecuteButton 追加テスト   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/ExecuteButton.test.tsx`                    | 境界値・エラーテスト追加     |
+| FloatingExecutionBar 追加  | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/FloatingExecutionBar.test.tsx`             | 境界値テスト追加             |
+| AdvancedSettingsPanel 追加 | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx`            | 境界値・組み合わせテスト追加 |
+| RecentExecutionList 追加   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/RecentExecutionList.test.tsx`              | 境界値テスト追加             |
+| AgentView 連携テスト       | `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx`                                | コンポーネント間連携テスト   |
+| agentSlice 追加テスト      | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.extension.test.ts`                                | 境界値・エラーテスト追加     |
 
 ## 完了条件
 
@@ -223,7 +226,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 6
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase

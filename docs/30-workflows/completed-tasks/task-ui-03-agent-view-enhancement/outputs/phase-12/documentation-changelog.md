@@ -1,132 +1,58 @@
-# Documentation Changelog - Phase 12
+# Phase 12: ドキュメント更新履歴
 
 ## メタ情報
 
-| 項目     | 値                                |
-| -------- | --------------------------------- |
-| タスクID | TASK-UI-03-AGENT-VIEW-ENHANCEMENT |
-| Phase    | 12                                |
-| 作成日   | 2026-03-07                        |
+| 項目   | 値                     |
+| ------ | ---------------------- |
+| Phase  | 12                     |
+| 機能名 | agent-view-enhancement |
+| 実施日 | 2026-03-10             |
 
----
+## Step 1-A
 
-## Task 1: 実装ガイド・コンポーネントドキュメント
+- `aiworkflow-requirements/LOGS.md` に TASK-UI-03 の Phase 11/12 同期ログを追記
+- `task-specification-creator/LOGS.md` に同タスクの再監査ログを追記
+- `aiworkflow-requirements/SKILL.md` / `task-specification-creator/SKILL.md` の変更履歴へ新規 version を追加
 
-### implementation-guide.md
+## Step 1-B
 
-| 内容                                                                      | 結果 |
-| ------------------------------------------------------------------------- | ---- |
-| Part 1: 中学生レベル概念説明（お店のショーケース・スマホのアナロジー）    | 完了 |
-| Part 2: 開発者向け実装詳細（型定義・Props API・状態管理・アニメーション） | 完了 |
+- `ui-ux-components.md` の TASK-UI-03 完了タスク行を 58 tests 表記から 136 tests へ更新
+- `ui-ux-feature-components.md` の TASK-UI-03 専用節へ `types.ts` と dedicated harness を追記
 
-### component-documentation.md
+## Step 1-C
 
-| 内容                                                            | 結果 |
-| --------------------------------------------------------------- | ---- |
-| SkillChip コンポーネント仕様（Props・アクセシビリティ・使用例） | 完了 |
-| ExecuteButton コンポーネント仕様                                | 完了 |
-| FloatingExecutionBar コンポーネント仕様                         | 完了 |
-| AdvancedSettingsPanel コンポーネント仕様                        | 完了 |
-| RecentExecutionList コンポーネント仕様                          | 完了 |
+- `grep -rn "TASK-UI-03"` で関連仕様を確認
+- 古い workflow 導線 `docs/30-workflows/agent-view-enhancement/` を current workflow の `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新
+- `UT-UI-03-TYPE-ASSERTION-001` は解消済みとして completed unassigned 側へ正規化
+- `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を `docs/30-workflows/unassigned-task/` に新規作成
+- `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` に `3.6 実装課題と解決策` を追記し、親タスクの苦戦箇所と diff監査ゲートを継承
+- `task-workflow.md` に current workflow の再監査記録が不足していたため、検証証跡付きで補完
 
----
+## Step 1-D
 
-## Task 2: システム仕様書更新
+- `generate-index.js` を両スキルで再実行し、topic-map / keywords / workflow index を再生成
 
-### Step 1-A: タスク完了記録
+## Step 2
 
-| 対象ファイル                          | 更新内容                             | 結果 |
-| ------------------------------------- | ------------------------------------ | ---- |
-| `aiworkflow-requirements/LOGS.md`     | TASK-UI-03 Phase 12 完了エントリ追加 | 完了 |
-| `task-specification-creator/LOGS.md`  | TASK-UI-03 Phase 12 完了エントリ追加 | 完了 |
-| `aiworkflow-requirements/SKILL.md`    | 変更履歴 v9.01.37 追加               | 完了 |
-| `task-specification-creator/SKILL.md` | 変更履歴 v10.08.19 追加              | 完了 |
+- `arch-ui-components.md` の TASK-UI-03 アーキテクチャ記録を current 実装へ同期
+- `task-workflow.md` に current workflow 完了台帳を追記
+- `architecture-implementation-patterns.md` に dedicated harness + review scope 分離パターンを追記
+- `lessons-learned.md` に Phase 11 harness 化と contrast observation の扱い、型アサーション残課題の追随ルールを追記
+- `ui-ux-design-system.md` に light theme 副次テキスト token 改善タスクを追記
+- `ui-ux-design-system.md` に token 改善タスクへ親タスク教訓を継承する運用を追記
+- `.claude/task-specification-creator` 正本と current workflow の task-spec script 参照を `.agents/skills/task-specification-creator/scripts/` へ是正
 
-P1/P25 対策: LOGS.md 2ファイル両方を更新済み。P29 対策: SKILL.md 2ファイル両方の変更履歴を更新済み。
+## Step 3
 
-### Step 1-B: 実装状況テーブル更新
+- `implementation-guide.md`
+- `spec-update-summary.md`
+- `documentation-changelog.md`
+- `unassigned-task-detection.md`
+- `skill-feedback-report.md`
 
-| 対象ファイル                  | 更新内容                                                 | 結果 |
-| ----------------------------- | -------------------------------------------------------- | ---- |
-| `ui-ux-feature-components.md` | AgentView Redesign (Tap & Discover) を「完了」として追加 | 完了 |
+上記 5 成果物を current workflow 配下へ作成した。
 
-新規コンポーネント5件（SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList）を記録。
+## 補足
 
-### Step 1-C: 関連タスクテーブル更新
-
-| 対象ファイル       | 更新内容                                                                                                                  | 結果 |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---- |
-| `task-workflow.md` | 未タスク4件（UT-UI-03-A11Y-RADIOGROUP-001 / A11Y-DIALOG-001 / A11Y-LABEL-001 / TYPE-ASSERTION-001）を残課題テーブルに登録 | 完了 |
-
-`grep -rn "TASK-UI-03" references/` の結果: `aiworkflow-requirements/references/` 配下に TASK-UI-03 の直接参照なし。タスクは workflow ディレクトリ内で管理されており、`ui-ux-feature-components.md` への新規追加で対応。
-
-### Step 1-D: topic-map.md 再生成
-
-| 内容                                                                         | 結果                   |
-| ---------------------------------------------------------------------------- | ---------------------- |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` 実行 | 完了（1471キーワード） |
-
-P2/P27 対策: 仕様書更新後に topic-map.md を再生成済み。
-
-### Step 2: システム仕様更新
-
-本タスクは新規コンポーネント5件 + agentSlice 拡張 + レイアウト変更を含むが、IPC インターフェースの変更はなく、既存コンポーネント仕様の拡張として `ui-ux-feature-components.md` に記録した。新規 IPC チャンネルの追加はないため、`api-ipc-*.md` や `security-*.md` の更新は不要。
-
----
-
-## Task 3: documentation-changelog.md（本ファイル）
-
-全 Step の完了結果を本ファイルに記録。
-
----
-
-## Task 4: 未タスク検出
-
-### 検出結果: 4件（Phase 10 MINOR 指摘）
-
-| ID                           | 内容                                                    | 指示書 | task-workflow.md | 関連仕様書リンク |
-| ---------------------------- | ------------------------------------------------------- | ------ | ---------------- | ---------------- |
-| UT-UI-03-A11Y-RADIOGROUP-001 | SkillChip リストに role="radiogroup" 追加               | 完了   | 完了             | 完了             |
-| UT-UI-03-A11Y-DIALOG-001     | AdvancedSettingsPanel に role="dialog" 追加             | 完了   | 完了             | 完了             |
-| UT-UI-03-A11Y-LABEL-001      | FloatingExecutionBar 停止ボタンの aria-label 改善       | 完了   | 完了             | 完了             |
-| UT-UI-03-TYPE-ASSERTION-001  | AgentView の `as unknown as Skill[]` 型アサーション除去 | 完了   | 完了             | 完了             |
-
-3ステップ完了確認（P3対策）:
-
-1. `docs/30-workflows/unassigned-task/` に指示書4件作成済み
-2. `task-workflow.md` 残課題テーブルに4件登録済み
-3. `ui-ux-feature-components.md` に AgentView Redesign 行として関連情報を記載済み
-
-### unassigned-task-report.md
-
-未タスク検出レポート作成済み（4件の詳細・優先度・影響範囲を記録）。
-
----
-
-## Task 5: スキルフィードバックレポート
-
-| 内容                          | 結果 |
-| ----------------------------- | ---- |
-| skill-feedback-report.md 作成 | 完了 |
-
-ワークフロー改善点・技術的教訓・スキル改善提案を記録。新規 Pitfall 候補はなし。
-
----
-
-## spec-update-summary.md
-
-Step 1-A から Step 2 までの全更新結果を記録済み。
-
----
-
-## 全タスク完了確認
-
-| Task | 内容                                   | 状態 |
-| ---- | -------------------------------------- | ---- |
-| 1    | 実装ガイド・コンポーネントドキュメント | 完了 |
-| 2    | システム仕様書更新                     | 完了 |
-| 3    | documentation-changelog.md             | 完了 |
-| 4    | 未タスク検出                           | 完了 |
-| 5    | スキルフィードバックレポート           | 完了 |
-
-全 Task・全 Step の完了を確認した上で、本ファイルの最終ステータスを「完了」とする（P4対策）。
+- `pnpm --filter @repo/desktop lint` は package script 不在のため、対象ファイルに対する `pnpm exec eslint` 実測で代替した
+- 新規未タスクは `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を起票した

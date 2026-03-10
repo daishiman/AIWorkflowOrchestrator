@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Square, CheckCircle } from "lucide-react";
 import { transitions } from "./animations";
 import { interactiveStyles } from "./styles";
+import type { AgentFloatingStatus } from "./types";
 
 export interface FloatingExecutionBarProps {
   skillName: string;
-  status: "executing" | "completed" | "failed" | "idle";
+  status: AgentFloatingStatus;
   startedAt: Date | null;
   progress?: number;
   onStop: () => void;
@@ -41,7 +42,7 @@ export const FloatingExecutionBar: React.FC<FloatingExecutionBarProps> = ({
     return (
       <div
         data-testid="floating-execution-bar"
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--status-success)] text-[var(--text-inverse)] px-6 py-3 rounded-2xl shadow-lg flex items-center gap-3"
+        className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-[var(--status-success)] px-6 py-3 text-[var(--text-inverse)] shadow-lg animate-[success-bounce_0.6s_ease-out]"
       >
         <CheckCircle className="w-5 h-5" />
         <span>{skillName}</span>
@@ -54,7 +55,7 @@ export const FloatingExecutionBar: React.FC<FloatingExecutionBarProps> = ({
     return (
       <div
         data-testid="floating-execution-bar"
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--status-error)] text-[var(--text-inverse)] px-6 py-3 rounded-2xl shadow-lg flex items-center gap-3 animate-[shake_0.5s_ease-in-out]"
+        className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-2xl bg-[var(--status-error)] px-6 py-3 text-[var(--text-inverse)] shadow-lg animate-[error-shake_0.5s_ease-in-out]"
       >
         <Square className="w-5 h-5" />
         <span>{skillName}</span>
@@ -68,7 +69,7 @@ export const FloatingExecutionBar: React.FC<FloatingExecutionBarProps> = ({
   return (
     <div
       data-testid="floating-execution-bar"
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[var(--bg-secondary)] border border-[var(--border-primary)] px-6 py-3 rounded-2xl shadow-lg flex items-center gap-4 min-w-[300px]"
+      className="fixed bottom-6 left-1/2 z-50 flex min-w-[300px] -translate-x-1/2 items-center gap-4 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-6 py-3 shadow-lg"
     >
       <span className="text-[var(--text-primary)] font-medium">
         {skillName}

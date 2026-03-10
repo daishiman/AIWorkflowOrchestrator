@@ -20,6 +20,28 @@
   - system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する運用を固定
 
 ---
+## 2026-03-10 - TASK-UI-03 Phase 12再監査で未タスク台帳を再整合
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `UT-UI-03-TYPE-ASSERTION-001` が current branch では解消済みであることを確認し、completed unassigned 側へ正規化
+  - Phase 11 の light theme 所見を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として `docs/30-workflows/unassigned-task/` に formalize
+  - `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` / `task-workflow.md` の値を同一ターンで再同期
+
+---
+## 2026-03-10 - TASK-UI-03 再監査で task-specification-creator 実行パス是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - current workflow と `.claude/skills/task-specification-creator` 正本を再監査し、存在しない `.claude/skills/task-specification-creator/scripts/` 参照を `.agents/skills/task-specification-creator/scripts/` へ統一
+  - `validate-phase-output.js` の CLI 契約を実スクリプトに合わせて位置引数方式へ再整合
+  - Phase 12成果物のコマンド例も現行実行経路へ更新し、再監査時の false negative を防止
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
 
 - **Agent**: task-specification-creator
@@ -42,7 +64,17 @@
   - merge 取り込み時に main 側履歴を維持しつつ、safeInvoke タスク由来の知見を欠落なく再適用できるようにした
 
 ---
+## 2026-03-10 - TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 完了同期
 
+- **Agent**: task-specification-creator
+- **Phase**: Phase 4-12
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-4` 〜 `outputs/phase-12` の必須成果物を current workflow 配下へ生成
+  - `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を validator 互換の TC + 証跡形式へ整理
+  - Phase 12 で `.claude/skills/...` 正本、`LOGS.md` 2件、`SKILL.md` 2件、workflow `artifacts.json` / `index.md` を同時同期
+
+---
 ## 2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見をスキルに反映
 
 - **Agent**: task-specification-creator (skill-improvement)

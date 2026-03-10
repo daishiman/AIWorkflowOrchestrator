@@ -7,7 +7,7 @@
 | タスクID   | TASK-UI-03-AGENT-VIEW-ENHANCEMENT |
 | Phase      | 1                                 |
 | 成果物種別 | 要件定義書                        |
-| 作成日     | 2026-03-07                        |
+| 作成日     | 2026-03-10                        |
 | 入力仕様書 | phase-1-requirements.md           |
 
 ---

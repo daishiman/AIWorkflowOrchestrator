@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 10                     |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -25,25 +25,31 @@ Phase 1〜9 の全成果物に対して、要件充足度・設計準拠度・�
 
 ## 参照資料
 
-| 資料名                     | パス                                                                                                                                  | 説明                               |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| タスク仕様書               | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | 元タスク仕様（要件・完了条件）     |
-| Phase 1 要件定義           | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-1/`                                                | 要件・受け入れ基準                 |
-| Phase 2 設計               | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-2/`                                                | アーキテクチャ・コンポーネント設計 |
-| Phase 3 設計レビュー       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-3/`                                                | 設計レビュー結果                   |
-| Phase 5 実装成果物         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-5/implementation-summary.md`                       | 依存Phase 5 の成果物               |
-| Phase 7 カバレッジレポート | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-7/coverage-report.md`                              | テストカバレッジ結果               |
-| Phase 8 リファクタリング   | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-8/refactoring-report.md`                           | リファクタリング結果               |
-| Phase 9 品質レポート       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-9/quality-report.md`                               | 品質検証結果                       |
-| コンポーネント実装         | `apps/desktop/src/renderer/components/organisms/AgentView/`                                                                           | 全コンポーネント群                 |
-| AgentView統合              | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                                                 | シングルカラムレイアウト           |
-| agentSlice拡張             | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                                                | recentExecutions, advancedSettings |
-| UIコンポーネント仕様       | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | UIコンポーネント設計仕様           |
-| デザイン原則               | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                        | Apple HIG準拠デザイン原則          |
-| UIアーキテクチャ           | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | コンポーネントアーキテクチャ       |
-| 状態管理仕様               | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand設計原則                    |
-| ワークフロー仕様           | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                                  | 完了記録/残課題連携                |
-| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`                                                                                                  | P31, P39, P40, P24, P47 等         |
+| 資料名                     | パス                                                                                                            | 説明                               |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| タスク仕様書               | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md`    | 元タスク仕様（要件・完了条件）     |
+| Phase 1 要件定義           | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-1/`                          | 要件・受け入れ基準                 |
+| Phase 2 設計               | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-2/`                          | アーキテクチャ・コンポーネント設計 |
+| Phase 3 設計レビュー       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-3/`                          | 設計レビュー結果                   |
+| Phase 5 実装成果物         | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-5/implementation-summary.md` | 依存Phase 5 の成果物               |
+| Phase 7 カバレッジレポート | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-7/coverage-report.md`        | テストカバレッジ結果               |
+| Phase 8 リファクタリング   | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-8/refactoring-report.md`     | リファクタリング結果               |
+| Phase 9 品質レポート       | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-9/quality-report.md`         | 品質検証結果                       |
+| コンポーネント実装         | `apps/desktop/src/renderer/components/organisms/AgentView/`                                                     | 全コンポーネント群                 |
+| AgentView統合              | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                           | シングルカラムレイアウト           |
+| agentSlice拡張             | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                                                          | recentExecutions, advancedSettings |
+| UIコンポーネント仕様       | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                         | UIコンポーネント設計仕様           |
+| デザイン原則               | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                  | Apple HIG準拠デザイン原則          |
+| 実行UI仕様                 | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                    | 実行状態・Permission導線           |
+| モデル選択UI               | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                       | AdvancedSettingsPanel のモデル契約 |
+| 許可設定UI                 | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                           | remembered permissions 契約        |
+| UIアーキテクチャ           | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                       | コンポーネントアーキテクチャ       |
+| 状態管理仕様               | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                    | Zustand設計原則                    |
+| ワークフロー仕様           | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                            | 完了記録/残課題連携                |
+| 既知の落とし穴             | `.claude/rules/06-known-pitfalls.md`                                                                            | P31, P39, P40, P24, P47 等         |
+| 設計差分記録               | `outputs/phase-5/design-changes.md`                                                                             | Phase 5 成果物                     |
+| 要件定義書                 | `outputs/phase-1/requirements-definition.md`                                                                    | Phase 1 成果物                     |
+| アーキテクチャ設計書       | `outputs/phase-2/architecture-design.md`                                                                        | Phase 2 成果物                     |
 
 ## 実行手順
 
@@ -167,8 +173,8 @@ Phase 2 の設計に実装が従っているかを検証する。
 
 MINOR 判定の場合、以下の3ステップを全て実行する:
 
-1. **指示書作成**: `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/tasks/unassigned-task/` に未タスク仕様書を作成
-2. **残課題テーブル登録**: `task-workflow.md` の残課題テーブルに登録
+1. **指示書作成**: `docs/30-workflows/unassigned-task/` に未タスク仕様書を作成
+2. **残課題テーブル登録**: `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の残課題テーブルに登録
 3. **関連仕様書リンク追加**: 該当する仕様書に参照リンクを追加
 
 #### レビュー結果テンプレート
@@ -230,7 +236,7 @@ MINOR 判定の場合、以下の3ステップを全て実行する:
 | 成果物           | パス                                                                                                          | 説明                                      |
 | ---------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | 最終レビュー結果 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-10/final-review-result.md` | 7観点のレビュー結果とゲート判定           |
-| 未タスク仕様書   | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/tasks/unassigned-task/*.md`              | MINOR指摘の未タスク化（該当する場合のみ） |
+| 未タスク仕様書   | `docs/30-workflows/unassigned-task/*.md`                                                                      | MINOR指摘の未タスク化（該当する場合のみ） |
 
 ## 完了条件
 
@@ -273,7 +279,7 @@ Phase完了前に以下を確認:
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 10
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { act } from "@testing-library/react";
 import { AgentView } from "../index";
 
@@ -28,6 +28,34 @@ const mockRemoveSkill = vi.fn();
 
 const mockSetAdvancedSettingsOpen = vi.fn();
 const mockAbortExecution = vi.fn();
+const mockExecuteSkill = vi.fn();
+const mockAddExecutionToHistory = vi.fn();
+const mockFetchProviders = vi.fn();
+const mockSelectProvider = vi.fn();
+const mockSelectModel = vi.fn();
+
+function setMockPermissionsApi(
+  overrides: {
+    getMode?: () => Promise<string>;
+    getRemembered?: () => Promise<unknown[]>;
+    setMode?: (mode: string) => Promise<unknown>;
+    clearRemembered?: () => Promise<unknown>;
+  } = {},
+) {
+  Object.defineProperty(window, "electronAPI", {
+    value: {
+      permissions: {
+        getMode: vi.fn().mockResolvedValue("default"),
+        getRemembered: vi.fn().mockResolvedValue([]),
+        setMode: vi.fn().mockResolvedValue(undefined),
+        clearRemembered: vi.fn().mockResolvedValue(undefined),
+        ...overrides,
+      },
+    },
+    configurable: true,
+    writable: true,
+  });
+}
 
 vi.mock("../../../store", () => ({
   useAppStore: vi.fn(),
@@ -50,7 +78,17 @@ vi.mock("../../../store", () => ({
   useSelectedSkillName: vi.fn(() => null),
   useIsSkillExecuting: vi.fn(() => false),
   useSkillExecutionId: vi.fn(() => null),
+  useSkillExecutionStatus: vi.fn(() => null),
   useAbortSkillExecution: vi.fn(() => mockAbortExecution),
+  useExecuteSkill: vi.fn(() => mockExecuteSkill),
+  useAddExecutionToHistory: vi.fn(() => mockAddExecutionToHistory),
+  useLLMProviders: vi.fn(() => []),
+  useSelectedProviderId: vi.fn(() => null),
+  useSelectedModelId: vi.fn(() => null),
+  useLLMHealthStatus: vi.fn(() => ({})),
+  useFetchProviders: vi.fn(() => mockFetchProviders),
+  useSelectProvider: vi.fn(() => mockSelectProvider),
+  useSelectModel: vi.fn(() => mockSelectModel),
   // Action selectors
   useSelectSkill: vi.fn(() => mockSelectSkill),
   useSetSkillFilter: vi.fn(() => mockSetSkillFilter),
@@ -66,6 +104,7 @@ vi.mock("../../../store", () => ({
 describe("AgentView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
+    setMockPermissionsApi();
     // Reset all selector mocks to defaults
     const store = await import("../../../store");
     vi.mocked(store.useFetchSkills).mockReturnValue(mockFetchSkills);
@@ -91,7 +130,19 @@ describe("AgentView", () => {
     vi.mocked(store.useImportSkill).mockReturnValue(mockImportSkill);
     vi.mocked(store.useRemoveSkill).mockReturnValue(mockRemoveSkill);
     vi.mocked(store.useIsSkillExecuting).mockReturnValue(false);
+    vi.mocked(store.useSkillExecutionStatus).mockReturnValue(null);
     vi.mocked(store.useAbortSkillExecution).mockReturnValue(mockAbortExecution);
+    vi.mocked(store.useExecuteSkill).mockReturnValue(mockExecuteSkill);
+    vi.mocked(store.useAddExecutionToHistory).mockReturnValue(
+      mockAddExecutionToHistory,
+    );
+    vi.mocked(store.useLLMProviders).mockReturnValue([]);
+    vi.mocked(store.useSelectedProviderId).mockReturnValue(null);
+    vi.mocked(store.useSelectedModelId).mockReturnValue(null);
+    vi.mocked(store.useLLMHealthStatus).mockReturnValue({});
+    vi.mocked(store.useFetchProviders).mockReturnValue(mockFetchProviders);
+    vi.mocked(store.useSelectProvider).mockReturnValue(mockSelectProvider);
+    vi.mocked(store.useSelectModel).mockReturnValue(mockSelectModel);
   });
 
   describe("レンダリング", () => {
@@ -398,6 +449,230 @@ describe("AgentView", () => {
       fireEvent.click(importButtons[0]);
       expect(mockFetchSkills).toHaveBeenCalledTimes(2); // mount + click
       expect(mockOpenImportDialog).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("詳細設定パネル連携", () => {
+    it("should fetch providers on mount", () => {
+      render(<AgentView />);
+
+      expect(mockFetchProviders).toHaveBeenCalledTimes(1);
+    });
+
+    it("should load permission mode and remembered count when panel is open", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      vi.mocked(store.useLLMProviders).mockReturnValue([
+        {
+          id: "anthropic",
+          name: "Anthropic",
+          isAvailable: true,
+          models: [
+            {
+              id: "claude-opus-4",
+              name: "Claude Opus 4",
+              description: "最高性能",
+              isDefault: true,
+            },
+          ],
+        },
+      ] as never);
+      vi.mocked(store.useSelectedProviderId).mockReturnValue("anthropic");
+      vi.mocked(store.useSelectedModelId).mockReturnValue("claude-opus-4");
+      vi.mocked(store.useLLMHealthStatus).mockReturnValue({
+        anthropic: {
+          status: "connected",
+          providerId: "anthropic",
+          checkedAt: new Date(),
+        },
+      } as never);
+      setMockPermissionsApi({
+        getMode: vi.fn().mockResolvedValue("plan"),
+        getRemembered: vi.fn().mockResolvedValue([{}, {}, {}]),
+      });
+
+      render(<AgentView />);
+
+      await screen.findByText("Claude Opus 4");
+      await waitFor(() => {
+        expect(screen.getByTestId("permission-mode-selector")).toHaveValue(
+          "plan",
+        );
+        expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
+      });
+    });
+
+    it("should call selectProvider and selectModel when model card is selected", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      vi.mocked(store.useLLMProviders).mockReturnValue([
+        {
+          id: "anthropic",
+          name: "Anthropic",
+          isAvailable: true,
+          models: [
+            { id: "claude-opus-4", name: "Claude Opus 4", isDefault: true },
+            {
+              id: "claude-sonnet-4",
+              name: "Claude Sonnet 4",
+              isDefault: false,
+            },
+          ],
+        },
+      ] as never);
+      vi.mocked(store.useSelectedProviderId).mockReturnValue("anthropic");
+      vi.mocked(store.useSelectedModelId).mockReturnValue("claude-opus-4");
+
+      render(<AgentView />);
+
+      await act(async () => {
+        fireEvent.click(screen.getByText("Claude Sonnet 4"));
+      });
+
+      expect(mockSelectProvider).toHaveBeenCalledWith("anthropic");
+      expect(mockSelectModel).toHaveBeenCalledWith("claude-sonnet-4");
+    });
+
+    it("should show error toast when permission mode update fails", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      setMockPermissionsApi({
+        setMode: vi.fn().mockRejectedValue(new Error("mode update failed")),
+      });
+
+      render(<AgentView />);
+
+      await act(async () => {
+        fireEvent.change(screen.getByTestId("permission-mode-selector"), {
+          target: { value: "acceptEdits" },
+        });
+      });
+
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "error",
+        "許可モードの更新に失敗しました: mode update failed",
+      );
+    });
+
+    it("should reset remembered permissions and show success toast", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      setMockPermissionsApi({
+        getRemembered: vi.fn().mockResolvedValue([{}, {}]),
+      });
+
+      render(<AgentView />);
+      await screen.findByText("記憶された許可: 2件");
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
+      });
+
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "success",
+        "記憶済みの許可をリセットしました",
+      );
+    });
+  });
+
+  describe("実行状態遷移", () => {
+    it("should execute selected skill and show floating bar", async () => {
+      const store = await import("../../../store");
+      const selectedSkill = {
+        id: "skill-run",
+        name: "Run Skill",
+        description: "Run me",
+        path: "/path/run",
+        triggers: ["run"],
+      };
+      vi.mocked(store.useImportedSkills).mockReturnValue([
+        selectedSkill,
+      ] as never);
+      vi.mocked(store.useSelectedSkill).mockReturnValue(selectedSkill as never);
+      vi.mocked(store.useSelectedSkillName).mockReturnValue("Run Skill");
+
+      render(<AgentView />);
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      expect(mockExecuteSkill).toHaveBeenCalledWith("");
+      expect(screen.getByTestId("floating-execution-bar")).toBeInTheDocument();
+    });
+
+    it("should add completed execution to history and auto hide floating bar", async () => {
+      vi.useFakeTimers();
+      const store = await import("../../../store");
+      const selectedSkill = {
+        id: "skill-complete",
+        name: "Complete Skill",
+        description: "Complete me",
+        path: "/path/complete",
+        triggers: ["complete"],
+      };
+      vi.mocked(store.useImportedSkills).mockReturnValue([
+        selectedSkill,
+      ] as never);
+      vi.mocked(store.useSelectedSkill).mockReturnValue(selectedSkill as never);
+      vi.mocked(store.useSelectedSkillName).mockReturnValue("Complete Skill");
+
+      const { rerender } = render(<AgentView />);
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      vi.mocked(store.useSkillExecutionStatus).mockReturnValue("completed");
+      rerender(<AgentView />);
+
+      expect(mockAddExecutionToHistory).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skillName: "Complete Skill",
+          status: "completed",
+        }),
+      );
+      expect(screen.getByText("完了!")).toBeInTheDocument();
+
+      await act(async () => {
+        vi.advanceTimersByTime(1500);
+      });
+
+      expect(
+        screen.queryByTestId("floating-execution-bar"),
+      ).not.toBeInTheDocument();
+      vi.useRealTimers();
+    });
+
+    it("should add failed execution to history and show failure state", async () => {
+      const store = await import("../../../store");
+      const selectedSkill = {
+        id: "skill-fail",
+        name: "Fail Skill",
+        description: "Fail me",
+        path: "/path/fail",
+        triggers: ["fail"],
+      };
+      vi.mocked(store.useImportedSkills).mockReturnValue([
+        selectedSkill,
+      ] as never);
+      vi.mocked(store.useSelectedSkill).mockReturnValue(selectedSkill as never);
+      vi.mocked(store.useSelectedSkillName).mockReturnValue("Fail Skill");
+
+      const { rerender } = render(<AgentView />);
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      vi.mocked(store.useSkillExecutionStatus).mockReturnValue("error");
+      rerender(<AgentView />);
+
+      expect(mockAddExecutionToHistory).toHaveBeenCalledWith(
+        expect.objectContaining({
+          skillName: "Fail Skill",
+          status: "failed",
+        }),
+      );
+      expect(screen.getByText("失敗")).toBeInTheDocument();
     });
   });
 

@@ -3,6 +3,27 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## [2026-03-10 - TASK-UI-03 の system spec 反映先マトリクスを skill-creator へ追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「UI current workflow の system spec 反映先を最適化する」パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に UI current workflow 反映先マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-design-system.md` を含む UI 反映先マトリクスを追加し、1仕様書=1関心の分担を明示した
+
+---
+
+## [2026-03-10 - TASK-UI-03 再監査で skill-creator の Phase 12 template drift を是正]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「backlog 継続前の現物確認」と「component scope / token scope の切り分け」パターンを追加
+  - `references/patterns.md` / `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` の task-spec script path を canonical `.agents/skills/task-specification-creator/scripts/` へ統一
+  - UI再監査で見つかった light theme 所見を design system 未タスクへ formalize する導線を再利用可能な形で残した
 
 ## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
 

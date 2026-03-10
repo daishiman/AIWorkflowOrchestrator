@@ -84,7 +84,7 @@
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
 # Step 2: screenshot-plan.json から全状態を一括撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 
@@ -99,33 +99,33 @@ kill %1 2>/dev/null
 
 ```bash
 # ルートベース撮影（ページ全体）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes {{変更対象のルート}} \
   --state after
 
 # コンポーネント単位撮影（要素指定）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes /settings \
   --selector "[data-testid='my-component']" \
   --state after
 
 # インタラクション状態撮影（ボタンクリック後等）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes /settings \
   --action click --action-target "[data-testid='open-modal']" \
   --state modal-open
 
 # ダークモード撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes {{変更対象のルート}} \
   --state after --dark
 
 # ドライラン（出力パス確認のみ）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json --dry-run
 ```
@@ -167,7 +167,7 @@ kill <PID...> || true
 ### スクリーンショット網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -180,12 +180,12 @@ which validate-phase-output || true
 which verify-unassigned-links || true
 
 # 2) スクリプト実体を確認
-rg --files .claude/skills/task-specification-creator/scripts \
+rg --files .agents/skills/task-specification-creator/scripts \
   | rg 'verify-all-specs|validate-phase-output|validate-phase11-screenshot-coverage|verify-unassigned-links|audit-unassigned-tasks'
 ```
 
 補足:
-- `not found` の場合はグローバルCLIではなく、`node .claude/skills/task-specification-creator/scripts/<script>.js` で実行する。
+- `not found` の場合はグローバルCLIではなく、`node .agents/skills/task-specification-creator/scripts/<script>.js` で実行する。
 - Phase 12成果物には「実際に使った最終コマンド」を記録し、次回再監査で同じ経路を再利用する。
 
 補足:
@@ -317,7 +317,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 
 ```bash
 # 自動生成スクリプト（推奨）
-node .claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
+node .agents/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -417,16 +417,16 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
-- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
+- [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] `spec-update-summary.md` に `verify-unassigned-links` の `existing/missing` と `audit --diff-from HEAD` の `current/baseline` を実測値で転記した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
-- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
+- [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
 - [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
-- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
-- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
+- [ ] `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
+- [ ] `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
 - [ ] `audit-unassigned-tasks.js --json --diff-from HEAD` を実行し、合否判定を `currentViolations.total` で記録した（baselineは別記録）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
@@ -455,20 +455,20 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 ```bash
 # topic-map.md再生成（Step 1-D）
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-node .claude/skills/task-specification-creator/scripts/generate-index.js \
+node .agents/skills/task-specification-creator/scripts/generate-index.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --regenerate
 
 # 実装ガイド内容要件（Task 1）
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
 
 # comparison baseline を使う場合の strict 検証
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
+node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
   --workflow docs/30-workflows/completed-tasks/{{FEATURE_NAME}} \
   --strict
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/completed-tasks/{{FEATURE_NAME}}
 
 # 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
@@ -476,20 +476,20 @@ rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未�
   docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
 
 # 対象監査（今回変更分合否: current）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
 
 # 差分監査（git差分を current 判定）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 全体監査（baseline監視）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # TODO/FIXMEスキャン（補助）
-node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan apps/desktop/src/main/ipc \
   --output docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/.tmp-unassigned-candidates.json
 

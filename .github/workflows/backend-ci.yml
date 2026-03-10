@@ -10,6 +10,7 @@ on:
 # 最小権限の原則
 permissions:
   contents: read
+  pull-requests: read
   deployments: write
 
 concurrency:

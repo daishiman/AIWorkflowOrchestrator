@@ -224,7 +224,7 @@ Phase N 実行完了
 
 ```bash
 # scripts/complete-phase.js を使用（推奨）
-node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+node .agents/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1 \
   --artifacts "outputs/phase-1/requirements-definition.md:要件定義書,outputs/phase-1/acceptance-criteria.md:受け入れ基準"
@@ -234,7 +234,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 
 ```bash
 # 新規ワークフロー作成時に artifacts.json を初期化
-node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
+node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
   --workflow "docs/30-workflows/{{FEATURE_NAME}}"
 ```
 
@@ -242,7 +242,7 @@ node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
 
 ```bash
 # Phase出力の検証
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
   "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1
 ```

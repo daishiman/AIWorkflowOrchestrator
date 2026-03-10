@@ -65,7 +65,7 @@
   1. Node.jsでは `\z` / `\Z` に依存しない
   2. Markdownセクション抽出は「終端見出しを付与してから切り出す」実装が安全
   3. 検証スクリプト自身の判定結果は、実ファイル内容と合わせて二重確認する
-- **修正ファイル**: `.claude/skills/task-specification-creator/scripts/validate-phase-output.js`
+- **修正ファイル**: `.agents/skills/task-specification-creator/scripts/validate-phase-output.js`
 - **発見日**: 2026-02-24
 
 ### validate-phase-output の `--phase` 引数ドリフト（TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査）
@@ -217,11 +217,11 @@
 - **状況**: Phase完了処理で `node scripts/complete-phase.js` を実行した
 - **問題**: モジュール未発見エラーが発生しスクリプトが実行できなかった
 - **原因**:
-  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.claude/skills/task-specification-creator/scripts/` に配置されている
+  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.agents/skills/task-specification-creator/scripts/` に配置されている
   2. スキルスクリプトのパスとプロジェクトルートのパスを混同した
 - **教訓**:
-  1. スキルスクリプトは必ず `.claude/skills/{skill-name}/scripts/` パスで参照する
-  2. `node scripts/xxx.js` ではなく `node .claude/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
+  1. task-specification-creator の実行スクリプトは `.agents/skills/task-specification-creator/scripts/` を canonical path として参照する
+  2. `node scripts/xxx.js` ではなく `node .agents/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
   3. スクリプト実行前にファイルの存在を `test -f` で確認する
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
@@ -371,7 +371,7 @@
 - **状況**: Phase検証時に `verify-all-specs` と同形式のオプション（`--phase` など）を想定しやすい
 - **問題**: `validate-phase-output.js` は workflow ディレクトリの位置引数のみ受け付けるため、誤用で検証が止まる
 - **解決パターン**:
-  1. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
+  1. `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
   2. `verify-all-specs --workflow` とコマンドペアで使い、役割を分離（仕様整合 / 出力構造）
   3. Phase 12記録には両コマンドの結果を併記する
 - **効果**:
@@ -1967,7 +1967,7 @@
   rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
     docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
 
-  node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+  node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
   ```
 - **効果**:
   - Phase 12「実施済み」と仕様実体の不一致を防止

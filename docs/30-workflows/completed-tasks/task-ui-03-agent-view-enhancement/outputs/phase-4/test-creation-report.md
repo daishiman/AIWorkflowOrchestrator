@@ -1,55 +1,51 @@
-# Phase 4 テスト作成レポート（TDD Red）
+# Phase 4: テスト作成レポート
 
-## タスク: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
+## メタ情報
 
-## 日付: 2026-03-07
+| 項目   | 値                     |
+| ------ | ---------------------- |
+| Phase  | 4                      |
+| 機能名 | agent-view-enhancement |
+| 実施日 | 2026-03-10             |
 
-## 作成したテストファイル一覧
+## 実施概要
 
-| #   | ファイルパス                                                                                        | テストケース数 | 状態                   |
-| --- | --------------------------------------------------------------------------------------------------- | -------------- | ---------------------- |
-| 1   | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.extension.test.ts`                     | 5              | Red (5 FAIL)           |
-| 2   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/SkillChip.test.tsx`             | 6              | Red (モジュール未発見) |
-| 3   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/ExecuteButton.test.tsx`         | 5              | Red (モジュール未発見) |
-| 4   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/FloatingExecutionBar.test.tsx`  | 5              | Red (モジュール未発見) |
-| 5   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx` | 7              | Red (モジュール未発見) |
-| 6   | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/RecentExecutionList.test.tsx`   | 5              | Red (モジュール未発見) |
-| 7   | `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx`                     | 7              | Red (5 FAIL / 2 PASS)  |
+Phase 1〜3 の要件・設計を基に、AgentView 再設計の受け入れ条件をテストへ落とし込んだ。最終的に AgentView 系のテストは 9 ファイル、`it()` 実測 136 件まで拡張され、Phase 5 以降の実装・回帰検知の正本になっている。
 
-**合計: 40 テストケース**
+現在の worktree は Phase 5 以降の実装済み状態のため、2026-03-10 時点の再実行では Green になる。Red 状態の再現目的で実装を巻き戻すことはしていない。
 
-## Red状態の確認結果
+## 作成したテスト成果物
 
-### 1. agentSlice.extension.test.ts (5/5 FAIL)
+| ファイル                                                                                            |    件数 | 主な観点                                         |
+| --------------------------------------------------------------------------------------------------- | ------: | ------------------------------------------------ |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/SkillChip.test.tsx`             |      15 | 選択状態、アクセシビリティ、キーボード操作       |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/ExecuteButton.test.tsx`         |       8 | disabled/enabled、実行中非表示、連打防止         |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/FloatingExecutionBar.test.tsx`  |      12 | 実行中/完了/失敗、進捗、停止                     |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx` |      15 | ダイアログ、AI種別、許可モード、remembered reset |
+| `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/RecentExecutionList.test.tsx`   |      11 | 最大件数、空状態、相対時間、cancelled            |
+| `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx`                     |      13 | 3セクション、検索バー表示条件、詳細設定パネル    |
+| `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx`                            |      45 | 統合動作、アクセシビリティ、Permission 連携      |
+| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.extension.test.ts`                     |      10 | 実行履歴、パネル状態、初期値                     |
+| `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.p31-regression.test.ts`                |       7 | P31 回帰、防御的 selector 利用                   |
+| **合計**                                                                                            | **136** | **コンポーネント + view + store**                |
 
-- `addExecutionToHistory` / `clearExecutionHistory` / `setAdvancedSettingsOpen`: agentSliceに拡張アクション・状態が未実装のため `undefined` エラー
-- `useRecentExecutions`: store/index.ts にセレクタが未エクスポートのため `typeof === 'undefined'`
+## TDD観点の整理
 
-### 2-6. コンポーネントテスト (全 FAIL)
+| 項目         | 内容                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------ |
+| 先行した契約 | SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList の props 契約 |
+| 統合観点     | AgentView 単一カラム、検索バー表示条件、空状態、最近の実行、詳細設定導線                                     |
+| 非機能観点   | `fireEvent` 利用、ARIA 属性、P31 個別 selector、P39/P40 対策                                                 |
 
-- SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList: コンポーネントファイルが未作成のため `vite:import-analysis` エラー（モジュール解決失敗）
+## 実行コマンド
 
-### 7. AgentView.layout.test.tsx (5 FAIL / 2 PASS)
+```bash
+cd apps/desktop && pnpm vitest run src/renderer/components/organisms/AgentView/__tests__/
+cd apps/desktop && pnpm vitest run src/renderer/views/AgentView/__tests__/
+```
 
-- 既存AgentViewはレンダリング可能だが、新レイアウト（「AIアシスタント」「できること」テキスト、検索バー、設定ボタン等）が未実装のため該当テストが失敗
-- 2件パス: 既存のEmpty State表示とmax-wクラス確認は既存実装と部分的に一致
+## 判定
 
-## P39/P40対策の遵守状況
-
-| 対策 | 内容                                                             | 遵守                                        |
-| ---- | ---------------------------------------------------------------- | ------------------------------------------- |
-| P39  | happy-dom環境では `userEvent` 使用禁止、`fireEvent` のみ使用     | 遵守                                        |
-| P40  | テスト実行は `cd apps/desktop && pnpm vitest run src/...` で実行 | 遵守                                        |
-| P47  | CSS変数ベースのスタイルテストでは Record定数パターン使用         | 該当なし（Phase 4ではスタイルテスト未実施） |
-
-## 次のステップ
-
-Phase 5（実装）で以下を作成し、テストをGreen状態にする:
-
-1. agentSliceの拡張（executionHistory, isAdvancedSettingsOpen, 関連アクション、セレクタ）
-2. SkillChip コンポーネント
-3. ExecuteButton コンポーネント
-4. FloatingExecutionBar コンポーネント
-5. AdvancedSettingsPanel コンポーネント
-6. RecentExecutionList コンポーネント
-7. AgentView の新レイアウト実装
+- Phase 4 の成果物作成: 完了
+- Phase 5 以降の実装に対する正本テスト群として利用中
+- 実装済み worktree のため、2026-03-10 時点の再実行は Green

@@ -1,0 +1,56 @@
+{
+  "total": {
+    "lines": { "total": 1408, "covered": 1338, "skipped": 0, "pct": 95.02 },
+    "statements": {
+      "total": 1408,
+      "covered": 1338,
+      "skipped": 0,
+      "pct": 95.02
+    },
+    "functions": { "total": 87, "covered": 77, "skipped": 0, "pct": 88.5 },
+    "branches": { "total": 313, "covered": 286, "skipped": 0, "pct": 91.37 },
+    "branchesTrue": { "total": 0, "covered": 0, "skipped": 0, "pct": 100 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/components/organisms/AgentView/AdvancedSettingsPanel.tsx": {
+    "lines": { "total": 142, "covered": 142, "skipped": 0, "pct": 100 },
+    "functions": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+    "statements": { "total": 142, "covered": 142, "skipped": 0, "pct": 100 },
+    "branches": { "total": 18, "covered": 17, "skipped": 0, "pct": 94.44 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx": {
+    "lines": { "total": 25, "covered": 25, "skipped": 0, "pct": 100 },
+    "functions": { "total": 1, "covered": 1, "skipped": 0, "pct": 100 },
+    "statements": { "total": 25, "covered": 25, "skipped": 0, "pct": 100 },
+    "branches": { "total": 10, "covered": 10, "skipped": 0, "pct": 100 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/components/organisms/AgentView/FloatingExecutionBar.tsx": {
+    "lines": { "total": 81, "covered": 80, "skipped": 0, "pct": 98.76 },
+    "functions": { "total": 2, "covered": 2, "skipped": 0, "pct": 100 },
+    "statements": { "total": 81, "covered": 80, "skipped": 0, "pct": 98.76 },
+    "branches": { "total": 16, "covered": 16, "skipped": 0, "pct": 100 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/components/organisms/AgentView/RecentExecutionList.tsx": {
+    "lines": { "total": 75, "covered": 75, "skipped": 0, "pct": 100 },
+    "functions": { "total": 5, "covered": 5, "skipped": 0, "pct": 100 },
+    "statements": { "total": 75, "covered": 75, "skipped": 0, "pct": 100 },
+    "branches": { "total": 19, "covered": 17, "skipped": 0, "pct": 89.47 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/components/organisms/AgentView/SkillChip.tsx": {
+    "lines": { "total": 47, "covered": 47, "skipped": 0, "pct": 100 },
+    "functions": { "total": 3, "covered": 3, "skipped": 0, "pct": 100 },
+    "statements": { "total": 47, "covered": 47, "skipped": 0, "pct": 100 },
+    "branches": { "total": 15, "covered": 15, "skipped": 0, "pct": 100 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/store/slices/agentSlice.ts": {
+    "lines": { "total": 584, "covered": 557, "skipped": 0, "pct": 95.37 },
+    "functions": { "total": 60, "covered": 54, "skipped": 0, "pct": 90 },
+    "statements": { "total": 584, "covered": 557, "skipped": 0, "pct": 95.37 },
+    "branches": { "total": 156, "covered": 149, "skipped": 0, "pct": 95.51 }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-150350-wt1/apps/desktop/src/renderer/views/AgentView/index.tsx": {
+    "lines": { "total": 454, "covered": 412, "skipped": 0, "pct": 90.74 },
+    "functions": { "total": 11, "covered": 7, "skipped": 0, "pct": 63.63 },
+    "statements": { "total": 454, "covered": 412, "skipped": 0, "pct": 90.74 },
+    "branches": { "total": 79, "covered": 62, "skipped": 0, "pct": 78.48 }
+  }
+}

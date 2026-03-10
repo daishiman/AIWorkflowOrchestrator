@@ -1,4 +1,10 @@
-import React, { useEffect, useCallback } from "react";
+import React, {
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import clsx from "clsx";
 import {
   useFetchSkills,
@@ -24,6 +30,16 @@ import {
   useSelectedSkillName,
   useIsSkillExecuting,
   useAbortSkillExecution,
+  useExecuteSkill,
+  useSkillExecutionStatus,
+  useAddExecutionToHistory,
+  useLLMProviders,
+  useSelectedProviderId,
+  useSelectedModelId,
+  useLLMHealthStatus,
+  useFetchProviders,
+  useSelectProvider,
+  useSelectModel,
 } from "../../store";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { SkillChip } from "../../components/organisms/AgentView/SkillChip";
@@ -32,9 +48,19 @@ import { ExecuteButton } from "../../components/organisms/AgentView/ExecuteButto
 import { FloatingExecutionBar } from "../../components/organisms/AgentView/FloatingExecutionBar";
 import { RecentExecutionList } from "../../components/organisms/AgentView/RecentExecutionList";
 import { AdvancedSettingsPanel } from "../../components/organisms/AgentView/AdvancedSettingsPanel";
-import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
-import type { Skill, SkillName } from "@repo/shared/types/skill";
+import {
+  toSkillId,
+  type ImportedSkill,
+  type Skill,
+  type SkillMetadata,
+  type SkillName,
+} from "@repo/shared/types/skill";
 import { Plus, RefreshCw, X, Settings, Search } from "lucide-react";
+import type {
+  AgentFloatingStatus,
+  AgentPermissionMode,
+  ModelCardItem,
+} from "../../components/organisms/AgentView/types";
 
 export interface AgentViewProps {
   className?: string;
@@ -42,6 +68,38 @@ export interface AgentViewProps {
 
 /** 共通のコンテナクラス */
 const containerClassName = "flex flex-col gap-6 p-6 h-full overflow-hidden";
+
+type PermissionApi = {
+  getMode?: () => Promise<string>;
+  getRemembered?: () => Promise<unknown[]>;
+  setMode?: (mode: AgentPermissionMode) => Promise<unknown>;
+  clearRemembered?: () => Promise<unknown>;
+};
+
+function getPermissionApi(): PermissionApi | undefined {
+  return (
+    window.electronAPI as typeof window.electronAPI & {
+      permissions?: PermissionApi;
+    }
+  ).permissions;
+}
+
+function toViewSkill(skill: Skill | SkillMetadata | ImportedSkill): Skill {
+  if ("id" in skill) {
+    return skill;
+  }
+
+  return {
+    id: toSkillId(`agent-view:${skill.name}`),
+    name: skill.name,
+    slug: String(skill.name),
+    description: skill.description,
+    path: skill.path,
+    triggers: [],
+    anchors: [],
+    lastModified: skill.updatedAt,
+  };
+}
 
 /**
  * ヘッダーセクション
@@ -61,7 +119,7 @@ const AgentHeader: React.FC<{
       <button
         type="button"
         onClick={onSettingsClick}
-        aria-label="詳細設定"
+        aria-label="詳細設定を開く"
         className="p-2 hover:bg-[var(--bg-tertiary)] rounded-lg transition-colors"
       >
         <Settings className="h-5 w-5 text-[var(--text-secondary)]" />
@@ -145,6 +203,16 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const selectedSkillName = useSelectedSkillName();
   const isExecuting = useIsSkillExecuting();
   const abortExecution = useAbortSkillExecution();
+  const executeSkill = useExecuteSkill();
+  const skillExecutionStatus = useSkillExecutionStatus();
+  const addExecutionToHistory = useAddExecutionToHistory();
+  const providers = useLLMProviders();
+  const selectedProviderId = useSelectedProviderId();
+  const selectedModelId = useSelectedModelId();
+  const llmHealthStatus = useLLMHealthStatus();
+  const fetchProviders = useFetchProviders();
+  const selectProvider = useSelectProvider();
+  const selectModel = useSelectModel();
 
   // Store actions - 個別セレクタ（P31対策）
   const fetchSkills = useFetchSkills();
@@ -155,20 +223,197 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const showToast = useShowToast();
   const clearToast = useClearToast();
   const importSkillAction = useImportSkill();
+  const [permissionMode, setPermissionMode] =
+    useState<AgentPermissionMode>("default");
+  const [rememberedCount, setRememberedCount] = useState(0);
+  const [floatingStatus, setFloatingStatus] =
+    useState<AgentFloatingStatus>("idle");
+  const [floatingStartedAt, setFloatingStartedAt] = useState<Date | null>(null);
+  const [activeExecution, setActiveExecution] = useState<{
+    skillName: string;
+    displayName: string;
+    startedAt: Date;
+  } | null>(null);
+  const terminalTimerRef = useRef<number | null>(null);
 
   // Fetch skills on mount - 個別セレクタで参照安定
   useEffect(() => {
     fetchSkills();
   }, [fetchSkills]);
 
-  // スキル一覧: importedSkillsをSkill[]として扱う（型互換性のため）
-  const skills = importedSkills as unknown as Skill[];
+  useEffect(() => {
+    fetchProviders();
+  }, [fetchProviders]);
 
-  // 利用可能スキル: availableSkillsMetadataをSkill[]として扱う（型互換性のため）
-  const availableSkills = availableSkillsMetadata as unknown as Skill[];
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadPermissions = async () => {
+      const permissionsApi = getPermissionApi();
+      if (!permissionsApi) {
+        return;
+      }
+
+      try {
+        const [mode, remembered] = await Promise.all([
+          permissionsApi.getMode?.(),
+          permissionsApi.getRemembered?.(),
+        ]);
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (typeof mode === "string") {
+          setPermissionMode(mode as AgentPermissionMode);
+        }
+
+        if (Array.isArray(remembered)) {
+          setRememberedCount(remembered.length);
+        }
+      } catch {
+        // 権限設定APIが利用できない環境では既定値のまま表示する。
+      }
+    };
+
+    void loadPermissions();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (skillExecutionStatus === "running") {
+      setFloatingStatus("executing");
+      return;
+    }
+
+    if (!activeExecution) {
+      return;
+    }
+
+    const finishedAt = new Date();
+    const duration = finishedAt.getTime() - activeExecution.startedAt.getTime();
+
+    if (skillExecutionStatus === "completed") {
+      addExecutionToHistory({
+        executionId: crypto.randomUUID(),
+        skillName: activeExecution.skillName,
+        skillDisplayName: activeExecution.displayName,
+        status: "completed",
+        startedAt: activeExecution.startedAt,
+        completedAt: finishedAt,
+        duration,
+      });
+      setFloatingStatus("completed");
+      setActiveExecution(null);
+      return;
+    }
+
+    if (skillExecutionStatus === "error") {
+      addExecutionToHistory({
+        executionId: crypto.randomUUID(),
+        skillName: activeExecution.skillName,
+        skillDisplayName: activeExecution.displayName,
+        status: "failed",
+        startedAt: activeExecution.startedAt,
+        completedAt: finishedAt,
+        duration,
+      });
+      setFloatingStatus("failed");
+      setActiveExecution(null);
+      return;
+    }
+
+    if (skillExecutionStatus === "cancelled") {
+      addExecutionToHistory({
+        executionId: crypto.randomUUID(),
+        skillName: activeExecution.skillName,
+        skillDisplayName: activeExecution.displayName,
+        status: "cancelled",
+        startedAt: activeExecution.startedAt,
+        completedAt: finishedAt,
+        duration,
+      });
+      setFloatingStatus("idle");
+      setActiveExecution(null);
+    }
+  }, [activeExecution, addExecutionToHistory, skillExecutionStatus]);
+
+  useEffect(() => {
+    if (terminalTimerRef.current) {
+      window.clearTimeout(terminalTimerRef.current);
+      terminalTimerRef.current = null;
+    }
+
+    if (floatingStatus === "completed") {
+      terminalTimerRef.current = window.setTimeout(() => {
+        setFloatingStatus("idle");
+      }, 1500);
+    }
+
+    if (floatingStatus === "failed") {
+      terminalTimerRef.current = window.setTimeout(() => {
+        setFloatingStatus("idle");
+      }, 3000);
+    }
+
+    return () => {
+      if (terminalTimerRef.current) {
+        window.clearTimeout(terminalTimerRef.current);
+        terminalTimerRef.current = null;
+      }
+    };
+  }, [floatingStatus]);
+
+  const skills = useMemo(
+    () => importedSkills.map(toViewSkill),
+    [importedSkills],
+  );
+  const availableSkills = useMemo(
+    () => availableSkillsMetadata.map(toViewSkill),
+    [availableSkillsMetadata],
+  );
 
   // 検索バー表示判定: 11個以上で表示
   const shouldShowSearchBar = skills.length > 10;
+  const filteredSkills = useMemo(() => {
+    const normalizedFilter = skillFilter.trim().toLowerCase();
+    if (!normalizedFilter) {
+      return skills;
+    }
+
+    return skills.filter((skill) =>
+      skill.name.toLowerCase().includes(normalizedFilter),
+    );
+  }, [skillFilter, skills]);
+
+  const modelCards = useMemo<ModelCardItem[]>(() => {
+    return providers.flatMap((provider) =>
+      provider.models.map((model) => {
+        const health = llmHealthStatus[provider.id];
+        const healthStatus: ModelCardItem["healthStatus"] =
+          health?.status === "connected"
+            ? "healthy"
+            : health?.status === "disconnected"
+              ? "degraded"
+              : health?.status === "error"
+                ? "unavailable"
+                : "unknown";
+
+        return {
+          providerId: provider.id,
+          modelId: model.id,
+          displayName: model.name,
+          description: model.description,
+          healthStatus,
+          isSelected:
+            provider.id === selectedProviderId && model.id === selectedModelId,
+        };
+      }),
+    );
+  }, [llmHealthStatus, providers, selectedModelId, selectedProviderId]);
 
   // Handlers
   const handleImportClick = useCallback(() => {
@@ -189,32 +434,17 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
 
   const handleExecute = useCallback(
     async (skill: Skill) => {
-      try {
-        const preflightResult = await preflightSkillExecutionAuth();
-        if (!preflightResult.ok) {
-          showToast(
-            "error",
-            preflightResult.error?.message ||
-              "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
-          );
-          return;
-        }
-
-        await window.electronAPI.skill.execute({
-          skillName: skill.name,
-          prompt: "",
-        });
-        showToast("success", `${skill.name} を実行しました`);
-      } catch (err) {
-        showToast(
-          "error",
-          err instanceof Error
-            ? `スキル実行に失敗しました: ${err.message}`
-            : "スキル実行に失敗しました",
-        );
-      }
+      const startedAt = new Date();
+      setActiveExecution({
+        skillName: skill.name,
+        displayName: skill.name,
+        startedAt,
+      });
+      setFloatingStartedAt(startedAt);
+      setFloatingStatus("executing");
+      await executeSkill("");
     },
-    [showToast],
+    [executeSkill],
   );
 
   const handleImport = useCallback(
@@ -243,6 +473,58 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleRetry = useCallback(() => {
     fetchSkills();
   }, [fetchSkills]);
+
+  const handleModelSelect = useCallback(
+    (providerId: string, modelId: string) => {
+      selectProvider(providerId as Parameters<typeof selectProvider>[0]);
+      selectModel(modelId);
+    },
+    [selectModel, selectProvider],
+  );
+
+  const handlePermissionModeChange = useCallback(
+    async (mode: AgentPermissionMode) => {
+      setPermissionMode(mode);
+
+      const permissionsApi = getPermissionApi();
+      if (!permissionsApi?.setMode) {
+        return;
+      }
+
+      try {
+        await permissionsApi.setMode(mode);
+      } catch (error) {
+        showToast(
+          "error",
+          error instanceof Error
+            ? `許可モードの更新に失敗しました: ${error.message}`
+            : "許可モードの更新に失敗しました",
+        );
+      }
+    },
+    [showToast],
+  );
+
+  const handleResetRemembered = useCallback(async () => {
+    const permissionsApi = getPermissionApi();
+    if (!permissionsApi?.clearRemembered) {
+      setRememberedCount(0);
+      return;
+    }
+
+    try {
+      await permissionsApi.clearRemembered();
+      setRememberedCount(0);
+      showToast("success", "記憶済みの許可をリセットしました");
+    } catch (error) {
+      showToast(
+        "error",
+        error instanceof Error
+          ? `記憶済み許可のリセットに失敗しました: ${error.message}`
+          : "記憶済み許可のリセットに失敗しました",
+      );
+    }
+  }, [showToast]);
 
   // Error state
   if (error) {
@@ -311,7 +593,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
             aria-label="ツール選択"
             className="flex flex-wrap gap-4 justify-center"
           >
-            {skills.map((skill) => (
+            {filteredSkills.map((skill) => (
               <SkillChip
                 key={skill.name || skill.id}
                 skillName={skill.name}
@@ -357,42 +639,32 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
       </div>
 
       {/* FloatingExecutionBar（実行中のみ表示） */}
-      {isExecuting && (
+      {floatingStatus !== "idle" && (
         <FloatingExecutionBar
-          skillName={selectedSkillName ?? ""}
-          status="executing"
-          startedAt={new Date()}
+          skillName={activeExecution?.displayName ?? selectedSkillName ?? ""}
+          status={floatingStatus}
+          startedAt={floatingStartedAt}
           onStop={() => {
             abortExecution();
           }}
         />
       )}
 
-      {/* Advanced Settings Panel - 固定位置オーバーレイ */}
+      {/* Advanced Settings Panel */}
       {isAdvancedSettingsOpen && (
-        <div
-          className="fixed inset-0 z-30 bg-black/30"
-          onClick={() => setAdvancedSettingsOpen(false)}
-        />
-      )}
-      <div
-        className={`fixed right-0 top-0 bottom-0 z-40 w-80 transform transition-transform duration-300 ease-out ${
-          isAdvancedSettingsOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
         <AdvancedSettingsPanel
           isOpen={isAdvancedSettingsOpen}
           onClose={() => setAdvancedSettingsOpen(false)}
-          models={[]}
-          selectedProviderId={null}
-          selectedModelId={null}
-          onSelectModel={() => {}}
-          permissionMode="default"
-          onModeChange={() => {}}
-          rememberedCount={0}
-          onResetRemembered={() => {}}
+          models={modelCards}
+          selectedProviderId={selectedProviderId}
+          selectedModelId={selectedModelId}
+          onSelectModel={handleModelSelect}
+          permissionMode={permissionMode}
+          onModeChange={handlePermissionModeChange}
+          rememberedCount={rememberedCount}
+          onResetRemembered={handleResetRemembered}
         />
-      </div>
+      )}
 
       {/* Import Dialog */}
       <SkillImportDialog

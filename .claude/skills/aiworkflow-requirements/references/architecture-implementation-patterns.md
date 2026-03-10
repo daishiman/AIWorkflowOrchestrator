@@ -3569,12 +3569,54 @@ export function invokeWithTimeout<T>(
 - Phase 12 では「PR マージ時に反映予定」を残さず、その場で system spec / SKILL / LOGS を更新する。
 
 ---
+### S34: dedicated harness + review scope 分離パターン
+
+- **課題**: UIタスクの Phase 11 で App shell 初期化や依存データの揺れがあると、実装確認したい状態の再現と screenshot 取得が不安定になる。加えて light/dark の視認性所見が、コンポーネント固有不具合か global token 問題か混線しやすい。
+- **解決策**: 本番コンポーネントをそのまま使う dedicated harness route を用意し、`scenario` / `theme` クエリで状態を固定する。画面証跡は harness、責務判定は design token / component scope を分離して記録する。
+- **適用条件**: deep-link が弱い、App shell 遷移が不安定、複数状態を短時間で撮り分けたい UI タスク。
+- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査
+
+```tsx
+function getScenario(): HarnessScenario {
+  const raw = new URLSearchParams(window.location.search).get("scenario");
+  switch (raw) {
+    case "floating-executing":
+    case "panel-open":
+    case "recent-list":
+      return raw;
+    default:
+      return "main-view";
+  }
+}
+
+function applyTheme(theme: "light" | "dark"): void {
+  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.style.colorScheme = theme;
+}
+```
+
+#### 判断基準
+
+| 観点 | 採用理由 |
+| --- | --- |
+| 再現性 | `scenario` ごとに store state を固定でき、TC単位で screenshot を安定取得できる |
+| 責務分離 | UI固有不具合と global token 所見を別 issue / 別記録に分けやすい |
+| 保守性 | harness は本番コンポーネント再利用に限定し、mock 境界を明文化できる |
+
+#### 運用メモ
+
+- harness 導入時は `manual-test-result.md` に entry path / 再利用した本番コンポーネント / mock 境界を残す
+- `validate-phase11-screenshot-coverage` を回し、TC と証跡ファイルの対応を機械確認する
+- token 由来所見は UI domain spec か design-system 側の follow-up として切り出し、主タスクの blocker 判定と混ぜない
+
+---
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.45.0 | 2026-03-10 | TASK-10A-G: S33 3層テストアーキテクチャパターン追加（G1/G2/G3の障害切り分け・並列性・カバレッジ戦略・2段階テスト設計）、S34 テスト専用タスクのPhase 4-5統合パターン追加（Red/Green混在許容・Phase 5判断基準） |
+| v1.44.0 | 2026-03-10 | TASK-UI-03 current workflow 再監査: S34 dedicated harness + review scope 分離パターンを追加。`scenario` / `theme` による state 固定、TC単位 screenshot、global token 所見と component 所見の分離を標準化 |
 | v1.43.0 | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001: S35 Preload invoke timeout + timer cleanup パターンを追加。`invokeWithTimeout()` の fail-fast / timeout / `clearTimeout` cleanup / screenshot 検証 / Phase 12 planned wording 排除を標準化 |
-| v1.44.0 | 2026-03-10 | TASK-10A-G: S33 3層テストアーキテクチャパターン追加（G1/G2/G3の障害切り分け・並列性・カバレッジ戦略・2段階テスト設計）、S34 テスト専用タスクのPhase 4-5統合パターン追加（Red/Green混在許容・Phase 5判断基準） |
 | v1.42.0 | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001: S32 executeSkill並行実行ガードパターンを追加。async操作前の同期的isExecutingチェックによるmicrotask境界前ガード、flushMicrotasksテストパターンを標準化 |
 | v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
 | v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |

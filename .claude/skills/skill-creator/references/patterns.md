@@ -151,7 +151,7 @@
 - **状況**: `phase-12-documentation.md` と `artifacts.json` は completed 側へ揃っていても、`outputs/artifacts.json` 未作成や `index.md` 未再生成で workflow 全体が「未実施」に見えることがある
 - **アプローチ**:
   - `artifacts.json` 更新後に `outputs/artifacts.json` を同内容で同期する
-  - `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 1-12 / 13 表示を再生成する
+  - `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 1-12 / 13 表示を再生成する
   - `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を四点セットで突合する
 - **結果**: 「成果物はあるが workflow index 上は未実施」というドリフトを防止し、再監査の初手で迷わなくなる
 - **適用条件**: Phase 12 完了後、または再監査で workflow 状態表示に違和感がある場合
@@ -189,7 +189,7 @@
 - **アプローチ**:
   - `completed-tasks/unassigned-task/` 配下の指示書をステータスで分類し、`未着手|未実施|進行中` は `docs/30-workflows/unassigned-task/` に配置
   - `task-workflow.md` と関連仕様（例: `api-ipc-agent.md`）の参照を `docs/30-workflows/unassigned-task/` に統一
-  - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` 実行でリンク整合を検証
+  - `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` 実行でリンク整合を検証
 - **結果**: 未タスク台帳と物理配置が一致し、Phase 12監査時の誤判定を防止
 - **適用条件**: 未タスク再監査、完了済み移管作業、参照修正を同時に行うPhase 12
 - **発見日**: 2026-02-20
@@ -236,7 +236,7 @@
 
 - **状況**: `task-workflow.md` に未タスクを登録したが、`docs/30-workflows/unassigned-task/` に実体ファイルがなく参照切れになる
 - **アプローチ**:
-  - 未タスク登録後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
+  - 未タスク登録後に `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
   - `missing > 0` の場合は Phase 12 を完了扱いにしない
   - 完了タスクへ移動した場合は `task-workflow.md` の参照先を `completed-tasks/` 側に更新
 - **結果**: 未タスク探索時のリンク切れを事前に排除し、後続タスクの追跡性を維持
@@ -267,7 +267,7 @@
 - **適用条件**: Phase 12 Task 12-2 実行時、システム仕様書更新後の検証
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
-- **検証コマンド**: `node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
+- **検証コマンド**: `node .agents/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
 
 ### [Phase12] 複数システム仕様書への横断的更新
 
@@ -1974,7 +1974,7 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **問題**: 再確認の初動で停止し、証跡時刻や台帳同期の再確認が後倒しになる
 - **原因**: 検証コマンドの実体探索を省略し、エイリアスの存在を前提にしている
 - **教訓**: Phase 12 は「エイリアス」ではなく「スクリプト実体」を正本として実行する
-- **対策**: `which <cmd> || true` と `rg --files .claude/skills/task-specification-creator/scripts` で実体確認後、`node .claude/skills/task-specification-creator/scripts/<script>.js` 形式へ統一する
+- **対策**: `which <cmd> || true` と `rg --files .agents/skills/task-specification-creator/scripts` で実体確認後、`node .agents/skills/task-specification-creator/scripts/<script>.js` 形式へ統一する
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-00-FOUNDATION-REFLECTION-AUDIT
 
@@ -2401,7 +2401,7 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **状況**: `verify-all-specs` / `validate-phase-output` をグローバルCLI前提で実行し、環境差で `not found` や `MODULE_NOT_FOUND` が発生しやすい
 - **アプローチ**:
   - 再監査開始時に `which verify-all-specs || true` でエイリアス有無を確認
-  - `rg --files .claude/skills/task-specification-creator/scripts` で実体を特定し、`node .claude/skills/task-specification-creator/scripts/<script>.js` へ固定
+  - `rg --files .agents/skills/task-specification-creator/scripts` で実体を特定し、`node .agents/skills/task-specification-creator/scripts/<script>.js` へ固定
   - 実行後に採用した最終コマンドを `spec-update-summary.md` と `documentation-changelog.md` へ転記して再現手順を固定
 - **結果**: 端末差異に依存しない検証フローとなり、Phase 12 再確認時の手戻りを抑制できる
 - **適用条件**: 複数ワークツリー/端末で同一検証コマンドを再利用する Phase 12 タスク
@@ -2431,6 +2431,44 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: Phase 12 で未タスクの追加・完了移管・リンク更新を行ったタスク
 - **発見日**: 2026-03-04
 - **関連タスク**: TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001
+
+### [Phase12] backlog 継続前に現物確認して completed/unassigned を再判定するパターン（TASK-UI-03）
+
+- **状況**: Phase 10/11 で起票した未タスクをそのまま継続扱いにすると、current branch では既に解消済みの項目まで open backlog として残りやすい
+- **アプローチ**:
+  - `rg -n "<symptom>" <codebase>` で現物の残存有無を先に確認する
+  - 解消済みなら `docs/30-workflows/completed-tasks/unassigned-task/` 側へ正規化し、`task-workflow.md` / `unassigned-task-detection.md` / `spec-update-summary.md` を同一ターンで更新する
+  - 未解消なら task-spec フォーマットで `docs/30-workflows/unassigned-task/` に formalize し、`audit --target-file` まで閉じる
+- **結果**: backlog と実コードのズレを抑止し、Phase 12 判定の信頼性を保てる
+- **適用条件**: current workflow 再監査、MINOR 指摘の継続判定、既存未タスクの棚卸し時
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
+
+### [Phase12] UI所見を component scope と token scope に切り分けて formalize するパターン（TASK-UI-03）
+
+- **状況**: screenshot で light/dark の視認性差分を見つけたとき、個別コンポーネント修正と design token 改善が混線しやすい
+- **アプローチ**:
+  - dedicated harness で component state を固定し、layout/state の不具合有無を先に確認する
+  - token 由来と判断した所見は `ui-ux-design-system.md` と `task-workflow.md` の両方へ未タスク化し、component 側にはハードコードを追加しない
+  - `manual-test-result.md` / `discovered-issues.md` / `unassigned-task-detection.md` に同じ task ID を転記する
+- **結果**: UIレビュー所見が観察止まりにならず、正しい責務境界で改善計画へ接続できる
+- **適用条件**: Phase 11 screenshot 再監査、Apple UI/UX レビュー、theme token 改善の判断時
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
+
+### [Phase12] UI current workflow の system spec 反映先を最適化するパターン（TASK-UI-03）
+
+- **状況**: 実装内容と苦戦箇所を `task-workflow.md` と `lessons-learned.md` にだけ集約すると、component catalog / feature spec / architecture / design-system のどこに何を書くべきかが揺れ、同じ内容の重複と反映漏れが起きやすい
+- **アプローチ**:
+  - コンポーネント一覧と完了記録は `ui-ux-components.md` に寄せる
+  - 機能の振る舞い、関連未タスク、5分解決カードは `ui-ux-feature-components.md` に寄せる
+  - 専用型、adapter helper、dedicated harness など責務境界の話は `arch-ui-components.md` に寄せる
+  - light/dark token や theme 所見は `ui-ux-design-system.md` に寄せる
+  - 横断的な検証値と教訓は `task-workflow.md` / `lessons-learned.md` に残す
+- **結果**: 参照起点が固定され、1仕様書=1関心の形で再利用しやすくなる
+- **適用条件**: UI current workflow 再監査、Step 2 の更新先選定、SubAgent 分担表を作る前
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT
 
 ### [Phase12] UI再撮影前ポート競合 preflight + 分岐記録固定（workflow02）
 

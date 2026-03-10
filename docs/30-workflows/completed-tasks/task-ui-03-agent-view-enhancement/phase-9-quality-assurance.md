@@ -6,7 +6,7 @@
 | ------ | ---------------------- |
 | Phase  | 9                      |
 | 機能名 | agent-view-enhancement |
-| 作成日 | 2026-03-07             |
+| 作成日 | 2026-03-10             |
 
 ## 目的
 
@@ -23,21 +23,27 @@ Phase 8 のリファクタリング完了後、TypeScript型チェック・ESLin
 
 ## 参照資料
 
-| 資料名                         | パス                                                                                                                                  | 説明                         |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| タスク仕様書                   | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058a-ui-03-agent-view-enhancement.md` | 元タスク仕様                 |
-| Phase 5 実装成果物             | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-5/implementation-summary.md`                       | 依存Phase 5 の成果物         |
-| Phase 8 リファクタリング成果物 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-8/refactoring-report.md`                           | リファクタリング結果         |
-| コンポーネント実装             | `apps/desktop/src/renderer/components/organisms/AgentView/`                                                                           | SkillChip, ExecuteButton 等  |
-| AgentView統合                  | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                                                 | シングルカラムレイアウト     |
-| UIコンポーネント仕様           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                               | UIコンポーネント設計仕様     |
-| デザイン原則                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                                        | Apple HIG準拠デザイン原則    |
-| UIアーキテクチャ               | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                                             | コンポーネントアーキテクチャ |
-| 状態管理仕様                   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                          | Zustand設計原則              |
-| 既知の落とし穴                 | `.claude/rules/06-known-pitfalls.md`                                                                                                  | P31, P39, P40, P47 等        |
-| 品質要件仕様                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                           | 品質ゲート基準               |
-| アクセシビリティ試験仕様       | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                                          | WCAG検証観点                 |
-| セキュリティ原則               | `.claude/skills/aiworkflow-requirements/references/security-principles.md`                                                            | 入力検証/XSS対策             |
+| 資料名                         | パス                                                                                                            | 説明                              |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| タスク仕様書                   | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md`    | 元タスク仕様                      |
+| Phase 5 実装成果物             | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-5/implementation-summary.md` | 依存Phase 5 の成果物              |
+| Phase 8 リファクタリング成果物 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/outputs/phase-8/refactoring-report.md`     | リファクタリング結果              |
+| コンポーネント実装             | `apps/desktop/src/renderer/components/organisms/AgentView/`                                                     | SkillChip, ExecuteButton 等       |
+| AgentView統合                  | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                           | シングルカラムレイアウト          |
+| UIコンポーネント仕様           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                         | UIコンポーネント設計仕様          |
+| デザイン原則                   | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                                  | Apple HIG準拠デザイン原則         |
+| デザインシステム               | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                      | トークン・コントラスト・spacing   |
+| UIアーキテクチャ               | `.claude/skills/aiworkflow-requirements/references/arch-ui-components.md`                                       | コンポーネントアーキテクチャ      |
+| 状態管理仕様                   | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                    | Zustand設計原則                   |
+| 実行UI仕様                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution.md`                                    | 実行状態・Permission 導線         |
+| 許可設定UI                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                           | remembered permissions の基準     |
+| スキル実行セキュリティ         | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`                                 | allowed tools / remembered choice |
+| 実装パターン                   | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                     | 型ドリフト・段階移行の確認        |
+| 既知の落とし穴                 | `.claude/rules/06-known-pitfalls.md`                                                                            | P31, P39, P40, P47 等             |
+| 品質要件仕様                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                     | 品質ゲート基準                    |
+| アクセシビリティ試験仕様       | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`                                    | WCAG検証観点                      |
+| セキュリティ原則               | `.claude/skills/aiworkflow-requirements/references/security-principles.md`                                      | 入力検証/XSS対策                  |
+| 設計差分記録                   | `outputs/phase-5/design-changes.md`                                                                             | Phase 5 成果物                    |
 
 ## 依存Phase成果物（参照必須）
 
@@ -255,7 +261,7 @@ Phase完了前に以下を確認:
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --phase 9
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement
 ```
 
 ## 次のPhase
