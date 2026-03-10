@@ -146,6 +146,19 @@
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-UI-02-GLOBAL-NAV-CORE
 
+### [Phase12] `generate-index` schema 互換監査 + 壊れた index の即時未タスク化
+
+- **状況**: `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` 実行後、workflow ごとの `artifacts.json` schema 差異により `index.md` が `undefined` 表示や全 Phase 未実施へ壊れることがある
+- **アプローチ**:
+  - `generate-index` 実行後に `index.md` の Phase 12/13 表示だけでなく、`undefined` 混入や成果物件数の崩れを即時確認する
+  - `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を四点突合し、generator 出力を盲信しない
+  - generator 側修正が current task の責務外なら、workflow は手動で正本へ戻し、汎用改善は `docs/30-workflows/unassigned-task/` に未タスク化する
+  - `task-workflow.md` と `lessons-learned.md` に、手動復旧した事実と generator/schema 互換改善が別課題であることを同一ターンで記録する
+- **結果**: completed workflow を自動再生成で再破壊する連鎖を止め、局所修復と汎用改善の責務分離を維持できる
+- **適用条件**: `generate-index` 実行後の `index.md` が `artifacts.json` と一致しない場合、または workflow 間で `artifacts.json` schema 差異が疑われる場合
+- **発見日**: 2026-03-10
+- **関連タスク**: UT-IMP-TASK-SPEC-GENERATE-INDEX-SCHEMA-COMPAT-001
+
 ### [Phase12] 完了済み未タスク指示書の配置整合（残置防止）
 
 - **状況**: 機能実装完了後も、対応済みの未タスク指示書が `docs/30-workflows/unassigned-task/` に残り、運用上「未完了」と誤認される

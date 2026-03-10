@@ -366,6 +366,23 @@ node scripts/search-spec.js "auth:check-online" -C 3
 node scripts/search-spec.js "Promise.race" -C 3
 ```
 
+### TASK-10A-G: スキルライフサイクル統合テスト強化
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| ui-ux-components.md | TASK-10A-C の `skill:create` 4層同期（channels / whitelist / handler / preload）と SkillCreateWizard 契約 | `skill:create` 契約の正本確認時 |
+| ui-ux-feature-components.md | SkillAnalysisView / SkillCreateWizard / Store-Driven Lifecycle Integration の UI責務と完了実績 | `create -> list -> analyze -> improve` の画面責務を確認したい時 |
+| arch-ui-components.md | TASK-10A-D の ChatPanel 導線・SkillManagementPanel 4ビュー遷移・`createSkill` 利用経路 | ChatPanel 起点ライフサイクル導線確認時 |
+| interfaces-agent-sdk-ui.md | TASK-7D の ChatPanel 公開インターフェース、toggle/stream 統合、UI結線の正本 | ChatPanel の結合境界と Props/Handle 契約を確認したい時 |
+| interfaces-agent-sdk-skill.md | Skill Dashboard / ChatPanel 統合 / `createSkill` 操作契約 / Store利用前提 | スキルUIの型・操作契約を確認したい時 |
+| arch-state-management.md | TASK-10A-E-C / TASK-10A-F の Store駆動ライフサイクル境界、個別セレクタ、`useShallow` 条件 | Store状態遷移・P31/P48 確認時 |
+| architecture-implementation-patterns.md | Handler Map 方式、Main ハンドラ間接テスト、IPC/Store 分離テストパターン | Main IPC テスト設計時 |
+| testing-component-patterns.md | View レベル統合テストハーネス、Store mock 集約、happy-dom パターン | Renderer 統合テスト設計時 |
+| security-electron-ipc.md | sender 検証、P42準拠3段バリデーション、IPC ハンドラライフサイクル | セキュリティ/入力検証観点確認時 |
+| error-handling.md | `CREATE_ERROR` / validation failure の期待レスポンスとエラー分類 | 異常系テストの期待値を固定したい時 |
+| quality-requirements.md | coverage gate、TDD、品質ゲートの下限値 | Phase 7/9/13 の合否基準を確認したい時 |
+| task-workflow.md | TASK-10A-C/D/F の完了記録、5仕様書同期、Phase 11/12 検証証跡 | 仕様同期範囲・Phase 12 観点確認時 |
+| lessons-learned.md | `skill:create` 契約同期漏れ、handler-scope coverage 誤読、再監査の再発防止手順 | 苦戦箇所の短縮導線が必要な時 |
 ### 検索クエリ例
 
 ```bash
@@ -385,7 +402,8 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-10 | 1.12.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |
+| 2026-03-10 | 1.12.0     | TASK-10A-G: `skill:create` 契約 + ChatPanel 起点ライフサイクル統合テスト向けの導線を追加 |
+| 2026-03-10 | 1.13.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |
 | 2026-03-09 | 1.11.0     | TASK-10A-F: タスク別リソースマップに Store駆動スキルライフサイクルUI統合の導線を追加 |
 | 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
 | 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |

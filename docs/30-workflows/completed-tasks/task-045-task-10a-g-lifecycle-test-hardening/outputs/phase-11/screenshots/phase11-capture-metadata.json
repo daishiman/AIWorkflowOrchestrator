@@ -1,0 +1,63 @@
+{
+  "taskId": "TASK-10A-G",
+  "capturedAt": "2026-03-10T03:31:25.244Z",
+  "baseUrl": "http://127.0.0.1:5186",
+  "outputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260310-073603-wt2/docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/outputs/phase-11/screenshots",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-chatpanel-executing-guard.png",
+      "route": "/advanced/concurrency-guard-review?scenario=chat-panel&skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-10T03:31:20.874Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-skill-management-panel-default.png",
+      "route": "/advanced/skill-management-panel?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-10T03:31:22.114Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-skill-create-wizard-complete.png",
+      "route": "/advanced/skill-create-wizard?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-10T03:31:23.228Z"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-skill-analysis-default.png",
+      "route": "/advanced/skill-analysis?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-10T03:31:24.339Z"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-skill-analysis-improved.png",
+      "route": "/advanced/skill-analysis?skipAuth=true&mode=improved",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-10T03:31:25.239Z"
+    }
+  ]
+}

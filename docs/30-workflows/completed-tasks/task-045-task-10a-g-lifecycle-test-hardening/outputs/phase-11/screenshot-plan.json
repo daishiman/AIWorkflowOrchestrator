@@ -1,0 +1,35 @@
+{
+  "workflow": "task-045-task-10a-g-lifecycle-test-hardening",
+  "testCases": [
+    {
+      "tcId": "TC-11-01",
+      "screen": "ChatPanel",
+      "state": "executing-guard",
+      "file": "TC-11-01-chatpanel-executing-guard.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "screen": "SkillManagementPanel",
+      "state": "default",
+      "file": "TC-11-02-skill-management-panel-default.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "screen": "SkillCreateWizard",
+      "state": "complete",
+      "file": "TC-11-03-skill-create-wizard-complete.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "screen": "SkillAnalysisView",
+      "state": "default",
+      "file": "TC-11-04-skill-analysis-default.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "screen": "SkillAnalysisView",
+      "state": "improved",
+      "file": "TC-11-05-skill-analysis-improved.png"
+    }
+  ]
+}

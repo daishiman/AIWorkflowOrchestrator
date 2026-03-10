@@ -114,6 +114,7 @@ rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentatio
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
 node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
+rg -n 'undefined' <workflow-path>/index.md
 rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
 rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
@@ -163,6 +164,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 が `[x]` で同期されている
 - [ ] `artifacts.json` と `outputs/artifacts.json` が同一内容で同期されている
 - [ ] `generate-index.js --workflow <workflow-path> --regenerate` 後の `index.md` が Phase 状態を正しく表示している
+- [ ] `generate-index.js` 後に `index.md` が `undefined` 混入や全Phase未実施化を起こしていない。発生時は手動復旧し、generator/schema 互換問題を未タスク化している
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `pending` が残っていない
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
