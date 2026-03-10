@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-09T17:07:03.174Z",
-  "totalKeywords": 1541,
+  "generated": "2026-03-10T02:23:45.445Z",
+  "totalKeywords": 1544,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -747,7 +747,8 @@
     ],
     "契約": [
       "api-ipc-agent.md",
-      "api-ipc-auth.md"
+      "api-ipc-auth.md",
+      "security-electron-ipc.md"
     ],
     "TASK": [
       "api-ipc-agent.md",
@@ -3287,7 +3288,8 @@
       "ipc-contract-checklist.md"
     ],
     "safeInvoke": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "security-electron-ipc.md"
     ],
     "safeOn": [
       "ipc-contract-checklist.md"
@@ -4123,6 +4125,7 @@
     ],
     "TIMEOUT": [
       "lessons-learned.md",
+      "security-electron-ipc.md",
       "ui-ux-settings.md"
     ],
     "BYPASS": [
@@ -4131,6 +4134,10 @@
     ],
     "実装教訓": [
       "lessons-learned.md"
+    ],
+    "SAFEINVOKE": [
+      "lessons-learned.md",
+      "security-electron-ipc.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4728,6 +4735,12 @@
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [
+      "security-electron-ipc.md"
+    ],
+    "タイムアウト": [
+      "security-electron-ipc.md"
+    ],
+    "cleanup": [
       "security-electron-ipc.md"
     ],
     "セキュリティ実装仕様": [

@@ -18,6 +18,7 @@
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
+| バグ修正（safeInvoke timeout / preload IPC timeout） | security-electron-ipc.md, architecture-implementation-patterns.md, api-ipc-auth.md, architecture-auth-security.md, arch-state-management.md, error-handling.md | ipc-contract-checklist.md, ui-ux-settings.md, quality-requirements.md, testing-component-patterns.md, task-workflow.md, lessons-learned.md |
 | バグ修正（persist / localStorage 破壊） | arch-state-management.md, arch-ipc-persistence.md | testing-component-patterns.md, development-guidelines.md, lessons-learned.md, security-electron-ipc.md |
 | バグ修正（スキル実行並行ガード） | arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md | ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
@@ -340,6 +341,31 @@
 | task-workflow.md | TASK-10A-F 完了記録・P50検証モード適用事例 | ワークフロー確認時 |
 | ui-ux-feature-components.md | SkillAnalysisView / SkillCreateWizard 仕様 | UI実装・スコープ確認時 |
 
+### TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| security-electron-ipc.md | Preload 境界、allowlist、防御責務 | Preload helper 設計時 |
+| architecture-implementation-patterns.md | safeInvoke / Promise.race / wrapper 設計 | helper 抽出時 |
+| api-ipc-auth.md | `auth:get-session` / `auth:check-online` 契約 | 認証影響確認時 |
+| architecture-auth-security.md | AuthGuard / LoadingScreen / timeout 影響 | UIブロック因果確認時 |
+| arch-state-management.md | `isLoading` / `isAuthenticated` の終了条件 | Renderer 状態確認時 |
+| error-handling.md | timeout 文言、分類、復旧方針 | エラー設計時 |
+| ipc-contract-checklist.md | helper 抽出後の契約維持確認 | レビュー時 |
+| testing-component-patterns.md | fake timer / preload test 設計補強 | テスト設計時 |
+
+**検索手順**:
+
+複合語を 1 回で投げず、1 概念 1 クエリで順に読む。
+
+```bash
+node scripts/search-spec.js "safeInvoke" -C 3
+node scripts/search-spec.js "timeout" -C 3
+node scripts/search-spec.js "auth:get-session" -C 3
+node scripts/search-spec.js "auth:check-online" -C 3
+node scripts/search-spec.js "Promise.race" -C 3
+```
+
 ### 検索クエリ例
 
 ```bash
@@ -359,6 +385,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-10 | 1.12.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |
 | 2026-03-09 | 1.11.0     | TASK-10A-F: タスク別リソースマップに Store駆動スキルライフサイクルUI統合の導線を追加 |
 | 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
 | 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |

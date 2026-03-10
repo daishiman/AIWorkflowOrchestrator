@@ -1430,6 +1430,7 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | timeout fallback | warning icon、見出し、説明文、`リトライ`、`設定画面へ` を表示する |
 | settings shell | 未認証でも `AccountSection` のログイン CTA、認証方式、APIキー、テーマ、RAG を表示できる |
 | safety | 保護ビューは reset 対象のまま維持し、公開するのは `settings` のみ |
+| 再監査補足 | current workflow の screenshot では light theme の `リトライ` 視認性差分が見つかったため、機能完了とは分離して未タスク化する |
 
 #### 画面証跡
 
@@ -1439,6 +1440,12 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | TC-11-02 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` |
 | TC-11-03 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` |
 | TC-11-04 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` |
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001 | `AuthTimeoutFallback` ライトテーマで `リトライ` の視認性が低い問題を改善する | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-auth-timeout-fallback-light-contrast-guard-001.md` |
 
 ---
 

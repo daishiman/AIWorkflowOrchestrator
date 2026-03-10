@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-03-10T01:51:01.670Z",
+  "baseUrl": "http://localhost:5183",
+  "viewport": {
+    "width": 1440,
+    "height": 1600
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "safeInvoke timeout 後の AuthTimeoutFallback をライトテーマで確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-01-safeinvoke-timeout-fallback-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "safeInvoke timeout 後の AuthTimeoutFallback をダークテーマで確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-02-safeinvoke-timeout-fallback-dark.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "timeout fallback から Settings 公開シェルへ遷移できることを確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-03-safeinvoke-timeout-to-settings.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "未認証 Settings 公開シェルが維持されることを確認",
+      "route": "/phase11-authguard-timeout.html",
+      "output": "screenshots/TC-11-04-safeinvoke-settings-shell-unauthenticated.png",
+      "priority": "A"
+    }
+  ]
+}

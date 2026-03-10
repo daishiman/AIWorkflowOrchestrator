@@ -99,6 +99,42 @@ if (getSupabaseClient()) {
 **詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
 **完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
 
+### safeInvoke timeout / preload IPC timeout 調査導線
+
+`safeInvoke timeout` / `preload IPC timeout` / `IPC_TIMEOUT_MS` / `Promise.race preload` / `auth:get-session timeout` で検索したときに最初に当たるべき導線。
+
+| まず読む | 目的 |
+|---------|------|
+| `security-electron-ipc.md` | Preload 公開境界、ホワイトリスト、防御責務を確認 |
+| `architecture-implementation-patterns.md` | `safeInvoke` / `safeInvokeUnwrap` と Promise ベース実装パターンを確認 |
+| `api-ipc-auth.md` | `auth:get-session` / `auth:check-online` の契約を確認 |
+| `architecture-auth-security.md` | AuthGuard / LoadingScreen への影響を確認 |
+| `arch-state-management.md` | timeout 後に `isLoading` を閉じる状態遷移を確認 |
+| `error-handling.md` | timeout の分類、エラーメッセージ、復旧方針を確認 |
+| `ipc-contract-checklist.md` | channel / 引数 / 戻り値 / error envelope の契約確認を行う |
+| `ui-ux-settings.md` | timeout が設定画面や認証導線に与える UI 影響を確認 |
+| `task-workflow.md` | 類似タスクの完了記録、未タスク、苦戦箇所を確認 |
+| `lessons-learned.md` | fake timer、timeout 系不具合、Phase 12 同期漏れの再発防止を確認 |
+
+**検索補助キーワード**:
+- `safeInvoke timeout`
+- `preload IPC timeout`
+- `IPC_TIMEOUT_MS`
+- `Promise.race preload`
+- `auth:get-session timeout`
+
+**検索のコツ**:
+
+`search-spec.js` は複合語一発より、1概念ずつ分割した方がヒットしやすい。
+
+```bash
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "safeInvoke" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "timeout" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "auth:get-session" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "auth:check-online" -C 3
+node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "Promise.race" -C 3
+```
+
 ### AuthGuard timeout / Settings認証除外 / currentView settings bypass 調査導線
 
 `AuthGuard timeout` / `Settings認証除外` / `timeout fallback` / `Settings bypass` / `currentView settings` / `navContract settings` / `AppDock settings` で検索したときに最初に当たるべき導線。
