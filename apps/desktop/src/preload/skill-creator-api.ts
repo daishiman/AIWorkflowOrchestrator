@@ -13,6 +13,7 @@ import {
   ALLOWED_ON_CHANNELS,
   ALLOWED_INVOKE_CHANNELS,
 } from "./channels";
+import { invokeWithTimeout } from "./ipc-utils";
 import type {
   SkillCreatorMode,
   CreateSkillOptions,
@@ -172,13 +173,10 @@ export interface SkillCreatorAPI {
 }
 
 /**
- * safeInvoke - 許可されたチャンネルのみ invoke を実行
+ * safeInvoke - 許可されたチャンネルのみ invoke を実行（タイムアウト付き）
  */
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
-  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
-    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
-  }
-  return ipcRenderer.invoke(channel, ...args);
+  return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
 }
 
 /**

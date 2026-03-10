@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期 |
 | v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
 | v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
 | v1.16.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: IPC ハンドラライフサイクル管理セクションに `IpcHandlerRegistrationResult` 戻り値契約と `safeRegister` による個別 try-catch の Graceful Degradation 仕様を追記。フェイルセキュア考慮事項を明文化 |
@@ -927,9 +928,41 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 ## 関連ドキュメント
 
+- [TASK-FIX-SAFEINVOKE-TIMEOUT-001 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/outputs/phase-12/implementation-guide.md)
 - [APIセキュリティ](./security-api.md)
 - [スキル実行セキュリティ](./security-skill-execution.md)
 - [AUTH IPC登録一元化 実装ガイド](../../../docs/30-workflows/ut-ipc-auth-handle-duplicate-001/outputs/phase-12/implementation-guide.md)
+
+---
+
+## safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
+
+Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `invoke` 呼び出しが応答不能になった場合でも Promise を永続 pending にしないためのフェイルセーフ契約である。
+
+| 観点 | 契約 |
+| --- | --- |
+| 対象実装 | `apps/desktop/src/preload/ipc-utils.ts` |
+| timeout 定数 | `IPC_TIMEOUT_MS = 5000` |
+| fail-fast | `allowedChannels.includes(channel)` に失敗したチャンネルは `ipcRenderer.invoke()` 前に即時 reject |
+| timeout error | `IPC timeout: {channel} did not respond within 5000ms` |
+| cleanup | 正常 resolve / reject の双方で `clearTimeout(timeoutId)` を実行し、短命 timer を残留させない |
+| 後方互換 | `safeInvoke<T>(channel, ...args): Promise<T>` の公開シグネチャは不変 |
+
+### セキュリティ意図
+
+- 応答不能ハンドラで Renderer が無限待機し続ける状態を防ぎ、安全側の reject に倒す。
+- エラーメッセージは channel 名と timeout 値のみを含み、パス・token・stack trace は露出しない。
+- cleanup はメモリ最適化だけでなく、fake timer テストや高頻度 invoke の再現性維持にも効く。
+
+### 検証証跡
+
+| 種別 | 結果 |
+| --- | --- |
+| preload 単体テスト | `src/preload/__tests__/ipc-utils.safeInvoke-timeout.test.ts` 15 tests PASS |
+| preload 回帰 | `pnpm vitest run src/preload` → 19 files / 551 tests PASS |
+| 型検証 | `pnpm typecheck` PASS |
+| workflow 検証 | `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` 全 PASS |
+| UI影響確認 | timeout fallback / settings shell の screenshot 4件を current workflow 配下で取得済み |
 
 ---
 
@@ -937,6 +970,7 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 | タスクID                                       | 完了日     | ステータス | 概要                                                                                                                                                                                          |
 | ---------------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001                | 2026-03-10 | 完了       | Preload `safeInvoke` を `invokeWithTimeout()` へ集約し、`IPC_TIMEOUT_MS = 5000` の timeout + `clearTimeout` cleanup を追加。allowlist fail-fast・error format・19 files / 551 tests PASS・Phase 11 screenshot 4件で完了確認 |
 | TASK-9I                                        | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |
 | TASK-9J                                        | 2026-02-28 | 完了       | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
 | TASK-9G                                        | 2026-02-27 | 完了       | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用                                                             |

@@ -4,6 +4,7 @@ import {
   ALLOWED_INVOKE_CHANNELS,
   ALLOWED_ON_CHANNELS,
 } from "./channels";
+import { invokeWithTimeout } from "./ipc-utils";
 import type {
   ElectronAPI,
   GetFileTreeRequest,
@@ -109,12 +110,9 @@ import type {
   SystemPromptDeleteRequest,
 } from "./types";
 
-// Type-safe invoke wrapper
+// Type-safe invoke wrapper with timeout
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
-  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
-    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
-  }
-  return ipcRenderer.invoke(channel, ...args);
+  return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
 }
 
 // Type-safe on wrapper with cleanup

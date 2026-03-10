@@ -245,6 +245,51 @@
 - screenshot 要求: **実画面証跡で充足**
 - 再発防止ポイント: bypass 実装時は reset 条件も同時確認する
 
+### タスク: TASK-FIX-SAFEINVOKE-TIMEOUT-001 safeInvoke timeout + timer cleanup（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-SAFEINVOKE-TIMEOUT-001 |
+| ステータス | **完了（Phase 1-13 実装・再監査・system spec 同期・PR作成完了）** |
+| 完了日 | 2026-03-10 |
+| 対象 | `apps/desktop/src/preload/ipc-utils.ts` / preload wrappers / current workflow Phase 11-12 |
+| 成果物 | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/outputs/` |
+
+#### 実施内容
+
+- `invokeWithTimeout()` に `IPC_TIMEOUT_MS = 5000` の timeout 契約を集約
+- allowlist fail-fast を維持したまま、正常応答・reject の双方で `clearTimeout(timeoutId)` cleanup を追加
+- preload timeout 単体テストを 15 件へ拡張し、timer 残留 0 件を固定
+- preload 全体回帰、current workflow screenshot 4件、Phase 12 成果物、system spec 5件、SKILL/LOGS 4件を同一ターンで同期
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| timeout 実装の主責務は Preload だが、影響は AuthGuard UI に現れる | 非UIタスクとしてコード検証のみで閉じる | current workflow 配下に timeout fallback / settings shell の screenshot 4件を取得し、UI 影響を実証した |
+| cleanup 実装後も Phase 2/8/12 に「`clearTimeout` 不採用」が残る | 実装更新後に outputs と spec を横断修正しない | workflow 本文 / outputs / system spec / SKILL / LOGS を同一ターンで修正し、planned wording を撤去した |
+| 再監査 screenshot で light theme の `リトライ` 視認性差分が見つかる | 機能修正と UI 品質課題を同一スコープで抱え込む | `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` として未タスク化し、主タスクは timeout 契約の完了に集中した |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm vitest run src/preload/__tests__/ipc-utils.safeInvoke-timeout.test.ts` | PASS（15 tests） |
+| `cd apps/desktop && pnpm vitest run src/preload` | PASS（19 files / 551 tests） |
+| `cd apps/desktop && pnpm typecheck` | PASS |
+| `node apps/desktop/scripts/capture-task-fix-safeinvoke-timeout-phase11.mjs` | PASS（4 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `gh pr create --title "fix(preload): safeInvoke に timeout と cleanup を追加"` | PR #1137 作成 |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001 | `AuthTimeoutFallback` ライトテーマの `リトライ` 視認性改善 | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-auth-timeout-fallback-light-contrast-guard-001.md` | 未着手 |
+
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
 | 項目 | 値 |
@@ -3405,7 +3450,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -3806,9 +3851,9 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001~~        | ~~Workflow12 の実装ガイド欠落是正~~                                                                                                                                          | ~~中~~   | ~~TASK-10A-E-D branch横断再監査（2026-03-08）~~ **完了: 2026-03-09（workflow12 implementation-guide 同期）**                       | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md`                                                                           |
 | UT-PERSIST-MIGRATION-001                                       | Zustand Persist バージョニングとマイグレーション機構                                                                                                                         | 中       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`                                                                                                               |
 | UT-PERSIST-VALIDATION-002                                      | Zustand Persist 全フィールド iterable ガード拡張                                                                                                                             | 低       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`                                                                                                             |
-| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001                    | repo-wide に残る debug-clear-storage 前提の comment / script / e2e setup のクリーンアップ                                                                                    | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md`                                                                                                   |
-| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                           | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                                                                                          |
-| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                        | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                                                                                       |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001                    | repo-wide に残る debug-clear-storage 前提の comment / script / e2e setup のクリーンアップ                                                                                    | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md`                                       |
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                           | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                              |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                        | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                           |
 | ~~UT-AUTHGUARD-004~~                                           | ~~App.tsx の currentView リセット条件で settings が除外されていない問題~~                                                                                                    | ~~P2~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **完了: 2026-03-10（本タスク内で修正）**                | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
 | ~~UT-AUTHGUARD-001~~                                           | ~~Settings画面内のプロファイルセクション未認証状態表示~~                                                                                                                     | ~~P3~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（既存 degrade 実装で不要）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
 | ~~UT-AUTHGUARD-002~~                                           | ~~AuthTimeoutFallback のアニメーション追加（保留）~~                                                                                                                         | ~~P4~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（品質改善候補であり defect ではない）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |

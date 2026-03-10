@@ -4,7 +4,7 @@ description: |
   AIWorkflowOrchestratorのシステム仕様管理スキル。`references/` 配下の正本仕様を検索・参照・更新する。
   仕様主導開発（Specification-Driven Development）を前提に、resource-map/topic-map/keywordsを使って必要最小限の文書を段階的に読む。
   次の作業で使用: 要件確認、アーキテクチャ判断、API/IPC契約確認、セキュリティ/テスト方針確認、仕様差分反映、未タスク登録、教訓反映。
-  典型キーワード: 仕様/要件/設計/API/IPC/型定義/権限/履歴/リトライ/状態管理/Zustand/認証/セッション/UI/テスト/カバレッジ/コンポーネント/アクセシビリティ/デプロイ。
+  典型キーワード: 仕様/要件/設計/API/IPC/型定義/権限/履歴/リトライ/状態管理/Zustand/認証/セッション/UI/テスト/カバレッジ/コンポーネント/アクセシビリティ/デプロイ/safeInvoke/timeout/Promise.race/ハング防止。
   目的は、実装と仕様の整合性維持、更新漏れ防止、再発防止知見の資産化。
 
   Anchors:
@@ -12,7 +12,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, UI仕様反映, IPC契約確認, セキュリティ要件確認, 未タスク登録, lessons-learned同期
+  仕様確認, 仕様更新, task-workflow同期, UI仕様反映, IPC契約確認, セキュリティ要件確認, 未タスク登録, lessons-learned同期, safeInvoke, timeout, Promise.race, ハング防止, Preloadセキュリティ
 allowed-tools:
   - Read
   - Glob
@@ -197,6 +197,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.58** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 スキル改善同期**: Trigger キーワードに `safeInvoke` / `timeout` / `Promise.race` / `ハング防止` / `Preloadセキュリティ` を追加。典型キーワードにも同キーワードを追記し、IPC タイムアウトパターンの仕様検索性を向上 |
+| **9.01.57** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 完了同期**: `security-electron-ipc.md` に Preload timeout + `clearTimeout` cleanup 契約と完了タスクを追加。`architecture-implementation-patterns.md` に S33 を追加し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` に screenshot 4件と未タスク `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` を同期 |
 | **9.01.56** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補を同期**: `architecture-auth-security.md` / `arch-state-management.md` / `ui-ux-navigation.md` / `ui-ux-feature-components.md` に `settings` reset 除外と screenshot 4件を追記。`task-workflow.md` / `lessons-learned.md` / LOGS.md 2件も実績ベースへ同期 |
 | **9.01.55** | **2026-03-09** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 完了同期**: `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加・Settings bypass セキュリティ記録。`arch-state-management.md` に AUTH_TIMEOUT_MS タイムアウト機構記録。`ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **9.01.54** | **2026-03-09** | **TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査の苦戦箇所を system spec へ固定**: `arch-state-management.md` に ChatPanel の現行 selector 実装と、CLI drift / Router 二重化 / workflow 本文 stale の短縮手順を追記。`lessons-learned.md` に未タスク9セクション逸脱・Router 二重化・4ステップ解決手順を追加し、未タスク `UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001` をテンプレート準拠へ再構成 |
