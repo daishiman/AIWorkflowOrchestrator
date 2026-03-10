@@ -165,22 +165,22 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L304 |
 | デスクトップ（Electron）実装パターン | L370 |
-| パフォーマンス最適化パターン | L785 |
-| セキュリティ実装パターン | L823 |
-| テスト実装パターン | L991 |
-| アクセシビリティ実装パターン | L1437 |
-| 関連ドキュメント | L1462 |
-| スキル作成実装パターン（TASK-9B-G） | L1474 |
-| 外部API データ正規化パターン | L1598 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1638 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1700 |
-| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1754 |
-| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1970 |
-| SkillEditor 実装パターン（TASK-9A completed） | L2038 |
-| IPC インターフェース不整合修正パターン（P44/P45解決） | L2101 |
-| useShallow派生selectorパターン（S18: TASK-10A-E-C 2026-03-06策定） | L2129 |
-| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2195 |
-| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2293 |
+| パフォーマンス最適化パターン | L871 |
+| セキュリティ実装パターン | L909 |
+| テスト実装パターン | L1077 |
+| アクセシビリティ実装パターン | L1523 |
+| 関連ドキュメント | L1548 |
+| スキル作成実装パターン（TASK-9B-G） | L1560 |
+| 外部API データ正規化パターン | L1684 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1724 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1786 |
+| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1840 |
+| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L2056 |
+| SkillEditor 実装パターン（TASK-9A completed） | L2124 |
+| IPC インターフェース不整合修正パターン（P44/P45解決） | L2187 |
+| useShallow派生selectorパターン（S18: TASK-10A-E-C 2026-03-06策定） | L2215 |
+| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2281 |
+| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2379 |
 
 ### references/architecture-monorepo.md
 
@@ -1071,7 +1071,7 @@ node scripts/list-specs.js --topics
 | 自動更新のセキュリティ | L918 |
 | 関連ドキュメント | L929 |
 | safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001） | L938 |
-| 完了タスク | L969 |
+| 完了タスク | L970 |
 
 ### references/security-implementation.md
 
@@ -1606,24 +1606,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08） | L274 |
-| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L328 |
-| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L330 |
-| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L367 |
-| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L414 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L581 |
-| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L639 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L705 |
-| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L758 |
-| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L830 |
-| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L895 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L958 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1037 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1095 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1295 |
-| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1337 |
-| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1379 |
-| TASK-10A-C: SkillCreateWizard 実装再監査（2026-03-02） | L1547 |
+| 最新教訓 | L45 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08） | L284 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L338 |
+| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L340 |
+| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L377 |
+| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L424 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L591 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L649 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L715 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L768 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L840 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L905 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L968 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1047 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1105 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1305 |
+| TASK-UI-05B-SKILL-ADVANCED-VIEWS: 高度管理ビュー群再確認（2026-03-02） | L1347 |
+| TASK-10A-B: SkillAnalysisView 再監査（2026-03-02） | L1389 |
 
 ### references/llm-embedding.md
 
@@ -1966,13 +1966,14 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3196 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3298 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3365 |
-| 残課題（未タスク） | L3446 |
-| 関連ドキュメント | L3868 |
-| 変更履歴 | L3878 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4122 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3245 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3347 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3414 |
+| 残課題（未タスク） | L3495 |
+| 関連ドキュメント | L3917 |
+| 変更履歴 | L3927 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4173 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4193 |
 
 ### references/testing-accessibility.md
 

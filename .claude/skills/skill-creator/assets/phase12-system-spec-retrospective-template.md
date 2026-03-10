@@ -159,8 +159,9 @@ UI機能実装の場合は次を推奨:
 6. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
 7. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
 8. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
-9. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
-10. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
+9. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
+10. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+11. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
 
 ---
 
@@ -174,6 +175,7 @@ UI機能実装の場合は次を推奨:
 | `rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md && rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md` | `phase-12-documentation.md` のメタ情報/Task 12-1〜12-5 完了同期を確認 | `ステータス=completed` と Task 12-1〜12-5 が `[x]` で一致する |
 | `diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json` | artifacts 二重台帳の同期確認 | 差分なし |
 | `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` | workflow index 再生成 | `index.md` が再生成される |
+| `rg -n 'undefined' <workflow-path>/index.md` | `generate-index` 後の壊れた index 早期検知 | 想定外の `undefined` が 0 件 |
 | `rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md && rg -n '^\\| 13 \\| .* \\| .*未実施' <workflow-path>/index.md` | workflow index 状態確認 | Phase 12=完了、Phase 13=未実施 |
 | `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` | workflow 本文 stale 確認 | 0件 |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
@@ -214,11 +216,14 @@ UI機能実装の場合は次を推奨:
 - [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 のチェックが `[x]` になっている
 - [ ] `artifacts.json` と `outputs/artifacts.json` が同一内容で同期されている
 - [ ] `generate-index.js --workflow <workflow-path> --regenerate` 実行後の `index.md` が `artifacts.json` と同じ Phase 状態を表示している
+- [ ] `generate-index.js` 実行後の `index.md` に `undefined` 混入や全Phase未実施化がない。発生時は workflow を手動復旧し、generator/schema 互換改善を未タスク化している
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `ステータス=pending` が残っていない
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
+- [ ] screenshot 検証で副次不具合や warning が露出した場合、その場で `docs/30-workflows/unassigned-task/` に正式な未タスクを追加している
+- [ ] 親タスクに苦戦箇所がある場合、新規未タスクへ `### 3.5 実装課題と解決策` を追加し、再発条件と解決策を継承している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する

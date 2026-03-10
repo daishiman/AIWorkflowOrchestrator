@@ -1,0 +1,142 @@
+{
+  "taskId": "UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001",
+  "title": "debug-clear-storage 残骸クリーンアップ",
+  "type": "improvement",
+  "priority": "medium",
+  "status": "not_started",
+  "dependencies": ["TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001"],
+  "issueNumber": 1115,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "not_started",
+      "file": "phase-2-design.md",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "not_started",
+      "file": "phase-3-design-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not_started",
+      "file": "phase-4-test-creation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not_started",
+      "file": "phase-5-implementation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not_started",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not_started",
+      "file": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "not_started",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "not_started",
+      "file": "phase-10-final-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not_started",
+      "file": "phase-11-manual-test.md",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "not_started",
+      "file": "phase-12-documentation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "rg debug-clear-storage の検出箇所が全件分類済み",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "不要な workaround・stale comment が削除または historical note に降格済み",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "e2e global-setup / screenshot script が現行前提で正常動作すること",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "verify-unassigned-links.js が PASS",
+      "verified": false
+    },
+    {
+      "id": "AC-5",
+      "description": "audit-unassigned-tasks --target-file で currentViolations=0",
+      "verified": false
+    },
+    {
+      "id": "AC-6",
+      "description": "task-workflow.md / lessons-learned.md / 関連 system spec が同期済み",
+      "verified": false
+    },
+    {
+      "id": "AC-7",
+      "description": "全既存テストが PASS すること",
+      "verified": false
+    }
+  ],
+  "relatedPitfalls": ["P31", "P48", "P53"],
+  "createdAt": "2026-03-10",
+  "updatedAt": "2026-03-10"
+}

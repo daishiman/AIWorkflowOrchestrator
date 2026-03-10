@@ -20,7 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、clearTimeout 不要の判断根拠（Timer は IPC_TIMEOUT_MS 後に自動 GC）、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
+| 2026-03-10 | 1.29.61 | TASK-10A-G 実装知見追補。IPC ハンドラキャプチャパターン、Store 統合テストの Promise 解決タイミング制御、Phase 6 カバレッジ不足の2段階テスト設計、P41 v8 Function Coverage exemption 判断、Phase 12 並列エージェント分割戦略の5苦戦箇所と5分解決カードを追記 |
+| 2026-03-10 | 1.29.60 | TASK-10A-G 再監査追補の教訓を追加。`generate-index.js --workflow ... --regenerate` が workflow `artifacts.json` スキーマ差で `index.md` を `undefined` / 全Phase未実施へ崩しうる点、実行直後に `verify-all-specs --strict` / `validate-phase-output` で確認し、必要なら未タスク化する運用を追記 |
+| 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、`clearTimeout` cleanup 採用の判断根拠、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
 | 2026-03-10 | 1.29.58 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓を追加。App.tsx AuthGuard構造変換、useAuthState タイマー管理（P13準拠）、getAuthState 判定優先順位設計、Settings bypass セキュリティ境界、サブエージェント exit code 144 の5苦戦箇所と5分解決カード・4ステップ再利用手順を追記 |
 | 2026-03-10 | 1.29.57 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査の教訓を追加。Settings bypass と未認証 reset の相殺、明示 screenshot 要求時の P53 代替禁止、worktree の `pnpm install --frozen-lockfile` preflight を 4 ステップ解決手順つきで追記 |
 | 2026-03-09 | 1.29.56 | TASK-10A-G の教訓を追加。テスト専用タスクの Phase 4/5 境界曖昧さ、巨大ファイルのカバレッジ計測誤解、3層テスト構成の Layer 間モック整合性、並列エージェントの Phase 12 分割戦略、`--sequence.shuffle` 検証、supporting artifact / open backlog 配置ドリフトを追記 |
@@ -39,6 +41,14 @@
 | 2026-03-07 | 1.29.45 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 の教訓を追加。`apiKey:list` 契約型の文書ドリフト（`ProviderStatus[]` vs `ProviderListResult`）と、画面検証を自動テスト代替で済ませてしまう運用リスクを同時に是正し、スクリーンショット検証を標準化 |
 | 2026-03-07 | 1.29.44 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT の教訓を追加。z-index事前設計の有効性、CSS変数ベース定数抽出タイミング（P47派生）、アクセシビリティ属性の段階的検出パターンの3課題と再利用手順を追記 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
+
+## 最新教訓
+
+### 2026-03-10 TASK-10A-G 再監査追補
+
+- `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow ... --regenerate` 実行後は、`index.md` の機能名が `undefined` になっていないか、Phase 1〜13 が全て `未実施` に崩れていないかを即確認する
+- workflow `artifacts.json` の Phase キー形式が generator 想定と異なる場合は、current task 内では `index.md` を手動で正規化し、汎用改善は未タスクへ切り出す
+- `verify-all-specs --strict` と `validate-phase-output` を再実行し、手動復旧後の workflow 正本が崩れていないことを確認して閉じる
 | 2026-03-06 | 1.29.42 | UT-TASK-10A-B-008 の追補4を追加。repo 内 `skill-creator/SKILL.md` が `resource-map.md` 依存に偏って warning 26件を残した苦戦箇所を追記し、`SKILL.md` と `resource-map.md` の二重導線 + `quick_validate` warning=0 を標準ルール化 |
 | 2026-03-06 | 1.29.41 | UT-TASK-10A-B-008 の Phase 12 Task 1 再確認を追補。実装ガイドが Part 1/2 構造だけ満たしても内容不足のまま通り得る苦戦箇所を追加し、`validate-phase12-implementation-guide.js` による内容検証を標準ルール化 |
 | 2026-03-06 | 1.29.40 | UT-TASK-10A-B-008 再監査追補を反映。ユーザー明示の screenshot 要求で `useSkillAnalysis` の StrictMode ローディング固着と light-theme mock 不整合を検出し、`SCREENSHOT + Apple review` 優先ルールを追加 |
@@ -6360,6 +6370,24 @@ function createStore(): { getState: () => AgentSlice } {
 | 対処 | 直列再実行へ切り替え、analysis mock を追加して証跡を再取得した |
 | 標準ルール | `--port` がない screenshot harness は直列実行し、取得時刻も記録する |
 
+### 苦戦箇所: test-only task でも explicit screenshot 要求が入る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 当初は P53 に従ってログ確認だけで閉じていたが、ユーザー要求は「実画面で再確認」だった |
+| 再発条件 | UI変更が主目的ではない task を理由に screenshot を省略する |
+| 対処 | current workflow に representative screenshots / plan / metadata / coverage を追加した |
+| 標準ルール | explicit screenshot 要求時は test-only task でも current workflow 配下へ画面証跡を残す |
+
+### 苦戦箇所: completed-tasks 移管前提の誤記
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | LOGS に completed-tasks へ移管済みと記録したが、current branch 実体は現 workflow 配下が正本だった |
+| 再発条件 | completed workflow 化を計画段階で書き、実体確認を省略する |
+| 対処 | current workflow canonical path を再確認し、LOGS / task-workflow / artifacts をその場で補正した |
+| 標準ルール | completed-tasks への移管を記録する前に `test -d <path>` で実在確認する |
+
 ### 苦戦箇所: supporting artifact の件数が summary 文書とずれる
 
 | 項目 | 内容 |
@@ -6387,6 +6415,85 @@ function createStore(): { getState: () => AgentSlice } {
 | feature coverage の scope 誤読 | `pnpm exec tsx scripts/coverage-by-handler.ts --file src/main/ipc/skillHandlers.ts --target skill:create` |
 | supporting artifact の件数ドリフト | `rg -n "43件|55 tests|合計" docs/30-workflows/<task>/outputs/phase-12/` |
 | open backlog の canonical path ドリフト | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` と `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/<task>/unassigned-task/<task>.md` |
+
+---
+
+## TASK-10A-G 実装知見追補（2026-03-10）
+
+### 苦戦箇所と解決策
+
+#### 1. IPC ハンドラキャプチャパターンの発見
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Main Process の IPC ハンドラを単体テストしようとする際、`ipcMain.handle` をモックして登録されたハンドラ関数を直接取り出す方法が非自明 |
+| **再発条件** | Main Process の IPC ハンドラを単体テストしようとする場合 |
+| **解決策** | 既存の `skillHandlers.contract.test.ts` にある handler capture パターン（`vi.mocked(ipcMain.handle).mock.calls.find(c => c[0] === 'skill:create')?.[1]`）を再利用。`registerSkillHandlers(mockService)` 後に `ipcMain.handle` の mock.calls からチャンネル名で検索 |
+| **教訓**   | IPC ハンドラの単体テストでは handler capture パターンを標準とする |
+
+```typescript
+const { ipcMain } = vi.mocked(await import("electron"));
+registerSkillHandlers(mockService);
+const handler = vi.mocked(ipcMain.handle).mock.calls.find(
+  (c) => c[0] === "skill:create"
+)?.[1];
+```
+
+#### 2. G2 Store統合テストでの Promise 解決タイミング制御
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Zustand Store のアクション内で Preload API (window.electronAPI) を呼び出す非同期処理をテストする際、`createSkill`/`analyzeSkill` アクション内の `await window.electronAPI.skill.create()` が Promise を返すため、act + flushPromises を組み合わせないと状態遷移が完了しない |
+| **再発条件** | Zustand Store のアクション内で Preload API (window.electronAPI) を呼び出す非同期処理をテストする場合 |
+| **解決策** | `vi.waitFor()` を使って状態遷移の完了を待機するパターンを採用 |
+| **教訓**   | Store アクションの非同期テストでは `vi.waitFor(() => expect(getState().someFlag).toBe(expected))` で状態遷移完了を待つ |
+
+```typescript
+const mockCreate = vi.fn().mockResolvedValue({ success: true });
+window.electronAPI = { skill: { create: mockCreate } };
+const { result } = renderHook(() => useAppStore((s) => s.createSkill));
+await act(async () => { result.current("test", {}); });
+await vi.waitFor(() => {
+  expect(useAppStore.getState().skills).toHaveLength(1);
+});
+```
+
+#### 3. G2 Phase 6 カバレッジ不足の根本原因特定
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Store アクションのバリデーション分岐や API ガード（electronAPI 未定義）がテストされていない。Phase 7 で Line 69.3%, Branch 46.7% と基準未達。21件中12件は正常系のみで、エラー系・ガード系のカバレッジが大幅に不足 |
+| **再発条件** | Store アクションのバリデーション分岐や API ガード（electronAPI 未定義）がテストされていない場合 |
+| **解決策** | Phase 6 で VAL(6件: createSkill/analyzeSkill/applySkillImprovements 各2件のバリデーション分岐) + GUARD(3件: electronAPI 未定義時の早期リターン) = 9件を追加し、100%/100% に到達 |
+| **教訓**   | テスト専用タスクでは Phase 4 初回は正常系を中心に設計し、Phase 6 でカバレッジ計測結果に基づいてエッジケースを追加する「2段階テスト設計」を標準とする |
+
+#### 4. P41 v8 Function Coverage 0% の exemption 判断
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Vitest v8 カバレッジプロバイダで skillHandlers.ts のようにオプションオブジェクト内にインラインアロー関数がある場合、`validateIpcSender` の options 内 `getAllowedWindows: () => [mainWindow]` が独立関数としてカウントされるため、G1 の handler-scope Function Coverage が 0% になる |
+| **再発条件** | Vitest v8 カバレッジプロバイダで skillHandlers.ts のようにオプションオブジェクト内にインラインアロー関数がある場合 |
+| **解決策** | Phase 7 レポートで P41 exemption として明記し、Line/Branch Coverage を主判定、Function Coverage を補助情報として扱うことで Phase 10 レビューでの不要な議論を回避 |
+| **教訓**   | v8 プロバイダ使用時は Function Coverage 0% を自動的に FAIL としない。`getAllowedWindows` のようなインラインコールバックが原因の場合は P41 exemption として事前記録する |
+
+#### 5. 並列エージェント実行時の Phase 12 分割戦略
+
+| 項目       | 内容 |
+| ---------- | ---- |
+| **課題**   | Phase 12 の仕様書更新を複数のサブエージェントに委譲する際、P43 準拠で「3ファイル以下/エージェント」に分割しないと rate limit で中断する |
+| **再発条件** | Phase 12 の仕様書更新を複数のサブエージェントに委譲する場合 |
+| **解決策** | Agent1(implementation-guide + spec-update-summary) と Agent2(LOGS.md x2 + SKILL.md x2 + references x2 + topic-map) に分割。Agent2 は references を 2ファイルに制限 |
+| **教訓**   | Phase 12 サブエージェントは仕様書更新3ファイル以下、LOGS.md への「完了」記録は全更新終了後の最終ステップとする |
+
+### TASK-10A-G 同種課題の5分解決カード
+
+| 症状 | 原因 | 最短手順 |
+| --- | --- | --- |
+| IPCハンドラを直接テストしたい | handler capture パターン未発見 | `mock.calls.find(c => c[0] === 'channel')?.[1]` |
+| Store統合テストで状態遷移が完了しない | async action の Promise 未解決 | `vi.waitFor(() => expect(getState()...))` |
+| カバレッジが基準未達 | 正常系のみでエッジケース不足 | Phase 7 → 不足分岐特定 → Phase 6 追加 |
+| Function Coverage 0% | P41 v8 inline function | exemption 記録（Line/Branch を主判定） |
+| Phase 12 エージェント中断 | P43 rate limit | 3ファイル以下/エージェント分割 |
 
 ---
 
@@ -6544,14 +6651,14 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 対処 | current workflow 配下へ screenshot 4件を取得し、timeout fallback と Settings shell の実影響を証跡化した |
 | 標準ルール | ユーザーが screenshot を明示要求したら、非UIタスクでも影響 UI を代表画面として撮影する |
 
-### 実装教訓: Promise.race パターンのシンプルさと clearTimeout 不要の判断
+### 実装教訓: Promise.race パターンのシンプルさと clearTimeout cleanup の判断
 
 | 項目 | 内容 |
 | --- | --- |
 | 発見 | IPC タイムアウトは `Promise.race([ipcRenderer.invoke(ch, args), timeoutPromise])` で驚くほどシンプルに実装できた。複雑な AbortController やカスタムキャンセル機構は不要 |
-| clearTimeout 判断 | 設計段階で clearTimeout の要否を検討した。結論: 不要。reject された Promise の Timer は `IPC_TIMEOUT_MS`（5秒）後に自然に GC される。Node.js/Electron の GC が未参照 Timer を処理するため、明示的な cleanup はオーバーエンジニアリング |
-| 判断根拠 | (1) Timer は5秒で自動消滅、(2) IPC 呼び出し頻度は高々数十回/秒で Timer 蓄積リスクは無視可能、(3) clearTimeout を入れると success/error 両分岐への追加が必要になりコードが複雑化 |
-| 標準ルール | timeout 導入タスクでは「発火条件」「エラーメッセージ文言」「GC 安全性の根拠」の3点を設計時に確認する |
+| clearTimeout 判断 | 設計段階で cleanup の要否を検討した。結論: 採用。成功/失敗の両分岐で `clearTimeout(timeoutId)` を実行し、短命 timer の残留を防いだ |
+| 判断根拠 | (1) fake timers テストで pending timer が残らず再現性が上がる、(2) 高頻度 invoke 時の不要 timer 残留を避けられる, (3) `invokeWithTimeout()` に閉じ込めれば呼び出し側の複雑さは増えない |
+| 標準ルール | timeout 導入タスクでは「発火条件」「エラーメッセージ文言」「cleanup 責務の配置」の3点を設計時に確認する |
 
 ### 実装教訓: 3ファイル重複 safeInvoke の DRY 統合
 
@@ -6571,6 +6678,15 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | P13 遵守 | `vi.runAllTimers()` は `Promise.race` + `setTimeout` の再スケジュールで無限ループするため使用禁止。必ず `advanceTimersByTime` で1ステップずつ進める |
 | テストパターン | `ipcRenderer.invoke` を未解決の Promise で制御し、`advanceTimersByTime(IPC_TIMEOUT_MS)` でタイマーを進行させ、タイムアウトエラーの発火を検証。正常応答テストでは Timer 進行前に Promise を resolve して成功パスを確認 |
 | 標準ルール | Promise.race + setTimeout のテストでは `runAllTimers` / `runAllTimersAsync` を絶対に使わず、`advanceTimersByTime` で必要な時間だけ進める |
+
+### 実装補遺: Preload タイマーテストと contextBridge capture
+
+| 項目 | 内容 |
+| --- | --- |
+| contextBridge capture | `preload/index.ts` 単体では `contextBridge.exposeInMainWorld` に公開された API を capture して評価すると、Renderer 実利用形に近い形で回帰を確認しやすい |
+| fake timer 順序 | fake timers は `invokeWithTimeout()` 呼び出し前に有効化し、Promise 作成後に `advanceTimersByTime` で進めると timeout 分岐を安定再現できる |
+| Promise.race helper 判断 | timeout 制御は各 API ごとに書かず、共通 helper に閉じ込めて `safeInvoke` / `safeInvokeUnwrap` から再利用させると rollout 漏れを減らせる |
+| カバレッジ判定 | timeout helper は file-scope 100% を狙い、Preload API 側は representative route の回帰で閉じると責務境界がぶれにくい |
 
 ### 苦戦箇所: Phase 12 の planned wording が system spec 同期漏れを招く
 

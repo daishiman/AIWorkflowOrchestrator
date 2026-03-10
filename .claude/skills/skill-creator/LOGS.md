@@ -3,6 +3,53 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 パターン反映
+
+- **Agent**: skill-creator
+- **Phase**: Phase 12（仕様同期）
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に safeInvoke timeout 実装パターンを追加
+  - contextBridge mock capture テストパターン、Promise.race タイムアウト適用基準を新規パターンとして記録
+  - クイックナビゲーション IPC ドメインを更新
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12 再監査テンプレート追補
+
+- **Agent**: skill-creator
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「画面検証で露出した副次不具合の即時未タスク化 + 3.5 節継承」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に screenshot 由来未タスク化と `### 3.5 実装課題と解決策` 継承チェックを追加
+  - `verify-unassigned-links` を `missing=0` まで閉じ、exact counts を outputs/task-workflow へ同値転記する運用を再強化
+
+---
+
+## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/quality-standards.md` に P41 Exemption ルール（v8 Function Coverage 特例）を追加
+  - テスト専用タスクの3層パターン（G1: IPC契約/G2: Store統合/G3: UI結線）は既に `references/patterns.md` に成功パターンとして記録済み
+  - task-specification-creator 側の `phase-templates.md`/`coverage-standards.md`/`phase-11-12-guide.md` と同期して知見を反映
+
+---
+
+## [2026-03-10 - TASK-10A-G `generate-index` schema 互換監査パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「`generate-index` schema 互換監査 + 壊れた index の即時未タスク化」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に `undefined` 混入の検知、手動復旧、未タスク化の完了条件を追加
+  - `generate-index` の誤出力は current task 内の手動復旧と、汎用改善の未タスク化へ責務分離する運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.21` として同期
+
+---
 
 ## [2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の Phase 12再確認パターン同期]
 

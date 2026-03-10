@@ -4,6 +4,22 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-SAFEINVOKE-TIMEOUT-001`
+- 目的: Preload safeInvoke timeout 実装完了に伴い、system spec 正本へ実装内容と検証結果を同期する
+
+### 実施内容
+- `security-electron-ipc.md` に `invokeWithTimeout()` 契約、`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup を追加
+- `architecture-implementation-patterns.md` に Preload timeout + cleanup パターンを追記
+- `task-workflow.md` と `lessons-learned.md` に完了台帳、検証証跡、再利用知見を同期
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
 
 ### コンテキスト
@@ -8687,17 +8703,17 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 
 ### 実施内容
 - `testing-component-patterns.md` に 3層テスト構成、handler-scope coverage、supporting artifact 同期ルールを追記
-- `task-workflow.md` に TASK-10A-G 完了記録と、完了移管後の未タスク canonical path を反映
+- `task-workflow.md` に TASK-10A-G 完了記録と、current workflow canonical path / 既存未タスク導線を反映
 - `lessons-learned.md` に TEST/Phase 12/未タスク配置の苦戦箇所を追加
-- `docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/` へ workflow 本体を移管し、関連 backlog を `unassigned-task/` 配下へ同梱
+- provisional に completed-tasks 移管を想定していたが、この branch では `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/` を canonical workflow として維持
 - `audit-unassigned-tasks.js` を completed workflow 配下の `unassigned-task/` も `--target-file` 監査できるよう更新
 
 ### 検証
-- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
-- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
-- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening`
 - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/TASK-10A-G-LIFECYCLE-TEST-HARDENING/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`
 
 ### 結果
 - ステータス: success
@@ -8718,3 +8734,19 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 - `arch-state-management.md` に AUTH_TIMEOUT_MS = 10_000 タイムアウト機構記録
 - `ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録
 - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-10 - TASK-10A-G
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）
+  - カバレッジ基準充足、回帰287件PASS
+  - `arch-state-management.md` 関連タスクステータスを「完了（2026-03-10）」に更新
+  - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
+  - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
+  - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

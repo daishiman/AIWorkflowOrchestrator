@@ -69,6 +69,7 @@
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
+- representative screenshot で current task スコープ外の視覚不具合や React warning が見つかった場合は、`PASS` と併記して Phase 11 の発見事項へ記録し、未タスク化要否をそのターンで判定する。画面が崩れているのに「非対象」とだけ書いて閉じない。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -417,6 +418,7 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
+- [ ] `spec-update-summary.md` に `verify-unassigned-links` の `existing/missing` と `audit --diff-from HEAD` の `current/baseline` を実測値で転記した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
 - [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
@@ -431,6 +433,7 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
 - [ ] 【品質】コメントフォーマット（JSDoc形式）が統一されている
 - [ ] 未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されていること（親タスクのtasks/ではない） ⚠️ **P3派生: TASK-9B-Iで再発**
+- [ ] 新規作成した未タスク指示書は、親タスクに苦戦箇所がある場合 `### 3.5 実装課題と解決策（親タスクからの教訓）` を持つ
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
@@ -514,6 +517,42 @@ for skill in skill-creator task-specification-creator aiworkflow-requirements; d
 done
 ```
 
+### Phase 12 サブエージェント分割戦略（P43準拠）
+
+> **根拠**: P43 で判明した通り、1サブエージェントに7ファイル一括更新を委譲すると rate limit で中断する。
+
+| ルール | 説明 |
+| --- | --- |
+| 3ファイル以下/エージェント | 仕様書更新は最大3ファイルをまとめて1サブエージェントに委譲 |
+| LOGS.md は最終ステップ | 全ファイル更新完了後にLOGS.mdへ「完了」を記録（中断時の未完了検出を容易にする） |
+| 完了検証 | サブエージェント完了後に `git diff --stat -- .claude/skills/` で実際の変更ファイル数を確認 |
+
+**推奨分割パターン（5仕様書の場合）**:
+
+| サブエージェント | 担当仕様書 | ファイル数 |
+| --- | --- | --- |
+| A | interfaces + api-ipc | 2 |
+| B | security + task-workflow | 2 |
+| C | lessons-learned + LOGS.md(2件) + SKILL.md(2件) | 1+4台帳 |
+
+### 3層テストパターン再利用ガイド（TASK-10A-G由来）
+
+テスト専用タスク（テスト強化・回帰テスト追加等）では、以下の3層分離パターンを標準構造として採用する:
+
+| 層 | 責務 | テスト対象例 |
+| --- | --- | --- |
+| G1: IPC契約層 | Main Process IPCハンドラの入力検証・応答契約 | `skill:create` ハンドラ14件 |
+| G2: Store統合層 | Zustand Store経由のライフサイクル統合フロー | Store駆動ライフサイクル21件 |
+| G3: UI結線層 | Rendererコンポーネントの表示・操作結線 | ChatPanel結線17件 |
+
+**再利用時のチェックリスト**:
+- [ ] 各層のテストファイルが独立して実行可能
+- [ ] G1→G2→G3 の依存方向が一方向（G3はG2のStore状態を前提、G2はG1のIPC応答を前提）
+- [ ] Phase 4 で正常系、Phase 6 でエッジケースの2段階設計を適用
+- [ ] Phase 7 のカバレッジ計測で P41 exemption が必要な場合は明記
+
+---
+
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
 
 | ID | 漏れやすいポイント | 対策 |
@@ -569,6 +608,7 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-10 | TASK-10A-G知見反映: Phase 12サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）追加、3層テストパターン再利用ガイド（G1/G2/G3）追加、LOGS.md完了記録の最終ステップ化を明記 |
 | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |
 | 2026-03-08 | Workflow10 再確認の教訓を反映し、dedicated harness 利用条件を「App shell 遷移不安定 / deep-link 不可」まで明文化し、`manual-test-result.md` に harness entry path・本番コンポーネント・mock 境界を記録する完了チェックを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |

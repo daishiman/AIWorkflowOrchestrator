@@ -7,6 +7,30 @@
 
 ## よく使うパターン
 
+### 仕様検索の分割ルール
+
+- `search-spec.js` は **1概念1クエリ** で分割して使う
+- 例: `TASK-FIX-SAFEINVOKE-TIMEOUT-001 safeInvoke IPC timeout` のようにまとめず、`TASK-FIX-SAFEINVOKE-TIMEOUT-001` → `safeInvoke` → `IPC timeout` → `preload invoke hang` の順で個別検索する
+- broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
+
+### Preload safeInvoke timeout を探すとき
+
+```bash
+node scripts/search-spec.js "TASK-FIX-SAFEINVOKE-TIMEOUT-001" -C 2
+node scripts/search-spec.js "safeInvoke" -C 3
+node scripts/search-spec.js "IPC timeout" -C 3
+node scripts/search-spec.js "preload invoke hang" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Preload safeInvoke timeout / invoke hang）」を見る
+2. `references/security-electron-ipc.md` の Preload `safeInvoke` timeout セクションを見る
+3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
+4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
+5. `references/error-handling.md` で timeout エラー表示責務を確認する
+6. `references/testing-component-patterns.md` の fake timer / `advanceTimersByTime` パターンを確認する
+
 ### Electron IPC パターン
 
 ```typescript
@@ -73,6 +97,24 @@ app.on("activate", () => {
 
 **詳細**: security-electron-ipc.md（IPC ハンドラライフサイクル管理）, architecture-implementation-patterns.md（二重登録防止パターン）
 **関連 Pitfall**: 06-known-pitfalls.md#P5
+
+### Preload timeout テストパターン
+
+```typescript
+vi.useFakeTimers();
+const pending = window.electronAPI.auth.getSession();
+await vi.advanceTimersByTimeAsync(5000);
+await expect(pending).rejects.toThrow(/IPC timeout/);
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| タイマー進行 | `advanceTimersByTime` / `advanceTimersByTimeAsync` を使う |
+| モック | `ipcRenderer.invoke` は never-resolving Promise で再現する |
+| 競合回避 | タイムアウト検証と Promise 検証を同じ await 連鎖で完了させる |
+| 回帰確認 | whitelist 拒否と Main reject の既存挙動を壊さない |
+
+**詳細**: testing-component-patterns.md, error-handling.md
 
 ### Supabase 未設定 fallback handler パターン
 
@@ -273,6 +315,36 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 ```
 
 **詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
+
+### TASK-10A-G: `skill:create` 契約 + ライフサイクル統合テスト導線
+
+`skill:create` の Main IPC 契約テストと ChatPanel 起点ライフサイクル統合テストを作るときに、最初に読むべき正本を固定する。
+
+| まず読む | 目的 |
+|---------|------|
+| `ui-ux-components.md` | TASK-10A-C の `skill:create` 4層同期（channels / whitelist / handler / preload）を確認 |
+| `ui-ux-feature-components.md` | SkillAnalysisView / SkillCreateWizard / TASK-10A-F の画面責務と状態遷移を確認 |
+| `arch-ui-components.md` | TASK-10A-D の ChatPanel → SkillManagementPanel → `createSkill` 導線を確認 |
+| `interfaces-agent-sdk-ui.md` | ChatPanel の公開インターフェース、toggle/stream 統合、UI結線を確認 |
+| `interfaces-agent-sdk-skill.md` | `createSkill` を含むスキルUI操作契約と ChatPanel 統合責務を確認 |
+| `arch-state-management.md` | TASK-10A-E-C / TASK-10A-F の Store駆動状態境界、個別セレクタ、`useShallow` 条件を確認 |
+| `architecture-implementation-patterns.md` | Handler Map 方式と Main ハンドラ間接テストの実装パターンを確認 |
+| `testing-component-patterns.md` | View レベル統合テストハーネスと Store / preload mock 集約パターンを確認 |
+| `security-electron-ipc.md` | sender 検証、P42準拠3段バリデーション、IPCライフサイクル制約を確認 |
+| `error-handling.md` | `CREATE_ERROR` / validation failure の期待レスポンスを確認 |
+| `quality-requirements.md` | coverage gate と Phase 7/9/13 の品質下限を確認 |
+| `task-workflow.md` | TASK-10A-C/D/F の完了記録と Phase 11/12 の同期範囲を確認 |
+| `lessons-learned.md` | `skill:create` 契約同期漏れと coverage 誤読の再発防止手順を確認 |
+
+**補助参照（aiworkflow-requirements外）**:
+- `.claude/rules/06-known-pitfalls.md`: P31 / P39 / P41 / P42 / P48 の落とし穴確認
+
+**検索キーワード例**:
+- `skill:create 4層同期`
+- `TASK-10A-G lifecycle test hardening`
+- `ChatPanel create analyze improve`
+- `Handler Map ipcMain.handle`
+- `coverage-by-handler skill:create`
 
 ### スキル実行並行ガード監査パターン
 

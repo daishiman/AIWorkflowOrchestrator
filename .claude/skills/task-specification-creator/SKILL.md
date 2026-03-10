@@ -396,6 +396,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.42** | **2026-03-10** | **TASK-10A-G完了**: スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）。arch-state-management.md関連タスクステータス更新、task-workflow.md完了タスク追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.08.41** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 スキル改善**: Phase 4 テンプレートに P13 タイマーテスト注意事項（advanceTimersByTime 必須、cleanup 検証、fake timers スコープ管理）を追加。Phase 5 テンプレートに P13 Pitfall 行と DRY 統合パターン（重複実装の共通ユーティリティ抽出手順）を追加。Phase 7 テンプレートに小規模ユーティリティ 100% カバレッジ達成パターンを追加。patterns.md に Preload IPC タイムアウトパターン2件（Promise.race タイムアウト、cleanup 検証テスト）を追加 |
 | **v10.08.40** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査運用を反映**: Phase 12 で `PR マージ時に実施予定` を残さず、その場で `.claude/skills/...` 正本・`SKILL.md` / `LOGS.md`・workflow outputs を同期するルールを追記。あわせて timeout タスクでは `cleanup` テストを acceptance に含め、明示 screenshot 要求時は非UIタスクでも影響 UI を representative capture する運用を固定 |
 | **v10.08.39** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査運用を反映**: 明示 screenshot 要求時は P53 代替を使わず、専用 harness route + `screenshot-plan.json` + capture metadata + `validate-phase11-screenshot-coverage` まで完了させる運用を追加。あわせて bypass view は reset 除外条件まで仕様化するルールと、worktree preflight `pnpm install --frozen-lockfile` を追記 |

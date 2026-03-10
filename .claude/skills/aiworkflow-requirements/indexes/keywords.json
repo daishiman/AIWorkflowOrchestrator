@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-10T02:23:45.445Z",
-  "totalKeywords": 1544,
+  "generated": "2026-03-10T07:45:04.670Z",
+  "totalKeywords": 1549,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -498,6 +498,7 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
+      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-ux-feature-skill-stream.md",
@@ -3348,6 +3349,9 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "最新教訓": [
+      "lessons-learned.md"
+    ],
     "HANDLER": [
       "lessons-learned.md"
     ],
@@ -4119,6 +4123,9 @@
     "再監査教訓": [
       "lessons-learned.md"
     ],
+    "実装知見追補": [
+      "lessons-learned.md"
+    ],
     "AUTHGUARD": [
       "lessons-learned.md",
       "ui-ux-settings.md"
@@ -4126,6 +4133,7 @@
     "TIMEOUT": [
       "lessons-learned.md",
       "security-electron-ipc.md",
+      "task-workflow.md",
       "ui-ux-settings.md"
     ],
     "BYPASS": [
@@ -4137,7 +4145,8 @@
     ],
     "SAFEINVOKE": [
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "task-workflow.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4984,6 +4993,9 @@
     "完了記録": [
       "task-workflow.md"
     ],
+    "再監査同期": [
+      "task-workflow.md"
+    ],
     "バックエンド技術スタック": [
       "technology-backend.md"
     ],
@@ -5199,6 +5211,12 @@
       "testing-component-patterns.md"
     ],
     "統合テストハーネスパターン": [
+      "testing-component-patterns.md"
+    ],
+    "ハンドラキャプチャテストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "駆動ライフサイクル統合テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [

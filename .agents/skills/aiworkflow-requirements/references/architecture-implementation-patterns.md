@@ -782,6 +782,56 @@ Renderer          Preload (safeInvokeUnwrap)        Main Process
 
 ---
 
+### Preload invoke hang containment パターン（safeInvoke timeout）
+
+> **導入タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001（監査観点）
+
+#### 問題
+
+Preload の `safeInvoke()` が `ipcRenderer.invoke()` をそのまま返すと、Main Process 側の未応答や外部 API ハング時に Renderer が永続 pending になる。特に認証初期化や設定ロードでは `isLoading` が落ちず、画面遷移が止まる。
+
+#### 解決パターン
+
+```typescript
+const IPC_TIMEOUT_MS = 5000;
+
+function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+  if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
+    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
+  }
+
+  return Promise.race([
+    ipcRenderer.invoke(channel, ...args),
+    new Promise<never>((_, reject) => {
+      setTimeout(() => {
+        reject(
+          new Error(
+            `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`,
+          ),
+        );
+      }, IPC_TIMEOUT_MS);
+    }),
+  ]);
+}
+```
+
+#### 適用基準
+
+| 条件 | 判断 |
+| ---- | ---- |
+| Preload 共通ラッパーで多数の `invoke` を集約している | timeout を共通化する |
+| 戻り値シグネチャを変えたくない | `Promise<T>` を維持したまま `Promise.race` を使う |
+| Renderer 側に loading state がある | timeout エラーを catch して復旧パスを明示する |
+| まだ実装差分が存在しない | spec は pending / spec_created に留め、completed としない |
+
+#### 注意事項
+
+- timeout 追加は `safeOn` にはそのまま適用しない
+- channel 名は whitelist 通過済み値のみ error 文言へ出す
+- テストは `advanceTimersByTime` 系を使い、永続 pending mock で再現する
+
+---
+
 ## パフォーマンス最適化パターン
 
 ### React最適化

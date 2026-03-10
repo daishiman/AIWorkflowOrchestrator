@@ -1,8 +1,8 @@
 # コンポーネントテストパターン
 
-> **バージョン**: 1.12.0
-> **更新日**: 2026-03-08
-> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001
+> **バージョン**: 1.13.0
+> **更新日**: 2026-03-10
+> **関連タスク**: TASK-8B, TASK-7D, UT-STORE-HOOKS-TEST-REFACTOR-001, TASK-FIX-11-1-SDK-TEST-ENABLEMENT, TASK-9A, TASK-UI-00-TOKENS, 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001, TASK-10A-G
 
 ---
 
@@ -1090,10 +1090,81 @@ beforeEach(() => {
 
 ---
 
+## 17. IPC ハンドラキャプチャテストパターン（TASK-10A-G）
+
+Main Process の IPC ハンドラを直接テストするためのパターン。`ipcMain.handle` のモック登録済みコールバックを取り出して直接呼び出す。
+
+### パターン: Handler Capture
+
+```typescript
+// Setup: IPC handler registration
+vi.mock("electron", () => ({
+  ipcMain: { handle: vi.fn(), removeHandler: vi.fn() },
+}));
+
+const { ipcMain } = vi.mocked(await import("electron"));
+const mockService = { createSkillFromWizard: vi.fn() };
+registerSkillHandlers(mockService);
+
+// Capture: チャンネル名で handler を取得
+const handler = vi.mocked(ipcMain.handle).mock.calls.find(
+  (c) => c[0] === "skill:create"
+)?.[1];
+
+// Test: handler を直接呼び出し
+const mockEvent = { sender: { id: 1 } } as Electron.IpcMainInvokeEvent;
+const result = await handler!(mockEvent, { description: "test", options: {} });
+```
+
+**使用場面**: IPC ハンドラの契約テスト（入力バリデーション、エラーハンドリング、セキュリティ検証）
+**関連 Pitfall**: P42（3段バリデーション）, P41（v8 Function Coverage）
+**導入タスク**: TASK-10A-G Phase 4（G1: 14テストケース）
+
+---
+
+## 18. Store 駆動ライフサイクル統合テストパターン（TASK-10A-G）
+
+Zustand Store のアクションを直接呼び出し、状態遷移を検証する統合テストパターン。renderHook で Store セレクタを使用し、Preload API (window.electronAPI) のモックと組み合わせる。
+
+### パターン: Direct Store Manipulation
+
+```typescript
+// Setup: electronAPI mock
+const mockCreate = vi.fn().mockResolvedValue({ success: true, skill: mockSkill });
+Object.defineProperty(window, "electronAPI", {
+  value: { skill: { create: mockCreate, list: vi.fn(), analyze: vi.fn() } },
+  writable: true,
+});
+
+// Reset: Store 状態リセット
+beforeEach(() => {
+  useAppStore.setState({ skills: [], skillError: null, isAnalyzing: false });
+});
+
+// Test: アクション呼び出し + 状態遷移検証
+const { result } = renderHook(() => useAppStore((s) => ({
+  createSkill: s.createSkill,
+  skills: s.skills,
+})));
+
+await act(async () => { result.current.createSkill("description", {}); });
+await vi.waitFor(() => {
+  expect(useAppStore.getState().skills).toHaveLength(1);
+});
+```
+
+**使用場面**: Store アクションの統合テスト（create/analyze/improve ライフサイクル）
+**関連 Pitfall**: P31（Zustand 無限ループ）, P48（useShallow 派生セレクタ）, P39（fireEvent）
+**カバレッジ戦略**: 正常系（Phase 4）→ エッジケース（Phase 6: VAL + GUARD）の2段階設計
+**導入タスク**: TASK-10A-G Phase 4-6（G2: 21テストケース）
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                            |
 | ------- | ---------- | ------------------------------------------------------------------ |
+| 1.13.0  | 2026-03-10 | TASK-10A-G: IPC ハンドラキャプチャテストパターン（セクション17）と Store 駆動ライフサイクル統合テストパターン（セクション18）を追加 |
 | 1.12.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: S-INT-01 View レベル統合テストハーネスパターンを追加（real composition、vi.mock hoisting、モジュールスコープ変数、M-01 網羅的デフォルト値） |
 | 1.11.0  | 2026-03-08 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合ハーネスパターンを追加（store+electronAPI 一本化、HarnessOptions、非同期安定化ルール） |
 | 1.10.0  | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Preload Shape 異常系テストパターン追加（electronAPI 差し替え、テストケースマトリクス、afterEach 復元ルール） |
