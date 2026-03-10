@@ -70,7 +70,7 @@
 | 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
 | 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
 | 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
-| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | pending    |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | completed  |
 
 ## 受け入れ基準
 

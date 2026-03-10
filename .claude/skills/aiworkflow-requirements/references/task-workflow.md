@@ -250,7 +250,7 @@
 | 項目 | 値 |
 | --- | --- |
 | タスクID | TASK-FIX-SAFEINVOKE-TIMEOUT-001 |
-| ステータス | **完了（Phase 1-12 実装・再監査・system spec 同期完了 / Phase 13 未実施）** |
+| ステータス | **完了（Phase 1-13 実装・再監査・system spec 同期・PR作成完了）** |
 | 完了日 | 2026-03-10 |
 | 対象 | `apps/desktop/src/preload/ipc-utils.ts` / preload wrappers / current workflow Phase 11-12 |
 | 成果物 | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/outputs/` |
@@ -282,6 +282,7 @@
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `gh pr create --title "fix(preload): safeInvoke に timeout と cleanup を追加"` | PR #1137 作成 |
 
 #### 関連未タスク
 

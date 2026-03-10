@@ -8,7 +8,7 @@
 | Phase      | 13                              |
 | Phase名    | PR作成                          |
 | カテゴリ   | fix                             |
-| ステータス | pending                         |
+| ステータス | completed                       |
 | 前提Phase  | Phase 12                        |
 | 後続Phase  | なし                            |
 
@@ -144,17 +144,17 @@
 | 成果物                 | パス                                                                               |
 | ---------------------- | ---------------------------------------------------------------------------------- |
 | artifacts.json（最終） | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/artifacts.json` |
-| PR                     | GitHub PR URL（ユーザー指示時のみ作成後記入）                                      |
+| PR                     | `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1137`                    |
 
 ## 完了条件
 
-- [ ] 全 Phase の成果物が揃っている
-- [ ] 変更ファイルの最終確認が完了
-- [ ] コミット前チェックリスト全項目 PASS
-- [ ] artifacts.json を最終更新
-- [ ] ユーザー指示がある場合のみ PR 準備完了（ブランチ名・タイトル・本文）
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] 全 Phase の成果物が揃っている
+- [x] 変更ファイルの最終確認が完了
+- [x] コミット前チェックリスト全項目 PASS
+- [x] artifacts.json を最終更新
+- [x] ユーザー指示がある場合のみ PR 準備完了（ブランチ名・タイトル・本文）
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## タスク完了
 
-TASK-FIX-SAFEINVOKE-TIMEOUT-001 の全 Phase が完了。コミット / PR はユーザー指示時のみ実施する。
+TASK-FIX-SAFEINVOKE-TIMEOUT-001 の全 Phase が完了。PR: `https://github.com/daishiman/AIWorkflowOrchestrator/pull/1137`
