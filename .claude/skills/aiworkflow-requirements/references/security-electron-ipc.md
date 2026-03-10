@@ -11,7 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期 |
+| v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
 | v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
 | v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
 | v1.16.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: IPC ハンドラライフサイクル管理セクションに `IpcHandlerRegistrationResult` 戻り値契約と `safeRegister` による個別 try-catch の Graceful Degradation 仕様を追記。フェイルセキュア考慮事項を明文化 |
@@ -947,6 +947,7 @@ Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `i
 | timeout error | `IPC timeout: {channel} did not respond within 5000ms` |
 | cleanup | 正常 resolve / reject の双方で `clearTimeout(timeoutId)` を実行し、短命 timer を残留させない |
 | 後方互換 | `safeInvoke<T>(channel, ...args): Promise<T>` の公開シグネチャは不変 |
+| rollout 監査 | `preload/index.ts` だけでなく `skill-api.ts` / `skill-creator-api.ts` など channel 境界ごとに file 単位で適用漏れを確認する |
 
 ### セキュリティ意図
 

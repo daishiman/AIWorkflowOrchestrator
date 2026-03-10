@@ -9,6 +9,17 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `invokeWithTimeout()` を Preload 共通 helper として導入し、`safeInvoke` / `safeInvokeUnwrap` 経由の timeout 制御を統一
+  - targeted timeout tests と preload regression を通し、Phase 11 screenshot 4件まで current workflow に同期
+  - system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する運用を固定
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
 
 - **Agent**: task-specification-creator
@@ -18,6 +29,17 @@
   - current workflow で screenshot 4件を再取得し、`manual-test-result.md` / `screenshot-plan.json` / capture metadata を current task 配下へ正規配置
   - `clearTimeout` cleanup 採用後の実装に合わせて Phase 2/5/8/10/12 成果物、`artifacts.json`、`index.md`、`phase-1..12` status を実績同期
   - `.claude/skills/...` 正本 5件 + `SKILL.md` / `LOGS.md` 4件を同一ターンで更新し、未タスク `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` を formalize
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（follow-up）
+- **Result**: success
+- **Notes**:
+  - 画面検証で露出した副次不具合を未タスク化し、`docs/30-workflows/unassigned-task/` 配置とテンプレート準拠を確認
+  - `Phase 12` の苦戦箇所を system spec と未タスク `3.5 実装課題と解決策` へ継承する再利用ルールを補強
+  - merge 取り込み時に main 側履歴を維持しつつ、safeInvoke タスク由来の知見を欠落なく再適用できるようにした
 
 ---
 

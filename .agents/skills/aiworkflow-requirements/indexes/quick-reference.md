@@ -13,6 +13,21 @@
 - 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
 - broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
 
+### Preload safeInvoke timeout を探すとき
+
+```bash
+node scripts/search-spec.js "safeInvoke" -C 3
+node scripts/search-spec.js "IPC timeout" -C 3
+node scripts/search-spec.js "preload invoke hang" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Preload safeInvoke timeout / invoke hang）」を見る
+2. `references/security-electron-ipc.md` の Preload `safeInvoke` timeout セクションを見る
+3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
+4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
+
 ### Electron IPC パターン
 
 ```typescript

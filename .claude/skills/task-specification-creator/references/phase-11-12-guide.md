@@ -69,6 +69,7 @@
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
+- representative screenshot で current task スコープ外の視覚不具合や React warning が見つかった場合は、`PASS` と併記して Phase 11 の発見事項へ記録し、未タスク化要否をそのターンで判定する。画面が崩れているのに「非対象」とだけ書いて閉じない。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -417,6 +418,7 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
+- [ ] `spec-update-summary.md` に `verify-unassigned-links` の `existing/missing` と `audit --diff-from HEAD` の `current/baseline` を実測値で転記した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
 - [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
@@ -431,6 +433,7 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
 - [ ] 【品質】コメントフォーマット（JSDoc形式）が統一されている
 - [ ] 未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されていること（親タスクのtasks/ではない） ⚠️ **P3派生: TASK-9B-Iで再発**
+- [ ] 新規作成した未タスク指示書は、親タスクに苦戦箇所がある場合 `### 3.5 実装課題と解決策（親タスクからの教訓）` を持つ
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること

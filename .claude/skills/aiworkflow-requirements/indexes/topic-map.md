@@ -165,22 +165,22 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L16 |
 | バックエンド実装パターン | L304 |
 | デスクトップ（Electron）実装パターン | L370 |
-| パフォーマンス最適化パターン | L785 |
-| セキュリティ実装パターン | L823 |
-| テスト実装パターン | L991 |
-| アクセシビリティ実装パターン | L1437 |
-| 関連ドキュメント | L1462 |
-| スキル作成実装パターン（TASK-9B-G） | L1474 |
-| 外部API データ正規化パターン | L1598 |
-| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1638 |
-| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1700 |
-| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1754 |
-| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L1970 |
-| SkillEditor 実装パターン（TASK-9A completed） | L2038 |
-| IPC インターフェース不整合修正パターン（P44/P45解決） | L2101 |
-| useShallow派生selectorパターン（S18: TASK-10A-E-C 2026-03-06策定） | L2129 |
-| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2195 |
-| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2293 |
+| パフォーマンス最適化パターン | L871 |
+| セキュリティ実装パターン | L909 |
+| テスト実装パターン | L1077 |
+| アクセシビリティ実装パターン | L1523 |
+| 関連ドキュメント | L1548 |
+| スキル作成実装パターン（TASK-9B-G） | L1560 |
+| 外部API データ正規化パターン | L1684 |
+| SkillAPI統一パターン（TASK-FIX-5-1 2026-02-06実装） | L1724 |
+| 型定義修正タスクパターン（UT-FIX-5-4 2026-02-10実装） | L1786 |
+| SDK 型統合パターン（TASK-9B-I 2026-02-12実装） | L1840 |
+| IPCインターフェース不整合修正パターン（P44 2026-02-21実装） | L2056 |
+| SkillEditor 実装パターン（TASK-9A completed） | L2124 |
+| IPC インターフェース不整合修正パターン（P44/P45解決） | L2187 |
+| useShallow派生selectorパターン（S18: TASK-10A-E-C 2026-03-06策定） | L2215 |
+| IPCチャネル名競合予防パターン（UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 2026-02-24策定） | L2281 |
+| P42準拠バリデーション一括移行パターン（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 2026-02-24実装） | L2379 |
 
 ### references/architecture-monorepo.md
 
@@ -1071,7 +1071,7 @@ node scripts/list-specs.js --topics
 | 自動更新のセキュリティ | L918 |
 | 関連ドキュメント | L929 |
 | safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001） | L938 |
-| 完了タスク | L969 |
+| 完了タスク | L970 |
 
 ### references/security-implementation.md
 
@@ -1972,7 +1972,8 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L3495 |
 | 関連ドキュメント | L3917 |
 | 変更履歴 | L3927 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4172 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4173 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4193 |
 
 ### references/testing-accessibility.md
 
