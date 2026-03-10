@@ -6,7 +6,7 @@
 | ---------- | --------------------------------- |
 | 機能名     | task-ui-03-agent-view-enhancement |
 | 作成日     | 2026-03-09                        |
-| ステータス | phase_12_completed                |
+| ステータス | phase_13_completed                |
 | 総Phase数  | 13                                |
 
 ---
@@ -27,7 +27,7 @@
 | 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
 | 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
 | 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
-| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | spec_ready |
+| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 完了       |
 
 ---
 
@@ -77,9 +77,9 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 | 10    | 最終レビュー結果                                                                                         |
 | 11    | 手動テスト結果, 発見課題一覧, スクリーンショット, 撮影計画, 画面カバレッジレポート                       |
 | 12    | 実装ガイド, ドキュメント更新履歴, 未タスク検出レポート, スキルフィードバックレポート, 仕様書更新サマリー |
-| 13    | docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-13-pr-creation.md              |
+| 13    | PR情報                                                                                                   |
 
 ---
 
 _このファイルは `generate-index.js` によって自動生成されました。_
-_最終更新: 2026-03-10T14:27:30.392Z_
+_最終更新: 2026-03-10T14:58:37.736Z_

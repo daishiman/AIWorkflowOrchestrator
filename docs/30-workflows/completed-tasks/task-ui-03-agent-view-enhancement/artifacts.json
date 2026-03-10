@@ -1,8 +1,8 @@
 {
   "feature": "task-ui-03-agent-view-enhancement",
   "created": "2026-03-10T00:00:00+09:00",
-  "lastUpdated": "2026-03-10T09:04:17.564Z",
-  "status": "phase_12_completed",
+  "lastUpdated": "2026-03-10T14:57:49.129Z",
+  "status": "phase_13_completed",
   "phases": {
     "1": {
       "status": "completed",
@@ -182,9 +182,14 @@
       ]
     },
     "13": {
-      "status": "spec_ready",
+      "status": "completed",
+      "completedAt": "2026-03-10T14:57:49.121Z",
       "artifacts": [
-        "docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/phase-13-pr-creation.md"
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
       ]
     }
   },
@@ -206,7 +211,7 @@
   "metadata": {
     "taskId": "TASK-UI-03-AGENT-VIEW-ENHANCEMENT",
     "taskType": "ui-specification",
-    "executionStatus": "phase_12_completed",
+    "executionStatus": "phase_13_completed",
     "estimatedPhases": 13,
     "actualPhases": 13,
     "specificationSource": "docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058a-ui-03-agent-view-enhancement.md"

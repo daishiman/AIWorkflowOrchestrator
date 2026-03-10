@@ -1,54 +1,40 @@
-# Phase 13: PR情報レポート
+# Phase 13: PR情報
 
-## PR情報
+## メタ情報
 
-| 項目           | 値                                                                   |
-| -------------- | -------------------------------------------------------------------- |
-| PR番号         | #1035                                                                |
-| PRタイトル     | feat(desktop): AgentView Tap & Discover リデザインとPhase 12仕様同期 |
-| PR URL         | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1035        |
-| ブランチ名     | docs/task-ui-03-agent-view-enhancement-specs                         |
-| ベースブランチ | main                                                                 |
-| コミットSHA    | a9b39b6d4768fe40000577484b9f5ae59e3bb0d7                             |
-| 作成日         | 2026-03-07                                                           |
+| 項目           | 値                                                            |
+| -------------- | ------------------------------------------------------------- |
+| タスクID       | TASK-UI-03-AGENT-VIEW-ENHANCEMENT                             |
+| PR番号         | 1146                                                          |
+| PRタイトル     | feat(desktop): AgentView enhancement と Phase 11-13 仕様同期  |
+| PR URL         | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1146 |
+| ベースブランチ | `main`                                                        |
+| 作業ブランチ   | `feature/task-ui-03-agent-view-enhancement`                   |
+| HEAD           | `0222fdc5c1493a19b0d2912fc1da285f5faf08d3`                    |
+| 作成日         | 2026-03-10                                                    |
 
-## 変更統計
+## PR本文反映内容
 
-| 項目           | 値     |
-| -------------- | ------ |
-| 変更ファイル数 | 93     |
-| 追加行数       | 12,342 |
-| 削除行数       | 674    |
-| 新規ファイル   | 67     |
-| 変更ファイル   | 24     |
-| 削除ファイル   | 2      |
+- `outputs/phase-12/implementation-guide.md` の Part 1 / Part 2 要点を PR 本文へ反映
+- Phase 11 スクリーンショット 4 枚を PR 本文へ raw URL で添付
+- follow-up `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を `Refs #1141` として記載
 
-## PRコメント
+## 投稿済みコメント
 
-| コメント | 内容                              | URL                                                                                   |
-| -------- | --------------------------------- | ------------------------------------------------------------------------------------- |
-| #1       | 実装ガイド全文（Part 1 + Part 2） | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1035#issuecomment-4015771747 |
+| 種別                         | URL                                                                                   | 内容                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 実装詳細・レビュー観点       | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1146#issuecomment-4032051396 | 実装主軸、レビュー観点、テスト方法、残課題         |
+| 実装ガイド全文               | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1146#issuecomment-4032056685 | `## 📖 実装ガイド（全文）` と Part 1 / Part 2 全文 |
+| スクリーンショットギャラリー | https://github.com/daishiman/AIWorkflowOrchestrator/pull/1146#issuecomment-4032059977 | Phase 11 代表スクリーンショット 7 枚               |
 
-## CI結果
+## CI状態
 
-| チェック                    | ステータス |
-| --------------------------- | ---------- |
-| Validate Build              | PASS       |
-| Detect Changes              | PASS       |
-| Label                       | PASS       |
-| E2E Test (desktop)          | PASS       |
-| Lint                        | 実行中     |
-| Build Shared                | 実行中     |
-| Build macOS (Apple Silicon) | 実行中     |
-| Security Audit              | 実行中     |
-| Module Sync Check           | 実行中     |
+2026-03-10 23:55 JST 時点:
 
-## 関連Issue
+- PASS: Auto Label PR / Detect Changes / Build Shared / Lint / Module Sync Check / Security Audit / Validate Build / E2E Test (desktop)
+- PENDING: Build macOS (Apple Silicon) / Type Check / Test (shared) / Test (desktop) matrix
 
-| Issue# | タスクID                                 | ステータス |
-| ------ | ---------------------------------------- | ---------- |
-| #1030  | UT-UI-03-A11Y-DIALOG-001                 | OPEN       |
-| #1031  | UT-UI-03-A11Y-LABEL-001                  | OPEN       |
-| #1032  | UT-UI-03-A11Y-RADIOGROUP-001             | OPEN       |
-| #1033  | UT-UI-03-TYPE-ASSERTION-001              | OPEN       |
-| #1034  | UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001 | OPEN       |
+## 補足
+
+- push hook で lint / shared build / typecheck / tests は再実行済み
+- PR 作成後の追加差分はなし
