@@ -140,6 +140,21 @@ UI機能実装の場合は次を推奨:
 
 > 迷った場合は「複数仕様書に同じ段落を貼る」のではなく、最初にこのマトリクスで責務を決めてから SubAgent 分担へ落とす。
 
+### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| `AuthKeyExistsResponse.source` 契約 | `interfaces-auth.md` | 判定根拠（saved/env-fallback/not-set）の型正本 |
+| `AIChatRequest(providerId/modelId)` と同期 request | `llm-ipc-types.md` | request/response 境界の型正本 |
+| `AI_CHAT` 解決順、`llm:set-selected-config`、cache clear | `api-ipc-system.md` | 実行経路とチャネル契約の正本 |
+| AI/チャット IPC 一覧 | `api-endpoints.md` | 探索導線の正本 |
+| 判定根拠の非機密化（キー実値非公開） | `security-electron-ipc.md` | セキュリティ境界の正本 |
+| AuthKeySection 表示条件と `source` 優先表示 | `ui-ux-settings.md` | 画面表示契約の正本 |
+| 完了台帳・検証証跡・苦戦箇所 | `task-workflow.md` | 実施記録の正本 |
+| 再発条件付き教訓と短手順 | `lessons-learned.md` | 同種課題の再利用起点 |
+
+> APIキー連動系は `interfaces / llm / api-ipc / security / ui-ux-settings / task / lessons` の7仕様書を同一ターンで同期する。
+
 ---
 
 ## 5. 苦戦箇所（再利用可能形式）

@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-03-11T09:24:06.492Z",
+  "harnessPath": "/phase11-auth-mode.html",
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "output": "screenshots/TC-11-01-settings-apikey-authkey-initial.png",
+      "description": "初期状態。api-keyモードでApiKeysSectionとAuthKeySectionが同時表示される。",
+      "priority": "A"
+    },
+    {
+      "tc": "TC-11-02",
+      "output": "screenshots/TC-11-02-settings-apikey-save-success.png",
+      "description": "Anthropic APIキー保存後。保存成功フィードバック表示。",
+      "priority": "A"
+    },
+    {
+      "tc": "TC-11-03",
+      "output": "screenshots/TC-11-03-settings-authkey-env-fallback.png",
+      "description": "AuthKeyが環境変数fallbackのとき、sourceに基づくバッジ表示。",
+      "priority": "A"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T09:50:19.384Z",
-  "totalKeywords": 1566,
+  "generated": "2026-03-11T11:33:35.787Z",
+  "totalKeywords": 1583,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -35,7 +35,8 @@
       "spec-splitting-guidelines.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
-      "ui-ux-settings.md"
+      "ui-ux-settings.md",
+      "workflow-apikey-chat-tool-integration-alignment.md"
     ],
     "仕様": [
       "api-chat-history.md",
@@ -135,6 +136,7 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
@@ -217,6 +219,7 @@
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
       "lessons-learned.md",
+      "llm-ipc-types.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
       "logging-migration-guide.md",
@@ -265,6 +268,7 @@
       "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
@@ -392,6 +396,7 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
@@ -783,7 +788,8 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md"
     ],
     "FIX": [
       "api-ipc-agent.md",
@@ -794,7 +800,8 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md",
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "SKILL": [
       "api-ipc-agent.md",
@@ -1395,7 +1402,8 @@
     "SETTINGS": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "PERSIST": [
       "arch-state-management.md",
@@ -3417,7 +3425,8 @@
       "lessons-learned.md"
     ],
     "INTEGRATION": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "REGRESSION": [
       "lessons-learned.md"
@@ -4148,7 +4157,8 @@
       "lessons-learned.md"
     ],
     "APIKEY": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "persist": [
       "lessons-learned.md"
@@ -4178,15 +4188,18 @@
       "lessons-learned.md"
     ],
     "AUTHGUARD": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "TIMEOUT": [
       "lessons-learned.md",
       "security-electron-ipc.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "BYPASS": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "実装教訓": [
       "lessons-learned.md"
@@ -5015,6 +5028,7 @@
     "フェーズ構造": [
       "task-workflow-phases.md",
       "task-workflow.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
@@ -5872,6 +5886,27 @@
     "Panel": [
       "ui-ux-settings.md"
     ],
+    "画面の": [
+      "ui-ux-settings.md"
+    ],
+    "AuthGuard": [
+      "ui-ux-settings.md"
+    ],
+    "非依存アクセス": [
+      "ui-ux-settings.md"
+    ],
+    "AuthKeySection": [
+      "ui-ux-settings.md"
+    ],
+    "表示契約": [
+      "ui-ux-settings.md"
+    ],
+    "CHAT": [
+      "ui-ux-settings.md"
+    ],
+    "TOOL": [
+      "ui-ux-settings.md"
+    ],
     "ApiKeysSection": [
       "ui-ux-settings.md"
     ],
@@ -5910,6 +5945,36 @@
     ],
     "デザイントークン": [
       "ui-ux-system-prompt.md"
+    ],
+    "キー連動とチャット実行経路整合ワークフロー仕様": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "今回実装内容": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "苦戦箇所と再発防止": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "同種課題の": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "分解決カード": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "最適なファイル形成": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "責務マトリクス": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "検証コマンド": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "最小セット": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "関連改善タスク": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

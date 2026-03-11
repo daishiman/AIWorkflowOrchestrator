@@ -30,6 +30,13 @@ LLMへのメッセージ送信リクエスト型。
 | systemPrompt   | string  | -    | システムプロンプト（AIの振る舞い指定） |
 | ragEnabled     | boolean | ✓    | RAG機能有効化フラグ                    |
 | conversationId | string  | -    | 会話ID（既存会話の続きの場合に指定）   |
+| providerId     | LLMProviderId | - | 送信時に明示的に使用するプロバイダーID |
+| modelId        | string  | -    | 送信時に明示的に使用するモデルID       |
+
+**補足**:
+
+- `providerId` と `modelId` はセット指定のみ有効（片方のみはエラー）
+- 省略時は Main 側に同期済みの選択状態（`llm:set-selected-config`）を使用する
 
 #### AIChatResponse
 
@@ -214,9 +221,32 @@ LLMモデル情報の型定義。
 | チャンネル           | メソッド | 入力             | 出力                    | 説明                   |
 | -------------------- | -------- | ---------------- | ----------------------- | ---------------------- |
 | llm:get-providers    | invoke   | なし             | LLMProvider[]           | プロバイダー一覧取得   |
+| llm:set-selected-config | invoke | `{ providerId, modelId }` | `{ success: boolean, error?: string }` | Renderer選択状態をMainへ同期 |
 | llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
 | llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
 | llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
+
+### AI_CHAT の provider/model 解決順
+
+| 優先順位 | 条件 | 使用値 |
+| --- | --- | --- |
+| 1 | `AIChatRequest.providerId` と `modelId` が両方ある | request 指定値を使用 |
+| 2 | request 側指定なし | Main 側選択状態（`setSelectedLLMConfig`）を使用 |
+| 3 | どちらも未設定 | エラー（LLM未選択）を返却 |
+
+### LLMSetSelectedConfigRequest
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| providerId | LLMProviderId | ✓ | 選択中プロバイダー |
+| modelId | string | ✓ | 選択中モデル |
+
+### LLMSetSelectedConfigResponse
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| success | boolean | 同期成功フラグ |
+| error | string | 同期失敗時メッセージ |
 
 ---
 
@@ -263,3 +293,12 @@ LLMモデル情報の型定義。
 - [LLMインターフェース概要](./interfaces-llm.md)
 - [LLMストリーミング仕様](./llm-streaming.md)
 - [Embedding Generation仕様](./llm-embedding.md)
+
+---
+
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
+| 1.0.0 | 2026-01-26 | 初版作成 |

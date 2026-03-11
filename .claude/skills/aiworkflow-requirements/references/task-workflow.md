@@ -330,6 +330,56 @@
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
+### タスク: TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 APIキー連動とチャット実行経路整合（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-11 |
+| 対象 | `ai.chat` / `llm:set-selected-config` / `apiKey:*` / `auth-key:exists` / Settings AuthKey導線 |
+| 成果物 | `docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/outputs/` |
+
+#### 実施内容
+
+- `AI_CHAT` へ `providerId + modelId` の明示指定ルートを追加し、片指定時は fail-fast に変更
+- `llm:set-selected-config` を追加し、Renderer の選択状態を Main 側 `ai.chat` 実行経路へ同期
+- `SecureStorage` を `api-keys` 単一正本参照へ収束し、保存先契約の二重化を解消
+- `apiKey:save` / `apiKey:delete` 成功後に `LLMAdapterFactory.clearInstance(provider)` を実行して stale adapter を除去
+- `auth-key:exists` に `source`（saved/env-fallback/not-set）を追加し、`AuthKeySection` を `authMode === "api-key"` 時のみ表示
+- Phase 11 で screenshot 3件を取得し、Apple UI/UX 観点（視覚階層/状態認知/フィードバック）で回帰なしを確認
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| APIキー保存後に旧 adapter が残り、実行経路が stale になる | storage 更新のみで adapter cache を無効化しない | `apiKey:save/delete` の成功後に provider 単位で adapter instance をクリア |
+| `ai.chat` の provider/model が Store と Main でずれる | Renderer の選択状態を Main に同期しない | `llm:set-selected-config` を追加し、`llmSlice` 変更イベントで Main へ同期 |
+| auth-key 表示状態が `hasCredentials` 依存で曖昧になる | env fallback と saved の区別を返さない | `auth-key:exists` を `{ exists, source }` へ拡張し `source` 優先表示へ移行 |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`apiKey:save/delete` の cache clear、`llm:set-selected-config` の Main 同期、`auth-key:exists.source` の Settings 表示を単一回帰マトリクスで guard する~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` | 完了: 2026-03-11 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm exec vitest run src/main/handlers/__tests__/llm.test.ts src/main/ipc/__tests__/aiHandlers.llm.test.ts src/main/ipc/__tests__/authKeyHandlers.test.ts src/preload/channels.test.ts src/renderer/components/settings/AuthKeySection/AuthKeySection.test.tsx src/renderer/views/SettingsView/SettingsView.test.tsx` | PASS（6 files / 133 tests, 1 skipped） |
+| `node apps/desktop/scripts/capture-task-fix-apikey-chat-tool-integration-phase11.mjs` | PASS（screenshot 3件） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment` | PASS |
+
+#### Phase 12再確認追補（2026-03-11 JST）
+
+- `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` を再実行し、Phase 12 タスク仕様準拠を再確認
+- `apps/desktop/scripts/capture-task-fix-apikey-chat-tool-integration-phase11.mjs` を再実行し、TC-11-01〜03 のスクリーンショット証跡を更新
+- 未タスク監査は `audit-unassigned-tasks --json --diff-from HEAD` を合否判定の正本にし、`currentViolations=0` と `baselineViolations=133` を分離記録
+
 ### タスク: TASK-UI-04A-WORKSPACE-LAYOUT Workspace レイアウト基盤（2026-03-10）
 
 | 項目 | 値 |
@@ -4216,6 +4266,10 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.49** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を同期**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の related task row を完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新。完了済み未タスクと実行workflowの配置整合を同一ターンで是正 |
+| **1.67.48** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を登録**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を、単一回帰マトリクスで guard する改善未タスクへ formalize。`docs/30-workflows/unassigned-task/` 配下へ配置し、同種課題の初動を短縮する導線を追加 |
+| **1.67.47** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を同期**: `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` の4検証を再実行し、`capture-task-fix-apikey-chat-tool-integration-phase11.mjs` でTC-11-01..03証跡を更新。未タスク監査は `current=0 / baseline=133` の二層判定へ固定して誤判定を回避 |
+| **1.67.46** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を同期**: `ai.chat` の provider/model 明示指定ルート、`llm:set-selected-config`、`apiKey:save/delete` 後の adapter cache clear、`auth-key:exists.source`、Settings `authMode=api-key` 時の AuthKeySection 表示、Phase 11 screenshot 3件、targeted tests 133件PASS を完了台帳へ追加 |
 | **1.67.45** | **2026-03-11** | **UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 を登録**: TASK-UI-07 Phase 12 再監査で露出した dual skill-root drift を未タスク化し、`TASK-UI-07` 完了節の関連未タスク表と残課題テーブルへ同時反映。`.claude` を canonical root、`.agents` を mirror として扱い、`rsync --checksum` + `diff -qr` を完了条件へ昇格する再利用ルールを追加 |
 | **1.67.44** | **2026-03-11** | **TASK-UI-07 再監査追補**: TASK-UI-07 の苦戦箇所へ「表示名ホームと内部 `dashboard` 契約の境界維持」を追記し、関連未タスク `UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001` を `docs/30-workflows/unassigned-task/` 正本へ再配置した。Phase 12 再監査では未実施UTの completed-tasks 混在を是正対象として扱う運用を固定 |
 | **1.67.43** | **2026-03-11** | **TASK-UI-07 完了反映**: 完了タスクセクションにホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline、22 tests、TC-11-01〜05）を追加し、workflow 本体の三層同期と Phase 11 validator 要件を記録 |

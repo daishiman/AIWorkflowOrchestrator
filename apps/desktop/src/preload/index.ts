@@ -338,6 +338,10 @@ const electronAPI: ElectronAPI = {
 
   llm: {
     getProviders: () => safeInvoke(IPC_CHANNELS.LLM_GET_PROVIDERS),
+    setSelectedConfig: (request: {
+      providerId: LLMProviderId;
+      modelId: string;
+    }) => safeInvoke(IPC_CHANNELS.LLM_SET_SELECTED_CONFIG, request),
     checkHealth: (providerId: LLMProviderId) =>
       safeInvoke(IPC_CHANNELS.LLM_CHECK_HEALTH, { providerId }),
     sendChat: (request: LLMChatRequest) =>

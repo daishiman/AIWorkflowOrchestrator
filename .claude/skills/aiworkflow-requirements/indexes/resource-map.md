@@ -38,6 +38,7 @@
 | Claude Code スキル作成      | claude-code-skills-overview.md                                | claude-code-skills-\*, claude-code-agents-\*                          |
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
+| バグ修正（APIキー連動 + チャット実行経路整合） | workflow-apikey-chat-tool-integration-alignment.md, api-ipc-system.md, interfaces-auth.md, llm-ipc-types.md | ui-ux-settings.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
@@ -257,6 +258,7 @@
 | plugin-development.md    | プラグイン開発、IWorkflowExecutor実装時    | アーキテクチャ、実装ガイド        |
 | discord-bot.md           | Discord Bot機能実装時                      | イベント、コマンド、通知          |
 | local-agent.md           | ローカルエージェント機能実装時             | ファイル監視、クラウド同期        |
+| workflow-apikey-chat-tool-integration-alignment.md | APIキー保存連動・`ai.chat` 実行経路整合・AuthKey表示契約の再発防止時 | source/sync/cache clear 契約、苦戦箇所、5分解決カード |
 | workflow-skill-identifier-branded-type-resolution.md | Skill識別子の型境界是正、Phase 12再監査時 | SubAgent分担、4フェーズ実行、監査コマンド |
 
 ### 11. ガイドライン

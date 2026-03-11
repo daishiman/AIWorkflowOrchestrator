@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-03-11T09:24:21.670Z",
+  "baseUrl": "http://localhost:5188",
+  "harnessPath": "/phase11-auth-mode.html",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-apikey-authkey-initial.png",
+      "note": "初期状態。api-keyモードでApiKeysSectionとAuthKeySectionが同時表示される。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-152431-wt2/docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/outputs/phase-11/screenshots/TC-11-01-settings-apikey-authkey-initial.png",
+      "capturedAt": "2026-03-11T09:24:18.471Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-settings-apikey-save-success.png",
+      "note": "Anthropic APIキー保存後。保存成功フィードバック表示。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-152431-wt2/docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/outputs/phase-11/screenshots/TC-11-02-settings-apikey-save-success.png",
+      "capturedAt": "2026-03-11T09:24:19.824Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-settings-authkey-env-fallback.png",
+      "note": "AuthKeyが環境変数fallbackのとき、sourceに基づくバッジ表示。",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-152431-wt2/docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/outputs/phase-11/screenshots/TC-11-03-settings-authkey-env-fallback.png",
+      "capturedAt": "2026-03-11T09:24:21.670Z"
+    }
+  ]
+}

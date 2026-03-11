@@ -108,6 +108,18 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 > 重要: 0件報告でも、baseline backlog を隠す表現にしてはいけない。`今回差分` と `ディレクトリ全体` は別の関心ごととして記録する。
 
+### 指定ディレクトリ配置チェック（報告テンプレート）
+
+ユーザーから「未タスクが指定ディレクトリへ配置できているか」を再確認依頼された場合は、以下3行をそのまま埋めて記録する。
+
+| 項目 | 記録例 |
+| --- | --- |
+| 今回差分の配置可否 | `docs/30-workflows/unassigned-task/` 配下に新規/更新未タスク `N` 件（または `0` 件） |
+| 今回差分の品質可否 | `audit --json --diff-from HEAD` の `currentViolations.total = X` |
+| 全体legacy状況 | `audit --json` の `baselineViolations.total = Y`（既存改善タスクID: ...） |
+
+> 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
+
 ### raw検出の誤検知対策（推奨）
 
 `detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。

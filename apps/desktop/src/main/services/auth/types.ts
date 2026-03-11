@@ -197,6 +197,7 @@ export interface AuthKeySetResponse {
  */
 export interface AuthKeyExistsResponse {
   exists: boolean;
+  source?: "saved" | "env-fallback" | "not-set";
 }
 
 /**

@@ -32,6 +32,26 @@
 
 成功した実行から学んだベストプラクティス。
 
+### [IPC/Auth] APIキー連動3点セット同期（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001）
+
+- **状況**: Settings で APIキーを更新しても `ai.chat` の実行経路が旧状態を参照し、`saved` と `env-fallback` の表示も曖昧になる
+- **アプローチ**:
+  - `llm:set-selected-config` で Renderer 選択状態を Main へ同期する
+  - `apiKey:save/delete` 成功後に `LLMAdapterFactory.clearInstance(provider)` を実行する
+  - `auth-key:exists` を `{ exists, source }` へ拡張し、UI は `source` 優先表示に統一する
+  - 仕様同期は `interfaces-auth` / `llm-ipc-types` / `api-ipc-system` / `security-electron-ipc` / `ui-ux-settings` / `task-workflow` / `lessons-learned` の7仕様書を同一ターンで実施する
+- **結果**: 実行経路、鍵更新反映、状態表示のドリフトを同時に解消し、同種課題の初動を短縮
+- **再確認運用**:
+  - Phase 12 再監査では `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` を同一セットで再実行する
+  - 未タスク監査は `audit --diff-from HEAD` の `currentViolations` を合否判定に使い、`baselineViolations` は legacy 監視として分離記録する
+- **適用条件**: APIキー保存とチャット実行が別経路で管理される IPC/UI タスク
+- **失敗パターン**:
+  - `apiKey:save` の永続化のみ更新して cache clear を実装しない
+  - `auth-key:exists` を boolean のまま維持し、判定根拠を UI へ返さない
+  - `task-workflow` のみ更新して domain spec（interfaces/api-ipc/security/ui）を未同期にする
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
+
 ### [Phase12] 証跡テーブル互換 + screenshot preflight 固定（TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001）
 
 - **状況**: `validate-phase11-screenshot-coverage` が `manual-test-result.md` から証跡列を抽出できず失敗し、さらに screenshot 再取得時に optional dependency 欠落で停止

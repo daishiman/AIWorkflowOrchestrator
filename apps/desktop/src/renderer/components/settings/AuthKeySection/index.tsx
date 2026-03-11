@@ -67,15 +67,24 @@ export const AuthKeySection: React.FC = () => {
       }
 
       const existsResult = await authKeyApi.exists();
-      const hasCredentials = authModeStatus?.hasCredentials ?? false;
-
-      if (hasCredentials) {
-        setAuthKeyStatus("saved");
-      } else if (existsResult.exists) {
-        setAuthKeyStatus("env-fallback");
-      } else {
+      if (!existsResult.exists) {
         setAuthKeyStatus("not-set");
+        return;
       }
+
+      if (existsResult.source === "saved") {
+        setAuthKeyStatus("saved");
+        return;
+      }
+
+      if (existsResult.source === "env-fallback") {
+        setAuthKeyStatus("env-fallback");
+        return;
+      }
+
+      // 旧実装互換: source が未提供の場合は hasCredentials を補助判定に使う
+      const hasCredentials = authModeStatus?.hasCredentials ?? false;
+      setAuthKeyStatus(hasCredentials ? "saved" : "env-fallback");
     } catch {
       setAuthKeyStatus("check-failed");
     }

@@ -65,6 +65,19 @@
 
 > 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
 
+### 2.5 APIキー連動 + チャット経路整合プロファイル（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/interfaces-auth.md` | `AuthKeyExistsResponse.source` 契約同期 | saved/env-fallback/not-set の型・説明が一致 |
+| SubAgent-B | `references/llm-ipc-types.md` | `AIChatRequest` と `LLMSetSelectedConfigRequest` 同期 | provider/model 契約が実装一致 |
+| SubAgent-C | `references/api-ipc-system.md` / `references/api-endpoints.md` | `AI_CHAT` 解決順、`llm:set-selected-config`、cache clear 反映 | channel 表と実装状況が一致 |
+| SubAgent-D | `references/security-electron-ipc.md` / `references/ui-ux-settings.md` | 非機密判定契約と表示契約を同期 | キー実値非公開 + `source` 優先表示が一致 |
+| SubAgent-E | `references/task-workflow.md` | 完了台帳、検証証跡、苦戦箇所同期 | 実装内容 + 苦戦箇所 + 検証値が同時記録 |
+| SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓と短手順同期 | 3苦戦箇所と解決カードが再利用可能 |
+
+> このプロファイルでは `interfaces / llm / api-ipc / security / ui-ux-settings / task-workflow / lessons` を同一ターンで更新する。
+
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |

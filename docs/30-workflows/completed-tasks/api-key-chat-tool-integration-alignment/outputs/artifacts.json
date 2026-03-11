@@ -1,0 +1,206 @@
+{
+  "taskId": "TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001",
+  "title": "APIキー連動とチャット実行経路の整合",
+  "type": "bugfix",
+  "priority": "high",
+  "status": "phase_12_completed",
+  "dependencies": [],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/current-routing-matrix.md",
+        "outputs/phase-1/requirements-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/architecture-decision-record.md",
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/team-a-storage-design.md",
+        "outputs/phase-2/team-b-chat-routing-design.md",
+        "outputs/phase-2/team-c-authkey-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/consistency-review.md",
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/team-a-test-cases.md",
+        "outputs/phase-4/team-b-test-cases.md",
+        "outputs/phase-4/team-c-test-cases.md",
+        "outputs/phase-4/test-design.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/implementation-log.md",
+        "outputs/phase-5/team-a-implementation.md",
+        "outputs/phase-5/team-b-implementation.md",
+        "outputs/phase-5/team-c-implementation.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/team-a-test-result.md",
+        "outputs/phase-6/team-b-test-result.md",
+        "outputs/phase-6/team-c-test-result.md",
+        "outputs/phase-6/test-expansion-plan.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-gap-plan.md",
+        "outputs/phase-7/coverage-summary.md",
+        "outputs/phase-7/team-coverage-analysis.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/refactoring-result.md",
+        "outputs/phase-8/regression-log.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/ac-evidence.md",
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/security-review.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/gate-decision.md",
+        "outputs/phase-10/open-issues.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-matrix.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshots/TC-11-01-settings-apikey-authkey-initial.png",
+        "outputs/phase-11/screenshots/TC-11-02-settings-apikey-save-success.png",
+        "outputs/phase-11/screenshots/TC-11-03-settings-authkey-env-fallback.png",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "Settingsで保存した4プロバイダーAPIキーがチャット実行で参照される",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "ai.chatとllm.send-chatとllm.stream-chatの選択プロバイダーが一致する",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "APIキー保存先仕様と実装が単一契約に収束している",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "AuthKey保存導線とSettings表示導線が一致する",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "PreloadとIPCの型契約が破綻していない",
+      "verified": true
+    },
+    {
+      "id": "AC-6",
+      "description": "秘密情報がログとエラーメッセージに出力されない",
+      "verified": true
+    },
+    {
+      "id": "AC-7",
+      "description": "変更範囲テストがPASSする",
+      "verified": true
+    },
+    {
+      "id": "AC-8",
+      "description": "aiworkflow-requirements system specが更新される",
+      "verified": true
+    }
+  ],
+  "relatedPitfalls": ["P31", "P48", "P53"],
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-11"
+}

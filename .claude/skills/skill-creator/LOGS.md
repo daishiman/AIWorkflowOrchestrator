@@ -3,6 +3,29 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 パターン/テンプレート同期
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に APIキー連動 + チャット経路整合マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に同課題向け SubAgent プロファイル（A〜F）を追加
+  - `references/patterns.md` に成功/失敗パターン「APIキー連動3点セット同期（source + llm同期 + cache clear）」を追加
+  - `SKILL.md` 変更履歴を APIKEY 系で同期
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 再確認パターン追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の `APIキー連動3点セット同期` に、Phase 12 再監査時の4検証セット（verify/validate/screenshot coverage）を追記
+  - 未タスク監査の合否判定を `currentViolations` 固定、`baselineViolations` を legacy 監視として分離記録する運用を追加
+  - 再確認時の誤判定（baselineを今回差分FAILと誤認）を防ぐ導線を強化
+
+---
 ## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成ルールを skill-creator へ追補
 
 - **Agent**: skill-creator (update)

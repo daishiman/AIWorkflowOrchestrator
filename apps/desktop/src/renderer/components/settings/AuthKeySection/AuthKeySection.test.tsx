@@ -33,7 +33,7 @@ beforeEach(() => {
   vi.clearAllMocks();
 
   mockAuthKeyApi.set.mockResolvedValue({ success: true });
-  mockAuthKeyApi.exists.mockResolvedValue({ exists: false });
+  mockAuthKeyApi.exists.mockResolvedValue({ exists: false, source: "not-set" });
   mockAuthKeyApi.validate.mockResolvedValue({ valid: true });
   mockAuthKeyApi.delete.mockResolvedValue({ success: true });
 
@@ -71,7 +71,10 @@ describe("AuthKeySection", () => {
       if (mockAuthModeStatusValue) {
         mockAuthModeStatusValue.hasCredentials = true;
       }
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: true });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: true,
+        source: "saved",
+      });
 
       await act(async () => {
         render(<AuthKeySection />);
@@ -86,7 +89,10 @@ describe("AuthKeySection", () => {
       if (mockAuthModeStatusValue) {
         mockAuthModeStatusValue.hasCredentials = false;
       }
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: true });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: true,
+        source: "env-fallback",
+      });
 
       await act(async () => {
         render(<AuthKeySection />);
@@ -97,11 +103,31 @@ describe("AuthKeySection", () => {
       expect(badge).toHaveAttribute("data-status", "env-fallback");
     });
 
+    it("source が優先され、hasCredentials=true でも env-fallback を表示する", async () => {
+      if (mockAuthModeStatusValue) {
+        mockAuthModeStatusValue.hasCredentials = true;
+      }
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: true,
+        source: "env-fallback",
+      });
+
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      const badge = screen.getByTestId("auth-key-status-badge");
+      expect(badge).toHaveAttribute("data-status", "env-fallback");
+    });
+
     it("未設定状態で赤バッジが表示される", async () => {
       if (mockAuthModeStatusValue) {
         mockAuthModeStatusValue.hasCredentials = false;
       }
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: false });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: false,
+        source: "not-set",
+      });
 
       await act(async () => {
         render(<AuthKeySection />);
@@ -128,7 +154,10 @@ describe("AuthKeySection", () => {
   describe("APIキー保存フロー", () => {
     it("APIキー入力・保存フローが動作する", async () => {
       mockAuthKeyApi.set.mockResolvedValue({ success: true });
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: false });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: false,
+        source: "not-set",
+      });
 
       await act(async () => {
         render(<AuthKeySection />);
@@ -210,7 +239,10 @@ describe("AuthKeySection", () => {
       if (mockAuthModeStatusValue) {
         mockAuthModeStatusValue.hasCredentials = true;
       }
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: true });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: true,
+        source: "saved",
+      });
       mockAuthKeyApi.delete.mockResolvedValue({ success: true });
 
       await act(async () => {
@@ -222,7 +254,10 @@ describe("AuthKeySection", () => {
       expect(deleteButton).toBeInTheDocument();
 
       // 削除後のexistsはfalseを返す
-      mockAuthKeyApi.exists.mockResolvedValue({ exists: false });
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: false,
+        source: "not-set",
+      });
       if (mockAuthModeStatusValue) {
         mockAuthModeStatusValue.hasCredentials = false;
       }

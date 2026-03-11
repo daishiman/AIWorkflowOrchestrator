@@ -114,6 +114,7 @@ describe("authKeyHandlers", () => {
 
     // AuthKeyService モックをリセット
     mockAuthKeyService.setKey.mockResolvedValue(undefined);
+    mockAuthKeyService.getKey.mockResolvedValue(null);
     mockAuthKeyService.hasKey.mockResolvedValue(false);
     mockAuthKeyService.validateKey.mockResolvedValue(true);
     mockAuthKeyService.deleteKey.mockResolvedValue(undefined);
@@ -335,9 +336,11 @@ describe("authKeyHandlers", () => {
   describe("AUTH_KEY_EXISTS (auth-key:exists)", () => {
     it("storeにキーがなくても環境変数があればexists=trueを返す", async () => {
       // Arrange
-      mockAuthKeyService.hasKey.mockResolvedValue(false);
       const originalEnvKey = process.env.ANTHROPIC_API_KEY;
       process.env.ANTHROPIC_API_KEY = "sk-ant-api03-env-fallback-key";
+      mockAuthKeyService.getKey.mockResolvedValue(
+        "sk-ant-api03-env-fallback-key",
+      );
 
       try {
         registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
@@ -348,7 +351,8 @@ describe("authKeyHandlers", () => {
         const result = await handler(event);
 
         // Assert
-        expect(result).toEqual({ exists: true });
+        expect(mockAuthKeyService.getKey).toHaveBeenCalled();
+        expect(result).toEqual({ exists: true, source: "env-fallback" });
       } finally {
         if (originalEnvKey === undefined) {
           delete process.env.ANTHROPIC_API_KEY;
@@ -360,7 +364,10 @@ describe("authKeyHandlers", () => {
 
     it("キー設定状態を確認できる - 設定あり", async () => {
       // Arrange
-      mockAuthKeyService.hasKey.mockResolvedValue(true);
+      mockAuthKeyService.getKey.mockResolvedValue(
+        "sk-ant-api03-saved-local-key",
+      );
+      delete process.env.ANTHROPIC_API_KEY;
 
       registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
       const handler = getRegisteredHandler("auth-key:exists");
@@ -370,13 +377,13 @@ describe("authKeyHandlers", () => {
       const result = await handler(event);
 
       // Assert
-      expect(mockAuthKeyService.hasKey).toHaveBeenCalled();
-      expect(result).toEqual({ exists: true });
+      expect(mockAuthKeyService.getKey).toHaveBeenCalled();
+      expect(result).toEqual({ exists: true, source: "saved" });
     });
 
     it("キー設定状態を確認できる - 設定なし", async () => {
       // Arrange
-      mockAuthKeyService.hasKey.mockResolvedValue(false);
+      mockAuthKeyService.getKey.mockResolvedValue(null);
 
       registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
       const handler = getRegisteredHandler("auth-key:exists");
@@ -386,7 +393,7 @@ describe("authKeyHandlers", () => {
       const result = await handler(event);
 
       // Assert
-      expect(result).toEqual({ exists: false });
+      expect(result).toEqual({ exists: false, source: "not-set" });
     });
 
     it("sender検証失敗時はエラーレスポンスを返す", async () => {
@@ -406,7 +413,7 @@ describe("authKeyHandlers", () => {
 
     it("レスポンスにキーの値は含まれない", async () => {
       // Arrange
-      mockAuthKeyService.hasKey.mockResolvedValue(true);
+      mockAuthKeyService.getKey.mockResolvedValue("sk-ant-api03-secret");
 
       registerAuthKeyHandlers(mockWindow, mockAuthKeyService);
       const handler = getRegisteredHandler("auth-key:exists");
@@ -417,7 +424,7 @@ describe("authKeyHandlers", () => {
 
       // Assert - レスポンスに 'key' フィールドがないことを確認
       expect(result).not.toHaveProperty("key");
-      expect(Object.keys(result)).toEqual(["exists"]);
+      expect(Object.keys(result)).toEqual(["exists", "source"]);
     });
   });
 
