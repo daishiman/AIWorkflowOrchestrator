@@ -2,7 +2,7 @@
 /**
  * 仕様検索スクリプト
  *
- * 用途: references/配下のドキュメントからキーワード検索
+ * 用途: references/ と indexes/ 配下のドキュメントからキーワード検索
  * 実行: node scripts/search-spec.js <keyword> [options]
  *
  * オプション:
@@ -18,6 +18,7 @@ import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REFS_DIR = join(__dirname, "..", "references");
+const INDEXES_DIR = join(__dirname, "..", "indexes");
 
 // ANSI colors
 const colors = {
@@ -127,19 +128,26 @@ async function search(options) {
     process.exit(2);
   }
 
-  const files = await readdir(REFS_DIR);
-  const mdFiles = files.filter((f) => f.endsWith(".md")).sort();
+  const searchTargets = [
+    { label: "references", dir: REFS_DIR },
+    { label: "indexes", dir: INDEXES_DIR },
+  ];
 
   let totalMatches = 0;
   const fileResults = [];
 
-  for (const file of mdFiles) {
-    const filePath = join(REFS_DIR, file);
-    const results = await searchInFile(filePath, keyword, options);
+  for (const target of searchTargets) {
+    const files = await readdir(target.dir);
+    const mdFiles = files.filter((f) => f.endsWith(".md")).sort();
 
-    if (results.length > 0) {
-      totalMatches += results.length;
-      fileResults.push({ file, results });
+    for (const file of mdFiles) {
+      const filePath = join(target.dir, file);
+      const results = await searchInFile(filePath, keyword, options);
+
+      if (results.length > 0) {
+        totalMatches += results.length;
+        fileResults.push({ file: `${target.label}/${file}`, results });
+      }
     }
   }
 
@@ -162,7 +170,7 @@ async function search(options) {
 
   for (const { file, results } of fileResults) {
     console.log(
-      `${colors.cyan}${colors.bright}references/${file}${colors.reset} (${results.length}件)`,
+      `${colors.cyan}${colors.bright}${file}${colors.reset} (${results.length}件)`,
     );
 
     if (!filesOnly) {

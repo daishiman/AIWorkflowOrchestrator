@@ -56,6 +56,7 @@ export interface NotificationService {
   ) => Promise<NotificationHistoryResult>;
   markRead: (notificationId: string) => Promise<{ updated: boolean }>;
   markAllRead: () => Promise<{ updatedCount: number }>;
+  delete: (notificationId: string) => Promise<{ deleted: boolean }>;
   clear: () => Promise<{ deletedCount: number }>;
 }
 
@@ -208,6 +209,20 @@ export function createNotificationService(): NotificationService {
       return { updatedCount };
     },
 
+    async delete(notificationId) {
+      const notifications = readNotifications(store);
+      const next = notifications.filter(
+        (notification) => notification.id !== notificationId,
+      );
+
+      if (next.length === notifications.length) {
+        return { deleted: false };
+      }
+
+      writeNotifications(store, next);
+      return { deleted: true };
+    },
+
     async clear() {
       const notifications = readNotifications(store);
       writeNotifications(store, []);
@@ -327,6 +342,43 @@ export function registerNotificationHandlers(
         return failure(
           "UNKNOWN_ERROR",
           sanitizeErrorMessage(error, "Failed to mark all notifications"),
+        );
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.NOTIFICATION_DELETE,
+    async (
+      event,
+      request: { notificationId?: unknown } = {},
+    ): Promise<IpcResult<{ deleted: boolean }>> => {
+      const senderValidation = validateSender(
+        event,
+        IPC_CHANNELS.NOTIFICATION_DELETE,
+        options,
+      );
+      if (!senderValidation.valid) {
+        return toIPCValidationError(senderValidation);
+      }
+
+      const validation = validateRequiredString(
+        request.notificationId,
+        "notificationId",
+      );
+
+      if (!validation.valid) {
+        return failure("VALIDATION_ERROR", validation.message);
+      }
+
+      try {
+        const notificationId = request.notificationId as string;
+        const data = await service.delete(notificationId);
+        return success(data);
+      } catch (error) {
+        return failure(
+          "UNKNOWN_ERROR",
+          sanitizeErrorMessage(error, "Failed to delete notification"),
         );
       }
     },

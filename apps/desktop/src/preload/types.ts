@@ -872,6 +872,10 @@ export interface NotificationMarkReadRequest {
   notificationId: string;
 }
 
+export interface NotificationDeleteRequest {
+  notificationId: string;
+}
+
 export interface NotificationClearRequest {
   onlyRead?: boolean;
 }
@@ -881,6 +885,7 @@ export interface NotificationMutationResponse {
   data?: {
     updated?: boolean;
     updatedCount?: number;
+    deleted?: boolean;
     removedCount?: number;
     deletedCount?: number;
   };
@@ -977,6 +982,9 @@ export interface NotificationAPI {
     request: NotificationMarkReadRequest,
   ) => Promise<NotificationMutationResponse>;
   markAllRead: () => Promise<NotificationMutationResponse>;
+  delete: (
+    request: NotificationDeleteRequest,
+  ) => Promise<NotificationMutationResponse>;
   clear: (
     request?: NotificationClearRequest,
   ) => Promise<NotificationMutationResponse>;

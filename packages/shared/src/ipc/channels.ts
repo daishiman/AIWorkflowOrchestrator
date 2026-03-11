@@ -110,6 +110,7 @@ export const NOTIFICATION_CHANNELS = {
   NOTIFICATION_GET_HISTORY: "notification:get-history",
   NOTIFICATION_MARK_READ: "notification:mark-read",
   NOTIFICATION_MARK_ALL_READ: "notification:mark-all-read",
+  NOTIFICATION_DELETE: "notification:delete",
   NOTIFICATION_CLEAR: "notification:clear",
   NOTIFICATION_NEW: "notification:new",
 } as const;

@@ -69,6 +69,7 @@ describe("IPC Channels", () => {
       expect(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ).toBe(
         "notification:mark-all-read",
       );
+      expect(IPC_CHANNELS.NOTIFICATION_DELETE).toBe("notification:delete");
       expect(IPC_CHANNELS.NOTIFICATION_CLEAR).toBe("notification:clear");
       expect(IPC_CHANNELS.NOTIFICATION_NEW).toBe("notification:new");
       expect(IPC_CHANNELS.HISTORY_SEARCH).toBe("history:search");
@@ -92,6 +93,9 @@ describe("IPC Channels", () => {
       );
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.NOTIFICATION_GET_HISTORY,
+      );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.NOTIFICATION_DELETE,
       );
       expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.HISTORY_SEARCH);
     });

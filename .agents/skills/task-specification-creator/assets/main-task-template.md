@@ -228,10 +228,10 @@ graph TD
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}}
 
 # Phase完了・成果物登録
-node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+node .agents/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}} --artifacts "..."
 ```
 

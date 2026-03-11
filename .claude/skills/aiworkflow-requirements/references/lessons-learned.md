@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.65 | TASK-UI-08-NOTIFICATION-CENTER 再監査の教訓を追加。Bell utility action の仕様同期漏れ、Phase 11 coverage validator の列名依存、delete reveal の実画面証跡不足を同時是正し、`ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` の同一ターン同期を標準化 |
 | 2026-03-10 | 1.29.64 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
 | 2026-03-10 | 1.29.63 | TASK-UI-06-HISTORY-SEARCH-VIEW の解決手順を 5 ステップへ最適化し、専用 domain spec / feature spec / task-workflow の同期粒度を揃えた |
 | 2026-03-10 | 1.29.62 | TASK-UI-06-HISTORY-SEARCH-VIEW の教訓を追加。worktree 依存補完 preflight、screenshot strict locator 化、`.claude` 正本 / `.agents` mirror の canonical root 固定、timeline UI の state 分離を再利用手順として追記 |
@@ -818,6 +819,45 @@ expect(element.className).toContain(statusStyles.primary);
 | タスクID                                         | 概要                                                                                                                                                         | 参照                                                                                                  |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
 | ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
+
+---
+
+## TASK-UI-08-NOTIFICATION-CENTER: NotificationCenter 058e 再監査（2026-03-11）
+
+### 苦戦箇所: utility action は feature doc だけ更新しても探索導線が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | NotificationCenter は `ui-ux-feature-components.md` には反映されていても、`ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` に記述がなければ次回の探索起点が分散する |
+| 再発条件 | Bell のような app header utility action を「ドメインUI」とだけ見なして、component index / navigation / portal guide を後回しにする場合 |
+| 対処 | `ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` を同一ターンで同期した |
+| 標準ルール | utility action を含む UI 改修は「component index + feature doc + navigation/portal + workflow/lessons」の複数入口を同一ターンで埋める |
+
+### 苦戦箇所: Phase 11 validator は見出しと列名の drift に弱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実際にスクリーンショットが存在していても、`manual-test-result.md` に `証跡` 列が無い、`phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` 見出しが無いと `validate-phase11-screenshot-coverage` が失敗する |
+| 再発条件 | Phase 11 文書を人間向けにだけ最適化し、validator が期待する literal header / column name を崩す場合 |
+| 対処 | Phase 11 文書を validator 互換の見出し・列名へ是正し、`screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md` を追加した |
+| 標準ルール | UIタスクの Phase 11 は screenshot 実体だけで閉じず、coverage validator を通る文書構造まで含めて完了とする |
+
+### 苦戦箇所: destructive affordance は自動テストだけでは視覚品質が確定しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | delete ボタンの表示有無はテストで確認できても、赤の強さ、幅、文脈、押しやすさは実画面を見ないと判断できない |
+| 再発条件 | swipe / reveal / destructive action を DOM assertion のみで完了扱いにする場合 |
+| 対処 | `TC-11-07-desktop-delete-reveal.png` を追加取得し、Apple UI/UX 観点で affordance を再確認した |
+| 標準ルール | destructive action を含む UI は「通常状態 + 展開状態 + destructive reveal」の3状態を screenshot で確認する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Utility action を追加したら `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` の4入口を先に洗い出す。  
+2. Phase 11 文書は `テストケース` / `画面カバレッジマトリクス` / `証跡` 列を literal で揃える。  
+3. destructive affordance は screenshot を 1枚追加して、通常状態との差を目視で確認する。  
+4. `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `validate-phase-output` を同一ターンで回す。  
+5. 最後に `task-workflow.md` と `lessons-learned.md` に再発条件付きで転記し、再監査の入口を閉じる。  
 
 ---
 

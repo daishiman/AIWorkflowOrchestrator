@@ -1,0 +1,302 @@
+{
+  "feature": "task-058e-ui-08-notification-center",
+  "created": "2026-03-11T04:55:00.000Z",
+  "lastUpdated": "2026-03-11T05:34:50.681Z",
+  "status": "completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-11T03:23:05.575Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/subagent-ownership.md",
+          "description": "SubAgent責務表"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:01.420Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/component-design.md",
+          "description": "コンポーネント設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/state-ipc-design.md",
+          "description": "状態とIPC設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/aiworkflow-requirements-extract.md",
+          "description": "正本仕様抽出"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-11T03:23:05.456Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gap-resolution-list.md",
+          "description": "差分解消一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-gate.md",
+          "description": "ゲート記録"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-11T03:35:12.804Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/integration-test-matrix.md",
+          "description": "統合テストマトリクス"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:01.590Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/p50-gap-closure-plan.md",
+          "description": "P50差分収束計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/ipc-channel-migration.md",
+          "description": "IPC差分対応"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-11T03:42:37.778Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-matrix.md",
+          "description": "回帰マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/accessibility-cases.md",
+          "description": "アクセシビリティケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/integration-test.md",
+          "description": "統合テスト結果"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:02.065Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-list.md",
+          "description": "カバレッジ不足一覧"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:02.402Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタ記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/boundary-checklist.md",
+          "description": "責務境界チェック"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-11T03:44:07.047Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/ipc-security-check.md",
+          "description": "IPCセキュリティ確認"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:02.733Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/open-items.md",
+          "description": "未解決項目"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:02.897Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-plan.md",
+          "description": "手動テスト計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-matrix.md",
+          "description": "スクリーンショット一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "screenshot計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "screenshot網羅率"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項一覧"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-11T04:43:03.043Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-03-11T05:34:50.679Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5", "6", "7", "8", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  }
+}

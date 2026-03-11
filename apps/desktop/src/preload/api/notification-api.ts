@@ -51,6 +51,12 @@ export interface NotificationMarkAllReadResponse {
   error?: { code: string; message: string };
 }
 
+export interface NotificationDeleteResponse {
+  success: boolean;
+  data?: { deleted: boolean };
+  error?: { code: string; message: string };
+}
+
 export interface NotificationClearResponse {
   success: boolean;
   data?: { deletedCount: number };
@@ -77,6 +83,9 @@ export interface NotificationAPI {
     notificationId: string;
   }) => Promise<NotificationMarkReadResponse>;
   markAllRead: () => Promise<NotificationMarkAllReadResponse>;
+  delete: (request: {
+    notificationId: string;
+  }) => Promise<NotificationDeleteResponse>;
   clear: () => Promise<NotificationClearResponse>;
   onNew: (
     callback: (event: { notification: Notification }) => void,
@@ -109,6 +118,11 @@ export function createNotificationAPI(
     markAllRead: () =>
       safeInvoke<NotificationMarkAllReadResponse>(
         IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ,
+      ),
+    delete: (request) =>
+      safeInvoke<NotificationDeleteResponse>(
+        IPC_CHANNELS.NOTIFICATION_DELETE,
+        request,
       ),
     clear: () =>
       safeInvoke<NotificationClearResponse>(IPC_CHANNELS.NOTIFICATION_CLEAR),

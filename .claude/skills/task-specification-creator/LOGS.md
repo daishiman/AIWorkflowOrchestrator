@@ -22,6 +22,28 @@
   - 058c workflow の `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を再監査結果へ更新
 
 ---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 11/12 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `validate-phase11-screenshot-coverage` 失敗を起点に、`phase-11-manual-test.md` / `manual-test-result.md` / `manual-test-plan.md` / `screenshot-matrix.md` を validator 互換へ是正
+  - `screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md` を追加し、delete reveal を含む screenshot 7件へ拡張
+  - workflow outputs だけでなく `lessons-learned.md` / `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` まで同期対象を広げた
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-12/implementation-guide.md` / `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を current workflow 配下へ生成
+  - workflow `index.md` / `requirements-traceability-matrix.md` / `branch-diff-reflection-matrix.md` / `outputs/verification-report.md` の stale な spec-only 記述を実績同期
+  - `.claude/skills/...` 正本、`LOGS.md` 2件、`SKILL.md` 2件を同一ターンで更新し、Phase 12 の root docs 同期を再発防止ルールとして記録
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
 
 - **Agent**: task-specification-creator

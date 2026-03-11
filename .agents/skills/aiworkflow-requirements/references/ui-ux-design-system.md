@@ -297,6 +297,7 @@ const variantStyles: Record<Variant, string> = {
 | タスクID | タスク名 | ステータス | 優先度 | 参照 |
 |----------|----------|------------|--------|------|
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 | light theme の副次テキスト token コントラスト改善 | 未実施 | 低 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md` |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
@@ -306,6 +307,8 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.5 | 2026-03-10 | UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 の未タスク仕様書を task-spec 準拠で追補し、親タスクの苦戦箇所（component/token 切り分け、dedicated harness 前提、diff監査ゲート）を token 改善タスクへ継承する運用を明記 |
+| 1.5.4 | 2026-03-10 | TASK-UI-03 再監査で判明した light theme 副次テキストの token 改善余地を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として関連タスクへ追加。AgentView 固有 bug ではなく design token scope の改善として管理する方針を明記 |
 | 1.5.3 | 2026-02-25 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 を関連タスクへ追加。UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所（状態責務混在/Hook依存不安定/Phase 12証跡同期）を再発防止タスクとして管理開始 |
 | 1.5.2 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の実装内容をテンプレート準拠で再編（状態設計/ UI反映/運用証跡の3観点で要約を追加） |
 | 1.5.1 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所を追記（`themeMode`/`resolvedTheme` 分離、Store Hook再実行ループ回避、Phase 12証跡同期） |

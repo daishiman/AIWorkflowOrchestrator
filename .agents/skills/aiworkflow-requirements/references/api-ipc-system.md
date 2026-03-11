@@ -97,6 +97,37 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ---
 
+## Workspace File Watch IPC API（TASK-UI-04A）
+
+### 概要
+
+workspace layout 04A では、selected file の preview と status bar を最新化するために file watch IPC を使う。
+
+**実装ファイル**:
+
+- ハンドラー: `apps/desktop/src/main/ipc/fileHandlers.ts`
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+
+### チャンネル一覧
+
+| チャネル | 方向 | 用途 | Payload |
+| --- | --- | --- | --- |
+| `file:watch-start` | Renderer → Main | selected file の監視開始 | `{ watchPath: string }` |
+| `file:watch-stop` | Renderer → Main | watch 停止 | `watchId: string` |
+| `file:changed` | Main → Renderer | file change 通知 | `{ watchId, eventType, filePath, timestamp }` |
+
+### 運用契約
+
+| 項目 | 契約 |
+| --- | --- |
+| watch scope | selected file のみ |
+| watch start response | `{ success: boolean, watchId?: string, error?: string }` |
+| push 受信後 | Renderer は path 一致時のみ `file.read` を再実行 |
+| cleanup | file switch / unmount で `file:watch-stop` を必ず実行 |
+
+---
+
 ## Electron IPC API設計
 
 デスクトップアプリでは、Renderer Process と Main Process 間の通信に IPC（Inter-Process Communication）を使用する。
@@ -221,6 +252,8 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `registerSkillHandlers` が `authKeyService` を `SkillExecutor` へ DI する                 | completed  | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001               |
 | `PROFILE_UNLINK_PROVIDER` 成功通知で `AUTH_STATE_CHANGED.user` を `AuthUser` 形状へ統一   | completed  | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
 | Renderer `linkedProviders` を契約崩れ時に正規化し `is not iterable` を回避                | completed  | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
+| `registerAllIpcHandlers` で各 `registerXxxHandlers` を `safeRegister` で個別 try-catch 化 | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
+| `registerAllIpcHandlers` が `IpcHandlerRegistrationResult` を返却（成功/失敗カウント）    | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 
 ### 関連タスク
 
@@ -230,6 +263,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001              | `auth-key:exists` 判定契約の env fallback 追加                                    | 完了       |
 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001           | auth-key 4チャネルの Main 登録漏れと解除連携を修正                                | 完了       |
 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 | OAuth後の `AUTH_STATE_CHANGED` / `linkedProviders` 契約整合で iterable 障害を分離 | 完了       |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        | `registerAllIpcHandlers` に Graceful Degradation（個別 try-catch + 失敗記録）を追加 | 完了       |
 
 **セキュリティ設計**:
 
@@ -256,21 +290,32 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | チャネル                     | メソッド | 引数                                  | 戻り値                           | 備考             |
 | ---------------------------- | -------- | ------------------------------------- | -------------------------------- | ---------------- |
 | `notification:get-history`   | invoke   | `{ limit?: number, offset?: number }` | `NotificationGetHistoryResponse` | sender検証必須   |
-| `notification:mark-read`     | invoke   | `{ id: string }`                      | `NotificationMutationResponse`   | 認証必須         |
+| `notification:mark-read`     | invoke   | `{ notificationId: string }`          | `NotificationMutationResponse`   | 認証必須         |
 | `notification:mark-all-read` | invoke   | なし                                  | `NotificationMutationResponse`   | 認証必須         |
+| `notification:delete`        | invoke   | `{ notificationId: string }`          | `NotificationMutationResponse`   | 認証必須         |
 | `notification:clear`         | invoke   | `{ onlyRead?: boolean }`              | `NotificationMutationResponse`   | 認証必須         |
 | `notification:new`           | on       | `NotificationHistoryItem`             | event                            | Main -> Renderer |
-| `history:search`             | invoke   | `HistorySearchRequest`                | `HistorySearchResponse`          | `query` 必須     |
-| `history:get-stats`          | invoke   | なし                                  | `HistorySearchStatsResponse`     | 集計返却         |
+| `history:search`             | invoke   | `HistorySearchRequest`                | `HistorySearchResponse`          | `query` は空文字許容、trim 正規化 |
+| `history:get-stats`          | invoke   | なし                                  | `HistorySearchStatsResponse`     | sender検証 + 集計返却 |
 
 **セキュリティ契約**:
 
 | 項目       | 契約                                                                            |
 | ---------- | ------------------------------------------------------------------------------- |
 | sender検証 | `event.sender === mainWindow.webContents` かつ URL を検証                       |
-| 更新系認証 | `notification:mark-read` / `mark-all-read` / `clear` は未認証時 `AUTH_REQUIRED` |
-| 入力検証   | `notification id` と `history query` を必須化                                   |
+| 更新系認証 | `notification:mark-read` / `mark-all-read` / `delete` / `clear` は未認証時 `AUTH_REQUIRED` |
+| 入力検証   | `notificationId` と `history query/filter/limit/offset` を検証                  |
 | 公開境界   | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` に明示登録                    |
+
+### HistorySearch handler detail（TASK-UI-06 追補）
+
+| 項目 | 契約 |
+| --- | --- |
+| `query` | `string` 以外は `VALIDATION_ERROR`。空文字と空白のみは `\"\"` へ正規化して全件検索として扱う |
+| `filter` | `all` / `chat` / `file` / `skill` 以外は `VALIDATION_ERROR` |
+| `limit` | 不正値は `30` へ fallback |
+| `offset` | 不正値は `0` へ fallback |
+| error sanitize | handler 内で `sanitizeErrorMessage()` を通し、生の例外文字列をそのまま Renderer へ出さない |
 
 ### IPC エラーコード
 
@@ -379,6 +424,63 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 ---
 
 ## 完了タスク
+
+### TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001（2026-03-08完了）
+
+| 項目             | 内容                                                                                                                                                                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001                                                                                                                                                       |
+| 反映対象         | `registerAllIpcHandlers` の Graceful Degradation                                                                                                                                                    |
+| 主要変更         | `safeRegister()` ヘルパーで各ハンドラ登録を個別 try-catch 化。`IpcHandlerRegistrationResult`（`successCount`/`failureCount`/`failures`）を戻り値として返却。エラーコード 4001（Infrastructure Error） |
+| 検証             | 個別失敗テスト + 全成功テスト + 戻り値検証テスト PASS                                                                                                                                              |
+| 関連ドキュメント | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/outputs/`                                                                                                                       |
+
+#### Graceful Degradation 実装パターン詳細
+
+**型定義**:
+
+| 型名                            | 目的               | フィールド                                                                                  |
+| ------------------------------- | ------------------ | ------------------------------------------------------------------------------------------- |
+| `HandlerRegistrationFailure`    | 個別登録失敗の記録 | `handlerName: string`, `errorMessage: string`, `errorCode: number` (4001 = Infrastructure Error) |
+| `IpcHandlerRegistrationResult`  | 全体の登録結果     | `successCount: number`, `failureCount: number`, `failures: HandlerRegistrationFailure[]`    |
+
+**内部ヘルパー関数**:
+
+| 関数名                              | 公開範囲                          | 目的                                                                                       |
+| ----------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------ |
+| `safeRegister(name, fn)`            | 非公開（index.ts内部）            | 個別ハンドラ登録を try-catch でラップ。失敗時は `HandlerRegistrationFailure` を返却         |
+| `sanitizeRegistrationErrorMessage(msg)` | 非公開                        | エラーメッセージからユーザーホームディレクトリパスを `~` にマスク（NFR-02）                 |
+| `escapeRegExp(str)`                 | 非公開                            | 正規表現メタ文字をエスケープ                                                               |
+| `track()`                           | 非公開クロージャ                  | `registerAllIpcHandlers` 内で `safeRegister` の成功/失敗を自動カウント                     |
+
+**ハンドラグループと登録パターン**:
+
+| グループ                             | ハンドラ数 | 登録方式                  | 備考                                                                |
+| ------------------------------------ | ---------- | ------------------------- | ------------------------------------------------------------------- |
+| 独立ハンドラ（File, Store, Dashboard 等） | 11    | `track()` 経由 `safeRegister` | 依存関係なし                                                        |
+| mainWindow 依存（Agent, ChatEdit）   | 2          | `track()` 経由 `safeRegister` | BrowserWindow 引数必要                                              |
+| ThemeWatcher                         | 1          | 個別 try-catch            | 戻り値（unsubscribe）のキャプチャが必要なため `safeRegister` 不適合 |
+| Supabase 条件付き                    | 1          | 条件分岐 + `track()`     | `getSupabaseClient()` 存在時のみ                                    |
+| 複合サービス（Skill, History, Auth 等） | ~15     | `track()` 経由 `safeRegister` | サービスインスタンス共有                                            |
+
+#### 実装時の苦戦箇所と再発防止
+
+| 項目      | 内容                                                                                                                                                         |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 苦戦箇所1 | `setupThemeWatcher` は `safeRegister` パターンに適合しない。戻り値（unsubscribe 関数）のキャプチャが必要なため、個別 try-catch で処理する必要がある            |
+| 苦戦箇所2 | `track()` クロージャで成功カウントを自動管理しないと、手動カウント漏れが発生する。成功/失敗を一元管理するクロージャパターンが必須                              |
+| 苦戦箇所3 | `os.homedir()` のパスには正規表現メタ文字（`\`、`.` 等）が含まれる可能性があり、`escapeRegExp` による事前エスケープが必須。未エスケープだと sanitize が誤動作する |
+| 苦戦箇所4 | `unregisterAllIpcHandlers` は変更不要。`ipcMain.removeHandler()` は未登録チャネルでも安全に動作するため、Graceful Degradation の対称修正は不要               |
+| 標準ルール | 戻り値キャプチャが必要なハンドラは `safeRegister` 対象外とし、個別 try-catch で処理する。カウント管理はクロージャで一元化し、手動カウントを禁止する             |
+
+#### 関連未タスク（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 から派生）
+
+| タスクID | 概要 | 優先度 | 指示書パス |
+|---|---|---|---|
+| UT-FIX-AGENT-HANDLERS-VITE-RESOLVE-001 | agentHandlers.test.ts 16テスト失敗（Vite resolvePackageEntry エラー）修正 | 高 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-fix-agent-handlers-vite-resolve.md` |
+| UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
+
+---
 
 ### TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001（2026-03-08完了）
 
@@ -510,6 +612,10 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                  |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.3     | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: Notification IPC に `notification:delete` を追加し、`mark-read` / `delete` の引数名を `notificationId` に統一。058e の個別削除 UI と sender 検証契約を同期 |
+| v1.8.2     | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `file:watch-start` / `file:watch-stop` / `file:changed` の workspace file watch API を追加し、selected file 単位の watch 契約と cleanup 条件を明文化 |
+| v1.8.1     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 追補: 完了タスク節へ「Graceful Degradation 実装パターン詳細」（型定義・内部ヘルパー関数・ハンドラグループ登録パターン）と「実装時の苦戦箇所と再発防止」を追加 |
+| v1.8.0     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: `registerAllIpcHandlers` の Graceful Degradation（`safeRegister` + `IpcHandlerRegistrationResult` 戻り値）を実装状況テーブル・関連タスク・完了タスクへ追加 |
 | v1.7.0     | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 仕様拡充: `apiKey:list` レスポンス詳細（IPCResponse/ProviderStatus 構造）、Main側バリデーション（GAP-05）、Renderer側 normalizeProviders（P49準拠）を追記。完了タスク日付を 2026-03-08 に更新 |
 | v1.6.1     | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: `apiKey:list` 戻り値を `IPCResponse<ProviderListResult>` へ更新し、Main/Renderer 双方の providers 形状防御と画面証跡（TC-11-01..03）を完了タスクへ同期                                  |
 | v1.6.0     | 2026-03-07 | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001 反映: Renderer側 Response Shape Fallback パターン（3段階防御）を追加。ApiKeysSection loadProviders での適用を明文化                                                               |

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T01:24:42.494Z",
-  "totalKeywords": 1567,
+  "generated": "2026-03-11T05:12:36.334Z",
+  "totalKeywords": 1569,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -850,6 +850,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
+      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -3484,6 +3485,12 @@
     "基盤移行": [
       "lessons-learned.md"
     ],
+    "CENTER": [
+      "lessons-learned.md"
+    ],
+    "NotificationCenter": [
+      "lessons-learned.md"
+    ],
     "KEY": [
       "lessons-learned.md"
     ],
@@ -3545,9 +3552,6 @@
       "lessons-learned.md"
     ],
     "連続是正": [
-      "lessons-learned.md"
-    ],
-    "CENTER": [
       "lessons-learned.md"
     ],
     "ADVANCED": [
@@ -4762,6 +4766,9 @@
       "security-electron-ipc.md"
     ],
     "historyAPI": [
+      "security-electron-ipc.md"
+    ],
+    "notificationAPI": [
       "security-electron-ipc.md"
     ],
     "slideSettingsAPI": [

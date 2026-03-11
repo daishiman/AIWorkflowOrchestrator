@@ -290,8 +290,9 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | チャネル                     | メソッド | 引数                                  | 戻り値                           | 備考             |
 | ---------------------------- | -------- | ------------------------------------- | -------------------------------- | ---------------- |
 | `notification:get-history`   | invoke   | `{ limit?: number, offset?: number }` | `NotificationGetHistoryResponse` | sender検証必須   |
-| `notification:mark-read`     | invoke   | `{ id: string }`                      | `NotificationMutationResponse`   | 認証必須         |
+| `notification:mark-read`     | invoke   | `{ notificationId: string }`          | `NotificationMutationResponse`   | 認証必須         |
 | `notification:mark-all-read` | invoke   | なし                                  | `NotificationMutationResponse`   | 認証必須         |
+| `notification:delete`        | invoke   | `{ notificationId: string }`          | `NotificationMutationResponse`   | 認証必須         |
 | `notification:clear`         | invoke   | `{ onlyRead?: boolean }`              | `NotificationMutationResponse`   | 認証必須         |
 | `notification:new`           | on       | `NotificationHistoryItem`             | event                            | Main -> Renderer |
 | `history:search`             | invoke   | `HistorySearchRequest`                | `HistorySearchResponse`          | `query` は空文字許容、trim 正規化 |
@@ -302,8 +303,8 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | 項目       | 契約                                                                            |
 | ---------- | ------------------------------------------------------------------------------- |
 | sender検証 | `event.sender === mainWindow.webContents` かつ URL を検証                       |
-| 更新系認証 | `notification:mark-read` / `mark-all-read` / `clear` は未認証時 `AUTH_REQUIRED` |
-| 入力検証   | `notification id` と `history query/filter/limit/offset` を検証                 |
+| 更新系認証 | `notification:mark-read` / `mark-all-read` / `delete` / `clear` は未認証時 `AUTH_REQUIRED` |
+| 入力検証   | `notificationId` と `history query/filter/limit/offset` を検証                  |
 | 公開境界   | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` に明示登録                    |
 
 ### HistorySearch handler detail（TASK-UI-06 追補）
@@ -611,6 +612,7 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                  |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.3     | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: Notification IPC に `notification:delete` を追加し、`mark-read` / `delete` の引数名を `notificationId` に統一。058e の個別削除 UI と sender 検証契約を同期 |
 | v1.8.2     | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `file:watch-start` / `file:watch-stop` / `file:changed` の workspace file watch API を追加し、selected file 単位の watch 契約と cleanup 条件を明文化 |
 | v1.8.1     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 追補: 完了タスク節へ「Graceful Degradation 実装パターン詳細」（型定義・内部ヘルパー関数・ハンドラグループ登録パターン）と「実装時の苦戦箇所と再発防止」を追加 |
 | v1.8.0     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: `registerAllIpcHandlers` の Graceful Degradation（`safeRegister` + `IpcHandlerRegistrationResult` 戻り値）を実装状況テーブル・関連タスク・完了タスクへ追加 |

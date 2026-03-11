@@ -14,6 +14,10 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
+| v1.7.2 | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `workspace` ViewType 内で `chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを持つこと、1024/1440 breakpoint、mobile overlay、preview dedicated harness による screenshot 検証を追記 |
+| v1.7.1 | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `settings` は AuthGuard bypass だけでなく未認証 reset 対象外であることを明文化し、Phase 11 screenshot 4件を証跡として同期 |
+| v1.7.0 | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: Settings 画面は AuthGuard 外からアクセス可能に変更。currentView === "settings" の場合、App.tsx で AuthGuard をバイパスして直接レンダリングする設計を追記 |
 | v1.6.4 | 2026-03-06 | TASK-UI-02 移管反映。Global Navigation Core の workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスクの配置先も completed workflow 配下へ統一 |
 | v1.6.3 | 2026-03-06 | TASK-UI-02 派生未タスクを追補。domain UI spec 同期ガードと workflow 本文 stale ガードを `関連未タスク` として登録し、Global Navigation 改修後の再監査導線を task spec へ接続 |
 | v1.6.2 | 2026-03-06 | TASK-UI-02 追補: 実装時の苦戦箇所（rollback 共存、`mobileLabel`、UI仕様同期漏れ、workflow 本文 stale）と簡潔解決手順を追加し、ナビ変更時は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` の同時同期を明文化 |
@@ -69,6 +73,29 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | Tablet | 左サイド固定、collapsed 56px 固定 |
 | Mobile | 下部固定、primary 5項目 + More 4項目 |
 
+### Header utility actions（TASK-UI-08）
+
+Global navigation とは別に、app header 右端には view 横断の utility action を置く。058e では Bell icon を `NotificationCenter` の入口として追加し、通知を view 遷移なしで確認できるようにした。
+
+| 項目 | 契約 |
+| --- | --- |
+| トリガー | Bell icon button (`data-testid="notification-bell-button"`) |
+| aria-label | `お知らせを開く` |
+| 表示位置 | desktop / tablet / mobile 共通で app header 右端 |
+| 開閉方式 | click で open/close、Escape / outside click / close button でも閉じる |
+| 表示形式 | desktop / tablet は anchored popover、mobile は full-width overlay |
+| 視覚状態 | idle badge / open / expanded / delete reveal / empty state の 5状態を基本とする |
+| 実装参照 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+
+### Header utility 画面証跡（TASK-UI-08）
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-01-desktop-idle-badge.png` | Bell idle badge |
+| TC-11-02 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-02-desktop-popover-open.png` | desktop open |
+| TC-11-04 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-04-tablet-popover-open.png` | tablet open |
+| TC-11-05 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-05-mobile-overlay-open.png` | mobile overlay |
+
 ### ViewType型定義
 
 | ViewType     | 説明                     |
@@ -76,13 +103,40 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | `dashboard`  | ダッシュボード画面       |
 | `workspace`  | ワークスペース画面       |
 | `editor`     | エディター画面           |
+
+### `workspace` ViewType のレイアウト契約（TASK-UI-04A）
+
+| 項目 | 契約 |
+| --- | --- |
+| 初期表示 | `chat-only` |
+| file panel | top toggle で開閉し、1024px 未満では overlay |
+| preview panel | top toggle で開閉し、1024px 未満では overlay |
+| 3-pane | 両 panel open かつ 1440px 以上で有効 |
+| 後続依存 | chat 本体は 04B、preview 本体は 04C が担当 |
 | `chat`       | チャット画面             |
 | `graph`      | グラフ画面               |
 | `agent`      | エージェント画面         |
 | `skillCenter`| スキルセンター画面       |
 | `historySearch` | 履歴検索画面          |
 | `skill-center` | 互換エイリアス（legacy導線） |
-| `settings`   | 設定画面                 |
+| `settings`   | 設定画面（AuthGuard 外 + 未認証 reset 対象外: 認証前でもアクセス可能） |
+
+### Settings 公開シェル到達性（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| shell bypass | `currentView === "settings"` のとき `SettingsView` を AuthGuard 外で描画する |
+| reset exclusion | 未認証時 view reset は `settings` を除外し、設定作業中に dashboard へ戻さない |
+| 導線 | `Cmd/Ctrl+,` と timeout fallback の `設定画面へ` の両方で到達可能 |
+
+### 画面証跡
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` | ライトテーマ fallback |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` | ダークテーマ fallback |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` | timeout -> settings |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` | 未認証 settings shell |
 
 ### navItems配列構造
 

@@ -33,6 +33,39 @@
 - ステータス: success
 
 ---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-08-NOTIFICATION-CENTER`
+- 目的: Bell utility action / Portal / Phase 11 coverage validator の観点で system spec の同期漏れを埋める
+
+### 実施内容
+- `references/ui-ux-components.md` / `references/ui-ux-navigation.md` / `references/ui-ux-portal-patterns.md` に NotificationCenter の探索入口を追加
+- `references/lessons-learned.md` に Phase 11 validator drift と destructive affordance screenshot の教訓を追加
+- `references/task-workflow.md` の変更履歴に再監査追補を追加し、screenshot 7件と追加成果物 3件を同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 12 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-08-NOTIFICATION-CENTER`
+- 目的: 058e の NotificationCenter 再整備（UI / Store / IPC / Phase 11 証跡）を system spec 正本へ同期する
+
+### 実施内容
+- `references/api-endpoints.md` / `references/api-ipc-system.md` に `notification:delete` と `notificationId` 契約を追加
+- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/security-electron-ipc.md` に 058e の `お知らせ` UI、Portal、dedupe、delete security を追記
+- `references/task-workflow.md` に TASK-UI-08 完了台帳と変更履歴を追加
+- `scripts/generate-index.js` を実行し、topic-map / keywords を再生成する
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
 
 ### コンテキスト

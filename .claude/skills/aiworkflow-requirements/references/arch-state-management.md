@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
 | v3.14.3    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
 | v3.14.2    | 2026-03-10 | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`historySearchSlice` の `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe 契約、`EditorSlice.pendingOpenFilePath` による file deep-open、timeline grouping / sentinel loading 分離、task-scope coverage 88.42 / 80.00 / 90.00 を追記 |
 | v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
@@ -151,6 +152,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
 | TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
+| TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | **完了**（2026-03-11） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
 
 ---
@@ -205,6 +207,16 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | 削除戦略 | 上限超過時は既読最古を優先削除。既読が無い場合は未読最古を削除 |
 | 既読管理 | `readAt: string | null` |
 | 永続化 | `persist.partialize` で `notifications` を保持 |
+
+### Notification 058e 追補（TASK-UI-08-NOTIFICATION-CENTER）
+
+| 項目 | 内容 |
+| --- | --- |
+| 履歴同期 | `setNotificationHistory()` は ID 単位で dedupe し、timestamp 降順へ正規化する |
+| push 取り込み | `ingestNotification()` は既存 ID を置換して二重表示を防ぐ |
+| 個別削除 | `deleteNotification()` は対象通知を除去し、展開中だった場合は `expandedNotificationId = null` に戻す |
+| UI state | `isPopoverOpen` と `expandedNotificationId` を局所 state と切り分けず slice で保持する |
+| 互換 API | `clearAllNotifications()` は Store/互換用途に残すが、058e UI では `すべて削除` を表示しない |
 
 ### HistorySearch 契約
 
