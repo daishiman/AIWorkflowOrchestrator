@@ -248,6 +248,16 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | `encouraging` | `var(--status-info)` | `var(--bg-secondary)` | 前向きに促す |
 | `celebrating` | `var(--status-success)` | `var(--bg-secondary)` | 達成を祝う |
 
+### Workspace QuickFileSearch dialog トークン（TASK-UI-04C）
+
+| トークン / 値 | 用途 | 意図 |
+| --- | --- | --- |
+| `width: 480px` | desktop dialog width | 候補一覧を 10 件出しても視線移動を増やしすぎない |
+| `border-radius: 12px` | dialog radius | preview panel 系と同系統の角丸で統一感を保つ |
+| `box-shadow: 0 8px 32px rgba(0,0,0,0.12)` | dialog shadow | 浮遊感は出すが、preview 本体より主張しすぎない |
+| scrim + centered sheet | mobile / narrow viewport | overlay close を自然に理解できる層構造を保つ |
+| muted path text + bold filename | result row hierarchy | fileName を主、relativePath を従にして探索速度を上げる |
+
 ---
 
 ## 完了タスク
@@ -258,6 +268,7 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | TASK-UI-00-TOKENS | デザイントークンCSS変数 Apple HIG準拠 light/dark テーマ定義 | 2026-02-22 | tokens.css に `[data-theme="light"]`/`[data-theme="dark"]` セレクタでApple HIG System Colors準拠のカラー定義を追加。マイクロインタラクション変数（ease-bounce/ease-anticipate/scale-hover/scale-active/scale-bounce）、キーフレームアニメーション（success-bounce/error-shake）、renderWithThemeテストヘルパーを作成。28テスト全PASS、カバレッジ100% |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント7種でデザイントークン適用 | 2026-02-23 | 全コンポーネントでCSS変数（`var(--status-primary)`等）を使用、ハードコードカラー0件。EmptyState mood機能でSemanticトークン参照 |
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 2026-02-25 | `ThemeMode` を4モードへ拡張し、settingsSlice / ThemeSelector / IPC（`theme:get-system`, `theme:system-changed`）でテーマ即時反映・OS追従・永続化を実装。Phase 1-12成果物を `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/` に出力 |
+| TASK-UI-04C-WORKSPACE-PREVIEW | Workspace preview quick search dialog | 2026-03-11 | quick search dialog の modal token（480px / 12px / shadow）と result hierarchy を固定し、preview panel と同系統の密度で統一 |
 
 #### TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 実装内容（2026-03-11）
 
@@ -339,6 +350,7 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.8 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` トークンを追加し、480px幅 / 12px radius / 0 8px 32px rgba(0,0,0,0.12) / mobile scrim / filename-path hierarchy を固定 |
 | 1.5.7 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。white background / black text 基準、renderer-wide compatibility bridge、primitive token 移行、shard 11 再現、screenshot 再取得を design system 正本へ同期した |
 | 1.5.6 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。light theme token 実装値（`bg/text/border/accent`）と完了タスクを追記し、follow-up 2件の正本導線を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` へ統一した |
 | 1.5.3 | 2026-02-25 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 を関連タスクへ追加。UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所（状態責務混在/Hook依存不安定/Phase 12証跡同期）を再発防止タスクとして管理開始 |

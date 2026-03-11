@@ -546,6 +546,58 @@
 | `cd apps/desktop && pnpm exec eslint src/renderer/views/WorkspaceView src/main/ipc/fileHandlers.ts src/main/ipc/fileHandlers.test.ts` | PASS |
 | `pnpm build` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
+
+### タスク: TASK-UI-04C-WORKSPACE-PREVIEW Workspace preview / quick search（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-04C-WORKSPACE-PREVIEW |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | P2 |
+| 完了日 | 2026-03-11 |
+| 対象 | `WorkspaceView` の `PreviewPanel`、`QuickFileSearch`、renderer timeout / retry、Phase 11 current build screenshot |
+| 成果物 | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/outputs/` |
+
+#### 実施内容
+
+- `PreviewPanel` / `PreviewToolbar` / `SourceView` / `PreviewErrorBoundary` を追加し、`Source` / `Preview` 切替、structured preview、image preview を実装
+- `QuickFileSearch` と `useQuickFileSearch` を追加し、`Cmd/Ctrl+P`、ArrowUp / ArrowDown / Enter / Escape、top 10 fuzzy result を実装
+- `file:read` を `Promise.race` で 5秒 timeout 化し、1秒間隔で最大3回 retry する renderer 側 resilience を追加
+- JSON/YAML parse error は alert banner + source fallback、render crash は error boundary reset で回復可能にした
+- task scope 13 files / 52 tests PASS、coverage `89.47 / 79.43 / 93.87 / 89.47`、Phase 11 screenshot 11件を current build static serve で取得した
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| fuzzy search の score 補正で非一致候補が残る | subsequence 0 のケースにも boost を加える | `score > 0` 条件を明示し、no match を空配列へ戻した |
+| `file:read` hang が preview loading を解除しない | renderer timeout を持たず Main 応答だけを待つ | `Promise.race` + retry を renderer 層に閉じた |
+| structured preview parse error が fatal 扱いになる | parse failure と transport failure を同じ error surface に載せる | banner と source fallback を分離した |
+
+#### 同種課題の5分解決カード
+
+1. fuzzy search は「一致判定」と「順位補正」を別関数として確認する。
+2. preview 系 `invoke` には renderer timeout と retry を先に設計する。
+3. parse error は fatal ではなく recoverable fallback にできるか確認する。
+4. Phase 11 は current build source を固定し、desktop / dialog / mobile を再撮影する。
+5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+
+#### 関連未タスク
+
+| タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview / search で露出した fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/WorkspaceView.test.tsx src/renderer/views/WorkspaceView/__tests__/PreviewPanel.test.tsx src/renderer/views/WorkspaceView/__tests__/PreviewErrorBoundary.test.tsx src/renderer/views/WorkspaceView/hooks/__tests__/useQuickFileSearch.test.ts` | PASS（13 files / 52 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop build` | PASS |
+| `pnpm --filter @repo/desktop run screenshot:task-059b` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch` | PASS |
 ### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
 
 | 項目 | 値 |
@@ -1038,6 +1090,34 @@
 | 完了済みガード | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC 証跡同期の運用ガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
+
+### タスク: TASK-SKILL-LIFECYCLE-03 Skill Creator 表導線化と作成・実行・改善統合（2026-03-11）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-03 |
+| 完了日 | 2026-03-11 |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
+| 対象 | `SkillLifecyclePanel`, `SkillManagementPanel`, `skillCreatorAPI.detectMode/improveSkill` の統合 |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/` |
+
+#### 仕様書別SubAgent分担（関心ごと分離）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | lifecycle surface と internal role の契約同期 | `skillCreatorAPI` の位置づけが明文化される |
+| SubAgent-B | `api-ipc-agent.md` / `security-skill-execution.md` | IPC 使用境界と権限境界の同期 | `detectMode/improve` と `create/execute` の責務差が文書化される |
+| SubAgent-C | `outputs/phase-4` - `outputs/phase-10` | テスト、coverage、QA、最終 gate の証跡化 | Task03 scope の 68 tests + coverage が記録される |
+| SubAgent-D | `outputs/phase-11/*` / `outputs/phase-12/*` | screenshot、Apple UI/UX 観点レビュー、spec sync | screenshot 4 件と実装ガイドが揃う |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | PASS（47 tests） |
+| `CI=true VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --coverage.enabled true --coverage.reporter=json-summary --coverage.reportsDirectory coverage-task-skill-lifecycle-scoped --coverage.include=src/renderer/components/skill/SkillLifecyclePanel.tsx --coverage.include=src/renderer/components/skill/SkillManagementPanel.tsx --coverage.include=src/renderer/components/chat/ChatPanel.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx` | PASS（68 tests, scoped total 92.34 / 83.78 / 82.51） |
+| `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
+| `node apps/desktop/scripts/capture-task-skill-lifecycle-task03-phase11.mjs` | PASS（TC-11-01..04 screenshot 取得） |
 
 #### 実装時の苦戦箇所（TASK-10A-F）
 
@@ -3948,6 +4028,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -4379,6 +4460,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.53** | **2026-03-11** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を登録**: TASK-UI-04C の苦戦箇所 3件（fuzzy no-match、renderer timeout+retry、parse/transport 分離）を共通ガード未タスクへ formalize し、04C 完了節の関連未タスクと残課題テーブルへ同一 ID で同期。`outputs/phase-12` の Step 1-C も 0件→1件へ再整合した |
+| **1.67.52** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW を同期**: `PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / structured fallback / Phase 11 screenshot 11件 / 52 tests PASS を完了台帳へ追加し、新規未タスク0件・workflow / outputs / system spec / LOGS / SKILL 同時更新を記録 |
 | **1.67.51** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT を同期**: `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context）、targeted tests 14件 PASS、typecheck PASS、Phase 11 screenshot 8件（Apple UI/UX 観点）を完了台帳へ追加。あわせて stream chunk/end race 修正、`implementation-guide` 要件充足、`phase-11-manual-test.md` 画面カバレッジマトリクス追補、`lessons-learned` / LOGS / SKILL の同一ターン同期を記録 |
 | **1.67.50** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映**: 完了台帳へ light token foundation の実装内容、Phase 11 screenshot 5件、contract test、follow-up 2件の正本導線 `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` を追加し、親 workflow 完了後の backlog 配置ルールを明文化 |
 | **1.67.49** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を同期**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の related task row を完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新。完了済み未タスクと実行workflowの配置整合を同一ターンで是正 |

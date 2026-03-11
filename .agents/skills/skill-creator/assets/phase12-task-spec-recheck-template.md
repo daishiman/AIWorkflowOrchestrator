@@ -25,7 +25,7 @@
 | SubAgent | 関心ごと | 主担当 | 完了条件 |
 | --- | --- | --- | --- |
 | SubAgent-A | workflow状態 | `phase-12-documentation.md` と `outputs/phase-12/` の実体突合 | `completed` / Task 12-1〜12-5 / Task進捗100% が一致 |
-| SubAgent-B | 実装ガイド品質 | `implementation-guide.md` の必須要素確認 | `Part 1 / Part 2`、理由先行、日常例え、型/API/エッジケース/設定が揃う |
+| SubAgent-B | 実装ガイド品質 | `implementation-guide.md` の必須要素確認 | `Part 1 / Part 2`、理由先行、日常例え（`たとえば` 明示）、型/API/エッジケース/設定が揃う |
 | SubAgent-C | 未タスク整合 | 物理配置、10見出し、links/audit 確認 | `docs/30-workflows/unassigned-task/` 配置 + `currentViolations=0` |
 | SubAgent-D | system spec同期 | `task-workflow.md` / `lessons-learned.md` へ実装内容と苦戦箇所を転記 | 検証値と5分解決カードが同値で同期 |
 | SubAgent-E | 成果物同期 | `spec-update-summary` / `phase12-compliance-recheck` / `unassigned-task-detection` へ実測値を同期 | system spec と outputs の値が一致 |
@@ -47,7 +47,7 @@
 - [ ] `## Part 1` がある
 - [ ] `## Part 2` がある
 - [ ] 理由先行 (`なぜ` / `必要`) がある
-- [ ] 日常例えがある
+- [ ] 日常例え（`たとえば` / `例え`）がある
 - [ ] 型 (`type` / `interface`) がある
 - [ ] 論理 API がある
 - [ ] エッジケースがある
@@ -69,6 +69,7 @@
 - [ ] `lessons-learned.md` に再発条件付き苦戦箇所と簡潔解決手順がある
 - [ ] `spec-update-summary.md` / `phase12-compliance-recheck.md` / `unassigned-task-detection.md` に system spec と同じ実測値がある
 - [ ] `phase12-task-spec-compliance-check.md` が root evidence として同じ値を持つ
+- [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` がある
 
 ---
 
@@ -80,7 +81,8 @@ node .agents/skills/task-specification-creator/scripts/validate-phase-output.js 
 node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 rg -n '^\| ステータス \| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \[x\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
-rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md
+rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md
+rg -n '^## 画面カバレッジマトリクス$' <workflow-path>/phase-11-manual-test.md
 node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
@@ -123,9 +125,11 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 - [ ] 4点突合の担当 SubAgent が定義されている
 - [ ] `phase-12-documentation.md` と `outputs/phase-12` の実体が一致している
 - [ ] `implementation-guide.md` の必須要素が確認済み
+- [ ] Part 1 の日常例えが `たとえば` を含んでいる
 - [ ] 未タスクの個別合否に `audit --diff-from HEAD --target-file` を使っている
 - [ ] repo 全体 `audit --json` を参考値として分離記録している
 - [ ] `current=0` でも baseline backlog と既存 remediation task の参照を省略していない
 - [ ] `task-workflow.md` / `lessons-learned.md` / `outputs/phase-12` の値が一致している
 - [ ] `documentation-changelog.md` に今回の改善対象ファイルが列挙されている
 - [ ] `skill-feedback-report.md` にテンプレート改善内容が記録されている
+- [ ] UIタスクでは `## 画面カバレッジマトリクス` 見出しを固定している

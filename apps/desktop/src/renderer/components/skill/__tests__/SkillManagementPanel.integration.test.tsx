@@ -149,6 +149,7 @@ vi.mock("@/renderer/store", () => {
 
 let capturedAnalysisProps: Record<string, unknown> = {};
 let capturedCreateWizardProps: Record<string, unknown> = {};
+let capturedLifecycleProps: Record<string, unknown> = {};
 
 vi.mock("../SkillEditor", () => ({
   SkillEditor: ({
@@ -202,12 +203,35 @@ vi.mock("../SkillCreateWizard", () => ({
   ),
 }));
 
+vi.mock("../SkillLifecyclePanel", () => ({
+  SkillLifecyclePanel: (props: Record<string, unknown>) => {
+    capturedLifecycleProps = props;
+    return (
+      <div data-testid="mock-skill-lifecycle-panel">
+        <button
+          data-testid="lifecycle-close"
+          onClick={props.onClose as () => void}
+        >
+          閉じる
+        </button>
+        <button
+          data-testid="lifecycle-open-wizard"
+          onClick={props.onOpenWizard as () => void}
+        >
+          詳細ウィザード
+        </button>
+      </div>
+    );
+  },
+}));
+
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
 beforeEach(() => {
   vi.clearAllMocks();
   capturedAnalysisProps = {};
   capturedCreateWizardProps = {};
+  capturedLifecycleProps = {};
   currentStoreState = {
     ...defaultStoreState,
     availableSkillsMetadata: [...defaultAvailableSkills],
@@ -249,7 +273,7 @@ describe("SkillManagementPanel integration", () => {
     render(<SkillManagementPanel />);
 
     await act(async () => {
-      fireEvent.click(screen.getByText("新規作成"));
+      fireEvent.click(screen.getByTestId("skill-management-create-button"));
     });
 
     expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();
@@ -263,6 +287,28 @@ describe("SkillManagementPanel integration", () => {
     });
 
     expect(screen.queryByTestId("mock-skill-create-wizard")).toBeNull();
+    expect(screen.getByTestId("skill-management-panel")).toBeDefined();
+  });
+
+  it("lifecycle view に遷移し、onClose で list view に戻る", async () => {
+    render(<SkillManagementPanel />);
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-management-lifecycle-button"));
+    });
+
+    expect(screen.getByTestId("mock-skill-lifecycle-panel")).toBeDefined();
+    expect(
+      screen.getByTestId("skill-management-panel-lifecycle-view"),
+    ).toBeDefined();
+    expect(typeof capturedLifecycleProps.onClose).toBe("function");
+    expect(typeof capturedLifecycleProps.onOpenWizard).toBe("function");
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("lifecycle-close"));
+    });
+
+    expect(screen.queryByTestId("mock-skill-lifecycle-panel")).toBeNull();
     expect(screen.getByTestId("skill-management-panel")).toBeDefined();
   });
 

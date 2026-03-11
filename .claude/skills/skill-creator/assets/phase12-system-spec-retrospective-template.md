@@ -18,6 +18,9 @@
 > - `references/lessons-learned.md`（再発防止知見）
 > - `references/<ui-domain-spec>.md`（必要時。例: `ui-ux-navigation.md` のようなドメイン固有 UI 正本）
 > - `references/ui-ux-design-system.md`（token / theme / contrast 所見がある場合）
+> - `references/ui-ux-search-panel.md`（shortcut / focus trap / ranking / no-match 契約がある場合）
+> - `references/error-handling.md`（recoverable / fatal error surface を追加した場合）
+> - `references/architecture-implementation-patterns.md`（renderer local timeout+retry / parse fallback を標準化した場合）
 
 ---
 
@@ -69,7 +72,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
 | --- | --- | --- | --- |
-| G+ | `references/<ui-domain-spec>.md` | ドメイン固有UI正本（例: `ui-ux-navigation.md`）へ実装内容・苦戦箇所・再利用手順を同期 | A/B/C/D完了後、E/Fと同一ターン |
+| G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-design-system.md` / `references/error-handling.md` / `references/architecture-implementation-patterns.md` | ドメイン固有 UI 正本または preview/search cross-cutting 正本へ実装内容・苦戦箇所・再利用手順を同期 | A/B/C/D完了後、E/Fと同一ターン |
 
 再確認タスクでは次の分担に置き換えてよい:
 - `A: task-workflow`
@@ -123,6 +126,9 @@ UI機能実装の場合は次を推奨:
 - `ui-ux-feature-components.md`（機能仕様・苦戦箇所）
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
 - `ui-ux-design-system.md`（token / contrast / theme 改善がある場合）
+- `ui-ux-search-panel.md`（shortcut / focus trap / ranking / no-match 契約がある場合）
+- `error-handling.md`（timeout / parse / transport error の UI 応答を整理した場合）
+- `architecture-implementation-patterns.md`（renderer local resilience を標準化した場合）
 - `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 - `ui-ux-navigation.md` などのドメイン固有 UI 正本（存在する場合）
 
@@ -135,6 +141,9 @@ UI機能実装の場合は次を推奨:
 | 専用型、adapter helper、harness、責務境界 | `arch-ui-components.md` | 構造上の判断理由を残せる |
 | selector / store / reset 条件 | `arch-state-management.md` | 状態責務の正本に集約できる |
 | token / contrast / theme 所見 | `ui-ux-design-system.md` | component 修正と token 改善を分離できる |
+| shortcut / focus trap / ranking / no-match | `ui-ux-search-panel.md` | quick search / search dialog の挙動を検索仕様へ再利用可能な形で集約できる |
+| renderer timeout / retry / parse fallback | `architecture-implementation-patterns.md` | UI実装で閉じた resilience pattern を他画面へ転用できる |
+| retryable / fatal / recoverable error surface | `error-handling.md` | parse/read/timeout の UI 応答を共通の error contract に寄せられる |
 | 検証値、残課題、完了記録 | `task-workflow.md` | 台帳として追跡できる |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | 次回の短時間解決に直結する |
 
@@ -273,6 +282,7 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
 - [ ] UIタスクでは `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を残し、一覧specから再利用ポイントを辿れるようにする
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）が存在する場合、基本6仕様書に加えて同一ターンで更新している
+- [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の cross-cutting 4仕様書について要否判定を記録し、該当時は同一ターンで更新している
 - [ ] 公開ビュー bypass を実装した場合、shell 公開だけでなく state reset 除外条件と nav 到達性も同一ターンで記録している
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている

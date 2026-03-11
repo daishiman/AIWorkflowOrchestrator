@@ -203,6 +203,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-UI-00-ORGANISMS | Organisms共通コンポーネント実装（CardGrid / MasterDetailLayout / SearchFilterList + 41テスト） | 2026-03-04 |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・UX語彙具体例・Task5B境界の監査是正 + 検証スクリプト/テスト追加 + Phase11再検証 + Phase12再確認） | 2026-03-05 |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout + feature flag 移行） | 2026-03-06 |
+| TASK-UI-04C | Workspace Preview / Quick Search（PreviewPanel / SourceView / QuickFileSearch + screenshot 11件） | 2026-03-11 |
 | TASK-UI-07 | DashboardView ホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline + screenshot harness） | 2026-03-11 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
 | TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
@@ -211,6 +212,28 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
 | TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、136テスト） | 2026-03-10 |
 | TASK-UI-08 | NotificationCenter（Bell utility action / Portal / relative time / delete reveal / screenshot 7件） | 2026-03-11 |
+
+---
+
+## TASK-UI-04C 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-04C-WORKSPACE-PREVIEW | Workspace PreviewPanel / QuickFileSearch | completed（実装・テスト・画面検証・Phase 12 同期完了） | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
+
+### TASK-UI-04C 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `PreviewPanel` に `Source` / `Preview` 切替、structured preview、image preview、toolbar、error boundary を追加し、`QuickFileSearch` を `Cmd/Ctrl+P` dialog として実装した |
+| 状態管理 | 04A の `workspaceSlice` / `fileSelectionSlice` を再利用し、preview loading/error と quick search query は local state に閉じた |
+| IPC | 新規 channel は追加せず、`file:read` と `file:changed` の再利用で preview 更新を実現した |
+| 画面検証 | Phase 11 で screenshot 11件を current build static serve から取得し、Apple UI/UX 観点で `PASS` と判定した |
+| 苦戦箇所1 | fuzzy search は一致判定と順位補正を混在させると false positive を生みやすい |
+| 苦戦箇所2 | file read hang を Main 契約変更で解決しようとすると影響範囲が広いため、Renderer timeout / retry で閉じる方が安全だった |
+| 苦戦箇所3 | JSON/YAML parse error を fatal error にすると preview UX が途切れるため、recoverable fallback に切り分ける必要があった |
+| 仕様同期 | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `api-ipc-system` / `security-electron-ipc` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
+| 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-04C 節 |
 
 ---
 
@@ -446,6 +469,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.16.6  | 2026-03-11 | TASK-UI-04C 完了反映: `TASK-UI-04C 実装完了記録` を追加し、`PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / current build screenshot 11件 / Apple UI/UX review を UI カタログ正本へ同期 |
 | 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
 | 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |
 | 2.16.3  | 2026-03-11 | TASK-UI-08 再監査反映: Organisms / 主要UI / 完了タスクへ `NotificationCenter` を追加し、Bell utility action・Portal・delete reveal・Phase 11 screenshot 7件を TASK-UI-08 完了記録として同期 |

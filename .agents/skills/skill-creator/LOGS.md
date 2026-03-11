@@ -3,6 +3,84 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「workspace preview/search は cross-cutting spec を追加同期する」成功/失敗パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-search-panel` / `ui-ux-design-system` / `error-handling` / `architecture-implementation-patterns` の要否判定マトリクスと完了チェックを追加
+  - `references/resource-map.md` のテンプレート説明も更新し、PreviewPanel / QuickFileSearch 系タスクで読むべき template capability を入口から辿れるようにした
+
+---
+## 2026-03-11 - TASK-UI-04C の Phase 12 本文 stale 防止パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: pattern-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` の「更新予定のみ残置を排除し、実更新ログへ昇格する」パターンに、completed workflow の `phase-12-documentation.md` 本文監査を追加
+  - `仕様策定のみ` / `実行予定` / `保留として記録` を `phase-12-documentation.md` から除去し、完了条件と `Task 100% 実行確認` を `[x]` へ同期するルールを標準化
+  - task-specification-creator 側 checklist / patterns と整合する meta-skill の再利用知見として固定
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 validator厳密化パターン反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「implementation-guide と coverage matrix の validator 文字列を固定する」成功パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `たとえば` / `## 画面カバレッジマトリクス` の機械確認コマンドと完了チェックを追加
+  - `assets/phase12-task-spec-recheck-template.md` へ同条件（Part 1 キーワード明示 + H2見出し固定）を反映し、再監査の取りこぼしを削減
+
+---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「Light Mode 全画面 white/black 基準 + compatibility bridge 固定」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に renderer-wide hardcoded neutral class 監査、desktop shard 再現、screenshot 再取得後の coverage validator 記録を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に Light Mode 専用 `SubAgent-L1..L4` を追加し、design-system / components / task-workflow / lessons の関心分離をテンプレート化した
+
+---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog ルール反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-spec-sync-subagent-template.md` に active / completed workflow で異なる unassigned 正本配置ルールを追加
+  - `audit-unassigned-tasks` の `--unassigned-dir` + `--target-file` を併用する検証コマンドを追記
+  - 親 workflow を `completed-tasks/` へ移した後も、child backlog の参照先が root `unassigned-task/` と混線しない完了条件へ整理
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 パターン/テンプレート同期
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に APIキー連動 + チャット経路整合マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に同課題向け SubAgent プロファイル（A〜F）を追加
+  - `references/patterns.md` に成功/失敗パターン「APIキー連動3点セット同期（source + llm同期 + cache clear）」を追加
+  - `SKILL.md` 変更履歴を APIKEY 系で同期
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 再確認パターン追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の `APIキー連動3点セット同期` に、Phase 12 再監査時の4検証セット（verify/validate/screenshot coverage）を追記
+  - 未タスク監査の合否判定を `currentViolations` 固定、`baselineViolations` を legacy 監視として分離記録する運用を追加
+  - 再確認時の誤判定（baselineを今回差分FAILと誤認）を防ぐ導線を強化
+
+---
 ## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成ルールを skill-creator へ追補
 
 - **Agent**: skill-creator (update)

@@ -83,6 +83,24 @@
 
 ---
 
+## Skill Lifecycle 向け internal orchestration（TASK-SKILL-LIFECYCLE-03）
+
+Task03 の lifecycle 統合では、表向きの会話導線は 1 つに保ちつつ、内部で役割だけを分離する。
+
+| internal role | 主責務 | 実体 | ユーザー露出 |
+| --- | --- | --- | --- |
+| Planner Agent | request の方針整理 | `skillCreator.detectMode` | mode label と説明のみ |
+| Executor Agent | 生成済み skill の実行 | `useExecuteSkill()` / `skill:execute` | 既存 execute ボタン 1 つ |
+| Improver Agent | 改善候補整理 | `skillCreator.improveSkill` | suggestion card と analysis toggle |
+
+### 運用ルール
+
+1. internal role は UI の新しい操作要素にしない。
+2. role 分離は session log と artifacts で説明し、ユーザー操作は最小化する。
+3. 並列化は `requirements / tests / spec sync` のように関心ごとが独立する範囲でのみ行う。
+
+---
+
 ## ハンドオフプロトコル
 
 | フィールド   | 型       | 説明                     |

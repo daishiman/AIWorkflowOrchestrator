@@ -1953,6 +1953,16 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-04
 - **関連タスク**: 03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001
 
+### [Phase12] preview/search を feature spec のみに閉じて cross-cutting spec を未同期
+
+- **状況**: `ui-ux-feature-components.md` と `task-workflow.md` だけを更新し、`ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` を未同期のまま完了扱いにする
+- **問題**: shortcut、dialog token、error severity、renderer fallback の参照先が分断され、次回の類似タスクで同じ判断をやり直すことになる
+- **原因**: UI基本6+αで十分と誤認し、preview/search 固有の cross-cutting 追加仕様を判定していない
+- **教訓**: preview/search 系 UI は feature spec だけでは閉じない。検索挙動、token、error contract、実装パターンを別仕様へ振り分ける必要がある
+- **対策**: `phase12-system-spec-retrospective-template` と `phase12-spec-sync-subagent-template` に cross-cutting matrix を追加し、該当4仕様書の同一ターン更新を完了条件にする
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
+
 ### [Phase12] Port 5174 競合ログ混在を未記録のまま完了判定
 
 - **状況**: screenshot 再取得は成功したが `Port 5174 is already in use` が同時出力され、警告を未記録のまま完了扱いにしやすい
@@ -2848,6 +2858,8 @@ interface BadgeProps extends Omit<
   - 「更新予定」「実行待ち」記述を残したまま Phase 12 を閉じる
 - **標準ルール**:
   - Phase 12 完了前に `rg -n "仕様策定のみ|実行中|実行待ち|更新が必要" outputs/phase-12` を実行し、残置文言をゼロにする
+  - completed workflow では `phase-12-documentation.md` に対しても `rg -n "仕様策定のみ|実行予定|保留として記録"` を実行し、本文だけ stale な状態を残さない
+  - `phase-12-documentation.md` の完了条件と `Task 100% 実行確認` を `[x]` へ同期し、Phase 13 以外の保留を残さない
   - Task 1〜5 の実施証跡を 1 ファイル（`documentation-changelog.md`）で追跡可能にする
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-10A-E-C
@@ -3273,6 +3285,21 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-UI-04A-WORKSPACE-LAYOUT
 
+### [Phase 12] workspace preview/search は cross-cutting spec を追加同期する（TASK-UI-04C）
+
+- **状況**: `PreviewPanel` / `QuickFileSearch` / renderer local fallback を実装しても、`ui-ux-feature-components.md` だけでは shortcut、dialog token、error surface、resilience pattern の再利用導線が不足する
+- **アプローチ**:
+  1. UI基本6+αに加えて、`ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の要否を最初に判定する
+  2. `Cmd/Ctrl+P`、focus trap、top N、`score=0` 除外のような検索挙動は `ui-ux-search-panel.md` に同期する
+  3. dialog 幅、radius、shadow、filename/path hierarchy は `ui-ux-design-system.md` に同期する
+  4. timeout / read failure / parse failure / renderer crash / no-match の UI 応答は `error-handling.md` に同期する
+  5. renderer timeout+retry、fuzzy 判定分離、structured preview fallback は `architecture-implementation-patterns.md` に同期する
+  6. 上記4仕様書を `ui-ux-components.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` と同一ターンで閉じる
+- **結果**: preview/search 系 UI の実装内容と苦戦箇所が「UI一覧」「機能仕様」「検索パネル」「デザイン」「エラー契約」「再利用パターン」の6導線から辿れる
+- **適用条件**: workspace preview、quick search dialog、renderer local search、recoverable parse fallback を含む UI タスク
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
+
 ### [Phase 12] implementation-guide と coverage matrix の validator 文字列を固定する
 
 - **状況**: `implementation-guide.md` が内容的には正しくても、Part 1 に日常例えのトリガー語が弱いと再監査で判定がぶれる。`phase-11-manual-test.md` も見出しが `### 画面カバレッジマトリクス【...】` のように変形すると、coverage validator が section 抽出できず warning になる
@@ -3285,7 +3312,6 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: UIタスクの Phase 12 再監査、implementation-guide 修正、coverage warning 再発防止
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-UI-04B-WORKSPACE-CHAT
-
 ### [Testing] 3層テストハードニング戦略（TASK-10A-G）
 
 - **状況**: テスト専用タスクでも Phase 12 まで含めると、Layer 1/2/3 の責務が混線しやすい

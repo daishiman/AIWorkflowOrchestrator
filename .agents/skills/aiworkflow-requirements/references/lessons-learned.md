@@ -20,6 +20,15 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
+| 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
+| 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
+| 2026-03-11 | 1.29.74 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。renderer-wide hardcoded neutral drift、desktop shard 11 再現、completed workflow 側 screenshot 再取得を苦戦箇所へ追加し、white/black 基準 + compatibility bridge + shard 再現 + screenshot 再検証の 5 ステップへ再編 |
+| 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
+| 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
+| 2026-03-11 | 1.29.71 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を追加。`cache clear` / Main 同期 / `source` 表示の 3 契約を個別テストの寄せ集めではなく単一回帰マトリクスで guard する改善導線を task-workflow / workflow spec / domain spec へ同期した |
+| 2026-03-11 | 1.29.70 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を追加。スクリーンショット再取得、Phase 12 4検証再実行、未タスク監査の `current=0 / baseline=133` 二層判定を同時に固定し、再確認時の誤判定を防止 |
+| 2026-03-11 | 1.29.69 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の教訓を追加。`ai.chat` と `llm` 選択状態の二重管理ドリフト、APIキー更新後の adapter cache stale、`auth-key:exists` の判定根拠不足を同時解消し、`source` 優先表示 + `llm:set-selected-config` + cache clear の三点セットを標準化 |
 | 2026-03-11 | 1.29.68 | TASK-UI-07 の派生未タスクを追加。`.claude` / `.agents` の dual skill-root drift を `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` として formalize し、canonical root 固定・mirror sync・`diff -qr` 検証を Phase 12 の再利用手順へ昇格 |
 | 2026-03-11 | 1.29.67 | TASK-UI-07-DASHBOARD-ENHANCEMENT の再監査追補。表示名「ホーム」と内部 `dashboard` 契約の境界維持、未実施UTの正本配置是正、UI機能仕様への苦戦箇所固定を追加 |
 | 2026-03-11 | 1.29.66 | TASK-UI-07-DASHBOARD-ENHANCEMENT の教訓を追加。workflow 本文 stale、Phase 11 validator のソース要求、worktree の esbuild 差分を整理し、4ステップ再利用手順を追記 |
@@ -53,6 +62,181 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
+
+#### 苦戦箇所1: stream の chunk/end が同一ティックで届くと assistant 応答が欠落する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `setState` 反映より先に end が確定し、assistant メッセージが空扱いで終わるケースがあった |
+| 再発条件 | stream 更新を state だけで管理し、即時参照用の ref を持たない |
+| 解決策 | `streamContentRef` / `isStreamingRef` を chunk/end 受信時に即時同期し、end 側の判定を ref 基準へ寄せた |
+| 標準ルール | stream UI は「描画 state」と「同期判定 ref」を分離し、chunk/end 競合を先に潰す |
+
+#### 苦戦箇所2: screenshot harness が llm / conversation API を揃えないと streaming 状態を再現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 04A 用 harness を流用すると、04B の stream/mention 状態が再現できず証跡が欠ける |
+| 再発条件 | UI capture script で対象機能の API mock を最低限にしすぎる |
+| 解決策 | `capture-task-059a-workspace-chat-panel-phase11.mjs` に llm/conversation mock を追加し、TC-11-01〜08 を固定した |
+| 標準ルール | Phase 11 の capture script は対象機能の API 境界（file/llm/conversation）を先に棚卸しする |
+
+#### 苦戦箇所3: Phase 12 実装ガイドが Part 1/2 の見出しだけでは validator に通らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `implementation-guide.md` が Part 1/2 構成だけ満たし、型/API/使用例/エッジケース/定数一覧が不足していた |
+| 再発条件 | 「構造あり = 完了」と判断し、内容 validator を後回しにする |
+| 解決策 | Part 2 に TypeScript 型定義、APIシグネチャ、使用例、エラーハンドリング、エッジケース、設定と定数を追記した |
+| 標準ルール | Phase 12 は `validate-phase12-implementation-guide.js` を必ず実行し、2/10 のような部分充足で閉じない |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. stream 実装は chunk/end 競合テストを先に作り、state と ref の責務を分離する。
+2. screenshot harness は対象 UI の API 境界を一覧化してから mock を追加する。
+3. Phase 11 は TC と screenshot path を `phase-11-manual-test.md` に固定する。
+4. Phase 12 は implementation-guide validator を先に実行し、NG項目を埋めてから他仕様を更新する。
+5. `task-workflow` / `lessons-learned` / `LOGS` / `SKILL` を同一ターンで同期する。
+
+### 2026-03-11 TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
+
+#### 苦戦箇所1: token 修正だけでは renderer 全域の light drift を止めきれない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `tokens.css` を white/black 基準へ直しても、renderer 側に残る `text-white` / `bg-gray-*` / `border-white/*` 系 class で一部画面が dark mode 寄りのまま残った |
+| 再発条件 | token 契約だけを修正し、renderer 全域の hardcoded neutral class を棚卸ししない |
+| 解決策 | `globals.css` に compatibility bridge を追加して全画面の暫定整合を先に取り、同時に `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` を token 基準へ移行した |
+| 標準ルール | Light Mode 全画面是正は「token 修正 → renderer 監査 → compatibility bridge → component migration」の順で分離して進める |
+
+#### 苦戦箇所2: desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | GitHub Actions では desktop test の shard 11 だけが失敗していたが、全量 rerun だけでは `DashboardView` の `--accent` drift が埋もれた |
+| 再発条件 | failing shard 番号を local で再現せず、broad rerun だけで当たりを付ける |
+| 解決策 | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、`--accent` を `--accent-primary` へ統一した |
+| 標準ルール | GitHub desktop CI が shard 単位で落ちたら、同じ `--shard=<n>/16` を local 再現の起点にする |
+
+#### 苦戦箇所3: global light remediation 後に screenshot を再取得しないと証跡が stale になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token / primitive / compatibility bridge を変えた後も旧 screenshot を残すと、Apple UI/UX 判断が最新実装を反映しない |
+| 再発条件 | 視覚証跡を「既にあるファイル」で済ませ、再撮影と coverage validator を省く |
+| 解決策 | capture script の workflow root を completed path に直し、5件を再撮影して `validate-phase11-screenshot-coverage` を再実行した |
+| 標準ルール | Light Mode の見た目を変えたら screenshot を撮り直し、coverage validator PASS を同ターンで固定する |
+
+#### 苦戦箇所4: Phase成果物の欠落を放置すると「実装済みだが台帳未完了」の誤判定になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `tokens.css` 実装とテストは完了していたが、`outputs/phase-5..12` が不足し `artifacts/index` と不整合が発生した |
+| 再発条件 | 実装後に workflow outputs の生成を後段へ回し、phase status 更新だけ先に行う |
+| 解決策 | 不足成果物を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` / `phase-*.md` を同ターンで同期した |
+| 標準ルール | 「実装完了」判定前に `outputs` 実体・status・registry の3点を同時確認する |
+
+#### 苦戦箇所5: Phase 11 で `テストケース` と `画面カバレッジマトリクス` を欠くと根拠追跡が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot は存在していても、`phase-11-manual-test.md` 必須節不足で証跡追跡が弱くなった |
+| 再発条件 | `manual-test-result.md` の記録だけを先に作り、仕様書本体の matrix を省略する |
+| 解決策 | `phase-11-manual-test.md` に TC 表と matrix を追記し、`証跡` 列を screenshot ファイル名へ厳密に紐づけた |
+| 標準ルール | Phase 11 は「TC表 + matrix + result証跡列」を 1 セットで作成する |
+
+#### 苦戦箇所6: Phase 12 で `spec_created` と `completed` を混在させると台帳ドリフトが再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-12-documentation.md` に `spec_created` 文言が残ると、実装完了タスクの状態が曖昧になる |
+| 再発条件 | 仕様作成専用テンプレート文言を実装完了タスクへ流用する |
+| 解決策 | Task 12-2 / 完了条件の表現を `completed` に統一し、Step 1-A〜2 の整合を修正した |
+| 標準ルール | 実装完了タスクの Phase 12 では `completed` を唯一の完了状態として使う |
+
+#### 苦戦箇所7: completed workflow へ移管した後の follow-up backlog は正本配置を固定しないと導線がぶれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `light-theme-shared-color-migration/` などの workflow 名だけを参照すると、正式な task spec / issue 追跡先が分離しやすい |
+| 再発条件 | 親 workflow を `completed-tasks/` へ移した後も、root `unassigned-task/` や workflow 名参照だけで運用する |
+| 解決策 | 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で個別 `currentViolations=0` を確認した |
+| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. light token baseline を `#ffffff / #000000` に固定する。
+2. `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` で renderer 全域を監査し、token / bridge / component の責務を分ける。
+3. 全画面共通の drift は `globals.css` の compatibility bridge で先に止め、primitives を token へ寄せる。
+4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
+5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
+
+### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
+
+#### 苦戦箇所1: `ai.chat` の provider/model 解決元が Main と Renderer でずれて実行経路が不安定
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Renderer の選択状態と Main 側 `ai.chat` の参照状態が別管理で、意図しない provider/model に送信される |
+| 再発条件 | `llmSlice` の状態変更を Main 側へ同期しない |
+| 解決策 | `llm:set-selected-config` を追加し、Renderer 選択変更時に Main の選択状態を即時同期 |
+| 標準ルール | 実行経路が Main で決まる機能は、UI 選択状態を専用IPCで同期してから送信する |
+
+#### 苦戦箇所2: APIキー更新後に LLM adapter cache が残留し、古い鍵で呼び出す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `apiKey:save/delete` 成功後も既存 adapter instance が残り、更新鍵が反映されない |
+| 再発条件 | storage 更新だけで cache invalidation を実行しない |
+| 解決策 | `apiKey:save/delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行 |
+| 標準ルール | 認証情報更新は「永続化 + 実行キャッシュ無効化」を1セットで実装する |
+
+#### 苦戦箇所3: `auth-key:exists` が boolean のみで、UI が saved/env-fallback を誤判定しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `exists` だけでは判定根拠が不足し、Settings の状態表示が曖昧になる |
+| 再発条件 | 状態表示に必要な由来情報（保存済み/環境変数）を IPC 契約へ昇格しない |
+| 解決策 | `AuthKeyExistsResponse` に `source`（saved/env-fallback/not-set）を追加し、UI は `source` 優先で表示 |
+| 標準ルール | UI が複数状態を表示する場合、判定根拠フィールドを IPC レスポンスへ含める |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 実行経路（Main）と選択経路（Renderer）を分け、同期チャネルを最初に定義する。
+2. 認証情報更新時は storage 更新と runtime cache clear を同時に実施する。
+3. UI 状態表示に必要な判定根拠を boolean 以外（`source` 等）で契約化する。
+4. Phase 11 で代表状態を screenshot 取得し、`validate-phase11-screenshot-coverage` で証跡整合を固定する。
+
+#### 再確認時の苦戦箇所（2026-03-11）
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所1 | `audit-unassigned-tasks --json` の全体結果（baseline）を、そのまま今回差分のFAILと誤読しやすい |
+| 再発条件 | `current` と `baseline` の判定軸を分離せずに報告する |
+| 解決策 | `audit --diff-from HEAD` を合否判定に固定し、`current=0` と `baseline=133` を別行で記録 |
+| 標準ルール | 未タスク監査は「今回差分合否」と「legacy負債監視」を二層で書く |
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所2 | 既存 screenshot が存在していても、再監査時点の鮮度保証がない |
+| 再発条件 | 画像ファイル実在のみで Phase 11 検証を完了扱いにする |
+| 解決策 | capture スクリプトを再実行し、`validate-phase11-screenshot-coverage` で TC 紐付けを再確認 |
+| 標準ルール | 明示 screenshot 要求時は「再撮影 + coverage validator」を必須セットにする |
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所3 | 仕様同期は完了していても、スキル側改善が履歴化されず再利用導線が弱くなる |
+| 再発条件 | workflow 成果物更新で終了し、`skill-creator` / `task-specification-creator` の更新を後回しにする |
+| 解決策 | system spec と同ターンで各スキルの `LOGS.md` / `SKILL.md` / ガイドを更新 |
+| 標準ルール | Phase 12 再確認は「workflow + system spec + skill docs」の三層を同時同期する |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard し、APIキー連動系の初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` | 完了: 2026-03-11 |
 
 ### 2026-03-11 TASK-SKILL-LIFECYCLE-01
 
@@ -6967,3 +7151,46 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | current build source pinning と Workspace UI 再監査 checklist をスクリプト/運用として共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+## TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11）
+
+### 苦戦箇所: fuzzy search の順位補正が非一致候補まで通す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | subsequence score が 0 でも定数 boost を足すと、query 非一致のファイルが候補に残る |
+| 再発条件 | fuzzy ranking で「一致判定」と「補正計算」を同一式に押し込む |
+| 対処 | `score > 0` を先に判定し、補正は一致済み候補にだけ適用した |
+| 標準ルール | fuzzy search は no-match を空配列で返すテストを必ず持つ |
+
+### 苦戦箇所: preview 用 `file:read` が hang すると loading が固着する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Main 応答待ちだけに依存すると preview が永続 loading のまま戻らない |
+| 再発条件 | renderer 側 timeout を持たず、IPC 契約変更で解決しようとする |
+| 対処 | `Promise.race` で 5秒 timeout、1秒間隔で最大3回 retry を追加した |
+| 標準ルール | preview / inspector 系の invoke は renderer timeout + retry を標準にする |
+
+### 苦戦箇所: structured preview parse error を fatal と同列に扱う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | JSON/YAML の整形失敗だけで preview 全体を error 画面に切り替えると復旧導線が消える |
+| 再発条件 | parse failure と transport failure を同じ error surface へ集約する |
+| 対処 | alert banner を出しつつ `SourceView` fallback を残した |
+| 標準ルール | parse error は recoverable、transport error は fatal という層分離を維持する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. fuzzy search に `no match -> []` と same-score stable sort テストを先に置く。
+2. preview 読み込みは renderer timeout と retry の上限を明示する。
+3. parse error と transport error を別 UI として扱う。
+4. Phase 11 は current build static serve を使い、dialog / mobile / terminology を再確認する。
+5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |

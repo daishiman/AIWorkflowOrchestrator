@@ -21,6 +21,7 @@ import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillCreateWizard } from "./SkillCreateWizard";
 import { SkillEditor } from "./SkillEditor";
 import { SkillImportDialog } from "./SkillImportDialog";
+import { SkillLifecyclePanel } from "./SkillLifecyclePanel";
 
 export const buttonStyles = {
   primary:
@@ -33,7 +34,7 @@ export const buttonStyles = {
     "rounded-md bg-[var(--status-error)] px-3 py-1 text-sm text-[var(--text-inverse)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-error)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]",
 } as const;
 
-type View = "list" | "editor" | "analysis" | "create";
+type View = "list" | "editor" | "analysis" | "create" | "lifecycle";
 
 interface SkillCardProps {
   skill: ImportedSkill;
@@ -445,6 +446,17 @@ export function SkillManagementPanel() {
     );
   }
 
+  if (currentView === "lifecycle") {
+    return (
+      <div data-testid="skill-management-panel-lifecycle-view">
+        <SkillLifecyclePanel
+          onClose={handleBackToList}
+          onOpenWizard={() => setCurrentView("create")}
+        />
+      </div>
+    );
+  }
+
   return (
     <div
       className="flex h-full flex-col p-4"
@@ -466,12 +478,22 @@ export function SkillManagementPanel() {
               : `合計${totalSkillCount}件`}
           </p>
         </div>
-        <button
-          className={`${buttonStyles.primary} min-h-[44px]`}
-          onClick={() => setCurrentView("create")}
-        >
-          新規作成
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            className={`${buttonStyles.primary} min-h-[44px]`}
+            onClick={() => setCurrentView("lifecycle")}
+            data-testid="skill-management-lifecycle-button"
+          >
+            ライフサイクルを開始
+          </button>
+          <button
+            className={`${buttonStyles.secondary} min-h-[44px]`}
+            onClick={() => setCurrentView("create")}
+            data-testid="skill-management-create-button"
+          >
+            詳細ウィザード
+          </button>
+        </div>
       </div>
 
       <div className="mb-4">
@@ -534,9 +556,9 @@ export function SkillManagementPanel() {
           <p>追加済みのスキルも、追加できるスキルもまだありません。</p>
           <button
             className={`mt-4 ${buttonStyles.secondary} min-h-[44px]`}
-            onClick={() => setCurrentView("create")}
+            onClick={() => setCurrentView("lifecycle")}
           >
-            新規作成へ進む
+            ライフサイクルを開始
           </button>
         </div>
       ) : null}

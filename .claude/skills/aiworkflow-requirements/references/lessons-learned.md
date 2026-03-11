@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
+| 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
 | 2026-03-11 | 1.29.74 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。renderer-wide hardcoded neutral drift、desktop shard 11 再現、completed workflow 側 screenshot 再取得を苦戦箇所へ追加し、white/black 基準 + compatibility bridge + shard 再現 + screenshot 再検証の 5 ステップへ再編 |
 | 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
@@ -7149,3 +7151,46 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | current build source pinning と Workspace UI 再監査 checklist をスクリプト/運用として共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+## TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11）
+
+### 苦戦箇所: fuzzy search の順位補正が非一致候補まで通す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | subsequence score が 0 でも定数 boost を足すと、query 非一致のファイルが候補に残る |
+| 再発条件 | fuzzy ranking で「一致判定」と「補正計算」を同一式に押し込む |
+| 対処 | `score > 0` を先に判定し、補正は一致済み候補にだけ適用した |
+| 標準ルール | fuzzy search は no-match を空配列で返すテストを必ず持つ |
+
+### 苦戦箇所: preview 用 `file:read` が hang すると loading が固着する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Main 応答待ちだけに依存すると preview が永続 loading のまま戻らない |
+| 再発条件 | renderer 側 timeout を持たず、IPC 契約変更で解決しようとする |
+| 対処 | `Promise.race` で 5秒 timeout、1秒間隔で最大3回 retry を追加した |
+| 標準ルール | preview / inspector 系の invoke は renderer timeout + retry を標準にする |
+
+### 苦戦箇所: structured preview parse error を fatal と同列に扱う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | JSON/YAML の整形失敗だけで preview 全体を error 画面に切り替えると復旧導線が消える |
+| 再発条件 | parse failure と transport failure を同じ error surface へ集約する |
+| 対処 | alert banner を出しつつ `SourceView` fallback を残した |
+| 標準ルール | parse error は recoverable、transport error は fatal という層分離を維持する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. fuzzy search に `no match -> []` と same-score stable sort テストを先に置く。
+2. preview 読み込みは renderer timeout と retry の上限を明示する。
+3. parse error と transport error を別 UI として扱う。
+4. Phase 11 は current build static serve を使い、dialog / mobile / terminology を再確認する。
+5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |

@@ -396,7 +396,9 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
+- [ ] completed workflow の `phase-12-documentation.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
+- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
@@ -555,6 +557,7 @@ done
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
+| 2026-03-11 | TASK-UI-04C follow-up を反映し、初回 0件判定後に親タスク苦戦箇所を共通ガード未タスクへ formalize する場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加 |
 | 2026-03-06 | UT-TASK-10A-B-008 Phase 12再確認を反映し、Task 1 完了条件へ `validate-phase12-implementation-guide.js` を追加。Part 1/2 の内容要件を構造チェックから独立して機械検証する運用へ更新 |
 | 2026-03-06 | UT-TASK-10A-B-008 再監査の教訓を反映し、「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root でなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加 |
 | 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |

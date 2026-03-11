@@ -35,7 +35,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-design-system.md` | ドメイン固有 UI 正本または token/theme 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
+| SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-design-system.md` / `references/error-handling.md` / `references/architecture-implementation-patterns.md` | ドメイン固有 UI 正本または preview/search cross-cutting 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
 
 #### 2.1.2 Light Mode 全画面是正プロファイル（theme / contrast）
 
@@ -102,6 +102,9 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
 - `ui-ux-design-system`: token / contrast / theme 起因の改善余地と未タスク導線
+- `ui-ux-search-panel`: shortcut / focus trap / ranking / no-match 契約
+- `error-handling`: timeout / read failure / parse failure / renderer crash / no-match の UI 応答
+- `architecture-implementation-patterns`: renderer local timeout+retry / fuzzy 判定分離 / structured fallback
 - `ui-ux-navigation` などのドメイン固有 UI 正本: その機能に固有な契約・苦戦箇所・再利用手順
 
 ### 3.1 UI current workflow 反映先マトリクス
@@ -113,6 +116,9 @@ UI機能実装時の必須記載（追加）:
 | 専用型、adapter、harness、責務境界 | `arch-ui-components.md` | C |
 | selector / reset / store 契約 | `arch-state-management.md` | D |
 | token / theme / contrast 所見 | `ui-ux-design-system.md` | G+ |
+| shortcut / focus trap / ranking / no-match | `ui-ux-search-panel.md` | G+ |
+| renderer timeout / retry / parse fallback | `architecture-implementation-patterns.md` | G+ |
+| retryable / fatal / recoverable error surface | `error-handling.md` | G+ |
 | 検証値、残課題、完了記録 | `task-workflow.md` | E |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | F |
 
@@ -180,6 +186,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] UI機能の場合、`ui-ux-components.md` にも `実装内容と苦戦箇所サマリー` を追加している
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）がある場合、SubAgent-G+ を追加して同一ターン更新している
+- [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の要否を判定し、該当分を SubAgent-G+ で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている

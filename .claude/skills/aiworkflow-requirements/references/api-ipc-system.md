@@ -136,6 +136,19 @@ workspace layout 04A では、selected file の preview と status bar を最新
 | push 受信後 | Renderer は path 一致時のみ `file.read` を再実行 |
 | cleanup | file switch / unmount で `file:watch-stop` を必ず実行 |
 
+### Workspace preview read 契約（TASK-UI-04C）
+
+04C では preview / quick search のために新規 IPC を追加せず、04A の watch 契約と既存 `file:read` を再利用する。
+
+| 項目 | 契約 |
+| --- | --- |
+| reuse channel | `file:read` |
+| new channel | なし |
+| timeout | Renderer が `Promise.race` で 5秒 timeout を適用する |
+| retry | timeout / read failure 時は 1秒間隔で最大3回 retry する |
+| watch integration | `file:changed` の path 一致時だけ preview 再読込を行う |
+| quick search source | `workspaceSlice` 由来の file tree を flatten し、Renderer local search のみで解決する |
+
 ---
 
 ## Electron IPC API設計
@@ -646,6 +659,7 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                  |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.7     | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 04C では新規 IPC を追加せず `file:read` を再利用し、Renderer 側 `Promise.race` timeout（5秒）+ 3回 retry、`file:changed` path 一致時の preview 再読込、QuickSearch の Renderer-only search を契約化 |
 | v1.8.6     | 2026-03-11 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、Phase 12完了後の配置整合を task-workflow と揃えた |
 | v1.8.5     | 2026-03-11 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を関連未タスクへ登録。`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard する改善導線を追加し、APIキー連動系の再発初動を短縮 |
 | v1.8.4     | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AI_CHAT` の provider/model 明示指定ルート、`llm:set-selected-config`、`auth-key:exists.source`、`apiKey:save/delete` 後の adapter cache clear、`SecureStorage` の単一正本化を同期 |

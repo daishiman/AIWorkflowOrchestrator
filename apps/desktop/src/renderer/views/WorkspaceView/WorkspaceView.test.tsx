@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { FolderId, FolderPath } from "@/renderer/store/types/workspace";
 import { resetWorkspaceLayoutStorage } from "./hooks/useWorkspaceLayout";
 import { WorkspaceView } from "./index";
@@ -19,9 +19,11 @@ const mockConversationCreate = vi.fn();
 const mockConversationAddMessage = vi.fn();
 const mockStreamChat = vi.fn();
 const mockCancelStream = vi.fn();
-const mockLLMState = {
+const mockSetCurrentView = vi.fn();
+const mockAppState = {
   selectedProviderId: "openai" as const,
   selectedModelId: "gpt-4o",
+  setCurrentView: mockSetCurrentView,
 };
 const mockSelectedFiles: Array<{
   id: string;
@@ -37,9 +39,6 @@ let onStreamChunkListener:
   | ((chunk: { delta?: { content?: string } }) => void)
   | null = null;
 let onStreamEndListener: (() => void) | null = null;
-let _onStreamErrorListener:
-  | ((error: { code: string; message: string; retryable: boolean }) => void)
-  | null = null;
 
 const mockStore = {
   workspace: {
@@ -86,8 +85,8 @@ vi.mock("@/renderer/store", () => ({
   useAddFiles: () => mockAddFiles,
   useSelectedFiles: () => mockSelectedFiles,
   useRemoveFile: () => mockRemoveFile,
-  useAppStore: (selector: (state: typeof mockLLMState) => unknown) =>
-    selector(mockLLMState),
+  useAppStore: (selector: (state: typeof mockAppState) => unknown) =>
+    selector(mockAppState),
 }));
 
 function setViewportWidth(width: number): void {
@@ -105,7 +104,6 @@ describe("WorkspaceView", () => {
     mockSelectedFiles.length = 0;
     onStreamChunkListener = null;
     onStreamEndListener = null;
-    _onStreamErrorListener = null;
 
     mockConversationCreate.mockResolvedValue({
       success: true,
@@ -158,9 +156,8 @@ describe("WorkspaceView", () => {
           };
         }),
         onStreamError: vi.fn().mockImplementation((callback) => {
-          _onStreamErrorListener = callback;
           return () => {
-            _onStreamErrorListener = null;
+            void callback;
           };
         }),
       },
@@ -175,6 +172,10 @@ describe("WorkspaceView", () => {
       addMessage: mockConversationAddMessage,
       search: vi.fn(),
     };
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("初期表示は chat-only", () => {
@@ -336,6 +337,7 @@ describe("WorkspaceView", () => {
   });
 
   it("file read 失敗時は status bar に error を表示する", async () => {
+    vi.useFakeTimers();
     window.electronAPI.file.read = vi.fn().mockResolvedValue({
       success: false,
       error: "Permission denied",
@@ -346,8 +348,35 @@ describe("WorkspaceView", () => {
     fireEvent.click(screen.getByTestId("workspace-toggle-file"));
     fireEvent.click(screen.getByTestId("workspace-treeitem-file-1"));
 
-    await waitFor(() => {
-      expect(screen.getByRole("status")).toHaveTextContent("Permission denied");
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2_100);
     });
+
+    expect(screen.getByTestId("workspace-status-bar")).toHaveTextContent(
+      "Permission denied",
+    );
+  });
+
+  it("file read timeout 5秒 + 3回再試行後に error を表示する", async () => {
+    vi.useFakeTimers();
+    const readMock = vi.fn().mockImplementation(() => new Promise(() => {}));
+    window.electronAPI.file.read = readMock;
+
+    render(<WorkspaceView />);
+
+    fireEvent.click(screen.getByTestId("workspace-toggle-file"));
+    fireEvent.click(screen.getByTestId("workspace-treeitem-file-1"));
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(17_000);
+    });
+
+    expect(readMock.mock.calls.length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByTestId("workspace-status-bar")).toHaveTextContent(
+      "5秒 timeout",
+    );
+    expect(screen.getByTestId("workspace-status-bar")).toHaveTextContent(
+      "3回再試行済み",
+    );
   });
 });

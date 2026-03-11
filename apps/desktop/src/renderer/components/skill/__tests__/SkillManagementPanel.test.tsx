@@ -194,6 +194,21 @@ vi.mock("../SkillCreateWizard", () => ({
   ),
 }));
 
+vi.mock("../SkillLifecyclePanel", () => ({
+  SkillLifecyclePanel: ({
+    onClose,
+    onOpenWizard,
+  }: {
+    onClose: () => void;
+    onOpenWizard: () => void;
+  }) => (
+    <div data-testid="skill-lifecycle-panel">
+      <button onClick={onClose}>閉じる</button>
+      <button onClick={onOpenWizard}>詳細ウィザード</button>
+    </div>
+  ),
+}));
+
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
 beforeEach(() => {

@@ -242,6 +242,25 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 ---
 
+## Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03）
+
+`SkillLifecyclePanel` は単一 UI だが、権限境界は既存の skill execute 契約に従う。
+
+| ステップ | 内部 role | 実行 API | セキュリティ要件 |
+| --- | --- | --- | --- |
+| request 解析 | Planner | `skillCreator.detectMode` | mode 判定のみ。ファイル操作なし |
+| 作成 | Create | `skill.create` | 既存 store 経由。validation / list refresh を維持 |
+| 実行 | Executor | `skill.execute` | preflight / permission / allowedTools 制御を維持 |
+| 改善提案 | Improver | `skillCreator.improveSkill` | autoApply false を既定にし、即時変更を避ける |
+| 詳細改善 | Analysis | `skill.analyze` / `skill.applyImprovements` | 詳細適用は既存 analysis 権限境界に委譲 |
+
+### UI 非露出原則
+
+- `SubAgent` / `Codex` は内部 role として説明だけ行い、権限選択 UI にしない。
+- ユーザーは `作成する / 実行する / 改善提案を取得` の 3 操作だけを理解すればよい。
+
+---
+
 ## テストカバレッジ
 
 | メトリクス        | 値     |

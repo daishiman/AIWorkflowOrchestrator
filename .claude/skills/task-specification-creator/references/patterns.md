@@ -351,6 +351,21 @@
 - **発見日**: 2026-02-27
 - **関連タスク**: TASK-9H
 
+### completed workflow の planned wording ゼロ化（TASK-UI-04C）
+
+- **状況**: `outputs/phase-12` の成果物と validator は揃っているのに、`phase-12-documentation.md` に `仕様策定のみ` や「実装・テストは保留」などの文言が残る
+- **問題**: completed workflow を再監査したときに、本文だけを見ると未実施タスクのように誤読され、Step 1-B と Task 100% 実行確認が崩れる
+- **解決パターン**:
+  1. `phase-12-documentation.md` に対して `rg -n "仕様策定のみ|実行予定|保留として記録"` を実行し、残置文言を 0 件にする
+  2. completed workflow では「実装・テスト・Phase 11/12 は完了、保留は Phase 13 のみ」のように実績ベースで書き換える
+  3. 完了条件チェックリストと `Task 100% 実行確認` の `[ ]` を `[x]` へ同期する
+  4. 是正結果を `spec-update-summary.md` と `phase12-task-spec-compliance-check.md` にも反映する
+- **効果**:
+  - completed workflow の本文と成果物台帳が同じ状態を示す
+  - Phase 12 再監査時に「成果物はあるが本文は未実施」という差し戻しを防止できる
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
+
 ### Phase 12 タスク仕様準拠の4点突合（TASK-UI-01-E）
 
 - **状況**: `outputs/phase-12` とシステム仕様更新が揃っていても、`phase-12-documentation.md` の完了同期、実装ガイド必須要件、未タスク指示書フォーマット、監査値転記のどれかが後追いでずれやすい
@@ -714,6 +729,25 @@
 - **効果**: 改善アイデアが正式に追跡され、優先度付けされる
 - **発見日**: 2026-01-27
 - **関連タスク**: TASK-3-2-A
+
+### 親タスク苦戦箇所の事後未タスク化（TASK-UI-04C follow-up）
+
+- **状況**: Phase 12 完了時点では task 内修正で閉じたため `新規未タスク 0件` と判定したが、後から親タスクの苦戦箇所が cross-cutting guard として再利用価値を持つと判断した場合
+- **パターン**: 親タスクの苦戦箇所を新規未タスクへ formalize し、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する
+- **手順**:
+  1. 親タスクの `苦戦箇所` と `5分解決カード` から、feature 内修正で閉じたものと共通ガードへ昇格すべきものを分離する
+  2. `docs/30-workflows/unassigned-task/` に 9セクション形式の未タスク指示書を作成し、`3.5 実装課題と解決策` に親タスク教訓を転記する
+  3. `task-workflow.md` と関連仕様書へ同一 ID を登録し、`verify-unassigned-links` を実行する
+  4. 親 workflow の `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` / 必要に応じて `phase12-task-spec-compliance-check.md` を同じ件数へ更新する
+- **例**（TASK-UI-04C）:
+  - `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001`
+  - fuzzy no-match、renderer timeout+retry、parse/transport 分離を preview/search 共通ガードへ昇格
+- **効果**:
+  - 「task 内で直した」ことと「次回の初動短縮に必要な共通ガード」を分けて追跡できる
+  - Phase 12 成果物の 0件判定が後日 stale になるのを防げる
+  - 親タスクの苦戦箇所を未タスクへ転記する判断基準が明確になる
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
 
 ### React Contextによる一括更新パターン
 
@@ -2111,6 +2145,7 @@
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-03-11** | **TASK-UI-04C follow-up パターン追加**: 成功パターン「親タスク苦戦箇所の事後未タスク化」を追加。初回 0件判定後に cross-cutting guard が必要と判明した場合、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する手順を標準化 |
 | **2026-03-05** | **TASK-UI-01-D 再確認パターン追加**: 成功パターン「Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化」を追加。`LOGS/SKILL/topic-map` 同時更新、`docs/30-workflows/unassigned-task/` への配置、`audit --target-file` + `--diff-from HEAD` の `currentViolations=0` 固定を標準化 |
 | **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |
 | **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |

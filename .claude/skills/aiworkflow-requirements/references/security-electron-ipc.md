@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.5    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 04C は `file:read` invoke と 04A watch lifecycle を再利用し、新規 channel を増やさずに renderer timeout / retry、HTML sandbox + CSP、structured preview fallback、`file:watch-stop` cleanup 維持をセキュリティ契約へ追加 |
 | v1.18.4    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の IPC 利用境界（`file:read` / `llm:stream-chat` / `llm:cancel-stream` / stream subscribe / `conversation:create` / `conversation:add-message`）を追加。Renderer 側 stream race 対策（chunk/end 同期）と cleanup 契約、mention 経由 file context 読み込みの error surface を明文化 |
 | v1.18.3    | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `auth-key:exists` が `source`（saved/env-fallback/not-set）を返す契約を追加し、Renderer preflight と Settings 状態表示の判定根拠を分離。`auth-key` 判定時にキー実値を返さない方針を明文化 |
 | v1.18.2    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notification:delete` の invoke-only allowlist、`notificationId` 非空文字列バリデーション、sender 検証、`notification:new` を subscribe 専用に保つ契約を追加。NotificationCenter 058e の delete UI と Main persistence を安全に接続 |
@@ -145,6 +146,18 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - Main 側は watchId 単位で watcher を保持し、stop 後は map から削除する。
 - Renderer は preload 公開 API だけを使い、 chokidar や Node FS へ直接触れない。
 
+### Workspace preview security contract（TASK-UI-04C）
+
+04C は preview 描画を増やすが、権限境界は 04A から広げない。
+
+| 観点 | 契約 |
+| --- | --- |
+| invoke reuse | Renderer は `window.electronAPI.file.read()` だけを使い、Node FS へ直接触れない |
+| timeout / retry | timeout は Renderer local 制御で実装し、Main の許可範囲を拡張しない |
+| HTML preview | iframe sandbox + CSP を維持し、危険 URL を除去した content のみ描画する |
+| structured preview | JSON/YAML parse error は banner + source fallback に落とし、追加評価は行わない |
+| watcher cleanup | 04A と同様に file switch / unmount の都度 `file:watch-stop` を呼ぶ |
+
 ### Workspace Chat Panel IPC 境界（TASK-UI-04B）
 
 `WorkspaceChatPanel` は 04A の file/watch 契約の上で、LLM stream と conversation 永続化を preload API 経由で組み合わせる。
@@ -163,7 +176,6 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - stream listener は preload 提供の unsubscribe を必ず cleanup する。
 - renderer は `isStreamingRef` と `streamContentRef` を使って競合に強い状態遷移を行うが、権限境界自体は preload/main に残す。
 - mention 経由の file context 追加でも `file:read` 失敗を黙殺せず alert 表示し、失敗状態を可視化する。
-
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。

@@ -146,6 +146,27 @@
 | キーボード操作 | ↑↓で選択移動、Enterで開く                      |
 | スクロール     | 選択アイテムが常に表示されるよう自動スクロール |
 
+### Workspace QuickFileSearch dialog（TASK-UI-04C）
+
+`WorkspaceView` では UnifiedSearchPanel をそのまま流用せず、workspace file tree を元にした lightweight な filename search dialog を別コンポーネントとして提供する。
+
+| 要素 | 仕様 |
+| --- | --- |
+| 起動 | `Cmd/Ctrl+P` |
+| データソース | `workspaceSlice` の file tree を flatten した Renderer local data |
+| 最大表示件数 | 10件 |
+| 結果判定 | fuzzy ranking を使うが、`score = 0` は候補に含めない |
+| フォーカス | open 時に input へ focus、dialog 内 Tab 循環を維持 |
+| キーボード | ArrowUp / ArrowDown / Enter / Escape |
+| 選択時動作 | file selection を更新し、preview panel が閉じていれば自動で開く |
+| 置換 | なし |
+
+#### 関連未タスク
+
+| タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | QuickFileSearch の `score=0` 除外、stable sort、top 10 制御を再利用可能な search resilience ガードへ昇格する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
 ---
 
 ## ハイライト表示
@@ -418,6 +439,7 @@ EditorInstanceインターフェースのTextArea実装。
 
 - [x] Phase 5 検索パネル実装の EditorView 統合（TASK-SEARCH-INTEGRATE-001） - 2026-01-22
 - [x] 検索・置換機能UI実装（task-imp-search-ui-001） - 2026-02-04
+- [x] Workspace preview quick file search 実装（TASK-UI-04C-WORKSPACE-PREVIEW） - 2026-03-11
 
 ### task-imp-search-ui-001（2026-02-04完了）
 
@@ -526,6 +548,8 @@ EditorInstanceインターフェースのTextArea実装。
 
 | 日付       | バージョン | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| 2026-03-11 | v1.3.1     | TASK-UI-04C follow-up: `Workspace QuickFileSearch dialog` に関連未タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を追加し、`score=0` 除外と stable sort の共通化導線を接続 |
+| 2026-03-11 | v1.3.0     | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` セクションを追加し、`Cmd/Ctrl+P`、top 10 results、focus trap、`score=0` 除外、preview 自動オープンを記録 |
 | 2026-02-04 | v1.2.0     | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（一括置換） |
 | 2026-02-04 | v1.1.0     | task-imp-search-ui-001完了記録追加（E2Eテスト17件、グローバルショートカット統合、IPCプロバイダ） |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |

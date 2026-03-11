@@ -27,16 +27,26 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ### LLM選択状態管理
 
-- **Store**: Zustand chatSlice
-- **状態**: currentProviderId（"openai" | "anthropic" | "google" | "xai"）、currentModelId
-- **初期値**: OpenAI gpt-5.2-instant
-- **切り替え**: リアルタイム（確認ダイアログなし）
+- **Store**: Zustand `llmSlice`（`selectedProviderId` / `selectedModelId`）+ `chatSlice`
+- **同期チャネル**: `llm:set-selected-config`（Renderer の選択状態を Main へ同期）
+- **AI_CHAT request 優先順位**:
+  1. `AIChatRequest.providerId` + `AIChatRequest.modelId`（両方指定時のみ有効）
+  2. Main 側の選択状態（`setSelectedLLMConfig` で保持）
+- **バリデーション**:
+  - `providerId` / `modelId` は片方のみ指定を禁止
+  - `providerId` は `"openai" | "anthropic" | "google" | "xai"` のみ許可
+
+#### LLM選択同期 IPC
+
+| チャネル                   | メソッド | 引数                               | 戻り値                              | 公開先   |
+| -------------------------- | -------- | ---------------------------------- | ----------------------------------- | -------- |
+| `llm:set-selected-config`  | invoke   | `{ providerId, modelId }`          | `{ success: boolean, error?: string }` | Renderer |
 
 ### セキュリティ考慮事項
 
 | 項目                       | 対策                                          |
 | -------------------------- | --------------------------------------------- |
-| APIキー保護                | Electron SafeStorageで暗号化保存              |
+| APIキー保護                | `api-keys` ストアを単一正本化し、safeStorage 暗号化 + `SecureStorage` facade で参照 |
 | プロンプトインジェクション | ローカルアプリのため影響限定的                |
 | XSS攻撃                    | React自動エスケープ + IPC経由で文字列のみ送信 |
 | レート制限対応             | プロバイダー側のレート制限エラーを通知        |
@@ -125,6 +135,19 @@ workspace layout 04A では、selected file の preview と status bar を最新
 | watch start response | `{ success: boolean, watchId?: string, error?: string }` |
 | push 受信後 | Renderer は path 一致時のみ `file.read` を再実行 |
 | cleanup | file switch / unmount で `file:watch-stop` を必ず実行 |
+
+### Workspace preview read 契約（TASK-UI-04C）
+
+04C では preview / quick search のために新規 IPC を追加せず、04A の watch 契約と既存 `file:read` を再利用する。
+
+| 項目 | 契約 |
+| --- | --- |
+| reuse channel | `file:read` |
+| new channel | なし |
+| timeout | Renderer が `Promise.race` で 5秒 timeout を適用する |
+| retry | timeout / read failure 時は 1秒間隔で最大3回 retry する |
+| watch integration | `file:changed` の path 一致時だけ preview 再読込を行う |
+| quick search source | `workspaceSlice` 由来の file tree を flatten し、Renderer local search のみで解決する |
 
 ---
 
@@ -228,19 +251,21 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | ------------------------- | -------------------------- | ------------ |
 | `AuthKeySetRequest`       | `key: string`              | API Key      |
 | `AuthKeySetResponse`      | `success: boolean, error?` | 設定結果     |
-| `AuthKeyExistsResponse`   | `exists: boolean`          | キー存在確認 |
+| `AuthKeyExistsResponse`   | `exists: boolean, source?: "saved" \| "env-fallback" \| "not-set"` | キー存在確認 |
 | `AuthKeyValidateRequest`  | `key: string`              | 検証対象キー |
 | `AuthKeyValidateResponse` | `valid: boolean, error?`   | 検証結果     |
 | `AuthKeyDeleteResponse`   | `success: boolean, error?` | 削除結果     |
 
 **`auth-key:exists` 判定契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001）**:
 
-| 項目    | 判定仕様                                          |
-| ------- | ------------------------------------------------- |
-| 1次判定 | `AuthKeyService.hasKey()`（safeStorage 保存キー） |
-| 2次判定 | `process.env.ANTHROPIC_API_KEY` が非空文字列か    |
-| 戻り値  | いずれかが true の場合 `{ exists: true }`         |
-| 目的    | Renderer preflight と Main 実行時判定の乖離を防止 |
+| 項目            | 判定仕様                                                                 |
+| --------------- | ------------------------------------------------------------------------ |
+| 1次判定         | `AuthKeyService.getKey()` で解決したキーを評価                           |
+| 2次判定         | `process.env.ANTHROPIC_API_KEY`（trim後）との一致を確認                  |
+| `source=saved`  | 保存済みキーが有効で、env fallback と同一値でない                        |
+| `source=env-fallback` | 解決キーが env key と一致（保存キー未設定時の fallback 含む）      |
+| `source=not-set` | キー未設定、または exists 判定でエラー                                   |
+| 目的            | Renderer preflight と Main 実行時判定の乖離を防止し、UI の状態表示を安定化 |
 
 ### 実装状況（auth-key ライフサイクル）
 
@@ -254,6 +279,9 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | Renderer `linkedProviders` を契約崩れ時に正規化し `is not iterable` を回避                | completed  | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001 |
 | `registerAllIpcHandlers` で各 `registerXxxHandlers` を `safeRegister` で個別 try-catch 化 | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 | `registerAllIpcHandlers` が `IpcHandlerRegistrationResult` を返却（成功/失敗カウント）    | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
+| `auth-key:exists` が `source`（saved/env-fallback/not-set）を返却                            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
+| `apiKey:save` / `apiKey:delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行      | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
+| `llm:set-selected-config` で Renderer 選択状態を Main 側 `ai.chat` 実行経路へ同期            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 
 ### 関連タスク
 
@@ -494,6 +522,25 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 | 画面証跡         | `docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001/outputs/phase-11/screenshots/TC-11-01..03`                                                                               |
 | 関連ドキュメント | `docs/30-workflows/06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001/outputs/phase-12/documentation-changelog.md`                                                                             |
 
+### TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001（2026-03-11完了）
+
+| 項目             | 内容                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID         | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001                                                                                                             |
+| 反映対象         | `ai.chat` 実行経路と Settings APIキー管理・AuthKey 状態表示の契約整合                                                                                 |
+| 主要変更         | `AI_CHAT` に `providerId/modelId` の request 優先ルートを追加（片指定禁止）。`llm:set-selected-config` を追加し Renderer 選択状態を Main に同期      |
+| 追加変更         | `SecureStorage` を `api-keys` 単一正本に収束。`apiKey:save/delete` で LLM adapter cache をクリア                                                     |
+| auth-key契約     | `auth-key:exists` へ `source` を追加し、`saved` / `env-fallback` / `not-set` を明示                                                                   |
+| 検証             | `llm.test.ts` / `aiHandlers.llm.test.ts` / `authKeyHandlers.test.ts` / `channels.test.ts` / `AuthKeySection.test.tsx` / `SettingsView.test.tsx` PASS |
+| 画面証跡         | `docs/30-workflows/api-key-chat-tool-integration-alignment/outputs/phase-11/screenshots/TC-11-01..03`                                               |
+| 関連ドキュメント | `docs/30-workflows/api-key-chat-tool-integration-alignment/outputs/phase-12/spec-update-summary.md`                                                 |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`apiKey:save/delete` の cache clear、`llm:set-selected-config` の Main 同期、`auth-key:exists.source` の Settings 表示を単一回帰マトリクスで guard する~~ **完了: 2026-03-11** | ~~中~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` |
+
 ### TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001（2026-03-05完了）
 
 | 項目             | 内容                                                                                                                                                       |
@@ -612,6 +659,10 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                  |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.8.7     | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 04C では新規 IPC を追加せず `file:read` を再利用し、Renderer 側 `Promise.race` timeout（5秒）+ 3回 retry、`file:changed` path 一致時の preview 再読込、QuickSearch の Renderer-only search を契約化 |
+| v1.8.6     | 2026-03-11 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、Phase 12完了後の配置整合を task-workflow と揃えた |
+| v1.8.5     | 2026-03-11 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を関連未タスクへ登録。`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard する改善導線を追加し、APIキー連動系の再発初動を短縮 |
+| v1.8.4     | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AI_CHAT` の provider/model 明示指定ルート、`llm:set-selected-config`、`auth-key:exists.source`、`apiKey:save/delete` 後の adapter cache clear、`SecureStorage` の単一正本化を同期 |
 | v1.8.3     | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: Notification IPC に `notification:delete` を追加し、`mark-read` / `delete` の引数名を `notificationId` に統一。058e の個別削除 UI と sender 検証契約を同期 |
 | v1.8.2     | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `file:watch-start` / `file:watch-stop` / `file:changed` の workspace file watch API を追加し、selected file 単位の watch 契約と cleanup 条件を明文化 |
 | v1.8.1     | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 追補: 完了タスク節へ「Graceful Degradation 実装パターン詳細」（型定義・内部ヘルパー関数・ハンドラグループ登録パターン）と「実装時の苦戦箇所と再発防止」を追加 |
