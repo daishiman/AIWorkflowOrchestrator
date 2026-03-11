@@ -4,9 +4,9 @@
   "feature": "task-059b-ui-04c-workspace-preview-quicksearch",
   "workflowPath": "docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch",
   "created": "2026-03-11T00:00:00+09:00",
-  "lastUpdated": "2026-03-11T19:12:45+09:00",
-  "status": "in_progress",
-  "currentPhase": 12,
+  "lastUpdated": "2026-03-12T08:29:24+09:00",
+  "status": "completed",
+  "currentPhase": 13,
   "phases": {
     "1": {
       "name": "要件定義",
@@ -149,7 +149,8 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-12T08:29:24+09:00",
       "artifacts": [
         "outputs/phase-13/pr-info.md",
         "outputs/phase-13/completion-report.md"
@@ -164,8 +165,8 @@
     "D": "review gate and documentation sync"
   },
   "constraints": {
-    "executionScope": "phase_1_12_completed",
-    "commit": "forbidden_without_user_instruction",
-    "pullRequest": "forbidden_without_user_instruction"
+    "executionScope": "phase_1_13_completed",
+    "commit": "executed_with_user_instruction",
+    "pullRequest": "executed_with_user_instruction"
   }
 }
