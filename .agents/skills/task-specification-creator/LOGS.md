@@ -30,6 +30,28 @@
   - current workflow / outputs の skill 参照が canonical root と整合するように再監査した
 
 ---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 の 0件報告テンプレートを補強
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に `currentViolations=0 / baselineViolations>0` の記述例を追加
+  - `assets/phase12-task-spec-compliance-template.md` に legacy baseline と既存 remediation task の記録欄を追加
+  - 未タスク 0 件報告でも `docs/30-workflows/unassigned-task/` 全体の legacy backlog を隠さない運用を task spec テンプレートへ固定
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 再監査で representative screenshot ルールを補強
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に「representative screenshot は shell 全景ではなく selector-based element capture を優先する」ルールを追加
+  - `data-testid` または実文言を ready selector の正本とする運用を明文化し、TC-11-05 の責務証跡改善を再利用可能にした
+  - workflow 側の `screenshot-plan.json` へ selector を持たせる形で、task-spec と実装の往復整合を確認した
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
 
 - **Agent**: task-specification-creator

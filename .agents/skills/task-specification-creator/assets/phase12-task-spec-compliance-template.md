@@ -58,6 +58,8 @@
 - 新規未タスク: {{0件 / N件}}
 - 配置先: `docs/30-workflows/unassigned-task/`
 - 判定根拠: {{currentViolations=0 など}}
+- legacy baseline: {{baselineViolations=0 / N件}}
+- 既存 remediation task: {{なし / docs/30-workflows/unassigned-task/...}}
 
 ## 結論
 
