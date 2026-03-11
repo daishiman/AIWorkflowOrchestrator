@@ -11,7 +11,12 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| v1.17.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 監査反映: Preload `safeInvoke` の invoke hang containment パターンを追加。`Promise.race` + `IPC_TIMEOUT_MS` + channel 名付き error 文言 + `current diff=0` 時の仕様更新停止判断を明文化 |
+| v1.18.2    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notification:delete` の invoke-only allowlist、`notificationId` 非空文字列バリデーション、sender 検証、`notification:new` を subscribe 専用に保つ契約を追加。NotificationCenter 058e の delete UI と Main persistence を安全に接続 |
+| v1.18.1    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: file watch IPC lifecycle（`file:watch-start` / `file:watch-stop` / `file:changed`）の sender push、Renderer cleanup、module scope guard、`FILE_CHANGED` を subscribe 専用に保つ allowlist 契約を追加 |
+| v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
+| v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
+| v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
+| v1.16.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 反映: IPC ハンドラライフサイクル管理セクションに `IpcHandlerRegistrationResult` 戻り値契約と `safeRegister` による個別 try-catch の Graceful Degradation 仕様を追記。フェイルセキュア考慮事項を明文化 |
 | v1.16.0    | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 完了記録: Profile/Avatar fallback 登録パターンセクション（v1.15.0で追加済み）の完了タスク反映。`registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` の検証基準（チャネル数一致・排他分岐・error envelope統一）を確定 |
 | v1.15.0    | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: ApiKeysSection 契約防御ガードセクション追加（GAP-01〜GAP-06テーブル、59テスト全PASS、カバレッジ実績値）。完了タスクテーブルに追加。architecture-implementation-patterns.md S29 との相互参照を設定                                                                                                   |
 | v1.14.0    | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: apiKeyAPI `apiKey:list` レスポンスバリデーション（`Array.isArray(providers)` + 要素 shape type predicate フィルタ）を追加。profileHandlers `identities` の `?? []` → `Array.isArray` パターン統一。Renderer 5層防御構造（namespace存在 → shape正規化 → 配列保証 → 要素フィルタ → 例外キャッチ）を明文化 |
@@ -118,6 +123,25 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
+
+### Workspace file watch lifecycle（TASK-UI-04A）
+
+`WorkspaceView` は selected file の再読込に限って watch を使う。watch 契約は file read/write の一般契約とは分けて扱う。
+
+| 項目 | 契約 |
+| --- | --- |
+| invoke channel | `file:watch-start`, `file:watch-stop` |
+| event channel | `file:changed` |
+| sender | Main は `event.sender.send(IPC_CHANNELS.FILE_CHANGED, payload)` で push する |
+| Renderer cleanup | file switch / unmount のたびに `watchStop` を呼ぶ |
+| allowlist | `FILE_CHANGED` は subscribe 専用で invoke allowlist には入れない |
+| duplicate guard | Renderer は module scope guard で selected file 同一時の再登録を避ける |
+
+**セキュリティ意図**:
+
+- watch 対象を selected file に限定し、広域監視を行わない。
+- Main 側は watchId 単位で watcher を保持し、stop 後は map から削除する。
+- Renderer は preload 公開 API だけを使い、 chokidar や Node FS へ直接触れない。
 
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
@@ -279,24 +303,38 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 
 **関連タスク**: history-preload-setup（2026-01-13完了）
 
-### Preload `safeInvoke` タイムアウトガード
+---
 
-`ipcRenderer.invoke()` は Main Process が返らない場合に永続 pending になるため、Preload 層で待機上限を持たせる。これは sender 検証や whitelist とは別の、Renderer 側停止回避の責務である。
+## 実装例: notificationAPI（TASK-UI-08）
 
-| 観点 | 契約 |
-| ---- | ---- |
-| 適用箇所 | `apps/desktop/src/preload/index.ts` の `safeInvoke` |
-| 方式 | `Promise.race([ipcRenderer.invoke(...), timeoutPromise])` |
-| 定数 | `IPC_TIMEOUT_MS` をファイルスコープ定数で保持する |
-| エラー文言 | `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms` |
-| 既存契約 | whitelist 拒否 (`Channel ${channel} is not allowed`) は維持する |
-| 呼び出し元要件 | Renderer 側で `catch` し、`isLoading=false` などの復旧処理を必ず実行する |
+**実装場所**:
 
-**実装判断**:
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- shared 定数: `packages/shared/src/ipc/channels.ts`
+- preload API: `apps/desktop/src/preload/api/notification-api.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+- Main handler: `apps/desktop/src/main/ipc/notificationHandlers.ts`
 
-- timeout は Preload 共通ラッパーで一括適用し、各 API ごとのシグネチャは変えない
-- `channel` 名は whitelist 済み文字列のみを error 文言へ出す
-- 実装差分が `origin/main...HEAD` で 0 件のときは、system spec を completed に更新せず監査メモだけ残す
+**チャンネルホワイトリスト方式**:
+
+`notification:get-history` / `notification:mark-read` / `notification:mark-all-read` / `notification:delete` / `notification:clear` は invoke allowlist、`notification:new` は subscribe 専用として分離する。
+
+| チャネル | 用途 | セキュリティ要件 |
+| --- | --- | --- |
+| `notification:get-history` | 初期履歴取得 | sender 検証 |
+| `notification:mark-read` | 単一既読化 | sender 検証 + `notificationId` 検証 |
+| `notification:mark-all-read` | 一括既読化 | sender 検証 |
+| `notification:delete` | 単一削除 | sender 検証 + `notificationId` 検証 |
+| `notification:new` | push 通知 | invoke allowlist へ入れず subscribe 専用 |
+
+**バリデーション契約**:
+
+1. `validateIpcSender(event, channel, ...)` で mainWindow 由来の sender を検証する。
+2. 更新系ハンドラでは `notificationId` を非空文字列として検証する。
+3. 例外メッセージは `sanitizeErrorMessage()` でサニタイズして返す。
+4. Renderer 側では `safeInvoke` / `safeOn` 経由以外で notification API を公開しない。
+
+**関連タスク**: TASK-UI-01-C（2026-03-05完了）, TASK-UI-08（2026-03-11完了）
 
 ---
 
@@ -441,6 +479,39 @@ macOS の `activate` イベントでウィンドウを再作成する際、IPC �
 | ------------------ | ------------------------------------- | ------------------------------------- |
 | `ipcMain.handle()` | 例外送出（同一チャンネルに2つ目不可） | `ipcMain.removeHandler(channel)`      |
 | `ipcMain.on()`     | 許可（リスナーが複数登録される）      | `ipcMain.removeAllListeners(channel)` |
+
+**Graceful Degradation 戻り値契約**（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001）:
+
+`registerAllIpcHandlers(mainWindow)` は `IpcHandlerRegistrationResult` を返却する。各 `registerXxxHandlers` を `safeRegister()` で個別 try-catch し、1つの失敗が後続の登録を阻害しない。
+
+| フィールド     | 型                              | 説明                                         |
+| -------------- | ------------------------------- | -------------------------------------------- |
+| `successCount` | `number`                        | 登録成功したハンドラグループ数               |
+| `failureCount` | `number`                        | 登録失敗したハンドラグループ数               |
+| `failures`     | `HandlerRegistrationFailure[]`  | 失敗詳細（`handlerName` / `errorMessage` / `errorCode: 4001`） |
+
+**セキュリティ上の考慮**: 失敗したハンドラグループのチャンネルは未登録状態となる。そのチャンネルへの Renderer からのリクエストは `Error: No handler registered` が返され、フェイルセキュアとして機能する。失敗情報は `console.error` でログ出力されるが、ユーザーホーム配下の絶対パスは `~` にマスクして記録する。
+
+#### Graceful Degradation 実装時の苦戦箇所（セキュリティ観点）
+
+| ID | 課題 | セキュリティリスク | 解決策 |
+|---|---|---|---|
+| SEC-GD-1 | エラーメッセージにユーザーのホームディレクトリパスが含まれる | ログ経由でファイルシステム構造が漏洩する可能性 | `sanitizeRegistrationErrorMessage()` で `os.homedir()` パスを `~` にマスク。`escapeRegExp()` で正規表現メタ文字をエスケープ後にパターン生成 |
+| SEC-GD-2 | `safeRegister` の失敗情報が `IpcHandlerRegistrationResult.failures` に蓄積される | 失敗情報に機密パスや内部構造が含まれる可能性 | 全失敗メッセージを `sanitizeRegistrationErrorMessage()` 経由で正規化してから `failures` 配列に格納 |
+| SEC-GD-3 | 部分的なハンドラ登録失敗時に、未登録チャネルへの IPC 呼び出しが発生する | 未登録チャネルへの `ipcMain.handle` 呼び出しは「No handler registered」エラーを返すが、Renderer 側でのエラーハンドリングが必要 | Renderer 側の `safeInvoke` パターンが未登録チャネルエラーもキャッチするため、フェイルセキュア原則を維持 |
+
+#### 同種課題向け4ステップ手順
+
+1. **パスマスク**: エラーログに含まれるファイルパスを `sanitize` 関数で正規化する
+2. **メタ文字エスケープ**: `os.homedir()` 等のパスを正規表現に使う前に `escapeRegExp()` を適用する
+3. **フェイルセキュア確認**: ハンドラ未登録時に Renderer 側のエラーハンドリングが機能することを確認する
+4. **ログレベル制御**: Infrastructure Error (4001) のログ出力を `electron-log` の `warn` レベルに制限し、ユーザーコンソールへの不要な出力を抑制する
+
+**関連未タスク（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 から派生）**:
+
+| タスクID | 概要 | 優先度 | 指示書パス |
+|---|---|---|---|
+| UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
 
 **関連未タスク（UT-FIX-IPC-HANDLER-DOUBLE-REG-001 から派生）**:
 
@@ -911,9 +982,42 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 ## 関連ドキュメント
 
+- [TASK-FIX-SAFEINVOKE-TIMEOUT-001 実装ガイド](../../../docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/outputs/phase-12/implementation-guide.md)
 - [APIセキュリティ](./security-api.md)
 - [スキル実行セキュリティ](./security-skill-execution.md)
 - [AUTH IPC登録一元化 実装ガイド](../../../docs/30-workflows/ut-ipc-auth-handle-duplicate-001/outputs/phase-12/implementation-guide.md)
+
+---
+
+## safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
+
+Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `invoke` 呼び出しが応答不能になった場合でも Promise を永続 pending にしないためのフェイルセーフ契約である。
+
+| 観点 | 契約 |
+| --- | --- |
+| 対象実装 | `apps/desktop/src/preload/ipc-utils.ts` |
+| timeout 定数 | `IPC_TIMEOUT_MS = 5000` |
+| fail-fast | `allowedChannels.includes(channel)` に失敗したチャンネルは `ipcRenderer.invoke()` 前に即時 reject |
+| timeout error | `IPC timeout: {channel} did not respond within 5000ms` |
+| cleanup | 正常 resolve / reject の双方で `clearTimeout(timeoutId)` を実行し、短命 timer を残留させない |
+| 後方互換 | `safeInvoke<T>(channel, ...args): Promise<T>` の公開シグネチャは不変 |
+| rollout 監査 | `preload/index.ts` だけでなく `skill-api.ts` / `skill-creator-api.ts` など channel 境界ごとに file 単位で適用漏れを確認する |
+
+### セキュリティ意図
+
+- 応答不能ハンドラで Renderer が無限待機し続ける状態を防ぎ、安全側の reject に倒す。
+- エラーメッセージは channel 名と timeout 値のみを含み、パス・token・stack trace は露出しない。
+- cleanup はメモリ最適化だけでなく、fake timer テストや高頻度 invoke の再現性維持にも効く。
+
+### 検証証跡
+
+| 種別 | 結果 |
+| --- | --- |
+| preload 単体テスト | `src/preload/__tests__/ipc-utils.safeInvoke-timeout.test.ts` 15 tests PASS |
+| preload 回帰 | `pnpm vitest run src/preload` → 19 files / 551 tests PASS |
+| 型検証 | `pnpm typecheck` PASS |
+| workflow 検証 | `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` 全 PASS |
+| UI影響確認 | timeout fallback / settings shell の screenshot 4件を current workflow 配下で取得済み |
 
 ---
 
@@ -921,6 +1025,8 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 | タスクID                                       | 完了日     | ステータス | 概要                                                                                                                                                                                          |
 | ---------------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TASK-UI-08-NOTIFICATION-CENTER                 | 2026-03-11 | 完了       | `notification:delete` を shared/preload/main へ追加し、`NotificationCenter` 058e の個別削除 UI、sender 検証、入力検証、allowlist、59 tests PASS、Phase 11 screenshot 7件を同期 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001                | 2026-03-10 | 完了       | Preload `safeInvoke` を `invokeWithTimeout()` へ集約し、`IPC_TIMEOUT_MS = 5000` の timeout + `clearTimeout` cleanup を追加。allowlist fail-fast・error format・19 files / 551 tests PASS・Phase 11 screenshot 4件で完了確認 |
 | TASK-9I                                        | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |
 | TASK-9J                                        | 2026-02-28 | 完了       | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |
 | TASK-9G                                        | 2026-02-27 | 完了       | スキルスケジュール5チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 方式別必須検証 + エラー正規化を適用                                                             |
@@ -928,3 +1034,4 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | 2026-03-08 | 完了       | ApiKeysSection Renderer 4層防御（API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新）+ Main側 providers/identities 配列正規化。59テスト全PASS、Stmts 93.17%              |
 | TASK-10A-E-A                                   | 2026-03-05 | 完了       | share 3チャネルの sender失敗を `ERR_2004`、validation失敗を `ERR_1001`、unknown例外を `ERR_5001` へ統一。`skillHandlers.share.ts` の `IPC_CHANNELS` 定数参照化でチャネルドリフトを抑止        |
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001               | 2026-02-25 | 完了       | AUTH 5チャネルの重複登録式を共通登録へ一元化し、契約互換を維持                                                                                                                                |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001  | 2026-03-08 | 完了       | registerAllIpcHandlers に safeRegister ヘルパーを導入し、1ハンドラ例外時も後続ハンドラを登録継続する Graceful Degradation を実装。19テスト全PASS、Phase 11 スクリーンショット 3/3 PASS、ログサニタイズ反映済み |

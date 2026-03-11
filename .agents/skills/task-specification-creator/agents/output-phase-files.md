@@ -139,15 +139,15 @@
 | スクリプト | 用途 | コマンド |
 | ---------- | ---- | -------- |
 | `init-artifacts.js` | ワークフロー初期化 | `node scripts/init-artifacts.js --workflow {{PATH}}` |
-| `validate-phase-output.js` | 出力検証 | `node scripts/validate-phase-output.js {{PATH}} --phase {{N}}` |
+| `validate-phase-output.js` | 出力検証 | `node scripts/validate-phase-output.js {{PATH}}` |
 
 ```bash
 # ワークフロー初期化（ディレクトリ作成 + artifacts.json生成）
-node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
+node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 
 # 出力検証
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/{{FEATURE_NAME}} --phase 0
 ```
 

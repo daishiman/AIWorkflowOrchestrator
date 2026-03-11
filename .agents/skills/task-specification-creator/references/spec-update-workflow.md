@@ -82,6 +82,8 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
+| 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
+| 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須4成果物を揃える** | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の4点が揃って初めて再監査可能になる |
 | 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** | `skillHandlers.ts` / `preload/index.ts` の引数・戻り値・エラー契約と一致しないと、API利用者が誤実装する |
@@ -258,7 +260,8 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] 関連する仕様ファイルの実装状況テーブル（該当する場合）を更新した
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
-- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
+- [ ] `git diff --stat origin/main...HEAD` と `git diff --stat HEAD` の両方を確認し、branch差分とcurrent worktree差分を区別して記録した
+- [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
 - [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
@@ -343,7 +346,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `docs/30-workflows/completed-tasks/unassigned-task/` 配下に未完了指示書（`未実施`/`未着手`）が混在していないことを確認した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
-- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
+- [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
 - [ ] `audit-unassigned-tasks.js --json --diff-from <ref> --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
@@ -372,7 +375,7 @@ Phase 12 Task 2 の更新後は、以下を**この順序で**実行する。
 #### 1. 未タスク参照リンク検証
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
 ```
 
 - 正常時: `ALL_LINKS_EXIST` が出力され、exit code 0
@@ -382,7 +385,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 ```bash
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-node .claude/skills/task-specification-creator/scripts/generate-index.js
+node .agents/skills/task-specification-creator/scripts/generate-index.js
 git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexes/keywords.json
 ```
 
@@ -543,21 +546,21 @@ comm -3 \
 
 ```bash
 # 1) 全体監査（既存違反を含む）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # 1.5) 対象ファイル監査（今回差分の current を抽出）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/<task>.md | \
   jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
 
 # 2) 今回差分の候補抽出（変更範囲を指定）
-node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001 \
   --output docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/.tmp-unassigned-candidates.json
 
 # 3) Phase出力構造の整合確認（位置引数）
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/<workflow-dir>
 ```
 

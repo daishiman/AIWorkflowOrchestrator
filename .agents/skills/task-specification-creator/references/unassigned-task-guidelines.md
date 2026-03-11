@@ -53,18 +53,18 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 ```bash
 # 1) 対象未タスクの今回差分監査（推奨）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
 
 # 2) 差分監査（workflow全体の current 判定）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 3) 全体監査（資産健全性監視）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 > 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
@@ -79,6 +79,20 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 | `--diff-from HEAD` | `currentViolations.total > 0` | 今回タスク全体の合否判定 |
 | `--target-file` のみ | 参考値 | repo 全体の既存違反が current 側へ寄る場合があるため合否には使わない |
 | scope指定なし `--json` | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
+
+### legacy baseline の扱い（重要）
+
+`currentViolations=0` は **今回差分が適切** であることを示すだけで、`docs/30-workflows/unassigned-task/` 全体が完全に正規化済みという意味ではない。
+
+- `currentViolations=0` かつ `baselineViolations>0` の場合:
+  - 検出レポートには「今回差分は合格」「legacy 負債は継続」の両方を明記する
+  - TASK 由来の open backlog がテンプレート準拠で配置済みかどうかは個別に書く
+  - baseline 負債に既存の改善未タスクがある場合は、その参照をレポートへ記載する
+  - baseline 負債を feature の不具合として扱わない
+- 「指定ディレクトリに配置できているか」の確認では、少なくとも以下を分離して報告する:
+  1. 今回タスク由来の未タスク指示書が指定ディレクトリに存在するか
+  2. その指示書がテンプレート準拠か
+  3. ディレクトリ全体に legacy 負債が残っているか
 
 ### raw検出の誤検知対策（推奨）
 
@@ -100,7 +114,7 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 | task-workflow.md テーブル登録  | 条件 | `references/task-workflow.md` の残課題テーブル           |
 | 関連仕様書の残課題テーブル登録 | 条件 | 対象機能の仕様書（例: `interfaces-agent-sdk-history.md`） |
 
-> **⚠️ 重要**: 未タスクが1件以上検出された場合、以下の4ステップを**全て**完了すること:
+> **⚠️ 重要**: 未タスクが1件以上検出された場合、以下の5ステップを**全て**完了すること:
 >
 > | #   | ステップ               | 確認方法                                                        |
 > | --- | ---------------------- | --------------------------------------------------------------- |
@@ -108,9 +122,16 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 > | 2   | 物理ファイル存在確認   | `ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証 |
 > | 3   | task-workflow.md 登録  | 残課題テーブルにエントリを追加                                  |
 > | 4   | 関連仕様書テーブル登録 | 対象機能の仕様書の残課題テーブルにエントリを追加                |
+> | 5   | リンク整合確認         | `verify-unassigned-links.js` で参照切れが0件であることを確認    |
 >
 > 検出レポートだけ作成して指示書・テーブル登録を行わないのは**不完全**です。
-> 指示書を作成したつもりでもファイルが実際に存在しないケースがあるため、ステップ2の物理ファイル確認は省略不可です。
+> 指示書を作成したつもりでもファイルが実際に存在しないケースがあるため、ステップ2の物理ファイル確認は省略不可です。Step 5 を飛ばすと `task-workflow.md` や関連仕様書のリンクドリフトを見逃すため、省略不可です。
+
+> 重要: branch横断再監査などで workflow 固有の compliance 未タスクを起票した後、対象 workflow 側で validator PASS まで解消した場合は、**同じターンで**未タスク指示書のステータスを `再評価クローズ` に更新し、`task-workflow.md` の残課題テーブルも完了表記へ同期すること。
+
+> 追加ルール: 指示書を新規作成・全面更新した直後に、対象ファイル単体で  
+> `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、  
+> `currentViolations.total = 0` を確認すること。配置済みでもテンプレート逸脱なら未完了扱いとする。
 
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。
 
@@ -193,9 +214,9 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 
 ---
 
-### 実装課題と解決策セクション（推奨）
+### 実装課題と解決策セクション（親タスクに苦戦箇所がある場合は必須）
 
-未タスク指示書には、親タスクで遭遇した苦戦箇所と解決策を「実装課題と解決策」セクション（推奨番号: 3.5）として含めることを推奨する。
+未タスク指示書には、親タスクで遭遇した苦戦箇所と解決策を「実装課題と解決策」セクション（推奨番号: 3.5）として含める。特に Phase 10/11/12 の再監査から起票した未タスク、または親タスクの `documentation-changelog.md` / `lessons-learned.md` に苦戦箇所が記録されている場合は必須とする。
 
 | 項目               | 説明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -203,7 +224,7 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 | 記載内容           | 親タスクのdocumentation-changelogから関連する苦戦箇所を抽出  |
 | 記載フォーマット   | 課題/発見経緯/解決策/教訓の4項目テーブル形式                 |
 | 参照リンク         | 該当するシステム仕様書（arch-state-management.md等）へのリンク |
-| 記載基準           | 未タスクの実装時に同様の問題が発生する可能性が高い場合は必須 |
+| 記載基準           | 親タスクに苦戦箇所記録がある場合は必須。ない場合でも、同様の問題が再発しやすいなら記載する |
 
 **苦戦箇所を未タスクに反映するフロー**:
 
@@ -224,6 +245,11 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 ```
 
 > **参考**: UT-STORE-HOOKS-REFACTOR-001では、合成Hookの参照不安定性（課題5.1）やESLintキャッシュ問題（課題5.2）、Phase 12更新漏れ（課題5.3）が苦戦箇所として記録された。後続の未タスク（UT-002, UT-003）にはこれらの教訓を「実装課題と解決策」セクションとして反映した。
+
+追加ルール:
+
+- Phase 11 の screenshot / capture / console warning から発見した未タスクも、親タスクの苦戦箇所を `3.5` に転記する
+- `verify-unassigned-links` で参照切れを補完した未タスクも、親タスク由来であれば同様に `3.5` を記載する
 
 ---
 

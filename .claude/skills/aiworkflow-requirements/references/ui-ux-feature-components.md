@@ -1314,6 +1314,27 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | 状態管理 | `historySearchFilter` / `historySearchStats` / `historySearchStatsError` を追加。`notificationSlice` に履歴同期/重複排除を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`, `apps/desktop/src/renderer/store/slices/notificationSlice.ts` |
 | 回帰テスト | Notification handler / notificationSlice / historySearchSlice / HistorySearchView を拡張 | `apps/desktop/src/main/ipc/__tests__/notificationHandlers.test.ts`, `apps/desktop/src/renderer/store/slices/*.test.ts`, `apps/desktop/src/renderer/views/HistorySearchView/HistorySearchView.test.tsx` |
 
+### TASK-UI-08 追補（2026-03-11）
+
+`TASK-UI-08-NOTIFICATION-CENTER` では、既存の NotificationCenter を 058e 正本へ寄せるための UX 再整備を行った。HistorySearch 側の責務は維持しつつ、Bell から開く通知体験だけを重点的に更新した。
+
+| 観点 | 058e 追補内容 | 主なファイル |
+| --- | --- | --- |
+| 文言/操作 | タイトルを `お知らせ` に統一し、`すべて削除` UI を撤去。`すべて既読` と個別削除に絞った | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| 視覚階層 | relative time、未読ドット、expanded detail inset を整理し、desktop/tablet/mobile の3レイアウトを調整 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| Portal/a11y | popover を `document.body` へ portal 描画し、Escape、outside click、focus return、Tab wrap を追加 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| 個別削除契約 | `notification:delete` を shared/preload/main に追加し、UI 削除導線を Main persistence と接続 | `packages/shared/src/ipc/channels.ts`, `apps/desktop/src/preload/types.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts` |
+| 回帰テスト | component/store/ipc/preload の targeted tests 59件と coverage gate を通過 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/NotificationCenter.test.tsx`, `apps/desktop/src/renderer/store/slices/notificationSlice.test.ts`, `apps/desktop/src/main/ipc/notificationHandlers.test.ts`, `apps/desktop/src/preload/channels.test.ts` |
+
+### 画面証跡（2026-03-11）
+
+| 証跡 | ファイル |
+| --- | --- |
+| desktop popover open | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-02-desktop-popover-open.png` |
+| desktop item expanded | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-03-desktop-item-expanded.png` |
+| mobile overlay | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-05-mobile-overlay-open.png` |
+| empty state | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-06-empty-state.png` |
+
 ### 苦戦箇所（再利用形式）
 
 | 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
@@ -1392,6 +1413,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
 | TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| TASK-UI-08 | NotificationCenter 058e UX 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
 | 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
@@ -1686,6 +1708,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | 2026-03-10 | v1.14.24   | TASK-UI-04A-WORKSPACE-LAYOUT を反映: 収録機能一覧へ Workspace Layout Foundation を追加し、`WorkspaceView` / `FileBrowserPanel` / `PanelToggleBar` / `WorkspaceStatusBar` / watcher 連携 / Phase 11 screenshot 8件 / light theme contrast 是正を専用セクションへ同期 |
 | 2026-03-10 | v1.14.23   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
 | 2026-03-10 | v1.14.22   | TASK-UI-03 current workflow 同期: AgentView Enhancement の workflow 導線を `docs/30-workflows/task-ui-03-agent-view-enhancement/` に修正し、`types.ts` と Phase 11 dedicated harness、実測 136 tests を反映 |
+| 2026-03-11 | v1.14.23   | TASK-UI-08-NOTIFICATION-CENTER を反映。Notification / History Domain 節へ 058e 追補（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件、59 tests PASS）を追加し、完了タスク表へ登録 |
 | 2026-03-08 | v1.14.21   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |

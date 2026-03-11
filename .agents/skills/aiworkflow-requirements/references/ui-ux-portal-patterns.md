@@ -181,9 +181,9 @@ Portal実装時に確認すべき項目：
 
 ## 参考実装
 
-**実装例**: `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`
-**テスト例**: `apps/desktop/src/renderer/components/organisms/AccountSection/AccountSection.portal.test.tsx`
-**タスクドキュメント**: `docs/30-workflows/auth-ui-z-index-fix/`
+**実装例**: `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`, `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx`
+**テスト例**: `apps/desktop/src/renderer/components/organisms/AccountSection/AccountSection.portal.test.tsx`, `apps/desktop/src/renderer/components/organisms/NotificationCenter/NotificationCenter.test.tsx`
+**タスクドキュメント**: `docs/30-workflows/auth-ui-z-index-fix/`, `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/`
 
 ---
 

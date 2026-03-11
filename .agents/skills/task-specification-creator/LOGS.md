@@ -9,6 +9,233 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `.claude` 正本を canonical root とし、workflow / outputs に残っていた `.agents/skills/...` 参照を是正
+  - `references/spec-update-workflow.md` に dual-root repo 向け canonical root 判定を追加
+  - `references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加
+  - `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を `docs/30-workflows/unassigned-task/` に formalize
+  - 058c workflow の `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を再監査結果へ更新
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 11/12 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `validate-phase11-screenshot-coverage` 失敗を起点に、`phase-11-manual-test.md` / `manual-test-result.md` / `manual-test-plan.md` / `screenshot-matrix.md` を validator 互換へ是正
+  - `screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md` を追加し、delete reveal を含む screenshot 7件へ拡張
+  - workflow outputs だけでなく `lessons-learned.md` / `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` まで同期対象を広げた
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-12/implementation-guide.md` / `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を current workflow 配下へ生成
+  - workflow `index.md` / `requirements-traceability-matrix.md` / `branch-diff-reflection-matrix.md` / `outputs/verification-report.md` の stale な spec-only 記述を実績同期
+  - `.claude/skills/...` 正本、`LOGS.md` 2件、`SKILL.md` 2件を同一ターンで更新し、Phase 12 の root docs 同期を再発防止ルールとして記録
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `invokeWithTimeout()` を Preload 共通 helper として導入し、`safeInvoke` / `safeInvokeUnwrap` 経由の timeout 制御を統一
+  - targeted timeout tests と preload regression を通し、Phase 11 screenshot 4件まで current workflow に同期
+  - system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する運用を固定
+
+---
+## 2026-03-10 - TASK-UI-03 Phase 12再監査で未タスク台帳を再整合
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `UT-UI-03-TYPE-ASSERTION-001` が current branch では解消済みであることを確認し、completed unassigned 側へ正規化
+  - Phase 11 の light theme 所見を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として `docs/30-workflows/unassigned-task/` に formalize
+  - `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` / `task-workflow.md` の値を同一ターンで再同期
+
+---
+## 2026-03-10 - TASK-UI-03 再監査で task-specification-creator 実行パス是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - current workflow と `.claude/skills/task-specification-creator` 正本を再監査し、存在しない `.claude/skills/task-specification-creator/scripts/` 参照を `.agents/skills/task-specification-creator/scripts/` へ統一
+  - `validate-phase-output.js` の CLI 契約を実スクリプトに合わせて位置引数方式へ再整合
+  - Phase 12成果物のコマンド例も現行実行経路へ更新し、再監査時の false negative を防止
+
+---
+## 2026-03-10 - TASK-UI-04A-WORKSPACE-LAYOUT Phase 11-12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-4`〜`phase-12` の不足成果物を current workflow 配下へ補完し、`artifacts.json` / `index.md` を Phase 1-12 completed ベースへ同期
+  - Phase 11 screenshot 8件を current worktree build の static server 配信で再取得し、light theme contrast 調整後の視覚レビュー結果を `manual-test-result.md` / `screenshot-matrix.md` / `issues-found.md` へ反映
+  - `references/phase-11-12-guide.md` に「複数 worktree 時は current build `out/renderer` を static 配信する」ルールを追加
+  - `validate-phase11-screenshot-coverage` / `validate-phase-output` / `verify-all-specs` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current=0 を確認
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - current workflow で screenshot 4件を再取得し、`manual-test-result.md` / `screenshot-plan.json` / capture metadata を current task 配下へ正規配置
+  - `clearTimeout` cleanup 採用後の実装に合わせて Phase 2/5/8/10/12 成果物、`artifacts.json`、`index.md`、`phase-1..12` status を実績同期
+  - `.claude/skills/...` 正本 5件 + `SKILL.md` / `LOGS.md` 4件を同一ターンで更新し、未タスク `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` を formalize
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（follow-up）
+- **Result**: success
+- **Notes**:
+  - 画面検証で露出した副次不具合を未タスク化し、`docs/30-workflows/unassigned-task/` 配置とテンプレート準拠を確認
+  - `Phase 12` の苦戦箇所を system spec と未タスク `3.5 実装課題と解決策` へ継承する再利用ルールを補強
+  - merge 取り込み時に main 側履歴を維持しつつ、safeInvoke タスク由来の知見を欠落なく再適用できるようにした
+
+---
+## 2026-03-10 - TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 4-12
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-4` 〜 `outputs/phase-12` の必須成果物を current workflow 配下へ生成
+  - `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を validator 互換の TC + 証跡形式へ整理
+  - Phase 12 で `.claude/skills/...` 正本、`LOGS.md` 2件、`SKILL.md` 2件、workflow `artifacts.json` / `index.md` を同時同期
+
+---
+## 2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見をスキルに反映
+
+- **Agent**: task-specification-creator (skill-improvement)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-templates.md` に「テスト専用タスク向け Phase 4-5 統合ルール」セクションを追加（3層テストパターン、Red/Green混在許容、2段階テスト設計）
+  - `references/coverage-standards.md` に P41 Exemption ルール（v8 Function Coverage特例）、2段階テスト設計パターン、handler-scope vs file-scope カバレッジ使い分けを追加
+  - `references/phase-11-12-guide.md` に Phase 12 サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）と3層テストパターン再利用ガイドを追加
+  - 知見の出典: TASK-10A-G（G1: 14件、G2: 21件、G3: 17件、計52件テスト全PASS）
+
+---
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13（完了）
+- **Result**: success
+- **Notes**:
+  - AuthGuard タイムアウトフォールバック + Settings認証除外の実装完了。教訓・仕様書同期実施
+  - AuthGuardDisplayState に "timed-out" 追加、10秒タイムアウト機構、AuthTimeoutFallback UI、Settings AuthGuardバイパス
+  - 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+  - 104テスト全PASS
+
+---
+
+## 2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査運用の反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - ユーザーが screenshot を明示要求した場合は P53 代替で閉じず、専用 harness route + `screenshot-plan.json` + capture metadata + coverage validator まで完了させる運用を固定
+  - bypass view を追加するタスクでは「AuthGuard bypass 条件」と「未認証 reset 除外条件」を Phase 2/11/12 の確認項目に含める
+  - worktree の Phase 11/12 は `pnpm install --frozen-lockfile` を preflight に含める
+
+---
+
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 11/12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
+- **Notes**:
+  - `pnpm --filter @repo/desktop run screenshot:app-debug-localstorage-clear` で screenshot 3件と metadata を再取得
+  - `phase-11-manual-test.md` / `manual-test-result.md` を validator 準拠の TC + 証跡形式へ更新
+  - `index.md` / `artifacts.json` / `phase-1..12` status を実績同期
+  - `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` を formalize し、system spec / skill 文書を同一ターンで更新
+
+---
+
+## 2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - App.tsx L45-61 デバッグコード削除（localStorage.clear + window.location.reload）
+  - TDD Red-Green 完了: 5テスト全PASS
+  - Phase 1-12 全完了、PR作成待ち
+
+---
+## 2026-03-09 - UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001 テンプレート準拠監査ルールを追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned task formalization）
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し `currentViolations=0` を確認する」ルールを追加
+  - 配置済みとテンプレート準拠を別判定にする運用を明文化
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md` を9セクションテンプレート準拠へ再構成
+
+---
+
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（Step 1-A: タスク完了記録）
+- **Result**: success
+- **Notes**:
+  - `arch-state-management.md` に executeSkill 並行実行ガードパターンと二重防御アーキテクチャを追記
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+  - 未タスク2件: UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001, UT-FIX-CHATPANEL-SELECTOR-MIGRATION-001
+
+---
+
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所記録
+
+- **Agent**: task-specification-creator
+- **Phase**: 追補（苦戦箇所記録）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - Graceful Degradation 実装時の苦戦箇所4件（S-GD-1〜S-GD-4）を `lessons-learned.md` に記録
+  - セキュリティ観点の苦戦箇所3件（SEC-GD-1〜SEC-GD-3）を `security-electron-ipc.md` に記録
+  - `api-ipc-system.md` と `architecture-implementation-patterns.md` S31 に実装パターン詳細を追記
+  - skill-creator によるテンプレート最適化（Phase 11 ハンドラ登録パターンの標準化）
+
+---
+
+## 2026-03-08 - TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 Phase 12 仕様同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（システム仕様書更新）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `registerAllIpcHandlers()` に Graceful Degradation（`safeRegister` + `IpcHandlerRegistrationResult`）を追加した実装を system spec 4仕様書へ同期
+  - `api-ipc-system.md`: 実装状況テーブルと完了タスク追加
+  - `task-workflow.md`: 完了タスクセクション追加
+  - `architecture-implementation-patterns.md`: S31 Graceful Degradation パターン追加
+  - `security-electron-ipc.md`: ライフサイクル管理に戻り値契約追記
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
 
 ## 2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 Phase 12完了条件の明文化
 
@@ -31,6 +258,47 @@
   - `api-ipc-auth.md` に完了タスクセクション追加（Profile 11ch / Avatar 3ch fallback ハンドラ）と変更履歴 v1.7.0 追記
   - `error-handling.md` に変更履歴 v1.10.0 追記（PROFILE_ERROR_CODES.NOT_CONFIGURED / AVATAR_ERROR_CODES.NOT_CONFIGURED）
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-08 - TASK-10A-F final sync（current/completed 2workflow 正規化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（final sync）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow の screenshot 11件を 2026-03-08 18:07-18:15 JST に再取得し、Phase 11 結果文書の時刻と証跡を同期
+  - `completed-tasks/store-driven-lifecycle-ui` の `phase-7-coverage-verification.md` / `phase-11-manual-testing.md` / Phase 11 artifact registry を正規化し、`verify-all-specs --strict` と `validate-phase-output` を PASS 化
+  - `capture-skill-create-wizard-screenshots.mjs` の error 待機を Store UI のフォールバック文言へ補正し、scenario 単位の failure diagnostics を追加
+  - `phase-12-documentation.md` Step 1-D の `generate-index.js` パス誤りを是正し、Phase 12 summary/changelog/feedback を final 状態へ更新
+
+---
+
+## 2026-03-08 - TASK-10A-F current workflow 再確認追補（Phase 11/12 実体同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認追補）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `store-driven-lifecycle-ui` current workflow に screenshot 11件を再取得し、`manual-test-result.md` を screenshot evidence + targeted tests 111件へ更新
+  - `implementation-guide.md` を validator 要件に合わせて補強し、`validate-phase12-implementation-guide` を PASS 化
+  - `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を実更新ベースへ書換
+  - TASK-10A-F 由来の未タスク3件は canonical backlog として維持し、legacy 正規化ガードの `## メタ情報` 重複のみを是正した
+
+---
+
+## 2026-03-08 - TASK-10A-F Phase 12タスク仕様再確認ガード追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再確認）
+- **Result**: 成功
+- **Duration**: N/A
+- **Notes**:
+  - `references/phase-11-12-guide.md` に comparison baseline の completed workflow も strict validator PASS へ揃える手順を追加
+  - `references/unassigned-task-guidelines.md` に `current=合否 / baseline=legacy 負債監視` の二層報告ルールを追加
+  - `task-imp-unassigned-task-legacy-normalization-001.md` の `## メタ情報` 重複を是正し、legacy 改善タスク自体をガイドライン準拠へ戻した
 
 ---
 
@@ -5568,6 +5836,18 @@ if (artifactPath) {
 
 ---
 
+## 2026-03-09 - TASK-10A-F P50検証ワークフロー完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13（P50検証モード）
+- **Result**: ✓ 成功
+- **Notes**:
+  - **実施内容**: Phase 1-13 のP50検証を完了。全Phase PASS
+  - **テンプレート改善候補**: P50モード用のPhase仕様書テンプレートの標準化
+  - **教訓**: SkillImportDialogとuseSkillAnalysisの責務混同を防ぐAPI系統スコープ分離
+
+---
+
 ## 2026-03-08 - TASK-10A-E-D/TASK-UI-03/TASK-10A-F 仕様同期
 
 - **Agent**: task-specification-creator
@@ -5584,15 +5864,57 @@ if (artifactPath) {
 
 ---
 
-## 2026-03-08 - workflow11 Phase 11/12 再確認（harness screenshot 運用を再利用）
+## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認）
-- **Result**: ✓ 成功
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
 - **Notes**:
-  - `apps/desktop/src/renderer/phase11-auth-mode.html` を入口にした harness で `SettingsView` を直描画し、`TC-11-UI-01..03` の screenshot を再取得
-  - `phase-11-manual-test.md` に `## テストケース` と `## 画面カバレッジマトリクス` を追加し、`manual-test-result.md` を証跡列付きへ更新
-  - `discovered-issues.md` で英語 fallback error 露出を記録し、未タスク 1 件の 4 ステップ登録を完了
-  - `artifacts.json` / `index.md` / Phase 12 成果物 stale を是正し、workflow11 の再確認を PASS 状態へ戻す
+  - `validate-phase-output` の誤用例 `--phase` を `assets/main-task-template.md` / `assets/common-footer-template.md` / `agents/output-phase-files.md` から除去
+  - `references/phase-11-12-guide.md` に「BrowserRouter 配下の harness で Router を二重にしない」ルールを追加
+  - workflow12 の Phase 11 screenshot 証跡と Phase 12 実装ガイドを validator 準拠へ再同期
+  - `aiworkflow-requirements` / `task-specification-creator` の `LOGS.md` と `SKILL.md` を同時更新
 
 ---
+
+## 2026-03-09 - TASK-10A-G スキルライフサイクル統合テスト強化
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + completed 移管）
+- **Result**: success
+- **Notes**:
+  - Layer 1/2/3 の 3 ファイル 55 tests（25/14/16）と representative screenshots を Phase 11-12 成果物へ同期
+  - `phase12-task-spec-compliance-check.md` を追加し、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の判定を集約
+- provisional に completed workflow 化を想定したが、この branch では `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/` を canonical workflow として維持した
+  - `audit-unassigned-tasks.js` を completed workflow 配下の `--target-file` 監査へ対応
+
+---
+
+## 2026-03-09 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - AuthGuard タイムアウトフォールバック + Settings認証除外を実装
+  - 変更ファイル: types.ts, getAuthState.ts, useAuthState.ts, AuthTimeoutFallback.tsx, index.tsx, App.tsx
+  - テスト: 104テスト全PASS、カバレッジ Line 95.59%, Branch 89.65%, Function 100%
+  - `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加、Settings bypass セキュリティ記録
+  - `arch-state-management.md` に AUTH_TIMEOUT_MS = 10_000 タイムアウト機構記録
+  - `ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-10 - TASK-10A-G
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）
+  - カバレッジ基準充足、回帰287件PASS
+  - `arch-state-management.md` 関連タスクステータスを「完了（2026-03-10）」に更新
+  - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
+  - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

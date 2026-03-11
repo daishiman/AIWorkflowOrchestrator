@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.2 | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `workspace` ViewType 内で `chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを持つこと、1024/1440 breakpoint、mobile overlay、preview dedicated harness による screenshot 検証を追記 |
 | v1.7.1 | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `settings` は AuthGuard bypass だけでなく未認証 reset 対象外であることを明文化し、Phase 11 screenshot 4件を証跡として同期 |
 | v1.7.0 | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: Settings 画面は AuthGuard 外からアクセス可能に変更。currentView === "settings" の場合、App.tsx で AuthGuard をバイパスして直接レンダリングする設計を追記 |
@@ -71,6 +72,29 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | Desktop | 左サイド固定、expanded/collapsed 切替可、expanded 幅 200px |
 | Tablet | 左サイド固定、collapsed 56px 固定 |
 | Mobile | 下部固定、primary 5項目 + More 4項目 |
+
+### Header utility actions（TASK-UI-08）
+
+Global navigation とは別に、app header 右端には view 横断の utility action を置く。058e では Bell icon を `NotificationCenter` の入口として追加し、通知を view 遷移なしで確認できるようにした。
+
+| 項目 | 契約 |
+| --- | --- |
+| トリガー | Bell icon button (`data-testid="notification-bell-button"`) |
+| aria-label | `お知らせを開く` |
+| 表示位置 | desktop / tablet / mobile 共通で app header 右端 |
+| 開閉方式 | click で open/close、Escape / outside click / close button でも閉じる |
+| 表示形式 | desktop / tablet は anchored popover、mobile は full-width overlay |
+| 視覚状態 | idle badge / open / expanded / delete reveal / empty state の 5状態を基本とする |
+| 実装参照 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+
+### Header utility 画面証跡（TASK-UI-08）
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-01-desktop-idle-badge.png` | Bell idle badge |
+| TC-11-02 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-02-desktop-popover-open.png` | desktop open |
+| TC-11-04 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-04-tablet-popover-open.png` | tablet open |
+| TC-11-05 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-05-mobile-overlay-open.png` | mobile overlay |
 
 ### ViewType型定義
 

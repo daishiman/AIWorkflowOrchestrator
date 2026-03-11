@@ -43,6 +43,7 @@ describe("notificationHandlers", () => {
       })),
       markRead: vi.fn(async () => ({ updated: true })),
       markAllRead: vi.fn(async () => ({ updatedCount: 1 })),
+      delete: vi.fn(async () => ({ deleted: true })),
       clear: vi.fn(async () => ({ deletedCount: 1 })),
     };
 
@@ -100,6 +101,32 @@ describe("notificationHandlers", () => {
 
     expect(result.success).toBe(true);
     expect(result.data?.updated).toBe(true);
+  });
+
+  it("notification:delete はnotificationId未指定を検証エラーにする", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_DELETE);
+
+    const result = (await handler!(validEvent, {})) as {
+      success: boolean;
+      error?: { code: string };
+    };
+
+    expect(result.success).toBe(false);
+    expect(result.error?.code).toBe("VALIDATION_ERROR");
+  });
+
+  it("notification:delete は削除結果を返す", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_DELETE);
+
+    const result = (await handler!(validEvent, {
+      notificationId: "n-1",
+    })) as {
+      success: boolean;
+      data?: { deleted: boolean };
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data?.deleted).toBe(true);
   });
 
   it("notification:clear が削除件数を返す", async () => {

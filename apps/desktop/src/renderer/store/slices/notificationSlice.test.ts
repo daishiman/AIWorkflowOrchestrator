@@ -81,11 +81,13 @@ describe("notificationSlice", () => {
     store.addNotification(buildNotification({ title: "n1" }));
     store.addNotification(buildNotification({ title: "n2" }));
     const targetId = store.notifications[0].id;
+    store.setExpandedNotificationId(targetId);
 
     store.deleteNotification(targetId);
 
     expect(store.notifications).toHaveLength(1);
     expect(store.notifications[0].id).not.toBe(targetId);
+    expect(store.expandedNotificationId).toBeNull();
   });
 
   it("100件超過で既読の古い通知から削除する", () => {
@@ -181,5 +183,30 @@ describe("notificationSlice", () => {
 
     expect(store.notifications.map((n) => n.id)).toEqual(["n-new", "n-old"]);
     expect(store.unreadCount).toBe(1);
+  });
+
+  it("setNotificationHistoryで同一IDを重複保持しない", () => {
+    store.setNotificationHistory([
+      {
+        id: "dup-1",
+        type: "info",
+        title: "before",
+        timestamp: "2026-03-05T10:00:00.000Z",
+        isRead: false,
+        source: { kind: "system", eventType: "before" },
+      },
+      {
+        id: "dup-1",
+        type: "info",
+        title: "after",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: true,
+        source: { kind: "system", eventType: "after" },
+      },
+    ]);
+
+    expect(store.notifications).toHaveLength(1);
+    expect(store.notifications[0].title).toBe("after");
+    expect(store.unreadCount).toBe(0);
   });
 });

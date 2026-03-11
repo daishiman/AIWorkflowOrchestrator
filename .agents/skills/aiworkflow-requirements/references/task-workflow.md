@@ -137,24 +137,42 @@
 | 項目 | 値 |
 | --- | --- |
 | タスクID | TASK-UI-06-HISTORY-SEARCH-VIEW |
-| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + 仕様同期）** |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
+| タイプ | ui |
+| 優先度 | 中 |
 | 完了日 | 2026-03-10 |
-| 対象 | `HistorySearchView` / `historySearchSlice` / `historySearchHandlers` / `preload/types.ts` / `EditorView` file deep-open |
+| 対象 | `HistorySearchView` timeline 再設計、`historySearchSlice`、`historySearchHandlers`、`EditorView` deep-open |
 | 成果物 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/outputs/` |
 
 #### 実施内容
 
-- `HistorySearchView` を query/filter/stats 主導から timeline 主導へ再設計
-- 300ms デバウンス検索、日付グループ、アコーディオン、observer 自動追補、初期空/検索空/error state を実装
-- `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` を追加し、append dedupe と trim 契約を固定
-- file card から `EditorView` を開くため `editorSlice.pendingOpenFilePath` を追加
-- Phase 11 screenshot 6件と task-scope coverage summary を取得
+- `HistorySearchView` を query/filter/stats 主導の検索画面から timeline 主導 UI へ再設計
+- `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe を追加
+- file card から editor を開くため `editorSlice.pendingOpenFilePath` を追加
+- `history:search` handler の trim / filter / pagination guard を明文化
+- Phase 11 screenshot 6件、targeted tests 26件、task-scope coverage 88.42 / 80.00 / 90.00 を取得
 
-#### 苦戦箇所（今回実装で詰まった点）
+#### 苦戦箇所
 
-- worktree 環境で `@rollup/rollup-darwin-x64` optional module が欠落し、最初の test run が失敗した
-- `phase-11` screenshot capture で accordion 待機条件が広すぎ、strict mode locator で停止した
-- 正本タスク参照パスが `task-00-unified-implementation-sequence` から `completed-task` へ移動しており、workflow 本文に drift が残っていた
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| worktree で Rollup native optional module が欠けて test 起動前に落ちる | UI検証前に dependency preflight を省略する | `pnpm install --frozen-lockfile` を preflight に含めた |
+| screenshot script の locator が broad で strict mode violation になる | summary/detail が同じ文字列を持つ | 一意な detail text へ待機条件を絞った |
+| `.claude` 正本と `.agents` mirror の参照が混線する | workflow / outputs が mirror 側を参照する | `.claude/skills/...` を正本に固定し、systemic gap は未タスクへ分離した |
+
+#### 同種課題の5分解決カード
+
+1. UIの主目的を「検索」ではなく「読む timeline」に置き直す。
+2. initial loading と load more を別 state に分ける。
+3. cross-view 導線は `pending payload + view 遷移` に分離する。
+4. screenshot script は一意 selector を待機条件にする。
+5. Phase 12 は `.claude` 正本・workflow outputs・skill docs を同ターンで同期する。
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 の canonical root を固定する | 中 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
 
 #### 検証証跡
 
@@ -162,12 +180,320 @@
 | --- | --- |
 | `pnpm --filter @repo/desktop exec vitest run src/renderer/views/HistorySearchView/HistorySearchView.test.tsx src/renderer/views/HistorySearchView/hooks/useTimelineGroups.test.tsx src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.test.tsx src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/__tests__/historySearchHandlers.test.ts` | PASS（26 tests） |
 | `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop exec vitest run --coverage --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.statements=0 --coverage.thresholds.branches=0 --coverage.include='src/renderer/views/HistorySearchView/**' --coverage.include='src/renderer/store/slices/historySearchSlice.ts' --coverage.include='src/main/ipc/historySearchHandlers.ts' --coverage.reporter=json-summary ...` | PASS（Lines 88.42 / Branch 80.00 / Functions 90.00） |
 | `pnpm --filter @repo/desktop run screenshot:task-058c` | PASS（6 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0 |
 
-#### Phase 12で登録した関連未タスク
+### タスク: TASK-UI-08-NOTIFICATION-CENTER お知らせセンター再整備（2026-03-11）
 
-- なし（今回差分から新規未タスクは未検出）
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-08-NOTIFICATION-CENTER |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | P2 |
+| 完了日 | 2026-03-11 |
+| 対象 | `NotificationCenter` の 058e 差分収束（`お知らせ`、Portal、relative time、個別削除 IPC、a11y、responsive） |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/` |
+
+#### 実施内容
+
+- `NotificationCenter` のタイトルを `お知らせ` に統一し、`すべて削除` UI を撤去
+- popover を `document.body` へ portal 描画し、Escape / outside click / focus return / Tab wrap を追加
+- `notification:delete` を shared / preload / main に追加し、個別削除を persistence と接続
+- `notificationSlice` に履歴 dedupe と delete 時 `expandedNotificationId` reset を追加
+- targeted tests 59件、typecheck PASS、coverage `92.94 / 81.77 / 94.44 / 92.94` を確認
+- Phase 11 で screenshot 7件を取得し、Apple UI/UX engineer 観点の視覚レビューを実施
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| popover が stacking context と focus 管理で不安定 | inline 描画のまま overlay を広げる | `createPortal(document.body)` と focus return を導入した |
+| 初期履歴同期と push が競合して重複する | history fetch 直後に同一ID push が届く | `setNotificationHistory()` / `ingestNotification()` の両方で dedupe した |
+| UI に delete を足しても Main persistence が追随しない | shared/preload/main の3境界を同時更新しない | `notification:delete` を channel / type / handler / test まで一括で追加した |
+
+#### 同種課題の5分解決カード
+
+1. Bell 起点 UI は portal と focus return を先に決める。
+2. push と history が混在する通知系は ID dedupe を Main/Renderer 両方で確認する。
+3. UI から mutation を追加するときは shared 定数、preload 型、main handler を同一ターンで更新する。
+4. `notification:clear` のような互換 API は残しても、UI 操作は正本仕様に合わせて減らしてよい。
+5. Phase 11 では desktop だけでなく tablet / mobile / empty state まで screenshot を残す。
+
+#### 関連未タスク
+
+- なし。Phase 11 の所見は `MINOR` に留まり、新規 backlog 化は不要と判断した。
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm test:run ...NotificationCenter scope...` | PASS（6 files / 59 tests） |
+| `cd apps/desktop && pnpm typecheck` | PASS |
+| `cd apps/desktop && pnpm exec vitest run --coverage ...NotificationCenter scope...` | PASS（Stmts 92.94 / Branch 81.77 / Funcs 94.44 / Lines 92.94） |
+| `node apps/desktop/scripts/capture-task-058e-notification-center-phase11.mjs` | PASS（screenshot 7件） |
+
+### タスク: TASK-UI-04A-WORKSPACE-LAYOUT Workspace レイアウト基盤（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-04A-WORKSPACE-LAYOUT |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | P2 |
+| 完了日 | 2026-03-10 |
+| 対象 | `WorkspaceView` の 1-pane 起点 layout、file browser、status bar、watcher、Phase 11 harness |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/outputs/` |
+
+#### 実施内容
+
+- `WorkspaceView` を stub から本実装へ差し替え、`chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを追加
+- `FileBrowserPanel` / `FileTreeNode` / `PanelToggleBar` / `PanelResizeHandle` / `WorkspaceStatusBar` / `WorkspaceShell` を追加
+- `useWorkspaceLayout` / `usePanelResize` / `useFileWatcher` / `useFileContextMenu` を追加
+- Main `fileHandlers.ts` に `FILE_WATCH_START` / `FILE_WATCH_STOP` を実装し、`FILE_CHANGED` push を接続
+- task scope 12 files / 61 tests PASS、coverage `91.64 / 81.78 / 96.36 / 91.64` を確認
+- Phase 11 で screenshot 8件を current workflow 配下へ取得し、light theme contrast 是正後の画面を再確認
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| right preview panel の resize 方向が直感と逆 | 左 panel と同じ drag 計算を右 panel に流用する | `usePanelResize` に `direction: "reverse"` を追加した |
+| `useFileWatcher` の callback identity 変更で watch 再登録が走る | `onFileChanged` を effect dependency に直接置く | callback を `ref` 化し、watch lifecycle dependency から外した |
+| worktree の Vite dev server が別 worktree source を配信する | preview server を HMR ソース前提で使う | build 後の `out/renderer` を static server で配信し、current worktree を固定した |
+| light theme の補助テキストが screenshot 上で沈む | dark 基準の濃度を light にそのまま流用する | Workspace 04A 局所の text / chip / status bar を調整して再撮影した |
+
+#### 同種課題の5分解決カード
+
+1. 右側 panel の resize は reverse drag かを最初に確認する。
+2. watch 系 hook は callback ref を使い、lifecycle dependency を分離する。
+3. worktree で preview する場合は current build 由来の asset hash を確認する。
+4. screenshot で light theme のコントラストを必ず目視確認する。
+5. `task-workflow.md` / `ui-ux-feature-components.md` / `arch-state-management.md` / `security-electron-ipc.md` / `lessons-learned.md` を同一ターンで更新する。
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot 再取得で current worktree build を capture 元として固定し、reverse resize / watcher 更新 / light theme contrast の再監査手順を共通化する | 中 | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm exec vitest run ...WorkspaceView scope...` | PASS（12 files / 61 tests） |
+| `cd apps/desktop && pnpm exec tsc --noEmit` | PASS |
+| `cd apps/desktop && pnpm exec eslint src/renderer/views/WorkspaceView src/main/ipc/fileHandlers.ts src/main/ipc/fileHandlers.test.ts` | PASS |
+| `pnpm build` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
+### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-10A-G |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | test |
+| 優先度 | 中 |
+| 完了日 | 2026-03-10 |
+| 対象 | スキルライフサイクル3層テスト（IPC契約 / Store駆動 / ChatPanel結線） |
+| 成果物 | `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/outputs/` |
+
+#### 実施内容
+
+- G1: IPC契約テスト14件（`skill:create` の入力検証・sender検証・正常委譲・異常系）
+- G2: Store駆動テスト21件（`create -> list -> analyze -> improve` の状態遷移・guard・trim バリデーション）
+- G3: ChatPanel結線テスト17件（スキル管理トグル、実行中 disabled、SkillManagementPanel 切替の統合フロー）
+- 合計52テスト全PASS、カバレッジ基準充足、回帰287件PASS
+- Phase 11 では代表 UI 5ケースの screenshot を current workflow 配下へ追加し、`validate-phase11-screenshot-coverage` PASS まで確認
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| テスト専用タスクで Phase 4/5 の境界が曖昧 | テストコードのみ追加するタスクで Red/Green 区分が不明確 | Phase 4 でテスト作成（Red）→ Phase 5 でモック/スタブ修正（Green）と整理 |
+| 巨大ファイルのカバレッジ計測が個別ファイル単位と全体で乖離 | v8 プロバイダが大規模ファイルをインライン関数単位でカウント | Layer 別にカバレッジを報告し、全体値は weighted average として扱う |
+| 3層テスト間のモック整合性 | Layer 1 のモックと Layer 2 のストア実装が異なる前提で動作 | 各 Layer のモック境界を明示的にドキュメント化 |
+
+#### 同種課題の5分解決カード
+
+1. テスト専用タスクでは Phase 4 = テスト作成（Red）、Phase 5 = モック/環境修正（Green）と読み替える。
+2. カバレッジは Layer 別に計測し、全体値との乖離を仕様書に明記する。
+3. `--sequence.shuffle` でテスト順序依存がないことを確認する。
+4. `task-workflow.md` / `lessons-learned.md` / 関連 domain spec を同一ターンで更新する。
+
+#### 関連未タスク（再監査追補）
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-TASK-SPEC-GENERATE-INDEX-SCHEMA-COMPAT-001 | `generate-index.js` と workflow `artifacts.json` の schema 互換改善 | 中 | `docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening/unassigned-task/task-imp-task-spec-generate-index-schema-compat-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run` (回帰テスト) | 287 PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
+
+### タスク: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 App.tsx debug storage clear 削除（2026-03-09）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 |
+| ステータス | **実装・Phase 1-12 完了 / Phase 13 未実施** |
+| 完了日 | 2026-03-09 |
+| 対象 | `apps/desktop/src/renderer/App.tsx` の debug-only `localStorage.clear()` / `window.location.reload()` 除去 |
+| 成果物 | `docs/30-workflows/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/outputs/` |
+
+#### 実施内容
+
+- `App.tsx` から debug storage clear `useEffect` を削除
+- `App.debug-removal.test.tsx` を追加し、debug code 非残存と reload 不再発を固定
+- Phase 11 では通常ルート metadata 確認 + dedicated harness screenshot 3件で persist 保持を検証
+- system spec / task-spec guide / skill 文書を同一ターンで同期
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| `skipAuth=true` で screenshot は安定するが bug path を bypass して false negative になる | auth / persist / App shell 初期化順序が原因の不具合を screenshot 導線だけで確認しようとする | 通常ルートで `navigation.type` / debug log absence / storage snapshot を metadata 取得し、画面証跡だけ dedicated harness へ分離した |
+| App shell 直下の画面検証は初期化ノイズで不安定 | 目的画面への遷移や preload 依存が強く、同一 view の状態固定が難しい | SettingsView 専用 harness を追加し、本番コンポーネントをそのまま使って screenshot を安定取得した |
+| repo-wide に残る `debug-clear-storage` 前提は current task の責務外まで波及する | current workflow だけ直しても、古い comment / script / e2e setup が別箇所に残る | `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` として未タスクへ分離し、current task は実装修正と Phase 12 同期に集中した |
+
+#### 同種課題の5分解決カード
+
+1. まず通常ルートで bug path を再現し、metadata で副作用の有無を固定する。
+2. 画面証跡が不安定なら dedicated harness を作り、screenshot path を bug path から分離する。
+3. `task-workflow.md` / `lessons-learned.md` / 関連 domain spec を同一ターンで更新する。
+4. repo-wide cleanup は未タスクへ切り出し、`audit --target-file` で current=0 を確認して閉じる。
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop run screenshot:app-debug-localstorage-clear` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/__tests__/App.debug-removal.test.tsx` | PASS |
+| `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001` | PASS |
+
+### タスク: TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 AuthGuard タイムアウトフォールバック + Settings認証除外（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 |
+| ステータス | **完了（Phase 1-13 出力 + 実装 + テスト104件全PASS + 仕様同期）** |
+| タイプ | fix |
+| 優先度 | P3 |
+| 完了日 | 2026-03-10 |
+| 対象 | `types.ts` / `getAuthState.ts` / `useAuthState.ts` / `AuthTimeoutFallback.tsx` / `index.tsx` / `App.tsx` |
+| 成果物 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/` |
+
+#### 実施内容
+
+- AuthGuardDisplayState に "timed-out" 状態を追加し、認証チェックの無限ブロックを防止
+- 10秒タイムアウト機構を useAuthState フックに実装（認証確認が10秒以内に完了しない場合にフォールバック）
+- AuthTimeoutFallback UI コンポーネントを新規作成（タイムアウト時のユーザーガイダンス表示）
+- Settings 画面を AuthGuard バイパス対象に追加（未認証状態でも設定画面にアクセス可能）
+- 104テスト全PASS
+
+#### 変更ファイル
+
+| ファイル | 変更内容 |
+| --- | --- |
+| `types.ts` | AuthGuardDisplayState に "timed-out" を追加 |
+| `getAuthState.ts` | タイムアウト判定ロジックの追加 |
+| `useAuthState.ts` | 10秒タイムアウト機構の実装 |
+| `AuthTimeoutFallback.tsx` | タイムアウト時フォールバック UI コンポーネント新規作成 |
+| `index.tsx` | AuthGuard コンポーネントへのタイムアウト状態ハンドリング追加 |
+| `App.tsx` | Settings 画面の AuthGuard バイパス設定 |
+
+### タスク: TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 |
+| ステータス | **完了（Phase 11 screenshot 再取得 + reset guard 修正 + system spec 同期）** |
+| 完了日 | 2026-03-10 |
+| 対象 | `App.tsx` / `shouldResetUnauthenticatedView.ts` / Phase 11-12 成果物 / auth-state system spec |
+
+#### 実施内容
+
+- `settings` を未認証 reset 対象外にする `shouldResetUnauthenticatedView` を追加
+- Phase 11 専用 harness route で screenshot 4件を再取得
+- workflow 成果物、system spec 6件、LOGS/SKILL 4件を同一ターンで再同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/utils/__tests__/shouldResetUnauthenticatedView.test.ts src/renderer/components/AuthGuard/AuthGuard.test.tsx src/renderer/components/AuthGuard/utils/getAuthState.test.ts src/renderer/components/AuthGuard/hooks/__tests__/useAuthState.test.ts src/renderer/components/AuthGuard/__tests__/AuthTimeoutFallback.test.tsx src/renderer/components/organisms/AccountSection/AccountSection.test.tsx` | PASS（6 files / 110 tests） |
+| `node apps/desktop/scripts/capture-task-authguard-timeout-phase11.mjs` | PASS（4 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001` | PASS |
+
+#### 画面証跡
+
+| TC | 証跡 |
+| --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` |
+| TC-11-02 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` |
+| TC-11-03 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` |
+| TC-11-04 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` |
+
+#### Phase 12 判定
+
+- open 未タスク: **0件**
+- screenshot 要求: **実画面証跡で充足**
+- 再発防止ポイント: bypass 実装時は reset 条件も同時確認する
+
+### タスク: TASK-FIX-SAFEINVOKE-TIMEOUT-001 safeInvoke timeout + timer cleanup（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-SAFEINVOKE-TIMEOUT-001 |
+| ステータス | **完了（Phase 1-13 実装・再監査・system spec 同期・PR作成完了）** |
+| 完了日 | 2026-03-10 |
+| 対象 | `apps/desktop/src/preload/ipc-utils.ts` / preload wrappers / current workflow Phase 11-12 |
+| 成果物 | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/outputs/` |
+
+#### 実施内容
+
+- `invokeWithTimeout()` に `IPC_TIMEOUT_MS = 5000` の timeout 契約を集約
+- allowlist fail-fast を維持したまま、正常応答・reject の双方で `clearTimeout(timeoutId)` cleanup を追加
+- preload timeout 単体テストを 15 件へ拡張し、timer 残留 0 件を固定
+- preload 全体回帰、current workflow screenshot 4件、Phase 12 成果物、system spec 5件、SKILL/LOGS 4件を同一ターンで同期
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| timeout 実装の主責務は Preload だが、影響は AuthGuard UI に現れる | 非UIタスクとしてコード検証のみで閉じる | current workflow 配下に timeout fallback / settings shell の screenshot 4件を取得し、UI 影響を実証した |
+| cleanup 実装後も Phase 2/8/12 に「`clearTimeout` 不採用」が残る | 実装更新後に outputs と spec を横断修正しない | workflow 本文 / outputs / system spec / SKILL / LOGS を同一ターンで修正し、planned wording を撤去した |
+| 再監査 screenshot で light theme の `リトライ` 視認性差分が見つかる | 機能修正と UI 品質課題を同一スコープで抱え込む | `UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001` として未タスク化し、主タスクは timeout 契約の完了に集中した |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm vitest run src/preload/__tests__/ipc-utils.safeInvoke-timeout.test.ts` | PASS（15 tests） |
+| `cd apps/desktop && pnpm vitest run src/preload` | PASS（19 files / 551 tests） |
+| `cd apps/desktop && pnpm typecheck` | PASS |
+| `node apps/desktop/scripts/capture-task-fix-safeinvoke-timeout-phase11.mjs` | PASS（4 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001` | PASS |
+| `gh pr create --title "fix(preload): safeInvoke に timeout と cleanup を追加"` | PR #1137 作成 |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001 | `AuthTimeoutFallback` ライトテーマの `リトライ` 視認性改善 | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-auth-timeout-fallback-light-contrast-guard-001.md` | 未着手 |
 
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
@@ -208,6 +534,71 @@
 | UT-08-003 | Phase 6 残件（INT-11〜13）の再評価と必要分実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
 | UT-08-004 | settings harness パターンの仕様標準化を継続強化 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
 
+### タスク: TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 registerAllIpcHandlers Graceful Degradation（2026-03-08）
+
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001                                            |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト + 仕様同期）**                                   |
+| 完了日     | 2026-03-08                                                                               |
+| 対象       | `registerAllIpcHandlers()` の Graceful Degradation（個別 try-catch + 失敗記録）          |
+| 成果物     | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/outputs/`            |
+
+#### 実施内容
+
+- `safeRegister()` ヘルパーを導入し、各 `registerXxxHandlers()` を個別 try-catch で囲む
+- `IpcHandlerRegistrationResult` 型（`successCount` / `failureCount` / `failures`）を戻り値として返却
+- `HandlerRegistrationFailure` 型（`handlerName` / `errorMessage` / `errorCode: 4001`）で失敗情報を記録
+- 8グループ（依存なし / mainWindow依存 / ThemeWatcher / Supabase条件分岐 / APIKey / History / AgentExecution / AuthKey+Skill系）に分類して登録
+- 1つのグループの失敗が後続グループの登録を阻害しない設計
+
+#### 教訓
+
+| 項目       | 内容                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| 苦戦箇所   | `setupThemeWatcher` は戻り値（unsubscribe関数）を保持する必要があり、`safeRegister` ラッパーに収まらなかった |
+| 対処       | `setupThemeWatcher` のみ個別の try-catch ブロックで処理し、他は `track()` 関数で統一的に処理                  |
+| 標準ルール | IPC ハンドラ登録は「失敗を記録し続行する」Graceful Degradation を標準とし、エラーコード 4001 で分類する       |
+
+### 苦戦箇所
+
+| ID | 課題 | 影響 | 解決策 |
+|---|---|---|---|
+| S-GD-1 | `setupThemeWatcher` が `safeRegister` パターンに適合しない | 戻り値（unsubscribe）のキャプチャ不可 | 個別 try-catch で対応、設計書に使い分けを明記 |
+| S-GD-2 | `track()` クロージャの成功カウント管理 | 手動カウント漏れリスク | クロージャで自動追跡 |
+| S-GD-3 | `sanitizeRegistrationErrorMessage` のパスマスク | 正規表現メタ文字の未エスケープ | `escapeRegExp()` 適用 |
+| S-GD-4 | 既存 `agentHandlers.test.ts` の失敗との混同 | 16テスト失敗が変更起因と誤認されるリスク | テストファイル絞り込み実行で分離 |
+
+### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+|---|---|
+| `lessons-learned.md` | S-GD-1〜S-GD-4 教訓追加 |
+| `api-ipc-system.md` | 実装パターン詳細追記 |
+| `architecture-implementation-patterns.md` | S30 苦戦箇所・テスト戦略追記 |
+| `security-electron-ipc.md` | SEC-GD-1〜SEC-GD-3 セキュリティ苦戦箇所追記 |
+
+#### 2026-03-08 再監査
+
+| 項目 | 結果 |
+| --- | --- |
+| `verify-all-specs` | PASS（13/13, error=0, warning=0） |
+| `validate-phase-output` | PASS（28項目） |
+| `validate-phase11-screenshot-coverage` | PASS（expected=3 / covered=3） |
+| `validate-phase12-implementation-guide` | PASS |
+| `verify-unassigned-links` | PASS（existing=216 / missing=0） |
+| open 未タスク | 4件（苦戦箇所・スキルフィードバック・テスト失敗由来） |
+
+#### Phase 12 後追加で検出した関連未タスク
+
+| ID | 概要 | 優先度 | 指示書パス |
+|---|---|---|---|
+| UT-FIX-AGENT-HANDLERS-VITE-RESOLVE-001 | agentHandlers.test.ts 16テスト失敗（Vite resolvePackageEntry エラー）修正 | 高 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-fix-agent-handlers-vite-resolve.md` |
+| UT-IMP-IPC-ERROR-SANITIZE-COMMON-001 | sanitizeErrorMessage の IPC ハンドラ横断共通化 | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-ipc-error-sanitize-common.md` |
+| UT-IMP-WORKFLOW-STALE-VALIDATOR-001 | index.md / artifacts.json / phase-*.md stale 状態一括検出バリデータ | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-workflow-stale-validator.md` |
+| UT-IMP-SKILL-CONFLICT-MARKER-LINT-001 | SKILL.md / LOGS.md conflict marker 検出 lint | 中 | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-skill-conflict-marker-lint.md` |
+
+---
 ### タスク: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 設定画面 apiKey.list 契約防御と providers 正規化（2026-03-07）
 
 | 項目       | 値                                                                          |
@@ -266,7 +657,7 @@
 | タスクID   | TASK-10A-F                                             |
 | ステータス | **完了**                                               |
 | 完了日     | 2026-03-07                                             |
-| 成果物     | `docs/30-workflows/store-driven-lifecycle-ui/outputs/` |
+| 成果物     | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/` |
 
 #### 実施内容
 
@@ -324,7 +715,7 @@
 | 完了日 | 2026-03-07 |
 | ステータス | **完了（Phase 1-12 出力 + 実画面検証 + 仕様同期）** |
 | 対象 | `useSkillAnalysis` の直接IPC排除、`SkillCreateWizard` / `SkillAnalysisView` の Store駆動整合 |
-| 参照 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| 参照 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/` |
 
 **別名 / 検索語**: `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal`
 
@@ -340,21 +731,56 @@
 
 | コマンド | 結果 |
 | --- | --- |
-| `pnpm --filter @repo/desktop exec node scripts/capture-skill-analysis-view-screenshots.mjs --output-dir ../../docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-11/screenshots` | PASS（TC-01..08 screenshot 取得） |
+| `pnpm --filter @repo/desktop exec node scripts/capture-skill-analysis-view-screenshots.mjs --output-dir ../../docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/outputs/phase-11/screenshots` | PASS（TC-01..08 screenshot 取得） |
 | `pnpm --filter @repo/desktop exec node scripts/capture-skill-create-wizard-screenshots.mjs` | PASS（create wizard screenshot 取得） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/store-driven-lifecycle-ui --json` | PASS（13/13, error=0） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/store-driven-lifecycle-ui --json` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --json` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --json` | PASS |
 
-#### Phase 12で検出した未タスク
+#### 2026-03-08 再確認追補
 
-- 新規未タスク: **4件**（Phase 11証跡ガード1件 + 残存IPC移行1件 + 苦戦箇所由来2件）
+- 移管前 current workflow の `manual-test-result.md` / `capture-results.json` / `implementation-guide.md` / `spec-update-summary.md` が stale だったため、actual evidence ベースへ再同期した
+- Phase 11 はスクリーンショット 11 件を移管前 workflow で再取得し、統合後 workflow へ反映した
+- Phase 12 は `validate-phase12-implementation-guide` を追加ゲートとして通し、Phase 12 完了確認後に completed workflow へ統合した
+
+#### 2026-03-08 final sync（comparison baseline 正規化）
+
+- completed workflow を comparison baseline に使う以上、`phase-7-coverage-check.md` / `phase-11-manual-test.md` / `artifacts.json` / `outputs/artifacts.json` まで current と同ターンで正規化し、`verify-all-specs --strict` / `validate-phase-output` を PASS に揃えた
+- `phase-11-manual-testing.md` の legacy 重複を削除し、`screenshot-plan.json` / `discovered-issues.md` を completed workflow にも補完した
+- screenshot harness は store action が内部例外を汎用 UI 文言へ畳む前提を踏まえ、wizard 側は `スキル生成に失敗しました`、analysis 側は `data-testid="skill-analysis-view"` を ready 条件の正本とした
+
+#### 2026-03-08 Phase 12 タスク仕様再確認
+
+- 移管前 current workflow は Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 を満たし、その成果物は completed workflow へ統合済み
+- `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/` には TASK-10A-F 由来の open backlog 5件が配置済みで、テンプレート準拠も確認した
+- ただしディレクトリ全体は legacy 正規化が未完了であり、repo-wide 監査値は `baselineViolations=110` を継続監視する
+- したがって判定は「今回差分合格」「legacy 負債は別管理」の二層で扱う
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm install --frozen-lockfile` | PASS（Rollup optional dependency 復旧） |
+| `pnpm --filter @repo/desktop exec playwright install chromium` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --diff-from HEAD --json` | PASS（currentViolations=0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` | INFO（baselineViolations=110） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/store-driven-lifecycle-ui --strict` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/store-driven-lifecycle-ui` | PASS |
+
+#### Phase 12で継続管理する open backlog
+
+- open backlog: **5件**
+- 履歴上の完了済み運用ガード: **1件**
 
 | タスクID | 概要 | 優先度 | 参照 |
 | --- | --- | --- | --- |
-| UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11証跡ファイル名同期ガード | 中 | `docs/30-workflows/store-driven-lifecycle-ui/outputs/phase-12/unassigned-task-detection.md` |
-| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
-| UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード | 中 | `docs/30-workflows/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` |
-| UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION | improvementResult Store統合（条件付き） | 低 | `docs/30-workflows/unassigned-task/task-10a-f-improvement-result-store-integration.md` |
+| UT-10A-G-SKILL-EDITOR-IPC-STORE-MIGRATION | SkillEditor 残存直接IPC呼び出し6箇所のStore移行 | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-g-skill-editor-ipc-store-migration.md` |
+| UT-10A-F-STORE-MOCK-PATTERN-STANDARDIZATION-GUARD | Store mockテストパターン標準化ガード | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-store-mock-pattern-standardization-guard.md` |
+| UT-10A-F-IMPROVEMENT-RESULT-STORE-INTEGRATION | improvementResult Store統合（条件付き） | 低 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-improvement-result-store-integration.md` |
+| UT-10A-F-SCREENSHOT-HARNESS-HARDENING | Screenshot Harness の data-testid ベース待機条件標準化 | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md` |
+| UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION | 2Workflow Baseline 正規化自動化 | 中 | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md` |
+
+| 完了済みガード | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC 証跡同期の運用ガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
 
 #### 実装時の苦戦箇所（TASK-10A-F）
 
@@ -393,18 +819,21 @@
 
 | タスクID                                           | 概要                                                 | 参照                                                                                        |
 | -------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001       | Workflow10 の Phase 7/12 準拠不足是正                | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md`       |
+| ~~UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001~~       | ~~Workflow10 の Phase 7/12 準拠不足是正~~                | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md` **再評価クローズ: 2026-03-08（workflow10 再監査完了）**       |
 | UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001       | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`       |
-| UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001 | Workflow12 の実装ガイド欠落是正                      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md` |
+| UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001          | Workflow12 の `abortExecution` 連打時ガード追加      | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md`          |
+| UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001 | agentSlice テスト createStore パターン標準化 | `docs/30-workflows/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md` |
+| UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001    | Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加 | `docs/30-workflows/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`    |
+| UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001 | agentSlice 既存テスト13ファイルの環境依存エラー修復   | `docs/30-workflows/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md` |
 
 #### branch横断再確認（2026-03-08）
 
-| workflow                                                | `verify-all-specs` | `validate-phase-output --phase 12` | `validate-phase12-implementation-guide` |
+| workflow                                                | `verify-all-specs` | `validate-phase-output`            | `validate-phase12-implementation-guide` |
 | ------------------------------------------------------- | ------------------ | ---------------------------------- | --------------------------------------- |
 | `07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001`   | PASS               | PASS                               | PASS                                    |
 | `10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001`      | PASS               | FAIL（Phase 7 必須節欠落）         | FAIL（implementation-guide 欠落）       |
 | `11-TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001`      | PASS               | PASS                               | PASS                                    |
-| `12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001` | PASS               | PASS                               | FAIL（implementation-guide 欠落）       |
+| `12-TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001` | PASS               | PASS                               | PASS                                    |
 
 > 完了判定は `verify-all-specs` 単独ではなく、Phase 12 2検証を含む3点セットを必須とする。
 
@@ -477,7 +906,7 @@
 
 | 観点               | コマンド                                                                                                                                                                            | 結果                                           |
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| Phase 12 必須要件  | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain --phase 12`                | PASS（Task 12-1〜12-5 / 完了条件5件を再確認）  |
+| Phase 12 必須要件  | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-056c-notification-history-domain`                           | PASS（Task 12-1〜12-5 / 完了条件5件を再確認）  |
 | 画面証跡再採取     | `node apps/desktop/scripts/capture-task-056c-notification-history-screenshots.mjs`                                                                                                  | PASS（TC-11-01〜03 再撮影）                    |
 | 画面証跡カバレッジ | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-056c-notification-history-domain` | PASS（expected 6 / covered 6）                 |
 | 未タスク差分監査   | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`                                                                          | `currentViolations=0`, `baselineViolations=92` |
@@ -3220,12 +3649,48 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 ---
 
+## TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-UI-03-AGENT-VIEW-ENHANCEMENT |
+| 対象workflow | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| 目的 | current workflow / outputs / `.claude/skills/...` 正本のドリフトを再確認し、実行コマンドと仕様同期漏れを解消する |
+
+### 再監査で反映した内容
+
+- `ui-ux-components.md` / `ui-ux-feature-components.md` / `arch-ui-components.md` を current workflow 導線、`types.ts`、Phase 11 dedicated harness、136 tests に同期
+- `architecture-implementation-patterns.md` に dedicated harness + review scope 分離パターンを追加し、UI再監査での state 固定と token 由来所見の切り分けを標準化
+- `.claude/skills/task-specification-creator` 正本と current workflow の task-spec script 参照を `.agents/skills/task-specification-creator/scripts/` に統一
+- `AgentView/index.tsx` / `phase11-agent-view.tsx` の `as unknown as Skill[]` を adapter helper (`toViewSkill` / `toImportedSkill`) へ置換し、型アサーション残存を解消
+
+### 検証証跡
+
+| 種別 | 結果 | 証跡 |
+| --- | --- | --- |
+| workflow 構造検証 | PASS | `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --strict` |
+| workflow phase 検証 | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement` |
+| Phase 11 coverage | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --allow-non-visual-tc TC-10 --json` |
+| Phase 12 implementation guide | PASS | `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement --json` |
+| 未タスクリンク | PASS | `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` |
+
+### 残課題
+
+- `UT-UI-03-TYPE-ASSERTION-001` は 2026-03-10 の再監査で解消済み。completed unassigned 側へ正規化した
+- light theme の副次テキスト所見は global token scope の改善余地として `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を新規作成し、`docs/30-workflows/unassigned-task/` に配置した
+- `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` の未タスク仕様書には、親タスクで苦戦した component/token 切り分け、dedicated harness 前提、`audit --diff-from HEAD --target-file` による品質判定を追補した
+
+---
+
 ## 残課題（未タスク）
 
 以下のタスクは未実施として認識されており、タスク仕様書が作成済み。
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -3244,6 +3709,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001 | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中 | TASK-10A-D Phase 12 再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md` |
 | UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡の状態名+検証目的分離ガード（TC意図混同防止） | 中 | TASK-10A-D Phase 11/12 再確認（苦戦箇所・2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
 | UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC証跡同期の自動ガード | 中 | TASK-10A-F Phase 12 再確認（苦戦箇所・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
+| UT-10A-F-SCREENSHOT-HARNESS-HARDENING | Screenshot Harness の data-testid ベース待機条件標準化 | 中 | TASK-10A-F Phase 11 実行時の苦戦箇所 #8（2026-03-08） | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-screenshot-harness-hardening.md` |
+| UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION | 2Workflow Baseline 正規化自動化 | 中 | TASK-10A-F Phase 12 実行時の苦戦箇所 #6, #7（2026-03-08） | `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/unassigned-task/task-10a-f-2workflow-baseline-normalization.md` |
 | UT-UI-05-001 | CategoryId / SkillCategory 型統一 | 低 | TASK-UI-05 Phase 10 MINOR-1 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-categoryid-skillcategory-type-unification.md` |
 | UT-UI-05-002 | SkillDetailPanel 内部 Molecule 分離 | 中 | TASK-UI-05 Phase 10 MINOR-2 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-skill-detail-panel-molecule-split.md` |
 | UT-UI-05-003 | ローディングスケルトン実装 | 低 | TASK-UI-05 Phase 10 MINOR-3 | `docs/30-workflows/completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/task-ui-05-loading-skeleton-implementation.md` |
@@ -3265,7 +3732,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-UI-03-A11Y-RADIOGROUP-001 | SkillChip群コンテナに role="radiogroup" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #1（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-radiogroup-001.md` |
 | UT-UI-03-A11Y-DIALOG-001 | AdvancedSettingsPanel に role="dialog" 追加 | 低 | TASK-UI-03 Phase 10 MINOR #2（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-dialog-001.md` |
 | UT-UI-03-A11Y-LABEL-001 | 停止ボタン aria-label 不一致修正 | 低 | TASK-UI-03 Phase 10 MINOR #3（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-label-001.md` |
-| UT-UI-03-TYPE-ASSERTION-001 | as unknown as Skill[] 型アサーション解消 | 低 | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md` |
+| ~~UT-UI-03-TYPE-ASSERTION-001~~ | ~~as unknown as Skill[] 型アサーション解消~~ **完了: 2026-03-10** | ~~低~~ | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md` |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 | light theme の副次テキスト token コントラスト改善 | 低 | TASK-UI-03 Phase 11 Apple UI/UX レビュー（2026-03-10） | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md` |
 | UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001 | Phase 11証跡表のTC網羅不足を解消（TC-02/03/04/05/07/10追補 + validator PASS化） | 中 | TASK-UI-03 Phase 11 再検証（2026-03-07） | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-phase11-screenshot-coverage-001.md` |
 | ~~TASK-9A-C~~                                         | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                     | ~~高~~     | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                            | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行                                                              | 低     | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）              | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                           |
@@ -3463,7 +3931,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | UT-UI-03-A11Y-RADIOGROUP-001                                   | SkillChip群コンテナに role="radiogroup" 追加                                                                                                                                 | 低       | TASK-UI-03 Phase 10 MINOR #1（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-radiogroup-001.md`                                                                                               |
 | UT-UI-03-A11Y-DIALOG-001                                       | AdvancedSettingsPanel に role="dialog" 追加                                                                                                                                  | 低       | TASK-UI-03 Phase 10 MINOR #2（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-dialog-001.md`                                                                                                   |
 | UT-UI-03-A11Y-LABEL-001                                        | 停止ボタン aria-label 不一致修正                                                                                                                                             | 低       | TASK-UI-03 Phase 10 MINOR #3（2026-03-07）                                                                                           | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-a11y-label-001.md`                                                                                                    |
-| UT-UI-03-TYPE-ASSERTION-001                                    | as unknown as Skill[] 型アサーション解消                                                                                                                                     | 低       | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07）                                                                                  | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md`                                                                                                |
+| ~~UT-UI-03-TYPE-ASSERTION-001~~                                | ~~as unknown as Skill[] 型アサーション解消~~ **完了: 2026-03-10**                                                                                                          | ~~低~~   | TASK-UI-03 Phase 10 MINOR #4（P24派生・2026-03-07）                                                                                  | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-type-assertion-001.md`                                                                                                |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001                     | light theme の副次テキスト token コントラスト改善                                                                                                                           | 低       | TASK-UI-03 Phase 11 Apple UI/UX レビュー（2026-03-10）                                                                               | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md`                                                                                                 |
 | UT-UI-03-PHASE11-SCREENSHOT-COVERAGE-001                       | Phase 11証跡表のTC網羅不足を解消（TC-02/03/04/05/07/10追補 + validator PASS化）                                                                                              | 中       | TASK-UI-03 Phase 11 再検証（2026-03-07）                                                                                             | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-ui-03-phase11-screenshot-coverage-001.md`                                                                                   |
 | ~~TASK-9A-C~~                                                  | ~~SkillEditor UI（仕様書作成済み・実装未着手）~~ **完了: 2026-02-26（TASK-9Aへ統合）**                                                                                       | ~~高~~   | ~~TASK-9A-SKILL-EDITOR Phase 1（UI仕様書作成完了）~~                                                                                 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/`                                                                                                                              |
 | TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION              | SkillExecutor の console ログを electron-log に移行                                                                                                                          | 低       | TASK-FIX-14-1-CONSOLE-LOG-MIGRATION Phase 12（スコープ外項目）                                                                       | `docs/30-workflows/completed-tasks/task-fix-14-2-skillexecutor-console-log-migration.md`                                                                                               |
@@ -3500,6 +3969,9 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-TASK9B-SPEC-CONTRACT-GUARD-001~~                      | ~~TASK-9B 仕様契約再監査ガード強化（13ch同期/P42 create/current-baseline判定）~~                                                                                             | ~~中~~   | **2026-02-26完了** TASK-9B 再監査 Phase 12（実装苦戦箇所・2026-02-26）                                                               | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9b-spec-contract-guard-001.md`                                                                                         |
 | TASK-10A-UI-SKILL-IMPROVE                                      | スキル改善UI表示機能                                                                                                                                                         | 中       | TASK-9C Phase 11（手動テスト発見）                                                                                                   | `docs/30-workflows/unassigned-task/task-10a-ui-skill-improve.md`                                                                                                                       |
 | TASK-10B-IMPROVE-HISTORY                                       | 改善履歴の永続化                                                                                                                                                             | 低       | TASK-9C Phase 12（スコープ外候補）                                                                                                   | `docs/30-workflows/unassigned-task/task-10b-improve-history.md`                                                                                                                        |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION                 | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（readFile/writeFile/listBackups/createFile/deleteFile/restoreBackup 6API）                                            | 中       | TASK-10A-F Phase 12（後続タスク・2026-03-09）                                                                                        | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`                                                                                                  |
+| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK                  | SkillAnalysisView 成功フィードバックの視覚強化（インライン成功バナー + ImprovementResultBreakdown フェードイン + ボタン内スピナー）                                           | 低       | TASK-10A-F Phase 11（手動テスト発見・2026-03-09）                                                                                    | `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md`                                           |
+| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY                   | SkillCreateWizard GenerateStep のリカバリ導線追加（エラー時「戻る」「再試行」ボタン）                                                                                        | 低       | TASK-10A-F Phase 11（手動テスト発見・2026-03-09）                                                                                    | `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md`                                            |
 | TASK-10C-AB-TEST                                               | A/Bテスト実行・結果比較機能                                                                                                                                                  | 低       | TASK-9C Phase 12（スコープ外候補）                                                                                                   | `docs/30-workflows/unassigned-task/task-10c-ab-test.md`                                                                                                                                |
 | task-imp-phase12-validation-001                                | Phase 12ドキュメント更新自動検証ツール                                                                                                                                       | 中       | AUTH-UI-004 Phase 12（ドキュメント更新漏れ）                                                                                         | `docs/30-workflows/unassigned-task/task-phase12-doc-validation-tool.md`                                                                                                                |
 | UT-9F-SETTER-INJECTION-001                                     | SkillShareManager の Setter Injection 実装                                                                                                                                   | 中       | TASK-9F Phase 10（MINOR-01）                                                                                                         | `docs/30-workflows/completed-tasks/skill-share/unassigned-task/task-9f-setter-injection-refactoring.md`                                                                                |
@@ -3616,11 +4088,18 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | ~~UT-IMP-AIWORKFLOW-SPEC-REFERENCE-SYNC-001~~                  | ~~Phase 12 仕様更新リンク同期ガード強化（task-workflow/SKILL/LOGSの3点同期）~~                                                                                               | ~~中~~   | ~~UT-IPC-AUTH-HANDLE-DUPLICATE-001 Phase 12 再確認（苦戦箇所・2026-02-25）~~ **完了: 2026-02-25（spec_created）**                    | `docs/30-workflows/completed-tasks/task-imp-aiworkflow-spec-reference-sync-001.md`                                                                                                     |
 
 | UT-10A-E-D-001                                                 | quality gate lint コマンドパス整合                                                                                                                                           | 中       | TASK-10A-E-D Phase 10 MINOR（2026-03-08）                                                                                            | `docs/30-workflows/unassigned-task/task-10a-e-d-lint-command-path-alignment-001.md`                                                                                                    |
-| UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001                   | Workflow10 の Phase 7/12 準拠不足是正                                                                                                                                        | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md`                                                                                                  |
+| ~~UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001~~                   | ~~Workflow10 の Phase 7/12 準拠不足是正~~                                                                                                                                        | ~~中~~       | ~~TASK-10A-E-D branch横断再監査（2026-03-08）~~ **再評価クローズ: 2026-03-08（workflow10 再監査完了）**                                                                                          | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md`                                                                                                  |
 | UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001                   | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正                                                                                                                         | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`                                                                                                  |
-| UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001             | Workflow12 の実装ガイド欠落是正                                                                                                                                              | 中       | TASK-10A-E-D branch横断再監査（2026-03-08）                                                                                          | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md`                                                                                            |
+| ~~UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001~~        | ~~Workflow12 の実装ガイド欠落是正~~                                                                                                                                          | ~~中~~   | ~~TASK-10A-E-D branch横断再監査（2026-03-08）~~ **完了: 2026-03-09（workflow12 implementation-guide 同期）**                       | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-workflow12-implementation-guide-001.md`                                                                           |
 | UT-PERSIST-MIGRATION-001                                       | Zustand Persist バージョニングとマイグレーション機構                                                                                                                         | 中       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`                                                                                                               |
 | UT-PERSIST-VALIDATION-002                                      | Zustand Persist 全フィールド iterable ガード拡張                                                                                                                             | 低       | TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001                                                                                     | `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`                                                                                                             |
+| UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001                    | repo-wide に残る debug-clear-storage 前提の comment / script / e2e setup のクリーンアップ                                                                                    | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md`                                       |
+| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001                           | Phase 11 harness ファイルのライフサイクル管理                                                                                                                                 | 低       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-phase11-harness-lifecycle-001.md`                                              |
+| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001                        | App.tsx テスト共有モックファクトリ集約                                                                                                                                        | 中       | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09）                                                                     | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-imp-app-test-mock-centralization-001.md`                                           |
+| ~~UT-AUTHGUARD-004~~                                           | ~~App.tsx の currentView リセット条件で settings が除外されていない問題~~                                                                                                    | ~~P2~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **完了: 2026-03-10（本タスク内で修正）**                | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
+| ~~UT-AUTHGUARD-001~~                                           | ~~Settings画面内のプロファイルセクション未認証状態表示~~                                                                                                                     | ~~P3~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（既存 degrade 実装で不要）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
+| ~~UT-AUTHGUARD-002~~                                           | ~~AuthTimeoutFallback のアニメーション追加（保留）~~                                                                                                                         | ~~P4~~   | ~~TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 Phase 12（2026-03-10）~~ **再評価クローズ: 2026-03-10（品質改善候補であり defect ではない）** | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-12/unassigned-task-detection.md`                                                   |
+
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置
@@ -3643,9 +4122,16 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.42** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER 再監査追補を同期**: `validate-phase11-screenshot-coverage` 失敗要因だった Phase 11 文書 drift（`証跡` 列欠落、5状態記述の残置）を是正し、delete reveal を含む screenshot 7件、`screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md`、`lessons-learned.md` / `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` の同時同期を追記 |
+| **1.67.41** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER を同期**: `NotificationCenter` 058e 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、focus trap、targeted tests 59件、Phase 11 screenshot 7件、新規未タスク0件）を完了台帳へ追加し、system spec / LOGS / SKILL の同時更新を記録 |
+| **1.67.40** | **2026-03-10** | **UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を登録**: TASK-UI-04A の再監査で用いた current build static serve を手運用のまま残さず、Workspace 系 UI の screenshot source pinning と visual checklist（reverse resize / watcher 更新 / light theme contrast）を未タスクとして formalize。`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` と workflow `unassigned-task-detection.md` を同時同期 |
+| **1.67.39** | **2026-03-10** | **TASK-UI-04A-WORKSPACE-LAYOUT を同期**: `WorkspaceView` の 4モード layout、file browser、status bar、watcher、Phase 11 screenshot 8件、light theme contrast 是正、task scope 12 files / 61 tests PASS を完了台帳へ追加。苦戦箇所（reverse resize / callback ref / static server capture / light contrast）と新規未タスク0件を記録 |
+| **1.67.38** | **2026-03-10** | **TASK-10A-G 完了同期**: スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）。`arch-state-management.md` 関連タスクステータス更新、`ui-ux-feature-components.md` 確認、LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
+| **1.67.37** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を同期**: `App.tsx` の debug storage clear / forced reload 除去、Phase 11 screenshot 3件 + metadata 検証、repo-wide cleanup 未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` の登録、system spec / skill 文書同期を完了台帳と残課題へ反映 |
 | **1.67.36** | **2026-03-09** | **TASK-10A-F Phase 12 再同期を追補**: completed workflow `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/` に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再同期した実装内容を台帳化。苦戦箇所として P53 placeholder 残置、implementation-guide literal 見出し不足、未タスク current/baseline と legacy directory 健全性の混同を追記し、新規未タスク 0件・既存後続 TASK-10A-G 集約・legacy remediation task 継続を明記 |
 | **1.67.33** | **2026-03-06** | **UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を登録**: `aiworkflow-requirements` の `quick_validate` warning 145件を「SKILL.md 全列挙」で雑に解消せず、`SKILL.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` の入口設計と validator 判定を両立させる未タスクを残課題テーブルへ追加。苦戦箇所と再利用方針を `lessons-learned.md` / `SKILL.md` / `LOGS.md` へ同期 |
-| **1.67.33** | **2026-03-07** | **TASK-10A-F 完了同期**: `docs/30-workflows/store-driven-lifecycle-ui/` の Phase 1-12 完了、Phase 11 スクリーンショット11件、Step 1-A〜Step 2 の仕様同期（`arch-state-management` / `ui-ux-feature-components` / `task-workflow` / LOGS / SKILL / topic-map再生成）を記録 |
+| **1.67.33** | **2026-03-07** | **TASK-10A-F 完了同期**: `docs/30-workflows/completed-tasks/store-driven-lifecycle-ui/` の Phase 1-12 完了、Phase 11 スクリーンショット11件、Step 1-A〜Step 2 の仕様同期（`arch-state-management` / `ui-ux-feature-components` / `task-workflow` / LOGS / SKILL / topic-map再生成）を記録 |
+| **1.67.34** | **2026-03-08** | **TASK-10A-F 苦戦箇所由来の未タスク2件登録**: `UT-10A-F-SCREENSHOT-HARNESS-HARDENING`（Screenshot Harness data-testid標準化、苦戦箇所#8）、`UT-10A-F-2WORKFLOW-BASELINE-NORMALIZATION`（2Workflow Baseline正規化自動化、苦戦箇所#6/#7）を残課題テーブルへ追加。open backlog 3→5件。既存3件の§8参照情報を `arch-state-management.md` / `lessons-learned.md` 新規セクションへ更新 |
 | **1.67.32** | **2026-03-06** | **UT-TASK-10A-B-008 追補3を skill-creator 導線改善まで拡張**: repo 内 `skill-creator/SKILL.md` に未リンク reference 群の直接参照導線を追加し、`resource-map` 偏重で残っていた `quick_validate` warning 26件を 0 件へ解消。system spec には「Task本体の実装 + 再発防止スキル改善」を同一ターンで残す運用を追記 |
 | **1.67.31** | **2026-03-06** | **UT-TASK-10A-B-008 Phase 12 Task 1 の内容準拠を追補**: `outputs/phase-12/implementation-guide.md` を理由先行 / 日常例え / TypeScript型 / API・CLI シグネチャ / 使用例 / エラー処理 / 設定一覧まで補強し、`validate-phase12-implementation-guide.js` を追加。Task 12-1 が「Part 1/2 の存在」だけでなく内容要件まで満たすことを機械検証へ昇格 |
 | **1.67.30** | **2026-03-06** | **UT-TASK-10A-B-008 再監査追補を同期**: ユーザー明示の screenshot 要求に基づき SkillAnalysisView の再監査を実施し、`useSkillAnalysis` の StrictMode ローディング固着修正、screenshot スクリプトの loaded-state / light-theme 対応、Phase 11 証跡 8 ケース再取得を完了記録へ追記 |
@@ -3659,6 +4145,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.21** | **2026-03-06** | **TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 の完了台帳を強化**: 完了タスクセクションを新設し、SubAgent分担・実装反映（`AuthKeyService` 単一生成 + `SkillExecutor` DI）・検証証跡（13/13, 28項目, target監査 current=0）・苦戦箇所（DIシグネチャドリフト、`phase-12-documentation` pending残置、教訓同期漏れ）を記録。Phase 12完了判定を「成果物実体 + 機械検証 + 仕様書ステータス同期」で固定 |
 | バージョン  | 日付           | 変更内容                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ----------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.37** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補を同期**: 完了タスクへ `shouldResetUnauthenticatedView` による `settings` reset 除外、Phase 11 screenshot 4件、targeted tests 110件、open 未タスク0件を追加。画面要求がある場合は P53 代替で閉じず screenshot 証跡へ更新する運用を明文化 |
+| **1.67.36** | **2026-03-08** | **TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追補**: 完了記録セクションに S-GD-1〜S-GD-4（`setupThemeWatcher` safeRegister 不適合、`track()` クロージャ成功カウント、`sanitizeRegistrationErrorMessage` 正規表現メタ文字、既存テスト失敗混同）と関連仕様書更新テーブルを追記 |
 | **1.67.35** | **2026-03-08** | **未タスク4件を残課題テーブルへ登録**: `UT-10A-E-D-001`（lint コマンドパス整合）、`UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001`（Workflow 10 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001`（Workflow 11 Phase 12準拠修正）、`UT-IMP-PHASE12-WORKFLOW12-IMPLEMENTATION-GUIDE-001`（Workflow 12 実装ガイド作成）を残課題テーブルへ追加。完了タスクセクション内の関連未タスク表に記載済みだったが残課題テーブルへの登録が未実施だったため同期                                   |
 | **1.67.34** | **2026-03-08** | **TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 の5分解決カード追加**: 完了タスク節へ「同種課題の5分解決カード（persist hydrate 破損入力）」を追記。症状/根本原因/最短4手順/検証ゲート/同期先3点を固定化し、persist iterable 崩れの再発時に短手順で対処可能化                                                                                                                                                                                                                                   |
 | **1.67.34** | **2026-03-07** | **TASK-10A-F 完了同期**: スキルライフサイクルUI Store移行（useSkillAnalysis.ts 直接IPC 3箇所排除、Case B方式、52テスト全PASS）の完了記録を追加。仕様書同期4件（arch-state-management/lessons-learned/architecture-implementation-patterns/task-workflow）を実施                                                                                                                                                                                                                                    |
@@ -3689,6 +4177,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.16** | **2026-03-05** | **TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 を completed-tasks へ移管**: `outputs/phase-12` 実体と `phase-12-documentation.md` completed を確認後、workflow本体を `docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001/` へ移動。併せて `UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001` を `completed-tasks/unassigned-task/` へ移管し、関連タスク/残課題テーブルのステータスを完了化                                                                             |
 | **1.67.15** | **2026-03-05** | **UT-IMP-DESKTOP-TESTRUN-SIGTERM-FALLBACK-GUARD-001 を残課題へ登録**: `apps/desktop test:run` の `SIGTERM` 中断に対するフォールバック運用（失敗ログ固定 + `vitest run <対象>` 分割実行 + 3仕様同期）を未タスク化し、`TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001` の関連タスク表と残課題テーブルへ同時反映                                                                                                                                                                                          |
 | **1.67.14** | **2026-03-05** | **TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 追補（SIGTERM運用ガード + 5分解決カード）**: 同タスク節へ `apps/desktop test:run` の `SIGTERM` 失敗証跡と分割実行運用を追加し、runtime配線修正とテスト中断ガードを一体化した「同種課題の5分解決カード」を追記。`task-workflow/lessons/api-ipc` の3点同時同期ルールを明文化                                                                                                                                                                            |
+| **1.67.14** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査追補**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 節へ苦戦箇所3件、4ステップ解決カード、検証証跡（verify-all-specs / validate-phase-output / verify-unassigned-links / audit --diff-from HEAD）を追加。Phase 12 の current/baseline 分離と representative screenshot 起点の backlog formalization を台帳へ固定 |
 | **1.67.13** | **2026-03-05** | **Phase 12 未タスクを追加（workflowパス正規化ガード）**: `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を `docs/30-workflows/unassigned-task/` に登録。苦戦箇所（workflow実体パス取り違え、`--target-file` 境界誤用、`current/baseline` 混在）を再利用可能な手順へ分解し、`task-056a` の再監査運用を安定化                                                                                                                                                                                   |
 | **1.67.12** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補**: `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` を再実行し、実装差分未タスクは0件であることを再確認。あわせて baseline負債（90件）の段階削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/unassigned-task/` に追加し、運用改善を追跡可能化                                                                                                                        |
 | **1.67.11** | **2026-03-05** | **TASK-UI-01-A-STORE-SLICE-BASELINE を完了タスクへ追加**: Renderer Store baseline（型定義 + inventory 16行 + 境界マトリクス + セレクタ規約）を同期し、Phase 11 の TC証跡を `TC-11-01〜03` へ統一。`validate-phase11-screenshot-coverage` を expected=3/covered=3 で PASS 化し、Phase 12 のシステム仕様同期漏れを解消                                                                                                                                                                               |
@@ -3888,8 +4377,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 ### 関連未タスク
 
-- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-persist-migration-versioning-001.md`
-- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-persist-typed-validation-expansion-001.md`
+- `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`
+- `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`
 
 ### 苦戦箇所（TASK-07）
 
@@ -3898,3 +4387,40 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | Phase 12 Task 1 不足 | `implementation-guide.md` が見出しのみで内容要件不足 | `validate-phase12-implementation-guide` を通るまで補完 |
 | worktree 依存欠損 | `@rollup/rollup-darwin-x64` 欠損で vitest/screenshot 失敗 | `pnpm install --frozen-lockfile` で復旧後に再実行 |
 | テスト対象の誤実行 | `test:run --` で全体実行になりやすい | `cd apps/desktop && pnpm exec vitest run <target>` に固定 |
+
+## TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10）
+
+- 対象: `apps/desktop/src/preload/index.ts` の safeInvoke timeout、Phase 11 screenshot、Phase 12 仕様同期
+- branch diff: `origin/main...HEAD` は 0 件
+- current worktree diff: `git diff HEAD` では safeInvoke 実装差分あり
+- Phase 11: dedicated harness で `TC-11-01/02` を再取得
+- Phase 12: workflow / system spec / skill refs / 未タスク 4件を同期
+
+### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| branch diff と current worktree diff を混同しやすい | `origin/main...HEAD` だけで completed / spec_created を判定する | `origin/main...HEAD` と `git diff HEAD` を分離記録した |
+| representative screenshot が scope 外不具合を露出する | screenshot を current task の合否判定だけに使う | `discovered-issues.md` に記録し、未タスクへ formalize した |
+| safeInvoke rollout scope を helper 名だけで言い切りやすい | 同名 helper の派生実装を洗わずに「preload 全体対応済み」と書く | `skill-api.ts` / `skill-creator-api.ts` を別 backlog として切り出した |
+
+### 同種課題の4ステップ解決カード
+
+1. `origin/main...HEAD` と `git diff HEAD` を分離し、branch と current worktree の結論を別々に固定する。
+2. representative screenshot を light/dark で取得し、画面不具合と console warning の両方を backlog 判定する。
+3. 共通 helper 改修は「どのファイルの helper か」を仕様書へ明記し、派生 helper は未タスクへ分離する。
+4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` を同一ターンで実行し、`missing=0` と `currentViolations=0` を両方確認する。
+
+### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/TASK-FIX-SAFEINVOKE-TIMEOUT-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/TASK-FIX-SAFEINVOKE-TIMEOUT-001` → PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` → existing 221 / missing 0
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` → currentViolations 0 / baselineViolations 130
+
+### 関連未タスク
+
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-api-safeinvoke-timeout-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-settings-light-theme-contrast-001.md`
+- `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-accountsection-linked-provider-key-warning-001.md`
