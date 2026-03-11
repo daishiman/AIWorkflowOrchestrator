@@ -63,9 +63,16 @@ function normalizeNotification(notification: Notification): Notification {
 function normalizeNotificationList(
   notifications: Notification[],
 ): Notification[] {
-  return notifications
-    .map(normalizeNotification)
-    .sort((a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp));
+  const deduped = new Map<string, Notification>();
+
+  notifications.forEach((notification) => {
+    const normalized = normalizeNotification(notification);
+    deduped.set(normalized.id, normalized);
+  });
+
+  return Array.from(deduped.values()).sort(
+    (a, b) => Date.parse(b.timestamp) - Date.parse(a.timestamp),
+  );
 }
 
 function syncNotificationState(

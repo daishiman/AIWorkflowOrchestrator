@@ -24,6 +24,7 @@
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | バグ修正（AuthGuard timeout / Settings認証除外 / currentView settings bypass） | architecture-auth-security.md, arch-state-management.md, ui-ux-navigation.md, ui-ux-settings.md | security-electron-ipc.md, api-ipc-auth.md, interfaces-auth.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
+| UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
 | セキュリティ実装            | security-implementation.md, security-principles.md            | security-\* 全般                                                      |
@@ -175,6 +176,7 @@
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
 | ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
 | ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
+| ui-history-search-view.md     | HistorySearchView / activity timeline の仕様確認時   | timeline UI、state/IPC 契約、画面証跡 |
 | ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
 | ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |
 | ui-history-data-types.md      | 履歴データ型、IPC通信チャンネル定義時                | VersionHistoryItem、IPC API        |

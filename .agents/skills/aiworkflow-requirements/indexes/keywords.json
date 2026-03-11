@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-09T23:42:23.359Z",
-  "totalKeywords": 1523,
+  "generated": "2026-03-11T05:12:36.334Z",
+  "totalKeywords": 1569,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -51,6 +51,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "spec-splitting-guidelines.md",
+      "ui-history-search-view.md",
       "ui-ux-history-panel.md",
       "ui-ux-settings.md"
     ],
@@ -118,6 +119,7 @@
       "testing-dialog-patterns.md",
       "testing-fixtures.md",
       "testing-playwright-e2e.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
@@ -250,6 +252,7 @@
       "ui-history-components.md",
       "ui-history-data-types.md",
       "ui-history-design.md",
+      "ui-history-search-view.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
       "ui-ux-components.md",
@@ -372,6 +375,7 @@
       "ui-history-data-types.md",
       "ui-history-design.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
@@ -498,8 +502,10 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
+      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-history-panel.md",
       "ui-ux-settings.md"
@@ -661,8 +667,10 @@
     ],
     "Workspace": [
       "api-ipc-agent.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
-      "llm-workspace-chat-edit.md"
+      "llm-workspace-chat-edit.md",
+      "ui-ux-feature-components.md"
     ],
     "Chat": [
       "api-ipc-agent.md",
@@ -747,11 +755,14 @@
     ],
     "契約": [
       "api-ipc-agent.md",
-      "api-ipc-auth.md"
+      "api-ipc-auth.md",
+      "security-electron-ipc.md",
+      "ui-history-search-view.md"
     ],
     "TASK": [
       "api-ipc-agent.md",
       "api-ipc-auth.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-auth-security.md",
@@ -773,7 +784,8 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md"
     ],
     "FIX": [
       "api-ipc-agent.md",
@@ -784,7 +796,8 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md",
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "SKILL": [
       "api-ipc-agent.md",
@@ -823,6 +836,7 @@
     ],
     "UI": [
       "api-ipc-agent.md",
+      "api-ipc-system.md",
       "arch-state-management.md",
       "arch-ui-components.md",
       "architecture-chat-history.md",
@@ -836,6 +850,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned.md",
       "llm-streaming.md",
+      "security-electron-ipc.md",
       "spec-splitting-guidelines.md",
       "task-workflow.md",
       "technology-frontend.md",
@@ -844,6 +859,7 @@
       "ui-history-data-types.md",
       "ui-history-design.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
@@ -995,6 +1011,12 @@
       "api-ipc-system.md"
     ],
     "スライド同期": [
+      "api-ipc-system.md"
+    ],
+    "File": [
+      "api-ipc-system.md"
+    ],
+    "Watch": [
       "api-ipc-system.md"
     ],
     "設計": [
@@ -1155,6 +1177,24 @@
       "arch-state-management.md",
       "lessons-learned.md"
     ],
+    "Layout": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
+    ],
+    "基盤": [
+      "arch-state-management.md",
+      "database-implementation.md"
+    ],
+    "WORKSPACE": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "LAYOUT": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
     "Notification": [
       "arch-state-management.md",
       "lessons-learned.md",
@@ -1173,11 +1213,29 @@
     ],
     "HISTORY": [
       "arch-state-management.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "DOMAIN": [
       "arch-state-management.md",
       "lessons-learned.md"
+    ],
+    "timeline": [
+      "arch-state-management.md"
+    ],
+    "再設計": [
+      "arch-state-management.md"
+    ],
+    "SEARCH": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-search-panel.md"
+    ],
+    "VIEW": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "ViewType": [
       "arch-state-management.md"
@@ -1328,18 +1386,20 @@
     "removal": [
       "arch-state-management.md"
     ],
-    "スキルライフサイクル": [
-      "arch-state-management.md",
-      "lessons-learned.md",
-      "task-workflow.md"
+    "Persist": [
+      "arch-state-management.md"
     ],
-    "移行完了": [
+    "Iterable": [
+      "arch-state-management.md"
+    ],
+    "Hardening": [
       "arch-state-management.md"
     ],
     "SETTINGS": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "PERSIST": [
       "arch-state-management.md",
@@ -1353,6 +1413,9 @@
     "HARDENING": [
       "arch-state-management.md",
       "task-workflow.md"
+    ],
+    "テスト品質ゲート設計": [
+      "arch-state-management.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components.md"
@@ -2280,9 +2343,6 @@
       "interfaces-rag-graphrag-query.md",
       "rag-query-pipeline.md"
     ],
-    "基盤": [
-      "database-implementation.md"
-    ],
     "運用・": [
       "database-operations.md"
     ],
@@ -2794,6 +2854,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "lessons-learned.md",
+      "task-workflow.md",
       "ui-ux-feature-components.md"
     ],
     "SkillImportStore": [
@@ -2944,6 +3005,7 @@
     "コンポーネント構成": [
       "interfaces-chat-history.md",
       "ui-history-components.md",
+      "ui-history-search-view.md",
       "ui-ux-file-selector.md",
       "ui-ux-system-prompt.md"
     ],
@@ -3280,7 +3342,8 @@
       "ipc-contract-checklist.md"
     ],
     "safeInvoke": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "security-electron-ipc.md"
     ],
     "safeOn": [
       "ipc-contract-checklist.md"
@@ -3339,6 +3402,24 @@
     "教訓集": [
       "lessons-learned.md"
     ],
+    "最新教訓": [
+      "lessons-learned.md"
+    ],
+    "HANDLER": [
+      "lessons-learned.md"
+    ],
+    "GRACEFUL": [
+      "lessons-learned.md"
+    ],
+    "DEGRADATION": [
+      "lessons-learned.md"
+    ],
+    "再監査": [
+      "lessons-learned.md"
+    ],
+    "再確認": [
+      "lessons-learned.md"
+    ],
     "INTEGRATION": [
       "lessons-learned.md"
     ],
@@ -3355,17 +3436,37 @@
     "統合回帰強化": [
       "lessons-learned.md"
     ],
-    "再確認": [
+    "SUPABASE": [
       "lessons-learned.md"
+    ],
+    "FALLBACK": [
+      "lessons-learned.md"
+    ],
+    "PROFILE": [
+      "lessons-learned.md"
+    ],
+    "AVATAR": [
+      "lessons-learned.md"
+    ],
+    "Profile": [
+      "lessons-learned.md"
+    ],
+    "Avatar": [
+      "lessons-learned.md"
+    ],
+    "ハンドラ追加": [
+      "lessons-learned.md"
+    ],
+    "スキルライフサイクル": [
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "移行": [
       "lessons-learned.md"
     ],
-    "VIEW": [
-      "lessons-learned.md"
-    ],
     "ENHANCEMENT": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "task-workflow.md"
     ],
     "GLOBAL": [
       "lessons-learned.md"
@@ -3384,10 +3485,13 @@
     "基盤移行": [
       "lessons-learned.md"
     ],
-    "KEY": [
+    "CENTER": [
       "lessons-learned.md"
     ],
-    "HANDLER": [
+    "NotificationCenter": [
+      "lessons-learned.md"
+    ],
+    "KEY": [
       "lessons-learned.md"
     ],
     "REGISTRATION": [
@@ -3447,13 +3551,7 @@
     "EDITOR": [
       "lessons-learned.md"
     ],
-    "再監査": [
-      "lessons-learned.md"
-    ],
     "連続是正": [
-      "lessons-learned.md"
-    ],
-    "CENTER": [
       "lessons-learned.md"
     ],
     "ADVANCED": [
@@ -3816,7 +3914,8 @@
     ],
     "workflow": [
       "lessons-learned.md",
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "task-workflow.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"
@@ -4052,27 +4151,6 @@
     "駆動ライフサイクル統合設計": [
       "lessons-learned.md"
     ],
-    "SUPABASE": [
-      "lessons-learned.md"
-    ],
-    "FALLBACK": [
-      "lessons-learned.md"
-    ],
-    "PROFILE": [
-      "lessons-learned.md"
-    ],
-    "AVATAR": [
-      "lessons-learned.md"
-    ],
-    "Profile": [
-      "lessons-learned.md"
-    ],
-    "Avatar": [
-      "lessons-learned.md"
-    ],
-    "ハンドラ追加": [
-      "lessons-learned.md"
-    ],
     "APIKEY": [
       "lessons-learned.md"
     ],
@@ -4081,6 +4159,49 @@
     ],
     "ハードニングでの教訓": [
       "lessons-learned.md"
+    ],
+    "教訓": [
+      "lessons-learned.md"
+    ],
+    "ワークフロー教訓": [
+      "lessons-learned.md"
+    ],
+    "検証実行": [
+      "lessons-learned.md"
+    ],
+    "CONCURRENCY": [
+      "lessons-learned.md"
+    ],
+    "ライフサイクルテストハードニング": [
+      "lessons-learned.md"
+    ],
+    "再監査教訓": [
+      "lessons-learned.md"
+    ],
+    "実装知見追補": [
+      "lessons-learned.md"
+    ],
+    "AUTHGUARD": [
+      "lessons-learned.md",
+      "ui-ux-settings.md"
+    ],
+    "TIMEOUT": [
+      "lessons-learned.md",
+      "security-electron-ipc.md",
+      "task-workflow.md",
+      "ui-ux-settings.md"
+    ],
+    "BYPASS": [
+      "lessons-learned.md",
+      "ui-ux-settings.md"
+    ],
+    "実装教訓": [
+      "lessons-learned.md"
+    ],
+    "SAFEINVOKE": [
+      "lessons-learned.md",
+      "security-electron-ipc.md",
+      "task-workflow.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -4647,6 +4768,9 @@
     "historyAPI": [
       "security-electron-ipc.md"
     ],
+    "notificationAPI": [
+      "security-electron-ipc.md"
+    ],
     "slideSettingsAPI": [
       "security-electron-ipc.md"
     ],
@@ -4678,6 +4802,12 @@
       "security-electron-ipc.md"
     ],
     "自動更新のセキュリティ": [
+      "security-electron-ipc.md"
+    ],
+    "タイムアウト": [
+      "security-electron-ipc.md"
+    ],
+    "cleanup": [
       "security-electron-ipc.md"
     ],
     "セキュリティ実装仕様": [
@@ -4788,7 +4918,8 @@
       "skill-executor-type-migration.md"
     ],
     "実装内容": [
-      "skill-executor-type-migration.md"
+      "skill-executor-type-migration.md",
+      "ui-history-search-view.md"
     ],
     "苦戦した箇所と解決策": [
       "skill-executor-type-migration.md"
@@ -4918,7 +5049,16 @@
       "task-workflow.md",
       "ui-ux-components.md"
     ],
+    "current": [
+      "task-workflow.md"
+    ],
+    "再監査記録": [
+      "task-workflow.md"
+    ],
     "完了記録": [
+      "task-workflow.md"
+    ],
+    "再監査同期": [
       "task-workflow.md"
     ],
     "バックエンド技術スタック": [
@@ -5138,6 +5278,12 @@
     "統合テストハーネスパターン": [
       "testing-component-patterns.md"
     ],
+    "ハンドラキャプチャテストパターン": [
+      "testing-component-patterns.md"
+    ],
+    "駆動ライフサイクル統合テストパターン": [
+      "testing-component-patterns.md"
+    ],
     "ダイアログテストパターン仕様": [
       "testing-dialog-patterns.md"
     ],
@@ -5297,6 +5443,27 @@
     ],
     "testing": [
       "ui-history-integration.md"
+    ],
+    "HistorySearchView": [
+      "ui-history-search-view.md"
+    ],
+    "要点": [
+      "ui-history-search-view.md"
+    ],
+    "責務": [
+      "ui-history-search-view.md"
+    ],
+    "状態・導線契約": [
+      "ui-history-search-view.md"
+    ],
+    "テスト・画面検証": [
+      "ui-history-search-view.md"
+    ],
+    "苦戦箇所": [
+      "ui-history-search-view.md"
+    ],
+    "再利用形式": [
+      "ui-history-search-view.md"
     ],
     "高度な": [
       "ui-ux-advanced.md"
@@ -5489,6 +5656,12 @@
       "ui-ux-feature-components.md",
       "ui-ux-settings.md"
     ],
+    "Timeline": [
+      "ui-ux-feature-components.md"
+    ],
+    "Refresh": [
+      "ui-ux-feature-components.md"
+    ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
     ],
@@ -5670,9 +5843,6 @@
     "実装詳細": [
       "ui-ux-search-panel.md"
     ],
-    "SEARCH": [
-      "ui-ux-search-panel.md"
-    ],
     "INTEGRATE": [
       "ui-ux-search-panel.md"
     ],
@@ -5707,6 +5877,15 @@
       "ui-ux-settings.md"
     ],
     "Panel": [
+      "ui-ux-settings.md"
+    ],
+    "画面の": [
+      "ui-ux-settings.md"
+    ],
+    "AuthGuard": [
+      "ui-ux-settings.md"
+    ],
+    "非依存アクセス": [
       "ui-ux-settings.md"
     ],
     "ApiKeysSection": [

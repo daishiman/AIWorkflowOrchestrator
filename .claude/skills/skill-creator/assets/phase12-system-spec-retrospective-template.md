@@ -178,6 +178,7 @@ UI機能実装の場合は次を推奨:
 9. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
 10. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
 11. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
+12. `<worktree の preview source が揺れる UIタスクでは current worktree の out/renderer を static server で配信し、right preview panel reverse resize / watcher callback ref 分離 / light theme 補助テキスト contrast を同じ再監査セットで確認する>`
 
 ---
 
@@ -206,6 +207,7 @@ UI機能実装の場合は次を推奨:
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
 | `test -f <workflow-path>/outputs/phase-11/screenshot-plan.json && test -f <workflow-path>/outputs/phase-11/phase11-capture-metadata.json` | screenshot 要求時の補助証跡実在確認 | 2ファイルとも存在する |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
+| `python3 -m http.server 4173 --directory apps/desktop/out/renderer` | worktree で preview source が揺れる場合の current build static serve | current worktree build を `127.0.0.1:4173` で配信できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
 | `pnpm --filter @repo/desktop test:run` | 回帰の全量実行（ベースライン確認） | `PASS` または `SIGTERM` 失敗ログが記録される |
@@ -249,8 +251,12 @@ UI機能実装の場合は次を推奨:
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
 - [ ] UIタスクでは worktree preflight として `pnpm install --frozen-lockfile` の要否を確認し、実行した場合は記録している
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
+- [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static server で配信した記録がある
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
+- [ ] workspace/preview UI では right preview panel の reverse resize を manual test または screenshot で確認している
+- [ ] file watch を含む UI では callback ref 分離などにより watch 再登録が抑止される設計/実装を記録している
+- [ ] light theme screenshot では補助テキスト・status bar・chip の contrast を目視確認し、必要な是正を記録している
 - [ ] ユーザーが画面検証を要求した場合、初期方針が `NON_VISUAL` でも `SCREENSHOT` へ昇格し、`TC-ID ↔ png` を再同期している
 - [ ] persist/auth 初期化バグでは bug path の metadata 証跡と screenshot harness 証跡を分離し、`skipAuth=true` を唯一経路にしていない
 - [ ] ユーザーが画面検証を要求した場合、`screenshot-plan.json` と `phase11-capture-metadata.json` を workflow 配下へ保存している

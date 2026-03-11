@@ -3,6 +3,28 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW UI domain spec テンプレート最適化
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-optimization
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-domain-spec-sync-block-template.md` に UIドメイン仕様向け拡張ブロックを追加
+  - `画面の主目的` / `契約上の要点` / `視覚検証` を UI spec の必須行として明文化
+  - `references/patterns.md` に TASK-UI-06 由来の「UI domain spec は主目的 + 状態契約 + 画面証跡を先に固定する」パターンを追加
+
+---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW の canonical root パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/cross-skill-reference-patterns.md` に `.claude` canonical root / `.agents` mirror ルールを追加
+  - dual-root repo では workflow / outputs に mirror 側 `references/` を正本として書かない運用を明文化
+  - task-specification-creator 側の Phase 12 guide 改善と合わせて、cross-skill 参照の root drift を再発防止パターンへ昇格
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 パターン反映
 
 - **Agent**: skill-creator
@@ -45,6 +67,18 @@
   - `references/patterns.md` に「backlog 継続前の現物確認」と「component scope / token scope の切り分け」パターンを追加
   - `references/patterns.md` / `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` の task-spec script path を canonical `.agents/skills/task-specification-creator/scripts/` へ統一
   - UI再監査で見つかった light theme 所見を design system 未タスクへ formalize する導線を再利用可能な形で残した
+
+---
+## [2026-03-10 - TASK-UI-04A Workspace UI 再監査パターンを skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workspace UI 再監査では current build static serve と 4観点の目視/挙動検証をセットにする」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に current worktree `out/renderer` の static serve、right preview panel reverse resize、watcher callback ref 分離、light theme contrast 確認を追加
+  - worktree の Vite preview source drift を静的配信で切り離し、UI screenshot 再監査を 1 セットで閉じる運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.22` として同期
 
 ---
 ## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]

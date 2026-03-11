@@ -872,6 +872,10 @@ export interface NotificationMarkReadRequest {
   notificationId: string;
 }
 
+export interface NotificationDeleteRequest {
+  notificationId: string;
+}
+
 export interface NotificationClearRequest {
   onlyRead?: boolean;
 }
@@ -881,6 +885,7 @@ export interface NotificationMutationResponse {
   data?: {
     updated?: boolean;
     updatedCount?: number;
+    deleted?: boolean;
     removedCount?: number;
     deletedCount?: number;
   };
@@ -894,48 +899,60 @@ export interface NotificationNewEvent {
   notification: NotificationHistoryItem;
 }
 
-export type HistorySearchEntityType =
-  | "conversation"
-  | "execution"
-  | "file"
-  | "notification";
+export type HistoryItemType = "chat" | "file" | "skill";
 
-export interface HistorySearchResultItem {
-  id: string;
-  type: HistorySearchEntityType;
-  title: string;
-  snippet: string;
-  createdAt: string;
-  metadata?: Record<string, unknown>;
+export interface ChatHistoryMetadata {
+  type: "chat";
+  sessionId: string;
+  messageCount: number;
+  lastModel?: string;
 }
 
-export interface HistorySearchFilters {
-  types?: HistorySearchEntityType[];
-  dateFrom?: string | null;
-  dateTo?: string | null;
-  includeArchived?: boolean;
+export interface FileHistoryMetadata {
+  type: "file";
+  filePath: string;
+  additions: number;
+  deletions: number;
+}
+
+export interface SkillHistoryMetadata {
+  type: "skill";
+  skillName: string;
+  executionId: string;
+  status: "success" | "failure" | "cancelled";
+  outputFile?: string;
+  executionTimeMs?: number;
+  modelUsed?: string;
+  outputFileSizeBytes?: number;
+}
+
+export type HistoryItemMetadata =
+  | ChatHistoryMetadata
+  | FileHistoryMetadata
+  | SkillHistoryMetadata;
+
+export interface HistoryItem {
+  id: string;
+  type: HistoryItemType;
+  title: string;
+  preview: string;
+  timestamp: string;
+  metadata: HistoryItemMetadata;
 }
 
 export interface HistorySearchRequest {
   query: string;
-  filters?: HistorySearchFilters;
-  page?: number;
-  pageSize?: number;
+  filter: HistoryItemType | "all";
+  limit: number;
+  offset: number;
 }
 
 export interface HistorySearchResponse {
   success: boolean;
   data?: {
-    results: HistorySearchResultItem[];
-    pagination: {
-      page: number;
-      pageSize: number;
-      total: number;
-    };
-    stats: {
-      totalCount: number;
-      byType: Record<HistorySearchEntityType, number>;
-    };
+    items: HistoryItem[];
+    totalCount: number;
+    hasMore: boolean;
   };
   error?: {
     code: string;
@@ -946,9 +963,10 @@ export interface HistorySearchResponse {
 export interface HistorySearchStatsResponse {
   success: boolean;
   data?: {
-    totalCount: number;
-    byType: Record<HistorySearchEntityType, number>;
-    unreadNotificationCount: number;
+    chat: number;
+    file: number;
+    skill: number;
+    total: number;
   };
   error?: {
     code: string;
@@ -964,6 +982,9 @@ export interface NotificationAPI {
     request: NotificationMarkReadRequest,
   ) => Promise<NotificationMutationResponse>;
   markAllRead: () => Promise<NotificationMutationResponse>;
+  delete: (
+    request: NotificationDeleteRequest,
+  ) => Promise<NotificationMutationResponse>;
   clear: (
     request?: NotificationClearRequest,
   ) => Promise<NotificationMutationResponse>;

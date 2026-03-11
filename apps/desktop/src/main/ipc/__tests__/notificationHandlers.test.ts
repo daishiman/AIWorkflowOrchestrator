@@ -1,13 +1,37 @@
+const { storeState, storeSetMock } = vi.hoisted(() => ({
+  storeState: {
+    notifications: [] as Array<Record<string, unknown>>,
+  },
+  storeSetMock: vi.fn(),
+}));
+
 vi.mock("electron", () => ({
   ipcMain: {
     handle: vi.fn(),
   },
 }));
 
+vi.mock("electron-store", () => ({
+  default: vi.fn().mockImplementation(() => ({
+    get: vi.fn((key: string, fallback: unknown) => {
+      if (key === "notifications") {
+        return storeState.notifications;
+      }
+      return fallback;
+    }),
+    set: storeSetMock.mockImplementation((key: string, value: unknown) => {
+      if (key === "notifications" && Array.isArray(value)) {
+        storeState.notifications = value as Array<Record<string, unknown>>;
+      }
+    }),
+  })),
+}));
+
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ipcMain } from "electron";
 import { IPC_CHANNELS } from "../../../preload/channels";
 import {
+  createNotificationService,
   emitNotificationNew,
   registerNotificationHandlers,
 } from "../notificationHandlers";
@@ -20,11 +44,13 @@ describe("notificationHandlers", () => {
     getHistory: vi.fn(),
     markRead: vi.fn(),
     markAllRead: vi.fn(),
+    delete: vi.fn(),
     clear: vi.fn(),
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    storeState.notifications = [];
     handlers = new Map();
     mockValidateSender = vi.fn().mockReturnValue({ valid: true });
 
@@ -40,6 +66,7 @@ describe("notificationHandlers", () => {
     });
     mockService.markRead.mockResolvedValue({ updated: true });
     mockService.markAllRead.mockResolvedValue({ updatedCount: 1 });
+    mockService.delete.mockResolvedValue({ deleted: true });
     mockService.clear.mockResolvedValue({ deletedCount: 1 });
 
     registerNotificationHandlers(mockService, {
@@ -51,6 +78,7 @@ describe("notificationHandlers", () => {
     expect(handlers.has(IPC_CHANNELS.NOTIFICATION_GET_HISTORY)).toBe(true);
     expect(handlers.has(IPC_CHANNELS.NOTIFICATION_MARK_READ)).toBe(true);
     expect(handlers.has(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ)).toBe(true);
+    expect(handlers.has(IPC_CHANNELS.NOTIFICATION_DELETE)).toBe(true);
     expect(handlers.has(IPC_CHANNELS.NOTIFICATION_CLEAR)).toBe(true);
   });
 
@@ -124,6 +152,18 @@ describe("notificationHandlers", () => {
     });
   });
 
+  it("deleteを委譲する", async () => {
+    const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_DELETE)!;
+
+    const result = await handler({}, { notificationId: "n-1" });
+
+    expect(mockService.delete).toHaveBeenCalledWith("n-1");
+    expect(result).toEqual({
+      success: true,
+      data: { deleted: true },
+    });
+  });
+
   it("clearを委譲する", async () => {
     const handler = handlers.get(IPC_CHANNELS.NOTIFICATION_CLEAR)!;
 
@@ -192,5 +232,125 @@ describe("notificationHandlers", () => {
 
     expect(result).toBe(false);
     expect(send).not.toHaveBeenCalled();
+  });
+
+  it("createNotificationServiceはlimit/offsetのfallbackで履歴を返す", async () => {
+    storeState.notifications = [
+      {
+        id: "n-1",
+        type: "info",
+        title: "first",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+      {
+        id: "n-2",
+        type: "warning",
+        title: "second",
+        timestamp: "2026-03-05T11:00:00.000Z",
+        isRead: true,
+        source: { kind: "system" },
+      },
+    ];
+
+    const service = createNotificationService();
+    const result = await service.getHistory({
+      limit: Number.NaN,
+      offset: -1,
+    });
+
+    expect(result.notifications).toHaveLength(2);
+    expect(result.totalCount).toBe(2);
+  });
+
+  it("createNotificationServiceはmarkRead/markAllRead/delete/clearを永続状態へ反映する", async () => {
+    storeState.notifications = [
+      {
+        id: "n-1",
+        type: "info",
+        title: "first",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+      {
+        id: "n-2",
+        type: "warning",
+        title: "second",
+        timestamp: "2026-03-05T11:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+    ];
+
+    const service = createNotificationService();
+
+    await expect(service.markRead("n-1")).resolves.toEqual({ updated: true });
+    expect(storeState.notifications[0].isRead).toBe(true);
+
+    await expect(service.markAllRead()).resolves.toEqual({ updatedCount: 1 });
+    expect(
+      storeState.notifications.every((notification) => notification.isRead),
+    ).toBe(true);
+
+    await expect(service.delete("n-2")).resolves.toEqual({ deleted: true });
+    expect(storeState.notifications).toHaveLength(1);
+
+    await expect(service.clear()).resolves.toEqual({ deletedCount: 1 });
+    expect(storeState.notifications).toHaveLength(0);
+    expect(storeSetMock).toHaveBeenCalled();
+  });
+
+  it("createNotificationServiceは存在しないID削除でfalseを返す", async () => {
+    storeState.notifications = [
+      {
+        id: "n-1",
+        type: "info",
+        title: "first",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+    ];
+
+    const service = createNotificationService();
+    const result = await service.delete("unknown");
+
+    expect(result).toEqual({ deleted: false });
+    expect(storeState.notifications).toHaveLength(1);
+  });
+
+  it("emitNotificationNewは無効なtimestampを現在時刻へ正規化する", () => {
+    vi.setSystemTime(new Date("2026-03-05T12:00:00.000Z"));
+
+    const send = vi.fn();
+    const mainWindow = {
+      isDestroyed: () => false,
+      webContents: {
+        isDestroyed: () => false,
+        send,
+      },
+    };
+
+    emitNotificationNew(mainWindow as never, {
+      id: "n-3",
+      type: "info",
+      title: "fallback",
+      timestamp: "invalid",
+      isRead: false,
+      source: { kind: "system" },
+    });
+
+    expect(send).toHaveBeenCalledWith(IPC_CHANNELS.NOTIFICATION_NEW, {
+      notification: {
+        id: "n-3",
+        type: "info",
+        title: "fallback",
+        timestamp: "2026-03-05T12:00:00.000Z",
+        isRead: false,
+        source: { kind: "system" },
+      },
+    });
   });
 });

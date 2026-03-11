@@ -1,0 +1,48 @@
+{
+  "createdAt": "2026-03-11T04:37:52.348Z",
+  "baseUrl": "http://localhost:5185/?skipAuth=true",
+  "captures": [
+    {
+      "testCase": "TC-11-01",
+      "file": "TC-11-01-desktop-idle-badge.png",
+      "viewport": "desktop",
+      "state": "idle badge"
+    },
+    {
+      "testCase": "TC-11-02",
+      "file": "TC-11-02-desktop-popover-open.png",
+      "viewport": "desktop",
+      "state": "popover open"
+    },
+    {
+      "testCase": "TC-11-03",
+      "file": "TC-11-03-desktop-item-expanded.png",
+      "viewport": "desktop",
+      "state": "item expanded"
+    },
+    {
+      "testCase": "TC-11-07",
+      "file": "TC-11-07-desktop-delete-reveal.png",
+      "viewport": "desktop",
+      "state": "delete reveal"
+    },
+    {
+      "testCase": "TC-11-04",
+      "file": "TC-11-04-tablet-popover-open.png",
+      "viewport": "tablet",
+      "state": "popover open"
+    },
+    {
+      "testCase": "TC-11-05",
+      "file": "TC-11-05-mobile-overlay-open.png",
+      "viewport": "mobile",
+      "state": "overlay open"
+    },
+    {
+      "testCase": "TC-11-06",
+      "file": "TC-11-06-empty-state.png",
+      "viewport": "desktop",
+      "state": "empty state"
+    }
+  ]
+}

@@ -2758,6 +2758,22 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001
 
+### [Phase12] UI domain spec は「主目的 + 状態契約 + 画面証跡」を先に固定する（TASK-UI-06-HISTORY-SEARCH-VIEW）
+
+- **状況**: UI task の system spec を作るとき、コンポーネント一覧と screenshot 一覧だけでは「何のための画面か」「どの state/IPC が正本か」が後から読み取りにくい
+- **成功パターン**:
+  - 専用 domain spec に `### 実装内容（要点）` を置き、`画面の主目的` / `変更範囲` / `契約上の要点` / `視覚検証` / `完了根拠` を最初に固定する
+  - `ui-ux-feature-components.md` 側は圧縮サマリーと 5分解決カードだけを保持し、詳細は専用 spec へリンクする
+  - `task-workflow.md` / `lessons-learned.md` / UI domain spec の 3 点で 5 ステップ順序を揃える
+- **失敗パターン**:
+  - UI spec が責務表と screenshot 一覧だけで終わり、変更範囲や state 契約の要点が本文から見えない
+  - 専用 spec と feature summary spec で見出し名や 5分カードの粒度がずれる
+- **標準ルール**:
+  - UI domain spec の `実装内容（要点）` には少なくとも `画面の主目的` / `契約上の要点` / `視覚検証` の 3 行を入れる
+  - `ui-ux-feature-components.md` の対応節にも `同種課題の5分解決カード` を置き、専用 spec と task-workflow の橋渡しに使う
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-06-HISTORY-SEARCH-VIEW
+
 ### [Phase12] 「更新予定のみ」残置を排除し、実更新ログへ昇格する（TASK-10A-E-C）
 
 - **状況**: Phase 12 で `spec-update-summary.md` は更新されているが、`documentation-changelog.md` や `phase-12-documentation.md` が「仕様策定のみ」「実行中」のまま残る
@@ -3144,6 +3160,20 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: persist / auth / initialization bug の Phase 11-12 再監査、App shell が不安定な UI 検証、`skipAuth=true` や `dev-skip-auth` を使う撮影導線
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001
+
+### [Phase 12] workspace UI 再監査では current build static serve と 4観点の目視/挙動検証をセットにする
+
+- **状況**: worktree 上の UI 再撮影で Vite preview が別 source を向いたり、右 preview panel の resize 方向逆転、watch hook の再登録、light theme 補助テキストの視認性不足が別々に混入しやすい
+- **アプローチ**:
+  1. worktree の preview source に揺れがある場合は、current worktree の `apps/desktop/out/renderer` を static server で配信し、その URL を screenshot capture の唯一の参照先にする
+  2. 右側 preview panel は `reverse` 方向 resize を前提に、drag 後の panel 幅が期待方向へ変化することを manual test と screenshot で確認する
+  3. file watch 系 hook は callback ref を分離し、callback identity が変わっても watch の再登録が起きない設計を優先する
+  4. light theme の screenshot は補助テキスト、status bar、chip などの低コントラスト要素を Apple UI/UX engineer 観点で目視確認し、沈んだ要素があれば再撮影前にクラス/色を是正する
+  5. `task-workflow.md` / `lessons-learned.md` / `documentation-changelog.md` に「static serve を使った理由」「4観点の確認結果」「再発条件」を同一ターンで記録する
+- **結果**: source drift、レイアウト逆転、watcher churn、見た目品質の取りこぼしを 1 回の UI 再監査でまとめて閉じられる
+- **適用条件**: workspace 系 UI、3-pane layout、file watcher を伴う preview、worktree での Phase 11 screenshot 再取得
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-04A-WORKSPACE-LAYOUT
 
 ### [Testing] 3層テストハードニング戦略（TASK-10A-G）
 

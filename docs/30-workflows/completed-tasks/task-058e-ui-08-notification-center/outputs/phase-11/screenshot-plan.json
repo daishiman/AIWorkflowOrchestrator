@@ -1,0 +1,54 @@
+{
+  "workflow": "docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center",
+  "generatedAt": "2026-03-11T00:00:00.000Z",
+  "captures": [
+    {
+      "testCase": "TC-11-01",
+      "viewport": { "width": 1440, "height": 900 },
+      "state": "idle badge",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-02",
+      "viewport": { "width": 1440, "height": 900 },
+      "state": "popover open",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-03",
+      "viewport": { "width": 1440, "height": 900 },
+      "state": "item expanded",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-04",
+      "viewport": { "width": 1024, "height": 768 },
+      "state": "tablet popover open",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-05",
+      "viewport": { "width": 390, "height": 844 },
+      "state": "mobile overlay open",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-06",
+      "viewport": { "width": 1440, "height": 900 },
+      "state": "empty state",
+      "priority": "B"
+    },
+    {
+      "testCase": "TC-11-07",
+      "viewport": { "width": 1440, "height": 900 },
+      "state": "delete reveal",
+      "priority": "A"
+    }
+  ],
+  "na": [
+    {
+      "category": "dark-mode",
+      "reason": "今回の task-058e は light theme 実装差分の確認が主目的で、dark theme 固有の style 変更は含まない"
+    }
+  ]
+}

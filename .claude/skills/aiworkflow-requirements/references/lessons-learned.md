@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.65 | TASK-UI-08-NOTIFICATION-CENTER 再監査の教訓を追加。Bell utility action の仕様同期漏れ、Phase 11 coverage validator の列名依存、delete reveal の実画面証跡不足を同時是正し、`ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` の同一ターン同期を標準化 |
+| 2026-03-10 | 1.29.64 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
+| 2026-03-10 | 1.29.63 | TASK-UI-06-HISTORY-SEARCH-VIEW の解決手順を 5 ステップへ最適化し、専用 domain spec / feature spec / task-workflow の同期粒度を揃えた |
+| 2026-03-10 | 1.29.62 | TASK-UI-06-HISTORY-SEARCH-VIEW の教訓を追加。worktree 依存補完 preflight、screenshot strict locator 化、`.claude` 正本 / `.agents` mirror の canonical root 固定、timeline UI の state 分離を再利用手順として追記 |
 | 2026-03-10 | 1.29.61 | TASK-10A-G 実装知見追補。IPC ハンドラキャプチャパターン、Store 統合テストの Promise 解決タイミング制御、Phase 6 カバレッジ不足の2段階テスト設計、P41 v8 Function Coverage exemption 判断、Phase 12 並列エージェント分割戦略の5苦戦箇所と5分解決カードを追記 |
 | 2026-03-10 | 1.29.60 | TASK-10A-G 再監査追補の教訓を追加。`generate-index.js --workflow ... --regenerate` が workflow `artifacts.json` スキーマ差で `index.md` を `undefined` / 全Phase未実施へ崩しうる点、実行直後に `verify-all-specs --strict` / `validate-phase-output` で確認し、必要なら未タスク化する運用を追記 |
 | 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、`clearTimeout` cleanup 採用の判断根拠、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
@@ -43,6 +47,43 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-10 TASK-UI-06-HISTORY-SEARCH-VIEW
+
+#### 苦戦箇所1: worktree では test failure の前に native optional dependency 不整合が起こりうる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `vitest` 実行前に `@rollup/rollup-darwin-x64` が見つからず startup error になった |
+| 再発条件 | worktree 作成後に install preflight を省略し、そのまま UI screenshot / テストへ進む |
+| 解決策 | `pnpm install --frozen-lockfile` を Phase 11 前の preflight に含めた |
+| 標準ルール | worktree で renderer 系テストや screenshot を行う前に依存整合を先に通す |
+
+#### 苦戦箇所2: screenshot script の待機条件が broad だと strict mode violation で止まる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | accordion summary/detail が同じ文字列を持ち、Playwright の text locator が複数一致した |
+| 再発条件 | 人間には読めるが DOM 上は一意でない文言を ready condition に使う |
+| 解決策 | detail 側でしか現れない text へ待機条件を絞った |
+| 標準ルール | screenshot script の ready condition は一意 text または `data-testid` を正本にする |
+
+#### 苦戦箇所3: `.claude` 正本と `.agents` mirror の更新先が混線しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow / spec-update-summary / phase doc が `.agents/skills/...` を参照し、ユーザー指定の `.claude` 正本とずれた |
+| 再発条件 | skill root が二重化された repo で mirror 側だけを更新して完了扱いにする |
+| 解決策 | `.claude/skills/...` を canonical root に固定し、mirror drift は未タスクへ分離した |
+| 標準ルール | Phase 12 の system spec 更新先は `.claude/skills/...` を唯一の正本として扱う |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. UIタスクの preflight で install / port / screenshot script を先に確認する。  
+2. timeline UI は initial loading / load more / empty を別 state で設計する。  
+3. cross-view 導線は `pending payload + view 遷移` の二段構成に分離する。  
+4. screenshot script は一意 selector を ready condition にする。  
+5. Phase 12 では `.claude` 正本、domain spec、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
 
 ### 2026-03-10 TASK-10A-G 再監査追補
 
@@ -778,6 +819,45 @@ expect(element.className).toContain(statusStyles.primary);
 | タスクID                                         | 概要                                                                                                                                                         | 参照                                                                                                  |
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
 | ~~UT-IMP-PHASE12-TARGETED-VITEST-RUN-GUARD-001~~ | ~~Phase 12 再監査で対象テストのみを確実実行するガード（`pnpm exec vitest run` 直指定 + スクリプト実在 preflight）~~ **完了: 2026-03-05（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-targeted-vitest-run-guard-001.md` |
+
+---
+
+## TASK-UI-08-NOTIFICATION-CENTER: NotificationCenter 058e 再監査（2026-03-11）
+
+### 苦戦箇所: utility action は feature doc だけ更新しても探索導線が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | NotificationCenter は `ui-ux-feature-components.md` には反映されていても、`ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` に記述がなければ次回の探索起点が分散する |
+| 再発条件 | Bell のような app header utility action を「ドメインUI」とだけ見なして、component index / navigation / portal guide を後回しにする場合 |
+| 対処 | `ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` を同一ターンで同期した |
+| 標準ルール | utility action を含む UI 改修は「component index + feature doc + navigation/portal + workflow/lessons」の複数入口を同一ターンで埋める |
+
+### 苦戦箇所: Phase 11 validator は見出しと列名の drift に弱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実際にスクリーンショットが存在していても、`manual-test-result.md` に `証跡` 列が無い、`phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` 見出しが無いと `validate-phase11-screenshot-coverage` が失敗する |
+| 再発条件 | Phase 11 文書を人間向けにだけ最適化し、validator が期待する literal header / column name を崩す場合 |
+| 対処 | Phase 11 文書を validator 互換の見出し・列名へ是正し、`screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md` を追加した |
+| 標準ルール | UIタスクの Phase 11 は screenshot 実体だけで閉じず、coverage validator を通る文書構造まで含めて完了とする |
+
+### 苦戦箇所: destructive affordance は自動テストだけでは視覚品質が確定しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | delete ボタンの表示有無はテストで確認できても、赤の強さ、幅、文脈、押しやすさは実画面を見ないと判断できない |
+| 再発条件 | swipe / reveal / destructive action を DOM assertion のみで完了扱いにする場合 |
+| 対処 | `TC-11-07-desktop-delete-reveal.png` を追加取得し、Apple UI/UX 観点で affordance を再確認した |
+| 標準ルール | destructive action を含む UI は「通常状態 + 展開状態 + destructive reveal」の3状態を screenshot で確認する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Utility action を追加したら `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` の4入口を先に洗い出す。  
+2. Phase 11 文書は `テストケース` / `画面カバレッジマトリクス` / `証跡` 列を literal で揃える。  
+3. destructive affordance は screenshot を 1枚追加して、通常状態との差を目視で確認する。  
+4. `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `validate-phase-output` を同一ターンで回す。  
+5. 最後に `task-workflow.md` と `lessons-learned.md` に再発条件付きで転記し、再監査の入口を閉じる。  
 
 ---
 
@@ -6721,3 +6801,55 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 4. 影響 UI があるなら、内部修正でも screenshot 対象を先に決める。
 5. Phase 12 では system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する。
 6. 再監査で見つかった別責務の差分は未タスク化し、主タスクの完了判定と分離する。
+
+## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
+
+### 苦戦箇所: right preview panel の resize 方向が逆転する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 左 panel 用の drag 計算を右 panel に流用すると、ドラッグ方向と幅変化が逆に感じられる |
+| 再発条件 | split view の左右 panel に同一 resize hook をそのまま使う |
+| 対処 | `usePanelResize` に `direction: "reverse"` を追加し、preview panel だけ反転計算へ切り替えた |
+| 標準ルール | 右 panel の resize は「カーソル移動方向と panel 幅変化が一致するか」を screenshot 前に確認する |
+
+### 苦戦箇所: watch hook が callback identity 変更で再登録する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `onFileChanged` を effect dependency に置くと、Render ごとに watch start / stop が揺れる |
+| 再発条件 | watch lifecycle と UI callback を同一 dependency で管理する |
+| 対処 | callback を `ref` に退避し、effect dependency は `enabled` / `filePath` に限定した |
+| 標準ルール | watch / subscription hook は callback ref と lifecycle dependency を分離する |
+
+### 苦戦箇所: worktree preview が別 source を指す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Vite dev server が別 worktree source を見て、current branch の harness が表示されないことがある |
+| 再発条件 | 複数 worktree で同一 repo の HMR / preview を使い回す |
+| 対処 | `pnpm build` 後の `apps/desktop/out/renderer` を static server で配信し、asset hash を current build と一致させた |
+| 標準ルール | worktree screenshot は「current build artifact を static 配信」を第一候補にする |
+
+### 苦戦箇所: light theme の補助テキストが screenshot で沈む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装中は読めても、証跡画像では補助情報が背景に溶けやすい |
+| 再発条件 | dark theme を基準に text-secondary を設計し、そのまま light へ流す |
+| 対処 | Workspace 04A の chip / 補助テキスト / status bar を局所調整し、再撮影で確認した |
+| 標準ルール | Apple UI/UX 目視レビューでは light theme の階層性とコントラストを別途判定する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. split view では左右 panel の resize 方向を個別に検証する。
+2. watch hook は callback ref 化して再登録の揺れを止める。
+3. worktree screenshot は build artifact の hash を確認して current source を固定する。
+4. light / dark の両テーマで補助テキストの視認性を screenshot で比較する。
+5. 問題を修正したら、その場で再撮影して Phase 11 証跡を更新する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | current build source pinning と Workspace UI 再監査 checklist をスクリプト/運用として共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |

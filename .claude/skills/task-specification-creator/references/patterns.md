@@ -142,6 +142,21 @@
 - **発見日**: 2026-02-04
 - **関連タスク**: task-imp-search-ui-001
 
+### Phase 12 の skill root 取り違え（TASK-UI-06-HISTORY-SEARCH-VIEW）
+
+- **状況**: system spec 更新で `.claude/skills/...` と `.agents/skills/...` の両方が存在する repo を扱った
+- **問題**: mirror 側 `.agents` だけを更新し、ユーザー指定の `.claude` 正本が stale のまま残りうる
+- **原因**:
+  1. workflow / outputs が mirror 側パスを参照していた
+  2. canonical root の規則が guide に明記されていなかった
+  3. SubAgent 分担時に「どの root が正本か」を共有しなかった
+- **教訓**:
+  1. system spec 更新先は `.claude/skills/...` を canonical root に固定する
+  2. `.agents` は mirror 扱いとし、正本更新の代替にしない
+  3. `rg -n "\\.agents/skills/.+references" docs/30-workflows/<workflow>` で workflow / outputs の mirror 参照を確認する
+- **発見日**: 2026-03-10
+- **関連タスク**: UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001
+
 ### Phase 12出力要件の漏れ
 
 - **状況**: タスク仕様書（phase-12-documentation.md）作成時

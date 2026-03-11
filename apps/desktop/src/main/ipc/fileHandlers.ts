@@ -12,6 +12,8 @@ import type {
   RenameFileRequest,
   RenameFileResponse,
   FileNode,
+  WatchStartRequest,
+  WatchStartResponse,
 } from "../../preload/types";
 import {
   validatePath,
@@ -20,6 +22,9 @@ import {
   validateNumber,
   createValidationErrorResponse,
 } from "./validation";
+import { FileWatcher } from "../services/watcher";
+
+const activeWatchers = new Map<string, FileWatcher>();
 
 // Build file tree recursively
 async function buildFileTree(
@@ -226,6 +231,68 @@ export function registerFileHandlers(): void {
             newPath: request.newPath,
           },
         };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.FILE_WATCH_START,
+    async (event, request: WatchStartRequest): Promise<WatchStartResponse> => {
+      const pathValidation = validatePath(request.watchPath);
+      if (!pathValidation.valid) {
+        return createValidationErrorResponse(
+          pathValidation.error!,
+        ) as WatchStartResponse;
+      }
+
+      try {
+        const watchId = crypto.randomUUID();
+        const watcher = new FileWatcher({
+          path: request.watchPath,
+          ignoreInitial: true,
+        });
+
+        watcher.on("file", (fileEvent) => {
+          event.sender.send(IPC_CHANNELS.FILE_CHANGED, {
+            watchId,
+            eventType: fileEvent.type,
+            filePath: fileEvent.path,
+            timestamp: fileEvent.timestamp,
+          });
+        });
+
+        watcher.start();
+        activeWatchers.set(watchId, watcher);
+        return { success: true, watchId };
+      } catch (error) {
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : "Unknown error",
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.FILE_WATCH_STOP,
+    async (
+      _event,
+      watchId: string,
+    ): Promise<{ success: boolean; error?: string }> => {
+      const watcher = activeWatchers.get(watchId);
+      if (!watcher) {
+        return { success: true };
+      }
+
+      try {
+        await watcher.stop();
+        activeWatchers.delete(watchId);
+        return { success: true };
       } catch (error) {
         return {
           success: false,

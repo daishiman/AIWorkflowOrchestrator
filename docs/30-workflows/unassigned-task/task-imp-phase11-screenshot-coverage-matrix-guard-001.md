@@ -3,8 +3,8 @@
 ## メタ情報
 
 ```yaml
-issue_number: 973
-task_id: UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001
+issue_number:
+1143
 task_name: Phase 11 画面カバレッジマトリクス必須化ガード
 category: 改善
 target_feature: Phase 11 手動テスト仕様（phase-11-manual-test.md）と screenshot coverage 検証運用

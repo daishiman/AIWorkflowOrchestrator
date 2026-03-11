@@ -18,9 +18,13 @@
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
-| バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
+| バグ修正（safeInvoke timeout / preload IPC timeout） | security-electron-ipc.md, architecture-implementation-patterns.md, api-ipc-auth.md, architecture-auth-security.md, arch-state-management.md, error-handling.md | ipc-contract-checklist.md, ui-ux-settings.md, quality-requirements.md, testing-component-patterns.md, task-workflow.md, lessons-learned.md |
+| バグ修正（persist / localStorage 破壊） | arch-state-management.md, arch-ipc-persistence.md | testing-component-patterns.md, development-guidelines.md, lessons-learned.md, security-electron-ipc.md |
+| バグ修正（スキル実行並行ガード） | arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md | ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
+| バグ修正（AuthGuard timeout / Settings認証除外 / currentView settings bypass） | architecture-auth-security.md, arch-state-management.md, ui-ux-navigation.md, ui-ux-settings.md | security-electron-ipc.md, api-ipc-auth.md, interfaces-auth.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
+| UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
 | セキュリティ実装            | security-implementation.md, security-principles.md            | security-\* 全般                                                      |
@@ -172,6 +176,7 @@
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
 | ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
 | ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
+| ui-history-search-view.md     | HistorySearchView / activity timeline の仕様確認時   | timeline UI、state/IPC 契約、画面証跡 |
 | ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
 | ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |
 | ui-history-data-types.md      | 履歴データ型、IPC通信チャンネル定義時                | VersionHistoryItem、IPC API        |
@@ -328,6 +333,58 @@
 | interfaces-auth.md | error code 型定義（PROFILE_ERROR_CODES / AVATAR_ERROR_CODES） | 型定義確認時 |
 | ipc-contract-checklist.md | IPC 契約整合チェック | 新規ハンドラ追加時 |
 
+### TASK-10A-F: Store駆動スキルライフサイクルUI統合
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| arch-state-management.md | Case B方式の状態管理設計（Store駆動UI） | Store設計・selector migration時 |
+| architecture-implementation-patterns.md | S19: 直接IPC→Store移行パターン | renderer direct IPC removal 実装時 |
+| lessons-learned.md | Store mock統一パターン等の苦戦箇所 | テスト設計・問題解決時 |
+| task-workflow.md | TASK-10A-F 完了記録・P50検証モード適用事例 | ワークフロー確認時 |
+| ui-ux-feature-components.md | SkillAnalysisView / SkillCreateWizard 仕様 | UI実装・スコープ確認時 |
+
+### TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| security-electron-ipc.md | Preload 境界、allowlist、防御責務 | Preload helper 設計時 |
+| architecture-implementation-patterns.md | safeInvoke / Promise.race / wrapper 設計 | helper 抽出時 |
+| api-ipc-auth.md | `auth:get-session` / `auth:check-online` 契約 | 認証影響確認時 |
+| architecture-auth-security.md | AuthGuard / LoadingScreen / timeout 影響 | UIブロック因果確認時 |
+| arch-state-management.md | `isLoading` / `isAuthenticated` の終了条件 | Renderer 状態確認時 |
+| error-handling.md | timeout 文言、分類、復旧方針 | エラー設計時 |
+| ipc-contract-checklist.md | helper 抽出後の契約維持確認 | レビュー時 |
+| testing-component-patterns.md | fake timer / preload test 設計補強 | テスト設計時 |
+
+**検索手順**:
+
+複合語を 1 回で投げず、1 概念 1 クエリで順に読む。
+
+```bash
+node scripts/search-spec.js "safeInvoke" -C 3
+node scripts/search-spec.js "timeout" -C 3
+node scripts/search-spec.js "auth:get-session" -C 3
+node scripts/search-spec.js "auth:check-online" -C 3
+node scripts/search-spec.js "Promise.race" -C 3
+```
+
+### TASK-10A-G: スキルライフサイクル統合テスト強化
+
+| リソース | 役割 | 読み込み条件 |
+|----------|------|-------------|
+| ui-ux-components.md | TASK-10A-C の `skill:create` 4層同期（channels / whitelist / handler / preload）と SkillCreateWizard 契約 | `skill:create` 契約の正本確認時 |
+| ui-ux-feature-components.md | SkillAnalysisView / SkillCreateWizard / Store-Driven Lifecycle Integration の UI責務と完了実績 | `create -> list -> analyze -> improve` の画面責務を確認したい時 |
+| arch-ui-components.md | TASK-10A-D の ChatPanel 導線・SkillManagementPanel 4ビュー遷移・`createSkill` 利用経路 | ChatPanel 起点ライフサイクル導線確認時 |
+| interfaces-agent-sdk-ui.md | TASK-7D の ChatPanel 公開インターフェース、toggle/stream 統合、UI結線の正本 | ChatPanel の結合境界と Props/Handle 契約を確認したい時 |
+| interfaces-agent-sdk-skill.md | Skill Dashboard / ChatPanel 統合 / `createSkill` 操作契約 / Store利用前提 | スキルUIの型・操作契約を確認したい時 |
+| arch-state-management.md | TASK-10A-E-C / TASK-10A-F の Store駆動ライフサイクル境界、個別セレクタ、`useShallow` 条件 | Store状態遷移・P31/P48 確認時 |
+| architecture-implementation-patterns.md | Handler Map 方式、Main ハンドラ間接テスト、IPC/Store 分離テストパターン | Main IPC テスト設計時 |
+| testing-component-patterns.md | View レベル統合テストハーネス、Store mock 集約、happy-dom パターン | Renderer 統合テスト設計時 |
+| security-electron-ipc.md | sender 検証、P42準拠3段バリデーション、IPC ハンドラライフサイクル | セキュリティ/入力検証観点確認時 |
+| error-handling.md | `CREATE_ERROR` / validation failure の期待レスポンスとエラー分類 | 異常系テストの期待値を固定したい時 |
+| quality-requirements.md | coverage gate、TDD、品質ゲートの下限値 | Phase 7/9/13 の合否基準を確認したい時 |
+| task-workflow.md | TASK-10A-C/D/F の完了記録、5仕様書同期、Phase 11/12 検証証跡 | 仕様同期範囲・Phase 12 観点確認時 |
+| lessons-learned.md | `skill:create` 契約同期漏れ、handler-scope coverage 誤読、再監査の再発防止手順 | 苦戦箇所の短縮導線が必要な時 |
 ### 検索クエリ例
 
 ```bash
@@ -347,6 +404,9 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-10 | 1.12.0     | TASK-10A-G: `skill:create` 契約 + ChatPanel 起点ライフサイクル統合テスト向けの導線を追加 |
+| 2026-03-10 | 1.13.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |
+| 2026-03-09 | 1.11.0     | TASK-10A-F: タスク別リソースマップに Store駆動スキルライフサイクルUI統合の導線を追加 |
 | 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
 | 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |
 | 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |

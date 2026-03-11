@@ -18,6 +18,7 @@
 | Community Visualization      | CONV-08-05       | CommunityGraph, CommunityDetailPanel               | 完了 | 本ファイル                                                       |
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
+| Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
@@ -30,7 +31,8 @@
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
-| AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/agent-view-enhancement/` |
+| History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | [ui-history-search-view.md](./ui-history-search-view.md) |
+| AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 
 ### 共通仕様
 
@@ -363,6 +365,76 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | Ctrl+Enter       | EditCommandInput | コマンド送信               |
 | Escape           | DiffPreview      | プレビューを閉じる         |
 | Tab              | DiffPreview      | フォーカストラップ内を循環 |
+
+---
+
+## Workspace Layout Foundation（TASK-UI-04A-WORKSPACE-LAYOUT）
+
+`WorkspaceView` を 1-pane 起点の作業スペース基盤へ引き上げた UI。chat を主役に維持しつつ、file browser / preview / status bar / file watcher を後続 04B / 04C が再利用できる境界で提供する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `WorkspaceView` | view | - | store selector、file read/watch、layout hook 結線 |
+| `WorkspaceShell` | template | `WorkspaceView` | inline / overlay / status bar の3領域を構成 |
+| `PanelToggleBar` | molecule | `WorkspaceView` | file / preview panel の表示切替 |
+| `FileBrowserPanel` | organism | `WorkspaceShell` | zero state / tree / error surface / context menu |
+| `FileTreeNode` | molecule | `FileBrowserPanel` | 再帰 tree item と keyboard nav |
+| `FileContextMenu` | molecule | `FileBrowserPanel` | 背景情報追加 / preview open |
+| `PanelResizeHandle` | molecule | `WorkspaceShell` | drag / keyboard / reset |
+| `WorkspaceStatusBar` | molecule | `WorkspaceShell` | selected file / ext / size / watch state 表示 |
+
+### レイアウトモード
+
+| モード | 条件 | 表示 |
+| --- | --- | --- |
+| `chat-only` | 初期状態 | chat のみ |
+| `chat+files` | file toggle ON | 左に file panel |
+| `chat+preview` | preview toggle ON | 右に preview panel |
+| `3-pane` | 両 toggle ON かつ 1440px 以上 | file + chat + preview 同時表示 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| mobile | 1023px 以下では panel を overlay 表示し、Escape で閉じる |
+| tablet | 1024px 以上 1439px 以下では最後に開いた panel を 1 枚だけ inline 表示 |
+| desktop wide | 1440px 以上では 3-pane を許可する |
+| status bar | `role="status"` + `aria-live="polite"` を維持する |
+| visual quality | light theme の補助テキストは WCAG を満たす濃度まで調整する |
+
+### 実装結果
+
+| 項目 | 内容 |
+| --- | --- |
+| store reuse | `workspaceSlice` / `fileSelectionSlice` を再利用、新規 slice なし |
+| watcher | `file:watch-start` / `file:watch-stop` / `file:changed` を selected file 単位で利用 |
+| test | task scope 12 files / 61 tests PASS |
+| screenshot | Phase 11 で 8 ケースを current workflow 配下に保存 |
+
+### 画面検証結果
+
+| 観点 | 判定 | 補足 |
+| --- | --- | --- |
+| desktop 3-pane | PASS | dark theme で 3 列の視線誘導が安定 |
+| tablet chat+files | PASS | 1 sidebar に圧縮しても hierarchy が崩れない |
+| mobile overlay | PASS | panel と scrim の分離が明確 |
+| light theme contrast | PASS | 初回 screenshot の弱い補助テキストを調整後に再撮影 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了（2026-03-10、Phase 13保留）** |
+| TASK-UI-04B | chat 本体統合 | 後続 |
+| TASK-UI-04C | preview / quick search 統合 | 後続 |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot source を current build へ固定し、reverse resize / watcher 更新 / light theme contrast の再監査を共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
 
 ---
 
@@ -1130,6 +1202,14 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 - `SkillCreateWizard` は `useCreateSkill()` で作成 action を実行し、生成進捗をUIに反映する。
 - 画面検証は dark/light/mobile と error/loading を含む 11ケースで確認済み。
 
+### 後続未タスク（TASK-10A-F 由来）
+
+| タスクID | 内容 | 優先度 | 仕様書 |
+| --- | --- | --- | --- |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
+| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
+| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
+
 ---
 
 <a id="organisms-foundation-task-ui-00-organisms"></a>
@@ -1224,7 +1304,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 `TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN` では、通知履歴ポップオーバーと履歴検索ビューを実装し、Store + IPC + UI を同時接続した。
 
-### 実装サマリー
+### 実装内容（要点）
 
 | 観点 | 実装内容 | 主なファイル |
 | --- | --- | --- |
@@ -1233,6 +1313,27 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | 履歴検索 UI | `HistorySearchView` を本実装。query/filter、統計カード、結果一覧、load more を実装 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx` |
 | 状態管理 | `historySearchFilter` / `historySearchStats` / `historySearchStatsError` を追加。`notificationSlice` に履歴同期/重複排除を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`, `apps/desktop/src/renderer/store/slices/notificationSlice.ts` |
 | 回帰テスト | Notification handler / notificationSlice / historySearchSlice / HistorySearchView を拡張 | `apps/desktop/src/main/ipc/__tests__/notificationHandlers.test.ts`, `apps/desktop/src/renderer/store/slices/*.test.ts`, `apps/desktop/src/renderer/views/HistorySearchView/HistorySearchView.test.tsx` |
+
+### TASK-UI-08 追補（2026-03-11）
+
+`TASK-UI-08-NOTIFICATION-CENTER` では、既存の NotificationCenter を 058e 正本へ寄せるための UX 再整備を行った。HistorySearch 側の責務は維持しつつ、Bell から開く通知体験だけを重点的に更新した。
+
+| 観点 | 058e 追補内容 | 主なファイル |
+| --- | --- | --- |
+| 文言/操作 | タイトルを `お知らせ` に統一し、`すべて削除` UI を撤去。`すべて既読` と個別削除に絞った | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| 視覚階層 | relative time、未読ドット、expanded detail inset を整理し、desktop/tablet/mobile の3レイアウトを調整 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| Portal/a11y | popover を `document.body` へ portal 描画し、Escape、outside click、focus return、Tab wrap を追加 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx` |
+| 個別削除契約 | `notification:delete` を shared/preload/main に追加し、UI 削除導線を Main persistence と接続 | `packages/shared/src/ipc/channels.ts`, `apps/desktop/src/preload/types.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts` |
+| 回帰テスト | component/store/ipc/preload の targeted tests 59件と coverage gate を通過 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/NotificationCenter.test.tsx`, `apps/desktop/src/renderer/store/slices/notificationSlice.test.ts`, `apps/desktop/src/main/ipc/notificationHandlers.test.ts`, `apps/desktop/src/preload/channels.test.ts` |
+
+### 画面証跡（2026-03-11）
+
+| 証跡 | ファイル |
+| --- | --- |
+| desktop popover open | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-02-desktop-popover-open.png` |
+| desktop item expanded | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-03-desktop-item-expanded.png` |
+| mobile overlay | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-05-mobile-overlay-open.png` |
+| empty state | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/phase-11/screenshots/TC-11-06-empty-state.png` |
 
 ### 苦戦箇所（再利用形式）
 
@@ -1258,11 +1359,61 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 ---
 
+## History Timeline Refresh（TASK-UI-06-HISTORY-SEARCH-VIEW / completed）
+
+`TASK-UI-06-HISTORY-SEARCH-VIEW` では、既存 `HistorySearchView` を「query/filter/stats の検索画面」から「最近の流れを自然に読める timeline」へ再設計した。
+
+### 実装内容（要点）
+
+| 観点 | 実装内容 | 主なファイル |
+| --- | --- | --- |
+| Timeline UI | `きょう` / `きのう` / `今週` / `先週` / `{n}月` の日付グループと sticky header を追加 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/hooks/useTimelineGroups.ts`, `apps/desktop/src/renderer/views/HistorySearchView/components/TimelineGroupHeader.tsx` |
+| 検索体験 | 300ms debounce、検索空/初期空/error state、結果総数補助表示へ整理 | `apps/desktop/src/renderer/views/HistorySearchView/components/HistorySearchBar.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/components/HistoryEmptyState.tsx` |
+| 追加読込 | observer sentinel による自動追補と loadingMore 分離 | `apps/desktop/src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.ts`, `apps/desktop/src/renderer/views/HistorySearchView/components/InfiniteScrollSentinel.tsx` |
+| 状態管理 | `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts` |
+| 導線統合 | file card から editor へ deep-open する `pendingOpenFilePath` を追加 | `apps/desktop/src/renderer/store/slices/editorSlice.ts`, `apps/desktop/src/renderer/views/EditorView/index.tsx` |
+| IPC | `history:search` の trim / filter / pagination guard を整理 | `apps/desktop/src/main/ipc/historySearchHandlers.ts`, `apps/desktop/src/preload/types.ts` |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（5 files / 26 tests） | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| task-scope coverage | Lines 88.42 / Branches 80.00 / Functions 90.00 |
+| Phase 11 screenshot | 6件取得、`validate-phase11-screenshot-coverage` PASS |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| worktree の rollup native optional module 欠落 | UI検証前に依存整合を確認しない | `pnpm install --frozen-lockfile` を preflight に追加 | worktree の screenshot / vitest 前に optional dependency を補完する |
+| screenshot script の locator が broad で strict mode violation になる | summary/detail が同一文字列を共有する | 一意な detail 側 text へ待機条件を変更 | capture script は一意 text または `data-testid` を正本にする |
+| `.claude` と `.agents` の skill root drift | workflow / outputs が mirror 側を参照する | `.claude` 正本へ再同期し、systemic 課題は未タスクへ分離 | system spec 更新先は `.claude/skills/...` を canonical として扱う |
+
+### 同種課題の5分解決カード
+
+1. 画面の主目的を「検索画面」ではなく「読む timeline」として先に固定する。  
+2. `hasFetchedHistory` と `isHistoryLoadingMore` を分け、初回/追補/空状態を混同しない。  
+3. cross-view 導線は `pending payload + view 遷移` の二段構成にする。  
+4. screenshot script は一意 selector または `data-testid` を ready condition にする。  
+5. `.claude` 正本、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 で canonical root を固定する | 中 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
-| TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウトテスト） | 2026-03-07 | `docs/30-workflows/agent-view-enhancement/` |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
+| TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| TASK-UI-08 | NotificationCenter 058e UX 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
 | 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
@@ -1343,14 +1494,16 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | 1-5 | AdvancedSettingsPanel | organisms | 144 | 詳細設定スライドインパネル（オーバーレイ） |
 | - | animations.ts | 共通定数 | 20 | アニメーション定義 |
 | - | styles.ts | 共通定数 | 31 | 共通スタイル定義 |
+| - | types.ts | 共通型 | 15 | AgentView 専用の状態/permission/model 型 |
 
 #### ファイル配置
 
 | ディレクトリ | 内容 |
 | --- | --- |
-| `apps/desktop/src/renderer/components/organisms/AgentView/` | 5サブコンポーネント + 共通定数 |
+| `apps/desktop/src/renderer/components/organisms/AgentView/` | 5サブコンポーネント + 共通定数 + 共通型 |
 | `apps/desktop/src/renderer/components/organisms/AgentView/__tests__/` | 5コンポーネントテスト |
 | `apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx` | 統合レイアウトテスト |
+| `apps/desktop/src/renderer/phase11-agent-view.{html,tsx}` | Phase 11 dedicated harness |
 
 #### レイアウト構成
 
@@ -1369,10 +1522,38 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | `SkillChip.test.tsx` | 15 | 203 | ツール選択チップの表示・操作 |
 | `ExecuteButton.test.tsx` | 8 | 120 | 実行ボタンの状態・操作 |
 | `FloatingExecutionBar.test.tsx` | 12 | 130 | フローティングバーの表示・進捗 |
-| `AdvancedSettingsPanel.test.tsx` | 13 | 235 | 詳細設定パネルの開閉・操作 |
+| `AdvancedSettingsPanel.test.tsx` | 15 | 235 | 詳細設定パネルの開閉・操作 |
 | `RecentExecutionList.test.tsx` | 11 | 229 | 実行履歴の表示・操作 |
-| `AgentView.layout.test.tsx` | 12 | 272 | 統合レイアウト（3リージョン構成検証） |
-| **合計** | **71** | **1,189** | |
+| `AgentView.layout.test.tsx` | 13 | 272 | 統合レイアウト（3リージョン構成検証） |
+| `AgentView.test.tsx` | 45 | - | 統合動作・アクセシビリティ・Permission 連携 |
+| `agentSlice.extension.test.ts` | 10 | - | recent history / advanced settings |
+| `agentSlice.p31-regression.test.ts` | 7 | - | P31 回帰 |
+| **合計** | **136** | **1,189+** | |
+
+#### 関連未タスク
+
+| タスクID | 概要 | 仕様書 |
+| --- | --- | --- |
+| UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001 | light theme の副次テキスト token コントラスト改善 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/unassigned-task/task-ut-ui-03-light-secondary-text-contrast-001.md` |
+
+#### 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | AgentView を「できること / 実行 / 最近の実行」の 3 リージョンへ再構成し、5 organisms と Phase 11 dedicated harness を追加した |
+| テスト/検証 | renderer targeted tests 136 件、typecheck、Phase 11 screenshot、Phase 12 validators を通し current workflow へ同期した |
+| 苦戦箇所1 | `ImportedSkill` / `SkillMetadata` / view `Skill` の境界が曖昧だと view 実装が `as unknown as Skill[]` に流れやすかった |
+| 苦戦箇所2 | 実画面導線では screenshot ごとの state 固定が難しく、panel/floating/recent list を dedicated harness 側で再現する必要があった |
+| 苦戦箇所3 | light theme の副次テキスト所見は layout 完了判定と別責務で、component 修正ではなく design token 改善として切り出す必要があった |
+| 再利用ルール | UIタスクでは「view 型変換」「画面 state 固定」「token scope 判定」を別 concern として分離し、1 仕様書に混ぜ込まない |
+
+#### 同種課題の5分解決カード
+
+1. view 層の型ずれは `adapter helper` を追加して閉じ、`unknown as` を残さない。
+2. 画面証跡は App shell に依存させず、dedicated harness で `scenario` / `theme` を固定する。
+3. screenshot 所見は component scope と token scope に分離し、token 起因なら `ui-ux-design-system.md` と未タスクへ送る。
+4. `task-workflow.md` / `lessons-learned.md` / 本仕様書に同じ task ID と検証値を同期する。
+5. Phase 12 は `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --target-file` まで閉じる。
 
 ---
 
@@ -1399,6 +1580,44 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | ディレクトリ | 内容 |
 | --- | --- |
 | `apps/desktop/src/renderer/components/settings/AuthKeySection/` | AuthKeySection コンポーネント + テスト |
+
+---
+
+### AuthTimeoutFallback / Settings 公開シェル（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 / completed）
+
+`AuthTimeoutFallback` は、AuthGuard の認証確認が `AUTH_TIMEOUT_MS = 10_000` を超えた場合に表示するフォールバック UI である。再監査では `settings` 公開シェルが AuthGuard bypass だけでなく未認証 reset 除外も満たしていることまで確認した。
+
+#### コンポーネント構成
+
+| コンポーネント | 分類 | 実装ファイル | 役割 |
+| --- | --- | --- | --- |
+| `AuthTimeoutFallback` | molecules | `apps/desktop/src/renderer/components/AuthGuard/AuthTimeoutFallback.tsx` | timeout 時の warning + retry + settings 導線 |
+| `SettingsView` | view | `apps/desktop/src/renderer/views/SettingsView/index.tsx` | 認証不能時でも操作可能な公開シェル |
+| `shouldResetUnauthenticatedView` | util | `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` | `settings` を公開ビューとして reset 対象外にする |
+
+#### UI 契約
+
+| 観点 | 契約 |
+| --- | --- |
+| timeout fallback | warning icon、見出し、説明文、`リトライ`、`設定画面へ` を表示する |
+| settings shell | 未認証でも `AccountSection` のログイン CTA、認証方式、APIキー、テーマ、RAG を表示できる |
+| safety | 保護ビューは reset 対象のまま維持し、公開するのは `settings` のみ |
+| 再監査補足 | current workflow の screenshot では light theme の `リトライ` 視認性差分が見つかったため、機能完了とは分離して未タスク化する |
+
+#### 画面証跡
+
+| TC | 証跡 |
+| --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` |
+| TC-11-02 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` |
+| TC-11-03 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` |
+| TC-11-04 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` |
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-AUTH-TIMEOUT-FALLBACK-LIGHT-CONTRAST-GUARD-001 | `AuthTimeoutFallback` ライトテーマで `リトライ` の視認性が低い問題を改善する | `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-auth-timeout-fallback-light-contrast-guard-001.md` |
 
 ---
 
@@ -1473,7 +1692,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 - [TASK-UI-00-FOUNDATION-REFLECTION-AUDIT 仕様](../../../docs/30-workflows/completed-tasks/task-055-ui-00-foundation-reflection-audit/index.md)
 - [TASK-UI-01-C Notification / History Domain 仕様](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/index.md)
 - [TASK-UI-01-C Notification / History Domain 手動検証結果](../../../docs/30-workflows/completed-tasks/task-056c-notification-history-domain/outputs/phase-11/manual-test-result.md)
-- [TASK-UI-03 AgentView Enhancement 仕様](../../../docs/30-workflows/agent-view-enhancement/)
+- [TASK-UI-03 AgentView Enhancement 仕様](../../../docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/)
 
 ---
 
@@ -1481,7 +1700,16 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-08 | v1.14.23   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
+| 2026-03-10 | v1.14.29   | TASK-UI-06-HISTORY-SEARCH-VIEW 節をテンプレート準拠へ最適化。見出しを `実装内容（要点）` に統一し、5分解決カードを追加して専用仕様 `ui-history-search-view.md` と粒度を揃えた |
+| 2026-03-10 | v1.14.28   | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`HistorySearchView` の timeline 再設計、`historySearchSlice` / `editorSlice` 契約、Phase 11 screenshot 6件、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を追加し、専用仕様 `ui-history-search-view.md` への入口を作成 |
+| 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |
+| 2026-03-10 | v1.14.26   | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に「実装内容と苦戦箇所サマリー」と「同種課題の5分解決カード」を追加し、adapter helper・dedicated harness・token scope 分離を feature 正本から直接参照できるよう再編 |
+| 2026-03-10 | v1.14.25   | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。Workspace Layout Foundation 節へ current build source pinning と visual checklist 共通化の未タスク導線を登録し、04A の苦戦箇所から active backlog へ直接たどれるようにした |
+| 2026-03-10 | v1.14.24   | TASK-UI-04A-WORKSPACE-LAYOUT を反映: 収録機能一覧へ Workspace Layout Foundation を追加し、`WorkspaceView` / `FileBrowserPanel` / `PanelToggleBar` / `WorkspaceStatusBar` / watcher 連携 / Phase 11 screenshot 8件 / light theme contrast 是正を専用セクションへ同期 |
+| 2026-03-10 | v1.14.23   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
+| 2026-03-10 | v1.14.22   | TASK-UI-03 current workflow 同期: AgentView Enhancement の workflow 導線を `docs/30-workflows/task-ui-03-agent-view-enhancement/` に修正し、`types.ts` と Phase 11 dedicated harness、実測 136 tests を反映 |
+| 2026-03-11 | v1.14.23   | TASK-UI-08-NOTIFICATION-CENTER を反映。Notification / History Domain 節へ 058e 追補（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件、59 tests PASS）を追加し、完了タスク表へ登録 |
+| 2026-03-08 | v1.14.21   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
 | 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |

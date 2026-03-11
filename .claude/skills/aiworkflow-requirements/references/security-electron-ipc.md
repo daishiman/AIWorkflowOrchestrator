@@ -11,6 +11,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.2    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notification:delete` の invoke-only allowlist、`notificationId` 非空文字列バリデーション、sender 検証、`notification:new` を subscribe 専用に保つ契約を追加。NotificationCenter 058e の delete UI と Main persistence を安全に接続 |
+| v1.18.1    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: file watch IPC lifecycle（`file:watch-start` / `file:watch-stop` / `file:changed`）の sender push、Renderer cleanup、module scope guard、`FILE_CHANGED` を subscribe 専用に保つ allowlist 契約を追加 |
 | v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
 | v1.17.1    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 苦戦箇所追記: IPC ハンドラライフサイクル管理セクションに `sanitizeRegistrationErrorMessage` によるパスマスクのセキュリティ意図、部分登録失敗時のフェイルセキュア確認、同種課題向け4ステップ手順を追加 |
 | v1.17.0    | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査を反映: Graceful Degradation のログ出力にユーザーホーム配下パスの `~` マスクを追加し、Phase 11 スクリーンショット検証完了状態へ同期。関連未タスクリンクを撤去 |
@@ -121,6 +123,25 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
+
+### Workspace file watch lifecycle（TASK-UI-04A）
+
+`WorkspaceView` は selected file の再読込に限って watch を使う。watch 契約は file read/write の一般契約とは分けて扱う。
+
+| 項目 | 契約 |
+| --- | --- |
+| invoke channel | `file:watch-start`, `file:watch-stop` |
+| event channel | `file:changed` |
+| sender | Main は `event.sender.send(IPC_CHANNELS.FILE_CHANGED, payload)` で push する |
+| Renderer cleanup | file switch / unmount のたびに `watchStop` を呼ぶ |
+| allowlist | `FILE_CHANGED` は subscribe 専用で invoke allowlist には入れない |
+| duplicate guard | Renderer は module scope guard で selected file 同一時の再登録を避ける |
+
+**セキュリティ意図**:
+
+- watch 対象を selected file に限定し、広域監視を行わない。
+- Main 側は watchId 単位で watcher を保持し、stop 後は map から削除する。
+- Renderer は preload 公開 API だけを使い、 chokidar や Node FS へ直接触れない。
 
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
@@ -281,6 +302,39 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 | 引数検証           | Main側ハンドラーで実施       | バリデーションテスト     |
 
 **関連タスク**: history-preload-setup（2026-01-13完了）
+
+---
+
+## 実装例: notificationAPI（TASK-UI-08）
+
+**実装場所**:
+
+- チャンネル定義: `apps/desktop/src/preload/channels.ts`
+- shared 定数: `packages/shared/src/ipc/channels.ts`
+- preload API: `apps/desktop/src/preload/api/notification-api.ts`
+- 型定義: `apps/desktop/src/preload/types.ts`
+- Main handler: `apps/desktop/src/main/ipc/notificationHandlers.ts`
+
+**チャンネルホワイトリスト方式**:
+
+`notification:get-history` / `notification:mark-read` / `notification:mark-all-read` / `notification:delete` / `notification:clear` は invoke allowlist、`notification:new` は subscribe 専用として分離する。
+
+| チャネル | 用途 | セキュリティ要件 |
+| --- | --- | --- |
+| `notification:get-history` | 初期履歴取得 | sender 検証 |
+| `notification:mark-read` | 単一既読化 | sender 検証 + `notificationId` 検証 |
+| `notification:mark-all-read` | 一括既読化 | sender 検証 |
+| `notification:delete` | 単一削除 | sender 検証 + `notificationId` 検証 |
+| `notification:new` | push 通知 | invoke allowlist へ入れず subscribe 専用 |
+
+**バリデーション契約**:
+
+1. `validateIpcSender(event, channel, ...)` で mainWindow 由来の sender を検証する。
+2. 更新系ハンドラでは `notificationId` を非空文字列として検証する。
+3. 例外メッセージは `sanitizeErrorMessage()` でサニタイズして返す。
+4. Renderer 側では `safeInvoke` / `safeOn` 経由以外で notification API を公開しない。
+
+**関連タスク**: TASK-UI-01-C（2026-03-05完了）, TASK-UI-08（2026-03-11完了）
 
 ---
 
@@ -971,6 +1025,7 @@ Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `i
 
 | タスクID                                       | 完了日     | ステータス | 概要                                                                                                                                                                                          |
 | ---------------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TASK-UI-08-NOTIFICATION-CENTER                 | 2026-03-11 | 完了       | `notification:delete` を shared/preload/main へ追加し、`NotificationCenter` 058e の個別削除 UI、sender 検証、入力検証、allowlist、59 tests PASS、Phase 11 screenshot 7件を同期 |
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001                | 2026-03-10 | 完了       | Preload `safeInvoke` を `invokeWithTimeout()` へ集約し、`IPC_TIMEOUT_MS = 5000` の timeout + `clearTimeout` cleanup を追加。allowlist fail-fast・error format・19 files / 551 tests PASS・Phase 11 screenshot 4件で完了確認 |
 | TASK-9I                                        | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |
 | TASK-9J                                        | 2026-02-28 | 完了       | スキル分析・統計5チャネルのセキュリティ実装。validateIpcSender + validateStringArg共通化 + 許可値リスト（ALLOWED_EVENT_TYPES/GRANULARITIES/FORMATS） + toIpcErrorResponse正規化。37テストPASS |

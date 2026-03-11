@@ -29,6 +29,18 @@ vi.mock("fs/promises", () => ({
   rename: vi.fn(),
 }));
 
+const mockWatcherStart = vi.fn();
+const mockWatcherStop = vi.fn();
+const mockWatcherOn = vi.fn();
+
+vi.mock("../services/watcher", () => ({
+  FileWatcher: vi.fn().mockImplementation(() => ({
+    on: mockWatcherOn,
+    start: mockWatcherStart,
+    stop: mockWatcherStop,
+  })),
+}));
+
 import { registerFileHandlers } from "./fileHandlers";
 import * as fs from "fs/promises";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -61,6 +73,11 @@ describe("fileHandlers", () => {
 
     it("FILE_WRITEハンドラーを登録する", () => {
       expect(handlers.has(IPC_CHANNELS.FILE_WRITE)).toBe(true);
+    });
+
+    it("FILE_WATCH_START / STOP ハンドラーを登録する", () => {
+      expect(handlers.has(IPC_CHANNELS.FILE_WATCH_START)).toBe(true);
+      expect(handlers.has(IPC_CHANNELS.FILE_WATCH_STOP)).toBe(true);
     });
   });
 
@@ -506,6 +523,60 @@ describe("fileHandlers", () => {
           newPath: "/Users/test/Documents/folder2/file.ts",
         },
       });
+    });
+  });
+
+  describe("FILE_WATCH handlers", () => {
+    it("watch を開始して watchId を返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_WATCH_START)!;
+      const send = vi.fn();
+
+      const result = await handler(
+        { sender: { send } },
+        {
+          watchPath: "/Users/test/Documents/project/file.ts",
+        },
+      );
+
+      expect(result).toEqual({
+        success: true,
+        watchId: expect.any(String),
+      });
+      expect(mockWatcherStart).toHaveBeenCalledTimes(1);
+      expect(mockWatcherOn).toHaveBeenCalledWith("file", expect.any(Function));
+    });
+
+    it("不正 path では watch start を拒否する", async () => {
+      const handler = handlers.get(IPC_CHANNELS.FILE_WATCH_START)!;
+
+      const result = await handler(
+        { sender: { send: vi.fn() } },
+        {
+          watchPath: "/etc/passwd",
+        },
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: "Validation error: Access denied: path is not allowed",
+      });
+    });
+
+    it("watch stop で watcher を停止する", async () => {
+      const startHandler = handlers.get(IPC_CHANNELS.FILE_WATCH_START)!;
+      const stopHandler = handlers.get(IPC_CHANNELS.FILE_WATCH_STOP)!;
+
+      const started = (await startHandler(
+        { sender: { send: vi.fn() } },
+        {
+          watchPath: "/Users/test/Documents/project/file.ts",
+        },
+      )) as { success: boolean; watchId: string };
+
+      const stopped = await stopHandler({}, started.watchId);
+
+      expect(stopped).toEqual({ success: true });
+      expect(mockWatcherStop).toHaveBeenCalledTimes(1);
     });
   });
 });

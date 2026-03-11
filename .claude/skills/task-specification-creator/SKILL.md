@@ -395,6 +395,9 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.48** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 11再監査追補を反映**: `validate-phase11-screenshot-coverage` を完了ゲートへ含め、`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` と `manual-test-result.md` の `証跡` 列を literal に保つ運用を変更履歴へ追加 |
+| **v10.08.47** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 12 完了同期を反映**: `outputs/phase-12` 5成果物と workflow root 文書（`index.md` / traceability / diff reflection / verification-report）を同一ターンで同期し、spec-only stale を残さない運用を変更履歴へ追加 |
+| **v10.08.46** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW の Phase 12再監査知見を反映**: `references/spec-update-workflow.md` に「`.claude` が canonical root、`.agents` は mirror」ルールを追加し、`references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加。workflow / outputs が `.agents/skills/.../references/` を正本として参照しないようにする再監査手順と、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` の formalization を標準化 |
 | **v10.08.45** | **2026-03-10** | **TASK-UI-03 Phase 12再監査の backlog 整合を反映**: current branch で解消済みの `UT-UI-03-TYPE-ASSERTION-001` を completed unassigned へ正規化し、Phase 11 light theme 所見を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として task-spec フォーマットで formalize する運用を変更履歴へ追加。`unassigned-task-detection.md` / `task-workflow.md` / `spec-update-summary.md` の同値同期を標準化 |
 | **v10.08.44** | **2026-03-10** | **TASK-UI-03 再監査で task-specification-creator の canonical script path を是正**: `.claude/skills/task-specification-creator/scripts/` を参照していた current workflow / `commands.md` / `phase-11-12-guide.md` / `phase-templates.md` / `patterns.md` / `unassigned-task-guidelines.md` を `.agents/skills/task-specification-creator/scripts/` へ統一し、`validate-phase-output.js` の位置引数契約へ再整合 |
 | **v10.08.43** | **2026-03-10** | **TASK-UI-03 current workflow 同期**: Phase 11 の dedicated harness route と `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` の TC証跡構成を current workflow 実績へ反映し、Phase 12 で outputs/phase-4〜12 と `.claude/skills/...` 正本を同ターン同期する運用を変更履歴へ追加 |
@@ -403,6 +406,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v10.08.40** | **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査運用を反映**: Phase 12 で `PR マージ時に実施予定` を残さず、その場で `.claude/skills/...` 正本・`SKILL.md` / `LOGS.md`・workflow outputs を同期するルールを追記。あわせて timeout タスクでは `cleanup` テストを acceptance に含め、明示 screenshot 要求時は非UIタスクでも影響 UI を representative capture する運用を固定 |
 | **v10.08.39** | **2026-03-10** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査運用を反映**: 明示 screenshot 要求時は P53 代替を使わず、専用 harness route + `screenshot-plan.json` + capture metadata + `validate-phase11-screenshot-coverage` まで完了させる運用を追加。あわせて bypass view は reset 除外条件まで仕様化するルールと、worktree preflight `pnpm install --frozen-lockfile` を追記 |
 | **v10.08.38** | **2026-03-09** | **TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 完了同期**: `architecture-auth-security.md` に認証状態遷移 "timed-out" 追加・Settings bypass セキュリティ記録。`arch-state-management.md` に AUTH_TIMEOUT_MS タイムアウト機構記録。`ui-ux-navigation.md` に Settings の AuthGuard 外アクセス記録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
+| **v10.08.39** | **2026-03-10** | **TASK-UI-04A-WORKSPACE-LAYOUT の worktree screenshot 運用を反映**: `phase-11-12-guide.md` に「複数 worktree で preview source が揺れる場合は current build `out/renderer` を static 配信する」ルールを追加。current workflow の Phase 4-12 成果物補完、screenshot 8件再取得、`audit-unassigned-tasks --diff-from HEAD` current=0 確認までを再監査標準手順へ追記 |
 | **v10.08.38** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の screenshot ルールを追補**: `phase-11-12-guide.md` に「persist bug では bug path 検証（通常ルート metadata）と screenshot path（dedicated harness）を分離し、`skipAuth=true` を唯一経路にしない」運用を追加。current workflow stale status / placeholder 除去と未タスク formalization の再監査手順も補強 |
 | **v10.08.37** | **2026-03-09** | **未タスク指示書の差分監査タイミングを明文化**: `references/unassigned-task-guidelines.md` に「新規/全面更新した未タスク指示書は、作成直後に `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、`currentViolations=0` まで閉じない」ルールを追加。配置済みとテンプレート準拠を分離して判定する運用へ補強 |
 | **v10.08.36** | **2026-03-09** | **TASK-FIX-CONCURRENCY-GUARD フィードバック反映**: Phase 4 テスト仕様にモノレポテスト実行ディレクトリ注意書き（P40）を標準追加。Phase 2 設計テンプレートに「並行実行ガード検討」チェックポイントを追加 |
@@ -492,11 +496,4 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v9.92.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査同期**: `references/spec-update-workflow.md` の baseline/current 判定手順を `--target-file` / `--diff-from` ベースへ更新 |
 | **v9.91.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 実装反映**: `scripts/audit-unassigned-tasks.js` に `--target-file` / `--diff-from`、`currentViolations` / `baselineViolations` 分離、scoped 判定を追加 |
 | **v9.90.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001 再確認反映**: `phase-11-12-guide.md` / `spec-update-workflow.md` にスキル構造検証チェックを追記（`quick_validate.js` ベース） |
-| **v9.89.0** | **2026-02-25** | **再監査運用改善**: baseline/current 分離監査ルールを標準化し、全体FAILと差分FAILの誤判定を防止 |
-| **v9.88.0** | **2026-02-25** | **Phase 1-12 実行反映**: 成果物出力完了、Phase 12 仕様同期、`artifacts.json` と `outputs/artifacts.json` 同期運用を明文化 |
-| **v9.87.0** | **2026-02-25** | **Phase 12 再監査反映**: 未タスク登録・参照整合・成果物追補の運用ガードを更新 |
-| **v9.86.0** | **2026-02-24** | **Phase 12 要件再整合**: 必須タスクを4→5へ修正し、漏れパターンに `spec-update-summary.md` と artifacts 同期不一致を追加 |
-| **v9.85.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 完了反映**: 仕様差分解消と検証結果を更新 |
-| **v9.84.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 反映**: IPC命名パターンの体系化を仕様へ展開 |
-
-> 補足: v9.83.2 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
+> 補足: v9.89.0 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。

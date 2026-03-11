@@ -231,6 +231,7 @@ export const IPC_CHANNELS = {
   NOTIFICATION_GET_HISTORY: "notification:get-history",
   NOTIFICATION_MARK_READ: "notification:mark-read",
   NOTIFICATION_MARK_ALL_READ: "notification:mark-all-read",
+  NOTIFICATION_DELETE: "notification:delete",
   NOTIFICATION_CLEAR: "notification:clear",
   NOTIFICATION_NEW: "notification:new",
 
@@ -522,6 +523,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.NOTIFICATION_GET_HISTORY,
   IPC_CHANNELS.NOTIFICATION_MARK_READ,
   IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ,
+  IPC_CHANNELS.NOTIFICATION_DELETE,
   IPC_CHANNELS.NOTIFICATION_CLEAR,
   // Community channels
   IPC_CHANNELS.COMMUNITY_GET_ALL,

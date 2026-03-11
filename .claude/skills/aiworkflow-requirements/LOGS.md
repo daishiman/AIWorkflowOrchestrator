@@ -4,6 +4,68 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW system spec 形成をテンプレート準拠へ最適化
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: documentation-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/ui-history-search-view.md` に `実装内容（要点）` ブロックを追加し、変更範囲・契約要点・視覚検証・完了根拠を明文化
+  - `references/ui-ux-feature-components.md` の TASK-UI-06 節を `実装内容（要点）` + `同種課題の5分解決カード` 構成へ最適化
+  - `references/lessons-learned.md` の TASK-UI-06 手順を 5 ステップへ揃え、domain spec / feature spec / task-workflow の同期粒度を統一
+
+---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-06-HISTORY-SEARCH-VIEW`
+- 目的: `.claude` 正本基準で system spec を再同期し、実装内容・苦戦箇所・未タスク導線を固定する
+
+### 実施内容
+- `references/ui-history-search-view.md` を新規作成し、timeline UI / state / IPC / screenshot / 苦戦箇所を統合
+- `references/ui-ux-feature-components.md` に TASK-UI-06 セクションと未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を追加
+- `references/arch-state-management.md` に `hasFetchedHistory` / `isHistoryLoadingMore` / `pendingOpenFilePath` 契約を追加
+- `references/api-ipc-system.md` に HistorySearch handler detail（trim / filter / pagination guard）を追補
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了記録・苦戦箇所・検証証跡・未タスク導線を同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-08-NOTIFICATION-CENTER`
+- 目的: Bell utility action / Portal / Phase 11 coverage validator の観点で system spec の同期漏れを埋める
+
+### 実施内容
+- `references/ui-ux-components.md` / `references/ui-ux-navigation.md` / `references/ui-ux-portal-patterns.md` に NotificationCenter の探索入口を追加
+- `references/lessons-learned.md` に Phase 11 validator drift と destructive affordance screenshot の教訓を追加
+- `references/task-workflow.md` の変更履歴に再監査追補を追加し、screenshot 7件と追加成果物 3件を同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 12 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-08-NOTIFICATION-CENTER`
+- 目的: 058e の NotificationCenter 再整備（UI / Store / IPC / Phase 11 証跡）を system spec 正本へ同期する
+
+### 実施内容
+- `references/api-endpoints.md` / `references/api-ipc-system.md` に `notification:delete` と `notificationId` 契約を追加
+- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/security-electron-ipc.md` に 058e の `お知らせ` UI、Portal、dedupe、delete security を追記
+- `references/task-workflow.md` に TASK-UI-08 完了台帳と変更履歴を追加
+- `scripts/generate-index.js` を実行し、topic-map / keywords を再生成する
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
 
 ### コンテキスト
@@ -95,6 +157,41 @@
 - `task-workflow.md` に current workflow の再監査記録、検証証跡、残課題判定を追加
 - `architecture-implementation-patterns.md` に S34 dedicated harness + review scope 分離パターンを追加
 - `.claude/task-specification-creator` 正本と current workflow の task-spec script 参照を `.agents/skills/task-specification-creator/scripts/` に統一した内容を system spec 側ログへ反映
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-10 - UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001`
+- 目的: TASK-UI-04A の苦戦箇所から派生した Workspace UI capture 運用改善を active unassigned task として system spec 正本へ登録する
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-04A 節へ active 未タスクを追加し、0件表記を是正
+- `references/ui-ux-feature-components.md` の Workspace Layout Foundation 節へ current build source pinning の未タスク導線を追加
+- `references/lessons-learned.md` に関連未タスクを追加し、static serve / reverse resize / watcher callback ref / light theme contrast の4観点を再利用導線へ接続
+- workflow `outputs/phase-12/unassigned-task-detection.md` / `documentation-changelog.md` / `skill-feedback-report.md` を 1件ベースへ同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-10 - TASK-UI-04A-WORKSPACE-LAYOUT 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04A-WORKSPACE-LAYOUT`
+- 目的: Workspace layout 04A の実装・Phase 11 screenshot・system spec 正本・task workflow 台帳を実績ベースへ同期する
+
+### 実施内容
+- `references/ui-ux-feature-components.md` に Workspace Layout Foundation セクションを追加し、`WorkspaceView` / `FileBrowserPanel` / `PanelToggleBar` / `WorkspaceStatusBar` / screenshot 8件を同期
+- `references/arch-state-management.md` に `workspace-layout-mode` / `workspace-panel-sizes` persist、`useFileWatcher` guard、preview reverse resize を追加
+- `references/ui-ux-navigation.md` / `references/security-electron-ipc.md` / `references/api-ipc-system.md` に workspace layout / file watch IPC 契約を追加
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、苦戦箇所、5分解決カード、未タスク0件を同期
+- `scripts/generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を更新
 
 ### 結果
 - ステータス: success

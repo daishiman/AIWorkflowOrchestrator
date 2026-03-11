@@ -13,7 +13,9 @@ export interface HistorySearchSlice {
   historySearchResults: HistoryItem[];
   historySearchTotalCount: number;
   historySearchHasMore: boolean;
+  hasFetchedHistory: boolean;
   isHistorySearching: boolean;
+  isHistoryLoadingMore: boolean;
   historySearchError: string | null;
   historySearchStats: HistorySearchStats;
   historySearchStatsError: string | null;
@@ -59,11 +61,28 @@ function buildRequest(
   filter: HistoryItemType | "all",
 ): HistorySearchRequest {
   return {
-    query,
+    query: query.trim(),
     filter,
     limit: DEFAULT_LIMIT,
     offset,
   };
+}
+
+function mergeHistoryItems(
+  currentItems: HistoryItem[],
+  incomingItems: HistoryItem[],
+): HistoryItem[] {
+  const seenIds = new Set(currentItems.map((item) => item.id));
+  const merged = [...currentItems];
+
+  incomingItems.forEach((item) => {
+    if (!seenIds.has(item.id)) {
+      merged.push(item);
+      seenIds.add(item.id);
+    }
+  });
+
+  return merged;
 }
 
 function isValidFilter(filter: unknown): filter is HistoryItemType | "all" {
@@ -127,7 +146,9 @@ export const createHistorySearchSlice: StateCreator<
   historySearchResults: [],
   historySearchTotalCount: 0,
   historySearchHasMore: false,
+  hasFetchedHistory: false,
   isHistorySearching: false,
+  isHistoryLoadingMore: false,
   historySearchError: null,
   historySearchStats: DEFAULT_STATS,
   historySearchStatsError: null,
@@ -156,7 +177,8 @@ export const createHistorySearchSlice: StateCreator<
     const selectedFilter = isValidFilter(filter) ? filter : currentFilter;
 
     set({
-      isHistorySearching: true,
+      isHistorySearching: offset === 0,
+      isHistoryLoadingMore: offset > 0,
       historySearchError: null,
     });
 
@@ -168,6 +190,8 @@ export const createHistorySearchSlice: StateCreator<
       if (!response.success || !response.data) {
         set({
           isHistorySearching: false,
+          isHistoryLoadingMore: false,
+          hasFetchedHistory: true,
           historySearchError: resolveErrorMessage(
             response.error,
             "検索結果の取得に失敗しました",
@@ -182,16 +206,20 @@ export const createHistorySearchSlice: StateCreator<
         historySearchFilter: selectedFilter,
         historySearchResults:
           offset > 0
-            ? [...state.historySearchResults, ...data.items]
+            ? mergeHistoryItems(state.historySearchResults, data.items)
             : data.items,
         historySearchTotalCount: data.totalCount,
         historySearchHasMore: data.hasMore,
+        hasFetchedHistory: true,
         isHistorySearching: false,
+        isHistoryLoadingMore: false,
         historySearchError: null,
       }));
     } catch (error) {
       set({
         isHistorySearching: false,
+        isHistoryLoadingMore: false,
+        hasFetchedHistory: true,
         historySearchError: resolveErrorMessage(error),
       });
     }
@@ -199,7 +227,11 @@ export const createHistorySearchSlice: StateCreator<
 
   loadMoreHistory: async () => {
     const state = get();
-    if (!state.historySearchHasMore || state.isHistorySearching) {
+    if (
+      !state.historySearchHasMore ||
+      state.isHistorySearching ||
+      state.isHistoryLoadingMore
+    ) {
       return;
     }
 
@@ -254,7 +286,9 @@ export const createHistorySearchSlice: StateCreator<
       historySearchResults: [],
       historySearchTotalCount: 0,
       historySearchHasMore: false,
+      hasFetchedHistory: false,
       isHistorySearching: false,
+      isHistoryLoadingMore: false,
       historySearchError: null,
       historySearchStats: DEFAULT_STATS,
       historySearchStatsError: null,

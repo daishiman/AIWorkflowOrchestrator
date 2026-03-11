@@ -9,6 +9,41 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `.claude` 正本を canonical root とし、workflow / outputs に残っていた `.agents/skills/...` 参照を是正
+  - `references/spec-update-workflow.md` に dual-root repo 向け canonical root 判定を追加
+  - `references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加
+  - `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を `docs/30-workflows/unassigned-task/` に formalize
+  - 058c workflow の `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を再監査結果へ更新
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 11/12 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `validate-phase11-screenshot-coverage` 失敗を起点に、`phase-11-manual-test.md` / `manual-test-result.md` / `manual-test-plan.md` / `screenshot-matrix.md` を validator 互換へ是正
+  - `screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md` を追加し、delete reveal を含む screenshot 7件へ拡張
+  - workflow outputs だけでなく `lessons-learned.md` / `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` まで同期対象を広げた
+
+---
+## 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-12/implementation-guide.md` / `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` を current workflow 配下へ生成
+  - workflow `index.md` / `requirements-traceability-matrix.md` / `branch-diff-reflection-matrix.md` / `outputs/verification-report.md` の stale な spec-only 記述を実績同期
+  - `.claude/skills/...` 正本、`LOGS.md` 2件、`SKILL.md` 2件を同一ターンで更新し、Phase 12 の root docs 同期を再発防止ルールとして記録
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
 
 - **Agent**: task-specification-creator
@@ -40,6 +75,18 @@
   - current workflow と `.claude/skills/task-specification-creator` 正本を再監査し、存在しない `.claude/skills/task-specification-creator/scripts/` 参照を `.agents/skills/task-specification-creator/scripts/` へ統一
   - `validate-phase-output.js` の CLI 契約を実スクリプトに合わせて位置引数方式へ再整合
   - Phase 12成果物のコマンド例も現行実行経路へ更新し、再監査時の false negative を防止
+
+---
+## 2026-03-10 - TASK-UI-04A-WORKSPACE-LAYOUT Phase 11-12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-4`〜`phase-12` の不足成果物を current workflow 配下へ補完し、`artifacts.json` / `index.md` を Phase 1-12 completed ベースへ同期
+  - Phase 11 screenshot 8件を current worktree build の static server 配信で再取得し、light theme contrast 調整後の視覚レビュー結果を `manual-test-result.md` / `screenshot-matrix.md` / `issues-found.md` へ反映
+  - `references/phase-11-12-guide.md` に「複数 worktree 時は current build `out/renderer` を static 配信する」ルールを追加
+  - `validate-phase11-screenshot-coverage` / `validate-phase-output` / `verify-all-specs` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current=0 を確認
 
 ---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期

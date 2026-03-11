@@ -9,6 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
+| v3.14.3    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
+| v3.14.2    | 2026-03-10 | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`historySearchSlice` の `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe 契約、`EditorSlice.pendingOpenFilePath` による file deep-open、timeline grouping / sentinel loading 分離、task-scope coverage 88.42 / 80.00 / 90.00 を追記 |
 | v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
 | v3.14.0    | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: useAuthState に AUTH_TIMEOUT_MS = 10,000ms タイムアウト機構追加。AuthState 型に "timed-out" 状態追加。getAuthState 純粋関数で isTimedOut 判定。Settings bypass で currentView === "settings" 時は AuthGuard 外レンダリング |
 | v3.13.2    | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映。App shell mount 時の debug-only `localStorage.clear()` / `window.location.reload()` を persist 契約違反として明文化し、DD-04/DD-05（shared shell 副作用禁止 / bug path検証と screenshot path 分離）を追加。Phase 11 は通常ルート metadata 確認 + dedicated harness screenshot の二段構成を標準化 |
@@ -145,12 +148,47 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | WorkspaceView layout / file browser / watcher 基盤 | **完了**（2026-03-10） |
 | TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
 | TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
+| TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | **完了**（2026-03-11） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
 
 ---
+
+## Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT）
+
+### 状態配置
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| workspace folders / tree / selected workspace file | `workspaceSlice` | 既存 workspace ドメイン責務の範囲内 |
+| 添付対象 file context | `fileSelectionSlice` | 04B へ渡す背景情報コンテキストを共有するため |
+| layout mode / last opened panel | `useWorkspaceLayout` | 画面固有であり global store 化不要 |
+| file / preview panel width | `useWorkspaceLayout` + localStorage | UI の一時状態であり view 内に閉じる |
+| context menu / expanded folders / selected file content | `WorkspaceView` local state | 04A 局所責務で完結するため |
+
+### persist 契約
+
+| key | 値 | 備考 |
+| --- | --- | --- |
+| `workspace-layout-mode` | `chat-only` / `chat+files` / `chat+preview` / `3-pane` | 表示モードを再現 |
+| `workspace-panel-sizes` | `{ filePanelWidth, previewPanelWidth }` | min/max clamp 後の値を保存 |
+
+### hook 境界
+
+| hook | 責務 |
+| --- | --- |
+| `useWorkspaceLayout` | breakpoint、mode 算出、persist、overlay close |
+| `usePanelResize` | min/max clamp、keyboard resize、preview reverse drag |
+| `useFileWatcher` | selected file 単位 watch、debounce、module scope guard、cleanup |
+
+### 再発防止ルール
+
+- `WorkspaceView` では新規 Zustand slice を作らない。
+- callback identity が変わっても `useFileWatcher` が watch を再登録しないよう `ref` 経由で参照する。
+- 右側 preview panel は reverse drag を標準とし、操作方向と視覚結果を一致させる。
 
 ## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
 
@@ -170,6 +208,16 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | 既読管理 | `readAt: string | null` |
 | 永続化 | `persist.partialize` で `notifications` を保持 |
 
+### Notification 058e 追補（TASK-UI-08-NOTIFICATION-CENTER）
+
+| 項目 | 内容 |
+| --- | --- |
+| 履歴同期 | `setNotificationHistory()` は ID 単位で dedupe し、timestamp 降順へ正規化する |
+| push 取り込み | `ingestNotification()` は既存 ID を置換して二重表示を防ぐ |
+| 個別削除 | `deleteNotification()` は対象通知を除去し、展開中だった場合は `expandedNotificationId = null` に戻す |
+| UI state | `isPopoverOpen` と `expandedNotificationId` を局所 state と切り分けず slice で保持する |
+| 互換 API | `clearAllNotifications()` は Store/互換用途に残すが、058e UI では `すべて削除` を表示しない |
+
 ### HistorySearch 契約
 
 | 項目 | 内容 |
@@ -186,6 +234,55 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `vitest`（対象5ファイル） | PASS（37 tests） |
 | `typecheck` | PASS |
 | coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
+
+---
+
+## HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW）
+
+### 更新した Slice / state
+
+| Slice | 追加/変更 | 目的 |
+| --- | --- | --- |
+| `historySearchSlice` | `hasFetchedHistory` | 初回 loading と初期 empty を分離する |
+| `historySearchSlice` | `isHistoryLoadingMore` | 初回検索と append 読込を分離する |
+| `historySearchSlice` | `expandedItemId` | accordion を単一展開に保つ |
+| `editorSlice` | `pendingOpenFilePath` | history file card から editor への deep-open を橋渡しする |
+
+### Action 契約
+
+| Action | 契約 |
+| --- | --- |
+| `searchHistory(query, offset, filter)` | `query.trim()` を正本にする。`offset === 0` は置換、`offset > 0` は append |
+| `loadMoreHistory()` | `hasMore=false` / `isHistorySearching=true` / `isHistoryLoadingMore=true` の場合は no-op |
+| `mergeHistoryItems()` | `id` 重複を除外して append する |
+| `requestOpenFile(filePath)` | `pendingOpenFilePath` をセットし、呼び出し元が `setCurrentView("editor")` を行う |
+| `clearPendingOpenFile()` | `EditorView` 側で消費後に必ず null へ戻す |
+
+### UI状態の分離
+
+| UI mode | 判定 | 表示 |
+| --- | --- | --- |
+| loading | `!hasFetchedHistory && isHistorySearching` | skeleton |
+| results | `historySearchResults.length > 0` | timeline + sentinel |
+| search-empty | `query.trim() !== "" && results.length === 0` | clear CTA |
+| empty | 初回取得後に結果0件 | chat 導線 |
+| error | `historySearchError !== null` | retry CTA |
+
+### 実装時の苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| 検索中と追加読込中を同一フラグで持つと empty/loading 判定が崩れる | `isHistorySearching` だけで全状態を表す | `hasFetchedHistory` / `isHistoryLoadingMore` を分離した | timeline UI は initial / append / empty を別フラグで表現する |
+| file card から editor を直接開けず、View 遷移だけ先に進む | deep-open 対象 path を global state に残さない | `pendingOpenFilePath` を `editorSlice` に追加した | cross-view 導線は「遷移」と「消費する payload」を分けて保持する |
+| mobile sticky header が card と視覚干渉しやすい | sticky offset が画面全体 header を前提に固定される | `top-0` + gradient + blur に寄せた | timeline の group header は local scroll container 基準で sticky を設計する |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（対象5ファイル） | PASS（26 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| coverage（task scope） | Lines 88.42 / Branches 80.00 / Functions 90.00 |
 
 ---
 

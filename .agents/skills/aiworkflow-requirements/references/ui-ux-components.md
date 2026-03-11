@@ -68,6 +68,7 @@
 | AppLayout | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AppLayout/` |
 | GlobalNavStrip | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/` |
 | MobileNavBar | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/MobileNavBar/` |
+| NotificationCenter | TASK-UI-08 | completed（実装・テスト・画面検証完了） | `apps/desktop/src/renderer/components/organisms/NotificationCenter/` |
 | SkillChip | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/SkillChip.tsx` |
 | ExecuteButton | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` |
 | FloatingExecutionBar | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/FloatingExecutionBar.tsx` |
@@ -94,6 +95,7 @@
 | AppLayout | TASK-UI-02 | グローバルナビと header/main を統合するテンプレート |
 | GlobalNavStrip | TASK-UI-02 | desktop/tablet の global navigation |
 | MobileNavBar | TASK-UI-02 | mobile の下部 global navigation |
+| NotificationCenter | TASK-UI-08 | Bell から開く通知 utility popover / overlay |
 | ComingSoonView | TASK-UI-02 | 未実装ビュー導線の退避表示 |
 | CardGrid / MasterDetailLayout / SearchFilterList | TASK-UI-00-ORGANISMS | 再利用可能な汎用Organisms（カード表示・マスター詳細・検索フィルタ） |
 | SkillChip | TASK-UI-03 | AIツール選択用丸型チップ（role="radio"、80x80px） |
@@ -206,7 +208,53 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
-| TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、58テスト） | 2026-03-07 |
+| TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、136テスト） | 2026-03-10 |
+| TASK-UI-08 | NotificationCenter（Bell utility action / Portal / relative time / delete reveal / screenshot 7件） | 2026-03-11 |
+
+---
+
+## TASK-UI-08 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | completed（実装・テスト・画面検証・Phase 12 再監査完了） | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
+
+### TASK-UI-08 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `NotificationCenter` を `お知らせ` 文言、relative time、Portal、responsive overlay、delete reveal、focus trap を備えた utility popover として再整備した |
+| 状態管理 | `notificationSlice` の dedupe、unread count、delete 時 `expandedNotificationId` reset を整理した |
+| IPC | `notification:delete` を shared / preload / main の3境界へ追加し、個別削除を persistence と接続した |
+| 画面検証 | Phase 11 で desktop / tablet / mobile / empty / delete reveal を screenshot 7件で確認し、Apple UI/UX 観点で `PASS` と判定した |
+| 苦戦箇所1 | utility action は feature doc だけでなく `ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` にも同期しないと探索導線が分散する |
+| 苦戦箇所2 | Phase 11 validator は `証跡` 列と `画面カバレッジマトリクス` を前提にするため、文書見出しのわずかなずれでも false fail になる |
+| 苦戦箇所3 | delete affordance は自動テストだけでは視覚品質が確定しないため、実画面証跡が必要だった |
+| 仕様同期 | UI系は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
+| 詳細参照 | `ui-ux-feature-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-08 節 |
+
+---
+
+## TASK-UI-03 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT | AgentView Enhancement（Tap & Discover リデザイン） | completed（実装・テスト・画面検証・Phase 12 再監査完了） | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+
+### TASK-UI-03 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `SkillChip` / `ExecuteButton` / `FloatingExecutionBar` / `AdvancedSettingsPanel` / `RecentExecutionList` を追加し、`AgentView` をシングルカラム・3セマンティックリージョンへ再構成した |
+| 状態管理 | `agentSlice` に recent history と advanced settings state を追加し、個別 selector と回帰テストで P31 系の再レンダー不安定を抑えた |
+| 型整理 | `types.ts` を新設し、`ImportedSkill` / `SkillMetadata` / view 用 `Skill` の橋渡しを adapter helper に寄せて `as unknown as Skill[]` を解消した |
+| 画面検証 | Phase 11 dedicated harness と screenshot で light / dark / panel / floating / recent states を再現し、主要 UI は Apple HIG 観点で Go と判定した |
+| 苦戦箇所1 | view 層で扱う `Skill` と import 元の `ImportedSkill` / `SkillMetadata` の責務がずれ、型アサーションで逃げやすかった |
+| 苦戦箇所2 | App shell 経由では screenshot 用 state 再現が揺れやすく、目的状態だけを固定した harness が必要だった |
+| 苦戦箇所3 | light theme の副次テキスト所見が AgentView 固有か token 基盤か混線しやすく、component scope と token scope の切り分けが必要だった |
+| 仕様同期 | `ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `ui-ux-design-system` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
+| 簡潔解決 | view 型は adapter helper で閉じる → screenshot は dedicated harness で state 固定 → 所見は component/token に切り分ける → 未タスク化と system spec 同期を同時に閉じる |
+| 詳細参照 | `ui-ux-feature-components.md` / `arch-ui-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-03 節 |
 
 ---
 
@@ -376,7 +424,10 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.16.3  | 2026-03-11 | TASK-UI-08 再監査反映: Organisms / 主要UI / 完了タスクへ `NotificationCenter` を追加し、Bell utility action・Portal・delete reveal・Phase 11 screenshot 7件を TASK-UI-08 完了記録として同期 |
+| 2.16.2  | 2026-03-10 | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement の完成記録を独立節として追加し、adapter helper・dedicated harness・token scope 切り分けを「実装内容 + 苦戦箇所 + 簡潔解決」の形式で正本化 |
 | 2.16.0  | 2026-03-07 | TASK-UI-03 完了反映: Organisms実装状況へ SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList を追加。主要UI一覧・organisms階層図・完了タスクへ AgentView Enhancement 5コンポーネント（58テスト）を同期 |
+| 2.16.1  | 2026-03-10 | TASK-UI-03 current workflow 同期: 完了タスク行のテスト件数を 136 tests へ更新し、Phase 11/12 再検証後の実測に合わせた |
 | 2.15.3  | 2026-03-06 | TASK-UI-02 移管反映: workflow 参照を `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、Phase 12 完了後の正本導線を completed-tasks 基準へ統一 |
 | 2.15.2  | 2026-03-06 | TASK-UI-02 追補: workflow 本文 `phase-1..11` stale と UI仕様同期セット（`ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned`）を TASK-UI-02 サマリーへ追記し、簡潔解決導線を明文化 |
 | 2.15.1  | 2026-03-06 | TASK-UI-02 再監査追補: `mobileLabel` による mobile 可読性改善と、`phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` の四点同期ルールを TASK-UI-02 サマリーへ追加 |

@@ -41,6 +41,7 @@ import type {
   SearchWorkspaceRequest,
   NotificationGetHistoryRequest,
   NotificationMarkReadRequest,
+  NotificationDeleteRequest,
   NotificationClearRequest,
   NotificationNewEvent,
   HistorySearchRequest,
@@ -297,6 +298,8 @@ const electronAPI: ElectronAPI = {
     markRead: (request: NotificationMarkReadRequest) =>
       safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_READ, request),
     markAllRead: () => safeInvoke(IPC_CHANNELS.NOTIFICATION_MARK_ALL_READ),
+    delete: (request: NotificationDeleteRequest) =>
+      safeInvoke(IPC_CHANNELS.NOTIFICATION_DELETE, request),
     clear: (request?: NotificationClearRequest) =>
       safeInvoke(IPC_CHANNELS.NOTIFICATION_CLEAR, request ?? {}),
     onNew: (callback: (event: NotificationNewEvent) => void) =>
