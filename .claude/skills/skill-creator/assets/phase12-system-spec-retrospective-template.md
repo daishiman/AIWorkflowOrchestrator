@@ -184,7 +184,7 @@ UI機能実装の場合は次を推奨:
 
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6+α責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons + domain-ui-spec）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
-3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
+3. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、workflow 直下 <workflow>/unassigned-task/ 参照のまま止めない。完了移管後は docs/30-workflows/completed-tasks/unassigned-task/ へ移す>`
 4. `<worktree では UI再撮影や検証前に pnpm install --frozen-lockfile を実行し、optional dependency 欠落を先に解消する>`
 5. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
 6. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
@@ -252,6 +252,7 @@ UI機能実装の場合は次を推奨:
 - [ ] `generate-index.js` 実行後の `index.md` に `undefined` 混入や全Phase未実施化がない。発生時は workflow を手動復旧し、generator/schema 互換改善を未タスク化している
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `ステータス=pending` が残っていない
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
+- [ ] 関連未タスク参照が workflow 直下 `.../<workflow>/unassigned-task/` で止まっていない（未実施は `docs/30-workflows/unassigned-task/` 正本、完了済みは `docs/30-workflows/completed-tasks/.../unassigned-task/`）
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している

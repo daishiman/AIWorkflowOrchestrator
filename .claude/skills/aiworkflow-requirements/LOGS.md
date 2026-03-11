@@ -4,6 +4,22 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001`
+- 目的: completed workflow へ移管済みの light theme token foundation と派生 backlog 2件の正本導線を system spec へ同期する
+
+### 実施内容
+- `references/task-workflow.md` に完了台帳、苦戦箇所、検証証跡、関連未タスク2件の completed parent `unassigned-task/` 導線を追加
+- `references/ui-ux-design-system.md` に light token 実装値、苦戦箇所、関連タスク参照を実装実体へ同期
+- `references/lessons-learned.md` / `SKILL.md` に「completed workflow 配下で follow-up backlog を継続管理する」ルールを反映
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管
 
 ### コンテキスト

@@ -132,6 +132,61 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 ライトテーマ token 基盤是正（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-11 |
+| 対象 | `apps/desktop/src/renderer/styles/tokens.css` の light token 契約是正（surface / text / border / accent） |
+| 成果物 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/` |
+
+#### 実施内容
+
+- `tokens.css` の light palette を純白依存から `#f7f7f5` 系へ是正し、surface / text / border / accent の階層を再定義
+- `--text-tertiary` / `--border-primary` / `--accent-primary` を正式定義し、required token を light / dark / kanagawa 3テーマで補完
+- token 契約テスト `tokens.light-theme.contract.test.ts` を追加し、light mode drift を固定化
+- Phase 11 で representative screenshot 5件を取得し、Apple UI/UX 観点の視覚検証を記録
+- 親 workflow 完了後の継続 backlog 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に移管し、Issue `#1156` / `#1157` と同期した
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| Phase 5-12 成果物不足で phase status と outputs が乖離する | 実装優先で phase artifacts 生成を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` と同時同期した |
+| `phase-11-manual-test.md` の必須節不足で coverage validator の根拠が弱くなる | `テストケース` と `画面カバレッジマトリクス` を省略する | 2節を追加し、`manual-test-result.md` の `証跡` 列と 1:1 対応にそろえた |
+| `.claude` 正本と workflow docs の更新順が崩れると Step 1-A〜2 の記録が欠ける | workflow だけ更新して system spec 台帳を後回しにする | `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期した |
+| completed workflow へ移管した後の follow-up backlog 正本がぶれる | workflow 名参照だけで残課題を管理し、正式 task spec / issue 導線を固定しない | 親 task 完了後の継続 backlog は `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
+
+#### 同種課題の5分解決カード
+
+1. token 修正タスクは `tokens.css` の契約層だけに責務を固定する。
+2. Phase 11 は screenshot 取得と coverage matrix を同時に作る。
+3. Phase 12 は `completed` 判定を `spec_created` と混在させない。
+4. `artifacts.json` と `index.md` は phase status 更新と同時に同期する。
+5. 親 workflow の状態に応じて backlog 正本を選び、`task-workflow` / `lessons` / `SKILL` / `LOGS` を同一ターンで閉じる。
+
+#### 関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/styles/tokens.light-theme.contract.test.ts` | PASS（4 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs` | PASS（screenshot 5件） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` | PASS（currentViolations=0） |
+
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
 | 項目 | 値 |
@@ -4266,6 +4321,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.50** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映**: 完了台帳へ light token foundation の実装内容、Phase 11 screenshot 5件、contract test、follow-up 2件の正本導線 `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` を追加し、親 workflow 完了後の backlog 配置ルールを明文化 |
 | **1.67.49** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を同期**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の related task row を完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新。完了済み未タスクと実行workflowの配置整合を同一ターンで是正 |
 | **1.67.48** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を登録**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を、単一回帰マトリクスで guard する改善未タスクへ formalize。`docs/30-workflows/unassigned-task/` 配下へ配置し、同種課題の初動を短縮する導線を追加 |
 | **1.67.47** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を同期**: `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` の4検証を再実行し、`capture-task-fix-apikey-chat-tool-integration-phase11.mjs` でTC-11-01..03証跡を更新。未タスク監査は `current=0 / baseline=133` の二層判定へ固定して誤判定を回避 |

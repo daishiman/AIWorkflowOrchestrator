@@ -64,6 +64,19 @@
 - **発見日**: 2026-03-08
 - **関連タスク**: 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 
+### [Phase12] 未タスク参照の canonical path 固定（TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001）
+
+- **状況**: Phase 12 Task 4 で残課題を検出しても、`light-theme-*/` の workflow ディレクトリ参照だけで管理し、`docs/30-workflows/unassigned-task/` の正式指示書作成が抜ける
+- **アプローチ**:
+  - 残課題を `docs/30-workflows/unassigned-task/` へ 9見出しフォーマットで正式起票する
+  - `task-workflow.md` / `ui-ux-design-system.md` の関連タスク参照を、workflow ディレクトリではなく未タスク指示書ファイルへ同期する
+  - `audit-unassigned-tasks --json --diff-from HEAD --target-file <new-file>` を各新規ファイルに対して実行し、`currentViolations=0` を確認する
+  - `unassigned-task-detection.md` に件数と監査値（current/baseline）を同値転記する
+- **結果**: 「検出レポートはあるが正式未タスクがない」状態を防ぎ、Phase 12 の追跡性を維持できる
+- **適用条件**: UI再監査や token 修正で follow-up 課題を検出したが、実装タスク本体で完了しない場合
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
+
 ### [Phase12] 画面検証で露出した副次不具合の即時未タスク化 + 3.5 節継承（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
 
 - **状況**: 代表画面の screenshot 再取得中に、主タスクとは別の light theme contrast / React key warning / rollout 漏れが露出し、親 task だけ直しても再発防止にならない

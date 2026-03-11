@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog ルール反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-spec-sync-subagent-template.md` に active / completed workflow で異なる unassigned 正本配置ルールを追加
+  - `audit-unassigned-tasks` の `--unassigned-dir` + `--target-file` を併用する検証コマンドを追記
+  - 親 workflow を `completed-tasks/` へ移した後も、child backlog の参照先が root `unassigned-task/` と混線しない完了条件へ整理
+
+---
 ## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 パターン/テンプレート同期
 
 - **Agent**: skill-creator (update)

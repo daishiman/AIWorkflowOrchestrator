@@ -1,0 +1,70 @@
+{
+  "taskId": "TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001",
+  "components": [
+    {
+      "name": "DashboardView",
+      "route": "/phase11-dashboard.html?theme=light",
+      "states": [
+        {
+          "id": "TC-11-01",
+          "label": "dashboard-light",
+          "theme": "light",
+          "priority": "A",
+          "note": "ライトテーマの基準画面（白の強さと情報階層）"
+        }
+      ]
+    },
+    {
+      "name": "SettingsView",
+      "route": "/phase11-safeinvoke-timeout.html",
+      "states": [
+        {
+          "id": "TC-11-02",
+          "label": "settings-light",
+          "theme": "light",
+          "priority": "A",
+          "note": "設定画面で補助テキストと境界線の視認性を確認"
+        }
+      ]
+    },
+    {
+      "name": "AuthGuardShell",
+      "route": "/phase11-authguard-timeout.html?theme=light",
+      "states": [
+        {
+          "id": "TC-11-03",
+          "label": "auth-shell-light",
+          "theme": "light",
+          "priority": "A",
+          "note": "認証導線画面で背景と本文コントラストを確認"
+        }
+      ]
+    },
+    {
+      "name": "AgentView",
+      "route": "/phase11-agent-view.html?scenario=main-view&theme=light",
+      "states": [
+        {
+          "id": "TC-11-04",
+          "label": "agent-main-light",
+          "theme": "light",
+          "priority": "A",
+          "note": "カード群・ボタン・補助テキストのlight token適用を確認"
+        }
+      ]
+    },
+    {
+      "name": "DashboardViewComparison",
+      "route": "/phase11-dashboard.html?theme=dark",
+      "states": [
+        {
+          "id": "TC-11-05",
+          "label": "dashboard-dark-baseline",
+          "theme": "dark",
+          "priority": "B",
+          "note": "ライト改善の比較用ベースライン"
+        }
+      ]
+    }
+  ]
+}

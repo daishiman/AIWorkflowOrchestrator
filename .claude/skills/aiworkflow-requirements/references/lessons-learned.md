@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
 | 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
 | 2026-03-11 | 1.29.71 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を追加。`cache clear` / Main 同期 / `source` 表示の 3 契約を個別テストの寄せ集めではなく単一回帰マトリクスで guard する改善導線を task-workflow / workflow spec / domain spec へ同期した |
 | 2026-03-11 | 1.29.70 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を追加。スクリーンショット再取得、Phase 12 4検証再実行、未タスク監査の `current=0 / baseline=133` 二層判定を同時に固定し、再確認時の誤判定を防止 |
@@ -57,6 +58,52 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
+
+#### 苦戦箇所1: Phase成果物の欠落を放置すると「実装済みだが台帳未完了」の誤判定になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `tokens.css` 実装とテストは完了していたが、`outputs/phase-5..12` が不足し `artifacts/index` と不整合が発生した |
+| 再発条件 | 実装後に workflow outputs の生成を後段へ回し、phase status 更新だけ先に行う |
+| 解決策 | 不足成果物を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` / `phase-*.md` を同ターンで同期した |
+| 標準ルール | 「実装完了」判定前に `outputs` 実体・status・registry の3点を同時確認する |
+
+#### 苦戦箇所2: Phase 11 で `テストケース` と `画面カバレッジマトリクス` を欠くと根拠追跡が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot は存在していても、`phase-11-manual-test.md` 必須節不足で証跡追跡が弱くなった |
+| 再発条件 | `manual-test-result.md` の記録だけを先に作り、仕様書本体の matrix を省略する |
+| 解決策 | `phase-11-manual-test.md` に TC 表と matrix を追記し、`証跡` 列を screenshot ファイル名へ厳密に紐づけた |
+| 標準ルール | Phase 11 は「TC表 + matrix + result証跡列」を 1 セットで作成する |
+
+#### 苦戦箇所3: Phase 12 で `spec_created` と `completed` を混在させると台帳ドリフトが再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-12-documentation.md` に `spec_created` 文言が残ると、実装完了タスクの状態が曖昧になる |
+| 再発条件 | 仕様作成専用テンプレート文言を実装完了タスクへ流用する |
+| 解決策 | Task 12-2 / 完了条件の表現を `completed` に統一し、Step 1-A〜2 の整合を修正した |
+| 標準ルール | 実装完了タスクの Phase 12 では `completed` を唯一の完了状態として使う |
+
+#### 苦戦箇所4: completed workflow へ移管した後の follow-up backlog は正本配置を固定しないと導線がぶれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `light-theme-shared-color-migration/` などの workflow 名だけを参照すると、正式な task spec / issue 追跡先が分離しやすい |
+| 再発条件 | 親 workflow を `completed-tasks/` へ移した後も、root `unassigned-task/` や workflow 名参照だけで運用する |
+| 解決策 | 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で個別 `currentViolations=0` を確認した |
+| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. 実装後に `outputs/phase-*` の不足を先に埋める。
+2. `artifacts.json` と `index.md` の status を同時更新する。
+3. Phase 11 の TC表 / matrix / result証跡列を 1:1 で突合する。
+4. Phase 12 の完了状態を `completed` に統一する。
+5. 親 workflow の状態に合わせて backlog 正本パスを選び、`task-workflow` / `lessons` / `SKILL` / `LOGS` を同ターンで同期する。
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 

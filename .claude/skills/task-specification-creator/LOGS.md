@@ -9,6 +9,17 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog 配置を再整合
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（completed migration follow-up）
+- **Result**: success
+- **Notes**:
+  - 親 workflow `light-theme-token-foundation` 完了移管後の follow-up 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` へ配置
+  - `audit-unassigned-tasks --json --diff-from HEAD --target-file ...` を 2件実行し、個別 `currentViolations=0` を確認
+  - active workflow 由来と completed workflow 由来で unassigned 正本配置が異なるルールを task-spec 側ガイドへ反映
+
+---
 ## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管
 
 - **Agent**: task-specification-creator

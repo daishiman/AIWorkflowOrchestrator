@@ -395,6 +395,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.53** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow backlog 配置を反映**: Phase 12 Task 4 の正本配置ルールを「active workflow 由来は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`」へ明文化し、`audit-unassigned-tasks --json --diff-from HEAD --unassigned-dir <dir> --target-file <file>` を完了ゲートへ追加 |
 | **v10.08.52** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の再確認知見を反映**: `references/unassigned-task-guidelines.md` に「指定ディレクトリ配置チェック（今回差分配置 / current判定 / legacy baseline）」の3行テンプレートを追加。`currentViolations=0` と `baselineViolations>0` を混同しない報告ルールを明文化し、Phase 12 再監査時の未タスク誤判定を防止 |
 | **v10.08.51** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 11/12 再監査を反映**: Phase 11 で `capture-task-fix-apikey-chat-tool-integration-phase11.mjs` による TC-11-01..03 再撮影と Apple UI/UX 視覚検証を実施。Phase 12 では必須5成果物の不足を補完し、`phase-12-documentation.md` を Task 12-1〜12-5 構成へ是正。`artifacts.json` / `outputs/artifacts.json` 同期、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を完了ゲートへ固定 |
 | **v10.08.50** | **2026-03-11** | **user 指定rootを正本にする Phase 12 ガードを追加**: `references/phase12-checklist-definition.md` と `references/phase-11-12-guide.md` に、`.claude/skills/...` のような user 指定rootを canonical root として扱い、`.agents/skills/...` などの mirror root と drift がないことを完了条件に加えた |

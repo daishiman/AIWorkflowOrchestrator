@@ -17,6 +17,14 @@ declare global {
 
 const harnessState = window.__PHASE11_AUTHGUARD_TIMEOUT_HARNESS__;
 
+function getThemeFromQuery(): "light" | "dark" | null {
+  const theme = new URLSearchParams(window.location.search).get("theme");
+  if (theme === "light" || theme === "dark") {
+    return theme;
+  }
+  return null;
+}
+
 if (harnessState) {
   useAppStore.setState(harnessState);
 
@@ -27,6 +35,16 @@ if (harnessState) {
     );
     document.documentElement.style.colorScheme =
       harnessState.resolvedTheme === "light" ? "light" : "dark";
+  }
+} else {
+  const queryTheme = getThemeFromQuery();
+  if (queryTheme) {
+    useAppStore.setState({
+      themeMode: queryTheme,
+      resolvedTheme: queryTheme,
+    } as never);
+    document.documentElement.setAttribute("data-theme", queryTheme);
+    document.documentElement.style.colorScheme = queryTheme;
   }
 }
 
