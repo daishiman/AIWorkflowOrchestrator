@@ -21,6 +21,7 @@
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
+| スキルライフサイクル一次導線設計 / 画面責務再編 | ui-ux-navigation.md, ui-ux-feature-components.md, arch-state-management.md, architecture-overview.md | ui-ux-settings.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
 | UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
@@ -37,10 +38,21 @@
 | Claude Code スキル作成      | claude-code-skills-overview.md                                | claude-code-skills-\*, claude-code-agents-\*                          |
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
+| バグ修正（APIキー連動 + チャット実行経路整合） | workflow-apikey-chat-tool-integration-alignment.md, api-ipc-system.md, interfaces-auth.md, llm-ipc-types.md | ui-ux-settings.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
+| バグ修正（Light Mode 全画面 white/black 再是正） | workflow-light-theme-global-remediation.md, ui-ux-design-system.md, task-workflow.md | lessons-learned.md, ui-ux-components.md, ui-ux-feature-components.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
+
+---
+
+補足:
+- advanced route の実体、rollback feature flag、`settings` bypass は `ui-ux-navigation.md` と `architecture-overview.md` を先に読み、現行実装アンカーとして `apps/desktop/src/renderer/App.tsx` を照合する。
+- lifecycle journey contract の正本は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`。create / use / improve の job guide、surface responsibility、advanced route policy、downstream contract を 1 箇所で確認する。
+- lifecycle の create/improve handoff は `ui-ux-feature-components.md` の Store-Driven Lifecycle Integration を読み、現行実装アンカーとして `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を照合する。
+- global nav の正式契約は `ui-ux-navigation.md` と `apps/desktop/src/renderer/navigation/navContract.ts` の組み合わせで確認する。
+- `settings` 公開 shell の例外条件は `arch-state-management.md` と `ui-ux-settings.md` を読み、現行実装アンカーとして `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` を照合する。
 
 ---
 
@@ -247,6 +259,7 @@
 | plugin-development.md    | プラグイン開発、IWorkflowExecutor実装時    | アーキテクチャ、実装ガイド        |
 | discord-bot.md           | Discord Bot機能実装時                      | イベント、コマンド、通知          |
 | local-agent.md           | ローカルエージェント機能実装時             | ファイル監視、クラウド同期        |
+| workflow-apikey-chat-tool-integration-alignment.md | APIキー保存連動・`ai.chat` 実行経路整合・AuthKey表示契約の再発防止時 | source/sync/cache clear 契約、苦戦箇所、5分解決カード |
 | workflow-skill-identifier-branded-type-resolution.md | Skill識別子の型境界是正、Phase 12再監査時 | SubAgent分担、4フェーズ実行、監査コマンド |
 
 ### 11. ガイドライン
@@ -349,6 +362,10 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-11 | 1.13.0     | TASK-SKILL-LIFECYCLE-01 完了同期: lifecycle task の逆引きへ `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` を追加し、Skill Center 一次導線・advanced route・settings bypass の実装アンカーを明示 |
+| 2026-03-10 | 1.12.0     | TASK-10A-G: `skill:create` 契約 + ChatPanel 起点ライフサイクル統合テスト向けの導線を追加 |
+| 2026-03-10 | 1.13.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |
+| 2026-03-09 | 1.11.0     | TASK-10A-F: タスク別リソースマップに Store駆動スキルライフサイクルUI統合の導線を追加 |
 | 2026-03-08 | 1.10.0     | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: タスク別リソースマップに Profile/Avatar fallback 導線を追加 |
 | 2026-02-25 | 1.9.0      | UT-TYPE-SKILL-IDENTIFIER-BRANDED-001 再利用向けの導線最適化。クイックルックアップに「Skill識別子型ドリフト是正」を追加し、`workflow-skill-identifier-branded-type-resolution.md` をその他カテゴリへ登録 |
 | 2026-02-02 | 1.8.0      | TASK-WCE-WORKSPACE-001: llm-workspace-chat-edit.md説明拡張（Main Process実装、IPC統合、workspacePath検証追加）                                                   |

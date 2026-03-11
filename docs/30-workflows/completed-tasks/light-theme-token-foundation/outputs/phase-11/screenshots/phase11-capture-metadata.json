@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-11T13:11:34.921Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "file": "TC-11-01-dashboard-light.png",
+      "route": "/phase11-dashboard.html?theme=light",
+      "theme": "light",
+      "selector": "[data-testid=\"phase11-dashboard-shell\"]",
+      "description": "Dashboard light representative",
+      "url": "http://127.0.0.1:4173/phase11-dashboard.html?theme=light",
+      "capturedAt": "2026-03-11T13:11:40.775Z",
+      "mtime": "2026-03-11T13:11:40.774Z"
+    },
+    {
+      "id": "TC-11-02",
+      "file": "TC-11-02-settings-light.png",
+      "route": "/phase11-safeinvoke-timeout.html",
+      "theme": "light",
+      "selector": "[data-testid=\"phase11-safeinvoke-timeout-shell\"]",
+      "description": "Settings light representative",
+      "url": "http://127.0.0.1:4173/phase11-safeinvoke-timeout.html",
+      "capturedAt": "2026-03-11T13:11:44.339Z",
+      "mtime": "2026-03-11T13:11:44.336Z"
+    },
+    {
+      "id": "TC-11-03",
+      "file": "TC-11-03-auth-shell-light.png",
+      "route": "/phase11-authguard-timeout.html?theme=light",
+      "theme": "light",
+      "selector": "[data-testid=\"phase11-protected-shell\"]",
+      "description": "Auth shell light representative",
+      "url": "http://127.0.0.1:4173/phase11-authguard-timeout.html?theme=light",
+      "capturedAt": "2026-03-11T13:11:46.061Z",
+      "mtime": "2026-03-11T13:11:46.061Z"
+    },
+    {
+      "id": "TC-11-04",
+      "file": "TC-11-04-agent-main-light.png",
+      "route": "/phase11-agent-view.html?scenario=main-view&theme=light",
+      "theme": "light",
+      "selector": "[data-testid=\"phase11-agent-view-harness\"]",
+      "description": "AgentView light representative",
+      "url": "http://127.0.0.1:4173/phase11-agent-view.html?scenario=main-view&theme=light",
+      "capturedAt": "2026-03-11T13:11:47.802Z",
+      "mtime": "2026-03-11T13:11:47.797Z"
+    },
+    {
+      "id": "TC-11-05",
+      "file": "TC-11-05-dashboard-dark-baseline.png",
+      "route": "/phase11-dashboard.html?theme=dark",
+      "theme": "dark",
+      "selector": "[data-testid=\"phase11-dashboard-shell\"]",
+      "description": "Dashboard dark baseline for comparison",
+      "url": "http://127.0.0.1:4173/phase11-dashboard.html?theme=dark",
+      "capturedAt": "2026-03-11T13:11:49.717Z",
+      "mtime": "2026-03-11T13:11:49.713Z"
+    }
+  ]
+}

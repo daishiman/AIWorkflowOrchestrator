@@ -44,7 +44,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
     <div
       className={clsx(
         "relative h-full overflow-auto px-4 py-6 sm:px-6 lg:px-8",
-        "bg-[radial-gradient(circle_at_top_left,_color-mix(in_srgb,var(--accent)_18%,transparent),transparent_45%),linear-gradient(180deg,var(--bg-primary)_0%,color-mix(in_srgb,var(--bg-secondary)_92%,transparent)_100%)]",
+        "bg-[radial-gradient(circle_at_top_left,_color-mix(in_srgb,var(--accent-primary)_10%,transparent),transparent_45%),linear-gradient(180deg,var(--bg-primary)_0%,color-mix(in_srgb,var(--bg-secondary)_96%,transparent)_100%)]",
         className,
       )}
       data-testid="dashboard-view"

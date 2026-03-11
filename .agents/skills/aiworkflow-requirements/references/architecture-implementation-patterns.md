@@ -830,6 +830,46 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
 - channel 名は whitelist 通過済み値のみ error 文言へ出す
 - テストは `advanceTimersByTime` 系を使い、永続 pending mock で再現する
 
+### Renderer local preview resilience パターン（TASK-UI-04C）
+
+> **導入タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
+
+#### 問題
+
+既存 IPC (`file:read`) を再利用する preview UI では、Main / Preload 契約を増やさなくても feature 層で hang、false positive search、structured parse failure が発生しうる。これを channel 追加や global helper 化だけで解こうとすると責務が過剰に広がる。
+
+#### 解決パターン
+
+| 論点 | パターン |
+| ---- | -------- |
+| hang containment | feature 層で `Promise.race` による timeout を掛け、限定回数 retry で閉じる |
+| fuzzy search | 「一致判定」と「順位補正」を分離し、`score = 0` を候補に入れない |
+| structured preview | parse failure は recoverable error として banner + source fallback を出す |
+| transport failure | timeout / read failure は fatal surface に落とし、loading を確実に解除する |
+
+#### 適用基準
+
+| 条件 | 判断 |
+| ---- | ---- |
+| 既存 IPC の戻り値契約は変えたくない | Renderer local resilience で閉じる |
+| failure が UI に局所化している | feature hook / view に timeout / fallback を置く |
+| parse failure でも raw source は読める | fatal error ではなく fallback UI に分離する |
+| ranking bug が結果誤認を生む | no-match を返す単体テストを先に置く |
+
+#### 苦戦箇所と対策
+
+| 苦戦箇所 | 原因 | 対策 |
+| --- | --- | --- |
+| subsequence score 0 でも候補が残る | boost 計算が match 判定より先に走る | `score > 0` を gate にした |
+| `file:read` hang で loading が固着する | Renderer 側 timeout 不在 | 5秒 timeout + 1秒間隔 3回 retry を追加 |
+| JSON/YAML parse failure が fatal 扱いになる | transport と parse を同じ error surface へ載せる | banner + `SourceView` fallback に分離した |
+
+#### 関連未タスク
+
+| タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Renderer local preview resilience を utility / test / error taxonomy まで共通化し、次回 preview/search UI の初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
 ---
 
 ## パフォーマンス最適化パターン
@@ -3285,6 +3325,8 @@ expect(result).toEqual({
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.41.1 | 2026-03-11 | TASK-UI-04C follow-up: `Renderer local preview resilience` パターンに関連未タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を追加し、timeout+retry / fuzzy no-match / parse fallback の共通化導線を接続 |
+| v1.41.0 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Renderer local preview resilience` パターンを追加。Renderer timeout + retry、fuzzy match 判定分離、structured parse recoverable fallback を標準化 |
 | v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化                                                                               |
 | v1.39.0 | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: S29 Renderer境界providers正規化パターン追加（4層防御: API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新、Main側配列正規化補足）                                                                                          |
 | v1.38.0 | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: S27 Renderer境界5層防御パターン追加（L1-L5防御層、type predicate in演算子推奨、完全コード例）、S28 Mainハンドラ間接テストパターン追加（ipcMain.handleモック経由のコールバック直接呼び出し）                                                             |

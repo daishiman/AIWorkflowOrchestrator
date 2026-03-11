@@ -322,6 +322,28 @@ electron-storeなどの外部ストレージから取得したデータは型保
 | バリデーションエラー | 入力を修正する必要がある |
 | ビジネスエラー       | ロジック上の問題         |
 
+### Workspace preview エラー分類（TASK-UI-04C）
+
+| ケース | 分類 | retryable | UI 応答 |
+| --- | --- | --- | --- |
+| `file:read` timeout | Infrastructure Error | true | loading を解除し、最大3回 retry 後に fatal preview error を表示 |
+| `file:read` read failure | Infrastructure Error | true | retry 後に error surface へ落とす |
+| JSON/YAML parse failure | Internal Error だが recoverable | false | alert banner を表示し、`SourceView` fallback を継続表示 |
+| iframe / preview renderer crash | Internal Error だが recoverable | false | `PreviewErrorBoundary` で reset 導線を表示 |
+| query no-match | Error ではない | false | empty result を返し、候補を表示しない |
+
+**設計ルール**:
+
+- transport failure と parse failure を同じ fatal surface に集約しない
+- retry は transport 系だけに限定し、parse 系には適用しない
+- preview / inspector 系の loading は timeout か success のどちらかで必ず解除する
+
+#### 関連未タスク
+
+| タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview/search 系の transport / parse / crash / no-match 分類を共通 error taxonomy として再利用可能にする | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
 ---
 
 ## SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001）
@@ -781,6 +803,8 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 
 | 日付       | バージョン | 変更内容                                                             |
 | ---------- | ---------- | -------------------------------------------------------------------- |
+| 2026-03-11 | v1.11.1    | TASK-UI-04C follow-up: `Workspace preview エラー分類` に関連未タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を追加し、transport / parse / crash / no-match の共通ガード化導線を接続 |
+| 2026-03-11 | v1.11.0    | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace preview エラー分類` を追加し、timeout / read failure / parse failure / renderer crash / no-match の retryable と UI 応答を整理 |
 | 2026-03-08 | v1.10.0    | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Auth/Profile/Avatar fallback エラーコードテーブルに `PROFILE_ERROR_CODES.NOT_CONFIGURED` / `AVATAR_ERROR_CODES.NOT_CONFIGURED` の詳細を追記（既存テーブル拡充） |
 | 2026-03-07 | v1.9.0     | 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001: Renderer 境界防御パターン（Preload Response Shape Guard）セクション追加（4層防御レイヤー、non-null assertion 禁止、P48参照） |
 | 2026-03-06 | v1.8.0     | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: `IPCResponse<T>` / `IPCError` / `AuthModeStatus` ベースの auth-mode error envelope を追加し、`message` / `errorCode` / `guidance` / `lastCheckedAt` の公開契約を明文化 |

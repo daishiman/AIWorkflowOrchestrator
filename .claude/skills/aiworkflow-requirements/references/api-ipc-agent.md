@@ -350,6 +350,25 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 
 ---
 
+### Renderer 統合契約（TASK-SKILL-LIFECYCLE-03）
+
+Task03 では `skill-creator:*` を単独の create 導線として見せず、単一 lifecycle UI の内部補助 IPC として使う。
+
+| flow | 使用チャネル | renderer 側の正本 |
+| --- | --- | --- |
+| request の方針判定 | `skill-creator:detect-mode` | `SkillLifecyclePanel.handlePrepare` |
+| 実作成 | 使わない | `agentSlice.createSkill()` → `skill:create` |
+| 実行 | 使わない | `agentSlice.executeSkill()` → `skill:execute` |
+| 改善候補 | `skill-creator:improve` | `SkillLifecyclePanel.handlePlanImprovement` |
+
+#### 露出ルール
+
+- `skill-creator:create` は Task03 の primary UI では直接呼ばない。
+- `skill-creator:detect-mode` と `skill-creator:improve` の結果は session log / suggestion card に集約する。
+- `SubAgent` / `Codex` の委譲は mode 説明に留め、別チャネル選択 UI は追加しない。
+
+---
+
 ## 実装パターン参照
 
 > **Progressive Disclosure**: 実装時に参照すべきパターンドキュメント

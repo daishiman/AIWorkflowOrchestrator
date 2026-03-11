@@ -20,6 +20,103 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  min-height: 100vh;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] #root {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+html[data-theme="light"] :is(
+    .bg-white\/5,
+    .bg-white\/10,
+    .bg-white\/15,
+    .bg-white\/20,
+    .bg-gray-900,
+    .bg-gray-800,
+    .bg-gray-700
+  ) {
+  background-color: var(--bg-secondary) !important;
+}
+
+html[data-theme="light"] :is(.bg-gray-600, .bg-gray-500) {
+  background-color: var(--bg-tertiary) !important;
+}
+
+html[data-theme="light"] :is(
+    .border-white,
+    .border-white\/10,
+    .border-white\/20,
+    .border-white\/30,
+    .border-white\/50,
+    .border-gray-700,
+    .border-gray-600
+  ) {
+  border-color: var(--border-primary) !important;
+}
+
+html[data-theme="light"] :is(
+    .text-white,
+    .text-gray-100,
+    .text-gray-200,
+    .text-gray-300
+  ) {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="light"] :is(.text-white\/80, .text-white\/70, .text-gray-400) {
+  color: var(--text-secondary) !important;
+}
+
+html[data-theme="light"] :is(
+    .text-white\/60,
+    .text-white\/50,
+    .text-white\/40,
+    .text-gray-500,
+    .text-gray-600
+  ) {
+  color: var(--text-muted) !important;
+}
+
+html[data-theme="light"] :is(
+    .hover\:bg-white\/5:hover,
+    .hover\:bg-white\/10:hover,
+    .hover\:bg-white\/15:hover,
+    .hover\:bg-white\/20:hover,
+    .hover\:bg-gray-700:hover,
+    .hover\:bg-gray-800:hover
+  ) {
+  background-color: var(--bg-hover) !important;
+}
+
+html[data-theme="light"] :is(
+    .hover\:border-white\/20:hover,
+    .hover\:border-white\/30:hover,
+    .hover\:border-gray-600:hover
+  ) {
+  border-color: var(--border-emphasis) !important;
+}
+
+html[data-theme="light"] .hover\:text-white:hover {
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="light"] :is(
+    .bg-\[var\(--status-primary\)\],
+    .bg-\[var\(--accent-primary\)\],
+    .bg-\[var\(--status-error\)\],
+    .bg-\[var\(--status-success\)\],
+    .bg-blue-500,
+    .bg-red-500,
+    .bg-green-500,
+    .bg-green-600
+  ).text-white {
+  color: var(--text-inverse) !important;
+}
+
 @keyframes bell-swing {
   0% {
     transform: rotate(0deg);

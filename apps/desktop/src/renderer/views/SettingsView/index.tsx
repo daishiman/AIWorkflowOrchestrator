@@ -8,6 +8,7 @@ import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
+import { AuthKeySection } from "../../components/settings/AuthKeySection";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import {
   useAppStore,
@@ -82,9 +83,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
       data-testid="settings-view"
     >
       {/* Header */}
-      <header className="p-6 border-b border-white/10">
-        <h1 className="text-2xl font-bold text-white">設定</h1>
-        <p className="text-gray-400 mt-1">Knowledge Studioの設定を管理します</p>
+      <header className="border-b border-[var(--border-primary)] p-6">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">設定</h1>
+        <p className="mt-1 text-[var(--text-secondary)]">
+          Knowledge Studioの設定を管理します
+        </p>
       </header>
 
       {/* Settings Content */}
@@ -149,6 +152,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
           </SettingsCard>
         </section>
 
+        {/* Auth Key Settings - auth-mode=api-key のときのみ表示 */}
+        {authMode === "api-key" && (
+          <section role="region" aria-labelledby="auth-key-settings-heading">
+            <SettingsCard
+              title="Claude Agent SDK APIキー"
+              description="Anthropic APIキーを設定してスキル実行に利用します"
+              id="auth-key-settings-heading"
+            >
+              <AuthKeySection />
+            </SettingsCard>
+          </section>
+        )}
+
         {/* API Keys Settings - 全4プロバイダー対応 */}
         <section role="region" aria-labelledby="api-keys-settings-heading">
           <ApiKeysSection />
@@ -206,7 +222,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
       </main>
 
       {/* Footer */}
-      <footer className="p-6 border-t border-white/10">
+      <footer className="border-t border-[var(--border-primary)] p-6">
         <div className="flex justify-end">
           <Button
             variant="primary"

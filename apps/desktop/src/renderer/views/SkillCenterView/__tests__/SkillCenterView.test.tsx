@@ -133,6 +133,40 @@ describe("SkillCenterView", () => {
     expect(screen.getByText("ツールを探す")).toBeInTheDocument();
   });
 
+  it("一次導線ガイドが表示される", () => {
+    render(<SkillCenterView />);
+
+    expect(screen.getByTestId("skill-lifecycle-journey")).toBeInTheDocument();
+    expect(screen.getByText("まずはこの順番で進める")).toBeInTheDocument();
+    expect(screen.getByTestId("skill-lifecycle-job-create")).toHaveTextContent(
+      "スキルを作る",
+    );
+    expect(screen.getByTestId("skill-lifecycle-job-use")).toHaveTextContent(
+      "スキルを使う",
+    );
+    expect(screen.getByTestId("skill-lifecycle-job-improve")).toHaveTextContent(
+      "スキルを改善する",
+    );
+  });
+
+  it("画面責務ボードが表示される", () => {
+    render(<SkillCenterView />);
+
+    expect(
+      screen.getByTestId("skill-lifecycle-surface-ownership"),
+    ).toBeInTheDocument();
+    expect(screen.getByText("画面ごとの責務を先に分ける")).toBeInTheDocument();
+    expect(
+      screen.getByTestId("skill-lifecycle-surface-skillCenter"),
+    ).toHaveTextContent("入口としてツール探索");
+    expect(
+      screen.getByTestId("skill-lifecycle-surface-agent"),
+    ).toHaveTextContent("スキル実行、結果確認、改善判断の起点");
+    expect(
+      screen.getByText("Settings は公開シェル例外として別ケースで確認する。"),
+    ).toBeInTheDocument();
+  });
+
   it("ローディング中にスケルトンが表示される", async () => {
     const store = await import("../../../store");
     vi.mocked(store.useIsLoadingSkills).mockReturnValue(true);

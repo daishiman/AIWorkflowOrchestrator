@@ -61,7 +61,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className={clsx("relative flex items-center", className)}>
         {leftIcon && (
           <div className="absolute left-3 pointer-events-none">
-            <Icon name={leftIcon} size={18} className="text-gray-400" />
+            <Icon
+              name={leftIcon}
+              size={18}
+              className="text-[var(--text-muted)]"
+            />
           </div>
         )}
 
@@ -83,10 +87,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-required={ariaRequired}
           className={clsx(
             "w-full px-3 py-2 rounded-lg",
-            "bg-white/5 border border-white/10",
-            "text-white placeholder:text-gray-400",
+            "bg-[var(--bg-secondary)] border border-[var(--border-primary)]",
+            "text-[var(--text-primary)] placeholder:text-[var(--text-muted)]",
             "transition-all duration-200",
-            "focus:outline-none focus:ring-2 focus:ring-blue-500",
+            "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
             error && "border-red-500 focus:ring-red-500",
             disabled && "opacity-50 cursor-not-allowed",
             leftIcon && "pl-10",
@@ -96,7 +100,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         {rightIcon && (
           <div className="absolute right-3 pointer-events-none">
-            <Icon name={rightIcon} size={18} className="text-gray-400" />
+            <Icon
+              name={rightIcon}
+              size={18}
+              className="text-[var(--text-muted)]"
+            />
           </div>
         )}
       </div>

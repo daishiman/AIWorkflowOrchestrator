@@ -30,7 +30,8 @@ describe("Button", () => {
     it("secondaryバリアントのスタイルを適用する", () => {
       render(<Button variant="secondary">Secondary</Button>);
       const button = screen.getByRole("button");
-      expect(button).toHaveClass("bg-white/10");
+      expect(button).toHaveClass("bg-[var(--bg-secondary)]");
+      expect(button).toHaveClass("border-[var(--border-primary)]");
     });
 
     it("ghostバリアントのスタイルを適用する", () => {

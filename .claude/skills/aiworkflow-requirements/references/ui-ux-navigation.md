@@ -14,7 +14,10 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
+| v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
+| v1.7.3 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: Skill Center を create / use / improve の一次導線入口として追記し、`skill-center` legacy alias は `App.tsx` の `normalizeSkillLifecycleView()` で canonical `skillCenter` へ正規化する契約を追加 |
 | v1.7.2 | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `workspace` ViewType 内で `chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを持つこと、1024/1440 breakpoint、mobile overlay、preview dedicated harness による screenshot 検証を追記 |
 | v1.7.1 | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `settings` は AuthGuard bypass だけでなく未認証 reset 対象外であることを明文化し、Phase 11 screenshot 4件を証跡として同期 |
 | v1.7.0 | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: Settings 画面は AuthGuard 外からアクセス可能に変更。currentView === "settings" の場合、App.tsx で AuthGuard をバイパスして直接レンダリングする設計を追記 |
@@ -50,6 +53,24 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 
 - `AppDock` は rollback path と比較用に残している。
 - 新規導線の正式UIは `GlobalNavStrip` / `MobileNavBar` とする。
+
+### Skill lifecycle primary entry
+
+- `Skill Center` は `スキルを作る` `使う` `改善する` の 3 ジョブを案内する一次導線入口として扱う。
+- `Agent` は実行、`Workspace` は作業継続、`Chat` は対話補助、`Skill Creator` は作成専用の supporting / destination surface として扱う。
+- legacy view 値 `skill-center` は表示責務を持たず、shell で canonical `skillCenter` に正規化したうえで描画する。
+
+### Surface ownership board（TASK-SKILL-LIFECYCLE-01）
+
+| surface | 主責務 | handoff |
+| --- | --- | --- |
+| `Skill Center` | 入口、一次導線案内、作成前の意図整理 | `Skill Creator` または `Workspace / Agent` |
+| `Workspace` | 文脈、ファイル、下準備の整理 | `Agent` |
+| `Agent` | 実行、結果確認、改善判断の起点 | `Skill Analysis` |
+| `Chat` | 会話と履歴への補助導線 | 必要時のみ `Skill Center` / 履歴 |
+| `Skill Creator` | 新規スキル作成 | `Workspace / Agent` |
+
+`settings` は公開シェル例外として同じ board には混ぜず、別 TC（TC-11-06）で確認する。
 
 ### メニュー項目一覧
 
@@ -121,6 +142,32 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | `skill-center` | 互換エイリアス（legacy導線） |
 | `settings`   | 設定画面（AuthGuard 外 + 未認証 reset 対象外: 認証前でもアクセス可能） |
 
+**canonicalization rule**:
+
+- `skill-center` は互換入力としてのみ許可し、画面描画・分岐・テスト証跡は `skillCenter` を正本にする。
+- canonical 化は `apps/desktop/src/renderer/App.tsx` から `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` の `normalizeSkillLifecycleView()` を呼んで行う。
+
+### representative evidence
+
+- TC-11-05 は route 全景ではなく `data-testid="skill-lifecycle-surface-ownership"` の要素 capture を正本とする。
+- representative screenshot は「画面全体が見えること」より「責務境界が読めること」を優先する。
+
+### TASK-SKILL-LIFECYCLE-01 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 一次導線の説明を nav / feature / state へ分散すると入口判断が揺れる | domain spec 側に入口説明だけを書き、コード契約の正本を持たない | `skillLifecycleJourney.ts` を導線正本にし、navigation doc はその参照と surface 役割だけを持つようにした | 入口・責務・例外・handoff は 1 つの契約ファイルへ集約する |
+| `skill-center` と `skillCenter` が混在すると導線説明が二重化する | alias 正規化を各 view やテストで個別吸収する | shell でだけ canonical 化し、domain spec も `skillCenter` を正本に統一した | alias は shell 入口で 1 回だけ処理する |
+| representative screenshot が shell 全景だけだと責務比較に使いにくい | TC を route screenshot だけで閉じる | surface ownership board を追加し、TC-11-05 を要素証跡へ切り替えた | representative evidence は state / 責務を表す selector を待って要素 capture する |
+
+#### 同種課題の5分解決カード
+
+1. 一次導線と画面責務は `skillLifecycleJourney.ts` のような契約正本へまとめる。  
+2. domain UI spec は「入口」「destination surface」「例外」を 1 画面設計として書く。  
+3. legacy alias は shell で canonical 化し、仕様書・テスト・UI 表示の正本値を 1 つに固定する。  
+4. representative screenshot は route 全景ではなく、責務境界が読める要素 capture を優先する。  
+5. Phase 12 では `ui-ux-navigation` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
+
 ### Settings 公開シェル到達性（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
 
 | 観点 | 仕様 |
@@ -137,6 +184,16 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` | ダークテーマ fallback |
 | TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` | timeout -> settings |
 | TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` | 未認証 settings shell |
+
+### Workspace quick search 契約（TASK-UI-04C）
+
+| 項目 | 契約 |
+| --- | --- |
+| open shortcut | `Cmd/Ctrl+P` で `QuickFileSearch` dialog を開く |
+| navigation | ArrowUp / ArrowDown で候補移動、Enter で選択、Escape / overlay click で閉じる |
+| focus | open 時に検索入力へフォーカスし、dialog 内で Tab 循環を維持する |
+| result action | file 選択時は対象 file を選択し、preview panel が閉じていれば自動で開く |
+| coverage | desktop / mobile overlay / terminology を Phase 11 screenshot 11件で確認する |
 
 ### navItems配列構造
 

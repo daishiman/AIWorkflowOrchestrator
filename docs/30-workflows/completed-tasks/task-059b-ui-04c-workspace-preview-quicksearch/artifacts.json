@@ -1,0 +1,171 @@
+{
+  "taskId": "TASK-UI-04C-WORKSPACE-PREVIEW",
+  "taskName": "Workspace PreviewPanel・QuickFileSearch",
+  "feature": "task-059b-ui-04c-workspace-preview-quicksearch",
+  "workflowPath": "docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch",
+  "created": "2026-03-11T00:00:00+09:00",
+  "lastUpdated": "2026-03-11T19:12:45+09:00",
+  "status": "in_progress",
+  "currentPhase": 12,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/subagent-ownership.md"
+      ],
+      "dependencies": []
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-2/architecture-design.md",
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/state-design.md",
+        "outputs/phase-2/quick-search-design.md",
+        "outputs/phase-2/preview-security-design.md"
+      ],
+      "dependencies": ["1"]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/open-items.md",
+        "outputs/phase-3/review-gate.md"
+      ],
+      "dependencies": ["1", "2"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/integration-test-design.md"
+      ],
+      "dependencies": ["1", "2", "3"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/changed-file-plan.md",
+        "outputs/phase-5/contract-delta.md"
+      ],
+      "dependencies": ["4"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-6/regression-matrix.md",
+        "outputs/phase-6/error-case-matrix.md",
+        "outputs/phase-6/accessibility-cases.md"
+      ],
+      "dependencies": ["5"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-gap-list.md",
+        "outputs/phase-7/gate-result.md"
+      ],
+      "dependencies": ["5", "6"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/boundary-checklist.md",
+        "outputs/phase-8/type-refactor-notes.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/open-items.md"
+      ],
+      "dependencies": ["5"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/rollback-map.md",
+        "outputs/phase-10/manual-test-input.md"
+      ],
+      "dependencies": ["1", "2", "5", "9"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshots/",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/current-build-source.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "completedAt": "2026-03-11T19:12:45+09:00",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10", "11"]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/completion-report.md"
+      ],
+      "dependencies": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+    }
+  },
+  "subAgents": {
+    "A": "UI/UX, preview rendering, manual validation",
+    "B": "state/IPC/security contract",
+    "C": "test strategy and quality gate",
+    "D": "review gate and documentation sync"
+  },
+  "constraints": {
+    "executionScope": "phase_1_12_completed",
+    "commit": "forbidden_without_user_instruction",
+    "pullRequest": "forbidden_without_user_instruction"
+  }
+}

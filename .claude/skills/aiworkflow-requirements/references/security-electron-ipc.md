@@ -11,6 +11,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.5    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 04C は `file:read` invoke と 04A watch lifecycle を再利用し、新規 channel を増やさずに renderer timeout / retry、HTML sandbox + CSP、structured preview fallback、`file:watch-stop` cleanup 維持をセキュリティ契約へ追加 |
+| v1.18.4    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の IPC 利用境界（`file:read` / `llm:stream-chat` / `llm:cancel-stream` / stream subscribe / `conversation:create` / `conversation:add-message`）を追加。Renderer 側 stream race 対策（chunk/end 同期）と cleanup 契約、mention 経由 file context 読み込みの error surface を明文化 |
+| v1.18.3    | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `auth-key:exists` が `source`（saved/env-fallback/not-set）を返す契約を追加し、Renderer preflight と Settings 状態表示の判定根拠を分離。`auth-key` 判定時にキー実値を返さない方針を明文化 |
 | v1.18.2    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notification:delete` の invoke-only allowlist、`notificationId` 非空文字列バリデーション、sender 検証、`notification:new` を subscribe 専用に保つ契約を追加。NotificationCenter 058e の delete UI と Main persistence を安全に接続 |
 | v1.18.1    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: file watch IPC lifecycle（`file:watch-start` / `file:watch-stop` / `file:changed`）の sender push、Renderer cleanup、module scope guard、`FILE_CHANGED` を subscribe 専用に保つ allowlist 契約を追加 |
 | v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
@@ -143,6 +146,36 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - Main 側は watchId 単位で watcher を保持し、stop 後は map から削除する。
 - Renderer は preload 公開 API だけを使い、 chokidar や Node FS へ直接触れない。
 
+### Workspace preview security contract（TASK-UI-04C）
+
+04C は preview 描画を増やすが、権限境界は 04A から広げない。
+
+| 観点 | 契約 |
+| --- | --- |
+| invoke reuse | Renderer は `window.electronAPI.file.read()` だけを使い、Node FS へ直接触れない |
+| timeout / retry | timeout は Renderer local 制御で実装し、Main の許可範囲を拡張しない |
+| HTML preview | iframe sandbox + CSP を維持し、危険 URL を除去した content のみ描画する |
+| structured preview | JSON/YAML parse error は banner + source fallback に落とし、追加評価は行わない |
+| watcher cleanup | 04A と同様に file switch / unmount の都度 `file:watch-stop` を呼ぶ |
+
+### Workspace Chat Panel IPC 境界（TASK-UI-04B）
+
+`WorkspaceChatPanel` は 04A の file/watch 契約の上で、LLM stream と conversation 永続化を preload API 経由で組み合わせる。
+
+| 種別 | チャンネル / API | 契約 |
+| --- | --- | --- |
+| invoke | `file:read` | 選択ファイルと context block 生成に限定 |
+| invoke | `llm:stream-chat` | request body は renderer 側で組み立てるが provider adapter へ直接アクセスしない |
+| invoke | `llm:cancel-stream` | unmount / ユーザー停止時に明示キャンセルする |
+| subscribe | `llm:on-stream-chunk` / `llm:on-stream-end` / `llm:on-stream-error` | stream lifecycle を UI 状態へ反映 |
+| invoke | `conversation:create` | workspace chat session を初回作成 |
+| invoke | `conversation:add-message` | user/assistant 双方を永続化 |
+
+**セキュリティ意図**:
+
+- stream listener は preload 提供の unsubscribe を必ず cleanup する。
+- renderer は `isStreamingRef` と `streamContentRef` を使って競合に強い状態遷移を行うが、権限境界自体は preload/main に残す。
+- mention 経由の file context 追加でも `file:read` 失敗を黙殺せず alert 表示し、失敗状態を可視化する。
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。
@@ -948,6 +981,7 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 | 層                 | 実装                                                        | セキュリティ意図                         |
 | ------------------ | ----------------------------------------------------------- | ---------------------------------------- |
 | Renderer preflight | `preflightSkillExecutionAuth()`                             | 不要な実行を事前停止し、設定誘導を明確化 |
+| Main exists 判定   | `auth-key:exists -> { exists, source }`                     | 判定根拠を返しつつキー実値は非公開       |
 | Main sender検証    | `validateIpcSender(event, IPC_CHANNELS.SKILL_EXECUTE, ...)` | DevTools/未許可windowからの呼び出し拒否  |
 | Main 失敗契約      | `{ success:false, error, errorCode?: string }`              | 認証失敗を識別可能にして復旧導線を保証   |
 | Preload unwrap     | `Error.code = result.errorCode`                             | Renderer 側の例外分岐を型安全に維持      |
@@ -961,9 +995,9 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 ### 既知リスクと対策
 
-| リスク                           | 対策                                                                  |
-| -------------------------------- | --------------------------------------------------------------------- |
-| preflight 判定と実行時判定の乖離 | `auth-key:exists` に env fallback を追加し `api-ipc-system.md` と同期 |
+| リスク                           | 対策                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| preflight 判定と実行時判定の乖離 | `auth-key:exists` を `{ exists, source }` 契約へ拡張し、`env-fallback` 判定根拠をUIへ明示        |
 | 認証失敗が一般エラーに埋もれる   | `errorCode` を optional 追加し後方互換を維持しつつ分類                |
 | UI層で重複実装が再発             | preflight utility を単一入口に固定                                    |
 

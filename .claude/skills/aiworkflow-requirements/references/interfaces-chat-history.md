@@ -501,6 +501,18 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 | 発見課題リスト     | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-11/discovered-issues.md`    |
 | 実装ガイド         | `docs/30-workflows/conversation-history-ui-implementation/outputs/phase-12/implementation-guide.md` |
 
+### TASK-UI-04B-WORKSPACE-CHAT（2026-03-11完了）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-UI-04B-WORKSPACE-CHAT |
+| 完了日       | 2026-03-11 |
+| ステータス   | **完了（Phase 1-12）** |
+| 利用API      | `conversation:create`, `conversation:addMessage` |
+| 役割         | `WorkspaceChatPanel` で user/assistant メッセージを会話単位で永続化 |
+| 実装箇所     | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` |
+| 証跡         | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/phase-6/integration-test.md` |
+
 ### UT-LLM-HISTORY-001（2026-01-24完了）
 
 | 項目         | 内容                                                      |
@@ -537,6 +549,7 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 | Version   | Date       | Changes                                                                                                                                   |
 | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.4.0** | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel での `conversation:create` / `conversation:addMessage` 利用フローと完了記録を同期 |
 | **1.3.0** | 2026-01-26 | spec-guidelines.md準拠: コードブロック（認可ロジック、エクスポート形式）を表形式・文章に変換                                              |
 | 1.2.0     | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |
 | 1.1.0     | 2026-01-24 | UT-LLM-HISTORY-001完了: 認可チェック追加、セキュリティ原則追加                                                                            |

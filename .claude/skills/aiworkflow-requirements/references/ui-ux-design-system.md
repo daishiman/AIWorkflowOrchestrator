@@ -84,14 +84,21 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 
 | 用途                   | ライトモード | ダークモード |
 | ---------------------- | ------------ | ------------ |
-| 背景（プライマリ）     | white        | slate-900    |
-| 背景（セカンダリ）     | slate-50     | slate-800    |
-| 背景（ターシャリ）     | slate-100    | slate-700    |
-| テキスト（プライマリ） | slate-900    | slate-50     |
-| テキスト（セカンダリ） | slate-600    | slate-400    |
-| テキスト（ミュート）   | slate-400    | slate-500    |
-| ボーダー               | slate-200    | slate-700    |
-| ボーダー（強調）       | slate-300    | slate-600    |
+| 背景（プライマリ）     | `#ffffff`    | `#000000` |
+| 背景（セカンダリ）     | `#ffffff`    | `#1c1c1e` |
+| 背景（ターシャリ）     | `#f5f5f7`    | `#2c2c2e` |
+| 背景（elevated）       | `#ffffff`    | `#1c1c1e` |
+| テキスト（プライマリ） | `#000000`    | `#ffffff` |
+| テキスト（セカンダリ） | `rgba(0, 0, 0, 0.72)` | `rgba(235, 235, 245, 0.6)` |
+| テキスト（ミュート）   | `rgba(0, 0, 0, 0.56)` | `rgba(235, 235, 245, 0.3)` |
+| テキスト（ターシャリ） | `rgba(0, 0, 0, 0.42)` | `rgba(235, 235, 245, 0.45)` |
+| ボーダー（標準）       | `#d2d2d7`    | `#38383a` |
+| ボーダー（強調）       | `#b8b8bf`    | `#48484a` |
+| ボーダー（primary）    | `var(--border-default)` | `var(--border-default)` |
+| アクセント（primary）  | `#0a6ce9`    | `#0a84ff` |
+
+- Light Mode の標準は「背景 `#ffffff` / 文字 `#000000`」とする。
+- accent / danger / selected surface などの強い面だけ inverse text を許可し、それ以外で `text-white` を常態化しない。
 
 ### セマンティックカラー
 
@@ -230,16 +237,26 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | `--suggestion-bg-hover` | `var(--bg-elevated)` | `var(--bg-elevated)` | ホバー時の背景色 |
 | `--suggestion-border` | `var(--border)` | `var(--border)` | ボーダー色 |
 | `--suggestion-text` | `var(--text-primary)` | `var(--text-primary)` | テキスト色 |
-| `--suggestion-icon` | `var(--accent)` | `var(--accent)` | アイコン色 |
+| `--suggestion-icon` | `var(--accent-primary)` | `var(--accent-primary)` | アイコン色 |
 | `--suggestion-radius` | `9999px` | `9999px` | 角丸（pill形状） |
 
 ### EmptyState mood トークン
 
 | mood | アイコン色 | 背景色 | テキストトーン |
 |------|-----------|--------|---------------|
-| `welcoming` | `var(--accent)` | `var(--bg-secondary)` | 暖かく迎え入れる |
+| `welcoming` | `var(--accent-primary)` | `var(--bg-secondary)` | 暖かく迎え入れる |
 | `encouraging` | `var(--status-info)` | `var(--bg-secondary)` | 前向きに促す |
 | `celebrating` | `var(--status-success)` | `var(--bg-secondary)` | 達成を祝う |
+
+### Workspace QuickFileSearch dialog トークン（TASK-UI-04C）
+
+| トークン / 値 | 用途 | 意図 |
+| --- | --- | --- |
+| `width: 480px` | desktop dialog width | 候補一覧を 10 件出しても視線移動を増やしすぎない |
+| `border-radius: 12px` | dialog radius | preview panel 系と同系統の角丸で統一感を保つ |
+| `box-shadow: 0 8px 32px rgba(0,0,0,0.12)` | dialog shadow | 浮遊感は出すが、preview 本体より主張しすぎない |
+| scrim + centered sheet | mobile / narrow viewport | overlay close を自然に理解できる層構造を保つ |
+| muted path text + bold filename | result row hierarchy | fileName を主、relativePath を従にして探索速度を上げる |
 
 ---
 
@@ -247,9 +264,34 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 
 | タスクID | タスク名 | 完了日 | 概要 |
 |----------|----------|--------|------|
+| TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 | ライトテーマ token 基盤是正 | 2026-03-11 | `tokens.css` の light baseline を `#ffffff` / `#000000` に是正し、`globals.css` の renderer-wide compatibility bridge と共通 primitives の token 移行で全画面共通の light drift を吸収。Phase 11 screenshot 5件を再取得し、Apple UI/UX 観点で white background / black text を再検証 |
 | TASK-UI-00-TOKENS | デザイントークンCSS変数 Apple HIG準拠 light/dark テーマ定義 | 2026-02-22 | tokens.css に `[data-theme="light"]`/`[data-theme="dark"]` セレクタでApple HIG System Colors準拠のカラー定義を追加。マイクロインタラクション変数（ease-bounce/ease-anticipate/scale-hover/scale-active/scale-bounce）、キーフレームアニメーション（success-bounce/error-shake）、renderWithThemeテストヘルパーを作成。28テスト全PASS、カバレッジ100% |
 | TASK-UI-00-ATOMS | Atoms共通コンポーネント7種でデザイントークン適用 | 2026-02-23 | 全コンポーネントでCSS変数（`var(--status-primary)`等）を使用、ハードコードカラー0件。EmptyState mood機能でSemanticトークン参照 |
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 2026-02-25 | `ThemeMode` を4モードへ拡張し、settingsSlice / ThemeSelector / IPC（`theme:get-system`, `theme:system-changed`）でテーマ即時反映・OS追従・永続化を実装。Phase 1-12成果物を `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001/outputs/` に出力 |
+| TASK-UI-04C-WORKSPACE-PREVIEW | Workspace preview quick search dialog | 2026-03-11 | quick search dialog の modal token（480px / 12px / shadow）と result hierarchy を固定し、preview panel と同系統の密度で統一 |
+
+#### TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 実装内容（2026-03-11）
+
+| 観点 | 内容 | 検証 |
+| --- | --- | --- |
+| Token 契約 | light を white background / black text 基準へ是正し、`--accent-primary` / `--border-primary` を正式 token として固定 | `tokens.light-theme.contract.test.ts` 4/4 PASS |
+| Renderer 全画面整合 | `globals.css` に compatibility bridge を追加し、legacy hardcoded neutral class を light mode で white/black 基準へ寄せた | Dashboard / Settings / Auth / Agent の representative screenshot 5件 |
+| Primitive 移行 | `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` を semantic token 基準へ寄せ、inverse text は accent surface のみに限定 | `Button.test.tsx` PASS |
+| 3テーマ整合 | required token を light / dark / kanagawa 全テーマで定義 | contract test で一括検証 |
+| CI 回復 | Dashboard の `--accent` 参照を `--accent-primary` に統一し、shard fail を local 再現して回復した | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` PASS |
+| 視覚検証 | Dashboard / Settings / Auth / AgentView + dark baseline を再撮影し、completed workflow 側の capture path と coverage を同期 | Phase 11 screenshot 5件 + coverage validator PASS |
+| 残課題分離 | component 側の補助文コントラストは後続 task へ切り分け | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` に引き継ぎ |
+
+#### TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 苦戦箇所（2026-03-11）
+
+| 苦戦箇所 | 再発条件 | 対策 |
+| --- | --- | --- |
+| token 値だけ直しても全画面の light drift が残る | renderer に `text-white` / `bg-gray-*` / `border-white/*` などの hardcoded neutral class が散在する | `globals.css` の compatibility bridge で全画面の基準を先に固定し、その後に primitives を token へ寄せる |
+| CI fail が desktop の一部 shard だけで起きる | broad rerun だけで済ませ、失敗 shard を local で再現しない | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で再現し、Dashboard の `--accent` drift を局所修正した |
+| global light remediation 後に screenshot 証跡が stale になる | token / primitive / bridge の変更後も旧 screenshot を流用する | capture script の workflow root を completed path へ更新し、5件を再取得して validator を再実行した |
+| Phase 5-12 成果物不足で実装済みと台帳が乖離する | 実装後に outputs / artifacts 同期を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `index.md` を同時同期した |
+| Phase 11 必須節不足で screenshot coverage 判定がぶれる | `テストケース` / `画面カバレッジマトリクス` を省略する | `phase-11-manual-test.md` に必須節を追記し、`manual-test-result.md` と 1:1 対応にそろえた |
+| completed workflow 移管後の follow-up backlog 正本がぶれる | workflow 名参照だけで残課題を管理する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に task spec を揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
 
 #### UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所
 
@@ -297,6 +339,8 @@ const variantStyles: Record<Variant, string> = {
 | タスクID | タスク名 | ステータス | 優先度 | 参照 |
 |----------|----------|------------|--------|------|
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | 未実施 | 高 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
@@ -306,6 +350,9 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.8 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` トークンを追加し、480px幅 / 12px radius / 0 8px 32px rgba(0,0,0,0.12) / mobile scrim / filename-path hierarchy を固定 |
+| 1.5.7 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。white background / black text 基準、renderer-wide compatibility bridge、primitive token 移行、shard 11 再現、screenshot 再取得を design system 正本へ同期した |
+| 1.5.6 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。light theme token 実装値（`bg/text/border/accent`）と完了タスクを追記し、follow-up 2件の正本導線を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` へ統一した |
 | 1.5.3 | 2026-02-25 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 を関連タスクへ追加。UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所（状態責務混在/Hook依存不安定/Phase 12証跡同期）を再発防止タスクとして管理開始 |
 | 1.5.2 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の実装内容をテンプレート準拠で再編（状態設計/ UI反映/運用証跡の3観点で要約を追加） |
 | 1.5.1 | 2026-02-25 | UT-UI-THEME-DYNAMIC-SWITCH-001 の苦戦箇所を追記（`themeMode`/`resolvedTheme` 分離、Store Hook再実行ループ回避、Phase 12証跡同期） |

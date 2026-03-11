@@ -422,6 +422,30 @@ Supabase Auth から取得するプロバイダー識別情報。
 
 ---
 
+### TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001: AuthKey source 表示契約整合（2026-03-11完了）
+
+| 項目 | 内容 |
+| ---- | ---- |
+| タスクID | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 |
+| ステータス | **完了** |
+| 反映対象 | `auth-key:exists` レスポンスの source 判定と Settings 表示整合 |
+| ドキュメント | `docs/30-workflows/api-key-chat-tool-integration-alignment/outputs/phase-12/spec-update-summary.md` |
+
+#### 追加した公開契約
+
+| 型 | フィールド | 説明 |
+| --- | --- | --- |
+| `AuthKeyExistsResponse` | `exists: boolean` | キー存在可否 |
+| `AuthKeyExistsResponse` | `source?: "saved" \| "env-fallback" \| "not-set"` | 判定起点（保存済み / 環境変数fallback / 未設定） |
+
+#### 運用ルール
+
+- `source` が存在する場合は UI 側で `source` を最優先して状態表示する
+- `source` が未提供の場合は後方互換として既存 `hasCredentials` 判定を補助利用する
+- `exists=false` のときは `source="not-set"` を返し、UI が曖昧状態にならないようにする
+
+---
+
 ## ワークスペース型定義
 
 Desktop アプリの複数フォルダ管理機能で使用する型定義。
@@ -480,6 +504,7 @@ Desktop アプリの複数フォルダ管理機能で使用する型定義。
 
 | Version    | Date           | Changes                                                                                 |
 | ---------- | -------------- | --------------------------------------------------------------------------------------- |
+| **1.5.3**  | **2026-03-11** | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `AuthKeyExistsResponse.source`（saved/env-fallback/not-set）を追加し、Settings の AuthKey 状態表示契約を `source` 優先へ同期 |
 | **1.5.2**  | **2026-03-06** | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補2: auth-mode 節へ「domain spec の標準3ブロックが Phase 12 の機械検証対象になっていない」苦戦箇所と関連未タスク `UT-IMP-PHASE12-DOMAIN-SPEC-SYNC-BLOCK-VALIDATOR-001` を追加し、interface 仕様の後追い追記防止ルールを明文化 |
 | **1.5.1**  | **2026-03-06** | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 追補: auth-mode 節へ `実装上の苦戦箇所（再利用形式）` と `同種課題の5分解決カード` を追加し、shared DTO 正本化・UI表示契約昇格・P31説明是正の再利用ルールを明文化 |
 | **1.5.0**  | **2026-03-06** | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: auth-mode transport DTO を `packages/shared/src/types/auth-mode.ts` に統一し、`auth-mode:get/set/status/validate/changed` の公開契約・error code union・Renderer 表示項目（message/errorCode/guidance）を現行実装へ同期 |

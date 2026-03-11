@@ -1,18 +1,17 @@
 ---
 name: aiworkflow-requirements
 description: |
-  AIWorkflowOrchestratorのシステム仕様管理スキル。`references/` 配下の正本仕様を検索・参照・更新する。
-  仕様主導開発（Specification-Driven Development）を前提に、resource-map/topic-map/keywordsを使って必要最小限の文書を段階的に読む。
-  次の作業で使用: 要件確認、アーキテクチャ判断、API/IPC契約確認、セキュリティ/テスト方針確認、仕様差分反映、未タスク登録、教訓反映。
-  典型キーワード: 仕様/要件/設計/API/IPC/型定義/権限/履歴/リトライ/状態管理/Zustand/認証/セッション/UI/テスト/カバレッジ/コンポーネント/アクセシビリティ/デプロイ/safeInvoke/timeout/Promise.race/ハング防止。
-  目的は、実装と仕様の整合性維持、更新漏れ防止、再発防止知見の資産化。
+  AIWorkflowOrchestratorの正本仕様を `references/` から検索・参照・更新するスキル。
+  resource-map / quick-reference / topic-map / keywords を起点に、必要最小限の文書だけを段階的に読む。
+  用途: 要件確認、設計/API/IPC契約確認、UI/状態管理/セキュリティ判断、task-workflow・lessons-learned・未タスク同期。
+  特に safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator の導線再編を扱う。
 
   Anchors:
   • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, UI仕様反映, IPC契約確認, セキュリティ要件確認, 未タスク登録, lessons-learned同期, safeInvoke, timeout, Promise.race, ハング防止, Preloadセキュリティ
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel
 allowed-tools:
   - Read
   - Glob
@@ -197,10 +196,23 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.83** | **2026-03-11** | **TASK-UI-04C follow-up の未タスク formalize を同期**: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` へ追加し、04C の fuzzy no-match、renderer timeout+retry、parse/transport 分離を次回 preview/search UI 向け共通ガードへ接続。workflow `outputs/phase-12` の Step 1-C も 0件→1件へ再同期 |
+| **9.01.82** | **2026-03-11** | **TASK-UI-04C の cross-cutting system spec を補完**: `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `architecture-implementation-patterns.md` / `error-handling.md` に Workspace 04C の quick file search dialog、modal token、renderer local timeout+retry、recoverable parse fallback を追記し、Phase 12 の planned wording 是正結果も workflow 側へ同期 |
+| **9.01.81** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW を同期**: `ui-ux-feature-components.md` / `ui-ux-components.md` / `arch-state-management.md` / `api-ipc-system.md` / `security-electron-ipc.md` / `ui-ux-navigation.md` / `task-workflow.md` / `lessons-learned.md` に 04C の preview / quick search、renderer timeout+retry、structured fallback、screenshot 11件、52 tests PASS を反映 |
+| **9.01.80** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT を同期**: `ui-ux-feature-components.md` / `arch-state-management.md` / `interfaces-llm.md` / `interfaces-chat-history.md` / `security-electron-ipc.md` / `task-workflow.md` / `lessons-learned.md` に Workspace Chat Panel 実装、stream race 対策、Phase 11 screenshot 8件、Phase 12 implementation-guide 再監査結果を反映 |
+| **9.01.79** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation を system spec へ昇格**: `references/workflow-light-theme-global-remediation.md` を新規作成し、white background / black text 基準、renderer-wide compatibility bridge、desktop shard 11 再現、completed workflow 側 screenshot 再取得を 1 ファイルへ集約。`ui-ux-design-system.md` / `task-workflow.md` / `lessons-learned.md` / `indexes/resource-map.md` も同一ターンで同期し、同種課題の参照初動を短縮 |
+| **9.01.78** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の完了移管後同期を反映**: `ui-ux-design-system.md` / `task-workflow.md` / `lessons-learned.md` に light token foundation の完了記録、Phase 11 screenshot 5件、follow-up 2件の正本導線 `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` を追記し、completed workflow 移管後も system spec の参照先がぶれない運用を明文化 |
+| **9.01.77** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を反映**: `docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/` と `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` への移管を system spec 側で同期し、関連改善タスクの状態と参照先を completed 配置へ統一 |
+| **9.01.76** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を追加**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所を、`docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` として formalize。`task-workflow.md` / `lessons-learned.md` / `api-ipc-system.md` / `workflow-apikey-chat-tool-integration-alignment.md` に残課題導線を同期し、修正済み契約を次回の回帰 guard へ接続 |
+| **9.01.75** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認運用を反映**: `task-workflow.md` に再確認追補（4検証 + screenshot再取得 + `current=0 / baseline=133` 二層判定）を追加し、`lessons-learned.md` に再確認時の苦戦箇所を追記。再監査時は「今回差分合否」と「legacy baseline 監視」を分離する運用を明文化 |
+| **9.01.74** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の再利用導線を最適化**: `references/workflow-apikey-chat-tool-integration-alignment.md` を新規作成し、実装内容・苦戦箇所・5分解決カード・仕様書別責務分離を1ファイルへ集約。`indexes/resource-map.md` に bugfix 逆引きと workflow 一覧導線を追加して、同種課題の参照初動を短縮 |
 | **9.01.73** | **2026-03-11** | **TASK-UI-07 由来の dual skill-root follow-up を同期**: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を `references/task-workflow.md` / `references/lessons-learned.md` / `references/ui-ux-feature-components.md` へ登録し、`.claude` canonical root / `.agents` mirror sync / `diff -qr` 検証を Phase 12 の再利用ルールとして固定 |
 | **9.01.72** | **2026-03-11** | **TASK-UI-07 の UI カタログ正本を最適化**: `references/ui-ux-components.md` に `TASK-UI-07 実装完了記録` と `実装内容と苦戦箇所サマリー` を追加し、実装内容・検証値・harness screenshot・内部契約境界・dual-root mirror sync を UI カタログ正本へ集約 |
 | **9.01.71** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER 再監査追補を反映**: `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` / `lessons-learned.md` まで同期範囲を拡張し、Phase 11 coverage validator drift と delete reveal screenshot を system spec 正本へ記録 |
 | **9.01.70** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER を同期**: `api-endpoints.md` / `api-ipc-system.md` / `ui-ux-feature-components.md` / `arch-state-management.md` / `security-electron-ipc.md` / `task-workflow.md` に 058e の `お知らせ` UI、Portal、`notification:delete`、dedupe、Phase 11 screenshot 7件を同期し、topic-map / keywords 再生成を実施 |
+| **9.01.72** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-01 の feature spec 形成を再最適化**: `references/ui-ux-feature-components.md` の lifecycle 追補を `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-navigation.md` と同粒度で再利用可能な system spec へ整理 |
+| **9.01.71** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を同期**: `references/task-workflow.md` に `phase12-task-spec-compliance-check.md` と `verify-all-specs=13/13` / `verify-unassigned-links=213/213` / `audit current=0 baseline=133` を追加し、`references/lessons-learned.md` へ 0件報告でも legacy backlog を隠さないルールを追記。`references/ui-ux-navigation.md` には surface ownership board / TC-11-05 要素証跡 / 苦戦箇所 / 5分解決カードを追加 |
+| **9.01.70** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-01 再監査同期**: `references/ui-ux-feature-components.md` に `SkillCenterView` の surface ownership board と TC-11-05 要素 capture を追加し、`references/task-workflow.md` / `references/lessons-learned.md` に representative screenshot は selector-based element capture を優先する再利用ルールを追記。`.claude` / `.agents` mirror 同期と search/validate 再確認の前提も整備 |
 | **9.01.69** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW の system spec 形成を最適化**: `references/ui-history-search-view.md` に `実装内容（要点）` を追加し、変更範囲・契約要点・視覚検証・完了根拠を明文化。`references/ui-ux-feature-components.md` では TASK-UI-06 節を 5分解決カード付きのテンプレート準拠構成へ整理し、`references/lessons-learned.md` の解決手順を 5 ステップへ統一 |
 | **9.01.68** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査同期**: `references/ui-history-search-view.md` を新規作成し、timeline UI / state / IPC / screenshot / 苦戦箇所を統合。`ui-ux-feature-components.md` / `arch-state-management.md` / `api-ipc-system.md` / `task-workflow.md` / `lessons-learned.md` に 058c と未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を同期 |
 | **9.01.67** | **2026-03-10** | **TASK-UI-03 workflow を completed-tasks へ移管**: `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` を正本導線に切り替え、関連未タスク `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` も親 workflow 配下 `unassigned-task/` へ移動。`ui-ux-feature-components.md` と Phase 12 検出レポートの path を同期 |

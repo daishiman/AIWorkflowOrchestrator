@@ -3,8 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number:
-1145
+issue_number: 1145
 task_name: quick_validate 警告ベースライン管理の導入
 category: 改善
 target_feature: `quick_validate.js` 運用（aiworkflow-requirements / skill-creator）

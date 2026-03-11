@@ -40,6 +40,7 @@ import { LLMAdapterFactory } from "@/main/adapters/llm/LLMAdapterFactory";
 // Handlers to be implemented
 import {
   registerLLMHandlers,
+  handleSetSelectedConfig,
   handleGetProviders,
   handleCheckHealth,
   handleSendChat,
@@ -63,6 +64,10 @@ describe("LLM IPC Handlers", () => {
         expect.any(Function),
       );
       expect(ipcMain.handle).toHaveBeenCalledWith(
+        "llm:set-selected-config",
+        expect.any(Function),
+      );
+      expect(ipcMain.handle).toHaveBeenCalledWith(
         "llm:check-health",
         expect.any(Function),
       );
@@ -74,6 +79,37 @@ describe("LLM IPC Handlers", () => {
         "llm:stream-chat",
         expect.any(Function),
       );
+    });
+  });
+
+  describe("IPC-000: llm:set-selected-config - 選択設定同期", () => {
+    it("should return success for valid provider/model", () => {
+      const result = handleSetSelectedConfig({
+        providerId: "openai",
+        modelId: "gpt-4o",
+      });
+
+      expect(result).toEqual({ success: true });
+    });
+
+    it("should reject invalid provider", () => {
+      const result = handleSetSelectedConfig({
+        providerId: "invalid" as never,
+        modelId: "model-x",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("Invalid provider ID");
+    });
+
+    it("should reject empty modelId", () => {
+      const result = handleSetSelectedConfig({
+        providerId: "openai",
+        modelId: "   ",
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("Model ID is required");
     });
   });
 

@@ -6,7 +6,6 @@ description: |
   • Clean Code / 適用: SRP / 目的: タスク分解基準
   • Continuous Delivery / 適用: フェーズゲート / 目的: 品質パイプライン
   • DDD / 適用: ユビキタス言語 / 目的: 用語統一
-
   Trigger:
   タスク仕様書作成, タスク分解, ワークフロー設計, Phase実行, IPC Bridge API統一, Preload APIパターン, safeInvoke, safeOn
 allowed-tools:
@@ -18,11 +17,8 @@ allowed-tools:
   - Grep
   - Task
 ---
-
 # Task Specification Creator
-
 開発タスクをPhase 1〜13の実行可能な仕様書に分解・生成。
-
 ## 設計原則
 
 | 原則                   | 説明                                 |
@@ -30,7 +26,6 @@ allowed-tools:
 | Script First           | 決定論的処理はスクリプト（100%精度） |
 | LLM for Judgment       | 判断・創造のみLLM担当                |
 | Progressive Disclosure | 必要時のみリソース読込               |
-
 ---
 
 ## クイックスタート
@@ -395,10 +390,19 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.57** | **2026-03-11** | **TASK-UI-04C follow-up の事後未タスク化を反映**: `references/phase-11-12-guide.md` と `references/patterns.md` に、初回 `新規未タスク 0件` で閉じた後でも親タスクの苦戦箇所が cross-cutting guard として再利用価値を持つ場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期して正式な未タスク仕様書へ昇格する運用を追加 |
+| **v10.08.56** | **2026-03-11** | **TASK-UI-04C の再監査知見を反映**: `references/phase12-checklist-definition.md` / `references/phase-11-12-guide.md` / `references/patterns.md` に、completed workflow の `phase-12-documentation.md` と `outputs/phase-12` から `仕様策定のみ` などの planned wording を除去するガードを追加し、実績同期と `[x]` 更新を Phase 12 完了条件へ昇格 |
+| **v10.08.55** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW の Phase 12 完了同期を反映**: current workflow の `index.md` / `artifacts.json` / `phase-1..12` status / `outputs/verification-report.md` を completed 実績へ同期し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を Phase 12 完了ゲートとして明示した |
+| **v10.08.54** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT の Phase 12 再監査を反映**: `implementation-guide.md` を validator 要件（Part 2 の TypeScript型 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定と定数）に適合させ、`phase-11-manual-test.md` に画面カバレッジマトリクスを追補。`validate-phase12-implementation-guide` と `validate-phase11-screenshot-coverage` warning解消を完了ゲートへ明記 |
+| **v10.08.53** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow backlog 配置を反映**: Phase 12 Task 4 の正本配置ルールを「active workflow 由来は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`」へ明文化し、`audit-unassigned-tasks --json --diff-from HEAD --unassigned-dir <dir> --target-file <file>` を完了ゲートへ追加 |
+| **v10.08.52** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の再確認知見を反映**: `references/unassigned-task-guidelines.md` に「指定ディレクトリ配置チェック（今回差分配置 / current判定 / legacy baseline）」の3行テンプレートを追加。`currentViolations=0` と `baselineViolations>0` を混同しない報告ルールを明文化し、Phase 12 再監査時の未タスク誤判定を防止 |
+| **v10.08.51** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 11/12 再監査を反映**: Phase 11 で `capture-task-fix-apikey-chat-tool-integration-phase11.mjs` による TC-11-01..03 再撮影と Apple UI/UX 視覚検証を実施。Phase 12 では必須5成果物の不足を補完し、`phase-12-documentation.md` を Task 12-1〜12-5 構成へ是正。`artifacts.json` / `outputs/artifacts.json` 同期、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を完了ゲートへ固定 |
 | **v10.08.50** | **2026-03-11** | **user 指定rootを正本にする Phase 12 ガードを追加**: `references/phase12-checklist-definition.md` と `references/phase-11-12-guide.md` に、`.claude/skills/...` のような user 指定rootを canonical root として扱い、`.agents/skills/...` などの mirror root と drift がないことを完了条件に加えた |
 | **v10.08.49** | **2026-03-11** | **TASK-UI-07 再監査で判明した canonical path drift を是正**: `references/spec-update-workflow.md` を user 指定root基準へ補強し、Phase 12 完了時に canonical root / mirror root / drift 記録を同時に残す運用を変更履歴へ追加 |
 | **v10.08.48** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 11再監査追補を反映**: `validate-phase11-screenshot-coverage` を完了ゲートへ含め、`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` と `manual-test-result.md` の `証跡` 列を literal に保つ運用を変更履歴へ追加 |
 | **v10.08.47** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 12 完了同期を反映**: `outputs/phase-12` 5成果物と workflow root 文書（`index.md` / traceability / diff reflection / verification-report）を同一ターンで同期し、spec-only stale を残さない運用を変更履歴へ追加 |
+| **v10.08.48** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-01 の Phase 12 未タスク0件報告を強化**: `references/unassigned-task-guidelines.md` に `currentViolations=0` かつ `baselineViolations>0` のときの推奨記述例を追加し、`今回差分` と `directory baseline` を分離するルールを明文化。`assets/phase12-task-spec-compliance-template.md` に legacy baseline と既存 remediation task の記録欄を追加し、0件報告でも backlog 導線を失わないテンプレートへ更新 |
+| **v10.08.47** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-01 再監査知見を反映**: `references/phase-11-12-guide.md` に representative screenshot は shell 全景より selector-based element capture を優先するルールを追加。`data-testid` または実文言を ready selector の正本とし、workflow `screenshot-plan.json` に selector を残す再利用パターンを明文化 |
 | **v10.08.46** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW の Phase 12再監査知見を反映**: `references/spec-update-workflow.md` に「`.claude` が canonical root、`.agents` は mirror」ルールを追加し、`references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加。workflow / outputs が `.agents/skills/.../references/` を正本として参照しないようにする再監査手順と、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` の formalization を標準化 |
 | **v10.08.45** | **2026-03-10** | **TASK-UI-03 Phase 12再監査の backlog 整合を反映**: current branch で解消済みの `UT-UI-03-TYPE-ASSERTION-001` を completed unassigned へ正規化し、Phase 11 light theme 所見を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として task-spec フォーマットで formalize する運用を変更履歴へ追加。`unassigned-task-detection.md` / `task-workflow.md` / `spec-update-summary.md` の同値同期を標準化 |
 | **v10.08.44** | **2026-03-10** | **TASK-UI-03 再監査で task-specification-creator の canonical script path を是正**: `.claude/skills/task-specification-creator/scripts/` を参照していた current workflow / `commands.md` / `phase-11-12-guide.md` / `phase-templates.md` / `patterns.md` / `unassigned-task-guidelines.md` を `.agents/skills/task-specification-creator/scripts/` へ統一し、`validate-phase-output.js` の位置引数契約へ再整合 |

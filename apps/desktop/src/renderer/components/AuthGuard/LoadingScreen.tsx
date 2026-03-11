@@ -28,7 +28,7 @@ export const LoadingScreen: React.FC = () => {
       </div>
 
       {/* アプリ名 */}
-      <h1 className="text-2xl font-bold text-white mb-8">
+      <h1 className="mb-8 text-2xl font-bold text-[var(--text-primary)]">
         AIWorkflowOrchestrator
       </h1>
 
@@ -36,7 +36,7 @@ export const LoadingScreen: React.FC = () => {
       <Spinner size="lg" className="text-blue-400" />
 
       {/* メッセージ */}
-      <p className="mt-4 text-white/60 text-sm">読み込み中...</p>
+      <p className="mt-4 text-sm text-[var(--text-secondary)]">読み込み中...</p>
     </div>
   );
 };

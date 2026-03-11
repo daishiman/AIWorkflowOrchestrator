@@ -80,6 +80,46 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 | `--target-file` のみ | 参考値 | repo 全体の既存違反が current 側へ寄る場合があるため合否には使わない |
 | scope指定なし `--json` | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
 
+### legacy baseline の扱い（重要）
+
+`currentViolations=0` は **今回差分が適切** であることを示すだけで、`docs/30-workflows/unassigned-task/` 全体が完全に正規化済みという意味ではない。
+
+- `currentViolations=0` かつ `baselineViolations>0` の場合:
+  - 検出レポートには「今回差分は合格」「legacy 負債は継続」の両方を明記する
+  - TASK 由来の open backlog がテンプレート準拠で配置済みかどうかは個別に書く
+  - baseline 負債に既存の改善未タスクがある場合は、その参照をレポートへ記載する
+  - baseline 負債を feature の不具合として扱わない
+- 「指定ディレクトリに配置できているか」の確認では、少なくとも以下を分離して報告する:
+  1. 今回タスク由来の未タスク指示書が指定ディレクトリに存在するか
+  2. その指示書がテンプレート準拠か
+  3. ディレクトリ全体に legacy 負債が残っているか
+
+推奨の記述例:
+
+```md
+- 今回タスク由来の新規未タスク: 0件
+- `docs/30-workflows/unassigned-task/` への配置要否: 追加作成なし
+- `verify-unassigned-links`: 213/213（missing=0）
+- `audit-unassigned-tasks --json --diff-from HEAD`: currentViolations=0 / baselineViolations=133
+- baseline backlog（継続監視）:
+  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`
+  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md`
+```
+
+> 重要: 0件報告でも、baseline backlog を隠す表現にしてはいけない。`今回差分` と `ディレクトリ全体` は別の関心ごととして記録する。
+
+### 指定ディレクトリ配置チェック（報告テンプレート）
+
+ユーザーから「未タスクが指定ディレクトリへ配置できているか」を再確認依頼された場合は、以下3行をそのまま埋めて記録する。
+
+| 項目 | 記録例 |
+| --- | --- |
+| 今回差分の配置可否 | `docs/30-workflows/unassigned-task/` 配下に新規/更新未タスク `N` 件（または `0` 件） |
+| 今回差分の品質可否 | `audit --json --diff-from HEAD` の `currentViolations.total = X` |
+| 全体legacy状況 | `audit --json` の `baselineViolations.total = Y`（既存改善タスクID: ...） |
+
+> 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
+
 ### raw検出の誤検知対策（推奨）
 
 `detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。

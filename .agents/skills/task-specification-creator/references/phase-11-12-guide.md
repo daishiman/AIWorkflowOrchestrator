@@ -66,6 +66,7 @@
 - App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
+- representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 
@@ -191,7 +192,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
-- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
+- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止、見出し文字列は完全一致）
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
@@ -258,7 +259,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 | Part 2 | 開発者・技術者 | 技術的詳細（スキーマ・API・使用例） |
 
 **Part 1（中学生レベル）記述ルール**:
-- 日常生活での例え話を**必ず**含める
+- 日常生活での例え話を**必ず**含め、`たとえば` を最低1回明示する
 - 専門用語は使わない（使う場合は即座に説明）
 - 図表より文章での説明を優先
 - 「なぜ必要か」を先に説明してから「何をするか」を説明
@@ -395,7 +396,9 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
+- [ ] completed workflow の `phase-12-documentation.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
+- [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
@@ -547,9 +550,14 @@ done
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-11 | TASK-SKILL-LIFECYCLE-01 再監査を反映し、representative screenshot は shell 全景より selector-based element capture を優先するルールを追加 |
+| 2026-03-10 | TASK-10A-G知見反映: Phase 12サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）追加、3層テストパターン再利用ガイド（G1/G2/G3）追加、LOGS.md完了記録の最終ステップ化を明記 |
+| 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |
+| 2026-03-08 | Workflow10 再確認の教訓を反映し、dedicated harness 利用条件を「App shell 遷移不安定 / deep-link 不可」まで明文化し、`manual-test-result.md` に harness entry path・本番コンポーネント・mock 境界を記録する完了チェックを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
+| 2026-03-11 | TASK-UI-04C follow-up を反映し、初回 0件判定後に親タスク苦戦箇所を共通ガード未タスクへ formalize する場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加 |
 | 2026-03-06 | UT-TASK-10A-B-008 Phase 12再確認を反映し、Task 1 完了条件へ `validate-phase12-implementation-guide.js` を追加。Part 1/2 の内容要件を構造チェックから独立して機械検証する運用へ更新 |
 | 2026-03-06 | UT-TASK-10A-B-008 再監査の教訓を反映し、「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root でなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加 |
 | 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |

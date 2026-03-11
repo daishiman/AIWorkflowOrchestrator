@@ -19,6 +19,8 @@
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
+| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/` |
+| Workspace Preview / Quick Search | TASK-UI-04C | PreviewPanel, PreviewToolbar, QuickFileSearch, SourceView | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
@@ -428,7 +430,7 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
 | TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了（2026-03-10、Phase 13保留）** |
-| TASK-UI-04B | chat 本体統合 | 後続 |
+| TASK-UI-04B | chat 本体統合 | **完了（2026-03-11、Phase 1-12）** |
 | TASK-UI-04C | preview / quick search 統合 | 後続 |
 
 ### 関連未タスク
@@ -439,6 +441,122 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ---
 
+## Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT）
+
+`WorkspaceView` に統合された 04B の chat 本体。04A の layout 基盤を再利用し、file context / mention / streaming / conversation 保存を 1 つの panel で提供する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `WorkspaceChatPanel` | organism | `WorkspaceView` | zero state / log / chips / input の統合 |
+| `WorkspaceChatMessageList` | molecule | `WorkspaceChatPanel` | user/assistant/streaming 表示 |
+| `WorkspaceFileContextChips` | molecule | `WorkspaceChatPanel` | 添付背景情報の表示・削除 |
+| `WorkspaceChatInput` | molecule | `WorkspaceChatPanel` | 送信・mention・cancel・error 表示 |
+| `WorkspaceMentionDropdown` | molecule | `WorkspaceChatInput` | `@mention` 候補表示と選択 |
+| `WorkspaceSuggestionBubbles` | molecule | `WorkspaceChatPanel` | 初回提案バブル |
+| `useWorkspaceChatController` | hook | `WorkspaceView` | stream / conversation / mention / attach の制御 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| zero state | 会話開始前は提案バブルを表示し、入力導線を明示する |
+| file context | 選択中ファイルを背景情報へ追加し、最大3件をチップ表示する |
+| mention | `@` 入力でファイル候補を表示し、keyboard（Arrow/Enter/Tab）で選択できる |
+| stream | chunk/end/error/cancel を UI 状態へ反映する |
+| persistence | user/assistant を `conversationAPI.addMessage` で保存する |
+| a11y | `role="log"` + `aria-live="polite"` と `role="alert"` を維持する |
+
+### 実装結果
+
+| 項目 | 内容 |
+| --- | --- |
+| 変更範囲 | `WorkspaceView` と `WorkspaceView/*` の chat 関連コンポーネント群 |
+| テスト | 3 files / 14 tests PASS（`WorkspaceView.test.tsx` ほか） |
+| 型検証 | `pnpm exec tsc --noEmit` PASS |
+| 画面証跡 | Phase 11 screenshot 8件（zero/mention/stream/error/compact/keyboard） |
+| 視覚レビュー | Apple UI/UX 観点で light/dark 階層・compact 幅を確認 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了** |
+| TASK-UI-04B-WORKSPACE-CHAT | chat panel 統合 | **完了（2026-03-11、Phase 1-12）** |
+| TASK-UI-04C | preview / quick search 統合 | 後続 |
+
+---
+
+## Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW）
+
+`WorkspaceView` 右ペインの `PreviewPanel` と `Cmd/Ctrl+P` の `QuickFileSearch` を 04A 基盤へ追加した UI。preview 表示とファイル探索を chat 本体から分離し、renderer 側 timeout / retry / fallback で堅牢性を補強する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `PreviewPanel` | organism | `WorkspaceView` | Source / Preview 切替、toolbar、error / zero state |
+| `PreviewToolbar` | molecule | `PreviewPanel` | refresh、wrap、open-in-editor、meta toggle |
+| `SourceView` | molecule | `PreviewPanel` | read-only source 表示、行番号、double click 導線 |
+| `PreviewErrorBoundary` | molecule | `PreviewPanel` | iframe / render crash 隔離と reset |
+| `QuickFileSearch` | organism | `WorkspaceView` | modal dialog、focus trap、検索結果一覧 |
+| `useQuickFileSearch` | hook | `WorkspaceView` | fuzzy ranking、shortcut、highlight / submit 制御 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| preview tab | `Source` / `Preview` の2状態を維持し、文言は Task 5D 語彙に合わせる |
+| HTML preview | sandbox + CSP 付き iframe を使い、危険 URL を除去した内容だけを描画する |
+| JSON/YAML | pretty print 失敗時は alert banner を出しつつ `SourceView` fallback を表示する |
+| image preview | 画像本体とメタ情報表示を切り替え可能にする |
+| source surface | read-only、行番号ガター、double click で EditorView へ遷移する |
+| quick search | `Cmd/Ctrl+P` で開き、ArrowUp / ArrowDown / Enter / Escape をサポートする |
+| result policy | fuzzy 検索の上位10件のみを表示し、score 0 は候補に含めない |
+
+### 実装結果
+
+| 項目 | 内容 |
+| --- | --- |
+| IPC reuse | 新規 channel 追加なし。`file:read` と 04A の `file:changed` を再利用 |
+| renderer resilience | `Promise.race` で 5秒 timeout、1秒間隔で最大3回 retry、最終失敗は preview error surface へ表示 |
+| test | task scope 13 files / 52 tests PASS |
+| coverage | Statements 89.47 / Branches 79.43 / Functions 93.87 / Lines 89.47 |
+| screenshot | current build static serve で Phase 11 screenshot 11件を取得 |
+
+### 画面検証結果
+
+| 観点 | 判定 | 補足 |
+| --- | --- | --- |
+| source / preview hierarchy | PASS | toolbar、body、status の階層が明瞭 |
+| quick search dialog | PASS | 480px 幅、12px radius、控えめな shadow で集中を妨げない |
+| mobile overlay | PASS | scrim と sheet の境界が自然で、overlay close も視覚的に明確 |
+| terminology consistency | PASS | `Source` / `Preview` / `ファイルをすばやく探す` の語彙を統一 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | 完了 |
+| TASK-UI-04B-WORKSPACE-CHAT | chat 本体統合 | 完了 |
+| TASK-UI-04C-WORKSPACE-PREVIEW | preview / quick search | **完了（2026-03-11、Phase 13保留）** |
+
+### 実装時の苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| fuzzy search が非一致 query まで候補化する | subsequence score 0 でも定数 boost を足す | `score > 0` 条件を先に切り、no match を空配列へ戻した | fuzzy score は「一致判定」と「順位補正」を分離する |
+| file read が hang すると preview 全体が loading に残る | renderer 側 timeout がなく IPC 成功/失敗待ちに依存する | `Promise.race` で 5秒 timeout を追加し、3回 retry 後に明示 error へ落とした | preview 系の invoke は renderer timeout + retry を標準にする |
+| structured preview parse error が full error になり UX が途切れる | JSON/YAML 整形失敗を致命的 error と同列扱いする | alert banner + `SourceView` fallback に分離した | parse error は recoverable error として source fallback を残す |
+
+### 関連未タスク
+
+| タスクID | 目的 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
+---
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
 > **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)
@@ -858,6 +976,36 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | テスト資産 | ✅ 完了（10ファイル / 132テストケース定義） | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/` |
 | Phase 12成果物 | ✅ 完了（5必須 + 補助1） | `outputs/phase-12/*.md` |
 
+### Task-Skill-Lifecycle-01 foundation 追補（2026-03-11）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| 画面の主目的 | `SkillCenterView` を create / use / improve の一次導線入口として固定し、後続 surface へ handoff する |
+| 変更範囲 | `Renderer`（`SkillCenterView`, `App.tsx`, `skillLifecycleJourney.ts`, view test） |
+| 実装した要点 | `skillLifecycleJourney.ts` へ job guide / surface responsibility / downstream contract を集約し、`SkillCenterView` に journey panel と surface ownership board を追加した |
+| 契約上の要点 | legacy `skill-center` は shell の `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化し、下流の UI / test / spec は正本値へ統一する |
+| 視覚検証 | Phase 11 screenshot 6件を再取得し、TC-11-05 は `data-testid="skill-lifecycle-surface-ownership"` の要素 capture を正本証跡にした |
+| 完了根拠 | targeted tests 18 PASS、`verify-all-specs` 13/13 PASS、`validate-phase-output` PASS、`validate-phase12-implementation-guide` PASS |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 一次導線の説明が nav / feature / state に分散し、入口判断が揺れる | UI 表示だけ更新し、コード契約の正本を持たない | `skillLifecycleJourney.ts` を導線正本にし、`SkillCenterView` は表示責務だけに寄せた | 入口・責務・例外・handoff は 1 ファイルへ集約する |
+| legacy alias を放置すると shell 分岐と仕様書が二重化する | `skill-center` を view や test 側で個別吸収する | `App.tsx` の `normalizeSkillLifecycleView()` で 1 回だけ canonical 化した | alias 正規化は shell 入口で一度だけ行う |
+| representative screenshot が shell 全景だけだと責務比較に弱い | route screenshot だけで TC を閉じる | surface ownership board を追加し、TC-11-05 を要素 capture へ切り替えた | representative evidence は責務や state を表す selector を待って要素単位で撮る |
+| 0件報告だけでは未タスクディレクトリ全体が健全に見える | `unassigned-task-detection.md` に件数 0 しか書かない | `currentViolations=0 / baselineViolations=133` と既存 remediation task 参照を同時に記録した | 0件報告でも current/baseline と既存 backlog 導線を分離して残す |
+
+#### 同種課題の5分解決カード
+
+1. 導線再編は job guide と責務境界をコード契約へ切り出し、view 本体は表示責務へ寄せる。
+2. legacy alias は shell で canonical 化し、下流コード・test・spec は正本値だけを使う。
+3. 入口画面には primary journey と destination surface を同居させず、handoff を明記する。
+4. representative screenshot は shell 全景ではなく、責務境界が読める要素 capture を正本にする。
+5. Phase 12 は `task-workflow` / `lessons-learned` / `ui-ux-feature-components` に同じ実装内容・苦戦箇所・current/baseline 監査値を同期する。
+
 ### 状態管理・IPC依存
 
 | 観点 | 採用方針 |
@@ -1202,6 +1350,7 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 - `useSkillAnalysis` は Store 個別セレクタ経由で `analysis/isAnalyzing/isImproving/skillError` を参照する。
 - `SkillCreateWizard` は `useCreateSkill()` で作成 action を実行し、生成進捗をUIに反映する。
 - 画面検証は dark/light/mobile と error/loading を含む 11ケースで確認済み。
+- TASK-SKILL-LIFECYCLE-01 では `skillLifecycleJourney.ts` を追加し、create / use / improve の job guide と downstream contract を Store-driven lifecycle の前段ガイドとして固定した。
 
 ### 後続未タスク（TASK-10A-F 由来）
 
@@ -1741,10 +1890,17 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
+| 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
+| 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
 | 2026-03-11 | v1.14.32   | TASK-UI-07 の related UT を追加: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を Dashboard Home Enhancement 節の関連未タスクへ登録し、dual root repository での canonical root 固定と mirror sync を UI 実装後の Phase 12 ガードとして再利用可能化 |
 | 2026-03-11 | v1.14.31   | TASK-UI-07 再監査反映: Dashboard Home Enhancement 節に実装時の苦戦箇所（表示名と内部契約の境界、view-local component 判断、harness screenshot 運用）と 5分解決カードを追加し、再利用可能な UI 実装知見として固定 |
 | 2026-03-11 | v1.14.30   | TASK-UI-07 完了反映: 収録機能一覧へ Dashboard Home Enhancement を追加し、専用セクションに GreetingHeader / DashboardSuggestionSection / RecentTimeline 構成、22 tests、Phase 11 screenshot 5件を同期 |
+| 2026-03-11 | v1.14.32   | TASK-SKILL-LIFECYCLE-01 の feature spec 形成を最適化: `ui-ux-feature-components.md` の lifecycle 追補を `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編し、system spec 単体でも短手順で再利用できる状態に整理 |
+| 2026-03-11 | v1.14.31   | TASK-SKILL-LIFECYCLE-01 再監査同期: `SkillCenterView UI` に surface ownership board と要素単位 screenshot 証跡（TC-11-05）を追記し、責務境界の可視化を system spec から参照可能にした |
+| 2026-03-11 | v1.14.30   | TASK-SKILL-LIFECYCLE-01 完了同期: `SkillCenterView UI` に lifecycle journey panel を追加し、`Store駆動ライフサイクルUI統合` へ job guide / downstream contract の前段責務を追記 |
 | 2026-03-10 | v1.14.29   | TASK-UI-06-HISTORY-SEARCH-VIEW 節をテンプレート準拠へ最適化。見出しを `実装内容（要点）` に統一し、5分解決カードを追加して専用仕様 `ui-history-search-view.md` と粒度を揃えた |
+| 2026-03-11 | v1.14.29   | TASK-UI-04C-WORKSPACE-PREVIEW を反映。`Workspace Preview / Quick Search` 節を追加し、`PreviewPanel` / `QuickFileSearch` / `SourceView` / timeout+retry / structured fallback / screenshot 11件 / 52 tests PASS を 04A 直下の feature 正本へ同期 |
 | 2026-03-10 | v1.14.28   | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`HistorySearchView` の timeline 再設計、`historySearchSlice` / `editorSlice` 契約、Phase 11 screenshot 6件、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を追加し、専用仕様 `ui-history-search-view.md` への入口を作成 |
 | 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |
 | 2026-03-10 | v1.14.26   | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に「実装内容と苦戦箇所サマリー」と「同種課題の5分解決カード」を追加し、adapter helper・dedicated harness・token scope 分離を feature 正本から直接参照できるよう再編 |
