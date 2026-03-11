@@ -1,5 +1,6 @@
 import { StateCreator } from "zustand";
 import type { ChatMessage, RagConnectionStatus } from "../types";
+import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 
 // ============================================
 // Helper Functions
@@ -36,6 +37,8 @@ async function callLLMAPI(
   message: string,
   systemPrompt: string,
   ragEnabled: boolean,
+  selectedProviderId?: LLMProviderId | null,
+  selectedModelId?: string | null,
 ): Promise<{ success: boolean; message?: string }> {
   if (typeof window === "undefined" || !window.electronAPI?.ai?.chat) {
     return { success: false };
@@ -47,6 +50,12 @@ async function callLLMAPI(
       systemPrompt,
       ragEnabled,
       conversationId: undefined,
+      ...(selectedProviderId && selectedModelId
+        ? {
+            providerId: selectedProviderId,
+            modelId: selectedModelId,
+          }
+        : {}),
     });
 
     if (response.success && response.data) {
@@ -178,6 +187,12 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
 
   sendMessage: async (message) => {
     const state = get();
+    const selectedProviderId = (
+      state as ChatSlice & { selectedProviderId?: LLMProviderId | null }
+    ).selectedProviderId;
+    const selectedModelId = (
+      state as ChatSlice & { selectedModelId?: string | null }
+    ).selectedModelId;
 
     // Add user message immediately
     const userMessage = createUserMessage(message);
@@ -191,6 +206,8 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
       message,
       state.systemPrompt,
       state.ragConnectionStatus === "connected",
+      selectedProviderId,
+      selectedModelId,
     );
 
     // Handle response

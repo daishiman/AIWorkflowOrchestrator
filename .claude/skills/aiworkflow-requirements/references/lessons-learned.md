@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
+| 2026-03-11 | 1.29.71 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を追加。`cache clear` / Main 同期 / `source` 表示の 3 契約を個別テストの寄せ集めではなく単一回帰マトリクスで guard する改善導線を task-workflow / workflow spec / domain spec へ同期した |
+| 2026-03-11 | 1.29.70 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を追加。スクリーンショット再取得、Phase 12 4検証再実行、未タスク監査の `current=0 / baseline=133` 二層判定を同時に固定し、再確認時の誤判定を防止 |
+| 2026-03-11 | 1.29.69 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の教訓を追加。`ai.chat` と `llm` 選択状態の二重管理ドリフト、APIキー更新後の adapter cache stale、`auth-key:exists` の判定根拠不足を同時解消し、`source` 優先表示 + `llm:set-selected-config` + cache clear の三点セットを標準化 |
 | 2026-03-11 | 1.29.68 | TASK-UI-07 の派生未タスクを追加。`.claude` / `.agents` の dual skill-root drift を `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` として formalize し、canonical root 固定・mirror sync・`diff -qr` 検証を Phase 12 の再利用手順へ昇格 |
 | 2026-03-11 | 1.29.67 | TASK-UI-07-DASHBOARD-ENHANCEMENT の再監査追補。表示名「ホーム」と内部 `dashboard` 契約の境界維持、未実施UTの正本配置是正、UI機能仕様への苦戦箇所固定を追加 |
 | 2026-03-11 | 1.29.66 | TASK-UI-07-DASHBOARD-ENHANCEMENT の教訓を追加。workflow 本文 stale、Phase 11 validator のソース要求、worktree の esbuild 差分を整理し、4ステップ再利用手順を追記 |
@@ -53,6 +57,71 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
+
+#### 苦戦箇所1: `ai.chat` の provider/model 解決元が Main と Renderer でずれて実行経路が不安定
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Renderer の選択状態と Main 側 `ai.chat` の参照状態が別管理で、意図しない provider/model に送信される |
+| 再発条件 | `llmSlice` の状態変更を Main 側へ同期しない |
+| 解決策 | `llm:set-selected-config` を追加し、Renderer 選択変更時に Main の選択状態を即時同期 |
+| 標準ルール | 実行経路が Main で決まる機能は、UI 選択状態を専用IPCで同期してから送信する |
+
+#### 苦戦箇所2: APIキー更新後に LLM adapter cache が残留し、古い鍵で呼び出す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `apiKey:save/delete` 成功後も既存 adapter instance が残り、更新鍵が反映されない |
+| 再発条件 | storage 更新だけで cache invalidation を実行しない |
+| 解決策 | `apiKey:save/delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行 |
+| 標準ルール | 認証情報更新は「永続化 + 実行キャッシュ無効化」を1セットで実装する |
+
+#### 苦戦箇所3: `auth-key:exists` が boolean のみで、UI が saved/env-fallback を誤判定しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `exists` だけでは判定根拠が不足し、Settings の状態表示が曖昧になる |
+| 再発条件 | 状態表示に必要な由来情報（保存済み/環境変数）を IPC 契約へ昇格しない |
+| 解決策 | `AuthKeyExistsResponse` に `source`（saved/env-fallback/not-set）を追加し、UI は `source` 優先で表示 |
+| 標準ルール | UI が複数状態を表示する場合、判定根拠フィールドを IPC レスポンスへ含める |
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 実行経路（Main）と選択経路（Renderer）を分け、同期チャネルを最初に定義する。
+2. 認証情報更新時は storage 更新と runtime cache clear を同時に実施する。
+3. UI 状態表示に必要な判定根拠を boolean 以外（`source` 等）で契約化する。
+4. Phase 11 で代表状態を screenshot 取得し、`validate-phase11-screenshot-coverage` で証跡整合を固定する。
+
+#### 再確認時の苦戦箇所（2026-03-11）
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所1 | `audit-unassigned-tasks --json` の全体結果（baseline）を、そのまま今回差分のFAILと誤読しやすい |
+| 再発条件 | `current` と `baseline` の判定軸を分離せずに報告する |
+| 解決策 | `audit --diff-from HEAD` を合否判定に固定し、`current=0` と `baseline=133` を別行で記録 |
+| 標準ルール | 未タスク監査は「今回差分合否」と「legacy負債監視」を二層で書く |
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所2 | 既存 screenshot が存在していても、再監査時点の鮮度保証がない |
+| 再発条件 | 画像ファイル実在のみで Phase 11 検証を完了扱いにする |
+| 解決策 | capture スクリプトを再実行し、`validate-phase11-screenshot-coverage` で TC 紐付けを再確認 |
+| 標準ルール | 明示 screenshot 要求時は「再撮影 + coverage validator」を必須セットにする |
+
+| 項目 | 内容 |
+| --- | --- |
+| 苦戦箇所3 | 仕様同期は完了していても、スキル側改善が履歴化されず再利用導線が弱くなる |
+| 再発条件 | workflow 成果物更新で終了し、`skill-creator` / `task-specification-creator` の更新を後回しにする |
+| 解決策 | system spec と同ターンで各スキルの `LOGS.md` / `SKILL.md` / ガイドを更新 |
+| 標準ルール | Phase 12 再確認は「workflow + system spec + skill docs」の三層を同時同期する |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard し、APIキー連動系の初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` | 完了: 2026-03-11 |
 
 ### 2026-03-11 TASK-SKILL-LIFECYCLE-01
 

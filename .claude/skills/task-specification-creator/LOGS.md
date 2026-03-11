@@ -9,6 +9,54 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（completed migration）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ移動
+  - 親workflow `api-key-chat-tool-integration-alignment` も `docs/30-workflows/completed-tasks/` へ移管
+  - `unassigned-task-detection.md` / `task-workflow.md` の参照先を completed 配置へ同期
+
+---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を 9セクション構成で新規作成
+  - 親タスク `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を `3.5 実装課題と解決策` に継承
+  - 親 workflow `outputs/phase-12/unassigned-task-detection.md` を 0件判定から「blocking 0件 + 改善未タスク 1件 formalize」へ更新
+  - `task-workflow.md` / `api-ipc-system.md` / `workflow-apikey-chat-tool-integration-alignment.md` に未タスク導線を同期
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 12再確認（未タスク配置判定強化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行し、Phase 12 完了条件を再確認
+  - `capture-task-fix-apikey-chat-tool-integration-phase11.mjs` を再実行し、TC-11-01〜03 の証跡鮮度を更新
+  - `audit-unassigned-tasks --json --diff-from HEAD` の `current=0` と `--json` の `baseline=133` を分離記録する報告テンプレートを `references/unassigned-task-guidelines.md` に追加
+  - 指定ディレクトリ確認は「今回差分の配置」「今回差分品質」「legacy baseline」の3行で報告するルールへ整理
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 11/12 再監査
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `apps/desktop/scripts/capture-task-fix-apikey-chat-tool-integration-phase11.mjs` を再実行し、TC-11-01〜03 のスクリーンショットを再取得
+  - `outputs/phase-12` の必須5成果物（implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）を作成
+  - `phase-12-documentation.md` を Task 12-1〜12-5 の5タスク構成へ是正
+  - `artifacts.json` / `outputs/artifacts.json` を Phase 1〜12 completed に同期
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行して PASS を確認
+
+---
 ## 2026-03-11 - Phase 12 再監査で user 指定rootを正本にするガードを追加
 
 - **Agent**: task-specification-creator

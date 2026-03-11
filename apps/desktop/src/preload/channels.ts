@@ -115,6 +115,7 @@ export const IPC_CHANNELS = {
 
   // LLM operations
   LLM_GET_PROVIDERS: "llm:get-providers",
+  LLM_SET_SELECTED_CONFIG: "llm:set-selected-config",
   LLM_CHECK_HEALTH: "llm:check-health",
   LLM_SEND_CHAT: "llm:send-chat",
   LLM_STREAM_CHAT: "llm:stream-chat",
@@ -440,6 +441,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.FILE_SELECTION_VALIDATE_PATH,
   // LLM channels
   IPC_CHANNELS.LLM_GET_PROVIDERS,
+  IPC_CHANNELS.LLM_SET_SELECTED_CONFIG,
   IPC_CHANNELS.LLM_CHECK_HEALTH,
   IPC_CHANNELS.LLM_SEND_CHAT,
   IPC_CHANNELS.LLM_STREAM_CHAT,

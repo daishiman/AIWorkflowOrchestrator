@@ -321,6 +321,83 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ---
 
+## Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
+
+**完了日**: 2026-03-09
+
+### 概要
+
+Settings 画面は認証状態に依存せず常時アクセス可能である。認証タイムアウト時や未認証状態でも、ユーザーが API キー設定等の認証前操作を行えるようにする。
+
+### アクセス導線
+
+| 導線 | トリガー | 説明 |
+| --- | --- | --- |
+| 通常アクセス | `Cmd/Ctrl + ,` または GlobalNavStrip/MobileNavBar | 認証済み・未認証を問わずアクセス可能 |
+| タイムアウトフォールバック | AuthTimeoutFallback の「設定画面へ」ボタン | 認証確認が 10 秒以内に完了しない場合に表示される導線 |
+
+### 設計仕様
+
+| 観点 | 仕様 |
+| --- | --- |
+| shell bypass | `App.tsx` で `currentView === "settings"` の場合、AuthGuard の外側で `SettingsView` を直接レンダリング |
+| reset exclusion | 未認証時の view reset で `settings` を除外し、設定作業中に dashboard へ強制遷移させない |
+| 公開ビュー定義 | `PUBLIC_UNAUTHENTICATED_VIEWS = ["settings"]` で AuthGuard 外アクセス可能なビューを明示管理 |
+| セキュリティ境界 | Settings シェルのみが AuthGuard 外に配置され、他のビュー（agent, chat, history 等）は全て AuthGuard 内で保護 |
+
+### 未認証状態での動作
+
+| 機能 | 動作 | 安全性 |
+| --- | --- | --- |
+| API キー設定 | IPC 経由で Main Process の暗号化ストレージに保存。Renderer にトークン平文は露出しない | contextBridge + safeStorage による保護 |
+| LLM プロバイダー選択 | IPC 経由で設定取得・保存。未認証でも設定可能 | IPC ホワイトリスト + sender 検証 |
+| アカウント設定 | 認証情報が必要な操作はエラーメッセージを表示（クラッシュしない） | fallback ハンドラによる安全な error envelope 返却 |
+
+### 関連ファイル
+
+| ファイル | 役割 |
+| --- | --- |
+| `apps/desktop/src/renderer/App.tsx` | Settings bypass 条件分岐 |
+| `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` | 未認証 reset 除外判定 |
+| `apps/desktop/src/renderer/components/AuthGuard/index.tsx` | AuthGuard 本体 |
+| `apps/desktop/src/renderer/components/AuthGuard/__tests__/AuthTimeoutFallback.tsx` | タイムアウトフォールバック UI |
+
+---
+
+## AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001）
+
+**完了日**: 2026-03-11  
+**実装ファイル**:
+
+- `apps/desktop/src/renderer/views/SettingsView/index.tsx`
+- `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx`
+
+### 表示条件
+
+| 条件 | 動作 |
+| --- | --- |
+| `authMode === "api-key"` | `AuthKeySection` を表示する |
+| `authMode !== "api-key"` | `AuthKeySection` を非表示にする |
+
+### 状態表示（`auth-key:exists` の `source` 優先）
+
+| `auth-key:exists` レスポンス | UI状態 | 表示意図 |
+| --- | --- | --- |
+| `{ exists: false, source: "not-set" }` | `not-set` | APIキー未設定を明示 |
+| `{ exists: true, source: "saved" }` | `saved` | 保存済みキーを優先表示 |
+| `{ exists: true, source: "env-fallback" }` | `env-fallback` | 環境変数 fallback 使用を表示 |
+| `source` 未提供（後方互換） | `hasCredentials` 補助判定 | 旧実装互換で状態を決定 |
+
+### Phase 11 視覚検証
+
+| テストケース | 証跡 | 判定 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-settings-apikey-authkey-initial.png` | PASS |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-settings-apikey-save-success.png` | PASS |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-settings-authkey-env-fallback.png` | PASS |
+
+---
+
 ## ApiKeysSection 異常系表示仕様（2026-03-07追加）
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
@@ -422,6 +499,7 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |
 | 1.5.0   | 2026-03-07 | ApiKeysSection 異常系表示仕様追加（09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）: Preload境界の4段防御ガード、6テストケース                                         |

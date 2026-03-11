@@ -215,19 +215,28 @@ export function registerAuthKeyHandlers(
       IPC_CHANNELS.AUTH_KEY_EXISTS,
       async (_event: IpcMainInvokeEvent): Promise<AuthKeyExistsResponse> => {
         try {
-          const hasStoredKey = await authKeyService.hasKey();
-          const hasEnvKey =
-            typeof process.env.ANTHROPIC_API_KEY === "string" &&
-            process.env.ANTHROPIC_API_KEY.trim().length > 0;
-          const exists = hasStoredKey || hasEnvKey;
-          return { exists };
+          const envKey = process.env.ANTHROPIC_API_KEY?.trim() ?? "";
+          const hasEnvKey = envKey.length > 0;
+          const resolvedKey = await authKeyService.getKey();
+          const exists =
+            typeof resolvedKey === "string" && resolvedKey.length > 0;
+
+          if (!exists) {
+            return { exists: false, source: "not-set" };
+          }
+
+          if (hasEnvKey && resolvedKey === envKey) {
+            return { exists: true, source: "env-fallback" };
+          }
+
+          return { exists: true, source: "saved" };
         } catch (error) {
           console.error(
             "[AuthKeyHandlers] hasKey error:",
             sanitizeError(error),
           );
           // エラー時は false を返す（セキュリティ上の理由）
-          return { exists: false };
+          return { exists: false, source: "not-set" };
         }
       },
       { getAllowedWindows: () => [mainWindow] },

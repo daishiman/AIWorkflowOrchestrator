@@ -1,133 +1,63 @@
 /**
  * @file SecureStorage Service for LLM API Keys
- * @description LLMプロバイダーのAPIキーを安全に保存・取得するサービス
+ * @description LLM 実行経路は Settings の API キーストアを単一正本として参照する
  * @feature chat-multi-llm-switching
  */
 
-import { safeStorage } from "electron";
-import Store from "electron-store";
+import type { AIProvider } from "@repo/shared/types/api-keys";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
+import {
+  createApiKeyStorage,
+  clearApiKeyStore,
+  resetApiKeyStore,
+} from "../infrastructure/apiKeyStorage";
 
-interface ApiKeyStoreSchema {
-  apiKeys: Record<string, string>;
-}
+const apiKeyStorage = createApiKeyStorage();
+const ALL_PROVIDERS: LLMProviderId[] = ["openai", "anthropic", "google", "xai"];
 
-// 遅延初期化（テスト時にモックが間に合うように）
-let store: Store<ApiKeyStoreSchema> | null = null;
-
-function getStore(): Store<ApiKeyStoreSchema> {
-  if (!store) {
-    store = new Store<ApiKeyStoreSchema>({
-      name: "llm-api-keys",
-      encryptionKey: "knowledge-studio-llm-keys",
-      defaults: {
-        apiKeys: {},
-      },
-    });
-  }
-  return store;
-}
-
-/**
- * 暗号化してストレージキーを生成
- */
-function getStorageKey(providerId: LLMProviderId): string {
-  return `llm.${providerId}.apiKey`;
+function toAIProvider(providerId: LLMProviderId): AIProvider {
+  return providerId;
 }
 
 /**
  * SecureStorage - LLM API キー管理
+ *
+ * Note:
+ * - `api-keys` ストアを単一正本として利用する。
+ * - 既存の LLM 呼び出し側 API を保つため、Facade として公開する。
  */
 export const SecureStorage = {
-  /**
-   * APIキーを安全に保存
-   */
   async setApiKey(providerId: LLMProviderId, apiKey: string): Promise<void> {
-    try {
-      const key = getStorageKey(providerId);
-      const apiKeys = getStore().get("apiKeys") || {};
-
-      if (safeStorage.isEncryptionAvailable()) {
-        const encrypted = safeStorage.encryptString(apiKey);
-        apiKeys[key] = encrypted.toString("base64");
-      } else {
-        // 暗号化が利用できない場合は警告を出して平文で保存（開発環境向け）
-        console.warn(
-          "[SecureStorage] Encryption not available, storing API key in plain text",
-        );
-        apiKeys[key] = apiKey;
-      }
-
-      getStore().set("apiKeys", apiKeys);
-    } catch (error) {
-      console.error("[SecureStorage] Failed to store API key:", error);
-      throw error;
+    const result = await apiKeyStorage.saveApiKey(
+      toAIProvider(providerId),
+      apiKey,
+    );
+    if (!result.success) {
+      throw new Error(result.errorMessage ?? "Failed to save API key");
     }
   },
 
-  /**
-   * APIキーを取得
-   */
   async getApiKey(providerId: LLMProviderId): Promise<string | null> {
-    try {
-      const key = getStorageKey(providerId);
-      const apiKeys = getStore().get("apiKeys") || {};
-      const stored = apiKeys[key];
-
-      if (!stored) {
-        return null;
-      }
-
-      if (safeStorage.isEncryptionAvailable()) {
-        try {
-          const encrypted = Buffer.from(stored, "base64");
-          return safeStorage.decryptString(encrypted);
-        } catch {
-          // 復号化に失敗した場合は平文として返す（フォールバック）
-          return stored;
-        }
-      } else {
-        return stored;
-      }
-    } catch (error) {
-      console.error("[SecureStorage] Failed to retrieve API key:", error);
-      return null;
-    }
+    return apiKeyStorage.getApiKey(toAIProvider(providerId));
   },
 
-  /**
-   * APIキーを削除
-   */
   async deleteApiKey(providerId: LLMProviderId): Promise<void> {
-    try {
-      const key = getStorageKey(providerId);
-      const apiKeys = getStore().get("apiKeys") || {};
-      delete apiKeys[key];
-      getStore().set("apiKeys", apiKeys);
-    } catch (error) {
-      console.error("[SecureStorage] Failed to delete API key:", error);
-      throw error;
+    const result = await apiKeyStorage.deleteApiKey(toAIProvider(providerId));
+    if (!result.success) {
+      throw new Error(result.errorMessage ?? "Failed to delete API key");
     }
   },
 
-  /**
-   * 全APIキーをクリア
-   */
   async clearAllApiKeys(): Promise<void> {
-    try {
-      getStore().set("apiKeys", {});
-    } catch (error) {
-      console.error("[SecureStorage] Failed to clear API keys:", error);
-      throw error;
-    }
+    await Promise.all(
+      ALL_PROVIDERS.map((providerId) =>
+        apiKeyStorage.deleteApiKey(toAIProvider(providerId)),
+      ),
+    );
   },
 
-  /**
-   * APIキーが設定されているか確認
-   */
   async hasApiKey(providerId: LLMProviderId): Promise<boolean> {
-    const apiKey = await SecureStorage.getApiKey(providerId);
-    return apiKey !== null && apiKey.length > 0;
+    return apiKeyStorage.hasApiKey(toAIProvider(providerId));
   },
 };
 
@@ -135,12 +65,12 @@ export const SecureStorage = {
  * テスト用: ストアをクリア
  */
 export function clearSecureStore(): void {
-  getStore().clear();
+  clearApiKeyStore();
 }
 
 /**
  * テスト用: ストアインスタンスをリセット
  */
 export function resetSecureStore(): void {
-  store = null;
+  resetApiKeyStore();
 }

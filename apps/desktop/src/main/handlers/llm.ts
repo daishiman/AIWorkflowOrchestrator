@@ -9,6 +9,7 @@ import { ipcMain, IpcMainInvokeEvent } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import { SecureStorage } from "../services/secureStorage";
+import { setSelectedLLMConfig } from "../ipc/llmConfigProvider";
 import type {
   LLMProvider,
   LLMProviderId,
@@ -119,6 +120,13 @@ const PROVIDER_CONFIGS: Array<{
 export function registerLLMHandlers(): void {
   ipcMain.handle(IPC_CHANNELS.LLM_GET_PROVIDERS, handleGetProviders);
   ipcMain.handle(
+    IPC_CHANNELS.LLM_SET_SELECTED_CONFIG,
+    (
+      _event: IpcMainInvokeEvent,
+      params: { providerId: LLMProviderId; modelId: string },
+    ) => handleSetSelectedConfig(params),
+  );
+  ipcMain.handle(
     IPC_CHANNELS.LLM_CHECK_HEALTH,
     (_event: IpcMainInvokeEvent, params: { providerId: LLMProviderId }) =>
       handleCheckHealth(params),
@@ -134,6 +142,31 @@ export function registerLLMHandlers(): void {
     (_event: IpcMainInvokeEvent, params: { requestId: string }) =>
       handleStreamCancel(params),
   );
+}
+
+export function handleSetSelectedConfig(params: {
+  providerId: LLMProviderId;
+  modelId: string;
+}): { success: boolean; error?: string } {
+  const { providerId, modelId } = params;
+
+  if (!isValidProviderId(providerId)) {
+    return {
+      success: false,
+      error: `Invalid provider ID: ${String(providerId)}`,
+    };
+  }
+
+  if (typeof modelId !== "string" || modelId.trim().length === 0) {
+    return { success: false, error: "Model ID is required" };
+  }
+
+  setSelectedLLMConfig({
+    providerId,
+    modelId: modelId.trim(),
+  });
+
+  return { success: true };
 }
 
 /**

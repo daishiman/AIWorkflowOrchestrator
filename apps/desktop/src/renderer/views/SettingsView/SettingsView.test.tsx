@@ -54,6 +54,12 @@ vi.mock("../../components/settings/AuthModeSelector", () => ({
   ),
 }));
 
+vi.mock("../../components/settings/AuthKeySection", () => ({
+  AuthKeySection: () => (
+    <div data-testid="auth-key-section">AuthKeySection Mock</div>
+  ),
+}));
+
 // Mock store state - flat structure matching actual store
 const createMockState = (overrides = {}) => ({
   // SettingsSlice
@@ -321,6 +327,18 @@ describe("SettingsView", () => {
       expect(screen.getByTestId("auth-mode-status-guidance")).toHaveTextContent(
         "設定画面でAPIキーを入力してください",
       );
+    });
+
+    it("auth-mode=api-key で AuthKeySection を表示する", () => {
+      mockAuthModeValues.mode = "api-key";
+      render(<SettingsView />);
+      expect(screen.getByTestId("auth-key-section")).toBeInTheDocument();
+    });
+
+    it("auth-mode=subscription では AuthKeySection を表示しない", () => {
+      mockAuthModeValues.mode = "subscription";
+      render(<SettingsView />);
+      expect(screen.queryByTestId("auth-key-section")).not.toBeInTheDocument();
     });
   });
 

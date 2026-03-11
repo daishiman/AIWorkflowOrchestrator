@@ -56,6 +56,28 @@ function getDefaultModel(provider: LLMProvider): LLMModel | undefined {
 }
 
 /**
+ * Renderer の選択状態を Main Process の ai.chat 実行設定へ同期する。
+ * API が未提供でも UI 操作をブロックしない。
+ */
+async function syncSelectedConfigToMain(
+  providerId: LLMProviderId,
+  modelId: string,
+): Promise<void> {
+  if (
+    typeof window === "undefined" ||
+    !window.electronAPI?.llm?.setSelectedConfig
+  ) {
+    return;
+  }
+
+  try {
+    await window.electronAPI.llm.setSelectedConfig({ providerId, modelId });
+  } catch (error) {
+    console.warn("[LLMSlice] Failed to sync selected config to main:", error);
+  }
+}
+
+/**
  * プロバイダー一覧を取得（IPC経由）
  */
 async function fetchProvidersFromIPC(): Promise<LLMProvider[]> {
@@ -110,6 +132,10 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
         selectedModelId: defaultModel?.id || null,
         llmIsLoading: false,
       });
+
+      if (firstProvider?.id && defaultModel?.id) {
+        void syncSelectedConfigToMain(firstProvider.id, defaultModel.id);
+      }
     } catch (error) {
       set({
         llmIsLoading: false,
@@ -135,11 +161,20 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
         selectedProviderId: providerId,
         selectedModelId: defaultModel?.id || null,
       });
+
+      if (defaultModel?.id) {
+        void syncSelectedConfigToMain(providerId, defaultModel.id);
+      }
     }
   },
 
   selectModel: (modelId) => {
     set({ selectedModelId: modelId });
+
+    const { selectedProviderId } = get();
+    if (selectedProviderId) {
+      void syncSelectedConfigToMain(selectedProviderId, modelId);
+    }
   },
 
   checkHealth: async (providerId) => {
@@ -177,6 +212,10 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
         selectedProviderId: firstProvider.id,
         selectedModelId: defaultModel?.id || null,
       });
+
+      if (defaultModel?.id) {
+        void syncSelectedConfigToMain(firstProvider.id, defaultModel.id);
+      }
     } else {
       set({
         selectedProviderId: null,

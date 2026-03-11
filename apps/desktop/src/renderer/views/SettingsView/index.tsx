@@ -8,6 +8,7 @@ import { Checkbox } from "../../components/atoms/Checkbox";
 import { Button } from "../../components/atoms/Button";
 import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
+import { AuthKeySection } from "../../components/settings/AuthKeySection";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
 import {
   useAppStore,
@@ -148,6 +149,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
             </div>
           </SettingsCard>
         </section>
+
+        {/* Auth Key Settings - auth-mode=api-key のときのみ表示 */}
+        {authMode === "api-key" && (
+          <section role="region" aria-labelledby="auth-key-settings-heading">
+            <SettingsCard
+              title="Claude Agent SDK APIキー"
+              description="Anthropic APIキーを設定してスキル実行に利用します"
+              id="auth-key-settings-heading"
+            >
+              <AuthKeySection />
+            </SettingsCard>
+          </section>
+        )}
 
         {/* API Keys Settings - 全4プロバイダー対応 */}
         <section role="region" aria-labelledby="api-keys-settings-heading">

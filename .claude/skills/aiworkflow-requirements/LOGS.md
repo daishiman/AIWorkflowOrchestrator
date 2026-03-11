@@ -4,6 +4,88 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001`
+- 目的: Phase 12 完了済み workflow と関連改善タスクを `completed-tasks/` へ移し、system spec の参照先と状態表記を同期する
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/api-key-chat-tool-integration-alignment/` を正本 workflow 配置へ移管
+- `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ未タスク仕様書を移動し、ステータスを完了へ更新
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/api-ipc-system.md` / `references/workflow-apikey-chat-tool-integration-alignment.md` の参照パスと完了状態を同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001`
+- 目的: 実装時に苦戦した 3 契約（cache clear / Main 同期 / `source` 表示）を、次回の短手順へ変換する改善未タスクを正本へ登録する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を正式な未タスク仕様書として作成
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/api-ipc-system.md` / `references/workflow-apikey-chat-tool-integration-alignment.md` に関連未タスク導線を追加
+- 親 workflow の `outputs/phase-12/unassigned-task-detection.md` を更新し、blocking 0件を維持したまま改善未タスク 1件を formalize した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 12再確認（ユーザー再依頼）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001`
+- 目的: Phase 12 タスク仕様準拠、画面証跡鮮度、未タスク配置判定を branch 最新状態で再確認する
+
+### 実施内容
+- `task-workflow.md` に Phase 12再確認追補（4検証 + screenshot再取得 + current/baseline分離）を追加
+- `lessons-learned.md` に再確認時の苦戦箇所（baseline誤読、証跡鮮度、スキル同期漏れ）を追記
+- `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行し PASS を確認
+- `audit-unassigned-tasks --json --diff-from HEAD` の `current=0 / baseline=133` を再確認して未タスク判定軸を固定
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 仕様書集約（再利用導線最適化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001`
+- 目的: 実装内容と苦戦箇所を「同種課題の短時間解決」に使える単一正本へ集約する
+
+### 実施内容
+- `references/workflow-apikey-chat-tool-integration-alignment.md` を新規作成し、実装内容・苦戦箇所・5分解決カード・仕様書別責務分離を統合
+- `indexes/resource-map.md` に bugfix 逆引き導線と workflow 一覧導線を追加
+- APIKEY 系の change history を `SKILL.md` へ追記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 12 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001`
+- 目的: APIキー保存連動 / LLM選択同期 / AuthKey表示契約の実装結果を system spec 正本へ再同期し、Phase 12 漏れを解消する
+
+### 実施内容
+- `references/api-ipc-system.md` / `llm-ipc-types.md` / `interfaces-auth.md` / `ui-ux-settings.md` / `security-electron-ipc.md` / `api-endpoints.md` を現行コードへ同期
+- `references/task-workflow.md` / `lessons-learned.md` に完了台帳、検証コマンド、苦戦箇所、再利用手順を追記
+- `scripts/generate-index.js` を実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- workflow `outputs/phase-12` の必須5成果物と `artifacts.json` / `outputs/artifacts.json` の整合を確認
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-UI-07 由来の dual skill-root follow-up を system spec へ登録
 
 ### コンテキスト
