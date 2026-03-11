@@ -2,7 +2,7 @@
   "feature": "task-058d-ui-07-dashboard-enhancement",
   "taskId": "TASK-UI-07-DASHBOARD-ENHANCEMENT",
   "created": "2026-03-11T00:00:00.000+09:00",
-  "lastUpdated": "2026-03-11T10:35:00.000+09:00",
+  "lastUpdated": "2026-03-11T15:27:05.000+09:00",
   "status": "completed",
   "phases": {
     "1": {
@@ -251,15 +251,15 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "skipped",
+      "status": "completed",
       "artifacts": [
         {
           "name": "PR 情報",
           "path": "outputs/phase-13/pr-info.md",
-          "status": "skipped"
+          "status": "created"
         }
       ],
-      "completedAt": null
+      "completedAt": "2026-03-11T15:27:05.000+09:00"
     }
   },
   "dependencies": {
