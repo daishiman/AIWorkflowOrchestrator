@@ -8,7 +8,7 @@
 | 元タスク   | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-058e-ui-08-notification-center.md` |
 | 機能名     | task-058e-ui-08-notification-center                                                                       |
 | 作成日     | 2026-03-11                                                                                                |
-| ステータス | in_progress（Phase 1-12 完了、Phase 13 未実施）                                                           |
+| ステータス | completed（Phase 1-13 完了、PR #1152 作成済み）                                                           |
 | 総Phase数  | 13                                                                                                        |
 | 実行方針   | P50 実装・検証完了                                                                                        |
 | 依存タスク | TASK-UI-00, TASK-UI-01, TASK-UI-02, TASK-UI-01-C                                                          |
@@ -63,7 +63,7 @@
 | 10    | 最終レビューゲート   | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
 | 11    | 手動テスト検証       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
 | 12    | ドキュメント更新     | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
-| 13    | PR作成               | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | planned    |
+| 13    | PR作成               | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | completed  |
 
 ## 主要成果物
 
