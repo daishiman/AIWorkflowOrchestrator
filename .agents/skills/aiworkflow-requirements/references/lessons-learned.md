@@ -20,7 +20,48 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-10 | 1.29.49 | TASK-UI-06-HISTORY-SEARCH-VIEW の教訓を追加。worktree の rollup native module 欠落、Playwright screenshot の strict locator 停止、正本タスク参照パス drift を整理し、4ステップ再利用手順を追記 |
 | 2026-03-09 | 1.29.48 | TASK-10A-F Phase 12 再同期の教訓を追補。Phase 11 placeholder 除去、implementation-guide validator literal 見出し、未タスク current/baseline と directory legacy の二軸報告を同時に固定し、同種課題の再利用手順を更新 |
+
+---
+
+## TASK-UI-06-HISTORY-SEARCH-VIEW: あなたの記録タイムライン再設計（2026-03-10）
+
+### 苦戦箇所と解決策
+
+#### 苦戦箇所1: worktree 環境で rollup native module が欠け、最初の test run が落ちる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `pnpm --filter @repo/desktop exec vitest run ...` 実行時に `@rollup/rollup-darwin-x64` が見つからず Startup Error になった |
+| 原因 | worktree 側の optional dependency 展開が不完全で、`rollup` native package が欠けていた |
+| 解決策 | `pnpm install --frozen-lockfile` を先に実行して optional dependency を補完した |
+| 教訓 | worktree で `vitest` が起動前に落ちる場合は、まず package 不整合を疑って `pnpm install --frozen-lockfile` を試す |
+
+#### 苦戦箇所2: screenshot capture の locator が広すぎて strict mode violation になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `slides.html` が summary と accordion detail の両方に出て、Playwright の `getByText()` が strict mode violation を起こした |
+| 原因 | Phase 11 script の待機条件が「一意でない文字列」に依存していた |
+| 解決策 | 待機対象を `12340ms` のような detail 固有テキストへ絞った |
+| 教訓 | Phase 11 screenshot script では、summary/detail の重複テキストを待機条件に使わない |
+
+#### 苦戦箇所3: 正本タスク参照パスが drift していた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 本文は削除済みパス `task-00-unified-implementation-sequence/.../task-058c...md` を参照していた |
+| 原因 | 正本タスクが `completed-task/` 側へ移動した後、workflow 側の参照が更新されていなかった |
+| 解決策 | Phase 3 で drift として登録し、Phase 12 で `completed-task/task-058c-ui-06-history-search-view.md` を実体として同期対象に固定した |
+| 教訓 | 参照仕様が開けない場合は、その場で「仕様がない」と判断せず、まず repo 内の移動先を探索する |
+
+### 同種課題の5分解決カード
+
+1. `vitest` が起動前に落ちたら、スタックトレースの先頭が native optional dependency か確認する。
+2. worktree では `pnpm install --frozen-lockfile` を先に実行し、optional dependency を補完する。
+3. Phase 11 screenshot script の待機条件は、必ず一意なテキストか `data-testid` に絞る。
+4. 仕様書の参照パスが開けないときは `rg --files docs | rg 'task-058c'` のように repo 内探索を先に行う。
 | 2026-03-08 | 1.29.47 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の教訓を追加。fallback handler 追加漏れ、transport message と UI localized message の責務混同、App shell 起点 screenshot の不安定さを整理し、4ステップ解決手順と 5分解決カードを追記 |
 | 2026-03-08 | 1.29.46 | 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 の教訓を追加。SettingsView 統合回帰での screenshot 検証失敗（ポート競合）、`act()` warning 残存、Phase 12 の計画記述残置を整理し、4ステップ再利用手順を追記 |
 | 2026-03-07 | 1.29.45 | TASK-10A-F 再確認の教訓を追加。Phase 11 文書名ドリフト（`manual-testing` vs `manual-test`）、TC証跡の未参照化、Phase 12 changelog の「対象/予定」残置を苦戦箇所として整理し、4ステップの再発防止手順を追記 |

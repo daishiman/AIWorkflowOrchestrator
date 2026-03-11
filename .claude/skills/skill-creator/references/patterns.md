@@ -2758,6 +2758,22 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001
 
+### [Phase12] UI domain spec は「主目的 + 状態契約 + 画面証跡」を先に固定する（TASK-UI-06-HISTORY-SEARCH-VIEW）
+
+- **状況**: UI task の system spec を作るとき、コンポーネント一覧と screenshot 一覧だけでは「何のための画面か」「どの state/IPC が正本か」が後から読み取りにくい
+- **成功パターン**:
+  - 専用 domain spec に `### 実装内容（要点）` を置き、`画面の主目的` / `変更範囲` / `契約上の要点` / `視覚検証` / `完了根拠` を最初に固定する
+  - `ui-ux-feature-components.md` 側は圧縮サマリーと 5分解決カードだけを保持し、詳細は専用 spec へリンクする
+  - `task-workflow.md` / `lessons-learned.md` / UI domain spec の 3 点で 5 ステップ順序を揃える
+- **失敗パターン**:
+  - UI spec が責務表と screenshot 一覧だけで終わり、変更範囲や state 契約の要点が本文から見えない
+  - 専用 spec と feature summary spec で見出し名や 5分カードの粒度がずれる
+- **標準ルール**:
+  - UI domain spec の `実装内容（要点）` には少なくとも `画面の主目的` / `契約上の要点` / `視覚検証` の 3 行を入れる
+  - `ui-ux-feature-components.md` の対応節にも `同種課題の5分解決カード` を置き、専用 spec と task-workflow の橋渡しに使う
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-06-HISTORY-SEARCH-VIEW
+
 ### [Phase12] 「更新予定のみ」残置を排除し、実更新ログへ昇格する（TASK-10A-E-C）
 
 - **状況**: Phase 12 で `spec-update-summary.md` は更新されているが、`documentation-changelog.md` や `phase-12-documentation.md` が「仕様策定のみ」「実行中」のまま残る

@@ -339,6 +339,12 @@ function App(): JSX.Element {
           }
         />
         <Route
+          path="/advanced/history-search"
+          element={
+            <AuthGuard>{renderStandaloneView(<HistorySearchView />)}</AuthGuard>
+          }
+        />
+        <Route
           path="/advanced/concurrency-guard-review"
           element={
             <AuthGuard>

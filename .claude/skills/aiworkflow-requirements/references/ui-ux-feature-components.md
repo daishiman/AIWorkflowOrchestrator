@@ -31,6 +31,7 @@
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
+| History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | [ui-history-search-view.md](./ui-history-search-view.md) |
 | AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 
 ### 共通仕様
@@ -1303,7 +1304,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 `TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN` では、通知履歴ポップオーバーと履歴検索ビューを実装し、Store + IPC + UI を同時接続した。
 
-### 実装サマリー
+### 実装内容（要点）
 
 | 観点 | 実装内容 | 主なファイル |
 | --- | --- | --- |
@@ -1334,6 +1335,54 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-TASK-UI-01C-NOTIFICATION-HISTORY-BOUNDARY-GUARD-001 | Notification/History ドメイン境界の回帰ガード強化（push正規化/dedupe/filter継承） | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/unassigned-task/task-imp-task-ui-01c-notification-history-boundary-guard-001.md` |
+
+---
+
+## History Timeline Refresh（TASK-UI-06-HISTORY-SEARCH-VIEW / completed）
+
+`TASK-UI-06-HISTORY-SEARCH-VIEW` では、既存 `HistorySearchView` を「query/filter/stats の検索画面」から「最近の流れを自然に読める timeline」へ再設計した。
+
+### 実装内容（要点）
+
+| 観点 | 実装内容 | 主なファイル |
+| --- | --- | --- |
+| Timeline UI | `きょう` / `きのう` / `今週` / `先週` / `{n}月` の日付グループと sticky header を追加 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/hooks/useTimelineGroups.ts`, `apps/desktop/src/renderer/views/HistorySearchView/components/TimelineGroupHeader.tsx` |
+| 検索体験 | 300ms debounce、検索空/初期空/error state、結果総数補助表示へ整理 | `apps/desktop/src/renderer/views/HistorySearchView/components/HistorySearchBar.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/components/HistoryEmptyState.tsx` |
+| 追加読込 | observer sentinel による自動追補と loadingMore 分離 | `apps/desktop/src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.ts`, `apps/desktop/src/renderer/views/HistorySearchView/components/InfiniteScrollSentinel.tsx` |
+| 状態管理 | `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts` |
+| 導線統合 | file card から editor へ deep-open する `pendingOpenFilePath` を追加 | `apps/desktop/src/renderer/store/slices/editorSlice.ts`, `apps/desktop/src/renderer/views/EditorView/index.tsx` |
+| IPC | `history:search` の trim / filter / pagination guard を整理 | `apps/desktop/src/main/ipc/historySearchHandlers.ts`, `apps/desktop/src/preload/types.ts` |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（5 files / 26 tests） | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| task-scope coverage | Lines 88.42 / Branches 80.00 / Functions 90.00 |
+| Phase 11 screenshot | 6件取得、`validate-phase11-screenshot-coverage` PASS |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| worktree の rollup native optional module 欠落 | UI検証前に依存整合を確認しない | `pnpm install --frozen-lockfile` を preflight に追加 | worktree の screenshot / vitest 前に optional dependency を補完する |
+| screenshot script の locator が broad で strict mode violation になる | summary/detail が同一文字列を共有する | 一意な detail 側 text へ待機条件を変更 | capture script は一意 text または `data-testid` を正本にする |
+| `.claude` と `.agents` の skill root drift | workflow / outputs が mirror 側を参照する | `.claude` 正本へ再同期し、systemic 課題は未タスクへ分離 | system spec 更新先は `.claude/skills/...` を canonical として扱う |
+
+### 同種課題の5分解決カード
+
+1. 画面の主目的を「検索画面」ではなく「読む timeline」として先に固定する。  
+2. `hasFetchedHistory` と `isHistoryLoadingMore` を分け、初回/追補/空状態を混同しない。  
+3. cross-view 導線は `pending payload + view 遷移` の二段構成にする。  
+4. screenshot script は一意 selector または `data-testid` を ready condition にする。  
+5. `.claude` 正本、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 で canonical root を固定する | 中 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
 
 ---
 
@@ -1629,6 +1678,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-10 | v1.14.29   | TASK-UI-06-HISTORY-SEARCH-VIEW 節をテンプレート準拠へ最適化。見出しを `実装内容（要点）` に統一し、5分解決カードを追加して専用仕様 `ui-history-search-view.md` と粒度を揃えた |
+| 2026-03-10 | v1.14.28   | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`HistorySearchView` の timeline 再設計、`historySearchSlice` / `editorSlice` 契約、Phase 11 screenshot 6件、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を追加し、専用仕様 `ui-history-search-view.md` への入口を作成 |
 | 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |
 | 2026-03-10 | v1.14.26   | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に「実装内容と苦戦箇所サマリー」と「同種課題の5分解決カード」を追加し、adapter helper・dedicated harness・token scope 分離を feature 正本から直接参照できるよう再編 |
 | 2026-03-10 | v1.14.25   | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。Workspace Layout Foundation 節へ current build source pinning と visual checklist 共通化の未タスク導線を登録し、04A の苦戦箇所から active backlog へ直接たどれるようにした |

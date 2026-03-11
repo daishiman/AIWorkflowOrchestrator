@@ -73,7 +73,9 @@ describe("historySearchSlice", () => {
     expect(store.historySearchResults).toEqual([]);
     expect(store.historySearchTotalCount).toBe(0);
     expect(store.historySearchHasMore).toBe(false);
+    expect(store.hasFetchedHistory).toBe(false);
     expect(store.isHistorySearching).toBe(false);
+    expect(store.isHistoryLoadingMore).toBe(false);
     expect(store.historySearchError).toBeNull();
     expect(store.historySearchStats).toEqual({
       chat: 0,
@@ -95,9 +97,9 @@ describe("historySearchSlice", () => {
     expect(store.historySearchFilter).toBe("chat");
   });
 
-  it("searchHistoryで結果を取得する", async () => {
+  it("searchHistoryでtrimした結果を取得する", async () => {
     store.setHistorySearchFilter("chat");
-    await store.searchHistory("react", 0);
+    await store.searchHistory("  react  ", 0);
 
     expect(mockSearch).toHaveBeenCalledWith({
       query: "react",
@@ -108,9 +110,10 @@ describe("historySearchSlice", () => {
     expect(store.historySearchResults).toHaveLength(1);
     expect(store.historySearchTotalCount).toBe(1);
     expect(store.historySearchHasMore).toBe(false);
+    expect(store.hasFetchedHistory).toBe(true);
   });
 
-  it("loadMoreHistoryで追補検索する", async () => {
+  it("loadMoreHistoryで重複を除いて追補検索する", async () => {
     store.setHistorySearchFilter("file");
     await store.searchHistory("react", 0);
     store.historySearchHasMore = true;
@@ -119,6 +122,18 @@ describe("historySearchSlice", () => {
       success: true,
       data: {
         items: [
+          {
+            id: "h-1",
+            type: "chat",
+            title: "Chat history",
+            preview: "preview",
+            timestamp: new Date().toISOString(),
+            metadata: {
+              type: "chat",
+              sessionId: "s-1",
+              messageCount: 3,
+            },
+          },
           {
             id: "h-2",
             type: "file",
@@ -160,6 +175,8 @@ describe("historySearchSlice", () => {
 
     expect(store.historySearchError).toBe("search failed");
     expect(store.isHistorySearching).toBe(false);
+    expect(store.isHistoryLoadingMore).toBe(false);
+    expect(store.hasFetchedHistory).toBe(true);
   });
 
   it("toggleItemExpandedで同一IDは折りたたむ", () => {
@@ -182,7 +199,9 @@ describe("historySearchSlice", () => {
     expect(store.historySearchResults).toEqual([]);
     expect(store.historySearchTotalCount).toBe(0);
     expect(store.historySearchHasMore).toBe(false);
+    expect(store.hasFetchedHistory).toBe(false);
     expect(store.historySearchError).toBeNull();
+    expect(store.isHistoryLoadingMore).toBe(false);
     expect(store.historySearchStats).toEqual({
       chat: 0,
       file: 0,

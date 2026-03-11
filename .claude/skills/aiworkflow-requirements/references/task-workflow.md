@@ -132,6 +132,60 @@
 
 ## 完了タスク
 
+### タスク: TASK-UI-06-HISTORY-SEARCH-VIEW あなたの記録タイムライン再設計（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-06-HISTORY-SEARCH-VIEW |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
+| タイプ | ui |
+| 優先度 | 中 |
+| 完了日 | 2026-03-10 |
+| 対象 | `HistorySearchView` timeline 再設計、`historySearchSlice`、`historySearchHandlers`、`EditorView` deep-open |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/outputs/` |
+
+#### 実施内容
+
+- `HistorySearchView` を query/filter/stats 主導の検索画面から timeline 主導 UI へ再設計
+- `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe を追加
+- file card から editor を開くため `editorSlice.pendingOpenFilePath` を追加
+- `history:search` handler の trim / filter / pagination guard を明文化
+- Phase 11 screenshot 6件、targeted tests 26件、task-scope coverage 88.42 / 80.00 / 90.00 を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| worktree で Rollup native optional module が欠けて test 起動前に落ちる | UI検証前に dependency preflight を省略する | `pnpm install --frozen-lockfile` を preflight に含めた |
+| screenshot script の locator が broad で strict mode violation になる | summary/detail が同じ文字列を持つ | 一意な detail text へ待機条件を絞った |
+| `.claude` 正本と `.agents` mirror の参照が混線する | workflow / outputs が mirror 側を参照する | `.claude/skills/...` を正本に固定し、systemic gap は未タスクへ分離した |
+
+#### 同種課題の5分解決カード
+
+1. UIの主目的を「検索」ではなく「読む timeline」に置き直す。
+2. initial loading と load more を別 state に分ける。
+3. cross-view 導線は `pending payload + view 遷移` に分離する。
+4. screenshot script は一意 selector を待機条件にする。
+5. Phase 12 は `.claude` 正本・workflow outputs・skill docs を同ターンで同期する。
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 の canonical root を固定する | 中 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/HistorySearchView/HistorySearchView.test.tsx src/renderer/views/HistorySearchView/hooks/useTimelineGroups.test.tsx src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.test.tsx src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/__tests__/historySearchHandlers.test.ts` | PASS（26 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop run screenshot:task-058c` | PASS（6 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0 |
+
 ### タスク: TASK-UI-04A-WORKSPACE-LAYOUT Workspace レイアウト基盤（2026-03-10）
 
 | 項目 | 値 |
@@ -185,7 +239,6 @@
 | `cd apps/desktop && pnpm exec eslint src/renderer/views/WorkspaceView src/main/ipc/fileHandlers.ts src/main/ipc/fileHandlers.test.ts` | PASS |
 | `pnpm build` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
-
 ### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
 
 | 項目 | 値 |

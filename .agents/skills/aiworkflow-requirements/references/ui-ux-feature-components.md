@@ -30,6 +30,7 @@
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
+| History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/` |
 | AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/agent-view-enhancement/` |
 
 ### 共通仕様
@@ -1230,9 +1231,9 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | --- | --- | --- |
 | Notification UI | ヘッダー右上に `NotificationCenter` を追加。未読バッジ、既読化、全件既読、全件削除、詳細展開を実装 | `apps/desktop/src/renderer/components/organisms/NotificationCenter/index.tsx`, `apps/desktop/src/renderer/App.tsx` |
 | 履歴同期 | 初期 `notification:get-history` 同期 + `notification:new` push 購読を追加し、購読解除を実装 | `apps/desktop/src/preload/api/notification-api.ts`, `apps/desktop/src/main/ipc/notificationHandlers.ts` |
-| 履歴検索 UI | `HistorySearchView` を本実装。query/filter、統計カード、結果一覧、load more を実装 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx` |
-| 状態管理 | `historySearchFilter` / `historySearchStats` / `historySearchStatsError` を追加。`notificationSlice` に履歴同期/重複排除を追加 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`, `apps/desktop/src/renderer/store/slices/notificationSlice.ts` |
-| 回帰テスト | Notification handler / notificationSlice / historySearchSlice / HistorySearchView を拡張 | `apps/desktop/src/main/ipc/__tests__/notificationHandlers.test.ts`, `apps/desktop/src/renderer/store/slices/*.test.ts`, `apps/desktop/src/renderer/views/HistorySearchView/HistorySearchView.test.tsx` |
+| 履歴検索 UI | `HistorySearchView` をタイムライン主導へ再設計。検索バーの 300ms デバウンス、日付グループ、アコーディオン、observer 自動追補、zero/error state を実装 | `apps/desktop/src/renderer/views/HistorySearchView/index.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/components/*` |
+| 状態管理 | `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` を追加し、file deep-open 用に editor pending path を接続 | `apps/desktop/src/renderer/store/slices/historySearchSlice.ts`, `apps/desktop/src/renderer/store/slices/editorSlice.ts` |
+| 回帰テスト | HistorySearchView / hooks / slice / IPC handler を 058c 観点へ更新し、task-scope coverage 88.42 / 80.00 / 90.00 を取得 | `apps/desktop/src/renderer/views/HistorySearchView/*.test.tsx`, `apps/desktop/src/renderer/views/HistorySearchView/hooks/*.test.tsx`, `apps/desktop/src/main/ipc/__tests__/historySearchHandlers.test.ts` |
 
 ### 苦戦箇所（再利用形式）
 
