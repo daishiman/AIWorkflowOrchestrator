@@ -65,6 +65,10 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
   const hasUnsavedChanges = useAppStore((state) => state.hasUnsavedChanges);
   const setEditorContent = useAppStore((state) => state.setEditorContent);
   const markAsSaved = useAppStore((state) => state.markAsSaved);
+  const pendingOpenFilePath = useAppStore((state) => state.pendingOpenFilePath);
+  const clearPendingOpenFile = useAppStore(
+    (state) => state.clearPendingOpenFile,
+  );
 
   // Selected file state
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
@@ -230,6 +234,16 @@ export const EditorView: React.FC<EditorViewProps> = ({ className }) => {
     },
     [setEditorContent, markAsSaved],
   );
+
+  useEffect(() => {
+    if (!pendingOpenFilePath) {
+      return;
+    }
+
+    void handleFileSelect(pendingOpenFilePath).finally(() => {
+      clearPendingOpenFile();
+    });
+  }, [clearPendingOpenFile, handleFileSelect, pendingOpenFilePath]);
 
   // Handle workspace search result click
   const handleWorkspaceResultClick = useCallback(

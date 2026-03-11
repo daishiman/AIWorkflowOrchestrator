@@ -55,15 +55,15 @@ function validateQuery(
 
   // P42: 空文字チェック（空文字は全件検索として許容）
   if (query === "") {
-    return { valid: true, value: query };
+    return { valid: true, value: "" };
   }
 
   // P42: trim空文字チェック（空白のみは全件検索として許容）
   if (query.trim() === "") {
-    return { valid: true, value: query };
+    return { valid: true, value: "" };
   }
 
-  return { valid: true, value: query };
+  return { valid: true, value: query.trim() };
 }
 
 function validateFilter(

@@ -132,6 +132,43 @@
 
 ## 完了タスク
 
+### タスク: TASK-UI-06-HISTORY-SEARCH-VIEW あなたの記録タイムライン再設計（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-06-HISTORY-SEARCH-VIEW |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + 仕様同期）** |
+| 完了日 | 2026-03-10 |
+| 対象 | `HistorySearchView` / `historySearchSlice` / `historySearchHandlers` / `preload/types.ts` / `EditorView` file deep-open |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/outputs/` |
+
+#### 実施内容
+
+- `HistorySearchView` を query/filter/stats 主導から timeline 主導へ再設計
+- 300ms デバウンス検索、日付グループ、アコーディオン、observer 自動追補、初期空/検索空/error state を実装
+- `historySearchSlice` に `hasFetchedHistory` / `isHistoryLoadingMore` を追加し、append dedupe と trim 契約を固定
+- file card から `EditorView` を開くため `editorSlice.pendingOpenFilePath` を追加
+- Phase 11 screenshot 6件と task-scope coverage summary を取得
+
+#### 苦戦箇所（今回実装で詰まった点）
+
+- worktree 環境で `@rollup/rollup-darwin-x64` optional module が欠落し、最初の test run が失敗した
+- `phase-11` screenshot capture で accordion 待機条件が広すぎ、strict mode locator で停止した
+- 正本タスク参照パスが `task-00-unified-implementation-sequence` から `completed-task` へ移動しており、workflow 本文に drift が残っていた
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/HistorySearchView/HistorySearchView.test.tsx src/renderer/views/HistorySearchView/hooks/useTimelineGroups.test.tsx src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.test.tsx src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/__tests__/historySearchHandlers.test.ts` | PASS（26 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run --coverage --coverage.thresholds.lines=0 --coverage.thresholds.functions=0 --coverage.thresholds.statements=0 --coverage.thresholds.branches=0 --coverage.include='src/renderer/views/HistorySearchView/**' --coverage.include='src/renderer/store/slices/historySearchSlice.ts' --coverage.include='src/main/ipc/historySearchHandlers.ts' --coverage.reporter=json-summary ...` | PASS（Lines 88.42 / Branch 80.00 / Functions 90.00） |
+| `pnpm --filter @repo/desktop run screenshot:task-058c` | PASS（6 screenshots） |
+
+#### Phase 12で登録した関連未タスク
+
+- なし（今回差分から新規未タスクは未検出）
+
 ### タスク: 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001 SettingsView 統合回帰カバレッジ強化（2026-03-08）
 
 | 項目 | 値 |

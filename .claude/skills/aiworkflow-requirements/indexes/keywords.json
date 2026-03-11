@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-10T22:52:46.322Z",
-  "totalKeywords": 1556,
+  "generated": "2026-03-11T01:24:42.494Z",
+  "totalKeywords": 1567,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -51,6 +51,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "spec-splitting-guidelines.md",
+      "ui-history-search-view.md",
       "ui-ux-history-panel.md",
       "ui-ux-settings.md"
     ],
@@ -118,6 +119,7 @@
       "testing-dialog-patterns.md",
       "testing-fixtures.md",
       "testing-playwright-e2e.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
@@ -250,6 +252,7 @@
       "ui-history-components.md",
       "ui-history-data-types.md",
       "ui-history-design.md",
+      "ui-history-search-view.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
       "ui-ux-components.md",
@@ -372,6 +375,7 @@
       "ui-history-data-types.md",
       "ui-history-design.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-atoms-patterns.md",
@@ -501,6 +505,7 @@
       "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-history-panel.md",
       "ui-ux-settings.md"
@@ -751,7 +756,8 @@
     "契約": [
       "api-ipc-agent.md",
       "api-ipc-auth.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "ui-history-search-view.md"
     ],
     "TASK": [
       "api-ipc-agent.md",
@@ -852,6 +858,7 @@
       "ui-history-data-types.md",
       "ui-history-design.md",
       "ui-history-integration.md",
+      "ui-history-search-view.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution.md",
       "ui-ux-components.md",
@@ -1205,11 +1212,29 @@
     ],
     "HISTORY": [
       "arch-state-management.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
     ],
     "DOMAIN": [
       "arch-state-management.md",
       "lessons-learned.md"
+    ],
+    "timeline": [
+      "arch-state-management.md"
+    ],
+    "再設計": [
+      "arch-state-management.md"
+    ],
+    "SEARCH": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-search-panel.md"
+    ],
+    "VIEW": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "ViewType": [
       "arch-state-management.md"
@@ -2979,6 +3004,7 @@
     "コンポーネント構成": [
       "interfaces-chat-history.md",
       "ui-history-components.md",
+      "ui-history-search-view.md",
       "ui-ux-file-selector.md",
       "ui-ux-system-prompt.md"
     ],
@@ -3436,10 +3462,6 @@
     ],
     "移行": [
       "lessons-learned.md"
-    ],
-    "VIEW": [
-      "lessons-learned.md",
-      "task-workflow.md"
     ],
     "ENHANCEMENT": [
       "lessons-learned.md",
@@ -4889,7 +4911,8 @@
       "skill-executor-type-migration.md"
     ],
     "実装内容": [
-      "skill-executor-type-migration.md"
+      "skill-executor-type-migration.md",
+      "ui-history-search-view.md"
     ],
     "苦戦した箇所と解決策": [
       "skill-executor-type-migration.md"
@@ -5414,6 +5437,27 @@
     "testing": [
       "ui-history-integration.md"
     ],
+    "HistorySearchView": [
+      "ui-history-search-view.md"
+    ],
+    "要点": [
+      "ui-history-search-view.md"
+    ],
+    "責務": [
+      "ui-history-search-view.md"
+    ],
+    "状態・導線契約": [
+      "ui-history-search-view.md"
+    ],
+    "テスト・画面検証": [
+      "ui-history-search-view.md"
+    ],
+    "苦戦箇所": [
+      "ui-history-search-view.md"
+    ],
+    "再利用形式": [
+      "ui-history-search-view.md"
+    ],
     "高度な": [
       "ui-ux-advanced.md"
     ],
@@ -5605,6 +5649,12 @@
       "ui-ux-feature-components.md",
       "ui-ux-settings.md"
     ],
+    "Timeline": [
+      "ui-ux-feature-components.md"
+    ],
+    "Refresh": [
+      "ui-ux-feature-components.md"
+    ],
     "useSkillExecution": [
       "ui-ux-feature-skill-stream.md"
     ],
@@ -5784,9 +5834,6 @@
       "ui-ux-search-panel.md"
     ],
     "実装詳細": [
-      "ui-ux-search-panel.md"
-    ],
-    "SEARCH": [
       "ui-ux-search-panel.md"
     ],
     "INTEGRATE": [

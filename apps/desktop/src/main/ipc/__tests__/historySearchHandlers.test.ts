@@ -118,6 +118,27 @@ describe("historySearchHandlers", () => {
     expect(result3.success).toBe(true);
   });
 
+  it("history:searchでtrim後のqueryをサービスへ渡す", async () => {
+    const handler = handlers.get(IPC_CHANNELS.HISTORY_SEARCH)!;
+
+    await handler(
+      {},
+      {
+        query: "  react hooks  ",
+        filter: "all",
+        limit: 30,
+        offset: 0,
+      },
+    );
+
+    expect(mockService.search).toHaveBeenCalledWith({
+      query: "react hooks",
+      filter: "all",
+      limit: 30,
+      offset: 0,
+    });
+  });
+
   it("history:get-statsを返す", async () => {
     const handler = handlers.get(IPC_CHANNELS.HISTORY_GET_STATS)!;
 

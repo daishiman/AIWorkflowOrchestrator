@@ -8,6 +8,7 @@ export interface EditorSlice {
   expandedFolders: Set<string>;
   editorContent: string;
   hasUnsavedChanges: boolean;
+  pendingOpenFilePath: string | null;
 
   // Actions
   setSelectedFile: (file: FileNode | null) => void;
@@ -17,6 +18,8 @@ export interface EditorSlice {
   setEditorContent: (content: string) => void;
   setHasUnsavedChanges: (hasChanges: boolean) => void;
   markAsSaved: () => void;
+  requestOpenFile: (filePath: string) => void;
+  clearPendingOpenFile: () => void;
 }
 
 export const createEditorSlice: StateCreator<
@@ -31,6 +34,7 @@ export const createEditorSlice: StateCreator<
   expandedFolders: new Set<string>(),
   editorContent: "",
   hasUnsavedChanges: false,
+  pendingOpenFilePath: null,
 
   // Actions
   setSelectedFile: (file) => {
@@ -74,5 +78,13 @@ export const createEditorSlice: StateCreator<
 
   markAsSaved: () => {
     set({ hasUnsavedChanges: false });
+  },
+
+  requestOpenFile: (filePath) => {
+    set({ pendingOpenFilePath: filePath });
+  },
+
+  clearPendingOpenFile: () => {
+    set({ pendingOpenFilePath: null });
   },
 });
