@@ -6,39 +6,28 @@ import {
   getTimelineEntries,
 } from "./dashboardContent";
 
+function createLocalDate(hour: number): Date {
+  return new Date(2026, 2, 11, hour, 0, 0, 0);
+}
+
 describe("dashboardContent", () => {
   describe("getGreetingContent", () => {
     it("表示名がある場合は名前付きの挨拶を返す", () => {
-      const result = getGreetingContent(
-        "山田",
-        new Date("2026-03-11T08:00:00+09:00"),
-        0,
-        3,
-      );
+      const result = getGreetingContent("山田", createLocalDate(8), 0, 3);
 
       expect(result.title).toBe("おはようございます、山田さん");
       expect(result.eyebrow).toBe("今日のホーム");
     });
 
     it("表示名が汎用値の場合は自然な挨拶だけを返す", () => {
-      const result = getGreetingContent(
-        "User",
-        new Date("2026-03-11T19:00:00+09:00"),
-        0,
-        0,
-      );
+      const result = getGreetingContent("User", createLocalDate(19), 0, 0);
 
       expect(result.title).toBe("こんばんは");
       expect(result.description).toContain("最初の一歩");
     });
 
     it("pending がある場合は優先導線を説明する", () => {
-      const result = getGreetingContent(
-        "田中",
-        new Date("2026-03-11T13:00:00+09:00"),
-        4,
-        7,
-      );
+      const result = getGreetingContent("田中", createLocalDate(13), 4, 7);
 
       expect(result.description).toContain("4件の保留");
     });

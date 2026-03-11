@@ -4,7 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { DashboardView } from "./index";
 import { useAppStore } from "../../store";
 
-const fixedNow = new Date("2026-03-11T10:15:00+09:00");
+function createLocalDate(hour: number, minute = 0): Date {
+  return new Date(2026, 2, 11, hour, minute, 0, 0);
+}
+
+const fixedNow = createLocalDate(10, 15);
 const mockSetCurrentView = vi.fn();
 
 const baseState = {

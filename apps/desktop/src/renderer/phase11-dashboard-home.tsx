@@ -7,6 +7,10 @@ import { useAppStore } from "./store";
 type HarnessState = "normal" | "empty" | "loading";
 type HarnessTheme = "light" | "dark" | "kanagawa-dragon";
 
+function createLocalDate(hour: number, minute = 0): Date {
+  return new Date(2026, 2, 11, hour, minute, 0, 0);
+}
+
 function getSearchParam(
   name: string,
   allowed: readonly string[],
@@ -113,7 +117,7 @@ function Harness(): JSX.Element {
       data-testid="phase11-dashboard-home"
     >
       <main className="mx-auto min-h-screen max-w-[1440px] p-4 sm:p-6">
-        <DashboardView now={new Date("2026-03-11T10:15:00+09:00")} />
+        <DashboardView now={createLocalDate(10, 15)} />
       </main>
     </div>
   );
