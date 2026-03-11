@@ -3145,6 +3145,20 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001
 
+### [Phase 12] workspace UI 再監査では current build static serve と 4観点の目視/挙動検証をセットにする
+
+- **状況**: worktree 上の UI 再撮影で Vite preview が別 source を向いたり、右 preview panel の resize 方向逆転、watch hook の再登録、light theme 補助テキストの視認性不足が別々に混入しやすい
+- **アプローチ**:
+  1. worktree の preview source に揺れがある場合は、current worktree の `apps/desktop/out/renderer` を static server で配信し、その URL を screenshot capture の唯一の参照先にする
+  2. 右側 preview panel は `reverse` 方向 resize を前提に、drag 後の panel 幅が期待方向へ変化することを manual test と screenshot で確認する
+  3. file watch 系 hook は callback ref を分離し、callback identity が変わっても watch の再登録が起きない設計を優先する
+  4. light theme の screenshot は補助テキスト、status bar、chip などの低コントラスト要素を Apple UI/UX engineer 観点で目視確認し、沈んだ要素があれば再撮影前にクラス/色を是正する
+  5. `task-workflow.md` / `lessons-learned.md` / `documentation-changelog.md` に「static serve を使った理由」「4観点の確認結果」「再発条件」を同一ターンで記録する
+- **結果**: source drift、レイアウト逆転、watcher churn、見た目品質の取りこぼしを 1 回の UI 再監査でまとめて閉じられる
+- **適用条件**: workspace 系 UI、3-pane layout、file watcher を伴う preview、worktree での Phase 11 screenshot 再取得
+- **発見日**: 2026-03-10
+- **関連タスク**: TASK-UI-04A-WORKSPACE-LAYOUT
+
 ### [Testing] 3層テストハードニング戦略（TASK-10A-G）
 
 - **状況**: テスト専用タスクでも Phase 12 まで含めると、Layer 1/2/3 の責務が混線しやすい

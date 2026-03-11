@@ -42,6 +42,18 @@
   - Phase 12成果物のコマンド例も現行実行経路へ更新し、再監査時の false negative を防止
 
 ---
+## 2026-03-10 - TASK-UI-04A-WORKSPACE-LAYOUT Phase 11-12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-4`〜`phase-12` の不足成果物を current workflow 配下へ補完し、`artifacts.json` / `index.md` を Phase 1-12 completed ベースへ同期
+  - Phase 11 screenshot 8件を current worktree build の static server 配信で再取得し、light theme contrast 調整後の視覚レビュー結果を `manual-test-result.md` / `screenshot-matrix.md` / `issues-found.md` へ反映
+  - `references/phase-11-12-guide.md` に「複数 worktree 時は current build `out/renderer` を static 配信する」ルールを追加
+  - `validate-phase11-screenshot-coverage` / `validate-phase-output` / `verify-all-specs` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current=0 を確認
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期
 
 - **Agent**: task-specification-creator

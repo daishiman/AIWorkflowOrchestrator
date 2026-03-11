@@ -3,7 +3,16 @@
 ## メタ情報
 
 ```yaml
-issue_number: 904
+issue_number:
+1144
+task_name: task-specification-creator SKILL.md 行数上限制約の恒久是正
+category: 改善
+target_feature: `.claude/skills/task-specification-creator/SKILL.md`
+priority: 高
+scale: 中規模
+status: 未実施
+source_phase: TASK-013 再監査の追補実行（quick_validate 実行時）
+created_date: 2026-02-25
 ```
 
 ## メタ情報

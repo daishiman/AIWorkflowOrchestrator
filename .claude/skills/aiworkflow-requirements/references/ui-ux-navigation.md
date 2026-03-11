@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.2 | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `workspace` ViewType 内で `chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを持つこと、1024/1440 breakpoint、mobile overlay、preview dedicated harness による screenshot 検証を追記 |
 | v1.7.1 | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `settings` は AuthGuard bypass だけでなく未認証 reset 対象外であることを明文化し、Phase 11 screenshot 4件を証跡として同期 |
 | v1.7.0 | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: Settings 画面は AuthGuard 外からアクセス可能に変更。currentView === "settings" の場合、App.tsx で AuthGuard をバイパスして直接レンダリングする設計を追記 |
 | v1.6.4 | 2026-03-06 | TASK-UI-02 移管反映。Global Navigation Core の workflow 導線を `completed-tasks/task-057-ui-02-global-nav-core/` へ更新し、関連未タスクの配置先も completed workflow 配下へ統一 |
@@ -78,6 +79,16 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | `dashboard`  | ダッシュボード画面       |
 | `workspace`  | ワークスペース画面       |
 | `editor`     | エディター画面           |
+
+### `workspace` ViewType のレイアウト契約（TASK-UI-04A）
+
+| 項目 | 契約 |
+| --- | --- |
+| 初期表示 | `chat-only` |
+| file panel | top toggle で開閉し、1024px 未満では overlay |
+| preview panel | top toggle で開閉し、1024px 未満では overlay |
+| 3-pane | 両 panel open かつ 1440px 以上で有効 |
+| 後続依存 | chat 本体は 04B、preview 本体は 04C が担当 |
 | `chat`       | チャット画面             |
 | `graph`      | グラフ画面               |
 | `agent`      | エージェント画面         |

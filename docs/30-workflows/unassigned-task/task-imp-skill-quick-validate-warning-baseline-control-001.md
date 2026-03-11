@@ -3,7 +3,16 @@
 ## メタ情報
 
 ```yaml
-issue_number: 905
+issue_number:
+1145
+task_name: quick_validate 警告ベースライン管理の導入
+category: 改善
+target_feature: `quick_validate.js` 運用（aiworkflow-requirements / skill-creator）
+priority: 中
+scale: 中規模
+status: 未実施
+source_phase: TASK-013 再監査の最終検証（警告ノイズ調査）
+created_date: 2026-02-25
 ```
 
 ## メタ情報
