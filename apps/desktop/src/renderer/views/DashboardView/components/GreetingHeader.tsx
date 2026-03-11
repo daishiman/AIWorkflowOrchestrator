@@ -29,7 +29,7 @@ export const GreetingHeader: React.FC<GreetingHeaderProps> = ({
     <header
       className={clsx(
         "overflow-hidden rounded-[32px] border border-[var(--border-subtle)]",
-        "bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent)_18%,var(--bg-secondary))_0%,color-mix(in_srgb,var(--status-info)_10%,var(--bg-secondary))_100%)]",
+        "bg-[linear-gradient(135deg,color-mix(in_srgb,var(--accent-primary)_14%,var(--bg-secondary))_0%,color-mix(in_srgb,var(--status-info)_8%,var(--bg-secondary))_100%)]",
         "p-6 shadow-sm backdrop-blur sm:p-8",
         className,
       )}

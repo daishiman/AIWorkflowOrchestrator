@@ -52,13 +52,13 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           htmlFor={checkboxId}
           className={clsx(
             "w-5 h-5 rounded border flex items-center justify-center cursor-pointer transition-all",
-            "focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-gray-900",
+            "focus-within:ring-2 focus-within:ring-[var(--status-primary)] focus-within:ring-offset-2 focus-within:ring-offset-[var(--bg-primary)]",
             checked
-              ? "bg-blue-500 border-blue-500"
-              : "bg-transparent border-white/30",
+              ? "bg-[var(--status-primary)] border-[var(--status-primary)]"
+              : "bg-transparent border-[var(--border-primary)]",
             disabled
               ? "opacity-50 cursor-not-allowed"
-              : "hover:border-white/50",
+              : "hover:border-[var(--border-emphasis)]",
           )}
         >
           {checked && (
@@ -77,7 +77,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             <label
               htmlFor={checkboxId}
               className={clsx(
-                "text-sm text-white select-none",
+                "text-sm text-[var(--text-primary)] select-none",
                 disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
               )}
             >
@@ -88,7 +88,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
             <span
               id={descriptionId}
               className={clsx(
-                "text-xs text-white/60",
+                "text-xs text-[var(--text-muted)]",
                 disabled && "opacity-50",
               )}
             >

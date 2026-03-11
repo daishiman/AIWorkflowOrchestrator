@@ -34,32 +34,32 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = clsx(
       "inline-flex items-center justify-center gap-2",
       "rounded-lg font-medium transition-all duration-200",
-      "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900",
+      "focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-primary)]",
       "disabled:opacity-50 disabled:cursor-not-allowed",
       fullWidth && "w-full",
     );
 
     const variantStyles = {
       primary: clsx(
-        "bg-[var(--status-primary)] text-white",
+        "bg-[var(--status-primary)] text-[var(--text-inverse)]",
         "hover:opacity-90",
         "focus:ring-[var(--status-primary)]",
         "active:opacity-80",
       ),
       secondary: clsx(
-        "bg-white/10 text-white",
-        "hover:bg-white/15",
-        "focus:ring-white/20",
-        "active:bg-white/20",
+        "border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)]",
+        "hover:bg-[var(--bg-hover)]",
+        "focus:ring-[var(--status-primary)]",
+        "active:bg-[var(--bg-tertiary)]",
       ),
       ghost: clsx(
-        "bg-transparent text-white",
-        "hover:bg-white/5",
-        "focus:ring-white/10",
-        "active:bg-white/10",
+        "bg-transparent text-[var(--text-primary)]",
+        "hover:bg-[var(--bg-hover)]",
+        "focus:ring-[var(--status-primary)]",
+        "active:bg-[var(--bg-tertiary)]",
       ),
       danger: clsx(
-        "bg-red-500 text-white",
+        "bg-red-500 text-[var(--text-inverse)]",
         "hover:opacity-90",
         "focus:ring-red-500",
         "active:opacity-80",

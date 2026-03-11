@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T11:33:35.787Z",
-  "totalKeywords": 1583,
+  "generated": "2026-03-11T13:35:01.874Z",
+  "totalKeywords": 1587,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -137,6 +137,7 @@
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
@@ -269,6 +270,7 @@
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
@@ -397,6 +399,7 @@
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
@@ -5029,6 +5032,7 @@
       "task-workflow-phases.md",
       "task-workflow.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
@@ -5950,31 +5954,52 @@
       "workflow-apikey-chat-tool-integration-alignment.md"
     ],
     "今回実装内容": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "苦戦箇所と再発防止": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "同種課題の": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "分解決カード": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "最適なファイル形成": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "責務マトリクス": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "検証コマンド": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "最小セット": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "関連改善タスク": [
-      "workflow-apikey-chat-tool-integration-alignment.md"
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "ライトモード全画面": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "white": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "black": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "再是正ワークフロー仕様": [
+      "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

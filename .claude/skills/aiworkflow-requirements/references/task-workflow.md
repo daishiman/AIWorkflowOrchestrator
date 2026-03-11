@@ -132,6 +132,70 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 ライトテーマ token 基盤是正（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-11 |
+| 対象 | `apps/desktop/src/renderer/styles/tokens.css` の light token 契約是正（surface / text / border / accent） |
+| 成果物 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/` |
+
+#### 実施内容
+
+- `tokens.css` の light palette を `#ffffff` / `#000000` 基準へ是正し、surface / text / border / accent の階層を再定義した
+- `globals.css` に renderer-wide compatibility bridge を追加し、light mode で残っていた `text-white` / `text-gray-*` / `bg-gray-*` / `border-white/*` 系の legacy neutral drift を全画面共通で吸収した
+- `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` などの共通 primitives を semantic token 基準へ寄せ、accent surface 上だけ inverse text を維持した
+- `DashboardView` まわりの未定義 `--accent` 参照を `--accent-primary` に統一し、CI fail shard と一致する `pnpm --filter @repo/desktop exec vitest run --shard=11/16` の再現系を PASS へ戻した
+- Phase 11 screenshot 5件を再取得し、completed workflow 側へ移した capture script / screenshot path / coverage validator を current 実装へ再同期した
+- 親 workflow 完了後の継続 backlog 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に移管し、Issue `#1156` / `#1157` と同期した
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| token 修正だけでは renderer 全域の hardcoded neutral class drift を止めきれない | `tokens.css` だけ直し、`text-white` / `bg-gray-*` / `border-white/*` を使う legacy class を棚卸ししない | `globals.css` に compatibility bridge を入れ、全画面の暫定整合を先に取り、その後に primitives を token へ寄せた |
+| desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる | GitHub Actions 上の shard 番号を local で再現せずに broad rerun する | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、Dashboard の `--accent` drift を局所化した |
+| light baseline 更新後に旧 screenshot を残すと Apple UI/UX 判断が stale になる | token / component / bridge を変えた後に screenshot を再取得しない | capture script の workflow root を completed path へ直し、5件を再撮影して `validate-phase11-screenshot-coverage` を通した |
+| Phase 5-12 成果物不足で phase status と outputs が乖離する | 実装優先で phase artifacts 生成を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` と同時同期した |
+| `phase-11-manual-test.md` の必須節不足で coverage validator の根拠が弱くなる | `テストケース` と `画面カバレッジマトリクス` を省略する | 2節を追加し、`manual-test-result.md` の `証跡` 列と 1:1 対応にそろえた |
+| `.claude` 正本と workflow docs の更新順が崩れると Step 1-A〜2 の記録が欠ける | workflow だけ更新して system spec 台帳を後回しにする | `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期した |
+| completed workflow へ移管した後の follow-up backlog 正本がぶれる | workflow 名参照だけで残課題を管理し、正式 task spec / issue 導線を固定しない | 親 task 完了後の継続 backlog は `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
+
+#### 同種課題の5分解決カード
+
+1. light token baseline を `#ffffff / #000000` に固定する。
+2. `rg` で renderer 全域の hardcoded neutral class を監査し、token 修正 / compatibility bridge / component migration の責務を先に分ける。
+3. CI fail が desktop shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で同じ shard を再現する。
+4. light baseline を変えたら screenshot を再取得し、`validate-phase11-screenshot-coverage` を再実行する。
+5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期して閉じる。
+
+#### 関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/styles/tokens.light-theme.contract.test.ts` | PASS（4 tests） |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/atoms/Button/Button.test.tsx` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run --shard=11/16` | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop build` | PASS |
+| `pnpm lint` | PASS（warning のみ、error 0） |
+| `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs` | PASS（screenshot 5件） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/light-theme-token-foundation` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` | PASS（currentViolations=0） |
+
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
 | 項目 | 値 |
@@ -4266,6 +4330,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.50** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映**: 完了台帳へ light token foundation の実装内容、Phase 11 screenshot 5件、contract test、follow-up 2件の正本導線 `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` を追加し、親 workflow 完了後の backlog 配置ルールを明文化 |
 | **1.67.49** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を同期**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の related task row を完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新。完了済み未タスクと実行workflowの配置整合を同一ターンで是正 |
 | **1.67.48** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を登録**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を、単一回帰マトリクスで guard する改善未タスクへ formalize。`docs/30-workflows/unassigned-task/` 配下へ配置し、同種課題の初動を短縮する導線を追加 |
 | **1.67.47** | **2026-03-11** | **TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 の Phase 12再確認追補を同期**: `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase12-implementation-guide` / `validate-phase11-screenshot-coverage` の4検証を再実行し、`capture-task-fix-apikey-chat-tool-integration-phase11.mjs` でTC-11-01..03証跡を更新。未タスク監査は `current=0 / baseline=133` の二層判定へ固定して誤判定を回避 |
