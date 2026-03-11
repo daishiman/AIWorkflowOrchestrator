@@ -24,7 +24,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 | UI正本へ反映済み |
+| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 + 実装内容と苦戦箇所サマリー追加 | UI正本へ反映済み |
 | SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様・未タスク・苦戦箇所同期 | 機能仕様と再利用手順が記録済み |
 | SubAgent-C | `references/arch-ui-components.md` | 構造責務境界の同期 | レイヤー境界が整合 |
 | SubAgent-D | `references/arch-state-management.md` | 状態管理責務の同期 | 状態境界が整合 |
@@ -86,7 +86,7 @@ UI機能実装時の必須記載（追加）:
 
 | 関心ごと | 最適な担当仕様書 | SubAgent |
 | --- | --- | --- |
-| コンポーネント一覧、完了タスク | `ui-ux-components.md` | A |
+| コンポーネント一覧、完了タスク、実装内容と苦戦箇所サマリー | `ui-ux-components.md` | A |
 | 機能の振る舞い、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | B |
 | 専用型、adapter、harness、責務境界 | `arch-ui-components.md` | C |
 | selector / reset / store 契約 | `arch-state-management.md` | D |
@@ -117,22 +117,22 @@ UI機能実装時の必須記載（追加）:
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
-node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
+node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
 rg -n 'undefined' <workflow-path>/index.md
 rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
 rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
-node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
@@ -140,7 +140,7 @@ curl -I http://127.0.0.1:4173
 pnpm --filter @repo/desktop test:run
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
 ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
@@ -151,6 +151,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
+- [ ] UI機能の場合、`ui-ux-components.md` にも `実装内容と苦戦箇所サマリー` を追加している
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）がある場合、SubAgent-G+ を追加して同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している

@@ -1,0 +1,43 @@
+{
+  "workflow": "skill-lifecycle-journey-foundation",
+  "capturedAt": "2026-03-11",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "route": "/?skipAuth=true",
+      "state": "create-entry",
+      "file": "screenshots/TC-11-01-create-entry.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "route": "/?skipAuth=true",
+      "state": "execute-entry",
+      "file": "screenshots/TC-11-02-execute-entry.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "route": "/advanced/skill-management-panel?skipAuth=true",
+      "state": "improve-entry",
+      "file": "screenshots/TC-11-03-improve-entry.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "route": "/advanced/skill-create-wizard?skipAuth=true",
+      "state": "advanced-supporting",
+      "file": "screenshots/TC-11-04-advanced-supporting.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "route": "/?skipAuth=true",
+      "state": "surface-ownership",
+      "selector": "[data-testid='skill-lifecycle-surface-ownership']",
+      "file": "screenshots/TC-11-05-surface-ownership.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "route": "/?skipAuth=true",
+      "state": "settings-public-shell",
+      "file": "screenshots/TC-11-06-settings-public-shell.png"
+    }
+  ]
+}

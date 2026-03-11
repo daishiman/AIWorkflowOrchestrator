@@ -203,6 +203,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-UI-00-ORGANISMS | Organisms共通コンポーネント実装（CardGrid / MasterDetailLayout / SearchFilterList + 41テスト） | 2026-03-04 |
 | TASK-UI-00-FOUNDATION-REFLECTION-AUDIT | UI基盤反映監査（正本導線・UX語彙具体例・Task5B境界の監査是正 + 検証スクリプト/テスト追加 + Phase11再検証 + Phase12再確認） | 2026-03-05 |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout + feature flag 移行） | 2026-03-06 |
+| TASK-UI-07 | DashboardView ホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline + screenshot harness） | 2026-03-11 |
 | TASK-UI-05 | SkillCenterView（ツールを探す）実装（7コンポーネント + 2フック + 9テストファイル） | 2026-03-01 |
 | TASK-10A-B | SkillAnalysisView（ScoreDisplay / SuggestionList / RiskPanel + useSkillAnalysis）実装 | 2026-03-02 |
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
@@ -232,6 +233,27 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 苦戦箇所3 | delete affordance は自動テストだけでは視覚品質が確定しないため、実画面証跡が必要だった |
 | 仕様同期 | UI系は `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
 | 詳細参照 | `ui-ux-feature-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-08 節 |
+
+---
+
+## TASK-UI-07 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-07-DASHBOARD-ENHANCEMENT | DashboardView ホーム画面リデザイン（挨拶 / サジェスチョン / タイムライン + screenshot harness） | completed（実装・テスト・画面検証・Phase 12 同期完了） | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
+
+### TASK-UI-07 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `DashboardView` をホーム画面へ再設計し、`GreetingHeader` / `DashboardSuggestionSection` / `RecentTimeline` を追加した |
+| 変更範囲 | `DashboardView`、view-local components、`dashboardContent.ts`、Phase 11 screenshot harness |
+| テスト/証跡 | 22 tests PASS、typecheck PASS、Phase 11 screenshot TC-11-01〜05、Apple UI/UX 観点レビュー |
+| 苦戦箇所1 | 表示名 `ホーム` と内部 `dashboard` 契約を分離しないと nav/store へ波及する |
+| 苦戦箇所2 | completed workflow でも `index.md` / `artifacts.json` / `phase-1..12` の stale が残りやすい |
+| 苦戦箇所3 | dual skill-root repository では canonical root を固定しないと mirror 側が stale になる |
+| 簡潔解決 | UI copy と内部契約を分離し、workflow 三層同期と mirror sync を同一ターンで閉じる |
+| 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-07 節 |
 
 ---
 
@@ -424,6 +446,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
+| 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |
 | 2.16.3  | 2026-03-11 | TASK-UI-08 再監査反映: Organisms / 主要UI / 完了タスクへ `NotificationCenter` を追加し、Bell utility action・Portal・delete reveal・Phase 11 screenshot 7件を TASK-UI-08 完了記録として同期 |
 | 2.16.2  | 2026-03-10 | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement の完成記録を独立節として追加し、adapter helper・dedicated harness・token scope 切り分けを「実装内容 + 苦戦箇所 + 簡潔解決」の形式で正本化 |
 | 2.16.0  | 2026-03-07 | TASK-UI-03 完了反映: Organisms実装状況へ SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList を追加。主要UI一覧・organisms階層図・完了タスクへ AgentView Enhancement 5コンポーネント（58テスト）を同期 |

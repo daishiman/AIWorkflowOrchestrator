@@ -1,6 +1,6 @@
 # Phase 12 ドメイン仕様書同期ブロックテンプレート
 
-> **用途**: `interfaces-*` / `api-ipc-*` / `security-*` / `ui-ux-feature-*` などのドメイン仕様書へ、`実装内容` と `苦戦箇所` を同じ粒度で反映する。
+> **用途**: `interfaces-*` / `api-ipc-*` / `security-*` / `ui-ux-feature-*` / `ui-ux-feature-components.md` などのドメイン仕様書へ、`実装内容` と `苦戦箇所` を同じ粒度で反映する。
 > **目的**: 「実装内容だけある」「苦戦箇所だけ lessons に逃がす」を防ぎ、system spec 単体でも再利用できる状態にする。
 
 ---
@@ -10,6 +10,9 @@
 1. 対象仕様書の該当タスクセクション直下へ、このテンプレートの3ブロックをそのまま貼る。
 2. `実装内容` と `苦戦箇所` は片方だけ埋めない。両方そろって初めて完了扱いにする。
 3. `同種課題の5分解決カード` は `task-workflow.md` / `lessons-learned.md` と順序を合わせる。
+4. UI ドメイン仕様書では、`実装内容（要点）` に画面の主目的・状態契約・視覚検証を含める。
+5. UI機能の current workflow では、必要に応じて `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を追加し、一覧ドキュメントから再利用できる粒度にする。
+5. `ui-ux-feature-components.md` のような feature summary spec でも、圧縮サマリーだけで終えず 3 ブロックをそろえる。
 
 ---
 
@@ -42,6 +45,38 @@
 5. `<task-workflow / lessons / domain-spec を同値で閉じる>`
 ```
 
+### UIドメイン仕様向け拡張ブロック
+
+```markdown
+### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| 画面の主目的 | `<検索画面 / timeline 閲覧 / 設定変更 / 実行監視 など>` |
+| 変更範囲 | `<Renderer / Store / Main / Preload / UI components>` |
+| 実装した要点 | `<UI構造・状態分離・導線を2-4点で要約>` |
+| 契約上の要点 | `<state / IPC / preload / navigation 契約の変更点>` |
+| 視覚検証 | `<TC-ID / screenshot / Apple review / visual note>` |
+| 完了根拠 | `<vitest / typecheck / coverage / verify>` |
+```
+
+### UI一覧仕様向けサマリー（任意だが推奨）
+
+```markdown
+### <TASK-ID> 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `<画面変更や追加 component を1-2行で要約>` |
+| 変更範囲 | `<View / Store / helper / harness など>` |
+| テスト/証跡 | `<tests / coverage / screenshot>` |
+| 苦戦箇所1 | `<内部契約や責務境界で詰まった点>` |
+| 苦戦箇所2 | `<shared化判断や設計判断で詰まった点>` |
+| 苦戦箇所3 | `<画面検証や workflow 運用で詰まった点>` |
+| 簡潔解決 | `<5ステップを1行で要約>` |
+| 詳細参照 | `<task-workflow / lessons / domain-spec>` |
+```
+
 ---
 
 ## 3. 最低限の確認コマンド
@@ -53,6 +88,8 @@ rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^#
 期待結果:
 - 3見出しがすべて存在する
 - `実装内容` と `苦戦箇所` が同じタスクセクション内にある
+- UIドメイン仕様では `画面の主目的` / `視覚検証` 行が埋まっている
+- `ui-ux-feature-components.md` でも同じ 3 ブロックを持つ
 
 ---
 
@@ -63,3 +100,5 @@ rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^#
 - [ ] 対象仕様書に `同種課題の5分解決カード` がある
 - [ ] `task-workflow.md` / `lessons-learned.md` と 5 ステップ順序が一致する
 - [ ] 検証値（テスト数・PASS条件・audit値）が他仕様書と矛盾しない
+- [ ] UIドメイン仕様では `画面の主目的` / `契約上の要点` / `視覚検証` の3行が欠けていない
+- [ ] UI一覧仕様へ要約カードを追加した場合、domain spec / task-workflow / lessons の内容と矛盾しない

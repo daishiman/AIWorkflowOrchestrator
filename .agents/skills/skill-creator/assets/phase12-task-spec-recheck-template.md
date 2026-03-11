@@ -61,12 +61,14 @@
 - [ ] `audit --json --diff-from HEAD --target-file <unassigned-file>` が `currentViolations=0`
 - [ ] `audit --json --diff-from HEAD` が `currentViolations=0`
 - [ ] `audit --json` 単独の repo 全体値は参考値として分離している
+- [ ] `currentViolations=0` かつ `baselineViolations>0` の場合、`unassigned-task-detection.md` に既存 backlog と remediation task 参照がある
 
 ### 3.4 system spec / outputs 同期
 
 - [ ] `task-workflow.md` に実装内容・苦戦箇所・検証証跡・5分解決カードがある
 - [ ] `lessons-learned.md` に再発条件付き苦戦箇所と簡潔解決手順がある
 - [ ] `spec-update-summary.md` / `phase12-compliance-recheck.md` / `unassigned-task-detection.md` に system spec と同じ実測値がある
+- [ ] `phase12-task-spec-compliance-check.md` が root evidence として同じ値を持つ
 
 ---
 
@@ -112,6 +114,7 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 - `audit --diff-from HEAD --target-file`: `currentViolations / baselineViolations`
 - `audit --diff-from HEAD`: `currentViolations / baselineViolations`
 - `audit --json`: repo 全体参考値
+- `legacy remediation tasks`: 参照した既存未タスク指示書のパス一覧
 
 ---
 
@@ -122,7 +125,7 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 - [ ] `implementation-guide.md` の必須要素が確認済み
 - [ ] 未タスクの個別合否に `audit --diff-from HEAD --target-file` を使っている
 - [ ] repo 全体 `audit --json` を参考値として分離記録している
+- [ ] `current=0` でも baseline backlog と既存 remediation task の参照を省略していない
 - [ ] `task-workflow.md` / `lessons-learned.md` / `outputs/phase-12` の値が一致している
 - [ ] `documentation-changelog.md` に今回の改善対象ファイルが列挙されている
 - [ ] `skill-feedback-report.md` にテンプレート改善内容が記録されている
-

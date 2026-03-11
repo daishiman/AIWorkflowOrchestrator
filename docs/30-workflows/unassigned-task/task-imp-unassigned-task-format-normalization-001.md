@@ -1,12 +1,10 @@
-# 未タスク指示書フォーマット正規化（67件） - タスク指示書
+# 未タスク指示書フォーマット正規化（91件） - タスク指示書
 
 ## メタ情報
 
 ```yaml
 issue_number: 871
 ```
-
-## メタ情報
 
 | 項目         | 内容                                                |
 | ------------ | --------------------------------------------------- |
@@ -17,7 +15,7 @@ issue_number: 871
 | 優先度       | 中                                                  |
 | 見積もり規模 | 中規模                                              |
 | ステータス   | 未実施                                              |
-| 発見元       | Phase 12 監査（2026-02-22）                         |
+| 発見元       | Phase 12 監査（継続更新: 2026-03-11 再確認）        |
 | 発見日       | 2026-02-22                                          |
 
 ---
@@ -26,13 +24,14 @@ issue_number: 871
 
 ### 1.1 背景
 
-`docs/30-workflows/unassigned-task/` を監査した結果、9セクションテンプレート未準拠の指示書が67件残っていた。
+`docs/30-workflows/unassigned-task/` を再監査した結果、repo-wide の legacy baseline として `formatViolations=91`、`namingViolations=5`、`misplacedFiles=37` が残っていた。このタスクはそのうち format violation の段階是正を担当する。
 
 ### 1.2 問題点・課題
 
 - 実装者が必要情報を再調査する手戻りが発生する
 - タスク粒度・完了条件の記述品質にばらつきがある
 - 機械検証を前提にした運用ができない
+- `current=0` でも指定ディレクトリ全体が健全とは限らず、format backlog の参照先が必要になる
 
 ### 1.3 放置した場合の影響
 
@@ -46,12 +45,12 @@ issue_number: 871
 
 ### 2.1 目的
 
-legacy未タスク指示書を `unassigned-task-template.md` 準拠へ統一し、監査を自動化可能にする。
+legacy 未タスク指示書を `unassigned-task-template.md` 準拠へ統一し、format backlog の段階削減を自動監査可能にする。
 
 ### 2.2 最終ゴール
 
-1. フォーマット未準拠67件を0件にする
-2. 命名規則違反（`*`/大文字含む）5件を是正する
+1. フォーマット未準拠91件を段階的に0件へ近づける
+2. `## メタ情報` 重複や必須見出し欠落をなくす
 3. `audit-unassigned-tasks.js` の結果を CI/運用チェックに組み込む
 
 ### 2.3 スコープ
@@ -59,13 +58,13 @@ legacy未タスク指示書を `unassigned-task-template.md` 準拠へ統一し�
 #### 含むもの
 
 - `docs/30-workflows/unassigned-task/*.md` のフォーマット修正
-- ファイル名の命名規則修正
 - `task-workflow.md` 内リンクの追従修正
 
 #### 含まないもの
 
 - タスク内容そのものの技術的仕様変更
 - 完了済みタスクへの移管作業
+- naming / misplaced の全体是正（`task-imp-unassigned-task-legacy-normalization-001.md` と `task-imp-phase12-unassigned-baseline-remediation-002.md` が担当）
 
 ### 2.4 成果物
 
@@ -126,7 +125,7 @@ legacy未タスク指示書を `unassigned-task-template.md` 準拠へ統一し�
 
 #### 完了条件
 
-- 67件の対象と優先順位が確定している
+- 91件の対象と優先順位が確定している
 
 ---
 
@@ -134,8 +133,8 @@ legacy未タスク指示書を `unassigned-task-template.md` 準拠へ統一し�
 
 ### 機能要件
 
-- [ ] フォーマット未準拠が0件
-- [ ] 命名規則違反が0件
+- [ ] フォーマット未準拠が段階是正されている
+- [ ] `## メタ情報` 重複と必須見出し欠落が解消されている
 
 ### 品質要件
 
@@ -181,6 +180,8 @@ legacy未タスク指示書を `unassigned-task-template.md` 準拠へ統一し�
 
 - `.claude/skills/task-specification-creator/assets/unassigned-task-template.md`
 - `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md`
+- `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md`
+- `docs/30-workflows/unassigned-task/task-imp-phase12-unassigned-baseline-remediation-002.md`
 - `docs/30-workflows/completed-tasks/skill-import-id-mismatch-fix/outputs/phase-12/unassigned-task-placement-audit.md`
 
 ### 参考資料

@@ -872,7 +872,6 @@ components/organisms/AgentView/
 ├── FloatingExecutionBar.tsx [新規] 実行状況フローティングバー
 ├── AdvancedSettingsPanel.tsx [新規] 詳細設定スライドインパネル
 ├── RecentExecutionList.tsx  [新規] 最近の実行履歴
-├── types.ts                 [新規] AgentView 専用型
 ├── animations.ts            [新規] アニメーション定数
 ├── styles.ts                [新規] 共通スタイル定数
 └── __tests__/
@@ -917,13 +916,11 @@ components/organisms/AgentView/
 | `SkillChip.test.tsx` | 15 | 203 | ツール選択チップの表示・操作 |
 | `ExecuteButton.test.tsx` | 8 | 120 | 実行ボタンの状態・操作 |
 | `FloatingExecutionBar.test.tsx` | 12 | 130 | フローティングバーの表示・進捗 |
-| `AdvancedSettingsPanel.test.tsx` | 15 | 235 | 詳細設定パネルの開閉・操作 |
+| `AdvancedSettingsPanel.test.tsx` | 13 | 235 | 詳細設定パネルの開閉・操作 |
 | `RecentExecutionList.test.tsx` | 11 | 229 | 実行履歴の表示・操作 |
-| `AgentView.layout.test.tsx` | 13 | 272 | 統合レイアウトテスト（3リージョン構成検証） |
-| `AgentView.test.tsx` | 45 | - | 統合動作・アクセシビリティ・Permission 連携 |
-| `agentSlice.extension.test.ts` | 10 | - | Store拡張テスト |
+| `AgentView.layout.test.tsx` | 12 | 272 | 統合レイアウトテスト（3リージョン構成検証） |
 | `agentSlice.p31-regression.test.ts` | 7 | - | Store拡張 P31回帰テスト |
-| **合計** | **136** | **1,189+** | |
+| **合計** | **78** | **1,189+** | |
 
 ### 関連タスク
 
@@ -942,23 +939,6 @@ components/organisms/AgentView/
 | `styles.ts` | 31 | 共通スタイル定数 |
 | **合計** | **508** | |
 
-### current workflow 追補（2026-03-10）
-
-| 観点 | 内容 |
-| --- | --- |
-| 専用型境界 | `components/organisms/AgentView/types.ts` を追加し、view が必要とする最小 shape を organisms 側で閉じた |
-| adapter 変換 | `AgentView/index.tsx` の `toViewSkill()` と `phase11-agent-view.tsx` の `toImportedSkill()` により、import 系の型差分を renderer 入口で吸収した |
-| harness 境界 | `phase11-agent-view.html` / `phase11-agent-view.tsx` を App shell から分離し、`scenario` / `theme` クエリで screenshot state を固定した |
-| 責務分離 | layout 完了判定は component / store / harness で閉じ、light theme token 所見は `ui-ux-design-system.md` と未タスクへ分離した |
-
-### アーキテクチャ上の苦戦箇所
-
-| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
-| --- | --- | --- | --- |
-| view 型が import 元の型へ引きずられる | `ImportedSkill` / `SkillMetadata` / view `Skill` の責務が1箇所で吸収されていなかった | adapter helper を view 入口に置き、UIは view 専用型だけを見る構成へ寄せた | UI統合 view は「表示用型」と「取得用型」を分け、変換点を1箇所に固定する |
-| screenshot 用 state が App shell 初期化に依存する | 認証/設定/履歴などの初期化が view 再現にノイズを入れる | dedicated harness route を追加し、クエリで state を選ぶ構成にした | 画面証跡が 3 状態以上ある UI は dedicated harness を先に設計する |
-| design token 所見が view 改修に混ざる | light/dark の視認性差分が feature 完了判定と同じレビューラインに乗る | component scope と token scope を分離し、token 側は design-system 未タスクに切り出した | UI再監査では「レイアウト完了」と「token 改善余地」を別行で記録する |
-
 ### Settings AuthKeySection（09-TASK-FIX 関連）
 
 AgentView Enhancement と同時期に実装された Settings 画面の新規コンポーネント。
@@ -970,7 +950,7 @@ AgentView Enhancement と同時期に実装された Settings 画面の新規コ
 
 ### 参照
 
-- [AgentView Enhancement ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/)
+- [AgentView Enhancement ワークフロー仕様](../../../../docs/30-workflows/agent-view-enhancement/)
 
 ---
 
@@ -978,9 +958,7 @@ AgentView Enhancement と同時期に実装された Settings 画面の新規コ
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
-| 2.11.2  | 2026-03-10 | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に current workflow 追補（専用型境界 / adapter 変換 / harness 境界）とアーキテクチャ上の苦戦箇所テーブルを追加し、再利用すべき責務分離ルールを明文化 |
 | 2.11.0  | 2026-03-08 | TASK-UI-03 完了同期: AgentView Enhancement を `in-progress` から `completed` へ更新。テスト構成を実測値（78テスト）で更新、実装ファイルサマリー（508行）追加、Settings AuthKeySection（295行/13テスト）を追記 |
-| 2.11.1  | 2026-03-10 | TASK-UI-03 current workflow 同期: `types.ts` と dedicated harness を追加し、テスト構成を 136 tests へ更新。workflow 導線も `task-ui-03-agent-view-enhancement/` へ修正 |
 | 2.10.0  | 2026-03-07 | TASK-UI-03 反映: AgentView Enhancement アーキテクチャパターン（コンポーネント階層、ファイル配置、レイアウト構成、Atomic Design整合、Store連携、テスト構成）を追加 |
 | 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |
 | 2.9.4   | 2026-03-06 | TASK-043B 反映: SkillManagementPanel import list refinement のアーキテクチャ節を追加し、2セクション構成、dialog/state 境界、success/error 判定、品質指標を同期 |

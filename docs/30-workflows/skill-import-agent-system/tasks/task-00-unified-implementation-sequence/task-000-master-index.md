@@ -86,7 +86,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 34. `task-058a-ui-03-agent-view-enhancement.md`（並列）
 35. `task-058b-ui-04a-workspace-layout-filebrowser.md`（並列、059a/059bをブロック）
 36. `task-058c-ui-06-history-search-view.md`（並列）
-37. `task-058d-ui-07-dashboard-enhancement.md`（並列）
+37. `../completed-task/task-058d-ui-07-dashboard-enhancement.md`（並列、完了済み）
 38. `task-058e-ui-08-notification-center.md`（並列）
 
 ```

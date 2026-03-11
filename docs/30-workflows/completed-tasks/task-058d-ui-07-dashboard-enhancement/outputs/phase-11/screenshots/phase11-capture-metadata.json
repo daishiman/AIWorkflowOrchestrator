@@ -1,0 +1,63 @@
+{
+  "taskId": "TASK-UI-07-DASHBOARD-ENHANCEMENT",
+  "capturedAt": "2026-03-11T04:24:42.202Z",
+  "baseUrl": "http://127.0.0.1:4281",
+  "outputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-074516-wt1/docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/outputs/phase-11/screenshots",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-home-normal-light-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-11T04:24:39.105Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-home-empty-light-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=empty&theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-11T04:24:39.940Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-home-loading-dark-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=loading&theme=dark",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-11T04:24:40.758Z"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-home-normal-mobile-dark.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-11T04:24:41.500Z"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-home-normal-kanagawa-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=kanagawa-dragon",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-11T04:24:42.195Z"
+    }
+  ]
+}
