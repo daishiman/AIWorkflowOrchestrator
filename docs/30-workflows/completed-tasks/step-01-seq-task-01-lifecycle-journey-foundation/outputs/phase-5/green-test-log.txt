@@ -1,0 +1,9 @@
+2026-03-11
+
+[PASS] pnpm --filter @repo/desktop typecheck
+[PASS] pnpm --filter @repo/desktop exec vitest run src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/navigation/navContract.test.ts src/renderer/views/SkillCenterView/__tests__/SkillCenterView.test.tsx src/renderer/utils/__tests__/shouldResetUnauthenticatedView.test.ts --reporter=dot
+[PASS] pnpm --filter @repo/desktop exec vitest run src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/navigation/navContract.test.ts src/renderer/views/SkillCenterView/__tests__/SkillCenterView.test.tsx src/renderer/utils/__tests__/shouldResetUnauthenticatedView.test.ts --coverage.enabled --coverage.reporter=json-summary --coverage.reporter=text --coverage.include=src/renderer/App.tsx --coverage.include=src/renderer/navigation/skillLifecycleJourney.ts --coverage.include=src/renderer/views/SkillCenterView/index.tsx --coverage.include=src/renderer/utils/shouldResetUnauthenticatedView.ts
+[PASS] node apps/desktop/scripts/capture-task-skill-lifecycle-01-phase11.mjs
+
+[NOTE] 初回の Vite / Vitest 実行は esbuild platform mismatch で失敗したため、pnpm install を実施して optional binary を補完した。
+

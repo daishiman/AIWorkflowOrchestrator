@@ -13,6 +13,37 @@
 - 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
 - broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
 
+### スキルライフサイクル一次導線 / 画面責務再編を探すとき
+
+このカテゴリは `skill lifecycle` `skillLifecycleJourney` `advanced route` `hidden route` `一次導線` `Skill Center` `Workspace` `Agent` `Skill Creator` `SkillManagementPanel` `settings bypass` `VITE_USE_GLOBAL_NAV_STRIP` `skill-center` `skillCenter` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "Global Navigation Core" -C 3
+node scripts/search-spec.js "Skill Center View" -C 3
+node scripts/search-spec.js "Workspace Layout Foundation" -C 3
+node scripts/search-spec.js "AgentView Redesign" -C 3
+node scripts/search-spec.js "Store-Driven Lifecycle Integration" -C 3
+node scripts/search-spec.js "Skill Creator" -C 3
+node scripts/search-spec.js "SkillManagementPanel" -C 3
+node scripts/search-spec.js "skillLifecycleJourney" -C 3
+node scripts/search-spec.js "settings bypass" -C 3
+node scripts/search-spec.js "VITE_USE_GLOBAL_NAV_STRIP" -C 3
+node scripts/search-spec.js "advanced" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「スキルライフサイクル一次導線設計 / 画面責務再編」を見る
+2. `references/ui-ux-navigation.md` で global nav / ViewType / rollback / advanced 前提を見る
+3. `references/ui-ux-feature-components.md` で `Skill Center View` `Workspace Layout Foundation` `AgentView Redesign` `Store-Driven Lifecycle Integration` を見る
+4. `references/arch-state-management.md` で `navigationSlice` `uiSlice` `Workspace` ownership と `settings` bypass / reset exclusion を見る
+5. `references/architecture-overview.md` で shell と view 配置、rollback の位置を確認する
+6. `references/ui-ux-settings.md` で `settings` 公開 shell の責務を確認する
+7. `references/interfaces-agent-sdk-ui.md` と `references/ui-ux-agent-execution.md` で Agent 実行面の責務を確認する
+8. `references/llm-workspace-chat-edit.md` で workspace/chat/edit 境界を確認する
+9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
+10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash

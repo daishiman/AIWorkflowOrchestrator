@@ -10,6 +10,7 @@
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
+| v3.14.4    | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: `App.tsx` が `normalizeSkillLifecycleView()` で legacy `skill-center` を canonical `skillCenter` に正規化してから view 分岐する契約を追加し、Skill Center を lifecycle 一次導線入口として扱う ownership note を追記 |
 | v3.14.3    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
 | v3.14.2    | 2026-03-10 | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`historySearchSlice` の `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe 契約、`EditorSlice.pendingOpenFilePath` による file deep-open、timeline grouping / sentinel loading 分離、task-scope coverage 88.42 / 80.00 / 90.00 を追記 |
 | v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
@@ -408,6 +409,15 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | public unauthenticated views | `settings` は未認証でも表示維持してよい公開ビューとして扱う |
 | reset rule | 未認証かつ初期化完了後に `currentView` を reset する場合、公開ビューは reset 対象から除外する |
 | helper | `shouldResetUnauthenticatedView({ isAuthenticated, isLoading, currentView })` 相当の純粋関数で判定する |
+
+### lifecycle entry canonicalization 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| canonical helper | `normalizeSkillLifecycleView(view)` が legacy alias を canonical `ViewType` へ寄せる |
+| 呼び出し責務 | `App.tsx` は `useCurrentView()` の生値を直接分岐せず、正規化後の `currentView` で shell/view を決定する |
+| 対象 | 現時点では `skill-center -> skillCenter` のみを吸収し、他 view の正式名は変更しない |
+| 理由 | lifecycle task の一次導線契約・画面責務・テスト証跡を `skillCenter` へ一本化し、legacy 値の残存で UI 仕様が二重化しないようにする |
 
 **標準ルール**:
 

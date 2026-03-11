@@ -129,6 +129,8 @@
 
 `App.tsx` は feature flag により legacy `AppDock` と新構成を切り替える。Step 3 までは rollback path を維持する。
 
+TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary entry surface として扱い、create / use / improve の job guide を入口で提示する。shell 側では `normalizeSkillLifecycleView()` により legacy `skill-center` alias を canonical `skillCenter` に寄せてから view 分岐する。
+
 ### Skill Advanced Views（TASK-UI-05B — 実装完了）
 
 | ビュー | 責務 | コンポーネント数 | 配置先 |
@@ -490,6 +492,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v2.18.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: `SkillCenterView` を lifecycle primary entry surface として追記し、`App.tsx` の `normalizeSkillLifecycleView()` による `skill-center` alias canonicalization を Desktop Renderer レイアウト構成へ反映 |
 | v2.18.3 | 2026-03-06 | TASK-UI-02 反映: Desktop Renderer の標準レイアウトを `AppLayout + GlobalNavStrip + MobileNavBar` へ更新し、`uiSlice` の nav状態、feature flag rollback path、`useNavShortcuts` の戻る導線を追記 |
 | v2.18.2 | 2026-03-02 | TASK-10A-C反映: `registerSkillHandlers` の対応チャネルへ `skill:create` を追加し、Pattern 3 の関連タスクに TASK-10A-C を追記 |
 | v2.18.1 | 2026-03-02 | TASK-UI-05B 実装完了同期: Skill Advanced Views の状態を `spec_created` から `実装完了` へ更新し、4ビューの実装導線（App navigation + direct routing）を反映 |

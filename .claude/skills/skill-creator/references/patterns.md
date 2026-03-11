@@ -2786,6 +2786,23 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-UI-06-HISTORY-SEARCH-VIEW
 
+### [Phase12] `ui-ux-feature-components.md` も 3ブロック構成で閉じる（TASK-SKILL-LIFECYCLE-01）
+
+- **状況**: `task-workflow.md` と `lessons-learned.md` には実装内容と苦戦箇所が入っているのに、`ui-ux-feature-components.md` 側はサマリー表だけで終わり、feature spec 単体では再利用手順が読み取りにくくなる
+- **成功パターン**:
+  - `ui-ux-feature-components.md` の対象節にも `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を置く
+  - `実装内容（要点）` には少なくとも `画面の主目的` / `契約上の要点` / `視覚検証` / `完了根拠` を含める
+  - `苦戦箇所` は `task-workflow.md` / `lessons-learned.md` と同じ再発条件で揃え、feature spec では UI 起点の対処へ寄せて圧縮する
+  - `currentViolations=0` と `baselineViolations>0` の二軸報告が必要なら feature spec 側にも短く残す
+- **失敗パターン**:
+  - feature spec を「UI観点の要点」だけで閉じ、苦戦箇所を別仕様書に追い出す
+  - task-workflow と feature spec で 5分解決カードの順序や検証値がズレる
+- **標準ルール**:
+  - UI task の feature spec は圧縮サマリー専用にせず、最小3ブロックを持つ再利用正本として形成する
+  - `rg -n '^#### 実装内容（要点）$|^#### 苦戦箇所（再利用形式）$|^#### 同種課題の5分解決カード$' references/ui-ux-feature-components.md` を完了前に実行する
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-SKILL-LIFECYCLE-01
+
 ### [Phase12] 「更新予定のみ」残置を排除し、実更新ログへ昇格する（TASK-10A-E-C）
 
 - **状況**: Phase 12 で `spec-update-summary.md` は更新されているが、`documentation-changelog.md` や `phase-12-documentation.md` が「仕様策定のみ」「実行中」のまま残る
@@ -2900,6 +2917,23 @@ interface BadgeProps extends Omit<
 - **適用条件**: current workflow 再監査、UI screenshot 再取得、legacy unassigned backlog を抱えた docs-heavy task
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-10A-F
+
+### [Phase12] `current=0` でも legacy backlog 参照を省略しない（TASK-SKILL-LIFECYCLE-01）
+
+- **状況**: `audit-unassigned-tasks --json --diff-from HEAD` が `currentViolations=0` を返すと、`unassigned-task-detection.md` が「問題なし」で閉じられ、`docs/30-workflows/unassigned-task/` 全体に残る legacy backlog や既存 remediation task への導線が消えやすい
+- **成功パターン**:
+  - `今回タスク由来 0 件` と `directory baseline 継続` を別行で記載する
+  - `verify-unassigned-links`、`audit --diff-from HEAD`、`audit --json` の値を `spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `unassigned-task-detection.md` / `task-workflow.md` に同値で同期する
+  - baseline backlog に対する既存改善タスクがある場合は、`unassigned-task-detection.md` と `skill-feedback-report.md` に参照を残す
+  - Phase 12 の root evidence は `outputs/phase-12/phase12-task-spec-compliance-check.md` とし、SubAgent ごとの判断をここに集約する
+- **失敗パターン**:
+  - `currentViolations=0` のみを理由に `docs/30-workflows/unassigned-task/` 全体が健全と書く
+  - baseline backlog の数値を system spec と outputs で別々に記録する
+  - `skill-feedback-report.md` に task-spec 改善だけを書き、skill-creator 側の改善点を残さない
+- **結果**: 「今回差分は task spec 準拠」「既存 backlog は別課題として継続」の責務分離が明確になり、Phase 12 の完了報告が過剰に楽観化しなくなる
+- **適用条件**: docs-heavy task、再監査タスク、未タスク 0 件報告を含む Phase 12 全般
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-SKILL-LIFECYCLE-01
 
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 

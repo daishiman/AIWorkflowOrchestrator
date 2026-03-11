@@ -1,6 +1,6 @@
 # Phase 12 ドメイン仕様書同期ブロックテンプレート
 
-> **用途**: `interfaces-*` / `api-ipc-*` / `security-*` / `ui-ux-feature-*` などのドメイン仕様書へ、`実装内容` と `苦戦箇所` を同じ粒度で反映する。
+> **用途**: `interfaces-*` / `api-ipc-*` / `security-*` / `ui-ux-feature-*` / `ui-ux-feature-components.md` などのドメイン仕様書へ、`実装内容` と `苦戦箇所` を同じ粒度で反映する。
 > **目的**: 「実装内容だけある」「苦戦箇所だけ lessons に逃がす」を防ぎ、system spec 単体でも再利用できる状態にする。
 
 ---
@@ -12,6 +12,7 @@
 3. `同種課題の5分解決カード` は `task-workflow.md` / `lessons-learned.md` と順序を合わせる。
 4. UI ドメイン仕様書では、`実装内容（要点）` に画面の主目的・状態契約・視覚検証を含める。
 5. UI機能の current workflow では、必要に応じて `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を追加し、一覧ドキュメントから再利用できる粒度にする。
+5. `ui-ux-feature-components.md` のような feature summary spec でも、圧縮サマリーだけで終えず 3 ブロックをそろえる。
 
 ---
 
@@ -88,6 +89,7 @@ rg -n '^### 実装内容（要点）$|^### 苦戦箇所（再利用形式）$|^#
 - 3見出しがすべて存在する
 - `実装内容` と `苦戦箇所` が同じタスクセクション内にある
 - UIドメイン仕様では `画面の主目的` / `視覚検証` 行が埋まっている
+- `ui-ux-feature-components.md` でも同じ 3 ブロックを持つ
 
 ---
 

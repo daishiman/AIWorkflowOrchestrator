@@ -24,6 +24,9 @@
 | 2026-03-11 | 1.29.67 | TASK-UI-07-DASHBOARD-ENHANCEMENT の再監査追補。表示名「ホーム」と内部 `dashboard` 契約の境界維持、未実施UTの正本配置是正、UI機能仕様への苦戦箇所固定を追加 |
 | 2026-03-11 | 1.29.66 | TASK-UI-07-DASHBOARD-ENHANCEMENT の教訓を追加。workflow 本文 stale、Phase 11 validator のソース要求、worktree の esbuild 差分を整理し、4ステップ再利用手順を追記 |
 | 2026-03-11 | 1.29.65 | TASK-UI-08-NOTIFICATION-CENTER 再監査の教訓を追加。Bell utility action の仕様同期漏れ、Phase 11 coverage validator の列名依存、delete reveal の実画面証跡不足を同時是正し、`ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` の同一ターン同期を標準化 |
+| 2026-03-11 | 1.29.67 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。`unassigned-task-detection.md` の 0件報告でも `current=0 / baseline=133` と既存 backlog 参照を残すルール、および `phase12-task-spec-compliance-check.md` による証跡集約を追加 |
+| 2026-03-11 | 1.29.66 | TASK-SKILL-LIFECYCLE-01 再監査追補。representative screenshot は shell 全景より selector-based element capture を優先するルールと、surface ownership board による責務証跡強化を追加 |
+| 2026-03-11 | 1.29.65 | TASK-SKILL-LIFECYCLE-01 の教訓を追加。journey contract の実装アンカー化、`skill-center` legacy alias の shell 正規化、Phase 12 で `artifacts.json` / phase 本文 / `.claude` 正本を同時同期する手順を追記 |
 | 2026-03-10 | 1.29.64 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
 | 2026-03-10 | 1.29.63 | TASK-UI-06-HISTORY-SEARCH-VIEW の解決手順を 5 ステップへ最適化し、専用 domain spec / feature spec / task-workflow の同期粒度を揃えた |
 | 2026-03-10 | 1.29.62 | TASK-UI-06-HISTORY-SEARCH-VIEW の教訓を追加。worktree 依存補完 preflight、screenshot strict locator 化、`.claude` 正本 / `.agents` mirror の canonical root 固定、timeline UI の state 分離を再利用手順として追記 |
@@ -50,6 +53,61 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-SKILL-LIFECYCLE-01
+
+#### 苦戦箇所1: 一次導線の要件が navigation / feature / state に分散すると入口判断が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `Skill Center` `Agent` `Workspace` `Skill Creator` の責務を別仕様書だけで読むと、「どこから始めるか」が毎回推測になる |
+| 再発条件 | job guide を UI 表示だけに置き、コード上の契約正本を持たない |
+| 解決策 | `skillLifecycleJourney.ts` に create / use / improve、surface responsibility、advanced route、downstream contract をまとめ、UI と仕様書の共通アンカーにした |
+| 標準ルール | 導線再編タスクでは「入口・責務・例外・後続契約」を 1 ファイルへ集約し、仕様書はそのアンカーを参照する |
+
+#### 苦戦箇所2: legacy alias を放置すると shell 分岐と仕様書が二重化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-center` と `skillCenter` が混在すると、render 分岐、テストケース、仕様書の表記がずれてドリフトが起きる |
+| 再発条件 | legacy 値を UI 各所で個別吸収し、shell で canonical 化しない |
+| 解決策 | `App.tsx` で `normalizeSkillLifecycleView()` を必ず通し、以降の描画・証跡・仕様書は canonical `skillCenter` だけを正本にした |
+| 標準ルール | view alias は shell 入口で 1 回だけ正規化し、下流コードと仕様書は正本値に統一する |
+
+#### 苦戦箇所3: Phase 12 は outputs だけ揃っても workflow 本文が stale になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-12` を先に作ると、`artifacts.json`、`outputs/artifacts.json`、`phase-1..12` 本文、`.claude` 正本の更新漏れが残りやすい |
+| 再発条件 | 証跡生成後に台帳同期を別作業に分ける |
+| 解決策 | 先に実装・テスト・スクリーンショットを確定し、その後に artifacts / phase files / `.claude` 正本を同ターンで閉じた |
+| 標準ルール | Phase 12 完了条件は「outputs + workflow 台帳 + 本文 + system spec」の 4 層同期で判定する |
+
+#### 苦戦箇所4: representative screenshot が shell 全景だけだと責務境界の証跡として弱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Global nav と main content を含む full screenshot だけでは、「どの画面が何を持つか」が 1 枚で読み取りにくい |
+| 再発条件 | representative surface を route screenshot の延長で扱い、要素単位の責務ボードを用意しない |
+| 解決策 | `SkillCenterView` に surface ownership board を置き、Phase 11 は `data-testid` 待機 + 要素 capture に切り替えた |
+| 標準ルール | representative screenshot は shell 全景を既定にせず、責務や state を表す selector / 実文言を待って要素単位で撮る |
+
+#### 苦戦箇所5: 0件報告だけでは unassigned-task ディレクトリ全体の状態を誤認しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | current task 由来の未タスクが 0 件でも、`docs/30-workflows/unassigned-task/` 全体の legacy baseline が見えず、「指定ディレクトリも健全」と誤読されやすい |
+| 再発条件 | `unassigned-task-detection.md` に `件数: 0` だけを書き、`currentViolations` / `baselineViolations` と既存 remediation task を残さない |
+| 解決策 | `verify-unassigned-links=213/213`、`audit --diff-from HEAD current=0 / baseline=133`、`format=91 / naming=5 / misplaced=37` を明記し、既存 backlog 3件の参照を固定した |
+| 標準ルール | 0件報告では「今回タスク由来 0 件」と「ディレクトリ全体の legacy backlog 継続」を必ず分離し、既存改善未タスクの参照先を併記する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. UI 導線再編は job guide をコード契約へ切り出し、view 本体は表示責務だけに寄せる。
+2. legacy alias は shell で canonical 化し、下流コードと仕様書は正本値に統一する。
+3. Skill Center のような入口画面には主要ジョブだけを明示し、destination surface へ handoff する。
+4. Phase 11 は route screenshot だけでなく、責務境界と例外画面を selector-based element capture で証跡化する。
+5. Phase 12 は `artifacts.json` / `outputs/artifacts.json` / phase 本文 / `.claude` 正本 / changelog を同一ターンで更新し、0件報告でも `current/baseline` と既存 backlog 参照を残す。
 
 ### 2026-03-10 TASK-UI-06-HISTORY-SEARCH-VIEW
 

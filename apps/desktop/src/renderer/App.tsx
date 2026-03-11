@@ -33,6 +33,7 @@ import { HistoryPage } from "./pages/HistoryPage";
 import { AgentSDKPage } from "./pages/AgentSDKPage";
 import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
 import { useNavShortcuts } from "./hooks/useNavShortcuts";
+import { normalizeSkillLifecycleView } from "./navigation/skillLifecycleJourney";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
@@ -57,7 +58,8 @@ function App(): JSX.Element {
   }, [initializeAuth]);
 
   // Reset currentView to dashboard when not authenticated
-  const currentView = useCurrentView();
+  const rawCurrentView = useCurrentView();
+  const currentView = normalizeSkillLifecycleView(rawCurrentView);
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
   const goBack = useAppStore((state) => state.goBack);
@@ -93,7 +95,7 @@ function App(): JSX.Element {
   }, [isAuthenticated, isLoading, currentView, setCurrentView]);
 
   const handleViewChange = (view: ViewType) => {
-    setCurrentView(view);
+    setCurrentView(normalizeSkillLifecycleView(view));
   };
 
   const handleGoBack = (): void => {
@@ -123,7 +125,6 @@ function App(): JSX.Element {
       case "agent":
         return <AgentView />;
       case "skillCenter":
-      case "skill-center":
         return <SkillCenterView />;
       case "historySearch":
         return <HistorySearchView />;

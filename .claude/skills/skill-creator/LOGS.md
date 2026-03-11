@@ -3,6 +3,28 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成ルールを skill-creator へ追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `ui-ux-feature-components.md` も `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックで閉じる成功パターンを追加
+  - `assets/phase12-domain-spec-sync-block-template.md` に feature summary spec も同じ3ブロックを持つ完了条件を追記
+  - system spec 単体でも短手順で再利用できる file formation を UI task の標準形として明文化した
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 backlog 分離報告を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「`current=0` でも legacy backlog 参照を省略しない」成功/失敗パターンを追加
+  - `assets/phase12-task-spec-recheck-template.md` に `phase12-task-spec-compliance-check.md` を root evidence とする運用を追加
+  - `baselineViolations>0` 時は `unassigned-task-detection.md` に既存 remediation task 参照を残す完了条件を明文化し、Phase 12 の過剰な楽観報告を防ぐ
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW UI domain spec テンプレート最適化
 
 - **Agent**: skill-creator (update)
