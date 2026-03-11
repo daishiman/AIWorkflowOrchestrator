@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-03-10T11:19:43.359Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "desktop 初期の chat-only 表示",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-01-chat-only-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "desktop 3-pane 表示と preview の同時表示",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-02-3-pane-dark.png",
+      "viewport": {
+        "width": 1600,
+        "height": 960
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "3-pane で file panel resize を反映した状態",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-03-resize-after-drag.png",
+      "viewport": {
+        "width": 1600,
+        "height": 960
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "tablet 幅で chat+files を表示",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-04-tablet-chat-files.png",
+      "viewport": {
+        "width": 1280,
+        "height": 920
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "description": "mobile overlay で file panel を表示",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-05-mobile-overlay.png",
+      "viewport": {
+        "width": 800,
+        "height": 1180
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-06",
+      "description": "tree keyboard nav と focus 移動",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-06-tree-keyboard-nav.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-07",
+      "description": "selected file の status bar 表示",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-07-status-bar-selected-file.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-08",
+      "description": "watcher change 後に preview 内容が再読込される",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-08-watcher-updated-preview.png",
+      "viewport": {
+        "width": 1600,
+        "height": 960
+      },
+      "priority": "A"
+    }
+  ]
+}

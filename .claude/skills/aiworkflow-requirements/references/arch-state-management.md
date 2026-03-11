@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.2    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
 | v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
 | v3.14.0    | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: useAuthState に AUTH_TIMEOUT_MS = 10,000ms タイムアウト機構追加。AuthState 型に "timed-out" 状態追加。getAuthState 純粋関数で isTimedOut 判定。Settings bypass で currentView === "settings" 時は AuthGuard 外レンダリング |
 | v3.13.2    | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映。App shell mount 時の debug-only `localStorage.clear()` / `window.location.reload()` を persist 契約違反として明文化し、DD-04/DD-05（shared shell 副作用禁止 / bug path検証と screenshot path 分離）を追加。Phase 11 は通常ルート metadata 確認 + dedicated harness screenshot の二段構成を標準化 |
@@ -145,12 +146,46 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | WorkspaceView layout / file browser / watcher 基盤 | **完了**（2026-03-10） |
 | TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
 | TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
 
 ---
+
+## Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT）
+
+### 状態配置
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| workspace folders / tree / selected workspace file | `workspaceSlice` | 既存 workspace ドメイン責務の範囲内 |
+| 添付対象 file context | `fileSelectionSlice` | 04B へ渡す背景情報コンテキストを共有するため |
+| layout mode / last opened panel | `useWorkspaceLayout` | 画面固有であり global store 化不要 |
+| file / preview panel width | `useWorkspaceLayout` + localStorage | UI の一時状態であり view 内に閉じる |
+| context menu / expanded folders / selected file content | `WorkspaceView` local state | 04A 局所責務で完結するため |
+
+### persist 契約
+
+| key | 値 | 備考 |
+| --- | --- | --- |
+| `workspace-layout-mode` | `chat-only` / `chat+files` / `chat+preview` / `3-pane` | 表示モードを再現 |
+| `workspace-panel-sizes` | `{ filePanelWidth, previewPanelWidth }` | min/max clamp 後の値を保存 |
+
+### hook 境界
+
+| hook | 責務 |
+| --- | --- |
+| `useWorkspaceLayout` | breakpoint、mode 算出、persist、overlay close |
+| `usePanelResize` | min/max clamp、keyboard resize、preview reverse drag |
+| `useFileWatcher` | selected file 単位 watch、debounce、module scope guard、cleanup |
+
+### 再発防止ルール
+
+- `WorkspaceView` では新規 Zustand slice を作らない。
+- callback identity が変わっても `useFileWatcher` が watch を再登録しないよう `ref` 経由で参照する。
+- 右側 preview panel は reverse drag を標準とし、操作方向と視覚結果を一致させる。
 
 ## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
 

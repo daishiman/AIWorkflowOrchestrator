@@ -135,6 +135,7 @@ node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.j
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
+python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
 pnpm --filter @repo/desktop test:run
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
@@ -165,10 +166,14 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
+- [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
+- [ ] workspace/preview UI では right preview panel の reverse resize を証跡化している
+- [ ] file watcher を含む UI では callback ref 分離など、watch 再登録を抑止する実装/設計を仕様へ転記している
+- [ ] light theme screenshot では補助テキスト・status bar・chip の contrast を目視確認し、是正結果を記録している
 - [ ] ユーザーが画面検証を要求した場合、初期方針が `NON_VISUAL` でも `SCREENSHOT` へ昇格し、`TC-ID ↔ png` を再同期している
 - [ ] persist/auth 初期化バグでは bug path の metadata 証跡と screenshot harness 証跡を分離し、`skipAuth=true` を唯一経路にしていない
 - [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している

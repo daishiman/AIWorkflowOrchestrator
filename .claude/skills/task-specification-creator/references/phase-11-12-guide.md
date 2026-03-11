@@ -145,6 +145,7 @@ curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
 補足:
 - build失敗または疎通失敗時は再撮影を継続しない。
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
+- 複数 worktree で Vite preview / dev server の参照元が揺れる場合は、`pnpm build` 後の current worktree `out/renderer` を static server（例: `python3 -m http.server 4173 --directory apps/desktop/out/renderer`）で配信し、asset hash と `phase11-capture-metadata.json` の時刻を current build と同期する。
 
 #### D. 再撮影後 cleanup（必須）
 

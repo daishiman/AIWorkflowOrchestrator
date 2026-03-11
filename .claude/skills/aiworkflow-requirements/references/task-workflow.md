@@ -132,6 +132,60 @@
 
 ## 完了タスク
 
+### タスク: TASK-UI-04A-WORKSPACE-LAYOUT Workspace レイアウト基盤（2026-03-10）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-04A-WORKSPACE-LAYOUT |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | P2 |
+| 完了日 | 2026-03-10 |
+| 対象 | `WorkspaceView` の 1-pane 起点 layout、file browser、status bar、watcher、Phase 11 harness |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/outputs/` |
+
+#### 実施内容
+
+- `WorkspaceView` を stub から本実装へ差し替え、`chat-only` / `chat+files` / `chat+preview` / `3-pane` の4モードを追加
+- `FileBrowserPanel` / `FileTreeNode` / `PanelToggleBar` / `PanelResizeHandle` / `WorkspaceStatusBar` / `WorkspaceShell` を追加
+- `useWorkspaceLayout` / `usePanelResize` / `useFileWatcher` / `useFileContextMenu` を追加
+- Main `fileHandlers.ts` に `FILE_WATCH_START` / `FILE_WATCH_STOP` を実装し、`FILE_CHANGED` push を接続
+- task scope 12 files / 61 tests PASS、coverage `91.64 / 81.78 / 96.36 / 91.64` を確認
+- Phase 11 で screenshot 8件を current workflow 配下へ取得し、light theme contrast 是正後の画面を再確認
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| right preview panel の resize 方向が直感と逆 | 左 panel と同じ drag 計算を右 panel に流用する | `usePanelResize` に `direction: "reverse"` を追加した |
+| `useFileWatcher` の callback identity 変更で watch 再登録が走る | `onFileChanged` を effect dependency に直接置く | callback を `ref` 化し、watch lifecycle dependency から外した |
+| worktree の Vite dev server が別 worktree source を配信する | preview server を HMR ソース前提で使う | build 後の `out/renderer` を static server で配信し、current worktree を固定した |
+| light theme の補助テキストが screenshot 上で沈む | dark 基準の濃度を light にそのまま流用する | Workspace 04A 局所の text / chip / status bar を調整して再撮影した |
+
+#### 同種課題の5分解決カード
+
+1. 右側 panel の resize は reverse drag かを最初に確認する。
+2. watch 系 hook は callback ref を使い、lifecycle dependency を分離する。
+3. worktree で preview する場合は current build 由来の asset hash を確認する。
+4. screenshot で light theme のコントラストを必ず目視確認する。
+5. `task-workflow.md` / `ui-ux-feature-components.md` / `arch-state-management.md` / `security-electron-ipc.md` / `lessons-learned.md` を同一ターンで更新する。
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot 再取得で current worktree build を capture 元として固定し、reverse resize / watcher 更新 / light theme contrast の再監査手順を共通化する | 中 | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm exec vitest run ...WorkspaceView scope...` | PASS（12 files / 61 tests） |
+| `cd apps/desktop && pnpm exec tsc --noEmit` | PASS |
+| `cd apps/desktop && pnpm exec eslint src/renderer/views/WorkspaceView src/main/ipc/fileHandlers.ts src/main/ipc/fileHandlers.test.ts` | PASS |
+| `pnpm build` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
+
 ### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
 
 | 項目 | 値 |
@@ -3965,6 +4019,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.40** | **2026-03-10** | **UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を登録**: TASK-UI-04A の再監査で用いた current build static serve を手運用のまま残さず、Workspace 系 UI の screenshot source pinning と visual checklist（reverse resize / watcher 更新 / light theme contrast）を未タスクとして formalize。`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` と workflow `unassigned-task-detection.md` を同時同期 |
+| **1.67.39** | **2026-03-10** | **TASK-UI-04A-WORKSPACE-LAYOUT を同期**: `WorkspaceView` の 4モード layout、file browser、status bar、watcher、Phase 11 screenshot 8件、light theme contrast 是正、task scope 12 files / 61 tests PASS を完了台帳へ追加。苦戦箇所（reverse resize / callback ref / static server capture / light contrast）と新規未タスク0件を記録 |
 | **1.67.38** | **2026-03-10** | **TASK-10A-G 完了同期**: スキルライフサイクル統合テスト強化（G1:14件IPC契約 + G2:21件Store駆動 + G3:17件ChatPanel結線 = 52テスト全PASS）。`arch-state-management.md` 関連タスクステータス更新、`ui-ux-feature-components.md` 確認、LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **1.67.37** | **2026-03-09** | **TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を同期**: `App.tsx` の debug storage clear / forced reload 除去、Phase 11 screenshot 3件 + metadata 検証、repo-wide cleanup 未タスク `UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001` の登録、system spec / skill 文書同期を完了台帳と残課題へ反映 |
 | **1.67.36** | **2026-03-09** | **TASK-10A-F Phase 12 再同期を追補**: completed workflow `docs/30-workflows/completed-tasks/TASK-10A-F-STORE-DRIVEN-LIFECYCLE-UI/` に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再同期した実装内容を台帳化。苦戦箇所として P53 placeholder 残置、implementation-guide literal 見出し不足、未タスク current/baseline と legacy directory 健全性の混同を追記し、新規未タスク 0件・既存後続 TASK-10A-G 集約・legacy remediation task 継続を明記 |

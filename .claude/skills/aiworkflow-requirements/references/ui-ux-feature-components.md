@@ -18,6 +18,7 @@
 | Community Visualization      | CONV-08-05       | CommunityGraph, CommunityDetailPanel               | 完了 | 本ファイル                                                       |
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
+| Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
@@ -363,6 +364,76 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | Ctrl+Enter       | EditCommandInput | コマンド送信               |
 | Escape           | DiffPreview      | プレビューを閉じる         |
 | Tab              | DiffPreview      | フォーカストラップ内を循環 |
+
+---
+
+## Workspace Layout Foundation（TASK-UI-04A-WORKSPACE-LAYOUT）
+
+`WorkspaceView` を 1-pane 起点の作業スペース基盤へ引き上げた UI。chat を主役に維持しつつ、file browser / preview / status bar / file watcher を後続 04B / 04C が再利用できる境界で提供する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `WorkspaceView` | view | - | store selector、file read/watch、layout hook 結線 |
+| `WorkspaceShell` | template | `WorkspaceView` | inline / overlay / status bar の3領域を構成 |
+| `PanelToggleBar` | molecule | `WorkspaceView` | file / preview panel の表示切替 |
+| `FileBrowserPanel` | organism | `WorkspaceShell` | zero state / tree / error surface / context menu |
+| `FileTreeNode` | molecule | `FileBrowserPanel` | 再帰 tree item と keyboard nav |
+| `FileContextMenu` | molecule | `FileBrowserPanel` | 背景情報追加 / preview open |
+| `PanelResizeHandle` | molecule | `WorkspaceShell` | drag / keyboard / reset |
+| `WorkspaceStatusBar` | molecule | `WorkspaceShell` | selected file / ext / size / watch state 表示 |
+
+### レイアウトモード
+
+| モード | 条件 | 表示 |
+| --- | --- | --- |
+| `chat-only` | 初期状態 | chat のみ |
+| `chat+files` | file toggle ON | 左に file panel |
+| `chat+preview` | preview toggle ON | 右に preview panel |
+| `3-pane` | 両 toggle ON かつ 1440px 以上 | file + chat + preview 同時表示 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| mobile | 1023px 以下では panel を overlay 表示し、Escape で閉じる |
+| tablet | 1024px 以上 1439px 以下では最後に開いた panel を 1 枚だけ inline 表示 |
+| desktop wide | 1440px 以上では 3-pane を許可する |
+| status bar | `role="status"` + `aria-live="polite"` を維持する |
+| visual quality | light theme の補助テキストは WCAG を満たす濃度まで調整する |
+
+### 実装結果
+
+| 項目 | 内容 |
+| --- | --- |
+| store reuse | `workspaceSlice` / `fileSelectionSlice` を再利用、新規 slice なし |
+| watcher | `file:watch-start` / `file:watch-stop` / `file:changed` を selected file 単位で利用 |
+| test | task scope 12 files / 61 tests PASS |
+| screenshot | Phase 11 で 8 ケースを current workflow 配下に保存 |
+
+### 画面検証結果
+
+| 観点 | 判定 | 補足 |
+| --- | --- | --- |
+| desktop 3-pane | PASS | dark theme で 3 列の視線誘導が安定 |
+| tablet chat+files | PASS | 1 sidebar に圧縮しても hierarchy が崩れない |
+| mobile overlay | PASS | panel と scrim の分離が明確 |
+| light theme contrast | PASS | 初回 screenshot の弱い補助テキストを調整後に再撮影 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了（2026-03-10、Phase 13保留）** |
+| TASK-UI-04B | chat 本体統合 | 後続 |
+| TASK-UI-04C | preview / quick search 統合 | 後続 |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot source を current build へ固定し、reverse resize / watcher 更新 / light theme contrast の再監査を共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
 
 ---
 
@@ -1560,9 +1631,11 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
 | 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |
 | 2026-03-10 | v1.14.26   | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement 節に「実装内容と苦戦箇所サマリー」と「同種課題の5分解決カード」を追加し、adapter helper・dedicated harness・token scope 分離を feature 正本から直接参照できるよう再編 |
-| 2026-03-10 | v1.14.24   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
-| 2026-03-10 | v1.14.25   | TASK-UI-03 current workflow 同期: AgentView Enhancement の workflow 導線を `docs/30-workflows/task-ui-03-agent-view-enhancement/` に修正し、`types.ts` と Phase 11 dedicated harness、実測 136 tests を反映 |
-| 2026-03-08 | v1.14.23   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
+| 2026-03-10 | v1.14.25   | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。Workspace Layout Foundation 節へ current build source pinning と visual checklist 共通化の未タスク導線を登録し、04A の苦戦箇所から active backlog へ直接たどれるようにした |
+| 2026-03-10 | v1.14.24   | TASK-UI-04A-WORKSPACE-LAYOUT を反映: 収録機能一覧へ Workspace Layout Foundation を追加し、`WorkspaceView` / `FileBrowserPanel` / `PanelToggleBar` / `WorkspaceStatusBar` / watcher 連携 / Phase 11 screenshot 8件 / light theme contrast 是正を専用セクションへ同期 |
+| 2026-03-10 | v1.14.23   | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `AuthTimeoutFallback` / Settings 公開シェル / `shouldResetUnauthenticatedView` を UI 機能仕様へ追加し、Phase 11 screenshot 4件を同期 |
+| 2026-03-10 | v1.14.22   | TASK-UI-03 current workflow 同期: AgentView Enhancement の workflow 導線を `docs/30-workflows/task-ui-03-agent-view-enhancement/` に修正し、`types.ts` と Phase 11 dedicated harness、実測 136 tests を反映 |
+| 2026-03-08 | v1.14.21   | TASK-UI-03 / 09-TASK-FIX 完了反映: AgentView Enhancement 専用セクション（5サブコンポーネント構成、71テスト、レイアウトテスト）と Settings AuthKeySection 専用セクション（13テスト）を追加。完了タスクテーブルに2件登録。関連ドキュメントリンクを追加 |
 | 2026-03-07 | v1.14.22   | TASK-10A-F 完了反映: 収録機能一覧に Store-Driven Lifecycle Integration を追加。`useSkillAnalysis` の Store統合と画面検証（11 screenshot）を専用セクションへ同期し、workflow 導線を `docs/30-workflows/store-driven-lifecycle-ui/` に固定 |
 | 2026-03-06 | v1.14.21   | UT-TASK-10A-B-008 再監査追補を反映。SkillAnalysisView 節へ `useSkillAnalysis` の StrictMode ローディング固着修正と screenshot 8ケース再検証（dark/light/mobile/error/loading）を追記し、active/completed 別表運用の再発防止ルールを補強 |
 | 2026-03-06 | v1.14.20   | UT-TASK-10A-B-008 完了を反映。SkillAnalysisView の関連未タスク表を current active set 6件（002/004/005/006/007/009）へ再同期し、完了済み派生タスク 3件（001/003/008）を別表へ分離。`validate-task10ab-ledger-sync` で task-workflow / detection との整合を機械検証する運用を追記 |
