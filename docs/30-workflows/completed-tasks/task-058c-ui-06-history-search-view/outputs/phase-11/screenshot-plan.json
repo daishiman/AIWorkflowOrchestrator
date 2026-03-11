@@ -1,0 +1,52 @@
+{
+  "capturedAt": "2026-03-10",
+  "route": "/advanced/history-search",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "state": "initial-timeline",
+      "viewport": "1440x1200",
+      "file": "screenshots/TC-11-01-initial.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "search-active",
+      "viewport": "1440x1200",
+      "file": "screenshots/TC-11-02-search.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "accordion-expanded",
+      "viewport": "1440x1200",
+      "file": "screenshots/TC-11-03-accordion.png"
+    },
+    {
+      "tcId": "TC-11-11",
+      "state": "error",
+      "viewport": "1440x1200",
+      "file": "screenshots/TC-11-11-error.png"
+    },
+    {
+      "tcId": "TC-11-12",
+      "state": "empty-search",
+      "viewport": "1440x1200",
+      "file": "screenshots/TC-11-12-empty.png"
+    },
+    {
+      "tcId": "TC-11-21",
+      "state": "mobile-sticky",
+      "viewport": "390x844",
+      "file": "screenshots/TC-11-21-mobile-sticky.png"
+    }
+  ],
+  "nonVisualCases": [
+    {
+      "tcId": "TC-11-04",
+      "reason": "導線遷移は state / route の統合確認を優先"
+    },
+    {
+      "tcId": "TC-11-22",
+      "reason": "keyboard / aria は非視覚ログで確認"
+    }
+  ]
+}

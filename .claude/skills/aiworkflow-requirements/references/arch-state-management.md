@@ -9,7 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| v3.14.2    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
+| v3.14.3    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
+| v3.14.2    | 2026-03-10 | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`historySearchSlice` の `hasFetchedHistory` / `isHistoryLoadingMore` / append dedupe 契約、`EditorSlice.pendingOpenFilePath` による file deep-open、timeline grouping / sentinel loading 分離、task-scope coverage 88.42 / 80.00 / 90.00 を追記 |
 | v3.14.1    | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: `shouldResetUnauthenticatedView` / `PUBLIC_UNAUTHENTICATED_VIEWS` 相当の公開ビュー境界を追加し、未認証時 `settings` を reset 対象外にする契約を明文化 |
 | v3.14.0    | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: useAuthState に AUTH_TIMEOUT_MS = 10,000ms タイムアウト機構追加。AuthState 型に "timed-out" 状態追加。getAuthState 純粋関数で isTimedOut 判定。Settings bypass で currentView === "settings" 時は AuthGuard 外レンダリング |
 | v3.13.2    | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映。App shell mount 時の debug-only `localStorage.clear()` / `window.location.reload()` を persist 契約違反として明文化し、DD-04/DD-05（shared shell 副作用禁止 / bug path検証と screenshot path 分離）を追加。Phase 11 は通常ルート metadata 確認 + dedicated harness screenshot の二段構成を標準化 |
@@ -221,6 +222,55 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `vitest`（対象5ファイル） | PASS（37 tests） |
 | `typecheck` | PASS |
 | coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
+
+---
+
+## HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW）
+
+### 更新した Slice / state
+
+| Slice | 追加/変更 | 目的 |
+| --- | --- | --- |
+| `historySearchSlice` | `hasFetchedHistory` | 初回 loading と初期 empty を分離する |
+| `historySearchSlice` | `isHistoryLoadingMore` | 初回検索と append 読込を分離する |
+| `historySearchSlice` | `expandedItemId` | accordion を単一展開に保つ |
+| `editorSlice` | `pendingOpenFilePath` | history file card から editor への deep-open を橋渡しする |
+
+### Action 契約
+
+| Action | 契約 |
+| --- | --- |
+| `searchHistory(query, offset, filter)` | `query.trim()` を正本にする。`offset === 0` は置換、`offset > 0` は append |
+| `loadMoreHistory()` | `hasMore=false` / `isHistorySearching=true` / `isHistoryLoadingMore=true` の場合は no-op |
+| `mergeHistoryItems()` | `id` 重複を除外して append する |
+| `requestOpenFile(filePath)` | `pendingOpenFilePath` をセットし、呼び出し元が `setCurrentView("editor")` を行う |
+| `clearPendingOpenFile()` | `EditorView` 側で消費後に必ず null へ戻す |
+
+### UI状態の分離
+
+| UI mode | 判定 | 表示 |
+| --- | --- | --- |
+| loading | `!hasFetchedHistory && isHistorySearching` | skeleton |
+| results | `historySearchResults.length > 0` | timeline + sentinel |
+| search-empty | `query.trim() !== "" && results.length === 0` | clear CTA |
+| empty | 初回取得後に結果0件 | chat 導線 |
+| error | `historySearchError !== null` | retry CTA |
+
+### 実装時の苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| 検索中と追加読込中を同一フラグで持つと empty/loading 判定が崩れる | `isHistorySearching` だけで全状態を表す | `hasFetchedHistory` / `isHistoryLoadingMore` を分離した | timeline UI は initial / append / empty を別フラグで表現する |
+| file card から editor を直接開けず、View 遷移だけ先に進む | deep-open 対象 path を global state に残さない | `pendingOpenFilePath` を `editorSlice` に追加した | cross-view 導線は「遷移」と「消費する payload」を分けて保持する |
+| mobile sticky header が card と視覚干渉しやすい | sticky offset が画面全体 header を前提に固定される | `top-0` + gradient + blur に寄せた | timeline の group header は local scroll container 基準で sticky を設計する |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（対象5ファイル） | PASS（26 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| coverage（task scope） | Lines 88.42 / Branches 80.00 / Functions 90.00 |
 
 ---
 

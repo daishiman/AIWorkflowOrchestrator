@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.12.2    | 2026-03-10 | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`HistorySearchView` の timeline 再設計、`historySearchSlice` の `hasFetchedHistory` / `isHistoryLoadingMore`、`editorSlice.pendingOpenFilePath` を同期し、task-scope coverage 88.42 / 80.00 / 90.00 と Phase 11 screenshot 6件を追記 |
 | v3.12.1    | 2026-03-09 | TASK-10A-F Phase 12 再同期を追補。current workflow に実スクリーンショット11件、validator 準拠 `manual-test-result.md`、Part 1/2 完備 `implementation-guide.md` を再配置した実装内容と、P53 placeholder 除去・implementation-guide literal 見出し・unassigned legacy baseline 分離報告の苦戦箇所を追加 |
 | v3.10.1    | 2026-03-07 | TASK-10A-F 反映: Skill lifecycle UI の direct IPC 排除を仕様同期。`useSkillAnalysis` の Store個別セレクタ利用、Phase 11 screenshot 11件、TASK-10A-D/E-C/F の責務境界を追記                                                                                                                                   |
 | v3.9.0     | 2026-03-06 | TASK-10A-E-C 反映: import lifecycle の store 駆動設計を同期。`useAvailableSkillsForImport` / `useFilteredAvailableSkills` と `useShallow` 適用条件、`importSkill` の状態遷移（`isImporting`/`importingSkillName`/`skillError`）および TASK-10A-F 境界を追記                                                  |
@@ -162,20 +163,24 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 ### HistorySearch 契約
 
-| 項目       | 内容                             |
-| ---------- | -------------------------------- |
-| フィルタ   | type/date/includeArchived        |
-| 結果管理   | `results`, `stats`, `pagination` |
-| 検索前処理 | `query.trim()` を必須化          |
-| エラー管理 | `historySearchError` に明示保持  |
+| 項目 | 内容 |
+| --- | --- |
+| フィルタ | Renderer UI では `all` 固定。契約互換のため slice に保持 |
+| 結果管理 | `historySearchResults` / `historySearchTotalCount` / `historySearchHasMore` |
+| 初回取得状態 | `hasFetchedHistory` で初期空状態と検索空状態を分離 |
+| 追加読込状態 | `isHistoryLoadingMore` で observer footer spinner を分離 |
+| 検索前処理 | `query.trim()` を Renderer/Main 両側で適用 |
+| 展開状態 | `expandedItemId` に単一アコーディオン状態を保持 |
+| エラー管理 | `historySearchError` に明示保持 |
+| file deep-open | `editorSlice.pendingOpenFilePath` を経由して `currentView=editor` へ接続 |
 
 ### 検証証跡
 
-| 検証                      | 結果                                       |
-| ------------------------- | ------------------------------------------ |
-| `vitest`（対象5ファイル） | PASS（37 tests）                           |
-| `typecheck`               | PASS                                       |
-| coverage（task scope）    | Line 87.45 / Branch 65.11 / Function 80.39 |
+| 検証 | 結果 |
+| --- | --- |
+| `vitest`（058c 対象5ファイル） | PASS（26 tests） |
+| `typecheck` | PASS |
+| coverage（058c task scope） | Lines 88.42 / Branch 80.00 / Functions 90.00 |
 
 ---
 

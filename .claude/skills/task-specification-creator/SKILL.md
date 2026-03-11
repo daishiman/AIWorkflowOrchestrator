@@ -395,6 +395,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.46** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW の Phase 12再監査知見を反映**: `references/spec-update-workflow.md` に「`.claude` が canonical root、`.agents` は mirror」ルールを追加し、`references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加。workflow / outputs が `.agents/skills/.../references/` を正本として参照しないようにする再監査手順と、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` の formalization を標準化 |
 | **v10.08.45** | **2026-03-10** | **TASK-UI-03 Phase 12再監査の backlog 整合を反映**: current branch で解消済みの `UT-UI-03-TYPE-ASSERTION-001` を completed unassigned へ正規化し、Phase 11 light theme 所見を `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` として task-spec フォーマットで formalize する運用を変更履歴へ追加。`unassigned-task-detection.md` / `task-workflow.md` / `spec-update-summary.md` の同値同期を標準化 |
 | **v10.08.44** | **2026-03-10** | **TASK-UI-03 再監査で task-specification-creator の canonical script path を是正**: `.claude/skills/task-specification-creator/scripts/` を参照していた current workflow / `commands.md` / `phase-11-12-guide.md` / `phase-templates.md` / `patterns.md` / `unassigned-task-guidelines.md` を `.agents/skills/task-specification-creator/scripts/` へ統一し、`validate-phase-output.js` の位置引数契約へ再整合 |
 | **v10.08.43** | **2026-03-10** | **TASK-UI-03 current workflow 同期**: Phase 11 の dedicated harness route と `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` の TC証跡構成を current workflow 実績へ反映し、Phase 12 で outputs/phase-4〜12 と `.claude/skills/...` 正本を同ターン同期する運用を変更履歴へ追加 |
@@ -493,11 +494,4 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 | **v9.92.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査同期**: `references/spec-update-workflow.md` の baseline/current 判定手順を `--target-file` / `--diff-from` ベースへ更新 |
 | **v9.91.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 実装反映**: `scripts/audit-unassigned-tasks.js` に `--target-file` / `--diff-from`、`currentViolations` / `baselineViolations` 分離、scoped 判定を追加 |
 | **v9.90.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001 再確認反映**: `phase-11-12-guide.md` / `spec-update-workflow.md` にスキル構造検証チェックを追記（`quick_validate.js` ベース） |
-| **v9.89.0** | **2026-02-25** | **再監査運用改善**: baseline/current 分離監査ルールを標準化し、全体FAILと差分FAILの誤判定を防止 |
-| **v9.88.0** | **2026-02-25** | **Phase 1-12 実行反映**: 成果物出力完了、Phase 12 仕様同期、`artifacts.json` と `outputs/artifacts.json` 同期運用を明文化 |
-| **v9.87.0** | **2026-02-25** | **Phase 12 再監査反映**: 未タスク登録・参照整合・成果物追補の運用ガードを更新 |
-| **v9.86.0** | **2026-02-24** | **Phase 12 要件再整合**: 必須タスクを4→5へ修正し、漏れパターンに `spec-update-summary.md` と artifacts 同期不一致を追加 |
-| **v9.85.0** | **2026-02-24** | **UT-IPC-DATA-FLOW-TYPE-GAPS-001 完了反映**: 仕様差分解消と検証結果を更新 |
-| **v9.84.0** | **2026-02-24** | **UT-SKILL-IMPORT-CHANNEL-CONFLICT-001 反映**: IPC命名パターンの体系化を仕様へ展開 |
-
-> 補足: v9.83.2 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
+> 補足: v9.89.0 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。

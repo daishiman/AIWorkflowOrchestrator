@@ -9,6 +9,19 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `.claude` 正本を canonical root とし、workflow / outputs に残っていた `.agents/skills/...` 参照を是正
+  - `references/spec-update-workflow.md` に dual-root repo 向け canonical root 判定を追加
+  - `references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加
+  - `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を `docs/30-workflows/unassigned-task/` に formalize
+  - 058c workflow の `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を再監査結果へ更新
+
+---
 ## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 1-12 実装完了
 
 - **Agent**: task-specification-creator

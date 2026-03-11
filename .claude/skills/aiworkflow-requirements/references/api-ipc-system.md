@@ -294,8 +294,8 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | `notification:mark-all-read` | invoke   | なし                                  | `NotificationMutationResponse`   | 認証必須         |
 | `notification:clear`         | invoke   | `{ onlyRead?: boolean }`              | `NotificationMutationResponse`   | 認証必須         |
 | `notification:new`           | on       | `NotificationHistoryItem`             | event                            | Main -> Renderer |
-| `history:search`             | invoke   | `HistorySearchRequest`                | `HistorySearchResponse`          | `query` 必須     |
-| `history:get-stats`          | invoke   | なし                                  | `HistorySearchStatsResponse`     | 集計返却         |
+| `history:search`             | invoke   | `HistorySearchRequest`                | `HistorySearchResponse`          | `query` は空文字許容、trim 正規化 |
+| `history:get-stats`          | invoke   | なし                                  | `HistorySearchStatsResponse`     | sender検証 + 集計返却 |
 
 **セキュリティ契約**:
 
@@ -303,8 +303,18 @@ Notification ドメインと HistorySearch ドメインの統合で追加したI
 | ---------- | ------------------------------------------------------------------------------- |
 | sender検証 | `event.sender === mainWindow.webContents` かつ URL を検証                       |
 | 更新系認証 | `notification:mark-read` / `mark-all-read` / `clear` は未認証時 `AUTH_REQUIRED` |
-| 入力検証   | `notification id` と `history query` を必須化                                   |
+| 入力検証   | `notification id` と `history query/filter/limit/offset` を検証                 |
 | 公開境界   | `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` に明示登録                    |
+
+### HistorySearch handler detail（TASK-UI-06 追補）
+
+| 項目 | 契約 |
+| --- | --- |
+| `query` | `string` 以外は `VALIDATION_ERROR`。空文字と空白のみは `\"\"` へ正規化して全件検索として扱う |
+| `filter` | `all` / `chat` / `file` / `skill` 以外は `VALIDATION_ERROR` |
+| `limit` | 不正値は `30` へ fallback |
+| `offset` | 不正値は `0` へ fallback |
+| error sanitize | handler 内で `sanitizeErrorMessage()` を通し、生の例外文字列をそのまま Renderer へ出さない |
 
 ### IPC エラーコード
 

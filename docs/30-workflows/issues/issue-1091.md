@@ -1,0 +1,180 @@
+# [#1091] "[UT-IMP-IPC-ERROR-SANITIZE-COMMON-001] IPC エラーメッセージサニタイズの共通ユーティリティ化"
+
+## メタ情報
+
+```yaml
+task_id: UT-IMP-IPC-ERROR-SANITIZE-COMMON-001
+task_name: IPC エラーメッセージサニタイズの共通ユーティリティ化
+category: リファクタリング
+target_feature: IPC エラーメッセージ処理
+priority: 低
+scale: 小規模
+status: 未実施
+source_phase: TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 Phase 12（苦戦箇所 S-GD-3）
+created_date: 2026-03-08
+dependencies: []
+spec_path: docs/30-workflows/unassigned-task/task-ipc-error-sanitize-common.md
+```
+
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 低     |
+| 規模       | 小規模 |
+| ステータス | 未実施 |
+
+---
+
+## 1. なぜこのタスクが必要か（Why）
+
+### 1.1 背景
+
+Graceful Degradation の実装で `sanitizeRegistrationErrorMessage()` と `escapeRegExp()` を `index.ts` 内部に作成した。一方、`skillCreatorHandlers.ts` にも `sanitizeErrorMessage()` が別途存在し、同様のパスマスク処理が分散している。NFR-02（プライバシー保護）準拠のエラーサニタイズは全 IPC ハンドラで統一的に適用すべき。
+
+### 1.2 問題点・課題
+
+| 課題                        | 現状                                               | あるべき姿                                            |
+| --------------------------- | -------------------------------------------------- | ----------------------------------------------------- |
+| パスマスク実装の分散        | `index.ts` と `skillCreatorHandlers.ts` に別実装   | 共通ユーティリティに統一                              |
+| `escapeRegExp` の重複リスク | 各モジュールが独自にエスケープ処理を実装する可能性 | 1箇所に集約                                           |
+| テストの重複                | 各ハンドラテストで個別にサニタイズ検証             | 共通ユーティリティのテスト + ハンドラテストはモック化 |
+
+### 1.3 放置した場合の影響
+
+- 新しい IPC ハンドラ追加時にサニタイズ処理の実装漏れが発生するリスク
+- `escapeRegExp` の異なる実装が混在し、一部のパスパターンでマスク漏れが発生する可能性
+- エラーメッセージのフォーマットがハンドラごとに異なり、ログの解析が困難になる
+
+---
+
+## 2. 何を達成するか（What）
+
+### 2.1 目的
+
+IPC エラーメッセージのサニタイズ処理を共通ユーティリティとして統一し、全 IPC ハンドラで一貫したプライバシー保護を実現する。
+
+### 2.2 最終ゴール
+
+- `apps/desktop/src/main/ipc/utils/sanitize.ts` に共通ユーティリティを配置
+- 既存の `sanitizeRegistrationErrorMessage` と `sanitizeErrorMessage` を統合
+- 全 IPC ハンドラが共通ユーティリティを使用
+
+### 2.3 スコープ
+
+#### 含むもの
+
+- `escapeRegExp()` の共通ユーティリティ化
+- `sanitizeErrorMessage()` の統一実装
+- 既存の分散実装の共通ユーティリティへの移行
+- 共通ユーティリティのユニットテスト
+
+#### 含まないもの
+
+- IPC ハンドラの機能変更
+- Renderer 側のエラー表示変更
+- ログレベル制御の変更
+
+### 2.4 成果物
+
+| 成果物             | パス                                                            |
+| ------------------ | --------------------------------------------------------------- |
+| 共通ユーティリティ | `apps/desktop/src/main/ipc/utils/sanitize.ts`                   |
+| ユニットテスト     | `apps/desktop/src/main/ipc/__tests__/sanitize.test.ts`          |
+| 修正済みハンドラ   | `apps/desktop/src/main/ipc/index.ts`, `skillCreatorHandlers.ts` |
+
+---
+
+## 3. どのように実行するか（How）
+
+### 3.1 前提条件
+
+- TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 が完了していること（マージ済み）
+
+### 3.2 依存タスク
+
+| タスクID                                      | 依存内容                                      |
+| --------------------------------------------- | --------------------------------------------- |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 | `sanitizeRegistrationErrorMessage` の基盤実装 |
+
+### 3.3 必要な知識
+
+- 正規表現メタ文字エスケープ（P55 参照）
+- `os.homedir()` のプラットフォーム差異
+- IPC ハンドラのエラーハンドリングパターン
+
+### 3.4 推奨アプローチ
+
+1. `grep -rn "sanitize.*Error\|sanitize.*Message" apps/desktop/src/main/ipc/` で既存実装を洗い出す
+2. 共通ユーティリティを `utils/sanitize.ts` に作成
+3. 既存実装を共通ユーティリティへの呼び出しに置換
+4. テストを共通ユーティリティ側に集約
+
+---
+
+## 3.5 実装課題と解決策（親タスクからの教訓）
+
+| 課題                                  | 発見経緯                                                               | 解決策                                                        | 教訓                                                         |
+| ------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| パスの正規表現メタ文字（S-GD-3, P55） | `os.homedir()` が返すパスに `.` が含まれ、ワイルドカードとして扱われた | `escapeRegExp()` でメタ文字をエスケープしてから `RegExp` 生成 | ユーザー入力由来の文字列を正規表現に使う場合は必ずエスケープ |
+| サニタイズ範囲の判断                  | どの情報をマスクすべきか設計時に明確でなかった                         | `os.homedir()` 配下パス → `~` マスクを最小基準とする          | NFR-02 に照らして機密性の判断基準を設計書に明記する          |
+
+---
+
+## 4. 実行手順
+
+### Phase構成
+
+小規模リファクタリングのため、Phase 4-5-9 の簡略構成。
+
+---
+
+## 5. 完了条件チェックリスト
+
+### 機能要件
+
+- [ ] `utils/sanitize.ts` に `sanitizeErrorMessage()` と `escapeRegExp()` が公開されている
+- [ ] `index.ts` の `sanitizeRegistrationErrorMessage` が共通ユーティリティを使用している
+- [ ] `skillCreatorHandlers.ts` の `sanitizeErrorMessage` が共通ユーティリティを使用している
+
+### 品質要件
+
+- [ ] 共通ユーティリティのユニットテストが PASS
+- [ ] 既存テスト（19 + 116 テスト）に回帰がないこと
+
+### ドキュメント要件
+
+- [ ] `api-ipc-system.md` のサニタイズ関連セクションを更新
+
+---
+
+## 6. 検証方法
+
+### テストケース
+
+| TC-ID | 観点                         | 期待結果                                    |
+| ----- | ---------------------------- | ------------------------------------------- |
+| TC-01 | ホームディレクトリパスマスク | `/Users/user/config.json` → `~/config.json` |
+| TC-02 | メタ文字含むパス             | `/Users/user.name/file` → `~/file`          |
+| TC-03 | パスなしメッセージ           | 変更なしで返却                              |
+| TC-04 | 空文字列                     | 空文字列を返却                              |
+
+---
+
+## 7. リスクと対策
+
+| リスク               | 影響度 | 発生確率 | 対策                                |
+| -------------------- | ------ | -------- | ----------------------------------- |
+| 既存テスト回帰       | 中     | 低       | 置換前後でテスト全件 PASS を確認    |
+| プラットフォーム差異 | 低     | 低       | Windows の `\` パスもテストに含める |
+
+---
+
+## 8. 参照情報
+
+### 関連ドキュメント
+
+| 資料                         | パス                                                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| セキュリティ仕様 SEC-GD-1〜3 | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                |
+| 落とし穴 P55                 | `.claude/rules/06-known-pitfalls.md#P55`                                                    |
+| S30 実装パターン             | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` |
+| lessons-learned S-GD-3       | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                      |

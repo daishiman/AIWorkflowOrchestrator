@@ -20,7 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-10 | 1.29.62 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
+| 2026-03-10 | 1.29.64 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
+| 2026-03-10 | 1.29.63 | TASK-UI-06-HISTORY-SEARCH-VIEW の解決手順を 5 ステップへ最適化し、専用 domain spec / feature spec / task-workflow の同期粒度を揃えた |
+| 2026-03-10 | 1.29.62 | TASK-UI-06-HISTORY-SEARCH-VIEW の教訓を追加。worktree 依存補完 preflight、screenshot strict locator 化、`.claude` 正本 / `.agents` mirror の canonical root 固定、timeline UI の state 分離を再利用手順として追記 |
 | 2026-03-10 | 1.29.61 | TASK-10A-G 実装知見追補。IPC ハンドラキャプチャパターン、Store 統合テストの Promise 解決タイミング制御、Phase 6 カバレッジ不足の2段階テスト設計、P41 v8 Function Coverage exemption 判断、Phase 12 並列エージェント分割戦略の5苦戦箇所と5分解決カードを追記 |
 | 2026-03-10 | 1.29.60 | TASK-10A-G 再監査追補の教訓を追加。`generate-index.js --workflow ... --regenerate` が workflow `artifacts.json` スキーマ差で `index.md` を `undefined` / 全Phase未実施へ崩しうる点、実行直後に `verify-all-specs --strict` / `validate-phase-output` で確認し、必要なら未タスク化する運用を追記 |
 | 2026-03-10 | 1.29.59 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 の教訓を補完。Promise.race パターンのシンプルさ、`clearTimeout` cleanup 採用の判断根拠、3ファイル重複 safeInvoke の DRY 統合（ipc-utils.ts）、safeInvokeUnwrap 自動対応、P13 準拠 Fake Timer テスト戦略を追記 |
@@ -44,6 +46,43 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-10 TASK-UI-06-HISTORY-SEARCH-VIEW
+
+#### 苦戦箇所1: worktree では test failure の前に native optional dependency 不整合が起こりうる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `vitest` 実行前に `@rollup/rollup-darwin-x64` が見つからず startup error になった |
+| 再発条件 | worktree 作成後に install preflight を省略し、そのまま UI screenshot / テストへ進む |
+| 解決策 | `pnpm install --frozen-lockfile` を Phase 11 前の preflight に含めた |
+| 標準ルール | worktree で renderer 系テストや screenshot を行う前に依存整合を先に通す |
+
+#### 苦戦箇所2: screenshot script の待機条件が broad だと strict mode violation で止まる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | accordion summary/detail が同じ文字列を持ち、Playwright の text locator が複数一致した |
+| 再発条件 | 人間には読めるが DOM 上は一意でない文言を ready condition に使う |
+| 解決策 | detail 側でしか現れない text へ待機条件を絞った |
+| 標準ルール | screenshot script の ready condition は一意 text または `data-testid` を正本にする |
+
+#### 苦戦箇所3: `.claude` 正本と `.agents` mirror の更新先が混線しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow / spec-update-summary / phase doc が `.agents/skills/...` を参照し、ユーザー指定の `.claude` 正本とずれた |
+| 再発条件 | skill root が二重化された repo で mirror 側だけを更新して完了扱いにする |
+| 解決策 | `.claude/skills/...` を canonical root に固定し、mirror drift は未タスクへ分離した |
+| 標準ルール | Phase 12 の system spec 更新先は `.claude/skills/...` を唯一の正本として扱う |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. UIタスクの preflight で install / port / screenshot script を先に確認する。  
+2. timeline UI は initial loading / load more / empty を別 state で設計する。  
+3. cross-view 導線は `pending payload + view 遷移` の二段構成に分離する。  
+4. screenshot script は一意 selector を ready condition にする。  
+5. Phase 12 では `.claude` 正本、domain spec、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
 
 ### 2026-03-10 TASK-10A-G 再監査追補
 
