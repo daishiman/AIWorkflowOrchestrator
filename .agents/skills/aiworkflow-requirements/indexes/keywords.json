@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T05:12:36.334Z",
-  "totalKeywords": 1569,
+  "generated": "2026-03-11T09:50:19.384Z",
+  "totalKeywords": 1566,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -502,7 +502,6 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
-      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-history-search-view.md",
@@ -784,8 +783,7 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings.md"
+      "ui-ux-search-panel.md"
     ],
     "FIX": [
       "api-ipc-agent.md",
@@ -796,8 +794,7 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md",
-      "testing-component-patterns.md",
-      "ui-ux-settings.md"
+      "testing-component-patterns.md"
     ],
     "SKILL": [
       "api-ipc-agent.md",
@@ -1398,8 +1395,7 @@
     "SETTINGS": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "task-workflow.md",
-      "ui-ux-settings.md"
+      "task-workflow.md"
     ],
     "PERSIST": [
       "arch-state-management.md",
@@ -4182,18 +4178,15 @@
       "lessons-learned.md"
     ],
     "AUTHGUARD": [
-      "lessons-learned.md",
-      "ui-ux-settings.md"
+      "lessons-learned.md"
     ],
     "TIMEOUT": [
       "lessons-learned.md",
       "security-electron-ipc.md",
-      "task-workflow.md",
-      "ui-ux-settings.md"
+      "task-workflow.md"
     ],
     "BYPASS": [
-      "lessons-learned.md",
-      "ui-ux-settings.md"
+      "lessons-learned.md"
     ],
     "実装教訓": [
       "lessons-learned.md"
@@ -4202,6 +4195,12 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md"
+    ],
+    "DASHBOARD": [
+      "lessons-learned.md"
+    ],
+    "ホーム画面リデザイン": [
+      "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -5278,12 +5277,6 @@
     "統合テストハーネスパターン": [
       "testing-component-patterns.md"
     ],
-    "ハンドラキャプチャテストパターン": [
-      "testing-component-patterns.md"
-    ],
-    "駆動ライフサイクル統合テストパターン": [
-      "testing-component-patterns.md"
-    ],
     "ダイアログテストパターン仕様": [
       "testing-dialog-patterns.md"
     ],
@@ -5877,15 +5870,6 @@
       "ui-ux-settings.md"
     ],
     "Panel": [
-      "ui-ux-settings.md"
-    ],
-    "画面の": [
-      "ui-ux-settings.md"
-    ],
-    "AuthGuard": [
-      "ui-ux-settings.md"
-    ],
-    "非依存アクセス": [
       "ui-ux-settings.md"
     ],
     "ApiKeysSection": [

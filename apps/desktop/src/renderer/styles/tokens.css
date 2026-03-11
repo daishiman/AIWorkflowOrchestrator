@@ -66,17 +66,21 @@
   --bg-tertiary: var(--color-slate-700);
   --bg-elevated: rgba(255, 255, 255, 0.05);
   --bg-glass: rgba(255, 255, 255, 0.1);
+  --bg-hover: var(--bg-tertiary);
 
   /* ─── Kanagawa Dragon Label Colors ─── */
   --text-primary: var(--color-slate-50);
   --text-secondary: var(--color-slate-400);
   --text-muted: var(--color-slate-500);
+  --text-tertiary: var(--color-slate-600);
   --text-inverse: var(--color-slate-900);
 
   /* ─── Kanagawa Dragon Separator Colors ─── */
   --border-default: var(--color-slate-700);
   --border-emphasis: var(--color-slate-600);
   --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-primary: var(--border-default);
+  --border-color: var(--border-default);
 
   /* ─── Kanagawa Dragon Status Colors ─── */
   --status-primary: var(--color-macos-blue);
@@ -89,6 +93,12 @@
   --status-error-hover: var(--color-red-400);
   --status-info: var(--color-sky-500);
   --status-info-hover: var(--color-sky-400);
+  --status-success-subtle: rgba(34, 197, 94, 0.2);
+  --status-warning-subtle: rgba(245, 158, 11, 0.22);
+  --status-info-subtle: rgba(14, 165, 233, 0.2);
+  --accent-primary: var(--status-primary);
+  --syntax-operator: var(--status-error);
+  --syntax-punctuation: var(--text-muted);
 
   /* ===== Spacing (8px Grid) ===== */
   --spacing-0: 0px;
@@ -219,17 +229,21 @@
   --bg-elevated: var(--kanagawa-dragon-black-3);
   --bg-glass: rgba(18, 18, 15, 0.9);
   --bg-selection: var(--kanagawa-dragon-black-4);
+  --bg-hover: var(--bg-tertiary);
 
   /* ─── Kanagawa Dragon Label Colors ─── */
   --text-primary: var(--kanagawa-dragon-white);
   --text-secondary: var(--kanagawa-dragon-gray-2);
   --text-muted: var(--kanagawa-dragon-gray);
+  --text-tertiary: rgba(166, 166, 156, 0.55);
   --text-inverse: var(--kanagawa-dragon-black-1);
 
   /* ─── Kanagawa Dragon Separator Colors ─── */
   --border-default: var(--kanagawa-dragon-black-4);
   --border-emphasis: var(--kanagawa-dragon-black-5);
   --border-subtle: rgba(197, 201, 197, 0.1);
+  --border-primary: var(--border-default);
+  --border-color: var(--border-default);
 
   /* ─── Kanagawa Dragon Status Colors ─── */
   --status-primary: var(--kanagawa-dragon-blue);
@@ -242,6 +256,10 @@
   --status-error-hover: var(--kanagawa-dragon-red);
   --status-info: var(--kanagawa-spring-blue);
   --status-info-hover: var(--kanagawa-dragon-blue);
+  --status-success-subtle: rgba(135, 169, 135, 0.2);
+  --status-warning-subtle: rgba(255, 158, 59, 0.2);
+  --status-info-subtle: rgba(127, 180, 202, 0.2);
+  --accent-primary: var(--status-primary);
 
   /* ─── Syntax Highlighting (Kanagawa Dragon) ─── */
   --syntax-keyword: var(--kanagawa-dragon-violet);
@@ -252,6 +270,8 @@
   --syntax-type: var(--kanagawa-dragon-aqua);
   --syntax-comment: var(--kanagawa-dragon-gray);
   --syntax-variable: var(--kanagawa-dragon-yellow);
+  --syntax-operator: var(--kanagawa-dragon-red);
+  --syntax-punctuation: var(--kanagawa-dragon-gray-2);
 }
 
 /* Kanagawa Dragon Glass Effects */
@@ -266,34 +286,42 @@
 
   /* ─── Apple System Background Colors ─── */
   --bg-primary: #ffffff;
-  --bg-secondary: #f2f2f7;
-  --bg-tertiary: #e5e5ea;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f5f5f7;
   --bg-elevated: #ffffff;
-  --bg-glass: rgba(242, 242, 247, 0.8);
-  --bg-selection: rgba(0, 122, 255, 0.15);
+  --bg-glass: rgba(255, 255, 255, 0.92);
+  --bg-selection: rgba(10, 122, 255, 0.12);
+  --bg-hover: var(--bg-tertiary);
 
   /* ─── Apple Label Colors ─── */
   --text-primary: #000000;
-  --text-secondary: rgba(60, 60, 67, 0.6);
-  --text-muted: rgba(60, 60, 67, 0.3);
+  --text-secondary: rgba(0, 0, 0, 0.72);
+  --text-muted: rgba(0, 0, 0, 0.56);
+  --text-tertiary: rgba(0, 0, 0, 0.42);
   --text-inverse: #ffffff;
 
   /* ─── Apple Separator Colors ─── */
-  --border-default: #c6c6c8;
-  --border-emphasis: #aeaeb2;
-  --border-subtle: rgba(60, 60, 67, 0.12);
+  --border-default: #d2d2d7;
+  --border-emphasis: #b8b8bf;
+  --border-subtle: rgba(60, 60, 67, 0.18);
+  --border-primary: var(--border-default);
+  --border-color: var(--border-default);
 
   /* ─── Apple System Tint Colors (Light) ─── */
-  --status-primary: #007aff;
-  --status-primary-hover: #0056b3;
-  --status-success: #34c759;
-  --status-success-hover: #28a745;
-  --status-warning: #ff9500;
-  --status-warning-hover: #cc7700;
-  --status-error: #ff3b30;
-  --status-error-hover: #cc2f26;
-  --status-info: #5856d6;
-  --status-info-hover: #4240a8;
+  --status-primary: #0a6ce9;
+  --status-primary-hover: #0959be;
+  --status-success: #1f9d57;
+  --status-success-hover: #1a874a;
+  --status-success-subtle: rgba(31, 157, 87, 0.14);
+  --status-warning: #d68006;
+  --status-warning-hover: #b46a03;
+  --status-warning-subtle: rgba(214, 128, 6, 0.16);
+  --status-error: #d8332a;
+  --status-error-hover: #b92a22;
+  --status-info: #4f46e5;
+  --status-info-hover: #4338ca;
+  --status-info-subtle: rgba(79, 70, 229, 0.14);
+  --accent-primary: var(--status-primary);
 
   /* ─── Syntax Highlighting (Xcode Light) ─── */
   --syntax-keyword: #9b2393;
@@ -304,6 +332,8 @@
   --syntax-type: #5856d6;
   --syntax-comment: #8e8e93;
   --syntax-variable: #3900a0;
+  --syntax-operator: #7c3aed;
+  --syntax-punctuation: #6b7280;
 }
 
 /* ===== Dark Theme (data-theme="dark") ===== */
@@ -317,29 +347,37 @@
   --bg-elevated: #1c1c1e;
   --bg-glass: rgba(28, 28, 30, 0.8);
   --bg-selection: rgba(10, 132, 255, 0.25);
+  --bg-hover: var(--bg-tertiary);
 
   /* ─── Apple Label Colors (Dark) ─── */
   --text-primary: #ffffff;
   --text-secondary: rgba(235, 235, 245, 0.6);
   --text-muted: rgba(235, 235, 245, 0.3);
+  --text-tertiary: rgba(235, 235, 245, 0.45);
   --text-inverse: #000000;
 
   /* ─── Apple Separator Colors (Dark) ─── */
   --border-default: #38383a;
   --border-emphasis: #48484a;
   --border-subtle: rgba(84, 84, 88, 0.36);
+  --border-primary: var(--border-default);
+  --border-color: var(--border-default);
 
   /* ─── Apple System Tint Colors (Dark) ─── */
   --status-primary: #0a84ff;
   --status-primary-hover: #409cff;
   --status-success: #30d158;
   --status-success-hover: #5bd97d;
+  --status-success-subtle: rgba(48, 209, 88, 0.2);
   --status-warning: #ff9f0a;
   --status-warning-hover: #ffb840;
+  --status-warning-subtle: rgba(255, 159, 10, 0.22);
   --status-error: #ff453a;
   --status-error-hover: #ff6961;
   --status-info: #5e5ce6;
   --status-info-hover: #7a78eb;
+  --status-info-subtle: rgba(94, 92, 230, 0.22);
+  --accent-primary: var(--status-primary);
 
   /* ─── Syntax Highlighting (Xcode Dark) ─── */
   --syntax-keyword: #fc5fa3;
@@ -350,6 +388,8 @@
   --syntax-type: #5e5ce6;
   --syntax-comment: #7f8c98;
   --syntax-variable: #67b7a4;
+  --syntax-operator: #ff6961;
+  --syntax-punctuation: #8e8e93;
 }
 
 /* ===== Theme Transition ===== */

@@ -13,6 +13,7 @@ import type { BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import type { ApiKeyStorage } from "../infrastructure/apiKeyStorage";
 import { withValidation } from "../infrastructure/security/ipc-validator.js";
+import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import {
   type AIProvider,
   type ApiKeyValidationResult,
@@ -21,6 +22,7 @@ import {
   API_KEY_ERROR_CODES,
   API_KEY_CONSTRAINTS,
 } from "@repo/shared/types/api-keys";
+import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 import { validateApiKey } from "@repo/shared/infrastructure/ai/apiKeyValidator";
 import type { IPCResponse } from "@repo/shared/types/auth";
 
@@ -100,6 +102,17 @@ function getCurrentTimestamp(): string {
   return new Date().toISOString();
 }
 
+function clearLLMAdapterCache(provider: AIProvider): void {
+  try {
+    LLMAdapterFactory.clearInstance(provider as LLMProviderId);
+  } catch (error) {
+    console.warn(
+      "[ApiKeyHandlers] Failed to clear LLM adapter cache:",
+      sanitizeApiKeyError(error),
+    );
+  }
+}
+
 // === ハンドラー登録 ===
 
 /**
@@ -161,6 +174,8 @@ export function registerApiKeyHandlers(
             };
           }
 
+          clearLLMAdapterCache(provider as AIProvider);
+
           return {
             success: true,
             data: {
@@ -217,6 +232,8 @@ export function registerApiKeyHandlers(
               },
             };
           }
+
+          clearLLMAdapterCache(provider as AIProvider);
 
           return {
             success: true,

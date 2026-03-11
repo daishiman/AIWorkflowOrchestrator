@@ -59,10 +59,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         aria-label={ariaLabel}
         className={clsx(
           "w-full px-3 py-2 rounded-lg",
-          "bg-white/5 border border-white/10",
-          "text-white placeholder:text-gray-400",
+          "bg-[var(--bg-secondary)] border border-[var(--border-primary)]",
+          "text-[var(--text-primary)] placeholder:text-[var(--text-muted)]",
           "transition-all duration-200",
-          "focus:outline-none focus:ring-2 focus:ring-blue-500",
+          "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
           disabled && "opacity-50 cursor-not-allowed",
           fontFamily === "mono" && "font-mono",
           resizeClasses[resize],

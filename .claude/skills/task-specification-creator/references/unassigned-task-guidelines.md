@@ -94,6 +94,32 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
   2. その指示書がテンプレート準拠か
   3. ディレクトリ全体に legacy 負債が残っているか
 
+推奨の記述例:
+
+```md
+- 今回タスク由来の新規未タスク: 0件
+- `docs/30-workflows/unassigned-task/` への配置要否: 追加作成なし
+- `verify-unassigned-links`: 213/213（missing=0）
+- `audit-unassigned-tasks --json --diff-from HEAD`: currentViolations=0 / baselineViolations=133
+- baseline backlog（継続監視）:
+  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`
+  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md`
+```
+
+> 重要: 0件報告でも、baseline backlog を隠す表現にしてはいけない。`今回差分` と `ディレクトリ全体` は別の関心ごととして記録する。
+
+### 指定ディレクトリ配置チェック（報告テンプレート）
+
+ユーザーから「未タスクが指定ディレクトリへ配置できているか」を再確認依頼された場合は、以下3行をそのまま埋めて記録する。
+
+| 項目 | 記録例 |
+| --- | --- |
+| 今回差分の配置可否 | `docs/30-workflows/unassigned-task/` 配下に新規/更新未タスク `N` 件（または `0` 件） |
+| 今回差分の品質可否 | `audit --json --diff-from HEAD` の `currentViolations.total = X` |
+| 全体legacy状況 | `audit --json` の `baselineViolations.total = Y`（既存改善タスクID: ...） |
+
+> 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
+
 ### raw検出の誤検知対策（推奨）
 
 `detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。
@@ -114,7 +140,7 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 | task-workflow.md テーブル登録  | 条件 | `references/task-workflow.md` の残課題テーブル           |
 | 関連仕様書の残課題テーブル登録 | 条件 | 対象機能の仕様書（例: `interfaces-agent-sdk-history.md`） |
 
-> **⚠️ 重要**: 未タスクが1件以上検出された場合、以下の5ステップを**全て**完了すること:
+> **⚠️ 重要**: 未タスクが1件以上検出された場合、以下の4ステップを**全て**完了すること:
 >
 > | #   | ステップ               | 確認方法                                                        |
 > | --- | ---------------------- | --------------------------------------------------------------- |
@@ -122,16 +148,9 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 > | 2   | 物理ファイル存在確認   | `ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証 |
 > | 3   | task-workflow.md 登録  | 残課題テーブルにエントリを追加                                  |
 > | 4   | 関連仕様書テーブル登録 | 対象機能の仕様書の残課題テーブルにエントリを追加                |
-> | 5   | リンク整合確認         | `verify-unassigned-links.js` で参照切れが0件であることを確認    |
 >
 > 検出レポートだけ作成して指示書・テーブル登録を行わないのは**不完全**です。
-> 指示書を作成したつもりでもファイルが実際に存在しないケースがあるため、ステップ2の物理ファイル確認は省略不可です。Step 5 を飛ばすと `task-workflow.md` や関連仕様書のリンクドリフトを見逃すため、省略不可です。
-
-> 重要: branch横断再監査などで workflow 固有の compliance 未タスクを起票した後、対象 workflow 側で validator PASS まで解消した場合は、**同じターンで**未タスク指示書のステータスを `再評価クローズ` に更新し、`task-workflow.md` の残課題テーブルも完了表記へ同期すること。
-
-> 追加ルール: 指示書を新規作成・全面更新した直後に、対象ファイル単体で  
-> `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を実行し、  
-> `currentViolations.total = 0` を確認すること。配置済みでもテンプレート逸脱なら未完了扱いとする。
+> 指示書を作成したつもりでもファイルが実際に存在しないケースがあるため、ステップ2の物理ファイル確認は省略不可です。
 
 **重要**: 未タスクが検出されなかった場合でも、検出レポートに「未対応課題は検出されませんでした」と明記すること。
 
@@ -214,9 +233,9 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 
 ---
 
-### 実装課題と解決策セクション（親タスクに苦戦箇所がある場合は必須）
+### 実装課題と解決策セクション（推奨）
 
-未タスク指示書には、親タスクで遭遇した苦戦箇所と解決策を「実装課題と解決策」セクション（推奨番号: 3.5）として含める。特に Phase 10/11/12 の再監査から起票した未タスク、または親タスクの `documentation-changelog.md` / `lessons-learned.md` に苦戦箇所が記録されている場合は必須とする。
+未タスク指示書には、親タスクで遭遇した苦戦箇所と解決策を「実装課題と解決策」セクション（推奨番号: 3.5）として含めることを推奨する。
 
 | 項目               | 説明                                                         |
 | ------------------ | ------------------------------------------------------------ |
@@ -224,7 +243,7 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 | 記載内容           | 親タスクのdocumentation-changelogから関連する苦戦箇所を抽出  |
 | 記載フォーマット   | 課題/発見経緯/解決策/教訓の4項目テーブル形式                 |
 | 参照リンク         | 該当するシステム仕様書（arch-state-management.md等）へのリンク |
-| 記載基準           | 親タスクに苦戦箇所記録がある場合は必須。ない場合でも、同様の問題が再発しやすいなら記載する |
+| 記載基準           | 未タスクの実装時に同様の問題が発生する可能性が高い場合は必須 |
 
 **苦戦箇所を未タスクに反映するフロー**:
 
@@ -245,11 +264,6 @@ rg -n "^## メタ情報" docs/30-workflows/unassigned-task/*.md
 ```
 
 > **参考**: UT-STORE-HOOKS-REFACTOR-001では、合成Hookの参照不安定性（課題5.1）やESLintキャッシュ問題（課題5.2）、Phase 12更新漏れ（課題5.3）が苦戦箇所として記録された。後続の未タスク（UT-002, UT-003）にはこれらの教訓を「実装課題と解決策」セクションとして反映した。
-
-追加ルール:
-
-- Phase 11 の screenshot / capture / console warning から発見した未タスクも、親タスクの苦戦箇所を `3.5` に転記する
-- `verify-unassigned-links` で参照切れを補完した未タスクも、親タスク由来であれば同様に `3.5` を記載する
 
 ---
 

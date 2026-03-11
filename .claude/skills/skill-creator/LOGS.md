@@ -3,6 +3,73 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「Light Mode 全画面 white/black 基準 + compatibility bridge 固定」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に renderer-wide hardcoded neutral class 監査、desktop shard 再現、screenshot 再取得後の coverage validator 記録を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に Light Mode 専用 `SubAgent-L1..L4` を追加し、design-system / components / task-workflow / lessons の関心分離をテンプレート化した
+
+---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog ルール反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-spec-sync-subagent-template.md` に active / completed workflow で異なる unassigned 正本配置ルールを追加
+  - `audit-unassigned-tasks` の `--unassigned-dir` + `--target-file` を併用する検証コマンドを追記
+  - 親 workflow を `completed-tasks/` へ移した後も、child backlog の参照先が root `unassigned-task/` と混線しない完了条件へ整理
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 パターン/テンプレート同期
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に APIキー連動 + チャット経路整合マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に同課題向け SubAgent プロファイル（A〜F）を追加
+  - `references/patterns.md` に成功/失敗パターン「APIキー連動3点セット同期（source + llm同期 + cache clear）」を追加
+  - `SKILL.md` 変更履歴を APIKEY 系で同期
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 再確認パターン追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の `APIキー連動3点セット同期` に、Phase 12 再監査時の4検証セット（verify/validate/screenshot coverage）を追記
+  - 未タスク監査の合否判定を `currentViolations` 固定、`baselineViolations` を legacy 監視として分離記録する運用を追加
+  - 再確認時の誤判定（baselineを今回差分FAILと誤認）を防ぐ導線を強化
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成ルールを skill-creator へ追補
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `ui-ux-feature-components.md` も `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックで閉じる成功パターンを追加
+  - `assets/phase12-domain-spec-sync-block-template.md` に feature summary spec も同じ3ブロックを持つ完了条件を追記
+  - system spec 単体でも短手順で再利用できる file formation を UI task の標準形として明文化した
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 backlog 分離報告を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「`current=0` でも legacy backlog 参照を省略しない」成功/失敗パターンを追加
+  - `assets/phase12-task-spec-recheck-template.md` に `phase12-task-spec-compliance-check.md` を root evidence とする運用を追加
+  - `baselineViolations>0` 時は `unassigned-task-detection.md` に既存 remediation task 参照を残す完了条件を明文化し、Phase 12 の過剰な楽観報告を防ぐ
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW UI domain spec テンプレート最適化
 
 - **Agent**: skill-creator (update)
@@ -12,6 +79,27 @@
   - `assets/phase12-domain-spec-sync-block-template.md` に UIドメイン仕様向け拡張ブロックを追加
   - `画面の主目的` / `契約上の要点` / `視覚検証` を UI spec の必須行として明文化
   - `references/patterns.md` に TASK-UI-06 由来の「UI domain spec は主目的 + 状態契約 + 画面証跡を先に固定する」パターンを追加
+
+---
+## 2026-03-11 - TASK-UI-07 を踏まえた Phase 12 UIテンプレート最適化
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の検証コマンドを `.claude` 正本へ統一
+  - `assets/phase12-domain-spec-sync-block-template.md` に UI一覧仕様向けサマリーブロックを追加
+  - UI current workflow では `ui-ux-components.md` にも実装内容と苦戦箇所サマリーを残すルールを追加
+
+---
+## 2026-03-11 - TASK-UI-07 Phase 12 再監査で dual skill-root mirror sync パターンを追加
+
+- **Agent**: skill-creator
+- **Phase**: pattern-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「dual skill-root repository の canonical root + mirror sync」パターンを追加
+  - `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に canonical root と mirror sync の両方を残すルールを固定
 
 ---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW の canonical root パターンを skill-creator へ反映

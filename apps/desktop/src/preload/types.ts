@@ -210,6 +210,8 @@ export interface AIChatRequest {
   conversationId?: string;
   ragEnabled?: boolean;
   systemPrompt?: string;
+  providerId?: LLMProviderId;
+  modelId?: string;
 }
 
 export interface AIChatResponse {
@@ -785,6 +787,7 @@ export interface AuthKeySetResponse {
 
 export interface AuthKeyExistsResponse {
   exists: boolean;
+  source?: "saved" | "env-fallback" | "not-set";
 }
 
 export interface AuthKeyValidateResponse {
@@ -1163,6 +1166,10 @@ export interface ElectronAPI {
 
   llm: {
     getProviders: () => Promise<LLMProvider[]>;
+    setSelectedConfig: (request: {
+      providerId: LLMProviderId;
+      modelId: string;
+    }) => Promise<{ success: boolean; error?: string }>;
     checkHealth: (providerId: LLMProviderId) => Promise<HealthCheckResult>;
     sendChat: (request: LLMChatRequest) => Promise<LLMChatResponse>;
     streamChat: (request: LLMChatRequest) => Promise<{ requestId: string }>;

@@ -12,10 +12,10 @@
  * テスト対象: validateSkill() 関数の8検証項目 + warning 分類 + 運用フロー
  *
  * テストフレームワーク: Vitest (Node.js ESM)
- * フィクスチャ: tests/fixtures/skill-creator/quick-validate/ 配下の模擬スキルディレクトリ
+ * フィクスチャ: __tests__/fixtures/ 配下の模擬スキルディレクトリ
  *
  * 実行方法:
- *   pnpm vitest run .agents/skills/skill-creator/scripts/__tests__/quick_validate.test.js
+ *   pnpm vitest run .claude/skills/skill-creator/scripts/__tests__/quick_validate.test.js
  */
 
 import { describe, it, expect } from "vitest";
@@ -26,6 +26,7 @@ import { existsSync, readFileSync } from "fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SCRIPT_PATH = join(__dirname, "..", "quick_validate.js");
+const FIXTURES_DIR = join(__dirname, "fixtures");
 
 // プロジェクトルートを検出（worktree 対応）
 function findProjectRoot() {
@@ -42,14 +43,6 @@ function findProjectRoot() {
   return process.cwd();
 }
 const PROJECT_ROOT = findProjectRoot();
-// 無効な SKILL.md を含むため、実スキル探索対象 (.agents/skills) の外に置く。
-const FIXTURES_DIR = join(
-  PROJECT_ROOT,
-  "tests",
-  "fixtures",
-  "skill-creator",
-  "quick-validate",
-);
 
 // スキルディレクトリのパス（統合テスト用）
 const SKILLS_DIR = join(PROJECT_ROOT, ".claude", "skills");

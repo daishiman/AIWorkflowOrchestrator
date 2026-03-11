@@ -133,6 +133,22 @@ node scripts/quick_validate.js .claude/skills/<skill-name> --verbose
 
 ---
 
+## 8.7 テストカバレッジ exemption ルール
+
+### P41 Exemption（v8 Function Coverage）
+
+Vitest の v8 カバレッジプロバイダ使用時、インライン arrow function がカウント対象となり Function Coverage が実態と乖離する場合がある。
+
+| 条件 | 対応 |
+| --- | --- |
+| v8 プロバイダ + インラインコールバック | Function Coverage 0% でも自動 FAIL としない |
+| 記録必須 | Phase 7 成果物に「P41 exemption 適用」を明記 |
+| handler-scope 推奨 | 複数ハンドラ集約ファイルはハンドラ単位でカバレッジ判定 |
+
+> **正本**: `task-specification-creator/references/coverage-standards.md` の P41 Exemption セクション
+
+---
+
 ## 関連リソース
 
 - **作成プロセス**: See [creation-process.md](creation-process.md) / [update-process.md](update-process.md)

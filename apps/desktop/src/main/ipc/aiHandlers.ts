@@ -57,6 +57,15 @@ function isLLMError(error: unknown): error is LLMError {
   );
 }
 
+function isValidProviderId(
+  value: unknown,
+): value is "openai" | "anthropic" | "google" | "xai" {
+  return (
+    typeof value === "string" &&
+    ["openai", "anthropic", "google", "xai"].includes(value)
+  );
+}
+
 export function registerAIHandlers(): void {
   // Chat with AI
   ipcMain.handle(
@@ -72,29 +81,53 @@ export function registerAIHandlers(): void {
         }
         conversations.get(conversationId)?.push(request.message);
 
-        // Get selected LLM configuration
-        const llmConfig = await getSelectedLLMConfig();
-        if (!llmConfig) {
-          return {
-            success: false,
-            error:
-              "LLMプロバイダーが選択されていません。設定画面でプロバイダーを選択してください。",
-          };
+        // Resolve provider/model:
+        // 1) request explicit selection
+        // 2) fallback to main process selected config
+        let providerId: "openai" | "anthropic" | "google" | "xai";
+        let modelId: string;
+
+        if (request.providerId || request.modelId) {
+          if (!request.providerId || !request.modelId) {
+            return {
+              success: false,
+              error: "providerId と modelId はセットで指定してください。",
+            };
+          }
+
+          if (!isValidProviderId(request.providerId)) {
+            return {
+              success: false,
+              error: `サポート外のプロバイダーです: ${String(request.providerId)}`,
+            };
+          }
+
+          providerId = request.providerId;
+          modelId = request.modelId;
+        } else {
+          const llmConfig = await getSelectedLLMConfig();
+          if (!llmConfig) {
+            return {
+              success: false,
+              error:
+                "LLMプロバイダーが選択されていません。設定画面でプロバイダーを選択してください。",
+            };
+          }
+          providerId = llmConfig.providerId;
+          modelId = llmConfig.modelId;
         }
 
         // Build messages with system prompt
         const messages = buildMessages(request.message, request.systemPrompt);
 
         // Get adapter for selected provider
-        const adapter = await LLMAdapterFactory.getAdapter(
-          llmConfig.providerId,
-        );
+        const adapter = await LLMAdapterFactory.getAdapter(providerId);
 
         // Send chat request to LLM
         const response = await adapter.sendChat({
           messages,
-          modelId: llmConfig.modelId,
-          providerId: llmConfig.providerId,
+          modelId,
+          providerId,
         });
 
         return {

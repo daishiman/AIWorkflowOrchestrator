@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v1.18.3    | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `auth-key:exists` が `source`（saved/env-fallback/not-set）を返す契約を追加し、Renderer preflight と Settings 状態表示の判定根拠を分離。`auth-key` 判定時にキー実値を返さない方針を明文化 |
 | v1.18.2    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notification:delete` の invoke-only allowlist、`notificationId` 非空文字列バリデーション、sender 検証、`notification:new` を subscribe 専用に保つ契約を追加。NotificationCenter 058e の delete UI と Main persistence を安全に接続 |
 | v1.18.1    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: file watch IPC lifecycle（`file:watch-start` / `file:watch-stop` / `file:changed`）の sender push、Renderer cleanup、module scope guard、`FILE_CHANGED` を subscribe 専用に保つ allowlist 契約を追加 |
 | v1.18.0    | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 を反映: Preload `invokeWithTimeout()` の timeout + timer cleanup 契約（`IPC_TIMEOUT_MS = 5000`、allowlist fail-fast、`clearTimeout` cleanup、timeout error 形式）を追加。Phase 11 screenshot 4件と preload 19 files / 551 tests の検証証跡を完了状態へ同期し、rollout scope を file 単位で再監査する運用を追記 |
@@ -948,6 +949,7 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 | 層                 | 実装                                                        | セキュリティ意図                         |
 | ------------------ | ----------------------------------------------------------- | ---------------------------------------- |
 | Renderer preflight | `preflightSkillExecutionAuth()`                             | 不要な実行を事前停止し、設定誘導を明確化 |
+| Main exists 判定   | `auth-key:exists -> { exists, source }`                     | 判定根拠を返しつつキー実値は非公開       |
 | Main sender検証    | `validateIpcSender(event, IPC_CHANNELS.SKILL_EXECUTE, ...)` | DevTools/未許可windowからの呼び出し拒否  |
 | Main 失敗契約      | `{ success:false, error, errorCode?: string }`              | 認証失敗を識別可能にして復旧導線を保証   |
 | Preload unwrap     | `Error.code = result.errorCode`                             | Renderer 側の例外分岐を型安全に維持      |
@@ -961,9 +963,9 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 
 ### 既知リスクと対策
 
-| リスク                           | 対策                                                                  |
-| -------------------------------- | --------------------------------------------------------------------- |
-| preflight 判定と実行時判定の乖離 | `auth-key:exists` に env fallback を追加し `api-ipc-system.md` と同期 |
+| リスク                           | 対策                                                                                              |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- |
+| preflight 判定と実行時判定の乖離 | `auth-key:exists` を `{ exists, source }` 契約へ拡張し、`env-fallback` 判定根拠をUIへ明示        |
 | 認証失敗が一般エラーに埋もれる   | `errorCode` を optional 追加し後方互換を維持しつつ分類                |
 | UI層で重複実装が再発             | preflight utility を単一入口に固定                                    |
 

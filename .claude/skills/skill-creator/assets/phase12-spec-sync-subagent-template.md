@@ -24,7 +24,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 | UI正本へ反映済み |
+| SubAgent-A | `references/ui-ux-components.md` | 主要UI一覧・完了タスク・導線同期 + 実装内容と苦戦箇所サマリー追加 | UI正本へ反映済み |
 | SubAgent-B | `references/ui-ux-feature-components.md` | 機能仕様・未タスク・苦戦箇所同期 | 機能仕様と再利用手順が記録済み |
 | SubAgent-C | `references/arch-ui-components.md` | 構造責務境界の同期 | レイヤー境界が整合 |
 | SubAgent-D | `references/arch-state-management.md` | 状態管理責務の同期 | 状態境界が整合 |
@@ -37,13 +37,22 @@
 | --- | --- | --- | --- |
 | SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-design-system.md` | ドメイン固有 UI 正本または token/theme 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
 
+#### 2.1.2 Light Mode 全画面是正プロファイル（theme / contrast）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-L1 | `references/ui-ux-design-system.md` | white/black baseline、token 契約、compatibility bridge 方針を同期 | light mode 標準と token 名が実装一致 |
+| SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、primitive migration、視覚証跡を同期 | 全画面共通の drift と代表 screenshot が記録済み |
+| SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
+| SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
+
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
 | SubAgent-A | `<workflow-a>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-a の検証が全て PASS |
 | SubAgent-B | `<workflow-b>` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | workflow-b の検証が全て PASS（不要時はN/A理由記録） |
-| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`、未実施は1つ目、完了済みUTは2つ目、3つ目は legacy のみ。`target-file` 監査は1つ目（未実施UT）に限定 |
+| SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`。active workflow 由来の未実施は1つ目、completed workflow 由来の継続 backlog は2つ目、完了済み standalone UT は3つ目、4つ目は legacy。`target-file` 監査は実際の正本 unassigned dir に合わせる |
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
 
@@ -64,6 +73,19 @@
 | SubAgent-C | `<spec-c>` | `<実装内容を反映した見出し>` | `<苦戦箇所を反映した見出し>` | `<verify/validate/links/audit/UI証跡>` |
 
 > 全SubAgentで「実装内容」「苦戦箇所」の両方を埋めること。空欄は未完了扱い。
+
+### 2.5 APIキー連動 + チャット経路整合プロファイル（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-A | `references/interfaces-auth.md` | `AuthKeyExistsResponse.source` 契約同期 | saved/env-fallback/not-set の型・説明が一致 |
+| SubAgent-B | `references/llm-ipc-types.md` | `AIChatRequest` と `LLMSetSelectedConfigRequest` 同期 | provider/model 契約が実装一致 |
+| SubAgent-C | `references/api-ipc-system.md` / `references/api-endpoints.md` | `AI_CHAT` 解決順、`llm:set-selected-config`、cache clear 反映 | channel 表と実装状況が一致 |
+| SubAgent-D | `references/security-electron-ipc.md` / `references/ui-ux-settings.md` | 非機密判定契約と表示契約を同期 | キー実値非公開 + `source` 優先表示が一致 |
+| SubAgent-E | `references/task-workflow.md` | 完了台帳、検証証跡、苦戦箇所同期 | 実装内容 + 苦戦箇所 + 検証値が同時記録 |
+| SubAgent-F | `references/lessons-learned.md` | 再発条件付き教訓と短手順同期 | 3苦戦箇所と解決カードが再利用可能 |
+
+> このプロファイルでは `interfaces / llm / api-ipc / security / ui-ux-settings / task-workflow / lessons` を同一ターンで更新する。
 
 ## 3. 各仕様書の必須記載
 
@@ -86,7 +108,7 @@ UI機能実装時の必須記載（追加）:
 
 | 関心ごと | 最適な担当仕様書 | SubAgent |
 | --- | --- | --- |
-| コンポーネント一覧、完了タスク | `ui-ux-components.md` | A |
+| コンポーネント一覧、完了タスク、実装内容と苦戦箇所サマリー | `ui-ux-components.md` | A |
 | 機能の振る舞い、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | B |
 | 専用型、adapter、harness、責務境界 | `arch-ui-components.md` | C |
 | selector / reset / store 契約 | `arch-state-management.md` | D |
@@ -117,30 +139,33 @@ UI機能実装時の必須記載（追加）:
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-dir>
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a>
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
-node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
+node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
 rg -n 'undefined' <workflow-path>/index.md
 rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
 rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
-node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --unassigned-dir <unassigned-dir> --target-file <unassigned-file>
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
 pnpm --filter @repo/desktop test:run
+pnpm --filter @repo/desktop exec vitest run --shard=<n>/16
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
 ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
@@ -151,14 +176,19 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] プロファイル選択（標準5仕様書 / UI機能6仕様書）が明記されている
 - [ ] 5仕様書（interfaces/api-ipc/security/task-workflow/lessons）が同一ターンで更新されている
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
+- [ ] UI機能の場合、`ui-ux-components.md` にも `実装内容と苦戦箇所サマリー` を追加している
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）がある場合、SubAgent-G+ を追加して同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
-- [ ] 未タスクの配置先判定（未実施=`docs/30-workflows/unassigned-task/`、完了済みUT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が `docs/30-workflows/unassigned-task/` 配下であることを確認している
+- [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
+- [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
+- [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
+- [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
+- [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
+- [ ] 関連未タスク参照の正本が実際の配置先と一致している（active workflow は root、completed workflow は parent workflow 配下）
 - [ ] screenshot 検証で露出した副次不具合や warning を `docs/30-workflows/unassigned-task/` へ正式起票している
 - [ ] 親タスクの苦戦箇所がある場合、新規未タスクに `### 3.5 実装課題と解決策` を追加して継承している
 - [ ] 苦戦箇所と簡潔解決手順が `lessons-learned.md` に反映されている
@@ -169,6 +199,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
+- [ ] Light Mode / contrast 改修で screenshot を再取得した場合、coverage validator の PASS を再取得後の証跡として記録している
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
 - [ ] workspace/preview UI では right preview panel の reverse resize を証跡化している

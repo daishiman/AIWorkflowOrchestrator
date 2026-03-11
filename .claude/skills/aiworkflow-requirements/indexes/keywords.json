@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T05:12:36.334Z",
-  "totalKeywords": 1569,
+  "generated": "2026-03-11T13:35:01.874Z",
+  "totalKeywords": 1587,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -35,7 +35,8 @@
       "spec-splitting-guidelines.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
-      "ui-ux-settings.md"
+      "ui-ux-settings.md",
+      "workflow-apikey-chat-tool-integration-alignment.md"
     ],
     "仕様": [
       "api-chat-history.md",
@@ -135,6 +136,8 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
@@ -217,6 +220,7 @@
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
       "lessons-learned.md",
+      "llm-ipc-types.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
       "logging-migration-guide.md",
@@ -265,6 +269,8 @@
       "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
@@ -392,6 +398,8 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
@@ -502,7 +510,6 @@
       "security-electron-ipc.md",
       "security-skill-ipc.md",
       "technology-desktop.md",
-      "testing-component-patterns.md",
       "ui-history-data-types.md",
       "ui-history-integration.md",
       "ui-history-search-view.md",
@@ -3421,7 +3428,8 @@
       "lessons-learned.md"
     ],
     "INTEGRATION": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "REGRESSION": [
       "lessons-learned.md"
@@ -4152,7 +4160,8 @@
       "lessons-learned.md"
     ],
     "APIKEY": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "persist": [
       "lessons-learned.md"
@@ -4202,6 +4211,12 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md"
+    ],
+    "DASHBOARD": [
+      "lessons-learned.md"
+    ],
+    "ホーム画面リデザイン": [
+      "lessons-learned.md"
     ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
@@ -5016,6 +5031,8 @@
     "フェーズ構造": [
       "task-workflow-phases.md",
       "task-workflow.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
@@ -5276,12 +5293,6 @@
       "testing-component-patterns.md"
     ],
     "統合テストハーネスパターン": [
-      "testing-component-patterns.md"
-    ],
-    "ハンドラキャプチャテストパターン": [
-      "testing-component-patterns.md"
-    ],
-    "駆動ライフサイクル統合テストパターン": [
       "testing-component-patterns.md"
     ],
     "ダイアログテストパターン仕様": [
@@ -5888,6 +5899,18 @@
     "非依存アクセス": [
       "ui-ux-settings.md"
     ],
+    "AuthKeySection": [
+      "ui-ux-settings.md"
+    ],
+    "表示契約": [
+      "ui-ux-settings.md"
+    ],
+    "CHAT": [
+      "ui-ux-settings.md"
+    ],
+    "TOOL": [
+      "ui-ux-settings.md"
+    ],
     "ApiKeysSection": [
       "ui-ux-settings.md"
     ],
@@ -5926,6 +5949,57 @@
     ],
     "デザイントークン": [
       "ui-ux-system-prompt.md"
+    ],
+    "キー連動とチャット実行経路整合ワークフロー仕様": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "今回実装内容": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "苦戦箇所と再発防止": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "同種課題の": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "分解決カード": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "最適なファイル形成": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "責務マトリクス": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "検証コマンド": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "最小セット": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "関連改善タスク": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "ライトモード全画面": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "white": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "black": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "再是正ワークフロー仕様": [
+      "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

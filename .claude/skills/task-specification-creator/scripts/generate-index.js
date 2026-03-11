@@ -153,7 +153,7 @@ Phase 8 → Phase 9 → Phase 10 (Gate) → Phase 11 → Phase 12 → Phase 13 �
 
 \`\`\`bash
 # Phase完了処理
-node .claude/skills/task-specification-creator/scripts/complete-phase.js \\
+node .agents/skills/task-specification-creator/scripts/complete-phase.js \\
   --workflow ${workflowDisplayPath} --phase {{N}} \\
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 \`\`\`

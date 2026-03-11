@@ -155,7 +155,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}}
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
 ````
 
@@ -483,19 +483,6 @@ Phase 4: テスト作成（TDD: Red）
 
 エッジケース（境界値、null、空文字列等）のテストを追加する。
 
-### 4.5. タイマー・非同期テスト設計（P13対策）
-
-`setTimeout` / `setInterval` / `Promise.race` を使用する実装のテストでは、以下の注意事項を必ず適用する：
-
-| 注意事項 | 対策 | 理由 |
-| -------- | ---- | ---- |
-| `vi.runAllTimers()` の無限ループ | `vi.advanceTimersByTime(ms)` で1ステップずつ進める | setTimeout + Promise + 再スケジュールのパターンで runAllTimers が無限ループする（P13） |
-| `Promise.race` のタイムアウトテスト | resolve 側と reject 側を個別にテストし、`clearTimeout` cleanup も検証する | タイマーリーク防止 |
-| `vi.useFakeTimers()` のスコープ | `beforeEach` で設定、`afterEach` で `vi.useRealTimers()` にリセット | テスト間の状態汚染防止（P9） |
-| Pending Promise のフラッシュ | タイマー進行後に `await vi.advanceTimersByTimeAsync(ms)` または `await Promise.resolve()` を挟む | Promise microtask がフラッシュされないと期待値が検証できない |
-
-> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `invokeWithTimeout()` のタイマーテスト実装時に、`runAllTimers` による無限ループと cleanup 検証漏れが発生した。Phase 4 での早期設計により手戻りを防止する。
-
 ### 5. アクセシビリティテスト（UIタスクの場合）
 
 UIコンポーネントを含むタスクでは、WCAG 2.1 AA 準拠のテストケースを Phase 4 で設計する。
@@ -572,61 +559,6 @@ Phase 5: 実装（TDD: Green）
 
 ---
 
-## テスト専用タスク向け Phase 4-5 統合ルール
-
-> **適用条件**: プロダクションコード変更なし・テスト追加/強化のみのタスク（例: TASK-10A-G スキルライフサイクル統合テスト強化）
-
-### 3層テストパターン（標準構造）
-
-テスト専用タスクでは、以下の3層分離パターンを標準構造として採用する:
-
-| 層 | テスト対象 | テストファイル配置 | 例 |
-| --- | --- | --- | --- |
-| G1: IPC契約層 | Main Process IPCハンドラの入力検証・応答契約 | `apps/desktop/src/main/ipc/**/*.test.ts` | skill:create ハンドラ契約テスト |
-| G2: Store統合層 | Zustand Store経由のライフサイクル統合フロー | `apps/desktop/src/renderer/store/**/*.test.ts` | Store駆動ライフサイクル統合テスト |
-| G3: UI結線層 | Rendererコンポーネントの表示・操作結線 | `apps/desktop/src/renderer/**/*.test.ts` | ChatPanel結線テスト |
-
-### Phase 4: Red/Green 混在の許容
-
-テスト専用タスクでは、テスト対象の実装が既に存在するため:
-
-| 状態 | 許容 | 説明 |
-| --- | --- | --- |
-| 即 Green | 許容 | 既存実装に対する正常系テストは即PASSして良い |
-| Red | 許容 | モック不足・タイミング問題で失敗する場合がある |
-| Red/Green 混在 | 許容 | 同一テストファイル内で混在して良い |
-
-**Phase 4 の完了条件（テスト専用タスク）**:
-- [ ] テストシナリオが全て設計されている
-- [ ] テストコードが作成されている（Red/Green 混在可）
-- [ ] テスト対象の既存実装が特定されている
-
-### Phase 5: モック調整・タイミング修正のみ
-
-テスト専用タスクの Phase 5 では、プロダクションコード変更は行わない:
-
-| 許可される作業 | 禁止される作業 |
-| --- | --- |
-| モックの調整・追加 | プロダクションコードの変更 |
-| テストユーティリティの作成 | 新規機能の実装 |
-| タイミング問題の修正（`act()` 追加等） | 既存APIの変更 |
-| テストヘルパーの共通化 | ビジネスロジックの修正 |
-
-**Phase 5 の完了条件（テスト専用タスク）**:
-- [ ] 全テストが Green
-- [ ] プロダクションコードに変更がないこと（`git diff --stat -- apps/*/src/main apps/*/src/renderer apps/*/src/preload packages/` でテストファイル以外の差分なし）
-
-### 2段階テスト設計パターン
-
-| Phase | テスト内容 | 目的 |
-| --- | --- | --- |
-| Phase 4 | 正常系テスト（Happy Path） | 基本動作の検証 |
-| Phase 6 | エッジケース・異常系テスト | Phase 7 カバレッジ計測結果をフィードバックとして追加 |
-
-> **根拠**: TASK-10A-G で Phase 4 に正常系14件、Phase 6 にエッジケース追加の2段階設計が効率的だった。Phase 7 のカバレッジ計測結果で不足箇所を特定し、Phase 6 で追加テストを設計するサイクルが有効。
-
----
-
 ## Phase 5: 実装（TDD: Green）
 
 ```markdown
@@ -689,21 +621,8 @@ Phase 5: 実装（TDD: Green）
 | P31 | Zustand Store Hooks無限ループ | 合成Store Hook（`useAuthModeStore()`等）の関数を`useEffect`依存配列に含めない。`useRef`でガードするか、個別セレクタを使用 |
 | P5 | リスナー二重登録 | React StrictModeで`useEffect`が2回実行される。モジュールレベルでガードするか`useRef`で初期化フラグを管理 |
 | P12 | 外部SDK自動処理との競合 | カスタム実装で置き換える場合、元の自動処理を必ず無効化 |
-| P13 | タイマーテスト無限ループ | `vi.runAllTimers()` ではなく `vi.advanceTimersByTime(ms)` を使用。Promise.race + setTimeout パターンでは cleanup（`clearTimeout`）も検証必須 |
 
 📖 詳細: `.claude/rules/06-known-pitfalls.md`、`references/patterns.md`
-
-## DRY統合パターン（重複実装の統合）
-
-既存コードに同等の機能が複数箇所に分散している場合、以下の手順で統合する：
-
-1. **重複検出**: `grep -rn "対象パターン" apps/desktop/src/` で同等実装の全箇所を特定
-2. **共通ユーティリティ抽出**: 重複ロジックを専用ユーティリティファイル（例: `ipc-utils.ts`）に抽出
-3. **呼び出し元の書き換え**: 全呼び出し元を共通ユーティリティ経由に変更
-4. **型シグネチャの維持**: 公開APIのシグネチャを変更しない（後方互換性）
-5. **回帰テスト**: 統合後に全テストがPASSすることを確認
-
-> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `safeInvoke` と `invokeWithTimeout` の重複を `ipc-utils.ts` に統合し、タイムアウト機構を一箇所で管理可能にした。DRY違反を放置すると、修正漏れや動作不整合が発生する。
 
 ## 成果物
 
@@ -882,24 +801,6 @@ pnpm test:e2e
 ### 3. 未達の場合の対応
 
 カバレッジ未達や統合テスト失敗がある場合、Phase 6へ戻って拡充する。
-
-#### 小規模ユーティリティの100%カバレッジ達成パターン
-
-小規模なユーティリティファイル（例: `ipc-utils.ts`、`helpers.ts` 等、関数5個以下・100行以下）では、推奨基準ではなく **100% カバレッジ** を目標にする：
-
-| 指標 | 通常基準 | 小規模ユーティリティ基準 | 理由 |
-| ---- | -------- | ------------------------ | ---- |
-| Line Coverage | 80% | **100%** | コード量が少ないため全行カバー可能 |
-| Branch Coverage | 60% | **100%** | 分岐が少ないため全分岐カバー可能 |
-| Function Coverage | 80% | **100%** | エクスポート関数が少ないため全関数カバー可能 |
-
-**達成手順**:
-1. `pnpm vitest run --coverage -- <対象ファイルのテスト>` で対象ファイルのみカバレッジ測定
-2. 未到達行をレポートから特定（通常はエラーパス・タイムアウトパス・cleanup パス）
-3. 各未到達パスに対応するテストケースを追加
-4. 特に `clearTimeout` / `finally` ブロック等の cleanup パスを見落としやすいため注意
-
-> **根拠**: TASK-FIX-SAFEINVOKE-TIMEOUT-001 で `ipc-utils.ts`（3関数・40行）の100%カバレッジを15テストで達成した。小規模ファイルは全パスの検証が現実的であり、未テストのエッジケースが本番障害の原因になりやすい。
 
 #### ハンドラ単位カバレッジレポート（IPCハンドラファイル対象時）
 
@@ -1529,10 +1430,10 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 **検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
 ```bash
 # 関連仕様書の検索（references/配下）
-grep -rn "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/
+grep -rn "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/
 
 # 残課題テーブルでの参照検索（task-workflow.md）
-grep -n "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 未タスク指示書の関連検索
 grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
@@ -1543,7 +1444,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 
-- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
+- [ ] `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
 - [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されていることを確認
 
 ```markdown
@@ -1573,7 +1474,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 | 新規定数/設定値追加         | バグ修正（仕様変更なし）   |
 | アーキテクチャパターン追加  | テスト追加のみ             |
 
-- 更新対象: `.claude/skills/aiworkflow-requirements/references/`
+- 更新対象: `.agents/skills/aiworkflow-requirements/references/`
 - 更新対象: `docs/00-requirements/` 配下
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
@@ -1681,7 +1582,7 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **【Task 2 Step 1】task-specification-creator/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
 - [ ] **【Task 2 Step 1-D】topic-map.mdを再生成した** ⚠️ 漏れやすい（P2, P27参照）
   - 再生成トリガー: セクション追加/削除/更新、行数変更
-  - コマンド: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+  - コマンド: `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js`
 - [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
@@ -1759,9 +1660,9 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 #### スキル検証
 
 ```bash
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/skill-creator
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/task-specification-creator
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/aiworkflow-requirements
 ```
 
 判定基準: `spec-update-workflow.md` Step 1-G.3.1 を参照。

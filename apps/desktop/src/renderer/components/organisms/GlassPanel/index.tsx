@@ -34,7 +34,7 @@ export const GlassPanel: React.FC<GlassPanelProps> = ({
         "relative",
         "bg-[var(--bg-glass)]",
         "border border-[var(--border-subtle)]",
-        "shadow-[0_20px_60px_rgba(0,0,0,0.6)]",
+        "shadow-[var(--shadow-xl)]",
         blurStyles[blur],
         radiusStyles[radius],
         className,

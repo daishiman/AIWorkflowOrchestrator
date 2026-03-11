@@ -364,6 +364,40 @@ Settings 画面は認証状態に依存せず常時アクセス可能である�
 
 ---
 
+## AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001）
+
+**完了日**: 2026-03-11  
+**実装ファイル**:
+
+- `apps/desktop/src/renderer/views/SettingsView/index.tsx`
+- `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx`
+
+### 表示条件
+
+| 条件 | 動作 |
+| --- | --- |
+| `authMode === "api-key"` | `AuthKeySection` を表示する |
+| `authMode !== "api-key"` | `AuthKeySection` を非表示にする |
+
+### 状態表示（`auth-key:exists` の `source` 優先）
+
+| `auth-key:exists` レスポンス | UI状態 | 表示意図 |
+| --- | --- | --- |
+| `{ exists: false, source: "not-set" }` | `not-set` | APIキー未設定を明示 |
+| `{ exists: true, source: "saved" }` | `saved` | 保存済みキーを優先表示 |
+| `{ exists: true, source: "env-fallback" }` | `env-fallback` | 環境変数 fallback 使用を表示 |
+| `source` 未提供（後方互換） | `hasCredentials` 補助判定 | 旧実装互換で状態を決定 |
+
+### Phase 11 視覚検証
+
+| テストケース | 証跡 | 判定 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-settings-apikey-authkey-initial.png` | PASS |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-settings-apikey-save-success.png` | PASS |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-settings-authkey-env-fallback.png` | PASS |
+
+---
+
 ## ApiKeysSection 異常系表示仕様（2026-03-07追加）
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
@@ -465,7 +499,7 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.7.0   | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: Settings 画面の AuthGuard 非依存アクセスセクション追加。shell bypass / reset exclusion / 未認証時動作仕様 / AuthTimeoutFallback 導線を記載 |
+| 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |
 | 1.5.0   | 2026-03-07 | ApiKeysSection 異常系表示仕様追加（09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）: Preload境界の4段防御ガード、6テストケース                                         |

@@ -4,6 +4,71 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-11 - TASK-UI-07 由来の dual skill-root follow-up を system spec へ登録
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-07-DASHBOARD-ENHANCEMENT`
+- 目的: Phase 12 再監査で露出した `.claude` / `.agents` の dual skill-root drift を未タスク化し、system spec の再利用ルールへ反映する
+
+### 実施内容
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/ui-ux-feature-components.md` に `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を追加
+- canonical root 固定、mirror sync、`diff -qr` 検証を TASK-UI-07 の苦戦箇所から再利用ルールへ昇格
+- completed workflow と completed unassigned-task の参照導線を completed path 基準へ統一
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-07 の UI カタログ要約カードを system spec へ追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-07-DASHBOARD-ENHANCEMENT`
+- 目的: ホーム画面リデザインの実装内容、検証結果、苦戦箇所を一覧仕様から即参照できるようにする
+
+### 実施内容
+- `references/ui-ux-components.md` に `TASK-UI-07 実装完了記録` と `実装内容と苦戦箇所サマリー` を追加
+- `references/ui-ux-feature-components.md` / `references/task-workflow.md` / `references/lessons-learned.md` と要点・検証値・未タスク導線を同期
+- `DashboardView/` の役割を統計ビューではなくホーム画面として再定義した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 feature spec 形成を再最適化
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: documentation-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/ui-ux-feature-components.md` の lifecycle 追補を `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編
+  - `task-workflow.md` / `lessons-learned.md` / `ui-ux-navigation.md` と同粒度に揃え、feature spec 単体でも実装内容と苦戦箇所を短手順で再利用できるようにした
+  - 0件報告でも `current/baseline` と remediation task 導線を残す方針を feature spec 側にも明示した
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認と backlog 分離報告を追補
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: documentation-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/task-workflow.md` に `phase12-task-spec-compliance-check.md`、`verify-all-specs=13/13`、`verify-unassigned-links=213/213`、`audit current=0 / baseline=133` を追記
+  - `references/lessons-learned.md` に「0件報告でも legacy backlog を隠さない」苦戦箇所と標準ルールを追加
+  - `references/ui-ux-navigation.md` に surface ownership board、TC-11-05 要素証跡、再利用用 5分解決カードを追加
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 再監査で責務証跡と mirror 抽出を強化
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: documentation-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/ui-ux-feature-components.md` に `SkillCenterView` の surface ownership board と TC-11-05 要素 capture を追記
+  - `references/task-workflow.md` / `references/lessons-learned.md` に representative screenshot は selector-based element capture を優先する教訓を同期
+  - `.claude` / `.agents` の `SKILL.md` / reference / index を再同期し、`search-spec "skillLifecycleJourney"` と quick_validate 再確認の前提を整備
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW system spec 形成をテンプレート準拠へ最適化
 
 - **Agent**: aiworkflow-requirements

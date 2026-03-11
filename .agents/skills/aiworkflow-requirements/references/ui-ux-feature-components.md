@@ -33,6 +33,7 @@
 | Notification / History Domain | TASK-UI-01-C | NotificationCenter, HistorySearchView | 完了 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | [ui-history-search-view.md](./ui-history-search-view.md) |
 | AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
+| Dashboard Home Enhancement | TASK-UI-07 | DashboardView, GreetingHeader, DashboardSuggestionSection, RecentTimeline | 完了 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
 
 ### 共通仕様
 
@@ -857,6 +858,36 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | テスト資産 | ✅ 完了（10ファイル / 132テストケース定義） | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/` |
 | Phase 12成果物 | ✅ 完了（5必須 + 補助1） | `outputs/phase-12/*.md` |
 
+### Task-Skill-Lifecycle-01 foundation 追補（2026-03-11）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| 画面の主目的 | `SkillCenterView` を create / use / improve の一次導線入口として固定し、後続 surface へ handoff する |
+| 変更範囲 | `Renderer`（`SkillCenterView`, `App.tsx`, `skillLifecycleJourney.ts`, view test） |
+| 実装した要点 | `skillLifecycleJourney.ts` へ job guide / surface responsibility / downstream contract を集約し、`SkillCenterView` に journey panel と surface ownership board を追加した |
+| 契約上の要点 | legacy `skill-center` は shell の `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化し、下流の UI / test / spec は正本値へ統一する |
+| 視覚検証 | Phase 11 screenshot 6件を再取得し、TC-11-05 は `data-testid="skill-lifecycle-surface-ownership"` の要素 capture を正本証跡にした |
+| 完了根拠 | targeted tests 18 PASS、`verify-all-specs` 13/13 PASS、`validate-phase-output` PASS、`validate-phase12-implementation-guide` PASS |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 一次導線の説明が nav / feature / state に分散し、入口判断が揺れる | UI 表示だけ更新し、コード契約の正本を持たない | `skillLifecycleJourney.ts` を導線正本にし、`SkillCenterView` は表示責務だけに寄せた | 入口・責務・例外・handoff は 1 ファイルへ集約する |
+| legacy alias を放置すると shell 分岐と仕様書が二重化する | `skill-center` を view や test 側で個別吸収する | `App.tsx` の `normalizeSkillLifecycleView()` で 1 回だけ canonical 化した | alias 正規化は shell 入口で一度だけ行う |
+| representative screenshot が shell 全景だけだと責務比較に弱い | route screenshot だけで TC を閉じる | surface ownership board を追加し、TC-11-05 を要素 capture へ切り替えた | representative evidence は責務や state を表す selector を待って要素単位で撮る |
+| 0件報告だけでは未タスクディレクトリ全体が健全に見える | `unassigned-task-detection.md` に件数 0 しか書かない | `currentViolations=0 / baselineViolations=133` と既存 remediation task 参照を同時に記録した | 0件報告でも current/baseline と既存 backlog 導線を分離して残す |
+
+#### 同種課題の5分解決カード
+
+1. 導線再編は job guide と責務境界をコード契約へ切り出し、view 本体は表示責務へ寄せる。
+2. legacy alias は shell で canonical 化し、下流コード・test・spec は正本値だけを使う。
+3. 入口画面には primary journey と destination surface を同居させず、handoff を明記する。
+4. representative screenshot は shell 全景ではなく、責務境界が読める要素 capture を正本にする。
+5. Phase 12 は `task-workflow` / `lessons-learned` / `ui-ux-feature-components` に同じ実装内容・苦戦箇所・current/baseline 監査値を同期する。
+
 ### 状態管理・IPC依存
 
 | 観点 | 採用方針 |
@@ -1201,6 +1232,7 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 - `useSkillAnalysis` は Store 個別セレクタ経由で `analysis/isAnalyzing/isImproving/skillError` を参照する。
 - `SkillCreateWizard` は `useCreateSkill()` で作成 action を実行し、生成進捗をUIに反映する。
 - 画面検証は dark/light/mobile と error/loading を含む 11ケースで確認済み。
+- TASK-SKILL-LIFECYCLE-01 では `skillLifecycleJourney.ts` を追加し、create / use / improve の job guide と downstream contract を Store-driven lifecycle の前段ガイドとして固定した。
 
 ### 後続未タスク（TASK-10A-F 由来）
 
@@ -1407,6 +1439,45 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 ---
 
+### Dashboard Home Enhancement（TASK-UI-07 / completed）
+
+TASK-UI-07 は、既存の統計中心 `DashboardView` を、挨拶・次の一手・最近の動きがすぐ分かるホーム画面へ置き換えた UI エンハンスメントタスクである。内部 `ViewType` は `dashboard` を維持しつつ、画面内文言と情報階層だけをホーム体験へ変換した。
+
+### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| 画面の主目的 | 挨拶・サジェスチョン・最近の動きから、次に取る行動を即決できるホーム画面 |
+| 変更範囲 | `DashboardView` / view-local components / `dashboardContent.ts` / screenshot harness |
+| 実装した要点 | `GreetingHeader`、`DashboardSuggestionSection`、`RecentTimeline` を追加し、旧統計カード主体の構成を置き換えた |
+| 契約上の要点 | 表示名は `ホーム` へ変更したが、内部 `ViewType` は `dashboard` を維持して nav/store 契約を崩していない |
+| 視覚検証 | Phase 11 screenshot TC-11-01〜05、Apple UI/UX engineer 観点レビュー |
+| 完了根拠 | 22 tests PASS、typecheck PASS、`verify-all-specs` PASS、`validate-phase11-screenshot-coverage` PASS |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| 表示名 `ホーム` と内部 `dashboard` 契約が混線する | UI文言変更をそのまま内部 ID 変更として扱う | copy と internal ID を分離し、内部契約は維持した | UI名称変更では文言と内部契約 ID を別 concern として扱う |
+| view-local component と shared component の境界が曖昧になる | 再利用前提がない UI を shared 配下へ早期抽出する | `GreetingHeader` などは `DashboardView/components/` に閉じた | view 固有ロジックは reusable 要件が出るまで local に留める |
+| dual skill-root repository で mirror 側が stale になる | canonical root を決めずに Phase 12 を完了扱いにする | `.claude` を正本に固定し、mirror sync と diff 検証を追加した | dual root repo では canonical root 固定 + mirror sync + root 間 diff を完了条件にする |
+
+### 同種課題の5分解決カード
+
+1. UI copy と内部契約 ID を最初に分離する。
+2. view-local component と shared component を利用範囲で切り分ける。
+3. screenshot harness で representative state を固定する。
+4. completed workflow は outputs と workflow 本文を同時に同期する。
+5. canonical root / mirror root / `diff -qr` を Phase 12 完了条件へ含める。
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
+
+---
+
 ## 完了タスク
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
@@ -1414,6 +1485,7 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
 | TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 | TASK-UI-08 | NotificationCenter 058e UX 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
+| TASK-UI-07 | DashboardView ホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline、Phase 11 screenshot 5件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
 | 09-TASK-FIX | Settings AuthKeySection + ApiKeysSection preload/sandbox iterable ガード | 2026-03-07 | `docs/30-workflows/09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001/` |
 | TASK-UI-01-C | Notification / History Domain（通知センター + 履歴検索） | 2026-03-05 | `docs/30-workflows/completed-tasks/task-056c-notification-history-domain/` |
 | TASK-UI-02 | Global Navigation Core（GlobalNavStrip / MobileNavBar / AppLayout） | 2026-03-06 | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/` |
@@ -1700,6 +1772,12 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-11 | v1.14.32   | TASK-UI-07 の related UT を追加: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を Dashboard Home Enhancement 節の関連未タスクへ登録し、dual root repository での canonical root 固定と mirror sync を UI 実装後の Phase 12 ガードとして再利用可能化 |
+| 2026-03-11 | v1.14.31   | TASK-UI-07 再監査反映: Dashboard Home Enhancement 節に実装時の苦戦箇所（表示名と内部契約の境界、view-local component 判断、harness screenshot 運用）と 5分解決カードを追加し、再利用可能な UI 実装知見として固定 |
+| 2026-03-11 | v1.14.30   | TASK-UI-07 完了反映: 収録機能一覧へ Dashboard Home Enhancement を追加し、専用セクションに GreetingHeader / DashboardSuggestionSection / RecentTimeline 構成、22 tests、Phase 11 screenshot 5件を同期 |
+| 2026-03-11 | v1.14.32   | TASK-SKILL-LIFECYCLE-01 の feature spec 形成を最適化: `ui-ux-feature-components.md` の lifecycle 追補を `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編し、system spec 単体でも短手順で再利用できる状態に整理 |
+| 2026-03-11 | v1.14.31   | TASK-SKILL-LIFECYCLE-01 再監査同期: `SkillCenterView UI` に surface ownership board と要素単位 screenshot 証跡（TC-11-05）を追記し、責務境界の可視化を system spec から参照可能にした |
+| 2026-03-11 | v1.14.30   | TASK-SKILL-LIFECYCLE-01 完了同期: `SkillCenterView UI` に lifecycle journey panel を追加し、`Store駆動ライフサイクルUI統合` へ job guide / downstream contract の前段責務を追記 |
 | 2026-03-10 | v1.14.29   | TASK-UI-06-HISTORY-SEARCH-VIEW 節をテンプレート準拠へ最適化。見出しを `実装内容（要点）` に統一し、5分解決カードを追加して専用仕様 `ui-history-search-view.md` と粒度を揃えた |
 | 2026-03-10 | v1.14.28   | TASK-UI-06-HISTORY-SEARCH-VIEW を反映。`HistorySearchView` の timeline 再設計、`historySearchSlice` / `editorSlice` 契約、Phase 11 screenshot 6件、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` を追加し、専用仕様 `ui-history-search-view.md` への入口を作成 |
 | 2026-03-10 | v1.14.27   | TASK-UI-03 workflow completed-tasks 移管: AgentView Enhancement の正本導線を `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` へ更新し、関連未タスクも親 workflow 配下 `unassigned-task/` へ移管した状態へ同期 |

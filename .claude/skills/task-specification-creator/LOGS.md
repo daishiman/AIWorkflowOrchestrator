@@ -9,6 +9,108 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog 配置を再整合
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（completed migration follow-up）
+- **Result**: success
+- **Notes**:
+  - 親 workflow `light-theme-token-foundation` 完了移管後の follow-up 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` へ配置
+  - `audit-unassigned-tasks --json --diff-from HEAD --target-file ...` を 2件実行し、個別 `currentViolations=0` を確認
+  - active workflow 由来と completed workflow 由来で unassigned 正本配置が異なるルールを task-spec 側ガイドへ反映
+
+---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（completed migration）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ移動
+  - 親workflow `api-key-chat-tool-integration-alignment` も `docs/30-workflows/completed-tasks/` へ移管
+  - `unassigned-task-detection.md` / `task-workflow.md` の参照先を completed 配置へ同期
+
+---
+## 2026-03-11 - UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を 9セクション構成で新規作成
+  - 親タスク `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を `3.5 実装課題と解決策` に継承
+  - 親 workflow `outputs/phase-12/unassigned-task-detection.md` を 0件判定から「blocking 0件 + 改善未タスク 1件 formalize」へ更新
+  - `task-workflow.md` / `api-ipc-system.md` / `workflow-apikey-chat-tool-integration-alignment.md` に未タスク導線を同期
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 12再確認（未タスク配置判定強化）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `verify-all-specs` / `validate-phase-output --phase 12` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行し、Phase 12 完了条件を再確認
+  - `capture-task-fix-apikey-chat-tool-integration-phase11.mjs` を再実行し、TC-11-01〜03 の証跡鮮度を更新
+  - `audit-unassigned-tasks --json --diff-from HEAD` の `current=0` と `--json` の `baseline=133` を分離記録する報告テンプレートを `references/unassigned-task-guidelines.md` に追加
+  - 指定ディレクトリ確認は「今回差分の配置」「今回差分品質」「legacy baseline」の3行で報告するルールへ整理
+
+---
+## 2026-03-11 - TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 Phase 11/12 再監査
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `apps/desktop/scripts/capture-task-fix-apikey-chat-tool-integration-phase11.mjs` を再実行し、TC-11-01〜03 のスクリーンショットを再取得
+  - `outputs/phase-12` の必須5成果物（implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）を作成
+  - `phase-12-documentation.md` を Task 12-1〜12-5 の5タスク構成へ是正
+  - `artifacts.json` / `outputs/artifacts.json` を Phase 1〜12 completed に同期
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit --diff-from HEAD` を再実行して PASS を確認
+
+---
+## 2026-03-11 - Phase 12 再監査で user 指定rootを正本にするガードを追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase12-checklist-definition.md` に canonical root + mirror sync の検証項目を追加
+  - `references/phase-11-12-guide.md` に skill root が複数ある repository で user 指定rootを正本にする運用を追記
+  - `.claude` 正本更新だけでなく mirror drift の有無を記録する完了条件を追加
+
+---
+## 2026-03-11 - TASK-UI-07 再監査で判明した skill 導線の canonical path 是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` の dual-root 判断ルールを user 指定root基準へ補強
+  - current workflow / outputs の skill 参照が canonical root と整合するように再監査した
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 Phase 12 の 0件報告テンプレートを補強
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に `currentViolations=0 / baselineViolations>0` の記述例を追加
+  - `assets/phase12-task-spec-compliance-template.md` に legacy baseline と既存 remediation task の記録欄を追加
+  - 未タスク 0 件報告でも `docs/30-workflows/unassigned-task/` 全体の legacy backlog を隠さない運用を task spec テンプレートへ固定
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-01 再監査で representative screenshot ルールを補強
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に「representative screenshot は shell 全景ではなく selector-based element capture を優先する」ルールを追加
+  - `data-testid` または実文言を ready selector の正本とする運用を明文化し、TC-11-05 の責務証跡改善を再利用可能にした
+  - workflow 側の `screenshot-plan.json` へ selector を持たせる形で、task-spec と実装の往復整合を確認した
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
 
 - **Agent**: task-specification-creator

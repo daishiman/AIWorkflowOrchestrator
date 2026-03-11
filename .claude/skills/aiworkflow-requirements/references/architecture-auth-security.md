@@ -96,8 +96,6 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 | バージョン | 日付       | 変更内容                                                                                                                       |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| v1.6.1     | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補: Settings bypass は shell 公開だけでなく、未認証時 view reset から `settings` を除外して初めて成立することを追記。Phase 11 screenshot 4件の証跡を同期 |
-| v1.6.0     | 2026-03-09 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001完了: 認証状態遷移に "timed-out" 追加、AuthTimeoutFallback コンポーネント仕様、Settings bypass セキュリティ設計を追記。AUTH_TIMEOUT_MS = 10,000ms |
 | v1.5.0     | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001完了: Supabase未設定時のProfile/Avatar fallbackルーティング詳細テーブル追加。registerProfileFallbackHandlers/registerAvatarFallbackHandlers の設計原則を明文化 |
 | v1.4.1     | 2026-02-06 | DEBT-SEC-001完了: State parameter検証実装、StateManager追加、認証フローにCSRF対策ステップ追加                                  |
 | v1.4.0     | 2026-02-06 | TASK-AUTH-SESSION-REFRESH-001完了: TokenRefreshSchedulerアーキテクチャ、リフレッシュフロー、リトライ戦略、セキュリティ設計追加 |
@@ -242,88 +240,21 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 アプリケーション起動時から認証完了までの状態遷移は以下の通り。
 
-| 現在の状態      | トリガー                       | 遷移先状態      |
-| --------------- | ------------------------------ | --------------- |
-| （初期状態）    | アプリ起動                     | Checking        |
-| Checking        | セッション復元成功             | Authenticated   |
-| Checking        | セッションなし                 | Unauthenticated |
-| Checking        | AUTH_TIMEOUT_MS (10秒) 経過    | Timed-out       |
-| Unauthenticated | ログイン成功                   | Authenticated   |
-| Authenticated   | ログアウト                     | Unauthenticated |
-| Timed-out       | ユーザーがログイン画面へ遷移   | Unauthenticated |
-| Timed-out       | ユーザーがリトライで認証成功   | Authenticated   |
+| 現在の状態      | トリガー           | 遷移先状態      |
+| --------------- | ------------------ | --------------- |
+| （初期状態）    | アプリ起動         | Checking        |
+| Checking        | セッション復元成功 | Authenticated   |
+| Checking        | セッションなし     | Unauthenticated |
+| Unauthenticated | ログイン成功       | Authenticated   |
+| Authenticated   | ログアウト         | Unauthenticated |
 
 **状態と表示の対応**:
 
-| 状態            | AuthGuard表示内容       | 説明                                       |
-| --------------- | ----------------------- | ------------------------------------------ |
-| checking        | LoadingScreen           | セッション確認中                           |
-| authenticated   | children                | 認証済み（メインUI）                       |
-| unauthenticated | AuthView                | 未認証（ログイン画面）                     |
-| timed-out       | AuthTimeoutFallback     | タイムアウト後のフォールバックUI（リトライ/Settings導線） |
-
-### AuthGuard タイムアウトフォールバック（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
-
-**完了日**: 2026-03-09
-
-認証状態の確認が `AUTH_TIMEOUT_MS`（デフォルト 10,000ms）以内に完了しない場合、`timed-out` 状態に遷移し `AuthTimeoutFallback` コンポーネントを表示する。
-
-#### AuthGuardDisplayState 型定義
-
-| 値                | 説明                                   | 表示コンポーネント      |
-| ----------------- | -------------------------------------- | ----------------------- |
-| `"checking"`      | セッション確認中（初期状態）           | LoadingScreen           |
-| `"authenticated"` | 認証済み                               | children（メインUI）    |
-| `"unauthenticated"` | 未認証                              | AuthView                |
-| `"timed-out"`     | AUTH_TIMEOUT_MS 経過後のフォールバック | AuthTimeoutFallback     |
-
-#### タイムアウト機構
-
-| 項目 | 値 |
-| --- | --- |
-| 定数名 | `AUTH_TIMEOUT_MS` |
-| デフォルト値 | 10,000ms |
-| 管理フック | `useAuthState` |
-| タイマー実装 | `useEffect` + `setTimeout` / `clearTimeout`（クリーンアップ付き） |
-| 状態判定 | `getAuthState()` 純粋関数（`isLoading`, `isAuthenticated`, `hasTimedOut` → `AuthGuardDisplayState`） |
-
-#### useAuthState セレクタ設計（P31 準拠）
-
-| セレクタ | 取得先 | 安定性 |
-| --- | --- | --- |
-| `useIsAuthenticated()` | 個別セレクタ | Zustand アクション参照は安定 |
-| `useIsAuthLoading()` | 個別セレクタ | Zustand アクション参照は安定 |
-| `useCurrentView()` | 個別セレクタ | Zustand アクション参照は安定 |
-
-合成 Hook（`useAuthModeStore()` 等）は使用禁止（P31）。`useEffect` 依存配列には個別セレクタで取得した値のみを含める。
-
-#### AuthTimeoutFallback コンポーネント仕様
-
-| Props | 型 | 説明 |
-| --- | --- | --- |
-| `onRetry` | `() => void` | リトライボタン押下時のコールバック（`window.location.reload()`） |
-| `onNavigateSettings` | `() => void` | 設定画面遷移ボタン押下時のコールバック（`setCurrentView("settings")`） |
-
-**設計原則**:
-- `useAuthState` フックが `setTimeout` でタイムアウトを管理
-- タイムアウト時は `getAuthState()` 純粋関数で `"timed-out"` を返却
-- `AuthTimeoutFallback` はリトライボタン + Settings 遷移ボタンを提供
-
-**Settings 認証除外（Settings bypass）**:
-- `App.tsx` において `currentView === "settings"` の場合、AuthGuard の外側で Settings シェルを直接レンダリング
-- Settings 画面は認証不要で常時アクセス可能（APIキー設定等の認証前操作に必要）
-- セキュリティ境界: Settings シェルのみが AuthGuard 外に配置され、他のビューは全て AuthGuard 内に保護される
-- ただし shell 公開だけでは不十分で、未認証時の view reset でも `settings` を除外する必要がある
-- `shouldResetUnauthenticatedView` 相当の判定で `PUBLIC_UNAUTHENTICATED_VIEWS = ["settings"]` を定義し、公開ビューを明示管理する
-
-**Phase 11 画面証跡**:
-
-| TC | 証跡 | 確認内容 |
-| --- | --- | --- |
-| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-timeout-fallback-light.png` | ライトテーマ fallback UI |
-| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` | ダークテーマ fallback UI |
-| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` | timeout -> Settings 公開シェル |
-| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` | 未認証 Settings 公開シェル |
+| 状態            | AuthGuard表示内容 | 説明                   |
+| --------------- | ----------------- | ---------------------- |
+| checking        | LoadingScreen     | セッション確認中       |
+| authenticated   | children          | 認証済み（メインUI）   |
+| unauthenticated | AuthView          | 未認証（ログイン画面） |
 
 ### 技術的負債
 
@@ -497,22 +428,6 @@ RAGシステムのコア機能として、SQLite FTS5による高速全文検索
 ---
 
 ## 完了タスク
-
-### タスク: TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査追補（2026-03-10）
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 |
-| 完了日 | 2026-03-10 |
-| ステータス | **完了** |
-| 追加是正 | `settings` を未認証 reset 対象外へ移動、Phase 11 screenshot 4件再取得、workflow/system spec 再同期 |
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/utils/__tests__/shouldResetUnauthenticatedView.test.ts src/renderer/components/AuthGuard/AuthGuard.test.tsx src/renderer/components/AuthGuard/utils/getAuthState.test.ts src/renderer/components/AuthGuard/hooks/__tests__/useAuthState.test.ts src/renderer/components/AuthGuard/__tests__/AuthTimeoutFallback.test.tsx src/renderer/components/organisms/AccountSection/AccountSection.test.tsx` | PASS（6 files / 110 tests） |
-| `node apps/desktop/scripts/capture-task-authguard-timeout-phase11.mjs` | PASS（4 screenshots） |
 
 ### タスク: DEBT-SEC-001 State Parameter CSRF対策（2026-02-06完了）
 

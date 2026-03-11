@@ -10,13 +10,43 @@
 ### 仕様検索の分割ルール
 
 - `search-spec.js` は **1概念1クエリ** で分割して使う
-- 例: `TASK-FIX-SAFEINVOKE-TIMEOUT-001 safeInvoke IPC timeout` のようにまとめず、`TASK-FIX-SAFEINVOKE-TIMEOUT-001` → `safeInvoke` → `IPC timeout` → `preload invoke hang` の順で個別検索する
+- 例: `TASK-10A-F useSkillAnalysis SkillCreateWizard` のようにまとめず、`TASK-10A-F` → `useSkillAnalysis` → `SkillCreateWizard` → `skillError` の順で個別検索する
 - broad query が 0 件でも、resource-map / quick-reference / topic-map から再入場して取りこぼしを防ぐ
+
+### スキルライフサイクル一次導線 / 画面責務再編を探すとき
+
+このカテゴリは `skill lifecycle` `skillLifecycleJourney` `advanced route` `hidden route` `一次導線` `Skill Center` `Workspace` `Agent` `Skill Creator` `SkillManagementPanel` `settings bypass` `VITE_USE_GLOBAL_NAV_STRIP` `skill-center` `skillCenter` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "Global Navigation Core" -C 3
+node scripts/search-spec.js "Skill Center View" -C 3
+node scripts/search-spec.js "Workspace Layout Foundation" -C 3
+node scripts/search-spec.js "AgentView Redesign" -C 3
+node scripts/search-spec.js "Store-Driven Lifecycle Integration" -C 3
+node scripts/search-spec.js "Skill Creator" -C 3
+node scripts/search-spec.js "SkillManagementPanel" -C 3
+node scripts/search-spec.js "skillLifecycleJourney" -C 3
+node scripts/search-spec.js "settings bypass" -C 3
+node scripts/search-spec.js "VITE_USE_GLOBAL_NAV_STRIP" -C 3
+node scripts/search-spec.js "advanced" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「スキルライフサイクル一次導線設計 / 画面責務再編」を見る
+2. `references/ui-ux-navigation.md` で global nav / ViewType / rollback / advanced 前提を見る
+3. `references/ui-ux-feature-components.md` で `Skill Center View` `Workspace Layout Foundation` `AgentView Redesign` `Store-Driven Lifecycle Integration` を見る
+4. `references/arch-state-management.md` で `navigationSlice` `uiSlice` `Workspace` ownership と `settings` bypass / reset exclusion を見る
+5. `references/architecture-overview.md` で shell と view 配置、rollback の位置を確認する
+6. `references/ui-ux-settings.md` で `settings` 公開 shell の責務を確認する
+7. `references/interfaces-agent-sdk-ui.md` と `references/ui-ux-agent-execution.md` で Agent 実行面の責務を確認する
+8. `references/llm-workspace-chat-edit.md` で workspace/chat/edit 境界を確認する
+9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
+10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
 ### Preload safeInvoke timeout を探すとき
 
 ```bash
-node scripts/search-spec.js "TASK-FIX-SAFEINVOKE-TIMEOUT-001" -C 2
 node scripts/search-spec.js "safeInvoke" -C 3
 node scripts/search-spec.js "IPC timeout" -C 3
 node scripts/search-spec.js "preload invoke hang" -C 3
@@ -28,8 +58,6 @@ node scripts/search-spec.js "preload invoke hang" -C 3
 2. `references/security-electron-ipc.md` の Preload `safeInvoke` timeout セクションを見る
 3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
 4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
-5. `references/error-handling.md` で timeout エラー表示責務を確認する
-6. `references/testing-component-patterns.md` の fake timer / `advanceTimersByTime` パターンを確認する
 
 ### Electron IPC パターン
 
@@ -98,24 +126,6 @@ app.on("activate", () => {
 **詳細**: security-electron-ipc.md（IPC ハンドラライフサイクル管理）, architecture-implementation-patterns.md（二重登録防止パターン）
 **関連 Pitfall**: 06-known-pitfalls.md#P5
 
-### Preload timeout テストパターン
-
-```typescript
-vi.useFakeTimers();
-const pending = window.electronAPI.auth.getSession();
-await vi.advanceTimersByTimeAsync(5000);
-await expect(pending).rejects.toThrow(/IPC timeout/);
-```
-
-| 確認項目 | 期待値 |
-|---------|--------|
-| タイマー進行 | `advanceTimersByTime` / `advanceTimersByTimeAsync` を使う |
-| モック | `ipcRenderer.invoke` は never-resolving Promise で再現する |
-| 競合回避 | タイムアウト検証と Promise 検証を同じ await 連鎖で完了させる |
-| 回帰確認 | whitelist 拒否と Main reject の既存挙動を壊さない |
-
-**詳細**: testing-component-patterns.md, error-handling.md
-
 ### Supabase 未設定 fallback handler パターン
 
 ```typescript
@@ -141,69 +151,6 @@ if (getSupabaseClient()) {
 **詳細**: api-ipc-auth.md, architecture-auth-security.md, security-electron-ipc.md, ipc-contract-checklist.md
 **完了タスク**: TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001（Profile 11ch / Avatar 3ch の fallback 実装完了）
 
-### safeInvoke timeout / preload IPC timeout 調査導線
-
-`safeInvoke timeout` / `preload IPC timeout` / `IPC_TIMEOUT_MS` / `Promise.race preload` / `auth:get-session timeout` で検索したときに最初に当たるべき導線。
-
-| まず読む | 目的 |
-|---------|------|
-| `security-electron-ipc.md` | Preload 公開境界、ホワイトリスト、防御責務を確認 |
-| `architecture-implementation-patterns.md` | `safeInvoke` / `safeInvokeUnwrap` と Promise ベース実装パターンを確認 |
-| `api-ipc-auth.md` | `auth:get-session` / `auth:check-online` の契約を確認 |
-| `architecture-auth-security.md` | AuthGuard / LoadingScreen への影響を確認 |
-| `arch-state-management.md` | timeout 後に `isLoading` を閉じる状態遷移を確認 |
-| `error-handling.md` | timeout の分類、エラーメッセージ、復旧方針を確認 |
-| `ipc-contract-checklist.md` | channel / 引数 / 戻り値 / error envelope の契約確認を行う |
-| `ui-ux-settings.md` | timeout が設定画面や認証導線に与える UI 影響を確認 |
-| `task-workflow.md` | 類似タスクの完了記録、未タスク、苦戦箇所を確認 |
-| `lessons-learned.md` | fake timer、timeout 系不具合、Phase 12 同期漏れの再発防止を確認 |
-
-**検索補助キーワード**:
-- `safeInvoke timeout`
-- `preload IPC timeout`
-- `IPC_TIMEOUT_MS`
-- `Promise.race preload`
-- `auth:get-session timeout`
-
-**検索のコツ**:
-
-`search-spec.js` は複合語一発より、1概念ずつ分割した方がヒットしやすい。
-
-```bash
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "safeInvoke" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "timeout" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "auth:get-session" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "auth:check-online" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "Promise.race" -C 3
-```
-
-### AuthGuard timeout / Settings認証除外 / currentView settings bypass 調査導線
-
-`AuthGuard timeout` / `Settings認証除外` / `timeout fallback` / `Settings bypass` / `currentView settings` / `navContract settings` / `AppDock settings` で検索したときに最初に当たるべき導線。
-
-| まず読む | 目的 |
-|---------|------|
-| `architecture-auth-security.md` | AuthGuard / LoadingScreen / 認証状態遷移 / 認証UI責務を確認 |
-| `arch-state-management.md` | `isLoading` / `isAuthenticated` / selector 設計と P31/P48 対策を確認 |
-| `ui-ux-navigation.md` | `settings` ViewType / `navContract.ts` / AppDock / shortcut 導線を確認 |
-| `ui-ux-settings.md` | Settings 画面で未認証時も残すべき UI と認証依存セクションを確認 |
-| `security-electron-ipc.md` | AuthGuard 外に出す route の最小公開面と既存 IPC 防御を確認 |
-| `api-ipc-auth.md` | 認証ハング時に影響する IPC 契約と Renderer 表示責務を確認 |
-| `lessons-learned.md` | P13 / P31 / P39 / P48 の再発防止手順を確認 |
-
-**検索補助キーワード**:
-- `AuthGuard timeout Settings bypass`
-- `currentView settings navigation`
-- `navContract settings`
-- `AppDock settings`
-- `settings ViewType`
-
-**検索キーワード例**:
-- `AuthGuard timeout`
-- `Settings認証除外`
-- `timeout fallback`
-- `Settings bypass`
-
 ### Result Pattern
 
 ```typescript
@@ -224,48 +171,6 @@ export const createXxxSlice: StateCreator<XxxSlice> = (set) => ({
 ```
 
 **詳細**: architecture-patterns.md L141-234
-
-### Persist / localStorage 破壊バグの調査パターン
-
-`localStorage.clear()` や `window.location.reload()` が絡むバグは、1回の broad query では取りこぼしやすい。`persist` / `localStorage` / `window.location.reload` / `WebContents` を**1概念1クエリ**で分割検索する。
-
-| 検索語 | 最初に読む | 目的 |
-| ------ | ---------- | ---- |
-| `persist` | `arch-state-management.md`, `arch-ipc-persistence.md` | Zustand persist 契約と永続化破壊の影響確認 |
-| `localStorage` | `testing-component-patterns.md`, `development-guidelines.md` | happy-dom polyfill とデバッグコード管理確認 |
-| `window.location.reload` | `lessons-learned.md` | reload 競合の再発条件確認 |
-| `WebContents` | `security-electron-ipc.md`, `error-handling.md` | BrowserWindow/WebContents ライフサイクルとエラー分類確認 |
-
-```bash
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "persist" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "localStorage" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "window.location.reload" -C 3
-node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "WebContents" -C 3
-```
-
-### S31: executeSkill 並行実行ガード
-
-async アクション内で `isExecuting` による二重実行防止。microtask 境界前に同期チェックを配置する。
-
-```typescript
-// ✅ async 操作前の同期ガード
-executeSkill: async (prompt) => {
-  const { selectedSkillName, isExecuting } = get();
-  if (!selectedSkillName) return;
-  if (isExecuting) return; // 同期チェック — microtask 境界前
-  set({ isExecuting: true, ... });
-  // await ... async operations
-};
-```
-
-| 確認項目 | 期待値 |
-|---------|--------|
-| ガード位置 | 最初の `await` より前（同期領域） |
-| `isExecuting` リセット | finally または catch で `false` に復元 |
-| テスト手法 | `flushMicrotasks()` で preflight 通過後にガード検証 |
-
-**詳細**: architecture-implementation-patterns.md S31
-**関連 Pitfall**: 06-known-pitfalls.md#P31
 
 ### P31対策: Store Hooks無限ループ防止
 
@@ -293,6 +198,25 @@ useEffect(() => {
 - 成功パターン: patterns.md（Zustand Store Hooks 無限ループ対策）
 - 落とし穴: 06-known-pitfalls.md#P31
 
+### Store selector migration / renderer direct IPC removal
+
+```typescript
+// before
+const result = await window.electronAPI.skill.analyze(skillName);
+
+// after
+const analyzeSkill = useAnalyzeSkill();
+await analyzeSkill(skillName);
+```
+
+| 確認項目 | 期待値 |
+|---------|--------|
+| 対象 | Renderer 直呼び出しを Store action / 個別セレクタへ寄せる |
+| state 境界 | 共有 state は Store、UI 一時 state は local |
+| 検索語 | `TASK-10A-F`, `store-driven lifecycle`, `selector migration`, `renderer direct IPC removal` |
+
+**詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
+
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript
@@ -315,71 +239,6 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 ```
 
 **詳細**: interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, ui-ux-feature-components.md
-
-### TASK-10A-G: `skill:create` 契約 + ライフサイクル統合テスト導線
-
-`skill:create` の Main IPC 契約テストと ChatPanel 起点ライフサイクル統合テストを作るときに、最初に読むべき正本を固定する。
-
-| まず読む | 目的 |
-|---------|------|
-| `ui-ux-components.md` | TASK-10A-C の `skill:create` 4層同期（channels / whitelist / handler / preload）を確認 |
-| `ui-ux-feature-components.md` | SkillAnalysisView / SkillCreateWizard / TASK-10A-F の画面責務と状態遷移を確認 |
-| `arch-ui-components.md` | TASK-10A-D の ChatPanel → SkillManagementPanel → `createSkill` 導線を確認 |
-| `interfaces-agent-sdk-ui.md` | ChatPanel の公開インターフェース、toggle/stream 統合、UI結線を確認 |
-| `interfaces-agent-sdk-skill.md` | `createSkill` を含むスキルUI操作契約と ChatPanel 統合責務を確認 |
-| `arch-state-management.md` | TASK-10A-E-C / TASK-10A-F の Store駆動状態境界、個別セレクタ、`useShallow` 条件を確認 |
-| `architecture-implementation-patterns.md` | Handler Map 方式と Main ハンドラ間接テストの実装パターンを確認 |
-| `testing-component-patterns.md` | View レベル統合テストハーネスと Store / preload mock 集約パターンを確認 |
-| `security-electron-ipc.md` | sender 検証、P42準拠3段バリデーション、IPCライフサイクル制約を確認 |
-| `error-handling.md` | `CREATE_ERROR` / validation failure の期待レスポンスを確認 |
-| `quality-requirements.md` | coverage gate と Phase 7/9/13 の品質下限を確認 |
-| `task-workflow.md` | TASK-10A-C/D/F の完了記録と Phase 11/12 の同期範囲を確認 |
-| `lessons-learned.md` | `skill:create` 契約同期漏れと coverage 誤読の再発防止手順を確認 |
-
-**補助参照（aiworkflow-requirements外）**:
-- `.claude/rules/06-known-pitfalls.md`: P31 / P39 / P41 / P42 / P48 の落とし穴確認
-
-**検索キーワード例**:
-- `skill:create 4層同期`
-- `TASK-10A-G lifecycle test hardening`
-- `ChatPanel create analyze improve`
-- `Handler Map ipcMain.handle`
-- `coverage-by-handler skill:create`
-
-### スキル実行並行ガード監査パターン
-
-```typescript
-// Store 層: executeSkill 冒頭で再入を拒否
-const { selectedSkillName, isExecuting } = get();
-if (!selectedSkillName) return;
-if (isExecuting) return;
-
-// UI 層: 既存ガード面を回帰確認
-// - ExecuteButton: isExecuting=true で null render
-// - AgentExecutionView: AgentMessageInput disabled
-// - ChatPanel: skill-management-toggle disabled + SkillStreamingView render
-```
-
-| まず読む | 目的 |
-|---------|------|
-| `arch-state-management.md` | `isExecuting` / `skillExecutionStatus` の状態遷移確認 |
-| `interfaces-agent-sdk-skill.md` | `executeSkill` / `pendingPermission` / streaming 型契約確認 |
-| `api-ipc-agent.md` | `skill:execute` request / response / error 契約確認 |
-| `ui-ux-agent-execution.md` | 実行中UIの disabled / hidden 契約確認 |
-| `ui-ux-feature-skill-stream.md` | ChatPanel / SkillStreamingView の表示契約確認 |
-| `quality-requirements.md` | TDD / coverage /性能下限確認 |
-| `testing-fixtures.md` | Store / component test の fixture 再利用方針確認 |
-
-| 実体ファイル | 確認観点 |
-|-------------|----------|
-| `apps/desktop/src/renderer/store/slices/agentSlice.ts` | Store guard の有無 |
-| `apps/desktop/src/renderer/store/index.ts` | `useIsSkillExecuting` export |
-| `apps/desktop/src/renderer/store/setupSkillListeners.ts` | 完了 / エラー後の `isExecuting` 復元経路 |
-| `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` | 実行中 null render |
-| `apps/desktop/src/renderer/views/AgentExecutionView/AgentExecutionView.tsx` | 入力 disabled |
-| `apps/desktop/src/renderer/components/chat/ChatPanel.tsx` | toggle disabled + stream 表示 |
-
-**詳細**: arch-state-management.md, interfaces-agent-sdk-skill.md, api-ipc-agent.md, ui-ux-agent-execution.md, ui-ux-feature-skill-stream.md, quality-requirements.md, testing-fixtures.md
 
 ---
 

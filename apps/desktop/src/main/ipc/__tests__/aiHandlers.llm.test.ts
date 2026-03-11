@@ -155,6 +155,76 @@ describe("aiHandlers - LLM API統合", () => {
   });
 
   describe("プロバイダー/モデル選択", () => {
+    it("request に providerId/modelId がある場合は Main 設定より優先する", async () => {
+      vi.mocked(getSelectedLLMConfig).mockResolvedValue({
+        providerId: "anthropic",
+        modelId: "claude-3-5-sonnet-20241022",
+      });
+
+      vi.mocked(buildMessages).mockReturnValue([
+        { role: "user", content: "Hello" },
+      ]);
+
+      mockAdapter.sendChat.mockResolvedValue({
+        content: "Response",
+        model: "gpt-4o-mini",
+        usage: { promptTokens: 5, completionTokens: 3, totalTokens: 8 },
+      });
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(mockAdapter);
+
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+      await handler(
+        {},
+        {
+          message: "Hello",
+          ragEnabled: false,
+          providerId: "openai",
+          modelId: "gpt-4o-mini",
+        },
+      );
+
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("openai");
+      expect(mockAdapter.sendChat).toHaveBeenCalledWith(
+        expect.objectContaining({
+          modelId: "gpt-4o-mini",
+          providerId: "openai",
+        }),
+      );
+    });
+
+    it("providerId/modelId の片方だけ指定時はエラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+
+      const result = (await handler(
+        {},
+        {
+          message: "Hello",
+          ragEnabled: false,
+          providerId: "openai",
+        },
+      )) as { success: boolean; error?: string };
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("セットで指定");
+    });
+
+    it("サポート外 providerId 指定時はエラーを返す", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AI_CHAT)!;
+
+      const result = (await handler(
+        {},
+        {
+          message: "Hello",
+          ragEnabled: false,
+          providerId: "invalid-provider",
+          modelId: "model-x",
+        },
+      )) as { success: boolean; error?: string };
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain("サポート外");
+    });
+
     it("選択されたプロバイダーのアダプターを取得する", async () => {
       vi.mocked(getSelectedLLMConfig).mockResolvedValue({
         providerId: "google",

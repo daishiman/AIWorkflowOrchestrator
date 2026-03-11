@@ -13,6 +13,10 @@ import React, { memo, useMemo, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import type { SkillMetadata, ImportedSkill } from "@repo/shared/types/skill";
 import { Icon } from "../../components/atoms/Icon";
+import {
+  SKILL_LIFECYCLE_JOB_GUIDES,
+  SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES,
+} from "../../navigation/skillLifecycleJourney";
 import { useSkillCenter } from "./hooks/useSkillCenter";
 import { FeaturedSection } from "./components/FeaturedSection/FeaturedSection";
 import { CategoryTabs } from "./components/CategoryTabs";
@@ -45,6 +49,41 @@ export const viewStyles = {
     "text-[var(--text-muted)]",
     "pointer-events-none",
   ),
+  journeyPanel: clsx(
+    "mb-6 rounded-3xl border border-[var(--border-primary)]",
+    "bg-[var(--bg-secondary)] p-5 shadow-sm",
+  ),
+  journeyHeader: "mb-4 flex flex-col gap-1",
+  journeyEyebrow:
+    "text-xs font-semibold uppercase tracking-[0.18em] text-[var(--status-primary)]",
+  journeyTitle: "text-lg font-semibold text-[var(--text-primary)]",
+  journeyBody: "text-sm leading-6 text-[var(--text-secondary)]",
+  journeyGrid: "grid gap-3 lg:grid-cols-3",
+  journeyCard: clsx(
+    "rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4",
+    "shadow-sm",
+  ),
+  journeyCardBadge:
+    "mb-3 inline-flex rounded-full bg-[var(--bg-tertiary)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)]",
+  journeyCardTitle: "text-base font-semibold text-[var(--text-primary)]",
+  journeyCardCopy: "mt-2 text-sm leading-6 text-[var(--text-secondary)]",
+  journeyCardOutcome:
+    "mt-3 rounded-2xl bg-[var(--bg-tertiary)] px-3 py-2 text-xs leading-5 text-[var(--text-secondary)]",
+  responsibilityPanel: clsx(
+    "mb-6 rounded-3xl border border-[var(--border-primary)]",
+    "bg-[var(--bg-secondary)] p-5 shadow-sm",
+  ),
+  responsibilityGrid: "grid gap-3 xl:grid-cols-2",
+  responsibilityCard: clsx(
+    "rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4",
+    "shadow-sm",
+  ),
+  responsibilityCardTitle: "text-base font-semibold text-[var(--text-primary)]",
+  responsibilityList: "mt-3 space-y-3",
+  responsibilityTerm:
+    "text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]",
+  responsibilityValue: "mt-1 text-sm leading-6 text-[var(--text-secondary)]",
+  responsibilityFooter: "mt-4 text-xs leading-5 text-[var(--text-muted)]",
   tabSection: "mb-6",
   countText: "text-xs text-[var(--text-muted)] mt-3",
   cardGrid: clsx(
@@ -58,6 +97,118 @@ export const viewStyles = {
     "text-[var(--status-error)]",
   ),
 } as const;
+
+const PRIMARY_SURFACE_RESPONSIBILITIES =
+  SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES.filter(
+    (surface) => surface.id !== "settings",
+  );
+
+function SkillLifecycleJourneyPanel(): JSX.Element {
+  return (
+    <section
+      className={viewStyles.journeyPanel}
+      aria-labelledby="skill-lifecycle-journey-title"
+      data-testid="skill-lifecycle-journey"
+    >
+      <div className={viewStyles.journeyHeader}>
+        <p className={viewStyles.journeyEyebrow}>Primary Journey</p>
+        <h2
+          id="skill-lifecycle-journey-title"
+          className={viewStyles.journeyTitle}
+        >
+          まずはこの順番で進める
+        </h2>
+        <p className={viewStyles.journeyBody}>
+          「作る」「使う」「改善する」を別々の迷路にせず、入口と受け渡し先を先に固定します。
+          高度なルートは検証や補助のために残し、通常は下の流れを優先します。
+        </p>
+      </div>
+
+      <div className={viewStyles.journeyGrid}>
+        {SKILL_LIFECYCLE_JOB_GUIDES.map((job, index) => (
+          <article
+            key={job.id}
+            className={viewStyles.journeyCard}
+            data-testid={`skill-lifecycle-job-${job.id}`}
+          >
+            <div className={viewStyles.journeyCardBadge}>Step {index + 1}</div>
+            <h3 className={viewStyles.journeyCardTitle}>{job.title}</h3>
+            <p className={viewStyles.journeyCardCopy}>
+              <strong>{job.entryLabel}</strong>
+              <br />
+              {job.summary}
+              <br />
+              <strong>{job.handoffLabel}</strong>
+            </p>
+            <p className={viewStyles.journeyCardOutcome}>{job.completion}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SkillLifecycleSurfaceOwnershipPanel(): JSX.Element {
+  return (
+    <section
+      className={viewStyles.responsibilityPanel}
+      aria-labelledby="skill-lifecycle-surface-ownership-title"
+      data-testid="skill-lifecycle-surface-ownership"
+    >
+      <div className={viewStyles.journeyHeader}>
+        <p className={viewStyles.journeyEyebrow}>Surface Ownership</p>
+        <h2
+          id="skill-lifecycle-surface-ownership-title"
+          className={viewStyles.journeyTitle}
+        >
+          画面ごとの責務を先に分ける
+        </h2>
+        <p className={viewStyles.journeyBody}>
+          入口、準備、実行、補助導線の役割を混ぜると、どこから始めるかがまた曖昧になります。
+          主要 surface ごとに、持つ責務と持たない責務をここで固定します。
+        </p>
+      </div>
+
+      <div className={viewStyles.responsibilityGrid}>
+        {PRIMARY_SURFACE_RESPONSIBILITIES.map((surface) => (
+          <article
+            key={surface.id}
+            className={viewStyles.responsibilityCard}
+            data-testid={`skill-lifecycle-surface-${surface.id}`}
+          >
+            <h3 className={viewStyles.responsibilityCardTitle}>
+              {surface.label}
+            </h3>
+            <dl className={viewStyles.responsibilityList}>
+              <div>
+                <dt className={viewStyles.responsibilityTerm}>主責務</dt>
+                <dd className={viewStyles.responsibilityValue}>
+                  {surface.primaryResponsibility}
+                </dd>
+              </div>
+              <div>
+                <dt className={viewStyles.responsibilityTerm}>持たない責務</dt>
+                <dd className={viewStyles.responsibilityValue}>
+                  {surface.forbiddenResponsibility}
+                </dd>
+              </div>
+              <div>
+                <dt className={viewStyles.responsibilityTerm}>handoff</dt>
+                <dd className={viewStyles.responsibilityValue}>
+                  {surface.handoff}
+                </dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+      </div>
+
+      <p className={viewStyles.responsibilityFooter}>
+        Settings は公開シェル例外として別ケースで確認する。
+      </p>
+    </section>
+  );
+}
 
 /**
  * SkillCenterView メインコンポーネント。
@@ -187,6 +338,9 @@ export const SkillCenterView: React.FC = memo(() => {
               AIワークフローを強化するツールを見つけましょう
             </p>
           </div>
+
+          <SkillLifecycleJourneyPanel />
+          <SkillLifecycleSurfaceOwnershipPanel />
 
           {/* 検索バー */}
           <div className={viewStyles.searchWrapper}>

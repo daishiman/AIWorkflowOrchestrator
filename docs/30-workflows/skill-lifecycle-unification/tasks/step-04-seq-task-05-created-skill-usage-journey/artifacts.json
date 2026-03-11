@@ -1,0 +1,135 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-05",
+  "title": "作成済みスキルを使う主導線",
+  "type": "design",
+  "priority": "high",
+  "status": "not_started",
+  "dependencies": [
+    "TASK-SKILL-LIFECYCLE-01",
+    "TASK-SKILL-LIFECYCLE-02",
+    "TASK-SKILL-LIFECYCLE-03",
+    "TASK-SKILL-LIFECYCLE-04"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "not_started",
+      "file": "phase-2-design.md",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "not_started",
+      "file": "phase-3-design-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not_started",
+      "file": "phase-4-test-creation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not_started",
+      "file": "phase-5-implementation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not_started",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not_started",
+      "file": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "not_started",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "not_started",
+      "file": "phase-10-final-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not_started",
+      "file": "phase-11-manual-test.md",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "not_started",
+      "file": "phase-12-documentation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "作成したスキルをすぐ使う入口と、後から使う入口が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "Workspace / Agent のどちらを主導線にするか決まっている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "作成直後の実行、保存済みスキルの再実行、履歴からの再利用が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "Task04 の品質表示・再評価が利用導線に組み込まれている",
+      "verified": false
+    },
+    {
+      "id": "AC-5",
+      "description": "使った結果から改善へ戻るフィードバックループがある",
+      "verified": false
+    }
+  ],
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-11"
+}
