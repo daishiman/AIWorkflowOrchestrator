@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-03-11T09:09:14.828Z",
+  "baseUrl": "http://127.0.0.1:4174",
+  "harnessPath": "/?phase11Harness=workspace-layout",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "zero state light",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-01-zero-state-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "zero state dark",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-02-zero-state-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "file chip attached",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-03-file-chip-attached.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "mention dropdown open",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-04-mention-dropdown-open.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "description": "streaming in progress",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-05-streaming-progress.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-06",
+      "description": "stream error surface",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-06-stream-error-surface.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-07",
+      "description": "compact width",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-07-compact-width.png",
+      "viewport": {
+        "width": 900,
+        "height": 980
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-08",
+      "description": "keyboard send + remove + mention",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-08-keyboard-only-flow.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    }
+  ]
+}

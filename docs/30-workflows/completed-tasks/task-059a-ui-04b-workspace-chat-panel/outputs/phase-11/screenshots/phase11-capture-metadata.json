@@ -1,0 +1,95 @@
+{
+  "generatedAt": "2026-03-11T09:09:44.708Z",
+  "baseUrl": "http://127.0.0.1:4174",
+  "harnessPath": "/?phase11Harness=workspace-layout",
+  "records": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-zero-state-light.png",
+      "note": "zero state light",
+      "capturedAt": "2026-03-11T09:09:38.929Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-zero-state-dark.png",
+      "note": "zero state dark",
+      "capturedAt": "2026-03-11T09:09:39.397Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "dark"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-file-chip-attached.png",
+      "note": "file chip attached",
+      "capturedAt": "2026-03-11T09:09:40.459Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-mention-dropdown-open.png",
+      "note": "mention dropdown open",
+      "capturedAt": "2026-03-11T09:09:41.084Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-streaming-progress.png",
+      "note": "streaming in progress",
+      "capturedAt": "2026-03-11T09:09:42.024Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-06",
+      "file": "TC-11-06-stream-error-surface.png",
+      "note": "stream error surface",
+      "capturedAt": "2026-03-11T09:09:42.695Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-07",
+      "file": "TC-11-07-compact-width.png",
+      "note": "compact width",
+      "capturedAt": "2026-03-11T09:09:43.340Z",
+      "viewport": {
+        "width": 900,
+        "height": 980
+      },
+      "theme": "light"
+    },
+    {
+      "tc": "TC-11-08",
+      "file": "TC-11-08-keyboard-only-flow.png",
+      "note": "keyboard send + remove + mention",
+      "capturedAt": "2026-03-11T09:09:44.703Z",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light"
+    }
+  ]
+}

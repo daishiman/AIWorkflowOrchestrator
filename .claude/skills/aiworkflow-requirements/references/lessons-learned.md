@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
 | 2026-03-11 | 1.29.74 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。renderer-wide hardcoded neutral drift、desktop shard 11 再現、completed workflow 側 screenshot 再取得を苦戦箇所へ追加し、white/black 基準 + compatibility bridge + shard 再現 + screenshot 再検証の 5 ステップへ再編 |
 | 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
 | 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
@@ -59,6 +60,43 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
+
+#### 苦戦箇所1: stream の chunk/end が同一ティックで届くと assistant 応答が欠落する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `setState` 反映より先に end が確定し、assistant メッセージが空扱いで終わるケースがあった |
+| 再発条件 | stream 更新を state だけで管理し、即時参照用の ref を持たない |
+| 解決策 | `streamContentRef` / `isStreamingRef` を chunk/end 受信時に即時同期し、end 側の判定を ref 基準へ寄せた |
+| 標準ルール | stream UI は「描画 state」と「同期判定 ref」を分離し、chunk/end 競合を先に潰す |
+
+#### 苦戦箇所2: screenshot harness が llm / conversation API を揃えないと streaming 状態を再現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 04A 用 harness を流用すると、04B の stream/mention 状態が再現できず証跡が欠ける |
+| 再発条件 | UI capture script で対象機能の API mock を最低限にしすぎる |
+| 解決策 | `capture-task-059a-workspace-chat-panel-phase11.mjs` に llm/conversation mock を追加し、TC-11-01〜08 を固定した |
+| 標準ルール | Phase 11 の capture script は対象機能の API 境界（file/llm/conversation）を先に棚卸しする |
+
+#### 苦戦箇所3: Phase 12 実装ガイドが Part 1/2 の見出しだけでは validator に通らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `implementation-guide.md` が Part 1/2 構成だけ満たし、型/API/使用例/エッジケース/定数一覧が不足していた |
+| 再発条件 | 「構造あり = 完了」と判断し、内容 validator を後回しにする |
+| 解決策 | Part 2 に TypeScript 型定義、APIシグネチャ、使用例、エラーハンドリング、エッジケース、設定と定数を追記した |
+| 標準ルール | Phase 12 は `validate-phase12-implementation-guide.js` を必ず実行し、2/10 のような部分充足で閉じない |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. stream 実装は chunk/end 競合テストを先に作り、state と ref の責務を分離する。
+2. screenshot harness は対象 UI の API 境界を一覧化してから mock を追加する。
+3. Phase 11 は TC と screenshot path を `phase-11-manual-test.md` に固定する。
+4. Phase 12 は implementation-guide validator を先に実行し、NG項目を埋めてから他仕様を更新する。
+5. `task-workflow` / `lessons-learned` / `LOGS` / `SKILL` を同一ターンで同期する。
 
 ### 2026-03-11 TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 

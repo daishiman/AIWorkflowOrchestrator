@@ -9,6 +9,29 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT 再監査知見で Phase 11/12 テンプレート厳密化
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `assets/implementation-guide-template.md` に Part 1 の `たとえば` 明示ルールを追加し、validator 判定ぶれを低減
+  - `references/phase-templates.md` に `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 見出し固定ルールを追記
+  - `references/phase-11-12-guide.md` の Part 1/coverage matrix 要件を厳密化し、再監査時の warning 再発条件を明文化
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-11` の screenshot 8件と `manual-test-result.md` を Apple UI/UX review 観点で再確認し、`phase-11-manual-test.md` に画面カバレッジマトリクスを追補
+  - `outputs/phase-12/implementation-guide.md` を validator 要件（Part 2 の型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定と定数）へ是正
+  - `verify-all-specs --strict` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行し、workflow 判定を PASS に統一
+  - `.claude/skills/...` 正本の `task-workflow` / `lessons-learned` / `LOGS.md` / `SKILL.md` を同一ターンで同期
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog 配置を再整合
 
 - **Agent**: task-specification-creator

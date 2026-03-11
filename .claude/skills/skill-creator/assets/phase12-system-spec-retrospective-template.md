@@ -223,7 +223,7 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | active workflow 由来は `unassigned-task`、completed workflow 由来は `completed-tasks/<workflow>/unassigned-task`、legacy standalone は `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
-| `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
+| `rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え（`たとえば` 含む）+ 型/API/エッジケース/設定語が検出される |
 | `test -f <workflow-path>/outputs/phase-11/screenshot-plan.json && test -f <workflow-path>/outputs/phase-11/phase11-capture-metadata.json` | screenshot 要求時の補助証跡実在確認 | 2ファイルとも存在する |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `python3 -m http.server 4173 --directory apps/desktop/out/renderer` | worktree で preview source が揺れる場合の current build static serve | current worktree build を `127.0.0.1:4173` で配信できる |
@@ -236,6 +236,7 @@ UI機能実装の場合は次を推奨:
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>` | 全量実行が `SIGTERM` の場合の分割フォールバック | 対象回帰の合否が確定できる |
 | `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
+| `rg -n '^## 画面カバレッジマトリクス$' <workflow-path>/phase-11-manual-test.md` | coverage validator 互換見出し確認（UIタスクのみ） | `## 画面カバレッジマトリクス` が1件以上検出される |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
@@ -274,6 +275,8 @@ UI機能実装の場合は次を推奨:
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）が存在する場合、基本6仕様書に加えて同一ターンで更新している
 - [ ] 公開ビュー bypass を実装した場合、shell 公開だけでなく state reset 除外条件と nav 到達性も同一ターンで記録している
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
+- [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
+- [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] UIタスクでは worktree preflight として `pnpm install --frozen-lockfile` の要否を確認し、実行した場合は記録している
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static server で配信した記録がある
