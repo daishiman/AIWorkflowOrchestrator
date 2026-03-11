@@ -11,7 +11,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const workflowRoot = path.join(
   repoRoot,
-  "docs/30-workflows/light-theme-token-foundation",
+  "docs/30-workflows/completed-tasks/light-theme-token-foundation",
 );
 const outputRoot = path.join(workflowRoot, "outputs/phase-11");
 const screenshotDir = path.join(outputRoot, "screenshots");

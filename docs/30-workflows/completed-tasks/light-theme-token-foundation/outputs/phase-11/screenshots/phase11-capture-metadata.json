@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-11T08:16:45.216Z",
+  "generatedAt": "2026-03-11T13:11:34.921Z",
   "baseUrl": "http://127.0.0.1:4173",
   "viewport": {
     "width": 1440,
@@ -14,8 +14,8 @@
       "selector": "[data-testid=\"phase11-dashboard-shell\"]",
       "description": "Dashboard light representative",
       "url": "http://127.0.0.1:4173/phase11-dashboard.html?theme=light",
-      "capturedAt": "2026-03-11T08:16:47.372Z",
-      "mtime": "2026-03-11T08:16:47.361Z"
+      "capturedAt": "2026-03-11T13:11:40.775Z",
+      "mtime": "2026-03-11T13:11:40.774Z"
     },
     {
       "id": "TC-11-02",
@@ -25,8 +25,8 @@
       "selector": "[data-testid=\"phase11-safeinvoke-timeout-shell\"]",
       "description": "Settings light representative",
       "url": "http://127.0.0.1:4173/phase11-safeinvoke-timeout.html",
-      "capturedAt": "2026-03-11T08:16:49.846Z",
-      "mtime": "2026-03-11T08:16:49.835Z"
+      "capturedAt": "2026-03-11T13:11:44.339Z",
+      "mtime": "2026-03-11T13:11:44.336Z"
     },
     {
       "id": "TC-11-03",
@@ -36,8 +36,8 @@
       "selector": "[data-testid=\"phase11-protected-shell\"]",
       "description": "Auth shell light representative",
       "url": "http://127.0.0.1:4173/phase11-authguard-timeout.html?theme=light",
-      "capturedAt": "2026-03-11T08:16:51.607Z",
-      "mtime": "2026-03-11T08:16:51.606Z"
+      "capturedAt": "2026-03-11T13:11:46.061Z",
+      "mtime": "2026-03-11T13:11:46.061Z"
     },
     {
       "id": "TC-11-04",
@@ -47,8 +47,8 @@
       "selector": "[data-testid=\"phase11-agent-view-harness\"]",
       "description": "AgentView light representative",
       "url": "http://127.0.0.1:4173/phase11-agent-view.html?scenario=main-view&theme=light",
-      "capturedAt": "2026-03-11T08:16:53.310Z",
-      "mtime": "2026-03-11T08:16:53.309Z"
+      "capturedAt": "2026-03-11T13:11:47.802Z",
+      "mtime": "2026-03-11T13:11:47.797Z"
     },
     {
       "id": "TC-11-05",
@@ -58,8 +58,8 @@
       "selector": "[data-testid=\"phase11-dashboard-shell\"]",
       "description": "Dashboard dark baseline for comparison",
       "url": "http://127.0.0.1:4173/phase11-dashboard.html?theme=dark",
-      "capturedAt": "2026-03-11T08:16:54.920Z",
-      "mtime": "2026-03-11T08:16:54.920Z"
+      "capturedAt": "2026-03-11T13:11:49.717Z",
+      "mtime": "2026-03-11T13:11:49.713Z"
     }
   ]
 }

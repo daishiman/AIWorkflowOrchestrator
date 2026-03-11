@@ -2,36 +2,36 @@
 
 ## 1. 契約方針
 
-- light theme のまぶしさ低減を最優先に、`surface` をオフホワイト階層へ変更する。
+- light theme は Apple HIG に合わせて `surface` を white base、`text` を black base に揃える。
 - 未定義 token は「alias で既存契約へ接続」または「明示値追加」で fallback 依存を排除する。
 - 3テーマ（light/dark/kanagawa）で同一 token 名を解決可能にする。
 
 ## 2. 変更対象 token（確定）
 
-| 区分          | token                                                                                        | 方針                                     |
-| ------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| surface       | `--bg-primary` `--bg-secondary` `--bg-tertiary` `--bg-elevated` `--bg-hover`                 | light をオフホワイト化、hover token 新設 |
-| text          | `--text-secondary` `--text-muted` `--text-tertiary`                                          | light の可読性強化、tertiary 新設        |
-| border        | `--border-default` `--border-emphasis` `--border-subtle` `--border-primary` `--border-color` | primary/color alias を統一               |
-| accent/status | `--accent-primary` + `--status-*-subtle`                                                     | accent alias と subtle 背景色を明示定義  |
-| syntax        | `--syntax-operator` `--syntax-punctuation`                                                   | renderer CSS fallback 依存を削減         |
+| 区分          | token                                                                                        | 方針                                             |
+| ------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| surface       | `--bg-primary` `--bg-secondary` `--bg-tertiary` `--bg-elevated` `--bg-hover`                 | light を white base に統一し、hover token を整備 |
+| text          | `--text-secondary` `--text-muted` `--text-tertiary`                                          | light の可読性強化、tertiary 新設                |
+| border        | `--border-default` `--border-emphasis` `--border-subtle` `--border-primary` `--border-color` | primary/color alias を統一                       |
+| accent/status | `--accent-primary` + `--status-*-subtle`                                                     | accent alias と subtle 背景色を明示定義          |
+| syntax        | `--syntax-operator` `--syntax-punctuation`                                                   | renderer CSS fallback 依存を削減                 |
 
 ## 3. Light Theme 契約値
 
 | token                     | 値                        |
 | ------------------------- | ------------------------- |
-| `--bg-primary`            | `#f7f7f5`                 |
-| `--bg-secondary`          | `#f0f1ee`                 |
-| `--bg-tertiary`           | `#e6e7e3`                 |
-| `--bg-elevated`           | `#fcfcfa`                 |
+| `--bg-primary`            | `#ffffff`                 |
+| `--bg-secondary`          | `#ffffff`                 |
+| `--bg-tertiary`           | `#f5f5f7`                 |
+| `--bg-elevated`           | `#ffffff`                 |
 | `--bg-hover`              | `var(--bg-tertiary)`      |
-| `--text-primary`          | `#111827`                 |
-| `--text-secondary`        | `#334155`                 |
-| `--text-muted`            | `#526174`                 |
-| `--text-tertiary`         | `#64748b`                 |
-| `--border-default`        | `#c4c9d1`                 |
-| `--border-emphasis`       | `#aeb6c2`                 |
-| `--border-subtle`         | `rgba(51, 65, 85, 0.16)`  |
+| `--text-primary`          | `#000000`                 |
+| `--text-secondary`        | `rgba(0, 0, 0, 0.72)`     |
+| `--text-muted`            | `rgba(0, 0, 0, 0.56)`     |
+| `--text-tertiary`         | `rgba(0, 0, 0, 0.42)`     |
+| `--border-default`        | `#d2d2d7`                 |
+| `--border-emphasis`       | `#b8b8bf`                 |
+| `--border-subtle`         | `rgba(60, 60, 67, 0.18)`  |
 | `--border-primary`        | `var(--border-default)`   |
 | `--border-color`          | `var(--border-default)`   |
 | `--status-primary`        | `#0a6ce9`                 |

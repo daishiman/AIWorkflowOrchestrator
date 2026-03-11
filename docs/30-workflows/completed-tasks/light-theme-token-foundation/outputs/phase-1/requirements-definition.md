@@ -19,7 +19,7 @@
 
 | ID  | 観測                                                               | 原因                     | 影響                     |
 | --- | ------------------------------------------------------------------ | ------------------------ | ------------------------ |
-| R-1 | `--bg-primary` / `--bg-elevated` が純白寄り                        | light surface 階層が弱い | まぶしさ・チカつき       |
+| R-1 | light theme の neutral surface / text が画面ごとに不統一           | light 基準の共通定義不足 | 可読性低下・見た目の分断 |
 | R-2 | `--text-secondary` / `--text-muted` が低コントラスト               | 補助テキスト濃度不足     | 可読性低下               |
 | R-3 | `--text-tertiary` / `--border-primary` / `--accent-primary` 未定義 | fallback 依存            | 画面ごとに見え方が崩れる |
 
@@ -38,12 +38,12 @@
 
 ### 3.1 機能要件（FR）
 
-| ID   | 要件                                                        |
-| ---- | ----------------------------------------------------------- |
-| FR-1 | light theme の `surface` 階層を純白依存から脱却する         |
-| FR-2 | `text` 階層（primary/secondary/muted/tertiary）を明確化する |
-| FR-3 | `border` と `accent` の未定義参照を解消する                 |
-| FR-4 | 追加監査で検出した未定義 token を基盤で解決する             |
+| ID   | 要件                                                                            |
+| ---- | ------------------------------------------------------------------------------- |
+| FR-1 | light theme の `surface` / `text` を white background / black text 基準へ揃える |
+| FR-2 | `text` 階層（primary/secondary/muted/tertiary）を明確化する                     |
+| FR-3 | `border` と `accent` の未定義参照を解消する                                     |
+| FR-4 | 追加監査で検出した未定義 token を基盤で解決する                                 |
 
 ### 3.2 非機能要件（NFR）
 

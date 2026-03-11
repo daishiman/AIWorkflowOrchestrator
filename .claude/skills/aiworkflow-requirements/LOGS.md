@@ -4,6 +4,22 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001`
+- 目的: 全画面共通の light mode white/black 基準、renderer-wide compatibility bridge、CI shard fail の再現手順、screenshot 再取得運用を system spec 正本へ落とし込む
+
+### 実施内容
+- `references/workflow-light-theme-global-remediation.md` を新規作成し、実装内容・苦戦箇所・5分解決カード・仕様書別責務分離を統合
+- `references/ui-ux-design-system.md` / `references/task-workflow.md` / `references/lessons-learned.md` に global light remediation の追補を追加
+- `indexes/resource-map.md` に Light Mode bugfix 逆引きを追加し、`scripts/generate-index.js` で topic-map / keywords を再生成する前提を整えた
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow 同期
 
 ### コンテキスト

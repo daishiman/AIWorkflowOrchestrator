@@ -7,13 +7,13 @@
 
 ## AC 判定
 
-| AC   | 判定 | コメント                         |
-| ---- | ---- | -------------------------------- |
-| AC-1 | PASS | light surface が純白依存から離脱 |
-| AC-2 | PASS | required token を3テーマで解決   |
-| AC-3 | PASS | token role matrix を確定         |
-| AC-4 | PASS | backlog 分離方針を明文化         |
-| AC-5 | PASS | 後続タスクへの入力を outputs 化  |
+| AC   | 判定 | コメント                                           |
+| ---- | ---- | -------------------------------------------------- |
+| AC-1 | PASS | light surface / text が white / black 基準へ揃った |
+| AC-2 | PASS | required token を3テーマで解決                     |
+| AC-3 | PASS | token role matrix を確定                           |
+| AC-4 | PASS | backlog 分離方針を明文化                           |
+| AC-5 | PASS | 後続タスクへの入力を outputs 化                    |
 
 ## 引き継ぎ
 

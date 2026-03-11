@@ -39,6 +39,7 @@
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
 | バグ修正（APIキー連動 + チャット実行経路整合） | workflow-apikey-chat-tool-integration-alignment.md, api-ipc-system.md, interfaces-auth.md, llm-ipc-types.md | ui-ux-settings.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
+| バグ修正（Light Mode 全画面 white/black 再是正） | workflow-light-theme-global-remediation.md, ui-ux-design-system.md, task-workflow.md | lessons-learned.md, ui-ux-components.md, ui-ux-feature-components.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |

@@ -4,7 +4,7 @@
 
 | AC   | 判定基準                                                                 | 検証方法                                  |
 | ---- | ------------------------------------------------------------------------ | ----------------------------------------- |
-| AC-1 | light surface が純白依存から緩和される                                   | `tokens.css` 値レビュー + snapshot テスト |
+| AC-1 | light surface / text が white background / black text 基準へ揃う         | `tokens.css` 値レビュー + snapshot テスト |
 | AC-2 | `--text-tertiary` / `--border-primary` / `--accent-primary` が定義される | token 契約テスト                          |
 | AC-3 | text / border / accent の役割表が outputs に明文化される                 | `token-role-matrix.md` 検査               |
 | AC-4 | token 起因 backlog 統合方針が記録される                                  | Phase 10/12 ドキュメント検査              |

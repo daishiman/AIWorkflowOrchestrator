@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.74 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。renderer-wide hardcoded neutral drift、desktop shard 11 再現、completed workflow 側 screenshot 再取得を苦戦箇所へ追加し、white/black 基準 + compatibility bridge + shard 再現 + screenshot 再検証の 5 ステップへ再編 |
 | 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
 | 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
 | 2026-03-11 | 1.29.71 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を追加。`cache clear` / Main 同期 / `source` 表示の 3 契約を個別テストの寄せ集めではなく単一回帰マトリクスで guard する改善導線を task-workflow / workflow spec / domain spec へ同期した |
@@ -61,7 +62,34 @@
 
 ### 2026-03-11 TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 
-#### 苦戦箇所1: Phase成果物の欠落を放置すると「実装済みだが台帳未完了」の誤判定になる
+#### 苦戦箇所1: token 修正だけでは renderer 全域の light drift を止めきれない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `tokens.css` を white/black 基準へ直しても、renderer 側に残る `text-white` / `bg-gray-*` / `border-white/*` 系 class で一部画面が dark mode 寄りのまま残った |
+| 再発条件 | token 契約だけを修正し、renderer 全域の hardcoded neutral class を棚卸ししない |
+| 解決策 | `globals.css` に compatibility bridge を追加して全画面の暫定整合を先に取り、同時に `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` を token 基準へ移行した |
+| 標準ルール | Light Mode 全画面是正は「token 修正 → renderer 監査 → compatibility bridge → component migration」の順で分離して進める |
+
+#### 苦戦箇所2: desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | GitHub Actions では desktop test の shard 11 だけが失敗していたが、全量 rerun だけでは `DashboardView` の `--accent` drift が埋もれた |
+| 再発条件 | failing shard 番号を local で再現せず、broad rerun だけで当たりを付ける |
+| 解決策 | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、`--accent` を `--accent-primary` へ統一した |
+| 標準ルール | GitHub desktop CI が shard 単位で落ちたら、同じ `--shard=<n>/16` を local 再現の起点にする |
+
+#### 苦戦箇所3: global light remediation 後に screenshot を再取得しないと証跡が stale になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token / primitive / compatibility bridge を変えた後も旧 screenshot を残すと、Apple UI/UX 判断が最新実装を反映しない |
+| 再発条件 | 視覚証跡を「既にあるファイル」で済ませ、再撮影と coverage validator を省く |
+| 解決策 | capture script の workflow root を completed path に直し、5件を再撮影して `validate-phase11-screenshot-coverage` を再実行した |
+| 標準ルール | Light Mode の見た目を変えたら screenshot を撮り直し、coverage validator PASS を同ターンで固定する |
+
+#### 苦戦箇所4: Phase成果物の欠落を放置すると「実装済みだが台帳未完了」の誤判定になる
 
 | 項目 | 内容 |
 | --- | --- |
@@ -70,7 +98,7 @@
 | 解決策 | 不足成果物を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` / `phase-*.md` を同ターンで同期した |
 | 標準ルール | 「実装完了」判定前に `outputs` 実体・status・registry の3点を同時確認する |
 
-#### 苦戦箇所2: Phase 11 で `テストケース` と `画面カバレッジマトリクス` を欠くと根拠追跡が崩れる
+#### 苦戦箇所5: Phase 11 で `テストケース` と `画面カバレッジマトリクス` を欠くと根拠追跡が崩れる
 
 | 項目 | 内容 |
 | --- | --- |
@@ -79,7 +107,7 @@
 | 解決策 | `phase-11-manual-test.md` に TC 表と matrix を追記し、`証跡` 列を screenshot ファイル名へ厳密に紐づけた |
 | 標準ルール | Phase 11 は「TC表 + matrix + result証跡列」を 1 セットで作成する |
 
-#### 苦戦箇所3: Phase 12 で `spec_created` と `completed` を混在させると台帳ドリフトが再発する
+#### 苦戦箇所6: Phase 12 で `spec_created` と `completed` を混在させると台帳ドリフトが再発する
 
 | 項目 | 内容 |
 | --- | --- |
@@ -88,7 +116,7 @@
 | 解決策 | Task 12-2 / 完了条件の表現を `completed` に統一し、Step 1-A〜2 の整合を修正した |
 | 標準ルール | 実装完了タスクの Phase 12 では `completed` を唯一の完了状態として使う |
 
-#### 苦戦箇所4: completed workflow へ移管した後の follow-up backlog は正本配置を固定しないと導線がぶれる
+#### 苦戦箇所7: completed workflow へ移管した後の follow-up backlog は正本配置を固定しないと導線がぶれる
 
 | 項目 | 内容 |
 | --- | --- |
@@ -99,11 +127,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. 実装後に `outputs/phase-*` の不足を先に埋める。
-2. `artifacts.json` と `index.md` の status を同時更新する。
-3. Phase 11 の TC表 / matrix / result証跡列を 1:1 で突合する。
-4. Phase 12 の完了状態を `completed` に統一する。
-5. 親 workflow の状態に合わせて backlog 正本パスを選び、`task-workflow` / `lessons` / `SKILL` / `LOGS` を同ターンで同期する。
+1. light token baseline を `#ffffff / #000000` に固定する。
+2. `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` で renderer 全域を監査し、token / bridge / component の責務を分ける。
+3. 全画面共通の drift は `globals.css` の compatibility bridge で先に止め、primitives を token へ寄せる。
+4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
+5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 

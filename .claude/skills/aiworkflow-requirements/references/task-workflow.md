@@ -146,16 +146,20 @@
 
 #### 実施内容
 
-- `tokens.css` の light palette を純白依存から `#f7f7f5` 系へ是正し、surface / text / border / accent の階層を再定義
-- `--text-tertiary` / `--border-primary` / `--accent-primary` を正式定義し、required token を light / dark / kanagawa 3テーマで補完
-- token 契約テスト `tokens.light-theme.contract.test.ts` を追加し、light mode drift を固定化
-- Phase 11 で representative screenshot 5件を取得し、Apple UI/UX 観点の視覚検証を記録
+- `tokens.css` の light palette を `#ffffff` / `#000000` 基準へ是正し、surface / text / border / accent の階層を再定義した
+- `globals.css` に renderer-wide compatibility bridge を追加し、light mode で残っていた `text-white` / `text-gray-*` / `bg-gray-*` / `border-white/*` 系の legacy neutral drift を全画面共通で吸収した
+- `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` などの共通 primitives を semantic token 基準へ寄せ、accent surface 上だけ inverse text を維持した
+- `DashboardView` まわりの未定義 `--accent` 参照を `--accent-primary` に統一し、CI fail shard と一致する `pnpm --filter @repo/desktop exec vitest run --shard=11/16` の再現系を PASS へ戻した
+- Phase 11 screenshot 5件を再取得し、completed workflow 側へ移した capture script / screenshot path / coverage validator を current 実装へ再同期した
 - 親 workflow 完了後の継続 backlog 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に移管し、Issue `#1156` / `#1157` と同期した
 
 #### 苦戦箇所
 
 | 苦戦箇所 | 再発条件 | 対処 |
 | --- | --- | --- |
+| token 修正だけでは renderer 全域の hardcoded neutral class drift を止めきれない | `tokens.css` だけ直し、`text-white` / `bg-gray-*` / `border-white/*` を使う legacy class を棚卸ししない | `globals.css` に compatibility bridge を入れ、全画面の暫定整合を先に取り、その後に primitives を token へ寄せた |
+| desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる | GitHub Actions 上の shard 番号を local で再現せずに broad rerun する | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、Dashboard の `--accent` drift を局所化した |
+| light baseline 更新後に旧 screenshot を残すと Apple UI/UX 判断が stale になる | token / component / bridge を変えた後に screenshot を再取得しない | capture script の workflow root を completed path へ直し、5件を再撮影して `validate-phase11-screenshot-coverage` を通した |
 | Phase 5-12 成果物不足で phase status と outputs が乖離する | 実装優先で phase artifacts 生成を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` と同時同期した |
 | `phase-11-manual-test.md` の必須節不足で coverage validator の根拠が弱くなる | `テストケース` と `画面カバレッジマトリクス` を省略する | 2節を追加し、`manual-test-result.md` の `証跡` 列と 1:1 対応にそろえた |
 | `.claude` 正本と workflow docs の更新順が崩れると Step 1-A〜2 の記録が欠ける | workflow だけ更新して system spec 台帳を後回しにする | `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期した |
@@ -163,11 +167,11 @@
 
 #### 同種課題の5分解決カード
 
-1. token 修正タスクは `tokens.css` の契約層だけに責務を固定する。
-2. Phase 11 は screenshot 取得と coverage matrix を同時に作る。
-3. Phase 12 は `completed` 判定を `spec_created` と混在させない。
-4. `artifacts.json` と `index.md` は phase status 更新と同時に同期する。
-5. 親 workflow の状態に応じて backlog 正本を選び、`task-workflow` / `lessons` / `SKILL` / `LOGS` を同一ターンで閉じる。
+1. light token baseline を `#ffffff / #000000` に固定する。
+2. `rg` で renderer 全域の hardcoded neutral class を監査し、token 修正 / compatibility bridge / component migration の責務を先に分ける。
+3. CI fail が desktop shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で同じ shard を再現する。
+4. light baseline を変えたら screenshot を再取得し、`validate-phase11-screenshot-coverage` を再実行する。
+5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期して閉じる。
 
 #### 関連未タスク
 
@@ -181,8 +185,13 @@
 | コマンド | 結果 |
 | --- | --- |
 | `pnpm --filter @repo/desktop exec vitest run src/renderer/styles/tokens.light-theme.contract.test.ts` | PASS（4 tests） |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/atoms/Button/Button.test.tsx` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run --shard=11/16` | PASS |
 | `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop build` | PASS |
+| `pnpm lint` | PASS（warning のみ、error 0） |
 | `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs` | PASS（screenshot 5件） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/light-theme-token-foundation` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0） |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` | PASS（currentViolations=0） |

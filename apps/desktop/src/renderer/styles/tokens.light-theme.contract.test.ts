@@ -106,13 +106,12 @@ function unresolvedVarReferences(): Array<{
 }
 
 describe("tokens.css light theme contract", () => {
-  it("light theme の背景階層を純白依存から外す", () => {
+  it("light theme が white surface と black text を基準にする", () => {
     const lightBlock = getThemeBlock("light");
 
-    expect(lightBlock).toContain("--bg-primary: #f7f7f5;");
-    expect(lightBlock).toContain("--bg-elevated: #fcfcfa;");
-    expect(lightBlock).not.toContain("--bg-primary: #ffffff;");
-    expect(lightBlock).not.toContain("--bg-elevated: #ffffff;");
+    expect(lightBlock).toContain("--bg-primary: #ffffff;");
+    expect(lightBlock).toContain("--bg-elevated: #ffffff;");
+    expect(lightBlock).toContain("--text-primary: #000000;");
   });
 
   it("必須 token が 3テーマすべてで解決できる", () => {

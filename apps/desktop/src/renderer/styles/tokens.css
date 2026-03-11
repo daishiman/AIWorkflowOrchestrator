@@ -285,25 +285,25 @@
   color-scheme: light;
 
   /* ─── Apple System Background Colors ─── */
-  --bg-primary: #f7f7f5;
-  --bg-secondary: #f0f1ee;
-  --bg-tertiary: #e6e7e3;
-  --bg-elevated: #fcfcfa;
-  --bg-glass: rgba(247, 248, 245, 0.82);
-  --bg-selection: rgba(10, 122, 255, 0.16);
+  --bg-primary: #ffffff;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f5f5f7;
+  --bg-elevated: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.92);
+  --bg-selection: rgba(10, 122, 255, 0.12);
   --bg-hover: var(--bg-tertiary);
 
   /* ─── Apple Label Colors ─── */
-  --text-primary: #111827;
-  --text-secondary: #334155;
-  --text-muted: #526174;
-  --text-tertiary: #64748b;
+  --text-primary: #000000;
+  --text-secondary: rgba(0, 0, 0, 0.72);
+  --text-muted: rgba(0, 0, 0, 0.56);
+  --text-tertiary: rgba(0, 0, 0, 0.42);
   --text-inverse: #ffffff;
 
   /* ─── Apple Separator Colors ─── */
-  --border-default: #c4c9d1;
-  --border-emphasis: #aeb6c2;
-  --border-subtle: rgba(51, 65, 85, 0.16);
+  --border-default: #d2d2d7;
+  --border-emphasis: #b8b8bf;
+  --border-subtle: rgba(60, 60, 67, 0.18);
   --border-primary: var(--border-default);
   --border-color: var(--border-default);
 

@@ -12,22 +12,22 @@
 
 ## テスト結果
 
-| TC-ID    | 対象画面                | 観点                 | 結果 | 証跡                                                                | 所見                                                                             |
-| -------- | ----------------------- | -------------------- | ---- | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| TC-11-01 | Dashboard light         | 背景階層・可読性     | PASS | `outputs/phase-11/screenshots/TC-11-01-dashboard-light.png`         | 白の刺激は緩和したが、統計カード周辺の補助テキストは判読性が低く追加改善が必要。 |
-| TC-11-02 | Settings light          | 補助テキスト・border | PASS | `outputs/phase-11/screenshots/TC-11-02-settings-light.png`          | 主要ラベルは読めるが、小さな補助文はコントラスト不足が残る。                     |
-| TC-11-03 | Auth shell light        | 背景/本文分離        | PASS | `outputs/phase-11/screenshots/TC-11-03-auth-shell-light.png`        | 主要導線は視認可。説明文階層はやや弱い。                                         |
-| TC-11-04 | AgentView light         | card/CTA/補助文      | PASS | `outputs/phase-11/screenshots/TC-11-04-agent-main-light.png`        | CTA は明瞭。補助テキストのコントラストは継続観察。                               |
-| TC-11-05 | Dashboard dark baseline | 比較基準             | PASS | `outputs/phase-11/screenshots/TC-11-05-dashboard-dark-baseline.png` | dark 側は可読性が維持されている。                                                |
+| TC-ID    | 対象画面                | 観点                 | 結果 | 証跡                                                                | 所見                                                                    |
+| -------- | ----------------------- | -------------------- | ---- | ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| TC-11-01 | Dashboard light         | 背景階層・可読性     | PASS | `outputs/phase-11/screenshots/TC-11-01-dashboard-light.png`         | 白背景上でも見出し・補助文・カード境界が判別できる。                    |
+| TC-11-02 | Settings light          | 補助テキスト・border | PASS | `outputs/phase-11/screenshots/TC-11-02-settings-light.png`          | フォーム系 primitive とカード見出しが black base で一貫した。           |
+| TC-11-03 | Auth shell light        | 背景/本文分離        | PASS | `outputs/phase-11/screenshots/TC-11-03-auth-shell-light.png`        | ローディングや保護画面でも本文が白背景に埋もれない。                    |
+| TC-11-04 | AgentView light         | card/CTA/補助文      | PASS | `outputs/phase-11/screenshots/TC-11-04-agent-main-light.png`        | neutral surface は black text 基準、accent CTA は inverse text を維持。 |
+| TC-11-05 | Dashboard dark baseline | 比較基準             | PASS | `outputs/phase-11/screenshots/TC-11-05-dashboard-dark-baseline.png` | dark 側は可読性が維持されている。                                       |
 
 ## 仕様照合サマリー
 
-| 確認項目           | 判定                       |
-| ------------------ | -------------------------- |
-| レイアウト一貫性   | PASS                       |
-| token 適用一貫性   | PASS                       |
-| light まぶしさ緩和 | PASS                       |
-| 補助文可読性       | PASS（HIGH follow-upあり） |
+| 確認項目               | 判定                                  |
+| ---------------------- | ------------------------------------- |
+| レイアウト一貫性       | PASS                                  |
+| token 適用一貫性       | PASS                                  |
+| light white/black 基準 | PASS                                  |
+| 補助文可読性           | PASS（shared migration で継続最適化） |
 
 ## 補足
 

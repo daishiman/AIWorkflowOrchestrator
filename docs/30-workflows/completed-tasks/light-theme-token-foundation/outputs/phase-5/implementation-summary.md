@@ -11,9 +11,10 @@
 
 ## 変更内容（token 基盤）
 
-- light theme の `--bg-primary` / `--bg-secondary` / `--bg-tertiary` / `--bg-elevated` をオフホワイト階層へ変更。
+- light theme の `--bg-primary` / `--bg-secondary` / `--bg-tertiary` / `--bg-elevated` を white surface 基準へ変更し、`--text-primary` を black 基準へ固定。
 - `--text-tertiary` / `--border-primary` / `--border-color` / `--accent-primary` を light・dark・kanagawa で定義。
 - `--bg-hover`、`--status-success-subtle`、`--status-warning-subtle`、`--status-info-subtle`、`--syntax-operator`、`--syntax-punctuation` を追加。
+- `globals.css` に light mode compatibility bridge を追加し、renderer 全画面の legacy neutral utility を white / black 基準へ補正。
 - fallback なし未定義 token 参照を契約テストで検出できるようにした。
 
 ## 実装差分ファイル
@@ -22,6 +23,7 @@
 | ------------------ | ----------------------------------------------------------------------- |
 | token 実装         | `apps/desktop/src/renderer/styles/tokens.css`                           |
 | token 契約テスト   | `apps/desktop/src/renderer/styles/tokens.light-theme.contract.test.ts`  |
+| light bridge       | `apps/desktop/src/renderer/styles/globals.css`                          |
 | Phase 11 支援      | `apps/desktop/src/renderer/phase11-authguard-timeout.tsx`               |
 | Phase 11 支援      | `apps/desktop/src/renderer/phase11-dashboard.tsx`                       |
 | Phase 11 支援      | `apps/desktop/src/renderer/phase11-dashboard.html`                      |

@@ -83,9 +83,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
       data-testid="settings-view"
     >
       {/* Header */}
-      <header className="p-6 border-b border-white/10">
-        <h1 className="text-2xl font-bold text-white">設定</h1>
-        <p className="text-gray-400 mt-1">Knowledge Studioの設定を管理します</p>
+      <header className="border-b border-[var(--border-primary)] p-6">
+        <h1 className="text-2xl font-bold text-[var(--text-primary)]">設定</h1>
+        <p className="mt-1 text-[var(--text-secondary)]">
+          Knowledge Studioの設定を管理します
+        </p>
       </header>
 
       {/* Settings Content */}
@@ -220,7 +222,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
       </main>
 
       {/* Footer */}
-      <footer className="p-6 border-t border-white/10">
+      <footer className="border-t border-[var(--border-primary)] p-6">
         <div className="flex justify-end">
           <Button
             variant="primary"

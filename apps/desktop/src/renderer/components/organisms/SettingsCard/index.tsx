@@ -20,11 +20,16 @@ export const SettingsCard: React.FC<SettingsCardProps> = ({
   return (
     <GlassPanel radius="md" blur="md" className={clsx("p-6", className)}>
       <div className="mb-4">
-        <h3 id={id} className="text-lg font-semibold text-white">
+        <h3
+          id={id}
+          className="text-lg font-semibold text-[var(--text-primary)]"
+        >
           {title}
         </h3>
         {description && (
-          <p className="mt-1 text-sm text-white/60">{description}</p>
+          <p className="mt-1 text-sm text-[var(--text-secondary)]">
+            {description}
+          </p>
         )}
       </div>
 

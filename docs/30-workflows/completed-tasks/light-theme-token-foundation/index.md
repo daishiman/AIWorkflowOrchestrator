@@ -12,13 +12,13 @@
 
 ### 目的
 
-ライトテーマ全体で発生している「白が強すぎる」「文字が見えない」「テーマ依存の色が継承に落ちる」問題のうち、**token 基盤の是正**に単一責務で対処する。対象は `tokens.css` のライトテーマ semantic token と未定義 token の整理であり、個別画面の色直書き修正は別タスクへ分離する。
+ライトテーマ全体で発生している「文字が見えない」「テーマ依存の色が継承に落ちる」「dark 前提の neutral color が Light Mode で残る」問題に対し、**token 基盤 + renderer 共通 bridge** で対処する。対象は `tokens.css` のライトテーマ semantic token、未定義 token の整理、および renderer 全画面へ効く共通 primitive / compatibility layer の整備である。
 
 ### 背景
 
-- 調査時点で `tokens.css` のライトテーマが純白依存で、全画面のまぶしさとコントラスト不足の起点になっていた
+- 調査時点で `tokens.css` のライトテーマと dark 前提 utility class が混在し、全画面で白背景と文字コントラストの不整合が起きていた
 - `--text-tertiary` / `--border-primary` / `--accent-primary` の未定義参照があり、継承 fallback に依存する不安定さが残っていた
-- component 側の直書き色問題まで同一タスクに含めると責務が肥大化するため、token 基盤のみを独立 task とする
+- 主要 primitive を token 基準へ寄せても、legacy hardcoded color は renderer-wide bridge がないと Light Mode で再発した
 
 ### 最終ゴール
 
@@ -60,13 +60,13 @@
 
 ## 受入基準
 
-| ID   | 基準                                                                                                             |
-| ---- | ---------------------------------------------------------------------------------------------------------------- |
-| AC-1 | `apps/desktop/src/renderer/styles/tokens.css` のライトテーマで純白依存を緩和した surface 階層が定義される        |
-| AC-2 | `--text-tertiary` / `--border-primary` / `--accent-primary` の扱いが「正式定義」または「参照廃止」で一貫化される |
-| AC-3 | ライトテーマ text / border / accent token の役割表が仕様書内で明文化される                                       |
-| AC-4 | 既存 backlog の token 系 light contrast 課題を本タスクへ束ねる判断根拠が記録される                               |
-| AC-5 | 後続タスクが token 契約を前提に実装できる状態になる                                                              |
+| ID   | 基準                                                                                                                          |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------- |
+| AC-1 | `apps/desktop/src/renderer/styles/tokens.css` のライトテーマで white surface / black text を基準にした token 階層が定義される |
+| AC-2 | `--text-tertiary` / `--border-primary` / `--accent-primary` の扱いが「正式定義」または「参照廃止」で一貫化される              |
+| AC-3 | ライトテーマ text / border / accent token の役割表が仕様書内で明文化される                                                    |
+| AC-4 | 既存 backlog の token 系 light contrast 課題を本タスクへ束ねる判断根拠が記録される                                            |
+| AC-5 | 後続タスクが token 契約を前提に実装できる状態になる                                                                           |
 
 ## スコープ
 
@@ -79,7 +79,7 @@
 
 **含まない**:
 
-- `text-white` / `bg-slate-*` / `bg-zinc-*` など個別 component の置換
+- renderer 全画面に効く primitive / compatibility layer を超える個別 component の全面置換
 - screenshot 再取得そのもの
 - commit / PR / 実装実行
 

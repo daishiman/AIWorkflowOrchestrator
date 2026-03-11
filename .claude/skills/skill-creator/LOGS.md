@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「Light Mode 全画面 white/black 基準 + compatibility bridge 固定」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に renderer-wide hardcoded neutral class 監査、desktop shard 再現、screenshot 再取得後の coverage validator 記録を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に Light Mode 専用 `SubAgent-L1..L4` を追加し、design-system / components / task-workflow / lessons の関心分離をテンプレート化した
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog ルール反映
 
 - **Agent**: skill-creator (update)
