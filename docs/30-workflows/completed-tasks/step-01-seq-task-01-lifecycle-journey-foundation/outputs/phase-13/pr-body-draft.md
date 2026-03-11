@@ -45,14 +45,18 @@ Skill Center をスキルライフサイクルの一次導線入口として整�
 
 ## スクリーンショット
 
-以下は push 後に raw URL へ差し替える。
-
-- `outputs/phase-11/screenshots/TC-11-01-create-entry.png`
-- `outputs/phase-11/screenshots/TC-11-02-execute-entry.png`
-- `outputs/phase-11/screenshots/TC-11-03-improve-entry.png`
-- `outputs/phase-11/screenshots/TC-11-04-advanced-supporting.png`
-- `outputs/phase-11/screenshots/TC-11-05-surface-ownership.png`
-- `outputs/phase-11/screenshots/TC-11-06-settings-public-shell.png`
+- TC-11-01 create 入口
+  ![TC-11-01-create-entry](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-01-create-entry.png)
+- TC-11-02 execute 入口
+  ![TC-11-02-execute-entry](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-02-execute-entry.png)
+- TC-11-03 improve 入口
+  ![TC-11-03-improve-entry](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-03-improve-entry.png)
+- TC-11-04 advanced 補助導線
+  ![TC-11-04-advanced-supporting](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-04-advanced-supporting.png)
+- TC-11-05 画面責務ボード
+  ![TC-11-05-surface-ownership](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-05-surface-ownership.png)
+- TC-11-06 settings 公開 shell
+  ![TC-11-06-settings-public-shell](https://raw.githubusercontent.com/daishiman/AIWorkflowOrchestrator/1f2d8fd639aa2998a53040bcaab97e6f59f1dc26/docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-06-settings-public-shell.png)
 
 ## チェックリスト
 

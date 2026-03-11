@@ -6,7 +6,7 @@
 | ---------- | ----------------------- |
 | 機能名     | TASK-SKILL-LIFECYCLE-01 |
 | 作成日     | 2026-03-11              |
-| ステータス | 実行中                  |
+| ステータス | 完了                    |
 | 総Phase数  | 13                      |
 
 ---
@@ -27,7 +27,7 @@
 | 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
 | 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
 | 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
-| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 未実施     |
+| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 完了       |
 
 ---
 
@@ -54,7 +54,7 @@ Phase 8 → Phase 9 → Phase 10 (Gate) → Phase 11 → Phase 12 → Phase 13 �
 
 ```bash
 # Phase完了処理
-node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+node .agents/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation --phase {{N}} \
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 ```
@@ -77,9 +77,9 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 | 10    | phase-10-final-review.md, outputs/phase-10/final-review-result.md, outputs/phase-10/final-review-findings.md, outputs/phase-10/remediation-plan.md                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 11    | phase-11-manual-test.md, outputs/phase-11/manual-test-result.md, outputs/phase-11/discovered-issues.md, outputs/phase-11/screenshot-plan.json, outputs/phase-11/screenshot-coverage.md, outputs/phase-11/screenshots/TC-11-01-create-entry.png, outputs/phase-11/screenshots/TC-11-02-execute-entry.png, outputs/phase-11/screenshots/TC-11-03-improve-entry.png, outputs/phase-11/screenshots/TC-11-04-advanced-supporting.png, outputs/phase-11/screenshots/TC-11-05-surface-ownership.png, outputs/phase-11/screenshots/TC-11-06-settings-public-shell.png |
 | 12    | phase-12-documentation.md, outputs/phase-12/implementation-guide.md, outputs/phase-12/spec-update-summary.md, outputs/phase-12/documentation-changelog.md, outputs/phase-12/phase12-task-spec-compliance-check.md, outputs/phase-12/unassigned-task-detection.md, outputs/phase-12/skill-feedback-report.md                                                                                                                                                                                                                                                   |
-| 13    | -                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| 13    | PR要約ドラフト, 証跡一覧, 依存影響一覧, PR本文ドラフト, PR情報                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 ---
 
 _このファイルは `generate-index.js` によって自動生成されました。_
-_最終更新: 2026-03-11T09:29:36.596Z_
+_最終更新: 2026-03-11T10:19:13.212Z_

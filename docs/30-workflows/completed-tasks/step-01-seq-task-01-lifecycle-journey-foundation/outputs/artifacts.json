@@ -1,8 +1,8 @@
 {
   "feature": "TASK-SKILL-LIFECYCLE-01",
   "created": "2026-03-11T00:00:00.000Z",
-  "lastUpdated": "2026-03-11T09:20:00.000Z",
-  "status": "in_progress",
+  "lastUpdated": "2026-03-11T10:18:42.239Z",
+  "status": "completed",
   "taskId": "TASK-SKILL-LIFECYCLE-01",
   "title": "スキルライフサイクル一次導線・画面責務基盤",
   "type": "design",
@@ -135,8 +135,35 @@
       ]
     },
     "13": {
-      "status": "pending",
-      "artifacts": []
+      "status": "completed",
+      "completedAt": "2026-03-11T10:18:42.235Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-summary-draft.md",
+          "description": "PR要約ドラフト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/evidence-index.md",
+          "description": "証跡一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/downstream-impact.md",
+          "description": "依存影響一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-body-draft.md",
+          "description": "PR本文ドラフト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報"
+        }
+      ]
     }
   },
   "dependencies": {
@@ -188,9 +215,9 @@
   "metadata": {
     "taskType": "design",
     "estimatedPhases": 13,
-    "actualPhases": 12
+    "actualPhases": 13
   },
-  "executionNote": "Phase 1-12 を順番に完了。設計・実装・テスト・Phase 11 スクリーンショット・Phase 12 正本仕様同期まで実施済み。Phase 13 はユーザー指示により未実施。",
+  "executionNote": "Phase 1-13 を順番に完了。設計・実装・テスト・Phase 11 スクリーンショット・Phase 12 正本仕様同期・Phase 13 の commit / push / PR 作成 / implementation-guide コメント反映まで実施済み。",
   "createdAt": "2026-03-11",
   "updatedAt": "2026-03-11"
 }
