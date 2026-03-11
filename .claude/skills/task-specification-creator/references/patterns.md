@@ -20,7 +20,6 @@
 | [サービス設計](#サービス設計パターンtask-9b-g)                                                        | 4件        | Facade・Script First             |
 | [Zustand Store](#zustand-store-hooks無限ループ対策パターンut-fix-store-hooks-infinite-loop-001)      | 1件        | 無限ループ対策・useRefガード     |
 | [IPC型不整合解決](#ipc型不整合解決パターンut-fix-skill-import-return-type-001)     | 2件        | IPC戻り値型変換・3層整合性確認   |
-| [Preload ICPタイムアウト](#preload-ipc-タイムアウトパターンtask-fix-safeinvoke-timeout-001) | 2件 | Promise.race タイムアウト・cleanup 検証 |
 
 ---
 
@@ -67,20 +66,6 @@
   3. 検証スクリプト自身の判定結果は、実ファイル内容と合わせて二重確認する
 - **修正ファイル**: `.agents/skills/task-specification-creator/scripts/validate-phase-output.js`
 - **発見日**: 2026-02-24
-
-### validate-phase-output の `--phase` 引数ドリフト（TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査）
-
-- **状況**: template / guide / system spec が `validate-phase-output.js <workflow> --phase 12` を案内していた
-- **問題**: 実スクリプトは workflow path の位置引数しか受け付けず、`--phase` を渡すと失敗する
-- **原因**:
-  1. 旧運用例がテンプレートへ残存した
-  2. system spec 側の説明が template 側へ逆流した
-  3. 再監査時に help 出力との突合を省略した
-- **教訓**:
-  1. CLI 例は `--help` 出力と同じターンで確認する
-  2. template / guide / system spec の3点を同時更新する
-  3. `validate-phase-output` は `node .../validate-phase-output.js <workflow-dir>` を正本とする
-- **発見日**: 2026-03-09
 
 ### 未タスク検出後のtask-workflow.md登録漏れ（TASK-9B-G）
 
@@ -235,7 +220,7 @@
   1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.agents/skills/task-specification-creator/scripts/` に配置されている
   2. スキルスクリプトのパスとプロジェクトルートのパスを混同した
 - **教訓**:
-  1. task-specification-creator の実行スクリプトは `.agents/skills/task-specification-creator/scripts/` を canonical path として参照する
+  1. スキルスクリプトは必ず `.agents/skills/{skill-name}/scripts/` パスで参照する
   2. `node scripts/xxx.js` ではなく `node .agents/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
   3. スクリプト実行前にファイルの存在を `test -f` で確認する
 - **発見日**: 2026-02-19
@@ -1408,7 +1393,7 @@
   - 将来の同様タスク（書き戻し機能等）で再利用可能
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-WCE-MONACO-001
-- **システム仕様書参照**: [architecture-implementation-patterns.md](/.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **システム仕様書参照**: [architecture-implementation-patterns.md](/.agents/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
 
 ---
 
@@ -1559,7 +1544,7 @@
   - ✅ `node scripts/generate-index.js` → 正しい
 - **確認方法**:
   ```bash
-  ls .claude/skills/aiworkflow-requirements/scripts/
+  ls .agents/skills/aiworkflow-requirements/scripts/
   ```
 - **教訓**: spec-update-workflow.mdのコマンド例を直接コピーせず、実ファイル名を確認
 - **発見日**: 2026-02-04
@@ -2122,68 +2107,10 @@
 
 ---
 
-## Preload IPC タイムアウトパターン（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
-
-### Promise.race によるIPC呼び出しタイムアウトパターン（TASK-FIX-SAFEINVOKE-TIMEOUT-001 2026-03-10）
-
-- **状況**: Preload 層の `safeInvoke` が Main Process の応答不能時に Promise を永続 pending にし、Renderer がハング
-- **パターン**: `Promise.race([ipcRenderer.invoke(), timeoutPromise])` で呼び出しにタイムアウトを設定
-- **実装要点**:
-  1. タイムアウト定数を外部化（`IPC_TIMEOUT_MS = 5000`）
-  2. allowlist チェックを `ipcRenderer.invoke()` **前**に実行し、不正チャネルは即時 reject
-  3. `clearTimeout(timeoutId)` を正常 resolve / reject の**両方**で実行（タイマーリーク防止）
-  4. エラーメッセージには `channel` 名と timeout 値のみ含め、パス・token・stack trace は露出しない
-- **DRY統合**: 既存の `safeInvoke` と新規の `invokeWithTimeout` を `ipc-utils.ts` に統合し、`safeInvoke` の内部実装を `invokeWithTimeout` に委譲
-- **テスト戦略**: P13 準拠で `vi.advanceTimersByTime(ms)` を使用（`runAllTimers` 禁止）。15テストで Line/Branch/Function 100% カバレッジ達成
-
-```typescript
-// ipc-utils.ts の核心パターン
-export function invokeWithTimeout<T>(
-  channel: string,
-  ...args: unknown[]
-): Promise<T> {
-  if (!allowedChannels.includes(channel)) {
-    return Promise.reject(new Error(`IPC channel not allowed: ${channel}`));
-  }
-  return new Promise<T>((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject(new Error(`IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`));
-    }, IPC_TIMEOUT_MS);
-    ipcRenderer.invoke(channel, ...args)
-      .then((result) => { clearTimeout(timeoutId); resolve(result as T); })
-      .catch((err) => { clearTimeout(timeoutId); reject(err); });
-  });
-}
-```
-
-- **効果**:
-  - Renderer のハング防止（安全側の reject に倒す）
-  - タイマーリーク防止（cleanup 保証）
-  - 後方互換性維持（公開シグネチャ不変）
-- **発見日**: 2026-03-10
-- **関連タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
-- **関連Pitfall**: P13（タイマーテスト無限ループ）
-
-### cleanup 検証のテストパターン（TASK-FIX-SAFEINVOKE-TIMEOUT-001 2026-03-10）
-
-- **状況**: `clearTimeout` が正常パスとタイムアウトパスの両方で呼ばれることの検証が必要
-- **パターン**: `vi.spyOn(global, 'clearTimeout')` でスパイし、各パスでの呼び出し回数を検証
-- **実装要点**:
-  1. 正常 resolve 時: `clearTimeout` が1回呼ばれることを検証
-  2. 正常 reject 時: `clearTimeout` が1回呼ばれることを検証
-  3. タイムアウト時: `clearTimeout` は呼ばれない（タイマー発火後のため）ことを検証
-  4. `afterEach` で `vi.useRealTimers()` と `vi.restoreAllMocks()` を必ず実行
-- **効果**: タイマーリークを防止する cleanup ロジックの正確性を保証
-- **発見日**: 2026-03-10
-- **関連タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
-
----
-
 ## 変更履歴
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **2026-03-10** | **TASK-FIX-SAFEINVOKE-TIMEOUT-001 知見追加**: Preload IPC タイムアウトパターン2件（Promise.race タイムアウト、cleanup 検証テスト）追加。Phase 4 テンプレートに P13 タイマーテスト注意事項を追加。Phase 5 テンプレートに DRY 統合パターンを追加。Phase 7 テンプレートに小規模ユーティリティ 100% カバレッジパターンを追加 |
 | **2026-03-05** | **TASK-UI-01-D 再確認パターン追加**: 成功パターン「Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化」を追加。`LOGS/SKILL/topic-map` 同時更新、`docs/30-workflows/unassigned-task/` への配置、`audit --target-file` + `--diff-from HEAD` の `currentViolations=0` 固定を標準化 |
 | **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |
 | **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |

@@ -14,6 +14,27 @@
   - `references/patterns.md` に TASK-UI-06 由来の「UI domain spec は主目的 + 状態契約 + 画面証跡を先に固定する」パターンを追加
 
 ---
+## 2026-03-11 - TASK-UI-07 を踏まえた Phase 12 UIテンプレート最適化
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の検証コマンドを `.claude` 正本へ統一
+  - `assets/phase12-domain-spec-sync-block-template.md` に UI一覧仕様向けサマリーブロックを追加
+  - UI current workflow では `ui-ux-components.md` にも実装内容と苦戦箇所サマリーを残すルールを追加
+
+---
+## 2026-03-11 - TASK-UI-07 Phase 12 再監査で dual skill-root mirror sync パターンを追加
+
+- **Agent**: skill-creator
+- **Phase**: pattern-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「dual skill-root repository の canonical root + mirror sync」パターンを追加
+  - `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に canonical root と mirror sync の両方を残すルールを固定
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW の canonical root パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)

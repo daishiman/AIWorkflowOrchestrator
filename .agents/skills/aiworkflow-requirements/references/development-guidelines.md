@@ -265,61 +265,6 @@
 
 詳細: `.claude/rules/06-known-pitfalls.md#P31`
 
-### デバッグコード管理規約
-
-> **経緯**: TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 で App.tsx に残存したデバッグ用 `useEffect`（`localStorage.clear()` + `window.location.reload()`）が Zustand persist を毎回破壊し、設定画面の無限ローディングを引き起こした。
-
-#### 1. App Shell（shared entry point）での禁止パターン
-
-App 全体の mount effect は、persist 復旧と WebContents ライフサイクルを壊しやすいため、debug-only の副作用を置いてはならない。
-
-| 禁止事項 | 理由 | 代替手段 |
-| --- | --- | --- |
-| `localStorage.clear()` を shared App shell の `useEffect` で実行 | Zustand persist 全破壊。再起動のたびに state が失われる | dedicated harness / one-shot capture script / DevTools 手動操作 |
-| `window.location.reload()` を shared App shell の `useEffect` で実行 | Electron の `BROWSER_GET_LAST_WEB_PREFERENCES` エラーと初期化順序の不安定化を招く | feature-specific reload button または harness 内の明示 reload |
-| デバッグ用 `useEffect` を App.tsx 等の shared entry point に残す | 全ユーザー・全環境に副作用が波及し、本番障害の原因になる | 専用のデバッグ harness ファイルに分離し、App shell には一切含めない |
-
-#### 2. 期限付き TODO コメント規約
-
-デバッグコードを一時的に入れる場合は、以下の形式のコメントを必須とする。
-
-| 項目 | 規約 |
-| --- | --- |
-| 必須形式 | `// TODO(YYYY-MM-DD): 削除理由 - 担当者` |
-| 期限 | コメント記載日から最長2週間以内 |
-| レビュー基準 | 期限付き TODO コメントのないデバッグコードはコードレビューで拒否する |
-| lint 検出 | `console.log` / `localStorage.clear()` / `window.location.reload()` が shared entry point に存在する場合、レビューで必ず指摘する |
-
-期限付き TODO の例:
-
-| パターン | 例 |
-| --- | --- |
-| 正しい形式 | `// TODO(2026-03-23): Phase 11 手動テスト完了後に削除 - @developer` |
-| 拒否される形式 | コメントなしの `localStorage.clear()` / `console.log("debug")` |
-
-#### 3. テスト用バイパス（skipAuth=true 等）の制約
-
-| 項目 | 規約 |
-| --- | --- |
-| false negative リスク | `skipAuth=true` や `VITE_E2E_MODE` による early return は、本来の不具合経路を guard して false negative になりうる |
-| 必須対応 | テスト用バイパスがある場合、通常パス（バイパスなし）の検証テストを必ず追加する |
-| 検証方法 | バイパス有無の両方のパスでテストを実行し、通常パスの metadata（isLoading 遷移、IPC 呼び出し等）を検証する |
-| レビュー基準 | バイパスが bug path 検証の唯一経路になっている場合、コードレビューで指摘する |
-
-#### 補助ルール
-
-- screenshot 必須タスクで App shell が不安定な場合は、dedicated harness を正式手段として使い、`manual-test-result.md` に harness path と mock 境界を記録する
-- デバッグコードの残存を防ぐため、PR の差分に `localStorage.clear` / `location.reload` が App shell に含まれていないことをセルフチェックする
-
-#### 関連未タスク（TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 派生）
-
-| タスクID | 概要 | 指示書パス |
-|---|---|---|
-| UT-IMP-PHASE11-HARNESS-LIFECYCLE-001 | Phase 11 harness ファイルのライフサイクル管理（作成・削除・本番混入防止） | `docs/30-workflows/unassigned-task/task-imp-phase11-harness-lifecycle-001.md` |
-| UT-IMP-APP-TEST-MOCK-CENTRALIZATION-001 | App.tsx テスト共有モックファクトリ集約（テスト間の重複モック排除） | `docs/30-workflows/unassigned-task/task-imp-app-test-mock-centralization-001.md` |
-
-詳細: `.claude/rules/06-known-pitfalls.md#P31`、`06-known-pitfalls.md#P48`
-
 ### 個別セレクタ命名規約
 
 新規セレクタ追加時は以下の命名パターンに従う。
@@ -757,8 +702,6 @@ App 全体の mount effect は、persist 復旧と WebContents ライフサイ�
 
 | Version | Date       | Changes                                                                                   |
 | ------- | ---------- | ----------------------------------------------------------------------------------------- |
-| 1.9.2   | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001: デバッグコード管理規約を拡充 — App Shell禁止パターン明確化、期限付きTODOコメント規約追加、テスト用バイパス制約追加 |
-| 1.9.1   | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001: shared App shell への debug-only `localStorage.clear()` / `window.location.reload()` を禁止し、`skipAuth=true` を bug path 検証の唯一経路にしない運用を追加 |
 | 1.9.0   | 2026-03-06 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001: AuthMode の現行P31対策を更新。`useEffect([initializeAuthMode])` を標準とし、`useAuthModeStore()` は互換用 deprecated hook として扱う運用へ改訂 |
 | 1.8.0   | 2026-02-20 | TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001: `@repo/shared` サブパス追加時の同期手順を追加（`exports`/`paths`/`alias`/`tsup entry` 同時更新、補助型宣言取り込みルール） |
 | 1.7.0   | 2026-02-14 | TASK-FIX-14-1: Skill系Main Processログ規約を追加（electron-log必須、プレフィックス、テスト方針、TASK-FIX-14-2継続管理） |

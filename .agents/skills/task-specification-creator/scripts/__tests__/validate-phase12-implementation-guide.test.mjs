@@ -86,7 +86,7 @@ const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
 ### 使用例
 
 \`\`\`bash
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/sample --json
+node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/sample --json
 \`\`\`
 
 ### エラーハンドリング

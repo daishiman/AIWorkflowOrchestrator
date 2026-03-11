@@ -368,7 +368,7 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 
 | ID                               | タイトル                                                            | 依存                | 複雑度 | ステータス |
 | -------------------------------- | ------------------------------------------------------------------- | ------------------- | ------ | ---------- |
-| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./task-058d-ui-07-dashboard-enhancement.md)    | UI-00, UI-01, UI-02 | small  | pending    |
+| TASK-UI-07-DASHBOARD-ENHANCEMENT | [ダッシュボード強化](./task-058d-ui-07-dashboard-enhancement.md)    | UI-00, UI-01, UI-02 | small  | completed  |
 | TASK-UI-08-NOTIFICATION-CENTER   | [通知センター](./task-058e-ui-08-notification-center.md)            | UI-00, UI-01, UI-02 | medium | pending    |
 | TASK-UI-09-ONBOARDING-WIZARD     | [オンボーディングウィザード](./task-061-ui-09-onboarding-wizard.md) | UI-00〜08全て       | small  | pending    |
 

@@ -9,6 +9,27 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - Phase 12 再監査で user 指定rootを正本にするガードを追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase12-checklist-definition.md` に canonical root + mirror sync の検証項目を追加
+  - `references/phase-11-12-guide.md` に skill root が複数ある repository で user 指定rootを正本にする運用を追記
+  - `.claude` 正本更新だけでなく mirror drift の有無を記録する完了条件を追加
+
+---
+## 2026-03-11 - TASK-UI-07 再監査で判明した skill 導線の canonical path 是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` の dual-root 判断ルールを user 指定root基準へ補強
+  - current workflow / outputs の skill 参照が canonical root と整合するように再監査した
+
+---
 ## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査と canonical root ガード反映
 
 - **Agent**: task-specification-creator

@@ -62,14 +62,12 @@
 
 補足:
 - App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
-- App shell から目的画面へ安定遷移できない、または deep-link がない場合も dedicated harness を優先してよい。
-- ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、entry HTML / 起動スクリプトのパス、再利用した本番コンポーネント、差し替えた mock 境界を `manual-test-result.md` に明記する。
+- ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、差し替えた mock 境界を `manual-test-result.md` に明記する。
 - App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
-- 既存アプリが `BrowserRouter` 配下で動いている場合、harness 内で `MemoryRouter` / `BrowserRouter` を重ねない。Router が必要なら既存 Router の descendant route として描画するか、route param 依存を mock state で外す。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
-- representative screenshot で current task スコープ外の視覚不具合や React warning が見つかった場合は、`PASS` と併記して Phase 11 の発見事項へ記録し、未タスク化要否をそのターンで判定する。画面が崩れているのに「非対象」とだけ書いて閉じない。
+- skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -84,7 +82,7 @@
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
 # Step 2: screenshot-plan.json から全状態を一括撮影
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 
@@ -99,33 +97,33 @@ kill %1 2>/dev/null
 
 ```bash
 # ルートベース撮影（ページ全体）
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes {{変更対象のルート}} \
   --state after
 
 # コンポーネント単位撮影（要素指定）
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes /settings \
   --selector "[data-testid='my-component']" \
   --state after
 
 # インタラクション状態撮影（ボタンクリック後等）
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes /settings \
   --action click --action-target "[data-testid='open-modal']" \
   --state modal-open
 
 # ダークモード撮影
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --routes {{変更対象のルート}} \
   --state after --dark
 
 # ドライラン（出力パス確認のみ）
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json --dry-run
 ```
@@ -168,7 +166,7 @@ kill <PID...> || true
 ### スクリーンショット網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -181,12 +179,12 @@ which validate-phase-output || true
 which verify-unassigned-links || true
 
 # 2) スクリプト実体を確認
-rg --files .agents/skills/task-specification-creator/scripts \
+rg --files .claude/skills/task-specification-creator/scripts \
   | rg 'verify-all-specs|validate-phase-output|validate-phase11-screenshot-coverage|verify-unassigned-links|audit-unassigned-tasks'
 ```
 
 補足:
-- `not found` の場合はグローバルCLIではなく、`node .agents/skills/task-specification-creator/scripts/<script>.js` で実行する。
+- `not found` の場合はグローバルCLIではなく、`node .claude/skills/task-specification-creator/scripts/<script>.js` で実行する。
 - Phase 12成果物には「実際に使った最終コマンド」を記録し、次回再監査で同じ経路を再利用する。
 
 補足:
@@ -195,10 +193,8 @@ rg --files .agents/skills/task-specification-creator/scripts \
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
-- screenshot 必須タスクでは `P53` / `代替` / `スクリーンショット不可` を最終成果物へ残さない。実撮影へ昇格した時点で placeholder を除去する
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
-- persist / auth 初期化バグでは `skipAuth=true` が bug path を guard して false negative になる場合がある。bug path の確認は通常ルート metadata、screenshot は dedicated harness に分離してよい
 ### テスト結果レポート形式
 
 ```markdown
@@ -318,7 +314,7 @@ rg --files .agents/skills/task-specification-creator/scripts \
 
 ```bash
 # 自動生成スクリプト（推奨）
-node .agents/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
+node .claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -335,15 +331,6 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 3. `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが実体証跡と同期している
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
-
-#### Task 3.6: comparison baseline 正規化【2workflow比較時必須】
-
-current workflow を `spec_created` のまま再監査し、completed workflow を comparison baseline として使う場合は、**current だけでなく baseline 側も validator PASS まで揃えてから** Phase 12 判定を書く。
-
-1. current workflow に対して `verify-all-specs --strict` / `validate-phase-output` / `validate-phase12-implementation-guide` を実行する
-2. comparison baseline の completed workflow に対しても `verify-all-specs --strict` / `validate-phase-output` を実行する
-3. completed workflow に legacy 名称や補助成果物欠落（例: `phase-11-manual-testing.md`, `phase-7-coverage-verification.md`, `outputs/artifacts.json` 欠落）がある場合は、同一ターンで正規化する
-4. current workflow の合否と baseline workflow の正規化結果を `spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `task-workflow.md` に分離記録する
 
 ---
 
@@ -372,11 +359,6 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 **検出タスクなし**
 
 すべてのテストがPASSし、発見課題もないため、未タスクとして記録すべき項目はありません。
-
-## legacy baseline の扱い
-
-- 新規未タスクが 0 件でも、`docs/30-workflows/unassigned-task/` 全体の legacy 違反有無は別行で記録する
-- 例: `今回差分: currentViolations=0 / legacy baseline: 127件（既存 remediation task で追跡）`
 ```
 
 ---
@@ -418,23 +400,21 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] 未タスク検出時、**関連ファイル調査**（同様パターンの他ファイル）を実施した ⚠️ **P24: 漏れやすい**
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
-- [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
-- [ ] `spec-update-summary.md` に `verify-unassigned-links` の `existing/missing` と `audit --diff-from HEAD` の `current/baseline` を実測値で転記した
+- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
-- [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
 - [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
-- [ ] `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
-- [ ] `node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
+- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
+- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
 - [ ] `audit-unassigned-tasks.js --json --diff-from HEAD` を実行し、合否判定を `currentViolations.total` で記録した（baselineは別記録）
 - [ ] artifacts.jsonが更新されている
 - [ ] .claude/rules/ の技術的負債テーブルが最新（負債解消時は「完了」に更新）
 - [ ] 【品質】ESLintキャッシュをクリアしてlintを再実行した（下記コマンド参照）
 - [ ] 【品質】コメントフォーマット（JSDoc形式）が統一されている
 - [ ] 未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されていること（親タスクのtasks/ではない） ⚠️ **P3派生: TASK-9B-Iで再発**
-- [ ] 新規作成した未タスク指示書は、親タスクに苦戦箇所がある場合 `### 3.5 実装課題と解決策（親タスクからの教訓）` を持つ
 - [ ] テスト数が実際の `it()` ブロック数と一致すること（Phase 4 の想定値ではなく実測値を使用） ⚠️ **TASK-9B-I教訓**
 - [ ] SDK 型定義変更時は、カスタム declare module ファイルの有無を確認し、不要なら削除を未タスク化すること
 - [ ] UI/UX変更タスクの場合: Phase 11のスクリーンショットがコミットに含まれる状態であること
@@ -443,7 +423,8 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 - [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
 - [ ] `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
 - [ ] Step 2 で domain spec を更新した場合、少なくとも 1 つの正本仕様書に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード`、またはそれと等価な lessons 参照が記録されている
-- [ ] dedicated harness を使った場合: `manual-test-result.md` に harness の entry path / 再利用した本番コンポーネント / mock 境界を記録した
+- [ ] 既存未タスクを参照する場合、リンク先が **未実施なら** `docs/30-workflows/unassigned-task/`、**完了済みなら** `docs/30-workflows/completed-tasks/**/unassigned-task/` になっていることを確認した
+- [ ] `unassigned-task-detection.md` に既存未タスクを流用した理由と、物理配置確認結果（`ls docs/30-workflows/unassigned-task/`）を記録した
 - [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した
 - [ ] PR本文/PRコメントへ掲載する画像リンクが `raw.githubusercontent.com/<repo>/<commit>/<path>` の絶対URLであること（相対パスのまま投稿しない）
 - [ ] スクリーンショットコメント更新時に、実装ガイド全文コメントを編集・上書きしていないこと
@@ -456,41 +437,34 @@ current workflow を `spec_created` のまま再監査し、completed workflow �
 ```bash
 # topic-map.md再生成（Step 1-D）
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-node .agents/skills/task-specification-creator/scripts/generate-index.js \
+node .claude/skills/task-specification-creator/scripts/generate-index.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --regenerate
 
 # 実装ガイド内容要件（Task 1）
-node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
-
-# comparison baseline を使う場合の strict 検証
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
-  --workflow docs/30-workflows/completed-tasks/{{FEATURE_NAME}} \
-  --strict
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
-  docs/30-workflows/completed-tasks/{{FEATURE_NAME}}
 
 # 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
   docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
 
 # 対象監査（今回変更分合否: current）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
 
 # 差分監査（git差分を current 判定）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 全体監査（baseline監視）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # TODO/FIXMEスキャン（補助）
-node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan apps/desktop/src/main/ipc \
   --output docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/.tmp-unassigned-candidates.json
 
@@ -517,42 +491,6 @@ for skill in skill-creator task-specification-creator aiworkflow-requirements; d
   node .claude/skills/skill-creator/scripts/quick_validate.js ".claude/skills/$skill"
 done
 ```
-
-### Phase 12 サブエージェント分割戦略（P43準拠）
-
-> **根拠**: P43 で判明した通り、1サブエージェントに7ファイル一括更新を委譲すると rate limit で中断する。
-
-| ルール | 説明 |
-| --- | --- |
-| 3ファイル以下/エージェント | 仕様書更新は最大3ファイルをまとめて1サブエージェントに委譲 |
-| LOGS.md は最終ステップ | 全ファイル更新完了後にLOGS.mdへ「完了」を記録（中断時の未完了検出を容易にする） |
-| 完了検証 | サブエージェント完了後に `git diff --stat -- .claude/skills/` で実際の変更ファイル数を確認 |
-
-**推奨分割パターン（5仕様書の場合）**:
-
-| サブエージェント | 担当仕様書 | ファイル数 |
-| --- | --- | --- |
-| A | interfaces + api-ipc | 2 |
-| B | security + task-workflow | 2 |
-| C | lessons-learned + LOGS.md(2件) + SKILL.md(2件) | 1+4台帳 |
-
-### 3層テストパターン再利用ガイド（TASK-10A-G由来）
-
-テスト専用タスク（テスト強化・回帰テスト追加等）では、以下の3層分離パターンを標準構造として採用する:
-
-| 層 | 責務 | テスト対象例 |
-| --- | --- | --- |
-| G1: IPC契約層 | Main Process IPCハンドラの入力検証・応答契約 | `skill:create` ハンドラ14件 |
-| G2: Store統合層 | Zustand Store経由のライフサイクル統合フロー | Store駆動ライフサイクル21件 |
-| G3: UI結線層 | Rendererコンポーネントの表示・操作結線 | ChatPanel結線17件 |
-
-**再利用時のチェックリスト**:
-- [ ] 各層のテストファイルが独立して実行可能
-- [ ] G1→G2→G3 の依存方向が一方向（G3はG2のStore状態を前提、G2はG1のIPC応答を前提）
-- [ ] Phase 4 で正常系、Phase 6 でエッジケースの2段階設計を適用
-- [ ] Phase 7 のカバレッジ計測で P41 exemption が必要な場合は明記
-
----
 
 ### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
 
@@ -609,9 +547,6 @@ done
 
 | Date | Changes |
 | ---- | ------- |
-| 2026-03-10 | TASK-10A-G知見反映: Phase 12サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）追加、3層テストパターン再利用ガイド（G1/G2/G3）追加、LOGS.md完了記録の最終ステップ化を明記 |
-| 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |
-| 2026-03-08 | Workflow10 再確認の教訓を反映し、dedicated harness 利用条件を「App shell 遷移不安定 / deep-link 不可」まで明文化し、`manual-test-result.md` に harness entry path・本番コンポーネント・mock 境界を記録する完了チェックを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |

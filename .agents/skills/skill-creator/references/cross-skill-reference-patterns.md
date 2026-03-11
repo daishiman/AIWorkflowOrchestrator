@@ -211,6 +211,7 @@ steps:
 ## 相対パス計算早見表
 
 すべてのスキルは `.claude/skills/<skill-name>/` に配置される前提。
+repo に `.agents/skills/` が存在しても、それは mirror または runtime 補助であり、**仕様更新の正本は `.claude/skills/`** とする。
 
 | From (呼び出し元)         | To (呼び出し先)                        | 相対パス                                  |
 | ------------------------- | -------------------------------------- | ----------------------------------------- |
@@ -218,6 +219,15 @@ steps:
 | `skills/skill-a/scripts/` | `skills/skill-b/scripts/foo.js`       | `../../skill-b/scripts/foo.js`            |
 | `skills/skill-a/agents/`  | `skills/skill-b/agents/analyze.md`    | `../../skill-b/agents/analyze.md`         |
 | `skills/skill-a/schemas/` | `skills/skill-b/schemas/result.json`  | `../../skill-b/schemas/result.json`       |
+
+### canonical root / mirror ルール
+
+| 項目 | ルール |
+| --- | --- |
+| canonical root | system spec / skill spec の更新先は `.claude/skills/...` を正本とする |
+| mirror root | `.agents/skills/...` は参照互換や runtime 用 mirror として扱い、正本更新の代替にしない |
+| workflow 記述 | `phase-12-documentation.md` / `spec-update-summary.md` / outputs に `.agents/skills/.../references/` を正本として書かない |
+| 監査方法 | `rg -n "\\.agents/skills/.+references" docs/30-workflows/<workflow>` で mirror 側参照残存を確認する |
 
 ---
 

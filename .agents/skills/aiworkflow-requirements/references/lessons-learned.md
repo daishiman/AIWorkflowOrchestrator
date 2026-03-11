@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-11 | 1.29.68 | TASK-UI-07 の派生未タスクを追加。`.claude` / `.agents` の dual skill-root drift を `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` として formalize し、canonical root 固定・mirror sync・`diff -qr` 検証を Phase 12 の再利用手順へ昇格 |
+| 2026-03-11 | 1.29.67 | TASK-UI-07-DASHBOARD-ENHANCEMENT の再監査追補。表示名「ホーム」と内部 `dashboard` 契約の境界維持、未実施UTの正本配置是正、UI機能仕様への苦戦箇所固定を追加 |
+| 2026-03-11 | 1.29.66 | TASK-UI-07-DASHBOARD-ENHANCEMENT の教訓を追加。workflow 本文 stale、Phase 11 validator のソース要求、worktree の esbuild 差分を整理し、4ステップ再利用手順を追記 |
 | 2026-03-11 | 1.29.65 | TASK-UI-08-NOTIFICATION-CENTER 再監査の教訓を追加。Bell utility action の仕様同期漏れ、Phase 11 coverage validator の列名依存、delete reveal の実画面証跡不足を同時是正し、`ui-ux-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` / `task-workflow` / `lessons-learned` の同一ターン同期を標準化 |
 | 2026-03-10 | 1.29.64 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を追加。TASK-UI-04A の苦戦箇所から current build static serve、reverse resize、watch callback ref、light theme contrast を未タスク導線へ接続し、次回の Workspace UI 再監査を短手順で再現できるようにした |
 | 2026-03-10 | 1.29.63 | TASK-UI-06-HISTORY-SEARCH-VIEW の解決手順を 5 ステップへ最適化し、専用 domain spec / feature spec / task-workflow の同期粒度を揃えた |
@@ -6801,6 +6804,59 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 4. 影響 UI があるなら、内部修正でも screenshot 対象を先に決める。
 5. Phase 12 では system spec / SKILL / LOGS / workflow outputs を同一ターンで更新する。
 6. 再監査で見つかった別責務の差分は未タスク化し、主タスクの完了判定と分離する。
+
+## TASK-UI-07-DASHBOARD-ENHANCEMENT: ホーム画面リデザイン（2026-03-11）
+
+### 苦戦箇所1: completed workflow でも workflow 本文と台帳が stale のまま残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `index.md` / `artifacts.json` は completed でも、`phase-1..12` 本文や legacy task doc に stale 状態が残った |
+| 再発条件 | outputs だけで Phase 12 完了と判断し、workflow 本文と親台帳を後回しにする |
+| 解決策 | `verify-all-specs` に加えて workflow 本文と親導線を手動で突合し、completed path 基準へそろえた |
+| 標準ルール | Phase 12 は outputs、workflow 本文、親台帳の三層同期で閉じる |
+
+### 苦戦箇所2: Phase 11 validator は manual test 文書の literal 見出しに依存する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` があっても `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` が欠けると false fail になった |
+| 再発条件 | screenshot 実体の存在確認だけで文書構造チェックを省略する |
+| 解決策 | harness screenshot と同時に coverage validator の期待見出しを文書へ固定した |
+| 標準ルール | UIタスクは screenshot 実体と manual test 文書構造をセットで検証する |
+
+### 苦戦箇所3: 表示名 `ホーム` と内部 `dashboard` 契約を混ぜると nav/store に波及する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UI文言変更をそのまま内部 `ViewType` 変更として扱うと、既存 navigation/store 契約が崩れる |
+| 再発条件 | copy と internal ID の責務を分離せずに rename する |
+| 解決策 | UI copy は `ホーム` へ更新しつつ、内部 `dashboard` 契約は維持した |
+| 標準ルール | 画面名称変更では UI copy と内部契約 ID を明示的に分離する |
+
+### 苦戦箇所4: dual skill-root repository では user 指定rootだけ更新すると mirror 側が stale になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `.claude` 正本だけ更新しても `.agents` mirror 側の参照や validator 対象が古いまま残った |
+| 再発条件 | canonical root を決めずに Phase 12 を閉じる |
+| 解決策 | `.claude` を canonical root、`.agents` を mirror として扱い、`rsync --checksum` と `diff -qr` で整合確認した |
+| 標準ルール | dual root repository では canonical root 固定、mirror sync、root 間 diff 検証を完了条件に含める |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. UI copy と内部契約 ID を先に分離する。
+2. completed workflow は outputs だけでなく workflow 本文と親台帳も同時に更新する。
+3. Phase 11 は screenshot 実体と `phase-11-manual-test.md` の literal 見出しを同時に整える。
+4. user 指定root を canonical root とし、mirror root は同期対象として明示する。
+5. Phase 12 完了前に `verify-all-specs`、`validate-phase11-screenshot-coverage`、`diff -qr` をまとめて通す。
+
+### 関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
 ## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
 
