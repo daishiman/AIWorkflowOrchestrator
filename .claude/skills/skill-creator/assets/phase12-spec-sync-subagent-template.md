@@ -147,6 +147,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
+rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
 node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
 rg -n 'undefined' <workflow-path>/index.md
@@ -167,6 +168,7 @@ pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-fi
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
+rg -n '^## 画面カバレッジマトリクス$' <workflow-path>/phase-11-manual-test.md
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
 ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 ```
@@ -220,6 +222,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
+- [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
+- [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] 利用テンプレート（retrospective/subagent）の重複行（同一手順番号・同一コマンド）が解消されている
 
 ## 7. 最適なファイル形成（仕様書別）

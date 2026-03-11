@@ -351,6 +351,55 @@
 | `cd apps/desktop && pnpm exec vitest run --coverage ...NotificationCenter scope...` | PASS（Stmts 92.94 / Branch 81.77 / Funcs 94.44 / Lines 92.94） |
 | `node apps/desktop/scripts/capture-task-058e-notification-center-phase11.mjs` | PASS（screenshot 7件） |
 
+### タスク: TASK-UI-04B-WORKSPACE-CHAT Workspace Chat Panel（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-04B-WORKSPACE-CHAT |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | P2 |
+| 完了日 | 2026-03-11 |
+| 対象 | `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context） |
+| 成果物 | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/` |
+
+#### 実施内容
+
+- `WorkspaceChatPanel` / `WorkspaceChatInput` / `WorkspaceChatMessageList` / `WorkspaceFileContextChips` / `WorkspaceMentionDropdown` / `WorkspaceSuggestionBubbles` を追加
+- `useWorkspaceChatController` で send/stream/persist/mention を統合
+- `WorkspaceView` 側の placeholder chat を置換し、attach/preview を共通化
+- stream race（chunk/end 同期）に対して `streamContentRef` / `isStreamingRef` の即時同期を導入
+- テスト14件 PASS、typecheck PASS、Phase 11 screenshot 8件を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| stream chunk と end が同一ティックで到着すると assistant が欠落する | state 反映前に end を処理する | ref 同期更新で chunk/end 競合を解消した |
+| screenshot harness で llm / conversation API が無いと stream状態が再現できない | 04A harness をそのまま流用する | 059a 専用 capture script で llm/conversation mock を追加した |
+| coverage が全体閾値で失敗し task-scope 判定が見えにくい | モノレポ全体 coverage をそのまま読む | task-scope 指標を phase-7 に分離して記録した |
+
+#### 同種課題の5分解決カード
+
+1. stream UI のテストで chunk/end を同時発火させ、race を先に検出する。
+2. `setState` 依存ロジックは必要なら ref で即時同期して競合を潰す。
+3. screenshot harness は対象機能の API（file + llm + conversation）を最初に揃える。
+4. モノレポ coverage は task-scope と global を分離して報告する。
+5. Phase 12 で system spec / LOGS / SKILL を同一ターンで同期する。
+
+#### 関連未タスク
+
+- なし。MINOR は本タスク成果物に取り込んで解消可能と判断した。
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `cd apps/desktop && pnpm exec vitest run src/renderer/views/WorkspaceView/WorkspaceView.test.tsx src/renderer/views/WorkspaceView/hooks/useWorkspaceMentionQuery.test.ts src/renderer/views/WorkspaceView/workspaceFileSelection.test.ts` | PASS（3 files / 14 tests） |
+| `cd apps/desktop && pnpm exec tsc --noEmit` | PASS |
+| `cd apps/desktop && pnpm build` | PASS |
+| `cd apps/desktop && node scripts/capture-task-059a-workspace-chat-panel-phase11.mjs` | PASS（screenshot 8件） |
+
 ### タスク: TASK-UI-07-DASHBOARD-ENHANCEMENT ホーム画面リデザイン ─ 挨拶・サジェスチョン・タイムライン（2026-03-11）
 
 | 項目 | 値 |
@@ -4330,6 +4379,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.51** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT を同期**: `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context）、targeted tests 14件 PASS、typecheck PASS、Phase 11 screenshot 8件（Apple UI/UX 観点）を完了台帳へ追加。あわせて stream chunk/end race 修正、`implementation-guide` 要件充足、`phase-11-manual-test.md` 画面カバレッジマトリクス追補、`lessons-learned` / LOGS / SKILL の同一ターン同期を記録 |
 | **1.67.50** | **2026-03-11** | **TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映**: 完了台帳へ light token foundation の実装内容、Phase 11 screenshot 5件、contract test、follow-up 2件の正本導線 `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` を追加し、親 workflow 完了後の backlog 配置ルールを明文化 |
 | **1.67.49** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 完了移管を同期**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の related task row を完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新。完了済み未タスクと実行workflowの配置整合を同一ターンで是正 |
 | **1.67.48** | **2026-03-11** | **UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 を登録**: `TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001` の苦戦箇所（cache clear / Main同期 / `source` 表示）を、単一回帰マトリクスで guard する改善未タスクへ formalize。`docs/30-workflows/unassigned-task/` 配下へ配置し、同種課題の初動を短縮する導線を追加 |

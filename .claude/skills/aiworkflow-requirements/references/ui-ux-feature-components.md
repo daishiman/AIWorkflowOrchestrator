@@ -19,6 +19,7 @@
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
+| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Editor UI              | TASK-9A          | SkillEditor, SkillCodeEditor                       | 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
@@ -428,7 +429,7 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
 | TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了（2026-03-10、Phase 13保留）** |
-| TASK-UI-04B | chat 本体統合 | 後続 |
+| TASK-UI-04B | chat 本体統合 | **完了（2026-03-11、Phase 1-12）** |
 | TASK-UI-04C | preview / quick search 統合 | 後続 |
 
 ### 関連未タスク
@@ -436,6 +437,53 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot source を current build へ固定し、reverse resize / watcher 更新 / light theme contrast の再監査を共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+---
+
+## Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT）
+
+`WorkspaceView` に統合された 04B の chat 本体。04A の layout 基盤を再利用し、file context / mention / streaming / conversation 保存を 1 つの panel で提供する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `WorkspaceChatPanel` | organism | `WorkspaceView` | zero state / log / chips / input の統合 |
+| `WorkspaceChatMessageList` | molecule | `WorkspaceChatPanel` | user/assistant/streaming 表示 |
+| `WorkspaceFileContextChips` | molecule | `WorkspaceChatPanel` | 添付背景情報の表示・削除 |
+| `WorkspaceChatInput` | molecule | `WorkspaceChatPanel` | 送信・mention・cancel・error 表示 |
+| `WorkspaceMentionDropdown` | molecule | `WorkspaceChatInput` | `@mention` 候補表示と選択 |
+| `WorkspaceSuggestionBubbles` | molecule | `WorkspaceChatPanel` | 初回提案バブル |
+| `useWorkspaceChatController` | hook | `WorkspaceView` | stream / conversation / mention / attach の制御 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| zero state | 会話開始前は提案バブルを表示し、入力導線を明示する |
+| file context | 選択中ファイルを背景情報へ追加し、最大3件をチップ表示する |
+| mention | `@` 入力でファイル候補を表示し、keyboard（Arrow/Enter/Tab）で選択できる |
+| stream | chunk/end/error/cancel を UI 状態へ反映する |
+| persistence | user/assistant を `conversationAPI.addMessage` で保存する |
+| a11y | `role="log"` + `aria-live="polite"` と `role="alert"` を維持する |
+
+### 実装結果
+
+| 項目 | 内容 |
+| --- | --- |
+| 変更範囲 | `WorkspaceView` と `WorkspaceView/*` の chat 関連コンポーネント群 |
+| テスト | 3 files / 14 tests PASS（`WorkspaceView.test.tsx` ほか） |
+| 型検証 | `pnpm exec tsc --noEmit` PASS |
+| 画面証跡 | Phase 11 screenshot 8件（zero/mention/stream/error/compact/keyboard） |
+| 視覚レビュー | Apple UI/UX 観点で light/dark 階層・compact 幅を確認 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了** |
+| TASK-UI-04B-WORKSPACE-CHAT | chat panel 統合 | **完了（2026-03-11、Phase 1-12）** |
+| TASK-UI-04C | preview / quick search 統合 | 後続 |
 
 ---
 
@@ -1772,6 +1820,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
 | 2026-03-11 | v1.14.32   | TASK-UI-07 の related UT を追加: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を Dashboard Home Enhancement 節の関連未タスクへ登録し、dual root repository での canonical root 固定と mirror sync を UI 実装後の Phase 12 ガードとして再利用可能化 |
 | 2026-03-11 | v1.14.31   | TASK-UI-07 再監査反映: Dashboard Home Enhancement 節に実装時の苦戦箇所（表示名と内部契約の境界、view-local component 判断、harness screenshot 運用）と 5分解決カードを追加し、再利用可能な UI 実装知見として固定 |
 | 2026-03-11 | v1.14.30   | TASK-UI-07 完了反映: 収録機能一覧へ Dashboard Home Enhancement を追加し、専用セクションに GreetingHeader / DashboardSuggestionSection / RecentTimeline 構成、22 tests、Phase 11 screenshot 5件を同期 |

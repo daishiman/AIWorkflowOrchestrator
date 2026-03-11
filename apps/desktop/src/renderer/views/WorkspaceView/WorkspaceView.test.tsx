@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { FolderId, FolderPath } from "@/renderer/store/types/workspace";
 import { resetWorkspaceLayoutStorage } from "./hooks/useWorkspaceLayout";
@@ -8,6 +14,32 @@ const mockLoadWorkspace = vi.fn();
 const mockAddFolder = vi.fn().mockResolvedValue(undefined);
 const mockSetWorkspaceSelectedFile = vi.fn();
 const mockAddFiles = vi.fn();
+const mockRemoveFile = vi.fn();
+const mockConversationCreate = vi.fn();
+const mockConversationAddMessage = vi.fn();
+const mockStreamChat = vi.fn();
+const mockCancelStream = vi.fn();
+const mockLLMState = {
+  selectedProviderId: "openai" as const,
+  selectedModelId: "gpt-4o",
+};
+const mockSelectedFiles: Array<{
+  id: string;
+  path: string;
+  name: string;
+  extension: string;
+  size: number;
+  mimeType: string;
+  lastModified: string;
+  createdAt: string;
+}> = [];
+let onStreamChunkListener:
+  | ((chunk: { delta?: { content?: string } }) => void)
+  | null = null;
+let onStreamEndListener: (() => void) | null = null;
+let _onStreamErrorListener:
+  | ((error: { code: string; message: string; retryable: boolean }) => void)
+  | null = null;
 
 const mockStore = {
   workspace: {
@@ -52,6 +84,10 @@ vi.mock("@/renderer/store", () => ({
   useAddFolder: () => mockAddFolder,
   useSetWorkspaceSelectedFile: () => mockSetWorkspaceSelectedFile,
   useAddFiles: () => mockAddFiles,
+  useSelectedFiles: () => mockSelectedFiles,
+  useRemoveFile: () => mockRemoveFile,
+  useAppStore: (selector: (state: typeof mockLLMState) => unknown) =>
+    selector(mockLLMState),
 }));
 
 function setViewportWidth(width: number): void {
@@ -66,6 +102,22 @@ function setViewportWidth(width: number): void {
 describe("WorkspaceView", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockSelectedFiles.length = 0;
+    onStreamChunkListener = null;
+    onStreamEndListener = null;
+    _onStreamErrorListener = null;
+
+    mockConversationCreate.mockResolvedValue({
+      success: true,
+      data: { id: "conversation-1" },
+    });
+    mockConversationAddMessage.mockResolvedValue({
+      success: true,
+      data: { id: "message-1" },
+    });
+    mockStreamChat.mockResolvedValue({ requestId: "stream-1" });
+    mockCancelStream.mockResolvedValue({ success: true });
+
     resetWorkspaceLayoutStorage();
     setViewportWidth(1280);
     window.electronAPI = {
@@ -89,7 +141,40 @@ describe("WorkspaceView", () => {
         watchStop: vi.fn().mockResolvedValue({ success: true }),
         onChanged: vi.fn().mockReturnValue(() => {}),
       },
+      llm: {
+        ...(window.electronAPI?.llm ?? {}),
+        streamChat: mockStreamChat,
+        cancelStream: mockCancelStream,
+        onStreamChunk: vi.fn().mockImplementation((callback) => {
+          onStreamChunkListener = callback;
+          return () => {
+            onStreamChunkListener = null;
+          };
+        }),
+        onStreamEnd: vi.fn().mockImplementation((callback) => {
+          onStreamEndListener = callback;
+          return () => {
+            onStreamEndListener = null;
+          };
+        }),
+        onStreamError: vi.fn().mockImplementation((callback) => {
+          _onStreamErrorListener = callback;
+          return () => {
+            _onStreamErrorListener = null;
+          };
+        }),
+      },
     } as typeof window.electronAPI;
+    window.conversationAPI = {
+      ...(window.conversationAPI ?? {}),
+      list: vi.fn(),
+      get: vi.fn(),
+      create: mockConversationCreate,
+      update: vi.fn(),
+      delete: vi.fn(),
+      addMessage: mockConversationAddMessage,
+      search: vi.fn(),
+    };
   });
 
   it("初期表示は chat-only", () => {
@@ -144,18 +229,94 @@ describe("WorkspaceView", () => {
     fireEvent.click(screen.getByTestId("workspace-toggle-file"));
     fireEvent.click(screen.getByTestId("workspace-treeitem-file-1"));
 
-    await screen.findByTestId("workspace-attach-selected-file");
-    fireEvent.click(screen.getByTestId("workspace-attach-selected-file"));
+    await screen.findByTestId("workspace-chat-attach-selected");
+    fireEvent.click(screen.getByTestId("workspace-chat-attach-selected"));
 
-    expect(mockAddFiles).toHaveBeenCalledWith([
-      expect.objectContaining({
-        path: "/workspace/app.ts",
-        name: "app.ts",
-        extension: ".ts",
-        size: 16,
-        mimeType: "text/typescript",
-      }),
-    ]);
+    await waitFor(() => {
+      expect(mockAddFiles).toHaveBeenCalledWith([
+        expect.objectContaining({
+          path: "/workspace/app.ts",
+          name: "app.ts",
+          extension: ".ts",
+          size: 16,
+          mimeType: "text/typescript",
+        }),
+      ]);
+    });
+  });
+
+  it("@mention候補を選ぶと背景情報を追加しプレビューを開く", async () => {
+    setViewportWidth(1600);
+    render(<WorkspaceView />);
+
+    const input = screen.getByTestId("workspace-chat-input");
+    fireEvent.change(input, {
+      target: { value: "@app", selectionStart: 4 },
+    });
+
+    expect(
+      await screen.findByTestId("workspace-mention-dropdown"),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByText("app.ts"));
+
+    await waitFor(() => {
+      expect(mockAddFiles).toHaveBeenCalledWith([
+        expect.objectContaining({
+          path: "/workspace/app.ts",
+          name: "app.ts",
+        }),
+      ]);
+    });
+
+    expect(
+      await screen.findByTestId("workspace-preview-panel"),
+    ).toBeInTheDocument();
+  });
+
+  it("送信後にストリーミング応答を表示して保存する", async () => {
+    render(<WorkspaceView />);
+
+    const input = screen.getByTestId("workspace-chat-input");
+    const sendButton = screen.getByTestId("workspace-chat-send");
+    fireEvent.change(input, {
+      target: { value: "stream test", selectionStart: 11 },
+    });
+    await waitFor(() => {
+      expect(sendButton).not.toBeDisabled();
+    });
+    fireEvent.click(sendButton);
+
+    await waitFor(() => {
+      expect(mockConversationCreate).toHaveBeenCalledTimes(1);
+      expect(mockConversationAddMessage).toHaveBeenCalledWith({
+        sessionId: "conversation-1",
+        message: {
+          role: "user",
+          content: "stream test",
+        },
+      });
+      expect(mockStreamChat).toHaveBeenCalledTimes(1);
+    });
+
+    await act(async () => {
+      onStreamChunkListener?.({
+        delta: {
+          content: "assistant response",
+        },
+      });
+      onStreamEndListener?.();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText("assistant response")).toBeInTheDocument();
+      expect(mockConversationAddMessage).toHaveBeenCalledWith({
+        sessionId: "conversation-1",
+        message: {
+          role: "assistant",
+          content: "assistant response",
+        },
+      });
+    });
   });
 
   it("context menu から preview を開ける", async () => {

@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 validator厳密化パターン反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「implementation-guide と coverage matrix の validator 文字列を固定する」成功パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `たとえば` / `## 画面カバレッジマトリクス` の機械確認コマンドと完了チェックを追加
+  - `assets/phase12-task-spec-recheck-template.md` へ同条件（Part 1 キーワード明示 + H2見出し固定）を反映し、再監査の取りこぼしを削減
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
 
 - **Agent**: skill-creator (update)

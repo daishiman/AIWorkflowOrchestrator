@@ -3273,6 +3273,19 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-UI-04A-WORKSPACE-LAYOUT
 
+### [Phase 12] implementation-guide と coverage matrix の validator 文字列を固定する
+
+- **状況**: `implementation-guide.md` が内容的には正しくても、Part 1 に日常例えのトリガー語が弱いと再監査で判定がぶれる。`phase-11-manual-test.md` も見出しが `### 画面カバレッジマトリクス【...】` のように変形すると、coverage validator が section 抽出できず warning になる
+- **アプローチ**:
+  1. Part 1 の「日常の例え」段落には `たとえば` を最低1回明示して、再監査時に人手判断へ依存しない記述にする
+  2. `phase-11-manual-test.md` の見出しは `## 画面カバレッジマトリクス` を固定し、修飾語は見出し本文に混ぜず直下説明文へ逃がす
+  3. Phase 12 テンプレートの検証コマンドへ `rg -n '^## 画面カバレッジマトリクス$'` と `たとえば` を含むチェックを追加し、実行前に機械確認する
+  4. coverage warning が残る場合は `manual-test-checklist` 代替採用理由と、見出し/証跡列の実体差分を `documentation-changelog.md` へ記録する
+- **結果**: validator 実装差分に引きずられず、Phase 11/12 の再監査を 1 回で閉じやすくなる
+- **適用条件**: UIタスクの Phase 12 再監査、implementation-guide 修正、coverage warning 再発防止
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-04B-WORKSPACE-CHAT
+
 ### [Testing] 3層テストハードニング戦略（TASK-10A-G）
 
 - **状況**: テスト専用タスクでも Phase 12 まで含めると、Layer 1/2/3 の責務が混線しやすい

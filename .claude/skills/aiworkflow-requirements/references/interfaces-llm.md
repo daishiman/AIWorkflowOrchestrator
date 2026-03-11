@@ -36,6 +36,7 @@ LLM統合アーキテクチャは、Electronのセキュアなプロセス分離
 | ProviderSelector   | LLMプロバイダーの選択UI                |
 | ModelSelector      | モデルの選択UI                         |
 | StreamingMessage   | ストリーミングレスポンスの表示         |
+| WorkspaceChatPanel | file context / mention / streaming UI |
 
 これらのコンポーネントは、contextBridgeを介したIPC Bridgeを通じてMain Processと通信する。
 
@@ -74,6 +75,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | llm:send-chat        | Renderer → Main | チャット送信             | [llm-ipc-types.md](./llm-ipc-types.md) |
 | llm:stream-chat      | Renderer ↔ Main | ストリーミングチャット   | [llm-streaming.md](./llm-streaming.md) |
 | chat-edit:send-with-context | Renderer → Main | コンテキスト付きチャット | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md) |
+| conversation:create / add-message | Renderer → Main | 04B の会話永続化 | [interfaces-chat-history.md](./interfaces-chat-history.md) |
 
 ---
 
@@ -85,6 +87,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | Streaming           | 129      | -             | 全PASS          |
 | Embedding Pipeline  | 104 + 14 | 91.39%        | 87.13%          |
 | Workspace Chat Edit | 164 + 45 | 95%           | 90%             |
+| Workspace Chat Panel | 14 | 83.80%（task-scope） | 77.44%（task-scope） |
 
 ---
 
@@ -132,12 +135,24 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | カバレッジ   | Line 95%, Branch 90%, Function 100%                                                     |
 | 詳細         | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md#workspace管理統合task-wce-workspace-0012026-02-02完了) |
 
+### Workspace Chat Panel統合（TASK-UI-04B-WORKSPACE-CHAT）
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | TASK-UI-04B-WORKSPACE-CHAT |
+| 完了日       | 2026-03-11 |
+| 実装内容     | `WorkspaceView` へ `WorkspaceChatPanel` を統合。`useWorkspaceChatController` で file context / mention / stream / conversation 保存を結線 |
+| 主要API      | `llm:stream-chat`, `llm:cancel-stream`, `conversation:create`, `conversation:add-message`, `file:read` |
+| テスト       | 3 files / 14 tests PASS |
+| 証跡         | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/phase-11/screenshots/` |
+
 ---
 
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |
 | 2.0.0   | 2026-01-26 | 4ファイルに分割（901行→インデックス+詳細ファイル）                                     |

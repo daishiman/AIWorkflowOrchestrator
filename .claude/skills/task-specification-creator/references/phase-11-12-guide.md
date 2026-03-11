@@ -192,7 +192,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
-- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止）
+- `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止、見出し文字列は完全一致）
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
@@ -259,7 +259,7 @@ rg --files .claude/skills/task-specification-creator/scripts \
 | Part 2 | 開発者・技術者 | 技術的詳細（スキーマ・API・使用例） |
 
 **Part 1（中学生レベル）記述ルール**:
-- 日常生活での例え話を**必ず**含める
+- 日常生活での例え話を**必ず**含め、`たとえば` を最低1回明示する
 - 専門用語は使わない（使う場合は即座に説明）
 - 図表より文章での説明を優先
 - 「なぜ必要か」を先に説明してから「何をするか」を説明
