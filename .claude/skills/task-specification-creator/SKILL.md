@@ -395,6 +395,8 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.50** | **2026-03-11** | **user 指定rootを正本にする Phase 12 ガードを追加**: `references/phase12-checklist-definition.md` と `references/phase-11-12-guide.md` に、`.claude/skills/...` のような user 指定rootを canonical root として扱い、`.agents/skills/...` などの mirror root と drift がないことを完了条件に加えた |
+| **v10.08.49** | **2026-03-11** | **TASK-UI-07 再監査で判明した canonical path drift を是正**: `references/spec-update-workflow.md` を user 指定root基準へ補強し、Phase 12 完了時に canonical root / mirror root / drift 記録を同時に残す運用を変更履歴へ追加 |
 | **v10.08.48** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 11再監査追補を反映**: `validate-phase11-screenshot-coverage` を完了ゲートへ含め、`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` と `manual-test-result.md` の `証跡` 列を literal に保つ運用を変更履歴へ追加 |
 | **v10.08.47** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER の Phase 12 完了同期を反映**: `outputs/phase-12` 5成果物と workflow root 文書（`index.md` / traceability / diff reflection / verification-report）を同一ターンで同期し、spec-only stale を残さない運用を変更履歴へ追加 |
 | **v10.08.46** | **2026-03-10** | **TASK-UI-06-HISTORY-SEARCH-VIEW の Phase 12再監査知見を反映**: `references/spec-update-workflow.md` に「`.claude` が canonical root、`.agents` は mirror」ルールを追加し、`references/patterns.md` に Phase 12 の skill root 取り違えパターンを追加。workflow / outputs が `.agents/skills/.../references/` を正本として参照しないようにする再監査手順と、未タスク `UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001` の formalization を標準化 |

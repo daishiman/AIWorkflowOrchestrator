@@ -784,11 +784,11 @@ Renderer          Preload (safeInvokeUnwrap)        Main Process
 
 ### Preload invoke hang containment パターン（safeInvoke timeout）
 
-> **導入タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
+> **導入タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001（監査観点）
 
 #### 問題
 
-Preload の `safeInvoke()` が `ipcRenderer.invoke()` をそのまま返すと、Main Process 側の未応答や外部 API ハング時に Renderer が永続 pending になる。認証初期化や設定ロードの loading state が落ちず、画面遷移が止まる。
+Preload の `safeInvoke()` が `ipcRenderer.invoke()` をそのまま返すと、Main Process 側の未応答や外部 API ハング時に Renderer が永続 pending になる。特に認証初期化や設定ロードでは `isLoading` が落ちず、画面遷移が止まる。
 
 #### 解決パターン
 
@@ -822,49 +822,13 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
 | Preload 共通ラッパーで多数の `invoke` を集約している | timeout を共通化する |
 | 戻り値シグネチャを変えたくない | `Promise<T>` を維持したまま `Promise.race` を使う |
 | Renderer 側に loading state がある | timeout エラーを catch して復旧パスを明示する |
-| 実装差分がまだ存在しない | spec は pending / spec_created に留め、completed としない |
+| まだ実装差分が存在しない | spec は pending / spec_created に留め、completed としない |
 
 #### 注意事項
 
-- timeout 追加は `safeOn` へ機械的に横展開しない
+- timeout 追加は `safeOn` にはそのまま適用しない
 - channel 名は whitelist 通過済み値のみ error 文言へ出す
-- テストは fake timer + `advanceTimersByTime` 系を使い、永続 pending mock で再現する
-- 2026-03-10 時点の rollout は `apps/desktop/src/preload/index.ts` に限定。`preload/skill-api.ts` と `preload/skill-creator-api.ts` は別実装の `safeInvoke` を持つため、自動的には保護されない
-
-#### 関連未タスク
-
-- `docs/30-workflows/unassigned-task/task-imp-preload-skill-api-safeinvoke-timeout-001.md`
-- `docs/30-workflows/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
-
-#### 苦戦箇所と解決策
-
-| 苦戦箇所 | 原因 | 解決策 | 教訓 |
-| --- | --- | --- | --- |
-| branch diff と current worktree diff の判定がずれる | `origin/main...HEAD` だけで実装有無を判定した | branch と current worktree を別軸で記録した | Phase 12 の completed 判定は 2軸で残す |
-| representative screenshot で task 外 defect が露出した | dedicated harness を作っても UI 全体の品質問題は見える | `discovered-issues.md` と未タスクへ formalize した | screenshot は current task の合否判定と backlog 発見を兼ねる |
-| 同名 helper の派生実装が rollout から漏れる | `safeInvoke` という名前だけで横展開済みと思い込んだ | `skill-api.ts` / `skill-creator-api.ts` を別 backlog にした | 共通 helper 改修は派生 helper の棚卸しとセットで行う |
-
-#### 同種課題の簡潔解決手順（4ステップ）
-
-1. branch と current worktree の diff を分離し、status を混同しない。
-2. representative screenshot を light/dark 両方で取得し、画面不具合と warning を同時に確認する。
-3. helper 改修はファイル境界を明記し、派生 helper の棚卸しを同時に行う。
-4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` で backlog の実体と current=0 を固定する。
-
-#### 実装時の苦戦箇所（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
-
-| # | 課題 | 再発条件 | 対処 |
-| --- | --- | --- | --- |
-| 1 | `contextBridge.exposeInMainWorld` 経由でしかアクセスできない `safeInvoke` のテスト | `process.contextIsolated` 未設定で contextBridge パスに入らない | mock capture パターン: `exposeInMainWorld` の第2引数を `exposedAPIs[name] = api` でキャプチャし、`process.contextIsolated = true` を `Object.defineProperty` で設定 |
-| 2 | `vi.useFakeTimers()` + dynamic `import()` でモジュール内 `setTimeout` が fake timer 管理下に入る | `vi.resetModules()` 未実行でテスト間状態リーク | `useFakeTimers` → `resetModules` → API キャプチャ変数リセット → `await import("../index")` の4ステップ順序を厳守 |
-| 3 | `Promise.race` の負け Promise が GC されるか判断が必要 | `clearTimeout` パターンを過剰に適用してコード複雑化 | `setTimeout` は最大5秒で自動実行→GC。UI 起点の IPC（秒間数回以下）では `clearTimeout` 不要 |
-
-#### 同種課題の簡潔解決手順（4ステップ）
-
-1. **テストインフラ**: `vi.mock("electron")` + `contextBridge.exposeInMainWorld` キャプチャ + `process.contextIsolated = true`
-2. **タイマーテスト**: `vi.useFakeTimers()` → `vi.resetModules()` → fresh import（P13準拠: `advanceTimersByTime` のみ使用）
-3. **Promise.race 適用**: whitelist チェック前段を維持 → `Promise.race([invoke, timeoutPromise])` → channel 名を error に含める
-4. **横展開判断**: 同名 helper が別ファイルにある場合（`skill-api.ts`, `skill-creator-api.ts`）は別タスクへ分離
+- テストは `advanceTimersByTime` 系を使い、永続 pending mock で再現する
 
 ---
 
@@ -3044,41 +3008,6 @@ beforeEach(() => {
 
 **関連タスク**: TASK-10A-F
 
-#### 問題の詳細（TASK-10A-F 2026-03-09 追記）
-
-Rendererコンポーネントが `window.electronAPI.skill.*` を直接呼び出すと以下の問題が発生する:
-
-| 問題 | 影響 |
-|---|---|
-| IPCチャネルの詳細がUI層に漏洩する | Preload変更時にRenderer全体への波及が発生 |
-| エラー状態の管理が分散する | 各コンポーネントが個別にtry/catchとstate管理を実装 |
-| テストでwindow.electronAPIのモックが必要になる | テストの複雑性増大・Preload依存の密結合 |
-| P31（無限ループ）リスクが増大する | 合成Hookの不安定参照がuseEffect依存配列に入る |
-
-```typescript
-// ❌ Before: Direct IPC（問題パターン）
-const result = await window.electronAPI.skill.analyze(skillName);
-
-// ✅ After: Store個別セレクタ経由（解決パターン）
-const analyzeSkill = useAnalyzeSkill();  // 個別セレクタ（安定参照）
-await analyzeSkill(skillName);           // Store action内部でIPCを呼ぶ
-```
-
-#### State境界（Case B方式）
-
-| 状態 | 配置先 | 理由 |
-|---|---|---|
-| currentAnalysis, isAnalyzing, isImproving, skillError | Store | 共有状態（複数コンポーネントから参照） |
-| selectedSuggestions, improvementResult | local useState | 画面固有の一時UI状態 |
-
-#### 適用事例（TASK-10A-F）
-
-- **移行対象**: useSkillAnalysis.ts → agentSlice
-- **移行API**: analyze, applyImprovements, autoImprove, create の4 API
-- **P31対策**: 個別セレクタで安定参照を取得（`useAnalyzeSkill()`, `useAutoImproveSkill()` 等）
-- **P42準拠**: Store action内で3段バリデーション（型チェック → 空文字列 → トリム空文字列）
-- **P48対策**: `.filter()` / `.map()` で配列を返すセレクタには `useShallow` を適用
-
 ---
 
 ### S27: Renderer 境界 5層防御パターン（06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 2026-03-07実装）
@@ -3351,276 +3280,12 @@ expect(result).toEqual({
 | P50      | 既実装防御の発見（本パターンはP50該当で検証モード適用） |
 
 ---
-### S31: IPC ハンドラ Graceful Degradation パターン（TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 2026-03-08実装）
 
-**問題**: `registerAllIpcHandlers()` 内の各 `registerXxxHandlers()` 呼び出しが1つでも例外を投げると、後続の全ハンドラが未登録のまま残り、アプリの大部分が機能しなくなる。
-
-**解決策**: 各ハンドラ登録を個別 try-catch で囲み、失敗を記録しつつ続行する。
-
-| ステップ | 処理内容                                | 成果物                                     |
-| -------- | --------------------------------------- | ------------------------------------------ |
-| 1        | `safeRegister(name, fn, failures)` で登録 | 成功: true / 失敗: false + failures に追加 |
-| 2        | `track(name, fn)` で成功カウント         | `successCount` インクリメント               |
-| 3        | 全グループ登録後に結果を返却             | `IpcHandlerRegistrationResult`              |
-
-**戻り値型**:
-
-```typescript
-interface HandlerRegistrationFailure {
-  handlerName: string;
-  errorMessage: string;
-  errorCode: number; // 4001 (Infrastructure Error)
-}
-
-interface IpcHandlerRegistrationResult {
-  successCount: number;
-  failureCount: number;
-  failures: HandlerRegistrationFailure[];
-}
-```
-
-**登録グループ分類**:
-
-| グループ       | 依存関係       | 例                                                     |
-| -------------- | -------------- | ------------------------------------------------------ |
-| 独立ハンドラ   | なし           | file, store, dashboard, graph, AI, theme, workspace 等 |
-| mainWindow依存 | BrowserWindow  | window, dialog                                         |
-| ThemeWatcher   | nativeTheme    | setupThemeWatcher（unsubscribe関数を保持）             |
-| Supabase条件分岐 | getSupabaseClient() | auth, profile, avatar（未設定時はfallback）       |
-| APIKey         | apiKeyStorage  | apiKeyHandlers                                         |
-| History        | DI生成         | history, historySearch, notification                   |
-| AgentExecution | mainWindow     | agentHandlers                                          |
-| AuthKey+Skill  | authKeyService | skill全系統 + authMode + claudeCli + permissionStore   |
-
-**設計上の注意**:
-- `setupThemeWatcher` は戻り値（unsubscribe関数）を保持する必要があるため、`safeRegister` ラッパーではなく個別の try-catch ブロックで処理する
-- エラーコードは `4001`（Infrastructure Error カテゴリ）を使用
-- ログ出力前にユーザーホーム配下パスを `~` へマスクし、ローカル環境依存情報の漏洩を防ぐ
-- 失敗したグループのチャンネルは未登録状態のまま残り、リクエスト到達時は `Error: No handler registered` でフェイルセキュア
-
-**適用基準**: Main Process の初期化で複数の独立したハンドラグループを登録する場面
-
-**関連パターン**: P5 リスナー二重登録防止、S22 AUTH IPC登録一元化
-
-#### 実装時の苦戦箇所
-
-| ID | 課題 | 解決策 | 再発防止 |
-|---|---|---|---|
-| S31-W1 | `setupThemeWatcher` は `safeRegister` パターンに適合しない。戻り値（unsubscribe 関数）をモジュールスコープ変数にキャプチャする必要がある | 個別 try-catch で囲み、戻り値を `themeWatcherUnsubscribe` に代入 | ハンドラ登録関数の設計時に「戻り値の要否」を明確にし、戻り値必要な場合は safeRegister ではなく個別 try-catch を使用 |
-| S31-W2 | `track()` クロージャの成功カウント管理。複数ハンドラの登録関数を個別にカウントするとカウント漏れが発生しやすい | `track()` 内部クロージャで `safeRegister` の結果を自動追跡し、`IpcHandlerRegistrationResult` として集約 | 複数の独立操作の成功/失敗を集約する場面ではクロージャパターンを適用 |
-| S31-W3 | エラーメッセージ中のパスに正規表現メタ文字が含まれる可能性。`os.homedir()` が返すパスをそのまま `new RegExp()` に渡すと予期しないマッチが発生する | `escapeRegExp()` でメタ文字をエスケープ後に `RegExp` 生成 | ログ出力にパスを含む場合は必ずサニタイズ処理を適用。NFR-02（プライバシー保護）準拠 |
-| S31-W4 | `unregisterAllIpcHandlers()` は変更不要。`ipcMain.removeHandler()` は未登録チャネルへの呼び出しでもエラーにならない | 解除側は現行のまま維持。登録側のみ Graceful Degradation を適用 | 登録/解除の対称性を維持しつつ、変更スコープを最小化 |
-
-#### テスト戦略
-
-| テスト観点 | テスト数 | ファイル | 手法 |
-|---|---|---|---|
-| 正常系（全成功） | 1 | `ipc-graceful-degradation.test.ts` | 全モック関数が成功 → `failureCount === 0` |
-| 異常系（部分失敗） | 5 | 同上 | 特定ハンドラモックを throw → `failures` に記録されることを検証 |
-| sanitize | 2 | 同上 | ホームディレクトリパスが `~` にマスクされることを検証 |
-| 再登録フロー | 1 | 同上 | `unregisterAll → registerAll` の連続実行で成功 |
-| 合計 | 19 | 同上 | 全PASS |
-
----
-### S32: executeSkill 並行実行ガードパターン
-
-- **課題**: `executeSkill` が async 関数のため、`preflightSkillExecutionAuth()` の await 中に2回目の呼び出しが可能。ストリーミングメッセージの混在と `executionId` の上書きが発生する
-- **解決策**: async 操作前に同期的な `get().isExecuting` チェックを配置し、microtask 境界を跨がずにガードする
-- **適用条件**: Zustand Store の async アクション（IPC呼び出しを含む）で二重実行を防止する必要がある場合
-- **関連Pitfall**: P31（個別セレクタ使用）、P40（テスト実行ディレクトリ）
-
-```typescript
-// ✅ 推奨: async 操作前の同期ガード
-executeSkill: async (prompt) => {
-  const { selectedSkillName, isExecuting } = get();
-  if (!selectedSkillName) return;
-  if (isExecuting) return; // 同期チェック — microtask 境界前
-
-  set({ isExecuting: true, ... }); // ここから先は排他実行
-  // await ... async operations
-};
-
-// ❌ 非推奨: async 操作後のガード（race condition あり）
-executeSkill: async (prompt) => {
-  await someAsyncPrecheck(); // この await 中に2回目が入る
-  if (get().isExecuting) return; // 遅すぎる
-};
-```
-
-- **テストパターン**: `flushMicrotasks()` で preflight await を通過させ、`isExecuting=true` 到達後にガードをテスト
-- **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
-
-### S33: 3層テストアーキテクチャパターン（TASK-10A-G）
-
-IPC ハンドラ + Store アクション + UI コンポーネントの3層にまたがる機能のテスト構造パターン。障害切り分けの明確化と並列テスト開発を可能にする。
-
-**適用条件**: Main Process → Preload → Renderer の3プロセスにまたがるフィーチャーのテスト強化
-
-| 層 | スコープ | テスト粒度 | モック戦略 | 並列性 |
-| --- | --- | --- | --- | --- |
-| G1 (IPC契約) | Main handler | handler capture | SkillService, validateIpcSender | G2と並列可 |
-| G2 (Store統合) | Zustand action + Preload | renderHook + Store直接操作 | window.electronAPI | G1と並列可 |
-| G3 (UI結線) | Component toggle/visibility | render + fireEvent | Store state + Preload | G1/G2完了後 |
-
-**障害切り分け順序**: G1 → G2 → G3（Main → Store → UI の順で確認）
-
-**カバレッジ戦略**:
-- G1: handler-scope coverage（対象 handler の行範囲のみ。P41 exemption: Function Coverage はインライン関数カウントで 0% になり得るため Line/Branch を主判定）
-- G2: targeted coverage（Store アクションのバリデーション分岐 + API ガード分岐を網羅）
-- G3: 結線確認（toggle/visibility/disable の3観点。カバレッジは補助指標）
-
-**2段階テスト設計**:
-1. Phase 4: 正常系テスト中心（G2: CL/LA/AI/SD 各3件 = 12件）
-2. Phase 6: カバレッジ不足分岐の追加（G2: VAL 6件 + GUARD 3件 = 9件追加）
-
-**関連 Pitfall**: P9（テスト間リーク）, P39（fireEvent）, P40（実行ディレクトリ）, P41（v8 Function Coverage）, P42（trim バリデーション）
-
-**関連タスク**: TASK-10A-G
-
-### S34: テスト専用タスクの Phase 4-5 統合パターン（TASK-10A-G）
-
-プロダクションコードの変更を伴わないテスト専用タスクでは、Phase 4（テスト作成）と Phase 5（実装）の境界が曖昧になる。既存実装に対するテスト仕様の補強では、Phase 4 で Red テストを書いても既存実装で Green になるケースが多発する。
-
-**適用条件**:
-- 新規機能実装ではなく、既存実装のテスト補強
-- プロダクションコードの変更がゼロまたは最小限
-
-**運用ルール**:
-
-| 従来（実装タスク） | テスト専用タスク |
-| --- | --- |
-| Phase 4: Red テスト作成 | Phase 4: テスト作成（Red/Green 混在許容） |
-| Phase 5: Green にする実装 | Phase 5: テスト修正のみ（mock 調整等） |
-| Red → Green が明確 | 即 Green のテストも正当 |
-
-**Phase 5 で行うこと**:
-1. モック設定の微調整（型不整合、戻り値の形式修正）
-2. テスト間の状態リーク修正（P9 対策）
-3. 非同期テストのタイミング調整（act + vi.waitFor）
-
-**判断基準**: Phase 4 終了時点で全テストが Green なら Phase 5 は「確認のみ」として最小限の作業で完了とする。Phase 4 で一部 Red の場合のみ Phase 5 で修正を行う。
-
-**関連タスク**: TASK-10A-G
-
----
-### S35: Preload invoke timeout + timer cleanup パターン
-
-- **課題**: `ipcRenderer.invoke()` をそのまま返す `safeInvoke` は、Main 側ハンドラが応答しない場合に Promise が永続 pending となり、Auth 初期化や preload API 呼び出しが全体停滞する。
-- **解決策**: `invokeWithTimeout<T>()` に timeout 契約を集約し、allowlist fail-fast、`setTimeout` による timeout、成功/失敗双方での `clearTimeout(timeoutId)` cleanup を 1 箇所で維持する。
-- **適用条件**: Preload 層の request-response 型 API で、公開シグネチャを変えずにハング耐性を追加したい場合。
-- **関連Pitfall**: P13（タイマーテスト）、P40（実行ディレクトリ）、P4（planned wording 残置）
-
-```typescript
-export function invokeWithTimeout<T>(
-  allowedChannels: readonly string[],
-  channel: string,
-  ...args: unknown[]
-): Promise<T> {
-  if (!allowedChannels.includes(channel)) {
-    return Promise.reject(new Error(`Channel ${channel} is not allowed`));
-  }
-
-  return new Promise<T>((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject(
-        new Error(
-          `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`,
-        ),
-      );
-    }, IPC_TIMEOUT_MS);
-
-    ipcRenderer
-      .invoke(channel, ...args)
-      .then((result) => {
-        clearTimeout(timeoutId);
-        resolve(result as T);
-      })
-      .catch((error: unknown) => {
-        clearTimeout(timeoutId);
-        reject(error);
-      });
-  });
-}
-```
-
-#### 判断基準
-
-| 観点 | 採用理由 |
-| --- | --- |
-| 契約維持 | `safeInvoke<T>(channel, ...args): Promise<T>` を変えずに timeout を追加できる |
-| 保守性 | `index.ts` / `skill-api.ts` / `skill-creator-api.ts` の3 wrapper を1行委譲へ統一できる |
-| 安全性 | timeout error は channel 名と固定 timeout 値のみで、内部情報を露出しない |
-| 再現性 | cleanup を入れることで fake timer テストで `vi.getTimerCount() === 0` を保証できる |
-
-#### 検証パターン
-
-| テスト観点 | 期待結果 |
-| --- | --- |
-| 無応答 | `IPC_TIMEOUT_MS` 経過後に timeout error で reject |
-| 正常応答 | timeout 前に resolve し、timer が残留しない |
-| Main reject | IPC エラーをそのまま reject し、timer が残留しない |
-| 遅延応答 | timeout 後の遅延 resolve は状態再遷移を起こさない |
-| 回帰 | `pnpm vitest run src/preload` で preload 全体が PASS |
-
-#### 運用メモ
-
-- timeout 影響が UI に現れるタスクでは、非UIタスクでも代表 UI を screenshot で検証する。
-- screenshot で見つかった別責務の品質差分は、主タスク完了を止めずに未タスクへ分離する。
-- Phase 12 では「PR マージ時に反映予定」を残さず、その場で system spec / SKILL / LOGS を更新する。
-
----
-### S34: dedicated harness + review scope 分離パターン
-
-- **課題**: UIタスクの Phase 11 で App shell 初期化や依存データの揺れがあると、実装確認したい状態の再現と screenshot 取得が不安定になる。加えて light/dark の視認性所見が、コンポーネント固有不具合か global token 問題か混線しやすい。
-- **解決策**: 本番コンポーネントをそのまま使う dedicated harness route を用意し、`scenario` / `theme` クエリで状態を固定する。画面証跡は harness、責務判定は design token / component scope を分離して記録する。
-- **適用条件**: deep-link が弱い、App shell 遷移が不安定、複数状態を短時間で撮り分けたい UI タスク。
-- **関連タスク**: TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査
-
-```tsx
-function getScenario(): HarnessScenario {
-  const raw = new URLSearchParams(window.location.search).get("scenario");
-  switch (raw) {
-    case "floating-executing":
-    case "panel-open":
-    case "recent-list":
-      return raw;
-    default:
-      return "main-view";
-  }
-}
-
-function applyTheme(theme: "light" | "dark"): void {
-  document.documentElement.setAttribute("data-theme", theme);
-  document.documentElement.style.colorScheme = theme;
-}
-```
-
-#### 判断基準
-
-| 観点 | 採用理由 |
-| --- | --- |
-| 再現性 | `scenario` ごとに store state を固定でき、TC単位で screenshot を安定取得できる |
-| 責務分離 | UI固有不具合と global token 所見を別 issue / 別記録に分けやすい |
-| 保守性 | harness は本番コンポーネント再利用に限定し、mock 境界を明文化できる |
-
-#### 運用メモ
-
-- harness 導入時は `manual-test-result.md` に entry path / 再利用した本番コンポーネント / mock 境界を残す
-- `validate-phase11-screenshot-coverage` を回し、TC と証跡ファイルの対応を機械確認する
-- token 由来所見は UI domain spec か design-system 側の follow-up として切り出し、主タスクの blocker 判定と混ぜない
-
----
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| v1.45.0 | 2026-03-10 | TASK-10A-G: S33 3層テストアーキテクチャパターン追加（G1/G2/G3の障害切り分け・並列性・カバレッジ戦略・2段階テスト設計）、S34 テスト専用タスクのPhase 4-5統合パターン追加（Red/Green混在許容・Phase 5判断基準） |
-| v1.44.0 | 2026-03-10 | TASK-UI-03 current workflow 再監査: S34 dedicated harness + review scope 分離パターンを追加。`scenario` / `theme` による state 固定、TC単位 screenshot、global token 所見と component 所見の分離を標準化 |
-| v1.43.0 | 2026-03-10 | TASK-FIX-SAFEINVOKE-TIMEOUT-001: S35 Preload invoke timeout + timer cleanup パターンを追加。`invokeWithTimeout()` の fail-fast / timeout / `clearTimeout` cleanup / screenshot 検証 / Phase 12 planned wording 排除を標準化 |
-| v1.42.0 | 2026-03-09 | TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001: S32 executeSkill並行実行ガードパターンを追加。async操作前の同期的isExecutingチェックによるmicrotask境界前ガード、flushMicrotasksテストパターンを標準化 |
-| v1.41.0 | 2026-03-09 | TASK-10A-F: S26に問題詳細・State境界（Case B方式）テーブル・適用事例（4 API移行、P31/P42/P48対策）を追記 |
-| v1.40.1 | 2026-03-08 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001: S31 IPC ハンドラ Graceful Degradation パターンを追加。safeRegister + IpcHandlerRegistrationResult 戻り値 + 8グループ分類 + 苦戦箇所4件 + テスト戦略19件を反映 |
-| v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化 |
+| v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化                                                                               |
 | v1.39.0 | 2026-03-08 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 完了記録: S29 Renderer境界providers正規化パターン追加（4層防御: API存在確認→レスポンス成功確認→配列正規化+type predicateフィルタ→UI更新、Main側配列正規化補足）                                                                                          |
 | v1.38.0 | 2026-03-07 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: S27 Renderer境界5層防御パターン追加（L1-L5防御層、type predicate in演算子推奨、完全コード例）、S28 Mainハンドラ間接テストパターン追加（ipcMain.handleモック経由のコールバック直接呼び出し）                                                             |
 | v1.37.0 | 2026-03-07 | TASK-10A-F: 直接IPC→Store個別セレクタ移行パターン追加（S26: 移行チェックリスト7ステップ、テストmock標準パターン、状態分類判断基準、P31/P48適用判定）                                                                                                                                                    |

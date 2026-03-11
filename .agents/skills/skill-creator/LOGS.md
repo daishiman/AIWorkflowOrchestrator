@@ -3,6 +3,71 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW UI domain spec テンプレート最適化
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-optimization
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-domain-spec-sync-block-template.md` に UIドメイン仕様向け拡張ブロックを追加
+  - `画面の主目的` / `契約上の要点` / `視覚検証` を UI spec の必須行として明文化
+  - `references/patterns.md` に TASK-UI-06 由来の「UI domain spec は主目的 + 状態契約 + 画面証跡を先に固定する」パターンを追加
+
+---
+## 2026-03-11 - TASK-UI-07 を踏まえた Phase 12 UIテンプレート最適化
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` の検証コマンドを `.claude` 正本へ統一
+  - `assets/phase12-domain-spec-sync-block-template.md` に UI一覧仕様向けサマリーブロックを追加
+  - UI current workflow では `ui-ux-components.md` にも実装内容と苦戦箇所サマリーを残すルールを追加
+
+---
+## 2026-03-11 - TASK-UI-07 Phase 12 再監査で dual skill-root mirror sync パターンを追加
+
+- **Agent**: skill-creator
+- **Phase**: pattern-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「dual skill-root repository の canonical root + mirror sync」パターンを追加
+  - `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に canonical root と mirror sync の両方を残すルールを固定
+
+---
+## 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW の canonical root パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/cross-skill-reference-patterns.md` に `.claude` canonical root / `.agents` mirror ルールを追加
+  - dual-root repo では workflow / outputs に mirror 側 `references/` を正本として書かない運用を明文化
+  - task-specification-creator 側の Phase 12 guide 改善と合わせて、cross-skill 参照の root drift を再発防止パターンへ昇格
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 パターン反映
+
+- **Agent**: skill-creator
+- **Phase**: Phase 12（仕様同期）
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に safeInvoke timeout 実装パターンを追加
+  - contextBridge mock capture テストパターン、Promise.race タイムアウト適用基準を新規パターンとして記録
+  - クイックナビゲーション IPC ドメインを更新
+
+---
+## 2026-03-10 - TASK-FIX-SAFEINVOKE-TIMEOUT-001 Phase 12 再監査テンプレート追補
+
+- **Agent**: skill-creator
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「画面検証で露出した副次不具合の即時未タスク化 + 3.5 節継承」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に screenshot 由来未タスク化と `### 3.5 実装課題と解決策` 継承チェックを追加
+  - `verify-unassigned-links` を `missing=0` まで閉じ、exact counts を outputs/task-workflow へ同値転記する運用を再強化
+
+---
 ## [2026-03-10 - TASK-UI-03 の system spec 反映先マトリクスを skill-creator へ追加]
 
 - **Agent**: skill-creator (update)
@@ -14,7 +79,6 @@
   - `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-design-system.md` を含む UI 反映先マトリクスを追加し、1仕様書=1関心の分担を明示した
 
 ---
-
 ## [2026-03-10 - TASK-UI-03 再監査で skill-creator の Phase 12 template drift を是正]
 
 - **Agent**: skill-creator (update)
@@ -24,6 +88,95 @@
   - `references/patterns.md` に「backlog 継続前の現物確認」と「component scope / token scope の切り分け」パターンを追加
   - `references/patterns.md` / `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` の task-spec script path を canonical `.agents/skills/task-specification-creator/scripts/` へ統一
   - UI再監査で見つかった light theme 所見を design system 未タスクへ formalize する導線を再利用可能な形で残した
+
+---
+## [2026-03-10 - TASK-UI-04A Workspace UI 再監査パターンを skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「workspace UI 再監査では current build static serve と 4観点の目視/挙動検証をセットにする」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に current worktree `out/renderer` の static serve、right preview panel reverse resize、watcher callback ref 分離、light theme contrast 確認を追加
+  - worktree の Vite preview source drift を静的配信で切り離し、UI screenshot 再監査を 1 セットで閉じる運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.22` として同期
+
+---
+## [2026-03-10 - TASK-10A-G スキルライフサイクル統合テスト強化の知見を skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/quality-standards.md` に P41 Exemption ルール（v8 Function Coverage 特例）を追加
+  - テスト専用タスクの3層パターン（G1: IPC契約/G2: Store統合/G3: UI結線）は既に `references/patterns.md` に成功パターンとして記録済み
+  - task-specification-creator 側の `phase-templates.md`/`coverage-standards.md`/`phase-11-12-guide.md` と同期して知見を反映
+
+---
+
+## [2026-03-10 - TASK-10A-G `generate-index` schema 互換監査パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「`generate-index` schema 互換監査 + 壊れた index の即時未タスク化」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に `undefined` 混入の検知、手動復旧、未タスク化の完了条件を追加
+  - `generate-index` の誤出力は current task 内の手動復旧と、汎用改善の未タスク化へ責務分離する運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.21` として同期
+
+---
+
+## [2026-03-09 - TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 の Phase 12再確認パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「persist/auth bug は bug path metadata と screenshot harness を分離する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `skipAuth=true` を唯一経路にしないチェックを追加
+  - workflow 側 `skill-feedback-report.md` / `documentation-changelog.md` に更新した skill 名を残す運用を今回 task で実証
+
+---
+
+## [2026-03-10 - TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 の Phase 12再監査知見を skill-creator へ反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「明示 screenshot 要求では plan / metadata / reset guard まで閉じる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に worktree preflight `pnpm install --frozen-lockfile`、`screenshot-plan.json` / `phase11-capture-metadata.json` 実在確認、公開ビュー bypass 時の reset guard 同期チェックを追加
+  - 未タスク 0件判定でも `verify-unassigned-links` / `audit --diff-from HEAD` の確定値を outputs へ転記し、legacy baseline と今回差分を分離して記録する運用を固定
+  - `SKILL.md` に直接参照導線を補完し、`quick_validate.js .claude/skills/skill-creator` を 0 warning へ復帰
+  - `SKILL.md` 変更履歴を `10.37.20` として同期
+
+---
+
+## [2026-03-09 - TASK-FIX-CONCURRENCY-GUARD フィードバック反映]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に Zustand Store 並行実行ガードパターンを追加
+  - Phase 4 テスト仕様テンプレートにモノレポテスト実行ディレクトリ注意書きを追加推奨
+  - Phase 2 設計テンプレートに並行実行ガード検討チェックポイントを追加推奨
+
+---
+
+## [2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査パターン同期]
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「current workflow 再監査で CLI drift / 未タスク9セクション / skill同期を同時に閉じる」を追加
+  - 同ファイルに成功パターン「BrowserRouter 配下の screenshot harness は descendant route で作る」を追加
+  - workflow の `documentation-changelog.md` と `skill-feedback-report.md` に更新した skill 名を記録する運用を標準化
+  - `SKILL.md` 変更履歴を `10.37.18` として同期
+
+---
 
 ## [2026-03-08 - TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001 の Phase 12再利用パターン同期]
 
@@ -46,6 +199,18 @@
   - `references/patterns.md` に成功パターン「Phase12 証跡テーブル互換 + screenshot preflight 固定」を追加
   - `validate-phase11-screenshot-coverage` の表形式要件（`テストケース`/`証跡`）を再発防止ルールとして明文化
   - screenshot 再取得時の依存不足（Rollup optional dependency）に対する `pnpm install` preflight を標準化
+
+---
+
+## [2026-03-08 - TASK-10A-F Phase 12 branch 再確認パターン追加]
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に成功パターン「comparison baseline 正規化つき branch 再監査（TASK-10A-F）」を追加
+  - 同ファイルに失敗パターン「current workflow PASS だけで comparison baseline を放置」を追加
+  - Phase 12 クイックナビへ comparison baseline 正規化を反映し、`currentViolations=0` と `baselineViolations>0` の二層報告を branch 判定前提として固定
 
 ---
 

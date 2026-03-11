@@ -236,6 +236,49 @@
 | `cd apps/desktop && pnpm exec vitest run --coverage ...NotificationCenter scope...` | PASS（Stmts 92.94 / Branch 81.77 / Funcs 94.44 / Lines 92.94） |
 | `node apps/desktop/scripts/capture-task-058e-notification-center-phase11.mjs` | PASS（screenshot 7件） |
 
+### タスク: TASK-UI-07-DASHBOARD-ENHANCEMENT ホーム画面リデザイン ─ 挨拶・サジェスチョン・タイムライン（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UI-07-DASHBOARD-ENHANCEMENT |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + 実画面検証 + 仕様同期）** |
+| 完了日 | 2026-03-11 |
+| 対象 | `DashboardView` / `views/DashboardView/components/` / Phase 11 screenshot harness |
+| 成果物 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/outputs/` |
+
+#### 実施内容
+
+- 旧統計カード中心の `DashboardView` を、挨拶、サジェスチョン 3 件、タイムライン 5 件中心のホーム画面へ置換
+- `dashboardContent.ts` に greeting / suggestions / timeline 導出を集約し、`GreetingHeader` / `DashboardSuggestionSection` / `RecentTimeline` を view-local component として分離
+- Phase 11 用 screenshot harness を追加し、light / dark / kanagawa-dragon / mobile / empty / loading を実画面で検証
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| workflow 本体が `spec_created` のまま残りやすい | `index.md` / `artifacts.json` / `phase-1..12` を分離更新する | 三層同期を Phase 12 の完了条件に含めた |
+| Phase 11 validator が `phase-11-manual-test.md` の literal 見出しに依存する | `manual-test-result.md` だけを更新して閉じる | `テストケース` と `画面カバレッジマトリクス` を専用文書へ固定した |
+| 表示名 `ホーム` と内部 `dashboard` 契約が混線する | 文言変更を `ViewType` 変更と同一視する | copy と internal ID を分離し、store / nav 契約は維持した |
+| `.claude` / `.agents` の二重 skill root で mirror 側が stale になる | user 指定rootだけ更新して完了扱いにする | canonical root 固定 + mirror sync + `diff -qr` を完了条件に追加した |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/DashboardView/DashboardView.test.tsx src/renderer/views/DashboardView/components/dashboardContent.test.ts` | PASS（22 tests） |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `pnpm --filter @repo/desktop screenshot:dashboard-home` | PASS（TC-11-01..05） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement` | PASS |
+| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS |
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+
 ### タスク: TASK-UI-04A-WORKSPACE-LAYOUT Workspace レイアウト基盤（2026-03-10）
 
 | 項目 | 値 |
@@ -4122,6 +4165,9 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.45** | **2026-03-11** | **UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 を登録**: TASK-UI-07 Phase 12 再監査で露出した dual skill-root drift を未タスク化し、`TASK-UI-07` 完了節の関連未タスク表と残課題テーブルへ同時反映。`.claude` を canonical root、`.agents` を mirror として扱い、`rsync --checksum` + `diff -qr` を完了条件へ昇格する再利用ルールを追加 |
+| **1.67.44** | **2026-03-11** | **TASK-UI-07 再監査追補**: TASK-UI-07 の苦戦箇所へ「表示名ホームと内部 `dashboard` 契約の境界維持」を追記し、関連未タスク `UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001` を `docs/30-workflows/unassigned-task/` 正本へ再配置した。Phase 12 再監査では未実施UTの completed-tasks 混在を是正対象として扱う運用を固定 |
+| **1.67.43** | **2026-03-11** | **TASK-UI-07 完了反映**: 完了タスクセクションにホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline、22 tests、TC-11-01〜05）を追加し、workflow 本体の三層同期と Phase 11 validator 要件を記録 |
 | **1.67.42** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER 再監査追補を同期**: `validate-phase11-screenshot-coverage` 失敗要因だった Phase 11 文書 drift（`証跡` 列欠落、5状態記述の残置）を是正し、delete reveal を含む screenshot 7件、`screenshot-plan.json` / `screenshot-coverage.md` / `discovered-issues.md`、`lessons-learned.md` / `ui-ux-components.md` / `ui-ux-navigation.md` / `ui-ux-portal-patterns.md` の同時同期を追記 |
 | **1.67.41** | **2026-03-11** | **TASK-UI-08-NOTIFICATION-CENTER を同期**: `NotificationCenter` 058e 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、focus trap、targeted tests 59件、Phase 11 screenshot 7件、新規未タスク0件）を完了台帳へ追加し、system spec / LOGS / SKILL の同時更新を記録 |
 | **1.67.40** | **2026-03-10** | **UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 を登録**: TASK-UI-04A の再監査で用いた current build static serve を手運用のまま残さず、Workspace 系 UI の screenshot source pinning と visual checklist（reverse resize / watcher 更新 / light theme contrast）を未タスクとして formalize。`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` と workflow `unassigned-task-detection.md` を同時同期 |

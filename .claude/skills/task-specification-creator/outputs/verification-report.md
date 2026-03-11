@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
 > 検証日時: 2026-01-26T04:15:58.949Z
-> 対象: .claude/skills/task-specification-creator
+> 対象: .agents/skills/task-specification-creator
 
 ## サマリー
 
@@ -92,5 +92,5 @@
 2. 警告（⚠️）も可能な限り対応してください
 3. 修正後、再度検証を実行してください:
    ```bash
-   node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow .claude/skills/task-specification-creator
+   node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow .agents/skills/task-specification-creator
    ```

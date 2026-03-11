@@ -210,7 +210,7 @@ steps:
 
 ## 相対パス計算早見表
 
-すべてのスキルは `.claude/skills/<skill-name>/` に配置される前提。  
+すべてのスキルは `.claude/skills/<skill-name>/` に配置される前提。
 repo に `.agents/skills/` が存在しても、それは mirror または runtime 補助であり、**仕様更新の正本は `.claude/skills/`** とする。
 
 | From (呼び出し元)         | To (呼び出し先)                        | 相対パス                                  |

@@ -1,144 +1,135 @@
-import React, { useState } from "react";
+import React from "react";
 import clsx from "clsx";
-import { GlassPanel } from "../../components/organisms/GlassPanel";
-import { StatCard } from "../../components/molecules/StatCard";
-import { ActivityItem } from "../../components/molecules/ActivityItem";
-import { useAppStore } from "../../store";
+import { EmptyState } from "../../components/atoms/EmptyState";
+import { useAppStore, useDisplayName } from "../../store";
+import { GreetingHeader } from "./components/GreetingHeader";
+import { DashboardSuggestionSection } from "./components/DashboardSuggestionSection";
+import { RecentTimeline } from "./components/RecentTimeline";
+import {
+  getDashboardSuggestions,
+  getTimelineEntries,
+} from "./components/dashboardContent";
 
 export interface DashboardViewProps {
   className?: string;
+  now?: Date;
 }
 
-export const DashboardView: React.FC<DashboardViewProps> = ({ className }) => {
-  // Use flat store structure
+export const DashboardView: React.FC<DashboardViewProps> = ({
+  className,
+  now,
+}) => {
   const dashboardStats = useAppStore((state) => state.dashboardStats);
   const activityFeed = useAppStore((state) => state.activityFeed);
   const isLoading = useAppStore((state) => state.isLoading);
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const displayName = useDisplayName();
 
-  // Local state for error
-  const [error] = useState<string | null>(null);
+  const pendingCount = dashboardStats.pending;
+  const suggestions = getDashboardSuggestions({
+    activityCount: activityFeed.length,
+    pendingCount,
+  });
+  const timelineEntries = getTimelineEntries(activityFeed);
+  const primaryEmptyAction = suggestions[0];
+  const currentTime = now ?? new Date();
 
-  // Compute derived stats
-  const stats = {
-    totalDocuments: dashboardStats.totalDocs,
-    indexedDocuments: dashboardStats.ragIndexed,
-    totalConversations: 0,
-    storageUsedPercent:
-      dashboardStats.storageTotal > 0
-        ? Math.round(
-            (dashboardStats.storageUsed / dashboardStats.storageTotal) * 100,
-          )
-        : 0,
+  const handleNavigate = (
+    view: "workspace" | "skillCenter" | "agent" | "historySearch",
+  ): void => {
+    setCurrentView(view);
   };
-
-  // Map activity feed to expected format
-  const recentActivity = activityFeed.map((activity) => ({
-    id: activity.id,
-    title: activity.message,
-    timestamp: activity.time,
-    type: activity.type as "info" | "success" | "warning" | "error",
-  }));
-
-  if (error) {
-    return (
-      <div
-        className={clsx(
-          "flex items-center justify-center h-full text-red-400",
-          className,
-        )}
-        role="alert"
-      >
-        <p>エラーが発生しました: {error}</p>
-      </div>
-    );
-  }
 
   return (
     <div
       className={clsx(
-        "flex flex-col gap-6 p-6 h-full overflow-auto",
+        "relative h-full overflow-auto px-4 py-6 sm:px-6 lg:px-8",
+        "bg-[radial-gradient(circle_at_top_left,_color-mix(in_srgb,var(--accent)_18%,transparent),transparent_45%),linear-gradient(180deg,var(--bg-primary)_0%,color-mix(in_srgb,var(--bg-secondary)_92%,transparent)_100%)]",
         className,
       )}
       data-testid="dashboard-view"
     >
-      {/* Header */}
-      <header>
-        <h1 className="text-2xl font-bold text-white">ダッシュボード</h1>
-        <p className="text-gray-400 mt-1">
-          Knowledge Studioの概要と最新のアクティビティ
-        </p>
-      </header>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <GreetingHeader
+          displayName={displayName}
+          now={currentTime}
+          pendingCount={pendingCount}
+          activityCount={activityFeed.length}
+        />
 
-      {/* Stats Grid */}
-      <section aria-labelledby="stats-heading">
-        <h2 id="stats-heading" className="sr-only">
-          統計情報
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            title="ドキュメント"
-            value={isLoading ? "-" : stats.totalDocuments.toLocaleString()}
-            icon="file-text"
-            color="default"
-          />
-          <StatCard
-            title="インデックス済み"
-            value={isLoading ? "-" : stats.indexedDocuments.toLocaleString()}
-            icon="check"
-            color="success"
-          />
-          <StatCard
-            title="会話数"
-            value={isLoading ? "-" : stats.totalConversations.toLocaleString()}
-            icon="message-circle"
-            color="default"
-          />
-          <StatCard
-            title="ストレージ使用量"
-            value={isLoading ? "-" : `${stats.storageUsedPercent}%`}
-            icon="folder"
-            color={stats.storageUsedPercent > 80 ? "warning" : "default"}
-            progress={
-              isLoading
-                ? undefined
-                : { value: stats.storageUsedPercent, max: 100 }
-            }
-          />
-        </div>
-      </section>
+        <DashboardSuggestionSection
+          suggestions={suggestions}
+          onNavigate={handleNavigate}
+        />
 
-      {/* Recent Activity */}
-      <section aria-labelledby="activity-heading" className="flex-1">
-        <h2
-          id="activity-heading"
-          className="text-lg font-semibold text-white mb-4"
-        >
-          最近のアクティビティ
-        </h2>
-        <GlassPanel className="h-full max-h-96 overflow-auto">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-32">
-              <p className="text-gray-400">読み込み中...</p>
+        {isLoading ? (
+          <section
+            aria-labelledby="dashboard-timeline-heading"
+            className="rounded-[28px] border border-[var(--border-subtle)] bg-[color-mix(in_srgb,var(--bg-secondary)_92%,transparent)] p-6 shadow-sm backdrop-blur"
+          >
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div>
+                <h2
+                  id="dashboard-timeline-heading"
+                  className="text-lg font-semibold text-[var(--text-primary)]"
+                >
+                  最近の動き
+                </h2>
+                <p className="text-sm text-[var(--text-muted)]">
+                  読み込みが完了すると、最新の5件を表示します。
+                </p>
+              </div>
+              <span
+                className="rounded-full border border-[var(--border-subtle)] px-3 py-1 text-xs text-[var(--text-muted)]"
+                data-testid="dashboard-loading-state"
+              >
+                読み込み中...
+              </span>
             </div>
-          ) : recentActivity.length === 0 ? (
-            <div className="flex items-center justify-center h-32">
-              <p className="text-gray-400">アクティビティはありません</p>
-            </div>
-          ) : (
-            <ul className="divide-y divide-white/5">
-              {recentActivity.map((activity) => (
-                <li key={activity.id}>
-                  <ActivityItem
-                    message={activity.title}
-                    time={activity.timestamp}
-                    type={activity.type}
-                  />
-                </li>
+            <div className="space-y-3" aria-hidden="true">
+              {[0, 1, 2].map((index) => (
+                <div
+                  key={index}
+                  className="h-20 animate-pulse rounded-2xl bg-[color-mix(in_srgb,var(--bg-tertiary)_92%,transparent)]"
+                />
               ))}
-            </ul>
-          )}
-        </GlassPanel>
-      </section>
+            </div>
+          </section>
+        ) : timelineEntries.length === 0 ? (
+          <section
+            aria-labelledby="dashboard-timeline-heading"
+            className="rounded-[28px] border border-[var(--border-subtle)] bg-[color-mix(in_srgb,var(--bg-secondary)_92%,transparent)] p-6 shadow-sm backdrop-blur"
+          >
+            <div className="mb-5">
+              <h2
+                id="dashboard-timeline-heading"
+                className="text-lg font-semibold text-[var(--text-primary)]"
+              >
+                最近の動き
+              </h2>
+              <p className="text-sm text-[var(--text-muted)]">
+                まだ履歴がありません。まずはおすすめの導線から始められます。
+              </p>
+            </div>
+            <EmptyState
+              title="最初のアクションを選びましょう"
+              description="ホームは、次の一手がすぐ分かる玄関のような場所です。"
+              icon="sparkles"
+              mood="welcoming"
+              action={{
+                label: primaryEmptyAction.title,
+                onClick: () => handleNavigate(primaryEmptyAction.view),
+              }}
+              className="min-h-64 rounded-[24px] border border-dashed border-[var(--border-subtle)] bg-[color-mix(in_srgb,var(--bg-tertiary)_90%,transparent)]"
+            />
+          </section>
+        ) : (
+          <RecentTimeline
+            items={timelineEntries}
+            onOpenHistory={() => handleNavigate("historySearch")}
+          />
+        )}
+      </div>
     </div>
   );
 };

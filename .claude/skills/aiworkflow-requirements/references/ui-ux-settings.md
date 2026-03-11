@@ -321,49 +321,6 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 
 ---
 
-## Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
-
-**完了日**: 2026-03-09
-
-### 概要
-
-Settings 画面は認証状態に依存せず常時アクセス可能である。認証タイムアウト時や未認証状態でも、ユーザーが API キー設定等の認証前操作を行えるようにする。
-
-### アクセス導線
-
-| 導線 | トリガー | 説明 |
-| --- | --- | --- |
-| 通常アクセス | `Cmd/Ctrl + ,` または GlobalNavStrip/MobileNavBar | 認証済み・未認証を問わずアクセス可能 |
-| タイムアウトフォールバック | AuthTimeoutFallback の「設定画面へ」ボタン | 認証確認が 10 秒以内に完了しない場合に表示される導線 |
-
-### 設計仕様
-
-| 観点 | 仕様 |
-| --- | --- |
-| shell bypass | `App.tsx` で `currentView === "settings"` の場合、AuthGuard の外側で `SettingsView` を直接レンダリング |
-| reset exclusion | 未認証時の view reset で `settings` を除外し、設定作業中に dashboard へ強制遷移させない |
-| 公開ビュー定義 | `PUBLIC_UNAUTHENTICATED_VIEWS = ["settings"]` で AuthGuard 外アクセス可能なビューを明示管理 |
-| セキュリティ境界 | Settings シェルのみが AuthGuard 外に配置され、他のビュー（agent, chat, history 等）は全て AuthGuard 内で保護 |
-
-### 未認証状態での動作
-
-| 機能 | 動作 | 安全性 |
-| --- | --- | --- |
-| API キー設定 | IPC 経由で Main Process の暗号化ストレージに保存。Renderer にトークン平文は露出しない | contextBridge + safeStorage による保護 |
-| LLM プロバイダー選択 | IPC 経由で設定取得・保存。未認証でも設定可能 | IPC ホワイトリスト + sender 検証 |
-| アカウント設定 | 認証情報が必要な操作はエラーメッセージを表示（クラッシュしない） | fallback ハンドラによる安全な error envelope 返却 |
-
-### 関連ファイル
-
-| ファイル | 役割 |
-| --- | --- |
-| `apps/desktop/src/renderer/App.tsx` | Settings bypass 条件分岐 |
-| `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` | 未認証 reset 除外判定 |
-| `apps/desktop/src/renderer/components/AuthGuard/index.tsx` | AuthGuard 本体 |
-| `apps/desktop/src/renderer/components/AuthGuard/__tests__/AuthTimeoutFallback.tsx` | タイムアウトフォールバック UI |
-
----
-
 ## ApiKeysSection 異常系表示仕様（2026-03-07追加）
 
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
@@ -465,7 +422,6 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.7.0   | 2026-03-10 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 反映: Settings 画面の AuthGuard 非依存アクセスセクション追加。shell bypass / reset exclusion / 未認証時動作仕様 / AuthTimeoutFallback 導線を記載 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |
 | 1.5.0   | 2026-03-07 | ApiKeysSection 異常系表示仕様追加（09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001）: Preload境界の4段防御ガード、6テストケース                                         |

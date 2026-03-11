@@ -151,7 +151,7 @@
 - **状況**: `phase-12-documentation.md` と `artifacts.json` は completed 側へ揃っていても、`outputs/artifacts.json` 未作成や `index.md` 未再生成で workflow 全体が「未実施」に見えることがある
 - **アプローチ**:
   - `artifacts.json` 更新後に `outputs/artifacts.json` を同内容で同期する
-  - `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 1-12 / 13 表示を再生成する
+  - `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 1-12 / 13 表示を再生成する
   - `phase-12-documentation.md` / `artifacts.json` / `outputs/artifacts.json` / `index.md` を四点セットで突合する
 - **結果**: 「成果物はあるが workflow index 上は未実施」というドリフトを防止し、再監査の初手で迷わなくなる
 - **適用条件**: Phase 12 完了後、または再監査で workflow 状態表示に違和感がある場合
@@ -189,11 +189,23 @@
 - **アプローチ**:
   - `completed-tasks/unassigned-task/` 配下の指示書をステータスで分類し、`未着手|未実施|進行中` は `docs/30-workflows/unassigned-task/` に配置
   - `task-workflow.md` と関連仕様（例: `api-ipc-agent.md`）の参照を `docs/30-workflows/unassigned-task/` に統一
-  - `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` 実行でリンク整合を検証
+  - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` 実行でリンク整合を検証
 - **結果**: 未タスク台帳と物理配置が一致し、Phase 12監査時の誤判定を防止
 - **適用条件**: 未タスク再監査、完了済み移管作業、参照修正を同時に行うPhase 12
 - **発見日**: 2026-02-20
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
+
+### [Phase12] dual skill-root repository の canonical root + mirror sync
+
+- **状況**: repository に `.claude/skills/...` と `.agents/skills/...` の二重 root があり、user は前者を正本として要求している一方、workflow や旧成果物が後者を参照している
+- **アプローチ**:
+  - 先に user 指定root を canonical root として固定し、system spec / skill 改善 / validator 実行もその root で行う
+  - 完了前に `diff -qr` または `rsync --checksum` で mirror root を同期し、古い参照経路との drift を残さない
+  - `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に canonical root と mirror sync の両方を記録する
+- **結果**: user 指定の正本を守りつつ、既存 workflow が参照する mirror root も stale にしない Phase 12 運用を固定できる
+- **適用条件**: skill root が複数ある repository、または `.claude` / `.agents` のような実体ミラーを併用する task
+- **発見日**: 2026-03-11
+- **関連タスク**: TASK-UI-07-DASHBOARD-ENHANCEMENT
 
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
@@ -236,7 +248,7 @@
 
 - **状況**: `task-workflow.md` に未タスクを登録したが、`docs/30-workflows/unassigned-task/` に実体ファイルがなく参照切れになる
 - **アプローチ**:
-  - 未タスク登録後に `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
+  - 未タスク登録後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行
   - `missing > 0` の場合は Phase 12 を完了扱いにしない
   - 完了タスクへ移動した場合は `task-workflow.md` の参照先を `completed-tasks/` 側に更新
 - **結果**: 未タスク探索時のリンク切れを事前に排除し、後続タスクの追跡性を維持
@@ -267,7 +279,7 @@
 - **適用条件**: Phase 12 Task 12-2 実行時、システム仕様書更新後の検証
 - **発見日**: 2026-01-23
 - **関連タスク**: SHARED-TYPE-EXPORT-03
-- **検証コマンド**: `node .agents/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
+- **検証コマンド**: `node .claude/skills/task-specification-creator/scripts/validate-phase12-step1.js --workflow <dir> --spec <file>`
 
 ### [Phase12] 複数システム仕様書への横断的更新
 
@@ -1974,7 +1986,7 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **問題**: 再確認の初動で停止し、証跡時刻や台帳同期の再確認が後倒しになる
 - **原因**: 検証コマンドの実体探索を省略し、エイリアスの存在を前提にしている
 - **教訓**: Phase 12 は「エイリアス」ではなく「スクリプト実体」を正本として実行する
-- **対策**: `which <cmd> || true` と `rg --files .agents/skills/task-specification-creator/scripts` で実体確認後、`node .agents/skills/task-specification-creator/scripts/<script>.js` 形式へ統一する
+- **対策**: `which <cmd> || true` と `rg --files .claude/skills/task-specification-creator/scripts` で実体確認後、`node .claude/skills/task-specification-creator/scripts/<script>.js` 形式へ統一する
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-00-FOUNDATION-REFLECTION-AUDIT
 
@@ -2401,7 +2413,7 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **状況**: `verify-all-specs` / `validate-phase-output` をグローバルCLI前提で実行し、環境差で `not found` や `MODULE_NOT_FOUND` が発生しやすい
 - **アプローチ**:
   - 再監査開始時に `which verify-all-specs || true` でエイリアス有無を確認
-  - `rg --files .agents/skills/task-specification-creator/scripts` で実体を特定し、`node .agents/skills/task-specification-creator/scripts/<script>.js` へ固定
+  - `rg --files .claude/skills/task-specification-creator/scripts` で実体を特定し、`node .claude/skills/task-specification-creator/scripts/<script>.js` へ固定
   - 実行後に採用した最終コマンドを `spec-update-summary.md` と `documentation-changelog.md` へ転記して再現手順を固定
 - **結果**: 端末差異に依存しない検証フローとなり、Phase 12 再確認時の手戻りを抑制できる
 - **適用条件**: 複数ワークツリー/端末で同一検証コマンドを再利用する Phase 12 タスク

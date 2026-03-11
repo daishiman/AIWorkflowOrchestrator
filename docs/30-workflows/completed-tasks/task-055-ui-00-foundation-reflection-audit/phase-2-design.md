@@ -25,13 +25,13 @@
 
 ## 参照資料
 
-| 参照資料             | パス                                                                                                                                 | 内容                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------- |
-| Phase 1 要件定義書   | `outputs/phase-1/requirements-definition.md`                                                                                         | 監査項目定義         |
-| Phase 1 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`                                                                                             | 判定基準             |
-| Phase 1 スコープ定義 | `outputs/phase-1/scope-definition.md`                                                                                                | 対象範囲             |
-| 監査対象画面仕様     | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-057-ui-02-global-nav-core.md`        | 後続画面の反映確認先 |
-| 監査対象画面仕様     | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-058d-ui-07-dashboard-enhancement.md` | 後続画面の反映確認先 |
+| 参照資料             | パス                                                                                                                          | 内容                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Phase 1 要件定義書   | `outputs/phase-1/requirements-definition.md`                                                                                  | 監査項目定義         |
+| Phase 1 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`                                                                                      | 判定基準             |
+| Phase 1 スコープ定義 | `outputs/phase-1/scope-definition.md`                                                                                         | 対象範囲             |
+| 監査対象画面仕様     | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-057-ui-02-global-nav-core.md` | 後続画面の反映確認先 |
+| 監査対象画面仕様     | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement.md`                                                  | 後続画面の反映確認先 |
 
 ## システム仕様（aiworkflow-requirements）
 

@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 996
+issue_number: 1151
 task_id: UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001
 task_name: aiworkflow-requirements 入口導線・validator整合ガード
 category: 改善
@@ -13,7 +13,7 @@ scale: 中規模
 status: 未実施
 source_phase: UT-TASK-10A-B-008 Phase 12 追補4-5（system spec 再同期・2026-03-06）
 created_date: 2026-03-06
-spec_path: docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md
+spec_path: docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md
 related_tasks:
   - UT-TASK-10A-B-008
   - UT-IMP-SKILL-QUICK-VALIDATE-WARNING-BASELINE-CONTROL-001
@@ -268,7 +268,7 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiwor
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/ut-task-10a-b-008-unassigned-count-resync-guard/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 

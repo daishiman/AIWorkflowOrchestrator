@@ -4,7 +4,7 @@
 
 Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件を検証するためのチェックリスト。
 
-## チェック項目一覧（15項目）
+## チェック項目一覧（18項目）
 
 | #   | Task ID | チェック項目                                                                 | 確認対象ファイル                                                                       | 検証方法                                                                                  |
 | --- | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -23,6 +23,9 @@ Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件�
 | 13  | Task 5  | task-specification-creator/LOGS.md が更新されている                           | .claude/skills/task-specification-creator/LOGS.md                                      | 更新確認                                                                                  |
 | 14  | Task 5  | aiworkflow-requirements/SKILL.md / task-specification-creator/SKILL.md 変更履歴が更新されている | .claude/skills/aiworkflow-requirements/SKILL.md / .claude/skills/task-specification-creator/SKILL.md | 変更履歴更新確認                                                                          |
 | 15  | Task 4  | 未タスク指示書で `## メタ情報` が1件のみである（重複なし）                              | docs/30-workflows/unassigned-task/*.md                                                 | `rg -n "^## メタ情報$"` で対象ファイルを確認し、1件であることを検証                     |
+| 16  | Task 2/4 | system spec に今回実装の苦戦箇所が残っている                                  | `references/lessons-learned.md` または更新対象 domain spec                              | `苦戦箇所` / `5分解決カード` / 等価な lessons 参照があることを確認                        |
+| 17  | Task 4  | 未実施の未タスクが `completed-tasks/**/unassigned-task/` に混在していない      | `docs/30-workflows/completed-tasks/**/unassigned-task/*.md`                            | `status: 未実施|未着手|進行中` を grep し、該当時は `docs/30-workflows/unassigned-task/` へ是正 |
+| 18  | Task 2/5 | user 指定の skill root が正本として更新され、mirror root との drift がない      | `.claude/skills/**` と `.agents/skills/**` などの mirror root                          | user 指定rootで validator 実行 + `diff -qr` または等価手段で mirror sync を検証 |
 
 ## 機械検証コマンド
 
@@ -95,6 +98,9 @@ git diff --name-only HEAD -- \
 - #13 task-specification-creator/LOGS.md: OK/NG
 - #14 aiworkflow-requirements/SKILL.md + task-specification-creator/SKILL.md: OK/NG
 - #15 未タスク `## メタ情報` 重複なし: OK/NG
+- #16 system spec に苦戦箇所記録: OK/NG
+- #17 未実施UTの completed-tasks 混在なし: OK/NG
+- #18 canonical root + mirror sync: OK/NG/N/A
 
-総合判定: PASS / FAIL (NG項目数: X/15)
+総合判定: PASS / FAIL (NG項目数: X/18)
 ```

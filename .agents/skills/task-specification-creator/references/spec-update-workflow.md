@@ -83,6 +83,7 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
+| 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須4成果物を揃える** | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の4点が揃って初めて再監査可能になる |
