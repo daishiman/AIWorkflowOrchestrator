@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1170
 task_id: UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001
 task_name: spec_created UI workflow root同期ガード
 category: 改善
