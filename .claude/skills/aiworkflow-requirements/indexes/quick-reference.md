@@ -80,6 +80,26 @@ node scripts/search-spec.js "baselineViolations" -C 3
 5. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録と短手順を確認する
 6. 実装実体は `apps/desktop/scripts/light-theme-contrast-guard.config.mjs` `apps/desktop/scripts/light-theme-contrast-guard.mjs` `apps/desktop/scripts/phase11-static-server.mjs` `apps/desktop/src/renderer/phase11-light-theme-contrast-guard.tsx` `apps/desktop/electron.vite.config.ts` を照合する
 
+### Workspace parent reference sweep guard を探すとき
+
+このカテゴリは `workspace parent reference sweep guard` `task-060` `pointer docs` `legacy index` `mirror drift` `representative visual re-audit` `workspace review board` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "workspace parent reference sweep guard" -C 3
+node scripts/search-spec.js "task-060" -C 3
+node scripts/search-spec.js "pointer docs" -C 3
+node scripts/search-spec.js "mirror drift" -C 3
+node scripts/search-spec.js "representative visual re-audit" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit）」を見る
+2. `references/workflow-workspace-parent-reference-sweep-guard.md` で全体像、SubAgent 分担、5分解決カードを確認する
+3. `references/task-workflow.md` と `references/ui-ux-feature-components.md` で completed 記録と Workspace surface 側の扱いを確認する
+4. `references/interfaces-llm.md` / `references/interfaces-chat-history.md` / `references/lessons-learned.md` で evidence path と苦戦箇所を確認する
+5. 実装実体は `scripts/validate-workspace-parent-reference-sweep.mjs` `scripts/__tests__/validate-workspace-parent-reference-sweep.test.mjs` `apps/desktop/scripts/capture-workspace-parent-reference-sweep-guard-review-board.mjs` `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/outputs/phase-11/screenshots/` を照合する
+
 ### Electron IPC パターン
 
 ```typescript

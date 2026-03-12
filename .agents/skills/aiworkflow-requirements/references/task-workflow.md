@@ -421,7 +421,7 @@
 | 優先度 | P2 |
 | 完了日 | 2026-03-11 |
 | 対象 | `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context） |
-| 成果物 | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/` |
+| 成果物 | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/outputs/` |
 
 #### 実施内容
 
@@ -606,6 +606,70 @@
 | `cd apps/desktop && pnpm exec eslint src/renderer/views/WorkspaceView src/main/ipc/fileHandlers.ts src/main/ipc/fileHandlers.test.ts` | PASS |
 | `pnpm build` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
+
+### タスク: UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Workspace parent reference sweep guard（2026-03-12）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | improvement |
+| 優先度 | 中 |
+| 完了日 | 2026-03-12 |
+| 対象 | `task-060` parent pointer、completed-task pointer docs、`task-000`、`task-090`、`interfaces-*`、capture root、mirror drift、representative visual re-audit |
+| 成果物 | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/outputs/` |
+
+#### 実施内容
+
+- `scripts/validate-workspace-parent-reference-sweep.mjs` と Vitest で path / status / mirror drift を 1 manifest で監査できるようにした
+- `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` を completed root と completed workflow 実績へ再同期した
+- 元 unassigned spec `task-imp-workspace-parent-reference-sweep-guard-001.md` の status を workflow 実行済みへ是正した
+- `capture-workspace-parent-reference-sweep-guard-review-board.mjs` を追加し、same-day child workflow screenshot を completed workflow へ集約して visual re-audit を実施した
+
+#### 仕様書別 SubAgent 分担
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| A | `task-workflow.md` | 完了台帳、検証値、5分解決カードの正規化 |
+| B | `ui-ux-feature-components.md` | Workspace lineage の feature surface と representative visual review の同期 |
+| C | `interfaces-llm.md` / `interfaces-chat-history.md` | completed root への証跡 path 統一 |
+| D | `workflow-workspace-parent-reference-sweep-guard.md` | docs-only parent workflow の統合正本化 |
+| E | `lessons-learned.md` / `skill-creator` templates | 苦戦箇所の再利用形式化と再利用テンプレート化 |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| parent pointer だけ直しても導線が閉じない | pointer docs / legacy index / `interfaces-*` / capture / mirror を別ターンで扱う | sweep manifest と validator を導入し、同一ターンで閉じた |
+| 元未タスク仕様書が `未実施` のまま残る | workflow 実行と spec status 更新を分離する | source spec の status と台帳の related UT を completed 実績へ是正した |
+| docs-heavy task の screenshot 要求を N/A と決め打ちしやすい | UI差分がないから visual review を省略する | same-day child workflow evidence を completed workflow へ集約し、review board を completed workflow で新規 capture した |
+| related UT row 移動後の exact count が stale になる | row 移動と `verify-unassigned-links` 再取得、`.claude` / `.agents` 同期を別ターンにする | row 移動後に exact count を再取得し、follow-up UT formalize と `220 / 220` への再同期を同一ターンで完了した |
+
+#### 同種課題の5分解決カード
+
+1. `task-060` / pointer docs / `task-000` / `task-090` を 1 セットで確認する。
+2. `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` の completed root を横断確認する。
+3. `validate-workspace-parent-reference-sweep.mjs --json` と `diff -qr` を同一ターンで実行する。
+4. screenshot 要求が来たら 04A / 04B / 04C の same-day evidence を completed workflow へ集約して review board を作る。
+5. 元 unassigned spec の status、exact counts、workflow outputs、LOGS を同一ターンで更新する。
+
+#### 関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-RELATED-UT-EXACT-COUNT-RESYNC-GUARD-001 | related UT を completed 実績へ移した直後の `verify-unassigned-links` exact count を `task-workflow` / workflow spec / detection report へ同値再同期する | 中 | `docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node scripts/validate-workspace-parent-reference-sweep.mjs --json` | PASS（path=0 / status=0 / mirror=0） |
+| `pnpm exec vitest run scripts/__tests__/validate-workspace-parent-reference-sweep.test.mjs` | PASS（4 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（220 / 220） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --completed-unassigned-dir docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task --target-file docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` | PASS（current 0 / scoped baseline 96） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（current 0 / baseline 134） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` | PASS（current 0 / baseline 134） |
+| `node apps/desktop/scripts/capture-workspace-parent-reference-sweep-guard-review-board.mjs` | PASS |
 
 ### タスク: TASK-UI-04C-WORKSPACE-PREVIEW Workspace preview / quick search（2026-03-11）
 
@@ -4585,7 +4649,6 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.67.58** | **2026-03-12** | **TASK-UI-04-WORKSPACE-VIEW を completed-tasks 正本へ移管し、docs-only parent follow-up を同期**: parent workflow root を `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` へ移し、pointer doc / master index / completed-task pointer / legacy index / interfaces / capture script / mirror sync を sweep。representative screenshot 3件、`currentViolations=0 / baselineViolations=134`、未タスク `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` / `UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001` を完了台帳へ反映 |
 | **1.67.57** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 再監査追補**: workflow 本文の Phase 1-12 completed 同期、`outputs/artifacts.json` 追加、index 再生成、`ui-ux-design-system.md` の status テーブル更新、localhost static serve fallback（`phase11-static-server.mjs`）を完了記録へ追記し、親仕様書の stale な未タスク導線を completed workflow 正本へ修正 |
 | **1.67.56** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行を同期**: completed workflow `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` の Phase 4-12 outputs、audit summary（`current=0 / baseline=64`）、Phase 11 screenshot 5件、Apple UI/UX 視覚レビュー、baseline routing を追加。`ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` の contrast backlog は remediation task `task-fix-light-theme-shared-color-migration-001` へ分離し、guard task は current build static serve + selector capture の標準手順として固定 |
 | **1.67.55** | **2026-03-12** | **UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 を登録**: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、`spec_created` UI workflow 向けの root同期ガードとして未タスク化。current inventory correction、verification-only lane、必要 system spec 抽出、`artifacts.json` / `outputs/artifacts.json` 同期を 1 つの再利用導線へ統合し、parent task 節と残課題テーブルへ同時反映 |

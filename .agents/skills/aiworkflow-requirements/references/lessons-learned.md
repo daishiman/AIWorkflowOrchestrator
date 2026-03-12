@@ -20,7 +20,6 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-12 | 1.29.83 | TASK-UI-04-WORKSPACE-VIEW の completed migration と docs-only parent 再監査を追補。pointer/master/completed-task pointer/legacy index/interface/capture script の stale-path sweep、representative screenshot 3件昇格条件、`.claude` / `.agents` mirror sync、`currentViolations=0 / baselineViolations=134` の二層判定を同一手順へ固定 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
 | 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
 | 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
@@ -7237,6 +7236,46 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 | Workspace 親 workflow の parent pointer / pointer docs / legacy index / interfaces / capture script / mirror root を一括監査する sweep ガード | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` |
+| UT-IMP-PHASE12-RELATED-UT-EXACT-COUNT-RESYNC-GUARD-001 | related UT を completed 実績へ移した後の `verify-unassigned-links` exact count を `.claude` / `.agents` 同期込みで再取得・再転記する | `docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` |
+
+## Workspace parent reference sweep guard（2026-03-12）
+
+### 苦戦箇所: task-060 だけ直しても Workspace 親導線が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | task-060 parent pointer を直しても、completed-task pointer docs、task-000 master index、task-090 legacy index、`interfaces-*`、capture script、mirror root に旧 path と旧 status が残る |
+| 再発条件 | 親 pointer だけを単発修正し、repo 全体の導線を manifest で固定しない |
+| 対処 | `task-060 -> completed-task pointer docs -> task-000 -> task-090 -> interfaces-* -> capture script -> mirror root` の順で sweep manifest を定義し、`node scripts/validate-workspace-parent-reference-sweep.mjs --json` と `diff -qr` を同一ターンで実行した |
+| 標準ルール | docs-only parent workflow の completed-task 移管後は pointer/index/spec/script/mirror を 1 セットで監査し、`.claude` を canonical root、`.agents` を mirror として同期する |
+
+### 苦戦箇所: docs-heavy task でも screenshot 再監査を `N/A` にすると user 指示を取りこぼす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UI 実装差分がないことを理由に screenshot / Apple review を省略すると、Workspace lineage の representative surface 再確認が欠落する |
+| 再発条件 | docs-only parent workflow を「画面非該当」と決め打ちし、upstream UI evidence の再利用を設計しない |
+| 対処 | 04A / 04B / 04C / mobile overlay の same-day screenshot を current workflow へ集約し、`capture-workspace-parent-reference-sweep-guard-review-board.mjs` で review board を新規 capture した |
+| 標準ルール | docs-heavy task でも user が screenshot を要求したら、current build 再撮影だけに固執せず representative evidence の review board 化を検討する |
+
+### 苦戦箇所: related unassigned row を completed 実績へ移した後に exact count が stale になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify-unassigned-links` の件数を先に summary へ転記してから related unassigned row を completed 実績へ移すと、`220 / 220` のような旧値が workflow outputs と system spec に残る |
+| 再発条件 | Phase 12 の台帳更新と exact count 再取得を別ターンにし、`task-workflow.md` / `workflow spec` / `unassigned-task-detection.md` のどれかだけを直す |
+| 対処 | row 移動後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を再実行し、`219 / 219` を `task-workflow.md` / `workflow-workspace-parent-reference-sweep-guard.md` / `outputs/phase-12/*.md` へ再同期した |
+| 標準ルール | related UT を completed 実績へ移したら exact counts を再取得し、current workflow outputs・system spec・summary 文書へ同値転記する |
+
+### 同種課題の5分解決カード
+
+1. task-060 の child link が実在する `completed-tasks/*/index.md` を指しているか確認する。
+2. completed-task pointer docs と task-090 の status に `未着手` / `pending` が残っていないか確認する。
+3. `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-llm.md` / `interfaces-chat-history.md` の Workspace path を一括で確認する。
+4. user が screenshot を要求したら 04A / 04B / 04C の same-day evidence を current workflow へ集約し review board を作る。
+5. related UT を completed 実績へ移した後に `verify-unassigned-links` を再実行し、exact counts を summary/system spec へ再同期する。
+6. `.claude` 正本更新後に `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` を実行する。
 
 ## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
 

@@ -14,10 +14,6 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
-| v1.7.8 | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW follow-up の未タスクを追加。`workspace` parent reference workflow に `UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001` を登録し、docs-only parent の visual re-audit policy を active backlog として追跡できるようにした |
-| v1.7.7 | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW の completed 移管を反映: `workspace` parent reference workflow の canonical root を `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` に固定し、master index / pointer doc と整合させた |
-| v1.7.6 | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW 再監査を反映: `workspace` parent reference workflow の Phase 11 契約を「既定は child evidence 継承、user 要求や統合再監査では current workflow に representative screenshot 3件を保存」へ更新し、completed-task pointer docs / legacy index 補正後の導線と整合させた |
-| v1.7.5 | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW を同期: `workspace` ViewType の親参照仕様 workflow を `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` として追加し、parent は pointer / dependency / canonical path / evidence inheritance を保持、Phase 11 は child screenshot 8/8/11 を継承確認して新規 capture を行わないルールを明記 |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
@@ -138,8 +134,6 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | preview panel | top toggle で開閉し、1024px 未満では overlay |
 | 3-pane | 両 panel open かつ 1440px 以上で有効 |
 | 後続依存 | chat 本体は 04B、preview 本体は 04C が担当 |
-| parent reference workflow | `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` が pointer / dependency / canonical path / evidence inheritance を保持し、completed-task pointer docs と legacy index の導線整合も担保する |
-| parent Phase 11 | 既定は 04A / 04B / 04C の screenshot 8 / 8 / 11 を継承確認し、新規 capture は不要。user 要求や統合再監査では current workflow に representative screenshot 3件を保存して Apple UI/UX 目視結果を残す |
 | `chat`       | チャット画面             |
 | `graph`      | グラフ画面               |
 | `agent`      | エージェント画面         |
@@ -157,12 +151,6 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 - TC-11-05 は route 全景ではなく `data-testid="skill-lifecycle-surface-ownership"` の要素 capture を正本とする。
 - representative screenshot は「画面全体が見えること」より「責務境界が読めること」を優先する。
-
-### 関連未タスク
-
-| 未タスクID | 目的 | タスク仕様書 |
-| --- | --- | --- |
-| UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001 | docs-only parent workflow の evidence inheritance と representative screenshot 3件昇格条件を標準化する | `docs/30-workflows/unassigned-task/task-imp-workspace-parent-visual-evidence-guard-001.md` |
 
 ### TASK-SKILL-LIFECYCLE-01 苦戦箇所（再利用形式）
 

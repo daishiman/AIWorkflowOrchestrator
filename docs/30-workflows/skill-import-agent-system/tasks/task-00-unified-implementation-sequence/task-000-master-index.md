@@ -105,12 +105,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 #### Step 6-D: 参照仕様（060は設計ドキュメント、実装は058b/059a/059bに分割済み）
 
-41. `../completed-task/task-060-ui-04-workspace-view.md`（完了 / 参照仕様）
-
-補足:
-
-- 実行可能な親 workflow は `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/index.md` を canonical root とする。
-- 060 自体は pointer / dependency / canonical path / system spec sync policy の親参照仕様として扱う。
+41. `task-060-ui-04-workspace-view.md`（参照仕様）
 
 #### Step 6-E: オンボーディング（全UI完了後）
 

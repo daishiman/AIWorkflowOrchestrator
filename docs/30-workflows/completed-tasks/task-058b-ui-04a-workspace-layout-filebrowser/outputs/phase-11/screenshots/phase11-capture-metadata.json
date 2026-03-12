@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-12T03:48:46.161Z",
+  "generatedAt": "2026-03-10T11:19:53.752Z",
   "baseUrl": "http://127.0.0.1:4173",
   "harnessPath": "/?phase11Harness=workspace-layout",
   "records": [
@@ -7,7 +7,7 @@
       "tc": "TC-11-01",
       "file": "TC-11-01-chat-only-light.png",
       "note": "desktop 初期の chat-only 表示",
-      "capturedAt": "2026-03-12T03:48:37.468Z",
+      "capturedAt": "2026-03-10T11:19:47.525Z",
       "viewport": {
         "width": 1440,
         "height": 960
@@ -18,7 +18,7 @@
       "tc": "TC-11-02",
       "file": "TC-11-02-3-pane-dark.png",
       "note": "desktop 3-pane 表示と preview の同時表示",
-      "capturedAt": "2026-03-12T03:48:38.812Z",
+      "capturedAt": "2026-03-10T11:19:48.624Z",
       "viewport": {
         "width": 1600,
         "height": 960
@@ -29,7 +29,7 @@
       "tc": "TC-11-03",
       "file": "TC-11-03-resize-after-drag.png",
       "note": "3-pane で file panel resize を反映した状態",
-      "capturedAt": "2026-03-12T03:48:40.981Z",
+      "capturedAt": "2026-03-10T11:19:49.882Z",
       "viewport": {
         "width": 1600,
         "height": 960
@@ -40,7 +40,7 @@
       "tc": "TC-11-04",
       "file": "TC-11-04-tablet-chat-files.png",
       "note": "tablet 幅で chat+files を表示",
-      "capturedAt": "2026-03-12T03:48:42.256Z",
+      "capturedAt": "2026-03-10T11:19:50.475Z",
       "viewport": {
         "width": 1280,
         "height": 920
@@ -51,7 +51,7 @@
       "tc": "TC-11-05",
       "file": "TC-11-05-mobile-overlay.png",
       "note": "mobile overlay で file panel を表示",
-      "capturedAt": "2026-03-12T03:48:43.244Z",
+      "capturedAt": "2026-03-10T11:19:51.098Z",
       "viewport": {
         "width": 800,
         "height": 1180
@@ -62,7 +62,7 @@
       "tc": "TC-11-06",
       "file": "TC-11-06-tree-keyboard-nav.png",
       "note": "tree keyboard nav と focus 移動",
-      "capturedAt": "2026-03-12T03:48:44.068Z",
+      "capturedAt": "2026-03-10T11:19:51.710Z",
       "viewport": {
         "width": 1440,
         "height": 960
@@ -73,7 +73,7 @@
       "tc": "TC-11-07",
       "file": "TC-11-07-status-bar-selected-file.png",
       "note": "selected file の status bar 表示",
-      "capturedAt": "2026-03-12T03:48:44.898Z",
+      "capturedAt": "2026-03-10T11:19:52.426Z",
       "viewport": {
         "width": 1440,
         "height": 960
@@ -84,7 +84,7 @@
       "tc": "TC-11-08",
       "file": "TC-11-08-watcher-updated-preview.png",
       "note": "watcher change 後に preview 内容が再読込される",
-      "capturedAt": "2026-03-12T03:48:46.149Z",
+      "capturedAt": "2026-03-10T11:19:53.747Z",
       "viewport": {
         "width": 1600,
         "height": 960

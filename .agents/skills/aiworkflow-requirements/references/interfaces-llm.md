@@ -152,7 +152,6 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
-| 2.3.1   | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW 再監査で Workspace Chat Panel の証跡 path を `completed-tasks` 正本へ補正し、親 representative screenshot 同期時の canonical 入口を維持 |
 | 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |

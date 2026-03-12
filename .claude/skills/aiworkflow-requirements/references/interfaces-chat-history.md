@@ -549,7 +549,6 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 | Version   | Date       | Changes                                                                                                                                   |
 | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.4.1** | 2026-03-12 | TASK-UI-04-WORKSPACE-VIEW 再監査で Workspace Chat Panel 統合テスト証跡 path を `completed-tasks` 正本へ補正し、親 workflow からの canonical 参照を維持 |
 | **1.4.0** | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel での `conversation:create` / `conversation:addMessage` 利用フローと完了記録を同期 |
 | **1.3.0** | 2026-01-26 | spec-guidelines.md準拠: コードブロック（認可ロジック、エクスポート形式）を表形式・文章に変換                                              |
 | 1.2.0     | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |

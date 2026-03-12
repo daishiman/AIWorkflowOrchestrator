@@ -4,6 +4,38 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: Phase 12 完了済み workflow と元 unassigned spec を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移管し、system spec 正本の path を completed 実体へ揃える
+
+### 実施内容
+- workflow 本体を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移動し、元 unassigned spec を `unassigned-task/` 配下へ同梱した
+- `references/workflow-workspace-parent-reference-sweep-guard.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の path と説明を completed workflow 前提へ更新した
+- capture script と quick-reference の evidence path を移管後 root へ合わせ、後続の mirror sync と validator 再実行に備えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認と stale count 再同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: branch 最新状態で Phase 12 準拠、元 unassigned spec の配置、related UT completed 化後の exact count を再確認し、system spec 正本へ実装内容と苦戦箇所を追補する
+
+### 実施内容
+- `references/workflow-workspace-parent-reference-sweep-guard.md` に Phase 12 再確認行、元 unassigned spec の配置確認、`verify-unassigned-links=219 / 219`、stale count 再発防止ルールを追記
+- `references/task-workflow.md` の検証証跡を `219 / 219` へ再同期し、`references/lessons-learned.md` に「related unassigned row を completed 実績へ移した後に exact count が stale になる」苦戦箇所を追加
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を再実行する前提の更新として記録し、current workflow outputs と system spec の数値を揃えた
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize
 
 ### コンテキスト
@@ -59,6 +91,40 @@
 - 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
 - 目的: light theme contrast guard の実装・Phase 11 証跡・Phase 12 仕様同期を `.claude` 正本へ反映する
 
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 visual re-audit と台帳整合を追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: docs-only parent workflow の再監査で、元未タスク spec の `未実施` 残置と related UT 表の stale 状態を解消し、representative visual re-audit の入口も system spec 正本へ固定する
+
+### 実施内容
+- `references/task-workflow.md` / `references/ui-ux-feature-components.md` から同 ID の related unassigned row を退避し、completed 実績セクションを追加
+- `references/workflow-workspace-parent-reference-sweep-guard.md` を新規作成し、drift guard / visual review board / unassigned cleanup / 5分解決カードを集約
+- `references/lessons-learned.md` に docs-heavy task の screenshot 要求を `N/A` にしない教訓を追記し、`indexes/resource-map.md` / `indexes/quick-reference.md` に逆引き入口を追加
+- `SKILL.md` に `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` の直リンクを追加し、workflow 正本の入口を validator warning なしで辿れるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Workspace 親導線 sweep 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: task-060 parent pointer と child workflow 04A/04B/04C の非対称 root に起因する path/status/mirror drift を system spec 正本へ同期する
+
+### 実施内容
+- `references/task-workflow.md` の Workspace 04A 関連未タスク表に `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` を追加し、parent pointer / pointer docs / legacy index / interfaces / capture script / mirror root を一括監査する導線を登録
+- `references/ui-ux-feature-components.md` の Workspace 04A 関連未タスク表へ同 ID を追加し、UI feature spec 側でも Workspace 親導線 drift を参照できるようにした
+- `references/lessons-learned.md` に `Workspace parent reference sweep guard` 節を追加し、task-060 単独修正では導線が閉じないこと、`validate-workspace-parent-reference-sweep.mjs` と `diff -qr` を同一ターンで使う手順を 5分解決カード化した
+- `references/interfaces-llm.md` / `references/interfaces-chat-history.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の stale 04B path を completed workflow 正本へ補正した
+
+### 結果
+- ステータス: success
+
 ### 実施内容
 - `references/task-workflow.md` に current workflow の Phase 1-12 実行記録、audit summary、baseline routing、5ステップ解決カードを追加
 - `references/lessons-learned.md` に `esbuild` アーキ差分、build input 漏れ、baseline 誤読、Apple UI/UX review の教訓を追加
@@ -81,38 +147,6 @@
 - SubAgent-B（台帳）: `references/task-workflow.md` に `spec_created` 完了記録、SubAgent分担、検証証跡を追加
 - SubAgent-C（教訓）: `references/lessons-learned.md` に 4苦戦箇所と 5ステップ解決カードを追加
 - SubAgent-D（履歴）: `SKILL.md` に変更履歴 `9.01.84` を追加
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW を completed-tasks 正本へ移管
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-UI-04-WORKSPACE-VIEW`
-- 目的: Phase 12 完了済みの docs-only parent workflow を completed 正本へ移し、pointer / master index / system spec / outputs の canonical path を同一ターンで揃える
-
-### 実施内容
-- `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` へ workflow root を移動
-- `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/ui-ux-navigation.md` / `references/lessons-learned.md` の canonical path を completed 側へ更新
-- `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-060-ui-04-workspace-view.md` と `task-000-master-index.md` を completed 導線へ更新
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW の再監査と follow-up 未タスク formalize を system spec へ同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-UI-04-WORKSPACE-VIEW`
-- 目的: docs-only parent workflow の stale-path sweep、representative screenshot policy、Phase 12 準拠再確認、follow-up backlog 2件を同一 ID で再利用できる形へ固定する
-
-### 実施内容
-- `references/task-workflow.md` に completed migration 後の sweep 範囲、`currentViolations=0 / baselineViolations=134`、representative screenshot 3件、mirror sync を追記
-- `references/ui-ux-feature-components.md` / `references/ui-ux-navigation.md` / `references/lessons-learned.md` に docs-only parent contract と未タスク `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` / `UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001` を同期
-- task-060 の `outputs/phase-12` と skill 側テンプレート改善内容を整合させ、`generate-index.js` と `.agents` mirror sync を再実行した
 
 ### 結果
 - ステータス: success

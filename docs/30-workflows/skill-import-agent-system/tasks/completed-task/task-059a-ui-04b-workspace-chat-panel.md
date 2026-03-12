@@ -1,12 +1,14 @@
 # TASK-UI-04B-WORKSPACE-CHAT: ワークスペースChatPanel
 
+> 実装 workflow 正本: [task-059a-ui-04b-workspace-chat-panel](../../../completed-tasks/task-059a-ui-04b-workspace-chat-panel/index.md)
+
 ## 1. メタ情報
 
 | 項目             | 値                                                                                                                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | タスクID         | TASK-UI-04B-WORKSPACE-CHAT                                                                                                                                                             |
 | 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                                    |
-| ステータス       | 未着手                                                                                                                                                                                 |
+| ステータス       | completed（実装 workflow は completed-tasks 正本へ移管済み）                                                                                                                           |
 | 優先度           | high                                                                                                                                                                                   |
 | 複雑度           | medium                                                                                                                                                                                 |
 | 推定ファイル数   | ~10                                                                                                                                                                                    |

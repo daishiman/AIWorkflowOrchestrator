@@ -32,7 +32,7 @@
 | 実施日 | `YYYY-MM-DD` |
 | ステータス | `completed` / `spec_created` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
-| SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui-components / D:arch-state-management / E:task-workflow / F:lessons / G+:<ui-domain-spec>`。docs-only parent workflow は `P1:ui-ux-feature-components / P2:ui-ux-navigation / P3:interfaces-* / P4:task-workflow / P5:lessons` を最小セットにする |
+| SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui-components / D:arch-state-management / E:task-workflow / F:lessons / G+:<ui-domain-spec>` |
 
 ---
 
@@ -74,18 +74,6 @@
 | --- | --- | --- | --- |
 | G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-design-system.md` / `references/error-handling.md` / `references/architecture-implementation-patterns.md` | ドメイン固有 UI 正本または preview/search cross-cutting 正本へ実装内容・苦戦箇所・再利用手順を同期 | A/B/C/D完了後、E/Fと同一ターン |
 
-#### 3.1.2 docs-only Parent Reference Workflow プロファイル（TASK-UI-04型）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
-| --- | --- | --- | --- |
-| P1 | `references/ui-ux-feature-components.md` | parent contract、child canonical path、苦戦箇所、5分解決カードの同期 | parent/child 実体確定後 |
-| P2 | `references/ui-ux-navigation.md` | parent entry、Phase 11 evidence inheritance、representative screenshot policy の同期 | P1 と同一ターン |
-| P3 | `references/interfaces-*.md` | completed-task 移管で波及する sibling interface evidence path の sweep | pointer path 補正後 |
-| P4 | `references/task-workflow.md` | `spec_created` 台帳、検証証跡、仕様書別SubAgent実行ログの同期 | P1-P3 完了後 |
-| P5 | `references/lessons-learned.md` | stale path sweep、docs-only Phase 11、mirror sync の標準ルール化 | P4 と同一ターン |
-
-> `task-060` 型では、pointer doc / master index / completed-task pointer docs / legacy index / capture script を P3/P4 の sweep 対象として扱い、user が視覚検証を求めた場合だけ current workflow に representative screenshot を残す。
-
 再確認タスクでは次の分担に置き換えてよい:
 - `A: task-workflow`
 - `B: lessons-learned`
@@ -100,6 +88,18 @@
 | `<workflow-b>` | `spec_created` / `completed` | `verify-all-specs` + `validate-phase-output` + Task 1/3/4/5 実体突合 | `task-workflow.md` 再確認テーブル |
 
 > `<workflow-b>` が不要な場合は1workflowのみで運用し、理由を「備考」に明記する。
+
+### 3.2.1 docs-only parent workflow sweep プロファイル
+
+| SubAgent | 担当仕様書 / 成果物 | 主担当作業 | 依存関係 |
+| --- | --- | --- | --- |
+| P1 | `task-060` 相当の parent pointer doc / completed-task pointer docs / `task-000` / `task-090` | parent-child root、legacy status、pointer inventory を completed 正本へそろえる | 実装差分確定後 |
+| P2 | `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/interfaces-*.md` | completed root、representative evidence path、5分解決カードを同期 | P1 完了後 |
+| P3 | `references/workflow-<feature>.md` / `references/lessons-learned.md` | docs-only parent workflow の統合正本、苦戦箇所、標準ルールを同期 | P2 完了後 |
+| P4 | `scripts/validate-<parent-sweep>.mjs` / `diff -qr .claude/skills/<skill> .agents/skills/<skill>` | path / status / mirror drift guard を機械検証 | P1-P3 完了後 |
+| P5 | `outputs/phase-11/*` / `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | representative visual re-audit board と SubAgent 実行ログ、再利用テンプレート化を同一ターンで残す | P2-P4 と同一ターン |
+
+> user が screenshot を要求した docs-heavy task では、P5 を `N/A` にせず current workflow への representative evidence 集約可否を最初に判定する。
 
 ### 3.3 仕様書別SubAgent実行ログ（必須）
 
@@ -137,7 +137,6 @@ UI機能実装の場合は次を推奨:
 - `ui-ux-components.md`（実装内容・完了タスク・未タスク導線）
 - `ui-ux-feature-components.md`（機能仕様・苦戦箇所）
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
-- docs-only parent workflow の場合は `ui-ux-feature-components.md` / `ui-ux-navigation.md` / `interfaces-*.md` / `task-workflow.md` / `lessons-learned.md` を最小セットにする
 - `ui-ux-design-system.md`（token / contrast / theme 改善がある場合）
 - `ui-ux-search-panel.md`（shortcut / focus trap / ranking / no-match 契約がある場合）
 - `error-handling.md`（timeout / parse / transport error の UI 応答を整理した場合）
@@ -151,9 +150,6 @@ UI機能実装の場合は次を推奨:
 | --- | --- | --- |
 | 追加コンポーネント一覧、完了タスク、実装内容と苦戦箇所サマリー | `ui-ux-components.md` | UI カタログとして一覧性が高く、一覧だけ読んでも再利用ポイントを把握できる |
 | 画面の振る舞い、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | 機能単位で再利用しやすい |
-| 親 docs-only workflow 契約（pointer / dependency / child canonical path） | `ui-ux-feature-components.md` | parent reference workflow の責務を feature 正本として短時間で再利用できる |
-| parent entry、Phase 11 evidence inheritance、representative screenshot policy | `ui-ux-navigation.md` | docs-only parent の導線と視覚証跡ルールを navigation 正本で共有できる |
-| completed-task 移管で波及する sibling interface evidence path | `interfaces-*.md` | parent workflow 由来の旧 path を interface spec 側で掃き切れる |
 | 専用型、adapter helper、harness、責務境界 | `arch-ui-components.md` | 構造上の判断理由を残せる |
 | selector / store / reset 条件 | `arch-state-management.md` | 状態責務の正本に集約できる |
 | token / contrast / theme 所見 | `ui-ux-design-system.md` | component 修正と token 改善を分離できる |
@@ -175,6 +171,17 @@ UI機能実装の場合は次を推奨:
 | `spec_created` 台帳、Phase 1-3 gate、苦戦箇所 | `task-workflow.md` / `lessons-learned.md` | Phase 1-3 completed / Phase 4+ planned の運用と 5分解決カードを固定できる |
 
 > `SettingsView` / `SettingsCard` / `DashboardView` のような wrapper shell は、current inventory で主因でない限り verification-only lane へ分離する。
+
+### 4.2.2 docs-only parent workflow 反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| parent pointer / completed-task pointer docs / legacy index の正規化 | parent workflow doc / `task-workflow.md` | 親導線と完了台帳を同時に閉じられる |
+| Workspace lineage の representative visual review | `ui-ux-feature-components.md` | surface 単位で same-day evidence を辿りやすい |
+| completed root / evidence path | `interfaces-*.md` | path drift を契約面から再利用できる |
+| docs-only parent workflow の統合ルール | `references/workflow-<feature>.md` | pointer / index / spec / script / mirror を 1 入口で再現できる |
+| 苦戦箇所、再発条件、5分解決カード | `lessons-learned.md` | 次回の調査時間を最短化できる |
+| 再利用テンプレート、SubAgent プロファイル | `skill-creator` patterns / templates | 同種 task の初動をテンプレートで短縮できる |
 
 ### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
 
@@ -223,18 +230,16 @@ UI機能実装の場合は次を推奨:
 3. `<Light Mode 全画面是正では rg で renderer 全域の hardcoded neutral class を棚卸しし、token修正 / compatibility bridge / component migration の責務を先に分ける>`
 4. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、workflow 直下 <workflow>/unassigned-task/ 参照のまま止めない。completed workflow 由来の継続 backlog は docs/30-workflows/completed-tasks/<workflow>/unassigned-task/ を正本にする>`
 5. `<worktree では UI再撮影や検証前に pnpm install --frozen-lockfile を実行し、optional dependency 欠落を先に解消する>`
-6. `<completed-task 移管後の docs-only parent 再監査では primary workflow だけで完了判定せず、.claude / .agents / apps/desktop/scripts / completed-task pointer docs / legacy index を rg で sweep する>`
-7. `<docs-only parent でも user が画面検証を求めたら、current workflow に representative screenshot 3件を保存し、manual-test-result.md へ visual 所見を残す>`
-8. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
-9. `<CI が desktop shard 単位で失敗している場合は pnpm --filter @repo/desktop exec vitest run --shard=<n>/16 で同じ shard を再現し、全量再実行だけで原因調査を済ませない>`
-10. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
-11. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
-12. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
-13. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
-14. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
-15. `<Light Mode / contrast 改修では screenshot を再取得し、token修正・compatibility bridge・component migration のどれで解消したかを spec-update-summary / task-workflow / lessons に同値転記する>`
-16. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
-17. `<worktree の preview source が揺れる UIタスクでは current worktree の out/renderer を static server で配信し、right preview panel reverse resize / watcher callback ref 分離 / light theme 補助テキスト contrast を同じ再監査セットで確認する>`
+6. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
+7. `<CI が desktop shard 単位で失敗している場合は pnpm --filter @repo/desktop exec vitest run --shard=<n>/16 で同じ shard を再現し、全量再実行だけで原因調査を済ませない>`
+8. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
+9. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
+10. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
+11. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
+12. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
+13. `<Light Mode / contrast 改修では screenshot を再取得し、token修正・compatibility bridge・component migration のどれで解消したかを spec-update-summary / task-workflow / lessons に同値転記する>`
+14. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
+15. `<worktree の preview source が揺れる UIタスクでは current worktree の out/renderer を static server で配信し、right preview panel reverse resize / watcher callback ref 分離 / light theme 補助テキスト contrast を同じ再監査セットで確認する>`
 
 ---
 
@@ -259,9 +264,10 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
-| `rg -n "<old-workflow-path>|<task-id>" .claude/skills .agents/skills apps/desktop/scripts docs/30-workflows/skill-import-agent-system/tasks/completed-task docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence` | completed-task 移管後の stale path / status sweep | 想定外の旧 path / stale status が 0 件、または修正対象が特定できる |
+| `node scripts/validate-<parent-sweep>.mjs --json` | docs-only parent workflow の path / status drift 監査 | `path-drift=0 / status-drift=0 / mirror-drift=0` |
+| `diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>` | dual root repository の mirror drift 監査 | 差分なし |
+| `node apps/desktop/scripts/capture-<docs-heavy-review-board>.mjs` | representative visual re-audit board の生成 | current workflow 配下へ PNG と metadata が出力される |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | active workflow 由来は `unassigned-task`、completed workflow 由来は `completed-tasks/<workflow>/unassigned-task`、legacy standalone は `completed-tasks/unassigned-task` |
-| `rg -n "<task-id>|<workflow-name>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks/unassigned-task` | current task 起因の新規未タスク有無を追加確認 | 追加未タスクがなければ 0 件 |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え（`たとえば` 含む）+ 型/API/エッジケース/設定語が検出される |
 | `test -f <workflow-path>/outputs/phase-11/screenshot-plan.json && test -f <workflow-path>/outputs/phase-11/phase11-capture-metadata.json` | screenshot 要求時の補助証跡実在確認 | 2ファイルとも存在する |
@@ -280,7 +286,6 @@ UI機能実装の場合は次を推奨:
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
-| `diff -qr .claude/skills/<skill-name> .agents/skills/<skill-name>` | dual-root repository の mirror sync 確認 | 差分なし |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
 
 ---
@@ -303,15 +308,15 @@ UI機能実装の場合は次を推奨:
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、legacy standalone=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
-- [ ] completed-task 移管後の docs-only parent 再監査では、primary workflow だけでなく sibling interface spec / pointer docs / legacy index / capture script も sweep している
-- [ ] docs-only parent でも user が画面検証を要求した場合、current workflow に representative screenshot を保存している
-- [ ] current task 固有 grep により、`docs/30-workflows/unassigned-task/` 直下へ新規未タスクが必要かどうかを追加確認している
 - [ ] Light Mode / contrast 是正では `token修正` / `compatibility bridge` / `component migration` のどれで閉じたかを仕様書へ明記している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を記録している
 - [ ] screenshot 検証で副次不具合や warning が露出した場合、その場で `docs/30-workflows/unassigned-task/` に正式な未タスクを追加している
 - [ ] 親タスクに苦戦箇所がある場合、新規未タスクへ `### 3.5 実装課題と解決策` を追加し、再発条件と解決策を継承している
 - [ ] Light Mode / contrast 改修で screenshot を再取得した場合、coverage validator の PASS を再取得後の証跡として記録している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
+- [ ] docs-only parent workflow では `SubAgent-P1..P5` または同等の責務分離を使い、pointer / index / spec / script / mirror / evidence board を同一ターンで閉じている
+- [ ] docs-only parent workflow では `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `workflow-<feature>.md` / `lessons-learned.md` / `skill-creator` templates の担当境界が `spec-update-summary.md` に記録されている
+- [ ] user が screenshot を要求した docs-heavy task では、representative visual re-audit board か `N/A` 理由のどちらかを `spec-update-summary.md` と `documentation-changelog.md` に記録している
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
@@ -339,7 +344,6 @@ UI機能実装の場合は次を推奨:
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
-- [ ] dual-root repository では canonical root 更新後に `diff -qr .claude/skills/<skill-name> .agents/skills/<skill-name>` を記録し、mirror sync を完了させている
 
 ---
 
