@@ -6,6 +6,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { buildWorkspaceChatContext } from "@/renderer/features/chat-platform/session";
 import type { FolderId, FolderPath } from "@/renderer/store/types/workspace";
 import { resetWorkspaceLayoutStorage } from "./hooks/useWorkspaceLayout";
 import { WorkspaceView } from "./index";
@@ -19,6 +20,7 @@ const mockConversationCreate = vi.fn();
 const mockConversationAddMessage = vi.fn();
 const mockStreamChat = vi.fn();
 const mockCancelStream = vi.fn();
+const mockActivateChatMode = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockAppState = {
   selectedProviderId: "openai" as const,
@@ -84,6 +86,8 @@ vi.mock("@/renderer/store", () => ({
   useSetWorkspaceSelectedFile: () => mockSetWorkspaceSelectedFile,
   useAddFiles: () => mockAddFiles,
   useSelectedFiles: () => mockSelectedFiles,
+  useActivateChatMode: () => mockActivateChatMode,
+  useSetCurrentView: () => mockSetCurrentView,
   useRemoveFile: () => mockRemoveFile,
   useAppStore: (selector: (state: typeof mockAppState) => unknown) =>
     selector(mockAppState),
@@ -188,6 +192,29 @@ describe("WorkspaceView", () => {
     expect(screen.getByTestId("workspace-status-layout")).toHaveTextContent(
       "chat-only",
     );
+  });
+
+  it("Workspace mode handoff ボタンで chat view へ遷移する", () => {
+    mockSelectedFiles.push({
+      id: "selected-1",
+      path: "/workspace/app.ts",
+      name: "app.ts",
+      extension: ".ts",
+      size: 16,
+      mimeType: "text/typescript",
+      lastModified: new Date("2026-03-10T00:00:00.000Z").toISOString(),
+      createdAt: new Date("2026-03-10T00:00:00.000Z").toISOString(),
+    });
+
+    render(<WorkspaceView />);
+
+    fireEvent.click(screen.getByTestId("workspace-open-chat"));
+
+    expect(mockActivateChatMode).toHaveBeenCalledWith(
+      "workspace",
+      buildWorkspaceChatContext(mockSelectedFiles, "/workspace"),
+    );
+    expect(mockSetCurrentView).toHaveBeenCalledWith("chat");
   });
 
   it("file toggle で file panel を表示する", () => {

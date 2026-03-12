@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.5 | 2026-03-11 | TASK-SKILL-LIFECYCLE-02 を反映: ChatView の mode switcher / recent session rail / context summary、Workspace / Skill Center からの handoff、light theme contrast 再検証を追加 |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
@@ -71,6 +72,20 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | `Skill Creator` | 新規スキル作成 | `Workspace / Agent` |
 
 `settings` は公開シェル例外として同じ board には混ぜず、別 TC（TC-11-06）で確認する。
+
+### 共通チャット基盤 handoff（TASK-SKILL-LIFECYCLE-02）
+
+| 入口 surface | トリガー | handoff payload | 遷移先 |
+| --- | --- | --- | --- |
+| `ChatView` | mode pills（`data-testid="chat-mode-*"`） | `entryPoint: "chat"`、必要に応じ既存 context を維持 | そのまま `ChatView` |
+| `WorkspaceView` | `data-testid="workspace-open-chat"` | `workspacePath`、selected file paths / names、`entryPoint: "workspace"` | `setCurrentView("chat")` |
+| `SkillCenterView` | `data-testid="skill-lifecycle-start-{job}"` | `lifecycleJob`、`handoffLabel`、`entryPoint: "skill-center"` | `setCurrentView("chat")` |
+
+### recent session rail
+
+- `ChatView` ヘッダー直下に `chat-session-rail` を置き、`chatSessionOrder` 降順で recent session を再表示する。
+- mode を切り替えても既存 session がある場合は `modeSessionIds` を使って再利用し、新規会話を乱立させない。
+- session pill には mode label、session title、summary を表示し、別 surface から来た handoff context も再開できる。
 
 ### メニュー項目一覧
 
@@ -284,7 +299,19 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 ChatViewには履歴ページへの導線として、ヘッダー右上にナビゲーションボタンを配置する。
 
+ChatView は「共通会話 surface」として、履歴導線だけでなく mode switcher、recent session rail、context summary を持つ。`WorkspaceView` と `SkillCenterView` はここへ handoff したあと会話本体を保持しない。
+
 **実装場所**: `apps/desktop/src/renderer/views/ChatView/index.tsx:136-143`
+
+### ヘッダー要素
+
+| 要素 | 仕様 |
+| --- | --- |
+| タイトル | `共通チャット基盤` |
+| モデル表示 | active mode 説明 + `selectedModelId` |
+| 履歴ボタン | 右上 `History` アイコン、`aria-label="チャット履歴"`、`/chat/history` へ遷移 |
+| mode switcher | `general` / `workspace` / `skill-lifecycle` の 3 pill。`data-testid="chat-mode-{mode}"` |
+| recent rail | 2件以上 session があると `chat-session-rail` を表示 |
 
 ## ナビゲーションボタン仕様
 
