@@ -86,6 +86,38 @@
 - ステータス: success
 
 ---
+## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW を completed-tasks 正本へ移管
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04-WORKSPACE-VIEW`
+- 目的: Phase 12 完了済みの docs-only parent workflow を completed 正本へ移し、pointer / master index / system spec / outputs の canonical path を同一ターンで揃える
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` へ workflow root を移動
+- `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/ui-ux-navigation.md` / `references/lessons-learned.md` の canonical path を completed 側へ更新
+- `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-060-ui-04-workspace-view.md` と `task-000-master-index.md` を completed 導線へ更新
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW の再監査と follow-up 未タスク formalize を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04-WORKSPACE-VIEW`
+- 目的: docs-only parent workflow の stale-path sweep、representative screenshot policy、Phase 12 準拠再確認、follow-up backlog 2件を同一 ID で再利用できる形へ固定する
+
+### 実施内容
+- `references/task-workflow.md` に completed migration 後の sweep 範囲、`currentViolations=0 / baselineViolations=134`、representative screenshot 3件、mirror sync を追記
+- `references/ui-ux-feature-components.md` / `references/ui-ux-navigation.md` / `references/lessons-learned.md` に docs-only parent contract と未タスク `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` / `UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001` を同期
+- task-060 の `outputs/phase-12` と skill 側テンプレート改善内容を整合させ、`generate-index.js` と `.agents` mirror sync を再実行した
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
 
 ### コンテキスト

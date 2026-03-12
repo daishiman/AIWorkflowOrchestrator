@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-12T04:49:20.887Z",
-  "totalKeywords": 1614,
+  "generated": "2026-03-12T08:01:25.176Z",
+  "totalKeywords": 1616,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4438,7 +4438,8 @@
       "master-design.md"
     ],
     "Workflow": [
-      "master-design.md"
+      "master-design.md",
+      "ui-ux-feature-components.md"
     ],
     "Orchestrator": [
       "master-design.md"
@@ -5719,6 +5720,12 @@
       "ui-ux-feature-components.md"
     ],
     "Issue": [
+      "ui-ux-feature-components.md"
+    ],
+    "Parent": [
+      "ui-ux-feature-components.md"
+    ],
+    "Reference": [
       "ui-ux-feature-components.md"
     ],
     "Light": [
