@@ -1,0 +1,192 @@
+{
+  "taskId": "UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001",
+  "title": "Workspace parent reference sweep ガード",
+  "type": "improvement",
+  "priority": "medium",
+  "status": "phase12_completed",
+  "dependencies": [
+    "TASK-UI-04-WORKSPACE-VIEW",
+    "UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001"
+  ],
+  "issueNumber": 1173,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/spec-reference-map.md",
+        "outputs/phase-1/subagent-responsibilities.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/sweep-manifest-design.md",
+        "outputs/phase-2/drift-guard-contract.md",
+        "outputs/phase-2/concern-boundary-map.md",
+        "outputs/phase-2/risk-analysis.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-findings.md",
+        "outputs/phase-3/remediation-plan.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/regression-cases.md",
+        "outputs/phase-4/test-commands.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/implementation-log.md",
+        "outputs/phase-5/diff-summary.md",
+        "outputs/phase-5/impact-analysis.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/test-expansion-result.md",
+        "outputs/phase-6/failure-cases.md",
+        "outputs/phase-6/delta-report.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/requirements-traceability.md",
+        "outputs/phase-7/uncovered-items.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/responsibility-map.md",
+        "outputs/phase-8/regression-check.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/reproducibility-log.md",
+        "outputs/phase-9/operation-readiness.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/final-review-findings.md",
+        "outputs/phase-10/remediation-plan.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-findings.md",
+        "outputs/phase-11/command-transcript.md",
+        "outputs/phase-11/apple-uiux-visual-review.md",
+        "outputs/phase-11/screenshots/UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001_workspace-review-board_2026-03-12.png",
+        "outputs/phase-11/screenshots/visual-review-metadata.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "sweep manifest が pointer/master/completed-task pointer/legacy index/interfaces/capture script/mirror root を全件含む",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "path drift・status drift・mirror drift の責務が設計上で分離されている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "task-060 parent pointer と child workflow の参照関係が一意に説明されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "Phase 12 仕様が task-workflow/ui-ux-feature-components/lessons-learned 同期まで含んでいる",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "verify-all-specs と validate-phase-output の構造検証を通過できる",
+      "verified": true
+    }
+  ],
+  "relatedPitfalls": ["P1", "P25"],
+  "createdAt": "2026-03-12",
+  "updatedAt": "2026-03-12",
+  "completedAt": "2026-03-12"
+}

@@ -2599,6 +2599,23 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
 - **クロスリファレンス**: [phase12-task-spec-recheck-template.md](../assets/phase12-task-spec-recheck-template.md), [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [phase12-spec-sync-subagent-template.md](../assets/phase12-spec-sync-subagent-template.md)
 
+### [Phase12] docs-heavy parent workflow は review board fallback + exact count 再同期で閉じる（UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001）
+
+- **状況**: docs-only parent workflow の再監査で、UI 実装差分はないが user が screenshot を要求し、さらに related unassigned row を completed 実績へ移したことで `verify-unassigned-links` の total が stale になりやすい
+- **アプローチ**:
+  - `pointer / index / spec / script / mirror` を別 concern として SubAgent 分担し、親導線の drift を 1 sweep で閉じる
+  - current build 再撮影が過剰または環境依存で難しい場合は、same-day upstream screenshot を current workflow へ集約し、review board 1件を current workflow で新規 capture して Apple review の正本にする
+  - related unassigned row を completed 実績へ移した後に `verify-unassigned-links` を再実行し、`existing/missing/total` を workflow outputs / task-workflow / workflow spec へ同値転記する
+  - 元 unassigned spec は `docs/30-workflows/unassigned-task/` に残したまま status を workflow 実行済みへ更新し、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で配置とフォーマットを当日確認する
+- **結果**: docs-heavy task でも visual re-audit を `N/A` にせず閉じられ、台帳移動後の数値ドリフトも current workflow と system spec の両方で防止できる
+- **適用条件**: docs-heavy parent workflow、spec_created 由来の再監査、representative screenshot 再確認、related UT の completed 化を伴う Phase 12
+- **失敗パターン**:
+  - screenshot を `N/A` のまま残し、同日 evidence の review board 化を検討しない
+  - related UT を completed 実績へ移した後も `220 / 220` のような旧 total を summary に残す
+  - 元 unassigned spec の status だけ更新し、配置確認や `currentViolations=0` を取り直さない
+- **発見日**: 2026-03-12
+- **関連タスク**: UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001
+
 ### [Phase12] 専用 recheck テンプレートで責務を分離（TASK-UI-01-E）
 
 - **状況**: `phase12-system-spec-retrospective-template` だけで再確認から system spec 同期まで抱えると、task spec 準拠確認の責務が埋もれて適用順がぶれやすい
@@ -2999,6 +3016,38 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 
+### [Phase12] light theme shared color migration は token scope / component scope / verification-only lane を分離する（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
+
+- **状況**: global light remediation 後の follow-up task で、親 unassigned-task の対象一覧をそのまま使うと current worktree の実体とずれやすい。settings/auth/workspace をまたぐため、UI だけ読んでも system spec 抽出が漏れやすい
+- **成功パターン**:
+  - Phase 1 で current worktree の hardcoded color inventory を取り直し、old unassigned-task の対象を盲信しない
+  - primary targets を `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` に固定し、`SettingsView` / `SettingsCard` / `DashboardView` は verification-only lane に落とす
+  - token foundation は親 workflow、current task は component migration、wrapper は verification-only として 3 lane に分離する
+  - `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` の要否を同一ターンで判定する
+  - `spec_created` task では Phase 1-3 を completed に固定してから、Phase 4+ を planned のまま書く
+- **失敗パターン**:
+  - `SettingsView` / `DashboardView` を親 task のまま P1 扱いし、actual inventory を補正しない
+  - token baseline の議論と component migration を同じ仕様書で進める
+  - `ui-ux-*` だけ読んで `api-ipc-*` / `security-*` / `rag-desktop-state` / `ui-ux-portal-patterns` を落とす
+  - Phase 1-3 gate 前に Phase 4-13 を completed 扱いにする
+- **結果**: `spec_created` UI task でも current inventory と system spec 抽出セットが揃い、後続の実装 lane / regression guard / Phase 12 同期が短手順で再利用できる
+- **適用条件**: Light Mode follow-up、component migration、settings/auth/workspace を跨ぐ UI task、spec-only workflow 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+### [Phase 12] loopback screenshot capture は localhost 不達時に current build static server を自動起動する
+
+- **状況**: screenshot capture script が `http://127.0.0.1:<port>` / `http://localhost:<port>` を前提にしていると、preview / static serve を別ターミナルで起動し忘れた瞬間に `ERR_CONNECTION_REFUSED` で落ちる
+- **アプローチ**:
+  1. capture 実行前に loopback `baseUrl` の readiness probe を行う
+  2. 不達かつ参照先が loopback の場合のみ、current worktree `apps/desktop/out/renderer` をローカル static server で自動配信する
+  3. capture 完了後は自動起動した server を cleanup し、`phase11-capture-metadata.json` / `manual-test-result.md` / Phase 12 レポートに fallback 使用を記録する
+  4. `current build` の asset hash と capture timestamp が同一 worktree 由来であることを確認する
+- **結果**: 「人手 preflight が1つ漏れただけで Phase 11 が全停止する」状態を避けつつ、current build 正本での screenshot 証跡を維持できる
+- **適用条件**: worktree 上の UI 再撮影、loopback baseUrl 固定の capture script、preview source drift を避けたい Phase 11/12 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
+
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する
@@ -3284,6 +3333,20 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: workspace 系 UI、3-pane layout、file watcher を伴う preview、worktree での Phase 11 screenshot 再取得
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-UI-04A-WORKSPACE-LAYOUT
+
+### [Phase 12] docs-only parent workflow は pointer/index/spec/script/mirror を 1 sweep で閉じる
+
+- **状況**: completed-task 移管後の親 workflow では `task-060` 相当の parent pointer doc だけ直しても、completed-task pointer docs、legacy index、`interfaces-*`、capture script、skill mirror に stale path / status が残りやすい。さらに user が screenshot を要求すると docs-heavy task でも evidence 再編が必要になる
+- **アプローチ**:
+  1. `parent pointer -> completed-task pointer docs -> task-000/master index -> task-090/legacy index -> interfaces-* -> capture script -> mirror root` を 1 manifest として固定する
+  2. path/status drift は `node scripts/validate-<parent-sweep>.mjs --json`、mirror drift は `diff -qr .claude/skills/<skill> .agents/skills/<skill>` で同一ターンに確認する
+  3. `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `lessons-learned.md` / `workflow-<feature>.md` を仕様書別 SubAgent に分け、実装内容と苦戦箇所を別仕様書で重複させすぎない
+  4. user が screenshot を要求した docs-heavy task では、current build 再撮影に固執せず same-day child workflow evidence を current workflow に集約し、review board を生成する
+  5. `verify-unassigned-links` の exact counts、`currentViolations=0 / baselineViolations=*`、`spec-update-summary.md` の SubAgent 実行ログを summary / task-workflow / lessons に同値転記する
+- **結果**: parent 導線 drift、mirror drift、representative evidence の散逸を 1 回の Phase 12 再監査で閉じられる
+- **適用条件**: docs-only parent workflow、completed-task 移管後の親台帳是正、representative visual re-audit を伴う task
+- **発見日**: 2026-03-12
+- **関連タスク**: UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001
 
 ### [Phase 12] workspace preview/search は cross-cutting spec を追加同期する（TASK-UI-04C）
 

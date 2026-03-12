@@ -4,6 +4,154 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: Phase 12 完了済み workflow と元 unassigned spec を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移管し、system spec 正本の path を completed 実体へ揃える
+
+### 実施内容
+- workflow 本体を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移動し、元 unassigned spec を `unassigned-task/` 配下へ同梱した
+- `references/workflow-workspace-parent-reference-sweep-guard.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の path と説明を completed workflow 前提へ更新した
+- capture script と quick-reference の evidence path を移管後 root へ合わせ、後続の mirror sync と validator 再実行に備えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認と stale count 再同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: branch 最新状態で Phase 12 準拠、元 unassigned spec の配置、related UT completed 化後の exact count を再確認し、system spec 正本へ実装内容と苦戦箇所を追補する
+
+### 実施内容
+- `references/workflow-workspace-parent-reference-sweep-guard.md` に Phase 12 再確認行、元 unassigned spec の配置確認、`verify-unassigned-links=219 / 219`、stale count 再発防止ルールを追記
+- `references/task-workflow.md` の検証証跡を `219 / 219` へ再同期し、`references/lessons-learned.md` に「related unassigned row を completed 実績へ移した後に exact count が stale になる」苦戦箇所を追加
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を再実行する前提の更新として記録し、current workflow outputs と system spec の数値を揃えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: current build capture の残課題を global `unassigned-task/` へ formalize し、system spec 正本から参照できるようにする
+
+### 実施内容
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/ui-ux-feature-components.md` / `references/workflow-light-theme-contrast-regression-guard.md` に未タスク `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` の導線を追加
+- completed workflow `light-theme-contrast-regression-guard` の `outputs/phase-12/unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
+- remediation task とは別に、`build / harness / baseUrl / native dependency` を 1 コマンドへ束ねる preflight bundle 改善として記録した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: Phase 12 の root evidence と system spec を再突合し、global `unassigned-task/` legacy と skill 改善の反映漏れをなくす
+
+### 実施内容
+- `references/task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task 3件を追記
+- `references/lessons-learned.md` に「workflow baseline 64 と directory baseline 134 の分離」「Task 5 の 3 skill 同値転記」を追加
+- workflow outputs の `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` と system spec 側の記述粒度を揃えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 仕様書集約（再利用導線最適化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: 今回の実装内容と苦戦箇所を 1 つの system spec 正本へ集約し、同種課題の初動を短縮する
+
+### 実施内容
+- `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、実装内容、苦戦箇所、5分解決カード、仕様書別 SubAgent 編成、最適なファイル形成を統合
+- `indexes/resource-map.md` に Light Theme contrast regression guard の逆引き導線を追加し、UI/UX 一覧にも workflow 正本を登録
+- `indexes/quick-reference.md` に検索語、読む順番、実装アンカーを追加し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` へ降りる最短ルートを固定
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: light theme contrast guard の実装・Phase 11 証跡・Phase 12 仕様同期を `.claude` 正本へ反映する
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 visual re-audit と台帳整合を追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: docs-only parent workflow の再監査で、元未タスク spec の `未実施` 残置と related UT 表の stale 状態を解消し、representative visual re-audit の入口も system spec 正本へ固定する
+
+### 実施内容
+- `references/task-workflow.md` / `references/ui-ux-feature-components.md` から同 ID の related unassigned row を退避し、completed 実績セクションを追加
+- `references/workflow-workspace-parent-reference-sweep-guard.md` を新規作成し、drift guard / visual review board / unassigned cleanup / 5分解決カードを集約
+- `references/lessons-learned.md` に docs-heavy task の screenshot 要求を `N/A` にしない教訓を追記し、`indexes/resource-map.md` / `indexes/quick-reference.md` に逆引き入口を追加
+- `SKILL.md` に `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` の直リンクを追加し、workflow 正本の入口を validator warning なしで辿れるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Workspace 親導線 sweep 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: task-060 parent pointer と child workflow 04A/04B/04C の非対称 root に起因する path/status/mirror drift を system spec 正本へ同期する
+
+### 実施内容
+- `references/task-workflow.md` の Workspace 04A 関連未タスク表に `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` を追加し、parent pointer / pointer docs / legacy index / interfaces / capture script / mirror root を一括監査する導線を登録
+- `references/ui-ux-feature-components.md` の Workspace 04A 関連未タスク表へ同 ID を追加し、UI feature spec 側でも Workspace 親導線 drift を参照できるようにした
+- `references/lessons-learned.md` に `Workspace parent reference sweep guard` 節を追加し、task-060 単独修正では導線が閉じないこと、`validate-workspace-parent-reference-sweep.mjs` と `diff -qr` を同一ターンで使う手順を 5分解決カード化した
+- `references/interfaces-llm.md` / `references/interfaces-chat-history.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の stale 04B path を completed workflow 正本へ補正した
+
+### 結果
+- ステータス: success
+
+### 実施内容
+- `references/task-workflow.md` に current workflow の Phase 1-12 実行記録、audit summary、baseline routing、5ステップ解決カードを追加
+- `references/lessons-learned.md` に `esbuild` アーキ差分、build input 漏れ、baseline 誤読、Apple UI/UX review の教訓を追加
+- `references/ui-ux-feature-components.md` に guard workflow の representative feature、実測値、baseline backlog routing を追加
+- `.agents` mirror は既存 drift が広範囲なため、本タスクでは記録のみとして `spec-update-summary.md` に明記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 追補を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
+- 目的: current workflow `docs/30-workflows/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
+
+### 実施内容
+- SubAgent-A（design-system/settings）: `references/workflow-light-theme-global-remediation.md` / `references/ui-ux-design-system.md` に current workflow、inventory correction、verification-only lane を追記
+- SubAgent-B（台帳）: `references/task-workflow.md` に `spec_created` 完了記録、SubAgent分担、検証証跡を追加
+- SubAgent-C（教訓）: `references/lessons-learned.md` に 4苦戦箇所と 5ステップ解決カードを追加
+- SubAgent-D（履歴）: `SKILL.md` に変更履歴 `9.01.84` を追加
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
 
 ### コンテキスト

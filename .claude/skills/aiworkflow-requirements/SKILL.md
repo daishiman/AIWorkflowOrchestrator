@@ -43,6 +43,11 @@ node scripts/search-spec.js "認証" -C 5
 2. 該当ファイルを `Read` ツールで参照
 3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
 
+### 直近の workflow 正本へ入る
+
+- Workspace 親導線再監査: [references/workflow-workspace-parent-reference-sweep-guard.md](references/workflow-workspace-parent-reference-sweep-guard.md)
+- Light Theme contrast guard: [references/workflow-light-theme-contrast-regression-guard.md](references/workflow-light-theme-contrast-regression-guard.md)
+
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
@@ -196,6 +201,9 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.91** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を追補**: `workflow-workspace-parent-reference-sweep-guard.md` / `task-workflow.md` / `lessons-learned.md` に `verify-unassigned-links=219 / 219` の再同期、元 unassigned spec の配置確認、related UT completed 化後の stale count 防止ルールを追加 |
+| **9.01.90** | **2026-03-12** | **workflow 正本の直リンクを SKILL.md に追加**: `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` への入口を明示し、docs-heavy workflow の再監査導線を SKILL レベルでも辿れるようにした |
+| **9.01.89** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: Workspace 親導線 sweep の system spec 同期（`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / `LOGS.md`）と、completed workflow root 正規化・mirror sync 運用を変更履歴へ追加 |
 | **9.01.88** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` に formalize し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `workflow-light-theme-contrast-regression-guard.md` へ導線を追加。completed workflow の Phase 12 outputs も 1 件 formalize 前提へ更新 |
 | **9.01.87** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を同期**: `task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task を追記し、`lessons-learned.md` に workflow baseline 64 と directory baseline 134 の分離、Task 5 の 3 skill 同値転記ルールを追加。Phase 12 root evidence と system spec の再突合手順を固定 |
 | **9.01.86** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本を追加**: `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、今回実装した audit / harness / static serve fallback / selector readiness / workflow sync と苦戦箇所を 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` も同時更新し、同種課題の参照初動を短縮 |

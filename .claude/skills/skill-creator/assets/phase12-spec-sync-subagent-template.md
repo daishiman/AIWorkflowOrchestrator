@@ -56,6 +56,16 @@
 | SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
 | SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
 
+#### 2.1.4 docs-only parent workflow sweep プロファイル
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-P1 | `task-060` 相当の parent pointer doc / completed-task pointer docs / `task-000` / `task-090` | parent-child root、legacy status、pointer inventory の正規化 | 親導線が completed 正本を指し、legacy status が一致 |
+| SubAgent-P2 | `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/interfaces-*.md` | completed root、representative evidence path、5分解決カードを同期 | task / feature / interface の root drift がゼロ |
+| SubAgent-P3 | `references/workflow-<feature>.md` / `references/lessons-learned.md` | docs-only parent workflow の統合正本、苦戦箇所、標準ルールを同期 | 実装内容 + 苦戦箇所 + 再利用手順が記録済み |
+| SubAgent-P4 | `scripts/validate-<parent-sweep>.mjs` / `diff -qr .claude/skills/<skill> .agents/skills/<skill>` | path / status / mirror drift guard を検証 | `path=0 / status=0 / mirror=0` かつ mirror 差分なし |
+| SubAgent-P5 | `outputs/phase-11/*` / `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | representative visual re-audit board、SubAgent 実行ログ、再利用テンプレート化 | evidence board と template update が同一ターン記録済み |
+
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
@@ -132,6 +142,17 @@ UI機能実装時の必須記載（追加）:
 | 検証値、残課題、完了記録 | `task-workflow.md` | E |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | F |
 
+### 3.2 docs-only parent workflow 反映先マトリクス
+
+| 関心ごと | 最適な担当仕様書 | SubAgent |
+| --- | --- | --- |
+| parent pointer / completed-task pointer docs / legacy index | parent workflow doc / `task-workflow.md` | P1 |
+| representative visual review と Workspace lineage surface | `ui-ux-feature-components.md` | P2 |
+| completed root / evidence path | `interfaces-*.md` | P2 |
+| 統合正本、苦戦箇所、5分解決カード | `workflow-<feature>.md` / `lessons-learned.md` | P3 |
+| path / status / mirror drift guard | validator script / `diff -qr` | P4 |
+| evidence board / SubAgent実行ログ / テンプレート改善 | `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | P5 |
+
 ### 3.1 同種課題の5分解決カード同期ルール
 
 - `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3仕様書に同一カードを記録する
@@ -174,7 +195,10 @@ rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --unassigned-dir <unassigned-dir> --target-file <unassigned-file>
+node scripts/validate-<parent-sweep>.mjs --json
+diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
+node apps/desktop/scripts/capture-<docs-heavy-review-board>.mjs
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
@@ -217,6 +241,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点に同一の「5分解決カード」が同期されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
+- [ ] docs-only parent workflow では `SubAgent-P1..P5` または同等の責務分離を使い、pointer / index / spec / script / mirror / evidence board を同一ターンで閉じている
+- [ ] docs-only parent workflow では `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `workflow-<feature>.md` / `lessons-learned.md` / `skill-creator` templates の担当境界が `spec-update-summary.md` に記録されている
+- [ ] user が screenshot を要求した docs-heavy task では、representative visual re-audit board か `N/A` 理由のどちらかを `spec-update-summary.md` と `documentation-changelog.md` に記録している
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
