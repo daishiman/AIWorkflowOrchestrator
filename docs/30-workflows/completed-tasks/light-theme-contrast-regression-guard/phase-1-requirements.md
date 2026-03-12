@@ -56,12 +56,12 @@ light theme の再発条件と guard の責務境界を requirements として�
 
 ## 参照資料
 
-| 参照資料               | パス                                                                      | 説明                            |
-| ---------------------- | ------------------------------------------------------------------------- | ------------------------------- |
-| ユーザー要求           | 会話ログ                                                                  | pain point と作業制約の正本     |
-| token foundation       | `docs/30-workflows/completed-tasks/light-theme-token-foundation/index.md` | 依存元と責務境界                |
-| shared color migration | `docs/30-workflows/light-theme-shared-color-migration/index.md`           | 依存先と representative file 群 |
-| create workflow        | `.claude/skills/task-specification-creator/references/create-workflow.md` | create-mode の工程順序          |
+| 参照資料               | パス                                                                            | 説明                            |
+| ---------------------- | ------------------------------------------------------------------------------- | ------------------------------- |
+| ユーザー要求           | 会話ログ                                                                        | pain point と作業制約の正本     |
+| token foundation       | `docs/30-workflows/completed-tasks/light-theme-token-foundation/index.md`       | 依存元と責務境界                |
+| shared color migration | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` | 依存先と representative file 群 |
+| create workflow        | `.claude/skills/task-specification-creator/references/create-workflow.md`       | create-mode の工程順序          |
 
 ### システム仕様（aiworkflow-requirements）
 

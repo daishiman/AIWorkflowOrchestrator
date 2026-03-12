@@ -53,7 +53,7 @@ screenshot matrix、hardcoded color audit、current/baseline evidence policy、f
 | ----------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------- |
 | Phase 1 成果物                | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-1/` | requirements と screen 選定                  |
 | token foundation design       | `docs/30-workflows/completed-tasks/light-theme-token-foundation/phase-2-design.md`         | token 契約の前提                             |
-| shared color migration design | `docs/30-workflows/light-theme-shared-color-migration/phase-2-design.md`                   | file batch と screen 影響範囲                |
+| shared color migration design | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/phase-2-design.md`   | file batch と screen 影響範囲                |
 | Phase 11/12 guide             | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                | screenshot / current build / evidence の正本 |
 
 ### システム仕様（aiworkflow-requirements）

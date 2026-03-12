@@ -369,9 +369,47 @@ ReactのcreatePortal関数を使用して、メニュー要素をdocument.body�
 
 ---
 
+## AuthView ライトテーマ可読性契約（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / completed）
+
+**完了日**: 2026-03-12  
+**対象コンポーネント**: `AuthView`, `AuthTimeoutFallback`
+
+`AuthView` は gradient 背景上に見出し、helper、CTA を載せるため、dark theme 前提の `text-white` 直書きが残ると light theme で hierarchy が壊れやすい。current task では semantic token と inverse text の境界を整理し、auth surface の情報優先度を light theme でも維持する。
+
+### 画面の主目的
+
+| surface | 主目的 | 今回の扱い |
+| --- | --- | --- |
+| AuthView | sign-in CTA、helper、provider choice を読みやすく提示する | heading / helper / status band / CTA text を semantic token 化 |
+| AuthTimeoutFallback | timeout 時の説明、retry、settings 導線を迷わず選べる | warning panel と inverse CTA の役割分離を明確化 |
+
+### 契約上の要点
+
+| 観点 | 契約 |
+| --- | --- |
+| heading/body contrast | `text-white*` の常用を避け、背景が light に解決しても見出しと説明文が分離される token を使う |
+| CTA inverse text | accent surface 上だけ `--text-inverse` を許可し、通常 panel 上では primary/secondary text を使う |
+| status band | error / timeout / helper band は semantic status color と border を併用して、色だけに依存しない |
+| fallback continuity | `AuthTimeoutFallback` は Settings 公開導線と整合し、warning tone と行動導線が同時に読めること |
+
+### 視覚検証
+
+| テストケース | 証跡 | 判定 |
+| --- | --- | --- |
+| TC-11-06 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-06-auth-surface-light-desktop.png` | PASS |
+
+### 実装時の苦戦箇所と簡潔解決
+
+| 苦戦箇所 | 再発条件 | 簡潔解決 |
+| --- | --- | --- |
+| gradient 背景の AuthView で `text-white` を広く使うと、light theme で見出しと helper の階層が崩れる | inverse text を CTA 以外にも常用する | heading / helper / status band は primary / secondary / status token に分け、accent CTA だけ inverse text を許可する |
+| AuthTimeoutFallback の warning、説明文、retry / settings 導線が同じ濃度だと「読む」と「行動する」が分離しない | timeout panel を単一トーンで描く | warning panel の本文と action surface を切り分け、TC-11-06 で warning tone と CTA の両方を確認する |
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| v1.2.1     | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の再確認追補。`AuthView` / `AuthTimeoutFallback` の苦戦箇所と簡潔解決を追加し、gradient 上の hierarchy と timeout action 分離を再利用ルール化 |
+| v1.2.0     | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。`AuthView` / `AuthTimeoutFallback` の light theme 可読性契約、semantic token 適用方針、Phase 11 証跡 TC-11-06 を追加 |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換（4箇所）         |
 | v1.0.0     | -          | 初版作成                                                                 |

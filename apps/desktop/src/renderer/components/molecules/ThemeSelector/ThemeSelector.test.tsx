@@ -59,6 +59,14 @@ describe("ThemeSelector", () => {
       expect(screen.getByTestId("theme-icon-moon")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-monitor")).toBeInTheDocument();
     });
+
+    it("radiogroupにsemantic border classを適用する", () => {
+      render(<ThemeSelector {...defaultProps} />);
+
+      expect(screen.getByRole("radiogroup")).toHaveClass(
+        "border-[var(--border-primary)]",
+      );
+    });
   });
 
   describe("選択状態", () => {
@@ -89,6 +97,7 @@ describe("ThemeSelector", () => {
       const darkButton = screen.getByRole("radio", { name: /ダーク/i });
       // CSS変数を使用したスタイル
       expect(darkButton).toHaveClass("bg-[var(--status-primary)]");
+      expect(darkButton).toHaveClass("text-[var(--text-inverse)]");
     });
 
     it("未選択のボタンは未選択スタイルを持つ", () => {
@@ -96,6 +105,7 @@ describe("ThemeSelector", () => {
 
       const lightButton = screen.getByRole("radio", { name: /ライト/i });
       expect(lightButton).not.toHaveClass("bg-[var(--status-primary)]");
+      expect(lightButton).toHaveClass("text-[var(--text-secondary)]");
     });
   });
 

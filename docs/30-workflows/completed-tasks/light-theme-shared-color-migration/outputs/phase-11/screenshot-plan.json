@@ -1,0 +1,91 @@
+{
+  "taskId": "TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001",
+  "capturedAt": "2026-03-12T10:19:34+09:00",
+  "command": "pnpm --filter @repo/desktop screenshot:light-theme-shared-color-migration",
+  "canonicalSkillRoot": ".claude/skills",
+  "mirrorSkillRoot": ".agents/skills",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "surface": "settings",
+      "state": "overview",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1440, "height": 1500 },
+      "output": "screenshots/TC-11-01-settings-overview-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "surface": "settings",
+      "state": "avatar-menu",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1440, "height": 1500 },
+      "output": "screenshots/TC-11-02-settings-avatar-menu-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "surface": "settings",
+      "state": "delete-dialog",
+      "theme": "light",
+      "priority": "B",
+      "viewport": { "width": 1440, "height": 1500 },
+      "output": "screenshots/TC-11-03-settings-delete-dialog-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "surface": "settings",
+      "state": "locale-dropdown",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1440, "height": 1500 },
+      "output": "screenshots/TC-11-04-settings-locale-dropdown-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "surface": "settings",
+      "state": "timezone-dropdown",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1440, "height": 1500 },
+      "output": "screenshots/TC-11-05-settings-timezone-dropdown-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "surface": "auth",
+      "state": "representative",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1280, "height": 960 },
+      "output": "screenshots/TC-11-06-auth-surface-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-07",
+      "surface": "workspace-search",
+      "state": "results",
+      "theme": "light",
+      "priority": "A",
+      "viewport": { "width": 1440, "height": 1200 },
+      "output": "screenshots/TC-11-07-workspace-search-results-light-desktop.png"
+    },
+    {
+      "tcId": "TC-11-08",
+      "surface": "dashboard",
+      "state": "reference",
+      "theme": "light",
+      "priority": "B",
+      "viewport": { "width": 1440, "height": 1080 },
+      "output": "screenshots/TC-11-08-dashboard-reference-light-desktop.png"
+    }
+  ],
+  "notApplicable": [
+    {
+      "state": "dark-theme-capture",
+      "reason": "今回の task scope は light theme shared color migration であり、dark/system 変更は含まない"
+    },
+    {
+      "state": "mobile-layout-capture",
+      "reason": "今回の差分は color token migration であり、breakpoint や responsive layout 変更は行っていない"
+    }
+  ]
+}

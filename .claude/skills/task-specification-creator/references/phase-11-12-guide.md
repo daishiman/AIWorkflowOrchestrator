@@ -432,6 +432,8 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] UI/UX変更タスクの場合: `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が PASS であることを Phase 12成果物に記録した
 - [ ] `phase-12-documentation.md` の Task 1-5 / Step 1-A〜3 / 完了条件チェックが、実績に合わせて `[x]` へ同期されている
 - [ ] Step 2 で domain spec を更新した場合、少なくとも 1 つの正本仕様書に `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード`、またはそれと等価な lessons 参照が記録されている
+- [ ] cross-cutting UI タスクで shared component と既存 surface の両方を触った場合、`ui-ux-components.md` / `ui-ux-feature-components.md` に加えて surface-specific 正本（例: `ui-ux-settings.md`, `ui-ux-forms.md`, `ui-ux-search-panel.md`）にも current task の契約と証跡を残した
+- [ ] `outputs/phase-11/screenshot-plan.json`、`outputs/phase-12/spec-update-summary.md`、`outputs/phase-12/documentation-changelog.md`、`outputs/phase-12/skill-feedback-report.md` が user 指定 canonical root を参照し、mirror root を正本扱いしていない
 - [ ] 既存未タスクを参照する場合、リンク先が **未実施なら** `docs/30-workflows/unassigned-task/`、**完了済みなら** `docs/30-workflows/completed-tasks/**/unassigned-task/` になっていることを確認した
 - [ ] `unassigned-task-detection.md` に既存未タスクを流用した理由と、物理配置確認結果（`ls docs/30-workflows/unassigned-task/`）を記録した
 - [ ] PRコメントに `## 📖 実装ガイド（全文）` が存在し、Part 1/Part 2 の両方を含むことを `gh api .../issues/<PR_NUMBER>/comments` で確認した

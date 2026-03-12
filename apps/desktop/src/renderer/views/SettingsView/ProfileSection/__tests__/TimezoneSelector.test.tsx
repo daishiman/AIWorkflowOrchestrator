@@ -46,12 +46,22 @@ describe("TimezoneSelector", () => {
 
     it("タイムゾーンラベルを表示する", () => {
       render(<TimezoneSelector {...defaultProps} />);
-      expect(screen.getByText("タイムゾーン")).toBeInTheDocument();
+      const label = screen.getByText("タイムゾーン");
+      expect(label).toBeInTheDocument();
+      expect(label).toHaveClass("text-[var(--text-secondary)]");
     });
 
     it("現在時刻のプレビューを表示する", () => {
       render(<TimezoneSelector {...defaultProps} />);
       expect(screen.getByText(/現在の時刻:/)).toBeInTheDocument();
+    });
+
+    it("comboboxにsemantic token classを適用する", () => {
+      render(<TimezoneSelector {...defaultProps} />);
+
+      const combobox = screen.getByRole("combobox", { name: /タイムゾーン/i });
+      expect(combobox).toHaveClass("border-[var(--border-primary)]");
+      expect(combobox).toHaveClass("text-[var(--text-primary)]");
     });
   });
 
@@ -99,9 +109,10 @@ describe("TimezoneSelector", () => {
   describe("クイック選択", () => {
     it("「現在地のタイムゾーン」ボタンを表示する", () => {
       render(<TimezoneSelector {...defaultProps} />);
-      expect(
-        screen.getByRole("button", { name: /現在地/i }),
-      ).toBeInTheDocument();
+      const detectButton = screen.getByRole("button", { name: /現在地/i });
+      expect(detectButton).toBeInTheDocument();
+      expect(detectButton).toHaveClass("bg-[var(--bg-tertiary)]");
+      expect(detectButton).toHaveClass("text-[var(--text-secondary)]");
     });
 
     it("「現在地のタイムゾーン」をクリックするとブラウザのタイムゾーンが設定される", async () => {

@@ -57,8 +57,9 @@
 
 - 新規未タスク: {{0件 / N件}}
 - 配置先: `docs/30-workflows/unassigned-task/`
-- 判定根拠: {{currentViolations=0 など}}
-- legacy baseline: {{baselineViolations=0 / N件}}
+- 今回差分の品質可否: {{currentViolations=0 / N}}
+- ディレクトリ全体legacy: {{baselineViolations=0 / N件}}
+- 内訳: {{format=0 / N, naming=0 / N, misplaced=0 / N}}
 - 既存 remediation task: {{なし / docs/30-workflows/unassigned-task/...}}
 
 ## 結論
