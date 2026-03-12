@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
+
+- **Agent**: skill-creator
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「loopback screenshot capture は localhost 不達時に current build static server を自動起動する」を追加
+  - `references/patterns.md` の skill feedback template に、`skill-creator` を含む 3 skill 同値転記ルールを追加
+  - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
+
+---
 ## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)

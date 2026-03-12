@@ -1,0 +1,784 @@
+{
+  "generatedAt": "2026-03-11T15:58:37.338Z",
+  "targets": [
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/AuthView/index.tsx",
+      "surface": "auth",
+      "bucket": "baseline"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+      "surface": "settings",
+      "bucket": "current"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/DashboardView/index.tsx",
+      "surface": "dashboard",
+      "bucket": "current"
+    }
+  ],
+  "missingTargets": [],
+  "screenshotPlan": {
+    "generatedAt": "2026-03-11T15:58:37.344Z",
+    "baseUrl": "http://127.0.0.1:4173",
+    "scenarios": [
+      {
+        "id": "TC-11-01",
+        "surface": "settings",
+        "description": "settings shell + theme selector + secondary text",
+        "theme": "light",
+        "route": "/phase11-light-theme-contrast-guard.html?surface=settings&theme=light",
+        "selector": "[data-testid=\"settings-view\"]",
+        "output": "screenshots/TC-11-01-settings-light.png",
+        "priority": "A"
+      },
+      {
+        "id": "TC-11-02",
+        "surface": "dashboard",
+        "description": "surface hierarchy + border + panel readability",
+        "theme": "light",
+        "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=light",
+        "selector": "[data-testid=\"dashboard-view\"]",
+        "output": "screenshots/TC-11-02-dashboard-light.png",
+        "priority": "A"
+      },
+      {
+        "id": "TC-11-03",
+        "surface": "auth",
+        "description": "glass panel + CTA + helper text readability",
+        "theme": "light",
+        "route": "/phase11-light-theme-contrast-guard.html?surface=auth&theme=light",
+        "selector": "[data-testid=\"auth-view-panel\"]",
+        "output": "screenshots/TC-11-03-auth-light.png",
+        "priority": "A"
+      },
+      {
+        "id": "TC-11-04",
+        "surface": "workspace-search",
+        "description": "panel + input + result row contrast",
+        "theme": "light",
+        "route": "/phase11-light-theme-contrast-guard.html?surface=workspace-search&theme=light",
+        "selector": "[data-testid=\"workspace-search-panel\"]",
+        "output": "screenshots/TC-11-04-workspace-search-light.png",
+        "priority": "A"
+      },
+      {
+        "id": "TC-11-05",
+        "surface": "dashboard",
+        "description": "dark baseline comparison",
+        "theme": "dark",
+        "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=dark",
+        "selector": "[data-testid=\"dashboard-view\"]",
+        "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
+        "priority": "B"
+      }
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "surface": "settings",
+      "selector": "[data-testid=\"settings-view\"]",
+      "output": "screenshots/TC-11-01-settings-light.png",
+      "theme": "light"
+    },
+    {
+      "id": "TC-11-02",
+      "surface": "dashboard",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-02-dashboard-light.png",
+      "theme": "light"
+    },
+    {
+      "id": "TC-11-03",
+      "surface": "auth",
+      "selector": "[data-testid=\"auth-view-panel\"]",
+      "output": "screenshots/TC-11-03-auth-light.png",
+      "theme": "light"
+    },
+    {
+      "id": "TC-11-04",
+      "surface": "workspace-search",
+      "selector": "[data-testid=\"workspace-search-panel\"]",
+      "output": "screenshots/TC-11-04-workspace-search-light.png",
+      "theme": "light"
+    },
+    {
+      "id": "TC-11-05",
+      "surface": "dashboard",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
+      "theme": "dark"
+    }
+  ],
+  "hits": [
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 108,
+      "patternId": "bg-white",
+      "patternLabel": "bg-white*",
+      "token": "bg-white/5",
+      "lineText": "\"bg-white/5 border border-white/10\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 108,
+      "patternId": "border-white",
+      "patternLabel": "border-white*",
+      "token": "border-white/10",
+      "lineText": "\"bg-white/5 border border-white/10\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 143,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "\"bg-[var(--status-primary)] text-white ring-2 ring-[var(--status-primary)]/30\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 146,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white/60",
+      "lineText": "\"bg-transparent text-white/60\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 147,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white/80",
+      "lineText": "!disabled && \"hover:bg-white/10 hover:text-white/80\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx",
+      "surface": "settings",
+      "bucket": "baseline",
+      "lineNumber": 147,
+      "patternId": "bg-white",
+      "patternLabel": "bg-white*",
+      "token": "bg-white/10",
+      "lineText": "!disabled && \"hover:bg-white/10 hover:text-white/80\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/AuthView/index.tsx",
+      "surface": "auth",
+      "bucket": "baseline",
+      "lineNumber": 109,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "<h1 className=\"text-2xl font-bold text-white mb-8\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/AuthView/index.tsx",
+      "surface": "auth",
+      "bucket": "baseline",
+      "lineNumber": 122,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white/40",
+      "lineText": "<Icon name=\"user\" size={48} className=\"mx-auto text-white/40 mb-4\" />"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/AuthView/index.tsx",
+      "surface": "auth",
+      "bucket": "baseline",
+      "lineNumber": 123,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "<h2 className=\"text-lg font-semibold text-white\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/views/AuthView/index.tsx",
+      "surface": "auth",
+      "bucket": "baseline",
+      "lineNumber": 126,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white/60",
+      "lineText": "<p className=\"text-white/60 text-sm mt-1\" data-testid=\"auth-view-helper-text\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 404,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-800",
+      "lineText": "\"workspace-search-panel flex flex-col h-full bg-slate-800\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 410,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700",
+      "lineText": "<div className=\"flex items-center gap-2 px-4 h-12 border-b border-slate-700\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 419,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": "\"text-slate-400 hover:bg-slate-700\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 419,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "\"text-slate-400 hover:bg-slate-700\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 431,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "className=\"text-slate-400 flex-shrink-0\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 447,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-900",
+      "lineText": "\"bg-slate-900 rounded-md\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 448,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "\"text-sm text-white placeholder-slate-400\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 451,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-600",
+      "lineText": "error ? \"border-red-500\" : \"border-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 468,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "? \"bg-blue-500 text-white\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 469,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 469,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-600",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 469,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 485,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "? \"bg-blue-500 text-white\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 486,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 486,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-600",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 486,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 502,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "? \"bg-blue-500 text-white\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 503,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 503,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-600",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 503,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": ": \"bg-slate-700 text-slate-400 hover:bg-slate-600\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 518,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "hasResults ? \"text-slate-400\" : \"text-slate-500\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 518,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-500",
+      "lineText": "hasResults ? \"text-slate-400\" : \"text-slate-500\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 534,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": "\"text-slate-400 hover:bg-slate-700\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 534,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "\"text-slate-400 hover:bg-slate-700\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 544,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700",
+      "lineText": "<div className=\"flex items-center gap-2 px-4 h-10 border-b border-slate-700\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 552,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "className=\"text-slate-400 flex-shrink-0\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 568,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-900",
+      "lineText": "\"bg-slate-900 rounded-md\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 569,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "\"text-sm text-white placeholder-slate-400\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 570,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-600",
+      "lineText": "\"border border-slate-600 transition-colors duration-150\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 587,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "? \"bg-blue-600 text-white hover:bg-blue-500\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 588,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-800",
+      "lineText": ": \"bg-slate-800 text-slate-600 cursor-not-allowed\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 588,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-600",
+      "lineText": ": \"bg-slate-800 text-slate-600 cursor-not-allowed\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 604,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-800/50",
+      "lineText": "<div className=\"px-4 py-2 border-b border-slate-700 bg-slate-800/50\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 604,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700",
+      "lineText": "<div className=\"px-4 py-2 border-b border-slate-700 bg-slate-800/50\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 605,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "<label className=\"block text-xs text-slate-400 mb-1\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 615,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-900",
+      "lineText": "\"bg-slate-900 rounded-md\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 616,
+      "patternId": "text-white",
+      "patternLabel": "text-white*",
+      "token": "text-white",
+      "lineText": "\"text-sm text-white placeholder-slate-400\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 617,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-600",
+      "lineText": "\"border border-slate-600 transition-colors duration-150\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 655,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-500",
+      "lineText": "<div className=\"p-4 text-center text-slate-500 text-sm\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 663,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-500",
+      "lineText": "className=\"p-4 text-center text-slate-500 text-sm\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 674,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-800/50",
+      "lineText": "<div className=\"px-4 py-2 text-xs text-slate-400 border-b border-slate-700 bg-slate-800/50\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 674,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "<div className=\"px-4 py-2 text-xs text-slate-400 border-b border-slate-700 bg-slate-800/50\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 674,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700",
+      "lineText": "<div className=\"px-4 py-2 text-xs text-slate-400 border-b border-slate-700 bg-slate-800/50\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 686,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700/30",
+      "lineText": "<div className=\"file-header px-4 py-2 bg-slate-700/30 border-b border-slate-700 flex items-center gap-2\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 686,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700",
+      "lineText": "<div className=\"file-header px-4 py-2 bg-slate-700/30 border-b border-slate-700 flex items-center gap-2\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 687,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-400",
+      "lineText": "<Icon name=\"file-text\" size={14} className=\"text-slate-400\" />"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 689,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-300",
+      "lineText": "className=\"flex-1 text-sm font-medium text-slate-300 truncate\""
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 694,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700",
+      "lineText": "<span className=\"text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 694,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-500",
+      "lineText": "<span className=\"text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 707,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700/50",
+      "lineText": "\"hover:bg-slate-700/50 transition-colors\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 708,
+      "patternId": "border-slate",
+      "patternLabel": "border-slate-*",
+      "token": "border-slate-700/50",
+      "lineText": "\"border-b border-slate-700/50 last:border-b-0\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 709,
+      "patternId": "bg-slate",
+      "patternLabel": "bg-slate-*",
+      "token": "bg-slate-700/50",
+      "lineText": "\"focus:outline-none focus:bg-slate-700/50\","
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 714,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-500",
+      "lineText": "<span className=\"text-xs text-slate-500 min-w-[3rem] text-right tabular-nums\">"
+    },
+    {
+      "relativePath": "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx",
+      "surface": "workspace-search",
+      "bucket": "baseline",
+      "lineNumber": 717,
+      "patternId": "text-slate",
+      "patternLabel": "text-slate-*",
+      "token": "text-slate-300",
+      "lineText": "<span className=\"text-sm font-mono text-slate-300 truncate\">"
+    }
+  ],
+  "summary": {
+    "totalViolations": 64,
+    "currentViolations": 0,
+    "baselineViolations": 64,
+    "byFile": {
+      "apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx": 6,
+      "apps/desktop/src/renderer/views/AuthView/index.tsx": 4,
+      "apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx": 54
+    },
+    "byPattern": {
+      "bg-white": 2,
+      "border-white": 1,
+      "text-white": 14,
+      "bg-slate": 19,
+      "border-slate": 9,
+      "text-slate": 19
+    }
+  }
+}

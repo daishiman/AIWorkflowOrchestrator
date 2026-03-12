@@ -135,7 +135,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 | --- | --- | --- |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する（`spec_created`） | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する（Phase 1-12 完了 / Phase 13 未実施） | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 ---
 
@@ -153,6 +153,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-12 | 1.1.2 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の completed workflow 同期を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` へ切り替え、guard と remediation の責務分離を正本へ固定 |
 | 2026-03-12 | 1.1.1 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。shared color migration 仕様作成で露出した current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を、light-theme follow-up の関連改善タスクとして formalize |
 | 2026-03-12 | 1.1.0 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を追加。current workflow、inventory correction、verification-only lane、必要 system spec 抽出セット、Phase 1-3 gate を workflow-light-theme-global-remediation 正本へ同期 |
 | 2026-03-11 | 1.0.0 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation を横断ワークフローとして新規作成 |

@@ -26,6 +26,8 @@
     "screenshot:skill-import-idempotency-guard": "node scripts/capture-skill-import-idempotency-guard-screenshots.mjs",
     "screenshot:organisms": "node scripts/capture-organisms-components-screenshots.mjs",
     "screenshot:dashboard-home": "node scripts/capture-dashboard-home-phase11.mjs",
+    "screenshot:light-theme-contrast-guard": "node scripts/capture-light-theme-contrast-regression-guard-phase11.mjs",
+    "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
