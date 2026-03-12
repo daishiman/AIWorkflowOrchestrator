@@ -351,7 +351,7 @@ const variantStyles: Record<Variant, string> = {
 |----------|----------|------------|--------|------|
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | `spec_created` | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 完了（Phase 1-12 完了 / Phase 13 未実施） | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
@@ -361,6 +361,7 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.5.10 | 2026-03-12 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 1-12 完了を反映。関連タスクテーブルの status を `完了（Phase 1-12 完了 / Phase 13 未実施）` へ更新し、current workflow 正本 `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` を参照先に切り替えた |
 | 1.5.9 | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を反映。current workflow、actual target inventory、verification-only lane、settings/search/auth/security まで含む必要 cross-cutting spec を design system 正本へ同期 |
 | 1.5.8 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` トークンを追加し、480px幅 / 12px radius / 0 8px 32px rgba(0,0,0,0.12) / mobile scrim / filename-path hierarchy を固定 |
 | 1.5.7 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。white background / black text 基準、renderer-wide compatibility bridge、primitive token 移行、shard 11 再現、screenshot 再取得を design system 正本へ同期した |

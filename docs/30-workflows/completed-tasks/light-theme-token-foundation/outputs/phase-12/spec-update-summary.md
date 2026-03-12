@@ -13,9 +13,9 @@
 ## Step 1-C（関連タスク更新）
 
 - 既存関連タスク `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` との関係を整理
-- 本タスクで未解決の component 側課題を、`docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に正式起票
-  - `task-fix-light-theme-shared-color-migration-001.md`
-  - `task-imp-light-theme-contrast-regression-guard-001.md`
+- 本タスクで未解決の component 側課題を formalize し、現在の正本へ同期
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md`
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`（実装完了後に completed archive へ移管）
 
 ## Step 2（条件付きシステム仕様更新）
 

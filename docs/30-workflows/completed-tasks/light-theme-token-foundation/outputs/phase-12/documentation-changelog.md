@@ -48,5 +48,5 @@
 - `verify-unassigned-links.js`
 - `audit-unassigned-tasks.js --json --diff-from HEAD`
 - `audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md`
-- `audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`
+- `audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`
 - `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator`

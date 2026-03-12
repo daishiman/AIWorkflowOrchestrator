@@ -11,7 +11,10 @@ beforeAll(() =>
       // ローカルHTTPサーバー実装を検証するテストでは、MSWを経由せず実サーバーへ到達させる
       if (
         url.hostname === "127.0.0.1" &&
-        (url.pathname === "/auth/callback" || url.pathname === "/")
+        (url.pathname === "/auth/callback" ||
+          url.pathname === "/" ||
+          url.pathname.startsWith("/phase11-") ||
+          url.pathname.startsWith("/assets/"))
       ) {
         return;
       }

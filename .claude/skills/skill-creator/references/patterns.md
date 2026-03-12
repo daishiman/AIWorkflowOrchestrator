@@ -3018,6 +3018,19 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-12
 - **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
 
+### [Phase 12] loopback screenshot capture は localhost 不達時に current build static server を自動起動する
+
+- **状況**: screenshot capture script が `http://127.0.0.1:<port>` / `http://localhost:<port>` を前提にしていると、preview / static serve を別ターミナルで起動し忘れた瞬間に `ERR_CONNECTION_REFUSED` で落ちる
+- **アプローチ**:
+  1. capture 実行前に loopback `baseUrl` の readiness probe を行う
+  2. 不達かつ参照先が loopback の場合のみ、current worktree `apps/desktop/out/renderer` をローカル static server で自動配信する
+  3. capture 完了後は自動起動した server を cleanup し、`phase11-capture-metadata.json` / `manual-test-result.md` / Phase 12 レポートに fallback 使用を記録する
+  4. `current build` の asset hash と capture timestamp が同一 worktree 由来であることを確認する
+- **結果**: 「人手 preflight が1つ漏れただけで Phase 11 が全停止する」状態を避けつつ、current build 正本での screenshot 証跡を維持できる
+- **適用条件**: worktree 上の UI 再撮影、loopback baseUrl 固定の capture script、preview source drift を避けたい Phase 11/12 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
+
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する

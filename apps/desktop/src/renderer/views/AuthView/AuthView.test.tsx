@@ -34,6 +34,8 @@ describe("AuthView", () => {
     it("3つのOAuthプロバイダーボタンを表示する", () => {
       render(<AuthView />);
 
+      expect(screen.getByTestId("auth-view")).toBeInTheDocument();
+      expect(screen.getByTestId("auth-view-panel")).toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: /google/i }),
       ).toBeInTheDocument();
@@ -55,9 +57,7 @@ describe("AuthView", () => {
       render(<AuthView />);
 
       expect(screen.getByText("アカウント登録・ログイン")).toBeInTheDocument();
-      expect(
-        screen.getByText(/アカウントを連携してデータを同期/i),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("auth-view-helper-text")).toBeInTheDocument();
     });
 
     it("ボタンテキストが「〇〇で続ける」になっている", () => {

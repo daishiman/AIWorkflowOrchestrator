@@ -1,0 +1,56 @@
+{
+  "generatedAt": "2026-03-11T22:27:27.640Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "surface": "settings",
+      "description": "settings shell + theme selector + secondary text",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=settings&theme=light",
+      "selector": "[data-testid=\"settings-view\"]",
+      "output": "screenshots/TC-11-01-settings-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "surface": "dashboard",
+      "description": "surface hierarchy + border + panel readability",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=light",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-02-dashboard-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "surface": "auth",
+      "description": "glass panel + CTA + helper text readability",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=auth&theme=light",
+      "selector": "[data-testid=\"auth-view-panel\"]",
+      "output": "screenshots/TC-11-03-auth-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "surface": "workspace-search",
+      "description": "panel + input + result row contrast",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=workspace-search&theme=light",
+      "selector": "[data-testid=\"workspace-search-panel\"]",
+      "output": "screenshots/TC-11-04-workspace-search-light.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "surface": "dashboard",
+      "description": "dark baseline comparison",
+      "theme": "dark",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=dark",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
+      "priority": "B"
+    }
+  ]
+}

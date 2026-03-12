@@ -98,6 +98,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
         "h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-primary)]",
         className,
       )}
+      data-testid="auth-view"
     >
       {/* ロゴ */}
       <div className="mb-6">
@@ -110,14 +111,22 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
       </h1>
 
       {/* ログインカード */}
-      <GlassPanel radius="lg" blur="md" className="p-8 w-full max-w-sm">
+      <GlassPanel
+        radius="lg"
+        blur="md"
+        className="p-8 w-full max-w-sm"
+        data-testid="auth-view-panel"
+      >
         {/* タイトル */}
         <div className="text-center mb-6">
           <Icon name="user" size={48} className="mx-auto text-white/40 mb-4" />
           <h2 className="text-lg font-semibold text-white">
             アカウント登録・ログイン
           </h2>
-          <p className="text-white/60 text-sm mt-1">
+          <p
+            className="text-white/60 text-sm mt-1"
+            data-testid="auth-view-helper-text"
+          >
             アカウントを連携してデータを同期しましょう
           </p>
         </div>

@@ -1,0 +1,96 @@
+{
+  "generatedAt": "2026-03-11T22:27:29.269Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "assetEntries": [
+    "globals-DHvT_oEb.css",
+    "globals-FyoUcilx.js",
+    "index-D3KPKqJb.js",
+    "phase11-light-theme-contrast-guard-DMr9deGI.js"
+  ],
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "surface": "settings",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=settings&theme=light",
+      "selector": "[data-testid=\"settings-view\"]",
+      "output": "screenshots/TC-11-01-settings-light.png",
+      "capturedAt": "2026-03-11T22:27:30.858Z",
+      "size": 195608,
+      "assetEntries": [
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+      ]
+    },
+    {
+      "id": "TC-11-02",
+      "surface": "dashboard",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=light",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-02-dashboard-light.png",
+      "capturedAt": "2026-03-11T22:27:32.262Z",
+      "size": 244443,
+      "assetEntries": [
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+      ]
+    },
+    {
+      "id": "TC-11-03",
+      "surface": "auth",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=auth&theme=light",
+      "selector": "[data-testid=\"auth-view-panel\"]",
+      "output": "screenshots/TC-11-03-auth-light.png",
+      "capturedAt": "2026-03-11T22:27:33.502Z",
+      "size": 18686,
+      "assetEntries": [
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+      ]
+    },
+    {
+      "id": "TC-11-04",
+      "surface": "workspace-search",
+      "theme": "light",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=workspace-search&theme=light",
+      "selector": "[data-testid=\"workspace-search-panel\"]",
+      "output": "screenshots/TC-11-04-workspace-search-light.png",
+      "capturedAt": "2026-03-11T22:27:34.771Z",
+      "size": 26603,
+      "assetEntries": [
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+      ]
+    },
+    {
+      "id": "TC-11-05",
+      "surface": "dashboard",
+      "theme": "dark",
+      "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=dark",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
+      "capturedAt": "2026-03-11T22:27:36.197Z",
+      "size": 250170,
+      "assetEntries": [
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+      ]
+    }
+  ]
+}

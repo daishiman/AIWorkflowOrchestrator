@@ -21,6 +21,7 @@ describe("ThemeSelector", () => {
     it("4つのテーマオプションボタンを表示する", () => {
       render(<ThemeSelector {...defaultProps} />);
 
+      expect(screen.getByTestId("theme-selector")).toBeInTheDocument();
       expect(
         screen.getByRole("radio", { name: /Kanagawa/i }),
       ).toBeInTheDocument();
@@ -50,6 +51,9 @@ describe("ThemeSelector", () => {
       render(<ThemeSelector {...defaultProps} />);
 
       // アイコンはaria-hiddenなので、テストID or 親要素から確認
+      expect(
+        screen.getByTestId("theme-option-kanagawa-dragon"),
+      ).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-sparkles")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-sun")).toBeInTheDocument();
       expect(screen.getByTestId("theme-icon-moon")).toBeInTheDocument();
