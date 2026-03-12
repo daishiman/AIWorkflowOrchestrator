@@ -145,7 +145,6 @@ curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
 - build失敗または疎通失敗時は再撮影を継続しない。
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
 - 複数 worktree で Vite preview / dev server の参照元が揺れる場合は、`pnpm build` 後の current worktree `out/renderer` を static server（例: `python3 -m http.server 4173 --directory apps/desktop/out/renderer`）で配信し、asset hash と `phase11-capture-metadata.json` の時刻を current build と同期する。
-- capture script が loopback URL（`127.0.0.1` / `localhost`）を前提にする場合は、疎通失敗時に current worktree `out/renderer` を自動配信する fallback を許可する。fallback を使った場合は `manual-test-result.md` / `phase11-capture-metadata.json` / Phase 12 レポートに「auto static serve を使った」ことを明記し、cleanup を必ず実行する。
 
 #### D. 再撮影後 cleanup（必須）
 
@@ -375,8 +374,6 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 **出力**: `outputs/phase-12/skill-feedback-report.md`
 
-Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-creator` だが、ユーザーがスキル改善を明示した場合、または Task 5 で再利用パターンを抽出して `skill-creator` 自体を更新した場合は、`skill-creator` も同じレポートへ含める。
-
 ---
 
 ## Phase 12 完了条件チェックリスト
@@ -387,13 +384,10 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] 【Step 1-A】システム仕様書に「完了タスク」セクションを追加した
 - [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
-- [ ] 【Step 1-A】`skill-creator` を改善した場合、`.claude/skills/skill-creator/LOGS.md` も更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
-- [ ] 【Step 1-A】`skill-creator` を改善した場合、`.claude/skills/skill-creator/SKILL.md` の変更履歴も更新した
 - [ ] 【Step 1-A】変更履歴へ追記した Version が既存行と重複していないことを確認した（同日追補時は最大値 + 0.0.1 で採番）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
 - [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`spec-update-summary.md` に「要監視 / 要対応」を記録した
-- [ ] Task 5 で `skill-creator` を更新した場合、その変更内容を `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` に同値で記録した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した

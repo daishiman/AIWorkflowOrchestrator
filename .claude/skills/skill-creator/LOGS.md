@@ -26,18 +26,6 @@
   - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
 
 ---
-## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW の docs-only parent workflow 知見を skill-creator へ反映
-
-- **Agent**: skill-creator
-- **Phase**: cross-skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「completed-task 移管後の docs-only parent 再監査は sibling spec / pointer / capture script まで sweep する」と「representative screenshot 3件の昇格条件」を追加
-  - `assets/phase12-system-spec-retrospective-template.md` に stale-path sweep、current task 固有の未タスク grep、docs-only parent の representative screenshot rule、`diff -qr` mirror sync を追記
-  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-P1..P5` を追加し、completed migration sweep と docs-only parent visual re-audit を関心ごと分離で再利用できるようにした
-  - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow 対応範囲を追記し、Phase 12 参照初動を短縮した
-
----
 ## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
 
 - **Agent**: skill-creator
