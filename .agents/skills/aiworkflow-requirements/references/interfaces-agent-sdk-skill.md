@@ -1457,6 +1457,37 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
 ---
 
+### Skill Lifecycle Surface（TASK-SKILL-LIFECYCLE-03）
+
+`SkillCreatorService` をそのまま表向きの create UI に昇格させず、`SkillLifecyclePanel` から見た内部オーケストレーション API として使う。
+
+| 項目 | 契約 |
+| --- | --- |
+| 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
+| `skillCreatorAPI` の役割 | `detectMode` / `improveSkill` を使う planner / improver 補助 API |
+| create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
+| execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
+| 詳細改善 | `SkillAnalysisView` / store action を再利用 |
+
+#### renderer 契約
+
+| surface | 使い方 | 理由 |
+| --- | --- | --- |
+| `window.electronAPI.skillCreator.detectMode(request)` | request 文の方針判定のみ | mode を UI に増やさず internal plan に閉じるため |
+| `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
+| `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
+| `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
+
+#### internal orchestration 役割
+
+| role | 実装 | UI 露出ルール |
+| --- | --- | --- |
+| Planner | `detectMode` | mode label と説明文のみ。新ボタンは増やさない |
+| Executor | `executeSkill` | 実行ボタン 1 つに集約する |
+| Improver | `improveSkill` + `SkillAnalysisView` | 事前提案と詳細適用を段階表示する |
+
+---
+
 ### ScriptExecutor API
 
 Script First原則に基づき、決定論的処理をスクリプトに委譲する。

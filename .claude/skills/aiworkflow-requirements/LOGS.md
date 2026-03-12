@@ -4,6 +4,108 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 追補を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
+- 目的: current workflow `docs/30-workflows/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
+
+### 実施内容
+- SubAgent-A（design-system/settings）: `references/workflow-light-theme-global-remediation.md` / `references/ui-ux-design-system.md` に current workflow、inventory correction、verification-only lane を追記
+- SubAgent-B（台帳）: `references/task-workflow.md` に `spec_created` 完了記録、SubAgent分担、検証証跡を追加
+- SubAgent-C（教訓）: `references/lessons-learned.md` に 4苦戦箇所と 5ステップ解決カードを追加
+- SubAgent-D（履歴）: `SKILL.md` に変更履歴 `9.01.84` を追加
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04C-WORKSPACE-PREVIEW`
+- 目的: 04C の苦戦箇所 3件を `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` として formalize し、feature spec だけでなく search / pattern / error handling まで同一 ID で辿れるようにする
+
+### 実施内容
+- SubAgent-A（台帳）: `references/task-workflow.md` の 04C 完了節と残課題テーブルへ `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を登録
+- SubAgent-B（UI/search）: `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` に関連未タスク導線を追加
+- SubAgent-C（教訓/pattern/error）: `references/lessons-learned.md` / `references/architecture-implementation-patterns.md` / `references/error-handling.md` に同一 ID を同期
+- SubAgent-D（workflow outputs）: 04C workflow の `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を 0件→1件へ再整合
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04C-WORKSPACE-PREVIEW`
+- 目的: 04C の苦戦箇所 3件を `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` として formalize し、feature spec だけでなく search / pattern / error handling まで同一 ID で辿れるようにする
+
+### 実施内容
+- SubAgent-A（台帳）: `references/task-workflow.md` の 04C 完了節と残課題テーブルへ `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を登録
+- SubAgent-B（UI/search）: `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` に関連未タスク導線を追加
+- SubAgent-C（教訓/pattern/error）: `references/lessons-learned.md` / `references/architecture-implementation-patterns.md` / `references/error-handling.md` に同一 ID を同期
+- SubAgent-D（workflow outputs）: 04C workflow の `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を 0件→1件へ再整合
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-04C の cross-cutting system spec 入口を補完
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04C-WORKSPACE-PREVIEW`
+- 目的: 04C の実装内容と苦戦箇所を feature 正本だけでなく、search/design/error/pattern の横断入口から辿れるようにする
+
+### 実施内容
+- `references/ui-ux-search-panel.md` に `Workspace QuickFileSearch dialog` を追加し、`Cmd/Ctrl+P`、top 10 results、focus trap、`score=0` 除外を記録
+- `references/ui-ux-design-system.md` に 04C dialog token（480px / 12px / 0 8px 32px rgba(0,0,0,0.12)）を追加
+- `references/architecture-implementation-patterns.md` に Renderer local preview resilience パターンを追加し、timeout+retry / fuzzy no-match / parse fallback を標準化
+- `references/error-handling.md` に timeout/read failure/parse failure/renderer crash/no-match の分類表を追加
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-04C-WORKSPACE-PREVIEW を system spec 正本へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04C-WORKSPACE-PREVIEW`
+- 目的: Workspace 04C の preview / quick search 実装、検証値、苦戦箇所を `.claude` 正本へ同期し、Phase 12 の cross-cutting drift を防ぐ
+
+### 実施内容
+- `references/ui-ux-feature-components.md` に `Workspace Preview / Quick Search` 節を追加し、`PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 52 tests PASS を記録
+- `references/ui-ux-components.md` / `references/ui-ux-navigation.md` / `references/arch-state-management.md` に 04C の UI語彙、shortcut、local state 境界を追記
+- `references/api-ipc-system.md` / `references/security-electron-ipc.md` に `file:read` 再利用、renderer timeout、HTML sandbox + CSP、watch cleanup 維持を追記
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、苦戦箇所、5分解決カードを同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 仕様同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-04B-WORKSPACE-CHAT`
+- 目的: Workspace Chat Panel 実装（UI / state / IPC / screenshot / 教訓）を system spec 正本へ同期し、Step 1-A 必須の LOGS/SKILL 更新を完了する
+
+### 実施内容
+- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/interfaces-llm.md` / `references/interfaces-chat-history.md` / `references/security-electron-ipc.md` に 04B 実装内容を同期
+- `references/task-workflow.md` に TASK-UI-04B 完了台帳と変更履歴 `1.67.51` を追記
+- `references/lessons-learned.md` に stream race・harness mock・implementation-guide validator の教訓を追加
+- `scripts/generate-index.js` 実行対象として topic-map / keywords 再生成を実施
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation 仕様同期
 
 ### コンテキスト

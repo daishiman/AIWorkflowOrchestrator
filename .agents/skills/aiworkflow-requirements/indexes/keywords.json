@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T09:50:19.384Z",
-  "totalKeywords": 1566,
+  "generated": "2026-03-11T22:36:59.515Z",
+  "totalKeywords": 1595,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -35,7 +35,8 @@
       "spec-splitting-guidelines.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
-      "ui-ux-settings.md"
+      "ui-ux-settings.md",
+      "workflow-apikey-chat-tool-integration-alignment.md"
     ],
     "仕様": [
       "api-chat-history.md",
@@ -135,6 +136,8 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
@@ -217,6 +220,7 @@
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
       "lessons-learned.md",
+      "llm-ipc-types.md",
       "llm-streaming.md",
       "llm-workspace-chat-edit.md",
       "logging-migration-guide.md",
@@ -265,6 +269,8 @@
       "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
@@ -392,6 +398,8 @@
       "ui-ux-search-panel.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
@@ -615,7 +623,9 @@
       "api-internal-embedding.md"
     ],
     "Search": [
-      "api-internal-search.md"
+      "api-internal-search.md",
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
     ],
     "Service": [
       "api-internal-search.md"
@@ -675,6 +685,7 @@
       "api-ipc-agent.md",
       "arch-state-management.md",
       "llm-workspace-chat-edit.md",
+      "ui-ux-feature-components.md",
       "ui-ux-llm-selector.md"
     ],
     "Edit": [
@@ -724,11 +735,13 @@
       "api-ipc-agent.md",
       "arch-state-management.md",
       "arch-ui-components.md",
+      "claude-code-agents-workflow.md",
       "claude-code-skills-overview.md",
       "claude-code-skills-process.md",
       "claude-code-skills-structure.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill.md",
+      "security-skill-execution.md",
       "security-skill-ipc.md",
       "ui-ux-feature-components.md",
       "workflow-skill-identifier-branded-type-resolution.md"
@@ -766,6 +779,7 @@
       "arch-ui-components.md",
       "architecture-auth-security.md",
       "architecture-implementation-patterns.md",
+      "claude-code-agents-workflow.md",
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-integration.md",
@@ -774,6 +788,7 @@
       "lessons-learned.md",
       "quality-e2e-testing.md",
       "security-electron-ipc.md",
+      "security-skill-execution.md",
       "security-skill-ipc.md",
       "task-workflow.md",
       "technology-devops.md",
@@ -783,7 +798,8 @@
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-panels.md",
-      "ui-ux-search-panel.md"
+      "ui-ux-search-panel.md",
+      "ui-ux-settings.md"
     ],
     "FIX": [
       "api-ipc-agent.md",
@@ -794,16 +810,19 @@
       "lessons-learned.md",
       "security-electron-ipc.md",
       "task-workflow.md",
-      "testing-component-patterns.md"
+      "testing-component-patterns.md",
+      "ui-ux-settings.md"
     ],
     "SKILL": [
       "api-ipc-agent.md",
       "architecture-implementation-patterns.md",
+      "claude-code-agents-workflow.md",
       "claude-code-skills-structure.md",
       "error-handling.md",
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "security-skill-execution.md"
     ],
     "AUTH": [
       "api-ipc-agent.md",
@@ -1192,6 +1211,43 @@
       "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
+    "Preview": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
+    ],
+    "Quick": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md"
+    ],
+    "PREVIEW": [
+      "arch-state-management.md",
+      "lessons-learned.md",
+      "ui-ux-feature-components.md"
+    ],
+    "Panel": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-settings.md"
+    ],
+    "統合": [
+      "arch-state-management.md",
+      "architecture-file-conversion.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill.md",
+      "lessons-learned.md",
+      "task-workflow.md",
+      "technology-backend.md",
+      "testing-playwright-e2e.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-feature-skill-stream.md"
+    ],
+    "CHAT": [
+      "arch-state-management.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-settings.md"
+    ],
     "Notification": [
       "arch-state-management.md",
       "lessons-learned.md",
@@ -1353,20 +1409,6 @@
       "lessons-learned.md",
       "ui-ux-feature-components.md"
     ],
-    "統合": [
-      "arch-state-management.md",
-      "architecture-file-conversion.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill.md",
-      "lessons-learned.md",
-      "task-workflow.md",
-      "technology-backend.md",
-      "testing-playwright-e2e.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-feature-skill-stream.md"
-    ],
     "selector": [
       "arch-state-management.md",
       "architecture-implementation-patterns.md"
@@ -1395,7 +1437,8 @@
     "SETTINGS": [
       "arch-state-management.md",
       "lessons-learned.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "PERSIST": [
       "arch-state-management.md",
@@ -2060,6 +2103,24 @@
     ],
     "エージェント間協調": [
       "claude-code-agents-workflow.md"
+    ],
+    "Lifecycle": [
+      "claude-code-agents-workflow.md",
+      "security-skill-execution.md"
+    ],
+    "向け": [
+      "claude-code-agents-workflow.md",
+      "ui-ux-design-principles.md"
+    ],
+    "internal": [
+      "claude-code-agents-workflow.md"
+    ],
+    "orchestration": [
+      "claude-code-agents-workflow.md"
+    ],
+    "LIFECYCLE": [
+      "claude-code-agents-workflow.md",
+      "security-skill-execution.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -3417,7 +3478,8 @@
       "lessons-learned.md"
     ],
     "INTEGRATION": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "REGRESSION": [
       "lessons-learned.md"
@@ -4148,7 +4210,8 @@
       "lessons-learned.md"
     ],
     "APIKEY": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "persist": [
       "lessons-learned.md"
@@ -4178,15 +4241,18 @@
       "lessons-learned.md"
     ],
     "AUTHGUARD": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "TIMEOUT": [
       "lessons-learned.md",
       "security-electron-ipc.md",
-      "task-workflow.md"
+      "task-workflow.md",
+      "ui-ux-settings.md"
     ],
     "BYPASS": [
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "ui-ux-settings.md"
     ],
     "実装教訓": [
       "lessons-learned.md"
@@ -4893,6 +4959,9 @@
     "リファレンス": [
       "security-skill-execution.md"
     ],
+    "実行境界": [
+      "security-skill-execution.md"
+    ],
     "Permission": [
       "security-skill-execution.md",
       "security-skill-ipc.md",
@@ -5015,6 +5084,8 @@
     "フェーズ構造": [
       "task-workflow-phases.md",
       "task-workflow.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
@@ -5551,9 +5622,6 @@
     "HIG": [
       "ui-ux-design-principles.md"
     ],
-    "向け": [
-      "ui-ux-design-principles.md"
-    ],
     "デザイン法則": [
       "ui-ux-design-principles.md"
     ],
@@ -5869,7 +5937,22 @@
     "権限要求履歴パネル": [
       "ui-ux-settings.md"
     ],
-    "Panel": [
+    "画面の": [
+      "ui-ux-settings.md"
+    ],
+    "AuthGuard": [
+      "ui-ux-settings.md"
+    ],
+    "非依存アクセス": [
+      "ui-ux-settings.md"
+    ],
+    "AuthKeySection": [
+      "ui-ux-settings.md"
+    ],
+    "表示契約": [
+      "ui-ux-settings.md"
+    ],
+    "TOOL": [
       "ui-ux-settings.md"
     ],
     "ApiKeysSection": [
@@ -5910,6 +5993,57 @@
     ],
     "デザイントークン": [
       "ui-ux-system-prompt.md"
+    ],
+    "キー連動とチャット実行経路整合ワークフロー仕様": [
+      "workflow-apikey-chat-tool-integration-alignment.md"
+    ],
+    "今回実装内容": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "苦戦箇所と再発防止": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "同種課題の": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "分解決カード": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "最適なファイル形成": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "責務マトリクス": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "検証コマンド": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "最小セット": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "関連改善タスク": [
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "ライトモード全画面": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "white": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "black": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "再是正ワークフロー仕様": [
+      "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

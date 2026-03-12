@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
+| v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
 | v3.14.4    | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: `App.tsx` が `normalizeSkillLifecycleView()` で legacy `skill-center` を canonical `skillCenter` に正規化してから view 分岐する契約を追加し、Skill Center を lifecycle 一次導線入口として扱う ownership note を追記 |
 | v3.14.3    | 2026-03-10 | TASK-UI-04A-WORKSPACE-LAYOUT を反映: `WorkspaceView` は新規 slice を作らず `workspaceSlice` / `fileSelectionSlice` を再利用する契約、`workspace-layout-mode` / `workspace-panel-sizes` persist key、`useFileWatcher` の module scope guard、preview panel reverse resize と light theme contrast 是正を追加 |
@@ -150,6 +152,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
 | TASK-UI-04A-WORKSPACE-LAYOUT | WorkspaceView layout / file browser / watcher 基盤 | **完了**（2026-03-10） |
+| TASK-UI-04B-WORKSPACE-CHAT | Workspace Chat panel / mention / stream 統合 | **完了**（2026-03-11） |
 | TASK-UI-01-A-STORE-SLICE-BASELINE | Store境界の基準化 | **完了**（2026-03-05） |
 | TASK-UI-01-B-IPC-CONTRACT-SECURITY | IPC契約とセキュリティ同期 | 後続 |
 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
@@ -191,6 +194,63 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - callback identity が変わっても `useFileWatcher` が watch を再登録しないよう `ref` 経由で参照する。
 - 右側 preview panel は reverse drag を標準とし、操作方向と視覚結果を一致させる。
 
+## Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW）
+
+### 状態配置
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| selected workspace file / 添付対象 file context | `workspaceSlice` / `fileSelectionSlice` | 04A / 04B との共有境界を維持するため |
+| preview content / size / extension / loading / read error | `WorkspaceView` local state | file read lifecycle は preview 局所責務で完結するため |
+| preview tab / wrap / structured meta 表示 | `PreviewPanel` local state | view 表示状態であり global store 化不要 |
+| quick search open / query / selectedIndex | `useQuickFileSearch` local state | workspace 内 shortcut UI に閉じるため |
+| watch state | `useFileWatcher` + local state | 04A の watch lifecycle を再利用し、preview 更新だけに限定するため |
+
+### 境界ルール
+
+| 項目 | 契約 |
+| --- | --- |
+| store reuse | 04C でも新規 Zustand slice は作らない |
+| file read resilience | renderer 側 `Promise.race` で 5秒 timeout、1秒間隔3回 retry を行う |
+| quick search ranking | `scoreFilePath()` は `score > 0` の候補だけを返し、同点は path で stable sort する |
+| preview fallback | JSON/YAML parse error は recoverable として `SourceView` fallback を維持する |
+| cross-task boundary | chat 実行状態や editor state を 04C local state に持ち込まない |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `WorkspaceView` task scope tests | PASS（13 files / 52 tests） |
+| coverage | Statements 89.47 / Branches 79.43 / Functions 93.87 / Lines 89.47 |
+| Phase 11 screenshot | PASS（11件 / current build static serve） |
+
+## Workspace Chat Panel 統合（TASK-UI-04B-WORKSPACE-CHAT）
+
+### 状態配置
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| messages / input / streamContent / error | `useWorkspaceChatController` | chat固有の一時状態で view 内に閉じる |
+| selected context files | `fileSelectionSlice` | 04A/04B で共有される背景情報 |
+| selected workspace file | `workspaceSlice` | file browser / preview / chat attach で共通利用 |
+| selected provider/model | `llmSlice`（selector） | 既存 LLM 設定を再利用 |
+| conversationId | `useWorkspaceChatController` | workspace chat session の局所管理 |
+
+### フロー契約
+
+| フロー | 契約 |
+| --- | --- |
+| send | user append → conversation create/addMessage → streamChat |
+| stream chunk | `streamContentRef` と `streamContent` を同時更新し race を防ぐ |
+| stream end | assistant append + `conversationAPI.addMessage(role=assistant)` |
+| stream error | streaming state reset + error surface |
+| mention | `@` 候補選択時に context add + preview open |
+
+### 再発防止ルール
+
+- `isStreamingRef` は `setIsStreaming()` だけに依存させず、開始/終了時に即時同期する。
+- stream buffer は state のみでなく ref でも保持し、chunk/end 同期到着で欠落させない。
+- 04B では新規 global slice を追加しない（`workspaceSlice` / `fileSelectionSlice` 再利用）。
 ## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
 
 ### 追加したSlice

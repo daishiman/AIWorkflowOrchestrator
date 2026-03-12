@@ -35,7 +35,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-design-system.md` | ドメイン固有 UI 正本または token/theme 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
+| SubAgent-G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-design-system.md` / `references/error-handling.md` / `references/architecture-implementation-patterns.md` | ドメイン固有 UI 正本または preview/search cross-cutting 正本の同期 | 実装内容 + 苦戦箇所 + 再利用手順が追記済み |
 
 #### 2.1.2 Light Mode 全画面是正プロファイル（theme / contrast）
 
@@ -45,6 +45,16 @@
 | SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、primitive migration、視覚証跡を同期 | 全画面共通の drift と代表 screenshot が記録済み |
 | SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
+
+#### 2.1.3 Light theme shared color migration プロファイル（`spec_created` / component migration）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-M1 | `references/ui-ux-design-system.md` / `references/ui-ux-settings.md` | actual target inventory、token/component 境界、verification-only lane を同期 | current workflow と inventory correction が一致 |
+| SubAgent-M2 | `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-portal-patterns.md` / `references/rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / panel state の cross-cutting 条件を同期 | search/portal/state contract が仕様へ反映済み |
+| SubAgent-M3 | `references/api-ipc-auth.md` / `references/api-ipc-system.md` / `references/architecture-auth-security.md` / `references/security-electron-ipc.md` / `references/security-principles.md` | auth/api/security boundary を同期 | public auth shell と settings/search の安全境界が記録済み |
+| SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
+| SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -102,6 +112,9 @@ UI機能実装時の必須記載（追加）:
 - `ui-ux-feature-components`: 機能仕様、苦戦箇所、簡潔解決手順
 - `arch-ui-components` / `arch-state-management`: UI構造・状態責務境界
 - `ui-ux-design-system`: token / contrast / theme 起因の改善余地と未タスク導線
+- `ui-ux-search-panel`: shortcut / focus trap / ranking / no-match 契約
+- `error-handling`: timeout / read failure / parse failure / renderer crash / no-match の UI 応答
+- `architecture-implementation-patterns`: renderer local timeout+retry / fuzzy 判定分離 / structured fallback
 - `ui-ux-navigation` などのドメイン固有 UI 正本: その機能に固有な契約・苦戦箇所・再利用手順
 
 ### 3.1 UI current workflow 反映先マトリクス
@@ -113,6 +126,9 @@ UI機能実装時の必須記載（追加）:
 | 専用型、adapter、harness、責務境界 | `arch-ui-components.md` | C |
 | selector / reset / store 契約 | `arch-state-management.md` | D |
 | token / theme / contrast 所見 | `ui-ux-design-system.md` | G+ |
+| shortcut / focus trap / ranking / no-match | `ui-ux-search-panel.md` | G+ |
+| renderer timeout / retry / parse fallback | `architecture-implementation-patterns.md` | G+ |
+| retryable / fatal / recoverable error surface | `error-handling.md` | G+ |
 | 検証値、残課題、完了記録 | `task-workflow.md` | E |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | F |
 
@@ -147,6 +163,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>
 rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md
 rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md
+rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md
 diff -u <workflow-path>/artifacts.json <workflow-path>/outputs/artifacts.json
 node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate
 rg -n 'undefined' <workflow-path>/index.md
@@ -167,6 +184,7 @@ pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-fi
 rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md | sort -u
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow <workflow-path>
 ls -la <workflow-path>/outputs/phase-11/screenshots
+rg -n '^## 画面カバレッジマトリクス$' <workflow-path>/phase-11-manual-test.md
 rg -n "screenshots/.*\\.png|NON_VISUAL:" <workflow-path>/outputs/phase-11/manual-test-result.md
 ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 ```
@@ -178,6 +196,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UI機能の場合、`ui-ux-components` / `ui-ux-feature-components` / `arch-ui-components` / `arch-state-management` / `task-workflow` / `lessons-learned` を 1仕様書=1SubAgent で同一ターン更新している
 - [ ] UI機能の場合、`ui-ux-components.md` にも `実装内容と苦戦箇所サマリー` を追加している
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）がある場合、SubAgent-G+ を追加して同一ターン更新している
+- [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の要否を判定し、該当分を SubAgent-G+ で同一ターン更新している
 - [ ] `handler/register/preload` 三点突合が完了している
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
@@ -185,6 +204,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
+- [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only wrappers が別行で記録されている
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
@@ -220,6 +242,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
+- [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
+- [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] 利用テンプレート（retrospective/subagent）の重複行（同一手順番号・同一コマンド）が解消されている
 
 ## 7. 最適なファイル形成（仕様書別）

@@ -1,0 +1,73 @@
+{
+  "workflow": "docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch",
+  "generatedAt": "2026-03-11T09:59:51.906Z",
+  "captures": [
+    {
+      "testCase": "TC-11-01",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "source view selected",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-02",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "markdown preview",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-03",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "html preview sandbox",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-04",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "quick search open",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-05",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "quick search select",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-06",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "quick search close",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-07",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "read error alert",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-08",
+      "viewport": { "width": 390, "height": 844 },
+      "state": "mobile overlay",
+      "priority": "A"
+    },
+    {
+      "testCase": "TC-11-09",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "ux terminology",
+      "priority": "B"
+    },
+    {
+      "testCase": "TC-11-10",
+      "viewport": { "width": 1600, "height": 1000 },
+      "state": "modal visual spec",
+      "priority": "B"
+    },
+    {
+      "testCase": "TC-11-11",
+      "viewport": { "width": 1400, "height": 900 },
+      "state": "coverage alignment board",
+      "priority": "B"
+    }
+  ],
+  "na": []
+}

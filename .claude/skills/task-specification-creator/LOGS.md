@@ -9,6 +9,62 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-11 - TASK-UI-04C follow-up の事後未タスク化パターンを追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（follow-up）
+- **Result**: success
+- **Notes**:
+  - `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を `docs/30-workflows/unassigned-task/` に formalize し、親 task の 3つの苦戦箇所を `3.5 実装課題と解決策` へ継承
+  - `references/phase-11-12-guide.md` に、初回 0件判定後でも cross-cutting guard が必要と判明した場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加
+  - `references/patterns.md` に「親タスク苦戦箇所の事後未タスク化」パターンを追加し、親 workflow outputs の再同期までを標準手順化
+
+---
+## 2026-03-11 - TASK-UI-04C の再監査で planned wording guard を追加
+
+- **Agent**: task-specification-creator (skill-improvement)
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase12-checklist-definition.md` を 19項目へ拡張し、completed workflow の `仕様策定のみ` / `実行予定` 残置を検知するチェックを追加
+  - `references/phase-11-12-guide.md` と `references/patterns.md` に、`phase-12-documentation.md` と `outputs/phase-12` の planned wording ゼロ化パターンを追記
+  - `phase-12-documentation.md` の `[x]` 同期と、Step 1-B 実績同期を再発防止ルールとして固定した
+
+---
+## 2026-03-11 - TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12
+- **Result**: success
+- **Notes**:
+  - current workflow `index.md` / `artifacts.json` / `phase-1..12` status を spec-only から completed 実績へ是正
+  - `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `validate-phase-output` / `verify-all-specs` を完了ゲートとして実行し、`outputs/phase-12` と `outputs/verification-report.md` を実績へ更新
+  - `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD` を追加で実行し、未タスク currentViolations=0 を Phase 12 根拠へ残す
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT 再監査知見で Phase 11/12 テンプレート厳密化
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `assets/implementation-guide-template.md` に Part 1 の `たとえば` 明示ルールを追加し、validator 判定ぶれを低減
+  - `references/phase-templates.md` に `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 見出し固定ルールを追記
+  - `references/phase-11-12-guide.md` の Part 1/coverage matrix 要件を厳密化し、再監査時の warning 再発条件を明文化
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 再監査完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-11` の screenshot 8件と `manual-test-result.md` を Apple UI/UX review 観点で再確認し、`phase-11-manual-test.md` に画面カバレッジマトリクスを追補
+  - `outputs/phase-12/implementation-guide.md` を validator 要件（Part 2 の型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定と定数）へ是正
+  - `verify-all-specs --strict` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行し、workflow 判定を PASS に統一
+  - `.claude/skills/...` 正本の `task-workflow` / `lessons-learned` / `LOGS.md` / `SKILL.md` を同一ターンで同期
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 completed workflow backlog 配置を再整合
 
 - **Agent**: task-specification-creator

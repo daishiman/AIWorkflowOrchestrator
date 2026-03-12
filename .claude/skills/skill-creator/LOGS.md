@@ -3,6 +3,51 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「light theme shared color migration は token scope / component scope / verification-only lane を分離する」成功/失敗パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に actual inventory correction、verification-only lane、`ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-*` / `security-*` 抽出マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-M1..M5` を追加し、spec-only UI task の SubAgent 分担を標準化
+  - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
+
+---
+## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「workspace preview/search は cross-cutting spec を追加同期する」成功/失敗パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `ui-ux-search-panel` / `ui-ux-design-system` / `error-handling` / `architecture-implementation-patterns` の要否判定マトリクスと完了チェックを追加
+  - `references/resource-map.md` のテンプレート説明も更新し、PreviewPanel / QuickFileSearch 系タスクで読むべき template capability を入口から辿れるようにした
+
+---
+## 2026-03-11 - TASK-UI-04C の Phase 12 本文 stale 防止パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: pattern-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` の「更新予定のみ残置を排除し、実更新ログへ昇格する」パターンに、completed workflow の `phase-12-documentation.md` 本文監査を追加
+  - `仕様策定のみ` / `実行予定` / `保留として記録` を `phase-12-documentation.md` から除去し、完了条件と `Task 100% 実行確認` を `[x]` へ同期するルールを標準化
+  - task-specification-creator 側 checklist / patterns と整合する meta-skill の再利用知見として固定
+
+---
+## 2026-03-11 - TASK-UI-04B-WORKSPACE-CHAT Phase 12 validator厳密化パターン反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「implementation-guide と coverage matrix の validator 文字列を固定する」成功パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `たとえば` / `## 画面カバレッジマトリクス` の機械確認コマンドと完了チェックを追加
+  - `assets/phase12-task-spec-recheck-template.md` へ同条件（Part 1 キーワード明示 + H2見出し固定）を反映し、再監査の取りこぼしを削減
+
+---
 ## 2026-03-11 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 global light remediation パターン追加
 
 - **Agent**: skill-creator (update)

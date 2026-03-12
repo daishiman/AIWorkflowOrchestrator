@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
 | v1.7.3 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: Skill Center を create / use / improve の一次導線入口として追記し、`skill-center` legacy alias は `App.tsx` の `normalizeSkillLifecycleView()` で canonical `skillCenter` へ正規化する契約を追加 |
@@ -183,6 +184,16 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-timeout-fallback-dark.png` | ダークテーマ fallback |
 | TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-timeout-to-settings.png` | timeout -> settings |
 | TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-shell-unauthenticated.png` | 未認証 settings shell |
+
+### Workspace quick search 契約（TASK-UI-04C）
+
+| 項目 | 契約 |
+| --- | --- |
+| open shortcut | `Cmd/Ctrl+P` で `QuickFileSearch` dialog を開く |
+| navigation | ArrowUp / ArrowDown で候補移動、Enter で選択、Escape / overlay click で閉じる |
+| focus | open 時に検索入力へフォーカスし、dialog 内で Tab 循環を維持する |
+| result action | file 選択時は対象 file を選択し、preview panel が閉じていれば自動で開く |
+| coverage | desktop / mobile overlay / terminology を Phase 11 screenshot 11件で確認する |
 
 ### navItems配列構造
 

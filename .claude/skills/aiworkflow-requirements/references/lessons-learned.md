@@ -20,6 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-12 | 1.29.79 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
+| 2026-03-12 | 1.29.78 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
+| 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
+| 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
+| 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
 | 2026-03-11 | 1.29.74 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。renderer-wide hardcoded neutral drift、desktop shard 11 再現、completed workflow 側 screenshot 再取得を苦戦箇所へ追加し、white/black 基準 + compatibility bridge + shard 再現 + screenshot 再検証の 5 ステップへ再編 |
 | 2026-03-11 | 1.29.73 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。Phase成果物不足・Phase 11 必須節不足・follow-up backlog 配置ドリフトの再発条件を整理し、active workflow は `docs/30-workflows/unassigned-task/`、completed workflow 由来は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本とするルールを追加 |
 | 2026-03-11 | 1.29.72 | UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001 の完了移管を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` へ更新し、親workflowと同時に completed 配置へ揃えた |
@@ -59,6 +64,43 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
+
+#### 苦戦箇所1: stream の chunk/end が同一ティックで届くと assistant 応答が欠落する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `setState` 反映より先に end が確定し、assistant メッセージが空扱いで終わるケースがあった |
+| 再発条件 | stream 更新を state だけで管理し、即時参照用の ref を持たない |
+| 解決策 | `streamContentRef` / `isStreamingRef` を chunk/end 受信時に即時同期し、end 側の判定を ref 基準へ寄せた |
+| 標準ルール | stream UI は「描画 state」と「同期判定 ref」を分離し、chunk/end 競合を先に潰す |
+
+#### 苦戦箇所2: screenshot harness が llm / conversation API を揃えないと streaming 状態を再現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 04A 用 harness を流用すると、04B の stream/mention 状態が再現できず証跡が欠ける |
+| 再発条件 | UI capture script で対象機能の API mock を最低限にしすぎる |
+| 解決策 | `capture-task-059a-workspace-chat-panel-phase11.mjs` に llm/conversation mock を追加し、TC-11-01〜08 を固定した |
+| 標準ルール | Phase 11 の capture script は対象機能の API 境界（file/llm/conversation）を先に棚卸しする |
+
+#### 苦戦箇所3: Phase 12 実装ガイドが Part 1/2 の見出しだけでは validator に通らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `implementation-guide.md` が Part 1/2 構成だけ満たし、型/API/使用例/エッジケース/定数一覧が不足していた |
+| 再発条件 | 「構造あり = 完了」と判断し、内容 validator を後回しにする |
+| 解決策 | Part 2 に TypeScript 型定義、APIシグネチャ、使用例、エラーハンドリング、エッジケース、設定と定数を追記した |
+| 標準ルール | Phase 12 は `validate-phase12-implementation-guide.js` を必ず実行し、2/10 のような部分充足で閉じない |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. stream 実装は chunk/end 競合テストを先に作り、state と ref の責務を分離する。
+2. screenshot harness は対象 UI の API 境界を一覧化してから mock を追加する。
+3. Phase 11 は TC と screenshot path を `phase-11-manual-test.md` に固定する。
+4. Phase 12 は implementation-guide validator を先に実行し、NG項目を埋めてから他仕様を更新する。
+5. `task-workflow` / `lessons-learned` / `LOGS` / `SKILL` を同一ターンで同期する。
 
 ### 2026-03-11 TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 
@@ -132,6 +174,58 @@
 3. 全画面共通の drift は `globals.css` の compatibility bridge で先に止め、primitives を token へ寄せる。
 4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
 5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
+
+### 2026-03-12 TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+#### 苦戦箇所1: old unassigned-task の対象一覧を盲信すると current worktree とずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SettingsView` / `SettingsCard` / `DashboardView` を主対象のまま持ち込むと、実際に hardcoded color が多い `AccountSection` / `ApiKeysSection` / `AuthModeSelector` / `AuthKeySection` / `WorkspaceSearchPanel` が薄まる |
+| 再発条件 | 親 task の未タスク指示書を current worktree 監査なしで再利用する |
+| 解決策 | `outputs/phase-1/requirements-definition.md` の inventory を正本にし、wrapper は verification-only lane へ落とした |
+| 標準ルール | spec_created UI task では Phase 1 で current worktree の inventory correction を必ず行う |
+
+#### 苦戦箇所2: token scope と component scope を混ぜると task が肥大化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token foundation の残件と component migration を同一 task に入れると、設計レビューで責務境界が曖昧になる |
+| 再発条件 | `white/black baseline` の議論と `shared component migration` を同時に扱う |
+| 解決策 | 親 workflow を token 基盤、current workflow を component migration、`SettingsView` / `SettingsCard` / `DashboardView` を verification-only として 3 lane に分離した |
+| 標準ルール | Light Mode follow-up は token / component / verification-only の 3 つに分ける |
+
+#### 苦戦箇所3: UI 仕様だけ読むと auth/search/security/portal/state の前提が漏れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AuthView` / `WorkspaceSearchPanel` / Settings sections を跨ぐのに、UI 正本だけでは IPC / security / portal / state の制約が読めない |
+| 再発条件 | `ui-ux-*` だけで Phase 1-2 を閉じる |
+| 解決策 | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `ui-ux-portal-patterns` を同時抽出した |
+| 標準ルール | settings + auth + workspace が同居する UI task は UI + state + api/auth + security + portal を同一ターンで読む |
+
+#### 苦戦箇所4: Phase 1-3 gate を崩すと後続 phase の設計が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | inventory correction 前に Phase 4 以降の内容を詳細化すると、batch と test anchor が二重修正になる |
+| 再発条件 | 設計レビュー PASS 前に downstream phase を先に完成扱いにする |
+| 解決策 | Phase 1-3 を completed に固定し、Phase 4-13 は planned のまま保持した |
+| 標準ルール | spec_created task は「Phase 1-3 completed → 4+ planned」の順序を守る |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で current worktree の hardcoded color inventory を取り直す。
+2. token scope / component scope / verification-only lane を先に分ける。
+3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
+4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として設計する。
+5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
+
+### 関連未タスク（2026-03-12 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 
@@ -7111,3 +7205,46 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | current build source pinning と Workspace UI 再監査 checklist をスクリプト/運用として共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+## TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11）
+
+### 苦戦箇所: fuzzy search の順位補正が非一致候補まで通す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | subsequence score が 0 でも定数 boost を足すと、query 非一致のファイルが候補に残る |
+| 再発条件 | fuzzy ranking で「一致判定」と「補正計算」を同一式に押し込む |
+| 対処 | `score > 0` を先に判定し、補正は一致済み候補にだけ適用した |
+| 標準ルール | fuzzy search は no-match を空配列で返すテストを必ず持つ |
+
+### 苦戦箇所: preview 用 `file:read` が hang すると loading が固着する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Main 応答待ちだけに依存すると preview が永続 loading のまま戻らない |
+| 再発条件 | renderer 側 timeout を持たず、IPC 契約変更で解決しようとする |
+| 対処 | `Promise.race` で 5秒 timeout、1秒間隔で最大3回 retry を追加した |
+| 標準ルール | preview / inspector 系の invoke は renderer timeout + retry を標準にする |
+
+### 苦戦箇所: structured preview parse error を fatal と同列に扱う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | JSON/YAML の整形失敗だけで preview 全体を error 画面に切り替えると復旧導線が消える |
+| 再発条件 | parse failure と transport failure を同じ error surface へ集約する |
+| 対処 | alert banner を出しつつ `SourceView` fallback を残した |
+| 標準ルール | parse error は recoverable、transport error は fatal という層分離を維持する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. fuzzy search に `no match -> []` と same-score stable sort テストを先に置く。
+2. preview 読み込みは renderer timeout と retry の上限を明示する。
+3. parse error と transport error を別 UI として扱う。
+4. Phase 11 は current build static serve を使い、dialog / mobile / terminology を再確認する。
+5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |

@@ -7,7 +7,7 @@
 | タスクID   | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 |
 | Phase      | 2                                               |
 | Phase名    | 設計                                            |
-| ステータス | not_started                                     |
+| ステータス | completed                                       |
 | 前提Phase  | Phase 1                                         |
 | 後続Phase  | Phase 3                                         |
 
@@ -18,31 +18,34 @@
 ## 実行タスク
 
 - タスク1: ファイル別移行方針の設計
-- タスク2: Batch A-D の実行順序と並列化設計
+- タスク2: Batch A-E の実行順序と並列化設計
 - タスク3: Codex 実装 lane への引き渡し仕様作成
 
 ### タスク1: ファイル別移行方針
 
-| ファイル群      | 現状問題                                | 設計方針                                   |
-| --------------- | --------------------------------------- | ------------------------------------------ |
-| Settings shell  | `text-white` / `border-white/10` 直書き | `var(--text-*)` / `var(--border-*)` へ統一 |
-| ThemeSelector   | `bg-white/5` / `text-white/60` 直書き   | theme token へ寄せる                       |
-| Dashboard/Auth  | 白文字前提 header                       | light/dark 両対応へ置換                    |
-| WorkspaceSearch | `slate-*` / `white` 固定                | token ベース panel 契約へ移行              |
+| ファイル群                 | 現状問題                                           | 設計方針                                                                  |
+| -------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------- |
+| shared selector / CTA      | neutral / accent hardcode が selector に残る       | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` を Batch A で統一 |
+| Settings organisms         | white glass / text hardcode が section に集中      | `AccountSection` / `ApiKeysSection` を Batch B で統一                     |
+| auth surface               | login surface の white text 前提が残る             | `AuthView` を Batch C で light token へ寄せる                             |
+| search surface             | panel / input / result listに slate / blue が残る  | `WorkspaceSearchPanel` を Batch D で単独移行                              |
+| verification-only wrappers | wrapper 自体は主因でなく regression guard だけ必要 | `SettingsView` / `SettingsCard` / `DashboardView` は Batch E で確認専用   |
 
 ### タスク2: 並列化設計
 
-| Lane | 対象バッチ | 並列条件                                   |
-| ---- | ---------- | ------------------------------------------ |
-| B    | Batch A    | token foundation Phase 3 PASS 後           |
-| C    | Batch B    | Batch A と並列可                           |
-| D    | Batch C    | Batch A/B と並列可だが review は最後に統合 |
+| Lane | 対象バッチ | 並列条件                                           |
+| ---- | ---------- | -------------------------------------------------- |
+| A    | Batch A    | token/component 境界確定後に先行                   |
+| B    | Batch B    | Batch A 後、Batch C と並列可                       |
+| C    | Batch C    | Batch A 後、Batch B と並列可                       |
+| D    | Batch D    | review コストが高いため単独                        |
+| E    | Batch E    | Batch B/C/D 後、verification-only として最後に確認 |
 
 ### タスク3: Codex 実装 lane 仕様
 
-- 1 PR / 1 commit 相当の修正単位を batch 単位に分割する
-- UI shell と search panel を同時に触らない
-- `WorkspaceSearchPanel` は単独 batch として扱う
+- 1 batch = 1 concern を守る
+- token foundation の再設計は含めず、component migration だけを扱う
+- `WorkspaceSearchPanel` は単独 batch として扱い、Batch E は verification-only にする
 
 ## 参照資料
 
@@ -53,11 +56,20 @@
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料                 | パス                                                                            | 内容                                  |
-| ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------- |
-| ui-ux-components         | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`         | component 期待責務                    |
-| ui-ux-feature-components | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md` | Settings / Workspace / Dashboard 導線 |
-| ui-ux-navigation         | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`         | shell / navigation 影響確認           |
+| 参照資料                   | パス                                                                              | 内容                            |
+| -------------------------- | --------------------------------------------------------------------------------- | ------------------------------- |
+| ui-ux-design-system        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`        | token / verification-only 境界  |
+| ui-ux-settings             | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`             | Settings domain 設計            |
+| ui-ux-components           | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           | shared component 期待責務       |
+| ui-ux-feature-components   | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`   | Auth / Workspace surface の正本 |
+| ui-ux-search-panel         | `.claude/skills/aiworkflow-requirements/references/ui-ux-search-panel.md`         | WorkspaceSearchPanel 契約       |
+| ui-ux-portal-patterns      | `.claude/skills/aiworkflow-requirements/references/ui-ux-portal-patterns.md`      | dialog / portal 設計            |
+| rag-desktop-state          | `.claude/skills/aiworkflow-requirements/references/rag-desktop-state.md`          | panel / search state の境界     |
+| api-ipc-auth               | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`               | auth surface の IPC 依存        |
+| api-ipc-system             | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`             | system IPC 依存                 |
+| architecture-auth-security | `.claude/skills/aiworkflow-requirements/references/architecture-auth-security.md` | auth shell の安全境界           |
+| security-electron-ipc      | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`      | preload / IPC 境界              |
+| security-principles        | `.claude/skills/aiworkflow-requirements/references/security-principles.md`        | renderer security 原則          |
 
 ## 成果物
 
@@ -77,10 +89,10 @@
 
 ## 完了条件
 
-- [ ] ファイル別移行方針がある
-- [ ] batch 単位の並列化ルールがある
-- [ ] Codex 実装 lane へ渡す単位が明確である
-- [ ] token foundation task 依存が明記されている
+- [x] ファイル別移行方針がある
+- [x] batch 単位の並列化ルールがある
+- [x] Codex 実装 lane へ渡す単位が明確である
+- [x] token foundation task 依存が明記されている
 
 ## 次Phase
 

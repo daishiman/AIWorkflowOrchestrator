@@ -18,6 +18,9 @@
 > - `references/lessons-learned.md`（再発防止知見）
 > - `references/<ui-domain-spec>.md`（必要時。例: `ui-ux-navigation.md` のようなドメイン固有 UI 正本）
 > - `references/ui-ux-design-system.md`（token / theme / contrast 所見がある場合）
+> - `references/ui-ux-search-panel.md`（shortcut / focus trap / ranking / no-match 契約がある場合）
+> - `references/error-handling.md`（recoverable / fatal error surface を追加した場合）
+> - `references/architecture-implementation-patterns.md`（renderer local timeout+retry / parse fallback を標準化した場合）
 
 ---
 
@@ -69,7 +72,7 @@
 
 | SubAgent | 担当仕様書 | 主担当作業 | 依存関係 |
 | --- | --- | --- | --- |
-| G+ | `references/<ui-domain-spec>.md` | ドメイン固有UI正本（例: `ui-ux-navigation.md`）へ実装内容・苦戦箇所・再利用手順を同期 | A/B/C/D完了後、E/Fと同一ターン |
+| G+ | `references/<ui-domain-spec>.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-design-system.md` / `references/error-handling.md` / `references/architecture-implementation-patterns.md` | ドメイン固有 UI 正本または preview/search cross-cutting 正本へ実装内容・苦戦箇所・再利用手順を同期 | A/B/C/D完了後、E/Fと同一ターン |
 
 再確認タスクでは次の分担に置き換えてよい:
 - `A: task-workflow`
@@ -123,6 +126,9 @@ UI機能実装の場合は次を推奨:
 - `ui-ux-feature-components.md`（機能仕様・苦戦箇所）
 - `arch-ui-components.md` / `arch-state-management.md`（設計整合）
 - `ui-ux-design-system.md`（token / contrast / theme 改善がある場合）
+- `ui-ux-search-panel.md`（shortcut / focus trap / ranking / no-match 契約がある場合）
+- `error-handling.md`（timeout / parse / transport error の UI 応答を整理した場合）
+- `architecture-implementation-patterns.md`（renderer local resilience を標準化した場合）
 - `task-workflow.md` / `lessons-learned.md`（台帳・教訓）
 - `ui-ux-navigation.md` などのドメイン固有 UI 正本（存在する場合）
 
@@ -135,10 +141,24 @@ UI機能実装の場合は次を推奨:
 | 専用型、adapter helper、harness、責務境界 | `arch-ui-components.md` | 構造上の判断理由を残せる |
 | selector / store / reset 条件 | `arch-state-management.md` | 状態責務の正本に集約できる |
 | token / contrast / theme 所見 | `ui-ux-design-system.md` | component 修正と token 改善を分離できる |
+| shortcut / focus trap / ranking / no-match | `ui-ux-search-panel.md` | quick search / search dialog の挙動を検索仕様へ再利用可能な形で集約できる |
+| renderer timeout / retry / parse fallback | `architecture-implementation-patterns.md` | UI実装で閉じた resilience pattern を他画面へ転用できる |
+| retryable / fatal / recoverable error surface | `error-handling.md` | parse/read/timeout の UI 応答を共通の error contract に寄せられる |
 | 検証値、残課題、完了記録 | `task-workflow.md` | 台帳として追跡できる |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | 次回の短時間解決に直結する |
 
 > 迷った場合は「複数仕様書に同じ段落を貼る」のではなく、最初にこのマトリクスで責務を決めてから SubAgent 分担へ落とす。
+
+### 4.2.1 Light theme shared color migration（`spec_created`）反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| actual target inventory、verification-only lane | `ui-ux-design-system.md` / `ui-ux-settings.md` | token/component 境界と Settings domain inventory を一緒に固定できる |
+| Auth / WorkspaceSearch / dialog / panel state | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md` | search/portal/state の cross-cutting 条件を落としにくい |
+| auth/api/security boundary | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | public auth shell と settings/search surface の安全境界を明示できる |
+| `spec_created` 台帳、Phase 1-3 gate、苦戦箇所 | `task-workflow.md` / `lessons-learned.md` | Phase 1-3 completed / Phase 4+ planned の運用と 5分解決カードを固定できる |
+
+> `SettingsView` / `SettingsCard` / `DashboardView` のような wrapper shell は、current inventory で主因でない限り verification-only lane へ分離する。
 
 ### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
 
@@ -223,7 +243,7 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | active workflow 由来は `unassigned-task`、completed workflow 由来は `completed-tasks/<workflow>/unassigned-task`、legacy standalone は `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
-| `rg -n '## Part 1|## Part 2|なぜ|必要|例え|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え + 型/API/エッジケース/設定語が検出される |
+| `rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え（`たとえば` 含む）+ 型/API/エッジケース/設定語が検出される |
 | `test -f <workflow-path>/outputs/phase-11/screenshot-plan.json && test -f <workflow-path>/outputs/phase-11/phase11-capture-metadata.json` | screenshot 要求時の補助証跡実在確認 | 2ファイルとも存在する |
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `python3 -m http.server 4173 --directory apps/desktop/out/renderer` | worktree で preview source が揺れる場合の current build static serve | current worktree build を `127.0.0.1:4173` で配信できる |
@@ -236,6 +256,7 @@ UI機能実装の場合は次を推奨:
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>` | 全量実行が `SIGTERM` の場合の分割フォールバック | 対象回帰の合否が確定できる |
 | `rg -o 'TC-[A-Za-z0-9-]*[0-9][A-Za-z0-9-]*' <workflow-path>/phase-11-manual-test.md <workflow-path>/outputs/phase-11/manual-test-checklist.md \| sort -u` | TC命名互換（`TC-XX` / `TC-UI-*`）の事前確認 | 対象TCが抽出される |
 | `ls -la <workflow-path>/outputs/phase-11/screenshots` | UI画面証跡の存在確認（UIタスクのみ） | スクリーンショットが列挙される |
+| `rg -n '^## 画面カバレッジマトリクス$' <workflow-path>/phase-11-manual-test.md` | coverage validator 互換見出し確認（UIタスクのみ） | `## 画面カバレッジマトリクス` が1件以上検出される |
 | `rg -n -e '^## 統合テスト連携$' -e '^## 成果物$' -e '^## 実行手順$' -e '^## 完了条件$' <workflow-path>/phase-11-manual-test.md` | Phase 11 必須節（統合テスト連携/成果物or実行手順/完了条件）確認 | 必須見出しが3種そろう |
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
@@ -270,10 +291,16 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only lane を明記している
+- [ ] Light theme shared color migration では `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` の要否判定を記録している
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が同期している
 - [ ] UIタスクでは `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を残し、一覧specから再利用ポイントを辿れるようにする
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）が存在する場合、基本6仕様書に加えて同一ターンで更新している
+- [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の cross-cutting 4仕様書について要否判定を記録し、該当時は同一ターンで更新している
 - [ ] 公開ビュー bypass を実装した場合、shell 公開だけでなく state reset 除外条件と nav 到達性も同一ターンで記録している
 - [ ] UIタスクでは `phase-11-manual-test.md` に必須節（`統合テスト連携` / `成果物 or 実行手順` / `完了条件`）が存在する
+- [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
+- [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] UIタスクでは worktree preflight として `pnpm install --frozen-lockfile` の要否を確認し、実行した場合は記録している
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static server で配信した記録がある
