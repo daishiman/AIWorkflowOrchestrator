@@ -42,9 +42,19 @@
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
 | SubAgent-L1 | `references/ui-ux-design-system.md` | white/black baseline、token 契約、compatibility bridge 方針を同期 | light mode 標準と token 名が実装一致 |
-| SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、primitive migration、視覚証跡を同期 | 全画面共通の drift と代表 screenshot が記録済み |
+| SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、verification-only blind spot、primitive migration、視覚証跡を同期 | 全画面共通の drift / blind spot と代表 screenshot が記録済み |
 | SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
+
+#### 2.1.3 Light theme shared color migration プロファイル（`spec_created` / component migration）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-M1 | `references/ui-ux-design-system.md` / `references/ui-ux-settings.md` | actual target inventory、token/component 境界、verification-only lane を同期 | current workflow と inventory correction が一致 |
+| SubAgent-M2 | `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-portal-patterns.md` / `references/rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / panel state の cross-cutting 条件を同期 | search/portal/state contract が仕様へ反映済み |
+| SubAgent-M3 | `references/api-ipc-auth.md` / `references/api-ipc-system.md` / `references/architecture-auth-security.md` / `references/security-electron-ipc.md` / `references/security-principles.md` | auth/api/security boundary を同期 | public auth shell と settings/search の安全境界が記録済み |
+| SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
+| SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -168,6 +178,7 @@ rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/co
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
+node -e "console.log(require.resolve('playwright'))"
 pnpm --filter @repo/desktop test:run
 pnpm --filter @repo/desktop exec vitest run --shard=<n>/16
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
@@ -194,6 +205,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
+- [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only wrappers が別行で記録されている
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
@@ -205,12 +219,16 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
+- [ ] UIタスクでは `node -e "console.log(require.resolve('playwright'))"` を再撮影前に実行し、screenshot script 実行 cwd から Playwright を解決できることを記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
 - [ ] Light Mode / contrast 改修で screenshot を再取得した場合、coverage validator の PASS を再取得後の証跡として記録している
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
+- [ ] route が変わる screenshot は `components[].route` 単位で分離し、`states[].route` に撮影経路の責務を持たせていない
+- [ ] Light Mode / contrast 系 UI task では verification-only batch の blind spot（status / warning / error / danger surface）を再監査している
+- [ ] user 指定 skill root を canonical root に固定し、mirror root との同期結果を記録している
 - [ ] workspace/preview UI では right preview panel の reverse resize を証跡化している
 - [ ] file watcher を含む UI では callback ref 分離など、watch 再登録を抑止する実装/設計を仕様へ転記している
 - [ ] light theme screenshot では補助テキスト・status bar・chip の contrast を目視確認し、是正結果を記録している

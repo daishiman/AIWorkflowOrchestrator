@@ -173,12 +173,12 @@
 4. light baseline を変えたら screenshot を再取得し、`validate-phase11-screenshot-coverage` を再実行する。
 5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期して閉じる。
 
-#### 関連未タスク
+#### 関連タスク
 
-| タスクID | 概要 | 優先度 | 参照 |
-| --- | --- | --- | --- |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+| タスクID | ステータス | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- | --- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | 完了（2026-03-12 / Phase 1-12、completed-tasks移管済み） | shared component の hardcoded color を semantic token へ段階移行し、verification-only blind spot も task 内で吸収した | 高 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | 完了（2026-03-12 / Phase 1-12、completed workflow 移管済み） | light contrast の screenshot / audit / Phase 11 checklist を恒久化し、current build static serve fallback を標準手順化した | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 #### 検証証跡
 
@@ -193,68 +193,49 @@
 | `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs` | PASS（screenshot 5件） |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/light-theme-token-foundation` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0、起票時監査の証跡。現在の canonical task spec は `docs/30-workflows/completed-tasks/task-fix-light-theme-shared-color-migration-001.md`） |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard` | PASS |
 
-### タスク: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 ライトテーマ shared 色移行仕様書整備（2026-03-12）
+### タスク: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 shared component semantic token 移行（2026-03-12）
 
 | 項目 | 値 |
 | --- | --- |
 | タスクID | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 1-3 completed / 実装未着手）** |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
 | タイプ | fix |
 | 優先度 | 高 |
 | 完了日 | 2026-03-12 |
-| 対象 | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` の hardcoded color migration を実コード監査ベースで仕様化 |
-| 成果物 | `docs/30-workflows/light-theme-shared-color-migration/outputs/` |
+| 対象 | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` の shared color hardcode を semantic token へ移行 |
+| 成果物 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/` |
 
 #### 実施内容
 
-- current workflow root（`index.md` / `phase-1..3` / `artifacts.json` / `outputs/artifacts.json`）を、`outputs/phase-1..3` と `verification-report.md` に合わせて `spec_created` + inventory correction ベースへ是正した
-- primary targets を `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` に更新し、`SettingsView` / `SettingsCard` / `DashboardView` は verification-only lane に落とした
-- `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` を current task の必要 spec として抽出した
-- Phase 1-3 を completed、Phase 4-12 を planned、Phase 13 を blocked に固定し、実装・commit・PR は user 指示どおり未着手のまま維持した
-
-#### 仕様書別 SubAgent 分担
-
-| SubAgent | 担当仕様書 | 主担当作業 |
-| --- | --- | --- |
-| A | `workflow-light-theme-global-remediation.md` / `ui-ux-design-system.md` / `ui-ux-settings.md` | token/component 境界、actual inventory、verification-only lane の同期 |
-| B | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / state の cross-cutting 条件抽出 |
-| C | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | auth/api/security 契約の抽出と boundary 確認 |
-| D | `task-workflow.md` | `spec_created` 台帳化、Phase gate、検証証跡の固定 |
-| E | `lessons-learned.md` / `skill-creator` templates | 苦戦箇所、5分解決カード、再利用テンプレート化 |
+- selector control / warning panel / success panel / delete dialog / error banner / search highlight を light theme token 基準へ揃え、shared surface の局所 hardcode を除去した
+- `SettingsView` status panel の blind spot を current task 内で吸収し、verification-only batch にも shared color 再監査を適用した
+- `phase11-light-theme-shared-color-migration.{tsx,html}` を追加し、Settings / Auth / Workspace の representative state を dedicated harness で再現した
+- Phase 11 screenshot 13件を workflow 配下で再取得し、Apple UI/UX engineer 観点レビューと screenshot coverage 100% を記録した
+- Phase 12 では `.claude/skills/aiworkflow-requirements/` を canonical root として system spec を更新し、`.agents` mirror との drift を解消した
+- `light-theme-shared-color-migration.guard.test.ts` を追加し、shared color migration 対象 surface の hardcoded class 再発を検知できるようにした
+- 2026-03-12 の representative rerun で `SettingsView.integration.test.tsx` は 18 tests PASS だが `ApiKeysSection` 起因の `act()` warning が継続することを再確認し、follow-up を completed workflow 配下 `unassigned-task/` へ移管・再接続した
 
 #### 苦戦箇所
 
 | 苦戦箇所 | 再発条件 | 対処 |
 | --- | --- | --- |
-| 旧 unassigned-task 在庫をそのまま使うと current worktree と drift する | `SettingsView` / `DashboardView` を主対象のまま固定する | Phase 1 で current worktree の hardcoded color inventory を取り直し、wrapper は verification-only に分離した |
-| token scope と component scope を混ぜると task 境界が崩れる | token foundation の残件を component migration に混在させる | 親 workflow を token 基盤、current workflow を component migration、wrapper を verification-only として3分離した |
-| UI spec だけ読むと auth/search/security/portal/state の前提を落とす | `ui-ux-*` だけで Phase 1-2 を閉じる | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` まで同一ターンで抽出した |
-| Phase 1-3 前提を崩すと後続 phase の batch が揺れる | inventory correction 前に Phase 4-13 を先に詳細化する | priority batches と design review を固定してから Phase 4+ を planned へ維持した |
+| verification-only 扱いの batch に blind spot が残る | 変更 diff がないことだけで `SettingsView` の status / warning surface を見ない | representative screenshot と integration test を追加し、shared color surface を Phase 12 再監査で吸収した |
+| screenshot plan の route を state 側へ置いても撮影対象が切り替わらない | `capture-screenshots.js` の route 解決が `components[].route` 基準であることを見落とす | component entry を surface 単位に分け、route を component 側へ寄せた |
+| `playwright` が workspace package にだけ存在すると workflow root script から解決できない | capture script 実行 cwd と依存解決経路を合わせない | root `node_modules/playwright` を解決できる状態で capture を再実行した |
+| user 指定 canonical root を無視すると Phase 12 判定が誤る | `.agents` を既定正本として扱い、`.claude` 更新を後回しにする | `.claude` を canonical root に固定し、mirror sync と `diff -qr` を完了条件へ含めた |
+| representative test が PASS でも stderr warning が残る | PASS/FAIL だけを見て stderr と Phase 10 residual note を照合しない | `SettingsView.integration.test.tsx` を単独再実行して warning を再確認し、completed workflow 配下 `unassigned-task/` の task spec を正規化して再接続した |
 
-#### 同種課題の5分解決カード
+#### 同種課題の6ステップ解決カード
 
-1. Phase 1 で current worktree の inventory を取り直し、旧 unassigned-task の対象を盲信しない。
-2. token scope / component scope / verification-only lane を先に分離する。
-3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
-4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として書く。
-5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/light-theme-shared-color-migration --phase 1` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/light-theme-shared-color-migration --json` | PASS |
-| `diff -u docs/30-workflows/light-theme-shared-color-migration/artifacts.json docs/30-workflows/light-theme-shared-color-migration/outputs/artifacts.json` | 差分なし |
-
-#### Phase 12で登録した関連未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+1. token foundation 完了後も shared surface の局所 hardcode は別タスクとして棚卸しする。
+2. verification-only batch でも status / warning / error / danger surface を blind spot として再監査する。
+3. screenshot plan で route が変わる場合は `components[].route` を分け、state ごとに route を持たせない。
+4. screenshot script の実行 cwd から `playwright` が解決できることを preflight で確認する。
+5. user 指定 root を canonical root とし、system spec / LOGS / SKILL / mirror sync を同一ターンで閉じる。
+6. representative test が PASS でも stderr warning と residual note を照合し、必要なら completed workflow 配下 `unassigned-task/` へ follow-up を再接続する。
 
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
@@ -4585,6 +4566,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.60** | **2026-03-12** | **TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を完了同期**: token foundation 節の関連タスク表で shared color migration を backlog から completed workflow 完了へ更新し、専用 completed section に shared surface / blind spot / screenshot 13件 / canonical root `.claude` + mirror sync を追加 |
 | **1.67.59** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 再監査追補**: workflow 本文の Phase 1-12 completed 同期、`outputs/artifacts.json` 追加、index 再生成、`ui-ux-design-system.md` の status テーブル更新、localhost static serve fallback（`phase11-static-server.mjs`）を完了記録へ追記し、親仕様書の stale な未タスク導線を completed workflow 正本へ修正 |
 | **1.67.58** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行を同期**: completed workflow `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` の Phase 4-12 outputs、audit summary（`current=0 / baseline=64`）、Phase 11 screenshot 5件、Apple UI/UX 視覚レビュー、baseline routing を追加。`ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` の contrast backlog は remediation task `task-fix-light-theme-shared-color-migration-001` へ分離し、guard task は current build static serve + selector capture の標準手順として固定 |
 | **1.67.57** | **2026-03-12** | **UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 を登録**: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、`spec_created` UI workflow 向けの root同期ガードとして未タスク化。current inventory correction、verification-only lane、必要 system spec 抽出、`artifacts.json` / `outputs/artifacts.json` 同期を 1 つの再利用導線へ統合し、parent task 節と残課題テーブルへ同時反映 |

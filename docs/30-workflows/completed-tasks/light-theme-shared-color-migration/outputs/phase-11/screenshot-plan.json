@@ -1,0 +1,155 @@
+{
+  "taskId": "TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001",
+  "components": [
+    {
+      "name": "ThemeSelector",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=valid&theme=light",
+      "states": [
+        {
+          "id": "TC-01",
+          "label": "theme-selector",
+          "theme": "light",
+          "selector": "section[aria-labelledby='theme-settings-heading']"
+        }
+      ]
+    },
+    {
+      "name": "AuthModeSelector",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=invalid&theme=light",
+      "states": [
+        {
+          "id": "TC-02",
+          "label": "auth-mode-warning",
+          "theme": "light",
+          "selector": "section[aria-labelledby='auth-mode-settings-heading']"
+        }
+      ]
+    },
+    {
+      "name": "AuthKeySection",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=valid&theme=light",
+      "states": [
+        {
+          "id": "TC-03",
+          "label": "auth-key-saved",
+          "theme": "light",
+          "selector": "section[aria-labelledby='auth-key-settings-heading']"
+        }
+      ]
+    },
+    {
+      "name": "AccountSection",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=valid&theme=light",
+      "states": [
+        {
+          "id": "TC-04",
+          "label": "account-surface",
+          "theme": "light",
+          "selector": "section[aria-labelledby='account-settings-heading']"
+        },
+        {
+          "id": "TC-05",
+          "label": "account-delete-dialog",
+          "theme": "light",
+          "action": "click",
+          "actionTarget": "section[aria-labelledby='account-settings-heading'] button[aria-label='アカウントを削除']",
+          "waitAfterAction": 400,
+          "selector": "[data-testid='account-confirm-dialog']"
+        }
+      ]
+    },
+    {
+      "name": "ApiKeysSection",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=valid&theme=light",
+      "states": [
+        {
+          "id": "TC-06",
+          "label": "api-keys-surface",
+          "theme": "light",
+          "selector": "[aria-label='APIキー設定']"
+        },
+        {
+          "id": "TC-07",
+          "label": "api-keys-delete-dialog",
+          "theme": "light",
+          "action": "click",
+          "actionTarget": "[aria-label='APIキー設定'] button[aria-label='削除']",
+          "waitAfterAction": 400,
+          "selector": "[role='dialog'][aria-labelledby='delete-confirm-title']"
+        }
+      ]
+    },
+    {
+      "name": "AuthView",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=auth&authError=1&theme=light",
+      "states": [
+        {
+          "id": "TC-08",
+          "label": "auth-error",
+          "theme": "light",
+          "selector": "[data-testid='phase11-auth-surface']"
+        }
+      ]
+    },
+    {
+      "name": "WorkspaceSearchPanel",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=workspace&workspaceScenario=success&theme=light",
+      "states": [
+        {
+          "id": "TC-09",
+          "label": "workspace-results",
+          "theme": "light",
+          "selector": "[data-testid='workspace-search-panel']"
+        }
+      ]
+    },
+    {
+      "name": "WorkspaceSearchPanel",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=workspace&workspaceScenario=error&theme=light",
+      "states": [
+        {
+          "id": "TC-10",
+          "label": "workspace-error",
+          "theme": "light",
+          "selector": "[data-testid='workspace-search-panel']"
+        }
+      ]
+    },
+    {
+      "name": "SettingsView",
+      "route": "/phase11-light-theme-shared-color-migration.html?surface=settings&authMode=api-key&authStatus=valid&theme=light",
+      "states": [
+        {
+          "id": "TC-11",
+          "label": "settings-shell",
+          "theme": "light",
+          "selector": "[data-testid='phase11-light-theme-settings']"
+        }
+      ]
+    },
+    {
+      "name": "DashboardView",
+      "route": "/phase11-dashboard-home.html?theme=light&state=normal",
+      "states": [
+        {
+          "id": "TC-12",
+          "label": "dashboard-light",
+          "theme": "light",
+          "selector": "[data-testid='phase11-dashboard-home']"
+        }
+      ]
+    },
+    {
+      "name": "DashboardView",
+      "route": "/phase11-dashboard-home.html?theme=dark&state=normal",
+      "states": [
+        {
+          "id": "TC-13",
+          "label": "dashboard-dark",
+          "theme": "dark",
+          "selector": "[data-testid='phase11-dashboard-home']"
+        }
+      ]
+    }
+  ]
+}

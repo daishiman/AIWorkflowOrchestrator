@@ -122,8 +122,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
                   className={clsx(
                     "space-y-1 text-sm px-3 py-2 rounded-md",
                     authModeStatus.isValid
-                      ? "bg-green-50 text-green-700 border border-green-200"
-                      : "bg-amber-50 text-amber-700 border border-amber-200",
+                      ? "bg-[var(--status-success-subtle)] text-[var(--status-success)] border border-[var(--status-success)]/20"
+                      : "bg-[var(--status-warning-subtle)] text-[var(--status-warning)] border border-[var(--status-warning)]/20",
                   )}
                   data-testid="auth-mode-status"
                 >

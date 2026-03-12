@@ -1,0 +1,252 @@
+{
+  "feature": "light-theme-shared-color-migration",
+  "created": "2026-03-11T00:00:00Z",
+  "lastUpdated": "2026-03-12T05:03:54Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/priority-batches.md",
+          "description": "優先バッチ定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/backlog-mapping.md",
+          "description": "backlog mapping"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/aiworkflow-requirements-extraction.md",
+          "description": "aiworkflow-requirements 抽出"
+        }
+      ],
+      "completedAt": "2026-03-12T04:10:00Z"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/batch-plan.md",
+          "description": "batch plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/migration-plan.md",
+          "description": "migration plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/codex-handoff.md",
+          "description": "codex handoff"
+        }
+      ],
+      "completedAt": "2026-03-12T04:10:30Z"
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "design review"
+        }
+      ],
+      "completedAt": "2026-03-12T04:10:45Z"
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-specification.md",
+          "description": "test specification"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/batch-test-matrix.md",
+          "description": "batch test matrix"
+        }
+      ],
+      "completedAt": "2026-03-12T04:11:00Z"
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "implementation summary"
+        }
+      ],
+      "completedAt": "2026-03-12T04:11:15Z"
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/expanded-test-plan.md",
+          "description": "expanded test plan"
+        }
+      ],
+      "completedAt": "2026-03-12T04:11:30Z"
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "coverage report"
+        }
+      ],
+      "completedAt": "2026-03-12T04:11:45Z"
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "description": "refactoring plan"
+        }
+      ],
+      "completedAt": "2026-03-12T04:12:00Z"
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "quality report"
+        }
+      ],
+      "completedAt": "2026-03-12T04:12:15Z"
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "final review result"
+        }
+      ],
+      "completedAt": "2026-03-12T04:12:30Z"
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "manual test checklist"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-plan.md",
+          "description": "manual test plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "screenshot plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "screenshot coverage"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "manual test result"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "discovered issues"
+        },
+        {
+          "type": "directory",
+          "path": "outputs/phase-11/screenshots",
+          "description": "screenshots"
+        }
+      ],
+      "completedAt": "2026-03-12T05:01:49Z"
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "implementation guide"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "spec update summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "phase12 compliance"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "documentation changelog"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "unassigned task detection"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill feedback"
+        }
+      ],
+      "completedAt": "2026-03-12T05:03:54Z"
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [],
+      "notes": "commit / PR はユーザー明示承認まで禁止"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "fix",
+    "taskId": "TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001",
+    "title": "ライトテーマ shared 色直書き移行",
+    "priority": "high",
+    "branch": "task-20260312-light-theme-shared-color-migration-specs"
+  }
+}

@@ -125,6 +125,26 @@
 | クリック動作 | ファイルを開き、該当行にジャンプ |
 | 最大表示件数 | 1000件（パフォーマンス考慮）     |
 
+### light theme shared color remediation（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
+
+**完了日**: 2026-03-12  
+**対象ファイル**: `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx`
+
+| surface | 契約 |
+| --- | --- |
+| panel container | background / border / text は search panel 共通 token を使い、light theme で `slate/white` 固定色へ戻さない |
+| input focus | focus ring は accent token に統一し、検索欄の可視性を light background 上で維持する |
+| result highlight | match highlight は subtle accent surface とし、ベタ塗り青で本文可読性を落とさない |
+| counter / meta text | 件数・補助文は primary / muted token を使い、コントラストを確保する |
+| error banner | error message と input border は error semantic token に統一し、light theme でも境界が消えない |
+
+### Phase 11 視覚検証
+
+| テストケース | 証跡 | 判定 |
+| --- | --- | --- |
+| TC-09 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-09-workspace-results-light.png` | PASS |
+| TC-10 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-10-workspace-error-light.png` | PASS |
+
 ---
 
 ## ファイル名検索パネル（FileNameSearchPanel）
@@ -548,6 +568,7 @@ EditorInstanceインターフェースのTextArea実装。
 
 | 日付       | バージョン | 変更内容                                                                 |
 | ---------- | ---------- | ------------------------------------------------------------------------ |
+| 2026-03-12 | v1.3.2     | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。`WorkspaceSearchPanel` の panel / focus / highlight / counter / error banner を semantic token 契約へ整理し、Phase 11 screenshot 2件を同期 |
 | 2026-03-11 | v1.3.1     | TASK-UI-04C follow-up: `Workspace QuickFileSearch dialog` に関連未タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を追加し、`score=0` 除外と stable sort の共通化導線を接続 |
 | 2026-03-11 | v1.3.0     | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` セクションを追加し、`Cmd/Ctrl+P`、top 10 results、focus trap、`score=0` 除外、preview 自動オープンを記録 |
 | 2026-02-04 | v1.2.0     | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（一括置換） |

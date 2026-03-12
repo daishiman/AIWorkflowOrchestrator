@@ -59,6 +59,27 @@ node scripts/search-spec.js "preload invoke hang" -C 3
 3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
 4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
 
+### Light Theme contrast regression guard を探すとき
+
+このカテゴリは `light theme contrast guard` `phase11-static-server` `selector-based capture` `currentViolations` `baselineViolations` `ThemeSelector` `AuthView` `workspace-search` `current build static serve` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "light theme contrast guard" -C 3
+node scripts/search-spec.js "phase11-static-server" -C 3
+node scripts/search-spec.js "selector-based capture" -C 3
+node scripts/search-spec.js "currentViolations" -C 3
+node scripts/search-spec.js "baselineViolations" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Light Theme contrast regression guard / representative screenshot audit）」を見る
+2. `references/workflow-light-theme-contrast-regression-guard.md` で実装内容、苦戦箇所、5分解決カード、SubAgent 分担をまとめて確認する
+3. `references/ui-ux-feature-components.md` の guard 節で representative screen と baseline routing を確認する
+4. `references/ui-ux-design-system.md` と `references/workflow-light-theme-global-remediation.md` で token/remediation 側の責務を切り分ける
+5. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録と短手順を確認する
+6. 実装実体は `apps/desktop/scripts/light-theme-contrast-guard.config.mjs` `apps/desktop/scripts/light-theme-contrast-guard.mjs` `apps/desktop/scripts/phase11-static-server.mjs` `apps/desktop/src/renderer/phase11-light-theme-contrast-guard.tsx` `apps/desktop/electron.vite.config.ts` を照合する
+
 ### Electron IPC パターン
 
 ```typescript

@@ -66,27 +66,27 @@ const VALIDATION_STATUS_CONFIG: Record<
 > = {
   valid: {
     icon: "check-circle",
-    color: "text-green-400",
+    color: "text-[var(--status-success)]",
     message: "APIキーは有効です",
   },
   invalid: {
     icon: "x-circle",
-    color: "text-red-400",
+    color: "text-[var(--status-error)]",
     message: "APIキーが無効です。キーを確認して再入力してください",
   },
   network_error: {
     icon: "alert-triangle",
-    color: "text-yellow-400",
+    color: "text-[var(--status-warning)]",
     message: "サーバーに接続できません。しばらく待ってから再試行してください",
   },
   timeout: {
     icon: "clock",
-    color: "text-yellow-400",
+    color: "text-[var(--status-warning)]",
     message: "接続がタイムアウトしました。ネットワーク環境を確認してください",
   },
   unknown_error: {
     icon: "alert-circle",
-    color: "text-yellow-400",
+    color: "text-[var(--status-warning)]",
     message: "検証中にエラーが発生しました。もう一度お試しください",
   },
 };
@@ -121,7 +121,10 @@ const ValidationStatusDisplay: React.FC<ValidationStatusDisplayProps> = ({
   if (isLoading) {
     return (
       <div
-        className={clsx("flex items-center gap-2 text-white/60", className)}
+        className={clsx(
+          "flex items-center gap-2 text-[var(--text-secondary)]",
+          className,
+        )}
         role="status"
         aria-live="polite"
       >
@@ -177,20 +180,24 @@ const ApiKeyItem: React.FC<ApiKeyItemProps> = ({
     <div
       role="listitem"
       aria-label={`${displayName}のAPIキー、${isRegistered ? "登録済み" : "未登録"}`}
-      className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+      className="flex items-center justify-between p-3 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-tertiary)] hover:bg-[var(--bg-secondary)] transition-colors"
     >
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] flex items-center justify-center">
           <AIProviderIcon
             provider={provider}
             size={18}
-            className="text-white/80"
+            className="text-[var(--text-secondary)]"
           />
         </div>
         <div className="flex flex-col">
-          <span className="text-white font-medium">{displayName}</span>
+          <span className="text-[var(--text-primary)] font-medium">
+            {displayName}
+          </span>
           {validatedAtText && (
-            <span className="text-xs text-white/40">{validatedAtText}</span>
+            <span className="text-xs text-[var(--text-muted)]">
+              {validatedAtText}
+            </span>
           )}
         </div>
       </div>
@@ -389,7 +396,7 @@ const ApiKeyFormModal: React.FC<ApiKeyFormModalProps> = ({
           <div className="flex items-center justify-between mb-4">
             <h2
               id="api-key-form-title"
-              className="text-lg font-semibold text-white"
+              className="text-lg font-semibold text-[var(--text-primary)]"
             >
               {displayName}のAPIキーを{isEdit ? "編集" : "登録"}
             </h2>
@@ -407,7 +414,7 @@ const ApiKeyFormModal: React.FC<ApiKeyFormModalProps> = ({
             <div>
               <label
                 htmlFor="api-key-input"
-                className="block text-sm font-medium text-white mb-1"
+                className="block text-sm font-medium text-[var(--text-primary)] mb-1"
               >
                 APIキー
               </label>
@@ -426,7 +433,7 @@ const ApiKeyFormModal: React.FC<ApiKeyFormModalProps> = ({
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-white/40 hover:text-white"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
                   onClick={() =>
                     setFormState((prev) => ({
                       ...prev,
@@ -445,7 +452,10 @@ const ApiKeyFormModal: React.FC<ApiKeyFormModalProps> = ({
                   />
                 </button>
               </div>
-              <p id="api-key-hint" className="mt-1 text-xs text-white/40">
+              <p
+                id="api-key-hint"
+                className="mt-1 text-xs text-[var(--text-muted)]"
+              >
                 {`「${placeholder.replace("...", "")}」で始まるAPIキーを入力してください`}
               </p>
             </div>
@@ -459,7 +469,7 @@ const ApiKeyFormModal: React.FC<ApiKeyFormModalProps> = ({
             )}
 
             {formState.error && (
-              <div className="text-sm text-red-400" role="alert">
+              <div className="text-sm text-[var(--status-error)]" role="alert">
                 {formState.error}
               </div>
             )}
@@ -543,16 +553,16 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
       <GlassPanel radius="lg" blur="lg" className="w-full max-w-sm p-6">
         <h2
           id="delete-confirm-title"
-          className="text-lg font-semibold text-white mb-4"
+          className="text-lg font-semibold text-[var(--text-primary)] mb-4"
         >
           APIキーを削除
         </h2>
 
-        <p className="text-white/80 mb-2">
+        <p className="text-[var(--text-primary)] mb-2">
           {displayName}のAPIキーを削除しますか？
         </p>
 
-        <p className="text-sm text-white/60 mb-6">
+        <p className="text-sm text-[var(--text-secondary)] mb-6">
           この操作は取り消せません。削除後、このプロバイダーを使用するには再度APIキーを登録する必要があります。
         </p>
 
@@ -564,7 +574,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
             variant="primary"
             onClick={handleConfirm}
             disabled={isDeleting}
-            className="bg-red-500 hover:bg-red-600"
+            className="bg-[var(--status-error)] hover:bg-[var(--status-error-hover)] text-[var(--text-inverse)]"
           >
             削除
           </Button>
@@ -733,7 +743,7 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
           </div>
         ) : state.error ? (
           <div className="text-center py-4">
-            <p className="text-red-400 mb-2" role="alert">
+            <p className="text-[var(--status-error)] mb-2" role="alert">
               {state.error}
             </p>
             <Button variant="ghost" onClick={handleRetry} aria-label="再試行">
@@ -758,7 +768,7 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
           </div>
         )}
 
-        <p className="mt-4 text-xs text-white/40 flex items-center gap-1">
+        <p className="mt-4 text-xs text-[var(--text-muted)] flex items-center gap-1">
           <Icon name="lock" size={14} aria-hidden="true" />
           APIキーは暗号化して安全に保存されます
         </p>

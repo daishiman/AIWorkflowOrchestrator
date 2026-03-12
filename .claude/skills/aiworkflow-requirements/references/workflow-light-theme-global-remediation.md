@@ -55,29 +55,19 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 | Primitive 移行 | `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` を token 基準へ寄せ、inverse text は accent surface のみに限定 |
 | CI 回復 | `DashboardView` の `--accent` を `--accent-primary` に統一し、desktop test shard 11 の fail を解消 |
 | 視覚証跡更新 | Phase 11 screenshot 5件を completed workflow 側パスで再取得し、coverage validator を PASS へ戻した |
-| 継続 backlog | shared color migration は current workflow `docs/30-workflows/light-theme-shared-color-migration/` で `spec_created`、contrast regression guard は親 workflow 配下 `unassigned-task/` で継続管理 |
+| 継続 backlog | shared color migration は completed workflow `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` へ移管済みで、contrast regression guard も completed workflow として完了した |
 
 ---
 
-## shared color migration 仕様作成追補（2026-03-12）
+## 追補: shared component semantic token migration（2026-03-12）
 
 | 観点 | 内容 |
 | --- | --- |
-| ステータス | `spec_created`（Phase 1-3 設計完了 / 実装未着手） |
-| current workflow | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| primary targets | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` |
-| verification-only | `SettingsView` / `SettingsCard` / `DashboardView` は hardcoded color 主因ではなく regression 確認専用 lane |
-| 抽出した system spec | `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` |
-| 仕様書別 SubAgent 分担 | A=`design-system/settings`、B=`feature/search/portal/state`、C=`api/security`、D=`task-workflow`、E=`lessons/skill-template` |
-
-### 仕様作成時の苦戦箇所
-
-| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
-| --- | --- | --- | --- |
-| 旧 unassigned-task の棚卸しをそのまま使うと対象 inventory が drift する | `SettingsView` / `DashboardView` を親 task のまま P1 扱いする | current worktree 監査結果で inventory を再固定し、wrapper は verification-only へ落とした | spec_created UI task は Phase 1 で必ず現物 inventory を取り直す |
-| token scope と component scope を同一 task で扱うと責務が崩れる | token foundation の残論点と component migration を混在させる | token 基盤は親 workflow、current task は component migration、wrapper は verification-only に分離した | Light Mode follow-up は token / component / verification-only の3 lane へ分ける |
-| UI だけ読むと Auth/Search/Portal/Security 依存を落とす | `ui-ux-*` だけ見て `api-ipc-*` / `security-*` / `rag-desktop-state` を参照しない | auth/search/settings に関わる cross-cutting spec を Phase 1-2 で抽出した | settings/auth/workspace を跨ぐ task では UI + state + auth/api + security を同一ターンで読む |
-| Phase 1-3 設計確定前に後続 phase を詰めると batch が揺れる | target inventory 確定前に Phase 4-13 を書き進める | priority batches と design review を固めてから planned phase を維持した | spec_created task は Phase 1-3 completed を gate にする |
+| 対象 surface | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` |
+| 実装方針 | light theme で hardcoded `green/amber/red/blue/slate/white` class に頼っていた shared surface を semantic token 基準へ移行し、selector / status / dialog / error banner / search highlight を横断的に揃える |
+| blind spot 是正 | Phase 2 で verification-only 扱いだった `SettingsView` status panel に residual hardcode が残っていたため、Phase 12 再監査で発見して current task 内で修正した |
+| 証跡 | completed workflow Phase 11 screenshot 13件、Apple UI/UX engineer 観点レビュー、guard test、targeted tests、typecheck、build |
+| canonical workflow | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
 
 ---
 
@@ -131,11 +121,11 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 
 ## 関連改善タスク
 
-| 未タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する（`spec_created`） | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する（Phase 1-12 完了 / Phase 13 未実施） | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+| タスクID | ステータス | 概要 | 参照 |
+| --- | --- | --- | --- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | 完了（2026-03-12 / Phase 1-12、completed-tasks移管済み） | shared component の hardcoded color を semantic token へ段階移行し、light theme shared surface を completed workflow で再監査した | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | 未実施 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | 完了（2026-03-12 / Phase 1-12、completed workflow 移管済み） | light contrast の screenshot / audit / Phase 11 checklist を恒久化し、current build static serve fallback を標準手順化した | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 ---
 
@@ -153,6 +143,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-12 | 1.1.3 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を追補。shared selector / status / dialog / error/search surface の semantic token 移行、verification-only blind spot 吸収、completed workflow Phase 11 screenshot 13件、canonical workflow 導線を追加し、shared color migration を backlog から完了状態へ更新 |
 | 2026-03-12 | 1.1.2 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の completed workflow 同期を反映。関連改善タスクの参照先を `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` へ切り替え、guard と remediation の責務分離を正本へ固定 |
 | 2026-03-12 | 1.1.1 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。shared color migration 仕様作成で露出した current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を、light-theme follow-up の関連改善タスクとして formalize |
 | 2026-03-12 | 1.1.0 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を追加。current workflow、inventory correction、verification-only lane、必要 system spec 抽出セット、Phase 1-3 gate を workflow-light-theme-global-remediation 正本へ同期 |
