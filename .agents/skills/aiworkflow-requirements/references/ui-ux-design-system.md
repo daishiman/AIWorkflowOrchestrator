@@ -280,7 +280,7 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | 3テーマ整合 | required token を light / dark / kanagawa 全テーマで定義 | contract test で一括検証 |
 | CI 回復 | Dashboard の `--accent` 参照を `--accent-primary` に統一し、shard fail を local 再現して回復した | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` PASS |
 | 視覚検証 | Dashboard / Settings / Auth / AgentView + dark baseline を再撮影し、completed workflow 側の capture path と coverage を同期 | Phase 11 screenshot 5件 + coverage validator PASS |
-| 残課題分離 | component 側の補助文コントラストは後続 task へ切り分け、その後 shared color migration として完了した | `docs/30-workflows/completed-tasks/task-fix-light-theme-shared-color-migration-001.md` |
+| 残課題分離 | component 側の補助文コントラストは後続 task へ切り分け | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` に引き継ぎ |
 
 #### TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 苦戦箇所（2026-03-11）
 
@@ -292,16 +292,6 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | Phase 5-12 成果物不足で実装済みと台帳が乖離する | 実装後に outputs / artifacts 同期を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `index.md` を同時同期した |
 | Phase 11 必須節不足で screenshot coverage 判定がぶれる | `テストケース` / `画面カバレッジマトリクス` を省略する | `phase-11-manual-test.md` に必須節を追記し、`manual-test-result.md` と 1:1 対応にそろえた |
 | completed workflow 移管後の follow-up backlog 正本がぶれる | workflow 名参照だけで残課題を管理する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に task spec を揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
-
-#### TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 実装内容（2026-03-12）
-
-| 観点 | 内容 | 検証 |
-| --- | --- | --- |
-| shared selector control | `ThemeSelector` / `AuthModeSelector` の selected / warning / success surface を semantic token 基準へ移行し、light theme で direct `blue/green/amber` class に依存しないよう整理 | Phase 11 TC-01 / TC-02 / TC-11, targeted tests PASS |
-| settings shared surface | `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `SettingsView` status panel を light theme token に揃え、saved badge・delete dialog・warning panel の可読性を固定 | Phase 11 TC-03〜07 / TC-11, `ApiKeysSection` / `SettingsView` tests PASS |
-| auth / search surface | `AuthView` の error panel と `WorkspaceSearchPanel` の result / error surface を semantic token 基準へ揃えた | Phase 11 TC-08〜10, `WorkspaceSearchPanel` tests PASS |
-| blind spot 対策 | verification-only 扱いだった `SettingsView` status panel を再監査し、green / amber hardcode を current task 内で吸収した | `SettingsView.integration.test.tsx` PASS |
-| hardcode 残存監査 | shared color migration の対象 surface に対し guard test を追加し、残存 hardcoded color class を検出できるようにした | `light-theme-shared-color-migration.guard.test.ts` PASS |
 
 #### UT-UI-THEME-DYNAMIC-SWITCH-001 実装時の苦戦箇所
 
@@ -349,8 +339,8 @@ const variantStyles: Record<Variant, string> = {
 | タスクID | タスク名 | ステータス | 優先度 | 参照 |
 |----------|----------|------------|--------|------|
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | 完了（2026-03-12 / Phase 1-12、completed-tasks移管済み） | 高 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 完了（Phase 1-12 完了 / Phase 13 未実施） | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | 未実施 | 高 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
@@ -360,9 +350,6 @@ const variantStyles: Record<Variant, string> = {
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.5.11 | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。`ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` の shared color semantic token 移行、verification-only blind spot 吸収、guard test 追加、completed workflow Phase 11 screenshot 13件を design system 正本へ同期 |
-| 1.5.10 | 2026-03-12 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 1-12 完了を反映。関連タスクテーブルの status を `完了（Phase 1-12 完了 / Phase 13 未実施）` へ更新し、current workflow 正本 `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` を参照先に切り替えた |
-| 1.5.9 | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を反映。current workflow、actual target inventory、verification-only lane、settings/search/auth/security まで含む必要 cross-cutting spec を design system 正本へ同期 |
 | 1.5.8 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Workspace QuickFileSearch dialog` トークンを追加し、480px幅 / 12px radius / 0 8px 32px rgba(0,0,0,0.12) / mobile scrim / filename-path hierarchy を固定 |
 | 1.5.7 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の global light remediation 追補を反映。white background / black text 基準、renderer-wide compatibility bridge、primitive token 移行、shard 11 再現、screenshot 再取得を design system 正本へ同期した |
 | 1.5.6 | 2026-03-11 | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の completed workflow 同期を反映。light theme token 実装値（`bg/text/border/accent`）と完了タスクを追記し、follow-up 2件の正本導線を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` へ統一した |

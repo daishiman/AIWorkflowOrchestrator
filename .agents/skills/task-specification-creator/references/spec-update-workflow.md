@@ -99,7 +99,6 @@ Phase 12 Task 2 開始
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
 | 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要** | Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須。統合元セクションを「統合済み」に変更し、統合先セクションを拡張すること（P25-P28参照） |
 | 「スキル改善なし」と判断                 | **フィードバック必須** | Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてskill-feedback-report.mdを作成すること |
-| 「aiworkflow/task-spec だけ直せば十分」 | **`skill-creator` も条件付きで更新** | ユーザーがスキル改善を明示した場合、または Task 5 から再利用パターンを抽出してテンプレート/パターンへ落とし込む場合は `skill-creator` を更新対象に含める |
 | 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり** | テスト戦略変更（renderHookパターン導入、テストヘルパー追加、テストカテゴリ体系変更）は仕様書に記録すべき。テストケースの追加・削除のみなら不要 |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
@@ -584,23 +583,20 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] task-specification-creator/LOGS.md を更新した
 - [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
 - [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
-- [ ] `skill-creator` を更新した場合、skill-creator/LOGS.md を更新した
-- [ ] `skill-creator` を更新した場合、skill-creator/SKILL.md の変更履歴にバージョンを追記した
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（判定基準は Step 1-G.3.1 を参照）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
 
-#### LOGS.md 更新（必須：2ファイル、`skill-creator` 更新時は +1）
+#### LOGS.md 更新（必須：2ファイル両方を更新）
 
-**⚠️ 重要**: 以下の**2つの**LOGS.mdファイルを**両方**更新する。さらに `skill-creator` を改善した場合は `skill-creator/LOGS.md` も同一ターンで更新する。
+**⚠️ 重要**: 以下の**2つの**LOGS.mdファイルを**両方**更新する必要があります。
 
 | ファイル | 目的 |
 | -------- | ---- |
 | `.claude/skills/aiworkflow-requirements/LOGS.md` | システム仕様書更新の記録 |
 | `.claude/skills/task-specification-creator/LOGS.md` | タスク仕様書スキルの使用記録 |
-| `.claude/skills/skill-creator/LOGS.md` | スキル改善パターン追加の記録（`skill-creator` 更新時のみ） |
 
 **1. aiworkflow-requirements/LOGS.md** に以下の形式でエントリを追加:
 

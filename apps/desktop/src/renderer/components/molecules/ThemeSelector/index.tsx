@@ -105,7 +105,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
       data-testid="theme-selector"
       className={clsx(
         "flex gap-1 p-1 rounded-lg",
-        "bg-[var(--bg-tertiary)] border border-[var(--border-primary)]",
+        "bg-white/5 border border-white/10",
         fullWidth && "w-full",
         disabled && "opacity-50 cursor-not-allowed",
         className,
@@ -140,12 +140,11 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
               // State styles
               isSelected
                 ? // Selected state
-                  "bg-[var(--status-primary)] text-[var(--text-inverse)] ring-2 ring-[var(--status-primary)]/20"
+                  "bg-[var(--status-primary)] text-white ring-2 ring-[var(--status-primary)]/30"
                 : // Unselected state
                   clsx(
-                    "bg-transparent text-[var(--text-secondary)]",
-                    !disabled &&
-                      "hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]",
+                    "bg-transparent text-white/60",
+                    !disabled && "hover:bg-white/10 hover:text-white/80",
                   ),
 
               // Disabled state

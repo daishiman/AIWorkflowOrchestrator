@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import clsx from "clsx";
 import { useAuthModeStatus } from "../../../store";
 
 /**
@@ -22,27 +21,27 @@ const STATUS_CONFIG: Record<
 > = {
   saved: {
     label: "保存済み",
-    bgClass: "bg-[var(--status-success-subtle)]",
-    textClass: "text-[var(--status-success)]",
-    borderClass: "border-[var(--status-success)]/30",
+    bgClass: "bg-[#34C759]/10",
+    textClass: "text-[#34C759]",
+    borderClass: "border-[#34C759]/30",
   },
   "env-fallback": {
     label: "環境変数で設定済み",
-    bgClass: "bg-[var(--status-warning-subtle)]",
-    textClass: "text-[var(--status-warning)]",
-    borderClass: "border-[var(--status-warning)]/30",
+    bgClass: "bg-[#FF9500]/10",
+    textClass: "text-[#FF9500]",
+    borderClass: "border-[#FF9500]/30",
   },
   "not-set": {
     label: "未設定",
-    bgClass: "bg-[var(--status-error)]/10",
-    textClass: "text-[var(--status-error)]",
-    borderClass: "border-[var(--status-error)]/30",
+    bgClass: "bg-[#FF3B30]/10",
+    textClass: "text-[#FF3B30]",
+    borderClass: "border-[#FF3B30]/30",
   },
   "check-failed": {
     label: "確認失敗",
-    bgClass: "bg-[var(--bg-tertiary)]",
-    textClass: "text-[var(--text-muted)]",
-    borderClass: "border-[var(--border-primary)]",
+    bgClass: "bg-gray-100",
+    textClass: "text-gray-500",
+    borderClass: "border-gray-300",
   },
 };
 
@@ -176,7 +175,7 @@ export const AuthKeySection: React.FC = () => {
     >
       {/* ステータスバッジ */}
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-[var(--text-secondary)]">
+        <span className="text-sm font-medium text-gray-700">
           APIキーの状態:
         </span>
         <span
@@ -192,7 +191,7 @@ export const AuthKeySection: React.FC = () => {
       <div className="space-y-2">
         <label
           htmlFor="auth-key-input"
-          className="block text-sm font-medium text-[var(--text-primary)]"
+          className="block text-sm font-medium text-gray-700"
         >
           Anthropic APIキー
         </label>
@@ -205,14 +204,14 @@ export const AuthKeySection: React.FC = () => {
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="sk-ant-..."
               disabled={isSubmitting}
-              className="w-full px-3 py-2 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed pr-10"
+              className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#007AFF] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed pr-10"
               aria-label="Anthropic APIキー入力"
               aria-describedby="auth-key-description"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
               aria-label={
                 showPassword ? "パスワードを隠す" : "パスワードを表示"
               }
@@ -261,7 +260,7 @@ export const AuthKeySection: React.FC = () => {
             type="button"
             onClick={handleSave}
             disabled={isSubmitting || inputValue.trim() === ""}
-            className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--text-inverse)] bg-[var(--status-primary)] hover:bg-[var(--status-primary-hover)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#007AFF] hover:bg-[#0066D6] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             data-testid="save-auth-key-button"
           >
             {isSubmitting ? "保存中..." : "保存"}
@@ -271,17 +270,14 @@ export const AuthKeySection: React.FC = () => {
               type="button"
               onClick={handleDelete}
               disabled={isSubmitting}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--status-error)] border border-[var(--status-error)] hover:bg-[var(--status-error)]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-lg text-sm font-medium text-[#FF3B30] border border-[#FF3B30] hover:bg-[#FF3B30]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               data-testid="delete-auth-key-button"
             >
               削除
             </button>
           )}
         </div>
-        <p
-          id="auth-key-description"
-          className="text-xs text-[var(--text-muted)]"
-        >
+        <p id="auth-key-description" className="text-xs text-gray-500">
           APIキーはセキュアストレージに暗号化して保存されます
         </p>
       </div>
@@ -289,12 +285,11 @@ export const AuthKeySection: React.FC = () => {
       {/* ステータスメッセージ */}
       {statusMessage && (
         <div
-          className={clsx(
-            "text-sm px-3 py-2 rounded-lg",
+          className={`text-sm px-3 py-2 rounded-lg ${
             statusType === "success"
-              ? "bg-[var(--status-success-subtle)] text-[var(--status-success)]"
-              : "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-          )}
+              ? "bg-[#34C759]/10 text-[#34C759]"
+              : "bg-[#FF3B30]/10 text-[#FF3B30]"
+          }`}
           data-testid="auth-key-status-message"
           role="status"
           aria-live="polite"

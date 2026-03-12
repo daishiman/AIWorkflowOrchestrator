@@ -3,17 +3,6 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の blind spot 再監査パターンを skill-creator へ反映
-
-- **Agent**: skill-creator
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「shared component semantic token migration + blind spot 固定」を追加し、verification-only surface 再監査、`components[].route` 正本、`require.resolve('playwright')` preflight、canonical root + mirror sync を1パターンへ集約
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に、Light Mode follow-up 向けの blind spot / route / Playwright / canonical root 完了チェックを追記
-  - shared component follow-up では `ui-ux-components.md` と `indexes/quick-reference.md` も探索入口として更新対象に含めることを meta-skill 側の成功条件へ昇格
-
----
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator

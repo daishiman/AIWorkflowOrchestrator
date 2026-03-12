@@ -20,15 +20,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-12 | 1.29.86 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の residual warning follow-up を追補。PASS test の stderr warning / Phase 10 residual note / 既存未タスクを3点照合し、completed workflow 配下 `unassigned-task/` 正本へ再接続するルールを追加 |
-| 2026-03-12 | 1.29.85 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の再監査教訓を追加。verification-only blind spot、`components[].route` 前提の screenshot plan、workflow root での Playwright module resolution、user 指定 canonical root 優先の 4 点を標準化し、system spec / skill guide / mirror sync を同一ターンで閉じる運用へ更新 |
-| 2026-03-12 | 1.29.84 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
-| 2026-03-12 | 1.29.83 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
-| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
-| 2026-03-12 | 1.29.81 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
-| 2026-03-12 | 1.29.80 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
-| 2026-03-12 | 1.29.79 | TASK-SKILL-LIFECYCLE-02 追補。`UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001` を追加し、entry surface / execution surface 分離と `Date` revive を横断で固定する回帰ガードを未タスク導線へ接続 |
-| 2026-03-11 | 1.29.78 | TASK-SKILL-LIFECYCLE-02 の教訓を追加。共通 chat platform の責務集約、persist revive、workflow/system spec stale 同時是正、`complete-phase.js` array schema drift 修正、light theme screenshot review を再利用手順として固定 |
+| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
+| 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
+| 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
+| 2026-03-12 | 1.29.79 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
+| 2026-03-12 | 1.29.78 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -184,59 +180,55 @@
 
 ### 2026-03-12 TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
 
-#### 苦戦箇所1: verification-only batch は shared color blind spot を生みやすい
+#### 苦戦箇所1: old unassigned-task の対象一覧を盲信すると current worktree とずれる
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | diff が少ない `SettingsView` を verification-only とみなすと、status panel の green / amber hardcode のような shared color 残件を見逃しやすい |
-| 再発条件 | バッチ設計時に component diff の有無だけで優先度を決め、status / warning / error / danger surface を代表画面で再確認しない |
-| 解決策 | Phase 11 representative screenshot と integration test を追加し、verification-only surface にも blind spot 監査を適用した |
-| 標準ルール | verification-only batch でも shared color surface は Apple UI/UX 観点の再確認対象に含める |
+| 課題 | `SettingsView` / `SettingsCard` / `DashboardView` を主対象のまま持ち込むと、実際に hardcoded color が多い `AccountSection` / `ApiKeysSection` / `AuthModeSelector` / `AuthKeySection` / `WorkspaceSearchPanel` が薄まる |
+| 再発条件 | 親 task の未タスク指示書を current worktree 監査なしで再利用する |
+| 解決策 | `outputs/phase-1/requirements-definition.md` の inventory を正本にし、wrapper は verification-only lane へ落とした |
+| 標準ルール | spec_created UI task では Phase 1 で current worktree の inventory correction を必ず行う |
 
-#### 苦戦箇所2: screenshot plan で route を state 側に持たせても capture 経路は切り替わらない
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `capture-screenshots.js` は route を `components[].route` から解決するため、`states[].route` を書いても意図した surface に移動しない |
-| 再発条件 | 1 component entry に複数 route 状態を詰め込み、state ごとに route を切り替えようとする |
-| 解決策 | component entry を surface 単位に分割し、route は component 側へ固定した |
-| 標準ルール | route が変わる撮影は `components[].route` を分け、state は UI 状態だけを持つ |
-
-#### 苦戦箇所3: workspace package に `playwright` があっても workflow root script からは解決できない
+#### 苦戦箇所2: token scope と component scope を混ぜると task が肥大化する
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `apps/desktop` 側に依存があっても、workflow root から screenshot script を叩くと `playwright` を見つけられない場合がある |
-| 再発条件 | script 実行 cwd と Node module resolution の前提を揃えずに capture を始める |
-| 解決策 | root 側の `playwright` 解決経路を用意し、capture 実行前に preflight で確認した |
-| 標準ルール | screenshot capture は「実行 cwd から `playwright` が解決できること」を preflight 条件にする |
+| 課題 | token foundation の残件と component migration を同一 task に入れると、設計レビューで責務境界が曖昧になる |
+| 再発条件 | `white/black baseline` の議論と `shared component migration` を同時に扱う |
+| 解決策 | 親 workflow を token 基盤、current workflow を component migration、`SettingsView` / `SettingsCard` / `DashboardView` を verification-only として 3 lane に分離した |
+| 標準ルール | Light Mode follow-up は token / component / verification-only の 3 つに分ける |
 
-#### 苦戦箇所4: user 指定 canonical root を無視すると Phase 12 の結論が誤る
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `.agents` を既定正本として扱うと、user が明示した `.claude/skills/...` と workflow outputs の判定が食い違う |
-| 再発条件 | user 指定 root を読まずに過去の既定ルールを流用する |
-| 解決策 | `.claude` を canonical root に固定し、system spec / LOGS / SKILL 更新後に `.agents` mirror と `diff -qr` で整合確認した |
-| 標準ルール | Phase 12 は「user 指定 root = canonical root」を最優先にし、mirror drift を完了条件へ含める |
-
-#### 苦戦箇所5: PASSした representative test の stderr warning を 0件扱いすると Phase 12 backlog 判定が甘くなる
+#### 苦戦箇所3: UI 仕様だけ読むと auth/search/security/portal/state の前提が漏れる
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `SettingsView.integration.test.tsx` は 18 tests PASS でも `ApiKeysSection` 起因の `act()` warning が継続し、visual blocker ではないことを理由に 0件報告しやすい |
-| 再発条件 | PASS/FAIL だけを見て stderr、Phase 10 residual note、既存未タスクの3点を照合しない |
-| 解決策 | representative rerun で warning を再確認し、completed workflow 配下 `unassigned-task/` の task spec を正規化した上で `task-workflow` / `ui-ux-feature-components` / `unassigned-task-detection.md` へ再接続した |
-| 標準ルール | Phase 10 residual note / Phase 11-12 stderr warning / 既存未タスクを3点照合し、PASS でも品質ノイズが残るなら 0件報告にしない |
+| 課題 | `AuthView` / `WorkspaceSearchPanel` / Settings sections を跨ぐのに、UI 正本だけでは IPC / security / portal / state の制約が読めない |
+| 再発条件 | `ui-ux-*` だけで Phase 1-2 を閉じる |
+| 解決策 | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `ui-ux-portal-patterns` を同時抽出した |
+| 標準ルール | settings + auth + workspace が同居する UI task は UI + state + api/auth + security + portal を同一ターンで読む |
 
-#### 同種課題の簡潔解決手順（6ステップ）
+#### 苦戦箇所4: Phase 1-3 gate を崩すと後続 phase の設計が揺れる
 
-1. token foundation の follow-up でも verification-only surface を blind spot として洗い直す。
-2. screenshot plan で route が変わる場合は `components[].route` を分ける。
-3. capture 前に `playwright` の module resolution を確認し、workflow root と package root の差を潰す。
-4. Phase 11 で representative screenshot を取り直し、TC と png の対応を validator で固定する。
-5. representative test が PASS でも stderr と residual note を照合し、follow-up が必要なら completed workflow 配下 `unassigned-task/` を正本として更新する。
-6. `.claude` 正本、workflow outputs、`.agents` mirror を同一ターンで同期する。
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | inventory correction 前に Phase 4 以降の内容を詳細化すると、batch と test anchor が二重修正になる |
+| 再発条件 | 設計レビュー PASS 前に downstream phase を先に完成扱いにする |
+| 解決策 | Phase 1-3 を completed に固定し、Phase 4-13 は planned のまま保持した |
+| 標準ルール | spec_created task は「Phase 1-3 completed → 4+ planned」の順序を守る |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で current worktree の hardcoded color inventory を取り直す。
+2. token scope / component scope / verification-only lane を先に分ける。
+3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
+4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として設計する。
+5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
+
+### 関連未タスク（2026-03-12 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ## TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12）
 

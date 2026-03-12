@@ -3031,27 +3031,6 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-12
 - **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
 
-### [Phase12] shared component semantic token migration + blind spot 固定（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
-
-- **状況**: token foundation 後でも `ThemeSelector` / `SettingsView` / `WorkspaceSearchPanel` などの shared surface に `green/amber/red/blue/slate/white` hardcode が残りやすい。特に verification-only 扱いの画面は blind spot になりやすく、Phase 11 screenshot plan と skill root の扱いを誤ると再監査が長引く
-- **成功パターン**:
-  - `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-search-panel` / `task-workflow` / `lessons-learned` を同一ターンで同期する
-  - verification-only batch でも status / warning / error / danger surface を blind spot として representative screenshot + targeted test で再監査する
-  - screenshot plan は `components[].route` を正本にし、route が変わる state は component entry ごとに分割する
-  - screenshot capture 前に `node -e "console.log(require.resolve('playwright'))"` を実行し、script 実行 cwd から Playwright を解決できることを確認する
-  - user 指定 root を canonical root として固定し、`.claude` 更新後に `.agents` mirror と `diff -qr` で整合確認する
-  - representative test が PASS でも stderr warning と residual note を再確認し、既存未タスクがある場合は completed workflow 配下 `unassigned-task/` 正本へ再接続する
-- **失敗パターン**:
-  - component diff が小さいことだけを理由に `SettingsView` の status surface を verification-only のまま閉じる
-  - `states[].route` に route を置けば capture 経路も切り替わると誤認する
-  - workspace package 側に `playwright` が入っていれば workflow root script でも解決できると決め打ちする
-  - domain spec を増やしたのに `ui-ux-components.md` や `indexes/quick-reference.md` を更新せず、探索入口を stale のまま残す
-  - `visual blocker ではない` ことを理由に PASS test の stderr warning を 0件報告で閉じる
-- **結果**: shared component follow-up を `token修正` だけで終わらせず、blind spot 再監査、screenshot plan 制約、Playwright preflight、canonical root / mirror sync を含む Phase 12 短手順として再利用できる
-- **適用条件**: global light remediation 後の shared component migration、contrast follow-up、Settings/Auth/Search など複数 surface に跨る theme bugfix
-- **発見日**: 2026-03-12
-- **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
-
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する

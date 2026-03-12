@@ -30,9 +30,6 @@
 | 4   | 各Phase成果物                 | 「将来対応」「TODO」「FIXME」              | ✅   |
 | 5   | コードベース                  | TODO/FIXME/HACK/XXXコメント                | ✅   |
 | 6   | documentation-changelog苦戦箇所 | 実装中に発見された課題で未解決のもの       | ✅   |
-| 7   | representative test の stderr / residual note | PASSでも残る warning、Phase 10 residual note、non-blocking issue | ✅   |
-
-> 重要: `vitest` / `playwright` / validator が PASS でも、stderr warning や residual note が残る場合は 0件報告で閉じない。feature fix が完了していても、品質ノイズが残るなら follow-up task の対象とする。
 
 ### 検出コマンド例
 
@@ -92,10 +89,6 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
   - TASK 由来の open backlog がテンプレート準拠で配置済みかどうかは個別に書く
   - baseline 負債に既存の改善未タスクがある場合は、その参照をレポートへ記載する
   - baseline 負債を feature の不具合として扱わない
-- 既存未タスクを再利用する場合:
-  - `docs/30-workflows/unassigned-task/` 配下の current 正本を使う
-  - legacy copy が別ディレクトリにあっても、今回差分で触るファイルは 1 つに絞る
-  - `audit --json --diff-from HEAD --target-file <current file>` と物理存在確認結果を必ず記録する
 - 「指定ディレクトリに配置できているか」の確認では、少なくとも以下を分離して報告する:
   1. 今回タスク由来の未タスク指示書が指定ディレクトリに存在するか
   2. その指示書がテンプレート準拠か
