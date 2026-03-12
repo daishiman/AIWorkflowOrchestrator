@@ -1,0 +1,304 @@
+{
+  "feature": "task-060-ui-04-workspace-view",
+  "created": "2026-03-12T00:08:22.850Z",
+  "lastUpdated": "2026-03-12T03:51:00.000Z",
+  "status": "phase_12_completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:11.869Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "requirements-definition"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-boundary.md",
+          "description": "scope-boundary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "acceptance-criteria"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/system-spec-entrypoints.md",
+          "description": "system-spec-entrypoints"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.042Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/parent-child-responsibility-matrix.md",
+          "description": "parent-child-responsibility-matrix"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/execution-lane-design.md",
+          "description": "execution-lane-design"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/sync-matrix.md",
+          "description": "sync-matrix"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/validator-strategy.md",
+          "description": "validator-strategy"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.195Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "design-review-result"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/review-findings.md",
+          "description": "review-findings"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.341Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-case-matrix.md",
+          "description": "test-case-matrix"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/red-test-report.md",
+          "description": "red-test-report"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/validator-command-list.md",
+          "description": "validator-command-list"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.485Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "implementation-summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/pointer-doc-update-plan.md",
+          "description": "pointer-doc-update-plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/canonical-path-normalization.md",
+          "description": "canonical-path-normalization"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.631Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/additional-test-cases.md",
+          "description": "additional-test-cases"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/cross-doc-audit-plan.md",
+          "description": "cross-doc-audit-plan"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "test-expansion-report"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.770Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "coverage-report"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gap-analysis.md",
+          "description": "coverage-gap-analysis"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:12.921Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "refactoring-report"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/terminology-normalization.md",
+          "description": "terminology-normalization"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:13.070Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-verification.md",
+          "description": "quality-verification"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/qa-risk-register.md",
+          "description": "qa-risk-register"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:01:13.252Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "final-review-result"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/remediation-directives.md",
+          "description": "remediation-directives"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:50:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "manual-test-checklist"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "manual-test-result"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/evidence-inheritance-log.md",
+          "description": "evidence-inheritance-log"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-03-04a-3-pane-dark.png",
+          "description": "representative screenshot 04A"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-04-04b-file-chip-attached.png",
+          "description": "representative screenshot 04B"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-05-04c-quick-search-dialog.png",
+          "description": "representative screenshot 04C"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-12T03:51:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "implementation-guide"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "spec-update-summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "documentation-changelog"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "unassigned-task-detection"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill-feedback-report"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "phase12-task-spec-compliance-check"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked_by_policy",
+      "artifacts": [],
+      "notes": "commit と PR はユーザー承認まで禁止"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "5", "6", "7", "8", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "docs",
+    "taskId": "TASK-UI-04-WORKSPACE-VIEW",
+    "title": "ワークスペース統合画面 親参照仕様",
+    "priority": "high",
+    "branch": "task-20260312-workspace-view-specs",
+    "estimatedPhases": 13,
+    "actualPhases": 12
+  }
+}

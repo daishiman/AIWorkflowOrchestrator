@@ -56,6 +56,18 @@
 | SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
 | SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
 
+#### 2.1.4 docs-only Parent Reference Workflow プロファイル（TASK-UI-04型）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-P1 | `references/ui-ux-feature-components.md` | parent contract、child canonical path、苦戦箇所、5分解決カードの同期 | docs-only parent の責務が feature 正本だけで再利用できる |
+| SubAgent-P2 | `references/ui-ux-navigation.md` | parent entry、Phase 11 evidence inheritance、representative screenshot policy の同期 | navigation 正本に導線と証跡ルールが揃う |
+| SubAgent-P3 | `references/interfaces-*.md` | completed-task 移管で波及する sibling interface evidence path の sweep | interface spec の旧 path が 0 件になる |
+| SubAgent-P4 | `references/task-workflow.md` | `spec_created` 台帳、検証証跡、SubAgent 実行ログの同期 | 実装内容 + 苦戦箇所 + 検証値が台帳で追跡できる |
+| SubAgent-P5 | `references/lessons-learned.md` | stale path sweep、docs-only Phase 11、mirror sync の標準ルール化 | 次回の短手順が教訓へ固定される |
+
+> pointer doc / master index / completed-task pointer docs / legacy index / capture script は `SubAgent-P3/P4` の sweep 対象とし、user が視覚検証を求めた場合だけ current workflow に representative screenshot を残す。
+
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |

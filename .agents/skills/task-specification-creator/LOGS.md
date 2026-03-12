@@ -9,6 +9,40 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` を 9セクション構成 + `3.5 実装課題と解決策` 付きで新規作成
+  - completed workflow `light-theme-contrast-regression-guard` の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
+  - parent task の苦戦箇所（native dependency, harness build input, localhost fallback, current/baseline 分離）を未タスク仕様書へ継承した
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に loopback static serve fallback と `skill-creator` 条件付き同期ルールを追加
+  - `references/spec-update-workflow.md` に `skill-creator` を含む必須更新ファイル条件と LOGS/SKILL 追記条件を追加
+  - workflow outputs の `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `spec-update-summary.md` を global `unassigned-task/` 監査値と 3 skill 同期前提へ更新
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 4-12
+- **Result**: success
+- **Notes**:
+  - guard workflow 向けに outputs/phase-4〜12 を current build / audit / screenshot 実測で作成
+  - `phase11-light-theme-contrast-guard.html` を renderer build input に追加し、Phase 11 を current build static serve で実行
+  - `validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` の入力形式に合わせて `manual-test-result.md` / `implementation-guide.md` を構成
+  - baseline backlog は新規未タスク化せず、既存 remediation task `task-fix-light-theme-shared-color-migration-001` へ routing を固定
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の事後未タスク化パターンを追加
 
 - **Agent**: task-specification-creator
@@ -6076,3 +6110,43 @@ if (artifactPath) {
   - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW を completed-tasks へ移管
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 post-completion
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` へ workflow root を移動し、Phase 12 完了済み task の physical path を completed 側へ統一
+  - task pointer doc を `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-060-ui-04-workspace-view.md` へ移し、`task-000-master-index.md` の参照も completed 側へ更新
+  - workflow 配下の outputs / phase docs / artifacts 内の canonical path を completed 側へ一括更新し、移管後 validation の前提を整えた
+
+---
+
+## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（親参照仕様 `spec_created` 完了）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/outputs/phase-1` から `phase-12` までの成果物を作成し、`artifacts.json` へ登録
+  - `validate-phase-output.js` / `verify-all-specs.js` を実行して workflow 構造を検証
+  - docs-only parent として Phase 11 は child evidence 継承に限定し、Apple HIG 観点の代表 screenshot 目視結果を記録
+  - `implementation-guide.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を作成
+  - `.claude` canonical root 更新後に `.agents` mirror sync と `diff -qr` を実施した
+
+---
+
+## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW RE-AUDIT
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査 + skill 改善）
+- **Result**: success
+- **Notes**:
+  - 04A / 04B / 04C の current-build screenshot harness を再実行し、親 workflow 配下へ representative screenshot 3件を追加
+  - `manual-test-result.md` / `evidence-inheritance-log.md` / `quality-verification.md` / `final-review-result.md` / `documentation-changelog.md` を再監査結果へ更新
+  - `references/spec-update-workflow.md` に completed-task 移管後の stale path sweep ルールと docs-only parent visual re-audit ルールを追記
+  - `validate-phase11-screenshot-coverage.js` を parent workflow に対して追加実行し、`TC-11-01` / `TC-11-02` を non-visual として明示
+  - `verify-unassigned-links.js` / `audit-unassigned-tasks.js --json --diff-from HEAD` / mirror diff を再実行して drift 0 を確認した

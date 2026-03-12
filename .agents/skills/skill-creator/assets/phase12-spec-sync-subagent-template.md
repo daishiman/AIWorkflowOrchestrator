@@ -46,6 +46,28 @@
 | SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
 
+#### 2.1.3 Light theme shared color migration プロファイル（`spec_created` / component migration）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-M1 | `references/ui-ux-design-system.md` / `references/ui-ux-settings.md` | actual target inventory、token/component 境界、verification-only lane を同期 | current workflow と inventory correction が一致 |
+| SubAgent-M2 | `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-portal-patterns.md` / `references/rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / panel state の cross-cutting 条件を同期 | search/portal/state contract が仕様へ反映済み |
+| SubAgent-M3 | `references/api-ipc-auth.md` / `references/api-ipc-system.md` / `references/architecture-auth-security.md` / `references/security-electron-ipc.md` / `references/security-principles.md` | auth/api/security boundary を同期 | public auth shell と settings/search の安全境界が記録済み |
+| SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
+| SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
+
+#### 2.1.4 docs-only Parent Reference Workflow プロファイル（TASK-UI-04型）
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-P1 | `references/ui-ux-feature-components.md` | parent contract、child canonical path、苦戦箇所、5分解決カードの同期 | docs-only parent の責務が feature 正本だけで再利用できる |
+| SubAgent-P2 | `references/ui-ux-navigation.md` | parent entry、Phase 11 evidence inheritance、representative screenshot policy の同期 | navigation 正本に導線と証跡ルールが揃う |
+| SubAgent-P3 | `references/interfaces-*.md` | completed-task 移管で波及する sibling interface evidence path の sweep | interface spec の旧 path が 0 件になる |
+| SubAgent-P4 | `references/task-workflow.md` | `spec_created` 台帳、検証証跡、SubAgent 実行ログの同期 | 実装内容 + 苦戦箇所 + 検証値が台帳で追跡できる |
+| SubAgent-P5 | `references/lessons-learned.md` | stale path sweep、docs-only Phase 11、mirror sync の標準ルール化 | 次回の短手順が教訓へ固定される |
+
+> pointer doc / master index / completed-task pointer docs / legacy index / capture script は `SubAgent-P3/P4` の sweep 対象とし、user が視覚検証を求めた場合だけ current workflow に representative screenshot を残す。
+
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
@@ -194,6 +216,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
+- [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only wrappers が別行で記録されている
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している

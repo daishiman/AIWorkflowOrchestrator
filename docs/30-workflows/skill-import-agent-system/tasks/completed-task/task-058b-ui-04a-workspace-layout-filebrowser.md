@@ -1,12 +1,14 @@
 # TASK-UI-04A-WORKSPACE-LAYOUT: 作業スペース
 
+> 実行済みの正本 workflow は `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/index.md` です。本ファイルは split task spec の参照入口として保持します。
+
 ## 1. メタ情報
 
 | 項目             | 値                                                                                                                                                                     |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | タスクID         | TASK-UI-04A-WORKSPACE-LAYOUT                                                                                                                                           |
 | 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                    |
-| ステータス       | 未着手                                                                                                                                                                 |
+| ステータス       | 完了（Phase 1-12 完了 / Phase 13 保留）                                                                                                                                |
 | 優先度           | high                                                                                                                                                                   |
 | 複雑度           | large                                                                                                                                                                  |
 | 推定ファイル数   | ~14                                                                                                                                                                    |
