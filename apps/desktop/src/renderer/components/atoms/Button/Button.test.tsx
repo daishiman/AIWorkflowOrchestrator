@@ -43,7 +43,8 @@ describe("Button", () => {
     it("dangerバリアントのスタイルを適用する", () => {
       render(<Button variant="danger">Danger</Button>);
       const button = screen.getByRole("button");
-      expect(button).toHaveClass("bg-red-500");
+      expect(button).toHaveClass("bg-[var(--status-error)]");
+      expect(button).toHaveClass("hover:bg-[var(--status-error-hover)]");
     });
   });
 

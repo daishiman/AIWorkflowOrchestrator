@@ -212,6 +212,30 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
 | TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、136テスト） | 2026-03-10 |
 | TASK-UI-08 | NotificationCenter（Bell utility action / Portal / relative time / delete reveal / screenshot 7件） | 2026-03-11 |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | Light theme shared component semantic token migration（selector / status / dialog / error / search、screenshot 13件） | 2026-03-12 |
+
+---
+
+## TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | Light theme shared component semantic token migration | completed（実装・テスト・画面検証・Phase 12 同期完了、completed-tasks移管済み） | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
+
+### TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` の shared color hardcode を semantic token へ移行した |
+| 画面検証 | dedicated harness `phase11-light-theme-shared-color-migration` と Phase 11 screenshot 13件で Settings / Auth / Workspace の representative surface を再確認し、Apple UI/UX 観点で `PASS` と判定した |
+| 回帰防止 | `light-theme-shared-color-migration.guard.test.ts` を追加し、shared surface に hardcoded class が再混入したときに検出できるようにした |
+| 苦戦箇所1 | verification-only 扱いの `SettingsView` status panel に blind spot が残りやすく、component diff だけでは shared color drift を見逃した |
+| 苦戦箇所2 | screenshot plan は `components[].route` が正本で、`states[].route` に route を置いても撮影経路は切り替わらなかった |
+| 苦戦箇所3 | workflow root から screenshot script を叩く場合、`playwright` の module resolution と user 指定 canonical root を先に固定しないと Phase 12 判定がぶれた |
+| 苦戦箇所4 | `SettingsView.integration.test.tsx` は PASS でも `ApiKeysSection` 起因の `act()` warning が残り、stderr を見ないと Phase 12 の未タスク判定が甘くなった |
+| 継続未タスク | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/unassigned-task/task-fix-settings-integration-act-warning-001.md` を completed workflow backlog として再接続した |
+| 仕様同期 | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-search-panel` / `task-workflow` / `lessons-learned` を同一ターンで同期した |
+| 詳細参照 | `ui-ux-feature-components.md` / `ui-ux-design-system.md` / `ui-ux-settings.md` / `ui-ux-search-panel.md` / `task-workflow.md` / `lessons-learned.md` の TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 節 |
 
 ---
 
@@ -471,6 +495,8 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
 | 2.16.6  | 2026-03-11 | TASK-UI-04C 完了反映: `TASK-UI-04C 実装完了記録` を追加し、`PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / current build screenshot 11件 / Apple UI/UX review を UI カタログ正本へ同期 |
 | 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
+| 2.16.7  | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の residual warning follow-up を追補。`SettingsView.integration.test.tsx` の `act()` warning 残存と completed workflow 配下 `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/unassigned-task/task-fix-settings-integration-act-warning-001.md` をサマリーへ追加し、PASS test の stderr も Phase 12 backlog 判定対象にするルールを UI カタログへ同期 |
+| 2.16.6  | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映: 完了タスクへ shared color migration を追加し、`ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` の semantic token 移行、blind spot 再監査、screenshot 13件、guard test を一覧正本へ同期 |
 | 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |
 | 2.16.3  | 2026-03-11 | TASK-UI-08 再監査反映: Organisms / 主要UI / 完了タスクへ `NotificationCenter` を追加し、Bell utility action・Portal・delete reveal・Phase 11 screenshot 7件を TASK-UI-08 完了記録として同期 |
 | 2.16.2  | 2026-03-10 | TASK-UI-03 実装/苦戦サマリー追補: AgentView Enhancement の完成記録を独立節として追加し、adapter helper・dedicated harness・token scope 切り分けを「実装内容 + 苦戦箇所 + 簡潔解決」の形式で正本化 |

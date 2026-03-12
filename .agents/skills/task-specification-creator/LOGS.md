@@ -9,6 +9,40 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` を 9セクション構成 + `3.5 実装課題と解決策` 付きで新規作成
+  - completed workflow `light-theme-contrast-regression-guard` の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
+  - parent task の苦戦箇所（native dependency, harness build input, localhost fallback, current/baseline 分離）を未タスク仕様書へ継承した
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に loopback static serve fallback と `skill-creator` 条件付き同期ルールを追加
+  - `references/spec-update-workflow.md` に `skill-creator` を含む必須更新ファイル条件と LOGS/SKILL 追記条件を追加
+  - workflow outputs の `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `spec-update-summary.md` を global `unassigned-task/` 監査値と 3 skill 同期前提へ更新
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 4-12
+- **Result**: success
+- **Notes**:
+  - guard workflow 向けに outputs/phase-4〜12 を current build / audit / screenshot 実測で作成
+  - `phase11-light-theme-contrast-guard.html` を renderer build input に追加し、Phase 11 を current build static serve で実行
+  - `validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` の入力形式に合わせて `manual-test-result.md` / `implementation-guide.md` を構成
+  - baseline backlog は新規未タスク化せず、既存 remediation task `task-fix-light-theme-shared-color-migration-001` へ routing を固定
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の事後未タスク化パターンを追加
 
 - **Agent**: task-specification-creator
@@ -6076,3 +6110,27 @@ if (artifactPath) {
   - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 再監査フィードバック反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に verification-only blind spot 再監査、`components[].route` 正本ルール、Playwright module resolution preflight を追加
+  - workflow `spec-update-summary.md` の `.agents` canonical 誤判定を是正し、`.claude` 正本 + `.agents` mirror sync 前提へ更新
+  - current workflow の Phase 11 screenshot 再確認、Phase 12 outputs、LOGS / SKILL / canonical root 判定を同一ターンで閉じる運用へ再整理
+
+---
+
+## 2026-03-12 - PASS-with-warning backlog 判定ガード追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（guide 改善）
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に PASS test の stderr warning / residual note を検出ソースへ追加
+  - `references/phase-11-12-guide.md` に 0件テンプレートの適用禁止条件と `--diff-from HEAD --target-file` current 判定を追加
+  - 既存未タスク再利用時も root `docs/30-workflows/unassigned-task/` 正本を更新するルールを明文化

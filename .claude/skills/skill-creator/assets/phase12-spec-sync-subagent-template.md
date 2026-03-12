@@ -42,7 +42,7 @@
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
 | SubAgent-L1 | `references/ui-ux-design-system.md` | white/black baseline、token 契約、compatibility bridge 方針を同期 | light mode 標準と token 名が実装一致 |
-| SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、primitive migration、視覚証跡を同期 | 全画面共通の drift と代表 screenshot が記録済み |
+| SubAgent-L2 | `references/ui-ux-components.md` / `references/ui-ux-feature-components.md` | renderer-wide drift の対象画面、verification-only blind spot、primitive migration、視覚証跡を同期 | 全画面共通の drift / blind spot と代表 screenshot が記録済み |
 | SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
 
@@ -178,6 +178,7 @@ rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/co
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
+node -e "console.log(require.resolve('playwright'))"
 pnpm --filter @repo/desktop test:run
 pnpm --filter @repo/desktop exec vitest run --shard=<n>/16
 pnpm --filter @repo/desktop exec vitest run <target-test-file-1> <target-test-file-2>
@@ -218,12 +219,16 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
+- [ ] UIタスクでは `node -e "console.log(require.resolve('playwright'))"` を再撮影前に実行し、screenshot script 実行 cwd から Playwright を解決できることを記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
 - [ ] Light Mode / contrast 改修で screenshot を再取得した場合、coverage validator の PASS を再取得後の証跡として記録している
 - [ ] UIタスクではスクリーンショット証跡（`outputs/phase-11/screenshots`）を台帳に記録している
 - [ ] UIタスクでは視覚TCの証跡列を `screenshots/*.png` 記法で記録している
+- [ ] route が変わる screenshot は `components[].route` 単位で分離し、`states[].route` に撮影経路の責務を持たせていない
+- [ ] Light Mode / contrast 系 UI task では verification-only batch の blind spot（status / warning / error / danger surface）を再監査している
+- [ ] user 指定 skill root を canonical root に固定し、mirror root との同期結果を記録している
 - [ ] workspace/preview UI では right preview panel の reverse resize を証跡化している
 - [ ] file watcher を含む UI では callback ref 分離など、watch 再登録を抑止する実装/設計を仕様へ転記している
 - [ ] light theme screenshot では補助テキスト・status bar・chip の contrast を目視確認し、是正結果を記録している

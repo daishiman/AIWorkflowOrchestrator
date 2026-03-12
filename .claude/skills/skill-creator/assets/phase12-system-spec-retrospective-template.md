@@ -207,14 +207,14 @@ UI機能実装の場合は次を推奨:
 3. `<Light Mode 全画面是正では rg で renderer 全域の hardcoded neutral class を棚卸しし、token修正 / compatibility bridge / component migration の責務を先に分ける>`
 4. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、workflow 直下 <workflow>/unassigned-task/ 参照のまま止めない。completed workflow 由来の継続 backlog は docs/30-workflows/completed-tasks/<workflow>/unassigned-task/ を正本にする>`
 5. `<worktree では UI再撮影や検証前に pnpm install --frozen-lockfile を実行し、optional dependency 欠落を先に解消する>`
-6. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
+6. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通 + require.resolve('playwright') 成功）を実施し、route が変わる screenshot は components[].route 単位へ分割し、失敗時は未タスク化へ分離する>`
 7. `<CI が desktop shard 単位で失敗している場合は pnpm --filter @repo/desktop exec vitest run --shard=<n>/16 で同じ shard を再現し、全量再実行だけで原因調査を済ませない>`
 8. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
 9. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
-10. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
+10. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、user 指定 canonical root を正本に mirror sync まで閉じたうえで generate-index.js --workflow ... --regenerate を実行する>`
 11. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
 12. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
-13. `<Light Mode / contrast 改修では screenshot を再取得し、token修正・compatibility bridge・component migration のどれで解消したかを spec-update-summary / task-workflow / lessons に同値転記する>`
+13. `<Light Mode / contrast 改修では verification-only batch も blind spot として status / warning / error / danger surface を再監査し、screenshot を再取得したら token修正・compatibility bridge・component migration のどれで解消したかを spec-update-summary / task-workflow / lessons に同値転記する>`
 14. `<persist/auth 初期化バグでは bug path を通常ルート metadata（navigation type / debug log absence / storage snapshot）で確認し、screenshot は dedicated harness に分離する。skipAuth=true を唯一経路にしない>`
 15. `<worktree の preview source が揺れる UIタスクでは current worktree の out/renderer を static server で配信し、right preview panel reverse resize / watcher callback ref 分離 / light theme 補助テキスト contrast を同じ再監査セットで確認する>`
 
@@ -248,6 +248,7 @@ UI機能実装の場合は次を推奨:
 | `pnpm --filter @repo/desktop preview` | UI再撮影前の preview preflight（build成否確認） | `ready in ...` または build成功ログが確認できる |
 | `python3 -m http.server 4173 --directory apps/desktop/out/renderer` | worktree で preview source が揺れる場合の current build static serve | current worktree build を `127.0.0.1:4173` で配信できる |
 | `curl -I http://127.0.0.1:4173` | UI再撮影前のローカル疎通確認 | `HTTP/1.1 200` 系応答 |
+| `node -e "console.log(require.resolve('playwright'))"` | screenshot script 実行 cwd から Playwright を解決できるか確認 | 例外なく実体パスが表示される |
 | `pnpm --filter @repo/desktop run screenshot:<feature>` | UI画面証跡の当日再撮影（UIタスクのみ） | 対象TCのスクリーンショットが再生成される |
 | `pnpm --filter @repo/desktop test:run` | 回帰の全量実行（ベースライン確認） | `PASS` または `SIGTERM` 失敗ログが記録される |
 | `pnpm --filter @repo/desktop exec vitest run <target-test-file>` | UI/Store/Main の再確認テストを非watchで実行 | プロセスが単発終了し証跡を固定できる |
@@ -303,9 +304,13 @@ UI機能実装の場合は次を推奨:
 - [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] UIタスクでは worktree preflight として `pnpm install --frozen-lockfile` の要否を確認し、実行した場合は記録している
 - [ ] UIタスクでは再撮影前に preview preflight（build成功 + `127.0.0.1:4173` 疎通）を記録している
+- [ ] UIタスクでは再撮影前に `node -e "console.log(require.resolve('playwright'))"` を実行し、screenshot script 実行 cwd から Playwright が解決できることを記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static server で配信した記録がある
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` が `PASS` である
 - [ ] UIタスクでは再撮影したスクリーンショット証跡（`outputs/phase-11/screenshots`）を記録し、更新時刻が当日である
+- [ ] route が変わる screenshot は `components[].route` 単位で分離し、`states[].route` に撮影経路の責務を持たせていない
+- [ ] Light Mode / contrast 系 UI task では verification-only batch の blind spot（status / warning / error / danger surface）を再監査し、残件を current task で吸収したか未タスク化している
+- [ ] user 指定 skill root を canonical root に固定し、mirror root との `diff -qr` または同等の同期結果を記録している
 - [ ] workspace/preview UI では right preview panel の reverse resize を manual test または screenshot で確認している
 - [ ] file watch を含む UI では callback ref 分離などにより watch 再登録が抑止される設計/実装を記録している
 - [ ] light theme screenshot では補助テキスト・status bar・chip の contrast を目視確認し、必要な是正を記録している

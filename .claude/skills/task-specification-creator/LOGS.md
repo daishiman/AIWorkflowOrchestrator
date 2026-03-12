@@ -6110,3 +6110,27 @@ if (artifactPath) {
   - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 再監査フィードバック反映
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再監査）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に verification-only blind spot 再監査、`components[].route` 正本ルール、Playwright module resolution preflight を追加
+  - workflow `spec-update-summary.md` の `.agents` canonical 誤判定を是正し、`.claude` 正本 + `.agents` mirror sync 前提へ更新
+  - current workflow の Phase 11 screenshot 再確認、Phase 12 outputs、LOGS / SKILL / canonical root 判定を同一ターンで閉じる運用へ再整理
+
+---
+
+## 2026-03-12 - PASS-with-warning backlog 判定ガード追加
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（guide 改善）
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に PASS test の stderr warning / residual note を検出ソースへ追加
+  - `references/phase-11-12-guide.md` に 0件テンプレートの適用禁止条件と `--diff-from HEAD --target-file` current 判定を追加
+  - 既存未タスク再利用時も root `docs/30-workflows/unassigned-task/` 正本を更新するルールを明文化

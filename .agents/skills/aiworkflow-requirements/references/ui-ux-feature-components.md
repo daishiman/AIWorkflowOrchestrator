@@ -557,6 +557,55 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
+## Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001）
+
+> **詳細仕様**: [workflow-light-theme-contrast-regression-guard.md](./workflow-light-theme-contrast-regression-guard.md)
+
+light theme remediation を直接行わず、representative screen と hardcoded color audit で回帰を検出する guard workflow。current build static serve と selector-based capture を正本手順に固定する。
+
+### 実装内容（要点）
+
+| 項目 | 内容 |
+| --- | --- |
+| audit | `ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` を baseline、`SettingsView` / `DashboardView` を current として監査 |
+| harness | `phase11-light-theme-contrast-guard.html` と `phase11-light-theme-contrast-guard.tsx` を build output に含める |
+| readiness | `ThemeSelector` / `AuthView` に minimal な `data-testid` を追加 |
+| capture | Settings / Dashboard / Auth / WorkspaceSearch + Dashboard dark baseline の 5 ケースを取得 |
+
+### 実測結果
+
+| 項目 | 値 |
+| --- | --- |
+| currentViolations | 0 |
+| baselineViolations | 64 |
+| screenshot | 5 png + metadata 1件 |
+| targeted tests | 46 PASS |
+
+### Apple UI/UX 視覚レビュー
+
+| 画面 | 判定 | 所見 |
+| --- | --- | --- |
+| Settings light | PASS with baseline note | settings shell は読めるが ThemeSelector の淡い chip が弱い |
+| Dashboard light | PASS | hierarchy / spacing / materiality が安定 |
+| Auth light | PASS with baseline note | helper text が light panel 上で沈む |
+| WorkspaceSearch light | PASS with baseline note | light 指定でも dark slate surface が残るため remediation 対象が明確 |
+
+### baseline backlog routing
+
+| backlog | 参照 |
+| --- | --- |
+| ThemeSelector / Auth / WorkspaceSearch の actual remediation | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| current build capture preflight bundle | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| guard workflow の維持 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+
+### 再利用ルール
+
+1. guard workflow は remediation task と分離する。
+2. current build screenshot は build artifact を static serve して取得する。
+3. selector-based capture を優先し、route 全景は fallback に留める。
+4. `current=0` でも baseline backlog と routing を必ず残す。
+
+---
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
 > **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)
@@ -1601,6 +1650,7 @@ TASK-UI-07 は、既存の統計中心 `DashboardView` を、挨拶・次の一�
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | Light theme shared component semantic token migration（selector / status / dialog / error / search） | 2026-03-12 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` |
 | TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 | TASK-UI-08 | NotificationCenter 058e UX 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
 | TASK-UI-07 | DashboardView ホーム画面リデザイン（GreetingHeader / DashboardSuggestionSection / RecentTimeline、Phase 11 screenshot 5件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
@@ -1811,6 +1861,72 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 
 ---
 
+### Light Theme Shared Color Migration（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / completed）
+
+TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 は、token foundation 後に残った shared component の hardcoded color を semantic token へ段階移行し、selector / status / delete dialog / auth error / workspace search の light theme drift を解消した再監査タスクであり、Phase 1-12 完了後に completed workflow として移管済みである。
+
+#### コンポーネント構成
+
+| コンポーネント | 分類 | 実装ファイル | 役割 |
+| --- | --- | --- | --- |
+| `ThemeSelector` | molecules | `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx` | settings のテーマ切替 selector |
+| `AuthModeSelector` | settings | `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx` | auth mode warning / success surface |
+| `AuthKeySection` | settings | `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx` | API key saved surface / CTA |
+| `AccountSection` | organisms | `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx` | account shell / delete dialog |
+| `ApiKeysSection` | organisms | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx` | provider list / delete dialog |
+| `AuthView` | view | `apps/desktop/src/renderer/views/AuthView/index.tsx` | auth error surface |
+| `WorkspaceSearchPanel` | organisms | `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx` | search result / error surface |
+| `SettingsView` | view | `apps/desktop/src/renderer/views/SettingsView/index.tsx` | representative shell / verification-only blind spot |
+| `phase11-light-theme-shared-color-migration` | harness | `apps/desktop/src/renderer/phase11-light-theme-shared-color-migration.{tsx,html}` | Phase 11 screenshot 専用 surface |
+
+#### テスト構成
+
+| テスト / 検証 | 結果 | 対象 |
+| --- | --- | --- |
+| `light-theme-shared-color-migration.guard.test.ts` | PASS | shared color hardcode 再発監査 |
+| targeted vitest 10 files / 286 tests | PASS | settings / auth / search / dialog / guard |
+| `SettingsView.integration.test.tsx` 単独再実行 | PASS（18 tests、`act()` warning 継続を再確認） | SettingsView / ApiKeysSection follow-up 判定 |
+| `typecheck` / `build` | PASS | renderer 全体整合 |
+| Phase 11 screenshot 13件 | PASS | Settings / Auth / Workspace / Dashboard |
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| selector / status | `ThemeSelector` / `AuthModeSelector` / `SettingsView` status panel を semantic token へ移行 |
+| settings dialogs | `AccountSection` / `ApiKeysSection` delete dialog と `AuthKeySection` saved surface の light theme 可読性を固定 |
+| auth / search | `AuthView` error panel と `WorkspaceSearchPanel` result / error surface を token 基準へ揃えた |
+| blind spot 吸収 | verification-only 扱いだった `SettingsView` status panel の residual hardcode を task 内で修正 |
+| 証跡 | dedicated harness + screenshot-plan + coverage + Apple UI/UX review を completed workflow へ同期 |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| verification-only surface に shared color が残る | diff が小さい画面を自動的に非対象扱いする | representative screenshot と integration test で blind spot を吸収した | verification-only batch でも status / warning / error / danger surface を再確認する |
+| screenshot plan の route が state 単位で効かない | `states[].route` で surface 切替できると誤認する | surface ごとに component entry を分割した | route は `components[].route` を正本にする |
+| workflow root から `playwright` を解決できない | package 側依存だけで capture を始める | root 側の解決経路を整えた | preflight で module resolution を確認する |
+| canonical root を誤ると docs と spec が割れる | `.claude` と `.agents` の役割を固定しない | `.claude` を正本、`.agents` を mirror として同期した | user 指定 root を canonical root に固定する |
+| representative test の warning を 0件報告で閉じやすい | PASS/FAIL だけを見て stderr と residual note を見ない | `SettingsView.integration.test.tsx` 単独再実行で warning を再確認し、completed workflow 配下 `unassigned-task/` へ follow-up を再接続した | UI task の Phase 12 は PASS test の stderr も backlog 判定対象に含める |
+
+#### 同種課題の6ステップ解決カード
+
+1. token foundation 完了後の residual hardcode は shared component 単位で切り出す。
+2. verification-only batch でも representative screenshot を取り、blind spot を潰す。
+3. screenshot plan で route が変わる場合は component entry を分ける。
+4. screenshot capture 前に `playwright` の解決経路を確認する。
+5. workflow outputs、system spec、skill root を同一ターンで同期する。
+6. representative test が PASS でも stderr warning を確認し、必要なら completed workflow 配下 `unassigned-task/` の follow-up を更新する。
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` |
+| UT-FIX-SETTINGS-INTEGRATION-ACT-WARNING-001 | `SettingsView.integration.test.tsx` の `ApiKeysSection` 起因 `act()` warning を解消する | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/unassigned-task/task-fix-settings-integration-act-warning-001.md` |
+
+---
+
 ## 仕様書作成済みタスク（spec_created）
 
 ### SkillEditorView UI（TASK-UI-05A / 統合未完了）
@@ -1893,6 +2009,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
+| 2026-03-12 | v1.14.36   | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の residual warning follow-up を追補。`SettingsView.integration.test.tsx` 単独再実行で `ApiKeysSection` 起因の `act()` warning 継続を記録し、completed workflow 配下 `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/unassigned-task/task-fix-settings-integration-act-warning-001.md` を関連未タスクへ追加。PASS test の stderr も backlog 判定対象にするルールを feature 正本へ同期 |
+| 2026-03-12 | v1.14.33   | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。completed task table へ completed workflow を追加し、`ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` / `SettingsView` / dedicated harness / screenshot 13件 / blind spot 再監査を feature 正本へ同期 |
 | 2026-03-11 | v1.14.32   | TASK-UI-07 の related UT を追加: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を Dashboard Home Enhancement 節の関連未タスクへ登録し、dual root repository での canonical root 固定と mirror sync を UI 実装後の Phase 12 ガードとして再利用可能化 |
 | 2026-03-11 | v1.14.31   | TASK-UI-07 再監査反映: Dashboard Home Enhancement 節に実装時の苦戦箇所（表示名と内部契約の境界、view-local component 判断、harness screenshot 運用）と 5分解決カードを追加し、再利用可能な UI 実装知見として固定 |
 | 2026-03-11 | v1.14.30   | TASK-UI-07 完了反映: 収録機能一覧へ Dashboard Home Enhancement を追加し、専用セクションに GreetingHeader / DashboardSuggestionSection / RecentTimeline 構成、22 tests、Phase 11 screenshot 5件を同期 |
