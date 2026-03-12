@@ -35,9 +35,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   );
 
   const bubbleClasses = clsx("rounded-lg px-4 py-2 max-w-[80%] break-words", {
-    "bg-blue-600 text-white": isUser,
-    "bg-white/10 text-white backdrop-blur-sm": isAssistant,
-    "bg-yellow-500/10 text-yellow-200 italic text-center": isSystem,
+    "bg-[var(--status-primary)] text-white": isUser,
+    "border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)]":
+      isAssistant,
+    "border border-[var(--border-primary)] bg-[var(--bg-tertiary)] text-[var(--text-secondary)] italic text-center":
+      isSystem,
   });
 
   const formatTimestamp = (date: Date) => {
@@ -77,7 +79,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
         {timestamp && !loading && (
           <div
-            className={clsx("text-xs text-white/40", {
+            className={clsx("text-xs text-[var(--text-muted)]", {
               "text-right": isUser,
               "text-left": isAssistant,
               "text-center": isSystem,
@@ -97,9 +99,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             role="status"
             aria-label="Loading message"
           >
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/60 [animation-delay:-0.3s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/60 [animation-delay:-0.15s]" />
-            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-white/60" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--text-muted)] [animation-delay:-0.3s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--text-muted)] [animation-delay:-0.15s]" />
+            <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[var(--text-muted)]" />
           </div>
         )}
       </div>

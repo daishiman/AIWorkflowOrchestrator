@@ -20,6 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-12 | 1.29.79 | TASK-SKILL-LIFECYCLE-02 追補。`UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001` を追加し、entry surface / execution surface 分離と `Date` revive を横断で固定する回帰ガードを未タスク導線へ接続 |
+| 2026-03-11 | 1.29.78 | TASK-SKILL-LIFECYCLE-02 の教訓を追加。共通 chat platform の責務集約、persist revive、workflow/system spec stale 同時是正、`complete-phase.js` array schema drift 修正、light theme screenshot review を再利用手順として固定 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -62,6 +64,77 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-SKILL-LIFECYCLE-02
+
+#### 苦戦箇所1: 入口ごとに会話 UI を持つと文脈と履歴が分断される
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `Workspace` と `Skill Center` が会話本体まで持つと、retry / stop / recent sessions / handoff context が surface ごとに分かれて整合しなくなる |
+| 再発条件 | 入口 surface 側へ独自 chat state を足してしまう |
+| 解決策 | 会話本体を `ChatView` + `chatSlice` に集約し、入口側は payload を作って `setCurrentView("chat")` するだけにした |
+| 標準ルール | 入口 surface は handoff だけ、実行 surface は 1 つ、という役割分担を崩さない |
+
+#### 苦戦箇所2: session persist は revive まで設計しないと recent rail が壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatSessions` の `createdAt` / `updatedAt` / `timestamp` が文字列のまま復元されると並び順と表示が不安定になる |
+| 再発条件 | localStorage の parse 結果をそのまま store に戻す |
+| 解決策 | `customStorage.getItem()` で session/message の日時を `Date` へ戻し、active session の messages を再構築した |
+| 標準ルール | persist 対象を決めたら revive 手順まで同じ設計項目として扱う |
+
+#### 苦戦箇所3: Phase 12 は outputs だけ整っても workflow 本文と system spec が stale になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装と screenshot が完了していても、phase 本文、task-workflow、system spec 本体、skill logs が古いままだと再監査で不整合が残る |
+| 再発条件 | `outputs/phase-12` を作ったあとに台帳同期を別作業へ逃がす |
+| 解決策 | workflow 本文、`.claude` 正本、`LOGS.md`、validator 結果、Phase 11 証跡を同一ターンで閉じた |
+| 標準ルール | Phase 12 完了条件は outputs / workflow / system spec / skill の 4 層同期で判定する |
+
+#### 苦戦箇所4: skill tooling が old schema 前提だと完了処理自体が drift を増幅する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `complete-phase.js` が旧 object-style `artifacts.json` を前提にしていると、current workflow の array schema を正しく更新できない |
+| 再発条件 | generator / completion script の前提スキーマを current workflow で再検証しない |
+| 解決策 | array / object の両 schema に対応するよう tool を修正し、top-level status 再計算も current schema へ合わせた |
+| 標準ルール | Phase 12 再監査では workflow 自体だけでなく task-spec tooling の schema drift も確認する |
+
+#### 苦戦箇所5: light theme screenshot を撮らないと統合後の可読性劣化を見逃す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | mode pill、context summary、message bubble の二次テキストが light theme で薄くなりやすい |
+| 再発条件 | dark theme のみで UI review を完了扱いにする |
+| 解決策 | Phase 11 で再撮影し、`ChatView` / `ChatMessage` を token ベース配色へ揃えた |
+| 標準ルール | UI 統合タスクは light theme screenshot と Apple 観点レビューを必須にする |
+
+#### 苦戦箇所6: Phase 12 の合格根拠を outputs へ分散したままだと再監査で判断が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `implementation-guide.md`、`spec-update-summary.md`、`unassigned-task-detection.md`、skill logs に根拠が散ると、「本当に task spec 通りに完了したか」を一読で確認できない |
+| 再発条件 | 必須5成果物は揃っているが、Task 12-1〜12-5 と Step 1-A〜1-G の対応表を別ファイル化しない |
+| 解決策 | `phase12-task-spec-compliance-check.md` を追加し、validator 結果、未タスク配置判定、skill validation、画面証跡を root evidence に集約した |
+| 標準ルール | Phase 12 再監査では root evidence 1ファイルを作り、system spec / outputs / skill docs の実測値をそこへ束ねる |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. 入口 surface では payload だけを作り、会話 state は共通 view/store へ集約する。
+2. persist する session は revive まで仕様化し、`Date` 復元を実装で保証する。
+3. Phase 12 は outputs だけで閉じず、workflow / system spec / skill logs を同時更新する。
+4. workflow tooling も current schema で動くかを再監査し、drift があればその場で直す。
+5. `phase12-task-spec-compliance-check.md` に validator、未タスク、skill validation、screen evidence を集約する。
+5. screenshot は light theme まで撮り直し、contrast と handoff 表示を目視確認する。
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 | `Workspace` / `Skill Center` handoff と persist revive を横断で固定する回帰ガード | `docs/30-workflows/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md` |
 
 ### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
 

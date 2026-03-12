@@ -95,13 +95,68 @@ function loadArtifacts(workflowDir) {
 // artifacts.json を保存
 function saveArtifacts(workflowDir, artifacts) {
   const artifactsPath = join(workflowDir, "artifacts.json");
-  artifacts.lastUpdated = new Date().toISOString();
+  const now = new Date().toISOString();
+  if ("lastUpdated" in artifacts) {
+    artifacts.lastUpdated = now;
+  }
+  if ("updatedAt" in artifacts) {
+    artifacts.updatedAt = now;
+  }
   writeFileSync(artifactsPath, JSON.stringify(artifacts, null, 2), "utf-8");
   console.log(`✅ artifacts.json を更新: ${artifactsPath}`);
 }
 
+function isArrayPhaseRegistry(artifacts) {
+  return Array.isArray(artifacts?.phases);
+}
+
+function updateWorkflowStatus(artifacts) {
+  if (!isArrayPhaseRegistry(artifacts)) {
+    return;
+  }
+
+  const requiredPhasesCompleted = artifacts.phases
+    .filter((phase) => Number(phase.phase) !== 13)
+    .every(
+      (phase) => phase.status === "completed" || phase.status === "skipped",
+    );
+  const phase13 = artifacts.phases.find((phase) => Number(phase.phase) === 13);
+
+  artifacts.status =
+    requiredPhasesCompleted && phase13?.status === "completed"
+      ? "completed"
+      : "in_progress";
+}
+
 // Phase成果物を登録
 function registerPhaseArtifacts(artifacts, phaseNum, phaseArtifacts) {
+  if (isArrayPhaseRegistry(artifacts)) {
+    const numericPhase = Number(phaseNum);
+    const phaseIndex = artifacts.phases.findIndex(
+      (phase) => Number(phase.phase) === numericPhase,
+    );
+    const artifactPaths = phaseArtifacts.map((artifact) => artifact.path);
+
+    if (phaseIndex >= 0) {
+      artifacts.phases[phaseIndex] = {
+        ...artifacts.phases[phaseIndex],
+        status: "completed",
+        artifacts: artifactPaths,
+      };
+    } else {
+      artifacts.phases.push({
+        phase: numericPhase,
+        name: `Phase ${numericPhase}`,
+        status: "completed",
+        file: null,
+        artifacts: artifactPaths,
+      });
+    }
+
+    updateWorkflowStatus(artifacts);
+    return;
+  }
+
   artifacts.phases[phaseNum] = {
     status: "completed",
     completedAt: new Date().toISOString(),

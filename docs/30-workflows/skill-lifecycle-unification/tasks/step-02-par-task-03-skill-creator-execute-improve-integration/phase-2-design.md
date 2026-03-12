@@ -24,7 +24,7 @@ Skill Creator をどのように表導線化し、共通会話基盤上で `作�
 | 参照資料               | パス                                                                                                                              | 説明         |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | Task01 設計            | `../../../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/phase-2-design.md`                                     | 一次導線     |
-| Task02 設計            | `../step-02-par-task-02-chat-platform-unification/phase-2-design.md`                                                              | 共通会話基盤 |
+| Task02 設計            | `../../../completed-tasks/step-02-par-task-02-chat-platform-unification/phase-2-design.md`                                        | 共通会話基盤 |
 | skill creator 統合仕様 | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-001-skill-creator-integration.md` | 既存 To-Be   |
 
 ### システム仕様（aiworkflow-requirements）

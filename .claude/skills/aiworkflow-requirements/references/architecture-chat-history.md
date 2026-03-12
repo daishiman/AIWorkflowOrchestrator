@@ -392,7 +392,46 @@ Result型は成功（Ok）または失敗（Err）を表す直和型である。
 
 ---
 
+## Renderer session overlay と long-term history の責務分離（TASK-SKILL-LIFECYCLE-02）
+
+TASK-SKILL-LIFECYCLE-02 では、`ChatView` の mode 切替や handoff を即時に扱うため Renderer 側に session overlay を導入した。ただし chat history の Clean Architecture 層は長期保存の正本として維持し、DB schema / Use Case 契約自体は変えていない。
+
+### 層ごとの責務
+
+| 層 | 持つ責務 | 持たない責務 |
+| --- | --- | --- |
+| Renderer overlay (`chatSlice`) | `activeChatMode`、`chatSessions`、recent rail、placeholder message、retry / stop、handoff context | SQLite 永続化、検索、エクスポート |
+| Chat history Application / Domain | session/message の作成・保存・検索・DTO変換 | mode switcher、UI rail、transient streaming state |
+| Infrastructure | Drizzle 経由の `chat_sessions` / `chat_messages` 永続化 | Renderer の entry surface 管理 |
+
+### 境界ルール
+
+| 観点 | ルール |
+| --- | --- |
+| DB schema | `chat_sessions` / `chat_messages` は変更しない |
+| UI session | mode / handoff / retryable error は Renderer overlay で閉じる |
+| future integration | overlay を永続化対象へ昇格させる場合でも、`ChatSessionDTO` / `ChatMessageDTO` に UI専用 state を混ぜない |
+
+### 実装メモ
+
+- `WorkspaceView` / `SkillCenterView` は entry surface として handoff payload のみを作り、会話本体は `ChatView` が保持する。
+- `customStorage.getItem()` で overlay の `createdAt` / `updatedAt` / `timestamp` を `Date` へ復元し、active session の message list を再構築する。
+- long-term history と overlay の二重責務を避けるため、system spec では `interfaces-chat-history.md` と `arch-state-management.md` を同一ターンで同期する。
+
+---
+
 ## 完了タスク
+
+### タスク: TASK-SKILL-LIFECYCLE-02（2026-03-11完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-02 |
+| 完了日 | 2026-03-11 |
+| ステータス | **完了** |
+| 実装内容 | Renderer session overlay を導入し、`ChatView` を共通会話 surface、`WorkspaceView` / `SkillCenterView` を handoff surface として再編 |
+| アーキテクチャ判断 | chat history の Clean Architecture 層は長期保存の正本のまま維持し、UI overlay を別責務として分離 |
+| ドキュメント | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` |
 
 ### タスク: chat-history-provider-integration（2026-01-22完了）
 
@@ -428,6 +467,7 @@ Result型は成功（Ok）または失敗（Err）を表す直和型である。
 
 | Version | Date       | Changes                                                                 |
 | ------- | ---------- | ----------------------------------------------------------------------- |
+| 1.4.0   | 2026-03-11 | TASK-SKILL-LIFECYCLE-02反映: Renderer session overlay と long-term history の責務分離、entry surface / execution surface 境界を追加 |
 | 1.3.0   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |
 | 1.2.0   | 2026-01-22 | App.tsx統合パターン・Repository Factory追加、UT-007完了記録追加          |
 | 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加                                             |

@@ -471,7 +471,52 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 ---
 
+## Renderer 共通チャット session overlay（TASK-SKILL-LIFECYCLE-02）
+
+`chat_sessions` / `chat_messages` の SQLite 永続化は long-term history の正本として維持しつつ、Renderer では別レイヤーの session overlay を持つ。これは `ChatView` の mode 切替、handoff、streaming placeholder を即時に扱うための UI state であり、DB schema 自体は変更しない。
+
+### overlay state
+
+| 項目 | 実装場所 | 用途 |
+| --- | --- | --- |
+| `activeChatMode` | `apps/desktop/src/renderer/store/slices/chatSlice.ts` | `general` / `workspace` / `skill-lifecycle` の現在 mode |
+| `activeChatSessionId` | 同上 | 現在表示中 session |
+| `chatSessions` | 同上 | `ChatSessionRecord` を session ID ごとに保持 |
+| `chatSessionOrder` | 同上 | `updatedAt` 降順の recent rail 表示 |
+| `modeSessionIds` | 同上 | mode ごとの再入場で既存 session を再利用するための索引 |
+
+### persist / revive 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| persist key | `knowledge-studio-store` |
+| partialize | `activeChatMode` `activeChatSessionId` `chatSessions` `chatSessionOrder` `modeSessionIds` を保持 |
+| revive | `customStorage.getItem()` で `createdAt` / `updatedAt` / `message.timestamp` を `Date` へ復元する |
+| active messages | 復元時は `activeChatSessionId` に対応する messages を `chatMessages` へ再構築する |
+
+### DB 永続化との境界
+
+| 層 | 責務 |
+| --- | --- |
+| SQLite chat history | 会話履歴の長期保存、検索、export、認可付き取得 |
+| Renderer overlay | UI mode、handoff context、streaming placeholder、retry / stop、recent rail |
+| 連携方針 | UI overlay は DB schema を変更せず独立し、必要時のみ history view / export 機能へ handoff する |
+
+---
+
 ## 完了タスク
+
+### TASK-SKILL-LIFECYCLE-02（2026-03-11完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-02 |
+| タスク名 | chat-platform-unification |
+| 完了日 | 2026-03-11 |
+| ステータス | **完了** |
+| 変更点 | Renderer 側 `chatSlice` に mode/session overlay を追加し、Workspace / Skill Center handoff でも会話履歴と context を保持できるようにした |
+| DB 影響 | SQLite schema 変更なし。UI overlay を local persist で補完 |
+| 成果物 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/` |
 
 ### UI-CONV-HISTORY-001（2026-01-25完了）
 
@@ -549,6 +594,7 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 | Version   | Date       | Changes                                                                                                                                   |
 | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.5.0** | 2026-03-11 | TASK-SKILL-LIFECYCLE-02反映: Renderer 共通チャット session overlay、persist/revive 契約、SQLite history との責務境界を追加 |
 | **1.4.0** | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel での `conversation:create` / `conversation:addMessage` 利用フローと完了記録を同期 |
 | **1.3.0** | 2026-01-26 | spec-guidelines.md準拠: コードブロック（認可ロジック、エクスポート形式）を表形式・文章に変換                                              |
 | 1.2.0     | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |

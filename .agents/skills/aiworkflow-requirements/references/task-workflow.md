@@ -247,6 +247,63 @@
 | 今回タスク由来の未タスク | 0 件 |
 | 継続管理する backlog | `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` |
 
+### タスク: TASK-SKILL-LIFECYCLE-02 会話基盤・セッション統合（2026-03-11）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-02 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | feat |
+| 優先度 | 高 |
+| 完了日 | 2026-03-11 |
+| 対象 | `ChatView` / `WorkspaceView` / `SkillCenterView` の会話入口統合、mode/session persist、stream retry / stop、context handoff |
+| 成果物 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/` |
+
+#### 実施内容
+
+- `chatSlice` に `activeChatMode` / `activeChatSessionId` / `chatSessions` / `chatSessionOrder` / `modeSessionIds` を追加し、mode ごとの session 再利用を実装
+- `ChatView` を共通会話 surface とし、mode switcher、recent session rail、context summary、retry / stop を追加
+- `WorkspaceView` は `workspace-open-chat` から file context を handoff、`SkillCenterView` は `skill-lifecycle-start-*` から `lifecycleJob` と intent を handoff する構造へ整理
+- `llm:stream-chat` の `requestId` と `llm:stream-cancel` を使う stop / retry 契約を Renderer Store に同期
+- Phase 11 screenshot 再取得、light theme contrast 修正、task-spec skill の `complete-phase.js` array schema drift 修正、system spec 本体更新まで同一ターンで実施
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| 入口ごとに会話 UI を持つと履歴・retry・handoff が分断される | `Workspace` や `Skill Center` 側へ chat UI を埋め込む | 会話本体を `ChatView` へ集約し、入口側は handoff payload だけを保持した |
+| persist 復元で `Date` が文字列のままだと recent rail と ordering が崩れる | `chatSessions` を revive せずそのまま使う | `customStorage.getItem()` で session/message の日時を `Date` に戻した |
+| workflow 本文や Phase 12 証跡が stale のまま残る | outputs だけ更新して phase 本文 / task 台帳 / system spec を後回しにする | workflow 本文、outputs、system spec、skill logs を同一ターンで同期した |
+| screenshot を dark theme だけで確認すると light theme の contrast 問題を見逃す | UI 変更後に視覚検証を一方向で済ませる | Phase 11 で再撮影し、`ChatView` / `ChatMessage` の token 配色を是正した |
+
+#### 同種課題の5分解決カード
+
+1. 入口 surface は handoff だけを持ち、会話 UI は 1 画面へ集約する。
+2. mode ごとの再入場は `modeSessionIds` のような索引で session を再利用する。
+3. persist する session は revive 契約まで含めて設計し、`Date` 復元を忘れない。
+4. Phase 12 は outputs だけで閉じず、workflow 本文 / system spec / skill logs を同時に更新する。
+5. UI 統合タスクは screenshot を再取得し、light theme まで Apple 観点で見直す。
+
+#### Phase 12 タスク仕様準拠の追加確認（2026-03-11 JST）
+
+| 観点 | 結果 |
+| --- | --- |
+| `verify-all-specs --workflow ... --json` | PASS（13/13 phases, error 0, warning 0, info 1） |
+| `validate-phase-output.js <workflow>` | PASS（28項目） |
+| `validate-phase12-implementation-guide.js --workflow ... --json` | PASS |
+| `validate-phase11-screenshot-coverage.js --workflow ...` | PASS（expected=5 / covered=5） |
+| `verify-unassigned-links.js --source .claude/.../task-workflow.md` | PASS（216 / 216, missing 0） |
+| `audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=134, misplaced=38） |
+| `quick_validate.js` 3スキル | PASS（skill-creator / task-specification-creator / aiworkflow-requirements） |
+| 今回タスク由来の未タスク | 1 件（`UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001`） |
+| 継続管理する backlog | `task-imp-chat-platform-handoff-revive-guard-001.md` / `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` |
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 | `Workspace` / `Skill Center` handoff と `chatSessions` persist revive を横断検証する回帰ガード | 中 | `docs/30-workflows/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md` |
+
 ### タスク: TASK-UI-06-HISTORY-SEARCH-VIEW あなたの記録タイムライン再設計（2026-03-10）
 
 | 項目 | 値 |
@@ -4028,6 +4085,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
+| UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 | chat platform の handoff / session revive 回帰ガード | 中 | TASK-SKILL-LIFECYCLE-02 Phase 12 追補（2026-03-12） | `docs/30-workflows/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md` |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
@@ -4460,6 +4518,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **1.67.55** | **2026-03-12** | **UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 を登録**: TASK-SKILL-LIFECYCLE-02 の苦戦箇所から、`Workspace` / `Skill Center` handoff と `chatSessions` revive を横断で固定する回帰ガードを未タスク化。完了節の関連未タスク表、Phase 12 準拠確認、残課題テーブルを同一ターンで同期 |
+| **1.67.54** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-02 完了同期**: 会話基盤・セッション統合を完了台帳へ追加し、`ChatView` 共通化、Workspace / Skill Center handoff、`llm:stream-cancel`、Phase 11 再撮影、task-spec skill の array schema drift 修正を記録 |
 | **1.67.53** | **2026-03-11** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を登録**: TASK-UI-04C の苦戦箇所 3件（fuzzy no-match、renderer timeout+retry、parse/transport 分離）を共通ガード未タスクへ formalize し、04C 完了節の関連未タスクと残課題テーブルへ同一 ID で同期。`outputs/phase-12` の Step 1-C も 0件→1件へ再整合した |
 | **1.67.52** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW を同期**: `PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / structured fallback / Phase 11 screenshot 11件 / 52 tests PASS を完了台帳へ追加し、新規未タスク0件・workflow / outputs / system spec / LOGS / SKILL 同時更新を記録 |
 | **1.67.51** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT を同期**: `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context）、targeted tests 14件 PASS、typecheck PASS、Phase 11 screenshot 8件（Apple UI/UX 観点）を完了台帳へ追加。あわせて stream chunk/end race 修正、`implementation-guide` 要件充足、`phase-11-manual-test.md` 画面カバレッジマトリクス追補、`lessons-learned` / LOGS / SKILL の同一ターン同期を記録 |

@@ -1,7 +1,7 @@
 # リソースマップ
 
-> 自動生成元: topic-map.md
-> 作成日: 2026-01-26
+> topic-map.md を基点に手動保守
+> 最終更新: 2026-03-11
 > 目的: Progressive Disclosure原則に基づき、タスクに応じた仕様読み込み判断を支援
 
 このファイルは**タスク種別→必要リソース**の逆引きインデックスです。
@@ -22,6 +22,7 @@
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | スキルライフサイクル一次導線設計 / 画面責務再編 | ui-ux-navigation.md, ui-ux-feature-components.md, arch-state-management.md, architecture-overview.md | ui-ux-settings.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
+| 会話基盤統合 / チャットプラットフォーム統合 | interfaces-llm.md, llm-ipc-types.md, llm-streaming.md, interfaces-chat-history.md, architecture-chat-history.md, llm-workspace-chat-edit.md, arch-state-management.md | api-chat-history.md, api-ipc-agent.md, arch-ipc-persistence.md, ui-ux-feature-components.md, ui-ux-navigation.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
 | UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
@@ -53,6 +54,7 @@
 - lifecycle の create/improve handoff は `ui-ux-feature-components.md` の Store-Driven Lifecycle Integration を読み、現行実装アンカーとして `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を照合する。
 - global nav の正式契約は `ui-ux-navigation.md` と `apps/desktop/src/renderer/navigation/navContract.ts` の組み合わせで確認する。
 - `settings` 公開 shell の例外条件は `arch-state-management.md` と `ui-ux-settings.md` を読み、現行実装アンカーとして `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` を照合する。
+- 会話基盤統合では `interfaces-llm.md` → `llm-ipc-types.md` → `llm-streaming.md` → `interfaces-chat-history.md` → `architecture-chat-history.md` → `llm-workspace-chat-edit.md` → `arch-state-management.md` の順で読み、必要に応じて `api-chat-history.md` `arch-ipc-persistence.md` を補う。現行実装アンカーとして `ChatView` `chatSlice` `useStreamingChat` `WorkspaceView` `skillLifecycleJourney.ts` を照合する。
 
 ---
 
