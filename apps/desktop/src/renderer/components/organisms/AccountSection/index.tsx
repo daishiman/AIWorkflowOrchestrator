@@ -476,7 +476,10 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     className="w-16 h-16 rounded-full object-cover border-2 border-[var(--border-primary)]"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center">
+                  <div
+                    data-testid="account-avatar-fallback"
+                    className="w-16 h-16 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center"
+                  >
                     <Icon
                       name="user"
                       size={32}
