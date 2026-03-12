@@ -488,58 +488,6 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ---
 
-## Chat Platform Execution Surface（TASK-SKILL-LIFECYCLE-02 / current branch 再監査）
-
-`ChatView` を execution surface、`WorkspaceView` と `SkillCenterView` を entry surface として扱う current branch の chat platform 契約。transport 一本化は未完了だが、mode / handoff / revive / non-persist overlay の shared contract と視覚証跡は current workflow で固定済みである。
-
-### UI 契約
-
-| 項目 | 契約 |
-| --- | --- |
-| execution surface | 会話本体、recent rail、stream overlay は `ChatView` に集約する |
-| Workspace entry | file context / summary を `createWorkspaceChatHandoff()` で正規化し、会話実行は `ChatView` 側へ handoff する |
-| lifecycle entry | `createSkillLifecycleChatHandoff()` で `prepare` 後の依頼内容を payload 化し、`ChatView` 側へ handoff する |
-| revive | `ChatReviveSnapshot` は revive すべき metadata だけを持ち、`NON_PERSISTED_CHAT_OVERLAY_KEYS` は再開対象に含めない |
-| representative evidence | `phase11-chat-platform.{html,tsx}` の dedicated harness で 5 scenario を撮影し、current workflow 配下へ保存する |
-
-### 実装内容（要点）
-
-| 観点 | 内容 |
-| --- | --- |
-| 画面の主目的 | `WorkspaceView` / `SkillCenterView` は request を整える entry surface、`ChatView` は実行と復元を担う execution surface として分離する |
-| 変更範囲 | `packages/shared/src/types/chat-platform.ts`, `apps/desktop/src/renderer/features/chat-platform/contracts.ts`, `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`, `apps/desktop/src/renderer/store/slices/chatSlice.ts`, `phase11-chat-platform.{html,tsx}` |
-| 契約上の要点 | `ChatHandoffPayload` / `ChatReviveSnapshot` / `NON_PERSISTED_CHAT_OVERLAY_KEYS` を shared contract に集約し、entry 側 helper と execution 側 overlay reset を別責務にした |
-| 実装した要点 | Workspace handoff builder、lifecycle handoff guard、non-persist overlay reset、Phase 11 dedicated harness を current branch へ同期した |
-| 視覚検証 | Phase 11 screenshot 5件を dedicated harness で再取得し、Apple UI/UX 観点レビューは PASS、low concern は lifecycle prepared state の縦伸びと workspace composer 高さに限定した |
-| 完了根拠 | desktop targeted tests 67 PASS、shared tests 5 PASS、typecheck PASS、`verify-all-specs` 13/13 PASS、`validate-phase-output` 28 PASS、Phase 11 coverage 5/5 |
-| 残差 | general / workspace の transport 一本化、recent rail と `conversationAPI` ownership の統一は follow-up 2件へ分離した |
-
-### 実装時の苦戦箇所（再利用形式）
-
-| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
-| --- | --- | --- | --- |
-| entry surface と execution surface の責務が混ざりやすい | `WorkspaceView` / `SkillCenterView` 側で会話 state まで持とうとする | payload 生成は helper、会話実行と revive は `ChatView` / `chatSlice` に寄せた | entry は request/handoff、execution は session/overlay に責務分離する |
-| shared contract 導入だけで task 全体も完了に見えやすい | DTO と transport を同じレイヤーとして扱う | shared DTO/handoff helper は完了扱いにしつつ、transport 一本化は follow-up として分離した | contract 統一だけでは `completed` に上げず、runtime owner が残るなら `in_progress` を維持する |
-| representative screenshot が shell 全景だけだと境界を説明しにくい | app shell route screenshot のみで視覚確認を終える | `phase11-chat-platform.{html,tsx}` の dedicated harness を作り、selector 単位で evidence を固定した | 基盤統合タスクの Phase 11 は dedicated harness + selector capture を優先する |
-| 未タスク配置の合否と legacy baseline を混同しやすい | `audit-unassigned-tasks` の baseline を今回差分の fail と誤読する | `verify-unassigned-links=220/220`、`currentViolations=0 / baselineViolations=134`、root `unassigned-task/` の2件配置を同時記録した | 未タスク監査は配置、current 合否、baseline 監視の3軸で分けて記録する |
-
-### 同種課題の5分解決カード
-
-1. entry surface の payload/handoff と execution surface の session/overlay を別責務で切る。
-2. shared DTO と runtime transport を別レイヤーとして扱い、partial completion を許容する。
-3. Phase 11 は dedicated harness を用意し、contract 境界が見える selector を証跡にする。
-4. follow-up は root `docs/30-workflows/unassigned-task/` に formalize し、`artifacts.status=in_progress` と同時に残す。
-5. 未タスク監査は `verify-unassigned-links`、`audit --diff-from HEAD`、物理配置確認を同一ターンで閉じる。
-
-### 関連未タスク
-
-| 未タスクID | 内容 | 参照先 |
-| --- | --- | --- |
-| UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001 | general / workspace transport を一本化し、`conversationId` / `requestId` ownership を統一する | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/unassigned-task/task-imp-chat-platform-transport-unification-001.md` |
-| UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 | handoff / revive / recent rail の回帰ガードを結合テストと台帳で固定する | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md` |
-
----
-
 ## Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW）
 
 `WorkspaceView` 右ペインの `PreviewPanel` と `Cmd/Ctrl+P` の `QuickFileSearch` を 04A 基盤へ追加した UI。preview 表示とファイル探索を chat 本体から分離し、renderer 側 timeout / retry / fallback で堅牢性を補強する。
@@ -1991,10 +1939,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-12 | v1.14.36   | TASK-SKILL-LIFECYCLE-02 current branch 再監査を再追補。`Chat Platform Execution Surface` 節を `実装内容（要点）` / `実装時の苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ拡張し、Phase 12 準拠確認値と未タスク配置監査値を system spec 単体で再利用できる粒度に整理 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
-| 2026-03-12 | v1.14.34   | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。`ChatView` execution surface、Workspace / lifecycle handoff helper、Phase 11 dedicated harness、follow-up 2件を UI 機能仕様へ追加 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
 | 2026-03-11 | v1.14.32   | TASK-UI-07 の related UT を追加: `UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001` を Dashboard Home Enhancement 節の関連未タスクへ登録し、dual root repository での canonical root 固定と mirror sync を UI 実装後の Phase 12 ガードとして再利用可能化 |
 | 2026-03-11 | v1.14.31   | TASK-UI-07 再監査反映: Dashboard Home Enhancement 節に実装時の苦戦箇所（表示名と内部契約の境界、view-local component 判断、harness screenshot 運用）と 5分解決カードを追加し、再利用可能な UI 実装知見として固定 |

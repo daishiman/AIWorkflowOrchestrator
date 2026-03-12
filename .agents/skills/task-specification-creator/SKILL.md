@@ -26,6 +26,8 @@ allowed-tools:
 | Script First           | 決定論的処理はスクリプト（100%精度） |
 | LLM for Judgment       | 判断・創造のみLLM担当                |
 | Progressive Disclosure | 必要時のみリソース読込               |
+---
+
 ## クイックスタート
 
 | モード            | 用途                 | 開始条件                           |
@@ -74,6 +76,8 @@ Phase 4〜5: 検証 → 完了
 
 📖 [references/execute-workflow.md](references/execute-workflow.md)
 
+---
+
 ## リソース一覧
 
 | カテゴリ    | 数  | 詳細参照                                                 |
@@ -86,6 +90,8 @@ Phase 4〜5: 検証 → 完了
 
 📖 [references/resource-map.md](references/resource-map.md)
 
+---
+
 ## 主要エントリポイント
 
 | 用途             | リソース                           |
@@ -97,6 +103,8 @@ Phase 4〜5: 検証 → 完了
 | システム仕様更新 | agents/update-system-specs.md      |
 | 未タスク生成     | agents/generate-unassigned-task.md |
 | フィードバック   | scripts/log-usage.js               |
+
+---
 
 ## 機能別ガイド
 
@@ -148,6 +156,8 @@ Phase 4〜5: 検証 → 完了
 
 📖 詳細: [references/quality-standards.md](references/quality-standards.md) セクション8
 
+---
+
 ## Task仕様ナビ
 
 | Task                     | 責務                       | パターン | 入力             | 出力                  |
@@ -177,6 +187,8 @@ Phase 4〜5: 検証 → 完了
 | 3    | ドキュメント更新履歴作成         | ✅   | scripts/generate-documentation-changelog.js |
 | 4    | 未タスク検出レポート作成         | ✅   | **0件でも出力必須**                         |
 | 5    | スキルフィードバックレポート作成 | ✅   | **改善点なしでも出力必須**                  |
+
+---
 
 ### Task 1: 実装ガイドの2パート構成
 
@@ -251,6 +263,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
 
+---
+
 ### Task 5: スキルフィードバックレポート（改善点なしでも出力必須）
 
 | 観点             | 記録内容                               |
@@ -279,7 +293,6 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | Phase 10 MINOR指摘を未タスク化せず進行                | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
 | 未タスク検出レポートで0件判定のまま未修正             | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
 | `task-workflow.md` の未タスクリンクが参照切れ         | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する               |
-| current workflow reopen 時に completed archive を上書き/削除 | current HEAD 基準の current workflow と completed archive を分離し、sibling relative ref を `test -f` / `test -d` で確認する |
 
 ### Phase 12 苦戦防止Tips
 
@@ -292,6 +305,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
+
+---
 
 ## 重要ルール
 
@@ -375,13 +390,6 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.08.64** | **2026-03-12** | **未タスク配置ガイドを canonical root 前提へ補強**: `references/unassigned-task-guidelines.md` の監査コマンドを `.claude/skills/task-specification-creator/scripts/...` 基準へ更新し、`.claude` canonical / `.agents` mirror / `diff -qr` の扱いを明記。Phase 12 で「指定ディレクトリへ正しく配置できたか」を root と current/baseline の両軸で再現可能にした |
-| **v10.08.63** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 partial completion guard を追加**: `references/spec-update-workflow.md` / `references/phase-11-12-guide.md` / `references/patterns.md` に、Phase 1-12 完了でも acceptance partial / residual follow-up が残る場合は top-level `artifacts.status=in_progress` を維持し、未タスク formalization と同時に記録するルールを追加 |
-| **v10.08.62** | **2026-03-12** | **TASK-SKILL-LIFECYCLE sibling relocation drift guard を追加**: `references/spec-update-workflow.md` / `references/patterns.md` に、workflow が `tasks/` から `completed-tasks/` へ移管された場合でも pack index / downstream phase refs / `task-workflow.md` を同一ターンで正規化するルールを追加 |
-| **v10.08.61** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の dual package drift guard を追加**: `references/spec-update-workflow.md` / `references/phase-11-12-guide.md` / `references/patterns.md` に、current workflow reopen と completed archive 保持を同時に扱うルール、sibling relative ref 確認、archive/current split 維持を追加 |
-| **v10.08.60** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` へ formalize し、親タスクの苦戦箇所を `3.5 実装課題と解決策` へ継承する運用を変更履歴へ追加。completed workflow の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へそろえるルールも追記 |
-| **v10.08.59** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を反映**: `references/phase-11-12-guide.md` に loopback static serve fallback と `skill-creator` 条件付き同期ルールを追加し、`references/spec-update-workflow.md` に `skill-creator/LOGS.md` / `skill-creator/SKILL.md` の条件付き更新を追記。global `unassigned-task/` 監査値と 3 skill 同値転記を root evidence へ揃える運用を変更履歴へ追加 |
-| **v10.08.58** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 を反映**: guard workflow 向けに「current build static serve での harness build input 登録」「Phase 11 の Apple UI/UX 視覚レビュー」「`currentViolations=0` と `baselineViolations>0` を分離する discovered issue 記法」を変更履歴へ追加。Phase 12 では `.claude` 正本更新と `.agents` drift 記録を分離する運用を明文化 |
 | **v10.08.57** | **2026-03-11** | **TASK-UI-04C follow-up の事後未タスク化を反映**: `references/phase-11-12-guide.md` と `references/patterns.md` に、初回 `新規未タスク 0件` で閉じた後でも親タスクの苦戦箇所が cross-cutting guard として再利用価値を持つ場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期して正式な未タスク仕様書へ昇格する運用を追加 |
 | **v10.08.56** | **2026-03-11** | **TASK-UI-04C の再監査知見を反映**: `references/phase12-checklist-definition.md` / `references/phase-11-12-guide.md` / `references/patterns.md` に、completed workflow の `phase-12-documentation.md` と `outputs/phase-12` から `仕様策定のみ` などの planned wording を除去するガードを追加し、実績同期と `[x]` 更新を Phase 12 完了条件へ昇格 |
 | **v10.08.55** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW の Phase 12 完了同期を反映**: current workflow の `index.md` / `artifacts.json` / `phase-1..12` status / `outputs/verification-report.md` を completed 実績へ同期し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を Phase 12 完了ゲートとして明示した |

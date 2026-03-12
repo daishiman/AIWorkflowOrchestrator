@@ -44,42 +44,6 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
-### 会話基盤統合 / chat platform unification を探すとき
-
-このカテゴリは `llm:stream-chat` `llm:stream-cancel` `requestId` `conversation:create` `conversation:addMessage` `ChatView` `useStreamingChat` `WorkspaceChatPanel` `useWorkspaceChatController` `skill-lifecycle` `skillLifecycleJourney` で検索を分割する。`session` `history` のような broad query は初手に使わない。
-
-```bash
-node scripts/search-spec.js "llm:stream-chat" -C 3
-node scripts/search-spec.js "llm:stream-cancel" -C 3
-node scripts/search-spec.js "requestId" -C 3
-node scripts/search-spec.js "conversation:create" -C 3
-node scripts/search-spec.js "ChatView" -C 3
-node scripts/search-spec.js "useStreamingChat" -C 3
-node scripts/search-spec.js "WorkspaceChatPanel" -C 3
-node scripts/search-spec.js "useWorkspaceChatController" -C 3
-node scripts/search-spec.js "skill-lifecycle" -C 3
-node scripts/search-spec.js "skillLifecycleJourney" -C 3
-```
-
-読む順番:
-
-1. `indexes/resource-map.md` の「会話基盤統合 / チャットプラットフォーム統合」を見る
-2. `references/workflow-chat-platform-unification.md` で current branch の実装内容、苦戦箇所、current/archive split、5分解決カードを先に掴む
-3. `references/interfaces-llm.md` と `references/llm-ipc-types.md` で current HEAD の LLM / requestId / cancel 契約を確認する
-4. `references/llm-streaming.md` で `llm:stream-chat` / `llm:stream-end` / `llm:stream-error` / `llm:stream-cancel` の lifecycle を確認する
-5. `references/interfaces-chat-history.md` と `references/architecture-chat-history.md` で long-term history と renderer overlay の境界を確認する
-6. `references/api-chat-history.md` で `conversationAPI` が担う persistence 契約を確認する
-7. `references/llm-workspace-chat-edit.md` で Workspace file context と handoff payload の元ネタを確認する
-8. `references/arch-state-management.md` で `chatSlice` と `useWorkspaceChatController` の current state ownership を確認する
-9. `references/ui-ux-feature-components.md` と `references/ui-ux-navigation.md` で Task01 / Task03 との接合位置、entry surface と execution surface の分離を確認する
-10. `references/api-ipc-agent.md` `references/interfaces-agent-sdk-ui.md` `references/ui-ux-agent-execution.md` で downstream handoff の前提を確認する
-11. 実装実体は `apps/desktop/src/renderer/views/ChatView/index.tsx` `apps/desktop/src/renderer/hooks/useStreamingChat.ts` `apps/desktop/src/renderer/store/slices/chatSlice.ts` `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` `apps/desktop/src/preload/index.ts` `apps/desktop/src/preload/types.ts` で確認する
-12. current branch で追加された contract 正本は `packages/shared/src/types/chat-platform.ts` `apps/desktop/src/renderer/features/chat-platform/contracts.ts` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` を見る。`ChatReviveSnapshot` / `NON_PERSISTED_CHAT_OVERLAY_KEYS` / `createWorkspaceChatHandoff()` / `createSkillLifecycleChatHandoff()` / `initialRequest` の語彙をここで固定する
-13. Phase 11 の代表証跡は `apps/desktop/src/renderer/phase11-chat-platform.{html,tsx}` と `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/outputs/phase-11/` を見る。5 scenario screenshot と Apple UI/UX 視覚レビューは phase12-complete workflow 正本
-14. prior attempt を比較する場合のみ `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` を開き、phase12-complete workflow と混同しない
-15. sibling workflow の path drift がある場合は `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/` も照合し、downstream 契約の現物を確認する
-16. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
-
 ### Preload safeInvoke timeout を探すとき
 
 ```bash
@@ -94,27 +58,6 @@ node scripts/search-spec.js "preload invoke hang" -C 3
 2. `references/security-electron-ipc.md` の Preload `safeInvoke` timeout セクションを見る
 3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
 4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
-
-### Light Theme contrast regression guard を探すとき
-
-このカテゴリは `light theme contrast guard` `phase11-static-server` `selector-based capture` `currentViolations` `baselineViolations` `ThemeSelector` `AuthView` `workspace-search` `current build static serve` で検索を分割する。
-
-```bash
-node scripts/search-spec.js "light theme contrast guard" -C 3
-node scripts/search-spec.js "phase11-static-server" -C 3
-node scripts/search-spec.js "selector-based capture" -C 3
-node scripts/search-spec.js "currentViolations" -C 3
-node scripts/search-spec.js "baselineViolations" -C 3
-```
-
-読む順番:
-
-1. `indexes/resource-map.md` の「バグ修正（Light Theme contrast regression guard / representative screenshot audit）」を見る
-2. `references/workflow-light-theme-contrast-regression-guard.md` で実装内容、苦戦箇所、5分解決カード、SubAgent 分担をまとめて確認する
-3. `references/ui-ux-feature-components.md` の guard 節で representative screen と baseline routing を確認する
-4. `references/ui-ux-design-system.md` と `references/workflow-light-theme-global-remediation.md` で token/remediation 側の責務を切り分ける
-5. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録と短手順を確認する
-6. 実装実体は `apps/desktop/scripts/light-theme-contrast-guard.config.mjs` `apps/desktop/scripts/light-theme-contrast-guard.mjs` `apps/desktop/scripts/phase11-static-server.mjs` `apps/desktop/src/renderer/phase11-light-theme-contrast-guard.tsx` `apps/desktop/electron.vite.config.ts` を照合する
 
 ### Electron IPC パターン
 

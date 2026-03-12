@@ -4,9 +4,7 @@ import {
   SKILL_LIFECYCLE_DEPENDENCY_CONTRACTS,
   SKILL_LIFECYCLE_ENTRY_VIEW,
   SKILL_LIFECYCLE_JOB_GUIDES,
-  createSkillLifecycleChatHandoff,
   getSkillLifecycleSurfaceResponsibility,
-  isSkillLifecycleChatHandoffAllowed,
   isSupportingAdvancedLifecycleRoute,
   normalizeSkillLifecycleView,
 } from "./skillLifecycleJourney";
@@ -54,20 +52,5 @@ describe("skillLifecycleJourney", () => {
       "TASK-SKILL-LIFECYCLE-04",
       "TASK-SKILL-LIFECYCLE-05",
     ]);
-  });
-
-  it("skill-lifecycle handoff を chat execution surface 向けに生成する", () => {
-    const handoff = createSkillLifecycleChatHandoff({
-      request: "スキルを生成して実行したい",
-      sourceSurface: "task03",
-      skillName: "demo-skill",
-      createdSkillPath: "/skills/demo-skill",
-    });
-
-    expect(handoff.mode).toBe("skill-lifecycle");
-    expect(handoff.sourceSurface).toBe("task03");
-    expect(handoff.targetSurface).toBe("chat-view");
-    expect(handoff.attachments[0]?.label).toBe("demo-skill");
-    expect(isSkillLifecycleChatHandoffAllowed(handoff)).toBe(true);
   });
 });

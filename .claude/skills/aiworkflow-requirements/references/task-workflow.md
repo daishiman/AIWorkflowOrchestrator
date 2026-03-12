@@ -256,97 +256,6 @@
 | --- | --- | --- | --- |
 | UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
-### タスク: TASK-SKILL-LIFECYCLE-02 会話基盤・セッション統合（2026-03-12 current branch 再監査）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SKILL-LIFECYCLE-02 |
-| ステータス | **Phase 1-12 完了 / Phase 13 未実施。shared contract・handoff helper・Phase 11 証跡は current branch で同期済み、transport 一本化は follow-up** |
-| タイプ | design |
-| 優先度 | 高 |
-| phase12-complete workflow | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` |
-| phase12-complete outputs | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/outputs/` |
-| prior attempt archive | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` |
-| 対象 | general chat / workspace chat / lifecycle handoff / LLM streaming / conversation history / session revive の統合 |
-
-#### current branch で固定して読むべき実装アンカー
-
-- shared contract: `packages/shared/src/types/chat-platform.ts`
-- renderer helper: `apps/desktop/src/renderer/features/chat-platform/contracts.ts`
-- general chat: `apps/desktop/src/renderer/views/ChatView/index.tsx` / `apps/desktop/src/renderer/store/slices/chatSlice.ts` / `apps/desktop/src/renderer/hooks/useStreamingChat.ts`
-- workspace chat: `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`
-- lifecycle 導線: `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`
-- Phase 11 harness: `apps/desktop/src/renderer/phase11-chat-platform.{html,tsx}`
-- IPC / preload: `apps/desktop/src/preload/index.ts` / `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/handlers/llm.ts`
-
-#### current branch で完了したこと
-
-- `ChatHandoffPayload` / `ChatReviveSnapshot` / `NON_PERSISTED_CHAT_OVERLAY_KEYS` を `packages/shared/src/types/chat-platform.ts` に集約し、mode / revive 語彙を shared DTO として固定した。
-- `createWorkspaceChatHandoff()` / `buildChatPlatformRequest()` / `createChatReviveSnapshot()` を `apps/desktop/src/renderer/features/chat-platform/contracts.ts` に抽出し、Workspace entry surface の payload 正規化を共通化した。
-- `createSkillLifecycleChatHandoff()` と allowed surface guard を `skillLifecycleJourney.ts` に追加し、Skill Center から ChatView への lifecycle handoff 契約を固定した。
-- `SkillLifecyclePanel` は `initialRequest` を受け取り、`prepare` 済み request を panel 側に残したまま handoff payload と UI state の文面を一致させるようにした。
-- `chatSlice` は `createEmptyChatStreamOverlayState()` を用いて cancel / end / error 後の non-persist overlay reset を統一した。
-- Phase 11 dedicated harness で 5 scenario の screenshot を取得し、Apple UI/UX 観点レビューと low concern を current workflow 配下へ記録した。
-- `.claude` 正本 / `.agents` mirror / current workflow outputs / unassigned-task 2件を同期し、follow-up を formalize した。
-
-#### 検証証跡
-
-- `pnpm --filter @repo/desktop typecheck` PASS
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/features/chat-platform/contracts.test.ts src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/store/slices/chatSlice.test.ts` PASS（4 files / 67 tests）
-- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/chat-platform.test.ts` PASS（5 tests）
-- Phase 11 screenshot 5件: `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/outputs/phase-11/screenshots/`
-
-#### Phase 12 タスク仕様書準拠確認
-
-| 観点 | 結果 |
-| --- | --- |
-| Task 12-1 実装ガイド | `outputs/phase-12/implementation-guide.md` 作成済み、`validate-phase12-implementation-guide` 10/10 PASS |
-| Task 12-2 システム仕様更新 | `spec-update-summary.md` と `.claude/skills/aiworkflow-requirements/` 正本を同期済み。Task02 節、feature spec、state spec、lessons を current branch 実装へ追随 |
-| Task 12-3 更新履歴 | `documentation-changelog.md` 作成済み、workflow / system spec / skill docs / mirror sync の実測値を転記済み |
-| Task 12-4 未タスク検出 | `unassigned-task-detection.md` 作成済み、follow-up 2件を root `docs/30-workflows/unassigned-task/` へ配置。`verify-unassigned-links=220/220`、`currentViolations=0 / baselineViolations=134` を確認 |
-| Task 12-5 スキルフィードバック | `skill-feedback-report.md` 作成済み、`aiworkflow-requirements` / `task-specification-creator` / `skill-creator` への改善点を記録 |
-| Phase 12 全体整合 | `verify-all-specs` 13/13 PASS、`validate-phase-output` 28 PASS、Phase 11 screenshot coverage 5/5 PASS |
-
-#### archive/current split を維持する理由
-
-| 観点 | prior attempt archive | current HEAD / current workflow |
-| --- | --- | --- |
-| 実装状態 | 2026-03-11 時点の prior attempt | 2026-03-12 current branch で shared contract / evidence を再固定し、transport 残差は follow-up に分離 |
-| 使い道 | 比較資料、苦戦箇所、再利用カードの参照 | current branch の正本、Phase 11/12 証跡、未タスク formalization |
-| 運用 | `completed-tasks/` に保持 | `step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` を Phase 1-12 完了 snapshot として保持し、prior attempt archive とは分離する |
-
-#### 今回の system spec 同期セット
-
-- `indexes/resource-map.md` / `indexes/quick-reference.md` に `workflow-chat-platform-unification.md` / `chat-platform.ts` / `contracts.ts` / `phase11-chat-platform.{html,tsx}` を追加
-- `interfaces-llm.md` / `interfaces-chat-history.md` / `architecture-chat-history.md` / `api-chat-history.md` / `llm-workspace-chat-edit.md` / `arch-state-management.md` に shared contract layer と transport 残差の境界を追加
-- `ui-ux-feature-components.md` / `ui-ux-navigation.md` に entry surface / execution surface と Phase 11 evidence を追加
-- `task-workflow.md` / `lessons-learned.md` には current branch 実施結果、follow-up 2件、current/archive split の再利用ルールを同期
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| completed archive を current workflow へそのまま戻すと current HEAD と乖離する | workflow 状態だけを見てコード実体を確認しない | current code anchors を先に固定し、archive は比較資料として別保持する |
-| general / workspace / history / streaming を同時に読むと責務が混ざる | 仕様抽出を 1 つの文書だけで済ませる | LLM、history、state、workflow 台帳の4仕様へ分割して抽出する |
-| handoff helper だけ作ると prepared request が entry surface に残らない | payload 生成だけで panel の request state を更新しない | `SkillLifecyclePanel.initialRequest` を追加し、prepared request と handoff payload の元文面を一致させた |
-| Phase 1-12 を実行しても transport が未統一だと task status を誤って completed にしやすい | outputs と screenshot が揃った時点で残課題を忘れる | artifacts.status は `in_progress`、acceptance criteria は partial、follow-up 2件を未タスクで固定した |
-| Phase 11 harness を app shell 全景で撮ると責務境界が見えない | route screenshot だけで視覚検証を閉じる | `phase11-chat-platform.{html,tsx}` を dedicated harness にし、selector 単位の representative evidence を採用した |
-
-#### 同種課題の5分解決カード
-
-1. current HEAD のコードアンカーを先に固定し、completed archive は比較資料として扱う。
-2. general chat、workspace chat、history persistence、LLM streaming を別仕様書で読む。
-3. shared DTO/handoff helper と transport 実装を同一ターンで混ぜず、entry surface の prepared request continuity も含めて contract layer を先に固定する。
-4. Phase 1-12 実施済みでも follow-up が残る場合は `artifacts.status=in_progress` と未タスク formalization を同時に残す。
-5. follow-up は `task-imp-chat-platform-handoff-revive-guard-001.md` や `task-imp-chat-platform-transport-unification-001.md` のように未タスク化して、current/baseline の混同を防ぐ。
-
-#### 関連未タスク
-
-| 未タスクID | 概要 | 優先度 | 参照 |
-| --- | --- | --- | --- |
-| UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001 | chat handoff / revive を current HEAD 準拠で再設計するための guard task | 中 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md` |
-| UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001 | general / workspace transport と recent rail ownership を一本化する follow-up task | 中 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/unassigned-task/task-imp-chat-platform-transport-unification-001.md` |
-
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
 | 項目 | 値 |
@@ -1250,7 +1159,7 @@
 | 完了日 | 2026-03-11 |
 | ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
 | 対象 | `SkillLifecyclePanel`, `SkillManagementPanel`, `skillCreatorAPI.detectMode/improveSkill` の統合 |
-| 成果物 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/` |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/` |
 
 #### 仕様書別SubAgent分担（関心ごと分離）
 
@@ -4676,11 +4585,6 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.67.62** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の Phase 12 完了 snapshot を completed-tasks へ移管**: current branch 正本を `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` へ移し、follow-up 2件も同 workflow 配下の `unassigned-task/` へ再配置。prior attempt archive `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` との二層運用へ更新 |
-| **1.67.61** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の fast-path hub と prepared-request continuity を追補**: `references/workflow-chat-platform-unification.md` を追加し、実装内容・苦戦箇所・5分解決カードを 1 ファイルへ集約。`SkillLifecyclePanel.initialRequest` による prepared request continuity も Task02 節へ反映 |
-| **1.67.60** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の Phase 12 準拠確認を台帳へ固定**: Task 12-1〜12-5 の成果物実体、`validate-phase12-implementation-guide` 10/10、`verify-unassigned-links` 220/220、`audit-unassigned-tasks` `current=0 / baseline=134` を Task02 節へ追記し、「Phase 12 完了」と「overall in_progress」を両立して再利用できる形へ整理 |
-| **1.67.59** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 current branch 再監査の partial completion を同期**: shared contract / handoff helper / Phase 11 harness / Phase 12 成果物補完を完了扱いにしつつ、top-level status は `in_progress`、AC-4 は false、follow-up 2件を workflow 配下の `unassigned-task/` に固定するルールを台帳へ追加 |
-| **1.67.58** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の current/archive split を台帳化**: Phase 12 完了 snapshot `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` を current 正本、`docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` を prior attempt archive として保持する前提を追加。general/workspace/history/LLM の抽出セットと relative ref guard を明文化 |
 | **1.67.57** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 再監査追補**: workflow 本文の Phase 1-12 completed 同期、`outputs/artifacts.json` 追加、index 再生成、`ui-ux-design-system.md` の status テーブル更新、localhost static serve fallback（`phase11-static-server.mjs`）を完了記録へ追記し、親仕様書の stale な未タスク導線を completed workflow 正本へ修正 |
 | **1.67.56** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行を同期**: completed workflow `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` の Phase 4-12 outputs、audit summary（`current=0 / baseline=64`）、Phase 11 screenshot 5件、Apple UI/UX 視覚レビュー、baseline routing を追加。`ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` の contrast backlog は remediation task `task-fix-light-theme-shared-color-migration-001` へ分離し、guard task は current build static serve + selector capture の標準手順として固定 |
 | **1.67.55** | **2026-03-12** | **UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 を登録**: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、`spec_created` UI workflow 向けの root同期ガードとして未タスク化。current inventory correction、verification-only lane、必要 system spec 抽出、`artifacts.json` / `outputs/artifacts.json` 同期を 1 つの再利用導線へ統合し、parent task 節と残課題テーブルへ同時反映 |

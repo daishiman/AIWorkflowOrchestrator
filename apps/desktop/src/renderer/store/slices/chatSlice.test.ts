@@ -149,49 +149,6 @@ describe("chatSlice", () => {
     });
   });
 
-  describe("streaming overlay reset", () => {
-    beforeEach(() => {
-      store.startStreaming("req-1");
-      store.appendStreamChunk("partial");
-    });
-
-    it("endStreaming で非永続 overlay をクリアする", () => {
-      store.endStreaming();
-
-      expect(store.isStreaming).toBe(false);
-      expect(store.currentStreamId).toBeNull();
-      expect(store.streamingMessageId).toBeNull();
-      expect(store.streamingContent).toBe("");
-      expect(store.streamingError).toBeNull();
-    });
-
-    it("cancelStreaming でメッセージを残しつつ overlay をクリアする", () => {
-      store.cancelStreaming();
-
-      expect(store.isStreaming).toBe(false);
-      expect(store.currentStreamId).toBeNull();
-      expect(store.streamingMessageId).toBeNull();
-      expect(store.streamingContent).toBe("");
-      expect(store.chatMessages.at(-1)?.content.endsWith(" [キャンセル]")).toBe(
-        true,
-      );
-    });
-
-    it("setStreamingError で error を保持しつつ overlay をクリアする", () => {
-      store.setStreamingError({
-        code: "STREAM_FAILED",
-        message: "failed",
-        retryable: true,
-      });
-
-      expect(store.isStreaming).toBe(false);
-      expect(store.currentStreamId).toBeNull();
-      expect(store.streamingMessageId).toBeNull();
-      expect(store.streamingContent).toBe("");
-      expect(store.streamingError?.code).toBe("STREAM_FAILED");
-    });
-  });
-
   describe("システムプロンプト - 初期状態", () => {
     it("systemPromptが空文字列である", () => {
       expect(store.systemPrompt).toBe("");

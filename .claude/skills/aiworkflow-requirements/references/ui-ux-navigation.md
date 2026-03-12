@@ -14,7 +14,6 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
-| v1.7.5 | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映: `SkillCenterView` / `WorkspaceView` は entry surface、`ChatView` は execution surface とする画面責務と Phase 11 evidence 5件を追記 |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
@@ -168,16 +167,6 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 3. legacy alias は shell で canonical 化し、仕様書・テスト・UI 表示の正本値を 1 つに固定する。  
 4. representative screenshot は route 全景ではなく、責務境界が読める要素 capture を優先する。  
 5. Phase 12 では `ui-ux-navigation` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
-
-### TASK-SKILL-LIFECYCLE-02 entry / execution split（2026-03-12 current branch 再監査）
-
-| surface | 役割 |
-| --- | --- |
-| `SkillCenterView` | lifecycle entry surface。`prepare` 後の request を `createSkillLifecycleChatHandoff()` で payload 化する |
-| `WorkspaceView` | workspace entry surface。selected files / summary を `createWorkspaceChatHandoff()` で payload 化する |
-| `ChatView` | execution surface。会話実行、recent rail、stream overlay を表示する |
-| representative evidence | `phase11-chat-platform.html` の 5 screenshot と Apple UI/UX 視覚レビューを current workflow 配下へ保存済み |
-| 残差 | transport 一本化は `UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001` で継続する |
 
 ### Settings 公開シェル到達性（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
 
