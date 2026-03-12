@@ -64,7 +64,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
       data-testid="locale-selector"
       onKeyDown={handleKeyDown}
     >
-      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
+      <label className="block text-sm font-medium text-white/80 mb-2">
         言語
       </label>
 
@@ -80,13 +80,12 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
         className={clsx(
           "w-full flex items-center justify-between",
           "px-4 py-3 rounded-lg",
-          "bg-[color-mix(in_srgb,var(--bg-tertiary)_80%,var(--bg-primary))]",
-          "border border-[var(--border-primary)]",
-          "text-[var(--text-primary)] text-left",
+          "bg-white/5 border border-white/10",
+          "text-white text-left",
           "transition-all duration-200",
           isDisabled
             ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-[var(--bg-hover)] hover:border-[var(--border-emphasis)]",
+            : "hover:bg-white/10 hover:border-white/20",
           isOpen && "ring-2 ring-[var(--status-primary)]",
         )}
       >
@@ -94,7 +93,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
         <Icon
           name={isOpen ? "chevron-up" : "chevron-down"}
           size={16}
-          className="text-[var(--text-muted)]"
+          className="text-white/50"
         />
       </button>
 
@@ -104,7 +103,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
           role="listbox"
           className={clsx(
             "absolute z-[100] w-full mt-1",
-            "bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-lg",
+            "bg-[var(--bg-secondary)] border border-white/10 rounded-lg",
             "shadow-xl overflow-hidden",
           )}
         >
@@ -120,8 +119,8 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
                 "transition-colors duration-150",
                 "flex items-center justify-between",
                 value === locale.value
-                  ? "bg-[var(--status-primary)] text-[var(--text-inverse)]"
-                  : "text-[var(--text-primary)] hover:bg-[var(--bg-hover)]",
+                  ? "bg-[var(--status-primary)] text-white"
+                  : "text-white/80 hover:bg-white/10",
               )}
             >
               <span>{locale.label}</span>
@@ -140,7 +139,7 @@ export const LocaleSelector: React.FC<LocaleSelectorProps> = ({
           <Icon
             name="loader-2"
             size={16}
-            className="animate-spin text-[var(--text-muted)]"
+            className="animate-spin text-white/50"
           />
         </div>
       )}

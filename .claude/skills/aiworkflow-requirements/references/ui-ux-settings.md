@@ -460,65 +460,8 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 ---
 
-## Light Theme Shared Color Migration（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / completed）
-
-**完了日**: 2026-03-12  
-**workflow**: `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/`
-
-Settings shell で共通利用される light surface の可読性を、token foundation を変えずに renderer component 側の適用責務で是正した。対象は `ThemeSelector`、`AccountSection`、`LocaleSelector`、`TimezoneSelector`、`AuthTimeoutFallback` であり、白地で埋もれていた文字色・境界線・open state の視認性を semantic token に寄せた。
-
-### 画面の主目的
-
-| surface | 主目的 | 今回の扱い |
-| --- | --- | --- |
-| ThemeSelector | light / dark / system / kanagawa-dragon の選択状態を明瞭に見せる | selected / unselected / focus-visible を semantic token へ統一 |
-| AccountSection | profile summary、avatar menu、linked provider、delete dialog の階層を保つ | text / panel / border / destructive state を token 化 |
-| LocaleSelector / TimezoneSelector | open dropdown の検索・選択・hover を白地で判読可能にする | selected row / hover / search field / helper を token 化 |
-| AuthTimeoutFallback | timeout fallback から settings へ遷移する公開導線を可読に保つ | warning panel / body / CTA inverse text を調整 |
-
-### 契約上の要点
-
-| 観点 | 契約 |
-| --- | --- |
-| text role | `text-white*` は accent / danger / selected surface を除き使用しない |
-| background role | `bg-white/5` / `bg-slate-*` / `bg-zinc-*` を shared light surface の常用表現として残さない |
-| border role | `border-white/10` を light panel の既定境界線として使用しない |
-| interaction state | dropdown / menu / dialog の open state は closed state と別TCで確認する |
-| scope boundary | token foundation 自体は変更せず、renderer component 側の適用責務のみを current task の対象とする |
-
-### 対象コンポーネント
-
-| コンポーネント | ファイル | 今回の要点 |
-| --- | --- | --- |
-| ThemeSelector | `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx` | selected / hover / focus-visible の text/background/border を semantic token へ寄せた |
-| AccountSection | `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx` | profile summary、avatar menu、delete dialog の副次テキストと境界線を token 化した |
-| LocaleSelector | `apps/desktop/src/renderer/views/SettingsView/ProfileSection/LocaleSelector.tsx` | open dropdown の selected row / hover / search field を light theme で可読化した |
-| TimezoneSelector | `apps/desktop/src/renderer/views/SettingsView/ProfileSection/TimezoneSelector.tsx` | locale 同様に search / current location / row list の contrast を是正した |
-| AuthTimeoutFallback | `apps/desktop/src/renderer/components/AuthGuard/AuthTimeoutFallback.tsx` | gradient / warning panel 上の text hierarchy と CTA inverse text を調整した |
-
-### 視覚検証
-
-| テストケース | 証跡 | 判定 |
-| --- | --- | --- |
-| TC-11-01 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-01-settings-overview-light-desktop.png` | PASS |
-| TC-11-02 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-02-settings-avatar-menu-light-desktop.png` | PASS |
-| TC-11-03 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-03-settings-delete-dialog-light-desktop.png` | PASS |
-| TC-11-04 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-04-settings-locale-dropdown-light-desktop.png` | PASS |
-| TC-11-05 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots/TC-11-05-settings-timezone-dropdown-light-desktop.png` | PASS |
-
-### 実装時の苦戦箇所と簡潔解決
-
-| 苦戦箇所 | 再発条件 | 簡潔解決 |
-| --- | --- | --- |
-| Locale / Timezone の dropdown は closed state だけだと helper、selected row、search field の沈み込みが見えない | Settings overview だけで完了判定する | open state を TC-11-04 / TC-11-05 として分離し、selected / hover / search field を別々に確認する |
-| AccountSection の summary、avatar menu、delete dialog を同じ濃度で扱うと階層と destructive affordance が崩れる | primary / secondary / destructive / inverse text の役割を混ぜる | summary text、menu item、destructive CTA、dialog emphasis を semantic role ごとに分けて token 化する |
-| Settings change scope と reference screenshot を混同しやすい | representative surface を変更対象一覧として扱う | code change 対象は Settings shell 内に限定し、reference surface は workflow / compliance-check 側で別管理する |
-
----
-
 ## 関連ドキュメント
 
-- [Light Theme Shared Color Migration workflow](../../../docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md) - completed workflow 正本
 - [security-api-electron.md](./security-api-electron.md) - IPCセキュリティ詳細
 - [security-skill-execution.md](./security-skill-execution.md) - Permission Store詳細
 - [ui-ux-forms.md](./ui-ux-forms.md) - フォーム設計ガイドライン
@@ -556,8 +499,6 @@ Settings shell で共通利用される light surface の可読性を、token fo
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.8.2   | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の再確認追補。Settings light theme task の苦戦箇所と簡潔解決を追加し、dropdown open state / hierarchy / changed-vs-reference の分離ルールを明文化 |
-| 1.8.1   | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。ThemeSelector / AccountSection / LocaleSelector / TimezoneSelector / AuthTimeoutFallback の light theme 契約、open state ごとの視覚検証 5件、scope boundary を追加 |
 | 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |

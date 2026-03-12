@@ -74,7 +74,7 @@
 ### コンテキスト
 - スキル: aiworkflow-requirements
 - 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
-- 目的: current workflow `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
+- 目的: current workflow `docs/30-workflows/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
 
 ### 実施内容
 - SubAgent-A（design-system/settings）: `references/workflow-light-theme-global-remediation.md` / `references/ui-ux-design-system.md` に current workflow、inventory correction、verification-only lane を追記

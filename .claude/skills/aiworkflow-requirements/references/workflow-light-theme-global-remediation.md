@@ -55,7 +55,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 | Primitive 移行 | `Button` / `Input` / `TextArea` / `Checkbox` / `SettingsCard` を token 基準へ寄せ、inverse text は accent surface のみに限定 |
 | CI 回復 | `DashboardView` の `--accent` を `--accent-primary` に統一し、desktop test shard 11 の fail を解消 |
 | 視覚証跡更新 | Phase 11 screenshot 5件を completed workflow 側パスで再取得し、coverage validator を PASS へ戻した |
-| 継続 backlog | shared color migration は current workflow `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` で `spec_created`、contrast regression guard は親 workflow 配下 `unassigned-task/` で継続管理 |
+| 継続 backlog | shared color migration は current workflow `docs/30-workflows/light-theme-shared-color-migration/` で `spec_created`、contrast regression guard は親 workflow 配下 `unassigned-task/` で継続管理 |
 
 ---
 
@@ -64,7 +64,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 | 観点 | 内容 |
 | --- | --- |
 | ステータス | `spec_created`（Phase 1-3 設計完了 / 実装未着手） |
-| current workflow | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` |
+| current workflow | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | primary targets | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` |
 | verification-only | `SettingsView` / `SettingsCard` / `DashboardView` は hardcoded color 主因ではなく regression 確認専用 lane |
 | 抽出した system spec | `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` |
@@ -133,7 +133,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する（`spec_created`） | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する（`spec_created`） | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する（Phase 1-12 完了 / Phase 13 未実施） | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 

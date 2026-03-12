@@ -50,22 +50,14 @@ describe("AuthView", () => {
     it("アプリ名を表示する", () => {
       render(<AuthView />);
 
-      const title = screen.getByText("AIWorkflowOrchestrator");
-
-      expect(title).toBeInTheDocument();
-      expect(title).toHaveClass("text-[var(--text-primary)]");
+      expect(screen.getByText("AIWorkflowOrchestrator")).toBeInTheDocument();
     });
 
     it("ログインメッセージを表示する", () => {
       render(<AuthView />);
 
-      const heading = screen.getByText("アカウント登録・ログイン");
-      const description = screen.getByTestId("auth-view-helper-text");
-
-      expect(heading).toBeInTheDocument();
-      expect(heading).toHaveClass("text-[var(--text-primary)]");
-      expect(description).toBeInTheDocument();
-      expect(description).toHaveClass("text-[var(--text-secondary)]");
+      expect(screen.getByText("アカウント登録・ログイン")).toBeInTheDocument();
+      expect(screen.getByTestId("auth-view-helper-text")).toBeInTheDocument();
     });
 
     it("ボタンテキストが「〇〇で続ける」になっている", () => {

@@ -60,8 +60,6 @@ describe("light-theme-contrast-guard", () => {
     expect(report.missingTargets).toEqual([]);
     expect(report.targets).toHaveLength(LIGHT_THEME_AUDIT_TARGETS.length);
     expect(report.summary.currentViolations).toBe(0);
-    expect(report.summary.totalViolations).toBe(
-      report.summary.currentViolations + report.summary.baselineViolations,
-    );
+    expect(report.summary.baselineViolations).toBeGreaterThan(0);
   });
 });

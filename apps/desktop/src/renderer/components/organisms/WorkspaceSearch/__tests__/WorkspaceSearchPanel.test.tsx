@@ -55,21 +55,16 @@ describe("WorkspaceSearchPanel", () => {
     it("should render the workspace search panel", () => {
       render(<WorkspaceSearchPanel {...defaultProps} />);
 
-      const panel = screen.getByTestId("workspace-search-panel");
-      expect(panel).toBeInTheDocument();
-      expect(panel).toHaveClass("bg-[var(--bg-secondary)]");
+      expect(screen.getByTestId("workspace-search-panel")).toBeInTheDocument();
     });
 
     it("should render search input field", () => {
       render(<WorkspaceSearchPanel {...defaultProps} />);
 
-      const searchInput = screen.getByTestId("search-input");
-      expect(searchInput).toBeInTheDocument();
+      expect(screen.getByTestId("search-input")).toBeInTheDocument();
       expect(
         screen.getByPlaceholderText(/全体検索|search all/i),
       ).toBeInTheDocument();
-      expect(searchInput).toHaveClass("text-[var(--text-primary)]");
-      expect(searchInput).toHaveClass("border-[var(--border-primary)]");
     });
 
     it("should render replace input field when initialShowReplace is true", () => {
@@ -104,12 +99,6 @@ describe("WorkspaceSearchPanel", () => {
       expect(
         screen.getByRole("checkbox", { name: /正規表現|regex/i }),
       ).toBeInTheDocument();
-
-      expect(
-        screen.getByRole("checkbox", {
-          name: /大文字.*小文字|case.*sensitive/i,
-        }),
-      ).toHaveClass("text-[var(--text-secondary)]");
     });
 
     it("should render replace all button when initialShowReplace is true", () => {

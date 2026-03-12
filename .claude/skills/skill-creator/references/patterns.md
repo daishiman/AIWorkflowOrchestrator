@@ -2980,23 +2980,6 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-SKILL-LIFECYCLE-01
 
-### [Phase12] 指定ディレクトリ配置確認は current diff / quality / directory legacy を三分割する（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
-
-- **状況**: ユーザーが「未タスクが `docs/30-workflows/unassigned-task/` に置けているか」を確認するとき、`currentViolations=0` だけでは「今回差分が合格」なのか「ディレクトリ全体が健全」なのかが曖昧になる
-- **成功パターン**:
-  - `phase12-task-spec-compliance-check.md` を root evidence にし、`今回差分の配置可否` / `今回差分の品質可否` / `ディレクトリ全体legacy` を 1 セクションで分離記録する
-  - `baselineViolations` に加えて `format / naming / misplaced` を同じレポートへ残し、指定ディレクトリ全体の負債を隠さない
-  - 既存 remediation task がある場合は `unassigned-task-detection.md` と `skill-feedback-report.md` の両方に参照を残す
-  - system spec 側の `task-workflow.md` / `lessons-learned.md` にも同じ数値を転記し、outputs と正本仕様の結論を一致させる
-- **失敗パターン**:
-  - `current=0` を理由に「指定ディレクトリも問題なし」と書く
-  - remediation task の参照を outputs だけに残し、system spec と skill 改善へ反映しない
-  - `phase12-task-spec-compliance-check.md` を作らず、結論が `spec-update-summary.md` / `unassigned-task-detection.md` / 口頭報告に分散する
-- **結果**: ユーザーが欲しい確認軸と validator の確認軸が一致し、Phase 12 の完了報告が「今回差分はPASS、legacyは継続」と明確に分離される
-- **適用条件**: Phase 12 再確認、docs-heavy task、未タスク 0件報告、指定ディレクトリ健全性の再質問が入ったケース
-- **発見日**: 2026-03-12
-- **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
-
 ### [Phase12] Light Mode 全画面 white/black 基準 + compatibility bridge 固定（TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001）
 
 - **状況**: `tokens.css` を white/black 基準へ直しても、renderer 側の `text-white` / `bg-gray-*` / `border-white/*` などが残り、全画面で Light Mode が崩れる。さらに desktop CI の一部 shard fail と screenshot stale が同時に起きやすい

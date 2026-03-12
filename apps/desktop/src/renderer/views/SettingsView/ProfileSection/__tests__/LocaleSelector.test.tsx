@@ -34,17 +34,7 @@ describe("LocaleSelector", () => {
 
     it("言語ラベルを表示する", () => {
       render(<LocaleSelector {...defaultProps} />);
-      const label = screen.getByText("言語");
-      expect(label).toBeInTheDocument();
-      expect(label).toHaveClass("text-[var(--text-secondary)]");
-    });
-
-    it("comboboxにsemantic token classを適用する", () => {
-      render(<LocaleSelector {...defaultProps} />);
-
-      const combobox = screen.getByRole("combobox", { name: /言語/i });
-      expect(combobox).toHaveClass("border-[var(--border-primary)]");
-      expect(combobox).toHaveClass("text-[var(--text-primary)]");
+      expect(screen.getByText("言語")).toBeInTheDocument();
     });
   });
 
@@ -65,9 +55,6 @@ describe("LocaleSelector", () => {
       expect(screen.getByText("简体中文")).toBeInTheDocument();
       expect(screen.getByText("繁體中文")).toBeInTheDocument();
       expect(screen.getByText("한국어")).toBeInTheDocument();
-      expect(screen.getByRole("option", { name: /English/i })).toHaveClass(
-        "text-[var(--text-primary)]",
-      );
     });
   });
 

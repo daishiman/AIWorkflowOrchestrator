@@ -282,7 +282,7 @@ workflow root と outputs の drift を無くす。
 2. `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
 3. `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
 4. `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md`
-5. `diff -u docs/30-workflows/completed-tasks/light-theme-shared-color-migration/artifacts.json docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/artifacts.json`
+5. `diff -u docs/30-workflows/light-theme-shared-color-migration/artifacts.json docs/30-workflows/light-theme-shared-color-migration/outputs/artifacts.json`
 
 ---
 
@@ -319,11 +319,11 @@ workflow root と outputs の drift を無くす。
 
 ### 参考資料
 
-- `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md`
-- `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/phase-1-requirements.md`
-- `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/phase-2-design.md`
-- `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/phase-3-design-review.md`
-- `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-1/requirements-definition.md`
+- `docs/30-workflows/light-theme-shared-color-migration/index.md`
+- `docs/30-workflows/light-theme-shared-color-migration/phase-1-requirements.md`
+- `docs/30-workflows/light-theme-shared-color-migration/phase-2-design.md`
+- `docs/30-workflows/light-theme-shared-color-migration/phase-3-design-review.md`
+- `docs/30-workflows/light-theme-shared-color-migration/outputs/phase-1/requirements-definition.md`
 
 ---
 
