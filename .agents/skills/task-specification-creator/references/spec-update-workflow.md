@@ -332,6 +332,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] 仕様書作成のみのタスクは、該当行を `spec_created` に更新した（`completed` にしない）
 - [ ] 更新対象として列挙した仕様書が実在することを `test -f <path>` で確認した
 - [ ] `phase-*.md` が `../task-*.md` を参照している場合、ブリッジ仕様の実在または参照修正を確認した
+- [ ] cross-cutting UI タスクの場合、aggregate spec（`ui-ux-components.md` / `ui-ux-feature-components.md`）だけでなく、実際に触った surface-specific spec（例: `ui-ux-settings.md` / `ui-ux-forms.md` / `ui-ux-search-panel.md`）も更新対象に含めた
 
 ### Step 1-C: 関連タスクテーブル更新
 - [ ] arch-state-management.md、interfaces-agent-sdk.md、security-api-electron.md、task-workflow.md の「関連タスク」テーブルを確認した
@@ -586,6 +587,7 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（判定基準は Step 1-G.3.1 を参照）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
+- [ ] user が canonical root を明示した場合、`outputs/phase-11/screenshot-plan.json` / `outputs/phase-12/spec-update-summary.md` / `outputs/phase-12/documentation-changelog.md` / `outputs/phase-12/skill-feedback-report.md` に mirror root 参照が残っていないことを確認した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
 

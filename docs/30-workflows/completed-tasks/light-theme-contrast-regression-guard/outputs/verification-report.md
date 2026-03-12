@@ -54,7 +54,7 @@
 
 ### Phase 10: 最終レビューゲート ✅
 
-- ℹ️ [consistency] 参照パス「docs/30-workflows/light-theme-shared-color-migration/outputs/phase-10/final-review-result.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-10/final-review-result.md」の存在を確認してください
 
 ### Phase 11: 手動テスト検証 ✅
 

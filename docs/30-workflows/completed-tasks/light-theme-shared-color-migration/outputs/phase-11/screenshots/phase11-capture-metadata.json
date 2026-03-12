@@ -1,0 +1,104 @@
+{
+  "taskId": "TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001",
+  "capturedAt": "2026-03-12T02:47:42.654Z",
+  "baseUrl": "http://127.0.0.1:4286",
+  "outputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260312-065955-wt#{@layout_b_worktree_id}-1/docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-11/screenshots",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-settings-overview-light-desktop.png",
+      "surface": "settings",
+      "note": "ThemeSelector / AccountSection / LocaleSelector / TimezoneSelector の overview。",
+      "viewport": {
+        "width": 1440,
+        "height": 1500
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=settings&theme=light",
+      "capturedAt": "2026-03-12T02:47:35.621Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-settings-avatar-menu-light-desktop.png",
+      "surface": "settings",
+      "note": "AccountSection の avatar menu state。",
+      "viewport": {
+        "width": 1440,
+        "height": 1500
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=settings&theme=light",
+      "capturedAt": "2026-03-12T02:47:36.815Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-settings-delete-dialog-light-desktop.png",
+      "surface": "settings",
+      "note": "AccountSection の delete dialog state。",
+      "viewport": {
+        "width": 1440,
+        "height": 1500
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=settings&theme=light",
+      "capturedAt": "2026-03-12T02:47:37.823Z"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-settings-locale-dropdown-light-desktop.png",
+      "surface": "settings",
+      "note": "LocaleSelector dropdown state。",
+      "viewport": {
+        "width": 1440,
+        "height": 1500
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=settings&theme=light",
+      "capturedAt": "2026-03-12T02:47:38.805Z"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-settings-timezone-dropdown-light-desktop.png",
+      "surface": "settings",
+      "note": "TimezoneSelector dropdown state。",
+      "viewport": {
+        "width": 1440,
+        "height": 1500
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=settings&theme=light",
+      "capturedAt": "2026-03-12T02:47:39.786Z"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06-auth-surface-light-desktop.png",
+      "surface": "auth",
+      "note": "AuthView の representative screen。",
+      "viewport": {
+        "width": 1280,
+        "height": 960
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=auth&theme=light",
+      "capturedAt": "2026-03-12T02:47:40.736Z"
+    },
+    {
+      "tcId": "TC-11-07",
+      "file": "TC-11-07-workspace-search-results-light-desktop.png",
+      "surface": "workspace-search",
+      "note": "WorkspaceSearchPanel の検索結果 state。",
+      "viewport": {
+        "width": 1440,
+        "height": 1200
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=workspace-search&theme=light",
+      "capturedAt": "2026-03-12T02:47:41.677Z"
+    },
+    {
+      "tcId": "TC-11-08",
+      "file": "TC-11-08-dashboard-reference-light-desktop.png",
+      "surface": "dashboard",
+      "note": "Dashboard の representative reference surface。",
+      "viewport": {
+        "width": 1440,
+        "height": 1080
+      },
+      "url": "http://127.0.0.1:4286/phase11-light-theme-shared-color-migration.html?surface=dashboard&theme=light",
+      "capturedAt": "2026-03-12T02:47:42.651Z"
+    }
+  ]
+}

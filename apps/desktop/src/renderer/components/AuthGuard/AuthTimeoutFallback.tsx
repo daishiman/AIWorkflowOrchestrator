@@ -58,7 +58,7 @@ export const AuthTimeoutFallback: FC<AuthTimeoutFallbackProps> = ({
         <button
           type="button"
           onClick={onRetry}
-          className="w-full px-6 py-3 rounded-lg bg-[var(--accent-primary)] text-white font-medium hover:opacity-90 active:opacity-80 transition-opacity duration-200"
+          className="w-full px-6 py-3 rounded-lg bg-[var(--accent-primary)] text-[var(--text-inverse)] font-medium hover:opacity-90 active:opacity-80 transition-opacity duration-200"
           aria-label="リトライ"
         >
           リトライ

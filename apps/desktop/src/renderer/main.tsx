@@ -1,8 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import { WorkspaceView } from "./views/WorkspaceView";
+import { LightThemeSharedColorMigrationReviewHarness } from "./views/LightThemeSharedColorMigrationReviewHarness";
 import "./styles/globals.css";
+
+const App = React.lazy(() => import("./App"));
+const WorkspaceView = React.lazy(async () => {
+  const module = await import("./views/WorkspaceView");
+  return { default: module.WorkspaceView };
+});
 
 declare global {
   interface Window {
@@ -29,14 +34,52 @@ function renderPhase11WorkspaceHarness(): JSX.Element {
   );
 }
 
+function renderLightThemeSharedColorMigrationHarness(): JSX.Element {
+  const searchParams = new URLSearchParams(window.location.search);
+  const theme =
+    (searchParams.get("theme") as
+      | "light"
+      | "dark"
+      | "system"
+      | "kanagawa-dragon") ?? "light";
+  const surface =
+    (searchParams.get("surface") as
+      | "settings"
+      | "auth"
+      | "workspace-search"
+      | "dashboard") ?? "settings";
+
+  document.documentElement.setAttribute("data-theme", theme);
+  document.documentElement.style.colorScheme =
+    theme === "light" ? "light" : "dark";
+
+  return (
+    <LightThemeSharedColorMigrationReviewHarness
+      surface={surface}
+      theme={theme}
+    />
+  );
+}
+
 const searchParams = new URLSearchParams(window.location.search);
 const appElement =
   searchParams.get("phase11Harness") === "workspace-layout" ? (
     renderPhase11WorkspaceHarness()
+  ) : searchParams.get("phase11Harness") ===
+    "light-theme-shared-color-migration" ? (
+    renderLightThemeSharedColorMigrationHarness()
   ) : (
     <App />
   );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>{appElement}</React.StrictMode>,
+  <React.StrictMode>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]" />
+      }
+    >
+      {appElement}
+    </Suspense>
+  </React.StrictMode>,
 );

@@ -110,7 +110,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
       data-testid="timezone-selector"
       onKeyDown={handleKeyDown}
     >
-      <label className="block text-sm font-medium text-white/80 mb-2">
+      <label className="block text-sm font-medium text-[var(--text-secondary)] mb-2">
         タイムゾーン
       </label>
 
@@ -126,25 +126,26 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
         className={clsx(
           "w-full flex items-center justify-between",
           "px-4 py-3 rounded-lg",
-          "bg-white/5 border border-white/10",
-          "text-white text-left",
+          "bg-[color-mix(in_srgb,var(--bg-tertiary)_80%,var(--bg-primary))]",
+          "border border-[var(--border-primary)]",
+          "text-[var(--text-primary)] text-left",
           "transition-all duration-200",
           isDisabled
             ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-white/10 hover:border-white/20",
+            : "hover:bg-[var(--bg-hover)] hover:border-[var(--border-emphasis)]",
           isOpen && "ring-2 ring-[var(--status-primary)]",
         )}
       >
         <div className="flex-1">
           <span className="block">{currentLabel}</span>
-          <span className="text-xs text-white/50">
+          <span className="text-xs text-[var(--text-muted)]">
             現在の時刻: {currentTimePreview}
           </span>
         </div>
         <Icon
           name={isOpen ? "chevron-up" : "chevron-down"}
           size={16}
-          className="text-white/50"
+          className="text-[var(--text-muted)]"
         />
       </button>
 
@@ -156,11 +157,11 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
         aria-label="現在地"
         className={clsx(
           "mt-2 px-3 py-1.5 rounded-md text-sm",
-          "bg-white/5 border border-white/10 text-white/70",
+          "bg-[var(--bg-tertiary)] border border-[var(--border-primary)] text-[var(--text-secondary)]",
           "transition-all duration-200",
           isDisabled
             ? "opacity-50 cursor-not-allowed"
-            : "hover:bg-white/10 hover:text-white",
+            : "hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]",
         )}
       >
         <Icon name="map-pin" size={14} className="inline mr-1" />
@@ -173,12 +174,12 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           role="listbox"
           className={clsx(
             "absolute z-[100] w-full mt-1",
-            "bg-[var(--bg-secondary)] border border-white/10 rounded-lg",
+            "bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-lg",
             "shadow-xl max-h-64 overflow-auto",
           )}
         >
           {/* Search input */}
-          <div className="sticky top-0 p-2 bg-[var(--bg-secondary)] border-b border-white/10">
+          <div className="sticky top-0 p-2 bg-[var(--bg-primary)] border-b border-[var(--border-primary)]">
             <input
               type="text"
               placeholder="検索..."
@@ -186,8 +187,8 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
               onChange={(e) => setSearchQuery(e.target.value)}
               className={clsx(
                 "w-full px-3 py-2 rounded-md",
-                "bg-white/5 border border-white/10",
-                "text-white placeholder-white/40",
+                "bg-[var(--bg-tertiary)] border border-[var(--border-primary)]",
+                "text-[var(--text-primary)] placeholder-[var(--text-muted)]",
                 "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
               )}
               autoFocus
@@ -205,8 +206,8 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
                 "w-full px-4 py-3 text-left",
                 "transition-colors duration-150",
                 value === tz.value
-                  ? "bg-[var(--status-primary)] text-white"
-                  : "text-white/80 hover:bg-white/10",
+                  ? "bg-[var(--status-primary)] text-[var(--text-inverse)]"
+                  : "text-[var(--text-primary)] hover:bg-[var(--bg-hover)]",
               )}
             >
               <span className="block">{tz.label}</span>
@@ -217,7 +218,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           ))}
 
           {filteredTimezones.length === 0 && (
-            <div className="px-4 py-3 text-white/50 text-center">
+            <div className="px-4 py-3 text-[var(--text-muted)] text-center">
               該当するタイムゾーンがありません
             </div>
           )}
@@ -233,7 +234,7 @@ export const TimezoneSelector: React.FC<TimezoneSelectorProps> = ({
           <Icon
             name="loader-2"
             size={16}
-            className="animate-spin text-white/50"
+            className="animate-spin text-[var(--text-muted)]"
           />
         </div>
       )}
