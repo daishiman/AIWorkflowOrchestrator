@@ -11,6 +11,7 @@ import { AppLayout } from "./components/organisms/AppLayout";
 import { NotificationCenter } from "./components/organisms/NotificationCenter";
 import { DynamicIsland } from "./components/molecules/DynamicIsland";
 import { DashboardView } from "./views/DashboardView";
+import { OnboardingGate } from "./views/DashboardView/components/onboarding/OnboardingGate";
 import { EditorView } from "./views/EditorView";
 import { ChatView } from "./views/ChatView";
 import { GraphView } from "./views/GraphView";
@@ -113,7 +114,12 @@ function App(): JSX.Element {
   const renderView = () => {
     switch (currentView) {
       case "dashboard":
-        return <DashboardView />;
+        return (
+          <>
+            <DashboardView />
+            <OnboardingGate />
+          </>
+        );
       case "workspace":
         return <WorkspaceView />;
       case "editor":

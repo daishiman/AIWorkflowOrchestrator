@@ -369,12 +369,12 @@ describe("SettingsView 統合テスト", () => {
       render(<SettingsView />);
 
       // ApiKeysSection は auth-mode に関係なく常に表示される
+      // 見出しは即時描画されるため、非同期ロード完了の目印として provider 名を待つ。
       await waitFor(() => {
-        expect(screen.getByText("APIキー設定")).toBeInTheDocument();
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
       });
 
       // プロバイダーも表示される
-      expect(screen.getByText("OpenAI")).toBeInTheDocument();
       expect(screen.getByText("Anthropic")).toBeInTheDocument();
     });
   });
@@ -434,9 +434,31 @@ describe("SettingsView 統合テスト", () => {
   });
 
   // ===========================================================
-  // INT-09: task-07 回帰 - themeMode が不正値の場合のリカバリー
+  // INT-09: はじめよう再表示導線
   // ===========================================================
-  describe("INT-09: task-07 回帰 - themeMode が不正値の場合のリカバリー", () => {
+  describe("INT-09: はじめよう再表示導線", () => {
+    it("button クリックで onboarding.completed=false を保存し dashboard へ戻す", async () => {
+      render(<SettingsView />);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "はじめようを再表示" }),
+      );
+
+      await waitFor(() => {
+        expect(harness.electronStore.set).toHaveBeenCalledWith({
+          key: "onboarding.completed",
+          value: false,
+        });
+      });
+
+      expect(currentStoreState.setCurrentView).toHaveBeenCalledWith("dashboard");
+    });
+  });
+
+  // ===========================================================
+  // INT-10: task-07 回帰 - themeMode が不正値の場合のリカバリー
+  // ===========================================================
+  describe("INT-10: task-07 回帰 - themeMode が不正値の場合のリカバリー", () => {
     it("themeMode に不正な値を設定してもクラッシュせずレンダリングされる", async () => {
       harness = createSettingsHarness({
         storeOverrides: {
@@ -462,9 +484,9 @@ describe("SettingsView 統合テスト", () => {
   });
 
   // ===========================================================
-  // INT-10: 保存ボタンクリック時の store アクション呼び出し
+  // INT-11: 保存ボタンクリック時の store アクション呼び出し
   // ===========================================================
-  describe("INT-10: 保存ボタンクリック・チェックボックス切替の store アクション", () => {
+  describe("INT-11: 保存ボタンクリック・チェックボックス切替の store アクション", () => {
     it("自動同期チェックボックスの切り替えで setAutoSyncEnabled が呼ばれる", async () => {
       render(<SettingsView />);
 

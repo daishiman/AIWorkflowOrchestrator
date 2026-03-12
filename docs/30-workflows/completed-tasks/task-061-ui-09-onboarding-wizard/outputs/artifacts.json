@@ -1,0 +1,118 @@
+{
+  "feature": "task-061-ui-09-onboarding-wizard",
+  "created": "2026-03-12T21:19:14+09:00",
+  "lastUpdated": "2026-03-13T00:01:40+09:00",
+  "status": "completed_with_minor_open_items",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "phase-1/requirements-definition.md",
+        "phase-1/scope-definition.md",
+        "phase-1/acceptance-criteria.md",
+        "phase-1/subagent-responsibilities.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "phase-2/component-architecture.md",
+        "phase-2/state-and-persistence-design.md",
+        "phase-2/navigation-and-surface-integration.md",
+        "phase-2/aiworkflow-requirements-extract.md",
+        "phase-2/traceability-matrix.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "phase-3/design-review-result.md",
+        "phase-3/review-findings.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "phase-4/test-specification.md",
+        "phase-4/test-cases.md",
+        "phase-4/mock-contracts.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "phase-5/implementation-plan.md",
+        "phase-5/file-change-plan.md",
+        "phase-5/implementation-summary.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "phase-6/regression-matrix.md",
+        "phase-6/edge-cases.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "phase-7/coverage-target-report.md",
+        "phase-7/coverage-gate-result.md"
+      ],
+      "notes": "Function coverage 76.92% only is unresolved."
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "phase-8/refactoring-plan.md",
+        "phase-8/extraction-decision.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "phase-9/qa-checklist.md",
+        "phase-9/risk-review.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "phase-10/final-review-result.md",
+        "phase-10/open-items.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11/manual-test-plan.md",
+        "phase-11/screenshot-plan.json",
+        "phase-11/manual-test-result.md",
+        "phase-11/screenshots/TC-11-01-desktop-step1-light.png",
+        "phase-11/screenshots/TC-11-02-tablet-step3-dark.png",
+        "phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png",
+        "phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png",
+        "phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12/implementation-guide.md",
+        "phase-12/spec-update-summary.md",
+        "phase-12/documentation-changelog.md",
+        "phase-12/unassigned-task-detection.md",
+        "phase-12/skill-feedback-report.md",
+        "phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "artifacts": [
+        "phase-13/pr-plan.md"
+      ],
+      "notes": "origin/main 同期状態を確認し、task-061 関連差分のみを PR 専用ブランチへ集約して commit / push / PR / implementation-guide comment まで実施する"
+    }
+  }
+}

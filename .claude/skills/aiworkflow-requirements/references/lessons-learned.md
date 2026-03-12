@@ -7371,3 +7371,56 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
+## TASK-UI-09-ONBOARDING-WIZARD 実装教訓（2026-03-13）
+
+### 苦戦箇所: onboarding completed flag と rerun handoff が分離しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | completed flag の reset と view handoff を別イベントとして扱うと、rerun しても overlay が期待通り再表示されない |
+| 再発条件 | Settings 側と onboarding 側が同じ責務を持つ |
+| 対処 | Settings は `onboarding.completed=false` の reset と dashboard handoff だけを担当し、表示条件判定は onboarding 側に残した |
+| 標準ルール | rerun 導線は「reset 起点」と「表示判定」を分離する |
+
+### 苦戦箇所: representative screenshot の名前と matrix がずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot 実体名、manual result、coverage matrix の命名が揃っていないと validator が通らない |
+| 再発条件 | 画像を先に撮って後から TC 台帳を書く |
+| 対処 | `TC-11-01..05` を `screenshots/*.png` と 1 対 1 で同期し、非視覚 TC は matrix から分離した |
+| 標準ルール | 画面検証を要求された UI は `phase-11-manual-test.md` の matrix を最初に正す |
+
+### 苦戦箇所: warning / coverage 不足が「あとで直す」で埋もれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `act(...)` warning や function coverage 76.92% を本体 report の末尾に残すだけだと、次回に継承されにくい |
+| 再発条件 | Phase 12 で MINOR の formalize 判断をしない |
+| 対処 | test hardening task と discoverability task の 2 件へ切り分けた |
+| 標準ルール | MINOR は「report」「system spec」「unassigned task」の3面同期を取る |
+
+### 苦戦箇所: Settings rerun card は isolated では明快でも page 全体では埋もれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 機能としては完成していても、full settings page で card が fold 下へ落ちやすい |
+| 再発条件 | representative surface だけで UI 完了判定を出す |
+| 対処 | 実装完了は維持しつつ、IA 改善は follow-up backlog として分離した |
+| 標準ルール | 「動くが見つけにくい」問題は discoverability task に分ける |
+
+### 同種課題の5分解決カード
+
+1. rerun は `persist reset` と `display condition` の責務を分離する。  
+2. screenshot 取得前に `TC-ID ↔ screenshots/*.png` の台帳を決める。  
+3. 非視覚 TC は visual matrix に混ぜない。  
+4. warning / coverage 不足は Phase 12 で必ず formalize 判断する。  
+5. 動作完了と discoverability 改善は別タスクとして扱う。  
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | Onboarding test harness、coverage、`act(...)` warning を hardening する | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | Settings rerun card の情報設計を改善する | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |

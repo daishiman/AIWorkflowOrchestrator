@@ -1917,6 +1917,44 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 ## 関連ドキュメント
 
+## Onboarding Wizard UI（TASK-UI-09-ONBOARDING-WIZARD）
+
+### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| surface | 初回起動時に前面表示される Onboarding Wizard overlay を追加 |
+| flow | multi-step で基本導線を案内し、完了後は通常画面へ復帰する |
+| rerun | Settings の `はじめよう` card から `はじめようを再表示` を実行できる |
+| persist | `onboarding.completed` により再表示抑制と rerun reset を制御する |
+
+### 画面証跡
+
+| TC | 証跡 | 確認内容 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png` | desktop light で Step 1 表示 |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png` | tablet dark で中盤 step 表示 |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png` | mobile kanagawa で最終 step 表示 |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | Settings rerun card の表示 |
+| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun 実行後の overlay 表示 |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 内容 | 解決方針 |
+| --- | --- | --- |
+| overlay と通常画面の境界 | 完了時に overlay を閉じた後の戻り先が曖昧になりやすい | 完了後の戻り先を dashboard 系へ固定する |
+| representative screenshot の粒度 | state 名と png 名がずれると台帳が破綻する | `TC-ID ↔ png` を manual test 台帳で固定する |
+| rerun discoverability | isolated screenshot では明快でも Settings 全体では埋もれる | UI 完了と IA 改善を分離し、未タスク化する |
+| test hardening | warning と coverage 不足が report に残りやすい | follow-up task を発行して本体完了から責務分離する |
+
+### 同種課題の5分解決カード
+
+1. overlay 表示条件と完了後の戻り先を先に固定する。  
+2. representative screenshot は desktop / tablet / mobile / rerun の4観点で押さえる。  
+3. Settings rerun は動作確認と発見性確認を分けて評価する。  
+4. MINOR は report だけで終わらせず unassigned task 化する。  
+5. `task-workflow` / `ui-ux-navigation` / `ui-ux-settings` / `lessons-learned` を同一ターンで同期する。  
+
 ### 分割ファイル
 
 - [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズの完全な仕様
@@ -1958,6 +1996,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-13 | v1.14.36   | TASK-UI-09-ONBOARDING-WIZARD を反映: Onboarding Wizard overlay / Settings rerun / screenshot 5件 / 苦戦箇所 4件 / related UT 2件を feature 正本へ同期 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |

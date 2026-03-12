@@ -468,6 +468,47 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 - [deployment-electron.md](./deployment-electron.md) - Electronデプロイ
 - [期間フィルタ実装ガイド](../../../docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-12/implementation-guide.md) - 期間別フィルタリング実装詳細
 
+## Onboarding rerun card（TASK-UI-09-ONBOARDING-WIZARD）
+
+### UI 構成
+
+| 項目 | 内容 |
+| --- | --- |
+| セクション名 | `はじめよう` |
+| CTA | `はじめようを再表示` |
+| test id | `rerun-onboarding-button` |
+| 役割 | 初回 onboarding の再体験を Settings から起動する |
+
+### persist / handoff 契約
+
+| 観点 | 内容 |
+| --- | --- |
+| reset key | `onboarding.completed=false` を保存する |
+| handoff | reset 後に `setCurrentView("dashboard")` で通常画面へ戻し、overlay を再評価させる |
+| responsibility | Settings は rerun の起点だけを持ち、wizard 本体の表示条件は onboarding 側で判定する |
+
+### 画面証跡
+
+| TC | 証跡 | 観点 |
+| --- | --- | --- |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | rerun card の表示 |
+| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun 実行後の overlay |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 内容 | 解決方針 |
+| --- | --- | --- |
+| reset と handoff の順序 | Settings だけで overlay を制御しようとすると state が競合しやすい | Settings は reset 起点、overlay は表示条件判定に専念させる |
+| full settings page での発見性 | isolated screenshot では見えるが、長い設定画面では埋もれる | discoverability は IA 改善として未タスク化する |
+| test warning | integration test に `act(...)` warning が残る | rerun UX の本体完了とは切り離して hardening task へ送る |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | rerun を含む integration / harness hardening | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | rerun card の配置・文言・発見性改善 | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
+
 ---
 
 ## 実装ファイル
@@ -499,6 +540,7 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.9.0   | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD を反映: `はじめよう` rerun card、`onboarding.completed=false` reset、`setCurrentView("dashboard")` handoff、Phase 11 screenshot 2件、苦戦箇所 3件を追加 |
 | 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |

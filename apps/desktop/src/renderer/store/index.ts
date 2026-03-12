@@ -257,11 +257,29 @@ export const useStoragePercentage = () =>
   );
 
 // Auth computed selectors
+function normalizeDisplayNameCandidate(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed === "" ? null : trimmed;
+}
+
 export const useDisplayName = () =>
-  useAppStore(
-    (state) =>
-      state.profile?.displayName ?? state.authUser?.displayName ?? "User",
-  );
+  useAppStore((state) => {
+    const localName = normalizeDisplayNameCandidate(state.userProfile?.name);
+    if (localName && localName !== "ユーザー") {
+      return localName;
+    }
+
+    return (
+      normalizeDisplayNameCandidate(state.profile?.displayName) ??
+      normalizeDisplayNameCandidate(state.authUser?.displayName) ??
+      localName ??
+      "User"
+    );
+  });
 export const useUserEmail = () =>
   useAppStore((state) => state.profile?.email ?? state.authUser?.email ?? "");
 export const useUserAvatar = () =>

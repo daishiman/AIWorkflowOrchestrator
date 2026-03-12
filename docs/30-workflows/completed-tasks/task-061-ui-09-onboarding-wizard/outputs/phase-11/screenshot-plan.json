@@ -1,0 +1,47 @@
+{
+  "taskId": "TASK-UI-09-ONBOARDING-WIZARD",
+  "capturedAt": "2026-03-12T23:44:00+09:00",
+  "script": "apps/desktop/scripts/capture-task-061-onboarding-wizard-phase11.mjs",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "file": "screenshots/TC-11-01-desktop-step1-light.png",
+      "surface": "dashboard",
+      "theme": "light",
+      "viewport": { "width": 1440, "height": 980 },
+      "objective": "desktop light の初回起動 overlay を確認する"
+    },
+    {
+      "id": "TC-11-02",
+      "file": "screenshots/TC-11-02-tablet-step3-dark.png",
+      "surface": "dashboard",
+      "theme": "dark",
+      "viewport": { "width": 1024, "height": 900 },
+      "objective": "tablet dark の Step 3 tool selection を確認する"
+    },
+    {
+      "id": "TC-11-03",
+      "file": "screenshots/TC-11-03-mobile-step4-kanagawa.png",
+      "surface": "dashboard",
+      "theme": "kanagawa-dragon",
+      "viewport": { "width": 390, "height": 844 },
+      "objective": "mobile kanagawa-dragon の Step 4 theme selection を確認する"
+    },
+    {
+      "id": "TC-11-04",
+      "file": "screenshots/TC-11-04-settings-rerun-entry-dark.png",
+      "surface": "settings",
+      "theme": "dark",
+      "viewport": { "width": 1440, "height": 1180 },
+      "objective": "settings rerun card の entry point を確認する"
+    },
+    {
+      "id": "TC-11-05",
+      "file": "screenshots/TC-11-05-settings-rerun-triggered-dark.png",
+      "surface": "settings -> dashboard",
+      "theme": "dark",
+      "viewport": { "width": 1440, "height": 980 },
+      "objective": "rerun button から onboarding overlay が再表示されることを確認する"
+    }
+  ]
+}

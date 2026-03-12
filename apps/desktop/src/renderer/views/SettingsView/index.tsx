@@ -20,6 +20,18 @@ import {
 } from "../../store";
 import type { ThemeMode } from "../../store/types";
 
+type StoreSetResponse = {
+  success: boolean;
+  error?: string;
+};
+
+type ElectronStoreApi = {
+  set?: (request: {
+    key: string;
+    value: unknown;
+  }) => Promise<StoreSetResponse>;
+};
+
 export interface SettingsViewProps {
   className?: string;
 }
@@ -30,6 +42,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const setAutoSyncEnabledAction = useAppStore(
     (state) => state.setAutoSyncEnabled,
   );
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
   const themeMode = useAppStore((state) => state.themeMode);
   const setThemeModeAction = useAppStore((state) => state.setThemeMode);
 
@@ -50,6 +63,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const [isLoading] = useState(false);
   const [error] = useState<string | null>(null);
   const [ragEnabled, setRagEnabled] = useState(false);
+  const [isRerunningOnboarding, setIsRerunningOnboarding] = useState(false);
+  const [onboardingError, setOnboardingError] = useState<string | null>(null);
 
   const handleRagToggle = useCallback((checked: boolean) => {
     setRagEnabled(checked);
@@ -72,6 +87,42 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
   const handleSave = useCallback(async () => {
     // Save logic would go here
   }, []);
+
+  const handleRerunOnboarding = useCallback(async () => {
+    setIsRerunningOnboarding(true);
+    setOnboardingError(null);
+
+    try {
+      const storeApi = (
+        window as typeof window & {
+          electronAPI?: { store?: ElectronStoreApi };
+        }
+      ).electronAPI?.store;
+
+      if (!storeApi?.set) {
+        throw new Error("Store API is not available");
+      }
+
+      const result = await storeApi.set({
+        key: "onboarding.completed",
+        value: false,
+      });
+
+      if (!result.success) {
+        throw new Error(result.error ?? "はじめようを再表示できませんでした");
+      }
+
+      setCurrentView("dashboard");
+    } catch (rerunError) {
+      setOnboardingError(
+        rerunError instanceof Error
+          ? rerunError.message
+          : "はじめようを再表示できませんでした",
+      );
+    } finally {
+      setIsRerunningOnboarding(false);
+    }
+  }, [setCurrentView]);
 
   if (error) {
     return <ErrorDisplay message={error} className={className} />;
@@ -191,6 +242,37 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
               fullWidth
               aria-labelledby="theme-settings-heading"
             />
+          </SettingsCard>
+        </section>
+
+        <section role="region" aria-labelledby="onboarding-settings-heading">
+          <SettingsCard
+            title="はじめよう"
+            description="初回ガイドをもう一度表示します"
+            id="onboarding-settings-heading"
+          >
+            <div className="space-y-3">
+              <p className="text-sm text-[var(--text-secondary)]">
+                名前入力、AIのおためし、ツール追加、テーマ選択の4ステップを再体験できます。
+              </p>
+              <Button
+                variant="secondary"
+                onClick={handleRerunOnboarding}
+                disabled={isRerunningOnboarding}
+                loading={isRerunningOnboarding}
+                data-testid="rerun-onboarding-button"
+              >
+                はじめようを再表示
+              </Button>
+              {onboardingError ? (
+                <p
+                  className="text-sm text-[var(--status-error)]"
+                  data-testid="rerun-onboarding-error"
+                >
+                  {onboardingError}
+                </p>
+              ) : null}
+            </div>
           </SettingsCard>
         </section>
 

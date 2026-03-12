@@ -1,0 +1,141 @@
+{
+  "feature": "task-061-ui-09-onboarding-wizard",
+  "created": "2026-03-12T21:19:14+09:00",
+  "lastUpdated": "2026-03-13T08:03:00+09:00",
+  "status": "completed_with_minor_open_items",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/subagent-responsibilities.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/component-architecture.md",
+        "outputs/phase-2/state-and-persistence-design.md",
+        "outputs/phase-2/navigation-and-surface-integration.md",
+        "outputs/phase-2/aiworkflow-requirements-extract.md",
+        "outputs/phase-2/traceability-matrix.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-findings.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/test-cases.md",
+        "outputs/phase-4/mock-contracts.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/file-change-plan.md",
+        "outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/regression-matrix.md",
+        "outputs/phase-6/edge-cases.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-target-report.md",
+        "outputs/phase-7/coverage-gate-result.md"
+      ],
+      "notes": "Scoped coverage summary: statements 89.22%, branches 83.06%, functions 76.92%, lines 89.22%. Function threshold 80% only is minor open item."
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/extraction-decision.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/qa-checklist.md",
+        "outputs/phase-9/risk-review.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/open-items.md"
+      ],
+      "notes": "Final gate is MINOR. Implementation is acceptable, but function coverage threshold and rerun discoverability remain follow-up candidates."
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png",
+        "outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png",
+        "outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png",
+        "outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png",
+        "outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-13/pr-plan.md"
+      ],
+      "notes": "origin/main 同期状態を確認し、task-061 関連差分のみを PR 専用ブランチへ集約して commit / push / PR / implementation-guide comment まで実施する"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "ui",
+    "taskId": "TASK-UI-09-ONBOARDING-WIZARD",
+    "title": "はじめようオンボーディングウィザード",
+    "priority": "low",
+    "branch": "task/task-061-ui-09-onboarding-wizard-specs"
+  }
+}

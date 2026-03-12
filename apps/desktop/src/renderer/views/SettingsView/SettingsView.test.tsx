@@ -75,6 +75,7 @@ const createMockState = (overrides = {}) => ({
   setApiKey: vi.fn(),
   setAutoSyncEnabled: vi.fn(),
   setThemeMode: vi.fn().mockResolvedValue(undefined),
+  setCurrentView: vi.fn(),
   setUserProfile: vi.fn(),
   updateUserProfile: vi.fn(),
   ...overrides,
@@ -234,12 +235,31 @@ describe("SettingsView", () => {
     });
   });
 
+  describe("はじめよう再表示", () => {
+    it("再表示セクションを表示する", () => {
+      render(<SettingsView />);
+
+      expect(screen.getByText("はじめよう")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "はじめようを再表示" }),
+      ).toBeInTheDocument();
+    });
+  });
+
   describe("保存ボタン", () => {
     it("保存ボタンを表示する", () => {
       render(<SettingsView />);
       expect(
         screen.getByRole("button", { name: "設定を保存" }),
       ).toBeInTheDocument();
+    });
+
+    it("保存ボタンをクリックしてもクラッシュしない", () => {
+      render(<SettingsView />);
+
+      fireEvent.click(screen.getByRole("button", { name: "設定を保存" }));
+
+      expect(screen.getByTestId("settings-view")).toBeInTheDocument();
     });
   });
 

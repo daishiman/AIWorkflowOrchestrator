@@ -44,6 +44,12 @@ const baseState = {
   authUser: {
     displayName: "田中",
   } as never,
+  userProfile: {
+    name: "田中",
+    email: "tanaka@example.com",
+    avatar: "",
+    plan: "free" as const,
+  },
   setCurrentView: mockSetCurrentView as never,
 };
 
@@ -95,6 +101,25 @@ describe("DashboardView", () => {
       render(<DashboardView now={fixedNow} />);
       expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
         "ホーム",
+      );
+    });
+
+    it("認証プロフィールがなくても userProfile.name を表示名として使う", () => {
+      applyState({
+        profile: null as never,
+        authUser: null as never,
+        userProfile: {
+          name: "春子",
+          email: "haruko@example.com",
+          avatar: "",
+          plan: "free" as const,
+        },
+      });
+
+      render(<DashboardView now={fixedNow} />);
+
+      expect(screen.getByTestId("dashboard-greeting")).toHaveTextContent(
+        "おはようございます、春子さん",
       );
     });
   });

@@ -35,6 +35,7 @@ export interface MockStoreState {
   setApiKey: ReturnType<typeof vi.fn>;
   setAutoSyncEnabled: ReturnType<typeof vi.fn>;
   setThemeMode: ReturnType<typeof vi.fn>;
+  setCurrentView: ReturnType<typeof vi.fn>;
   setUserProfile: ReturnType<typeof vi.fn>;
   updateUserProfile: ReturnType<typeof vi.fn>;
   setResolvedTheme: ReturnType<typeof vi.fn>;
@@ -122,6 +123,11 @@ export interface MockElectronApiKey {
   validate: ReturnType<typeof vi.fn>;
 }
 
+export interface MockElectronStore {
+  get: ReturnType<typeof vi.fn>;
+  set: ReturnType<typeof vi.fn>;
+}
+
 /**
  * harness のオプション
  */
@@ -134,6 +140,8 @@ export interface HarnessOptions {
   apiKeyListResult?: unknown;
   /** electronAPI.apiKey 全体の上書き */
   apiKeyOverrides?: Partial<MockElectronApiKey>;
+  /** electronAPI.store 全体の上書き */
+  electronStoreOverrides?: Partial<MockElectronStore>;
 }
 
 // ============================================================
@@ -161,6 +169,7 @@ export const createDefaultStoreState = (
   setApiKey: vi.fn(),
   setAutoSyncEnabled: vi.fn(),
   setThemeMode: vi.fn().mockResolvedValue(undefined),
+  setCurrentView: vi.fn(),
   setUserProfile: vi.fn(),
   updateUserProfile: vi.fn(),
   setResolvedTheme: vi.fn(),
@@ -287,6 +296,14 @@ export const createDefaultElectronApiKey = (
   ...overrides,
 });
 
+export const createDefaultElectronStore = (
+  overrides: Partial<MockElectronStore> = {},
+): MockElectronStore => ({
+  get: vi.fn().mockResolvedValue({ success: true, data: false }),
+  set: vi.fn().mockResolvedValue({ success: true }),
+  ...overrides,
+});
+
 // ============================================================
 // ハーネス本体
 // ============================================================
@@ -310,11 +327,15 @@ export function createSettingsHarness(options: HarnessOptions = {}) {
     options.apiKeyOverrides,
     options.apiKeyListResult,
   );
+  const electronStore = createDefaultElectronStore(
+    options.electronStoreOverrides,
+  );
 
   return {
     storeState,
     authModeSelectors,
     electronApiKey,
+    electronStore,
 
     /**
      * vi.mock("../../../store", ...) に渡す factory 関数を生成
@@ -351,6 +372,7 @@ export function createSettingsHarness(options: HarnessOptions = {}) {
         value: {
           ...existingApi,
           apiKey: electronApiKey,
+          store: electronStore,
         },
         writable: true,
         configurable: true,
