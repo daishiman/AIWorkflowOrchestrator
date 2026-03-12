@@ -95,23 +95,18 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
   return (
     <div
       className={clsx(
-        "h-screen w-screen flex flex-col items-center justify-center",
-        "bg-[radial-gradient(circle_at_top,_color-mix(in_srgb,var(--accent-primary)_10%,transparent),transparent_42%),linear-gradient(180deg,var(--bg-primary)_0%,color-mix(in_srgb,var(--bg-tertiary)_88%,var(--bg-primary))_100%)]",
+        "h-screen w-screen flex flex-col items-center justify-center bg-[var(--bg-primary)]",
         className,
       )}
       data-testid="auth-view"
     >
       {/* ロゴ */}
       <div className="mb-6">
-        <Icon
-          name="sparkles"
-          size={64}
-          className="text-[var(--status-primary)]"
-        />
+        <Icon name="sparkles" size={64} className="text-blue-400" />
       </div>
 
       {/* アプリ名 */}
-      <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-8">
+      <h1 className="text-2xl font-bold text-white mb-8">
         AIWorkflowOrchestrator
       </h1>
 
@@ -124,16 +119,12 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
       >
         {/* タイトル */}
         <div className="text-center mb-6">
-          <Icon
-            name="user"
-            size={48}
-            className="mx-auto text-[var(--text-muted)] mb-4"
-          />
-          <h2 className="text-lg font-semibold text-[var(--text-primary)]">
+          <Icon name="user" size={48} className="mx-auto text-white/40 mb-4" />
+          <h2 className="text-lg font-semibold text-white">
             アカウント登録・ログイン
           </h2>
           <p
-            className="text-[var(--text-secondary)] text-sm mt-1"
+            className="text-white/60 text-sm mt-1"
             data-testid="auth-view-helper-text"
           >
             アカウントを連携してデータを同期しましょう
@@ -142,11 +133,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ className }) => {
 
         {/* エラー表示 */}
         {authError && (
-          <div className="mb-4 rounded-lg border border-[color-mix(in_srgb,var(--status-error)_28%,var(--border-primary))] bg-[color-mix(in_srgb,var(--status-error)_10%,var(--bg-primary))] p-3">
+          <div className="mb-4 p-3 rounded-lg bg-red-500/20 border border-red-500/30">
             <div className="flex items-center justify-between">
-              <span className="text-[var(--status-error)] text-sm">
-                {authError}
-              </span>
+              <span className="text-red-400 text-sm">{authError}</span>
               <Button
                 variant="ghost"
                 size="sm"

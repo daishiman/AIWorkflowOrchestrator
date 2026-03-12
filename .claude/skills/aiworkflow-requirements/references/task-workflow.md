@@ -177,7 +177,7 @@
 
 | タスクID | 概要 | 優先度 | 参照 |
 | --- | --- | --- | --- |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 #### 検証証跡
@@ -206,7 +206,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-12 |
 | 対象 | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` の hardcoded color migration を実コード監査ベースで仕様化 |
-| 成果物 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/` |
+| 成果物 | `docs/30-workflows/light-theme-shared-color-migration/outputs/` |
 
 #### 実施内容
 
@@ -246,9 +246,9 @@
 
 | コマンド | 結果 |
 | --- | --- |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/light-theme-shared-color-migration --phase 1` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/light-theme-shared-color-migration --json` | PASS |
-| `diff -u docs/30-workflows/completed-tasks/light-theme-shared-color-migration/artifacts.json docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/artifacts.json` | 差分なし |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/light-theme-shared-color-migration --phase 1` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/light-theme-shared-color-migration --json` | PASS |
+| `diff -u docs/30-workflows/light-theme-shared-color-migration/artifacts.json docs/30-workflows/light-theme-shared-color-migration/outputs/artifacts.json` | 差分なし |
 
 #### Phase 12で登録した関連未タスク
 
@@ -4588,7 +4588,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.67.57** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 再監査追補**: workflow 本文の Phase 1-12 completed 同期、`outputs/artifacts.json` 追加、index 再生成、`ui-ux-design-system.md` の status テーブル更新、localhost static serve fallback（`phase11-static-server.mjs`）を完了記録へ追記し、親仕様書の stale な未タスク導線を completed workflow 正本へ修正 |
 | **1.67.56** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行を同期**: completed workflow `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` の Phase 4-12 outputs、audit summary（`current=0 / baseline=64`）、Phase 11 screenshot 5件、Apple UI/UX 視覚レビュー、baseline routing を追加。`ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` の contrast backlog は remediation task `task-fix-light-theme-shared-color-migration-001` へ分離し、guard task は current build static serve + selector capture の標準手順として固定 |
 | **1.67.55** | **2026-03-12** | **UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 を登録**: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、`spec_created` UI workflow 向けの root同期ガードとして未タスク化。current inventory correction、verification-only lane、必要 system spec 抽出、`artifacts.json` / `outputs/artifacts.json` 同期を 1 つの再利用導線へ統合し、parent task 節と残課題テーブルへ同時反映 |
-| **1.67.54** | **2026-03-12** | **TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を同期**: current workflow `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/` を完了台帳へ追加し、actual target inventory、verification-only lane、必要 system spec 14件、Phase 1-3 gate、root `artifacts.json` / `outputs/artifacts.json` 同期を記録。親 workflow の旧 unassigned-task 参照ではなく current workflow を正本とする運用へ更新 |
+| **1.67.54** | **2026-03-12** | **TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の `spec_created` 追補を同期**: current workflow `docs/30-workflows/light-theme-shared-color-migration/` を完了台帳へ追加し、actual target inventory、verification-only lane、必要 system spec 14件、Phase 1-3 gate、root `artifacts.json` / `outputs/artifacts.json` 同期を記録。親 workflow の旧 unassigned-task 参照ではなく current workflow を正本とする運用へ更新 |
 | **1.67.53** | **2026-03-11** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を登録**: TASK-UI-04C の苦戦箇所 3件（fuzzy no-match、renderer timeout+retry、parse/transport 分離）を共通ガード未タスクへ formalize し、04C 完了節の関連未タスクと残課題テーブルへ同一 ID で同期。`outputs/phase-12` の Step 1-C も 0件→1件へ再整合した |
 | **1.67.52** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW を同期**: `PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / structured fallback / Phase 11 screenshot 11件 / 52 tests PASS を完了台帳へ追加し、新規未タスク0件・workflow / outputs / system spec / LOGS / SKILL 同時更新を記録 |
 | **1.67.51** | **2026-03-11** | **TASK-UI-04B-WORKSPACE-CHAT を同期**: `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context）、targeted tests 14件 PASS、typecheck PASS、Phase 11 screenshot 8件（Apple UI/UX 観点）を完了台帳へ追加。あわせて stream chunk/end race 修正、`implementation-guide` 要件充足、`phase-11-manual-test.md` 画面カバレッジマトリクス追補、`lessons-learned` / LOGS / SKILL の同一ターン同期を記録 |

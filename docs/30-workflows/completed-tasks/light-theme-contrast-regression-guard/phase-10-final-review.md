@@ -23,13 +23,13 @@ AC-1〜AC-5 に照らして guard 設計 / 実装 / quality gate を総合判定
 
 ## 参照資料
 
-| 参照資料                | パス                                                                                                           | 説明                    |
-| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| Phase 2 成果物          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-2/`                     | screenshot / audit 設計 |
-| Phase 5 成果物          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-5/`                     | 実装差分                |
-| quality report          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-9/quality-report.md`    | 品質評価                |
-| token foundation review | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/phase-10/final-review-result.md`       | 依存元の最終状態        |
-| shared migration review | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/outputs/phase-10/final-review-result.md` | 依存先の最終状態        |
+| 参照資料                | パス                                                                                                        | 説明                    |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
+| Phase 2 成果物          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-2/`                  | screenshot / audit 設計 |
+| Phase 5 成果物          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-5/`                  | 実装差分                |
+| quality report          | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/phase-9/quality-report.md` | 品質評価                |
+| token foundation review | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/phase-10/final-review-result.md`    | 依存元の最終状態        |
+| shared migration review | `docs/30-workflows/light-theme-shared-color-migration/outputs/phase-10/final-review-result.md`              | 依存先の最終状態        |
 
 ### システム仕様（aiworkflow-requirements）
 

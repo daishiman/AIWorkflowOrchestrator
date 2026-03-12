@@ -206,9 +206,11 @@ describe("AccountSection Edge Cases", () => {
       // avatarUrl が null の場合、img 要素は表示されない
       // 代わりにデフォルトのアイコンが表示される
       if (!avatar) {
-        expect(
-          screen.getByTestId("account-avatar-fallback"),
-        ).toBeInTheDocument();
+        // フォールバックとしてユーザーアイコンの div が表示される
+        const fallbackIcon = document.querySelector(
+          ".rounded-full.bg-white\\/10",
+        );
+        expect(fallbackIcon).toBeInTheDocument();
       }
     });
   });

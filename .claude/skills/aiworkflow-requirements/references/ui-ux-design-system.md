@@ -280,7 +280,7 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | 3テーマ整合 | required token を light / dark / kanagawa 全テーマで定義 | contract test で一括検証 |
 | CI 回復 | Dashboard の `--accent` 参照を `--accent-primary` に統一し、shard fail を local 再現して回復した | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` PASS |
 | 視覚検証 | Dashboard / Settings / Auth / AgentView + dark baseline を再撮影し、completed workflow 側の capture path と coverage を同期 | Phase 11 screenshot 5件 + coverage validator PASS |
-| 残課題分離 | component 側の hardcoded color は current workflow へ切り分け | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md`（`spec_created`）へ引き継ぎ |
+| 残課題分離 | component 側の hardcoded color は current workflow へ切り分け | `docs/30-workflows/light-theme-shared-color-migration/index.md`（`spec_created`）へ引き継ぎ |
 
 #### TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 苦戦箇所（2026-03-11）
 
@@ -298,7 +298,7 @@ Knowledge StudioデスクトップアプリではApple Human Interface Guideline
 | 観点 | 内容 |
 | --- | --- |
 | ステータス | `spec_created`（実装未着手） |
-| current workflow | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` |
+| current workflow | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | primary targets | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` |
 | verification-only | `SettingsView` / `SettingsCard` / `DashboardView` は regression 確認専用 lane |
 | 必要 cross-cutting spec | `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` |
@@ -350,7 +350,7 @@ const variantStyles: Record<Variant, string> = {
 | タスクID | タスク名 | ステータス | 優先度 | 参照 |
 |----------|----------|------------|--------|------|
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | `spec_created` | 高 | `docs/30-workflows/completed-tasks/light-theme-shared-color-migration/index.md` |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | `spec_created` | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 完了（Phase 1-12 完了 / Phase 13 未実施） | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 | UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |

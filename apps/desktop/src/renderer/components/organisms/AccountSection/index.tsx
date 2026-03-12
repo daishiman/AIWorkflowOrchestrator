@@ -387,16 +387,12 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
         /* Unauthenticated State */
         <GlassPanel radius="md" blur="md" className="p-6">
           <div className="text-center space-y-4">
-            <Icon
-              name="user"
-              size={48}
-              className="mx-auto text-[var(--text-muted)]"
-            />
+            <Icon name="user" size={48} className="mx-auto text-white/40" />
             <div>
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+              <h3 className="text-lg font-semibold text-white">
                 アカウント登録・ログイン
               </h3>
-              <p className="text-[var(--text-secondary)] text-sm mt-1">
+              <p className="text-white/60 text-sm mt-1">
                 アカウントを連携してデータを同期しましょう
               </p>
             </div>
@@ -473,18 +469,11 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                   <img
                     src={avatarUrl}
                     alt={`${displayName}のavatar`}
-                    className="w-16 h-16 rounded-full object-cover border-2 border-[var(--border-primary)]"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-white/20"
                   />
                 ) : (
-                  <div
-                    data-testid="account-avatar-fallback"
-                    className="w-16 h-16 rounded-full bg-[var(--bg-tertiary)] flex items-center justify-center"
-                  >
-                    <Icon
-                      name="user"
-                      size={32}
-                      className="text-[var(--text-muted)]"
-                    />
+                  <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                    <Icon name="user" size={32} className="text-white/40" />
                   </div>
                 )}
                 {/* Avatar Edit Button */}
@@ -495,7 +484,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                   aria-label="アバターを編集"
                   aria-expanded={isAvatarMenuOpen}
                   aria-haspopup="menu"
-                  className="absolute -bottom-1 -right-1 w-6 h-6 !p-0 rounded-full bg-[var(--bg-tertiary)] hover:bg-[var(--bg-hover)] text-[var(--text-primary)]"
+                  className="absolute -bottom-1 -right-1 w-6 h-6 !p-0 rounded-full bg-white/20 hover:bg-white/30"
                 >
                   <Icon name="pencil" size={12} />
                 </Button>
@@ -509,13 +498,13 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     ref={avatarMenuRef}
                     role="menu"
                     aria-label="アバター編集メニュー"
-                    className="fixed w-48 bg-[var(--bg-primary)] border border-[var(--border-primary)] rounded-lg shadow-lg z-[9999]"
+                    className="fixed w-48 bg-[var(--bg-secondary)] border border-white/10 rounded-lg shadow-lg z-[9999]"
                     style={{ top: menuPosition.top, left: menuPosition.left }}
                   >
                     <button
                       role="menuitem"
                       onClick={handleUploadAvatar}
-                      className="w-full px-4 py-2 text-left text-sm text-[var(--text-primary)] hover:bg-[var(--bg-hover)] flex items-center gap-2"
+                      className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
                     >
                       <Icon name="upload" size={14} />
                       アップロード
@@ -532,7 +521,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                               provider.provider as OAuthProvider,
                             )
                           }
-                          className="w-full px-4 py-2 text-left text-sm text-[var(--text-primary)] hover:bg-[var(--bg-hover)] flex items-center gap-2"
+                          className="w-full px-4 py-2 text-left text-sm text-white hover:bg-white/10 flex items-center gap-2"
                         >
                           <ProviderIcon
                             provider={provider.provider as OAuthProvider}
@@ -551,7 +540,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                         "w-full px-4 py-2 text-left text-sm flex items-center gap-2",
                         avatarUrl
                           ? "text-red-400 hover:bg-red-500/10"
-                          : "text-[var(--text-tertiary)] cursor-not-allowed",
+                          : "text-white/30 cursor-not-allowed",
                       )}
                     >
                       <Icon name="trash-2" size={14} />
@@ -598,7 +587,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                 ) : (
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold text-[var(--text-primary)] truncate">
+                      <h3 className="text-lg font-semibold text-white truncate">
                         {displayName}
                       </h3>
                       <Button
@@ -610,9 +599,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                         <Icon name="pencil" size={14} />
                       </Button>
                     </div>
-                    <p className="text-[var(--text-secondary)] text-sm truncate">
-                      {email}
-                    </p>
+                    <p className="text-white/60 text-sm truncate">{email}</p>
                     <span className="inline-block mt-2 px-2 py-0.5 text-xs rounded-full bg-blue-500/20 text-blue-400 capitalize">
                       {plan}
                     </span>
@@ -624,7 +611,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
 
           {/* Linked Providers */}
           <GlassPanel radius="md" blur="md" className="p-6">
-            <h4 className="text-sm font-medium text-[var(--text-secondary)] mb-3">
+            <h4 className="text-sm font-medium text-white/80 mb-3">
               連携サービス
             </h4>
             <div className="space-y-2">
@@ -638,11 +625,11 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                       provider={provider.provider as OAuthProvider}
                     />
                     <div className="flex flex-col">
-                      <span className="text-[var(--text-primary)] capitalize">
+                      <span className="text-white capitalize">
                         {provider.provider}
                       </span>
                       {provider.email && (
-                        <span className="text-[var(--text-muted)] text-xs">
+                        <span className="text-white/40 text-xs">
                           {provider.email}
                         </span>
                       )}
@@ -688,7 +675,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     <ProviderIcon provider={provider.id} />
                     <span>{provider.name}</span>
                   </div>
-                  <span className="text-[var(--text-muted)]">連携する</span>
+                  <span className="text-white/40">連携する</span>
                 </Button>
               ))}
             </div>
@@ -713,7 +700,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
             <h4 className="text-sm font-medium text-red-400 mb-2">
               危険な操作
             </h4>
-            <p className="text-[var(--text-secondary)] text-sm mb-4">
+            <p className="text-white/60 text-sm mb-4">
               アカウントを削除すると、全てのデータが削除されます。この操作は取り消せません。
             </p>
             <Button
@@ -744,14 +731,14 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     : "text-yellow-400",
                 )}
               />
-              <h3 className="text-lg font-semibold text-[var(--text-primary)]">
+              <h3 className="text-lg font-semibold text-white">
                 {confirmDialog.type === "unlink"
                   ? "連携解除の確認"
                   : confirmDialog.type === "delete-account"
                     ? "アカウント削除の確認"
                     : "アバター削除の確認"}
               </h3>
-              <p className="text-[var(--text-secondary)] text-sm">
+              <p className="text-white/60 text-sm">
                 {confirmDialog.type === "unlink"
                   ? `${confirmDialog.provider}との連携を本当に連携を解除しますか？`
                   : confirmDialog.type === "delete-account"
@@ -763,7 +750,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                 <div className="text-left space-y-2">
                   <label
                     htmlFor="delete-confirm-email"
-                    className="text-[var(--text-secondary)] text-sm"
+                    className="text-white/80 text-sm"
                   >
                     確認のため、メールアドレスを入力してください:
                   </label>
@@ -775,7 +762,7 @@ export const AccountSection: React.FC<AccountSectionProps> = ({
                     placeholder={email}
                     type="email"
                   />
-                  <p className="text-[var(--text-muted)] text-xs">
+                  <p className="text-white/40 text-xs">
                     削除するアカウント: {email}
                   </p>
                 </div>
