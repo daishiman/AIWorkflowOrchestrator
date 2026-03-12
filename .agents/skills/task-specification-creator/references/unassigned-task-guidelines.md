@@ -53,18 +53,18 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 ```bash
 # 1) 対象未タスクの今回差分監査（推奨）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
 
 # 2) 差分監査（workflow全体の current 判定）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 3) 全体監査（資産健全性監視）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 > 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  

@@ -4,6 +4,54 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-03 未タスク formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
+- 目的: light theme の visual hierarchy 所見を `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` として formalize し、acceptance 判定と改善 backlog を分離する
+
+### 実施内容
+- `references/task-workflow.md` の Task03 完了節へ follow-up 未タスクを追加
+- `references/ui-ux-navigation.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に同一タスク ID を同期
+- `references/workflow-skill-creator-execute-improve-integration.md` に苦戦箇所と 5 分解決カードを集約し、resource-map / quick-reference の起点を更新
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-03 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
+- 目的: Phase 12 補助成果物、verification report、canonical root 運用を再監査値へ揃える
+
+### 実施内容
+- `references/task-workflow.md` に `phase12-task-spec-compliance-check.md` 実体化、`verification-report.md` 最新化、`verify-unassigned-links=215/215` / `audit current=0 baseline=134` を反映
+- `references/lessons-learned.md` に補助成果物の実体漏れ、worktree capture script、`.claude` 正本固定の教訓を追加
+- `.claude` を正本、`.agents` を mirror とする前提で Task03 導線を再同期
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-11 - TASK-SKILL-LIFECYCLE-03 集約 workflow 追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
+- 目的: 実装内容・苦戦箇所・SubAgent 分担を 1 ファイルへ集約し、同種課題の初動を短縮する
+
+### 実施内容
+- `references/workflow-skill-creator-execute-improve-integration.md` を新規作成
+- `indexes/resource-map.md` と `indexes/quick-reference.md` の Task03 起点を workflow spec へ寄せた
+- list view session card、wizard secondary route、error boundary、Phase 11/12 証跡を同一ハブで辿れるように整理
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
 
 ### コンテキスト

@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.8    | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: `execute` を `activeSkillName + trimmedPrompt` の二重条件でガードする契約、Phase 12 補助成果物の実体確認、`.claude` 正本固定を追記 |
+| v3.14.7    | 2026-03-11 | TASK-SKILL-LIFECYCLE-03 を反映: `SkillLifecycleSessionCard` の local state 群、create path から `selectSkillByName()` へ渡す handoff、panel global error 分離ルールを追加 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -484,6 +486,16 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - `PUBLIC_UNAUTHENTICATED_VIEWS` のような単一配列で公開ビューを管理する
 - `settings` のような bypass view を追加した場合は、AuthGuard 条件と reset 条件を同時更新する
 - 公開ビュー追加時は `AuthGuard` テストだけでなく、view reset テストも追加する
+
+### Skill Creator session state boundary（TASK-SKILL-LIFECYCLE-03）
+
+| state owner | 主な state | 役割 |
+| --- | --- | --- |
+| `SkillLifecycleSessionCard` | `prompt`, `detectedMode`, `modeStatus`, `createdSkillPath`, `createdSkillName`, `validationMessage`, `sessionMessage` | session-local feedback と step sequencing を担う |
+| `agentSlice` | `selectedSkillName`, `executionStatus`, `streamingMessages`, `currentAnalysis`, `skillError` | execute / analyze / improve の共有状態を保持する |
+| `SkillManagementPanel` | `currentView`, `statusMessage`, `deleteError`, `importDialogSkill` | 一覧管理と panel-global alert を担う |
+| 実行 guard | `activeSkillName + trimmedPrompt` | 空 prompt 実行や未選択 skill 実行を防ぐ |
+| error 分離 | `shouldShowGlobalSkillError()` | lifecycle 失敗を panel-global alert に重複表示しない |
 
 ### agentSlice詳細
 

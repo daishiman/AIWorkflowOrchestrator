@@ -22,17 +22,8 @@ import { SkillCreateWizard } from "./SkillCreateWizard";
 import { SkillEditor } from "./SkillEditor";
 import { SkillImportDialog } from "./SkillImportDialog";
 import { SkillLifecyclePanel } from "./SkillLifecyclePanel";
-
-export const buttonStyles = {
-  primary:
-    "rounded-md bg-[var(--status-primary)] px-3 py-1 text-sm text-[var(--text-inverse)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]",
-  secondary:
-    "rounded-md border border-[var(--border-primary)] px-3 py-1 text-sm text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]",
-  danger:
-    "rounded-md px-3 py-1 text-sm text-[var(--status-error)] hover:bg-[var(--bg-tertiary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-error)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]",
-  dangerConfirm:
-    "rounded-md bg-[var(--status-error)] px-3 py-1 text-sm text-[var(--text-inverse)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-error)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-primary)]",
-} as const;
+import { SkillLifecycleSessionCard } from "./SkillLifecycleSessionCard";
+import { buttonStyles } from "./skillButtonStyles";
 
 type View = "list" | "editor" | "analysis" | "create" | "lifecycle";
 
@@ -134,6 +125,16 @@ function formatSectionCount(
   }
 
   return `${totalCount}件`;
+}
+
+function shouldShowGlobalSkillError(message: string | null): boolean {
+  if (!message) {
+    return false;
+  }
+
+  return !/(スキル作成に失敗|実行開始に失敗|スキル分析に失敗|改善適用に失敗|全自動改善に失敗)/.test(
+    message,
+  );
 }
 
 function SkillCard({
@@ -496,6 +497,10 @@ export function SkillManagementPanel() {
         </div>
       </div>
 
+      <SkillLifecycleSessionCard
+        onOpenCreateWizard={() => setCurrentView("create")}
+      />
+
       <div className="mb-4">
         <input
           type="text"
@@ -519,7 +524,7 @@ export function SkillManagementPanel() {
         </div>
       ) : null}
 
-      {skillError && !importDialogSkill ? (
+      {shouldShowGlobalSkillError(skillError) && !importDialogSkill ? (
         <div
           role="alert"
           data-testid="skill-management-error"

@@ -5,10 +5,10 @@
  * 未タスク指示書の配置・フォーマット監査を実行する。
  *
  * Usage:
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/example.md
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD~1
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/example.md
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD~1
  */
 
 import { readdirSync, readFileSync, existsSync } from "fs";

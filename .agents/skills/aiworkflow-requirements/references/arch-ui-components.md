@@ -795,6 +795,57 @@ TASK-043B は、TASK-10A-D で統合済みの `SkillManagementPanel` list branch
 
 ---
 
+## Skill Creator Session Integration アーキテクチャパターン（TASK-SKILL-LIFECYCLE-03 / current workflow）
+
+> ステータス: **completed**（Phase 1-12 完了 / PR未作成）
+
+Task03 は `SkillManagementPanel` の list branch を「ただの一覧」から「その場で create / execute / improve を進める session surface」へ拡張した。既存の `SkillCreateWizard` / `SkillAnalysisView` / `SkillEditor` は残しつつ、一次導線だけを list view に寄せている。
+
+### レイヤー構成
+
+| レイヤー | 要素 | 役割 |
+| --- | --- | --- |
+| Panel Root | `SkillManagementPanel` | view 切替、list root、global error boundary |
+| Session Surface | `SkillLifecycleSessionCard` | prompt、action row、summary cards、local success/error |
+| Detail Surface | `SkillAnalysisView` / `SkillEditor` | 詳細操作と deep dive |
+| Supporting Route | `SkillCreateWizard` | 詳細設定 create |
+| Store Bridge | create / execute / analyze / auto improve hooks | Store action と preload API の handoff |
+
+### コンポーネント関係図
+
+| 親コンポーネント | 子コンポーネント | 表示条件 |
+| --- | --- | --- |
+| `SkillManagementPanel` | `SkillLifecycleSessionCard` | `currentView === "list"` |
+| `SkillLifecycleSessionCard` | Store hooks | create / execute / analyze / auto improve |
+| `SkillLifecycleSessionCard` | `SkillCreateWizard` | `詳細設定で作成する` 押下後に `currentView === "create"` |
+| `SkillManagementPanel` | `SkillAnalysisView` | imported skill から analysis view を開いた場合 |
+
+### 状態境界
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| `prompt` / `detectedMode` / `modeStatus` | `SkillLifecycleSessionCard` local state | session 固有で list 画面を出ると不要 |
+| `createdSkillPath` / `createdSkillName` / `validationMessage` / `sessionMessage` | `SkillLifecycleSessionCard` local state | create 結果の一時保持 |
+| `selectedSkillName` / `executionStatus` / `streamingMessages` / `currentAnalysis` / `skillError` | Store | execute / analysis 系と共通利用するため |
+| `currentView` / `selectedSkill` | `SkillManagementPanel` local state | panel 表示の routing 責務 |
+
+### 品質指標
+
+| 指標 | 値 |
+| --- | --- |
+| テストファイル | 4 |
+| テストケース | 30（全PASS） |
+| 対象カバレッジ | Statements 92.12 / Branches 80.44 / Functions 88.57 / Lines 92.12 |
+| 画面証跡 | 5 screenshots |
+
+### 苦戦箇所
+
+| 苦戦箇所 | 原因 | 対処 | 標準化ルール |
+| --- | --- | --- | --- |
+| stale success banner | create 後 message を reset しない | execute / analyze / auto improve の開始時に `setSessionMessage(null)` | multi-step card は前 step の成功表示を消す |
+| global alert 重複 | list/import error と lifecycle error を同面で扱った | `shouldShowGlobalSkillError()` で lifecycle 文言を除外 | root error と local error を分離する |
+| wizard の主従混線 | create UI を2つとも主導線で見せた | wizard を secondary action に降格 | 同一目的の導線は primary 1つ + supporting 1つに分ける |
+
 ## TASK-UI-00-ORGANISMS アーキテクチャ記録
 
 ### 対象コンポーネント
@@ -958,6 +1009,8 @@ AgentView Enhancement と同時期に実装された Settings 画面の新規コ
 
 | Version | Date       | Changes                            |
 | ------- | ---------- | ---------------------------------- |
+| 2.11.2  | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: quality 指標を 30 tests / 5 screenshots へ更新し、execute prompt guard と capture script の worktree 耐性を再発防止ルールへ追加 |
+| 2.11.1  | 2026-03-11 | TASK-SKILL-LIFECYCLE-03 を反映: Skill Creator Session Integration 節を追加し、`SkillLifecycleSessionCard` の layer 構成、state 境界、quality 指標、stale success / global error / wizard 競合の再発防止ルールを記録 |
 | 2.11.0  | 2026-03-08 | TASK-UI-03 完了同期: AgentView Enhancement を `in-progress` から `completed` へ更新。テスト構成を実測値（78テスト）で更新、実装ファイルサマリー（508行）追加、Settings AuthKeySection（295行/13テスト）を追記 |
 | 2.10.0  | 2026-03-07 | TASK-UI-03 反映: AgentView Enhancement アーキテクチャパターン（コンポーネント階層、ファイル配置、レイアウト構成、Atomic Design整合、Store連携、テスト構成）を追加 |
 | 2.9.2   | 2026-03-04 | TASK-UI-00-ORGANISMS 最適化追補: 設計時の苦戦箇所と対策テーブルを追加し、レイアウト分岐/描画責務重複/UI状態表の再発防止ルールを明文化 |

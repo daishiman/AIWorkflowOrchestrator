@@ -148,7 +148,7 @@ BABOK（Business Analysis Body of Knowledge）の要件スコープ定義手法�
 
 ```bash
 # スキーマ検証
-node .agents/skills/task-specification-creator/scripts/validate-schema.js \
+node .claude/skills/task-specification-creator/scripts/validate-schema.js \
   --schema schemas/scope-definition.json \
   --data .tmp/scope-definition.json
 ```

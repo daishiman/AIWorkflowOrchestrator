@@ -29,6 +29,7 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| Skill Creator Session Integration | TASK-SKILL-LIFECYCLE-03 | SkillManagementPanel, SkillLifecycleSessionCard, SkillLifecyclePanel | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
@@ -1362,6 +1363,42 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 ---
 
+## Skill Creator Session Integration（TASK-SKILL-LIFECYCLE-03 / completed）
+
+Task03 では `SkillManagementPanel` list view の先頭に `SkillLifecycleSessionCard` を追加し、自然言語 create / execute / improve を 1 セッションで継続できるようにした。`SkillCreateWizard` は詳細設定の supporting route として残し、主導線との競合を抑えている。
+
+### UI観点の要点
+
+- list view の中に `SkillLifecycleSessionCard` を常設し、一覧面をそのまま Skill Creator の作業面に昇格した
+- create 成功時は返却 path から basename を抽出し、`selectSkillByName()` に handoff して execute / analyze / auto improve を継続する
+- lifecycle 系 error は card 内に閉じ、panel global error は import / list 管理系だけに残す
+- `SkillLifecyclePanel` は詳細な lifecycle view として維持しつつ、lightweight な primary flow は session card 側へ寄せる
+
+### 画面検証
+
+| 項目 | 実績 |
+| --- | --- |
+| targeted tests | 30 tests PASS |
+| screenshot | Phase 11 screenshot 5件 |
+| 視覚レビュー | Apple UI/UX review 完了 |
+| 実装ガイド | `outputs/phase-12/implementation-guide.md` に反映 |
+
+### 実装時の苦戦箇所（TASK-SKILL-LIFECYCLE-03）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 |
+| --- | --- | --- |
+| stale success banner が後続 action に残る | create success を step 遷移時に消さない | execute / analyze / auto improve 開始時に `setSessionMessage(null)` を実行 |
+| lifecycle error と panel global error が重複表示される | session 系 error と list/import 系 error を同じ alert 面へ流す | `shouldShowGlobalSkillError()` で lifecycle 文言を root alert から除外 |
+| worktree で capture script が Vite 実体を解決できない | `node_modules/vite/bin/vite.js` 固定前提で起動する | Vite binary を探索して `/opt/homebrew/bin/node` で起動する方式へ変更 |
+
+### 関連未タスク
+
+| タスクID | 内容 | 優先度 | 仕様書 |
+| --- | --- | --- | --- |
+| UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001 | `SkillLifecycleSessionCard` の light theme helper text / placeholder / summary hierarchy 改善 | 低 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-03-light-visual-hierarchy-001.md` |
+
+---
+
 <a id="organisms-foundation-task-ui-00-organisms"></a>
 ## Organisms Foundation（TASK-UI-00-ORGANISMS / completed）
 
@@ -1890,6 +1927,9 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-12 | v1.14.38   | TASK-SKILL-LIFECYCLE-03 の関連未タスクを追加: `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` を Skill Creator Session Integration 節へ登録し、light theme の helper text / placeholder / summary hierarchy 改善を主導線成立判定から分離した |
+| 2026-03-12 | v1.14.37   | TASK-SKILL-LIFECYCLE-03 再監査を追補: action enablement（create/execute/analyze/auto improve の有効条件）、`.claude` 正本固定、2026-03-12 再取得 screenshot を同期 |
+| 2026-03-11 | v1.14.36   | TASK-SKILL-LIFECYCLE-03 を同期: 収録機能一覧へ Skill Creator Session Integration を追加し、`SkillLifecycleSessionCard` の UI責務、Phase 11 screenshot 5件、stale success / error 境界 / wizard secondary route を専用節へ記録 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
