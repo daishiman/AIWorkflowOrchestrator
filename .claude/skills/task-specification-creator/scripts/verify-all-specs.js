@@ -497,7 +497,7 @@ function generateMarkdownReport(results) {
     lines.push("3. 修正後、再度検証を実行してください:");
     lines.push("   ```bash");
     lines.push(
-      `   node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow ${results.workflowDir}`
+      `   node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow ${results.workflowDir}`
     );
     lines.push("   ```");
     lines.push("");

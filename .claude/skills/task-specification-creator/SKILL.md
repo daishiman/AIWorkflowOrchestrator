@@ -304,7 +304,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **spec-update-workflow.mdを常に参照**      | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認                                                                                                                                                      |
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
-| **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
+| **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
 
 ---
 
@@ -390,9 +390,6 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.08.60** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-03 再監査の Phase 12 漏れを運用へ反映**: `references/evidence-sync-rules.md` に `phase12-task-spec-compliance-check.md` と `verification-report.md` の同期対象を追加し、`references/phase-11-12-guide.md` の完了チェックへ補助成果物の実体確認を追加。台帳登録したら実ファイル存在と検証レポート更新まで同一ターンで確認するルールを固定 |
-| **v10.08.59** | **2026-03-11** | **TASK-SKILL-LIFECYCLE-03 の Phase 11/12 完了同期を反映**: current workflow に Phase 11/12 の必須成果物を補完し、`artifacts.json` / `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` を同一ターンで同期。あわせて `references/phase-11-12-guide.md` に array-based `artifacts.json` では `complete-phase.js` を使わず manual sync へ切り替える guard を追加 |
-| **v10.08.58** | **2026-03-11** | **dual-root mirror sync を現行運用へ昇格**: `references/spec-update-workflow.md` と `references/phase-11-12-guide.md` に、canonical `.claude` 更新後に changed-files だけを `.agents` mirror へ同期し、`cmp -s` / `diff -qr` で drift 0 を確認する手順を追加。Phase 12 で `topic-map/keywords` 再生成と mirror 同期を同一ターンで閉じる方針を固定 |
 | **v10.08.57** | **2026-03-11** | **TASK-UI-04C follow-up の事後未タスク化を反映**: `references/phase-11-12-guide.md` と `references/patterns.md` に、初回 `新規未タスク 0件` で閉じた後でも親タスクの苦戦箇所が cross-cutting guard として再利用価値を持つ場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期して正式な未タスク仕様書へ昇格する運用を追加 |
 | **v10.08.56** | **2026-03-11** | **TASK-UI-04C の再監査知見を反映**: `references/phase12-checklist-definition.md` / `references/phase-11-12-guide.md` / `references/patterns.md` に、completed workflow の `phase-12-documentation.md` と `outputs/phase-12` から `仕様策定のみ` などの planned wording を除去するガードを追加し、実績同期と `[x]` 更新を Phase 12 完了条件へ昇格 |
 | **v10.08.55** | **2026-03-11** | **TASK-UI-04C-WORKSPACE-PREVIEW の Phase 12 完了同期を反映**: current workflow の `index.md` / `artifacts.json` / `phase-1..12` status / `outputs/verification-report.md` を completed 実績へ同期し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を Phase 12 完了ゲートとして明示した |

@@ -4,49 +4,18 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-03 未タスク formalize
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 追補を system spec へ同期
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
-- 目的: light theme の visual hierarchy 所見を `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` として formalize し、acceptance 判定と改善 backlog を分離する
+- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
+- 目的: current workflow `docs/30-workflows/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
 
 ### 実施内容
-- `references/task-workflow.md` の Task03 完了節へ follow-up 未タスクを追加
-- `references/ui-ux-navigation.md` / `references/ui-ux-feature-components.md` / `references/lessons-learned.md` に同一タスク ID を同期
-- `references/workflow-skill-creator-execute-improve-integration.md` に苦戦箇所と 5 分解決カードを集約し、resource-map / quick-reference の起点を更新
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-03 再監査追補
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
-- 目的: Phase 12 補助成果物、verification report、canonical root 運用を再監査値へ揃える
-
-### 実施内容
-- `references/task-workflow.md` に `phase12-task-spec-compliance-check.md` 実体化、`verification-report.md` 最新化、`verify-unassigned-links=215/215` / `audit current=0 baseline=134` を反映
-- `references/lessons-learned.md` に補助成果物の実体漏れ、worktree capture script、`.claude` 正本固定の教訓を追加
-- `.claude` を正本、`.agents` を mirror とする前提で Task03 導線を再同期
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-11 - TASK-SKILL-LIFECYCLE-03 集約 workflow 追加
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-03`
-- 目的: 実装内容・苦戦箇所・SubAgent 分担を 1 ファイルへ集約し、同種課題の初動を短縮する
-
-### 実施内容
-- `references/workflow-skill-creator-execute-improve-integration.md` を新規作成
-- `indexes/resource-map.md` と `indexes/quick-reference.md` の Task03 起点を workflow spec へ寄せた
-- list view session card、wizard secondary route、error boundary、Phase 11/12 証跡を同一ハブで辿れるように整理
+- SubAgent-A（design-system/settings）: `references/workflow-light-theme-global-remediation.md` / `references/ui-ux-design-system.md` に current workflow、inventory correction、verification-only lane を追記
+- SubAgent-B（台帳）: `references/task-workflow.md` に `spec_created` 完了記録、SubAgent分担、検証証跡を追加
+- SubAgent-C（教訓）: `references/lessons-learned.md` に 4苦戦箇所と 5ステップ解決カードを追加
+- SubAgent-D（履歴）: `SKILL.md` に変更履歴 `9.01.84` を追加
 
 ### 結果
 - ステータス: success

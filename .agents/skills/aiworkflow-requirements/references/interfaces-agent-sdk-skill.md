@@ -1488,20 +1488,6 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
 ---
 
-#### Task03 handoff 契約（2026-03-12 追補）
-
-`SkillLifecycleSessionCard` では `createSkill()` の戻り値が「作成先ディレクトリ path」である点を利用し、basename を抽出して `skillName` ベースの既存実行系 API へ接続する。
-
-| 入力 | 変換 | 出力先 |
-| --- | --- | --- |
-| `createSkill()` の戻り値 `string` | path basename を抽出 | `selectSkillByName(skillName)` |
-| `selectedSkillName` or `createdSkillName` | `activeSkillName` として採用 | `analyzeSkill(skillName)` / `autoImproveSkill(skillName)` |
-| `trimmedPrompt` | 空文字を拒否 | `executeSkill(prompt)` |
-
-この handoff により、`SkillCreatorService.createSkill()` の戻り値契約を変えずに、既存の `skillName` ベース実行契約へ橋渡しできる。
-
----
-
 ### ScriptExecutor API
 
 Script First原則に基づき、決定論的処理をスクリプトに委譲する。

@@ -208,11 +208,7 @@ vi.mock("../SkillLifecyclePanel", () => ({
     </div>
   ),
 }));
-vi.mock("../SkillLifecycleSessionCard", () => ({
-  SkillLifecycleSessionCard: () => (
-    <div data-testid="mock-skill-lifecycle-session-card" />
-  ),
-}));
+
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
 beforeEach(() => {
@@ -236,9 +232,6 @@ describe("SkillManagementPanel list UI", () => {
   it("mixed stateで imported / available の2セクションを表示する", () => {
     render(<SkillManagementPanel />);
 
-    expect(
-      screen.getByTestId("mock-skill-lifecycle-session-card"),
-    ).toBeDefined();
     expect(screen.getByText("インポート済み")).toBeDefined();
     expect(screen.getByText("利用可能なスキル")).toBeDefined();
     expect(

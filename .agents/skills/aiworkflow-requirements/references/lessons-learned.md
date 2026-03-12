@@ -20,10 +20,6 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-12 | 1.29.81 | TASK-SKILL-LIFECYCLE-03 の visual hierarchy follow-up を追補。light theme の helper text / placeholder / summary hierarchy は主導線成立確認と分けて `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` へ formalize する運用を追加 |
-| 2026-03-12 | 1.29.80 | TASK-SKILL-LIFECYCLE-03 の再監査追補。`phase12-task-spec-compliance-check.md` の実体漏れを防ぐため、補助成果物は台帳登録・実ファイル・`verification-report.md` 更新を同一ターンで閉じるルールを追加 |
-| 2026-03-12 | 1.29.79 | TASK-SKILL-LIFECYCLE-03 再監査を追補。`.claude` 正本固定、capture script の Vite 実体解決、execute prompt guard、2026-03-12 screenshot 再取得を教訓へ昇格 |
-| 2026-03-11 | 1.29.78 | TASK-SKILL-LIFECYCLE-03 の教訓を追加。session card 主導線化、stale success banner、global/local error 境界、`.agents` mirror sync、arm64 Node 固定の課題を 5 分解決カードへ整理 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -66,61 +62,6 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
-
-### 2026-03-11 TASK-SKILL-LIFECYCLE-03
-
-#### 苦戦箇所1: 一次導線を wizard 側に寄せると quick path が弱くなる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `SkillCreateWizard` は詳細設定には向くが、quick create / execute / improve を回す一次導線としては重い |
-| 再発条件 | 既存 wizard があるからといって、list view を単なる一覧のまま残す |
-| 解決策 | `SkillManagementPanel` list view の先頭に `SkillLifecycleSessionCard` を置き、wizard は supporting route に下げた |
-| 標準ルール | primary flow は一覧面の中に寄せ、wizard は詳細設定だけを担当させる |
-
-#### 苦戦箇所2: create success の session message は次の action で stale 化しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | create 直後の成功文言が execute / improve 後も残ると、現在の状態が読みにくくなる |
-| 再発条件 | multi-step card で success banner を step 遷移時に消さない |
-| 解決策 | execute / analyze / auto improve の開始時に `setSessionMessage(null)` を必ず実行した |
-| 標準ルール | 1 カードで複数 action を積む UI は、前 step の成功表示を次 step 前に消す |
-
-#### 苦戦箇所3: lifecycle error と panel global error を混ぜると重複 alert になる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | session 内エラーと list/import 系エラーを同じ場所に出すと、何が壊れたのか分かりにくい |
-| 再発条件 | panel root の alert を万能扱いする |
-| 解決策 | `shouldShowGlobalSkillError()` で lifecycle 系文言を panel global error から除外し、card 内 alert に閉じた |
-| 標準ルール | root error と local error は表示面も責務も分ける |
-
-#### 苦戦箇所4: Phase 12 補助成果物は台帳だけ更新すると実体漏れを見落としやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `phase12-task-spec-compliance-check.md` を `artifacts.json` や changelog に登録しても、実ファイルと `verification-report.md` が追従しないと再監査時に不整合になる |
-| 再発条件 | Phase 12 の補助成果物を「記録上は追加済み」と判断し、物理存在確認と validator 再実行を省略する |
-| 解決策 | 実ファイルを作成し、`verify-all-specs` と `validate-phase-output` を再実行して `verification-report.md` を更新した |
-| 標準ルール | 補助成果物は「実体作成 -> 台帳登録 -> 検証レポート更新」の順で閉じる |
-
-#### 苦戦箇所5: light theme の visual hierarchy は主導線成立と別軸で残りやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | create / execute / improve の成立確認と UI polish を同じ accept 判定で閉じようとすると、軽微な所見の扱いが曖昧になる |
-| 再発条件 | blocker でない visual 調整を親タスク内に抱えたまま閉じる |
-| 解決策 | `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` を独立未タスクへ切り出し、acceptance と改善 backlog を分離した |
-| 標準ルール | LOW 所見でも再利用価値があるなら未タスクへ formalize する |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. 一次導線は list view の中で完結させ、別 view 遷移を前提にしない。
-2. create 後の handoff は path から skill 名を抽出して `selectSkillByName()` へ接続する。
-3. lifecycle 系 success / error と panel-wide alert は責務を分ける。
-4. user 指定 root は `.claude` を正本に固定し、`.agents` は mirror として同期する。
-5. Phase 12 の補助成果物は、台帳登録だけでなく実ファイル作成と `verification-report.md` 再生成まで同一ターンで閉じる。
 
 ### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
 

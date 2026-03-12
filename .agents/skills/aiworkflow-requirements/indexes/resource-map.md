@@ -22,7 +22,6 @@
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | スキルライフサイクル一次導線設計 / 画面責務再編 | ui-ux-navigation.md, ui-ux-feature-components.md, arch-state-management.md, architecture-overview.md | ui-ux-settings.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
-| Skill Creator 作成/実行/改善統合 | workflow-skill-creator-execute-improve-integration.md, ui-ux-navigation.md, ui-ux-feature-components.md, api-ipc-agent.md, arch-ui-components.md, arch-state-management.md | architecture-implementation-patterns.md, security-electron-ipc.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, interfaces-agent-sdk-skill.md, security-skill-execution.md, claude-code-agents-workflow.md, task-workflow.md, lessons-learned.md |
 | UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
@@ -52,7 +51,6 @@
 - advanced route の実体、rollback feature flag、`settings` bypass は `ui-ux-navigation.md` と `architecture-overview.md` を先に読み、現行実装アンカーとして `apps/desktop/src/renderer/App.tsx` を照合する。
 - lifecycle journey contract の正本は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`。create / use / improve の job guide、surface responsibility、advanced route policy、downstream contract を 1 箇所で確認する。
 - lifecycle の create/improve handoff は `ui-ux-feature-components.md` の Store-Driven Lifecycle Integration を読み、現行実装アンカーとして `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を照合する。
-- Skill Creator の create / execute / improve 統合は、まず `workflow-skill-creator-execute-improve-integration.md` で全体像・苦戦箇所・5分解決カードを確認し、その後 `ui-ux-navigation.md` の入口/handoff、`api-ipc-agent.md` の `Skill Creator IPC チャネル`、`arch-ui-components.md` の `SkillManagementPanel` + `ChatPanel`、`arch-state-management.md` の `agentSlice` action 群、`architecture-implementation-patterns.md` / `security-electron-ipc.md` の preload・IPC 境界、`interfaces-agent-sdk-skill.md` / `security-skill-execution.md` / `claude-code-agents-workflow.md` の内部委譲・権限境界をセットで確認する。
 - global nav の正式契約は `ui-ux-navigation.md` と `apps/desktop/src/renderer/navigation/navContract.ts` の組み合わせで確認する。
 - `settings` 公開 shell の例外条件は `arch-state-management.md` と `ui-ux-settings.md` を読み、現行実装アンカーとして `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` を照合する。
 
@@ -262,7 +260,6 @@
 | discord-bot.md           | Discord Bot機能実装時                      | イベント、コマンド、通知          |
 | local-agent.md           | ローカルエージェント機能実装時             | ファイル監視、クラウド同期        |
 | workflow-apikey-chat-tool-integration-alignment.md | APIキー保存連動・`ai.chat` 実行経路整合・AuthKey表示契約の再発防止時 | source/sync/cache clear 契約、苦戦箇所、5分解決カード |
-| workflow-skill-creator-execute-improve-integration.md | Skill Creator の create / execute / improve 統合、session card 導線、Phase 12 再監査の最短参照時 | 実装内容、苦戦箇所、SubAgent分担、5分解決カード |
 | workflow-skill-identifier-branded-type-resolution.md | Skill識別子の型境界是正、Phase 12再監査時 | SubAgent分担、4フェーズ実行、監査コマンド |
 
 ### 11. ガイドライン

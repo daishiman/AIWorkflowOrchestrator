@@ -7,7 +7,7 @@
 | タスクID   | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 |
 | Phase      | 3                                               |
 | Phase名    | 設計レビュー                                    |
-| ステータス | not_started                                     |
+| ステータス | completed                                       |
 | 前提Phase  | Phase 1, Phase 2                                |
 | 後続Phase  | Phase 4                                         |
 
@@ -33,11 +33,11 @@ shared color migration の対象、順序、責務分離が妥当かをレビュ
 
 ### 判定
 
-| 判定  | 条件                       | 次アクション   |
-| ----- | -------------------------- | -------------- |
-| PASS  | 全観点 OK                  | Phase 4 へ進む |
-| MINOR | 文言・batch 微修正のみ     | 修正後 Phase 4 |
-| MAJOR | token 依存や対象範囲が曖昧 | Phase 2 へ戻る |
+| 判定  | 条件                       | 次アクション                       |
+| ----- | -------------------------- | ---------------------------------- |
+| PASS  | 全観点 OK                  | Phase 4 は user 明示依頼時のみ進む |
+| MINOR | 文言・batch 微修正のみ     | 修正後 Phase 4                     |
+| MAJOR | token 依存や対象範囲が曖昧 | Phase 2 へ戻る                     |
 
 ## 参照資料
 
@@ -49,10 +49,12 @@ shared color migration の対象、順序、責務分離が妥当かをレビュ
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料             | パス                                                                        | 内容                      |
-| -------------------- | --------------------------------------------------------------------------- | ------------------------- |
-| quality requirements | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | 品質基準                  |
-| lessons-learned      | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`      | light theme review 再利用 |
+| 参照資料                   | パス                                                                                           | 内容                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------- |
+| workflow light remediation | `.claude/skills/aiworkflow-requirements/references/workflow-light-theme-global-remediation.md` | 親 workflow の責務境界    |
+| quality requirements       | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                    | 品質基準                  |
+| task-workflow              | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                           | `spec_created` 台帳       |
+| lessons-learned            | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                         | light theme review 再利用 |
 
 ## 統合テスト連携
 
@@ -70,10 +72,10 @@ shared color migration の対象、順序、責務分離が妥当かをレビュ
 
 ## 完了条件
 
-- [ ] 依存関係と batch 分割がレビュー済みである
-- [ ] PASS または MINOR 判定が記録されている
-- [ ] Phase 4 以降へ進む条件が明文化されている
+- [x] 依存関係と batch 分割がレビュー済みである
+- [x] PASS 判定が記録されている
+- [x] Phase 4 以降へ進む条件が明文化されている
 
 ## 次Phase
 
-Phase 4: テスト作成
+Phase 4: テスト作成（user 明示依頼時）

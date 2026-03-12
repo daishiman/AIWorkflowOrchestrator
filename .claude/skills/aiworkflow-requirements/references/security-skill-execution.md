@@ -213,17 +213,6 @@ ALLOWED_TOOLS_WHITELISTに加えて、PermissionDialogでのリスクレベル�
 
 ## 使用例
 
-### Task03 session card の扱い（TASK-SKILL-LIFECYCLE-03）
-
-`SkillLifecycleSessionCard` は create / execute / improve の UI surface を統合するだけで、PermissionDialog や allowed tools の境界は変更しない。Task03 で増えたのは UI の入口であり、`skill:execute` 実行時の安全性は既存の `ALLOWED_TOOLS_WHITELIST` と Permission Control に従う。
-
-| 観点 | Task03 の扱い |
-| --- | --- |
-| allowed tools | 追加なし。既存 whitelist を再利用 |
-| dangerous command 判定 | `skill:execute` 経路で従来どおり適用 |
-| protected path 判定 | Write / Edit 系ツールで従来どおり適用 |
-| permission UI | 既存 PermissionDialog を再利用し、Task03 専用の bypass は設けない |
-
 ### PreToolUseフックでの使用
 
 PreToolUseフックでは、ツール名と引数に基づいてセキュリティチェックを実行します。
@@ -386,7 +375,6 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
-| v1.3.1     | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: session card は実行 UI の入口を増やすだけで permission boundary / allowed tools を変えないことを明文化 |
 | v1.3.0     | 2026-02-01 | toolMetadataモジュール参照追加: ALLOWED_TOOLS_WHITELIST vs toolMetadata対応表、差異理由、ui-ux-agent-execution.mdリンク |
 | 1.2.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）           |
