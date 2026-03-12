@@ -154,6 +154,20 @@ afterEach(() => {
 });
 
 describe("SkillLifecyclePanel", () => {
+  it("initialRequest を初期入力へ反映する", () => {
+    render(
+      <SkillLifecyclePanel
+        onClose={vi.fn()}
+        onOpenWizard={vi.fn()}
+        initialRequest="初期依頼"
+      />,
+    );
+
+    expect(screen.getByTestId("skill-lifecycle-request-input")).toHaveValue(
+      "初期依頼",
+    );
+  });
+
   it("依頼文から mode 判定を行い、セッションログに追記する", async () => {
     render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
 

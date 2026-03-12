@@ -7,6 +7,8 @@
 | タスクID | `<TASK-ID>` |
 | 実装対象 | `<実装ファイル/機能>` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
+| workflow全体ステータス | `completed` / `in_progress` / `spec_created` |
+| completed archive | `<completed-workflow-path>` / `N/A` |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
 
@@ -65,6 +67,14 @@
 | SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`。active workflow 由来の未実施は1つ目、completed workflow 由来の継続 backlog は2つ目、完了済み standalone UT は3つ目、4つ目は legacy。`target-file` 監査は実際の正本 unassigned dir に合わせる |
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
+
+### 2.2.1 current/archive split + retrospective hub プロファイル
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-H | `references/workflow-<topic>.md` | current branch 実装要点・苦戦箇所・5分解決カード・current/archive split を 1 ファイルへ集約 | `task-workflow.md` / `lessons-learned.md` / `resource-map.md` / `quick-reference.md` から辿れる |
+
+> current workflow と completed archive が共存し、cross-cutting 情報が 3 仕様書以上に跨る場合は SubAgent-H を追加する。
 
 ### 2.3 Step 2 判定同期プロファイル（仕様更新タスク必須）
 
@@ -202,6 +212,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
+- [ ] current workflow と completed archive が併存する場合、workflow全体ステータスと residual follow-up 理由を `task-workflow.md` / `lessons-learned.md` / `workflow-<topic>.md` で同値記録している
+- [ ] cross-cutting な実装内容/苦戦箇所が 3 仕様書以上に跨る場合、`references/workflow-<topic>.md` を追加し、SubAgent-H で同期している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
 - [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している

@@ -1,0 +1,74 @@
+{
+  "generatedAt": "2026-03-12T16:52:00+09:00",
+  "source": "phase11-chat-platform harness",
+  "components": [
+    {
+      "name": "ChatView",
+      "route": "/phase11-chat-platform.html?scenario=general&theme=light",
+      "states": [
+        {
+          "id": "TC-11-01",
+          "label": "general-chat",
+          "selector": "[data-testid='chat-view']",
+          "theme": "light",
+          "note": "current general chat"
+        }
+      ]
+    },
+    {
+      "name": "WorkspaceView",
+      "route": "/phase11-chat-platform.html?scenario=workspace-handoff&theme=light",
+      "states": [
+        {
+          "id": "TC-11-02",
+          "label": "workspace-handoff",
+          "selector": "[data-testid='workspace-view']",
+          "theme": "light",
+          "note": "workspace entry surface"
+        }
+      ]
+    },
+    {
+      "name": "SkillLifecyclePanel",
+      "route": "/phase11-chat-platform.html?scenario=skill-lifecycle&theme=light",
+      "states": [
+        {
+          "id": "TC-11-03",
+          "label": "skill-lifecycle-handoff",
+          "selector": "[data-testid='skill-lifecycle-panel']",
+          "theme": "light",
+          "action": "click",
+          "actionTarget": "[data-testid='skill-lifecycle-prepare-button']",
+          "waitAfterAction": 300,
+          "note": "prepared lifecycle handoff"
+        }
+      ]
+    },
+    {
+      "name": "ReviveEvidence",
+      "route": "/phase11-chat-platform.html?scenario=revive&theme=light",
+      "states": [
+        {
+          "id": "TC-11-04",
+          "label": "revive-recent-rail",
+          "selector": "[data-testid='phase11-revive-evidence']",
+          "theme": "light",
+          "note": "revive metadata only"
+        }
+      ]
+    },
+    {
+      "name": "StreamingResetEvidence",
+      "route": "/phase11-chat-platform.html?scenario=stream-cancel&theme=light",
+      "states": [
+        {
+          "id": "TC-11-05",
+          "label": "streaming-cancel",
+          "selector": "[data-testid='phase11-stream-cancel-evidence']",
+          "theme": "light",
+          "note": "non-persist overlay reset"
+        }
+      ]
+    }
+  ]
+}

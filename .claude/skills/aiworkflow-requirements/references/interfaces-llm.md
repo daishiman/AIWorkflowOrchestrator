@@ -74,6 +74,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | llm:get-providers    | Renderer → Main | プロバイダー一覧取得     | [llm-ipc-types.md](./llm-ipc-types.md) |
 | llm:send-chat        | Renderer → Main | チャット送信             | [llm-ipc-types.md](./llm-ipc-types.md) |
 | llm:stream-chat      | Renderer ↔ Main | ストリーミングチャット   | [llm-streaming.md](./llm-streaming.md) |
+| llm:stream-cancel    | Renderer → Main | requestId を指定して進行中 stream を停止 | [llm-streaming.md](./llm-streaming.md) |
 | chat-edit:send-with-context | Renderer → Main | コンテキスト付きチャット | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md) |
 | conversation:create / add-message | Renderer → Main | 04B の会話永続化 | [interfaces-chat-history.md](./interfaces-chat-history.md) |
 
@@ -88,6 +89,22 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | Embedding Pipeline  | 104 + 14 | 91.39%        | 87.13%          |
 | Workspace Chat Edit | 164 + 45 | 95%           | 90%             |
 | Workspace Chat Panel | 14 | 83.80%（task-scope） | 77.44%（task-scope） |
+
+---
+
+## Task02 設計抽出起点（TASK-SKILL-LIFECYCLE-02）
+
+現HEADでは transport 一本化までは完了していないが、current branch で shared mode / handoff / revive contract、Workspace / lifecycle handoff helper、Phase 11 dedicated harness までは同期済みである。Task02 を追う際は「current 実装」と「prior attempt archive」を分離しつつ、実装済み contract layer と未実装 transport layer を混同しない。
+
+| 観点 | current HEAD |
+| --- | --- |
+| general chat | `ChatView` + `chatSlice` + `useStreamingChat` が 1本目の chat 実装 |
+| workspace chat | `WorkspaceView/hooks/useWorkspaceChatController.ts` が `conversationAPI` と `llm.streamChat()` を直接束ねる 2本目の chat 実装。current branch では `renderer/features/chat-platform/contracts.ts` へ request / handoff 生成を抽出済み |
+| lifecycle handoff | `skillLifecycleJourney.ts` に `createSkillLifecycleChatHandoff()` と allowed surface guard が追加され、entry surface 契約は current branch で固定済み |
+| current branch 共通contract | `packages/shared/src/types/chat-platform.ts` に `ChatHandoffPayload` `ChatReviveSnapshot` `NON_PERSISTED_CHAT_OVERLAY_KEYS` を集約し、`chatSlice` は `createEmptyChatStreamOverlayState()` で overlay reset を統一 |
+| 共通IPC | `llm:stream-chat` / `llm:stream-cancel` / `llm:stream-chunk` / `llm:stream-end` / `llm:stream-error` |
+| 残差 | general chat transport の legacy 維持、workspace transport の direct 利用、`conversationAPI` lookup / recent rail の一本化 |
+| 比較資料 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` |
 
 ---
 
@@ -152,6 +169,8 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| 2.5.0   | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。shared contract / handoff helper / dedicated harness は実装済み、transport 一本化は follow-up とする境界を追記 |
+| 2.4.0   | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 の抽出導線を復帰。`llm:stream-cancel` と current HEAD の general/workspace split、prior attempt archive の扱いを追記 |
 | 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |

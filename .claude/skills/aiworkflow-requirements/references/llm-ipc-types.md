@@ -106,6 +106,18 @@ LLMモデル情報型。
 
 プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
 
+### Task02 設計で前提にする Renderer チャット状態（current HEAD）
+
+Task02 を再設計する時点の current HEAD では、Renderer 側チャット状態は以下の契約に分かれている。
+
+| 契約 | 実装場所 | 内容 |
+| --- | --- | --- |
+| `ChatMessage` | `apps/desktop/src/renderer/store/types.ts` | `id` / `role` / `content` / `timestamp` / `isStreaming` を持つ general chat message |
+| `StreamingError` | `apps/desktop/src/renderer/store/slices/chatSlice.ts` | `code` / `message` / `retryable` を持つ stream UI error |
+| `streamChat()` | `apps/desktop/src/preload/index.ts` | `Promise<{ requestId: string }>` を返し、Renderer は requestId を state/ref に保持する |
+| `cancelStream(requestId)` | `apps/desktop/src/preload/index.ts` | `{ success: boolean }` を返し、Main 側 AbortController を停止する |
+| 設計ギャップ | current HEAD | `ChatMode` / `modeSessionIds` / session overlay は未実装であり、Task02 で導入するなら renderer types と state ownership を先に正本化する |
+
 ---
 
 ## Multi-LLM Provider Switching 型定義
@@ -225,6 +237,7 @@ LLMモデル情報の型定義。
 | llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
 | llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
 | llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
+| llm:stream-cancel    | invoke   | `{ requestId: string }` | `{ success: boolean }` | 進行中ストリームの abort |
 
 ### AI_CHAT の provider/model 解決順
 
@@ -300,5 +313,6 @@ LLMモデル情報の型定義。
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.2.0 | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 の抽出導線を復帰。current HEAD の Renderer chat state、`llm:stream-cancel`、requestId 契約を追記 |
 | 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

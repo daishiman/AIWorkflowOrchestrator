@@ -43,6 +43,15 @@ node scripts/search-spec.js "認証" -C 5
 2. 該当ファイルを `Read` ツールで参照
 3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
 
+### TASK-SKILL-LIFECYCLE-02 / chat platform unification を追う
+
+1. `indexes/resource-map.md` の「会話基盤統合 / チャットプラットフォーム統合」を開く
+2. `indexes/quick-reference.md` の Task02 節から current code anchors を確認する
+3. `references/workflow-chat-platform-unification.md` で current branch の実装内容・苦戦箇所・5分解決カードを先に掴む
+4. `references/interfaces-llm.md` / `references/llm-ipc-types.md` / `references/llm-streaming.md` で streaming / IPC 契約を読む
+5. `references/interfaces-chat-history.md` / `references/architecture-chat-history.md` / `references/api-chat-history.md` / `references/llm-workspace-chat-edit.md` / `references/arch-state-management.md` で history / workspace / state 境界を読む
+6. Phase 12 完了 snapshot `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` を current branch 正本、prior attempt archive `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` を比較資料として分離して扱う。Phase 1-12 / outputs / Phase 11 screenshot は phase12-complete workflow 側を見て、transport 一本化は `UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001` follow-up として読む
+
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
@@ -196,6 +205,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.92** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の fast-path hub を追加**: `references/workflow-chat-platform-unification.md` を新設し、Phase 12 完了 snapshot を基準に実装内容・苦戦箇所・5分解決カードを 1 ファイルへ集約。`SkillLifecyclePanel.initialRequest` による prepared request continuity も Task02 読み順へ組み込んだ |
+| **9.01.91** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 の Phase 12 準拠確認と苦戦箇所整理を追補**: `references/task-workflow.md` に Task 12-1〜12-5 と unassigned 配置監査値を固定し、`references/ui-ux-feature-components.md` の Chat Platform 節を `実装内容（要点）` / `苦戦箇所` / `5分解決カード` の3ブロックへ再編。system spec 単体で再利用できる粒度へ整理 |
+| **9.01.90** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 current branch 再監査の partial completion を固定**: `resource-map` / `task-workflow` / `lessons-learned` / `arch-state-management` / `LOGS.md` に shared contract 実装済み・Phase 11 harness 証跡済み・transport follow-up 未完了の境界を追記し、Phase 1-12 完了と overall `in_progress` を分離 |
+| **9.01.89** | **2026-03-12** | **TASK-SKILL-LIFECYCLE の抽出導線を branch 実体へ追補**: `resource-map` / `quick-reference` / `task-workflow` に `SkillCenterView` / `skillLifecycleJourney` / `preload index/types` を追加し、entry surface / execution surface / non-persist revive の境界、Task03 completed path の downstream 参照先を Phase 12 完了 snapshot 基準へ補強 |
 | **9.01.88** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` に formalize し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `workflow-light-theme-contrast-regression-guard.md` へ導線を追加。completed workflow の Phase 12 outputs も 1 件 formalize 前提へ更新 |
 | **9.01.87** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を同期**: `task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task を追記し、`lessons-learned.md` に workflow baseline 64 と directory baseline 134 の分離、Task 5 の 3 skill 同値転記ルールを追加。Phase 12 root evidence と system spec の再突合手順を固定 |
 | **9.01.86** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本を追加**: `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、今回実装した audit / harness / static serve fallback / selector readiness / workflow sync と苦戦箇所を 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` も同時更新し、同種課題の参照初動を短縮 |

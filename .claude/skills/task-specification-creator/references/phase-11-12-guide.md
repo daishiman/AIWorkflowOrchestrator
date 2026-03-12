@@ -69,6 +69,8 @@
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
+- current workflow を reopen した場合でも、parallel sibling が completed archive を相対参照しているなら archive/current split を維持し、archive を current へ上書きしない。
+- completed archive を残す理由、current workflow を reopen のまま維持する理由、relative ref 確認結果を `documentation-changelog.md` または `spec-update-summary.md` に記録する。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -331,6 +333,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 1. `outputs/phase-12/` の必須5成果物が実在する
 2. `artifacts.json` の `phases.12.status` が `completed` である
 3. `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが実体証跡と同期している
+4. acceptance partial / residual follow-up が残る場合、workflow 全体の top-level `artifacts.status` は `completed` にせず、`in_progress` と follow-up 未タスクを同時に残している
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
 
@@ -402,6 +405,7 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
+- [ ] acceptance partial / residual follow-up が残る場合、top-level `artifacts.status` は `in_progress` のままで、`executionNote` / `spec-update-summary.md` / `unassigned-task-detection.md` に同じ理由が書かれている
 - [ ] completed workflow の `phase-12-documentation.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
@@ -564,6 +568,7 @@ done
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
 | 2026-03-11 | TASK-UI-04C follow-up を反映し、初回 0件判定後に親タスク苦戦箇所を共通ガード未タスクへ formalize する場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加 |
+| 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映し、Phase 1-12 完了と workflow 全体完了を分離。acceptance partial / residual follow-up が残る場合は top-level `artifacts.status=in_progress` を維持するガードを追加 |
 | 2026-03-06 | UT-TASK-10A-B-008 Phase 12再確認を反映し、Task 1 完了条件へ `validate-phase12-implementation-guide.js` を追加。Part 1/2 の内容要件を構造チェックから独立して機械検証する運用へ更新 |
 | 2026-03-06 | UT-TASK-10A-B-008 再監査の教訓を反映し、「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root でなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加 |
 | 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |

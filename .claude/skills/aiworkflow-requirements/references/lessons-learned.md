@@ -20,6 +20,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-12 | 1.29.85 | `workflow-chat-platform-unification.md` を追加し、TASK-SKILL-LIFECYCLE-02 の実装内容・苦戦箇所・5分解決カードを 1 ファイルへ集約。`SkillLifecyclePanel.initialRequest` による prepared request continuity も教訓化 |
+| 2026-03-12 | 1.29.84 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を追補。shared contract / dedicated harness / follow-up partial completion の3点を追加し、「Phase 1-12 完了」と「overall completed」を分離するルールを標準化 |
+| 2026-03-12 | 1.29.83 | TASK-SKILL-LIFECYCLE-02 の教訓を追加。Phase 12 完了 snapshot と prior attempt archive の責務分離、general/workspace/history/streaming の4分割読解、sibling relative ref guard を標準化 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
 | 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
 | 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
@@ -67,6 +70,119 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-SKILL-LIFECYCLE-02
+
+`7c24c149f` で current workflow は reopen したが、以下の教訓は current HEAD で Task02 を再設計する際にもそのまま再利用する。
+
+#### 苦戦箇所1: 入口ごとに会話 UI を持つと platform 統合前に責務が分断される
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | general chat は `chatSlice`、workspace chat は `useWorkspaceChatController` で別々に進化し、session 統合の前提が揃わない |
+| 再発条件 | state / history / IPC を同時に読む前に、各入口の所有者を固定しない |
+| 解決策 | general、workspace、history、streaming の4仕様へ分けて current HEAD を棚卸しし、統合点だけを Task02 へ残す |
+| 標準ルール | 先に「どの入口が何を所有するか」を表にしてから session 統合へ進む |
+
+#### 苦戦箇所2: session persist は create だけでなく revive まで見ないと設計が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workspace 側は create/addMessage があるが、general chat への handoff / revive 契約が未定義のままだった |
+| 再発条件 | persistence を「保存できる」で完了扱いにし、再利用導線を定義しない |
+| 解決策 | `conversationAPI` の create/addMessage と renderer overlay の境界を分け、revive/handoff を follow-up として formalize した |
+| 標準ルール | session 設計では create / append / revive / handoff を 1 セットで確認する |
+
+#### 苦戦箇所3: Phase 12 は outputs だけでは current/archive の二重状態を表現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | completed archive と reopen current workflow が同時に存在する状況を outputs だけでは説明しきれない |
+| 再発条件 | `completed-tasks` だけ更新し、current workflow の status と台帳説明を省略する |
+| 解決策 | `task-workflow.md`、`lessons-learned.md`、workflow 本文へ current/archive split を明記した |
+| 標準ルール | reopen 時は「current workflow」「completed archive」「比較理由」を同時に記録する |
+
+#### 苦戦箇所4: completed archive を current workflow へそのまま戻すと現 HEAD と乖離する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 2026-03-11 の prior attempt 文書を current workflow に戻すと、現コードの `chatSlice` / `useWorkspaceChatController` 実体と合わなくなる |
+| 再発条件 | 履歴上の completed package を current HEAD の検証なしで正本扱いする |
+| 解決策 | archive は比較資料として completed 側へ戻し、current workflow は reopen stub + current code anchor 追補に留めた |
+| 標準ルール | current code anchor を確認せずに completed package を current へ上書きしない |
+
+#### 苦戦箇所5: skill tooling 側の old schema drift が archive/current 混同を悪化させる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow status、artifacts、Phase 12 guide が dual package を前提にしていないと、古い完了物を current へ戻しやすい |
+| 再発条件 | `task-specification-creator` の guide / patterns に reopen + archive split guard がない |
+| 解決策 | task-spec 側へ current/completed dual package guard を追加し、relative ref 確認を必須化した |
+| 標準ルール | system spec と task-spec の両スキルを同一ターンで更新する |
+
+#### 苦戦箇所6: completed archive を消すと sibling task の比較資料まで失う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | completed workflow を比較資料として残せないと、視覚証跡や follow-up の参照が sibling task から切れる |
+| 再発条件 | relative ref / completed archive の存在確認をしない |
+| 解決策 | sibling task の相対参照を `test -f` で確認し、必要 archive を復元した |
+| 標準ルール | completed archive 削除前に sibling workflow の参照有無を機械確認する |
+
+#### 同種課題の簡潔解決手順（6ステップ）
+
+1. current HEAD のコードアンカーを general / workspace / history / streaming に分割して確認する。
+2. current workflow と completed archive の両方が必要かを sibling relative ref まで含めて確認する。
+3. completed archive は比較資料、current workflow は reopen design 正本として別々に扱う。
+4. system spec は LLM、history、state、台帳の4仕様へ分けて抽出導線を整える。
+5. task-spec 側にも dual package drift guard を追加して、Phase 12 誤判断を防ぐ。
+6. follow-up は `UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001` のように未タスク化して継続管理する。
+
+### 2026-03-12 TASK-SKILL-LIFECYCLE-02 current branch 再監査
+
+#### 苦戦箇所1: shared contract を実装しても transport 未統一のまま completed に見えやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `ChatHandoffPayload` / `ChatReviveSnapshot` / `NON_PERSISTED_CHAT_OVERLAY_KEYS` を shared 化すると、タスク全体も完了したように見えやすい |
+| 再発条件 | outputs と screenshot が揃った時点で acceptance partial を確認しない |
+| 解決策 | `artifacts.json` top-level status を `in_progress` に留め、AC-4 を false のまま維持し、follow-up 2件を formalize した |
+| 標準ルール | 「Phase 1-12 完了」と「overall completed」は分離し、残差があれば台帳と lessons の両方へ残す |
+
+#### 苦戦箇所2: representative screenshot が shell 全景だと contract 境界を読み取れない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 会話基盤タスクでは shell 全景だけだと entry surface / execution surface / revive boundary の差がぼやける |
+| 再発条件 | Phase 11 で page full screenshot だけを証跡にする |
+| 解決策 | `phase11-chat-platform.{html,tsx}` の dedicated harness を使い、selector 単位で general / workspace / lifecycle / revive / stream reset を撮影した |
+| 標準ルール | 基盤統合タスクの Phase 11 は dedicated harness + selector capture を優先する |
+
+#### 苦戦箇所3: system spec と task-spec の両方に partial-completion guard がないと再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 側だけで `in_progress` を残しても、skill guide 側が completed 前提のままだと次回再監査で誤判定しやすい |
+| 再発条件 | current task の結果を outputs だけで閉じ、skill docs を更新しない |
+| 解決策 | `aiworkflow-requirements` と `task-specification-creator` の両方へ residual follow-up guard を追記した |
+| 標準ルール | partial completion を伴う task は workflow / system spec / task-spec の3層で同一表現に揃える |
+
+#### 苦戦箇所4: handoff helper を追加しても prepared request が entry surface に残らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `createSkillLifecycleChatHandoff()` だけでは `prepare` 済み request が `SkillLifecyclePanel` 側に保持されず、payload と UI state がずれやすい |
+| 再発条件 | handoff payload 生成を contract 完了とみなし、entry surface の request state を同期しない |
+| 解決策 | `SkillLifecyclePanel.initialRequest` を追加し、prepared request を panel に残したまま handoff payload と同じ文面を表示できるようにした |
+| 標準ルール | entry helper を追加したら、entry UI の request continuity も同じ task で固定する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. shared contract 実装と transport 実装を別レイヤーとして扱う。
+2. handoff helper を作ったら、entry surface の prepared request continuity (`initialRequest` など) も同時に固定する。
+3. Phase 11 は dedicated harness で contract 境界が見える証跡を残す。
+4. AC が partial の場合は `artifacts.status=in_progress` を維持する。
+5. workflow / system spec / task-spec の3層で partial completion を同じ語彙に揃える。
 
 ### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
 

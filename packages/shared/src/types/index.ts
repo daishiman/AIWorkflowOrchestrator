@@ -10,6 +10,7 @@ export * from "./rag";
 // Chat履歴型定義
 export * from "./chat-session";
 export * from "./chat-message";
+export * from "./chat-platform";
 export * from "./llm-metadata";
 export * from "./history";
 

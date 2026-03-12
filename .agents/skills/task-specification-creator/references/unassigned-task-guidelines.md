@@ -53,23 +53,24 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 ```bash
 # 1) 対象未タスクの今回差分監査（推奨）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
 
 # 2) 差分監査（workflow全体の current 判定）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 3) 全体監査（資産健全性監視）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 > 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
 > `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
 > `--target-file` 単独実行は repo 全体の既存違反が `current` 側へ見える場合があるため、今回差分の合否には使わない。
+> canonical root は `.claude/skills/task-specification-creator/`、`.agents/skills/task-specification-creator/` は mirror として扱う。validator が mirror を読む運用では、Phase 12 完了前に mirror sync と `diff -qr` を行う。
 
 判定ルール:
 

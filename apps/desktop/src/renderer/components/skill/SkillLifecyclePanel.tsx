@@ -134,11 +134,13 @@ function appendSessionEntry(
 export interface SkillLifecyclePanelProps {
   onClose: () => void;
   onOpenWizard: () => void;
+  initialRequest?: string;
 }
 
 export function SkillLifecyclePanel({
   onClose,
   onOpenWizard,
+  initialRequest = "",
 }: SkillLifecyclePanelProps) {
   const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
@@ -151,7 +153,7 @@ export function SkillLifecyclePanel({
   const skillExecutionStatus = useSkillExecutionStatus();
   const skillError = useSkillError();
 
-  const [request, setRequest] = useState("");
+  const [request, setRequest] = useState(initialRequest);
   const [detectedMode, setDetectedMode] = useState<SkillCreatorMode | null>(
     null,
   );

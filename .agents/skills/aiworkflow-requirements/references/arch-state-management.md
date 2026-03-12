@@ -9,6 +9,8 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.8    | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映: `packages/shared/src/types/chat-platform.ts` を shared contract 正本、`contracts.ts` / `skillLifecycleJourney.ts` を entry helper、`chatSlice` を execution overlay owner として固定し、Phase 1-12 完了と top-level `in_progress` の分離、transport follow-up 2件を追記 |
+| v3.14.7    | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 向けに current HEAD の general chat / workspace chat state 境界を追加。`chatSlice` の streaming overlay、`useWorkspaceChatController` の local persistence、completed archive と reopen workflow の分離前提を明文化 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -251,6 +253,47 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - `isStreamingRef` は `setIsStreaming()` だけに依存させず、開始/終了時に即時同期する。
 - stream buffer は state のみでなく ref でも保持し、chunk/end 同期到着で欠落させない。
 - 04B では新規 global slice を追加しない（`workspaceSlice` / `fileSelectionSlice` 再利用）。
+
+## Chat / Workspace Chat の current state 境界（TASK-SKILL-LIFECYCLE-02 設計抽出起点）
+
+### general chat（`chatSlice` + `useStreamingChat`）
+
+| 項目 | current HEAD |
+| --- | --- |
+| 主担当 | `apps/desktop/src/renderer/store/slices/chatSlice.ts` |
+| 管理内容 | messages、streaming overlay、error、requestId ベース cancel |
+| 未保持 | `activeChatMode`、mode 別 session map、persistent conversation linkage |
+
+### workspace chat（`useWorkspaceChatController`）
+
+| 項目 | current HEAD |
+| --- | --- |
+| 主担当 | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` |
+| 管理内容 | workspace 固有 messages/input/isStreaming/error、`conversationAPI.create/addMessage`、`llm.streamChat/cancelStream` |
+| 依存 | `workspaceSlice`、`fileSelectionSlice`、LLM selector |
+
+### current branch で固定した shared contract
+
+| 契約 | current branch の正本 |
+| --- | --- |
+| mode / handoff / revive DTO | `packages/shared/src/types/chat-platform.ts` |
+| Workspace request / handoff builder | `apps/desktop/src/renderer/features/chat-platform/contracts.ts` |
+| lifecycle handoff guard | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
+| streaming overlay reset | `apps/desktop/src/renderer/store/slices/chatSlice.ts` の `createEmptyChatStreamOverlayState()` |
+
+補足:
+- current branch では Phase 1-12 の workflow / outputs / screenshot / system spec 同期まで完了している。
+- ただし `conversationAPI` への transport 一本化は未完了のため、workflow 全体の top-level status は `completed` ではなく `in_progress` として扱う。
+
+### Task02 で残る差分
+
+| 差分 | 現状 | 設計で決めること |
+| --- | --- | --- |
+| 永続化境界 | general chat は未接続、workspace chat は直結 | session revive / handoff の所有者をどこに置くか |
+| state ownership | mode / handoff / revive contract は shared 化済みだが、runtime transport ownership は general=store、workspace=view-local のまま | session transport をどこへ集約するか |
+| transport 一本化 | `ChatHandoffPayload` / `ChatReviveSnapshot` は共通化済み、`conversationAPI` 接続は分岐したまま | `UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001` で `conversationId` / `requestId` ownership を一本化する |
+| archive/current | 2026-03-11 prior attempt archive と current HEAD が乖離 | current workflow は Phase 1-12 実行済みの current 正本、archive は比較資料として保持 |
+
 ## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
 
 ### 追加したSlice
