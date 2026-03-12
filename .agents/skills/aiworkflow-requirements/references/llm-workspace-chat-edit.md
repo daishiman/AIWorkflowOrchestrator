@@ -243,39 +243,7 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ---
 
-## Workspace mode handoff context（TASK-SKILL-LIFECYCLE-02）
-
-Workspace Chat Edit の file context 契約は、TASK-SKILL-LIFECYCLE-02 で `ChatView` の workspace mode handoff に再利用される。Main Process の `SendWithContextRequest` を直接増やすのではなく、Renderer 側で `buildWorkspaceChatContext()` により payload を整えて共通会話基盤へ渡す。
-
-### handoff payload
-
-| 項目 | 生成元 | 用途 |
-| --- | --- | --- |
-| `workspacePath` | `workspace.folders[0]?.path` | context summary と mode system prompt の基底 |
-| `selectedFilePaths` | `useSelectedFiles()` | file context の実体パス |
-| `selectedFileNames` | 同上 | UI summary / handoff label |
-| `entryPoint: "workspace"` | `WorkspaceView` | entry surface の出所記録 |
-| `handoffLabel` | `buildWorkspaceChatContext()` | ChatView での要約表示 |
-
-### 標準ルール
-
-- `WorkspaceView` は file browser / preview / selection に専念し、会話本体を持たない。
-- `Workspace mode` の会話開始は `activateChatMode("workspace", buildWorkspaceChatContext(...))` → `setCurrentView("chat")` の順で行う。
-- file context の詳細解決や file I/O 制約は従来どおり `chat-edit:*` IPC / `workspacePath` 検証に従い、Renderer handoff payload だけで security 判断を完結させない。
-
----
-
 ## 完了タスク
-
-### 共通チャット基盤 Workspace handoff（TASK-SKILL-LIFECYCLE-02）2026-03-11完了
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-SKILL-LIFECYCLE-02 |
-| ステータス | **完了** |
-| 実装内容 | `WorkspaceView` から `workspace-open-chat` ボタンで `workspacePath` / selected files を `ChatView` workspace mode へ handoff |
-| 役割分離 | file context の選定は Workspace、会話 UI と session は ChatView / chatSlice、file I/O と安全性は chat-edit service が担当 |
-| ドキュメント | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` |
 
 ### Workspace管理統合（TASK-WCE-WORKSPACE-001）2026-02-02完了
 
@@ -304,6 +272,5 @@ Workspace Chat Edit の file context 契約は、TASK-SKILL-LIFECYCLE-02 で `Ch
 
 | 日付       | バージョン | 変更内容                                                            |
 | ---------- | ---------- | ------------------------------------------------------------------- |
-| 2026-03-11 | v1.2.0     | TASK-SKILL-LIFECYCLE-02反映: Workspace mode handoff context、`buildWorkspaceChatContext()`、entry surface と chat-edit service の責務分離を追加 |
 | 2026-02-02 | v1.1.0     | TASK-WCE-WORKSPACE-001完了: workspacePathパラメータ追加、完了タスクセクション追加 |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                  |

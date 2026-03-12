@@ -27,7 +27,6 @@
 | `{{TASK_BACKGROUND}}` | タスクの背景 | （詳細に記述） |
 | `{{FINAL_GOAL}}` | 最終ゴール | （具体的な最終状態） |
 | `{{SUBTASK_COUNT}}` | サブタスク数 | `15` |
-| `{{#each ACCEPTANCE_CRITERIA}}` | 受入基準配列 | `[{ id: "AC-1", description: "..." }]` |
 
 ---
 
@@ -81,16 +80,6 @@ docs/30-workflows/{{FEATURE_NAME}}/index.md
 
 {{FINAL_GOAL}}
 <!-- 達成すべき具体的な最終状態 -->
-
-### 受入基準
-
-> `index.md` の受入基準は `artifacts.json.acceptanceCriteria` と **同じ ID / 本文** にすること。片方だけ更新してはいけない。
-
-| ID | 基準 |
-| -- | ---- |
-{{#each ACCEPTANCE_CRITERIA}}
-| {{id}} | {{description}} |
-{{/each}}
 
 ### 成果物一覧
 

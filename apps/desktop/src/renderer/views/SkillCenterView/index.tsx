@@ -17,8 +17,6 @@ import {
   SKILL_LIFECYCLE_JOB_GUIDES,
   SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES,
 } from "../../navigation/skillLifecycleJourney";
-import { useActivateChatMode, useSetCurrentView } from "../../store";
-import { getSkillLifecycleJobLabel } from "../../features/chat-platform/session";
 import { useSkillCenter } from "./hooks/useSkillCenter";
 import { FeaturedSection } from "./components/FeaturedSection/FeaturedSection";
 import { CategoryTabs } from "./components/CategoryTabs";
@@ -105,13 +103,7 @@ const PRIMARY_SURFACE_RESPONSIBILITIES =
     (surface) => surface.id !== "settings",
   );
 
-interface SkillLifecycleJourneyPanelProps {
-  onStartChat: (job: "create" | "use" | "improve") => void;
-}
-
-function SkillLifecycleJourneyPanel({
-  onStartChat,
-}: SkillLifecycleJourneyPanelProps): JSX.Element {
+function SkillLifecycleJourneyPanel(): JSX.Element {
   return (
     <section
       className={viewStyles.journeyPanel}
@@ -149,14 +141,6 @@ function SkillLifecycleJourneyPanel({
               <strong>{job.handoffLabel}</strong>
             </p>
             <p className={viewStyles.journeyCardOutcome}>{job.completion}</p>
-            <button
-              type="button"
-              onClick={() => onStartChat(job.id)}
-              className="mt-4 rounded-full border border-[var(--border-primary)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-tertiary)]"
-              data-testid={`skill-lifecycle-start-${job.id}`}
-            >
-              {getSkillLifecycleJobLabel(job.id)}会話を始める
-            </button>
           </article>
         ))}
       </div>
@@ -230,8 +214,6 @@ function SkillLifecycleSurfaceOwnershipPanel(): JSX.Element {
  * SkillCenterView メインコンポーネント。
  */
 export const SkillCenterView: React.FC = memo(() => {
-  const activateChatMode = useActivateChatMode();
-  const setCurrentView = useSetCurrentView();
   const {
     importedSkills,
     isLoading,
@@ -297,18 +279,6 @@ export const SkillCenterView: React.FC = memo(() => {
     handleSetCategory("all");
   }, [handleSetFilter, handleSetCategory]);
 
-  const handleStartLifecycleChat = useCallback(
-    (job: "create" | "use" | "improve") => {
-      activateChatMode("skill-lifecycle", {
-        lifecycleJob: job,
-        entryPoint: "skill-center",
-        handoffLabel: `${getSkillLifecycleJobLabel(job)}の意図を Skill Center から引き継ぎ`,
-      });
-      setCurrentView("chat");
-    },
-    [activateChatMode, setCurrentView],
-  );
-
   useEffect(() => {
     if (!isDeleteConfirmOpen) return;
 
@@ -369,7 +339,7 @@ export const SkillCenterView: React.FC = memo(() => {
             </p>
           </div>
 
-          <SkillLifecycleJourneyPanel onStartChat={handleStartLifecycleChat} />
+          <SkillLifecycleJourneyPanel />
           <SkillLifecycleSurfaceOwnershipPanel />
 
           {/* 検索バー */}

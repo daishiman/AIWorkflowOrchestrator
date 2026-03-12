@@ -99,50 +99,6 @@ const customStorage = {
         parsed.state.expandedFolders = new Set<string>();
       }
     }
-
-    if (
-      parsed.state &&
-      parsed.state.chatSessions &&
-      typeof parsed.state.chatSessions === "object"
-    ) {
-      const chatSessions = parsed.state.chatSessions as Record<
-        string,
-        {
-          createdAt?: string;
-          updatedAt?: string;
-          messages?: Array<{ timestamp?: string }>;
-        }
-      >;
-
-      for (const session of Object.values(chatSessions)) {
-        if (session.createdAt) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (session as any).createdAt = new Date(session.createdAt);
-        }
-        if (session.updatedAt) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (session as any).updatedAt = new Date(session.updatedAt);
-        }
-        if (Array.isArray(session.messages)) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (session as any).messages = session.messages.map((message) => ({
-            ...message,
-            timestamp: message.timestamp
-              ? new Date(message.timestamp)
-              : new Date(),
-          }));
-        }
-      }
-
-      const activeSessionId =
-        typeof parsed.state.activeChatSessionId === "string"
-          ? parsed.state.activeChatSessionId
-          : null;
-      if (activeSessionId && chatSessions[activeSessionId]) {
-        parsed.state.chatMessages =
-          chatSessions[activeSessionId].messages ?? [];
-      }
-    }
     return parsed;
   },
   setItem: (name: string, value: unknown) => {
@@ -209,11 +165,6 @@ export const useAppStore = create<AppStore>()(
           isNavExpanded: state.isNavExpanded,
           permissionHistory: state.permissionHistory,
           notifications: state.notifications,
-          activeChatMode: state.activeChatMode,
-          activeChatSessionId: state.activeChatSessionId,
-          chatSessions: state.chatSessions,
-          chatSessionOrder: state.chatSessionOrder,
-          modeSessionIds: state.modeSessionIds,
         }),
       },
     ),
@@ -230,45 +181,12 @@ export const useStore = useAppStore;
 
 // Selector hooks for better performance
 export const useCurrentView = () => useAppStore((state) => state.currentView);
-export const useSetCurrentView = () =>
-  useAppStore((state) => state.setCurrentView);
 export const useSelectedFile = () => useAppStore((state) => state.selectedFile);
 export const useFileTree = () => useAppStore((state) => state.fileTree);
 export const useExpandedFolders = () =>
   useAppStore((state) => state.expandedFolders);
 export const useChatMessages = () => useAppStore((state) => state.chatMessages);
 export const useIsSending = () => useAppStore((state) => state.isSending);
-export const useActiveChatMode = () =>
-  useAppStore((state) => state.activeChatMode);
-export const useActiveChatSessionId = () =>
-  useAppStore((state) => state.activeChatSessionId);
-export const useChatSessions = () => useAppStore((state) => state.chatSessions);
-export const useChatSessionOrder = () =>
-  useAppStore((state) => state.chatSessionOrder);
-export const useActiveChatSession = () =>
-  useAppStore((state) =>
-    state.activeChatSessionId
-      ? (state.chatSessions[state.activeChatSessionId] ?? null)
-      : null,
-  );
-export const useRecentChatSessions = () =>
-  useAppStore(
-    useShallow((state) =>
-      state.chatSessionOrder
-        .map((sessionId) => state.chatSessions[sessionId])
-        .filter(Boolean),
-    ),
-  );
-export const useActivateChatMode = () =>
-  useAppStore((state) => state.activateChatMode);
-export const useResumeChatSession = () =>
-  useAppStore((state) => state.resumeChatSession);
-export const useUpdateActiveChatContext = () =>
-  useAppStore((state) => state.updateActiveChatContext);
-export const useAbortStreaming = () =>
-  useAppStore((state) => state.abortStreaming);
-export const useRetryLastMessage = () =>
-  useAppStore((state) => state.retryLastMessage);
 export const useGraphNodes = () => useAppStore((state) => state.graphNodes);
 export const useGraphLinks = () => useAppStore((state) => state.graphLinks);
 export const useIsAnimating = () => useAppStore((state) => state.isAnimating);

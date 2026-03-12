@@ -44,39 +44,6 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
-### 会話基盤統合 / chat platform unification を探すとき
-
-このカテゴリは `ChatMessage` `llm:stream-chat` `conversationId` `workspacePath` `ChatSessionDTO` `chat_sessions` `ChatView` `WorkspaceView` `skill-lifecycle` `skillLifecycleJourney` `abort` `retry` で検索を分割する。`session` `history` のような broad query はノイズが多いので初手に使わない。
-
-```bash
-node scripts/search-spec.js "ChatMessage" -C 3
-node scripts/search-spec.js "llm:stream-chat" -C 3
-node scripts/search-spec.js "workspacePath" -C 3
-node scripts/search-spec.js "ChatSessionDTO" -C 3
-node scripts/search-spec.js "chat_sessions" -C 3
-node scripts/search-spec.js "ChatView" -C 3
-node scripts/search-spec.js "WorkspaceView" -C 3
-node scripts/search-spec.js "skill-lifecycle" -C 3
-node scripts/search-spec.js "skillLifecycleJourney" -C 3
-node scripts/search-spec.js "abort" -C 3
-node scripts/search-spec.js "retry" -C 3
-```
-
-読む順番:
-
-1. `indexes/resource-map.md` の「会話基盤統合 / チャットプラットフォーム統合」を見る
-2. `references/interfaces-llm.md` と `references/llm-ipc-types.md` で LLM / stream / conversationId の入口を確認する
-3. `references/llm-streaming.md` で stream lifecycle と abort / retry 契約を確認する
-4. `references/interfaces-chat-history.md` と `references/architecture-chat-history.md` で session / message persistence と責務分離を確認する
-5. `references/api-chat-history.md` で session / message use case と DTO を確認する
-6. `references/llm-workspace-chat-edit.md` で workspace context adapter と `workspacePath` 契約を確認する
-7. `references/arch-state-management.md` で store / local state / ownership を確認する
-8. `references/ui-ux-feature-components.md` と `references/ui-ux-navigation.md` で Task01 導線との接合位置を確認する
-9. `references/api-ipc-agent.md` `references/interfaces-agent-sdk-ui.md` `references/ui-ux-agent-execution.md` で Task03 handoff の downstream 契約を確認する
-10. `references/arch-ipc-persistence.md` は `conversationId` 永続化が絡む場合のみ補助参照する
-11. 実装実体は `apps/desktop/src/renderer/views/ChatView/index.tsx` `apps/desktop/src/renderer/store/slices/chatSlice.ts` `apps/desktop/src/renderer/hooks/useStreamingChat.ts` `apps/desktop/src/renderer/views/WorkspaceView/index.tsx` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` で確認する
-12. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
-
 ### Preload safeInvoke timeout を探すとき
 
 ```bash

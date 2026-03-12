@@ -362,26 +362,6 @@ Use Caseで発生するエラーの基底クラス。AppErrorを継承する。
 
 ---
 
-## Renderer session overlay と Use Case API の境界（TASK-SKILL-LIFECYCLE-02）
-
-TASK-SKILL-LIFECYCLE-02 では Renderer 側に `chatSessions` / `modeSessionIds` / `lastUserMessage` を持つ overlay を追加したが、これは Use Case API の公開契約には含めない。
-
-### APIに残すもの / 残さないもの
-
-| 区分 | 対象 | 理由 |
-| --- | --- | --- |
-| Use Case API に残す | `ChatSessionDTO` / `ChatMessageDTO` / session/message 永続化 | 長期保存・検索・export の正本だから |
-| Renderer overlay に留める | `activeChatMode` / `chatSessionOrder` / `modeSessionIds` / `lastUserMessage` / retryable error | UI の handoff / rail / retry 制御に閉じる transient state だから |
-| 将来連携時の注意 | overlay context を DTO に直接混ぜず、必要最小限の session/message に正規化してから永続化する | UI state の肥大化と API drift を防ぐため |
-
-### 標準ルール
-
-- `sendMessage()` は `LLMChatRequest` を直接作るが、Use Case API 側へは session/message が永続化対象として確定したときだけ橋渡しする。
-- `workspacePath` や `selectedFileNames` のような handoff context は `llm-workspace-chat-edit.md` と `arch-state-management.md` 側に残し、chat history DTO には入れない。
-- `lastUserMessage` / `streamingMessageId` のような retry 補助情報は Renderer store 専用とする。
-
----
-
 ## 将来の拡張
 
 ### 未実装Use Cases（予定）
@@ -400,7 +380,6 @@ TASK-SKILL-LIFECYCLE-02 では Renderer 側に `chatSessions` / `modeSessionIds`
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
-| 2026-03-11 | 1.2.0 | TASK-SKILL-LIFECYCLE-02反映: Renderer session overlay と chat history Use Case API の責務境界を追加 |
 | 2026-01-26 | 1.1.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 2026-01-19 | 1.0.0 | 初版作成 |
 

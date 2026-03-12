@@ -1,3 +1,9 @@
+/**
+ * ChatView - AIチャットメインビュー
+ *
+ * ユーザーがAIとリアルタイムで会話するためのメインインターフェース。
+ * RAG（Retrieval-Augmented Generation）モードをサポート。
+ */
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
@@ -9,168 +15,50 @@ import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { SystemPromptPanel } from "../../components/organisms/SystemPromptPanel";
 import { SystemPromptToggleButton } from "../../components/atoms/SystemPromptToggleButton";
 import { SaveTemplateDialog } from "../../components/organisms/SaveTemplateDialog";
-import {
-  useAbortStreaming,
-  useActivateChatMode,
-  useActiveChatMode,
-  useActiveChatSession,
-  useAppStore,
-  useFetchProviders,
-  useRecentChatSessions,
-  useResumeChatSession,
-  useSelectedFiles,
-  useSelectedModelId,
-  useSelectedProviderId,
-  useUpdateActiveChatContext,
-  useWorkspace,
-} from "../../store";
-import { useStreamingChat } from "../../hooks/useStreamingChat";
-import {
-  buildWorkspaceChatContext,
-  getChatModeLabel,
-  summarizeChatSession,
-} from "../../features/chat-platform/session";
-import type { ChatMode } from "../../store/types";
+import { useAppStore } from "../../store";
 
+// ============================================
+// 定数定義
+// ============================================
 const EMPTY_STATE_MESSAGES = {
   primary: "メッセージを入力してAIと会話を始めましょう",
-  hint: "通常 / Workspace / Skill Lifecycle の mode を切り替えても、会話は共通基盤で継続します。",
+  hint: "Shift + Enter で改行、Enter で送信",
 } as const;
 
-const MODE_ORDER: ChatMode[] = ["general", "workspace", "skill-lifecycle"];
+const RAG_STATUS_MESSAGES = {
+  enabled: "RAG有効: ナレッジベースを参照して回答します",
+  disabled: "通常モード",
+} as const;
 
-const MODE_EXPLANATIONS: Record<ChatMode, string> = {
-  general: "通常会話",
-  workspace: "Workspace 文脈付き会話",
-  "skill-lifecycle": "Skill 作成 / 実行 / 改善向け会話",
-};
-
+// ============================================
+// 型定義
+// ============================================
 export interface ChatViewProps {
   className?: string;
 }
 
-function ContextSummaryCard(): JSX.Element | null {
-  const activeSession = useActiveChatSession();
-
-  if (!activeSession) {
-    return null;
-  }
-
-  const { context } = activeSession;
-
-  if (
-    activeSession.mode === "general" &&
-    !context.selectedSkillName &&
-    context.selectedFileNames.length === 0
-  ) {
-    return null;
-  }
-
-  return (
-    <div
-      className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-      data-testid="chat-context-summary"
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="rounded-full bg-[var(--bg-tertiary)] px-2.5 py-1 text-xs font-medium text-[var(--text-primary)]">
-          {getChatModeLabel(activeSession.mode)}
-        </span>
-        <span className="text-xs text-[var(--text-secondary)]">
-          {summarizeChatSession(activeSession)}
-        </span>
-      </div>
-
-      {context.workspacePath && (
-        <p className="mt-2 text-xs text-[var(--text-secondary)]">
-          workspacePath: {context.workspacePath}
-        </p>
-      )}
-
-      {context.selectedFileNames.length > 0 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          {context.selectedFileNames.map((fileName) => (
-            <span
-              key={fileName}
-              className="rounded-full border border-[var(--border-primary)] px-2.5 py-1 text-xs text-[var(--text-secondary)]"
-            >
-              {fileName}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {context.handoffLabel && (
-        <p className="mt-3 text-xs leading-5 text-[var(--text-secondary)]">
-          handoff: {context.handoffLabel}
-        </p>
-      )}
-    </div>
-  );
-}
-
-function RecentSessionsRail(): JSX.Element | null {
-  const recentSessions = useRecentChatSessions();
-  const activeSession = useActiveChatSession();
-  const resumeChatSession = useResumeChatSession();
-
-  if (recentSessions.length <= 1) {
-    return null;
-  }
-
-  return (
-    <div
-      className="flex gap-2 overflow-x-auto pb-1"
-      data-testid="chat-session-rail"
-    >
-      {recentSessions.map((session) => {
-        const isActive = session.id === activeSession?.id;
-        return (
-          <button
-            key={session.id}
-            type="button"
-            onClick={() => resumeChatSession(session.id)}
-            className={clsx(
-              "min-w-[180px] rounded-2xl border px-3 py-2 text-left transition-colors",
-              isActive
-                ? "border-[var(--status-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)]"
-                : "border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]",
-            )}
-            data-testid={`chat-session-${session.id}`}
-          >
-            <div className="text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">
-              {getChatModeLabel(session.mode)}
-            </div>
-            <div className="mt-1 text-sm font-medium text-[var(--text-primary)]">
-              {session.title}
-            </div>
-            <div className="mt-1 text-xs text-[var(--text-secondary)]">
-              {summarizeChatSession(session)}
-            </div>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
+// ============================================
+// コンポーネント
+// ============================================
 export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   const navigate = useNavigate();
-  const activeChatMode = useActiveChatMode();
-  const activeChatSession = useActiveChatSession();
-  const selectedFiles = useSelectedFiles();
-  const workspace = useWorkspace();
-  const activateChatMode = useActivateChatMode();
-  const updateActiveChatContext = useUpdateActiveChatContext();
-  const selectedProviderId = useSelectedProviderId();
-  const selectedModelId = useSelectedModelId();
-  const fetchProviders = useFetchProviders();
-  const abortStreaming = useAbortStreaming();
-  const { state: streamingState, actions: streamingActions } =
-    useStreamingChat();
 
+  // ----------------------------------------
+  // Store State - チャット関連
+  // ----------------------------------------
   const chatMessages = useAppStore((state) => state.chatMessages);
   const chatInput = useAppStore((state) => state.chatInput);
   const isSending = useAppStore((state) => state.isSending);
+
+  // ----------------------------------------
+  // Store State - RAG関連
+  // ----------------------------------------
+  const ragConnectionStatus = useAppStore((state) => state.ragConnectionStatus);
+  const isRagEnabled = ragConnectionStatus === "connected";
+
+  // ----------------------------------------
+  // Store State - システムプロンプト関連
+  // ----------------------------------------
   const isSystemPromptPanelExpanded = useAppStore(
     (state) => state.isSystemPromptPanelExpanded,
   );
@@ -180,7 +68,13 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   const isSaveTemplateDialogOpen = useAppStore(
     (state) => state.isSaveTemplateDialogOpen,
   );
+
+  // ----------------------------------------
+  // Store Actions
+  // ----------------------------------------
   const setChatInput = useAppStore((state) => state.setChatInput);
+  const sendMessage = useAppStore((state) => state.sendMessage);
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
   const toggleSystemPromptPanel = useAppStore(
     (state) => state.toggleSystemPromptPanel,
   );
@@ -196,65 +90,58 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   const deleteTemplate = useAppStore((state) => state.deleteTemplate);
   const initializeTemplates = useAppStore((state) => state.initializeTemplates);
 
-  const [error] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  // ----------------------------------------
+  // Effects - テンプレート初期化
+  // ----------------------------------------
   useEffect(() => {
     initializeTemplates();
   }, [initializeTemplates]);
 
-  useEffect(() => {
-    if (!selectedModelId) {
-      void fetchProviders();
-    }
-  }, [fetchProviders, selectedModelId]);
-
-  useEffect(() => {
-    if (activeChatMode !== "workspace") {
-      return;
-    }
-
-    const workspacePath = workspace.folders[0]?.path ?? null;
-    updateActiveChatContext(
-      buildWorkspaceChatContext(selectedFiles, workspacePath),
-    );
-  }, [
-    activeChatMode,
-    selectedFiles,
-    updateActiveChatContext,
-    workspace.folders,
-  ]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatMessages]);
-
+  // ----------------------------------------
+  // Callbacks - システムプロンプト
+  // ----------------------------------------
   const handleSelectTemplate = useCallback(
     (template: (typeof templates)[number]) => {
       setSystemPrompt(template.content);
     },
-    [setSystemPrompt, templates],
+    [setSystemPrompt],
   );
+
+  const handleSaveTemplate = useCallback(() => {
+    openSaveTemplateDialog();
+  }, [openSaveTemplateDialog]);
 
   const handleConfirmSaveTemplate = useCallback(
     async (name: string) => {
       await saveTemplate(name, systemPrompt);
       closeSaveTemplateDialog();
     },
-    [closeSaveTemplateDialog, saveTemplate, systemPrompt],
+    [saveTemplate, systemPrompt, closeSaveTemplateDialog],
   );
 
-  const handleSend = useCallback(async () => {
-    if (!chatInput.trim()) {
-      return;
-    }
+  const existingTemplateNames = templates.map((t) => t.name);
 
-    await streamingActions.startStream({
-      content: chatInput,
-      providerId: selectedProviderId,
-      modelId: selectedModelId,
-    });
-  }, [chatInput, selectedModelId, selectedProviderId, streamingActions]);
+  // ----------------------------------------
+  // Local State
+  // ----------------------------------------
+  const [error] = useState<string | null>(null);
+
+  // ----------------------------------------
+  // Refs
+  // ----------------------------------------
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // ----------------------------------------
+  // Callbacks - メッセージ送信
+  // ----------------------------------------
+  const handleSend = useCallback(async () => {
+    const trimmedInput = chatInput.trim();
+    if (trimmedInput && !isSending) {
+      // Send message to LLM with system prompt
+      await sendMessage(chatInput);
+      setChatInput("");
+    }
+  }, [chatInput, isSending, sendMessage, setChatInput]);
 
   const handleInputChange = useCallback(
     (value: string) => {
@@ -263,146 +150,72 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
     [setChatInput],
   );
 
-  const handleModeSwitch = useCallback(
-    (mode: ChatMode) => {
-      if (mode === "workspace") {
-        const workspacePath = workspace.folders[0]?.path ?? null;
-        activateChatMode(
-          mode,
-          buildWorkspaceChatContext(selectedFiles, workspacePath),
-        );
-        return;
-      }
+  // ----------------------------------------
+  // Effects - 自動スクロール
+  // ----------------------------------------
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatMessages]);
 
-      activateChatMode(mode, { entryPoint: "chat" });
-    },
-    [activateChatMode, selectedFiles, workspace.folders],
-  );
-
-  const existingTemplateNames = templates.map((template) => template.name);
-  const hasMessages = chatMessages.length > 0;
-
+  // ----------------------------------------
+  // Render - エラー状態
+  // ----------------------------------------
   if (error) {
     return <ErrorDisplay message={error} className={className} />;
   }
 
+  // ----------------------------------------
+  // Render - メインビュー
+  // ----------------------------------------
+  const hasMessages = chatMessages.length > 0;
+  const ragStatusMessage = isRagEnabled
+    ? RAG_STATUS_MESSAGES.enabled
+    : RAG_STATUS_MESSAGES.disabled;
+
   return (
     <div
-      className={clsx(
-        "flex h-full flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]",
-        className,
-      )}
+      className={clsx("flex flex-col h-full", className)}
       data-testid="chat-view"
     >
-      <header className="border-b border-[var(--border-subtle)] p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-lg font-semibold text-[var(--text-primary)]">
-              共通チャット基盤
-            </h1>
-            <p className="text-sm text-[var(--text-secondary)]">
-              {MODE_EXPLANATIONS[activeChatMode]}
-              {selectedModelId ? ` / ${selectedModelId}` : " / モデル未選択"}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => navigate("/chat/history")}
-              aria-label="チャット履歴"
-              className="rounded-lg p-2 text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]"
-            >
-              <History className="h-5 w-5" />
-            </button>
-          </div>
+      {/* ヘッダー: タイトルとナビゲーション */}
+      <header className="flex items-center justify-between p-4 border-b border-white/10">
+        <div>
+          <h1 className="text-lg font-semibold text-white">AIチャット</h1>
+          <p className="text-sm text-gray-400">{ragStatusMessage}</p>
         </div>
-
-        <div
-          className="mt-4 flex flex-wrap gap-2"
-          data-testid="chat-mode-switcher"
-        >
-          {MODE_ORDER.map((mode) => {
-            const isActive = mode === activeChatMode;
-            return (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => handleModeSwitch(mode)}
-                className={clsx(
-                  "rounded-full border px-3 py-1.5 text-sm transition-colors",
-                  isActive
-                    ? "border-[var(--status-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)]"
-                    : "border-[var(--border-primary)] bg-[var(--bg-primary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]",
-                )}
-                data-testid={`chat-mode-${mode}`}
-              >
-                {getChatModeLabel(mode)}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-4">
-          <RecentSessionsRail />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setCurrentView("skill-center")}
+            aria-label="スキル管理"
+            className="px-3 py-1.5 text-sm rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            スキル管理
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/chat/history")}
+            aria-label="チャット履歴"
+            className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            <History className="h-5 w-5" />
+          </button>
         </div>
       </header>
 
-      <div className="space-y-3 border-b border-[var(--border-subtle)] px-4 py-3">
-        <ContextSummaryCard />
+      {/* システムプロンプトトグルボタン */}
+      <div className="px-4 pt-3">
+        <SystemPromptToggleButton
+          isExpanded={isSystemPromptPanelExpanded}
+          onClick={toggleSystemPromptPanel}
+          hasContent={systemPrompt.trim().length > 0}
+          disabled={isSending}
+        />
+      </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <SystemPromptToggleButton
-            isExpanded={isSystemPromptPanelExpanded}
-            onClick={toggleSystemPromptPanel}
-            hasContent={systemPrompt.trim().length > 0}
-            disabled={isSending}
-          />
-
-          {activeChatSession?.context.entryPoint && (
-            <span className="rounded-full border border-[var(--border-primary)] px-2.5 py-1 text-xs text-[var(--text-secondary)]">
-              entry: {activeChatSession.context.entryPoint}
-            </span>
-          )}
-
-          {streamingState.error?.retryable && (
-            <button
-              type="button"
-              onClick={() =>
-                void streamingActions.retryLastStream({
-                  providerId: selectedProviderId,
-                  modelId: selectedModelId,
-                })
-              }
-              className="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs text-amber-700 transition-colors hover:bg-amber-100"
-              data-testid="chat-retry-button"
-            >
-              直前の送信を再試行
-            </button>
-          )}
-
-          {streamingState.isStreaming && (
-            <button
-              type="button"
-              onClick={() => void abortStreaming()}
-              className="rounded-full border border-rose-300 bg-rose-50 px-2.5 py-1 text-xs text-rose-700 transition-colors hover:bg-rose-100"
-              data-testid="chat-stop-button"
-            >
-              生成を停止
-            </button>
-          )}
-        </div>
-
-        {streamingState.error && (
-          <div
-            className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700"
-            data-testid="chat-stream-error"
-          >
-            {streamingState.error.message}
-          </div>
-        )}
-
-        {isSystemPromptPanelExpanded && (
+      {/* システムプロンプトパネル */}
+      {isSystemPromptPanelExpanded && (
+        <div className="px-4 pb-3">
           <SystemPromptPanel
             isExpanded={isSystemPromptPanelExpanded}
             systemPrompt={systemPrompt}
@@ -410,13 +223,14 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
             templates={templates}
             selectedTemplateId={selectedTemplateId}
             onSelectTemplate={handleSelectTemplate}
-            onSaveTemplate={openSaveTemplateDialog}
+            onSaveTemplate={handleSaveTemplate}
             onDeleteTemplate={deleteTemplate}
             onClear={clearSystemPrompt}
           />
-        )}
-      </div>
+        </div>
+      )}
 
+      {/* メッセージエリア: チャット履歴またはエンプティステート */}
       <main className="flex-1 overflow-auto p-4">
         <div
           role="log"
@@ -438,12 +252,12 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
               <div ref={messagesEndRef} />
             </div>
           ) : (
-            <div className="flex h-full items-center justify-center">
-              <div className="rounded-3xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-6 py-8 text-center">
-                <p className="mb-2 text-[var(--text-primary)]">
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <p className="text-gray-400 mb-2">
                   {EMPTY_STATE_MESSAGES.primary}
                 </p>
-                <p className="text-sm text-[var(--text-secondary)]">
+                <p className="text-sm text-gray-500">
                   {EMPTY_STATE_MESSAGES.hint}
                 </p>
               </div>
@@ -452,23 +266,20 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
         </div>
       </main>
 
-      <footer className="border-t border-[var(--border-subtle)] p-4">
+      {/* 入力エリア: メッセージ入力フォーム */}
+      <footer className="p-4 border-t border-white/10">
         <GlassPanel className="p-2">
           <ChatInput
             value={chatInput}
             onChange={handleInputChange}
             onSend={handleSend}
             sending={isSending}
-            disabled={!selectedModelId}
+            disabled={isSending}
           />
         </GlassPanel>
-        {!selectedModelId && (
-          <p className="mt-2 text-xs text-amber-700">
-            LLM provider / model を読み込み中、または未設定です。
-          </p>
-        )}
       </footer>
 
+      {/* テンプレート保存ダイアログ */}
       <SaveTemplateDialog
         isOpen={isSaveTemplateDialogOpen}
         onClose={closeSaveTemplateDialog}

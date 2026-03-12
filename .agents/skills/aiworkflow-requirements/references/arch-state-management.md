@@ -9,8 +9,6 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| v3.14.8    | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 追補。関連未タスク `UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001` を追加し、`modeSessionIds` / active session / `Date` revive / non-persist state を横断で固定する回帰ガード導線を追記 |
-| v3.14.7    | 2026-03-11 | TASK-SKILL-LIFECYCLE-02 を反映: `chatSlice` の mode/session platform、`modeSessionIds` による mode 別再利用、persist revive、Workspace / Skill Center handoff、`llm:stream-cancel` を使う requestId 管理を追記 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -480,58 +478,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | 呼び出し責務 | `App.tsx` は `useCurrentView()` の生値を直接分岐せず、正規化後の `currentView` で shell/view を決定する |
 | 対象 | 現時点では `skill-center -> skillCenter` のみを吸収し、他 view の正式名は変更しない |
 | 理由 | lifecycle task の一次導線契約・画面責務・テスト証跡を `skillCenter` へ一本化し、legacy 値の残存で UI 仕様が二重化しないようにする |
-
-## 共通チャット基盤の状態管理（TASK-SKILL-LIFECYCLE-02）
-
-### chatSlice の主要 state
-
-| state | 役割 |
-| --- | --- |
-| `activeChatMode` | `general` / `workspace` / `skill-lifecycle` の現在 mode |
-| `activeChatSessionId` | 現在表示中 session の ID |
-| `chatSessions` | `ChatSessionRecord` の辞書。mode ごと welcome message と lastError を保持 |
-| `chatSessionOrder` | `updatedAt` 降順。ChatView recent session rail の表示順 |
-| `modeSessionIds` | mode ごとの既存 session 再利用索引 |
-| `isStreaming` / `currentStreamId` / `streamingMessageId` / `streamingContent` / `streamingError` | requestId、placeholder message、retryable error を一括管理 |
-
-### action 境界
-
-| action | 責務 |
-| --- | --- |
-| `activateChatMode(mode, context)` | mode ごとの session を再利用または新規作成し、context merge と title 更新を行う |
-| `resumeChatSession(sessionId)` | recent rail から任意 session を再表示する |
-| `updateActiveChatContext(context)` | selected files、`workspacePath`、`lifecycleJob`、`handoffLabel` を現在 session に追記する |
-| `sendMessage(message, options)` | user message 追加、placeholder assistant message 生成、`LLMChatRequest` 構築、`streamChat()` 開始 |
-| `abortStreaming()` | `currentStreamId` を `cancelStream()` に渡し、中断後の UI state を正規化する |
-| `retryLastMessage()` | active session の `lastUserMessage` を用いて再送する |
-
-### persist / revive 契約
-
-| 項目 | 契約 |
-| --- | --- |
-| persist 対象 | `activeChatMode` `activeChatSessionId` `chatSessions` `chatSessionOrder` `modeSessionIds` |
-| revive | `customStorage.getItem()` が session/message の日時文字列を `Date` に戻し、active session の messages を `chatMessages` に同期する |
-| 非 persist | `isStreaming` `currentStreamId` `streamingMessageId` `streamingContent` `streamingError` は再起動後に持ち越さない |
-
-### handoff 境界
-
-| surface | 持つ責務 | 持たない責務 |
-| --- | --- | --- |
-| `ChatView` | 共通会話 UI、mode switcher、recent rail、context summary、retry / stop | Workspace 固有の file browser、Skill Center 固有の journey board |
-| `WorkspaceView` | selected files と `workspacePath` を整えて `activateChatMode("workspace", ...)` を呼ぶ | chat UI 本体を内包しない |
-| `SkillCenterView` | `lifecycleJob` と `handoffLabel` を付けて `activateChatMode("skill-lifecycle", ...)` を呼ぶ | 実会話を保持しない |
-
-### 検証観点
-
-| 検証 | 結果 |
-| --- | --- |
-| `chatSlice` / `ChatView` / `WorkspaceView` / `SkillCenterView` の targeted tests | PASS |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| Phase 11 screenshot | Chat / Workspace / Skill Lifecycle handoff を current workflow 配下へ再取得 |
-
-### 関連未タスク
-
-- `UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001`: `Workspace` / `Skill Center` handoff、`modeSessionIds`、`Date` revive、non-persist state 非保持を横断で固定する回帰ガード（`docs/30-workflows/unassigned-task/task-imp-chat-platform-handoff-revive-guard-001.md`）
 
 **標準ルール**:
 

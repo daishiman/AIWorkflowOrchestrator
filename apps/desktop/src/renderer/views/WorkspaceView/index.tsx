@@ -2,18 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { FileNode } from "@/preload/types";
 import {
   useAddFiles,
-  useActivateChatMode,
   useAddFolder,
+  useAppStore,
   useFolderFileTrees,
   useLoadWorkspace,
-  useSelectedFiles,
-  useSetCurrentView,
   useSetWorkspaceSelectedFile,
   useWorkspace,
   useWorkspaceError,
   useWorkspaceLoading,
 } from "@/renderer/store";
-import { buildWorkspaceChatContext } from "@/renderer/features/chat-platform/session";
 import { QuickFileSearch } from "./components/QuickFileSearch";
 import { PreviewPanel } from "./components/PreviewPanel/PreviewPanel";
 import { normalizeExtension } from "./components/PreviewPanel/preview-utils";
@@ -97,9 +94,7 @@ export function WorkspaceView(): JSX.Element {
   const addFolder = useAddFolder();
   const setWorkspaceSelectedFile = useSetWorkspaceSelectedFile();
   const addFiles = useAddFiles();
-  const selectedFiles = useSelectedFiles();
-  const activateChatMode = useActivateChatMode();
-  const setCurrentView = useSetCurrentView();
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
 
   const [selectedFilePath, setSelectedFilePath] = useState<string | null>(null);
   const [selectedFileContent, setSelectedFileContent] = useState("");
@@ -255,15 +250,6 @@ export function WorkspaceView(): JSX.Element {
     setCurrentView("editor");
   }, [selectedFilePath, setCurrentView, setWorkspaceSelectedFile]);
 
-  const handleOpenWorkspaceChat = useCallback(() => {
-    const workspacePath = workspace.folders[0]?.path ?? null;
-    activateChatMode(
-      "workspace",
-      buildWorkspaceChatContext(selectedFiles, workspacePath),
-    );
-    setCurrentView("chat");
-  }, [activateChatMode, selectedFiles, setCurrentView, workspace.folders]);
-
   const fileResize = usePanelResize({
     width: layout.filePanelWidth,
     minWidth: MIN_FILE_PANEL_WIDTH,
@@ -281,13 +267,7 @@ export function WorkspaceView(): JSX.Element {
     onWidthChange: layout.setPreviewPanelWidth,
   });
 
-  const chatPanel = (
-    <WorkspaceChatPanel
-      controller={chatController}
-      selectedFileCount={selectedFiles.length}
-      onOpenChat={handleOpenWorkspaceChat}
-    />
-  );
+  const chatPanel = <WorkspaceChatPanel controller={chatController} />;
 
   const previewPanel = (
     <PreviewPanel
