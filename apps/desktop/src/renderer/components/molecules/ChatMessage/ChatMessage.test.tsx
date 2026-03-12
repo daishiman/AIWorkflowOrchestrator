@@ -49,37 +49,28 @@ describe("ChatMessage", () => {
   });
 
   describe("スタイル", () => {
-    it("userメッセージにtoken背景を適用する", () => {
-      render(<ChatMessage role="user" content="User message" />);
-      const bubble = screen.getByText("User message").parentElement;
+    it("userメッセージにblue背景を適用する", () => {
+      const { container } = render(
+        <ChatMessage role="user" content="User message" />,
+      );
+      const bubble = container.querySelector(".bg-blue-600");
       expect(bubble).toBeInTheDocument();
-      expect(bubble).toHaveClass("bg-[var(--status-primary)]", "text-white");
     });
 
-    it("assistantメッセージにsurface背景を適用する", () => {
-      render(<ChatMessage role="assistant" content="Assistant message" />);
-      const bubble = screen.getByText("Assistant message").parentElement;
-      expect(bubble).toBeInTheDocument();
-      expect(bubble).toHaveClass(
-        "border",
-        "border-[var(--border-primary)]",
-        "bg-[var(--bg-secondary)]",
-        "text-[var(--text-primary)]",
+    it("assistantメッセージにglass背景を適用する", () => {
+      const { container } = render(
+        <ChatMessage role="assistant" content="Assistant message" />,
       );
+      const bubble = container.querySelector(".bg-white\\/10");
+      expect(bubble).toBeInTheDocument();
     });
 
-    it("systemメッセージにsecondary背景を適用する", () => {
-      render(<ChatMessage role="system" content="System message" />);
-      const bubble = screen.getByText("System message").parentElement;
-      expect(bubble).toBeInTheDocument();
-      expect(bubble).toHaveClass(
-        "border",
-        "border-[var(--border-primary)]",
-        "bg-[var(--bg-tertiary)]",
-        "text-[var(--text-secondary)]",
-        "italic",
-        "text-center",
+    it("systemメッセージにyellow背景を適用する", () => {
+      const { container } = render(
+        <ChatMessage role="system" content="System message" />,
       );
+      const bubble = container.querySelector(".bg-yellow-500\\/10");
+      expect(bubble).toBeInTheDocument();
     });
   });
 

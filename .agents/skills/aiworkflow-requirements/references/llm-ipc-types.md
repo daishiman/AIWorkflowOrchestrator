@@ -106,17 +106,6 @@ LLMモデル情報型。
 
 プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
 
-### Renderer 共通チャット基盤 overlay 型（TASK-SKILL-LIFECYCLE-02）
-
-`electronAPI.llm` の生 IPC 型に加えて、Renderer Store では mode / handoff / persist を扱う overlay 型を持つ。
-
-| 型 | 実装場所 | 用途 |
-| --- | --- | --- |
-| `ChatMode` | `apps/desktop/src/renderer/store/types.ts` | `general` / `workspace` / `skill-lifecycle` の 3 mode を表す |
-| `ChatSessionContext` | `apps/desktop/src/renderer/store/types.ts` | `workspacePath`、selected files、selected skill、`lifecycleJob`、`handoffLabel` を保持 |
-| `ChatSessionRecord` | `apps/desktop/src/renderer/store/types.ts` | mode 単位の title / messages / lastError / updatedAt を保持 |
-| `StreamingError` | `apps/desktop/src/renderer/store/slices/chatSlice.ts` | retryable UI と placeholder message を同期する |
-
 ---
 
 ## Multi-LLM Provider Switching 型定義
@@ -236,7 +225,6 @@ LLMモデル情報の型定義。
 | llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
 | llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
 | llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
-| llm:stream-cancel    | invoke   | `{ requestId: string }` | `{ success: boolean }` | 進行中ストリームの abort |
 
 ### AI_CHAT の provider/model 解決順
 
@@ -259,10 +247,6 @@ LLMモデル情報の型定義。
 | --- | --- | --- |
 | success | boolean | 同期成功フラグ |
 | error | string | 同期失敗時メッセージ |
-
-### Legacy note
-
-`apps/desktop/src/preload/types.ts` には旧 `AIChatRequest` / `AIChatResponse` / `AICheckConnectionResponse` も残るが、`electronAPI.llm` の現行利用は shared types ベースの `LLM*` 契約を正本とする。
 
 ---
 
@@ -316,6 +300,5 @@ LLMモデル情報の型定義。
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.2.0 | 2026-03-11 | TASK-SKILL-LIFECYCLE-02反映: `LLMChatRequest` 正本化、`llm:stream-cancel`、Renderer overlay 型、legacy `AIChatRequest` の位置づけを明文化 |
 | 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

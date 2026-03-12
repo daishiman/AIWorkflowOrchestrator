@@ -74,7 +74,6 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | llm:get-providers    | Renderer → Main | プロバイダー一覧取得     | [llm-ipc-types.md](./llm-ipc-types.md) |
 | llm:send-chat        | Renderer → Main | チャット送信             | [llm-ipc-types.md](./llm-ipc-types.md) |
 | llm:stream-chat      | Renderer ↔ Main | ストリーミングチャット   | [llm-streaming.md](./llm-streaming.md) |
-| llm:stream-cancel    | Renderer → Main | requestId を指定して進行中 stream を停止 | [llm-streaming.md](./llm-streaming.md) |
 | chat-edit:send-with-context | Renderer → Main | コンテキスト付きチャット | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md) |
 | conversation:create / add-message | Renderer → Main | 04B の会話永続化 | [interfaces-chat-history.md](./interfaces-chat-history.md) |
 
@@ -93,19 +92,6 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 ---
 
 ## 完了タスク
-
-### 共通チャット基盤・セッション統合（TASK-SKILL-LIFECYCLE-02）
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-SKILL-LIFECYCLE-02 |
-| 完了日 | 2026-03-11 |
-| 対象 | `ChatView` / `WorkspaceView` / `SkillCenterView` の会話入口を共通 session platform へ統合 |
-| 実装内容 | `chatSlice` に `activeChatMode` `activeChatSessionId` `chatSessions` `chatSessionOrder` `modeSessionIds` を追加し、mode ごとの session 再利用と context merge を実装 |
-| ストリーミング | `llm:stream-chat` の `requestId` と `llm:stream-cancel` を使い、retry / stop / error surface を ChatView に統合 |
-| handoff | Workspace は `workspacePath` と selected files、Skill Center は `lifecycleJob` と `handoffLabel` を ChatView へ引き継ぐ |
-| 永続化 | Renderer persist で chat session を復元し、Date revive 後に active session を再構築する |
-| 成果物 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/` |
 
 ### Workspace Chat Edit Main Process（TASK-WCE-MAIN-001）
 
@@ -166,7 +152,6 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
-| 2.4.0   | 2026-03-11 | TASK-SKILL-LIFECYCLE-02反映: Renderer 共通チャット基盤、`llm:stream-cancel`、mode/session handoff、persist 復元契約を追加 |
 | 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |

@@ -109,22 +109,6 @@
 | 要件定義書 | `docs/30-workflows/{{FEATURE_NAME}}/phase-1-requirements.md` | Phase 1の主要成果物 |
 ```
 
-### 4.3 タスク台帳の整合性
-
-`index.md` と `artifacts.json` は、タスク全体の契約が一致していなければならない:
-
-| 対象 | 一致させる内容 |
-| ---- | -------------- |
-| `index.md` ↔ `artifacts.json` | 受入基準の ID / 本文 |
-| `index.md` ↔ `artifacts.json` | 依存タスク、ブロック対象、ステータス |
-| `phase-*.md` ↔ `artifacts.json` | Phase 名、成果物パス、完了後に生成すべきファイル名 |
-
-**禁止**:
-
-- `index.md` の受入基準を更新したのに `artifacts.json.acceptanceCriteria` を更新しない
-- `artifacts.json` にだけ成果物パスを追加して `phase-*.md` の成果物表へ反映しない
-- Phase 名やファイル名を `index.md` / `artifacts.json` / `phase-*.md` で別表記にする
-
 ---
 
 ## 5. 完了条件基準

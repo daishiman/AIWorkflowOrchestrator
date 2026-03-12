@@ -240,18 +240,6 @@
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-UI-07-DASHBOARD-ENHANCEMENT
 
-### [Phase12] 共通チャット基盤は entry surface / execution surface / persist revive を三分離する（TASK-SKILL-LIFECYCLE-02）
-
-- **状況**: `WorkspaceView` / `SkillCenterView` / `ChatView` がそれぞれ chat state を持つと、session、retry / stop、handoff context、recent rail、system spec 更新先が分断されやすい
-- **アプローチ**:
-  - entry surface は `activateChatMode(...payload)` と `setCurrentView("chat")` だけを担当し、会話 state は execution surface `ChatView` + `chatSlice` に集約する
-  - `chatSessions` のような persist 対象は revive 手順まで同一仕様に含め、`Date` 復元と active session 再構築を `arch-state-management.md` / `interfaces-chat-history.md` へ同時に書く
-  - Phase 12 Step 2 は `interfaces-llm` / `llm-ipc-types` / `llm-streaming` / `interfaces-chat-history` / `architecture-chat-history` / `api-chat-history` / `llm-workspace-chat-edit` / `arch-state-management` / `ui-ux-feature-components` / `ui-ux-navigation` / `task-workflow` / `lessons-learned` の SubAgent 分担で閉じる
-- **結果**: 入口 surface を増やしても会話の実装責務が一箇所に残り、spec update も最小探索で再利用できる
-- **適用条件**: 共通 chat platform、mode switcher、context handoff、retry / stop、chat session persist を伴う task
-- **発見日**: 2026-03-11
-- **関連タスク**: TASK-SKILL-LIFECYCLE-02
-
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
 - **状況**: システムプロンプトのLLM API統合時、仕様書ではVercel AI SDK使用を提案

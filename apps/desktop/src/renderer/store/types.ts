@@ -31,45 +31,10 @@ export interface FileNode {
 // チャットメッセージ型
 export interface ChatMessage {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: "user" | "assistant";
   content: string;
   timestamp: Date;
   isStreaming?: boolean;
-  sessionId?: string;
-  mode?: ChatMode;
-  errorCode?: string;
-  retryable?: boolean;
-}
-
-// 共通チャットモード型
-export type ChatMode = "general" | "workspace" | "skill-lifecycle";
-
-export type SkillLifecycleChatJob = "create" | "use" | "improve";
-
-export interface ChatSessionContext {
-  workspacePath?: string | null;
-  selectedFilePaths: string[];
-  selectedFileNames: string[];
-  selectedSkillName?: string | null;
-  lifecycleJob?: SkillLifecycleChatJob | null;
-  entryPoint?: "chat" | "workspace" | "skill-center" | "agent";
-  handoffLabel?: string | null;
-}
-
-export interface ChatSessionRecord {
-  id: string;
-  mode: ChatMode;
-  title: string;
-  messages: ChatMessage[];
-  createdAt: Date;
-  updatedAt: Date;
-  context: ChatSessionContext;
-  lastUserMessage?: string | null;
-  lastError?: {
-    code: string;
-    message: string;
-    retryable: boolean;
-  } | null;
 }
 
 // グラフノード型
