@@ -1,10 +1,10 @@
 {
-  "capturedAt": "2026-03-12T03:49:41.962Z",
+  "capturedAt": "2026-03-11T09:59:51.906Z",
   "baseUrl": "http://127.0.0.1:4173",
   "harnessPath": "/?phase11Harness=workspace-layout&skipAuth=true",
-  "buildOutputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260312-085742-wt3-1/apps/desktop/out/renderer",
+  "buildOutputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-161426-wt1/apps/desktop/out/renderer",
   "sourceKind": "current-build-static-server",
-  "workflow": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260312-085742-wt3-1/docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch",
+  "workflow": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260311-161426-wt1/docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch",
   "screenshots": [
     {
       "tc": "TC-11-01",

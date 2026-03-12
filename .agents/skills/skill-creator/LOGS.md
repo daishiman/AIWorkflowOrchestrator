@@ -3,41 +3,6 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
-
-- **Agent**: skill-creator
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に「loopback screenshot capture は localhost 不達時に current build static server を自動起動する」を追加
-  - `references/patterns.md` の skill feedback template に、`skill-creator` を含む 3 skill 同値転記ルールを追加
-  - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
-
----
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「light theme shared color migration は token scope / component scope / verification-only lane を分離する」成功/失敗パターンを追加
-  - `assets/phase12-system-spec-retrospective-template.md` に actual inventory correction、verification-only lane、`ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-*` / `security-*` 抽出マトリクスを追加
-  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-M1..M5` を追加し、spec-only UI task の SubAgent 分担を標準化
-  - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
-
----
-## 2026-03-12 - TASK-UI-04-WORKSPACE-VIEW の docs-only parent workflow 知見を skill-creator へ反映
-
-- **Agent**: skill-creator
-- **Phase**: cross-skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「completed-task 移管後の docs-only parent 再監査は sibling spec / pointer / capture script まで sweep する」と「representative screenshot 3件の昇格条件」を追加
-  - `assets/phase12-system-spec-retrospective-template.md` に stale-path sweep、current task 固有の未タスク grep、docs-only parent の representative screenshot rule、`diff -qr` mirror sync を追記
-  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-P1..P5` を追加し、completed migration sweep と docs-only parent visual re-audit を関心ごと分離で再利用できるようにした
-  - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow 対応範囲を追記し、Phase 12 参照初動を短縮した
-
----
 ## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
 
 - **Agent**: skill-creator

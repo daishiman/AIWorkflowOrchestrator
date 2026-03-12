@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const workflowRoot = path.join(
   repoRoot,
-  "docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser",
+  "docs/30-workflows/task-058b-ui-04a-workspace-layout-filebrowser",
 );
 const phase11Root = path.join(workflowRoot, "outputs/phase-11");
 const rendererRoot = path.join(desktopRoot, "out/renderer");

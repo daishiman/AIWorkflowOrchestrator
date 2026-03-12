@@ -557,121 +557,6 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
-## Workspace Parent Reference Workflow（TASK-UI-04-WORKSPACE-VIEW）
-
-Workspace 系 04A / 04B / 04C を束ねる docs-only 親参照仕様。UI 実装を持たず、pointer / dependency / canonical path / system spec sync policy / evidence inheritance を保持する。
-
-### workflow 契約
-
-| 項目 | 契約 |
-| --- | --- |
-| canonical root | `docs/30-workflows/completed-tasks/task-060-ui-04-workspace-view/` |
-| task type | `spec_created` |
-| 親責務 | pointer、dependency、canonical path、Phase 12 sync policy、Phase 11 evidence inheritance |
-| child 責務 | 04A=layout / file browser、04B=chat panel、04C=preview / quick search |
-| 依存順序 | 04A が 04B / 04C を block、04B / 04C は並列可能 |
-| screenshot policy | 既定は child evidence 8/8/11 の継承確認。user 要求や再監査では current workflow に representative screenshot 3件を残し、Apple UI/UX 所見まで親成果物へ同期する |
-
-### child canonical paths
-
-| child | canonical path |
-| --- | --- |
-| 04A | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
-| 04B | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/` |
-| 04C | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
-
-### 同期結果
-
-| 項目 | 内容 |
-| --- | --- |
-| Phase 5 | parent pointer / master index / completed-task pointer docs / legacy index の導線と status を正規化 |
-| Phase 11 | child evidence 8 / 8 / 11 を継承確認し、current workflow に representative screenshot 3件を保存 |
-| Phase 12 | `task-workflow.md` / `ui-ux-navigation.md` / `lessons-learned.md` / `interfaces-llm.md` / `interfaces-chat-history.md` / LOGS へ同期 |
-
-### 苦戦箇所（再利用形式）
-
-| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
-| --- | --- | --- | --- |
-| parent pointer / master index だけ直しても completed-task pointer docs や legacy index に旧 path が残る | parent workflow root を直した時点で探索導線の監査を止める | pointer doc、master index、completed-task pointer docs、legacy index を同一 sweep で補正した | docs-only parent workflow は入口導線を 1 セットで閉じる |
-| primary workflow だけ直して sibling interface spec / capture script を見落とす | completed-task 移管時に system spec 以外の補助導線を後回しにする | `interfaces-llm.md` / `interfaces-chat-history.md` / capture script まで old path grep を実施した | completed 移管後は interface spec と capture script も同一ターンで sweep する |
-| docs-only parent を Phase 11 N/A で閉じると user 要求の visual re-audit が漏れる | 「新規 UI 実装なし」と「視覚証跡不要」を同一視する | child evidence inheritance を既定にしつつ、user 要求時は current workflow に representative screenshot 3件を保存した | docs-only parent でも user が画面確認を求めたら代表証跡を残す |
-| `.claude` だけ更新して `.agents` mirror が stale になる | canonical root 更新後の mirror sync を完了条件に入れない | `diff -qr` を実行し、dual-root 差分なしを確認した | dual-root repository では mirror sync を検証証跡へ含める |
-
-### 仕様書別SubAgent分担（関心ごと分離）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-A | `references/ui-ux-feature-components.md` | parent workflow 契約、child canonical path、苦戦箇所、5分解決カードの同期 | docs-only parent の feature 正本だけで要点を再利用できる |
-| SubAgent-B | `references/ui-ux-navigation.md` | parent entry、Phase 11 evidence inheritance、representative screenshot policy の同期 | navigation 正本に導線と証跡ルールが揃う |
-| SubAgent-C | `references/interfaces-llm.md` / `references/interfaces-chat-history.md` | completed-task 移管で波及した sibling interface evidence path の補正 | interface spec の旧 path が 0 件になる |
-| SubAgent-D | `references/task-workflow.md` | 完了台帳、検証証跡、SubAgent 実行ログの同期 | 実装内容 + 苦戦箇所 + 検証値が台帳で追跡できる |
-| SubAgent-E | `references/lessons-learned.md` / `LOGS.md` | 再発条件、標準ルール、mirror sync 記録の同期 | 次回の短手順と更新履歴が同一ターンで閉じる |
-
-### 同種課題の5分解決カード
-
-1. completed-task 移管後は `rg` で old path を `.claude` / `.agents` / `apps/desktop/scripts` / completed-task pointer docs / legacy index まで掃く。
-2. pointer / master index / completed-task pointer docs / legacy index の status と path を同一ターンで補正する。
-3. child screenshot を current build で再取得して、親 workflow には representative 3件だけを残す。
-4. `validate-phase11-screenshot-coverage.js` と stale path grep を両方実行して、視覚証跡と文書導線を同時に閉じる。
-5. Phase 12 では `task-workflow` / `ui-ux-feature-components` / `ui-ux-navigation` / `interfaces-*` / `lessons-learned` / LOGS / mirror sync をまとめて完了させる。
-
-### 関連未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 | docs-only parent workflow の pointer / legacy / interfaces / capture script / mirror root sweep を標準化する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` |
-| UT-IMP-WORKSPACE-PARENT-VISUAL-EVIDENCE-GUARD-001 | docs-only parent workflow の representative screenshot 3件昇格条件と visual re-audit policy を標準化する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-parent-visual-evidence-guard-001.md` |
-
----
-## Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001）
-
-> **詳細仕様**: [workflow-light-theme-contrast-regression-guard.md](./workflow-light-theme-contrast-regression-guard.md)
-
-light theme remediation を直接行わず、representative screen と hardcoded color audit で回帰を検出する guard workflow。current build static serve と selector-based capture を正本手順に固定する。
-
-### 実装内容（要点）
-
-| 項目 | 内容 |
-| --- | --- |
-| audit | `ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` を baseline、`SettingsView` / `DashboardView` を current として監査 |
-| harness | `phase11-light-theme-contrast-guard.html` と `phase11-light-theme-contrast-guard.tsx` を build output に含める |
-| readiness | `ThemeSelector` / `AuthView` に minimal な `data-testid` を追加 |
-| capture | Settings / Dashboard / Auth / WorkspaceSearch + Dashboard dark baseline の 5 ケースを取得 |
-
-### 実測結果
-
-| 項目 | 値 |
-| --- | --- |
-| currentViolations | 0 |
-| baselineViolations | 64 |
-| screenshot | 5 png + metadata 1件 |
-| targeted tests | 46 PASS |
-
-### Apple UI/UX 視覚レビュー
-
-| 画面 | 判定 | 所見 |
-| --- | --- | --- |
-| Settings light | PASS with baseline note | settings shell は読めるが ThemeSelector の淡い chip が弱い |
-| Dashboard light | PASS | hierarchy / spacing / materiality が安定 |
-| Auth light | PASS with baseline note | helper text が light panel 上で沈む |
-| WorkspaceSearch light | PASS with baseline note | light 指定でも dark slate surface が残るため remediation 対象が明確 |
-
-### baseline backlog routing
-
-| backlog | 参照 |
-| --- | --- |
-| ThemeSelector / Auth / WorkspaceSearch の actual remediation | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
-| current build capture preflight bundle | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
-| guard workflow の維持 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
-
-### 再利用ルール
-
-1. guard workflow は remediation task と分離する。
-2. current build screenshot は build artifact を static serve して取得する。
-3. selector-based capture を優先し、route 全景は fallback に留める。
-4. `current=0` でも baseline backlog と routing を必ず残す。
-
----
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
 > **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)
@@ -2005,7 +1890,6 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
-| 2026-03-12 | v1.14.36   | TASK-UI-04-WORKSPACE-VIEW を反映。docs-only parent reference workflow 節を追加し、canonical root、child evidence 8/8/11 継承、representative screenshot 3件、stale-path sweep、関連未タスク2件、SubAgent分担、5分解決カードを同期 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |

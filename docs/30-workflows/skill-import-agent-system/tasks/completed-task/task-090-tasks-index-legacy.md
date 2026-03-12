@@ -356,9 +356,9 @@ grep -l "tier: 1" tasks/task-*.md | xargs grep "^status:" | sort | uniq -c
 | ID                                | タイトル                                                                                    | 依存                       | 複雑度 | ステータス |
 | --------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------- | ------ | ---------- |
 | TASK-UI-03-AGENT-VIEW-ENHANCEMENT | [エージェントビュー強化](./task-058a-ui-03-agent-view-enhancement.md)                       | UI-00, UI-01, UI-02        | medium | pending    |
-| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./task-058b-ui-04a-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02        | large  | completed  |
-| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./task-059a-ui-04b-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A       | medium | completed  |
-| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./task-059b-ui-04c-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A       | medium | completed  |
+| TASK-UI-04A-WORKSPACE-LAYOUT      | [ワークスペースレイアウト・FileBrowser](./task-058b-ui-04a-workspace-layout-filebrowser.md) | UI-00, UI-01, UI-02        | large  | pending    |
+| TASK-UI-04B-WORKSPACE-CHAT        | [ワークスペースChatPanel](./task-059a-ui-04b-workspace-chat-panel.md)                       | UI-00, UI-01, UI-04A       | medium | pending    |
+| TASK-UI-04C-WORKSPACE-PREVIEW     | [ワークスペースPreview・QuickSearch](./task-059b-ui-04c-workspace-preview-quicksearch.md)   | UI-00, UI-01, UI-04A       | medium | pending    |
 | TASK-UI-05-SKILL-CENTER-VIEW      | [スキルセンター画面](./task-030-ui-05-skill-center-view.md)                                 | UI-00, UI-01, UI-02        | medium | pending    |
 | TASK-UI-05A-SKILL-EDITOR-VIEW     | [スキルエディター画面](./task-031a-ui-05a-skill-editor-view.md)                             | UI-00, UI-01, UI-02, UI-05 | medium | pending    |
 | TASK-UI-05B-SKILL-ADVANCED-VIEWS  | [スキル高度管理ビュー](./task-031b-ui-05b-skill-advanced-views.md)                          | UI-00, UI-01, UI-05        | large  | pending    |
