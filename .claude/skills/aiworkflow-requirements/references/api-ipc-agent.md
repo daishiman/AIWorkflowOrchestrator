@@ -348,6 +348,17 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | スキーマ名ホワイトリスト | `ALLOWED_SCHEMA_NAMES = ['task-spec','skill-spec','mode']` | 不正時: `"無効なスキーマ名が指定されました: <schemaName>"` |
 | エラー情報マスキング | `sanitizeErrorMessage(error)` | 非Error時: `"スキル作成処理でエラーが発生しました"` |
 
+### Task03 表導線との接続（TASK-SKILL-LIFECYCLE-03）
+
+`SkillLifecycleSessionCard` は skill creation を 1 画面で完結させるが、IPC 経路そのものは増やしていない。`detectMode` / `validateSkill` は `electronAPI.skillCreator`、create / execute / analyze / autoImprove は既存 `electronAPI.skill` と store action を再利用する。
+
+| UI action | 利用API | 返却値の使い方 |
+| --- | --- | --- |
+| prompt 入力中の mode hint | `skill-creator:detect-mode` | `SkillCreatorMode` を mode hint 表示へ使用 |
+| create 完了後の validation | `skill-creator:validate` | non-blocking に `検証済み` / 警告表示へ変換 |
+| create 実行 | `skill:create` | 作成先 path から basename を抽出し、`selectSkillByName()` に handoff |
+| execute / analyze / auto improve | `skill:execute` / `skill:analyze` / `skill:autoImprove` | 既存 store 契約を維持し、Task03 では UI surface だけを統合 |
+
 ---
 
 ### Renderer 統合契約（TASK-SKILL-LIFECYCLE-03）
@@ -971,6 +982,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.7    | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: `SkillLifecycleSessionCard` が `skillCreator:detect-mode` / `skillCreator:validate` と既存 `skill:*` IPC を組み合わせる位置づけ、create path -> skillName handoff、`.claude` 正本同期を追加 |
 | v1.16.6    | 2026-03-05 | TASK-10A-E-A 追補: share IPC セクションへ「実装内容（IPC契約）」「苦戦箇所」「5ステップ手順」を追加し、Step 2同時同期・`code/errorCode` 二軸固定・画像+diagnostics 証跡の3点を標準化 |
 | v1.16.5    | 2026-03-05 | TASK-10A-E-A反映: share IPC（`skill:importFromSource/export/validateSource`）の失敗契約へ `errorCode` を追記。sender失敗 `ERR_2004`、validation `ERR_1001`、unknown例外 `ERR_5001` を明文化し、`IPC_CHANNELS` 定数参照と実装テスト（Main 34 / Preload 60）の整合を記録 |
 | v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 契約セクションを追加し、失敗レスポンス `errorCode`・Renderer preflight・`auth-key:exists` store+env 判定順・Preload `Error.code` 転写を同期 |

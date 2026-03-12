@@ -44,6 +44,37 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
+### Skill Creator の作成・実行・改善統合を探すとき
+
+Task03 相当の確認では、`Skill Creator` 単体ではなく `create improve` `create execute improve` `作成・実行・改善統合` `単一会話フロー` `SkillManagementPanel` `SkillCreateWizard` `SkillAnalysisView` `Store-Driven Lifecycle Integration` `Skill Creator IPC チャネル` を分割して検索する。
+
+```bash
+node scripts/search-spec.js "create improve" -C 3
+node scripts/search-spec.js "create execute improve" -C 3
+node scripts/search-spec.js "作成・実行・改善統合" -C 3
+node scripts/search-spec.js "SkillManagementPanel" -C 3
+node scripts/search-spec.js "SkillCreateWizard" -C 3
+node scripts/search-spec.js "SkillAnalysisView" -C 3
+node scripts/search-spec.js "Store-Driven Lifecycle Integration" -C 3
+node scripts/search-spec.js "Skill Creator IPC チャネル" -C 3
+node scripts/search-spec.js "security-skill-execution" -C 3
+node scripts/search-spec.js "claude-code-agents-workflow" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Skill Creator 作成/実行/改善統合」を見る
+2. `references/workflow-skill-creator-execute-improve-integration.md` で実装内容、苦戦箇所、5分解決カード、SubAgent分担を先に掴む
+3. `references/ui-ux-navigation.md` で Skill Center 入口と handoff を確認する
+4. `references/ui-ux-feature-components.md` で `SkillAnalysisView` `SkillCreateWizard` `Store-Driven Lifecycle Integration` を読む
+5. `references/api-ipc-agent.md` で `Skill Creator IPC チャネル` と `skillCreatorAPI` の IPC 位置づけを確認する
+6. `references/arch-ui-components.md` で `SkillManagementPanel` と `ChatPanel` のビュー統合を確認する
+7. `references/arch-state-management.md` で `agentSlice.createSkill` `executeSkill` `analyzeSkill` `autoImproveSkill` の責務境界を確認する
+8. `references/architecture-implementation-patterns.md` と `references/security-electron-ipc.md` で preload / IPC / security boundary を確認する
+9. `references/interfaces-agent-sdk-ui.md` と `references/ui-ux-agent-execution.md` で実行面の UI 契約を確認する
+10. `references/interfaces-agent-sdk-skill.md` `references/security-skill-execution.md` `references/claude-code-agents-workflow.md` で内部委譲と権限境界を確認する
+11. 仕様同期時は `references/task-workflow.md` と `references/lessons-learned.md` を必ず同時に確認する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash

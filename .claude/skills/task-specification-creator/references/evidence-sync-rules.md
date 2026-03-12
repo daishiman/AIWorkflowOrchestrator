@@ -15,6 +15,7 @@
 | 5   | task-specification-creator/LOGS.md           | Phase 12 Task 5 完了時     | タスク完了記録を追加（P1/P25対策: 2ファイル両方必須）       |
 | 6   | aiworkflow-requirements/SKILL.md             | Phase 12 Task 5 完了時     | 変更履歴テーブルを更新                                       |
 | 7   | task-specification-creator/SKILL.md          | Phase 12 Task 5 完了時     | 変更履歴テーブルを更新                                       |
+| 8   | `outputs/phase-12/phase12-task-spec-compliance-check.md` / `outputs/verification-report.md` | Phase 12 再監査時 | 補助成果物の実体存在と最新 validator 結果を同期             |
 
 ## 同期ルール
 
@@ -28,8 +29,8 @@ aiworkflow-requirements と task-specification-creator の両方の LOGS.md を�
 
 ```bash
 git diff --name-only HEAD -- \
-  .agents/skills/aiworkflow-requirements/LOGS.md \
-  .agents/skills/task-specification-creator/LOGS.md | wc -l
+  .claude/skills/aiworkflow-requirements/LOGS.md \
+  .claude/skills/task-specification-creator/LOGS.md | wc -l
 # 期待値: 2（両方更新されている）
 ```
 
@@ -80,10 +81,24 @@ LOGS.md への「完了」記録は全ファイル更新後の最終ステップ
 ls docs/30-workflows/unassigned-task/
 
 # task-workflow.md の残課題テーブル確認
-grep -n "未タスクID" .agents/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "未タスクID" .claude/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 関連仕様書のリンク確認
-grep -rn "未タスクID" .agents/skills/aiworkflow-requirements/references/
+grep -rn "未タスクID" .claude/skills/aiworkflow-requirements/references/
+```
+
+### ルール6: 補助成果物は台帳登録だけで完了扱いしない（TASK-SKILL-LIFECYCLE-03 対策）
+
+`phase12-task-spec-compliance-check.md` のような補助成果物を `artifacts.json` / `phase-12-documentation.md` / `documentation-changelog.md` に登録した場合、同一ターンで実ファイル存在と `outputs/verification-report.md` 更新を確認する。
+
+**根拠**: TASK-SKILL-LIFECYCLE-03 再監査で、補助成果物が台帳には登録されていたが物理ファイルが欠け、検証サマリーも旧値のまま残っていた。
+
+**検証方法**:
+
+```bash
+test -f docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/phase12-task-spec-compliance-check.md
+test -f docs/30-workflows/{{FEATURE_NAME}}/outputs/verification-report.md
+rg -n "warning 0|警告 \\| 0" docs/30-workflows/{{FEATURE_NAME}}/outputs/verification-report.md
 ```
 
 ## 同期チェックリスト
@@ -97,3 +112,4 @@ Phase 12 完了時に以下の全項目を確認する:
 - [ ] task-specification-creator/LOGS.md 更新済み
 - [ ] aiworkflow-requirements/SKILL.md 変更履歴更新済み
 - [ ] task-specification-creator/SKILL.md 変更履歴更新済み
+- [ ] 補助成果物を登録した場合、`outputs/phase-12/phase12-task-spec-compliance-check.md` 実体と `outputs/verification-report.md` 最新値を確認済み

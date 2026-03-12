@@ -14,13 +14,13 @@
 
 ## 参照資料
 
-| 参照資料                      | パス                                                                                 | 説明                    |
-| ----------------------------- | ------------------------------------------------------------------------------------ | ----------------------- |
-| security-skill-execution      | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`      | 実行安全性              |
-| interfaces-agent-sdk-executor | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md` | PermissionResolver 契約 |
-| ui-ux-settings                | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                | 権限履歴パネル          |
-| task-03設計                   | `../step-02-par-task-03-skill-creator-execute-improve-integration/phase-2-design.md` | lifecycle 統合前提      |
-| task-05設計                   | `../step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md`               | 利用導線前提            |
+| 参照資料                      | パス                                                                                                       | 説明                    |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------- |
+| security-skill-execution      | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`                            | 実行安全性              |
+| interfaces-agent-sdk-executor | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor.md`                       | PermissionResolver 契約 |
+| ui-ux-settings                | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                      | 権限履歴パネル          |
+| task-03設計                   | `../../../completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/phase-2-design.md` | lifecycle 統合前提      |
+| task-05設計                   | `../step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md`                                     | 利用導線前提            |
 
 ## 完了条件
 

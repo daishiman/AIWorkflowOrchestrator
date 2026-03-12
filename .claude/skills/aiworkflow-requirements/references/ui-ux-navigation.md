@@ -14,6 +14,9 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.7 | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 の follow-up を登録: light theme の helper text / placeholder / summary hierarchy 改善を `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` として追加し、Task03 の所見を acceptance と改善 backlog に分離 |
+| v1.7.6 | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: `.claude` 正本 / `.agents` mirror の root 固定、Phase 11 screenshot 再取得（2026-03-12 JST）、session action enablement の再確認を同期 |
+| v1.7.5 | 2026-03-11 | TASK-SKILL-LIFECYCLE-03 を同期: `SkillManagementPanel` list view を Skill Creator の作業面として追加し、`SkillLifecycleSessionCard` の一次導線、wizard secondary route、Phase 11 screenshot 5件、Apple UI/UX 所見を追記 |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
@@ -71,6 +74,38 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 | `Skill Creator` | 新規スキル作成 | `Workspace / Agent` |
 
 `settings` は公開シェル例外として同じ board には混ぜず、別 TC（TC-11-06）で確認する。
+
+### Skill Creator session handoff（TASK-SKILL-LIFECYCLE-03）
+
+Task03 では `Skill Creator` を独立 view のみで扱わず、`SkillManagementPanel` list view の先頭に一次導線を置いた。これにより、`Skill Center` から `Skill Creator` へ来た後も、同じ面で create / execute / improve を継続できる。
+
+| surface | 主導線 | 補助導線 | handoff |
+| --- | --- | --- | --- |
+| `SkillManagementPanel` list view | `SkillLifecycleSessionCard` | imported / available skill list | create 後に `selectSkillByName()` で同一セッション継続 |
+| `SkillLifecycleSessionCard` | `作成する` | `実行する` / `分析する` / `全自動改善` | `skill:create` / `skill:execute` / `skill:analyze` / `skill:autoImprove` |
+| `SkillCreateWizard` | なし | `詳細設定で作成する` から到達 | primary flow の代替ではなく詳細設定面 |
+
+### Phase 11 画面証跡（TASK-SKILL-LIFECYCLE-03）
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/phase-11/screenshots/tc-11-01-start.png` | session card 初期状態 |
+| TC-11-01 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/phase-11/screenshots/tc-11-01-created.png` | create 完了 |
+| TC-11-02 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/phase-11/screenshots/tc-11-02-executed.png` | execute 完了 |
+| TC-11-03 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/phase-11/screenshots/tc-11-03-improved.png` | improve 完了 |
+| TC-11-04 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/phase-11/screenshots/tc-11-04-wizard.png` | wizard secondary route |
+
+### Task03 の所見
+
+- 一次導線を list view に置いたことで、Skill Creator を「別画面へ飛ぶ機能」ではなく「同じ作業面で継続する機能」として扱えるようになった
+- wizard は secondary route としては成立しており、主導線との競合を抑えられている
+- light theme の補助テキストと summary hierarchy はやや淡く、`UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` として follow-up 化した
+
+### 関連未タスク（TASK-SKILL-LIFECYCLE-03）
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001 | `SkillLifecycleSessionCard` の light theme helper text / placeholder / summary hierarchy 改善 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-03-light-visual-hierarchy-001.md` |
 
 ### メニュー項目一覧
 

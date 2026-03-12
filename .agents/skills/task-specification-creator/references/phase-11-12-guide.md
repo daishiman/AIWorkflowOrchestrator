@@ -69,6 +69,20 @@
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
+- mirror sync が必要な場合は、canonical root の変更ファイルだけを `.agents` mirror へ同期し、`cmp -s` または `diff -qr` で drift 0 を確認してから Phase 12 を閉じる。
+- workflow `artifacts.json` の `phases` が array 形式で、`complete-phase.js` が object map 前提の更新を行う場合は、その workflow では `complete-phase.js` を使わず manual sync に切り替える。更新後は `validate-phase-output` と `verify-all-specs` を再実行して破損がないことを確認する。
+
+```bash
+git diff --name-only -- \
+  .claude/skills/task-specification-creator \
+  .claude/skills/aiworkflow-requirements \
+| while read -r canonical; do
+  mirror="${canonical/.claude\//.agents/}"
+  mkdir -p "$(dirname "$mirror")"
+  rsync -a --checksum "$canonical" "$mirror"
+  cmp -s "$canonical" "$mirror"
+done
+```
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -406,6 +420,7 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
 - [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
 - [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
+- [ ] `phase12-task-spec-compliance-check.md` を登録した場合、`outputs/phase-12/` の実ファイル存在と `outputs/verification-report.md` 最新化を確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
 - [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
