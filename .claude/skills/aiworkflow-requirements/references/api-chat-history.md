@@ -376,30 +376,10 @@ Use Caseで発生するエラーの基底クラス。AppErrorを継承する。
 
 ---
 
-## Task02 設計抽出起点: Renderer overlay と Use Case API の境界
-
-| 観点 | Use Case API に残すもの | renderer local に留めるもの | current HEAD のギャップ |
-| --- | --- | --- | --- |
-| session lifecycle | create / add message / list / search / revive 用 lookup | 一時的な入力欄、optimistic stream buffer、panel open state | general chat は永続 session と未接続、workspace chat だけが create/addMessage を使う |
-| message persistence | user / assistant message の保存、検索、export | chunk ごとの中間文字列、typing indicator | stream 完了前の buffer をどの時点で assistant message に確定するかが UI 実装へ偏っている |
-| mode separation | session kind / source / handoff policy | 現在表示中 mode の UI 切替 state | mode-aware lookup / revive 契約が Use Case 側に未定義 |
-| revive / handoff bridge | `ChatReviveSnapshot` へ接続する lookup / reuse API | selector 単位の temporary overlay reset | current branch では DTO 正本化まで完了し、Use Case API への一本化は follow-up |
-
-標準ルール:
-
-- Task02 では「保存すべき契約」を Use Case API へ、「描画専用 state」を renderer へ残す。
-- `conversationAPI` を呼ぶだけの controller を増やすのではなく、必要な session lookup/handoff を先に API 面へ定義する。
-- current branch では revive payload を shared DTO へ寄せてから API 一本化へ進む。DTO 正本化と transport 変更を同一ターンに混ぜない。
-- archive の prior attempt との差分は current HEAD 実装を基準に評価する。
-
----
-
 ## 変更履歴
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
-| 2026-03-12 | 1.3.0 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。shared revive/handoff DTO と transport follow-up の境界を追加 |
-| 2026-03-12 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の設計抽出起点を追加し、Use Case API と renderer overlay の責務境界を明文化 |
 | 2026-01-26 | 1.1.0 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 2026-01-19 | 1.0.0 | 初版作成 |
 

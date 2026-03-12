@@ -22,7 +22,6 @@
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | スキルライフサイクル一次導線設計 / 画面責務再編 | ui-ux-navigation.md, ui-ux-feature-components.md, arch-state-management.md, architecture-overview.md | ui-ux-settings.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
-| 会話基盤統合 / チャットプラットフォーム統合 | workflow-chat-platform-unification.md, interfaces-llm.md, llm-ipc-types.md, llm-streaming.md, interfaces-chat-history.md, architecture-chat-history.md, llm-workspace-chat-edit.md, arch-state-management.md | api-chat-history.md, api-ipc-agent.md, arch-ipc-persistence.md, ui-ux-feature-components.md, ui-ux-navigation.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
 | UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
@@ -41,7 +40,6 @@
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
 | バグ修正（APIキー連動 + チャット実行経路整合） | workflow-apikey-chat-tool-integration-alignment.md, api-ipc-system.md, interfaces-auth.md, llm-ipc-types.md | ui-ux-settings.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
 | バグ修正（Light Mode 全画面 white/black 再是正） | workflow-light-theme-global-remediation.md, ui-ux-design-system.md, task-workflow.md | lessons-learned.md, ui-ux-components.md, ui-ux-feature-components.md |
-| バグ修正（Light Theme contrast regression guard / representative screenshot audit） | workflow-light-theme-contrast-regression-guard.md, ui-ux-feature-components.md, lessons-learned.md | ui-ux-design-system.md, task-workflow.md, workflow-light-theme-global-remediation.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
@@ -55,7 +53,6 @@
 - lifecycle の create/improve handoff は `ui-ux-feature-components.md` の Store-Driven Lifecycle Integration を読み、現行実装アンカーとして `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を照合する。
 - global nav の正式契約は `ui-ux-navigation.md` と `apps/desktop/src/renderer/navigation/navContract.ts` の組み合わせで確認する。
 - `settings` 公開 shell の例外条件は `arch-state-management.md` と `ui-ux-settings.md` を読み、現行実装アンカーとして `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` を照合する。
-- 会話基盤統合ではまず `workflow-chat-platform-unification.md` で current branch の実装内容・苦戦箇所・5分解決カードを掴み、その後 `interfaces-llm.md` → `llm-ipc-types.md` → `llm-streaming.md` → `interfaces-chat-history.md` → `architecture-chat-history.md` → `llm-workspace-chat-edit.md` → `arch-state-management.md` の順で読む。必要に応じて `api-chat-history.md` `arch-ipc-persistence.md` `ui-ux-feature-components.md` `ui-ux-navigation.md` を補う。現行実装アンカーとして `ChatView` `chatSlice` `useStreamingChat` `WorkspaceView/hooks/useWorkspaceChatController.ts` `SkillCenterView/index.tsx` `skillLifecycleJourney.ts` `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` `preload/index.ts` `preload/types.ts` に加え、`packages/shared/src/types/chat-platform.ts` `apps/desktop/src/renderer/features/chat-platform/contracts.ts` `apps/desktop/src/renderer/phase11-chat-platform.{html,tsx}` を照合し、entry surface / execution surface / non-persist revive の境界を固定する。current branch では shared mode/handoff/revive contract、Workspace / lifecycle handoff helper、prepared request continuity、Phase 11 dedicated harness までは実装済みで、Phase 12 完了 snapshot は `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` を正本とする。transport 一本化は `UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001` の follow-up として扱い、prior attempt は `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` を比較資料として扱う。Task03 downstream 契約は `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/` で照合する。
 
 ---
 
@@ -188,7 +185,6 @@
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
 | ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
 | ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
-| workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
 | ui-history-search-view.md     | HistorySearchView / activity timeline の仕様確認時   | timeline UI、state/IPC 契約、画面証跡 |
 | ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
 | ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |
@@ -366,9 +362,6 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-12 | 1.14.3     | `workflow-chat-platform-unification.md` を追加し、会話基盤統合の最短導線を 1 ファイルへ集約。`SkillLifecyclePanel.initialRequest` を prepared request continuity の実装アンカーとして追記 |
-| 2026-03-12 | 1.14.2     | TASK-SKILL-LIFECYCLE-02 Phase 12 完了 snapshot を基準に `packages/shared/src/types/chat-platform.ts` / `apps/desktop/src/renderer/features/chat-platform/contracts.ts` / `apps/desktop/src/renderer/phase11-chat-platform.{html,tsx}` の実装アンカーを追記し、transport 一本化は `UT-IMP-CHAT-PLATFORM-TRANSPORT-UNIFICATION-001` follow-up として扱うことを明記 |
-| 2026-03-12 | 1.14.1     | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本 `workflow-light-theme-contrast-regression-guard.md` を追加。クイックルックアップと UI/UX 一覧にも current build static serve / selector-based capture / baseline routing の導線を登録 |
 | 2026-03-11 | 1.13.0     | TASK-SKILL-LIFECYCLE-01 完了同期: lifecycle task の逆引きへ `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` を追加し、Skill Center 一次導線・advanced route・settings bypass の実装アンカーを明示 |
 | 2026-03-10 | 1.12.0     | TASK-10A-G: `skill:create` 契約 + ChatPanel 起点ライフサイクル統合テスト向けの導線を追加 |
 | 2026-03-10 | 1.13.0     | TASK-FIX-SAFEINVOKE-TIMEOUT-001: safeInvoke timeout / preload IPC timeout の Must/Conditional 導線と 1概念1検索手順を追加 |

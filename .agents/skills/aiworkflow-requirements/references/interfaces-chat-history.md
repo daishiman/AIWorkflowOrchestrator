@@ -354,25 +354,6 @@ LLMメタデータ型（assistant応答時に保存）。
 
 ---
 
-## Task02 設計抽出起点: current HEAD の conversationAPI 境界
-
-| 項目 | current HEAD | Task02 設計で補う点 |
-| --- | --- | --- |
-| general chat | `apps/desktop/src/renderer/views/ChatView/index.tsx` は `chatSlice` + `useStreamingChat` を使い、`conversationAPI` へ未接続 | general chat と persistent conversation の責務境界を定義し、session handoff を設計する |
-| workspace chat | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` が `conversationAPI.create/addMessage` を直接利用 | Workspace 側だけが先行している永続化フローを、共通 chat platform へどう吸収するかを決める |
-| 履歴責務 | `conversationAPI` は long-term history、`chatSlice` / controller local state は renderer overlay | overlay state と永続履歴を混同せず、どこで session revive / reuse を行うかを分離する |
-| revive 契約 | current branch では `packages/shared/src/types/chat-platform.ts` の `ChatReviveSnapshot` と `NON_PERSISTED_CHAT_OVERLAY_KEYS` が revive payload の正本 | `conversationAPI` lookup / recent rail の最終所有者を transport 一本化 task で確定する |
-| 比較資料 | `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/` に 2026-03-11 時点の prior attempt archive が残る | archive は比較資料であり、phase12-complete workflow `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` へそのまま上書きしない |
-
-標準ルール:
-
-- `conversationAPI` を使っている経路と使っていない経路を先に棚卸しし、Task02 では「統合対象」と「現行維持境界」を分けて記述する。
-- `chatSlice` の streaming overlay と history 永続化の境界は別仕様として扱い、`sessionId` 導入の前に責務を固定する。
-- revive payload は renderer local 型へ再定義せず、shared DTO (`ChatReviveSnapshot`) を正本にする。
-- completed archive は実装比較の根拠として保持し、current HEAD の reopen workflow は現行コードアンカー基準で更新する。
-
----
-
 ## Preload API（conversationAPI）
 
 Renderer ProcessからMain Processへのアクセスを提供するAPI。
@@ -568,8 +549,6 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 
 | Version   | Date       | Changes                                                                                                                                   |
 | --------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.6.0** | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。`ChatReviveSnapshot` と non-persist revive 境界を shared contract として追記し、transport follow-up を明記 |
-| **1.5.0** | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 の設計抽出起点を追加。general chat は `conversationAPI` 未接続、workspace chat は直接利用中、archive/current split で読む前提を明文化 |
 | **1.4.0** | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel での `conversation:create` / `conversation:addMessage` 利用フローと完了記録を同期 |
 | **1.3.0** | 2026-01-26 | spec-guidelines.md準拠: コードブロック（認可ロジック、エクスポート形式）を表形式・文章に変換                                              |
 | 1.2.0     | 2026-01-25 | UI-CONV-HISTORY-001完了: Renderer Process型定義追加、Preload API追加、React Hooks追加、UIコンポーネント構成追加、アクセシビリティ対応追加 |

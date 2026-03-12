@@ -243,25 +243,6 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ---
 
-## Task02 設計抽出起点: Workspace handoff context
-
-| 項目 | current HEAD | Task02 で見る点 |
-| --- | --- | --- |
-| context file 選定 | Workspace 側は `fileSelectionSlice` と mention / preview を前提に文脈を集める | general chat へ持ち込む共通責務と workspace 固有責務を分離する |
-| LLM送信 | `useWorkspaceChatController` が `window.electronAPI.llm.streamChat()` を直接利用する | send/cancel/end の共通 contract を general chat と揃える |
-| 永続化 | conversation 作成と message 保存は workspace 側だけが先行している | revive / reuse / handoff が必要なら history / state / IPC を横断して設計する |
-| handoff helper | current branch では `createWorkspaceContextAttachments()` / `createWorkspaceChatHandoff()` が `contracts.ts` に抽出された | file context 生成と transport 一本化を分離し、Workspace 固有責務を過抽象化しない |
-| 未実装 | workspace edit と chat platform 統合は別責務のまま残っている | Task02 では edit workflow を巻き込まず、chat session/platform の境界だけを先に固める |
-
-標準ルール:
-
-- file context は workspace 固有 value として扱い、chat platform 統合時も一括抽象化しない。
-- `streamChat` / `cancelStream` / history persistence の 3 契約は同一表で比較し、どの層で共通化するかを先に決める。
-- current branch で抽出した handoff helper は Workspace value object の正規化担当であり、transport 所有者そのものではない。
-- completed archive は比較資料であり、workspace edit 系の設計正本ではない。
-
----
-
 ## 完了タスク
 
 ### Workspace管理統合（TASK-WCE-WORKSPACE-001）2026-02-02完了
@@ -291,7 +272,5 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 | 日付       | バージョン | 変更内容                                                            |
 | ---------- | ---------- | ------------------------------------------------------------------- |
-| 2026-03-12 | v1.3.0     | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。Workspace handoff helper 抽出と transport follow-up の境界を追記 |
-| 2026-03-12 | v1.2.0     | TASK-SKILL-LIFECYCLE-02 向けに Workspace handoff context と chat platform 境界の抽出起点を追加 |
 | 2026-02-02 | v1.1.0     | TASK-WCE-WORKSPACE-001完了: workspacePathパラメータ追加、完了タスクセクション追加 |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                  |

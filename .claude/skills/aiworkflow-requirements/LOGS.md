@@ -4,55 +4,6 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 の Phase 12 準拠確認と実装苦戦箇所を system spec へ追補
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
-- 目的: current branch 実装の要点、Phase 12 準拠確認値、苦戦箇所、5分解決カードを system spec 単体で再利用できるようにする
-
-### 実施内容
-- SubAgent-A（feature spec）: `references/ui-ux-feature-components.md` の Task02 節を `実装内容（要点）` / `実装時の苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編
-- SubAgent-B（台帳）: `references/task-workflow.md` に Task 12-1〜12-5 の準拠確認、`verify-unassigned-links=220/220`、`currentViolations=0 / baselineViolations=134` を追加
-- SubAgent-C（履歴）: `SKILL.md` 変更履歴へ Task02 の再利用導線を追記
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 current branch 再監査の partial completion を system spec へ固定
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
-- 目的: shared contract / handoff helper / Phase 11 harness / Phase 12 outputs は current branch へ同期済みである一方、transport 一本化は未完了であることを system spec 正本へ一貫した語彙で固定する
-
-### 実施内容
-- SubAgent-A（state/history）: `references/arch-state-management.md` / `references/interfaces-chat-history.md` / `references/architecture-chat-history.md` / `references/api-chat-history.md` に shared contract layer と transport 残差を追記
-- SubAgent-B（台帳/教訓）: `references/task-workflow.md` / `references/lessons-learned.md` に Phase 1-12 完了と overall `in_progress` の分離、follow-up 2件、5ステップ解決カードを追記
-- SubAgent-C（入口）: `indexes/resource-map.md` / `SKILL.md` に current workflow 正本、Phase 11 harness、follow-up 読み分けを追記
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 の抽出導線を current HEAD 準拠で再整備
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
-- 目的: current workflow は Phase 12 完了 snapshot、completed archive は prior attempt という二重状態を崩さず、current HEAD から必要仕様を迷わず抽出できる入口を整備する
-
-### 実施内容
-- SubAgent-A（workflow split）: `references/task-workflow.md` / `references/lessons-learned.md` に current workflow と completed archive の責務分離、relative ref guard、follow-up 未タスクを追記
-- SubAgent-B（entrypoints）: `SKILL.md` / `indexes/resource-map.md` / `indexes/quick-reference.md` に Task02 の読む順番と current code anchors を追記
-- SubAgent-C（LLM-streaming）: `references/interfaces-llm.md` / `references/llm-ipc-types.md` / `references/llm-streaming.md` を current HEAD の `llm:stream-cancel` / `requestId` 契約へ更新
-- SubAgent-D（history-workspace-state）: `references/interfaces-chat-history.md` / `references/architecture-chat-history.md` / `references/api-chat-history.md` / `references/llm-workspace-chat-edit.md` / `references/arch-state-management.md` に general/workspace/history/state の境界を追記
-
-### 結果
-- ステータス: success
-
----
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize
 
 ### コンテキスト
@@ -9338,11 +9289,3 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
-## 2026-03-12 - TASK-SKILL-LIFECYCLE branch extraction follow-up
-
-- **Agent**: aiworkflow-requirements
-- **Phase**: Phase 12 extraction guide hardening
-- **Result**: success
-- **Notes**:
-  - `resource-map.md` と `quick-reference.md` に `SkillCenterView` / `skillLifecycleJourney` / `preload index/types` を追加し、entry surface / execution surface / non-persist revive を current branch 実体から抽出できる導線へ追補
-  - `task-workflow.md` の TASK-SKILL-LIFECYCLE-03 成果物 path を `completed-tasks/` 正本へ更新し、Task02 downstream 参照の path drift を是正

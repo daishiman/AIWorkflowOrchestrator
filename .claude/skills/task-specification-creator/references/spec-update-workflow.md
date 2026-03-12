@@ -82,7 +82,6 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
-| 「Phase 1-12 の成果物が揃ったので workflow 全体も completed でよい」 | **残差があれば top-level は `in_progress`** | `acceptanceCriteria` 未達や follow-up 必須項目が残る場合、Phase 実行完了と workflow 全体完了は別。`artifacts.status`、`executionNote`、未タスク formalization を同時に残す |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
 | 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
@@ -92,11 +91,8 @@ Phase 12 Task 2 開始
 | 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` は `current/baseline` 分類で使い、合否は `currentViolations.total` を正本に判定する（scope未指定の全体監査は baseline として別記録） |
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
 | 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** | Phase 仕様書が親タスク仕様を相対参照している場合、`docs/30-workflows/<workflow>.md` をブリッジとして残すか、各 Phase の参照先を正本へ更新する |
-| 「parallel step の sibling が参照する completed archive を削除して current stub だけ残せばよい」 | **archive/current split を維持** | sibling workflow の relative ref が切れると、比較資料と依存導線が同時に失われる。`test -f` / `test -d` で archive 参照を先に確認する |
-| 「過去完了アーカイブを current workflow へそのまま上書きしてよい」 | **current workflow は現 HEAD 基準で維持** | code revert / reopen design の場合、completed package を current に戻すと現行実装と仕様が乖離する。archive は比較資料、current は再設計正本として分離する |
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
-| 「sibling workflow が `tasks/` から `completed-tasks/` へ移管されても依存 path は後で直せばよい」 | **移管と依存 ref 修正を同一ターンで完了** | pack index、後続 task の `phase-1-requirements.md`、`task-workflow.md` が旧 `tasks/...` を指したままだと、仕様抽出と downstream 参照が壊れる。`rg -n "<workflow-dir>" docs/30-workflows/skill-lifecycle-unification .claude/skills/aiworkflow-requirements/indexes .claude/skills/aiworkflow-requirements/references/task-workflow.md` で live 参照を洗い切る |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
@@ -266,12 +262,9 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] 関連する仕様ファイルの実装状況テーブル（該当する場合）を更新した
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
-- [ ] `acceptanceCriteria` 未達や residual follow-up が残る場合、top-level `artifacts.status` を `in_progress` に維持し、`executionNote` と未タスク指示書へ同じ理由を記録した
 - [ ] `git diff --stat origin/main...HEAD` と `git diff --stat HEAD` の両方を確認し、branch差分とcurrent worktree差分を区別して記録した
 - [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
 - [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
-- [ ] parallel step / sibling workflow が completed archive を relative 参照していないか `test -f` / `test -d` で確認し、必要な archive/current split を維持した
-- [ ] sibling workflow の移管がある場合、pack index / downstream phase refs / `task-workflow.md` の旧 `tasks/...` live 参照を `rg -n` で洗い切った
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
 - [ ] IPC契約を更新した場合、`outputs/phase-12/ipc-documentation.md` の引数/戻り値/エラー仕様を実装契約へ同期した
@@ -338,7 +331,6 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 ### Step 1-B: 実装状況テーブル更新
 - [ ] 該当仕様書に「実装状況」テーブルがある場合、該当行を「完了」に更新した
 - [ ] 仕様書作成のみのタスクは、該当行を `spec_created` に更新した（`completed` にしない）
-- [ ] Phase 1-12 実施済みでも acceptance partial / residual follow-up が残る場合、workflow 全体の top-level status を `completed` にしていない
 - [ ] 更新対象として列挙した仕様書が実在することを `test -f <path>` で確認した
 - [ ] `phase-*.md` が `../task-*.md` を参照している場合、ブリッジ仕様の実在または参照修正を確認した
 

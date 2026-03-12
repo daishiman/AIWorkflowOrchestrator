@@ -2,7 +2,7 @@
 
 ## 概要
 
-本パックは、`スキルを作る` `スキルを実行する` `スキルを改善する` を単一導線として再構成するためのタスク仕様書群である。current branch では Task01/02/03 の実装と再監査が進んでいるため、仕様書だけでなく current workflow / completed archive / system spec の同期結果もこのパックで管理する。
+本パックは、`スキルを作る` `スキルを実行する` `スキルを改善する` を単一導線として再構成するためのタスク仕様書群である。現時点では実装を行わず、責務分離されたタスク仕様書の作成に専念する。
 
 > 注記:
 > ユーザージョブは `作る` `使う` `改善する` の3本を中核とし、`採点/評価` は独立ジョブではなく各ジョブの遷移を制御する品質ゲートとして扱う。
@@ -17,22 +17,16 @@
 
 ## タスク一覧
 
-| 順序 | タスクID                | ディレクトリ                                                                                 | 責務                                                                   | 実行順序                                                         |
-| ---- | ----------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| 1    | TASK-SKILL-LIFECYCLE-01 | `../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation`                        | 一次導線、画面責務、ナビゲーション基盤の定義                           | 最優先・直列                                                     |
-| 2    | TASK-SKILL-LIFECYCLE-02 | `../completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312` | 会話基盤、履歴、ストリーミング、Workspace 文脈統合                     | Step 01 後、Task03 と並列可（Phase 12 完了 snapshot を移管済み） |
-| 3    | TASK-SKILL-LIFECYCLE-03 | `../completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration`           | Skill Creator の表導線化、作成/実行/改善統合、内部オーケストレーション | Step 01 後、Task02 と並列可（完了移管済み）                      |
-| 4    | TASK-SKILL-LIFECYCLE-04 | `tasks/step-03-seq-task-04-evaluation-and-scoring-gate`                                      | 採点、評価、改善トリガー、受け入れ基準ゲート                           | Step 02 後・直列                                                 |
-| 5    | TASK-SKILL-LIFECYCLE-05 | `tasks/step-04-seq-task-05-created-skill-usage-journey`                                      | 作成済みスキルを日常導線で選ぶ・実行する・再利用する導線               | Step 03 後・直列                                                 |
-| 6    | TASK-SKILL-LIFECYCLE-06 | `tasks/step-05-par-task-06-trust-permission-governance`                                      | 権限、危険操作、承認履歴、信頼境界の統合                               | Step 04 後、Task07 と並列可                                      |
-| 7    | TASK-SKILL-LIFECYCLE-07 | `tasks/step-05-par-task-07-lifecycle-history-feedback`                                       | 実行履歴、評価履歴、改善フィードバック、再利用学習                     | Step 04 後、Task06 と並列可                                      |
-| 8    | TASK-SKILL-LIFECYCLE-08 | `tasks/step-06-seq-task-08-skill-publishing-version-compatibility`                           | 共有、公開、互換性、バージョニング、配布ガード                         | Step 05 後・直列                                                 |
-
-## 現在の進捗
-
-- Task01 は `docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/` へ移管済みで、一次導線と画面責務基盤が完了している。
-- Task02 は `docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification-phase12-complete-20260312/` へ Phase 12 完了 snapshot を移管済みであり、shared contract / handoff helper / Phase 11 screenshot / system spec 同期まで完了した。Phase 13 は未実施、transport 一本化は workflow 配下 `unassigned-task/` の follow-up で継続する。
-- Task03 は `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/` を正本として完了している。
+| 順序 | タスクID                | ディレクトリ                                                          | 責務                                                                   | 実行順序                    |
+| ---- | ----------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------- | --------------------------- |
+| 1    | TASK-SKILL-LIFECYCLE-01 | `../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation` | 一次導線、画面責務、ナビゲーション基盤の定義                           | 最優先・直列                |
+| 2    | TASK-SKILL-LIFECYCLE-02 | `tasks/step-02-par-task-02-chat-platform-unification`                 | 会話基盤、履歴、ストリーミング、Workspace 文脈統合                     | Step 01 後、Task03 と並列可 |
+| 3    | TASK-SKILL-LIFECYCLE-03 | `tasks/step-02-par-task-03-skill-creator-execute-improve-integration` | Skill Creator の表導線化、作成/実行/改善統合、内部オーケストレーション | Step 01 後、Task02 と並列可 |
+| 4    | TASK-SKILL-LIFECYCLE-04 | `tasks/step-03-seq-task-04-evaluation-and-scoring-gate`               | 採点、評価、改善トリガー、受け入れ基準ゲート                           | Step 02 後・直列            |
+| 5    | TASK-SKILL-LIFECYCLE-05 | `tasks/step-04-seq-task-05-created-skill-usage-journey`               | 作成済みスキルを日常導線で選ぶ・実行する・再利用する導線               | Step 03 後・直列            |
+| 6    | TASK-SKILL-LIFECYCLE-06 | `tasks/step-05-par-task-06-trust-permission-governance`               | 権限、危険操作、承認履歴、信頼境界の統合                               | Step 04 後、Task07 と並列可 |
+| 7    | TASK-SKILL-LIFECYCLE-07 | `tasks/step-05-par-task-07-lifecycle-history-feedback`                | 実行履歴、評価履歴、改善フィードバック、再利用学習                     | Step 04 後、Task06 と並列可 |
+| 8    | TASK-SKILL-LIFECYCLE-08 | `tasks/step-06-seq-task-08-skill-publishing-version-compatibility`    | 共有、公開、互換性、バージョニング、配布ガード                         | Step 05 後・直列            |
 
 ## 命名規則
 

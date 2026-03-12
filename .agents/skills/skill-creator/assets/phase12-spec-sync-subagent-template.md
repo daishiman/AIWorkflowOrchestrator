@@ -7,8 +7,6 @@
 | タスクID | `<TASK-ID>` |
 | 実装対象 | `<実装ファイル/機能>` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
-| workflow全体ステータス | `completed` / `in_progress` / `spec_created` |
-| completed archive | `<completed-workflow-path>` / `N/A` |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
 
@@ -48,16 +46,6 @@
 | SubAgent-L3 | `references/task-workflow.md` | shard 再現、screenshot 再取得、継続 backlog を同期 | 実装内容 + 検証証跡 + 未タスクが同一ターン記録済み |
 | SubAgent-L4 | `references/lessons-learned.md` | token修正 / bridge / component migration の責務分離と 5分解決カードを同期 | 再発条件付きの短手順が記録済み |
 
-#### 2.1.3 Light theme shared color migration プロファイル（`spec_created` / component migration）
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-M1 | `references/ui-ux-design-system.md` / `references/ui-ux-settings.md` | actual target inventory、token/component 境界、verification-only lane を同期 | current workflow と inventory correction が一致 |
-| SubAgent-M2 | `references/ui-ux-feature-components.md` / `references/ui-ux-search-panel.md` / `references/ui-ux-portal-patterns.md` / `references/rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / panel state の cross-cutting 条件を同期 | search/portal/state contract が仕様へ反映済み |
-| SubAgent-M3 | `references/api-ipc-auth.md` / `references/api-ipc-system.md` / `references/architecture-auth-security.md` / `references/security-electron-ipc.md` / `references/security-principles.md` | auth/api/security boundary を同期 | public auth shell と settings/search の安全境界が記録済み |
-| SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
-| SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
-
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
@@ -67,14 +55,6 @@
 | SubAgent-C | `docs/30-workflows/unassigned-task/` / `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / `docs/30-workflows/completed-tasks/` / `docs/30-workflows/completed-tasks/unassigned-task/` | `verify-unassigned-links` + `audit --diff-from HEAD` + 10見出し確認 + 配置先判定 | `missing=0` かつ `currentViolations=0`。active workflow 由来の未実施は1つ目、completed workflow 由来の継続 backlog は2つ目、完了済み standalone UT は3つ目、4つ目は legacy。`target-file` 監査は実際の正本 unassigned dir に合わせる |
 | SubAgent-D | `references/task-workflow.md` | 2workflow証跡、苦戦箇所、簡潔解決手順の同期 | 監査結果が再利用可能形式で記録済み |
 | SubAgent-E | `references/lessons-learned.md` | 再発条件付き教訓と標準ルールの同期 | 教訓が task-workflow と整合 |
-
-### 2.2.1 current/archive split + retrospective hub プロファイル
-
-| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
-| --- | --- | --- | --- |
-| SubAgent-H | `references/workflow-<topic>.md` | current branch 実装要点・苦戦箇所・5分解決カード・current/archive split を 1 ファイルへ集約 | `task-workflow.md` / `lessons-learned.md` / `resource-map.md` / `quick-reference.md` から辿れる |
-
-> current workflow と completed archive が共存し、cross-cutting 情報が 3 仕様書以上に跨る場合は SubAgent-H を追加する。
 
 ### 2.3 Step 2 判定同期プロファイル（仕様更新タスク必須）
 
@@ -212,13 +192,8 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
-- [ ] current workflow と completed archive が併存する場合、workflow全体ステータスと residual follow-up 理由を `task-workflow.md` / `lessons-learned.md` / `workflow-<topic>.md` で同値記録している
-- [ ] cross-cutting な実装内容/苦戦箇所が 3 仕様書以上に跨る場合、`references/workflow-<topic>.md` を追加し、SubAgent-H で同期している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
-- [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
-- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only wrappers が別行で記録されている
-- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している

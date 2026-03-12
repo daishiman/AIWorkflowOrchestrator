@@ -3,40 +3,6 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 active workflow partial completion パターンを skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「active workflow partial completion を system spec 3ブロックへ同期する」パターンを追加
-  - `.claude` canonical / `.agents` mirror、`実装内容（要点）` / `苦戦箇所` / `5分解決カード`、`verify-unassigned-links` + `audit --diff-from HEAD` + mirror sync を同一ターンで閉じる運用を標準化
-  - `SKILL.md` 変更履歴へ current/archive split と partial completion の template 追補を反映
-
----
-## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
-
-- **Agent**: skill-creator
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に「loopback screenshot capture は localhost 不達時に current build static server を自動起動する」を追加
-  - `references/patterns.md` の skill feedback template に、`skill-creator` を含む 3 skill 同値転記ルールを追加
-  - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
-
----
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「light theme shared color migration は token scope / component scope / verification-only lane を分離する」成功/失敗パターンを追加
-  - `assets/phase12-system-spec-retrospective-template.md` に actual inventory correction、verification-only lane、`ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-*` / `security-*` 抽出マトリクスを追加
-  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-M1..M5` を追加し、spec-only UI task の SubAgent 分担を標準化
-  - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
-
----
 ## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
 
 - **Agent**: skill-creator
