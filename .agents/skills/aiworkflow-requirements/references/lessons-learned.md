@@ -20,6 +20,14 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-12 | 1.29.85 | `workflow-chat-platform-unification.md` を追加し、TASK-SKILL-LIFECYCLE-02 の実装内容・苦戦箇所・5分解決カードを 1 ファイルへ集約。`SkillLifecyclePanel.initialRequest` による prepared request continuity も教訓化 |
+| 2026-03-12 | 1.29.84 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を追補。shared contract / dedicated harness / follow-up partial completion の3点を追加し、「Phase 1-12 完了」と「overall completed」を分離するルールを標準化 |
+| 2026-03-12 | 1.29.83 | TASK-SKILL-LIFECYCLE-02 の教訓を追加。Phase 12 完了 snapshot と prior attempt archive の責務分離、general/workspace/history/streaming の4分割読解、sibling relative ref guard を標準化 |
+| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
+| 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
+| 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
+| 2026-03-12 | 1.29.79 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
+| 2026-03-12 | 1.29.78 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -62,6 +70,119 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-11 TASK-SKILL-LIFECYCLE-02
+
+`7c24c149f` で current workflow は reopen したが、以下の教訓は current HEAD で Task02 を再設計する際にもそのまま再利用する。
+
+#### 苦戦箇所1: 入口ごとに会話 UI を持つと platform 統合前に責務が分断される
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | general chat は `chatSlice`、workspace chat は `useWorkspaceChatController` で別々に進化し、session 統合の前提が揃わない |
+| 再発条件 | state / history / IPC を同時に読む前に、各入口の所有者を固定しない |
+| 解決策 | general、workspace、history、streaming の4仕様へ分けて current HEAD を棚卸しし、統合点だけを Task02 へ残す |
+| 標準ルール | 先に「どの入口が何を所有するか」を表にしてから session 統合へ進む |
+
+#### 苦戦箇所2: session persist は create だけでなく revive まで見ないと設計が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workspace 側は create/addMessage があるが、general chat への handoff / revive 契約が未定義のままだった |
+| 再発条件 | persistence を「保存できる」で完了扱いにし、再利用導線を定義しない |
+| 解決策 | `conversationAPI` の create/addMessage と renderer overlay の境界を分け、revive/handoff を follow-up として formalize した |
+| 標準ルール | session 設計では create / append / revive / handoff を 1 セットで確認する |
+
+#### 苦戦箇所3: Phase 12 は outputs だけでは current/archive の二重状態を表現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | completed archive と reopen current workflow が同時に存在する状況を outputs だけでは説明しきれない |
+| 再発条件 | `completed-tasks` だけ更新し、current workflow の status と台帳説明を省略する |
+| 解決策 | `task-workflow.md`、`lessons-learned.md`、workflow 本文へ current/archive split を明記した |
+| 標準ルール | reopen 時は「current workflow」「completed archive」「比較理由」を同時に記録する |
+
+#### 苦戦箇所4: completed archive を current workflow へそのまま戻すと現 HEAD と乖離する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 2026-03-11 の prior attempt 文書を current workflow に戻すと、現コードの `chatSlice` / `useWorkspaceChatController` 実体と合わなくなる |
+| 再発条件 | 履歴上の completed package を current HEAD の検証なしで正本扱いする |
+| 解決策 | archive は比較資料として completed 側へ戻し、current workflow は reopen stub + current code anchor 追補に留めた |
+| 標準ルール | current code anchor を確認せずに completed package を current へ上書きしない |
+
+#### 苦戦箇所5: skill tooling 側の old schema drift が archive/current 混同を悪化させる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow status、artifacts、Phase 12 guide が dual package を前提にしていないと、古い完了物を current へ戻しやすい |
+| 再発条件 | `task-specification-creator` の guide / patterns に reopen + archive split guard がない |
+| 解決策 | task-spec 側へ current/completed dual package guard を追加し、relative ref 確認を必須化した |
+| 標準ルール | system spec と task-spec の両スキルを同一ターンで更新する |
+
+#### 苦戦箇所6: completed archive を消すと sibling task の比較資料まで失う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | completed workflow を比較資料として残せないと、視覚証跡や follow-up の参照が sibling task から切れる |
+| 再発条件 | relative ref / completed archive の存在確認をしない |
+| 解決策 | sibling task の相対参照を `test -f` で確認し、必要 archive を復元した |
+| 標準ルール | completed archive 削除前に sibling workflow の参照有無を機械確認する |
+
+#### 同種課題の簡潔解決手順（6ステップ）
+
+1. current HEAD のコードアンカーを general / workspace / history / streaming に分割して確認する。
+2. current workflow と completed archive の両方が必要かを sibling relative ref まで含めて確認する。
+3. completed archive は比較資料、current workflow は reopen design 正本として別々に扱う。
+4. system spec は LLM、history、state、台帳の4仕様へ分けて抽出導線を整える。
+5. task-spec 側にも dual package drift guard を追加して、Phase 12 誤判断を防ぐ。
+6. follow-up は `UT-IMP-CHAT-PLATFORM-HANDOFF-REVIVE-GUARD-001` のように未タスク化して継続管理する。
+
+### 2026-03-12 TASK-SKILL-LIFECYCLE-02 current branch 再監査
+
+#### 苦戦箇所1: shared contract を実装しても transport 未統一のまま completed に見えやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `ChatHandoffPayload` / `ChatReviveSnapshot` / `NON_PERSISTED_CHAT_OVERLAY_KEYS` を shared 化すると、タスク全体も完了したように見えやすい |
+| 再発条件 | outputs と screenshot が揃った時点で acceptance partial を確認しない |
+| 解決策 | `artifacts.json` top-level status を `in_progress` に留め、AC-4 を false のまま維持し、follow-up 2件を formalize した |
+| 標準ルール | 「Phase 1-12 完了」と「overall completed」は分離し、残差があれば台帳と lessons の両方へ残す |
+
+#### 苦戦箇所2: representative screenshot が shell 全景だと contract 境界を読み取れない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 会話基盤タスクでは shell 全景だけだと entry surface / execution surface / revive boundary の差がぼやける |
+| 再発条件 | Phase 11 で page full screenshot だけを証跡にする |
+| 解決策 | `phase11-chat-platform.{html,tsx}` の dedicated harness を使い、selector 単位で general / workspace / lifecycle / revive / stream reset を撮影した |
+| 標準ルール | 基盤統合タスクの Phase 11 は dedicated harness + selector capture を優先する |
+
+#### 苦戦箇所3: system spec と task-spec の両方に partial-completion guard がないと再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 側だけで `in_progress` を残しても、skill guide 側が completed 前提のままだと次回再監査で誤判定しやすい |
+| 再発条件 | current task の結果を outputs だけで閉じ、skill docs を更新しない |
+| 解決策 | `aiworkflow-requirements` と `task-specification-creator` の両方へ residual follow-up guard を追記した |
+| 標準ルール | partial completion を伴う task は workflow / system spec / task-spec の3層で同一表現に揃える |
+
+#### 苦戦箇所4: handoff helper を追加しても prepared request が entry surface に残らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `createSkillLifecycleChatHandoff()` だけでは `prepare` 済み request が `SkillLifecyclePanel` 側に保持されず、payload と UI state がずれやすい |
+| 再発条件 | handoff payload 生成を contract 完了とみなし、entry surface の request state を同期しない |
+| 解決策 | `SkillLifecyclePanel.initialRequest` を追加し、prepared request を panel に残したまま handoff payload と同じ文面を表示できるようにした |
+| 標準ルール | entry helper を追加したら、entry UI の request continuity も同じ task で固定する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. shared contract 実装と transport 実装を別レイヤーとして扱う。
+2. handoff helper を作ったら、entry surface の prepared request continuity (`initialRequest` など) も同時に固定する。
+3. Phase 11 は dedicated harness で contract 境界が見える証跡を残す。
+4. AC が partial の場合は `artifacts.status=in_progress` を維持する。
+5. workflow / system spec / task-spec の3層で partial completion を同じ語彙に揃える。
 
 ### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
 
@@ -172,6 +293,138 @@
 3. 全画面共通の drift は `globals.css` の compatibility bridge で先に止め、primitives を token へ寄せる。
 4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
 5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
+
+### 2026-03-12 TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+#### 苦戦箇所1: old unassigned-task の対象一覧を盲信すると current worktree とずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SettingsView` / `SettingsCard` / `DashboardView` を主対象のまま持ち込むと、実際に hardcoded color が多い `AccountSection` / `ApiKeysSection` / `AuthModeSelector` / `AuthKeySection` / `WorkspaceSearchPanel` が薄まる |
+| 再発条件 | 親 task の未タスク指示書を current worktree 監査なしで再利用する |
+| 解決策 | `outputs/phase-1/requirements-definition.md` の inventory を正本にし、wrapper は verification-only lane へ落とした |
+| 標準ルール | spec_created UI task では Phase 1 で current worktree の inventory correction を必ず行う |
+
+#### 苦戦箇所2: token scope と component scope を混ぜると task が肥大化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token foundation の残件と component migration を同一 task に入れると、設計レビューで責務境界が曖昧になる |
+| 再発条件 | `white/black baseline` の議論と `shared component migration` を同時に扱う |
+| 解決策 | 親 workflow を token 基盤、current workflow を component migration、`SettingsView` / `SettingsCard` / `DashboardView` を verification-only として 3 lane に分離した |
+| 標準ルール | Light Mode follow-up は token / component / verification-only の 3 つに分ける |
+
+#### 苦戦箇所3: UI 仕様だけ読むと auth/search/security/portal/state の前提が漏れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AuthView` / `WorkspaceSearchPanel` / Settings sections を跨ぐのに、UI 正本だけでは IPC / security / portal / state の制約が読めない |
+| 再発条件 | `ui-ux-*` だけで Phase 1-2 を閉じる |
+| 解決策 | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `ui-ux-portal-patterns` を同時抽出した |
+| 標準ルール | settings + auth + workspace が同居する UI task は UI + state + api/auth + security + portal を同一ターンで読む |
+
+#### 苦戦箇所4: Phase 1-3 gate を崩すと後続 phase の設計が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | inventory correction 前に Phase 4 以降の内容を詳細化すると、batch と test anchor が二重修正になる |
+| 再発条件 | 設計レビュー PASS 前に downstream phase を先に完成扱いにする |
+| 解決策 | Phase 1-3 を completed に固定し、Phase 4-13 は planned のまま保持した |
+| 標準ルール | spec_created task は「Phase 1-3 completed → 4+ planned」の順序を守る |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で current worktree の hardcoded color inventory を取り直す。
+2. token scope / component scope / verification-only lane を先に分ける。
+3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
+4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として設計する。
+5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
+
+### 関連未タスク（2026-03-12 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+
+## TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12）
+
+### 苦戦箇所: `vitest` が通っても build 用 `esbuild` だけアーキ不整合で落ちる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | x64 Node で `electron-vite build` だけ `@esbuild/darwin-arm64` を掴み、Phase 11 preflight が成立しない |
+| 再発条件 | test pass を見て build preflight を後回しにする |
+| 対処 | `pnpm install --force` で native dependency を再解決し、`pnpm --filter @repo/desktop build` を Phase 11 の先頭に固定した |
+| 標準ルール | UI screenshot task は `typecheck → targeted tests → build` の順で確認する |
+
+### 苦戦箇所: harness HTML を build input に入れないと current build static serve が成立しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | harness route を source には置いても、renderer build input に登録しないと `out/renderer/*.html` へ出ない |
+| 再発条件 | dev server 前提の capture script をそのまま current build task に流用する |
+| 対処 | `electron.vite.config.ts` の `renderer.build.rollupOptions.input` に harness HTML を明示追加した |
+| 標準ルール | Phase 11 が current build static serve 条件なら、harness HTML の build 出力有無を先に確認する |
+
+### 苦戦箇所: light capture の所見を current failure と baseline backlog で混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | WorkspaceSearch の dark carryover のような既存問題を、今回差分の失敗として誤判定しやすい |
+| 再発条件 | audit summary を 1 つの総件数だけで記録する |
+| 対処 | `currentViolations=0 / baselineViolations=64` を別欄に分離し、`discovered-issues.md` でも baseline backlog として routing した |
+| 標準ルール | light theme guard は current 判定と baseline routing を必ず二層で残す |
+
+### 苦戦箇所: Apple UI/UX 観点では helper text の沈みがコードレビューより先に見える
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `text-white/60` のような utility はコード上では許容に見えても、light panel screenshot では情報階層を崩しやすい |
+| 再発条件 | color token だけを見て、視線誘導や余白を別軸で見ない |
+| 対処 | Phase 11 の所見を hierarchy / contrast / spacing / materiality の4軸で記録した |
+| 標準ルール | Apple UI/UX review では light theme の helper text と panel border を別項目で見る |
+
+### 苦戦箇所: screenshot script 単体実行だと static serve 未起動で `ERR_CONNECTION_REFUSED` になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `pnpm --filter @repo/desktop screenshot:light-theme-contrast-guard` を 1 コマンドとして実行しても、4173 の static server がなければ capture が落ちる |
+| 再発条件 | preflight 手順を人手運用のまま残し、script 側に localhost fallback を持たせない |
+| 対処 | `phase11-static-server.mjs` を追加し、loopback baseUrl が不達な場合は `out/renderer` を auto static serve してから capture するようにした |
+| 標準ルール | Phase 11 screenshot script は「外部 server があれば再利用、無ければ current build を自走配信」の順で復旧できるようにする |
+
+### 苦戦箇所: workflow backlog `64` と global unassigned legacy `134` を同じ失敗と誤読しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | contrast audit の baseline 件数と、`docs/30-workflows/unassigned-task/` 全体の legacy 監査値が別の意味なのに、Phase 12 で 1 つの `baseline` として潰れて見える |
+| 再発条件 | `unassigned-task-detection.md` に workflow backlog だけを書き、指定ディレクトリ監査の `current/baseline` を別欄で残さない |
+| 対処 | `workflow baseline backlog=64` と `directory baselineViolations=134` を別表へ分離し、既存 normalization task 3件への導線を追加した |
+| 標準ルール | Phase 12 で未タスク配置を確認するときは「今回差分の配置」「今回差分の品質」「全体 legacy 状況」の3行を必ず残す |
+
+### 苦戦箇所: Task 5 で `skill-creator` を更新しても root evidence 側へ漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-feedback-report.md` にだけ `skill-creator` 改善が残り、`documentation-changelog.md` / `spec-update-summary.md` には 2 skill のまま残りやすい |
+| 再発条件 | Task 5 を「提案を書くだけ」の工程として扱い、実際に更新した skill 集合を outputs 間で突合しない |
+| 対処 | `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` の更新対象 skill 集合を同値化し、`skill-creator` を更新した場合は 3 skill 表記へ揃えた |
+| 標準ルール | Phase 12 Task 5 で更新した skill 名は root evidence 3ファイルに同値転記する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `typecheck` と targeted test の後に必ず build を通す。
+2. harness route が build output に出ているかを `out/renderer` で確認する。
+3. current build を static serve し、到達不能なら screenshot script 側の localhost fallback で復旧してから selector-based capture を取る。
+4. audit は `current` と `baseline` を別 bucket で集計する。
+5. visual review では helper text、panel border、card hierarchy を別々に評価して routing する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ねる | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001 | worktree の native dependency 不整合を事前検知する | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` |
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 

@@ -7,8 +7,8 @@
 
 ---
 
-> **実装**: `apps/desktop/src/main/adapters/llm/`
-> **UIコンポーネント**: `apps/desktop/src/renderer/components/chat/StreamingMessage.tsx`
+> **実装**: `apps/desktop/src/main/adapters/llm/`, `apps/desktop/src/main/handlers/llm.ts`
+> **Renderer**: `apps/desktop/src/renderer/hooks/useStreamingChat.ts`, `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`
 > **テスト**: `apps/desktop/src/main/adapters/llm/__tests__/streaming.test.ts`
 > **詳細ガイド**: `docs/30-workflows/llm-streaming-response/outputs/phase-12/implementation-guide.md`
 
@@ -20,26 +20,28 @@ LLMからの応答をServer-Sent Events (SSE) 形式でリアルタイムに受�
 
 ## 型定義
 
-### StreamChunk
+### LLMStreamChunk
 
 ストリーミングチャンクの型定義。
 
-| フィールド | 型                              | 必須 | 説明                           |
-| ---------- | ------------------------------- | ---- | ------------------------------ |
-| type       | "content" \| "error" \| "done"  | ✓    | チャンクタイプ                 |
-| content    | string                          | -    | テキストコンテンツ（type=content時） |
-| error      | LLMError                        | -    | エラー情報（type=error時）     |
+| フィールド | 型 | 必須 | 説明 |
+| ---------- | --- | ---- | ---- |
+| id | string | ✓ | provider chunk または stream 内イベント識別子 |
+| delta | `{ content?: string; role?: string }` | - | 部分テキスト。Renderer は `delta.content` を累積する |
+| done | boolean | ✓ | この chunk 時点で完了したか |
+| metadata | `{ model?: string; finishReason?: string; usage?: { promptTokens: number; completionTokens: number; totalTokens: number } }` | - | provider metadata |
 
 ### StreamingState
 
 ストリーミング状態の型定義。
 
-| フィールド    | 型      | 説明                       |
-| ------------- | ------- | -------------------------- |
-| isStreaming   | boolean | ストリーミング中フラグ     |
-| streamId      | string  | ストリームID               |
-| accumulatedContent | string | 累積コンテンツ        |
-| abortController | AbortController | キャンセル用コントローラー |
+| フィールド | 型 | 説明 |
+| ---------- | --- | ---- |
+| isStreaming | boolean | streaming 中フラグ |
+| currentStreamId | string \| null | `streamChat()` が返した `requestId` |
+| streamingMessageId | string \| null | placeholder assistant message の ID |
+| streamingContent | string | 現在までに累積した本文 |
+| streamingError | `LLMError \| { code: string; message: string; retryable: boolean } \| null` | retry / stop UI 用の最新 error |
 
 ### ChatMessage
 
@@ -57,18 +59,18 @@ LLMからの応答をServer-Sent Events (SSE) 形式でリアルタイムに受�
 
 ## SSEフロー
 
-ストリーミング通信は、Renderer Process → Main Process → Provider API の順で要求が送信され、応答は逆方向にSSE形式で返却される。
+ストリーミング通信は、Renderer Process → Main Process → Provider API の順で要求が送信され、応答は逆方向に chunk event として返却される。
 
 | ステップ | 送信元           | 送信先           | イベント/メソッド              | 説明                       |
 | -------- | ---------------- | ---------------- | ------------------------------ | -------------------------- |
-| 1        | Renderer Process | Main Process     | llm:stream-chat (request)      | ストリーミングチャット要求 |
+| 1        | Renderer Process | Main Process     | `llm:stream-chat` (invoke)     | ストリーミング要求。戻り値は `requestId` |
 | 2        | Main Process     | Provider API     | HTTP POST (stream=true)        | SSEストリーム接続開始      |
 | 3        | Provider API     | Main Process     | SSE: data: {"delta":...}       | チャンク受信（1回目）      |
-| 4        | Main Process     | Renderer Process | llm:stream-chunk (chunk)       | チャンク転送（1回目）      |
+| 4        | Main Process     | Renderer Process | `llm:stream-chunk`             | chunk 転送（1回目）        |
 | 5        | Provider API     | Main Process     | SSE: data: {"delta":...}       | チャンク受信（2回目以降）  |
-| 6        | Main Process     | Renderer Process | llm:stream-chunk (chunk)       | チャンク転送（2回目以降）  |
+| 6        | Main Process     | Renderer Process | `llm:stream-chunk`             | chunk 転送（2回目以降）    |
 | 7        | Provider API     | Main Process     | SSE: data: [DONE]              | ストリーム終了シグナル     |
-| 8        | Main Process     | Renderer Process | llm:stream-done                | ストリーミング完了通知     |
+| 8        | Main Process     | Renderer Process | `llm:stream-end`               | ストリーミング完了通知     |
 
 ---
 
@@ -85,28 +87,37 @@ LLMからの応答をServer-Sent Events (SSE) 形式でリアルタイムに受�
 
 ## キャンセル機構
 
-### AbortController統合
+### requestId ベース cancel
 
-Renderer側でキャンセル機構を実装する際は、AbortControllerを使用する。
+Renderer は `AbortController` を直接持たず、`streamChat()` が返した `requestId` を `cancelStream(requestId)` へ渡す。AbortController は Main Process の `handleStreamChat()` 内で保持される。
 
-| 処理                 | メソッド/プロパティ                                      | 説明                                     |
-| -------------------- | -------------------------------------------------------- | ---------------------------------------- |
-| AbortController生成  | new AbortController()                                    | キャンセル制御用インスタンスを生成       |
-| ストリーミング開始   | window.api.llm.streamChat(request, { signal: controller.signal }) | signalオプションでAbortSignalを渡す |
-| キャンセル実行       | controller.abort()                                       | ストリーミングを中断しリソースを解放     |
+| 処理 | メソッド/プロパティ | 説明 |
+| ---- | -------------------- | ---- |
+| ストリーミング開始 | `window.electronAPI.llm.streamChat(request)` | `{ requestId }` を受け取る |
+| 状態保持 | `chatSlice.currentStreamId` / `streamRequestIdRef` | 現在の requestId を保存 |
+| キャンセル実行 | `window.electronAPI.llm.cancelStream(requestId)` | Main 側 AbortController を abort する |
+| UI 後処理 | `cancelStreaming()` / local reset | placeholder message や stream state を停止する |
 
 ### キャンセルトリガー
 
-| トリガー           | アクション                     |
-| ------------------ | ------------------------------ |
-| キャンセルボタン   | `onCancel()` → `abort()`       |
-| Escapeキー         | キーイベント → `abort()`       |
-| コンポーネント破棄 | useEffect cleanup → `abort()`  |
-| 新規メッセージ送信 | 前のストリームを自動キャンセル |
+| トリガー | アクション |
+| -------- | ---------- |
+| ChatView の停止ボタン | `cancelStream()` → `cancelStream(requestId)` |
+| Workspace chat の停止ボタン | `cancelStream()` → `cancelStream(requestId)` |
+| Main 側 abort | `activeStreams.get(requestId)?.abort()` |
+| コンポーネント破棄 | cleanup で `cancelStream(requestId)` |
 
 ---
 
 ## UIコンポーネント
+
+### current HEAD の二重実装と Task02 設計ギャップ
+
+| surface | 現在の実装 | Task02 で揃える対象 |
+| --- | --- | --- |
+| `ChatView` / `useStreamingChat` | `chatSlice` に placeholder / `streamingContent` / `currentStreamId` を保持する general chat | 共通 general mode 契約 |
+| `WorkspaceChatPanel` / `useWorkspaceChatController` | local state + ref で stream を管理し、`conversationAPI` で永続化する workspace 専用 chat | workspace mode 契約 |
+| 設計ギャップ | current HEAD | `skill-lifecycle` mode、共通 recent rail、mode/session overlay、handoff summary の統一 |
 
 ### StreamingMessage
 
@@ -175,5 +186,6 @@ Renderer側でキャンセル機構を実装する際は、AbortControllerを使
 
 | バージョン | 日付       | 変更内容                                                           |
 | ---------- | ---------- | ------------------------------------------------------------------ |
+| v1.2.0     | 2026-03-12 | current HEAD 準拠へ更新。`LLMStreamChunk`、`llm:stream-end`、`llm:stream-cancel`、ChatView/Workspace の二重実装と Task02 設計ギャップを追記 |
 | v1.0.0     | 2025-01-20 | 初版作成                                                           |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換         |

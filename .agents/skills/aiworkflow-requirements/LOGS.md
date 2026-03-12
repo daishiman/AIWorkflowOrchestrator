@@ -4,6 +4,137 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 の Phase 12 準拠確認と実装苦戦箇所を system spec へ追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
+- 目的: current branch 実装の要点、Phase 12 準拠確認値、苦戦箇所、5分解決カードを system spec 単体で再利用できるようにする
+
+### 実施内容
+- SubAgent-A（feature spec）: `references/ui-ux-feature-components.md` の Task02 節を `実装内容（要点）` / `実装時の苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックへ再編
+- SubAgent-B（台帳）: `references/task-workflow.md` に Task 12-1〜12-5 の準拠確認、`verify-unassigned-links=220/220`、`currentViolations=0 / baselineViolations=134` を追加
+- SubAgent-C（履歴）: `SKILL.md` 変更履歴へ Task02 の再利用導線を追記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 current branch 再監査の partial completion を system spec へ固定
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
+- 目的: shared contract / handoff helper / Phase 11 harness / Phase 12 outputs は current branch へ同期済みである一方、transport 一本化は未完了であることを system spec 正本へ一貫した語彙で固定する
+
+### 実施内容
+- SubAgent-A（state/history）: `references/arch-state-management.md` / `references/interfaces-chat-history.md` / `references/architecture-chat-history.md` / `references/api-chat-history.md` に shared contract layer と transport 残差を追記
+- SubAgent-B（台帳/教訓）: `references/task-workflow.md` / `references/lessons-learned.md` に Phase 1-12 完了と overall `in_progress` の分離、follow-up 2件、5ステップ解決カードを追記
+- SubAgent-C（入口）: `indexes/resource-map.md` / `SKILL.md` に current workflow 正本、Phase 11 harness、follow-up 読み分けを追記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 の抽出導線を current HEAD 準拠で再整備
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-02`
+- 目的: current workflow は Phase 12 完了 snapshot、completed archive は prior attempt という二重状態を崩さず、current HEAD から必要仕様を迷わず抽出できる入口を整備する
+
+### 実施内容
+- SubAgent-A（workflow split）: `references/task-workflow.md` / `references/lessons-learned.md` に current workflow と completed archive の責務分離、relative ref guard、follow-up 未タスクを追記
+- SubAgent-B（entrypoints）: `SKILL.md` / `indexes/resource-map.md` / `indexes/quick-reference.md` に Task02 の読む順番と current code anchors を追記
+- SubAgent-C（LLM-streaming）: `references/interfaces-llm.md` / `references/llm-ipc-types.md` / `references/llm-streaming.md` を current HEAD の `llm:stream-cancel` / `requestId` 契約へ更新
+- SubAgent-D（history-workspace-state）: `references/interfaces-chat-history.md` / `references/architecture-chat-history.md` / `references/api-chat-history.md` / `references/llm-workspace-chat-edit.md` / `references/arch-state-management.md` に general/workspace/history/state の境界を追記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: current build capture の残課題を global `unassigned-task/` へ formalize し、system spec 正本から参照できるようにする
+
+### 実施内容
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/ui-ux-feature-components.md` / `references/workflow-light-theme-contrast-regression-guard.md` に未タスク `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` の導線を追加
+- completed workflow `light-theme-contrast-regression-guard` の `outputs/phase-12/unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
+- remediation task とは別に、`build / harness / baseUrl / native dependency` を 1 コマンドへ束ねる preflight bundle 改善として記録した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: Phase 12 の root evidence と system spec を再突合し、global `unassigned-task/` legacy と skill 改善の反映漏れをなくす
+
+### 実施内容
+- `references/task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task 3件を追記
+- `references/lessons-learned.md` に「workflow baseline 64 と directory baseline 134 の分離」「Task 5 の 3 skill 同値転記」を追加
+- workflow outputs の `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` と system spec 側の記述粒度を揃えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 仕様書集約（再利用導線最適化）
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: 今回の実装内容と苦戦箇所を 1 つの system spec 正本へ集約し、同種課題の初動を短縮する
+
+### 実施内容
+- `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、実装内容、苦戦箇所、5分解決カード、仕様書別 SubAgent 編成、最適なファイル形成を統合
+- `indexes/resource-map.md` に Light Theme contrast regression guard の逆引き導線を追加し、UI/UX 一覧にも workflow 正本を登録
+- `indexes/quick-reference.md` に検索語、読む順番、実装アンカーを追加し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` へ降りる最短ルートを固定
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
+- 目的: light theme contrast guard の実装・Phase 11 証跡・Phase 12 仕様同期を `.claude` 正本へ反映する
+
+### 実施内容
+- `references/task-workflow.md` に current workflow の Phase 1-12 実行記録、audit summary、baseline routing、5ステップ解決カードを追加
+- `references/lessons-learned.md` に `esbuild` アーキ差分、build input 漏れ、baseline 誤読、Apple UI/UX review の教訓を追加
+- `references/ui-ux-feature-components.md` に guard workflow の representative feature、実測値、baseline backlog routing を追加
+- `.agents` mirror は既存 drift が広範囲なため、本タスクでは記録のみとして `spec-update-summary.md` に明記
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 追補を system spec へ同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
+- 目的: current workflow `docs/30-workflows/light-theme-shared-color-migration/` の actual target inventory、必要 system spec 抽出セット、苦戦箇所を system spec 正本へ反映し、同種 task の初動を短縮する
+
+### 実施内容
+- SubAgent-A（design-system/settings）: `references/workflow-light-theme-global-remediation.md` / `references/ui-ux-design-system.md` に current workflow、inventory correction、verification-only lane を追記
+- SubAgent-B（台帳）: `references/task-workflow.md` に `spec_created` 完了記録、SubAgent分担、検証証跡を追加
+- SubAgent-C（教訓）: `references/lessons-learned.md` に 4苦戦箇所と 5ステップ解決カードを追加
+- SubAgent-D（履歴）: `SKILL.md` に変更履歴 `9.01.84` を追加
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の未タスク formalize を system spec へ同期
 
 ### コンテキスト
@@ -9207,3 +9338,11 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+## 2026-03-12 - TASK-SKILL-LIFECYCLE branch extraction follow-up
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12 extraction guide hardening
+- **Result**: success
+- **Notes**:
+  - `resource-map.md` と `quick-reference.md` に `SkillCenterView` / `skillLifecycleJourney` / `preload index/types` を追加し、entry surface / execution surface / non-persist revive を current branch 実体から抽出できる導線へ追補
+  - `task-workflow.md` の TASK-SKILL-LIFECYCLE-03 成果物 path を `completed-tasks/` 正本へ更新し、Task02 downstream 参照の path drift を是正

@@ -240,6 +240,34 @@
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-UI-07-DASHBOARD-ENHANCEMENT
 
+### [Phase12] current/archive split + partial completion + retrospective hub（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: current workflow を reopen したまま completed archive を比較資料として保持し、さらに residual follow-up が残るため workflow 全体は `in_progress` のまま閉じる必要がある
+- **アプローチ**:
+  - current workflow / completed archive / top-level workflow status を別々に記録する
+  - `artifacts.status=in_progress` と follow-up 未タスクを同一ターンで残す
+  - `references/workflow-<topic>.md` を追加し、実装内容・苦戦箇所・5分解決カード・current/archive split を 1 ファイルへ集約する
+  - `task-workflow.md` / `lessons-learned.md` / `resource-map.md` / `quick-reference.md` から hub へ辿れる状態にする
+- **結果**: completed archive の上書きと partial completion の誤判定を同時に防ぎ、次回の初動を 1 ファイル起点へ短縮できる
+- **適用条件**: current/completed dual package、cross-cutting な実装内容、Phase 1-12 完了だが overall completed ではない task
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+
+### [Phase12] current/completed dual package を片側へ潰して fast-path doc も残さない
+
+- **状況**: reopened workflow の再監査で current workflow と completed archive の両方がある
+- **問題**: archive を current へ戻すか削除すると、現 HEAD 基準の正本と比較資料のどちらかが消え、仕様探索も遅くなる
+- **原因**:
+  1. current workflow と completed archive の責務を分けずに扱った
+  2. Phase 1-12 完了と workflow 全体完了を同一視した
+  3. 実装内容と苦戦箇所を各仕様書へ散らし、`workflow-<topic>.md` のような hub を作らなかった
+- **教訓**:
+  1. current と archive は共存させ、役割を table で分けて書く
+  2. residual follow-up が残るなら top-level status は `in_progress` に留める
+  3. cross-cutting な知見は workflow hub に集約し、resource-map / quick-reference へ導線を追加する
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+
 ### [Architecture] 既存アダプターパターンの活用（新規API統合時）
 
 - **状況**: システムプロンプトのLLM API統合時、仕様書ではVercel AI SDK使用を提案
@@ -2999,6 +3027,38 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 
+### [Phase12] light theme shared color migration は token scope / component scope / verification-only lane を分離する（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
+
+- **状況**: global light remediation 後の follow-up task で、親 unassigned-task の対象一覧をそのまま使うと current worktree の実体とずれやすい。settings/auth/workspace をまたぐため、UI だけ読んでも system spec 抽出が漏れやすい
+- **成功パターン**:
+  - Phase 1 で current worktree の hardcoded color inventory を取り直し、old unassigned-task の対象を盲信しない
+  - primary targets を `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` に固定し、`SettingsView` / `SettingsCard` / `DashboardView` は verification-only lane に落とす
+  - token foundation は親 workflow、current task は component migration、wrapper は verification-only として 3 lane に分離する
+  - `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` の要否を同一ターンで判定する
+  - `spec_created` task では Phase 1-3 を completed に固定してから、Phase 4+ を planned のまま書く
+- **失敗パターン**:
+  - `SettingsView` / `DashboardView` を親 task のまま P1 扱いし、actual inventory を補正しない
+  - token baseline の議論と component migration を同じ仕様書で進める
+  - `ui-ux-*` だけ読んで `api-ipc-*` / `security-*` / `rag-desktop-state` / `ui-ux-portal-patterns` を落とす
+  - Phase 1-3 gate 前に Phase 4-13 を completed 扱いにする
+- **結果**: `spec_created` UI task でも current inventory と system spec 抽出セットが揃い、後続の実装 lane / regression guard / Phase 12 同期が短手順で再利用できる
+- **適用条件**: Light Mode follow-up、component migration、settings/auth/workspace を跨ぐ UI task、spec-only workflow 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+### [Phase 12] loopback screenshot capture は localhost 不達時に current build static server を自動起動する
+
+- **状況**: screenshot capture script が `http://127.0.0.1:<port>` / `http://localhost:<port>` を前提にしていると、preview / static serve を別ターミナルで起動し忘れた瞬間に `ERR_CONNECTION_REFUSED` で落ちる
+- **アプローチ**:
+  1. capture 実行前に loopback `baseUrl` の readiness probe を行う
+  2. 不達かつ参照先が loopback の場合のみ、current worktree `apps/desktop/out/renderer` をローカル static server で自動配信する
+  3. capture 完了後は自動起動した server を cleanup し、`phase11-capture-metadata.json` / `manual-test-result.md` / Phase 12 レポートに fallback 使用を記録する
+  4. `current build` の asset hash と capture timestamp が同一 worktree 由来であることを確認する
+- **結果**: 「人手 preflight が1つ漏れただけで Phase 11 が全停止する」状態を避けつつ、current build 正本での screenshot 証跡を維持できる
+- **適用条件**: worktree 上の UI 再撮影、loopback baseUrl 固定の capture script、preview source drift を避けたい Phase 11/12 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
+
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する
@@ -3492,3 +3552,17 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **教訓**: Preload テストでは `Object.defineProperty(process, "contextIsolated", { value: true })` が必須。`electronAPI` が `undefined` の場合は contextBridge パスの通過を確認
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
+
+### [Phase12] active workflow partial completion を system spec 3ブロックへ同期する（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: current workflow は Phase 1-12 を実施済みだが、follow-up が残るため overall status は `in_progress` のまま維持する必要がある。Phase 12 再監査では「成果物は揃っているが task 全体は fully closed ではない」状態を system spec と skill docs の両方へ残す必要がある
+- **アプローチ**:
+  1. `.claude/skills/...` を canonical root、`.agents/skills/...` を mirror として扱い、skill 改善は canonical 側へ集約する
+  2. system spec の domain file には `実装内容（要点）` / `実装時の苦戦箇所（再利用形式）` / `同種課題の5分解決カード` の3ブロックを必ず置く
+  3. `phase12-task-spec-compliance-check.md`、`verify-unassigned-links`、`audit-unassigned-tasks --diff-from HEAD` の実測値を domain spec と task-workflow の両方へ転記する
+  4. follow-up は root `docs/30-workflows/unassigned-task/` に formalize し、`currentViolations=0` と物理配置確認を同時に残す
+  5. `rsync` または同等手段で mirror sync を行い、`diff -qr` で drift を閉じてから完了判定する
+- **結果**: Phase 12 は準拠 PASS のまま、overall status は `in_progress` を維持できる。domain spec 単体でも「何を実装し、どこで苦戦し、次にどう解くか」を短時間で再利用できる
+- **適用条件**: current workflow 再監査、partial completion を含む active task、dual skill-root repository、follow-up 未タスクを伴う UI / state / contract 統合タスク
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02

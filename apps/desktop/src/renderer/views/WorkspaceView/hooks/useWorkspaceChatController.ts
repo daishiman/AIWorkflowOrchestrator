@@ -14,6 +14,10 @@ import {
   useWorkspaceMentionQuery,
   type WorkspaceMentionCandidate,
 } from "./useWorkspaceMentionQuery";
+import {
+  buildChatPlatformRequest,
+  createWorkspaceChatHandoff,
+} from "@/renderer/features/chat-platform/contracts";
 
 export interface WorkspaceChatMessage {
   id: string;
@@ -121,31 +125,6 @@ async function buildFileContextBlock(
     "以下は現在のワークスペース背景情報です。回答時に参照してください。",
     ...blocks,
   ].join("\n\n");
-}
-
-function buildChatRequest(params: {
-  input: string;
-  contextBlock: string;
-  selectedModelId: string | null;
-  selectedProviderId: "openai" | "anthropic" | "google" | "xai" | null;
-}) {
-  const body =
-    params.contextBlock.length > 0
-      ? `${params.contextBlock}\n\nユーザーの依頼:\n${params.input}`
-      : params.input;
-
-  return {
-    modelId: params.selectedModelId ?? "gpt-4o",
-    providerId: params.selectedProviderId ?? undefined,
-    temperature: 0.2,
-    stream: true,
-    messages: [
-      {
-        role: "user" as const,
-        content: body,
-      },
-    ],
-  };
 }
 
 export function useWorkspaceChatController(params: {
@@ -320,10 +299,14 @@ export function useWorkspaceChatController(params: {
       return conversationIdRef.current;
     }
 
-    const title = input.trim().slice(0, 32) || "Workspace Chat";
+    const handoff = createWorkspaceChatHandoff({
+      request: input,
+      selectedFiles,
+      selectedFilePath,
+    });
     const response = await window.conversationAPI.create({
       userId: WORKSPACE_CHAT_USER_ID,
-      title,
+      title: handoff.title,
     });
 
     if (!response.success || !response.data) {
@@ -335,7 +318,7 @@ export function useWorkspaceChatController(params: {
 
     setConversationId(response.data.id);
     return response.data.id;
-  }, [input]);
+  }, [input, selectedFilePath, selectedFiles]);
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
@@ -377,11 +360,21 @@ export function useWorkspaceChatController(params: {
       }
 
       const contextBlock = await buildFileContextBlock(selectedFiles);
-      const request = buildChatRequest({
-        input: trimmed,
+      const handoff = createWorkspaceChatHandoff({
+        request: trimmed,
+        selectedFiles,
+        selectedFilePath,
+      });
+      const request = buildChatPlatformRequest({
+        mode: handoff.mode,
+        input: handoff.request,
         contextBlock,
         selectedModelId,
         selectedProviderId,
+        systemPrompt:
+          handoff.attachments.length > 0
+            ? "添付されたワークスペース文脈を優先し、一般会話へ漏らさずに回答してください。"
+            : undefined,
       });
 
       streamContentRef.current = "";
@@ -403,6 +396,7 @@ export function useWorkspaceChatController(params: {
     ensureConversation,
     input,
     isSending,
+    selectedFilePath,
     selectedFiles,
     selectedModelId,
     selectedProviderId,

@@ -31,7 +31,10 @@
 | タスクID | `<TASK-ID>` |
 | 実施日 | `YYYY-MM-DD` |
 | ステータス | `completed` / `spec_created` |
+| workflow全体ステータス | `completed` / `in_progress` / `spec_created` |
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
+| completed archive | `<completed-workflow-path>` / `N/A` |
+| workflow retrospective hub | `references/workflow-<topic>.md`（cross-cutting な実装内容/苦戦箇所を 1 ファイルへ集約する場合） |
 | SubAgent分担 | `A:interfaces / B:api-ipc / C:security / D:task-workflow / E:lessons` または `A:ui-ux-components / B:ui-ux-feature-components / C:arch-ui-components / D:arch-state-management / E:task-workflow / F:lessons / G+:<ui-domain-spec>` |
 
 ---
@@ -89,6 +92,19 @@
 
 > `<workflow-b>` が不要な場合は1workflowのみで運用し、理由を「備考」に明記する。
 
+### 3.2.1 current/archive split + residual follow-up プロファイル
+
+| 項目 | 記録内容 |
+| --- | --- |
+| current workflow | `<workflow-a>` |
+| completed archive | `<completed-workflow-path>` / `N/A` |
+| Phase 1-12 実行状態 | `completed` / `spec_created` |
+| workflow全体ステータス | `completed` / `in_progress` |
+| residual follow-up | `<UT-ID or acceptance gap>` |
+| workflow retrospective hub | `references/workflow-<topic>.md`（3仕様書以上に跨る実装内容/苦戦箇所を 1 ファイルへ集約する場合） |
+
+> `Phase 1-12 完了` と `workflow全体 completed` は同義ではない。current/archive split があるときは top-level status と follow-up 理由を別行で残す。
+
 ### 3.3 仕様書別SubAgent実行ログ（必須）
 
 | SubAgent | 担当仕様書 | 実装内容の反映先 | 苦戦箇所の反映先 | 検証証跡 |
@@ -144,6 +160,7 @@ UI機能実装の場合は次を推奨:
 | shortcut / focus trap / ranking / no-match | `ui-ux-search-panel.md` | quick search / search dialog の挙動を検索仕様へ再利用可能な形で集約できる |
 | renderer timeout / retry / parse fallback | `architecture-implementation-patterns.md` | UI実装で閉じた resilience pattern を他画面へ転用できる |
 | retryable / fatal / recoverable error surface | `error-handling.md` | parse/read/timeout の UI 応答を共通の error contract に寄せられる |
+| current branch 実装要点・苦戦箇所・5分解決カードの集約ハブ | `workflow-<topic>.md` | cross-cutting 情報が 3 仕様書以上に跨るときの初動を短縮できる |
 | 検証値、残課題、完了記録 | `task-workflow.md` | 台帳として追跡できる |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | 次回の短時間解決に直結する |
 
@@ -291,6 +308,8 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] current workflow と completed archive が併存する場合、archive/current split、workflow全体ステータス、residual follow-up 理由を同一ターンで記録する
+- [ ] cross-cutting な実装内容/苦戦箇所が 3 仕様書以上に跨る場合、`references/workflow-<topic>.md` を追加し、resource-map / quick-reference / task-workflow から辿れるようにする
 - [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only lane を明記している
 - [ ] Light theme shared color migration では `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` の要否判定を記録している
 - [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が同期している

@@ -1,4 +1,5 @@
 import { StateCreator } from "zustand";
+import { createEmptyChatStreamOverlayState } from "@repo/shared/types";
 import type { ChatMessage, RagConnectionStatus } from "../types";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 
@@ -259,9 +260,10 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   },
 
   endStreaming: () => {
+    const resetOverlay = createEmptyChatStreamOverlayState();
+
     set((state) => ({
-      isStreaming: false,
-      currentStreamId: null,
+      ...resetOverlay,
       chatMessages: state.chatMessages.map((msg) =>
         msg.id === state.streamingMessageId
           ? { ...msg, isStreaming: false }
@@ -271,11 +273,10 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   },
 
   cancelStreaming: () => {
-    // Optionally remove incomplete message or keep it
+    const resetOverlay = createEmptyChatStreamOverlayState();
+
     set((state) => ({
-      isStreaming: false,
-      currentStreamId: null,
-      streamingContent: "",
+      ...resetOverlay,
       chatMessages: state.chatMessages.map((msg) =>
         msg.id === state.streamingMessageId
           ? {
@@ -289,10 +290,12 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   },
 
   setStreamingError: (error) => {
-    set((state) => ({
-      isStreaming: false,
-      currentStreamId: null,
+    const resetOverlay = createEmptyChatStreamOverlayState({
       streamingError: error,
+    });
+
+    set((state) => ({
+      ...resetOverlay,
       chatMessages: state.chatMessages.map((msg) =>
         msg.id === state.streamingMessageId
           ? { ...msg, isStreaming: false }

@@ -8,7 +8,7 @@
 
 | カテゴリ                                                                                              | パターン数 | 説明                             |
 | ----------------------------------------------------------------------------------------------------- | ---------- | -------------------------------- |
-| [失敗パターン](#失敗パターン)                                                                         | 13件       | 回避すべきアンチパターン         |
+| [失敗パターン](#失敗パターン)                                                                         | 14件       | 回避すべきアンチパターン         |
 | [成功パターン](#成功パターン)                                                                         | 50+件      | 再利用可能なベストプラクティス   |
 | [ガイドライン](#ガイドライン)                                                                         | 6件        | 判断基準・検出パターン・Pitfall登録 |
 | [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition)                                | 4件        | Phase間の成果物引き継ぎ          |
@@ -272,9 +272,58 @@
 - **発見日**: 2026-02-21
 - **関連タスク**: UT-FIX-SKILL-IMPORT-INTERFACE-001
 
+### current/completed dual package drift（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: parallel step を含む workflow で、過去完了済み archive と current reopen workflow が同時に存在した
+- **問題**: completed archive を削除するか current workflow へ上書きすると、sibling の relative ref と current HEAD 準拠仕様のどちらかが壊れる
+- **派生問題**: sibling workflow が `tasks/...` から `completed-tasks/...` へ移管されたのに、pack index / downstream 仕様書 / `task-workflow.md` が旧 path を持ち続ける
+- **原因**:
+  1. completed package を「最新版だから current へ戻してよい」と誤認した
+  2. sibling workflow が `../step-02-par-task-02-chat-platform-unification/` のような相対参照を持つことを確認しなかった
+  3. system spec と task-spec の両方に archive/current split guard がなかった
+- **教訓**:
+  1. current workflow と completed archive は別責務として保持する
+  2. current workflow は現 HEAD のコードアンカー基準で reopen design を維持する
+  3. `test -f` / `test -d` で sibling relative ref を先に確認する
+  4. sibling 移管がある場合は live docs を対象に `rg -n "<workflow-dir>" docs/30-workflows/skill-lifecycle-unification .claude/skills/aiworkflow-requirements/indexes .claude/skills/aiworkflow-requirements/references/task-workflow.md` を実行し、旧 path 残存を 0 件にする
+  5. Phase 12 では resource-map / quick-reference / core references の3層同期まで含めて完了とする
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+
+### Phase 1-12 完了と overall completed の誤同一視（TASK-SKILL-LIFECYCLE-02 current branch 再監査）
+
+- **状況**: shared contract / handoff helper / screenshot / outputs が揃い、Phase 1-12 自体は完了している
+- **問題**: acceptance partial や transport follow-up が残っているのに、workflow 全体も completed に見せてしまう
+- **原因**:
+  1. `phases.1-12.status=completed` と top-level `artifacts.status` を分けて考えていない
+  2. `acceptanceCriteria` の false 項目と未タスク formalization を別台帳で管理し、結論が分散する
+  3. Phase 12 guide に「partial completion」判定が明文化されていない
+- **教訓**:
+  1. Phase 実行完了と workflow 全体完了は別概念として扱う
+  2. residual follow-up がある場合は top-level `artifacts.status=in_progress` を維持する
+  3. `executionNote` / `spec-update-summary.md` / `unassigned-task-detection.md` に同じ理由を書く
+  4. 未完了 acceptance を false のまま残し、completed へ塗りつぶさない
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+
 ---
 
 ## 成功パターン
+
+### Phase 1-12 完了だが residual follow-up が残る task の締め方（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: 実装・テスト・スクリーンショット・ドキュメント更新までは終わったが、cross-cutting follow-up が残る
+- **解決パターン**:
+  1. `phases.1-12.status=completed` と `artifacts.status=in_progress` を分離する
+  2. `acceptanceCriteria` は false を維持し、`executionNote` に partial reason を明記する
+  3. follow-up を root `docs/30-workflows/unassigned-task/` に formalize する
+  4. `phase12-task-spec-compliance-check.md` に「Phase 12 は PASS / workflow 全体は in_progress」の結論を集約する
+  5. system spec と task-spec の両方へ partial completion guard を同期する
+- **効果**:
+  - Phase 12 の完了根拠を残しつつ、未完了 acceptance を隠さない
+  - 後続 task の開始条件と current task の実施済み範囲を同時に明確化できる
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
 
 ### 仕様書修正タスクの「差分監査」と「全体監査」分離（UT-SKILL-IPC-PRELOAD-EXTENSION-001）
 
@@ -2145,6 +2194,8 @@
 
 | Date           | Changes                                                                                                                                                                                                |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 dual package drift パターン追加**: 失敗パターン「current/completed dual package drift」を追加。current workflow reopen と completed archive 保持を同時に扱うときは、sibling relative ref 確認、archive/current split 維持、resource-map / quick-reference / core refs の3層同期を完了条件に含める |
+| **2026-03-12** | **TASK-SKILL-LIFECYCLE-02 partial completion パターン追加**: 失敗パターン「Phase 1-12 完了と overall completed の誤同一視」と成功パターン「Phase 1-12 完了だが residual follow-up が残る task の締め方」を追加し、`artifacts.status=in_progress` と acceptance partial の併記を標準化 |
 | **2026-03-11** | **TASK-UI-04C follow-up パターン追加**: 成功パターン「親タスク苦戦箇所の事後未タスク化」を追加。初回 0件判定後に cross-cutting guard が必要と判明した場合、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する手順を標準化 |
 | **2026-03-05** | **TASK-UI-01-D 再確認パターン追加**: 成功パターン「Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化」を追加。`LOGS/SKILL/topic-map` 同時更新、`docs/30-workflows/unassigned-task/` への配置、`audit --target-file` + `--diff-from HEAD` の `currentViolations=0` 固定を標準化 |
 | **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |

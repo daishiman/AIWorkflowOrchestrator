@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-02 active workflow partial completion パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「active workflow partial completion を system spec 3ブロックへ同期する」パターンを追加
+  - `.claude` canonical / `.agents` mirror、`実装内容（要点）` / `苦戦箇所` / `5分解決カード`、`verify-unassigned-links` + `audit --diff-from HEAD` + mirror sync を同一ターンで閉じる運用を標準化
+  - `SKILL.md` 変更履歴へ current/archive split と partial completion の template 追補を反映
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator

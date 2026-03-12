@@ -382,6 +382,25 @@ Result型は成功（Ok）または失敗（Err）を表す直和型である。
 
 ---
 
+## Task02 設計抽出起点: Renderer overlay と long-term history の責務
+
+| 層/境界 | current HEAD の実体 | Task02 で追加設計する責務 |
+| --- | --- | --- |
+| Renderer general chat | `ChatView` + `chatSlice` + `useStreamingChat` | general chat session をどこまで履歴へ昇格させるか、mode/session mapping をどう置くか |
+| Renderer workspace chat | `WorkspaceChatPanel` + `useWorkspaceChatController` | workspace 専用フローを共通 platform へ寄せる範囲と、workspace 固有 context を残す範囲 |
+| Application / Domain | `CreateChatSessionUseCase` / `AddUserMessageUseCase` / `AddAssistantMessageUseCase` | revive / handoff / mode-aware session lookup を新規 Use Case にするか、既存 Use Case 合成で扱うか |
+| Infrastructure | `conversation:*` repository / IPC 境界 | session 永続化契約を renderer convenience state と切り離し、transport 追加時は IPC 契約まで同期する |
+| current branch contract layer | `packages/shared/src/types/chat-platform.ts` / `apps/desktop/src/renderer/features/chat-platform/contracts.ts` | entry payload / revive snapshot を shared contract へ固定し、transport 残差だけを follow-up に分離する |
+
+標準ルール:
+
+- Renderer overlay は「描画都合の一時状態」、chat history は「再起動後も残る契約」として分離する。
+- Workspace 側の先行実装を general chat へ横流しせず、domain/application 層で共通責務を定義してから統合する。
+- current branch で先に landed した shared contract (`ChatHandoffPayload` / `ChatReviveSnapshot`) は transport 実装より先に architecture 正本へ昇格させる。
+- prior attempt archive は比較資料として参照し、current HEAD の設計正本は現行コードアンカーで更新する。
+
+---
+
 ## 関連ドキュメント
 
 - [API仕様](./api-chat-history.md) - Use Case API詳細
@@ -428,6 +447,8 @@ Result型は成功（Ok）または失敗（Err）を表す直和型である。
 
 | Version | Date       | Changes                                                                 |
 | ------- | ---------- | ----------------------------------------------------------------------- |
+| 1.5.0   | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 current branch 再監査を反映。shared contract layer と transport follow-up の分離を追記 |
+| 1.4.0   | 2026-03-12 | TASK-SKILL-LIFECYCLE-02 向けに renderer overlay と long-term history の責務境界を追加 |
 | 1.3.0   | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |
 | 1.2.0   | 2026-01-22 | App.tsx統合パターン・Repository Factory追加、UT-007完了記録追加          |
 | 1.1.0   | 2026-01-22 | Drizzle Repository実装を追加                                             |

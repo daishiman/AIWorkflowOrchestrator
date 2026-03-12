@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-03-11T14:41:02.161Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "screenshots": [
+    "TC-02-01-chat-general-foundation.png",
+    "TC-02-02-chat-retry-error-state.png",
+    "TC-02-03-workspace-surface.png",
+    "TC-02-04-workspace-handoff-chat.png",
+    "TC-02-05-skill-center-journey.png",
+    "TC-02-06-skill-lifecycle-handoff-chat.png"
+  ]
+}

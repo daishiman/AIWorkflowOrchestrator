@@ -1,0 +1,32 @@
+[
+  {
+    "id": "TC-11-01",
+    "selector": "[data-testid='chat-view']",
+    "text": "AIチャット RAG有効: ナレッジベースを参照して回答します スキル管理 workspace と general の違いを教えて 09:00 AI general は追加文脈なし、workspace は選択ファイルの背景情報付きで会話します。 09:00 送信",
+    "capturedAt": "2026-03-12T08:55:50.622Z"
+  },
+  {
+    "id": "TC-11-02",
+    "selector": "[data-testid='workspace-view']",
+    "text": "ファイル プレビュー 作業スペース フォルダを追加 • app.ts • chat.ts Workspace Chat ファイル背景情報と会話履歴を使って、作業コンテキストに沿った回答を得られます。 最初の質問を選ぶか、そのまま入力して始めてください。 このファイルの責務を3行で要約して バグになりそうな箇所を優先度付きで指摘して 最小変更でリファクタリング案を作って まだ会話は始まっていません。下の入力欄か提案バブルから始めてください。 添付 app.ts × ファイルの背景情報をAIに伝えています ↑ ファイル未選択 chat+files - - idle",
+    "capturedAt": "2026-03-12T08:55:51.280Z"
+  },
+  {
+    "id": "TC-11-03",
+    "selector": "[data-testid='skill-lifecycle-panel']",
+    "text": "SKILL LIFECYCLE 作成・実行・改善を一つの流れで進める 表向きの入口はこの画面に集約し、内部では作成支援 API と既存の実行・分析導線を必要最小限だけ組み合わせます。 詳細ウィザード 一覧へ戻る PLAN 共同設計 CREATE 未生成 EXECUTE chat-platform-demo-skill IMPROVE 未取得 1. 依頼をまとめる 何を作りたいかを自然文で入力してください。mode 判定は内部で処理し、表の導線は増やしません。 方針を決める スキルを生成する 実生成は既存の安全な作成導線を再利用し、判定結果は会話プランにだけ反映します。 2. 生成したスキルを実行する 生成後はそのまま選択状態に切り替え、既存の実行ストリームへ接続します。 実行する 3. 改善の次アクションを決める creator 側の改善提案で方向性を出し、必要なら詳細分析で適用まで進めます。 改善提案を取得 詳細分析を開く セッションログ GUIDE 単一ライフサイクル導線 依頼文から作成方針を決め、生成したスキルをそのまま実行し、最後に改善提案まで一気通しで確認できます。 REQUEST 作成依頼 workspace で集めた文脈を使ってレビュー補助スキルを作り、そのまま実行したい GUIDE 推奨モード: 共同設計 表向きの導線はこのまま維持しつつ、内部では必要な計画・実行・改善の役割だけを使い分けます。 内部オーケストレーション Planner mode 判定: 共同設計 Executor 生成後に既存 execute 導線へ自動接続します。 Improver creator 提案と詳細分析を段階的に使い分けます。",
+    "capturedAt": "2026-03-12T08:55:52.331Z"
+  },
+  {
+    "id": "TC-11-04",
+    "selector": "[data-testid='phase11-revive-evidence']",
+    "text": "REVIVE BOUNDARY recent session / active session は復元し、streaming overlay は復元しない MODE workspace CONVERSATIONID phase11-conversation TITLE Workspace: app.ts の責務を整理して ATTACHMENTS app.ts RECENT RAIL phase11-conversation,phase11-other-conversation NON-PERSIST currentStreamId / streamingMessageId / streamingContent / streamingError は revive 対象外",
+    "capturedAt": "2026-03-12T08:55:52.954Z"
+  },
+  {
+    "id": "TC-11-05",
+    "selector": "[data-testid='phase11-stream-cancel-evidence']",
+    "text": "STREAMING RESET cancel / end 後に非永続 overlay を空に戻す ISSTREAMING false CURRENTSTREAMID null STREAMINGMESSAGEID null STREAMINGCONTENT \"\" STREAMINGERROR null NOTE workspace / general どちらでも revive されるのは session metadata のみ",
+    "capturedAt": "2026-03-12T08:55:53.570Z"
+  }
+]

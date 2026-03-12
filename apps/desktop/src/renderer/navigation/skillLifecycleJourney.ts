@@ -1,4 +1,10 @@
 import type { ViewType } from "../store/types";
+import {
+  createChatSessionTitle,
+  type ChatContextAttachment,
+  type ChatEntrySurface,
+  type ChatHandoffPayload,
+} from "@repo/shared/types";
 
 export type SkillLifecycleJob = "create" | "use" | "improve";
 
@@ -38,6 +44,17 @@ export interface SkillLifecycleDependencyContract {
   input: string;
   output: string;
   forbidden: string;
+}
+
+export interface SkillLifecycleChatHandoffInput {
+  request: string;
+  sourceSurface?: Extract<
+    ChatEntrySurface,
+    "skill-center" | "skill-creator" | "task03"
+  >;
+  skillName?: string | null;
+  createdSkillPath?: string | null;
+  metadata?: Record<string, unknown>;
 }
 
 export const SKILL_LIFECYCLE_ENTRY_VIEW = "skillCenter" as const;
@@ -195,4 +212,50 @@ export function getSkillLifecycleSurfaceResponsibility(
 
 export function isSupportingAdvancedLifecycleRoute(path: string): boolean {
   return SKILL_LIFECYCLE_ADVANCED_ROUTES.some((route) => route.path === path);
+}
+
+export function createSkillLifecycleChatHandoff(
+  input: SkillLifecycleChatHandoffInput,
+): ChatHandoffPayload {
+  const trimmedRequest = input.request.trim().replace(/\s+/g, " ");
+  const attachments: ChatContextAttachment[] = input.skillName
+    ? [
+        {
+          id: `skill:${input.skillName}`,
+          kind: "skill",
+          label: input.skillName,
+          path: input.createdSkillPath ?? undefined,
+          summary: "Skill lifecycle handoff target",
+        },
+      ]
+    : [];
+
+  return {
+    mode: "skill-lifecycle",
+    sourceSurface: input.sourceSurface ?? "skill-center",
+    targetSurface: "chat-view",
+    request: trimmedRequest,
+    title: createChatSessionTitle("skill-lifecycle", trimmedRequest),
+    summary: input.skillName?.trim().length
+      ? `${input.skillName} を実行 surface へ handoff`
+      : "Skill lifecycle handoff",
+    attachments,
+    metadata: {
+      createdSkillPath: input.createdSkillPath ?? null,
+      ...input.metadata,
+    },
+    createdAt: new Date().toISOString(),
+  };
+}
+
+export function isSkillLifecycleChatHandoffAllowed(
+  payload: ChatHandoffPayload,
+): boolean {
+  return (
+    payload.mode === "skill-lifecycle" &&
+    (payload.sourceSurface === "skill-center" ||
+      payload.sourceSurface === "skill-creator" ||
+      payload.sourceSurface === "task03") &&
+    payload.targetSurface === "chat-view"
+  );
 }
