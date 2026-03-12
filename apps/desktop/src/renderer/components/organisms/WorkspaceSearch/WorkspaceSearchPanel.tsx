@@ -401,13 +401,13 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
   return (
     <div
       className={clsx(
-        "workspace-search-panel flex flex-col h-full bg-[var(--bg-primary)] text-[var(--text-primary)]",
+        "workspace-search-panel flex flex-col h-full bg-slate-800",
         className,
       )}
       data-testid="workspace-search-panel"
     >
       {/* Search Row */}
-      <div className="flex items-center gap-2 px-4 h-12 border-b border-[var(--border-primary)]">
+      <div className="flex items-center gap-2 px-4 h-12 border-b border-slate-700">
         {/* Toggle Replace Button */}
         <button
           type="button"
@@ -416,7 +416,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
           aria-label={showReplace ? "置換を閉じる" : "置換を開く"}
           className={clsx(
             "w-5 h-5 flex items-center justify-center rounded",
-            "text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)]",
+            "text-slate-400 hover:bg-slate-700",
             "transition-transform duration-150",
             showReplace && "rotate-90",
           )}
@@ -428,7 +428,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
         <Icon
           name="folder-search"
           size={18}
-          className="text-[var(--text-muted)] flex-shrink-0"
+          className="text-slate-400 flex-shrink-0"
         />
 
         {/* Search Input */}
@@ -444,13 +444,11 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
           aria-label="Search query"
           className={clsx(
             "flex-1 min-w-0 px-3 py-1.5 h-8",
-            "bg-[var(--bg-tertiary)] rounded-md",
-            "text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)]",
+            "bg-slate-900 rounded-md",
+            "text-sm text-white placeholder-slate-400",
             "border transition-colors duration-150",
-            "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
-            error
-              ? "border-[var(--status-error)]"
-              : "border-[var(--border-primary)]",
+            "focus:outline-none focus:ring-2 focus:ring-blue-500",
+            error ? "border-red-500" : "border-slate-600",
           )}
           data-testid="search-input"
         />
@@ -467,8 +465,8 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
               "w-7 h-7 flex items-center justify-center rounded",
               "transition-colors duration-150",
               options.caseSensitive
-                ? "bg-[var(--status-primary)] text-[var(--text-inverse)]"
-                : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]",
+                ? "bg-blue-500 text-white"
+                : "bg-slate-700 text-slate-400 hover:bg-slate-600",
             )}
           >
             <span className="text-xs font-medium">Aa</span>
@@ -484,8 +482,8 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
               "w-7 h-7 flex items-center justify-center rounded",
               "transition-colors duration-150",
               options.wholeWord
-                ? "bg-[var(--status-primary)] text-[var(--text-inverse)]"
-                : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]",
+                ? "bg-blue-500 text-white"
+                : "bg-slate-700 text-slate-400 hover:bg-slate-600",
             )}
           >
             <span className="text-xs font-medium">Ab</span>
@@ -501,8 +499,8 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
               "w-7 h-7 flex items-center justify-center rounded",
               "transition-colors duration-150",
               options.useRegex
-                ? "bg-[var(--status-primary)] text-[var(--text-inverse)]"
-                : "bg-[var(--bg-tertiary)] text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)]",
+                ? "bg-blue-500 text-white"
+                : "bg-slate-700 text-slate-400 hover:bg-slate-600",
             )}
           >
             <span className="text-xs font-medium">.*</span>
@@ -512,19 +510,12 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
         {/* Counter & Status */}
         <div className="flex items-center gap-2 min-w-[80px] justify-center">
           {isSearching ? (
-            <Icon
-              name="loader-2"
-              size={16}
-              spin
-              className="text-[var(--status-primary)]"
-            />
+            <Icon name="loader-2" size={16} spin className="text-blue-400" />
           ) : hasSearched ? (
             <span
               className={clsx(
                 "text-xs tabular-nums",
-                hasResults
-                  ? "text-[var(--text-secondary)]"
-                  : "text-[var(--text-muted)]",
+                hasResults ? "text-slate-400" : "text-slate-500",
               )}
             >
               {hasResults ? `${totalCount} 件` : "結果なし / 0件"}
@@ -540,7 +531,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
           aria-label="詳細オプション"
           className={clsx(
             "w-7 h-7 flex items-center justify-center rounded",
-            "text-[var(--text-muted)] hover:bg-[var(--bg-tertiary)]",
+            "text-slate-400 hover:bg-slate-700",
             "transition-colors duration-100",
           )}
         >
@@ -550,7 +541,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
 
       {/* Replace Row - Conditionally visible */}
       {showReplace && (
-        <div className="flex items-center gap-2 px-4 h-10 border-b border-[var(--border-primary)]">
+        <div className="flex items-center gap-2 px-4 h-10 border-b border-slate-700">
           {/* Spacer for alignment with search row */}
           <div className="w-5" />
 
@@ -558,7 +549,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
           <Icon
             name="replace"
             size={18}
-            className="text-[var(--text-muted)] flex-shrink-0"
+            className="text-slate-400 flex-shrink-0"
           />
 
           {/* Replace Input */}
@@ -574,10 +565,10 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
             aria-label="Replace string"
             className={clsx(
               "flex-1 min-w-0 px-3 py-1.5 h-8",
-              "bg-[var(--bg-tertiary)] rounded-md",
-              "text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)]",
-              "border border-[var(--border-primary)] transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
+              "bg-slate-900 rounded-md",
+              "text-sm text-white placeholder-slate-400",
+              "border border-slate-600 transition-colors duration-150",
+              "focus:outline-none focus:ring-2 focus:ring-blue-500",
             )}
             data-testid="replace-input"
           />
@@ -593,8 +584,8 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
               "px-3 h-7 flex items-center justify-center rounded text-xs",
               "transition-colors duration-100",
               hasResults && !isReplacing
-                ? "bg-[var(--status-primary)] text-[var(--text-inverse)] hover:bg-[var(--status-primary-hover)]"
-                : "bg-[var(--bg-tertiary)] text-[var(--text-muted)] cursor-not-allowed",
+                ? "bg-blue-600 text-white hover:bg-blue-500"
+                : "bg-slate-800 text-slate-600 cursor-not-allowed",
             )}
             data-testid="replace-all-button"
           >
@@ -603,20 +594,15 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
 
           {/* Replace Loading */}
           {isReplacing && (
-            <Icon
-              name="loader-2"
-              size={16}
-              spin
-              className="text-[var(--status-primary)]"
-            />
+            <Icon name="loader-2" size={16} spin className="text-blue-400" />
           )}
         </div>
       )}
 
       {/* Advanced Options */}
       {showAdvancedOptions && (
-        <div className="px-4 py-2 border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
-          <label className="block text-xs text-[var(--text-secondary)] mb-1">
+        <div className="px-4 py-2 border-b border-slate-700 bg-slate-800/50">
+          <label className="block text-xs text-slate-400 mb-1">
             除外パターン / Exclude patterns (comma separated)
           </label>
           <input
@@ -626,10 +612,10 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
             placeholder="node_modules, .git, *.log"
             className={clsx(
               "w-full px-3 py-1.5 h-8",
-              "bg-[var(--bg-tertiary)] rounded-md",
-              "text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)]",
-              "border border-[var(--border-primary)] transition-colors duration-150",
-              "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)]",
+              "bg-slate-900 rounded-md",
+              "text-sm text-white placeholder-slate-400",
+              "border border-slate-600 transition-colors duration-150",
+              "focus:outline-none focus:ring-2 focus:ring-blue-500",
             )}
             aria-label="File exclude patterns"
             data-testid="exclude-patterns-input"
@@ -641,7 +627,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
       {error && (
         <div
           role="alert"
-          className="mx-4 my-2 px-3 py-1.5 bg-[var(--status-error)]/10 border border-[var(--status-error)]/20 rounded text-xs text-[var(--status-error)]"
+          className="mx-4 my-2 px-3 py-1.5 bg-red-900/50 border border-red-700 rounded text-xs text-red-400"
           data-testid="error-message"
         >
           {error}
@@ -652,7 +638,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
       {replaceSuccess && (
         <div
           role="status"
-          className="mx-4 my-2 px-3 py-1.5 bg-[var(--status-success-subtle)] border border-[var(--status-success)]/20 rounded text-xs text-[var(--status-success)]"
+          className="mx-4 my-2 px-3 py-1.5 bg-green-900/50 border border-green-700 rounded text-xs text-green-400"
           data-testid="success-message"
         >
           {replaceSuccess}
@@ -666,7 +652,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
       >
         {/* Empty State - No search yet */}
         {!isSearching && !hasSearched && (
-          <div className="p-4 text-center text-[var(--text-muted)] text-sm">
+          <div className="p-4 text-center text-slate-500 text-sm">
             検索語を入力してEnterを押してください
           </div>
         )}
@@ -674,7 +660,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
         {/* Empty State - No results */}
         {!isSearching && hasSearched && !hasResults && !error && (
           <div
-            className="p-4 text-center text-[var(--text-muted)] text-sm"
+            className="p-4 text-center text-slate-500 text-sm"
             data-testid="empty-results"
           >
             結果なし / No results for "{searchQuery}"
@@ -685,7 +671,7 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
         {!isSearching && !error && groupedResults.length > 0 && (
           <div className="results-list">
             {/* Results Summary */}
-            <div className="px-4 py-2 text-xs text-[var(--text-secondary)] border-b border-[var(--border-primary)] bg-[var(--bg-secondary)]">
+            <div className="px-4 py-2 text-xs text-slate-400 border-b border-slate-700 bg-slate-800/50">
               {totalCount} 件 / {groupedResults.length} ファイル
             </div>
 
@@ -697,19 +683,15 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
                 data-testid={`file-group-${group.filePath}`}
               >
                 {/* File Header */}
-                <div className="file-header px-4 py-2 bg-[var(--bg-tertiary)] border-b border-[var(--border-primary)] flex items-center gap-2">
-                  <Icon
-                    name="file-text"
-                    size={14}
-                    className="text-[var(--text-muted)]"
-                  />
+                <div className="file-header px-4 py-2 bg-slate-700/30 border-b border-slate-700 flex items-center gap-2">
+                  <Icon name="file-text" size={14} className="text-slate-400" />
                   <span
-                    className="flex-1 text-sm font-medium text-[var(--text-primary)] truncate"
+                    className="flex-1 text-sm font-medium text-slate-300 truncate"
                     title={group.filePath}
                   >
                     {getFileName(group.filePath)}
                   </span>
-                  <span className="text-xs text-[var(--text-muted)] bg-[var(--bg-secondary)] px-1.5 py-0.5 rounded border border-[var(--border-primary)]">
+                  <span className="text-xs text-slate-500 bg-slate-700 px-1.5 py-0.5 rounded">
                     {group.matches.length}
                   </span>
                 </div>
@@ -722,17 +704,17 @@ export const WorkspaceSearchPanel: React.FC<WorkspaceSearchPanelProps> = ({
                       onClick={() => handleResultClick(match)}
                       className={clsx(
                         "result-item w-full text-left px-4 py-1.5",
-                        "hover:bg-[var(--bg-tertiary)] transition-colors",
-                        "border-b border-[var(--border-subtle)] last:border-b-0",
-                        "focus:outline-none focus:bg-[var(--bg-tertiary)]",
+                        "hover:bg-slate-700/50 transition-colors",
+                        "border-b border-slate-700/50 last:border-b-0",
+                        "focus:outline-none focus:bg-slate-700/50",
                       )}
                       data-testid="result-item"
                     >
                       <div className="flex items-start gap-2">
-                        <span className="text-xs text-[var(--text-muted)] min-w-[3rem] text-right tabular-nums">
+                        <span className="text-xs text-slate-500 min-w-[3rem] text-right tabular-nums">
                           {match.lineNumber}
                         </span>
-                        <span className="text-sm font-mono text-[var(--text-primary)] truncate">
+                        <span className="text-sm font-mono text-slate-300 truncate">
                           {highlightMatch(
                             match.lineContent,
                             match.column,
@@ -775,7 +757,7 @@ function highlightMatch(
   return (
     <>
       {before}
-      <mark className="bg-[var(--status-warning-subtle)] text-[var(--text-primary)] rounded px-0.5">
+      <mark className="bg-yellow-500/40 text-yellow-200 rounded px-0.5">
         {match}
       </mark>
       {after}

@@ -13,7 +13,9 @@
 ## Step 1-C（関連タスク更新）
 
 - 既存関連タスク `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` との関係を整理
-- follow-up を 2 件起票し、その後 shared-color migration は `docs/30-workflows/completed-tasks/task-fix-light-theme-shared-color-migration-001.md` へ完了移管、contrast regression guard は `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` と archive task spec で同期した
+- 本タスクで未解決の component 側課題を formalize し、現在の正本へ同期
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md`
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`（実装完了後に completed archive へ移管）
 
 ## Step 2（条件付きシステム仕様更新）
 
@@ -54,4 +56,4 @@
 
 - `SKILL.md` / `LOGS.md` を `aiworkflow-requirements` / `skill-creator` / `task-specification-creator` で更新
 - workflow `artifacts.json` と `outputs/artifacts.json` を同一内容で同期
-- `unassigned-task-detection.md` を 2件起票結果とその後の canonical path 更新に合わせて再同期
+- `unassigned-task-detection.md` を 2件起票結果で再同期（配置先: `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/`）

@@ -9210,49 +9210,6 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
 ### 結果
 - ステータス: success
 
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の探索入口と UI カタログを最適化
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
-- 目的: 同種課題を一覧specと検索入口の両方から短時間で再利用できるようにする
-
-### 実施内容
-- `references/ui-ux-components.md` に shared color migration の実装内容、苦戦箇所、検証証跡、同期先をまとめた completed record を追加
-- `indexes/quick-reference.md` に `shared color migration` / `verification-only blind spot` / `components[].route` / `playwright` を起点にした検索語と読む順番を追加
-- `.claude` 正本で更新した一覧spec / quick-reference を mirror root `.agents` に同期する前提を維持
-
-### 検証
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
-- `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js`
-- `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`
-
-### 結果
-- ステータス: success
-- 補足: 実装詳細は domain spec に残しつつ、初動で見るべき一覧specと検索語を追加した
-
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 再監査と canonical root 同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001`
-- 目的: current workflow / system spec / skill root の不整合を解消し、`.claude` 正本へ今回の機能開発内容を昇格する
-
-### 実施内容
-- `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md` / `workflow-light-theme-global-remediation.md` / `ui-ux-settings.md` / `ui-ux-search-panel.md` / `task-workflow.md` / `lessons-learned.md` を current workflow 実体へ更新
-- `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` を token foundation の follow-up backlog から current workflow 完了（Phase 1-12）へ是正
-- user 指定 root `.claude` を canonical root に固定し、`.agents` mirror との `diff -qr` 前提へ判定を修正
-- verification-only blind spot、screenshot route 制約、Playwright module resolution の教訓を task-spec guide 側へ返却
-
-### 検証
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
-- `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js`
-- `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`
-
-### 結果
-- ステータス: success
-- 補足: public IPC / preload contract 変更はなく、system spec 更新は UI/Workflow/lesson domain に閉じた
-
 ## 2026-03-09 - TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001 再監査追補
 
 ### コンテキスト
@@ -9330,17 +9287,5 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `arch-state-management.md` 関連タスクステータスを「完了（2026-03-10）」に更新
   - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
   - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
-- `generate-index.js` 実行で topic-map.md / keywords.json 再生成
-- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
-
----
-
-## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 residual warning follow-up 同期
-
-- **Agent**: aiworkflow-requirements
-- **Phase**: Phase 12（再監査追補）
-- **Result**: success
-- **Notes**:
-  - `SettingsView.integration.test.tsx` 単独再実行で `ApiKeysSection` 起因の `act()` warning 継続を確認
-  - `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` / `references/lessons-learned.md` に root `unassigned-task/` follow-up 導線を追加
-  - PASS test の stderr も Phase 12 backlog 判定対象とするルールを system spec 正本へ固定
+  - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）

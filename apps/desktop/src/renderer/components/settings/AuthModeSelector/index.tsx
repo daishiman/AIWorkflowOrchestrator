@@ -5,7 +5,7 @@
  * セグメントコントロールUI。
  *
  * Apple Human Interface Guidelines準拠:
- * - 角丸8px、semantic accent token を選択状態に使用
+ * - 角丸8px、アクセントカラー#007AFF
  * - 200msトランジション
  * - WCAG 2.1 AA準拠のコントラスト比
  *
@@ -123,7 +123,7 @@ export const AuthModeSelector: React.FC<AuthModeSelectorProps> = ({
       className={clsx(
         // Container styles
         "flex p-0.5 rounded-lg",
-        "bg-[var(--bg-tertiary)] border border-[var(--border-primary)]",
+        "bg-[#F5F5F7] border border-[#D2D2D7]",
         // Disabled state
         disabled && "opacity-50 cursor-not-allowed",
         className,
@@ -154,15 +154,16 @@ export const AuthModeSelector: React.FC<AuthModeSelectorProps> = ({
               "transition-all duration-200 ease-out",
               // Focus styles
               "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1",
-              "focus-visible:ring-[var(--status-primary)]",
+              "focus-visible:ring-[#007AFF]",
 
               // State styles
               isSelected
-                ? "bg-[var(--status-primary)] text-[var(--text-inverse)] shadow-sm"
+                ? // Selected state - Apple accent blue
+                  "bg-[#007AFF] text-white shadow-sm"
                 : // Unselected state
                   clsx(
-                    "bg-transparent text-[var(--text-primary)]",
-                    !disabled && "hover:bg-[var(--bg-secondary)]",
+                    "bg-transparent text-[#1D1D1F]",
+                    !disabled && "hover:bg-[#E8E8ED]",
                   ),
 
               // Disabled state

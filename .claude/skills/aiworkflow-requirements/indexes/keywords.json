@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-12T10:58:29.908Z",
-  "totalKeywords": 1618,
+  "generated": "2026-03-12T04:49:20.887Z",
+  "totalKeywords": 1614,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -814,7 +814,6 @@
       "security-electron-ipc.md",
       "task-workflow.md",
       "testing-component-patterns.md",
-      "ui-ux-components.md",
       "ui-ux-settings.md"
     ],
     "SKILL": [
@@ -2632,7 +2631,6 @@
     "shared": [
       "directory-structure.md",
       "lessons-learned.md",
-      "ui-ux-settings.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "詳細構造": [
@@ -3477,16 +3475,12 @@
     "LIGHT": [
       "lessons-learned.md",
       "task-workflow.md",
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-settings.md"
+      "ui-ux-feature-components.md"
     ],
     "THEME": [
       "lessons-learned.md",
       "task-workflow.md",
-      "ui-ux-components.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-settings.md"
+      "ui-ux-feature-components.md"
     ],
     "CONTRAST": [
       "lessons-learned.md",
@@ -3637,8 +3631,7 @@
       "lessons-learned.md"
     ],
     "追補": [
-      "lessons-learned.md",
-      "workflow-light-theme-global-remediation.md"
+      "lessons-learned.md"
     ],
     "境界基準化の再監査": [
       "lessons-learned.md"
@@ -3699,9 +3692,7 @@
       "lessons-learned.md"
     ],
     "SHARED": [
-      "lessons-learned.md",
-      "ui-ux-components.md",
-      "ui-ux-settings.md"
+      "lessons-learned.md"
     ],
     "SOURCE": [
       "lessons-learned.md"
@@ -4129,9 +4120,7 @@
       "lessons-learned.md"
     ],
     "MIGRATION": [
-      "lessons-learned.md",
-      "ui-ux-components.md",
-      "ui-ux-settings.md"
+      "lessons-learned.md"
     ],
     "個別セレクタ": [
       "lessons-learned.md"
@@ -5640,10 +5629,6 @@
     "コンポーネント階層図": [
       "ui-ux-components.md"
     ],
-    "COLOR": [
-      "ui-ux-components.md",
-      "ui-ux-settings.md"
-    ],
     "仕様書作成済みタスク": [
       "ui-ux-components.md",
       "ui-ux-feature-components.md"
@@ -6022,16 +6007,6 @@
     "異常系表示仕様": [
       "ui-ux-settings.md"
     ],
-    "color": [
-      "ui-ux-settings.md"
-    ],
-    "semantic": [
-      "ui-ux-settings.md",
-      "workflow-light-theme-global-remediation.md"
-    ],
-    "contract": [
-      "ui-ux-settings.md"
-    ],
     "実装ファイル": [
       "ui-ux-settings.md"
     ],
@@ -6146,10 +6121,10 @@
     "再是正ワークフロー仕様": [
       "workflow-light-theme-global-remediation.md"
     ],
-    "component": [
+    "color": [
       "workflow-light-theme-global-remediation.md"
     ],
-    "token": [
+    "仕様作成追補": [
       "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [

@@ -460,44 +460,6 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 ---
 
-## Settings shared color semantic contract（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
-
-**完了日**: 2026-03-12  
-**実装ファイル**:
-
-- `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx`
-- `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx`
-- `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx`
-- `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`
-- `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`
-- `apps/desktop/src/renderer/views/SettingsView/index.tsx`
-
-### light theme 契約
-
-| surface | 契約 |
-| --- | --- |
-| `ThemeSelector` | selected/unselected state は accent / neutral の semantic token だけで表現し、light theme で direct `blue/gray` class に依存しない |
-| `AuthModeSelector` | warning / success panel は semantic status token を使い、message / code / guidance の可読性を維持する |
-| `AuthKeySection` | saved badge、入力欄、CTA は settings shell と同じ light token 階層に揃える |
-| `AccountSection` | linked provider、danger action、delete confirm dialog は light theme でも overlay / body / CTA の意味差が崩れない |
-| `ApiKeysSection` | provider row / badge / delete dialog は semantic surface と danger color を共有し、Preload guard UI と競合しない |
-| `SettingsView` | verification-only 扱いでも auth mode status panel を blind spot にせず、section hierarchy と spacing を representative shell で再確認する |
-
-### Phase 11 視覚検証
-
-| テストケース | 証跡 | 判定 |
-| --- | --- | --- |
-| TC-01 | `outputs/phase-11/screenshots/TC-01-theme-selector-light.png` | PASS |
-| TC-02 | `outputs/phase-11/screenshots/TC-02-auth-mode-warning-light.png` | PASS |
-| TC-03 | `outputs/phase-11/screenshots/TC-03-auth-key-saved-light.png` | PASS |
-| TC-04 | `outputs/phase-11/screenshots/TC-04-account-surface-light.png` | PASS |
-| TC-05 | `outputs/phase-11/screenshots/TC-05-account-delete-dialog-light.png` | PASS |
-| TC-06 | `outputs/phase-11/screenshots/TC-06-api-keys-surface-light.png` | PASS |
-| TC-07 | `outputs/phase-11/screenshots/TC-07-api-keys-delete-dialog-light.png` | PASS |
-| TC-11 | `outputs/phase-11/screenshots/TC-11-settings-shell-light.png` | PASS |
-
----
-
 ## 関連ドキュメント
 
 - [security-api-electron.md](./security-api-electron.md) - IPCセキュリティ詳細
@@ -537,7 +499,6 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.9.0   | 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 を反映。`ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `SettingsView` の light theme semantic contract、Phase 11 screenshot 8件、verification-only blind spot 再監査を追加 |
 | 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |

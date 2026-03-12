@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { ApiKeysSection } from "../index";
 
@@ -487,10 +487,11 @@ describe("ApiKeysSection", () => {
         expect(screen.getByRole("dialog")).toBeInTheDocument();
       });
 
+      // ダイアログ内の削除ボタン（bg-red-500クラスを持つ）
       const dialog = screen.getByRole("dialog");
-      const confirmButton = within(dialog).getByRole("button", {
-        name: "削除",
-      });
+      const confirmButton = dialog.querySelector(
+        'button[class*="bg-red"]',
+      ) as HTMLButtonElement;
       await userEvent.click(confirmButton);
 
       await waitFor(() => {
@@ -518,9 +519,9 @@ describe("ApiKeysSection", () => {
       });
 
       const dialog = screen.getByRole("dialog");
-      const confirmButton = within(dialog).getByRole("button", {
-        name: "削除",
-      });
+      const confirmButton = dialog.querySelector(
+        'button[class*="bg-red"]',
+      ) as HTMLButtonElement;
       await userEvent.click(confirmButton);
 
       await waitFor(() => {

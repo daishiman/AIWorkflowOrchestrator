@@ -952,7 +952,7 @@ describe("WorkspaceSearchPanel", () => {
       await user.type(searchInput, "test{enter}");
 
       await waitFor(() => {
-        expect(searchInput).toHaveClass("border-[var(--status-error)]");
+        expect(searchInput).toHaveClass("border-red-500");
       });
     });
 

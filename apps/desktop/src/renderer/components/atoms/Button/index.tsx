@@ -59,9 +59,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "active:bg-[var(--bg-tertiary)]",
       ),
       danger: clsx(
-        "bg-[var(--status-error)] text-[var(--text-inverse)]",
-        "hover:bg-[var(--status-error-hover)]",
-        "focus:ring-[var(--status-error)]",
+        "bg-red-500 text-[var(--text-inverse)]",
+        "hover:opacity-90",
+        "focus:ring-red-500",
         "active:opacity-80",
       ),
     };

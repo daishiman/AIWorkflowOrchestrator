@@ -300,8 +300,8 @@ describe("SettingsView 統合テスト", () => {
 
       const statusEl = screen.getByTestId("auth-mode-status");
       expect(statusEl).toBeInTheDocument();
-      expect(statusEl.className).toContain("bg-[var(--status-success-subtle)]");
-      expect(statusEl.className).toContain("text-[var(--status-success)]");
+      // 成功時は green 系のクラスが適用される
+      expect(statusEl.className).toContain("bg-green-50");
     });
   });
 
@@ -373,9 +373,9 @@ describe("SettingsView 統合テスト", () => {
         expect(screen.getByText("APIキー設定")).toBeInTheDocument();
       });
 
-      // 非同期ロード完了後にプロバイダーも表示される
-      expect(await screen.findByText("OpenAI")).toBeInTheDocument();
-      expect(await screen.findByText("Anthropic")).toBeInTheDocument();
+      // プロバイダーも表示される
+      expect(screen.getByText("OpenAI")).toBeInTheDocument();
+      expect(screen.getByText("Anthropic")).toBeInTheDocument();
     });
   });
 

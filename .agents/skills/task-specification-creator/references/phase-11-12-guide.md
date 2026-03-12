@@ -21,9 +21,8 @@
    4-1. git diff で変更コンポーネント一覧を洗い出す
    4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
    4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
-   4-4. verification-only 扱いの batch でも status / warning / error / danger surface を blind spot として再監査する
-   4-5. 撮影計画 screenshot-plan.json を作成
-   4-6. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
+   4-4. 撮影計画 screenshot-plan.json を作成
+   4-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
    ↓
 5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
    5-1. ルートベース撮影（ページ全体）
@@ -65,13 +64,11 @@
 - App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
 - ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、差し替えた mock 境界を `manual-test-result.md` に明記する。
 - App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
-- `capture-screenshots.js` の route 解決は `components[].route` が正本であり、`states[].route` は撮影経路切り替えに使わない。route が変わる場合は component entry 自体を分ける。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
-- screenshot capture は script 実行 cwd から `playwright` を解決できることを前提にする。workspace package 側だけに依存がある場合は、root 側の module resolution を整えてから実行する。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
@@ -142,17 +139,12 @@ pnpm --filter @repo/desktop preview
 
 # 2) 別ターミナルで疎通確認（preview起動時）
 curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
-
-# 3) screenshot script 実行 cwd から playwright が解決できることを確認
-node -e "console.log(require.resolve('playwright'))"
 ```
 
 補足:
 - build失敗または疎通失敗時は再撮影を継続しない。
-- `require.resolve('playwright')` が失敗する場合は、依存がある package 側から実行するか、root `node_modules/playwright` を解決できる状態へ整えてから capture を再開する。
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
 - 複数 worktree で Vite preview / dev server の参照元が揺れる場合は、`pnpm build` 後の current worktree `out/renderer` を static server（例: `python3 -m http.server 4173 --directory apps/desktop/out/renderer`）で配信し、asset hash と `phase11-capture-metadata.json` の時刻を current build と同期する。
-- capture script が loopback URL（`127.0.0.1` / `localhost`）を前提にする場合は、疎通失敗時に current worktree `out/renderer` を自動配信する fallback を許可する。fallback を使った場合は `manual-test-result.md` / `phase11-capture-metadata.json` / Phase 12 レポートに「auto static serve を使った」ことを明記し、cleanup を必ず実行する。
 
 #### D. 再撮影後 cleanup（必須）
 
@@ -350,7 +342,6 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 | Phase 11テスト結果 | FAILテスト |
 | 発見課題 | 重要度「高」課題 |
 | アクセシビリティ | WCAG違反 |
-| residual note / stderr | PASS でも残る warning、Phase 10 residual note、既存 follow-up の再接続要否 |
 
 **0件の場合の出力形式**:
 
@@ -371,8 +362,6 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 すべてのテストがPASSし、発見課題もないため、未タスクとして記録すべき項目はありません。
 ```
 
-> 重要: `PASS` でも stderr warning や Phase 10 residual note が残る場合はこの 0件テンプレートを使わない。既存未タスクを再利用する場合も、root `docs/30-workflows/unassigned-task/` の正本更新、物理存在確認、`--diff-from HEAD --target-file` 監査まで完了させる。
-
 ---
 
 #### Task 5: スキルフィードバックレポート作成【改善点なしでも出力必須】
@@ -385,8 +374,6 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 **出力**: `outputs/phase-12/skill-feedback-report.md`
 
-Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-creator` だが、ユーザーがスキル改善を明示した場合、または Task 5 で再利用パターンを抽出して `skill-creator` 自体を更新した場合は、`skill-creator` も同じレポートへ含める。
-
 ---
 
 ## Phase 12 完了条件チェックリスト
@@ -397,13 +384,10 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] 【Step 1-A】システム仕様書に「完了タスク」セクションを追加した
 - [ ] 【Step 1-A】関連ドキュメントセクションに実装ガイドリンクを追加した
 - [ ] 【Step 1-A】LOGS.md **2ファイル両方**（aiworkflow-requirements + task-specification-creator）を更新した
-- [ ] 【Step 1-A】`skill-creator` を改善した場合、`.claude/skills/skill-creator/LOGS.md` も更新した
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
-- [ ] 【Step 1-A】`skill-creator` を改善した場合、`.claude/skills/skill-creator/SKILL.md` の変更履歴も更新した
 - [ ] 【Step 1-A】変更履歴へ追記した Version が既存行と重複していないことを確認した（同日追補時は最大値 + 0.0.1 で採番）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-workflow.md` Step 1-G.3.1 を参照）
 - [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`spec-update-summary.md` に「要監視 / 要対応」を記録した
-- [ ] Task 5 で `skill-creator` を更新した場合、その変更内容を `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` に同値で記録した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
@@ -426,7 +410,7 @@ Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-crea
 - [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
 - [ ] 完了済み未タスク指示書が `unassigned-task/` に残置されていない（完了時は `completed-tasks/unassigned-task/` へ移管）
 - [ ] **未実施**タスク指示書（未着手/未実施/進行中）が `completed-tasks/unassigned-task/` に混在していない（存在する場合は `docs/30-workflows/unassigned-task/` へ是正）
-- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
+- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <今回対象ファイル>` を実行し、`currentViolations.total = 0` を確認した
 - [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json` を実行し、baseline監視結果（全体違反件数）を記録した
 - [ ] `audit-unassigned-tasks.js --json --diff-from HEAD` を実行し、合否判定を `currentViolations.total` で記録した（baselineは別記録）
 - [ ] artifacts.jsonが更新されている
@@ -573,7 +557,6 @@ done
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
-| 2026-03-12 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 residual warning 追補を反映し、PASS test の stderr warning / Phase 10 residual note / 既存未タスクの3点照合、`--diff-from HEAD --target-file` による current 判定、0件テンプレートを使わない条件を追加 |
 | 2026-03-11 | TASK-UI-04C follow-up を反映し、初回 0件判定後に親タスク苦戦箇所を共通ガード未タスクへ formalize する場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加 |
 | 2026-03-06 | UT-TASK-10A-B-008 Phase 12再確認を反映し、Task 1 完了条件へ `validate-phase12-implementation-guide.js` を追加。Part 1/2 の内容要件を構造チェックから独立して機械検証する運用へ更新 |
 | 2026-03-06 | UT-TASK-10A-B-008 再監査の教訓を反映し、「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root でなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加 |

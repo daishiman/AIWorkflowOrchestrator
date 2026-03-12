@@ -47,10 +47,10 @@
 
 - 新規未タスク: 2件
 - 配置先:
-  - `docs/30-workflows/completed-tasks/task-fix-light-theme-shared-color-migration-001.md`
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md`
   - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`
 - 判定根拠:
-  - `task-fix-light-theme-shared-color-migration-001.md` → 起票時監査は `currentViolations=0`、現在の canonical task spec は `docs/30-workflows/completed-tasks/task-fix-light-theme-shared-color-migration-001.md`
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` → `currentViolations=0`
   - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` → `currentViolations=0`
 
 ## 結論
