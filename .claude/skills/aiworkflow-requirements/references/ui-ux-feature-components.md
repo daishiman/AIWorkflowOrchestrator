@@ -557,6 +557,55 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
+## Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001）
+
+> **詳細仕様**: [workflow-light-theme-contrast-regression-guard.md](./workflow-light-theme-contrast-regression-guard.md)
+
+light theme remediation を直接行わず、representative screen と hardcoded color audit で回帰を検出する guard workflow。current build static serve と selector-based capture を正本手順に固定する。
+
+### 実装内容（要点）
+
+| 項目 | 内容 |
+| --- | --- |
+| audit | `ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` を baseline、`SettingsView` / `DashboardView` を current として監査 |
+| harness | `phase11-light-theme-contrast-guard.html` と `phase11-light-theme-contrast-guard.tsx` を build output に含める |
+| readiness | `ThemeSelector` / `AuthView` に minimal な `data-testid` を追加 |
+| capture | Settings / Dashboard / Auth / WorkspaceSearch + Dashboard dark baseline の 5 ケースを取得 |
+
+### 実測結果
+
+| 項目 | 値 |
+| --- | --- |
+| currentViolations | 0 |
+| baselineViolations | 64 |
+| screenshot | 5 png + metadata 1件 |
+| targeted tests | 46 PASS |
+
+### Apple UI/UX 視覚レビュー
+
+| 画面 | 判定 | 所見 |
+| --- | --- | --- |
+| Settings light | PASS with baseline note | settings shell は読めるが ThemeSelector の淡い chip が弱い |
+| Dashboard light | PASS | hierarchy / spacing / materiality が安定 |
+| Auth light | PASS with baseline note | helper text が light panel 上で沈む |
+| WorkspaceSearch light | PASS with baseline note | light 指定でも dark slate surface が残るため remediation 対象が明確 |
+
+### baseline backlog routing
+
+| backlog | 参照 |
+| --- | --- |
+| ThemeSelector / Auth / WorkspaceSearch の actual remediation | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| current build capture preflight bundle | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| guard workflow の維持 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+
+### 再利用ルール
+
+1. guard workflow は remediation task と分離する。
+2. current build screenshot は build artifact を static serve して取得する。
+3. selector-based capture を優先し、route 全景は fallback に留める。
+4. `current=0` でも baseline backlog と routing を必ず残す。
+
+---
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
 > **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)

@@ -37,37 +37,41 @@
 
 ## メタ情報
 
-| 項目         | 内容                                               |
-| ------------ | -------------------------------------------------- |
-| タスクID     | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001    |
-| タスク種別   | 修正                                               |
-| 優先度       | 高                                                 |
-| ステータス   | not_started                                        |
-| 依存タスク   | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001          |
-| 関連タスク   | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 |
-| 発見元       | 2026-03-11 ライトモード調査                        |
-| 作成ブランチ | `task-20260311-light-theme-specs`                  |
+| 項目         | 内容                                                              |
+| ------------ | ----------------------------------------------------------------- |
+| タスクID     | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001                   |
+| タスク種別   | 修正                                                              |
+| 優先度       | 高                                                                |
+| ステータス   | spec_created                                                      |
+| 依存タスク   | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001                         |
+| 関連タスク   | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001                |
+| 発見元       | 2026-03-11 ライトモード調査                                       |
+| 作成ブランチ | `docs/task-fix-light-theme-shared-color-migration-specs-20260312` |
 
 ## 参照ファイル
 
+- `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`
+- `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`
+- `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx`
+- `apps/desktop/src/renderer/views/AuthView/index.tsx`
+- `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx`
+- `apps/desktop/src/renderer/components/settings/AuthKeySection/AuthKeySection.tsx`
+- `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx`
 - `apps/desktop/src/renderer/views/SettingsView/index.tsx`
 - `apps/desktop/src/renderer/components/organisms/SettingsCard/index.tsx`
-- `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx`
 - `apps/desktop/src/renderer/views/DashboardView/index.tsx`
-- `apps/desktop/src/renderer/views/AuthView/index.tsx`
-- `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx`
 - `.claude/skills/task-specification-creator/SKILL.md`
 - `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`
 
 ## 受入基準
 
-| ID   | 基準                                                                                                                                          |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| AC-1 | 代表 shared view / component が semantic token ベースへ移行される                                                                             |
-| AC-2 | 調査で高頻度だった `SettingsView` / `SettingsCard` / `ThemeSelector` / `DashboardView` / `AuthView` / `WorkspaceSearchPanel` を優先対象に含む |
-| AC-3 | 対象スコープ内で `text-white` / `bg-slate-*` / `bg-zinc-*` 依存を段階的に除去する計画がある                                                   |
-| AC-4 | 既存の Settings/Auth/AgentView 関連 light contrast backlog との重複を防ぐ整理方針がある                                                       |
-| AC-5 | 後続の regression guard task が検証しやすいファイル単位の修正バッチに分かれている                                                             |
+| ID   | 基準                                                                                                                                                                                                                                                             |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AC-1 | 代表 shared view / component が semantic token ベースへ移行される                                                                                                                                                                                                |
+| AC-2 | 実コード監査結果に基づき `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` を優先対象に含み、`SettingsView` / `SettingsCard` / `DashboardView` は verification-only に分離する |
+| AC-3 | 対象スコープ内で `text-white` / `bg-slate-*` / `bg-zinc-*` 依存を段階的に除去する計画がある                                                                                                                                                                      |
+| AC-4 | 既存の Settings/Auth/AgentView 関連 light contrast backlog との重複を防ぐ整理方針がある                                                                                                                                                                          |
+| AC-5 | 後続の regression guard task が検証しやすいファイル単位の修正バッチに分かれている                                                                                                                                                                                |
 
 ## スコープ
 
@@ -88,23 +92,28 @@
 
 | 優先度 | 対象                                                                                      |
 | ------ | ----------------------------------------------------------------------------------------- |
-| P1     | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                                  |
-| P1     | `apps/desktop/src/renderer/components/organisms/SettingsCard/index.tsx`                   |
 | P1     | `apps/desktop/src/renderer/components/molecules/ThemeSelector/index.tsx`                  |
-| P1     | `apps/desktop/src/renderer/views/DashboardView/index.tsx`                                 |
+| P1     | `apps/desktop/src/renderer/components/settings/AuthModeSelector/index.tsx`                |
+| P1     | `apps/desktop/src/renderer/components/settings/AuthKeySection/AuthKeySection.tsx`         |
+| P1     | `apps/desktop/src/renderer/components/organisms/AccountSection/index.tsx`                 |
+| P1     | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx`                 |
 | P1     | `apps/desktop/src/renderer/views/AuthView/index.tsx`                                      |
 | P1     | `apps/desktop/src/renderer/components/organisms/WorkspaceSearch/WorkspaceSearchPanel.tsx` |
-| P2     | `AccountSection` / `ProfileSection` / `TimezoneSelector` / `LocaleSelector`               |
-| P2     | `AuthTimeoutFallback` / `Dashboard` / `AgentView` 周辺の直書き箇所                        |
+| Verify | `apps/desktop/src/renderer/views/SettingsView/index.tsx`                                  |
+| Verify | `apps/desktop/src/renderer/components/organisms/SettingsCard/index.tsx`                   |
+| Verify | `apps/desktop/src/renderer/views/DashboardView/index.tsx`                                 |
+| P2     | `ProfileSection` / `TimezoneSelector` / `LocaleSelector`                                  |
+| P2     | `AuthTimeoutFallback` / `AgentView` 周辺の直書き箇所                                      |
 
 ## Atent Team / SubAgent 実行方針
 
-| Lane | 担当関心ごと                                              | 実行タイミング | 並列可否            |
-| ---- | --------------------------------------------------------- | -------------- | ------------------- |
-| A    | `aiworkflow-requirements` 仕様確認、既存 backlog 統合整理 | Phase 1-2      | 直列                |
-| B    | Settings shell / profile / selector 群の移行設計          | Phase 2        | Lane A 後に開始     |
-| C    | Dashboard / Auth / WorkspaceSearch の移行設計             | Phase 2        | Lane B と並列可     |
-| D    | Codex 実装 lane（将来）                                   | Phase 5以降    | Phase 3 PASS 後のみ |
+| Lane | 担当関心ごと                                                                        | 実行タイミング | 並列可否                   |
+| ---- | ----------------------------------------------------------------------------------- | -------------- | -------------------------- |
+| A    | `aiworkflow-requirements` 仕様抽出、inventory correction、token/component 境界確定  | Phase 1-2      | 直列                       |
+| B    | shared selector / Settings organisms（ThemeSelector / AuthMode / AuthKey / APIKey） | Phase 2        | Lane A 後、C と並列可      |
+| C    | Auth surface / WorkspaceSearchPanel の移行設計                                      | Phase 2        | Lane A 後、B と並列可      |
+| D    | verification-only lane（SettingsView / SettingsCard / DashboardView）               | Phase 2-3      | B/C 後、最後に確認         |
+| E    | Codex 実装 lane（将来）                                                             | Phase 5以降    | Phase 1-3 completed 後のみ |
 
 ## ユーザー指定ポリシー
 
@@ -126,19 +135,19 @@
 
 ## aiworkflow-requirements 抽出セット
 
-| 関心ごと                | 正本仕様                                                                                                                                              | 抽出理由                                      |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| settings / form UI      | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                                                                 | Settings 系 light mode の正本                 |
-| auth form UI            | `.claude/skills/aiworkflow-requirements/references/ui-ux-forms.md`                                                                                    | AuthView の light mode / readable text 基準   |
-| feature component       | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                                       | Dashboard / Auth / Workspace の記録先         |
-| shared component 原則   | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                                               | 共通 component の責務確認                     |
-| navigation / shell      | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                                                                               | shell 周辺影響確認                            |
-| search panel            | `.claude/skills/aiworkflow-requirements/references/ui-ux-search-panel.md`                                                                             | WorkspaceSearchPanel の正本                   |
-| selector migration      | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                                          | selector / store 駆動 UI の責務確認           |
-| implementation patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                                                           | batch ごとの修正粒度と再利用パターン          |
-| quality / test          | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                                                                           | Phase 4-11 の品質基準                         |
-| accessibility / fixture | `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`, `.claude/skills/aiworkflow-requirements/references/testing-fixtures.md` | readable text / representative harness の基準 |
-| task 台帳 / lessons     | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`, `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`          | backlog と再発防止の同期先                    |
+| 関心ごと                     | 正本仕様                                                                                                                                                                                                                                    | 抽出理由                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| design token / contrast      | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                                                                                                                                                                  | token scope と component scope の境界を固定する              |
+| settings domain              | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                                                                                                                                                       | `AccountSection` / `ApiKeysSection` / `ThemeSelector` の正本 |
+| feature component            | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                                                                                                                             | `AuthView` / `WorkspaceSearchPanel` の機能記録先             |
+| shared component 原則        | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                                                                                                                                                                     | 共通 selector / section の責務確認                           |
+| search / portal              | `.claude/skills/aiworkflow-requirements/references/ui-ux-search-panel.md`, `.claude/skills/aiworkflow-requirements/references/ui-ux-portal-patterns.md`                                                                                     | WorkspaceSearch surface、dialog/portal の再利用境界          |
+| renderer state               | `.claude/skills/aiworkflow-requirements/references/rag-desktop-state.md`, `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                                                      | search/settings state と verification-only lane の境界       |
+| auth / IPC contract          | `.claude/skills/aiworkflow-requirements/references/api-ipc-auth.md`, `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                                                                                                  | AuthKey/AuthMode surface が依存する IPC 契約確認             |
+| auth / security architecture | `.claude/skills/aiworkflow-requirements/references/architecture-auth-security.md`, `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`, `.claude/skills/aiworkflow-requirements/references/security-principles.md` | 公開 auth shell と設定 UI の安全境界を維持する               |
+| implementation patterns      | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`                                                                                                                                                 | batch ごとの修正粒度と再利用パターン                         |
+| quality / test               | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`, `.claude/skills/aiworkflow-requirements/references/testing-accessibility.md`, `.claude/skills/aiworkflow-requirements/references/testing-fixtures.md`          | Phase 4-11 の品質基準                                        |
+| task 台帳 / lessons          | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`, `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                                                                                | `spec_created` 記録と再発防止の同期先                        |
 
 ## 分解戦略
 
@@ -157,6 +166,16 @@
 - `validate-phase-output.js` と `verify-all-specs.js` を通してから仕様書完成とみなす
 - `aiworkflow-requirements` は resource-map / quick-reference 起点で必要仕様だけを抽出する
 
+## 再設計監査（2026-03-12）
+
+| 観点                 | 内容                                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| inventory correction | root/index の旧棚卸しを、`outputs/phase-1/requirements-definition.md` の現行 inventory に合わせて補正する                           |
+| primary targets      | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` |
+| verification-only    | `SettingsView` / `SettingsCard` / `DashboardView` は hardcoded color 主因ではなく regression 確認専用 lane とする                   |
+| phase gate           | Phase 1-3 が completed になるまで、Phase 4 以降は planned のまま保持する                                                            |
+| status policy        | workflow 全体は `spec_created`、実装・commit・PR は未着手のまま維持する                                                             |
+
 ## 既存 backlog との関係
 
 | 既存指示書                                                                                                                                     | 位置づけ                                                |
@@ -167,18 +186,18 @@
 
 ## Phase 一覧
 
-| Phase | 名称             | ファイル                                                       | ステータス  |
-| ----- | ---------------- | -------------------------------------------------------------- | ----------- |
-| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | not_started |
-| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | not_started |
-| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | not_started |
-| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | not_started |
-| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | not_started |
-| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | not_started |
-| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | not_started |
-| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | not_started |
-| 9     | 品質検証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | not_started |
-| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | not_started |
-| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | not_started |
-| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | not_started |
-| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | blocked     |
+| Phase | 名称             | ファイル                                                       | ステータス |
+| ----- | ---------------- | -------------------------------------------------------------- | ---------- |
+| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | completed  |
+| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | completed  |
+| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | completed  |
+| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | planned    |
+| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | planned    |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | planned    |
+| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | planned    |
+| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | planned    |
+| 9     | 品質検証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | planned    |
+| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | planned    |
+| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | planned    |
+| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | planned    |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | blocked    |

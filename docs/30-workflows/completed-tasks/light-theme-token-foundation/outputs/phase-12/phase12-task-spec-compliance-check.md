@@ -11,13 +11,13 @@
 
 ## Task 12-1〜12-5 準拠確認
 
-| Task                  | 判定 | 根拠                                                                                                                 | 証跡                                            |
-| --------------------- | ---- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| 12-1 実装ガイド       | PASS | Part 1 / Part 2 構成、日常例え、型/API/edge case を確認                                                              | `outputs/phase-12/implementation-guide.md`      |
-| 12-2 システム仕様更新 | PASS | Step 1-A〜1-C / Step 2 の更新結果を `spec-update-summary` に記録                                                     | `outputs/phase-12/spec-update-summary.md`       |
-| 12-3 更新履歴         | PASS | 更新対象・同期対象・検証コマンドが記録済み                                                                           | `outputs/phase-12/documentation-changelog.md`   |
-| 12-4 未タスク検出     | PASS | 未タスク2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に正式配置し監査PASS | `outputs/phase-12/unassigned-task-detection.md` |
-| 12-5 フィードバック   | PASS | 改善提案と更新先スキルを記録                                                                                         | `outputs/phase-12/skill-feedback-report.md`     |
+| Task                  | 判定 | 根拠                                                               | 証跡                                            |
+| --------------------- | ---- | ------------------------------------------------------------------ | ----------------------------------------------- |
+| 12-1 実装ガイド       | PASS | Part 1 / Part 2 構成、日常例え、型/API/edge case を確認            | `outputs/phase-12/implementation-guide.md`      |
+| 12-2 システム仕様更新 | PASS | Step 1-A〜1-C / Step 2 の更新結果を `spec-update-summary` に記録   | `outputs/phase-12/spec-update-summary.md`       |
+| 12-3 更新履歴         | PASS | 更新対象・同期対象・検証コマンドが記録済み                         | `outputs/phase-12/documentation-changelog.md`   |
+| 12-4 未タスク検出     | PASS | 未タスク2件を formalize し、現行の正本配置へ同期したうえで監査PASS | `outputs/phase-12/unassigned-task-detection.md` |
+| 12-5 フィードバック   | PASS | 改善提案と更新先スキルを記録                                       | `outputs/phase-12/skill-feedback-report.md`     |
 
 ## Step 1-A〜1-G / Step 2 準拠確認
 
@@ -46,12 +46,14 @@
 ## 未タスク配置監査
 
 - 新規未タスク: 2件
-- 配置先: `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/`
+- 配置先:
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md`
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md`
 - 判定根拠:
-  - `task-fix-light-theme-shared-color-migration-001.md` → `currentViolations=0`
-  - `task-imp-light-theme-contrast-regression-guard-001.md` → `currentViolations=0`
+  - `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` → `currentViolations=0`
+  - `docs/30-workflows/completed-tasks/unassigned-task/task-imp-light-theme-contrast-regression-guard-001.md` → `currentViolations=0`
 
 ## 結論
 
 - TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 の Phase 12 は、Task 12-1〜12-5 と Step 1-A〜1-G / Step 2 の要件を満たしている。
-- 追加で、未タスク導線を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` 正本へ是正し、再監査時の追跡性を強化した。
+- 追加で、未タスク導線を current backlog と completed archive に分離して是正し、再監査時の追跡性を強化した。

@@ -102,6 +102,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
     <div
       role="radiogroup"
       aria-labelledby={ariaLabelledby}
+      data-testid="theme-selector"
       className={clsx(
         "flex gap-1 p-1 rounded-lg",
         "bg-white/5 border border-white/10",
@@ -124,6 +125,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
             aria-description={option.description}
             disabled={disabled}
             tabIndex={isSelected ? 0 : -1}
+            data-testid={`theme-option-${option.mode}`}
             onClick={() => handleClick(option.mode)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={clsx(

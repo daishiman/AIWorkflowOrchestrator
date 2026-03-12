@@ -1,11 +1,9 @@
 import React from "react";
 import clsx from "clsx";
 
-export interface GlassPanelProps {
-  children: React.ReactNode;
+export interface GlassPanelProps extends React.HTMLAttributes<HTMLDivElement> {
   radius?: "none" | "sm" | "md" | "lg";
   blur?: "none" | "sm" | "md" | "lg";
-  className?: string;
 }
 
 const radiusStyles = {
@@ -27,6 +25,7 @@ export const GlassPanel: React.FC<GlassPanelProps> = ({
   radius = "md",
   blur = "md",
   className,
+  ...props
 }) => {
   return (
     <div
@@ -39,6 +38,7 @@ export const GlassPanel: React.FC<GlassPanelProps> = ({
         radiusStyles[radius],
         className,
       )}
+      {...props}
     >
       {children}
     </div>

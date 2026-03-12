@@ -2999,6 +2999,38 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001
 
+### [Phase12] light theme shared color migration は token scope / component scope / verification-only lane を分離する（TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001）
+
+- **状況**: global light remediation 後の follow-up task で、親 unassigned-task の対象一覧をそのまま使うと current worktree の実体とずれやすい。settings/auth/workspace をまたぐため、UI だけ読んでも system spec 抽出が漏れやすい
+- **成功パターン**:
+  - Phase 1 で current worktree の hardcoded color inventory を取り直し、old unassigned-task の対象を盲信しない
+  - primary targets を `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` に固定し、`SettingsView` / `SettingsCard` / `DashboardView` は verification-only lane に落とす
+  - token foundation は親 workflow、current task は component migration、wrapper は verification-only として 3 lane に分離する
+  - `ui-ux-design-system` / `ui-ux-settings` / `ui-ux-feature-components` / `ui-ux-components` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `task-workflow` / `lessons-learned` の要否を同一ターンで判定する
+  - `spec_created` task では Phase 1-3 を completed に固定してから、Phase 4+ を planned のまま書く
+- **失敗パターン**:
+  - `SettingsView` / `DashboardView` を親 task のまま P1 扱いし、actual inventory を補正しない
+  - token baseline の議論と component migration を同じ仕様書で進める
+  - `ui-ux-*` だけ読んで `api-ipc-*` / `security-*` / `rag-desktop-state` / `ui-ux-portal-patterns` を落とす
+  - Phase 1-3 gate 前に Phase 4-13 を completed 扱いにする
+- **結果**: `spec_created` UI task でも current inventory と system spec 抽出セットが揃い、後続の実装 lane / regression guard / Phase 12 同期が短手順で再利用できる
+- **適用条件**: Light Mode follow-up、component migration、settings/auth/workspace を跨ぐ UI task、spec-only workflow 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+### [Phase 12] loopback screenshot capture は localhost 不達時に current build static server を自動起動する
+
+- **状況**: screenshot capture script が `http://127.0.0.1:<port>` / `http://localhost:<port>` を前提にしていると、preview / static serve を別ターミナルで起動し忘れた瞬間に `ERR_CONNECTION_REFUSED` で落ちる
+- **アプローチ**:
+  1. capture 実行前に loopback `baseUrl` の readiness probe を行う
+  2. 不達かつ参照先が loopback の場合のみ、current worktree `apps/desktop/out/renderer` をローカル static server で自動配信する
+  3. capture 完了後は自動起動した server を cleanup し、`phase11-capture-metadata.json` / `manual-test-result.md` / Phase 12 レポートに fallback 使用を記録する
+  4. `current build` の asset hash と capture timestamp が同一 worktree 由来であることを確認する
+- **結果**: 「人手 preflight が1つ漏れただけで Phase 11 が全停止する」状態を避けつつ、current build 正本での screenshot 証跡を維持できる
+- **適用条件**: worktree 上の UI 再撮影、loopback baseUrl 固定の capture script、preview source drift を避けたい Phase 11/12 再監査
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
+
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する

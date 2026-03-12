@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-11T22:36:59.515Z",
-  "totalKeywords": 1595,
+  "generated": "2026-03-12T04:49:20.887Z",
+  "totalKeywords": 1614,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -137,6 +137,7 @@
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -270,6 +271,7 @@
       "ui-ux-navigation.md",
       "ui-ux-search-panel.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -399,6 +401,7 @@
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
@@ -841,7 +844,9 @@
     "GUARD": [
       "api-ipc-agent.md",
       "lessons-learned.md",
-      "security-electron-ipc.md"
+      "security-electron-ipc.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "スキルファイル操作": [
       "api-ipc-agent.md",
@@ -1414,7 +1419,8 @@
       "architecture-implementation-patterns.md"
     ],
     "migration": [
-      "arch-state-management.md"
+      "arch-state-management.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "renderer": [
       "arch-state-management.md"
@@ -1901,7 +1907,9 @@
     ],
     "IMP": [
       "architecture-implementation-patterns.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns.md",
@@ -2090,6 +2098,7 @@
     "Phase": [
       "claude-code-agents-workflow.md",
       "lessons-learned.md",
+      "task-workflow.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "共通": [
@@ -2621,7 +2630,8 @@
     ],
     "shared": [
       "directory-structure.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "詳細構造": [
       "directory-structure.md"
@@ -3462,6 +3472,29 @@
     "最新教訓": [
       "lessons-learned.md"
     ],
+    "LIGHT": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "THEME": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "CONTRAST": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "REGRESSION": [
+      "lessons-learned.md",
+      "task-workflow.md",
+      "ui-ux-feature-components.md"
+    ],
+    "教訓": [
+      "lessons-learned.md"
+    ],
     "HANDLER": [
       "lessons-learned.md"
     ],
@@ -3480,9 +3513,6 @@
     "INTEGRATION": [
       "lessons-learned.md",
       "ui-ux-settings.md"
-    ],
-    "REGRESSION": [
-      "lessons-learned.md"
     ],
     "COVERAGE": [
       "lessons-learned.md"
@@ -3794,9 +3824,6 @@
       "lessons-learned.md"
     ],
     "分離": [
-      "lessons-learned.md"
-    ],
-    "THEME": [
       "lessons-learned.md"
     ],
     "DYNAMIC": [
@@ -4217,9 +4244,6 @@
       "lessons-learned.md"
     ],
     "ハードニングでの教訓": [
-      "lessons-learned.md"
-    ],
-    "教訓": [
       "lessons-learned.md"
     ],
     "ワークフロー教訓": [
@@ -5060,7 +5084,8 @@
       "spec-splitting-guidelines.md"
     ],
     "ワークフロー仕様": [
-      "spec-splitting-guidelines.md"
+      "spec-splitting-guidelines.md",
+      "workflow-light-theme-contrast-regression-guard.md"
     ],
     "claude": [
       "spec-splitting-guidelines.md"
@@ -5123,6 +5148,12 @@
       "task-workflow.md"
     ],
     "再監査記録": [
+      "task-workflow.md"
+    ],
+    "実行記録": [
+      "task-workflow.md"
+    ],
+    "JST": [
       "task-workflow.md"
     ],
     "完了記録": [
@@ -5690,6 +5721,21 @@
     "Issue": [
       "ui-ux-feature-components.md"
     ],
+    "Light": [
+      "ui-ux-feature-components.md"
+    ],
+    "Theme": [
+      "ui-ux-feature-components.md"
+    ],
+    "Contrast": [
+      "ui-ux-feature-components.md"
+    ],
+    "Regression": [
+      "ui-ux-feature-components.md"
+    ],
+    "Guard": [
+      "ui-ux-feature-components.md"
+    ],
     "SkillStreamDisplay": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
@@ -6003,18 +6049,22 @@
     ],
     "苦戦箇所と再発防止": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "同種課題の": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "分解決カード": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "最適なファイル形成": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "責務マトリクス": [
@@ -6023,6 +6073,7 @@
     ],
     "検証コマンド": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
     ],
     "最小セット": [
@@ -6031,7 +6082,32 @@
     ],
     "関連改善タスク": [
       "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md"
+    ],
+    "ライトテーマ": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "contrast": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "regression": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "guard": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "仕様書別": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "SubAgent": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "編成": [
+      "workflow-light-theme-contrast-regression-guard.md"
+    ],
+    "今回実装した内容": [
+      "workflow-light-theme-contrast-regression-guard.md"
     ],
     "ライトモード全画面": [
       "workflow-light-theme-global-remediation.md"
@@ -6043,6 +6119,12 @@
       "workflow-light-theme-global-remediation.md"
     ],
     "再是正ワークフロー仕様": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "color": [
+      "workflow-light-theme-global-remediation.md"
+    ],
+    "仕様作成追補": [
       "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [
