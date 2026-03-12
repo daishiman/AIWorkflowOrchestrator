@@ -1,0 +1,9 @@
+# Requirements Traceability
+
+| 要件                               | 実装 / 検証                                                                                                         | 証跡                                                                                                | 判定 |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---- |
+| AC-1 sweep manifest が全対象を含む | `FILE_CHECKS` / `REQUIRED_PATHS` / mirror pair を実装                                                               | `outputs/phase-2/sweep-manifest-design.md`, `scripts/validate-workspace-parent-reference-sweep.mjs` | PASS |
+| AC-2 path/status/mirror の責務分離 | drift type ごとの check を実装                                                                                      | `outputs/phase-2/drift-guard-contract.md`, `outputs/phase-6/test-expansion-result.md`               | PASS |
+| AC-3 task-060 の参照関係一意化     | `task-060` と pointer docs を正本 link に更新                                                                       | `outputs/phase-5/implementation-log.md`, `outputs/phase-11/manual-test-result.md`                   | PASS |
+| AC-4 Phase 12 sync の包含          | `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / LOGS を更新            | `outputs/phase-12/spec-update-summary.md`                                                           | PASS |
+| AC-5 validator 群が通る            | root guard、`validate-phase-output`、`verify-all-specs`、`verify-unassigned-links`、`audit-unassigned-tasks` を実行 | `outputs/phase-9/quality-report.md`, `outputs/phase-12/unassigned-task-detection.md`                | PASS |

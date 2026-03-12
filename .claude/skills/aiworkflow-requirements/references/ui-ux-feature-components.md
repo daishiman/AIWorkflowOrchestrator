@@ -19,7 +19,7 @@
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
-| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/` |
+| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/` |
 | Workspace Preview / Quick Search | TASK-UI-04C | PreviewPanel, PreviewToolbar, QuickFileSearch, SourceView | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
@@ -438,6 +438,25 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PHASE11-CURRENT-BUILD-CAPTURE-GUARD-001 | Workspace 系 UI の screenshot source を current build へ固定し、reverse resize / watcher 更新 / light theme contrast の再監査を共通化する | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/unassigned-task/task-imp-workspace-phase11-current-build-capture-guard-001.md` |
+
+---
+
+### Workspace parent reference sweep guard（2026-03-12）
+
+docs-only parent workflow の再監査として、04A / 04B / 04C child workflow の representative surface と導線正本を completed workflow へ再同期した補助 task。Workspace UI 実装を変える task ではなく、親導線の drift と visual evidence の散逸を止めるための guard として扱う。
+
+| 観点 | 内容 |
+| --- | --- |
+| workflow | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` |
+| drift scope | `task-060` parent pointer、completed-task pointer docs、legacy index、`interfaces-*`、capture root、mirror |
+| visual review | 04A layout、04B chat、04C preview search、mobile overlay を completed workflow screenshot へ集約 |
+| evidence | `outputs/phase-11/apple-uiux-visual-review.md`, `outputs/phase-11/screenshots/UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001_workspace-review-board_2026-03-12.png` |
+| reference spec | `references/workflow-workspace-parent-reference-sweep-guard.md` |
+
+#### 再利用ポイント
+
+- user が docs-heavy task にも screenshot 再監査を要求した場合、same-day child workflow evidence を completed workflow へ集約して review board を作る。
+- Workspace lineage task は 04A / 04B / 04C の screen 自体だけでなく、親導線の pointer / mirror / spec root も同時に確認する。
 
 ---
 

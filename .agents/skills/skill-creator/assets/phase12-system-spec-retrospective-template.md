@@ -89,6 +89,18 @@
 
 > `<workflow-b>` が不要な場合は1workflowのみで運用し、理由を「備考」に明記する。
 
+### 3.2.1 docs-only parent workflow sweep プロファイル
+
+| SubAgent | 担当仕様書 / 成果物 | 主担当作業 | 依存関係 |
+| --- | --- | --- | --- |
+| P1 | `task-060` 相当の parent pointer doc / completed-task pointer docs / `task-000` / `task-090` | parent-child root、legacy status、pointer inventory を completed 正本へそろえる | 実装差分確定後 |
+| P2 | `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/interfaces-*.md` | completed root、representative evidence path、5分解決カードを同期 | P1 完了後 |
+| P3 | `references/workflow-<feature>.md` / `references/lessons-learned.md` | docs-only parent workflow の統合正本、苦戦箇所、標準ルールを同期 | P2 完了後 |
+| P4 | `scripts/validate-<parent-sweep>.mjs` / `diff -qr .claude/skills/<skill> .agents/skills/<skill>` | path / status / mirror drift guard を機械検証 | P1-P3 完了後 |
+| P5 | `outputs/phase-11/*` / `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | representative visual re-audit board と SubAgent 実行ログ、再利用テンプレート化を同一ターンで残す | P2-P4 と同一ターン |
+
+> user が screenshot を要求した docs-heavy task では、P5 を `N/A` にせず current workflow への representative evidence 集約可否を最初に判定する。
+
 ### 3.3 仕様書別SubAgent実行ログ（必須）
 
 | SubAgent | 担当仕様書 | 実装内容の反映先 | 苦戦箇所の反映先 | 検証証跡 |
@@ -148,6 +160,28 @@ UI機能実装の場合は次を推奨:
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | 次回の短時間解決に直結する |
 
 > 迷った場合は「複数仕様書に同じ段落を貼る」のではなく、最初にこのマトリクスで責務を決めてから SubAgent 分担へ落とす。
+
+### 4.2.1 Light theme shared color migration（`spec_created`）反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| actual target inventory、verification-only lane | `ui-ux-design-system.md` / `ui-ux-settings.md` | token/component 境界と Settings domain inventory を一緒に固定できる |
+| Auth / WorkspaceSearch / dialog / panel state | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md` | search/portal/state の cross-cutting 条件を落としにくい |
+| auth/api/security boundary | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | public auth shell と settings/search surface の安全境界を明示できる |
+| `spec_created` 台帳、Phase 1-3 gate、苦戦箇所 | `task-workflow.md` / `lessons-learned.md` | Phase 1-3 completed / Phase 4+ planned の運用と 5分解決カードを固定できる |
+
+> `SettingsView` / `SettingsCard` / `DashboardView` のような wrapper shell は、current inventory で主因でない限り verification-only lane へ分離する。
+
+### 4.2.2 docs-only parent workflow 反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| parent pointer / completed-task pointer docs / legacy index の正規化 | parent workflow doc / `task-workflow.md` | 親導線と完了台帳を同時に閉じられる |
+| Workspace lineage の representative visual review | `ui-ux-feature-components.md` | surface 単位で same-day evidence を辿りやすい |
+| completed root / evidence path | `interfaces-*.md` | path drift を契約面から再利用できる |
+| docs-only parent workflow の統合ルール | `references/workflow-<feature>.md` | pointer / index / spec / script / mirror を 1 入口で再現できる |
+| 苦戦箇所、再発条件、5分解決カード | `lessons-learned.md` | 次回の調査時間を最短化できる |
+| 再利用テンプレート、SubAgent プロファイル | `skill-creator` patterns / templates | 同種 task の初動をテンプレートで短縮できる |
 
 ### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
 
@@ -230,6 +264,9 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | 対象未タスクの形式/命名/配置監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | 今回差分の未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD \| jq '{currentViolations: .currentViolations.total, baselineViolations: .baselineViolations.total}'` | 未タスク監査カウンタ（current/baseline）を転記用に固定 | current/baseline の確定値が取得できる |
+| `node scripts/validate-<parent-sweep>.mjs --json` | docs-only parent workflow の path / status drift 監査 | `path-drift=0 / status-drift=0 / mirror-drift=0` |
+| `diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>` | dual root repository の mirror drift 監査 | 差分なし |
+| `node apps/desktop/scripts/capture-<docs-heavy-review-board>.mjs` | representative visual re-audit board の生成 | current workflow 配下へ PNG と metadata が出力される |
 | `rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task` | 未タスクの配置先判定（未完了/完了移管） | active workflow 由来は `unassigned-task`、completed workflow 由来は `completed-tasks/<workflow>/unassigned-task`、legacy standalone は `completed-tasks/unassigned-task` |
 | `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` | 10見出しの機械確認 | `## メタ情報` が1件、`## 1..9` が9件 |
 | `rg -n '## Part 1|## Part 2|なぜ|必要|例え|たとえば|interface|type|API|エッジケース|設定' <workflow-path>/outputs/phase-12/implementation-guide.md` | 実装ガイド Task 1 必須要素の簡易確認 | Part 1/Part 2 + 理由先行 + 日常例え（`たとえば` 含む）+ 型/API/エッジケース/設定語が検出される |
@@ -277,9 +314,15 @@ UI機能実装の場合は次を推奨:
 - [ ] 親タスクに苦戦箇所がある場合、新規未タスクへ `### 3.5 実装課題と解決策` を追加し、再発条件と解決策を継承している
 - [ ] Light Mode / contrast 改修で screenshot を再取得した場合、coverage validator の PASS を再取得後の証跡として記録している
 - [ ] 2workflow同時監査時は両workflowの `verify-all-specs` / `validate-phase-output` 証跡を記録
+- [ ] docs-only parent workflow では `SubAgent-P1..P5` または同等の責務分離を使い、pointer / index / spec / script / mirror / evidence board を同一ターンで閉じている
+- [ ] docs-only parent workflow では `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `workflow-<feature>.md` / `lessons-learned.md` / `skill-creator` templates の担当境界が `spec-update-summary.md` に記録されている
+- [ ] user が screenshot を要求した docs-heavy task では、representative visual re-audit board か `N/A` 理由のどちらかを `spec-update-summary.md` と `documentation-changelog.md` に記録している
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only lane を明記している
+- [ ] Light theme shared color migration では `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` の要否判定を記録している
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が同期している
 - [ ] UIタスクでは `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を残し、一覧specから再利用ポイントを辿れるようにする
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）が存在する場合、基本6仕様書に加えて同一ターンで更新している
 - [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の cross-cutting 4仕様書について要否判定を記録し、該当時は同一ターンで更新している

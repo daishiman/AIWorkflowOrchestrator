@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「docs-only parent workflow は pointer / index / spec / script / mirror を 1 sweep で閉じる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-P1..P5`、representative visual re-audit board、mirror drift validator を追加
+  - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow sweep profile を同期し、入口から template capability を辿れるようにした
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator

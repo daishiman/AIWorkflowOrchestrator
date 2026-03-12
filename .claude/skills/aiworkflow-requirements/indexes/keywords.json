@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-12T04:49:20.887Z",
-  "totalKeywords": 1614,
+  "generated": "2026-03-12T11:17:15.644Z",
+  "totalKeywords": 1619,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -139,7 +139,8 @@
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
+      "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "Cases": [
       "api-chat-history.md",
@@ -273,7 +274,8 @@
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
+      "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "関連ドキュメント": [
       "api-chat-history.md",
@@ -403,7 +405,8 @@
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
+      "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "設計原則・認証・レート制限": [
       "api-core.md"
@@ -681,8 +684,10 @@
       "api-ipc-agent.md",
       "api-ipc-system.md",
       "arch-state-management.md",
+      "lessons-learned.md",
       "llm-workspace-chat-edit.md",
-      "ui-ux-feature-components.md"
+      "ui-ux-feature-components.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "Chat": [
       "api-ipc-agent.md",
@@ -4292,6 +4297,23 @@
     "ホーム画面リデザイン": [
       "lessons-learned.md"
     ],
+    "parent": [
+      "lessons-learned.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
+    "reference": [
+      "lessons-learned.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
+    "sweep": [
+      "lessons-learned.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
+    "guard": [
+      "lessons-learned.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
     "プロバイダーインターフェース": [
       "llm-embedding.md"
     ],
@@ -5085,7 +5107,8 @@
     ],
     "ワークフロー仕様": [
       "spec-splitting-guidelines.md",
-      "workflow-light-theme-contrast-regression-guard.md"
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "claude": [
       "spec-splitting-guidelines.md"
@@ -6055,17 +6078,20 @@
     "同種課題の": [
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md"
+      "workflow-light-theme-global-remediation.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "分解決カード": [
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md"
+      "workflow-light-theme-global-remediation.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "最適なファイル形成": [
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md"
+      "workflow-light-theme-global-remediation.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "責務マトリクス": [
       "workflow-apikey-chat-tool-integration-alignment.md",
@@ -6074,7 +6100,8 @@
     "検証コマンド": [
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md"
+      "workflow-light-theme-global-remediation.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "最小セット": [
       "workflow-apikey-chat-tool-integration-alignment.md",
@@ -6094,17 +6121,17 @@
     "regression": [
       "workflow-light-theme-contrast-regression-guard.md"
     ],
-    "guard": [
-      "workflow-light-theme-contrast-regression-guard.md"
-    ],
     "仕様書別": [
-      "workflow-light-theme-contrast-regression-guard.md"
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "SubAgent": [
-      "workflow-light-theme-contrast-regression-guard.md"
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "編成": [
-      "workflow-light-theme-contrast-regression-guard.md"
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "今回実装した内容": [
       "workflow-light-theme-contrast-regression-guard.md"
@@ -6144,6 +6171,12 @@
     ],
     "監視・ログ": [
       "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "今回実装・更新した内容": [
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
+    "苦戦箇所と標準ルール": [
+      "workflow-workspace-parent-reference-sweep-guard.md"
     ]
   }
 }

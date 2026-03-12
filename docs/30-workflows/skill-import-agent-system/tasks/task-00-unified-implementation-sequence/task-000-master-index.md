@@ -84,7 +84,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 #### Step 6-B: 画面実装（並列、057完了後）
 
 34. `task-058a-ui-03-agent-view-enhancement.md`（並列）
-35. `task-058b-ui-04a-workspace-layout-filebrowser.md`（並列、059a/059bをブロック）
+35. `../completed-task/task-058b-ui-04a-workspace-layout-filebrowser.md`（並列、059a/059bをブロック）
 36. `task-058c-ui-06-history-search-view.md`（並列）
 37. `../completed-task/task-058d-ui-07-dashboard-enhancement.md`（並列、完了済み）
 38. `task-058e-ui-08-notification-center.md`（並列）
@@ -100,8 +100,8 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 #### Step 6-C: ワークスペース分割（058b完了後、並列）
 
-39. `task-059a-ui-04b-workspace-chat-panel.md`（並列：059a∥059b）
-40. `task-059b-ui-04c-workspace-preview-quicksearch.md`（並列：059a∥059b）
+39. `../completed-task/task-059a-ui-04b-workspace-chat-panel.md`（並列：059a∥059b）
+40. `../completed-task/task-059b-ui-04c-workspace-preview-quicksearch.md`（並列：059a∥059b）
 
 #### Step 6-D: 参照仕様（060は設計ドキュメント、実装は058b/059a/059bに分割済み）
 

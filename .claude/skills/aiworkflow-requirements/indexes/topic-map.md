@@ -844,21 +844,21 @@ node scripts/list-specs.js --topics
 | Custom Execution Environment UI コンポーネント（AGENT-006） | L159 |
 | workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L226 |
 | Workspace Layout Foundation（TASK-UI-04A-WORKSPACE-LAYOUT） | L374 |
-| Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT） | L444 |
-| Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L491 |
-| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L560 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L609 |
-| i18n対応（TASK-3-2-B） | L660 |
-| コピー履歴機能（TASK-3-2-D） | L709 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L818 |
-| SkillStreamingView コンポーネント（TASK-7D） | L829 |
-| SkillEditor UI（TASK-9A / 完了） | L874 |
-| SkillCenterView UI（TASK-UI-05 / 完了） | L1002 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L1160 |
-| SkillAnalysisView UI（TASK-10A-B / completed） | L1234 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L1323 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L1385 |
-| Organisms Foundation（TASK-UI-00-ORGANISMS / completed） | L1415 |
+| Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT） | L463 |
+| Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L510 |
+| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L579 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L628 |
+| i18n対応（TASK-3-2-B） | L679 |
+| コピー履歴機能（TASK-3-2-D） | L728 |
+| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L837 |
+| SkillStreamingView コンポーネント（TASK-7D） | L848 |
+| SkillEditor UI（TASK-9A / 完了） | L893 |
+| SkillCenterView UI（TASK-UI-05 / 完了） | L1021 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L1179 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L1253 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L1342 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L1404 |
+| Organisms Foundation（TASK-UI-00-ORGANISMS / completed） | L1434 |
 
 ### references/ui-ux-feature-skill-stream.md
 
@@ -1405,6 +1405,19 @@ node scripts/list-specs.js --topics
 | 監視・ログ | L177 |
 | 関連ドキュメント | L197 |
 | 変更履歴 | L208 |
+
+### references/workflow-workspace-parent-reference-sweep-guard.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 仕様書別 SubAgent 編成 | L19 |
+| 今回実装・更新した内容（2026-03-12） | L31 |
+| 苦戦箇所と標準ルール | L55 |
+| 同種課題の5分解決カード | L67 |
+| 最適なファイル形成 | L77 |
+| 検証コマンド | L89 |
+| 関連ドキュメント | L103 |
+| 変更履歴 | L117 |
 
 ---
 
@@ -2022,16 +2035,16 @@ node scripts/list-specs.js --topics
 | 出力テンプレート | L86 |
 | 実行時のコマンド・エージェント・スキル | L109 |
 | 完了タスク | L133 |
-| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3799 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3901 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L3968 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L4049 |
-| 残課題（未タスク） | L4084 |
-| 関連ドキュメント | L4510 |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L4520 |
-| 変更履歴 | L4584 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4852 |
-| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4872 |
+| TASK-10A-B: SkillAnalysisView 実装完了記録（2026-03-02） | L3863 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L3965 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L4032 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L4113 |
+| 残課題（未タスク） | L4148 |
+| 関連ドキュメント | L4574 |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L4584 |
+| 変更履歴 | L4648 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4916 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4936 |
 
 ### references/testing-accessibility.md
 

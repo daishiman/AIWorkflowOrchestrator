@@ -144,7 +144,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | 実装内容     | `WorkspaceView` へ `WorkspaceChatPanel` を統合。`useWorkspaceChatController` で file context / mention / stream / conversation 保存を結線 |
 | 主要API      | `llm:stream-chat`, `llm:cancel-stream`, `conversation:create`, `conversation:add-message`, `file:read` |
 | テスト       | 3 files / 14 tests PASS |
-| 証跡         | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/phase-11/screenshots/` |
+| 証跡         | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/outputs/phase-11/screenshots/` |
 
 ---
 

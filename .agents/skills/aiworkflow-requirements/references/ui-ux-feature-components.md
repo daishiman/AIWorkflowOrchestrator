@@ -19,7 +19,7 @@
 | Custom Execution Environment | AGENT-006        | ExecutionEnvironment, HTMLPreviewEnvironment       | 完了 | 本ファイル                                                       |
 | Workspace Chat Edit          | Issue #468, #494 | FileAttachmentButton, FileContextList, DiffPreview | 完了 | 本ファイル                                                       |
 | Workspace Layout Foundation  | TASK-UI-04A      | WorkspaceView, FileBrowserPanel, PanelToggleBar, WorkspaceStatusBar | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/` |
-| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/` |
+| Workspace Chat Panel         | TASK-UI-04B      | WorkspaceChatPanel, WorkspaceChatInput, WorkspaceChatMessageList, WorkspaceMentionDropdown | 完了（Phase 1-12） | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/` |
 | Workspace Preview / Quick Search | TASK-UI-04C | PreviewPanel, PreviewToolbar, QuickFileSearch, SourceView | 完了（Phase 13保留） | `docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/` |
 | Skill Stream Display         | TASK-3-2         | SkillStreamDisplay, useSkillExecution              | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
 | Skill Stream Copy History    | TASK-3-2-D       | CopyHistoryPanel, CopyHistoryContext, useCopyHistory | 完了 | [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md) |
@@ -441,6 +441,25 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 
 ---
 
+### Workspace parent reference sweep guard（2026-03-12）
+
+docs-only parent workflow の再監査として、04A / 04B / 04C child workflow の representative surface と導線正本を completed workflow へ再同期した補助 task。Workspace UI 実装を変える task ではなく、親導線の drift と visual evidence の散逸を止めるための guard として扱う。
+
+| 観点 | 内容 |
+| --- | --- |
+| workflow | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` |
+| drift scope | `task-060` parent pointer、completed-task pointer docs、legacy index、`interfaces-*`、capture root、mirror |
+| visual review | 04A layout、04B chat、04C preview search、mobile overlay を completed workflow screenshot へ集約 |
+| evidence | `outputs/phase-11/apple-uiux-visual-review.md`, `outputs/phase-11/screenshots/UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001_workspace-review-board_2026-03-12.png` |
+| reference spec | `references/workflow-workspace-parent-reference-sweep-guard.md` |
+
+#### 再利用ポイント
+
+- user が docs-heavy task にも screenshot 再監査を要求した場合、same-day child workflow evidence を completed workflow へ集約して review board を作る。
+- Workspace lineage task は 04A / 04B / 04C の screen 自体だけでなく、親導線の pointer / mirror / spec root も同時に確認する。
+
+---
+
 ## Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT）
 
 `WorkspaceView` に統合された 04B の chat 本体。04A の layout 基盤を再利用し、file context / mention / streaming / conversation 保存を 1 つの panel で提供する。
@@ -555,6 +574,55 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | タスクID | 目的 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
+---
+## Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001）
+
+> **詳細仕様**: [workflow-light-theme-contrast-regression-guard.md](./workflow-light-theme-contrast-regression-guard.md)
+
+light theme remediation を直接行わず、representative screen と hardcoded color audit で回帰を検出する guard workflow。current build static serve と selector-based capture を正本手順に固定する。
+
+### 実装内容（要点）
+
+| 項目 | 内容 |
+| --- | --- |
+| audit | `ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` を baseline、`SettingsView` / `DashboardView` を current として監査 |
+| harness | `phase11-light-theme-contrast-guard.html` と `phase11-light-theme-contrast-guard.tsx` を build output に含める |
+| readiness | `ThemeSelector` / `AuthView` に minimal な `data-testid` を追加 |
+| capture | Settings / Dashboard / Auth / WorkspaceSearch + Dashboard dark baseline の 5 ケースを取得 |
+
+### 実測結果
+
+| 項目 | 値 |
+| --- | --- |
+| currentViolations | 0 |
+| baselineViolations | 64 |
+| screenshot | 5 png + metadata 1件 |
+| targeted tests | 46 PASS |
+
+### Apple UI/UX 視覚レビュー
+
+| 画面 | 判定 | 所見 |
+| --- | --- | --- |
+| Settings light | PASS with baseline note | settings shell は読めるが ThemeSelector の淡い chip が弱い |
+| Dashboard light | PASS | hierarchy / spacing / materiality が安定 |
+| Auth light | PASS with baseline note | helper text が light panel 上で沈む |
+| WorkspaceSearch light | PASS with baseline note | light 指定でも dark slate surface が残るため remediation 対象が明確 |
+
+### baseline backlog routing
+
+| backlog | 参照 |
+| --- | --- |
+| ThemeSelector / Auth / WorkspaceSearch の actual remediation | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
+| current build capture preflight bundle | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| guard workflow の維持 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+
+### 再利用ルール
+
+1. guard workflow は remediation task と分離する。
+2. current build screenshot は build artifact を static serve して取得する。
+3. selector-based capture を優先し、route 全景は fallback に留める。
+4. `current=0` でも baseline backlog と routing を必ず残す。
 
 ---
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
