@@ -9,6 +9,14 @@ runs:
       run: |
         set -euo pipefail
 
+        node_dir="$(node -p "const path = require('path'); path.dirname(path.dirname(process.execPath))")"
+        if [ -d "${node_dir}/include/node" ]; then
+          export npm_config_nodedir="${node_dir}"
+          echo "Using local Node.js headers from ${npm_config_nodedir}"
+        else
+          echo "Local Node.js headers not found under ${node_dir}; falling back to default node-gyp resolution"
+        fi
+
         max_attempts="${INSTALL_RETRY_MAX_ATTEMPTS:-3}"
         attempt=1
 

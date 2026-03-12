@@ -38,12 +38,21 @@ Closes #
 
 ## スクリーンショット
 
-| 項目                    | スクリーンショット                                                       |
-| ----------------------- | ------------------------------------------------------------------------ |
-| Chat / general baseline | `outputs/phase-11/screenshots/TC-02-01-chat-general-foundation.png`      |
-| Chat / retry error      | `outputs/phase-11/screenshots/TC-02-02-chat-retry-error-state.png`       |
-| Workspace handoff       | `outputs/phase-11/screenshots/TC-02-04-workspace-handoff-chat.png`       |
-| Skill Lifecycle handoff | `outputs/phase-11/screenshots/TC-02-06-skill-lifecycle-handoff-chat.png` |
+### Chat / general baseline
+
+![TC-02-01](https://github.com/daishiman/AIWorkflowOrchestrator/blob/7d348eaedfe2f19e30010150c47686166a29336d/docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/phase-11/screenshots/TC-02-01-chat-general-foundation.png?raw=1)
+
+### Chat / retry error
+
+![TC-02-02](https://github.com/daishiman/AIWorkflowOrchestrator/blob/7d348eaedfe2f19e30010150c47686166a29336d/docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/phase-11/screenshots/TC-02-02-chat-retry-error-state.png?raw=1)
+
+### Workspace handoff
+
+![TC-02-04](https://github.com/daishiman/AIWorkflowOrchestrator/blob/7d348eaedfe2f19e30010150c47686166a29336d/docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/phase-11/screenshots/TC-02-04-workspace-handoff-chat.png?raw=1)
+
+### Skill Lifecycle handoff
+
+![TC-02-06](https://github.com/daishiman/AIWorkflowOrchestrator/blob/7d348eaedfe2f19e30010150c47686166a29336d/docs/30-workflows/completed-tasks/step-02-par-task-02-chat-platform-unification/outputs/phase-11/screenshots/TC-02-06-skill-lifecycle-handoff-chat.png?raw=1)
 
 ## チェックリスト
 
@@ -51,7 +60,7 @@ Closes #
 - [x] 必要に応じてドキュメントを更新した
 - [x] 新規・変更機能にテストを追加した
 - [x] すべてのテストがローカルで成功する
-- [ ] Pre-commit hooks が成功する
+- [x] Pre-commit hooks が成功する
 
 ## その他
 
