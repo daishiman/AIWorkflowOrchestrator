@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-12T03:02:53.559Z",
-  "totalKeywords": 1601,
+  "generated": "2026-03-12T03:38:42.683Z",
+  "totalKeywords": 1597,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -138,7 +138,6 @@
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Cases": [
@@ -272,7 +271,6 @@
       "ui-ux-search-panel.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "関連ドキュメント": [
@@ -402,7 +400,6 @@
       "ui-ux-system-prompt.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "設計原則・認証・レート制限": [
@@ -746,17 +743,11 @@
       "interfaces-agent-sdk-skill.md",
       "security-skill-execution.md",
       "security-skill-ipc.md",
-      "ui-ux-agent-execution.md",
       "ui-ux-feature-components.md",
-      "workflow-skill-creator-execute-improve-integration.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "Creator": [
-      "api-ipc-agent.md",
-      "arch-ui-components.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "api-ipc-agent.md"
     ],
     "実装パターン参照": [
       "api-ipc-agent.md"
@@ -824,7 +815,6 @@
     ],
     "SKILL": [
       "api-ipc-agent.md",
-      "arch-ui-components.md",
       "architecture-implementation-patterns.md",
       "claude-code-agents-workflow.md",
       "claude-code-skills-structure.md",
@@ -832,9 +822,7 @@
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
       "security-electron-ipc.md",
-      "security-skill-execution.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md"
+      "security-skill-execution.md"
     ],
     "AUTH": [
       "api-ipc-agent.md",
@@ -1426,7 +1414,8 @@
       "architecture-implementation-patterns.md"
     ],
     "migration": [
-      "arch-state-management.md"
+      "arch-state-management.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "renderer": [
       "arch-state-management.md"
@@ -1512,33 +1501,6 @@
     ],
     "List": [
       "arch-ui-components.md"
-    ],
-    "Session": [
-      "arch-ui-components.md",
-      "interfaces-agent-sdk-integration.md",
-      "ui-ux-feature-components.md"
-    ],
-    "Integration": [
-      "arch-ui-components.md",
-      "interfaces-agent-sdk-integration.md",
-      "ui-ux-feature-components.md"
-    ],
-    "LIFECYCLE": [
-      "arch-ui-components.md",
-      "claude-code-agents-workflow.md",
-      "security-skill-execution.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-feature-components.md"
-    ],
-    "current": [
-      "arch-ui-components.md",
-      "task-workflow.md"
-    ],
-    "workflow": [
-      "arch-ui-components.md",
-      "lessons-learned.md",
-      "spec-splitting-guidelines.md",
-      "task-workflow.md"
     ],
     "ORGANISMS": [
       "arch-ui-components.md",
@@ -1794,8 +1756,7 @@
       "rag-knowledge-graph.md",
       "rag-search-vector.md",
       "security-skill-ipc.md",
-      "ui-ux-portal-patterns.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "ui-ux-portal-patterns.md"
     ],
     "型定義修正タスクパターン": [
       "architecture-implementation-patterns.md"
@@ -2157,6 +2118,10 @@
     ],
     "orchestration": [
       "claude-code-agents-workflow.md"
+    ],
+    "LIFECYCLE": [
+      "claude-code-agents-workflow.md",
+      "security-skill-execution.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -2657,7 +2622,8 @@
     ],
     "shared": [
       "directory-structure.md",
-      "lessons-learned.md"
+      "lessons-learned.md",
+      "workflow-light-theme-global-remediation.md"
     ],
     "詳細構造": [
       "directory-structure.md"
@@ -2927,6 +2893,12 @@
       "quality-e2e-testing.md",
       "task-workflow.md",
       "ui-ux-search-panel.md"
+    ],
+    "Integration": [
+      "interfaces-agent-sdk-integration.md"
+    ],
+    "Session": [
+      "interfaces-agent-sdk-integration.md"
     ],
     "Persistence": [
       "interfaces-agent-sdk-integration.md"
@@ -3502,8 +3474,7 @@
       "lessons-learned.md"
     ],
     "再監査": [
-      "lessons-learned.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "lessons-learned.md"
     ],
     "再確認": [
       "lessons-learned.md"
@@ -4000,6 +3971,11 @@
     ],
     "未実施が混在していないか": [
       "lessons-learned.md"
+    ],
+    "workflow": [
+      "lessons-learned.md",
+      "spec-splitting-guidelines.md",
+      "task-workflow.md"
     ],
     "の参照整合を検証": [
       "lessons-learned.md"
@@ -5112,7 +5088,6 @@
       "task-workflow.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md",
       "workflow-skill-identifier-branded-type-resolution.md"
     ],
     "出力テンプレート": [
@@ -5145,6 +5120,9 @@
     "実装完了記録": [
       "task-workflow.md",
       "ui-ux-components.md"
+    ],
+    "current": [
+      "task-workflow.md"
     ],
     "再監査記録": [
       "task-workflow.md"
@@ -5577,12 +5555,6 @@
       "ui-ux-agent-execution.md"
     ],
     "実装済": [
-      "ui-ux-agent-execution.md"
-    ],
-    "session": [
-      "ui-ux-agent-execution.md"
-    ],
-    "からの継続実行": [
       "ui-ux-agent-execution.md"
     ],
     "コンポーネント実装パターンガイド": [
@@ -6029,48 +6001,39 @@
     ],
     "今回実装内容": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "苦戦箇所と再発防止": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "同種課題の": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "分解決カード": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "最適なファイル形成": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "責務マトリクス": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "検証コマンド": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "最小セット": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "関連改善タスク": [
       "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-skill-creator-execute-improve-integration.md"
+      "workflow-light-theme-global-remediation.md"
     ],
     "ライトモード全画面": [
       "workflow-light-theme-global-remediation.md"
@@ -6084,17 +6047,11 @@
     "再是正ワークフロー仕様": [
       "workflow-light-theme-global-remediation.md"
     ],
-    "作成・実行・改善統合ワークフロー仕様": [
-      "workflow-skill-creator-execute-improve-integration.md"
+    "color": [
+      "workflow-light-theme-global-remediation.md"
     ],
-    "仕様書別": [
-      "workflow-skill-creator-execute-improve-integration.md"
-    ],
-    "SubAgent": [
-      "workflow-skill-creator-execute-improve-integration.md"
-    ],
-    "実行ログ": [
-      "workflow-skill-creator-execute-improve-integration.md"
+    "仕様作成追補": [
+      "workflow-light-theme-global-remediation.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

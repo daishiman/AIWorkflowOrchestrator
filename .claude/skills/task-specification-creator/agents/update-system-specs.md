@@ -184,5 +184,5 @@ Phase 12 Task 2において、実装内容をシステム仕様書に正確に�
 | リソース                | パス                                                                   |
 | ----------------------- | ---------------------------------------------------------------------- |
 | 更新フロー詳細          | `references/spec-update-workflow.md`                                   |
-| aiworkflow-requirements | `.claude/skills/aiworkflow-requirements/`                              |
-| 仕様記述ガイドライン    | `.claude/skills/aiworkflow-requirements/references/spec-guidelines.md` |
+| aiworkflow-requirements | `.agents/skills/aiworkflow-requirements/`                              |
+| 仕様記述ガイドライン    | `.agents/skills/aiworkflow-requirements/references/spec-guidelines.md` |

@@ -224,17 +224,7 @@ vi.mock("../SkillLifecyclePanel", () => ({
     );
   },
 }));
-vi.mock("../SkillLifecycleSessionCard", () => ({
-  SkillLifecycleSessionCard: ({
-    onOpenCreateWizard,
-  }: {
-    onOpenCreateWizard: () => void;
-  }) => (
-    <button data-testid="open-lifecycle-wizard" onClick={onOpenCreateWizard}>
-      セッションから作成
-    </button>
-  ),
-}));
+
 import { SkillManagementPanel } from "../SkillManagementPanel";
 
 beforeEach(() => {
@@ -283,7 +273,7 @@ describe("SkillManagementPanel integration", () => {
     render(<SkillManagementPanel />);
 
     await act(async () => {
-      fireEvent.click(screen.getByTestId("open-lifecycle-wizard"));
+      fireEvent.click(screen.getByTestId("skill-management-create-button"));
     });
 
     expect(screen.getByTestId("mock-skill-create-wizard")).toBeDefined();

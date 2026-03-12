@@ -149,6 +149,17 @@ UI機能実装の場合は次を推奨:
 
 > 迷った場合は「複数仕様書に同じ段落を貼る」のではなく、最初にこのマトリクスで責務を決めてから SubAgent 分担へ落とす。
 
+### 4.2.1 Light theme shared color migration（`spec_created`）反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| actual target inventory、verification-only lane | `ui-ux-design-system.md` / `ui-ux-settings.md` | token/component 境界と Settings domain inventory を一緒に固定できる |
+| Auth / WorkspaceSearch / dialog / panel state | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md` | search/portal/state の cross-cutting 条件を落としにくい |
+| auth/api/security boundary | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | public auth shell と settings/search surface の安全境界を明示できる |
+| `spec_created` 台帳、Phase 1-3 gate、苦戦箇所 | `task-workflow.md` / `lessons-learned.md` | Phase 1-3 completed / Phase 4+ planned の運用と 5分解決カードを固定できる |
+
+> `SettingsView` / `SettingsCard` / `DashboardView` のような wrapper shell は、current inventory で主因でない限り verification-only lane へ分離する。
+
 ### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
 
 | 情報の種類 | 最適な反映先 | 反映理由 |
@@ -280,6 +291,9 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only lane を明記している
+- [ ] Light theme shared color migration では `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` の要否判定を記録している
+- [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が同期している
 - [ ] UIタスクでは `ui-ux-components.md` にも「実装内容と苦戦箇所サマリー」を残し、一覧specから再利用ポイントを辿れるようにする
 - [ ] UIドメイン固有正本（例: `ui-ux-navigation.md`）が存在する場合、基本6仕様書に加えて同一ターンで更新している
 - [ ] preview/search 系 UI タスクでは `ui-ux-search-panel.md` / `ui-ux-design-system.md` / `error-handling.md` / `architecture-implementation-patterns.md` の cross-cutting 4仕様書について要否判定を記録し、該当時は同一ターンで更新している

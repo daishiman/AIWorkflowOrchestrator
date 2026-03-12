@@ -6,14 +6,14 @@
  *
  * Usage:
  *   node verify-unassigned-links.js
- *   node verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md
+ *   node verify-unassigned-links.js --source .agents/skills/aiworkflow-requirements/references/task-workflow.md
  */
 
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
 
 const args = process.argv.slice(2);
-let source = ".claude/skills/aiworkflow-requirements/references/task-workflow.md";
+let source = ".agents/skills/aiworkflow-requirements/references/task-workflow.md";
 
 for (let i = 0; i < args.length; i += 1) {
   if (args[i] === "--source" && args[i + 1]) {

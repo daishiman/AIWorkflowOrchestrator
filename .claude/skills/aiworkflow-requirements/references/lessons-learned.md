@@ -20,10 +20,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-12 | 1.29.81 | TASK-SKILL-LIFECYCLE-03 の visual hierarchy follow-up を追補。light theme の helper text / placeholder / summary hierarchy は主導線成立確認と分けて `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` へ formalize する運用を追加 |
-| 2026-03-12 | 1.29.80 | TASK-SKILL-LIFECYCLE-03 の再監査追補。`phase12-task-spec-compliance-check.md` の実体漏れを防ぐため、補助成果物は台帳登録・実ファイル・`verification-report.md` 更新を同一ターンで閉じるルールを追加 |
-| 2026-03-12 | 1.29.79 | TASK-SKILL-LIFECYCLE-03 再監査を追補。`.claude` 正本固定、capture script の Vite 実体解決、execute prompt guard、2026-03-12 screenshot 再取得を教訓へ昇格 |
-| 2026-03-11 | 1.29.78 | TASK-SKILL-LIFECYCLE-03 の教訓を追加。session card 主導線化、stale success banner、global/local error 境界、`.agents` mirror sync、arm64 Node 固定の課題を 5 分解決カードへ整理 |
+| 2026-03-12 | 1.29.79 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
+| 2026-03-12 | 1.29.78 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -66,61 +64,6 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
-
-### 2026-03-11 TASK-SKILL-LIFECYCLE-03
-
-#### 苦戦箇所1: 一次導線を wizard 側に寄せると quick path が弱くなる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `SkillCreateWizard` は詳細設定には向くが、quick create / execute / improve を回す一次導線としては重い |
-| 再発条件 | 既存 wizard があるからといって、list view を単なる一覧のまま残す |
-| 解決策 | `SkillManagementPanel` list view の先頭に `SkillLifecycleSessionCard` を置き、wizard は supporting route に下げた |
-| 標準ルール | primary flow は一覧面の中に寄せ、wizard は詳細設定だけを担当させる |
-
-#### 苦戦箇所2: create success の session message は次の action で stale 化しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | create 直後の成功文言が execute / improve 後も残ると、現在の状態が読みにくくなる |
-| 再発条件 | multi-step card で success banner を step 遷移時に消さない |
-| 解決策 | execute / analyze / auto improve の開始時に `setSessionMessage(null)` を必ず実行した |
-| 標準ルール | 1 カードで複数 action を積む UI は、前 step の成功表示を次 step 前に消す |
-
-#### 苦戦箇所3: lifecycle error と panel global error を混ぜると重複 alert になる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | session 内エラーと list/import 系エラーを同じ場所に出すと、何が壊れたのか分かりにくい |
-| 再発条件 | panel root の alert を万能扱いする |
-| 解決策 | `shouldShowGlobalSkillError()` で lifecycle 系文言を panel global error から除外し、card 内 alert に閉じた |
-| 標準ルール | root error と local error は表示面も責務も分ける |
-
-#### 苦戦箇所4: Phase 12 補助成果物は台帳だけ更新すると実体漏れを見落としやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `phase12-task-spec-compliance-check.md` を `artifacts.json` や changelog に登録しても、実ファイルと `verification-report.md` が追従しないと再監査時に不整合になる |
-| 再発条件 | Phase 12 の補助成果物を「記録上は追加済み」と判断し、物理存在確認と validator 再実行を省略する |
-| 解決策 | 実ファイルを作成し、`verify-all-specs` と `validate-phase-output` を再実行して `verification-report.md` を更新した |
-| 標準ルール | 補助成果物は「実体作成 -> 台帳登録 -> 検証レポート更新」の順で閉じる |
-
-#### 苦戦箇所5: light theme の visual hierarchy は主導線成立と別軸で残りやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | create / execute / improve の成立確認と UI polish を同じ accept 判定で閉じようとすると、軽微な所見の扱いが曖昧になる |
-| 再発条件 | blocker でない visual 調整を親タスク内に抱えたまま閉じる |
-| 解決策 | `UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001` を独立未タスクへ切り出し、acceptance と改善 backlog を分離した |
-| 標準ルール | LOW 所見でも再利用価値があるなら未タスクへ formalize する |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. 一次導線は list view の中で完結させ、別 view 遷移を前提にしない。
-2. create 後の handoff は path から skill 名を抽出して `selectSkillByName()` へ接続する。
-3. lifecycle 系 success / error と panel-wide alert は責務を分ける。
-4. user 指定 root は `.claude` を正本に固定し、`.agents` は mirror として同期する。
-5. Phase 12 の補助成果物は、台帳登録だけでなく実ファイル作成と `verification-report.md` 再生成まで同一ターンで閉じる。
 
 ### 2026-03-11 TASK-UI-04B-WORKSPACE-CHAT
 
@@ -231,6 +174,58 @@
 3. 全画面共通の drift は `globals.css` の compatibility bridge で先に止め、primitives を token へ寄せる。
 4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
 5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
+
+### 2026-03-12 TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+#### 苦戦箇所1: old unassigned-task の対象一覧を盲信すると current worktree とずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SettingsView` / `SettingsCard` / `DashboardView` を主対象のまま持ち込むと、実際に hardcoded color が多い `AccountSection` / `ApiKeysSection` / `AuthModeSelector` / `AuthKeySection` / `WorkspaceSearchPanel` が薄まる |
+| 再発条件 | 親 task の未タスク指示書を current worktree 監査なしで再利用する |
+| 解決策 | `outputs/phase-1/requirements-definition.md` の inventory を正本にし、wrapper は verification-only lane へ落とした |
+| 標準ルール | spec_created UI task では Phase 1 で current worktree の inventory correction を必ず行う |
+
+#### 苦戦箇所2: token scope と component scope を混ぜると task が肥大化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token foundation の残件と component migration を同一 task に入れると、設計レビューで責務境界が曖昧になる |
+| 再発条件 | `white/black baseline` の議論と `shared component migration` を同時に扱う |
+| 解決策 | 親 workflow を token 基盤、current workflow を component migration、`SettingsView` / `SettingsCard` / `DashboardView` を verification-only として 3 lane に分離した |
+| 標準ルール | Light Mode follow-up は token / component / verification-only の 3 つに分ける |
+
+#### 苦戦箇所3: UI 仕様だけ読むと auth/search/security/portal/state の前提が漏れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AuthView` / `WorkspaceSearchPanel` / Settings sections を跨ぐのに、UI 正本だけでは IPC / security / portal / state の制約が読めない |
+| 再発条件 | `ui-ux-*` だけで Phase 1-2 を閉じる |
+| 解決策 | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `ui-ux-portal-patterns` を同時抽出した |
+| 標準ルール | settings + auth + workspace が同居する UI task は UI + state + api/auth + security + portal を同一ターンで読む |
+
+#### 苦戦箇所4: Phase 1-3 gate を崩すと後続 phase の設計が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | inventory correction 前に Phase 4 以降の内容を詳細化すると、batch と test anchor が二重修正になる |
+| 再発条件 | 設計レビュー PASS 前に downstream phase を先に完成扱いにする |
+| 解決策 | Phase 1-3 を completed に固定し、Phase 4-13 は planned のまま保持した |
+| 標準ルール | spec_created task は「Phase 1-3 completed → 4+ planned」の順序を守る |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で current worktree の hardcoded color inventory を取り直す。
+2. token scope / component scope / verification-only lane を先に分ける。
+3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
+4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として設計する。
+5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
+
+### 関連未タスク（2026-03-12 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 

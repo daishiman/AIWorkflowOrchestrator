@@ -155,7 +155,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
 ````
 
@@ -1095,7 +1095,7 @@ Phase 11: 手動テスト検証
 
 ```bash
 # 推奨: 撮影計画から一括撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 ```
@@ -1106,14 +1106,14 @@ node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
 ### 網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
 非視覚TCのみ例外許可する場合:
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --allow-non-visual-tc TC-08
 ```
@@ -1437,10 +1437,10 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 **検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
 ```bash
 # 関連仕様書の検索（references/配下）
-grep -rn "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/
+grep -rn "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/
 
 # 残課題テーブルでの参照検索（task-workflow.md）
-grep -n "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 未タスク指示書の関連検索
 grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
@@ -1451,7 +1451,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 
-- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
+- [ ] `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
 - [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されていることを確認
 
 ```markdown
@@ -1481,7 +1481,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 | 新規定数/設定値追加         | バグ修正（仕様変更なし）   |
 | アーキテクチャパターン追加  | テスト追加のみ             |
 
-- 更新対象: `.claude/skills/aiworkflow-requirements/references/`
+- 更新対象: `.agents/skills/aiworkflow-requirements/references/`
 - 更新対象: `docs/00-requirements/` 配下
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
@@ -1589,7 +1589,7 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **【Task 2 Step 1】task-specification-creator/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
 - [ ] **【Task 2 Step 1-D】topic-map.mdを再生成した** ⚠️ 漏れやすい（P2, P27参照）
   - 再生成トリガー: セクション追加/削除/更新、行数変更
-  - コマンド: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
+  - コマンド: `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js`
 - [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
@@ -1667,9 +1667,9 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 #### スキル検証
 
 ```bash
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/skill-creator
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/task-specification-creator
+node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/aiworkflow-requirements
 ```
 
 判定基準: `spec-update-workflow.md` Step 1-G.3.1 を参照。

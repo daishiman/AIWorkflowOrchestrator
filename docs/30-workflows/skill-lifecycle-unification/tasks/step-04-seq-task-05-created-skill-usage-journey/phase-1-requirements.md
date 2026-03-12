@@ -14,13 +14,13 @@
 
 ## 参照資料
 
-| 参照資料        | パス                                                                                                       | 説明          |
-| --------------- | ---------------------------------------------------------------------------------------------------------- | ------------- |
-| Task01 設計     | `../../../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/phase-2-design.md`              | 主導線        |
-| Task03 設計     | `../../../completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/phase-2-design.md` | 作成/改善統合 |
-| App routes      | `apps/desktop/src/renderer/App.tsx`                                                                        | 利用導線候補  |
-| AgentView       | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                                      | 実行候補      |
-| SkillCenterView | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`                                                | 発見/一覧候補 |
+| 参照資料        | パス                                                                                          | 説明          |
+| --------------- | --------------------------------------------------------------------------------------------- | ------------- |
+| Task01 設計     | `../../../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/phase-2-design.md` | 主導線        |
+| Task03 設計     | `../step-02-par-task-03-skill-creator-execute-improve-integration/phase-2-design.md`          | 作成/改善統合 |
+| App routes      | `apps/desktop/src/renderer/App.tsx`                                                           | 利用導線候補  |
+| AgentView       | `apps/desktop/src/renderer/views/AgentView/index.tsx`                                         | 実行候補      |
+| SkillCenterView | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`                                   | 発見/一覧候補 |
 
 ### システム仕様（aiworkflow-requirements）
 

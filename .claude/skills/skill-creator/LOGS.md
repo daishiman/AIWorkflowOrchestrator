@@ -3,6 +3,18 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「light theme shared color migration は token scope / component scope / verification-only lane を分離する」成功/失敗パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に actual inventory correction、verification-only lane、`ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-*` / `security-*` 抽出マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-M1..M5` を追加し、spec-only UI task の SubAgent 分担を標準化
+  - `references/resource-map.md` と `SKILL.md` へ同 profile を同期し、入口から template capability を辿れるようにした
+
+---
 ## 2026-03-11 - TASK-UI-04C の preview/search cross-cutting spec 同期を skill-creator へ反映
 
 - **Agent**: skill-creator

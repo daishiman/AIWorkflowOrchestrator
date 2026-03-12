@@ -9,39 +9,6 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-03-RECHECK
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12（再監査 + スキル運用改善）
-- **Result**: success
-- **Notes**:
-  - `outputs/phase-12/phase12-task-spec-compliance-check.md` の実体漏れを補完し、`outputs/verification-report.md` を最新値へ更新
-  - `references/evidence-sync-rules.md` と `references/phase-11-12-guide.md` に、補助成果物は台帳登録だけで終えず実ファイル存在と検証レポート更新まで同一ターンで閉じるルールを追加
-  - `.claude` canonical root の変更を `.agents` mirror へ同期し、Phase 12 の root / artifact / validator 記録を再整合した
-
----
-## 2026-03-11 - TASK-SKILL-LIFECYCLE-03 の Phase 11/12 完了同期
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12
-- **Result**: success
-- **Notes**:
-  - current workflow `outputs/phase-11` に `manual-test-result.md` / `apple-ui-ux-review.md` / `discovered-issues.md` / `screenshot-plan.json` / `screenshot-coverage.md` を追加
-  - `outputs/phase-12` の必須5成果物を作成し、`artifacts.json` / `index.md` / `phase-11-manual-test.md` / `phase-12-documentation.md` を同期
-  - `references/phase-11-12-guide.md` に array-based `artifacts.json` では `complete-phase.js` を使わず manual sync へ切り替える guard を追加
-
----
-## 2026-03-11 - dual-root mirror sync を現行 Phase 12 手順へ昇格
-
-- **Agent**: task-specification-creator
-- **Phase**: skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/spec-update-workflow.md` に changed-files 単位の canonical `.claude` -> `.agents` mirror sync 手順を追加
-  - `references/phase-11-12-guide.md` に `rsync --checksum` + `cmp -s` の実行例を追加し、mirror drift を Phase 12 完了前に閉じる運用を明文化
-  - `aiworkflow-requirements` 側で `ui-ux-feature-components.md` に新規節を追加した際、`topic-map.md` / `keywords.json` を再生成してから mirror sync する手順へ整理
-
----
 ## 2026-03-11 - TASK-UI-04C follow-up の事後未タスク化パターンを追加
 
 - **Agent**: task-specification-creator

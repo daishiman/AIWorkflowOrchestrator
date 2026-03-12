@@ -97,7 +97,7 @@ docs/30-workflows/{{FEATURE_NAME}}/index.md
 本仕様書のコマンド選定は以下を参照：
 
 - `docs/00-requirements/master_system_design.md` - システム要件
-- `.claude/skills/aiworkflow-requirements/references/` - システム仕様
+- `.agents/skills/aiworkflow-requirements/references/` - システム仕様
 
 ---
 
@@ -228,10 +228,10 @@ graph TD
 
 ```bash
 # Phase完了時の検証コマンド
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 
 # Phase完了・成果物登録
-node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+node .agents/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}} --artifacts "..."
 ```
 

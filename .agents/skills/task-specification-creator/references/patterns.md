@@ -64,7 +64,7 @@
   1. Node.jsでは `\z` / `\Z` に依存しない
   2. Markdownセクション抽出は「終端見出しを付与してから切り出す」実装が安全
   3. 検証スクリプト自身の判定結果は、実ファイル内容と合わせて二重確認する
-- **修正ファイル**: `.claude/skills/task-specification-creator/scripts/validate-phase-output.js`
+- **修正ファイル**: `.agents/skills/task-specification-creator/scripts/validate-phase-output.js`
 - **発見日**: 2026-02-24
 
 ### 未タスク検出後のtask-workflow.md登録漏れ（TASK-9B-G）
@@ -217,11 +217,11 @@
 - **状況**: Phase完了処理で `node scripts/complete-phase.js` を実行した
 - **問題**: モジュール未発見エラーが発生しスクリプトが実行できなかった
 - **原因**:
-  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.claude/skills/task-specification-creator/scripts/` に配置されている
+  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.agents/skills/task-specification-creator/scripts/` に配置されている
   2. スキルスクリプトのパスとプロジェクトルートのパスを混同した
 - **教訓**:
-  1. スキルスクリプトは canonical root（既定は `.claude/skills/{skill-name}/scripts/`）で参照する
-  2. `node scripts/xxx.js` ではなく `node .claude/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
+  1. スキルスクリプトは必ず `.agents/skills/{skill-name}/scripts/` パスで参照する
+  2. `node scripts/xxx.js` ではなく `node .agents/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
   3. スクリプト実行前にファイルの存在を `test -f` で確認する
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
@@ -386,7 +386,7 @@
 - **状況**: Phase検証時に `verify-all-specs` と同形式のオプション（`--phase` など）を想定しやすい
 - **問題**: `validate-phase-output.js` は workflow ディレクトリの位置引数のみ受け付けるため、誤用で検証が止まる
 - **解決パターン**:
-  1. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
+  1. `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
   2. `verify-all-specs --workflow` とコマンドペアで使い、役割を分離（仕様整合 / 出力構造）
   3. Phase 12記録には両コマンドの結果を併記する
 - **効果**:
@@ -1427,7 +1427,7 @@
   - 将来の同様タスク（書き戻し機能等）で再利用可能
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-WCE-MONACO-001
-- **システム仕様書参照**: [architecture-implementation-patterns.md](/.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **システム仕様書参照**: [architecture-implementation-patterns.md](/.agents/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
 
 ---
 
@@ -1578,7 +1578,7 @@
   - ✅ `node scripts/generate-index.js` → 正しい
 - **確認方法**:
   ```bash
-  ls .claude/skills/aiworkflow-requirements/scripts/
+  ls .agents/skills/aiworkflow-requirements/scripts/
   ```
 - **教訓**: spec-update-workflow.mdのコマンド例を直接コピーせず、実ファイル名を確認
 - **発見日**: 2026-02-04
@@ -2001,7 +2001,7 @@
   rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
     docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
 
-  node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
+  node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
   ```
 - **効果**:
   - Phase 12「実施済み」と仕様実体の不一致を防止

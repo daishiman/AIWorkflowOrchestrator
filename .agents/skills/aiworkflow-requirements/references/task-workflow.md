@@ -1091,53 +1091,40 @@
 | --- | --- | --- |
 | UT-IMP-TASK10A-F-PHASE11-FILENAME-EVIDENCE-SYNC-GUARD-001 | Phase 11 文書名・TC 証跡同期の運用ガード | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-f-phase11-filename-and-evidence-sync-guard-001.md` |
 
-### タスク: TASK-SKILL-LIFECYCLE-03 Skill Creator 表導線化と作成・実行・改善統合（2026-03-11実装 / 2026-03-12再監査）
+### タスク: TASK-SKILL-LIFECYCLE-03 Skill Creator 表導線化と作成・実行・改善統合（2026-03-11）
 
 | 項目 | 内容 |
 | --- | --- |
 | タスクID | TASK-SKILL-LIFECYCLE-03 |
-| 完了日 | 2026-03-11（2026-03-12 再監査） |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| 対象 | `SkillManagementPanel`, `SkillLifecycleSessionCard`, `SkillLifecyclePanel`, Phase 11 harness, canonical `.claude` sync |
-| 成果物 | `docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/` |
+| 完了日 | 2026-03-11 |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
+| 対象 | `SkillLifecyclePanel`, `SkillManagementPanel`, `skillCreatorAPI.detectMode/improveSkill` の統合 |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-02-par-task-03-skill-creator-execute-improve-integration/outputs/` |
 
 #### 仕様書別SubAgent分担（関心ごと分離）
 
 | SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-A | `ui-ux-navigation.md` | Skill Center 入口と session handoff の同期 | 入口 / 補助導線 / handoff が読める |
-| SubAgent-B | `ui-ux-feature-components.md` / `arch-ui-components.md` | session surface と component boundary の同期 | card / wizard / analysis の責務が読める |
-| SubAgent-C | `arch-state-management.md` | local state、global error、execute guard の同期 | state ownership が読める |
-| SubAgent-D | `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` | detect / validate / create handoff 契約の同期 | UI から IPC / type 契約へ辿れる |
-| SubAgent-E | `outputs/phase-11/*` / `outputs/phase-12/*` | screenshot、Apple UI/UX review、verification report、未タスク formalize | screenshot 5件と補助成果物が揃う |
+| SubAgent-A | `interfaces-agent-sdk-skill.md` | lifecycle surface と internal role の契約同期 | `skillCreatorAPI` の位置づけが明文化される |
+| SubAgent-B | `api-ipc-agent.md` / `security-skill-execution.md` | IPC 使用境界と権限境界の同期 | `detectMode/improve` と `create/execute` の責務差が文書化される |
+| SubAgent-C | `outputs/phase-4` - `outputs/phase-10` | テスト、coverage、QA、最終 gate の証跡化 | Task03 scope の 68 tests + coverage が記録される |
+| SubAgent-D | `outputs/phase-11/*` / `outputs/phase-12/*` | screenshot、Apple UI/UX 観点レビュー、spec sync | screenshot 4 件と実装ガイドが揃う |
 
 #### 検証証跡
 
 | コマンド | 結果 |
 | --- | --- |
-| `/opt/homebrew/bin/node node_modules/vitest/vitest.mjs run src/renderer/components/skill/__tests__/SkillManagementPanel.lifecycle-session.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.lifecycle-failure.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx` | PASS（30 tests） |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx` | PASS（47 tests） |
+| `CI=true VITEST_SHARDED_COVERAGE=true pnpm --filter @repo/desktop exec vitest run --coverage.enabled true --coverage.reporter=json-summary --coverage.reportsDirectory coverage-task-skill-lifecycle-scoped --coverage.include=src/renderer/components/skill/SkillLifecyclePanel.tsx --coverage.include=src/renderer/components/skill/SkillManagementPanel.tsx --coverage.include=src/renderer/components/chat/ChatPanel.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.test.tsx src/renderer/components/skill/__tests__/SkillManagementPanel.integration.test.tsx src/renderer/components/chat/__tests__/ChatPanel.skill-management.test.tsx src/renderer/components/skill/__tests__/SkillLifecycle.integration.test.tsx` | PASS（68 tests, scoped total 92.34 / 83.78 / 82.51） |
 | `pnpm --filter @repo/desktop exec tsc --noEmit` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration --json` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-02-par-task-03-skill-creator-execute-improve-integration` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md` | PASS（215 / 215） |
+| `node apps/desktop/scripts/capture-task-skill-lifecycle-task03-phase11.mjs` | PASS（TC-11-01..04 screenshot 取得） |
 
-#### 実装時の苦戦箇所
+#### 実装時の苦戦箇所（TASK-10A-F）
 
 | 苦戦箇所 | 再発条件 | 対処 |
 | --- | --- | --- |
-| stale success message が後続 action まで残る | create success を session card に残したまま execute / improve を行う | execute / analyze / auto improve 開始時に `setSessionMessage(null)` を実行した |
-| lifecycle error と panel global error が二重表示になる | list/import 系 error と session 系 error を同じ alert 面に流す | `shouldShowGlobalSkillError()` で lifecycle 系文言を除外し、card 内 alert に閉じた |
-| user 指定 root `.claude` と mirror `.agents` の参照が workflow 本文で混線する | phase doc / outputs が mirror 側パスを残したまま再監査へ進む | current workflow 本文は `.claude/skills/...` を正本へ戻し、touch したファイルだけ `.agents` mirror へ同期した |
-| `complete-phase.js` が array-based `artifacts.json` で unsafe | workflow ごとの差分を見ずに汎用完了 script を使う | Task03 は manual sync に切り替え、task-spec guide に guard を追記した |
-| capture script が `node_modules/vite/bin/vite.js` 固定で worktree 依存になる | worktree の install 実体が `.pnpm` 配下に解決される | Vite binary を探索して `/opt/homebrew/bin/node` で起動する方式へ変更し、Phase 11 再撮影を安定化した |
-| `phase12-task-spec-compliance-check.md` を台帳へ登録しても実体ファイルが欠ける | `artifacts.json` / `phase-12-documentation.md` / changelog を先に更新し、補助成果物の存在確認を後回しにする | 実ファイル作成、`verify-all-specs` 再実行、`outputs/verification-report.md` 更新を同一ターンで行った |
-
-#### Phase 12で登録した関連未タスク
-
-| タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| UT-SKILL-LIFECYCLE-03-LIGHT-VISUAL-HIERARCHY-001 | `SkillLifecycleSessionCard` の light theme helper text / placeholder / summary hierarchy 改善 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-03-light-visual-hierarchy-001.md` |
+| `phase-11-manual-testing.md` と validator 期待名 `phase-11-manual-test.md` の不一致 | 手動テスト文書名が workflow ごとに揺れる | `phase-11-manual-test.md` を正本として固定し、証跡11件を TC と1:1で同期 |
+| Phase 12 changelog が「対象/予定」表現のまま残る | 実更新前に changelog を先行記述する | Step 1-A〜Step 2 を完了ベースで再記録し、予定表現を削除 |
 
 ### タスク: TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 settings persist iterable hardening（2026-03-07）
 

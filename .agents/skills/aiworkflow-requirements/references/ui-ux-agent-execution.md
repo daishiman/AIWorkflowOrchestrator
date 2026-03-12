@@ -13,7 +13,6 @@
 
 | バージョン | 日付       | 変更内容                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------- |
-| v1.7.1     | 2026-03-12 | TASK-SKILL-LIFECYCLE-03 再監査を追補: `SkillLifecycleSessionCard` から Agent 実行へ継続する入口、`activeSkillName + trimmedPrompt` 前提、card 内 summary 表示の縮約契約を追加 |
 | v1.0.0     | 初版       | 初期作成                                                                                            |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換                                          |
 | v1.3.0     | 2026-01-31 | TASK-IMP-permission-tool-icons完了: ツールアイコンバッジ視覚仕様追加、完了タスク・関連ドキュメント拡充 |
@@ -535,17 +534,6 @@ toolMetadata.ts（12ツール）とsecurity-skill-execution.md ALLOWED_TOOLS_WHI
 | ------------------ | --------------------------------------------------------------------------------------------------------- |
 | 実装ガイド         | `docs/30-workflows/task-imp-permission-tool-metadata-001/outputs/phase-12/implementation-guide.md`        |
 | 最終レビュー       | `docs/30-workflows/task-imp-permission-tool-metadata-001/outputs/phase-10/final-review-report.md`         |
-
-## Skill Creator session からの継続実行（TASK-SKILL-LIFECYCLE-03）
-
-Task03 では `SkillManagementPanel` list view に `SkillLifecycleSessionCard` を置き、Skill Creator surface から Agent 実行 surface へ同じコンテキストで継続できるようにした。Execution UI 本体を増やしたのではなく、Agent 実行の入口を `Skill Creator` 側へ前倒しした構成である。
-
-| 観点 | 契約 |
-| --- | --- |
-| 入口 | `SkillLifecycleSessionCard` の `実行する` ボタン |
-| 前提条件 | `activeSkillName` と `trimmedPrompt` が揃っていること |
-| 実行状態表示 | `executionStatus` / `streamingMessages` を card 内 summary へ縮約表示 |
-| 詳細 execution UI | 既存 Agent 実行面・PermissionDialog・analysis view を再利用 |
 ## 関連ドキュメント
 
 | ドキュメント                       | パス                                                                                          |
