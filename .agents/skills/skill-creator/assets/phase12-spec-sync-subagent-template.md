@@ -1,7 +1,5 @@
 # Phase 12 仕様書別SubAgent同期テンプレート
 
-> **cross-cutting follow-up の追加テンプレート**: `references/workflow-<feature>.md` を新規作成する場合は `skill-creator/assets/phase12-integrated-workflow-spec-template.md` を併用し、実装内容 / 苦戦箇所 / 5分解決カード / root evidence を 1 ファイルへ集約する。
-
 ## 1. 対象タスク
 
 | 項目 | 記入内容 |
@@ -11,8 +9,6 @@
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
-
-> `workflow-<feature>.md` を追加した場合は、`indexes/resource-map.md` / `indexes/quick-reference.md` / 対象 skill の `SKILL.md` まで同一ターンで直リンクを戻す。
 
 ## 2. SubAgent分担（仕様書単位）
 
@@ -199,8 +195,6 @@ rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --unassigned-dir <unassigned-dir> --target-file <unassigned-file>
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/<task>.md
 node scripts/validate-<parent-sweep>.mjs --json
 diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
@@ -231,7 +225,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
-- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認し、移動直後の untracked completed file は `audit --target-file` で補完している
+- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
 - [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
@@ -240,6 +234,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
 - [ ] `audit --target-file` の対象が、実際の正本配置（active / completed parent / standalone completed）と一致していることを確認している
+- [ ] current workflow 起因の新規未タスクが `0 件` でも、related active open backlog がある場合は `rg` の 10見出し確認と `audit --diff-from HEAD --target-file` を実行している
 - [ ] 関連未タスク参照の正本が実際の配置先と一致している（active workflow は root、completed workflow は parent workflow 配下）
 - [ ] screenshot 検証で露出した副次不具合や warning を `docs/30-workflows/unassigned-task/` へ正式起票している
 - [ ] 親タスクの苦戦箇所がある場合、新規未タスクに `### 3.5 実装課題と解決策` を追加して継承している
@@ -251,6 +246,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] docs-only parent workflow では `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `workflow-<feature>.md` / `lessons-learned.md` / `skill-creator` templates の担当境界が `spec-update-summary.md` に記録されている
 - [ ] user が screenshot を要求した docs-heavy task では、representative visual re-audit board か `N/A` 理由のどちらかを `spec-update-summary.md` と `documentation-changelog.md` に記録している
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
+- [ ] `browserType.launch: Executable doesn't exist` を UI regress と誤分類せず、browser install preflight の要否と実行結果を記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
 - [ ] UIタスクでは `validate-phase11-screenshot-coverage.js --workflow <workflow-path>` の `PASS` を記録している
@@ -265,6 +261,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] UIタスクでは非視覚TCを `NON_VISUAL:` 記法で記録し、許容理由を明記している
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 - [ ] UIタスクで preflight 失敗時は再撮影を中断し、未タスク化と代替証跡理由を記録している
+- [ ] shared build artifact を触る failure simulation は parallel 実行せず、serial 実行順と各ケース後の前提復旧を記録している
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
 - [ ] `apps/desktop test:run` が `SIGTERM` の場合、失敗ログと `vitest run` 分割実行結果を同時に記録している
 - [ ] `phase-12-documentation.md` が `ステータス=completed` で、Task 12-1〜12-5 が `[x]` で同期されている

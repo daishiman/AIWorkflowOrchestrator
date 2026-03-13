@@ -9,18 +9,20 @@ category: 改善
 target_feature: Phase 11 screenshot capture / current build harness / guard workflow
 priority: 中
 scale: 小規模（2-4時間）
-status: 未実施
+status: 完了
 source_phase: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12
 created_date: 2026-03-12
-dependencies: []
-spec_path: docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
+dependencies:
+  - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
+  - UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
 ```
 
 | 項目       | 内容              |
 | ---------- | ----------------- |
 | 優先度     | 中                |
 | 規模       | 小規模（2-4時間） |
-| ステータス | 未実施            |
+| ステータス | 完了              |
 
 ---
 
@@ -30,7 +32,7 @@ category: 改善
 target_feature: Phase 11 screenshot capture / current build harness / guard workflow
 priority: 中
 scale: 小規模
-status: 未実施
+status: 完了
 source_phase: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12
 created_date: 2026-03-12
 dependencies:
@@ -251,7 +253,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
-  --target-file docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
+  --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 

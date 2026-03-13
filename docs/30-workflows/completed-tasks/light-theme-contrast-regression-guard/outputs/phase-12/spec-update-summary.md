@@ -12,7 +12,7 @@
 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                  | guard 完了記録、audit summary、baseline routing、Phase 11/12 手順を追加                                                         |
 | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                | current build static serve、Apple UI/UX review、baseline split の教訓を追加                                                     |
 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                       | light theme contrast guard の representative feature、audit hit、baseline backlog を追加                                        |
-| `.claude/skills/aiworkflow-requirements/references/workflow-light-theme-contrast-regression-guard.md` | guard 正本へ新規未タスク `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` の導線と再利用対象を追加                           |
+| `.claude/skills/aiworkflow-requirements/references/workflow-light-theme-contrast-regression-guard.md` | guard 正本へ follow-up `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` の current workflow 導線と再利用対象を追加           |
 | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                            | 関連タスクテーブルの `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001` を `完了（Phase 1-12 完了 / Phase 13 未実施）` へ更新 |
 | `.claude/skills/aiworkflow-requirements/LOGS.md`                                                      | 今回の Phase 12 同期ログを追加                                                                                                  |
 | `.claude/skills/task-specification-creator/LOGS.md`                                                   | 今回の Phase 11/12 実行ログを追加                                                                                               |
@@ -28,12 +28,12 @@
 
 ## 未タスク監査の再確認
 
-| 観点                         | 値                       | 補足                                                                                                     |
-| ---------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------- |
-| 今回 task 由来の新規未タスク | 1                        | `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` へ formalize |
-| `verify-unassigned-links`    | existing 214 / missing 0 | 指定ディレクトリ参照切れなし                                                                             |
-| `audit --diff-from HEAD`     | currentViolations 0      | 今回差分はテンプレート準拠                                                                               |
-| `audit --json`               | baselineViolations 134   | global legacy は別改善タスクで継続管理                                                                   |
+| 観点                       | 値                       | 補足                                                                                                                                                                    |
+| -------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 今回 task 由来の follow-up | 1                        | `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` は completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/` へ昇格済み |
+| `verify-unassigned-links`  | existing 219 / missing 0 | 指定ディレクトリ参照切れなし                                                                                                                                            |
+| `audit --diff-from HEAD`   | currentViolations 0      | 今回差分はテンプレート準拠                                                                                                                                              |
+| `audit --json`             | baselineViolations 134   | global legacy は別改善タスクで継続管理                                                                                                                                  |
 
 ## skill validator 結果
 
