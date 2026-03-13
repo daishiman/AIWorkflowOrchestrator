@@ -53,7 +53,7 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 ```bash
 # 1) 対象未タスクの今回差分監査（推奨）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
@@ -64,12 +64,12 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
   --target-file docs/30-workflows/completed-tasks/task-imp-unassigned-audit-scope-control-001.md
 
 # 2) 差分監査（workflow全体の current 判定）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 
 # 3) 全体監査（資産健全性監視）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
 > 重要: `--target-file` は root `docs/30-workflows/unassigned-task/`、actual parent `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、standalone `docs/30-workflows/completed-tasks/*.md` のいずれかを指定可能。  
@@ -124,6 +124,31 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 | 全体legacy状況 | `audit --json` の `baselineViolations.total = Y`（既存改善タスクID: ...） |
 
 > 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
+
+### 既存 follow-up 未タスクの current contract 再同期
+
+Phase 12 の再監査で「新規未タスク 0 件」と判定しても、既存 follow-up 未タスクを参照・流用する場合は、本文が **最新の system spec / current implementation** を向いていることを確認する。
+
+| チェック箇所 | 確認内容 |
+| --- | --- |
+| `2.2 最終ゴール` | 最新 contract の state key / callback / handoff を誤記していないか |
+| `3.1 前提条件` | 現行の責務分離（例: force-open local state と completion 時のみ persist save）が反映されているか |
+| `3.5 実装課題と解決策` | 親タスクの苦戦箇所が current implementation 前提で継承されているか |
+| `6. 検証方法` | 検証手順が最新 contract に沿っているか |
+
+確認コマンド例:
+
+```bash
+rg -n "completed=false|persist reset|old key name" docs/30-workflows/unassigned-task/task-*.md
+
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --diff-from HEAD \
+  --target-file docs/30-workflows/unassigned-task/<task-file>.md
+```
+
+> 重要: 既存 follow-up に旧契約が残っていた場合、配置確認だけで済ませず **同ターンで本文を修正** する。  
+> `current task 由来の新規未タスク 0 件` と `既存 follow-up 本文の是正` は両立する。
 
 ### raw検出の誤検知対策（推奨）
 

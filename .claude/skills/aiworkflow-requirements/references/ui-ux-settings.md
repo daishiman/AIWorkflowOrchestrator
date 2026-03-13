@@ -468,46 +468,45 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 - [deployment-electron.md](./deployment-electron.md) - Electronデプロイ
 - [期間フィルタ実装ガイド](../../../docs/30-workflows/TASK-IMP-permission-date-filter/outputs/phase-12/implementation-guide.md) - 期間別フィルタリング実装詳細
 
-## Onboarding rerun card（TASK-UI-09-ONBOARDING-WIZARD）
+## Onboarding rerun action（TASK-UI-09-ONBOARDING-WIZARD）
 
 ### UI 構成
 
 | 項目 | 内容 |
 | --- | --- |
-| セクション名 | `はじめよう` |
-| CTA | `はじめようを再表示` |
-| test id | `rerun-onboarding-button` |
-| 役割 | 初回 onboarding の再体験を Settings から起動する |
+| 配置 | `SettingsView` header 右側の secondary button |
+| CTA | `はじめてガイドを再表示` |
+| test id | `settings-open-onboarding` |
+| 役割 | 完了済みユーザーを含めて wizard overlay を force-open する |
 
 ### persist / handoff 契約
 
 | 観点 | 内容 |
 | --- | --- |
-| reset key | `onboarding.completed=false` を保存する |
-| handoff | reset 後に `setCurrentView("dashboard")` で通常画面へ戻し、overlay を再評価させる |
-| responsibility | Settings は rerun の起点だけを持ち、wizard 本体の表示条件は onboarding 側で判定する |
+| trigger state | `setIsOnboardingForcedOpen(true)` と `setIsOnboardingDismissed(false)` を設定する |
+| persist | rerun 起動時には `onboarding.hasCompleted` を書き換えない |
+| handoff | completion 時だけ `setCurrentView("dashboard")` と persist save を行う |
+| responsibility | Settings は callback を発火し、overlay 表示条件と保存は `App.tsx` が担当する |
 
-### 画面証跡
+### 検証証跡
 
-| TC | 証跡 | 観点 |
+| 種別 | 証跡 | 観点 |
 | --- | --- | --- |
-| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | rerun card の表示 |
-| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun 実行後の overlay |
+| 自動テスト | `apps/desktop/src/renderer/views/SettingsView/SettingsView.test.tsx` | button render と callback 発火 |
+| 自動テスト | `apps/desktop/src/renderer/App.onboarding.test.tsx` | overlay 表示条件 |
+| 手動テスト | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/outputs/phase-11/manual-test-result.md` | wizard overlay の visual review |
 
 ### 苦戦箇所（再利用形式）
 
 | 苦戦箇所 | 内容 | 解決方針 |
 | --- | --- | --- |
-| reset と handoff の順序 | Settings だけで overlay を制御しようとすると state が競合しやすい | Settings は reset 起点、overlay は表示条件判定に専念させる |
-| full settings page での発見性 | isolated screenshot では見えるが、長い設定画面では埋もれる | discoverability は IA 改善として未タスク化する |
-| test warning | integration test に `act(...)` warning が残る | rerun UX の本体完了とは切り離して hardening task へ送る |
+| force-open と persist の境界 | rerun 起動で完了フラグまで変更すると close 挙動が揺れる | rerun は local state の force-open に限定する |
+| Settings 責務の肥大化 | Settings 側で wizard 表示条件まで持つと重複責務になる | `onOpenOnboarding` callback だけを公開する |
+| visual target の選定 | rerun button 単体より wizard 本体の変化が視覚差分の中心になる | Phase 11 は wizard surface を代表証跡にする |
 
-### 関連未タスク
+### current task 結論
 
-| 未タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | rerun を含む integration / harness hardening | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
-| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | rerun card の配置・文言・発見性改善 | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
+- rerun action は current task で完了しており、新規 backlog は起票していない。
 
 ---
 
@@ -540,7 +539,9 @@ loadProviders における Preload 境界の防御ガードにより、以下の
 
 | Version | Date       | Changes                                                                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1.9.0   | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD を反映: `はじめよう` rerun card、`onboarding.completed=false` reset、`setCurrentView("dashboard")` handoff、Phase 11 screenshot 2件、苦戦箇所 3件を追加 |
+| 1.9.2   | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の監査補修を反映: rerun 契約を `completed flag reset` ではなく `force-open local state` として是正し、current build の `system` preview readability 再確認と `ui-ux-navigation` mirror sync 完了を追記 |
+| 1.9.1   | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の current implementation へ同期: `settings-open-onboarding` button、force-open local state、completion 時のみ dashboard handoff、automated evidence 3件へ更新 |
+| 1.9.0   | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD を反映: `はじめてガイドを再表示` button、force-open callback、`setCurrentView("dashboard")` handoff、Phase 11 screenshot 2件、苦戦箇所 3件を追加 |
 | 1.8.0   | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 反映: `authMode === "api-key"` 時のみ `AuthKeySection` を表示する契約と、`auth-key:exists.source`（saved/env-fallback/not-set）優先表示を追加。Phase 11 screenshot 3件を同期 |
 | 1.6.0   | 2026-03-08 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 拡充: 防御レイヤーテーブル（L1-L4）、normalizeProviders フィルタ仕様（P49準拠 in 演算子）、テスト合計46件、関連タスクテーブルを追加 |
 | 1.5.1   | 2026-03-07 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 反映: providers 要素 shape フィルタ（`provider/status` 必須）と実画面検証（TC-11-01〜03）を追記                                     |

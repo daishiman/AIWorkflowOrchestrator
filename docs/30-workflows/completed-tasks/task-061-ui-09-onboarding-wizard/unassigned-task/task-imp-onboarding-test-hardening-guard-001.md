@@ -27,7 +27,7 @@ TASK-UI-09-ONBOARDING-WIZARD の Phase 12 再確認で、Onboarding Wizard の�
 
 - Onboarding 関連テストの function coverage が 80% 未満で止まっている。
 - `SettingsView.integration.test.tsx` と `OnboardingGate.test.tsx` 系で `act(...)` warning が残る。
-- rerun 導線は `persist reset -> view handoff -> overlay 再評価` の連鎖を持つため、分岐が多く回帰しやすい。
+- rerun 導線は `force-open local state -> overlay 再評価` と、completion 時のみの persist save / dashboard handoff に分かれるため、分岐が多く回帰しやすい。
 - warning と coverage 不足を report の文章だけで残すと、次の担当者が着手点を特定しにくい。
 
 ### 1.3 放置した場合の影響
@@ -80,7 +80,7 @@ Onboarding Wizard 周辺のテストを hardening し、warning のない安定�
 ### 3.1 前提条件
 
 - TASK-UI-09-ONBOARDING-WIZARD の実装が存在していること
-- Onboarding rerun 契約が `onboarding.completed=false` reset と dashboard handoff で定義されていること
+- Onboarding rerun 契約が `onboarding.hasCompleted` を維持したまま、Settings の force-open local state と completion 時のみの dashboard handoff で定義されていること
 - system spec 側に Onboarding Wizard の実装内容と苦戦箇所が反映済みであること
 
 ### 3.2 依存タスク
@@ -100,12 +100,12 @@ rerun 契約を 1 本のテストシナリオとしてではなく、`first laun
 
 ### 3.5 実装課題と解決策
 
-| 実装課題                         | 内容                                                                               | 解決策                                                                         |
-| -------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| rerun 契約が複数層にまたがる     | `persist reset -> dashboard handoff -> overlay 再表示` が 1 回の UI 操作に含まれる | helper で手順を固定し、分岐を個別テストに分解する                              |
-| warning の原因が見えにくい       | state update と assertion の境界が曖昧だと `act(...)` warning が残る               | async wait と flush ポイントを明示し、暗黙待機を減らす                         |
-| coverage gap が再発しやすい      | complete 済み分岐や rerun edge 分岐が後回しになりやすい                            | 主要 5 分岐を coverage 対象として列挙し、抜けを防ぐ                            |
-| system spec との接続が切れやすい | report の数値だけでは後続担当が背景を読めない                                      | task-workflow / settings / lessons で同じ UT ID を参照し、完了時は同値更新する |
+| 実装課題                         | 内容                                                                                                                        | 解決策                                                                         |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| rerun 契約が複数層にまたがる     | `force-open local state -> overlay 再表示` と completion 時の persist save / dashboard handoff が近接し、責務を混同しやすい | helper で手順を固定し、rerun 分岐と completion 分岐を個別テストに分解する      |
+| warning の原因が見えにくい       | state update と assertion の境界が曖昧だと `act(...)` warning が残る                                                        | async wait と flush ポイントを明示し、暗黙待機を減らす                         |
+| coverage gap が再発しやすい      | complete 済み分岐や rerun edge 分岐が後回しになりやすい                                                                     | 主要 5 分岐を coverage 対象として列挙し、抜けを防ぐ                            |
+| system spec との接続が切れやすい | report の数値だけでは後続担当が背景を読めない                                                                               | task-workflow / settings / lessons で同じ UT ID を参照し、完了時は同値更新する |
 
 ---
 

@@ -48,7 +48,7 @@ Settings 上の onboarding rerun 導線を、ユーザーが自然に見つけ�
 
 - rerun card の配置または見せ方が改善され、full settings page でも視認しやすい。
 - CTA の意味が非技術者にも分かる。
-- rerun の内部契約（`onboarding.completed=false` reset と dashboard handoff）は変えずに改善できる。
+- rerun の内部契約（`onboarding.hasCompleted` は維持し、Settings は force-open local state だけを発火する）は変えずに改善できる。
 - representative screenshot と manual note で改善結果を説明できる。
 
 ### 2.3 スコープ
@@ -79,7 +79,7 @@ Settings 上の onboarding rerun 導線を、ユーザーが自然に見つけ�
 ### 3.1 前提条件
 
 - Onboarding Wizard の rerun 機能自体が正常動作していること
-- Settings 側が reset 起点、Onboarding 側が表示判定という責務分離を守っていること
+- Settings 側が force-open callback 起点、App / Onboarding 側が表示判定という責務分離を守っていること
 - current system spec に rerun card と discoverability 課題が記録されていること
 
 ### 3.2 依存タスク
@@ -216,7 +216,7 @@ rerun 入口の見つけやすさを上げる。
 
 1. Settings 画面を representative state で表示する。
 2. rerun 入口の位置、見出し、説明文、CTA を確認する。
-3. rerun 実行後に既存契約どおり overlay が再表示されることを確認する。
+3. rerun 実行後に `onboarding.hasCompleted` を保持したまま overlay が再表示されることを確認する。
 4. 文書更新を伴う場合は system spec の関連箇所も同期する。
 
 ---

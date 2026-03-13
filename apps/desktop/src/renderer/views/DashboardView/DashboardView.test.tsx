@@ -97,6 +97,25 @@ describe("DashboardView", () => {
         "ホーム",
       );
     });
+
+    it("profile/authUser がなくても userProfile.name を表示名 fallback として使う", () => {
+      applyState({
+        profile: null as never,
+        authUser: null as never,
+        userProfile: {
+          name: "山田",
+          email: "yamada@example.com",
+          avatar: "",
+          plan: "free" as const,
+        } as never,
+      });
+
+      render(<DashboardView now={fixedNow} />);
+
+      expect(screen.getByTestId("dashboard-greeting")).toHaveTextContent(
+        "おはようございます、山田さん",
+      );
+    });
   });
 
   describe("サジェスチョン", () => {

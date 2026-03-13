@@ -48,7 +48,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ### Phase 4: UIスキル管理（部分並列）
 
-18. `task-030-ui-05-skill-center-view.md`（直列：先行）
+18. `../completed-task/task-030-ui-05-skill-center-view.md`（直列：先行）
 19. `task-031a-ui-05a-skill-editor-view.md`（並列：031a∥031b、030完了後）
 20. `task-031b-ui-05b-skill-advanced-views.md`（並列：031a∥031b、030完了後）
 
@@ -105,11 +105,11 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 #### Step 6-D: 参照仕様（060は設計ドキュメント、実装は058b/059a/059bに分割済み）
 
-41. `task-060-ui-04-workspace-view.md`（参照仕様）
+41. `../completed-task/task-060-ui-04-workspace-view.md`（参照仕様）
 
 #### Step 6-E: オンボーディング（全UI完了後）
 
-42. `task-061-ui-09-onboarding-wizard.md`（全UI完了後）
+42. `../../../completed-tasks/task-061-ui-09-onboarding-wizard/index.md`（全UI完了後）
 
 ## 並列実行ルール
 
@@ -151,6 +151,7 @@ UI/UX/バックエンドを1ディレクトリで実行するための統合イ�
 
 ## 更新履歴
 
+- 2026-03-13: `task-030` / `task-060` の移管後に `task-000-master-index.md` の参照を `completed-task`/`completed-tasks` 正本へ同期。`task-061` の現行正本 `index.md` 参照へ更新。
 - 2026-03-05: TASK-10A残課題（`task-043`〜`task-045`）を追加。管理パネルのImport統合、Store駆動統一、統合テスト強化をPhase 5へ編入。
 - 2026-02-27: Phase 2 の正本参照を `completed-task` へ統一（`task-020a` / `task-020b` / `task-022`）。
 - 2026-02-25: 実行ステータス再同期。`task-014` を完了タスクへ確定し、参照先を `../completed-task/task-014-ut-fix-skill-execute-interface-001.md` に更新。`task-013e-phase12-action-bridge.md` も完了扱いに同期。

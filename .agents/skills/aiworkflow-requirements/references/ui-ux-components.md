@@ -69,6 +69,7 @@
 | GlobalNavStrip | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/GlobalNavStrip/` |
 | MobileNavBar | TASK-UI-02 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/MobileNavBar/` |
 | NotificationCenter | TASK-UI-08 | completed（実装・テスト・画面検証完了） | `apps/desktop/src/renderer/components/organisms/NotificationCenter/` |
+| OnboardingWizard | TASK-UI-09 | completed（実装・テスト・画面検証完了） | `apps/desktop/src/renderer/components/organisms/OnboardingWizard/` |
 | SkillChip | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/SkillChip.tsx` |
 | ExecuteButton | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/ExecuteButton.tsx` |
 | FloatingExecutionBar | TASK-UI-03 | completed（実装・テスト完了） | `apps/desktop/src/renderer/components/organisms/AgentView/FloatingExecutionBar.tsx` |
@@ -96,6 +97,7 @@
 | GlobalNavStrip | TASK-UI-02 | desktop/tablet の global navigation |
 | MobileNavBar | TASK-UI-02 | mobile の下部 global navigation |
 | NotificationCenter | TASK-UI-08 | Bell から開く通知 utility popover / overlay |
+| OnboardingWizard | TASK-UI-09 | 初回利用時の 4 step onboarding overlay |
 | ComingSoonView | TASK-UI-02 | 未実装ビュー導線の退避表示 |
 | CardGrid / MasterDetailLayout / SearchFilterList | TASK-UI-00-ORGANISMS | 再利用可能な汎用Organisms（カード表示・マスター詳細・検索フィルタ） |
 | SkillChip | TASK-UI-03 | AIツール選択用丸型チップ（role="radio"、80x80px） |
@@ -228,20 +230,12 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 実装内容 | `PreviewPanel` に `Source` / `Preview` 切替、structured preview、image preview、toolbar、error boundary を追加し、`QuickFileSearch` を `Cmd/Ctrl+P` dialog として実装した |
 | 状態管理 | 04A の `workspaceSlice` / `fileSelectionSlice` を再利用し、preview loading/error と quick search query は local state に閉じた |
 | IPC | 新規 channel は追加せず、`file:read` と `file:changed` の再利用で preview 更新を実現した |
-| 画面検証 | 初回 Phase 11 で screenshot 11件を current build static serve から取得し、follow-up では screenshot 5件を `external-dev-server` から再取得して Apple UI/UX 観点で再確認した |
+| 画面検証 | Phase 11 で screenshot 11件を current build static serve から取得し、Apple UI/UX 観点で `PASS` と判定した |
 | 苦戦箇所1 | fuzzy search は一致判定と順位補正を混在させると false positive を生みやすい |
 | 苦戦箇所2 | file read hang を Main 契約変更で解決しようとすると影響範囲が広いため、Renderer timeout / retry で閉じる方が安全だった |
 | 苦戦箇所3 | JSON/YAML parse error を fatal error にすると preview UX が途切れるため、recoverable fallback に切り分ける必要があった |
 | 仕様同期 | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `api-ipc-system` / `security-electron-ipc` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-04C 節 |
-
-### TASK-UI-04C follow-up 実装追補（2026-03-13）
-
-| 観点 | 内容 |
-| --- | --- |
-| helper 抽出 | `quickFileSearchResilience.ts` と `previewResilience.ts` を追加し、`score > 0` gate、stable sort、timeout/retry、typed taxonomy を view から分離した |
-| visual polish | no-match helper text を empty state card に昇格し、timeout alert の retry action を primary emphasis に更新した |
-| 追補検証 | `TC-11-02` と `TC-11-05` を含む screenshot 5件を再取得し、dark helper text の可読性と retry action の affordance を再確認した |
 
 ---
 
@@ -285,6 +279,27 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 苦戦箇所3 | dual skill-root repository では canonical root を固定しないと mirror 側が stale になる |
 | 簡潔解決 | UI copy と内部契約を分離し、workflow 三層同期と mirror sync を同一ターンで閉じる |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-07 節 |
+
+---
+
+## TASK-UI-09 実装完了記録
+
+| タスクID | 機能名 | 状態 | 参照 |
+| --- | --- | --- | --- |
+| TASK-UI-09-ONBOARDING-WIZARD | Onboarding Wizard（4 step overlay + completion + Settings rerun） | completed（実装・テスト・画面検証・Phase 12 同期完了） | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/` |
+
+### TASK-UI-09 実装内容と苦戦箇所サマリー
+
+| 観点 | 内容 |
+| --- | --- |
+| 実装内容 | `OnboardingWizard` を追加し、名前入力、AI おためし、starter tool、theme preview、completion を 1 overlay に統合した |
+| 状態管理 | `App.tsx` が force-open / dismiss / persist load / complete handoff を管理し、`SettingsView` は rerun callback だけを公開する |
+| 画面検証 | Phase 11 で wizard state 6件を screenshot で確認し、Apple UI/UX 観点で PASS と判定した |
+| 苦戦箇所1 | rerun を persisted reset で設計すると close 条件が揺れる |
+| 苦戦箇所2 | `TC-ID` と png 命名がずれると coverage validator が失敗する |
+| 苦戦箇所3 | mobile step indicator が first fold の主コンテンツを押し下げる |
+| 簡潔解決 | force-open は local state、persist save は completion のみ、mobile は再撮影まで同ターンで閉じる |
+| 詳細参照 | `workflow-onboarding-wizard-alignment.md` / `ui-ux-feature-components.md` / `ui-ux-settings.md` / `arch-state-management.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-09 節 |
 
 ---
 
@@ -477,7 +492,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
-| 2.16.7  | 2026-03-13 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査反映: TASK-UI-04C サマリーへ helper 抽出、`external-dev-server` screenshot 5件、empty state / retry action の visual polish を追補し、一覧 spec から follow-up 実績を辿れるようにした |
+| 2.16.7  | 2026-03-13 | TASK-UI-09 完了反映: Organisms 実装状況と主要UI一覧へ `OnboardingWizard` を追加し、TASK-UI-09 実装完了記録を current screenshot 6件と force-open 契約で同期 |
 | 2.16.6  | 2026-03-11 | TASK-UI-04C 完了反映: `TASK-UI-04C 実装完了記録` を追加し、`PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / current build screenshot 11件 / Apple UI/UX review を UI カタログ正本へ同期 |
 | 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
 | 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |

@@ -3576,15 +3576,18 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **アプローチ**:
   1. **本体完了と follow-up を分離**: workflow 本体は completed 系ステータスを維持し、軽微課題のみ未タスク化する
   2. **raw 候補を精査**: `verification-report.md` / `manual-test-result.md` / `documentation-changelog.md` から候補を抽出し、責務単位で統合する
-  3. **canonical spec を 5 点同期**: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` / `ui-ux-settings.md` / `lessons-learned.md` を同一ターンで更新する
-  4. **苦戦箇所を再利用知識へ昇格**: 状態同期、画面導線、テスト warning、discoverability の 4 軸で lessons learned に残す
-  5. **差分監査で閉じる**: `verify-unassigned-links.js` と `audit-unassigned-tasks.js --diff-from HEAD` を実行し、`currentViolations=0` を確認する
+  3. **既存 follow-up spec も current contract へ再同期**: `docs/30-workflows/unassigned-task/*.md` の `2.2` / `3.1` / `3.5` / 検証手順を確認し、`completed=false reset` のような旧契約を残さない
+  4. **canonical spec を 5 点同期**: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-navigation.md` / `ui-ux-settings.md` / `lessons-learned.md` を同一ターンで更新する
+  5. **苦戦箇所を再利用知識へ昇格**: 状態同期、画面導線、テスト warning、discoverability、follow-up drift の 5 軸で lessons learned に残す
+  6. **差分監査で閉じる**: `verify-unassigned-links.js`、`audit-unassigned-tasks.js --diff-from HEAD`、必要なら `--target-file` を実行し、`currentViolations=0` を確認する
 - **成功パターン**:
   - UI 完了判定を崩さずに、軽微事項だけを formalized backlog として管理できる
   - Phase 12 成果物、system spec、unassigned-task の 3 点に同じ未タスク ID が残り、検索経路がぶれない
+  - 既存 follow-up 本文と system spec が同じ rerun / persist 契約を指し、次回着手時の読み直しコストが小さい
   - スクリーンショット証跡と backlog が直接結びつき、再確認時に迷わない
 - **失敗パターン**:
   - `verification-report.md` の MINOR を文書内コメントのまま放置する
+  - `docs/30-workflows/unassigned-task/` の既存本文が `completed=false reset` など旧契約のまま残る
   - `ui-ux-feature-components.md` だけ更新し、navigation / settings / lessons learned を更新しない
   - 苦戦ポイントを会話で消費し、次回のスキル改善へ残さない
 - **適用条件**: 初回起動オーバーレイ、Settings からの rerun、persist key、Phase 11 screenshot を含む UI タスク

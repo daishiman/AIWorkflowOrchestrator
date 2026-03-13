@@ -243,6 +243,20 @@ describe("SettingsView", () => {
     });
   });
 
+  describe("オンボーディング再表示導線", () => {
+    it("callback が渡された場合は再表示ボタンを表示し、押下で呼び出す", () => {
+      const handleOpenOnboarding = vi.fn();
+
+      render(<SettingsView onOpenOnboarding={handleOpenOnboarding} />);
+
+      fireEvent.click(
+        screen.getByRole("button", { name: "はじめてガイドを再表示" }),
+      );
+
+      expect(handleOpenOnboarding).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe("アカウント設定", () => {
     it("アカウントセクションを表示する", () => {
       render(<SettingsView />);

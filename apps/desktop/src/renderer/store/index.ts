@@ -238,6 +238,19 @@ export const useAuthLoading = () => useAppStore((state) => state.isLoading);
 export const useAuthError = () => useAppStore((state) => state.authError);
 export const useIsOffline = () => useAppStore((state) => state.isOffline);
 
+function normalizeDisplayNameCandidate(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed.length === 0 || trimmed === "User" || trimmed === "ユーザー") {
+    return null;
+  }
+
+  return trimmed;
+}
+
 // Computed selectors
 export const useIsDesktop = () =>
   useAppStore((state) => state.responsiveMode === "desktop");
@@ -260,7 +273,10 @@ export const useStoragePercentage = () =>
 export const useDisplayName = () =>
   useAppStore(
     (state) =>
-      state.profile?.displayName ?? state.authUser?.displayName ?? "User",
+      normalizeDisplayNameCandidate(state.profile?.displayName) ??
+      normalizeDisplayNameCandidate(state.authUser?.displayName) ??
+      normalizeDisplayNameCandidate(state.userProfile.name) ??
+      "User",
   );
 export const useUserEmail = () =>
   useAppStore((state) => state.profile?.email ?? state.authUser?.email ?? "");

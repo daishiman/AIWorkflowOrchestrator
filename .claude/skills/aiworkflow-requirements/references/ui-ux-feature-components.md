@@ -1930,36 +1930,50 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | 観点 | 内容 |
 | --- | --- |
 | surface | 初回起動時に前面表示される Onboarding Wizard overlay を追加 |
-| flow | multi-step で基本導線を案内し、完了後は通常画面へ復帰する |
-| rerun | Settings の `はじめよう` card から `はじめようを再表示` を実行できる |
-| persist | `onboarding.completed` により再表示抑制と rerun reset を制御する |
+| flow | `名前 → AIおためし → 使い始め → テーマ → completion` の 4 step + 1 completion を提供する |
+| rerun | `SettingsView` header の `はじめてガイドを再表示` button から force-open できる |
+| persist | `onboarding.hasCompleted` / `onboarding.userName` / `onboarding.selectedStarterTool` / `onboarding.lastCompletedAt` を保存する |
 
 ### 画面証跡
 
 | TC | 証跡 | 確認内容 |
 | --- | --- | --- |
-| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png` | desktop light で Step 1 表示 |
-| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png` | tablet dark で中盤 step 表示 |
-| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png` | mobile kanagawa で最終 step 表示 |
-| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | Settings rerun card の表示 |
-| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun 実行後の overlay 表示 |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-onboarding-step1-light-desktop.png` | light desktop の step1 |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-onboarding-step2-dark-desktop.png` | dark desktop の step2 |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-onboarding-step3-dark-tablet.png` | dark tablet の step3 |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-onboarding-step4-light-desktop.png` | light desktop の step4（`system` preview readability を含む） |
+| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-onboarding-step3-dark-mobile.png` | dark mobile の step3 |
+| TC-11-06 | `outputs/phase-11/screenshots/TC-11-06-onboarding-complete-kanagawa-desktop.png` | kanagawa の completion |
 
 ### 苦戦箇所（再利用形式）
 
 | 苦戦箇所 | 内容 | 解決方針 |
 | --- | --- | --- |
-| overlay と通常画面の境界 | 完了時に overlay を閉じた後の戻り先が曖昧になりやすい | 完了後の戻り先を dashboard 系へ固定する |
-| representative screenshot の粒度 | state 名と png 名がずれると台帳が破綻する | `TC-ID ↔ png` を manual test 台帳で固定する |
-| rerun discoverability | isolated screenshot では明快でも Settings 全体では埋もれる | UI 完了と IA 改善を分離し、未タスク化する |
-| test hardening | warning と coverage 不足が report に残りやすい | follow-up task を発行して本体完了から責務分離する |
+| overlay と underlying view の境界 | Settings / Dashboard どちらの上にも overlay が乗るため close 条件がぶれやすい | force-open と completion handoff を `App.tsx` に集中させる |
+| screenshot matrix の命名 | png と TC の命名がずれると coverage validator が失敗する | `TC-11-01..06` と file 名を 1 対 1 に固定する |
+| split-theme preview の可読性 | `system` preview の dark half に black text を直接載せると primary text が沈む | split表現は outer card に残し、inner card は readable surface に寄せる |
+| mobile first fold | step indicator が縦に伸びると主コンテンツの初見性が落ちる | indicator を 2 列化して再撮影する |
+| mobile selected card prominence | first fold が通っても、selected card が 2 番目だと「何を選んだか」が即時に伝わりにくい | first fold 可視性と selected-state prominence を別評価し、改善は follow-up task へ分離する |
 
 ### 同種課題の5分解決カード
 
-1. overlay 表示条件と完了後の戻り先を先に固定する。
-2. representative screenshot は desktop / tablet / mobile / rerun の4観点で押さえる。
-3. Settings rerun は動作確認と発見性確認を分けて評価する。
-4. MINOR は report だけで終わらせず unassigned task 化する。
-5. `task-workflow` / `ui-ux-navigation` / `ui-ux-settings` / `lessons-learned` を同一ターンで同期する。
+1. overlay 表示条件と completion handoff を先に固定する。
+2. `TC-ID ↔ screenshots/*.png` を capture 前に確定する。
+3. mobile first fold と selected card prominence は別の screenshot / manual note で確認する。
+4. rerun button は callback 契約、wizard 本体は visual contract として分けて記録する。
+5. `task-workflow` / `ui-ux-components` / `ui-ux-settings` / `lessons-learned` を同一ターンで同期する。
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001 | mobile Step 3 で selected starter card を first fold 内の最優先位置で理解しやすくする | 低 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-mobile-starter-card-order-001.md` |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | onboarding rerun / already-completed / warning / coverage の guard を integration test で強化する | 中 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | Settings で rerun 入口が埋もれないよう、IA と copy を改善する | 中 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
+
+### 統合入口
+
+- `workflow-onboarding-wizard-alignment.md` を起点に、overlay / rerun / persist / follow-up backlog resweep を 1 ファイルで辿れるようにする。
 
 ### 分割ファイル
 
@@ -2002,6 +2016,8 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-13 | v1.14.39   | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加: selected starter card が 2 番目に残る改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として関連未タスクへ登録し、first fold と selected-state prominence を別評価するルールを追記 |
+| 2026-03-13 | v1.14.38   | TASK-UI-09-ONBOARDING-WIZARD の current audit を反映: `system` preview readability 修正、Phase 11 screenshot 6件の current build 再確認、visual TC と non-visual check の分離ルールを feature 正本へ追補 |
 | 2026-03-13 | v1.14.37   | TASK-UI-09-ONBOARDING-WIZARD を反映: Onboarding Wizard overlay / Settings rerun / screenshot 5件 / 苦戦箇所 4件 / related UT 2件を feature 正本へ同期 |
 | 2026-03-12 | v1.14.36   | TASK-SKILL-LIFECYCLE-04 を反映: 収録機能一覧へ Skill Evaluation Gate を追加し、`SkillEvaluationPanel` / Task03-Task05 共通 gate / screenshot 6件 / public preload API 同期漏れ対策 / validator 準拠証跡を専用セクションへ同期 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |

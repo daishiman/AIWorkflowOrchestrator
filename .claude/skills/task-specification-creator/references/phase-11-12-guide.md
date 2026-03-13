@@ -199,6 +199,12 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
+
+#### TC-ID / 非視覚確認の分離（再監査時必須）
+
+- screenshot coverage の `TC-*` は visual evidence 専用にし、ESC / dismiss / focus trap / keyboard spot check は `NV-*` または automated test として別枠管理する
+- Phase 10 checklist と `outputs/phase-4/test-cases.md` で同じ `TC-ID` が別シナリオを指していないか、capture 前に `rg -n "TC-11-"` で突合する
+- `TC-ID` を流用したまま Phase 12 へ進めない。衝突が見つかったら screenshot plan / manual-test / final-review / Phase 12 narrative を同一ターンで是正する
 ### テスト結果レポート形式
 
 ```markdown

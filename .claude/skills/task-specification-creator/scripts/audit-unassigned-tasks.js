@@ -5,16 +5,15 @@
  * 未タスク指示書の配置・フォーマット監査を実行する。
  *
  * Usage:
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/example.md
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/example.md
- *   node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD~1
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/example.md
+ *   node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD~1
  */
 
 import { readdirSync, readFileSync, existsSync } from "fs";
 import { execSync } from "child_process";
-import { join, basename, resolve, relative, dirname } from "path";
+import { join, basename, resolve, relative } from "path";
 import { pathToFileURL } from "url";
 
 const REQUIRED_HEADINGS = [
@@ -34,25 +33,11 @@ const STATUS_PENDING_REGEX =
   /\|\s*ステータス\s*\|\s*(未実施|未着手|進行中|未対応)\s*\|/;
 
 const STATUS_PENDING_TEXT_REGEX = /(ステータス\s*[:：]\s*)(未実施|未着手|進行中|未対応)/;
-const DEFAULT_COMPLETED_TASKS_DIR = "docs/30-workflows/completed-tasks";
-
-function deriveCompletedTasksDir(completedUnassignedDir) {
-  const normalized = normalizePath(completedUnassignedDir);
-  if (
-    normalized === "unassigned-task" ||
-    normalized.endsWith("/unassigned-task")
-  ) {
-    return normalizePath(dirname(normalized));
-  }
-
-  return normalized;
-}
 
 function parseArgs(argv) {
   const args = {
     unassignedDir: "docs/30-workflows/unassigned-task",
     completedUnassignedDir: "docs/30-workflows/completed-tasks/unassigned-task",
-    completedTasksDir: DEFAULT_COMPLETED_TASKS_DIR,
     targetFiles: [],
     diffFrom: null,
     json: false,
@@ -159,28 +144,12 @@ function isTargetWithinAuditDirs(filePath, unassignedDir, completedUnassignedDir
   );
 }
 
-function isStandaloneCompletedTaskFile(filePath, completedTasksDir) {
-  const normalized = normalizePath(filePath);
-  const root = normalizePath(completedTasksDir);
-  if (!normalized.startsWith(`${root}/`)) {
-    return false;
-  }
-
-  const relativePath = normalized.slice(root.length + 1);
-  return relativePath.endsWith(".md") && !relativePath.includes("/");
-}
-
 function shellEscapeSingleQuotes(value) {
   return `'${value.replace(/'/g, `'\\''`)}'`;
 }
 
-function getScopedFilesFromDiff(
-  diffFrom,
-  unassignedDir,
-  completedUnassignedDir,
-  completedTasksDir,
-) {
-  const dirs = [...new Set([unassignedDir, completedUnassignedDir, completedTasksDir])];
+function getScopedFilesFromDiff(diffFrom, unassignedDir, completedUnassignedDir) {
+  const dirs = [unassignedDir, completedUnassignedDir];
   const command =
     `git diff --name-only ${shellEscapeSingleQuotes(diffFrom)} -- ` +
     dirs.map((dir) => shellEscapeSingleQuotes(dir)).join(" ");
@@ -201,7 +170,6 @@ function getScopedFilesFromDiff(
 function resolveScope(args) {
   const scopeErrors = [];
   const currentFiles = new Set();
-  const completedStandaloneTargets = new Set();
   const scoped = args.targetFiles.length > 0 || Boolean(args.diffFrom);
 
   if (args.targetFiles.length > 0) {
@@ -219,18 +187,13 @@ function resolveScope(args) {
         continue;
       }
 
-      const completedTasksDir = deriveCompletedTasksDir(
-        args.completedUnassignedDir || args.completedTasksDir,
-      );
-      const isAllowedTarget =
-        isTargetWithinAuditDirs(
+      if (
+        !isTargetWithinAuditDirs(
           repoRelativeTarget,
           args.unassignedDir,
           args.completedUnassignedDir,
-        ) ||
-        isStandaloneCompletedTaskFile(repoRelativeTarget, completedTasksDir);
-
-      if (!isAllowedTarget) {
+        )
+      ) {
         scopeErrors.push(
           `--target-file は監査対象ディレクトリ配下のみ指定できます: ${rawTarget}`,
         );
@@ -238,9 +201,6 @@ function resolveScope(args) {
       }
 
       currentFiles.add(normalizePath(repoRelativeTarget));
-      if (isStandaloneCompletedTaskFile(repoRelativeTarget, completedTasksDir)) {
-        completedStandaloneTargets.add(normalizePath(repoRelativeTarget));
-      }
     }
   }
 
@@ -250,13 +210,9 @@ function resolveScope(args) {
         args.diffFrom,
         args.unassignedDir,
         args.completedUnassignedDir,
-        deriveCompletedTasksDir(args.completedUnassignedDir || args.completedTasksDir),
       );
       for (const file of diffFiles) {
         currentFiles.add(file);
-        if (isStandaloneCompletedTaskFile(file, args.completedTasksDir)) {
-          completedStandaloneTargets.add(file);
-        }
       }
     } catch (error) {
       const message = error?.stderr?.toString().trim() || error.message;
@@ -267,7 +223,6 @@ function resolveScope(args) {
   return {
     scoped,
     currentFiles,
-    completedStandaloneTargets,
     errors: scopeErrors,
   };
 }
@@ -320,22 +275,8 @@ function main(argv = process.argv.slice(2)) {
     process.exit(2);
   }
 
-  const scope = resolveScope(args);
-  if (scope.errors.length > 0) {
-    for (const error of scope.errors) {
-      console.error(`[audit-unassigned-tasks] ${error}`);
-    }
-    process.exit(2);
-  }
-
   const unassignedFiles = listMarkdownFiles(args.unassignedDir);
   const completedUnassignedFiles = listMarkdownFiles(args.completedUnassignedDir);
-  const completedStatusFiles = [
-    ...new Set([
-      ...completedUnassignedFiles,
-      ...Array.from(scope.completedStandaloneTargets),
-    ]),
-  ].sort();
 
   const formatViolations = [];
   const namingViolations = [];
@@ -353,7 +294,15 @@ function main(argv = process.argv.slice(2)) {
     }
   }
 
-  const misplacedFiles = completedStatusFiles.filter((filePath) => checkMisplaced(filePath));
+  const misplacedFiles = completedUnassignedFiles.filter((filePath) => checkMisplaced(filePath));
+
+  const scope = resolveScope(args);
+  if (scope.errors.length > 0) {
+    for (const error of scope.errors) {
+      console.error(`[audit-unassigned-tasks] ${error}`);
+    }
+    process.exit(2);
+  }
 
   const summary = {
     checkedAt: new Date().toISOString(),
@@ -362,7 +311,6 @@ function main(argv = process.argv.slice(2)) {
     totals: {
       unassignedFiles: unassignedFiles.length,
       completedUnassignedFiles: completedUnassignedFiles.length,
-      completedStatusFiles: completedStatusFiles.length,
       formatViolations: formatViolations.length,
       namingViolations: namingViolations.length,
       misplacedFiles: misplacedFiles.length,
@@ -378,7 +326,6 @@ function main(argv = process.argv.slice(2)) {
         .sort(),
       diffFrom: args.diffFrom,
       currentFiles: Array.from(scope.currentFiles).sort(),
-      completedStandaloneTargets: Array.from(scope.completedStandaloneTargets).sort(),
     },
   };
 
@@ -396,7 +343,7 @@ function main(argv = process.argv.slice(2)) {
     console.log(`- unassigned files: ${summary.totals.unassignedFiles}`);
     console.log(`- format violations: ${summary.totals.formatViolations}`);
     console.log(`- naming violations: ${summary.totals.namingViolations}`);
-    console.log(`- misplaced files (completed area): ${summary.totals.misplacedFiles}`);
+    console.log(`- misplaced files (completed-tasks/unassigned-task): ${summary.totals.misplacedFiles}`);
     console.log(`- current violations: ${summary.totals.currentViolations}`);
     console.log(`- baseline violations: ${summary.totals.baselineViolations}`);
 

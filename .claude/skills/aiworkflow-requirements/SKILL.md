@@ -18,12 +18,10 @@ allowed-tools:
   - Grep
   - Bash
 ---
-
 # AIWorkflow Requirements Manager
-
 ## 概要
-
-AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。**このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
+AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
+**このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## クイックスタート
 
@@ -46,7 +44,7 @@ node scripts/search-spec.js "認証" -C 5
 
 - Workspace 親導線再監査: [references/workflow-workspace-parent-reference-sweep-guard.md](references/workflow-workspace-parent-reference-sweep-guard.md)
 - Light Theme contrast guard: [references/workflow-light-theme-contrast-regression-guard.md](references/workflow-light-theme-contrast-regression-guard.md)
-- Workspace Preview/Search resilience guard: [references/workflow-workspace-preview-search-resilience-guard.md](references/workflow-workspace-preview-search-resilience-guard.md)
+- Onboarding Wizard / Settings rerun: [references/workflow-onboarding-wizard-alignment.md](references/workflow-onboarding-wizard-alignment.md)
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
@@ -200,10 +198,12 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.01.95** | **2026-03-13** | **UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を反映**: `task-workflow.md` / `lessons-learned.md` / `workflow-workspace-preview-search-resilience-guard.md` に、Phase 12 outputs 4成果物（`spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report`）の exact count 横断比較 validator を未タスク導線として追加。follow-up 未タスク formalize 後の stale 値を機械検出する改善として同期 |
-| **9.01.94** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本を追加**: `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、今回実装した search/preview resilience helper、conversation persistence race fix、Phase 11 screenshot 5件、苦戦箇所、5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同一ターンで更新し、同種課題の参照初動を短縮 |
-| **9.01.93** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の再監査追補を同期**: `ui-ux-components.md` と `arch-state-management.md` に 04C follow-up の helper 抽出、preview reset 順序、`external-dev-server` screenshot 5件、empty state / retry action の visual polish を追記し、一覧 spec と状態 spec の再利用導線を補完 |
-| **9.01.92** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期**: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` に search match gate、preview timeout helper、typed taxonomy、current source dev server screenshot fallback を反映し、related row を completed path へ更新 |
+| **9.01.97** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の統合正本入口を追加**: `references/workflow-onboarding-wizard-alignment.md` を新規作成し、overlay / Settings rerun / persist key / screenshot 6件 / follow-up backlog resweep / SubAgent 分担 / 5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同期し、同種課題の参照初動を短縮 |
+| **9.01.96** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の follow-up resweep を同期**: `references/task-workflow.md` / `references/lessons-learned.md` に、既存 `docs/30-workflows/unassigned-task/` 2 件の配置確認と本文 contract drift 是正を追記。`onboarding.hasCompleted` 維持 + Settings force-open local state + completion 時のみ persist save / dashboard handoff の rerun 契約を、system spec だけでなく follow-up 未タスク本文まで再同期する運用を変更履歴へ追加 |
+| **9.01.95** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の監査補修を同期**: `ui-ux-navigation.md` の onboarding contract を現行実装へ更新し、`arch-state-management.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` に persist key 正式名、`system` preview readability 修正、visual/non-visual TC 分離、canonical→mirror `diff -qr` 完了判定を追記 |
+| **9.01.94** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD を同期**: `task-workflow.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `ui-ux-components.md` / `lessons-learned.md` / `arch-state-management.md` に onboarding wizard の overlay state、Settings rerun callback、persist key 4件、Phase 11 screenshot 6件、`current=0 / baseline=134` の Phase 12 evidence を反映し、`generate-index.js` と `.agents` mirror sync を同一ターンで閉じる運用を追記 |
+| **9.01.93** | **2026-03-13** | **TASK-SKILL-LIFECYCLE-04 follow-up の未タスク formalize を同期**: `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を `docs/30-workflows/unassigned-task/` へ作成し、`task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` / parent workflow outputs / `LOGS.md` を `verify-unassigned-links=221/221`、`current=0 / baseline=134` 前提で再同期 |
+| **9.01.92** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-04 を同期**: `ui-ux-feature-components.md` / `arch-state-management.md` / `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` / `lessons-learned.md` に Task04 の quality gate 実装、screenshot 6件、`evaluatePrompt()` public preload API、shared export、`current=0 / baseline=134` 監査結果を反映し、`.claude` 正本更新後に `.agents` mirror を追従させる運用を追記 |
 | **9.01.91** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を追補**: `workflow-workspace-parent-reference-sweep-guard.md` / `task-workflow.md` / `lessons-learned.md` に `verify-unassigned-links=219 / 219` の再同期、元 unassigned spec の配置確認、related UT completed 化後の stale count 防止ルールを追加 |
 | **9.01.90** | **2026-03-12** | **workflow 正本の直リンクを SKILL.md に追加**: `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` への入口を明示し、docs-heavy workflow の再監査導線を SKILL レベルでも辿れるようにした |
 | **9.01.89** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: Workspace 親導線 sweep の system spec 同期（`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / `LOGS.md`）と、completed workflow root 正規化・mirror sync 運用を変更履歴へ追加 |

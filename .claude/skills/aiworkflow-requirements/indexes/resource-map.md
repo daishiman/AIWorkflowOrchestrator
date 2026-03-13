@@ -191,6 +191,7 @@
 | workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
 | workflow-workspace-preview-search-resilience-guard.md | QuickFileSearch / PreviewPanel / renderer local timeout+retry / `external-dev-server` capture fallback を再利用したい時 | helper 抽出、typed taxonomy、`audit --target-file`、5分解決カード |
 | workflow-workspace-parent-reference-sweep-guard.md | docs-only parent workflow の pointer/index/spec/script/mirror drift と representative visual re-audit を再利用したい時 | drift guard、visual review board、unassigned cleanup、5分解決カード |
+| workflow-onboarding-wizard-alignment.md | onboarding overlay / Settings rerun / follow-up unassigned drift を再利用したい時 | force-open 契約、screenshot 6件、SubAgent分担、苦戦箇所、5分解決カード |
 | ui-history-search-view.md     | HistorySearchView / activity timeline の仕様確認時   | timeline UI、state/IPC 契約、画面証跡 |
 | ui-ux-history-panel.md        | 履歴パネルUI全体像把握時（インデックス）             | 概要、ドキュメント構成、テスト品質 |
 | ui-history-components.md      | 履歴コンポーネント実装、Props定義確認時              | VersionHistory、Detail、Logs、Hook |

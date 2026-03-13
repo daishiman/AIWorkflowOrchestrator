@@ -3,26 +3,38 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-13 - 統合 workflow 正本テンプレートを skill-creator へ追加
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD onboarding template profile を skill-creator へ反映
 
-- **Agent**: skill-creator
+- **Agent**: skill-creator (update)
 - **Phase**: template-refinement
-- **Result**: success
+- **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-integrated-workflow-spec-template.md` を新規作成し、`references/workflow-<feature>.md` の標準構成をテンプレート化
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に同テンプレートの利用条件と入口更新ルールを追記
-  - `references/resource-map.md` に統合 workflow 正本テンプレートを追加し、asset 一覧から直接辿れるようにした
+  - `assets/phase12-system-spec-retrospective-template.md` に onboarding overlay / Settings rerun / follow-up backlog resweep の反映先マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に canonical docs 7点、既存 follow-up 指示書の current contract 再同期、`workflow-onboarding-wizard-alignment.md` 更新を完了条件として追加
+  - `references/resource-map.md` の asset 説明も onboarding profile に追従させ、template 入口から capability を辿れるようにした
 
 ---
-## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の workflow 正本集約パターンを skill-creator へ反映
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up contract drift パターンを skill-creator へ反映
 
-- **Agent**: skill-creator
-- **Phase**: template-refinement
-- **Result**: success
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に「cross-cutting follow-up は `workflow-<feature>.md` を追加して実装内容 / 苦戦箇所 / 5分カード / root evidence を 1 ファイルへ集約する」を追加
-  - resource-map / quick-reference / SKILL 直リンクまで同一ターンで戻すことを標準手順へ昇格し、system spec 正本の入口不足を防ぐルールを明文化
-  - `phase12-task-spec-compliance-check.md` を workflow 正本から辿る完了条件を追記し、Phase 12 の判断根拠が outputs と spec の両方で一致するようにした
+  - `references/patterns.md` の onboarding Phase 12 パターンに、既存 `docs/30-workflows/unassigned-task/` 本文の contract drift を検査する手順を追加
+  - `2.2` / `3.1` / `3.5` / 検証手順を current contract へ再同期し、`completed=false reset` のような旧文言を残さない運用を明文化
+  - 必要時は `audit-unassigned-tasks --json --diff-from HEAD --target-file <task-file>` を個別品質ゲートとして使う方針を cross-skill pattern に還元した
+
+---
+## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認知見を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「既存 IPC 再利用でも public preload / shared export 追加は Step 2 必須」を追加
+  - `references/patterns.md` に「未タスク 0 件でも `docs/30-workflows/unassigned-task/` への追加作成なしを明記する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に同判定の検証コマンドと完了チェックを追記
+  - `references/resource-map.md` と `SKILL.md` を同期し、template capability を入口から辿れるようにした
 
 ---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
@@ -45,17 +57,6 @@
   - `references/patterns.md` に「loopback screenshot capture は localhost 不達時に current build static server を自動起動する」を追加
   - `references/patterns.md` の skill feedback template に、`skill-creator` を含む 3 skill 同値転記ルールを追加
   - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
-
----
-## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査知見を skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に standalone completed spec の `audit --target-file`、untracked completed move fallback、`screenshot-plan.md` / `screenshots/phase11-capture-metadata.json` の実ファイル名を追記
-  - `assets/phase12-audit-record-template.md` と `assets/phase12-subagent-assignment-template.md` を、`audit --diff-from HEAD` 単独前提ではなく `audit --target-file` 併用前提へ更新
-  - `references/patterns.md` の `--target-file` 境界パターンと screenshot artifact 記述を direct completed path / actual screenshot artifact 名へ再同期
 
 ---
 ## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映

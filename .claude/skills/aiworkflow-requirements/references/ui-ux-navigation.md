@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.5 | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加。selected starter card の理解しやすさは first fold 可視性と別問題として `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` へ切り出し、関連未タスクへ登録した |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
 | v1.7.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 Phase 12 準拠再確認を追補。Skill lifecycle primary entry に surface ownership board と TC-11-05 要素証跡の扱い、苦戦箇所、5分解決カードを追加し、domain UI spec でも実装内容と再利用手順を辿れるようにした |
@@ -390,20 +391,21 @@ ChatViewには履歴ページへの導線として、ヘッダー右上にナビ
 
 | 観点 | 内容 |
 | --- | --- |
-| 初回起動 | `onboarding.completed=false` の場合、通常画面の上に wizard overlay を表示する |
-| 完了後導線 | wizard 完了後は通常画面へ戻し、以後の自動再表示を抑止する |
-| rerun 導線 | Settings から rerun を選ぶと completed flag を reset し、dashboard 経由で overlay を再表示する |
-| keyboard | キーボード進行は手動 spot check を残し、visual TC とは分離して記録する |
+| 初回起動 | `isOnboardingReady && !isOnboardingCompleted && !isOnboardingDismissed` の場合、通常画面の上に wizard overlay を表示する |
+| 完了後導線 | completion persist 成功後に `setCurrentView("dashboard")` で通常画面へ戻し、以後の自動再表示を抑止する |
+| rerun 導線 | Settings header の `はじめてガイドを再表示` button は `handleOpenOnboarding()` を呼び、`isOnboardingForcedOpen=true` / `isOnboardingDismissed=false` の local reopen で overlay を再表示する |
+| non-visual close | ESC / 閉じるボタン / focus trap は automated test と code review で担保し、visual TC と ID を分離して扱う |
 
 ### 画面証跡
 
 | TC | 証跡 | 観点 |
 | --- | --- | --- |
-| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png` | 初回起動時の overlay |
-| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png` | 中盤 step の navigation |
-| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png` | mobile での最終 step |
-| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | Settings 内 rerun 入口 |
-| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun での overlay 再表示 |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-onboarding-step1-light-desktop.png` | 初回起動時の overlay |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-onboarding-step2-dark-desktop.png` | step2 の AI おためし |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-onboarding-step3-dark-tablet.png` | tablet 幅での starter card |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-onboarding-step4-light-desktop.png` | `system` preview readability を含む step4 |
+| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-onboarding-step3-dark-mobile.png` | mobile first fold の可視性 |
+| TC-11-06 | `outputs/phase-11/screenshots/TC-11-06-onboarding-complete-kanagawa-desktop.png` | completion hierarchy |
 
 ### 苦戦箇所（再発条件付き）
 
@@ -411,20 +413,23 @@ ChatViewには履歴ページへの導線として、ヘッダー右上にナビ
 | --- | --- | --- |
 | overlay と通常ナビゲーションの責務が混ざる | wizard を単なる modal として扱い、戻り先を曖昧にする | 「初回 overlay」「完了後通常画面」「Settings rerun」の3状態に分けて記録した |
 | coverage validator に必要な台帳形式が崩れる | `phase-11-manual-test.md` に matrix を置かずに screenshot だけ残す | `## 画面カバレッジマトリクス` を正本にした |
-| 非視覚 TC が visual matrix を汚染する | keyboard spot check を screenshot TC と同列に置く | 非視覚 TC は result 側へ分離した |
+| split-theme preview の可読性 | `system` preview の dark half に black text を載せると primary text が沈む | split 表現は outer card に残し、inner card は readable surface に寄せた |
+| visual / non-visual TC の ID が衝突する | keyboard spot check を screenshot TC と同じ ID 空間で管理する | non-visual close は automated test / code review へ分離し、visual matrix は `TC-11-01..06` へ固定した |
 | rerun card が埋もれる | overlay 再表示動作だけで navigation UX を完了扱いにする | discoverability は follow-up task に切り出した |
+| selected card の理解しやすさが first fold 評価に埋もれる | `TC-11-05` で主コンテンツ可視性だけ見て、選択済み card の位置を別評価しない | mobile selected-card order は follow-up task に切り出し、first fold と selected-state prominence を別管理にした |
 
 ### 同種課題の5分解決カード
 
-1. overlay UI は「表示条件」「完了後導線」「rerun 導線」を別行で書く。
-2. Phase 11 では visual TC と非視覚 TC を分離して管理する。
-3. screenshot coverage validator が要求する matrix 形式を先に揃える。
+1. overlay UI は「表示条件」「完了後導線」「rerun callback」を別行で書く。
+2. split-theme preview は outer/inner surface を分け、text を dark half に沈めない。
+3. Phase 11 では visual TC と非視覚確認を別 ID 空間で管理する。
 4. rerun 動作確認と発見性評価を別の判断軸にする。
-5. navigation の変更は `ui-ux-settings` と同時に同期する。
+5. navigation の変更は `ui-ux-settings` / `task-workflow` / `lessons-learned` と同時に同期する。
 
 ### 関連未タスク
 
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | screenshot / test hardening と warning 解消 | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
-| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | rerun 入口の情報設計改善 | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
+| UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001 | mobile Step 3 で selected starter card を最優先に理解しやすくする改善 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-mobile-starter-card-order-001.md` |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | screenshot / test hardening と warning 解消 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | rerun 入口の情報設計改善 | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
