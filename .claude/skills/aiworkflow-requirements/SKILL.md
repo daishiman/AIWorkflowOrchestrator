@@ -18,11 +18,8 @@ allowed-tools:
   - Grep
   - Bash
 ---
-
 # AIWorkflow Requirements Manager
-
 ## 概要
-
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
@@ -43,6 +40,11 @@ node scripts/search-spec.js "認証" -C 5
 2. 該当ファイルを `Read` ツールで参照
 3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
 
+### 直近の workflow 正本へ入る
+
+- Workspace 親導線再監査: [references/workflow-workspace-parent-reference-sweep-guard.md](references/workflow-workspace-parent-reference-sweep-guard.md)
+- Light Theme contrast guard: [references/workflow-light-theme-contrast-regression-guard.md](references/workflow-light-theme-contrast-regression-guard.md)
+- Onboarding Wizard / Settings rerun: [references/workflow-onboarding-wizard-alignment.md](references/workflow-onboarding-wizard-alignment.md)
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
@@ -196,6 +198,15 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.97** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の統合正本入口を追加**: `references/workflow-onboarding-wizard-alignment.md` を新規作成し、overlay / Settings rerun / persist key / screenshot 6件 / follow-up backlog resweep / SubAgent 分担 / 5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同期し、同種課題の参照初動を短縮 |
+| **9.01.96** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の follow-up resweep を同期**: `references/task-workflow.md` / `references/lessons-learned.md` に、既存 `docs/30-workflows/unassigned-task/` 2 件の配置確認と本文 contract drift 是正を追記。`onboarding.hasCompleted` 維持 + Settings force-open local state + completion 時のみ persist save / dashboard handoff の rerun 契約を、system spec だけでなく follow-up 未タスク本文まで再同期する運用を変更履歴へ追加 |
+| **9.01.95** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の監査補修を同期**: `ui-ux-navigation.md` の onboarding contract を現行実装へ更新し、`arch-state-management.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` に persist key 正式名、`system` preview readability 修正、visual/non-visual TC 分離、canonical→mirror `diff -qr` 完了判定を追記 |
+| **9.01.94** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD を同期**: `task-workflow.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `ui-ux-components.md` / `lessons-learned.md` / `arch-state-management.md` に onboarding wizard の overlay state、Settings rerun callback、persist key 4件、Phase 11 screenshot 6件、`current=0 / baseline=134` の Phase 12 evidence を反映し、`generate-index.js` と `.agents` mirror sync を同一ターンで閉じる運用を追記 |
+| **9.01.93** | **2026-03-13** | **TASK-SKILL-LIFECYCLE-04 follow-up の未タスク formalize を同期**: `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を `docs/30-workflows/unassigned-task/` へ作成し、`task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` / parent workflow outputs / `LOGS.md` を `verify-unassigned-links=221/221`、`current=0 / baseline=134` 前提で再同期 |
+| **9.01.92** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-04 を同期**: `ui-ux-feature-components.md` / `arch-state-management.md` / `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` / `lessons-learned.md` に Task04 の quality gate 実装、screenshot 6件、`evaluatePrompt()` public preload API、shared export、`current=0 / baseline=134` 監査結果を反映し、`.claude` 正本更新後に `.agents` mirror を追従させる運用を追記 |
+| **9.01.91** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を追補**: `workflow-workspace-parent-reference-sweep-guard.md` / `task-workflow.md` / `lessons-learned.md` に `verify-unassigned-links=219 / 219` の再同期、元 unassigned spec の配置確認、related UT completed 化後の stale count 防止ルールを追加 |
+| **9.01.90** | **2026-03-12** | **workflow 正本の直リンクを SKILL.md に追加**: `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` への入口を明示し、docs-heavy workflow の再監査導線を SKILL レベルでも辿れるようにした |
+| **9.01.89** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: Workspace 親導線 sweep の system spec 同期（`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / `LOGS.md`）と、completed workflow root 正規化・mirror sync 運用を変更履歴へ追加 |
 | **9.01.88** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` に formalize し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `workflow-light-theme-contrast-regression-guard.md` へ導線を追加。completed workflow の Phase 12 outputs も 1 件 formalize 前提へ更新 |
 | **9.01.87** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を同期**: `task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task を追記し、`lessons-learned.md` に workflow baseline 64 と directory baseline 134 の分離、Task 5 の 3 skill 同値転記ルールを追加。Phase 12 root evidence と system spec の再突合手順を固定 |
 | **9.01.86** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本を追加**: `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、今回実装した audit / harness / static serve fallback / selector readiness / workflow sync と苦戦箇所を 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` も同時更新し、同種課題の参照初動を短縮 |

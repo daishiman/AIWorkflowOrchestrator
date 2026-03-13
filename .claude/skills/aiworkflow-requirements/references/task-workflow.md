@@ -421,7 +421,7 @@
 | 優先度 | P2 |
 | 完了日 | 2026-03-11 |
 | 対象 | `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context） |
-| 成果物 | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/` |
+| 成果物 | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/outputs/` |
 
 #### 実施内容
 
@@ -607,6 +607,70 @@
 | `pnpm build` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser` | PASS |
 
+### タスク: UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Workspace parent reference sweep guard（2026-03-12）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | improvement |
+| 優先度 | 中 |
+| 完了日 | 2026-03-12 |
+| 対象 | `task-060` parent pointer、completed-task pointer docs、`task-000`、`task-090`、`interfaces-*`、capture root、mirror drift、representative visual re-audit |
+| 成果物 | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/outputs/` |
+
+#### 実施内容
+
+- `scripts/validate-workspace-parent-reference-sweep.mjs` と Vitest で path / status / mirror drift を 1 manifest で監査できるようにした
+- `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` を completed root と completed workflow 実績へ再同期した
+- 元 unassigned spec `task-imp-workspace-parent-reference-sweep-guard-001.md` の status を workflow 実行済みへ是正した
+- `capture-workspace-parent-reference-sweep-guard-review-board.mjs` を追加し、same-day child workflow screenshot を completed workflow へ集約して visual re-audit を実施した
+
+#### 仕様書別 SubAgent 分担
+
+| SubAgent | 担当仕様書 | 主担当作業 |
+| --- | --- | --- |
+| A | `task-workflow.md` | 完了台帳、検証値、5分解決カードの正規化 |
+| B | `ui-ux-feature-components.md` | Workspace lineage の feature surface と representative visual review の同期 |
+| C | `interfaces-llm.md` / `interfaces-chat-history.md` | completed root への証跡 path 統一 |
+| D | `workflow-workspace-parent-reference-sweep-guard.md` | docs-only parent workflow の統合正本化 |
+| E | `lessons-learned.md` / `skill-creator` templates | 苦戦箇所の再利用形式化と再利用テンプレート化 |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| parent pointer だけ直しても導線が閉じない | pointer docs / legacy index / `interfaces-*` / capture / mirror を別ターンで扱う | sweep manifest と validator を導入し、同一ターンで閉じた |
+| 元未タスク仕様書が `未実施` のまま残る | workflow 実行と spec status 更新を分離する | source spec の status と台帳の related UT を completed 実績へ是正した |
+| docs-heavy task の screenshot 要求を N/A と決め打ちしやすい | UI差分がないから visual review を省略する | same-day child workflow evidence を completed workflow へ集約し、review board を completed workflow で新規 capture した |
+| related UT row 移動後の exact count が stale になる | row 移動と `verify-unassigned-links` 再取得、`.claude` / `.agents` 同期を別ターンにする | row 移動後に exact count を再取得し、follow-up UT formalize と `220 / 220` への再同期を同一ターンで完了した |
+
+#### 同種課題の5分解決カード
+
+1. `task-060` / pointer docs / `task-000` / `task-090` を 1 セットで確認する。
+2. `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` の completed root を横断確認する。
+3. `validate-workspace-parent-reference-sweep.mjs --json` と `diff -qr` を同一ターンで実行する。
+4. screenshot 要求が来たら 04A / 04B / 04C の same-day evidence を completed workflow へ集約して review board を作る。
+5. 元 unassigned spec の status、exact counts、workflow outputs、LOGS を同一ターンで更新する。
+
+#### 関連未タスク
+
+| タスクID | 概要 | 優先度 | 参照 |
+| --- | --- | --- | --- |
+| UT-IMP-PHASE12-RELATED-UT-EXACT-COUNT-RESYNC-GUARD-001 | related UT を completed 実績へ移した直後の `verify-unassigned-links` exact count を `task-workflow` / workflow spec / detection report へ同値再同期する | 中 | `docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node scripts/validate-workspace-parent-reference-sweep.mjs --json` | PASS（path=0 / status=0 / mirror=0） |
+| `pnpm exec vitest run scripts/__tests__/validate-workspace-parent-reference-sweep.test.mjs` | PASS（4 tests） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（220 / 220） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --completed-unassigned-dir docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task --target-file docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` | PASS（current 0 / scoped baseline 96） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（current 0 / baseline 134） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` | PASS（current 0 / baseline 134） |
+| `node apps/desktop/scripts/capture-workspace-parent-reference-sweep-guard-review-board.mjs` | PASS |
+
 ### タスク: TASK-UI-04C-WORKSPACE-PREVIEW Workspace preview / quick search（2026-03-11）
 
 | 項目 | 値 |
@@ -647,7 +711,8 @@
 
 | タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview / search で露出した fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~preview / search で露出した fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | `spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report` の exact count を横断比較し、Phase 12 follow-up の stale 値を機械検出する | 中 | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
 
 #### 検証証跡
 
@@ -658,6 +723,42 @@
 | `pnpm --filter @repo/desktop build` | PASS |
 | `pnpm --filter @repo/desktop run screenshot:task-059b` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch` | PASS |
+
+### タスク: UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 Workspace Preview/Search resilience ガード（2026-03-13）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | fix |
+| 優先度 | 中 |
+| 完了日 | 2026-03-13 |
+| 対象 | `WorkspaceView` の Quick Search match gate、preview timeout/retry、typed error taxonomy、Phase 11 current source screenshot |
+| 成果物 | `docs/30-workflows/completed-tasks/workspace-preview-search-resilience-guard/outputs/` |
+
+#### 実施内容
+
+- `quickFileSearchResilience.ts` を追加し、`score > 0` gate、stable sort、empty-state text を pure utility 化
+- `previewResilience.ts` を追加し、5秒 timeout、3回 retry、transport/parse/crash/no-match taxonomy を共通 helper 化
+- `QuickFileSearch`, `PreviewPanel`, `PreviewErrorBoundary`, `WorkspaceView` を typed error surface へ更新
+- targeted vitest 39件 PASS、typecheck PASS、eslint PASS、targeted coverage `81.63 / 73.79 / 78.41 / 81.63`
+- Phase 11 では current source dev server を使って screenshot 5件と Apple UI/UX review を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| fuzzy search の一致判定と順位補正が混在する | subsequence 0 にも boost を乗せる | pure utility で `score > 0` gate を先に切る |
+| `file.read` hang が loading を解放しない | renderer timeout を持たず IPC 応答だけ待つ | timeout / retry を `readPreviewFileWithResilience()` に集約 |
+| current build screenshot が esbuild binary mismatch で詰まる | `electron-vite build` が local arch と不整合 | current source dev server を capture source として利用し、metadata に記録 |
+
+#### 同種課題の5分解決カード
+
+1. fuzzy search は一致判定と順位補正を別関数へ分離する。
+2. preview 系 `invoke` には renderer timeout と retry 上限を先に決める。
+3. parse error は recoverable fallback、transport error は action 付き alert へ分離する。
+4. Phase 11 の build が壊れている場合でも、current source dev server から representative screenshot を取る。
+5. workflow / completed task spec / system spec / LOGS / SKILL / mirror sync を同一ターンで更新する。
 ### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
 
 | 項目 | 値 |
@@ -4088,7 +4189,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化~~ | ~~中~~ | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | Phase 12 outputs の exact count と current/baseline bucket を横断比較し、follow-up 未タスク formalize 後の stale 記録を機械検出する | 中 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 Phase 12 follow-up（2026-03-13） | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -4786,6 +4888,10 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.45.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001登録**: skill:import IPCハンドラ戻り値型不整合修正タスクを残課題テーブルに追加。20フレームワーク多角的分析で発見されたImportResult→ImportedSkill変換漏れの修正 |
 | **1.44.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001派生未タスク2件登録**: UT-FIX-SKILL-VALIDATION-P42-001（P42バリデーション横展開）、UT-FIX-SKILL-IPC-ERROR-RESPONSE-001（エラー応答パターン統一）を残課題テーブルに追加。実装苦戦箇所（P23/P42/P44/P45）を未タスク指示書に反映 |
 | **1.43.0** | **2026-02-20** | **未タスク配置ディレクトリ整合を是正**: 未実施タスク（task-imp-vitest-alias-sync-automation-001 / UT-9A-B-001〜003）の参照先を `docs/30-workflows/unassigned-task/` に統一。完了済み UT-9B-H-003 の参照を `completed-tasks/ut-9b-h-003-security-hardening/index.md` に更新。`verify-unassigned-links.js` で再検証 |
+| **1.44.4** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加**: Phase 11 manual note で残っていた selected starter card 順序の改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として `docs/30-workflows/unassigned-task/` へ formalize し、first fold 可視性と selected-state prominence を別観点で評価するルールを task/workflow/lesson spec へ同期した |
+| **1.44.3** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の Phase 12 再確認を追補**: `docs/30-workflows/unassigned-task/` 配下の follow-up 2件を task-spec フォーマットと current rerun 契約で再監査し、`onboarding.hasCompleted` 維持 + Settings force-open local state + completion 時のみ persist save / dashboard handoff へ本文を再同期した |
+| **1.44.2** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の監査補修を同期**: `ui-ux-navigation.md` mirror drift、persist key 表記ゆれ、`TC-11-07` の visual/non-visual ID 衝突を是正し、`OnboardingWizard` の `system` preview readability 修正後 screenshot 6件を current build で再確認した |
+| **1.44.1** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD current implementation 同期**: completed workflow path、`App.tsx` overlay 統合、force-open rerun、Phase 11 screenshot 6件、検証値 `13/13 phases` / `28項目` / `TC 6/6` / `currentViolations 0` へ更新した |
 | **1.43.0** | **2026-02-20** | **未タスク2件登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001（@repo/shared ソース構造二重性統一、中優先度）、TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001（3層整合CIガード、高優先度）をP3準拠で残課題テーブルに追加。architecture-monorepo.mdに参照リンク追加 |
 | **1.42.1** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化**: 完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS、shared build成功、lint PASS）、変更ファイル詳細（tsconfig +27 paths、package.json +26 typesVersions、vitest.config +3 alias）、変更行数（+353行/17ファイル）、テスト数（224テスト/3スイート）を追記。残課題 UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 の説明を詳細化（背景・提案解決策・スコープ追記） |
 | **1.42.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001完了反映**: 残課題テーブルの同タスクを完了（取り消し線 + 完了日）へ更新。参照先を `skill-import-agent-system/tasks/completed-task/` に変更。UT-FIX-SKILL-IMPORT-INTERFACE-001 の参照先も実ファイルパスへ修正 |
@@ -4905,3 +5011,50 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-settings-light-theme-contrast-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-accountsection-linked-provider-key-warning-001.md`
+
+## TASK-UI-09-ONBOARDING-WIZARD 完了記録（2026-03-13）
+
+### 実装内容（要点）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| 初回導線 | 初回起動時に `App.tsx` 上へ Onboarding Wizard overlay を表示し、completion 後に dashboard へ戻す | `apps/desktop/src/renderer/App.tsx` / workflow `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/` |
+| multi-step 体験 | desktop / tablet / mobile / theme 差分を screenshot 6件で確認できる multi-step 導線を用意し、`TC-11-04` で `system` preview readability を current build 再確認した | `outputs/phase-11/screenshots/TC-11-01..06` |
+| Settings rerun | `SettingsView` header button が `handleOpenOnboarding()` を呼び、force-open local state で再表示する | `apps/desktop/src/renderer/views/SettingsView/index.tsx` |
+| Phase 12 同期 | implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を揃え、既存 follow-up 未タスク 2 件の contract drift も再同期した | `outputs/phase-12/` |
+
+### 検証証跡
+
+| 項目 | 結果 |
+| --- | --- |
+| `verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard --json` | `13/13 phases pass`, `errors=0`, `warnings=0` |
+| `validate-phase-output.js docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard` | `28項目 pass`, `0 error`, `0 warning` |
+| `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard` | `expected TC=6`, `covered TC=6`, `PASS` |
+| `verify-unassigned-links.js` | `existing=222`, `missing=0` |
+| `audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=134` |
+
+### 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| rerun と persist save の責務がずれる | rerun 起動時に persisted flag まで変える | rerun は force-open local state、persist save は completion だけに限定した | rerun は「force-open」、completion は「persist save」と責務を分離する |
+| 既存 follow-up 未タスクが旧 rerun 契約を引き継ぐ | current implementation を直した後に `docs/30-workflows/unassigned-task/` の本文を再読しない | follow-up 2件の `2.2` / `3.1` / `3.5` / 検証手順を current contract へ揃えた | 既存未タスクを流用する時は、前提条件・最終ゴール・実装課題を現行 contract で再確認する |
+| representative screenshot と台帳名がずれる | matrix / result / png 実体を別命名で管理する | `TC-ID ↔ screenshots/*.png` を再同期した | 画面検証を求められた UI は coverage matrix を正本にする |
+| split-theme preview の text contrast が崩れる | `system` preview の dark half に black text を直接載せる | inner preview card を readable surface に寄せ、current build screenshot を再取得した | split-theme visual は outer/inner surface を分離して評価する |
+| mobile step indicator が主コンテンツを押し下げる | step chip を横 4 並びに固定する | `grid-cols-2 sm:grid-cols-4` へ変更して再撮影した | mobile は first fold の主コンテンツ可視性を screenshot で再確認する |
+| mobile selected card prominence と first fold を同一判定にしやすい | `TC-11-05` の first fold PASS だけで selected-state の理解しやすさも十分とみなす | manual note の改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として formalize した | mobile wizard は first fold と selected-state prominence を別項目で確認する |
+
+### 同種課題の5分解決カード
+
+1. `onboarding.hasCompleted` の保存キーと表示条件を先に固定する。
+2. rerun は force-open local state、completion は persist save として分離する。
+3. Phase 11 は `TC-ID ↔ screenshots/*.png` を coverage matrix で固定する。
+4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を同一ターンで記録する。
+5. 既存 follow-up 未タスクを流用する時は、`docs/30-workflows/unassigned-task/` の本文も current contract へ再同期する。
+
+### 関連未タスク
+
+- `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001`: mobile Step 3 で selected starter card を最初に理解しやすくする follow-up。`docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-mobile-starter-card-order-001.md`
+- `UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001`: onboarding rerun / already-completed / warning / coverage の guard を強化する follow-up。`docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md`
+- `UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001`: rerun 入口の IA と copy を改善する follow-up。`docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md`
+- current turn では Phase 11 manual note 由来の minor backlog 1 件を formalize し、既存 follow-up 2 件の current contract 再同期も維持した。

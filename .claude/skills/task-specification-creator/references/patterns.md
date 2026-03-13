@@ -64,7 +64,7 @@
   1. Node.jsでは `\z` / `\Z` に依存しない
   2. Markdownセクション抽出は「終端見出しを付与してから切り出す」実装が安全
   3. 検証スクリプト自身の判定結果は、実ファイル内容と合わせて二重確認する
-- **修正ファイル**: `.agents/skills/task-specification-creator/scripts/validate-phase-output.js`
+- **修正ファイル**: `.claude/skills/task-specification-creator/scripts/validate-phase-output.js`
 - **発見日**: 2026-02-24
 
 ### 未タスク検出後のtask-workflow.md登録漏れ（TASK-9B-G）
@@ -217,11 +217,11 @@
 - **状況**: Phase完了処理で `node scripts/complete-phase.js` を実行した
 - **問題**: モジュール未発見エラーが発生しスクリプトが実行できなかった
 - **原因**:
-  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.agents/skills/task-specification-creator/scripts/` に配置されている
+  1. `scripts/complete-phase.js` はプロジェクトルートの `scripts/` ではなく、`.claude/skills/task-specification-creator/scripts/` に配置されている
   2. スキルスクリプトのパスとプロジェクトルートのパスを混同した
 - **教訓**:
   1. スキルスクリプトは必ず `.agents/skills/{skill-name}/scripts/` パスで参照する
-  2. `node scripts/xxx.js` ではなく `node .agents/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
+  2. `node scripts/xxx.js` ではなく `node .claude/skills/task-specification-creator/scripts/xxx.js` と完全パスで実行する
   3. スクリプト実行前にファイルの存在を `test -f` で確認する
 - **発見日**: 2026-02-19
 - **関連タスク**: TASK-9A-C
@@ -336,6 +336,23 @@
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-043B
 
+### Phase 12 root evidence + workflow 正本集約（UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001）
+
+- **状況**: Task 12-1〜12-5 の成果物は揃っていても、system spec 側の実装内容・苦戦箇所・screen evidence が複数仕様へ散ると、Phase 12 の完了根拠と再利用入口が別々になりやすい
+- **問題**:
+  1. `spec-update-summary.md` と system spec を別々に読まないと「何を実装し、どこで苦戦したか」が追えない
+  2. Phase 12 の準拠確認を報告しても、同種課題の初動で参照入口が定まらない
+- **解決パターン**:
+  1. `outputs/phase-12/phase12-task-spec-compliance-check.md` を root evidence として追加し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を 1 ファイルへ集約する
+  2. 実装内容と苦戦箇所が 6 仕様書以上へ広がる follow-up task では、`aiworkflow-requirements/references/workflow-<feature>.md` を新規作成し、SubAgent 分担、5分解決カード、検証コマンドもまとめて残す
+  3. `resource-map.md` / `quick-reference.md` / `SKILL.md` に workflow 正本の入口を追加し、仕様更新後の再利用経路を固定する
+  4. `quick_validate.js` 3件、`verify-unassigned-links`、`audit --target-file`、screen verification の結果を compliance check と verification report の両方へ転記する
+- **効果**:
+  - Phase 12 完了判定と system spec 再利用入口が分離しない
+  - 同種課題の再開時に「どこから読むべきか」の探索コストを下げられる
+- **発見日**: 2026-03-13
+- **関連タスク**: UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
+
 ### `phase-12-documentation.md` 完了同期パターン（TASK-9H）
 
 - **状況**: `outputs/phase-12` の成果物5件が揃っていても、`phase-12-documentation.md` のメタ情報と完了条件チェックが `未実施` のまま残ることがある
@@ -386,7 +403,7 @@
 - **状況**: Phase検証時に `verify-all-specs` と同形式のオプション（`--phase` など）を想定しやすい
 - **問題**: `validate-phase-output.js` は workflow ディレクトリの位置引数のみ受け付けるため、誤用で検証が止まる
 - **解決パターン**:
-  1. `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
+  1. `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<workflow>` を固定テンプレート化
   2. `verify-all-specs --workflow` とコマンドペアで使い、役割を分離（仕様整合 / 出力構造）
   3. Phase 12記録には両コマンドの結果を併記する
 - **効果**:
@@ -1427,7 +1444,7 @@
   - 将来の同様タスク（書き戻し機能等）で再利用可能
 - **発見日**: 2026-02-03
 - **関連タスク**: TASK-WCE-MONACO-001
-- **システム仕様書参照**: [architecture-implementation-patterns.md](/.agents/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
+- **システム仕様書参照**: [architecture-implementation-patterns.md](/.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md)
 
 ---
 
@@ -1578,7 +1595,7 @@
   - ✅ `node scripts/generate-index.js` → 正しい
 - **確認方法**:
   ```bash
-  ls .agents/skills/aiworkflow-requirements/scripts/
+  ls .claude/skills/aiworkflow-requirements/scripts/
   ```
 - **教訓**: spec-update-workflow.mdのコマンド例を直接コピーせず、実ファイル名を確認
 - **発見日**: 2026-02-04
@@ -2001,7 +2018,7 @@
   rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
     docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
 
-  node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
+  node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
   ```
 - **効果**:
   - Phase 12「実施済み」と仕様実体の不一致を防止

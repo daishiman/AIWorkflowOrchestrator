@@ -20,6 +20,17 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-13 | 1.29.88 | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加。Phase 11 manual note の selected card 順序改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として formalize し、first fold 可視性と selected-state prominence を別観点で評価する教訓を追加 |
+| 2026-03-13 | 1.29.87 | TASK-UI-09-ONBOARDING-WIZARD の Phase 12 再確認を追補。既存 follow-up 未タスク 2 件の配置確認と契約ドリフト是正を追加し、`onboarding.hasCompleted` 維持 + Settings force-open local state ルールを未タスク本文まで再同期する手順を標準化 |
+| 2026-03-13 | 1.29.86 | TASK-UI-09-ONBOARDING-WIZARD の監査補修を追補。`system` preview の text contrast 修正、visual / non-visual TC-ID 分離、`.claude` canonical / `.agents` mirror drift の同日是正を current evidence として追加 |
+| 2026-03-13 | 1.29.85 | TASK-UI-09-ONBOARDING-WIZARD の current implementation 同期を追補。force-open rerun 契約、wizard screenshot 6件、mobile step indicator の first fold 修正、task scope coverage 実測を current evidence に更新 |
+| 2026-03-13 | 1.29.84 | TASK-SKILL-LIFECYCLE-04 follow-up の未タスク 2 件を追加。Step 2 public contract 判定と未タスク 0 件証跡 stale 化を `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` として formalize し、Task04 教訓節から直接辿れるようにした |
+| 2026-03-12 | 1.29.83 | TASK-SKILL-LIFECYCLE-04 の教訓を追加。public preload API / shared export の Step 2 判定漏れ、Phase 11 `証跡` 列依存、Phase 12 why-first + literal 見出し依存、`recommended -> use_ready` 再評価契約、`.claude` 正本 / `.agents` mirror 同期を 5 ステップへ整理 |
+| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
+| 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
+| 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
+| 2026-03-12 | 1.29.79 | `UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001` を追加。`TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、current inventory correction、verification-only lane、cross-cutting system spec 抽出、root registry sync を同時に固定する未タスクへ formalize し、次回 `spec_created` UI task の初動を短縮 |
+| 2026-03-12 | 1.29.78 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の教訓を追加。old unassigned inventory drift、token/component/verification-only の責務混線、UI-only 読みでの auth/search/security/portal/state 抽出漏れ、Phase 1-3 gate の破綻を同時に整理し、`spec_created` UI task 向け 5 ステップへ圧縮 |
 | 2026-03-11 | 1.29.77 | TASK-UI-04C follow-up として `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を関連未タスクへ追加。fuzzy no-match、renderer timeout+retry、parse/transport 分離の 3 難所を未タスク指示書へ formalize し、次回 preview/search UI の簡潔解決導線を接続 |
 | 2026-03-11 | 1.29.76 | TASK-UI-04C-WORKSPACE-PREVIEW の教訓を追加。fuzzy search false positive、renderer timeout 不足、structured preview fallback 分離、current build screenshot 11件の再利用手順を 5 ステップ化 |
 | 2026-03-11 | 1.29.75 | TASK-UI-04B-WORKSPACE-CHAT の教訓を追加。stream chunk/end 競合、Phase 11 screenshot harness の API mock 不足、Phase 12 実装ガイド要件不足を同時是正し、`task-workflow` / `implementation-guide` / `LOGS` / `SKILL` の同一ターン更新を標準化 |
@@ -173,6 +184,138 @@
 4. CI fail が shard 単位なら `pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` で再現し、screenshot を撮り直して `validate-phase11-screenshot-coverage` を通す。
 5. `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期する。
 
+### 2026-03-12 TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001
+
+#### 苦戦箇所1: old unassigned-task の対象一覧を盲信すると current worktree とずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SettingsView` / `SettingsCard` / `DashboardView` を主対象のまま持ち込むと、実際に hardcoded color が多い `AccountSection` / `ApiKeysSection` / `AuthModeSelector` / `AuthKeySection` / `WorkspaceSearchPanel` が薄まる |
+| 再発条件 | 親 task の未タスク指示書を current worktree 監査なしで再利用する |
+| 解決策 | `outputs/phase-1/requirements-definition.md` の inventory を正本にし、wrapper は verification-only lane へ落とした |
+| 標準ルール | spec_created UI task では Phase 1 で current worktree の inventory correction を必ず行う |
+
+#### 苦戦箇所2: token scope と component scope を混ぜると task が肥大化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | token foundation の残件と component migration を同一 task に入れると、設計レビューで責務境界が曖昧になる |
+| 再発条件 | `white/black baseline` の議論と `shared component migration` を同時に扱う |
+| 解決策 | 親 workflow を token 基盤、current workflow を component migration、`SettingsView` / `SettingsCard` / `DashboardView` を verification-only として 3 lane に分離した |
+| 標準ルール | Light Mode follow-up は token / component / verification-only の 3 つに分ける |
+
+#### 苦戦箇所3: UI 仕様だけ読むと auth/search/security/portal/state の前提が漏れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AuthView` / `WorkspaceSearchPanel` / Settings sections を跨ぐのに、UI 正本だけでは IPC / security / portal / state の制約が読めない |
+| 再発条件 | `ui-ux-*` だけで Phase 1-2 を閉じる |
+| 解決策 | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` / `ui-ux-portal-patterns` を同時抽出した |
+| 標準ルール | settings + auth + workspace が同居する UI task は UI + state + api/auth + security + portal を同一ターンで読む |
+
+#### 苦戦箇所4: Phase 1-3 gate を崩すと後続 phase の設計が揺れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | inventory correction 前に Phase 4 以降の内容を詳細化すると、batch と test anchor が二重修正になる |
+| 再発条件 | 設計レビュー PASS 前に downstream phase を先に完成扱いにする |
+| 解決策 | Phase 1-3 を completed に固定し、Phase 4-13 は planned のまま保持した |
+| 標準ルール | spec_created task は「Phase 1-3 completed → 4+ planned」の順序を守る |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で current worktree の hardcoded color inventory を取り直す。
+2. token scope / component scope / verification-only lane を先に分ける。
+3. `ui-ux-*` だけでなく `rag-desktop-state` / `api-ipc-*` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` の要否を同時判定する。
+4. Phase 1-3 を completed にしてから、Phase 4 以降は planned task として設計する。
+5. `workflow-light-theme-global-remediation` / `task-workflow` / `lessons-learned` / skill template を同一ターンで同期する。
+
+### 関連未タスク（2026-03-12 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+
+## TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12）
+
+### 苦戦箇所: `vitest` が通っても build 用 `esbuild` だけアーキ不整合で落ちる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | x64 Node で `electron-vite build` だけ `@esbuild/darwin-arm64` を掴み、Phase 11 preflight が成立しない |
+| 再発条件 | test pass を見て build preflight を後回しにする |
+| 対処 | `pnpm install --force` で native dependency を再解決し、`pnpm --filter @repo/desktop build` を Phase 11 の先頭に固定した |
+| 標準ルール | UI screenshot task は `typecheck → targeted tests → build` の順で確認する |
+
+### 苦戦箇所: harness HTML を build input に入れないと current build static serve が成立しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | harness route を source には置いても、renderer build input に登録しないと `out/renderer/*.html` へ出ない |
+| 再発条件 | dev server 前提の capture script をそのまま current build task に流用する |
+| 対処 | `electron.vite.config.ts` の `renderer.build.rollupOptions.input` に harness HTML を明示追加した |
+| 標準ルール | Phase 11 が current build static serve 条件なら、harness HTML の build 出力有無を先に確認する |
+
+### 苦戦箇所: light capture の所見を current failure と baseline backlog で混同しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | WorkspaceSearch の dark carryover のような既存問題を、今回差分の失敗として誤判定しやすい |
+| 再発条件 | audit summary を 1 つの総件数だけで記録する |
+| 対処 | `currentViolations=0 / baselineViolations=64` を別欄に分離し、`discovered-issues.md` でも baseline backlog として routing した |
+| 標準ルール | light theme guard は current 判定と baseline routing を必ず二層で残す |
+
+### 苦戦箇所: Apple UI/UX 観点では helper text の沈みがコードレビューより先に見える
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `text-white/60` のような utility はコード上では許容に見えても、light panel screenshot では情報階層を崩しやすい |
+| 再発条件 | color token だけを見て、視線誘導や余白を別軸で見ない |
+| 対処 | Phase 11 の所見を hierarchy / contrast / spacing / materiality の4軸で記録した |
+| 標準ルール | Apple UI/UX review では light theme の helper text と panel border を別項目で見る |
+
+### 苦戦箇所: screenshot script 単体実行だと static serve 未起動で `ERR_CONNECTION_REFUSED` になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `pnpm --filter @repo/desktop screenshot:light-theme-contrast-guard` を 1 コマンドとして実行しても、4173 の static server がなければ capture が落ちる |
+| 再発条件 | preflight 手順を人手運用のまま残し、script 側に localhost fallback を持たせない |
+| 対処 | `phase11-static-server.mjs` を追加し、loopback baseUrl が不達な場合は `out/renderer` を auto static serve してから capture するようにした |
+| 標準ルール | Phase 11 screenshot script は「外部 server があれば再利用、無ければ current build を自走配信」の順で復旧できるようにする |
+
+### 苦戦箇所: workflow backlog `64` と global unassigned legacy `134` を同じ失敗と誤読しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | contrast audit の baseline 件数と、`docs/30-workflows/unassigned-task/` 全体の legacy 監査値が別の意味なのに、Phase 12 で 1 つの `baseline` として潰れて見える |
+| 再発条件 | `unassigned-task-detection.md` に workflow backlog だけを書き、指定ディレクトリ監査の `current/baseline` を別欄で残さない |
+| 対処 | `workflow baseline backlog=64` と `directory baselineViolations=134` を別表へ分離し、既存 normalization task 3件への導線を追加した |
+| 標準ルール | Phase 12 で未タスク配置を確認するときは「今回差分の配置」「今回差分の品質」「全体 legacy 状況」の3行を必ず残す |
+
+### 苦戦箇所: Task 5 で `skill-creator` を更新しても root evidence 側へ漏れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-feedback-report.md` にだけ `skill-creator` 改善が残り、`documentation-changelog.md` / `spec-update-summary.md` には 2 skill のまま残りやすい |
+| 再発条件 | Task 5 を「提案を書くだけ」の工程として扱い、実際に更新した skill 集合を outputs 間で突合しない |
+| 対処 | `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` の更新対象 skill 集合を同値化し、`skill-creator` を更新した場合は 3 skill 表記へ揃えた |
+| 標準ルール | Phase 12 Task 5 で更新した skill 名は root evidence 3ファイルに同値転記する |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. `typecheck` と targeted test の後に必ず build を通す。
+2. harness route が build output に出ているかを `out/renderer` で確認する。
+3. current build を static serve し、到達不能なら screenshot script 側の localhost fallback で復旧してから selector-based capture を取る。
+4. audit は `current` と `baseline` を別 bucket で集計する。
+5. visual review では helper text、panel border、card hierarchy を別々に評価して routing する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ねる | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001 | worktree の native dependency 不整合を事前検知する | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` |
+
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 
 #### 苦戦箇所1: `ai.chat` の provider/model 解決元が Main と Renderer でずれて実行経路が不安定
@@ -237,6 +380,68 @@
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
 | ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard し、APIキー連動系の初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` | 完了: 2026-03-11 |
+
+### 2026-03-12 TASK-SKILL-LIFECYCLE-04
+
+#### 苦戦箇所1: 新しい IPC を増やしていなくても public preload API は system spec 更新対象になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill:optimize:evaluate` の既存 channel を再利用したため、「新規 IPC はないから Step 2 不要」と誤読しやすかった |
+| 再発条件 | Main/IPC 変更の有無だけで仕様更新要否を判断し、`window.electronAPI.skill.*` の public method 追加を見ない |
+| 解決策 | `evaluatePrompt()` と `packages/shared` barrel export 追加を `interfaces-agent-sdk-skill.md` 更新条件として明文化した |
+| 標準ルール | 既存 IPC 再利用でも public preload API または shared public export が増えたら Step 2 対象とみなす |
+
+#### 苦戦箇所2: screenshot が存在しても `証跡` 列がなければ Phase 11 validator は通らない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | png 6件と `capture-results.json` があっても、`manual-test-result.md` に screenshot 列がないだけで coverage validator が 0 件扱いになった |
+| 再発条件 | `期待 / 実結果 / 判定` だけで手動テスト結果を書き、TC と screenshot path の対応を本文へ持たない |
+| 解決策 | `テストケース / 結果 / 証跡` を literal にし、`phase-11-manual-test.md` も `テストケース` / `画面カバレッジマトリクス` 見出しへ揃えた |
+| 標準ルール | Phase 11 は screenshot 取得だけでなく、TC と証跡 path の 1:1 対応を Markdown 表で固定する |
+
+#### 苦戦箇所3: Part 1 / Part 2 があっても Phase 12 validator の意図を満たしていないことがある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装ガイドが Part 1/2 構造を持っていても、Part 1 に `何をしたか` の文、Part 2 に literal 見出し群が無いと validator が落ちる |
+| 再発条件 | 「だいたい同じ内容なら通るはず」と考え、`型定義` `APIシグネチャ` `使用例` などの表現を揺らす |
+| 解決策 | why-first + analogy + `何をしたかというと` を Part 1 に追加し、Part 2 は `型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧` に固定した |
+| 標準ルール | Phase 12 は文章品質で吸収せず、validator が期待する literal をテンプレートへ先置きする |
+
+#### 苦戦箇所4: 改善後の推奨状態は永続 badge にすると stale になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `recommended` を気持ちよく見せたくなる一方、Task05 側で再評価すると最新状態とズレる可能性がある |
+| 再発条件 | improvement 直後の snapshot を不変扱いし、再評価後も同じ badge を残す |
+| 解決策 | `deltaFromPrevious = 0` の再評価では `use_ready` に戻し、「改善効果が残っている間だけ推奨」という意味に限定した |
+| 標準ルール | recommendation は履歴称号ではなく、最新 snapshot に対する一時的な quality signal として扱う |
+
+#### 苦戦箇所5: `.claude` 正本と `.agents` mirror を混同すると同期完了の判定がぶれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | skill root が二重化された repo では、mirror 側だけ更新して「system spec は同期済み」と誤解しやすい |
+| 再発条件 | workflow outputs や sync plan に `.agents` を先に書き、canonical root の存在を弱める |
+| 解決策 | `.claude/skills/...` を正本、`.agents/skills/...` を mirror と明記し、Task04 では正本更新後に mirror 追従を取る運用へ寄せた |
+| 標準ルール | Phase 12 の完了判定は canonical root 更新を先に見て、mirror は追従確認として扱う |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. IPC 追加の有無ではなく、public preload API と shared export の増減まで見て Step 2 要否を判定する。
+2. Phase 11 は `テストケース / 結果 / 証跡` と `画面カバレッジマトリクス` を literal で固定する。
+3. Phase 12 は why-first、日常の例え、`何をしたか`、Part 2 の必須見出し群をテンプレート段階で入れる。
+4. `recommended` は最新 snapshot の quality signal として扱い、再評価結果で上書きする。
+5. `.claude` 正本更新、`.agents` mirror sync、validator、未タスク監査を同一ターンで閉じる。
+
+### 関連未タスク（2026-03-13 追補）
+
+| 未タスクID | 概要 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001 | 既存 IPC 再利用時でも public preload API / shared export 増分を Step 2 必須として扱うための判定ガード | `docs/30-workflows/unassigned-task/task-imp-phase12-step2-public-contract-guard-001.md` |
+| UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001 | 未タスク 0 件報告を `current` / `baseline` / link count / 配置結果へ分解し、follow-up formalize 時の stale 証跡を防ぐ | `docs/30-workflows/unassigned-task/task-imp-phase12-zero-unassigned-evidence-guard-001.md` |
 
 ### 2026-03-11 TASK-SKILL-LIFECYCLE-01
 
@@ -324,11 +529,11 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. UIタスクの preflight で install / port / screenshot script を先に確認する。  
-2. timeline UI は initial loading / load more / empty を別 state で設計する。  
-3. cross-view 導線は `pending payload + view 遷移` の二段構成に分離する。  
-4. screenshot script は一意 selector を ready condition にする。  
-5. Phase 12 では `.claude` 正本、domain spec、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
+1. UIタスクの preflight で install / port / screenshot script を先に確認する。
+2. timeline UI は initial loading / load more / empty を別 state で設計する。
+3. cross-view 導線は `pending payload + view 遷移` の二段構成に分離する。
+4. screenshot script は一意 selector を ready condition にする。
+5. Phase 12 では `.claude` 正本、domain spec、workflow outputs、未タスク、skill docs を同一ターンで同期する。
 
 ### 2026-03-10 TASK-10A-G 再監査追補
 
@@ -1098,11 +1303,11 @@ expect(element.className).toContain(statusStyles.primary);
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. Utility action を追加したら `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` の4入口を先に洗い出す。  
-2. Phase 11 文書は `テストケース` / `画面カバレッジマトリクス` / `証跡` 列を literal で揃える。  
-3. destructive affordance は screenshot を 1枚追加して、通常状態との差を目視で確認する。  
-4. `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `validate-phase-output` を同一ターンで回す。  
-5. 最後に `task-workflow.md` と `lessons-learned.md` に再発条件付きで転記し、再監査の入口を閉じる。  
+1. Utility action を追加したら `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-portal-patterns` の4入口を先に洗い出す。
+2. Phase 11 文書は `テストケース` / `画面カバレッジマトリクス` / `証跡` 列を literal で揃える。
+3. destructive affordance は screenshot を 1枚追加して、通常状態との差を目視で確認する。
+4. `validate-phase11-screenshot-coverage` / `verify-unassigned-links` / `validate-phase-output` を同一ターンで回す。
+5. 最後に `task-workflow.md` と `lessons-learned.md` に再発条件付きで転記し、再監査の入口を閉じる。
 
 ---
 
@@ -7099,6 +7304,46 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 | Workspace 親 workflow の parent pointer / pointer docs / legacy index / interfaces / capture script / mirror root を一括監査する sweep ガード | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` |
+| UT-IMP-PHASE12-RELATED-UT-EXACT-COUNT-RESYNC-GUARD-001 | related UT を completed 実績へ移した後の `verify-unassigned-links` exact count を `.claude` / `.agents` 同期込みで再取得・再転記する | `docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md` |
+
+## Workspace parent reference sweep guard（2026-03-12）
+
+### 苦戦箇所: task-060 だけ直しても Workspace 親導線が閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | task-060 parent pointer を直しても、completed-task pointer docs、task-000 master index、task-090 legacy index、`interfaces-*`、capture script、mirror root に旧 path と旧 status が残る |
+| 再発条件 | 親 pointer だけを単発修正し、repo 全体の導線を manifest で固定しない |
+| 対処 | `task-060 -> completed-task pointer docs -> task-000 -> task-090 -> interfaces-* -> capture script -> mirror root` の順で sweep manifest を定義し、`node scripts/validate-workspace-parent-reference-sweep.mjs --json` と `diff -qr` を同一ターンで実行した |
+| 標準ルール | docs-only parent workflow の completed-task 移管後は pointer/index/spec/script/mirror を 1 セットで監査し、`.claude` を canonical root、`.agents` を mirror として同期する |
+
+### 苦戦箇所: docs-heavy task でも screenshot 再監査を `N/A` にすると user 指示を取りこぼす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UI 実装差分がないことを理由に screenshot / Apple review を省略すると、Workspace lineage の representative surface 再確認が欠落する |
+| 再発条件 | docs-only parent workflow を「画面非該当」と決め打ちし、upstream UI evidence の再利用を設計しない |
+| 対処 | 04A / 04B / 04C / mobile overlay の same-day screenshot を current workflow へ集約し、`capture-workspace-parent-reference-sweep-guard-review-board.mjs` で review board を新規 capture した |
+| 標準ルール | docs-heavy task でも user が screenshot を要求したら、current build 再撮影だけに固執せず representative evidence の review board 化を検討する |
+
+### 苦戦箇所: related unassigned row を completed 実績へ移した後に exact count が stale になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verify-unassigned-links` の件数を先に summary へ転記してから related unassigned row を completed 実績へ移すと、`220 / 220` のような旧値が workflow outputs と system spec に残る |
+| 再発条件 | Phase 12 の台帳更新と exact count 再取得を別ターンにし、`task-workflow.md` / `workflow spec` / `unassigned-task-detection.md` のどれかだけを直す |
+| 対処 | row 移動後に `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を再実行し、`219 / 219` を `task-workflow.md` / `workflow-workspace-parent-reference-sweep-guard.md` / `outputs/phase-12/*.md` へ再同期した |
+| 標準ルール | related UT を completed 実績へ移したら exact counts を再取得し、current workflow outputs・system spec・summary 文書へ同値転記する |
+
+### 同種課題の5分解決カード
+
+1. task-060 の child link が実在する `completed-tasks/*/index.md` を指しているか確認する。
+2. completed-task pointer docs と task-090 の status に `未着手` / `pending` が残っていないか確認する。
+3. `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-llm.md` / `interfaces-chat-history.md` の Workspace path を一括で確認する。
+4. user が screenshot を要求したら 04A / 04B / 04C の same-day evidence を current workflow へ集約し review board を作る。
+5. related UT を completed 実績へ移した後に `verify-unassigned-links` を再実行し、exact counts を summary/system spec へ再同期する。
+6. `.claude` 正本更新後に `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` を実行する。
 
 ## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
 
@@ -7194,3 +7439,93 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+
+## TASK-UI-09-ONBOARDING-WIZARD 実装教訓（2026-03-13）
+
+### 苦戦箇所: onboarding completed flag と rerun handoff が分離しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | rerun 起動時に persisted flag まで変更すると、close 後の状態と completion 保存の責務がぶれる |
+| 再発条件 | rerun と completion の両方を persisted reset で表現しようとする |
+| 対処 | Settings は force-open callback だけを発火し、persist save は completion に限定した |
+| 標準ルール | rerun は local state、completion は persist save として責務を分離する |
+
+### 苦戦箇所: 既存 follow-up 未タスクが旧 rerun 契約を保持しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | current implementation を修正しても、既存の unassigned-task 本文に `completed=false reset` のような旧契約が残ると次回の担当者が誤読する |
+| 再発条件 | Phase 12 で「新規未タスク 0 件」だけを確認し、`docs/30-workflows/unassigned-task/` 配下の既存 follow-up を再読しない |
+| 対処 | `UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001` と `UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001` の `2.2` / `3.1` / `3.5` / 検証手順を `onboarding.hasCompleted` 維持 + Settings force-open local state 契約へ再同期した |
+| 標準ルール | Phase 12 の 0 件報告でも、関連 follow-up 未タスクの配置と本文契約ドリフトを確認する |
+
+### 苦戦箇所: representative screenshot の名前と matrix がずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot 実体名、manual result、coverage matrix の命名が揃っていないと validator が通らない |
+| 再発条件 | 画像を先に撮って後から TC 台帳を書く |
+| 対処 | `TC-11-01..06` を `screenshots/*.png` と 1 対 1 で同期し、非視覚確認は matrix から分離した |
+| 標準ルール | 画面検証を要求された UI は `phase-11-manual-test.md` の matrix を最初に正す |
+
+### 苦戦箇所: mobile step indicator が first fold の主コンテンツを押し下げる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | mobile 幅 390px で step chip を横 4 並びにすると、wizard の主コンテンツが first fold から押し出される |
+| 再発条件 | desktop 用の step indicator を mobile へそのまま流用する |
+| 対処 | `grid-cols-2 sm:grid-cols-4` へ変更し、TC-11-05 を再撮影した |
+| 標準ルール | mobile wizard は first fold の主コンテンツ可視性を screenshot で確認する |
+
+### 苦戦箇所: mobile selected card の理解しやすさが first fold 評価に埋もれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | first fold の主コンテンツ可視性は改善できても、selected card が 2 番目のままだと「何を選んだか」が一目で伝わりにくい |
+| 再発条件 | `TC-11-05` を first fold の合否だけで閉じ、selected-state prominence を別観点で確認しない |
+| 対処 | Phase 11 manual note の改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として formalize した |
+| 標準ルール | mobile wizard は `first fold` と `selected-state prominence` を別項目で記録する |
+
+### 苦戦箇所: `system` preview の split gradient で primary text が沈む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `system` preview の inner card まで dark/light split を適用すると、black text が dark half に重なって可読性が崩れる |
+| 再発条件 | 「system らしさ」を outer card だけでなく text が載る surface 全てへ一律適用する |
+| 対処 | split 表現は outer preview に残し、inner card は readable な light surface に戻して `TC-11-04` を current build で再撮影した |
+| 標準ルール | split-theme UI は outer/inner surface を分離し、text が載る面の contrast を別判定する |
+
+### 苦戦箇所: visual TC と non-visual check の ID が衝突する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot TC と keyboard / dismiss の非視覚確認を同じ `TC-*` 空間で再利用すると、Phase 10/11/12 の narrative が別シナリオを同じ ID で指し始める |
+| 再発条件 | Phase 4 test-cases と Phase 10 checklist を capture 前に突合しない |
+| 対処 | visual matrix は `TC-11-01..06` に固定し、dismiss / ESC は automated test と non-visual note へ分離した |
+| 標準ルール | 画面証跡は `TC-*`、非視覚確認は `NV-*` または automated test として分離し、同じ ID を再利用しない |
+
+### 苦戦箇所: task scope coverage では App / store の mock 影響で file 単位一覧が欠ける
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `App.tsx` と `store/index.ts` は強い mock を使うため `coverage-summary.json` の file 一覧に出ない |
+| 再発条件 | total coverage だけで file 単位 coverage も取得できたと誤読する |
+| 対処 | total metrics と `OnboardingWizard` / `SettingsView` の file metrics を記録し、App / store は automated test の存在で補足した |
+| 標準ルール | task scope coverage は total 値と file 一覧の差分理由まで記録する |
+
+### 同種課題の5分解決カード
+
+1. rerun は local state、completion は persist save として分離する。
+2. screenshot 取得前に `TC-ID ↔ screenshots/*.png` の台帳を決める。
+3. mobile wizard は first fold と selected-state prominence を別々に確認する。
+4. task scope coverage は total 値と file 一覧の差を一緒に記録する。
+5. Phase 12 は 0 件報告でも、関連 follow-up 未タスクの配置と本文契約ドリフトを点検する。
+
+### 関連未タスク
+
+| 未タスクID | 目的 | タスク仕様書 |
+| --- | --- | --- |
+| UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001 | mobile Step 3 で selected starter card を最優先に理解しやすくし、first fold と selected-state prominence を別観点で評価できるようにする | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-mobile-starter-card-order-001.md` |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | onboarding rerun / already-completed / warning / coverage の guard を強化する | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | Settings rerun 入口の情報設計を改善する | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |

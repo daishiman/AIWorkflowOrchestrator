@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-03-12T11:07:55.926Z",
+  "output": "docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/outputs/phase-11/screenshots/UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001_workspace-review-board_2026-03-12.png",
+  "cards": [
+    {
+      "id": "04A",
+      "title": "Workspace Layout Foundation",
+      "note": "3 pane layout / hierarchy / file-browser balance",
+      "source": "docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/outputs/phase-11/screenshots/TC-11-02-3-pane-dark.png",
+      "capturedAt": "2026-03-12T05:41:38.508Z"
+    },
+    {
+      "id": "04B",
+      "title": "Workspace Chat Panel",
+      "note": "file chip / mention / input hierarchy",
+      "source": "docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/outputs/phase-11/screenshots/TC-11-03-file-chip-attached.png",
+      "capturedAt": "2026-03-12T05:41:38.565Z"
+    },
+    {
+      "id": "04C",
+      "title": "Workspace Preview Quick Search",
+      "note": "preview + modal layering / search affordance",
+      "source": "docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch/outputs/phase-11/screenshots/TC-11-04-quick-search-dialog.png",
+      "capturedAt": "2026-03-12T05:41:38.586Z"
+    },
+    {
+      "id": "Mobile",
+      "title": "Workspace Mobile Overlay",
+      "note": "narrow viewport overlay / touch-first readability",
+      "source": "docs/30-workflows/completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/outputs/phase-11/screenshots/TC-11-05-mobile-overlay.png",
+      "capturedAt": "2026-03-12T05:41:38.509Z"
+    }
+  ]
+}

@@ -2,6 +2,17 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import type { ComponentProps } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { PreviewPanel } from "../components/PreviewPanel/PreviewPanel";
+import type { PreviewSurfaceError } from "../utils/previewResilience";
+
+const transportError: PreviewSurfaceError = {
+  category: "transport",
+  code: "file-read-timeout",
+  summary: "ファイル読み込みがタイムアウトしました",
+  detail: "5秒 timeout / 3回再試行済み",
+  retryable: true,
+  attempts: 3,
+  timeoutMs: 5000,
+};
 
 function renderPreviewPanel(
   overrides: Partial<ComponentProps<typeof PreviewPanel>> = {},
@@ -122,6 +133,25 @@ describe("PreviewPanel", () => {
       screen.getByTestId("preview-structured-fallback-alert"),
     ).toBeInTheDocument();
     expect(screen.getByTestId("source-view")).toBeInTheDocument();
+  });
+
+  it("transport error は taxonomy に沿った alert を表示する", () => {
+    renderPreviewPanel({
+      error: transportError,
+    });
+
+    expect(screen.getByTestId("preview-alert")).toHaveTextContent(
+      "プレビューの取得に失敗しました",
+    );
+    expect(screen.getByTestId("preview-alert")).toHaveTextContent(
+      "ファイル読み込みがタイムアウトしました",
+    );
+    expect(screen.getByTestId("preview-alert")).toHaveTextContent(
+      "5秒 timeout / 3回再試行済み",
+    );
+    expect(screen.getByTestId("preview-retry")).toHaveClass(
+      "bg-[var(--status-primary)]",
+    );
   });
 
   it("画像 preview でメタ情報を開閉できる", () => {

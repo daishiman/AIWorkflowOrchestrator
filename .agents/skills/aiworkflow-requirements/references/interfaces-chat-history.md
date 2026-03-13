@@ -511,7 +511,7 @@ Renderer ProcessからMain Processへのアクセスを提供するAPI。
 | 利用API      | `conversation:create`, `conversation:addMessage` |
 | 役割         | `WorkspaceChatPanel` で user/assistant メッセージを会話単位で永続化 |
 | 実装箇所     | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` |
-| 証跡         | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/phase-6/integration-test.md` |
+| 証跡         | `docs/30-workflows/completed-tasks/task-059a-ui-04b-workspace-chat-panel/outputs/phase-6/integration-test.md` |
 
 ### UT-LLM-HISTORY-001（2026-01-24完了）
 

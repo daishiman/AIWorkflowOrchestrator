@@ -9,6 +9,119 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/unassigned-task-guidelines.md` に、既存 follow-up 未タスクを流用する際は `2.2` / `3.1` / `3.5` / `6.検証方法` を current contract で再確認するルールを追加
+  - Phase 12 の 0 件報告でも、関連する既存 `docs/30-workflows/unassigned-task/` 配下ファイルの本文 drift を見逃さないことを明文化
+  - `audit-unassigned-tasks --json --diff-from HEAD --target-file <task-file>` を、配置確認後の個別品質ゲートとして再利用可能な形で記録した
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD audit correction pattern capture
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に、visual screenshot `TC-*` と non-visual check (`NV-*` or automated test) を同じ ID 空間で混在させないルールを追加
+  - `references/spec-update-workflow.md` に、mirror sync 完了判定は `diff -qr <canonical> <mirror>` の実行結果つきで残すルールと、`TC-ID` 再利用禁止を追加
+  - `references/phase-templates.md` / `references/spec-update-workflow.md` / `references/patterns.md` / `scripts/verify-unassigned-links.js` など、Phase 11/12 再監査で実際に使う導線のコマンド例を `.claude` 正本基準へ補正
+  - onboarding wizard 再監査で露出した `TC-11-07` narrative drift と canonical / mirror drift を、Phase 11/12 再監査の共通失敗パターンとして skill へ還元した
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD Phase 1-12 実行完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/` の `phase-1..12` と `outputs/phase-4..12/*` を、要件定義→設計→テスト→実装→検証→文書化の順で current evidence へ同期した
+  - `validate-phase-output` / `verify-all-specs` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を完了ゲートとして再実行し、実測値を `outputs/verification-report.md` と `outputs/phase-12/phase12-task-spec-compliance-check.md` に集約した
+  - Phase 11 では screenshot 6件の再撮影と Apple UI/UX 観点レビューを完了し、mobile first fold を圧迫した step indicator を `grid-cols-2 sm:grid-cols-4` へ是正した
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 11/12 再監査テンプレート是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` に、既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須とする判断ルールを追加
+  - Task04 workflow の `manual-test-result.md` を `テストケース / 結果 / 証跡` 形式へ是正し、`validate-phase11-screenshot-coverage` の再発条件を具体化した
+  - Task04 の `implementation-guide.md` を Part 1/2 + `型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧` へ再編し、validator と実務可読性の両立を固定した
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認パターン追補
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に docs-heavy task の same-day evidence review board fallback を追加し、current build 再撮影が不要な再監査経路を明文化
+  - `references/spec-update-workflow.md` に related unassigned row を completed 実績へ移した後の `verify-unassigned-links` exact count 再取得ルールを追加
+  - Phase 12 の current workflow outputs へ `219 / 219` 再同期と未タスク配置確認を反映する前提を skill 側ガイドへ固定した
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 11 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - user 指示に合わせて screenshot / Apple UI/UX review を N/A から実施へ是正し、`outputs/phase-11/apple-uiux-visual-review.md` と screenshot 5件を追加
+  - docs-heavy parent workflow では same-day child workflow evidence を current workflow へ集約し、review board を current workflow で新規 capture する軽量運用を採用
+  - 元 unassigned spec の `status: 未実施` を workflow 実行済みへ更新し、Phase 12 記録と task ledger の整合を回復した
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/outputs/phase-5..12/` を作成し、docs-only parent workflow の要件→設計→テスト→実装→検証→文書化を完了
+  - `outputs/artifacts.json` を root `artifacts.json` と同期し、workflow 本体の `index.md` / `phase-1..12` status を completed 側へ更新
+  - `verify-unassigned-links` の `total=220 / missing=0` と `audit-unassigned-tasks --diff-from HEAD` の `current=0 / baseline=134` を Phase 12 記録へ反映
+  - docs/script task のため screenshot / Apple UI/UX review は N/A と明示し、手動確認は parent-child 導線と mirror sync に限定した
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` を 9セクション構成 + `3.5 実装課題と解決策` 付きで新規作成
+  - completed workflow `light-theme-contrast-regression-guard` の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
+  - parent task の苦戦箇所（native dependency, harness build input, localhost fallback, current/baseline 分離）を未タスク仕様書へ継承した
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/phase-11-12-guide.md` に loopback static serve fallback と `skill-creator` 条件付き同期ルールを追加
+  - `references/spec-update-workflow.md` に `skill-creator` を含む必須更新ファイル条件と LOGS/SKILL 追記条件を追加
+  - workflow outputs の `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `spec-update-summary.md` を global `unassigned-task/` 監査値と 3 skill 同期前提へ更新
+
+---
+## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 4-12
+- **Result**: success
+- **Notes**:
+  - guard workflow 向けに outputs/phase-4〜12 を current build / audit / screenshot 実測で作成
+  - `phase11-light-theme-contrast-guard.html` を renderer build input に追加し、Phase 11 を current build static serve で実行
+  - `validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` の入力形式に合わせて `manual-test-result.md` / `implementation-guide.md` を構成
+  - baseline backlog は新規未タスク化せず、既存 remediation task `task-fix-light-theme-shared-color-migration-001` へ routing を固定
+
+---
 ## 2026-03-11 - TASK-UI-04C follow-up の事後未タスク化パターンを追加
 
 - **Agent**: task-specification-creator

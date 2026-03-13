@@ -109,7 +109,7 @@ Phase 6: 完了                           Phase 2へ戻り修正
 
 | 参照資料 | パス | 内容 |
 | -------- | ---- | ---- |
-| {{SPEC_NAME}} | `.agents/skills/aiworkflow-requirements/references/{{SPEC_FILE}}.md` | {{SPEC_DESCRIPTION}} |
+| {{SPEC_NAME}} | `.claude/skills/aiworkflow-requirements/references/{{SPEC_FILE}}.md` | {{SPEC_DESCRIPTION}} |
 ```
 
 ---

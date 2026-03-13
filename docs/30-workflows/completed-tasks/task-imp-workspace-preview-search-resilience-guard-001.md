@@ -10,9 +10,10 @@ category: 改善
 target_feature: Workspace Preview / QuickFileSearch / renderer resilience / error taxonomy
 priority: 中
 scale: 中規模
-status: 未実施
+status: 完了
 source_phase: TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up
 created_date: 2026-03-11
+completed_date: 2026-03-13
 dependencies:
   - TASK-UI-04C-WORKSPACE-PREVIEW
 ```
@@ -25,9 +26,10 @@ dependencies:
 | 対象機能     | Workspace Preview / QuickFileSearch / renderer resilience / error分類 |
 | 優先度       | 中                                                                    |
 | 見積もり規模 | 中規模                                                                |
-| ステータス   | 未実施                                                                |
+| ステータス   | 完了（Phase 1-12 完了、commit/PR 未実施）                             |
 | 発見元       | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up                      |
 | 発見日       | 2026-03-11                                                            |
+| 完了日       | 2026-03-13                                                            |
 
 ---
 
@@ -85,7 +87,7 @@ Workspace Preview / QuickFileSearch で露出した 3 つの難所を、再利�
 
 ### 2.4 成果物
 
-- 本未タスク指示書
+- 本完了タスク指示書
 - fuzzy search / preview resilience / error taxonomy の標準化コードまたは仕様差分
 - 更新済み system spec 正本
 - 更新済み Phase 12 成果物
@@ -246,7 +248,7 @@ parse / transport / crash / no-match の UI 応答を正本仕様へ固定する
 
 - [ ] relevant tests が PASS する
 - [ ] `pnpm --filter @repo/desktop typecheck` が PASS する
-- [ ] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` で `currentViolations.total = 0`
+- [x] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` で `currentViolations.total = 0`
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` が PASS する
 
 ### ドキュメント要件
@@ -285,7 +287,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
-  --target-file docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md
+  --target-file docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md
 
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator

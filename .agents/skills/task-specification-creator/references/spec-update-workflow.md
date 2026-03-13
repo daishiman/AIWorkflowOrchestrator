@@ -83,6 +83,7 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
+| 「mirror sync 完了は summary 記述だけでよい」 | **`diff -qr <canonical> <mirror>` の実行結果が必須** | 実際には mirror へ反映されていないまま Phase 12 を閉じる事故が起きる。完了判定はコマンド結果で裏付ける |
 | 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
@@ -94,11 +95,15 @@ Phase 12 Task 2 開始
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
+| 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** | UI 実装差分がなく same-day upstream evidence があるなら、source screenshot を current workflow へ集約し、review board を current workflow で新規 capture して Apple review に使ってよい |
+| 「visual TC と dismiss/keyboard 確認に同じ `TC-ID` を使ってよい」 | **`TC-*` と `NV-*`/automated を分離** | screenshot coverage と narrative が別シナリオを同じ ID で指し始めると、未実施誤判定や Phase 12 誤記録を生む |
+| 「related unassigned row を completed 実績へ移した後も `verify-unassigned-links` の total は据え置きでよい」 | **exact count 再取得が必須** | related UT の移動で `existing/total` は変わる。row 移動後に `verify-unassigned-links` を再実行し、`task-workflow.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / workflow spec へ同値転記する |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
 | 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須** | 仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい。`grep -rn "TASK_ID" references/`で全箇所を確認 |
 | 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要** | Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須。統合元セクションを「統合済み」に変更し、統合先セクションを拡張すること（P25-P28参照） |
 | 「スキル改善なし」と判断                 | **フィードバック必須** | Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてskill-feedback-report.mdを作成すること |
+| 「aiworkflow/task-spec だけ直せば十分」 | **`skill-creator` も条件付きで更新** | ユーザーがスキル改善を明示した場合、または Task 5 から再利用パターンを抽出してテンプレート/パターンへ落とし込む場合は `skill-creator` を更新対象に含める |
 | 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり** | テスト戦略変更（renderHookパターン導入、テストヘルパー追加、テストカテゴリ体系変更）は仕様書に記録すべき。テストケースの追加・削除のみなら不要 |
 
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
@@ -262,7 +267,7 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
 - [ ] `git diff --stat origin/main...HEAD` と `git diff --stat HEAD` の両方を確認し、branch差分とcurrent worktree差分を区別して記録した
-- [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
 - [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
@@ -347,7 +352,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `docs/30-workflows/completed-tasks/unassigned-task/` 配下に未完了指示書（`未実施`/`未着手`）が混在していないことを確認した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
-- [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
+- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
 - [ ] `audit-unassigned-tasks.js --json --diff-from <ref> --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
@@ -376,7 +381,7 @@ Phase 12 Task 2 の更新後は、以下を**この順序で**実行する。
 #### 1. 未タスク参照リンク検証
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 ```
 
 - 正常時: `ALL_LINKS_EXIST` が出力され、exit code 0
@@ -386,7 +391,7 @@ node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 ```bash
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-node .agents/skills/task-specification-creator/scripts/generate-index.js
+node .claude/skills/task-specification-creator/scripts/generate-index.js
 git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexes/keywords.json
 ```
 
@@ -547,21 +552,21 @@ comm -3 \
 
 ```bash
 # 1) 全体監査（既存違反を含む）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # 1.5) 対象ファイル監査（今回差分の current を抽出）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/<task>.md | \
   jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
 
 # 2) 今回差分の候補抽出（変更範囲を指定）
-node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001 \
   --output docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/.tmp-unassigned-candidates.json
 
 # 3) Phase出力構造の整合確認（位置引数）
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/<workflow-dir>
 ```
 
@@ -583,20 +588,23 @@ audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→
 - [ ] task-specification-creator/LOGS.md を更新した
 - [ ] aiworkflow-requirements/SKILL.md の変更履歴にバージョンを追記した
 - [ ] task-specification-creator/SKILL.md の変更履歴にバージョンを追記した
+- [ ] `skill-creator` を更新した場合、skill-creator/LOGS.md を更新した
+- [ ] `skill-creator` を更新した場合、skill-creator/SKILL.md の変更履歴にバージョンを追記した
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（判定基準は Step 1-G.3.1 を参照）
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した
 - [ ] ui-ux-components.md（UI/UX関連タスクの場合）の完了タスクと変更履歴を更新した
 - [ ] completed-tasks/ 内の該当タスク仕様書のステータスを更新した（実装完了: `completed` / 仕様書作成のみ: `spec_created`）
 ```
 
-#### LOGS.md 更新（必須：2ファイル両方を更新）
+#### LOGS.md 更新（必須：2ファイル、`skill-creator` 更新時は +1）
 
-**⚠️ 重要**: 以下の**2つの**LOGS.mdファイルを**両方**更新する必要があります。
+**⚠️ 重要**: 以下の**2つの**LOGS.mdファイルを**両方**更新する。さらに `skill-creator` を改善した場合は `skill-creator/LOGS.md` も同一ターンで更新する。
 
 | ファイル | 目的 |
 | -------- | ---- |
 | `.claude/skills/aiworkflow-requirements/LOGS.md` | システム仕様書更新の記録 |
 | `.claude/skills/task-specification-creator/LOGS.md` | タスク仕様書スキルの使用記録 |
+| `.claude/skills/skill-creator/LOGS.md` | スキル改善パターン追加の記録（`skill-creator` 更新時のみ） |
 
 **1. aiworkflow-requirements/LOGS.md** に以下の形式でエントリを追加:
 
@@ -715,6 +723,10 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Step 2 で以
 
 > **参考**: TASK-9B-H（SkillCreatorService IPC）では上記7ファイル全ての更新が必要だった。
 > IPC追加タスクでは必ずこの一覧を確認し、該当するファイルを漏れなく更新すること。
+
+> **Task04 再監査で追加した判断ルール**:
+> 既存 IPC を再利用していても、`window.electronAPI.skill.*` などの public preload method を追加した場合、または `packages/shared` の barrel export を増やした場合は Step 2 対象とみなす。
+> この場合は少なくとも `api-ipc-agent.md`、`interfaces-agent-sdk-skill.md`、`task-workflow.md` を更新し、必要に応じて `lessons-learned.md` に再利用ルールを残す。
 
 ### Step 2: システム仕様更新（条件付き）
 
@@ -899,6 +911,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |

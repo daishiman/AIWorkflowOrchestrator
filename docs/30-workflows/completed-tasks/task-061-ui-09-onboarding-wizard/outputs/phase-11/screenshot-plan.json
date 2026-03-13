@@ -1,0 +1,54 @@
+{
+  "workflow": "docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard",
+  "captureScript": "apps/desktop/scripts/capture-task-061-onboarding-wizard-phase11.mjs",
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-onboarding-step1-light-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=light",
+      "viewport": { "width": 1440, "height": 980 },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-onboarding-step2-dark-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": { "width": 1440, "height": 980 },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-onboarding-step3-dark-tablet.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": { "width": 1024, "height": 900 },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-onboarding-step4-light-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=light",
+      "viewport": { "width": 1440, "height": 980 },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-onboarding-step3-dark-mobile.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": { "width": 390, "height": 844 },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06-onboarding-complete-kanagawa-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=kanagawa-dragon",
+      "viewport": { "width": 1440, "height": 980 },
+      "theme": "kanagawa-dragon",
+      "priority": "A"
+    }
+  ]
+}

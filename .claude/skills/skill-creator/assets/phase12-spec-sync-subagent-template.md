@@ -1,5 +1,7 @@
 # Phase 12 仕様書別SubAgent同期テンプレート
 
+> **cross-cutting follow-up の追加テンプレート**: `references/workflow-<feature>.md` を新規作成する場合は `skill-creator/assets/phase12-integrated-workflow-spec-template.md` を併用し、実装内容 / 苦戦箇所 / 5分解決カード / root evidence を 1 ファイルへ集約する。
+
 ## 1. 対象タスク
 
 | 項目 | 記入内容 |
@@ -9,6 +11,8 @@
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
+
+> `workflow-<feature>.md` を追加した場合は、`indexes/resource-map.md` / `indexes/quick-reference.md` / 対象 skill の `SKILL.md` まで同一ターンで直リンクを戻す。
 
 ## 2. SubAgent分担（仕様書単位）
 
@@ -55,6 +59,16 @@
 | SubAgent-M3 | `references/api-ipc-auth.md` / `references/api-ipc-system.md` / `references/architecture-auth-security.md` / `references/security-electron-ipc.md` / `references/security-principles.md` | auth/api/security boundary を同期 | public auth shell と settings/search の安全境界が記録済み |
 | SubAgent-M4 | `references/task-workflow.md` | `spec_created` 台帳、Phase 1-3 gate、検証証跡を同期 | Phase 1-3 completed / Phase 4+ planned / status=`spec_created` が一致 |
 | SubAgent-M5 | `references/lessons-learned.md` | inventory drift、scope 分離、cross-cutting spec 抽出漏れ、Phase gate を教訓化 | 5分解決カードが再利用可能形式で記録済み |
+
+#### 2.1.4 docs-only parent workflow sweep プロファイル
+
+| SubAgent | 担当仕様書 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-P1 | `task-060` 相当の parent pointer doc / completed-task pointer docs / `task-000` / `task-090` | parent-child root、legacy status、pointer inventory の正規化 | 親導線が completed 正本を指し、legacy status が一致 |
+| SubAgent-P2 | `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/interfaces-*.md` | completed root、representative evidence path、5分解決カードを同期 | task / feature / interface の root drift がゼロ |
+| SubAgent-P3 | `references/workflow-<feature>.md` / `references/lessons-learned.md` | docs-only parent workflow の統合正本、苦戦箇所、標準ルールを同期 | 実装内容 + 苦戦箇所 + 再利用手順が記録済み |
+| SubAgent-P4 | `scripts/validate-<parent-sweep>.mjs` / `diff -qr .claude/skills/<skill> .agents/skills/<skill>` | path / status / mirror drift guard を検証 | `path=0 / status=0 / mirror=0` かつ mirror 差分なし |
+| SubAgent-P5 | `outputs/phase-11/*` / `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | representative visual re-audit board、SubAgent 実行ログ、再利用テンプレート化 | evidence board と template update が同一ターン記録済み |
 
 ### 2.2 再確認（2workflow同時監査）プロファイル
 
@@ -132,6 +146,17 @@ UI機能実装時の必須記載（追加）:
 | 検証値、残課題、完了記録 | `task-workflow.md` | E |
 | 苦戦箇所、再発条件、標準手順 | `lessons-learned.md` | F |
 
+### 3.2 docs-only parent workflow 反映先マトリクス
+
+| 関心ごと | 最適な担当仕様書 | SubAgent |
+| --- | --- | --- |
+| parent pointer / completed-task pointer docs / legacy index | parent workflow doc / `task-workflow.md` | P1 |
+| representative visual review と Workspace lineage surface | `ui-ux-feature-components.md` | P2 |
+| completed root / evidence path | `interfaces-*.md` | P2 |
+| 統合正本、苦戦箇所、5分解決カード | `workflow-<feature>.md` / `lessons-learned.md` | P3 |
+| path / status / mirror drift guard | validator script / `diff -qr` | P4 |
+| evidence board / SubAgent実行ログ / テンプレート改善 | `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | P5 |
+
 ### 3.1 同種課題の5分解決カード同期ルール
 
 - `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3仕様書に同一カードを記録する
@@ -174,7 +199,12 @@ rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --unassigned-dir <unassigned-dir> --target-file <unassigned-file>
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/<task>.md
+node scripts/validate-<parent-sweep>.mjs --json
+diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
+node apps/desktop/scripts/capture-<docs-heavy-review-board>.mjs
 pnpm --filter @repo/desktop preview
 python3 -m http.server 4173 --directory apps/desktop/out/renderer
 curl -I http://127.0.0.1:4173
@@ -201,7 +231,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
-- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
+- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認し、移動直後の untracked completed file は `audit --target-file` で補完している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
 - [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
@@ -209,7 +239,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
+- [ ] `audit --target-file` の対象が、実際の正本配置（active / completed parent / standalone completed）と一致していることを確認している
 - [ ] 関連未タスク参照の正本が実際の配置先と一致している（active workflow は root、completed workflow は parent workflow 配下）
 - [ ] screenshot 検証で露出した副次不具合や warning を `docs/30-workflows/unassigned-task/` へ正式起票している
 - [ ] 親タスクの苦戦箇所がある場合、新規未タスクに `### 3.5 実装課題と解決策` を追加して継承している
@@ -217,6 +247,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点に同一の「5分解決カード」が同期されている
 - [ ] 仕様書別SubAgent実行ログで、全担当の「実装内容 + 苦戦箇所 + 検証証跡」が記録されている
 - [ ] 2workflow同時監査時は `workflow-a` / `workflow-b` の検証結果が両方記録されている
+- [ ] docs-only parent workflow では `SubAgent-P1..P5` または同等の責務分離を使い、pointer / index / spec / script / mirror / evidence board を同一ターンで閉じている
+- [ ] docs-only parent workflow では `task-workflow.md` / `ui-ux-feature-components.md` / `interfaces-*` / `workflow-<feature>.md` / `lessons-learned.md` / `skill-creator` templates の担当境界が `spec-update-summary.md` に記録されている
+- [ ] user が screenshot を要求した docs-heavy task では、representative visual re-audit board か `N/A` 理由のどちらかを `spec-update-summary.md` と `documentation-changelog.md` に記録している
 - [ ] UIタスクでは preview preflight（`pnpm --filter @repo/desktop preview` + `curl -I http://127.0.0.1:4173`）を再撮影前に記録している
 - [ ] worktree の preview source が揺れる UIタスクでは current worktree の `apps/desktop/out/renderer` を static serve して capture 元を固定している
 - [ ] UIタスクでは TC命名互換（`TC-XX` / `TC-UI-*`）を事前確認し、coverage実行前に抽出結果を記録している
@@ -262,3 +295,50 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書間で検証値（13/13, 28項目, current=0 など）の値が一致している
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致している
 - [ ] UIタスクでは画面証跡の時刻が仕様書間で一致している
+
+## 8. 追補プロファイル: Onboarding Wizard / Settings rerun
+
+### 8.1 適用条件
+
+- 初回表示オーバーレイ
+- multi-step onboarding
+- Settings からの rerun 導線
+- persist key による再表示抑制
+
+### 8.2 最低限更新する canonical docs
+
+1. `/.claude/skills/aiworkflow-requirements/references/task-workflow.md`
+2. `/.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`
+3. `/.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`
+4. `/.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`
+5. `/.claude/skills/aiworkflow-requirements/references/arch-state-management.md`
+6. `/.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
+7. `/.claude/skills/aiworkflow-requirements/references/workflow-onboarding-wizard-alignment.md`
+
+### 8.3 関心ごとの分離
+
+- 画面導線担当:
+  - overlay 表示条件
+  - step 遷移
+  - 完了後の戻り先
+  - screenshot 証跡の照合
+- 設定導線担当:
+  - rerun button 文言
+  - persist key と local state の責務分離
+  - dashboard への handoff
+  - discoverability 課題の backlog 化要否
+- 品質/未タスク担当:
+  - verification report の MINOR 抽出
+  - `docs/30-workflows/unassigned-task/` への formalize
+  - 既存 follow-up 指示書の `2.2` / `3.1` / `3.5` / 検証手順が current contract を向いているか確認
+  - `verify-unassigned-links.js`
+  - `audit-unassigned-tasks.js --diff-from HEAD`
+  - 必要時 `audit-unassigned-tasks.js --diff-from HEAD --target-file <follow-up-file>`
+
+### 8.4 完了条件
+
+- Phase 12 側に implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report が揃っている
+- canonical docs 側に実装内容と苦戦箇所が同一用語で残っている
+- UI 本体完了と follow-up backlog が責務分離されている
+- 既存 follow-up backlog を流用した場合、`docs/30-workflows/unassigned-task/` の本文も current contract へ再同期されている
+- `workflow-onboarding-wizard-alignment.md` が作成または更新され、統合入口が残っている

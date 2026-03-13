@@ -21,7 +21,7 @@
    4-1. git diff で変更コンポーネント一覧を洗い出す
    4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
    4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
-   4-4. 撮影計画 screenshot-plan.json を作成
+   4-4. 撮影計画 `screenshot-plan.md` または capture script の対象一覧を作成
    4-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
    ↓
 5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
@@ -68,6 +68,7 @@
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
+- docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 
 補足:
@@ -82,7 +83,7 @@
 # Step 1: dev serverを起動（別ターミナル or バックグラウンド）
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
-# Step 2: screenshot-plan.json から全状態を一括撮影
+# Step 2: `screenshot-plan.md` または capture script 対象一覧に従って全状態を撮影
 node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
@@ -146,6 +147,7 @@ curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
 - 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
 - 複数 worktree で Vite preview / dev server の参照元が揺れる場合は、`pnpm build` 後の current worktree `out/renderer` を static server（例: `python3 -m http.server 4173 --directory apps/desktop/out/renderer`）で配信し、asset hash と `phase11-capture-metadata.json` の時刻を current build と同期する。
 - capture script が loopback URL（`127.0.0.1` / `localhost`）を前提にする場合は、疎通失敗時に current worktree `out/renderer` を自動配信する fallback を許可する。fallback を使った場合は `manual-test-result.md` / `phase11-capture-metadata.json` / Phase 12 レポートに「auto static serve を使った」ことを明記し、cleanup を必ず実行する。
+- ただし docs-heavy / spec_created task で代表画面の再監査が目的かつ UI 実装差分がない場合は、build failure を即 blocker にせず、same-day upstream screenshot を current workflow に集約して review board を current workflow で新規 capture する代替経路を許可する。build failure の内容、source screenshot の由来、review board metadata は必ず残す。
 
 #### D. 再撮影後 cleanup（必須）
 
@@ -197,6 +199,12 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
+
+#### TC-ID / 非視覚確認の分離（再監査時必須）
+
+- screenshot coverage の `TC-*` は visual evidence 専用にし、ESC / dismiss / focus trap / keyboard spot check は `NV-*` または automated test として別枠管理する
+- Phase 10 checklist と `outputs/phase-4/test-cases.md` で同じ `TC-ID` が別シナリオを指していないか、capture 前に `rg -n "TC-11-"` で突合する
+- `TC-ID` を流用したまま Phase 12 へ進めない。衝突が見つかったら screenshot plan / manual-test / final-review / Phase 12 narrative を同一ターンで是正する
 ### テスト結果レポート形式
 
 ```markdown
@@ -455,14 +463,19 @@ node .claude/skills/task-specification-creator/scripts/validate-phase12-implemen
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
 
-# 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
+# 未実施タスク誤配置チェック（completed-only area に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
-  docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+  docs/30-workflows/completed-tasks -g "*.md"
 
 # 対象監査（今回変更分合否: current）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
+
+# standalone 完了指示書の current 監査
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/completed-tasks/{{TASK_FILE}}.md
 
 # 差分監査（git差分を current 判定）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
@@ -511,7 +524,7 @@ done
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 | P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
 | P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
-| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ。差分判定は `--diff-from HEAD` を使用 |
+| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は root `unassigned-task/`、actual parent `completed-tasks/<workflow>/unassigned-task/`、standalone `completed-tasks/*.md` のいずれかに合わせる。移動直後の untracked completed file は `--diff-from HEAD` で拾えないため `--target-file` を正本にする |
 | - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---

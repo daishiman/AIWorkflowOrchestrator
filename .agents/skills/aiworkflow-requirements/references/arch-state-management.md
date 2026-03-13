@@ -9,6 +9,9 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.9    | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の監査補修を反映: onboarding persist key 名を `hasCompleted/userName/selectedStarterTool/lastCompletedAt` へ是正し、`system` preview readability 修正と `ui-ux-navigation` mirror sync 完了を current implementation へ再同期 |
+| v3.14.8    | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD を反映: `App.tsx` local onboarding state（ready/completed/dismissed/forcedOpen/initialName/initialStarterTool）、persist key 4件、Settings rerun callback、`useDisplayName()` generic fallback 除外、Phase 11 screenshot 6件を追加 |
+| v3.14.7    | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 を反映: `skillEvaluationSlice` を lifecycle quality gate の正本 state として追加し、`agentSlice` との責務分離、`latestExecutionQuality` 再利用、`recommended -> use_ready` 再評価契約、Phase 11 screenshot 6件と Phase 12 interface spec 同期を追記 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -251,6 +254,38 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - `isStreamingRef` は `setIsStreaming()` だけに依存させず、開始/終了時に即時同期する。
 - stream buffer は state のみでなく ref でも保持し、chunk/end 同期到着で欠落させない。
 - 04B では新規 global slice を追加しない（`workspaceSlice` / `fileSelectionSlice` 再利用）。
+
+## Onboarding Wizard 状態管理（TASK-UI-09-ONBOARDING-WIZARD）
+
+### 状態配置
+
+| 状態 | 所有者 | 理由 |
+| --- | --- | --- |
+| `isOnboardingReady` / `isOnboardingCompleted` / `isOnboardingDismissed` / `isOnboardingForcedOpen` | `App.tsx` local state | 初回表示判定、overlay 開閉、Settings からの rerun を renderer root で一元管理するため |
+| `onboardingInitialName` / `onboardingInitialStarterTool` | `App.tsx` local state | persisted 値と current profile から wizard 初期値を合成してから modal を開くため |
+| `currentStep` / `draftName` / `selectedBubbleId` / `selectedStarterTool` / `selectedThemeMode` / `completionError` | `OnboardingWizard` local state | step 遷移中の入力途中値と completion 可否は wizard 内で完結するため |
+| `onboarding.hasCompleted` / `onboarding.userName` / `onboarding.selectedStarterTool` / `onboarding.lastCompletedAt` | `window.electronAPI.store` persist key | 初回完了後の再表示抑制と次回初期値復元に必要な最小情報だけを永続化するため |
+| `userProfile.name` | global store (`userProfile` persist) | Dashboard / Settings / wizard の表示名候補として横断利用する唯一の共有状態だから |
+
+### 境界ルール
+
+| 項目 | 契約 |
+| --- | --- |
+| Settings rerun | `SettingsView` は `onOpenOnboarding` callback だけを受け取り、persisted completion を reset しない |
+| completion persist | 永続化は onboarding 完了時のみ実行し、step 途中の draft は store に書き戻さない |
+| display name fallback | `useDisplayName()` は `"User"` / `"ユーザー"` / 空文字を generic fallback とみなし、既定 welcome 文言へ昇格させない |
+| navigation side effect | `setCurrentView("dashboard")` は completion persist 成功後にだけ実行する |
+| rerun behavior | rerun は `isOnboardingForcedOpen=true` の local reopen で実現し、完了済みフラグ自体は保持する |
+
+### 検証証跡
+
+| 検証 | 結果 |
+| --- | --- |
+| `src/renderer/App.onboarding.test.tsx` | PASS |
+| `src/renderer/views/SettingsView/SettingsView.test.tsx` | PASS |
+| `src/renderer/views/DashboardView/DashboardView.test.tsx` | PASS |
+| `src/renderer/components/organisms/OnboardingWizard/OnboardingWizard.test.tsx` | PASS |
+| Phase 11 screenshot `TC-11-01`〜`TC-11-06` | PASS |
 ## Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN）
 
 ### 追加したSlice
@@ -1778,6 +1813,50 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | 5 | screenshot harness のUI文言依存 | Store が内部例外を汎用文言に変換 | `data-testid` を ready 条件の正本に |
 
 詳細: `lessons-learned.md` の TASK-10A-F セクション参照
+
+
+## TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合（2026-03-12）
+
+**検索キーワード**: `TASK-SKILL-LIFECYCLE-04`, `skillEvaluationSlice`, `SkillEvaluationPanel`, `latestGateDecision`, `evaluationHistory`
+
+### 責務境界
+
+| レイヤ | 保持する状態 / ロジック | 理由 |
+| --- | --- | --- |
+| `agentSlice` | `currentAnalysis`, `isAnalyzing`, `isImproving`, `skillError` | 既存の skill analysis / improve 導線を維持するため |
+| `skillEvaluationSlice` | `latestPromptRequest`, `latestEvaluationSnapshot`, `latestGateDecision`, `latestExecutionQuality`, `evaluationHistory`, `evaluationError` | quality gate を cross-surface で再利用するため |
+| pure helper (`skillEvaluation.ts`) | score 集約、stage 重み、hard block 検出、gate 決定 | UI と store の両方から再利用しやすい純粋関数に閉じるため |
+| view-local state | 選択 UI や一時 open/close 状態のみ | gate 判定の正本を UI ローカルに持たないため |
+
+### 状態遷移契約
+
+| checkpoint | 入力 | slice 更新 |
+| --- | --- | --- |
+| `evaluateDraft` | request 文のみ | `latestPromptRequest`, `latestGateDecision`, `evaluationHistory` |
+| `evaluatePostCreate` | prompt + `SkillAnalysis` | snapshot / decision / history を更新 |
+| `evaluatePostExecute` | prompt + `SkillAnalysis` + execution 結果 | execution 品質を確定し `latestExecutionQuality` を保持 |
+| `evaluatePostImprove` | prompt + 再分析結果 | 直近 execution 品質を再利用しつつ delta を再計算 |
+
+### 設計上の判断
+
+- Renderer から `window.electronAPI.skill.evaluatePrompt()` を直接呼ばず、必ず `skillEvaluationSlice` の action 経由で評価する。
+- `post_improve` は execution 結果が新たに得られない前提なので、`latestExecutionQuality` を再利用し、欠損軸は available weight 正規化で扱う。
+- Task05 側は独自の gate 状態を持たず、`latestGateDecision` と `latestEvaluationSnapshot` を再利用する。
+- `recommended` は永続状態ではなく、「改善差分がプラスで再評価直後」の表示と定義する。
+
+### 実装時の苦戦箇所
+
+| 苦戦箇所 | 根本原因 | 対処 |
+| --- | --- | --- |
+| `post_improve` で execution 軸が欠ける | 改善後は再実行せずに再分析だけ更新するケースがある | execution 品質を保持し、未入力時は stage weight を正規化する |
+| Task03 と Task05 で別々に state を持ちたくなる | create/improve 側と use 側で UI が異なる | slice を分離しても snapshot / decision は 1 正本に集約した |
+| error state が既存 `skillError` と衝突する | 分析失敗と gate 失敗は責務が異なる | `evaluationError` を別 state とし、UI では併記ルールを採用した |
+
+### 検証証跡
+
+- 対象テスト: preload 2、store 1、renderer 6 の targeted suite を実行
+- Phase 11: screenshot 6 件で `revise_required` / `warning` / `use_ready` / hard block / `recommended` / Task05 re-evaluate を確認
+- Phase 12: public preload API、shared export、workflow ledger、lessons を同一ターンで同期
 
 
 ## Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001）

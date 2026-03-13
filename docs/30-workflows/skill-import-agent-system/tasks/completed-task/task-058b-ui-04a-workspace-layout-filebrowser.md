@@ -1,12 +1,14 @@
 # TASK-UI-04A-WORKSPACE-LAYOUT: 作業スペース
 
+> 実装 workflow 正本: [task-058b-ui-04a-workspace-layout-filebrowser](../../../completed-tasks/task-058b-ui-04a-workspace-layout-filebrowser/index.md)
+
 ## 1. メタ情報
 
 | 項目             | 値                                                                                                                                                                     |
 | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | タスクID         | TASK-UI-04A-WORKSPACE-LAYOUT                                                                                                                                           |
 | 元タスクID       | TASK-UI-04-WORKSPACE-VIEW（分割元）                                                                                                                                    |
-| ステータス       | 未着手                                                                                                                                                                 |
+| ステータス       | completed（実装 workflow は completed-tasks 正本へ移管済み）                                                                                                           |
 | 優先度           | high                                                                                                                                                                   |
 | 複雑度           | large                                                                                                                                                                  |
 | 推定ファイル数   | ~14                                                                                                                                                                    |

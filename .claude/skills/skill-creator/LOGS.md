@@ -3,6 +3,51 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD onboarding template profile を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` に onboarding overlay / Settings rerun / follow-up backlog resweep の反映先マトリクスを追加
+  - `assets/phase12-spec-sync-subagent-template.md` に canonical docs 7点、既存 follow-up 指示書の current contract 再同期、`workflow-onboarding-wizard-alignment.md` 更新を完了条件として追加
+  - `references/resource-map.md` の asset 説明も onboarding profile に追従させ、template 入口から capability を辿れるようにした
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up contract drift パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` の onboarding Phase 12 パターンに、既存 `docs/30-workflows/unassigned-task/` 本文の contract drift を検査する手順を追加
+  - `2.2` / `3.1` / `3.5` / 検証手順を current contract へ再同期し、`completed=false reset` のような旧文言を残さない運用を明文化
+  - 必要時は `audit-unassigned-tasks --json --diff-from HEAD --target-file <task-file>` を個別品質ゲートとして使う方針を cross-skill pattern に還元した
+
+---
+## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認知見を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「既存 IPC 再利用でも public preload / shared export 追加は Step 2 必須」を追加
+  - `references/patterns.md` に「未タスク 0 件でも `docs/30-workflows/unassigned-task/` への追加作成なしを明記する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に同判定の検証コマンドと完了チェックを追記
+  - `references/resource-map.md` と `SKILL.md` を同期し、template capability を入口から辿れるようにした
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「docs-only parent workflow は pointer / index / spec / script / mirror を 1 sweep で閉じる」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `SubAgent-P1..P5`、representative visual re-audit board、mirror drift validator を追加
+  - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow sweep profile を同期し、入口から template capability を辿れるようにした
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator

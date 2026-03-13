@@ -10,16 +10,16 @@
 
 ```bash
 # 13ファイル一括検証（Script Task - 100%精度・自動実行）
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 
 # 厳格モード（警告もエラーとして扱う）
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --strict
 
 # JSON形式で出力
-node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
 ```
@@ -34,7 +34,7 @@ node .agents/skills/task-specification-creator/scripts/verify-all-specs.js \
 ```bash
 # Phase出力の検証（Script Task - 100%精度）
 # 注: 位置引数でワークフローディレクトリを指定
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -44,7 +44,7 @@ node .agents/skills/task-specification-creator/scripts/validate-phase-output.js 
 
 ```bash
 # Phase完了・成果物登録（Script Task - 100%精度）
-node .agents/skills/task-specification-creator/scripts/complete-phase.js \
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --phase {{PHASE_NUMBER}} \
   --artifacts "outputs/phase-{{PHASE_NUMBER}}/{{FILE}}.md:{{DESCRIPTION}}"
@@ -56,7 +56,7 @@ node .agents/skills/task-specification-creator/scripts/complete-phase.js \
 
 ```bash
 # コードベースからTODO/FIXME検出（Script Task - 100%精度）
-node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan packages/shared/src \
   --output .tmp/unassigned-candidates.json
 ```
@@ -65,18 +65,23 @@ node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.j
 
 ```bash
 # unassigned-task 配置/フォーマット監査（0違反でexit code 0）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 # JSON出力
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # 対象監査（current判定）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
 
-# 差分監査（git差分をcurrent判定）
+# standalone 完了指示書の current 判定
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/completed-tasks/{{TASK_FILE}}.md
+
+# 差分監査（git差分をcurrent判定）
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD
 ```
@@ -87,7 +92,7 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ```bash
 # documentation-changelog.md自動生成
-node .agents/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
+node .claude/skills/task-specification-creator/scripts/generate-documentation-changelog.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
@@ -97,7 +102,7 @@ node .agents/skills/task-specification-creator/scripts/generate-documentation-ch
 
 ```bash
 # create/update/execute/detect-unassigned判定
-node .agents/skills/task-specification-creator/scripts/detect-mode.js \
+node .claude/skills/task-specification-creator/scripts/detect-mode.js \
   --request "{{USER_REQUEST}}"
 ```
 
@@ -107,7 +112,7 @@ node .agents/skills/task-specification-creator/scripts/detect-mode.js \
 
 ```bash
 # artifacts.json初期化
-node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
+node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
   --feature {{FEATURE_NAME}} \
   --output docs/30-workflows/{{FEATURE_NAME}} \
   --type feat
@@ -119,7 +124,7 @@ node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
 
 ```bash
 # JSON Schema検証
-node .agents/skills/task-specification-creator/scripts/validate-schema.js \
+node .claude/skills/task-specification-creator/scripts/validate-schema.js \
   --schema schemas/{{SCHEMA_NAME}}.json \
   --data {{DATA_FILE}}.json
 ```
@@ -130,12 +135,12 @@ node .agents/skills/task-specification-creator/scripts/validate-schema.js \
 
 ```bash
 # 成功時
-node .agents/skills/task-specification-creator/scripts/log-usage.js \
+node .claude/skills/task-specification-creator/scripts/log-usage.js \
   --result success \
   --phase "Phase {{N}}"
 
 # 失敗時
-node .agents/skills/task-specification-creator/scripts/log-usage.js \
+node .claude/skills/task-specification-creator/scripts/log-usage.js \
   --result failure \
   --phase "Phase {{N}}" \
   --error "{{ERROR_TYPE}}"
@@ -147,7 +152,7 @@ node .agents/skills/task-specification-creator/scripts/log-usage.js \
 
 ```bash
 # ワークフローのindex.md自動生成
-node .agents/skills/task-specification-creator/scripts/generate-index.js \
+node .claude/skills/task-specification-creator/scripts/generate-index.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 

@@ -4,6 +4,151 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD mobile Step 3 follow-up formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-09-ONBOARDING-WIZARD`
+- 目的: Phase 11 manual note に残っていた mobile Step 3 の selected starter card 順序改善余地を、未タスクと system spec に同期して再利用可能な形へ固定する
+
+### 実施内容
+- `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-onboarding-mobile-starter-card-order-001.md` を作成し、first fold 可視性と selected-state prominence を別観点で扱う 9 セクション指示書として formalize
+- `references/task-workflow.md` / `references/ui-ux-feature-components.md` / `references/ui-ux-navigation.md` / `references/lessons-learned.md` / `references/workflow-onboarding-wizard-alignment.md` に新規未タスク導線と苦戦箇所を同期
+- completed workflow の Phase 12 証跡も、`new unassigned task = 1` 前提へ更新する準備を行った
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD consolidated workflow reference sync
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-09-ONBOARDING-WIZARD`
+- 目的: onboarding 実装内容・苦戦箇所・follow-up backlog resweep を 1 入口で辿れる統合正本を追加し、次回の参照初動を短縮する
+
+### 実施内容
+- `references/workflow-onboarding-wizard-alignment.md` を新規作成し、SubAgent 分担、実装内容、苦戦箇所、5分解決カード、最適なファイル形成、検証コマンドを集約
+- `indexes/resource-map.md` / `indexes/quick-reference.md` / `SKILL.md` に onboarding workflow 入口を追加
+- 既存の `ui-ux-feature-components.md` / `ui-ux-settings.md` / `ui-ux-navigation.md` / `arch-state-management.md` / `task-workflow.md` / `lessons-learned.md` への責務マッピングを統合入口側へ整理した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned resweep sync
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-09-ONBOARDING-WIZARD`
+- 目的: 既存 follow-up 未タスク 2 件が `docs/30-workflows/unassigned-task/` に適切配置され、現行 rerun 契約と一致していることを system spec まで含めて再確認する
+
+### 実施内容
+- `references/task-workflow.md` の TASK-UI-09 完了記録へ、既存 follow-up 2 件の配置確認と本文 contract resync を追記
+- `references/lessons-learned.md` に「新規未タスク 0 件でも既存 follow-up の contract drift を点検する」教訓を追加
+- `onboarding.hasCompleted` 維持、Settings force-open local state、completion 時のみ persist save / dashboard handoff の rerun 契約を、follow-up 本文まで同じ表現にそろえた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD audit correction sync
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-09-ONBOARDING-WIZARD`
+- 目的: current implementation 再監査で見つかった system preview readability、persist key 表記ゆれ、canonical / mirror drift を同日補修する
+
+### 実施内容
+- `references/ui-ux-navigation.md` を現行実装へ全面更新し、`onboarding.hasCompleted` / force-open rerun / `TC-11-01..06` current screenshot を正本へ反映
+- `references/arch-state-management.md` / `references/ui-ux-settings.md` / `references/ui-ux-feature-components.md` / `references/task-workflow.md` / `references/lessons-learned.md` に persist key 正式名、split-theme preview contrast、visual / non-visual ID 分離ルールを追記
+- `.agents/skills/aiworkflow-requirements/` の対応ファイルへ canonical 内容を同期し、`diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` で drift 0 を確認した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD system spec / Phase 12 evidence sync
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-UI-09-ONBOARDING-WIZARD`
+- 目的: onboarding wizard 実装、Settings rerun 導線、state ownership、Phase 11 screenshot 6件、Phase 12 verification evidence を canonical system spec に同期する
+
+### 実施内容
+- `references/task-workflow.md` / `references/ui-ux-settings.md` / `references/ui-ux-feature-components.md` / `references/ui-ux-components.md` / `references/lessons-learned.md` / `references/arch-state-management.md` を current implementation に更新
+- `references/arch-state-management.md` に onboarding local state、persist key 4件、`useDisplayName()` generic fallback 除外、Settings rerun callback 境界を追加
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` による `indexes/topic-map.md` / `indexes/keywords.json` 再生成と `.agents` mirror 同期を実施し、workflow `outputs/phase-12/*` と実測値を一致させた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 follow-up 未タスク formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
+- 目的: Task04 の Phase 12 follow-up として、public contract 判定漏れと未タスク 0 件証跡の stale 化を `docs/30-workflows/unassigned-task/` に formalize し、parent workflow outputs と system spec を再同期する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` と `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を作成
+- `references/task-workflow.md` / `references/interfaces-agent-sdk-skill.md` / `references/lessons-learned.md` に関連未タスク導線と変更履歴を追加
+- parent workflow `outputs/phase-12/unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `outputs/verification-report.md` を 2 件 formalize 前提へ再同期
+- `verify-unassigned-links=221/221`、`audit --diff-from HEAD current=0 / baseline=134` を再確認した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: Phase 12 完了済み workflow と元 unassigned spec を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移管し、system spec 正本の path を completed 実体へ揃える
+
+### 実施内容
+- workflow 本体を `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/` へ移動し、元 unassigned spec を `unassigned-task/` 配下へ同梱した
+- `references/workflow-workspace-parent-reference-sweep-guard.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の path と説明を completed workflow 前提へ更新した
+- capture script と quick-reference の evidence path を移管後 root へ合わせ、後続の mirror sync と validator 再実行に備えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認と stale count 再同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: branch 最新状態で Phase 12 準拠、元 unassigned spec の配置、related UT completed 化後の exact count を再確認し、system spec 正本へ実装内容と苦戦箇所を追補する
+
+### 実施内容
+- `references/workflow-workspace-parent-reference-sweep-guard.md` に Phase 12 再確認行、元 unassigned spec の配置確認、`verify-unassigned-links=219 / 219`、stale count 再発防止ルールを追記
+- `references/task-workflow.md` の検証証跡を `219 / 219` へ再同期し、`references/lessons-learned.md` に「related unassigned row を completed 実績へ移した後に exact count が stale になる」苦戦箇所を追加
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を再実行する前提の更新として記録し、current workflow outputs と system spec の数値を揃えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 12 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
+- 目的: Task04 の quality gate 実装、Phase 11 screenshot、Phase 12 system spec 同期を `.claude` 正本へ反映し、public preload API と shared export の更新漏れをなくす
+
+### 実施内容
+- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/api-ipc-agent.md` / `references/interfaces-agent-sdk-skill.md` に Task04 の UI・state・IPC・public interface 契約を追加
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、Phase 11 screenshot 6件、`currentViolations=0 / baselineViolations=134`、public preload API 見落とし教訓を同期
+- `.agents` は mirror として扱い、`.claude` 正本更新後に同一差分を追従させる前提を明文化した
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize
 
 ### コンテキスト
@@ -58,6 +203,40 @@
 - スキル: aiworkflow-requirements
 - 対象タスク: `TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001`
 - 目的: light theme contrast guard の実装・Phase 11 証跡・Phase 12 仕様同期を `.claude` 正本へ反映する
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 visual re-audit と台帳整合を追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: docs-only parent workflow の再監査で、元未タスク spec の `未実施` 残置と related UT 表の stale 状態を解消し、representative visual re-audit の入口も system spec 正本へ固定する
+
+### 実施内容
+- `references/task-workflow.md` / `references/ui-ux-feature-components.md` から同 ID の related unassigned row を退避し、completed 実績セクションを追加
+- `references/workflow-workspace-parent-reference-sweep-guard.md` を新規作成し、drift guard / visual review board / unassigned cleanup / 5分解決カードを集約
+- `references/lessons-learned.md` に docs-heavy task の screenshot 要求を `N/A` にしない教訓を追記し、`indexes/resource-map.md` / `indexes/quick-reference.md` に逆引き入口を追加
+- `SKILL.md` に `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` の直リンクを追加し、workflow 正本の入口を validator warning なしで辿れるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Workspace 親導線 sweep 同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001`
+- 目的: task-060 parent pointer と child workflow 04A/04B/04C の非対称 root に起因する path/status/mirror drift を system spec 正本へ同期する
+
+### 実施内容
+- `references/task-workflow.md` の Workspace 04A 関連未タスク表に `UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001` を追加し、parent pointer / pointer docs / legacy index / interfaces / capture script / mirror root を一括監査する導線を登録
+- `references/ui-ux-feature-components.md` の Workspace 04A 関連未タスク表へ同 ID を追加し、UI feature spec 側でも Workspace 親導線 drift を参照できるようにした
+- `references/lessons-learned.md` に `Workspace parent reference sweep guard` 節を追加し、task-060 単独修正では導線が閉じないこと、`validate-workspace-parent-reference-sweep.mjs` と `diff -qr` を同一ターンで使う手順を 5分解決カード化した
+- `references/interfaces-llm.md` / `references/interfaces-chat-history.md` / `references/task-workflow.md` / `references/ui-ux-feature-components.md` の stale 04B path を completed workflow 正本へ補正した
+
+### 結果
+- ステータス: success
 
 ### 実施内容
 - `references/task-workflow.md` に current workflow の Phase 1-12 実行記録、audit summary、baseline routing、5ステップ解決カードを追加

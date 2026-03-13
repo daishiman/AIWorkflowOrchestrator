@@ -155,7 +155,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
 ````
 
@@ -1089,13 +1089,13 @@ Phase 11: 手動テスト検証
 
 ### 撮影コマンド
 
-撮影は Step 3 の撮影計画（`screenshot-plan.json`）に基づいて一括実行するのが推奨。
+撮影は Step 3 の撮影計画（`screenshot-plan.md` または capture script の対象一覧）に基づいて一括実行するのが推奨。
 個別撮影コマンドの詳細オプション（`--plan`, `--selector`, `--action`, `--action-target`, `--dark`, `--dry-run` 等）は
 `references/phase-11-12-guide.md` の「スクリーンショット撮影コマンド」セクションを参照。
 
 ```bash
 # 推奨: 撮影計画から一括撮影
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 ```
@@ -1106,14 +1106,14 @@ node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
 ### 網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
 非視覚TCのみ例外許可する場合:
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --allow-non-visual-tc TC-08
 ```
@@ -1200,6 +1200,7 @@ git diff main --name-only -- '*.tsx' '*.jsx' | grep -E '(components|views|pages)
 #### Step 3: 撮影計画の作成
 
 Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.json` に作成する:
+Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.md` へ整理し、必要なら自動撮影用 `screenshot-plan.json` か task 専用 capture script の対象一覧へ落とし込む:
 
 **テーブル形式（manual-test-result.md に記載）**:
 
@@ -1316,7 +1317,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 | テスト結果         | `outputs/phase-11/manual-test-result.md`  | 必須   | 手動テスト結果                        |
 | 発見課題一覧       | `outputs/phase-11/discovered-issues.md`   | 必須   | 発見した課題（0件でも出力）           |
 | スクリーンショット | `outputs/phase-11/screenshots/`           | 条件付 | UI/UX変更時は必須、それ以外は任意     |
-| 撮影計画           | `outputs/phase-11/screenshot-plan.json`   | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
+| 撮影計画           | `outputs/phase-11/screenshot-plan.md` または capture script 対象一覧 | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
 | カバレッジレポート | `outputs/phase-11/screenshot-coverage.md` | 条件付 | UI/UX変更時は必須（100%達成確認用）   |
 
 ## 完了条件
@@ -1326,7 +1327,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 - [ ] 統合テスト手動確認が完了
 - [ ] UI/UX対象タスクの場合: `git diff` で変更コンポーネント一覧を洗い出し済み、または representative screenshots の対象UI surface を列挙済み
 - [ ] UI/UX対象タスクの場合: 各コンポーネント/画面の全UI状態（表示/インタラクション/テーマ）を列挙済み（N/A理由も記録）
-- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.json` または capture script の対象一覧が作成済み
+- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.md` または capture script の対象一覧が作成済み
 - [ ] UI/UX対象タスクの場合: 撮影計画の**全項目**のスクリーンショットが `outputs/phase-11/screenshots/` に配置済み
 - [ ] UI/UX対象タスクの場合: 各TCにスクリーンショット証跡が紐付き、`validate-phase11-screenshot-coverage.js` がPASS
 - [ ] UI/UX対象タスクの場合: 画面カバレッジレポートの必須項目（優先度[A][B]）が**100%**（推奨[C]・任意[D]はN/A記録で代替可）
@@ -1431,16 +1432,16 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ##### Step 1-C: 関連タスクテーブル更新（該当する場合）
 - [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
-- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
-- [ ] `docs/30-workflows/completed-tasks/unassigned-task/` に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
+- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] completed-only area（`docs/30-workflows/completed-tasks/*.md` と `docs/30-workflows/completed-tasks/unassigned-task/`）に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
 
 **検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
 ```bash
 # 関連仕様書の検索（references/配下）
-grep -rn "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/
+grep -rn "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/
 
 # 残課題テーブルでの参照検索（task-workflow.md）
-grep -n "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 未タスク指示書の関連検索
 grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
@@ -1451,7 +1452,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 
-- [ ] `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
 - [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されていることを確認
 
 ```markdown
@@ -1481,7 +1482,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 | 新規定数/設定値追加         | バグ修正（仕様変更なし）   |
 | アーキテクチャパターン追加  | テスト追加のみ             |
 
-- 更新対象: `.agents/skills/aiworkflow-requirements/references/`
+- 更新対象: `.claude/skills/aiworkflow-requirements/references/`
 - 更新対象: `docs/00-requirements/` 配下
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
@@ -1589,14 +1590,14 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **【Task 2 Step 1】task-specification-creator/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
 - [ ] **【Task 2 Step 1-D】topic-map.mdを再生成した** ⚠️ 漏れやすい（P2, P27参照）
   - 再生成トリガー: セクション追加/削除/更新、行数変更
-  - コマンド: `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js`
+  - コマンド: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
 - [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] 未タスク指示書の物理ファイル存在を確認した（`ls docs/30-workflows/unassigned-task/` で検証）
-- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
+- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / 完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md` / legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
 - [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
 - [ ] **artifacts.jsonの全完了Phase（1-12）のステータスがcompletedであること**
@@ -1667,9 +1668,9 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 #### スキル検証
 
 ```bash
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/skill-creator
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/task-specification-creator
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/aiworkflow-requirements
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 ```
 
 判定基準: `spec-update-workflow.md` Step 1-G.3.1 を参照。

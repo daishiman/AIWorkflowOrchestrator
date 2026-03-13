@@ -16,7 +16,7 @@ const TARGETS = {
   workspaceChat:
     "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-059a-ui-04b-workspace-chat-panel.md",
   onboarding:
-    "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-061-ui-09-onboarding-wizard.md",
+    "docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/index.md",
 };
 
 function parseArgs(argv) {
