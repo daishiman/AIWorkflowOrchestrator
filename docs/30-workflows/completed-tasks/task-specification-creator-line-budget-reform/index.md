@@ -24,7 +24,7 @@
 - 対象 6 ファイルを concern 単位で再編できる実装 plan が整う
 - Phase 1-3 完了前に Phase 4 以降へ進まない gate が明文化される
 - `.claude` 正本 / `.agents` mirror、`quick_validate`、line budget、直リンク、history 保全の検証 plan が揃う
-- Phase 1〜12 を完了し、commit・PR は user 指示待ちのため Phase 13 を blocked のまま維持する
+- Phase 1〜13 を完了し、PR #1207 まで completed workflow へ同期する
 
 ### 成果物一覧
 
@@ -43,7 +43,7 @@
 | タスクID     | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001                         |
 | タスク種別   | 改善                                                                               |
 | 優先度       | 高                                                                                 |
-| ステータス   | Phase 1〜12 完了、Phase 13 blocked                                                 |
+| ステータス   | Phase 1〜13 completed                                                              |
 | issue        | #1144                                                                              |
 | source doc   | `docs/30-workflows/unassigned-task/task-imp-task-spec-skill-md-line-budget-001.md` |
 | 対象 root    | `.claude/skills/task-specification-creator/`                                       |
@@ -165,7 +165,7 @@
 | 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
 | 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
 | 12    | ドキュメント更新 | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
-| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | blocked    |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | completed  |
 
 ## 検証導線
 

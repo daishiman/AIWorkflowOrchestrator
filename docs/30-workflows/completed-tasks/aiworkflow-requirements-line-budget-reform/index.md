@@ -25,7 +25,7 @@
 - manual over-limit docs 34 件を 6 family へ再編し、manual over-limit 0 / max 495 行を確認できている
 - generated index 1 件を manual docs と分離し、`topic-map.md` 3520 行を blocked dependency として formalize できている
 - `.claude` 正本 / `.agents` mirror、`validate-structure.js`、`generate-index.js`、`wc -l`、`diff -qr`、discovery / dependency smoke test の検証結果が揃っている
-- Phase 1-12 が completed、Phase 13 が user 指示により blocked として artifacts と phase specs に反映されている
+- Phase 1-13 が completed となり、PR #1207 と artifacts / phase specs が同期されている
 - 各 phase の outputs が `outputs/phase-*` 配下に作成され、verification report と follow-up task まで閉じている
 
 ### 成果物一覧
@@ -45,10 +45,10 @@
 | タスクID     | TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001                                                                                                                                                 |
 | タスク種別   | 改善                                                                                                                                                                                                    |
 | 優先度       | 高                                                                                                                                                                                                      |
-| ステータス   | in_progress                                                                                                                                                                                             |
+| ステータス   | completed                                                                                                                                                                                               |
 | currentPhase | 13                                                                                                                                                                                                      |
-| lastUpdated  | 2026-03-12T23:58:40Z                                                                                                                                                                                    |
-| issue        | なし                                                                                                                                                                                                    |
+| lastUpdated  | 2026-03-13T14:00:02Z                                                                                                                                                                                    |
+| issue        | PR #1207                                                                                                                                                                                                |
 | source docs  | `docs/30-workflows/unassigned-task/task-ref-quality-requirements-split-001.md`、`docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md`、2026-03-12 user request |
 | 対象 root    | `.claude/skills/aiworkflow-requirements/`                                                                                                                                                               |
 | mirror root  | `.agents/skills/aiworkflow-requirements/`                                                                                                                                                               |
@@ -75,8 +75,8 @@
 | AC-3 | `spec-guidelines.md` と `spec-splitting-guidelines.md` の 500/700 行ルールを満たす manual docs reform を実装し、manual over-limit 0 を確認する     |
 | AC-4 | `indexes/topic-map.md` を manual docs と分離し、script exclusion 由来の blocked dependency として扱う                                              |
 | AC-5 | Atent Team 相当の SubAgent lane が 3 並列以下で設計される                                                                                          |
-| AC-6 | Phase 1-12 を completed、Phase 13 を blocked として `artifacts.json`、phase specs、verification report に反映する                                  |
-| AC-7 | commit / PR は実行せず、user 指示に従って Phase 13 blocked を維持する                                                                              |
+| AC-6 | Phase 1-13 を completed として `artifacts.json`、phase specs、verification report、PR #1207 に反映する                                             |
+| AC-7 | user 承認後に commit / PR を実行し、Phase 13 記録まで同期する                                                                                      |
 | AC-8 | 分割後も parent→child shard、ledger/history→archive、discovery index→family parent、`.claude`→`.agents` の依存関係が閉じている検証手順が定義される |
 
 ## スコープ
@@ -160,7 +160,7 @@
 | scope 正規化         | 既存未タスクの単発 split を、manual docs 34 件 + generated index 1 件の全体 reform へ再統合した |
 | generator dependency | `topic-map.md` は docs-only での恒久解消が困難なため blocked dependency とした                  |
 | execution result     | Phase 5 で manual docs reform を完了し、Phase 9-12 で blocker と follow-up を formalize した    |
-| phase handling       | Phase 1-12 は completed、Phase 13 は user 指示により blocked を維持する                         |
+| phase handling       | Phase 1-13 を completed とし、PR #1207 作成結果まで completed workflow へ同期した               |
 
 ## Phase 一覧
 
@@ -178,7 +178,7 @@
 | 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
 | 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
 | 12    | ドキュメント更新 | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
-| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | blocked    |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | completed  |
 
 ## 検証導線
 

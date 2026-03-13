@@ -2,7 +2,7 @@
   "feature": "task-specification-creator-line-budget-reform",
   "created": "2026-03-12T00:00:00Z",
   "lastUpdated": "2026-03-12T12:20:00Z",
-  "status": "in_progress",
+  "status": "completed",
   "currentPhase": 13,
   "phases": {
     "1": {
@@ -100,9 +100,9 @@
       ]
     },
     "13": {
-      "status": "blocked",
-      "artifacts": [],
-      "notes": "commit / PR は user 明示承認まで禁止"
+      "status": "completed",
+      "artifacts": ["outputs/phase-13/pr-summary.md"],
+      "notes": "PR #1207 を作成し、secondary workflow evidence を同一 PR へ統合した"
     }
   },
   "dependencies": {

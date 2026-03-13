@@ -1,6 +1,6 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-13T01:08:53.871Z
+> 検証日時: 2026-03-13T14:03:51.731Z
 > 対象: docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform
 
 ## サマリー

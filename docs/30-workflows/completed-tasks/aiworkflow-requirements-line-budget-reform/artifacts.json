@@ -2,7 +2,7 @@
   "feature": "aiworkflow-requirements-line-budget-reform",
   "created": "2026-03-12T00:00:00Z",
   "lastUpdated": "2026-03-12T23:58:40Z",
-  "status": "in_progress",
+  "status": "completed",
   "currentPhase": 13,
   "phases": {
     "1": {
@@ -117,12 +117,12 @@
       "notes": "documentation / system spec sync / unassigned formalize / skill feedback を完了"
     },
     "13": {
-      "status": "blocked",
+      "status": "completed",
       "artifacts": [
         "outputs/phase-13/pr-summary.md",
         "outputs/phase-13/release-note-draft.md"
       ],
-      "notes": "user 指示により commit / PR は実行しない"
+      "notes": "PR #1207 を作成し、Phase 13 outputs と completed workflow 状態を同期した"
     }
   },
   "dependencies": {

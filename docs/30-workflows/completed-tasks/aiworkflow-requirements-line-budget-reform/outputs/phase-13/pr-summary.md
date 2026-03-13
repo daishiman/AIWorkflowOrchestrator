@@ -2,15 +2,22 @@
 
 ## 状態
 
-blocked
+completed
 
-## 理由
+## PR 情報
 
-- user の明示承認がないため commit / PR を実行していない
-- 本ファイルは blocked 状態の記録だけを保持し、PR 文面の実運用は開始していない
+- PR: #1207
+- URL: https://github.com/daishiman/AIWorkflowOrchestrator/pull/1207
+- base/head: `main` ← `task/1144-aiworkflow-requirements-line-budget-reform-specs`
 
-## 予定していた要約項目
+## 要約
 
-- manual docs reform 34件完了
-- `topic-map.md` 3520行は blocked dependency として follow-up へ分離
-- `.claude` / `.agents` parity、validator、branch-level screenshot sanity は PASS
+- manual docs reform 34件を split parent + child companion 構成として completed workflow へ移管
+- generated `topic-map.md` は follow-up task `TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001` として切り分け済み
+- `.claude` canonical / `.agents` mirror / generated index / unassigned issue sync を同一 PR に統合
+
+## 検証
+
+- pre-push hook: `pnpm lint` / `pnpm --filter @repo/shared build` / `pnpm typecheck` / `pnpm test:all` PASS
+- docs validator: `validate-structure.js` PASS、`.claude` / `.agents` parity 差分なし
+- Phase 11 evidence: screenshot sanity と Apple UI/UX visual review を PR 本文へ反映

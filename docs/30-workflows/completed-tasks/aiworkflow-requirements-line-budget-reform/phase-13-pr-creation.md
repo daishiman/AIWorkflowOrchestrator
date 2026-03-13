@@ -7,19 +7,19 @@
 | タスクID   | TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001                                              |
 | Phase      | 13                                                                                                   |
 | Phase名    | PR作成                                                                                               |
-| ステータス | blocked                                                                                              |
+| ステータス | completed                                                                                            |
 | 前提Phase  | Phase 1、Phase 2、Phase 3、Phase 5、Phase 6、Phase 7、Phase 8、Phase 9、Phase 10、Phase 11、Phase 12 |
 | 後続Phase  | なし                                                                                                 |
 
 ## 目的
 
-user が許可した場合のみ、manual docs reform と generated index status を説明できる PR 材料を整える。
+user 承認後に、manual docs reform と generated index status を説明できる PR を作成し、Phase 13 記録まで完了させる。
 
 ## 実行タスク
 
 - タスク1: PR summary と verification 抜粋を整える
 - タスク2: generated index の resolved / blocked 状態を明記する
-- タスク3: user 承認があるまで commit / PR を実行しない
+- タスク3: PR 作成後に outputs / artifacts / completed workflow 状態を同期する
 
 ## 参照資料
 
@@ -54,9 +54,9 @@ manual docs reform の要点、verification、G0 状態を summary にまとめ�
 
 `topic-map.md` が blocked の場合は、script exclusion 由来であることを明示する。
 
-### ステップ3: 実行を止める
+### ステップ3: PR 実行結果を同期する
 
-user 明示承認があるまで commit / PR を行わない。
+PR #1207 作成後に `pr-summary.md`、`release-note-draft.md`、`artifacts.json` を completed 状態へ更新する。
 
 ## 統合テスト連携
 
@@ -95,13 +95,13 @@ Phase実行開始時に管理するサブタスク:
 
 ## 完了条件
 
-- [ ] user 明示承認がある
+- [x] user 明示承認がある
 - [ ] PR summary に manual docs reform と G0 状態が記載されている
-- [ ] commit / PR 実行可否が user 指示と一致している
+- [x] commit / PR 実行可否が user 指示と一致している
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 参照資料と成果物の対応が確認済み
-- [ ] `artifacts.json` または引き継ぎ条件が更新済み
-- [ ] user 明示承認があるまで実行しない条件が維持されている
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 参照資料と成果物の対応が確認済み
+- [x] `artifacts.json` または引き継ぎ条件が更新済み
+- [x] PR #1207 作成結果が記録済み
