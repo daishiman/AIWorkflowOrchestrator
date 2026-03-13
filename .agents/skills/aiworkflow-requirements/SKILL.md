@@ -18,13 +18,17 @@ allowed-tools:
   - Grep
   - Bash
 ---
+
 # AIWorkflow Requirements Manager
+
 ## 概要
-AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
-**このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
+
+AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。**このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
 ## クイックスタート
+
 ### 仕様を探す
+
 ```bash
 # キーワード検索（推奨）
 node scripts/search-spec.js "認証" -C 5
@@ -33,6 +37,7 @@ node scripts/search-spec.js "認証" -C 5
 ```
 
 ### 仕様を読む
+
 1. **まず [resource-map.md](indexes/resource-map.md) を確認** - タスク種別に応じた読み込みファイルを特定
 2. 該当ファイルを `Read` ツールで参照
 3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
@@ -41,7 +46,7 @@ node scripts/search-spec.js "認証" -C 5
 
 - Workspace 親導線再監査: [references/workflow-workspace-parent-reference-sweep-guard.md](references/workflow-workspace-parent-reference-sweep-guard.md)
 - Light Theme contrast guard: [references/workflow-light-theme-contrast-regression-guard.md](references/workflow-light-theme-contrast-regression-guard.md)
-
+- Workspace Preview/Search resilience guard: [references/workflow-workspace-preview-search-resilience-guard.md](references/workflow-workspace-preview-search-resilience-guard.md)
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
@@ -195,15 +200,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.02.00** | **2026-03-13** | **UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を反映**: `task-workflow.md` / `lessons-learned.md` / `workflow-workspace-preview-search-resilience-guard.md` に、Phase 12 outputs 4成果物（`spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report`）の exact count 横断比較 validator を未タスク導線として追加。follow-up 未タスク formalize 後の stale 値を機械検出する改善として同期 |
-| **9.01.99** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本を追加**: `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、今回実装した search/preview resilience helper、conversation persistence race fix、Phase 11 screenshot 5件、苦戦箇所、5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同一ターンで更新し、同種課題の参照初動を短縮 |
-| **9.01.98** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の再監査追補を同期**: `ui-ux-components.md` と `arch-state-management.md` に 04C follow-up の helper 抽出、preview reset 順序、`external-dev-server` screenshot 5件、empty state / retry action の visual polish を追記し、一覧 spec と状態 spec の再利用導線を補完 |
-| **9.01.97** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期**: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` に search match gate、preview timeout helper、typed taxonomy、current source dev server screenshot fallback を反映し、related row を completed path へ更新 |
-| **9.01.96** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001 を追加**: current build preflight bundle 実装後に残った実行運用を未タスクへ formalize し、`task-workflow.md` / `lessons-learned.md` / `workflow-light-theme-contrast-regression-guard.md` に Playwright browser preflight の fail-fast 化と shared artifact failure simulation の serial runner 化の導線を追加 |
-| **9.01.95** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12 再確認を反映**: `task-workflow.md` / `lessons-learned.md` / `workflow-light-theme-contrast-regression-guard.md` に、`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` 欠落で coverage validator が落ちる条件と、新規未タスク 0 件でも related active backlog を `--target-file` + 10見出しで再監査する標準手順を追加 |
-| **9.01.94** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の system spec 形成を最適化**: `workflow-light-theme-contrast-regression-guard.md` に preflight core / CLI wrapper / capture integration / script tests の追補と serial failure simulation ルールを追加し、current workflow `spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` へ仕様書別 SubAgent 実行ログを固定。あわせて `skill-creator` へ Playwright browser preflight / serial failure simulation パターンを還元 |
-| **9.01.93** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の screenshot 再監査追補を反映**: `workflow-light-theme-contrast-regression-guard.md` と `lessons-learned.md` に Playwright browser cache 欠落の復旧手順を追加し、`browserType.launch: Executable doesn't exist` を UI regress と誤分類しないルール、`pnpm --filter @repo/desktop exec playwright install chromium` の preflight、same-day evidence 再同期を変更履歴へ反映 |
-| **9.01.92** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12 完了同期を反映**: `workflow-light-theme-contrast-regression-guard.md` / `task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` の related row を completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` へ更新し、`preflight:light-theme-contrast-guard` 検証コマンド、same-day upstream evidence mirror、serial failure simulation ルールを追加 |
+| **9.01.95** | **2026-03-13** | **UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を反映**: `task-workflow.md` / `lessons-learned.md` / `workflow-workspace-preview-search-resilience-guard.md` に、Phase 12 outputs 4成果物（`spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report`）の exact count 横断比較 validator を未タスク導線として追加。follow-up 未タスク formalize 後の stale 値を機械検出する改善として同期 |
+| **9.01.94** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本を追加**: `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、今回実装した search/preview resilience helper、conversation persistence race fix、Phase 11 screenshot 5件、苦戦箇所、5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同一ターンで更新し、同種課題の参照初動を短縮 |
+| **9.01.93** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の再監査追補を同期**: `ui-ux-components.md` と `arch-state-management.md` に 04C follow-up の helper 抽出、preview reset 順序、`external-dev-server` screenshot 5件、empty state / retry action の visual polish を追記し、一覧 spec と状態 spec の再利用導線を補完 |
+| **9.01.92** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期**: `task-workflow.md` / `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` に search match gate、preview timeout helper、typed taxonomy、current source dev server screenshot fallback を反映し、related row を completed path へ更新 |
 | **9.01.91** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を追補**: `workflow-workspace-parent-reference-sweep-guard.md` / `task-workflow.md` / `lessons-learned.md` に `verify-unassigned-links=219 / 219` の再同期、元 unassigned spec の配置確認、related UT completed 化後の stale count 防止ルールを追加 |
 | **9.01.90** | **2026-03-12** | **workflow 正本の直リンクを SKILL.md に追加**: `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` への入口を明示し、docs-heavy workflow の再監査導線を SKILL レベルでも辿れるようにした |
 | **9.01.89** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: Workspace 親導線 sweep の system spec 同期（`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / `LOGS.md`）と、completed workflow root 正規化・mirror sync 運用を変更履歴へ追加 |

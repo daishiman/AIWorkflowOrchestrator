@@ -57,7 +57,7 @@
 | 撮影枚数 | 該当必須状態（優先度[A][B]）に撮影上限は設けない。変更コンポーネントの必須状態を**全て**撮影する。推奨[C]・任意[D]はN/A理由記録で省略可 |
 | 4段階優先度 | **[A] 高価値・容易=必須**（正常表示/テーマ/主要操作後）、**[B] 高価値・困難=該当時必須**（エラー/空状態/モーダル）、**[C] 低価値・容易=推奨**（フォーカス/スクロール位置）、**[D] 低価値・困難=任意**（ホバー/アニメーション中間、N/A理由記録で省略可） |
 | Electron IPC制約 | Vite dev server経由のため、IPC通信に依存するElectron固有画面は完全再現不可の場合がある |
-| Playwright browser 未導入環境 | まず `pnpm --filter @repo/desktop exec playwright install chromium` を実行し、それでも不可なら NOTE.txt 代替経路を記録する |
+| Playwright非対応環境 | NOTE.txt で代替（後述の実行フロー Step 5 参照） |
 | 完了基準 | 必須項目（優先度[A][B]）の**100%撮影**が完了していること。推奨[C]・任意[D]はN/A理由の記録で代替可 |
 
 補足:
@@ -69,13 +69,11 @@
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
-- failure simulation が shared build artifact や `out/renderer` を破壊する場合は parallel 実行しない。`build missing` / `harness missing` / `baseUrl unreachable` のような検証は serial で 1 ケースずつ取り、前ケースの副作用を残さない。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 
 補足:
 - ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
 - テーマ別証跡は mock/theme API が撮影シナリオに追従していることを確認する。light ケースで dark UI が出た場合は証跡として無効。
-- `browserType.launch: Executable doesn't exist` のような Playwright 実行ファイル欠落は UI issue として扱わず、environment preflight として browser install を先に完了させる。
 
 ### スクリーンショット撮影コマンド（UI/UX変更タスク）
 
@@ -565,7 +563,6 @@ done
 
 | Date | Changes |
 | ---- | ------- |
-| 2026-03-13 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 を反映し、same-day upstream evidence mirror 補助線に加えて shared build artifact を壊す failure simulation の serial 実行ルールを追加 |
 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 再監査を反映し、representative screenshot は shell 全景より selector-based element capture を優先するルールを追加 |
 | 2026-03-10 | TASK-10A-G知見反映: Phase 12サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）追加、3層テストパターン再利用ガイド（G1/G2/G3）追加、LOGS.md完了記録の最終ステップ化を明記 |
 | 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |

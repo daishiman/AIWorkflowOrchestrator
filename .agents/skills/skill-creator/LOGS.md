@@ -3,28 +3,6 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 related open backlog 再監査パターンを skill-creator へ反映
-
-- **Agent**: skill-creator
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「新規未タスク 0 件でも related active open backlog を `--target-file` で再監査する」成功パターンを追加
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に、`0 件報告` 時でも `10見出し + target-file audit` を要求する完了チェックを追加
-  - `references/resource-map.md` と `SKILL.md` を更新し、Phase 12 の配置確認依頼から当該 template capability を辿れるようにした
-
----
-## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12再利用パターンを skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `references/patterns.md` に「Playwright browser cache 欠落は environment preflight として復旧し、shared build artifact を壊す failure simulation は serial で扱う」を追加
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に browser install preflight と serial failure simulation の完了チェックを追加
-  - `references/resource-map.md` と `SKILL.md` に同 capability を同期し、current build screenshot 系 task で入口から辿れるようにした
-
----
 ## 2026-03-13 - 統合 workflow 正本テンプレートを skill-creator へ追加
 
 - **Agent**: skill-creator
@@ -47,17 +25,6 @@
   - `phase12-task-spec-compliance-check.md` を workflow 正本から辿る完了条件を追記し、Phase 12 の判断根拠が outputs と spec の両方で一致するようにした
 
 ---
-## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査知見を skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: template-refinement
-- **Result**: success
-- **Notes**:
-  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に standalone completed spec の `audit --target-file`、untracked completed move fallback、`screenshot-plan.md` / `screenshots/phase11-capture-metadata.json` の実ファイル名を追記
-  - `assets/phase12-audit-record-template.md` と `assets/phase12-subagent-assignment-template.md` を、`audit --diff-from HEAD` 単独前提ではなく `audit --target-file` 併用前提へ更新
-  - `references/patterns.md` の `--target-file` 境界パターンと screenshot artifact 記述を direct completed path / actual screenshot artifact 名へ再同期
-
----
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
 
 - **Agent**: skill-creator
@@ -78,6 +45,17 @@
   - `references/patterns.md` に「loopback screenshot capture は localhost 不達時に current build static server を自動起動する」を追加
   - `references/patterns.md` の skill feedback template に、`skill-creator` を含む 3 skill 同値転記ルールを追加
   - `references/resource-map.md` の Phase 12 template 説明に loopback static serve fallback と global `unassigned-task/` 二層報告を追記
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査知見を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に standalone completed spec の `audit --target-file`、untracked completed move fallback、`screenshot-plan.md` / `screenshots/phase11-capture-metadata.json` の実ファイル名を追記
+  - `assets/phase12-audit-record-template.md` と `assets/phase12-subagent-assignment-template.md` を、`audit --diff-from HEAD` 単独前提ではなく `audit --target-file` 併用前提へ更新
+  - `references/patterns.md` の `--target-file` 境界パターンと screenshot artifact 記述を direct completed path / actual screenshot artifact 名へ再同期
 
 ---
 ## 2026-03-12 - TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 の spec_created 再利用パターンを skill-creator へ反映

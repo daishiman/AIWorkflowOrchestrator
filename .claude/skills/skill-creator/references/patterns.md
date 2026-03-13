@@ -3049,23 +3049,6 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-12
 - **関連タスク**: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
 
-### [Phase 12] Playwright browser cache preflight + shared artifact serial failure simulation（UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001）
-
-- **状況**: same-day screenshot 再取得の初回が `browserType.launch: Executable doesn't exist` で止まり、さらに `build missing` / `harness missing` / `baseUrl unreachable` を parallel に流すと shared `out/renderer` が壊れて失敗 bucket が混線する
-- **アプローチ**:
-  1. screenshot 再取得前に `preflight:<feature>` または同等の current build preflight を実行し、`native / build / harness / baseUrl` の 4 bucket を先に判定する
-  2. `browserType.launch: Executable doesn't exist` が出たら UI regress と誤分類せず、`pnpm --filter @repo/desktop exec playwright install chromium` を environment preflight として先に実行する
-  3. build / harness / baseUrl の failure simulation は shared artifact を壊す前提で、`serial` に 1 ケースずつ実行し、各ケース後に build output と metadata 前提を復元する
-  4. 復旧後は same-day screenshot / `capturedAt` / `manual-test-result.md` / Phase 12 summary を同一ターンで再同期する
-- **失敗パターン**:
-  - Playwright browser cache 欠落を light theme regress と誤認し、UI 修正へ進んでしまう
-  - `build missing` / `harness missing` / `baseUrl unreachable` を parallel 実行して failure bucket を混線させる
-  - 復旧後に stale screenshot や旧 `capturedAt` を残したまま Phase 12 を閉じる
-- **結果**: environment preflight と UI regress を分離したまま current build screenshot を再取得でき、failure simulation も再現性を保ったまま evidence 化できる
-- **適用条件**: current build screenshot を伴う Phase 11/12 再監査、shared `out/renderer` を使う failure simulation、Playwright browser install が worktree 差分で揺れやすい task
-- **発見日**: 2026-03-13
-- **関連タスク**: UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001
-
 ### [Testing] コンポーネント分割テスト戦略パターン（TASK-043D）
 
 - **状況**: 大規模コンポーネント（AgentView 556行テスト）を複数の子コンポーネントに分割する際、テストの責務境界が曖昧になり、テストケースの重複や漏れが発生する
@@ -3297,19 +3280,6 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: Phase 12 再監査、branch 再確認、current workflow の stale 修正
 - **発見日**: 2026-03-09
 - **関連タスク**: TASK-FIX-AGENT-EXECUTE-SKILL-CONCURRENCY-GUARD-001
-
-### [Phase 12] 0件報告でも related active open backlog を `--target-file` で再監査する
-
-- **状況**: `audit-unassigned-tasks --json --diff-from HEAD` が `currentViolations=0` を返すと、current workflow 起因の新規未タスクが 0 件であることだけで安心し、system spec や workflow が参照する既存 active open backlog の format drift を見落としやすい
-- **アプローチ**:
-  1. current workflow / `task-workflow.md` / 関連仕様書が参照する active open backlog を 1 件以上抽出する
-  2. `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` で 10見出しを機械確認する
-  3. `audit-unassigned-tasks --json --diff-from HEAD --target-file <unassigned-file>` を実行し、`currentViolations=0` を確認する
-  4. 結果を `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` / `skill-feedback-report.md` に同値転記する
-- **結果**: 「新規未タスクは無い」と「既存 active backlog は task-spec フォーマット準拠」の2つを分離して報告でき、配置確認依頼への回答精度が上がる
-- **適用条件**: docs-heavy task、Phase 12 再監査、user が指定ディレクトリ配置の再確認を求めるケース
-- **発見日**: 2026-03-13
-- **関連タスク**: UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001
 
 ### [Phase 11] BrowserRouter 配下の screenshot harness は descendant route で作る
 

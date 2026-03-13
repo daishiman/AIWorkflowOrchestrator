@@ -10,9 +10,10 @@ import {
   createLightThemeScreenshotPlan,
 } from "./light-theme-contrast-guard.config.mjs";
 import {
-  formatPhase11CurrentBuildPreflightReport,
-  runPhase11CurrentBuildPreflight,
-} from "./phase11-current-build-preflight-core.mjs";
+  canAutoStartLocalStaticServer,
+  probeStaticServer,
+  startRendererStaticServer,
+} from "./phase11-static-server.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,7 @@ const rendererRoot = path.join(desktopRoot, "out", "renderer");
 const assetRoot = path.join(rendererRoot, "assets");
 const baseUrl = process.env.PHASE11_CAPTURE_BASE_URL ?? "http://127.0.0.1:4173";
 const viewport = { width: 1440, height: 960 };
+const readinessUrl = `${baseUrl}/phase11-light-theme-contrast-guard.html?surface=settings&theme=light`;
 
 function createProviderList() {
   return [
@@ -394,36 +396,43 @@ async function main() {
     "utf8",
   );
 
-  const preflightRun = await runPhase11CurrentBuildPreflight({ baseUrl });
   const assetEntries = await collectAssetEntries();
-  let browser = null;
+  let staticServer = null;
 
+  if (!(await probeStaticServer(readinessUrl))) {
+    if (!canAutoStartLocalStaticServer(baseUrl)) {
+      throw new Error(
+        `Static server is not reachable and auto-start is unavailable for ${baseUrl}`,
+      );
+    }
+    staticServer = await startRendererStaticServer({
+      baseUrl,
+      rootDir: rendererRoot,
+    });
+
+    if (!(await probeStaticServer(readinessUrl))) {
+      throw new Error(`Failed to start local static server for ${readinessUrl}`);
+    }
+  }
+
+  const browser = await chromium.launch({ headless: true });
   const metadata = {
     generatedAt: new Date().toISOString(),
     baseUrl,
     viewport,
     assetEntries,
-    preflight: preflightRun.result,
     scenarios: [],
   };
 
   try {
-    if (preflightRun.result.summary.status !== "pass") {
-      await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2), "utf8");
-      console.error(formatPhase11CurrentBuildPreflightReport(preflightRun.result));
-      process.exitCode = preflightRun.result.summary.exitCode;
-      return;
-    }
-
-    browser = await chromium.launch({ headless: true });
     for (const scenario of LIGHT_THEME_SCREENSHOT_SCENARIOS) {
       const result = await captureScenario(browser, scenario, assetEntries);
       metadata.scenarios.push(result);
       console.log(`✓ ${result.id} -> ${path.basename(result.output)}`);
     }
   } finally {
-    await browser?.close();
-    await preflightRun.cleanup?.();
+    await browser.close();
+    await staticServer?.close();
   }
 
   await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2), "utf8");

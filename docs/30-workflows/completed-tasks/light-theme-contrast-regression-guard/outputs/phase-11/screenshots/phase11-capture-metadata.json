@@ -1,68 +1,16 @@
 {
-  "generatedAt": "2026-03-13T02:21:34.006Z",
+  "generatedAt": "2026-03-11T22:27:29.269Z",
   "baseUrl": "http://127.0.0.1:4173",
   "viewport": {
     "width": 1440,
     "height": 960
   },
   "assetEntries": [
-    "globals-D6xyRw6P.js",
-    "globals-LwdMmUl_.css",
-    "index-Dva6RS17.css",
-    "index-IDpfPQY6.js",
-    "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+    "globals-DHvT_oEb.css",
+    "globals-FyoUcilx.js",
+    "index-D3KPKqJb.js",
+    "phase11-light-theme-contrast-guard-DMr9deGI.js"
   ],
-  "preflight": {
-    "bundleName": "phase11-current-build-preflight",
-    "timestamp": "2026-03-13T02:21:34.002Z",
-    "baseUrl": "http://127.0.0.1:4173",
-    "summary": {
-      "status": "pass",
-      "failedBucket": null,
-      "readyForCapture": true,
-      "autoServed": true,
-      "exitCode": 0,
-      "passCount": 4,
-      "blockedCount": 0
-    },
-    "checks": [
-      {
-        "bucket": "native",
-        "status": "pass",
-        "summary": "Native dependency is ready.",
-        "details": [
-          "esbuild resolved at /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001106-wt3-8/node_modules/.pnpm/esbuild@0.25.12/node_modules/esbuild/lib/main.js"
-        ],
-        "nextActions": []
-      },
-      {
-        "bucket": "build",
-        "status": "pass",
-        "summary": "Build output is available.",
-        "details": ["Renderer assets: 5 entries"],
-        "nextActions": []
-      },
-      {
-        "bucket": "harness",
-        "status": "pass",
-        "summary": "Harness route output is available.",
-        "details": [
-          "Harness file: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001106-wt3-8/apps/desktop/out/renderer/phase11-light-theme-contrast-guard.html"
-        ],
-        "nextActions": []
-      },
-      {
-        "bucket": "baseUrl",
-        "status": "pass",
-        "summary": "Base URL became reachable via auto static serve.",
-        "details": [
-          "Readiness URL: http://127.0.0.1:4173/phase11-light-theme-contrast-guard.html?surface=settings&theme=light"
-        ],
-        "nextActions": []
-      }
-    ],
-    "guidance": []
-  },
   "scenarios": [
     {
       "id": "TC-11-01",
@@ -71,14 +19,13 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=settings&theme=light",
       "selector": "[data-testid=\"settings-view\"]",
       "output": "screenshots/TC-11-01-settings-light.png",
-      "capturedAt": "2026-03-13T02:21:41.432Z",
+      "capturedAt": "2026-03-11T22:27:30.858Z",
       "size": 195608,
       "assetEntries": [
-        "globals-D6xyRw6P.js",
-        "globals-LwdMmUl_.css",
-        "index-Dva6RS17.css",
-        "index-IDpfPQY6.js",
-        "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
       ]
     },
     {
@@ -88,14 +35,13 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=light",
       "selector": "[data-testid=\"dashboard-view\"]",
       "output": "screenshots/TC-11-02-dashboard-light.png",
-      "capturedAt": "2026-03-13T02:21:42.868Z",
-      "size": 243152,
+      "capturedAt": "2026-03-11T22:27:32.262Z",
+      "size": 244443,
       "assetEntries": [
-        "globals-D6xyRw6P.js",
-        "globals-LwdMmUl_.css",
-        "index-Dva6RS17.css",
-        "index-IDpfPQY6.js",
-        "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
       ]
     },
     {
@@ -105,14 +51,13 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=auth&theme=light",
       "selector": "[data-testid=\"auth-view-panel\"]",
       "output": "screenshots/TC-11-03-auth-light.png",
-      "capturedAt": "2026-03-13T02:21:44.071Z",
+      "capturedAt": "2026-03-11T22:27:33.502Z",
       "size": 18686,
       "assetEntries": [
-        "globals-D6xyRw6P.js",
-        "globals-LwdMmUl_.css",
-        "index-Dva6RS17.css",
-        "index-IDpfPQY6.js",
-        "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
       ]
     },
     {
@@ -122,14 +67,13 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=workspace-search&theme=light",
       "selector": "[data-testid=\"workspace-search-panel\"]",
       "output": "screenshots/TC-11-04-workspace-search-light.png",
-      "capturedAt": "2026-03-13T02:21:45.332Z",
-      "size": 26591,
+      "capturedAt": "2026-03-11T22:27:34.771Z",
+      "size": 26603,
       "assetEntries": [
-        "globals-D6xyRw6P.js",
-        "globals-LwdMmUl_.css",
-        "index-Dva6RS17.css",
-        "index-IDpfPQY6.js",
-        "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
       ]
     },
     {
@@ -139,14 +83,13 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=dark",
       "selector": "[data-testid=\"dashboard-view\"]",
       "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
-      "capturedAt": "2026-03-13T02:21:46.684Z",
-      "size": 248846,
+      "capturedAt": "2026-03-11T22:27:36.197Z",
+      "size": 250170,
       "assetEntries": [
-        "globals-D6xyRw6P.js",
-        "globals-LwdMmUl_.css",
-        "index-Dva6RS17.css",
-        "index-IDpfPQY6.js",
-        "phase11-light-theme-contrast-guard-BcXa1QOt.js"
+        "globals-DHvT_oEb.css",
+        "globals-FyoUcilx.js",
+        "index-D3KPKqJb.js",
+        "phase11-light-theme-contrast-guard-DMr9deGI.js"
       ]
     }
   ]
