@@ -125,20 +125,6 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 > 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
 
-### 既存 open backlog の再確認（0件報告でも必要になるケース）
-
-current workflow 起因の新規未タスクが `0 件` でも、user から「指定ディレクトリに配置できているか」「system spec が参照する既存 open backlog も確認せよ」と再確認依頼があった場合は、関連する active open backlog を個別に監査する。
-
-必須手順:
-
-1. `task-workflow.md` / current workflow / 関連仕様書が参照する active open backlog を特定する
-2. `docs/30-workflows/unassigned-task/` 配下に実在することを確認する
-3. `rg -n '^## メタ情報$|^## [1-9]\\. ' <unassigned-file>` で 10見出しを確認する
-4. `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file <unassigned-file>` で `currentViolations=0` を確認する
-5. `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` に結果を同値転記する
-
-> 重要: 「今回差分で新規作成が無い」ことと、「既存 open backlog が task-spec フォーマット準拠である」ことは別の確認項目。
-
 ### raw検出の誤検知対策（推奨）
 
 `detect-unassigned-tasks.js` の結果は「未タスク候補（raw）」であり、確定件数ではない。仕様書本文の説明用 TODO が多数ヒットするケースがあるため、以下の2段階で判定する。

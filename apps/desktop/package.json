@@ -27,7 +27,6 @@
     "screenshot:organisms": "node scripts/capture-organisms-components-screenshots.mjs",
     "screenshot:dashboard-home": "node scripts/capture-dashboard-home-phase11.mjs",
     "screenshot:light-theme-contrast-guard": "node scripts/capture-light-theme-contrast-regression-guard-phase11.mjs",
-    "preflight:light-theme-contrast-guard": "node scripts/phase11-current-build-preflight.mjs",
     "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",

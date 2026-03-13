@@ -9,39 +9,6 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
-## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 未タスク 0件時の related backlog 監査ルール追補
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 / skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/unassigned-task-guidelines.md` に、新規未タスク `0 件` でも related active open backlog を `--target-file` + 10見出しで再監査する条件と手順を追加した
-  - `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` へ、配置確認と format 監査を別判定として残す運用を同期した
-  - `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` を `audit --diff-from HEAD --target-file` で再監査し、currentViolations=0 を確認した
-
----
-## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 screenshot 再監査ルール追補
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 / skill-improvement
-- **Result**: success
-- **Notes**:
-  - `references/phase-11-12-guide.md` に Playwright browser 未導入時は `pnpm --filter @repo/desktop exec playwright install chromium` を先に実行する preflight を追加した
-  - `references/spec-update-workflow.md` に `browserType.launch: Executable doesn't exist` を UI regress と誤分類しない判断ルールを追加した
-  - current workflow `manual-test-result.md` / `discovered-issues.md` / `spec-update-summary.md` に初回 FAIL → install chromium → PASS の実測経路を同期した
-
----
-## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 Phase 11/12 実行パターン追補
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 / skill-improvement
-- **Result**: success
-- **Notes**:
-  - completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/` の Phase 1-12 実績に合わせ、workflow `index.md` / `artifacts.json` / `outputs/artifacts.json` の `completed` / `blocked` 同期パターンを再確認した
-  - `references/phase-11-12-guide.md` に same-day upstream evidence mirror 時の shared build artifact failure simulation は serial 実行とするルールを追加した
-  - `references/spec-update-workflow.md` に parallel 実行禁止条件を追記し、build/harness/baseUrl failure simulation の bucket 混線を防ぐ Phase 12 手順へ更新した
-
----
 ## 2026-03-13 - UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 未タスク仕様書作成
 
 - **Agent**: task-specification-creator
@@ -104,7 +71,7 @@
 - **Phase**: Phase 12（unassigned formalization）
 - **Result**: success
 - **Notes**:
-  - 旧 unassigned spec を 9セクション構成 + `3.5 実装課題と解決策` 付きで作成し、その後 `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` と completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/` へ正規化した
+  - `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` を 9セクション構成 + `3.5 実装課題と解決策` 付きで新規作成
   - completed workflow `light-theme-contrast-regression-guard` の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へ更新
   - parent task の苦戦箇所（native dependency, harness build input, localhost fallback, current/baseline 分離）を未タスク仕様書へ継承した
 
@@ -6199,3 +6166,28 @@ if (artifactPath) {
   - `task-workflow.md` に完了タスクセクション追加、変更履歴 v1.67.38 追加
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（手動検証 + 仕様同期）
+- **Result**: success
+- **Notes**:
+  - Phase 4-12 の placeholder outputs を actual execution evidence へ差し替え
+  - `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加し、`validate-phase11-screenshot-coverage` を通した
+  - current build static build が `esbuild` binary mismatch で失敗したため、current source dev server capture を同日 fallback として記録
+  - `artifacts.json` / `outputs/artifacts.json` / `index.md` / phase 本文を completed へ同期
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（再監査）
+- **Result**: success
+- **Notes**:
+  - `audit-unassigned-tasks.js` を更新し、`docs/30-workflows/completed-tasks/*.md` 直下の standalone completed spec を `--target-file` で current 監査できるよう改善
+  - `audit-unassigned-tasks.test.mjs` に direct completed target-file の回帰テストを追加
+  - `spec-update-workflow.md` / `phase-11-12-guide.md` / `phase-templates.md` / `commands.md` / `unassigned-task-guidelines.md` / `phase12-checklist-definition.md` を direct completed path、untracked move、strict implementation-guide validator 前提へ再同期

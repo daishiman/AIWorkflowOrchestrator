@@ -32,7 +32,7 @@
 | `artifacts.json` / `outputs/artifacts.json` 二重台帳同期 | PASS | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/artifacts.json`, `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/outputs/artifacts.json` |
 | workflow `index.md` 再生成                               | PASS | `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard --regenerate`                 |
 | Phase 1-12 本文 status 同期                              | PASS | `phase-1-requirements.md` 〜 `phase-12-documentation.md`                                                                                                                                   |
-| 指定ディレクトリ未タスク監査                             | PASS | `verify-unassigned-links: 219/219`, `audit --diff-from HEAD: current=0`, `audit --json: baseline=134`                                                                                      |
+| 指定ディレクトリ未タスク監査                             | PASS | `verify-unassigned-links: 214/214`, `audit --diff-from HEAD: current=0`, `audit --json: baseline=134`                                                                                      |
 | `skill-creator` 条件付き同期                             | PASS | `.claude/skills/skill-creator/LOGS.md`, `.claude/skills/skill-creator/SKILL.md`, `references/patterns.md`, `references/resource-map.md`                                                    |
 
 ## validator 実行結果

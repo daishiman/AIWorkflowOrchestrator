@@ -4640,12 +4640,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | 項目 | 値 |
 | --- | --- |
-| 今回 task 由来の新規未タスク | 1 |
-| `verify-unassigned-links` | existing 221 / missing 0 |
+| 今回 task 由来の新規未タスク | 0 |
+| `verify-unassigned-links` | existing 214 / missing 0 |
 | `audit-unassigned-tasks --json --diff-from HEAD` | currentViolations 0 |
-| `audit-unassigned-tasks --json` | baselineViolations 133 |
+| `audit-unassigned-tasks --json` | baselineViolations 134 |
 | legacy normalization task | `task-imp-unassigned-task-format-normalization-001`, `task-imp-unassigned-task-legacy-normalization-001`, `task-imp-phase12-unassigned-baseline-remediation-002` |
-| related open backlog format audit | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md`: `## メタ情報 + ## 1..9` を確認し、`audit --diff-from HEAD --target-file` は `currentViolations=0 / baselineViolations=133` |
 
 ### Phase 11 発見事項
 
@@ -4664,8 +4663,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 
 | 未タスクID | 目的 | 参照 |
 | --- | --- | --- |
-| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の native dependency / build / harness / baseUrl preflight を 1 コマンド化し、Phase 1-12 実行済み completed workflow として維持する | `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` |
-| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001 | Playwright browser preflight の fail-fast 化と destructive failure simulation の serial runner を追加し、current build screenshot task の残運用を減らす | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-runner-guard-001.md` |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の native dependency / build / harness / baseUrl preflight を 1 コマンド化し、同種タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | ThemeSelector / AuthView / WorkspaceSearchPanel の baseline contrast remediation を継続する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
 
 ### 苦戦箇所
@@ -4676,8 +4674,6 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | harness HTML を build input に登録し忘れる | dev server 前提のまま Phase 11 を進める | `electron.vite.config.ts` に harness HTML を追加した |
 | screenshot script が localhost server 未起動で即失敗する | current build static serve を人手 preflight のみに依存する | loopback baseUrl のときは `out/renderer` を auto static serve する fallback を capture script に追加した |
 | light capture の不具合を current failure と誤読する | baseline backlog と current diff を同じ表で扱う | `current=0 / baseline=64` を別欄に分離し、remediation task へ routing した |
-| screenshot 実体が揃っていても coverage validator が落ちる | `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` を省略する | current workflow の manual test spec に `TC-11-01`〜`TC-11-05` と coverage matrix を補完し、`manual-test-result.md` の証跡列と 1:1 に揃えた |
-| 新規未タスク 0 件を理由に related active backlog の formal 品質確認を飛ばす | `docs/30-workflows/unassigned-task/` に既にある open backlog を target 監査せずに Phase 12 を閉じる | `task-fix-worktree-native-binary-guard-001.md` を `--target-file` + 10見出しで再監査し、指定ディレクトリ配置と format 準拠を確認した |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
@@ -4686,15 +4682,11 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 3. selector-based capture のために最小限の `data-testid` を追加する。
 4. Phase 11 では Apple UI/UX 観点で hierarchy / contrast / spacing を別々に記録する。
 5. Phase 12 では `.claude` 正本の system spec / LOGS / SKILL を同一ターンで更新し、global `unassigned-task/` の current/baseline を分離記録する。
-6. current workflow 起因の新規未タスクが 0 件でも、related active backlog がある場合は `--target-file` + 10見出しで formal 品質を確認する。
 
 ## 変更履歴
 
 | バージョン | 日付           | 変更内容                                                                                                                                                                                                                                                          |
 | ---------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **1.67.60** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001 を登録**: current build preflight bundle 実装後に残った 2 つの運用課題（Playwright browser preflight の fail-fast 化、shared artifact を壊す failure simulation の serial runner 化）を未タスクへ formalize し、`UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` 節の関連未タスクと completed workflow Phase 12 follow-up 記録へ同期 |
-| **1.67.59** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12 再確認を追補**: `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` が無いと screenshot 実体があっても coverage validator が落ちること、`verify-unassigned-links=220 / 220`、`audit --diff-from HEAD=current 0 / baseline 133`、related active backlog `task-fix-worktree-native-binary-guard-001.md` の `--target-file` + 10見出し再監査を追加し、指定ディレクトリ配置確認を台帳へ反映 |
-| **1.67.58** | **2026-03-13** | **UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 Phase 1-12 実行完了を同期**: related row の参照先を削除済み `unassigned-task` から completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` へ更新し、preflight report / failure simulation / same-day upstream screenshot mirror を Phase 11 evidence として記録。shared build artifact を壊す failure simulation は serial 実行へ固定した |
 | **1.67.57** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 再監査追補**: workflow 本文の Phase 1-12 completed 同期、`outputs/artifacts.json` 追加、index 再生成、`ui-ux-design-system.md` の status テーブル更新、localhost static serve fallback（`phase11-static-server.mjs`）を完了記録へ追記し、親仕様書の stale な未タスク導線を completed workflow 正本へ修正 |
 | **1.67.56** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行を同期**: completed workflow `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` の Phase 4-12 outputs、audit summary（`current=0 / baseline=64`）、Phase 11 screenshot 5件、Apple UI/UX 視覚レビュー、baseline routing を追加。`ThemeSelector` / `AuthView` / `WorkspaceSearchPanel` の contrast backlog は remediation task `task-fix-light-theme-shared-color-migration-001` へ分離し、guard task は current build static serve + selector capture の標準手順として固定 |
 | **1.67.55** | **2026-03-12** | **UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 を登録**: `TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001` の苦戦箇所を、`spec_created` UI workflow 向けの root同期ガードとして未タスク化。current inventory correction、verification-only lane、必要 system spec 抽出、`artifacts.json` / `outputs/artifacts.json` 同期を 1 つの再利用導線へ統合し、parent task 節と残課題テーブルへ同時反映 |

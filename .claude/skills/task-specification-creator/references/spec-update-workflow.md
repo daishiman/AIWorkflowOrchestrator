@@ -84,7 +84,6 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
 | 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
-| 「Playwright 実行ファイル欠落は UI regress の一種だ」 | **environment preflight を先に復旧する** | `browserType.launch: Executable doesn't exist` は UI 差分とは無関係。`pnpm --filter @repo/desktop exec playwright install chromium` を先に実行し、復旧後の screenshot を正本にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須4成果物を揃える** | `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の4点が揃って初めて再監査可能になる |
@@ -96,7 +95,6 @@ Phase 12 Task 2 開始
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** | UI 実装差分がなく same-day upstream evidence があるなら、source screenshot を current workflow へ集約し、review board を current workflow で新規 capture して Apple review に使ってよい |
-| 「failure simulation は並列でまとめてよい」 | **shared artifact を触る検証は serial 固定** | `out/renderer` や build output を壊す検証を parallel に流すと失敗 bucket が混線する。build/harness/baseUrl 系は 1 ケースずつ実行し、各ケース後に前提を再生成する |
 | 「related unassigned row を completed 実績へ移した後も `verify-unassigned-links` の total は据え置きでよい」 | **exact count 再取得が必須** | related UT の移動で `existing/total` は変わる。row 移動後に `verify-unassigned-links` を再実行し、`task-workflow.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / workflow spec へ同値転記する |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |

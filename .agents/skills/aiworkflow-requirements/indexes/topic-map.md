@@ -1372,13 +1372,13 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L9 |
 | 仕様書別 SubAgent 編成 | L20 |
 | 今回実装した内容（2026-03-12） | L33 |
-| 苦戦箇所と再発防止 | L66 |
-| 同種課題の 5 分解決カード | L82 |
-| 最適なファイル形成 | L96 |
-| 検証コマンド | L110 |
-| 関連改善タスク | L125 |
-| 関連ドキュメント | L135 |
-| 変更履歴 | L147 |
+| 苦戦箇所と再発防止 | L56 |
+| 同種課題の 5 分解決カード | L68 |
+| 最適なファイル形成 | L78 |
+| 検証コマンド | L92 |
+| 関連改善タスク | L105 |
+| 関連ドキュメント | L114 |
+| 変更履歴 | L126 |
 
 ### references/workflow-light-theme-global-remediation.md
 
@@ -1429,9 +1429,9 @@ node scripts/list-specs.js --topics
 | 同種課題の 5 分解決カード | L74 |
 | 最適なファイル形成 | L84 |
 | 検証コマンド | L101 |
-| 関連未タスク | L119 |
-| 関連ドキュメント | L127 |
-| 変更履歴 | L143 |
+| 関連未タスク | L118 |
+| 関連ドキュメント | L126 |
+| 変更履歴 | L142 |
 
 ---
 
@@ -1688,24 +1688,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L8 |
 | 変更履歴 | L19 |
-| 最新教訓 | L74 |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12） | L238 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08） | L749 |
-| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L803 |
-| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L805 |
-| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L842 |
-| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L889 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L1056 |
-| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L1130 |
-| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L1196 |
-| TASK-UI-08-NOTIFICATION-CENTER: NotificationCenter 058e 再監査（2026-03-11） | L1249 |
-| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L1288 |
-| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L1360 |
-| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L1425 |
-| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L1488 |
-| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1567 |
-| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1625 |
-| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1825 |
+| 最新教訓 | L70 |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 教訓（2026-03-12） | L234 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 再監査（2026-03-08） | L708 |
+| TASK-10A-F: Store駆動ライフサイクルUI統合 再確認（2026-03-07） | L762 |
+| 08-TASK-IMP-SETTINGS-INTEGRATION-REGRESSION-COVERAGE-001: SettingsView 統合回帰強化（2026-03-08） | L764 |
+| TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: Profile / Avatar fallback ハンドラ追加（2026-03-08） | L801 |
+| TASK-10A-F: スキルライフサイクルUI Store移行（2026-03-07） | L848 |
+| TASK-UI-03-AGENT-VIEW-ENHANCEMENT: AgentView Enhancement（2026-03-07） | L1015 |
+| TASK-UI-02-GLOBAL-NAV-CORE: Global Navigation 基盤移行（2026-03-06） | L1089 |
+| TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN: Notification/HistorySearch 実装（2026-03-05） | L1155 |
+| TASK-UI-08-NOTIFICATION-CENTER: NotificationCenter 058e 再監査（2026-03-11） | L1208 |
+| TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001: auth-key IPCハンドラ登録漏れ修正（2026-03-05） | L1247 |
+| TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L1319 |
+| TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L1384 |
+| TASK-UI-01-A-STORE-SLICE-BASELINE: Store境界基準化の再監査（2026-03-05） | L1447 |
+| TASK-UI-05A-SKILL-EDITOR-VIEW: 再監査（2026-03-02） | L1526 |
+| TASK-FIX-SKILL-IMPORT 3連続是正（2026-03-04） | L1584 |
+| TASK-UI-05-SKILL-CENTER-VIEW: SkillCenterView 実装（2026-03-01） | L1784 |
 
 ### references/llm-embedding.md
 
@@ -2056,9 +2056,9 @@ node scripts/list-specs.js --topics
 | 残課題（未タスク） | L4185 |
 | 関連ドキュメント | L4612 |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L4622 |
-| 変更履歴 | L4691 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4962 |
-| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4982 |
+| 変更履歴 | L4686 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L4954 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L4974 |
 
 ### references/testing-accessibility.md
 
