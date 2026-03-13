@@ -11,15 +11,18 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding
 allowed-tools:
   - Read
   - Glob
   - Grep
   - Bash
 ---
+
 # AIWorkflow Requirements Manager
+
 ## 概要
+
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
 
@@ -36,19 +39,15 @@ node scripts/search-spec.js "認証" -C 5
 
 ### 仕様を読む
 
-1. **まず [resource-map.md](indexes/resource-map.md) を確認** - タスク種別に応じた読み込みファイルを特定
+1. **まず [resource-map.md](indexes/resource-map.md) を確認** - タスク種別と current canonical set を特定
 2. 該当ファイルを `Read` ツールで参照
-3. 詳細行番号が必要な場合は [topic-map.md](indexes/topic-map.md) を参照
+3. 今回差分の完全ファイル一覧、旧 ordinal filename から current semantic filename への対応、エレガンス監査が必要な場合は [workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md](references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md), [legacy-ordinal-family-register.md](references/legacy-ordinal-family-register.md), [spec-elegance-consistency-audit.md](references/spec-elegance-consistency-audit.md) を参照
+4. 詳細行番号や完全ファイル一覧が必要な場合は [topic-map.md](indexes/topic-map.md) と `node scripts/list-specs.js --topics` を参照
 
-### 直近の workflow 正本へ入る
-
-- Workspace 親導線再監査: [references/workflow-workspace-parent-reference-sweep-guard.md](references/workflow-workspace-parent-reference-sweep-guard.md)
-- Light Theme contrast guard: [references/workflow-light-theme-contrast-regression-guard.md](references/workflow-light-theme-contrast-regression-guard.md)
-- Onboarding Wizard / Settings rerun: [references/workflow-onboarding-wizard-alignment.md](references/workflow-onboarding-wizard-alignment.md)
 ### 仕様を作成・更新
 
 1. `assets/` 配下の該当テンプレートを使用
-2. `references/spec-guidelines.md` の命名規則に従う
+2. `references/spec-guidelines.md` と `references/spec-splitting-guidelines.md` を見て、classification-first で更新する
 3. 編集後は `node scripts/generate-index.js` を実行
 
 ## ワークフロー
@@ -118,9 +117,9 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | エージェント       | 用途         | 対応Task           | 主な機能                         |
 | ------------------ | ------------ | ------------------ | -------------------------------- |
-| `create-spec.md`   | 新規仕様作成 | create-spec        | テンプレート対応、重複チェック   |
-| `update-spec.md`   | 既存仕様更新 | update-spec        | テンプレート準拠、分割ガイド     |
-| `validate-spec.md` | 仕様検証     | validate-structure | resource-map登録確認、サイズ検証 |
+| [create-spec.md](agents/create-spec.md) | 新規仕様作成 | create-spec        | テンプレート対応、重複チェック   |
+| [update-spec.md](agents/update-spec.md) | 既存仕様更新 | update-spec        | テンプレート準拠、分割ガイド     |
+| [validate-spec.md](agents/validate-spec.md) | 仕様検証     | validate-structure | resource-map登録確認、サイズ検証 |
 
 ### indexes/
 
@@ -182,7 +181,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 - キーワード検索で情報を素早く特定
 - 編集後は `node scripts/generate-index.js` を実行
-- 500行超過時はインデックス+サブファイル形式に手動分割
+- 500行超過時は classification-first で parent / child / history / archive / discovery を同一 wave で分割
 
 ### 避けるべきこと
 
@@ -194,19 +193,11 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 ## 変更履歴
 
-> 古い履歴（v8.31.0以前）は [LOGS.md](LOGS.md#変更履歴アーカイブ) に移動しました。
+> 古い履歴（v8.31.0以前）は [logs-archive-index.md](references/logs-archive-index.md) を参照してください。
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.01.97** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の統合正本入口を追加**: `references/workflow-onboarding-wizard-alignment.md` を新規作成し、overlay / Settings rerun / persist key / screenshot 6件 / follow-up backlog resweep / SubAgent 分担 / 5分解決カードを 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` と SKILL 直リンクも同期し、同種課題の参照初動を短縮 |
-| **9.01.96** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の follow-up resweep を同期**: `references/task-workflow.md` / `references/lessons-learned.md` に、既存 `docs/30-workflows/unassigned-task/` 2 件の配置確認と本文 contract drift 是正を追記。`onboarding.hasCompleted` 維持 + Settings force-open local state + completion 時のみ persist save / dashboard handoff の rerun 契約を、system spec だけでなく follow-up 未タスク本文まで再同期する運用を変更履歴へ追加 |
-| **9.01.95** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の監査補修を同期**: `ui-ux-navigation.md` の onboarding contract を現行実装へ更新し、`arch-state-management.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` に persist key 正式名、`system` preview readability 修正、visual/non-visual TC 分離、canonical→mirror `diff -qr` 完了判定を追記 |
-| **9.01.94** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD を同期**: `task-workflow.md` / `ui-ux-settings.md` / `ui-ux-feature-components.md` / `ui-ux-components.md` / `lessons-learned.md` / `arch-state-management.md` に onboarding wizard の overlay state、Settings rerun callback、persist key 4件、Phase 11 screenshot 6件、`current=0 / baseline=134` の Phase 12 evidence を反映し、`generate-index.js` と `.agents` mirror sync を同一ターンで閉じる運用を追記 |
-| **9.01.93** | **2026-03-13** | **TASK-SKILL-LIFECYCLE-04 follow-up の未タスク formalize を同期**: `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を `docs/30-workflows/unassigned-task/` へ作成し、`task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` / parent workflow outputs / `LOGS.md` を `verify-unassigned-links=221/221`、`current=0 / baseline=134` 前提で再同期 |
-| **9.01.92** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-04 を同期**: `ui-ux-feature-components.md` / `arch-state-management.md` / `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `task-workflow.md` / `lessons-learned.md` に Task04 の quality gate 実装、screenshot 6件、`evaluatePrompt()` public preload API、shared export、`current=0 / baseline=134` 監査結果を反映し、`.claude` 正本更新後に `.agents` mirror を追従させる運用を追記 |
-| **9.01.91** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を追補**: `workflow-workspace-parent-reference-sweep-guard.md` / `task-workflow.md` / `lessons-learned.md` に `verify-unassigned-links=219 / 219` の再同期、元 unassigned spec の配置確認、related UT completed 化後の stale count 防止ルールを追加 |
-| **9.01.90** | **2026-03-12** | **workflow 正本の直リンクを SKILL.md に追加**: `workflow-workspace-parent-reference-sweep-guard.md` と `workflow-light-theme-contrast-regression-guard.md` への入口を明示し、docs-heavy workflow の再監査導線を SKILL レベルでも辿れるようにした |
-| **9.01.89** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: Workspace 親導線 sweep の system spec 同期（`task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` / `interfaces-*` / `LOGS.md`）と、completed workflow root 正規化・mirror sync 運用を変更履歴へ追加 |
+| **9.01.89** | **2026-03-12** | **TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 を同期**: `claude-code-skills-structure.md` / `claude-code-skills-resources.md` / `claude-code-skills-process.md` / `task-workflow.md` / `lessons-learned.md` に、`SKILL.md` 入口特化、family file 分割、rolling `LOGS.md` + archive、`.claude` 正本 / `.agents` mirror、validator 順序の再利用ルールを追加 |
 | **9.01.88** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` に formalize し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `workflow-light-theme-contrast-regression-guard.md` へ導線を追加。completed workflow の Phase 12 outputs も 1 件 formalize 前提へ更新 |
 | **9.01.87** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を同期**: `task-workflow.md` に global `unassigned-task/` 監査値（current 0 / baseline 134）と legacy normalization task を追記し、`lessons-learned.md` に workflow baseline 64 と directory baseline 134 の分離、Task 5 の 3 skill 同値転記ルールを追加。Phase 12 root evidence と system spec の再突合手順を固定 |
 | **9.01.86** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本を追加**: `references/workflow-light-theme-contrast-regression-guard.md` を新規作成し、今回実装した audit / harness / static serve fallback / selector readiness / workflow sync と苦戦箇所を 1 ファイルへ集約。`indexes/resource-map.md` / `indexes/quick-reference.md` も同時更新し、同種課題の参照初動を短縮 |
@@ -497,3 +488,12 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.37.0** | **2026-02-04** | **AUTH-UI-001完了**: architecture-implementation-patterns.md更新（React Portal/Supabase認証状態即時更新パターン追加）、ui-ux-auth-flow.md v1.3.0更新（Googleログインボタン仕様追加） |
 | **8.36.0** | **2026-02-04** | **スキル最適化**: spec-update-workflow.mdファイル名修正（kebab-case統一）、topic-map.md再生成（新規ファイル反映） |
 | **8.35.1** | **2026-02-04** | **task-imp-search-ui-001完了**: ui-ux-search-panel.md v1.2.0更新（E2Eテスト17件追加、グローバルショートカット統合完了） |
+
+### バージョン更新: 9.01.91
+- 日付: 2026-03-12
+- 内容: `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` の最終同期を反映。manual docs 34件 reform、Phase 1-12 completed / currentPhase=13 / Phase 13 blocked、generated `topic-map.md` の 500行超 blocker 化、`TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001` と `TASK-IMP-AIWORKFLOW-GENERATED-INDEX-METRIC-SYNC-GUARD-001` の follow-up formalize、Phase 11 branch-level dashboard screenshot sanity に加え、Phase 12 root evidence 化、active 未タスク10見出し化、`verify-unassigned-links` の split 親 + sibling 監査、`workflow-aiworkflow-requirements-line-budget-reform.md` / `quick-reference.md` / `resource-map.md` / `spec-splitting-guidelines.md` の再利用導線まで system spec に固定した。
+
+### バージョン更新: 9.01.90
+- 日付: 2026-03-12
+- 内容: Phase12監査で `outputs/phase-12` 未作成 drift を検出し、`TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001` として切り出した。後続の再同期で documentation shell 追加と verification rerun を完了し、この drift 自体は解消済みの履歴として管理する。
+- 追加: タスク `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` をシステム仕様追跡対象として追加。

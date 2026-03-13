@@ -166,6 +166,13 @@ docs/30-workflows/{{FEATURE_NAME}}/
 }
 ```
 
+### 2.2 互換ルール
+
+- 新規 workflow では `{ type, path, description }` の object 形式を推奨する。
+- 既存 workflow の `artifacts` にある文字列パス配列も validator / changelog generator 互換の legacy 形式として許容する。
+- Phase が user 指示や外部依存で停止している場合は `status: "blocked"` を使用してよい。
+- `metadata.taskType` は `feat` / `fix` / `refactor` / `docs` / `test` / `chore` / `improvement` を推奨しつつ、既存 workflow の kebab_case / snake_case 派生値も互換対象として扱う。
+
 ---
 
 ## 3. 依存タスクへの反映プロセス

@@ -1,49 +1,41 @@
 # Task Specification Creator パターン集
 
-> フィードバックから発見された成功/失敗パターンを記録
+> 読み込み条件:
+> 失敗原因を切り分けたい時、または同種 task の再利用手順を短時間で見つけたい時。
 
----
+## クイックナビ
 
-## 📌 クイックナビゲーション
+| family | 使う場面 | ファイル |
+| --- | --- | --- |
+| workflow generation | phase 設計、SubAgent lane、artifact registry 設計 | [patterns-workflow-generation.md](patterns-workflow-generation.md) |
+| validation and audit | line budget、mirror parity、root drift、scoped audit | [patterns-validation-and-audit.md](patterns-validation-and-audit.md) |
+| Phase 12 sync | implementation guide、spec sync、未タスク化、planned wording guard | [patterns-phase12-sync.md](patterns-phase12-sync.md) |
 
-| カテゴリ                                                                                              | パターン数 | 説明                             |
-| ----------------------------------------------------------------------------------------------------- | ---------- | -------------------------------- |
-| [失敗パターン](#失敗パターン)                                                                         | 13件       | 回避すべきアンチパターン         |
-| [成功パターン](#成功パターン)                                                                         | 50+件      | 再利用可能なベストプラクティス   |
-| [ガイドライン](#ガイドライン)                                                                         | 6件        | 判断基準・検出パターン・Pitfall登録 |
-| [フェーズ境界遷移](#フェーズ境界遷移パターンphase-boundary-transition)                                | 4件        | Phase間の成果物引き継ぎ          |
-| [失敗回避](#失敗回避パターン)                                                                         | 3件        | よくある失敗の未然防止           |
-| [単体テスト設計](#単体テスト設計パターンtask-8a)                                                      | 4件        | モック・カバレッジ戦略           |
-| [E2Eテスト設計](#e2eテスト設計パターンtask-8c-b)                                                      | 3件        | Playwright安定化                 |
-| [CI/DevOps最適化](#cidevops最適化パターン)                                                            | 2件        | GitHub Actions並列化             |
-| [Main→Renderer IPC](#mainrenderer-ipc実装パターンtask-wce-monaco-001)                                 | 1件        | 逆方向通信パターン               |
-| [サービス設計](#サービス設計パターンtask-9b-g)                                                        | 4件        | Facade・Script First             |
-| [Zustand Store](#zustand-store-hooks無限ループ対策パターンut-fix-store-hooks-infinite-loop-001)      | 1件        | 無限ループ対策・useRefガード     |
-| [IPC型不整合解決](#ipc型不整合解決パターンut-fix-skill-import-return-type-001)     | 2件        | IPC戻り値型変換・3層整合性確認   |
+## 即時参照
 
----
+### まず確認する 5 項目
 
-## 🚨 Phase 12 Task 2 クイックリファレンス
+1. 問題は workflow 設計か、validation か、Phase 12 同期かを切り分ける。
+2. `.claude` 正本と `.agents` mirror のどちらで観測された問題かを切り分ける。
+3. `current` と `baseline` を分けて報告する。
+4. `outputs/` の実体、`artifacts.json`、phase 本文が同時に更新されているか確認する。
+5. Phase 10 / 12 の指摘が未タスク化されるべきかを確認する。
 
-> **最重要**: Phase 12 Task 2は漏れが発生しやすい。以下を必ず確認。
+### 高頻度パターン
 
-| Step | 必須 | チェック項目       | 更新対象                                |
-| ---- | ---- | ------------------ | --------------------------------------- |
-| 1-A  | ✅   | タスク完了記録     | 該当仕様書（ui-ux-\*.md等）             |
-| 1-A  | ✅   | LOGS.md更新        | **aiworkflow-requirements/LOGS.md**     |
-| 1-A  | ✅   | LOGS.md更新        | **task-specification-creator/LOGS.md**  |
-| 1-A  | ✅   | SKILL.md変更履歴   | **aiworkflow-requirements/SKILL.md**    |
-| 1-A  | ✅   | SKILL.md変更履歴   | **task-specification-creator/SKILL.md** |
-| 1-B  | △    | 実装状況テーブル   | api-endpoints.md等（該当する場合）      |
-| 1-C  | △    | 関連タスクテーブル | `grep -rn "TASK_ID" references/` で検索 |
-| 1-D  | ✅   | topic-map.md再生成 | `node generate-index.js` 実行           |
-| 2    | △    | システム仕様更新   | 新規インターフェース追加時のみ          |
+| 問題 | 先に読むもの | 期待する出口 |
+| --- | --- | --- |
+| `SKILL.md` が肥大化した | [patterns-workflow-generation.md](patterns-workflow-generation.md) | entrypoint と detail の責務分離 |
+| validator が PASS しない | [patterns-validation-and-audit.md](patterns-validation-and-audit.md) | command ごとの fail 原因特定 |
+| Phase 12 で成果物はあるのに gate が通らない | [patterns-phase12-sync.md](patterns-phase12-sync.md) | output / ledger / wording の再同期 |
 
-📖 詳細: [spec-update-workflow.md](./spec-update-workflow.md)
+## 運用メモ
 
----
+- family file を増やす時は `SKILL.md` から直リンクを張る。
+- archive や detail file を追加したら parent guide から 1 hop で到達できるようにする。
+- 大きな失敗パターンは Phase 12 の `skill-feedback-report.md` と `lessons-learned.md` にも反映する。
 
-## 失敗パターン
+## 関連リソース
 
 ### Markdown見出しレベルの誤検出
 
@@ -2157,47 +2149,13 @@
 - **関連タスク**: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV, UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001
 
 ---
+- [phase-templates.md](phase-templates.md)
+- [spec-update-workflow.md](spec-update-workflow.md)
+- [phase-11-12-guide.md](phase-11-12-guide.md)
+- [logs-archive-index.md](logs-archive-index.md)
 
 ## 変更履歴
 
-| Date           | Changes                                                                                                                                                                                                |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **2026-03-11** | **TASK-UI-04C follow-up パターン追加**: 成功パターン「親タスク苦戦箇所の事後未タスク化」を追加。初回 0件判定後に cross-cutting guard が必要と判明した場合、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する手順を標準化 |
-| **2026-03-05** | **TASK-UI-01-D 再確認パターン追加**: 成功パターン「Phase 12 Step 1-A 四点同期 + screenshot運用ギャップ未タスク化」を追加。`LOGS/SKILL/topic-map` 同時更新、`docs/30-workflows/unassigned-task/` への配置、`audit --target-file` + `--diff-from HEAD` の `currentViolations=0` 固定を標準化 |
-| **2026-03-04** | **TASK-UI-00-ORGANISMS 再確認パターン追加**: 成功パターン「Phase 12 UI再確認の証跡固定」を追加。`verify/validate/screenshot-coverage` 同時実行、`stat` 時刻同期、`currentViolations=0` 固定、`phase12-task-spec-compliance-check.md` 集約の4点を標準化 |
-| **2026-03-04** | **workflow02再確認パターン追加**: 成功パターン「Phase 12 検証スクリプト実体探索先行」「Phase 12 Vitest 非watch固定」を追加。`rg --files` による実体解決と `pnpm --filter @repo/desktop exec vitest run` 固定で再確認の手戻りを抑止 |
-| **2026-02-28** | **TASK-9E 再監査パターン追加**: 成功パターン「Phase 12 テスト件数ドリフト再同期」を追加。正本件数固定→文脈限定抽出→4点検証→未タスク化までの手順を標準化 |
-| **2026-02-27** | **TASK-9H 再監査パターン追加**: 成功パターン「`phase-12-documentation.md` 完了同期」を追加。成果物5件の実体確認→ステータス同期→検証証跡固定の4ステップを標準化 |
-| **2026-02-21** | **worktree運用時のPhase 12先送り誤判断を是正**: 成功パターン「worktree環境でもStep 1-Aを先送りしない」を追加。未実施タスク誤配置検出コマンド（completed配下の未着手/未実施検知）と `verify-unassigned-links.js` 最終検証を標準化 |
-| **2026-02-21** | **IPC不整合姉妹タスク横展開検出パターン追加**: 成功パターン1件（Phase 12未タスク検出時の横展開検証）追加。クイックナビゲーション更新（成功47+件） |
-| **2026-02-21** | **UT-FIX-SKILL-IMPORT-INTERFACE-001知見反映**: 成功パターン2件（P44 IPCインターフェース不整合体系的修正、7並列エージェント仕様書生成）・失敗パターン1件（artifacts.json Phaseステータス更新忘れ）追加。クイックナビゲーション更新（失敗9件・成功46+件） |
-| **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001知見追加**: IPC型不整合解決パターン2件（IPC戻り値型2ステップ変換、Phase 12並列エージェント最適化）追加。クイックナビゲーションにIPC型不整合解決カテゴリ追加 |
-| **2026-02-19** | **TASK-9A-C仕様書作成知見反映**: 成功パターン2件（4並列Phase 1分析、既知Pitfall仕様書事前組み込み）・失敗パターン2件（APIレートリミット、complete-phase.jsパス解決誤り）追加。クイックナビゲーション更新（失敗8件・成功44+件） |
-| **2026-02-12** | **UT-STORE-HOOKS-COMPONENT-MIGRATION-001知見追加**: Phase 12 spec-update-workflow全Step逐次実行パターン追加（チェックリスト駆動、12項目更新漏れ防止） |
-| **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION知見追加**: Setter Injectionによる遅延初期化パターン追加（BrowserWindow依存DI、DIパターン使い分け基準テーブル）。関連Pitfall P34/P35参照                       |
-| **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001知見追加**: Zustand Store Hooks無限ループ対策パターン追加（useRefガード）。06-known-pitfalls.md連携強化（新規Pitfall登録フロー）。クイックナビゲーション更新     |
-| **2026-02-09** | **TASK-FIX-15-1知見追加**: 成功パターン2件（未タスク仕様書Level A化パターン、Phase 12 3ステップ完全性確認パターン）                                                                                    |
-| **2026-02-06** | **DEBT-SEC-001知見追加**: 成功パターン2件（Phase 12ドキュメント更新の完全性保証、未タスク「既存タスクに包含」判断の追跡性確保）                                                                        |
-| **2026-02-04** | **AUTH-UI-001知見追加**: 認証UIバグ修正パターン4件（既実装発見、テスト環境切り分け、React Portal z-index、認証状態変更後UI更新）                                                                       |
-| **2026-02-04** | **patterns.md構造最適化**: クイックナビゲーション・Phase 12 Task 2クイックリファレンス追加、search-replace-ui実装パターン3件追加（既存実装品質評価、Page Object、generate-index.jsファイル名誤認回避） |
-| **2026-02-04** | **AUTH-UI-004知見追加**: 外部APIデータ正規化パターン3件（プロバイダー別フォールバック、Phase 12ドキュメント5点セット、環境依存テスト分離）                                                             |
-| **2026-02-04** | **TASK-FIX-1-1-TYPE-ALIGNMENT知見追加**: 型定義統合/移行パターン4件（パッケージエクスポート更新チェック、型定義ファイルカバレッジ、Discriminated Union DRY、import文一括置換安全性）                   |
-| **2026-02-03** | **マージ統合**: TASK-9B-G（サービス設計パターン4件）+ TASK-9C/9A-A（SDK統合パターン5件）を統合                                                                                                         |
-| **2026-02-03** | **TASK-9B-G失敗パターン追加: 未タスク検出後のtask-workflow.md登録漏れ（3ステップ必須の誤認パターン）**                                                                                                 |
-| **2026-02-03** | **TASK-9B-G知見追加: サービス設計パターン4件（Script First/Progressive Disclosure統合、Facadeパターン、定数外部化、未タスク検出3ステップ）**                                                           |
-| **2026-02-03** | **TASK-9C知見追加: 成功パターン3件（Graceful SDK Fallbackパターン、queryFn DIパターン、スキル名バリデーション禁止文字サニタイズ）**                                                                    |
-| **2026-02-03** | **TASK-WCE-MONACO-001知見追加: Main→Renderer IPC実装パターン（webContents.executeJavaScript逆方向クエリ、課題ID MR-01〜MR-04）**                                                                       |
-| **2026-02-03** | **TASK-9A-A知見追加: 成功パターン2件（ESModuleモッキング回避パターン、汎用エラーアサーションパターン）**                                                                                               |
-| **2026-02-02** | **TASK-8C-C知見追加: 成功パターン1件（Phase 12 Step 1完了チェックリストの厳格遵守 - SKILL.md更新漏れ/未タスク配置漏れ/topic-map.md再生成忘れ防止）**                                                   |
-| **2026-02-02** | **TASK-8C-B知見追加: E2Eテスト設計パターン3件（ARIA属性ベースセレクタ優先、E2Eヘルパー関数分離、安定性対策3層）**                                                                                      |
-| **2026-02-02** | **TASK-OPT-CI-TEST-PARALLEL-001知見追加: CI/DevOps最適化パターン2件（GitHub Actionsテスト並列実行、DevOps仕様書更新）**                                                                                |
-| **2026-02-02** | **TASK-8B知見追加: 成功パターン1件（Phase 10 MINOR指摘の確実な未タスク変換）**                                                                                                                         |
-| **2026-02-02** | **TASK-8A知見追加: 成功パターン4件（カバレッジ閾値免除判定、ギャップ分析ベースTDD、未タスク検出P3全件記録、vi.doMock動的再読み込み）**                                                                 |
-| 2026-02-01     | TASK-8C-G知見追加: 成功パターン3件（境界値フィクスチャ設計、parseFrontmatter構造化検証、execSync決定論的テスト）                                                                                       |
-| 2026-02-01     | task-imp-permission-tool-metadata-001知見追加: 成功パターン3件（Record型スタイルマッピング、IIFEレンダリング、デフォルトメタデータフォールバック）                                                     |
-| 2026-01-31     | TASK-7D知見体系化: フェーズ境界遷移パターン（4件）・失敗回避パターン（3件）追加                                                                                                                        |
-| 2026-01-30     | TASK-7Dフィードバック反映: 成功パターン4件追加（forwardRef テスト、Exclude型設定マップ、個別セレクタ、並列エージェント）                                                                               |
-| 2026-01-28     | TASK-3-2-Cフィードバック反映: 成功パターン3件追加（React Context一括更新、動的更新間隔、Page Visibility API）                                                                                          |
-| 2026-01-27     | TASK-3-2-Aフィードバック反映: 成功パターン5件追加（R-ID方式、日常例え、ユーティリティ分離、未タスク変換）                                                                                              |
-| 2026-01-26     | Phase 12出力要件漏れパターン追加、成功パターンにチェックリスト追加                                                                                                                                     |
-| 2026-01-24     | 初版作成、Markdown見出しパターン追加                                                                                                                                                                   |
+| Date | Changes |
+| --- | --- |
+| 2026-03-12 | family index へ再編し、大規模 pattern 本文を workflow / validation / Phase 12 の 3 系統に分離 |

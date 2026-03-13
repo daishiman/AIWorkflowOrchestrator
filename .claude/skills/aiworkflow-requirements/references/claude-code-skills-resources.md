@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| v1.2.0     | 2026-03-12 | family file と rolling log archive を使う large reference skill の resource pattern を追加 |
 | v1.0.0     | 2025-01-01 | 初版作成                                               |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表・文章に変換 |
 
@@ -122,6 +123,20 @@ SKILL.mdは「Quick start」で基本的な使用方法を提供し、「Advance
 
 - 深くネストした参照を避ける（SKILL.md から1レベルに保つ）
 - すべての参照ファイルは SKILL.md から直接リンク（相対パス使用）
+
+### パターン4: family file + archive 構成
+
+large reference skill では、1枚の巨大ドキュメントを以下へ分割する。
+
+| パス | 役割 |
+| --- | --- |
+| `references/topic-index.md` | family index |
+| `references/topic-detail-a.md` | detail |
+| `references/topic-detail-b.md` | detail |
+| `references/logs-archive-index.md` | archive index |
+| `references/logs-archive-YYYY-MM.md` | 月次 archive |
+
+`SKILL.md` は上記すべてへ直リンクを持ち、`LOGS.md` は rolling log に留める。
 
 ---
 
