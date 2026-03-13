@@ -711,7 +711,8 @@
 
 | タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview / search で露出した fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~preview / search で露出した fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | `spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report` の exact count を横断比較し、Phase 12 follow-up の stale 値を機械検出する | 中 | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
 
 #### 検証証跡
 
@@ -722,6 +723,42 @@
 | `pnpm --filter @repo/desktop build` | PASS |
 | `pnpm --filter @repo/desktop run screenshot:task-059b` | PASS |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-059b-ui-04c-workspace-preview-quicksearch` | PASS |
+
+### タスク: UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 Workspace Preview/Search resilience ガード（2026-03-13）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | fix |
+| 優先度 | 中 |
+| 完了日 | 2026-03-13 |
+| 対象 | `WorkspaceView` の Quick Search match gate、preview timeout/retry、typed error taxonomy、Phase 11 current source screenshot |
+| 成果物 | `docs/30-workflows/completed-tasks/workspace-preview-search-resilience-guard/outputs/` |
+
+#### 実施内容
+
+- `quickFileSearchResilience.ts` を追加し、`score > 0` gate、stable sort、empty-state text を pure utility 化
+- `previewResilience.ts` を追加し、5秒 timeout、3回 retry、transport/parse/crash/no-match taxonomy を共通 helper 化
+- `QuickFileSearch`, `PreviewPanel`, `PreviewErrorBoundary`, `WorkspaceView` を typed error surface へ更新
+- targeted vitest 39件 PASS、typecheck PASS、eslint PASS、targeted coverage `81.63 / 73.79 / 78.41 / 81.63`
+- Phase 11 では current source dev server を使って screenshot 5件と Apple UI/UX review を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| fuzzy search の一致判定と順位補正が混在する | subsequence 0 にも boost を乗せる | pure utility で `score > 0` gate を先に切る |
+| `file.read` hang が loading を解放しない | renderer timeout を持たず IPC 応答だけ待つ | timeout / retry を `readPreviewFileWithResilience()` に集約 |
+| current build screenshot が esbuild binary mismatch で詰まる | `electron-vite build` が local arch と不整合 | current source dev server を capture source として利用し、metadata に記録 |
+
+#### 同種課題の5分解決カード
+
+1. fuzzy search は一致判定と順位補正を別関数へ分離する。
+2. preview 系 `invoke` には renderer timeout と retry 上限を先に決める。
+3. parse error は recoverable fallback、transport error は action 付き alert へ分離する。
+4. Phase 11 の build が壊れている場合でも、current source dev server から representative screenshot を取る。
+5. workflow / completed task spec / system spec / LOGS / SKILL / mirror sync を同一ターンで更新する。
 ### タスク: TASK-10A-G スキルライフサイクル統合テスト強化（2026-03-10）
 
 | 項目 | 値 |
@@ -4152,7 +4189,8 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化~~ | ~~中~~ | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | Phase 12 outputs の exact count と current/baseline bucket を横断比較し、follow-up 未タスク formalize 後の stale 記録を機械検出する | 中 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 Phase 12 follow-up（2026-03-13） | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
 | UT-UI-05A-GETFILETREE-001 | skill:getFileTree IPCチャネル追加 | CRITICAL | TASK-UI-05A FR-1前提 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
 | UT-UI-05A-SPEC-CONSISTENCY-001 | Phase 2/5 useFileTree 仕様統一（filePaths vs IPC getFileTree） | 中 | TASK-UI-05A 再監査（2026-03-02） | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-spec-consistency-filetree-contract.md` |
@@ -4969,3 +5007,5 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-settings-light-theme-contrast-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-accountsection-linked-provider-key-warning-001.md`
+| **1.67.59** | **2026-03-13** | **UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を登録**: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` follow-up の苦戦箇所を、Phase 12 outputs 4成果物（`spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report`）の exact count 横断比較 validator として未タスク化。04C 完了節の関連未タスクと残課題テーブルへ同時登録し、follow-up formalize 後の stale count を機械検出する導線を追加 |
+| **1.67.58** | **2026-03-13** | **UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期**: 04C 節の related row と残課題テーブルを完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` へ更新。Quick Search / preview resilience / typed taxonomy の実装、targeted tests 39件 PASS、Phase 11 screenshot 5件、current source dev server capture fallback を完了記録へ追加 |

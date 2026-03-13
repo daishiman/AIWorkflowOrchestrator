@@ -74,7 +74,7 @@ Phase 12 Task 2 開始
 | 「関連タスクテーブルは確認不要」         | **Step 1-C必須** | 仕様書内の「未タスク候補」「関連タスク」テーブルにタスクが記載されている可能性あり。Grepで確認が必要 |
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
 | 「実行タスクは表だけ記載すれば十分」 | **表+箇条書きの両方必須** | `phase-12-documentation.md` は実行タスクの表と `- Task 12-X:` 箇条書きを両方残すことで、機械検証と人間可読性の両方を満たす |
-| 「未完了の未タスクを completed-tasks/unassigned-task に置いてよい」 | **配置先判定を必須記録** | 未完了は `docs/30-workflows/unassigned-task/`、完了移管済みのみ `docs/30-workflows/completed-tasks/unassigned-task/`。混在は参照ドリフトを招く |
+| 「未完了の未タスクを completed-tasks 側へ置いてよい」 | **配置先判定を必須記録** | 未完了は `docs/30-workflows/unassigned-task/`。completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT は `docs/30-workflows/completed-tasks/*.md`、legacy standalone は `docs/30-workflows/completed-tasks/unassigned-task/` として区別する |
 | 「task-workflow.md の未タスクリンクは後で直す」 | **Step 1-Eで即時整合** | 参照切れが残ると後続タスクの探索が失敗する。`verify-unassigned-links.js` で機械検証する |
 | 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
@@ -346,8 +346,8 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 
 ### Step 1-E: 未タスク指示書作成・登録（1件以上検出時は必須）
 - [ ] 未タスク候補が1件以上の場合、`docs/30-workflows/unassigned-task/` に指示書を作成・配置した
-- [ ] 未タスクごとに配置先判定を記録した（未完了=`docs/30-workflows/unassigned-task/` / 完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
-- [ ] `docs/30-workflows/completed-tasks/unassigned-task/` 配下に未完了指示書（`未実施`/`未着手`）が混在していないことを確認した
+- [ ] 未タスクごとに配置先判定を記録した（未完了=`docs/30-workflows/unassigned-task/` / completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / 完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md` / legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] completed-only area（`docs/30-workflows/completed-tasks/*.md` と `docs/30-workflows/completed-tasks/unassigned-task/`）に未完了指示書（`未実施`/`未着手`）が混在していないことを確認した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
 - [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
@@ -552,10 +552,21 @@ comm -3 \
 # 1) 全体監査（既存違反を含む）
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
-# 1.5) 対象ファイル監査（今回差分の current を抽出）
+# 1.5-a) 対象未タスク監査（今回差分の current を抽出）
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/<task>.md | \
+  jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
+
+# 1.5-b) completed 直下の standalone 完了指示書を current 監査
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+  --target-file docs/30-workflows/completed-tasks/<task>.md | \
+  jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
+
+# 1.5-c) completed workflow 配下の継続 backlog を current 監査
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+  --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task \
+  --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md | \
   jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
 
 # 2) 今回差分の候補抽出（変更範囲を指定）
@@ -572,8 +583,12 @@ node .agents/skills/task-specification-creator/scripts/validate-phase-output.js 
 
 - `baseline`: 着手前から存在する違反。スコープ外として記録し、別途改善対象化
 - `current`: 今回変更で新規発生した違反。今回タスク内で修正必須
-- `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。**今回差分の合否判定には `--diff-from HEAD --target-file` の組み合わせ**を使う
-- `--target-file` の有効範囲: `docs/30-workflows/unassigned-task/` または `docs/30-workflows/completed-tasks/unassigned-task/` 配下のみ。`docs/30-workflows/completed-tasks/*.md`（完了済み指示書直下）は対象外のため、scoped監査には未実施指示書を指定する
+- `--target-file`: 対象のみを表示する機能ではなく、`current/baseline` を分類する機能。root `unassigned-task/` の今回差分合否判定には **`--diff-from HEAD --target-file` の組み合わせ**を使う
+- `--target-file` の有効範囲:
+  - `docs/30-workflows/unassigned-task/*.md`
+  - `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/*.md`（`--completed-unassigned-dir` を実際の親 workflow 配下へ合わせる）
+  - `docs/30-workflows/completed-tasks/*.md`（standalone 完了指示書の current 監査）
+- `git diff --name-status HEAD` / `--diff-from HEAD` は、移動直後の untracked completed file を拾えない場合がある。削除済み旧 path だけが current に出るときは、`--target-file docs/30-workflows/completed-tasks/<task>.md` を正本にする
 
 記録フォーマット:
 

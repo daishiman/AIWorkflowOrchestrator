@@ -868,7 +868,12 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Renderer local preview resilience を utility / test / error taxonomy まで共通化し、次回 preview/search UI の初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Renderer local preview resilience を utility / test / error taxonomy まで共通化し、次回 preview/search UI の初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+
+#### 2026-03-13 追補
+
+- `readPreviewFileWithResilience()` を `WorkspaceView` から切り出し、timeout / retry / detail message を pure helper 化した
+- `PreviewSurfaceError` を category / code / summary / detail の構造体へ揃え、`PreviewPanel` と `WorkspaceStatusBar` が同じ error contract を使う
 
 ---
 
@@ -3374,3 +3379,4 @@ expect(result).toEqual({
 | 1.1.0   | 2026-01-30 | TASK-3-2-F: テスト環境設定パターン追加（jsdom/happy-dom選択、グローバルモック設計、モック上書きパターン）                                                                                                                                                                                               |
 | 1.0.0   | 2026-01-26 | 仕様ガイドライン準拠: コード例削除、文章・表形式に変更                                                                                                                                                                                                                                                  |
 | 0.1.0   | 2026-01-26 | 初版作成                                                                                                                                                                                                                                                                                                |
+| 2026-03-13 | v1.41.2 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期。renderer local preview resilience を helper / typed taxonomy / integration test まで引き上げ、related row を completed path へ更新 |

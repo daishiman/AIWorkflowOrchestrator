@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-13 | 1.29.83 | UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を関連未タスクとして追加。`workspace-preview-search-resilience-guard` follow-up で露出した Phase 12 outputs 4成果物の exact count drift を苦戦箇所へ昇格し、summary / checklist / detection / report を横断比較する validator 改善導線を追加 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
 | 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
 | 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
@@ -7363,11 +7364,22 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 1. fuzzy search に `no match -> []` と same-score stable sort テストを先に置く。
 2. preview 読み込みは renderer timeout と retry の上限を明示する。
 3. parse error と transport error を別 UI として扱う。
-4. Phase 11 は current build static serve を使い、dialog / mobile / terminology を再確認する。
-5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+4. Phase 11 の build が詰まる場合でも、current source dev server から representative screenshot を取って review を止めない。
+5. workflow / outputs / system spec / LOGS / SKILL / mirror sync を同一ターンで同期し、Phase 12 outputs 4成果物の exact count を同値化する。
+
+### 苦戦箇所: Phase 12 outputs の exact count が 4成果物で手動同期になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec-update-summary.md`、`system-spec-sync-checklist.md`、`unassigned-task-detection.md`、`verification-report.md` の exact count が、follow-up 未タスク formalize 後に 1 ファイルだけ古い値のまま残りやすい |
+| 再発条件 | related row / global backlog / outputs を別ターンで更新し、manual diff だけで整合を見ようとする |
+| 対処 | current task では 4 成果物を同一ターンで再同期し、未タスク `UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001` を formalize した |
+| 標準ルール | exact count の再同期ルールだけで終えず、Phase 12 outputs 4成果物を横断比較する validator で stale 値を機械検出する |
 
 ### 関連未タスク
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | Phase 12 outputs 4成果物の exact count と current/baseline bucket を横断比較し、follow-up 未タスク formalize 後の stale 値を機械検出する | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
+| 2026-03-13 | 1.29.78 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の完了を反映。`score > 0` gate、renderer timeout helper、typed error taxonomy、current source dev server screenshot fallback を教訓へ追加し、関連改善タスクの参照先を completed path へ更新 |

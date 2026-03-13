@@ -347,11 +347,13 @@ describe("WorkspaceView", () => {
 
     fireEvent.click(screen.getByTestId("workspace-toggle-file"));
     fireEvent.click(screen.getByTestId("workspace-treeitem-file-1"));
+    fireEvent.click(screen.getByTestId("workspace-toggle-preview"));
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(2_100);
     });
 
+    expect(screen.getByTestId("preview-alert")).toBeInTheDocument();
     expect(screen.getByTestId("workspace-status-bar")).toHaveTextContent(
       "Permission denied",
     );
@@ -366,12 +368,14 @@ describe("WorkspaceView", () => {
 
     fireEvent.click(screen.getByTestId("workspace-toggle-file"));
     fireEvent.click(screen.getByTestId("workspace-treeitem-file-1"));
+    fireEvent.click(screen.getByTestId("workspace-toggle-preview"));
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(17_000);
     });
 
     expect(readMock.mock.calls.length).toBeGreaterThanOrEqual(3);
+    expect(screen.getByTestId("preview-alert")).toBeInTheDocument();
     expect(screen.getByTestId("workspace-status-bar")).toHaveTextContent(
       "5秒 timeout",
     );

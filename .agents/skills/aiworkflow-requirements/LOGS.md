@@ -4,6 +4,38 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-13 - UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を system spec へ追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001`
+- 目的: `workspace-preview-search-resilience-guard` follow-up で手動再同期した exact count を、Phase 12 outputs 4成果物で横断比較する改善導線として formalize する
+
+### 実施内容
+- `references/task-workflow.md` の 04C 完了節と残課題テーブルへ同 ID を追加し、global backlog からも辿れるようにした
+- `references/lessons-learned.md` に「Phase 12 outputs の exact count が 4成果物で手動同期になりやすい」苦戦箇所と標準ルールを追加し、関連未タスク表へ導線を追加した
+- `references/workflow-workspace-preview-search-resilience-guard.md` に同 ID を関連未タスクとして追加し、統合正本から validator 改善へ直接遷移できるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 統合 workflow 正本を追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001`
+- 目的: 実装内容、苦戦箇所、screen verification、Phase 12 root evidence が複数仕様へ分散していたため、同種課題の再利用入口を 1 ファイルへ集約する
+
+### 実施内容
+- `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、search resilience helper、preview timeout/retry helper、conversation persistence race fix、Phase 11 screenshot 5件、5分解決カード、仕様書別 SubAgent 編成を統合した
+- `indexes/resource-map.md` に preview/search resilience 向け逆引き導線を追加し、`indexes/quick-reference.md` に検索語、読む順番、実装アンカーを追加した
+- `SKILL.md` に workflow 正本の直リンクを追加し、`task-workflow.md` / `ui-ux-search-panel.md` / `arch-state-management.md` / `error-handling.md` / `lessons-learned.md` へ降りる最短入口を固定した
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
 
 ### コンテキスト
@@ -9355,3 +9387,28 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - `task-workflow.md` の 04C 関連 row と残課題テーブルを完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` へ更新
+  - `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` に search match gate、preview timeout helper、typed taxonomy、current source dev server screenshot fallback を同期
+  - Phase 11 screenshot 5件と Apple UI/UX review を current workflow 配下へ記録
+  - mirror sync 前提で `.claude` を canonical root として更新
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査追補
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（再監査）
+- **Result**: success
+- **Notes**:
+  - `ui-ux-components.md` に 04C follow-up の helper 抽出、empty state / retry action の visual polish、`external-dev-server` screenshot 5件の再検証結果を追記
+  - `arch-state-management.md` に preview reset 順序、local helper 抽出、targeted vitest 39件 PASS を 04C の state evidence として追記
+  - `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` と同粒度で一覧 spec / state spec を補完し、再利用導線の抜けを解消

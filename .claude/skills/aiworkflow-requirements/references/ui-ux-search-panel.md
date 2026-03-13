@@ -165,7 +165,7 @@
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | QuickFileSearch の `score=0` 除外、stable sort、top 10 制御を再利用可能な search resilience ガードへ昇格する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~QuickFileSearch の `score=0` 除外、stable sort、top 10 制御を再利用可能な search resilience ガードへ昇格する~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
 
 ---
 
@@ -553,3 +553,9 @@ EditorInstanceインターフェースのTextArea実装。
 | 2026-02-04 | v1.2.0     | 未タスク2件追加: task-search-scope-folder-001（検索スコープ指定）、task-search-multifile-replace-001（一括置換） |
 | 2026-02-04 | v1.1.0     | task-imp-search-ui-001完了記録追加（E2Eテスト17件、グローバルショートカット統合、IPCプロバイダ） |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                       |
+#### 2026-03-13 追補
+
+- `buildSearchResults()` が `score > 0` gate と same-score `path.localeCompare()` を担い、dialog は UI state 表示だけに集中する
+- no-match empty state と live region 文言は `resolveQuickFileSearchViewState()` で統一した
+
+| 2026-03-13 | v1.3.2     | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期。`buildSearchResults()` / `resolveQuickFileSearchViewState()` による `score=0` 除外、stable sort、no-match 文言統一を current 実装へ反映し、関連 task row を completed path へ更新 |
