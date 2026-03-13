@@ -184,6 +184,30 @@ describe("1. IPC Channel Correctness", () => {
       source,
     );
   });
+
+  it("PC-CH-12: evaluatePrompt() invokes IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE", async () => {
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: {
+        score: 82,
+        breakdown: {
+          clarity: 80,
+          specificity: 84,
+          completeness: 82,
+          reproducibility: 81,
+          security: 90,
+        },
+        feedback: ["ok"],
+      },
+    });
+
+    await skillAPI.evaluatePrompt("品質ゲートを追加する");
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+      { prompt: "品質ゲートを追加する" },
+    );
+  });
 });
 
 // ============================================================
@@ -412,6 +436,10 @@ describe("3. Channel Whitelist Verification", () => {
       name: "SKILL_VALIDATE_SOURCE",
       channel: IPC_CHANNELS.SKILL_VALIDATE_SOURCE,
     },
+    {
+      name: "SKILL_OPTIMIZE_EVALUATE",
+      channel: IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+    },
   ];
 
   it.each(invokeChannels)(
@@ -628,6 +656,22 @@ describe("6. No Hardcoded Channel Strings", () => {
 
     mockInvoke.mockResolvedValue(null);
     await skillAPI.getExecutionStatus("e1");
+
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: {
+        score: 82,
+        breakdown: {
+          clarity: 80,
+          specificity: 84,
+          completeness: 82,
+          reproducibility: 81,
+          security: 90,
+        },
+        feedback: ["ok"],
+      },
+    });
+    await skillAPI.evaluatePrompt("品質ゲートを追加する");
 
     // Verify all invoked channels are IPC_CHANNELS values
     for (const call of mockInvoke.mock.calls) {

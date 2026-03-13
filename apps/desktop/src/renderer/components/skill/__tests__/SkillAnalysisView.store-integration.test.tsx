@@ -31,6 +31,7 @@ import {
 const mockAnalyzeSkill = vi.fn();
 const mockApplySkillImprovements = vi.fn();
 const mockAutoImproveSkill = vi.fn();
+const mockEvaluatePostImprove = vi.fn();
 const mockClearSkillError = vi.fn();
 const mockClearAnalysis = vi.fn();
 
@@ -38,8 +39,18 @@ let mockCurrentAnalysis: SkillAnalysis | null = null;
 let mockIsAnalyzing = false;
 let mockIsImproving = false;
 let mockSkillError: string | null = null;
+let mockLatestPromptRequest = "改善して";
+let mockLatestGateDecision = null;
+let mockLatestEvaluationSnapshot = null;
+let mockSkillEvaluationError: string | null = null;
+let mockIsLifecycleEvaluating = false;
 
 vi.mock("../../../store", () => ({
+  useAppStore: {
+    getState: () => ({
+      currentAnalysis: mockCurrentAnalysis,
+    }),
+  },
   useCurrentAnalysis: () => mockCurrentAnalysis,
   useIsAnalyzingSkill: () => mockIsAnalyzing,
   useIsImprovingSkill: () => mockIsImproving,
@@ -47,6 +58,12 @@ vi.mock("../../../store", () => ({
   useAnalyzeSkill: () => mockAnalyzeSkill,
   useApplySkillImprovements: () => mockApplySkillImprovements,
   useAutoImproveSkill: () => mockAutoImproveSkill,
+  useEvaluatePostImprove: () => mockEvaluatePostImprove,
+  useIsLifecycleEvaluating: () => mockIsLifecycleEvaluating,
+  useLatestEvaluationSnapshot: () => mockLatestEvaluationSnapshot,
+  useLatestGateDecision: () => mockLatestGateDecision,
+  useLatestPromptRequest: () => mockLatestPromptRequest,
+  useSkillEvaluationError: () => mockSkillEvaluationError,
   useClearSkillError: () => mockClearSkillError,
   useClearAnalysis: () => mockClearAnalysis,
 }));
@@ -70,10 +87,16 @@ describe("SkillAnalysisView Store統合", () => {
     mockIsAnalyzing = false;
     mockIsImproving = false;
     mockSkillError = null;
+    mockLatestPromptRequest = "改善して";
+    mockLatestGateDecision = null;
+    mockLatestEvaluationSnapshot = null;
+    mockSkillEvaluationError = null;
+    mockIsLifecycleEvaluating = false;
 
     mockAnalyzeSkill.mockResolvedValue(undefined);
     mockApplySkillImprovements.mockResolvedValue(undefined);
     mockAutoImproveSkill.mockResolvedValue(undefined);
+    mockEvaluatePostImprove.mockResolvedValue(undefined);
 
     (window as Record<string, unknown>).electronAPI = {
       skill: {

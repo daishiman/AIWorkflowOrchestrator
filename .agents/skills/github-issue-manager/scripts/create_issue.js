@@ -226,7 +226,7 @@ function updateExistingIssue(
       "edit",
       String(issueNumber),
       "--title",
-      `"${title}"`,
+      title,
       "--body-file",
       tmpFile,
     ]);
@@ -349,7 +349,7 @@ function createOrUpdateIssue(specPath, dryRun = false) {
       "issue",
       "create",
       "--title",
-      `"${title}"`,
+      title,
       "--body-file",
       tmpFile,
       ...labelArgs,

@@ -80,9 +80,11 @@
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-S2-A | `phase-12-documentation.md` | Step 2 更新対象（`arch/api/interfaces/security`）の要否判定を確定 | 更新対象に応じて Step 2 を `完了` / `該当なし` で説明可能 |
+| SubAgent-S2-A | `phase-12-documentation.md` | Step 2 更新対象（`arch/api/interfaces/security`）の要否判定を確定 | 更新対象に応じて Step 2 を `完了` / `該当なし` で説明可能。既存 IPC 再利用でも public preload method / shared export 追加時は `完了` 側で扱う |
 | SubAgent-S2-B | `outputs/phase-12/documentation-changelog.md` | Step 判定（1-A〜2）と理由を同期 | Step 2 判定が実装実体と一致 |
 | SubAgent-S2-C | `outputs/phase-12/spec-update-summary.md` | Step 2 更新仕様書の一覧化と反映内容同期 | changelog の Step 2 判定と更新対象一覧が一致 |
+
+> `skill:*` など既存 channel の再利用だけであっても、`window.electronAPI.*` の public preload method や `packages/shared` の barrel export が増えた場合は Step 2 対象として扱う。
 
 ### 2.4 仕様書別SubAgent実行ログ（必須）
 
@@ -174,6 +176,7 @@ UI機能実装時の必須記載（追加）:
 
 ```bash
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
+rg -n "contextBridge\\.exposeInMainWorld|window\\.electronAPI\\.|export .* from" apps/desktop/src/preload packages/shared/src
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
@@ -268,7 +271,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `pending` が残っていない
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
+- [ ] 既存 IPC 再利用でも public preload method または shared barrel export を追加した場合、Step 2 を `該当なし` にしていない
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
+- [ ] 新規未タスクが 0 件の場合、`docs/30-workflows/unassigned-task/` への追加作成なしを成果物へ明記している
 - [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
 - [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] 利用テンプレート（retrospective/subagent）の重複行（同一手順番号・同一コマンド）が解消されている

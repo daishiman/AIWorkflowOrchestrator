@@ -20,6 +20,7 @@ import type {
   Suggestion,
 } from "@repo/shared/types/skill-improver";
 import {
+  useAppStore,
   useCurrentAnalysis,
   useIsAnalyzingSkill,
   useIsImprovingSkill,
@@ -27,6 +28,8 @@ import {
   useAnalyzeSkill,
   useApplySkillImprovements,
   useAutoImproveSkill,
+  useEvaluatePostImprove,
+  useLatestPromptRequest,
 } from "../../../store";
 
 // ============================================
@@ -86,11 +89,13 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
   const isAnalyzing = useIsAnalyzingSkill();
   const isImproving = useIsImprovingSkill();
   const error = useSkillError();
+  const latestPromptRequest = useLatestPromptRequest();
 
   // ---- Store actions (P31対策: 個別セレクタで取得) ----
   const analyzeSkill = useAnalyzeSkill();
   const applySkillImprovements = useApplySkillImprovements();
   const autoImproveSkill = useAutoImproveSkill();
+  const evaluatePostImprove = useEvaluatePostImprove();
 
   // ---- Local state (ローカルUI状態は引き続きuseState) ----
   const [selectedSuggestions, setSelectedSuggestions] = useState<Set<number>>(
@@ -139,11 +144,26 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
 
     try {
       await applySkillImprovements(skillName, selected);
+      const nextAnalysis = useAppStore.getState().currentAnalysis;
+      if (nextAnalysis) {
+        await evaluatePostImprove({
+          skillName,
+          prompt: latestPromptRequest ?? skillName,
+          skillAnalysis: nextAnalysis,
+        });
+      }
       setImprovementResult(null);
     } catch {
       // store action 内部でエラーをskillErrorに格納済み。UIクラッシュ防止
     }
-  }, [analysis, selectedSuggestions, skillName, applySkillImprovements]);
+  }, [
+    analysis,
+    selectedSuggestions,
+    skillName,
+    applySkillImprovements,
+    evaluatePostImprove,
+    latestPromptRequest,
+  ]);
 
   const handleAutoImprove = useCallback(async () => {
     const isConfirmed = window.confirm("全自動改善を実行しますか？");
@@ -151,11 +171,19 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
 
     try {
       await autoImproveSkill(skillName);
+      const nextAnalysis = useAppStore.getState().currentAnalysis;
+      if (nextAnalysis) {
+        await evaluatePostImprove({
+          skillName,
+          prompt: latestPromptRequest ?? skillName,
+          skillAnalysis: nextAnalysis,
+        });
+      }
       setImprovementResult(null);
     } catch {
       // store action 内部でエラーをskillErrorに格納済み。UIクラッシュ防止
     }
-  }, [skillName, autoImproveSkill]);
+  }, [skillName, autoImproveSkill, evaluatePostImprove, latestPromptRequest]);
 
   // ---- Effects ----
 

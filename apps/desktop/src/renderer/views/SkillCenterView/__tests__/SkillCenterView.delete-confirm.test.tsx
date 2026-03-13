@@ -6,6 +6,7 @@ import type { UseSkillCenterReturn } from "../hooks/useSkillCenter";
 const mockUseSkillCenter = vi.fn<() => UseSkillCenterReturn>();
 const mockHandleConfirmDelete = vi.fn();
 const mockHandleCancelDelete = vi.fn();
+const mockEvaluatePostImprove = vi.fn();
 
 vi.mock("../hooks/useSkillCenter", () => ({
   useSkillCenter: () => mockUseSkillCenter(),
@@ -35,6 +36,16 @@ vi.mock("../components/SkillEmptyState", () => ({
 
 vi.mock("../components/SkillDetailPanel/SkillDetailPanel", () => ({
   SkillDetailPanel: vi.fn(() => <div data-testid="skill-detail-panel" />),
+}));
+
+vi.mock("../../../store", () => ({
+  useLatestGateDecision: vi.fn(() => null),
+  useLatestEvaluationSnapshot: vi.fn(() => null),
+  useLatestPromptRequest: vi.fn(() => "改善して"),
+  useCurrentAnalysis: vi.fn(() => null),
+  useIsLifecycleEvaluating: vi.fn(() => false),
+  useSkillEvaluationError: vi.fn(() => null),
+  useEvaluatePostImprove: vi.fn(() => mockEvaluatePostImprove),
 }));
 
 import { SkillCenterView } from "../index";

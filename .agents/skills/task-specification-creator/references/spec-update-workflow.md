@@ -722,6 +722,10 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Step 2 で以
 > **参考**: TASK-9B-H（SkillCreatorService IPC）では上記7ファイル全ての更新が必要だった。
 > IPC追加タスクでは必ずこの一覧を確認し、該当するファイルを漏れなく更新すること。
 
+> **Task04 再監査で追加した判断ルール**:
+> 既存 IPC を再利用していても、`window.electronAPI.skill.*` などの public preload method を追加した場合、または `packages/shared` の barrel export を増やした場合は Step 2 対象とみなす。
+> この場合は少なくとも `api-ipc-agent.md`、`interfaces-agent-sdk-skill.md`、`task-workflow.md` を更新し、必要に応じて `lessons-learned.md` に再利用ルールを残す。
+
 ### Step 2: システム仕様更新（条件付き）
 
 **更新判断基準に該当する場合のみ**実行。
@@ -905,6 +909,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |

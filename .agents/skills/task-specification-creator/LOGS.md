@@ -9,6 +9,17 @@
 > - 参照ガイド: references/self-improvement-cycle.md
 
 ---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 11/12 再監査テンプレート是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` に、既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須とする判断ルールを追加
+  - Task04 workflow の `manual-test-result.md` を `テストケース / 結果 / 証跡` 形式へ是正し、`validate-phase11-screenshot-coverage` の再発条件を具体化した
+  - Task04 の `implementation-guide.md` を Part 1/2 + `型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧` へ再編し、validator と実務可読性の両立を固定した
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認パターン追補
 
 - **Agent**: task-specification-creator

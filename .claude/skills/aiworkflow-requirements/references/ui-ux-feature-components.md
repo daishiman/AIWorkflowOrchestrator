@@ -29,6 +29,7 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| Skill Evaluation Gate | TASK-SKILL-LIFECYCLE-04 | SkillEvaluationPanel, SkillLifecyclePanel, SkillAnalysisView, ScoreDisplay, SkillCenterView | 完了 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
@@ -1430,6 +1431,47 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 ---
 
+## Skill Evaluation Gate（TASK-SKILL-LIFECYCLE-04 / completed）
+
+TASK-SKILL-LIFECYCLE-04 では、Task03 の create / execute / improve と Task05 の use / re-evaluate を、単一の quality gate UI でつなぐ `SkillEvaluationPanel` を追加した。`ScoreDisplay` の視覚閾値をそのまま使いながら、保存可否・利用可否・推奨可否を `revise_required` / `save_with_warning` / `use_with_warning` / `use_ready` / `recommended` の 5 状態で統一した。
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 1-12 完了 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/` |
+| 実画面検証（スクリーンショット） | ✅ 6件取得 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/` |
+| Phase 12成果物 | ✅ 6成果物 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-12/` |
+
+### UI観点の要点
+
+- `SkillEvaluationPanel` は `SkillLifecyclePanel` と `SkillCenterView` の両方で同じ status badge / summary / next surface / delta 表現を使う。
+- `SkillAnalysisView` は詳細分析、`SkillEvaluationPanel` は最終判定を担当し、情報密度の高い分析と行動判断を分離する。
+- `ScoreDisplay` は総合スコアの視覚化を継続しつつ、60 / 80 の閾値は gate decision の根拠としても再利用する。
+- hard block ケースは `critical risk が残っているため利用できません。` の短い文で利用停止理由を固定した。
+
+### 実装時の苦戦箇所（TASK-SKILL-LIFECYCLE-04）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| public API を増やしたのに UI spec だけ更新してしまう | IPC チャネル追加がないため `interfaces-agent-sdk-skill.md` を見落とす | `evaluatePrompt()` と shared export を public contract として Step 2 対象へ昇格 | 既存IPC再利用でも preload method 追加時は interface spec を必ず更新する |
+| screenshot はあるが TC と 1:1 で結び付かない | `manual-test-result.md` に `証跡` 列がなく、validator が coverage を読めない | `テストケース / 結果 / 証跡` の literal 形式へ是正した | Phase 11 は screenshot path を `証跡` 列に固定する |
+| Task05 再評価後の表示が stale に見える | `recommended` を維持したくなり、delta 0 ケースの意味がぶれる | `delta=0` なら `use_ready` に戻す契約を UI と教訓へ明記 | 推奨状態は「改善差分が残る間だけ」と定義し、再評価結果を優先する |
+
+### 同種課題の5分解決カード
+
+1. 画面間共通の品質判定は、詳細分析 UI と行動判断 UI を分けて設計する。
+2. score 表示だけで済ませず、next surface と blocking issue まで 1 カードで返す。
+3. Phase 11 は `テストケース / 証跡` を literal で固定し、screenshot validator を通す。
+4. 既存 IPC を再利用しても preload public API を増やしたら interface spec を更新する。
+5. 再評価画面では stale な推奨表示を残さず、最新 snapshot をそのまま見せる。
+
+### 関連未タスク
+
+本タスクで新規未タスクは検出されていない。`audit-unassigned-tasks --json --diff-from HEAD` では current task 由来 0 件で、legacy baseline は既存 backlog として継続監視する。
+
+---
+
 <a id="organisms-foundation-task-ui-00-organisms"></a>
 ## Organisms Foundation（TASK-UI-00-ORGANISMS / completed）
 
@@ -1958,6 +2000,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-12 | v1.14.36   | TASK-SKILL-LIFECYCLE-04 を反映: 収録機能一覧へ Skill Evaluation Gate を追加し、`SkillEvaluationPanel` / Task03-Task05 共通 gate / screenshot 6件 / public preload API 同期漏れ対策 / validator 準拠証跡を専用セクションへ同期 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
 | 2026-03-11 | v1.14.33   | TASK-UI-04B-WORKSPACE-CHAT を反映: 収録機能一覧へ Workspace Chat Panel を追加し、専用セクションへ `WorkspaceChatPanel` / mention / stream / file context / conversation persist、targeted tests 14件、Phase 11 screenshot 8件を同期 |
