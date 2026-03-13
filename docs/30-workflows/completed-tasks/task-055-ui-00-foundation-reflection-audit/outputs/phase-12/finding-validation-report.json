@@ -18,7 +18,7 @@
       "id": "FND-055-003",
       "status": "PASS",
       "detail": "Task 5B の適用境界（対象/対象外）を確認",
-      "target": "docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-061-ui-09-onboarding-wizard.md"
+      "target": "docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/index.md"
     }
   ],
   "pass": true

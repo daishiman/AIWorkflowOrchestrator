@@ -190,6 +190,22 @@ UI機能実装の場合は次を推奨:
 | 苦戦箇所、再発条件、5分解決カード | `lessons-learned.md` | 次回の調査時間を最短化できる |
 | 再利用テンプレート、SubAgent プロファイル | `skill-creator` patterns / templates | 同種 task の初動をテンプレートで短縮できる |
 
+### 4.2.3 Onboarding overlay / Settings rerun 反映先マトリクス
+
+| 情報の種類 | 最適な反映先 | 反映理由 |
+| --- | --- | --- |
+| 実装全体像、SubAgent 分担、follow-up resweep の統合入口 | `references/workflow-onboarding-wizard-alignment.md` | overlay / rerun / persist / screenshot / backlog resweep を 1 入口で再現できる |
+| 追加コンポーネント一覧、完了タスク、実装サマリー | `ui-ux-components.md` | UI カタログとして一覧性が高い |
+| overlay flow、画面証跡、関連未タスク、5分解決カード | `ui-ux-feature-components.md` | 機能単位で再利用しやすい |
+| overlay 表示条件、`system` preview readability | `ui-ux-navigation.md` | visual contract と表示条件の正本 |
+| rerun button、force-open callback、Settings 責務 | `ui-ux-settings.md` | rerun 導線の責務境界を固定できる |
+| persist key、dismiss / forcedOpen / completion ownership | `arch-state-management.md` | state 境界を保存責務込みで整理できる |
+| 完了記録、検証値、既存 follow-up 配置確認 | `task-workflow.md` | 台帳と検証結果を同時追跡できる |
+| 苦戦箇所、再発条件、5分解決カード | `lessons-learned.md` | 次回の短時間解決に直結する |
+| 既存 follow-up 指示書本文 | `docs/30-workflows/unassigned-task/*.md` | 実際の実行仕様を current contract に保てる |
+
+> Onboarding 系 Phase 12 では「新規未タスク 0 件」でも、既存 follow-up 本文の `2.2` / `3.1` / `3.5` / 検証手順を current contract へ再同期する。
+
 ### 4.3 APIキー連動 + チャット経路整合マトリクス（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001型）
 
 | 情報の種類 | 最適な反映先 | 反映理由 |

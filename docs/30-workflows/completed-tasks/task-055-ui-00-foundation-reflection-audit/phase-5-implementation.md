@@ -31,7 +31,7 @@
 | Phase 4 Redチェック計画  | `outputs/phase-4/red-check-plan.md`                                                                                                  | 失敗条件     |
 | Phase 4 検証コマンド表   | `outputs/phase-4/validation-command-sheet.md`                                                                                        | 実行コマンド |
 | 監査対象画面仕様         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-059a-ui-04b-workspace-chat-panel.md` | 反映先確認   |
-| 監査対象画面仕様         | `docs/30-workflows/skill-import-agent-system/tasks/task-00-unified-implementation-sequence/task-061-ui-09-onboarding-wizard.md`      | 反映先確認   |
+| 監査対象画面仕様         | `docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/index.md`                                                        | 反映先確認   |
 
 ## システム仕様（aiworkflow-requirements）
 

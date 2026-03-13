@@ -22,9 +22,13 @@ import type { ThemeMode } from "../../store/types";
 
 export interface SettingsViewProps {
   className?: string;
+  onOpenOnboarding?: () => void;
 }
 
-export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
+export const SettingsView: React.FC<SettingsViewProps> = ({
+  className,
+  onOpenOnboarding,
+}) => {
   // Use flat store structure
   const autoSyncEnabled = useAppStore((state) => state.autoSyncEnabled);
   const setAutoSyncEnabledAction = useAppStore(
@@ -84,10 +88,26 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ className }) => {
     >
       {/* Header */}
       <header className="border-b border-[var(--border-primary)] p-6">
-        <h1 className="text-2xl font-bold text-[var(--text-primary)]">設定</h1>
-        <p className="mt-1 text-[var(--text-secondary)]">
-          Knowledge Studioの設定を管理します
-        </p>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--text-primary)]">
+              設定
+            </h1>
+            <p className="mt-1 text-[var(--text-secondary)]">
+              Knowledge Studioの設定を管理します
+            </p>
+          </div>
+
+          {onOpenOnboarding ? (
+            <Button
+              variant="secondary"
+              onClick={onOpenOnboarding}
+              data-testid="settings-open-onboarding"
+            >
+              はじめてガイドを再表示
+            </Button>
+          ) : null}
+        </div>
       </header>
 
       {/* Settings Content */}

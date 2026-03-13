@@ -295,3 +295,50 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] 仕様書間で検証値（13/13, 28項目, current=0 など）の値が一致している
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致している
 - [ ] UIタスクでは画面証跡の時刻が仕様書間で一致している
+
+## 8. 追補プロファイル: Onboarding Wizard / Settings rerun
+
+### 8.1 適用条件
+
+- 初回表示オーバーレイ
+- multi-step onboarding
+- Settings からの rerun 導線
+- persist key による再表示抑制
+
+### 8.2 最低限更新する canonical docs
+
+1. `/.claude/skills/aiworkflow-requirements/references/task-workflow.md`
+2. `/.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`
+3. `/.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`
+4. `/.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`
+5. `/.claude/skills/aiworkflow-requirements/references/arch-state-management.md`
+6. `/.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
+7. `/.claude/skills/aiworkflow-requirements/references/workflow-onboarding-wizard-alignment.md`
+
+### 8.3 関心ごとの分離
+
+- 画面導線担当:
+  - overlay 表示条件
+  - step 遷移
+  - 完了後の戻り先
+  - screenshot 証跡の照合
+- 設定導線担当:
+  - rerun button 文言
+  - persist key と local state の責務分離
+  - dashboard への handoff
+  - discoverability 課題の backlog 化要否
+- 品質/未タスク担当:
+  - verification report の MINOR 抽出
+  - `docs/30-workflows/unassigned-task/` への formalize
+  - 既存 follow-up 指示書の `2.2` / `3.1` / `3.5` / 検証手順が current contract を向いているか確認
+  - `verify-unassigned-links.js`
+  - `audit-unassigned-tasks.js --diff-from HEAD`
+  - 必要時 `audit-unassigned-tasks.js --diff-from HEAD --target-file <follow-up-file>`
+
+### 8.4 完了条件
+
+- Phase 12 側に implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report が揃っている
+- canonical docs 側に実装内容と苦戦箇所が同一用語で残っている
+- UI 本体完了と follow-up backlog が責務分離されている
+- 既存 follow-up backlog を流用した場合、`docs/30-workflows/unassigned-task/` の本文も current contract へ再同期されている
+- `workflow-onboarding-wizard-alignment.md` が作成または更新され、統合入口が残っている

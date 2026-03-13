@@ -4,9 +4,9 @@ import { existsSync, readFileSync } from "fs";
 
 const DEFAULTS = {
   taskWorkflow:
-    ".agents/skills/aiworkflow-requirements/references/task-workflow.md",
+    ".claude/skills/aiworkflow-requirements/references/task-workflow.md",
   uiSpec:
-    ".agents/skills/aiworkflow-requirements/references/ui-ux-feature-components.md",
+    ".claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md",
   detection:
     "docs/30-workflows/completed-tasks/skill-analysis-view/outputs/phase-12/unassigned-task-detection.md",
 };

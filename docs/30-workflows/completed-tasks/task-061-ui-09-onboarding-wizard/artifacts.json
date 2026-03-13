@@ -1,0 +1,278 @@
+{
+  "feature": "task-061-ui-09-onboarding-wizard",
+  "taskId": "TASK-UI-09-ONBOARDING-WIZARD",
+  "created": "2026-03-13T00:00:00.000+09:00",
+  "lastUpdated": "2026-03-13T15:40:00.000+09:00",
+  "status": "completed",
+  "canonicalSkillRoot": ".claude/skills",
+  "mirrorSkillRoot": ".agents/skills",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "status": "created"
+        },
+        {
+          "name": "受け入れ基準",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "created"
+        },
+        {
+          "name": "スコープ定義",
+          "path": "outputs/phase-1/scope-definition.md",
+          "status": "created"
+        },
+        {
+          "name": "SubAgent 分担",
+          "path": "outputs/phase-1/subagent-ownership.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T09:30:00.000+09:00"
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計",
+          "path": "outputs/phase-2/architecture-design.md",
+          "status": "created"
+        },
+        {
+          "name": "コンポーネント設計",
+          "path": "outputs/phase-2/component-design.md",
+          "status": "created"
+        },
+        {
+          "name": "状態管理 / IPC 設計",
+          "path": "outputs/phase-2/state-ipc-design.md",
+          "status": "created"
+        },
+        {
+          "name": "aiworkflow 抽出表",
+          "path": "outputs/phase-2/aiworkflow-requirements-extract.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T10:00:00.000+09:00"
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md",
+          "status": "created"
+        },
+        {
+          "name": "ギャップ解消一覧",
+          "path": "outputs/phase-3/gap-resolution-list.md",
+          "status": "created"
+        },
+        {
+          "name": "レビューゲート判定",
+          "path": "outputs/phase-3/review-gate.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T10:30:00.000+09:00"
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-specification.md",
+          "status": "created"
+        },
+        {
+          "name": "テストケース一覧",
+          "path": "outputs/phase-4/test-cases.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T12:20:00.000+09:00"
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装計画",
+          "path": "outputs/phase-5/implementation-plan.md",
+          "status": "created"
+        },
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T14:00:00.000+09:00"
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト拡充計画",
+          "path": "outputs/phase-6/test-expansion-plan.md",
+          "status": "created"
+        },
+        {
+          "name": "回帰マトリクス",
+          "path": "outputs/phase-6/regression-matrix.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T14:10:00.000+09:00"
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジ目標レポート",
+          "path": "outputs/phase-7/coverage-target-report.md",
+          "status": "created"
+        },
+        {
+          "name": "カバレッジゲート結果",
+          "path": "outputs/phase-7/coverage-gate-result.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:28:00.000+09:00"
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング方針",
+          "path": "outputs/phase-8/refactoring-plan.md",
+          "status": "created"
+        },
+        {
+          "name": "コンポーネント抽出判定",
+          "path": "outputs/phase-8/component-extraction-check.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:30:00.000+09:00"
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質チェックリスト",
+          "path": "outputs/phase-9/quality-checklist.md",
+          "status": "created"
+        },
+        {
+          "name": "アクセシビリティ検証計画",
+          "path": "outputs/phase-9/accessibility-validation-plan.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:31:00.000+09:00"
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "created"
+        },
+        {
+          "name": "持ち越し項目",
+          "path": "outputs/phase-10/open-items.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:32:00.000+09:00"
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト計画",
+          "path": "outputs/phase-11/manual-test-plan.md",
+          "status": "created"
+        },
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "created"
+        },
+        {
+          "name": "スクリーンショット計画",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:33:00.000+09:00"
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "created"
+        },
+        {
+          "name": "仕様更新サマリー",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "status": "created"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "created"
+        },
+        {
+          "name": "未タスク検出結果",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "created"
+        },
+        {
+          "name": "スキルフィードバック",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "created"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:40:00.000+09:00"
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "skipped",
+      "artifacts": [
+        {
+          "name": "PR スキップ記録",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "created"
+        }
+      ],
+      "completedAt": "2026-03-13T15:40:00.000+09:00",
+      "reason": "ユーザー指示によりコミットとPR作成を実施しない"
+    }
+  }
+}
