@@ -497,3 +497,25 @@ mv docs/30-workflows/unassigned-task/task-{{task-name}}.md \
 
 - テンプレート: `assets/unassigned-task-template.md`
 - エージェント: `agents/generate-unassigned-task.md`
+
+---
+
+## 追加ルール: verification-report / MINOR formalization（2026-03-13）
+
+### 未タスク化の起点
+
+- `outputs/verification-report.md` の `MINOR` / remaining issues
+- Phase 11 のスクリーンショット検証・手動試験で発見した discoverability / 情報設計課題
+- system spec 更新時に「本体完了と切り分けた方が責務が明確」と判断できる follow-up 項目
+
+### formalize 判断基準
+
+- 本体完了判定は維持できるが、放置すると再発・理解コスト増につながる
+- 複数の軽微事項を 1 つの品質テーマへ統合した方が実装責務が明確になる
+- `task-workflow.md` と Phase 12 成果物の両方に同一 ID を残したい
+
+### 記述ルール
+
+- `3.5 実装課題と解決策` に、なぜ残件化したかと再発防止の観点を 2〜4 項目で残す
+- `## 8. 参照情報` に `verification-report.md` や `manual-test-result.md` など発見元を入れる
+- `verify-unassigned-links.js` と `audit-unassigned-tasks.js --diff-from HEAD` の結果を Phase 12 成果物側にも記録する

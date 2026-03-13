@@ -4913,6 +4913,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | **1.45.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001登録**: skill:import IPCハンドラ戻り値型不整合修正タスクを残課題テーブルに追加。20フレームワーク多角的分析で発見されたImportResult→ImportedSkill変換漏れの修正 |
 | **1.44.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001派生未タスク2件登録**: UT-FIX-SKILL-VALIDATION-P42-001（P42バリデーション横展開）、UT-FIX-SKILL-IPC-ERROR-RESPONSE-001（エラー応答パターン統一）を残課題テーブルに追加。実装苦戦箇所（P23/P42/P44/P45）を未タスク指示書に反映 |
 | **1.43.0** | **2026-02-20** | **未タスク配置ディレクトリ整合を是正**: 未実施タスク（task-imp-vitest-alias-sync-automation-001 / UT-9A-B-001〜003）の参照先を `docs/30-workflows/unassigned-task/` に統一。完了済み UT-9B-H-003 の参照を `completed-tasks/ut-9b-h-003-security-hardening/index.md` に更新。`verify-unassigned-links.js` で再検証 |
+| **1.44.0** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD を反映**: Onboarding Wizard の初回オーバーレイ、multi-step 導線、Settings rerun、Phase 11 screenshot 5件、検証値 `13/13 phases` / `28項目` / `TC 5/5` / `currentViolations 0` を追加。実装時の苦戦箇所 4 件と follow-up 未タスク 2 件を formalize した |
 | **1.43.0** | **2026-02-20** | **未タスク2件登録**: TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001（@repo/shared ソース構造二重性統一、中優先度）、TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001（3層整合CIガード、高優先度）をP3準拠で残課題テーブルに追加。architecture-monorepo.mdに参照リンク追加 |
 | **1.42.1** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001記録強化**: 完了タスク記録に品質ゲート達成状況テーブル（typecheck 228→0、vitest 224/224 PASS、shared build成功、lint PASS）、変更ファイル詳細（tsconfig +27 paths、package.json +26 typesVersions、vitest.config +3 alias）、変更行数（+353行/17ファイル）、テスト数（224テスト/3スイート）を追記。残課題 UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 の説明を詳細化（背景・提案解決策・スコープ追記） |
 | **1.42.0** | **2026-02-20** | **UT-FIX-SKILL-REMOVE-INTERFACE-001完了反映**: 残課題テーブルの同タスクを完了（取り消し線 + 完了日）へ更新。参照先を `skill-import-agent-system/tasks/completed-task/` に変更。UT-FIX-SKILL-IMPORT-INTERFACE-001 の参照先も実ファイルパスへ修正 |
@@ -5032,3 +5033,48 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-imp-preload-skill-creator-api-safeinvoke-timeout-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-settings-light-theme-contrast-001.md`
 - `docs/30-workflows/completed-tasks/TASK-FIX-SAFEINVOKE-TIMEOUT-001/unassigned-task/task-fix-accountsection-linked-provider-key-warning-001.md`
+
+## TASK-UI-09-ONBOARDING-WIZARD 完了記録（2026-03-13）
+
+### 実装内容（要点）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| 初回導線 | 初回起動時に Onboarding Wizard をオーバーレイ表示し、完了後は通常画面へ戻す | `OnboardingGate` / workflow `docs/30-workflows/task-061-ui-09-onboarding-wizard/` |
+| multi-step 体験 | desktop / tablet / mobile / theme 差分を representative screenshot で確認できる multi-step 導線を用意 | `outputs/phase-11/screenshots/TC-11-01..05` |
+| Settings rerun | Settings から `onboarding.completed=false` へ戻し、dashboard に handoff して wizard を再表示できるようにした | `apps/desktop/src/renderer/views/SettingsView/index.tsx` |
+| Phase 12 同期 | implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を揃えた | `outputs/phase-12/` |
+
+### 検証証跡
+
+| 項目 | 結果 |
+| --- | --- |
+| `verify-all-specs.js --workflow docs/30-workflows/task-061-ui-09-onboarding-wizard --json` | `13/13 phases pass`, `errors=0`, `warnings=0` |
+| `validate-phase-output.js docs/30-workflows/task-061-ui-09-onboarding-wizard` | `28項目 pass`, `0 error`, `0 warning` |
+| `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-061-ui-09-onboarding-wizard` | `expected TC=5`, `covered TC=5`, `PASS` |
+| `verify-unassigned-links.js` | `existing=216`, `missing=0` |
+| `audit-unassigned-tasks.js --json --diff-from HEAD` | `currentViolations=0`, `baselineViolations=134` |
+
+### 苦戦箇所（再発条件付き）
+
+| 苦戦箇所 | 再発条件 | 対処 | 標準ルール |
+| --- | --- | --- | --- |
+| 完了状態と rerun の handoff がずれる | `onboarding.completed` の reset と view handoff を別々に扱う | flag reset と dashboard handoff を一連の操作として扱った | rerun は「persist reset → handoff → overlay 再表示」を 1 契約として記録する |
+| representative screenshot と台帳名がずれる | matrix / result / png 実体を別命名で管理する | `TC-ID ↔ screenshots/*.png` を再同期した | 画面検証を求められた UI は coverage matrix を正本にする |
+| テスト warning と coverage 不足を本体タスクへ抱え込みやすい | `act(...)` warning と function coverage 76.92% を report 止まりで残す | follow-up 2 件へ formalize した | MINOR は report だけで終わらせず unassigned task へ昇格する |
+| Settings 内 rerun card の発見性が落ちる | isolated screenshot だけで UI 完了判定を出す | Settings 導線の discoverability を別 backlog 化した | 動作するが見つけにくい UI は IA 改善タスクとして切り出す |
+
+### 同種課題の5分解決カード
+
+1. `onboarding.completed` の保存キーと表示条件を先に固定する。
+2. rerun は flag reset と dashboard handoff を同一操作として設計する。
+3. Phase 11 は `TC-ID ↔ screenshots/*.png` を coverage matrix で固定する。
+4. `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `audit --diff-from HEAD` を同一ターンで記録する。
+5. `act(...)` warning、coverage 不足、discoverability のような MINOR は unassigned task に formalize する。
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | function coverage / `act(...)` warning / harness hardening を統合して改善する | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
+| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | Settings 内 rerun card の配置・文言・導線の発見性を改善する | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |
