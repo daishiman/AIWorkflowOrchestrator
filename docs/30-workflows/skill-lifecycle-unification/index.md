@@ -22,7 +22,7 @@
 | 1    | TASK-SKILL-LIFECYCLE-01 | `../completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation` | 一次導線、画面責務、ナビゲーション基盤の定義                           | 最優先・直列                |
 | 2    | TASK-SKILL-LIFECYCLE-02 | `tasks/step-02-par-task-02-chat-platform-unification`                 | 会話基盤、履歴、ストリーミング、Workspace 文脈統合                     | Step 01 後、Task03 と並列可 |
 | 3    | TASK-SKILL-LIFECYCLE-03 | `tasks/step-02-par-task-03-skill-creator-execute-improve-integration` | Skill Creator の表導線化、作成/実行/改善統合、内部オーケストレーション | Step 01 後、Task02 と並列可 |
-| 4    | TASK-SKILL-LIFECYCLE-04 | `tasks/step-03-seq-task-04-evaluation-and-scoring-gate`               | 採点、評価、改善トリガー、受け入れ基準ゲート                           | Step 02 後・直列            |
+| 4    | TASK-SKILL-LIFECYCLE-04 | `../completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate`  | 採点、評価、改善トリガー、受け入れ基準ゲート                           | Step 02 後・直列            |
 | 5    | TASK-SKILL-LIFECYCLE-05 | `tasks/step-04-seq-task-05-created-skill-usage-journey`               | 作成済みスキルを日常導線で選ぶ・実行する・再利用する導線               | Step 03 後・直列            |
 | 6    | TASK-SKILL-LIFECYCLE-06 | `tasks/step-05-par-task-06-trust-permission-governance`               | 権限、危険操作、承認履歴、信頼境界の統合                               | Step 04 後、Task07 と並列可 |
 | 7    | TASK-SKILL-LIFECYCLE-07 | `tasks/step-05-par-task-07-lifecycle-history-feedback`                | 実行履歴、評価履歴、改善フィードバック、再利用学習                     | Step 04 後、Task06 と並列可 |

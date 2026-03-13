@@ -3,6 +3,18 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認知見を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に「既存 IPC 再利用でも public preload / shared export 追加は Step 2 必須」を追加
+  - `references/patterns.md` に「未タスク 0 件でも `docs/30-workflows/unassigned-task/` への追加作成なしを明記する」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に同判定の検証コマンドと完了チェックを追記
+  - `references/resource-map.md` と `SKILL.md` を同期し、template capability を入口から辿れるようにした
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
 
 - **Agent**: skill-creator

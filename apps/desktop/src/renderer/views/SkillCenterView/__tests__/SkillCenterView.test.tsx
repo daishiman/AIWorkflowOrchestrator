@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import type { SkillMetadata, SkillName } from "@repo/shared/types/skill";
+import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 
 // --- テストデータファクトリ ---
 
@@ -73,6 +74,14 @@ const mockRemoveSkill = vi.fn();
 const mockSetSkillFilter = vi.fn();
 const mockSetSkillCategory = vi.fn();
 const mockSelectSkillByName = vi.fn();
+const mockEvaluatePostImprove = vi.fn();
+const defaultAnalysis: SkillAnalysis = {
+  skillName: "test-skill",
+  overallScore: 82,
+  categories: [],
+  suggestions: [],
+  risks: [],
+};
 
 vi.mock("../../../store", () => ({
   useAppStore: vi.fn(),
@@ -98,6 +107,13 @@ vi.mock("../../../store", () => ({
   useImportedSkillIds: vi.fn(() => []),
   useSelectedSkill: vi.fn(() => null),
   useSkills: vi.fn(() => []),
+  useLatestGateDecision: vi.fn(() => null),
+  useLatestEvaluationSnapshot: vi.fn(() => null),
+  useLatestPromptRequest: vi.fn(() => "改善して"),
+  useCurrentAnalysis: vi.fn(() => defaultAnalysis),
+  useIsLifecycleEvaluating: vi.fn(() => false),
+  useSkillEvaluationError: vi.fn(() => null),
+  useEvaluatePostImprove: vi.fn(() => mockEvaluatePostImprove),
 }));
 
 // テスト対象のビュー（実装はPhase 5で作成される）
@@ -120,6 +136,15 @@ describe("SkillCenterView", () => {
     vi.mocked(store.useSetSkillCategory).mockReturnValue(mockSetSkillCategory);
     vi.mocked(store.useSelectSkillByName).mockReturnValue(
       mockSelectSkillByName,
+    );
+    vi.mocked(store.useLatestGateDecision).mockReturnValue(null);
+    vi.mocked(store.useLatestEvaluationSnapshot).mockReturnValue(null);
+    vi.mocked(store.useLatestPromptRequest).mockReturnValue("改善して");
+    vi.mocked(store.useCurrentAnalysis).mockReturnValue(defaultAnalysis);
+    vi.mocked(store.useIsLifecycleEvaluating).mockReturnValue(false);
+    vi.mocked(store.useSkillEvaluationError).mockReturnValue(null);
+    vi.mocked(store.useEvaluatePostImprove).mockReturnValue(
+      mockEvaluatePostImprove,
     );
   });
 
@@ -165,6 +190,64 @@ describe("SkillCenterView", () => {
     expect(
       screen.getByText("Settings は公開シェル例外として別ケースで確認する。"),
     ).toBeInTheDocument();
+  });
+
+  it("最新の品質ゲートがある場合は利用前バナーを表示する", async () => {
+    const store = await import("../../../store");
+    vi.mocked(store.useLatestGateDecision).mockReturnValue({
+      stage: "post_improve",
+      status: "recommended",
+      nextSurface: "workspace",
+      summary: "改善効果が確認できたため推奨利用に進めます。",
+      blockingIssues: [],
+      totalScore: 91,
+      recommended: true,
+    });
+    vi.mocked(store.useLatestEvaluationSnapshot).mockReturnValue({
+      skillName: "test-skill",
+      stage: "post_improve",
+      totalScore: 91,
+      hardBlocks: [],
+      deltaFromPrevious: 12,
+      createdAt: "2026-03-12T00:00:00.000Z",
+    });
+
+    render(<SkillCenterView />);
+
+    expect(screen.getByText("利用前の品質ゲート")).toBeInTheDocument();
+    expect(screen.getByTestId("skill-evaluation-summary")).toHaveTextContent(
+      "改善効果が確認できたため推奨利用に進めます。",
+    );
+  });
+
+  it("利用前バナーから再評価を実行できる", async () => {
+    const store = await import("../../../store");
+    vi.mocked(store.useLatestGateDecision).mockReturnValue({
+      stage: "post_improve",
+      status: "save_with_warning",
+      nextSurface: "skillCenter",
+      summary: "保存は可能ですが、改善余地が残っています。",
+      blockingIssues: [],
+      totalScore: 72,
+      recommended: false,
+    });
+    vi.mocked(store.useLatestEvaluationSnapshot).mockReturnValue({
+      skillName: "test-skill",
+      stage: "post_improve",
+      totalScore: 72,
+      hardBlocks: [],
+      deltaFromPrevious: 4,
+      createdAt: "2026-03-12T00:00:00.000Z",
+    });
+
+    render(<SkillCenterView />);
+    fireEvent.click(screen.getByTestId("skill-evaluation-reevaluate"));
+
+    expect(mockEvaluatePostImprove).toHaveBeenCalledWith({
+      skillName: "test-skill",
+      prompt: "改善して",
+      skillAnalysis: defaultAnalysis,
+    });
   });
 
   it("ローディング中にスケルトンが表示される", async () => {

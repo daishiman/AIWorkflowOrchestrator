@@ -4,6 +4,23 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 follow-up 未タスク formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
+- 目的: Task04 の Phase 12 follow-up として、public contract 判定漏れと未タスク 0 件証跡の stale 化を `docs/30-workflows/unassigned-task/` に formalize し、parent workflow outputs と system spec を再同期する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/` に `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` と `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を作成
+- `references/task-workflow.md` / `references/interfaces-agent-sdk-skill.md` / `references/lessons-learned.md` に関連未タスク導線と変更履歴を追加
+- parent workflow `outputs/phase-12/unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `outputs/verification-report.md` を 2 件 formalize 前提へ再同期
+- `verify-unassigned-links=221/221`、`audit --diff-from HEAD current=0 / baseline=134` を再確認した
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
 
 ### コンテキスト
@@ -31,6 +48,22 @@
 - `references/workflow-workspace-parent-reference-sweep-guard.md` に Phase 12 再確認行、元 unassigned spec の配置確認、`verify-unassigned-links=219 / 219`、stale count 再発防止ルールを追記
 - `references/task-workflow.md` の検証証跡を `219 / 219` へ再同期し、`references/lessons-learned.md` に「related unassigned row を completed 実績へ移した後に exact count が stale になる」苦戦箇所を追加
 - `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を再実行する前提の更新として記録し、current workflow outputs と system spec の数値を揃えた
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 12 再監査同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
+- 目的: Task04 の quality gate 実装、Phase 11 screenshot、Phase 12 system spec 同期を `.claude` 正本へ反映し、public preload API と shared export の更新漏れをなくす
+
+### 実施内容
+- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/api-ipc-agent.md` / `references/interfaces-agent-sdk-skill.md` に Task04 の UI・state・IPC・public interface 契約を追加
+- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、Phase 11 screenshot 6件、`currentViolations=0 / baselineViolations=134`、public preload API 見落とし教訓を同期
+- `.agents` は mirror として扱い、`.claude` 正本更新後に同一差分を追従させる前提を明文化した
 
 ### 結果
 - ステータス: success

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-12T11:17:15.644Z",
-  "totalKeywords": 1619,
+  "generated": "2026-03-13T01:23:26.904Z",
+  "totalKeywords": 1622,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -823,6 +823,7 @@
     ],
     "SKILL": [
       "api-ipc-agent.md",
+      "arch-state-management.md",
       "architecture-implementation-patterns.md",
       "claude-code-agents-workflow.md",
       "claude-code-skills-structure.md",
@@ -830,7 +831,8 @@
       "interfaces-agent-sdk-executor.md",
       "lessons-learned.md",
       "security-electron-ipc.md",
-      "security-skill-execution.md"
+      "security-skill-execution.md",
+      "ui-ux-feature-components.md"
     ],
     "AUTH": [
       "api-ipc-agent.md",
@@ -1434,6 +1436,15 @@
       "arch-state-management.md"
     ],
     "removal": [
+      "arch-state-management.md"
+    ],
+    "LIFECYCLE": [
+      "arch-state-management.md",
+      "claude-code-agents-workflow.md",
+      "security-skill-execution.md",
+      "ui-ux-feature-components.md"
+    ],
+    "採点・評価・受け入れゲート統合": [
       "arch-state-management.md"
     ],
     "Persist": [
@@ -2131,10 +2142,6 @@
     ],
     "orchestration": [
       "claude-code-agents-workflow.md"
-    ],
-    "LIFECYCLE": [
-      "claude-code-agents-workflow.md",
-      "security-skill-execution.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -5772,6 +5779,12 @@
     "SkillStreamingView": [
       "ui-ux-feature-components.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "Evaluation": [
+      "ui-ux-feature-components.md"
+    ],
+    "Gate": [
+      "ui-ux-feature-components.md"
     ],
     "Reflection": [
       "ui-ux-feature-components.md"

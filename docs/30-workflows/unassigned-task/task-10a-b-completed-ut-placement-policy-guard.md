@@ -8,7 +8,7 @@ task_id: UT-TASK-10A-B-009
 task_name: 完了済みUT配置ポリシー統一ガード
 category: 改善
 target_feature: TASK-10A-B Phase 12 未タスク運用・監査境界
-priority: 中
+priority: 低
 scale: 小規模
 status: 未実施
 source_phase: UT-TASK-10A-B-001 最終再監査（Phase 12）

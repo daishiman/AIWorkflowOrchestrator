@@ -24,8 +24,15 @@ let mockSkillError: string | null = null;
 const mockAnalyzeSkill = vi.fn();
 const mockApplySkillImprovements = vi.fn();
 const mockAutoImproveSkill = vi.fn();
+const mockEvaluatePostImprove = vi.fn();
+let mockLatestPromptRequest: string | null = "改善して";
 
 vi.mock("../../../store", () => ({
+  useAppStore: {
+    getState: () => ({
+      currentAnalysis: mockCurrentAnalysis,
+    }),
+  },
   useCurrentAnalysis: () => mockCurrentAnalysis,
   useIsAnalyzingSkill: () => mockIsAnalyzing,
   useIsImprovingSkill: () => mockIsImproving,
@@ -33,6 +40,8 @@ vi.mock("../../../store", () => ({
   useAnalyzeSkill: () => mockAnalyzeSkill,
   useApplySkillImprovements: () => mockApplySkillImprovements,
   useAutoImproveSkill: () => mockAutoImproveSkill,
+  useEvaluatePostImprove: () => mockEvaluatePostImprove,
+  useLatestPromptRequest: () => mockLatestPromptRequest,
   useClearSkillError: () => vi.fn(),
   useClearAnalysis: () => vi.fn(),
 }));
@@ -85,9 +94,12 @@ describe("useSkillAnalysis", () => {
     mockAnalyzeSkill.mockReset();
     mockApplySkillImprovements.mockReset();
     mockAutoImproveSkill.mockReset();
+    mockEvaluatePostImprove.mockReset();
+    mockLatestPromptRequest = "改善して";
     mockAnalyzeSkill.mockResolvedValue(undefined);
     mockApplySkillImprovements.mockResolvedValue(undefined);
     mockAutoImproveSkill.mockResolvedValue(undefined);
+    mockEvaluatePostImprove.mockResolvedValue(undefined);
     vi.restoreAllMocks();
   });
 
