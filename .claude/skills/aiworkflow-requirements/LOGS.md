@@ -4,6 +4,86 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001 を formalize
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001`
+- 目的: current build preflight bundle 実装後に残った実行運用（Playwright browser preflight と destructive failure simulation の serial 化）を未タスクとして切り出し、system spec 正本へ導線を追加する
+
+### 実施内容
+- `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-runner-guard-001.md` を作成し、親タスクの苦戦箇所 3 件と SubAgent 分担を task-specification-creator テンプレートに沿って formalize した
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/workflow-light-theme-contrast-regression-guard.md` に新規未タスク導線を追加した
+- completed workflow `outputs/phase-12/unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` へ follow-up 1 件の記録を追記した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 Phase 12 再確認追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001`
+- 目的: Phase 12 再確認で判明した coverage validator 前提と related active backlog の format 監査要件を system spec 正本へ反映する
+
+### 実施内容
+- `references/task-workflow.md` に related open backlog format audit 行、coverage validator 前提、`--target-file` 再監査ルールを追記した
+- `references/lessons-learned.md` に `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` 欠落で validator が落ちる条件と、`current=0` でも related active backlog を個別監査する標準手順を追加した
+- `references/workflow-light-theme-contrast-regression-guard.md` に同内容を domain spec として反映した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の system spec 形成を最適化
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001`
+- 目的: current build preflight bundle の実装内容と苦戦箇所を、1仕様書=1関心で再利用できる形へ再編し、仕様書別 SubAgent 実行ログを current workflow 成果物へ固定する
+
+### 実施内容
+- `references/workflow-light-theme-contrast-regression-guard.md` に preflight core / CLI wrapper / capture integration / script tests の追補と、shared build artifact を壊す failure simulation の serial ルールを追加した
+- current workflow `outputs/phase-12/spec-update-summary.md` / `documentation-changelog.md` / `skill-feedback-report.md` に仕様書別 SubAgent 実行ログを追加し、`skill-creator` 更新の実施内容を同値転記した
+- `.claude/skills/skill-creator/` へ Playwright browser cache 欠落の environment preflight 化と serial failure simulation の再利用パターンを還元した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 screenshot 再監査追補
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001`
+- 目的: Phase 11 screenshot 再取得時に判明した Playwright browser cache 欠落を system spec 正本へ反映し、UI regress と environment preflight を誤分類しないようにする
+
+### 実施内容
+- `references/workflow-light-theme-contrast-regression-guard.md` に browser cache 欠落の苦戦箇所、復旧コマンド、変更履歴 `1.0.2` を追加した
+- `references/lessons-learned.md` に screenshot 再監査の教訓と `capturedAt` 再同期ルールを追記した
+- current workflow `outputs/phase-11/manual-test-result.md` / `discovered-issues.md` と Phase 12 根拠文書へ、初回 FAIL → install chromium → PASS の実測経路を反映した
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 Phase 12 完了同期
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001`
+- 目的: current workflow の Phase 1-12 完了実績を system spec 正本へ同期し、親 guard spec の stale な unassigned path を解消する
+
+### 実施内容
+- `references/workflow-light-theme-contrast-regression-guard.md` に `preflight:light-theme-contrast-guard` 検証コマンドを追加し、related row を completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` へ更新した
+- `references/task-workflow.md` / `references/lessons-learned.md` / `references/ui-ux-feature-components.md` の関連 row と変更履歴を同期し、same-day upstream evidence mirror と serial failure simulation ルールを追記した
+- `.claude` を canonical root として変更を集約し、後続の `generate-index.js` と `.agents` mirror sync に備えた
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
 
 ### コンテキスト

@@ -1,0 +1,58 @@
+{
+  "bundleName": "phase11-current-build-preflight",
+  "timestamp": "2026-03-12T23:55:36.203Z",
+  "baseUrl": "http://127.0.0.1:4173",
+  "summary": {
+    "status": "fail",
+    "failedBucket": "baseUrl",
+    "readyForCapture": false,
+    "autoServed": false,
+    "exitCode": 40,
+    "passCount": 3,
+    "blockedCount": 0
+  },
+  "checks": [
+    {
+      "bucket": "native",
+      "status": "pass",
+      "summary": "Native dependency is ready.",
+      "details": [
+        "esbuild resolved at /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001106-wt3-8/node_modules/.pnpm/esbuild@0.25.12/node_modules/esbuild/lib/main.js"
+      ],
+      "nextActions": []
+    },
+    {
+      "bucket": "build",
+      "status": "pass",
+      "summary": "Build output is available.",
+      "details": ["Renderer assets: 5 entries"],
+      "nextActions": []
+    },
+    {
+      "bucket": "harness",
+      "status": "pass",
+      "summary": "Harness route output is available.",
+      "details": [
+        "Harness file: /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001106-wt3-8/apps/desktop/out/renderer/phase11-light-theme-contrast-guard.html"
+      ],
+      "nextActions": []
+    },
+    {
+      "bucket": "baseUrl",
+      "status": "fail",
+      "summary": "Base URL is unreachable and auto static serve is disabled.",
+      "details": [
+        "Readiness URL: http://127.0.0.1:4173/phase11-light-theme-contrast-guard.html?surface=settings&theme=light"
+      ],
+      "nextActions": [
+        "Retry without `--no-auto-serve`, or start a local static server before capture."
+      ]
+    }
+  ],
+  "guidance": [
+    {
+      "bucket": "baseUrl",
+      "message": "Retry without `--no-auto-serve`, or start a local static server before capture."
+    }
+  ]
+}

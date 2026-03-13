@@ -5,9 +5,10 @@ category: 改善
 target_feature: Phase 11 screenshot capture / current build harness / guard workflow
 priority: 中
 scale: 小規模
-status: 未実施
+status: 実行済み（workflow phase12_completed）
 source_phase: TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12
 created_date: 2026-03-12
+completed_date: 2026-03-13
 issue_number: 1167
 dependencies:
   - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001
@@ -26,9 +27,10 @@ dependencies:
 | 対象機能     | Phase 11 screenshot capture / current build harness / guard workflow |
 | 優先度       | 中                                                                   |
 | 見積もり規模 | 小規模（2-4時間）                                                    |
-| ステータス   | 未実施                                                               |
+| ステータス   | 実行済み（workflow phase12_completed）                               |
 | 発見元       | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12          |
 | 発見日       | 2026-03-12                                                           |
+| 完了日       | 2026-03-13                                                           |
 
 ---
 
@@ -239,7 +241,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
-  --target-file docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
+  --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 ```
 

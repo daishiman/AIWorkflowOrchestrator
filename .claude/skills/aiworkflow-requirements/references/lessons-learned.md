@@ -20,6 +20,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-13 | 1.29.86 | current build screenshot follow-up として `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001` を追加。Playwright browser preflight の fail-fast 契約と shared artifact を壊す failure simulation の serial runner 化を、教訓セクションと関連未タスクへ同期 |
+| 2026-03-13 | 1.29.85 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12 再確認を追補。`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` 欠落で coverage validator が失敗する条件と、新規未タスク 0 件でも related active backlog を `--target-file` + 10見出しで再監査する標準手順を追加 |
+| 2026-03-13 | 1.29.84 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の screenshot 再監査追補。Playwright browser cache 欠落を UI regress と誤分類しないルール、`pnpm --filter @repo/desktop exec playwright install chromium` による復旧、same-day evidence 再取得時刻の同期を教訓へ追加 |
+| 2026-03-13 | 1.29.83 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 1-12 実行完了を追補。関連 row の参照先を completed workflow `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` へ更新し、same-day upstream evidence mirror と shared build artifact を壊す failure simulation の serial 実行ルールを教訓へ昇格 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
 | 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
 | 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
@@ -295,20 +299,57 @@
 | 対処 | `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` の更新対象 skill 集合を同値化し、`skill-creator` を更新した場合は 3 skill 表記へ揃えた |
 | 標準ルール | Phase 12 Task 5 で更新した skill 名は root evidence 3ファイルに同値転記する |
 
+### 苦戦箇所: screenshot 実体があっても Phase 11 文書 drift で coverage validator が落ちる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `outputs/phase-11/screenshots/*.png` が揃っていても、`phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` が無いと `validate-phase11-screenshot-coverage` が不合格になる |
+| 再発条件 | Phase 11 を「PNG があるか」だけで判定し、manual test spec と `manual-test-result.md` の TC 対応を確認しない |
+| 対処 | current workflow の `phase-11-manual-test.md` に `TC-11-01`〜`TC-11-05` と coverage matrix を追加し、`manual-test-result.md` の証跡列を同じ TC へ揃えた |
+| 標準ルール | UI task の再確認では screenshot 実体、manual test spec、`manual-test-result.md` の 3 点を必ず同時に突合する |
+
+### 苦戦箇所: 新規未タスク 0 件でも related active backlog の formal 品質確認が残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `audit-unassigned-tasks --json --diff-from HEAD` が `currentViolations=0` を返しても、system spec が参照する既存 active backlog の見出し崩れや配置逸脱が隠れることがある |
+| 再発条件 | `unassigned-task-detection.md` を「新規 0 件」で閉じ、`docs/30-workflows/unassigned-task/` 配下の related open backlog を個別監査しない |
+| 対処 | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` を `rg` の 10見出し確認と `audit --diff-from HEAD --target-file` で再監査し、指定ディレクトリ配置と format 準拠を確認した |
+| 標準ルール | user が配置確認を求めた再監査では、「今回差分の新規件数」と「related active backlog の formal 品質」を別々に記録する |
+
 ### 同種課題の簡潔解決手順（5ステップ）
 
 1. `typecheck` と targeted test の後に必ず build を通す。
 2. harness route が build output に出ているかを `out/renderer` で確認する。
 3. current build を static serve し、到達不能なら screenshot script 側の localhost fallback で復旧してから selector-based capture を取る。
 4. audit は `current` と `baseline` を別 bucket で集計する。
-5. visual review では helper text、panel border、card hierarchy を別々に評価して routing する。
+5. visual review では helper text、panel border、card hierarchy を別々に評価し、Phase 12 では related active backlog の `--target-file` + 10見出し確認まで閉じる。
 
 ### 関連未タスク
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ねる | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ね、completed workflow として維持する | `docs/30-workflows/completed-tasks/ut-imp-phase11-current-build-preflight-bundle/index.md` |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001 | Playwright browser preflight と destructive failure simulation の serial 実行を runner 契約へ昇格し、文書依存の残運用を削減する | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-runner-guard-001.md` |
 | UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001 | worktree の native dependency 不整合を事前検知する | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` |
+
+### 苦戦箇所: Playwright browser cache 欠落を UI regress と誤分類すると再監査が空転する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot 再取得の初回が `browserType.launch: Executable doesn't exist` で失敗すると、見た目の regress ではないのに UI 修正 task と誤解しやすい |
+| 再発条件 | browser install をローカル前提にし、Phase 11 evidence だけ stale なまま残す |
+| 対処 | `pnpm --filter @repo/desktop exec playwright install chromium` を実行後、same-day evidence を current workflow `outputs/phase-11/screenshots/` へ再同期した |
+| 標準ルール | Playwright 実行ファイル欠落は environment preflight として復旧し、再取得した `capturedAt` と `manual-test-result.md` を同ターンで更新する |
+
+### 苦戦箇所: shared artifact を壊す failure simulation を人手 serial に頼ると bucket 分離が崩れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `build missing / harness missing / baseUrl unreachable` をまとめて流すと、shared `out/renderer` や metadata の破壊が次ケースへ漏れて失敗原因が混線する |
+| 再発条件 | destructive case を parallel で実行し、各ケース後の build output 復旧を runner に持たせない |
+| 対処 | `build -> harness -> baseUrl` を serial で 1 件ずつ実行し、各ケース後に build artifact と metadata 前提を復旧した |
+| 標準ルール | shared artifact を触る failure simulation は runner 契約で serial 固定にし、bucket ごとの cleanup を同時に記録する |
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 

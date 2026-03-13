@@ -3,6 +3,28 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 related open backlog 再監査パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「新規未タスク 0 件でも related active open backlog を `--target-file` で再監査する」成功パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に、`0 件報告` 時でも `10見出し + target-file audit` を要求する完了チェックを追加
+  - `references/resource-map.md` と `SKILL.md` を更新し、Phase 12 の配置確認依頼から当該 template capability を辿れるようにした
+
+---
+## 2026-03-13 - UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12再利用パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「Playwright browser cache 欠落は environment preflight として復旧し、shared build artifact を壊す failure simulation は serial で扱う」を追加
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に browser install preflight と serial failure simulation の完了チェックを追加
+  - `references/resource-map.md` と `SKILL.md` に同 capability を同期し、current build screenshot 系 task で入口から辿れるようにした
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
 
 - **Agent**: skill-creator
