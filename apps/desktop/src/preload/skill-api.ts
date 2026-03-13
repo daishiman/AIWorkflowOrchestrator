@@ -55,7 +55,6 @@ import type {
   Suggestion,
   ImprovementResult,
   ImprovementOptions,
-  PromptEvaluation,
 } from "@repo/shared/types/skill-improver";
 import type { BackupInfo, SkillFileTreeNode } from "./types";
 import type {
@@ -332,13 +331,6 @@ export interface SkillAPI {
    * @returns 改善結果
    */
   autoImprove: (skillName: string) => Promise<ImprovementResult>;
-
-  /**
-   * 作成依頼文を評価する
-   * @param prompt - 評価対象の依頼文
-   * @returns prompt 評価結果
-   */
-  evaluatePrompt: (prompt: string) => Promise<PromptEvaluation>;
 
   // === Skill Debug API (TASK-9H) ===
 
@@ -713,11 +705,6 @@ export const skillAPI: SkillAPI = {
       skillName,
       analysis: {} as SkillAnalysis,
       options: { autoFix: true } as ImprovementOptions,
-    }),
-
-  evaluatePrompt: (prompt: string): Promise<PromptEvaluation> =>
-    safeInvokeUnwrap<PromptEvaluation>(IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE, {
-      prompt,
     }),
 
   // === Skill Debug API (TASK-9H) ===

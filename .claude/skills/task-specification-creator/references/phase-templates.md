@@ -1089,7 +1089,7 @@ Phase 11: 手動テスト検証
 
 ### 撮影コマンド
 
-撮影は Step 3 の撮影計画（`screenshot-plan.json`）に基づいて一括実行するのが推奨。
+撮影は Step 3 の撮影計画（`screenshot-plan.md` または capture script の対象一覧）に基づいて一括実行するのが推奨。
 個別撮影コマンドの詳細オプション（`--plan`, `--selector`, `--action`, `--action-target`, `--dark`, `--dry-run` 等）は
 `references/phase-11-12-guide.md` の「スクリーンショット撮影コマンド」セクションを参照。
 
@@ -1200,6 +1200,7 @@ git diff main --name-only -- '*.tsx' '*.jsx' | grep -E '(components|views|pages)
 #### Step 3: 撮影計画の作成
 
 Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.json` に作成する:
+Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.md` へ整理し、必要なら自動撮影用 `screenshot-plan.json` か task 専用 capture script の対象一覧へ落とし込む:
 
 **テーブル形式（manual-test-result.md に記載）**:
 
@@ -1316,7 +1317,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 | テスト結果         | `outputs/phase-11/manual-test-result.md`  | 必須   | 手動テスト結果                        |
 | 発見課題一覧       | `outputs/phase-11/discovered-issues.md`   | 必須   | 発見した課題（0件でも出力）           |
 | スクリーンショット | `outputs/phase-11/screenshots/`           | 条件付 | UI/UX変更時は必須、それ以外は任意     |
-| 撮影計画           | `outputs/phase-11/screenshot-plan.json`   | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
+| 撮影計画           | `outputs/phase-11/screenshot-plan.md` または capture script 対象一覧 | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
 | カバレッジレポート | `outputs/phase-11/screenshot-coverage.md` | 条件付 | UI/UX変更時は必須（100%達成確認用）   |
 
 ## 完了条件
@@ -1326,7 +1327,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 - [ ] 統合テスト手動確認が完了
 - [ ] UI/UX対象タスクの場合: `git diff` で変更コンポーネント一覧を洗い出し済み、または representative screenshots の対象UI surface を列挙済み
 - [ ] UI/UX対象タスクの場合: 各コンポーネント/画面の全UI状態（表示/インタラクション/テーマ）を列挙済み（N/A理由も記録）
-- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.json` または capture script の対象一覧が作成済み
+- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.md` または capture script の対象一覧が作成済み
 - [ ] UI/UX対象タスクの場合: 撮影計画の**全項目**のスクリーンショットが `outputs/phase-11/screenshots/` に配置済み
 - [ ] UI/UX対象タスクの場合: 各TCにスクリーンショット証跡が紐付き、`validate-phase11-screenshot-coverage.js` がPASS
 - [ ] UI/UX対象タスクの場合: 画面カバレッジレポートの必須項目（優先度[A][B]）が**100%**（推奨[C]・任意[D]はN/A記録で代替可）
@@ -1431,8 +1432,8 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ##### Step 1-C: 関連タスクテーブル更新（該当する場合）
 - [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
-- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
-- [ ] `docs/30-workflows/completed-tasks/unassigned-task/` に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
+- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] completed-only area（`docs/30-workflows/completed-tasks/*.md` と `docs/30-workflows/completed-tasks/unassigned-task/`）に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
 
 **検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
 ```bash
@@ -1596,7 +1597,7 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] 未タスク指示書の物理ファイル存在を確認した（`ls docs/30-workflows/unassigned-task/` で検証）
-- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
+- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / 完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md` / legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
 - [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
 - [ ] **artifacts.jsonの全完了Phase（1-12）のステータスがcompletedであること**

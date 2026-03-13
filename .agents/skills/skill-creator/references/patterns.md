@@ -1299,22 +1299,6 @@
 - **関連タスク**: TASK-10A-A-SKILL-MANAGEMENT-PANEL
 - **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
 
-### [Phase12] 既存IPC再利用でも public preload / shared export 追加は Step 2 必須（TASK-SKILL-LIFECYCLE-04）
-
-- **状況**: 既存 IPC channel を再利用した実装では、新規 channel が増えていないことだけを見て Step 2 を `該当なし` にしやすい。一方で `window.electronAPI.*` の public preload method や `packages/shared` の barrel export が増えると、利用者から見える契約面は確実に変わる
-- **成功パターン**:
-  - Step 2 判定では `channel追加有無` だけでなく、`public preload method 追加` と `shared barrel export 追加` を同じ優先度で確認する
-  - `phase-12-documentation.md` の更新対象表、`documentation-changelog.md` の Step 2 行、`spec-update-summary.md` の更新一覧を同値で同期する
-  - `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで更新し、苦戦箇所まで残す
-- **失敗パターン**:
-  - `既存 skill:* を再利用しただけ` と判断して interface spec 更新を省く
-  - Renderer / store 実装だけを見て、Preload 公開面や shared export の増分を確認しない
-  - `documentation-changelog.md` だけ Step 2 完了にして、正本仕様の更新実体が無いまま閉じる
-- **効果**: `新しい channel はないが public contract は増えた` という見落としを防ぎ、Phase 12 の説明責任を一貫させられる
-- **適用条件**: Electron preload API、shared types、barrel export、contextBridge 公開面を伴う Phase 12 Step 2
-- **発見日**: 2026-03-12
-- **関連タスク**: TASK-SKILL-LIFECYCLE-04
-
 ### [Phase 12] UI再撮影 + TCカバレッジ検証の同時固定（TASK-10A-C）
 
 - **状況**: UI証跡を再撮影しても、TCと画像の紐付け検証を省略すると `manual-test-result.md` と実ファイルの対応がずれやすい
@@ -2581,8 +2565,9 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 
 - **状況**: Phase 12 再監査で `audit-unassigned-tasks --target-file` に `outputs/phase-12/*.md` を指定し、対象外エラーで判定が停止した
 - **アプローチ**:
-  - `--target-file` は `docs/30-workflows/unassigned-task/*.md` に限定し、成果物監査は `--diff-from HEAD` へ切り替える
+  - `--target-file` は `docs/30-workflows/unassigned-task/*.md`、actual parent `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/*.md`、standalone `docs/30-workflows/completed-tasks/*.md` のいずれかに限定し、成果物監査は `--diff-from HEAD` へ切り替える
   - 合否判定は `currentViolations` のみを使用し、`baselineViolations` は資産健全性指標として別管理する
+  - move 直後の untracked completed file が `--diff-from HEAD` に出ない場合は、`--target-file docs/30-workflows/completed-tasks/<task>.md` を current 判定の正本にする
   - baseline負債が残る場合は別未タスク（段階削減）へ切り出して追跡する
 - **結果**: 監査コマンド誤用による手戻りを防ぎ、差分合否と既存負債の説明責務を同時に満たせる
 - **適用条件**: 未タスク監査を含む Phase 12 再確認タスク全般
@@ -3013,22 +2998,6 @@ interface BadgeProps extends Omit<
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-SKILL-LIFECYCLE-01
 
-### [Phase12] 未タスク 0 件でも指定ディレクトリへの追加作成なしを明記する（TASK-SKILL-LIFECYCLE-04）
-
-- **状況**: `currentViolations=0` と `baselineViolations>0` を報告しても、`docs/30-workflows/unassigned-task/` に実際に新規ファイルを作ったのか、作っていないのかが成果物に残らず、再監査者が台帳を開き直すことになる
-- **成功パターン**:
-  - `unassigned-task-detection.md` に `今回差分では docs/30-workflows/unassigned-task/ への新規追加作成なし` を明記する
-  - `phase12-task-spec-compliance-check.md` または `task-workflow.md` にも、`current=0 / baseline>0 / 追加作成なし` を同値で残す
-  - 親責務へ継続する残課題がある場合は、`このタスクから追加 formalize しない` と併記して責務境界を固定する
-- **失敗パターン**:
-  - `currentViolations=0` だけを書いて、指定ディレクトリの追加作成有無を曖昧にする
-  - 新規未タスクが 0 件なのに `未タスク確認済み` だけで閉じ、配置先判定を成果物へ残さない
-  - 親タスク責務の backlog を current task 起因の未タスクのように読める文面にする
-- **効果**: `未タスク 0 件` と `指定ディレクトリに何も追加していない` を区別して残せるため、再監査時の確認コストが下がる
-- **適用条件**: 未タスク監査が PASS だが新規 follow-up を起票しない Phase 12、特に docs-heavy task の再確認
-- **発見日**: 2026-03-13
-- **関連タスク**: TASK-SKILL-LIFECYCLE-04
-
 ### [Phase12] Light Mode 全画面 white/black 基準 + compatibility bridge 固定（TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001）
 
 - **状況**: `tokens.css` を white/black 基準へ直しても、renderer 側の `text-white` / `bg-gray-*` / `border-white/*` などが残り、全画面で Light Mode が崩れる。さらに desktop CI の一部 shard fail と screenshot stale が同時に起きやすい
@@ -3329,7 +3298,7 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 
 - **状況**: ユーザーが画面検証を明示していても、`NON_VISUAL` 代替や shell bypass のみで完了扱いにすると、実画面証跡と state reset の破壊条件を見落としやすい
 - **アプローチ**:
-  1. screenshot 方針は `SCREENSHOT` を強制し、workflow 配下へ `screenshot-plan.json` と `phase11-capture-metadata.json` を保存する
+  1. screenshot 方針は `SCREENSHOT` を強制し、workflow 配下へ `screenshot-plan.md` と `screenshots/phase11-capture-metadata.json` を保存する
   2. `validate-phase11-screenshot-coverage` で `TC-ID ↔ png` の 1:1 を確認する
   3. 公開ビュー bypass は shell 公開だけで閉じず、state reset 除外条件と nav 到達性をコード・workflow・system spec へ同時転記する
   4. worktree では `pnpm install --frozen-lockfile` を preflight に追加し、optional dependency 欠落で screenshot/テストが不安定化する前に止める
@@ -3394,6 +3363,19 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **適用条件**: workspace preview、quick search dialog、renderer local search、recoverable parse fallback を含む UI タスク
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-UI-04C-WORKSPACE-PREVIEW
+
+### [Phase 12] cross-cutting follow-up は `workflow-<feature>.md` へ統合正本を追加する（UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001）
+
+- **状況**: `task-workflow.md` / `lessons-learned.md` / UI spec / architecture spec に実装内容と苦戦箇所が入っていても、再利用入口が散ると次回の初動で「どこから読むか」の探索コストが高い
+- **アプローチ**:
+  1. cross-cutting follow-up では `references/workflow-<feature>.md` を新規作成し、実装内容、苦戦箇所、5分解決カード、SubAgent 分担、検証コマンド、最適なファイル形成を 1 ファイルへ集約する
+  2. `indexes/resource-map.md` のクイックルックアップ、`indexes/quick-reference.md` の検索語 / 読む順番、`SKILL.md` の直リンクを同一ターンで追加する
+  3. workflow 正本には `outputs/phase-12/phase12-task-spec-compliance-check.md` を root evidence として関連ドキュメントに含め、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 の判断根拠へ即座に降りられるようにする
+  4. `task-workflow.md` / `lessons-learned.md` / `<domain-spec>` への同期は薄くしつつ、workflow 正本に「なぜその仕様へ振り分けたか」を書いて重複転記を抑える
+- **結果**: 実装内容、苦戦箇所、screen evidence、Phase 12 root evidence の入口が 1 つに集約され、次回の同種課題を短時間で再現しやすくなる
+- **適用条件**: UI/architecture/error/state を横断する follow-up task、screen verification を伴う Phase 12 再監査、system spec 更新先が 6 仕様書以上に広がる task
+- **発見日**: 2026-03-13
+- **関連タスク**: UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
 
 ### [Phase 12] implementation-guide と coverage matrix の validator 文字列を固定する
 

@@ -4,18 +4,33 @@
 `scripts/log_usage.js` で自動更新されます。
 
 ---
-## 2026-03-13 - TASK-SKILL-LIFECYCLE-04 follow-up 未タスク formalize
+## 2026-03-13 - UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を system spec へ追加
 
 ### コンテキスト
 - スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
-- 目的: Task04 の Phase 12 follow-up として、public contract 判定漏れと未タスク 0 件証跡の stale 化を `docs/30-workflows/unassigned-task/` に formalize し、parent workflow outputs と system spec を再同期する
+- 対象タスク: `UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001`
+- 目的: `workspace-preview-search-resilience-guard` follow-up で手動再同期した exact count を、Phase 12 outputs 4成果物で横断比較する改善導線として formalize する
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/` に `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` と `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` を作成
-- `references/task-workflow.md` / `references/interfaces-agent-sdk-skill.md` / `references/lessons-learned.md` に関連未タスク導線と変更履歴を追加
-- parent workflow `outputs/phase-12/unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `outputs/verification-report.md` を 2 件 formalize 前提へ再同期
-- `verify-unassigned-links=221/221`、`audit --diff-from HEAD current=0 / baseline=134` を再確認した
+- `references/task-workflow.md` の 04C 完了節と残課題テーブルへ同 ID を追加し、global backlog からも辿れるようにした
+- `references/lessons-learned.md` に「Phase 12 outputs の exact count が 4成果物で手動同期になりやすい」苦戦箇所と標準ルールを追加し、関連未タスク表へ導線を追加した
+- `references/workflow-workspace-preview-search-resilience-guard.md` に同 ID を関連未タスクとして追加し、統合正本から validator 改善へ直接遷移できるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 統合 workflow 正本を追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001`
+- 目的: 実装内容、苦戦箇所、screen verification、Phase 12 root evidence が複数仕様へ分散していたため、同種課題の再利用入口を 1 ファイルへ集約する
+
+### 実施内容
+- `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、search resilience helper、preview timeout/retry helper、conversation persistence race fix、Phase 11 screenshot 5件、5分解決カード、仕様書別 SubAgent 編成を統合した
+- `indexes/resource-map.md` に preview/search resilience 向け逆引き導線を追加し、`indexes/quick-reference.md` に検索語、読む順番、実装アンカーを追加した
+- `SKILL.md` に workflow 正本の直リンクを追加し、`task-workflow.md` / `ui-ux-search-panel.md` / `arch-state-management.md` / `error-handling.md` / `lessons-learned.md` へ降りる最短入口を固定した
 
 ### 結果
 - ステータス: success
@@ -48,22 +63,6 @@
 - `references/workflow-workspace-parent-reference-sweep-guard.md` に Phase 12 再確認行、元 unassigned spec の配置確認、`verify-unassigned-links=219 / 219`、stale count 再発防止ルールを追記
 - `references/task-workflow.md` の検証証跡を `219 / 219` へ再同期し、`references/lessons-learned.md` に「related unassigned row を completed 実績へ移した後に exact count が stale になる」苦戦箇所を追加
 - `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を再実行する前提の更新として記録し、current workflow outputs と system spec の数値を揃えた
-
-### 結果
-- ステータス: success
-
----
-## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 12 再監査同期
-
-### コンテキスト
-- スキル: aiworkflow-requirements
-- 対象タスク: `TASK-SKILL-LIFECYCLE-04`
-- 目的: Task04 の quality gate 実装、Phase 11 screenshot、Phase 12 system spec 同期を `.claude` 正本へ反映し、public preload API と shared export の更新漏れをなくす
-
-### 実施内容
-- `references/ui-ux-feature-components.md` / `references/arch-state-management.md` / `references/api-ipc-agent.md` / `references/interfaces-agent-sdk-skill.md` に Task04 の UI・state・IPC・public interface 契約を追加
-- `references/task-workflow.md` / `references/lessons-learned.md` に完了台帳、Phase 11 screenshot 6件、`currentViolations=0 / baselineViolations=134`、public preload API 見落とし教訓を同期
-- `.agents` は mirror として扱い、`.claude` 正本更新後に同一差分を追従させる前提を明文化した
 
 ### 結果
 - ステータス: success
@@ -9388,3 +9387,28 @@ OAuth認証をImplicit FlowからAuthorization Code Flow + PKCE方式に移行�
   - `ui-ux-feature-components.md` の関連テーブル確認（TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION は別タスクとして残存確認）
   - `generate-index.js` 実行で topic-map.md / keywords.json 再生成
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（タスク完了記録 + システム仕様更新）
+- **Result**: success
+- **Notes**:
+  - `task-workflow.md` の 04C 関連 row と残課題テーブルを完了化し、参照先を `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` へ更新
+  - `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `architecture-implementation-patterns.md` / `error-handling.md` / `lessons-learned.md` に search match gate、preview timeout helper、typed taxonomy、current source dev server screenshot fallback を同期
+  - Phase 11 screenshot 5件と Apple UI/UX review を current workflow 配下へ記録
+  - mirror sync 前提で `.claude` を canonical root として更新
+
+---
+
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査追補
+
+- **Agent**: aiworkflow-requirements
+- **Phase**: Phase 12（再監査）
+- **Result**: success
+- **Notes**:
+  - `ui-ux-components.md` に 04C follow-up の helper 抽出、empty state / retry action の visual polish、`external-dev-server` screenshot 5件の再検証結果を追記
+  - `arch-state-management.md` に preview reset 順序、local helper 抽出、targeted vitest 39件 PASS を 04C の state evidence として追記
+  - `task-workflow.md` / `ui-ux-feature-components.md` / `lessons-learned.md` と同粒度で一覧 spec / state spec を補完し、再利用導線の抜けを解消

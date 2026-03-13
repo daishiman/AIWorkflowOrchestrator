@@ -14,12 +14,6 @@ import type {
   SkillAnalysis,
   AnalysisCategory,
 } from "@repo/shared/types/skill-improver";
-import type {
-  LifecycleEvaluationSnapshot,
-  LifecycleGateDecision,
-  GateStatus,
-} from "@repo/shared/types";
-import { getLifecycleGateLabel } from "../../store/skillEvaluation";
 
 // ============================================
 // Types
@@ -28,10 +22,6 @@ import { getLifecycleGateLabel } from "../../store/skillEvaluation";
 export interface ScoreDisplayProps {
   /** スキル分析結果 */
   analysis: SkillAnalysis;
-  /** 最新 gate decision */
-  gateDecision?: LifecycleGateDecision | null;
-  /** 最新 snapshot */
-  snapshot?: LifecycleEvaluationSnapshot | null;
 }
 
 // ============================================
@@ -52,19 +42,6 @@ export const scoreBarStyles: Record<ScoreVariant, string> = {
   success: "bg-[var(--status-success)]",
   warning: "bg-[var(--status-warning)]",
   error: "bg-[var(--status-error)]",
-};
-
-const gateBadgeStyles: Record<GateStatus, string> = {
-  revise_required:
-    "border-[var(--status-error)]/20 bg-[var(--status-error)]/10 text-[var(--status-error)]",
-  save_with_warning:
-    "border-[var(--status-warning)]/20 bg-[var(--status-warning)]/10 text-[var(--status-warning)]",
-  use_with_warning:
-    "border-[var(--status-warning)]/20 bg-[var(--status-warning)]/10 text-[var(--status-warning)]",
-  use_ready:
-    "border-[var(--status-success)]/20 bg-[var(--status-success)]/10 text-[var(--status-success)]",
-  recommended:
-    "border-[var(--status-primary)]/20 bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
 };
 
 /**
@@ -171,66 +148,22 @@ const CategoryBar: React.FC<{ category: AnalysisCategory }> = ({
  * スコアに応じて成功/警告/エラーの色分けを適用する。
  */
 export const ScoreDisplay: React.FC<ScoreDisplayProps> = memo(
-  ({ analysis, gateDecision = null, snapshot = null }) => {
+  ({ analysis }) => {
     return (
       <div className="flex flex-col gap-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4">
         {/* ヘッダー */}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <BarChart3
-              className="h-4 w-4 text-[var(--text-secondary)]"
-              aria-hidden="true"
-            />
-            <h2 className="text-base font-semibold text-[var(--text-primary)]">
-              スキル分析結果
-            </h2>
-          </div>
-          {gateDecision ? (
-            <span
-              className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${gateBadgeStyles[gateDecision.status]}`}
-              data-testid="score-display-gate-badge"
-            >
-              {getLifecycleGateLabel(gateDecision.status)}
-            </span>
-          ) : null}
+        <div className="flex items-center gap-2">
+          <BarChart3
+            className="h-4 w-4 text-[var(--text-secondary)]"
+            aria-hidden="true"
+          />
+          <h2 className="text-base font-semibold text-[var(--text-primary)]">
+            スキル分析結果
+          </h2>
         </div>
 
         {/* 総合スコア */}
         <OverallScore score={analysis.overallScore} />
-
-        {gateDecision || snapshot ? (
-          <div className="grid gap-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-3 md:grid-cols-3">
-            <div>
-              <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-secondary)]">
-                Gate
-              </p>
-              <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                {gateDecision ? gateDecision.summary : "-"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-secondary)]">
-                Next
-              </p>
-              <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                {gateDecision?.nextSurface ?? "-"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-secondary)]">
-                Delta
-              </p>
-              <p
-                className="mt-2 text-sm font-medium text-[var(--text-primary)]"
-                data-testid="score-display-gate-delta"
-              >
-                {typeof snapshot?.deltaFromPrevious === "number"
-                  ? `${snapshot.deltaFromPrevious > 0 ? "+" : ""}${snapshot.deltaFromPrevious}`
-                  : "n/a"}
-              </p>
-            </div>
-          </div>
-        ) : null}
 
         {/* カテゴリ別分析 */}
         {analysis.categories.length > 0 && (

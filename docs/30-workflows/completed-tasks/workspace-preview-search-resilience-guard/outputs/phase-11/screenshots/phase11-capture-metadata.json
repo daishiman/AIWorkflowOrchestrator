@@ -1,0 +1,60 @@
+{
+  "workflow": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001112-wt3-9/docs/30-workflows/completed-tasks/workspace-preview-search-resilience-guard",
+  "capturedAt": "2026-03-13T02:32:47.019Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "harnessPath": "/?phase11Harness=workspace-layout&skipAuth=true",
+  "buildOutputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-001112-wt3-9/apps/desktop/out/renderer",
+  "sourceKind": "external-dev-server",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-quick-search-results.png",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "theme": "light",
+      "mode": "default"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-quick-search-no-match-dark.png",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "theme": "dark",
+      "mode": "default"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-quick-search-select-preview.png",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "theme": "light",
+      "mode": "default"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-structured-preview-fallback.png",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "theme": "light",
+      "mode": "default"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-preview-timeout-alert.png",
+      "viewport": {
+        "width": 1600,
+        "height": 1000
+      },
+      "theme": "light",
+      "mode": "timeout"
+    }
+  ]
+}

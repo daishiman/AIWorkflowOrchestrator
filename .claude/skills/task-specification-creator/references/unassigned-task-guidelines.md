@@ -58,6 +58,11 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
 
+# 1-b) standalone 完了指示書の current 監査
+node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/completed-tasks/task-imp-unassigned-audit-scope-control-001.md
+
 # 2) 差分監査（workflow全体の current 判定）
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
@@ -67,9 +72,9 @@ node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 ```
 
-> 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
+> 重要: `--target-file` は root `docs/30-workflows/unassigned-task/`、actual parent `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、standalone `docs/30-workflows/completed-tasks/*.md` のいずれかを指定可能。  
 > `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
-> `--target-file` 単独実行は repo 全体の既存違反が `current` 側へ見える場合があるため、今回差分の合否には使わない。
+> root `unassigned-task/` の合否判定は `--diff-from HEAD --target-file` を優先する。移動直後の untracked completed file は `--diff-from HEAD` に乗らないため、standalone completed spec の current 監査は `--target-file` を正本にする。
 
 判定ルール:
 

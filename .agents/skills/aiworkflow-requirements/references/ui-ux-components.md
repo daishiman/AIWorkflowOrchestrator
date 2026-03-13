@@ -228,12 +228,20 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | 実装内容 | `PreviewPanel` に `Source` / `Preview` 切替、structured preview、image preview、toolbar、error boundary を追加し、`QuickFileSearch` を `Cmd/Ctrl+P` dialog として実装した |
 | 状態管理 | 04A の `workspaceSlice` / `fileSelectionSlice` を再利用し、preview loading/error と quick search query は local state に閉じた |
 | IPC | 新規 channel は追加せず、`file:read` と `file:changed` の再利用で preview 更新を実現した |
-| 画面検証 | Phase 11 で screenshot 11件を current build static serve から取得し、Apple UI/UX 観点で `PASS` と判定した |
+| 画面検証 | 初回 Phase 11 で screenshot 11件を current build static serve から取得し、follow-up では screenshot 5件を `external-dev-server` から再取得して Apple UI/UX 観点で再確認した |
 | 苦戦箇所1 | fuzzy search は一致判定と順位補正を混在させると false positive を生みやすい |
 | 苦戦箇所2 | file read hang を Main 契約変更で解決しようとすると影響範囲が広いため、Renderer timeout / retry で閉じる方が安全だった |
 | 苦戦箇所3 | JSON/YAML parse error を fatal error にすると preview UX が途切れるため、recoverable fallback に切り分ける必要があった |
 | 仕様同期 | `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `api-ipc-system` / `security-electron-ipc` / `task-workflow` / `lessons-learned` を同一ターンで同期する |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` / `lessons-learned.md` の TASK-UI-04C 節 |
+
+### TASK-UI-04C follow-up 実装追補（2026-03-13）
+
+| 観点 | 内容 |
+| --- | --- |
+| helper 抽出 | `quickFileSearchResilience.ts` と `previewResilience.ts` を追加し、`score > 0` gate、stable sort、timeout/retry、typed taxonomy を view から分離した |
+| visual polish | no-match helper text を empty state card に昇格し、timeout alert の retry action を primary emphasis に更新した |
+| 追補検証 | `TC-11-02` と `TC-11-05` を含む screenshot 5件を再取得し、dark helper text の可読性と retry action の affordance を再確認した |
 
 ---
 
@@ -469,6 +477,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
+| 2.16.7  | 2026-03-13 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査反映: TASK-UI-04C サマリーへ helper 抽出、`external-dev-server` screenshot 5件、empty state / retry action の visual polish を追補し、一覧 spec から follow-up 実績を辿れるようにした |
 | 2.16.6  | 2026-03-11 | TASK-UI-04C 完了反映: `TASK-UI-04C 実装完了記録` を追加し、`PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / current build screenshot 11件 / Apple UI/UX review を UI カタログ正本へ同期 |
 | 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
 | 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |

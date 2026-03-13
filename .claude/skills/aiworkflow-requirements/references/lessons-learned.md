@@ -20,8 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-13 | 1.29.84 | TASK-SKILL-LIFECYCLE-04 follow-up の未タスク 2 件を追加。Step 2 public contract 判定と未タスク 0 件証跡 stale 化を `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` / `UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001` として formalize し、Task04 教訓節から直接辿れるようにした |
-| 2026-03-12 | 1.29.83 | TASK-SKILL-LIFECYCLE-04 の教訓を追加。public preload API / shared export の Step 2 判定漏れ、Phase 11 `証跡` 列依存、Phase 12 why-first + literal 見出し依存、`recommended -> use_ready` 再評価契約、`.claude` 正本 / `.agents` mirror 同期を 5 ステップへ整理 |
+| 2026-03-13 | 1.29.83 | UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を関連未タスクとして追加。`workspace-preview-search-resilience-guard` follow-up で露出した Phase 12 outputs 4成果物の exact count drift を苦戦箇所へ昇格し、summary / checklist / detection / report を横断比較する validator 改善導線を追加 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
 | 2026-03-12 | 1.29.81 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の再監査追補。Phase 11 screenshot script が localhost static serve 未起動で `ERR_CONNECTION_REFUSED` になる運用漏れを追加し、`out/renderer` の auto static serve fallback を標準手順へ昇格 |
 | 2026-03-12 | 1.29.80 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の教訓を追加。worktree の `esbuild` アーキ差分、harness HTML build input 登録漏れ、light capture の baseline 誤読、Apple UI/UX 観点での補助テキスト評価を 5 ステップへ整理 |
@@ -376,68 +375,6 @@
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
 | ~~UT-IMP-APIKEY-CHAT-TRIPLE-SYNC-GUARD-001~~ | ~~`cache clear` / Main 同期 / `source` 表示の 3 契約を単一回帰マトリクスで guard し、APIキー連動系の初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-apikey-chat-triple-sync-guard-001.md` | 完了: 2026-03-11 |
-
-### 2026-03-12 TASK-SKILL-LIFECYCLE-04
-
-#### 苦戦箇所1: 新しい IPC を増やしていなくても public preload API は system spec 更新対象になる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `skill:optimize:evaluate` の既存 channel を再利用したため、「新規 IPC はないから Step 2 不要」と誤読しやすかった |
-| 再発条件 | Main/IPC 変更の有無だけで仕様更新要否を判断し、`window.electronAPI.skill.*` の public method 追加を見ない |
-| 解決策 | `evaluatePrompt()` と `packages/shared` barrel export 追加を `interfaces-agent-sdk-skill.md` 更新条件として明文化した |
-| 標準ルール | 既存 IPC 再利用でも public preload API または shared public export が増えたら Step 2 対象とみなす |
-
-#### 苦戦箇所2: screenshot が存在しても `証跡` 列がなければ Phase 11 validator は通らない
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | png 6件と `capture-results.json` があっても、`manual-test-result.md` に screenshot 列がないだけで coverage validator が 0 件扱いになった |
-| 再発条件 | `期待 / 実結果 / 判定` だけで手動テスト結果を書き、TC と screenshot path の対応を本文へ持たない |
-| 解決策 | `テストケース / 結果 / 証跡` を literal にし、`phase-11-manual-test.md` も `テストケース` / `画面カバレッジマトリクス` 見出しへ揃えた |
-| 標準ルール | Phase 11 は screenshot 取得だけでなく、TC と証跡 path の 1:1 対応を Markdown 表で固定する |
-
-#### 苦戦箇所3: Part 1 / Part 2 があっても Phase 12 validator の意図を満たしていないことがある
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 実装ガイドが Part 1/2 構造を持っていても、Part 1 に `何をしたか` の文、Part 2 に literal 見出し群が無いと validator が落ちる |
-| 再発条件 | 「だいたい同じ内容なら通るはず」と考え、`型定義` `APIシグネチャ` `使用例` などの表現を揺らす |
-| 解決策 | why-first + analogy + `何をしたかというと` を Part 1 に追加し、Part 2 は `型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧` に固定した |
-| 標準ルール | Phase 12 は文章品質で吸収せず、validator が期待する literal をテンプレートへ先置きする |
-
-#### 苦戦箇所4: 改善後の推奨状態は永続 badge にすると stale になりやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `recommended` を気持ちよく見せたくなる一方、Task05 側で再評価すると最新状態とズレる可能性がある |
-| 再発条件 | improvement 直後の snapshot を不変扱いし、再評価後も同じ badge を残す |
-| 解決策 | `deltaFromPrevious = 0` の再評価では `use_ready` に戻し、「改善効果が残っている間だけ推奨」という意味に限定した |
-| 標準ルール | recommendation は履歴称号ではなく、最新 snapshot に対する一時的な quality signal として扱う |
-
-#### 苦戦箇所5: `.claude` 正本と `.agents` mirror を混同すると同期完了の判定がぶれる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | skill root が二重化された repo では、mirror 側だけ更新して「system spec は同期済み」と誤解しやすい |
-| 再発条件 | workflow outputs や sync plan に `.agents` を先に書き、canonical root の存在を弱める |
-| 解決策 | `.claude/skills/...` を正本、`.agents/skills/...` を mirror と明記し、Task04 では正本更新後に mirror 追従を取る運用へ寄せた |
-| 標準ルール | Phase 12 の完了判定は canonical root 更新を先に見て、mirror は追従確認として扱う |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. IPC 追加の有無ではなく、public preload API と shared export の増減まで見て Step 2 要否を判定する。
-2. Phase 11 は `テストケース / 結果 / 証跡` と `画面カバレッジマトリクス` を literal で固定する。
-3. Phase 12 は why-first、日常の例え、`何をしたか`、Part 2 の必須見出し群をテンプレート段階で入れる。
-4. `recommended` は最新 snapshot の quality signal として扱い、再評価結果で上書きする。
-5. `.claude` 正本更新、`.agents` mirror sync、validator、未タスク監査を同一ターンで閉じる。
-
-### 関連未タスク（2026-03-13 追補）
-
-| 未タスクID | 概要 | タスク仕様書 |
-| --- | --- | --- |
-| UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001 | 既存 IPC 再利用時でも public preload API / shared export 増分を Step 2 必須として扱うための判定ガード | `docs/30-workflows/unassigned-task/task-imp-phase12-step2-public-contract-guard-001.md` |
-| UT-IMP-PHASE12-ZERO-UNASSIGNED-EVIDENCE-GUARD-001 | 未タスク 0 件報告を `current` / `baseline` / link count / 配置結果へ分解し、follow-up formalize 時の stale 証跡を防ぐ | `docs/30-workflows/unassigned-task/task-imp-phase12-zero-unassigned-evidence-guard-001.md` |
 
 ### 2026-03-11 TASK-SKILL-LIFECYCLE-01
 
@@ -7427,14 +7364,24 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 1. fuzzy search に `no match -> []` と same-score stable sort テストを先に置く。
 2. preview 読み込みは renderer timeout と retry の上限を明示する。
 3. parse error と transport error を別 UI として扱う。
-4. Phase 11 は current build static serve を使い、dialog / mobile / terminology を再確認する。
-5. workflow / outputs / system spec / LOGS / SKILL を同一ターンで同期する。
+4. Phase 11 の build が詰まる場合でも、current source dev server から representative screenshot を取って review を止めない。
+5. workflow / outputs / system spec / LOGS / SKILL / mirror sync を同一ターンで同期し、Phase 12 outputs 4成果物の exact count を同値化する。
+
+### 苦戦箇所: Phase 12 outputs の exact count が 4成果物で手動同期になりやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `spec-update-summary.md`、`system-spec-sync-checklist.md`、`unassigned-task-detection.md`、`verification-report.md` の exact count が、follow-up 未タスク formalize 後に 1 ファイルだけ古い値のまま残りやすい |
+| 再発条件 | related row / global backlog / outputs を別ターンで更新し、manual diff だけで整合を見ようとする |
+| 対処 | current task では 4 成果物を同一ターンで再同期し、未タスク `UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001` を formalize した |
+| 標準ルール | exact count の再同期ルールだけで終えず、Phase 12 outputs 4成果物を横断比較する validator で stale 値を機械検出する |
 
 ### 関連未タスク
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | Phase 12 outputs 4成果物の exact count と current/baseline bucket を横断比較し、follow-up 未タスク formalize 後の stale 値を機械検出する | `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` |
 
 ## TASK-UI-09-ONBOARDING-WIZARD 実装教訓（2026-03-13）
 

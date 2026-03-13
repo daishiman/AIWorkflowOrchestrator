@@ -9,7 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| v3.14.7    | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 を反映: `skillEvaluationSlice` を lifecycle quality gate の正本 state として追加し、`agentSlice` との責務分離、`latestExecutionQuality` 再利用、`recommended -> use_ready` 再評価契約、Phase 11 screenshot 6件と Phase 12 interface spec 同期を追記 |
+| v3.14.7    | 2026-03-13 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査反映: `WorkspaceView` の preview reset 順序（content/size/extension/error → read helper）と、`quickFileSearchResilience.ts` / `previewResilience.ts` による local helper 抽出を追記。follow-up screenshot 5件（`external-dev-server`）と targeted tests 39件 PASS も 04C の state evidence として同期 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -215,6 +215,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | file read resilience | renderer 側 `Promise.race` で 5秒 timeout、1秒間隔3回 retry を行う |
 | quick search ranking | `scoreFilePath()` は `score > 0` の候補だけを返し、同点は path で stable sort する |
 | preview fallback | JSON/YAML parse error は recoverable として `SourceView` fallback を維持する |
+| preview reset order | file 切替時は `content -> size -> extension -> error` を先に reset し、その後に resilience helper を実行する |
 | cross-task boundary | chat 実行状態や editor state を 04C local state に持ち込まない |
 
 ### 検証証跡
@@ -224,6 +225,12 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `WorkspaceView` task scope tests | PASS（13 files / 52 tests） |
 | coverage | Statements 89.47 / Branches 79.43 / Functions 93.87 / Lines 89.47 |
 | Phase 11 screenshot | PASS（11件 / current build static serve） |
+
+### 追補（2026-03-13）
+
+- `quickFileSearchResilience.ts` へ results/no-match 判定を寄せ、`QuickFileSearch` は dialog state と keyboard focus だけを持つ構造へ整理した。
+- `previewResilience.ts` へ timeout/retry/taxonomy を寄せ、`PreviewPanel` / `PreviewErrorBoundary` は `PreviewSurfaceError` を描画するだけの責務へ寄せた。
+- follow-up 検証は targeted vitest 39件 PASS、Phase 11 screenshot 5件 PASS、Apple UI/UX 再レビュー PASS として current state evidence に追加した。
 
 ## Workspace Chat Panel 統合（TASK-UI-04B-WORKSPACE-CHAT）
 
@@ -1779,50 +1786,6 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | 5 | screenshot harness のUI文言依存 | Store が内部例外を汎用文言に変換 | `data-testid` を ready 条件の正本に |
 
 詳細: `lessons-learned.md` の TASK-10A-F セクション参照
-
-
-## TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合（2026-03-12）
-
-**検索キーワード**: `TASK-SKILL-LIFECYCLE-04`, `skillEvaluationSlice`, `SkillEvaluationPanel`, `latestGateDecision`, `evaluationHistory`
-
-### 責務境界
-
-| レイヤ | 保持する状態 / ロジック | 理由 |
-| --- | --- | --- |
-| `agentSlice` | `currentAnalysis`, `isAnalyzing`, `isImproving`, `skillError` | 既存の skill analysis / improve 導線を維持するため |
-| `skillEvaluationSlice` | `latestPromptRequest`, `latestEvaluationSnapshot`, `latestGateDecision`, `latestExecutionQuality`, `evaluationHistory`, `evaluationError` | quality gate を cross-surface で再利用するため |
-| pure helper (`skillEvaluation.ts`) | score 集約、stage 重み、hard block 検出、gate 決定 | UI と store の両方から再利用しやすい純粋関数に閉じるため |
-| view-local state | 選択 UI や一時 open/close 状態のみ | gate 判定の正本を UI ローカルに持たないため |
-
-### 状態遷移契約
-
-| checkpoint | 入力 | slice 更新 |
-| --- | --- | --- |
-| `evaluateDraft` | request 文のみ | `latestPromptRequest`, `latestGateDecision`, `evaluationHistory` |
-| `evaluatePostCreate` | prompt + `SkillAnalysis` | snapshot / decision / history を更新 |
-| `evaluatePostExecute` | prompt + `SkillAnalysis` + execution 結果 | execution 品質を確定し `latestExecutionQuality` を保持 |
-| `evaluatePostImprove` | prompt + 再分析結果 | 直近 execution 品質を再利用しつつ delta を再計算 |
-
-### 設計上の判断
-
-- Renderer から `window.electronAPI.skill.evaluatePrompt()` を直接呼ばず、必ず `skillEvaluationSlice` の action 経由で評価する。
-- `post_improve` は execution 結果が新たに得られない前提なので、`latestExecutionQuality` を再利用し、欠損軸は available weight 正規化で扱う。
-- Task05 側は独自の gate 状態を持たず、`latestGateDecision` と `latestEvaluationSnapshot` を再利用する。
-- `recommended` は永続状態ではなく、「改善差分がプラスで再評価直後」の表示と定義する。
-
-### 実装時の苦戦箇所
-
-| 苦戦箇所 | 根本原因 | 対処 |
-| --- | --- | --- |
-| `post_improve` で execution 軸が欠ける | 改善後は再実行せずに再分析だけ更新するケースがある | execution 品質を保持し、未入力時は stage weight を正規化する |
-| Task03 と Task05 で別々に state を持ちたくなる | create/improve 側と use 側で UI が異なる | slice を分離しても snapshot / decision は 1 正本に集約した |
-| error state が既存 `skillError` と衝突する | 分析失敗と gate 失敗は責務が異なる | `evaluationError` を別 state とし、UI では併記ルールを採用した |
-
-### 検証証跡
-
-- 対象テスト: preload 2、store 1、renderer 6 の targeted suite を実行
-- Phase 11: screenshot 6 件で `revise_required` / `warning` / `use_ready` / hard block / `recommended` / Task05 re-evaluate を確認
-- Phase 12: public preload API、shared export、workflow ledger、lessons を同一ターンで同期
 
 
 ## Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001）
