@@ -1,0 +1,35 @@
+{
+  "taskId": "TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001",
+  "phase": 11,
+  "generatedAt": "2026-03-13",
+  "screenshots": [
+    {
+      "tcId": "TC-11-00",
+      "surface": "settings",
+      "state": "authmode-review-board",
+      "file": "screenshots/TC-11-00-settings-authmode-review-board.png",
+      "focus": ["認証方式カード", "Claude Agent SDK APIキー", "APIキー設定一覧"]
+    },
+    {
+      "tcId": "TC-11-01",
+      "surface": "settings",
+      "state": "access-card-sync",
+      "file": "screenshots/TC-11-01-access-card-sync.png",
+      "focus": ["Access Capability Card", "Runtime 状態表示"]
+    },
+    {
+      "tcId": "TC-11-02",
+      "surface": "settings",
+      "state": "runtime-missing-api-key",
+      "file": "screenshots/TC-11-02-runtime-missing-api-key.png",
+      "focus": ["Guidance", "missing API key"]
+    },
+    {
+      "tcId": "TC-11-03",
+      "surface": "settings",
+      "state": "terminal-unavailable",
+      "file": "screenshots/TC-11-03-terminal-unavailable.png",
+      "focus": ["terminal unavailable", "理由表示"]
+    }
+  ]
+}

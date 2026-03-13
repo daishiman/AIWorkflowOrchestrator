@@ -89,6 +89,22 @@
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
 
+### [Phase12] 契約テストと回帰テストの責務分離（TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001）
+
+- **状況**: design/spec_created タスクで Phase 4（契約テスト仕様）と Phase 6（回帰テスト仕様）を同時に書く際、同一ロジックを重複検証して保守コストが増える
+- **アプローチ**:
+  - Phase 4 は「単一関数の入出力契約（引数・戻り値・例外）」に限定する
+  - Phase 6 は「イベント伝播・状態遷移・複数コンポーネント連携」の回帰に限定する
+  - `phase-4-test-creation.md` / `phase-6-test-expansion.md` を grep 比較し、重複テスト ID（例: `TC-C*` と `MR-*`）を同一ターンで棚卸しする
+  - 責務分離ができない場合は未タスクを即時起票し、`task-workflow` / `lessons-learned` / workflow spec を同一 wave で更新する
+- **結果**: テスト種別の責務境界が明確になり、重複テストの管理負荷を先回りで抑制できる
+- **適用条件**: 実装より先にテスト仕様を定義する design/spec_created タスク
+- **失敗パターン**:
+  - 契約テストと回帰テストで同一入力パターンをそのまま重複検証する
+  - 重複を検出しても未タスク化せず、次タスクへ暗黙持ち越しにする
+- **発見日**: 2026-03-14
+- **関連タスク**: TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
+
 ### [Skill] Collaborative First による要件明確化
 
 - **状況**: ユーザーの要求が抽象的（L1/L2レベル）

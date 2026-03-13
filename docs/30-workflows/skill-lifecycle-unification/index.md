@@ -7,6 +7,13 @@
 > 注記:
 > ユーザージョブは `作る` `使う` `改善する` の3本を中核とし、`採点/評価` は独立ジョブではなく各ジョブの遷移を制御する品質ゲートとして扱う。
 
+## 追加成果物
+
+| 成果物     | パス                   | 用途                                                                                       |
+| ---------- | ---------------------- | ------------------------------------------------------------------------------------------ |
+| UI/UX 正本 | `ui-ux-realization.md` | create / execute / improve の導線、supporting surface、terminal handoff の見せ方を固定する |
+| UI/UX 図解 | `ui-ux-diagrams.md`    | 核図、画面構成図、状態遷移図、マイコンポーネント図、CTA / handoff flow 図を固定する        |
+
 ## 目的
 
 - ユーザーが迷わない一次導線を定義する
@@ -14,6 +21,20 @@
 - 会話基盤、スキル生成、実行/改善導線を分離しつつ統合可能な形で設計する
 - 後続実装で `Atent Team` / `SubAgent` / `Codex` を内部オーケストレーションとして採用できる前提を仕様化する
 - 信頼性、再利用性、公開可能性まで含めて、スキルをプロダクト資産として扱える設計にする
+
+## 前提ブロッカー
+
+- `docs/30-workflows/ai-runtime-authmode-unification/index.md` を Task02 / Task03 / Task05 の共通前提として扱う
+- 特に `TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001` の Phase 1-3 と `TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001` の Phase 1-3 を PASS にするまでは、Task02 / Task03 / Task05 の Phase 4 以降へ進まない
+- lifecycle 個別仕様では `subscription/api-key` toggle を再発明せず、`Integrated API Runtime` と `Claude Code terminal handoff` を上記パックの access matrix から参照して扱う
+- Claude Code を使う導線は `embedded terminal transcript` を前提にし、ユーザーが自分で `claude` を実行して出力を読む構造として扱う
+
+## UI/UX Realization 方針
+
+- lifecycle UI は「内部オーケストレーション」ではなく「ユーザーの仕事」を主語にして設計する
+- `Atent Team` `SubAgent` `Codex` は内部責務として扱い、UI には job と next action だけを出す
+- chat surface と terminal transcript は primary journey を置き換えず、supporting surface として扱う
+- どの lifecycle surface からでも terminal を開けるようにし、`迷ったら terminal` の避難路を固定する
 
 ## タスク一覧
 
@@ -44,7 +65,8 @@
 
 ## Phase 1-3 ゲート
 
-- Task02 と Task03 は、Task01 の Phase 1-3 成果物が確定してから着手する
+- `TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001` と `TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001` の Phase 1-3 を Step 02 着手の共通前提とする
+- Task02 と Task03 は、上記 2 task の Phase 1-3 成果物が確定してから着手する
 - Task03 の API・UI・オーケストレーション設計は、Task02 の Phase 2 成果物を参照して整合させる
 - Task04 は、Task03 の create / execute / improve フロー定義が確定してから着手する
 - Task05 は、Task03 の lifecycle 統合と Task04 の評価ゲートを前提に着手する
@@ -56,6 +78,7 @@
 ## 並列化方針
 
 - 直列で先に確定すべき設計ゲート:
+  - `ai-runtime-authmode-unification` Task01 / Task02 Phase 1-3
   - Task01 Phase 1-3
   - Step 02 の入口として Task02 / Task03 の Phase 1-2
   - Step 03 の入口として Task04 の Phase 1-2

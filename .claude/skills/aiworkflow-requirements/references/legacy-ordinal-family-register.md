@@ -18,6 +18,12 @@ rename は命名作業ではなく、classification-first の結果として行�
 3. 同種 rename を再現するときは、ここで使った分類軸を `spec-splitting-guidelines.md` の classification-first ルールへ戻して使う。
 4. 追加 rename を行う場合は、parent / quick-reference / resource-map / topic-map / mirror sync を同一 wave で更新する。
 
+## Current Alias Overrides（個別互換行）
+
+| scope | legacy filename | current semantic filename | canonical location | last-verified |
+| --- | --- | --- | --- | --- |
+| `TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001` Step-01 | `outputs/phase-9/qa-checklist.md` | `outputs/phase-9/quality-assurance-checklist.md` | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/` | 2026-03-14 |
+
 ## Family Summary
 
 | family | parent | files | old axis | migration status |

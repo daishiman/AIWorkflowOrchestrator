@@ -37,6 +37,40 @@
   - Phase 11 では screenshot 6件の再撮影と Apple UI/UX 観点レビューを完了し、mobile first fold を圧迫した step indicator を `grid-cols-2 sm:grid-cols-4` へ是正した
 
 ---
+## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 branch横断 Phase12 再確認の判定軸を固定
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（branch-wide recheck）
+- **Result**: success
+- **Notes**:
+  - Task01-Task10 に `verify-all-specs` / `validate-phase-output` を適用し、10/10 PASS を確認
+  - `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は `phase-12-documentation=completed` workflow（Step-01）に限定し、他9件は `not_started` 由来の未適用として判定
+  - 判定マトリクスを `workflow-ai-runtime-authmode-unification.md` / `task-workflow.md` / `lessons-learned.md` へ同期し、`all PASS` 記録の適用範囲を明確化
+
+---
+## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase 12 ステータス同期 + 未タスク3件フォーマット是正
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（re-audit / unassigned normalization）
+- **Result**: success
+- **Notes**:
+  - Step-01 `phase-12-documentation.md` の `ステータス=not_started` を `completed` へ同期し、完了チェック `[x]` を反映
+  - `task-imp-ai-runtime-permission-resolver-placement-001.md` / `task-imp-ai-runtime-test-separation-criteria-001.md` / `task-imp-spec-only-phase-workflow-optimization-001.md` を 9セクション形式へ是正
+  - `audit-unassigned-tasks --target-file` 3件 + `--diff-from HEAD` を再実行し、`current=0 / baseline=134` を確認
+  - `verify-unassigned-links=227/227` を再確認し、Phase 12 outputs と system spec 台帳へ同期
+
+---
+## 2026-03-13 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase 11/12 欠落成果物補完
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-13（re-audit）
+- **Result**: success
+- **Notes**:
+  - `manual-test-result.md` / `screenshot-plan.json` が欠落した step-01 workflow に対し、Phase 11 screenshot coverage 要件を満たす成果物構成へ是正
+  - `documentation-changelog.md` を Task 12-1〜12-5（Step 1-A/1-B/1-C/Step 2）準拠へ再構成し、`unassigned-task-detection.md` / `skill-feedback-report.md` / `system-spec-sync-plan.md` / `pr-summary-draft.md` を補完
+  - `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `validate-phase-output` / `verify-all-specs` を再実行して再監査 PASS を確認
+
+---
 ## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 11/12 再監査テンプレート是正
 
 - **Agent**: task-specification-creator

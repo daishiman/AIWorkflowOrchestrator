@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-13T13:43:01.166Z",
-  "totalKeywords": 2128,
+  "generated": "2026-03-13T22:22:48.225Z",
+  "totalKeywords": 2142,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -186,6 +186,7 @@
       "ui-ux-settings-core.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
@@ -325,6 +326,7 @@
       "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-search-panel-history.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
@@ -493,6 +495,7 @@
       "ui-ux-settings-history.md",
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
@@ -1792,7 +1795,8 @@
       "api-ipc-system.md",
       "glossary.md",
       "master-design.md",
-      "technology-backend.md"
+      "technology-backend.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "プロバイダー": [
       "api-ipc-system-core.md",
@@ -2862,7 +2866,8 @@
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -3267,7 +3272,8 @@
     ],
     "docs": [
       "claude-code-skills-process.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md"
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "update": [
       "claude-code-skills-process.md"
@@ -3841,7 +3847,8 @@
     ],
     "AuthMode": [
       "error-handling-details.md",
-      "testing-component-patterns-details.md"
+      "testing-component-patterns-details.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "エラー": [
       "error-handling-details.md"
@@ -4626,6 +4633,18 @@
       "legacy-ordinal-family-register.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
+    "Current": [
+      "legacy-ordinal-family-register.md"
+    ],
+    "Alias": [
+      "legacy-ordinal-family-register.md"
+    ],
+    "Overrides": [
+      "legacy-ordinal-family-register.md"
+    ],
+    "個別互換行": [
+      "legacy-ordinal-family-register.md"
+    ],
     "Summary": [
       "legacy-ordinal-family-register.md"
     ],
@@ -5214,7 +5233,8 @@
       "lessons-learned-current.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "summary": [
       "lessons-learned-current.md"
@@ -5811,7 +5831,8 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "diff": [
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
@@ -6574,6 +6595,7 @@
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "spec-elegance-consistency-audit.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
@@ -7080,7 +7102,8 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "苦戦箇所記録": [
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
@@ -7231,7 +7254,8 @@
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "ui-ux-components-details.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "形成をテンプレート準拠へ最適化": [
       "logs-archive-2026-03-history-search-notification-center.md"
@@ -7336,7 +7360,8 @@
     ],
     "sync": [
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "正規化": [
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
@@ -7534,6 +7559,7 @@
     ],
     "分解決カード": [
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
@@ -8448,7 +8474,8 @@
       "spec-elegance-consistency-audit.md"
     ],
     "wave": [
-      "spec-elegance-consistency-audit.md"
+      "spec-elegance-consistency-audit.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "ユーザー依頼テンプレ": [
       "spec-elegance-consistency-audit.md"
@@ -8530,6 +8557,7 @@
     ],
     "ワークフロー仕様": [
       "spec-splitting-guidelines.md",
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
@@ -9495,19 +9523,84 @@
     "デザイントークン": [
       "ui-ux-system-prompt.md"
     ],
+    "Runtime": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "Unification": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "今回の確定事項": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "canonical": [
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+    ],
+    "set": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
     "artifact": [
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
     "inventory": [
+      "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+    ],
+    "parent": [
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-workspace-parent-reference-sweep-guard.md"
+    ],
+    "と依存関係": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "filename": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "互換管理": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "設定画面レビューの必須改善対象": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "後続タスクへの伝搬先": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "編成": [
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-aiworkflow-requirements-line-budget-reform.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "関心ごと分離": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "同種課題の": [
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-aiworkflow-requirements-line-budget-reform.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-light-theme-global-remediation.md",
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "最適なファイル形成": [
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-aiworkflow-requirements-line-budget-reform.md",
+      "workflow-apikey-chat-tool-integration-alignment.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-light-theme-global-remediation.md",
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
     ],
     "集計": [
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
     "更新した": [
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
-    ],
-    "canonical": [
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
     "control": [
@@ -9525,13 +9618,6 @@
     "再生成・監査コマンド": [
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
-    "編成": [
-      "workflow-aiworkflow-requirements-line-budget-reform.md",
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-onboarding-wizard-alignment.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
-    ],
     "今回実装した内容": [
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
@@ -9543,24 +9629,6 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md"
-    ],
-    "同種課題の": [
-      "workflow-aiworkflow-requirements-line-budget-reform.md",
-      "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-onboarding-wizard-alignment.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
-    ],
-    "最適なファイル形成": [
-      "workflow-aiworkflow-requirements-line-budget-reform.md",
-      "workflow-apikey-chat-tool-integration-alignment.md",
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-light-theme-global-remediation.md",
-      "workflow-onboarding-wizard-alignment.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
     ],
     "検証コマンド": [
       "workflow-aiworkflow-requirements-line-budget-reform.md",
@@ -9646,9 +9714,6 @@
     ],
     "監視・ログ": [
       "workflow-skill-identifier-branded-type-resolution.md"
-    ],
-    "parent": [
-      "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "sweep": [
       "workflow-workspace-parent-reference-sweep-guard.md"

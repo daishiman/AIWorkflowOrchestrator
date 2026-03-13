@@ -1738,6 +1738,24 @@ node scripts/list-specs.js --topics
 
 **関連キーワード**: タスク分解, Git Worktree, PR, CI/CD
 
+### references/workflow-ai-runtime-authmode-unification.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 今回の確定事項（2026-03-13） | L19 |
+| 再監査追補（2026-03-14） | L31 |
+| current canonical set（2026-03-14 wave） | L41 |
+| artifact inventory（Step-01 + system spec sync） | L56 |
+| parent docs と依存関係 | L70 |
+| 旧 filename 互換管理 | L83 |
+| 設定画面レビューの必須改善対象 | L90 |
+| 後続タスクへの伝搬先 | L108 |
+| SubAgent 編成（関心ごと分離） | L124 |
+| 同種課題の5分解決カード | L136 |
+| 最適なファイル形成 | L146 |
+| 関連ドキュメント | L158 |
+| 変更履歴 | L170 |
+
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
 | セクション | 行 |
@@ -2254,8 +2272,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
-| Family Summary | L21 |
-| Detailed Register | L40 |
+| Current Alias Overrides（個別互換行） | L21 |
+| Family Summary | L27 |
+| Detailed Register | L46 |
 
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
@@ -2318,7 +2337,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L68 |
+| 最新教訓 | L69 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 

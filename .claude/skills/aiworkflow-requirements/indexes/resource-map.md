@@ -42,6 +42,7 @@
 | バグ修正（Light Mode 全画面 white/black 再是正） | workflow-light-theme-global-remediation.md, ui-ux-design-system.md, task-workflow.md | lessons-learned.md, ui-ux-components.md, ui-ux-feature-components.md |
 | バグ修正（Light Theme contrast regression guard / representative screenshot audit） | workflow-light-theme-contrast-regression-guard.md, ui-ux-feature-components.md, lessons-learned.md | ui-ux-design-system.md, task-workflow.md, workflow-light-theme-global-remediation.md |
 | バグ修正（Workspace preview/search resilience / fuzzy no-match / renderer timeout+retry） | workflow-workspace-preview-search-resilience-guard.md, ui-ux-search-panel.md, architecture-implementation-patterns.md | arch-state-management.md, error-handling.md, task-workflow.md, lessons-learned.md |
+| 設計同期（AI runtime/auth-mode unification） | workflow-ai-runtime-authmode-unification.md, ui-ux-settings.md, interfaces-auth.md, api-ipc-system.md, legacy-ordinal-family-register.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md, `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
@@ -190,6 +191,8 @@
 | ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
 | workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
 | workflow-workspace-preview-search-resilience-guard.md | QuickFileSearch / PreviewPanel / renderer local timeout+retry / `external-dev-server` capture fallback を再利用したい時 | helper 抽出、typed taxonomy、`audit --target-file`、5分解決カード |
+| workflow-ai-runtime-authmode-unification.md | AI runtime/auth-mode foundation と Settings 3領域レビュー反映を再利用したい時 | foundation 契約、current canonical set、artifact inventory、後続9タスク伝搬、Phase 11/12 再監査手順 |
+| legacy-ordinal-family-register.md | 旧 filename から current semantic filename への逆引きを確認したい時 | legacy->current マッピング、mirror 同期前提、最終検証日 |
 | workflow-workspace-parent-reference-sweep-guard.md | docs-only parent workflow の pointer/index/spec/script/mirror drift と representative visual re-audit を再利用したい時 | drift guard、visual review board、unassigned cleanup、5分解決カード |
 | workflow-onboarding-wizard-alignment.md | onboarding overlay / Settings rerun / follow-up unassigned drift を再利用したい時 | force-open 契約、screenshot 6件、SubAgent分担、苦戦箇所、5分解決カード |
 | ui-history-search-view.md     | HistorySearchView / activity timeline の仕様確認時   | timeline UI、state/IPC 契約、画面証跡 |

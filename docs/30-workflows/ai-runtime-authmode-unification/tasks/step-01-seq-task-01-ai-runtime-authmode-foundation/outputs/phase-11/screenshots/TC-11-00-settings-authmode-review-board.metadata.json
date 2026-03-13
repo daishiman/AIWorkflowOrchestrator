@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-03-13T17:33:20.718Z",
+  "output": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-00-settings-authmode-review-board.png",
+  "cards": [
+    {
+      "id": "Block-1",
+      "source": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-01-access-card-sync.png",
+      "capturedAt": "2026-03-13T14:59:06.208Z"
+    },
+    {
+      "id": "Block-2",
+      "source": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-02-runtime-missing-api-key.png",
+      "capturedAt": "2026-03-13T14:59:06.222Z"
+    },
+    {
+      "id": "Block-3",
+      "source": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-03-terminal-unavailable.png",
+      "capturedAt": "2026-03-13T14:59:06.232Z"
+    }
+  ]
+}
