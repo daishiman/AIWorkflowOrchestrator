@@ -390,6 +390,7 @@ node scripts/log-usage.js --result failure --phase "Phase {{N}}" --error "{{ERRO
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.08.63** | **2026-03-12** | **TASK-SKILL-LIFECYCLE-04 の再監査知見を反映**: `references/spec-update-workflow.md` に「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加。あわせて Phase 11 の `テストケース / 結果 / 証跡` literal、Phase 12 の必須見出し群（型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧）を再確認ゲートへ固定 |
 | **v10.08.62** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の Phase 12 再確認を反映**: `references/phase-11-12-guide.md` に docs-heavy task 向け same-day evidence review board fallback を追加し、`references/spec-update-workflow.md` に related unassigned row を completed 実績へ移した後の `verify-unassigned-links` exact count 再取得ルールを追記 |
 | **v10.08.61** | **2026-03-12** | **UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 を反映**: docs-only parent workflow 向けに `outputs/artifacts.json` 同期、manual review の N/A screenshot 記録、`current=0 / baseline=134` の未タスク分離記法、parent/index/spec/script/mirror を一括で閉じる Phase 12 記録パターンを変更履歴へ追加 |
 | **v10.08.60** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` へ formalize し、親タスクの苦戦箇所を `3.5 実装課題と解決策` へ継承する運用を変更履歴へ追加。completed workflow の `unassigned-task-detection.md` / `documentation-changelog.md` / `spec-update-summary.md` を 1件 formalize 前提へそろえるルールも追記 |

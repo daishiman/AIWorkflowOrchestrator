@@ -13,10 +13,20 @@ import React, { memo, useMemo, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import type { SkillMetadata, ImportedSkill } from "@repo/shared/types/skill";
 import { Icon } from "../../components/atoms/Icon";
+import { SkillEvaluationPanel } from "../../components/skill/SkillEvaluationPanel";
 import {
   SKILL_LIFECYCLE_JOB_GUIDES,
   SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES,
 } from "../../navigation/skillLifecycleJourney";
+import {
+  useCurrentAnalysis,
+  useEvaluatePostImprove,
+  useIsLifecycleEvaluating,
+  useLatestEvaluationSnapshot,
+  useLatestGateDecision,
+  useLatestPromptRequest,
+  useSkillEvaluationError,
+} from "../../store";
 import { useSkillCenter } from "./hooks/useSkillCenter";
 import { FeaturedSection } from "./components/FeaturedSection/FeaturedSection";
 import { CategoryTabs } from "./components/CategoryTabs";
@@ -247,6 +257,13 @@ export const SkillCenterView: React.FC = memo(() => {
     () => new Set(importedSkillNames),
     [importedSkillNames],
   );
+  const latestGateDecision = useLatestGateDecision();
+  const latestEvaluationSnapshot = useLatestEvaluationSnapshot();
+  const latestPromptRequest = useLatestPromptRequest();
+  const currentAnalysis = useCurrentAnalysis();
+  const skillEvaluationError = useSkillEvaluationError();
+  const isLifecycleEvaluating = useIsLifecycleEvaluating();
+  const evaluatePostImprove = useEvaluatePostImprove();
 
   // 詳細パネル用のスキルデータ
   const detailSkill = useMemo((): SkillMetadata | ImportedSkill | undefined => {
@@ -296,6 +313,17 @@ export const SkillCenterView: React.FC = memo(() => {
     void handleConfirmDelete();
   }, [handleConfirmDelete]);
 
+  const handleReevaluate = useCallback(async () => {
+    if (!currentAnalysis || !latestPromptRequest) {
+      return;
+    }
+    await evaluatePostImprove({
+      skillName: currentAnalysis.skillName,
+      prompt: latestPromptRequest,
+      skillAnalysis: currentAnalysis,
+    });
+  }, [currentAnalysis, evaluatePostImprove, latestPromptRequest]);
+
   // スキル件数テキスト
   const countText = `${filteredSkills.length}件のツール`;
 
@@ -338,6 +366,25 @@ export const SkillCenterView: React.FC = memo(() => {
               AIワークフローを強化するツールを見つけましょう
             </p>
           </div>
+
+          {(latestGateDecision ||
+            latestEvaluationSnapshot ||
+            skillEvaluationError) && (
+            <div className="mb-6">
+              <SkillEvaluationPanel
+                decision={latestGateDecision}
+                snapshot={latestEvaluationSnapshot}
+                error={skillEvaluationError}
+                isEvaluating={isLifecycleEvaluating}
+                onReevaluate={
+                  currentAnalysis && latestPromptRequest
+                    ? handleReevaluate
+                    : undefined
+                }
+                title="利用前の品質ゲート"
+              />
+            </div>
+          )}
 
           <SkillLifecycleJourneyPanel />
           <SkillLifecycleSurfaceOwnershipPanel />

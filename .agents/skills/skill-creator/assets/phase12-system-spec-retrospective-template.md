@@ -125,7 +125,7 @@
 
 | 仕様書 | 必須記載 | 担当SubAgent |
 | --- | --- | --- |
-| `interfaces-agent-sdk-skill.md` | 実装した型/API契約、苦戦箇所、同種課題の簡潔解決手順 | A |
+| `interfaces-agent-sdk-skill.md` | 実装した型/API契約、public preload method / shared barrel export、苦戦箇所、同種課題の簡潔解決手順 | A |
 | `api-ipc-agent.md` | request/response/validation、苦戦箇所、同種課題の簡潔解決手順 | B |
 | `security-electron-ipc.md` | sender/P42/構造/サニタイズ、苦戦箇所、同種課題の簡潔解決手順 | C |
 | `task-workflow.md` | 完了記録、検証証跡、SubAgent分担、苦戦箇所 | D |
@@ -228,12 +228,12 @@ UI機能実装の場合は次を推奨:
 1. `<変更範囲を標準5責務（interfaces/api-ipc/security/task/lessons）またはUI6+α責務（ui-ux-components/ui-ux-feature/arch-ui/arch-state/task/lessons + domain-ui-spec）へ分離する>`
 2. `<実装 + 契約 + セキュリティを同一ターンで同期する>`
 3. `<Light Mode 全画面是正では rg で renderer 全域の hardcoded neutral class を棚卸しし、token修正 / compatibility bridge / component migration の責務を先に分ける>`
-4. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、workflow 直下 <workflow>/unassigned-task/ 参照のまま止めない。completed workflow 由来の継続 backlog は docs/30-workflows/completed-tasks/<workflow>/unassigned-task/ を正本にする>`
+4. `<未タスクがある場合は docs/30-workflows/unassigned-task/ に10見出し（## メタ情報 + ## 1..9）で作成し、workflow 直下 <workflow>/unassigned-task/ 参照のまま止めない。completed workflow 由来の継続 backlog は docs/30-workflows/completed-tasks/<workflow>/unassigned-task/ を正本にする。新規未タスクが 0 件なら docs/30-workflows/unassigned-task/ への追加作成なしを成果物に明記する>`
 5. `<worktree では UI再撮影や検証前に pnpm install --frozen-lockfile を実行し、optional dependency 欠落を先に解消する>`
 6. `<UIタスクは再撮影前に preview preflight（build成功 + 127.0.0.1:4173 疎通）を実施し、失敗時は未タスク化へ分離する>`
 7. `<CI が desktop shard 単位で失敗している場合は pnpm --filter @repo/desktop exec vitest run --shard=<n>/16 で同じ shard を再現し、全量再実行だけで原因調査を済ませない>`
 8. `<公開ビューを bypass した場合は shell 公開だけで閉じず、state reset 除外条件と nav 到達性も同一ターンで検証する>`
-9. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する>`
+9. `<verify-unassigned-links / audit --diff-from HEAD で current/baseline を確定し、必要時だけ未タスクを追加する。0 件なら current/baseline と指定ディレクトリへの追加作成なしを同値で残す>`
 10. `<phase-12-documentation.md / phase-1..11-*.md / artifacts.json / outputs/artifacts.json / index.md を同一ターンで同期し、generate-index.js --workflow ... --regenerate を実行する>`
 11. `<generate-index.js 実行後は index.md の undefined 混入や全Phase未実施化を確認し、schema 互換問題なら workflow を手動復旧して未タスク化する>`
 12. `<UIタスクでは validate-phase11-screenshot-coverage を追加し、全量 test:run が SIGTERM の場合は vitest 分割実行へフォールバックした記録を含めて、検証値と苦戦箇所を task-workflow と lessons に同時転記する>`
@@ -248,6 +248,7 @@ UI機能実装の場合は次を推奨:
 | コマンド | 目的 | 期待結果 |
 | --- | --- | --- |
 | `rg --files .claude/skills \| rg 'verify-all-specs\|validate-phase-output\|verify-unassigned-links\|audit-unassigned-tasks'` | 監査スクリプト実体の事前解決 | 実体パスが確認できる |
+| `rg -n "contextBridge\\.exposeInMainWorld\|window\\.electronAPI\\.\|export .* from" apps/desktop/src/preload packages/shared/src` | public preload API / shared export の追加有無確認 | Step 2 要否を説明できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-path> --strict` | ワークフロー仕様準拠確認 | `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-path>` | Phase出力構造確認 | `PASS` |
 | `rg -n '^\\| ステータス \\| completed' <workflow-path>/phase-12-documentation.md && rg -n '^- \\[x\\] Task 12-[1-5]' <workflow-path>/phase-12-documentation.md` | `phase-12-documentation.md` のメタ情報/Task 12-1〜12-5 完了同期を確認 | `ステータス=completed` と Task 12-1〜12-5 が `[x]` で一致する |
@@ -308,6 +309,7 @@ UI機能実装の場合は次を推奨:
 - [ ] `audit --target-file` の `currentViolations: 0` を確認
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、legacy standalone=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している
+- [ ] 新規未タスクが 0 件の場合、`docs/30-workflows/unassigned-task/` への追加作成なしを成果物に明記している
 - [ ] Light Mode / contrast 是正では `token修正` / `compatibility bridge` / `component migration` のどれで閉じたかを仕様書へ明記している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を記録している
 - [ ] screenshot 検証で副次不具合や warning が露出した場合、その場で `docs/30-workflows/unassigned-task/` に正式な未タスクを追加している
@@ -385,6 +387,7 @@ UI機能実装の場合は次を推奨:
 - [ ] 3仕様書（`task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>`）で5分解決カードの5ステップ順序が一致する
 - [ ] UIタスクでは `manual-test-result.md` の時刻と `screenshots/*.png` の `stat` が一致する
 - [ ] `currentViolations` を合否、`baselineViolations` を監視値として分離記録している
+- [ ] 既存 IPC 再利用でも public preload method または shared barrel export を追加した場合、Step 2 を `該当なし` にしていない
 - [ ] UIタスクで coverage が warning になった場合、`manual-test-checklist` 代替や `画面カバレッジマトリクス` 未記載などの理由を成果物へ明記している
 - [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している
 - [ ] `apps/desktop` 全量 `test:run` が `SIGTERM` の場合、失敗ログと分割実行結果の両方を記録している

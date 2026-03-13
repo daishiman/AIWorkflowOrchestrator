@@ -17,10 +17,19 @@
 import React from "react";
 import { X } from "lucide-react";
 import { ScoreDisplay } from "./ScoreDisplay";
+import { SkillEvaluationPanel } from "./SkillEvaluationPanel";
 import { SuggestionList } from "./SuggestionList";
 import { RiskPanel } from "./RiskPanel";
 import { ImprovementResultBreakdown } from "./ImprovementResultBreakdown";
 import { useSkillAnalysis } from "./hooks/useSkillAnalysis";
+import {
+  useEvaluatePostImprove,
+  useIsLifecycleEvaluating,
+  useLatestEvaluationSnapshot,
+  useLatestGateDecision,
+  useLatestPromptRequest,
+  useSkillEvaluationError,
+} from "../../store";
 
 // ============================================
 // Types
@@ -54,6 +63,21 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
     handleApplySelected,
     handleAutoImprove,
   } = useSkillAnalysis(skillName);
+  const latestGateDecision = useLatestGateDecision();
+  const latestEvaluationSnapshot = useLatestEvaluationSnapshot();
+  const latestPromptRequest = useLatestPromptRequest();
+  const evaluationError = useSkillEvaluationError();
+  const isLifecycleEvaluating = useIsLifecycleEvaluating();
+  const evaluatePostImprove = useEvaluatePostImprove();
+
+  const handleReevaluate = async () => {
+    if (!analysis) return;
+    await evaluatePostImprove({
+      skillName,
+      prompt: latestPromptRequest ?? skillName,
+      skillAnalysis: analysis,
+    });
+  };
 
   return (
     <div
@@ -108,7 +132,19 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
             {improvementResult && (
               <ImprovementResultBreakdown result={improvementResult} />
             )}
-            <ScoreDisplay analysis={analysis} />
+            <SkillEvaluationPanel
+              decision={latestGateDecision}
+              snapshot={latestEvaluationSnapshot}
+              error={evaluationError}
+              isEvaluating={isLifecycleEvaluating}
+              onReevaluate={handleReevaluate}
+              title="改善面の品質ゲート"
+            />
+            <ScoreDisplay
+              analysis={analysis}
+              gateDecision={latestGateDecision}
+              snapshot={latestEvaluationSnapshot}
+            />
             <SuggestionList
               suggestions={analysis.suggestions}
               selected={selectedSuggestions}

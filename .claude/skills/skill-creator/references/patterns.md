@@ -1299,6 +1299,22 @@
 - **関連タスク**: TASK-10A-A-SKILL-MANAGEMENT-PANEL
 - **クロスリファレンス**: [phase12-system-spec-retrospective-template.md](../assets/phase12-system-spec-retrospective-template.md), [spec-update-workflow.md](../../task-specification-creator/references/spec-update-workflow.md), [task-workflow.md](../../aiworkflow-requirements/references/task-workflow.md)
 
+### [Phase12] 既存IPC再利用でも public preload / shared export 追加は Step 2 必須（TASK-SKILL-LIFECYCLE-04）
+
+- **状況**: 既存 IPC channel を再利用した実装では、新規 channel が増えていないことだけを見て Step 2 を `該当なし` にしやすい。一方で `window.electronAPI.*` の public preload method や `packages/shared` の barrel export が増えると、利用者から見える契約面は確実に変わる
+- **成功パターン**:
+  - Step 2 判定では `channel追加有無` だけでなく、`public preload method 追加` と `shared barrel export 追加` を同じ優先度で確認する
+  - `phase-12-documentation.md` の更新対象表、`documentation-changelog.md` の Step 2 行、`spec-update-summary.md` の更新一覧を同値で同期する
+  - `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` / `task-workflow.md` / `lessons-learned.md` を同一ターンで更新し、苦戦箇所まで残す
+- **失敗パターン**:
+  - `既存 skill:* を再利用しただけ` と判断して interface spec 更新を省く
+  - Renderer / store 実装だけを見て、Preload 公開面や shared export の増分を確認しない
+  - `documentation-changelog.md` だけ Step 2 完了にして、正本仕様の更新実体が無いまま閉じる
+- **効果**: `新しい channel はないが public contract は増えた` という見落としを防ぎ、Phase 12 の説明責任を一貫させられる
+- **適用条件**: Electron preload API、shared types、barrel export、contextBridge 公開面を伴う Phase 12 Step 2
+- **発見日**: 2026-03-12
+- **関連タスク**: TASK-SKILL-LIFECYCLE-04
+
 ### [Phase 12] UI再撮影 + TCカバレッジ検証の同時固定（TASK-10A-C）
 
 - **状況**: UI証跡を再撮影しても、TCと画像の紐付け検証を省略すると `manual-test-result.md` と実ファイルの対応がずれやすい
@@ -2996,6 +3012,22 @@ interface BadgeProps extends Omit<
 - **適用条件**: docs-heavy task、再監査タスク、未タスク 0 件報告を含む Phase 12 全般
 - **発見日**: 2026-03-11
 - **関連タスク**: TASK-SKILL-LIFECYCLE-01
+
+### [Phase12] 未タスク 0 件でも指定ディレクトリへの追加作成なしを明記する（TASK-SKILL-LIFECYCLE-04）
+
+- **状況**: `currentViolations=0` と `baselineViolations>0` を報告しても、`docs/30-workflows/unassigned-task/` に実際に新規ファイルを作ったのか、作っていないのかが成果物に残らず、再監査者が台帳を開き直すことになる
+- **成功パターン**:
+  - `unassigned-task-detection.md` に `今回差分では docs/30-workflows/unassigned-task/ への新規追加作成なし` を明記する
+  - `phase12-task-spec-compliance-check.md` または `task-workflow.md` にも、`current=0 / baseline>0 / 追加作成なし` を同値で残す
+  - 親責務へ継続する残課題がある場合は、`このタスクから追加 formalize しない` と併記して責務境界を固定する
+- **失敗パターン**:
+  - `currentViolations=0` だけを書いて、指定ディレクトリの追加作成有無を曖昧にする
+  - 新規未タスクが 0 件なのに `未タスク確認済み` だけで閉じ、配置先判定を成果物へ残さない
+  - 親タスク責務の backlog を current task 起因の未タスクのように読める文面にする
+- **効果**: `未タスク 0 件` と `指定ディレクトリに何も追加していない` を区別して残せるため、再監査時の確認コストが下がる
+- **適用条件**: 未タスク監査が PASS だが新規 follow-up を起票しない Phase 12、特に docs-heavy task の再確認
+- **発見日**: 2026-03-13
+- **関連タスク**: TASK-SKILL-LIFECYCLE-04
 
 ### [Phase12] Light Mode 全画面 white/black 基準 + compatibility bridge 固定（TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001）
 

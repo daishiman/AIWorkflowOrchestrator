@@ -367,6 +367,25 @@ Task03 では `skill-creator:*` を単独の create 導線として見せず、�
 - `skill-creator:detect-mode` と `skill-creator:improve` の結果は session log / suggestion card に集約する。
 - `SubAgent` / `Codex` の委譲は mode 説明に留め、別チャネル選択 UI は追加しない。
 
+### Renderer 評価ゲート契約（TASK-SKILL-LIFECYCLE-04）
+
+Task04 では新しい IPC チャネルを増やさず、既存 `skill:*` 契約の組み合わせで quality gate を構成する。
+
+| flow | 使用チャネル / API | renderer 側の正本 |
+| --- | --- | --- |
+| draft 評価 | `skill:optimize:evaluate` / `window.electronAPI.skill.evaluatePrompt()` | `skillEvaluationSlice.evaluateDraft` |
+| create 後評価 | `skill:create` + `skill:analyze` | `skillEvaluationSlice.evaluatePostCreate` |
+| execute 後評価 | `skill:execute` + `skill:analyze` | `skillEvaluationSlice.evaluatePostExecute` |
+| improve 後評価 | `skillCreator:improve` + `skill:applyImprovements` + `skill:analyze` | `skillEvaluationSlice.evaluatePostImprove` |
+| Task05 再評価 | 直近 prompt / analysis / executionQuality を再利用 | `SkillCenterView` から slice action を再呼び出し |
+
+#### 露出ルール
+
+- `window.electronAPI.skill.evaluatePrompt()` は public preload API だが、Renderer component から直接呼ばず store action に閉じる。
+- Task04 は `skill:optimize:evaluate` を再利用するため、IPC チャネル数は増やさない。
+- `SkillEvaluationPanel` は IPC 結果を直接描画せず、必ず `LifecycleGateDecision` に正規化された state を読む。
+- Task05 の re-evaluate も Task04 と同じ slice action を通し、別の判定ロジックを持たない。
+
 ---
 
 ## 実装パターン参照
@@ -971,6 +990,7 @@ SkillUsageEvent, ToolUsageStat, SkillStatistics, AnalyticsPeriod, TrendDataPoint
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.7    | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 を反映: `skill:optimize:evaluate` を draft gate に再利用し、`window.electronAPI.skill.evaluatePrompt()` の public preload 経路、Task03 create/execute/improve と Task05 re-evaluate の renderer 契約、store action 経由ルールを追記 |
 | v1.16.6    | 2026-03-05 | TASK-10A-E-A 追補: share IPC セクションへ「実装内容（IPC契約）」「苦戦箇所」「5ステップ手順」を追加し、Step 2同時同期・`code/errorCode` 二軸固定・画像+diagnostics 証跡の3点を標準化 |
 | v1.16.5    | 2026-03-05 | TASK-10A-E-A反映: share IPC（`skill:importFromSource/export/validateSource`）の失敗契約へ `errorCode` を追記。sender失敗 `ERR_2004`、validation `ERR_1001`、unknown例外 `ERR_5001` を明文化し、`IPC_CHANNELS` 定数参照と実装テスト（Main 34 / Preload 60）の整合を記録 |
 | v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 契約セクションを追加し、失敗レスポンス `errorCode`・Renderer preflight・`auth-key:exists` store+env 判定順・Preload `Error.code` 転写を同期 |

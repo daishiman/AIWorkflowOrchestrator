@@ -79,6 +79,15 @@ export type {
   SkillOptimizeEvaluateRequest,
 } from "./src/types/skill-improver";
 
+export type {
+  EvaluationStage,
+  GateStatus,
+  LifecycleNextSurface,
+  ExecutionQualityEvaluation,
+  LifecycleEvaluationSnapshot,
+  LifecycleGateDecision,
+} from "./src/types/skill-evaluation";
+
 // Skill Debug types and constants (TASK-9H)
 export type {
   DebugSessionStatus,
