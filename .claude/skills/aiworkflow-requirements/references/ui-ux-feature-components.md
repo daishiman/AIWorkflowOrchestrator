@@ -1162,10 +1162,10 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. UI責務を `view / organism / molecule / hook` に分解し、拡張点を先に決める。  
-2. 未タスク候補を `docs/30-workflows/unassigned-task/` に分離登録する。  
-3. `verify-unassigned-links` と `audit --target-file` で参照と形式を機械確認する。  
-4. `task-workflow.md` と `lessons-learned.md` に苦戦箇所を同一ターンで同期する。  
+1. UI責務を `view / organism / molecule / hook` に分解し、拡張点を先に決める。
+2. 未タスク候補を `docs/30-workflows/unassigned-task/` に分離登録する。
+3. `verify-unassigned-links` と `audit --target-file` で参照と形式を機械確認する。
+4. `task-workflow.md` と `lessons-learned.md` に苦戦箇所を同一ターンで同期する。
 
 ### 関連ドキュメント
 
@@ -1227,11 +1227,11 @@ UI 実装コード・IPC 統合・自動テスト・画面検証証跡を正本�
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. 更新対象を 1仕様書=1SubAgent で分割し、担当責務を先に固定する。  
-2. `verify-all-specs` と `validate-phase-output` を実行し、warning/error の根拠を抽出する。  
-3. Phase 12 文書の参照資料に依存Phase成果物を追加して再検証する。  
-4. UI画面はスクリーンショットを再撮影し、更新時刻で当日証跡を固定する。  
-5. 未タスク監査結果は `current` を合否、`baseline` を改善バックログとして分離記録する。  
+1. 更新対象を 1仕様書=1SubAgent で分割し、担当責務を先に固定する。
+2. `verify-all-specs` と `validate-phase-output` を実行し、warning/error の根拠を抽出する。
+3. Phase 12 文書の参照資料に依存Phase成果物を追加して再検証する。
+4. UI画面はスクリーンショットを再撮影し、更新時刻で当日証跡を固定する。
+5. 未タスク監査結果は `current` を合否、`baseline` を改善バックログとして分離記録する。
 
 ### 実装着手前のガード条件
 
@@ -1312,11 +1312,11 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. 画面証跡を先に再取得し、`outputs/phase-11/screenshots` を更新する。  
-2. `manual-test-result` と `discovered-issues` を実証跡ベースに書き換える。  
-3. `verify-all-specs` と `validate-phase-output` を実行し、不足セクションを埋める。  
-4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。  
-5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。  
+1. 画面証跡を先に再取得し、`outputs/phase-11/screenshots` を更新する。
+2. `manual-test-result` と `discovered-issues` を実証跡ベースに書き換える。
+3. `verify-all-specs` と `validate-phase-output` を実行し、不足セクションを埋める。
+4. 未タスク台帳（作成済みID）を再計算し、`task-workflow.md` と同期する。
+5. 苦戦箇所を `lessons-learned.md` に転記して再利用ルール化する。
 
 ### 関連未タスク（active set）
 
@@ -1504,11 +1504,11 @@ TASK-UI-00-ORGANISMS で、Renderer横断で再利用する Organisms 3コンポ
 
 ### 同種課題の最短解決テンプレート（5分）
 
-1. `verify-all-specs` と `validate-phase-output` で構造合否を先に確定する。  
-2. UI再撮影を実行し、`validate-phase11-screenshot-coverage` をPASSさせる。  
-3. `stat` 時刻を `manual-test-result.md` と仕様書へ同期する。  
-4. `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否に使う。  
-5. `task-workflow.md` / `lessons-learned.md` へ実装内容・苦戦箇所・検証値を同時転記する。  
+1. `verify-all-specs` と `validate-phase-output` で構造合否を先に確定する。
+2. UI再撮影を実行し、`validate-phase11-screenshot-coverage` をPASSさせる。
+3. `stat` 時刻を `manual-test-result.md` と仕様書へ同期する。
+4. `verify-unassigned-links` と `audit --diff-from HEAD` を連続実行し、`currentViolations=0` を合否に使う。
+5. `task-workflow.md` / `lessons-learned.md` へ実装内容・苦戦箇所・検証値を同時転記する。
 
 ### 関連未タスク（2026-03-04 追補）
 
@@ -1653,11 +1653,11 @@ UI基盤反映監査タスクで、Task 5D語彙具体例と Task 5B適用境界
 
 ### 同種課題の5分解決カード
 
-1. 画面の主目的を「検索画面」ではなく「読む timeline」として先に固定する。  
-2. `hasFetchedHistory` と `isHistoryLoadingMore` を分け、初回/追補/空状態を混同しない。  
-3. cross-view 導線は `pending payload + view 遷移` の二段構成にする。  
-4. screenshot script は一意 selector または `data-testid` を ready condition にする。  
-5. `.claude` 正本、workflow outputs、未タスク、skill docs を同一ターンで同期する。  
+1. 画面の主目的を「検索画面」ではなく「読む timeline」として先に固定する。
+2. `hasFetchedHistory` と `isHistoryLoadingMore` を分け、初回/追補/空状態を混同しない。
+3. cross-view 導線は `pending payload + view 遷移` の二段構成にする。
+4. screenshot script は一意 selector または `data-testid` を ready condition にする。
+5. `.claude` 正本、workflow outputs、未タスク、skill docs を同一ターンで同期する。
 
 ### 関連未タスク
 
@@ -1959,6 +1959,44 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 ## 関連ドキュメント
 
+## Onboarding Wizard UI（TASK-UI-09-ONBOARDING-WIZARD）
+
+### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| surface | 初回起動時に前面表示される Onboarding Wizard overlay を追加 |
+| flow | multi-step で基本導線を案内し、完了後は通常画面へ復帰する |
+| rerun | Settings の `はじめよう` card から `はじめようを再表示` を実行できる |
+| persist | `onboarding.completed` により再表示抑制と rerun reset を制御する |
+
+### 画面証跡
+
+| TC | 証跡 | 確認内容 |
+| --- | --- | --- |
+| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png` | desktop light で Step 1 表示 |
+| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png` | tablet dark で中盤 step 表示 |
+| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png` | mobile kanagawa で最終 step 表示 |
+| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | Settings rerun card の表示 |
+| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun 実行後の overlay 表示 |
+
+### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 内容 | 解決方針 |
+| --- | --- | --- |
+| overlay と通常画面の境界 | 完了時に overlay を閉じた後の戻り先が曖昧になりやすい | 完了後の戻り先を dashboard 系へ固定する |
+| representative screenshot の粒度 | state 名と png 名がずれると台帳が破綻する | `TC-ID ↔ png` を manual test 台帳で固定する |
+| rerun discoverability | isolated screenshot では明快でも Settings 全体では埋もれる | UI 完了と IA 改善を分離し、未タスク化する |
+| test hardening | warning と coverage 不足が report に残りやすい | follow-up task を発行して本体完了から責務分離する |
+
+### 同種課題の5分解決カード
+
+1. overlay 表示条件と完了後の戻り先を先に固定する。
+2. representative screenshot は desktop / tablet / mobile / rerun の4観点で押さえる。
+3. Settings rerun は動作確認と発見性確認を分けて評価する。
+4. MINOR は report だけで終わらせず unassigned task 化する。
+5. `task-workflow` / `ui-ux-navigation` / `ui-ux-settings` / `lessons-learned` を同一ターンで同期する。
+
 ### 分割ファイル
 
 - [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズの完全な仕様
@@ -2000,6 +2038,7 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 
 | 日付       | バージョン | 変更内容                                                                                        |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------- |
+| 2026-03-13 | v1.14.37   | TASK-UI-09-ONBOARDING-WIZARD を反映: Onboarding Wizard overlay / Settings rerun / screenshot 5件 / 苦戦箇所 4件 / related UT 2件を feature 正本へ同期 |
 | 2026-03-12 | v1.14.36   | TASK-SKILL-LIFECYCLE-04 を反映: 収録機能一覧へ Skill Evaluation Gate を追加し、`SkillEvaluationPanel` / Task03-Task05 共通 gate / screenshot 6件 / public preload API 同期漏れ対策 / validator 準拠証跡を専用セクションへ同期 |
 | 2026-03-11 | v1.14.35   | TASK-UI-04C follow-up: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を Workspace Preview / Quick Search 節の関連未タスクへ追加し、fuzzy no-match、renderer timeout+retry、error taxonomy を再利用用未タスクへ接続 |
 | 2026-03-11 | v1.14.34   | TASK-UI-04C-WORKSPACE-PREVIEW を反映: 収録機能一覧へ Workspace Preview / Quick Search を追加し、専用セクションへ `PreviewPanel` / `QuickFileSearch` / timeout+retry / screenshot 11件 / 苦戦箇所 3件を同期 |
