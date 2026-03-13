@@ -61,7 +61,7 @@ function App(): JSX.Element {
   const themeMode = useAppStore((state) => state.themeMode);
   const setThemeMode = useAppStore((state) => state.setThemeMode);
   const updateUserProfile = useAppStore((state) => state.updateUserProfile);
-  const userProfileName = useAppStore((state) => state.userProfile.name);
+  const userProfileName = useAppStore((state) => state.userProfile?.name ?? "");
 
   useEffect(() => {
     console.log("🔍 [App] Initializing auth...");
