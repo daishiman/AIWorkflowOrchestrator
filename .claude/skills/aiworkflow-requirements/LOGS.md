@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 canonical set / legacy register 同期 |
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-SAME-WAVE-SYNC-GUARD-001 unassigned follow-up formalize |
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 actual semantic rename of legacy ordinal files |
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 multi-angle elegance and consistency audit |

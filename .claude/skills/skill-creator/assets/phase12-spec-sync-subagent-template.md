@@ -194,6 +194,7 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js --workf
 rg -n 'undefined' <workflow-path>/index.md
 rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md
 rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md
+rg -n "契約テスト|回帰テスト|TC-C|MR-" <workflow-path>/phase-4-test-creation.md <workflow-path>/phase-6-test-expansion.md
 rg -n '^\\| 2\\s+\\|' <workflow-path>/outputs/phase-12/documentation-changelog.md
 rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
@@ -231,6 +232,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
+- [ ] design/spec_created タスクでは Phase 4（契約テスト）/ Phase 6（回帰テスト）の責務境界を記録し、重複候補を未タスク化している
 - [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認し、移動直後の untracked completed file は `audit --target-file` で補完している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している

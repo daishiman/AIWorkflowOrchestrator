@@ -1,0 +1,129 @@
+{
+  "taskId": "TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001",
+  "title": "Claude Code terminal surface と手動操作境界の整流",
+  "type": "design",
+  "priority": "high",
+  "status": "not_started",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "not_started",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "not_started",
+      "file": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not_started",
+      "file": "phase-4-test-creation.md",
+      "artifacts": ["outputs/phase-4/test-matrix.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not_started",
+      "file": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-plan.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not_started",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": ["outputs/phase-6/regression-plan.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-plan.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not_started",
+      "file": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactor-plan.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "not_started",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": ["outputs/phase-9/qa-checklist.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "not_started",
+      "file": "phase-10-final-review.md",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not_started",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "not_started",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-sync-plan.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["outputs/phase-13/pr-summary-draft.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "terminal launch / session / output / abort / retry / history の現状経路が整理されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "`copy only / no auto-send` と credential 非中継の境界が仕様化されている",
+      "verified": false
+    }
+  ],
+  "createdAt": "2026-03-13",
+  "updatedAt": "2026-03-13"
+}

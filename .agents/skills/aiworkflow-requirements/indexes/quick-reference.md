@@ -123,6 +123,25 @@ node scripts/search-spec.js "conversationIdRef" -C 3
 5. `references/task-workflow.md` / `references/lessons-learned.md` で completed path、`external-dev-server` screenshot、`audit --target-file` ルールを確認する
 6. 実装実体は `apps/desktop/src/renderer/views/WorkspaceView/utils/quickFileSearchResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/utils/previewResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/index.tsx` `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/scripts/capture-workspace-preview-search-resilience-guard-phase11.mjs` を照合する
 
+### AI runtime/auth-mode unification を探すとき
+
+このカテゴリは `ai-runtime-authmode` `auth mode unification` `settings authmode` `legacy-ordinal-family-register` `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "ai-runtime-authmode" -C 3
+node scripts/search-spec.js "auth mode unification" -C 3
+node scripts/search-spec.js "legacy-ordinal-family-register" -C 3
+node scripts/search-spec.js "UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「設計同期（AI runtime/auth-mode unification）」を見る
+2. `references/workflow-ai-runtime-authmode-unification.md` で foundation 契約に加えて `current canonical set` と `artifact inventory` を確認する
+3. `references/ui-ux-settings.md` / `references/interfaces-auth.md` / `references/api-ipc-system.md` で settings 3領域と runtime 契約の境界を確認する
+4. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録、苦戦箇所、関連未タスク `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` を確認する
+5. `references/legacy-ordinal-family-register.md` で旧 filename 互換行（`qa-checklist` -> `quality-assurance-checklist`）を確認する
+
 ### Electron IPC パターン
 
 ```typescript

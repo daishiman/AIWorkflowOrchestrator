@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に追加済みの「Phase 4（契約テスト）/ Phase 6（回帰テスト）責務境界監査」を `references/resource-map.md` の asset 説明へ同期
+  - `references/patterns.md` に記録した `[Phase12] 契約テストと回帰テストの責務分離` と template 説明の導線を一致させ、入口説明だけで required audit が分かる状態にした
+  - `SKILL.md` 変更履歴を `10.37.42` に更新し、差分の追跡可能性を確保
+
+---
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD onboarding template profile を skill-creator へ反映
 
 - **Agent**: skill-creator (update)

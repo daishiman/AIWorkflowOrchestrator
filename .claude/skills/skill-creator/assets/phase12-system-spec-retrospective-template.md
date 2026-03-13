@@ -279,6 +279,7 @@ UI機能実装の場合は次を推奨:
 | `rg -n 'undefined' <workflow-path>/index.md` | `generate-index` 後の壊れた index 早期検知 | 想定外の `undefined` が 0 件 |
 | `rg -n '^\\| 12 \\| .* \\| .*完了' <workflow-path>/index.md && rg -n '^\\| 13 \\| .* \\| .*未実施' <workflow-path>/index.md` | workflow index 状態確認 | Phase 12=完了、Phase 13=未実施 |
 | `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` | workflow 本文 stale 確認 | 0件 |
+| `rg -n "契約テスト|回帰テスト|TC-C|MR-" <workflow-path>/phase-4-test-creation.md <workflow-path>/phase-6-test-expansion.md` | Phase 4/6 のテスト責務境界と重複候補の監査 | 契約テスト（関数入出力）と回帰テスト（伝播経路）が分離され、重複候補が説明できる |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-a> --json && node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-b> --json` | 2workflow同時監査（構造） | 2件とも `PASS` |
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
 | `pnpm install --frozen-lockfile` | worktree / UI再撮影前の依存解決 preflight | 依存欠落が解消される |
@@ -345,6 +346,7 @@ UI機能実装の場合は次を推奨:
 - [ ] `task-workflow.md` の対象タスク節へ「仕様書別SubAgent分担」表を転記する
 - [ ] 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）を `spec-update-summary.md` に記録する
 - [ ] `task-workflow.md` / `lessons-learned.md` / `<domain-spec or ui-ux-feature-components.md>` の3点へ同一内容の「5分解決カード」を記録する
+- [ ] design/spec_created タスクでは Phase 4（契約テスト）/ Phase 6（回帰テスト）の責務境界を記録し、重複候補は未タスク化している
 - [ ] Light theme shared color migration の `spec_created` task では actual target inventory と verification-only lane を明記している
 - [ ] Light theme shared color migration では `ui-ux-settings` / `ui-ux-search-panel` / `ui-ux-portal-patterns` / `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-electron-ipc` / `security-principles` の要否判定を記録している
 - [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が同期している
