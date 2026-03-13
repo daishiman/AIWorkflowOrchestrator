@@ -84,6 +84,38 @@
 - ステータス: success
 
 ---
+## 2026-03-13 - UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を system spec へ追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001`
+- 目的: `workspace-preview-search-resilience-guard` follow-up で手動再同期した exact count を、Phase 12 outputs 4成果物で横断比較する改善導線として formalize する
+
+### 実施内容
+- `references/task-workflow.md` の 04C 完了節と残課題テーブルへ同 ID を追加し、global backlog からも辿れるようにした
+- `references/lessons-learned.md` に「Phase 12 outputs の exact count が 4成果物で手動同期になりやすい」苦戦箇所と標準ルールを追加し、関連未タスク表へ導線を追加した
+- `references/workflow-workspace-preview-search-resilience-guard.md` に同 ID を関連未タスクとして追加し、統合正本から validator 改善へ直接遷移できるようにした
+
+### 結果
+- ステータス: success
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 統合 workflow 正本を追加
+
+### コンテキスト
+- スキル: aiworkflow-requirements
+- 対象タスク: `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001`
+- 目的: 実装内容、苦戦箇所、screen verification、Phase 12 root evidence が複数仕様へ分散していたため、同種課題の再利用入口を 1 ファイルへ集約する
+
+### 実施内容
+- `references/workflow-workspace-preview-search-resilience-guard.md` を新規作成し、search resilience helper、preview timeout/retry helper、conversation persistence race fix、Phase 11 screenshot 5件、5分解決カード、仕様書別 SubAgent 編成を統合した
+- `indexes/resource-map.md` に preview/search resilience 向け逆引き導線を追加し、`indexes/quick-reference.md` に検索語、読む順番、実装アンカーを追加した
+- `SKILL.md` に workflow 正本の直リンクを追加し、`task-workflow.md` / `ui-ux-search-panel.md` / `arch-state-management.md` / `error-handling.md` / `lessons-learned.md` へ降りる最短入口を固定した
+
+### 結果
+- ステータス: success
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 completed-tasks 移管同期
 
 ### コンテキスト

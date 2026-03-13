@@ -342,7 +342,7 @@ electron-storeなどの外部ストレージから取得したデータは型保
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview/search 系の transport / parse / crash / no-match 分類を共通 error taxonomy として再利用可能にする | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~preview/search 系の transport / parse / crash / no-match 分類を共通 error taxonomy として再利用可能にする~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
 
 ---
 
@@ -815,3 +815,4 @@ Supabaseの`user_profiles`テーブルが存在しない場合、`user_metadata`
 | 2026-02-02 | v1.3.0     | TASK-8A: SkillExecutor実行エラーコード6種の正式仕様追加（EXECUTION_FAILED, MAX_CONCURRENT_EXCEEDED, INVALID_SKILL_METADATA, PERMISSION_DENIED, TIMEOUT, ABORT） |
 | 2026-01-31 | v1.2.0     | TASK-SKILL-RETRY-001: SkillExecutorリトライ戦略セクション追加        |
 | 2026-01-26 | v1.1.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                   |
+| 2026-03-13 | v1.11.2    | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期。`PreviewSurfaceError` の category/code/summary/detail 契約、structured fallback heading、transport timeout detail を current 実装に合わせて固定し、related row を completed path へ更新 |

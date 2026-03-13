@@ -573,7 +573,13 @@ docs-only parent workflow の再監査として、04A / 04B / 04C child workflow
 
 | タスクID | 目的 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| ~~UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001~~ | ~~Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する~~ | ~~中~~ | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | 完了: 2026-03-13 |
+
+### 追補（2026-03-13）
+
+- `QuickFileSearch` の results / no-match / keyboard select を `quickFileSearchResilience.ts` へ分離し、dialog 側は view state だけを扱う構造へ整理した
+- `PreviewPanel` は transport alert と structured parse fallback を typed taxonomy で描き分け、`PreviewErrorBoundary` も同じ見出し規約へ揃えた
+- Phase 11 では current source dev server から screenshot 5件を取得し、Apple UI/UX 観点で hierarchy / fallback clarity / dark contrast を確認した
 
 ---
 ## Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001）
@@ -2036,3 +2042,4 @@ TASK-UI-05A-SKILL-EDITOR-VIEW は、SkillEditorView の Phase 1-13 仕様書作�
 | 2026-01-27 | v1.1.1     | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル）                                |
 | 2026-01-27 | v1.1.0     | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加                        |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                              |
+| 2026-03-13 | v1.14.36   | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 を完了同期。関連改善タスクを completed path へ更新し、Quick Search resilience utility、preview taxonomy helper、current source dev server による screenshot 5件、Apple UI/UX review を 04C follow-up の実績として追記 |

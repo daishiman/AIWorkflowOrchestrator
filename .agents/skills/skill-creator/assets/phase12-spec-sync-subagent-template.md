@@ -233,7 +233,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
+- [ ] `audit --target-file` の対象が、実際の正本配置（active / completed parent / standalone completed）と一致していることを確認している
 - [ ] current workflow 起因の新規未タスクが `0 件` でも、related active open backlog がある場合は `rg` の 10見出し確認と `audit --diff-from HEAD --target-file` を実行している
 - [ ] 関連未タスク参照の正本が実際の配置先と一致している（active workflow は root、completed workflow は parent workflow 配下）
 - [ ] screenshot 検証で露出した副次不具合や warning を `docs/30-workflows/unassigned-task/` へ正式起票している

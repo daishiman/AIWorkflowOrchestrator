@@ -68,6 +68,29 @@ describe("QuickFileSearch", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it("no-match は empty state を表示する", () => {
+    render(
+      <QuickFileSearch
+        isOpen
+        query="missing"
+        results={[]}
+        selectedIndex={0}
+        onClose={vi.fn()}
+        onQueryChange={vi.fn()}
+        onHighlight={vi.fn()}
+        onSubmit={vi.fn()}
+        onKeyDown={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByTestId("quick-file-search-empty-state"),
+    ).toHaveTextContent("一致するファイルは見つかりませんでした。");
+    expect(
+      screen.getByTestId("quick-file-search-empty-state"),
+    ).toHaveTextContent("別のファイル名やフォルダ名でもう一度試してください。");
+  });
+
   it("mouse と click でハイライト・選択できる", () => {
     const onHighlight = vi.fn();
     const onSubmit = vi.fn();

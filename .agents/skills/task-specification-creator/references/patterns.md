@@ -336,6 +336,23 @@
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-043B
 
+### Phase 12 root evidence + workflow 正本集約（UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001）
+
+- **状況**: Task 12-1〜12-5 の成果物は揃っていても、system spec 側の実装内容・苦戦箇所・screen evidence が複数仕様へ散ると、Phase 12 の完了根拠と再利用入口が別々になりやすい
+- **問題**:
+  1. `spec-update-summary.md` と system spec を別々に読まないと「何を実装し、どこで苦戦したか」が追えない
+  2. Phase 12 の準拠確認を報告しても、同種課題の初動で参照入口が定まらない
+- **解決パターン**:
+  1. `outputs/phase-12/phase12-task-spec-compliance-check.md` を root evidence として追加し、Task 12-1〜12-5 / Step 1-A〜1-G / Step 2 を 1 ファイルへ集約する
+  2. 実装内容と苦戦箇所が 6 仕様書以上へ広がる follow-up task では、`aiworkflow-requirements/references/workflow-<feature>.md` を新規作成し、SubAgent 分担、5分解決カード、検証コマンドもまとめて残す
+  3. `resource-map.md` / `quick-reference.md` / `SKILL.md` に workflow 正本の入口を追加し、仕様更新後の再利用経路を固定する
+  4. `quick_validate.js` 3件、`verify-unassigned-links`、`audit --target-file`、screen verification の結果を compliance check と verification report の両方へ転記する
+- **効果**:
+  - Phase 12 完了判定と system spec 再利用入口が分離しない
+  - 同種課題の再開時に「どこから読むべきか」の探索コストを下げられる
+- **発見日**: 2026-03-13
+- **関連タスク**: UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001
+
 ### `phase-12-documentation.md` 完了同期パターン（TASK-9H）
 
 - **状況**: `outputs/phase-12` の成果物5件が揃っていても、`phase-12-documentation.md` のメタ情報と完了条件チェックが `未実施` のまま残ることがある

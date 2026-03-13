@@ -1,4 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import {
+  createPreviewRenderCrashError,
+  getPreviewErrorHeading,
+} from "../../utils/previewResilience";
 
 interface PreviewErrorBoundaryProps {
   children: ReactNode;
@@ -43,6 +47,8 @@ export class PreviewErrorBoundary extends Component<
       return this.props.children;
     }
 
+    const crashError = createPreviewRenderCrashError(this.state.message);
+
     return (
       <section
         className="flex h-full min-h-0 flex-col items-center justify-center gap-3 rounded-2xl border border-[var(--status-error)] bg-[var(--bg-primary)] p-4"
@@ -50,10 +56,10 @@ export class PreviewErrorBoundary extends Component<
         data-testid="preview-error-boundary"
       >
         <p className="text-sm font-semibold text-[var(--status-error)]">
-          プレビューの描画でエラーが発生しました
+          {getPreviewErrorHeading(crashError)}
         </p>
         <p className="text-xs text-[var(--text-secondary)]">
-          {this.state.message}
+          {crashError.detail}
         </p>
         <button
           type="button"

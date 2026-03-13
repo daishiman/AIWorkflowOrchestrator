@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.7    | 2026-03-13 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査反映: `WorkspaceView` の preview reset 順序（content/size/extension/error → read helper）と、`quickFileSearchResilience.ts` / `previewResilience.ts` による local helper 抽出を追記。follow-up screenshot 5件（`external-dev-server`）と targeted tests 39件 PASS も 04C の state evidence として同期 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -214,6 +215,7 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | file read resilience | renderer 側 `Promise.race` で 5秒 timeout、1秒間隔3回 retry を行う |
 | quick search ranking | `scoreFilePath()` は `score > 0` の候補だけを返し、同点は path で stable sort する |
 | preview fallback | JSON/YAML parse error は recoverable として `SourceView` fallback を維持する |
+| preview reset order | file 切替時は `content -> size -> extension -> error` を先に reset し、その後に resilience helper を実行する |
 | cross-task boundary | chat 実行状態や editor state を 04C local state に持ち込まない |
 
 ### 検証証跡
@@ -223,6 +225,12 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `WorkspaceView` task scope tests | PASS（13 files / 52 tests） |
 | coverage | Statements 89.47 / Branches 79.43 / Functions 93.87 / Lines 89.47 |
 | Phase 11 screenshot | PASS（11件 / current build static serve） |
+
+### 追補（2026-03-13）
+
+- `quickFileSearchResilience.ts` へ results/no-match 判定を寄せ、`QuickFileSearch` は dialog state と keyboard focus だけを持つ構造へ整理した。
+- `previewResilience.ts` へ timeout/retry/taxonomy を寄せ、`PreviewPanel` / `PreviewErrorBoundary` は `PreviewSurfaceError` を描画するだけの責務へ寄せた。
+- follow-up 検証は targeted vitest 39件 PASS、Phase 11 screenshot 5件 PASS、Apple UI/UX 再レビュー PASS として current state evidence に追加した。
 
 ## Workspace Chat Panel 統合（TASK-UI-04B-WORKSPACE-CHAT）
 

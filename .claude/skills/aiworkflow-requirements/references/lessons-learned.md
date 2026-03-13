@@ -20,6 +20,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-13 | 1.29.87 | UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 を関連未タスクとして追加。`workspace-preview-search-resilience-guard` follow-up で露出した Phase 12 outputs 4成果物の exact count drift を苦戦箇所へ昇格し、summary / checklist / detection / report を横断比較する validator 改善導線を追加 |
 | 2026-03-13 | 1.29.86 | current build screenshot follow-up として `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-RUNNER-GUARD-001` を追加。Playwright browser preflight の fail-fast 契約と shared artifact を壊す failure simulation の serial runner 化を、教訓セクションと関連未タスクへ同期 |
 | 2026-03-13 | 1.29.85 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の Phase 12 再確認を追補。`phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス` 欠落で coverage validator が失敗する条件と、新規未タスク 0 件でも related active backlog を `--target-file` + 10見出しで再監査する標準手順を追加 |
 | 2026-03-13 | 1.29.84 | UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 の screenshot 再監査追補。Playwright browser cache 欠落を UI regress と誤分類しないルール、`pnpm --filter @repo/desktop exec playwright install chromium` による復旧、same-day evidence 再取得時刻の同期を教訓へ追加 |

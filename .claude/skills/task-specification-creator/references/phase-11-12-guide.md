@@ -21,7 +21,7 @@
    4-1. git diff で変更コンポーネント一覧を洗い出す
    4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
    4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
-   4-4. 撮影計画 screenshot-plan.json を作成
+   4-4. 撮影計画 `screenshot-plan.md` または capture script の対象一覧を作成
    4-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
    ↓
 5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
@@ -85,7 +85,7 @@
 # Step 1: dev serverを起動（別ターミナル or バックグラウンド）
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
-# Step 2: screenshot-plan.json から全状態を一括撮影
+# Step 2: `screenshot-plan.md` または capture script 対象一覧に従って全状態を撮影
 node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
@@ -459,14 +459,19 @@ node .claude/skills/task-specification-creator/scripts/validate-phase12-implemen
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
 
-# 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
+# 未実施タスク誤配置チェック（completed-only area に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
-  docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+  docs/30-workflows/completed-tasks -g "*.md"
 
 # 対象監査（今回変更分合否: current）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
+
+# standalone 完了指示書の current 監査
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/completed-tasks/{{TASK_FILE}}.md
 
 # 差分監査（git差分を current 判定）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
@@ -515,7 +520,7 @@ done
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 | P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
 | P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
-| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ。差分判定は `--diff-from HEAD` を使用 |
+| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は root `unassigned-task/`、actual parent `completed-tasks/<workflow>/unassigned-task/`、standalone `completed-tasks/*.md` のいずれかに合わせる。移動直後の untracked completed file は `--diff-from HEAD` で拾えないため `--target-file` を正本にする |
 | - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---

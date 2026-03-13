@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import type { QuickFileSearchResult } from "../hooks/useQuickFileSearch";
+import { resolveQuickFileSearchViewState } from "../utils/quickFileSearchResilience";
 
 export interface QuickFileSearchProps {
   isOpen: boolean;
@@ -36,13 +37,10 @@ export function QuickFileSearch({
     inputRef.current?.focus();
   }, [isOpen]);
 
-  const resultCountLabel = useMemo(() => {
-    if (!query.trim()) {
-      return "検索語を入力してください";
-    }
-
-    return `${results.length} 件ヒット`;
-  }, [query, results.length]);
+  const viewState = useMemo(
+    () => resolveQuickFileSearchViewState(query, results.length),
+    [query, results.length],
+  );
 
   if (!isOpen) {
     return null;
@@ -97,7 +95,7 @@ export function QuickFileSearch({
             aria-live="polite"
             data-testid="quick-search-live-region"
           >
-            {resultCountLabel}
+            {viewState.liveRegionText}
           </p>
         </div>
 
@@ -119,10 +117,20 @@ export function QuickFileSearch({
             data-testid="quick-file-search-results"
           >
             {results.length === 0 ? (
-              <li className="px-3 py-4 text-sm text-[var(--text-secondary)]">
-                {query.trim()
-                  ? "一致するファイルは見つかりませんでした。"
-                  : "検索語を入力してください。"}
+              <li
+                className="px-3 py-4"
+                data-testid="quick-file-search-empty-state"
+              >
+                <div className="rounded-xl bg-[var(--bg-secondary)] px-3 py-3">
+                  <p className="text-sm font-medium text-[var(--text-primary)]">
+                    {viewState.emptyMessage}
+                  </p>
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                    {viewState.kind === "no-match"
+                      ? "別のファイル名やフォルダ名でもう一度試してください。"
+                      : "ファイル名、拡張子、パスの一部で検索できます。"}
+                  </p>
+                </div>
               </li>
             ) : (
               results.map((result, index) => (

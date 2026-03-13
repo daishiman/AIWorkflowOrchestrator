@@ -25,6 +25,39 @@
   - `references/resource-map.md` と `SKILL.md` に同 capability を同期し、current build screenshot 系 task で入口から辿れるようにした
 
 ---
+## 2026-03-13 - 統合 workflow 正本テンプレートを skill-creator へ追加
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-integrated-workflow-spec-template.md` を新規作成し、`references/workflow-<feature>.md` の標準構成をテンプレート化
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に同テンプレートの利用条件と入口更新ルールを追記
+  - `references/resource-map.md` に統合 workflow 正本テンプレートを追加し、asset 一覧から直接辿れるようにした
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の workflow 正本集約パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「cross-cutting follow-up は `workflow-<feature>.md` を追加して実装内容 / 苦戦箇所 / 5分カード / root evidence を 1 ファイルへ集約する」を追加
+  - resource-map / quick-reference / SKILL 直リンクまで同一ターンで戻すことを標準手順へ昇格し、system spec 正本の入口不足を防ぐルールを明文化
+  - `phase12-task-spec-compliance-check.md` を workflow 正本から辿る完了条件を追記し、Phase 12 の判断根拠が outputs と spec の両方で一致するようにした
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 再監査知見を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: template-refinement
+- **Result**: success
+- **Notes**:
+  - `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に standalone completed spec の `audit --target-file`、untracked completed move fallback、`screenshot-plan.md` / `screenshots/phase11-capture-metadata.json` の実ファイル名を追記
+  - `assets/phase12-audit-record-template.md` と `assets/phase12-subagent-assignment-template.md` を、`audit --diff-from HEAD` 単独前提ではなく `audit --target-file` 併用前提へ更新
+  - `references/patterns.md` の `--target-file` 境界パターンと screenshot artifact 記述を direct completed path / actual screenshot artifact 名へ再同期
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 の docs-only parent workflow パターンを skill-creator へ反映
 
 - **Agent**: skill-creator

@@ -308,7 +308,7 @@ UI機能実装の場合は次を推奨:
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `ステータス=pending` が残っていない
 - [ ] 未タスク指示書の見出しフォーマット（`## メタ情報` + `## 1..9`）確認
 - [ ] 関連未タスク参照が workflow 直下 `.../<workflow>/unassigned-task/` で止まっていない（未実施は `docs/30-workflows/unassigned-task/` 正本、完了済みは `docs/30-workflows/completed-tasks/.../unassigned-task/`）
-- [ ] `audit --target-file` の `currentViolations: 0` を確認
+- [ ] `audit --target-file` の `currentViolations: 0` を確認し、対象の正本配置（root / completed parent / standalone completed）と一致している
 - [ ] current workflow 起因の新規未タスクが `0 件` でも、related active open backlog がある場合は `rg` の 10見出し確認と `audit --diff-from HEAD --target-file` を実行している
 - [ ] `verify-unassigned-links` / `audit --diff-from HEAD` の確定値（existing/missing/current/baseline）を `task-workflow.md` と `outputs/phase-12`（`spec-update-summary.md`/`unassigned-task-detection.md`）へ同値転記する
 - [ ] 未タスクの配置先判定（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、legacy standalone=`docs/30-workflows/completed-tasks/unassigned-task/`）を証跡化している

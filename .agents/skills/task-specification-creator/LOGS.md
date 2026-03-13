@@ -42,6 +42,28 @@
   - `references/spec-update-workflow.md` に parallel 実行禁止条件を追記し、build/harness/baseUrl failure simulation の bucket 混線を防ぐ Phase 12 手順へ更新した
 
 ---
+## 2026-03-13 - UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 未タスク仕様書作成
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned formalization）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` を 9セクション構成 + `3.5 実装課題と解決策` 付きで新規作成
+  - 親タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` の苦戦箇所（exact count の 4成果物ドリフト、mirror source 差、follow-up 0→1 再同期）を未タスクへ継承
+  - `aiworkflow-requirements` の `task-workflow.md` / `lessons-learned.md` / `workflow-workspace-preview-search-resilience-guard.md` に未タスク導線を追加し、Phase 12 outputs の 0件報告を follow-up 1件へ再整合する前提を記録
+
+---
+## 2026-03-13 - UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 root evidence + workflow 正本集約
+
+- **Agent**: task-specification-creator
+- **Phase**: skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「`phase12-task-spec-compliance-check.md` を root evidence とし、cross-cutting follow-up では `workflow-<feature>.md` を system spec 側へ追加する」パターンを追加
+  - `quick_validate.js` 3件、`verify-unassigned-links`、`audit --target-file`、screen verification を Phase 12 再監査の同一ターン完了条件として整理した
+  - Phase 12 の完了根拠と同種課題の再利用入口を分離しない運用を標準手順へ昇格した
+
+---
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認パターン追補
 
 - **Agent**: task-specification-creator
