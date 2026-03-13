@@ -141,6 +141,35 @@ test("target-file mode fails when violation is in current scope", () => {
   assert.equal(payload.totals.baselineViolations, 0);
 });
 
+test("standalone completed task spec can be scoped without overriding completed dir", () => {
+  const root = makeTempDir();
+  writeFile(join(root, "unassigned/baseline-ok.md"), validTaskMarkdown());
+  writeFile(
+    join(root, "completed/task-direct.md"),
+    `| 項目 | 値 |\n| --- | --- |\n| ステータス | 未実施 |\n`,
+  );
+  mkdirSync(join(root, "completed/unassigned-task"), { recursive: true });
+
+  const { result, payload } = runAudit(
+    [
+      "--unassigned-dir",
+      "unassigned",
+      "--completed-unassigned-dir",
+      "completed/unassigned-task",
+      "--target-file",
+      "completed/task-direct.md",
+    ],
+    root,
+  );
+
+  assert.equal(result.status, 1);
+  assert.ok(payload);
+  assert.equal(payload.scope.mode, "scoped");
+  assert.ok(payload.scope.currentFiles.includes("completed/task-direct.md"));
+  assert.ok(payload.scope.completedStandaloneTargets.includes("completed/task-direct.md"));
+  assert.equal(payload.totals.currentViolations, 1);
+});
+
 test("diff-from mode builds current scope from git diff", () => {
   const root = makeTempDir();
   writeFile(join(root, "unassigned/unchanged-baseline-bad.md"), invalidTaskMarkdown());

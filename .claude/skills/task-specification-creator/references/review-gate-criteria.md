@@ -10,6 +10,55 @@
 
 ---
 
+## レビュー実行ランナー
+
+### 既定方針
+
+| 項目 | 既定値 | 理由 |
+| ---- | ------ | ---- |
+| 既定 CLI | `codex` | review task を非対話で実行しやすい |
+| Phase 3 / 10 の既定モード | `codex exec` | task specification 本文を直接読ませて判定できる |
+| 実装差分 review | `codex review --uncommitted` | git diff を前提に blocker を拾いやすい |
+| prompt artifact | `outputs/phase-N/review-prompt.txt` | Claude Code / 他 CLI / AI agent へ同一入力を渡せる |
+
+### 実行ルール
+
+1. Phase 3 と Phase 10 の review task は、原則 `node .claude/skills/task-specification-creator/scripts/run-review-task.js --runner codex` で実行する。
+2. shell alias は環境依存で、非対話 shell では反映されないことがある。shared spec と workflow では raw `codex` コマンドを基準にし、必要なら PATH 上の wrapper で吸収する。
+3. Claude Code、他 CLI、AI agent を使う場合も、`review-prompt.txt` の中身は変えずに runner だけ差し替える。
+4. runner 固有の危険オプションは task spec に埋め込まず、ローカル wrapper または alias で注入する。
+
+### 標準コマンド
+
+```bash
+# Task spec を使った設計レビュー
+node .claude/skills/task-specification-creator/scripts/run-review-task.js \
+  --runner codex \
+  --mode exec \
+  --task-file docs/30-workflows/{{FEATURE_NAME}}/phase-3-design-review.md \
+  --output-prompt docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-3/review-prompt.txt
+
+# 最終 review task spec を codex exec で実行
+node .claude/skills/task-specification-creator/scripts/run-review-task.js \
+  --runner codex \
+  --mode exec \
+  --task-file docs/30-workflows/{{FEATURE_NAME}}/phase-10-final-review.md \
+  --output-prompt docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-10/review-prompt.txt
+
+# 差分 blocker を確認したい場合のみ補助的に codex review を追加
+codex review --uncommitted "docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-10/review-prompt.txt の指示に従って現在差分をレビューしてください。"
+```
+
+### runner 切替の最小契約
+
+| runner | 実行方法 | prompt の渡し方 |
+| ------ | -------- | --------------- |
+| `codex` | `codex exec` / `codex review` | 引数 |
+| `claude-code` | runner 固有コマンド | `stdin` または file |
+| `generic-agent` | 任意 CLI / MCP client | `stdin` または file |
+
+---
+
 ## Phase 3: 設計レビューゲート
 
 ### 目的
@@ -214,7 +263,8 @@ MINOR判定時に未完了タスク指示書を作成する場合、以下を確
 
 ### How（どのように実行するか）
 
-- [ ] Claude Codeスラッシュコマンド（/ai:xxx形式）が選定されているか
+- [ ] `codex` CLI を既定 runner とする review 手順が定義されているか
+- [ ] Claude Code / 他 CLI / AI agent に渡す共通 prompt artifact が定義されているか
 - [ ] 完了条件が検証可能な形で定義されているか
 - [ ] テストケース/検証方法が記載されているか
 - [ ] リスクと対策が検討されているか

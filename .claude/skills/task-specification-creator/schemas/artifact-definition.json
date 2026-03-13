@@ -23,7 +23,7 @@
     },
     "status": {
       "type": "string",
-      "enum": ["in_progress", "completed", "on_hold"],
+      "enum": ["in_progress", "completed", "on_hold", "blocked"],
       "description": "ワークフロー全体のステータス"
     },
     "phases": {
@@ -36,7 +36,7 @@
           "properties": {
             "status": {
               "type": "string",
-              "enum": ["pending", "in_progress", "completed", "skipped"],
+              "enum": ["pending", "in_progress", "completed", "skipped", "blocked"],
               "description": "Phaseステータス"
             },
             "startedAt": {
@@ -53,23 +53,31 @@
               "type": "array",
               "description": "成果物一覧",
               "items": {
-                "type": "object",
-                "required": ["type", "path"],
-                "properties": {
-                  "type": {
+                "oneOf": [
+                  {
                     "type": "string",
-                    "enum": ["document", "code", "test", "config"],
-                    "description": "成果物タイプ"
+                    "description": "legacy/simple artifact path"
                   },
-                  "path": {
-                    "type": "string",
-                    "description": "成果物パス"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "成果物説明"
+                  {
+                    "type": "object",
+                    "required": ["type", "path"],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["document", "code", "test", "config"],
+                        "description": "成果物タイプ"
+                      },
+                      "path": {
+                        "type": "string",
+                        "description": "成果物パス"
+                      },
+                      "description": {
+                        "type": "string",
+                        "description": "成果物説明"
+                      }
+                    }
                   }
-                }
+                ]
               }
             },
             "notes": {
@@ -97,7 +105,15 @@
       "properties": {
         "taskType": {
           "type": "string",
-          "enum": ["feat", "fix", "refactor", "docs", "test", "chore"]
+          "description": "推奨は短い canonical type。既存 workflow の hyphen/underscore 形式も許容する。",
+          "anyOf": [
+            {
+              "enum": ["feat", "fix", "refactor", "docs", "test", "chore", "improvement"]
+            },
+            {
+              "pattern": "^[a-z][a-z0-9_-]*$"
+            }
+          ]
         },
         "estimatedPhases": {
           "type": "integer",

@@ -1,5 +1,7 @@
 # Phase 12 仕様書別SubAgent同期テンプレート
 
+> **cross-cutting follow-up の追加テンプレート**: `references/workflow-<feature>.md` を新規作成する場合は `skill-creator/assets/phase12-integrated-workflow-spec-template.md` を併用し、実装内容 / 苦戦箇所 / 5分解決カード / root evidence を 1 ファイルへ集約する。
+
 ## 1. 対象タスク
 
 | 項目 | 記入内容 |
@@ -9,6 +11,8 @@
 | 監査対象workflow | `<workflow-a>`（必須） / `<workflow-b>`（必要時） |
 | 反映対象仕様書 | `interfaces / api-ipc / security / task-workflow / lessons / (+ domain-ui-spec if needed)` |
 | 実行日 | `<YYYY-MM-DD>` |
+
+> `workflow-<feature>.md` を追加した場合は、`indexes/resource-map.md` / `indexes/quick-reference.md` / 対象 skill の `SKILL.md` まで同一ターンで直リンクを戻す。
 
 ## 2. SubAgent分担（仕様書単位）
 
@@ -80,11 +84,9 @@
 
 | SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
 | --- | --- | --- | --- |
-| SubAgent-S2-A | `phase-12-documentation.md` | Step 2 更新対象（`arch/api/interfaces/security`）の要否判定を確定 | 更新対象に応じて Step 2 を `完了` / `該当なし` で説明可能。既存 IPC 再利用でも public preload method / shared export 追加時は `完了` 側で扱う |
+| SubAgent-S2-A | `phase-12-documentation.md` | Step 2 更新対象（`arch/api/interfaces/security`）の要否判定を確定 | 更新対象に応じて Step 2 を `完了` / `該当なし` で説明可能 |
 | SubAgent-S2-B | `outputs/phase-12/documentation-changelog.md` | Step 判定（1-A〜2）と理由を同期 | Step 2 判定が実装実体と一致 |
 | SubAgent-S2-C | `outputs/phase-12/spec-update-summary.md` | Step 2 更新仕様書の一覧化と反映内容同期 | changelog の Step 2 判定と更新対象一覧が一致 |
-
-> `skill:*` など既存 channel の再利用だけであっても、`window.electronAPI.*` の public preload method や `packages/shared` の barrel export が増えた場合は Step 2 対象として扱う。
 
 ### 2.4 仕様書別SubAgent実行ログ（必須）
 
@@ -176,7 +178,6 @@ UI機能実装時の必須記載（追加）:
 
 ```bash
 rg --files .claude/skills | rg 'verify-all-specs|validate-phase-output|verify-unassigned-links|audit-unassigned-tasks'
-rg -n "contextBridge\\.exposeInMainWorld|window\\.electronAPI\\.|export .* from" apps/desktop/src/preload packages/shared/src
 rg -n "register.*Handlers|skill:analytics|safeInvokeUnwrap" apps/desktop/src/main/ipc apps/desktop/src/preload/skill-api.ts
 rg -n "services/skill/SkillChain(Store|Executor)|export .*SkillChain(Store|Executor)" apps/desktop/src/main
 node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow <workflow-dir> --json
@@ -198,6 +199,8 @@ rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --unassigned-dir <unassigned-dir> --target-file <unassigned-file>
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/<task>.md
 node scripts/validate-<parent-sweep>.mjs --json
 diff -qr .claude/skills/<canonical-skill> .agents/skills/<mirror-skill>
 rg -n "<UT-ID>|<task-id>" docs/30-workflows/unassigned-task docs/30-workflows/completed-tasks docs/30-workflows/completed-tasks/unassigned-task
@@ -228,7 +231,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] IPC登録修正タスクでは `service 公開境界`（`services/*/index.ts` export）を確認し、未対応時は未タスク移管を記録している
 - [ ] 変更履歴が各仕様書で更新されている
 - [ ] 検証コマンド結果が `task-workflow.md` に記録されている
-- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認している
+- [ ] `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` を確認し、移動直後の untracked completed file は `audit --target-file` で補完している
 - [ ] Light Mode / contrast 系 UI task では `SubAgent-L1..L4` または同等の責務分離を使い、design-system / components / task-workflow / lessons を同一ターンで同期している
 - [ ] Light Mode / contrast 系 UI task では `rg -n "text-white|bg-white/|border-white/|text-gray-|bg-gray-|border-gray-" apps/desktop/src/renderer` の監査結果を残している
 - [ ] Light theme shared color migration の `spec_created` task では `SubAgent-M1..M5` または同等の責務分離を使い、inventory correction / verification-only lane / auth-search-security cross-cutting spec を同一ターンで同期している
@@ -236,7 +239,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] Light theme shared color migration の `spec_created` task では Phase 1-3 completed / Phase 4+ planned / workflow status=`spec_created` が台帳と artifacts で一致している
 - [ ] GitHub desktop CI が shard 単位で失敗した場合、`pnpm --filter @repo/desktop exec vitest run --shard=<n>/16` の結果を `task-workflow.md` に転記している
 - [ ] 未タスクの配置先判定（active workflow 由来の未実施=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録している
-- [ ] `audit --target-file` の対象が、実際の正本 unassigned dir（active または completed parent）配下であることを確認している
+- [ ] `audit --target-file` の対象が、実際の正本配置（active / completed parent / standalone completed）と一致していることを確認している
 - [ ] 関連未タスク参照の正本が実際の配置先と一致している（active workflow は root、completed workflow は parent workflow 配下）
 - [ ] screenshot 検証で露出した副次不具合や warning を `docs/30-workflows/unassigned-task/` へ正式起票している
 - [ ] 親タスクの苦戦箇所がある場合、新規未タスクに `### 3.5 実装課題と解決策` を追加して継承している
@@ -271,9 +274,7 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - [ ] completed 扱いの `phase-1..11` 本文仕様書に `pending` が残っていない
 - [ ] `phase-12-documentation.md` の更新対象表と `documentation-changelog.md` の Step 2 判定が一致している
 - [ ] `spec-update-summary.md` の更新対象一覧が Step 2 判定と一致している
-- [ ] 既存 IPC 再利用でも public preload method または shared barrel export を追加した場合、Step 2 を `該当なし` にしていない
 - [ ] `audit --diff-from HEAD` の結果は `currentViolations` を合否、`baselineViolations` を監視として分離記録している
-- [ ] 新規未タスクが 0 件の場合、`docs/30-workflows/unassigned-task/` への追加作成なしを成果物へ明記している
 - [ ] `implementation-guide.md` の Part 1 に日常例えを示す `たとえば` が明示されている
 - [ ] UIタスクでは `phase-11-manual-test.md` に `## 画面カバレッジマトリクス` 見出しが存在する
 - [ ] 利用テンプレート（retrospective/subagent）の重複行（同一手順番号・同一コマンド）が解消されている
@@ -310,7 +311,9 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 2. `/.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`
 3. `/.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`
 4. `/.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`
-5. `/.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
+5. `/.claude/skills/aiworkflow-requirements/references/arch-state-management.md`
+6. `/.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
+7. `/.claude/skills/aiworkflow-requirements/references/workflow-onboarding-wizard-alignment.md`
 
 ### 8.3 関心ごとの分離
 
@@ -321,17 +324,21 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
   - screenshot 証跡の照合
 - 設定導線担当:
   - rerun button 文言
-  - persist key 更新
+  - persist key と local state の責務分離
   - dashboard への handoff
   - discoverability 課題の backlog 化要否
 - 品質/未タスク担当:
   - verification report の MINOR 抽出
   - `docs/30-workflows/unassigned-task/` への formalize
+  - 既存 follow-up 指示書の `2.2` / `3.1` / `3.5` / 検証手順が current contract を向いているか確認
   - `verify-unassigned-links.js`
   - `audit-unassigned-tasks.js --diff-from HEAD`
+  - 必要時 `audit-unassigned-tasks.js --diff-from HEAD --target-file <follow-up-file>`
 
 ### 8.4 完了条件
 
 - Phase 12 側に implementation-guide / spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report が揃っている
 - canonical docs 側に実装内容と苦戦箇所が同一用語で残っている
 - UI 本体完了と follow-up backlog が責務分離されている
+- 既存 follow-up backlog を流用した場合、`docs/30-workflows/unassigned-task/` の本文も current contract へ再同期されている
+- `workflow-onboarding-wizard-alignment.md` が作成または更新され、統合入口が残っている

@@ -143,11 +143,11 @@
 
 ```bash
 # ワークフロー初期化（ディレクトリ作成 + artifacts.json生成）
-node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
+node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 
 # 出力検証
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/{{FEATURE_NAME}} --phase 0
 ```
 

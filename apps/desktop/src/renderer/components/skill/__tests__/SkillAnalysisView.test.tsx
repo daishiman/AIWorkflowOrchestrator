@@ -25,7 +25,6 @@ import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 const mockAnalyzeSkill = vi.fn();
 const mockApplySkillImprovements = vi.fn();
 const mockAutoImproveSkill = vi.fn();
-const mockEvaluatePostImprove = vi.fn();
 const mockClearSkillError = vi.fn();
 const mockClearAnalysis = vi.fn();
 
@@ -33,36 +32,8 @@ let mockCurrentAnalysis: SkillAnalysis | null = null;
 let mockIsAnalyzing = false;
 let mockIsImproving = false;
 let mockSkillError: string | null = null;
-let mockLatestPromptRequest: string | null = "改善して";
-let mockLatestGateDecision: {
-  status: string;
-  totalScore: number;
-  summary: string;
-  nextSurface: string;
-  stage: string;
-  blockingIssues: string[];
-  recommended: boolean;
-} | null = null;
-let mockLatestEvaluationSnapshot: {
-  stage: string;
-  deltaFromPrevious?: number;
-} | null = null;
-let mockSkillEvaluationError: string | null = null;
-let mockIsLifecycleEvaluating = false;
-
-const getOverallScoreElement = (score: number | string) => {
-  const scoreText = String(score);
-  return screen
-    .getAllByText(scoreText)
-    .find((element) => element.className.includes("text-4xl"));
-};
 
 vi.mock("../../../store", () => ({
-  useAppStore: {
-    getState: () => ({
-      currentAnalysis: mockCurrentAnalysis,
-    }),
-  },
   useCurrentAnalysis: () => mockCurrentAnalysis,
   useIsAnalyzingSkill: () => mockIsAnalyzing,
   useIsImprovingSkill: () => mockIsImproving,
@@ -70,12 +41,6 @@ vi.mock("../../../store", () => ({
   useAnalyzeSkill: () => mockAnalyzeSkill,
   useApplySkillImprovements: () => mockApplySkillImprovements,
   useAutoImproveSkill: () => mockAutoImproveSkill,
-  useEvaluatePostImprove: () => mockEvaluatePostImprove,
-  useLatestPromptRequest: () => mockLatestPromptRequest,
-  useLatestGateDecision: () => mockLatestGateDecision,
-  useLatestEvaluationSnapshot: () => mockLatestEvaluationSnapshot,
-  useSkillEvaluationError: () => mockSkillEvaluationError,
-  useIsLifecycleEvaluating: () => mockIsLifecycleEvaluating,
   useClearSkillError: () => mockClearSkillError,
   useClearAnalysis: () => mockClearAnalysis,
 }));
@@ -102,23 +67,6 @@ describe("SkillAnalysisView", () => {
     mockAnalyzeSkill.mockResolvedValue(undefined);
     mockApplySkillImprovements.mockResolvedValue(undefined);
     mockAutoImproveSkill.mockResolvedValue(undefined);
-    mockEvaluatePostImprove.mockResolvedValue(undefined);
-    mockLatestPromptRequest = "改善して";
-    mockLatestGateDecision = {
-      status: "save_with_warning",
-      totalScore: 72,
-      summary: "保存は可能ですが、改善余地が残っています。",
-      nextSurface: "skillCenter",
-      stage: "post_create",
-      blockingIssues: [],
-      recommended: false,
-    };
-    mockLatestEvaluationSnapshot = {
-      stage: "post_create",
-      deltaFromPrevious: 4,
-    };
-    mockSkillEvaluationError = null;
-    mockIsLifecycleEvaluating = false;
 
     // window.confirm モック
     vi.spyOn(window, "confirm").mockReturnValue(true);
@@ -164,12 +112,8 @@ describe("SkillAnalysisView", () => {
     });
 
     // ScoreDisplay が描画される（総合スコア表示）
-    expect(getOverallScoreElement(72)).toBeInTheDocument();
+    expect(screen.getByText("72")).toBeInTheDocument();
     expect(screen.getByText("総合スコア")).toBeInTheDocument();
-    expect(screen.getByTestId("skill-evaluation-panel")).toBeInTheDocument();
-    expect(screen.getByTestId("skill-evaluation-summary")).toHaveTextContent(
-      "保存は可能ですが、改善余地が残っています。",
-    );
 
     // SuggestionList が描画される（提案の説明テキスト）
     expect(screen.getByText("高優先度: セキュリティ改善")).toBeInTheDocument();
@@ -192,26 +136,8 @@ describe("SkillAnalysisView", () => {
       );
     });
 
-    expect(getOverallScoreElement(72)).toBeInTheDocument();
+    expect(screen.getByText("72")).toBeInTheDocument();
     expect(screen.queryByText("分析中...")).not.toBeInTheDocument();
-  });
-
-  it("再評価ボタンで post_improve 評価を実行する", async () => {
-    await act(async () => {
-      render(
-        <SkillAnalysisView skillName="test-skill" onClose={mockOnClose} />,
-      );
-    });
-
-    await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-evaluation-reevaluate"));
-    });
-
-    expect(mockEvaluatePostImprove).toHaveBeenCalledWith({
-      skillName: "test-skill",
-      prompt: "改善して",
-      skillAnalysis: defaultAnalysis,
-    });
   });
 
   // ------------------------------------------
@@ -517,7 +443,7 @@ describe("SkillAnalysisView", () => {
     });
 
     // 総合スコアは表示される
-    expect(getOverallScoreElement(72)).toBeInTheDocument();
+    expect(screen.getByText("72")).toBeInTheDocument();
     // カテゴリ別分析の見出しは表示されない
     expect(screen.queryByText("カテゴリ別分析")).not.toBeInTheDocument();
   });
@@ -747,7 +673,7 @@ describe("SkillAnalysisView", () => {
     expect(mockAnalyzeSkill).toHaveBeenCalledWith("test-skill");
 
     // 2. ScoreDisplay: 総合スコアとカテゴリ別分析が表示
-    expect(getOverallScoreElement(72)).toBeInTheDocument();
+    expect(screen.getByText("72")).toBeInTheDocument();
     expect(screen.getByText("総合スコア")).toBeInTheDocument();
     expect(screen.getByText("カテゴリ別分析")).toBeInTheDocument();
     expect(screen.getByText("Code Quality")).toBeInTheDocument();
@@ -781,7 +707,7 @@ describe("SkillAnalysisView", () => {
     });
 
     // Step 1: 初回分析結果を確認
-    expect(getOverallScoreElement(72)).toBeInTheDocument();
+    expect(screen.getByText("72")).toBeInTheDocument();
 
     // Step 2: 提案を2件選択
     const checkboxes = screen.getAllByRole("checkbox");

@@ -1,0 +1,74 @@
+{
+  "taskId": "TASK-061-UI-09-ONBOARDING-WIZARD",
+  "capturedAt": "2026-03-13T08:23:50.281Z",
+  "baseUrl": "http://127.0.0.1:4287",
+  "outputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260313-120203-wt-1/docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/outputs/phase-11/screenshots",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-onboarding-step1-light-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-13T08:23:41.810Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-onboarding-step2-dark-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-13T08:23:43.608Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-onboarding-step3-dark-tablet.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-13T08:23:44.964Z"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-onboarding-step4-light-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-13T08:23:47.037Z"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-onboarding-step3-dark-mobile.png",
+      "route": "/phase11-onboarding-wizard.html?theme=dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-13T08:23:48.257Z"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06-onboarding-complete-kanagawa-desktop.png",
+      "route": "/phase11-onboarding-wizard.html?theme=kanagawa-dragon",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-13T08:23:50.266Z"
+    }
+  ]
+}

@@ -33,10 +33,6 @@ import {
 import { createLLMSlice, type LLMSlice } from "./slices/llmSlice";
 import { createAgentSlice, type AgentSlice } from "./slices/agentSlice";
 import {
-  createSkillEvaluationSlice,
-  type SkillEvaluationSlice,
-} from "./slices/skillEvaluationSlice";
-import {
   createChatEditSlice,
   type ChatEditSlice,
 } from "../features/workspace-chat-edit/store/chatEditSlice";
@@ -74,7 +70,6 @@ export type AppStore = NavigationSlice &
   SystemPromptTemplateSlice &
   LLMSlice &
   AgentSlice &
-  SkillEvaluationSlice &
   ChatEditSlice &
   PermissionHistorySlice &
   NotificationSlice &
@@ -150,7 +145,6 @@ export const useAppStore = create<AppStore>()(
         ...createSystemPromptTemplateSlice(...args),
         ...createLLMSlice(...args),
         ...createAgentSlice(...args),
-        ...createSkillEvaluationSlice(...args),
         ...createChatEditSlice(...args),
         // TASK-FIX-6-1: skillSliceは削除済み。状態はagentSliceに統合
         ...createPermissionHistorySlice(...args),
@@ -244,6 +238,19 @@ export const useAuthLoading = () => useAppStore((state) => state.isLoading);
 export const useAuthError = () => useAppStore((state) => state.authError);
 export const useIsOffline = () => useAppStore((state) => state.isOffline);
 
+function normalizeDisplayNameCandidate(value: unknown): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (trimmed.length === 0 || trimmed === "User" || trimmed === "ユーザー") {
+    return null;
+  }
+
+  return trimmed;
+}
+
 // Computed selectors
 export const useIsDesktop = () =>
   useAppStore((state) => state.responsiveMode === "desktop");
@@ -266,7 +273,10 @@ export const useStoragePercentage = () =>
 export const useDisplayName = () =>
   useAppStore(
     (state) =>
-      state.profile?.displayName ?? state.authUser?.displayName ?? "User",
+      normalizeDisplayNameCandidate(state.profile?.displayName) ??
+      normalizeDisplayNameCandidate(state.authUser?.displayName) ??
+      normalizeDisplayNameCandidate(state.userProfile.name) ??
+      "User",
   );
 export const useUserEmail = () =>
   useAppStore((state) => state.profile?.email ?? state.authUser?.email ?? "");
@@ -658,27 +668,6 @@ export const useIsAnalyzingSkill = () =>
 /** スキル改善中フラグ */
 export const useIsImprovingSkill = () =>
   useAppStore((state) => state.isImproving);
-/** 最新の lifecycle gate decision */
-export const useLatestGateDecision = () =>
-  useAppStore((state) => state.latestGateDecision);
-/** 最新の lifecycle snapshot */
-export const useLatestEvaluationSnapshot = () =>
-  useAppStore((state) => state.latestEvaluationSnapshot);
-/** lifecycle 評価履歴 */
-export const useSkillEvaluationHistory = () =>
-  useAppStore((state) => state.evaluationHistory);
-/** 最新の prompt request */
-export const useLatestPromptRequest = () =>
-  useAppStore((state) => state.latestPromptRequest);
-/** lifecycle 評価中フラグ */
-export const useIsLifecycleEvaluating = () =>
-  useAppStore((state) => state.isEvaluatingLifecycle);
-/** lifecycle 評価エラー */
-export const useSkillEvaluationError = () =>
-  useAppStore((state) => state.evaluationError);
-/** 最新の execution quality */
-export const useLatestExecutionQuality = () =>
-  useAppStore((state) => state.latestExecutionQuality);
 
 // --- アクションセレクタ ---
 /** スキル分析アクション */
@@ -694,21 +683,6 @@ export const useCreateSkill = () => useAppStore((state) => state.createSkill);
 /** 分析結果クリアアクション */
 export const useClearAnalysis = () =>
   useAppStore((state) => state.clearAnalysis);
-/** draft 評価アクション */
-export const useEvaluateDraft = () =>
-  useAppStore((state) => state.evaluateDraft);
-/** post_create 評価アクション */
-export const useEvaluatePostCreate = () =>
-  useAppStore((state) => state.evaluatePostCreate);
-/** post_execute 評価アクション */
-export const useEvaluatePostExecute = () =>
-  useAppStore((state) => state.evaluatePostExecute);
-/** post_improve 評価アクション */
-export const useEvaluatePostImprove = () =>
-  useAppStore((state) => state.evaluatePostImprove);
-/** lifecycle 評価状態クリア */
-export const useClearSkillEvaluation = () =>
-  useAppStore((state) => state.clearSkillEvaluation);
 
 // ==========================================================================
 // スキルインポートライフサイクル派生セレクタ（TASK-10A-E-C）

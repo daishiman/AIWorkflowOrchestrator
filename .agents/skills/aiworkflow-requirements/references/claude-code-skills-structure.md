@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| v1.2.0     | 2026-03-12 | large skill docs の line budget reform パターンを追加。`SKILL.md` は入口、詳細は family file、`LOGS.md` は rolling + archive、`.claude` を canonical、`.agents` を mirror として運用する |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
 | v1.0.0     | -          | 初版作成                                                   |
 
@@ -32,6 +33,18 @@ Claude Code Skills のフォルダ構造、SKILL.md仕様、各ディレクト�
 ---
 
 ## Skill構造仕様
+
+### 大規模 skill docs の分割パターン
+
+500 行超の reference や log を持つ skill では、以下を標準とする。
+
+| 要素 | 標準 |
+| --- | --- |
+| `SKILL.md` | 入口、quick start、resource navigation、validator command のみを保持 |
+| `references/` | family index + detail file へ分割し、1 hop で到達できる導線を持つ |
+| `LOGS.md` | rolling log のみを保持し、月次 archive へ退避する |
+| root policy | `.claude/skills/...` を canonical、`.agents/skills/...` を mirror とする |
+| validation | `quick_validate.js`、`validate_all.js`、`diff -qr` を最低セットとする |
 
 ### 標準フォルダ構造（改訂：agents/ を追加）
 

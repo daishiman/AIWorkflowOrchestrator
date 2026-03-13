@@ -166,6 +166,13 @@ docs/30-workflows/{{FEATURE_NAME}}/
 }
 ```
 
+### 2.2 互換ルール
+
+- 新規 workflow では `{ type, path, description }` の object 形式を推奨する。
+- 既存 workflow の `artifacts` にある文字列パス配列も validator / changelog generator 互換の legacy 形式として許容する。
+- Phase が user 指示や外部依存で停止している場合は `status: "blocked"` を使用してよい。
+- `metadata.taskType` は `feat` / `fix` / `refactor` / `docs` / `test` / `chore` / `improvement` を推奨しつつ、既存 workflow の kebab_case / snake_case 派生値も互換対象として扱う。
+
 ---
 
 ## 3. 依存タスクへの反映プロセス
@@ -224,7 +231,7 @@ Phase N 実行完了
 
 ```bash
 # scripts/complete-phase.js を使用（推奨）
-node .agents/skills/task-specification-creator/scripts/complete-phase.js \
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
   --workflow "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1 \
   --artifacts "outputs/phase-1/requirements-definition.md:要件定義書,outputs/phase-1/acceptance-criteria.md:受け入れ基準"
@@ -234,7 +241,7 @@ node .agents/skills/task-specification-creator/scripts/complete-phase.js \
 
 ```bash
 # 新規ワークフロー作成時に artifacts.json を初期化
-node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
+node .claude/skills/task-specification-creator/scripts/init-artifacts.js \
   --workflow "docs/30-workflows/{{FEATURE_NAME}}"
 ```
 
@@ -242,7 +249,7 @@ node .agents/skills/task-specification-creator/scripts/init-artifacts.js \
 
 ```bash
 # Phase出力の検証
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   "docs/30-workflows/{{FEATURE_NAME}}" \
   --phase 1
 ```

@@ -1,14 +1,18 @@
 # Phase 11/12 実行ガイダンス
 
-> **Progressive Disclosure**
-> - 読み込みタイミング: Phase 11（手動テスト検証）、Phase 12（ドキュメント更新）実行時
-> - 読み込み条件: 手動テストまたはドキュメント更新を行うとき
+> 読み込み条件:
+> Phase 11 または Phase 12 を開始する時。
 
----
+## split guide
 
-## Phase 11: 手動テスト検証
+| file | 使う場面 | 内容 |
+| --- | --- | --- |
+| [phase-11-screenshot-guide.md](phase-11-screenshot-guide.md) | manual test、UI evidence、docs walkthrough | Phase 11 の execution detail |
+| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | implementation guide、spec sync、feedback | Phase 12 の 5 task |
+| [spec-update-workflow.md](spec-update-workflow.md) | Task 12-2 | Step 1 / Step 2 index |
+| [spec-update-validation-matrix.md](spec-update-validation-matrix.md) | final validation | validator と pass 基準 |
 
-### 実行フロー
+## 使い分け
 
 ```
 1. 関連する自動テストを全て実行して確認
@@ -21,7 +25,7 @@
    4-1. git diff で変更コンポーネント一覧を洗い出す
    4-2. 各コンポーネントの全UI状態（表示/インタラクション/テーマ）を列挙
    4-3. 該当しない状態にN/A理由を記録（暗黙スキップ禁止）
-   4-4. 撮影計画 screenshot-plan.json を作成
+   4-4. 撮影計画 `screenshot-plan.md` または capture script の対象一覧を作成
    4-5. ユーザーが明示的に「スクリーンショットで検証」と要求した場合は、UI差分が主目的でなくても関連UIを対象に screenshot + Appleレビューを実施する（`NON_VISUAL` 単独は不可）
    ↓
 5. UI/UX変更タスクの場合: 撮影計画に基づいてスクリーンショットを撮影
@@ -49,16 +53,13 @@
    ↓
 10. 発見課題（修正済み・未修正）を outputs/phase-11/discovered-issues.md に出力
 ```
+### Phase 11
 
-### スクリーンショット撮影の制約・ガイドライン
+- docs-only task: navigation、archive discoverability、mirror parity を確認する。
+- UI task: 上記に加えて screenshot と Apple UI/UX 視覚検証を行う。
+- representative evidence は workflow 配下 `outputs/phase-11/` に置く。
 
-| 項目 | 内容 |
-| ---- | ---- |
-| 撮影枚数 | 該当必須状態（優先度[A][B]）に撮影上限は設けない。変更コンポーネントの必須状態を**全て**撮影する。推奨[C]・任意[D]はN/A理由記録で省略可 |
-| 4段階優先度 | **[A] 高価値・容易=必須**（正常表示/テーマ/主要操作後）、**[B] 高価値・困難=該当時必須**（エラー/空状態/モーダル）、**[C] 低価値・容易=推奨**（フォーカス/スクロール位置）、**[D] 低価値・困難=任意**（ホバー/アニメーション中間、N/A理由記録で省略可） |
-| Electron IPC制約 | Vite dev server経由のため、IPC通信に依存するElectron固有画面は完全再現不可の場合がある |
-| Playwright非対応環境 | NOTE.txt で代替（後述の実行フロー Step 5 参照） |
-| 完了基準 | 必須項目（優先度[A][B]）の**100%撮影**が完了していること。推奨[C]・任意[D]はN/A理由の記録で代替可 |
+### Phase 12
 
 補足:
 - App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
@@ -70,10 +71,11 @@
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
+- Task 12-1〜12-5 を順に閉じる。
+- `artifacts.json`、`outputs/artifacts.json`、phase 本文、`index.md` を同一ターンで同期する。
+- `current` / `baseline` の二層判定を changelog と quality report に残す。
 
-補足:
-- ready 判定は root shell ではなく、**表示完了を表す selector**（例: スコア表示、エラーカード、空状態メッセージ）を使う。
-- テーマ別証跡は mock/theme API が撮影シナリオに追従していることを確認する。light ケースで dark UI が出た場合は証跡として無効。
+## 注意事項
 
 ### スクリーンショット撮影コマンド（UI/UX変更タスク）
 
@@ -83,7 +85,7 @@
 # Step 1: dev serverを起動（別ターミナル or バックグラウンド）
 cd apps/desktop && npx vite --config vite.e2e.config.ts &
 
-# Step 2: screenshot-plan.json から全状態を一括撮影
+# Step 2: `screenshot-plan.md` または capture script 対象一覧に従って全状態を撮影
 node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
@@ -199,6 +201,12 @@ rg --files .claude/skills/task-specification-creator/scripts \
 - `phase-11-manual-test.md` の `## 画面カバレッジマトリクス` 表にも `テストケース` 列を持たせる（validator warning 防止）
 - UI再撮影後は残留プロセスを確認し、次工程へ持ち越さない
 - `VIS-xx` や mobile / comparison 用の補助 screenshot は `TC-xx` 証跡と別枠で管理する。`validate-phase11-screenshot-coverage` では warning 許容とし、TC 本体の不足と混同しない
+
+#### TC-ID / 非視覚確認の分離（再監査時必須）
+
+- screenshot coverage の `TC-*` は visual evidence 専用にし、ESC / dismiss / focus trap / keyboard spot check は `NV-*` または automated test として別枠管理する
+- Phase 10 checklist と `outputs/phase-4/test-cases.md` で同じ `TC-ID` が別シナリオを指していないか、capture 前に `rg -n "TC-11-"` で突合する
+- `TC-ID` を流用したまま Phase 12 へ進めない。衝突が見つかったら screenshot plan / manual-test / final-review / Phase 12 narrative を同一ターンで是正する
 ### テスト結果レポート形式
 
 ```markdown
@@ -457,14 +465,19 @@ node .claude/skills/task-specification-creator/scripts/validate-phase12-implemen
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --json
 
-# 未実施タスク誤配置チェック（completed配下に未着手/未実施が混在していないか）
+# 未実施タスク誤配置チェック（completed-only area に未着手/未実施が混在していないか）
 rg -n "^\\| ステータス\\s*\\|.*未着手|^\\| ステータス\\s*\\|.*未実施|^\\| ステータス\\s*\\|.*進行中" \
-  docs/30-workflows/completed-tasks/unassigned-task -g "*.md"
+  docs/30-workflows/completed-tasks -g "*.md"
 
 # 対象監査（今回変更分合否: current）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --target-file docs/30-workflows/unassigned-task/{{TASK_FILE}}.md
+
+# standalone 完了指示書の current 監査
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json \
+  --target-file docs/30-workflows/completed-tasks/{{TASK_FILE}}.md
 
 # 差分監査（git差分を current 判定）
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
@@ -513,7 +526,7 @@ done
 | P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
 | P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
 | P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
-| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ。差分判定は `--diff-from HEAD` を使用 |
+| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は root `unassigned-task/`、actual parent `completed-tasks/<workflow>/unassigned-task/`、standalone `completed-tasks/*.md` のいずれかに合わせる。移動直後の untracked completed file は `--diff-from HEAD` で拾えないため `--target-file` を正本にする |
 | - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
 
 ---
@@ -553,36 +566,13 @@ done
 - `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/spec-update-summary.md`
 
 ---
+1. UI task で screenshot を省略しない。
+2. docs-only task では screenshot を要求せず、manual walkthrough と mirror parity を証跡化する。
+3. user が root を明示した場合はその root を canonical として扱う。
+4. completed workflow では planned wording を残さない。
 
 ## 変更履歴
 
 | Date | Changes |
-| ---- | ------- |
-| 2026-03-11 | TASK-SKILL-LIFECYCLE-01 再監査を反映し、representative screenshot は shell 全景より selector-based element capture を優先するルールを追加 |
-| 2026-03-10 | TASK-10A-G知見反映: Phase 12サブエージェント分割戦略（P43準拠・3ファイル以下/エージェント）追加、3層テストパターン再利用ガイド（G1/G2/G3）追加、LOGS.md完了記録の最終ステップ化を明記 |
-| 2026-03-09 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 を反映し、persist bug では `skipAuth=true` を screenshot 専用補助手段として扱い、bug path 検証（通常ルート metadata）と dedicated harness screenshot を分離するルールを追加 |
-| 2026-03-08 | Workflow10 再確認の教訓を反映し、dedicated harness 利用条件を「App shell 遷移不安定 / deep-link 不可」まで明文化し、`manual-test-result.md` に harness entry path・本番コンポーネント・mock 境界を記録する完了チェックを追加 |
-| 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、完了チェックへ `outputs/artifacts.json` 同期後の `generate-index.js --workflow ... --regenerate` と `index.md` 状態確認を追加 |
-| 2026-03-06 | TASK-UI-02 再々監査を反映し、完了チェックへ `phase-1..11` 本文仕様書の `pending` 残置確認を追加 |
-| 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、Phase 12完了チェックへ「変更履歴 Version 重複確認（同日追補時は最大値 + 0.0.1）」を追加 |
-| 2026-03-11 | TASK-UI-04C follow-up を反映し、初回 0件判定後に親タスク苦戦箇所を共通ガード未タスクへ formalize する場合は `unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期する完了条件を追加 |
-| 2026-03-06 | UT-TASK-10A-B-008 Phase 12再確認を反映し、Task 1 完了条件へ `validate-phase12-implementation-guide.js` を追加。Part 1/2 の内容要件を構造チェックから独立して機械検証する運用へ更新 |
-| 2026-03-06 | UT-TASK-10A-B-008 再監査の教訓を反映し、「ユーザーが明示的にスクリーンショット検証を要求した場合は `NON_VISUAL` 単独不可」「ready 判定は root でなく loaded-state selector を使う」「light 証跡は theme mock を撮影シナリオへ追従させる」を追加 |
-| 2026-03-05 | TASK-043A 再監査の教訓を反映し、Step 2実施後の成果物ドリフト防止チェック（`spec-update-summary.md` と `documentation-changelog.md` の更新有無一致）を追加 |
-| 2026-03-06 | TASK-043B 再監査を反映し、`TC-xx` 本体証跡と `VIS-xx` 補助証跡の分離管理を追記。補助 screenshot は coverage validator 上 warning 許容で、blocking 条件へ昇格させない運用を明文化 |
-| 2026-03-04 | TASK-UI-00-ORGANISMS 再確認を反映し、Phase 12完了チェックへ「再撮影後の `stat` 時刻同期（manual-test/screenshot-coverage）」「`validate-phase11-screenshot-coverage` PASS 記録」を追加 |
-| 2026-03-04 | SkillCenter再監査の教訓を反映し、UI再撮影前 `preview preflight`（build + 疎通確認）を必須手順へ追加。失敗時は `unassigned-task-detection.md` 記録 + 未タスク化を標準化 |
-| 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 再確認追補: `phase-12-documentation.md` の完了チェック同期（Task 1-5 + 条件項目N/A明記）と、`audit --target-file` 制約（unassigned-task配下限定）を運用ルールへ追加 |
-| 2026-03-01 | `UT-IMP-PHASE11-WORKTREE-PROTOCOL-001` の完了タスク記録を追加。Phase 11 Worktree代替手順・CI E2Eジョブ追加・deferred-tests追跡を運用ガイドへ同期 |
-| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` の完了タスク記録・関連ドキュメントリンクを追加 |
-| 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: Phase 11/12 実行で判明したリンク整合運用を更新（`task-workflow.md` の完了移管参照修正）、`quick_validate.js` 実行結果に基づく判定再現性確認フローを明文化 |
-| 2026-02-25 | `audit-unassigned-tasks.js` の scope制御（`--target-file`/`--diff-from`）を標準手順化。Phase 12チェックリストを「対象監査（current）→全体監査（baseline）」の2段判定に更新 |
-| 2026-02-25 | skill-creator連携を追加: Phase 12完了条件に `quick_validate.js` 検証を追加し、SKILL frontmatterの破損検知を標準化 |
-| 2026-02-25 | 未タスク監査運用を補強: `audit-unassigned-tasks.js` が既存baseline違反で失敗する場合の current差分分離手順（`detect-unassigned-tasks --scan`）と記録要件を追加 |
-| 2026-02-24 | Phase 12整合性改善: 必須タスク数を5に更新（Task 5: skill-feedback-report 必須化）。完了条件に `spec-update-summary.md` 作成・`artifacts.json` 二重台帳同期チェックを追加 |
-| 2026-02-22 | 未タスク監査強化: `audit-unassigned-tasks.js` 実行チェックを追加（フォーマット違反/命名違反/誤配置の一括検証） |
-| 2026-02-13 | TASK-FIX-13-1教訓反映: Phase 12完了チェックリストに「苦戦箇所のシステム仕様書記録」を追加 |
-| 2026-02-12 | TASK-9B-I教訓反映: 未タスク配置ディレクトリ確認・テスト数実測値確認・SDK declare module確認の3項目をチェックリストに追加。漏れやすいポイントテーブルに2件追加 |
-| 2026-02-12 | TASK-FIX-7-1スキル改善: 未タスク指示書の物理ファイル存在確認ステップを完了条件チェックリストに追加 |
-| 2026-02-10 | Phase 12チェックリスト強化: Step 1-D(topic-map.md再生成)、ESLintキャッシュクリア、コメントフォーマット統一、自動化コマンドセクション追加 |
-| 2026-01-26 | SKILL.mdから分離・作成、中学生レベル解説の仕様を明確化 |
+| --- | --- |
+| 2026-03-12 | Phase 11 と Phase 12 の detail を別ファイルへ分離 |

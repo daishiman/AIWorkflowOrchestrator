@@ -1,12 +1,9 @@
 # Phase別テンプレートリファレンス
 
-> **Progressive Disclosure**
->
-> - 読み込みタイミング: Phase仕様書生成時（generate-task-specs Task実行時）
-> - 読み込み条件: Phase構造をMarkdownに変換する必要があるとき
-> - 関連スキーマ: schemas/phase-spec.json
+> 読み込み条件:
+> `phase-*.md` を新規作成または大幅更新する時。
 
-各Phaseで生成されるドキュメントのテンプレート構造を定義する。
+## family 構成
 
 ---
 
@@ -155,7 +152,7 @@ Phase完了前に以下を確認:
 
 ```bash
 # Phase完了時の検証コマンド
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
 ````
 
@@ -212,603 +209,21 @@ grep -n "<対象関数名>" <対象ファイルパス>
 ```
 
 | 判定 | 条件 | 対応 |
+| file | 対象 | 役割 |
 | --- | --- | --- |
-| 新規実装 | 対象機能が未実装 | 通常のPhase 1-13ワークフローを実行 |
-| P50該当 | 対象機能が既に実装済み | 全Phaseを「検証・補完」モードに切り替え |
-
-**P50該当の場合**:
-- 各Phase成果物に「P50パターン該当: 検証・補完モード」を明記
-- Phase 4: テストを新規作成し、既存実装に対してGREEN確認
-- Phase 5: 実装は不要（既存コードの検証結果を記録）
-- Phase 6-12: 通常通り実行
-
-### 1. 要件抽出
-
-ユーザー要求から機能要件・非機能要件を抽出する。
-
-### 2. 受け入れ基準作成
-
-各要件に対して検証可能な受け入れ基準を定義する。
-
-### 3. FR/NFR分類
-
-機能要件と非機能要件を分類し、優先度を設定する。
-
-## 統合テスト連携【必須】
-
-接続要件（API/認証/データフロー）を要件に明記する:
-
-| 接続要件カテゴリ | 記載内容 |
-| ---------------- | -------- |
-| API接続 | {{API_ENDPOINTS}} |
-| 認証フロー | {{AUTH_FLOW}} |
-| データフロー | {{DATA_FLOW}} |
-
-## アーキテクチャ層別要件（AIが判断）
-
-タスクの性質に応じて、以下の層別に要件を整理する：
-
-| 層 | 確認観点 |
-| --- | -------- |
-| フロントエンド（Renderer） | UI要件、状態管理要件、UX要件 |
-| バックエンド（Main） | ビジネスロジック要件、システムアクセス要件 |
-| IPC通信 | Main-Renderer間の通信要件 |
-| セキュリティ | 認証・認可、入力検証、Electronセキュリティ要件 |
-| データ | 永続化要件、データフロー要件 |
-
-## 成果物
-
-| 成果物       | パス                                         | 説明             |
-| ------------ | -------------------------------------------- | ---------------- |
-| 要件定義書   | `outputs/phase-1/requirements-definition.md` | 機能・非機能要件 |
-| 受け入れ基準 | `outputs/phase-1/acceptance-criteria.md`     | AC定義           |
-| スコープ定義 | `outputs/phase-1/scope-definition.md`        | 実装範囲         |
-
-## 完了条件
-
-- [ ] 全要件が抽出されている
-- [ ] 各要件に受け入れ基準がある
-- [ ] FR/NFRが分類されている
-- [ ] ステークホルダーが特定されている
-- [ ] 接続要件（API/認証/データフロー）が明記されている
-- [ ] アーキテクチャ層別の要件が整理されている
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## 次のPhase
-
-Phase 2: 設計
-````
-
----
-
-## Phase 2: 設計
-
-```markdown
-# Phase 2: 設計
-
-## メタ情報
-
-| 項目   | 値               |
-| ------ | ---------------- |
-| Phase  | 2                |
-| 機能名 | {{FEATURE_NAME}} |
-| 作成日 | {{CREATED_DATE}} |
-
-## 目的
-
-要件を実現可能な構造に落とし込む。
-
-## 実行タスク
-
-- アーキテクチャ設計: システム構造の設計とパターン選定
-- ドメインモデリング: エンティティ・関係の定義
-- API設計: APIエンドポイント・スキーマの設計
-
-## 参照資料
-
-| 資料名     | パス                                         | 説明          |
-| ---------- | -------------------------------------------- | ------------- |
-| 要件定義書 | `outputs/phase-1/requirements-definition.md` | Phase 1成果物 |
-
-## 統合テスト連携【必須】
-
-統合ポイント/契約（API・スキーマ）を設計に反映する:
-
-| 統合ポイント | 契約定義                      |
-| ------------ | ----------------------------- |
-| フロント→API | {{API_CONTRACT}}              |
-| API→DB       | {{DB_SCHEMA}}                 |
-| 外部サービス | {{EXTERNAL_SERVICE_CONTRACT}} |
-
-## アーキテクチャ層別設計（AIが判断）
-
-タスクの性質に応じて、以下の層別に設計を行う：
-
-| 層                         | 設計観点                            | 仕様参照先                                             |
-| -------------------------- | ----------------------------------- | ------------------------------------------------------ |
-| フロントエンド（Renderer） | コンポーネント設計、状態管理、UI/UX | `aiworkflow-requirements: ui-ux-*.md`                  |
-| バックエンド（Main）       | サービス設計、ビジネスロジック      | `aiworkflow-requirements: architecture-*.md`           |
-| IPC通信                    | チャンネル設計、型定義、契約        | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
-| Preload                    | contextBridge設計、API公開          | `aiworkflow-requirements: security-api-electron.md`    |
-| データ                     | スキーマ設計、リポジトリパターン    | `aiworkflow-requirements: database-*.md`               |
-
-## z-index管理テーブル（UIタスクの場合のみ）
-
-> **条件**: UIコンポーネントの追加・変更を含むタスクの場合に記載する。非UIタスクでは省略可。
-
-新規・変更するコンポーネントのz-indexを既存レイヤーとの整合性を確認して定義する。
-
-| レイヤー名         | z-index範囲 | 用途                         | 本タスクでの使用 |
-| ------------------ | ----------- | ---------------------------- | ---------------- |
-| ベースコンテンツ   | 0-9         | 通常のコンテンツ             | —                |
-| フローティング要素 | 10-19       | ツールチップ、ドロップダウン | —                |
-| オーバーレイ       | 20-29       | モーダル背景、サイドパネル   | —                |
-| モーダル           | 30-39       | ダイアログ、確認モーダル     | —                |
-| トースト通知       | 40-49       | 通知、スナックバー           | —                |
-| グローバルUI       | 50+         | ローディングオーバーレイ     | —                |
-
-**記載ルール**:
-
-- 「本タスクでの使用」列に、該当レイヤーを使用するコンポーネント名を記載する
-- 既存コンポーネントとの競合がないことを確認する
-- カスタムz-index値を使用する場合は、その理由を明記する
-
-## 成果物
-
-| 成果物         | パス                                     | 説明         |
-| -------------- | ---------------------------------------- | ------------ |
-| アーキテクチャ | `outputs/phase-2/architecture-design.md` | システム構造 |
-| ドメインモデル | `outputs/phase-2/domain-model.md`        | エンティティ |
-
-## 完了条件
-
-- [ ] アーキテクチャが定義されている
-- [ ] ドメインモデルが作成されている
-- [ ] 要件との整合性が確認されている
-- [ ] 統合ポイント/契約が設計に反映されている
-- [ ] アーキテクチャ層別の設計が完了している
-- [ ] UIタスクの場合: z-index管理テーブルが定義され、既存レイヤーとの競合がないこと
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## 次のPhase
-
-Phase 3: 設計レビューゲート
-```
-
----
-
-## Phase 3: 設計レビューゲート
-
-```markdown
-# Phase 3: 設計レビューゲート
-
-## メタ情報
-
-| 項目   | 値               |
-| ------ | ---------------- |
-| Phase  | 3                |
-| 機能名 | {{FEATURE_NAME}} |
-| 作成日 | {{CREATED_DATE}} |
-
-## 目的
-
-実装開始前に要件・設計の妥当性を検証する。
-
-## 判定基準
-
-| 判定  | 条件             | 対応                         |
-| ----- | ---------------- | ---------------------------- |
-| PASS  | 全観点で問題なし | Phase 4へ進行                |
-| MINOR | 軽微な指摘あり   | 指摘対応後Phase 4へ進行      |
-| MAJOR | 重大な問題あり   | 影響範囲に応じて戻り先を決定 |
-
-## 統合テスト連携【必須】
-
-統合テスト観点のレビューゲートを実施:
-
-| レビュー観点       | 確認項目                           |
-| ------------------ | ---------------------------------- |
-| API設計            | エンドポイント定義の妥当性         |
-| データフロー       | フロント→API→DB→API→フロントの設計 |
-| エラーハンドリング | 障害時のフロントエンド表示設計     |
-| 認証連携           | トークン管理の設計                 |
-
-## 成果物
-
-| 成果物       | パス                                      | 説明     |
-| ------------ | ----------------------------------------- | -------- |
-| レビュー結果 | `outputs/phase-3/design-review-result.md` | 判定結果 |
-
-## 完了条件
-
-- [ ] 全レビュー観点で確認完了
-- [ ] 判定結果が記録されている
-- [ ] 統合テスト観点のレビューが完了している
-- [ ] **本Phase内のレビュー作業を100%実行完了**
-
-## 次のPhase
-
-Phase 4: テスト作成（TDD: Red）
-```
-
----
-
-## Phase 4: テスト作成（TDD: Red）
-
-````markdown
-# Phase 4: テスト作成（TDD: Red）
-
-## メタ情報
-
-| 項目   | 値               |
-| ------ | ---------------- |
-| Phase  | 4                |
-| 機能名 | {{FEATURE_NAME}} |
-| 作成日 | {{CREATED_DATE}} |
-
-## 目的
-
-期待される動作を検証するテストを実装より先に作成する（Red状態）。
-
-## 実行タスク
-
-- TDD原則適用: テストファースト開発の実践
-- フロントエンドテスト: UIコンポーネントのテスト作成
-- 統合テスト: コンポーネント間連携テストの作成
-- 境界値分析: エッジケースのテスト追加
-
-## 参照資料
-
-| 資料名       | パス                                         | 説明          |
-| ------------ | -------------------------------------------- | ------------- |
-| 要件定義書   | `outputs/phase-1/requirements-definition.md` | Phase 1成果物 |
-| 設計書       | `outputs/phase-2/architecture-design.md`     | Phase 2成果物 |
-| 設計レビュー | `outputs/phase-3/design-review-result.md`    | Phase 3成果物 |
-
-## 実行手順
-
-### 1. テストシナリオ設計
-
-受け入れ基準からテストシナリオを導出する。TDD原則に従い、テストを先に書く。
-
-### 2. ユニットテスト作成
-
-各機能のユニットテストを作成する。テストは失敗する状態（Red）で完了。
-
-### 3. 統合テスト作成
-
-コンポーネント間の連携テストを作成する。
-
-### 4. 境界値テスト
-
-エッジケース（境界値、null、空文字列等）のテストを追加する。
-
-### 5. アクセシビリティテスト（UIタスクの場合）
-
-UIコンポーネントを含むタスクでは、WCAG 2.1 AA 準拠のテストケースを Phase 4 で設計する。
-Phase 10 以降での a11y 指摘検出を防ぐため、以下の観点を早期にテストへ組み込む。
-
-| 観点           | テスト内容                                                               | 検証方法                                 |
-| -------------- | ------------------------------------------------------------------------ | ---------------------------------------- |
-| ARIA ラベル    | インタラクティブ要素に `aria-label` / `aria-labelledby` が付与されている | `getByRole` + `name` オプション          |
-| ロール属性     | セマンティックロール（`radiogroup`, `dialog`, `tab` 等）が正しい         | `getByRole` で要素取得可能か             |
-| キーボード操作 | Tab / Enter / Escape で全機能にアクセス可能                              | `fireEvent.keyDown` でフォーカス遷移検証 |
-| コントラスト比 | テキスト 4.5:1 以上、大テキスト/UI部品 3:1 以上                          | CSS変数の値検証（デザイントークン準拠）  |
-| 状態通知       | 動的変更が `aria-live` / `aria-expanded` で通知される                    | 状態変更後の属性値検証                   |
-
-> **根拠**: TASK-UI-03 で Phase 10 まで a11y 属性不足（`radiogroup` ロール、`dialog` ロール、`aria-label` 欠落）が検出されず、4件の未タスク化が発生した。Phase 4 での早期テスト設計により、手戻りコストを削減する。
-
-## 統合テスト連携【必須】
-
-統合テストシナリオを全カテゴリで設計する:
-
-| シナリオカテゴリ   | 検証内容                                     | テストファイル          |
-| ------------------ | -------------------------------------------- | ----------------------- |
-| API接続テスト      | エンドポイント疎通・レスポンス形式           | `*.integration.test.ts` |
-| データフローテスト | フロント→API→DB→API→フロントの往復           | `*.flow.test.ts`        |
-| エラーハンドリング | API障害時のフロントエンド表示・リトライ      | `*.error.test.ts`       |
-| 認証連携テスト     | トークン取得・リフレッシュ・期限切れ処理     | `*.auth.test.ts`        |
-| 状態同期テスト     | リアルタイム更新・楽観的UI更新・ロールバック | `*.sync.test.ts`        |
-
-## アーキテクチャ層別テスト（AIが判断）
-
-タスクの性質に応じて、以下の層別にテストを作成する：
-
-| 層               | テスト観点                        | テストファイル配置                       |
-| ---------------- | --------------------------------- | ---------------------------------------- |
-| Renderer Process | UIコンポーネント、状態管理、Hooks | `apps/desktop/src/renderer/**/*.test.ts` |
-| Main Process     | サービス、ビジネスロジック        | `apps/desktop/src/main/**/*.test.ts`     |
-| IPC通信          | Main-Renderer連携、チャンネル     | `*.ipc.test.ts`                          |
-| Preload          | API公開、型安全性                 | `apps/desktop/src/preload/**/*.test.ts`  |
-| Shared           | ユーティリティ、型定義            | `packages/shared/**/*.test.ts`           |
-
-## 成果物
-
-| 成果物             | パス                                         | 説明               |
-| ------------------ | -------------------------------------------- | ------------------ |
-| テスト仕様書       | `outputs/phase-4/test-specification.md`      | テスト設計         |
-| テストケース       | `outputs/phase-4/test-cases.md`              | ケース一覧         |
-| 統合テストシナリオ | `outputs/phase-4/integration-test-design.md` | 統合テスト設計     |
-| テストファイル     | `packages/*/src/**/*.test.ts`                | 実際のテストコード |
-
-## 完了条件
-
-- [ ] 受け入れ基準ごとにユニットテストがある
-- [ ] 統合テストシナリオが全カテゴリで定義されている
-- [ ] すべてのテストが失敗状態（Red）
-- [ ] テストカバレッジ目標が設定されている
-- [ ] 境界値テストが含まれている
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## TDD検証
-
-```bash
-# テスト実行コマンド
-pnpm test
-
-# 確認項目
-# - [ ] テストが失敗することを確認（Red状態）
-```
-````
-
-## 次のPhase
-
-Phase 5: 実装（TDD: Green）
-
-````
-
----
-
-## Phase 5: 実装（TDD: Green）
-
-```markdown
-# Phase 5: 実装（TDD: Green）
-
-## メタ情報
-
-| 項目   | 値                 |
-| ------ | ------------------ |
-| Phase  | 5                  |
-| 機能名 | {{FEATURE_NAME}}   |
-| 作成日 | {{CREATED_DATE}}   |
-
-## 目的
-
-テストを通すための最小限の実装を行う。
-
-## 実行タスク
-
-- クリーンコード実装: 可読性・保守性の高いコード作成
-- エラーハンドリング: 適切なエラー処理の実装
-- 型安全性確保: TypeScriptの型システム活用
-
-## 統合テスト連携【必須】
-
-フロント/バック接続の実装とテスト支援コード整備:
-
-| 実装項目 | 内容 |
-| -------- | ---- |
-| API接続 | {{API_CONNECTION_IMPLEMENTATION}} |
-| エラーハンドリング | {{ERROR_HANDLING_IMPLEMENTATION}} |
-| 状態同期 | {{STATE_SYNC_IMPLEMENTATION}} |
-
-## アーキテクチャ層別実装（AIが判断）
-
-タスクの性質に応じて、以下の層別に実装を行う：
-
-| 層 | 実装観点 | 実装ファイル配置 | 仕様参照先 |
-| --- | -------- | ---------------- | ---------- |
-| Renderer Process | UIコンポーネント、状態管理、Hooks | `apps/desktop/src/renderer/` | `aiworkflow-requirements: ui-ux-*.md` |
-| Main Process | サービス、ビジネスロジック、システムアクセス | `apps/desktop/src/main/` | `aiworkflow-requirements: architecture-*.md` |
-| IPC通信 | チャンネルハンドラー、型定義 | `apps/desktop/src/main/ipc/`, `packages/shared/types/` | `aiworkflow-requirements: api-*.md` |
-| Preload | contextBridge、セキュアAPI公開 | `apps/desktop/src/preload/` | `aiworkflow-requirements: security-api-electron.md` |
-| Shared | ユーティリティ、型定義、定数 | `packages/shared/` | - |
-| データ層 | リポジトリ、SQLite操作 | `apps/desktop/src/main/repositories/` | `aiworkflow-requirements: database-*.md` |
-
-## 設計変更記録（該当する場合）
-
-実装中にPhase 2の設計から乖離が発生した場合、以下を記録する:
-
-- [ ] 乖離内容と理由を `outputs/phase-5/design-changes.md` に記録
-- [ ] Phase 2設計書への影響を評価し、Phase 10レビューで検証できるようにする
-
-## 実装時の注意事項（既知のPitfall対策）
-
-以下は過去の実装経験から得られた重要な注意事項です：
-
-| Pitfall ID | 注意事項 | 対策 |
-| ---------- | -------- | ---- |
-| P31 | Zustand Store Hooks無限ループ | 合成Store Hook（`useAuthModeStore()`等）の関数を`useEffect`依存配列に含めない。`useRef`でガードするか、個別セレクタを使用 |
-| P5 | リスナー二重登録 | React StrictModeで`useEffect`が2回実行される。モジュールレベルでガードするか`useRef`で初期化フラグを管理 |
-| P12 | 外部SDK自動処理との競合 | カスタム実装で置き換える場合、元の自動処理を必ず無効化 |
-
-📖 詳細: `.claude/rules/06-known-pitfalls.md`、`references/patterns.md`
-
-## 成果物
-
-| 成果物     | パス                               | 説明     |
-| ---------- | ---------------------------------- | -------- |
-| 実装コード | `packages/*/src/{{FEATURE_PATH}}/` | 機能実装 |
-
-## 完了条件
-
-- [ ] すべてのテストが成功状態（Green）
-- [ ] 実装が最小限に抑えられている
-- [ ] フロント/バック接続が実装されている
-- [ ] アーキテクチャ層別の実装が層責務に一致して配置されている（UI: `apps/*/src/renderer`, Main: `apps/*/src/main`, Shared: `packages/shared`）
-- [ ] **設計書（Phase 2成果物）から意図的に変更した箇所がある場合、変更理由をPhase 5成果物に記録し、Phase 2成果物も更新している**
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## TDD検証
-
-```bash
-# テスト実行コマンド
-pnpm test
-
-# 確認項目
-# - [ ] テストが成功することを確認（Green状態）
-````
-
-## 次のPhase
-
-Phase 6: テスト拡充
-
-````
-
----
-
-## Phase 6: テスト拡充
-
-```markdown
-# Phase 6: テスト拡充
-
-## メタ情報
-
-| 項目   | 値                 |
-| ------ | ------------------ |
-| Phase  | 6                  |
-| 機能名 | {{FEATURE_NAME}}   |
-| 作成日 | {{CREATED_DATE}}   |
-
-## 目的
-
-Phase 5の実装に対してテストを拡充し、カバレッジ目標を達成する。
-
-## 実行タスク
-
-- カバレッジ分析: テストカバレッジの測定と不足領域の特定
-- 統合テスト設計・実行: コンポーネント間連携テストの追加
-- フロントエンドテスト: UIコンポーネントのテスト拡充
-- E2Eテスト拡充: エンドツーエンドテストの追加
-
-## ユニットテストカバレッジ基準
-
-| 指標              | 最低基準 | 推奨基準 |
-| ----------------- | -------- | -------- |
-| Line Coverage     | 80%      | 90%      |
-| Branch Coverage   | 60%      | 70%      |
-| Function Coverage | 80%      | 90%      |
-
-## 結合テストカバレッジ基準
-
-| 指標                         | 目標   |
-| ---------------------------- | ------ |
-| APIエンドポイント            | 100%   |
-| モジュール間インターフェース | 100%   |
-| 正常系シナリオ               | 100%   |
-| 異常系シナリオ               | 80%+   |
-| 外部連携ポイント             | 100%   |
-
-## 統合テスト連携【必須】
-
-統合テストの拡充（全カテゴリのカバレッジ向上）:
-
-| テストカテゴリ     | 検証項目                                   | 目標 |
-| ------------------ | ------------------------------------------ | ---- |
-| API接続テスト      | エンドポイント疎通・レスポンス形式         | 100% |
-| データフローテスト | フロント→API→DB→API→フロントの往復         | 100% |
-| エラーハンドリング | API障害時のフロントエンド表示・リトライ    | 80%+ |
-| 認証連携テスト     | トークン取得・リフレッシュ・期限切れ処理   | 100% |
-| 状態同期テスト     | リアルタイム更新・楽観的UI更新・ロールバック | 100% |
-
-## 実行手順
-
-### 1. カバレッジ測定
-
-```bash
-pnpm test:coverage
-````
-
-### 2. ギャップ分析
-
-- 未到達の行/分岐/関数を特定
-- 統合テスト不足領域を特定
-
-### 3. 追加テスト作成
-
-- ユニット/統合/E2Eの不足分を追加
-- フロント・バックエンド接続経路を優先
-
-### 4. 統合テスト再実行
-
-```bash
-pnpm test:integration
-pnpm test:e2e
-```
-
-## 成果物
-
-| 成果物             | パス                                  | 説明               |
-| ------------------ | ------------------------------------- | ------------------ |
-| カバレッジレポート | `outputs/phase-6/coverage-report.md`  | カバレッジ分析結果 |
-| 統合テスト結果     | `outputs/phase-6/integration-test.md` | 統合テスト実行結果 |
-| テストファイル     | `packages/*/src/**/*.test.ts`         | 追加テストコード   |
-
-## 完了条件
-
-- [ ] ユニットテストカバレッジ基準を達成（Line 80%+, Branch 60%+, Function 80%+）
-- [ ] 結合テストカバレッジ基準を達成（API 100%, シナリオ 100%/80%）
-- [ ] 統合テストの追加が完了している
-- [ ] フロントエンド・バックエンド接続テストが成功
-- [ ] カバレッジレポートが出力されている
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## 次のPhase
-
-Phase 7: テストカバレッジ確認
-
-````
-
----
-
-## Phase 7: テストカバレッジ確認
-
-```markdown
-# Phase 7: テストカバレッジ確認
-
-## メタ情報
-
-| 項目   | 値                 |
-| ------ | ------------------ |
-| Phase  | 7                  |
-| 機能名 | {{FEATURE_NAME}}   |
-| 作成日 | {{CREATED_DATE}}   |
-
-## 目的
-
-Phase 6で拡充したテスト結果を検証し、カバレッジ基準を満たすことを確認する。
-
-## 実行タスク
-
-- カバレッジ再測定: テストカバレッジの再計測
-- 統合テスト実行: 統合テストの実行と結果確認
-
-## 実行手順
-
-### 1. カバレッジ再測定
-
-```bash
-pnpm test:coverage
-````
-
-### 2. 統合テスト実行
-
-```bash
-pnpm test:integration
-pnpm test:e2e
-```
-
-### 3. 未達の場合の対応
-
-カバレッジ未達や統合テスト失敗がある場合、Phase 6へ戻って拡充する。
-
-#### ハンドラ単位カバレッジレポート（IPCハンドラファイル対象時）
-
-IPCハンドラを含むファイルのカバレッジ検証時は、ファイル全体カバレッジに加えてハンドラ単位カバレッジを実施する。
-
-```bash
-npx tsx scripts/coverage-by-handler.ts --file <対象ファイルパス>
-```
+| [phase-template-core.md](phase-template-core.md) | Phase 1-3 | 要件定義、設計、設計レビューの共通構造 |
+| [phase-template-execution.md](phase-template-execution.md) | Phase 4-10 | テスト、実装、品質、最終レビュー |
+| [phase-template-phase11.md](phase-template-phase11.md) | Phase 11 | manual walkthrough と screenshot evidence |
+| [phase-template-phase12.md](phase-template-phase12.md) | Phase 12 | implementation guide、spec sync、未タスク、feedback |
+| [phase-template-phase13.md](phase-template-phase13.md) | Phase 13 | user approval と PR blocked ルール |
+
+## 共通ルール
+
+1. タイトルは `# Phase N: ...` を維持する。
+2. `## メタ情報`、`## 目的`、`## 実行タスク`、`## 参照資料`、`## 成果物`、`## 完了条件` を省略しない。
+3. Phase 1〜11 では `## 統合テスト連携` を必ず残す。
+4. `完了条件` と `タスク100%実行確認` はチェックリストで書く。
+5. outputs と phase 本文の名称は 1:1 に揃える。
 
 出力レポートをPhase 7成果物に含める。判定はハンドラ単位で行う（quality-requirements.md参照）。
 
@@ -1089,13 +504,13 @@ Phase 11: 手動テスト検証
 
 ### 撮影コマンド
 
-撮影は Step 3 の撮影計画（`screenshot-plan.json`）に基づいて一括実行するのが推奨。
+撮影は Step 3 の撮影計画（`screenshot-plan.md` または capture script の対象一覧）に基づいて一括実行するのが推奨。
 個別撮影コマンドの詳細オプション（`--plan`, `--selector`, `--action`, `--action-target`, `--dark`, `--dry-run` 等）は
 `references/phase-11-12-guide.md` の「スクリーンショット撮影コマンド」セクションを参照。
 
 ```bash
 # 推奨: 撮影計画から一括撮影
-node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
+node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --plan outputs/phase-11/screenshot-plan.json
 ```
@@ -1106,14 +521,14 @@ node .agents/skills/task-specification-creator/scripts/capture-screenshots.js \
 ### 網羅性検証コマンド（UI/UX変更タスク）
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}}
 ```
 
 非視覚TCのみ例外許可する場合:
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
   --workflow docs/30-workflows/{{FEATURE_NAME}} \
   --allow-non-visual-tc TC-08
 ```
@@ -1200,6 +615,7 @@ git diff main --name-only -- '*.tsx' '*.jsx' | grep -E '(components|views|pages)
 #### Step 3: 撮影計画の作成
 
 Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.json` に作成する:
+Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-11/screenshot-plan.md` へ整理し、必要なら自動撮影用 `screenshot-plan.json` か task 専用 capture script の対象一覧へ落とし込む:
 
 **テーブル形式（manual-test-result.md に記載）**:
 
@@ -1316,7 +732,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 | テスト結果         | `outputs/phase-11/manual-test-result.md`  | 必須   | 手動テスト結果                        |
 | 発見課題一覧       | `outputs/phase-11/discovered-issues.md`   | 必須   | 発見した課題（0件でも出力）           |
 | スクリーンショット | `outputs/phase-11/screenshots/`           | 条件付 | UI/UX変更時は必須、それ以外は任意     |
-| 撮影計画           | `outputs/phase-11/screenshot-plan.json`   | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
+| 撮影計画           | `outputs/phase-11/screenshot-plan.md` または capture script 対象一覧 | 条件付 | UI/UX変更時は必須（画面カバレッジ用） |
 | カバレッジレポート | `outputs/phase-11/screenshot-coverage.md` | 条件付 | UI/UX変更時は必須（100%達成確認用）   |
 
 ## 完了条件
@@ -1326,7 +742,7 @@ Step 1-2 のマトリクスから、具体的な撮影計画を `outputs/phase-1
 - [ ] 統合テスト手動確認が完了
 - [ ] UI/UX対象タスクの場合: `git diff` で変更コンポーネント一覧を洗い出し済み、または representative screenshots の対象UI surface を列挙済み
 - [ ] UI/UX対象タスクの場合: 各コンポーネント/画面の全UI状態（表示/インタラクション/テーマ）を列挙済み（N/A理由も記録）
-- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.json` または capture script の対象一覧が作成済み
+- [ ] UI/UX対象タスクの場合: 撮影計画 `screenshot-plan.md` または capture script の対象一覧が作成済み
 - [ ] UI/UX対象タスクの場合: 撮影計画の**全項目**のスクリーンショットが `outputs/phase-11/screenshots/` に配置済み
 - [ ] UI/UX対象タスクの場合: 各TCにスクリーンショット証跡が紐付き、`validate-phase11-screenshot-coverage.js` がPASS
 - [ ] UI/UX対象タスクの場合: 画面カバレッジレポートの必須項目（優先度[A][B]）が**100%**（推奨[C]・任意[D]はN/A記録で代替可）
@@ -1431,16 +847,16 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 
 ##### Step 1-C: 関連タスクテーブル更新（該当する場合）
 - [ ] `grep -rn "TASK_ID" references/` で関連仕様書を検索して更新
-- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）
-- [ ] `docs/30-workflows/completed-tasks/unassigned-task/` に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
+- [ ] 未タスクIDがある場合、配置先判定を記録（未完了=`docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md`、legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）
+- [ ] completed-only area（`docs/30-workflows/completed-tasks/*.md` と `docs/30-workflows/completed-tasks/unassigned-task/`）に未完了指示書（`未実施` / `未着手`）が混在していないことを確認
 
 **検索コマンド例**（TASK_IDを実際のタスクIDに置換して実行）:
 ```bash
 # 関連仕様書の検索（references/配下）
-grep -rn "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/
+grep -rn "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/
 
 # 残課題テーブルでの参照検索（task-workflow.md）
-grep -n "TASK-UI-03" .agents/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "TASK-UI-03" .claude/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 未タスク指示書の関連検索
 grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
@@ -1451,7 +867,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 
 ##### Step 1-D: topic-map.md 再生成（**仕様書に変更があれば必ず実行** -- P2, P27）
 
-- [ ] `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して topic-map.md を再生成
 - [ ] 再生成されたtopic-map.mdに新規セクションの行番号が正しく反映されていることを確認
 
 ```markdown
@@ -1481,7 +897,7 @@ grep -rn "TASK-UI-03" docs/30-workflows/completed-tasks/
 | 新規定数/設定値追加         | バグ修正（仕様変更なし）   |
 | アーキテクチャパターン追加  | テスト追加のみ             |
 
-- 更新対象: `.agents/skills/aiworkflow-requirements/references/`
+- 更新対象: `.claude/skills/aiworkflow-requirements/references/`
 - 更新対象: `docs/00-requirements/` 配下
 - 更新原則: 概要のみ記載、Single Source of Truth遵守
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
@@ -1589,14 +1005,14 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 - [ ] **【Task 2 Step 1】task-specification-creator/SKILL.md変更履歴テーブルを更新した** ⚠️ 漏れやすい（P29）
 - [ ] **【Task 2 Step 1-D】topic-map.mdを再生成した** ⚠️ 漏れやすい（P2, P27参照）
   - 再生成トリガー: セクション追加/削除/更新、行数変更
-  - コマンド: `node .agents/skills/aiworkflow-requirements/scripts/generate-index.js`
+  - コマンド: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
 - [ ] **【Task 2 Step 1-C】関連タスクテーブルのステータスを「完了」に更新した（該当する場合）**
 - [ ] **【Task 2 Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した**
 - [ ] **アーキテクチャ層別のドキュメントが作成されている（該当する層のみ）**
 - [ ] **未タスク検出レポートが出力されている**【必須】
 - [ ] 検出された未タスクに対して指示書が作成されている（該当する場合）
 - [ ] 未タスク指示書の物理ファイル存在を確認した（`ls docs/30-workflows/unassigned-task/` で検証）
-- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管済み=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
+- [ ] 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / completed workflow 由来の継続 backlog=`docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` / 完了済み standalone UT=`docs/30-workflows/completed-tasks/*.md` / legacy=`docs/30-workflows/completed-tasks/unassigned-task/`）を記録した
 - [ ] **スキルフィードバックレポートが出力されている**【必須・改善点なしでも作成】
 - [ ] artifacts.jsonが更新されている
 - [ ] **artifacts.jsonの全完了Phase（1-12）のステータスがcompletedであること**
@@ -1667,9 +1083,9 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Task 2 Step 2
 #### スキル検証
 
 ```bash
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/skill-creator
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/task-specification-creator
-node .agents/skills/skill-creator/scripts/quick_validate.js .agents/skills/aiworkflow-requirements
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
+node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 ```
 
 判定基準: `spec-update-workflow.md` Step 1-G.3.1 を参照。
@@ -1800,19 +1216,26 @@ git push
 ````
 
 ## 次のPhase
+## 変数一覧
 
-なし（ワークフロー完了）
+| 変数 | 意味 |
+| --- | --- |
+| `{{TASK_ID}}` | workflow 全体の task ID |
+| `{{FEATURE_NAME}}` | workflow ディレクトリ名 |
+| `{{PHASE_NAME}}` | phase 名称 |
+| `{{ARTIFACT_PATH}}` | `outputs/phase-N/...` の相対パス |
+| `{{SYSTEM_SPEC_PATH}}` | aiworkflow-requirements 側の更新対象 |
 
-```
+## 関連テンプレート
 
----
+- [../assets/phase-spec-template.md](../assets/phase-spec-template.md)
+- [../assets/main-task-template.md](../assets/main-task-template.md)
+- [../assets/review-result-template.md](../assets/review-result-template.md)
+- [../assets/implementation-guide-template.md](../assets/implementation-guide-template.md)
+- [../assets/documentation-changelog-template.md](../assets/documentation-changelog-template.md)
 
-## 使用方法
+## 変更履歴
 
-1. タスク仕様書生成時に、対象Phaseのテンプレートを参照
-2. `{{変数}}` を実際の値で置換
-3. 実行タスクセクションに該当するタスクを列挙
-4. 参照資料に前Phaseの成果物を追加
-5. ファイルを `docs/30-workflows/{{FEATURE_NAME}}/` に出力
-6. Phase完了後、`complete-phase.js` で成果物を登録
-```
+| Date | Changes |
+| --- | --- |
+| 2026-03-12 | 1818行の monolith から family file 構成へ再編 |

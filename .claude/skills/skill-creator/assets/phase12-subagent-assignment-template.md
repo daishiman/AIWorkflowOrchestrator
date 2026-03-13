@@ -62,7 +62,7 @@ Phase 12（ドキュメント整備）を効率的かつ安全に実行するた
 leader が Phase 1 + Phase 2 の全成果物を検証
   ├─ N/Aログ検証: validateNaLogEntries() で全エントリを確認
   ├─ 三点突合: validateTripleCheck() で artifacts/changelog/audit を確認
-  └─ 監査実行: audit-unassigned-tasks --diff-from HEAD で current=0 を確認
+  └─ 監査実行: audit-unassigned-tasks --diff-from HEAD を基本に、completed direct path は audit-unassigned-tasks --target-file で current=0 を確認
 ```
 
 **実行時間**: 約30分
@@ -131,7 +131,7 @@ leader が Phase 1 + Phase 2 の全成果物を検証
 
 - [ ] N/Aログバリデーター実行: `pnpm vitest run __tests__/na-log-validator.test.ts`
 - [ ] 三点突合バリデーター実行: `pnpm vitest run __tests__/triple-check-validator.test.ts`
-- [ ] 監査実行: `audit-unassigned-tasks --diff-from HEAD`
+- [ ] 監査実行: `audit-unassigned-tasks --diff-from HEAD`（必要時は `audit-unassigned-tasks --target-file <path>` を併記）
 - [ ] `phase12-completion-guard-checklist.md` の全項目をチェック
 - [ ] Phase 12 完了を宣言（全項目 ✓ の場合のみ）
 
@@ -147,6 +147,7 @@ cd .claude/scripts && pnpm vitest run __tests__/triple-check-validator.test.ts
 # 監査実行（current/baseline 違反検出）
 cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && \
   pnpm audit-unassigned-tasks --diff-from HEAD
+  pnpm audit-unassigned-tasks --target-file docs/30-workflows/completed-tasks/<task>.md
 
 # 全検証をまとめて実行
 cd .claude/scripts && pnpm vitest run && cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator && pnpm audit-unassigned-tasks --diff-from HEAD

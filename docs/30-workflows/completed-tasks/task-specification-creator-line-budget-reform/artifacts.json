@@ -1,0 +1,131 @@
+{
+  "feature": "task-specification-creator-line-budget-reform",
+  "created": "2026-03-12T00:00:00Z",
+  "lastUpdated": "2026-03-12T12:20:00Z",
+  "status": "completed",
+  "currentPhase": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/oversized-markdown-inventory.md",
+        "outputs/phase-1/source-task-mapping.md"
+      ],
+      "notes": "Phase 1-3 完了前は実装へ進まない"
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/responsibility-split-plan.md",
+        "outputs/phase-2/subagent-lane-plan.md",
+        "outputs/phase-2/validation-and-mirror-plan.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-prompt.txt",
+        "outputs/phase-3/task-specification-creator-compliance-audit.md",
+        "outputs/phase-3/aiworkflow-requirements-extraction-audit.md",
+        "outputs/phase-3/solution-elegance-review.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-scenarios.md",
+        "outputs/phase-4/command-expectations.md",
+        "outputs/phase-4/mirror-checklist.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-log.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-matrix.md",
+        "outputs/phase-6/regression-checks.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-matrix.md",
+        "outputs/phase-7/gap-list.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/duplication-audit.md",
+        "outputs/phase-8/navigation-refactor-summary.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/command-log.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/review-prompt.txt"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/ui-sanity-visual-review.md",
+        "outputs/phase-11/screenshots-app-sanity/phase11-capture-metadata.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-13/pr-summary.md"],
+      "notes": "PR #1207 を作成し、secondary workflow evidence を同一 PR へ統合した"
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "5", "6", "7", "8", "9"],
+    "11": ["1", "2", "3", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "3", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "3", "5", "6", "7", "8", "9", "10", "11", "12"]
+  },
+  "metadata": {
+    "taskType": "improvement",
+    "taskId": "TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001",
+    "title": "task-specification-creator 大規模 Markdown 責務分離",
+    "priority": "high",
+    "branch": "task/1144-skill-doc-line-budget-separation",
+    "issue": 1144
+  }
+}

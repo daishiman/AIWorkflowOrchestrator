@@ -28,8 +28,8 @@ aiworkflow-requirements と task-specification-creator の両方の LOGS.md を�
 
 ```bash
 git diff --name-only HEAD -- \
-  .agents/skills/aiworkflow-requirements/LOGS.md \
-  .agents/skills/task-specification-creator/LOGS.md | wc -l
+  .claude/skills/aiworkflow-requirements/LOGS.md \
+  .claude/skills/task-specification-creator/LOGS.md | wc -l
 # 期待値: 2（両方更新されている）
 ```
 
@@ -80,10 +80,10 @@ LOGS.md への「完了」記録は全ファイル更新後の最終ステップ
 ls docs/30-workflows/unassigned-task/
 
 # task-workflow.md の残課題テーブル確認
-grep -n "未タスクID" .agents/skills/aiworkflow-requirements/references/task-workflow.md
+grep -n "未タスクID" .claude/skills/aiworkflow-requirements/references/task-workflow.md
 
 # 関連仕様書のリンク確認
-grep -rn "未タスクID" .agents/skills/aiworkflow-requirements/references/
+grep -rn "未タスクID" .claude/skills/aiworkflow-requirements/references/
 ```
 
 ## 同期チェックリスト

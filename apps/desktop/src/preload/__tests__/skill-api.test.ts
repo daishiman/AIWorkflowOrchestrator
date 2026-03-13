@@ -53,7 +53,6 @@ import type {
   ImportedSkill,
   RemoveResult,
 } from "@repo/shared";
-import type { PromptEvaluation } from "@repo/shared/types/skill-improver";
 
 // ============================================================
 // テストフィクスチャ
@@ -115,21 +114,6 @@ const createMockRemoveResult = (
 ): RemoveResult => ({
   success: true,
   removed: true,
-  ...overrides,
-});
-
-const createMockPromptEvaluation = (
-  overrides?: Partial<PromptEvaluation>,
-): PromptEvaluation => ({
-  score: 84,
-  breakdown: {
-    clarity: 88,
-    specificity: 82,
-    completeness: 86,
-    reproducibility: 80,
-    security: 90,
-  },
-  feedback: ["十分に明確です"],
   ...overrides,
 });
 
@@ -739,7 +723,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
 // 8. 統一API構造テスト
 // ============================================================
 describe("統一SkillAPI - API構造検証", () => {
-  it("統一APIが48メソッドを持つ（fileTree API・fork API・共有API・ドキュメントAPI・分析/改善API・評価API・チェーンAPI含む）", () => {
+  it("統一APIが47メソッドを持つ（fileTree API・fork API・共有API・ドキュメントAPI・分析/改善API・チェーンAPI含む）", () => {
     const expectedMethods: (keyof SkillAPI)[] = [
       "list",
       "getImported",
@@ -783,7 +767,6 @@ describe("統一SkillAPI - API構造検証", () => {
       "analyze",
       "applyImprovements",
       "autoImprove",
-      "evaluatePrompt",
       "chainList",
       "chainGet",
       "chainSave",
@@ -798,7 +781,7 @@ describe("統一SkillAPI - API構造検証", () => {
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(48);
+    expect(methodCount).toBe(47);
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {
@@ -813,23 +796,6 @@ describe("統一SkillAPI - API構造検証", () => {
       const unsubscribe = method(vi.fn());
       expect(typeof unsubscribe).toBe("function");
     }
-  });
-});
-
-describe("統一SkillAPI - 評価メソッド", () => {
-  it("evaluatePrompt が skill:optimize:evaluate を呼び出して評価結果を返す", async () => {
-    const evaluation = createMockPromptEvaluation();
-    mockInvoke.mockResolvedValue({ success: true, data: evaluation });
-
-    const result = await skillAPI.evaluatePrompt("レビュー観点を整理する");
-
-    expect(mockInvoke).toHaveBeenCalledWith(
-      IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
-      {
-        prompt: "レビュー観点を整理する",
-      },
-    );
-    expect(result).toEqual(evaluation);
   });
 });
 

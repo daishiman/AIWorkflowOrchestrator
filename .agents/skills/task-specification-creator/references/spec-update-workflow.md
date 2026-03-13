@@ -1,66 +1,33 @@
 # システム仕様更新ワークフロー
 
-> **Progressive Disclosure**
->
-> - 読み込みタイミング: Phase 12（ドキュメント更新）実行時
-> - 読み込み条件: Phase 12 Task 2実行時（必須）
-> - 関連スキル: aiworkflow-requirements
+> 読み込み条件:
+> Phase 12 Task 2 を開始する時。Step 1 と Step 2 を混同しないための index。
 
----
+## 2種類の更新アクション
 
-## ⚠️ 重要: 2種類の更新アクション
+| アクション | 必須 | 役割 | 詳細 |
+| --- | --- | --- | --- |
+| Step 1: 完了記録 | すべての task で必須 | workflow 完了と台帳の同期 | [spec-update-step1-completion.md](spec-update-step1-completion.md) |
+| Step 2: domain spec sync | 条件付き | interface / API / architecture 変更の反映 | [spec-update-step2-domain-sync.md](spec-update-step2-domain-sync.md) |
+| validation | 完了前に必須 | 4系統の validator と pass 基準 | [spec-update-validation-matrix.md](spec-update-validation-matrix.md) |
 
-Phase 12では以下の**2種類の更新アクション**があります。混同に注意してください。
+## 判断フロー
 
-| アクション               | 必須 | 条件                               | 更新内容                     |
-| ------------------------ | ---- | ---------------------------------- | ---------------------------- |
-| **タスク完了記録の追加** | ✅   | **全タスクで必須**                 | 完了セクションを仕様書に追加 |
-| **実装状況テーブル更新** | ✅   | **実装完了時は必須**（仕様書作成のみタスクは `spec_created` を適用） | 「未実装」→「完了 or spec_created」に変更 |
-| システム仕様の更新       | △    | インターフェース変更がある場合のみ | 仕様内容の変更               |
+1. まず Step 1-A〜1-G を完了する。
+2. 次に interface、API、state、security、UI contract の変更有無を判定する。
+3. Step 2 が不要でも、判断根拠を `documentation-changelog.md` と `system-spec-update-summary.md` に残す。
+4. final validation を通してから Phase 12 を閉じる。
 
-### 判断フローチャート（全体）
+## よくある誤判断
 
-```
-Phase 12 Task 2 開始
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-A: タスク完了記録（必須）                                   │
-│ → 「完了タスク」セクションを該当仕様書に追加                        │
-│ → 関連ドキュメントセクションに実装ガイドへのリンク追加               │
-│ → LOGS.md×2ファイル + topic-map.md 更新                            │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-B: 実装状況テーブル更新（実装完了時は必須）                  │
-│ → api-endpoints.md等の「実装状況」テーブルを確認                    │
-│ → 該当項目が「未実装」の場合、「完了」または「spec_created」に変更   │
-│ → ⚠️ これは「システム仕様更新」ではなく必須アクションです           │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-C: 関連タスクテーブル更新（該当する場合は必須）              │
-│ → 仕様書内の「関連タスク」「未タスク候補」テーブルを確認            │
-│ → grep でタスクID/名を references/ 配下全体から検索                 │
-│ → 該当タスクのステータスを「完了」に更新                            │
-│ → ⚠️ 見落としやすいステップ: 必ずGrepで確認すること                │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 2: システム仕様更新判断（条件付き）                           │
-│ → 新規インターフェース/型の追加があるか判断                        │
-│ → 不要の場合は「更新なし」と documentation-changelog.md に明記     │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ 完了チェック: documentation-changelog.md に全Step結果を記録        │
-│ → Step 1-A: ✅/❌ + 詳細                                          │
-│ → Step 1-B: ✅/該当なし + 詳細                                     │
-│ → Step 1-C: ✅/該当なし + 詳細                                     │
-│ → Step 2:   ✅/更新不要 + 理由                                     │
-└─────────────────────────────────────────────────────────────────┘
-```
+| 誤判断 | 正しい扱い |
+| --- | --- |
+| 「実装ガイドを書いたので Step 1 は完了」 | 実装ガイドは Task 12-1。Step 1 は別物 |
+| 「`.agents` を更新したから spec sync も終わった」 | 正本は `.claude`。mirror は代替不可 |
+| 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
+| 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
 
-### ⚠️ よくある誤判断パターン
+## 入口ファイル
 
 以下のケースで「更新不要」と誤判断しやすいので注意:
 
@@ -83,6 +50,7 @@ Phase 12 Task 2 開始
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
+| 「mirror sync 完了は summary 記述だけでよい」 | **`diff -qr <canonical> <mirror>` の実行結果が必須** | 実際には mirror へ反映されていないまま Phase 12 を閉じる事故が起きる。完了判定はコマンド結果で裏付ける |
 | 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
@@ -95,6 +63,7 @@ Phase 12 Task 2 開始
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** | UI 実装差分がなく same-day upstream evidence があるなら、source screenshot を current workflow へ集約し、review board を current workflow で新規 capture して Apple review に使ってよい |
+| 「visual TC と dismiss/keyboard 確認に同じ `TC-ID` を使ってよい」 | **`TC-*` と `NV-*`/automated を分離** | screenshot coverage と narrative が別シナリオを同じ ID で指し始めると、未実施誤判定や Phase 12 誤記録を生む |
 | 「related unassigned row を completed 実績へ移した後も `verify-unassigned-links` の total は据え置きでよい」 | **exact count 再取得が必須** | related UT の移動で `existing/total` は変わる。row 移動後に `verify-unassigned-links` を再実行し、`task-workflow.md` / `spec-update-summary.md` / `unassigned-task-detection.md` / workflow spec へ同値転記する |
 | 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** | `channels.ts` / `skillCreatorHandlers.ts` と `api-ipc-agent.md` / `interfaces-agent-sdk-skill.md` / `architecture-overview.md` のチャンネル数を一致させる |
 | 「topic-map.mdは変更なし」               | **再生成が必要** | 仕様書にセクション追加・**削除**・**更新**・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
@@ -265,7 +234,7 @@ Phase 12 Task 2実行時に以下をチェックし、該当する場合は**必
 - [ ] IPC transport contract を更新した場合、`references/ipc-contract-checklist.md` と `indexes/quick-reference.md` の両方を確認した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
 - [ ] `git diff --stat origin/main...HEAD` と `git diff --stat HEAD` の両方を確認し、branch差分とcurrent worktree差分を区別して記録した
-- [ ] `node .agents/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
+- [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow <workflow-path> --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致している
 - [ ] `rg -n 'ステータス\\s*\\|\\s*pending' <workflow-path>/phase-{1,2,3,4,5,6,7,8,9,10,11}-*.md` を実行し、completed 扱いの Phase 本文に stale が残っていない
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に `spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が存在する
@@ -350,7 +319,7 @@ topic-map.md に新規セクションエントリを追加（下記参照）
 - [ ] `docs/30-workflows/completed-tasks/unassigned-task/` 配下に未完了指示書（`未実施`/`未着手`）が混在していないことを確認した
 - [ ] `task-workflow.md` の残課題（未タスク）テーブルに新規未タスクを登録した
 - [ ] 関連仕様書（`interfaces-agent-sdk-history.md`、`task-workflow.md`、該当する `interfaces-*.md`）の残課題テーブルに新規未タスクを登録した
-- [ ] `node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
+- [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`ALL_LINKS_EXIST` を確認した
 - [ ] `audit-unassigned-tasks.js --json --diff-from <ref> --target-file <path>` または `--diff-from <ref>` の `currentViolations.total` を記録した
 - [ ] scope未指定の `audit-unassigned-tasks.js --json` を baseline 監視結果として併記した
 - [ ] ⚠️ 検出レポート作成だけでなく、指示書作成+テーブル登録まで完了すること
@@ -379,7 +348,7 @@ Phase 12 Task 2 の更新後は、以下を**この順序で**実行する。
 #### 1. 未タスク参照リンク検証
 
 ```bash
-node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 ```
 
 - 正常時: `ALL_LINKS_EXIST` が出力され、exit code 0
@@ -389,7 +358,7 @@ node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 ```bash
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
-node .agents/skills/task-specification-creator/scripts/generate-index.js
+node .claude/skills/task-specification-creator/scripts/generate-index.js
 git diff --stat -- .claude/skills/*/indexes/topic-map.md .claude/skills/*/indexes/keywords.json
 ```
 
@@ -550,21 +519,21 @@ comm -3 \
 
 ```bash
 # 1) 全体監査（既存違反を含む）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
 
 # 1.5) 対象ファイル監査（今回差分の current を抽出）
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
   --diff-from HEAD \
   --target-file docs/30-workflows/unassigned-task/<task>.md | \
   jq '{scope, current_total: .currentViolations.total, baseline_total: .baselineViolations.total}'
 
 # 2) 今回差分の候補抽出（変更範囲を指定）
-node .agents/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
+node .claude/skills/task-specification-creator/scripts/detect-unassigned-tasks.js \
   --scan docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001 \
   --output docs/30-workflows/completed-tasks/ut-imp-aiworkflow-spec-reference-sync-001/outputs/phase-12/.tmp-unassigned-candidates.json
 
 # 3) Phase出力構造の整合確認（位置引数）
-node .agents/skills/task-specification-creator/scripts/validate-phase-output.js \
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   docs/30-workflows/<workflow-dir>
 ```
 
@@ -904,6 +873,10 @@ grep -rn "permission-tool-icons" references/
 | ドキュメント更新履歴テンプレート | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` |
 
 ---
+- [phase-12-documentation-guide.md](phase-12-documentation-guide.md)
+- [phase12-checklist-definition.md](phase12-checklist-definition.md)
+- [technical-documentation-guide.md](technical-documentation-guide.md)
+- [patterns-phase12-sync.md](patterns-phase12-sync.md)
 
 ## 変更履歴
 
@@ -914,3 +887,5 @@ grep -rn "permission-tool-icons" references/
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: `quick_validate.js` 手動検証の再現性確認手順を Phase 11/12 の運用実績に合わせて再確認し、曖昧語（「など」表記へ統一）を調整して機械判定の一貫性を向上 |
+| --- | --- |
+| 2026-03-12 | Step 1 / Step 2 / validation の 3 ファイルへ責務分離 |

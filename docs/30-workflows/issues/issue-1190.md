@@ -12,7 +12,7 @@ scale: 小規模
 status: 未実施
 source_phase: Phase 11, Phase 12
 created_date: 2026-03-13
-spec_path: docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md
+spec_path: docs/30-workflows/completed-tasks/task-061-ui-09-onboarding-wizard/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md
 ```
 
 ## 背景

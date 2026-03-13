@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { parse as parseYaml } from "yaml";
+import {
+  createStructuredPreviewParseError,
+  getPreviewErrorHeading,
+  type PreviewSurfaceError,
+} from "../../utils/previewResilience";
 import { HtmlPreview } from "./HtmlPreview";
 import { ImagePreview } from "./ImagePreview";
 import { MarkdownPreview } from "./MarkdownPreview";
@@ -21,7 +26,7 @@ export interface PreviewPanelProps {
   content: string;
   size: number | null;
   isLoading: boolean;
-  error: string | null;
+  error: PreviewSurfaceError | null;
   onRefresh: () => void;
   onOpenEditor: () => void;
 }
@@ -29,7 +34,7 @@ export interface PreviewPanelProps {
 interface StructuredResult {
   formatted: string;
   format: "json" | "yaml";
-  error: string | null;
+  error: PreviewSurfaceError | null;
 }
 
 function formatStructuredContent(
@@ -54,10 +59,11 @@ function formatStructuredContent(
     return {
       formatted: "",
       format: extension === ".json" ? "json" : "yaml",
-      error:
+      error: createStructuredPreviewParseError(
         error instanceof Error
           ? `Structured preview failed: ${error.message}`
           : "Structured preview failed",
+      ),
     };
   }
 }
@@ -124,13 +130,16 @@ export function PreviewPanel({
           data-testid="preview-alert"
         >
           <p className="text-sm font-semibold text-[var(--status-error)]">
-            プレビューの取得に失敗しました
+            {getPreviewErrorHeading(error)}
           </p>
-          <p className="text-xs text-[var(--text-secondary)]">{error}</p>
+          <p className="text-xs text-[var(--text-secondary)]">
+            {error.summary}
+          </p>
+          <p className="text-xs text-[var(--text-secondary)]">{error.detail}</p>
           <div className="flex gap-2">
             <button
               type="button"
-              className="rounded-full border border-[var(--border-subtle)] px-3 py-1 text-xs text-[var(--text-secondary)]"
+              className="rounded-full bg-[var(--status-primary)] px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-90"
               onClick={onRefresh}
               data-testid="preview-retry"
             >
@@ -158,10 +167,10 @@ export function PreviewPanel({
             data-testid="preview-structured-fallback-alert"
           >
             <p className="text-sm font-semibold text-[var(--status-error)]">
-              整形プレビューに失敗したため、コード表示に切り替えました
+              {getPreviewErrorHeading(structuredError)}
             </p>
             <p className="mt-1 text-xs text-[var(--text-secondary)]">
-              {structuredError}
+              {structuredError.detail}
             </p>
           </div>
           <div className="min-h-0 flex-1">

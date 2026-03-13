@@ -53,6 +53,110 @@
 | 関連ドキュメント   | 参照先一覧                     |
 | 変更履歴           | 直近の変更のみ                 |
 
+## 2026-03 line budget reform 標準パターン
+
+`TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` で確立した、aiworkflow skill 向けの実運用標準。
+大規模仕様書は「1ファイルを割る」のではなく、「family-wave で入口・履歴・mirror まで一緒に閉じる」前提で扱う。
+
+### family-wave 実行ルール
+
+| ルール | 意図 |
+| --- | --- |
+| 1 lane / 1 wave あたり 3ファイル以下 | エージェントの責務を小さく保ち、diff の衝突を減らす |
+| parent / child / history / archive / discovery を同一 wave で閉じる | 入口切れと orphan shard を防ぐ |
+| `.claude` を正本に固定し、`.agents` は最後に mirror sync する | mirror drift を防ぐ |
+| Wave 1 の validator 完了前に次 wave へ進まない | 依存崩れを早期に止める |
+
+### parent / companion の必須セット
+
+| 種別 | 必須要素 | 目的 |
+| --- | --- | --- |
+| parent index | 概要、仕様書インデックス、利用順序、関連ドキュメント | 読み始めの入口を 1 つに固定する |
+| detail companion | `core` / `details` / `advanced` / domain-specific child | 過大な H2/H3 セクションを外出しする |
+| history companion | `history` / `completed-*` / `lessons-*` | 実装履歴と運用知見を本文から分離する |
+| archive companion | `logs-archive-*` などの月次/保管用途 | 現在の読み物と保管ログを切り分ける |
+| discovery entry | `quick-reference.md` / `resource-map.md` | 新しい parent へ最短で到達できるようにする |
+
+### 分類先行ルール
+
+rename は命名作業ではなく、**責務分類の確定結果**として行う。
+次の順序を踏まずに `-a` / `-b` を semantic filename へ置き換えない。
+
+| 手順 | 判定内容 | 例 |
+| --- | --- | --- |
+| 1. file type を確定する | `core` / `details` / `advanced` / `reference` / `history` / `archive` のどれか | `task-workflow-completed-*` は `history`、`logs-archive-*` は `archive` |
+| 2. primary concern を 1 つ決める | surface / capability / contract / failure-mode / lifecycle stage / platform / audit gate / period | `safeInvoke timeout`, `skill import`, `phase12 audit`, `2026-03 ui` |
+| 3. concern が 2 つ以上あるか確認する | 2 つ以上なら rename 前に再分割する | `permissionHistory + lifecycle integration` はそのまま rename しない |
+| 4. parent との依存を言語化する | 親から見た読む順番と責務差を固定する | `task-workflow` 親から `completed-ipc-contracts` を読む |
+| 5. semantic filename を付ける | `{parent}-{primary-concern}-{role}.md` を基本形にする | `lessons-learned-auth-ipc-timeout.md` |
+
+### ファイル命名ポリシー
+
+`-a` / `-b` / `-1` / `-2` のような順序 suffix ではなく、**責務が名前から読める semantic filename** を使う。
+分割は「量で割る」のではなく「関心ごとで割る」が原則。
+
+| ルール | 採用例 | 避ける例 |
+| --- | --- | --- |
+| 役割を suffix で表す | `interfaces-agent-sdk-skill-core.md`, `ui-ux-settings-history.md` | `interfaces-agent-sdk-skill-a.md` |
+| 領域差は concern を名前に出す | `lessons-learned-ui-navigation.md`, `lessons-learned-ui-feedback.md` | `lessons-learned-ui-agent-view-nav-notification-history.md`, `lessons-learned-ui-skill-center-editor-dashboard.md` |
+| 台帳や完了記録は domain / scope を名前に出す | `task-workflow-completed-desktop.md`, `task-workflow-completed-integration.md` | `task-workflow-completed-workspace-chat-lifecycle-tests.md` |
+| reference 補助資料は topic を名前に出す | `arch-state-management-reference-selectors.md` | `arch-state-management-reference-permissions-import-lifecycle.md` |
+| archive は period や retention を名前に出す | `logs-archive-2026-03-auth.md`, `logs-archive-legacy.md` | `logs-archive-a.md` |
+
+### 禁止パターン
+
+| 禁止 | 理由 |
+| --- | --- |
+| `-a` / `-b` / `-c` のような連番 suffix | 責務がファイル名から分からず、検索・引用・レビューが弱くなる |
+| `-part1` / `-part2` のような量基準分割 | 次の分割時に意味境界が壊れる |
+| parent と child の責務差が名前に出ない分割 | 依存関係と読む順番が曖昧になる |
+
+### 旧連番 filename migration の扱い
+
+2026-03-13 時点で `references/` 配下の旧 `-a` / `-b` 系ファイルは semantic filename へ移行済み。
+今後は**新規作成で使わない**だけでなく、旧 citation や旧 workflow 出力を見つけたら `legacy-ordinal-family-register.md` で current filename へ引き直す。
+
+例:
+
+- `lessons-learned-ui-agent-view-nav-notification-history.md` / `lessons-learned-ui-skill-center-editor-dashboard.md` を増やさず、`lessons-learned-ui-navigation.md` / `lessons-learned-ui-dialogs.md` のように concern で切る
+- `task-workflow-completed-workspace-chat-lifecycle-tests.md` を増やさず、`task-workflow-completed-desktop.md` / `task-workflow-completed-workflow.md` のように scope で切る
+- `arch-state-management-reference-permissions-import-lifecycle.md` を増やさず、`arch-state-management-reference-selectors.md` / `arch-state-management-reference-navigation.md` のように用途で切る
+
+### legacy ordinal migration matrix（2026-03-13 適用済み）
+
+| family | old axis | semantic naming rule | current status |
+| --- | --- | --- | --- |
+| `lessons-learned-ui-*` | UI surface / user journey | `agent-view`, `global-nav`, `history-search`, `skill-center`, `dashboard` のように surface で切る | `migrated` |
+| `lessons-learned-auth-ipc-*` | contract / failure mode / registration type | `handler-registration`, `contract-bridge`, `preload-timeout`, `ipc-security`, `phase12-audit` のように失敗様式で切る | `migrated` |
+| `lessons-learned-skill-*` | skill lifecycle stage / capability | `skill-import`, `skill-create`, `skill-remove`, `skill-validation`, `skill-execute`, `skill-share-debug` のように capability で切る | `migrated` |
+| `lessons-learned-workflow-quality-*` | workflow gate / quality concern | `phase12-audit`, `ci-module-resolution`, `sdk-tests`, `line-budget-reform` のように gate で切る | `migrated` |
+| `task-workflow-completed-*` | delivery domain / verification lane | `completed-ui-workspace`, `completed-ipc-contracts`, `completed-skill-lifecycle`, `completed-quality-gates` のように lane で切る | `migrated` |
+| `logs-archive-YYYY-MM-*` | month + theme | `logs-archive-2026-03-system-spec-sync`, `logs-archive-2026-03-ui-workflows` のように period と theme を両方出す | `migrated` |
+| `arch-state-management-reference-*` | state concern / hardening concern | `reference-permissions-history`, `reference-skill-lifecycle`, `reference-persist-hardening`, `reference-test-quality-gate` のように store concern で切る | `migrated` |
+| `architecture-implementation-patterns-reference-*` | pattern family / audit family | `reference-ipc-contract-audits`, `reference-agent-view-surface`, `reference-fallback-validation` のように pattern family で切る | `migrated` |
+| `interfaces-agent-sdk-skill-reference-*` | skill capability set | `reference-share-debug`, `reference-doc-generation-analytics` のように capability cluster で切る | `migrated` |
+| `interfaces-agent-sdk-skill-history-*` | completed task bundle / changelog | `history-completed-contract-fixes`, `history-change-log` のように history type を名前に出す | `migrated` |
+| `interfaces-agent-sdk-history-history-*` | timeline / changelog | `history-completed-timeline`, `history-doc-links-change-log` のように history content で切る | `migrated` |
+| `ui-ux-feature-components-reference-*` | UI surface cluster / feature history | `reference-organisms-foundation`, `reference-history-notification-surfaces` のように surface cluster で切る | `migrated` |
+
+### generated artifact の扱い
+
+| 対象 | 取り扱い | 理由 |
+| --- | --- | --- |
+| manual docs | patch + line budget 監査の対象 | 人手で責務分割できるため |
+| `topic-map.md` / `keywords.json` | `generate-index.js` 再生成を正本とし、手編集しない | generator 由来の差分を壊さないため |
+| oversized generated artifact | 親タスクでは状態記録まで、恒久対応は未タスク化 | docs-only task と script task の責務を分けるため |
+
+### close-out チェックリスト
+
+1. `validate-structure.js` と raw `wc -l` で manual docs の over-limit を確認する。
+2. `generate-index.js` を再実行し、generated artifact を最新化する。
+3. `diff -qr .claude ... .agents ...` で mirror parity を確認する。
+4. `current` / `baseline`、`manual` / `generated`、`links` / `phase outputs` / `validator` を別々に記録する。
+5. workflow outputs、`SKILL.md`、`LOGS.md`、`task-workflow`、`lessons-learned` を final state へ同一ターンで同期する。
+6. rename の前に family ごとの classification matrix を作成したか確認する。
+7. 新規 split filename に `-a` / `-b` / `-1` / `-2` が混入していないことを確認する。
+
 ### 分割ファイルの必須セクション
 
 | セクション       | 内容                   |

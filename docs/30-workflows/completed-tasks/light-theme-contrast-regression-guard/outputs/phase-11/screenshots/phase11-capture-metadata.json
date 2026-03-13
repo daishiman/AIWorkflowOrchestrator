@@ -1,15 +1,16 @@
 {
-  "generatedAt": "2026-03-11T22:27:29.269Z",
+  "generatedAt": "2026-03-13T13:20:57.763Z",
   "baseUrl": "http://127.0.0.1:4173",
   "viewport": {
     "width": 1440,
     "height": 960
   },
   "assetEntries": [
-    "globals-DHvT_oEb.css",
-    "globals-FyoUcilx.js",
-    "index-D3KPKqJb.js",
-    "phase11-light-theme-contrast-guard-DMr9deGI.js"
+    "globals-CJB4WMp2.css",
+    "globals-IaKyG58y.js",
+    "index-Dlqwsw9l.js",
+    "index-Dva6RS17.css",
+    "phase11-light-theme-contrast-guard-DESHccGv.js"
   ],
   "scenarios": [
     {
@@ -19,13 +20,14 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=settings&theme=light",
       "selector": "[data-testid=\"settings-view\"]",
       "output": "screenshots/TC-11-01-settings-light.png",
-      "capturedAt": "2026-03-11T22:27:30.858Z",
+      "capturedAt": "2026-03-13T13:20:59.517Z",
       "size": 195608,
       "assetEntries": [
-        "globals-DHvT_oEb.css",
-        "globals-FyoUcilx.js",
-        "index-D3KPKqJb.js",
-        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+        "globals-CJB4WMp2.css",
+        "globals-IaKyG58y.js",
+        "index-Dlqwsw9l.js",
+        "index-Dva6RS17.css",
+        "phase11-light-theme-contrast-guard-DESHccGv.js"
       ]
     },
     {
@@ -35,13 +37,14 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=light",
       "selector": "[data-testid=\"dashboard-view\"]",
       "output": "screenshots/TC-11-02-dashboard-light.png",
-      "capturedAt": "2026-03-11T22:27:32.262Z",
-      "size": 244443,
+      "capturedAt": "2026-03-13T13:21:00.876Z",
+      "size": 243152,
       "assetEntries": [
-        "globals-DHvT_oEb.css",
-        "globals-FyoUcilx.js",
-        "index-D3KPKqJb.js",
-        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+        "globals-CJB4WMp2.css",
+        "globals-IaKyG58y.js",
+        "index-Dlqwsw9l.js",
+        "index-Dva6RS17.css",
+        "phase11-light-theme-contrast-guard-DESHccGv.js"
       ]
     },
     {
@@ -51,13 +54,14 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=auth&theme=light",
       "selector": "[data-testid=\"auth-view-panel\"]",
       "output": "screenshots/TC-11-03-auth-light.png",
-      "capturedAt": "2026-03-11T22:27:33.502Z",
+      "capturedAt": "2026-03-13T13:21:02.191Z",
       "size": 18686,
       "assetEntries": [
-        "globals-DHvT_oEb.css",
-        "globals-FyoUcilx.js",
-        "index-D3KPKqJb.js",
-        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+        "globals-CJB4WMp2.css",
+        "globals-IaKyG58y.js",
+        "index-Dlqwsw9l.js",
+        "index-Dva6RS17.css",
+        "phase11-light-theme-contrast-guard-DESHccGv.js"
       ]
     },
     {
@@ -67,13 +71,14 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=workspace-search&theme=light",
       "selector": "[data-testid=\"workspace-search-panel\"]",
       "output": "screenshots/TC-11-04-workspace-search-light.png",
-      "capturedAt": "2026-03-11T22:27:34.771Z",
-      "size": 26603,
+      "capturedAt": "2026-03-13T13:21:03.568Z",
+      "size": 26599,
       "assetEntries": [
-        "globals-DHvT_oEb.css",
-        "globals-FyoUcilx.js",
-        "index-D3KPKqJb.js",
-        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+        "globals-CJB4WMp2.css",
+        "globals-IaKyG58y.js",
+        "index-Dlqwsw9l.js",
+        "index-Dva6RS17.css",
+        "phase11-light-theme-contrast-guard-DESHccGv.js"
       ]
     },
     {
@@ -83,13 +88,14 @@
       "route": "/phase11-light-theme-contrast-guard.html?surface=dashboard&theme=dark",
       "selector": "[data-testid=\"dashboard-view\"]",
       "output": "screenshots/TC-11-05-dashboard-dark-baseline.png",
-      "capturedAt": "2026-03-11T22:27:36.197Z",
-      "size": 250170,
+      "capturedAt": "2026-03-13T13:21:05.018Z",
+      "size": 248846,
       "assetEntries": [
-        "globals-DHvT_oEb.css",
-        "globals-FyoUcilx.js",
-        "index-D3KPKqJb.js",
-        "phase11-light-theme-contrast-guard-DMr9deGI.js"
+        "globals-CJB4WMp2.css",
+        "globals-IaKyG58y.js",
+        "index-Dlqwsw9l.js",
+        "index-Dva6RS17.css",
+        "phase11-light-theme-contrast-guard-DESHccGv.js"
       ]
     }
   ]
