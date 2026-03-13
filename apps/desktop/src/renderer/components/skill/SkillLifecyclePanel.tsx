@@ -1,29 +1,17 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import {
-  useAnalyzeSkill,
-  useAppStore,
   useClearSkillError,
-  useClearSkillEvaluation,
   useClearStreamingMessages,
   useCreateSkill,
-  useEvaluateDraft,
-  useEvaluatePostCreate,
-  useEvaluatePostExecute,
   useExecuteSkill,
   useIsSkillExecuting,
-  useIsLifecycleEvaluating,
-  useLatestEvaluationSnapshot,
-  useLatestGateDecision,
-  useLatestPromptRequest,
   useSelectedSkillName,
   useSelectSkillByName,
-  useSkillEvaluationError,
   useSkillError,
   useSkillExecutionStatus,
   useStreamingMessages,
 } from "../../store";
 import { SkillAnalysisView } from "./SkillAnalysisView";
-import { SkillEvaluationPanel } from "./SkillEvaluationPanel";
 import { SkillStreamingView } from "./SkillStreamingView";
 
 type SkillCreatorMode =
@@ -153,22 +141,12 @@ export function SkillLifecyclePanel({
   onOpenWizard,
 }: SkillLifecyclePanelProps) {
   const createSkill = useCreateSkill();
-  const analyzeSkill = useAnalyzeSkill();
   const executeSkill = useExecuteSkill();
-  const evaluateDraft = useEvaluateDraft();
-  const evaluatePostCreate = useEvaluatePostCreate();
-  const evaluatePostExecute = useEvaluatePostExecute();
   const selectSkillByName = useSelectSkillByName();
   const clearSkillError = useClearSkillError();
-  const clearSkillEvaluation = useClearSkillEvaluation();
   const clearStreamingMessages = useClearStreamingMessages();
   const selectedSkillName = useSelectedSkillName();
   const isExecuting = useIsSkillExecuting();
-  const isLifecycleEvaluating = useIsLifecycleEvaluating();
-  const latestGateDecision = useLatestGateDecision();
-  const latestEvaluationSnapshot = useLatestEvaluationSnapshot();
-  const latestPromptRequest = useLatestPromptRequest();
-  const skillEvaluationError = useSkillEvaluationError();
   const streamingMessages = useStreamingMessages();
   const skillExecutionStatus = useSkillExecutionStatus();
   const skillError = useSkillError();
@@ -200,7 +178,6 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
-  const lastPostExecuteStatus = useRef<SkillExecutionStatusValue>(null);
 
   useEffect(() => {
     if (skillExecutionStatus === previousStatus.current) {
@@ -236,7 +213,6 @@ export function SkillLifecyclePanel({
     }
 
     clearSkillError();
-    clearSkillEvaluation();
     setLocalError(null);
     setIsPreparing(true);
 
@@ -247,7 +223,6 @@ export function SkillLifecyclePanel({
     });
 
     try {
-      const draftDecision = await evaluateDraft(trimmedRequest);
       const skillCreatorApi = getSkillCreatorApi();
       if (!skillCreatorApi?.detectMode) {
         setDetectedMode("create");
@@ -257,13 +232,6 @@ export function SkillLifecyclePanel({
           detail:
             "mode 判定 API が見つからないため、既存の作成導線を優先して進めます。必要なら詳細ウィザードで細かく調整できます。",
         });
-        if (draftDecision) {
-          appendSessionEntry(setSessionEntries, {
-            role: "assistant",
-            title: "依頼文の品質ゲート",
-            detail: `${draftDecision.summary} 現在スコア ${draftDecision.totalScore}。`,
-          });
-        }
         return;
       }
 
@@ -279,13 +247,6 @@ export function SkillLifecyclePanel({
         detail:
           "表向きの導線はこのまま維持しつつ、内部では必要な計画・実行・改善の役割だけを使い分けます。",
       });
-      if (draftDecision) {
-        appendSessionEntry(setSessionEntries, {
-          role: "assistant",
-          title: "依頼文の品質ゲート",
-          detail: `${draftDecision.summary} 現在スコア ${draftDecision.totalScore}。`,
-        });
-      }
     } catch (error) {
       setLocalError(
         error instanceof Error ? error.message : "mode 判定に失敗しました。",
@@ -317,7 +278,6 @@ export function SkillLifecyclePanel({
       const nextSkillName = extractSkillNameFromPath(skillPath);
       if (nextSkillName) {
         selectSkillByName(nextSkillName);
-        await analyzeSkill(nextSkillName);
       }
 
       setCreatedSkillPath(skillPath);
@@ -333,21 +293,6 @@ export function SkillLifecyclePanel({
           ? `${nextSkillName} を作成しました。次はそのまま実行して挙動を確認できます。`
           : `生成先: ${skillPath}`,
       });
-      const currentAnalysis = useAppStore.getState().currentAnalysis;
-      if (nextSkillName && currentAnalysis) {
-        const createDecision = await evaluatePostCreate({
-          skillName: nextSkillName,
-          prompt: trimmedRequest,
-          skillAnalysis: currentAnalysis,
-        });
-        if (createDecision) {
-          appendSessionEntry(setSessionEntries, {
-            role: "assistant",
-            title: "作成直後の品質ゲート",
-            detail: `${createDecision.summary} 現在スコア ${createDecision.totalScore}。`,
-          });
-        }
-      }
     } catch (error) {
       setLocalError(
         error instanceof Error ? error.message : "スキル生成に失敗しました。",
@@ -373,7 +318,6 @@ export function SkillLifecyclePanel({
     setLocalError(null);
     setCreatorImproveResult(null);
     setShowDetailedAnalysis(false);
-    lastPostExecuteStatus.current = null;
 
     selectSkillByName(createdSkillName);
     appendSessionEntry(setSessionEntries, {
@@ -446,52 +390,7 @@ export function SkillLifecyclePanel({
     }
   };
 
-  useEffect(() => {
-    const hasReachedTerminalState =
-      skillExecutionStatus === "completed" ||
-      skillExecutionStatus === "error" ||
-      skillExecutionStatus === "cancelled";
-
-    if (!createdSkillName || !hasReachedTerminalState) {
-      return;
-    }
-    if (lastPostExecuteStatus.current === skillExecutionStatus) {
-      return;
-    }
-
-    const prompt = latestPromptRequest ?? request.trim();
-    if (!prompt) {
-      return;
-    }
-
-    const skillAnalysis = useAppStore.getState().currentAnalysis;
-    void evaluatePostExecute({
-      skillName: createdSkillName,
-      prompt,
-      skillAnalysis,
-      status: skillExecutionStatus,
-      messages: streamingMessages,
-    }).then((decision) => {
-      lastPostExecuteStatus.current = skillExecutionStatus;
-      if (!decision) {
-        return;
-      }
-      appendSessionEntry(setSessionEntries, {
-        role: "assistant",
-        title: "実行後の品質ゲート",
-        detail: `${decision.summary} 現在スコア ${decision.totalScore}。`,
-      });
-    });
-  }, [
-    createdSkillName,
-    evaluatePostExecute,
-    latestPromptRequest,
-    request,
-    skillExecutionStatus,
-    streamingMessages,
-  ]);
-
-  const currentSurfaceError = localError ?? skillError ?? skillEvaluationError;
+  const currentSurfaceError = localError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
@@ -689,32 +588,6 @@ export function SkillLifecyclePanel({
                 />
               </div>
             ) : null}
-            {latestGateDecision ||
-            latestEvaluationSnapshot ||
-            skillEvaluationError ? (
-              <div className="mt-4">
-                <SkillEvaluationPanel
-                  decision={latestGateDecision}
-                  snapshot={latestEvaluationSnapshot}
-                  error={skillEvaluationError}
-                  isEvaluating={isLifecycleEvaluating}
-                  onReevaluate={
-                    createdSkillName && latestPromptRequest
-                      ? () =>
-                          void evaluatePostExecute({
-                            skillName: createdSkillName,
-                            prompt: latestPromptRequest,
-                            skillAnalysis:
-                              useAppStore.getState().currentAnalysis,
-                            status: skillExecutionStatus,
-                            messages: streamingMessages,
-                          })
-                      : undefined
-                  }
-                  title="利用面の品質ゲート"
-                />
-              </div>
-            ) : null}
           </div>
 
           <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -869,16 +742,6 @@ export function SkillLifecyclePanel({
                   {creatorImproveResult
                     ? `${creatorImproveResult.suggestions.length} 件の creator 改善候補を整理しました。`
                     : "creator 提案と詳細分析を段階的に使い分けます。"}
-                </p>
-              </div>
-              <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3">
-                <p className="font-medium text-[var(--text-primary)]">
-                  Evaluator
-                </p>
-                <p className="mt-1 text-[var(--text-secondary)]">
-                  {latestGateDecision
-                    ? `${latestGateDecision.status} / ${latestGateDecision.totalScore} 点で判定済みです。`
-                    : "依頼・作成・実行・改善の各節目で品質ゲートを計算します。"}
                 </p>
               </div>
             </div>

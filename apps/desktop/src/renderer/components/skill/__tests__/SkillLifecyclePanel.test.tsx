@@ -13,14 +13,9 @@ import {
 } from "@testing-library/react";
 
 const mockCreateSkill = vi.fn();
-const mockAnalyzeSkill = vi.fn();
 const mockExecuteSkill = vi.fn();
-const mockEvaluateDraft = vi.fn();
-const mockEvaluatePostCreate = vi.fn();
-const mockEvaluatePostExecute = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockClearSkillError = vi.fn();
-const mockClearSkillEvaluation = vi.fn();
 const mockClearStreamingMessages = vi.fn();
 
 type MockStoreState = {
@@ -40,29 +35,6 @@ type MockStoreState = {
     | "error"
     | null;
   skillError: string | null;
-  latestGateDecision: {
-    status: string;
-    totalScore: number;
-    summary: string;
-    nextSurface: string;
-    stage: string;
-    blockingIssues: string[];
-    recommended: boolean;
-  } | null;
-  latestEvaluationSnapshot: {
-    stage: string;
-    deltaFromPrevious?: number;
-  } | null;
-  skillEvaluationError: string | null;
-  isLifecycleEvaluating: boolean;
-  currentAnalysis: {
-    overallScore: number;
-    categories: [];
-    suggestions: [];
-    risks: [];
-    skillName: string;
-  } | null;
-  latestPromptRequest: string | null;
 };
 
 let mockStoreState: MockStoreState = {
@@ -71,41 +43,14 @@ let mockStoreState: MockStoreState = {
   streamingMessages: [],
   skillExecutionStatus: null,
   skillError: null,
-  latestGateDecision: null,
-  latestEvaluationSnapshot: null,
-  skillEvaluationError: null,
-  isLifecycleEvaluating: false,
-  currentAnalysis: {
-    overallScore: 72,
-    categories: [],
-    suggestions: [],
-    risks: [],
-    skillName: "lifecycle-skill",
-  },
-  latestPromptRequest: null,
 };
 
 vi.mock("../../../store", () => ({
-  useAppStore: {
-    getState: () => ({
-      currentAnalysis: mockStoreState.currentAnalysis,
-    }),
-  },
-  useAnalyzeSkill: () => mockAnalyzeSkill,
   useCreateSkill: () => mockCreateSkill,
   useExecuteSkill: () => mockExecuteSkill,
-  useEvaluateDraft: () => mockEvaluateDraft,
-  useEvaluatePostCreate: () => mockEvaluatePostCreate,
-  useEvaluatePostExecute: () => mockEvaluatePostExecute,
   useSelectSkillByName: () => mockSelectSkillByName,
   useClearSkillError: () => mockClearSkillError,
-  useClearSkillEvaluation: () => mockClearSkillEvaluation,
   useClearStreamingMessages: () => mockClearStreamingMessages,
-  useIsLifecycleEvaluating: () => mockStoreState.isLifecycleEvaluating,
-  useLatestGateDecision: () => mockStoreState.latestGateDecision,
-  useLatestEvaluationSnapshot: () => mockStoreState.latestEvaluationSnapshot,
-  useLatestPromptRequest: () => mockStoreState.latestPromptRequest,
-  useSkillEvaluationError: () => mockStoreState.skillEvaluationError,
   useSelectedSkillName: () => mockStoreState.selectedSkillName,
   useIsSkillExecuting: () => mockStoreState.isExecuting,
   useStreamingMessages: () => mockStoreState.streamingMessages,
@@ -144,18 +89,6 @@ beforeEach(() => {
     streamingMessages: [],
     skillExecutionStatus: null,
     skillError: null,
-    latestGateDecision: null,
-    latestEvaluationSnapshot: null,
-    skillEvaluationError: null,
-    isLifecycleEvaluating: false,
-    currentAnalysis: {
-      overallScore: 72,
-      categories: [],
-      suggestions: [],
-      risks: [],
-      skillName: "lifecycle-skill",
-    },
-    latestPromptRequest: null,
   };
 
   (
@@ -210,35 +143,7 @@ beforeEach(() => {
   };
 
   mockCreateSkill.mockResolvedValue("/skills/lifecycle-skill");
-  mockAnalyzeSkill.mockResolvedValue(undefined);
   mockExecuteSkill.mockResolvedValue(undefined);
-  mockEvaluateDraft.mockResolvedValue({
-    status: "use_ready",
-    totalScore: 84,
-    summary: "品質ゲートを通過しました。利用に進めます。",
-    nextSurface: "workspace",
-    stage: "draft",
-    blockingIssues: [],
-    recommended: false,
-  });
-  mockEvaluatePostCreate.mockResolvedValue({
-    status: "save_with_warning",
-    totalScore: 72,
-    summary: "保存は可能ですが、改善余地が残っています。",
-    nextSurface: "skillCenter",
-    stage: "post_create",
-    blockingIssues: [],
-    recommended: false,
-  });
-  mockEvaluatePostExecute.mockResolvedValue({
-    status: "use_ready",
-    totalScore: 88,
-    summary: "品質ゲートを通過しました。利用に進めます。",
-    nextSurface: "agent",
-    stage: "post_execute",
-    blockingIssues: [],
-    recommended: false,
-  });
 });
 
 afterEach(() => {
@@ -260,9 +165,6 @@ describe("SkillLifecyclePanel", () => {
     });
 
     expect(window.electronAPI?.skillCreator?.detectMode).toHaveBeenCalledWith(
-      "レビューを自動化するスキルを作りたい",
-    );
-    expect(mockEvaluateDraft).toHaveBeenCalledWith(
       "レビューを自動化するスキルを作りたい",
     );
     expect(screen.getByTestId("skill-lifecycle-mode-label")).toHaveTextContent(
@@ -291,8 +193,6 @@ describe("SkillLifecyclePanel", () => {
         addReferences: false,
       },
     );
-    expect(mockAnalyzeSkill).toHaveBeenCalledWith("lifecycle-skill");
-    expect(mockEvaluatePostCreate).toHaveBeenCalled();
     expect(mockSelectSkillByName).toHaveBeenCalledWith("lifecycle-skill");
     expect(
       screen.getByTestId("skill-lifecycle-created-name"),

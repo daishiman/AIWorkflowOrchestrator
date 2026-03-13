@@ -25,6 +25,12 @@ import { usePanelResize } from "./hooks/usePanelResize";
 import { useQuickFileSearch } from "./hooks/useQuickFileSearch";
 import { useWorkspaceChatController } from "./hooks/useWorkspaceChatController";
 import {
+  createPreviewApiUnavailableError,
+  formatPreviewStatusText,
+  readPreviewFileWithResilience,
+  type PreviewSurfaceError,
+} from "./utils/previewResilience";
+import {
   DEFAULT_FILE_PANEL_WIDTH,
   DEFAULT_RESET_WIDTH,
   MAX_FILE_PANEL_WIDTH,
@@ -34,10 +40,6 @@ import {
   useWorkspaceLayout,
 } from "./hooks/useWorkspaceLayout";
 import { createSelectedFile } from "./workspaceFileSelection";
-
-const FILE_READ_TIMEOUT_MS = 5000;
-const FILE_READ_RETRY_DELAY_MS = 1000;
-const FILE_READ_MAX_RETRIES = 3;
 
 function flattenFilePaths(nodes: FileNode[]): string[] {
   const paths: string[] = [];
@@ -54,35 +56,6 @@ function flattenFilePaths(nodes: FileNode[]): string[] {
   }
 
   return paths;
-}
-
-function wait(ms: number): Promise<void> {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, ms);
-  });
-}
-
-async function readFileWithTimeout(filePath: string) {
-  let timeoutId: number | undefined;
-
-  try {
-    return await Promise.race([
-      window.electronAPI.file.read({ filePath }),
-      new Promise<never>((_, reject) => {
-        timeoutId = window.setTimeout(() => {
-          reject(
-            new Error(
-              `ファイル読み込みが ${FILE_READ_TIMEOUT_MS / 1000} 秒でタイムアウトしました`,
-            ),
-          );
-        }, FILE_READ_TIMEOUT_MS);
-      }),
-    ]);
-  } finally {
-    if (timeoutId !== undefined) {
-      window.clearTimeout(timeoutId);
-    }
-  }
 }
 
 export function WorkspaceView(): JSX.Element {
@@ -102,9 +75,8 @@ export function WorkspaceView(): JSX.Element {
   const [selectedFileExtension, setSelectedFileExtension] = useState<
     string | null
   >(null);
-  const [selectedFileError, setSelectedFileError] = useState<string | null>(
-    null,
-  );
+  const [selectedFileError, setSelectedFileError] =
+    useState<PreviewSurfaceError | null>(null);
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     new Set(),
@@ -130,44 +102,30 @@ export function WorkspaceView(): JSX.Element {
   const refreshSelectedFile = useCallback(async (filePath: string) => {
     if (!window.electronAPI?.file) {
       setIsFileLoading(false);
-      setSelectedFileError("file API が利用できません");
+      setSelectedFileError(createPreviewApiUnavailableError());
       return;
     }
 
     setIsFileLoading(true);
+    setSelectedFileContent("");
+    setSelectedFileSize(null);
+    setSelectedFileExtension(normalizeExtension(filePath));
     setSelectedFileError(null);
 
-    let lastError = "";
+    const result = await readPreviewFileWithResilience({
+      filePath,
+      readFile: window.electronAPI.file.read,
+    });
 
-    for (let attempt = 0; attempt < FILE_READ_MAX_RETRIES; attempt += 1) {
-      try {
-        const response = await readFileWithTimeout(filePath);
-
-        if (!response.success || !response.data) {
-          throw new Error(response.error ?? "file-read failed");
-        }
-
-        setSelectedFileContent(response.data.content);
-        setSelectedFileSize(response.data.metadata.size);
-        setSelectedFileExtension(normalizeExtension(filePath));
-        setSelectedFileError(null);
-        setIsFileLoading(false);
-        return;
-      } catch (error) {
-        lastError =
-          error instanceof Error
-            ? error.message
-            : "ファイル読み込みで不明なエラーが発生しました";
-
-        if (attempt < FILE_READ_MAX_RETRIES - 1) {
-          await wait(FILE_READ_RETRY_DELAY_MS);
-        }
-      }
+    if (result.success) {
+      setSelectedFileContent(result.data.content);
+      setSelectedFileSize(result.data.size);
+      setSelectedFileError(null);
+      setIsFileLoading(false);
+      return;
     }
 
-    setSelectedFileError(
-      `${lastError}（${FILE_READ_TIMEOUT_MS / 1000}秒 timeout / ${FILE_READ_MAX_RETRIES}回再試行済み）`,
-    );
+    setSelectedFileError(result.error);
     setIsFileLoading(false);
   }, []);
 
@@ -194,8 +152,16 @@ export function WorkspaceView(): JSX.Element {
         const response = await window.electronAPI.file.read({ filePath });
         if (!response.success || !response.data) {
           const errorMessage =
-            response.error ?? "背景情報の読み込みに失敗しました";
-          setSelectedFileError(errorMessage);
+            typeof response.error === "string"
+              ? response.error
+              : "背景情報の読み込みに失敗しました";
+          setSelectedFileError({
+            category: "transport",
+            code: "file-read-failure",
+            summary: "背景情報の読み込みに失敗しました",
+            detail: errorMessage,
+            retryable: false,
+          });
           return { success: false, errorMessage };
         }
 
@@ -213,7 +179,13 @@ export function WorkspaceView(): JSX.Element {
           error instanceof Error
             ? error.message
             : "背景情報の読み込みに失敗しました";
-        setSelectedFileError(errorMessage);
+        setSelectedFileError({
+          category: "transport",
+          code: "file-read-failure",
+          summary: "背景情報の読み込みに失敗しました",
+          detail: errorMessage,
+          retryable: false,
+        });
         return { success: false, errorMessage };
       }
     },
@@ -338,7 +310,11 @@ export function WorkspaceView(): JSX.Element {
             extension={selectedFileExtension}
             layoutMode={layout.layoutMode}
             watchState={watchState}
-            error={selectedFileError ?? watchError}
+            error={
+              selectedFileError
+                ? formatPreviewStatusText(selectedFileError)
+                : watchError
+            }
           />
         }
         showFilePanelInline={layout.showFilePanelInline}

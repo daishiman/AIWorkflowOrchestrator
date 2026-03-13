@@ -23,10 +23,6 @@ import {
   getScoreVariant,
 } from "../ScoreDisplay";
 import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
-import type {
-  LifecycleEvaluationSnapshot,
-  LifecycleGateDecision,
-} from "@repo/shared/types";
 
 // ============================================
 // Test Suite
@@ -181,41 +177,6 @@ describe("ScoreDisplay", () => {
     expect(secondBar).toHaveAttribute("aria-valuenow", "60");
     expect(secondBar).toHaveAttribute("aria-valuemin", "0");
     expect(secondBar).toHaveAttribute("aria-valuemax", "100");
-  });
-
-  it("gate badge と delta を表示できる", () => {
-    const decision: LifecycleGateDecision = {
-      stage: "post_improve",
-      status: "recommended",
-      nextSurface: "workspace",
-      summary: "改善効果が確認できたため推奨利用に進めます。",
-      blockingIssues: [],
-      totalScore: 91,
-      recommended: true,
-    };
-    const snapshot: LifecycleEvaluationSnapshot = {
-      skillName: "test-skill",
-      stage: "post_improve",
-      totalScore: 91,
-      hardBlocks: [],
-      deltaFromPrevious: 12,
-      createdAt: "2026-03-12T00:00:00.000Z",
-    };
-
-    render(
-      <ScoreDisplay
-        analysis={defaultAnalysis}
-        gateDecision={decision}
-        snapshot={snapshot}
-      />,
-    );
-
-    expect(screen.getByTestId("score-display-gate-badge")).toHaveTextContent(
-      "推奨",
-    );
-    expect(screen.getByTestId("score-display-gate-delta")).toHaveTextContent(
-      "+12",
-    );
   });
 
   // ============================================

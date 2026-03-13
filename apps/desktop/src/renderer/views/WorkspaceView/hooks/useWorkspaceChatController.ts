@@ -333,6 +333,7 @@ export function useWorkspaceChatController(params: {
       throw new Error(message);
     }
 
+    conversationIdRef.current = response.data.id;
     setConversationId(response.data.id);
     return response.data.id;
   }, [input]);

@@ -162,11 +162,11 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 #### 同種課題の5分解決カード
 
-1. 一次導線と画面責務は `skillLifecycleJourney.ts` のような契約正本へまとめる。
-2. domain UI spec は「入口」「destination surface」「例外」を 1 画面設計として書く。
-3. legacy alias は shell で canonical 化し、仕様書・テスト・UI 表示の正本値を 1 つに固定する。
-4. representative screenshot は route 全景ではなく、責務境界が読める要素 capture を優先する。
-5. Phase 12 では `ui-ux-navigation` / `task-workflow` / `lessons-learned` を同一ターンで同期する。
+1. 一次導線と画面責務は `skillLifecycleJourney.ts` のような契約正本へまとめる。  
+2. domain UI spec は「入口」「destination surface」「例外」を 1 画面設計として書く。  
+3. legacy alias は shell で canonical 化し、仕様書・テスト・UI 表示の正本値を 1 つに固定する。  
+4. representative screenshot は route 全景ではなく、責務境界が読める要素 capture を優先する。  
+5. Phase 12 では `ui-ux-navigation` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
 
 ### Settings 公開シェル到達性（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001）
 
@@ -238,11 +238,11 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. `navContract.ts` を導線正本にし、`AppLayout` / nav / shortcut / state の責務を先に分離する。
-2. `navigationSlice` は current view/history、`uiSlice` は nav UI state、`useNavShortcuts` は DOM 条件判定に限定する。
-3. rollback path は feature flag に閉じ、legacy/new の両導線で同じ契約と状態を参照させる。
-4. mobile は `mobileLabel` と `aria-label` を分離し、Phase 11 スクリーンショットで可読性を最終確認する。
-5. `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` と workflow 本文を同一ターンで同期する。
+1. `navContract.ts` を導線正本にし、`AppLayout` / nav / shortcut / state の責務を先に分離する。  
+2. `navigationSlice` は current view/history、`uiSlice` は nav UI state、`useNavShortcuts` は DOM 条件判定に限定する。  
+3. rollback path は feature flag に閉じ、legacy/new の両導線で同じ契約と状態を参照させる。  
+4. mobile は `mobileLabel` と `aria-label` を分離し、Phase 11 スクリーンショットで可読性を最終確認する。  
+5. `ui-ux-components` / `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` と workflow 本文を同一ターンで同期する。  
 
 ### 関連未タスク（2026-03-06 追補）
 
@@ -272,11 +272,11 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 #### 同種課題の5分解決カード（最短手順）
 
-1. `navContract.ts` を導線正本にし、UI側の重複定義を削除する。
-2. `meta/ctrl` 条件 + 編集要素除外 + `alt/shift` 抑止をセットで実装する。
-3. `TC-xx` と `screenshots/*.png` を1対1で管理し、coverage validator を必ず実行する。
-4. Step 2 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。
-5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` の結果と分岐（停止/再利用/別ポート）を成果物へ残し、必要時は未タスク化する。
+1. `navContract.ts` を導線正本にし、UI側の重複定義を削除する。  
+2. `meta/ctrl` 条件 + 編集要素除外 + `alt/shift` 抑止をセットで実装する。  
+3. `TC-xx` と `screenshots/*.png` を1対1で管理し、coverage validator を必ず実行する。  
+4. Step 2 で `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同一ターンで同期する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` の結果と分岐（停止/再利用/別ポート）を成果物へ残し、必要時は未タスク化する。  
 
 ---
 
@@ -381,50 +381,3 @@ ChatViewには履歴ページへの導線として、ヘッダー右上にナビ
 - [システムプロンプト設定UI](./ui-ux-system-prompt.md)
 - [LLM選択機能](./ui-ux-llm-selector.md)
 - [UI/UXパネル設計](./ui-ux-panels.md)
-
----
-
-## Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD）
-
-### 実装内容（要点）
-
-| 観点 | 内容 |
-| --- | --- |
-| 初回起動 | `onboarding.completed=false` の場合、通常画面の上に wizard overlay を表示する |
-| 完了後導線 | wizard 完了後は通常画面へ戻し、以後の自動再表示を抑止する |
-| rerun 導線 | Settings から rerun を選ぶと completed flag を reset し、dashboard 経由で overlay を再表示する |
-| keyboard | キーボード進行は手動 spot check を残し、visual TC とは分離して記録する |
-
-### 画面証跡
-
-| TC | 証跡 | 観点 |
-| --- | --- | --- |
-| TC-11-01 | `outputs/phase-11/screenshots/TC-11-01-desktop-step1-light.png` | 初回起動時の overlay |
-| TC-11-02 | `outputs/phase-11/screenshots/TC-11-02-tablet-step3-dark.png` | 中盤 step の navigation |
-| TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-mobile-step4-kanagawa.png` | mobile での最終 step |
-| TC-11-04 | `outputs/phase-11/screenshots/TC-11-04-settings-rerun-entry-dark.png` | Settings 内 rerun 入口 |
-| TC-11-05 | `outputs/phase-11/screenshots/TC-11-05-settings-rerun-triggered-dark.png` | rerun での overlay 再表示 |
-
-### 苦戦箇所（再発条件付き）
-
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| overlay と通常ナビゲーションの責務が混ざる | wizard を単なる modal として扱い、戻り先を曖昧にする | 「初回 overlay」「完了後通常画面」「Settings rerun」の3状態に分けて記録した |
-| coverage validator に必要な台帳形式が崩れる | `phase-11-manual-test.md` に matrix を置かずに screenshot だけ残す | `## 画面カバレッジマトリクス` を正本にした |
-| 非視覚 TC が visual matrix を汚染する | keyboard spot check を screenshot TC と同列に置く | 非視覚 TC は result 側へ分離した |
-| rerun card が埋もれる | overlay 再表示動作だけで navigation UX を完了扱いにする | discoverability は follow-up task に切り出した |
-
-### 同種課題の5分解決カード
-
-1. overlay UI は「表示条件」「完了後導線」「rerun 導線」を別行で書く。
-2. Phase 11 では visual TC と非視覚 TC を分離して管理する。
-3. screenshot coverage validator が要求する matrix 形式を先に揃える。
-4. rerun 動作確認と発見性評価を別の判断軸にする。
-5. navigation の変更は `ui-ux-settings` と同時に同期する。
-
-### 関連未タスク
-
-| 未タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| UT-IMP-ONBOARDING-TEST-HARDENING-GUARD-001 | screenshot / test hardening と warning 解消 | `docs/30-workflows/unassigned-task/task-imp-onboarding-test-hardening-guard-001.md` |
-| UT-IMP-SETTINGS-ONBOARDING-RERUN-DISCOVERABILITY-001 | rerun 入口の情報設計改善 | `docs/30-workflows/unassigned-task/task-imp-settings-onboarding-rerun-discoverability-001.md` |

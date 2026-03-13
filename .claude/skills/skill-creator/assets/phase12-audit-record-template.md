@@ -2,7 +2,7 @@
 
 ## 用途
 
-Phase 12 実施中に `audit-unassigned-tasks --diff-from HEAD` コマンドを実行した結果を、**current violations（本タスク新規）**と**baseline violations（既知の未解決）**に分離して記録するためのテンプレートです。
+Phase 12 実施中に `audit-unassigned-tasks --diff-from HEAD` と、必要に応じた `audit-unassigned-tasks --target-file ...` を実行した結果を、**current violations（本タスク新規）**と**baseline violations（既知の未解決）**に分離して記録するためのテンプレートです。
 
 これにより、本タスク範囲での検証と、将来の修正対象の明確化ができます。
 
@@ -18,7 +18,7 @@ Phase 12 実施中に `audit-unassigned-tasks --diff-from HEAD` コマンドを�
 | 実行者 | {{YOUR_NAME}} |
 | 実行環境 | {{OS_VERSION}} (Node.js {{NODE_VERSION}}) |
 | diff-from | HEAD（タスク着手時点） |
-| 実行コマンド | `pnpm audit-unassigned-tasks --diff-from HEAD` |
+| 実行コマンド | `pnpm audit-unassigned-tasks --diff-from HEAD`（必要時: `pnpm audit-unassigned-tasks --target-file <path>` を併記） |
 | 出力ファイル | {{output-filename.json}} |
 
 ### 実行環境確認コマンド
@@ -34,7 +34,7 @@ git rev-parse HEAD  # 着手時点のコミットハッシュ確認
 
 ## Current Violations（本タスク実施中に発生した新規違反）
 
-**定義**: `audit --diff-from HEAD` の実行結果で、`currentViolations` セクションに含まれる違反。  
+**定義**: `audit --diff-from HEAD` または placement に応じた `audit --target-file` の実行結果で、`currentViolations` セクションに含まれる違反。  
 本タスク実施中に新規に生成された仕様書・コードの不整合。
 
 ### 実行結果
@@ -106,7 +106,7 @@ git rev-parse HEAD  # 着手時点のコミットハッシュ確認
 
 - interfaces-agent.md に AgentConfig の新フィールドを追加
 - api-ipc-agent.md に 新規 IPC handler の仕様を追加
-- 修正後、再度 `audit-unassigned-tasks --diff-from HEAD` を実行
+- 修正後、再度 `audit-unassigned-tasks --diff-from HEAD` を実行し、必要なら `audit-unassigned-tasks --target-file <path>` も再実行
 
 **対応方法2**: 未タスク化（Phase 12 Task 4）
 
@@ -118,7 +118,7 @@ git rev-parse HEAD  # 着手時点のコミットハッシュ確認
 
 ## Baseline Violations（タスク着手前から存在する既知の違反）
 
-**定義**: `audit --diff-from HEAD` の実行結果で、`baselineViolations` セクションに含まれる違反。  
+**定義**: `audit --diff-from HEAD` または `audit --target-file <path>` の実行結果で、`baselineViolations` セクションに含まれる違反。  
 本タスク着手前から存在する、未解決の仕様・実装の乖離。
 
 ### 実行結果

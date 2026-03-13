@@ -668,22 +668,6 @@ Permission要求に対してユーザーの応答を送信する。
 
 **戻り値**: `Promise<RemoveResult>`
 
-##### evaluatePrompt
-
-Task04 quality gate 用の prompt 評価を取得する。
-
-| パラメータ | 型 | 必須 | 説明 |
-| ---------- | --- | ---- | ---- |
-| `prompt` | `string` | ✓ | 評価対象の依頼文 |
-
-**戻り値**: `Promise<PromptEvaluation>`
-
-**利用ルール**:
-
-- Renderer component からの直接呼び出しではなく、`skillEvaluationSlice` の action から利用する。
-- `skill:optimize:evaluate` の public preload ラッパーであり、戻り値は `PromptEvaluation` をそのまま返す。
-- Task04 では create / improve 前後の gate 判定の入力として使う。
-
 ---
 
 ### Permission型定義（TASK-3-1-D）
@@ -1501,27 +1485,6 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | Planner | `detectMode` | mode label と説明文のみ。新ボタンは増やさない |
 | Executor | `executeSkill` | 実行ボタン 1 つに集約する |
 | Improver | `improveSkill` + `SkillAnalysisView` | 事前提案と詳細適用を段階表示する |
-
-#### quality gate surface（TASK-SKILL-LIFECYCLE-04）
-
-| 項目 | 契約 |
-| --- | --- |
-| public preload | `window.electronAPI.skill.evaluatePrompt(prompt)` |
-| shared types | `ExecutionQualityEvaluation`, `LifecycleEvaluationSnapshot`, `LifecycleGateDecision`, `EvaluationStage`, `GateStatus` |
-| store 正本 | `skillEvaluationSlice.evaluateDraft/postCreate/postExecute/postImprove` |
-| renderer surface | `SkillEvaluationPanel`, `SkillLifecyclePanel`, `SkillAnalysisView`, `SkillCenterView` |
-| 表示ルール | Task03 と Task05 は同じ `LifecycleGateDecision` を読み、独自 gate 状態を持たない |
-
-#### shared export 境界
-
-- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` は Task04 の lifecycle quality 型を barrel export する。
-- public preload API を追加したが IPC チャネルは増えていないため、interface spec は preload method と shared export の両方を正本にする。
-
-#### 関連未タスク（2026-03-13 追補）
-
-| タスクID | 概要 | 指示書パス |
-| --- | --- | --- |
-| UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001 | Step 2 を IPC channel 追加ではなく public preload API / shared export 増分で判定し、`interfaces-agent-sdk-skill.md` 同期漏れを防ぐ | `docs/30-workflows/unassigned-task/task-imp-phase12-step2-public-contract-guard-001.md` |
 
 ---
 
@@ -2366,8 +2329,6 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
-| 2026-03-13 | 1.43.6     | TASK-SKILL-LIFECYCLE-04 follow-up の未タスク `UT-IMP-PHASE12-STEP2-PUBLIC-CONTRACT-GUARD-001` を追加。既存 IPC 再利用でも public preload API / shared export 増分があれば Step 2 必須とする再利用導線を Task04 節へ追記 |
-| 2026-03-12 | 1.43.5     | TASK-SKILL-LIFECYCLE-04 を反映: `window.electronAPI.skill.evaluatePrompt()` を Preload API に追加し、Task04 の quality gate surface、shared type export、store 経由利用ルールを同期 |
 | 2026-03-05 | 1.43.4     | SkillService/SkillExecutor DIフロー表を実装に同期。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ更新し、AuthKeyService注入経路を明示 |
 | 2026-03-04 | 1.43.3     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬と Renderer preflight（`auth-key:exists`）の境界を追加。完了タスク記録と苦戦箇所・再利用手順を追記 |
 | 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
