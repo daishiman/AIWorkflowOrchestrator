@@ -1,66 +1,33 @@
 # システム仕様更新ワークフロー
 
-> **Progressive Disclosure**
->
-> - 読み込みタイミング: Phase 12（ドキュメント更新）実行時
-> - 読み込み条件: Phase 12 Task 2実行時（必須）
-> - 関連スキル: aiworkflow-requirements
+> 読み込み条件:
+> Phase 12 Task 2 を開始する時。Step 1 と Step 2 を混同しないための index。
 
----
+## 2種類の更新アクション
 
-## ⚠️ 重要: 2種類の更新アクション
+| アクション | 必須 | 役割 | 詳細 |
+| --- | --- | --- | --- |
+| Step 1: 完了記録 | すべての task で必須 | workflow 完了と台帳の同期 | [spec-update-step1-completion.md](spec-update-step1-completion.md) |
+| Step 2: domain spec sync | 条件付き | interface / API / architecture 変更の反映 | [spec-update-step2-domain-sync.md](spec-update-step2-domain-sync.md) |
+| validation | 完了前に必須 | 4系統の validator と pass 基準 | [spec-update-validation-matrix.md](spec-update-validation-matrix.md) |
 
-Phase 12では以下の**2種類の更新アクション**があります。混同に注意してください。
+## 判断フロー
 
-| アクション               | 必須 | 条件                               | 更新内容                     |
-| ------------------------ | ---- | ---------------------------------- | ---------------------------- |
-| **タスク完了記録の追加** | ✅   | **全タスクで必須**                 | 完了セクションを仕様書に追加 |
-| **実装状況テーブル更新** | ✅   | **実装完了時は必須**（仕様書作成のみタスクは `spec_created` を適用） | 「未実装」→「完了 or spec_created」に変更 |
-| システム仕様の更新       | △    | インターフェース変更がある場合のみ | 仕様内容の変更               |
+1. まず Step 1-A〜1-G を完了する。
+2. 次に interface、API、state、security、UI contract の変更有無を判定する。
+3. Step 2 が不要でも、判断根拠を `documentation-changelog.md` と `system-spec-update-summary.md` に残す。
+4. final validation を通してから Phase 12 を閉じる。
 
-### 判断フローチャート（全体）
+## よくある誤判断
 
-```
-Phase 12 Task 2 開始
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-A: タスク完了記録（必須）                                   │
-│ → 「完了タスク」セクションを該当仕様書に追加                        │
-│ → 関連ドキュメントセクションに実装ガイドへのリンク追加               │
-│ → LOGS.md×2ファイル + topic-map.md 更新                            │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-B: 実装状況テーブル更新（実装完了時は必須）                  │
-│ → api-endpoints.md等の「実装状況」テーブルを確認                    │
-│ → 該当項目が「未実装」の場合、「完了」または「spec_created」に変更   │
-│ → ⚠️ これは「システム仕様更新」ではなく必須アクションです           │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 1-C: 関連タスクテーブル更新（該当する場合は必須）              │
-│ → 仕様書内の「関連タスク」「未タスク候補」テーブルを確認            │
-│ → grep でタスクID/名を references/ 配下全体から検索                 │
-│ → 該当タスクのステータスを「完了」に更新                            │
-│ → ⚠️ 見落としやすいステップ: 必ずGrepで確認すること                │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ Step 2: システム仕様更新判断（条件付き）                           │
-│ → 新規インターフェース/型の追加があるか判断                        │
-│ → 不要の場合は「更新なし」と documentation-changelog.md に明記     │
-└─────────────────────────────────────────────────────────────────┘
-    ↓
-┌─────────────────────────────────────────────────────────────────┐
-│ 完了チェック: documentation-changelog.md に全Step結果を記録        │
-│ → Step 1-A: ✅/❌ + 詳細                                          │
-│ → Step 1-B: ✅/該当なし + 詳細                                     │
-│ → Step 1-C: ✅/該当なし + 詳細                                     │
-│ → Step 2:   ✅/更新不要 + 理由                                     │
-└─────────────────────────────────────────────────────────────────┘
-```
+| 誤判断 | 正しい扱い |
+| --- | --- |
+| 「実装ガイドを書いたので Step 1 は完了」 | 実装ガイドは Task 12-1。Step 1 は別物 |
+| 「`.agents` を更新したから spec sync も終わった」 | 正本は `.claude`。mirror は代替不可 |
+| 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
+| 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
 
-### ⚠️ よくある誤判断パターン
+## 入口ファイル
 
 以下のケースで「更新不要」と誤判断しやすいので注意:
 
@@ -906,6 +873,10 @@ grep -rn "permission-tool-icons" references/
 | ドキュメント更新履歴テンプレート | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` |
 
 ---
+- [phase-12-documentation-guide.md](phase-12-documentation-guide.md)
+- [phase12-checklist-definition.md](phase12-checklist-definition.md)
+- [technical-documentation-guide.md](technical-documentation-guide.md)
+- [patterns-phase12-sync.md](patterns-phase12-sync.md)
 
 ## 変更履歴
 
@@ -916,3 +887,5 @@ grep -rn "permission-tool-icons" references/
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
 | 2026-03-06 | TASK-UI-02 再監査の教訓を反映し、変更履歴更新手順へ「Version 重複確認」と「同日追補は最大値 + 0.0.1 採番」を追加 |
 | 2026-02-26 | `UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001` 反映: `quick_validate.js` 手動検証の再現性確認手順を Phase 11/12 の運用実績に合わせて再確認し、曖昧語（「など」表記へ統一）を調整して機械判定の一貫性を向上 |
+| --- | --- |
+| 2026-03-12 | Step 1 / Step 2 / validation の 3 ファイルへ責務分離 |

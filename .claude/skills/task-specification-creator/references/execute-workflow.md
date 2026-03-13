@@ -48,6 +48,14 @@ LLM Task: 仕様書に基づくタスク実行
 Phase N+1 へ
 ```
 
+### review gate 実行ルール
+
+- Phase 3 / 10 の review task は `codex` を既定 runner とする。
+- Phase 3 / 10 の task specification review は `codex exec` で実行する。
+- git diff を評価するときだけ `codex review --uncommitted` を補助的に使う。
+- 非対話 shell では alias が効かないことがあるため、環境固有オプションは wrapper または明示コマンドへ閉じ込める。
+- Claude Code / 他 CLI / AI agent を使う場合も、`run-review-task.js` が生成した `review-prompt.txt` を共通入力にする。
+
 ---
 
 ## Phase完了時の必須アクション

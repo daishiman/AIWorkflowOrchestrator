@@ -3593,3 +3593,16 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **適用条件**: 初回起動オーバーレイ、Settings からの rerun、persist key、Phase 11 screenshot を含む UI タスク
 - **発見日**: 2026-03-13
 - **関連タスク**: TASK-UI-09-ONBOARDING-WIZARD
+
+### [Phase12] shallow PASS 表を root evidence へ昇格し、split 親から sibling backlog まで監査する（TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001）
+
+- **状況**: `phase12-task-spec-compliance-check.md` が成果物の存在確認だけに寄ると、`implementation-guide.md` の型/API不足や active 未タスクの10見出し欠落を見逃しやすい。さらに `verify-unassigned-links` を親 `task-workflow.md` だけで実行すると、split 後の `task-workflow-backlog.md` に残る未タスクリンクを取りこぼす
+- **アプローチ**:
+  1. `phase12-task-spec-compliance-check.md` を root evidence とし、Task 12-1〜12-5、`phase-12-documentation.md`、implementation guide 品質、未タスク10見出し、current/baseline 分離、system spec 同期を 1 ファイルへ集約する
+  2. implementation guide は `validate-phase12-implementation-guide` を必須で通し、Part 1 の `たとえば`、Part 2 の `type` / `interface`、API/CLI シグネチャ、エッジケース、設定項目を機械確認する
+  3. `verify-unassigned-links` は親 `task-workflow.md` 指定時に sibling `task-workflow*.md` も走査する前提で使い、`missing=0` を compliance / detection / task-workflow に同値転記する
+  4. active 未タスクは `audit-unassigned-tasks --json --diff-from HEAD --target-file ...` と `--diff-from HEAD` の両方で `currentViolations=0` を確認し、repo 全体 `audit --json` は baseline 参考値として分離記録する
+- **結果**: Phase 12 の shallow PASS を防ぎ、split 後の backlog 見落としも同時に回収できる
+- **適用条件**: docs-heavy task、line-budget reform、spec-only task、または Phase 12 再監査で shallow summary のまま閉じた形跡がある場合
+- **発見日**: 2026-03-13
+- **関連タスク**: TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001

@@ -44,6 +44,8 @@ outputs/phase-{{PHASE_NUMBER}}/review-result.md
 | レビュータイプ | {{REVIEW_TYPE}} |
 | 機能名 | {{FEATURE_NAME}} |
 | 実施日 | {{REVIEW_DATE}} |
+| 実行ランナー | {{REVIEW_RUNNER}} |
+| 実行コマンド | `{{REVIEW_COMMAND}}` |
 | **最終判定** | **{{JUDGMENT}}** |
 
 ---
@@ -161,9 +163,10 @@ outputs/phase-{{PHASE_NUMBER}}/review-result.md
 
 ## 使用方法
 
-1. Phase 3/10でレビューを実施
+1. `run-review-task.js` または raw `codex exec` で review task を実行する
 2. 各カテゴリの項目をチェック
 3. 指摘事項があれば記録
 4. 最終判定を決定
-5. 次のアクションを明記
-6. `outputs/phase-{{N}}/review-result.md` に出力
+5. `codex review` は差分 blocker を補助確認したい場合だけ使う
+6. PASS / MINOR でも次Phaseまたは戻り先を明記する
+7. `outputs/phase-{{N}}/review-result.md` に出力

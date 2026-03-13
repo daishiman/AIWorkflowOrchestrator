@@ -48,6 +48,17 @@
   - `references/resource-map.md` と `SKILL.md` に docs-only parent workflow sweep profile を同期し、入口から template capability を辿れるようにした
 
 ---
+## 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 の Phase 12 root evidence パターンを skill-creator へ反映
+
+- **Agent**: skill-creator
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「shallow PASS 表を root evidence へ昇格し、split 親から sibling backlog まで監査する」を追加
+  - `phase12-task-spec-compliance-check.md` には Task 12-1〜12-5 だけでなく implementation guide 品質、未タスク10見出し、current/baseline 分離、system spec 同期を集約する運用を明文化
+  - `verify-unassigned-links` は親 `task-workflow.md` 指定時に sibling `task-workflow*.md` をまとめて監査する、という template 前提を固定
+
+---
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再利用パターン追補
 
 - **Agent**: skill-creator
