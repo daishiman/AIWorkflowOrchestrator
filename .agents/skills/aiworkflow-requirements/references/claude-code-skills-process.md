@@ -321,6 +321,19 @@ frontmatter は YAML 形式で以下のフィールドを含む：
 | 発動条件               | description に明確に記述（本文ではなく）                |
 | 相対パス               | references/ へのリンクは相対パスで記述                  |
 
+### review task runner 方針
+
+Skill / workflow の review gate を自動化するときは、review 対象そのものと runner 固有設定を分離する。
+
+| 観点 | 方針 |
+| ---- | ---- |
+| 既定 runner | `codex` CLI を使う |
+| task spec review | `codex exec` で specification 本文を読む |
+| diff review | `codex review --uncommitted` で差分を読む |
+| portability | review prompt は artifact として保存し、Claude Code / 他 CLI / AI agent に再利用する |
+| local override | 危険オプションや alias は環境側 wrapper に隔離し、shared spec へは書かない |
+| non-interactive shell | zsh alias は反映保証がないため、PATH 上の wrapper か明示コマンドで吸収する |
+
 ---
 
 ## 命名規則
@@ -419,5 +432,17 @@ skill_list.md は以下の構造で記述する：
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.3.0     | 2026-03-12 | line budget reform の update flow を追加。大規模 skill docs では `SKILL.md` slim 化 → family file 分割 → rolling `LOGS.md` + archive → `quick_validate` / `validate_all` / `diff -qr` の順で更新する |
 | v1.2.0     | 2026-02-27 | quick_validate.js の空フィールドガード仕様を反映（`typeof` + `trim()` の非空文字列検証を明文化） |
 | v1.1.0     | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
+
+## large skill docs update flow
+
+| Step | 作業 |
+| --- | --- |
+| 1 | 現行の over-limit file を inventory 化する |
+| 2 | `SKILL.md` を入口専用へ slim 化する |
+| 3 | `references/` を family index + detail file へ分割する |
+| 4 | `LOGS.md` を rolling 化し archive index を追加する |
+| 5 | `.claude` 正本更新後に `.agents` mirror を同期する |
+| 6 | `quick_validate.js`、`validate_all.js`、`diff -qr` を順に実行する |

@@ -29,6 +29,44 @@ node .claude/skills/task-specification-creator/scripts/verify-all-specs.js \
 
 ---
 
+## レビューゲート実行
+
+```bash
+# Phase 3 / 10 の task spec review を codex CLI で実行
+node .claude/skills/task-specification-creator/scripts/run-review-task.js \
+  --runner codex \
+  --mode exec \
+  --task-file docs/30-workflows/{{FEATURE_NAME}}/phase-3-design-review.md \
+  --output-prompt docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-3/review-prompt.txt
+
+# 最終 review task spec を codex exec で実行
+node .claude/skills/task-specification-creator/scripts/run-review-task.js \
+  --runner codex \
+  --mode exec \
+  --task-file docs/30-workflows/{{FEATURE_NAME}}/phase-10-final-review.md \
+  --output-prompt docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-10/review-prompt.txt
+
+# 差分確認が必要な場合のみ補助的に codex review を追加
+codex review --uncommitted "docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-10/review-prompt.txt の指示に従って現在差分をレビューしてください。"
+
+# Claude Code / 他 CLI / AI agent には同じ prompt file を渡す
+node .claude/skills/task-specification-creator/scripts/run-review-task.js \
+  --runner generic-agent \
+  --runner-command "{{AGENT_COMMAND}}" \
+  --mode exec \
+  --task-file docs/30-workflows/{{FEATURE_NAME}}/phase-3-design-review.md \
+  --prompt-transport stdin \
+  --dry-run
+```
+
+補足:
+
+- shared spec では raw `codex` コマンドを前提にし、shell alias には依存しない。
+- 環境固有の追加オプションは `codex` 側の wrapper / alias で注入し、task spec 本文へは埋め込まない。
+- Claude Code / 他 CLI / AI agent は `review-prompt.txt` を共通入力として流用する。
+
+---
+
 ## Phase出力検証
 
 ```bash
@@ -162,6 +200,7 @@ node .claude/skills/task-specification-creator/scripts/generate-index.js \
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-12 | run-review-task.js と codex review gate 実行例を追加 |
 | 2026-02-22 | audit-unassigned-tasks.js コマンドを追加（未タスク配置・フォーマット監査） |
 | 2026-01-26 | generate-index.jsコマンド追加 |
 | 2026-01-26 | SKILL.mdから分離・作成 |

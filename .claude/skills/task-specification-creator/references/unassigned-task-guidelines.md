@@ -73,6 +73,15 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 ```
 
 > 重要: `--target-file` は root `docs/30-workflows/unassigned-task/`、actual parent `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、standalone `docs/30-workflows/completed-tasks/*.md` のいずれかを指定可能。  
+`verify-unassigned-links.js` は親 `task-workflow.md` を `--source` に渡した場合、
+split 後の sibling `task-workflow*.md` もまとめて走査する前提で使う。
+
+```bash
+node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js \
+  --source .agents/skills/aiworkflow-requirements/references/task-workflow.md
+```
+
+> 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
 > `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
 > root `unassigned-task/` の合否判定は `--diff-from HEAD --target-file` を優先する。移動直後の untracked completed file は `--diff-from HEAD` に乗らないため、standalone completed spec の current 監査は `--target-file` を正本にする。
 
