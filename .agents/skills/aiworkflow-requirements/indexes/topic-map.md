@@ -556,12 +556,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | ドキュメント構成 | L15 |
 | アーキテクチャ概要 | L26 |
-| 対応LLMプロバイダー | L59 |
-| 主要IPCチャンネル | L70 |
-| 品質メトリクス サマリー | L82 |
-| 完了タスク | L94 |
-| 変更履歴 | L151 |
-| 関連ドキュメント | L165 |
+| 対応LLMプロバイダー | L61 |
+| 主要IPCチャンネル | L72 |
+| 品質メトリクス サマリー | L84 |
+| 完了タスク | L96 |
+| 変更履歴 | L164 |
+| 関連ドキュメント | L179 |
 
 ### references/interfaces-rag-chunk-embedding.md
 
@@ -800,10 +800,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
-| Skill Creator IPC チャネル | L200 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L296 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L330 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L384 |
+| Skill Creator IPC チャネル | L213 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L309 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L343 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L397 |
 
 ### references/api-ipc-agent-details.md
 
@@ -1409,9 +1409,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L240 |
-| 実装例: notificationAPI（TASK-UI-08） | L292 |
-| 実装例: slideSettingsAPI | L325 |
+| 実装例: historyAPI | L260 |
+| 実装例: notificationAPI（TASK-UI-08） | L312 |
+| 実装例: slideSettingsAPI | L345 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1744,17 +1744,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | 今回の確定事項（2026-03-13） | L19 |
 | 再監査追補（2026-03-14） | L31 |
-| current canonical set（2026-03-14 wave） | L41 |
-| artifact inventory（Step-01 + system spec sync） | L56 |
-| parent docs と依存関係 | L70 |
-| 旧 filename 互換管理 | L83 |
-| 設定画面レビューの必須改善対象 | L90 |
-| 後続タスクへの伝搬先 | L108 |
-| SubAgent 編成（関心ごと分離） | L124 |
-| 同種課題の5分解決カード | L136 |
-| 最適なファイル形成 | L146 |
-| 関連ドキュメント | L158 |
-| 変更履歴 | L170 |
+| current canonical set（2026-03-14 wave） | L44 |
+| artifact inventory（Step-01 + system spec sync） | L59 |
+| parent docs と依存関係 | L73 |
+| 旧 filename 互換管理 | L86 |
+| 設定画面レビューの必須改善対象 | L93 |
+| 後続タスクへの伝搬先 | L111 |
+| SubAgent 編成（関心ごと分離） | L127 |
+| 同種課題の5分解決カード | L139 |
+| 最適なファイル形成 | L149 |
+| 関連ドキュメント | L161 |
+| 変更履歴 | L173 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2355,6 +2355,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
 | 最新教訓 | L71 |
+| 最新教訓 | L70 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2530,13 +2531,14 @@ node scripts/list-specs.js --topics
 | FileService | L21 |
 | ContextBuilder | L63 |
 | ChatEditService | L103 |
-| IPCチャンネル | L149 |
-| セキュリティ | L169 |
-| ディレクトリ構成 | L181 |
-| 品質メトリクス | L207 |
-| 関連ドキュメント | L218 |
-| 完了タスク | L246 |
-| 変更履歴 | L271 |
+| RuntimeResolver / Adapter / Handoff | L153 |
+| IPCチャンネル | L183 |
+| セキュリティ | L203 |
+| ディレクトリ構成 | L215 |
+| 品質メトリクス | L244 |
+| 関連ドキュメント | L255 |
+| 完了タスク | L283 |
+| 変更履歴 | L319 |
 
 ### references/local-agent.md
 

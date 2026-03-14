@@ -127,6 +127,26 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - stream listener は preload 提供の unsubscribe を必ず cleanup する。
 - renderer は `isStreamingRef` と `streamContentRef` を使って競合に強い状態遷移を行うが、権限境界自体は preload/main に残す。
 - mention 経由の file context 追加でも `file:read` 失敗を黙殺せず alert 表示し、失敗状態を可視化する。
+
+### Workspace Chat Edit runtime/handoff IPC 境界（TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001）
+
+`chat-edit:send-with-context` は auth mode と API key 状態に応じて integrated 実行か handoff 案内を返す。2026-03-14 の同期で preload/main の契約を以下に固定した。
+
+| 観点 | 契約 |
+| --- | --- |
+| preload 公開 | `contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI)` を使用し、`window` 直接代入を禁止 |
+| invoke payload | `read-file` / `write-file` は object payload（`{ filePath, workspacePath? }`）で Main 契約と一致させる |
+| sender 検証 | すべての `chat-edit:*` handler で `validateIpcSender` を先頭実行 |
+| workspace 境界 | `workspacePath` 指定時は `isAllowedPath()` で context file 全件を検証し、違反時は `PERMISSION_DENIED` |
+| runtime 分岐 | `RuntimeResolver.resolve()` が `subscription` / API key 不足を `handoff` として返す |
+| handoff 出力 | `TerminalHandoffBuilder` は `terminalCommand` に API key を含めない（secret 非中継） |
+
+**セキュリティ意図**:
+
+- renderer は `chatEditAPI` 以外の直接 IPC 経路を持たない。
+- handoff は「手動実行支援」に限定し、auto-send / hidden prompt injection を許容しない。
+- auth key の有無を判定しても key 実値は UI / command / error へ露出しない。
+
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。
@@ -370,4 +390,3 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 **関連タスク**: slide-directory-settings（2026-01-14完了）
 
 ---
-

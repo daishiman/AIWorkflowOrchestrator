@@ -261,10 +261,12 @@ export interface SendWithContextRequest {
   contexts: FileContextInput[];
   /** 編集コマンド */
   command: EditCommand;
-  /** ユーザーメッセージ */
-  message: string;
+  /** ユーザーメッセージ（省略可能） */
+  message?: string;
   /** オプション */
   options?: SendOptions;
+  /** ワークスペースパス（セキュリティ制約検証に使用） */
+  workspacePath?: string;
 }
 
 /**
@@ -276,10 +278,25 @@ export interface SendError {
     | "LLM_ERROR"
     | "TIMEOUT"
     | "RATE_LIMIT"
-    | "INVALID_COMMAND";
+    | "INVALID_COMMAND"
+    | "SELECTION_REQUIRED"
+    | "ACCESS_NOT_CONFIGURED"
+    | "PERMISSION_DENIED";
   message: string;
   retryable: boolean;
   retryAfterMs?: number;
+}
+
+/**
+ * ターミナルハンドオフ案内
+ */
+export interface HandoffGuidance {
+  /** Claude Code で実行するコマンド例 */
+  terminalCommand: string;
+  /** ファイル名・行範囲・コマンドタイプの要約 */
+  contextSummary: string;
+  /** handoff になった理由 */
+  reason: string;
 }
 
 /**
@@ -289,6 +306,10 @@ export interface SendWithContextResponse {
   success: boolean;
   result?: GeneratedResult;
   error?: SendError;
+  /** true のとき guidance を参照してターミナルで続行 */
+  handoff?: boolean;
+  /** handoff=true の場合のターミナル実行案内 */
+  guidance?: HandoffGuidance;
 }
 
 /**
@@ -332,6 +353,8 @@ export interface ChatEditState {
   error: string | null;
   /** ドラッグ中フラグ */
   isDragging: boolean;
+  /** エディタ選択範囲（null=未選択） */
+  selection: TextSelection | null;
 }
 
 /**
@@ -364,6 +387,8 @@ export interface ChatEditActions {
   setError: (error: string | null) => void;
   /** ドラッグ状態を設定 */
   setDragging: (dragging: boolean) => void;
+  /** エディタ選択範囲を設定 */
+  setSelection: (selection: TextSelection | null) => void;
   /** 状態をリセット */
   reset: () => void;
 }

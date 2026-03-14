@@ -89,6 +89,21 @@
 - **発見日**: 2026-03-10
 - **関連タスク**: TASK-FIX-SAFEINVOKE-TIMEOUT-001
 
+### [Phase12] 既存未タスク再参照時の target-file 監査固定（TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001）
+
+- **状況**: `unassigned-task-detection.md` で「新規0件 / 既存再参照あり」と判定しても、再参照先の既存未タスク本文が10見出し要件を満たさず `currentViolations>0` になる場合がある
+- **アプローチ**:
+  - `audit-unassigned-tasks --json --diff-from HEAD` で全体合否（current/baseline）を確認した後、再参照した既存未タスクへ `--target-file` を個別実行する
+  - 個別監査で current違反が出た場合は、同ターンで9/10見出し要件へ是正し、再監査で `currentViolations=0` を固定する
+  - `verify-unassigned-links` の total は固定値を使わず同一ターン実測値を `unassigned-task-detection.md` / `documentation-changelog.md` / system spec に同値転記する
+- **結果**: 「新規未タスクは0件だが、再参照先の品質が崩れている」取りこぼしを防げる
+- **適用条件**: Phase 12 で既存未タスク再利用を選択した全タスク
+- **失敗パターン**:
+  - diff監査のみで完了判定し、再参照タスク本文の品質監査を省略する
+  - `verify-unassigned-links` 件数を過去値のまま転記し、current実測と不一致になる
+- **発見日**: 2026-03-14
+- **関連タスク**: TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
+
 ### [Phase12] 契約テストと回帰テストの責務分離（TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001）
 
 - **状況**: design/spec_created タスクで Phase 4（契約テスト仕様）と Phase 6（回帰テスト仕様）を同時に書く際、同一ロジックを重複検証して保守コストが増える

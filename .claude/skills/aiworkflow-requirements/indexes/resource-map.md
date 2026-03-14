@@ -45,6 +45,7 @@
 | バグ修正（Workspace preview/search resilience / fuzzy no-match / renderer timeout+retry） | workflow-workspace-preview-search-resilience-guard.md, ui-ux-search-panel.md, architecture-implementation-patterns.md | arch-state-management.md, error-handling.md, task-workflow.md, lessons-learned.md |
 | 設計同期（AI runtime/auth-mode unification） | workflow-ai-runtime-authmode-unification.md, ui-ux-settings.md, interfaces-auth.md, api-ipc-system.md, legacy-ordinal-family-register.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md, `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
+| Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
@@ -374,6 +375,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |
 | 2026-03-13 | 1.15.0     | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本 `workflow-workspace-preview-search-resilience-guard.md` を追加。クイックルックアップと UI/UX 一覧にも preview/search resilience・typed taxonomy・`audit --target-file` の導線を登録 |
 | 2026-03-12 | 1.14.0     | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本 `workflow-light-theme-contrast-regression-guard.md` を追加。クイックルックアップと UI/UX 一覧にも current build static serve / selector-based capture / baseline routing の導線を登録 |
 | 2026-03-11 | 1.13.0     | TASK-SKILL-LIFECYCLE-01 完了同期: lifecycle task の逆引きへ `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` を追加し、Skill Center 一次導線・advanced route・settings bypass の実装アンカーを明示 |

@@ -1,6 +1,8 @@
 {
   "generated": "2026-03-14T03:34:39.648Z",
   "totalKeywords": 2153,
+  "generated": "2026-03-14T03:31:42.560Z",
+  "totalKeywords": 2146,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4341,6 +4343,13 @@
     "主要": [
       "interfaces-llm.md"
     ],
+    "主要型定義": [
+      "interfaces-llm.md",
+      "rag-knowledge-graph.md"
+    ],
+    "追加分": [
+      "interfaces-llm.md"
+    ],
     "チャンク・埋め込み型定義": [
       "interfaces-rag-chunk-embedding.md"
     ],
@@ -6042,6 +6051,15 @@
       "llm-workspace-chat-edit.md"
     ],
     "ChatEditService": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "RuntimeResolver": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "AnthropicLLMAdapter": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "TerminalHandoffBuilder": [
       "llm-workspace-chat-edit.md"
     ],
     "セキュリティ": [
@@ -8055,9 +8073,6 @@
     "セキュリティ考慮事項": [
       "rag-desktop-state.md",
       "ui-ux-system-prompt.md"
-    ],
-    "主要型定義": [
-      "rag-knowledge-graph.md"
     ],
     "EntityEntity": [
       "rag-knowledge-graph.md"

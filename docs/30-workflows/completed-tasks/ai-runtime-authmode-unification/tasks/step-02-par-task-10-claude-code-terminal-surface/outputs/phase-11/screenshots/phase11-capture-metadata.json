@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-03-14T03:06:18.036Z",
+  "mode": "fallback-review-board",
+  "reason": "electron-vite dev capture unavailable in current environment",
+  "sourceEvidenceRoot": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260314-082335-wt-3/docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-terminal-claude-transcript.png",
+      "label": "Terminal transcript view contract review",
+      "source": "TC-11-03-terminal-unavailable.png"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-terminal-controls.png",
+      "label": "Abort/retry/history control contract review",
+      "source": "TC-11-03-terminal-unavailable.png"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-terminal-unavailable-guidance.png",
+      "label": "Unavailable guidance contract review",
+      "source": "TC-11-03-terminal-unavailable.png"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-terminal-no-auto-send.png",
+      "label": "No auto-send boundary review",
+      "source": "TC-11-00-settings-authmode-review-board.png"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-terminal-persistent-launcher.png",
+      "label": "Persistent launcher contract review",
+      "source": "TC-11-01-access-card-sync.png"
+    },
+    {
+      "tc": "TC-11-06",
+      "file": "TC-11-06-terminal-manual-share.png",
+      "label": "Manual transcript share contract review",
+      "source": "TC-11-02-runtime-missing-api-key.png"
+    }
+  ]
+}

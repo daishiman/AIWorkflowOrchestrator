@@ -28,6 +28,29 @@
   - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
 
 ---
+## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase12 再確認（target-file監査で既存未タスク是正）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（recheck / unassigned normalization）
+- **Result**: success
+- **Notes**:
+  - `verify-all-specs` / `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を Task02 と Task10 で再実行し PASS を再確認
+  - 画面検証要件に合わせて fallback capture script を再実行し、Task10 `TC-11-01..06` と Task02 `TC-11-01..03` を再生成
+  - `audit-unassigned-tasks --target-file docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` で current違反を検出し、同ファイルを9見出し形式へ是正して `currentViolations=0` へ回復
+  - `verify-unassigned-links=223/223`、`audit --diff-from HEAD current=0 / baseline=133` を outputs/system spec へ同期
+
+---
+## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Step02 再監査追補（Task02/Task10）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - Task02 の `TC-11-01..03` を fallback review board 方式で再撮影し、`validate-phase11-screenshot-coverage` を PASS 化
+  - Task02 `implementation-guide.md` を Part 1/2 必須見出し（APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定と定数）に是正し、`validate-phase12-implementation-guide` を 10/10 へ回復
+  - `electron-vite dev` が esbuild platform mismatch で失敗する条件を記録し、明示 screenshot 要求時の fallback 実行 + metadata 固定パターンを再利用ルール化
+
+---
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator

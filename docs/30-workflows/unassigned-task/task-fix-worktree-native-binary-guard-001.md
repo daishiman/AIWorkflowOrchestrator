@@ -122,29 +122,103 @@ fi
 
 ---
 
-## 4. 苦戦箇所と解決のヒント
+## 4. 実行手順
 
-### 4.1 TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001 での苦戦
+### 4.1 監査対象の確定
 
-| 課題                            | 原因                                              | 解決のヒント                                               |
-| ------------------------------- | ------------------------------------------------- | ---------------------------------------------------------- |
-| esbuild darwin-arm64/x64 不整合 | worktreeがmain repoのnode_modulesを共有           | platform検出スクリプトで事前チェック                       |
-| pnpm install --force 失敗       | lucide-react ENOTEMPTY + better-sqlite3 gyp error | node_modules削除→再インストール、またはmain repoからコピー |
-| テスト実行不可                  | ネイティブバイナリ不整合で vitest が起動しない    | main repoでテスト実行し結果をworktreeに反映                |
+1. `session-init.sh` の実行タイミング（SessionStart）を確認する
+2. worktree 判定条件（`.git` と `git worktree list`）を固定する
+3. 対象ネイティブモジュールを確定する（最小: `@esbuild/*`, `better-sqlite3`）
 
-### 4.2 参照すべき仕様書
+### 4.2 チェックスクリプト実装
 
-| 仕様書                 | 内容                                                            |
-| ---------------------- | --------------------------------------------------------------- |
-| `06-known-pitfalls.md` | P7（ネイティブモジュール不一致）、P48（worktreeバイナリ不整合） |
-| `lessons-learned.md`   | TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001 苦戦箇所1            |
-| `CLAUDE.md`            | Hooks設定（session-init.sh）                                    |
+1. `scripts/check-native-binaries.sh` を追加する
+2. `process.platform` + `process.arch` から期待 platform を算出する
+3. 期待する `node_modules/@esbuild/<platform>` の存在チェックを行う
+4. 不整合時は修復手順を標準文言で出力する
+
+```bash
+#!/bin/bash
+EXPECTED_PLATFORM="$(node -e "console.log(process.platform + '-' + process.arch)")"
+ESBUILD_PKG="node_modules/@esbuild/${EXPECTED_PLATFORM}"
+
+if [ ! -d "$ESBUILD_PKG" ]; then
+  echo "⚠️ esbuild platform mismatch: expected $EXPECTED_PLATFORM"
+  echo "Fix: pnpm install --force"
+fi
+```
+
+### 4.3 SessionStart 連携
+
+1. `session-init.sh` から `scripts/check-native-binaries.sh` を呼び出す
+2. worktree 配下のみ実行し、通常リポジトリではノイズを出さない
+3. 失敗時は即終了せず、警告 + 修復ガイド表示に留める
+
+### 4.4 完了報告反映
+
+1. 実行ログを `task-workflow` / `lessons-learned` に反映する
+2. 必要なら follow-up 未タスクを `docs/30-workflows/unassigned-task/` に追加する
 
 ---
 
-## 5. 受入基準
+## 5. 完了条件チェックリスト
 
 - [ ] worktree環境でセッション開始時にplatform整合性チェックが実行される
 - [ ] 不整合時に修復手順が表示される
 - [ ] 正常環境では追加の出力なし（ノイズ回避）
-- [ ] テスト: darwin-arm64/x64 両方でチェックが正しく動作
+- [ ] darwin-arm64 / darwin-x64 の両ケースでチェックが期待通り動作する
+- [ ] 運用ドキュメント（`task-workflow` / `lessons-learned`）へ反映される
+
+---
+
+## 6. 検証方法
+
+```bash
+# 1) スクリプト単体実行
+bash scripts/check-native-binaries.sh
+
+# 2) セッション初期化経由で実行
+bash session-init.sh
+
+# 3) worktree判定確認
+git worktree list
+```
+
+期待結果:
+
+1. 不整合時のみ警告が表示される
+2. 修復手順（`pnpm install --force` など）が表示される
+3. 正常時は不要な警告が出ない
+
+---
+
+## 7. リスクと対策
+
+| リスク                             | 発生条件                                            | 対策                                           |
+| ---------------------------------- | --------------------------------------------------- | ---------------------------------------------- |
+| 誤検知で通常環境にも警告が出る     | worktree 判定が曖昧                                 | `git worktree list` と current path を突合する |
+| 検知はするが修復不能で作業が止まる | `pnpm install --force` が ENOTEMPTY / node-gyp 失敗 | 代替手順（main repo からコピー）を同時表示する |
+| 対象モジュールが増えて検知漏れ     | esbuild 以外の native module が追加                 | 対象一覧を配列化し、増分更新しやすくする       |
+
+### 7.1 既知の苦戦箇所（再利用）
+
+| 課題                            | 原因                                              | 解決のヒント                                                    |
+| ------------------------------- | ------------------------------------------------- | --------------------------------------------------------------- |
+| esbuild darwin-arm64/x64 不整合 | worktree が main repo の `node_modules` を共有    | platform検出スクリプトで事前チェック                            |
+| `pnpm install --force` 失敗     | lucide-react ENOTEMPTY + better-sqlite3 gyp error | `node_modules` 削除→再インストール、または main repo からコピー |
+| テスト実行不可                  | ネイティブバイナリ不整合で `vitest` が起動しない  | main repo でテスト実行し結果を worktree に反映                  |
+
+---
+
+## 8. 参照情報
+
+- `06-known-pitfalls.md`（P7: ネイティブモジュール不一致、P48: worktreeバイナリ不整合）
+- `lessons-learned.md`（TASK-FIX-SETTINGS-AUTHKEY-UI-ALIGNMENT-001 苦戦箇所1）
+- `CLAUDE.md`（Hooks設定: `session-init.sh`）
+
+---
+
+## 9. 備考
+
+- 本タスクは「自動修復」ではなく「早期検知 + 修復手順提示」を目的とする。
+- CI 変更はスコープ外とし、ローカル開発体験の安定化を優先する。
