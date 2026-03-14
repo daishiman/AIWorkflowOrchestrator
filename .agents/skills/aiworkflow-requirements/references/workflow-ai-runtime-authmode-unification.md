@@ -34,7 +34,11 @@
 - validator 適用マトリクスを再確認し、`verify-all-specs` / `validate-phase-output` は Task01-Task10 全10タスクで PASS、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は Step-01 のみ PASS（残り9タスクは Phase 11/12 `not_started` のため未適用）と判定した。
 - `phase-12-documentation.md` のステータスを `completed` へ同期し、完了チェックを `[x]` へ更新した。
 - `task-imp-ai-runtime-permission-resolver-placement-001.md` / `task-imp-ai-runtime-test-separation-criteria-001.md` / `task-imp-spec-only-phase-workflow-optimization-001.md` を 9セクション形式へ是正した。
-- 未タスク監査は `verify-unassigned-links=227/227`、`currentViolations=0` / `baselineViolations=134` を確認し、baseline は既存正規化タスクで継続管理とした。
+- 未タスク監査は `verify-unassigned-links=223/223`、`currentViolations=0` / `baselineViolations=133` を確認し、baseline は既存正規化タスクで継続管理とした。
+- Step-02 Task10 は `TC-11-01..06` の screenshot を current workflow 配下で再取得し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS へ回復した。
+- Step-02 Task02 も `TC-11-01..03` の screenshot を同日取得し、`validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` を PASS 化した。
+- Step-02 Task02 実装差分（`RuntimeResolver` / `AnthropicLLMAdapter` / `TerminalHandoffBuilder` / `chatEditAPI` contextBridge 公開 / `workspacePath` 境界検証）を system spec 正本へ同期した。
+- Step-02 Task10 の再参照未タスク `task-fix-worktree-native-binary-guard-001.md` は 9見出し形式へ是正し、`audit-unassigned-tasks --target-file` で `currentViolations=0` を確認した。
 
 ---
 
@@ -171,6 +175,8 @@
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-14 | 1.0.6 | Phase 12 再確認を追補。`verify-unassigned-links=223/223` へ更新し、再参照未タスク `task-fix-worktree-native-binary-guard-001.md` の 9見出し是正と `target-file` 監査 PASS（current=0）を記録 |
+| 2026-03-14 | 1.0.5 | Step-02 Task02/Task10 の Phase 11/12 再監査結果を追補。Task10 `TC-11-01..06`、Task02 `TC-11-01..03` を current workflow 配下へ証跡化し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` PASS を明記。あわせて Task02 実装差分（RuntimeResolver/AnthropicLLMAdapter/TerminalHandoffBuilder/chatEditAPI contextBridge/workspacePath 検証）の正本同期を追加 |
 | 2026-03-14 | 1.0.4 | branch 横断再確認の validator 適用範囲を明文化。`verify-all-specs` / `validate-phase-output` は 10/10 PASS、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は Step-01 のみ適用対象（他9件は `not_started`）であることを追補 |
 | 2026-03-14 | 1.0.3 | `phase-12-documentation` ステータス同期、未タスク3件のフォーマット是正、未タスク監査値（`227/227`, `current=0`, `baseline=134`）を追補 |
 | 2026-03-14 | 1.0.2 | `current canonical set` / `artifact inventory` / parent docs / legacy filename 互換管理を追加し、follow-up 未タスク `task-imp-ai-runtime-test-separation-criteria-001.md` と同一 wave で同期 |

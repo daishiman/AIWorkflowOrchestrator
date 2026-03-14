@@ -62,6 +62,7 @@ const initialState: ChatEditState = {
   isDiffPreviewOpen: false,
   error: null,
   isDragging: false,
+  selection: null,
 };
 
 /**
@@ -317,6 +318,13 @@ export const createChatEditSlice: StateCreator<ChatEditSlice> = (set, get) => ({
    */
   setDragging: (dragging) => {
     set({ isDragging: dragging });
+  },
+
+  /**
+   * エディタ選択範囲を設定
+   */
+  setSelection: (selection) => {
+    set({ selection });
   },
 
   /**

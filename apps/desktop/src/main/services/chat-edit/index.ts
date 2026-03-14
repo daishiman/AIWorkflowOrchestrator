@@ -9,6 +9,10 @@ export { FileService } from "./FileService";
 export { ContextBuilder, MAX_CONTEXT_SIZE } from "./ContextBuilder";
 export { ChatEditService } from "./ChatEditService";
 export type { LLMAdapter } from "./ChatEditService";
+export { RuntimeResolver } from "./RuntimeResolver";
+export type { RuntimeResolution } from "./RuntimeResolver";
+export { AnthropicLLMAdapter } from "./AnthropicLLMAdapter";
+export { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 
 // プロンプト
 export {

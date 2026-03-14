@@ -98,18 +98,18 @@
 
 ## タスク一覧
 
-| 順序 | タスクID                                         | ディレクトリ                                                       | 責務                                                              | 実行順序                          |
-| ---- | ------------------------------------------------ | ------------------------------------------------------------------ | ----------------------------------------------------------------- | --------------------------------- |
-| 1    | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001     | `tasks/step-01-seq-task-01-ai-runtime-authmode-foundation`         | access matrix、legacy auth mode migration、共通 capability 契約   | 最優先・直列                      |
-| 2    | TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001        | `tasks/step-02-par-task-10-claude-code-terminal-surface`           | user-operated Claude Code terminal、session UX、manual boundary   | Task01 Phase 3 後・直列優先       |
-| 3    | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001      | `tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation` | Chat Edit の API runtime 有効化と terminal handoff                | Task01/Task02 Phase 3 後・並列    |
-| 4    | TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001         | `tasks/step-02-par-task-03-skill-agent-runtime-routing`            | Skill / Agent / Creator の integrated runtime と terminal handoff | Task01/Task02 Phase 3 後・並列    |
-| 5    | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001               | `tasks/step-03-par-task-04-skill-docs-runtime-integration`         | Skill Docs の integrated runtime と terminal handoff              | Task01/Task02 Phase 3 後・並列    |
-| 6    | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001       | `tasks/step-03-par-task-06-main-chat-settings-runtime-sync`        | Chat / Settings / health / access card / launcher 同期            | Task01/Task02 Phase 3 後・並列    |
-| 7    | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001              | `tasks/step-03-seq-task-05-chatpanel-real-chat-wiring`             | ChatPanel の API runtime 統合と terminal fallback UX              | Task02 と Task06 Phase 2 後・直列 |
-| 8    | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001     | `tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment` | Workspace Chat Panel の streaming と terminal handoff             | Task02 と Task06 Phase 2 後・並列 |
-| 9    | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 | `tasks/step-04-par-task-08-rag-embedding-extraction-runtime`       | backend AI capability matrix と API runtime ルール                | Task01 Phase 3 後・並列           |
-| 10   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001          | `tasks/step-04-par-task-09-slide-ai-runtime-alignment`             | slide reverse-sync の API runtime 整流と manual fallback          | Task01/Task02 Phase 3 後・並列    |
+| 順序 | タスクID                                         | ディレクトリ                                                                                                          | 責務                                                              | 実行順序                          |
+| ---- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------------------------------- |
+| 1    | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001     | `tasks/step-01-seq-task-01-ai-runtime-authmode-foundation`                                                            | access matrix、legacy auth mode migration、共通 capability 契約   | 最優先・直列                      |
+| 2    | TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001        | `../completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface`           | user-operated Claude Code terminal、session UX、manual boundary   | Task01 Phase 3 後・直列優先       |
+| 3    | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001      | `../completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation` | Chat Edit の API runtime 有効化と terminal handoff                | Task01/Task02 Phase 3 後・並列    |
+| 4    | TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001         | `tasks/step-02-par-task-03-skill-agent-runtime-routing`                                                               | Skill / Agent / Creator の integrated runtime と terminal handoff | Task01/Task02 Phase 3 後・並列    |
+| 5    | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001               | `tasks/step-03-par-task-04-skill-docs-runtime-integration`                                                            | Skill Docs の integrated runtime と terminal handoff              | Task01/Task02 Phase 3 後・並列    |
+| 6    | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001       | `tasks/step-03-par-task-06-main-chat-settings-runtime-sync`                                                           | Chat / Settings / health / access card / launcher 同期            | Task01/Task02 Phase 3 後・並列    |
+| 7    | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001              | `tasks/step-03-seq-task-05-chatpanel-real-chat-wiring`                                                                | ChatPanel の API runtime 統合と terminal fallback UX              | Task02 と Task06 Phase 2 後・直列 |
+| 8    | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001     | `tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment`                                                    | Workspace Chat Panel の streaming と terminal handoff             | Task02 と Task06 Phase 2 後・並列 |
+| 9    | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 | `tasks/step-04-par-task-08-rag-embedding-extraction-runtime`                                                          | backend AI capability matrix と API runtime ルール                | Task01 Phase 3 後・並列           |
+| 10   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001          | `tasks/step-04-par-task-09-slide-ai-runtime-alignment`                                                                | slide reverse-sync の API runtime 整流と manual fallback          | Task01/Task02 Phase 3 後・並列    |
 
 ## タスク通称
 

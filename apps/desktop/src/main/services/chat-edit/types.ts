@@ -22,6 +22,7 @@ export type {
   SendWithContextResponse,
   SendError,
   SendOptions,
+  HandoffGuidance,
 } from "../../../renderer/features/workspace-chat-edit/types";
 
 export {
