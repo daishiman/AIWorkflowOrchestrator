@@ -15,6 +15,7 @@ export * from "./history";
 
 // スキル管理型定義
 export * from "./skill";
+export * from "./handoff";
 
 // スキル改善型定義 (TASK-9C)
 export * from "./skill-improver";

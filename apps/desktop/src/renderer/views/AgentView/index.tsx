@@ -33,6 +33,8 @@ import {
   useExecuteSkill,
   useSkillExecutionStatus,
   useAddExecutionToHistory,
+  useHandoffGuidance,
+  useClearHandoffGuidance,
   useLLMProviders,
   useSelectedProviderId,
   useSelectedModelId,
@@ -48,6 +50,7 @@ import { ExecuteButton } from "../../components/organisms/AgentView/ExecuteButto
 import { FloatingExecutionBar } from "../../components/organisms/AgentView/FloatingExecutionBar";
 import { RecentExecutionList } from "../../components/organisms/AgentView/RecentExecutionList";
 import { AdvancedSettingsPanel } from "../../components/organisms/AgentView/AdvancedSettingsPanel";
+import { TerminalHandoffCard } from "../../components/organisms/TerminalHandoffCard";
 import {
   toSkillId,
   type ImportedSkill,
@@ -206,6 +209,8 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const executeSkill = useExecuteSkill();
   const skillExecutionStatus = useSkillExecutionStatus();
   const addExecutionToHistory = useAddExecutionToHistory();
+  const handoffGuidance = useHandoffGuidance();
+  const clearHandoffGuidance = useClearHandoffGuidance();
   const providers = useLLMProviders();
   const selectedProviderId = useSelectedProviderId();
   const selectedModelId = useSelectedModelId();
@@ -435,6 +440,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const handleExecute = useCallback(
     async (skill: Skill) => {
       const startedAt = new Date();
+      clearHandoffGuidance();
       setActiveExecution({
         skillName: skill.name,
         displayName: skill.name,
@@ -444,8 +450,20 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
       setFloatingStatus("executing");
       await executeSkill("");
     },
-    [executeSkill],
+    [clearHandoffGuidance, executeSkill],
   );
+
+  const handleCopyHandoffCommand = useCallback(async () => {
+    if (!handoffGuidance) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(handoffGuidance.terminalCommand);
+      showToast("success", "コマンドをコピーしました");
+    } catch {
+      showToast("error", "コマンドのコピーに失敗しました");
+    }
+  }, [handoffGuidance, showToast]);
 
   const handleImport = useCallback(
     async (skillNames: SkillName[]) => {
@@ -626,6 +644,18 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
             }}
             isExecuting={isExecuting}
           />
+
+          {handoffGuidance && (
+            <div className="mt-4">
+              <TerminalHandoffCard
+                guidance={handoffGuidance}
+                onCopyCommand={() => {
+                  void handleCopyHandoffCommand();
+                }}
+                onDismiss={clearHandoffGuidance}
+              />
+            </div>
+          )}
         </section>
 
         {/* Section 2: 最近の実行 */}

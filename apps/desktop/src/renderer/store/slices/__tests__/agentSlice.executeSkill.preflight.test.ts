@@ -106,4 +106,48 @@ describe("agentSlice.executeSkill preflight", () => {
       "APIキー設定状態の確認に失敗",
     );
   });
+
+  it("subscription モードでは handoff guidance を保持する", async () => {
+    const executeMock = vi.fn().mockResolvedValue({
+      executionId: "handoff-1",
+      success: false,
+      handoff: true,
+      error: "subscription mode: use Claude Code CLI",
+      guidance: {
+        terminalCommand: 'claude "Continue this task"',
+        contextSummary: "surface=skill skill=test-skill",
+        reason: "subscription mode: use Claude Code CLI",
+      },
+    });
+
+    Object.defineProperty(window, "electronAPI", {
+      configurable: true,
+      value: {
+        authMode: {
+          get: vi.fn().mockResolvedValue({
+            success: true,
+            data: { mode: "subscription" },
+          }),
+        },
+        authKey: {
+          exists: vi.fn().mockResolvedValue({ exists: false }),
+        },
+        skill: {
+          execute: executeMock,
+        },
+      },
+    });
+
+    const store = createStore();
+    store.getState().selectSkillByName("test-skill");
+
+    await store.getState().executeSkill("hello");
+
+    expect(executeMock).toHaveBeenCalledTimes(1);
+    expect(store.getState().skillExecutionStatus).toBe("error");
+    expect(store.getState().handoffGuidance).not.toBeNull();
+    expect(store.getState().handoffGuidance?.terminalCommand).toContain(
+      "claude",
+    );
+  });
 });

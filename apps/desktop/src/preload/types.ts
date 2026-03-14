@@ -1346,6 +1346,7 @@ import type {
   PermissionRequest as AgentPermissionRequest,
   PermissionResponse as AgentPermissionResponse,
 } from "@repo/shared/types/agent";
+import type { AgentStartResult } from "@repo/shared";
 
 // Skill schedule types (TASK-9G) - P23対策: @repo/shared から型を参照
 import type { ScheduledSkill } from "@repo/shared";
@@ -1359,7 +1360,7 @@ export type {
 };
 
 export interface AgentExecutionAPI {
-  start: (request: AgentStartRequest) => Promise<{ executionId: string }>;
+  start: (request: AgentStartRequest) => Promise<AgentStartResult>;
   stop: () => Promise<void>;
   respondPermission: (response: AgentPermissionResponse) => Promise<void>;
   onStream: (callback: (payload: AgentStreamPayload) => void) => () => void;

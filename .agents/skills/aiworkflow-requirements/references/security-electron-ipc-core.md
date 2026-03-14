@@ -78,6 +78,21 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
 
+### P59: Preload API 未公開の検出と防止（TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001）
+
+`chatEditApi.ts` に `exposeChatEditAPI()` 関数を定義しても、`preload/index.ts` で呼び出さなければ `window.chatEditAPI` は `undefined` のまま Renderer に公開されない。2026-03-14 の実装で発覚した。
+
+| 観点 | 内容 |
+| --- | --- |
+| 根本原因 | `preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックと else ブロックの両方に `exposeChatEditAPI()` 呼び出しが欠落していた |
+| 症状 | `window.chatEditAPI` が `undefined` で全 chat-edit IPC 呼び出しが silent fail |
+| 修正内容 | `preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックと `else` ブロックの両方に `exposeChatEditAPI()` を追加 |
+| 監査方法 | `grep -c "exposeInMainWorld" preload/index.ts` で公開 API 数を確認し、定義済み API 数と一致させる |
+| 再発防止 | 新規 Preload API 追加時は「定義 → index.ts 両ブロック追記 → typecheck → 手動確認（DevTools で `window.xxxAPI` 存在検証）」を 1 セットで実施 |
+
+**関連 Pitfall**: P59（lessons-learned-current.md）、P23（API二重定義の型管理複雑性）
+**関連タスク**: TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001
+
 ### Workspace file watch lifecycle（TASK-UI-04A）
 
 `WorkspaceView` は selected file の再読込に限って watch を使う。watch 契約は file read/write の一般契約とは分けて扱う。

@@ -11,7 +11,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, runtime routing, RuntimeResolver, handoff, handoff guidance, TerminalHandoffCard
 allowed-tools:
   - Read
   - Glob
@@ -196,6 +196,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.94** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の arch-electron-services-details.md に RuntimeResolver サービス詳細セクションを追加** |
+| **9.01.93** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 を同期**: `interfaces-agent-sdk-executor-*` に runtime routing/handoff 契約を追加し、`arch-electron-services-details.md` へ `RuntimeResolver` / `TerminalHandoffBuilder` DI 配線を追記。`ui-ux-agent-execution-core.md` に `TerminalHandoffCard`、`arch-state-management-reference.md` に `handoffGuidance` 契約を追加し、`task-workflow` / `lessons-learned-current` / `indexes/resource-map.md` / `indexes/quick-reference.md` / `LOGS.md` を同一 wave で更新 |
 | **9.01.92** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期を追加**: `workflow-skill-lifecycle-evaluation-scoring-gate.md` を新規作成し、実装内容・苦戦箇所・`current canonical set`・`artifact inventory`・legacy path 互換を統合。`indexes/resource-map.md` / `indexes/quick-reference.md` / `references/task-workflow.md` / `references/lessons-learned-current.md` / `references/legacy-ordinal-family-register.md` / `LOGS.md` を同一 wave で同期し、mirror parity（`.claude` 正本→`.agents`）を完了条件に固定 |
 | **9.01.91** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 完了同期**: ScoringGate型・evaluatePrompt追加・ScoreDeltaBadge実装 |
 | **9.01.90** | **2026-03-14** | **TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の canonical set / legacy register 同期を追加**: `workflow-ai-runtime-authmode-unification.md` に `current canonical set` / `artifact inventory` / parent docs / 旧 filename 互換管理を追記し、`legacy-ordinal-family-register.md` の current alias row（`qa-checklist` -> `quality-assurance-checklist`）を同期。あわせて `task-workflow-backlog.md` / `lessons-learned-current.md` / `indexes/resource-map.md` / `indexes/quick-reference.md` へ `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` 導線を同一 wave で反映 |

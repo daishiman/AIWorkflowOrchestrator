@@ -1,0 +1,106 @@
+{
+  "generatedAt": "2026-03-14T21:52:34.256Z",
+  "baseUrl": "http://127.0.0.1:4179",
+  "harnessPath": "/phase11-runtime-routing-integration-closure.html",
+  "scenarios": [
+    {
+      "id": "TC-01",
+      "description": "subscription mode skill handoff (light)",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc01-skill-handoff&theme=light",
+      "output": "screenshots/TC-01-skill-handoff-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-02",
+      "description": "api-key mode skill integrated (light)",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc02-skill-integrated&theme=light",
+      "output": "screenshots/TC-02-skill-integrated-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-03",
+      "description": "subscription mode agent handoff (light)",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc03-agent-handoff&theme=light",
+      "output": "screenshots/TC-03-agent-handoff-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-04",
+      "description": "terminal handoff layout with long command",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc04-layout&theme=light",
+      "output": "screenshots/TC-04-handoff-layout-long-command.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-05",
+      "description": "copy button feedback",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc05-copy-feedback&theme=light",
+      "output": "screenshots/TC-05-copy-feedback.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-06",
+      "description": "dismiss button hides handoff card",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc06-dismiss&theme=light",
+      "output": "screenshots/TC-06-dismiss-handoff.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-07",
+      "description": "subscription mode skill handoff (dark)",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc07-dark-mode&theme=dark",
+      "output": "screenshots/TC-07-skill-handoff-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-08",
+      "description": "chat-edit regression check",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc08-chat-edit-regression&theme=light",
+      "output": "screenshots/TC-08-chat-edit-regression.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    },
+    {
+      "id": "TC-09",
+      "description": "api-key skill regression check",
+      "route": "/phase11-runtime-routing-integration-closure.html?variant=tc09-skill-regression&theme=light",
+      "output": "screenshots/TC-09-skill-regression-apikey.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1024
+      },
+      "priority": "A"
+    }
+  ]
+}

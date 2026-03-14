@@ -5,6 +5,7 @@
  * Electron IPC経由でエージェント機能にアクセスするためのヘルパー関数群。
  * 型安全なアクセスと共通のエラーハンドリングを提供。
  */
+import type { AgentStartResult } from "@repo/shared";
 
 /**
  * agentAPIが利用可能かどうかを判定
@@ -53,7 +54,7 @@ export const startAgentExecution = async (params: {
   skillId: string;
   prompt: string;
   executionId?: string;
-}): Promise<{ executionId: string } | null> => {
+}): Promise<AgentStartResult | null> => {
   return safeAgentApiCall(
     (api) => api.start(params),
     "Failed to start agent execution",
