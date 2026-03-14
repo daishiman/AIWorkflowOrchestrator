@@ -35,12 +35,14 @@ const mockClearSkillError = vi.fn();
 const mockClearAnalysis = vi.fn();
 
 let mockCurrentAnalysis: SkillAnalysis | null = null;
+let mockPreviousAnalysis: SkillAnalysis | null = null;
 let mockIsAnalyzing = false;
 let mockIsImproving = false;
 let mockSkillError: string | null = null;
 
 vi.mock("../../../store", () => ({
   useCurrentAnalysis: () => mockCurrentAnalysis,
+  usePreviousAnalysis: () => mockPreviousAnalysis,
   useIsAnalyzingSkill: () => mockIsAnalyzing,
   useIsImprovingSkill: () => mockIsImproving,
   useSkillError: () => mockSkillError,
@@ -67,6 +69,7 @@ describe("SkillAnalysisView Store統合", () => {
 
     // Reset store mock state
     mockCurrentAnalysis = defaultAnalysis;
+    mockPreviousAnalysis = null;
     mockIsAnalyzing = false;
     mockIsImproving = false;
     mockSkillError = null;
