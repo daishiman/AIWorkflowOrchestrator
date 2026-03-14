@@ -17,10 +17,12 @@
 import { useState, useEffect, useCallback } from "react";
 import type {
   ImprovementResult,
+  SkillAnalysis,
   Suggestion,
 } from "@repo/shared/types/skill-improver";
 import {
   useCurrentAnalysis,
+  usePreviousAnalysis,
   useIsAnalyzingSkill,
   useIsImprovingSkill,
   useSkillError,
@@ -32,6 +34,9 @@ import {
 // ============================================
 // Types
 // ============================================
+
+/** スコア差分の方向 */
+export type ScoreDirection = "up" | "neutral" | "down";
 
 export interface UseSkillAnalysisReturn {
   /** 分析結果（未取得時はnull） */
@@ -46,6 +51,16 @@ export interface UseSkillAnalysisReturn {
   error: string | null;
   /** 改善適用結果（未適用時はnull） */
   improvementResult: ImprovementResult | null;
+  /** 改善適用前のスナップショット分析結果（handleApplySelected実行前はnull） */
+  previousAnalysis: SkillAnalysis | null;
+  /** スコア差分（previousAnalysisがある場合のみ計算、ない場合はnull） */
+  scoreDelta: number | null;
+  /** スコア差分の方向（|delta| <= 2 は neutral） */
+  scoreDirection: ScoreDirection | null;
+  /** evaluatePrompt エラーメッセージ */
+  evaluateError: string | null;
+  /** evaluatePrompt エラーフラグ */
+  isEvaluateError: boolean;
   /** 分析を手動実行する */
   handleAnalyze: () => Promise<void>;
   /** 提案の選択/選択解除をトグルする */
@@ -56,6 +71,8 @@ export interface UseSkillAnalysisReturn {
   handleApplySelected: () => Promise<void>;
   /** 全自動改善を実行する */
   handleAutoImprove: () => Promise<void>;
+  /** プロンプトを評価する（空文字列はエラー） */
+  handleEvaluatePrompt: (prompt: string) => Promise<void>;
 }
 
 // ============================================
@@ -83,6 +100,7 @@ export const buildAutoFixableSelection = (
 export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
   // ---- Store state (P31対策: 個別セレクタで取得) ----
   const analysis = useCurrentAnalysis();
+  const previousAnalysis = usePreviousAnalysis();
   const isAnalyzing = useIsAnalyzingSkill();
   const isImproving = useIsImprovingSkill();
   const error = useSkillError();
@@ -98,6 +116,8 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
   );
   const [improvementResult, setImprovementResult] =
     useState<ImprovementResult | null>(null);
+  const [evaluateError, setEvaluateError] = useState<string | null>(null);
+  const [isEvaluateError, setIsEvaluateError] = useState<boolean>(false);
 
   // ---- Handlers ----
 
@@ -145,6 +165,23 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
     }
   }, [analysis, selectedSuggestions, skillName, applySkillImprovements]);
 
+  const handleEvaluatePrompt = useCallback(async (prompt: string) => {
+    if (prompt.trim() === "") {
+      setEvaluateError("プロンプトを入力してください");
+      setIsEvaluateError(true);
+      return;
+    }
+    setEvaluateError(null);
+    setIsEvaluateError(false);
+    try {
+      await window.electronAPI.skill.evaluatePrompt(prompt);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "評価に失敗しました";
+      setEvaluateError(message);
+      setIsEvaluateError(true);
+    }
+  }, []);
+
   const handleAutoImprove = useCallback(async () => {
     const isConfirmed = window.confirm("全自動改善を実行しますか？");
     if (!isConfirmed) return;
@@ -163,6 +200,20 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
     handleAnalyze();
   }, [handleAnalyze]);
 
+  // スコア差分の計算（previousAnalysis がある場合のみ）
+  const scoreDelta: number | null =
+    previousAnalysis != null && analysis != null
+      ? analysis.overallScore - previousAnalysis.overallScore
+      : null;
+  const scoreDirection: ScoreDirection | null =
+    scoreDelta != null
+      ? scoreDelta >= 3
+        ? "up"
+        : scoreDelta <= -3
+          ? "down"
+          : "neutral"
+      : null;
+
   return {
     analysis,
     isAnalyzing,
@@ -170,10 +221,16 @@ export const useSkillAnalysis = (skillName: string): UseSkillAnalysisReturn => {
     selectedSuggestions,
     error,
     improvementResult,
+    previousAnalysis,
+    scoreDelta,
+    scoreDirection,
+    evaluateError,
+    isEvaluateError,
     handleAnalyze,
     handleToggleSuggestion,
     handleSelectAutoFixable,
     handleApplySelected,
     handleAutoImprove,
+    handleEvaluatePrompt,
   };
 };

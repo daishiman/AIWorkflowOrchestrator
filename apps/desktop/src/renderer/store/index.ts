@@ -662,6 +662,9 @@ export const useClearStreamingMessages = () =>
 /** 現在の分析結果 */
 export const useCurrentAnalysis = () =>
   useAppStore((state) => state.currentAnalysis);
+/** 改善適用前のスナップショット分析結果（Δスコア表示用） */
+export const usePreviousAnalysis = () =>
+  useAppStore((state) => state.previousAnalysis);
 /** スキル分析中フラグ */
 export const useIsAnalyzingSkill = () =>
   useAppStore((state) => state.isAnalyzing);

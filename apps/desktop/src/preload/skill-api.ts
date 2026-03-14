@@ -55,7 +55,9 @@ import type {
   Suggestion,
   ImprovementResult,
   ImprovementOptions,
+  PromptEvaluation,
 } from "@repo/shared/types/skill-improver";
+import type { OperationResult } from "@repo/shared/types/skill";
 import type { BackupInfo, SkillFileTreeNode } from "./types";
 import type {
   DebugSessionState,
@@ -313,6 +315,15 @@ export interface SkillAPI {
    * @returns 分析結果
    */
   analyze: (skillName: string) => Promise<SkillAnalysis>;
+
+  /**
+   * プロンプトを評価して採点する (TASK-SKILL-LIFECYCLE-04)
+   * @param prompt - 評価対象のプロンプト文字列
+   * @returns 評価結果（スコア・ブレークダウン・フィードバック）
+   */
+  evaluatePrompt: (
+    prompt: string,
+  ) => Promise<OperationResult<PromptEvaluation>>;
 
   /**
    * 選択した改善提案を適用する
@@ -690,6 +701,14 @@ export const skillAPI: SkillAPI = {
 
   analyze: (skillName: string): Promise<SkillAnalysis> =>
     safeInvokeUnwrap<SkillAnalysis>(IPC_CHANNELS.SKILL_ANALYZE, { skillName }),
+
+  evaluatePrompt: (
+    prompt: string,
+  ): Promise<OperationResult<PromptEvaluation>> =>
+    safeInvoke<OperationResult<PromptEvaluation>>(
+      IPC_CHANNELS.SKILL_OPTIMIZE_EVALUATE,
+      { prompt },
+    ),
 
   applyImprovements: (
     skillName: string,

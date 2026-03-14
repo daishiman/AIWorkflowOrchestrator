@@ -20,6 +20,7 @@
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
+| バグ修正（Skill Lifecycle 評価・採点ゲート） | workflow-skill-lifecycle-evaluation-scoring-gate.md, interfaces-agent-sdk-skill-details.md, arch-state-management-details.md | ui-ux-feature-components-reference.md, task-workflow.md, lessons-learned-current.md, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md`, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
 | スキルライフサイクル一次導線設計 / 画面責務再編 | ui-ux-navigation.md, ui-ux-feature-components.md, arch-state-management.md, architecture-overview.md | ui-ux-settings.md, interfaces-agent-sdk-ui.md, ui-ux-agent-execution.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
 | UI実装（HistorySearch timeline / あなたの記録） | ui-history-search-view.md, ui-ux-feature-components.md, arch-state-management.md | api-ipc-system.md, ui-ux-navigation.md, task-workflow.md, lessons-learned.md |
@@ -192,6 +193,7 @@
 | workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
 | workflow-workspace-preview-search-resilience-guard.md | QuickFileSearch / PreviewPanel / renderer local timeout+retry / `external-dev-server` capture fallback を再利用したい時 | helper 抽出、typed taxonomy、`audit --target-file`、5分解決カード |
 | workflow-ai-runtime-authmode-unification.md | AI runtime/auth-mode foundation と Settings 3領域レビュー反映を再利用したい時 | foundation 契約、current canonical set、artifact inventory、後続9タスク伝搬、Phase 11/12 再監査手順 |
+| workflow-skill-lifecycle-evaluation-scoring-gate.md | SkillAnalysis の評価・採点ゲート統合、`ScoringGate` 契約、`evaluatePrompt` 導線、Phase 12 未タスク canonical path 是正を再利用したい時 | 実装内容、苦戦箇所、current canonical set、artifact inventory、legacy path 互換、same-wave 検証手順 |
 | legacy-ordinal-family-register.md | 旧 filename から current semantic filename への逆引きを確認したい時 | legacy->current マッピング、mirror 同期前提、最終検証日 |
 | workflow-workspace-parent-reference-sweep-guard.md | docs-only parent workflow の pointer/index/spec/script/mirror drift と representative visual re-audit を再利用したい時 | drift guard、visual review board、unassigned cleanup、5分解決カード |
 | workflow-onboarding-wizard-alignment.md | onboarding overlay / Settings rerun / follow-up unassigned drift を再利用したい時 | force-open 契約、screenshot 6件、SubAgent分担、苦戦箇所、5分解決カード |
