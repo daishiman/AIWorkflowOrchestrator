@@ -71,22 +71,22 @@ export function TerminalHandoffCard({
     <div
       role="region"
       aria-label="ターミナルでの実行案内"
-      className="rounded-xl border border-[var(--separator)] bg-[var(--secondary-bg)] p-5 shadow-sm"
+      className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)] p-5 shadow-sm"
     >
       {/* ヘッダー */}
       <div className="mb-3 flex items-center gap-2">
-        <span className="text-base font-semibold text-[var(--label)]">
+        <span className="text-base font-semibold text-[var(--text-primary)]">
           Terminal で続けてください
         </span>
       </div>
 
       {/* 案内文 */}
-      <p className="mb-4 text-sm text-[var(--secondary-label)]">
+      <p className="mb-4 text-sm text-[var(--text-secondary)]">
         {bundle.manualRetryRule}
       </p>
 
       {/* コマンド表示 */}
-      <div className="mb-3 rounded-lg bg-[var(--tertiary-bg)] px-4 py-3 font-mono text-sm text-[var(--label)]">
+      <div className="mb-3 rounded-lg bg-[var(--bg-tertiary)] px-4 py-3 font-mono text-sm text-[var(--text-primary)]">
         <span className="select-all break-all">{bundle.suggestedCommand}</span>
       </div>
 
@@ -96,24 +96,24 @@ export function TerminalHandoffCard({
           type="button"
           onClick={handleCopy}
           aria-label="コマンドをクリップボードにコピー"
-          className="rounded-md bg-[var(--accent)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 active:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+          className="rounded-md bg-[var(--accent-primary)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 active:opacity-60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
         >
           {copied ? "コピー済み" : "コピー"}
         </button>
       </div>
 
       {/* 作業ディレクトリ */}
-      <p className="mb-4 text-xs text-[var(--secondary-label)]">
+      <p className="mb-4 text-xs text-[var(--text-secondary)]">
         作業ディレクトリ: <code className="font-mono">{bundle.cwd}</code>
       </p>
 
       {/* runbook（任意） */}
       {bundle.runbook && (
         <details className="mb-4">
-          <summary className="cursor-pointer text-sm text-[var(--accent)]">
+          <summary className="cursor-pointer text-sm text-[var(--accent-primary)]">
             詳細手順を見る ▼
           </summary>
-          <div className="mt-2 rounded-lg bg-[var(--tertiary-bg)] p-3 text-sm text-[var(--label)]">
+          <div className="mt-2 rounded-lg bg-[var(--bg-tertiary)] p-3 text-sm text-[var(--text-primary)]">
             <pre className="whitespace-pre-wrap">{bundle.runbook}</pre>
           </div>
         </details>
@@ -125,7 +125,7 @@ export function TerminalHandoffCard({
           <button
             type="button"
             onClick={onOpenTerminal}
-            className="rounded-md bg-[var(--accent)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+            className="rounded-md bg-[var(--accent-primary)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
           >
             terminal を開く
           </button>
@@ -134,7 +134,7 @@ export function TerminalHandoffCard({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-[var(--separator)] bg-[var(--secondary-bg)] px-4 py-1.5 text-sm font-medium text-[var(--label)] transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+            className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-secondary)] px-4 py-1.5 text-sm font-medium text-[var(--text-primary)] transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
           >
             閉じる
           </button>
