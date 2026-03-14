@@ -78,6 +78,21 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 **関連タスク**: 09-TASK-FIX-SETTINGS-PRELOAD-SANDBOX-ITERABLE-GUARD-001, TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001
 **関連**: task-04（Preload 層 safeInvoke 防御）との責務分離
 
+### P59: Preload API 未公開の検出と防止（TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001）
+
+`chatEditApi.ts` に `exposeChatEditAPI()` 関数を定義しても、`preload/index.ts` で呼び出さなければ `window.chatEditAPI` は `undefined` のまま Renderer に公開されない。2026-03-14 の実装で発覚した。
+
+| 観点 | 内容 |
+| --- | --- |
+| 根本原因 | `preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックと else ブロックの両方に `exposeChatEditAPI()` 呼び出しが欠落していた |
+| 症状 | `window.chatEditAPI` が `undefined` で全 chat-edit IPC 呼び出しが silent fail |
+| 修正内容 | `preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックと `else` ブロックの両方に `exposeChatEditAPI()` を追加 |
+| 監査方法 | `grep -c "exposeInMainWorld" preload/index.ts` で公開 API 数を確認し、定義済み API 数と一致させる |
+| 再発防止 | 新規 Preload API 追加時は「定義 → index.ts 両ブロック追記 → typecheck → 手動確認（DevTools で `window.xxxAPI` 存在検証）」を 1 セットで実施 |
+
+**関連 Pitfall**: P59（lessons-learned-current.md）、P23（API二重定義の型管理複雑性）
+**関連タスク**: TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001
+
 ### Workspace file watch lifecycle（TASK-UI-04A）
 
 `WorkspaceView` は selected file の再読込に限って watch を使う。watch 契約は file read/write の一般契約とは分けて扱う。
@@ -127,6 +142,26 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - stream listener は preload 提供の unsubscribe を必ず cleanup する。
 - renderer は `isStreamingRef` と `streamContentRef` を使って競合に強い状態遷移を行うが、権限境界自体は preload/main に残す。
 - mention 経由の file context 追加でも `file:read` 失敗を黙殺せず alert 表示し、失敗状態を可視化する。
+
+### Workspace Chat Edit runtime/handoff IPC 境界（TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001）
+
+`chat-edit:send-with-context` は auth mode と API key 状態に応じて integrated 実行か handoff 案内を返す。2026-03-14 の同期で preload/main の契約を以下に固定した。
+
+| 観点 | 契約 |
+| --- | --- |
+| preload 公開 | `contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI)` を使用し、`window` 直接代入を禁止 |
+| invoke payload | `read-file` / `write-file` は object payload（`{ filePath, workspacePath? }`）で Main 契約と一致させる |
+| sender 検証 | すべての `chat-edit:*` handler で `validateIpcSender` を先頭実行 |
+| workspace 境界 | `workspacePath` 指定時は `isAllowedPath()` で context file 全件を検証し、違反時は `PERMISSION_DENIED` |
+| runtime 分岐 | `RuntimeResolver.resolve()` が `subscription` / API key 不足を `handoff` として返す |
+| handoff 出力 | `TerminalHandoffBuilder` は `terminalCommand` に API key を含めない（secret 非中継） |
+
+**セキュリティ意図**:
+
+- renderer は `chatEditAPI` 以外の直接 IPC 経路を持たない。
+- handoff は「手動実行支援」に限定し、auto-send / hidden prompt injection を許容しない。
+- auth key の有無を判定しても key 実値は UI / command / error へ露出しない。
+
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。
@@ -370,4 +405,3 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 **関連タスク**: slide-directory-settings（2026-01-14完了）
 
 ---
-

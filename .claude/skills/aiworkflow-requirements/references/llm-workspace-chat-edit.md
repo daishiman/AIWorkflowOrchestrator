@@ -102,7 +102,7 @@ IContextBuilderインターフェースは以下のメソッドを提供する�
 
 ## ChatEditService
 
-LLM統合のFacadeサービス。プロンプト構築とレスポンス解析を担当。
+LLM統合のFacadeサービス。プロンプト構築とレスポンス解析を担当。`RuntimeResolver` が `integrated` を返した場合にのみインスタンス化され、解決済みの `LLMAdapter` をコンストラクタで受け取る。`ipc/chatEditHandlers.ts` の `handleSendWithContext` では `resolve()` → integrated 判定 → `new ChatEditService(resolution.adapter, contextBuilder)` の順で生成する。
 
 ### インターフェース
 
@@ -118,11 +118,12 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 | 型名                    | 説明                               |
 | ----------------------- | ---------------------------------- |
-| SendWithContextRequest  | リクエスト（contexts/command/message/options） |
-| SendWithContextResponse | レスポンス（success/result/error） |
+| SendWithContextRequest  | リクエスト（contexts/command/message?/options/workspacePath?） |
+| SendWithContextResponse | レスポンス（success/result/error/handoff?/guidance?） |
 | EditCommand             | 編集コマンド（type/targetContextId/instruction） |
 | GeneratedResult         | 生成結果（id/originalContent/generatedContent/diffHunks/status） |
 | DiffHunk                | 差分ハンク（oldStart/oldLines/newStart/newLines/lines） |
+| HandoffGuidance         | terminal handoff 案内（terminalCommand/contextSummary/reason） |
 
 ### EditCommand.type
 
@@ -143,6 +144,119 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 | LLM_ERROR         | LLM APIエラー              | Yes       |
 | TIMEOUT           | タイムアウト               | Yes       |
 | RATE_LIMIT        | レート制限                 | Yes       |
+| SELECTION_REQUIRED | 選択範囲がない            | No        |
+| ACCESS_NOT_CONFIGURED | integrated runtime の資格情報がない | No |
+| PERMISSION_DENIED | workspacePath 制約違反    | No        |
+
+---
+
+## RuntimeResolver
+
+`AuthMode` と API key の有無からランタイム（integrated / handoff）を決定するサービス。`chat-edit:send-with-context` の前段で呼び出される。
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts`
+
+### インターフェース
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| resolve | なし | Promise\<RuntimeResolution\> | 現在の auth mode と API key 状態を評価し、ランタイムを決定する |
+
+### 型定義
+
+| 型名 | 説明 |
+| ---- | ---- |
+| RuntimeResolution | 判定結果の判別共用体。`{ type: "integrated"; adapter: LLMAdapter }` または `{ type: "handoff"; reason: string }` |
+
+### 解決テーブル
+
+| authMode | hasApiKey | 結果 | reason |
+| --- | --- | --- | --- |
+| subscription | any | handoff | subscription mode |
+| api-key | true | integrated | — （`AnthropicLLMAdapter` を返却） |
+| api-key | false | handoff | API key not configured |
+
+### DI
+
+コンストラクタで以下を注入する。
+
+| 依存 | 説明 |
+| ---- | ---- |
+| IAuthModeService | 現在の `AuthMode` を取得 |
+| IAuthKeyService | API key の存在チェック |
+
+---
+
+## AnthropicLLMAdapter
+
+`LLMAdapter` インターフェースの Anthropic API 実装。Electron の `net.fetch` を使用して Main Process 内で API 呼び出しを完結させる。
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/AnthropicLLMAdapter.ts`
+
+### インターフェース
+
+LLMAdapter インターフェースを実装する。
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| sendMessage | prompt: string | Promise\<string\> | プロンプトを Anthropic API に送信し、レスポンステキストを返す |
+
+### 定数
+
+| 定数名 | 値 | import元 | 説明 |
+| ------ | -- | -------- | ---- |
+| ANTHROPIC_API_ENDPOINT | `https://api.anthropic.com/v1/messages` | `../auth/types` | API エンドポイント |
+| ANTHROPIC_API_VERSION | `2023-06-01` | `../auth/types` | API バージョンヘッダ値 |
+
+### リクエスト仕様
+
+| 項目 | 値 |
+| ---- | -- |
+| モデル | `claude-sonnet-4-6` |
+| HTTPメソッド | POST |
+| ヘッダ | `x-api-key`, `anthropic-version`, `content-type: application/json` |
+| 実行境界 | Main Process（`electron.net.fetch`） |
+
+### セキュリティ
+
+- API キーは Main Process 内のみで使用し、Renderer に渡さない
+- `net.fetch` により Chromium のネットワークスタックを経由し、CSP の制約を受けない
+
+---
+
+## TerminalHandoffBuilder
+
+handoff 判定時に `HandoffGuidance` を構築するサービス。ユーザーがターミナルで Claude CLI を使用するための情報を生成する。
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/TerminalHandoffBuilder.ts`
+
+### インターフェース
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| build | request: SendWithContextRequest, reason: string | HandoffGuidance | handoff 案内情報を構築する |
+
+### 型定義
+
+| 型名 | フィールド | 説明 |
+| ---- | ---------- | ---- |
+| HandoffGuidance | terminalCommand: string | 実行すべき CLI コマンド |
+| | contextSummary: string | コンテキストの要約 |
+| | reason: string | handoff の理由 |
+
+### contextSummary 生成内容
+
+| 情報 | 説明 |
+| ---- | ---- |
+| basename | 対象ファイルのベース名 |
+| 選択行範囲 | 選択がある場合、開始行〜終了行 |
+| コマンドタイプ | EditCommand.type（refactor, generate-test 等） |
+| workspace名 | ワークスペースのディレクトリ名 |
+
+### セキュリティ
+
+- `terminalCommand` に API キーを含めない
+- コマンド形式: `claude --add-dir "<workspace>" "<message>"`
 
 ---
 
@@ -150,10 +264,10 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 | チャネル                    | 方向            | Request                                             | Response                      |
 | --------------------------- | --------------- | --------------------------------------------------- | ----------------------------- |
-| `chat-edit:read-file`       | Renderer → Main | `{ filePath: string, workspacePath?: string \| null }` | `IPCResponse<FileReadResult>` |
-| `chat-edit:write-file`      | Renderer → Main | `{ filePath, content, workspacePath?: string \| null }` | `IPCResponse<FileWriteResult>` |
-| `chat-edit:get-selection`   | Renderer → Main | なし                                                | `IPCResponse<TextSelection>`  |
-| `chat-edit:send-with-context` | Renderer → Main | `SendWithContextRequest`                          | `IPCResponse<GeneratedResult>` |
+| `chat-edit:read-file`       | Renderer → Main | `{ filePath: string, workspacePath?: string \| null }` | `FileReadResult` |
+| `chat-edit:write-file`      | Renderer → Main | `{ filePath, content, options?, workspacePath?: string \| null }` | `FileWriteResult` |
+| `chat-edit:get-selection`   | Renderer → Main | なし                                                | `{ success: boolean, data: TextSelection \| null }`  |
+| `chat-edit:send-with-context` | Renderer → Main | `SendWithContextRequest`                          | `SendWithContextResponse` |
 
 ### workspacePathパラメータ
 
@@ -162,7 +276,7 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 | workspacePath | string \| null   | No   | ワークスペースパス。指定時はファイルアクセスをワークスペース内に制限 |
 
 - **未指定/null/空文字の場合**: 検証スキップ（後方互換性維持）
-- **指定時**: `isWithinWorkspace()`でパス検証し、外部アクセスは`PERMISSION_DENIED`エラー
+- **指定時**: `isAllowedPath()` でパス検証し、外部アクセスは`PERMISSION_DENIED`エラー
 
 ---
 
@@ -174,7 +288,11 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ### パストラバーサル防止
 
-`utils/PathValidator`モジュールの`detectTraversal`関数および`validateFilePath`関数を使用してパストラバーサル攻撃を防止する。パストラバーサルが検出された場合、エラーコード「INVALID_PATH」とメッセージ「Path traversal detected」を含むエラーレスポンスを返す。
+`utils/PathValidator`モジュールの`detectTraversal`関数および`validateFilePath`関数で path traversal を拒否する。
+
+### workspacePath 境界検証
+
+`handleSendWithContext` では `workspacePath` が指定されている場合、リクエスト内の各コンテキストファイルに対して `isAllowedPath(ctx.filePath, [args.workspacePath])` を実行する。境界外のファイルパスが検出された場合は `PERMISSION_DENIED` エラーを返し、LLM 呼び出しを行わない。この検証は `RuntimeResolver.resolve()` より前に実行され、handoff/integrated いずれの経路でもファイルパスの安全性を保証する。
 
 ---
 
@@ -198,6 +316,9 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 | ChatEditService.ts | ChatEditServiceメイン実装 |
 | ContextBuilder.ts | ContextBuilderメイン実装 |
 | FileService.ts | FileServiceメイン実装 |
+| RuntimeResolver.ts | auth mode / API key から runtime を解決 |
+| AnthropicLLMAdapter.ts | integrated runtime 用の LLM adapter |
+| TerminalHandoffBuilder.ts | handoff guidance 生成 |
 | prompts.ts | プロンプトテンプレート |
 | types.ts | 型定義 |
 | index.ts | モジュールエクスポート |
@@ -259,6 +380,17 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 | カバレッジ     | Line 95%, Branch 90%, Function 100%                                             |
 | ドキュメント   | `docs/30-workflows/TASK-WCE-WORKSPACE-001/`                                     |
 
+### AI Runtime Activation 追補（TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001）2026-03-14
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+| 実装内容 | `RuntimeResolver` / `AnthropicLLMAdapter` / `TerminalHandoffBuilder` を追加し、`chat-edit:send-with-context` で integrated/handoff を分岐 |
+| セキュリティ | `workspacePath` 指定時に `isAllowedPath()` で context file を検証 |
+| IPC更新 | `SendWithContextResponse` に `handoff` / `guidance` を追加 |
+| Preload更新 | `chatEditAPI` を `contextBridge.exposeInMainWorld` で公開し、read/write invoke payload を object 契約へ整合 |
+| 検証 | `chatEditHandlers.*` 4 files / 55 tests PASS、`pnpm --filter @repo/desktop typecheck` PASS |
+
 ### 削除されたTODO
 
 | ファイル            | 行番号 | 削除されたTODO                                 |
@@ -272,5 +404,6 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 | 日付       | バージョン | 変更内容                                                            |
 | ---------- | ---------- | ------------------------------------------------------------------- |
+| 2026-03-14 | v1.2.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 を反映。`RuntimeResolver`/`TerminalHandoffBuilder`/`AnthropicLLMAdapter`、`SendWithContextResponse.handoff/guidance`、`workspacePath` 境界検証、preload `contextBridge` 公開を同期 |
 | 2026-02-02 | v1.1.0     | TASK-WCE-WORKSPACE-001完了: workspacePathパラメータ追加、完了タスクセクション追加 |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                  |

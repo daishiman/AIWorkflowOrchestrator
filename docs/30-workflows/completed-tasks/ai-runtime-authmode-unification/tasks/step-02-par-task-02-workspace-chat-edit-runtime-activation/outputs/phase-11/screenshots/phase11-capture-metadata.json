@@ -1,0 +1,35 @@
+{
+  "capturedAt": "2026-03-14T03:06:17.600Z",
+  "mode": "fallback-review-board",
+  "reason": "electron-vite dev capture unavailable due esbuild platform mismatch",
+  "workflowRoot": "docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-chat-edit-selection.png",
+      "title": "Selection Ready Contract Review",
+      "sources": [
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/ui-ux-realization.md"
+      ]
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-chat-edit-handoff.png",
+      "title": "Missing API Key / Handoff Contract Review",
+      "sources": [
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/contract-matrix.md"
+      ]
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-chat-edit-diff-preview.png",
+      "title": "Diff Preview Contract Review",
+      "sources": [
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/design-summary.md"
+      ]
+    }
+  ]
+}

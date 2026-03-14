@@ -82,11 +82,8 @@ import {
   createStubLogger,
 } from "../infrastructure";
 import { registerChatEditHandlers } from "./chatEditHandlers";
-import {
-  ChatEditService,
-  FileService,
-  ContextBuilder,
-} from "../services/chat-edit";
+import { FileService, ContextBuilder } from "../services/chat-edit";
+import { RuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import {
   AUTH_ERROR_CODES,
   PROFILE_ERROR_CODES,
@@ -833,14 +830,17 @@ export function registerAllIpcHandlers(
   track("registerChatEditHandlers", () => {
     const fileService = new FileService();
     const contextBuilder = new ContextBuilder();
-    const stubLLMAdapter = {
-      sendMessage: async () => ({
-        success: false,
-        error: { message: "LLM adapter not configured for chat-edit" },
-      }),
-    };
-    const chatEditService = new ChatEditService(stubLLMAdapter, contextBuilder);
-    registerChatEditHandlers(mainWindow, chatEditService, fileService);
+    const authModeService = createAuthModeService(authKeyService);
+    const runtimeResolver = new RuntimeResolver(
+      authKeyService,
+      authModeService,
+    );
+    registerChatEditHandlers(
+      mainWindow,
+      contextBuilder,
+      fileService,
+      runtimeResolver,
+    );
   });
 
   // --- サマリーログ ---

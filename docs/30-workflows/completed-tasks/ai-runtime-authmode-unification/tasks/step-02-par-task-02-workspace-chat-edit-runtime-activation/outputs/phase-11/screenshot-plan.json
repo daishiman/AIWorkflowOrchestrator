@@ -1,0 +1,60 @@
+{
+  "taskId": "TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001",
+  "phase": 11,
+  "note": "current build の実画面撮影は esbuild platform mismatch により失敗したため、同日 fallback review board 方式で TC-11-01..03 を撮影済み。",
+  "screenshotTargets": [
+    {
+      "tcId": "TC-11-01",
+      "filename": "TC-11-01-chat-edit-selection.png",
+      "targetScreen": "Workspace Chat Edit",
+      "state": "selection-ready",
+      "description": "Monaco editor で複数行を選択した状態。Editor Selection Action Bar に「編集案を生成」ボタン (#007AFF) と選択行数バッジが表示されている。Context Summary Panel にファイル名・行範囲を表示。",
+      "captureMethod": "Playwright page.screenshot() または Electron webContents.capturePage()",
+      "appleHigCheckpoints": [
+        "「編集案を生成」ボタンのコントラスト比 4.5:1 以上を確認",
+        "8px グリッドのレイアウトを確認",
+        "選択行数バッジのセカンダリテキスト色 rgba(60,60,67,0.6) を確認"
+      ],
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-02",
+      "filename": "TC-11-02-chat-edit-handoff.png",
+      "targetScreen": "Workspace Chat Edit",
+      "state": "handoff",
+      "description": "API key 未設定で「編集案を生成」をクリックした後の状態。Inline Guidance Block が #FF9500 左ボーダーで表示。「この画面では自動実行せず terminal で続ける」マイクロコピーと terminal コマンドのコードブロックが表示。",
+      "captureMethod": "Playwright page.screenshot() または Electron webContents.capturePage()",
+      "appleHigCheckpoints": [
+        "#FF9500 ボーダーが警告状態を明確に示しているか確認",
+        "terminal コマンドが等幅フォントで表示されているか確認",
+        "「terminal で続ける」Outline CTA と Primary CTA の視覚的優先度の差を確認",
+        "Inline Guidance Block が Monaco editor のコンテンツを過度に隠していないか確認（Deference 原則）"
+      ],
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-03",
+      "filename": "TC-11-03-chat-edit-diff-preview.png",
+      "targetScreen": "Workspace Chat Edit",
+      "state": "diff-ready",
+      "description": "LLM 生成成功後の diff preview 表示状態。削除行（赤背景）/ 追加行（緑背景）の unified diff を表示。「差分を確認」→「変更を適用」のサブアクション導線が表示。",
+      "captureMethod": "Playwright page.screenshot() または Electron webContents.capturePage()",
+      "appleHigCheckpoints": [
+        "削除行の背景色（systemRed 系）と追加行の背景色（systemGreen 系）のコントラストを確認",
+        "「変更を適用」ボタンが確認ダイアログをトリガーするか確認（Destructive-confirm）",
+        "diff 表示がコード内容の可読性を損なっていないか確認（Clarity 原則）",
+        "「差分を確認」と「変更を適用」の Progressive Disclosure が自然かを確認"
+      ],
+      "status": "captured"
+    }
+  ],
+  "implementationNote": {
+    "playwright": "cd apps/desktop && pnpm exec playwright screenshot --browser chromium --full-page",
+    "electron": "webContents.capturePage().then(image => image.toPNG())",
+    "xvfb": "xvfb-run -a electron . --screenshot (Linux headless 環境)"
+  },
+  "createdAt": "2026-03-14",
+  "capturedAt": "2026-03-14",
+  "captureMode": "fallback-review-board",
+  "captureMetadata": "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+}

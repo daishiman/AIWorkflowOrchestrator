@@ -1,0 +1,145 @@
+{
+  "taskId": "TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001",
+  "title": "Workspace Chat Edit の AI runtime 有効化",
+  "type": "design",
+  "priority": "high",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": ["outputs/phase-4/test-matrix.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/implementation-plan.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": ["outputs/phase-6/regression-plan.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-plan.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactor-plan.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": ["outputs/phase-9/qa-checklist.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-sync-plan.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["outputs/phase-13/pr-summary-draft.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "selection、context、runtime の要件が分離されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "既存 TODO の吸収範囲が明確になっている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "Task01 foundation の access capability 契約（integratedRuntime / terminalSurface）を参照して runtime 判定境界が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "integrated runtime が unavailable / blocked のとき、silent fallback せず terminal handoff guidance を返す設計が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "aiworkflow-requirements の必要仕様抽出マトリクス（foundation / IPC / LLM / UI / state / 台帳）が index と各Phaseに反映されている",
+      "verified": true
+    }
+  ],
+  "createdAt": "2026-03-13",
+  "updatedAt": "2026-03-14"
+}

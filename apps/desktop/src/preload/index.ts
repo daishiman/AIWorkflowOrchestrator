@@ -558,6 +558,8 @@ import { skillAPI } from "./skill-api";
 import { skillCreatorAPI } from "./skill-creator-api";
 import type { SkillCreatorAPI } from "./skill-creator-api";
 import type { PermissionAPI } from "./types";
+import { chatEditAPI } from "./chatEditApi";
+import type { ChatEditAPI } from "./chatEditApi";
 
 const conversationAPI: ConversationAPI = {
   list: (request: ConversationListRequest) =>
@@ -598,6 +600,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
     contextBridge.exposeInMainWorld("permissionAPI", permissionAPI);
     contextBridge.exposeInMainWorld("skillCreatorAPI", skillCreatorAPI);
+    contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
   }
@@ -621,4 +624,5 @@ if (process.contextIsolated) {
     permissionAPI;
   (window as unknown as { skillCreatorAPI: SkillCreatorAPI }).skillCreatorAPI =
     skillCreatorAPI;
+  (window as unknown as { chatEditAPI: ChatEditAPI }).chatEditAPI = chatEditAPI;
 }

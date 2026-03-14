@@ -20,6 +20,9 @@
 |------|-----------|----------|
 | 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
 | 2026-03-14 | 1.29.88 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
+||||||| Stash base
+| 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 12 再確認追補を反映。再参照既存未タスクが `target-file` 監査で current 違反になり得る点を追加し、`audit-unassigned-tasks --target-file` で是正確認する運用を明文化 |
+| 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 の再監査教訓を追補。`electron-vite dev` の esbuild platform mismatch で実画面 capture が詰まる条件、fallback review board 証跡化、`chatEditAPI` payload 契約（object vs positional）ドリフト是正を追加 |
 | 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の follow-up 教訓を追補。Phase 4 契約テストと Phase 6 回帰テストの責務混線を `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` として未タスク化し、境界定義と重複防止手順を追加 |
 | 2026-03-12 | 1.29.83 | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 の教訓を追加。large skill docs は `SKILL.md` を入口に保ち、family file と rolling `LOGS.md` + archive へ責務分離し、`.claude` 正本更新後に `.agents` mirror と validator 3点セットを同期する手順を標準化 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
@@ -105,6 +108,54 @@
 | 再発条件 | 「実装記録は完了したので index は後でよい」と判断する |
 | 解決策 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、`current canonical set` と `artifact inventory` を起点に parent docs / ledger / indexes / logs を同一 wave で同期した |
 | 標準ルール | Phase 12 の close-out は `workflow + parent docs + task-workflow + lessons + indexes + LOGS + mirror` を最小単位とする |
+
+||||||| Stash base
+### 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補）
+
+#### 苦戦箇所: 既存未タスクを再参照しても、対象ファイル自体が10見出し要件を満たしていない場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `unassigned-task-detection.md` で「既存未タスクを再利用」と記録しても、`audit-unassigned-tasks --target-file` では current 違反が出るケースがあった |
+| 再発条件 | diff監査（`--diff-from HEAD`）だけで完了判定し、再参照した既存未タスク本文を個別監査しない |
+| 解決策 | 再参照した各未タスクに対して `audit-unassigned-tasks --target-file` を実行し、違反があれば同ターンで9見出しへ是正した |
+| 標準ルール | Phase 12 の「新規未タスク0件」判定時でも、再参照した既存未タスクは `target-file` 監査で `currentViolations=0` を確認する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-unassigned-links --source .../task-workflow.md` で参照切れを先に潰す。  
+2. `audit-unassigned-tasks --json --diff-from HEAD` で今回差分の合否（current）を確認する。  
+3. `unassigned-task-detection.md` で再参照した既存未タスクを列挙する。  
+4. 各ファイルへ `audit-unassigned-tasks --target-file <path>` を実行し、current違反を確認する。  
+5. 違反があれば同ターンで9見出し是正し、再実行で `currentViolations=0` を固定する。  
+
+### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001
+
+#### 苦戦箇所1: current build screenshot が esbuild platform mismatch で停止する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `electron-vite dev` が `@esbuild/darwin-arm64` / `@esbuild/darwin-x64` 不一致で起動できず、Phase 11 の実画面 capture が中断した |
+| 再発条件 | worktree の node 実行アーキと lockfile 由来 binary がずれている状態で capture script を実行する |
+| 解決策 | 当日中に fallback review board capture を current workflow 配下で生成し、`phase11-capture-metadata.json` へ理由と source を固定した |
+| 標準ルール | 明示 screenshot 要求時は「実画面試行ログ → fallback 実行 → metadata 記録 → coverage validator PASS」まで同一ターンで閉じる |
+
+#### 苦戦箇所2: chatEdit preload と Main IPC の payload 契約がドリフトしていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatEditAPI.readFile/writeFile` が positional 引数で invoke し、Main 側の object payload 契約（`{ filePath, workspacePath? }`）と不整合だった |
+| 再発条件 | IPC handler 側シグネチャ変更時に preload API と renderer hook の引数形を同時更新しない |
+| 解決策 | `chatEditApi.ts` を object payload 契約へ統一し、`getEditorSelection` も `{ success, data }` を unwrap する実装へ修正した |
+| 標準ルール | IPC 契約変更時は handler / preload / renderer usage を 1 セットで更新し、`typecheck` と関連テストを同ターンで実行する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 11 capture 前に `pnpm --filter @repo/desktop dev` の preflight 実行可否を確認する。
+2. 起動不可ならエラー理由を記録し、fallback capture を current workflow 配下で生成する。
+3. screenshot plan / manual-test-result / metadata を同時更新して TC-ID と証跡を 1:1 にする。
+4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
+5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
 
 ### 2026-03-13 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
 

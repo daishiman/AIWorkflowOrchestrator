@@ -1,0 +1,49 @@
+{
+  "taskId": "TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001",
+  "phase": 11,
+  "captureMode": "fallback-review-board",
+  "reason": "electron-vite dev capture blocked by esbuild architecture mismatch in current worktree",
+  "sourceEvidence": {
+    "workflow": "step-01-seq-task-01-ai-runtime-authmode-foundation",
+    "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots"
+  },
+  "targets": [
+    {
+      "tcId": "TC-11-01",
+      "filename": "TC-11-01-terminal-claude-transcript.png",
+      "state": "terminal-transcript",
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-02",
+      "filename": "TC-11-02-terminal-controls.png",
+      "state": "terminal-controls",
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-03",
+      "filename": "TC-11-03-terminal-unavailable-guidance.png",
+      "state": "terminal-unavailable-guidance",
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-04",
+      "filename": "TC-11-04-terminal-no-auto-send.png",
+      "state": "no-auto-send-boundary",
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-05",
+      "filename": "TC-11-05-terminal-persistent-launcher.png",
+      "state": "persistent-launcher",
+      "status": "captured"
+    },
+    {
+      "tcId": "TC-11-06",
+      "filename": "TC-11-06-terminal-manual-share.png",
+      "state": "manual-transcript-share",
+      "status": "captured"
+    }
+  ],
+  "metadata": "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+}

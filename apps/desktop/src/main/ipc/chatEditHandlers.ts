@@ -6,7 +6,11 @@
 import { ipcMain, IpcMainInvokeEvent, BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import { ChatEditService } from "../services/chat-edit/ChatEditService";
+import { ContextBuilder } from "../services/chat-edit/ContextBuilder";
 import { FileService } from "../services/chat-edit/FileService";
+import { RuntimeResolver } from "../services/chat-edit/RuntimeResolver";
+import { TerminalHandoffBuilder } from "../services/chat-edit/TerminalHandoffBuilder";
+import { isAllowedPath } from "../services/chat-edit/utils/PathValidator";
 import {
   validateIpcSender,
   toIPCValidationError,
@@ -21,8 +25,9 @@ import {
  */
 export function registerChatEditHandlers(
   mainWindow: BrowserWindow,
-  chatEditService: ChatEditService,
+  contextBuilder: ContextBuilder,
   fileService: FileService,
+  runtimeResolver: RuntimeResolver,
 ): void {
   // chat-edit:read-file
   ipcMain.handle(
@@ -151,6 +156,36 @@ export function registerChatEditHandlers(
         };
       }
 
+      // workspacePath セキュリティ検証
+      if (args.workspacePath && typeof args.workspacePath === "string") {
+        for (const ctx of args.contexts) {
+          if (!isAllowedPath(ctx.filePath, [args.workspacePath])) {
+            return {
+              success: false,
+              error: {
+                code: "PERMISSION_DENIED",
+                message: "File path is outside the workspace",
+                retryable: false,
+              },
+            };
+          }
+        }
+      }
+
+      // RuntimeResolver でランタイムを決定
+      const resolution = await runtimeResolver.resolve();
+
+      if (resolution.type === "handoff") {
+        const builder = new TerminalHandoffBuilder();
+        const guidance = builder.build(args, resolution.reason);
+        return { success: true, handoff: true, guidance };
+      }
+
+      // integrated: LLM Adapter を使って ChatEditService 経由で実行
+      const chatEditService = new ChatEditService(
+        resolution.adapter,
+        contextBuilder,
+      );
       return chatEditService.sendWithContext(args);
     },
   );
