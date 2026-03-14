@@ -3,6 +3,28 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 same-wave system spec 同期パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[Phase12] current canonical set / artifact inventory / legacy register / mirror parity を same-wave で閉じる` を追加
+  - `workflow-<feature>.md` 新設時に parent docs / ledger / index / register / mirror を同一 wave で同期する順序を標準化
+  - `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` の最終検証チェーンを明示し、docs-heavy 再監査の手戻りを減らす
+
+---
+## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク root 配置ガードを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[Phase12] 未タスク root canonical path 固定 + 9セクション正規化` パターンを追加
+  - `tasks/unassigned-task/` へ誤配置した場合の失敗条件と、`verify-unassigned-links` + `audit --diff-from HEAD --target-file` の二段監査を明文化
+  - task-spec 由来の `3.5 実装課題と解決策` 継承を含め、同種タスクの再利用性を強化
+
+---
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
 
 - **Agent**: skill-creator (update)

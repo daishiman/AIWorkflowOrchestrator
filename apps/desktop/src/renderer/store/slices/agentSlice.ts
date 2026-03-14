@@ -160,6 +160,8 @@ export interface AgentState {
   // === スキルライフサイクル状態（TASK-10A-D） ===
   /** 最新の分析結果 */
   currentAnalysis: SkillAnalysis | null;
+  /** 改善適用前のスナップショット分析結果（Δスコア表示用） */
+  previousAnalysis: SkillAnalysis | null;
   /** 分析処理中フラグ */
   isAnalyzing: boolean;
   /** 改善適用処理中フラグ */
@@ -383,6 +385,7 @@ const initialAgentState: AgentState = {
 
   // === スキルライフサイクル初期状態（TASK-10A-D） ===
   currentAnalysis: null,
+  previousAnalysis: null,
   isAnalyzing: false,
   isImproving: false,
 
@@ -857,7 +860,12 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       set({ skillError: "スキル名が無効です" });
       return;
     }
-    set({ isAnalyzing: true, skillError: null, currentAnalysis: null });
+    set({
+      isAnalyzing: true,
+      skillError: null,
+      currentAnalysis: null,
+      previousAnalysis: null,
+    });
     try {
       if (!window.electronAPI?.skill) {
         throw new Error("Skill API not available");
@@ -885,7 +893,12 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       set({ skillError: "改善提案が選択されていません" });
       return;
     }
-    set({ isImproving: true, skillError: null });
+    // 改善適用前に現在の分析結果をスナップショット（Δスコア表示用）
+    set({
+      isImproving: true,
+      skillError: null,
+      previousAnalysis: get().currentAnalysis,
+    });
     try {
       if (!window.electronAPI?.skill) {
         throw new Error("Skill API not available");
@@ -962,7 +975,7 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   },
 
   clearAnalysis: () => {
-    set({ currentAnalysis: null });
+    set({ currentAnalysis: null, previousAnalysis: null });
   },
 
   // === TASK-UI-03: 実行履歴・詳細設定アクション ===

@@ -295,3 +295,88 @@ export interface SkillOptimizeEvaluateRequest {
   /** 評価対象のプロンプト */
   prompt: string;
 }
+
+// ===== Section: 採点ゲート型 (TASK-SKILL-LIFECYCLE-04) =====
+
+/** スコアを 0-100 整数に正規化（防御的実装） */
+export function normalizeScore(raw: unknown): number {
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return 0;
+  return Math.round(Math.max(0, Math.min(100, n)));
+}
+
+/** EvaluationBreakdown の5項目（均等重み）から総合スコアを算出 */
+export function calculateScoreFromBreakdown(
+  breakdown: EvaluationBreakdown,
+): number {
+  const raw =
+    (breakdown.clarity +
+      breakdown.specificity +
+      breakdown.completeness +
+      breakdown.reproducibility +
+      breakdown.security) /
+    5;
+  return normalizeScore(raw);
+}
+
+/** 採点ゲート: 4段階の品質判定 */
+export type ScoringGate =
+  | "NEEDS_IMPROVEMENT" // 0-59: 改善必須
+  | "SAVE_ALLOWED" // 60-79: 保存可・改善推奨
+  | "USE_ALLOWED" // 80-99: 利用可
+  | "RECOMMENDED"; // 100:   推奨
+
+/** ゲート判定結果（UI制御用フラグ付き）*/
+export interface ScoringGateResult {
+  gate: ScoringGate;
+  score: number;
+  canSave: boolean;
+  canUse: boolean;
+  isRecommended: boolean;
+}
+
+/** スコア差分情報 */
+export interface ScoreDelta {
+  previousScore: number;
+  newScore: number;
+  delta: number;
+  /** |delta| >= 3 で方向確定、2以下は neutral */
+  direction: "up" | "neutral" | "down";
+}
+
+/** スコア → ScoringGate 判定（純粋関数）*/
+export function getScoreGate(score: number): ScoringGate {
+  const s = normalizeScore(score);
+  if (s === 100) return "RECOMMENDED";
+  if (s >= 80) return "USE_ALLOWED";
+  if (s >= 60) return "SAVE_ALLOWED";
+  return "NEEDS_IMPROVEMENT";
+}
+
+/** スコア → ScoringGateResult（UIフラグ込み）*/
+export function getScoreGateResult(score: number): ScoringGateResult {
+  const gate = getScoreGate(score);
+  return {
+    gate,
+    score: normalizeScore(score),
+    canSave: gate !== "NEEDS_IMPROVEMENT",
+    canUse: gate === "USE_ALLOWED" || gate === "RECOMMENDED",
+    isRecommended: gate === "RECOMMENDED",
+  };
+}
+
+/** スコア差分を計算（pure function）*/
+export function calculateScoreDelta(
+  previousScore: number,
+  newScore: number,
+): ScoreDelta {
+  const delta = normalizeScore(newScore) - normalizeScore(previousScore);
+  const direction: ScoreDelta["direction"] =
+    delta >= 3 ? "up" : delta <= -3 ? "down" : "neutral";
+  return {
+    previousScore: normalizeScore(previousScore),
+    newScore: normalizeScore(newScore),
+    delta,
+    direction,
+  };
+}
