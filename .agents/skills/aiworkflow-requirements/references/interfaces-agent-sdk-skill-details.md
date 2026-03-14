@@ -27,6 +27,50 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
 
+### TASK-SKILL-LIFECYCLE-04: 評価・採点ゲート契約（2026-03-14）
+
+#### 追加型（shared transport / domain）
+
+| 型 | 目的 | 定義 |
+| --- | --- | --- |
+| `ScoringGate` | スコアに応じた4段階判定 | `"NEEDS_IMPROVEMENT" \| "SAVE_ALLOWED" \| "USE_ALLOWED" \| "RECOMMENDED"` |
+| `ScoringGateResult` | UI制御フラグ付き判定結果 | `gate`, `score`, `canSave`, `canUse`, `isRecommended` |
+| `ScoreDelta` | 改善前後の差分情報 | `previousScore`, `newScore`, `delta`, `direction` |
+
+#### 追加関数（shared）
+
+| 関数 | 役割 |
+| --- | --- |
+| `normalizeScore(raw)` | 0-100 整数へ正規化（NaN/範囲外ガード） |
+| `calculateScoreFromBreakdown(breakdown)` | 5項目平均で総合スコア算出 |
+| `getScoreGate(score)` | スコア→`ScoringGate` 変換 |
+| `getScoreGateResult(score)` | スコア→`ScoringGateResult` 変換 |
+| `calculateScoreDelta(previousScore, newScore)` | 差分と方向（up/neutral/down）を算出 |
+
+#### Preload API 契約（追加）
+
+| API | シグネチャ | 契約 |
+| --- | --- | --- |
+| `evaluatePrompt` | `(prompt: string) => Promise<OperationResult<PromptEvaluation>>` | `skill:optimize:evaluate` を `safeInvoke` で呼び出す。payload は `{ prompt }`（P44/P45） |
+
+#### 実装アンカー
+
+- `packages/shared/src/types/skill-improver.ts`
+- `apps/desktop/src/preload/skill-api.ts`
+- `apps/desktop/src/renderer/components/skill/hooks/useSkillAnalysis.ts`
+- `apps/desktop/src/renderer/components/skill/ScoreDisplay.tsx`
+
+#### 関連未タスク（Phase 10 MINOR）
+
+| タスクID | 内容 | 指示書 |
+| --- | --- | --- |
+| `TASK-FIX-EVAL-STORE-DISPATCH-001` | `handleEvaluatePrompt` の Store 経由化 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md` |
+| `TASK-FIX-SCORE-DELTA-DEDUP-001` | `calculateScoreDelta` 重複解消 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
+
+> 配置ルール: active 未タスクは `docs/30-workflows/unassigned-task/` を正本とし、workflow ローカル `tasks/unassigned-task/` は参照先として使わない。
+>
+> 統合正本: `workflow-skill-lifecycle-evaluation-scoring-gate.md`（実装内容 / 苦戦箇所 / current canonical set / artifact inventory）
+
 #### `skill:import` リクエスト契約（UT-FIX-SKILL-IMPORT-INTERFACE-001）
 
 | 項目 | 契約 |
@@ -396,4 +440,3 @@ AgentViewを親コンポーネントとして、各UIコンポーネントが階
 | キャッシュ | なし                 | あり（SkillCacheEntry）                      |
 
 ---
-

@@ -18,6 +18,7 @@ import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 // ============================================
 
 let mockCurrentAnalysis: SkillAnalysis | null = null;
+let mockPreviousAnalysis: SkillAnalysis | null = null;
 let mockIsAnalyzing = false;
 let mockIsImproving = false;
 let mockSkillError: string | null = null;
@@ -27,6 +28,7 @@ const mockAutoImproveSkill = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCurrentAnalysis: () => mockCurrentAnalysis,
+  usePreviousAnalysis: () => mockPreviousAnalysis,
   useIsAnalyzingSkill: () => mockIsAnalyzing,
   useIsImprovingSkill: () => mockIsImproving,
   useSkillError: () => mockSkillError,
@@ -79,6 +81,7 @@ describe("useSkillAnalysis", () => {
   beforeEach(() => {
     // P9準拠: 全モック状態をリセット
     mockCurrentAnalysis = null;
+    mockPreviousAnalysis = null;
     mockIsAnalyzing = false;
     mockIsImproving = false;
     mockSkillError = null;

@@ -134,6 +134,20 @@ node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 > 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
 
+workflow ローカル配置ドリフト（`*/tasks/unassigned-task/`）を避けるため、以下の preflight を推奨する。
+
+```bash
+# root canonical 以外に未タスクを置いていないか確認
+find docs/30-workflows -path "*/tasks/unassigned-task/*.md" -print
+
+# 参照が workflow ローカル path を向いていないか確認
+rg -n "tasks/unassigned-task/" \
+  docs/30-workflows \
+  .claude/skills/aiworkflow-requirements/references
+```
+
+> 重要: 上記で検出された場合は、`docs/30-workflows/unassigned-task/` へ再配置し、同ターンで参照リンクを更新する。
+
 ### 既存 follow-up 未タスクの current contract 再同期
 
 Phase 12 の再監査で「新規未タスク 0 件」と判定しても、既存 follow-up 未タスクを参照・流用する場合は、本文が **最新の system spec / current implementation** を向いていることを確認する。

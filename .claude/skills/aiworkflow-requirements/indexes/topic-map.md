@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-13
+> 自動生成: 2026-03-14
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -377,7 +377,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| Skill Dashboard 型定義（AGENT-002） | L6 |
-| SkillImportStore（TASK-2B） | L348 |
+| SkillImportStore（TASK-2B） | L392 |
 
 ### references/interfaces-agent-sdk-skill-history-contract-fix-changelog.md
 
@@ -1153,8 +1153,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L6 |
 | Skill Advanced Views UI（TASK-UI-05B / completed） | L165 |
 | SkillAnalysisView UI（TASK-10A-B / completed） | L240 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L330 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L392 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L341 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L403 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1851,6 +1851,23 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L197 |
 | 変更履歴 | L208 |
 
+### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| classification-first 分割判断 | L18 |
+| 今回の実装内容（2026-03-14） | L29 |
+| 苦戦箇所（再利用形式） | L42 |
+| current canonical set（2026-03-14 wave） | L53 |
+| artifact inventory（implementation + doc sync） | L69 |
+| parent docs と依存関係 | L86 |
+| 旧 filename 互換管理 | L99 |
+| 仕様書別 SubAgent 分担（関心分離） | L111 |
+| 検証コマンド | L123 |
+| 同種課題の5分解決カード | L136 |
+| 関連ドキュメント | L146 |
+| 変更履歴 | L159 |
+
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
 | セクション | 行 |
@@ -2273,8 +2290,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L27 |
-| Detailed Register | L46 |
+| Family Summary | L29 |
+| Detailed Register | L48 |
 
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
@@ -2337,7 +2354,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L69 |
+| 最新教訓 | L71 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3411,6 +3428,7 @@ node scripts/list-specs.js --topics
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L189 |
 | 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L253 |
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L273 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L368 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
@@ -3450,8 +3468,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L25 |
-| 関連ドキュメント | L30 |
+| 利用順序 | L26 |
+| 関連ドキュメント | L31 |
 
 ### references/testing-accessibility.md
 
