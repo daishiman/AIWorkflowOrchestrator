@@ -1,6 +1,11 @@
 {
   "generated": "2026-03-14T03:34:39.648Z",
   "totalKeywords": 2153,
+||||||| Stash base
+  "generated": "2026-03-13T22:22:48.225Z",
+  "totalKeywords": 2142,
+  "generated": "2026-03-14T02:57:39.546Z",
+  "totalKeywords": 2145,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6042,6 +6047,15 @@
       "llm-workspace-chat-edit.md"
     ],
     "ChatEditService": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "RuntimeResolver": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "Adapter": [
+      "llm-workspace-chat-edit.md"
+    ],
+    "Handoff": [
       "llm-workspace-chat-edit.md"
     ],
     "セキュリティ": [

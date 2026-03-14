@@ -40,8 +40,9 @@ type IpcHandler = (event: IpcMainInvokeEvent, ...args: any[]) => Promise<any>;
 
 describe("chatEditHandlers - セキュリティテスト", () => {
   let mockMainWindow: any;
-  let mockChatEditService: any;
+  let mockContextBuilder: any;
   let mockFileService: any;
+  let mockRuntimeResolver: any;
   let registeredHandlers: Map<string, IpcHandler>;
 
   beforeEach(() => {
@@ -55,14 +56,8 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     });
 
     mockMainWindow = { id: 1, webContents: { id: 1 } };
-    mockChatEditService = {
-      sendWithContext: vi.fn().mockResolvedValue({
-        success: true,
-        result: {
-          id: "result-1",
-          generatedContent: "generated code",
-        },
-      }),
+    mockContextBuilder = {
+      build: vi.fn().mockReturnValue("context"),
     };
     mockFileService = {
       readFile: vi.fn().mockResolvedValue({
@@ -72,6 +67,12 @@ describe("chatEditHandlers - セキュリティテスト", () => {
       }),
       writeFile: vi.fn().mockResolvedValue({
         success: true,
+      }),
+    };
+    mockRuntimeResolver = {
+      resolve: vi.fn().mockResolvedValue({
+        type: "handoff",
+        reason: "test handoff",
       }),
     };
 
@@ -104,8 +105,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
 
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:read-file");
@@ -125,8 +127,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
 
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:write-file");
@@ -146,8 +149,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
 
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:get-selection");
@@ -165,8 +169,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
 
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:send-with-context");
@@ -186,8 +191,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:read-file - filePathがundefinedでエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:read-file");
@@ -202,8 +208,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:read-file - filePathが数値でエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:read-file");
@@ -218,8 +225,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:write-file - contentがundefinedでエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:write-file");
@@ -234,8 +242,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:write-file - filePathがundefinedでエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:write-file");
@@ -250,8 +259,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:send-with-context - contextsがundefinedでエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:send-with-context");
@@ -266,8 +276,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:send-with-context - contextsが配列でない場合エラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:send-with-context");
@@ -286,8 +297,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("chat-edit:send-with-context - commandがundefinedでエラーを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:send-with-context");
@@ -307,8 +319,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("有効なread-fileリクエストでFileServiceを呼び出す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:read-file");
@@ -325,8 +338,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("有効なwrite-fileリクエストでFileServiceを呼び出す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:write-file");
@@ -349,8 +363,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
     it("get-selectionでnullを含む成功レスポンスを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:get-selection");
@@ -362,11 +377,12 @@ describe("chatEditHandlers - セキュリティテスト", () => {
       expect(result.data).toBeNull();
     });
 
-    it("有効なsend-with-contextリクエストでChatEditServiceを呼び出す", async () => {
+    it("有効なsend-with-contextリクエストでRuntimeResolverを経由してhandoffを返す", async () => {
       registerChatEditHandlers(
         mockMainWindow,
-        mockChatEditService,
+        mockContextBuilder,
         mockFileService,
+        mockRuntimeResolver,
       );
 
       const handler = registeredHandlers.get("chat-edit:send-with-context");
@@ -386,7 +402,9 @@ describe("chatEditHandlers - セキュリティテスト", () => {
       const result = await handler!(mockEvent, request);
 
       expect(result.success).toBe(true);
-      expect(mockChatEditService.sendWithContext).toHaveBeenCalledWith(request);
+      expect(mockRuntimeResolver.resolve).toHaveBeenCalledTimes(1);
+      expect(result.handoff).toBe(true);
+      expect(result.guidance.terminalCommand).toContain("claude");
     });
   });
 });

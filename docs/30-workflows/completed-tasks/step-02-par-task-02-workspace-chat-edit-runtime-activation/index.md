@@ -1,0 +1,137 @@
+# workspace-chat-edit-runtime-activation - タスク実行仕様書
+
+## ユーザーからの元の指示
+
+```text
+AI 機能を `Integrated API Runtime` と `ユーザー操作の Claude Code terminal surface` に分離し、すべての AI surface で切替・handoff・UI/UX・実行順序が分かるタスク仕様書を task-specification-creator と aiworkflow-requirements に従って整備する。実装は行わない。
+```
+
+## メタ情報
+
+| 項目         | 内容                                        |
+| ------------ | ------------------------------------------- |
+| タスクID     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+| タスク名     | workspace-chat-edit-runtime-activation      |
+| 分類         | 設計                                        |
+| 対象機能     | Workspace Chat Edit の AI runtime 有効化    |
+| 優先度       | 高                                          |
+| 見積もり規模 | 中規模                                      |
+| ステータス   | completed                                   |
+| 作成日       | 2026-03-13                                  |
+
+## タスク概要
+
+### 目的
+
+Chat Edit の selection 取得と send-with-context を `Integrated API Runtime` へ接続し、integrated runtime が使えない場合は `Claude Code terminal` へ文脈を handoff できる構造を設計する。
+
+### 背景
+
+現状の Chat Edit は selection と LLM 実行の TODO が残り、ipc/index.ts では stub adapter が注入されている。さらに旧 `subscription/api-key` toggle 前提のままでは、consumer subscription を安全に扱えない。Chat Edit では `API runtime` と `terminal handoff` の責務を分けた仕様が必要である。
+
+### 最終ゴール
+
+Chat Edit が Monaco selection、workspacePath 制約、security を維持したまま API runtime へ接続され、未接続時は terminal 起動導線と context summary を返せる設計を確定する。
+
+### 成果物一覧
+
+| 種別               | 成果物                                                                                                                                                                                                                                                                                                                                                          | 配置先                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 仕様書             | index.md / phase-1〜13 / artifacts.json                                                                                                                                                                                                                                                                                                                         | `docs/30-workflows/completed-tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation`                  |
+| 設計成果物         | outputs/phase-_/_.md                                                                                                                                                                                                                                                                                                                                            | `docs/30-workflows/completed-tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation/outputs/phase-*/` |
+| system spec 同期先 | workflow-ai-runtime-authmode-unification.md / interfaces-auth.md / api-ipc-system.md / api-ipc-agent.md / llm-workspace-chat-edit.md / llm-streaming.md / interfaces-llm.md / ui-ux-settings.md / ui-ux-feature-components.md / arch-state-management.md / security-electron-ipc.md / task-workflow.md / lessons-learned.md / legacy-ordinal-family-register.md | `/.claude/skills/aiworkflow-requirements/references/`                                                           |
+
+## 参照ファイル
+
+| 参照資料                                 | パス                                                                                                                                                                                  | 内容                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| pack parent index                        | `docs/30-workflows/ai-runtime-authmode-unification/index.md`                                                                                                                          | 実行順序、依存グラフ、共通方針の正本を確認する                                                  |
+| pack design audit                        | `docs/30-workflows/ai-runtime-authmode-unification/design-audit-matrix.md`                                                                                                            | 多角的監査の結論、禁止事項、依存整合を確認する                                                  |
+| pack UI/UX 図解                          | `docs/30-workflows/ai-runtime-authmode-unification/ui-ux-diagrams.md`                                                                                                                 | 5図セットの画面構成、状態遷移、CTA 導線を確認する                                               |
+| pack UI/UX 正本                          | `docs/30-workflows/ai-runtime-authmode-unification/ui-ux-realization.md`                                                                                                              | 全 surface 共通の状態、CTA、microcopy 契約を確認する                                            |
+| Task01 foundation outputs                | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-2/design-summary.md`                                        | access matrix / resolver / fail-fast / terminal boundary の共通契約を継承する                   |
+| Task01 settings review                   | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-00-settings-authmode-review-board.png` | 設定画面（認証方式カード・Claude Agent SDK APIキー・APIキー設定一覧）の改善要求を設計へ反映する |
+| chatEditHandlers                         | `apps/desktop/src/main/handlers/chatEditHandlers.ts`                                                                                                                                  | stub 実装と TODO の起点                                                                         |
+| ChatEditService                          | `apps/desktop/src/main/services/chat-edit/ChatEditService.ts`                                                                                                                         | real adapter を受ける facade                                                                    |
+| chatEdit IPC bootstrap                   | `apps/desktop/src/main/ipc/index.ts`                                                                                                                                                  | stub adapter 注入の現状を確認する                                                               |
+| api-ipc-agent                            | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                                                                                                                  | Chat Edit IPC 正本                                                                              |
+| llm-workspace-chat-edit                  | `.claude/skills/aiworkflow-requirements/references/llm-workspace-chat-edit.md`                                                                                                        | Chat Edit service interface 正本                                                                |
+| workflow-ai-runtime-authmode-unification | `.claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-authmode-unification.md`                                                                                       | Task01 foundation 契約と後続タスク反映順の正本を確認する                                        |
+| interfaces-auth                          | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`                                                                                                                | access capability 型契約（integratedRuntime / terminalSurface）の正本を確認する                 |
+| api-ipc-system                           | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                                                                                                                 | runtime resolver / selected config / settings 反映の IPC 契約を確認する                         |
+| llm-streaming                            | `.claude/skills/aiworkflow-requirements/references/llm-streaming.md`                                                                                                                  | stream / cancel とエラー分類の正本を確認する                                                    |
+| interfaces-llm                           | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`                                                                                                                 | LLM 契約と coverage 指針                                                                        |
+| ui-ux-settings                           | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                                                                                                 | settings access card / guidance 語彙の正本を確認する                                            |
+| security-electron-ipc                    | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                                                                                                          | sender、masking、error envelope の正本                                                          |
+| ui-ux-feature-components                 | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`                                                                                                       | Workspace Chat Edit の UI component 正本                                                        |
+| arch-state-management                    | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                                                                                                          | chatEdit state ownership / reset policy / handoff 境界の正本を確認する                          |
+| task-workflow                            | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                                                                                  | 完了台帳、関連タスク、未タスク導線を確認する                                                    |
+| lessons-learned                          | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                                                                                                | 苦戦箇所と再発防止手順を確認する                                                                |
+| legacy-ordinal-family-register           | `.claude/skills/aiworkflow-requirements/references/legacy-ordinal-family-register.md`                                                                                                 | 旧成果物命名（例: qa-checklist）との互換管理を確認する                                          |
+
+## 必要仕様抽出マトリクス（aiworkflow-requirements）
+
+| 関心ごと                | 必須仕様                                                          | 抽出目的                                                                           |
+| ----------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| foundation 契約継承     | workflow-ai-runtime-authmode-unification.md / interfaces-auth.md  | integrated runtime と terminal handoff の共通語彙・型契約を固定する                |
+| runtime 判定と設定連動  | api-ipc-system.md / ui-ux-settings.md                             | selected config、access card、guidance の矛盾を防ぐ                                |
+| Chat Edit 契約          | api-ipc-agent.md / llm-workspace-chat-edit.md / interfaces-llm.md | selection、context、suggestion、diff 契約を固定する                                |
+| stream / cancel / error | llm-streaming.md / security-electron-ipc.md                       | timeout、cancel、error envelope の境界を固定する                                   |
+| UI と状態管理           | ui-ux-feature-components.md / arch-state-management.md            | selection-ready / generating / diff-ready / handoff / blocked の状態責務を固定する |
+| 台帳と学習資産          | task-workflow.md / lessons-learned.md                             | 完了記録、未タスク導線、再発防止手順を同期する                                     |
+| 命名互換管理            | legacy-ordinal-family-register.md                                 | `qa-checklist` など旧命名との互換を維持する                                        |
+
+## タスク分解サマリー
+
+| ID   | フェーズ   | サブタスク名    | 責務                                        | 依存 |
+| ---- | ---------- | --------------- | ------------------------------------------- | ---- |
+| T-01 | Phase 1    | 要件整理        | Chat Edit の TODO と runtime gap を整理する | -    |
+| T-02 | Phase 2    | 設計確定        | selection と LLM 実行の責務境界を設計する   | T-01 |
+| T-03 | Phase 3    | レビューゲート  | security と UX の破綻がないかを判定する     | T-02 |
+| T-04 | Phase 4-7  | テスト仕様化    | selection と send のテスト仕様を定義する    | T-03 |
+| T-05 | Phase 8-13 | 文書化とhandoff | spec sync と handoff を整理する             | T-04 |
+
+## Atent Team / SubAgent 分担（関心分離）
+
+| 役割                   | 関心ごと                                       | 主担当                                                                            |
+| ---------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------- |
+| Lead Agent             | 仕様整合、依存順、最終判定                     | 全 Phase の gate と acceptance criteria を統合する                                |
+| Runtime Contract Agent | capability / resolver / selected config 契約   | interfaces-auth.md / api-ipc-system.md / api-ipc-agent.md を監査する              |
+| UI/UX Agent            | selection / diff / handoff の状態・CTA         | ui-ux-realization.md / ui-ux-feature-components.md / ui-ux-settings.md を監査する |
+| Security Agent         | sender / timeout / error envelope / path guard | security-electron-ipc.md / llm-streaming.md を監査する                            |
+| Ledger Agent           | 完了台帳・未タスク・教訓                       | task-workflow.md / lessons-learned.md を同期する                                  |
+
+## 実行フロー
+
+1. Phase 1-3 で前提、設計、レビューゲートを固める。
+2. Phase 4-7 でテスト仕様と coverage 目標を固める。
+3. Phase 8-13 で実装順序、文書同期、handoff を固める。
+
+## Phase一覧
+
+| Phase | 名称             | 仕様書                                                         | ステータス  |
+| ----- | ---------------- | -------------------------------------------------------------- | ----------- |
+| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | completed   |
+| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | completed   |
+| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | completed   |
+| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | completed   |
+| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | completed   |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | completed   |
+| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | completed   |
+| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | completed   |
+| 9     | 品質検証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | completed   |
+| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed   |
+| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed   |
+| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | completed   |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | not_started |
+
+## 統合テスト連携（Phase 1〜11で必須）
+
+- integrated runtime、terminal handoff、IPC、state handoff の接続点を各 Phase で必ず扱う。
+- 本タスクでは selection handoff、chat-edit IPC、workspacePath 制約、context summary、terminal launcher を統合テスト観点の中心に置く。
+
+## Phase完了時の必須アクション
+
+- 本Phase内の全タスクを100%実行完了と記録する。
+- 成果物パスと完了条件を確認する。
+- artifacts.json を更新対象として扱う。

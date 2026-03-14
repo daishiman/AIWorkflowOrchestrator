@@ -25,6 +25,18 @@
   - task-spec 由来の `3.5 実装課題と解決策` 継承を含め、同種タスクの再利用性を強化
 
 ---
+||||||| Stash base
+## 2026-03-14 - Phase12 再確認での「既存未タスク再参照 + target監査」パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - Phase 12 で「新規未タスク0件」でも、再参照した既存未タスクを `audit-unassigned-tasks --target-file` で個別監査する成功パターンを追加
+  - `verify-unassigned-links` の total 値は固定値を使わず、同一ターン実測値を system spec / phase-12成果物へ同値転記するルールを追記
+  - 実運用で検出した `task-fix-worktree-native-binary-guard-001.md` の9見出し是正事例を再利用可能なテンプレート改善知見として記録
+
+---
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
 
 - **Agent**: skill-creator (update)

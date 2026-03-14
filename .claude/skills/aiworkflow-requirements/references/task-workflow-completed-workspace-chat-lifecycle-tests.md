@@ -404,3 +404,29 @@
 | UT-08-002 | SettingsView 画面導線の E2E カバレッジ拡張 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-002-settings-e2e-coverage.md` |
 | UT-08-003 | Phase 6 残件（INT-11〜13）の再評価と必要分実装 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-003-settings-phase6-remaining-cases.md` |
 | UT-08-004 | settings harness パターンの仕様標準化を継続強化 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-08-004-settings-harness-pattern-spec-sync.md` |
+
+### タスク: TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 Workspace Chat Edit AI Runtime 有効化（2026-03-14）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | feat |
+| 優先度 | 高 |
+| 完了日 | 2026-03-14 |
+| 対象 | RuntimeResolver / AnthropicLLMAdapter / TerminalHandoffBuilder / M-01 contextBridge fix |
+| 成果物 | `docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface/outputs/` |
+
+#### 実施内容
+
+- RuntimeResolver / AnthropicLLMAdapter / TerminalHandoffBuilder を実装し、Workspace Chat Edit の AI Runtime を有効化
+- M-01 contextBridge fix を適用し、Preload payload の安全性を確保
+- Phase 11 で screenshot 取得と Apple UI/UX 観点レビューを完了
+
+#### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 | workspacePath テスト実装確認（TC-WS-01〜06） | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-chat-edit-workspace-constraint-test-001.md` |
+| TASK-IMP-WORKSPACE-CHAT-EDIT-SPEC-SYNC-IPC-001 | IPC 正本同期（F-M02） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-workspace-chat-edit-spec-sync-ipc-001.md` |
+| UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動化 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase11-screenshot-automation-001.md` |

@@ -4,7 +4,7 @@
  * @description Renderer Process から Main Process への IPC ブリッジ
  */
 
-import { ipcRenderer } from "electron";
+import { contextBridge, ipcRenderer } from "electron";
 import type {
   FileReadResult,
   FileWriteResult,
@@ -34,21 +34,27 @@ export interface ChatEditAPI {
   /**
    * ファイルを読み込む
    * @param filePath ファイルの絶対パス
+   * @param workspacePath ワークスペースパス（指定時はアクセス制約に使用）
    * @returns ファイル内容と言語情報
    */
-  readFile: (filePath: string) => Promise<FileReadResult>;
+  readFile: (
+    filePath: string,
+    workspacePath?: string | null,
+  ) => Promise<FileReadResult>;
 
   /**
    * ファイルに書き込む
    * @param filePath ファイルの絶対パス
    * @param content 書き込む内容
    * @param options 書き込みオプション
+   * @param workspacePath ワークスペースパス（指定時はアクセス制約に使用）
    * @returns 書き込み結果
    */
   writeFile: (
     filePath: string,
     content: string,
     options?: FileWriteOptions,
+    workspacePath?: string | null,
   ) => Promise<FileWriteResult>;
 
   /**
@@ -85,20 +91,36 @@ export interface ChatEditAPI {
  * ChatEditAPI 実装
  */
 export const chatEditAPI: ChatEditAPI = {
-  readFile: (filePath: string): Promise<FileReadResult> => {
-    return ipcRenderer.invoke(CHANNELS.READ_FILE, filePath);
+  readFile: (
+    filePath: string,
+    workspacePath?: string | null,
+  ): Promise<FileReadResult> => {
+    return ipcRenderer.invoke(CHANNELS.READ_FILE, { filePath, workspacePath });
   },
 
   writeFile: (
     filePath: string,
     content: string,
     options?: FileWriteOptions,
+    workspacePath?: string | null,
   ): Promise<FileWriteResult> => {
-    return ipcRenderer.invoke(CHANNELS.WRITE_FILE, filePath, content, options);
+    return ipcRenderer.invoke(CHANNELS.WRITE_FILE, {
+      filePath,
+      content,
+      options,
+      workspacePath,
+    });
   },
 
-  getEditorSelection: (): Promise<TextSelection | null> => {
-    return ipcRenderer.invoke(CHANNELS.GET_SELECTION);
+  getEditorSelection: async (): Promise<TextSelection | null> => {
+    const result = (await ipcRenderer.invoke(CHANNELS.GET_SELECTION)) as {
+      success?: boolean;
+      data?: TextSelection | null;
+    };
+    if (!result?.success) {
+      return null;
+    }
+    return result.data ?? null;
   },
 
   detectLanguage: (filePath: string): Promise<string> => {
@@ -131,12 +153,10 @@ export const chatEditAPI: ChatEditAPI = {
 };
 
 /**
- * window.chatEditAPI として公開
+ * window.chatEditAPI として公開（contextBridge 経由）
  */
 export const exposeChatEditAPI = (): void => {
-  if (typeof window !== "undefined") {
-    (window as unknown as Record<string, unknown>).chatEditAPI = chatEditAPI;
-  }
+  contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI);
 };
 
 export default chatEditAPI;
