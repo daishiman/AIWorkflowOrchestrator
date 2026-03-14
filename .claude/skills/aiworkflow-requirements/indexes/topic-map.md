@@ -2355,7 +2355,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L72 |
+| 最新教訓 | L84 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 

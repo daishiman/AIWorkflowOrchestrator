@@ -36,6 +36,7 @@
   - 実運用で検出した `task-fix-worktree-native-binary-guard-001.md` の9見出し是正事例を再利用可能なテンプレート改善知見として記録
 
 ---
+||||||| Stash base
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
 
 - **Agent**: skill-creator (update)

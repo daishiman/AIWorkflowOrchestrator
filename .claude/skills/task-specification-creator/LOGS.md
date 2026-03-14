@@ -62,6 +62,7 @@
   - `electron-vite dev` が esbuild platform mismatch で失敗する条件を記録し、明示 screenshot 要求時の fallback 実行 + metadata 固定パターンを再利用ルール化
 
 ---
+||||||| Stash base
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator
