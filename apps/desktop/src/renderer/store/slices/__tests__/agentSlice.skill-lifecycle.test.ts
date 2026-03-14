@@ -202,6 +202,10 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       expect(store.currentAnalysis).toBeNull();
     });
 
+    it("previousAnalysisの初期値はnull", () => {
+      expect(store.previousAnalysis).toBeNull();
+    });
+
     it("isAnalyzingの初期値はfalse", () => {
       expect(store.isAnalyzing).toBe(false);
     });
@@ -242,6 +246,16 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       const promise = store.analyzeSkill("another-skill");
 
       expect(store.currentAnalysis).toBeNull();
+
+      await promise;
+    });
+
+    it("分析開始時にpreviousAnalysisがクリアされる", async () => {
+      store.previousAnalysis = mockAnalysis;
+
+      const promise = store.analyzeSkill("another-skill");
+
+      expect(store.previousAnalysis).toBeNull();
 
       await promise;
     });
@@ -613,6 +627,14 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       store.clearAnalysis();
 
       expect(store.currentAnalysis).toBeNull();
+    });
+
+    it("previousAnalysisもnullにクリアされる", () => {
+      store.previousAnalysis = mockAnalysis;
+
+      store.clearAnalysis();
+
+      expect(store.previousAnalysis).toBeNull();
     });
 
     it("既にnullの場合もエラーなく動作する", () => {

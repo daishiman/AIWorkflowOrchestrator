@@ -44,6 +44,28 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
+### Skill Lifecycle 評価・採点ゲート（TASK-SKILL-LIFECYCLE-04）を探すとき
+
+このカテゴリは `skill lifecycle scoring gate` `ScoringGate` `evaluatePrompt` `ScoreDelta` `previousAnalysis` `task-fix-eval-store-dispatch-001` `task-fix-score-delta-dedup-001` `canonical path` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "skill lifecycle scoring gate" -C 3
+node scripts/search-spec.js "ScoringGate" -C 3
+node scripts/search-spec.js "evaluatePrompt" -C 3
+node scripts/search-spec.js "previousAnalysis" -C 3
+node scripts/search-spec.js "task-fix-eval-store-dispatch-001" -C 3
+node scripts/search-spec.js "task-fix-score-delta-dedup-001" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Skill Lifecycle 評価・採点ゲート）」を見る
+2. `references/workflow-skill-lifecycle-evaluation-scoring-gate.md` で `current canonical set` と `artifact inventory` を確認する
+3. `references/interfaces-agent-sdk-skill-details.md` / `references/arch-state-management-details.md` / `references/ui-ux-feature-components-reference.md` で契約・状態・UI責務を分離確認する
+4. `references/task-workflow.md` / `references/task-workflow-backlog.md` / `references/task-workflow-completed-skill-lifecycle-agent-view-line-budget.md` で完了台帳と follow-up 未タスク導線を確認する
+5. `references/lessons-learned-current.md` で苦戦箇所と簡潔解決手順を確認する
+6. 実装実体は `packages/shared/src/types/skill-improver.ts` `apps/desktop/src/preload/skill-api.ts` `apps/desktop/src/renderer/store/slices/agentSlice.ts` `apps/desktop/src/renderer/components/skill/ScoreDisplay.tsx` `apps/desktop/scripts/capture-task-skill-lifecycle-04-phase11.mjs` を照合する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash

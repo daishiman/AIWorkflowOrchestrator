@@ -18,10 +18,14 @@ import {
 } from "./helpers/test-data-factory";
 import {
   ScoreDisplay,
+  ScoreDeltaBadge,
+  calculateScoreDelta,
+  scoreDeltaStyles,
   scoreVariantStyles,
   scoreBarStyles,
   getScoreVariant,
 } from "../ScoreDisplay";
+import type { ScoreDelta } from "../ScoreDisplay";
 import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 
 // ============================================
@@ -334,5 +338,123 @@ describe("ScoreDisplay", () => {
     expect(getScoreVariant(80)).toBe("success");
     expect(getScoreVariant(90)).toBe("success");
     expect(getScoreVariant(100)).toBe("success");
+  });
+});
+
+// ============================================
+// Phase 6: ScoreDeltaBadge テスト
+// ============================================
+
+describe("ScoreDeltaBadge", () => {
+  // ------------------------------------------
+  // SDB-01: delta=null のとき何もレンダリングしない
+  // ------------------------------------------
+  it("delta が null のとき何もレンダリングしない", () => {
+    const { container } = render(<ScoreDeltaBadge delta={null} />);
+    expect(container.firstChild).toBeNull();
+  });
+
+  // ------------------------------------------
+  // SDB-02: direction="up" のとき上昇バッジを表示する
+  // ------------------------------------------
+  it("direction='up' のとき上昇バッジを表示する", () => {
+    const delta: ScoreDelta = { value: 15, direction: "up", raw: 15 };
+    render(<ScoreDeltaBadge delta={delta} />);
+
+    const badge = screen.getByTestId("score-delta-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute("aria-label", "スコア差分: +15点向上");
+    expect(badge.className).toContain(scoreDeltaStyles.up);
+    expect(badge.className).toContain("--status-success");
+  });
+
+  // ------------------------------------------
+  // SDB-03: direction="neutral" のとき変化なしバッジを表示する
+  // ------------------------------------------
+  it("direction='neutral' のとき変化なしバッジを表示する", () => {
+    const delta: ScoreDelta = { value: 1, direction: "neutral", raw: 1 };
+    render(<ScoreDeltaBadge delta={delta} />);
+
+    const badge = screen.getByTestId("score-delta-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute("aria-label", "スコア差分: 変化なし");
+    expect(badge.className).toContain(scoreDeltaStyles.neutral);
+    expect(badge.className).toContain("--bg-tertiary");
+  });
+
+  // ------------------------------------------
+  // SDB-04: direction="down" のとき低下バッジを表示する
+  // ------------------------------------------
+  it("direction='down' のとき低下バッジを表示する", () => {
+    const delta: ScoreDelta = { value: 10, direction: "down", raw: -10 };
+    render(<ScoreDeltaBadge delta={delta} />);
+
+    const badge = screen.getByTestId("score-delta-badge");
+    expect(badge).toBeInTheDocument();
+    expect(badge).toHaveAttribute("aria-label", "スコア差分: -10点低下");
+    expect(badge.className).toContain(scoreDeltaStyles.down);
+    expect(badge.className).toContain("--status-error");
+  });
+});
+
+// ============================================
+// Phase 6: calculateScoreDelta テスト（ローカル関数）
+// ============================================
+
+describe("calculateScoreDelta (ScoreDisplay local)", () => {
+  // ------------------------------------------
+  // CSD-01: 差分 > 2 → direction="up"
+  // ------------------------------------------
+  it("差分3以上は direction='up' を返す", () => {
+    const result = calculateScoreDelta(85, 60);
+    expect(result.raw).toBe(25);
+    expect(result.value).toBe(25);
+    expect(result.direction).toBe("up");
+  });
+
+  // ------------------------------------------
+  // CSD-02: 差分 <= 2 → direction="neutral"
+  // ------------------------------------------
+  it("差分2以下は direction='neutral' を返す", () => {
+    const result = calculateScoreDelta(82, 80);
+    expect(result.raw).toBe(2);
+    expect(result.value).toBe(2);
+    expect(result.direction).toBe("neutral");
+  });
+
+  // ------------------------------------------
+  // CSD-03: 差分 < -2 → direction="down"
+  // ------------------------------------------
+  it("差分-3以下は direction='down' を返す", () => {
+    const result = calculateScoreDelta(50, 80);
+    expect(result.raw).toBe(-30);
+    expect(result.value).toBe(30);
+    expect(result.direction).toBe("down");
+  });
+
+  // ------------------------------------------
+  // CSD-04: previousAnalysis がある場合に ScoreDisplay がデルタを表示する
+  // ------------------------------------------
+  it("previousAnalysis がある場合に ScoreDeltaBadge を表示する", () => {
+    const current = createMockAnalysis({ overallScore: 85 });
+    const previous = createMockAnalysis({ overallScore: 60 });
+
+    render(<ScoreDisplay analysis={current} previousAnalysis={previous} />);
+
+    const badge = screen.getByTestId("score-delta-badge");
+    expect(badge).toBeInTheDocument();
+    // 85 - 60 = +25 点向上
+    expect(badge).toHaveAttribute("aria-label", "スコア差分: +25点向上");
+  });
+
+  // ------------------------------------------
+  // CSD-05: previousAnalysis が null の場合に ScoreDeltaBadge を非表示
+  // ------------------------------------------
+  it("previousAnalysis が null の場合に ScoreDeltaBadge を非表示にする", () => {
+    const current = createMockAnalysis({ overallScore: 85 });
+
+    render(<ScoreDisplay analysis={current} previousAnalysis={null} />);
+
+    expect(screen.queryByTestId("score-delta-badge")).toBeNull();
   });
 });

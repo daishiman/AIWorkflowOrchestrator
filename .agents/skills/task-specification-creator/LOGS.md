@@ -3,6 +3,31 @@
 ## 役割
 
 ---
+## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク配置是正（指定ディレクトリ再確認）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（unassigned normalization）
+- **Result**: success
+- **Notes**:
+  - `TASK-FIX-EVAL-STORE-DISPATCH-001` / `TASK-FIX-SCORE-DELTA-DEDUP-001` を `docs/30-workflows/unassigned-task/` へ再配置し、9セクション形式で再作成
+  - workflow ローカル `tasks/unassigned-task/` の旧配置を撤去し、`phase-12-documentation.md` / `unassigned-task-detection.md` / system spec 参照を root canonical path に同期
+  - `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD --target-file` を使う配置確認手順を運用ログへ固定
+
+---
+## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: system-spec-sync (Phase 12)
+- **Result**: success
+- **Notes**:
+  - 採点・評価・受け入れゲート統合を実装（ScoringGate型・evaluatePrompt・ScoreDeltaBadge）
+  - ScoringGate型（4段階: NEEDS_IMPROVEMENT/SAVE_ALLOWED/USE_ALLOWED/RECOMMENDED）を @repo/shared に追加
+  - Preload API に evaluatePrompt() を追加（P44/P45準拠）
+  - agentSlice.ts に previousAnalysis フィールドを追加（スコア差分Δ表示用）
+  - ScoreDeltaBadge コンポーネントを ScoreDisplay.tsx に追加
+  - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
+
+---
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator

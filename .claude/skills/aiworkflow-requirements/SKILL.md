@@ -190,13 +190,14 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - 詳細ルールをSKILL.mdに追加（→ spec-guidelines.md へ）
 
 **詳細ルール**: See [references/spec-guidelines.md](references/spec-guidelines.md)
-
 ## 変更履歴
 
 > 古い履歴（v8.31.0以前）は [logs-archive-index.md](references/logs-archive-index.md) を参照してください。
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.92** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期を追加**: `workflow-skill-lifecycle-evaluation-scoring-gate.md` を新規作成し、実装内容・苦戦箇所・`current canonical set`・`artifact inventory`・legacy path 互換を統合。`indexes/resource-map.md` / `indexes/quick-reference.md` / `references/task-workflow.md` / `references/lessons-learned-current.md` / `references/legacy-ordinal-family-register.md` / `LOGS.md` を同一 wave で同期し、mirror parity（`.claude` 正本→`.agents`）を完了条件に固定 |
+| **9.01.91** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 完了同期**: ScoringGate型・evaluatePrompt追加・ScoreDeltaBadge実装 |
 | **9.01.90** | **2026-03-14** | **TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の canonical set / legacy register 同期を追加**: `workflow-ai-runtime-authmode-unification.md` に `current canonical set` / `artifact inventory` / parent docs / 旧 filename 互換管理を追記し、`legacy-ordinal-family-register.md` の current alias row（`qa-checklist` -> `quality-assurance-checklist`）を同期。あわせて `task-workflow-backlog.md` / `lessons-learned-current.md` / `indexes/resource-map.md` / `indexes/quick-reference.md` へ `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` 導線を同一 wave で反映 |
 | **9.01.89** | **2026-03-12** | **TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 を同期**: `claude-code-skills-structure.md` / `claude-code-skills-resources.md` / `claude-code-skills-process.md` / `task-workflow.md` / `lessons-learned.md` に、`SKILL.md` 入口特化、family file 分割、rolling `LOGS.md` + archive、`.claude` 正本 / `.agents` mirror、validator 順序の再利用ルールを追加 |
 | **9.01.88** | **2026-03-12** | **TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の未タスク formalize を反映**: `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` を `docs/30-workflows/unassigned-task/` に formalize し、`task-workflow.md` / `lessons-learned.md` / `ui-ux-feature-components.md` / `workflow-light-theme-contrast-regression-guard.md` へ導線を追加。completed workflow の Phase 12 outputs も 1 件 formalize 前提へ更新 |
@@ -489,11 +490,9 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.37.0** | **2026-02-04** | **AUTH-UI-001完了**: architecture-implementation-patterns.md更新（React Portal/Supabase認証状態即時更新パターン追加）、ui-ux-auth-flow.md v1.3.0更新（Googleログインボタン仕様追加） |
 | **8.36.0** | **2026-02-04** | **スキル最適化**: spec-update-workflow.mdファイル名修正（kebab-case統一）、topic-map.md再生成（新規ファイル反映） |
 | **8.35.1** | **2026-02-04** | **task-imp-search-ui-001完了**: ui-ux-search-panel.md v1.2.0更新（E2Eテスト17件追加、グローバルショートカット統合完了） |
-
 ### バージョン更新: 9.01.91
 - 日付: 2026-03-12
 - 内容: `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` の最終同期を反映。manual docs 34件 reform、Phase 1-12 completed / currentPhase=13 / Phase 13 blocked、generated `topic-map.md` の 500行超 blocker 化、`TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001` と `TASK-IMP-AIWORKFLOW-GENERATED-INDEX-METRIC-SYNC-GUARD-001` の follow-up formalize、Phase 11 branch-level dashboard screenshot sanity に加え、Phase 12 root evidence 化、active 未タスク10見出し化、`verify-unassigned-links` の split 親 + sibling 監査、`workflow-aiworkflow-requirements-line-budget-reform.md` / `quick-reference.md` / `resource-map.md` / `spec-splitting-guidelines.md` の再利用導線まで system spec に固定した。
-
 ### バージョン更新: 9.01.90
 - 日付: 2026-03-12
 - 内容: Phase12監査で `outputs/phase-12` 未作成 drift を検出し、`TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001` として切り出した。後続の再同期で documentation shell 追加と verification rerun を完了し、この drift 自体は解消済みの履歴として管理する。

@@ -120,10 +120,13 @@
 | `isLoading`          | `boolean`              | ローディング状態   |
 | `error`              | `string \| null`       | エラーメッセージ   |
 | `currentAnalysis`    | `SkillAnalysis \| null` | 分析結果（TASK-10A-D追加） |
+| `previousAnalysis`   | `SkillAnalysis \| null` | 改善前スナップショット（TASK-SKILL-LIFECYCLE-04追加） |
 | `isAnalyzing`        | `boolean`               | 分析中フラグ（TASK-10A-D追加） |
 | `isImproving`        | `boolean`               | 改善中フラグ（TASK-10A-D追加） |
 | `recentExecutions`       | `ExecutionSummary[]`    | 実行履歴（最大10件、`MAX_EXECUTION_HISTORY`定数）（TASK-UI-03追加） |
 | `isAdvancedSettingsOpen`  | `boolean`               | 詳細設定パネル開閉状態（TASK-UI-03追加） |
+
+> 関連 workflow 正本: `workflow-skill-lifecycle-evaluation-scoring-gate.md`（`previousAnalysis` 追加背景、Phase 11証跡、未タスク canonical path 是正を統合）
 
 **アクション定義**:
 
@@ -138,7 +141,7 @@
 | `clearExecution`     | -                              | 実行クリア     |
 | `resetAgentState`    | -                              | 状態リセット   |
 | `analyzeSkill`           | `skillName: string`                                  | 分析実行（TASK-10A-D追加）     |
-| `applySkillImprovements` | `skillName: string, suggestions: Suggestion[]`       | 改善提案適用（TASK-10A-D追加） |
+| `applySkillImprovements` | `skillName: string, suggestions: Suggestion[]`       | 改善提案適用（実行前に `previousAnalysis` を保持） |
 | `autoImproveSkill`       | `skillName: string`                                  | 全自動改善（TASK-10A-D追加）   |
 | `createSkill`            | `description: string, options: CreateOptions`         | スキル作成（TASK-10A-D追加）   |
 | `clearAnalysis`          | -                                                     | 分析結果クリア（TASK-10A-D追加） |
@@ -193,4 +196,3 @@
 - 全アクションのテストを実装
 
 ---
-

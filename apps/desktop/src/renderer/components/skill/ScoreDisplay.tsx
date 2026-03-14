@@ -22,7 +22,60 @@ import type {
 export interface ScoreDisplayProps {
   /** スキル分析結果 */
   analysis: SkillAnalysis;
+  /** 改善前スナップショット分析結果（Δスコア表示用、省略時は非表示） */
+  previousAnalysis?: SkillAnalysis | null;
 }
+
+/**
+ * スコア差分の方向
+ */
+export type ScoreDeltaDirection = "up" | "neutral" | "down";
+
+/**
+ * スコア差分情報
+ * - value: 差分の絶対値（|current - previous|）
+ * - direction: 上昇/変化なし/低下の方向
+ * - raw: 符号付きの差分値（current - previous）
+ */
+export interface ScoreDelta {
+  value: number;
+  direction: ScoreDeltaDirection;
+  raw: number;
+}
+
+/**
+ * スコア差分を計算する
+ * |raw| <= 2 を "neutral" とみなす（微細変動を変化なしとして扱う）
+ *
+ * @param current - 改善後スコア
+ * @param previous - 改善前スコア
+ * @returns ScoreDelta
+ */
+export function calculateScoreDelta(
+  current: number,
+  previous: number,
+): ScoreDelta {
+  const raw = current - previous;
+  const value = Math.abs(raw);
+  const direction: ScoreDeltaDirection =
+    value <= 2 ? "neutral" : raw > 0 ? "up" : "down";
+  return { value, direction, raw };
+}
+
+export interface ScoreDeltaBadgeProps {
+  delta: ScoreDelta | null;
+}
+
+// ============================================
+// Score Delta Styles (P47準拠: モジュールスコープ export)
+// ============================================
+
+/** スコア差分の方向ごとのバッジスタイル（P47準拠: Record<ScoreDeltaDirection, string>） */
+export const scoreDeltaStyles: Record<ScoreDeltaDirection, string> = {
+  up: "bg-[var(--status-success)] text-[var(--text-inverse)]",
+  neutral: "bg-[var(--bg-tertiary)] text-[var(--text-secondary)]",
+  down: "bg-[var(--status-error)] text-[var(--text-inverse)]",
+};
 
 // ============================================
 // Score Variant (P47準拠: モジュールスコープ export)
@@ -61,9 +114,46 @@ export const getScoreVariant = (score: number): ScoreVariant => {
 // ============================================
 
 /**
+ * ScoreDeltaBadge - スコア差分バッジ
+ *
+ * delta が null の場合はレンダリングしない（初回評価時など）。
+ * Apple HIG準拠: rounded-full、8pxグリッド準拠のpadding
+ */
+export const ScoreDeltaBadge: React.FC<ScoreDeltaBadgeProps> = ({ delta }) => {
+  if (delta === null) return null;
+
+  const { direction, raw } = delta;
+  const styleClass = scoreDeltaStyles[direction];
+
+  let label: string;
+  if (direction === "up") {
+    label = `+${raw}点向上`;
+  } else if (direction === "down") {
+    label = `${raw}点低下`;
+  } else {
+    label = "変化なし";
+  }
+
+  return (
+    <span
+      data-testid="score-delta-badge"
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styleClass}`}
+      aria-label={`スコア差分: ${label}`}
+    >
+      {direction === "up" && <span aria-hidden="true">↑ </span>}
+      {direction === "down" && <span aria-hidden="true">↓ </span>}
+      {label}
+    </span>
+  );
+};
+
+/**
  * OverallScore - 総合スコア表示
  */
-const OverallScore: React.FC<{ score: number }> = ({ score }) => {
+const OverallScore: React.FC<{ score: number; delta?: ScoreDelta | null }> = ({
+  score,
+  delta,
+}) => {
   const variant = getScoreVariant(score);
 
   return (
@@ -74,6 +164,7 @@ const OverallScore: React.FC<{ score: number }> = ({ score }) => {
       <span className={`text-4xl font-bold ${scoreVariantStyles[variant]}`}>
         {score}
       </span>
+      {delta !== undefined && <ScoreDeltaBadge delta={delta ?? null} />}
     </div>
   );
 };
@@ -148,7 +239,15 @@ const CategoryBar: React.FC<{ category: AnalysisCategory }> = ({
  * スコアに応じて成功/警告/エラーの色分けを適用する。
  */
 export const ScoreDisplay: React.FC<ScoreDisplayProps> = memo(
-  ({ analysis }) => {
+  ({ analysis, previousAnalysis }) => {
+    const delta =
+      previousAnalysis != null
+        ? calculateScoreDelta(
+            analysis.overallScore,
+            previousAnalysis.overallScore,
+          )
+        : null;
+
     return (
       <div className="flex flex-col gap-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4">
         {/* ヘッダー */}
@@ -163,7 +262,7 @@ export const ScoreDisplay: React.FC<ScoreDisplayProps> = memo(
         </div>
 
         {/* 総合スコア */}
-        <OverallScore score={analysis.overallScore} />
+        <OverallScore score={analysis.overallScore} delta={delta} />
 
         {/* カテゴリ別分析 */}
         {analysis.categories.length > 0 && (
