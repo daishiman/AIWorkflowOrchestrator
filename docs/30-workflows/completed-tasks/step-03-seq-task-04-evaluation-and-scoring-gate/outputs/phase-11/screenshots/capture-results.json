@@ -1,0 +1,56 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-04",
+  "capturedAt": "2026-03-14T03:10:28.935Z",
+  "baseUrl": "http://127.0.0.1:5184",
+  "route": "/advanced/skill-analysis",
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "name": "初期表示（desktop/dark）",
+      "file": "TC-11-01-skill-analysis-baseline-dark-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "colorScheme": "dark",
+      "verifySelector": "[data-testid=\"skill-analysis-view\"]",
+      "status": "captured"
+    },
+    {
+      "id": "TC-11-02",
+      "name": "改善適用後 Δバッジ表示（desktop/dark）",
+      "file": "TC-11-02-skill-analysis-delta-dark-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "colorScheme": "dark",
+      "verifySelector": "[data-testid=\"score-delta-badge\"]",
+      "status": "captured"
+    },
+    {
+      "id": "TC-11-03",
+      "name": "改善適用後 Δバッジ表示（desktop/light）",
+      "file": "TC-11-03-skill-analysis-delta-light-desktop.png",
+      "viewport": {
+        "width": 1440,
+        "height": 1100
+      },
+      "colorScheme": "light",
+      "verifySelector": "[data-testid=\"score-delta-badge\"]",
+      "status": "captured"
+    },
+    {
+      "id": "TC-11-04",
+      "name": "改善適用後 Δバッジ表示（mobile/dark）",
+      "file": "TC-11-04-skill-analysis-delta-dark-mobile.png",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "colorScheme": "dark",
+      "verifySelector": "[data-testid=\"score-delta-badge\"]",
+      "status": "captured"
+    }
+  ]
+}

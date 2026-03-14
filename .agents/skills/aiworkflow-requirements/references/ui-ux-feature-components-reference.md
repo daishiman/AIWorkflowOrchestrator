@@ -265,10 +265,21 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 
 | 観点 | 採用方針 |
 | --- | --- |
-| 状態管理 | コンポーネントローカル状態 + `useSkillAnalysis` に集約（Store追加なし） |
-| IPC利用 | `window.electronAPI.skill.analyze` / `applyImprovements` / `autoImprove` |
+| 状態管理 | 初期実装（TASK-10A-B）はローカル状態 + `useSkillAnalysis` 集約。現行は Store 駆動（`currentAnalysis` / `previousAnalysis` / `isAnalyzing` / `isImproving`）を併用 |
+| IPC利用 | 初期実装は direct IPC。現行は `analyzeSkill` / `applySkillImprovements` / `autoImproveSkill` を Store action 経由で実行（`evaluatePrompt` は follow-up 対象） |
 | エラー処理 | `role=\"alert\"` のUI表示 + 再試行導線 |
 | 設計方針 | UI表示とビジネスロジックを hook 分離（Refactor済み） |
+
+### 再監査追補（TASK-SKILL-LIFECYCLE-04 / 2026-03-14）
+
+| 観点 | 反映内容 |
+| --- | --- |
+| Δスコア表示連携 | `SkillAnalysisView` が `useSkillAnalysis` の `previousAnalysis` を `ScoreDisplay` に渡す経路へ修正し、`ScoreDeltaBadge` が実画面で表示されることを確認 |
+| Store snapshot | `agentSlice.applySkillImprovements` で改善適用前 `currentAnalysis` を `previousAnalysis` に保存し、再分析後の比較基準を固定 |
+| 画面証跡 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/` に TC-11-01〜04 を保存（dark/light/mobile + Δ表示） |
+| テスト/品質 | `scoring-gate` 30件、`ScoreDisplay` 26件、`useSkillAnalysis-gate` 7件、合計 63/63 PASS + `tsc --noEmit` PASS |
+| 残課題 | `TASK-FIX-EVAL-STORE-DISPATCH-001`（evaluatePrompt Store経由化）、`TASK-FIX-SCORE-DELTA-DEDUP-001`（差分計算重複解消）を backlog 管理 |
+| 統合正本 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` で current canonical set / artifact inventory / same-wave 同期手順を管理 |
 
 ### アクセシビリティ・デザイントークン補正（Phase 11 反映）
 

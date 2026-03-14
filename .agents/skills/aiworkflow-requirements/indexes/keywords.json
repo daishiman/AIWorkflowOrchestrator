@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-13T22:22:48.225Z",
-  "totalKeywords": 2142,
+  "generated": "2026-03-14T03:34:39.648Z",
+  "totalKeywords": 2153,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -194,6 +194,7 @@
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -334,6 +335,7 @@
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -502,6 +504,7 @@
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -1137,7 +1140,8 @@
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
       "ui-ux-feature-components-reference.md",
-      "workflow-skill-identifier-branded-type-resolution.md"
+      "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "Creator": [
       "api-ipc-agent-core.md"
@@ -1266,7 +1270,8 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "logs-archive-legacy.md",
       "security-electron-ipc-advanced.md",
-      "security-skill-execution.md"
+      "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "AUTH": [
       "api-ipc-agent-core.md",
@@ -3104,7 +3109,8 @@
     ],
     "Lifecycle": [
       "claude-code-agents-workflow.md",
-      "security-skill-execution.md"
+      "security-skill-execution.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "向け": [
       "claude-code-agents-workflow.md",
@@ -3120,7 +3126,8 @@
       "claude-code-agents-workflow.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "security-skill-execution.md"
+      "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -3273,7 +3280,8 @@
     "docs": [
       "claude-code-skills-process.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "update": [
       "claude-code-skills-process.md"
@@ -5234,7 +5242,8 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "summary": [
       "lessons-learned-current.md"
@@ -6599,11 +6608,13 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
     "分担": [
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md"
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "苦戦箇所追補": [
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md"
@@ -7161,6 +7172,7 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -7199,7 +7211,8 @@
     "苦戦箇所": [
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
-      "ui-history-search-view.md"
+      "ui-history-search-view.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "仕様整合": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
@@ -7361,7 +7374,8 @@
     "sync": [
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "正規化": [
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
@@ -7565,6 +7579,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -8475,7 +8490,8 @@
     ],
     "wave": [
       "spec-elegance-consistency-audit.md",
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "ユーザー依頼テンプレ": [
       "spec-elegance-consistency-audit.md"
@@ -8561,6 +8577,7 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -8643,6 +8660,9 @@
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "JST": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "採点・評価・受け入れゲート統合": [
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "タスクワークフロー": [
@@ -9032,7 +9052,8 @@
       "ui-history-search-view.md"
     ],
     "再利用形式": [
-      "ui-history-search-view.md"
+      "ui-history-search-view.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "高度な": [
       "ui-ux-advanced.md"
@@ -9534,31 +9555,39 @@
     ],
     "canonical": [
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "set": [
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "artifact": [
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "inventory": [
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "parent": [
       "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md"
     ],
     "と依存関係": [
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "filename": [
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "互換管理": [
-      "workflow-ai-runtime-authmode-unification.md"
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "設定画面レビューの必須改善対象": [
       "workflow-ai-runtime-authmode-unification.md"
@@ -9584,6 +9613,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -9636,6 +9666,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -9714,6 +9745,36 @@
     ],
     "監視・ログ": [
       "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "Evaluation": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "Scoring": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "Gate": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "classification": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "first": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "分割判断": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "今回の実装内容": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "implementation": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "doc": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "関心分離": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "sweep": [
       "workflow-workspace-parent-reference-sweep-guard.md"
