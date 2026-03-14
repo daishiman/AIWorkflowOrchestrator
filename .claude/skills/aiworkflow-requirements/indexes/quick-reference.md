@@ -164,6 +164,18 @@ node scripts/search-spec.js "UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001" -C 3
 4. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録、苦戦箇所、関連未タスク `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` を確認する
 5. `references/legacy-ordinal-family-register.md` で旧 filename 互換行（`qa-checklist` -> `quality-assurance-checklist`）を確認する
 
+### Workspace Chat Edit AI Runtime（RuntimeResolver / handoff）を探すとき
+
+検索語: `RuntimeResolver` `AnthropicLLMAdapter` `TerminalHandoffBuilder` `HandoffGuidance` `chat-edit:send-with-context` `workspacePath` `isAllowedPath`
+
+読む順番:
+1. `references/llm-workspace-chat-edit.md` で RuntimeResolver / AnthropicLLMAdapter / TerminalHandoffBuilder の実装仕様を確認
+2. `references/interfaces-llm.md` で RuntimeResolution / HandoffGuidance 型定義を確認
+3. `references/api-ipc-agent-core.md` で `chat-edit:send-with-context` チャンネル契約変更を確認
+4. `references/security-electron-ipc-core.md` で workspacePath 検証・M-01 contextBridge 修正を確認
+5. `references/lessons-learned-current.md` で P57-P61 の苦戦箇所を確認
+6. 実装実体: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts` `AnthropicLLMAdapter.ts` `TerminalHandoffBuilder.ts` `apps/desktop/src/main/ipc/chatEditHandlers.ts` `apps/desktop/src/preload/chatEditApi.ts`
+
 ### Electron IPC パターン
 
 ```typescript
