@@ -3622,3 +3622,34 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **適用条件**: docs-heavy task、line-budget reform、spec-only task、または Phase 12 再監査で shallow summary のまま閉じた形跡がある場合
 - **発見日**: 2026-03-13
 - **関連タスク**: TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001
+
+### [Phase12] 未タスク root canonical path 固定 + 9セクション正規化（TASK-SKILL-LIFECYCLE-04）
+
+- **状況**: Phase 10 MINOR 由来の未タスクを workflow ローカル `tasks/unassigned-task/` に置いたまま進めると、`audit-unassigned-tasks --target-file` の監査境界と衝突し、指定ディレクトリ配置確認が不成立になる
+- **アプローチ**:
+  1. 未タスク指示書は `docs/30-workflows/unassigned-task/` を正本として作成する
+  2. 指示書本文は task-spec テンプレート準拠（`## 1..9` + `3.5 実装課題と解決策`）で作る
+  3. `phase-12-documentation.md` / `unassigned-task-detection.md` / `task-workflow-backlog.md` / 関連仕様書の参照を同ターンで root path へ同期する
+  4. `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD --target-file ...` をセットで実行し、links と品質を別軸で判定する
+- **結果**: 「未タスクは検出済みだが指定ディレクトリに未配置」という状態を防ぎ、再監査時の説明責任を保持できる
+- **失敗パターン**:
+  - workflow ローカル `tasks/unassigned-task/` を temporary として残し、参照更新を後回しにする
+  - `current`/`baseline` の監査値だけを見て、物理配置の確認を省略する
+  - 未タスク本文を簡易フォーマットで作成し、`3.5` の教訓継承を省略する
+- **適用条件**: Phase 12 Task 4 で MINOR 指摘を未タスク化する全 workflow
+- **発見日**: 2026-03-14
+- **関連タスク**: TASK-SKILL-LIFECYCLE-04
+
+### [Phase12] current canonical set / artifact inventory / legacy register / mirror parity を same-wave で閉じる（TASK-SKILL-LIFECYCLE-04）
+
+- **状況**: 実装内容と苦戦箇所は記録済みでも、`resource-map` / `quick-reference` / `legacy-ordinal-family-register` / mirror 同期が別ターンになると、引用導線と再現手順が stale になる
+- **アプローチ**:
+  1. `workflow-<feature>.md` を統合正本として新設し、`current canonical set` と `artifact inventory` を固定する
+  2. parent docs（契約/状態/UI）と ledger（task-workflow/backlog/lessons）を同一 wave で更新する
+  3. old path/filename がある場合は `legacy-ordinal-family-register.md` の `Current Alias Overrides` へ互換行を追加する
+  4. 入口導線として `indexes/resource-map.md` / `indexes/quick-reference.md` を同時更新する
+  5. 仕上げに `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を実行して parity を確認する
+- **結果**: 実装記録、再利用入口、旧名互換、mirror 一致が 1 wave で閉じ、次回の引用再現コストを下げられる
+- **適用条件**: docs-heavy task の Phase 12 再監査、または system spec へ「実装内容 + 苦戦箇所 + 再利用手順」を formalize する場合
+- **発見日**: 2026-03-14
+- **関連タスク**: TASK-SKILL-LIFECYCLE-04

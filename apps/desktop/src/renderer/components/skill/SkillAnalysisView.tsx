@@ -43,6 +43,7 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
 }) => {
   const {
     analysis,
+    previousAnalysis,
     isAnalyzing,
     isImproving,
     selectedSuggestions,
@@ -108,7 +109,10 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
             {improvementResult && (
               <ImprovementResultBreakdown result={improvementResult} />
             )}
-            <ScoreDisplay analysis={analysis} />
+            <ScoreDisplay
+              analysis={analysis}
+              previousAnalysis={previousAnalysis}
+            />
             <SuggestionList
               suggestions={analysis.suggestions}
               selected={selectedSuggestions}
