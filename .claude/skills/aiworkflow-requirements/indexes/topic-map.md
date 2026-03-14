@@ -2358,6 +2358,7 @@ node scripts/list-specs.js --topics
 | 最新教訓 | L71 |
 | 最新教訓 | L69 |
 | 最新教訓 | L72 |
+| 最新教訓 | L84 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 

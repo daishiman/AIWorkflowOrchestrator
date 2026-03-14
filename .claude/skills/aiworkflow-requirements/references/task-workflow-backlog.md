@@ -429,6 +429,7 @@
 | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 | workspacePath テスト実装確認（TC-WS-01〜06） | 高 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 Phase 12（2026-03-14） | `docs/30-workflows/completed-tasks/unassigned-task/task-chat-edit-workspace-constraint-test-001.md` |
 | TASK-IMP-WORKSPACE-CHAT-EDIT-SPEC-SYNC-IPC-001 | IPC 正本同期（F-M02） | 中 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 Phase 12（2026-03-14） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-workspace-chat-edit-spec-sync-ipc-001.md` |
 | UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動化 | 低 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 Phase 12（2026-03-14） | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase11-screenshot-automation-001.md` |
+||||||| Stash base
 
 ### 未タスク管理ルール
 
