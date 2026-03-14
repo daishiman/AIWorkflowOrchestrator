@@ -18,12 +18,12 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
+| 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
 | 2026-03-14 | 1.29.88 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
 | 2026-03-14 | 1.29.90 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 の実装教訓 P57〜P61 を追加。AuthMode 値乖離、同名ファイル二重存在、Preload API 未公開、サービススコープ制限、動的アダプタ注入の5教訓と5ステップ解決手順を追記 |
+| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
 | 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 12 再確認追補を反映。再参照既存未タスクが `target-file` 監査で current 違反になり得る点を追加し、`audit-unassigned-tasks --target-file` で是正確認する運用を明文化 |
 | 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 の再監査教訓を追補。`electron-vite dev` の esbuild platform mismatch で実画面 capture が詰まる条件、fallback review board 証跡化、`chatEditAPI` payload 契約（object vs positional）ドリフト是正を追加 |
-||||||| Stash base
 | 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の follow-up 教訓を追補。Phase 4 契約テストと Phase 6 回帰テストの責務混線を `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` として未タスク化し、境界定義と重複防止手順を追加 |
 | 2026-03-12 | 1.29.83 | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 の教訓を追加。large skill docs は `SKILL.md` を入口に保ち、family file と rolling `LOGS.md` + archive へ責務分離し、`.claude` 正本更新後に `.agents` mirror と validator 3点セットを同期する手順を標準化 |
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
@@ -220,7 +220,6 @@
 4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
 5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
 
-||||||| Stash base
 ### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57〜P61）
 
 #### P57: 設計書と実コードの AuthMode 値の乖離
