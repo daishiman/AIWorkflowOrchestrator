@@ -1,0 +1,47 @@
+{
+  "taskId": "TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001",
+  "phase": 11,
+  "createdAt": "2026-03-14",
+  "status": "captured_with_limitations",
+  "note": "画面証跡は4ケース取得済み。ただし runtime/handoff UI の実遷移は未達のため、TC結果は manual-test-result.md で PARTIAL/BLOCKED として評価した。",
+  "captureMetadata": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+  "testCases": [
+    {
+      "tcId": "TC-11-01",
+      "targetScreen": "Skill / Agent",
+      "state": "integrated_runtime",
+      "filename": "TC-11-01-skill-agent-runtime.png",
+      "captureStatus": "captured",
+      "verificationMethod": "ui_capture_and_code_review"
+    },
+    {
+      "tcId": "TC-11-02",
+      "targetScreen": "Skill / Agent / Creator",
+      "state": "terminal_handoff",
+      "filename": "TC-11-02-skill-agent-terminal-handoff.png",
+      "captureStatus": "captured",
+      "verificationMethod": "ui_capture_and_code_review"
+    },
+    {
+      "tcId": "TC-11-03",
+      "targetScreen": "Skill Lifecycle",
+      "state": "creator_handoff",
+      "filename": "TC-11-03-creator-handoff.png",
+      "captureStatus": "captured",
+      "verificationMethod": "ui_capture_and_code_review"
+    },
+    {
+      "tcId": "TC-11-04",
+      "targetScreen": "Skill / Agent",
+      "state": "permission_surface",
+      "filename": "TC-11-04-skill-agent-permission.png",
+      "captureStatus": "captured",
+      "verificationMethod": "ui_capture_and_code_review"
+    }
+  ],
+  "followUp": {
+    "unassignedTask": "UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001",
+    "reason": "runtime resolver の IPC 配線未完了により、手動テストで handoff/permission の実状態に到達できない",
+    "priority": "high"
+  }
+}

@@ -25,7 +25,6 @@
   - task-spec 由来の `3.5 実装課題と解決策` 継承を含め、同種タスクの再利用性を強化
 
 ---
-||||||| Stash base
 ## 2026-03-14 - Phase12 再確認での「既存未タスク再参照 + target監査」パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)

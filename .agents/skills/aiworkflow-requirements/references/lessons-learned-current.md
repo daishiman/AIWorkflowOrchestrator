@@ -18,9 +18,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
-| 2026-03-14 | 1.29.88 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
-||||||| Stash base
+| 2026-03-14 | 1.29.90 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
+| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
 | 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 12 再確認追補を反映。再参照既存未タスクが `target-file` 監査で current 違反になり得る点を追加し、`audit-unassigned-tasks --target-file` で是正確認する運用を明文化 |
 | 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 の再監査教訓を追補。`electron-vite dev` の esbuild platform mismatch で実画面 capture が詰まる条件、fallback review board 証跡化、`chatEditAPI` payload 契約（object vs positional）ドリフト是正を追加 |
 | 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の follow-up 教訓を追補。Phase 4 契約テストと Phase 6 回帰テストの責務混線を `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` として未タスク化し、境界定義と重複防止手順を追加 |
@@ -109,7 +108,6 @@
 | 解決策 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、`current canonical set` と `artifact inventory` を起点に parent docs / ledger / indexes / logs を同一 wave で同期した |
 | 標準ルール | Phase 12 の close-out は `workflow + parent docs + task-workflow + lessons + indexes + LOGS + mirror` を最小単位とする |
 
-||||||| Stash base
 ### 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補）
 
 #### 苦戦箇所: 既存未タスクを再参照しても、対象ファイル自体が10見出し要件を満たしていない場合がある

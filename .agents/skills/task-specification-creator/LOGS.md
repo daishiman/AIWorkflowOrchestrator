@@ -28,7 +28,6 @@
   - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
 
 ---
-||||||| Stash base
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase12 再確認（target-file監査で既存未タスク是正）
 
 - **Agent**: task-specification-creator

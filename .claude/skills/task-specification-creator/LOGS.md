@@ -28,7 +28,6 @@
   - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
 
 ---
-||||||| Stash base
 ## 2026-03-14 - TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 実装完了
 
 - **Agent**: task-specification-creator
