@@ -2355,6 +2355,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
 | 最新教訓 | L71 |
+||||||| Stash base
+| 最新教訓 | L69 |
+| 最新教訓 | L70 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
