@@ -122,11 +122,9 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
-    const response = await this.skillExecutor.execute(
-      request,
-      skillMeta,
-      decision,
-    );
+    // decision は将来の integrated_api/terminal_handoff 分岐で使用予定
+    void decision;
+    const response = await this.skillExecutor.execute(request, skillMeta);
 
     return {
       executeId: response.executionId,
