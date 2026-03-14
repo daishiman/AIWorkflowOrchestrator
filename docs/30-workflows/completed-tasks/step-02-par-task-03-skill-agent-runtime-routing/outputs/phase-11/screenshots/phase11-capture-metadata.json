@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-03-14T02:38:12.098Z",
+  "baseUrl": "http://127.0.0.1:5173",
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-skill-agent-runtime.png",
+      "route": "/advanced/skill-management-panel?skipAuth=true",
+      "url": "http://127.0.0.1:5173/advanced/skill-management-panel?skipAuth=true",
+      "note": "Skill runtime entry state (lifecycle panel CTA)",
+      "capturedAt": "2026-03-14T02:38:08.160Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-skill-agent-terminal-handoff.png",
+      "route": "/agent?skipAuth=true",
+      "url": "http://127.0.0.1:5173/agent?skipAuth=true",
+      "note": "Agent runtime surface fallback state",
+      "capturedAt": "2026-03-14T02:38:09.489Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-creator-handoff.png",
+      "route": "/advanced/skill-create-wizard?skipAuth=true",
+      "url": "http://127.0.0.1:5173/advanced/skill-create-wizard?skipAuth=true",
+      "note": "Creator execution flow entry wizard",
+      "capturedAt": "2026-03-14T02:38:10.824Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-skill-agent-permission.png",
+      "route": "/advanced/skill-center?skipAuth=true",
+      "url": "http://127.0.0.1:5173/advanced/skill-center?skipAuth=true",
+      "note": "Permission/auth fallback observable state",
+      "capturedAt": "2026-03-14T02:38:12.096Z"
+    }
+  ]
+}
