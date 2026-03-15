@@ -26,50 +26,56 @@ const scenarios = [
   {
     tc: "TC-01",
     file: "TC-01-skill-handoff-light.png",
-    note: "subscription mode skill handoff (light)",
+    note: "サブスクリプションモードのスキル引き継ぎ（ライト）",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc01-skill-handoff&theme=light",
   },
   {
     tc: "TC-02",
     file: "TC-02-skill-integrated-light.png",
-    note: "api-key mode skill integrated (light)",
+    note: "APIキーモードのスキル統合実行（ライト）",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc02-skill-integrated&theme=light",
   },
   {
     tc: "TC-03",
     file: "TC-03-agent-handoff-light.png",
-    note: "subscription mode agent handoff (light)",
+    note: "サブスクリプションモードのエージェント引き継ぎ（ライト）",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc03-agent-handoff&theme=light",
   },
   {
     tc: "TC-04",
     file: "TC-04-handoff-layout-long-command.png",
-    note: "terminal handoff layout with long command",
+    note: "長いコマンド時のターミナル引き継ぎレイアウト",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc04-layout&theme=light",
   },
   {
     tc: "TC-05",
     file: "TC-05-copy-feedback.png",
-    note: "copy button feedback",
+    note: "コピーボタンのフィードバック表示",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc05-copy-feedback&theme=light",
     action: async (page) => {
-      await page.getByLabel("コマンドをコピー").click();
+      await page
+        .locator('[data-testid="copy-button"]')
+        .first()
+        .click({ force: true });
       await page.waitForTimeout(200);
     },
   },
   {
     tc: "TC-06",
     file: "TC-06-dismiss-handoff.png",
-    note: "dismiss button hides handoff card",
+    note: "閉じるボタンで引き継ぎカードを非表示化",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc06-dismiss&theme=light",
     action: async (page) => {
-      await page.getByLabel("案内を閉じる").click();
+      await page
+        .locator('[data-testid="dismiss-button"]')
+        .first()
+        .click({ force: true });
       await page.waitForSelector('[data-testid="phase11-handoff-hidden"]', {
         timeout: 5000,
       });
@@ -78,21 +84,21 @@ const scenarios = [
   {
     tc: "TC-07",
     file: "TC-07-skill-handoff-dark.png",
-    note: "subscription mode skill handoff (dark)",
+    note: "サブスクリプションモードのスキル引き継ぎ（ダーク）",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc07-dark-mode&theme=dark",
   },
   {
     tc: "TC-08",
     file: "TC-08-chat-edit-regression.png",
-    note: "chat-edit regression check",
+    note: "chat-edit回帰確認",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc08-chat-edit-regression&theme=light",
   },
   {
     tc: "TC-09",
     file: "TC-09-skill-regression-apikey.png",
-    note: "api-key skill regression check",
+    note: "APIキー方式スキル実行の回帰確認",
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc09-skill-regression&theme=light",
   },
@@ -112,7 +118,7 @@ const BASE_AGENT_GUIDANCE = {
 
 const LONG_COMMAND_GUIDANCE = {
   terminalCommand:
-    'claude --add-dir "/Users/dev/workspace" "ランタイムルーティング統合の継続実装を行い、skill/agent 画面のハンドオフUIをスクリーンショットで検証してください。"',
+    'claude --add-dir "/Users/dev/workspace" "ランタイムルーティング統合の継続実装を行い、スキル/エージェント画面のハンドオフUIをスクリーンショットで検証してください。"',
   contextSummary: "surface=skill skill=runtime-routing-integration-closure",
   reason: "サブスクリプションモードのため、Claude Code CLI で続行してください。",
 };
@@ -157,6 +163,48 @@ function getGuidanceByVariant(variant) {
   }
 }
 
+function getVariantLabel(variant) {
+  switch (variant) {
+    case "tc01-skill-handoff":
+      return "TC-01 スキル引き継ぎ";
+    case "tc02-skill-integrated":
+      return "TC-02 スキル統合実行";
+    case "tc03-agent-handoff":
+      return "TC-03 エージェント引き継ぎ";
+    case "tc04-layout":
+      return "TC-04 長文コマンドレイアウト";
+    case "tc05-copy-feedback":
+      return "TC-05 コピー操作のフィードバック";
+    case "tc06-dismiss":
+      return "TC-06 引き継ぎカードを閉じる";
+    case "tc07-dark-mode":
+      return "TC-07 スキル引き継ぎ（ダーク）";
+    case "tc08-chat-edit-regression":
+      return "TC-08 chat-edit回帰確認";
+    case "tc09-skill-regression":
+      return "TC-09 APIキー方式の回帰確認";
+    default:
+      return variant;
+  }
+}
+
+function localizeContextSummary(contextSummary) {
+  const match = String(contextSummary).match(/^surface=(\S+)\s+skill=(.+)$/);
+  if (!match) {
+    return String(contextSummary);
+  }
+
+  const [, surface, skill] = match;
+  const surfaceLabel =
+    surface === "skill"
+      ? "スキル"
+      : surface === "agent"
+        ? "エージェント"
+        : surface;
+
+  return `対象画面: ${surfaceLabel} / スキル: ${skill}`;
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -168,6 +216,8 @@ function escapeHtml(value) {
 
 function renderFallbackHarness({ variant, theme }) {
   const guidance = getGuidanceByVariant(variant);
+  const variantLabel = getVariantLabel(variant);
+  const themeLabel = theme === "dark" ? "ダーク" : "ライト";
   const hasIntegrated = variant === "tc02-skill-integrated";
   const hasChatEditRegression = variant === "tc08-chat-edit-regression";
   const hasSkillRegression = variant === "tc09-skill-regression";
@@ -231,7 +281,7 @@ function renderFallbackHarness({ variant, theme }) {
               コピー
             </button>
           </div>
-          <p class="muted small">${escapeHtml(guidance.contextSummary)}</p>
+          <p class="muted small">${escapeHtml(localizeContextSummary(guidance.contextSummary))}</p>
         </div>
       </section>
     `
@@ -242,7 +292,7 @@ function renderFallbackHarness({ variant, theme }) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>runtime routing fallback harness</title>
+    <title>ランタイムルーティング フォールバックハーネス</title>
     <style>
       * {
         box-sizing: border-box;
@@ -354,7 +404,7 @@ function renderFallbackHarness({ variant, theme }) {
           <h1 style="margin: 0; font-size: 22px; font-weight: 700;">
             ランタイムルーティング統合クロージャ - Phase 11 ハーネス
           </h1>
-          <p class="meta">バリアント=${escapeHtml(variant)} / テーマ=${escapeHtml(theme)}</p>
+          <p class="meta">バリアント: ${escapeHtml(variantLabel)} / テーマ: ${escapeHtml(themeLabel)}</p>
           <p class="meta">キャプチャモード: フォールバックレビュー（esbuild プラットフォーム不一致）</p>
         </header>
 
@@ -382,7 +432,7 @@ function renderFallbackHarness({ variant, theme }) {
           ターミナル引き継ぎカードは非表示です。
         </div>
 
-        <div data-testid="phase11-copy-count" class="meta">copyCount=0</div>
+        <div data-testid="phase11-copy-count" class="meta">コピー回数=0</div>
       </section>
     </main>
 
@@ -399,7 +449,7 @@ function renderFallbackHarness({ variant, theme }) {
           copyButton.addEventListener("click", () => {
             copyCount += 1;
             copyButton.textContent = "コピー済み";
-            if (counter) counter.textContent = "copyCount=" + String(copyCount);
+            if (counter) counter.textContent = "コピー回数=" + String(copyCount);
           });
         }
 
@@ -578,7 +628,7 @@ async function main() {
           mode,
           fallbackReason: mode === "vite" ? null : fallbackReason,
           records,
-          note: "phase11 runtime routing integration closure capture",
+          note: "phase11 ランタイムルーティング統合クロージャのキャプチャ",
         },
         null,
         2,

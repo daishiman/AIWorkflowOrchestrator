@@ -112,11 +112,13 @@ describe("agentSlice.executeSkill preflight", () => {
       executionId: "handoff-1",
       success: false,
       handoff: true,
-      error: "subscription mode: use Claude Code CLI",
+      error:
+        "サブスクリプションモードのため、Claude Code CLI で続行してください。",
       guidance: {
         terminalCommand: 'claude "Continue this task"',
         contextSummary: "surface=skill skill=test-skill",
-        reason: "subscription mode: use Claude Code CLI",
+        reason:
+          "サブスクリプションモードのため、Claude Code CLI で続行してください。",
       },
     });
 

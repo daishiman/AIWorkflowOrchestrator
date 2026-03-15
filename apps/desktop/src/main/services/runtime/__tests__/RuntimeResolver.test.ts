@@ -68,7 +68,8 @@ describe("RuntimeResolver", () => {
 
     expect(result).toEqual({
       type: "handoff",
-      reason: "subscription mode: use Claude Code CLI",
+      reason:
+        "サブスクリプションモードのため、Claude Code CLI で続行してください。",
     });
     expect(mockAuthKeyService.hasKey).not.toHaveBeenCalled();
   });
@@ -81,7 +82,7 @@ describe("RuntimeResolver", () => {
 
     expect(result).toEqual({
       type: "handoff",
-      reason: "API key not configured",
+      reason: "APIキーが設定されていません。",
     });
     expect(mockAuthKeyService.getKey).not.toHaveBeenCalled();
   });
@@ -95,7 +96,7 @@ describe("RuntimeResolver", () => {
 
     expect(result).toEqual({
       type: "handoff",
-      reason: "API key unavailable",
+      reason: "APIキーを取得できませんでした。",
     });
   });
 
@@ -126,7 +127,7 @@ describe("RuntimeResolver", () => {
 
       expect(result).toEqual({
         type: "handoff",
-        reason: "API key not configured",
+        reason: "APIキーが設定されていません。",
       });
       expect(mockAuthKeyService.hasKey).toHaveBeenCalled();
     });
@@ -151,7 +152,7 @@ describe("RuntimeResolver", () => {
 
       expect(result).toEqual({
         type: "handoff",
-        reason: "API key unavailable",
+        reason: "APIキーを取得できませんでした。",
       });
     });
   });

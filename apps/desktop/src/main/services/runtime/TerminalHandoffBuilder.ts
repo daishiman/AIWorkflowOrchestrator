@@ -59,7 +59,7 @@ export class TerminalHandoffBuilder {
   ): HandoffGuidance {
     const prompt =
       request.prompt?.trim() ||
-      "Please continue agent execution from current context";
+      "現在のコンテキストからエージェント実行を続けてください";
     const cwd =
       request.workingDirectory?.trim() && request.workingDirectory.trim() !== ""
         ? request.workingDirectory
@@ -84,8 +84,8 @@ export class TerminalHandoffBuilder {
     const prompt =
       request.prompt?.trim() ||
       (request.skillName?.trim()
-        ? `Please continue skill execution for "${request.skillName}"`
-        : "Please continue skill execution with latest context");
+        ? `「${request.skillName}」のスキル実行を続けてください`
+        : "最新のコンテキストでスキル実行を続けてください");
     const cwd =
       request.workingDirectory?.trim() && request.workingDirectory.trim() !== ""
         ? request.workingDirectory

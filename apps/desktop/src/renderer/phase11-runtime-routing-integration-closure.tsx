@@ -42,27 +42,43 @@ function applyTheme(): "light" | "dark" {
 }
 
 const baseSkillGuidance = {
-  terminalCommand: 'claude "Please continue with skill execution"',
+  terminalCommand: 'claude "スキル実行の続きを進めてください"',
   contextSummary: "surface=skill skill=skill-creator",
-  reason: "subscription mode: use Claude Code CLI",
+  reason:
+    "サブスクリプションモードのため、Claude Code CLI で続行してください。",
 };
 
 const baseAgentGuidance = {
-  terminalCommand: 'claude "Continue agent execution from current context"',
+  terminalCommand:
+    'claude "現在のコンテキストからエージェント実行を続けてください"',
   contextSummary: "surface=agent skill=agent-01",
-  reason: "API key not configured",
+  reason: "APIキーが設定されていません。",
 };
 
 const longCommandGuidance = {
   terminalCommand:
-    'claude --add-dir "/Users/dev/workspace" "Please continue with runtime routing integration closure and validate handoff UI for skill and agent surfaces with screenshot evidence."',
+    'claude --add-dir "/Users/dev/workspace" "ランタイムルーティング統合の継続実装を行い、スキル/エージェント画面のハンドオフUIをスクリーンショットで検証してください。"',
   contextSummary: "surface=skill skill=runtime-routing-integration-closure",
-  reason: "subscription mode: use Claude Code CLI",
+  reason:
+    "サブスクリプションモードのため、Claude Code CLI で続行してください。",
+};
+
+const variantLabels: Record<Variant, string> = {
+  "tc01-skill-handoff": "TC-01 スキル引き継ぎ",
+  "tc02-skill-integrated": "TC-02 スキル統合実行",
+  "tc03-agent-handoff": "TC-03 エージェント引き継ぎ",
+  "tc04-layout": "TC-04 長文コマンドレイアウト",
+  "tc05-copy-feedback": "TC-05 コピー操作のフィードバック",
+  "tc06-dismiss": "TC-06 引き継ぎカードを閉じる",
+  "tc07-dark-mode": "TC-07 スキル引き継ぎ（ダーク）",
+  "tc08-chat-edit-regression": "TC-08 chat-edit回帰確認",
+  "tc09-skill-regression": "TC-09 APIキー方式の回帰確認",
 };
 
 const RuntimeRoutingHarness: React.FC = () => {
   const variant = useMemo(getVariant, []);
   const theme = useMemo(applyTheme, []);
+  const themeLabel = theme === "dark" ? "ダーク" : "ライト";
 
   const initialGuidance =
     variant === "tc03-agent-handoff"
@@ -89,7 +105,7 @@ const RuntimeRoutingHarness: React.FC = () => {
             ランタイムルーティング統合クロージャ - Phase 11 ハーネス
           </h1>
           <p className="text-sm text-[var(--text-secondary)]">
-            バリアント={variant} / テーマ={theme}
+            バリアント: {variantLabels[variant]} / テーマ: {themeLabel}
           </p>
         </header>
 
@@ -143,7 +159,7 @@ const RuntimeRoutingHarness: React.FC = () => {
           data-testid="phase11-copy-count"
           className="text-xs text-[var(--text-secondary)]"
         >
-          copyCount={copyCount}
+          コピー回数={copyCount}
         </div>
       </section>
     </main>
@@ -152,7 +168,9 @@ const RuntimeRoutingHarness: React.FC = () => {
 
 const root = document.getElementById("root");
 if (!root) {
-  throw new Error("Failed to find root element for runtime routing harness");
+  throw new Error(
+    "ランタイムルーティング用ハーネスのルート要素が見つかりませんでした",
+  );
 }
 
 ReactDOM.createRoot(root).render(

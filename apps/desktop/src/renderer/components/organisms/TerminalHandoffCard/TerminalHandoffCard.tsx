@@ -10,6 +10,39 @@ interface TerminalHandoffCardProps {
   onDismiss: () => void;
 }
 
+function localizeReason(reason: string): string {
+  switch (reason) {
+    case "subscription mode: use Claude Code CLI":
+    case "サブスクリプションモードのため、Claude Code CLI で続行してください。":
+      return "サブスクリプションモードのため、Claude Code CLI で続行してください。";
+    case "API key not configured":
+    case "APIキーが設定されていません。":
+      return "APIキーが設定されていません。";
+    case "API key unavailable":
+    case "APIキーを取得できませんでした。":
+      return "APIキーを取得できませんでした。";
+    default:
+      return reason;
+  }
+}
+
+function localizeContextSummary(contextSummary: string): string {
+  const match = contextSummary.match(/^surface=(\S+)\s+skill=(.+)$/);
+  if (!match) {
+    return contextSummary;
+  }
+
+  const [, surface, skill] = match;
+  const surfaceLabel =
+    surface === "skill"
+      ? "スキル"
+      : surface === "agent"
+        ? "エージェント"
+        : surface;
+
+  return `対象画面: ${surfaceLabel} / スキル: ${skill}`;
+}
+
 export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
   guidance,
   onCopyCommand,
@@ -17,18 +50,10 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
-  const localizedReason = (() => {
-    switch (guidance.reason) {
-      case "subscription mode: use Claude Code CLI":
-        return "サブスクリプションモードのため、Claude Code CLI で続行してください。";
-      case "API key not configured":
-        return "APIキーが設定されていません。";
-      case "API key unavailable":
-        return "APIキーを取得できませんでした。";
-      default:
-        return guidance.reason;
-    }
-  })();
+  const localizedReason = localizeReason(guidance.reason);
+  const localizedContextSummary = localizeContextSummary(
+    guidance.contextSummary,
+  );
 
   const handleCopy = useCallback(() => {
     onCopyCommand();
@@ -131,7 +156,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
 
       {/* Context summary */}
       <p className="text-xs" style={{ color: "var(--text-secondary)" }}>
-        {guidance.contextSummary}
+        {localizedContextSummary}
       </p>
     </div>
   );

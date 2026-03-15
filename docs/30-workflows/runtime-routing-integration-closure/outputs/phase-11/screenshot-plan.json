@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-03-15T04:02:06.677Z",
+  "generatedAt": "2026-03-15T08:23:03.284Z",
   "baseUrl": "http://127.0.0.1:4179",
   "harnessPath": "/phase11-runtime-routing-integration-closure.html",
   "scenarios": [
     {
       "id": "TC-01",
-      "description": "subscription mode skill handoff (light)",
+      "description": "サブスクリプションモードのスキル引き継ぎ（ライト）",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc01-skill-handoff&theme=light",
       "output": "screenshots/TC-01-skill-handoff-light.png",
       "viewport": {
@@ -16,7 +16,7 @@
     },
     {
       "id": "TC-02",
-      "description": "api-key mode skill integrated (light)",
+      "description": "APIキーモードのスキル統合実行（ライト）",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc02-skill-integrated&theme=light",
       "output": "screenshots/TC-02-skill-integrated-light.png",
       "viewport": {
@@ -27,7 +27,7 @@
     },
     {
       "id": "TC-03",
-      "description": "subscription mode agent handoff (light)",
+      "description": "サブスクリプションモードのエージェント引き継ぎ（ライト）",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc03-agent-handoff&theme=light",
       "output": "screenshots/TC-03-agent-handoff-light.png",
       "viewport": {
@@ -38,7 +38,7 @@
     },
     {
       "id": "TC-04",
-      "description": "terminal handoff layout with long command",
+      "description": "長いコマンド時のターミナル引き継ぎレイアウト",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc04-layout&theme=light",
       "output": "screenshots/TC-04-handoff-layout-long-command.png",
       "viewport": {
@@ -49,7 +49,7 @@
     },
     {
       "id": "TC-05",
-      "description": "copy button feedback",
+      "description": "コピーボタンのフィードバック表示",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc05-copy-feedback&theme=light",
       "output": "screenshots/TC-05-copy-feedback.png",
       "viewport": {
@@ -60,7 +60,7 @@
     },
     {
       "id": "TC-06",
-      "description": "dismiss button hides handoff card",
+      "description": "閉じるボタンで引き継ぎカードを非表示化",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc06-dismiss&theme=light",
       "output": "screenshots/TC-06-dismiss-handoff.png",
       "viewport": {
@@ -71,7 +71,7 @@
     },
     {
       "id": "TC-07",
-      "description": "subscription mode skill handoff (dark)",
+      "description": "サブスクリプションモードのスキル引き継ぎ（ダーク）",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc07-dark-mode&theme=dark",
       "output": "screenshots/TC-07-skill-handoff-dark.png",
       "viewport": {
@@ -82,7 +82,7 @@
     },
     {
       "id": "TC-08",
-      "description": "chat-edit regression check",
+      "description": "chat-edit回帰確認",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc08-chat-edit-regression&theme=light",
       "output": "screenshots/TC-08-chat-edit-regression.png",
       "viewport": {
@@ -93,7 +93,7 @@
     },
     {
       "id": "TC-09",
-      "description": "api-key skill regression check",
+      "description": "APIキー方式スキル実行の回帰確認",
       "route": "/phase11-runtime-routing-integration-closure.html?variant=tc09-skill-regression&theme=light",
       "output": "screenshots/TC-09-skill-regression-apikey.png",
       "viewport": {

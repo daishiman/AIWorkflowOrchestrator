@@ -108,7 +108,7 @@ describe("agentHandlers runtime integration", () => {
   it("RuntimeResolver が handoff を返す → HandoffGuidance 応答が返される", async () => {
     mockResolve.mockResolvedValue({
       type: "handoff",
-      reason: "API key not configured",
+      reason: "APIキーが設定されていません。",
     });
 
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
@@ -131,7 +131,7 @@ describe("agentHandlers runtime integration", () => {
 
     expect(opResult.success).toBe(false);
     expect(opResult.handoff).toBe(true);
-    expect(opResult.error).toContain("API key not configured");
+    expect(opResult.error).toContain("APIキーが設定されていません");
     expect(opResult.guidance?.terminalCommand).toContain("claude");
     expect(mockExecutionManager.startExecution).not.toHaveBeenCalled();
   });

@@ -148,7 +148,8 @@ describe("skillHandlers runtime integration", () => {
   it("RuntimeResolver が handoff を返す → HandoffGuidance 応答が返される", async () => {
     mockResolve.mockResolvedValue({
       type: "handoff",
-      reason: "subscription mode: use Claude Code CLI",
+      reason:
+        "サブスクリプションモードのため、Claude Code CLI で続行してください。",
     });
 
     const { registerSkillHandlers } = await import("../skillHandlers");
@@ -176,7 +177,7 @@ describe("skillHandlers runtime integration", () => {
     expect(opResult.success).toBe(true);
     expect(opResult.data?.handoff).toBe(true);
     expect(opResult.data?.success).toBe(false);
-    expect(opResult.data?.error).toContain("subscription mode");
+    expect(opResult.data?.error).toContain("サブスクリプションモード");
     expect(opResult.data?.guidance?.terminalCommand).toContain("claude");
   });
 
