@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-03-15T09:18:41.762Z",
+  "output": "docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/outputs/phase-11/screenshots/TC-11-00-created-skill-usage-review-board.png",
+  "cards": [
+    {
+      "id": "A",
+      "title": "作成直後に使う（Skill Center 入口）",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-01-create-entry.png",
+      "sourceCapturedAt": "2026-03-14T15:46:31.594Z"
+    },
+    {
+      "id": "B",
+      "title": "あとから使う（Agent 入口）",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-02-execute-entry.png",
+      "sourceCapturedAt": "2026-03-14T15:46:31.594Z"
+    },
+    {
+      "id": "C",
+      "title": "履歴/改善への戻り（Improve 入口）",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-03-improve-entry.png",
+      "sourceCapturedAt": "2026-03-14T15:46:31.595Z"
+    },
+    {
+      "id": "D",
+      "title": "評価差分表示（desktop）",
+      "source": "docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/TC-11-02-skill-analysis-delta-dark-desktop.png",
+      "sourceCapturedAt": "2026-03-14T15:46:31.629Z"
+    },
+    {
+      "id": "E",
+      "title": "評価差分表示（mobile）",
+      "source": "docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/TC-11-04-skill-analysis-delta-dark-mobile.png",
+      "sourceCapturedAt": "2026-03-14T15:46:31.630Z"
+    }
+  ]
+}

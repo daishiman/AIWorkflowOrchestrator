@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-14
+> 自動生成: 2026-03-15
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -299,7 +299,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | SkillService 統合（TASK-FIX-7-1） | L13 |
 | SkillExecutor 型定義（TASK-3-1-A） | L99 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L338 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L325 |
 
 ### references/interfaces-agent-sdk-executor-details.md
 
@@ -311,8 +311,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
-| 関連ドキュメント | L249 |
-| 変更履歴 | L263 |
+| 関連ドキュメント | L221 |
+| 変更履歴 | L235 |
 
 ### references/interfaces-agent-sdk-executor.md
 
@@ -970,10 +970,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
-| コンポーネント仕様 | L43 |
-| インタラクション設計 | L287 |
-| 視覚デザイン | L316 |
-| アクセシビリティ（WCAG 2.1 AA） | L340 |
+| コンポーネント仕様 | L39 |
+| インタラクション設計 | L258 |
+| 視覚デザイン | L286 |
+| アクセシビリティ（WCAG 2.1 AA） | L310 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -984,8 +984,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 完了タスク | L24 |
-| 関連ドキュメント | L63 |
+| 完了タスク | L23 |
+| 関連ドキュメント | L61 |
 
 ### references/ui-ux-agent-execution.md
 
@@ -1852,6 +1852,22 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L197 |
 | 変更履歴 | L208 |
 
+### references/workflow-skill-lifecycle-created-skill-usage-journey.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L8 |
+| 必要仕様の抽出セット | L23 |
+| 抽出確認コマンド | L37 |
+| Task04 依存契約 | L51 |
+| 現行 workflow 仕様書 | L62 |
+| 実装内容（TASK-SKILL-LIFECYCLE-05） | L74 |
+| 苦戦箇所 | L102 |
+| Current Canonical Set | L142 |
+| Artifact Inventory | L162 |
+| 実装コードアンカー | L184 |
+| same-wave 検証手順 | L196 |
+| 5分解決カード | L212 |
+
 ### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
 
 | セクション | 行 |
@@ -1929,7 +1945,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L23 |
+| 関連ドキュメント | L22 |
 
 ### references/arch-electron-services.md
 
@@ -1981,7 +1997,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L78 |
+| 関連ドキュメント | L77 |
 
 ### references/arch-state-management-reference-permissions-import-lifecycle.md
 
@@ -2294,12 +2310,6 @@ node scripts/list-specs.js --topics
 | Family Summary | L29 |
 | Detailed Register | L48 |
 
-### references/lessons-learned-archive-2026-03.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
-
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
 | セクション | 行 |
@@ -2361,13 +2371,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L75 |
-| 最新教訓 | L71 |
-| 最新教訓 | L69 |
-| 最新教訓 | L72 |
-| 最新教訓 | L76 |
-| 最新教訓 | L84 |
-| アーカイブ | L274 |
+| 最新教訓 | L37 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2493,8 +2497,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L36 |
-| 関連ドキュメント | L41 |
+| 利用順序 | L35 |
+| 関連ドキュメント | L40 |
 
 ### references/llm-embedding.md
 
@@ -2552,7 +2556,7 @@ node scripts/list-specs.js --topics
 | 品質メトリクス | L328 |
 | 関連ドキュメント | L339 |
 | 完了タスク | L367 |
-| 変更履歴 | L424 |
+| 変更履歴 | L403 |
 
 ### references/local-agent.md
 
@@ -3445,6 +3449,7 @@ node scripts/list-specs.js --topics
 | 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L253 |
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L273 |
 | TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L368 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L475 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
@@ -3484,8 +3489,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L26 |
-| 関連ドキュメント | L31 |
+| 利用順序 | L27 |
+| 関連ドキュメント | L32 |
 
 ### references/testing-accessibility.md
 

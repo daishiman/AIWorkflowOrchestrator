@@ -14,12 +14,12 @@
 
 ## 参照資料
 
-| 参照資料                  | パス                                                                             | 説明       |
-| ------------------------- | -------------------------------------------------------------------------------- | ---------- |
-| ui-history-search-view    | `.claude/skills/aiworkflow-requirements/references/ui-history-search-view.md`    | 履歴検索   |
-| ui-ux-history-panel       | `.claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md`       | 履歴 UI    |
-| architecture-chat-history | `.claude/skills/aiworkflow-requirements/references/architecture-chat-history.md` | 履歴基盤   |
-| task-05設計               | `../step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md`           | 再利用導線 |
+| 参照資料                  | パス                                                                                                  | 説明       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- | ---------- |
+| ui-history-search-view    | `.claude/skills/aiworkflow-requirements/references/ui-history-search-view.md`                         | 履歴検索   |
+| ui-ux-history-panel       | `.claude/skills/aiworkflow-requirements/references/ui-ux-history-panel.md`                            | 履歴 UI    |
+| architecture-chat-history | `.claude/skills/aiworkflow-requirements/references/architecture-chat-history.md`                      | 履歴基盤   |
+| task-05設計               | `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md` | 再利用導線 |
 
 ## 完了条件
 

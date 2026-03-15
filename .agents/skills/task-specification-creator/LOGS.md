@@ -3,50 +3,42 @@
 ## 役割
 
 ---
-## 2026-03-15 - UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 Phase 12 完了同期
+## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（Task 1〜5 完了整合）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（recheck + documentation sync）
+- **Phase**: Phase 12（documentation resync）
 - **Result**: success
 - **Notes**:
-  - `runtime-routing-integration-closure` の `artifacts.json` / `index.md` / `phase-1..12` を `completed` へ同期し、Phase 13 のみ `not_started` を維持
-  - `validate-phase11-screenshot-coverage`（TC 9/9）と `validate-phase12-implementation-guide`（10/10）を再実行し、画面証跡と実装ガイド品質を再確認
-  - Step 2 domain spec 同期として `interfaces-agent-sdk-executor` / `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `lessons` を同一ターンで更新
+  - `phase-12-documentation.md` を `status=completed` へ同期し、Task 1〜5 の実績チェックへ置換
+  - `outputs/phase-12/` に `spec-update-summary.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
+  - `documentation-changelog.md` から計画記述を除去し、実施結果のみ記録する形式へ統一
+  - `audit-unassigned-tasks --diff-from HEAD` と `--target-file` で current 違反 0 を確認し、未タスク6件の root 配置を再確認
 
 ---
-## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 Phase 12 再確認（SKILL履歴同期 + 未タスク配置判定分離）
+## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 4-12 完了（CTA 16パターン実装 + 30テストGREEN）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（spec sync / unassigned audit）
+- **Phase**: Phase 4-12（implementation / documentation）
 - **Result**: success
 - **Notes**:
-  - Step 1-A の必須4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を更新し、SKILL変更履歴同期漏れを解消
-  - `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md` が指定ディレクトリに配置されていることを再確認
-  - `audit-unassigned-tasks --json --diff-from HEAD`（今回差分）と `--target-file`（個票品質）を分離実行し、current/baseline の混同を防止
-  - repo-wide `@repo/shared` 解決失敗は既存未タスクに紐付け、新規未タスク化は見送った
+  - `packages/shared/src/types/cta-visibility.ts` に ScoringGate x CTA 16パターンマトリクス純粋関数を実装
+  - `packages/shared/src/types/__tests__/cta-visibility.test.ts` に 30テストを作成し全件 GREEN 確認
+  - `packages/shared/src/types/index.ts` にエクスポートを追加
+  - Phase 10 ゲート判定 PASS（MAJOR 0件、MINOR 8件→全て未タスク記録済み）
+  - Phase 11 ウォークスルー 63項目中 61 PASS、2 MINOR
+  - `artifacts.json` の Phase 1-12 ステータスを同期し、system spec same-wave 更新を完了
 
 ---
-## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 system spec 同期（lessons-learned / task-workflow / resource-map / llm-workspace-chat-edit / security-electron-ipc 更新）
+## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 再監査で Phase 11/12 必須成果物チェックを強化
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12（system spec sync）
+- **Phase**: Phase 11-12（re-audit / template-refinement）
 - **Result**: success
 - **Notes**:
-  - `lessons-learned-current.md` に P58（同名ファイル二重存在）判定手順、RuntimeResolver mock 戦略（P61派生）、vi.spyOn vs vi.mock セキュリティテスト判断基準の3苦戦箇所と5分解決カードを追加
-  - LOGS.md 2ファイル + SKILL.md 2ファイルの計4ファイルを同期（P1/P25/P29 対策）
-
----
-## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 再監査同期
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（re-audit / spec-sync）
-- **Result**: success
-- **Notes**:
-  - workflow 内の旧タスク指示書 path（`completed-tasks/unassigned-task/...`）を canonical path に統一
-  - `artifacts.json` と `outputs/artifacts.json` の status drift を解消（Phase 1-12 completed）
-  - ユーザー明示要件に合わせて Phase 11 screenshot 証跡（TC-11-01〜05 + metadata）を workflow 配下へ同期
-  - `task-workflow-backlog.md` / `task-workflow-completed-workspace-chat-lifecycle-tests.md` / LOGS を同一ターンで更新し、stash base 競合マーカー残骸を除去
-  - repo-wide `test:run` で再現した `@repo/shared` 解決失敗（agentHandlers/integration/AgentExecutor）は新規未タスク化せず、既存 `task-imp-vitest-alias-sync-automation-001` へ紐付けた
+  - `validate-phase11-screenshot-coverage` の必須成果物（`manual-test-checklist.md` / `manual-test-result.md` / `screenshot-plan.json` / `screenshots/*.png`）を current workflow で再構成し、TC-11-01〜05 の証跡を再固定
+  - `validate-phase12-implementation-guide` の Part 1/Part 2 要件（「なぜ先行」「使用例」「エッジケース」）を満たすよう implementation guide を是正
+  - docs-heavy かつ current build capture が難しい条件で、review board 1件 + source screenshot 集約 + metadata 記録を許容する運用を skill guide へ追記
+  - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current 違反 0 を確認
 
 ---
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク配置是正（指定ディレクトリ再確認）
@@ -325,6 +317,5 @@
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.1** | **2026-03-15** | runtime routing integration closure の Phase 12 再確認ログ（workflow status同期 + screenshot/guide validator + Step2 domain spec 同期）を追加 |
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |

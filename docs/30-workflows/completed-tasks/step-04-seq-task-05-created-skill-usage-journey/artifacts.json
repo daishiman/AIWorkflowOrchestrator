@@ -1,0 +1,246 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-05",
+  "title": "作成済みスキルを使う主導線",
+  "type": "design",
+  "priority": "high",
+  "status": "completed",
+  "dependencies": [
+    "TASK-SKILL-LIFECYCLE-01",
+    "TASK-SKILL-LIFECYCLE-02",
+    "TASK-SKILL-LIFECYCLE-03",
+    "TASK-SKILL-LIFECYCLE-04"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/spec-extraction-map.md",
+        "outputs/phase-1/usage-scenario-table.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/screen-transition-design.md",
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/state-management-design.md",
+        "outputs/phase-2/ipc-integration-design.md",
+        "outputs/phase-2/quality-display-placement.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/requirements-design-matrix.md",
+        "outputs/phase-3/dependency-contract-report.md",
+        "outputs/phase-3/ui-ux-review-report.md",
+        "outputs/phase-3/technical-review-report.md",
+        "outputs/phase-3/gate-decision.md"
+      ],
+      "gateResult": "PASS",
+      "majorIssues": 0,
+      "minorIssues": 3
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/traceability-test-design.md",
+        "outputs/phase-4/scoring-gate-cta-matrix.md",
+        "outputs/phase-4/flow-test-design.md",
+        "outputs/phase-4/state-management-test-design.md",
+        "outputs/phase-4/ipc-test-design.md",
+        "outputs/phase-4/accessibility-test-design.md"
+      ],
+      "implementedTests": [
+        "packages/shared/src/types/__tests__/cta-visibility.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": ["outputs/phase-5/integrity-verification-report.md"],
+      "implementedCode": ["packages/shared/src/types/cta-visibility.ts"],
+      "integrityCheck": {
+        "totalFiles": 20,
+        "verified": 20,
+        "crossReferenceChecks": 6,
+        "result": "PASS"
+      }
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/test-expansion-plan.md",
+        "outputs/phase-6/failure-handling-matrix.md",
+        "outputs/phase-6/regression-guard-list.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-matrix.md",
+        "outputs/phase-7/coverage-gap-report.md",
+        "outputs/phase-7/coverage-summary.md"
+      ],
+      "coverageResult": {
+        "overall": "100%",
+        "criticalGaps": 0,
+        "majorGaps": 0,
+        "result": "PASS"
+      }
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/terminology-unification.md",
+        "outputs/phase-8/duplication-removal.md",
+        "outputs/phase-8/common-execution-flow.md",
+        "outputs/phase-8/link-normalization-checklist.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/spec-quality-report.md",
+        "outputs/phase-9/ambiguity-detection-report.md",
+        "outputs/phase-9/type-consistency-report.md",
+        "outputs/phase-9/link-validity-report.md",
+        "outputs/phase-9/pitfall-compliance-report.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/ac-fulfillment-report.md",
+        "outputs/phase-10/design-completeness-report.md",
+        "outputs/phase-10/gate-decision.md",
+        "outputs/phase-10/unassigned-task-report.md"
+      ],
+      "gateResult": "PASS",
+      "acFulfillment": "5/5"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/walkthrough-scenario-a.md",
+        "outputs/phase-11/walkthrough-scenario-b.md",
+        "outputs/phase-11/walkthrough-scenario-c.md",
+        "outputs/phase-11/walkthrough-feedback-loop.md",
+        "outputs/phase-11/walkthrough-edge-cases.md",
+        "outputs/phase-11/manual-test-report.md"
+      ],
+      "walkthroughResult": {
+        "totalItems": 63,
+        "passed": 61,
+        "minor": 2,
+        "result": "PASS"
+      }
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/unassigned-task-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "作成したスキルをすぐ使う入口と、後から使う入口が定義されている",
+      "verified": true,
+      "evidence": "outputs/phase-1/usage-scenario-table.md: シナリオA（作成直後）、シナリオB（あとから）を定義"
+    },
+    {
+      "id": "AC-2",
+      "description": "Workspace / Agent のどちらを主導線にするか決まっている",
+      "verified": true,
+      "evidence": "outputs/phase-2/screen-transition-design.md: Workspace経由を推奨経路、Agent直接実行をショートカットと定義"
+    },
+    {
+      "id": "AC-3",
+      "description": "作成直後の実行、保存済みスキルの再実行、履歴からの再利用が定義されている",
+      "verified": true,
+      "evidence": "outputs/phase-1/usage-scenario-table.md: シナリオA/B/Cで3パターン完全定義"
+    },
+    {
+      "id": "AC-4",
+      "description": "Task04 の品質表示・再評価が利用導線に組み込まれている",
+      "verified": true,
+      "evidence": "outputs/phase-2/quality-display-placement.md: 7地点での品質表示、ScoringGate 4段階 x CTA 4種の16パターンマトリクス定義"
+    },
+    {
+      "id": "AC-5",
+      "description": "使った結果から改善へ戻るフィードバックループがある",
+      "verified": true,
+      "evidence": "outputs/phase-11/walkthrough-feedback-loop.md: 実行結果→スコア表示→改善提案→Skill Improver遷移の完全ループ定義"
+    }
+  ],
+  "testResults": {
+    "ctaVisibilityTests": {
+      "file": "packages/shared/src/types/__tests__/cta-visibility.test.ts",
+      "totalTests": 30,
+      "passed": 30,
+      "failed": 0,
+      "categories": [
+        "NEEDS_IMPROVEMENT x 4CTA + highlight",
+        "SAVE_ALLOWED x 4CTA + highlight",
+        "USE_ALLOWED x 4CTA + highlight",
+        "RECOMMENDED x 4CTA + highlight",
+        "境界値テスト (0, 59, 60, 79, 80, 99, 100)",
+        "異常値テスト (-10, 150, NaN)"
+      ]
+    }
+  },
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-15"
+}

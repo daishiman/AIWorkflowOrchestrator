@@ -1,0 +1,32 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-05",
+  "capturedAt": "2026-03-15T00:00:00.000Z",
+  "note": "esbuild platform mismatch fallback: completed workflow evidence re-bundle",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "file": "screenshots/TC-11-01-created-immediate-use-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-01-create-entry.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "screenshots/TC-11-02-deferred-use-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-02-execute-entry.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "screenshots/TC-11-03-history-reuse-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-03-improve-entry.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "screenshots/TC-11-04-feedback-loop-score-delta.png",
+      "source": "docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/TC-11-02-skill-analysis-delta-dark-desktop.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "screenshots/TC-11-05-edge-mobile-score-guard.png",
+      "source": "docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/TC-11-04-skill-analysis-delta-dark-mobile.png"
+    }
+  ]
+}
