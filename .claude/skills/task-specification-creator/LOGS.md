@@ -14,6 +14,41 @@
   - Step 2 domain spec 同期として `interfaces-agent-sdk-executor` / `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `lessons` を同一ターンで更新
 
 ---
+## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 Phase 12 再確認（SKILL履歴同期 + 未タスク配置判定分離）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（spec sync / unassigned audit）
+- **Result**: success
+- **Notes**:
+  - Step 1-A の必須4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を更新し、SKILL変更履歴同期漏れを解消
+  - `docs/30-workflows/unassigned-task/task-imp-vitest-alias-sync-automation-001.md` が指定ディレクトリに配置されていることを再確認
+  - `audit-unassigned-tasks --json --diff-from HEAD`（今回差分）と `--target-file`（個票品質）を分離実行し、current/baseline の混同を防止
+  - repo-wide `@repo/shared` 解決失敗は既存未タスクに紐付け、新規未タスク化は見送った
+
+---
+## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 system spec 同期（lessons-learned / task-workflow / resource-map / llm-workspace-chat-edit / security-electron-ipc 更新）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12（system spec sync）
+- **Result**: success
+- **Notes**:
+  - `lessons-learned-current.md` に P58（同名ファイル二重存在）判定手順、RuntimeResolver mock 戦略（P61派生）、vi.spyOn vs vi.mock セキュリティテスト判断基準の3苦戦箇所と5分解決カードを追加
+  - LOGS.md 2ファイル + SKILL.md 2ファイルの計4ファイルを同期（P1/P25/P29 対策）
+
+---
+## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 再監査同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit / spec-sync）
+- **Result**: success
+- **Notes**:
+  - workflow 内の旧タスク指示書 path（`completed-tasks/unassigned-task/...`）を canonical path に統一
+  - `artifacts.json` と `outputs/artifacts.json` の status drift を解消（Phase 1-12 completed）
+  - ユーザー明示要件に合わせて Phase 11 screenshot 証跡（TC-11-01〜05 + metadata）を workflow 配下へ同期
+  - `task-workflow-backlog.md` / `task-workflow-completed-workspace-chat-lifecycle-tests.md` / LOGS を同一ターンで更新し、stash base 競合マーカー残骸を除去
+  - repo-wide `test:run` で再現した `@repo/shared` 解決失敗（agentHandlers/integration/AgentExecutor）は新規未タスク化せず、既存 `task-imp-vitest-alias-sync-automation-001` へ紐付けた
+
+---
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク配置是正（指定ディレクトリ再確認）
 
 - **Agent**: task-specification-creator
@@ -73,7 +108,6 @@
   - `electron-vite dev` が esbuild platform mismatch で失敗する条件を記録し、明示 screenshot 要求時の fallback 実行 + metadata 固定パターンを再利用ルール化
 
 ---
-||||||| Stash base
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator

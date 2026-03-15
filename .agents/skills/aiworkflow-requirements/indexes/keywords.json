@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-14T21:50:20.883Z",
-  "totalKeywords": 2157,
+  "generated": "2026-03-14T22:24:03.553Z",
+  "totalKeywords": 2159,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3338,6 +3338,7 @@
     "メタ情報": [
       "csrf-state-parameter.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
       "logging-migration-guide.md"
     ],
@@ -4667,6 +4668,7 @@
       "legacy-ordinal-family-register.md"
     ],
     "Lessons": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4694,6 +4696,7 @@
       "lessons-learned.md"
     ],
     "Learned": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4719,6 +4722,13 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "lessons-learned.md"
+    ],
+    "アーカイブ": [
+      "lessons-learned-archive-2026-03.md",
+      "lessons-learned-current.md"
+    ],
+    "教訓アーカイブ": [
+      "lessons-learned-archive-2026-03.md"
     ],
     "教訓集": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",

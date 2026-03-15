@@ -30,6 +30,7 @@
 | [lessons-learned-skill-execute-hook-migration.md](lessons-learned-skill-execute-hook-migration.md) | skill domain lessons (execute delegation / hook migration) | TASK-FIX-7-1: SkillService executeSkill 委譲実装 / UT-STORE-HOOKS-COMPONENT-MIGRATION-001: 個別セレクタHook移行 |
 | [lessons-learned-skill-share-debug-lifecycle-design.md](lessons-learned-skill-share-debug-lifecycle-design.md) | skill domain lessons (share / debug / lifecycle design / persist hardening) | TASK-9F: スキル共有・インポート機能 再監査（2026-02-27） / TASK-9H: スキルデバッグモード実装（2026-02-27） / TASK-10A-E-C: Store駆動ライフサイクル統合設計（2026-03-06） / persist iterable ハードニングでの教訓（2026-03-08） |
 | [lessons-learned-skill-lifecycle-test-hardening.md](lessons-learned-skill-lifecycle-test-hardening.md) | skill domain lessons (lifecycle test hardening) | TASK-10A-G 実装知見追補（2026-03-10） |
+| [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | archive (2026-03-01〜2026-03-13) | current summary から分離した過去教訓の保管 |
 | [lessons-learned-templates.md](lessons-learned-templates.md) | templates and checklist | 目次 / 関連ドキュメント / テンプレート（新規教訓追加用） / TASK-XXX: タスク名（YYYY-MM-DD） |
 
 ## 利用順序

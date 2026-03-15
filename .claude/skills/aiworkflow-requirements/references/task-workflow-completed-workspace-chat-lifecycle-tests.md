@@ -473,6 +473,49 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 | workspacePath テスト実装確認（TC-WS-01〜06） | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-chat-edit-workspace-constraint-test-001.md` |
+| ~~UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001~~ | ~~workspacePath テスト実装確認（TC-WS-01〜06）~~ | ~~高~~ | `docs/30-workflows/completed-tasks/task-chat-edit-workspace-constraint-test-001.md`（完了: 2026-03-15） |
 | TASK-IMP-WORKSPACE-CHAT-EDIT-SPEC-SYNC-IPC-001 | IPC 正本同期（F-M02） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-workspace-chat-edit-spec-sync-ipc-001.md` |
 | UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動化 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase11-screenshot-automation-001.md` |
+
+### UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001: workspacePath セキュリティ検証テスト実装（2026-03-15）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 |
+| Issue | #1222 |
+| タイプ | test |
+| 完了日 | 2026-03-15 |
+| テストファイル | `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` |
+| テスト対象 | `apps/desktop/src/main/ipc/chatEditHandlers.ts` L159-173（workspacePath 検証ロジック） |
+| テスト数 | 6（TC-WS-01〜06 全PASS） |
+| カバレッジ | workspacePath ブランチ 100% |
+
+**テストケース概要**:
+- TC-WS-01: workspace 内ファイルは正常処理（PASS）
+- TC-WS-02: workspace 外ファイルは PERMISSION_DENIED で拒否
+- TC-WS-03: workspacePath 未指定時は検証スキップ
+- TC-WS-04: パストラバーサル攻撃パターン（`../`）を拒否
+- TC-WS-05: 複数コンテキストのうち1件でも外部なら全体拒否
+- TC-WS-06: 空配列コンテキストの正常処理
+
+#### 実装内容（要点）
+
+- `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` を追加し、workspacePath 制約の正常系/異常系/境界値（6ケース）を固定した
+- `ipcMain.handle` の handler capture + `invokeHandler()` で IPC 経由の挙動をテストし、Main IPC 契約に沿った失敗コード（`PERMISSION_DENIED`）を確認した
+- `isAllowedPath` は `vi.spyOn` ベースで監視し、パストラバーサル拒否の実装ロジック（正規化を含む）を保持したまま検証した
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| 同名ファイルの二重存在（P58） | `ipc/chatEditHandlers.ts` と `handlers/chatEditHandlers.ts` の責務差を確認せず編集する | `grep -rn "registerChatEditHandlers" apps/desktop/src/main` で呼び出し元を特定し、IPC 側を正本に固定 |
+| RuntimeResolver mock 戦略（P61派生） | `integrated` 返却のままテストし、ChatEditService 依存が増殖する | `type: "handoff"` を返す mock へ寄せて依存面積を縮小し、workspacePath 監査に焦点化 |
+| `vi.spyOn` と `vi.mock` の誤選択 | security helper を丸ごと mock して内部バリデーションを失う | `vi.spyOn(PathValidatorModule, "isAllowedPath")` を使い、実装保持で呼び出し観測 |
+
+#### 同種課題の5分解決カード
+
+1. 先に正本ファイルを `grep import/register` で確定し、同名ファイル誤編集を防ぐ。
+2. 動的DI依存が重い場合は mock 戦略を `handoff` 側へ寄せ、対象責務だけを検証する。
+3. セキュリティロジック検証は `vi.mock` ではなく `vi.spyOn` を優先し、実装を保持する。
+4. workspace 制約は `正常系 / 外部拒否 / パストラバーサル / 複数コンテキスト / 空配列` を最小セットとして固定する。
+5. Phase 12 では完了台帳・教訓・未タスク判定（current/baseline 分離）を同ターンで同期する。

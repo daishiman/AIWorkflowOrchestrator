@@ -61,6 +61,7 @@
 
 | タスクID                                       | 完了日     | ステータス | 概要                                                                                                                                                                                          |
 | ---------------------------------------------- | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001     | 2026-03-15 | 完了       | workspacePath セキュリティ検証テスト6件（TC-WS-01〜06）を新規作成。`isAllowedPath()` による workspace 境界検証のブランチカバレッジ 100%。chatEditHandlers.ts L159-173 対象 |
 | TASK-UI-08-NOTIFICATION-CENTER                 | 2026-03-11 | 完了       | `notification:delete` を shared/preload/main へ追加し、`NotificationCenter` 058e の個別削除 UI、sender 検証、入力検証、allowlist、59 tests PASS、Phase 11 screenshot 7件を同期 |
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001                | 2026-03-10 | 完了       | Preload `safeInvoke` を `invokeWithTimeout()` へ集約し、`IPC_TIMEOUT_MS = 5000` の timeout + `clearTimeout` cleanup を追加。allowlist fail-fast・error format・19 files / 551 tests PASS・Phase 11 screenshot 4件で完了確認 |
 | TASK-9I                                        | 2026-02-28 | 完了       | スキルドキュメント4チャネルのセキュリティ実装。validateIpcSender + P42準拠3段バリデーション + 許可値検証 + export パストラバーサル二重防御 + エラー正規化を適用                               |

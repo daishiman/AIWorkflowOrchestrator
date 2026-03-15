@@ -391,6 +391,30 @@ handoff 判定時に `HandoffGuidance` を構築するサービス。ユーザ�
 | Preload更新 | `chatEditAPI` を `contextBridge.exposeInMainWorld` で公開し、read/write invoke payload を object 契約へ整合 |
 | 検証 | `chatEditHandlers.*` 4 files / 55 tests PASS、`pnpm --filter @repo/desktop typecheck` PASS |
 
+### workspacePath セキュリティ検証テスト（UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001）2026-03-15
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 |
+| テストファイル | `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` |
+| テスト数 | 6（全PASS） |
+| カバレッジ | workspacePath ブランチ 100% |
+| 完了日 | 2026-03-15 |
+
+テストケース:
+
+| TC | 検証内容 | 期待結果 |
+| --- | --- | --- |
+| TC-WS-01 | workspace 内ファイル | 正常処理（handoff） |
+| TC-WS-02 | workspace 外ファイル | PERMISSION_DENIED |
+| TC-WS-03 | workspacePath 未指定 | 検証スキップ |
+| TC-WS-04 | パストラバーサル（`../`） | PERMISSION_DENIED |
+| TC-WS-05 | 複数コンテキスト（1件外部） | 全体拒否 |
+| TC-WS-06 | 空配列コンテキスト | 正常処理 |
+
+**関連未タスク**:
+- `task-ut-chat-edit-integrated-path-workspace-guard-001` — integrated path の workspace 制約テスト
+
 ### 削除されたTODO
 
 | ファイル            | 行番号 | 削除されたTODO                                 |
