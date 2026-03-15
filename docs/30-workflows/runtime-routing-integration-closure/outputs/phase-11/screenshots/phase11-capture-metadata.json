@@ -1,0 +1,82 @@
+{
+  "generatedAt": "2026-03-15T04:02:22.874Z",
+  "baseUrl": "http://127.0.0.1:4179",
+  "harnessPath": "/phase11-runtime-routing-integration-closure.html",
+  "mode": "fallback-review-board",
+  "fallbackReason": "Timed out waiting for Vite server: http://127.0.0.1:4179/phase11-runtime-routing-integration-closure.html",
+  "records": [
+    {
+      "tc": "TC-01",
+      "file": "TC-01-skill-handoff-light.png",
+      "note": "subscription mode skill handoff (light) [fallback-review-board]",
+      "bytes": 51376,
+      "capturedAt": "2026-03-15T04:02:20.132Z",
+      "route": "fallback://variant=tc01-skill-handoff&theme=light"
+    },
+    {
+      "tc": "TC-02",
+      "file": "TC-02-skill-integrated-light.png",
+      "note": "api-key mode skill integrated (light) [fallback-review-board]",
+      "bytes": 46831,
+      "capturedAt": "2026-03-15T04:02:20.432Z",
+      "route": "fallback://variant=tc02-skill-integrated&theme=light"
+    },
+    {
+      "tc": "TC-03",
+      "file": "TC-03-agent-handoff-light.png",
+      "note": "subscription mode agent handoff (light) [fallback-review-board]",
+      "bytes": 49744,
+      "capturedAt": "2026-03-15T04:02:20.694Z",
+      "route": "fallback://variant=tc03-agent-handoff&theme=light"
+    },
+    {
+      "tc": "TC-04",
+      "file": "TC-04-handoff-layout-long-command.png",
+      "note": "terminal handoff layout with long command [fallback-review-board]",
+      "bytes": 63505,
+      "capturedAt": "2026-03-15T04:02:20.974Z",
+      "route": "fallback://variant=tc04-layout&theme=light"
+    },
+    {
+      "tc": "TC-05",
+      "file": "TC-05-copy-feedback.png",
+      "note": "copy button feedback [fallback-review-board]",
+      "bytes": 65119,
+      "capturedAt": "2026-03-15T04:02:21.702Z",
+      "route": "fallback://variant=tc05-copy-feedback&theme=light"
+    },
+    {
+      "tc": "TC-06",
+      "file": "TC-06-dismiss-handoff.png",
+      "note": "dismiss button hides handoff card [fallback-review-board]",
+      "bytes": 36659,
+      "capturedAt": "2026-03-15T04:02:21.993Z",
+      "route": "fallback://variant=tc06-dismiss&theme=light"
+    },
+    {
+      "tc": "TC-07",
+      "file": "TC-07-skill-handoff-dark.png",
+      "note": "subscription mode skill handoff (dark) [fallback-review-board]",
+      "bytes": 52026,
+      "capturedAt": "2026-03-15T04:02:22.300Z",
+      "route": "fallback://variant=tc07-dark-mode&theme=dark"
+    },
+    {
+      "tc": "TC-08",
+      "file": "TC-08-chat-edit-regression.png",
+      "note": "chat-edit regression check [fallback-review-board]",
+      "bytes": 47182,
+      "capturedAt": "2026-03-15T04:02:22.570Z",
+      "route": "fallback://variant=tc08-chat-edit-regression&theme=light"
+    },
+    {
+      "tc": "TC-09",
+      "file": "TC-09-skill-regression-apikey.png",
+      "note": "api-key skill regression check [fallback-review-board]",
+      "bytes": 46310,
+      "capturedAt": "2026-03-15T04:02:22.865Z",
+      "route": "fallback://variant=tc09-skill-regression&theme=light"
+    }
+  ],
+  "note": "phase11 runtime routing integration closure capture"
+}

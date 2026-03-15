@@ -17,6 +17,19 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
+  const localizedReason = (() => {
+    switch (guidance.reason) {
+      case "subscription mode: use Claude Code CLI":
+        return "サブスクリプションモードのため、Claude Code CLI で続行してください。";
+      case "API key not configured":
+        return "APIキーが設定されていません。";
+      case "API key unavailable":
+        return "APIキーを取得できませんでした。";
+      default:
+        return guidance.reason;
+    }
+  })();
+
   const handleCopy = useCallback(() => {
     onCopyCommand();
     setIsCopied(true);
@@ -31,7 +44,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
   return (
     <div
       role="alert"
-      aria-label="Terminal handoff guidance"
+      aria-label="ターミナル引き継ぎ案内"
       className="rounded-xl border p-4"
       style={{
         backgroundColor: "var(--bg-secondary)",
@@ -60,13 +73,13 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
             className="text-sm font-semibold"
             style={{ color: "var(--text-primary)" }}
           >
-            Terminal Handoff
+            ターミナル引き継ぎ
           </span>
         </div>
         <button
           type="button"
           onClick={onDismiss}
-          aria-label="Dismiss handoff guidance"
+          aria-label="案内を閉じる"
           className="rounded-lg p-1 transition-colors hover:opacity-70"
           style={{ color: "var(--text-secondary)" }}
         >
@@ -88,7 +101,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
 
       {/* Reason */}
       <p className="mb-3 text-sm" style={{ color: "var(--text-secondary)" }}>
-        {guidance.reason}
+        {localizedReason}
       </p>
 
       {/* Command */}
@@ -105,14 +118,14 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
         <button
           type="button"
           onClick={handleCopy}
-          aria-label="Copy terminal command"
+          aria-label="コマンドをコピー"
           className="shrink-0 rounded-lg px-3 py-1 text-xs font-medium transition-colors"
           style={{
             backgroundColor: "var(--accent-primary)",
             color: "#fff",
           }}
         >
-          {isCopied ? "Copied!" : "Copy"}
+          {isCopied ? "コピー済み" : "コピー"}
         </button>
       </div>
 

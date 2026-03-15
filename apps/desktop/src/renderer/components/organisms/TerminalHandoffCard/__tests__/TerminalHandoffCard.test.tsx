@@ -49,7 +49,7 @@ describe("TerminalHandoffCard", () => {
         <TerminalHandoffCard {...defaultProps} onCopyCommand={onCopyCommand} />,
       );
 
-      const copyButton = screen.getByLabelText("Copy terminal command");
+      const copyButton = screen.getByLabelText("コマンドをコピー");
       await act(async () => {
         fireEvent.click(copyButton);
       });
@@ -61,7 +61,7 @@ describe("TerminalHandoffCard", () => {
       const onDismiss = vi.fn();
       render(<TerminalHandoffCard {...defaultProps} onDismiss={onDismiss} />);
 
-      const dismissButton = screen.getByLabelText("Dismiss handoff guidance");
+      const dismissButton = screen.getByLabelText("案内を閉じる");
       await act(async () => {
         fireEvent.click(dismissButton);
       });
@@ -79,22 +79,18 @@ describe("TerminalHandoffCard", () => {
     it("has aria-label for the card", () => {
       render(<TerminalHandoffCard {...defaultProps} />);
       expect(
-        screen.getByLabelText("Terminal handoff guidance"),
+        screen.getByLabelText("ターミナル引き継ぎ案内"),
       ).toBeInTheDocument();
     });
 
     it("has aria-label on dismiss button", () => {
       render(<TerminalHandoffCard {...defaultProps} />);
-      expect(
-        screen.getByLabelText("Dismiss handoff guidance"),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText("案内を閉じる")).toBeInTheDocument();
     });
 
     it("has aria-label on copy button", () => {
       render(<TerminalHandoffCard {...defaultProps} />);
-      expect(
-        screen.getByLabelText("Copy terminal command"),
-      ).toBeInTheDocument();
+      expect(screen.getByLabelText("コマンドをコピー")).toBeInTheDocument();
     });
   });
 
@@ -113,30 +109,30 @@ describe("TerminalHandoffCard", () => {
       expect(commandEl).toHaveClass("break-all");
     });
 
-    it("copy button shows 'Copied!' then reverts to 'Copy' after 2 seconds (P13: advanceTimersByTime)", async () => {
+    it("コピー後に『コピー済み』が表示され、2秒後に『コピー』へ戻る", async () => {
       vi.useFakeTimers();
 
       try {
         render(<TerminalHandoffCard {...defaultProps} />);
-        const copyButton = screen.getByLabelText("Copy terminal command");
+        const copyButton = screen.getByLabelText("コマンドをコピー");
 
-        expect(copyButton).toHaveTextContent("Copy");
+        expect(copyButton).toHaveTextContent("コピー");
 
         await act(async () => {
           fireEvent.click(copyButton);
         });
 
-        expect(copyButton).toHaveTextContent("Copied!");
+        expect(copyButton).toHaveTextContent("コピー済み");
 
         await act(async () => {
           vi.advanceTimersByTime(1999);
         });
-        expect(copyButton).toHaveTextContent("Copied!");
+        expect(copyButton).toHaveTextContent("コピー済み");
 
         await act(async () => {
           vi.advanceTimersByTime(1);
         });
-        expect(copyButton).toHaveTextContent("Copy");
+        expect(copyButton).toHaveTextContent("コピー");
       } finally {
         vi.useRealTimers();
       }

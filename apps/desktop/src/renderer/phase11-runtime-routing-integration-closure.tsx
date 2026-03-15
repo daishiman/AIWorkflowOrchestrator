@@ -86,10 +86,10 @@ const RuntimeRoutingHarness: React.FC = () => {
       <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-6">
         <header className="space-y-2">
           <h1 className="text-xl font-semibold">
-            Runtime Routing Integration Closure - Phase 11 Harness
+            ランタイムルーティング統合クロージャ - Phase 11 ハーネス
           </h1>
           <p className="text-sm text-[var(--text-secondary)]">
-            variant={variant} / theme={theme}
+            バリアント={variant} / テーマ={theme}
           </p>
         </header>
 
@@ -98,7 +98,7 @@ const RuntimeRoutingHarness: React.FC = () => {
             data-testid="phase11-skill-integrated-result"
             className="rounded-lg border border-emerald-300 bg-emerald-50 p-4 text-emerald-800"
           >
-            Skill integrated path completed. Terminal handoff is not shown.
+            スキル統合実行パスが完了しました。ターミナル引き継ぎは表示されません。
           </div>
         )}
 
@@ -107,8 +107,7 @@ const RuntimeRoutingHarness: React.FC = () => {
             data-testid="phase11-chat-edit-regression-result"
             className="rounded-lg border border-sky-300 bg-sky-50 p-4 text-sky-900"
           >
-            chat-edit runtime routing regression check: PASS (existing behavior
-            preserved).
+            chat-edit のランタイムルーティング回帰確認: PASS（既存動作を維持）。
           </div>
         )}
 
@@ -117,8 +116,7 @@ const RuntimeRoutingHarness: React.FC = () => {
             data-testid="phase11-skill-regression-result"
             className="rounded-lg border border-indigo-300 bg-indigo-50 p-4 text-indigo-900"
           >
-            api-key mode skill execution regression check: PASS (integrated path
-            preserved).
+            APIキー方式のスキル実行回帰確認: PASS（統合実行パスを維持）。
           </div>
         )}
 
@@ -137,7 +135,7 @@ const RuntimeRoutingHarness: React.FC = () => {
             data-testid="phase11-handoff-hidden"
             className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] p-4 text-sm text-[var(--text-secondary)]"
           >
-            TerminalHandoffCard is hidden.
+            ターミナル引き継ぎカードは非表示です。
           </div>
         )}
 

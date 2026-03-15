@@ -58,7 +58,7 @@ const scenarios = [
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc05-copy-feedback&theme=light",
     action: async (page) => {
-      await page.getByLabel("Copy terminal command").click();
+      await page.getByLabel("コマンドをコピー").click();
       await page.waitForTimeout(200);
     },
   },
@@ -69,7 +69,7 @@ const scenarios = [
     viewport: { width: 1440, height: 1024 },
     query: "variant=tc06-dismiss&theme=light",
     action: async (page) => {
-      await page.getByLabel("Dismiss handoff guidance").click();
+      await page.getByLabel("案内を閉じる").click();
       await page.waitForSelector('[data-testid="phase11-handoff-hidden"]', {
         timeout: 5000,
       });
@@ -99,22 +99,22 @@ const scenarios = [
 ];
 
 const BASE_SKILL_GUIDANCE = {
-  terminalCommand: 'claude "Please continue with skill execution"',
+  terminalCommand: 'claude "スキル実行の続きを進めてください"',
   contextSummary: "surface=skill skill=skill-creator",
-  reason: "subscription mode: use Claude Code CLI",
+  reason: "サブスクリプションモードのため、Claude Code CLI で続行してください。",
 };
 
 const BASE_AGENT_GUIDANCE = {
-  terminalCommand: 'claude "Continue agent execution from current context"',
+  terminalCommand: 'claude "現在のコンテキストからエージェント実行を続けてください"',
   contextSummary: "surface=agent skill=agent-01",
-  reason: "API key not configured",
+  reason: "APIキーが設定されていません。",
 };
 
 const LONG_COMMAND_GUIDANCE = {
   terminalCommand:
-    'claude --add-dir "/Users/dev/workspace" "Please continue with runtime routing integration closure and validate handoff UI for skill and agent surfaces with screenshot evidence."',
+    'claude --add-dir "/Users/dev/workspace" "ランタイムルーティング統合の継続実装を行い、skill/agent 画面のハンドオフUIをスクリーンショットで検証してください。"',
   contextSummary: "surface=skill skill=runtime-routing-integration-closure",
-  reason: "subscription mode: use Claude Code CLI",
+  reason: "サブスクリプションモードのため、Claude Code CLI で続行してください。",
 };
 
 function createPlan() {
@@ -202,17 +202,17 @@ function renderFallbackHarness({ variant, theme }) {
       <section data-testid="phase11-terminal-handoff-card-wrapper">
         <div
           role="alert"
-          aria-label="Terminal handoff guidance"
+          aria-label="ターミナル引き継ぎ案内"
           class="handoff-card"
           data-testid="phase11-terminal-handoff-card"
         >
           <div class="handoff-header">
             <div class="handoff-title-wrap">
-              <span class="handoff-title">Terminal Handoff</span>
+              <span class="handoff-title">ターミナル引き継ぎ</span>
             </div>
             <button
               type="button"
-              aria-label="Dismiss handoff guidance"
+              aria-label="案内を閉じる"
               class="button-ghost"
               data-testid="dismiss-button"
             >
@@ -224,11 +224,11 @@ function renderFallbackHarness({ variant, theme }) {
             <code class="command">${escapeHtml(guidance.terminalCommand)}</code>
             <button
               type="button"
-              aria-label="Copy terminal command"
+              aria-label="コマンドをコピー"
               class="button-copy"
               data-testid="copy-button"
             >
-              Copy
+              コピー
             </button>
           </div>
           <p class="muted small">${escapeHtml(guidance.contextSummary)}</p>
@@ -352,25 +352,25 @@ function renderFallbackHarness({ variant, theme }) {
       <section class="panel">
         <header>
           <h1 style="margin: 0; font-size: 22px; font-weight: 700;">
-            Runtime Routing Integration Closure - Phase 11 Harness
+            ランタイムルーティング統合クロージャ - Phase 11 ハーネス
           </h1>
-          <p class="meta">variant=${escapeHtml(variant)} / theme=${escapeHtml(theme)}</p>
-          <p class="meta">Capture mode: fallback review board (esbuild platform mismatch)</p>
+          <p class="meta">バリアント=${escapeHtml(variant)} / テーマ=${escapeHtml(theme)}</p>
+          <p class="meta">キャプチャモード: フォールバックレビュー（esbuild プラットフォーム不一致）</p>
         </header>
 
         ${
           hasIntegrated
-            ? `<div data-testid="phase11-skill-integrated-result" class="status-box">Skill integrated path completed. Terminal handoff is not shown.</div>`
+            ? `<div data-testid="phase11-skill-integrated-result" class="status-box">スキル統合実行パスが完了しました。ターミナル引き継ぎは表示されません。</div>`
             : ""
         }
         ${
           hasChatEditRegression
-            ? `<div data-testid="phase11-chat-edit-regression-result" class="status-box">chat-edit runtime routing regression check: PASS (existing behavior preserved).</div>`
+            ? `<div data-testid="phase11-chat-edit-regression-result" class="status-box">chat-edit のランタイムルーティング回帰確認: PASS（既存動作を維持）。</div>`
             : ""
         }
         ${
           hasSkillRegression
-            ? `<div data-testid="phase11-skill-regression-result" class="status-box">api-key mode skill execution regression check: PASS (integrated path preserved).</div>`
+            ? `<div data-testid="phase11-skill-regression-result" class="status-box">APIキー方式のスキル実行回帰確認: PASS（統合実行パスを維持）。</div>`
             : ""
         }
 
@@ -379,7 +379,7 @@ function renderFallbackHarness({ variant, theme }) {
         <div data-testid="phase11-handoff-hidden" class="${
           guidance ? "hidden" : ""
         } status-box">
-          TerminalHandoffCard is hidden.
+          ターミナル引き継ぎカードは非表示です。
         </div>
 
         <div data-testid="phase11-copy-count" class="meta">copyCount=0</div>
@@ -398,7 +398,7 @@ function renderFallbackHarness({ variant, theme }) {
         if (copyButton) {
           copyButton.addEventListener("click", () => {
             copyCount += 1;
-            copyButton.textContent = "Copied!";
+            copyButton.textContent = "コピー済み";
             if (counter) counter.textContent = "copyCount=" + String(copyCount);
           });
         }
