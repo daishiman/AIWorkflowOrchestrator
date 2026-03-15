@@ -2294,6 +2294,12 @@ node scripts/list-specs.js --topics
 | Family Summary | L29 |
 | Detailed Register | L48 |
 
+### references/lessons-learned-archive-2026-03.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
+
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
 | セクション | 行 |
@@ -2359,7 +2365,9 @@ node scripts/list-specs.js --topics
 | 最新教訓 | L71 |
 | 最新教訓 | L69 |
 | 最新教訓 | L72 |
+| 最新教訓 | L76 |
 | 最新教訓 | L84 |
+| アーカイブ | L274 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2485,8 +2493,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L35 |
-| 関連ドキュメント | L40 |
+| 利用順序 | L36 |
+| 関連ドキュメント | L41 |
 
 ### references/llm-embedding.md
 
@@ -2544,7 +2552,7 @@ node scripts/list-specs.js --topics
 | 品質メトリクス | L328 |
 | 関連ドキュメント | L339 |
 | 完了タスク | L367 |
-| 変更履歴 | L403 |
+| 変更履歴 | L424 |
 
 ### references/local-agent.md
 

@@ -10,7 +10,7 @@
 | 対象機能     | chatEditHandlers.ts / workspacePath 制約ガード                     |
 | 優先度       | 高                                                                 |
 | 見積もり規模 | 中規模                                                             |
-| ステータス   | 未実施                                                             |
+| ステータス   | 完了（Phase 1-12 完了 / Phase 13 未実施）                          |
 | 発見元       | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 Phase 12（2026-03-14） |
 | 発見日       | 2026-03-14                                                         |
 | issue_number | 1222                                                               |

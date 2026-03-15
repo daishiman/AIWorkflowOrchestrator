@@ -376,6 +376,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-15 | 1.17.0     | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001: llm-workspace-chat-edit.md の読み込み条件にテスト検証完了を反映 |
 | 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |
 | 2026-03-13 | 1.15.0     | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本 `workflow-workspace-preview-search-resilience-guard.md` を追加。クイックルックアップと UI/UX 一覧にも preview/search resilience・typed taxonomy・`audit --target-file` の導線を登録 |
 | 2026-03-12 | 1.14.0     | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本 `workflow-light-theme-contrast-regression-guard.md` を追加。クイックルックアップと UI/UX 一覧にも current build static serve / selector-based capture / baseline routing の導線を登録 |
