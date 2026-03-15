@@ -320,6 +320,7 @@ executeSkill: async (prompt) => {
 | `executionId`        | `string \| null`                 | `null`  | 現在の実行ID             |
 | `executionStatus`    | `SkillExecutionStatus \| null`   | `null`  | 実行ステータス           |
 | `streamingMessages`  | `SkillStreamMessage[]`           | `[]`    | ストリーミングメッセージ |
+| `handoffGuidance`    | `HandoffGuidance \| null`        | `null`  | terminal handoff ガイダンス |
 | `pendingPermission`  | `SkillPermissionRequest \| null` | `null`  | 保留中の権限リクエスト   |
 | `skillError`         | `string \| null`                 | `null`  | エラー情報               |
 | `isLoadingSkills`    | `boolean`                        | `false` | スキル一覧読み込み中     |
@@ -341,6 +342,22 @@ executeSkill: async (prompt) => {
 | `respondToPermission`    | `(approved: boolean, remember?: boolean) => void` | 権限リクエスト応答             |
 | `clearError`             | `() => void`                                      | エラークリア                   |
 | `clearStreamingMessages` | `() => void`                                      | ストリーミングメッセージクリア |
+| `clearHandoffGuidance`   | `() => void`                                      | handoff カードを閉じる         |
+
+### Runtime routing / handoff 状態契約（2026-03-15 同期）
+
+`skill:execute` / `agent:start` の handoff 応答は `agentSlice` を単一正本として保持する。
+
+| イベント | Store 更新 |
+| --- | --- |
+| `handoff=true` 応答を受信 | `handoffGuidance` を設定し、`isExecuting=false` に戻す |
+| integrated 実行開始 | `handoffGuidance=null` を先に設定して stale card を防止 |
+| Dismiss 操作 | `clearHandoffGuidance()` で `handoffGuidance=null` |
+
+| セレクタ / 参照先 | 用途 |
+| --- | --- |
+| `useHandoffGuidance()` | `TerminalHandoffCard` の表示条件 |
+| `useIsSkillExecuting()` | handoff 後の入力再開制御（P31安全な個別セレクタ） |
 
 ### 内部ハンドラー（4メソッド）
 
@@ -414,4 +431,3 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 </details>
 
 ---
-

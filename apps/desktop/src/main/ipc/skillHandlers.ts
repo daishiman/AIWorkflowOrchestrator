@@ -36,7 +36,10 @@ import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import type { SkillDocGenerator } from "../services/skill/SkillDocGenerator";
 import { DEFAULT_DOC_TEMPLATE } from "../services/skill/SkillDocGenerator";
 import type { IAuthKeyService } from "../services/auth/types";
+import type { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
 import type { SkillChainDefinition } from "@repo/shared";
+import type { SkillExecutionResponse } from "@repo/shared/types/skill";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -89,6 +92,7 @@ export function registerSkillHandlers(
   mainWindow: BrowserWindow,
   skillService: SkillService,
   authKeyService?: IAuthKeyService,
+  runtimeResolver?: RuntimeResolver,
 ): void {
   // Initialize SkillExecutor instance
   _skillExecutorInstance = new SkillExecutor(
@@ -309,6 +313,37 @@ export function registerSkillHandlers(
           code: "VALIDATION_ERROR",
           message: "skillId must be a non-empty string",
         };
+      }
+
+      // Runtime routing: handoff 分岐
+      if (runtimeResolver) {
+        const resolution = await runtimeResolver.resolve();
+        if (resolution.type === "handoff") {
+          const builder = new TerminalHandoffBuilder();
+          const guidance = builder.buildForSkillExecution(
+            {
+              skillName: hasSkillName ? args.skillName : undefined,
+              skillId: hasSkillName ? undefined : args.skillId,
+              prompt: hasSkillName ? args.prompt : undefined,
+              workingDirectory:
+                hasSkillName && typeof args.workingDirectory === "string"
+                  ? args.workingDirectory
+                  : undefined,
+            },
+            resolution.reason,
+          );
+          const handoffResponse: SkillExecutionResponse = {
+            executionId: `handoff-${Date.now()}`,
+            success: false,
+            error: resolution.reason,
+            handoff: true,
+            guidance,
+          };
+          return {
+            success: true,
+            data: handoffResponse,
+          };
+        }
       }
 
       try {

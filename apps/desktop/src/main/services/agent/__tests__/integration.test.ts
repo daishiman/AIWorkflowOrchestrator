@@ -102,7 +102,7 @@ describe("Agent SDK Integration", () => {
         executionId: "flow-test",
       });
 
-      expect(startResult).toEqual({ executionId: "exec-id" });
+      expect(startResult).toEqual({ success: true, executionId: "exec-id" });
       expect(mockStartExecution).toHaveBeenCalledWith(
         expect.objectContaining({ prompt: "Test execution" }),
         mockMainWindow,
@@ -229,8 +229,8 @@ describe("Agent SDK Integration", () => {
         executionId: "exec-2",
       });
 
-      expect(result1).toEqual({ executionId: "exec-1" });
-      expect(result2).toEqual({ executionId: "exec-2" });
+      expect(result1).toEqual({ success: true, executionId: "exec-1" });
+      expect(result2).toEqual({ success: true, executionId: "exec-2" });
     });
   });
 });

@@ -131,7 +131,7 @@ describe("agentHandlers", () => {
       const result = await handler!(mockEvent, request);
 
       expect(mockStartExecution).toHaveBeenCalled();
-      expect(result).toEqual({ executionId: "exec-id" });
+      expect(result).toEqual({ success: true, executionId: "exec-id" });
     });
 
     it("should throw error if prompt is missing", async () => {

@@ -797,6 +797,20 @@ export const useSetAdvancedSettingsOpen = () =>
 export const useClearExecutionHistory = () =>
   useAppStore((state) => state.clearExecutionHistory);
 
+// ==========================================================================
+// Terminal Handoff selectors
+// ==========================================================================
+
+/** ターミナルハンドオフ案内 */
+export const useHandoffGuidance = () =>
+  useAppStore((state) => state.handoffGuidance);
+/** ハンドオフ案内を設定 */
+export const useSetHandoffGuidance = () =>
+  useAppStore((state) => state.setHandoffGuidance);
+/** ハンドオフ案内をクリア */
+export const useClearHandoffGuidance = () =>
+  useAppStore((state) => state.clearHandoffGuidance);
+
 /**
  * AuthMode selectors - single hook for all AuthMode-related state and actions
  *

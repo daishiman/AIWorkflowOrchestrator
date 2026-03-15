@@ -6,10 +6,12 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-15 - UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 仕様同期完了（runtime routing/handoff 契約 + workflow phase status completed + screenshot 9件 + Step2 domain spec同時更新） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期（workflow正本 + canonical set + artifact inventory + legacy register + mirror parity） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 Phase 12 未タスク配置是正（root canonical path + 9セクション再作成 + 参照同期） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 再監査追補（previousAnalysis Store単一ソース化 / UI仕様同期 / index再生成） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 採点・評価・受け入れゲート統合完了 |
+| 2026-03-14 - TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 実装完了（RuntimeResolver / AnthropicLLMAdapter / TerminalHandoffBuilder / M-01 contextBridge fix） |
 | 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase12 recheck（223/223 + target-file unassigned normalization） |
 | 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Step02 Task02/Task10 re-audit sync（screenshot + runtime contract + preload payload） |
 ||||||| Stash base

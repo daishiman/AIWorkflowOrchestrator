@@ -7,6 +7,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                                                                                                                                                                                                                                     |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| v3.14.7    | 2026-03-15 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 反映: `agentSlice` に `handoffGuidance` 状態契約を追加し、`skill:execute` / `agent:start` handoff 応答時の state 遷移（set/dismiss/reset）と `TerminalHandoffCard` 表示条件（個別セレクタ）を追記 |
 | v3.14.6    | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `WorkspaceView` は 04A の `workspaceSlice` / `fileSelectionSlice` を維持したまま、preview content/loading/error と quick search query/dialog state を view-local に保持する契約、`score=0` 除外の fuzzy search、renderer timeout/retry を追記 |
 | v3.14.5    | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を反映: `WorkspaceChatPanel` の state ownership（`useWorkspaceChatController` 局所 state + `workspaceSlice` / `fileSelectionSlice` 再利用）を追加。stream race 回避の `streamContentRef` / `isStreamingRef` 即時同期、conversation 保存フロー、04B 対象テスト14件/Phase11 screenshot 8件を追記 |
 | v3.14.4    | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER を反映: `notificationSlice` の `setNotificationHistory()` dedupe、`deleteNotification()` の `expandedNotificationId` reset、058e の `NotificationCenter` 再整備（`お知らせ` / relative time / delete UI）を追記 |
@@ -83,4 +84,3 @@
 - [実装パターン総合ガイド: Zustand Slice設計原則](./architecture-implementation-patterns.md#zustand-slice設計原則)
 - [Store Hooks コンポーネント移行 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-STORE-HOOKS-COMPONENT-MIGRATION-001/outputs/phase-12/implementation-guide.md)
 - [AgentView無限ループ修正 実装ガイド](../../../../docs/30-workflows/completed-tasks/UT-FIX-AGENTVIEW-INFINITE-LOOP-001/outputs/phase-12/implementation-guide.md)
-

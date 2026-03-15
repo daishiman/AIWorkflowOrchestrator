@@ -1,18 +1,18 @@
 ---
-name: Codex-agent-sdk
+name: claude-agent-sdk
 description: |
-  Codex Agent SDK（@anthropic-ai/Codex-agent-sdk）および直接Anthropic SDK（@anthropic-ai/sdk）を使用したエージェント統合の実装を専門とするスキル。
+  Claude Agent SDK（@anthropic-ai/claude-agent-sdk）および直接Anthropic SDK（@anthropic-ai/sdk）を使用したエージェント統合の実装を専門とするスキル。
   query() API、Hooksシステム、Permission Control、Electron統合、ストリーミング処理、Direct SDKパターンを支援します。
 
   Anchors:
-  • Codex Agent SDK Official Docs / 適用: SDK API、Hooks、Permissions / 目的: 公式パターンに準拠した実装
+  • Claude Agent SDK Official Docs / 適用: SDK API、Hooks、Permissions / 目的: 公式パターンに準拠した実装
   • Anthropic SDK (@anthropic-ai/sdk) / 適用: Direct SDK呼び出し / 目的: シンプルなMain Process統合
   • Electron IPC Best Practices / 適用: Main-Renderer間通信 / 目的: セキュアなプロセス間通信
   • TypeScript Handbook / 適用: 型定義、ジェネリクス / 目的: 型安全なSDK統合
 
   Trigger:
-  Codex Agent SDKを使用したエージェント機能実装、query() APIストリーミング処理、Hooksシステム実装、Electron統合、Permission Control設計、MCP統合、Direct SDK統合を行う場合に使用。
-  Codex-agent-sdk, query API, PreToolUse, PostToolUse, PermissionRequest, Electron IPC, MCP, ストリーミング, 権限制御, @anthropic-ai/sdk, Direct SDK
+  Claude Agent SDKを使用したエージェント機能実装、query() APIストリーミング処理、Hooksシステム実装、Electron統合、Permission Control設計、MCP統合、Direct SDK統合を行う場合に使用。
+  claude-agent-sdk, query API, PreToolUse, PostToolUse, PermissionRequest, Electron IPC, MCP, ストリーミング, 権限制御, @anthropic-ai/sdk, Direct SDK
 
 allowed-tools:
   - Read
@@ -23,11 +23,11 @@ allowed-tools:
   - Grep
 ---
 
-# Codex Agent SDK
+# Claude Agent SDK
 
 ## 概要
 
-Codex Agent SDK（`@anthropic-ai/Codex-agent-sdk`）を使用したエージェント統合の実装を専門とするスキル。query() API、Hooksシステム、Permission Control、Electron統合、ストリーミング処理を支援します。
+Claude Agent SDK（`@anthropic-ai/claude-agent-sdk`）を使用したエージェント統合の実装を専門とするスキル。query() API、Hooksシステム、Permission Control、Electron統合、ストリーミング処理を支援します。
 
 **対象言語**: TypeScript のみ
 
@@ -37,10 +37,10 @@ SDK情報は頻繁に更新されるため、実装前に最新情報を確認�
 
 ```bash
 # 最新情報を取得
-node .Codex/skills/Codex-agent-sdk/scripts/fetch-latest-info.mjs
+node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs
 
 # npmパッケージ情報のみ
-node .Codex/skills/Codex-agent-sdk/scripts/fetch-latest-info.mjs --category npm
+node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category npm
 ```
 
 詳細なURL一覧は `references/official-urls.md` を参照してください。
@@ -101,9 +101,9 @@ node .Codex/skills/Codex-agent-sdk/scripts/fetch-latest-info.mjs --category npm
 
 ## パターン選択ガイド
 
-### Codex-agent-sdk vs 直接SDK使用
+### claude-agent-sdk vs 直接SDK使用
 
-| 要件                 | Codex-agent-sdk | 直接SDK (`@anthropic-ai/sdk`) |
+| 要件                 | claude-agent-sdk | 直接SDK (`@anthropic-ai/sdk`) |
 | -------------------- | ---------------- | ----------------------------- |
 | Hooks (PreToolUse等) | ✅ 必要          | ❌ 不要                       |
 | Permission Control   | ✅ 必要          | ❌ 不要                       |
@@ -113,7 +113,7 @@ node .Codex/skills/Codex-agent-sdk/scripts/fetch-latest-info.mjs --category npm
 
 **推奨**:
 
-- **対話型エージェント** → `@anthropic-ai/Codex-agent-sdk`
+- **対話型エージェント** → `@anthropic-ai/claude-agent-sdk`
 - **バックグラウンド処理/バッチ** → `@anthropic-ai/sdk` 直接使用
 
 ### Direct Anthropic SDK Pattern
@@ -154,7 +154,7 @@ async function executeQuery(
   try {
     const response = await client.messages.create(
       {
-        model: "Codex-sonnet-4-20250514",
+        model: "claude-sonnet-4-20250514",
         max_tokens: 8192,
         ...(systemPrompt ? { system: systemPrompt } : {}),
         messages: [{ role: "user", content: prompt }],
@@ -256,16 +256,16 @@ const result = await skillExecutor.execute("hearing", projectPath);
 ### パッケージインストール
 
 ```bash
-pnpm add @anthropic-ai/Codex-agent-sdk
+pnpm add @anthropic-ai/claude-agent-sdk
 ```
 
 ### 基本使用例
 
 ```typescript
-import { query } from "@anthropic-ai/Codex-agent-sdk";
+import { query } from "@anthropic-ai/claude-agent-sdk";
 
 const conversation = query({
-  prompt: "Hello, Codex!",
+  prompt: "Hello, Claude!",
   options: {
     tools: ["Read", "Edit"],
     permissionMode: "default",
@@ -303,59 +303,59 @@ const options = {
 
 ```bash
 # query() API、SDKMessage型、ストリーミング
-cat .Codex/skills/Codex-agent-sdk/references/query-api.md
+cat .claude/skills/claude-agent-sdk/references/query-api.md
 
 # Hooksシステム（全イベント、実装パターン）
-cat .Codex/skills/Codex-agent-sdk/references/hooks-system.md
+cat .claude/skills/claude-agent-sdk/references/hooks-system.md
 
 # Permission Control（4層システム、ルール）
-cat .Codex/skills/Codex-agent-sdk/references/permission-control.md
+cat .claude/skills/claude-agent-sdk/references/permission-control.md
 
 # Electron IPC統合
-cat .Codex/skills/Codex-agent-sdk/references/electron-ipc.md
+cat .claude/skills/claude-agent-sdk/references/electron-ipc.md
 
 # エラーハンドリング（AbortSignal、タイムアウト）
-cat .Codex/skills/Codex-agent-sdk/references/error-handling.md
+cat .claude/skills/claude-agent-sdk/references/error-handling.md
 
 # リトライパターン（Exponential Backoff, Jitter, エラー分類）
-cat .Codex/skills/Codex-agent-sdk/references/retry-patterns.md
+cat .claude/skills/claude-agent-sdk/references/retry-patterns.md
 
 # MCP統合
-cat .Codex/skills/Codex-agent-sdk/references/mcp-integration.md
+cat .claude/skills/claude-agent-sdk/references/mcp-integration.md
 
 # セキュリティとサンドボックス
-cat .Codex/skills/Codex-agent-sdk/references/security-sandboxing.md
+cat .claude/skills/claude-agent-sdk/references/security-sandboxing.md
 
 # 公式URL一覧
-cat .Codex/skills/Codex-agent-sdk/references/official-urls.md
+cat .claude/skills/claude-agent-sdk/references/official-urls.md
 
 # タスク別実装成果物・ファイル一覧
-cat .Codex/skills/Codex-agent-sdk/references/implementation-artifacts.md
+cat .claude/skills/claude-agent-sdk/references/implementation-artifacts.md
 ```
 
 ### テンプレート参照
 
 ```bash
-cat .Codex/skills/Codex-agent-sdk/assets/agent-handler-template.ts
-cat .Codex/skills/Codex-agent-sdk/assets/use-agent-hook-template.ts
+cat .claude/skills/claude-agent-sdk/assets/agent-handler-template.ts
+cat .claude/skills/claude-agent-sdk/assets/use-agent-hook-template.ts
 ```
 
 ### スクリプト実行
 
 ```bash
 # 最新情報取得
-node .Codex/skills/Codex-agent-sdk/scripts/fetch-latest-info.mjs --help
+node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --help
 
 # 設定検証
-node .Codex/skills/Codex-agent-sdk/scripts/validate-agent-setup.mjs --help
+node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 ```
 
 ## 関連ドキュメント
 
 | ドキュメント                  | パス                                                                                 | 説明                                |
 | ----------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------- |
-| Agent SDKインターフェース仕様 | `.Codex/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`          | 統合システム設計仕様（型定義、IPC） |
-| 実装ガイド                    | `docs/30-workflows/Codex-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド            |
+| Agent SDKインターフェース仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk.md`          | 統合システム設計仕様（型定義、IPC） |
+| 実装ガイド                    | `docs/30-workflows/claude-code-integration/outputs/phase-12/implementation-guide.md` | 概念的・技術的実装ガイド            |
 | 実装成果物一覧                | `references/implementation-artifacts.md`                                             | タスク別の成果物・実装ファイル      |
 
 タスク別の成果物・実装ファイル詳細は [references/implementation-artifacts.md](references/implementation-artifacts.md) を参照。

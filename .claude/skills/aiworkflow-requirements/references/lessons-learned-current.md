@@ -18,6 +18,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-15 | 1.29.91 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の教訓を追加。workflow 台帳の `not_started` 残置、runtime handoff 契約の Main/Preload/Store 三層同期漏れ、capture fallback 証跡化の抜けを同時に是正する手順を追記 |
 | 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
 | 2026-03-14 | 1.29.88 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
 | 2026-03-14 | 1.29.90 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 の実装教訓 P57〜P61 を追加。AuthMode 値乖離、同名ファイル二重存在、Preload API 未公開、サービススコープ制限、動的アダプタ注入の5教訓と5ステップ解決手順を追記 |
@@ -73,6 +74,69 @@
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
 
 ## 最新教訓
+
+### 2026-03-15 UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001
+
+#### 苦戦箇所1: workflow が実体完了でも `index.md` / `artifacts.json` / `phase本文` が `not_started` のまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | outputs と実装差分は揃っていても、workflow 本文台帳の同期が遅れると再監査時に未実施と誤読される |
+| 再発条件 | validator PASS のみで Phase close を判断する |
+| 解決策 | `artifacts.json`・`index.md`・`phase-1..12` のステータスを同一ターンで completed 同期した |
+| 標準ルール | Phase 12 close-out は「成果物・台帳・phase本文」の三層同時更新を必須にする |
+
+#### 苦戦箇所2: runtime handoff 契約を executor 側だけ更新すると UI/state がドリフトする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill:execute` / `agent:start` の handoff 応答を仕様化しても、`TerminalHandoffCard` と `handoffGuidance` の state 契約が未同期だと実装理解が分断される |
+| 再発条件 | interfaces 更新だけで Step 2 を完了扱いにする |
+| 解決策 | `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `history` を同時更新した |
+| 標準ルール | runtime routing 変更は Main・Preload・UI・Store の4層を最低同期単位にする |
+
+#### 苦戦箇所3: alias import による同名クラス衝突回避
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `services/chat-edit/RuntimeResolver.ts` と `services/runtime/RuntimeResolver.ts` が同名クラス。`ipc/index.ts` で両方 import すると名前衝突 |
+| 再発条件 | 共通化のため同名サービスを新ディレクトリに切り出す |
+| 解決策 | `import { RuntimeResolver as ChatEditRuntimeResolver }` で alias 分離。元のパスは型システムで追跡可能 |
+| 標準ルール | 同名クラスの共通化では、特化版に alias を付けて共通版を素のまま import する |
+
+#### 苦戦箇所4: replace_all による後方互換テスト破壊
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Edit ツールで `replace_all: true` を使い `registerSkillHandlers(mockMainWindow, mockSkillService as never)` を全置換したところ、後方互換テスト（RuntimeResolver 未注入ケース）まで書き換わった |
+| 再発条件 | テストファイル内に同一パターンが複数箇所あり、一部だけ変更したい場合に `replace_all` を使用 |
+| 解決策 | `replace_all: false`（デフォルト）で個別に Edit するか、変更後に後方互換テストを手動で元に戻す |
+| 標準ルール | テストファイルの Edit は `replace_all` を避け、対象箇所のコンテキストを十分に含めた個別 Edit を使う |
+
+#### 苦戦箇所5: Linter 自動修正によるテストアサーション型変更
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | PostToolUse Hook の Prettier/ESLint が `skillHandlers.runtime.test.ts` の応答型キャストを変更。`opResult.handoff` → `opResult.data?.handoff` に自動書き換えされた |
+| 再発条件 | IPC envelope（`{ success, data }`）をアンラップせずにアサーションすると、Linter が型推論に基づいて修正 |
+| 解決策 | テスト側で IPC envelope 構造を正確に反映した型キャスト（`result as { success: boolean; data?: { handoff?: boolean } }`）を使用 |
+| 標準ルール | IPC テストのアサーションは実際の応答構造に合わせ、Linter 修正後も意図どおりの検証になっているか確認する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs --strict` と `validate-phase11-screenshot-coverage` を先に実行し、成果物欠落を先に潰す。
+2. `artifacts.json` / `index.md` / `phase-1..12` を completed 同期し、Phase 13 のみ未実施に固定する。
+3. Step 2 は executor だけで閉じず、electron-services / ui / state / task-workflow / lessons を同時更新する。
+4. screenshot が fallback の場合は metadata に理由・source を残し、coverage validator PASS まで閉じる。
+5. テスト Edit 後は PostToolUse Hook の差分を `git diff` で確認し、Linter 自動修正が意図に反していないか検証する。
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| UT-FIX-AGENT-HANDLERS-WORKTREE-PACKAGE-RESOLUTION-001 | worktree 環境の @repo/shared パッケージ解決修復 | 未実施 |
+| UT-IMP-IPC-HANDOFF-ENVELOPE-CONSISTENCY-001 | skill:execute / agent:start の handoff 応答 envelope 統一 | 未実施 |
+| UT-IMP-RUNTIME-RESOLVER-CHATEDIT-INTEGRATION-TEST-001 | ChatEditRuntimeResolver パスの統合テスト追加 | 未実施 |
 
 ### 2026-03-14 TASK-SKILL-LIFECYCLE-04
 

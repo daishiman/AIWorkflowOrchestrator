@@ -25,6 +25,7 @@ import type {
   SkillAnalysis,
   Suggestion,
 } from "@repo/shared/types/skill-improver";
+import type { HandoffGuidance } from "../../features/workspace-chat-edit/types";
 import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 
 // Re-export for backward compatibility
@@ -172,6 +173,10 @@ export interface AgentState {
   recentExecutions: ExecutionSummary[];
   /** 詳細設定パネルの開閉状態 */
   isAdvancedSettingsOpen: boolean;
+
+  // === Terminal Handoff ===
+  /** ターミナルハンドオフ案内（null は非表示） */
+  handoffGuidance: HandoffGuidance | null;
 }
 
 /**
@@ -315,6 +320,12 @@ export interface AgentActions {
   /** 詳細設定パネルの開閉制御 */
   setAdvancedSettingsOpen: (isOpen: boolean) => void;
 
+  // === Terminal Handoff アクション ===
+  /** ハンドオフ案内を設定 */
+  setHandoffGuidance: (guidance: HandoffGuidance) => void;
+  /** ハンドオフ案内をクリア */
+  clearHandoffGuidance: () => void;
+
   // === 内部アクション（IPCイベントハンドラ用） ===
   _handleStreamMessage: (msg: SkillStreamMessage) => void;
   _handleComplete: (executionId: string) => void;
@@ -392,6 +403,9 @@ const initialAgentState: AgentState = {
   // === TASK-UI-03: 実行履歴・詳細設定初期状態 ===
   recentExecutions: [],
   isAdvancedSettingsOpen: false,
+
+  // === Terminal Handoff 初期状態 ===
+  handoffGuidance: null,
 };
 
 /**
@@ -779,6 +793,7 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
         skillExecutionStatus: "running",
         streamingMessages: [],
         skillError: null,
+        handoffGuidance: null,
         executionId: tempExecutionId, // 事前設定
       });
 
@@ -791,8 +806,34 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
         prompt,
       });
 
-      // サーバーからの正式なexecutionIdで更新
-      set({ executionId: response.executionId });
+      if (response.handoff && response.guidance) {
+        set({
+          isExecuting: false,
+          skillExecutionStatus: "error",
+          skillError: response.error || response.guidance.reason,
+          executionId: null,
+          handoffGuidance: response.guidance,
+        });
+        return;
+      }
+
+      if (response.success !== false) {
+        // サーバーからの正式なexecutionIdで更新
+        set({
+          executionId: response.executionId,
+          handoffGuidance: null,
+        });
+        return;
+      }
+
+      set({
+        isExecuting: false,
+        skillExecutionStatus: "error",
+        skillError:
+          typeof response.error === "string" && response.error.trim() !== ""
+            ? response.error
+            : "スキル実行に失敗しました",
+      });
     } catch (error) {
       set({
         isExecuting: false,
@@ -991,6 +1032,12 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   clearExecutionHistory: () => set({ recentExecutions: [] }),
 
   setAdvancedSettingsOpen: (isOpen) => set({ isAdvancedSettingsOpen: isOpen }),
+
+  // === Terminal Handoff アクション ===
+
+  setHandoffGuidance: (guidance) => set({ handoffGuidance: guidance }),
+
+  clearHandoffGuidance: () => set({ handoffGuidance: null }),
 
   // === 内部ハンドラ（IPCイベント用） ===
 

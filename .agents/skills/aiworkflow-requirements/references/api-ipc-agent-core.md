@@ -132,6 +132,37 @@ AIによるコード編集支援（ファイルコンテキスト付きチャッ
 | `contextSummary` | string | ○ | file basename / line range / command type の要約 |
 | `reason` | string | ○ | handoff 判定理由（subscription mode / API key 不足など） |
 
+```typescript
+interface HandoffGuidance {
+  terminalCommand: string;  // Claude Code で実行するコマンド例
+  contextSummary: string;   // ファイル名・行範囲・コマンドタイプの要約
+  reason: string;           // handoff になった理由
+}
+```
+
+#### SendWithContextResponse（チャット応答）
+
+`chat-edit:send-with-context` の統一レスポンス型。
+
+| プロパティ   | 型                 | 必須 | 説明                                          |
+| ------------ | ------------------ | ---- | --------------------------------------------- |
+| success      | boolean            | ○    | 処理成功フラグ                                |
+| data         | object             | -    | 成功時の応答データ                            |
+| error        | string             | -    | 失敗時のエラーメッセージ                      |
+| errorCode    | string             | -    | エラーコード（下表参照）                      |
+| handoff      | boolean            | -    | `true` のとき `guidance` を参照               |
+| guidance     | HandoffGuidance    | -    | terminal handoff 案内（`handoff=true` 時のみ）|
+
+#### エラーコード一覧（chat-edit）
+
+| コード                  | 意味                                   | retryable |
+| ----------------------- | -------------------------------------- | --------- |
+| `SELECTION_REQUIRED`    | 選択範囲なしで実行しようとした         | false     |
+| `ACCESS_NOT_CONFIGURED` | API キー未設定                         | false     |
+| `PERMISSION_DENIED`     | ワークスペース外ファイルアクセス       | false     |
+| `RATE_LIMIT`            | レート制限                             | true      |
+| `TIMEOUT`               | タイムアウト                           | true      |
+
 #### EditCommand（編集コマンド）
 
 AIに送信する編集指示を定義する。
@@ -206,7 +237,19 @@ AIによるコード生成・編集の結果を保持する。
 | IPCハンドラー      | **完了** | chatEditHandlers.ts               |
 | get-selection実装  | **完了** | Monaco Editor選択範囲取得（TASK-WCE-MONACO-001） |
 | integrated/handoff 分岐 | **完了** | `RuntimeResolver.resolve()` による判定（2026-03-14） |
-| Preload API公開     | **完了** | `contextBridge.exposeInMainWorld(\"chatEditAPI\", chatEditAPI)` |
+| Preload API公開     | **完了** | `contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI)` |
+
+#### 修正記録
+
+| ID   | 内容                                                                                          | 日付       |
+| ---- | --------------------------------------------------------------------------------------------- | ---------- |
+| M-01 | `chatEditApi.ts` で `contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI)` に修正（キー名統一） | 2026-03-14 |
+
+#### 廃止予定チャンネル
+
+| チャンネル              | 廃止理由                              | 代替                        |
+| ----------------------- | ------------------------------------- | --------------------------- |
+| `chat-edit:get-selection` | renderer selection 管理への移行     | `chatEditSlice.selection`   |
 
 ---
 

@@ -285,6 +285,79 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | `apps/desktop/src/preload/skill-api.ts` | `forkSkill(options)` の Preload API |
 | `packages/shared/src/types/skill-fork.ts` | 入出力/メタデータ型の正本 |
 
+### RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001）
+
+> **実装完了**: 2026-03-15
+> **実装場所**: `apps/desktop/src/main/services/runtime/RuntimeResolver.ts`
+
+`RuntimeResolver` は `skill:execute` / `agent:start` の runtime 判定を共通化するサービス。`ChatEditRuntimeResolver`（`services/chat-edit/RuntimeResolver.ts`）から LLMAdapter 依存を除去し、認証判定のみに特化した共通版。
+
+#### コンポーネント構成
+
+| コンポーネント | ファイル | 責務 |
+| --- | --- | --- |
+| `RuntimeResolver` | `services/runtime/RuntimeResolver.ts` | 認証状態に基づく `integrated` / `handoff` 判定 |
+| `ChatEditRuntimeResolver` | `services/chat-edit/RuntimeResolver.ts` | chat-edit 用の `RuntimeResolver`（LLMAdapter 生成含む） |
+
+#### RuntimeResolution 型
+
+```typescript
+export type RuntimeResolution =
+  | { type: "integrated" }
+  | { type: "handoff"; reason: string };
+```
+
+- `integrated`: API キー有効 → 既存実行フロー続行
+- `handoff`: subscription モードまたは API キー未設定 → `HandoffGuidance` 応答を返す
+
+#### RuntimeResolver API
+
+| メソッド | シグネチャ | 説明 |
+| --- | --- | --- |
+| `resolve` | `() => Promise<RuntimeResolution>` | authMode と API キー有無で判定 |
+
+#### 判定ロジック
+
+| 条件 | 結果 | reason |
+| --- | --- | --- |
+| `authMode === "subscription"` | `handoff` | `"subscription mode: use Claude Code CLI"` |
+| `hasKey() === false` | `handoff` | `"API key not configured"` |
+| `getKey() === null` | `handoff` | `"API key unavailable"` |
+| 上記以外 | `integrated` | — |
+
+#### DI と Composition Root
+
+`ipc/index.ts` の `registerAllIpcHandlers()` で `new RuntimeResolver(authKeyService, authModeService)` を1回生成し、`registerAgentExecutionHandlers` / `registerSkillHandlers` / chat-edit ハンドラの3箇所へ注入する（P5 二重登録防止）。chat-edit は `ChatEditRuntimeResolver` alias で別 import。
+
+#### Handoff 応答パターン
+
+| チャンネル | handoff 応答形式 | 備考 |
+| --- | --- | --- |
+| `skill:execute` | `{ success: true, data: { success: false, handoff: true, guidance, error } }` | IPC envelope 維持 |
+| `agent:start` | `{ success: false, handoff: true, guidance, error }` | 直接応答 |
+
+#### テスト
+
+| テストファイル | テスト数 | 検証内容 |
+| --- | --- | --- |
+| `services/runtime/__tests__/RuntimeResolver.test.ts` | 8 | subscription/apiKey判定 |
+| `ipc/__tests__/skillHandlers.runtime.test.ts` | 3 | skill handoff 分岐 |
+| `ipc/__tests__/agentHandlers.runtime.test.ts` | 2 | agent handoff 分岐 |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| ChatEditRuntimeResolver との alias import 衝突 | 同名クラスを異なるパスから import | `import { RuntimeResolver as ChatEditRuntimeResolver }` で alias 分離 |
+| Composition Root でのサービススコープ制限（P60） | authModeService が track() 内スコープに閉じる | 共通消費者の外側スコープで生成 |
+| optional parameter による後方互換維持 | 既存テスト・呼び出し元の一括修正が必要 | `runtimeResolver?` で既存動作を保証 |
+
+#### 関連タスク
+
+| タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | Skill/Agent runtime routing 統合クロージャ | 完了（2026-03-15） |
+
 ### SkillScheduler / ScheduleStore（TASK-9G）
 
 スキルスケジュール実行は、Facade の `SkillService` とは独立した専用サービスで構成する。
@@ -338,6 +411,34 @@ SkillExecutor は `registerSkillHandlers()` 内で生成され、`setSkillExecut
 | 遅延初期化 | SkillExecutor は mainWindow を必要とするため、ハンドラー登録時に生成 |
 | 単一責務 | SkillService はスキル管理、SkillExecutor は実行に責務を分離 |
 | テスタビリティ | SkillExecutor をモックに差し替え可能 |
+
+### Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001）
+
+`skill:execute` と `agent:start` は `RuntimeResolver` の判定結果で `integrated` / `handoff` を分岐する。Main 側では resolver と handoff builder を同一初期化タイミングで注入し、Skill/Agent の両経路で契約を統一する。
+
+#### Composition root 配線
+
+| ステップ | 処理 | 実装ファイル |
+| --- | --- | --- |
+| 1 | `new RuntimeResolver(authModeService, authKeyService)` を生成 | `main/ipc/index.ts` |
+| 2 | `new TerminalHandoffBuilder()` を生成 | `main/ipc/index.ts` |
+| 3 | `registerSkillHandlers(mainWindow, skillService, authKeyService, runtimeResolver, handoffBuilder)` を登録 | `main/ipc/index.ts` |
+| 4 | `registerAgentExecutionHandlers(mainWindow, authKeyService, runtimeResolver, handoffBuilder)` を登録 | `main/ipc/index.ts` |
+
+#### Runtime 分岐契約
+
+| チャネル | integrated 条件 | handoff 条件 | handoff 応答 |
+| --- | --- | --- | --- |
+| `skill:execute` | `authMode=api-key` かつ API key 有効 | `authMode=subscription` または API key 未設定 | IPC envelope 内で `handoff=true` と `guidance` を返す |
+| `agent:start` | `authMode=api-key` かつ API key 有効 | `authMode=subscription` または API key 未設定 | `success=false, handoff=true, guidance` を返す |
+
+#### セキュリティ境界
+
+| 項目 | 方針 |
+| --- | --- |
+| 秘匿情報 | `TerminalHandoffBuilder` は API key を返さず、`terminalCommand/contextSummary/reason` のみ返却 |
+| 既存契約維持 | `skill:execute` は `safeInvokeUnwrap` 互換の IPC envelope を維持 |
+| Preload 契約 | Agent 実行は `AGENT_EXECUTION_*` チャネルへ統一し、旧 `agent:*` との差分を吸収 |
 
 ### キャッシュ機構
 
@@ -398,4 +499,3 @@ electron-storeとの型安全な連携のための抽象化インターフェー
 | `SkillImportManager.persistence.test.ts` | ストア保存・復元、再起動シミュレーション | 永続化 |
 | `SkillImportManager.error.test.ts` | 異常系、例外処理、フォールバック | エラー |
 | `SkillImportManager.boundary.test.ts` | null、空配列、最大長、Unicode | 境界値 |
-

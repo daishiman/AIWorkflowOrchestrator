@@ -7,6 +7,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                    |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------- |
+| 6.38.0     | 2026-03-15 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 反映: `RuntimeResolver` / `TerminalHandoffBuilder` の DI 配線、`registerSkillHandlers` / `registerAgentExecutionHandlers` の注入シグネチャ、`skill:execute` / `agent:start` の integrated/handoff 分岐契約を追記 |
 | 6.37.1     | 2026-03-05 | SkillService/SkillExecutor 統合フローのDI記述を現行実装へ同期。`registerSkillHandlers(mainWindow, skillService, authKeyService)` と `new SkillExecutor(mainWindow, undefined, authKeyService)` を正本化 |
 | 6.37.0     | 2026-02-28 | TASK-9E反映: `SkillForker` サービスをスキル管理コンポーネントへ追加。`skill:fork` IPC契約、`SkillForkOptions/Result/Metadata` 型、Path境界検証（prefix一致すり抜け防止）を仕様化 |
 | 6.36.0     | 2026-02-27 | TASK-9G反映: SkillScheduler / ScheduleStore セクション追加。Main IPC 初期化配線（`ipc/index.ts`）と SchedulerSkillExecutor アダプタ構成、5チャネルの責務分離を追記 |
@@ -24,4 +25,3 @@
 - [アーキテクチャパターン概要](./architecture-patterns.md)
 - [IPC・永続化パターン](./arch-ipc-persistence.md)
 - [インターフェース定義（Agent SDK）](./interfaces-agent-sdk.md)
-

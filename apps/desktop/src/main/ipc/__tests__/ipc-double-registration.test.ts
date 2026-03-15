@@ -581,6 +581,9 @@ describe("IPC Handler Double Registration Prevention", () => {
         mockWindow,
         expect.anything(),
         expect.anything(),
+        expect.objectContaining({
+          resolve: expect.any(Function),
+        }),
       );
 
       const skillHandlerAuthService = (

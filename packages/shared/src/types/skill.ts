@@ -4,6 +4,7 @@
  */
 
 import type { EnvironmentType } from "./agent";
+import type { HandoffGuidance } from "./handoff";
 
 /**
  * Skill識別子向け Branded Type
@@ -345,6 +346,12 @@ export interface SkillExecutionResponse {
 
   /** エラーメッセージ（失敗時） */
   error?: string;
+
+  /** true の場合は統合実行せず terminal handoff を案内する */
+  handoff?: boolean;
+
+  /** handoff=true の場合のターミナル実行案内 */
+  guidance?: HandoffGuidance;
 }
 
 /**
