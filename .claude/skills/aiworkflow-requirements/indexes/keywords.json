@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-14T22:24:03.553Z",
-  "totalKeywords": 2159,
+  "generated": "2026-03-15T13:06:58.338Z",
+  "totalKeywords": 2177,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -194,6 +194,7 @@
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
@@ -1085,7 +1086,8 @@
       "ui-ux-navigation.md",
       "ui-ux-panels.md",
       "ui-ux-search-panel-details.md",
-      "ui-ux-settings-core.md"
+      "ui-ux-settings-core.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "core": [
       "api-ipc-agent-core.md",
@@ -1141,6 +1143,7 @@
       "security-skill-ipc-core.md",
       "ui-ux-feature-components-reference.md",
       "workflow-skill-identifier-branded-type-resolution.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "Creator": [
@@ -1271,7 +1274,8 @@
       "logs-archive-legacy.md",
       "security-electron-ipc-advanced.md",
       "security-skill-execution.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "AUTH": [
       "api-ipc-agent-core.md",
@@ -3110,6 +3114,7 @@
     "Lifecycle": [
       "claude-code-agents-workflow.md",
       "security-skill-execution.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "向け": [
@@ -3127,7 +3132,8 @@
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "security-skill-execution.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -3223,11 +3229,13 @@
     ],
     "Task": [
       "claude-code-skills-agents.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md"
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "仕様書": [
       "claude-code-skills-agents.md",
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md"
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "目的": [
       "claude-code-skills-agents.md"
@@ -3338,7 +3346,6 @@
     "メタ情報": [
       "csrf-state-parameter.md",
       "ipc-contract-checklist.md",
-      "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
       "logging-migration-guide.md"
     ],
@@ -4650,7 +4657,8 @@
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
     "Current": [
-      "legacy-ordinal-family-register.md"
+      "legacy-ordinal-family-register.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "Alias": [
       "legacy-ordinal-family-register.md"
@@ -4668,7 +4676,6 @@
       "legacy-ordinal-family-register.md"
     ],
     "Lessons": [
-      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4696,7 +4703,6 @@
       "lessons-learned.md"
     ],
     "Learned": [
-      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4722,13 +4728,6 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "lessons-learned.md"
-    ],
-    "アーカイブ": [
-      "lessons-learned-archive-2026-03.md",
-      "lessons-learned-current.md"
-    ],
-    "教訓アーカイブ": [
-      "lessons-learned-archive-2026-03.md"
     ],
     "教訓集": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -5445,7 +5444,8 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "spec-splitting-guidelines.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "の参照整合を検証": [
       "lessons-learned-skill-remove-contract.md"
@@ -6725,7 +6725,8 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "skill-executor-type-migration.md",
-      "ui-history-search-view.md"
+      "ui-history-search-view.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "苦戦箇所追記": [
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -7238,6 +7239,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "ui-history-search-view.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "仕様整合": [
@@ -7283,7 +7285,8 @@
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
     ],
     "整合": [
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "spec": [
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -7605,6 +7608,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
@@ -8514,6 +8518,7 @@
     "wave": [
       "spec-elegance-consistency-audit.md",
       "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "ユーザー依頼テンプレ": [
@@ -8600,6 +8605,7 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
@@ -8686,6 +8692,9 @@
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "採点・評価・受け入れゲート統合": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "作成済みスキル利用導線": [
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "タスクワークフロー": [
@@ -9768,6 +9777,63 @@
     ],
     "監視・ログ": [
       "workflow-skill-identifier-branded-type-resolution.md"
+    ],
+    "Created": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Usage": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Journey": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "必要仕様の抽出セット": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "抽出確認コマンド": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "依存契約": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "現行": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Canonical": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Set": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Artifact": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "Inventory": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "実装コードアンカー": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "same": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "検証手順": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "CTA": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "テスト実行": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "ビルド確認": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "artifacts": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "json": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "Evaluation": [
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"

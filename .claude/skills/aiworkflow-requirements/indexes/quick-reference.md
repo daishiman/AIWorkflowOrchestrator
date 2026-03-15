@@ -66,6 +66,29 @@ node scripts/search-spec.js "task-fix-score-delta-dedup-001" -C 3
 5. `references/lessons-learned-current.md` で苦戦箇所と簡潔解決手順を確認する
 6. 実装実体は `packages/shared/src/types/skill-improver.ts` `apps/desktop/src/preload/skill-api.ts` `apps/desktop/src/renderer/store/slices/agentSlice.ts` `apps/desktop/src/renderer/components/skill/ScoreDisplay.tsx` `apps/desktop/scripts/capture-task-skill-lifecycle-04-phase11.mjs` を照合する
 
+### 作成済みスキル利用導線（TASK-SKILL-LIFECYCLE-05）を探すとき
+
+このカテゴリは `TASK-SKILL-LIFECYCLE-05` `created-skill-usage-journey` `ScoreGateBadge` `PostExecutionActionBar` `favoriteSkillNames` `recentlyUsedSkills` `workspacePath` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "TASK-SKILL-LIFECYCLE-05" -C 3
+node scripts/search-spec.js "created-skill-usage-journey" -C 3
+node scripts/search-spec.js "ScoreGateBadge" -C 3
+node scripts/search-spec.js "PostExecutionActionBar" -C 3
+node scripts/search-spec.js "favoriteSkillNames" -C 3
+node scripts/search-spec.js "recentlyUsedSkills" -C 3
+node scripts/search-spec.js "workspacePath" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「設計仕様（Skill Lifecycle 作成済みスキル利用導線）」を見る
+2. `references/workflow-skill-lifecycle-created-skill-usage-journey.md` で 3 シナリオ導線・Task04 依存契約・仕様抽出マップを確認する
+3. `references/ui-ux-agent-execution.md` / `references/ui-ux-navigation.md` / `references/ui-ux-feature-components.md` で導線と UI 責務を確認する
+4. `references/interfaces-agent-sdk-executor.md` / `references/interfaces-agent-sdk-skill.md` / `references/arch-state-management.md` で契約・状態を突合する
+5. `references/llm-workspace-chat-edit.md` で Workspace 文脈引き継ぎの境界を確認する
+6. 実体仕様は `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/phase-1-requirements.md` から Phase 13 までを順に照合する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash
@@ -354,6 +377,18 @@ await analyzeSkill(skillName);
 
 **詳細**: arch-state-management.md, architecture-implementation-patterns.md, task-workflow.md, lessons-learned.md
 
+### CTA制御マトリクスパターン（TASK-SKILL-LIFECYCLE-05）
+
+`Record<ScoringGate, CTAVisibility>` で採点ゲート → ボタン表示状態を静的マッピング。キー不足はコンパイルエラーで検出。30テスト（16マトリクス + 7境界値 + 3異常値 + 4ハイライト）。
+
+```typescript
+import { getCTAVisibilityFromScore } from "@repo/shared";
+const cta = getCTAVisibilityFromScore(85); // USE_ALLOWED
+// cta.useNow === "primary", cta.improveFirst === "hidden"
+```
+
+**詳細**: workflow-skill-lifecycle-created-skill-usage-journey.md, packages/shared/src/types/cta-visibility.ts
+
 ### ChatPanel統合パターン（TASK-7D）
 
 ```typescript
@@ -391,6 +426,7 @@ const selectedSkillName = useAppStore((s) => s.skill.selectedSkillName);
 | 会話セッション     | `ChatSession`                 | interfaces-chat-history.md |
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |
 | エラー             | `AppError`, `ValidationError` | error-handling.md          |
+| CTA制御            | `CTAVisibility`, `CTAState`   | workflow-skill-lifecycle-created-skill-usage-journey.md |
 
 ---
 

@@ -3,27 +3,15 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 から IPC Handler テストパターン（P58/P61派生）を抽出し patterns.md へ反映
+## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期ドリフト防止パターンを追加
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `references/patterns.md` に `[テスト] IPC Handler テストパターン（P58/P61派生）` を追加
-  - P58正本判定、RuntimeResolver動的DI回避（`type: "handoff"`）、spy vs mock判断基準、handler captureパターンの4手法をテーブル形式で明文化
-  - クイックナビゲーションのテストドメイン行にも同パターン名を追記
-  - `SKILL.md` 変更履歴テーブルにエントリを追加
-
----
-## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 の未タスク判定分離パターンを skill-creator へ反映
-
-- **Agent**: skill-creator (update)
-- **Phase**: cross-skill-improvement
-- **Result**: ✓ 成功
-- **Notes**:
-  - `references/patterns.md` に `[Phase12] repo-wide テスト失敗は「既存未タスク継続」か「新規未タスク化」かを二段判定する` を追加
-  - `audit-unassigned-tasks --diff-from HEAD`（current）と `--target-file`（個票品質）の分離判定、および `docs/30-workflows/unassigned-task/` 正本配置確認を成功条件として明文化
-  - UT-CHAT-EDIT の再監査で再現した `@repo/shared` 解決失敗を既存未タスクへ紐付ける判断を、再利用可能な Phase 12 パターンへ昇格した
+  - `references/patterns.md` に `[Phase12] design タスクでも「実装済み同期」があるなら Step 2 を先送りしない` を追加
+  - `phase-12-documentation.md` / `documentation-changelog.md` / `spec-update-summary.md` を同値同期する手順を標準化
+  - planned wording（`実行予定` / `後続タスクで実施`）を残したまま完了判定しない失敗パターンを明示
 
 ---
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 same-wave system spec 同期パターンを skill-creator へ反映

@@ -14,12 +14,12 @@
 
 ## 参照資料
 
-| 参照資料            | パス                                                                                               | 説明               |
-| ------------------- | -------------------------------------------------------------------------------------------------- | ------------------ |
-| task-9f skill-share | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-022-task-9f-skill-share.md` | 共有仕様の先行事例 |
-| task-05設計         | `../step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md`                             | 利用導線           |
-| task-06設計         | `../step-05-par-task-06-trust-permission-governance/phase-2-design.md`                             | 安全性ゲート       |
-| task-07設計         | `../step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`                              | 観測指標           |
+| 参照資料            | パス                                                                                                  | 説明               |
+| ------------------- | ----------------------------------------------------------------------------------------------------- | ------------------ |
+| task-9f skill-share | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/task-022-task-9f-skill-share.md`    | 共有仕様の先行事例 |
+| task-05設計         | `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/phase-2-design.md` | 利用導線           |
+| task-06設計         | `../step-05-par-task-06-trust-permission-governance/phase-2-design.md`                                | 安全性ゲート       |
+| task-07設計         | `../step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`                                 | 観測指標           |
 
 ### システム仕様（aiworkflow-requirements）
 

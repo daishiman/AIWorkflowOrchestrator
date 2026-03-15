@@ -6,11 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-15 - UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 仕様同期完了（runtime routing/handoff 契約 + workflow phase status completed + screenshot 9件 + Step2 domain spec同時更新） |
-| 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 Phase 12 再確認（実装内容/苦戦箇所/5分解決カード追記 + current/baseline 分離判定を固定） |
-| 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 system spec 同期（lessons-learned / task-workflow / resource-map / llm-workspace-chat-edit / security-electron-ipc 更新） |
-| 2026-03-15 - Desktop 全件テスト再監査で `@repo/shared` 解決失敗（agent系3スイート）を再確認し、既存未タスク `task-imp-vitest-alias-sync-automation-001` へ紐付け |
-| 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 再監査同期（path drift / artifacts drift / Phase 11 screenshot 証跡 / backlog-completed 台帳更新） |
+| 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（phase-12/documentation-changelog/spec-update-summary 同値化 + 苦戦箇所追補） |
+| 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 4-12 完了（CTA 16パターン実装 + 30テストGREEN + artifacts.json同期 + system spec same-wave更新） |
+| 2026-03-15 - TASK-SKILL-LIFECYCLE-05 再監査同期（Phase 11 screenshot証跡復旧 + implementation-guide要件充足 + system spec same-wave 更新） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期（workflow正本 + canonical set + artifact inventory + legacy register + mirror parity） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 Phase 12 未タスク配置是正（root canonical path + 9セクション再作成 + 参照同期） |
 | 2026-03-14 - TASK-SKILL-LIFECYCLE-04 再監査追補（previousAnalysis Store単一ソース化 / UI仕様同期 / index再生成） |

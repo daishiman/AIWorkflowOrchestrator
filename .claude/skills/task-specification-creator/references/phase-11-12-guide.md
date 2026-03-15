@@ -195,6 +195,8 @@ rg --files .claude/skills/task-specification-creator/scripts \
 
 補足:
 - `manual-test-result.md` のテスト結果サマリー表で、**各TCに最低1枚の `.png` 証跡**を紐付ける
+- `outputs/phase-11/manual-test-checklist.md` を必ず作成し、TC-ID ごとの実施可否を記録する
+- `outputs/phase-11/screenshot-plan.json`（または同等の capture plan）を残し、TC-ID と撮影対象を明示する
 - 非視覚TCのみ例外許可する場合は `--allow-non-visual-tc TC-xx` を使用する
 - `manual-test-result.md` の先頭列は `テストケース`（推奨）または `TC-ID`/`TC` を使用する（`validate-phase11-screenshot-coverage.js` 互換）
 - `phase-11-manual-test.md` には `## テストケース` と `## 画面カバレッジマトリクス` の2セクションを必ず持たせ、TC-IDと証跡ファイルを明記する（代替ソース警告の防止、見出し文字列は完全一致）

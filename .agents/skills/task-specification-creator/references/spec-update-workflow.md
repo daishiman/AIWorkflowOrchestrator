@@ -757,7 +757,9 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 | 成果物             | パス                                                                       |
 | ------------------ | -------------------------------------------------------------------------- |
+| 手動テストチェックリスト | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/manual-test-checklist.md` |
 | テスト結果レポート | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/manual-test-result.md`   |
+| スクリーンショット計画 | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/screenshot-plan.json` |
 | 発見課題リスト     | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-11/discovered-issues.md`    |
 | 実装ガイド         | `docs/30-workflows/{{TASK_NAME}}/outputs/phase-12/implementation-guide.md` |
 ```

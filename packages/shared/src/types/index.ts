@@ -158,3 +158,6 @@ export * from "./skill-debug";
 
 // スキルフォーク型定義 (TASK-9E)
 export * from "./skill-fork";
+
+// CTA表示制御型定義 (TASK-SKILL-LIFECYCLE-05)
+export * from "./cta-visibility";

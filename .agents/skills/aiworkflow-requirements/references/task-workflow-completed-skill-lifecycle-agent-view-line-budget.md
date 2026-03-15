@@ -447,3 +447,88 @@
 | --- | --- | --- |
 | 未タスク配置先の canonical path が曖昧になり、`--target-file` 境界と衝突する | workflow 配下 `unassigned-task` を一時運用したまま参照更新を後回しにする | root canonical path を先に固定し、関連仕様の参照を同ターンで一括更新する |
 | `current`/`baseline` 判定と「指定ディレクトリ配置確認」を同じ意味で扱ってしまう | 監査結果を単一数値で報告する | 配置可否・links可否・audit可否を3軸で分離して記録する |
+
+---
+
+### TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-05 |
+| タスク種別 | design |
+| 完了日 | 2026-03-15 |
+| Phase完了 | 1-12 完了、13（PR作成）未実施 |
+| 成果物数 | 49ファイル（Phase 1-12） |
+| テスト | 30テスト全GREEN（cta-visibility.test.ts） |
+| 受入基準 | AC-1〜AC-5 全充足 |
+
+実装コード:
+- `packages/shared/src/types/cta-visibility.ts`: ScoringGate x CTA 16パターンマトリクス純粋関数
+- `packages/shared/src/types/__tests__/cta-visibility.test.ts`: 30テスト
+- `packages/shared/src/types/index.ts`: エクスポート追加
+
+Phase 10 ゲート判定: PASS（MAJOR 0件、MINOR 8件→全て未タスク記録済み）
+Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
+
+---
+
+## TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-05 |
+| 対象workflow | `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/` |
+| ステータス | in_progress（Phase 1-12 completed / Phase 13 blocked） |
+| 主対象 | 作成済みスキル利用導線（Immediate / Deferred / History）・ScoreGate表示・導線再利用性 |
+
+### 反映内容（再監査）
+
+| 観点 | 内容 |
+| --- | --- |
+| Phase 11 証跡復旧 | `manual-test-checklist.md` / `manual-test-result.md` / `screenshot-plan.json` を作成し、TC-11-01〜05 の `.png` 証跡を current workflow に再集約 |
+| 画面検証 | review board capture（`TC-11-00`）を追加し、source screenshot 5件と合わせて Apple UI/UX 観点の再確認を実施 |
+| Phase 12 是正 | implementation guide を Part 1/2 要件に再編し、Part 1「なぜ先行」、Part 2「使用例」「エッジケース」を補強 |
+| backlog 同期 | Phase 10/11/12 で露出した follow-up 6件を `task-workflow-backlog.md` と root `unassigned-task/` に登録 |
+| 統合正本 | `workflow-skill-lifecycle-created-skill-usage-journey.md` を追加し、仕様抽出マップ・Task04依存契約・5分解決カードを一元化 |
+
+### 仕様書別SubAgent分担（関心分離）
+
+| SubAgent | 担当仕様書 / 生成物 | 主担当作業 |
+| --- | --- | --- |
+| A | workflow phase docs（Phase 1-13） | stale narrative の補正、完了条件の再同期 |
+| B | `outputs/phase-11/*` | screenshot plan / checklist / result / evidence board の整備 |
+| C | `outputs/phase-12/implementation-guide.md` | Part 1/2 validator 要件の不足補完 |
+| D | `task-workflow-backlog.md`, `docs/30-workflows/unassigned-task/` | 未タスク formalize とリンク同期 |
+| Lead | `task-workflow.md`, `lessons-learned-current.md`, `indexes/*`, `LOGS.md`, `.agents` mirror | system spec same-wave 同期と最終検証 |
+
+### 検証証跡
+
+| 検証項目 | コマンド | 結果 |
+| --- | --- | --- |
+| workflow 構造検証 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey --json` | PASS（13/13, errors=0, warnings=0） |
+| workflow phase 検証 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey` | PASS（28項目） |
+| Phase 11 coverage | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey --json` | PASS（expected 5 / covered 5） |
+| Phase 12 implementation guide | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey --json` | PASS（10/10） |
+| 未タスクリンク整合 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md --json` | PASS（229/229, missing=0） |
+| 未タスク差分監査 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（current=0, baseline=136） |
+
+### 関連未タスク（active）
+
+| タスクID | 内容 | 優先度 | 指示書 |
+| --- | --- | --- | --- |
+| TASK-IMP-SKILL-LIFECYCLE-05-CTA-INTERACTION-STATES-001 | CTA hover/active/focus-visible 状態定義の追加 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-cta-interaction-states-001.md` |
+| TASK-IMP-SKILL-LIFECYCLE-05-CUSTOMSTORAGE-VALIDATION-GUARD-001 | customStorage 復元時の runtime validation 強化 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-customstorage-validation-guard-001.md` |
+| TASK-IMP-SKILL-LIFECYCLE-05-FAVORITE-SELECTOR-STABILITY-001 | favorite selector の再レンダー安定性検証 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-favorite-selector-stability-001.md` |
+| TASK-IMP-SKILL-LIFECYCLE-05-AMBIGUITY-CRITERIA-CLARIFICATION-001 | テスト合否基準の曖昧表現除去 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-ambiguity-criteria-clarification-001.md` |
+| TASK-IMP-SKILL-LIFECYCLE-05-EMPTY-STATE-DETAIL-DESIGN-001 | Skill Center Empty State 詳細設計補完 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-empty-state-detail-design-001.md` |
+| TASK-IMP-SKILL-LIFECYCLE-05-E2E-SCENARIOS-COVERAGE-001 | 3シナリオ導線の E2E カバレッジ固定 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-e2e-scenarios-coverage-001.md` |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. 先に `validate-phase11-screenshot-coverage` を通し、欠落成果物（checklist/result/plan/screenshot）を機械的に揃える。  
+2. `implementation-guide` は Part 1「なぜ先行」→ Part 2「型/API/使用例/エッジケース/設定一覧」の順で埋める。  
+3. 画面再現が環境依存で詰まる場合は、source screenshot 集約 + review board 1件 + metadata で evidence chain を固定する。  
+4. Phase 10/11/12 で残った論点は即 `unassigned-task/` に formalize し、backlog と同ターン同期する。  
+5. 最後に `task-workflow` / `lessons` / `indexes` / `LOGS` / mirror を同一 wave で更新し、再監査 drift を防ぐ。  
