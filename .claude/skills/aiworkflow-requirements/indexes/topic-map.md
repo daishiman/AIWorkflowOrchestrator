@@ -299,7 +299,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | SkillService 統合（TASK-FIX-7-1） | L13 |
 | SkillExecutor 型定義（TASK-3-1-A） | L99 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L325 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L338 |
 
 ### references/interfaces-agent-sdk-executor-details.md
 
@@ -311,8 +311,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
-| 関連ドキュメント | L221 |
-| 変更履歴 | L235 |
+| 関連ドキュメント | L249 |
+| 変更履歴 | L263 |
 
 ### references/interfaces-agent-sdk-executor.md
 
@@ -970,10 +970,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
-| コンポーネント仕様 | L39 |
-| インタラクション設計 | L258 |
-| 視覚デザイン | L286 |
-| アクセシビリティ（WCAG 2.1 AA） | L310 |
+| コンポーネント仕様 | L43 |
+| インタラクション設計 | L287 |
+| 視覚デザイン | L316 |
+| アクセシビリティ（WCAG 2.1 AA） | L340 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -984,8 +984,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 完了タスク | L23 |
-| 関連ドキュメント | L61 |
+| 完了タスク | L24 |
+| 関連ドキュメント | L63 |
 
 ### references/ui-ux-agent-execution.md
 
@@ -1929,7 +1929,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L22 |
+| 関連ドキュメント | L23 |
 
 ### references/arch-electron-services.md
 
@@ -1981,7 +1981,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L77 |
+| 関連ドキュメント | L78 |
 
 ### references/arch-state-management-reference-permissions-import-lifecycle.md
 
@@ -2355,10 +2355,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
+| 最新教訓 | L75 |
 | 最新教訓 | L71 |
-||||||| Stash base
 | 最新教訓 | L69 |
 | 最新教訓 | L72 |
+| 最新教訓 | L84 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 

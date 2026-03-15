@@ -11,7 +11,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, runtime routing, RuntimeResolver, handoff, handoff guidance, TerminalHandoffCard
 allowed-tools:
   - Read
   - Glob
@@ -196,6 +196,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.94** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の arch-electron-services-details.md に RuntimeResolver サービス詳細セクションを追加** |
+| **9.01.93** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 を同期**: `interfaces-agent-sdk-executor-*` に runtime routing/handoff 契約を追加し、`arch-electron-services-details.md` へ `RuntimeResolver` / `TerminalHandoffBuilder` DI 配線を追記。`ui-ux-agent-execution-core.md` に `TerminalHandoffCard`、`arch-state-management-reference.md` に `handoffGuidance` 契約を追加し、`task-workflow` / `lessons-learned-current` / `indexes/resource-map.md` / `indexes/quick-reference.md` / `LOGS.md` を同一 wave で更新 |
 | **9.01.92** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期を追加**: `workflow-skill-lifecycle-evaluation-scoring-gate.md` を新規作成し、実装内容・苦戦箇所・`current canonical set`・`artifact inventory`・legacy path 互換を統合。`indexes/resource-map.md` / `indexes/quick-reference.md` / `references/task-workflow.md` / `references/lessons-learned-current.md` / `references/legacy-ordinal-family-register.md` / `LOGS.md` を同一 wave で同期し、mirror parity（`.claude` 正本→`.agents`）を完了条件に固定 |
 | **9.01.91** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 完了同期**: ScoringGate型・evaluatePrompt追加・ScoreDeltaBadge実装 |
 | **9.01.90** | **2026-03-14** | **TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の canonical set / legacy register 同期を追加**: `workflow-ai-runtime-authmode-unification.md` に `current canonical set` / `artifact inventory` / parent docs / 旧 filename 互換管理を追記し、`legacy-ordinal-family-register.md` の current alias row（`qa-checklist` -> `quality-assurance-checklist`）を同期。あわせて `task-workflow-backlog.md` / `lessons-learned-current.md` / `indexes/resource-map.md` / `indexes/quick-reference.md` へ `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` 導線を同一 wave で反映 |
@@ -483,6 +485,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（OAuth CSRF/State詳細を分離）、security-principles.md軽量化（参照リンク追加）、patterns.md拡充（OAuth成功/失敗パターン10件追加） |
 | **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
 | **8.41.0** | **2026-02-06** | **TASK-FIX-5-1最適化**: architecture-implementation-patterns.md更新（S1-S4パターン追加、既知パターンテーブル拡充）、06-known-pitfalls.md P11追加（Claude Code Hooks Edit失敗） |
+| **8.41.0** | **2026-03-14** | **TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001完了**: llm-workspace-chat-edit.md更新（RuntimeResolver/AnthropicLLMAdapter/TerminalHandoffBuilder）、interfaces-llm.md更新（RuntimeResolution/HandoffGuidance型）、api-ipc-agent-core.md更新（chat-edit:send-with-context契約変更）、security-electron-ipc-core.md更新（M-01 contextBridge修正/workspacePath検証）、lessons-learned-current.md更新（P57-P61）。55テスト全PASS |
 | **8.40.1** | **2026-02-06** | **TASK-FIX-5-1-SKILL-API-UNIFICATION完了**: security-electron-ipc.md更新（safeInvoke/safeOnパターン、API統合アーキテクチャ図追加）、interfaces-skill-execution.md更新（ImportedSkill型統一）。Preload API統一（window.skillAPI→window.electronAPI.skill）。210テスト全PASS |
 | **8.40.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001完了**: architecture-auth-security.md v1.10.0更新（TokenRefreshScheduler仕様追加）、interfaces-auth.md更新（TokenRefreshCallbacks/TokenRefreshConfig追加）、api-ipc-auth.md更新（session:scheduleRefreshチャンネル追加）。26テスト全PASS |
 | **8.39.0** | **2026-02-05** | **ENV-INFRA-001苦戦箇所記録**: patterns.md更新（ネイティブモジュールNODE_MODULE_VERSION不一致解決パターン追加） |
@@ -495,5 +498,4 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 - 内容: `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` の最終同期を反映。manual docs 34件 reform、Phase 1-12 completed / currentPhase=13 / Phase 13 blocked、generated `topic-map.md` の 500行超 blocker 化、`TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001` と `TASK-IMP-AIWORKFLOW-GENERATED-INDEX-METRIC-SYNC-GUARD-001` の follow-up formalize、Phase 11 branch-level dashboard screenshot sanity に加え、Phase 12 root evidence 化、active 未タスク10見出し化、`verify-unassigned-links` の split 親 + sibling 監査、`workflow-aiworkflow-requirements-line-budget-reform.md` / `quick-reference.md` / `resource-map.md` / `spec-splitting-guidelines.md` の再利用導線まで system spec に固定した。
 ### バージョン更新: 9.01.90
 - 日付: 2026-03-12
-- 内容: Phase12監査で `outputs/phase-12` 未作成 drift を検出し、`TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001` として切り出した。後続の再同期で documentation shell 追加と verification rerun を完了し、この drift 自体は解消済みの履歴として管理する。
-- 追加: タスク `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` をシステム仕様追跡対象として追加。
+- 内容: Phase12監査で `outputs/phase-12` 未作成 drift を検出し `TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001` として切り出した。documentation shell 追加と verification rerun 完了済み。`TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` をシステム仕様追跡対象として追加。

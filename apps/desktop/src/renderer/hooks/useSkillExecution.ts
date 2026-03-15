@@ -143,7 +143,7 @@ export function useSkillExecution(skillId: string): UseSkillExecutionReturn {
           skillName: skillId,
         });
 
-        if (response.success) {
+        if (response.success !== false) {
           executionIdRef.current = response.executionId;
         } else {
           setStatus("error");

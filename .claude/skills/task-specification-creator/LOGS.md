@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## 2026-03-15 - UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 Phase 12 完了同期
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（recheck + documentation sync）
+- **Result**: success
+- **Notes**:
+  - `runtime-routing-integration-closure` の `artifacts.json` / `index.md` / `phase-1..12` を `completed` へ同期し、Phase 13 のみ `not_started` を維持
+  - `validate-phase11-screenshot-coverage`（TC 9/9）と `validate-phase12-implementation-guide`（10/10）を再実行し、画面証跡と実装ガイド品質を再確認
+  - Step 2 domain spec 同期として `interfaces-agent-sdk-executor` / `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `lessons` を同一ターンで更新
+
+---
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク配置是正（指定ディレクトリ再確認）
 
 - **Agent**: task-specification-creator
@@ -28,7 +39,6 @@
   - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
 
 ---
-||||||| Stash base
 ## 2026-03-14 - TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 実装完了
 
 - **Agent**: task-specification-creator
@@ -63,6 +73,7 @@
   - `electron-vite dev` が esbuild platform mismatch で失敗する条件を記録し、明示 screenshot 要求時の fallback 実行 + metadata 固定パターンを再利用ルール化
 
 ---
+||||||| Stash base
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator
@@ -280,5 +291,6 @@
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.1** | **2026-03-15** | runtime routing integration closure の Phase 12 再確認ログ（workflow status同期 + screenshot/guide validator + Step2 domain spec 同期）を追加 |
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |

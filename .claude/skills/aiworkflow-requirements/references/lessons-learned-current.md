@@ -18,10 +18,11 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
+| 2026-03-15 | 1.29.91 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の教訓を追加。workflow 台帳の `not_started` 残置、runtime handoff 契約の Main/Preload/Store 三層同期漏れ、capture fallback 証跡化の抜けを同時に是正する手順を追記 |
+| 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
 | 2026-03-14 | 1.29.88 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
-||||||| Stash base
 | 2026-03-14 | 1.29.90 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 の実装教訓 P57〜P61 を追加。AuthMode 値乖離、同名ファイル二重存在、Preload API 未公開、サービススコープ制限、動的アダプタ注入の5教訓と5ステップ解決手順を追記 |
+| 2026-03-14 | 1.29.89 | TASK-SKILL-LIFECYCLE-04 の Phase 12 再確認を追補。未タスクを workflow ローカル `tasks/unassigned-task/` に置くと監査境界と衝突する課題を是正し、root canonical path（`docs/30-workflows/unassigned-task/`）固定 + 9セクション正規化 + 参照同期の再利用手順を追加 |
 | 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 12 再確認追補を反映。再参照既存未タスクが `target-file` 監査で current 違反になり得る点を追加し、`audit-unassigned-tasks --target-file` で是正確認する運用を明文化 |
 | 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 の再監査教訓を追補。`electron-vite dev` の esbuild platform mismatch で実画面 capture が詰まる条件、fallback review board 証跡化、`chatEditAPI` payload 契約（object vs positional）ドリフト是正を追加 |
 | 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の follow-up 教訓を追補。Phase 4 契約テストと Phase 6 回帰テストの責務混線を `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` として未タスク化し、境界定義と重複防止手順を追加 |
@@ -74,6 +75,69 @@
 
 ## 最新教訓
 
+### 2026-03-15 UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001
+
+#### 苦戦箇所1: workflow が実体完了でも `index.md` / `artifacts.json` / `phase本文` が `not_started` のまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | outputs と実装差分は揃っていても、workflow 本文台帳の同期が遅れると再監査時に未実施と誤読される |
+| 再発条件 | validator PASS のみで Phase close を判断する |
+| 解決策 | `artifacts.json`・`index.md`・`phase-1..12` のステータスを同一ターンで completed 同期した |
+| 標準ルール | Phase 12 close-out は「成果物・台帳・phase本文」の三層同時更新を必須にする |
+
+#### 苦戦箇所2: runtime handoff 契約を executor 側だけ更新すると UI/state がドリフトする
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill:execute` / `agent:start` の handoff 応答を仕様化しても、`TerminalHandoffCard` と `handoffGuidance` の state 契約が未同期だと実装理解が分断される |
+| 再発条件 | interfaces 更新だけで Step 2 を完了扱いにする |
+| 解決策 | `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `history` を同時更新した |
+| 標準ルール | runtime routing 変更は Main・Preload・UI・Store の4層を最低同期単位にする |
+
+#### 苦戦箇所3: alias import による同名クラス衝突回避
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `services/chat-edit/RuntimeResolver.ts` と `services/runtime/RuntimeResolver.ts` が同名クラス。`ipc/index.ts` で両方 import すると名前衝突 |
+| 再発条件 | 共通化のため同名サービスを新ディレクトリに切り出す |
+| 解決策 | `import { RuntimeResolver as ChatEditRuntimeResolver }` で alias 分離。元のパスは型システムで追跡可能 |
+| 標準ルール | 同名クラスの共通化では、特化版に alias を付けて共通版を素のまま import する |
+
+#### 苦戦箇所4: replace_all による後方互換テスト破壊
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Edit ツールで `replace_all: true` を使い `registerSkillHandlers(mockMainWindow, mockSkillService as never)` を全置換したところ、後方互換テスト（RuntimeResolver 未注入ケース）まで書き換わった |
+| 再発条件 | テストファイル内に同一パターンが複数箇所あり、一部だけ変更したい場合に `replace_all` を使用 |
+| 解決策 | `replace_all: false`（デフォルト）で個別に Edit するか、変更後に後方互換テストを手動で元に戻す |
+| 標準ルール | テストファイルの Edit は `replace_all` を避け、対象箇所のコンテキストを十分に含めた個別 Edit を使う |
+
+#### 苦戦箇所5: Linter 自動修正によるテストアサーション型変更
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | PostToolUse Hook の Prettier/ESLint が `skillHandlers.runtime.test.ts` の応答型キャストを変更。`opResult.handoff` → `opResult.data?.handoff` に自動書き換えされた |
+| 再発条件 | IPC envelope（`{ success, data }`）をアンラップせずにアサーションすると、Linter が型推論に基づいて修正 |
+| 解決策 | テスト側で IPC envelope 構造を正確に反映した型キャスト（`result as { success: boolean; data?: { handoff?: boolean } }`）を使用 |
+| 標準ルール | IPC テストのアサーションは実際の応答構造に合わせ、Linter 修正後も意図どおりの検証になっているか確認する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-all-specs --strict` と `validate-phase11-screenshot-coverage` を先に実行し、成果物欠落を先に潰す。
+2. `artifacts.json` / `index.md` / `phase-1..12` を completed 同期し、Phase 13 のみ未実施に固定する。
+3. Step 2 は executor だけで閉じず、electron-services / ui / state / task-workflow / lessons を同時更新する。
+4. screenshot が fallback の場合は metadata に理由・source を残し、coverage validator PASS まで閉じる。
+5. テスト Edit 後は PostToolUse Hook の差分を `git diff` で確認し、Linter 自動修正が意図に反していないか検証する。
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| UT-FIX-AGENT-HANDLERS-WORKTREE-PACKAGE-RESOLUTION-001 | worktree 環境の @repo/shared パッケージ解決修復 | 未実施 |
+| UT-IMP-IPC-HANDOFF-ENVELOPE-CONSISTENCY-001 | skill:execute / agent:start の handoff 応答 envelope 統一 | 未実施 |
+| UT-IMP-RUNTIME-RESOLVER-CHATEDIT-INTEGRATION-TEST-001 | ChatEditRuntimeResolver パスの統合テスト追加 | 未実施 |
+
 ### 2026-03-14 TASK-SKILL-LIFECYCLE-04
 
 #### 苦戦箇所1: 未タスク配置先ドリフトで指定ディレクトリ監査が不成立になる
@@ -109,8 +173,117 @@
 | 再発条件 | 「実装記録は完了したので index は後でよい」と判断する |
 | 解決策 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、`current canonical set` と `artifact inventory` を起点に parent docs / ledger / indexes / logs を同一 wave で同期した |
 | 標準ルール | Phase 12 の close-out は `workflow + parent docs + task-workflow + lessons + indexes + LOGS + mirror` を最小単位とする |
+### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57〜P61）
 
-||||||| Stash base
+#### P57: 設計書と実コードの AuthMode 値の乖離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計ドキュメントでは AuthMode を `"integrated"` / `"terminal"` / `"hybrid"` の3値で定義したが、実コードベースでは `"subscription" \| "api-key"` の2値。RuntimeResolver の実装時に解決テーブルの全面書き直しが必要だった |
+| 再発条件 | Phase 2（設計）で想定値を使い、実コードの型定義を検証しない |
+| 解決策 | Phase 1（要件定義）で `grep -rn "AuthMode" packages/shared/` を実行し、正本の型定義値を確認する。設計書で想定値を使う前に必ず実コードの型を検証 |
+| 標準ルール | 設計書で列挙型の値を参照するときは、実コードの型定義を正本として先に確認する |
+| 関連タスク | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+
+#### P58: 同名ファイルの二重存在（chatEditHandlers.ts）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `apps/desktop/src/main/handlers/chatEditHandlers.ts` と `apps/desktop/src/main/ipc/chatEditHandlers.ts` の2つが存在し、実際に `ipc/index.ts` から import されているのは `ipc/chatEditHandlers.ts` だった。設計書は `handlers/chatEditHandlers.ts` を参照しており、誤ったファイルを修正するリスクがあった |
+| 再発条件 | 設計書のファイルパスを信じて修正対象を決め、実際の import 元を確認しない |
+| 解決策 | 修正対象ファイルの特定には `grep -rn "import.*chatEditHandlers" apps/desktop/src/main/` で実際の import 元を確認する |
+| 標準ルール | 同名ファイルが複数ディレクトリに存在する場合、`grep import` で実際に使用されている方を正本とする |
+| 関連タスク | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+
+#### P59: Preload API 未公開（exposeChatEditAPI 呼び出し欠落）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatEditApi.ts` に `exposeChatEditAPI()` 関数は定義されていたが、`preload/index.ts` で一切呼ばれておらず、`chatEditAPI` が Renderer に完全に未公開だった。他の全 API（electronAPI, agentAPI 等）は contextBridge 経由で公開済みだった |
+| 症状 | `window.chatEditAPI` が `undefined` で全ての chat-edit IPC 呼び出しが失敗 |
+| 再発条件 | 新規 Preload API を定義するだけで `preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックへの追記を忘れる |
+| 解決策 | 新規 Preload API を追加した場合、`preload/index.ts` の `contextBridge.exposeInMainWorld()` ブロックと else ブロックの両方に追記されているか必ず確認する |
+| 再発防止 | `grep -c "exposeInMainWorld" preload/index.ts` と `grep -c "chatEditAPI\|slideApi\|agentAPI" preload/index.ts` で API 公開数を監査 |
+| 関連パターン | M-01（contextBridge 未使用）、P23（API二重定義の型管理複雑性） |
+| 関連タスク | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+
+#### P60: createAuthModeService のスコープ制限
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `ipc/index.ts` で `createAuthModeService(authKeyService)` が `track("registerAuthModeHandlers", ...)` コールバック内で呼ばれており、そのスコープ外（chat-edit ハンドラ登録ブロック）からは参照できなかった。chat-edit ハンドラにも authModeService が必要だったため、別インスタンスを生成する必要があった |
+| 再発条件 | 複数のハンドラ登録ブロックで同じサービスが必要なのに、外側スコープに引き上げない |
+| 解決策 | 複数のハンドラ登録ブロックで同じサービスが必要な場合、外側スコープで生成するか、各ブロック内で `createXxxService()` を呼ぶ |
+| 標準ルール | サービスの共有スコープは「最も外側の共通消費者」に合わせて配置する |
+| 関連パターン | P34（遅延初期化 DI パターン選択） |
+| 関連タスク | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+
+#### P61: ChatEditService の動的アダプタ注入
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ChatEditService はコンストラクタで LLMAdapter を受け取る設計だが、RuntimeResolver の結果（API キー有無）によって adapter が変わるため、毎回 `new ChatEditService(resolution.adapter, contextBuilder)` で生成する方式を採用。stubLLMAdapter を置き換える際、Setter Injection ではなく Factory パターンに近い動的生成が最適だった |
+| 再発条件 | adapter が呼び出し時の状態に依存するのに、インスタンスをキャッシュする |
+| 解決策 | adapter が呼び出し時の状態に依存する場合は、毎回 new でインスタンスを生成する。API キーが変更される可能性を考慮すると、キャッシュは避ける |
+| 標準ルール | DI 対象が実行時コンテキスト依存（認証状態等）の場合は Factory パターンで毎回生成する |
+| 関連パターン | P34（遅延初期化 DI） |
+| 関連タスク | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 で `grep -rn "AuthMode\|ChatEdit" packages/shared/ apps/desktop/src/` を実行し、実コードの型定義値と既存ファイル配置を先に確認する。
+2. 同名ファイルがある場合は `grep -rn "import.*FileName"` で実際の import 元を特定し、正本を決定する。
+3. 新規 Preload API は定義後に `preload/index.ts` の `contextBridge.exposeInMainWorld()` と else ブロックの両方に追記を確認する。
+4. サービスの共有スコープは消費者ブロックの共通親に引き上げるか、各ブロック内で `createXxxService()` を呼ぶ。
+5. DI 対象が認証状態依存の場合は Factory パターンで毎回生成し、キャッシュを避ける。
+
+### 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補）
+
+#### 苦戦箇所: 既存未タスクを再参照しても、対象ファイル自体が10見出し要件を満たしていない場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `unassigned-task-detection.md` で「既存未タスクを再利用」と記録しても、`audit-unassigned-tasks --target-file` では current 違反が出るケースがあった |
+| 再発条件 | diff監査（`--diff-from HEAD`）だけで完了判定し、再参照した既存未タスク本文を個別監査しない |
+| 解決策 | 再参照した各未タスクに対して `audit-unassigned-tasks --target-file` を実行し、違反があれば同ターンで9見出しへ是正した |
+| 標準ルール | Phase 12 の「新規未タスク0件」判定時でも、再参照した既存未タスクは `target-file` 監査で `currentViolations=0` を確認する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. `verify-unassigned-links --source .../task-workflow.md` で参照切れを先に潰す。  
+2. `audit-unassigned-tasks --json --diff-from HEAD` で今回差分の合否（current）を確認する。  
+3. `unassigned-task-detection.md` で再参照した既存未タスクを列挙する。  
+4. 各ファイルへ `audit-unassigned-tasks --target-file <path>` を実行し、current違反を確認する。  
+5. 違反があれば同ターンで9見出し是正し、再実行で `currentViolations=0` を固定する。  
+
+### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001
+
+#### 苦戦箇所1: current build screenshot が esbuild platform mismatch で停止する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `electron-vite dev` が `@esbuild/darwin-arm64` / `@esbuild/darwin-x64` 不一致で起動できず、Phase 11 の実画面 capture が中断した |
+| 再発条件 | worktree の node 実行アーキと lockfile 由来 binary がずれている状態で capture script を実行する |
+| 解決策 | 当日中に fallback review board capture を current workflow 配下で生成し、`phase11-capture-metadata.json` へ理由と source を固定した |
+| 標準ルール | 明示 screenshot 要求時は「実画面試行ログ → fallback 実行 → metadata 記録 → coverage validator PASS」まで同一ターンで閉じる |
+
+#### 苦戦箇所2: chatEdit preload と Main IPC の payload 契約がドリフトしていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatEditAPI.readFile/writeFile` が positional 引数で invoke し、Main 側の object payload 契約（`{ filePath, workspacePath? }`）と不整合だった |
+| 再発条件 | IPC handler 側シグネチャ変更時に preload API と renderer hook の引数形を同時更新しない |
+| 解決策 | `chatEditApi.ts` を object payload 契約へ統一し、`getEditorSelection` も `{ success, data }` を unwrap する実装へ修正した |
+| 標準ルール | IPC 契約変更時は handler / preload / renderer usage を 1 セットで更新し、`typecheck` と関連テストを同ターンで実行する |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 11 capture 前に `pnpm --filter @repo/desktop dev` の preflight 実行可否を確認する。
+2. 起動不可ならエラー理由を記録し、fallback capture を current workflow 配下で生成する。
+3. screenshot plan / manual-test-result / metadata を同時更新して TC-ID と証跡を 1:1 にする。
+4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
+5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
+
 ### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57〜P61）
 
 #### P57: 設計書と実コードの AuthMode 値の乖離

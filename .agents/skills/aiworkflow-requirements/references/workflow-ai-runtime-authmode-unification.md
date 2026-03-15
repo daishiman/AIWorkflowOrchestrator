@@ -68,6 +68,8 @@
 | Phase 12 フィードバック | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-12/skill-feedback-report.md` | 再利用パターンの抽出 |
 | 画面再取得スクリプト | `apps/desktop/scripts/capture-ai-runtime-authmode-review-board.mjs` | `TC-11-00` 再取得の実行実体 |
 | follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` | 契約テスト/回帰テスト責務分離の継続改善 |
+| runtime routing closure 成果物 | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/` | Phase 1-12 の全成果物（Task03 runtime routing 統合） |
+| RuntimeResolver 共通サービス | `apps/desktop/src/main/services/runtime/RuntimeResolver.ts` | Skill/Agent/ChatEdit 共通の runtime 判定 |
 
 ---
 
@@ -114,7 +116,7 @@
 | タスク | 反映内容 |
 | --- | --- |
 | step-02-par-task-02-workspace-chat-edit-runtime-activation | foundation 契約 + settings review 参照 |
-| step-02-par-task-03-skill-agent-runtime-routing | foundation 契約 + settings review 参照 |
+| step-02-par-task-03-skill-agent-runtime-routing | foundation 契約 + settings review 参照 **(UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 で完了: 2026-03-15)** |
 | step-02-par-task-10-claude-code-terminal-surface | foundation 契約 + settings review 参照 |
 | step-03-par-task-04-skill-docs-runtime-integration | foundation 契約 + settings review 参照 |
 | step-03-par-task-06-main-chat-settings-runtime-sync | 設定画面3領域を必須改善対象として明示 |
@@ -175,6 +177,7 @@
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-15 | 1.0.7 | Step-02 Task03 (skill-agent-runtime-routing) を UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 で完了同期。`RuntimeResolver` 共通化、`TerminalHandoffCard`、`handoffGuidance` store 統合を反映。`arch-electron-services-details.md` に RuntimeResolver サービス詳細セクションを追加 |
 | 2026-03-14 | 1.0.6 | Phase 12 再確認を追補。`verify-unassigned-links=223/223` へ更新し、再参照未タスク `task-fix-worktree-native-binary-guard-001.md` の 9見出し是正と `target-file` 監査 PASS（current=0）を記録 |
 | 2026-03-14 | 1.0.5 | Step-02 Task02/Task10 の Phase 11/12 再監査結果を追補。Task10 `TC-11-01..06`、Task02 `TC-11-01..03` を current workflow 配下へ証跡化し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` PASS を明記。あわせて Task02 実装差分（RuntimeResolver/AnthropicLLMAdapter/TerminalHandoffBuilder/chatEditAPI contextBridge/workspacePath 検証）の正本同期を追加 |
 | 2026-03-14 | 1.0.4 | branch 横断再確認の validator 適用範囲を明文化。`verify-all-specs` / `validate-phase-output` は 10/10 PASS、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` は Step-01 のみ適用対象（他9件は `not_started`）であることを追補 |

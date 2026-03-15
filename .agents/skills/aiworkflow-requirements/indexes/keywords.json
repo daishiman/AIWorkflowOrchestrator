@@ -1,11 +1,6 @@
 {
-  "generated": "2026-03-14T03:34:39.648Z",
-  "totalKeywords": 2153,
-||||||| Stash base
-  "generated": "2026-03-13T22:22:48.225Z",
-  "totalKeywords": 2142,
-  "generated": "2026-03-14T02:57:39.546Z",
-  "totalKeywords": 2145,
+  "generated": "2026-03-14T21:50:20.883Z",
+  "totalKeywords": 2157,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4346,6 +4341,13 @@
     "主要": [
       "interfaces-llm.md"
     ],
+    "主要型定義": [
+      "interfaces-llm.md",
+      "rag-knowledge-graph.md"
+    ],
+    "追加分": [
+      "interfaces-llm.md"
+    ],
     "チャンク・埋め込み型定義": [
       "interfaces-rag-chunk-embedding.md"
     ],
@@ -6052,10 +6054,10 @@
     "RuntimeResolver": [
       "llm-workspace-chat-edit.md"
     ],
-    "Adapter": [
+    "AnthropicLLMAdapter": [
       "llm-workspace-chat-edit.md"
     ],
-    "Handoff": [
+    "TerminalHandoffBuilder": [
       "llm-workspace-chat-edit.md"
     ],
     "セキュリティ": [
@@ -8069,9 +8071,6 @@
     "セキュリティ考慮事項": [
       "rag-desktop-state.md",
       "ui-ux-system-prompt.md"
-    ],
-    "主要型定義": [
-      "rag-knowledge-graph.md"
     ],
     "EntityEntity": [
       "rag-knowledge-graph.md"

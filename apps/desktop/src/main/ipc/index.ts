@@ -83,7 +83,8 @@ import {
 } from "../infrastructure";
 import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
-import { RuntimeResolver } from "../services/chat-edit/RuntimeResolver";
+import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
+import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import {
   AUTH_ERROR_CODES,
   PROFILE_ERROR_CODES,
@@ -621,14 +622,23 @@ export function registerAllIpcHandlers(
     registerNotificationHandlers(createNotificationService(), { mainWindow }),
   );
 
-  // --- 7. Agent Execution handlers ---
-  track("registerAgentExecutionHandlers", () =>
-    registerAgentExecutionHandlers(mainWindow),
-  );
+  // --- 7. Agent Execution handlers (runtimeResolver injected below after auth setup) ---
 
-  // --- 8. Auth Key service + Skill 系ハンドラ ---
+  // --- 8. Auth Key service + RuntimeResolver + Skill 系ハンドラ ---
   const authKeyStorage = createAuthKeyStorage();
   const authKeyService = new AuthKeyService(authKeyStorage);
+
+  // 共通 RuntimeResolver（1回だけ生成 — P5 準拠）
+  const authModeServiceForRuntime = createAuthModeService(authKeyService);
+  const runtimeResolver = new RuntimeResolver(
+    authKeyService,
+    authModeServiceForRuntime,
+  );
+
+  // Agent Execution handlers (RuntimeResolver 注入)
+  track("registerAgentExecutionHandlers", () =>
+    registerAgentExecutionHandlers(mainWindow, undefined, runtimeResolver),
+  );
 
   // Skill Management handlers (SKILL-IPC-001)
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
@@ -652,7 +662,12 @@ export function registerAllIpcHandlers(
   );
 
   track("registerSkillHandlers", () =>
-    registerSkillHandlers(mainWindow, skillService, authKeyService),
+    registerSkillHandlers(
+      mainWindow,
+      skillService,
+      authKeyService,
+      runtimeResolver,
+    ),
   );
 
   // Skill File handlers (TASK-9A-B)
@@ -830,16 +845,15 @@ export function registerAllIpcHandlers(
   track("registerChatEditHandlers", () => {
     const fileService = new FileService();
     const contextBuilder = new ContextBuilder();
-    const authModeService = createAuthModeService(authKeyService);
-    const runtimeResolver = new RuntimeResolver(
+    const chatEditResolver = new ChatEditRuntimeResolver(
       authKeyService,
-      authModeService,
+      authModeServiceForRuntime,
     );
     registerChatEditHandlers(
       mainWindow,
       contextBuilder,
       fileService,
-      runtimeResolver,
+      chatEditResolver,
     );
   });
 

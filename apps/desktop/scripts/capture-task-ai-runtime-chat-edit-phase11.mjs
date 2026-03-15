@@ -63,7 +63,9 @@ const scenarios = [
       await openFilePanel(page);
       await selectFile(page, "file-app");
       await page.getByTestId("workspace-chat-attach-selected").click();
-      await page.waitForSelector('[data-testid="workspace-file-context-chips"]');
+      await page.waitForSelector(
+        '[data-testid="workspace-file-context-chips"]',
+      );
     },
   },
   {
@@ -352,7 +354,10 @@ async function captureScenario(browser, scenario) {
       get: async () => ({ success: true, data: null }),
       create: async () => {
         conversationSeq += 1;
-        return { success: true, data: { id: `conversation-${conversationSeq}` } };
+        return {
+          success: true,
+          data: { id: `conversation-${conversationSeq}` },
+        };
       },
       update: async () => ({ success: true, data: null }),
       delete: async () => ({ success: true }),
@@ -421,14 +426,10 @@ server.listen(port, "127.0.0.1", () => {
 });
 `;
 
-  const server = spawn(
-    "node",
-    ["-e", staticServerScript, String(port)],
-    {
-      cwd: rendererRoot,
-      stdio: ["ignore", "pipe", "pipe"],
-    },
-  );
+  const server = spawn("node", ["-e", staticServerScript, String(port)], {
+    cwd: rendererRoot,
+    stdio: ["ignore", "pipe", "pipe"],
+  });
 
   server.stdout.on("data", (data) => {
     process.stdout.write(data);

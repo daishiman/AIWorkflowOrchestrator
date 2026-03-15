@@ -30,6 +30,7 @@ const mockSetAdvancedSettingsOpen = vi.fn();
 const mockAbortExecution = vi.fn();
 const mockExecuteSkill = vi.fn();
 const mockAddExecutionToHistory = vi.fn();
+const mockClearHandoffGuidance = vi.fn();
 const mockFetchProviders = vi.fn();
 const mockSelectProvider = vi.fn();
 const mockSelectModel = vi.fn();
@@ -82,6 +83,8 @@ vi.mock("../../../store", () => ({
   useAbortSkillExecution: vi.fn(() => mockAbortExecution),
   useExecuteSkill: vi.fn(() => mockExecuteSkill),
   useAddExecutionToHistory: vi.fn(() => mockAddExecutionToHistory),
+  useHandoffGuidance: vi.fn(() => null),
+  useClearHandoffGuidance: vi.fn(() => mockClearHandoffGuidance),
   useLLMProviders: vi.fn(() => []),
   useSelectedProviderId: vi.fn(() => null),
   useSelectedModelId: vi.fn(() => null),
@@ -135,6 +138,10 @@ describe("AgentView", () => {
     vi.mocked(store.useExecuteSkill).mockReturnValue(mockExecuteSkill);
     vi.mocked(store.useAddExecutionToHistory).mockReturnValue(
       mockAddExecutionToHistory,
+    );
+    vi.mocked(store.useHandoffGuidance).mockReturnValue(null);
+    vi.mocked(store.useClearHandoffGuidance).mockReturnValue(
+      mockClearHandoffGuidance,
     );
     vi.mocked(store.useLLMProviders).mockReturnValue([]);
     vi.mocked(store.useSelectedProviderId).mockReturnValue(null);

@@ -164,6 +164,38 @@ node scripts/search-spec.js "UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001" -C 3
 4. `references/task-workflow.md` と `references/lessons-learned.md` で完了記録、苦戦箇所、関連未タスク `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` を確認する
 5. `references/legacy-ordinal-family-register.md` で旧 filename 互換行（`qa-checklist` -> `quality-assurance-checklist`）を確認する
 
+### Skill/Agent runtime routing integration closure を探すとき
+
+このカテゴリは `runtime routing integration closure` `TerminalHandoffCard` `handoffGuidance` `RuntimeResolver` `AGENT_EXECUTION_START` `skill:execute handoff` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "runtime routing integration closure" -C 3
+node scripts/search-spec.js "TerminalHandoffCard" -C 3
+node scripts/search-spec.js "handoffGuidance" -C 3
+node scripts/search-spec.js "AGENT_EXECUTION_START" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Skill/Agent runtime routing 統合（harness + handoff guidance）」を見る
+2. `references/interfaces-agent-sdk-executor-core.md` / `details.md` / `history.md` で `skill:execute` / `agent:start` の handoff 契約を確認する
+3. `references/arch-electron-services-details.md` で `RuntimeResolver` / `TerminalHandoffBuilder` の DI 配線を確認する
+4. `references/ui-ux-agent-execution-core.md` で `TerminalHandoffCard` の表示条件・操作を確認する
+5. `references/arch-state-management-reference.md` で `handoffGuidance` の state 遷移と dismiss 契約を確認する
+6. workflow 証跡は `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/phase-11/` と `outputs/phase-12/` を参照する
+
+### Workspace Chat Edit AI Runtime（RuntimeResolver / handoff）を探すとき
+
+検索語: `RuntimeResolver` `AnthropicLLMAdapter` `TerminalHandoffBuilder` `HandoffGuidance` `chat-edit:send-with-context` `workspacePath` `isAllowedPath`
+
+読む順番:
+1. `references/llm-workspace-chat-edit.md` で RuntimeResolver / AnthropicLLMAdapter / TerminalHandoffBuilder の実装仕様を確認
+2. `references/interfaces-llm.md` で RuntimeResolution / HandoffGuidance 型定義を確認
+3. `references/api-ipc-agent-core.md` で `chat-edit:send-with-context` チャンネル契約変更を確認
+4. `references/security-electron-ipc-core.md` で workspacePath 検証・M-01 contextBridge 修正を確認
+5. `references/lessons-learned-current.md` で P57-P61 の苦戦箇所を確認
+6. 実装実体: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts` `AnthropicLLMAdapter.ts` `TerminalHandoffBuilder.ts` `apps/desktop/src/main/ipc/chatEditHandlers.ts` `apps/desktop/src/preload/chatEditApi.ts`
+
 ### Electron IPC パターン
 
 ```typescript

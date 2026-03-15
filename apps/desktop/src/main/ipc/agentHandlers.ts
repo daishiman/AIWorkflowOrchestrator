@@ -15,11 +15,14 @@ import {
 } from "../infrastructure/security/ipc-validator";
 import type {
   AgentExecutionRequest,
+  AgentStartResult,
   PermissionResponse,
   PermissionRules,
 } from "@repo/shared";
+import type { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
 import type { EnvironmentService } from "../services/environment";
+import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
 
 // シングルトンのExecutionManager
 let executionManager: ExecutionManager | null = null;
@@ -32,6 +35,7 @@ let executionManager: ExecutionManager | null = null;
 export function registerAgentExecutionHandlers(
   mainWindow: BrowserWindow,
   customRules?: PermissionRules,
+  runtimeResolver?: RuntimeResolver,
 ): void {
   // ExecutionManagerを初期化
   executionManager = new ExecutionManager();
@@ -53,6 +57,28 @@ export function registerAgentExecutionHandlers(
         throw { code: "VALIDATION_ERROR", message: "prompt must be a string" };
       }
 
+      // Runtime routing: handoff 分岐
+      if (runtimeResolver) {
+        const resolution = await runtimeResolver.resolve();
+        if (resolution.type === "handoff") {
+          const builder = new TerminalHandoffBuilder();
+          const response: AgentStartResult = {
+            success: false,
+            handoff: true,
+            error: resolution.reason,
+            guidance: builder.buildForAgentExecution(
+              {
+                skillId: request.skillId,
+                prompt: request.prompt,
+                workingDirectory: request.workingDirectory,
+              },
+              resolution.reason,
+            ),
+          };
+          return response;
+        }
+      }
+
       if (!executionManager) {
         throw {
           code: "NOT_INITIALIZED",
@@ -66,7 +92,7 @@ export function registerAgentExecutionHandlers(
         customRules,
       );
 
-      return { executionId };
+      return { success: true, executionId };
     },
   );
 

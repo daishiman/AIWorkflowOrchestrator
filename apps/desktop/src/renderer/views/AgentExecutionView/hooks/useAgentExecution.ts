@@ -91,18 +91,27 @@ export const useAgentExecution = (skill: Skill | null) => {
 
       // Start execution via IPC
       try {
-        await startAgentExecution({
+        const result = await startAgentExecution({
           skillId: skill.id,
           prompt: message,
           executionId,
         });
+
+        if (result?.handoff) {
+          stopExecution();
+          setExecutionError(
+            result.error ||
+              result.guidance?.reason ||
+              "統合実行を開始できませんでした",
+          );
+        }
       } catch (error) {
         setExecutionError(
           error instanceof Error ? error.message : "実行に失敗しました",
         );
       }
     },
-    [skill, addUserMessage, startExecution, setExecutionError],
+    [skill, addUserMessage, startExecution, setExecutionError, stopExecution],
   );
 
   /**
