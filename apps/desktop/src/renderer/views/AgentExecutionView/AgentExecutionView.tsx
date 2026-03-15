@@ -9,11 +9,13 @@ import { AgentChatInterface } from "@/renderer/components/organisms/AgentChatInt
 import { AgentMessageInput } from "@/renderer/components/molecules/AgentMessageInput";
 import { AgentExecutionControls } from "@/renderer/components/molecules/AgentExecutionControls";
 import { PermissionDialog } from "@/renderer/components/organisms/PermissionDialog";
+import { TerminalHandoffCard } from "@/renderer/components/organisms/TerminalHandoffCard";
 import {
   startAgentExecution,
   stopAgentExecution,
   respondToAgentPermission,
 } from "@/renderer/utils/agentApi";
+import type { HandoffGuidance } from "@/renderer/features/workspace-chat-edit/types";
 
 /**
  * エージェント実行ビューコンポーネント
@@ -27,6 +29,8 @@ export const AgentExecutionView: React.FC = () => {
   const navigate = useNavigate();
   const { skillId } = useParams<{ skillId: string }>();
   const [inputValue, setInputValue] = useState("");
+  const [handoffGuidance, setHandoffGuidance] =
+    useState<HandoffGuidance | null>(null);
 
   // Store selectors
   const executionState = useStore((state) => state.executionState);
@@ -67,25 +71,43 @@ export const AgentExecutionView: React.FC = () => {
   /**
    * メッセージ送信ハンドラ
    */
-  const handleSendMessage = useCallback(() => {
+  const handleSendMessage = useCallback(async () => {
     if (!inputValue.trim() || !currentSkill) return;
 
     addUserMessage(inputValue);
     setInputValue("");
+    setHandoffGuidance(null);
 
     // Start execution via IPC
     const executionId = `exec-${Date.now()}`;
     startExecution(currentSkill, executionId);
 
     // Call IPC using helper
-    startAgentExecution({
-      skillId: currentSkill.id,
-      prompt: inputValue,
-      executionId,
-    }).catch((error) => {
+    try {
+      const result = await startAgentExecution({
+        skillId: currentSkill.id,
+        prompt: inputValue,
+        executionId,
+      });
+
+      if (result?.handoff && result.guidance) {
+        stopExecution();
+        setHandoffGuidance(result.guidance);
+        return;
+      }
+
+      if (result && result.success === false) {
+        stopExecution();
+        console.error(
+          "Agent execution returned failure:",
+          result.error ?? "Unknown error",
+        );
+      }
+    } catch (error) {
+      stopExecution();
       console.error("Failed to start agent execution:", error);
-    });
-  }, [inputValue, currentSkill, addUserMessage, startExecution]);
+    }
+  }, [addUserMessage, currentSkill, inputValue, startExecution, stopExecution]);
 
   /**
    * キャンセルハンドラ
@@ -150,6 +172,17 @@ export const AgentExecutionView: React.FC = () => {
     executionState.status === "streaming";
   const hasMessages = executionState.messages.length > 0;
 
+  const handleCopyHandoffCommand = useCallback(async () => {
+    if (!handoffGuidance) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(handoffGuidance.terminalCommand);
+    } catch (error) {
+      console.error("Failed to copy handoff command:", error);
+    }
+  }, [handoffGuidance]);
+
   return (
     <div className="flex h-full flex-col bg-gray-900">
       {/* ヘッダー */}
@@ -180,6 +213,18 @@ export const AgentExecutionView: React.FC = () => {
       </header>
 
       {/* チャットインターフェース */}
+      {handoffGuidance && (
+        <section className="px-4 pt-4">
+          <TerminalHandoffCard
+            guidance={handoffGuidance}
+            onCopyCommand={() => {
+              void handleCopyHandoffCommand();
+            }}
+            onDismiss={() => setHandoffGuidance(null)}
+          />
+        </section>
+      )}
+
       <AgentChatInterface
         messages={executionState.messages}
         streamingContent={executionState.currentStreamingContent}

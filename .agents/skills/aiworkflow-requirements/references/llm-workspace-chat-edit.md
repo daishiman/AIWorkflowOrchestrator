@@ -102,7 +102,7 @@ IContextBuilderインターフェースは以下のメソッドを提供する�
 
 ## ChatEditService
 
-LLM統合のFacadeサービス。プロンプト構築とレスポンス解析を担当。
+LLM統合のFacadeサービス。プロンプト構築とレスポンス解析を担当。`RuntimeResolver` が `integrated` を返した場合にのみインスタンス化され、解決済みの `LLMAdapter` をコンストラクタで受け取る。`ipc/chatEditHandlers.ts` の `handleSendWithContext` では `resolve()` → integrated 判定 → `new ChatEditService(resolution.adapter, contextBuilder)` の順で生成する。
 
 ### インターフェース
 
@@ -150,33 +150,113 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ---
 
-## RuntimeResolver / Adapter / Handoff
+## RuntimeResolver
 
-`chat-edit:send-with-context` は `RuntimeResolver` で auth mode と API key 状態を評価し、integrated 実行か terminal handoff を決定する。
+`AuthMode` と API key の有無からランタイム（integrated / handoff）を決定するサービス。`chat-edit:send-with-context` の前段で呼び出される。
 
-### RuntimeResolver
+> **実装**: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts`
 
-| 入力条件 | 判定 |
-| --- | --- |
-| `authMode=subscription` | `handoff`（reason: subscription mode） |
-| `authMode=api-key` かつ `hasKey=false` | `handoff`（reason: API key not configured） |
-| `authMode=api-key` かつ `hasKey=true` | `integrated`（`AnthropicLLMAdapter`） |
+### インターフェース
 
-### AnthropicLLMAdapter
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| resolve | なし | Promise\<RuntimeResolution\> | 現在の auth mode と API key 状態を評価し、ランタイムを決定する |
 
-- 実装: `apps/desktop/src/main/services/chat-edit/AnthropicLLMAdapter.ts`
-- 送信先: `ANTHROPIC_API_ENDPOINT`（`/v1/messages`）
-- ヘッダ: `x-api-key`, `anthropic-version`, `content-type`
-- モデル: `claude-sonnet-4-6`
-- 実行境界: Main Process で `electron.net.fetch` を使用
+### 型定義
 
-### TerminalHandoffBuilder
+| 型名 | 説明 |
+| ---- | ---- |
+| RuntimeResolution | 判定結果の判別共用体。`{ type: "integrated"; adapter: LLMAdapter }` または `{ type: "handoff"; reason: string }` |
 
-- 実装: `apps/desktop/src/main/services/chat-edit/TerminalHandoffBuilder.ts`
-- 出力: `HandoffGuidance`
-- `contextSummary`: file basename / selection line range / command type / workspace
-- `terminalCommand`: `claude --add-dir "<workspace>" "<message>"`
-- セキュリティ: API キー値を `terminalCommand` に含めない
+### 解決テーブル
+
+| authMode | hasApiKey | 結果 | reason |
+| --- | --- | --- | --- |
+| subscription | any | handoff | subscription mode |
+| api-key | true | integrated | — （`AnthropicLLMAdapter` を返却） |
+| api-key | false | handoff | API key not configured |
+
+### DI
+
+コンストラクタで以下を注入する。
+
+| 依存 | 説明 |
+| ---- | ---- |
+| IAuthModeService | 現在の `AuthMode` を取得 |
+| IAuthKeyService | API key の存在チェック |
+
+---
+
+## AnthropicLLMAdapter
+
+`LLMAdapter` インターフェースの Anthropic API 実装。Electron の `net.fetch` を使用して Main Process 内で API 呼び出しを完結させる。
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/AnthropicLLMAdapter.ts`
+
+### インターフェース
+
+LLMAdapter インターフェースを実装する。
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| sendMessage | prompt: string | Promise\<string\> | プロンプトを Anthropic API に送信し、レスポンステキストを返す |
+
+### 定数
+
+| 定数名 | 値 | import元 | 説明 |
+| ------ | -- | -------- | ---- |
+| ANTHROPIC_API_ENDPOINT | `https://api.anthropic.com/v1/messages` | `../auth/types` | API エンドポイント |
+| ANTHROPIC_API_VERSION | `2023-06-01` | `../auth/types` | API バージョンヘッダ値 |
+
+### リクエスト仕様
+
+| 項目 | 値 |
+| ---- | -- |
+| モデル | `claude-sonnet-4-6` |
+| HTTPメソッド | POST |
+| ヘッダ | `x-api-key`, `anthropic-version`, `content-type: application/json` |
+| 実行境界 | Main Process（`electron.net.fetch`） |
+
+### セキュリティ
+
+- API キーは Main Process 内のみで使用し、Renderer に渡さない
+- `net.fetch` により Chromium のネットワークスタックを経由し、CSP の制約を受けない
+
+---
+
+## TerminalHandoffBuilder
+
+handoff 判定時に `HandoffGuidance` を構築するサービス。ユーザーがターミナルで Claude CLI を使用するための情報を生成する。
+
+> **実装**: `apps/desktop/src/main/services/chat-edit/TerminalHandoffBuilder.ts`
+
+### インターフェース
+
+| メソッド名 | 引数 | 戻り値 | 説明 |
+| ---------- | ---- | ------ | ---- |
+| build | request: SendWithContextRequest, reason: string | HandoffGuidance | handoff 案内情報を構築する |
+
+### 型定義
+
+| 型名 | フィールド | 説明 |
+| ---- | ---------- | ---- |
+| HandoffGuidance | terminalCommand: string | 実行すべき CLI コマンド |
+| | contextSummary: string | コンテキストの要約 |
+| | reason: string | handoff の理由 |
+
+### contextSummary 生成内容
+
+| 情報 | 説明 |
+| ---- | ---- |
+| basename | 対象ファイルのベース名 |
+| 選択行範囲 | 選択がある場合、開始行〜終了行 |
+| コマンドタイプ | EditCommand.type（refactor, generate-test 等） |
+| workspace名 | ワークスペースのディレクトリ名 |
+
+### セキュリティ
+
+- `terminalCommand` に API キーを含めない
+- コマンド形式: `claude --add-dir "<workspace>" "<message>"`
 
 ---
 
@@ -208,7 +288,11 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 
 ### パストラバーサル防止
 
-`utils/PathValidator`モジュールの`detectTraversal`関数および`validateFilePath`関数で path traversal を拒否し、`chat-edit:send-with-context` では `isAllowedPath()` により `workspacePath` 境界外アクセスを `PERMISSION_DENIED` として拒否する。
+`utils/PathValidator`モジュールの`detectTraversal`関数および`validateFilePath`関数で path traversal を拒否する。
+
+### workspacePath 境界検証
+
+`handleSendWithContext` では `workspacePath` が指定されている場合、リクエスト内の各コンテキストファイルに対して `isAllowedPath(ctx.filePath, [args.workspacePath])` を実行する。境界外のファイルパスが検出された場合は `PERMISSION_DENIED` エラーを返し、LLM 呼び出しを行わない。この検証は `RuntimeResolver.resolve()` より前に実行され、handoff/integrated いずれの経路でもファイルパスの安全性を保証する。
 
 ---
 
@@ -306,6 +390,30 @@ IChatEditServiceインターフェースは以下のメソッドを提供する�
 | IPC更新 | `SendWithContextResponse` に `handoff` / `guidance` を追加 |
 | Preload更新 | `chatEditAPI` を `contextBridge.exposeInMainWorld` で公開し、read/write invoke payload を object 契約へ整合 |
 | 検証 | `chatEditHandlers.*` 4 files / 55 tests PASS、`pnpm --filter @repo/desktop typecheck` PASS |
+
+### workspacePath セキュリティ検証テスト（UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001）2026-03-15
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 |
+| テストファイル | `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` |
+| テスト数 | 6（全PASS） |
+| カバレッジ | workspacePath ブランチ 100% |
+| 完了日 | 2026-03-15 |
+
+テストケース:
+
+| TC | 検証内容 | 期待結果 |
+| --- | --- | --- |
+| TC-WS-01 | workspace 内ファイル | 正常処理（handoff） |
+| TC-WS-02 | workspace 外ファイル | PERMISSION_DENIED |
+| TC-WS-03 | workspacePath 未指定 | 検証スキップ |
+| TC-WS-04 | パストラバーサル（`../`） | PERMISSION_DENIED |
+| TC-WS-05 | 複数コンテキスト（1件外部） | 全体拒否 |
+| TC-WS-06 | 空配列コンテキスト | 正常処理 |
+
+**関連未タスク**:
+- `task-ut-chat-edit-integrated-path-workspace-guard-001` — integrated path の workspace 制約テスト
 
 ### 削除されたTODO
 

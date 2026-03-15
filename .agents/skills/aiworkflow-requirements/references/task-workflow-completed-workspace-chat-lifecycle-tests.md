@@ -5,6 +5,52 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 runtime routing 統合クロージャ（2026-03-15）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | improvement |
+| 優先度 | 高 |
+| 完了日 | 2026-03-15 |
+| 対象 | `RuntimeResolver` 共通化、`skill:execute`/`agent:start` handoff 契約、`TerminalHandoffCard`、`handoffGuidance` store |
+| 成果物 | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/` |
+
+#### 実施内容
+
+- Main: `RuntimeResolver` / `TerminalHandoffBuilder` を `registerSkillHandlers` と `registerAgentExecutionHandlers` に注入し、runtime 判定を共通化
+- IPC: `skill:execute` は envelope 互換を維持しつつ `handoff=true + guidance` を返す分岐を追加
+- Preload/Renderer: `agentAPI` を `AGENT_EXECUTION_*` チャネルへ整合し、`TerminalHandoffCard` の copy/dismiss UX を追加
+- Store: `handoffGuidance` の保持・dismiss・integrated 開始時 reset を `agentSlice` へ統合
+- Phase 11: TC-01〜09 の screenshot 9件を取得し、fallback capture の metadata を記録
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| `electron-vite dev` が `esbuild` アーキ不一致で起動不能 | worktree の lockfile/binary 差分を preflight せず capture 実行 | fallback review board で証跡を確保し、metadata に理由を固定 |
+| workflow 実体は完了済みでも `index.md` / `artifacts.json` / phase本文が `not_started` のまま残る | validator PASS をもって台帳同期を省略 | Phase 12 で workflow 本文・台帳・outputs を同一ターンで completed 同期 |
+| Step 2 で必要な domain spec 同期範囲が漏れる | executor 仕様だけ更新し、UI/state/history を後回し | `arch-electron-services` / `ui-ux-agent-execution` / `arch-state-management` / `task-workflow` / `lessons` を同時更新 |
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/runtime-routing-integration-closure --strict` | PASS（13/13, error=0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS（223/223, missing=0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/runtime-routing-integration-closure` | PASS（TC 9/9） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/runtime-routing-integration-closure` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | current違反なし（baselineは既存 legacy と分離管理） |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-FIX-AGENT-HANDLERS-WORKTREE-PACKAGE-RESOLUTION-001 | worktree 環境で `@repo/shared` パッケージ解決エラーにより agentHandlers.test.ts 全16件 FAIL | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/task-fix-agent-handlers-worktree-package-resolution-001.md` | 未実施 |
+| UT-IMP-IPC-HANDOFF-ENVELOPE-CONSISTENCY-001 | `skill:execute` と `agent:start` の handoff 応答 envelope 形式を統一 | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/task-imp-ipc-handoff-envelope-consistency-001.md` | 未実施 |
+| UT-IMP-RUNTIME-RESOLVER-CHATEDIT-INTEGRATION-TEST-001 | ChatEditRuntimeResolver パスの統合テスト追加（3テスト: integrated/handoff/後方互換） | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/task-imp-runtime-resolver-chatedit-integration-test-001.md` | 未実施 |
+
 ### タスク: TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 APIキー連動とチャット実行経路整合（2026-03-11）
 
 | 項目 | 値 |
@@ -427,6 +473,49 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 | workspacePath テスト実装確認（TC-WS-01〜06） | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-chat-edit-workspace-constraint-test-001.md` |
+| ~~UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001~~ | ~~workspacePath テスト実装確認（TC-WS-01〜06）~~ | ~~高~~ | `docs/30-workflows/completed-tasks/task-chat-edit-workspace-constraint-test-001.md`（完了: 2026-03-15） |
 | TASK-IMP-WORKSPACE-CHAT-EDIT-SPEC-SYNC-IPC-001 | IPC 正本同期（F-M02） | 中 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-workspace-chat-edit-spec-sync-ipc-001.md` |
 | UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動化 | 低 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-phase11-screenshot-automation-001.md` |
+
+### UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001: workspacePath セキュリティ検証テスト実装（2026-03-15）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 |
+| Issue | #1222 |
+| タイプ | test |
+| 完了日 | 2026-03-15 |
+| テストファイル | `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` |
+| テスト対象 | `apps/desktop/src/main/ipc/chatEditHandlers.ts` L159-173（workspacePath 検証ロジック） |
+| テスト数 | 6（TC-WS-01〜06 全PASS） |
+| カバレッジ | workspacePath ブランチ 100% |
+
+**テストケース概要**:
+- TC-WS-01: workspace 内ファイルは正常処理（PASS）
+- TC-WS-02: workspace 外ファイルは PERMISSION_DENIED で拒否
+- TC-WS-03: workspacePath 未指定時は検証スキップ
+- TC-WS-04: パストラバーサル攻撃パターン（`../`）を拒否
+- TC-WS-05: 複数コンテキストのうち1件でも外部なら全体拒否
+- TC-WS-06: 空配列コンテキストの正常処理
+
+#### 実装内容（要点）
+
+- `apps/desktop/src/main/ipc/__tests__/chatEditHandlers.workspace-constraint.test.ts` を追加し、workspacePath 制約の正常系/異常系/境界値（6ケース）を固定した
+- `ipcMain.handle` の handler capture + `invokeHandler()` で IPC 経由の挙動をテストし、Main IPC 契約に沿った失敗コード（`PERMISSION_DENIED`）を確認した
+- `isAllowedPath` は `vi.spyOn` ベースで監視し、パストラバーサル拒否の実装ロジック（正規化を含む）を保持したまま検証した
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| 同名ファイルの二重存在（P58） | `ipc/chatEditHandlers.ts` と `handlers/chatEditHandlers.ts` の責務差を確認せず編集する | `grep -rn "registerChatEditHandlers" apps/desktop/src/main` で呼び出し元を特定し、IPC 側を正本に固定 |
+| RuntimeResolver mock 戦略（P61派生） | `integrated` 返却のままテストし、ChatEditService 依存が増殖する | `type: "handoff"` を返す mock へ寄せて依存面積を縮小し、workspacePath 監査に焦点化 |
+| `vi.spyOn` と `vi.mock` の誤選択 | security helper を丸ごと mock して内部バリデーションを失う | `vi.spyOn(PathValidatorModule, "isAllowedPath")` を使い、実装保持で呼び出し観測 |
+
+#### 同種課題の5分解決カード
+
+1. 先に正本ファイルを `grep import/register` で確定し、同名ファイル誤編集を防ぐ。
+2. 動的DI依存が重い場合は mock 戦略を `handoff` 側へ寄せ、対象責務だけを検証する。
+3. セキュリティロジック検証は `vi.mock` ではなく `vi.spyOn` を優先し、実装を保持する。
+4. workspace 制約は `正常系 / 外部拒否 / パストラバーサル / 複数コンテキスト / 空配列` を最小セットとして固定する。
+5. Phase 12 では完了台帳・教訓・未タスク判定（current/baseline 分離）を同ターンで同期する。

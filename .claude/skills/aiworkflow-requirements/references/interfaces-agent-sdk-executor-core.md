@@ -166,6 +166,8 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | `executionId` | `string`              | ✓    | 実行ID（UUID）       |
 | `success`     | `boolean`             | ✓    | 成功/失敗フラグ      |
 | `error`       | `SkillExecutionError` | -    | エラー情報（失敗時） |
+| `handoff`     | `boolean`             | -    | `true` の場合は統合実行を行わず terminal handoff を案内 |
+| `guidance`    | `HandoffGuidance`     | -    | handoff 時の CLI 継続ガイド（`terminalCommand/contextSummary/reason`） |
 
 #### SkillStreamMessage
 
@@ -236,6 +238,17 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | チャンネル     | 方向            | 説明               |
 | -------------- | --------------- | ------------------ |
 | `skill:stream` | Main → Renderer | ストリーミング配信 |
+
+### Runtime routing 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001）
+
+`skill:execute` は `RuntimeResolver` の判定結果に応じて `integrated` / `handoff` を分岐する。
+
+| 分岐 | 条件 | 応答契約 |
+| --- | --- | --- |
+| integrated | `authMode=api-key` かつ API key 有効 | 既存の `SkillExecutionResponse` を返す |
+| handoff | `authMode=subscription` または API key 未設定/取得不可 | `handoff=true` + `guidance` 付きレスポンスを返す |
+
+`TerminalHandoffBuilder` は secret を含めず、CLI 継続に必要な最小情報のみを返却する。
 
 ### 設定定数
 
@@ -388,4 +401,3 @@ SkillExecutorにExponential Backoff with Jitterパターンのリトライ機構
 | `RETRYABLE_NETWORK_ERRORS`  | ECONNRESET, ETIMEDOUT, ECONNREFUSED, ENOTFOUND, EAI_AGAIN | -           | リトライ対象ネットワークエラーコード |
 
 ---
-

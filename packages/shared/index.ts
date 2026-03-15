@@ -43,6 +43,7 @@ export type {
 } from "./src/types/skill";
 
 export { SKILL_CATEGORIES, toSkillId, toSkillName } from "./src/types/skill";
+export type { HandoffGuidance } from "./src/types/handoff";
 
 // Claude CLI types
 export * from "./src/claude-cli";

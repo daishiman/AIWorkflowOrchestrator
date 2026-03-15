@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-14T03:34:39.648Z",
-  "totalKeywords": 2153,
+  "generated": "2026-03-14T22:24:03.553Z",
+  "totalKeywords": 2159,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3338,6 +3338,7 @@
     "メタ情報": [
       "csrf-state-parameter.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
       "logging-migration-guide.md"
     ],
@@ -4341,6 +4342,13 @@
     "主要": [
       "interfaces-llm.md"
     ],
+    "主要型定義": [
+      "interfaces-llm.md",
+      "rag-knowledge-graph.md"
+    ],
+    "追加分": [
+      "interfaces-llm.md"
+    ],
     "チャンク・埋め込み型定義": [
       "interfaces-rag-chunk-embedding.md"
     ],
@@ -4660,6 +4668,7 @@
       "legacy-ordinal-family-register.md"
     ],
     "Lessons": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4687,6 +4696,7 @@
       "lessons-learned.md"
     ],
     "Learned": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4712,6 +4722,13 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "lessons-learned.md"
+    ],
+    "アーカイブ": [
+      "lessons-learned-archive-2026-03.md",
+      "lessons-learned-current.md"
+    ],
+    "教訓アーカイブ": [
+      "lessons-learned-archive-2026-03.md"
     ],
     "教訓集": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -6047,10 +6064,10 @@
     "RuntimeResolver": [
       "llm-workspace-chat-edit.md"
     ],
-    "Adapter": [
+    "AnthropicLLMAdapter": [
       "llm-workspace-chat-edit.md"
     ],
-    "Handoff": [
+    "TerminalHandoffBuilder": [
       "llm-workspace-chat-edit.md"
     ],
     "セキュリティ": [
@@ -8064,9 +8081,6 @@
     "セキュリティ考慮事項": [
       "rag-desktop-state.md",
       "ui-ux-system-prompt.md"
-    ],
-    "主要型定義": [
-      "rag-knowledge-graph.md"
     ],
     "EntityEntity": [
       "rag-knowledge-graph.md"

@@ -434,17 +434,17 @@ const historyAPI: HistoryAPI = {
 // Agent Execution API for agent execution UI
 const agentAPI: AgentExecutionAPI = {
   start: (request: AgentStartRequest) =>
-    safeInvoke(IPC_CHANNELS.AGENT_EXECUTE, request),
-  stop: () => safeInvoke(IPC_CHANNELS.AGENT_ABORT),
+    safeInvoke(IPC_CHANNELS.AGENT_EXECUTION_START, request),
+  stop: () => safeInvoke(IPC_CHANNELS.AGENT_EXECUTION_STOP_ALL),
   respondPermission: (response: AgentPermissionResponse) =>
-    safeInvoke(IPC_CHANNELS.AGENT_PERMISSION_RESPOND, response),
+    safeInvoke(IPC_CHANNELS.AGENT_EXECUTION_PERMISSION_RES, response),
   onStream: (callback: (payload: AgentStreamPayload) => void) =>
-    safeOn<AgentStreamPayload>(IPC_CHANNELS.AGENT_STREAM_CHUNK, callback),
+    safeOn<AgentStreamPayload>(IPC_CHANNELS.AGENT_EXECUTION_STREAM, callback),
   onStatus: (callback: (payload: AgentStatusPayload) => void) =>
-    safeOn<AgentStatusPayload>(IPC_CHANNELS.AGENT_STATUS_CHANGED, callback),
+    safeOn<AgentStatusPayload>(IPC_CHANNELS.AGENT_EXECUTION_STATUS, callback),
   onPermission: (callback: (request: AgentPermissionRequest) => void) =>
     safeOn<AgentPermissionRequest>(
-      IPC_CHANNELS.AGENT_PERMISSION_REQUEST,
+      IPC_CHANNELS.AGENT_EXECUTION_PERMISSION,
       callback,
     ),
 };

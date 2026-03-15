@@ -5,6 +5,34 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 Runtime routing 統合クロージャ（2026-03-15完了）
+
+| 項目         | 内容                                                                 |
+| ------------ | -------------------------------------------------------------------- |
+| タスクID     | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001          |
+| 完了日       | 2026-03-15                                                           |
+| ステータス   | **完了**                                                             |
+| 対象         | `skill:execute` / `agent:start` runtime routing、handoff DTO、Preload channel整合 |
+| ドキュメント | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/`             |
+
+#### 変更内容
+
+| 変更箇所 | 内容 |
+| -------- | ---- |
+| Main IPC | `RuntimeResolver` 注入時に `integrated` / `handoff` 分岐を適用 |
+| Skill応答 | handoff 時に `SkillExecutionResponse.handoff/guidance` を返却 |
+| Agent応答 | handoff 時に `AgentStartResult.handoff/guidance` を返却 |
+| Preload | `agentAPI` を `AGENT_EXECUTION_*` チャネルへ統一 |
+| Renderer | `TerminalHandoffCard` 表示へ `guidance` を接続 |
+
+#### 検証結果
+
+- `apps/desktop/src/main/ipc/__tests__/skillHandlers.runtime.test.ts`
+- `apps/desktop/src/main/ipc/__tests__/agentHandlers.runtime.test.ts`
+- `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/phase-11/screenshots/TC-01..09`
+
+---
+
 ### タスク: TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 AuthKeyService注入経路統一（2026-03-05完了）
 
 | 項目         | 内容                                                                 |
@@ -236,6 +264,7 @@
 
 | 日付       | バージョン | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| 2026-03-15 | 1.7.4      | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 反映: `skill:execute` / `agent:start` の runtime routing と handoff 契約、Preload `AGENT_EXECUTION_*` チャネル整合、TerminalHandoffCard 連携を追記 |
 | 2026-03-05 | 1.7.3      | DI初期化フロー表のシグネチャを実装に同期（`registerSkillHandlers(mainWindow, skillService, authKeyService)` / `main/ipc/index.ts`）。旧2引数表記を更新 |
 | 2026-03-05 | 1.7.2      | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001 反映: AuthKeyService DI配線契約（単一生成 + Skill/Auth同一注入）を追加。完了タスク記録と関連ドキュメントリンクを同期 |
 | 2026-02-13 | 1.7.1      | TASK-FIX-11-1-SDK-TEST-ENABLEMENT: 「実装上の課題と教訓」追記（Step 1-A/1-D誤判定、未タスクraw誤検知、Vitestモック再初期化） |
@@ -248,4 +277,3 @@
 | 2026-01-31 | 1.2.0      | TASK-SKILL-RETRY-001: リトライ機構の型・API・定数追加      |
 | 2026-01-26 | 1.1.0      | spec-guidelines.md準拠: コードブロックを表形式・文章に変換 |
 | 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                            |
-

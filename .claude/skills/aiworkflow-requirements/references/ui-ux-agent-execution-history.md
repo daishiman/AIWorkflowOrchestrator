@@ -7,6 +7,7 @@
 
 | バージョン | 日付       | 変更内容                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| v1.8.0     | 2026-03-15 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 反映: `TerminalHandoffCard` のコンポーネント仕様、表示条件（handoffGuidance）、copy/dismiss 操作、`agent:start` の runtime 分岐 UI フローを追加 |
 | v1.0.0     | 初版       | 初期作成                                                                                            |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換                                          |
 | v1.3.0     | 2026-01-31 | TASK-IMP-permission-tool-icons完了: ツールアイコンバッジ視覚仕様追加、完了タスク・関連ドキュメント拡充 |
@@ -29,6 +30,7 @@
 | task-imp-permission-readable-ui-001 | 2026-01-30 | `permissionDescriptions.ts`（説明テンプレート）, `PermissionDialog.tsx`（人間可読UI統合）, テスト53件追加 |
 | TASK-7D | 2026-01-31 | `ChatPanel.tsx`（forwardRef統合）, `SkillStreamingView.tsx`（React.memo最適化）, テスト48件（15+33）全PASS |
 | task-imp-permission-tool-metadata-001 | 2026-01-31 | `toolMetadata.ts`（リスクレベル・セキュリティ影響定義）, `PermissionDialog.tsx`（リスクバッジ統合）, テスト56件追加 |
+| UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | 2026-03-15 | `TerminalHandoffCard.tsx`, `AgentExecutionView.tsx`, `agentSlice.handoff` テスト、Phase 11 screenshot 9件 |
 
 ### タスク: PermissionDialog人間可読UI改善（2026-01-30完了）
 
@@ -74,4 +76,3 @@
 | UI/UXコンポーネント概要            | `./ui-ux-components.md`                                                                       |
 | デザイン原則                       | `./ui-ux-design-principles.md`                                                                |
 | 機能別UIコンポーネント             | `./ui-ux-feature-components.md`                                                               |
-

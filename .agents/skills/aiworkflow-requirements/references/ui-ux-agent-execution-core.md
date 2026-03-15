@@ -13,7 +13,7 @@
 
 | レベル | コンポーネント         | 種別                  | 親コンポーネント       | 子コンポーネント                                                                        |
 | ------ | ---------------------- | --------------------- | ---------------------- | --------------------------------------------------------------------------------------- |
-| 1      | AgentExecutionView     | views                 | -                      | Header, AgentChatInterface, AgentExecutionControls, AgentMessageInput, PermissionDialog |
+| 1      | AgentExecutionView     | views                 | -                      | Header, AgentChatInterface, AgentExecutionControls, AgentMessageInput, TerminalHandoffCard, PermissionDialog |
 | 2      | Header                 | -                     | AgentExecutionView     | BackButton, SkillInfo                                                                   |
 | 3      | BackButton             | -                     | Header                 | -                                                                                       |
 | 3      | SkillInfo              | -                     | Header                 | -                                                                                       |
@@ -28,6 +28,10 @@
 | 2      | AgentMessageInput      | molecules             | AgentExecutionView     | TextInput, SendButton                                                                   |
 | 3      | TextInput              | -                     | AgentMessageInput      | -                                                                                       |
 | 3      | SendButton             | -                     | AgentMessageInput      | -                                                                                       |
+| 2      | TerminalHandoffCard    | organisms             | AgentExecutionView     | CommandPreview, CopyButton, DismissButton                                               |
+| 3      | CommandPreview         | -                     | TerminalHandoffCard    | -                                                                                       |
+| 3      | CopyButton             | -                     | TerminalHandoffCard    | -                                                                                       |
+| 3      | DismissButton          | -                     | TerminalHandoffCard    | -                                                                                       |
 | 2      | PermissionDialog       | organisms（モーダル） | AgentExecutionView     | DialogHeader, PermissionDetails, RememberCheckbox, ActionButtons                        |
 | 3      | DialogHeader           | -                     | PermissionDialog       | -                                                                                       |
 | 3      | PermissionDetails      | -                     | PermissionDialog       | -                                                                                       |
@@ -53,6 +57,7 @@
 | ------------------------ | ------------------ | ---------------------------------- | ------------------------------------ |
 | ヘッダー                 | 上部               | 戻るボタン、スキル情報             | 画面上端に固定配置                   |
 | チャットインターフェース | 中央（メイン領域） | メッセージ履歴、ストリーミング出力 | スクロール可能な主要コンテンツエリア |
+| handoff ガイダンス       | 入力欄の上          | TerminalHandoffCard                | handoff 時のみ表示                    |
 | 実行コントロール         | 下部（入力欄上）   | キャンセルボタン、クリアボタン     | 横並び配置                           |
 | メッセージ入力           | 最下部             | テキスト入力フィールド、送信ボタン | 画面下端に固定配置                   |
 
@@ -111,6 +116,30 @@
 | ---------- | ------------------ | ------------------- | ------------------- | --------------- |
 | キャンセル | 無効               | 有効                | 有効                | 無効            |
 | クリア     | 有効（履歴あり時） | 無効                | 無効                | 有効            |
+
+### TerminalHandoffCard（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001）
+
+| 項目 | 仕様 |
+| --- | --- |
+| ファイル | `apps/desktop/src/renderer/components/organisms/TerminalHandoffCard/TerminalHandoffCard.tsx` |
+| 責務 | integrated 実行不可時に CLI handoff ガイダンスを表示する |
+| 表示条件 | `handoffGuidance != null` |
+| 主操作 | copy（terminal command 複製） / dismiss（カード非表示） |
+
+**表示内容**
+
+| フィールド | 内容 |
+| --- | --- |
+| `terminalCommand` | CLI へ引き継ぐ実行コマンド |
+| `contextSummary` | handoff 理由と実行コンテキスト要約 |
+| `reason` | integrated 経路で実行できなかった理由 |
+
+**インタラクション**
+
+| 操作 | 動作 |
+| --- | --- |
+| Copy | クリップボードへ `terminalCommand` をコピーし、完了フィードバックを表示 |
+| Dismiss | `agentSlice.clearHandoffGuidance()` を呼び出し、カードを閉じる |
 
 ### PermissionDialog（TASK-7C実装済）
 
@@ -265,9 +294,10 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 | 2        | Enterキーまたは送信ボタン押下      | 送信トリガーの実行                       |
 | 3        | ユーザーメッセージをチャットに追加 | MessageListに新規メッセージを表示        |
 | 4        | 入力欄をクリア & 無効化            | テキストフィールドを空にし、入力を無効化 |
-| 5        | agent:start IPC送信                | Main Processへエージェント実行を要求     |
-| 6        | ストリーミング応答を受信・表示     | AgentOutputStreamでリアルタイム表示      |
-| 7        | 完了後、入力欄を有効化             | 次のメッセージ入力を許可                 |
+| 5        | `agent:start` IPC送信              | Main Processへエージェント実行を要求     |
+| 6        | runtime 判定                       | integrated なら streaming、handoff なら TerminalHandoffCard 表示 |
+| 7        | 結果表示                           | integrated: AgentOutputStream、handoff: guidance card |
+| 8        | 次アクション可能化                 | 入力欄を再有効化し、再実行/CLI継続を可能にする |
 
 ### 権限確認フロー
 
@@ -318,4 +348,3 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 | エラー状態               | アイコン + テキストで色以外でも伝達             |
 
 ---
-

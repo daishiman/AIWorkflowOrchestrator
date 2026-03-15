@@ -5,6 +5,8 @@
  * @see docs/30-workflows/claude-code-integration/outputs/phase-2/type-definitions.md
  */
 
+import type { HandoffGuidance } from "./handoff";
+
 // ========================================
 // Permission Mode
 // ========================================
@@ -191,13 +193,19 @@ export interface PermissionRules {
  */
 export interface AgentStartResult {
   /** 実行ID */
-  executionId: string;
+  executionId?: string;
 
   /** 開始成功かどうか */
-  success: boolean;
+  success?: boolean;
 
   /** エラーメッセージ（失敗時） */
   error?: string;
+
+  /** true の場合は統合実行せず terminal handoff を案内する */
+  handoff?: boolean;
+
+  /** handoff=true の場合のターミナル実行案内 */
+  guidance?: HandoffGuidance;
 }
 
 /**

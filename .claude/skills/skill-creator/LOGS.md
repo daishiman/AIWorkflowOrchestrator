@@ -3,6 +3,29 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 から IPC Handler テストパターン（P58/P61派生）を抽出し patterns.md へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[テスト] IPC Handler テストパターン（P58/P61派生）` を追加
+  - P58正本判定、RuntimeResolver動的DI回避（`type: "handoff"`）、spy vs mock判断基準、handler captureパターンの4手法をテーブル形式で明文化
+  - クイックナビゲーションのテストドメイン行にも同パターン名を追記
+  - `SKILL.md` 変更履歴テーブルにエントリを追加
+
+---
+## 2026-03-15 - UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 の未タスク判定分離パターンを skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns.md` に `[Phase12] repo-wide テスト失敗は「既存未タスク継続」か「新規未タスク化」かを二段判定する` を追加
+  - `audit-unassigned-tasks --diff-from HEAD`（current）と `--target-file`（個票品質）の分離判定、および `docs/30-workflows/unassigned-task/` 正本配置確認を成功条件として明文化
+  - UT-CHAT-EDIT の再監査で再現した `@repo/shared` 解決失敗を既存未タスクへ紐付ける判断を、再利用可能な Phase 12 パターンへ昇格した
+
+---
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 same-wave system spec 同期パターンを skill-creator へ反映
 
 - **Agent**: skill-creator (update)
@@ -36,7 +59,6 @@
   - 実運用で検出した `task-fix-worktree-native-binary-guard-001.md` の9見出し是正事例を再利用可能なテンプレート改善知見として記録
 
 ---
-||||||| Stash base
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期
 
 - **Agent**: skill-creator (update)

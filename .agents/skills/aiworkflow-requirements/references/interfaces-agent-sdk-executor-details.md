@@ -108,7 +108,7 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | メソッド             | シグネチャ                                        | 用途                               |
 | -------------------- | ------------------------------------------------- | ---------------------------------- |
-| `execute`            | `(request) => Promise<SkillExecutionResponse>`    | スキル実行開始、executionIdを返す  |
+| `execute`            | `(request) => Promise<SkillExecutionResponse>`    | スキル実行開始。handoff 時は `handoff/guidance` を返す  |
 | `onStream`           | `(callback) => () => void`                        | ストリームメッセージのリスナー登録 |
 | `abort`              | `(executionId) => Promise<boolean>`               | 実行中のスキルを中断               |
 | `getExecutionStatus` | `(executionId) => Promise<ExecutionInfo \| null>` | 実行状態を照会                     |
@@ -117,10 +117,22 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 
 | チャンネル         | 方向            | 用途                 |
 | ------------------ | --------------- | -------------------- |
-| `skill:execute`    | Renderer → Main | 実行開始             |
+| `skill:execute`    | Renderer → Main | 実行開始（runtime routing 分岐） |
 | `skill:stream`     | Main → Renderer | メッセージストリーム |
 | `skill:abort`      | Renderer → Main | 実行中断             |
 | `skill:get-status` | Renderer → Main | ステータス照会       |
+
+### Runtime routing / handoff 応答契約（2026-03-15 同期）
+
+| チャンネル | handoff 条件 | 応答 |
+| --- | --- | --- |
+| `skill:execute` | `authMode=subscription` または API key 未設定 | `{ success: true, data: { success: false, handoff: true, guidance, error } }` |
+| `agent:start` | `authMode=subscription` または API key 未設定 | `{ success: false, handoff: true, guidance, error }` |
+
+補足:
+
+- `skill:execute` は IPC envelope（`{ success, data }`）を維持し、Preload `safeInvokeUnwrap` と整合させる。
+- `agent:start` は `AGENT_EXECUTION_START` チャネルで実行し、Preload `agentAPI` は `AGENT_EXECUTION_*` 系チャネルを使用する。
 
 ### React Hook（useSkillExecution）
 
@@ -166,4 +178,3 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | Total Index | 283.55% |
 
 ---
-

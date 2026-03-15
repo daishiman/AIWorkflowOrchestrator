@@ -1,0 +1,67 @@
+{
+  "generatedAt": "2026-03-14T22:03:53.767Z",
+  "baseUrl": "http://127.0.0.1:4176",
+  "harnessPath": "/?phase11Harness=workspace-layout",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "selection-ready proxy（context chip付き）",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-01-chat-edit-selection.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "generating proxy（request in-flight）",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-02-chat-edit-generating.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "diff-ready proxy（stream result surface）",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-03-chat-edit-diff-preview.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "handoff proxy（CAPABILITY_UNAVAILABLE）",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-04-chat-edit-handoff.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "description": "blocked proxy（CREDENTIAL_MISSING）",
+      "route": "/?phase11Harness=workspace-layout",
+      "output": "screenshots/TC-11-05-chat-edit-blocked.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    }
+  ]
+}

@@ -50,6 +50,7 @@ LLM統合アーキテクチャは、Electronのセキュアなプロセス分離
 | Embedding Provider | テキストのベクトル化処理               |
 | ChatEdit Service   | ワークスペースコンテキストを含むチャット処理 |
 | RuntimeResolver    | auth mode / API key から integrated と handoff を判定 |
+| AnthropicLLMAdapter | Anthropic API への直接呼び出し（`net.fetch` 使用） |
 | TerminalHandoffBuilder | handoff 時の `terminalCommand` / `contextSummary` を構築 |
 
 ### 通信フロー
@@ -78,6 +79,46 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 | llm:stream-chat      | Renderer ↔ Main | ストリーミングチャット   | [llm-streaming.md](./llm-streaming.md) |
 | chat-edit:send-with-context | Renderer → Main | コンテキスト付きチャット（`SendWithContextResponse.handoff/guidance` を含む） | [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md) |
 | conversation:create / add-message | Renderer → Main | 04B の会話永続化 | [interfaces-chat-history.md](./interfaces-chat-history.md) |
+
+---
+
+## 主要型定義（v2.4.0 追加分）
+
+TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 で追加・変更された型定義。詳細は [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md) を参照。
+
+### RuntimeResolution
+
+```typescript
+type RuntimeResolution =
+  | { type: "integrated"; adapter: LLMAdapter }
+  | { type: "handoff"; reason: string };
+```
+
+### HandoffGuidance
+
+```typescript
+interface HandoffGuidance {
+  terminalCommand: string;
+  contextSummary: string;
+  reason: string;
+}
+```
+
+### SendWithContextRequest / Response 変更点
+
+| フィールド | 変更内容 |
+| --- | --- |
+| `SendWithContextRequest.workspacePath?` | `string` 型で追加（任意） |
+| `SendWithContextRequest.message` | `string` → `string?`（optional に変更） |
+| `SendWithContextResponse.handoff?` | `boolean` 型で追加（任意） |
+| `SendWithContextResponse.guidance?` | `HandoffGuidance` 型で追加（任意） |
+
+### chatEditSlice 型変更
+
+| 型 | フィールド | 変更内容 |
+| --- | --- | --- |
+| `ChatEditState` | `selection` | `TextSelection \| null` を追加 |
+| `ChatEditActions` | `setSelection` | `(selection: TextSelection \| null) => void` を追加 |
 
 ---
 
@@ -165,7 +206,7 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
-| 2.4.0   | 2026-03-14 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 を追加。RuntimeResolver/handoff guidance 契約と `workspacePath` 境界検証を LLM interface index へ同期 |
+| 2.4.0   | 2026-03-14 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 を追加。RuntimeResolution/HandoffGuidance 型定義、AnthropicLLMAdapter サービス、SendWithContextRequest/Response 変更点、chatEditSlice 型変更（selection/setSelection）を同期 |
 | 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |
 | 2.1.0   | 2026-01-26 | アーキテクチャ概要をコードブロックから表形式・文章に変換（spec-guidelines準拠）        |

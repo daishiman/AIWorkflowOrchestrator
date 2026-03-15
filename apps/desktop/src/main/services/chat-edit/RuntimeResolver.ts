@@ -26,19 +26,20 @@ export class RuntimeResolver {
     if (authMode === "subscription") {
       return {
         type: "handoff",
-        reason: "subscription mode: use Claude Code CLI",
+        reason:
+          "サブスクリプションモードのため、Claude Code CLI で続行してください。",
       };
     }
 
     // api-key mode
     const hasKey = await this.authKeyService.hasKey();
     if (!hasKey) {
-      return { type: "handoff", reason: "API key not configured" };
+      return { type: "handoff", reason: "APIキーが設定されていません。" };
     }
 
     const apiKey = await this.authKeyService.getKey();
     if (!apiKey) {
-      return { type: "handoff", reason: "API key unavailable" };
+      return { type: "handoff", reason: "APIキーを取得できませんでした。" };
     }
 
     return {

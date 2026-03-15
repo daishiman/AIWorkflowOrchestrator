@@ -55,10 +55,10 @@ GitHub Issueを`gh` CLIで操作し、タスク仕様書との双方向連携を
 
 ```bash
 # ラベル作成
-node .Codex/skills/github-issue-manager/scripts/init_labels.js
+node .claude/skills/github-issue-manager/scripts/init_labels.js
 
 # GitHub→ローカル同期
-node .Codex/skills/github-issue-manager/scripts/sync_issues.js
+node .claude/skills/github-issue-manager/scripts/sync_issues.js
 ```
 
 ## 基本ワークフロー
@@ -67,7 +67,7 @@ node .Codex/skills/github-issue-manager/scripts/sync_issues.js
 1. /task-specification-creator で仕様書作成
    → docs/30-workflows/unassigned-task/task-xxx.md
        ↓
-2. 【自動】Codex Hookにより自動Issue作成/更新
+2. 【自動】Claude Code Hookにより自動Issue作成/更新
    → GitHub Issue作成 + ラベル自動付与
    → issue_number が仕様書に自動書き戻し
        ↓
@@ -87,7 +87,7 @@ node .Codex/skills/github-issue-manager/scripts/sync_issues.js
 
 ```
 仕様書作成/編集
-    ↓ Codex Hook
+    ↓ Claude Code Hook
 GitHub Issue 作成/更新
     ↓
 issue_number を仕様書に書き戻し
@@ -96,16 +96,16 @@ issue_number を仕様書に書き戻し
 ### GitHub → 仕様書（手動）
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/sync_issues.js
+node .claude/skills/github-issue-manager/scripts/sync_issues.js
 # GitHub上のステータス変更を仕様書に反映
 ```
 
-## 自動Issue同期（Codex Hook）
+## 自動Issue同期（Claude Code Hook）
 
 `docs/30-workflows/unassigned-task/task-*.md` へのWrite/Edit操作時に自動でIssue作成/更新。
 
-- **フックファイル**: `.Codex/hooks/auto-create-issue.sh`
-- **設定場所**: `.Codex/settings.local.json` の PostToolUse
+- **フックファイル**: `.claude/hooks/auto-create-issue.sh`
+- **設定場所**: `.claude/settings.local.json` の PostToolUse
 - **動作**:
   - `issue_number` なし → Issue新規作成、番号を書き戻し
   - `issue_number` あり → 既存Issue更新
@@ -115,8 +115,8 @@ node .Codex/skills/github-issue-manager/scripts/sync_issues.js
 仕様書ファイルが削除されると、対応するIssueが自動でクローズされる。
 
 - **フックファイル**:
-  - `.Codex/hooks/pre-delete-spec.sh` (PreToolUse)
-  - `.Codex/hooks/post-delete-spec.sh` (PostToolUse)
+  - `.claude/hooks/pre-delete-spec.sh` (PreToolUse)
+  - `.claude/hooks/post-delete-spec.sh` (PostToolUse)
 - **動作**:
   - 削除前: `issue_number`をキャッシュ
   - 削除後: Issueをクローズ、`status:completed`ラベル付与
@@ -128,20 +128,20 @@ node .Codex/skills/github-issue-manager/scripts/sync_issues.js
 ## sync: GitHub↔ローカル同期
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/sync_issues.js           # GitHub→ローカル
-node .Codex/skills/github-issue-manager/scripts/sync_issues.js --all     # 閉じたIssue含む
-node .Codex/skills/github-issue-manager/scripts/sync_issues.js --push    # ローカル→GitHub
+node .claude/skills/github-issue-manager/scripts/sync_issues.js           # GitHub→ローカル
+node .claude/skills/github-issue-manager/scripts/sync_issues.js --all     # 閉じたIssue含む
+node .claude/skills/github-issue-manager/scripts/sync_issues.js --push    # ローカル→GitHub
 ```
 
 ## sync-new: 未同期仕様書→Issue一括作成
 
 `issue_number`を持たないタスク仕様書を検出し、GitHub Issueを一括作成。
-**PR作成前**や**git merge/stash後**に実行推奨（Codex Hookが発火しないケース対応）。
+**PR作成前**や**git merge/stash後**に実行推奨（Claude Code Hookが発火しないケース対応）。
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/sync_new_issues.js           # 新規Issue作成
-node .Codex/skills/github-issue-manager/scripts/sync_new_issues.js --dry-run # 変更内容を確認のみ
-node .Codex/skills/github-issue-manager/scripts/sync_new_issues.js --check   # CI用：未同期があれば終了コード1
+node .claude/skills/github-issue-manager/scripts/sync_new_issues.js           # 新規Issue作成
+node .claude/skills/github-issue-manager/scripts/sync_new_issues.js --dry-run # 変更内容を確認のみ
+node .claude/skills/github-issue-manager/scripts/sync_new_issues.js --check   # CI用：未同期があれば終了コード1
 ```
 
 **ユースケース**:
@@ -153,41 +153,41 @@ node .Codex/skills/github-issue-manager/scripts/sync_new_issues.js --check   # C
 ## create: Issue作成
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/create_issue.js --spec <path>
-node .Codex/skills/github-issue-manager/scripts/create_issue.js --all    # 全仕様書
+node .claude/skills/github-issue-manager/scripts/create_issue.js --spec <path>
+node .claude/skills/github-issue-manager/scripts/create_issue.js --all    # 全仕様書
 ```
 
 ## select: 最適Issue選択
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/select_issue.js
-node .Codex/skills/github-issue-manager/scripts/select_issue.js --priority high
-node .Codex/skills/github-issue-manager/scripts/select_issue.js --category bugfix
-node .Codex/skills/github-issue-manager/scripts/select_issue.js --remote  # GitHub直接
+node .claude/skills/github-issue-manager/scripts/select_issue.js
+node .claude/skills/github-issue-manager/scripts/select_issue.js --priority high
+node .claude/skills/github-issue-manager/scripts/select_issue.js --category bugfix
+node .claude/skills/github-issue-manager/scripts/select_issue.js --remote  # GitHub直接
 ```
 
 ## list: Issue一覧
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/list_issues.js
-node .Codex/skills/github-issue-manager/scripts/list_issues.js --priority high --status unassigned
-node .Codex/skills/github-issue-manager/scripts/list_issues.js --json
+node .claude/skills/github-issue-manager/scripts/list_issues.js
+node .claude/skills/github-issue-manager/scripts/list_issues.js --priority high --status unassigned
+node .claude/skills/github-issue-manager/scripts/list_issues.js --json
 ```
 
 ## update: Issue更新
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/update_issue.js -n 123 --status in-progress
-node .Codex/skills/github-issue-manager/scripts/update_issue.js -n 123 --priority high
-node .Codex/skills/github-issue-manager/scripts/update_issue.js -n 123 --close
+node .claude/skills/github-issue-manager/scripts/update_issue.js -n 123 --status in-progress
+node .claude/skills/github-issue-manager/scripts/update_issue.js -n 123 --priority high
+node .claude/skills/github-issue-manager/scripts/update_issue.js -n 123 --close
 ```
 
 ## close: Issueクローズ
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/close_issue.js --number 123
-node .Codex/skills/github-issue-manager/scripts/close_issue.js --spec docs/30-workflows/unassigned-task/task-xxx.md
-node .Codex/skills/github-issue-manager/scripts/close_issue.js --number 123 --reason "完了しました"
+node .claude/skills/github-issue-manager/scripts/close_issue.js --number 123
+node .claude/skills/github-issue-manager/scripts/close_issue.js --spec docs/30-workflows/unassigned-task/task-xxx.md
+node .claude/skills/github-issue-manager/scripts/close_issue.js --number 123 --reason "完了しました"
 ```
 
 ## relink: Issue↔仕様書再リンク
@@ -195,19 +195,19 @@ node .Codex/skills/github-issue-manager/scripts/close_issue.js --number 123 --re
 既存のIssueと仕様書ファイルをタスクIDでマッチングし、`issue_number`を書き戻す。
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/relink_issues.js            # 全Issueを再リンク
-node .Codex/skills/github-issue-manager/scripts/relink_issues.js --dry-run  # 変更内容を確認
+node .claude/skills/github-issue-manager/scripts/relink_issues.js            # 全Issueを再リンク
+node .claude/skills/github-issue-manager/scripts/relink_issues.js --dry-run  # 変更内容を確認
 ```
 
 ## cleanup: 孤立Issue検出・クローズ
 
 仕様書ファイルが削除されたが、Issueが残っている「孤立Issue」を検出し、クローズする。
-**手動削除時**など、Codex Hook が発火しない場合に使用。
+**手動削除時**など、Claude Code Hook が発火しない場合に使用。
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/cleanup_orphaned.js           # 孤立Issue検出（確認のみ）
-node .Codex/skills/github-issue-manager/scripts/cleanup_orphaned.js --close   # 孤立Issueをクローズ
-node .Codex/skills/github-issue-manager/scripts/cleanup_orphaned.js --dry-run # 変更内容を表示
+node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js           # 孤立Issue検出（確認のみ）
+node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js --close   # 孤立Issueをクローズ
+node .claude/skills/github-issue-manager/scripts/cleanup_orphaned.js --dry-run # 変更内容を表示
 ```
 
 ## label: 全Issueにラベル一括付与
@@ -215,9 +215,9 @@ node .Codex/skills/github-issue-manager/scripts/cleanup_orphaned.js --dry-run # 
 オープン中の全Issueにメタ情報（優先度・規模・分類・ステータス）からラベルを付与。
 
 ```bash
-node .Codex/skills/github-issue-manager/scripts/label_all_issues.js           # 全Issueにラベル付与
-node .Codex/skills/github-issue-manager/scripts/label_all_issues.js --dry-run # 変更内容を確認
-node .Codex/skills/github-issue-manager/scripts/label_all_issues.js --force   # 既存ラベルを上書き
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js           # 全Issueにラベル付与
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js --dry-run # 変更内容を確認
+node .claude/skills/github-issue-manager/scripts/label_all_issues.js --force   # 既存ラベルを上書き
 ```
 
 **注意**: Issue作成時(`create_issue.js`)は自動でラベル付与されます。このコマンドは既存Issueの一括ラベル付与に使用。
