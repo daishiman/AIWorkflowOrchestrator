@@ -3,6 +3,7 @@
  *
  * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
  */
+import type { HandoffGuidance } from "@repo/shared/types";
 import type { TerminalHandoffBundle } from "./RuntimePolicyResolver";
 
 export interface HandoffBuildOptions {
@@ -12,6 +13,19 @@ export interface HandoffBuildOptions {
   runbook?: string;
   /** permissionMode（任意） */
   permissionMode?: string;
+}
+
+export interface AgentHandoffBuildRequest {
+  skillId?: string;
+  prompt?: string;
+  workingDirectory?: string;
+}
+
+export interface SkillHandoffBuildRequest {
+  skillName?: string;
+  skillId?: string;
+  prompt?: string;
+  workingDirectory?: string;
 }
 
 export class TerminalHandoffBuilder {
@@ -36,6 +50,57 @@ export class TerminalHandoffBuilder {
       manualRetryRule:
         "以下のコマンドをターミナルで実行してください。Claude Code CLI が必要です。",
       runbook: options.runbook,
+    };
+  }
+
+  buildForAgentExecution(
+    request: AgentHandoffBuildRequest,
+    reason: string,
+  ): HandoffGuidance {
+    const prompt =
+      request.prompt?.trim() ||
+      "Please continue agent execution from current context";
+    const cwd =
+      request.workingDirectory?.trim() && request.workingDirectory.trim() !== ""
+        ? request.workingDirectory
+        : process.cwd();
+    const bundle = this.build(prompt, cwd);
+    const skillId =
+      typeof request.skillId === "string" && request.skillId.trim() !== ""
+        ? request.skillId
+        : "unknown";
+
+    return {
+      terminalCommand: bundle.suggestedCommand,
+      contextSummary: `surface=agent skill=${skillId}`,
+      reason,
+    };
+  }
+
+  buildForSkillExecution(
+    request: SkillHandoffBuildRequest,
+    reason: string,
+  ): HandoffGuidance {
+    const prompt =
+      request.prompt?.trim() ||
+      (request.skillName?.trim()
+        ? `Please continue skill execution for "${request.skillName}"`
+        : "Please continue skill execution with latest context");
+    const cwd =
+      request.workingDirectory?.trim() && request.workingDirectory.trim() !== ""
+        ? request.workingDirectory
+        : process.cwd();
+    const bundle = this.build(prompt, cwd);
+
+    const skillToken =
+      (request.skillName && request.skillName.trim()) ||
+      (request.skillId && request.skillId.trim()) ||
+      "unknown";
+
+    return {
+      terminalCommand: bundle.suggestedCommand,
+      contextSummary: `surface=skill skill=${skillToken}`,
+      reason,
     };
   }
 

@@ -35,7 +35,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
       className="rounded-xl border p-4"
       style={{
         backgroundColor: "var(--bg-secondary)",
-        borderColor: "var(--border)",
+        borderColor: "var(--border-color)",
       }}
     >
       {/* Header */}
@@ -51,7 +51,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ color: "var(--accent)" }}
+            style={{ color: "var(--accent-primary)" }}
           >
             <polyline points="4 17 10 11 4 5" />
             <line x1="12" y1="19" x2="20" y2="19" />
@@ -108,7 +108,7 @@ export const TerminalHandoffCard: React.FC<TerminalHandoffCardProps> = ({
           aria-label="Copy terminal command"
           className="shrink-0 rounded-lg px-3 py-1 text-xs font-medium transition-colors"
           style={{
-            backgroundColor: "var(--accent)",
+            backgroundColor: "var(--accent-primary)",
             color: "#fff",
           }}
         >

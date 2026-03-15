@@ -83,7 +83,7 @@ const RuntimeRoutingHarness: React.FC = () => {
       data-testid="phase11-runtime-routing-harness"
       className="min-h-screen bg-[var(--bg-primary)] px-8 py-10 text-[var(--text-primary)]"
     >
-      <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 rounded-xl border border-[var(--border)] bg-[var(--bg-secondary)] p-6">
+      <section className="mx-auto flex w-full max-w-4xl flex-col gap-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-secondary)] p-6">
         <header className="space-y-2">
           <h1 className="text-xl font-semibold">
             Runtime Routing Integration Closure - Phase 11 Harness
@@ -135,7 +135,7 @@ const RuntimeRoutingHarness: React.FC = () => {
         {!guidance && (
           <div
             data-testid="phase11-handoff-hidden"
-            className="rounded-lg border border-[var(--border)] bg-[var(--bg-tertiary)] p-4 text-sm text-[var(--text-secondary)]"
+            className="rounded-lg border border-[var(--border-color)] bg-[var(--bg-tertiary)] p-4 text-sm text-[var(--text-secondary)]"
           >
             TerminalHandoffCard is hidden.
           </div>
