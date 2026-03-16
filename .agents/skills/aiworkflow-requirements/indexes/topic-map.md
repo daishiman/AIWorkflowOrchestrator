@@ -306,6 +306,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| PermissionResolver 型定義（TASK-3-2） | L6 |
 | SkillExecutor IPC統合（TASK-3-2） | L93 |
+| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L182 |
 
 ### references/interfaces-agent-sdk-executor-history.md
 
@@ -1491,7 +1492,8 @@ node scripts/list-specs.js --topics
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
 | 関連ドキュメント | L364 |
-| 変更履歴 | L374 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L374 |
+| 変更履歴 | L387 |
 
 ### references/security-skill-ipc-core.md
 
@@ -2008,6 +2010,7 @@ node scripts/list-specs.js --topics
 | Skill Import / SkillCenter 防御状態管理（2026-03-04） | L180 |
 | TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L225 |
 | TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07） | L263 |
+| permissionHistorySlice 拡張仕様（TASK-SKILL-LIFECYCLE-06） | L333 |
 
 ### references/arch-state-management-reference-persist-hardening-test-quality.md
 
@@ -2378,7 +2381,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L37 |
+| 最新教訓 | L38 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3457,6 +3460,16 @@ node scripts/list-specs.js --topics
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L273 |
 | TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L368 |
 | TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L475 |
+
+### references/task-workflow-completed-skill-lifecycle.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L8 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L75 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L156 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L241 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L263 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L326 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

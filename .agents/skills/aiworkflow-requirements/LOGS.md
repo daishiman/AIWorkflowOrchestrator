@@ -34,3 +34,21 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
+
+- タスク名: 信頼・権限・ガバナンス統合
+- 種別: 設計タスク（実装コード非対象）
+- ワークフロー: skill-lifecycle-unification
+- 主要成果物:
+  - `security.ts`: ToolRiskLevel（4段階）/ ToolRiskConfig / TOOL_RISK_CONFIG の型定義
+  - `permission-store-interface.ts`: AllowedToolEntryV2（失効ポリシー付き）/ PermissionStoreInterface / calcExpiresAt の型定義
+  - `safety-gate.ts`: SafetyGrade / SafetyGateResult / SafetyGatePort / SafetyCheckId の型定義
+  - `abort-fallback-contract.md`: abort/skip/retry フロー4ステップ契約
+  - `accountability-ui-spec.md`: INS-01（CTA）/INS-02（実行中）/INS-03（結果）の挿入点仕様
+- 接続先:
+  - TASK-08（スキル公開）が SafetyGatePort.evaluate() を呼び出してブロック判定を行う
+  - TASK-03（スキル実行）が PermissionStoreInterface を通じて権限判定を行う
+- 影響範囲:
+  - packages/shared/src/constants/security.ts（ToolRiskLevel 追加）
+  - apps/desktop/src/main/permissions/（AllowedToolEntryV2・SafetyGatePort 追加）

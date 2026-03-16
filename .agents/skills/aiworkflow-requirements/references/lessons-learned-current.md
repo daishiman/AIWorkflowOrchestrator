@@ -18,6 +18,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-06 の苦戦箇所3件（P57: 設計タスク仕様書更新先送り / P58: 未タスク指示書配置省略 / P59: 並列エージェント changelog 件数不整合）を追加。`06-known-pitfalls.md` P57〜P59 として登録 |
 | 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 の苦戦箇所6（Phase 12 本文と成果物の実績乖離）を追加。`phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の同値同期ルールを追記 |
 | 2026-03-15 | 1.29.93 | TASK-SKILL-LIFECYCLE-05 の苦戦箇所4（Record パターン ScoringGate 網羅性）・苦戦箇所5（artifacts.json 逐次更新忘れ）を追加。変更履歴を最新10件に圧縮し、2026-03-11以前の教訓を専用ファイルへ移動 |
 | 2026-03-15 | 1.29.92 | TASK-SKILL-LIFECYCLE-05 再監査を追補。Phase 11 screenshot 必須成果物（checklist/result/plan + TC証跡）欠落時の復旧手順、docs-heavy の review board fallback、Phase 12 implementation-guide literal 要件（Part1 why-first / Part2 usage+edge cases）の充足手順を追加 |
@@ -35,6 +36,49 @@
 ---
 
 ## 最新教訓
+
+### 2026-03-16 TASK-SKILL-LIFECYCLE-06
+
+#### 苦戦箇所1: 設計タスクでのシステム仕様書更新先送り（P57）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計タスク（型定義・契約定義のみ）では「`.claude/skills/` の実更新は PR 作成時に実施」と先送りし、`system-spec-update-summary.md` に計画文だけを記録した。Phase 12 完了条件を満たさなかった |
+| 再発条件 | 「プロダクションコードがないから仕様書更新は後でよい」と判断する |
+| 解決策 | 設計タスクでも Phase 12 完了時点で `.claude/skills/` を実更新する。worktree 環境でのコンフリクトリスクより、仕様書と実装の乖離リスクの方が高い |
+| 標準ルール | Phase 12 は実績ログのみを残し、計画文は残さない（TASK-SKILL-LIFECYCLE-05 苦戦箇所6 の再発） |
+| 関連パターン | P57（新規）、P26（システム仕様書更新遅延） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-06 |
+
+#### 苦戦箇所2: 設計タスクを理由とした未タスク指示書の配置省略（P58）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 「設計タスクだから」という例外判断で `docs/30-workflows/unassigned-task/` への独立指示書ファイルの作成を省略した。「本レポート内で完了」という代替措置では、後続の監査ツールが指示書パスを参照できず不整合が発生する |
+| 再発条件 | タスク種別を理由に P3 の3ステップを例外扱いにする |
+| 解決策 | 設計タスクの未タスクであっても独立した指示書ファイルを `docs/30-workflows/unassigned-task/` に作成する |
+| 標準ルール | P3（①指示書作成 → ②task-workflow 登録 → ③関連仕様書リンク追加）に例外はない |
+| 関連パターン | P58（新規）、P3（未タスク管理の3ステップ不完全）、P38（未タスク配置ディレクトリ間違い） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-06 |
+
+#### 苦戦箇所3: 並列エージェント分担による documentation-changelog 件数不整合（P59）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | documentation-changelog.md に「Task 4 検出件数: 0件」と記載されたが、実際の `unassigned-task-detection.md` では8件検出されていた。Phase 12 を複数の並列エージェントで分担した結果、changelog 作成エージェントと未タスク検出エージェントの情報が断絶した |
+| 再発条件 | 並列エージェントで分担し、changelog を各エージェントが個別に記録する |
+| 解決策 | documentation-changelog.md は全 Task 完了後にメインエージェントが一括作成し、`unassigned-task-detection.md` の検出件数と照合してから記録する |
+| 標準ルール | changelog は「事後統合」する。並列エージェントの中間報告をそのまま changelog に転記しない |
+| 関連パターン | P59（新規）、P4（早期完了記載）、P43（サブエージェント中断）、P51（サブエージェント早期完了記載） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-06 |
+
+#### 同種課題の簡潔解決手順（3ステップ）
+
+1. Phase 12 開始時に「設計タスク / 実装タスク」に関わらず `.claude/skills/` の実更新を必須とし、計画文ではなく実績ログのみを記録する。
+2. 未タスク検出は P3 の3ステップを必ず完遂し、タスク種別を理由に例外判断をしない。
+3. documentation-changelog はメインエージェントが最終統合する。並列エージェントの分担結果を `unassigned-task-detection.md` の件数と照合してから記録する。
+
+---
 
 ### 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
 

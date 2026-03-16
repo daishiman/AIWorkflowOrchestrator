@@ -382,6 +382,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | Version | Date | Changes |
 | --- | --- | --- |
 | **v10.09.5** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了。Phase 4-5 統合実行パターンの教訓を記録** |
+| **v10.09.5** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-06 スキルフィードバック SF-01/02/03 対応**: `references/phase-template-phase11.md` に設計タスク専用セクション（テスト方式=設計文書ウォークスルー、P53対策のNON_VISUAL記法）を追加。`references/phase-template-phase12.md` に設計タスク向け補足（SF-02: システム仕様書更新2段階方式、SF-03: 設計タスク特有未タスク4パターン）を追加 |
 | **v10.09.4** | **2026-03-15** | **UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 の Phase 12 再確認を反映**: `references/spec-update-workflow.md` / `references/unassigned-task-guidelines.md` の運用に沿って、`SKILL.md` 変更履歴更新（aiworkflow/task-spec 両方）を必須完了条件として明記。未タスクは `docs/30-workflows/unassigned-task/` の配置確認と `audit-unassigned-tasks --diff-from HEAD --target-file` の分離判定をセットで実施し、repo-wide テスト失敗を既存未タスクへ紐付ける判断基準を追補 |
 | **v10.08.68** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の system spec 詳細同期を完了** |
 | **v10.08.67** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 再確認を反映**: `runtime-routing-integration-closure` workflow の Phase 11/12 検証（TC 9/9・guide 10/10）と、`artifacts.json` / `index.md` / `phase-1..12` completed 同期を同一ターンで閉じる運用を追記。Step 2 は executor/electron-services/ui/state/task-workflow/lessons の同時同期を必須化 |
@@ -495,5 +496,6 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.08.59** | **2026-03-12** | current build static serve fallback と skill-creator 条件付き同期ルールを追加 |
 | **v10.08.58** | **2026-03-12** | Apple UI/UX 視覚レビューと current/baseline 分離記法を追記 |
 | **v10.08.57** | **2026-03-11** | 事後未タスク化による 0件→1件 再同期ルールを追加 |
+| 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
 詳細な履歴と usage log は [LOGS.md](LOGS.md) と [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

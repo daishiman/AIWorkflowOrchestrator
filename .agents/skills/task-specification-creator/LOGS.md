@@ -27,6 +27,16 @@
   - Phase 4-5 統合実行パターンの教訓を lessons-learned-current.md に記録
 
 ---
+## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
+
+- タスク名: 信頼・権限・ガバナンス統合
+- 種別: 設計タスク
+- フェーズ: Phase 1-12 完了
+- 成果物格納先: docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/
+- ワークフロー改善点:
+  - 設計タスクにおける Phase 12 のシステム仕様書更新フローを明確化（計画記録→PR時に実施する2段階方式を標準化）
+
+---
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（Task 1〜5 完了整合）
 
 - **Agent**: task-specification-creator

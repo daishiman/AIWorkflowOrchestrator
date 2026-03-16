@@ -23,8 +23,47 @@ Phase 12 の documentation update。
 | `skill-feedback-report.md` | 改善点 or 改善点なし |
 | `phase12-task-spec-compliance-check.md` | Task 12-1〜12-5 の準拠チェック |
 
+## 設計タスク向け補足（SF-02, SF-03対応）
+
+### システム仕様書更新の2段階方式（SF-02対応）
+
+設計タスクでは `.claude/skills/` への実更新がPR時まで保留されがちなため、以下の2段階方式を標準とする。
+
+| ステージ | タイミング | 内容 | 必須 |
+| --- | --- | --- | --- |
+| Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容の計画を `system-spec-update-summary.md` に記録 | ✅ |
+| Step 2B: 実更新 | Task 2 完了前 | 実際に `.claude/skills/` 配下の仕様書を更新し、planned wording を除去 | ✅ |
+
+`仕様策定のみ` / `実行予定` / `保留として記録` 等の planned wording は Phase 12 完了前に全て実更新ログへ昇格すること。
+
+**planned wording 残存確認コマンド（完了前に必ず実行）**:
+
+```bash
+rg -n "仕様策定のみ|実行予定|保留として記録" \
+  docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/ || echo "planned wording なし"
+```
+
+### 設計タスク特有の未タスク検出パターン（SF-03対応）
+
+設計タスクでは未タスクが「全て実装タスク」になるパターンが標準。以下の4パターンを必ずチェックする。
+
+| パターン | 候補の例 | 優先度目安 |
+| --- | --- | --- |
+| **型定義→実装** | 型を定義したが、ハンドラ側のランタイム実装が未完了 | 高 |
+| **契約→テスト** | IPC契約・インターフェースを設計したが、対応する統合テストが未作成 | 中 |
+| **UI仕様→コンポーネント** | 画面仕様を設計したが、Reactコンポーネントが未実装 | 中 |
+| **仕様書間差異→設計決定** | 複数仕様書で矛盾する記述が残り、どちらが正しいか決定できていない | 高 |
+
+**SF-03 チェック手順**:
+
+1. Phase 1 要件定義の受入基準を再確認し「将来対応」とした項目を列挙する
+2. Phase 2/3 設計・レビューの MINOR 判定事項をリストアップする
+3. 上記4パターンと照合し、未タスク化対象を確定する
+4. 0件でも `unassigned-task-detection.md` に「設計タスクパターン確認済み、0件」と明記する
+
 ## 関連ガイド
 
-- [phase-12-documentation-guide.md](phase-12-documentation-guide.md)
-- [spec-update-workflow.md](spec-update-workflow.md)
-- [spec-update-validation-matrix.md](spec-update-validation-matrix.md)
+- [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-5 の詳細手順
+- [spec-update-workflow.md](spec-update-workflow.md) — Step 1/2 の実行フロー
+- [spec-update-validation-matrix.md](spec-update-validation-matrix.md) — 完了判定コマンド
+- [phase-11-12-guide.md](phase-11-12-guide.md) — Phase 12 完了条件チェックリスト（全項目）

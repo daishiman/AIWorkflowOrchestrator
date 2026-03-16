@@ -89,6 +89,30 @@ node scripts/search-spec.js "workspacePath" -C 3
 5. `references/llm-workspace-chat-edit.md` で Workspace 文脈引き継ぎの境界を確認する
 6. 実体仕様は `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/phase-1-requirements.md` から Phase 13 までを順に照合する
 
+### 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06）を探すとき
+
+このカテゴリは `TASK-SKILL-LIFECYCLE-06` `ToolRiskLevel` `SafetyGatePort` `AllowedToolEntryV2` `TOOL_RISK_CONFIG` `PermissionResolver` `SafetyGrade` `INS-01` `abort fallback` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "TASK-SKILL-LIFECYCLE-06" -C 3
+node scripts/search-spec.js "ToolRiskLevel" -C 3
+node scripts/search-spec.js "SafetyGatePort" -C 3
+node scripts/search-spec.js "AllowedToolEntryV2" -C 3
+node scripts/search-spec.js "TOOL_RISK_CONFIG" -C 3
+node scripts/search-spec.js "PermissionResolver" -C 3
+node scripts/search-spec.js "INS-01" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「信頼・権限・ガバナンス設計」を見る
+2. `references/security-skill-execution.md` で ToolRiskLevel 参照を確認する
+3. `references/interfaces-agent-sdk-executor-details.md` で AllowedToolEntryV2 / SafetyGatePort を確認する
+4. `references/arch-state-management-reference-permissions-import-lifecycle.md` で permissionHistorySlice 拡張仕様を確認する
+5. `references/lessons-learned-current.md` で P57〜P59（設計タスク特有の苦戦箇所）を確認する
+6. `references/task-workflow-backlog.md` で UT-06-001〜008 の未タスク状況を確認する
+7. 設計成果物は `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/` 配下を参照する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash
