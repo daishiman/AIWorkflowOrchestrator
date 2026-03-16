@@ -1,0 +1,136 @@
+{
+  "taskId": "TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION",
+  "taskName": "conversation-ipc-handler-registration",
+  "description": "registerConversationHandlers() を registerAllIpcHandlers() に接続し、Conversation IPC チャンネルを Main Process で正常登録する",
+  "createdAt": "2026-03-16",
+  "status": "phase_12_completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputs": ["outputs/phase-1/requirements-verification.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputs": ["outputs/phase-2/design-verification.md"]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [],
+      "codeArtifacts": [
+        "apps/desktop/src/main/ipc/__tests__/register-conversation-handlers.test.ts"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [],
+      "codeArtifacts": ["apps/desktop/src/main/ipc/index.ts"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": ["outputs/phase-6/test-expansion-result.md"],
+      "codeArtifacts": [
+        "apps/desktop/src/main/ipc/__tests__/register-conversation-handlers.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/ipc-graceful-degradation.test.ts"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": ["outputs/phase-7/coverage-check-result.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-decisions.md"]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  },
+  "qualityMetrics": {
+    "coverageTargets": {
+      "line": "80%+",
+      "branch": "60%+",
+      "function": "80%+"
+    },
+    "designReviewResult": "MINOR",
+    "minorItems": [
+      "MINOR-01: safeRegister 戻り値分岐パターンの一貫性",
+      "MINOR-02: ipc-graceful-degradation.test.ts へのテスト追加"
+    ]
+  },
+  "references": {
+    "systemSpecs": [
+      "architecture-overview.md",
+      "api-ipc-system-core.md",
+      "database-schema.md",
+      "database-implementation.md",
+      "database-implementation-core.md",
+      "security-electron-ipc.md",
+      "error-handling.md",
+      "error-handling-core.md",
+      "architecture-implementation-patterns.md",
+      "api-ipc-system.md",
+      "interfaces-chat-history-history.md",
+      "arch-ipc-persistence.md"
+    ],
+    "knownPitfalls": ["P5", "P7", "P42", "P54", "P55"]
+  },
+  "verification": {
+    "totalPhases": 13,
+    "specFilesExist": 13,
+    "mandatorySectionsPass": true,
+    "verifiedAt": "2026-03-16"
+  }
+}

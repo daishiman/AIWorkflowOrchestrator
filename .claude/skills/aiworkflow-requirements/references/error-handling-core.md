@@ -57,6 +57,7 @@
 | ERR_4003 | FILE_SYSTEM_ERROR          | ファイルシステムエラー |
 | ERR_4004 | NETWORK_ERROR              | ネットワークエラー     |
 | ERR_4005 | SYNC_CONFLICT              | 同期コンフリクト       |
+| ERR_4006 | DB_NOT_AVAILABLE           | 会話履歴DB利用不可（conversation チャンネル Graceful Degradation フォールバック） |
 
 **Internal Error (5000-5999)**:
 

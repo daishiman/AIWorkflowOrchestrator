@@ -372,3 +372,45 @@
 
 ---
 
+## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION: Conversation IPC ハンドラ登録修正（2026-03-16）
+
+### 苦戦箇所1: registerConversationHandlers() が registerAllIpcHandlers() から呼ばれていなかった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `registerConversationHandlers()` は定義済みだったが、`registerAllIpcHandlers()` の Section 13 に登録呼び出しがなく、conversation:* チャンネル7本が Main Process で未登録だった。Preload 側は safeInvoke で silent fail するため、Renderer では timeout まで Promise が pending し、会話履歴機能が完全に無効化されていた |
+| 再発条件 | 新規 IPC ハンドラグループを作成したが、`ipc/index.ts` の `registerAllIpcHandlers()` への接続を忘れた時 |
+| 解決策 | `registerAllIpcHandlers()` の Section 13 に `track("registerConversationHandlers", registerConversationHandlers)` を追加。safeRegister + track パターンで Graceful Degradation（S30）に準拠 |
+| 標準ルール | 新規ハンドラグループ作成時は「定義 → index.ts Section 追加 → unregister 対象確認 → テスト追加」を1セットで実施。`grep -c "track(" ipc/index.ts` で登録数と定義数の一致を検証 |
+| 関連パターン | P5（リスナー二重登録）、S30（Graceful Degradation）、P54（safeRegister 適合判定） |
+| 関連タスク | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION |
+
+### 苦戦箇所2: conversation:search ハンドラの P42 バリデーション漏れ（他6ハンドラは実装済み）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `registerConversationHandlers()` 内の7ハンドラのうち、conversation:search だけ P42 準拠の3段バリデーション（型チェック → 空文字列 → トリム空文字列）が欠落していた。他の6ハンドラ（create/get/list/add-message/update-title/delete）は正しく実装されていた |
+| 再発条件 | 同一ファイル内で多数のハンドラを実装する際、1つだけバリデーションパターンが異なるハンドラを見落とした時 |
+| 解決策 | conversation:search の userId と query に3段バリデーションを追加。テスト EC-VAL-07〜10 を4件追加（空文字列 + トリム空文字列 × userId/query） |
+| 標準ルール | ハンドラグループ内の全ハンドラに対して `grep -n "trim()" conversationHandlers.ts` でバリデーション適用を一括検証。引数を持つ全ハンドラで P42 準拠を確認 |
+| 関連パターン | P42（.trim() バリデーション漏れ）|
+| 関連タスク | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION |
+
+### 苦戦箇所3: better-sqlite3 WAL モード初期化と DB 障害時のフォールバック設計
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | conversation DB は better-sqlite3 の WAL モードで初期化されるが、DB 初期化失敗時（ファイル破損、ディスク容量不足等）に conversation:* 全7チャンネルが使用不能になる。従来は DB 初期化失敗が silent fail で、Renderer 側は原因不明の timeout を経験した |
+| 解決策 | Graceful Degradation パターンを適用: DB 初期化失敗時は `isConversationDbAvailable = false` フラグを設定し、全ハンドラが `{ success: false, error: { code: "DB_NOT_AVAILABLE" } }` を即座に返す。ERR_4006 としてエラーコード体系に登録 |
+| 標準ルール | ネイティブモジュール（better-sqlite3 等）を使用するハンドラグループには、初期化失敗時のフォールバックハンドラを必ず用意する |
+| 関連パターン | S30（Graceful Degradation パターン）、ERR_4006（DB_NOT_AVAILABLE） |
+| 関連タスク | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. `grep -c "track(" ipc/index.ts` で registered handler group 数と実際の handler group 定義ファイル数を突合する。
+2. 各ハンドラグループ内で `grep -n "trim()" <handler-file>` を実行し、引数を持つ全ハンドラに P42 バリデーションが適用されていることを検証する。
+3. ネイティブリソース（DB/ファイル）を使用するハンドラグループは、リソース初期化失敗時の Graceful Degradation フォールバックの存在を確認する。
+
+---
+

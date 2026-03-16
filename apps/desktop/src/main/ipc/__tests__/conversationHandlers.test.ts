@@ -902,6 +902,70 @@ describe("conversationHandlers", () => {
         expect(result.error.code).toBe("VALIDATION_ERROR");
       }
     });
+
+    it("EC-VAL-07: should return error for empty search userId", async () => {
+      const handler = handlers.get(CONVERSATION_CHANNELS.SEARCH);
+      if (!handler)
+        throw new Error("conversation:search handler not registered");
+
+      const result = (await handler(
+        {},
+        { userId: "", query: "test" },
+      )) as IPCResponse<ConversationSummary[]>;
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe("VALIDATION_ERROR");
+      }
+    });
+
+    it("EC-VAL-08: should return error for whitespace-only search userId", async () => {
+      const handler = handlers.get(CONVERSATION_CHANNELS.SEARCH);
+      if (!handler)
+        throw new Error("conversation:search handler not registered");
+
+      const result = (await handler(
+        {},
+        { userId: "   ", query: "test" },
+      )) as IPCResponse<ConversationSummary[]>;
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe("VALIDATION_ERROR");
+      }
+    });
+
+    it("EC-VAL-09: should return error for empty search query", async () => {
+      const handler = handlers.get(CONVERSATION_CHANNELS.SEARCH);
+      if (!handler)
+        throw new Error("conversation:search handler not registered");
+
+      const result = (await handler(
+        {},
+        { userId: "local-user", query: "" },
+      )) as IPCResponse<ConversationSummary[]>;
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe("VALIDATION_ERROR");
+      }
+    });
+
+    it("EC-VAL-10: should return error for whitespace-only search query", async () => {
+      const handler = handlers.get(CONVERSATION_CHANNELS.SEARCH);
+      if (!handler)
+        throw new Error("conversation:search handler not registered");
+
+      const result = (await handler(
+        {},
+        { userId: "local-user", query: "   " },
+      )) as IPCResponse<ConversationSummary[]>;
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.code).toBe("VALIDATION_ERROR");
+      }
+    });
   });
 
   describe("Edge Cases - Error Handling", () => {

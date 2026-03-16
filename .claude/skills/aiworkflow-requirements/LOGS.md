@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
 | 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
 | 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了（RiskLevel / ToolRiskConfigEntry / TOOL_RISK_CONFIG 実装 + 15テスト ALL PASS） |
@@ -38,6 +39,21 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
+
+- タスク名: Conversation IPC ハンドラ登録修正
+- 種別: バグ修正
+- ワークフロー: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
+- 主要成果物:
+  - `apps/desktop/src/main/ipc/index.ts`（修正）: Section 13 に conversation ハンドラ登録（safeRegister + fallback）を追加
+  - `apps/desktop/src/main/ipc/conversationHandlers.ts`（既存）: 7チャンネルの CRUD ハンドラ
+  - `apps/desktop/src/main/repositories/conversationRepository.ts`（既存）: SQLite ベースの会話リポジトリ
+  - `apps/desktop/src/main/ipc/__tests__/register-conversation-handlers.test.ts`（修正）: 9→22テストに拡充
+  - `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts`（修正）: conversation チャンネル対応追加
+- テスト結果: 172 tests ALL PASS（register-conversation-handlers 22 + ipc-graceful-degradation 19 + ipc-double-registration 17 + conversationHandlers 92 + conversationRepository 22）
+- 未タスク: 1件（UT-COVERAGE-INDEX-TS-EXCLUSION-001）
+- 完了日: 2026-03-16
 
 ## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
 

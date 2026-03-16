@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-16T13:14:29.570Z",
+  "generated": "2026-03-16T14:54:49.373Z",
   "totalKeywords": 2233,
   "keywords": {
     "チャット履歴": [
@@ -1871,6 +1871,13 @@
       "api-ipc-system-core.md"
     ],
     "Watch": [
+      "api-ipc-system-core.md"
+    ],
+    "Conversation": [
+      "api-ipc-system-core.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
+    "会話履歴永続化": [
       "api-ipc-system-core.md"
     ],
     "設計": [
@@ -5277,6 +5284,12 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
     ],
     "責務分離": [
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
+    "CONVERSATION": [
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
+    "ハンドラ登録修正": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
     ],
     "ハンドラー実装": [
