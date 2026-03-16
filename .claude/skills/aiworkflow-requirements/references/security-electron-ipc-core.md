@@ -162,6 +162,29 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - handoff は「手動実行支援」に限定し、auto-send / hidden prompt injection を許容しない。
 - auth key の有無を判定しても key 実値は UI / command / error へ露出しない。
 
+### Conversation IPC セキュリティ契約（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION）
+
+`registerConversationHandlers()` が `registerAllIpcHandlers()` Section 13 に接続され、conversation:* 7チャンネルが Main Process で正常登録される。
+
+| 観点 | 契約 |
+| --- | --- |
+| 登録パターン | `safeRegister` + `track` で Graceful Degradation 準拠（S30） |
+| sender 検証 | 各ハンドラで `validateIpcSender` を先頭実行 |
+| 引数バリデーション | 全ハンドラで P42 準拠3段バリデーション（型チェック → 空文字列 → `trim()` 空文字列） |
+| DB 障害時 | `isConversationDbAvailable = false` → 全チャンネルが `DB_NOT_AVAILABLE`（ERR_4006）を返却 |
+| エラーメッセージ | `sanitizeRegistrationErrorMessage` でホームパスをマスク（P55準拠） |
+| 二重登録防止 | `unregisterAllIpcHandlers()` で `CONVERSATION_*` 全チャンネルを解除後に再登録（P5準拠） |
+
+**セキュリティ意図**:
+
+- conversation DB 操作は Main Process に閉じ、Renderer は Preload 公開の `conversationAPI` のみ使用
+- search クエリの SQL injection は better-sqlite3 のパラメータバインディングで防止
+- DB ファイルパスはアプリデータディレクトリに固定し、パストラバーサルを排除
+
+**関連タスク**: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
+**関連未タスク**: UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001（グループ内P42一貫性監査）
+**関連**: arch-ipc-persistence.md（ConversationRepository 詳細）
+
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
 
 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 で実装した Renderer 4層防御 + Main 側配列正規化の完了記録。

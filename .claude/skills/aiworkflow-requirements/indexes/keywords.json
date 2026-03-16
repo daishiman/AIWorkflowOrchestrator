@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-16T12:08:31.690Z",
-  "totalKeywords": 2229,
+  "generated": "2026-03-16T14:54:49.373Z",
+  "totalKeywords": 2233,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1873,6 +1873,13 @@
     "Watch": [
       "api-ipc-system-core.md"
     ],
+    "Conversation": [
+      "api-ipc-system-core.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
+    "会話履歴永続化": [
+      "api-ipc-system-core.md"
+    ],
     "設計": [
       "api-ipc-system-core.md",
       "interfaces-rag-community-detection.md",
@@ -2032,6 +2039,7 @@
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-implementation.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle.md"
     ],
@@ -2934,6 +2942,9 @@
       "architecture-implementation-patterns-core.md"
     ],
     "バックエンド実装パターン": [
+      "architecture-implementation-patterns-core.md"
+    ],
+    "共有パッケージ実装パターン": [
       "architecture-implementation-patterns-core.md"
     ],
     "実装": [
@@ -5275,6 +5286,12 @@
     "責務分離": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
     ],
+    "CONVERSATION": [
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
+    "ハンドラ登録修正": [
+      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+    ],
     "ハンドラー実装": [
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md"
     ],
@@ -6651,7 +6668,8 @@
     "実装完了": [
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
       "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "security-implementation.md"
     ],
     "topic": [
       "logs-archive-2026-01-topic-map-remember-choice.md"
@@ -8584,6 +8602,15 @@
       "security-implementation.md"
     ],
     "実装記録": [
+      "security-implementation.md"
+    ],
+    "Tool": [
+      "security-implementation.md"
+    ],
+    "Risk": [
+      "security-implementation.md"
+    ],
+    "Configuration": [
       "security-implementation.md"
     ],
     "入力バリデーション・ファイル変換セキュリティ": [

@@ -18,8 +18,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-16 | 1.29.97 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION の教訓3件を追加。IPC ハンドラ登録漏れ検出、P42 バリデーション一括検証、better-sqlite3 Graceful Degradation を追記 |
 | 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 の教訓3件を追加。Main Process エントリポイント副作用によるテスト不可能問題、Electron role ベースメニューの検証手法、小規模修正での13 Phase ワークフロー適用を追記 |
 | 2026-03-16 | 1.29.96 | UT-06-005 の苦戦箇所3件（S-PF-1: 既実装コードの4ステップ abort フロー発見遅延 / S-PF-2: revokeSessionEntries スタブ実装の設計判断 / S-PF-3: PERMISSION_MAX_RETRIES デッドコード化と abortedExecutions メモリリーク検出）と5分解決カードを追加 |
+| 2026-03-16 | 1.29.96 | UT-06-001 (tool-risk-config-implementation) の苦戦箇所3件を追加。Object.freeze + satisfies パターン（P19再発防止）、SKILL.md 変更履歴更新漏れ（P29再発）、テンプレートリテラル型による CSS 変数名の値域制限を追記 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-07 の教訓4件を追加。設計タスク Phase 12 の実ファイル更新必須化、Phase 3 MINOR 追跡マトリクス、バックグラウンドエージェント timeout 対策、コンテキスト消失対策を追記 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-06 の苦戦箇所3件（P57: 設計タスク仕様書更新先送り / P58: 未タスク指示書配置省略 / P59: 並列エージェント changelog 件数不整合）を追加。`06-known-pitfalls.md` P57〜P59 として登録 |
 | 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 苦戦箇所6追加。Phase 12 本文と成果物の実績乖離、3ファイル同値同期ルール追記 |
@@ -92,6 +94,94 @@ expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
 
 ---
 
+### 2026-03-16 UT-06-001 (tool-risk-config-implementation)
+
+#### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-06-001 |
+| 目的 | `packages/shared/src/constants/security.ts` に RiskLevel 型・ToolRiskConfigEntry interface・TOOL_RISK_CONFIG 定数を実装 |
+| 完了日 | 2026-03-16 |
+| ステータス | **完了** |
+
+#### 実装内容
+
+| 変更内容 | ファイル | 説明 |
+| --- | --- | --- |
+| RiskLevel 型・TOOL_RISK_CONFIG 定数 | `packages/shared/src/constants/security.ts` | 3段階リスクレベル（low/medium/high）、Object.freeze 深層凍結、satisfies パターン |
+| テスト | 対応テストファイル | 18テスト ALL PASS |
+
+#### 苦戦箇所1: Object.freeze + as キャストの型安全性問題（P19 再発パターン）
+
+| 項目 | 内容 |
+| --- | --- |
+| **課題** | `Object.freeze()` の戻り値が `Readonly<T>` となり、`Record<K, V>` 型注釈と不一致。初回実装で `as Record<...>` キャストを使用したが、P19（型キャストバイパス）違反 |
+| **原因** | `Object.freeze()` は入力型を `Readonly<T>` に変換するため、`as Record<K, V>` で型情報を上書きすると freeze の不変性保証が型レベルで失われる |
+| **解決策** | `satisfies Record<K, V>` パターンに置き換え。型チェック + リテラル型保持 + ランタイム不変性の三重防御を実現 |
+| **教訓** | セキュリティ定数に `Object.freeze()` を適用する際は `satisfies` で型検査し、`as` キャストを排除する |
+
+**コード例**:
+
+```typescript
+// ❌ P19違反: as キャストで Readonly<T> を Record<K, V> に偽装
+const TOOL_RISK_CONFIG = Object.freeze({
+  low: { /* ... */ },
+  medium: { /* ... */ },
+  high: { /* ... */ },
+}) as Record<RiskLevel, ToolRiskConfigEntry>;
+
+// ✅ satisfies で型チェック + リテラル型保持 + freeze 不変性
+const TOOL_RISK_CONFIG = Object.freeze({
+  low: { /* ... */ },
+  medium: { /* ... */ },
+  high: { /* ... */ },
+} satisfies Record<RiskLevel, ToolRiskConfigEntry>);
+```
+
+**5分解決カード**: `satisfies` キーワードで `as` を置換 → テスト実行 → ビルド確認
+
+#### 苦戦箇所2: SKILL.md 変更履歴テーブル更新漏れ（P29 再発）
+
+| 項目 | 内容 |
+| --- | --- |
+| **課題** | LOGS.md 2ファイルは更新済みだったが、SKILL.md x2 の変更履歴テーブルへの UT-06-001 エントリ追加が漏れていた |
+| **原因** | Phase 12 Step 1-A で LOGS.md を2ファイル更新した時点で「完了」と判断し、SKILL.md 変更履歴の存在を忘れた |
+| **解決策** | Phase 12 完了条件チェックリストに「SKILL.md x2 変更履歴更新」を明示的に含める |
+| **教訓** | Step 1-A は「LOGS.md x2 + SKILL.md x2」の4ファイル更新が最小単位。LOGS.md だけで完了判定しない |
+
+**関連パターン**: P29（SKILL.md 変更履歴の更新漏れ）、P25（LOGS.md 2ファイル更新漏れ）
+
+#### 苦戦箇所3: headerColorToken の型が string のまま残存
+
+| 項目 | 内容 |
+| --- | --- |
+| **課題** | CSS変数名を `string` 型で定義していたため、タイポを型チェックで検出できなかった |
+| **原因** | `headerColorToken: string` では `"--risk-hgih"` のようなタイポがコンパイルを通過する |
+| **解決策** | テンプレートリテラル型 `` `--risk-${RiskLevel}` `` に狭小化し、3つの有効な値（`--risk-low` / `--risk-medium` / `--risk-high`）のみ許可 |
+| **教訓** | CSS変数名やトークン名をドメイン固有型ではなく `string` で定義すると、タイポが型チェックをすり抜ける。テンプレートリテラル型で値域を制限する |
+
+**コード例**:
+
+```typescript
+// ❌ string 型ではタイポを検出できない
+interface ToolRiskConfigEntry {
+  headerColorToken: string;
+}
+
+// ✅ テンプレートリテラル型で値域を制限
+interface ToolRiskConfigEntry {
+  headerColorToken: `--risk-${RiskLevel}`;
+}
+```
+
+#### 同種課題の簡潔解決手順（3ステップ）
+
+1. セキュリティ定数に `Object.freeze()` を適用する際は `satisfies Record<K, V>` パターンを使い、`as` キャストを排除する。
+2. Phase 12 Step 1-A は「LOGS.md x2 + SKILL.md x2」の4ファイル更新を最小単位として完了判定する。
+3. CSS変数名・トークン名にはテンプレートリテラル型を適用し、`string` 型で定義しない。
+
+---
 ### 2026-03-16 TASK-SKILL-LIFECYCLE-06
 
 #### 苦戦箇所1: 設計タスクでのシステム仕様書更新先送り（P57）
@@ -485,56 +575,5 @@ expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
 4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
 5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
 
----
 
-### 2026-03-13 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
-
-#### 苦戦箇所1: screenshot が存在しても `manual-test-result.md` がないと Phase 11 は失敗する
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `phase-11-manual-test.md` と screenshots が揃っていても、`outputs/phase-11/manual-test-result.md` が欠落すると screenshot coverage validator が失敗した |
-| 再発条件 | Phase 11 成果物を「計画 + 画像」だけで完了扱いにする |
-| 解決策 | `manual-test-result.md` を追加し、TC-ID と `screenshots/*.png` を 1:1 で紐付けた |
-| 標準ルール | Phase 11 は `manual-test` / `manual-test-checklist` / `manual-test-result` / `screenshots` を4点セットで確認する |
-
-#### 苦戦箇所2: 設定画面レビュー添付が task 参照へ伝搬しないと再発する
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | ユーザー添付の settings review（認証方式カード / APIキー入力 / APIキー一覧）が Step-01 だけに閉じると Task06 以降へ反映漏れが起きる |
-| 再発条件 | foundation 仕様に画像を置くだけで、後続 task index へ参照を追加しない |
-| 解決策 | `TC-11-00-settings-authmode-review-board.png` を Step-01 正式証跡として固定し、Task02-10 index に参照導線を追加した |
-| 標準ルール | レビュー添付を受けたら「証跡ID化 -> 後続task参照追加 -> system spec導線同期」を同一ターンで実施する |
-
-#### 苦戦箇所3: `artifacts.json` の命名差分を放置すると後続 validator と台帳がずれる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `qa-checklist.md`（旧名）を残したまま進めると、phase出力検証と台帳参照が一致しない |
-| 再発条件 | semantic rename 後の旧 filename 互換管理を省略する |
-| 解決策 | `legacy-ordinal-family-register.md` に旧名->現行名の対応を登録し、`quality-assurance-checklist.md` に統一した |
-| 標準ルール | 旧 filename が残る場合は workflow 本文だけでなく legacy register へ必ず登録する |
-
-#### 苦戦箇所4: 契約テスト（Phase 4）と回帰テスト（Phase 6）の責務境界が曖昧だと重複が増える
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | MR-01〜03 と TC-C112〜113 が同系統検証になり、テスト保守コストが増えた |
-| 再発条件 | design/spec_created タスクで Phase 4/6 の責務を先に分離しない |
-| 解決策 | `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` を起票し、契約テスト=単一関数入出力、回帰テスト=伝播経路検証の境界を明文化した |
-| 標準ルール | Phase 4/6 の双方に同じケースが出た時点で未タスク化し、重複判定基準を先に固定する |
-
-#### 同種課題の簡潔解決手順（5ステップ）
-
-1. Step-01 の `artifacts.json` と実ファイル名を突合し、命名ドリフトを先に潰す。
-2. Phase 11 は `manual-test-result.md` の証跡列まで揃えてから screenshot coverage を実行する。
-3. レビュー添付は `TC-ID` 化して後続 task index へ参照導線を追加する。
-4. Phase 4 契約テストと Phase 6 回帰テストの責務境界を先に定義する。
-5. `task-workflow` / `lessons` / `resource-map` / `quick-reference` / `LOGS` を同一 wave で同期する。
-
-### 関連未タスク（2026-03-12 追補）
-
-| 未タスクID | 概要 | タスク仕様書 |
-| --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+> 2026-03-13 以前の教訓は [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) を参照。

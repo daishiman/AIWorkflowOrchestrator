@@ -18,6 +18,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-16 | 1.29.97 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION の教訓3件を追加。IPC ハンドラ登録漏れ検出、P42 バリデーション一括検証、better-sqlite3 Graceful Degradation を追記 |
 | 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 の教訓3件を追加。Main Process エントリポイント副作用によるテスト不可能問題、Electron role ベースメニューの検証手法、小規模修正での13 Phase ワークフロー適用を追記 |
 | 2026-03-16 | 1.29.96 | UT-06-005 の苦戦箇所3件（S-PF-1: 既実装コードの4ステップ abort フロー発見遅延 / S-PF-2: revokeSessionEntries スタブ実装の設計判断 / S-PF-3: PERMISSION_MAX_RETRIES デッドコード化と abortedExecutions メモリリーク検出）と5分解決カードを追加 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-07 の教訓4件を追加。設計タスク Phase 12 の実ファイル更新必須化、Phase 3 MINOR 追跡マトリクス、バックグラウンドエージェント timeout 対策、コンテキスト消失対策を追記 |

@@ -3,6 +3,20 @@
 ## 役割
 
 ---
+## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - Conversation IPC ハンドラ登録修正を実装（ipc/index.ts Section 13 に conversation ハンドラ登録を追加）
+  - `apps/desktop/src/main/ipc/index.ts`（修正）: safeRegister + fallback パターンで7チャンネルを登録
+  - `apps/desktop/src/main/ipc/__tests__/register-conversation-handlers.test.ts`（修正）: 9→22テストに拡充
+  - `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts`（修正）: conversation チャンネル対応追加
+  - 172 tests ALL PASS（register-conversation-handlers 22 + ipc-graceful-degradation 19 + ipc-double-registration 17 + conversationHandlers 92 + conversationRepository 22）
+  - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
+
+---
 ## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -29,6 +43,18 @@
   - SkillExecutor.fallback.test.ts に新規テスト23ケースを作成し全件 PASS 確認
   - 全1293テスト PASS（既存1270 + 新規23）
   - GitHub Issue #1250 完了
+
+---
+## 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `packages/shared/src/constants/security.ts` に `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数を実装
+  - `security.test.ts` に 15テスト作成、ALL PASS
+  - TypeCheck/Build/Import 確認済み
+  - 後続タスク UT-06-004（PermissionDialog UI）のブロッカー解消
 
 ---
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補

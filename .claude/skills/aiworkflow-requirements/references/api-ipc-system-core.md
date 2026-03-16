@@ -147,6 +147,36 @@ workspace layout 04A では、selected file の preview と status bar を最新
 
 ---
 
+## Conversation IPC API（会話履歴永続化）
+
+> 完了タスク: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION（2026-03-16）
+
+### チャンネル一覧
+
+| チャンネル | 用途 | Request | Response |
+| --- | --- | --- | --- |
+| `conversation:list` | 会話一覧取得 | `{ userId, limit?, offset? }` | `PaginatedResult<ConversationSummary>` |
+| `conversation:get` | 会話詳細取得 | `{ id }` | `Conversation \| null` |
+| `conversation:create` | 会話作成 | `{ userId, title }` | `Conversation` |
+| `conversation:update` | 会話更新 | `{ id, title?, isFavorite?, isPinned? }` | `Conversation` |
+| `conversation:delete` | 会話削除 | `{ id }` | `void` |
+| `conversation:addMessage` | メッセージ追加 | `{ sessionId, message: { role, content } }` | `Message` |
+| `conversation:search` | 会話検索 | `{ userId, query }` | `ConversationSummary[]` |
+
+### DB 初期化フロー
+
+1. `better-sqlite3` で `~/.claude/conversations.db` を開く
+2. `pragma("journal_mode = WAL")` で WAL モード設定
+3. `CONVERSATION_DB_SCHEMA` DDL で `chat_sessions` + `chat_messages` テーブル + 4インデックスを作成
+4. `ConversationRepository(db)` を生成
+5. `registerConversationHandlers(repository)` で7チャンネルを登録
+
+### Graceful Degradation
+
+DB 初期化失敗時は `registerConversationFallbackHandlers()` で全7チャンネルに `DB_NOT_AVAILABLE` フォールバックを登録。S30 パターン準拠。
+
+---
+
 ## Electron IPC API設計
 
 デスクトップアプリでは、Renderer Process と Main Process 間の通信に IPC（Inter-Process Communication）を使用する。

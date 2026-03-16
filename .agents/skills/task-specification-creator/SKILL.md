@@ -381,6 +381,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.8** | **2026-03-16** | **TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了記録**: Section 13 に safeRegister + fallback パターンで conversation:create/list/get/update/delete/addMessage/search の7チャンネルを登録。better-sqlite3 による WAL モード DB 初期化、ConversationRepository 生成、DB 失敗時の Graceful Degradation フォールバックを実装。172テスト ALL PASS |
 | **v10.09.7** | **2026-03-16** | **UT-06-005 abort-skip-retry-fallback 完了記録を追加**: SkillExecutor への processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド実装、PermissionStore への revokeSessionEntries 追加、SkillPermissionResponse に skip?: boolean フィールド追加を記録。新規23テスト追加で全1293テストPASS |
 | **v10.09.6** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: Phase 11 テンプレートにウォークスルー発見事項リアルタイム分類欄（Blocker/Note/Info）を追加。Phase 12 テンプレートに Phase 10 MINOR 追跡テーブルと docs-only モードフラグを追加。Phase 3 テンプレートに MINOR 追跡テーブル（解決予定Phase/解決確認Phase列）を追加。Phase 12 documentation guide に設計タスクでも実ファイル更新必須の注意を追加。spec-update-workflow.md に新規型定義の配置判断フローと interfaces-agent-sdk-skill-*.md ファミリー配置ルールを追加 |
 | **v10.09.5** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 設計完了**: ライフサイクル履歴型定義（SkillLifecycleEvent 5カテゴリ18イベント種別）・SkillAggregateView 集約ロジック・SkillFeedback 4種別還流設計・PublishReadinessMetrics Task08公開判断メトリクス契約・Task05/08連携データ供給経路定義を反映。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出 |

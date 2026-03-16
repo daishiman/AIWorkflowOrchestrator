@@ -228,6 +228,13 @@ export function registerConversationHandlers(
       request: ConversationSearchRequest,
     ): Promise<ConversationSearchResponse> => {
       try {
+        // Validate required fields (P42: 3-stage validation)
+        if (!request.userId || request.userId.trim() === "") {
+          return validationError("userId is required");
+        }
+        if (!request.query || request.query.trim() === "") {
+          return validationError("query is required");
+        }
         const result = repository.searchConversations(
           request.userId,
           request.query,

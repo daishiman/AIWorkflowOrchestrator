@@ -379,3 +379,30 @@ Phase 10 ゲート判定: PASS
 Phase 11 ウォークスルー: 実施済み
 
 未タスク検出: UT-06-001〜UT-06-008（8件）登録済み
+
+---
+
+### UT-06-001 (tool-risk-config-implementation)
+
+| タスクID | UT-06-001 |
+| タスク種別 | implementation |
+| ステータス | completed |
+| 完了日 | 2026-03-16 |
+| Phase完了 | 1-12 完了、13（PR作成）未実施 |
+| GitHub Issue | #1251 |
+| 成果物ディレクトリ | `docs/30-workflows/tool-risk-config-implementation/` |
+
+主要実装成果物:
+- `packages/shared/src/constants/security.ts` : RiskLevel 型・ToolRiskConfigEntry interface・TOOL_RISK_CONFIG 定数（Object.freeze 深層凍結）
+- `packages/shared/src/constants/security.test.ts` : 18テスト ALL PASS
+- `packages/shared/src/constants/index.ts` : 型・定数の re-export 追加
+
+セキュリティ不変条件:
+- `TOOL_RISK_CONFIG.high.allowPermanent === false`（恒久許可禁止）
+- `TOOL_RISK_CONFIG.high.allowTime24h === false`（24時間許可禁止）
+- `TOOL_RISK_CONFIG.high.allowTime7d === false`（7日間許可禁止）
+
+Phase 10 ゲート判定: PASS
+Phase 11 手動テスト: NON_VISUAL（CLI環境、UI変更なし）
+
+後続ブロッカー解消: UT-06-004（PermissionDialog）、TASK-SKILL-LIFECYCLE-08
