@@ -101,9 +101,12 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "spec-ready",
+      "status": "in_progress",
       "spec": "phase-13-pr-creation.md",
-      "outputs": []
+      "outputs": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/final-checklist.md"
+      ]
     }
   },
   "index": "index.md",
