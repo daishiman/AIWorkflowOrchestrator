@@ -243,7 +243,7 @@ node scripts/list-specs.js --topics
 | 状態管理アーキテクチャ | L179 |
 | データフローアーキテクチャ | L204 |
 | ディレクトリ構造 | L286 |
-| データ構造（型システム） | L347 |
+| データ構造（型システム） | L348 |
 
 ### references/architecture-overview-details.md
 
@@ -400,7 +400,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L72 |
 | スキルドキュメント生成 型定義（TASK-9I） | L122 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L186 |
-| スキル分析 型定義（TASK-9J） | L248 |
+| スキル分析 型定義（TASK-9J） | L250 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1564,8 +1564,8 @@ node scripts/list-specs.js --topics
 | 自動更新 | L207 |
 | 開発ツール | L227 |
 | ディレクトリ構造 | L247 |
-| 関連ドキュメント | L266 |
-| 変更履歴 | L278 |
+| 関連ドキュメント | L267 |
+| 変更履歴 | L279 |
 
 ### references/technology-devops-core.md
 
@@ -1944,10 +1944,28 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Environment Backend サービス | L6 |
 
+### references/arch-electron-services-details-part1.md
+
+| セクション | 行 |
+|------------|----|\n| スキル管理サービス | L8 |
+
+### references/arch-electron-services-details-part2.md
+
+| セクション | 行 |
+|------------|----|\n| SkillForker（TASK-9E） | L8 |
+| RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L100 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L129 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L154 |
+| キャッシュ機構 | L182 |
+| 永続化 | L188 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L194 |
+
 ### references/arch-electron-services-details.md
 
 | セクション | 行 |
-|------------|----|\n| スキル管理サービス | L6 |
+|------------|----|\n| 分割先ファイル | L8 |
+| 目次（クイックリファレンス） | L15 |
 
 ### references/arch-electron-services-history.md
 
@@ -2319,6 +2337,7 @@ node scripts/list-specs.js --topics
 | Current Alias Overrides（個別互換行） | L21 |
 | Family Summary | L29 |
 | Detailed Register | L48 |
+| 500-Line Split Register (2026-03-16) | L229 |
 
 ### references/lessons-learned-archive-2026-03.md
 
@@ -2387,7 +2406,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L38 |
+| 最新教訓 | L40 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3425,6 +3444,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
 
+### references/task-workflow-completed-agent-view-line-budget.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L8 |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L43 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L107 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L127 |
+| TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 | L164 |
+
+### references/task-workflow-completed-chat-lifecycle-tests.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L8 |
+
 ### references/task-workflow-completed-debug-scheduler-doc-generation-theme.md
 
 | セクション | 行 |
@@ -3458,15 +3491,14 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-skill-lifecycle-agent-view-line-budget.md
 
 | セクション | 行 |
-|------------|----|\n| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L6 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L56 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L123 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L204 |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L239 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L303 |
-| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L323 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L418 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L525 |
+|------------|----|\n| TASK-FIX-ELECTRON-APP-MENU-ZOOM-001: Electronアプリケーションメニュー初期化・ズームショートカット対応 完了記録（2026-03-16） | L17 |
+| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L71 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L121 |
+
+### references/task-workflow-completed-skill-lifecycle-authfix.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L9 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 
@@ -3480,9 +3512,10 @@ node scripts/list-specs.js --topics
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
-| セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+### references/task-workflow-completed-workspace.md
 
+| セクション | 行 |
+|------------|----|\n
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
