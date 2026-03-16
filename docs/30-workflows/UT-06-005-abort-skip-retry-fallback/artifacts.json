@@ -1,0 +1,123 @@
+{
+  "taskId": "UT-06-005",
+  "taskName": "abort-skip-retry-fallback",
+  "createdAt": "2026-03-16",
+  "githubIssue": "#1250",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "spec": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/p50-check-result.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "spec": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/state-diagram.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "spec": "phase-3-design-review.md",
+      "outputs": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "spec": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/red-state-confirmation.md",
+        "outputs/phase-4/existing-tests-pass.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "spec": "phase-5-implementation.md",
+      "outputs": ["outputs/phase-5/implementation-result.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "spec": "phase-6-test-expansion.md",
+      "outputs": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "spec": "phase-7-coverage-check.md",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "spec": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-result.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "spec": "phase-9-quality-assurance.md",
+      "outputs": ["outputs/phase-9/quality-assurance-result.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "spec": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "spec": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "spec": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "in_progress",
+      "spec": "phase-13-pr-creation.md",
+      "outputs": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/final-checklist.md"
+      ]
+    }
+  },
+  "index": "index.md",
+  "dependencies": ["TASK-SKILL-LIFECYCLE-08"],
+  "targetFiles": [
+    "apps/desktop/src/main/services/skill/SkillExecutor.ts",
+    "apps/desktop/src/main/services/skill/PermissionResolver.ts",
+    "apps/desktop/src/main/services/skill/PermissionStore.ts",
+    "packages/shared/src/types/skill.ts"
+  ],
+  "testFiles": [
+    "apps/desktop/src/main/services/skill/__tests__/SkillExecutor.fallback.test.ts"
+  ]
+}

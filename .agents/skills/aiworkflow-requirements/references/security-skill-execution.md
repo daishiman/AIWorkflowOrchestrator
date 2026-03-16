@@ -361,6 +361,32 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 ---
 
+## Permission フォールバック セキュリティ（UT-06-005）
+
+#### fail-closed 原則の適用
+
+Permission 拒否・timeout・不明エラー時は、デフォルトで abort に遷移する。
+
+| シナリオ | 対応 | セキュリティ根拠 |
+| --- | --- | --- |
+| Permission 明示拒否 | abort（reason: "denied"） | 不正なツール実行を防止 |
+| タイムアウト（5分） | abort（reason: "timeout"） | 応答不能状態でのリソース占有を防止 |
+| 最大リトライ到達（3回） | abort（reason: "max_retries"） | 無限リトライによるリソース枯渇を防止 |
+| 不明エラー | abort（reason: "unknown"） | 未知の状態での実行継続を防止 |
+
+#### revokeSessionEntries によるセッション権限クリーンアップ
+
+abort 時に `permissionStore.revokeSessionEntries(executionId)` を呼び出し、当該実行セッションで付与された一時許可を取り消す。abort されたスキルの rememberChoice 許可が残存し、後続の実行で意図しない自動許可が発生することを防止する。
+
+#### retry 上限のセキュリティ根拠
+
+リトライ最大回数を3回に制限する理由:
+1. 無限リトライによる計算リソースの枯渇を防止
+2. 繰り返しの Permission 要求によるユーザー体験の劣化を防止
+3. 攻撃者がリトライ機構を悪用して大量の Permission ダイアログを生成することを防止
+
+---
+
 ## 関連ドキュメント
 
 - [セキュリティ実装概要](./security-implementation.md)

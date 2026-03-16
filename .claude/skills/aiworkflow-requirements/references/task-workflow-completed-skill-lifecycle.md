@@ -3,7 +3,44 @@
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
 > 分割元: `task-workflow-completed-skill-lifecycle-agent-view-line-budget.md`（500行超のため分割）
-> 対象タスク: TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06
+> 対象タスク: TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-005
+
+## UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16）
+
+### タスク概要
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | UT-06-005                                                                  |
+| 機能         | SkillExecutor の Permission 拒否時 fallback 制御（abort/skip/retry/timeout） |
+| 実施日       | 2026-03-16                                                                 |
+| ステータス   | completed（Phase 1-12）                                                    |
+| ワークフロー | `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/`                   |
+| テスト       | 23 tests PASS（SkillExecutor.fallback.test.ts）                            |
+
+### 苦戦箇所
+
+| ID     | 内容                                                | 解決策                                                    |
+| ------ | --------------------------------------------------- | --------------------------------------------------------- |
+| S-PF-1 | 既実装コードの4ステップ abort フロー発見遅延         | Phase 1 で git log + grep で既存実装有無を確認する         |
+| S-PF-2 | revokeSessionEntries スタブ実装の設計判断             | UT-06-005-B として未タスク化、Phase 2 に判断根拠記録       |
+| S-PF-3 | PERMISSION_MAX_RETRIES デッドコードと Set メモリリーク | 定数参照統一 + セッション単位 clear 機構追加               |
+
+### 派生未タスク（3件）
+
+| タスクID    | 内容                                  | 優先度 |
+| ----------- | ------------------------------------- | ------ |
+| UT-06-005-A | PreToolUse Hook への fallback 統合    | 高     |
+| UT-06-005-B | revokeSessionEntries セッション別実装 | 中     |
+| UT-06-005-C | SkillStreamMessageType abort/skip 追加 | 中    |
+
+### 検証証跡
+
+- Phase 12 全 Task PASS（phase12-task-spec-compliance-check.md）
+- 未タスク 3件検出、3ステップ完了（指示書 + backlog + 仕様書リンク）
+- `workflow-permission-fallback-abort-skip-retry.md` に統合正本を作成
+
+---
 
 ## TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02）
 

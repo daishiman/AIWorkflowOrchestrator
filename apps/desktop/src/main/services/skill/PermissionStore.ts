@@ -146,6 +146,26 @@ export class PermissionStore implements IPermissionStore {
   }
 
   /**
+   * セッション内の一時許可エントリを一括取り消し
+   *
+   * UT-06-005: abort フロー Step 2 で使用。
+   * セッション内で許可されたツールを全て取り消す。
+   *
+   * @param _sessionId - セッションID（将来のセッション別管理用）
+   * @returns 取り消されたエントリ数
+   */
+  revokeSessionEntries(_sessionId: string): number {
+    // 現在の実装ではセッション別管理はないため、全エントリを取り消す
+    const count = this.toolCache.size;
+    if (count > 0) {
+      this.toolCache.clear();
+      this.updateStore();
+      log.info(`[PermissionStore] Session entries revoked: ${count} tools`);
+    }
+    return count;
+  }
+
+  /**
    * キャッシュを初期化（起動時に呼び出し）
    */
   private initializeCache(): void {
