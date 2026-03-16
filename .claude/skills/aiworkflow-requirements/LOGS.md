@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
+| 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（phase-12/documentation-changelog/spec-update-summary 同値化 + 苦戦箇所追補） |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 4-12 完了（CTA 16パターン実装 + 30テストGREEN + artifacts.json同期 + system spec same-wave更新） |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 再監査同期（Phase 11 screenshot証跡復旧 + implementation-guide要件充足 + system spec same-wave 更新） |

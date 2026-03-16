@@ -36,6 +36,43 @@
 
 ## 最新教訓
 
+### 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
+
+#### 教訓1: Constructor Injection による queryFn 差替パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 状況 | SkillDocGenerator の stubQueryFn を LLMDocQueryAdapter.query() に差し替える必要があった |
+| 解決策 | `adapter.query.bind(adapter)` で既存の `LLMQueryFn` シグネチャに合わせることで、SkillDocGenerator 自体に変更を加えずに adapter を注入できた（Open-Closed Principle） |
+| 適用範囲 | 他の LLM 統合箇所（chat-edit, agent-execution 等）でも同パターンが適用可能 |
+| 関連タスク | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+
+#### 教訓2: CapabilityResolver パターンの再利用性
+
+| 項目 | 内容 |
+| --- | --- |
+| 状況 | Skill Docs の capability 判定（integrated-api / guidance-only / terminal-handoff）を3パスで実装 |
+| 解決策 | ILLMDocQueryAdapter インターフェースの isAvailable() / getProviderName() を基に resolver が判定する疎結合設計 |
+| 注意 | terminal-handoff は事後判定（LLM呼出し失敗後の fallback）であり、事前判定には isAvailable() では不十分。実LLM接続テストが必要（UT-SKILL-DOCS-TERMINAL-HANDOFF-001 として未タスク化） |
+| 関連タスク | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+
+#### 教訓3: Phase 4-5 統合実行の効率性
+
+| 項目 | 内容 |
+| --- | --- |
+| 状況 | Phase 4（テスト作成 Red）と Phase 5（実装 Green）を別エージェントで実行しようとした |
+| 解決策 | TDD の Red-Green サイクルを1エージェントで統合実行するほうが、型定義→テスト→実装のコンテキスト切替コストが低く効率的だった |
+| 適用範囲 | 今後の Phase 4-5 実行時は統合エージェントを推奨 |
+| 関連タスク | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+
+#### 同種課題の簡潔解決手順（3ステップ）
+
+1. LLM adapter 差し替えは `bind()` パターンで既存シグネチャに合わせ、Generator クラス本体を変更しない。
+2. CapabilityResolver の terminal-handoff パスは「失敗後 fallback」として設計し、事前判定と混在させない。
+3. Phase 4-5 は同一エージェントで Red-Green サイクルを完結させる。
+
+---
+
 ### 2026-03-15 TASK-SKILL-LIFECYCLE-05
 
 #### 苦戦箇所1: Phase 11 の必須成果物が揃っておらず screenshot coverage validator が失敗する

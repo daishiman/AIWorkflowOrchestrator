@@ -51,6 +51,9 @@
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
+| Skill Docs Runtime実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義） | interfaces-agent-sdk-skill-reference-share-debug-analytics.md | api-ipc-agent-details.md, security-electron-ipc-advanced.md           |
+| Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |
+| Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
 
 ---
 
@@ -377,6 +380,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-16 | 1.18.0     | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001: Skill Docs Runtime の型定義（LLMDocQueryAdapter / DocOperationResult / SkillDocsCapabilityResolver）・エラーコード体系（1001-5001）・セキュリティ（4チャンネル4層防御）参照をクイックルックアップに追加 |
 | 2026-03-15 | 1.17.0     | TASK-SKILL-LIFECYCLE-05: CTA制御マトリクス実装完了。workflow正本にcurrent canonical set/artifact inventory/苦戦箇所を追加。クイックルックアップに「CTA制御マトリクス」導線を登録 |
 | 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |
 | 2026-03-13 | 1.15.0     | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本 `workflow-workspace-preview-search-resilience-guard.md` を追加。クイックルックアップと UI/UX 一覧にも preview/search resilience・typed taxonomy・`audit --target-file` の導線を登録 |

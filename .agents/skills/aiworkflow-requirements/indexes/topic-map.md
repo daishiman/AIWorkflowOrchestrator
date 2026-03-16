@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-15
+> 自動生成: 2026-03-16
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -299,7 +299,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | SkillService 統合（TASK-FIX-7-1） | L13 |
 | SkillExecutor 型定義（TASK-3-1-A） | L99 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L325 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L338 |
 
 ### references/interfaces-agent-sdk-executor-details.md
 
@@ -311,8 +311,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
-| 関連ドキュメント | L221 |
-| 変更履歴 | L235 |
+| 関連ドキュメント | L249 |
+| 変更履歴 | L263 |
 
 ### references/interfaces-agent-sdk-executor.md
 
@@ -397,7 +397,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| スキル共有 型定義（TASK-9F） | L6 |
 | スキルデバッグ 型定義（TASK-9H） | L72 |
 | スキルドキュメント生成 型定義（TASK-9I） | L122 |
-| スキル分析 型定義（TASK-9J） | L186 |
+| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L186 |
+| スキル分析 型定義（TASK-9J） | L248 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -970,10 +971,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
-| コンポーネント仕様 | L39 |
-| インタラクション設計 | L258 |
-| 視覚デザイン | L286 |
-| アクセシビリティ（WCAG 2.1 AA） | L310 |
+| コンポーネント仕様 | L43 |
+| インタラクション設計 | L287 |
+| 視覚デザイン | L316 |
+| アクセシビリティ（WCAG 2.1 AA） | L340 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -984,8 +985,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 完了タスク | L23 |
-| 関連ドキュメント | L61 |
+| 完了タスク | L24 |
+| 関連ドキュメント | L63 |
 
 ### references/ui-ux-agent-execution.md
 
@@ -1399,10 +1400,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 実装例: skillDebugAPI（TASK-9H） | L6 |
 | 実装例: skillDocsAPI（TASK-9I） | L61 |
-| 実装例: skillAnalyticsAPI（TASK-9J） | L118 |
-| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L151 |
-| 自動更新のセキュリティ | L182 |
-| safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001） | L193 |
+| 実装例: skillAnalyticsAPI（TASK-9J） | L128 |
+| 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L161 |
+| 自動更新のセキュリティ | L192 |
+| safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001） | L203 |
 
 ### references/security-electron-ipc-core.md
 
@@ -1747,15 +1748,15 @@ node scripts/list-specs.js --topics
 | 再監査追補（2026-03-14） | L31 |
 | current canonical set（2026-03-14 wave） | L45 |
 | artifact inventory（Step-01 + system spec sync） | L60 |
-| parent docs と依存関係 | L74 |
-| 旧 filename 互換管理 | L87 |
-| 設定画面レビューの必須改善対象 | L94 |
-| 後続タスクへの伝搬先 | L112 |
-| SubAgent 編成（関心ごと分離） | L128 |
-| 同種課題の5分解決カード | L140 |
-| 最適なファイル形成 | L150 |
-| 関連ドキュメント | L162 |
-| 変更履歴 | L174 |
+| parent docs と依存関係 | L76 |
+| 旧 filename 互換管理 | L89 |
+| 設定画面レビューの必須改善対象 | L96 |
+| 後続タスクへの伝搬先 | L114 |
+| SubAgent 編成（関心ごと分離） | L130 |
+| 同種課題の5分解決カード | L142 |
+| 最適なファイル形成 | L152 |
+| 関連ドキュメント | L164 |
+| 変更履歴 | L176 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -1945,7 +1946,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L22 |
+| 関連ドキュメント | L23 |
 
 ### references/arch-electron-services.md
 
@@ -1997,7 +1998,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L77 |
+| 関連ドキュメント | L78 |
 
 ### references/arch-state-management-reference-permissions-import-lifecycle.md
 
@@ -2310,6 +2311,12 @@ node scripts/list-specs.js --topics
 | Family Summary | L29 |
 | Detailed Register | L48 |
 
+### references/lessons-learned-archive-2026-03.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
+
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
 | セクション | 行 |
@@ -2497,8 +2504,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L35 |
-| 関連ドキュメント | L40 |
+| 利用順序 | L36 |
+| 関連ドキュメント | L41 |
 
 ### references/llm-embedding.md
 
@@ -2556,7 +2563,7 @@ node scripts/list-specs.js --topics
 | 品質メトリクス | L328 |
 | 関連ドキュメント | L339 |
 | 完了タスク | L367 |
-| 変更履歴 | L403 |
+| 変更履歴 | L427 |
 
 ### references/local-agent.md
 

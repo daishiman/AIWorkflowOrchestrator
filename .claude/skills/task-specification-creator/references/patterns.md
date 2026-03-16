@@ -2148,6 +2148,50 @@
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-D-VIEWTYPE-ROUTING-NAV, UT-IMP-TASK-056D-PHASE11-SCREENSHOT-CAPTURE-PATH-GUARD-001
 
+#### Phase 4-5 統合実行推奨パターン（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 2026-03-16）
+
+- **状況**: Phase 4（テスト作成 Red）と Phase 5（実装 Green）を別エージェントで分割実行すると、型定義が実装前に未確定なためテストコードでコンパイルエラーが発生しやすい
+- **パターン**: 型定義 → テスト（Red）→ 実装（Green）を 1 エージェントで統合実行し、Green 状態を直接確認してから次 Phase へ進む
+- **根拠**: Phase 4 と Phase 5 は型定義・テスト・実装のコンテキストが密結合しており、コンテキスト分断がコンパイルエラーや手戻りを引き起こす
+  | 実行方式 | リスク | 推奨度 |
+  | --- | --- | --- |
+  | Phase 4 のみ実行後に別エージェントで Phase 5 | 型未定義→コンパイルエラー、コンテキスト再構築コスト | 非推奨 |
+  | Phase 4-5 を 1 エージェントで統合実行 | なし（型→テスト→実装を一気通貫） | **推奨** |
+- **適用条件**: 新規型定義（interface / type）を伴う実装タスク全般。既存型を変更しない場合は Phase 分割も可
+- **注意**: 統合実行でもファイル数が多い場合は rate limit に注意（P43対策: 3ファイル以下/エージェントを維持）
+- **発見日**: 2026-03-16
+- **関連タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
+- **関連パターン**: P43（Phase 12 サブエージェントの rate limit 中断）、7並列エージェント仕様書生成パターン
+
+#### 同一 wave インデックス同期パターン（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 2026-03-16）
+
+- **状況**: Phase 12 Task 2 で `references/` 配下の仕様書更新は完了しているのに、`resource-map.md` のクイックルックアップ行・`quick-reference.md` の導線セクションの更新が漏れる
+- **問題**: インデックスファイルが古いまま残ると、他のエージェントや開発者が旧パスを参照し続け、仕様書ドリフトが静かに蓄積する
+- **解決策**: Phase 12 Task 2 に「Step 2.5: インデックス同期」を追加し、`references/` 更新と **同一 wave**（同一エージェント実行）で以下を完了させる
+  1. `resource-map.md` のクイックルックアップ行を追加・更新
+  2. `quick-reference.md` の該当導線セクションを追加・更新
+  3. `topic-map.md` を `node scripts/generate-index.js` で再生成
+- **適用条件**: Phase 12 Task 2 で `references/` 配下の仕様書を追加・更新・削除した場合は必須
+- **チェック方法**: `grep -n "新規ファイル名" resource-map.md quick-reference.md` でゼロヒットなら更新漏れ
+- **発見日**: 2026-03-16
+- **関連タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
+- **関連パターン**: P2（topic-map.md 再生成忘れ）、P27（topic-map 再生成トリガー判断ミス）
+
+#### mirror sync 遅延パターン（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 2026-03-16）
+
+- **状況**: `.claude/skills/` の仕様書を更新した後、`.agents/skills/` へのミラー同期が Phase 12 完了後に忘れられる
+- **問題**: 2つのディレクトリが乖離したまま PR がマージされると、エージェント実行時に古いスキル仕様が参照され、動作不整合が発生する
+- **解決策**: Phase 12 の最終ステップとして以下を固定実行する
+  ```bash
+  diff -rq .claude/skills/ .agents/skills/
+  ```
+  差分 0 を確認してから完了とする。差分がある場合は `.agents/skills/` 側を `.claude/skills/` と同内容に同期する
+- **適用条件**: Phase 12 完了時（仕様書変更の有無にかかわらず毎回実行）
+- **チェック方法**: `diff -rq .claude/skills/ .agents/skills/` の出力が空であること
+- **発見日**: 2026-03-16
+- **関連タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
+- **関連パターン**: P1（LOGS.md 2ファイル更新漏れ）、P43（Phase 12 サブエージェントの rate limit 中断）
+
 ---
 - [phase-templates.md](phase-templates.md)
 - [spec-update-workflow.md](spec-update-workflow.md)
@@ -2158,4 +2202,6 @@
 
 | Date | Changes |
 | --- | --- |
+| 2026-03-16 | 同一 wave インデックス同期パターン・mirror sync 遅延パターンを追加（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 教訓） |
+| 2026-03-16 | Phase 4-5 統合実行推奨パターンを追加（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 教訓） |
 | 2026-03-12 | family index へ再編し、大規模 pattern 本文を workflow / validation / Phase 12 の 3 系統に分離 |

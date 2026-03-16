@@ -19,7 +19,6 @@ allowed-tools:
 ---
 # Task Specification Creator
 開発タスクを Phase 1〜13 の実行可能な仕様書へ落とし込む。`SKILL.md` は入口だけを持ち、詳細は `references/` と `LOGS.md` に分離する。
-
 ## 設計原則
 
 | 原則 | 説明 |
@@ -29,7 +28,6 @@ allowed-tools:
 | Progressive Disclosure | 必要な reference だけを段階的に読む |
 | 1 File = 1 Responsibility | 大きくなった guide は family file へ分離する |
 | `.claude` Canonical | 正本は `.claude/skills/...`、`.agents/skills/...` は mirror |
-
 ## クイックスタート
 
 | モード | 用途 | 最初に読むもの |
@@ -38,7 +36,6 @@ allowed-tools:
 | `execute` | Phase 1〜13 を順番に実行する | [references/execute-workflow.md](references/execute-workflow.md) |
 | `update` | 既存仕様書を修正する | [references/phase-templates.md](references/phase-templates.md) |
 | `detect-unassigned` | Phase 12 の残課題を formalize する | [references/phase-12-documentation-guide.md](references/phase-12-documentation-guide.md) |
-
 ```bash
 node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 ```
@@ -384,6 +381,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.5** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了。Phase 4-5 統合実行パターンの教訓を記録** |
 | **v10.09.4** | **2026-03-15** | **UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 の Phase 12 再確認を反映**: `references/spec-update-workflow.md` / `references/unassigned-task-guidelines.md` の運用に沿って、`SKILL.md` 変更履歴更新（aiworkflow/task-spec 両方）を必須完了条件として明記。未タスクは `docs/30-workflows/unassigned-task/` の配置確認と `audit-unassigned-tasks --diff-from HEAD --target-file` の分離判定をセットで実施し、repo-wide テスト失敗を既存未タスクへ紐付ける判断基準を追補 |
 | **v10.08.68** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 の system spec 詳細同期を完了** |
 | **v10.08.67** | **2026-03-15** | **UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 再確認を反映**: `runtime-routing-integration-closure` workflow の Phase 11/12 検証（TC 9/9・guide 10/10）と、`artifacts.json` / `index.md` / `phase-1..12` completed 同期を同一ターンで閉じる運用を追記。Step 2 は executor/electron-services/ui/state/task-workflow/lessons の同時同期を必須化 |
