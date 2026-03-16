@@ -243,7 +243,7 @@ node scripts/list-specs.js --topics
 | 状態管理アーキテクチャ | L179 |
 | データフローアーキテクチャ | L204 |
 | ディレクトリ構造 | L286 |
-| データ構造（型システム） | L347 |
+| データ構造（型システム） | L348 |
 
 ### references/architecture-overview-details.md
 
@@ -400,7 +400,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L72 |
 | スキルドキュメント生成 型定義（TASK-9I） | L122 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L186 |
-| スキル分析 型定義（TASK-9J） | L248 |
+| スキル分析 型定義（TASK-9J） | L250 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1564,8 +1564,8 @@ node scripts/list-specs.js --topics
 | 自動更新 | L207 |
 | 開発ツール | L227 |
 | ディレクトリ構造 | L247 |
-| 関連ドキュメント | L266 |
-| 変更履歴 | L278 |
+| 関連ドキュメント | L267 |
+| 変更履歴 | L279 |
 
 ### references/technology-devops-core.md
 
@@ -2345,18 +2345,6 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
 
-### references/lessons-learned-archive-2026-03.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
-
-### references/lessons-learned-archive-2026-03.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
-
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
 | セクション | 行 |
@@ -2418,7 +2406,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L38 |
+| 最新教訓 | L40 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3502,6 +3490,11 @@ node scripts/list-specs.js --topics
 
 ### references/task-workflow-completed-skill-lifecycle-agent-view-line-budget.md
 
+| セクション | 行 |
+|------------|----|\n| TASK-FIX-ELECTRON-APP-MENU-ZOOM-001: Electronアプリケーションメニュー初期化・ズームショートカット対応 完了記録（2026-03-16） | L17 |
+| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L71 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L121 |
+
 ### references/task-workflow-completed-skill-lifecycle-authfix.md
 
 | セクション | 行 |
@@ -3516,7 +3509,6 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L241 |
 | TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L263 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L326 |
-| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L390 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

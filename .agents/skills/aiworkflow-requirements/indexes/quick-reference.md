@@ -275,6 +275,13 @@ node scripts/search-spec.js "AGENT_EXECUTION_START" -C 3
 3. `references/security-electron-ipc-advanced.md` で 4チャンネル4層防御（送信元検証 → ホワイトリスト → 入力バリデーション → サニタイズ）を確認する
 4. `references/lessons-learned-current.md` で以下の教訓を確認する: bind() を用いた this コンテキスト保持 DI パターン、CapabilityResolver のフォールバック戦略、Phase 4-5 統合テスト設計の注意点
 
+### Electron role-based メニューパターン
+
+- `Menu.buildFromTemplate()` + `Menu.setApplicationMenu()` でグローバルメニューを設定
+- macOS: 4メニュー（App名、Edit、View、Window）、Windows/Linux: 1メニュー（View）
+- role指定（`zoomIn`, `zoomOut`, `resetZoom`, `togglefullscreen`）でOS標準ショートカット自動バインド
+- 参照: `architecture-implementation-patterns-reference-ipc-fallback-validation.md` S31
+
 ### Electron IPC パターン
 
 ```typescript

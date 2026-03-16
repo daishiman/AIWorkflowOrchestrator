@@ -18,25 +18,78 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 の教訓3件を追加。Main Process エントリポイント副作用によるテスト不可能問題、Electron role ベースメニューの検証手法、小規模修正での13 Phase ワークフロー適用を追記 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-07 の教訓4件を追加。設計タスク Phase 12 の実ファイル更新必須化、Phase 3 MINOR 追跡マトリクス、バックグラウンドエージェント timeout 対策、コンテキスト消失対策を追記 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-06 の苦戦箇所3件（P57: 設計タスク仕様書更新先送り / P58: 未タスク指示書配置省略 / P59: 並列エージェント changelog 件数不整合）を追加。`06-known-pitfalls.md` P57〜P59 として登録 |
-| 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 の苦戦箇所6（Phase 12 本文と成果物の実績乖離）を追加。`phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の同値同期ルールを追記 |
-| 2026-03-15 | 1.29.93 | TASK-SKILL-LIFECYCLE-05 の苦戦箇所4（Record パターン ScoringGate 網羅性）・苦戦箇所5（artifacts.json 逐次更新忘れ）を追加。変更履歴を最新10件に圧縮し、2026-03-11以前の教訓を専用ファイルへ移動 |
-| 2026-03-15 | 1.29.92 | TASK-SKILL-LIFECYCLE-05 再監査を追補。Phase 11 screenshot 必須成果物（checklist/result/plan + TC証跡）欠落時の復旧手順、docs-heavy の review board fallback、Phase 12 implementation-guide literal 要件（Part1 why-first / Part2 usage+edge cases）の充足手順を追加 |
-| 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 の system spec 同一 wave 同期を追補。`workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、current canonical set / artifact inventory / legacy path 互換 / mirror parity 手順を固定 |
-| 2026-03-14 | 1.29.90 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 の実装教訓 P57〜P61 を追加。AuthMode 値乖離、同名ファイル二重存在、Preload API 未公開、サービススコープ制限、動的アダプタ注入の5教訓と5ステップ解決手順を追記 |
-| 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 12 再確認追補を反映。再参照既存未タスクが `target-file` 監査で current 違反になり得る点を追加し、`audit-unassigned-tasks --target-file` で是正確認する運用を明文化 |
-| 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 の再監査教訓を追補。`electron-vite dev` の esbuild platform mismatch で実画面 capture が詰まる条件、fallback review board 証跡化、`chatEditAPI` payload 契約（object vs positional）ドリフト是正を追加 |
-| 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の follow-up 教訓を追補。Phase 4 契約テストと Phase 6 回帰テストの責務混線を `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` として未タスク化し、境界定義と重複防止手順を追加 |
-| 2026-03-12 | 1.29.83 | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 の教訓を追加。large skill docs は `SKILL.md` を入口に保ち、family file と rolling `LOGS.md` + archive へ責務分離し、`.claude` 正本更新後に `.agents` mirror と validator 3点セットを同期する手順を標準化 |
-| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の Phase 12 再確認を追補。workflow baseline backlog `64` と global `docs/30-workflows/unassigned-task/` legacy `134` を分離して報告するルール、および Task 5 で `skill-creator` まで同期した場合は `skill-feedback-report` / `documentation-changelog` / `spec-update-summary` の3ファイルへ同値転記するルールを追加 |
-| 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 を追加。`aiworkflow-requirements` が 145 warning を残す理由を「大規模 reference スキルの入口設計と validator 前提の不整合」として分離し、`SKILL.md` / `quick-reference.md` / `resource-map.md` の三層入口と validator 整合を未タスク化した |
+| 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 苦戦箇所6追加。Phase 12 本文と成果物の実績乖離、3ファイル同値同期ルール追記 |
+| 2026-03-15 | 1.29.93 | TASK-SKILL-LIFECYCLE-05 苦戦箇所4-5追加（Record ScoringGate 網羅性、artifacts.json 逐次更新忘れ）。変更履歴圧縮 |
+| 2026-03-15 | 1.29.92 | TASK-SKILL-LIFECYCLE-05 再監査追補。Phase 11 必須成果物欠落復旧、review board fallback、impl-guide literal 要件充足 |
+| 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 system spec 同一 wave 同期追補。統合正本追加、canonical set / artifact inventory / legacy / mirror 手順固定 |
+| 2026-03-14 | 1.29.90 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 実装教訓 P57〜P61 追加（AuthMode 値乖離、同名ファイル二重存在、Preload API 未公開、スコープ制限、動的アダプタ注入） |
+| 2026-03-14 | 1.29.89 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase 12 再確認追補。再参照既存未タスクの `target-file` 監査運用を明文化 |
+| 2026-03-14 | 1.29.88 | TASK-IMP-WORKSPACE-CHAT-EDIT/CLAUDE-CODE-TERMINAL-SURFACE 再監査追補。esbuild platform mismatch、fallback 証跡化、payload 契約ドリフト是正 |
+| 2026-03-14 | 1.29.87 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 follow-up。Phase 4/6 責務混線を未タスク化、境界定義と重複防止手順追加 |
+| 2026-03-12 | 1.29.83 | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 追加。SKILL.md 入口 + family file + rolling LOGS + archive の責務分離、mirror/validator 同期手順標準化 |
+| 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補。workflow baseline/global legacy 分離報告、skill-creator 同期時の3ファイル同値転記ルール追加 |
+| 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 追加。大規模 reference スキルの入口設計と validator 不整合を分離、三層入口と validator 整合を未タスク化 |
 
 > 以前の変更履歴（2026-03-11以前）は各専用ファイル（lessons-learned-*.md）の archive を参照してください。
 
 ---
 
 ## 最新教訓
+
+### 2026-03-16 TASK-FIX-ELECTRON-APP-MENU-ZOOM-001
+
+#### 苦戦箇所1: Main Process エントリポイント（index.ts）のトップレベル副作用でテスト不可能
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Main Process の index.ts に直接メニューロジックを追加しようとしたが、テストファイルで import するだけで `setupCustomProtocol` 等のトップレベル副作用が実行され、テストが動作しない |
+| 再発条件 | Main Process のエントリポイント（index.ts）に直接ロジックを追加しようとした時 |
+| 解決策 | ロジックを独立したモジュール（menu.ts）に分離してテスト容易性を確保（SRP準拠）。エントリポイントは薄い呼び出し層に留める |
+| 標準ルール | Electron Main Process にメニュー/機能を追加する際は、まず独立モジュールに分離してからエントリポイントで呼び出す |
+| 関連パターン | P5（リスナー二重登録）、SRP（単一責務原則） |
+| 関連タスク | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
+
+#### 苦戦箇所2: Electron role ベースメニューの検証手法
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Electron の role ベースメニュー項目（cut, copy, paste, zoomIn 等）は OS ネイティブ処理に委譲されるため、動作の直接テストが困難 |
+| 再発条件 | Electron の role ベースメニュー項目のテストを書く時 |
+| 解決策 | `Menu.buildFromTemplate` のモック呼出し引数を検査してメニュー構造を検証する。`vi.spyOn(process, "platform", "get")` で platform 分岐もテスト可能 |
+| 標準ルール | role ベースのメニュー項目は Electron に処理を委譲（カスタム click 不要）し、テストはメニュー構造の検証に留める |
+| 関連タスク | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
+
+```typescript
+// role ベースメニューのテスト手法
+vi.spyOn(process, "platform", "get").mockReturnValue("darwin");
+setupApplicationMenu();
+const template = vi.mocked(Menu.buildFromTemplate).mock.calls[0][0];
+// メニュー構造を検証（role の存在確認）
+expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
+```
+
+#### 苦戦箇所3: 小規模修正に対する13 Phase ワークフローの適用
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 83行の新規ファイル + 2行の既存ファイル変更程度の小規模修正に対して、13 Phase のフルワークフローは過剰に見えた |
+| 再発条件 | 小規模な機能追加（100行未満）にフルワークフローを適用する場合 |
+| 解決策 | テスト20件・カバレッジ100%の品質が確保されており、ワークフローの網羅性が品質に貢献した。小規模でもフルワークフローを適用することで、macOS は Apple HIG 準拠の4メニュー、Windows/Linux は最小構成という platform 分岐の品質保証ができた |
+| 標準ルール | ワークフローの規模判断は実装行数ではなく、品質保証の必要度（platform 分岐、セキュリティ影響等）で判断する |
+| 関連タスク | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
+
+#### 同種課題の簡潔解決手順（5ステップ）
+
+1. Electron Main Process にメニュー/機能を追加する際は、まず独立モジュールに分離する。
+2. role ベースのメニュー項目は Electron に処理を委譲し、カスタム click ハンドラは不要。
+3. macOS は Apple HIG 準拠の4メニュー（App/Edit/View/Window）、Windows/Linux は最小構成にする。
+4. テストは `Menu.buildFromTemplate` のモック引数検査でメニュー構造を検証する。
+5. platform 分岐テストは `vi.spyOn(process, "platform", "get").mockReturnValue("darwin"|"win32"|"linux")` でモックする。
+
+---
 
 ### 2026-03-16 TASK-SKILL-LIFECYCLE-06
 
@@ -438,8 +491,6 @@
 3. レビュー添付は `TC-ID` 化して後続 task index へ参照導線を追加する。
 4. Phase 4 契約テストと Phase 6 回帰テストの責務境界を先に定義する。
 5. `task-workflow` / `lessons` / `resource-map` / `quick-reference` / `LOGS` を同一 wave で同期する。
-
----
 
 ### 関連未タスク（2026-03-12 追補）
 

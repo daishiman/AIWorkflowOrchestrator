@@ -251,6 +251,7 @@
 | apps/desktop/src/main/ | Main Process |
 | apps/desktop/src/main/services/ | ビジネスロジック |
 | apps/desktop/src/main/ipc/ | IPCハンドラ |
+| apps/desktop/src/main/menu.ts | アプリケーションメニュー（ズーム制御含む） |
 | apps/desktop/src/main/infrastructure/ | インフラ層 |
 | apps/desktop/src/renderer/ | Renderer Process |
 | apps/desktop/src/renderer/components/ | UIコンポーネント |
@@ -275,9 +276,18 @@
 
 ---
 
+## 関連未タスク
+
+| タスクID | 内容 | 優先度 | 指示書 |
+|---------|------|--------|--------|
+| UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001 | Main Process index.ts トップレベル副作用モジュール分離ガード | 中 | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-main-process-module-extraction-guard-001.md` |
+
+---
+
 ## 変更履歴
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2026-03-16 | 関連未タスクセクション追加（UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001） |
 | 1.1.0 | 2026-01-26 | 仕様ガイドライン準拠: ディレクトリ構造を表形式に変換 |
 | 1.0.0 | 2026-01-26 | 初版作成 |
