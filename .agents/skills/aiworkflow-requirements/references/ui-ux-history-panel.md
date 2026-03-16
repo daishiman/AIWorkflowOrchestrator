@@ -105,6 +105,30 @@
 
 ---
 
+## 履歴UIファミリー参照導線（TASK-SKILL-LIFECYCLE-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-07 |
+| ステータス | `spec_created`（設計タスク） |
+
+### ナビゲーション経路
+
+ライフサイクル履歴パネルからの参照導線:
+
+| 起点 | 遷移先 | トリガー |
+| --- | --- | --- |
+| ライフサイクルタイムライン | スキル詳細パネル | イベント行クリック |
+| 集約ビューサマリー | HistorySearchView | 「すべての履歴」リンク |
+| フィードバック一覧 | フィードバック詳細モーダル | フィードバック行クリック |
+| スコア推移グラフ | 評価詳細ビュー | データポイントクリック |
+
+### 参照リンク
+
+- Task07 設計: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`
+
+---
+
 ## 関連ドキュメント
 
 | ドキュメント     | パス                              |

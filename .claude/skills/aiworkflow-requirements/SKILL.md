@@ -193,6 +193,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.96** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: `spec-update-workflow.md` に新規型定義の仕様書配置判断フロー（interfaces-agent-sdk-skill-*.md ファミリー配置ルール、パス配置ルール）を追加。ライフサイクル型など新規ドメイン型の配置判断を明文化 |
+| **9.01.95** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 設計完了**: ライフサイクル履歴型定義（SkillLifecycleEvent 5カテゴリ18イベント種別）・SkillAggregateView 集約ロジック・SkillFeedback 4種別還流設計・PublishReadinessMetrics Task08公開判断メトリクス契約・Task05/08連携データ供給経路定義をシステム仕様に反映。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出 |
 | **9.01.95** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了記録追加。DocOperationResult / LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義を仕様書に反映** |
 | **9.01.94** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正を反映**: `references/workflow-skill-lifecycle-created-skill-usage-journey.md` の Artifact Inventory を実体ファイル名へ全面更新し、苦戦箇所へ「Phase 12 本文と成果物乖離」を追加。`references/lessons-learned-current.md` へ苦戦箇所6と5ステップ解決手順を追記し、`phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の同値同期ルールを固定 |
 | **9.01.93** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 インデックス同期**: `indexes/resource-map.md` クイックルックアップに「CTA制御マトリクス」導線を追加、変更履歴 v1.17.0 を登録。`indexes/quick-reference.md` に `CTA制御マトリクスパターン` セクション（11行）と型定義テーブルへ `CTAVisibility`/`CTAState` 行を追加 |

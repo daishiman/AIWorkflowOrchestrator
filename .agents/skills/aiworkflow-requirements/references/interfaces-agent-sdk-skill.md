@@ -20,6 +20,31 @@
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。
 - 完了タスク、変更履歴、補助情報は `history` / `archive` 系を読む。
 
+## ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-07 |
+| ステータス | `spec_created`（設計タスク） |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/outputs/` |
+
+### 型サマリー
+
+| 型名 | 概要 |
+| --- | --- |
+| `SkillLifecycleEvent` | ライフサイクルイベント単体。18種別のイベントを `eventType` で判別し、`metadata` に詳細を格納する |
+| `SkillAggregateView` | スキル単位の集約ビュー。成功率・トレンド・推薦スコア・最終イベント日時を保持する |
+| `SkillFeedback` | ユーザーフィードバック。rating / comment / category / severity を持つ |
+| `PublishReadinessMetrics` | 公開準備度指標。success_rate / test_coverage / feedback_score / overall_readiness を集約する |
+
+### 参照リンク
+
+- 要件定義: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-1-requirements.md`
+- 設計: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`
+- 最終レビュー: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-10-final-review.md`
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`

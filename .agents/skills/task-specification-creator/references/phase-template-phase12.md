@@ -12,6 +12,27 @@ Phase 12 の documentation update。
 4. unassigned-task detection
 5. skill feedback report
 
+## Phase 10 MINOR 追跡テーブル
+
+Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結果を記録する。
+
+| MINOR ID | 指摘内容 | 解決予定Phase | 解決確認Phase | 解決方法 | ステータス |
+| -------- | -------- | ------------- | ------------- | -------- | ---------- |
+| ...      | ...      | Phase 5/8/12  | Phase 10/12   | ...      | 解決済/未タスク化 |
+
+- Phase 10 MINOR は全て未タスク仕様書に変換するか、Phase 12 内で解決する（省略不可）
+- `documentation-changelog.md` に追跡結果を記録する
+
+## docs-only モードフラグ
+
+設計タスク（docs-only）の場合、以下の挙動が変わる:
+
+| 項目 | 通常タスク | docs-only タスク |
+| ---- | ---------- | ---------------- |
+| Step 1-G 検証コマンド | 実行して結果記録 | **計画記録のみ**（実行対象コードなし） |
+| implementation-guide Part 2 | 実装詳細・コード例 | 型定義・配置ルール・使用例 |
+| Step 1-B 実装状況 | `completed` | `spec_created` |
+
 ## 出力テンプレ
 
 | file | 最低限必要な内容 |
