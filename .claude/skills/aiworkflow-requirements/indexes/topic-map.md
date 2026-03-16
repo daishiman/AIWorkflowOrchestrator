@@ -347,7 +347,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L14 |
-| 関連ドキュメント | L19 |
+| ライフサイクルイベントモデル（TASK-SKILL-LIFECYCLE-07） | L19 |
+| 関連ドキュメント | L43 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -416,7 +417,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
-| 関連ドキュメント | L23 |
+| ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L23 |
+| 関連ドキュメント | L48 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1220,7 +1222,8 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L60 |
 | 統合ステータス | L74 |
 | 変更履歴 | L91 |
-| 関連ドキュメント | L108 |
+| 履歴UIファミリー参照導線（TASK-SKILL-LIFECYCLE-07） | L108 |
+| 関連ドキュメント | L132 |
 
 ### references/ui-ux-llm-selector.md
 
@@ -1862,14 +1865,15 @@ node scripts/list-specs.js --topics
 | 必要仕様の抽出セット | L23 |
 | 抽出確認コマンド | L37 |
 | Task04 依存契約 | L51 |
-| 現行 workflow 仕様書 | L62 |
-| 実装内容（TASK-SKILL-LIFECYCLE-05） | L74 |
-| 苦戦箇所 | L102 |
-| Current Canonical Set | L142 |
-| Artifact Inventory | L162 |
-| 実装コードアンカー | L184 |
-| same-wave 検証手順 | L196 |
-| 5分解決カード | L212 |
+| Task07 依存契約（TASK-SKILL-LIFECYCLE-07） | L62 |
+| 現行 workflow 仕様書 | L77 |
+| 実装内容（TASK-SKILL-LIFECYCLE-05） | L89 |
+| 苦戦箇所 | L117 |
+| Current Canonical Set | L157 |
+| Artifact Inventory | L177 |
+| 実装コードアンカー | L199 |
+| same-wave 検証手順 | L211 |
+| 5分解決カード | L227 |
 
 ### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
 
@@ -1886,7 +1890,8 @@ node scripts/list-specs.js --topics
 | 検証コマンド | L123 |
 | 同種課題の5分解決カード | L136 |
 | 関連ドキュメント | L146 |
-| 変更履歴 | L159 |
+| Task04→Task07 評価イベント連携（TASK-SKILL-LIFECYCLE-07） | L159 |
+| 変更履歴 | L174 |
 
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
@@ -2049,7 +2054,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
-| 関連ドキュメント | L23 |
+| lifecycleHistorySlice / feedbackSlice（TASK-SKILL-LIFECYCLE-07） | L23 |
+| 関連ドキュメント | L52 |
 
 ### references/arch-ui-components-advanced.md
 
@@ -2332,6 +2338,12 @@ node scripts/list-specs.js --topics
 | Family Summary | L29 |
 | Detailed Register | L48 |
 | 500-Line Split Register (2026-03-16) | L229 |
+
+### references/lessons-learned-archive-2026-03.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
 
 ### references/lessons-learned-archive-2026-03.md
 
@@ -3504,6 +3516,7 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L241 |
 | TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L263 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L326 |
+| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L390 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
@@ -3705,8 +3718,9 @@ node scripts/list-specs.js --topics
 | IPC契約 | L105 |
 | テスト・画面検証 | L124 |
 | 苦戦箇所（再利用形式） | L149 |
-| 関連ドキュメント | L167 |
-| 変更履歴 | L177 |
+| ライフサイクルタイムライン観測項目（TASK-SKILL-LIFECYCLE-07） | L167 |
+| 関連ドキュメント | L189 |
+| 変更履歴 | L199 |
 
 ---
 

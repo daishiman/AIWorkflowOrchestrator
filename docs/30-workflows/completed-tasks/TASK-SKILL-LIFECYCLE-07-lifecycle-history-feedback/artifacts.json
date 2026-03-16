@@ -1,0 +1,395 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-07",
+  "title": "ライフサイクル履歴・フィードバック統合",
+  "type": "design",
+  "priority": "medium",
+  "status": "not_started",
+  "dependencies": ["TASK-SKILL-LIFECYCLE-04", "TASK-SKILL-LIFECYCLE-05"],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/lifecycle-event-catalog.md",
+        "outputs/phase-1/feedback-collection-spec.md",
+        "outputs/phase-1/task05-integration-contract.md",
+        "outputs/phase-1/task08-metrics-definition.md",
+        "outputs/phase-1/acceptance-criteria-matrix.md"
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:15:28.603Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/lifecycle-event-catalog.md",
+          "description": "ライフサイクルイベント一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/feedback-collection-spec.md",
+          "description": "フィードバック収集要件"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/task05-integration-contract.md",
+          "description": "Task05連携要件"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/task08-metrics-definition.md",
+          "description": "Task08メトリクス定義"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria-matrix.md",
+          "description": "受入基準検証マトリクス"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:21:23.249Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/event-model-design.md",
+          "description": "イベントモデル設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/aggregate-view-design.md",
+          "description": "集約ビュー設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/feedback-loop-design.md",
+          "description": "フィードバック還流設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/publish-metrics-interface-design.md",
+          "description": "公開メトリクスIF設計書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/data-flow-design.md",
+          "description": "データフロー設計書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:29:17.055Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/requirements-design-matrix.md",
+          "description": "要件-設計マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/technical-review-report.md",
+          "description": "技術レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/integration-review-report.md",
+          "description": "連携妥当性レビュー結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "ゲート判定書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:44:26.725Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/event-model-test-spec.md",
+          "description": "イベントモデルテスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/aggregate-logic-test-spec.md",
+          "description": "集約ロジックテスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/feedback-loop-test-spec.md",
+          "description": "フィードバック還流テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/ipc-contract-test-spec.md",
+          "description": "IPC契約テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-data-factory-definition.md",
+          "description": "テストデータファクトリ定義"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:44:27.244Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/event-model-impl-spec.md",
+          "description": "SkillLifecycleEvent実装仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/lifecycle-history-slice-spec.md",
+          "description": "lifecycleHistorySlice設計仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/aggregate-logic-impl-spec.md",
+          "description": "集約ロジック実装仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/feedback-model-impl-spec.md",
+          "description": "フィードバックモデル実装仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/publish-metrics-api-impl-spec.md",
+          "description": "Task08メトリクスAPI実装仕様書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:56:54.051Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/duplicate-prevention-test-spec.md",
+          "description": "重複防止テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/error-handling-test-spec.md",
+          "description": "異常系テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/boundary-value-test-spec.md",
+          "description": "境界値テスト仕様書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-guard-test-spec.md",
+          "description": "回帰ガードテスト仕様書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:56:54.625Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/event-category-coverage-matrix.md",
+          "description": "イベントカテゴリ別カバレッジマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/aggregate-logic-coverage-matrix.md",
+          "description": "集約計算ロジックカバレッジマトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/feedback-path-coverage-matrix.md",
+          "description": "フィードバック還流パスカバレッジ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-gate-decision.md",
+          "description": "カバレッジゲート判定書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:56:55.178Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/naming-unification-report.md",
+          "description": "命名統一レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/deduplication-report.md",
+          "description": "重複除去レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/data-flow-optimization-report.md",
+          "description": "データフロー最適化記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/test-rerun-report.md",
+          "description": "テスト再実行レポート"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T00:56:55.685Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/spec-quality-report.md",
+          "description": "仕様書品質検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/type-consistency-report.md",
+          "description": "型整合性検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/link-validity-report.md",
+          "description": "リンク有効性検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-report.md",
+          "description": "品質ゲート判定レポート"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T01:06:26.438Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/acceptance-criteria-fulfillment.md",
+          "description": "受入基準充足マトリクス"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/design-implementation-gap-report.md",
+          "description": "設計-実装差分レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/integration-final-verification.md",
+          "description": "連携最終検証レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-decision.md",
+          "description": "最終レビュー判定書"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T01:06:26.985Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/walkthrough-scenario-a.md",
+          "description": "ウォークスルーシナリオA"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/walkthrough-scenario-b.md",
+          "description": "ウォークスルーシナリオB"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/walkthrough-scenario-c.md",
+          "description": "ウォークスルーシナリオC"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト結果レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項リスト"
+        }
+      ]
+    },
+    {
+      "status": "completed",
+      "completedAt": "2026-03-16T01:14:47.896Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase12準拠チェック結果"
+        }
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "作成/評価/実行/改善の履歴イベントが定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "再利用や推薦に使うフィードバックデータが定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "Task05 の再利用導線と連動している",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "Task08 の公開判断材料へ接続できる",
+      "verified": false
+    }
+  ],
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-16",
+  "lastUpdated": "2026-03-16T01:14:47.896Z"
+}

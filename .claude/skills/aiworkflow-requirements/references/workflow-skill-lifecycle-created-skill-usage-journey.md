@@ -59,6 +59,21 @@ node scripts/search-spec.js "workspacePath" -C 3
 
 ---
 
+## Task07 依存契約（TASK-SKILL-LIFECYCLE-07）
+
+| 依存項目 | 契約内容 |
+| --- | --- |
+| SkillAggregateView | Task07 が算出する集約ビュー。成功率（`successRate`）・トレンド（`scoreTrend: ScoreDataPoint[]`）・推薦スコア（`recommendationScore`）を保持する |
+| Task05 UI への提供 | Task07 の SkillAggregateView は Task05 の UI コンポーネント（SkillCard / SkillDetailPanel）に品質指標を提供し、「履歴から再利用」シナリオの判断材料となる |
+| フィードバック連携 | Task07 の SkillFeedback がユーザー評価を蓄積し、推薦スコア算出の入力として使用される |
+
+### 参照リンク
+
+- Task07 設計: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`
+- Task07 要件: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-1-requirements.md`
+
+---
+
 ## 現行 workflow 仕様書
 
 | 区分 | パス |

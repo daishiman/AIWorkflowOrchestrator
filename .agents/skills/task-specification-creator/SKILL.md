@@ -381,6 +381,8 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.6** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: Phase 11 テンプレートにウォークスルー発見事項リアルタイム分類欄（Blocker/Note/Info）を追加。Phase 12 テンプレートに Phase 10 MINOR 追跡テーブルと docs-only モードフラグを追加。Phase 3 テンプレートに MINOR 追跡テーブル（解決予定Phase/解決確認Phase列）を追加。Phase 12 documentation guide に設計タスクでも実ファイル更新必須の注意を追加。spec-update-workflow.md に新規型定義の配置判断フローと interfaces-agent-sdk-skill-*.md ファミリー配置ルールを追加 |
+| **v10.09.5** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 設計完了**: ライフサイクル履歴型定義（SkillLifecycleEvent 5カテゴリ18イベント種別）・SkillAggregateView 集約ロジック・SkillFeedback 4種別還流設計・PublishReadinessMetrics Task08公開判断メトリクス契約・Task05/08連携データ供給経路定義を反映。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出 |
 | **v10.09.5** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了。Phase 4-5 統合実行パターンの教訓を記録** |
 | **v10.09.5** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-06 スキルフィードバック SF-01/02/03 対応**: `references/phase-template-phase11.md` に設計タスク専用セクション（テスト方式=設計文書ウォークスルー、P53対策のNON_VISUAL記法）を追加。`references/phase-template-phase12.md` に設計タスク向け補足（SF-02: システム仕様書更新2段階方式、SF-03: 設計タスク特有未タスク4パターン）を追加 |
 | **v10.09.4** | **2026-03-15** | **UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 の Phase 12 再確認を反映**: `references/spec-update-workflow.md` / `references/unassigned-task-guidelines.md` の運用に沿って、`SKILL.md` 変更履歴更新（aiworkflow/task-spec 両方）を必須完了条件として明記。未タスクは `docs/30-workflows/unassigned-task/` の配置確認と `audit-unassigned-tasks --diff-from HEAD --target-file` の分離判定をセットで実施し、repo-wide テスト失敗を既存未タスクへ紐付ける判断基準を追補 |

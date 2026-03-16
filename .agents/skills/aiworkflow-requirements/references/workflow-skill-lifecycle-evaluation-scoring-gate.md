@@ -156,8 +156,24 @@ system spec へ同一 wave で同期するための統合正本。
 
 ---
 
+## Task04→Task07 評価イベント連携（TASK-SKILL-LIFECYCLE-07）
+
+| 連携項目 | 内容 |
+| --- | --- |
+| イベント種別 | `skill:evaluated` / `skill:score_updated` イベントが Task04 の評価フローから発火される |
+| 記録先 | Task07 の `lifecycle_events` テーブル（設計仕様）に時系列で記録される |
+| 集約への影響 | 記録されたイベントは SkillAggregateView の `scoreTrend`（ScoreDataPoint配列）に反映される |
+| ゲート連携 | `skill:gate_passed` / `skill:gate_failed` イベントも ScoringGate 判定結果として記録される |
+
+### 参照リンク
+
+- Task07 設計: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`
+
+---
+
 ## 変更履歴
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-16 | 1.1.0 | Task04→Task07 評価イベント連携セクションを追加（TASK-SKILL-LIFECYCLE-07 Phase 12） |
 | 2026-03-14 | 1.0.0 | `TASK-SKILL-LIFECYCLE-04` の実装内容・苦戦箇所・current canonical set・artifact inventory・legacy path 互換・same-wave 検証手順を統合した workflow 正本を新規作成 |

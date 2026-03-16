@@ -254,6 +254,15 @@
 
 ## 最新ログ
 
+### 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only設計タスク |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル |
+| 結果 | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
+| 検証 | Phase 1-12 全Phase完了、artifacts.json同期済み |
+
 ### 2026-03-13 - Phase 12 root evidence / split-aware unassigned audit
 
 | 項目 | 内容 |

@@ -1006,6 +1006,7 @@
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
+      "arch-state-management.md",
       "arch-ui-components-advanced.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-core.md",
@@ -1017,11 +1018,13 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-details.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill-reference.md",
+      "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -1082,6 +1085,7 @@
       "testing-component-patterns-advanced.md",
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
+      "ui-history-search-view.md",
       "ui-ux-agent-execution-details.md",
       "ui-ux-components-core.md",
       "ui-ux-feature-components-advanced.md",
@@ -1089,11 +1093,13 @@
       "ui-ux-feature-components-reference-organisms-history-surfaces.md",
       "ui-ux-feature-components-reference.md",
       "ui-ux-feature-skill-stream.md",
+      "ui-ux-history-panel.md",
       "ui-ux-navigation.md",
       "ui-ux-panels.md",
       "ui-ux-search-panel-details.md",
       "ui-ux-settings-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "core": [
       "api-ipc-agent-core.md",
@@ -1250,12 +1256,15 @@
       "api-ipc-agent-core.md",
       "arch-electron-services-details-part2.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "arch-state-management.md",
       "claude-code-agents-workflow.md",
       "claude-code-skills-structure.md",
       "error-handling-core.md",
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
@@ -1286,8 +1295,12 @@
       "logs-archive-legacy.md",
       "security-electron-ipc-advanced.md",
       "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "ui-history-search-view.md",
+      "ui-ux-history-panel.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "AUTH": [
       "api-ipc-agent-core.md",
@@ -2603,6 +2616,26 @@
       "arch-state-management-reference.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
+    "lifecycleHistorySlice": [
+      "arch-state-management.md"
+    ],
+    "feedbackSlice": [
+      "arch-state-management.md"
+    ],
+    "LIFECYCLE": [
+      "arch-state-management.md",
+      "claude-code-agents-workflow.md",
+      "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-skill.md",
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
+      "ui-history-search-view.md",
+      "ui-ux-history-panel.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
     "コンポーネントパターン": [
       "arch-ui-components-advanced.md",
       "arch-ui-components-core.md",
@@ -3414,7 +3447,8 @@
     "Task": [
       "claude-code-skills-agents.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "仕様書": [
       "claude-code-skills-agents.md",
@@ -4214,6 +4248,9 @@
       "task-workflow-backlog.md",
       "ui-ux-search-panel-details.md"
     ],
+    "ライフサイクルイベントモデル": [
+      "interfaces-agent-sdk-history.md"
+    ],
     "Integration": [
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
@@ -4278,6 +4315,9 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "testing-component-patterns-details.md",
       "ui-ux-feature-components-advanced.md"
+    ],
+    "ライフサイクル履歴型定義": [
+      "interfaces-agent-sdk-skill.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
@@ -8878,6 +8918,12 @@
     "view": [
       "task-workflow-completed-agent-view-line-budget.md"
     ],
+    "ライフサイクル履歴・フィードバック統合": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "設計完了記録": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
     "再監査記録": [
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md"
@@ -9304,6 +9350,9 @@
       "ui-history-search-view.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
+    "ライフサイクルタイムライン観測項目": [
+      "ui-history-search-view.md"
+    ],
     "高度な": [
       "ui-ux-advanced.md"
     ],
@@ -9556,6 +9605,9 @@
       "ui-ux-history-panel.md"
     ],
     "カスタムフック一覧": [
+      "ui-ux-history-panel.md"
+    ],
+    "ファミリー参照導線": [
       "ui-ux-history-panel.md"
     ],
     "選択機能": [
@@ -10077,6 +10129,9 @@
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "関心分離": [
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "評価イベント連携": [
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "sweep": [
