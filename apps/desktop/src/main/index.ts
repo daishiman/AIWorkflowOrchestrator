@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, session } from "electron";
+import { app, BrowserWindow, Menu, shell, session } from "electron";
 import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "./ipc";
@@ -265,6 +265,11 @@ if (!gotSingleInstanceLock) {
     app.on("browser-window-created", (_, window) => {
       optimizer.watchWindowShortcuts(window);
     });
+
+    // TODO(human): アプリケーションメニューのテンプレートを定義してください
+    // template 配列に MenuItemConstructorOptions[] を記述します
+    const template: Electron.MenuItemConstructorOptions[] = [];
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
     mainWindowRef = createWindow();
 
