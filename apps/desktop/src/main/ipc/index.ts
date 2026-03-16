@@ -86,6 +86,9 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import Database from "better-sqlite3";
+import { registerConversationHandlers } from "./conversationHandlers";
+import { ConversationRepository } from "../repositories/conversationRepository";
 import {
   AUTH_ERROR_CODES,
   PROFILE_ERROR_CODES,
@@ -95,6 +98,44 @@ import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
+
+/** Conversation DB スキーマ定義 */
+const CONVERSATION_DB_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS chat_sessions (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    message_count INTEGER NOT NULL DEFAULT 0,
+    is_favorite INTEGER NOT NULL DEFAULT 0,
+    is_pinned INTEGER NOT NULL DEFAULT 0,
+    pin_order INTEGER,
+    last_message_preview TEXT,
+    metadata JSON NOT NULL DEFAULT '{}',
+    deleted_at TEXT
+  );
+  CREATE TABLE IF NOT EXISTS chat_messages (
+    id TEXT PRIMARY KEY,
+    session_id TEXT NOT NULL,
+    role TEXT NOT NULL,
+    content TEXT NOT NULL,
+    message_index INTEGER NOT NULL,
+    timestamp TEXT NOT NULL,
+    llm_provider TEXT,
+    llm_model TEXT,
+    llm_metadata JSON,
+    attachments JSON NOT NULL DEFAULT '[]',
+    system_prompt TEXT,
+    metadata JSON NOT NULL DEFAULT '{}',
+    FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
+  );
+  CREATE INDEX IF NOT EXISTS idx_chat_sessions_user_id ON chat_sessions(user_id);
+  CREATE INDEX IF NOT EXISTS idx_chat_sessions_created_at ON chat_sessions(created_at DESC);
+  CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON chat_messages(session_id);
+  CREATE UNIQUE INDEX IF NOT EXISTS idx_chat_messages_session_message
+    ON chat_messages(session_id, message_index);
+`;
 
 /** ハンドラ登録失敗情報 */
 export interface HandlerRegistrationFailure {
@@ -866,6 +907,31 @@ export function registerAllIpcHandlers(
     );
   });
 
+  // --- 13. Conversation handlers ---
+  const conversationRegistered = safeRegister(
+    "registerConversationHandlers",
+    () => {
+      const conversationDbPath = path.join(
+        homeDir,
+        ".claude",
+        "conversations.db",
+      );
+      const db = new Database(conversationDbPath);
+      db.pragma("journal_mode = WAL");
+      db.exec(CONVERSATION_DB_SCHEMA);
+      const conversationRepository = new ConversationRepository(db);
+      registerConversationHandlers(conversationRepository);
+    },
+    failures,
+  );
+  if (conversationRegistered) {
+    successCount++;
+  } else {
+    track("registerConversationFallbackHandlers", () =>
+      registerConversationFallbackHandlers(),
+    );
+  }
+
   // --- サマリーログ ---
   if (failures.length > 0) {
     console.error(
@@ -983,6 +1049,30 @@ function registerAvatarFallbackHandlers(): void {
   ];
 
   registerFallbackHandlers(fallbackAvatarHandlers);
+}
+
+/**
+ * Register fallback conversation handlers when database initialization fails
+ * These handlers return appropriate "database not available" responses
+ */
+function registerConversationFallbackHandlers(): void {
+  const dbNotAvailableResponse = {
+    success: false as const,
+    error: {
+      code: "DB_NOT_AVAILABLE",
+      message: "Conversation database is not available",
+    },
+  };
+  const fallbackConversationHandlers: ReadonlyArray<FallbackHandler> = [
+    [IPC_CHANNELS.CONVERSATION_LIST, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_GET, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_CREATE, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_UPDATE, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_DELETE, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_ADD_MESSAGE, async () => dbNotAvailableResponse],
+    [IPC_CHANNELS.CONVERSATION_SEARCH, async () => dbNotAvailableResponse],
+  ];
+  registerFallbackHandlers(fallbackConversationHandlers);
 }
 
 // Re-export for menu actions

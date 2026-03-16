@@ -457,6 +457,9 @@
 | UT-06-008 | タイムアウトカウンタリセット仕様明確化（AllowedToolEntryV2 の expiresAt と allowedAt の再許可時リセット挙動の仕様化） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-008-timeout-counter-reset-spec.md` |
 | UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001 | Main Process index.ts トップレベル副作用モジュール分離ガード | 中 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-main-process-module-extraction-guard-001.md` |
 | UT-IMP-SMALL-SCALE-WORKFLOW-OPTIMIZATION-001 | 小規模修正向け軽量ワークフローバリアント定義 | 低 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-small-scale-workflow-optimization-001.md` |
+| UT-COVERAGE-INDEX-TS-EXCLUSION-001 | vitest.config.ts の `**/index.ts` 除外パターンが実装ロジック含む ipc/index.ts もカバレッジから除外 | 低 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION Phase 7（2026-03-16） | `docs/30-workflows/unassigned-task/task-coverage-index-ts-exclusion-001.md` |
+| UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001 | IPC ハンドラグループ内 P42 バリデーション一貫性監査。conversation:search で検出された intra-group 不整合パターンの自動検出 | 中 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 再監査（2026-03-16） | `docs/30-workflows/unassigned-task/task-ipc-p42-intra-group-consistency-audit-001.md` |
+| UT-ARTIFACTS-JSON-FILEPATH-VALIDATION-001 | artifacts.json 参照ファイルパスの実在検証自動化。15件のファントムファイル参照を検出した経験から | 中 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 再監査（2026-03-16） | `docs/30-workflows/unassigned-task/task-artifacts-json-filepath-validation-001.md` |
 
 ### 未タスク管理ルール
 

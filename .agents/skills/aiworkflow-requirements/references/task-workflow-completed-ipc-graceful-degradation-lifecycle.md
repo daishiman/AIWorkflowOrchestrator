@@ -5,6 +5,44 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION Conversation IPC ハンドラ登録修正（2026-03-16）
+
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION                                           |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + テスト + 仕様同期）**                                   |
+| 完了日     | 2026-03-16                                                                               |
+| 対象       | `registerAllIpcHandlers()` に Section 13（Conversation IPC ハンドラ登録）を追加          |
+| 成果物     | `docs/30-workflows/TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION/outputs/`              |
+
+#### 実施内容
+
+- `ipc/index.ts` Section 13 追加: `safeRegister` + fallback パターンで conversation 7チャンネルを登録
+- `better-sqlite3` による `conversations.db` の WAL モード初期化 + `CONVERSATION_DB_SCHEMA` DDL 実行
+- `ConversationRepository` 生成と `registerConversationHandlers()` 呼び出し
+- DB 初期化失敗時の Graceful Degradation（`registerConversationFallbackHandlers()` で `DB_NOT_AVAILABLE` 返却）
+- `unregisterAllIpcHandlers()` で conversation チャンネルも自動解除（P5 対策）
+- テスト: 176 tests ALL PASS（register-conversation-handlers 22 + ipc-double-registration 17 + ipc-graceful-degradation 19 + conversationHandlers 96 + conversationRepository 22）
+
+#### 教訓
+
+| 項目       | 内容                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| 苦戦箇所   | `conversation:search` ハンドラのみ P42 準拠バリデーションが欠落していた（再監査で発見・修正） |
+| 対処       | 他6ハンドラと同じ3段バリデーション（falsy → 空文字列 → trim空文字列）を追加 |
+| 標準ルール | 新規ハンドラ追加時は全ハンドラの横断バリデーションチェックを必須とする |
+
+#### 関連仕様書更新
+
+| 仕様書 | 更新内容 |
+|---|---|
+| `LOGS.md` (x2) | 完了記録追加（P1/P25 対策） |
+| `SKILL.md` (x2) | 変更履歴 v9.01.98 / v10.09.8 追加 |
+| `task-workflow-backlog.md` | 未タスク UT-COVERAGE-INDEX-TS-EXCLUSION-001 登録 |
+| `quality-requirements-details.md` | カバレッジ除外設定注意事項追加 |
+
+---
+
 ### タスク: TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 registerAllIpcHandlers Graceful Degradation（2026-03-08）
 
 | 項目       | 値                                                                                       |

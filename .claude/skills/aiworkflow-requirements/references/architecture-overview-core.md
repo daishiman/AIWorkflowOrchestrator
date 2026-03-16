@@ -91,6 +91,7 @@
 | **Slice Pattern** | Zustand Store | 機能単位の状態分離 | arch-state-management.md |
 | **IPC Handler Registration** | registerAllIpcHandlers | ハンドラの一元管理 | arch-ipc-persistence.md |
 | **IPC Handler Lifecycle** | unregisterAllIpcHandlers | macOS activate時の二重登録防止 | security-electron-ipc.md |
+| **Conversation DB Graceful Degradation** | registerConversationHandlers | DB障害時のフォールバック応答 | arch-ipc-persistence.md |
 | **Whitelist Pattern** | IPC Channel定義 | セキュアな通信 | security-electron-ipc.md |
 
 📖 詳細: [architecture-patterns.md](./architecture-patterns.md)
@@ -198,6 +199,18 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | **Type Safety** | StateCreator型による型安全性 |
 
 📖 詳細: [arch-state-management.md](./arch-state-management.md)
+
+### Conversation 永続化アーキテクチャ（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION）
+
+| 項目 | 内容 |
+|-----|------|
+| データストア | better-sqlite3（WAL mode） |
+| スキーマ | chat_sessions + chat_messages（4インデックス） |
+| IPC チャンネル | conversation:create/get/list/add-message/update-title/delete/search |
+| 登録パターン | safeRegister + track（Section 13） |
+| 障害時動作 | Graceful Degradation（ERR_4006 DB_NOT_AVAILABLE） |
+
+📖 詳細: [arch-ipc-persistence.md](./arch-ipc-persistence.md), [database-schema.md](./database-schema.md)
 
 ---
 

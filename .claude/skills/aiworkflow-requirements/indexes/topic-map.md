@@ -239,12 +239,12 @@ node scripts/list-specs.js --topics
 | 設計思想 | L12 |
 | レイヤー構成 | L39 |
 | デザインパターン | L69 |
-| UI/UXアーキテクチャ | L100 |
-| セキュリティアーキテクチャ | L145 |
-| 状態管理アーキテクチャ | L179 |
-| データフローアーキテクチャ | L204 |
-| ディレクトリ構造 | L286 |
-| データ構造（型システム） | L348 |
+| UI/UXアーキテクチャ | L101 |
+| セキュリティアーキテクチャ | L146 |
+| 状態管理アーキテクチャ | L180 |
+| データフローアーキテクチャ | L217 |
+| ディレクトリ構造 | L299 |
+| データ構造（型システム） | L361 |
 
 ### references/architecture-overview-details.md
 
@@ -860,8 +860,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| AI/チャット IPC チャネル | L6 |
 | Slide IPC API（スライド同期） | L52 |
 | Workspace File Watch IPC API（TASK-UI-04A） | L106 |
-| Electron IPC API設計 | L150 |
-| AIプロバイダーAPI連携 | L371 |
+| Conversation IPC API（会話履歴永続化） | L150 |
+| Electron IPC API設計 | L180 |
+| AIプロバイダーAPI連携 | L401 |
 
 ### references/api-ipc-system-details.md
 
@@ -1416,9 +1417,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L275 |
-| 実装例: notificationAPI（TASK-UI-08） | L327 |
-| 実装例: slideSettingsAPI | L360 |
+| 実装例: historyAPI | L297 |
+| 実装例: notificationAPI（TASK-UI-08） | L349 |
+| 実装例: slideSettingsAPI | L382 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2290,10 +2291,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| エラー分類 | L6 |
-| 認可エラー（UnauthorizedError） | L174 |
-| 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L239 |
-| リトライ戦略 | L283 |
-| SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L347 |
+| 認可エラー（UnauthorizedError） | L175 |
+| 外部ストレージ取得フォールバックパターン（TASK-FIX-4-2） | L240 |
+| リトライ戦略 | L284 |
+| SkillExecutor リトライ戦略（TASK-SKILL-RETRY-001） | L348 |
 
 ### references/error-handling-details.md
 
@@ -2381,6 +2382,7 @@ node scripts/list-specs.js --topics
 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001: SkillExecutor AuthKeyService DI経路統一（2026-03-05） | L216 |
 | TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001: OAuth後 sandbox iterable エラー原因分離（2026-03-06追補） | L281 |
 | TASK-FIX-AUTH-CALLBACK-SERVER-WORKER-EXIT-001: authCallbackServer timeout/stop 責務分離 | L344 |
+| TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION: Conversation IPC ハンドラ登録修正（2026-03-16） | L375 |
 
 ### references/lessons-learned-auth-ipc-file-ops-skill-creator-registration.md
 
@@ -3217,8 +3219,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| テスト戦略（TDD実践ガイド） | L6 |
-| セキュリティ | L333 |
-| 可用性 | L361 |
+| セキュリティ | L343 |
+| 可用性 | L371 |
 
 ### references/quality-requirements-history.md
 

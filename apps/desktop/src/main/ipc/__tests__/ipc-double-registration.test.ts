@@ -96,6 +96,13 @@ vi.mock("../../../preload/channels", () => ({
     AUTH_GET_SESSION: "auth:get-session",
     AUTH_REFRESH: "auth:refresh",
     AUTH_CHECK_ONLINE: "auth:check-online",
+    CONVERSATION_LIST: "conversation:list",
+    CONVERSATION_GET: "conversation:get",
+    CONVERSATION_CREATE: "conversation:create",
+    CONVERSATION_UPDATE: "conversation:update",
+    CONVERSATION_DELETE: "conversation:delete",
+    CONVERSATION_ADD_MESSAGE: "conversation:addMessage",
+    CONVERSATION_SEARCH: "conversation:search",
     PROFILE_GET: "profile:get",
     PROFILE_UPDATE: "profile:update",
     PROFILE_DELETE: "profile:delete",
@@ -266,6 +273,56 @@ vi.mock("../../services/skill/SkillChainExecutor", () => ({
     executeChain: vi.fn().mockResolvedValue({}),
   })),
 }));
+vi.mock("../skillAnalyticsHandlers", () => ({
+  registerSkillAnalyticsHandlers: vi.fn(),
+}));
+vi.mock("../skillDebugHandlers", () => ({
+  registerSkillDebugHandlers: vi.fn(),
+}));
+vi.mock("../skillFileHandlers", () => ({
+  registerSkillFileHandlers: vi.fn(),
+}));
+vi.mock("../historySearchHandlers", () => ({
+  createHistorySearchService: vi.fn().mockReturnValue({}),
+  registerHistorySearchHandlers: vi.fn(),
+}));
+vi.mock("../notificationHandlers", () => ({
+  createNotificationService: vi.fn().mockReturnValue({}),
+  registerNotificationHandlers: vi.fn(),
+}));
+vi.mock("../../services/skill/SkillFileManager", () => ({
+  SkillFileManager: vi.fn().mockImplementation(() => ({})),
+}));
+vi.mock("../../services/skill/ScheduleStore", () => ({
+  ScheduleStore: vi.fn().mockImplementation(() => ({})),
+}));
+vi.mock("../../services/skill/SkillScheduler", () => ({
+  SkillScheduler: vi.fn().mockImplementation(() => ({
+    initialize: vi.fn().mockResolvedValue(undefined),
+  })),
+}));
+vi.mock("../../services/skill/AnalyticsStore", () => ({
+  AnalyticsStore: vi.fn().mockImplementation(() => ({})),
+}));
+vi.mock("../../services/skill/SkillAnalytics", () => ({
+  SkillAnalytics: vi.fn().mockImplementation(() => ({})),
+}));
+vi.mock("../../services/skill/SkillDocGenerator", () => ({
+  SkillDocGenerator: vi.fn().mockImplementation(() => ({})),
+}));
+vi.mock("better-sqlite3", () => ({
+  default: vi.fn().mockReturnValue({
+    pragma: vi.fn(),
+    exec: vi.fn(),
+    close: vi.fn(),
+  }),
+}));
+vi.mock("../conversationHandlers", () => ({
+  registerConversationHandlers: vi.fn(),
+}));
+vi.mock("../../repositories/conversationRepository", () => ({
+  ConversationRepository: vi.fn().mockImplementation(() => ({})),
+}));
 
 // --- テスト対象のインポート ---
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
@@ -378,6 +435,18 @@ describe("IPC Handler Double Registration Prevention", () => {
 
       // Step 2: 登録解除（activate 前の cleanup 相当）
       expect(() => unregisterAllIpcHandlers()).not.toThrow();
+
+      // conversation チャンネルが unregister されていること
+      const removedChannels = mockIpcMainRemoveHandler.mock.calls.map(
+        (call) => call[0],
+      );
+      expect(removedChannels).toContain("conversation:list");
+      expect(removedChannels).toContain("conversation:get");
+      expect(removedChannels).toContain("conversation:create");
+      expect(removedChannels).toContain("conversation:update");
+      expect(removedChannels).toContain("conversation:delete");
+      expect(removedChannels).toContain("conversation:addMessage");
+      expect(removedChannels).toContain("conversation:search");
 
       // Step 3: 再登録（activate で新 window 作成後）
       expect(() => registerAllIpcHandlers(mockWindow)).not.toThrow();

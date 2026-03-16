@@ -60,6 +60,8 @@ const {
   mockRegisterSkillCreatorHandlers,
   mockRegisterClaudeCliHandlers,
   mockRegisterChatEditHandlers,
+  mockDatabaseConstructor,
+  mockRegisterConversationHandlers,
 } = vi.hoisted(() => {
   const mockWebContentsSend = vi.fn();
   const mockIsDestroyed = vi.fn().mockReturnValue(false);
@@ -115,6 +117,12 @@ const {
     mockRegisterSkillCreatorHandlers: vi.fn(),
     mockRegisterClaudeCliHandlers: vi.fn(),
     mockRegisterChatEditHandlers: vi.fn(),
+    mockDatabaseConstructor: vi.fn().mockReturnValue({
+      pragma: vi.fn(),
+      exec: vi.fn(),
+      close: vi.fn(),
+    }),
+    mockRegisterConversationHandlers: vi.fn(),
   };
 });
 
@@ -353,6 +361,15 @@ vi.mock("../../services/skill/SkillAnalytics", () => ({
 vi.mock("../../services/skill/SkillDocGenerator", () => ({
   SkillDocGenerator: vi.fn().mockImplementation(() => ({})),
 }));
+vi.mock("better-sqlite3", () => ({
+  default: mockDatabaseConstructor,
+}));
+vi.mock("../conversationHandlers", () => ({
+  registerConversationHandlers: mockRegisterConversationHandlers,
+}));
+vi.mock("../../repositories/conversationRepository", () => ({
+  ConversationRepository: vi.fn().mockImplementation(() => ({})),
+}));
 
 // --- テスト対象のインポート ---
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
@@ -570,6 +587,7 @@ describe("IPC Handler Graceful Degradation", () => {
         mockRegisterSkillCreatorHandlers,
         mockRegisterClaudeCliHandlers,
         mockRegisterChatEditHandlers,
+        mockRegisterConversationHandlers,
       ];
       for (const mock of allMocks) {
         mock.mockImplementationOnce(() => {
@@ -580,9 +598,9 @@ describe("IPC Handler Graceful Degradation", () => {
       mockSetupThemeWatcher.mockImplementationOnce(() => {
         throw new Error("theme watcher failed");
       });
-      // ipcMain.handle を一時的に失敗させて registerAuthFallbackHandlers も失敗させる
-      // fallback ハンドラは ipcMain.handle を5回呼ぶため、十分な回数を設定
-      for (let i = 0; i < 10; i++) {
+      // ipcMain.handle を一時的に失敗させて registerAuthFallbackHandlers + conversation fallback も失敗させる
+      // fallback ハンドラは ipcMain.handle を合計12回以上呼ぶため、十分な回数を設定
+      for (let i = 0; i < 20; i++) {
         mockIpcMainHandle.mockImplementationOnce(() => {
           throw new Error("ipc handle failed");
         });

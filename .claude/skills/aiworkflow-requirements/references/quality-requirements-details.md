@@ -115,6 +115,16 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 - 設定の退行防止として、設定検証テストを1件以上維持する
 - 未処理 Promise 拒否が発生した場合は設定で隠蔽せず、テスト/実装側で根本修正する
 
+### `coveragePathIgnorePatterns` 設定注意事項
+
+`apps/desktop/vitest.config.ts` の `coveragePathIgnorePatterns` に `**/index.ts` を含む場合、バレルエクスポート専用ファイルだけでなく実装ロジックを含む `index.ts` もカバレッジ計測対象外になる。
+
+| 問題 | 対象ファイル | 状況 |
+| ---- | ------------ | ---- |
+| `**/index.ts` 一括除外 | `apps/desktop/src/main/ipc/index.ts` | `registerAllIpcHandlers()` 等の実装ロジックが除外される |
+
+- 未タスク: `UT-COVERAGE-INDEX-TS-EXCLUSION-001`（`docs/30-workflows/unassigned-task/task-coverage-index-ts-exclusion-001.md`）
+
 ### `@repo/shared` alias 管理ルール（TASK-FIX-10-1 2026-02-19更新）
 
 モノレポ環境でのVitest解決エラーを防ぐため、`@repo/shared` のサブパス alias を明示管理する。
