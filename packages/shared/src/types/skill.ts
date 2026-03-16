@@ -527,6 +527,9 @@ export interface SkillPermissionResponse {
 
   /** 拒否理由（オプション） */
   rejectReason?: string;
+
+  /** 現在のツールをスキップして後続を継続するか（UT-06-005） */
+  skip?: boolean;
 }
 
 // ========================================

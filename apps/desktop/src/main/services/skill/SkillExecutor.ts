@@ -228,6 +228,28 @@ export type HooksStreamMessage =
 // Constants
 // =================================================================
 
+/** abort 理由 */
+export type AbortReason = "denied" | "timeout" | "max_retries" | "unknown";
+
+/** Permission フローコンテキスト */
+export interface PermissionFlowContext {
+  executionId: string;
+  requestId: string;
+  toolName: string;
+  retryCount: number;
+  maxRetries: number;
+}
+
+/** Permission フロー判定結果 */
+export interface PermissionFlowResult {
+  action: "approved" | "skip" | "retry" | "abort";
+  reason?: AbortReason;
+  retryCount?: number;
+}
+
+/** Permission リトライ最大回数 */
+const PERMISSION_MAX_RETRIES = 3;
+
 /** デフォルトのツールリスト */
 const DEFAULT_TOOLS = ["Read", "Edit", "Bash", "Glob", "Grep"] as const;
 
@@ -470,6 +492,8 @@ export class SkillExecutor {
   private permissionResolver: PermissionResolver;
   private permissionStore: IPermissionStore | null;
   private authKeyService: IAuthKeyService | null;
+  private retryCounters: Map<string, number> = new Map();
+  private abortedExecutions: Set<string> = new Set();
 
   /**
    * コンストラクタ
@@ -1056,6 +1080,7 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     // 一定時間後に Map から削除（履歴保持のため即削除しない）
     setTimeout(() => {
       this.activeExecutions.delete(executionId);
+      this.abortedExecutions.delete(executionId);
     }, HISTORY_RETENTION_MS);
   }
 
@@ -1489,5 +1514,169 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
 
     // 応答を待機
     return this.permissionResolver.waitForResponse(requestId, signal);
+  }
+
+  // =================================================================
+  // UT-06-005: Permission Fallback Flows
+  // abort/skip/retry/timeout フォールバック制御
+  // =================================================================
+
+  /**
+   * Permission応答のフォールバック処理
+   *
+   * フロー分岐:
+   * - approved=true → { action: "approved" }
+   * - approved=false, skip=true → { action: "skip" }
+   * - approved=false, retryCount < maxRetries → { action: "retry" }
+   * - approved=false, retryCount >= maxRetries → { action: "abort", reason: "max_retries" }
+   *
+   * NFR-1: 不明なエラー時は fail-closed（abort）
+   */
+  async processPermissionFallback(
+    response: SkillPermissionResponse,
+    context: PermissionFlowContext,
+  ): Promise<PermissionFlowResult> {
+    try {
+      // approved の場合
+      if (response.approved) {
+        return { action: "approved" };
+      }
+
+      // skip の場合
+      if ("skip" in response && response.skip === true) {
+        console.info(
+          `[SkillExecutor] skip: tool=${context.toolName}, executionId=${context.executionId}`,
+        );
+        return { action: "skip" };
+      }
+
+      // retry 判定
+      const maxRetries = context.maxRetries ?? PERMISSION_MAX_RETRIES;
+      const nextRetryCount = context.retryCount + 1;
+      if (nextRetryCount >= maxRetries) {
+        // max retries 到達 → abort
+        console.warn(
+          `[SkillExecutor] max_retries reached: retryCount=${nextRetryCount}, executionId=${context.executionId}`,
+        );
+        await this.executeAbortFlow("max_retries", context.executionId);
+        return {
+          action: "abort",
+          reason: "max_retries",
+          retryCount: nextRetryCount,
+        };
+      }
+
+      // retry
+      console.info(
+        `[SkillExecutor] retry: retryCount=${nextRetryCount}/${maxRetries}, executionId=${context.executionId}`,
+      );
+      this.retryCounters.set(context.requestId, nextRetryCount);
+      return {
+        action: "retry",
+        retryCount: nextRetryCount,
+      };
+    } catch (error: unknown) {
+      // NFR-1: fail-closed
+      console.error(
+        "[SkillExecutor] unknown error in permission fallback",
+        error,
+      );
+      await this.executeAbortFlow("unknown", context.executionId);
+      return { action: "abort", reason: "unknown" };
+    }
+  }
+
+  /**
+   * abort 4ステップフローの実行
+   *
+   * Step 1: cancelAll() - 全pending permissionリクエストをキャンセル
+   * Step 2: revokeSessionEntries(executionId) - セッション内一時許可を取消
+   * Step 3: log - abort イベントをログに記録
+   * Step 4: IPC - Renderer に abort 通知を送信
+   *
+   * NFR-3: 冪等性 - 二重 abort でエラー非発生
+   */
+  async executeAbortFlow(
+    reason: AbortReason,
+    executionId: string,
+  ): Promise<void> {
+    // 冪等性: 既に aborted なら何もしない
+    if (this.abortedExecutions.has(executionId)) {
+      return;
+    }
+    this.abortedExecutions.add(executionId);
+
+    // Step 1: cancelAll
+    try {
+      this.permissionResolver.cancelAll();
+    } catch (error: unknown) {
+      console.error("[SkillExecutor] cancelAll failed during abort", error);
+    }
+
+    // Step 2: revokeSessionEntries
+    try {
+      if (this.permissionStore) {
+        const revokedCount =
+          this.permissionStore.revokeSessionEntries?.(executionId) ?? 0;
+        if (revokedCount > 0) {
+          console.info(
+            `[SkillExecutor] revoked ${revokedCount} session entries`,
+          );
+        }
+      }
+    } catch (error: unknown) {
+      console.error(
+        "[SkillExecutor] revokeSessionEntries failed during abort",
+        error,
+      );
+    }
+
+    // Step 3: log
+    console.warn(
+      `[SkillExecutor] abort: reason=${reason}, executionId=${executionId}`,
+    );
+
+    // Step 4: IPC notification
+    if (!this.mainWindow.isDestroyed()) {
+      this.sendStream({
+        executionId,
+        id: uuidv4(),
+        type: "error",
+        content: `Execution aborted: ${reason}`,
+        timestamp: Date.now(),
+        isComplete: true,
+      });
+    }
+
+    // 状態更新
+    this.updateExecutionState(executionId, "aborted");
+
+    // リトライカウンタクリア
+    this.retryCounters.clear();
+  }
+
+  /**
+   * skip フローの実行
+   *
+   * 現在のツール実行をスキップし、後続処理を継続する。
+   * ExecutionState は "running" のまま維持。
+   */
+  executeSkipFlow(executionId: string, toolName: string): void {
+    // ログ記録
+    console.info(
+      `[SkillExecutor] skip: toolName=${toolName}, executionId=${executionId}`,
+    );
+
+    // IPC通知
+    if (!this.mainWindow.isDestroyed()) {
+      this.sendStream({
+        executionId,
+        id: uuidv4(),
+        type: "tool_use",
+        content: `Tool skipped: ${toolName}`,
+        timestamp: Date.now(),
+        isComplete: false,
+      });
+    }
   }
 }

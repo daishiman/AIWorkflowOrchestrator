@@ -19,6 +19,7 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 の教訓3件を追加。Main Process エントリポイント副作用によるテスト不可能問題、Electron role ベースメニューの検証手法、小規模修正での13 Phase ワークフロー適用を追記 |
+| 2026-03-16 | 1.29.96 | UT-06-005 の苦戦箇所3件（S-PF-1: 既実装コードの4ステップ abort フロー発見遅延 / S-PF-2: revokeSessionEntries スタブ実装の設計判断 / S-PF-3: PERMISSION_MAX_RETRIES デッドコード化と abortedExecutions メモリリーク検出）と5分解決カードを追加 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-07 の教訓4件を追加。設計タスク Phase 12 の実ファイル更新必須化、Phase 3 MINOR 追跡マトリクス、バックグラウンドエージェント timeout 対策、コンテキスト消失対策を追記 |
 | 2026-03-16 | 1.29.95 | TASK-SKILL-LIFECYCLE-06 の苦戦箇所3件（P57: 設計タスク仕様書更新先送り / P58: 未タスク指示書配置省略 / P59: 並列エージェント changelog 件数不整合）を追加。`06-known-pitfalls.md` P57〜P59 として登録 |
 | 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 苦戦箇所6追加。Phase 12 本文と成果物の実績乖離、3ファイル同値同期ルール追記 |
@@ -168,6 +169,46 @@ expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
 1. LLM adapter 差し替えは `bind()` パターンで既存シグネチャに合わせ、Generator クラス本体を変更しない。
 2. CapabilityResolver の terminal-handoff パスは「失敗後 fallback」として設計し、事前判定と混在させない。
 3. Phase 4-5 は同一エージェントで Red-Green サイクルを完結させる。
+
+---
+
+### 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout）
+
+#### 苦戦箇所 S-PF-1: 既実装コードの4ステップ abort フロー発見遅延
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4 でテストを書き始めた段階で、abort 4ステップ（cancelAll→revokeSessionEntries→log→IPC通知）が既に SkillExecutor.ts に実装済みだった。Phase 1-3 で「新規実装」前提で仕様を書いたため、既存コードとの重複リスクが発生 |
+| 再発条件 | 大規模ファイル（SkillExecutor.ts 1500行超）のコード調査が不十分なまま Phase 1 に入る場合 |
+| 解決策 | Phase 1 で `git log --oneline -- <target-file>` と `grep -n "abort\|fallback\|retry" <target-file>` を実行し、既存実装の有無を確認してから要件を策定する |
+| 関連パターン | P50（既実装防御の発見による Phase 転換）|
+| 関連タスク | UT-06-005 |
+
+#### 苦戦箇所 S-PF-2: revokeSessionEntries スタブ実装の設計判断
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | abort フローの Step 2（revokeSessionEntries）がスタブ実装（全エントリクリア）のまま。セッション別フィルタリングには AllowedToolEntry に sessionId 追加が必要で、UT-06-005 のスコープ外と判断した |
+| 再発条件 | 既存の型定義（AllowedToolEntry）を拡張すると、関連テスト・仕様書への影響範囲が広すぎる場合 |
+| 解決策 | スタブ実装を選択し、本格実装を UT-06-005-B として未タスク化。スタブ判断の根拠を Phase 2 設計ドキュメントに明記する |
+| 関連タスク | UT-06-005, UT-06-005-B |
+
+#### 苦戦箇所 S-PF-3: PERMISSION_MAX_RETRIES デッドコード化と abortedExecutions メモリリーク
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 10 最終レビューで2件の品質問題を検出: (1) `PERMISSION_MAX_RETRIES=3` が定数として定義されているが、retryCounters で直接 `3` がハードコードされデッドコード化 (2) `abortedExecutions: Set<string>` にクリア機構がなくメモリリーク |
+| 再発条件 | 定数を定義しても使用箇所で参照せず直値を使うパターン、Set/Map のクリーンアップ忘れ |
+| 解決策 | (1) retryCounters の条件を `PERMISSION_MAX_RETRIES` 参照に変更 (2) abortedExecutions にセッション単位のクリア機構を追加 |
+| 関連タスク | UT-06-005 |
+
+#### 同種課題の5分解決カード
+
+1. `grep -n "abort\|fallback\|retry\|skip" <target-file>` で既存実装を確認
+2. 既実装の場合は Phase 4-5 を「検証・補完」モードに切り替え（P50 準拠）
+3. スタブ実装が必要な場合は Phase 2 に判断根拠を記録し、未タスク化を Phase 12 Task 4 に組み込む
+4. 定数定義は `grep -rn "CONST_NAME" <file>` で使用箇所を確認、未使用は即修正
+5. Set/Map を使う場合は cleanup 機構（セッション終了時の clear/delete）を設計段階で明記
 
 ---
 

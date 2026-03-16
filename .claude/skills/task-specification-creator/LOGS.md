@@ -15,6 +15,22 @@
   - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
 
 ---
+## 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - SkillExecutor の Permission 拒否時フォールバック制御（abort/skip/retry/timeout）を実装
+  - processPermissionFallback / executeAbortFlow / executeSkipFlow の3メソッドを SkillExecutor.ts に追加（+187行）
+  - PermissionStore.ts に revokeSessionEntries メソッドを追加（+20行）
+  - IPermissionStore インターフェースに revokeSessionEntries? を追加（+10行）
+  - SkillPermissionResponse に skip?: boolean フィールドを追加（+3行）
+  - SkillExecutor.fallback.test.ts に新規テスト23ケースを作成し全件 PASS 確認
+  - 全1293テスト PASS（既存1270 + 新規23）
+  - GitHub Issue #1250 完了
+
+---
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
 
 - **Agent**: task-specification-creator

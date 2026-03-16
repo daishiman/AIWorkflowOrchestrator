@@ -52,6 +52,7 @@
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
+| Permission Fallback（abort/skip/retry/timeout） | interfaces-agent-sdk-executor-core.md, interfaces-agent-sdk-executor-details.md, security-skill-execution.md | workflow-permission-fallback-abort-skip-retry.md, interfaces-agent-sdk-skill-details.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
 | Skill Docs Runtime実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義） | interfaces-agent-sdk-skill-reference-share-debug-analytics.md | api-ipc-agent-details.md, security-electron-ipc-advanced.md           |
 | Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |

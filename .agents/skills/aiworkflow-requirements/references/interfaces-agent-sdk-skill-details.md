@@ -314,11 +314,12 @@ Permission要求に対してユーザーの応答を送信する。
 
 #### SkillPermissionResponse
 
-| プロパティ       | 型        | 必須 | 説明             |
-| ---------------- | --------- | ---- | ---------------- |
-| `requestId`      | `string`  | ✓    | リクエストID     |
-| `approved`       | `boolean` | ✓    | 許可/拒否        |
-| `rememberChoice` | `boolean` | -    | 選択を記憶するか |
+| プロパティ       | 型        | 必須 | 説明                                               |
+| ---------------- | --------- | ---- | -------------------------------------------------- |
+| `requestId`      | `string`  | ✓    | リクエストID                                       |
+| `approved`       | `boolean` | ✓    | 許可/拒否                                          |
+| `rememberChoice` | `boolean` | -    | 選択を記憶するか                                   |
+| `skip`           | `boolean` | -    | 拒否時にスキップ（中断しない）するか（UT-06-005） |
 
 ---
 

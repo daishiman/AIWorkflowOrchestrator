@@ -1,0 +1,195 @@
+# Phase 7: カバレッジ確認
+
+## メタ情報
+
+| 項目   | 値                                  |
+| ------ | ----------------------------------- |
+| Phase  | 7                                   |
+| 機能名 | UT-06-005-abort-skip-retry-fallback |
+| 作成日 | 2026-03-16                          |
+
+## 目的
+
+Phase 4-6 で作成したテストのカバレッジを計測し、プロジェクト基準（Line 80%+, Branch 60%+, Function 80%+）の達成を確認する。未達の場合は Phase 6 へ戻りテストを追加する。
+
+## 実行タスク
+
+- タスク1: カバレッジ計測の実行
+- タスク2: カバレッジ結果の分析
+- タスク3: 未達時の対応計画（Phase 6 へのフィードバック）
+- タスク4: 達成判定
+
+## 参照資料
+
+| 資料名           | パス                                                                            | 説明                 |
+| ---------------- | ------------------------------------------------------------------------------- | -------------------- |
+| Phase 4 テスト   | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.fallback.test.ts` | fallback テスト      |
+| Phase 5 実装     | `apps/desktop/src/main/services/skill/SkillExecutor.ts`                         | 対象実装ファイル     |
+| Phase 5 実装     | `apps/desktop/src/main/services/skill/PermissionStore.ts`                       | revokeSessionEntries |
+| Phase 6 拡充ログ | `outputs/phase-6/coverage-report.md`                                            | Phase 6 カバレッジ   |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                   | パス                                                                                         | 内容                                                               |
+| -------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 品質要件                   | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                  | カバレッジ基準                                                     |
+| セキュリティ（スキル実行） | `.claude/skills/aiworkflow-requirements/references/security-skill-execution.md`              | fail-closed原則                                                    |
+| 実装パターン               | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md`  | DI/状態遷移パターン                                                |
+| エラーハンドリング         | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                        | エラーコード体系                                                   |
+| エラーハンドリング（コア） | `.claude/skills/aiworkflow-requirements/references/error-handling-core.md`                   | エラーコード範囲（1000-5999）、ERR_2002 PERMISSION_DENIED          |
+| エラーハンドリング（詳細） | `.claude/skills/aiworkflow-requirements/references/error-handling-details.md`                | SkillExecutor実行エラーコード（PERMISSION_DENIED, TIMEOUT, ABORT） |
+| Agent SDK Executor（コア） | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor-core.md`    | ExecutionState列挙型、RetryConfig、SkillExecutionErrorCode         |
+| Agent SDK Executor（詳細） | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-executor-details.md` | PermissionResolver完全仕様、DEFAULT_TIMEOUT_MS=300000              |
+
+## 実行手順
+
+### ステップ1: カバレッジ計測の実行（タスク1）
+
+**P40準拠**: 対象パッケージディレクトリから実行する。
+
+```bash
+# 変更対象ファイルのカバレッジを計測
+cd apps/desktop && pnpm vitest run --coverage src/main/services/skill/__tests__/SkillExecutor.fallback.test.ts
+
+# skill ディレクトリ全体のカバレッジを計測（既存テスト含む）
+cd apps/desktop && pnpm vitest run --coverage src/main/services/skill/
+```
+
+### ステップ2: カバレッジ結果の分析（タスク2）
+
+#### カバレッジ基準テーブル
+
+| 指標              | 最低基準 | 推奨基準 | 計測結果 | 判定 |
+| ----------------- | -------- | -------- | -------- | ---- |
+| Line Coverage     | 80%      | 90%      | -        | -    |
+| Branch Coverage   | 60%      | 70%      | -        | -    |
+| Function Coverage | 80%      | 90%      | -        | -    |
+
+#### カバレッジ対象ファイル
+
+| ファイル             | 対象範囲                                                    | 備考             |
+| -------------------- | ----------------------------------------------------------- | ---------------- |
+| `SkillExecutor.ts`   | handlePermissionResponse, executeAbortFlow, executeSkipFlow | 新規追加メソッド |
+| `PermissionStore.ts` | revokeSessionEntries                                        | 新規追加メソッド |
+
+#### P41注意: v8 カバレッジプロバイダのインライン関数カウント
+
+Vitest の v8 カバレッジプロバイダは、インライン arrow function を独立した関数としてカウントする。以下のパターンに注意:
+
+- `cancelAll` に渡すコールバック
+- `retryCounters.forEach` 等のコールバック
+- IPC send のオプションオブジェクト内コールバック
+
+インライン関数が Function Coverage を低下させる場合、テストで明示的にコールバックを実行して検証する。
+
+### ステップ3: 未達時の対応計画（タスク3）
+
+カバレッジが基準未達の場合、以下の手順で Phase 6 へフィードバックする:
+
+| 判定 | 条件                         | 対応                                       |
+| ---- | ---------------------------- | ------------------------------------------ |
+| 達成 | 全指標が最低基準以上         | Phase 8 へ進行                             |
+| 未達 | いずれかの指標が最低基準未満 | Phase 6 へ戻り、未カバー箇所のテストを追加 |
+
+#### 未カバー箇所の特定手順
+
+```bash
+# カバレッジレポートの詳細を確認
+cd apps/desktop && pnpm vitest run --coverage --coverage.reporter=text src/main/services/skill/
+
+# HTML レポートで視覚的に確認（ローカル環境）
+cd apps/desktop && pnpm vitest run --coverage --coverage.reporter=html src/main/services/skill/
+```
+
+未カバー箇所が判明した場合、以下の情報を Phase 6 フィードバックに含める:
+
+1. 未カバーのファイル名・行番号
+2. 未カバーの分岐条件
+3. 追加すべきテストケースの概要
+
+### ステップ4: 達成判定（タスク4）
+
+全指標が最低基準を満たしている場合、以下を記録して Phase 8 へ進行する:
+
+- 最終カバレッジ数値
+- カバレッジレポートのスナップショット
+- 既存テストの PASS 確認結果（AC-12）
+
+```bash
+# 既存テストの PASS 最終確認
+cd apps/desktop && pnpm vitest run src/main/services/skill/__tests__/SkillExecutor.permission.test.ts
+cd apps/desktop && pnpm vitest run src/main/services/skill/__tests__/SkillExecutor.retry.test.ts
+```
+
+## 統合テスト連携【必須】
+
+カバレッジ計測結果から、統合ポイントのテスト漏れを検出する。
+
+| 統合ポイント                  | カバレッジ確認項目                                        | 未カバー時の対応 |
+| ----------------------------- | --------------------------------------------------------- | ---------------- |
+| SE → PR: cancelAll            | cancelAll の呼び出しパスが Line Coverage に含まれる       | Phase 6 で追加   |
+| SE → PS: revokeSessionEntries | revokeSessionEntries のパスが Branch Coverage に含まれる  | Phase 6 で追加   |
+| SE → IPC: 各チャンネル        | IPC send の分岐が Branch Coverage に含まれる              | Phase 6 で追加   |
+| 冪等性ガード                  | 二重呼び出し時の早期リターンが Branch Coverage に含まれる | Phase 6 で追加   |
+
+## 多角的チェック観点（AIが判断）
+
+| 観点       | 適用判断                                    | 仕様参照先                                         |
+| ---------- | ------------------------------------------- | -------------------------------------------------- |
+| テスト品質 | カバレッジ基準の達成確認が必要              | `aiworkflow-requirements: quality-requirements.md` |
+| P41 対策   | v8 プロバイダのインライン関数カウントに注意 | `.claude/rules/06-known-pitfalls.md`               |
+
+**Electronデスクトップアプリ観点**:
+
+| 層                   | 適用判断                                | 仕様参照先                                             |
+| -------------------- | --------------------------------------- | ------------------------------------------------------ |
+| バックエンド（Main） | Main Process 実装コードのカバレッジ計測 | `aiworkflow-requirements: quality-requirements.md`     |
+| IPC通信              | IPC 通知分岐の Branch Coverage 確認     | `aiworkflow-requirements: security-skill-execution.md` |
+
+## 成果物
+
+| 成果物             | パス                                   | 説明                |
+| ------------------ | -------------------------------------- | ------------------- |
+| カバレッジレポート | `outputs/phase-7/coverage-report.md`   | 計測結果と分析      |
+| 達成判定           | `outputs/phase-7/coverage-decision.md` | 達成/未達の判定結果 |
+
+## 完了条件
+
+- [ ] カバレッジ計測が実行されている
+- [ ] SkillExecutor.ts の変更部分: Line 80%+, Branch 60%+, Function 80%+
+- [ ] PermissionStore.ts の変更部分: Line 80%+, Branch 60%+, Function 80%+
+- [ ] P41 対策: インライン関数のカバレッジが確認されている
+- [ ] 未達の場合: Phase 6 へのフィードバック情報が記録されている
+- [ ] 達成の場合: 最終カバレッジ数値が記録されている
+- [ ] 既存テスト（permission.test.ts, retry.test.ts）が全て PASS している（AC-12）
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. カバレッジ計測の実行（タスク1）
+2. カバレッジ結果の分析（タスク2）
+3. 未達時の対応計画（タスク3、該当時のみ）
+4. 達成判定（タスク4）
+5. 成果物の作成・配置
+6. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/UT-06-005-abort-skip-retry-fallback --phase 7
+```
+
+## 次のPhase
+
+Phase 8: リファクタリング（カバレッジ基準達成の場合）。未達の場合は Phase 6 へ戻る。

@@ -210,6 +210,47 @@ SkillExecutorは、Main ProcessとRenderer Process間でIPCを介してストリ
 | `EXECUTION_FAILED`        | 実行失敗                                     |
 | `AUTHENTICATION_ERROR`    | 認証エラー（API Key 未設定・無効）TASK-FIX-16-1 |
 
+### Permission フォールバック型定義（UT-06-005）
+
+#### AbortReason
+
+Permission 拒否時の abort 理由を示す型。
+
+| 値 | 説明 |
+| --- | --- |
+| `"denied"` | Permission が明示的に拒否された |
+| `"timeout"` | PermissionResolver の応答待機タイムアウト（300000ms） |
+| `"max_retries"` | retry 上限（PERMISSION_MAX_RETRIES=3）に到達 |
+| `"unknown"` | 不明なエラー（fail-closed 原則により abort） |
+
+#### PermissionFlowContext
+
+Permission フォールバック処理のコンテキスト情報。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `executionId` | `string` | スキル実行ID |
+| `requestId` | `string` | Permission リクエストID |
+| `toolName` | `string` | ツール名 |
+| `retryCount` | `number` | 現在のリトライ回数 |
+| `maxRetries` | `number` | 最大リトライ回数（デフォルト: 3） |
+
+#### PermissionFlowResult
+
+Permission フォールバック処理の結果。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `action` | `"approved" \| "skip" \| "retry" \| "abort"` | 決定されたアクション |
+| `reason?` | `AbortReason` | abort 時の理由 |
+| `retryCount?` | `number` | retry 時のカウント |
+
+#### 設定定数
+
+| 定数 | 値 | 説明 |
+| --- | --- | --- |
+| `PERMISSION_MAX_RETRIES` | `3` | Permission リトライ最大回数 |
+
 #### ExecutionInfo
 
 実行情報（状態確認用）。

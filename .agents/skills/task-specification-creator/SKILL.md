@@ -381,6 +381,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.7** | **2026-03-16** | **UT-06-005 abort-skip-retry-fallback 完了記録を追加**: SkillExecutor への processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド実装、PermissionStore への revokeSessionEntries 追加、SkillPermissionResponse に skip?: boolean フィールド追加を記録。新規23テスト追加で全1293テストPASS |
 | **v10.09.6** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: Phase 11 テンプレートにウォークスルー発見事項リアルタイム分類欄（Blocker/Note/Info）を追加。Phase 12 テンプレートに Phase 10 MINOR 追跡テーブルと docs-only モードフラグを追加。Phase 3 テンプレートに MINOR 追跡テーブル（解決予定Phase/解決確認Phase列）を追加。Phase 12 documentation guide に設計タスクでも実ファイル更新必須の注意を追加。spec-update-workflow.md に新規型定義の配置判断フローと interfaces-agent-sdk-skill-*.md ファミリー配置ルールを追加 |
 | **v10.09.5** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 設計完了**: ライフサイクル履歴型定義（SkillLifecycleEvent 5カテゴリ18イベント種別）・SkillAggregateView 集約ロジック・SkillFeedback 4種別還流設計・PublishReadinessMetrics Task08公開判断メトリクス契約・Task05/08連携データ供給経路定義を反映。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出 |
 | **v10.09.5** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了。Phase 4-5 統合実行パターンの教訓を記録** |
@@ -499,6 +500,26 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.08.58** | **2026-03-12** | Apple UI/UX 視覚レビューと current/baseline 分離記法を追記 |
 | **v10.08.57** | **2026-03-11** | 事後未タスク化による 0件→1件 再同期ルールを追加 |
 | **2026-03-16** | **TASK-FIX-ELECTRON-APP-MENU-ZOOM-001** | **Electron メニュー初期化修正（ズームショートカット対応）の完了記録追加。LOGS.md 2ファイル・SKILL.md 2ファイル更新** |
+| **v10.02.0** | **2026-03-02** | **TASK-UI-05A 再監査（Phase 11/12整合是正）**: `outputs/phase-11` へ 2026-03-02 再取得スクリーンショット（Dashboard/Editor/導線チェック）を追補。`outputs/phase-12/spec-update-summary.md` を追加し、未タスク正本3件（`docs/30-workflows/unassigned-task/`）と `artifacts.json`/`outputs/artifacts.json` の同期を反映 |
+| **v10.01.0** | **2026-03-01** | **TASK-UI-05A 包括的監査・仕様修正反映**: Phase 1/2/4/5 に skill:getFileTree IPCチャネルを追加し、useFileTree 引数仕様を skillName ベースに統一。UT-UI-05A-GETFILETREE-001 未タスク登録を反映 |
+| **v10.00.0** | **2026-03-01** | **TASK-UI-05A spec_created 再監査を反映**: Phase 12運用に「画面検証スクリーンショット必須」を明記し、`docs/30-workflows/skill-editor-view/outputs/phase-11/` への証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）同期手順を追補。併せて `verify-unassigned-links` 失敗要因になっていた completed-tasks 移管後リンクドリフトの是正運用を反映 |
+| **v10.02.0** | **2026-03-02** | **TASK-UI-05B 実装完了再監査を反映**: `docs/30-workflows/skill-advanced-views` を再監査し、`spec_created` 残存を `completed` へ同期。Phase 11 画面証跡（TC-04〜TC-07）を追加。`phase-12-documentation.md` をテンプレート準拠（`実行タスク` / `参照資料` / `成果物` / `完了条件`）へ補正し、`verify-all-specs`（13/13）/`validate-phase-output`（28項目）を PASS に復帰。Phase 12 Step 1-A の `SKILL.md` / `LOGS.md` 4点同期を完了 |
+| **v10.01.0-v9.97.0** | **2026-03-01〜2026-02-28** | **Phase 12 完了同期と再監査ルールの整備**: `artifacts.json` / `outputs/artifacts.json` / `index.md` / `phase-1..12` の同期、必須成果物実体確認、`validate-phase-output` / `verify-all-specs` / `verify-unassigned-links` / screenshot coverage の完了ゲート化を段階的に整理。詳細は `LOGS.md` を参照 |
+| **v9.96.0-v9.92.2** | **2026-02-27〜2026-02-25** | **Phase 12 guard と quick_validate 運用の標準化**: unassigned audit、親仕様参照整合、completed-tasks 移管、`quick_validate.js` 経路統一、skill-creator 連携、`## メタ情報` 重複防止などの再発防止ルールを整備。詳細は `LOGS.md` を参照 |
+| **v9.92.1** | **2026-02-25** | **履歴運用改善**: `SKILL.md` の変更履歴を直近中心に整理し、構造検証（500行上限）に適合。詳細な長期履歴は `LOGS.md` を正本として参照する方針へ統一 |
+| **v9.92.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 再監査同期**: `references/spec-update-workflow.md` の baseline/current 判定手順を `--target-file` / `--diff-from` ベースへ更新 |
+| **v9.91.0** | **2026-02-25** | **UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001 実装反映**: `scripts/audit-unassigned-tasks.js` に `--target-file` / `--diff-from`、`currentViolations` / `baselineViolations` 分離、scoped 判定を追加 |
+| **v9.90.0** | **2026-02-25** | **UT-IPC-AUTH-HANDLE-DUPLICATE-001 再確認反映**: `phase-11-12-guide.md` / `spec-update-workflow.md` にスキル構造検証チェックを追記（`quick_validate.js` ベース） |
+> 補足: v9.89.0 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
+| **v10.09.3** | **2026-03-13** | **Phase 12 root evidence と split-aware 未タスク監査を強化**: `assets/phase12-task-spec-compliance-template.md` を 4点突合 / implementation-guide 必須要素 / current-baseline 分離 / system spec 同期まで確認する root evidence 形式へ拡張し、`scripts/verify-unassigned-links.js` は親 `task-workflow.md` 指定時に sibling `task-workflow*.md` も走査するよう改善した。`references/unassigned-task-guidelines.md` にも split-aware 実行前提を追記 |
+| **v10.09.2** | **2026-03-13** | **artifacts schema compatibility を修正**: `schemas/artifact-definition.json` を current workflow 実体へ合わせ、legacy string artifact array、Phase `blocked`、`metadata.taskType=improvement` を validator 互換として受理するよう更新。`references/artifact-naming-conventions.md` に object 推奨 / legacy 互換の運用ルールも追記した |
+| **v10.09.1** | **2026-03-13** | **TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 の再監査知見を反映**: `spec_created` workflow でも branch-level documentation drift を解消するために `outputs/phase-12/` の shell を補完してよいが、`artifacts.json` の `currentPhase` は execution progress の正本として維持し、implementation guide / documentation changelog / cross-skill feedback を Phase 12 checklist の細目まで満たすルールを固定した |
+| **v10.09.0** | **2026-03-12** | **TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 を反映**: `SKILL.md` を入口特化へ slim 化し、`patterns`、`phase-templates`、`spec-update-workflow`、`phase-11-12-guide`、`LOGS.md` を family file と archive へ再編した。canonical root は `.claude`、mirror は `.agents` に固定し、line budget / direct link / mirror parity / dependency integrity の検証導線を整理した |
+| **v10.08.60** | **2026-03-12** | `UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001` formalize を反映 |
+| **v10.08.59** | **2026-03-12** | current build static serve fallback と skill-creator 条件付き同期ルールを追加 |
+| **v10.08.58** | **2026-03-12** | Apple UI/UX 視覚レビューと current/baseline 分離記法を追記 |
+| **v10.08.57** | **2026-03-11** | 事後未タスク化による 0件→1件 再同期ルールを追加 |
+> 補足: v10.03.0 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
 詳細な履歴と usage log は [LOGS.md](LOGS.md) と [references/logs-archive-index.md](references/logs-archive-index.md) を参照。
