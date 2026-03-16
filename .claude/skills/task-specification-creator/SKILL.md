@@ -498,6 +498,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.08.59** | **2026-03-12** | current build static serve fallback と skill-creator 条件付き同期ルールを追加 |
 | **v10.08.58** | **2026-03-12** | Apple UI/UX 視覚レビューと current/baseline 分離記法を追記 |
 | **v10.08.57** | **2026-03-11** | 事後未タスク化による 0件→1件 再同期ルールを追加 |
+| **2026-03-16** | **TASK-FIX-ELECTRON-APP-MENU-ZOOM-001** | **Electron メニュー初期化修正（ズームショートカット対応）の完了記録追加。LOGS.md 2ファイル・SKILL.md 2ファイル更新** |
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
 詳細な履歴と usage log は [LOGS.md](LOGS.md) と [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

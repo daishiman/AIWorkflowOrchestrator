@@ -3,6 +3,18 @@
 ## 役割
 
 ---
+## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - Electron メニュー初期化修正（ズームショートカット対応）を実装
+  - `apps/desktop/src/main/menu.ts`（新規）: アプリケーションメニュー定義
+  - `apps/desktop/src/main/index.ts`（修正）: メニュー初期化処理の統合
+  - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
+
+---
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
 
 - **Agent**: task-specification-creator

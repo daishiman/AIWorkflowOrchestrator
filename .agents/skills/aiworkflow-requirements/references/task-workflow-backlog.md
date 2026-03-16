@@ -451,6 +451,8 @@
 | UT-06-006 | high × time_24h テスト追加（expiryPolicy="time_24h" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-006-high-time-24h-test.md` |
 | UT-06-007 | high × time_7d テスト追加（expiryPolicy="time_7d" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-007-high-time-7d-test.md` |
 | UT-06-008 | タイムアウトカウンタリセット仕様明確化（AllowedToolEntryV2 の expiresAt と allowedAt の再許可時リセット挙動の仕様化） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-008-timeout-counter-reset-spec.md` |
+| UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001 | Main Process index.ts トップレベル副作用モジュール分離ガード | 中 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-main-process-module-extraction-guard-001.md` |
+| UT-IMP-SMALL-SCALE-WORKFLOW-OPTIMIZATION-001 | 小規模修正向け軽量ワークフローバリアント定義 | 低 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-small-scale-workflow-optimization-001.md` |
 
 ### 未タスク管理ルール
 

@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
 | 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）完了 |
@@ -35,6 +36,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
+
+- タスク名: Electron メニュー初期化修正（ズームショートカット対応）
+- 種別: バグ修正
+- ワークフロー: electron-app-menu-zoom
+- 主要成果物:
+  - `apps/desktop/src/main/menu.ts`（新規）: Electron アプリケーションメニュー定義（ズームイン/アウト/リセットショートカット対応）
+  - `apps/desktop/src/main/index.ts`（修正）: メニュー初期化処理の統合
+  - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
+- 完了日: 2026-03-16
 
 ## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
 
