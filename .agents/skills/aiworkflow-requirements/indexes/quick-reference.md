@@ -219,6 +219,16 @@ node scripts/search-spec.js "AGENT_EXECUTION_START" -C 3
 5. `references/lessons-learned-current.md` で P57-P61 の苦戦箇所を確認
 6. 実装実体: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts` `AnthropicLLMAdapter.ts` `TerminalHandoffBuilder.ts` `apps/desktop/src/main/ipc/chatEditHandlers.ts` `apps/desktop/src/preload/chatEditApi.ts`
 
+### Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき
+
+検索語: `DocOperationResult` `ILLMDocQueryAdapter` `SkillDocsCapabilityResult` `skill-docs:query` `CapabilityResolver` `bind() DI`
+
+読む順番:
+1. `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` で `DocOperationResult` / `ILLMDocQueryAdapter` / `SkillDocsCapabilityResult` の型定義を確認する
+2. `references/api-ipc-agent-details.md` でエラーコード体系（1001-5001、7カテゴリ: Validation/Permission/FileSystem/LLM/Parse/Context/Internal）と 4チャンネル契約（`skill-docs:query` 等）を確認する
+3. `references/security-electron-ipc-advanced.md` で 4チャンネル4層防御（送信元検証 → ホワイトリスト → 入力バリデーション → サニタイズ）を確認する
+4. `references/lessons-learned-current.md` で以下の教訓を確認する: bind() を用いた this コンテキスト保持 DI パターン、CapabilityResolver のフォールバック戦略、Phase 4-5 統合テスト設計の注意点
+
 ### Electron IPC パターン
 
 ```typescript
@@ -573,3 +583,11 @@ packages/
 | topic-map.md                 | セクション・行番号詳細    |
 | spec-guidelines.md           | 仕様書作成ルール          |
 | spec-splitting-guidelines.md | ファイル分割ルール        |
+
+---
+
+## 変更履歴
+
+| 日付       | 変更内容                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

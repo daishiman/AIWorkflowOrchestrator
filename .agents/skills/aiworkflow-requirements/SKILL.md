@@ -168,7 +168,6 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 **Phase 12 仕様更新時**: `.claude/skills/task-specification-creator/references/spec-update-workflow.md` を参照
 
 ### 運用ファイル
-
 | ファイル     | 用途                         |
 | ------------ | ---------------------------- |
 | `EVALS.json` | スキルレベル・メトリクス管理 |
@@ -194,6 +193,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.95** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了記録追加。DocOperationResult / LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義を仕様書に反映** |
 | **9.01.94** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正を反映**: `references/workflow-skill-lifecycle-created-skill-usage-journey.md` の Artifact Inventory を実体ファイル名へ全面更新し、苦戦箇所へ「Phase 12 本文と成果物乖離」を追加。`references/lessons-learned-current.md` へ苦戦箇所6と5ステップ解決手順を追記し、`phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の同値同期ルールを固定 |
 | **9.01.93** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 インデックス同期**: `indexes/resource-map.md` クイックルックアップに「CTA制御マトリクス」導線を追加、変更履歴 v1.17.0 を登録。`indexes/quick-reference.md` に `CTA制御マトリクスパターン` セクション（11行）と型定義テーブルへ `CTAVisibility`/`CTAState` 行を追加 |
 | **9.01.92** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期を追加**: `workflow-skill-lifecycle-evaluation-scoring-gate.md` を新規作成し、実装内容・苦戦箇所・`current canonical set`・`artifact inventory`・legacy path 互換を統合。`indexes/resource-map.md` / `indexes/quick-reference.md` / `references/task-workflow.md` / `references/lessons-learned-current.md` / `references/legacy-ordinal-family-register.md` / `LOGS.md` を同一 wave で同期し、mirror parity（`.claude` 正本→`.agents`）を完了条件に固定 |

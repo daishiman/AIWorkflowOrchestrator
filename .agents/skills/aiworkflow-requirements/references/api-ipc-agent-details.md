@@ -372,5 +372,23 @@ ScheduledSkill, SkillSchedule, NotificationSettings, ScheduledRunResult
 | パストラバーサル防止 | `outputPath.includes(\"..\")` を IPC 層で拒否し、サービス層でも再検証 | 不正時: `{ success: false, error: \"Invalid output path\" }` |
 | エラー境界 | `try/catch` で unknown を `"Internal error"` に正規化 | 内部情報漏えい防止 |
 
+#### Runtime Integration (TASK-IMP-SKILL-DOCS-AI-RUNTIME-001)
+
+4チャンネル（skill:docs:generate / preview / export / templates）のレスポンス形式を `DocOperationResult<T>` で統一。
+
+**エラーコード体系**:
+| コード | カテゴリ | 意味 | retryable |
+|--------|---------|------|-----------|
+| 1001 | VALIDATION | prompt が空 | false |
+| 2001 | BUSINESS | API key 未設定 | false |
+| 2002 | BUSINESS | API key 無効 | false |
+| 3001 | EXTERNAL_SERVICE | タイムアウト | true |
+| 3002 | EXTERNAL_SERVICE | レートリミット | true |
+| 3003 | EXTERNAL_SERVICE | サーバーエラー | true |
+| 4001 | INFRASTRUCTURE | IPC通信エラー | true |
+| 5001 | INTERNAL | 内部エラー | false |
+
+**queryFn DI 経路**: ipc/index.ts L784-794 の stubQueryFn → LLMDocQueryAdapter.query() bind
+
 ---
 

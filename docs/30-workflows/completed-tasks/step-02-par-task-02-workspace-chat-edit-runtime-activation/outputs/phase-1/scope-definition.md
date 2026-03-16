@@ -110,7 +110,7 @@
 
 Task01 foundation の成果物パス:
 
-- `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-2/design-summary.md`
+- `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md`
 
 ### 4-B. 並列タスクとの関係
 

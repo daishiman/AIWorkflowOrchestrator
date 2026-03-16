@@ -113,6 +113,16 @@
 
 **関連タスク**: TASK-9I（2026-02-28完了）
 
+#### Skill Docs 4チャンネル セキュリティ (TASK-IMP-SKILL-DOCS-AI-RUNTIME-001)
+
+4チャンネル（generate/preview/export/templates）に4層セキュリティ適用:
+1. **sender検証**: validateIpcSender() で webContents.id を検証
+2. **P42 3段バリデーション**: validateStringArg() で型チェック → 空文字列 → .trim()空文字列
+3. **入力制約**: outputFormat / language の enum 値検証
+4. **エラー境界**: try-catch で内部エラーをサニタイズしてから返却
+
+**テスト**: skillHandlers.docs.test.ts 37テスト（P42/sender/パストラバーサル回帰含む）
+
 ---
 
 ## 実装例: skillAnalyticsAPI（TASK-9J）

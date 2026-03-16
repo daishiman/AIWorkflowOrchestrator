@@ -3,6 +3,30 @@
 ## 役割
 
 ---
+## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `phase-11-manual-test.md` の証跡計画を実ファイルに同期し、`validate-phase11-screenshot-coverage` を 5/5 PASS に回復
+  - `outputs/phase-12/implementation-guide.md` を validator literal 要件（why先行・例え・型・API/CLIシグネチャ・使用例・エラー・エッジケース・設定項目）へ補強し、`validate-phase12-implementation-guide` 10/10 PASS を確認
+  - workflow 本文（index / phase-1..12）のステータスを `artifacts.json` と同値（completed）へ同期
+  - `isAvailable(): Promise<boolean>` と `resolve(): Promise<SkillDocsCapabilityResult>` の async 契約を phase 文書と system spec へ同期
+
+---
+## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - Skill Docs 生成の AI runtime 統合を実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型）
+  - 97テスト ALL PASS、カバレッジ基準充足（LLMDocQueryAdapter 98.58%, CapabilityResolver 100%）
+  - 未タスク1件検出: UT-SKILL-DOCS-TERMINAL-HANDOFF-001（terminal-handoff 実パス実装）
+  - Phase 4-5 統合実行パターンの教訓を lessons-learned-current.md に記録
+
+---
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（Task 1〜5 完了整合）
 
 - **Agent**: task-specification-creator

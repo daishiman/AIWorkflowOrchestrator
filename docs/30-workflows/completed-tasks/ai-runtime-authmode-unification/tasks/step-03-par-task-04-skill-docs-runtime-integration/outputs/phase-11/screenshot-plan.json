@@ -1,0 +1,34 @@
+{
+  "taskId": "TASK-IMP-SKILL-DOCS-AI-RUNTIME-001",
+  "phase": 11,
+  "captureMethod": "fallback-review-board",
+  "reason": "electron-vite / esbuild platform mismatch により current build 直接captureが不可",
+  "generatedAt": "2026-03-16T01:05:05.460Z",
+  "screens": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-skill-docs-success.png",
+      "note": "queryFn DI が stub ではなく LLMDocQueryAdapter 経路へ接続されていることをレビューする。"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-skill-docs-guidance-only.png",
+      "note": "API key 未設定時に code=2001 を返し、設定誘導 guidance を提供する契約をレビューする。"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-skill-docs-timeout.png",
+      "note": "timeout 時に code=3001 / retryable=true へ分類し、再試行 guidance を返す契約をレビューする。"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-skill-docs-rate-limit.png",
+      "note": "429 受信時に code=3002 / retryable=true で分類されることをレビューする。"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-skill-docs-terminal-handoff.png",
+      "note": "terminal-handoff は未実装のため未タスク化し、フォールバック設計として管理していることをレビューする。"
+    }
+  ]
+}
