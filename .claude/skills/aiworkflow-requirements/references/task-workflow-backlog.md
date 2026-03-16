@@ -447,10 +447,15 @@
 | UT-06-002 | AllowedToolEntryV2 PermissionStore 適用（expiresAt / skillName / expiryPolicy フィールドの PermissionStore 書き込み対応） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-002-allowed-tool-entry-v2-permission-store.md` |
 | UT-06-003 | SafetyGatePort 具象クラス実装（evaluate() メソッドの Main Process 実装） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md` |
 | UT-06-004 | INS-01〜03 UI コンポーネント実装（PermissionDialog リスクバッジ / 有効期限選択 / 失効通知） | 中 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-004-ins-01-03-ui-components.md` |
-| UT-06-005 | abort/skip/retry fallback 組み込み（SafetyGateResult failure 時のエラー経路整備） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-abort-skip-retry-fallback.md` |
+| ~~UT-06-005~~ | ~~abort/skip/retry fallback 組み込み（SafetyGateResult failure 時のエラー経路整備）~~ | ~~高~~ | ~~TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16）~~ | ~~`docs/30-workflows/unassigned-task/task-ut-06-005-abort-skip-retry-fallback.md`~~ **完了 2026-03-16** |
+| UT-06-005-A | PreToolUse Hook フォールバック統合（processPermissionFallback の実行時フロー接続） | 高 | UT-06-005 Phase 12 レビュー（GAP-02/03）（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md` |
+| UT-06-005-B | revokeSessionEntries セッション別本格実装（AllowedToolEntry sessionId 追加） | 中 | UT-06-005 Phase 12 レビュー（GAP-04）（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md` |
+| UT-06-005-C | SkillStreamMessageType abort/skip 型追加（Renderer UI 対応・GAP-01/06 解消） | 中 | UT-06-005 Phase 12 レビュー（GAP-06）（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md` |
 | UT-06-006 | high × time_24h テスト追加（expiryPolicy="time_24h" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-006-high-time-24h-test.md` |
 | UT-06-007 | high × time_7d テスト追加（expiryPolicy="time_7d" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-007-high-time-7d-test.md` |
 | UT-06-008 | タイムアウトカウンタリセット仕様明確化（AllowedToolEntryV2 の expiresAt と allowedAt の再許可時リセット挙動の仕様化） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-008-timeout-counter-reset-spec.md` |
+| UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001 | Main Process index.ts トップレベル副作用モジュール分離ガード | 中 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-main-process-module-extraction-guard-001.md` |
+| UT-IMP-SMALL-SCALE-WORKFLOW-OPTIMIZATION-001 | 小規模修正向け軽量ワークフローバリアント定義 | 低 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 Phase 12 再監査（2026-03-16） | `docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-small-scale-workflow-optimization-001.md` |
 
 ### 未タスク管理ルール
 

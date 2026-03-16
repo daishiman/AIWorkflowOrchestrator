@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-16T02:23:55.000Z",
-  "totalKeywords": 2210,
+  "generated": "2026-03-16T12:08:31.690Z",
+  "totalKeywords": 2229,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -335,6 +335,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
@@ -504,6 +505,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
@@ -752,6 +754,7 @@
       "security-electron-ipc-details.md",
       "security-electron-ipc-history.md",
       "security-electron-ipc.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "technology-core.md",
       "technology-desktop.md",
       "ui-ux-design-principles-core.md"
@@ -1080,6 +1083,7 @@
       "security-skill-ipc-core.md",
       "task-workflow-completed-abort-contract-auth-session-chat.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
@@ -1248,6 +1252,7 @@
       "logs-archive-legacy.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
       "ui-ux-settings-core.md"
@@ -2026,11 +2031,14 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle.md"
     ],
     "IMP": [
       "arch-electron-services-details-part2.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
@@ -2072,7 +2080,8 @@
       "ui-ux-feature-components-core.md"
     ],
     "RUNTIME": [
-      "arch-electron-services-details-part2.md"
+      "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
     "ROUTING": [
       "arch-electron-services-details-part2.md",
@@ -2116,6 +2125,7 @@
     ],
     "Runtime": [
       "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "workflow-ai-runtime-authmode-unification.md"
     ],
     "handoff": [
@@ -2545,13 +2555,20 @@
     ],
     "LIFECYCLE": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "arch-state-management.md",
       "claude-code-agents-workflow.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-skill.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "ui-history-search-view.md",
+      "ui-ux-history-panel.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "Persist": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
@@ -2621,20 +2638,6 @@
     ],
     "feedbackSlice": [
       "arch-state-management.md"
-    ],
-    "LIFECYCLE": [
-      "arch-state-management.md",
-      "claude-code-agents-workflow.md",
-      "interfaces-agent-sdk-history.md",
-      "interfaces-agent-sdk-skill.md",
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "security-skill-execution.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "ui-history-search-view.md",
-      "ui-ux-history-panel.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "コンポーネントパターン": [
       "arch-ui-components-advanced.md",
@@ -3040,34 +3043,6 @@
     ],
     "未タスク監査スコープ分離パターン": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
-    ],
-    "IMP": [
-      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-skill-build-harness-guard.md",
-      "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-line-budget-reform.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-02-completed-move-preload-sync.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
-      "logs-archive-2026-03-notification-history-sigterm-guard.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
-      "ui-ux-feature-components-details.md"
     ],
     "UNASSIGNED": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -3566,7 +3541,8 @@
       "ipc-contract-checklist.md",
       "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
-      "logging-migration-guide.md"
+      "logging-migration-guide.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "認証フローにおける統合": [
       "csrf-state-parameter.md"
@@ -4291,14 +4267,7 @@
     "Docs": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
-    "Runtime": [
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "workflow-ai-runtime-authmode-unification.md"
-    ],
     "DOCS": [
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
-    ],
-    "RUNTIME": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
     "スキル分析": [
@@ -5243,7 +5212,8 @@
     ],
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "SANDBOX": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
@@ -5295,7 +5265,9 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
     ],
     "timeout": [
-      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "stop": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -5479,6 +5451,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "workflow-ai-runtime-authmode-unification.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "summary": [
@@ -5528,6 +5501,7 @@
     "SkillCreateWizard": [
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
       "ui-ux-feature-components-reference.md"
     ],
@@ -6297,6 +6271,7 @@
       "security-electron-ipc-details.md",
       "security-electron-ipc-history.md",
       "security-electron-ipc.md",
+      "security-skill-execution.md",
       "security-skill-ipc-core.md",
       "security-skill-ipc-history.md",
       "security-skill-ipc.md",
@@ -6943,6 +6918,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "skill-executor-type-migration.md",
       "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "苦戦箇所追記": [
@@ -7140,7 +7116,9 @@
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
-      "ui-ux-settings-core.md"
+      "task-workflow-completed-skill-lifecycle.md",
+      "ui-ux-settings-core.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "履歴トラッキング": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -7191,7 +7169,9 @@
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
     "abort": [
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "型定義不一致修正": [
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
@@ -7246,6 +7226,7 @@
     "完了記録": [
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md"
     ],
     "苦戦箇所と": [
@@ -7457,6 +7438,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
@@ -7573,7 +7555,8 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "APP": [
-      "logs-archive-2026-03-history-search-notification-center.md"
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "DEBUG": [
       "logs-archive-2026-03-history-search-notification-center.md"
@@ -7826,6 +7809,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
@@ -8680,6 +8664,9 @@
     "権限永続化": [
       "security-skill-execution.md"
     ],
+    "フォールバック": [
+      "security-skill-execution.md"
+    ],
     "ToolRiskLevel": [
       "security-skill-execution.md"
     ],
@@ -8912,17 +8899,12 @@
     ],
     "実装完了記録": [
       "task-workflow-completed-abort-contract-auth-session-chat.md",
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
       "ui-ux-components-core.md"
     ],
     "view": [
       "task-workflow-completed-agent-view-line-budget.md"
-    ],
-    "ライフサイクル履歴・フィードバック統合": [
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
-    ],
-    "設計完了記録": [
-      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "再監査記録": [
       "task-workflow-completed-agent-view-line-budget.md",
@@ -8944,6 +8926,33 @@
     "redirect": [
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-workspace-chat-lifecycle-tests.md"
+    ],
+    "MENU": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "ZOOM": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "アプリケーションメニュー初期化・ズームショートカット対応": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "ライフサイクル履歴・フィードバック統合": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "設計完了記録": [
+      "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
+    ],
+    "skip": [
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "retry": [
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "Fallback": [
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "採点・評価・受け入れゲート統合": [
       "task-workflow-completed-skill-lifecycle.md"
@@ -9018,6 +9027,12 @@
     ],
     "固有": [
       "technology-desktop.md"
+    ],
+    "関連未タスク": [
+      "technology-desktop.md",
+      "testing-component-patterns-history.md",
+      "ui-ux-components-history.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
     ],
     "パッケージ管理・": [
       "technology-devops-core.md",
@@ -9176,11 +9191,6 @@
     "テーマ横断テストヘルパー": [
       "testing-component-patterns-details.md"
     ],
-    "関連未タスク": [
-      "testing-component-patterns-history.md",
-      "ui-ux-components-history.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
-    ],
     "ダイアログテストパターン仕様": [
       "testing-dialog-patterns.md"
     ],
@@ -9335,7 +9345,8 @@
       "ui-history-search-view.md"
     ],
     "要点": [
-      "ui-history-search-view.md"
+      "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "責務": [
       "ui-history-search-view.md"
@@ -9348,6 +9359,7 @@
     ],
     "再利用形式": [
       "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "ライフサイクルタイムライン観測項目": [
@@ -9854,20 +9866,24 @@
     "canonical": [
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "set": [
       "workflow-ai-runtime-authmode-unification.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "artifact": [
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "inventory": [
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
     "parent": [
@@ -9911,6 +9927,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
@@ -10025,6 +10042,9 @@
     ],
     "Wizard": [
       "workflow-onboarding-wizard-alignment.md"
+    ],
+    "検出した未タスク": [
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "識別子": [
       "workflow-skill-identifier-branded-type-resolution.md"

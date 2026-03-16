@@ -373,9 +373,11 @@ describe("SettingsView 統合テスト", () => {
         expect(screen.getByText("APIキー設定")).toBeInTheDocument();
       });
 
-      // プロバイダーも表示される
-      expect(screen.getByText("OpenAI")).toBeInTheDocument();
-      expect(screen.getByText("Anthropic")).toBeInTheDocument();
+      // プロバイダーも表示される（非同期フェッチ完了を待つ）
+      await waitFor(() => {
+        expect(screen.getByText("OpenAI")).toBeInTheDocument();
+        expect(screen.getByText("Anthropic")).toBeInTheDocument();
+      });
     });
   });
 

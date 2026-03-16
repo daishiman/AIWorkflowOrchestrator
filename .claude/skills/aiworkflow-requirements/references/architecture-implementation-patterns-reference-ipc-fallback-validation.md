@@ -112,3 +112,83 @@ expect(result).toEqual({
 
 ---
 
+### S31: Electron role ベースメニュー追加パターン（TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 2026-03-16実装）
+
+Electron の `Menu.buildFromTemplate()` で `role` プロパティを使用した OS ネイティブメニュー項目の追加パターン。ズーム操作やウィンドウ操作など、OS 標準の振る舞いを活用する場合に適用する。
+
+#### 設計原則
+
+| 原則                     | 実装                                                         |
+| ------------------------ | ------------------------------------------------------------ |
+| role 優先                | カスタム `click` ハンドラより `role` を優先（OS 標準動作保証）|
+| ファイル分離             | メニュー定義を独立ファイルに分離（main.ts の肥大化防止）     |
+| Platform 分岐テスト      | `vi.spyOn(process, "platform", "get")` で macOS/Windows 分岐 |
+| 副作用分離               | `Menu.setApplicationMenu()` を呼び出す関数を分離しテスト容易に|
+
+#### コード例
+
+```typescript
+// apps/desktop/src/main/menu.ts（分離されたメニュー定義）
+import { Menu, type MenuItemConstructorOptions } from "electron";
+
+export function createApplicationMenu(): Menu {
+  const isMac = process.platform === "darwin";
+
+  const template: MenuItemConstructorOptions[] = [
+    ...(isMac
+      ? [{ label: "App", submenu: [{ role: "about" as const }, { role: "quit" as const }] }]
+      : []),
+    {
+      label: "View",
+      submenu: [
+        { role: "zoomIn" as const },
+        { role: "zoomOut" as const },
+        { role: "resetZoom" as const },
+        { type: "separator" as const },
+        { role: "togglefullscreen" as const },
+      ],
+    },
+  ];
+
+  return Menu.buildFromTemplate(template);
+}
+```
+
+#### テスト戦略
+
+```typescript
+// platform 分岐テスト
+describe("createApplicationMenu", () => {
+  it("macOS ではアプリメニューを含む", () => {
+    vi.spyOn(process, "platform", "get").mockReturnValue("darwin");
+    const menu = createApplicationMenu();
+    // menu.items[0] がアプリメニュー
+    expect(menu.items[0].label).toBe("App");
+  });
+
+  it("Windows ではアプリメニューを含まない", () => {
+    vi.spyOn(process, "platform", "get").mockReturnValue("win32");
+    const menu = createApplicationMenu();
+    expect(menu.items[0].label).not.toBe("App");
+  });
+});
+```
+
+#### 利用可能な role 一覧（主要）
+
+| カテゴリ   | role                                     | 説明               |
+| ---------- | ---------------------------------------- | ------------------ |
+| ズーム     | `zoomIn`, `zoomOut`, `resetZoom`         | 画面拡大/縮小/リセット |
+| ウィンドウ | `minimize`, `close`, `togglefullscreen`  | ウィンドウ操作     |
+| 編集       | `undo`, `redo`, `cut`, `copy`, `paste`   | クリップボード操作 |
+| macOS専用  | `about`, `hide`, `unhide`, `quit`        | アプリ制御         |
+
+#### 関連パターン
+
+| パターン | 関連                                           |
+| -------- | ---------------------------------------------- |
+| P5       | リスナー二重登録防止（メニュー初期化の一回性） |
+| Phase 4  | import 副作用チェック（main.ts 分離の動機）    |
+
+---
+

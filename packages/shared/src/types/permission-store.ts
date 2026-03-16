@@ -116,4 +116,14 @@ export interface IPermissionStore {
    * ```
    */
   clearAll(): void;
+
+  /**
+   * セッション内の一時許可エントリを一括取り消し
+   *
+   * UT-06-005: abort フロー Step 2 で使用。
+   *
+   * @param sessionId - セッションID
+   * @returns 取り消されたエントリ数
+   */
+  revokeSessionEntries?(sessionId: string): number;
 }

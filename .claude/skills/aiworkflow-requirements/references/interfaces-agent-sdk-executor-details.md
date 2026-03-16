@@ -88,6 +88,45 @@ SkillExecutorがPermissionResolverのwaitForResponseを呼び出すと、IPC経�
 | メモリリーク防止     | 全てのケースでタイマーがクリアされる              |
 | 並行処理             | 複数リクエストを同時に管理可能（Map による O(1)） |
 
+### Permission フォールバックフロー（UT-06-005）
+
+SkillExecutor が Permission 拒否を受けた際のフォールバック処理フロー。
+
+#### processPermissionFallback
+
+Permission レスポンスを受けて適切なアクションを決定する。
+
+**分岐ロジック:**
+
+| 条件 | アクション | 説明 |
+| --- | --- | --- |
+| `approved === true` | `{ action: "approved" }` | ツール実行を許可 |
+| `approved === false && skip === true` | `executeSkipFlow()` → `{ action: "skip" }` | 当該ツールをスキップし実行継続 |
+| `approved === false && retryCount < maxRetries` | `{ action: "retry", retryCount: retryCount + 1 }` | Permission を再要求 |
+| `approved === false && retryCount >= maxRetries` | `executeAbortFlow("max_retries")` → `{ action: "abort" }` | 最大リトライ到達で中断 |
+| catch(error) | `executeAbortFlow("unknown")` → `{ action: "abort" }` | fail-closed 原則 |
+
+#### executeAbortFlow（4ステップ）
+
+スキル実行を安全に中断する4ステップフロー。各ステップは個別の try-catch で保護され、一部失敗でも後続ステップが実行される（fail-closed）。
+
+| Step | 処理 | 失敗時の影響 |
+| --- | --- | --- |
+| 1 | `permissionResolver.cancelAll()` | 未解決のPermission要求が残存（タイムアウトで自然解消） |
+| 2 | `permissionStore.revokeSessionEntries?.(executionId)` | セッション許可が残存（セキュリティリスク低） |
+| 3 | `console.warn("[SkillExecutor] abort: ...")` | ログ欠損のみ |
+| 4 | `sendStream({ type: "error", content: "Execution aborted: ${reason}" })` | Renderer への通知欠損 |
+
+**冪等性保証**: `abortedExecutions: Set<string>` で管理。二重 abort 時は Step 1-4 をスキップして即座にリターン。
+
+#### executeSkipFlow
+
+当該ツール呼び出しをスキップし、スキル実行を継続する。ExecutionState は `"running"` を維持。
+
+#### timeout → abort フロー
+
+PermissionResolver の応答待機が `DEFAULT_TIMEOUT_MS`（300000ms = 5分）を超過した場合、`executeAbortFlow("timeout")` を呼び出して中断する。retry を経由しない直接 abort。
+
 ---
 
 ## SkillExecutor IPC統合（TASK-3-2）

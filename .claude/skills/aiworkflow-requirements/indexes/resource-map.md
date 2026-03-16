@@ -17,6 +17,7 @@
 | --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
+| バグ修正（Electron Menu / ズーム / ショートカット） | technology-desktop.md, architecture-overview-core.md | lessons-learned-current.md, task-workflow.md |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
@@ -51,6 +52,7 @@
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
+| Permission Fallback（abort/skip/retry/timeout） | interfaces-agent-sdk-executor-core.md, interfaces-agent-sdk-executor-details.md, security-skill-execution.md | workflow-permission-fallback-abort-skip-retry.md, interfaces-agent-sdk-skill-details.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
 | Skill Docs Runtime実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義） | interfaces-agent-sdk-skill-reference-share-debug-analytics.md | api-ipc-agent-details.md, security-electron-ipc-advanced.md           |
 | Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |

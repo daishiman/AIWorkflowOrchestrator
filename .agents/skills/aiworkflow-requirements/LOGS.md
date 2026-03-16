@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
+| 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
 | 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）完了 |
@@ -36,6 +38,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
+
+- タスク名: Electron メニュー初期化修正（ズームショートカット対応）
+- 種別: バグ修正
+- ワークフロー: electron-app-menu-zoom
+- 主要成果物:
+  - `apps/desktop/src/main/menu.ts`（新規）: Electron アプリケーションメニュー定義（ズームイン/アウト/リセットショートカット対応）
+  - `apps/desktop/src/main/index.ts`（修正）: メニュー初期化処理の統合
+  - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
+- 完了日: 2026-03-16
+
 ## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
 
 - タスク名: 信頼・権限・ガバナンス統合
@@ -53,3 +66,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 影響範囲:
   - packages/shared/src/constants/security.ts（ToolRiskLevel 追加）
   - apps/desktop/src/main/permissions/（AllowedToolEntryV2・SafetyGatePort 追加）
+
+## UT-06-005 abort-skip-retry-fallback 完了（2026-03-16）
+
+- タスク名: abort/skip/retry fallback 組み込み（SkillExecutor Permission拒否時フォールバック制御）
+- 種別: 実装タスク
+- ワークフロー: UT-06-005-abort-skip-retry-fallback
+- GitHub Issue: #1250
+- 主要成果物:
+  - `SkillExecutor.ts`: processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）
+  - `PermissionStore.ts`: revokeSessionEntries メソッド追加（+20行）
+  - `permission-store.ts`: IPermissionStore に revokeSessionEntries? 追加（+10行）
+  - `skill.ts`: SkillPermissionResponse に skip?: boolean 追加（+3行）
+  - `SkillExecutor.fallback.test.ts`: 新規テスト 23ケース追加
+- テスト結果: 全1293テスト PASS（既存1270 + 新規23）

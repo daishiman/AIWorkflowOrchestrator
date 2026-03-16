@@ -317,7 +317,8 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | apps/desktop/src/main/infrastructure/ | インフラ（DB、セキュリティ） |
 | apps/desktop/src/main/infrastructure/db/ | better-sqlite3 |
 | apps/desktop/src/main/infrastructure/security/ | IPC検証、CSP |
-| apps/desktop/src/main/index.ts | エントリポイント |
+| apps/desktop/src/main/menu.ts | アプリケーションメニュー（ズーム制御含む） |
+| apps/desktop/src/main/index.ts | エントリポイント（関連未タスク: [UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001](../../docs/30-workflows/completed-tasks/TASK-FIX-ELECTRON-APP-MENU-ZOOM-001/unassigned-task/task-imp-main-process-module-extraction-guard-001.md) — トップレベル副作用モジュール分離ガード） |
 
 ### Desktop Renderer Process構造
 

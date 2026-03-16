@@ -243,7 +243,7 @@ node scripts/list-specs.js --topics
 | 状態管理アーキテクチャ | L179 |
 | データフローアーキテクチャ | L204 |
 | ディレクトリ構造 | L286 |
-| データ構造（型システム） | L347 |
+| データ構造（型システム） | L348 |
 
 ### references/architecture-overview-details.md
 
@@ -299,14 +299,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | SkillService 統合（TASK-FIX-7-1） | L13 |
 | SkillExecutor 型定義（TASK-3-1-A） | L99 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L338 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L379 |
 
 ### references/interfaces-agent-sdk-executor-details.md
 
 | セクション | 行 |
 |------------|----|\n| PermissionResolver 型定義（TASK-3-2） | L6 |
-| SkillExecutor IPC統合（TASK-3-2） | L93 |
-| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L182 |
+| SkillExecutor IPC統合（TASK-3-2） | L132 |
+| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L221 |
 
 ### references/interfaces-agent-sdk-executor-history.md
 
@@ -357,8 +357,8 @@ node scripts/list-specs.js --topics
 | Claude Code CLI統合 | L16 |
 | Session Persistence（セッション永続化） | L119 |
 | Skill Import Agent System 型定義（TASK-1-1） | L219 |
-| 関連ドキュメント | L367 |
-| 変更履歴 | L376 |
+| 関連ドキュメント | L368 |
+| 変更履歴 | L377 |
 
 ### references/interfaces-agent-sdk-skill-advanced.md
 
@@ -379,7 +379,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| Skill Dashboard 型定義（AGENT-002） | L6 |
-| SkillImportStore（TASK-2B） | L392 |
+| SkillImportStore（TASK-2B） | L393 |
 
 ### references/interfaces-agent-sdk-skill-history-contract-fix-changelog.md
 
@@ -400,7 +400,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L72 |
 | スキルドキュメント生成 型定義（TASK-9I） | L122 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L186 |
-| スキル分析 型定義（TASK-9J） | L248 |
+| スキル分析 型定義（TASK-9J） | L250 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1494,9 +1494,10 @@ node scripts/list-specs.js --topics
 | Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03） | L245 |
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
-| 関連ドキュメント | L364 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L374 |
-| 変更履歴 | L387 |
+| Permission フォールバック セキュリティ（UT-06-005） | L364 |
+| 関連ドキュメント | L390 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L400 |
+| 変更履歴 | L413 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1564,8 +1565,9 @@ node scripts/list-specs.js --topics
 | 自動更新 | L207 |
 | 開発ツール | L227 |
 | ディレクトリ構造 | L247 |
-| 関連ドキュメント | L266 |
-| 変更履歴 | L278 |
+| 関連ドキュメント | L267 |
+| 関連未タスク | L279 |
+| 変更履歴 | L287 |
 
 ### references/technology-devops-core.md
 
@@ -1846,6 +1848,19 @@ node scripts/list-specs.js --topics
 | 関連改善タスク | L102 |
 | 関連ドキュメント | L112 |
 | 変更履歴 | L126 |
+
+### references/workflow-permission-fallback-abort-skip-retry.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L8 |
+| current canonical set | L19 |
+| artifact inventory | L31 |
+| 実装内容（要点） | L44 |
+| 苦戦箇所（再利用形式） | L79 |
+| 同種課題の5分解決カード | L107 |
+| 検出した未タスク（3件） | L119 |
+| 関連ドキュメント | L129 |
+| 変更履歴 | L140 |
 
 ### references/workflow-skill-identifier-branded-type-resolution.md
 
@@ -2345,18 +2360,6 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
 
-### references/lessons-learned-archive-2026-03.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
-
-### references/lessons-learned-archive-2026-03.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
-
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
 | セクション | 行 |
@@ -2418,7 +2421,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L38 |
+| 最新教訓 | L41 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3502,6 +3505,11 @@ node scripts/list-specs.js --topics
 
 ### references/task-workflow-completed-skill-lifecycle-agent-view-line-budget.md
 
+| セクション | 行 |
+|------------|----|\n| TASK-FIX-ELECTRON-APP-MENU-ZOOM-001: Electronアプリケーションメニュー初期化・ズームショートカット対応 完了記録（2026-03-16） | L17 |
+| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L78 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L128 |
+
 ### references/task-workflow-completed-skill-lifecycle-authfix.md
 
 | セクション | 行 |
@@ -3510,13 +3518,13 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-skill-lifecycle.md
 
 | セクション | 行 |
-|------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L8 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L75 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L156 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L241 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L263 |
-| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L326 |
-| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L390 |
+|------------|----|\n| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L8 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L45 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L112 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L193 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L278 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L300 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L363 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

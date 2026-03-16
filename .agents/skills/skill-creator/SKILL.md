@@ -172,6 +172,44 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 
 ---
 
+## 設計タスク向けオーケストレーション
+
+設計タスク（Phase 1-3中心）では実装タスクと異なるエージェント戦略が有効。
+
+### 設計タスクのフェーズ戦略
+
+| Phase | 実装タスクとの差異 | 備考 |
+| --- | --- | --- |
+| Phase 4-8 | テスト作成・実装が「型定義・仕様書作成」に置き換わる | コードテストではなく仕様整合性テスト |
+| Phase 9 | `pnpm lint/typecheck` ではなく `quick_validate.js` でゲート | 仕様書品質検証 |
+| Phase 11 | UI テストではなく設計文書ウォークスルー（SF-01） | NON_VISUAL 判定 |
+| Phase 12 | システム仕様書更新は2段階方式（SF-02）、未タスクは実装タスク4パターン（SF-03） | `phase-template-phase12.md` 参照 |
+
+📖 [task-specification-creator/references/phase-template-phase11.md](../task-specification-creator/references/phase-template-phase11.md) — SF-01（設計タスク向けウォークスルー）
+📖 [task-specification-creator/references/phase-template-phase12.md](../task-specification-creator/references/phase-template-phase12.md) — SF-02/SF-03（設計タスク向け補足）
+
+### 設計タスク並列エージェント戦略
+
+```
+Phase 2（設計）並列実行可能なSubAgent分担例:
+  SubAgent-A: 型定義・インターフェース設計
+  SubAgent-B: API/IPC契約設計
+  SubAgent-C: UI/UX仕様設計
+  SubAgent-D: セキュリティ/権限設計
+```
+
+**注意**: 各SubAgentに割り当てるファイル数は3ファイル以下を推奨（P43対策）。
+
+### P43対策: SubAgent ファイル分割基準
+
+| 状況 | 対応 |
+| --- | --- |
+| 更新対象が4ファイル以上 | SubAgentを複数に分割し各3ファイル以下に制限 |
+| 単一AgentへのRate limit懸念 | ファイルグループを先に決め、SubAgent割り当てを明示 |
+| Phase 12 仕様書更新 | 3ファイル/SubAgent に分割（P43 再発防止） |
+
+📖 [references/parallel-execution-guide.md](references/parallel-execution-guide.md)
+
 ## ベストプラクティス
 
 | すべきこと                          | 避けるべきこと                |
@@ -183,6 +221,7 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 | LLMは判断・創造のみ                 | Script可能な処理をLLMに任せる |
 | Progressive Disclosure              | 具体例をテンプレートに書く    |
 | クロススキル参照は相対パスで        | 絶対パスやハードコードで参照  |
+| SubAgentは3ファイル以下/エージェント | 多数ファイルを1エージェントに集中 |
 
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの
@@ -195,6 +234,7 @@ node scripts/log_usage.js --result failure --phase "Phase 3" --error "Validation
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **10.37.44** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: `references/patterns.md` に「設計タスク（docs-only）でもサブエージェントに実更新を保留させない」パターンを追加。Phase 12 サブエージェントが「設計タスク範囲外」として実更新を保留する問題の防止策を明文化 |
+| **10.37.44** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-06 スキルフィードバック SF-01/02/03 対応**: 設計タスク向けオーケストレーション戦略セクションを追加（並列エージェント分担例、P43対策: 3ファイル/SubAgent制限）。ベストプラクティス表に「SubAgentは3ファイル以下/エージェント」を追記 |
 | **10.37.43** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 の Phase 12 実績同期ドリフト防止パターンを追加**: `references/patterns.md` に「design タスクでも system spec 更新が発生したら Step 2 を先送りしない」成功/失敗パターンを追記。`phase-12-documentation.md` / `documentation-changelog.md` / `spec-update-summary.md` の同値同期と planned wording 除去を標準手順化し、`LOGS.md` へ同日の更新記録を追加 |
 | **10.37.42** | **2026-03-14** | **TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 の Phase 4/6責務分離監査を template 入口へ同期**: `assets/phase12-system-spec-retrospective-template.md` / `assets/phase12-spec-sync-subagent-template.md` に追加した「Phase 4（契約テスト）/ Phase 6（回帰テスト）境界監査」の運用を `references/resource-map.md` へ反映し、template 説明だけ読めば責務分離チェック要件まで辿れるようにした。`LOGS.md` へ同日の実施ログを追加し、再利用手順を trace 可能にした |
 | **10.37.41** | **2026-03-13** | **TASK-UI-09-ONBOARDING-WIZARD の統合入口 template を追加**: `assets/phase12-system-spec-retrospective-template.md` に onboarding overlay / Settings rerun / follow-up backlog resweep の反映先マトリクスを追加し、`assets/phase12-spec-sync-subagent-template.md` には canonical docs 7点、既存 follow-up 指示書の current contract 再同期、`workflow-onboarding-wizard-alignment.md` 更新を完了条件として追記。`references/resource-map.md` も同 profile 説明へ同期 |

@@ -355,12 +355,13 @@ TASK-1-1で実装された16の共通型定義。specification.md §5.1に基づ
 
 #### SkillPermissionResponse
 
-| プロパティ       | 型        | 必須 | 説明             |
-| ---------------- | --------- | ---- | ---------------- |
-| `requestId`      | `string`  | ✓    | リクエストID     |
-| `approved`       | `boolean` | ✓    | 許可/拒否        |
-| `rememberChoice` | `boolean` | -    | 選択を記憶するか |
-| `rejectReason`   | `string`  | -    | 拒否理由         |
+| プロパティ       | 型        | 必須 | 説明                                               |
+| ---------------- | --------- | ---- | -------------------------------------------------- |
+| `requestId`      | `string`  | ✓    | リクエストID                                       |
+| `approved`       | `boolean` | ✓    | 許可/拒否                                          |
+| `rememberChoice` | `boolean` | -    | 選択を記憶するか                                   |
+| `rejectReason`   | `string`  | -    | 拒否理由                                           |
+| `skip`           | `boolean` | -    | 拒否時にスキップ（中断しない）するか（UT-06-005） |
 
 ---
 
