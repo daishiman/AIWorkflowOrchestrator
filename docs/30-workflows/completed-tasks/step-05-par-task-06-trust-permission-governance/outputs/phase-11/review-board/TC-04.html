@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>TC-04 Task03/05 Connection</title>
+  <style>
+    body{margin:0;padding:40px;background:linear-gradient(120deg,#f7f5ff,#edf8ff);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#26204a}
+    .board{max-width:1120px;margin:0 auto;background:#fff;border-radius:18px;box-shadow:0 20px 50px rgba(38,32,74,.12);overflow:hidden}
+    .head{padding:28px 32px;background:#3a2f7d;color:#fff}
+    .content{padding:30px 32px}
+    .row{display:grid;grid-template-columns:140px 1fr 1fr 90px;gap:12px;border-bottom:1px solid #ece8ff;padding:12px 0;align-items:center}
+    .row.headr{font-weight:700;border-bottom:2px solid #d8d1ff}
+    .ok{justify-self:center;background:#e6f8ec;color:#0f6a3a;padding:4px 10px;border-radius:999px;font-weight:700}
+  </style>
+</head>
+<body>
+  <main class="board">
+    <header class="head"><h1>TC-04 Task-03 / Task-05 接続整合</h1></header>
+    <section class="content">
+      <div class="row headr"><div>INS-ID</div><div>挿入先</div><div>対応画面</div><div>判定</div></div>
+      <div class="row"><div>INS-01</div><div>Task-05 CTA</div><div>SkillDetailView 上部</div><div class="ok">PASS</div></div>
+      <div class="row"><div>INS-02</div><div>Task-03 実行中</div><div>Streaming UI 上部</div><div class="ok">PASS</div></div>
+      <div class="row"><div>INS-03</div><div>Task-05 実行結果</div><div>ExecutionResultSummary 下部</div><div class="ok">PASS</div></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-06",
+  "title": "信頼・権限・ガバナンス統合",
+  "type": "design",
+  "priority": "high",
+  "status": "spec_created",
+  "dependencies": ["TASK-SKILL-LIFECYCLE-03", "TASK-SKILL-LIFECYCLE-05"],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "spec_created",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/risk-level-classification.md",
+        "outputs/phase-1/permission-state-flow.md",
+        "outputs/phase-1/approval-history-policy.md",
+        "outputs/phase-1/accountability-insertion-map.md",
+        "outputs/phase-1/skill-safety-contract.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "spec_created",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/risk-level-design.md",
+        "outputs/phase-2/permission-persistence-design.md",
+        "outputs/phase-2/accountability-ui-design.md",
+        "outputs/phase-2/abort-fallback-design.md",
+        "outputs/phase-2/safety-gate-contract.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "spec_created",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/minor-tasks.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "spec_created",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/tc-type-contract.md",
+        "outputs/phase-4/tc-state-transition.md",
+        "outputs/phase-4/tc-rule-logic.md",
+        "outputs/phase-4/tc-flow.md",
+        "outputs/phase-4/decision-table-risk-permission.md",
+        "outputs/phase-4/validate-design-script-spec.md",
+        "outputs/phase-4/test-scenario-index.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "spec_created",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/security.ts",
+        "outputs/phase-5/permission-store-interface.ts",
+        "outputs/phase-5/safety-gate.ts",
+        "outputs/phase-5/permission-state-machine.md",
+        "outputs/phase-5/accountability-ui-spec.md",
+        "outputs/phase-5/abort-fallback-contract.md",
+        "outputs/phase-5/spec-update-plan.md",
+        "outputs/phase-5/validate-script-spec-v2.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "spec_created",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/tc-risk-level-boundary.md",
+        "outputs/phase-6/tc-expiry-risk-matrix.md",
+        "outputs/phase-6/tc-ins-boundary.md",
+        "outputs/phase-6/tc-safety-grade-priority.md",
+        "outputs/phase-6/tc-retry-timeout-boundary.md",
+        "outputs/phase-6/tc-history-boundary.md",
+        "outputs/phase-6/tc-session-scope-boundary.md",
+        "outputs/phase-6/coverage-gap-analysis.md",
+        "outputs/phase-6/expanded-test-scenario-index.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "spec_created",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/uncovered-combinations.md",
+        "outputs/phase-7/coverage-gaps.md",
+        "outputs/phase-7/security-invariant-checklist.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "spec_created",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/terminology-audit.md",
+        "outputs/phase-8/duplication-audit.md",
+        "outputs/phase-8/link-audit.md",
+        "outputs/phase-8/ac-gap-report.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "spec_created",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/lint-report.md",
+        "outputs/phase-9/type-check-report.md",
+        "outputs/phase-9/test-scenario-report.md",
+        "outputs/phase-9/security-check-report.md",
+        "outputs/phase-9/qa-summary.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "spec_created",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/ac-fulfillment-report.md",
+        "outputs/phase-10/type-integrity-report.md",
+        "outputs/phase-10/integration-report.md",
+        "outputs/phase-10/multi-angle-report.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "spec_created",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/screenshot-plan.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "spec_created",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "危険操作の権限境界と説明責任が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "許可、拒否、都度許可、承認履歴の扱いが定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "Task03/05 の導線に信頼境界が埋め込まれている",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "権限の永続化と取り消しが定義されている",
+      "verified": false
+    }
+  ],
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-16"
+}

@@ -531,4 +531,26 @@ Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
 2. `implementation-guide` は Part 1「なぜ先行」→ Part 2「型/API/使用例/エッジケース/設定一覧」の順で埋める。  
 3. 画面再現が環境依存で詰まる場合は、source screenshot 集約 + review board 1件 + metadata で evidence chain を固定する。  
 4. Phase 10/11/12 で残った論点は即 `unassigned-task/` に formalize し、backlog と同ターン同期する。  
-5. 最後に `task-workflow` / `lessons` / `indexes` / `LOGS` / mirror を同一 wave で更新し、再監査 drift を防ぐ。  
+5. 最後に `task-workflow` / `lessons` / `indexes` / `LOGS` / mirror を同一 wave で更新し、再監査 drift を防ぐ。
+
+---
+
+### TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-06 |
+| タスク種別 | design |
+| ステータス | spec_created |
+| 完了日 | 2026-03-16 |
+| Phase完了 | 1-12 完了、13（PR作成）未実施 |
+| 成果物ディレクトリ | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/` |
+
+主要設計成果物:
+- `outputs/phase-2/` : 型定義設計（ToolRiskLevel / AllowedToolEntryV2 / SafetyGatePort / PERMISSION_HISTORY_MAX_ENTRIES）
+- `outputs/phase-12/implementation-guide.md` : Part 1（概念説明）/ Part 2（実装詳細）
+
+Phase 10 ゲート判定: PASS
+Phase 11 ウォークスルー: 実施済み
+
+未タスク検出: UT-06-001〜UT-06-008（8件）登録済み

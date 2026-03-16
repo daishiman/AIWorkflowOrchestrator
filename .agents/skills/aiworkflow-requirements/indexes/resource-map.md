@@ -54,6 +54,7 @@
 | Skill Docs Runtime実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義） | interfaces-agent-sdk-skill-reference-share-debug-analytics.md | api-ipc-agent-details.md, security-electron-ipc-advanced.md           |
 | Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |
 | Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
+| 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06） | security-skill-execution.md, interfaces-agent-sdk-executor-details.md, arch-state-management-reference-permissions-import-lifecycle.md | lessons-learned-current.md, task-workflow-backlog.md, workflow-skill-lifecycle-evaluation-scoring-gate.md |
 
 ---
 

@@ -178,3 +178,22 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 | Total Index | 283.55% |
 
 ---
+
+## AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06）
+
+スキル実行エグゼキューターは以下のインターフェースを使用して権限管理・安全性チェックを行う。
+
+### AllowedToolEntryV2
+
+- 型定義ファイル: `apps/desktop/src/main/permissions/permission-store-interface.ts`
+- 既存 `AllowedToolEntry` の拡張型（後方互換性あり）
+- 追加フィールド: `expiresAt`（失効タイムスタンプ）/ `skillName`（適用スキル名）/ `expiryPolicy`（session | time_24h | time_7d | permanent）
+
+### SafetyGatePort
+
+- 型定義ファイル: `apps/desktop/src/main/permissions/safety-gate.ts`
+- 公開前安全性チェックの契約インターフェース
+- メソッド: `evaluate(skillName: string): Promise<SafetyGateResult>`
+- Task-08（スキル公開）がこのインターフェースを通じて安全性チェックを実行する
+
+詳細は TASK-SKILL-LIFECYCLE-06 の実装ガイド（docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-12/implementation-guide.md）を参照。
