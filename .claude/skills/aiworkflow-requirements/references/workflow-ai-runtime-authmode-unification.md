@@ -61,11 +61,11 @@
 
 | 種別 | ファイル | 用途 |
 | --- | --- | --- |
-| Phase 11 結果 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/manual-test-result.md` | TC-ID と screenshot の 1:1 対応 |
-| Phase 11 plan | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshot-plan.json` | capture 対象の固定 |
-| 設定画面レビュー証跡 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots/TC-11-00-settings-authmode-review-board.png` | 認証方式カード/APIキー入力/APIキー設定一覧の判読性確認 |
-| Phase 12 同期計画 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-12/system-spec-sync-plan.md` | 仕様書別 SubAgent 分担 |
-| Phase 12 フィードバック | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-12/skill-feedback-report.md` | 再利用パターンの抽出 |
+| Phase 11 結果 | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 調査レポートで TC-ID 相当の証跡連携を確認 |
+| Phase 11 plan | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 調査レポートで capture 対象の現状を確認 |
+| 設定画面レビュー調査 | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 設定画面3領域の判読性確認（TC-11-00 相当） |
+| Phase 12 同期計画 | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 仕様書別 SubAgent 分担（調査レポート参照） |
+| Phase 12 フィードバック | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 再利用パターンの抽出（調査レポート参照） |
 | 画面再取得スクリプト | `apps/desktop/scripts/capture-ai-runtime-authmode-review-board.mjs` | `TC-11-00` 再取得の実行実体 |
 | follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` | 契約テスト/回帰テスト責務分離の継続改善 |
 | runtime routing closure 成果物 | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/` | Phase 1-12 の全成果物（Task03 runtime routing 統合） |
@@ -118,7 +118,7 @@
 | step-02-par-task-02-workspace-chat-edit-runtime-activation | foundation 契約 + settings review 参照 |
 | step-02-par-task-03-skill-agent-runtime-routing | foundation 契約 + settings review 参照 **(UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 で完了: 2026-03-15)** |
 | step-02-par-task-10-claude-code-terminal-surface | foundation 契約 + settings review 参照 |
-| step-03-par-task-04-skill-docs-runtime-integration | foundation 契約 + settings review 参照 |
+| step-03-par-task-04-skill-docs-runtime-integration | foundation 契約 + settings review 参照 **(TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 で完了: 2026-03-16)** |
 | step-03-par-task-06-main-chat-settings-runtime-sync | 設定画面3領域を必須改善対象として明示 |
 | step-03-par-task-07-workspace-chat-panel-runtime-alignment | foundation 契約 + settings review 参照 |
 | step-03-seq-task-05-chatpanel-real-chat-wiring | foundation 契約 + settings review 参照 |

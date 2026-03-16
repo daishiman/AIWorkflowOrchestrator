@@ -5,7 +5,7 @@
   "reason": "electron-vite dev capture blocked by esbuild architecture mismatch in current worktree",
   "sourceEvidence": {
     "workflow": "step-01-seq-task-01-ai-runtime-authmode-foundation",
-    "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-11/screenshots"
+    "path": "docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION"
   },
   "targets": [
     {

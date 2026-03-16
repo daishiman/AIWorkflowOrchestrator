@@ -11,7 +11,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification
 allowed-tools:
   - Read
   - Glob
@@ -168,7 +168,6 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 **Phase 12 仕様更新時**: `.claude/skills/task-specification-creator/references/spec-update-workflow.md` を参照
 
 ### 運用ファイル
-
 | ファイル     | 用途                         |
 | ------------ | ---------------------------- |
 | `EVALS.json` | スキルレベル・メトリクス管理 |
@@ -194,6 +193,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.01.95** | **2026-03-16** | **TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了記録追加。DocOperationResult / LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義を仕様書に反映** |
 | **9.01.94** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正を反映**: `references/workflow-skill-lifecycle-created-skill-usage-journey.md` の Artifact Inventory を実体ファイル名へ全面更新し、苦戦箇所へ「Phase 12 本文と成果物乖離」を追加。`references/lessons-learned-current.md` へ苦戦箇所6と5ステップ解決手順を追記し、`phase-12-documentation` / `documentation-changelog` / `spec-update-summary` の同値同期ルールを固定 |
 | **9.01.93** | **2026-03-15** | **TASK-SKILL-LIFECYCLE-05 インデックス同期**: `indexes/resource-map.md` クイックルックアップに「CTA制御マトリクス」導線を追加、変更履歴 v1.17.0 を登録。`indexes/quick-reference.md` に `CTA制御マトリクスパターン` セクション（11行）と型定義テーブルへ `CTAVisibility`/`CTAState` 行を追加 |
 | **9.01.92** | **2026-03-14** | **TASK-SKILL-LIFECYCLE-04 system spec same-wave 同期を追加**: `workflow-skill-lifecycle-evaluation-scoring-gate.md` を新規作成し、実装内容・苦戦箇所・`current canonical set`・`artifact inventory`・legacy path 互換を統合。`indexes/resource-map.md` / `indexes/quick-reference.md` / `references/task-workflow.md` / `references/lessons-learned-current.md` / `references/legacy-ordinal-family-register.md` / `LOGS.md` を同一 wave で同期し、mirror parity（`.claude` 正本→`.agents`）を完了条件に固定 |
@@ -491,6 +491,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.37.0** | **2026-02-04** | **AUTH-UI-001完了**: architecture-implementation-patterns.md更新（React Portal/Supabase認証状態即時更新パターン追加）、ui-ux-auth-flow.md v1.3.0更新（Googleログインボタン仕様追加） |
 | **8.36.0** | **2026-02-04** | **スキル最適化**: spec-update-workflow.mdファイル名修正（kebab-case統一）、topic-map.md再生成（新規ファイル反映） |
 | **8.35.1** | **2026-02-04** | **task-imp-search-ui-001完了**: ui-ux-search-panel.md v1.2.0更新（E2Eテスト17件追加、グローバルショートカット統合完了） |
+| 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加。ToolRiskLevel 4段階・AllowedToolEntryV2 失効ポリシー・SafetyGatePort 公開前安全ゲート・INS-01〜03 説明責任UI・abort/skip/retry fallback フロー契約を定義 |
 ### バージョン更新: 9.01.91
 - 日付: 2026-03-12
 - 内容: `TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001` の最終同期を反映。manual docs 34件 reform、Phase 1-12 completed / currentPhase=13 / Phase 13 blocked、generated `topic-map.md` の 500行超 blocker 化、`TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001` と `TASK-IMP-AIWORKFLOW-GENERATED-INDEX-METRIC-SYNC-GUARD-001` の follow-up formalize、Phase 11 branch-level dashboard screenshot sanity に加え、Phase 12 root evidence 化、active 未タスク10見出し化、`verify-unassigned-links` の split 親 + sibling 監査、`workflow-aiworkflow-requirements-line-budget-reform.md` / `quick-reference.md` / `resource-map.md` / `spec-splitting-guidelines.md` の再利用導線まで system spec に固定した。

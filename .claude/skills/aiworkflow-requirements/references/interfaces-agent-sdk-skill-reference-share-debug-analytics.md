@@ -183,6 +183,70 @@
 
 ---
 
+## Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）
+
+### Skill Docs Runtime Integration 型定義 (TASK-IMP-SKILL-DOCS-AI-RUNTIME-001)
+
+#### DocOperationResult<T>
+```typescript
+interface DocOperationResult<T> {
+  success: boolean;
+  data?: T;
+  error?: DocError;
+}
+```
+
+#### DocError
+```typescript
+interface DocError {
+  code: number;          // 1001-5001
+  category: DocErrorCategory; // "VALIDATION" | "BUSINESS" | "EXTERNAL_SERVICE" | "INFRASTRUCTURE" | "INTERNAL"
+  message: string;
+  retryable: boolean;
+  guidance?: DocErrorGuidance;
+}
+```
+
+#### DocErrorGuidance
+```typescript
+interface DocErrorGuidance {
+  reason: string;
+  action: string;
+  handoffAvailable: boolean;
+}
+```
+
+#### ILLMDocQueryAdapter
+```typescript
+interface ILLMDocQueryAdapter {
+  query(prompt: string): Promise<DocOperationResult<string>>;
+  isAvailable(): Promise<boolean>;
+  getProviderName(): string;
+}
+```
+
+#### SkillDocsCapabilityResult
+```typescript
+type SkillDocsCapability = "integrated-api" | "guidance-only" | "terminal-handoff";
+interface SkillDocsCapabilityResult {
+  capability: SkillDocsCapability;
+  provider?: string;
+  guidance?: string;
+  reason?: string;
+}
+```
+
+**実装ファイル**:
+- `packages/shared/src/types/skill-docs.ts`
+- `apps/desktop/src/main/services/skill/LLMDocQueryAdapter.ts`
+- `apps/desktop/src/main/services/skill/SkillDocsCapabilityResolver.ts`
+
+**完了タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001（2026-03-16）
+
+> 未タスク: [UT-SKILL-DOCS-TERMINAL-HANDOFF-001](../../../docs/30-workflows/unassigned-task/task-ut-skill-docs-terminal-handoff-001.md) — terminal-handoff 実パス実装
+
+---
+
 ## スキル分析 型定義（TASK-9J）
 
 > 完了タスク: TASK-9J（2026-02-28）
@@ -231,4 +295,3 @@
 | ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~ | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` |
 
 ---
-

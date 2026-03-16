@@ -230,20 +230,20 @@ Phase 11（手動テスト）で重点的に確認すべき事項を以下に示
 
 ## 付録: レビューに使用した成果物
 
-| 成果物                             | パス                                                                                   |
-| ---------------------------------- | -------------------------------------------------------------------------------------- |
-| Phase 1 要件定義                   | `outputs/phase-1/requirements-definition.md`                                           |
-| Phase 2 設計サマリー               | `outputs/phase-2/design-summary.md`                                                    |
-| Phase 2 契約マトリクス             | `outputs/phase-2/contract-matrix.md`                                                   |
-| Phase 3 設計レビューレポート       | `outputs/phase-3/design-review-report.md`                                              |
-| Phase 4 テストマトリクス           | `outputs/phase-4/test-matrix.md`                                                       |
-| Phase 5 実装計画書                 | `outputs/phase-5/implementation-plan.md`                                               |
-| Phase 6 回帰・Edge Case 拡充計画書 | `outputs/phase-6/regression-plan.md`                                                   |
-| Phase 7 カバレッジ確認計画書       | `outputs/phase-7/coverage-plan.md`                                                     |
-| Phase 8 リファクタリング計画書     | `outputs/phase-8/refactor-plan.md`                                                     |
-| Phase 9 品質検証チェックリスト     | `outputs/phase-9/qa-checklist.md`                                                      |
-| 現行実装（ハンドラー）             | `apps/desktop/src/main/handlers/chatEditHandlers.ts`                                   |
-| 現行実装（IPC 登録）               | `apps/desktop/src/main/ipc/index.ts`                                                   |
-| 現行実装（Preload）                | `apps/desktop/src/preload/chatEditApi.ts`                                              |
-| IPC 正本                           | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`              |
-| Task01 設計サマリー                | `step-01-seq-task-01-ai-runtime-authmode-foundation/outputs/phase-2/design-summary.md` |
+| 成果物                             | パス                                                                                                     |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Phase 1 要件定義                   | `outputs/phase-1/requirements-definition.md`                                                             |
+| Phase 2 設計サマリー               | `outputs/phase-2/design-summary.md`                                                                      |
+| Phase 2 契約マトリクス             | `outputs/phase-2/contract-matrix.md`                                                                     |
+| Phase 3 設計レビューレポート       | `outputs/phase-3/design-review-report.md`                                                                |
+| Phase 4 テストマトリクス           | `outputs/phase-4/test-matrix.md`                                                                         |
+| Phase 5 実装計画書                 | `outputs/phase-5/implementation-plan.md`                                                                 |
+| Phase 6 回帰・Edge Case 拡充計画書 | `outputs/phase-6/regression-plan.md`                                                                     |
+| Phase 7 カバレッジ確認計画書       | `outputs/phase-7/coverage-plan.md`                                                                       |
+| Phase 8 リファクタリング計画書     | `outputs/phase-8/refactor-plan.md`                                                                       |
+| Phase 9 品質検証チェックリスト     | `outputs/phase-9/qa-checklist.md`                                                                        |
+| 現行実装（ハンドラー）             | `apps/desktop/src/main/handlers/chatEditHandlers.ts`                                                     |
+| 現行実装（IPC 登録）               | `apps/desktop/src/main/ipc/index.ts`                                                                     |
+| 現行実装（Preload）                | `apps/desktop/src/preload/chatEditApi.ts`                                                                |
+| IPC 正本                           | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                                |
+| Task01 設計サマリー                | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` |

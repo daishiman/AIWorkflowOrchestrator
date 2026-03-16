@@ -89,6 +89,30 @@ node scripts/search-spec.js "workspacePath" -C 3
 5. `references/llm-workspace-chat-edit.md` で Workspace 文脈引き継ぎの境界を確認する
 6. 実体仕様は `docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/phase-1-requirements.md` から Phase 13 までを順に照合する
 
+### 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06）を探すとき
+
+このカテゴリは `TASK-SKILL-LIFECYCLE-06` `ToolRiskLevel` `SafetyGatePort` `AllowedToolEntryV2` `TOOL_RISK_CONFIG` `PermissionResolver` `SafetyGrade` `INS-01` `abort fallback` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "TASK-SKILL-LIFECYCLE-06" -C 3
+node scripts/search-spec.js "ToolRiskLevel" -C 3
+node scripts/search-spec.js "SafetyGatePort" -C 3
+node scripts/search-spec.js "AllowedToolEntryV2" -C 3
+node scripts/search-spec.js "TOOL_RISK_CONFIG" -C 3
+node scripts/search-spec.js "PermissionResolver" -C 3
+node scripts/search-spec.js "INS-01" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「信頼・権限・ガバナンス設計」を見る
+2. `references/security-skill-execution.md` で ToolRiskLevel 参照を確認する
+3. `references/interfaces-agent-sdk-executor-details.md` で AllowedToolEntryV2 / SafetyGatePort を確認する
+4. `references/arch-state-management-reference-permissions-import-lifecycle.md` で permissionHistorySlice 拡張仕様を確認する
+5. `references/lessons-learned-current.md` で P57〜P59（設計タスク特有の苦戦箇所）を確認する
+6. `references/task-workflow-backlog.md` で UT-06-001〜008 の未タスク状況を確認する
+7. 設計成果物は `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/` 配下を参照する
+
 ### Preload safeInvoke timeout を探すとき
 
 ```bash
@@ -218,6 +242,16 @@ node scripts/search-spec.js "AGENT_EXECUTION_START" -C 3
 4. `references/security-electron-ipc-core.md` で workspacePath 検証・M-01 contextBridge 修正を確認
 5. `references/lessons-learned-current.md` で P57-P61 の苦戦箇所を確認
 6. 実装実体: `apps/desktop/src/main/services/chat-edit/RuntimeResolver.ts` `AnthropicLLMAdapter.ts` `TerminalHandoffBuilder.ts` `apps/desktop/src/main/ipc/chatEditHandlers.ts` `apps/desktop/src/preload/chatEditApi.ts`
+
+### Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき
+
+検索語: `DocOperationResult` `ILLMDocQueryAdapter` `SkillDocsCapabilityResult` `skill-docs:query` `CapabilityResolver` `bind() DI`
+
+読む順番:
+1. `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` で `DocOperationResult` / `ILLMDocQueryAdapter` / `SkillDocsCapabilityResult` の型定義を確認する
+2. `references/api-ipc-agent-details.md` でエラーコード体系（1001-5001、7カテゴリ: Validation/Permission/FileSystem/LLM/Parse/Context/Internal）と 4チャンネル契約（`skill-docs:query` 等）を確認する
+3. `references/security-electron-ipc-advanced.md` で 4チャンネル4層防御（送信元検証 → ホワイトリスト → 入力バリデーション → サニタイズ）を確認する
+4. `references/lessons-learned-current.md` で以下の教訓を確認する: bind() を用いた this コンテキスト保持 DI パターン、CapabilityResolver のフォールバック戦略、Phase 4-5 統合テスト設計の注意点
 
 ### Electron IPC パターン
 
@@ -573,3 +607,11 @@ packages/
 | topic-map.md                 | セクション・行番号詳細    |
 | spec-guidelines.md           | 仕様書作成ルール          |
 | spec-splitting-guidelines.md | ファイル分割ルール        |
+
+---
+
+## 変更履歴
+
+| 日付       | 変更内容                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

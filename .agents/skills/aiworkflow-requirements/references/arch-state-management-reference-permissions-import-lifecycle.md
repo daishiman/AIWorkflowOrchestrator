@@ -328,6 +328,30 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | non-null assertion（実コード） | 0件 |
 | `useAgentStore` 直接使用 | 0件（P31準拠） |
 
+---
+
+## permissionHistorySlice 拡張仕様（TASK-SKILL-LIFECYCLE-06）
+
+TASK-SKILL-LIFECYCLE-06 の設計により、permissionHistorySlice に以下の制約が追加された。
+
+### 最大保持件数
+
+- 定数: `PERMISSION_HISTORY_MAX_ENTRIES = 1000`
+- 定義ファイル: `apps/desktop/src/main/permissions/permission-store-interface.ts`
+- 超過時の動作: 最古エントリを FIFO 方式で削除する
+
+### 失効ポリシー別エントリ管理
+
+- `session`: electron-store に書き込まない（メモリ上のみ）。アプリ再起動・abort フロー実行時に全削除
+- `time_24h`: electron-store に書き込む。`allowedAt + 86_400_000` ms で自動失効
+- `time_7d`: electron-store に書き込む。`allowedAt + 604_800_000` ms で自動失効
+- `permanent`: electron-store に書き込む。`revokeTool()` の明示的呼び出しまで有効
+
+### セッション終了時のクリーンアップ
+
+- `revokeSessionEntries(sessionId)` を呼び出し、`expiryPolicy === "session"` の全エントリを削除する
+- 恒久許可（`permanent`）エントリは削除しない
+
 ### 個別セレクタ使用一覧（P31/P48準拠）
 
 | ファイル | 使用セレクタ | 種別 |

@@ -34,7 +34,7 @@ rename は命名作業ではなく、classification-first の結果として行�
 | `lessons-learned-auth-ipc-*` | `lessons-learned.md` | 7 | contract / failure mode / registration type | `migrated` |
 | `lessons-learned-skill-*` | `lessons-learned.md` | 9 | skill lifecycle stage / capability | `migrated` |
 | `lessons-learned-workflow-quality-*` | `lessons-learned.md` | 4 | workflow gate / quality concern | `migrated` |
-| `task-workflow-completed-*` | `task-workflow.md` | 10 | delivery domain / verification lane | `migrated` |
+| `task-workflow-completed-*` | `task-workflow.md` | 12 | delivery domain / verification lane | `migrated` + `split-500` |
 | `logs-archive-2026-01-*` | `logs-archive-index.md` | 6 | month + theme | `migrated` |
 | `logs-archive-2026-02-*` | `logs-archive-index.md` | 11 | month + theme | `migrated` |
 | `logs-archive-2026-03-*` | `logs-archive-index.md` | 9 | month + theme | `migrated` |
@@ -225,3 +225,17 @@ Family status: `reclassify-first`
 | file | current concern | semantic target idea |
 | --- | --- | --- |
 | `ui-ux-feature-components-reference-b.md` | organisms foundation / history-notification surfaces | `ui-ux-feature-components-reference-organisms-history-surfaces.md` |
+
+## 500-Line Split Register (2026-03-16)
+
+> 以下は ordinal rename ではなく、500行制限超過に伴うファイル分割の記録。旧ファイルはリダイレクトに変換済み。
+
+| old filename | split into | lines | split axis | date |
+| --- | --- | --- | --- | --- |
+| `task-workflow-completed-skill-lifecycle-agent-view-line-budget.md` (557行) | `task-workflow-completed-skill-lifecycle.md` | 344 | skill lifecycle 系タスク（TASK-10A-C/D, TASK-SKILL-LIFECYCLE-04/05/06） | 2026-03-16 |
+| ↑ | `task-workflow-completed-agent-view-line-budget.md` | 219 | AgentView / Light Theme / Settings Persist / Line Budget 系タスク | 2026-03-16 |
+| `task-workflow-completed-workspace-chat-lifecycle-tests.md` (522行) | `task-workflow-completed-workspace.md` | 112 | Workspace Layout / Preview 系タスク | 2026-03-16 |
+| ↑ | `task-workflow-completed-chat-lifecycle-tests.md` | 418 | Chat Edit / Runtime Routing / Auth Fix / Integration テスト系タスク | 2026-03-16 |
+| ↑ | `task-workflow-completed-skill-lifecycle-authfix.md` | 254 | スキルライフサイクルテスト強化 / Auth 修正系タスク | 2026-03-16 |
+| `arch-electron-services-details.md` (502行) | `arch-electron-services-details-part1.md` | 269 | スキル管理サービス基盤 / Scanner / IPC API / Service API | 2026-03-16 |
+| ↑ | `arch-electron-services-details-part2.md` | 240 | SkillForker / RuntimeResolver / Scheduler / DI統合 / 永続化 | 2026-03-16 |
