@@ -14,15 +14,27 @@
 | ステータス   | not_started                     |
 | 依存タスク   | TASK-SKILL-LIFECYCLE-05, 06, 07 |
 | ブロック対象 | なし                            |
+| 作成日       | 2026-03-11                      |
+| 更新日       | 2026-03-16                      |
 
 ## 受入基準
 
-| ID   | 基準                                     |
-| ---- | ---------------------------------------- |
-| AC-1 | 共有/公開レベルが定義されている          |
-| AC-2 | バージョン/互換性ルールが定義されている  |
-| AC-3 | 公開前の安全性と観測指標が接続されている |
-| AC-4 | Skill Center との接続方針がある          |
+| ID   | 基準                                                                          |
+| ---- | ----------------------------------------------------------------------------- |
+| AC-1 | local/team/public の3レベルが定義され、遷移条件と権限マトリクスがある         |
+| AC-2 | semver/schema/依存バージョンの互換性チェックロジックが定義されている          |
+| AC-3 | Task06 の安全性ゲートと Task07 の観測指標が公開判定マトリクスに接続されている |
+| AC-4 | Skill Center の登録・更新・公開停止フローと配布操作の責務境界がある           |
+
+## 設計対象サマリー
+
+| 関心ごと            | 主要型/インターフェース                            | Phase 2 設計書                                      |
+| ------------------- | -------------------------------------------------- | --------------------------------------------------- |
+| 公開レベル          | `SkillVisibility`, `SkillPublishingMetadata`       | `outputs/phase-2/publishing-metadata-design.md`     |
+| 互換性チェック      | `CompatibilityCheckResult`, `CompatibilityChecker` | `outputs/phase-2/compatibility-check-design.md`     |
+| Skill Center フロー | `SkillRegistryService`                             | `outputs/phase-2/skill-center-flow-design.md`       |
+| 配布操作            | `SkillDistributionService`                         | `outputs/phase-2/distribution-operations-design.md` |
+| 公開判定            | `PublishReadiness`, `PublishReadinessChecker`      | `outputs/phase-2/publish-readiness-design.md`       |
 
 ## Phase 一覧
 
@@ -41,3 +53,11 @@
 | 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | not_started |
 | 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | not_started |
 | 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | not_started |
+
+## 依存関係
+
+```
+TASK-SKILL-LIFECYCLE-05 (利用導線)  ─┐
+TASK-SKILL-LIFECYCLE-06 (安全性)    ─┼── TASK-SKILL-LIFECYCLE-08 (公開・互換性)
+TASK-SKILL-LIFECYCLE-07 (観測指標)  ─┘
+```

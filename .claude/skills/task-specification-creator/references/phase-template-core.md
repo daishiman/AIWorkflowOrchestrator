@@ -34,6 +34,20 @@ Phase 1、Phase 2、Phase 3。
 - concern ごとの target topology を table 化する。
 - lane 数は 3 以下に固定する。
 - validation matrix を command 単位で定義する。
+- DI 境界の型配置判断を明示する（下記フロー参照）。
+
+### DI 境界の型配置判断フロー（Phase 2 設計時に確認）
+
+| 条件 | 配置先 | 例 |
+| --- | --- | --- |
+| DI 依存型を1つの具象クラスのみで使用 | 具象クラスファイル内に定義 | `DefaultSafetyGateDeps` → `default-safety-gate.ts` |
+| DI 依存型を複数の具象クラスで共有 | Port インターフェースと同階層に配置 | `ServiceDeps` → `ports/` ディレクトリ |
+| DI 依存型がレイヤー境界をまたぐ | `packages/shared/` に配置 | Main/Renderer 両方で参照する型 |
+
+### IPC ハンドラ設計時の確認項目
+
+- IPC ハンドラの依存先が Port/Interface であること（具象クラスを直接参照しない）
+- IPC レスポンス形式（`{ success, error }` ラッパー使用の有無）を設計時点で明示的に決定する
 
 ## Phase 3 のポイント
 

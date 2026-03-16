@@ -54,6 +54,7 @@
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
 | Permission Fallback（abort/skip/retry/timeout） | interfaces-agent-sdk-executor-core.md, interfaces-agent-sdk-executor-details.md, security-skill-execution.md | workflow-permission-fallback-abort-skip-retry.md, interfaces-agent-sdk-skill-details.md |
+| SafetyGate MetadataProvider 実装 | api-ipc-agent-safety.md, security-skill-execution.md | arch-electron-services-details-part2.md, lessons-learned-safety-gate-permission-fallback.md |
 | 権限履歴/Permission History | ui-ux-settings.md, arch-state-management.md                   | interfaces-agent-sdk-history.md                                       |
 | Skill Docs Runtime実装（LLMDocQueryAdapter / SkillDocsCapabilityResolver 型定義） | interfaces-agent-sdk-skill-reference-share-debug-analytics.md | api-ipc-agent-details.md, security-electron-ipc-advanced.md           |
 | Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |
@@ -386,6 +387,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-17 | 1.19.0     | TASK-SKILL-LIFECYCLE-08 / UT-06-005: SafetyGate MetadataProvider 実装・Permission Fallback（abort/skip/retry/timeout）クイックルックアップを追加。`api-ipc-agent-safety.md` 新規登録（`api-ipc-agent-core.md` から safety/getFileTree セクションを分離） |
 | 2026-03-16 | 1.18.0     | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001: Skill Docs Runtime の型定義（LLMDocQueryAdapter / DocOperationResult / SkillDocsCapabilityResolver）・エラーコード体系（1001-5001）・セキュリティ（4チャンネル4層防御）参照をクイックルックアップに追加 |
 | 2026-03-15 | 1.17.0     | TASK-SKILL-LIFECYCLE-05: CTA制御マトリクス実装完了。workflow正本にcurrent canonical set/artifact inventory/苦戦箇所を追加。クイックルックアップに「CTA制御マトリクス」導線を登録 |
 | 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |

@@ -205,6 +205,7 @@ node scripts/list-specs.js --topics
 | IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施） | L257 |
 | 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
 | 共有型インポート標準パターン（TASK-10A-D） | L348 |
+| IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
 
 ### references/architecture-implementation-patterns-reference-ipc-fallback-validation.md
 
@@ -308,6 +309,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| PermissionResolver 型定義（TASK-3-2） | L6 |
 | SkillExecutor IPC統合（TASK-3-2） | L132 |
 | AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L221 |
+| 型変更記録（UT-06-005） | L252 |
 
 ### references/interfaces-agent-sdk-executor-history.md
 
@@ -809,7 +811,7 @@ node scripts/list-specs.js --topics
 | Skill Creator IPC チャネル | L256 |
 | `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L352 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L386 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L440 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L440 |
 
 ### references/api-ipc-agent-details.md
 
@@ -829,6 +831,13 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L90 |
 | 完了タスク | L102 |
 | 変更履歴 | L140 |
+
+### references/api-ipc-agent-safety.md
+
+| セクション | 行 |
+|------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L70 |
+| 変更履歴 | L101 |
 
 ### references/api-ipc-agent.md
 
@@ -1973,11 +1982,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | SkillScheduler / ScheduleStore（TASK-9G） | L100 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L129 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L154 |
-| キャッシュ機構 | L182 |
-| 永続化 | L188 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L194 |
+| DefaultSafetyGate サービス（UT-06-003） | L129 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L180 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L205 |
+| キャッシュ機構 | L233 |
+| 永続化 | L239 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L245 |
 
 ### references/arch-electron-services-details.md
 
@@ -2425,7 +2435,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L42 |
+| 最新教訓 | L35 |
+
+### references/lessons-learned-safety-gate-permission-fallback.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L6 |
+| TASK-SKILL-LIFECYCLE-08 / UT-06-005 実装知見（2026-03-17） | L16 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3522,13 +3538,15 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-skill-lifecycle.md
 
 | セクション | 行 |
-|------------|----|\n| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L8 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L45 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L112 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L193 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L278 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L300 |
-| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L363 |
+|------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L8 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L46 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L83 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L150 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L231 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L316 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L338 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L401 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L427 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
@@ -3569,8 +3587,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L27 |
-| 関連ドキュメント | L32 |
+| 利用順序 | L28 |
+| 関連ドキュメント | L33 |
 
 ### references/testing-accessibility.md
 

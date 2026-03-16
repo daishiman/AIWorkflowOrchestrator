@@ -43,6 +43,8 @@ import { registerSkillDebugHandlers } from "./skillDebugHandlers";
 import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
+import { registerSafetyGateHandlers } from "./safetyGateHandlers";
+import { DefaultSafetyGate } from "../permissions/default-safety-gate";
 import { SkillCreatorService } from "../services/skill/SkillCreatorService";
 import {
   SkillScanner,
@@ -866,9 +868,30 @@ export function registerAllIpcHandlers(
   });
 
   // Permission Store handlers (TASK-3-1-E)
+  const permissionStore = new PermissionStore();
   track("registerPermissionStoreHandlers", () => {
-    const permissionStore = new PermissionStore();
     registerPermissionStoreHandlers(permissionStore);
+  });
+
+  // Safety Gate handlers (TASK-SAFETY-GATE)
+  track("registerSafetyGateHandlers", () => {
+    const safetyGate = new DefaultSafetyGate({
+      permissionStore,
+      metadataProvider: {
+        getRequiredTools: async () => [],
+        getAccessPaths: async () => [],
+      },
+      protectedPaths: [
+        "/etc",
+        "/usr",
+        "/var",
+        "/sys",
+        "/proc",
+        "/boot",
+        "/root",
+      ],
+    });
+    registerSafetyGateHandlers(mainWindow, safetyGate);
   });
 
   // --- 9. Auth Mode handlers ---

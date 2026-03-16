@@ -691,3 +691,43 @@ const providers = Array.isArray(result.data?.providers)
 - **解決策**: documentation-changelog.md は全 Task 完了後に1つのエージェントが一括作成する。並列エージェントで分担する場合でも、changelog は最後にメインエージェントが統合し、`unassigned-task-detection.md` の検出件数と照合してから記録する
 - **関連パターン**: P4（documentation-changelog への早期「完了」記載）、P43（サブエージェント rate limit 中断）、P51（サブエージェントの documentation-changelog 早期完了記載）
 - **関連タスク**: TASK-SKILL-LIFECYCLE-06
+
+### P60: IPC テスト応答形式の不一致（Phase 4/5 間の wrapper 形式合意不足）
+
+- **教訓**: Phase 4（テスト設計）で `{ code: "VALIDATION_ERROR" }` のフラットな形式を期待するテストを作成したが、Phase 5（実装）で IPC ハンドラが `{ success: false, error: { code: "VALIDATION_ERROR" } }` の wrapper 形式を返す実装になった。テスト I-3〜I-7 の全アサーション修正が必要になった
+- **症状**: テストが `result.code` を参照するが、実装は `result.error.code` にエラー情報を格納しているため全テスト失敗
+- **解決策**: Phase 2 設計書に IPC レスポンスの wrapper 形式（`{ success: boolean, data?: T, error?: { code: string, message: string } }`）を明示的に定義し、Phase 4 のテスト設計時にこの定義を参照してアサーションを記述する
+- **再発防止**: 新規 IPC ハンドラのテスト作成時は、既存ハンドラのレスポンス形式を `grep -rn "success:" apps/desktop/src/main/handlers/` で確認してからテストを書く
+- **関連パターン**: P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト）
+- **関連タスク**: UT-06-003
+
+```typescript
+// Phase 4 で書いたテスト（不正）
+expect(result).toEqual({ code: "VALIDATION_ERROR", message: "..." });
+
+// Phase 5 実装が返す実際の形式
+// テストは以下に修正する必要がある
+expect(result).toEqual({
+  success: false,
+  error: { code: "VALIDATION_ERROR", message: "..." },
+});
+```
+
+### P61: IPC ハンドラの DIP 違反が Phase 10 まで検出されない
+
+- **教訓**: `registerSafetyGateHandlers` が `DefaultSafetyGate`（具象クラス）を引数に取る DIP 違反が、Phase 10（最終レビュー）まで検出されなかった。Phase 2（設計）で IPC ハンドラの依存方向を明示しなかったため、Phase 5（実装）で具象クラスへの直接依存が入り込んだ
+- **症状**: コードは正常に動作するが、テスタビリティと拡張性が低下し、具象クラスのモック差し替えが困難になる
+- **解決策**: 引数型を `SafetyGatePort`（インターフェース）に変更。Phase 2 設計書に「IPC ハンドラの依存先は Port/Interface であること」を設計チェック項目として含める
+- **再発防止**: Phase 3（設計レビュー）のチェックリストに「IPC ハンドラ登録関数の引数型が具象クラスではなくインターフェースであること」を追加
+- **関連パターン**: P34（遅延初期化 DI パターン選択）、DIP（依存性逆転原則）
+- **関連タスク**: UT-06-003
+
+```typescript
+// P61: DIP 違反（具象クラス依存）
+export function registerSafetyGateHandlers(
+  safetyGate: DefaultSafetyGate,
+): void {}
+
+// DIP 準拠（インターフェース依存）
+export function registerSafetyGateHandlers(safetyGate: SafetyGatePort): void {}
+```
