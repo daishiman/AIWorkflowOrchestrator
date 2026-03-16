@@ -6,7 +6,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
+| 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
+| 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了バッチ同期（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
 | 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
+| 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
 | 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
 | 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了（RiskLevel / ToolRiskConfigEntry / TOOL_RISK_CONFIG 実装 + 15テスト ALL PASS） |
@@ -40,6 +44,25 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-SKILL-LIFECYCLE-08 仕様書作成完了（2026-03-17）
+
+- タスク名: スキル共有・公開・互換性統合（仕様書作成タスク）
+- 種別: 設計タスク（Phase 1-13 仕様書生成）
+- ワークフロー: skill-lifecycle-unification / step-06-seq-task-08-skill-publishing-version-compatibility
+- 主要成果物:
+  - Phase 1-13 の仕様書ファイル（index.md / phase-1.md 〜 phase-13.md）
+  - artifacts.json 同期済み
+  - SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了
+  - Phase 10 PASS（MINOR 指摘対応済み）、設計レベルテストケース定義
+
+## UT-06-003: DefaultSafetyGate 具象クラス実装（2026-03-16）
+
+- SafetyGatePort 具象クラス DefaultSafetyGate を実装
+- IPC ハンドラ（skill:evaluate-safety）を追加
+- 5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約
+- 36テスト全PASS、カバレッジ全100%
+- 成果物: packages/shared/src/types/safety-gate.ts, apps/desktop/src/main/permissions/default-safety-gate.ts, apps/desktop/src/main/ipc/safetyGateHandlers.ts
+
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - タスク名: Conversation IPC ハンドラ登録修正
@@ -54,7 +77,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - テスト結果: 172 tests ALL PASS（register-conversation-handlers 22 + ipc-graceful-degradation 19 + ipc-double-registration 17 + conversationHandlers 92 + conversationRepository 22）
 - 未タスク: 1件（UT-COVERAGE-INDEX-TS-EXCLUSION-001）
 - 完了日: 2026-03-16
-
 ## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
 
 - タスク名: Electron メニュー初期化修正（ズームショートカット対応）

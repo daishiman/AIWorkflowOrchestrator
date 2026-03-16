@@ -49,7 +49,7 @@
 cancelAll() → revokeSessionEntries(sessionId) → log → IPC通知(SKILL_STREAM)
 ```
 
-- `AbortReason`: `"user_denied"` | `"timeout"` | `"max_retries"` | `"error"`
+- `AbortReason`: `"denied"` | `"timeout"` | `"max_retries"` | `"unknown"`
 - 冪等性: `abortedExecutions: Set<string>` で二重 abort 防止（NFR-3）
 - fail-closed: 不明エラーは abort にフォールバック（NFR-1）
 

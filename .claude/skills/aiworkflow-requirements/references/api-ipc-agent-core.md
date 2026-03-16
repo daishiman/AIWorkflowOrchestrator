@@ -437,33 +437,11 @@ Renderer からのスキル実行要求を Main へ渡す中核チャネル。�
 | SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
 | エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
 
-## スキルファイルツリー取得 IPC チャネル（TASK-UI-05A）
+## スキル安全性評価・ファイルツリー IPC チャネル
 
-スキルディレクトリのファイルツリー構造を取得する IPC チャネル。SkillEditorView のファイルツリーパネルで使用する。
+詳細は [api-ipc-agent-safety.md](api-ipc-agent-safety.md) を参照。
 
-### チャネル仕様
-
-| 項目 | 内容 |
-| --- | --- |
-| チャネル名 | `skill:getFileTree` |
-| 方向 | Renderer → Main |
-| 引数 | `skillName: string` |
-| 戻り値 | `{ tree: FileNode[] }` |
-| バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） |
-| セキュリティ | パストラバーサル検証、送信元ウィンドウ検証 |
-| 実装状況 | 未実装（UT-UI-05A-GETFILETREE-001 で対応予定） |
-| 関連タスク | TASK-UI-05A-SKILL-EDITOR-VIEW |
-| 未タスク正本 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
-
-### FileNode 型定義
-
-```typescript
-interface FileNode {
-  name: string;
-  path: string; // スキルルートからの相対パス
-  type: "file" | "directory";
-  children?: FileNode[];
-}
-```
-
----
+| チャネル | タスク | 概要 |
+| --- | --- | --- |
+| `skill:evaluate-safety` | UT-06-003 | スキル安全性評価（SafetyGateResult 返却） |
+| `skill:getFileTree` | TASK-UI-05A | スキルファイルツリー取得（未実装） |

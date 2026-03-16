@@ -445,8 +445,11 @@
 
 | ~~UT-06-001~~ | ~~ToolRiskConfig 実装~~ **実装完了（2026-03-16）** | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出 → UT-06-001 で実装完了 | `docs/30-workflows/tool-risk-config-implementation/` |
 | UT-06-002 | AllowedToolEntryV2 PermissionStore 適用（expiresAt / skillName / expiryPolicy フィールドの PermissionStore 書き込み対応） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-002-allowed-tool-entry-v2-permission-store.md` |
-| UT-06-003 | SafetyGatePort 具象クラス実装（evaluate() メソッドの Main Process 実装） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md` |
+| ~~UT-06-003~~ | ~~SafetyGatePort 具象クラス実装（evaluate() メソッドの Main Process 実装）~~ | ~~高~~ | ~~TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16）~~ | ~~`docs/30-workflows/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md`~~ **完了 2026-03-16** |
 | UT-06-001-CSS-RISK-VARS | CSS リスクレベル変数定義（`--risk-low` / `--risk-medium` / `--risk-high`） | 中 | UT-06-001 エレガンスレビューで検出（2026-03-16）。UT-06-004 の前提 | `docs/30-workflows/unassigned-task/task-ut-06-001-css-risk-variables-definition.md` |
+| UT-06-003-PRELOAD-API-IMPL | Preload 層に evaluateSafety safeInvoke 呼び出し追加（Renderer → Main 通信チェーン完成） | 高 | UT-06-003 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-preload-api-impl.md` |
+| UT-06-003-METADATA-PROVIDER-IMPL | stub metadataProvider を実際の SkillMetadataProvider 実装に置換（SKILL.md からツール情報取得） | 中 | UT-06-003 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-metadata-provider-impl.md` |
+| UT-06-003-DIP-REFACTOR | unregisterSafetyGateHandlers 解除関数追加（P5 リスナー二重登録対策） | 中 | UT-06-003 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-dip-refactor.md` |
 | UT-06-004 | INS-01〜03 UI コンポーネント実装（PermissionDialog リスクバッジ / 有効期限選択 / 失効通知） | 中 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-004-ins-01-03-ui-components.md` |
 | ~~UT-06-005~~ | ~~abort/skip/retry fallback 組み込み（SafetyGateResult failure 時のエラー経路整備）~~ | ~~高~~ | ~~TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16）~~ | ~~`docs/30-workflows/unassigned-task/task-ut-06-005-abort-skip-retry-fallback.md`~~ **完了 2026-03-16** |
 | UT-06-005-A | PreToolUse Hook フォールバック統合（processPermissionFallback の実行時フロー接続） | 高 | UT-06-005 Phase 12 レビュー（GAP-02/03）（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md` |
@@ -460,6 +463,7 @@
 | UT-COVERAGE-INDEX-TS-EXCLUSION-001 | vitest.config.ts の `**/index.ts` 除外パターンが実装ロジック含む ipc/index.ts もカバレッジから除外 | 低 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION Phase 7（2026-03-16） | `docs/30-workflows/unassigned-task/task-coverage-index-ts-exclusion-001.md` |
 | UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001 | IPC ハンドラグループ内 P42 バリデーション一貫性監査。conversation:search で検出された intra-group 不整合パターンの自動検出 | 中 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 再監査（2026-03-16） | `docs/30-workflows/unassigned-task/task-ipc-p42-intra-group-consistency-audit-001.md` |
 | UT-ARTIFACTS-JSON-FILEPATH-VALIDATION-001 | artifacts.json 参照ファイルパスの実在検証自動化。15件のファントムファイル参照を検出した経験から | 中 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 再監査（2026-03-16） | `docs/30-workflows/unassigned-task/task-artifacts-json-filepath-validation-001.md` |
+| TASK-SKILL-LIFECYCLE-08 | スキル共有・公開・互換性統合（SkillVisibility / SkillPublishingMetadata / CompatibilityChecker / SkillRegistryService / PublishReadinessChecker の実装） | 高 | TASK-SKILL-LIFECYCLE-08 Phase 1-12 仕様書作成完了（spec_created, 2026-03-16） | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/` |
 
 ### 未タスク管理ルール
 

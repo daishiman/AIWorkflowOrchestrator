@@ -226,6 +226,16 @@ Family status: `reclassify-first`
 | --- | --- | --- |
 | `ui-ux-feature-components-reference-b.md` | organisms foundation / history-notification surfaces | `ui-ux-feature-components-reference-organisms-history-surfaces.md` |
 
+## Section Extract Register (2026-03-17)
+
+> 以下は 500行制限に関係なく、単一ファイルから責務別に仕様セクションを抽出・独立ファイル化した記録。
+
+| source file | extracted to | extracted sections | extract axis | date |
+| --- | --- | --- | --- | --- |
+| `api-ipc-agent-core.md` | `api-ipc-agent-safety.md` | スキル安全性評価（skill:evaluate-safety / SafetyGateResult / DefaultSafetyGate DI）、スキルファイルツリー取得（skill:getFileTree / FileNode）| SafetyGate 責務の独立化（セキュリティ評価 IPC を core から分離） | 2026-03-17 |
+
+---
+
 ## 500-Line Split Register (2026-03-16)
 
 > 以下は ordinal rename ではなく、500行制限超過に伴うファイル分割の記録。旧ファイルはリダイレクトに変換済み。

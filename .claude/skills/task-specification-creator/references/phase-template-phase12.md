@@ -82,6 +82,38 @@ rg -n "仕様策定のみ|実行予定|保留として記録" \
 3. 上記4パターンと照合し、未タスク化対象を確定する
 4. 0件でも `unassigned-task-detection.md` に「設計タスクパターン確認済み、0件」と明記する
 
+## 未タスク配置先ディレクトリの明示（P38 再発防止）
+
+未タスク指示書は必ず以下のディレクトリに配置する。配置先の判断を省略しない。
+
+| 条件 | 配置先 |
+| --- | --- |
+| 未完了の未タスク（通常） | `docs/30-workflows/unassigned-task/` |
+| completed workflow 由来の継続 backlog | `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` |
+| 完了済み standalone UT | `docs/30-workflows/completed-tasks/*.md` |
+| legacy | `docs/30-workflows/completed-tasks/unassigned-task/` |
+
+**確認コマンド（Phase 12 完了前に必ず実行）**:
+
+```bash
+# 未タスク指示書の物理ファイル存在を確認
+ls docs/30-workflows/unassigned-task/
+```
+
+## 成果物ファイル名の照合チェック
+
+Phase 12 の成果物ファイル名がテンプレートと一致していることを確認する。名前の不一致はバリデーションスクリプトの検出漏れを引き起こす。
+
+| テンプレート上の名前 | 正しいファイル名 |
+| --- | --- |
+| 未タスク検出レポート | `unassigned-task-detection.md` |
+| ドキュメント更新履歴 | `documentation-changelog.md` |
+| 実装ガイド | `implementation-guide.md` |
+| スキルフィードバック | `skill-feedback-report.md` |
+| 仕様書更新サマリー | `system-spec-update-summary.md` 又は `spec-update-summary.md` |
+
+**注意**: `unassigned-task-report.md` のような類似名ファイルを作成しないこと。正式名称は `unassigned-task-detection.md` である。
+
 ## 関連ガイド
 
 - [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-5 の詳細手順

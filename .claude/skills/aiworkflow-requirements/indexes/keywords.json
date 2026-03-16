@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-16T14:54:49.373Z",
-  "totalKeywords": 2233,
+  "generated": "2026-03-16T15:51:42.661Z",
+  "totalKeywords": 2240,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -44,6 +44,7 @@
     "仕様": [
       "api-chat-history.md",
       "api-internal.md",
+      "api-ipc-agent-safety.md",
       "claude-code-agents-workflow.md",
       "claude-code-commands.md",
       "claude-code-skills-process.md",
@@ -223,6 +224,7 @@
       "api-internal-embedding.md",
       "api-internal-search.md",
       "api-ipc-agent-history.md",
+      "api-ipc-agent-safety.md",
       "api-ipc-auth.md",
       "api-ipc-system-history.md",
       "arch-claude-cli.md",
@@ -613,6 +615,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-agent-details.md",
       "api-ipc-agent-history.md",
+      "api-ipc-agent-safety.md",
       "api-ipc-agent.md",
       "api-ipc-auth.md",
       "api-ipc-system-core.md",
@@ -994,6 +997,7 @@
       "api-ipc-agent-advanced.md",
       "api-ipc-agent-core.md",
       "api-ipc-agent-details.md",
+      "api-ipc-agent-safety.md",
       "api-ipc-auth.md",
       "api-ipc-system-core.md",
       "security-skill-ipc-core.md"
@@ -1002,6 +1006,7 @@
       "api-ipc-agent-advanced.md",
       "api-ipc-agent-core.md",
       "api-ipc-agent-details.md",
+      "api-ipc-agent-safety.md",
       "api-ipc-auth.md",
       "api-ipc-system-core.md",
       "arch-electron-services-details-part2.md",
@@ -1034,6 +1039,7 @@
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -1274,6 +1280,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-remove-contract.md",
@@ -1359,102 +1366,9 @@
       "api-ipc-agent-core.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md"
     ],
-    "スキルファイルツリー取得": [
-      "api-ipc-agent-core.md"
-    ],
-    "UI": [
+    "スキル安全性評価・ファイルツリー": [
       "api-ipc-agent-core.md",
-      "api-ipc-system-core.md",
-      "arch-state-management-core.md",
-      "arch-state-management-reference-permissions-import-lifecycle.md",
-      "arch-ui-components-advanced.md",
-      "arch-ui-components-core.md",
-      "arch-ui-components-details.md",
-      "arch-ui-components-history.md",
-      "arch-ui-components.md",
-      "architecture-chat-history.md",
-      "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
-      "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
-      "architecture-overview-core.md",
-      "error-handling-details.md",
-      "glossary.md",
-      "interfaces-agent-sdk-skill-reference.md",
-      "interfaces-agent-sdk-ui.md",
-      "interfaces-chat-history-core.md",
-      "interfaces-chat-history-details.md",
-      "interfaces-rag-file-selection.md",
-      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
-      "lessons-learned-skill-create-lifecycle-import-contract.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "lessons-learned-ui-skill-center-editor-dashboard.md",
-      "llm-streaming.md",
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
-      "logs-archive-2026-03-notification-history-sigterm-guard.md",
-      "logs-archive-2026-03-skill-views-completed-move.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "security-electron-ipc-core.md",
-      "spec-splitting-guidelines.md",
-      "task-workflow-completed-agent-view-line-budget.md",
-      "task-workflow-completed-skill-lifecycle.md",
-      "technology-frontend.md",
-      "testing-component-patterns-advanced.md",
-      "testing-component-patterns-details.md",
-      "ui-history-components.md",
-      "ui-history-data-types.md",
-      "ui-history-design.md",
-      "ui-history-integration.md",
-      "ui-history-search-view.md",
-      "ui-ux-advanced.md",
-      "ui-ux-agent-execution-core.md",
-      "ui-ux-agent-execution-details.md",
-      "ui-ux-agent-execution-history.md",
-      "ui-ux-agent-execution.md",
-      "ui-ux-components-core.md",
-      "ui-ux-components-details.md",
-      "ui-ux-components-history.md",
-      "ui-ux-components.md",
-      "ui-ux-design-principles-core.md",
-      "ui-ux-design-principles-details.md",
-      "ui-ux-design-principles-history.md",
-      "ui-ux-design-principles.md",
-      "ui-ux-design-system.md",
-      "ui-ux-feature-components-advanced.md",
-      "ui-ux-feature-components-core.md",
-      "ui-ux-feature-components-details.md",
-      "ui-ux-feature-components-history.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md",
-      "ui-ux-feature-components-reference.md",
-      "ui-ux-feature-components.md",
-      "ui-ux-file-selector.md",
-      "ui-ux-forms.md",
-      "ui-ux-history-panel.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-navigation.md",
-      "ui-ux-panels.md",
-      "ui-ux-portal-patterns.md",
-      "ui-ux-search-panel-core.md",
-      "ui-ux-search-panel-details.md",
-      "ui-ux-search-panel-history.md",
-      "ui-ux-search-panel.md",
-      "ui-ux-settings-core.md",
-      "ui-ux-settings-details.md",
-      "ui-ux-settings-history.md",
-      "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
+      "api-ipc-agent-safety.md"
     ],
     "detail": [
       "api-ipc-agent-details.md",
@@ -1643,6 +1557,142 @@
     ],
     "実装パターン参照": [
       "api-ipc-agent-history.md"
+    ],
+    "スキル安全性評価": [
+      "api-ipc-agent-safety.md"
+    ],
+    "UT": [
+      "api-ipc-agent-safety.md",
+      "arch-electron-services-details-part2.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "interfaces-agent-sdk-executor-details.md",
+      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-skill-create-lifecycle-import-contract.md",
+      "lessons-learned-skill-execute-hook-migration.md",
+      "lessons-learned-skill-remove-contract.md",
+      "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-workflow-quality-line-budget-reform.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md",
+      "logs-archive-2026-02-console-migration-patterns.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md",
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-skill-execution.md",
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
+    "スキルファイルツリー取得": [
+      "api-ipc-agent-safety.md"
+    ],
+    "UI": [
+      "api-ipc-agent-safety.md",
+      "api-ipc-system-core.md",
+      "arch-state-management-core.md",
+      "arch-state-management-reference-permissions-import-lifecycle.md",
+      "arch-ui-components-advanced.md",
+      "arch-ui-components-core.md",
+      "arch-ui-components-details.md",
+      "arch-ui-components-history.md",
+      "arch-ui-components.md",
+      "architecture-chat-history.md",
+      "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
+      "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
+      "architecture-overview-core.md",
+      "error-handling-details.md",
+      "glossary.md",
+      "interfaces-agent-sdk-skill-reference.md",
+      "interfaces-agent-sdk-ui.md",
+      "interfaces-chat-history-core.md",
+      "interfaces-chat-history-details.md",
+      "interfaces-rag-file-selection.md",
+      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
+      "lessons-learned-skill-create-lifecycle-import-contract.md",
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "llm-streaming.md",
+      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
+      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md",
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-electron-ipc-core.md",
+      "spec-splitting-guidelines.md",
+      "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-skill-lifecycle.md",
+      "technology-frontend.md",
+      "testing-component-patterns-advanced.md",
+      "testing-component-patterns-details.md",
+      "ui-history-components.md",
+      "ui-history-data-types.md",
+      "ui-history-design.md",
+      "ui-history-integration.md",
+      "ui-history-search-view.md",
+      "ui-ux-advanced.md",
+      "ui-ux-agent-execution-core.md",
+      "ui-ux-agent-execution-details.md",
+      "ui-ux-agent-execution-history.md",
+      "ui-ux-agent-execution.md",
+      "ui-ux-components-core.md",
+      "ui-ux-components-details.md",
+      "ui-ux-components-history.md",
+      "ui-ux-components.md",
+      "ui-ux-design-principles-core.md",
+      "ui-ux-design-principles-details.md",
+      "ui-ux-design-principles-history.md",
+      "ui-ux-design-principles.md",
+      "ui-ux-design-system.md",
+      "ui-ux-feature-components-advanced.md",
+      "ui-ux-feature-components-core.md",
+      "ui-ux-feature-components-details.md",
+      "ui-ux-feature-components-history.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md",
+      "ui-ux-feature-components-reference.md",
+      "ui-ux-feature-components.md",
+      "ui-ux-file-selector.md",
+      "ui-ux-forms.md",
+      "ui-ux-history-panel.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-navigation.md",
+      "ui-ux-panels.md",
+      "ui-ux-portal-patterns.md",
+      "ui-ux-search-panel-core.md",
+      "ui-ux-search-panel-details.md",
+      "ui-ux-search-panel-history.md",
+      "ui-ux-search-panel.md",
+      "ui-ux-settings-core.md",
+      "ui-ux-settings-details.md",
+      "ui-ux-settings-history.md",
+      "ui-ux-settings.md",
+      "ui-ux-system-prompt.md"
     ],
     "仕様書インデックス": [
       "api-ipc-agent.md",
@@ -2111,6 +2161,11 @@
     "ScheduleStore": [
       "arch-electron-services-details-part2.md"
     ],
+    "DefaultSafetyGate": [
+      "api-ipc-agent-safety.md",
+      "arch-electron-services-details-part2.md",
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
     "SkillService": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-executor-core.md",
@@ -2446,6 +2501,7 @@
     ],
     "パターン": [
       "arch-state-management-details.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "claude-code-skills-resources.md",
       "testing-dialog-patterns.md",
       "testing-playwright-e2e.md",
@@ -2568,6 +2624,7 @@
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "security-skill-execution.md",
@@ -2951,6 +3008,7 @@
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -3099,6 +3157,12 @@
       "quality-e2e-testing.md"
     ],
     "共有型インポート標準パターン": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "レスポンス": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "Wrapper": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
     ],
     "テスト実装パターン": [
@@ -3552,6 +3616,7 @@
       "ipc-contract-checklist.md",
       "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "logging-migration-guide.md",
       "workflow-permission-fallback-abort-skip-retry.md"
     ],
@@ -4209,6 +4274,10 @@
       "interfaces-agent-sdk-executor-details.md"
     ],
     "SafetyGatePort": [
+      "api-ipc-agent-safety.md",
+      "interfaces-agent-sdk-executor-details.md"
+    ],
+    "型変更記録": [
       "interfaces-agent-sdk-executor-details.md"
     ],
     "完了タスク・履歴": [
@@ -4888,6 +4957,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -4916,6 +4986,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -4949,6 +5020,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
+      "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -5476,6 +5548,27 @@
     ],
     "最新教訓": [
       "lessons-learned-current.md"
+    ],
+    "SafetyGate": [
+      "lessons-learned-safety-gate-permission-fallback.md"
+    ],
+    "Permission": [
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "security-skill-execution.md",
+      "security-skill-ipc-core.md",
+      "task-workflow-completed-skill-lifecycle.md",
+      "ui-ux-settings-core.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "Fallback": [
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "task-workflow-completed-skill-lifecycle.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "実装知見": [
+      "lessons-learned-safety-gate-permission-fallback.md"
     ],
     "domain": [
       "lessons-learned-skill-build-harness-guard.md",
@@ -7128,15 +7221,6 @@
     "testing": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "ui-history-integration.md"
-    ],
-    "Permission": [
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "security-skill-execution.md",
-      "security-skill-ipc-core.md",
-      "task-workflow-completed-skill-lifecycle.md",
-      "ui-ux-settings-core.md",
-      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "履歴トラッキング": [
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -8969,15 +9053,14 @@
     "設計完了記録": [
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
+    "具象クラス実装完了記録": [
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
     "skip": [
       "task-workflow-completed-skill-lifecycle.md",
       "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "retry": [
-      "task-workflow-completed-skill-lifecycle.md",
-      "workflow-permission-fallback-abort-skip-retry.md"
-    ],
-    "Fallback": [
       "task-workflow-completed-skill-lifecycle.md",
       "workflow-permission-fallback-abort-skip-retry.md"
     ],
@@ -8991,6 +9074,12 @@
       "task-workflow-completed-skill-lifecycle.md"
     ],
     "作成済みスキル利用導線": [
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
+    "スキル共有・公開・互換性統合": [
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
+    "仕様書作成完了記録": [
       "task-workflow-completed-skill-lifecycle.md"
     ],
     "信頼・権限ガバナンス": [
@@ -10194,6 +10283,23 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "evaluateSafety": [
+      "api-ipc-agent-safety.md"
+    ],
+    "processPermissionFallback": [
+      "interfaces-agent-sdk-executor-details.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "revokeSessionEntries": [
+      "interfaces-agent-sdk-executor-details.md",
+      "lessons-learned-safety-gate-permission-fallback.md"
+    ],
+    "P62": [
+      "lessons-learned-safety-gate-permission-fallback.md"
+    ],
+    "P63": [
+      "lessons-learned-safety-gate-permission-fallback.md"
     ]
   }
 }
