@@ -8,6 +8,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | --- |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
 | 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
+| 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了（RiskLevel / ToolRiskConfigEntry / TOOL_RISK_CONFIG 実装 + 15テスト ALL PASS） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
 | 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）完了 |
@@ -48,6 +49,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `apps/desktop/src/main/index.ts`（修正）: メニュー初期化処理の統合
   - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
 - 完了日: 2026-03-16
+
+## UT-06-001 完了（2026-03-16）
+
+- タスク名: tool-risk-config-implementation（TOOL_RISK_CONFIG 定数実装）
+- 種別: 実装タスク（定数追加）
+- ワークフロー: tool-risk-config-implementation
+- 実装ファイル: `packages/shared/src/constants/security.ts`
+- エクスポート: `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数
+- テスト: `packages/shared/src/constants/security.test.ts`（15テスト ALL PASS）
+- 後続タスク: UT-06-004（PermissionDialog UI実装）、TASK-SKILL-LIFECYCLE-08
+
 
 ## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
 

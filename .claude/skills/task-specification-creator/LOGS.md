@@ -31,6 +31,18 @@
   - GitHub Issue #1250 完了
 
 ---
+## 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `packages/shared/src/constants/security.ts` に `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数を実装
+  - `security.test.ts` に 15テスト作成、ALL PASS
+  - TypeCheck/Build/Import 確認済み
+  - 後続タスク UT-06-004（PermissionDialog UI）のブロッカー解消
+
+---
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
 
 - **Agent**: task-specification-creator
