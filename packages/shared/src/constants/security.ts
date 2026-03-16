@@ -320,3 +320,71 @@ export function filterAllowedTools(tools: readonly string[]): AllowedTool[] {
     ALLOWED_TOOLS_WHITELIST.includes(tool as AllowedTool),
   ) as AllowedTool[];
 }
+
+// ─── Tool Risk Configuration ──────────────────────────────────────────────────
+
+/**
+ * ツール操作のリスクレベル分類
+ *
+ * @remarks
+ * - "low": Read・Glob・Grep を含む読み取り専用ツール呼び出し
+ * - "medium": Write・Edit による局所的なファイル変更操作
+ * - "high": Bash によるシステム設定変更・ファイル削除・プロセス実行
+ */
+export type RiskLevel = "low" | "medium" | "high";
+
+/**
+ * リスクレベルごとのダイアログ・権限設定エントリ
+ *
+ * @see TOOL_RISK_CONFIG
+ */
+export interface ToolRiskConfigEntry {
+  /** PermissionDialog の表示幅（px）。リスクが高いほど大きい値 */
+  dialogWidth: 400 | 480 | 640;
+  /** ダイアログヘッダーの色トークン（CSS変数名） */
+  headerColorToken: `--risk-${RiskLevel}`;
+  /** 「常に許可」ボタンの表示可否。high では false 固定 */
+  allowPermanent: boolean;
+  /** 「24時間許可」ボタンの表示可否。high では false 固定 */
+  allowTime24h: boolean;
+  /** 「7日間許可」ボタンの表示可否。high では false 固定 */
+  allowTime7d: boolean;
+}
+
+/**
+ * リスクレベル別の動作設定マップ
+ *
+ * @remarks
+ * セキュリティ不変条件:
+ * - `TOOL_RISK_CONFIG.high.allowPermanent === false`（恒久許可禁止）
+ * - `TOOL_RISK_CONFIG.high.allowTime24h === false`（24時間許可禁止）
+ * - `TOOL_RISK_CONFIG.high.allowTime7d === false`（7日間許可禁止）
+ *
+ * dialogWidth はリスクレベルに比例して大きくなり、ユーザーに操作の重大性を視覚的に伝える。
+ * headerColorToken は CSS 変数名で、PermissionDialog のヘッダー背景色を決定する。
+ *
+ * @see Phase 4 デシジョンテーブル（decision-table-risk-permission.md）
+ */
+export const TOOL_RISK_CONFIG = Object.freeze({
+  low: Object.freeze({
+    dialogWidth: 400,
+    headerColorToken: "--risk-low",
+    allowPermanent: true,
+    allowTime24h: true,
+    allowTime7d: true,
+  }),
+  medium: Object.freeze({
+    dialogWidth: 480,
+    headerColorToken: "--risk-medium",
+    allowPermanent: true,
+    allowTime24h: true,
+    allowTime7d: true,
+  }),
+  high: Object.freeze({
+    dialogWidth: 640,
+    headerColorToken: "--risk-high",
+    allowPermanent: false,
+    allowTime24h: false,
+    allowTime7d: false,
+  }),
+}) satisfies Record<RiskLevel, ToolRiskConfigEntry>;

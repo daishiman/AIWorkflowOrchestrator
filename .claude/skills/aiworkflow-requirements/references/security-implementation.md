@@ -136,6 +136,42 @@ Authorization Code Flow + PKCE方式を実装し、DEBT-SEC-001/002/003を解消
 
 ---
 
+## Tool Risk Configuration（UT-06-001: 2026-03-16 実装完了）
+
+### 概要
+
+ツール操作のリスクレベルに応じた PermissionDialog の表示設定を定義する定数。
+
+### 実装ファイル
+
+- `packages/shared/src/constants/security.ts`
+- エクスポート: `@repo/shared` から named export（`RiskLevel`・`ToolRiskConfigEntry`・`TOOL_RISK_CONFIG`）
+
+### 型定義
+
+| 型名                 | 種別      | 定義                                     |
+| -------------------- | --------- | ---------------------------------------- |
+| `RiskLevel`          | type      | `"low" \| "medium" \| "high"`           |
+| `ToolRiskConfigEntry`| interface | dialogWidth, headerColorToken, allowPermanent, allowTime24h, allowTime7d |
+| `TOOL_RISK_CONFIG`   | const     | `Record<RiskLevel, ToolRiskConfigEntry>` |
+
+### セキュリティ不変条件
+
+- `TOOL_RISK_CONFIG.high.allowPermanent === false`（恒久許可禁止）
+- `TOOL_RISK_CONFIG.high.allowTime24h === false`（24時間許可禁止）
+- `TOOL_RISK_CONFIG.high.allowTime7d === false`（7日間許可禁止）
+
+### 関連未タスク
+
+- UT-06-001-CSS-RISK-VARS: CSS変数 `--risk-low` / `--risk-medium` / `--risk-high` の定義（[指示書](../../../docs/30-workflows/unassigned-task/task-ut-06-001-css-risk-variables-definition.md)）
+
+### 後続タスク
+
+- UT-06-004: PermissionDialog UI 実装（本定数を参照）
+- TASK-SKILL-LIFECYCLE-08: スキル公開ワークフロー
+
+---
+
 ## 関連ドキュメント
 
 - [デプロイメント](./deployment.md)

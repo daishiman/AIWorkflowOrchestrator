@@ -30,6 +30,7 @@
 | Store駆動UI / selector migration | arch-state-management.md, architecture-implementation-patterns.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md |
 | API設計                     | api-core.md, api-endpoints.md                                 | interfaces-\*, security-api-electron.md                               |
 | セキュリティ実装            | security-implementation.md, security-principles.md            | security-\* 全般                                                      |
+| セキュリティ定数（Tool Risk Config） | security-implementation.md (§Tool Risk Configuration)  | architecture-implementation-patterns-core.md (§S19), lessons-learned-current.md (§UT-06-001) |
 | データベース操作            | database-schema.md, database-implementation.md                | database-\*, architecture-database.md                                 |
 | RAG/検索機能                | interfaces-rag.md, architecture-rag.md                        | interfaces-rag-\* 詳細ファイル                                        |
 | Agent SDK統合               | interfaces-agent-sdk.md（インデックス）                       | interfaces-agent-sdk-\* 分割ファイル                                  |
