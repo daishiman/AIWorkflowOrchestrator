@@ -15,6 +15,20 @@
 - 更新した spec と理由
 - canonical root / mirror policy
 
+### 設計タスク（docs-only）での注意
+
+設計タスクであっても Step 1-A〜Step 2 の**実ファイル更新は必須**である。
+「設計タスク範囲外」として実更新を保留してはならない。
+
+具体的に必須な更新:
+- LOGS.md 2ファイル更新（aiworkflow-requirements + task-specification-creator）
+- SKILL.md 2ファイルの変更履歴更新
+- topic-map.md の再生成（`generate-index.js` 実行）
+- 新規型定義がある場合は `interfaces-*.md` への型定義配置
+- `task-workflow.md` の完了タスク記録
+
+サブエージェントに委譲する場合も、「設計タスクだから更新不要」という判断を許容しない。
+
 ## Task 12-3: documentation changelog
 
 - 変更した file 一覧

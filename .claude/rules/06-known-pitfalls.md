@@ -670,3 +670,24 @@ const providers = Array.isArray(result.data?.providers)
 - **再発防止**: Phase 12 Task 4 チェックリストに「再評価クローズ時の Issue Close」ステップを追加
 - **関連パターン**: P4（documentation-changelog への早期「完了」記載）、P51（サブエージェントの早期完了記載）
 - **関連タスク**: UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001
+
+### P57: 設計タスクにおける Phase 12 システム仕様書更新の先送りパターン
+
+- **教訓**: 設計タスク（型定義・契約定義のみ、プロダクションコードなし）では「`.claude/skills/` の実更新は PR 作成時に実施」と先送りする判断をしがちだが、これは P26（システム仕様書更新遅延）の再発パターン。`system-spec-update-summary.md` に計画を記録しただけで実際のファイル更新が行われず、Phase 12 の完了条件を満たさなかった
+- **解決策**: 設計タスクでも Phase 12 完了時点で `.claude/skills/` を実更新する。worktree 環境でのコンフリクトリスクより、仕様書と実装の乖離リスクの方が高い。「計画文」ではなく「実績ログ」のみを残す
+- **関連パターン**: P26（システム仕様書更新遅延）、P4（documentation-changelog への早期「完了」記載）
+- **関連タスク**: TASK-SKILL-LIFECYCLE-06
+
+### P58: 設計タスクにおける未タスク指示書の配置省略
+
+- **教訓**: 「設計タスクだから」という理由で `docs/30-workflows/unassigned-task/` への独立した指示書ファイルの作成を省略した。「本レポート内で完了」という代替措置を採用したが、P3 / P38 の3ステップ（①指示書作成 → ②task-workflow 残課題テーブル登録 → ③関連仕様書リンク追加）は設計タスクでも必須であり、後続の監査ツールが指示書パスを参照できず不整合が発生した
+- **解決策**: 設計タスクの未タスクであっても、独立した指示書ファイルを `docs/30-workflows/unassigned-task/` に作成する。P3 の3ステップに例外はない。指示書の内容が簡素であっても「ファイルが存在すること」が監査ツールの前提
+- **関連パターン**: P3（未タスク管理の3ステップ不完全）、P38（未タスク配置ディレクトリ間違い）
+- **関連タスク**: TASK-SKILL-LIFECYCLE-06
+
+### P59: 並列エージェントによる documentation-changelog 件数不整合
+
+- **教訓**: documentation-changelog.md では「Task 4 検出件数: 0件」と記載されたが、実際の `unassigned-task-detection.md` では8件検出されていた。Phase 12 を複数の並列エージェントで分担した結果、changelog 作成エージェントと未タスク検出エージェントの間で情報が断絶し、数値の整合チェックが行われなかった
+- **解決策**: documentation-changelog.md は全 Task 完了後に1つのエージェントが一括作成する。並列エージェントで分担する場合でも、changelog は最後にメインエージェントが統合し、`unassigned-task-detection.md` の検出件数と照合してから記録する
+- **関連パターン**: P4（documentation-changelog への早期「完了」記載）、P43（サブエージェント rate limit 中断）、P51（サブエージェントの documentation-changelog 早期完了記載）
+- **関連タスク**: TASK-SKILL-LIFECYCLE-06

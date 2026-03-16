@@ -27,6 +27,16 @@
   - Phase 4-5 統合実行パターンの教訓を lessons-learned-current.md に記録
 
 ---
+## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
+
+- タスク名: 信頼・権限・ガバナンス統合
+- 種別: 設計タスク
+- フェーズ: Phase 1-12 完了
+- 成果物格納先: docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/
+- ワークフロー改善点:
+  - 設計タスクにおける Phase 12 のシステム仕様書更新フローを明確化（計画記録→PR時に実施する2段階方式を標準化）
+
+---
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（Task 1〜5 完了整合）
 
 - **Agent**: task-specification-creator
@@ -243,6 +253,15 @@
 - 長期の version changelog は [references/changelog-archive.md](references/changelog-archive.md) を参照する。
 
 ## 最新ログ
+
+### 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only設計タスク |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル |
+| 結果 | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
+| 検証 | Phase 1-12 全Phase完了、artifacts.json同期済み |
 
 ### 2026-03-13 - Phase 12 root evidence / split-aware unassigned audit
 

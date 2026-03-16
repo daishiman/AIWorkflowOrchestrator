@@ -3380,6 +3380,19 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **発見日**: 2026-03-12
 - **関連タスク**: UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001
 
+### [Phase 12] 設計タスク（docs-only）でもサブエージェントに実更新を保留させない
+
+- **状況**: Phase 12 サブエージェントが「設計タスク範囲外」と判断して system spec の実ファイル更新を保留し、LOGS.md / SKILL.md / topic-map.md の更新が未実施のまま Phase 12 が閉じられる
+- **アプローチ**:
+  1. サブエージェントへの委譲指示に「docs-only タスクであっても Step 1-A〜Step 2 の実ファイル更新は必須。保留不可」を明示的に含める
+  2. LOGS.md 2ファイル、SKILL.md 変更履歴、topic-map.md 再生成は docs-only / 実装タスクに関わらず**全タスクで必須**であることをプロンプトに記載する
+  3. サブエージェント完了後に `git diff --stat -- .claude/skills/` で実際の変更ファイル数を検証し、期待されるファイル数と一致することを確認する
+  4. 新規型定義がある設計タスクでは、型の配置先ファイル（`interfaces-*.md`）への記録も必須とする
+- **結果**: サブエージェントの「設計範囲外」判断による更新保留を防止し、Phase 12 完了時の台帳整合性を保証する
+- **適用条件**: docs-only / spec_created タスクの Phase 12 サブエージェント委譲
+- **発見日**: 2026-03-16
+- **関連タスク**: TASK-SKILL-LIFECYCLE-07
+
 ### [Phase 12] workspace preview/search は cross-cutting spec を追加同期する（TASK-UI-04C）
 
 - **状況**: `PreviewPanel` / `QuickFileSearch` / renderer local fallback を実装しても、`ui-ux-feature-components.md` だけでは shortcut、dialog token、error surface、resilience pattern の再利用導線が不足する

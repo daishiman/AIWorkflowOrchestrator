@@ -16,6 +16,30 @@
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。
 - 完了タスク、変更履歴、補助情報は `history` / `archive` 系を読む。
 
+## ライフサイクルイベントモデル（TASK-SKILL-LIFECYCLE-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-07 |
+| ステータス | `spec_created`（設計タスク） |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/outputs/` |
+
+### 18イベント種別カテゴリ分類
+
+| カテゴリ | イベント数 | イベント種別 |
+| --- | --- | --- |
+| creation | 3 | `skill:created`, `skill:imported`, `skill:forked` |
+| evaluation | 4 | `skill:evaluated`, `skill:score_updated`, `skill:gate_passed`, `skill:gate_failed` |
+| execution | 4 | `skill:executed`, `skill:execution_succeeded`, `skill:execution_failed`, `skill:execution_timeout` |
+| improvement | 3 | `skill:improved`, `skill:version_bumped`, `skill:feedback_applied` |
+| reuse | 4 | `skill:reused`, `skill:recommended`, `skill:imported`, `skill:forked` |
+
+### ScoreDataPoint 型参照
+
+`ScoreDataPoint` は時系列スコア推移を記録する型で、`{ timestamp: number; score: number; eventType: string }` の構造を持つ。SkillAggregateView の `scoreTrend` フィールドで使用される。
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`

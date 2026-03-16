@@ -9,6 +9,11 @@
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-FIX-FEEDBACK-TYPE-GUARD-AS-REMOVAL-001 | SkillFeedback 型ガード内の `as` キャスト除去（P49準拠） | 低 | TASK-SKILL-LIFECYCLE-07 Phase 10 MINOR-01（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-feedback-type-guard-as-removal.md` |
+| UT-FIX-LIFECYCLE-SLICE-CLEAR-EVENTS-TYPE-001 | lifecycleHistorySlice clearEvents の型定義明確化 | 低 | TASK-SKILL-LIFECYCLE-07 Phase 10 MINOR-02（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-slice-clear-events-type.md` |
+| UT-SPEC-LIFECYCLE-TYPE-REF-ADVANCED-001 | ライフサイクル型参照高度化（ジェネリクス活用検討） | 低 | TASK-SKILL-LIFECYCLE-07 Phase 11 Note-01（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-type-ref-advanced.md` |
+| UT-DESIGN-FEEDBACK-SEVERITY-FIELD-001 | フィードバック severity フィールド追加検討 | 低 | TASK-SKILL-LIFECYCLE-07 Phase 11 Note-03（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-feedback-severity-field.md` |
+| UT-IMPL-EVENTQUEUE-FALLBACK-STORAGE-001 | イベントキュー fallback ストレージ設計 | 中 | TASK-SKILL-LIFECYCLE-07 Phase 11 Note-05（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-eventqueue-fallback-storage.md` |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` |
 | UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001 | 契約テスト（Phase 4）と回帰テスト（Phase 6）の責務境界を明文化し、重複テスト判定基準を固定する | 低 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 10 MINOR-05, 2026-03-14） | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
@@ -437,6 +442,15 @@
 | TASK-IMP-SKILL-LIFECYCLE-05-E2E-SCENARIOS-COVERAGE-001 | 3シナリオ導線の E2E カバレッジ固定 | 中 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-e2e-scenarios-coverage-001.md` |
 | UT-SKILL-DOCS-TERMINAL-HANDOFF-001 | terminal-handoff実パス実装 | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
 | UT-SPEC-LINE-BUDGET-SPLIT-001 | aiworkflow-requirements 500行超過仕様書の責務分割 | 低 | arch-electron-services-details.md(502行) / task-workflow-completed-skill-lifecycle(535行) / task-workflow-completed-workspace-chat(522行) の3ファイルを500行以下に分割 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+
+| UT-06-001 | ToolRiskConfig 実装（PermissionDialog 表示ロジックへの TOOL_RISK_CONFIG 組み込み） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-001-tool-risk-config-implementation.md` |
+| UT-06-002 | AllowedToolEntryV2 PermissionStore 適用（expiresAt / skillName / expiryPolicy フィールドの PermissionStore 書き込み対応） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-002-allowed-tool-entry-v2-permission-store.md` |
+| UT-06-003 | SafetyGatePort 具象クラス実装（evaluate() メソッドの Main Process 実装） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md` |
+| UT-06-004 | INS-01〜03 UI コンポーネント実装（PermissionDialog リスクバッジ / 有効期限選択 / 失効通知） | 中 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-004-ins-01-03-ui-components.md` |
+| UT-06-005 | abort/skip/retry fallback 組み込み（SafetyGateResult failure 時のエラー経路整備） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-abort-skip-retry-fallback.md` |
+| UT-06-006 | high × time_24h テスト追加（expiryPolicy="time_24h" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-006-high-time-24h-test.md` |
+| UT-06-007 | high × time_7d テスト追加（expiryPolicy="time_7d" かつ riskLevel="high" のマトリクステスト） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-007-high-time-7d-test.md` |
+| UT-06-008 | タイムアウトカウンタリセット仕様明確化（AllowedToolEntryV2 の expiresAt と allowedAt の再許可時リセット挙動の仕様化） | 低 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-008-timeout-counter-reset-spec.md` |
 
 ### 未タスク管理ルール
 

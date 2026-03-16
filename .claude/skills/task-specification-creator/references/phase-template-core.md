@@ -40,3 +40,14 @@ Phase 1、Phase 2、Phase 3。
 - PASS / MINOR / MAJOR の戻り先を明示する。
 - simpler alternative を検討した結果を記録する。
 - Phase 4 開始条件と Phase 13 blocked 条件を残す。
+
+### MINOR 追跡テーブル（gate-decision.md 用）
+
+Phase 3 で MINOR 判定された指摘は、以下のテーブルで追跡計画を明示する。
+
+| MINOR ID | 指摘内容 | 解決予定Phase | 解決確認Phase | 備考 |
+| -------- | -------- | ------------- | ------------- | ---- |
+| TECH-M-01 | ... | Phase 5 | Phase 9/10 | ... |
+
+- 「解決予定Phase」を Phase 3 時点で決定し、追跡の見通しを立てる
+- 「解決確認Phase」は Phase 9（品質検証）または Phase 10（最終レビュー）で記録する

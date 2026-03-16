@@ -306,6 +306,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| PermissionResolver 型定義（TASK-3-2） | L6 |
 | SkillExecutor IPC統合（TASK-3-2） | L93 |
+| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L182 |
 
 ### references/interfaces-agent-sdk-executor-history.md
 
@@ -346,7 +347,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L14 |
-| 関連ドキュメント | L19 |
+| ライフサイクルイベントモデル（TASK-SKILL-LIFECYCLE-07） | L19 |
+| 関連ドキュメント | L43 |
 
 ### references/interfaces-agent-sdk-integration.md
 
@@ -415,7 +417,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
-| 関連ドキュメント | L23 |
+| ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L23 |
+| 関連ドキュメント | L48 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -1219,7 +1222,8 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L60 |
 | 統合ステータス | L74 |
 | 変更履歴 | L91 |
-| 関連ドキュメント | L108 |
+| 履歴UIファミリー参照導線（TASK-SKILL-LIFECYCLE-07） | L108 |
+| 関連ドキュメント | L132 |
 
 ### references/ui-ux-llm-selector.md
 
@@ -1491,7 +1495,8 @@ node scripts/list-specs.js --topics
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
 | 関連ドキュメント | L364 |
-| 変更履歴 | L374 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L374 |
+| 変更履歴 | L387 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1860,14 +1865,15 @@ node scripts/list-specs.js --topics
 | 必要仕様の抽出セット | L23 |
 | 抽出確認コマンド | L37 |
 | Task04 依存契約 | L51 |
-| 現行 workflow 仕様書 | L62 |
-| 実装内容（TASK-SKILL-LIFECYCLE-05） | L74 |
-| 苦戦箇所 | L102 |
-| Current Canonical Set | L142 |
-| Artifact Inventory | L162 |
-| 実装コードアンカー | L184 |
-| same-wave 検証手順 | L196 |
-| 5分解決カード | L212 |
+| Task07 依存契約（TASK-SKILL-LIFECYCLE-07） | L62 |
+| 現行 workflow 仕様書 | L77 |
+| 実装内容（TASK-SKILL-LIFECYCLE-05） | L89 |
+| 苦戦箇所 | L117 |
+| Current Canonical Set | L157 |
+| Artifact Inventory | L177 |
+| 実装コードアンカー | L199 |
+| same-wave 検証手順 | L211 |
+| 5分解決カード | L227 |
 
 ### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
 
@@ -1884,7 +1890,8 @@ node scripts/list-specs.js --topics
 | 検証コマンド | L123 |
 | 同種課題の5分解決カード | L136 |
 | 関連ドキュメント | L146 |
-| 変更履歴 | L159 |
+| Task04→Task07 評価イベント連携（TASK-SKILL-LIFECYCLE-07） | L159 |
+| 変更履歴 | L174 |
 
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
@@ -1937,10 +1944,28 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Environment Backend サービス | L6 |
 
+### references/arch-electron-services-details-part1.md
+
+| セクション | 行 |
+|------------|----|\n| スキル管理サービス | L8 |
+
+### references/arch-electron-services-details-part2.md
+
+| セクション | 行 |
+|------------|----|\n| SkillForker（TASK-9E） | L8 |
+| RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L100 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L129 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L154 |
+| キャッシュ機構 | L182 |
+| 永続化 | L188 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L194 |
+
 ### references/arch-electron-services-details.md
 
 | セクション | 行 |
-|------------|----|\n| スキル管理サービス | L6 |
+|------------|----|\n| 分割先ファイル | L8 |
+| 目次（クイックリファレンス） | L15 |
 
 ### references/arch-electron-services-history.md
 
@@ -2008,6 +2033,7 @@ node scripts/list-specs.js --topics
 | Skill Import / SkillCenter 防御状態管理（2026-03-04） | L180 |
 | TASK-10A-E-C: Store駆動ライフサイクル統合（2026-03-06） | L225 |
 | TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07） | L263 |
+| permissionHistorySlice 拡張仕様（TASK-SKILL-LIFECYCLE-06） | L333 |
 
 ### references/arch-state-management-reference-persist-hardening-test-quality.md
 
@@ -2028,7 +2054,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
-| 関連ドキュメント | L23 |
+| lifecycleHistorySlice / feedbackSlice（TASK-SKILL-LIFECYCLE-07） | L23 |
+| 関連ドキュメント | L52 |
 
 ### references/arch-ui-components-advanced.md
 
@@ -2310,6 +2337,19 @@ node scripts/list-specs.js --topics
 | Current Alias Overrides（個別互換行） | L21 |
 | Family Summary | L29 |
 | Detailed Register | L48 |
+| 500-Line Split Register (2026-03-16) | L229 |
+
+### references/lessons-learned-archive-2026-03.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
+
+### references/lessons-learned-archive-2026-03.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
 
 ### references/lessons-learned-archive-2026-03.md
 
@@ -2378,7 +2418,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L37 |
+| 最新教訓 | L38 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -3416,6 +3456,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
 
+### references/task-workflow-completed-agent-view-line-budget.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L8 |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L43 |
+| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L107 |
+| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L127 |
+| TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 | L164 |
+
+### references/task-workflow-completed-chat-lifecycle-tests.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L8 |
+
 ### references/task-workflow-completed-debug-scheduler-doc-generation-theme.md
 
 | セクション | 行 |
@@ -3448,21 +3502,28 @@ node scripts/list-specs.js --topics
 
 ### references/task-workflow-completed-skill-lifecycle-agent-view-line-budget.md
 
+### references/task-workflow-completed-skill-lifecycle-authfix.md
+
 | セクション | 行 |
-|------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L6 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L73 |
-| TASK-UI-03-AGENT-VIEW-ENHANCEMENT current workflow 再監査記録（2026-03-10） | L154 |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 1-12 実行記録（2026-03-12 JST） | L189 |
-| 07-TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001 完了記録（2026-03-08） | L253 |
-| TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L273 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L368 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L475 |
+|------------|----|\n| 完了タスク | L9 |
+
+### references/task-workflow-completed-skill-lifecycle.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L8 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L75 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L156 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L241 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L263 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L326 |
+| TASK-SKILL-LIFECYCLE-07: ライフサイクル履歴・フィードバック統合 設計完了記録（2026-03-16） | L390 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
-| セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+### references/task-workflow-completed-workspace.md
 
+| セクション | 行 |
+|------------|----|\n
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
@@ -3657,8 +3718,9 @@ node scripts/list-specs.js --topics
 | IPC契約 | L105 |
 | テスト・画面検証 | L124 |
 | 苦戦箇所（再利用形式） | L149 |
-| 関連ドキュメント | L167 |
-| 変更履歴 | L177 |
+| ライフサイクルタイムライン観測項目（TASK-SKILL-LIFECYCLE-07） | L167 |
+| 関連ドキュメント | L189 |
+| 変更履歴 | L199 |
 
 ---
 

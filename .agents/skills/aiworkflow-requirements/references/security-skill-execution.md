@@ -371,10 +371,24 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 ---
 
+## ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06）
+
+スキル実行時のツール権限判定には、以下の型定義を使用する。
+
+- 型定義ファイル: `packages/shared/src/constants/security.ts`
+- 主要型: `ToolRiskLevel`（"critical" | "high" | "medium" | "low"）
+- 設定マップ: `TOOL_RISK_CONFIG`（各レベルの allowApproveOnce / allowPermanent / autoDenyDefault を定義）
+
+Critical ツールは `autoDenyDefault: true` のため、PermissionDialog を表示せずに自動拒否する。
+詳細は TASK-SKILL-LIFECYCLE-06 の設計書（docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-2/）を参照。
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
+| v1.4.0     | 2026-03-16 | ToolRiskLevel参照追加: TASK-SKILL-LIFECYCLE-06設計成果物への参照リンク |
 | v1.3.0     | 2026-02-01 | toolMetadataモジュール参照追加: ALLOWED_TOOLS_WHITELIST vs toolMetadata対応表、差異理由、ui-ux-agent-execution.mdリンク |
 | 1.2.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.1.0      | 2026-01-26 | Permission Store機能追加（TASK-3-1-E）           |

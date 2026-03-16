@@ -20,6 +20,35 @@
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。
 - 完了タスク、変更履歴、補助情報は `history` / `archive` 系を読む。
 
+## lifecycleHistorySlice / feedbackSlice（TASK-SKILL-LIFECYCLE-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-07 |
+| ステータス | `spec_created`（設計タスク） |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/outputs/` |
+
+### lifecycleHistorySlice State 設計
+
+| フィールド | 型 | persist対象 | 備考 |
+| --- | --- | --- | --- |
+| `events` | `SkillLifecycleEvent[]` | Yes | イベント履歴の永続化対象 |
+| `aggregateViews` | `Record<string, SkillAggregateView>` | No | 派生データのため persist 対象外（TECH-M-01 解決） |
+| `lastSyncedAt` | `number \| null` | Yes | 最終同期タイムスタンプ |
+| `isLoading` | `boolean` | No | 読込状態 |
+| `error` | `string \| null` | No | エラーメッセージ |
+
+### feedbackSlice 概要
+
+feedbackSlice はユーザーフィードバック（SkillFeedback）の収集・管理を担当する。lifecycleHistorySlice とは独立した Slice として設計し、ドメイン分離を維持する。
+
+### P31/P48 準拠
+
+- 個別セレクタパターンを採用し、合成 Hook は使用しない（P31 対策）
+- `aggregateViews` の派生セレクタ（`.filter()` / `.map()` を含むもの）には `useShallow` を適用する（P48 対策）
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
