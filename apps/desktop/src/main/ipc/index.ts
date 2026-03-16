@@ -57,6 +57,7 @@ import { SkillFileManager } from "../services/skill/SkillFileManager";
 import { SkillChainStore } from "../services/skill/SkillChainStore";
 import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import { SkillDocGenerator as SkillDocGeneratorCls } from "../services/skill/SkillDocGenerator";
+import { LLMDocQueryAdapter } from "../services/skill/LLMDocQueryAdapter";
 import { ScheduleStore } from "../services/skill/ScheduleStore";
 import { SkillScheduler } from "../services/skill/SkillScheduler";
 import { AnalyticsStore } from "../services/skill/AnalyticsStore";
@@ -783,11 +784,19 @@ export function registerAllIpcHandlers(
 
   // Skill Docs handlers (TASK-9I)
   track("registerSkillDocsHandlers", () => {
-    const stubQueryFn = async (prompt: string) => ({
-      content: `Generated content for: ${prompt.slice(0, 50)}`,
-    });
+    const adapter = new LLMDocQueryAdapter(
+      () => authKeyService.getKey(),
+      "anthropic",
+    );
+    const queryFn = async (prompt: string) => {
+      const result = await adapter.query(prompt);
+      if (result.success && result.data !== undefined) {
+        return { content: result.data };
+      }
+      throw new Error(result.error?.message ?? "LLM query failed");
+    };
     const skillDocGenerator = new SkillDocGeneratorCls(
-      stubQueryFn,
+      queryFn,
       skillFileManager,
     );
     registerSkillDocsHandlers(mainWindow, skillDocGenerator);

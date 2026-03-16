@@ -81,3 +81,60 @@ export interface TemplateSection {
   /** 必須セクションか（NFR-09） */
   required: boolean;
 }
+
+// ============================================================
+// Runtime Integration Types (TASK-04 Phase 4-5)
+// ============================================================
+
+/** エラーガイダンス情報 */
+export interface DocErrorGuidance {
+  /** 失敗理由の説明 */
+  reason: string;
+  /** 推奨アクション */
+  action: string;
+  /** Terminal Handoff が利用可能か */
+  handoffAvailable: boolean;
+}
+
+/** エラー分類カテゴリ */
+export type DocErrorCategory =
+  | "VALIDATION"
+  | "BUSINESS"
+  | "EXTERNAL_SERVICE"
+  | "INFRASTRUCTURE"
+  | "INTERNAL";
+
+/** 構造化エラー情報 */
+export interface DocError {
+  /** エラーコード (1001-5001) */
+  code: number;
+  /** エラーカテゴリ */
+  category: DocErrorCategory;
+  /** エラーメッセージ */
+  message: string;
+  /** リトライ可能かどうか */
+  retryable: boolean;
+  /** ユーザー向けガイダンス */
+  guidance?: DocErrorGuidance;
+}
+
+/** docs操作の結果型 */
+export interface DocOperationResult<T> {
+  success: boolean;
+  data?: T;
+  error?: DocError;
+}
+
+/** Skill Docs の capability パス */
+export type SkillDocsCapability =
+  | "integrated-api"
+  | "guidance-only"
+  | "terminal-handoff";
+
+/** Capability 解決結果 */
+export interface SkillDocsCapabilityResult {
+  capability: SkillDocsCapability;
+  provider?: string;
+  guidance?: string;
+  reason?: string;
+}

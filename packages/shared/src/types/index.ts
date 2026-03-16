@@ -161,3 +161,6 @@ export * from "./skill-fork";
 
 // CTA表示制御型定義 (TASK-SKILL-LIFECYCLE-05)
 export * from "./cta-visibility";
+
+// スキルドキュメント生成型定義 (TASK-9I / TASK-04)
+export * from "./skill-docs";

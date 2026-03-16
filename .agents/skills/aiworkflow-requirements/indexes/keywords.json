@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-15T13:06:58.338Z",
-  "totalKeywords": 2177,
+  "generated": "2026-03-16T01:33:37.971Z",
+  "totalKeywords": 2182,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1244,6 +1244,7 @@
       "claude-code-skills-structure.md",
       "error-handling-core.md",
       "interfaces-agent-sdk-executor-core.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
@@ -1803,6 +1804,7 @@
       "api-ipc-system-history.md",
       "api-ipc-system.md",
       "glossary.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "master-design.md",
       "technology-backend.md",
       "workflow-ai-runtime-authmode-unification.md"
@@ -2818,6 +2820,7 @@
     ],
     "IMP": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
@@ -3346,6 +3349,7 @@
     "メタ情報": [
       "csrf-state-parameter.md",
       "ipc-contract-checklist.md",
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-current.md",
       "logging-migration-guide.md"
     ],
@@ -4039,6 +4043,7 @@
     ],
     "Integration": [
       "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md"
     ],
     "Session": [
@@ -4086,6 +4091,19 @@
     ],
     "SkillImportStore": [
       "interfaces-agent-sdk-skill-details.md"
+    ],
+    "Docs": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
+    ],
+    "Runtime": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "DOCS": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
+    ],
+    "RUNTIME": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
     "スキル分析": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
@@ -4676,6 +4694,7 @@
       "legacy-ordinal-family-register.md"
     ],
     "Lessons": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4703,6 +4722,7 @@
       "lessons-learned.md"
     ],
     "Learned": [
+      "lessons-learned-archive-2026-03.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -4728,6 +4748,12 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "lessons-learned.md"
+    ],
+    "アーカイブ": [
+      "lessons-learned-archive-2026-03.md"
+    ],
+    "教訓アーカイブ": [
+      "lessons-learned-archive-2026-03.md"
     ],
     "教訓集": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -9575,9 +9601,6 @@
     ],
     "デザイントークン": [
       "ui-ux-system-prompt.md"
-    ],
-    "Runtime": [
-      "workflow-ai-runtime-authmode-unification.md"
     ],
     "Unification": [
       "workflow-ai-runtime-authmode-unification.md"

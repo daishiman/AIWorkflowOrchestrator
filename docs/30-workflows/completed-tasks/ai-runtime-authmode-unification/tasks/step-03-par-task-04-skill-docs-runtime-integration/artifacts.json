@@ -1,0 +1,223 @@
+{
+  "taskId": "TASK-IMP-SKILL-DOCS-AI-RUNTIME-001",
+  "title": "Skill Docs 生成の AI runtime 統合",
+  "type": "implementation",
+  "priority": "high",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "subtasks": 5,
+      "completionCriteria": 7,
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "subtasks": 5,
+      "completionCriteria": 8,
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md",
+        "outputs/phase-2/ui-ux-realization.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "subtasks": 2,
+      "completionCriteria": 7,
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "subtasks": 4,
+      "completionCriteria": 4,
+      "artifacts": ["outputs/phase-4/test-matrix.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "subtasks": 5,
+      "completionCriteria": 5,
+      "artifacts": ["outputs/phase-5/implementation-plan.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "subtasks": 4,
+      "completionCriteria": 4,
+      "artifacts": ["outputs/phase-6/regression-plan.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "subtasks": 1,
+      "completionCriteria": 3,
+      "artifacts": ["outputs/phase-7/coverage-plan.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "subtasks": 5,
+      "completionCriteria": 8,
+      "artifacts": ["outputs/phase-8/refactor-plan.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "subtasks": 5,
+      "completionCriteria": 11,
+      "artifacts": ["outputs/phase-9/qa-checklist.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "subtasks": 3,
+      "completionCriteria": 6,
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "subtasks": 5,
+      "completionCriteria": 7,
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshots/"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "subtasks": 5,
+      "completionCriteria": 11,
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-sync-plan.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "subtasks": 3,
+      "completionCriteria": 6,
+      "artifacts": [
+        "outputs/phase-13/pr-summary-draft.md",
+        "outputs/phase-13/change-scope-analysis.md",
+        "outputs/phase-13/pr-checklist.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "docs 生成に必要な runtime 要件（プロバイダ、API key、timeout、retry）が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "stub 排除の対象範囲が明確になっている（4 IPC チャンネルの影響範囲）",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "terminal handoff の 3 経路（timeout / missing credentials / rate limit）が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "access matrix の Skill Docs 適用方針（3 path）が Task01 契約と整合している",
+      "verified": true
+    }
+  ],
+  "designOverview": {
+    "newTypes": [
+      {
+        "name": "LLMDocQueryAdapter",
+        "responsibility": "query(prompt) / isAvailable() / getProviderName()"
+      },
+      {
+        "name": "DocOperationResult<T>",
+        "responsibility": "success / data? / error?（code, category, message, retryable, guidance?）"
+      },
+      {
+        "name": "SkillDocsCapabilityResolver",
+        "responsibility": "integrated-api / guidance-only / terminal-handoff の 3 path 判定"
+      }
+    ],
+    "errorClassification": {
+      "categories": 7,
+      "codeRange": "1001-5001",
+      "retryableRange": "3000-3999"
+    },
+    "uiStates": 7,
+    "pitfalls": ["P23", "P32", "P34", "P42", "P44", "P45", "P48", "P54"]
+  },
+  "testResults": {
+    "newTests": 36,
+    "existingRegressionTests": 61,
+    "totalTests": 97,
+    "allPass": true,
+    "coverageMetrics": {
+      "LLMDocQueryAdapter": "98.58%",
+      "SkillDocsCapabilityResolver": "100%"
+    }
+  },
+  "unassignedTasks": [
+    {
+      "id": "UT-SKILL-DOCS-TERMINAL-HANDOFF-001",
+      "title": "terminal-handoff 実パス実装",
+      "path": "docs/30-workflows/unassigned-task/task-ut-skill-docs-terminal-handoff-001.md"
+    }
+  ],
+  "dependencies": {
+    "prerequisite": [
+      "step-01-seq-task-01-ai-runtime-authmode-foundation (Phase 3 PASS)",
+      "step-02-seq-task-02-claude-code-terminal-surface (Phase 2 完了)",
+      "TASK-9I (2026-02-28 完了、64テスト全PASS)"
+    ],
+    "relatedUnassignedTasks": [
+      "UT-9I-001 (LLM プロバイダ連携)",
+      "UT-9I-002 (テンプレート CRUD)",
+      "UT-SKILL-DOCS-TERMINAL-HANDOFF-001 (terminal-handoff 実パス実装)"
+    ]
+  },
+  "createdAt": "2026-03-13",
+  "updatedAt": "2026-03-16"
+}

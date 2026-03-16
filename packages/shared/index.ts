@@ -154,6 +154,16 @@ export type {
   TemplateSection,
 } from "./src/types/skill-docs";
 
+// Skill Docs Runtime Integration types (TASK-04)
+export type {
+  DocErrorGuidance,
+  DocErrorCategory,
+  DocError,
+  DocOperationResult,
+  SkillDocsCapability,
+  SkillDocsCapabilityResult,
+} from "./src/types/skill-docs";
+
 // Skill Chain types (TASK-9D)
 export type {
   SkillChainDefinition,

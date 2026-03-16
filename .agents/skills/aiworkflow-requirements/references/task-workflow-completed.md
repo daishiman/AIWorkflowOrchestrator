@@ -5,6 +5,42 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 skill-docs-runtime-integration（2026-03-16）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | implementation |
+| 優先度 | 中 |
+| 完了日 | 2026-03-16 |
+| 対象 | Skill Docs 生成の AI runtime 統合（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型） |
+| 成果物 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-04-skill-docs-runtime-integration/` |
+
+#### 実施内容
+
+- `LLMDocQueryAdapter` を実装し、SkillDocGenerator の stubQueryFn を差し替えた
+- `SkillDocsCapabilityResolver` で integrated-api / guidance-only / terminal-handoff の3パス判定を実装
+- `DocOperationResult<T>` 型を追加し、エラーハンドリングを統一
+- 実装完了時点の証跡として 97テスト ALL PASS、カバレッジ基準充足（LLMDocQueryAdapter 98.58%、CapabilityResolver 100%）を保持
+- 2026-03-16 再監査で Phase 11 screenshot/Phase 12 guide/workflow 構造を再検証し、契約ドリフト（証跡ファイル名・implementation-guide要件）を是正
+- 未タスク1件検出: UT-SKILL-DOCS-TERMINAL-HANDOFF-001（terminal-handoff 実パス実装）
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop test` | 97テスト ALL PASS |
+| `LLMDocQueryAdapter` カバレッジ | 98.58% |
+| `SkillDocsCapabilityResolver` カバレッジ | 100% |
+| `pnpm --filter @repo/desktop typecheck` | PASS（再監査 2026-03-16） |
+| `pnpm --filter @repo/shared typecheck` | PASS（再監査 2026-03-16） |
+| `node .../verify-all-specs.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（13/13, warning 0） |
+| `node .../validate-phase-output.js ...step-03-par-task-04-skill-docs-runtime-integration --phase 12 --json` | PASS（28項目） |
+| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（5/5） |
+| `node .../validate-phase12-implementation-guide.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（10/10） |
+| `pnpm --filter @repo/desktop exec vitest run ...` | 環境依存で再実行不可（esbuild darwin-x64/arm64 mismatch）。実装完了時の PASS 証跡を保持し、今回は typecheck + validator で再監査 |
+
 ### タスク: TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 task-specification-creator 大規模 Markdown 責務分離（2026-03-12）
 
 | 項目 | 値 |
@@ -404,4 +440,3 @@
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
-
