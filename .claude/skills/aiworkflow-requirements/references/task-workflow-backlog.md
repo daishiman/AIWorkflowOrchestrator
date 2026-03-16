@@ -443,9 +443,10 @@
 | UT-SKILL-DOCS-TERMINAL-HANDOFF-001 | terminal-handoff実パス実装 | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
 | UT-SPEC-LINE-BUDGET-SPLIT-001 | aiworkflow-requirements 500行超過仕様書の責務分割 | 低 | arch-electron-services-details.md(502行) / task-workflow-completed-skill-lifecycle(535行) / task-workflow-completed-workspace-chat(522行) の3ファイルを500行以下に分割 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
 
-| UT-06-001 | ToolRiskConfig 実装（PermissionDialog 表示ロジックへの TOOL_RISK_CONFIG 組み込み） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-001-tool-risk-config-implementation.md` |
+| ~~UT-06-001~~ | ~~ToolRiskConfig 実装~~ **実装完了（2026-03-16）** | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出 → UT-06-001 で実装完了 | `docs/30-workflows/tool-risk-config-implementation/` |
 | UT-06-002 | AllowedToolEntryV2 PermissionStore 適用（expiresAt / skillName / expiryPolicy フィールドの PermissionStore 書き込み対応） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-002-allowed-tool-entry-v2-permission-store.md` |
 | UT-06-003 | SafetyGatePort 具象クラス実装（evaluate() メソッドの Main Process 実装） | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md` |
+| UT-06-001-CSS-RISK-VARS | CSS リスクレベル変数定義（`--risk-low` / `--risk-medium` / `--risk-high`） | 中 | UT-06-001 エレガンスレビューで検出（2026-03-16）。UT-06-004 の前提 | `docs/30-workflows/unassigned-task/task-ut-06-001-css-risk-variables-definition.md` |
 | UT-06-004 | INS-01〜03 UI コンポーネント実装（PermissionDialog リスクバッジ / 有効期限選択 / 失効通知） | 中 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-004-ins-01-03-ui-components.md` |
 | ~~UT-06-005~~ | ~~abort/skip/retry fallback 組み込み（SafetyGateResult failure 時のエラー経路整備）~~ | ~~高~~ | ~~TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出（2026-03-16）~~ | ~~`docs/30-workflows/unassigned-task/task-ut-06-005-abort-skip-retry-fallback.md`~~ **完了 2026-03-16** |
 | UT-06-005-A | PreToolUse Hook フォールバック統合（processPermissionFallback の実行時フロー接続） | 高 | UT-06-005 Phase 12 レビュー（GAP-02/03）（2026-03-16） | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md` |

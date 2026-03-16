@@ -180,6 +180,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L300 |
+| 共有パッケージ実装パターン | L366 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -1451,7 +1452,8 @@ node scripts/list-specs.js --topics
 | セキュリティ原則 | L24 |
 | PKCE / State parameter 実装記録 | L47 |
 | 実装時の苦戦した箇所・知見 | L94 |
-| 関連ドキュメント | L139 |
+| Tool Risk Configuration（UT-06-001: 2026-03-16 実装完了） | L139 |
+| 関連ドキュメント | L175 |
 
 ### references/security-input-validation.md
 
@@ -2421,7 +2423,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L41 |
+| 最新教訓 | L42 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
