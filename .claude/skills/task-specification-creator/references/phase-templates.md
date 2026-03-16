@@ -213,8 +213,8 @@ grep -n "<対象関数名>" <対象ファイルパス>
 | --- | --- | --- |
 | [phase-template-core.md](phase-template-core.md) | Phase 1-3 | 要件定義、設計、設計レビューの共通構造 |
 | [phase-template-execution.md](phase-template-execution.md) | Phase 4-10 | テスト、実装、品質、最終レビュー |
-| [phase-template-phase11.md](phase-template-phase11.md) | Phase 11 | manual walkthrough と screenshot evidence |
-| [phase-template-phase12.md](phase-template-phase12.md) | Phase 12 | implementation guide、spec sync、未タスク、feedback |
+| [phase-template-phase11.md](phase-template-phase11.md) | Phase 11 | manual walkthrough と screenshot evidence。設計タスク向けウォークスルー方式（NON_VISUAL判定）を含む |
+| [phase-template-phase12.md](phase-template-phase12.md) | Phase 12 | implementation guide、spec sync、未タスク、feedback。設計タスク向け2段階更新方式（SF-02）と未タスク4パターン（SF-03）を含む |
 | [phase-template-phase13.md](phase-template-phase13.md) | Phase 13 | user approval と PR blocked ルール |
 
 ## 共通ルール

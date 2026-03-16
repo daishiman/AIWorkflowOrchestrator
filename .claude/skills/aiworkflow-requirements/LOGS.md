@@ -8,6 +8,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | --- |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
+| 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）完了 |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（phase-12/documentation-changelog/spec-update-summary 同値化 + 苦戦箇所追補） |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 4-12 完了（CTA 16パターン実装 + 30テストGREEN + artifacts.json同期 + system spec same-wave更新） |
 | 2026-03-15 - TASK-SKILL-LIFECYCLE-05 再監査同期（Phase 11 screenshot証跡復旧 + implementation-guide要件充足 + system spec same-wave 更新） |
@@ -34,3 +35,21 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
+
+- タスク名: 信頼・権限・ガバナンス統合
+- 種別: 設計タスク（実装コード非対象）
+- ワークフロー: skill-lifecycle-unification
+- 主要成果物:
+  - `security.ts`: ToolRiskLevel（4段階）/ ToolRiskConfig / TOOL_RISK_CONFIG の型定義
+  - `permission-store-interface.ts`: AllowedToolEntryV2（失効ポリシー付き）/ PermissionStoreInterface / calcExpiresAt の型定義
+  - `safety-gate.ts`: SafetyGrade / SafetyGateResult / SafetyGatePort / SafetyCheckId の型定義
+  - `abort-fallback-contract.md`: abort/skip/retry フロー4ステップ契約
+  - `accountability-ui-spec.md`: INS-01（CTA）/INS-02（実行中）/INS-03（結果）の挿入点仕様
+- 接続先:
+  - TASK-08（スキル公開）が SafetyGatePort.evaluate() を呼び出してブロック判定を行う
+  - TASK-03（スキル実行）が PermissionStoreInterface を通じて権限判定を行う
+- 影響範囲:
+  - packages/shared/src/constants/security.ts（ToolRiskLevel 追加）
+  - apps/desktop/src/main/permissions/（AllowedToolEntryV2・SafetyGatePort 追加）

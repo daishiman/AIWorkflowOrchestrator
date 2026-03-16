@@ -1,0 +1,27 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-07",
+  "capturedAt": "2026-03-16T10:35:00+09:00",
+  "note": "esbuild platform mismatch fallback: completed workflow evidence re-bundle + review board recapture",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "file": "screenshots/TC-11-01-created-immediate-use-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/outputs/phase-11/screenshots/TC-11-01-created-immediate-use-entry.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "screenshots/TC-11-02-deferred-use-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/outputs/phase-11/screenshots/TC-11-02-deferred-use-entry.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "screenshots/TC-11-03-history-reuse-entry.png",
+      "source": "docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/outputs/phase-11/screenshots/TC-11-03-history-reuse-entry.png"
+    },
+    {
+      "tcId": "TC-11-00",
+      "file": "screenshots/TC-11-00-created-skill-usage-review-board.png",
+      "source": "apps/desktop/scripts/capture-task-skill-lifecycle-05-review-board.mjs"
+    }
+  ]
+}

@@ -73,6 +73,38 @@
 | 「aiworkflow/task-spec だけ直せば十分」 | **`skill-creator` も条件付きで更新** | ユーザーがスキル改善を明示した場合、または Task 5 から再利用パターンを抽出してテンプレート/パターンへ落とし込む場合は `skill-creator` を更新対象に含める |
 | 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり** | テスト戦略変更（renderHookパターン導入、テストヘルパー追加、テストカテゴリ体系変更）は仕様書に記録すべき。テストケースの追加・削除のみなら不要 |
 
+### 新規型定義の仕様書配置判断フロー
+
+新規型定義が作成された場合、以下のフローで配置先を決定する。
+
+```
+[新規型定義が発生]
+    ↓
+[既存 interfaces-*.md のドメインに属するか？]
+    ├── Yes → [該当ファイルが 500行未満か？]
+    │         ├── Yes → 既存ファイルに追記
+    │         └── No  → ファイル分割を検討（-advanced.md / -details.md）
+    └── No  → [新規ドメインか？]
+              ├── Yes → 新規 interfaces-*.md を作成
+              └── No  → arch-*.md に追記（アーキテクチャレベル設計変更の場合）
+```
+
+**interfaces-agent-sdk-skill-*.md ファミリーの配置ルール**:
+
+| ファイル | 配置する型の種類 |
+| -------- | ---------------- |
+| `interfaces-agent-sdk-skill.md` | スキルの基本型（SkillMetadata, SkillFile など） |
+| `interfaces-agent-sdk-skill-core.md` | コア実行型（SkillExecutionResult など） |
+| `interfaces-agent-sdk-skill-advanced.md` | 高度な機能型（SkillPermission, SkillCreator など） |
+| `interfaces-agent-sdk-skill-history.md` | 履歴・バージョン管理型（SkillVersion, SkillDiff など） |
+| `interfaces-agent-sdk-skill-reference.md` | 参照系型（SkillCategory, SkillTag など） |
+| 新規作成が必要な場合 | 独立したドメイン型（例: ライフサイクル型 → `interfaces-agent-sdk-skill-lifecycle.md`） |
+
+**パス配置ルール**:
+- 共有型（複数パッケージから参照）: `packages/shared/src/skill/<domain>/types.ts`
+- Renderer専用型: `apps/desktop/src/renderer/types/`
+- Main Process専用型: `apps/desktop/src/main/types/`
+
 ### 🆕 新規クラス/コンポーネント追加時のチェックリスト
 
 新しいクラスやコンポーネントを実装した場合、**型定義の有無に関わらず**以下を確認：

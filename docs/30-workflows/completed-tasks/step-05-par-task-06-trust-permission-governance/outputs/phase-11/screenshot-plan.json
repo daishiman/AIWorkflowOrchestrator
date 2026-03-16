@@ -1,0 +1,43 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-06",
+  "capturedAt": "2026-03-16T10:40:00+09:00",
+  "captureMethod": "QuickLook(qlmanage) static-review-board",
+  "note": "CLI環境のため、Phase 11レビュー用ボード（outputs/phase-11/review-board/TC-*.html）を描画し、TC単位でPNGを生成した。",
+  "screenshots": [
+    {
+      "tcId": "TC-01",
+      "file": "screenshots/TC-01-risk-dialog-alignment.png",
+      "source": "outputs/phase-11/review-board/TC-01.html"
+    },
+    {
+      "tcId": "TC-02",
+      "file": "screenshots/TC-02-risk-classification-coverage.png",
+      "source": "outputs/phase-11/review-board/TC-02.html"
+    },
+    {
+      "tcId": "TC-03",
+      "file": "screenshots/TC-03-permission-state-transition.png",
+      "source": "outputs/phase-11/review-board/TC-03.html"
+    },
+    {
+      "tcId": "TC-04",
+      "file": "screenshots/TC-04-task03-05-connection.png",
+      "source": "outputs/phase-11/review-board/TC-04.html"
+    },
+    {
+      "tcId": "TC-05",
+      "file": "screenshots/TC-05-safety-gate-contract.png",
+      "source": "outputs/phase-11/review-board/TC-05.html"
+    },
+    {
+      "tcId": "TC-06",
+      "file": "screenshots/TC-06-approval-history-completeness.png",
+      "source": "outputs/phase-11/review-board/TC-06.html"
+    },
+    {
+      "tcId": "TC-07",
+      "file": "screenshots/TC-07-abort-fallback-safety.png",
+      "source": "outputs/phase-11/review-board/TC-07.html"
+    }
+  ]
+}

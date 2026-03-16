@@ -164,6 +164,28 @@
 
 ---
 
+## ライフサイクルタイムライン観測項目（TASK-SKILL-LIFECYCLE-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-07 |
+| ステータス | `spec_created`（設計タスク） |
+
+### スコア推移グラフ
+
+Task07 の `ScoreDataPoint[]`（`{ timestamp, score, eventType }`）を時系列で可視化する。HistorySearchView の timeline とは独立したライフサイクル専用ビューとして設計される。
+
+### 集約ビュー表示
+
+`SkillAggregateView` の最新値（成功率・トレンド方向・推薦スコア）をスキル詳細パネルのサマリー領域に表示する。
+
+### 参照リンク
+
+- Task07 設計: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-2-design.md`
+- Task07 要件: `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/phase-1-requirements.md`
+
+---
+
 ## 関連ドキュメント
 
 - [ui-ux-feature-components.md](./ui-ux-feature-components.md)
