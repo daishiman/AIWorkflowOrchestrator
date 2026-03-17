@@ -36,6 +36,8 @@
 | 公開準備状態       | `PublishReadiness`            | interfaces-agent-sdk-skill.md |
 | スキルレジストリ   | `SkillRegistryService`        | interfaces-agent-sdk-skill.md |
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
+| LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
+| LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
 
 ---
 
@@ -85,6 +87,9 @@
 | `chat:send`      | メッセージ送信 |
 | `chat:stream`    | ストリーミング |
 | `conversation:*` | 会話履歴管理   |
+| `llm:check-health` | LLMヘルスチェック（primary） |
+| `llm:set-selected-config` | Renderer→Main 選択同期 |
+| `AI_CHECK_CONNECTION` | legacy接続確認（新規利用禁止） |
 
 **詳細**: api-endpoints.md L126-736
 

@@ -19,21 +19,18 @@ export interface SelectedLLMConfig {
 // In-memory state for selected LLM config
 let currentConfig: SelectedLLMConfig | null = null;
 
-/**
- * デフォルト設定
- */
-const DEFAULT_CONFIG: SelectedLLMConfig = {
-  providerId: "openai",
-  modelId: "gpt-4o",
-};
+// DEFAULT_CONFIG: 将来の参照用（現在は未使用）
+// const DEFAULT_CONFIG: SelectedLLMConfig = {
+//   providerId: "openai",
+//   modelId: "gpt-4o",
+// };
 
 /**
  * 選択されたLLM設定を取得する
  * @returns 選択されたプロバイダーとモデルの設定、未選択の場合はnull
  */
 export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null> {
-  // 設定が存在しない場合はデフォルトを返す
-  return currentConfig ?? DEFAULT_CONFIG;
+  return currentConfig;
 }
 
 /**

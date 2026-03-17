@@ -209,7 +209,7 @@ export async function handleCheckHealth(params: {
     return result;
   } catch (error) {
     return {
-      status: "error",
+      status: "disconnected",
       providerId,
       errorMessage: isLLMError(error)
         ? error.code

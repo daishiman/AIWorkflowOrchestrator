@@ -1,6 +1,6 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-13T17:18:19.988Z
+> 検証日時: 2026-03-17T04:00:23.499Z
 > 対象: docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync
 
 ## サマリー

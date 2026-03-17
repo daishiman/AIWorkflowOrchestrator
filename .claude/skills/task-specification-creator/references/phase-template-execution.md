@@ -88,6 +88,23 @@ grep -n "^[^/]*\(app\.\|server\.\|connect\|initialize\|ipcMain\.\|BrowserWindow\
 
 ## Phase 5 追加チェック項目
 
+### 既存テスト回帰確認の先行実行（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 教訓）
+
+Phase 5 実装開始前に、影響を受ける可能性がある既存テストを先行実行して baseline を確認する。
+
+```bash
+# 変更対象ファイルに関連する既存テストを実行
+pnpm --filter @repo/desktop exec vitest run src/path/to/related.test.ts
+
+# 変更対象ファイルを特定
+git diff --name-only HEAD -- 'apps/**/*.ts' 'packages/**/*.ts'
+```
+
+- [ ] 変更対象ファイルの既存テストが全て GREEN であることを確認した（baseline 確認）
+- [ ] 新規実装後に既存テストが回帰していないことを確認した
+
+**注意**: 定数・型・インターフェースの変更（例: `status: "error"` → `status: "disconnected"`）は関係する全テストに波及する。変更前に `grep -rn "\"error\""` 等で影響範囲を調査してから実装する。
+
 ### IPC ハンドラ register/unregister ペアの確認（P5 対策）
 
 IPC ハンドラを新規作成した場合、以下を確認する:

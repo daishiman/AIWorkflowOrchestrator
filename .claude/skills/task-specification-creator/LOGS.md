@@ -63,6 +63,20 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
 
 ---
+## 2026-03-17 - TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - Main Chat / Settings / Selector / System Prompt の runtime 同期を実装
+  - GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
+  - GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
+  - GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
+  - 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
+  - 未タスク: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+
+---
 ## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
 - **Agent**: task-specification-creator

@@ -361,3 +361,159 @@
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
 | UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+
+---
+
+### 2026-03-15 TASK-SKILL-LIFECYCLE-05
+
+#### 苦戦箇所1: Phase 11 の必須成果物が揃っておらず screenshot coverage validator が失敗する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `manual-test-result.md` のみで運用し、`manual-test-checklist.md` と `screenshot-plan.json` が欠落した状態で再監査に進んでしまった |
+| 再発条件 | 「スクリーンショットがあるから十分」と判断し、validator 前提ファイルを確認しない |
+| 解決策 | `outputs/phase-11/` を `checklist/result/plan/screenshots` の4点セットで再構成し、TC-11-01〜05 の証跡を 1:1 で再紐付けした |
+| 標準ルール | Phase 11 完了判定は `validate-phase11-screenshot-coverage` PASS を必須にし、必須ファイル欠落を残さない |
+
+#### 苦戦箇所4: Record パターンでの ScoringGate 網羅性保証
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | switch 文で ScoringGate の4段階を分岐しようとしたが、新しい段階が追加された場合にコンパイルエラーにならない |
+| 解決策 | `Record<ScoringGate, CTAVisibility>` で全キーの定義を型レベルで強制する |
+| 標準ルール | ユニオン型の全ケース網羅には `Record<UnionType, Config>` パターンを使う |
+| 関連タスク | TASK-SKILL-LIFECYCLE-05 |
+
+#### 苦戦箇所5: 設計タスクの artifacts.json 逐次更新忘れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 49成果物を全て作成済みだったが、artifacts.json の phase status が全て `not_started` のまま放置 |
+| 解決策 | 各Phase完了ごとに artifacts.json の status, artifacts 配列, acceptanceCriteria を逐次更新 |
+| 標準ルール | artifacts.json は Phase 完了の正式記録であり、成果物作成と同時に更新する |
+| 関連タスク | TASK-SKILL-LIFECYCLE-05 |
+
+#### 苦戦箇所6: Phase 12 本文と成果物の実績が乖離する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase-12-documentation.md` が `not_started` のまま、`documentation-changelog.md` に計画文が残り、成果物実体と矛盾した |
+| 解決策 | `phase-12-documentation.md` / `documentation-changelog.md` / `spec-update-summary.md` の3点を同一ターンで更新した |
+| 標準ルール | Phase 12 は実績ログのみを残し、計画文は残さない |
+| 関連タスク | TASK-SKILL-LIFECYCLE-05 |
+
+---
+
+### 2026-03-14 TASK-SKILL-LIFECYCLE-04
+
+#### 苦戦箇所1: 未タスク配置先ドリフトで指定ディレクトリ監査が不成立になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未タスクを `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/` に置いたため、`--target-file` 監査境界と衝突した |
+| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置した |
+| 標準ルール | active 未タスクは root canonical path を正本とし、workflow ローカル path は使わない |
+
+#### 苦戦箇所3: system spec の同期対象を絞りすぎると same-wave が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 成果物だけ更新して `resource-map` / `quick-reference` / `legacy register` / `LOGS` を後回しにすると、再利用入口が stale になる |
+| 解決策 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、`parent docs / ledger / indexes / logs` を同一 wave で同期した |
+| 標準ルール | Phase 12 の close-out は `workflow + parent docs + task-workflow + lessons + indexes + LOGS + mirror` を最小単位とする |
+
+---
+
+### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57〜P61）
+
+#### P57: 設計書と実コードの AuthMode 値の乖離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計ドキュメントでは AuthMode を `"integrated"` / `"terminal"` / `"hybrid"` の3値で定義したが、実コードでは `"subscription" \| "api-key"` の2値。RuntimeResolver の解決テーブルの全面書き直しが必要だった |
+| 解決策 | Phase 1 で `grep -rn "AuthMode" packages/shared/` で正本型定義値を先に確認する |
+| 標準ルール | 設計書で列挙型の値を参照するときは、実コードの型定義を正本として先に確認する |
+
+#### P59: Preload API 未公開（exposeChatEditAPI 呼び出し欠落）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatEditApi.ts` に `exposeChatEditAPI()` 関数は定義されていたが、`preload/index.ts` で一切呼ばれておらず `window.chatEditAPI` が `undefined` |
+| 解決策 | 新規 Preload API は `preload/index.ts` の `contextBridge.exposeInMainWorld()` と else ブロック両方に追記を確認する |
+| 関連パターン | M-01（contextBridge 未使用）、P23 |
+
+#### P60: createAuthModeService のスコープ制限
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `createAuthModeService(authKeyService)` が `track()` コールバック内にあり、スコープ外から参照できなかった |
+| 解決策 | 複数のハンドラ登録ブロックで同じサービスが必要な場合、外側スコープで生成する |
+| 標準ルール | サービスの共有スコープは「最も外側の共通消費者」に合わせて配置する |
+
+---
+
+### 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補）
+
+#### 苦戦箇所: 既存未タスクを再参照しても `target-file` 監査要件を満たさない場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `unassigned-task-detection.md` で「既存未タスクを再利用」と記録しても、`audit-unassigned-tasks --target-file` では current 違反が出るケースがあった |
+| 解決策 | 再参照した各未タスクに対して `audit-unassigned-tasks --target-file` を実行し、違反があれば同ターンで9見出しへ是正した |
+| 標準ルール | 「新規未タスク0件」判定時でも、再参照した既存未タスクは `target-file` 監査で `currentViolations=0` を確認する |
+
+---
+
+### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001
+
+#### 苦戦箇所1: current build screenshot が esbuild platform mismatch で停止する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `electron-vite dev` が `@esbuild/darwin-arm64` / `@esbuild/darwin-x64` 不一致で起動できず Phase 11 の実画面 capture が中断した |
+| 解決策 | fallback review board capture を current workflow 配下で生成し、`phase11-capture-metadata.json` へ理由と source を固定した |
+| 標準ルール | 明示 screenshot 要求時は「実画面試行ログ → fallback 実行 → metadata 記録 → coverage validator PASS」まで同一ターンで閉じる |
+
+#### 苦戦箇所2: chatEdit preload と Main IPC の payload 契約がドリフトしていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatEditAPI.readFile/writeFile` が positional 引数で invoke し、Main 側の object payload 契約（`{ filePath, workspacePath? }`）と不整合だった |
+| 解決策 | `chatEditApi.ts` を object payload 契約へ統一した |
+| 標準ルール | IPC 契約変更時は handler / preload / renderer usage を 1 セットで更新し、`typecheck` と関連テストを同ターンで実行する |
+
+---
+
+### 2026-03-16 TASK-SKILL-LIFECYCLE-07
+
+#### 苦戦箇所1: Phase 12 サブエージェントが「設計タスク範囲外」として実ファイル更新を保留する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 12 の Step 1-A〜Step 2 で、サブエージェントが「設計タスクなので実ファイル更新は実装タスクで行う」と判断し、更新計画のみ記録した |
+| 解決策 | 設計タスクでも Step 1-A（タスク完了記録）、Step 1-C（関連タスクテーブル）、Step 2（システム仕様更新）は実ファイルへの書き込みが必須 |
+| 標準ルール | Phase 12 のシステム仕様書更新は、タスク種別に関わらず実ファイル変更を必ず伴う |
+
+#### 苦戦箇所2: Phase 3 MINOR 4件の追跡フローが Phase 横断で見失われる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 3 で検出された MINOR 4件が Phase 5→9→10 を横断する過程で、追跡マトリクスを作成しなかったため対応状況の確認に時間がかかった |
+| 解決策 | Phase 5 完了時点で「Phase 3 MINOR 追跡マトリクス」を作成し、各指摘の対応状況を明示する |
+| 標準ルール | Phase 3 の MINOR が3件以上の場合は Phase 5 完了時に追跡マトリクスを作成する |
+
+#### 苦戦箇所3: バックグラウンドエージェントの TaskOutput timeout パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 並列実行したバックグラウンドエージェントが10分 timeout で結果取得に失敗したが、実際には成果物ファイルの生成は完了していた |
+| 解決策 | timeout 後は `find` / `ls` で成果物ファイルの存在を直接確認する |
+| 標準ルール | バックグラウンドエージェント timeout 後は成果物ファイルの存在確認を優先する |
+
+#### 苦戦箇所4: コンテキストウィンドウ圧縮で前セッションのエージェント結果が消失する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 並列エージェントの結果をメモリ上で保持したが、コンテキストウィンドウ圧縮により前セッションの結果が参照不能になった |
+| 解決策 | 並列エージェントの結果は必ず成果物ファイルとして出力し、後続 Phase ではファイルから読み取る |
+| 標準ルール | 並列エージェントは成果物ファイル出力を優先し、結果参照はファイルベースで行う |

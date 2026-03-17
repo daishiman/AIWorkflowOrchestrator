@@ -741,3 +741,20 @@ export function registerSafetyGateHandlers(
 // DIP 準拠（インターフェース依存）
 export function registerSafetyGateHandlers(safetyGate: SafetyGatePort): void {}
 ```
+
+### P62: DEFAULT_CONFIG への暗黙 fallback（GAP-03 パターン）
+
+- **教訓**: Provider/Model が未選択の場合に `DEFAULT_CONFIG` へ暗黙 fallback すると、ユーザーが意図しない AI モデルでリクエストが送信される。開発環境と本番環境で異なるデフォルトが設定されている場合、本番で予期しない動作になる
+- **症状**: AI から予期しないレスポンスが返る、または本番環境と開発環境で動作が異なる。意図しない課金が発生する場合もある
+- **解決策**: Provider/Model が未選択の場合はエラー表示またはセレクター画面へのリダイレクトを行う。fallback は一切行わない。明示的な選択を必須とする
+- **検出方法**: `grep -rn "DEFAULT_CONFIG\|defaultConfig" apps/desktop/src/main/` で fallback 箇所を特定する
+- **関連タスク**: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001
+
+### P63: サブエージェントによるテストファイルのインポートパス誤り
+
+- **教訓**: テスト作成をサブエージェントに委譲した際、サブエージェントが既存テストファイルのインポートパスを参照せず、`__tests__/` ディレクトリ基準の誤ったパスでインポートを記述した。テスト実行時まで気付けない
+- **症状**: `Module not found` エラー、または実行時に意図しないモジュールが読み込まれる
+- **原因**: サブエージェントがプロジェクトのディレクトリ構造を把握せず、慣例的なパスを推測で記述する
+- **解決策**: テスト作成を委譲するサブエージェントの指示に「同ディレクトリの既存テストファイルのインポートパスを必ず参照してから記述すること」を明示的に含める。具体的なコマンド例を与えると効果的: `grep -n "^import" src/path/to/existing.test.ts`
+- **再発防止**: Phase 4 テスト作成サブエージェントの指示テンプレートに「インポートパス参照確認」を必須ステップとして追加する
+- **関連タスク**: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001

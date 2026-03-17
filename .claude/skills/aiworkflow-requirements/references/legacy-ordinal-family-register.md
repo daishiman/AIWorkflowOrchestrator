@@ -233,6 +233,7 @@ Family status: `reclassify-first`
 | source file | extracted to | extracted sections | extract axis | date |
 | --- | --- | --- | --- | --- |
 | `api-ipc-agent-core.md` | `api-ipc-agent-safety.md` | スキル安全性評価（skill:evaluate-safety / SafetyGateResult / DefaultSafetyGate DI）、スキルファイルツリー取得（skill:getFileTree / FileNode）| SafetyGate 責務の独立化（セキュリティ評価 IPC を core から分離） | 2026-03-17 |
+| `lessons-learned-current.md` | `lessons-learned-safety-gate-permission-fallback.md` | TASK-SKILL-LIFECYCLE-08 / UT-06-005 苦戦箇所（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバック制御境界条件テスト設計） | SafetyGate・Permission・Fallback 実装教訓の責務別独立化（current から抽出） | 2026-03-17 |
 
 ---
 
