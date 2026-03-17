@@ -36,6 +36,17 @@ Phase 1、Phase 2、Phase 3。
 - validation matrix を command 単位で定義する。
 - DI 境界の型配置判断を明示する（下記フロー参照）。
 
+### concern 数による設計書分割基準（TASK-SKILL-LIFECYCLE-08 知見）
+
+| concern 数 | 推奨構成 |
+| --- | --- |
+| 1〜2 concern | 単一 `phase-2-design.md` に全て記述 |
+| 3〜4 concern | concern ごとにセクション分割（同一ファイル内） |
+| 5+ concern | サブタスク分割を検討（`phase-2-design-{concern}.md` 形式） |
+
+- 分割すると Phase 3/10 の指摘が concern 単位で追跡しやすくなる
+- 分割後は各設計書に「他 concern との依存境界」を明示する
+
 ### DI 境界の型配置判断フロー（Phase 2 設計時に確認）
 
 | 条件 | 配置先 | 例 |

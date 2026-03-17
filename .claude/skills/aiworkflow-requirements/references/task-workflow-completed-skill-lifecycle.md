@@ -471,6 +471,17 @@ Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
 Phase 10 ゲート判定: PASS（MINOR 2件→未タスク記録済み）
 Phase 11 ウォークスルー: 実施済み
 
+### 2026-03-17 再監査追補（画面証跡・未タスク同期）
+
+| 観点 | 結果 |
+| --- | --- |
+| Phase 11 screenshot coverage | PASS（expected 3 / covered 3） |
+| Phase 12 implementation guide | PASS（10/10） |
+| 画面証跡 | `TC-11-01-skill-publishing-visual-review-board.png`, `TC-11-02-publishing-and-compatibility-focus.png`, `TC-11-03-safety-gate-and-permission-focus.png` |
+| 未タスク formalize | `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` / `UT-SKILL-LIFECYCLE-08-IPC-TEST` / `UT-SKILL-LIFECYCLE-08-UI-IMPL` / `UT-SKILL-LIFECYCLE-08-NAMING-FIX` を `docs/30-workflows/unassigned-task/` に作成 |
+
+再監査では「設計タスクでも明示要求がある場合は representative capture を撮影する」運用を適用し、NON_VISUAL 単独判定を採用しない。
+
 ---
 
 ## TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16）

@@ -11,6 +11,7 @@ Phase 12 の documentation update。
 3. documentation changelog
 4. unassigned-task detection
 5. skill feedback report
+6. phase12-task-spec-compliance-check（Task 1〜5 の全完了確認）
 
 ## Phase 10 MINOR 追跡テーブル
 

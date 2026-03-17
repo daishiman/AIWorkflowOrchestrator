@@ -61,6 +61,7 @@
 | Skill Docs エラーコード（DocOperationResult 1001-5001） | api-ipc-agent-details.md | interfaces-agent-sdk-skill-reference-share-debug-analytics.md, error-handling.md |
 | Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
 | 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06） | security-skill-execution.md, interfaces-agent-sdk-executor-details.md, arch-state-management-reference-permissions-import-lifecycle.md | lessons-learned-current.md, task-workflow-backlog.md, workflow-skill-lifecycle-evaluation-scoring-gate.md |
+| 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
 
 ---
 
@@ -389,6 +390,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-17 | 1.20.0     | TASK-SKILL-LIFECYCLE-08: Skill Publishing & Version Compatibility（13型定義・4サービスIF・11 IPCチャンネル）のクイックルックアップ追加。SkillVisibility/PublishReadiness/CompatibilityCheckResult/SkillRegistryService/SkillDistributionService 導線を登録 |
 | 2026-03-17 | 1.19.0     | TASK-SKILL-LIFECYCLE-08 / UT-06-005: SafetyGate MetadataProvider 実装・Permission Fallback（abort/skip/retry/timeout）クイックルックアップを追加。`api-ipc-agent-safety.md` 新規登録（`api-ipc-agent-core.md` から safety/getFileTree セクションを分離） |
 | 2026-03-17 | 1.19.1     | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: クイックルックアップに `workflow-skill-lifecycle-routing-render-view-foundation.md` 導線を追加し、ViewType拡張・renderView分岐・follow-up 未タスクの参照を固定 |
 | 2026-03-16 | 1.18.0     | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001: Skill Docs Runtime の型定義（LLMDocQueryAdapter / DocOperationResult / SkillDocsCapabilityResolver）・エラーコード体系（1001-5001）・セキュリティ（4チャンネル4層防御）参照をクイックルックアップに追加 |
