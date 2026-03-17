@@ -180,7 +180,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L300 |
-| 共有パッケージ実装パターン | L366 |
+| 共有パッケージ実装パターン | L385 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -400,10 +400,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル共有 型定義（TASK-9F） | L6 |
-| スキルデバッグ 型定義（TASK-9H） | L72 |
-| スキルドキュメント生成 型定義（TASK-9I） | L122 |
-| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L186 |
-| スキル分析 型定義（TASK-9J） | L250 |
+| スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created） | L72 |
+| スキルデバッグ 型定義（TASK-9H） | L91 |
+| スキルドキュメント生成 型定義（TASK-9I） | L141 |
+| Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
+| スキル分析 型定義（TASK-9J） | L269 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -421,7 +422,8 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
 | ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L23 |
-| 関連ドキュメント | L48 |
+| 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L48 |
+| 関連ドキュメント | L202 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -812,6 +814,7 @@ node scripts/list-specs.js --topics
 | `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L352 |
 | スキルファイル操作 IPC チャネル（TASK-9A-B） | L386 |
 | スキル安全性評価・ファイルツリー IPC チャネル | L440 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L451 |
 
 ### references/api-ipc-agent-details.md
 
@@ -836,8 +839,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L70 |
-| 変更履歴 | L101 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L71 |
+| 変更履歴 | L102 |
 
 ### references/api-ipc-agent.md
 
@@ -1507,9 +1510,10 @@ node scripts/list-specs.js --topics
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
 | Permission フォールバック セキュリティ（UT-06-005） | L364 |
-| 関連ドキュメント | L390 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L400 |
-| 変更履歴 | L413 |
+| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L390 |
+| 関連ドキュメント | L433 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L443 |
+| 変更履歴 | L456 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1893,14 +1897,15 @@ node scripts/list-specs.js --topics
 | 抽出確認コマンド | L37 |
 | Task04 依存契約 | L51 |
 | Task07 依存契約（TASK-SKILL-LIFECYCLE-07） | L62 |
-| 現行 workflow 仕様書 | L77 |
-| 実装内容（TASK-SKILL-LIFECYCLE-05） | L89 |
-| 苦戦箇所 | L117 |
-| Current Canonical Set | L157 |
-| Artifact Inventory | L177 |
-| 実装コードアンカー | L199 |
-| same-wave 検証手順 | L211 |
-| 5分解決カード | L227 |
+| Task08 接続契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L77 |
+| 現行 workflow 仕様書 | L133 |
+| 実装内容（TASK-SKILL-LIFECYCLE-05） | L145 |
+| 苦戦箇所 | L173 |
+| Current Canonical Set | L213 |
+| Artifact Inventory | L233 |
+| 実装コードアンカー | L255 |
+| same-wave 検証手順 | L267 |
+| 5分解決カード | L283 |
 
 ### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
 
@@ -1983,6 +1988,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| Environment Backend サービス | L6 |
+| スキル公開・配布サービス境界（TASK-SKILL-LIFECYCLE-08 / spec_created） | L73 |
 
 ### references/arch-electron-services-details-part1.md
 
@@ -2054,6 +2060,7 @@ node scripts/list-specs.js --topics
 | Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L182 |
 | HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L229 |
 | ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L278 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L315 |
 
 ### references/arch-state-management-details.md
 
@@ -2378,7 +2385,8 @@ node scripts/list-specs.js --topics
 | Current Alias Overrides（個別互換行） | L21 |
 | Family Summary | L29 |
 | Detailed Register | L48 |
-| 500-Line Split Register (2026-03-16) | L229 |
+| Section Extract Register (2026-03-17) | L229 |
+| 500-Line Split Register (2026-03-16) | L239 |
 
 ### references/lessons-learned-archive-2026-03.md
 
@@ -2448,7 +2456,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L35 |
+| 最新教訓 | L48 |
 
 ### references/lessons-learned-safety-gate-permission-fallback.md
 

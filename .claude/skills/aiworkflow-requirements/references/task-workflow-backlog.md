@@ -468,6 +468,10 @@
 | UT-IMP-QUICK-REFERENCE-SEARCH-PATTERNS-SPLIT-001 | quick-reference-search-patterns.md 513行超過分割。classification-first でカテゴリ別に分割 | 中 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 Phase 12（2026-03-17） | `docs/30-workflows/unassigned-task/task-imp-quick-reference-search-patterns-split-001.md` |
 | UT-IMP-P40-DYNAMIC-IMPORT-TEST-PATTERN-STANDARDIZATION-001 | P40 dynamic import テストパターン標準化。vi.mock vs await import の挙動差をテストテンプレートに組み込み | 中 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 Phase 4-6（2026-03-17） | `docs/30-workflows/unassigned-task/task-imp-p40-dynamic-import-test-pattern-standardization-001.md` |
 | UT-IMP-SPEC-500LINE-PREEMPTIVE-SPLIT-GUIDELINE-001 | 仕様書 500行制限 先制分割ガイドライン整備。450-500行の監視対象10ファイルの管理基準 | 低 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 Phase 12（2026-03-17） | `docs/30-workflows/unassigned-task/task-imp-spec-500line-preemptive-split-guideline-001.md` |
+| UT-SKILL-LIFECYCLE-08-TYPE-IMPL | TASK-SKILL-LIFECYCLE-08 で設計済みの型定義（SkillVisibility / PublishReadiness 等）をランタイム実装へ移行 | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-type-impl.md` |
+| UT-SKILL-LIFECYCLE-08-IPC-TEST | `skill:publishing:*` / `skill:distribution:*` 11チャネルの統合テストを実装（P42/P60/P61 回帰ガード） | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ipc-test.md` |
+| UT-SKILL-LIFECYCLE-08-UI-IMPL | 公開導線UI（VisibilityBadge/PublishFlowDialog/CompatibilityResultView 等）を実装 | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ui-impl.md` |
+| UT-SKILL-LIFECYCLE-08-NAMING-FIX | TASK-SKILL-LIFECYCLE-08 の命名規約違反（boolean prefix）是正 | 低 | TASK-SKILL-LIFECYCLE-08 Phase 9/12 レビュー（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
 
 ### 未タスク管理ルール
 

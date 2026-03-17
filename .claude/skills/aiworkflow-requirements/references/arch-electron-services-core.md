@@ -70,3 +70,26 @@ Environment BackendはMain Process（Electron）上で動作し、以下の階�
 
 ---
 
+## スキル公開・配布サービス境界（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 で Main Process 側サービス境界を設計した。実装は未タスク化済み。
+
+### サービス契約
+
+| サービス | 主責務 | メソッド |
+| --- | --- | --- |
+| `SkillRegistryService` | 公開メタデータの登録・更新・停止・削除 | `register`, `update`, `deprecate`, `remove`, `getDependents` |
+| `SkillDistributionService` | スキル配布操作 | `importSkill`, `exportSkill`, `forkSkill`, `shareSkill` |
+| `CompatibilityChecker` | semver と schema 差分の互換性評価 | `checkVersion` |
+| `PublishReadinessChecker` | 安全性/品質入力から公開可否判定 | `check` |
+
+### 依存関係ルール（P61）
+
+- IPC handler は concrete class ではなく上記 interface を注入する。
+- `PublishReadinessChecker` は `SafetyGateResult` と `ObservabilityMetrics` を adapter 経由で受け取る。
+- `CompatibilityChecker` は semver 比較と breaking change 集約を分離する。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-IPC-TEST`

@@ -25,6 +25,30 @@
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ---
+
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+- 完了日: 2026-03-17
+- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
+- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
+- 未タスク化: 5件（U-1〜U-5）
+- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
+
+---
+
+## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11/12 実績同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `phase-11-manual-test.md` に TC-11-01..03 の screenshot 証跡を同期し、`validate-phase11-screenshot-coverage` を PASS 化
+  - `implementation-guide.md` の不足項目（APIシグネチャ/エッジケース）を補完し、`validate-phase12-implementation-guide` 10/10 PASS
+  - `system-spec-update-summary.md` / `documentation-changelog.md` を計画記録から実績記録へ置換
+  - `phase12-task-spec-compliance-check.md` を新規作成し、Task 1-5 完了を固定
+  - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
+
+---
+
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator

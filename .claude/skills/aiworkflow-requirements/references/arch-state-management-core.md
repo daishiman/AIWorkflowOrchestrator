@@ -330,3 +330,27 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
 
 ---
+
+## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
+
+### publishingSlice 境界
+
+| 状態 | 所有者 | 補足 |
+| --- | --- | --- |
+| `visibilityFilter` | `publishingSlice` | `"all" | SkillVisibility` で一覧フィルタを制御 |
+| `publishReadiness` | `publishingSlice` | `auto-approved` 等の公開判定結果を保持 |
+| `compatibilityResult` | `publishingSlice` | version 更新時の互換性評価結果を保持 |
+| `publishDialogState` | `publishingSlice` | register/check/confirm の3ステップ進行状態 |
+
+### state 不変条件
+
+- `visibilityFilter` の初期値は `"all"`。
+- `publishReadiness.status === "blocked"` のとき confirm アクションを禁止する。
+- `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`
