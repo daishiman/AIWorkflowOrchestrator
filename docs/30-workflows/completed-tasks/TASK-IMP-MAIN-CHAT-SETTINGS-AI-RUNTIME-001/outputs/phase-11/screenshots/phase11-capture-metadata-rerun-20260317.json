@@ -1,0 +1,76 @@
+{
+  "capturedAt": "2026-03-17T04:02:21.715Z",
+  "mode": "fallback-review-board",
+  "reason": "esbuild platform mismatch prevented vite/electron capture",
+  "workflowRoot": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-access-matrix-rerun-20260317.png",
+      "mode": "fallback-review-board",
+      "refs": [
+        {
+          "path": "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+          "anchor": "data-testid=\"auth-mode-status\""
+        },
+        {
+          "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync/phase-11-manual-test.md",
+          "anchor": "TC-11-01"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-main-chat-selector-prompt-rerun-20260317.png",
+      "mode": "fallback-review-board",
+      "refs": [
+        {
+          "path": "apps/desktop/src/main/ipc/aiHandlers.ts",
+          "anchor": "providerId と modelId はセットで指定してください"
+        },
+        {
+          "path": "apps/desktop/src/main/ipc/llmConfigProvider.ts",
+          "anchor": "return currentConfig;"
+        },
+        {
+          "path": "apps/desktop/src/main/ipc/__tests__/aiHandlers.runtime-sync.test.ts",
+          "anchor": "IT-001"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-settings-health-rag-guidance-rerun-20260317.png",
+      "mode": "fallback-review-board",
+      "refs": [
+        {
+          "path": "apps/desktop/src/main/handlers/llm.ts",
+          "anchor": "status: \"disconnected\""
+        },
+        {
+          "path": "apps/desktop/src/main/handlers/__tests__/llm.test.ts",
+          "anchor": "expect(result.status).toBe(\"disconnected\")"
+        },
+        {
+          "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync/outputs/phase-11/discovered-issues.md",
+          "anchor": "RAG state"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-settings-terminal-launcher-rerun-20260317.png",
+      "mode": "fallback-review-board",
+      "refs": [
+        {
+          "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync/phase-11-manual-test.md",
+          "anchor": "TC-11-04"
+        },
+        {
+          "path": "docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync/outputs/phase-11/screenshot-plan.json",
+          "anchor": "TC-11-04"
+        }
+      ]
+    }
+  ]
+}

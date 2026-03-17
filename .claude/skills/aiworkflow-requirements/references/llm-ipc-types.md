@@ -36,7 +36,9 @@ LLMへのメッセージ送信リクエスト型。
 **補足**:
 
 - `providerId` と `modelId` はセット指定のみ有効（片方のみはエラー）
+- `providerId` / `modelId` は空文字・トリム後空文字を禁止
 - 省略時は Main 側に同期済みの選択状態（`llm:set-selected-config`）を使用する
+- request と Main 側選択状態がどちらも未設定の場合はエラーを返す（暗黙 fallback なし）
 
 #### AIChatResponse
 
@@ -60,6 +62,11 @@ AI/RAG接続状態確認の応答型。
 | data.status           | "connected" \| "disconnected" \| "error" | 接続状態               |
 | data.indexedDocuments | number                                   | インデックス済み文書数 |
 | data.lastSyncTime     | Date                                     | 最終同期時刻           |
+
+**運用方針（2026-03-17）**:
+
+- `AICheckConnectionResponse` は legacy 互換のため保持する。
+- 新規UI/新規実装の health check は `llm:check-health` を使用する。
 
 #### AIIndexRequest
 
@@ -198,9 +205,9 @@ LLMモデル情報の型定義。
 | フィールド  | 型               | 必須 | 説明               |
 | ----------- | ---------------- | ---- | ------------------ |
 | providerId  | LLMProviderId    | ✓    | プロバイダーID     |
-| status      | healthy/degraded/unhealthy | ✓ | 接続状態     |
-| latencyMs   | number           | -    | レイテンシ（ms）   |
-| checkedAt   | string (ISO8601) | ✓    | チェック日時       |
+| status      | connected/disconnected/error | ✓ | 接続状態     |
+| latency     | number           | -    | レイテンシ（ms）   |
+| checkedAt   | Date             | ✓    | チェック日時       |
 | errorMessage| string           | -    | エラーメッセージ   |
 
 ---
@@ -222,7 +229,7 @@ LLMモデル情報の型定義。
 | -------------------- | -------- | ---------------- | ----------------------- | ---------------------- |
 | llm:get-providers    | invoke   | なし             | LLMProvider[]           | プロバイダー一覧取得   |
 | llm:set-selected-config | invoke | `{ providerId, modelId }` | `{ success: boolean, error?: string }` | Renderer選択状態をMainへ同期 |
-| llm:check-health     | invoke   | LLMProviderId    | HealthCheckResult       | ヘルスチェック実行     |
+| llm:check-health     | invoke   | `LLMProviderId`（preload） / `{ providerId }`（Main handler） | HealthCheckResult | ヘルスチェック実行 |
 | llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
 | llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
 
@@ -296,9 +303,25 @@ LLMモデル情報の型定義。
 
 ---
 
+## 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
+
+> 完了日: 2026-03-17
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| GAP-02: `llm:check-health` catch ブロック修正 | `apps/desktop/src/main/handlers/llm.ts` | catch ブロックの `status: "error"` → `status: "disconnected"` に変更。`HealthCheckResultSchema` の enum（`connected \| disconnected \| error`）のうち、catch が返すべき値は `"disconnected"` が正しい（接続試行失敗を示す） |
+| `handleSetSelectedConfig` バリデーション確認 | `apps/desktop/src/main/handlers/llm.ts` | `modelId` の trim バリデーションが既に実装済みであることを確認・記録 |
+| `HealthCheckResultSchema` status 確認 | `packages/shared/src/types/llm/schemas/` | `status: "connected" \| "disconnected" \| "error"` の定義済みを確認。catch ブロックの `"disconnected"` 変更により enum との整合性が確保された |
+
+**注意事項**:
+
+- `status: "error"` は `HealthCheckResultSchema` の有効な値だが、**catch ブロック（ネットワーク到達不能時）** は `"disconnected"` を返すべき。`"error"` はアダプター内部の論理エラー（例: 認証失敗）に使用する
+- 既存テスト `llm.test.ts` L231 が `status: "error"` を期待していたため、`"disconnected"` に修正が必要だった（GAP-02 の波及影響）
+
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.2.0 | 2026-03-17 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 を反映: `llm:check-health` catch ブロックの `status: "error"` → `"disconnected"` 変更を記録 |
 | 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

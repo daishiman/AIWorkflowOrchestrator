@@ -46,6 +46,19 @@
 - 改善点があれば next action を書く
 - 改善点なしでも「なし」と理由を書く
 
+## Task 12-6: phase12-task-spec-compliance-check（P4対策・最終確認）
+
+- Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
+- 全タスクが「完了」と記録されてから Phase 12 を閉じる
+- `documentation-changelog.md` に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+
+**確認コマンド（docs-only タスクで特に必須）**:
+
+```bash
+grep -n "計画\|予定\|TODO\|will be\|を予定" outputs/phase-12/documentation-changelog.md
+# 出力が0件であること
+```
+
 ## 完了前チェック
 
 - `implementation-guide.md`

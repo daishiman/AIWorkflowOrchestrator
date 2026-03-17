@@ -286,13 +286,32 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | ショートカット | `Cmd` / `Ctrl` 両対応。`alt` / `shift` 併用時・編集要素上は無効化 | `apps/desktop/src/renderer/navigation/navContract.ts`, `apps/desktop/src/renderer/App.tsx` |
 | AppDock連携 | `APP_DOCK_NAV_ITEMS` を参照し、表示順と ViewType 契約を固定 | `apps/desktop/src/renderer/components/organisms/AppDock/index.tsx` |
 
+### TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001（2026-03-17）
+
+| 観点 | 内容 | 実装ファイル |
+| --- | --- | --- |
+| ViewType 拡張 | `skillAnalysis` / `skillCreate` を `ViewType` に追加 | `apps/desktop/src/renderer/store/types.ts` |
+| renderView 導線 | `skillAnalysis` は `SkillAnalysisView`、`skillCreate` は `SkillCreateWizard` を返す | `apps/desktop/src/renderer/App.tsx` |
+| close 時の状態復帰 | `SkillAnalysisView` close で `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` | `apps/desktop/src/renderer/App.tsx` |
+| lifecycle 型境界 | `SkillLifecycleJobGuide` に `onAction?: () => void` を追加（既存 job guide 互換を維持） | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
+| alias 正規化 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` へ集約 | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
+
 ### 検証証跡
 
 | 検証 | 結果 |
 | --- | --- |
 | `vitest run src/renderer/navigation/navContract.test.ts src/renderer/components/organisms/AppDock/AppDock.test.tsx src/renderer/__tests__/integration/navigation.integration.test.ts` | PASS（49 tests） |
+| `vitest run src/renderer/__tests__/App.renderView.viewtype.test.tsx src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/store/types.test.ts` | PASS（34 tests: TC-VT-01~04, TC-RV-01~08, TC-SL-01~11） |
 | `pnpm --filter @repo/desktop typecheck` | PASS |
 | `validate-phase11-screenshot-coverage --workflow docs/30-workflows/task-056d-viewtype-routing-nav` | PASS（expected=5 / covered=5） |
+
+### TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 苦戦箇所（2026-03-17）
+
+| 苦戦箇所 | 再発条件 | 解決策 | 標準化ルール |
+| --- | --- | --- | --- |
+| P40 再発: dynamic import の Vite alias 解決失敗 | モノレポルートから `await import("@/renderer/App")` を含むテストを実行する | `cd apps/desktop` が必須 | `pnpm --filter @repo/desktop exec vitest run` を標準とする |
+| コンテキスト圧縮リカバリ | エージェント作業中にコンテキストウィンドウが圧縮される | `git diff --stat HEAD` + `Glob` で完了判定 | 中断復帰時は差分から未完了成果物を特定する |
+| ViewType union 拡張パターン | `Record<ViewType, Config>` を使用すると全 case 強制で拡張時の影響が大きい | カテゴリコメント付き union 整理 + `renderView()` default fallback | union 拡張は `types.ts` + `renderView()` を同一ターンで更新する |
 
 ### 実装時の苦戦箇所（TASK-UI-01-D 追補）
 
@@ -308,7 +327,71 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 2. `keydown` 導線へ編集要素除外を適用し、誤発火を単体テストで固定する。  
 3. AppDock表示順と `NAV_SHORTCUT_TO_VIEW` の整合を同一PR単位で更新する。  
 4. Phase 11 証跡（`TC-xx` + `.png`）を workflow 配下へ保存し、coverage validator を実行する。  
-5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。
 
 ---
 
+## LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
+
+> 完了日: 2026-03-17
+
+### GAP-03: DEFAULT_CONFIG fallback 廃止
+
+**変更前の挙動**（廃止）:
+
+```typescript
+// ❌ 廃止前: 未選択時に暗黙的なデフォルトへ fallback していた
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig> {
+  return currentConfig ?? DEFAULT_CONFIG; // DEFAULT_CONFIG = { providerId: "openai", modelId: "gpt-4o" }
+}
+```
+
+**変更後の挙動**:
+
+```typescript
+// ✅ 現在: null を返す。呼び出し元が明示的にハンドリングする責務を持つ
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null> {
+  return currentConfig; // 未設定時は null
+}
+```
+
+### 状態管理への影響
+
+| 項目 | 内容 |
+| ---- | ---- |
+| `currentConfig` | `SelectedLLMConfig \| null`（変更なし） |
+| `getSelectedLLMConfig()` 戻り値 | `Promise<SelectedLLMConfig \| null>`（`null` が返る） |
+| `aiHandlers.ts` の null チェック | `if (!llmConfig)` で LLM未選択エラーを返す（既存実装） |
+| 暗黙 fallback | **廃止**。`setSelectedLLMConfig` 経由で明示的に設定が必要 |
+
+### 設計判断の根拠
+
+- 呼び出し元（`aiHandlers.ts`）に既に null チェックが存在していたため、`getSelectedLLMConfig()` 側の DEFAULT_CONFIG fallback は二重管理になっていた
+- LLM 未選択時はエラーを返してユーザーに選択を促す UX が正しい（`api-ipc-system-core.md` の「未選択時の挙動」に準拠）
+- DEFAULT_CONFIG の暗黙 fallback は設定画面での選択がスキップされる原因になっていた
+
+---
+
+## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
+
+### publishingSlice 境界
+
+| 状態 | 所有者 | 補足 |
+| --- | --- | --- |
+| `visibilityFilter` | `publishingSlice` | `"all" | SkillVisibility` で一覧フィルタを制御 |
+| `publishReadiness` | `publishingSlice` | `auto-approved` 等の公開判定結果を保持 |
+| `compatibilityResult` | `publishingSlice` | version 更新時の互換性評価結果を保持 |
+| `publishDialogState` | `publishingSlice` | register/check/confirm の3ステップ進行状態 |
+
+### state 不変条件
+
+- `visibilityFilter` の初期値は `"all"`。
+- `publishReadiness.status === "blocked"` のとき confirm アクションを禁止する。
+- `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`

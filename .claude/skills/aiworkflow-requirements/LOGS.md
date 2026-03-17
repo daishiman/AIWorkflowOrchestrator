@@ -6,9 +6,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
 | 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了バッチ同期（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
+| 2026-03-17 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了同期（ViewType拡張 / renderView分岐 / screenshot 5件 / 未タスク1件 formalize） |
 | 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
 | 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
@@ -44,6 +46,29 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+- 完了日: 2026-03-17
+- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
+- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
+- 未タスク化: 5件（U-1〜U-5）
+- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
+
+## TASK-SKILL-LIFECYCLE-08 再監査完了（2026-03-17）
+
+- タスク名: スキル共有・公開・互換性統合（再監査）
+- 種別: 設計タスク再監査（Phase 11/12 証跡補完 + 正本同期）
+- 主要実施:
+  - `validate-phase11-screenshot-coverage` を 3/3 PASS へ回復
+  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復
+  - `verify-unassigned-links` 失敗要因だった欠落未タスク12件を復旧
+  - TASK-08由来の未タスク4件を `docs/30-workflows/unassigned-task/` に formalize
+  - `.claude/skills/aiworkflow-requirements/references/*.md` に公開/互換/配布契約を同ターン実更新
+- 成果物:
+  - `outputs/phase-12/system-spec-update-summary.md`（実績版）
+  - `outputs/phase-12/documentation-changelog.md`（実績版）
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md`（新規）
+  - `outputs/phase-11/screenshots/*.png`（TC-11-01..03）
+
 ## TASK-SKILL-LIFECYCLE-08 仕様書作成完了（2026-03-17）
 
 - タスク名: スキル共有・公開・互換性統合（仕様書作成タスク）
@@ -55,6 +80,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了
   - Phase 10 PASS（MINOR 指摘対応済み）、設計レベルテストケース定義
 
+## TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了（2026-03-17）
+
+### Main Chat / Settings / Selector / System Prompt の runtime 同期
+
+**実装完了した GAP/DRIFT**:
+- GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
+- GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
+- GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
+
+**テスト**: 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
+
+**未タスク**: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+
 ## UT-06-003: DefaultSafetyGate 具象クラス実装（2026-03-16）
 
 - SafetyGatePort 具象クラス DefaultSafetyGate を実装
@@ -62,6 +100,33 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約
 - 36テスト全PASS、カバレッジ全100%
 - 成果物: packages/shared/src/types/safety-gate.ts, apps/desktop/src/main/permissions/default-safety-gate.ts, apps/desktop/src/main/ipc/safetyGateHandlers.ts
+
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
+
+- タスク名: ViewType/renderView 基盤拡張
+- 種別: 実装タスク
+- ワークフロー: `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/`
+- 主要成果物:
+  - `apps/desktop/src/renderer/store/types.ts`（修正）: `ViewType` に `skillAnalysis` / `skillCreate` を追加
+  - `apps/desktop/src/renderer/App.tsx`（修正）: `renderView()` に 2 case と close 導線を追加
+  - `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`（修正）: `onAction?: () => void` を追加
+  - `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx`（新規）
+  - `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs`（新規）
+- 検証:
+  - `vitest` targeted suite PASS（`App.renderView.viewtype` / `skillLifecycleJourney` / `types`）
+  - Phase 11 screenshot TC-11-01..05 を再取得
+  - `validate-phase11-screenshot-coverage` PASS（expected=5 / covered=5）
+- 未タスク:
+  - `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize し、`task-workflow-backlog.md` / `lessons-learned-current.md` へ同期
+
+### 変更内容
+- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
+- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
+- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
+- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
+
+### AC達成状況
+AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 

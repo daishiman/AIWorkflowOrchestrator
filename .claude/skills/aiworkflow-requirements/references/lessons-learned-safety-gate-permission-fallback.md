@@ -106,6 +106,46 @@ const metadataProvider: MetadataProvider = {
 
 ---
 
+---
+
+### 苦戦箇所 S-PF-1: 既実装コードの4ステップ abort フロー発見遅延
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4 でテストを書き始めた段階で、abort 4ステップ（cancelAll→revokeSessionEntries→log→IPC通知）が既に SkillExecutor.ts に実装済みだった |
+| 再発条件 | 大規模ファイル（SkillExecutor.ts 1500行超）のコード調査が不十分なまま Phase 1 に入る場合 |
+| 解決策 | Phase 1 で `git log --oneline -- <target-file>` と `grep -n "abort\|fallback\|retry" <target-file>` を実行し、既存実装の有無を確認してから要件を策定する |
+| 関連パターン | P50（既実装防御の発見による Phase 転換）|
+| 関連タスク | UT-06-005 |
+
+### 苦戦箇所 S-PF-2: revokeSessionEntries スタブ実装の設計判断
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | abort フローの Step 2（revokeSessionEntries）がスタブ実装（全エントリクリア）のまま。セッション別フィルタリングには AllowedToolEntry に sessionId 追加が必要で、スコープ外と判断した |
+| 再発条件 | 既存の型定義（AllowedToolEntry）を拡張すると、関連テスト・仕様書への影響範囲が広すぎる場合 |
+| 解決策 | スタブ実装を選択し、本格実装を UT-06-005-B として未タスク化。スタブ判断の根拠を Phase 2 設計ドキュメントに明記する |
+| 関連タスク | UT-06-005, UT-06-005-B |
+
+### 苦戦箇所 S-PF-3: PERMISSION_MAX_RETRIES デッドコード化と abortedExecutions メモリリーク
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 10 最終レビューで2件の品質問題を検出: (1) `PERMISSION_MAX_RETRIES=3` がデッドコード化 (2) `abortedExecutions: Set<string>` にクリア機構がなくメモリリーク |
+| 再発条件 | 定数を定義しても使用箇所で参照せず直値を使うパターン、Set/Map のクリーンアップ忘れ |
+| 解決策 | (1) retryCounters の条件を `PERMISSION_MAX_RETRIES` 参照に変更 (2) abortedExecutions にセッション単位のクリア機構を追加 |
+| 関連タスク | UT-06-005 |
+
+### 同種課題の5分解決カード（S-PF-1〜3）
+
+1. `grep -n "abort\|fallback\|retry\|skip" <target-file>` で既存実装を確認
+2. 既実装の場合は Phase 4-5 を「検証・補完」モードに切り替え（P50 準拠）
+3. スタブ実装が必要な場合は Phase 2 に判断根拠を記録し、未タスク化を Phase 12 Task 4 に組み込む
+4. 定数定義は `grep -rn "CONST_NAME" <file>` で使用箇所を確認、未使用は即修正
+5. Set/Map を使う場合は cleanup 機構（セッション終了時の clear/delete）を設計段階で明記
+
+---
+
 ### 関連PitfallID（06-known-pitfalls.md に追記済み）
 
 | ID | タイトル | 追記先 |

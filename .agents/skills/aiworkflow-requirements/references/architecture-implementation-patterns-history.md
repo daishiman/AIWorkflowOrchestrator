@@ -19,6 +19,7 @@
 
 | Version | Date       | Changes                                                                                                                                                                                                                                                                                                 |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| v1.42.0 | 2026-03-17 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: S32 ViewType union 拡張パターンを details に追加。ViewType union へのメンバー追加時の標準4ステップ手順（types.ts → App.tsx → テスト → normalizeSkillLifecycleView 確認）を定義 |
 | v1.41.1 | 2026-03-11 | TASK-UI-04C follow-up: `Renderer local preview resilience` パターンに関連未タスク `UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001` を追加し、timeout+retry / fuzzy no-match / parse fallback の共通化導線を接続 |
 | v1.41.0 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW: `Renderer local preview resilience` パターンを追加。Renderer timeout + retry、fuzzy match 判定分離、structured parse recoverable fallback を標準化 |
 | v1.40.0 | 2026-03-08 | TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001: S30 IPC Fallback Handler DRYヘルパーパターンを追加。createNotConfiguredResponse + registerFallbackHandlers によるAuth/Profile/Avatar 3ドメインのfallback宣言的登録を標準化                                                                               |

@@ -42,6 +42,27 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
+## ViewType/renderView 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）を探すとき
+
+このカテゴリは `viewtype renderview foundation` `skillAnalysis` `skillCreate` `normalizeSkillLifecycleView` `advanced route fallback` `direct currentView` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "viewtype renderview foundation" -C 3
+node scripts/search-spec.js "skillAnalysis skillCreate" -C 3
+node scripts/search-spec.js "normalizeSkillLifecycleView" -C 3
+node scripts/search-spec.js "advanced route fallback" -C 3
+node scripts/search-spec.js "direct currentView" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Skill Lifecycle routing / renderView foundation」を見る
+2. `references/workflow-skill-lifecycle-routing-render-view-foundation.md` で実装内容、TC-11-01..05、follow-up を確認する
+3. `references/ui-ux-navigation.md` と `references/arch-state-management-core.md` で ViewType / state 契約を確認する
+4. `references/task-workflow.md` / `references/task-workflow-completed-skill-lifecycle.md` / `references/task-workflow-backlog.md` で完了記録と未タスク導線を確認する
+5. `references/lessons-learned-current.md` で direct 到達不安定性の再発防止ルールを確認する
+6. 実装実体は `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/store/types.ts` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` を照合する
+
 ## Skill Lifecycle 評価・採点ゲート（TASK-SKILL-LIFECYCLE-04）を探すとき
 
 このカテゴリは `skill lifecycle scoring gate` `ScoringGate` `evaluatePrompt` `ScoreDelta` `previousAnalysis` `task-fix-eval-store-dispatch-001` `task-fix-score-delta-dedup-001` `canonical path` で検索を分割する。
@@ -254,6 +275,29 @@ node scripts/search-spec.js "conversationIdRef" -C 3
 4. `references/arch-state-management.md` / `references/ui-ux-components.md` / `references/architecture-implementation-patterns.md` / `references/error-handling.md` で state reset、visual polish、timeout/retry、typed taxonomy を確認する
 5. `references/task-workflow.md` / `references/lessons-learned.md` で completed path、`external-dev-server` screenshot、`audit --target-file` ルールを確認する
 6. 実装実体は `apps/desktop/src/renderer/views/WorkspaceView/utils/quickFileSearchResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/utils/previewResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/index.tsx` `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/scripts/capture-workspace-preview-search-resilience-guard-phase11.mjs` を照合する
+
+## Main Chat / Settings runtime 同期（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）を探すとき
+
+このカテゴリは `llm:check-health` `llm:set-selected-config` `AI_CHECK_CONNECTION` `DEFAULT_CONFIG` `HealthCheckResult` `SetSelectedConfigParams` `aiHandlers` `llmConfigProvider` `disconnected` `P42 validation` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "llm:check-health" -C 3
+node scripts/search-spec.js "llm:set-selected-config" -C 3
+node scripts/search-spec.js "AI_CHECK_CONNECTION" -C 3
+node scripts/search-spec.js "DEFAULT_CONFIG" -C 3
+node scripts/search-spec.js "HealthCheckResult" -C 3
+node scripts/search-spec.js "SetSelectedConfigParams" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Main Chat / Settings runtime 同期」を見る
+2. `references/api-ipc-system-core.md` で `AI_CHAT` IPC チャンネル・P42 準拠3段バリデーション（型チェック → 空文字列 → トリム空文字列）を確認する
+3. `references/llm-ipc-types.md` で `HealthCheckResult`（`llm:check-health` レスポンス）・`SetSelectedConfigParams`（`llm:set-selected-config` 引数）型を確認する
+4. `references/arch-state-management-core.md` で `llmSlice` の `selectedConfig` 同期フローと Store 更新タイミングを確認する
+5. `references/lessons-learned-current.md` で P42（trim バリデーション）・P60（IPC レスポンス形式不一致）の教訓と UT-TASK06-001〜004 未タスク状況を確認する
+6. `references/task-workflow-backlog.md` で UT-TASK06-001〜004（aiHandlers / llmConfigProvider / disconnected 統一 / AI_CHAT バリデーション）の状況を確認する
+7. 実装実体: `apps/desktop/src/main/ipc/aiHandlers.ts`（AI_CHAT P42バリデーション）`apps/desktop/src/main/ipc/llm.ts`（llm:check-health disconnected統一）`apps/desktop/src/main/services/llmConfigProvider.ts`（DEFAULT_CONFIG廃止）`apps/desktop/src/preload/channels.ts`（AI_CHECK_CONNECTION legacy残置）
 
 ## AI runtime/auth-mode unification を探すとき
 

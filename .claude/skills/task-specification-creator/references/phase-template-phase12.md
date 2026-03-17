@@ -11,6 +11,7 @@ Phase 12 の documentation update。
 3. documentation changelog
 4. unassigned-task detection
 5. skill feedback report
+6. phase12-task-spec-compliance-check（Task 1〜5 の全完了確認）
 
 ## Phase 10 MINOR 追跡テーブル
 
@@ -49,6 +50,8 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 ### システム仕様書更新の2段階方式（SF-02対応）
 
 設計タスクでは `.claude/skills/` への実更新がPR時まで保留されがちなため、以下の2段階方式を標準とする。
+
+> **worktree 環境での注意（P57 再発防止）**: worktree でのコンフリクトリスクを理由に `.claude/skills/` の実更新を先送りしてはならない。`仕様策定のみ` / `実行予定` などの planned wording を残さず、Phase 12 完了前に実更新を行うこと。コンフリクトリスクより仕様書と実装の乖離リスクの方が高い。
 
 | ステージ | タイミング | 内容 | 必須 |
 | --- | --- | --- | --- |

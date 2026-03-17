@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-03-17T03:13:04.435Z",
+  "workflow": "docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility",
+  "outputs": [
+    "TC-11-01-skill-publishing-visual-review-board.png",
+    "TC-11-02-publishing-and-compatibility-focus.png",
+    "TC-11-03-safety-gate-and-permission-focus.png"
+  ],
+  "sources": [
+    {
+      "id": "ENTRY-01",
+      "lane": "publishing",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-01-create-entry.png"
+    },
+    {
+      "id": "ENTRY-02",
+      "lane": "publishing",
+      "source": "docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/phase-11/screenshots/TC-11-02-execute-entry.png"
+    },
+    {
+      "id": "COMP-01",
+      "lane": "compatibility",
+      "source": "docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/outputs/phase-11/screenshots/TC-11-02-skill-analysis-delta-dark-desktop.png"
+    },
+    {
+      "id": "FLOW-01",
+      "lane": "compatibility",
+      "source": "docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-journey/outputs/phase-11/screenshots/TC-11-01-created-immediate-use-entry.png"
+    },
+    {
+      "id": "SAFE-01",
+      "lane": "safety",
+      "source": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-11/screenshots/TC-05-safety-gate-contract.png"
+    },
+    {
+      "id": "SAFE-02",
+      "lane": "safety",
+      "source": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-11/screenshots/TC-03-permission-state-transition.png"
+    }
+  ]
+}
