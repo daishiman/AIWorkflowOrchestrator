@@ -180,7 +180,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L300 |
-| 共有パッケージ実装パターン | L366 |
+| 共有パッケージ実装パターン | L385 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -301,15 +301,15 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | SkillService 統合（TASK-FIX-7-1） | L13 |
 | SkillExecutor 型定義（TASK-3-1-A） | L99 |
-| リトライ機構（TASK-SKILL-RETRY-001） | L379 |
+| リトライ機構（TASK-SKILL-RETRY-001） | L390 |
 
 ### references/interfaces-agent-sdk-executor-details.md
 
 | セクション | 行 |
 |------------|----|\n| PermissionResolver 型定義（TASK-3-2） | L6 |
-| SkillExecutor IPC統合（TASK-3-2） | L132 |
-| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L221 |
-| 型変更記録（UT-06-005） | L252 |
+| SkillExecutor IPC統合（TASK-3-2） | L160 |
+| AllowedToolEntryV2 / SafetyGatePort 参照（TASK-SKILL-LIFECYCLE-06） | L249 |
+| 型変更記録（UT-06-005） | L280 |
 
 ### references/interfaces-agent-sdk-executor-history.md
 
@@ -836,8 +836,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L70 |
-| 変更履歴 | L101 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L71 |
+| 変更履歴 | L102 |
 
 ### references/api-ipc-agent.md
 
@@ -1257,15 +1257,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L39 |
-| ChatViewナビゲーション | L298 |
-| ナビゲーションボタン仕様 | L304 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L320 |
-| テスト検証済み項目 | L334 |
-| アクセシビリティ対応事例 | L349 |
-| ナビゲーションパターンのベストプラクティス | L381 |
-| 関連ドキュメント | L393 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L402 |
+| Global Navigation | L38 |
+| ChatViewナビゲーション | L284 |
+| ナビゲーションボタン仕様 | L290 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L306 |
+| テスト検証済み項目 | L320 |
+| アクセシビリティ対応事例 | L335 |
+| ナビゲーションパターンのベストプラクティス | L367 |
+| 関連ドキュメント | L379 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L388 |
 
 ### references/ui-ux-panels.md
 
@@ -1507,9 +1507,9 @@ node scripts/list-specs.js --topics
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
 | Permission フォールバック セキュリティ（UT-06-005） | L364 |
-| 関連ドキュメント | L390 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L400 |
-| 変更履歴 | L413 |
+| 関連ドキュメント | L399 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L409 |
+| 変更履歴 | L422 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1867,12 +1867,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L8 |
 | current canonical set | L19 |
 | artifact inventory | L31 |
-| 実装内容（要点） | L44 |
-| 苦戦箇所（再利用形式） | L79 |
-| 同種課題の5分解決カード | L107 |
-| 検出した未タスク（3件） | L119 |
-| 関連ドキュメント | L129 |
-| 変更履歴 | L140 |
+| 実装内容（要点） | L46 |
+| 苦戦箇所（再利用形式） | L87 |
+| 同種課題の5分解決カード | L115 |
+| 検出した未タスク（更新: 2026-03-17） | L127 |
+| 関連ドキュメント | L137 |
+| 変更履歴 | L148 |
 
 ### references/workflow-skill-identifier-branded-type-resolution.md
 
@@ -1919,19 +1919,6 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L146 |
 | Task04→Task07 評価イベント連携（TASK-SKILL-LIFECYCLE-07） | L159 |
 | 変更履歴 | L174 |
-
-### references/workflow-skill-lifecycle-routing-render-view-foundation.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L8 |
-| 実装内容（2026-03-17） | L17 |
-| Phase 11 証跡（画面） | L29 |
-| 苦戦箇所（再利用形式） | L45 |
-| artifact inventory | L67 |
-| current canonical set（2026-03-17 wave） | L83 |
-| 検証コマンド | L100 |
-| 同種課題の5分解決カード | L111 |
-| 変更履歴 | L121 |
 
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
@@ -2378,7 +2365,8 @@ node scripts/list-specs.js --topics
 | Current Alias Overrides（個別互換行） | L21 |
 | Family Summary | L29 |
 | Detailed Register | L48 |
-| 500-Line Split Register (2026-03-16) | L229 |
+| Section Extract Register (2026-03-17) | L229 |
+| 500-Line Split Register (2026-03-16) | L239 |
 
 ### references/lessons-learned-archive-2026-03.md
 
@@ -2448,36 +2436,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 最新教訓 | L35 |
+| 最新教訓 | L46 |
 
 ### references/lessons-learned-safety-gate-permission-fallback.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | TASK-SKILL-LIFECYCLE-08 / UT-06-005 実装知見（2026-03-17） | L16 |
-| 分割ファイル一覧 | L32 |
-| クイックリファレンス: カテゴリ別検索ガイド | L43 |
-
-### references/lessons-learned-ipc-preload-runtime.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L26 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L32 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L69 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L135 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L156 |
-
-### references/lessons-learned-phase12-workflow-lifecycle.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L26 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L69 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L120 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L189 |
+| UT-06-005-A 実装知見（2026-03-17） | L130 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2544,14 +2510,6 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L203 |
 | テンプレート（新規教訓追加用） | L213 |
 
-### references/lessons-learned-test-typesafety.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L26 |
-| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L115 |
-
 ### references/lessons-learned-ui-agent-view-nav-notification-history.md
 
 | セクション | 行 |
@@ -2571,14 +2529,6 @@ node scripts/list-specs.js --topics
 | TASK-UI-07-DASHBOARD-ENHANCEMENT: ホーム画面リデザイン（2026-03-11） | L229 |
 | TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10） | L282 |
 | TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11） | L334 |
-
-### references/lessons-learned-viewtype-electron-ui.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 2026-03-17 TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 | L26 |
-| 2026-03-16 TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 | L99 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -3592,21 +3542,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L8 |
 | UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L46 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L83 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L150 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L231 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L316 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L338 |
-| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L401 |
-| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L427 |
-|------------|----|\n| TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17） | L8 |
-| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L57 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L94 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L161 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L242 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L327 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L349 |
-| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L412 |
+| UT-06-005-A: PreToolUse Hook fallback 統合完了記録（2026-03-17） | L83 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L110 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L177 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L258 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L343 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L365 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L428 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L454 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
@@ -3647,8 +3590,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L29 |
-| 関連ドキュメント | L34 |
+| 利用順序 | L28 |
+| 関連ドキュメント | L33 |
 
 ### references/testing-accessibility.md
 

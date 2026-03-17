@@ -188,7 +188,7 @@ Family status: `partially-ready`
 | --- | --- | --- |
 | `architecture-implementation-patterns-reference-b.md` | IPC data contracts / naming audit / unassigned scope | `architecture-implementation-patterns-reference-ipc-contract-audits.md` |
 | `architecture-implementation-patterns-reference-c.md` | AgentView / selector migration / renderer boundary | `architecture-implementation-patterns-reference-agent-view-selector-migration.md` |
-| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
+| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up / S32 Promise.race timeout pattern | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
 
 ### `interfaces-agent-sdk-skill-reference-*`
 

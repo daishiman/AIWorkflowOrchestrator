@@ -11,6 +11,7 @@ Phase 12 の documentation update。
 3. documentation changelog
 4. unassigned-task detection
 5. skill feedback report
+6. phase12-task-spec-compliance-check（Task 1〜5 の全完了確認）
 
 ## Phase 10 MINOR 追跡テーブル
 
@@ -50,6 +51,8 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 
 設計タスクでは `.claude/skills/` への実更新がPR時まで保留されがちなため、以下の2段階方式を標準とする。
 
+> **worktree 環境での注意（P57 再発防止）**: worktree でのコンフリクトリスクを理由に `.claude/skills/` の実更新を先送りしてはならない。`仕様策定のみ` / `実行予定` などの planned wording を残さず、Phase 12 完了前に実更新を行うこと。コンフリクトリスクより仕様書と実装の乖離リスクの方が高い。
+
 | ステージ | タイミング | 内容 | 必須 |
 | --- | --- | --- | --- |
 | Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容の計画を `system-spec-update-summary.md` に記録 | ✅ |
@@ -81,6 +84,38 @@ rg -n "仕様策定のみ|実行予定|保留として記録" \
 2. Phase 2/3 設計・レビューの MINOR 判定事項をリストアップする
 3. 上記4パターンと照合し、未タスク化対象を確定する
 4. 0件でも `unassigned-task-detection.md` に「設計タスクパターン確認済み、0件」と明記する
+
+## 未タスク配置先ディレクトリの明示（P38 再発防止）
+
+未タスク指示書は必ず以下のディレクトリに配置する。配置先の判断を省略しない。
+
+| 条件 | 配置先 |
+| --- | --- |
+| 未完了の未タスク（通常） | `docs/30-workflows/unassigned-task/` |
+| completed workflow 由来の継続 backlog | `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` |
+| 完了済み standalone UT | `docs/30-workflows/completed-tasks/*.md` |
+| legacy | `docs/30-workflows/completed-tasks/unassigned-task/` |
+
+**確認コマンド（Phase 12 完了前に必ず実行）**:
+
+```bash
+# 未タスク指示書の物理ファイル存在を確認
+ls docs/30-workflows/unassigned-task/
+```
+
+## 成果物ファイル名の照合チェック
+
+Phase 12 の成果物ファイル名がテンプレートと一致していることを確認する。名前の不一致はバリデーションスクリプトの検出漏れを引き起こす。
+
+| テンプレート上の名前 | 正しいファイル名 |
+| --- | --- |
+| 未タスク検出レポート | `unassigned-task-detection.md` |
+| ドキュメント更新履歴 | `documentation-changelog.md` |
+| 実装ガイド | `implementation-guide.md` |
+| スキルフィードバック | `skill-feedback-report.md` |
+| 仕様書更新サマリー | `system-spec-update-summary.md` 又は `spec-update-summary.md` |
+
+**注意**: `unassigned-task-report.md` のような類似名ファイルを作成しないこと。正式名称は `unassigned-task-detection.md` である。
 
 ## 関連ガイド
 

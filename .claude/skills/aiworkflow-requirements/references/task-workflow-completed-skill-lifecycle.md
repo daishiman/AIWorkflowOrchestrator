@@ -3,56 +3,7 @@
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
 > 分割元: `task-workflow-completed-skill-lifecycle-agent-view-line-budget.md`（500行超のため分割）
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-003, UT-06-005
-
-## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
-
-### タスク概要
-
-| 項目 | 内容 |
-| --- | --- |
-| タスクID | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 |
-| 対象workflow | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/` |
-| ステータス | completed（Phase 1-12） |
-| テスト | `App.renderView.viewtype` / `skillLifecycleJourney` / `types` の targeted suite PASS |
-| 画面証跡 | TC-11-01..05 screenshot（advanced route fallback） |
-
-### 実装内容
-
-| 観点 | 内容 |
-| --- | --- |
-| ViewType 拡張 | `apps/desktop/src/renderer/store/types.ts` に `skillAnalysis` / `skillCreate` を追加 |
-| renderView 分岐 | `apps/desktop/src/renderer/App.tsx` に `skillAnalysis` / `skillCreate` case を追加 |
-| close 導線 | `SkillAnalysisView` close で `skillCenter` へ戻し `currentSkillName` をクリア |
-| 型契約 | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` に `onAction?: () => void` を追加 |
-| alias 正規化 | `normalizeSkillLifecycleView("skill-center") -> "skillCenter"` を維持 |
-
-### 検証証跡
-
-| 区分 | コマンド / 証跡 | 結果 |
-| --- | --- | --- |
-| unit test | `pnpm --filter @repo/desktop exec vitest run src/renderer/__tests__/App.renderView.viewtype.test.tsx src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/store/types.test.ts` | PASS |
-| screenshot | `node apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` | PASS（TC-11-01..05） |
-| coverage | `validate-phase11-screenshot-coverage --workflow .../step-01-seq-task-01-viewtype-renderView-foundation` | PASS（expected=5 / covered=5） |
-| guide validator | `validate-phase12-implementation-guide --workflow .../step-01-seq-task-01-viewtype-renderView-foundation` | PASS |
-
-### 苦戦箇所と再発防止
-
-| 苦戦箇所 | 解決策 | 再利用ルール |
-| --- | --- | --- |
-| `currentView` 注入で direct 到達が不安定 | screenshot は `advanced route fallback` に寄せ、分岐保証は unit test へ分離 | 「到達保証」と「分岐保証」を別コマンドで固定する |
-| Phase 12 出力名揺れ | `unassigned-task-detection.md` を正本化し、`unassigned-task-report.md` は互換リンク化 | changelog / detection / summary の件数を同値で管理する |
-| P40 再発: dynamic import の Vite alias 解決失敗 | モノレポルートではなく `cd apps/desktop` からテスト実行する | `pnpm --filter @repo/desktop exec vitest run` を標準コマンドとする |
-| コンテキスト圧縮リカバリ | `git diff --stat HEAD` + `Glob` で完了判定 | エージェント作業の中断復帰時は差分から未完了成果物を特定する |
-| ViewType union 拡張パターン | カテゴリコメント付き整理で見通し確保、`Record<ViewType, Config>` 不使用が安全 | union 拡張時は `types.ts` + `renderView()` を同一ターンで更新する |
-
-### Phase 12 未タスク（1件）
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
-
----
+> 対象タスク: TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-003, UT-06-005, UT-06-005-A
 
 ## UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16）
 
@@ -102,7 +53,7 @@
 | 機能         | SkillExecutor の Permission 拒否時 fallback 制御（abort/skip/retry/timeout） |
 | 実施日       | 2026-03-16                                                                 |
 | ステータス   | completed（Phase 1-12）                                                    |
-| ワークフロー | `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/`                   |
+| ワークフロー | `docs/30-workflows/completed-tasks/UT-06-005-abort-skip-retry-fallback/`   |
 | テスト       | 23 tests PASS（SkillExecutor.fallback.test.ts）                            |
 
 ### 苦戦箇所
@@ -117,7 +68,7 @@
 
 | タスクID    | 内容                                  | 優先度 |
 | ----------- | ------------------------------------- | ------ |
-| UT-06-005-A | PreToolUse Hook への fallback 統合    | 高     |
+| ~~UT-06-005-A~~ | ~~PreToolUse Hook への fallback 統合~~ **完了: 2026-03-17** | ~~高~~ |
 | UT-06-005-B | revokeSessionEntries セッション別実装 | 中     |
 | UT-06-005-C | SkillStreamMessageType abort/skip 追加 | 中    |
 
@@ -126,6 +77,33 @@
 - Phase 12 全 Task PASS（phase12-task-spec-compliance-check.md）
 - 未タスク 3件検出、3ステップ完了（指示書 + backlog + 仕様書リンク）
 - `workflow-permission-fallback-abort-skip-retry.md` に統合正本を作成
+
+---
+
+## UT-06-005-A: PreToolUse Hook fallback 統合完了記録（2026-03-17）
+
+### タスク概要
+
+| 項目         | 内容 |
+| ------------ | ---- |
+| タスクID     | UT-06-005-A |
+| 機能         | PreToolUse Hook への fallback 実行時統合 + timeout→abort 遷移 |
+| 実施日       | 2026-03-17 |
+| ステータス   | completed（Phase 1-12） |
+| ワークフロー | `docs/30-workflows/UT-06-005-A-hook-fallback-integration/` |
+
+### 実装内容（要点）
+
+1. `createHooks().PreToolUse` が `handlePermissionCheck()` を呼び出す形に変更し、Permission 拒否時に `processPermissionFallback()` を実行時フローへ接続
+2. `sendPermissionRequestWithTimeout()` と `PermissionTimeoutError` を追加し、30秒 timeout を `executeAbortFlow("timeout")` へ接続
+3. 統合テスト `SkillExecutor.hook-fallback.test.ts` を追加し、reject/timeout/retry/skip/fail-closed を検証
+
+### 参照仕様同期
+
+- `interfaces-agent-sdk-executor-core.md`
+- `interfaces-agent-sdk-executor-details.md`
+- `security-skill-execution.md`
+- `workflow-permission-fallback-abort-skip-retry.md`
 
 ---
 
@@ -470,17 +448,6 @@ Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
 
 Phase 10 ゲート判定: PASS（MINOR 2件→未タスク記録済み）
 Phase 11 ウォークスルー: 実施済み
-
-### 2026-03-17 再監査追補（画面証跡・未タスク同期）
-
-| 観点 | 結果 |
-| --- | --- |
-| Phase 11 screenshot coverage | PASS（expected 3 / covered 3） |
-| Phase 12 implementation guide | PASS（10/10） |
-| 画面証跡 | `TC-11-01-skill-publishing-visual-review-board.png`, `TC-11-02-publishing-and-compatibility-focus.png`, `TC-11-03-safety-gate-and-permission-focus.png` |
-| 未タスク formalize | `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` / `UT-SKILL-LIFECYCLE-08-IPC-TEST` / `UT-SKILL-LIFECYCLE-08-UI-IMPL` / `UT-SKILL-LIFECYCLE-08-NAMING-FIX` を `docs/30-workflows/unassigned-task/` に作成 |
-
-再監査では「設計タスクでも明示要求がある場合は representative capture を撮影する」運用を適用し、NON_VISUAL 単独判定を採用しない。
 
 ---
 

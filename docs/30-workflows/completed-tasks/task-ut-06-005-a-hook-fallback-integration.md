@@ -10,7 +10,7 @@
 | 対象機能     | SkillExecutor Permission Fallback        |
 | 優先度       | 高                                       |
 | 見積もり規模 | 小規模                                   |
-| ステータス   | 未実施                                   |
+| ステータス   | 完了（Phase 1-12 実施済み、PR未作成）    |
 | 発見元       | Phase 12（UT-06-005 レビュー GAP-02/03） |
 | 発見日       | 2026-03-16                               |
 
@@ -246,7 +246,7 @@ PreToolUse Hook に processPermissionFallback を統合する。
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/` （親タスクの完了成果物）
+- `docs/30-workflows/completed-tasks/UT-06-005-abort-skip-retry-fallback/` （親タスクの完了成果物）
 - `.claude/rules/06-known-pitfalls.md` - P5（リスナー二重登録）、P13（タイマーテスト無限ループ）
 
 ### 参考資料

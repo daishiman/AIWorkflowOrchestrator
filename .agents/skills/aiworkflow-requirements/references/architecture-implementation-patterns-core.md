@@ -340,6 +340,25 @@ Badge.displayName = "Badge";
 | 整合性保証           | 全操作の成功または全ロールバック        |
 | 実装方法             | db.transaction()内で全操作を実行        |
 
+### 横断ユーティリティ配置ガイドライン
+
+サービス横断で使用されるユーティリティ関数（`normalizePath`、`escapeRegExp` 等）の配置先を以下の基準で決定する。
+
+| 使用箇所の数 | 配置先 | 例 |
+| --- | --- | --- |
+| 3つ以上のサービス/モジュールで使用 | `packages/shared/src/utils/` | `normalizePath`, `escapeRegExp` |
+| 2つのサービス/モジュールで使用 | 上位ディレクトリの `utils/` | `apps/desktop/src/main/utils/` |
+| 1つのサービス/モジュールでのみ使用 | サービス内に定義 | サービス固有のヘルパー |
+
+**判断フロー**:
+
+1. 新規ユーティリティ作成前に `grep -rn "export.*function.*<名前>" packages/ apps/` で既存実装を検索する
+2. 既存実装がある場合は再利用する（重複実装禁止）
+3. 新規作成する場合は上記テーブルに従い配置先を決定する
+4. `packages/shared/` に配置する場合は `package.json` の `exports` フィールドを更新する
+
+**関連 Pitfall**: P8（幽霊依存）-- `import` するなら自身の `package.json` に宣言すること
+
 ### エラーハンドリングパターン
 
 #### Result型パターン

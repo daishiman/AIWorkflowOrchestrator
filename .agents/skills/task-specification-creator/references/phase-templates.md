@@ -298,6 +298,14 @@ pnpm test:integration
 pnpm test:e2e
 ````
 
+## 成果物
+
+| 成果物               | パス                                          | 説明                                |
+| -------------------- | --------------------------------------------- | ----------------------------------- |
+| リファクタリングログ | `outputs/phase-8/refactoring-log.md`          | 変更内容と改善理由の記録            |
+| コード品質チェック   | `outputs/phase-8/code-quality-check.md`       | Lint/型チェック結果（PASS 確認用）  |
+| テスト通過確認       | `outputs/phase-8/test-pass-confirmation.md`   | リファクタ後の全テスト PASS の証跡  |
+
 ## 完了条件
 
 - [ ] テストが継続成功
@@ -361,9 +369,11 @@ Phase 9: 品質保証
 
 ## 成果物
 
-| 成果物       | パス                                | 説明         |
-| ------------ | ----------------------------------- | ------------ |
-| 品質レポート | `outputs/phase-9/quality-report.md` | 品質検証結果 |
+| 成果物                   | パス                                        | 説明                                        |
+| ------------------------ | ------------------------------------------- | ------------------------------------------- |
+| 品質レポート             | `outputs/phase-9/quality-report.md`         | 品質検証結果（全ゲート通過の総括）          |
+| セキュリティチェック結果 | `outputs/phase-9/security-check.md`         | 脆弱性スキャン・OWASP確認結果              |
+| テスト実行ログ           | `outputs/phase-9/test-execution-log.md`     | 全テストスイートの実行結果とカバレッジ集計  |
 
 ## 完了条件
 
@@ -841,6 +851,18 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 - [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加（**2ファイル両方必須** -- P1, P25）
 - [ ] aiworkflow-requirements/SKILL.md 変更履歴更新
 - [ ] task-specification-creator/SKILL.md 変更履歴更新
+
+**4ファイル更新確認コマンド**（P1/P25/P29 対策 — 更新後に必ず実行）:
+
+```bash
+# LOGS.md × 2 + SKILL.md × 2 に TASK_ID が含まれているか確認
+grep -rn "{{TASK_ID}}" \
+  .claude/skills/aiworkflow-requirements/LOGS.md \
+  .claude/skills/task-specification-creator/LOGS.md \
+  .claude/skills/aiworkflow-requirements/SKILL.md \
+  .claude/skills/task-specification-creator/SKILL.md
+# → 4ファイル全てにマッチしなければ更新漏れ
+```
 
 ##### Step 1-B: 実装状況テーブル更新（該当する場合）
 - [ ] api-endpoints.md等の実装ステータスを「完了」に更新
