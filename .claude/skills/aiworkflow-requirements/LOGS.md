@@ -9,6 +9,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
 | 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了バッチ同期（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
+| 2026-03-17 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了同期（ViewType拡張 / renderView分岐 / screenshot 5件 / 未タスク1件 formalize） |
 | 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
 | 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
@@ -62,6 +63,33 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約
 - 36テスト全PASS、カバレッジ全100%
 - 成果物: packages/shared/src/types/safety-gate.ts, apps/desktop/src/main/permissions/default-safety-gate.ts, apps/desktop/src/main/ipc/safetyGateHandlers.ts
+
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
+
+- タスク名: ViewType/renderView 基盤拡張
+- 種別: 実装タスク
+- ワークフロー: `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/`
+- 主要成果物:
+  - `apps/desktop/src/renderer/store/types.ts`（修正）: `ViewType` に `skillAnalysis` / `skillCreate` を追加
+  - `apps/desktop/src/renderer/App.tsx`（修正）: `renderView()` に 2 case と close 導線を追加
+  - `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`（修正）: `onAction?: () => void` を追加
+  - `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx`（新規）
+  - `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs`（新規）
+- 検証:
+  - `vitest` targeted suite PASS（`App.renderView.viewtype` / `skillLifecycleJourney` / `types`）
+  - Phase 11 screenshot TC-11-01..05 を再取得
+  - `validate-phase11-screenshot-coverage` PASS（expected=5 / covered=5）
+- 未タスク:
+  - `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize し、`task-workflow-backlog.md` / `lessons-learned-current.md` へ同期
+
+### 変更内容
+- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
+- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
+- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
+- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
+
+### AC達成状況
+AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 

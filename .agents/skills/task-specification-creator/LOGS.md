@@ -3,6 +3,28 @@
 ## 役割
 
 ---
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認を含む）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-11` の screenshot を再取得し、`advanced route fallback` で TC-11-01..05 を固定
+  - `renderView` 分岐は `App.renderView.viewtype.test.tsx` と `skillLifecycleJourney/types` の targeted suite で補助検証
+  - Phase 12 不足成果物 `spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `artifacts.json` / `outputs/artifacts.json` を補完
+  - 未タスク `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize（指示書 + backlog + spec link）
+  - `phase-11-12-guide.md` に「画面到達（route）と分岐保証（unit test）の責務分離」ルールを追記
+
+### 変更内容
+- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
+- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
+- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
+- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
+
+### AC達成状況
+AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
+
+---
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -43,6 +65,18 @@
   - SkillExecutor.fallback.test.ts に新規テスト23ケースを作成し全件 PASS 確認
   - 全1293テスト PASS（既存1270 + 新規23）
   - GitHub Issue #1250 完了
+
+---
+## 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - `packages/shared/src/constants/security.ts` に `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数を実装
+  - `security.test.ts` に 15テスト作成、ALL PASS
+  - TypeCheck/Build/Import 確認済み
+  - 後続タスク UT-06-004（PermissionDialog UI）のブロッカー解消
 
 ---
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
