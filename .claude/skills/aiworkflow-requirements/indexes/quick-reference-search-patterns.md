@@ -42,6 +42,27 @@ node scripts/search-spec.js "advanced" -C 3
 9. 実装実体は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/navigation/navContract.ts` `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` で確認する
 10. 仕様同期が必要なら `references/task-workflow.md` と `references/lessons-learned.md` を確認する
 
+## ViewType/renderView 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）を探すとき
+
+このカテゴリは `viewtype renderview foundation` `skillAnalysis` `skillCreate` `normalizeSkillLifecycleView` `advanced route fallback` `direct currentView` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "viewtype renderview foundation" -C 3
+node scripts/search-spec.js "skillAnalysis skillCreate" -C 3
+node scripts/search-spec.js "normalizeSkillLifecycleView" -C 3
+node scripts/search-spec.js "advanced route fallback" -C 3
+node scripts/search-spec.js "direct currentView" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Skill Lifecycle routing / renderView foundation」を見る
+2. `references/workflow-skill-lifecycle-routing-render-view-foundation.md` で実装内容、TC-11-01..05、follow-up を確認する
+3. `references/ui-ux-navigation.md` と `references/arch-state-management-core.md` で ViewType / state 契約を確認する
+4. `references/task-workflow.md` / `references/task-workflow-completed-skill-lifecycle.md` / `references/task-workflow-backlog.md` で完了記録と未タスク導線を確認する
+5. `references/lessons-learned-current.md` で direct 到達不安定性の再発防止ルールを確認する
+6. 実装実体は `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/store/types.ts` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` を照合する
+
 ## Skill Lifecycle 評価・採点ゲート（TASK-SKILL-LIFECYCLE-04）を探すとき
 
 このカテゴリは `skill lifecycle scoring gate` `ScoringGate` `evaluatePrompt` `ScoreDelta` `previousAnalysis` `task-fix-eval-store-dispatch-001` `task-fix-score-delta-dedup-001` `canonical path` で検索を分割する。

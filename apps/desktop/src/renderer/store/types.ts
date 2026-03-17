@@ -2,21 +2,28 @@
 
 // ビュー型
 export type ViewType =
+  // コア画面
   | "dashboard"
   | "workspace"
   | "editor"
   | "chat"
   | "graph"
   | "settings"
-  | "agent"
+  // スキル関連
   | "skillCenter"
-  | "historySearch"
+  | "skill-editor"
+  | "skill-center" // legacy alias → normalizeSkillLifecycleView で "skillCenter" に正規化
+  | "skillAnalysis"
+  | "skillCreate"
+  // エージェント・ワークフロー
+  | "agent"
   | "chainBuilder"
   | "scheduleManager"
+  // 検索・履歴
+  | "historySearch"
+  // デバッグ・分析
   | "debugPanel"
-  | "analyticsDashboard"
-  | "skill-editor"
-  | "skill-center";
+  | "analyticsDashboard";
 
 // ファイルノード型
 export interface FileNode {

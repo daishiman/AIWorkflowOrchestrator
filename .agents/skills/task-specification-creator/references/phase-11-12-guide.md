@@ -65,6 +65,7 @@
 - App shell 全体だと初期化ノイズが強い場合、**対象コンポーネント専用 harness** を作って撮影してよい。
 - ただし harness は本番コンポーネント / Store / 公開 contract をそのまま使い、差し替えた mock 境界を `manual-test-result.md` に明記する。
 - App shell ナビゲーションが不安定で目的 view に到達しにくい場合は、**同一 view を直描画する harness route** を優先し、撮影対象を必要最小の導線へ絞る。
+- `renderView` 拡張タスクでは、**画面到達（route）** と **分岐保証（unit test）** を分離する。screenshot は route-based evidence、`App.renderView.*` 系は `vitest` で保証し、同一コマンドに混在させない。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。

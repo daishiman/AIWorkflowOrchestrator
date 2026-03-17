@@ -368,7 +368,17 @@ await act(async () => {
 - **原因**: Vitestはカレントディレクトリの`vitest.config.ts`を優先読み込みするため、`apps/desktop/`のhappy-dom設定が適用されない
 - **解決策**: `cd apps/desktop && pnpm vitest run src/...` または `pnpm --filter @repo/desktop exec vitest run src/...` で実行
 - **再発防止**: テスト実行は常に対象パッケージのディレクトリから行う
-- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001
+- **特にP40の影響を受けやすいパターン**: dynamic import（`await import("@/renderer/App")`）を使用するテストは、`vi.mock` がコンパイル時に解決されるのに対し、dynamic import はランタイムで解決されるため、`vitest.config.ts` の `resolve.alias` 設定（`@` エイリアス等）が適用されないとモジュール解決に失敗する。dynamic import を使うテストでは、対象パッケージディレクトリからの実行が必須
+- **関連タスク**: UT-FIX-AGENTVIEW-INFINITE-LOOP-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001
+
+```typescript
+// P40 影響例: dynamic import はエイリアス解決にconfig依存
+// ❌ プロジェクトルートから実行すると @/ エイリアスが解決不可
+const { App } = await import("@/renderer/App");
+
+// ✅ apps/desktop/ ディレクトリから実行すれば vitest.config.ts の alias が適用される
+// cd apps/desktop && pnpm vitest run src/renderer/App.test.tsx
+```
 
 ## Preload / API 統一
 

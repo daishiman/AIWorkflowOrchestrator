@@ -6,9 +6,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-17 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了同期（ViewType拡張 / renderView分岐 / screenshot 5件 / 未タスク1件 formalize） |
 | 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
 | 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
+| 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了（RiskLevel / ToolRiskConfigEntry / TOOL_RISK_CONFIG 実装 + 15テスト ALL PASS） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補（Phase11 screenshot 5/5 + Phase12 guide 10/10 + async契約ドリフト是正 + current違反0） |
 | 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型実装 + 97テスト ALL PASS + 未タスク1件検出） |
 | 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）完了 |
@@ -39,6 +41,33 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
+
+- タスク名: ViewType/renderView 基盤拡張
+- 種別: 実装タスク
+- ワークフロー: `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/`
+- 主要成果物:
+  - `apps/desktop/src/renderer/store/types.ts`（修正）: `ViewType` に `skillAnalysis` / `skillCreate` を追加
+  - `apps/desktop/src/renderer/App.tsx`（修正）: `renderView()` に 2 case と close 導線を追加
+  - `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`（修正）: `onAction?: () => void` を追加
+  - `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx`（新規）
+  - `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs`（新規）
+- 検証:
+  - `vitest` targeted suite PASS（`App.renderView.viewtype` / `skillLifecycleJourney` / `types`）
+  - Phase 11 screenshot TC-11-01..05 を再取得
+  - `validate-phase11-screenshot-coverage` PASS（expected=5 / covered=5）
+- 未タスク:
+  - `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize し、`task-workflow-backlog.md` / `lessons-learned-current.md` へ同期
+
+### 変更内容
+- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
+- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
+- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
+- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
+
+### AC達成状況
+AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
+
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - タスク名: Conversation IPC ハンドラ登録修正
@@ -64,6 +93,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `apps/desktop/src/main/index.ts`（修正）: メニュー初期化処理の統合
   - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
 - 完了日: 2026-03-16
+
+## UT-06-001 完了（2026-03-16）
+
+- タスク名: tool-risk-config-implementation（TOOL_RISK_CONFIG 定数実装）
+- 種別: 実装タスク（定数追加）
+- ワークフロー: tool-risk-config-implementation
+- 実装ファイル: `packages/shared/src/constants/security.ts`
+- エクスポート: `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数
+- テスト: `packages/shared/src/constants/security.test.ts`（15テスト ALL PASS）
+- 後続タスク: UT-06-004（PermissionDialog UI実装）、TASK-SKILL-LIFECYCLE-08
+
 
 ## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
 

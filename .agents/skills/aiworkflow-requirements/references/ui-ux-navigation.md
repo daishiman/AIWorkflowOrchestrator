@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.6 | 2026-03-17 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 を反映: `skillAnalysis` / `skillCreate` ViewType と `renderView()` 分岐、`SkillAnalysisView` close→`skillCenter` 導線、Phase 11 screenshot 5件（advanced route fallback）を同期 |
 | v1.7.5 | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加。selected starter card の理解しやすさは first fold 可視性と別問題として `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` へ切り出し、関連未タスクへ登録した |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
 | v1.7.3 | 2026-03-11 | TASK-UI-08-NOTIFICATION-CENTER 再監査反映: app header の Bell utility action と `NotificationCenter` 導線を追加し、Portal 前提の通知 popover、`aria-label="お知らせを開く"`、responsive overlay、Phase 11 screenshot 7件を同期 |
@@ -120,11 +121,20 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 ### ViewType型定義
 
-| ViewType     | 説明                     |
-| ------------ | ------------------------ |
-| `dashboard`  | ダッシュボード画面       |
-| `workspace`  | ワークスペース画面       |
-| `editor`     | エディター画面           |
+| ViewType | 説明 |
+| --- | --- |
+| `dashboard` | ダッシュボード画面 |
+| `workspace` | ワークスペース画面 |
+| `editor` | エディター画面 |
+| `chat` | チャット画面 |
+| `graph` | グラフ画面 |
+| `agent` | エージェント画面 |
+| `skillCenter` | スキルセンター画面（canonical） |
+| `skillAnalysis` | スキル分析画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |
+| `skillCreate` | スキル作成画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |
+| `historySearch` | 履歴検索画面 |
+| `skill-center` | 互換エイリアス（legacy導線） |
+| `settings` | 設定画面（AuthGuard 外 + 未認証 reset 対象外） |
 
 ### `workspace` ViewType のレイアウト契約（TASK-UI-04A）
 
@@ -135,18 +145,22 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | preview panel | top toggle で開閉し、1024px 未満では overlay |
 | 3-pane | 両 panel open かつ 1440px 以上で有効 |
 | 後続依存 | chat 本体は 04B、preview 本体は 04C が担当 |
-| `chat`       | チャット画面             |
-| `graph`      | グラフ画面               |
-| `agent`      | エージェント画面         |
-| `skillCenter`| スキルセンター画面       |
-| `historySearch` | 履歴検索画面          |
-| `skill-center` | 互換エイリアス（legacy導線） |
-| `settings`   | 設定画面（AuthGuard 外 + 未認証 reset 対象外: 認証前でもアクセス可能） |
 
 **canonicalization rule**:
 
 - `skill-center` は互換入力としてのみ許可し、画面描画・分岐・テスト証跡は `skillCenter` を正本にする。
 - canonical 化は `apps/desktop/src/renderer/App.tsx` から `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` の `normalizeSkillLifecycleView()` を呼んで行う。
+
+### ViewType/renderView 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| 追加 ViewType | `skillAnalysis` / `skillCreate` |
+| 画面分岐 | `App.tsx` `renderView()` が `skillAnalysis -> SkillAnalysisView`、`skillCreate -> SkillCreateWizard` を返す |
+| close 導線 | `skillAnalysis` close 時は `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` |
+| legacy 互換 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化 |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
+| 補助検証 | `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx` で renderView case を直接検証 |
 
 ### representative evidence
 

@@ -38,8 +38,9 @@
 |---|---|
 | `LOGS.md` (x2) | 完了記録追加（P1/P25 対策） |
 | `SKILL.md` (x2) | 変更履歴 v9.01.98 / v10.09.8 追加 |
-| `task-workflow-backlog.md` | 未タスク UT-COVERAGE-INDEX-TS-EXCLUSION-001 登録 |
+| `task-workflow-backlog.md` | 未タスク UT-COVERAGE-INDEX-TS-EXCLUSION-001 登録 + UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001 / UT-ARTIFACTS-JSON-FILEPATH-VALIDATION-001 追加（再監査） |
 | `quality-requirements-details.md` | カバレッジ除外設定注意事項追加 |
+| `security-electron-ipc-core.md` | Conversation IPC セキュリティ契約に UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001 参照追加 |
 
 ---
 
