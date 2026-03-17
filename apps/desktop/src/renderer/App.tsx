@@ -302,6 +302,20 @@ function App(): JSX.Element {
             }}
           />
         );
+      case "skillAnalysis":
+        return (
+          <SkillAnalysisView
+            skillName={currentSkillName ?? "demo-skill"}
+            onClose={() => {
+              setCurrentView("skillCenter");
+              setCurrentSkillName(null);
+            }}
+          />
+        );
+      case "skillCreate":
+        return (
+          <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
+        );
       case "settings":
         return <SettingsView onOpenOnboarding={handleOpenOnboarding} />;
       default: {

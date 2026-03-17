@@ -418,3 +418,49 @@ Renderer          Preload (safeInvokeUnwrap)        Main Process
 
 ---
 
+### S32: ViewType union 拡張パターン（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 2026-03-17実装）
+
+ViewType union に新メンバーを追加する際の標準手順を定義する。
+
+#### 変更対象ファイルと手順
+
+| 順序 | ファイル | 変更内容 |
+| --- | --- | --- |
+| 1 | `store/types.ts` | ViewType union にメンバー追加 |
+| 2 | `App.tsx` | `renderView()` の switch に対応する case を追加 |
+| 3 | テスト | `types.test.ts` + `App.renderView.viewtype.test.tsx` を追加 |
+| 4 | `normalizeSkillLifecycleView` | 新メンバーは変換不要（passthrough）であることを確認 |
+
+#### 注意事項
+
+- `Record<ViewType, Config>` パターンを使用している箇所は新メンバーを網羅すること（TypeScript が未網羅を型エラーで検出する）
+- テスト実行は必ず `apps/desktop` ディレクトリから行う（P40 準拠: dynamic import のエイリアス解決に必須）
+- `onClose` パターンは2箇所までは共通化不要（YAGNI）、3箇所以上で共通 Hook 化を検討する
+
+#### コード例
+
+```typescript
+// store/types.ts
+export type ViewType =
+  | "home"
+  | "settings"
+  | "agent"
+  | "skillCenter"
+  | "skillAnalysis"  // 新規追加
+  | "skillCreate";   // 新規追加
+
+// App.tsx — renderView() switch
+case "skillAnalysis":
+  return <SkillAnalysisView onClose={() => setCurrentView("skillCenter")} />;
+case "skillCreate":
+  return <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />;
+```
+
+#### 関連パターン
+
+- P40: テスト実行ディレクトリ依存（モノレポ）
+- P37: ドキュメント数値の早期固定
+- S26: 直接IPC→Store個別セレクタ移行パターン（セレクタ設計時の参考）
+
+---
+

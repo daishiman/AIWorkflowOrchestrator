@@ -1,6 +1,6 @@
 # Legacy Ordinal Family Register
 
-> 最終更新日: 2026-03-14
+> 最終更新日: 2026-03-17
 > 目的: 旧 ordinal filename から current semantic filename への移行結果を family 単位で保持し、旧 citation や旧ログから current 名へ引き直せるようにする
 
 ## 概要
@@ -249,3 +249,7 @@ Family status: `reclassify-first`
 | ↑ | `task-workflow-completed-skill-lifecycle-authfix.md` | 254 | スキルライフサイクルテスト強化 / Auth 修正系タスク | 2026-03-16 |
 | `arch-electron-services-details.md` (502行) | `arch-electron-services-details-part1.md` | 269 | スキル管理サービス基盤 / Scanner / IPC API / Service API | 2026-03-16 |
 | ↑ | `arch-electron-services-details-part2.md` | 240 | SkillForker / RuntimeResolver / Scheduler / DI統合 / 永続化 | 2026-03-16 |
+| `lessons-learned-current.md` (651行) | `lessons-learned-viewtype-electron-ui.md` | ~160 | ViewType / renderView 分岐 / Electron メニュー / P40 再発 | 2026-03-17 |
+| ↑ | `lessons-learned-ipc-preload-runtime.md` | ~200 | IPC/Preload/AI Runtime / AuthMode 統一 / LLM adapter / P57-P61 | 2026-03-17 |
+| ↑ | `lessons-learned-test-typesafety.md` | ~170 | テスト/型安全 / Object.freeze+satisfies / Permission Fallback | 2026-03-17 |
+| ↑ | `lessons-learned-phase12-workflow-lifecycle.md` | ~290 | Phase 12 / ワークフロー / SKILL-LIFECYCLE-04/05/06/07 | 2026-03-17 |

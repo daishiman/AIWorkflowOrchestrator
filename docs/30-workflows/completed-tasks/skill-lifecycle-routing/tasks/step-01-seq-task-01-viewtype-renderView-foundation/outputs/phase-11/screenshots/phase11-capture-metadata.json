@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-03-17T04:08:39.983Z",
+  "workflowRoot": "docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation",
+  "screenshotDir": "docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots",
+  "baseUrl": "http://127.0.0.1:5194",
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-renderview-skill-analysis.png",
+      "selector": "[data-testid=\"skill-analysis-view\"]",
+      "note": "SkillAnalysisView 代表画面（advanced route fallback）",
+      "pageErrors": []
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-renderview-skill-create.png",
+      "selector": "[data-testid=\"skill-create-wizard\"]",
+      "note": "SkillCreateWizard 代表画面（advanced route fallback）",
+      "pageErrors": []
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-renderview-dashboard-regression.png",
+      "selector": "[data-testid=\"dashboard-view\"]",
+      "note": "dashboard 回帰がないことを確認",
+      "pageErrors": []
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-analysis-close-to-skill-center.png",
+      "selector": "[data-testid=\"skill-center-view\"]",
+      "note": "skillAnalysis close で skillCenter へ戻る導線を確認（advanced route）",
+      "pageErrors": []
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-legacy-skill-center-alias-normalized.png",
+      "selector": "[data-testid=\"skill-center-view\"]",
+      "note": "legacy alias 正規化後と同一到達面（skillCenter）を視覚確認",
+      "pageErrors": []
+    }
+  ]
+}

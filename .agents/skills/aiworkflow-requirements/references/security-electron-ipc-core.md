@@ -182,6 +182,7 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - DB ファイルパスはアプリデータディレクトリに固定し、パストラバーサルを排除
 
 **関連タスク**: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
+**関連未タスク**: UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001（グループ内P42一貫性監査）
 **関連**: arch-ipc-persistence.md（ConversationRepository 詳細）
 
 ### ApiKeysSection 契約防御ガード（2026-03-08完了）
