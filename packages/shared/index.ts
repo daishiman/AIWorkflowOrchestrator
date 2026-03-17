@@ -58,6 +58,19 @@ export type {
   IPermissionStore,
 } from "./src/types/permission-store";
 
+// Safety Gate types (UT-06-003)
+export type {
+  ToolRiskLevel,
+  ToolRiskConfig,
+  SafetyGrade,
+  SafetyCheckId,
+  SafetyCheckDetail,
+  SafetyGateResult,
+  SafetyGatePort,
+} from "./src/types/safety-gate";
+
+export { TOOL_RISK_CONFIG } from "./src/types/safety-gate";
+
 // Skill Improver types (TASK-9C)
 export type {
   SuggestionType,

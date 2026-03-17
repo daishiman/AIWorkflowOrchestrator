@@ -154,6 +154,28 @@ node scripts/search-spec.js "abortedExecutions" -C 3
 4. `references/interfaces-agent-sdk-executor-details.md` で 4フロー詳細と連携図を確認する
 5. `references/security-skill-execution.md` で fail-closed 原則と retry limit セキュリティを確認する
 
+## SafetyGate / Permission Fallback 実装（UT-06-003 / UT-06-005）を探すとき
+
+このカテゴリは `DefaultSafetyGate` `SafetyGateResult` `evaluateSafety` `skill:evaluate-safety` `PermissionStore` `DI スコープ` `metadataProvider` `P62` `P63` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "DefaultSafetyGate" -C 3
+node scripts/search-spec.js "SafetyGateResult" -C 3
+node scripts/search-spec.js "skill:evaluate-safety" -C 3
+node scripts/search-spec.js "metadataProvider" -C 3
+node scripts/search-spec.js "PermissionStore" -C 3
+node scripts/search-spec.js "revokeSessionEntries" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「SafetyGate MetadataProvider 実装」を見る
+2. `references/api-ipc-agent-safety.md` で `skill:evaluate-safety` チャネル仕様・SafetyGateResult 型・DefaultSafetyGate DI 構成を確認する
+3. `references/security-skill-execution.md` で SafetyGate の 5 種チェック（critical/high/no-approval/all-low/protected-path）と fail-closed 原則を確認する
+4. `references/lessons-learned-safety-gate-permission-fallback.md` で P62（PermissionStore DI スコープ問題）・P63（metadataProvider データソース未定義）の教訓と解決手順を確認する
+5. `references/interfaces-agent-sdk-executor-details.md` で `processPermissionFallback` / `executeAbortFlow` / `executeSkipFlow` の連携図を確認する
+6. 実装実体: `apps/desktop/src/main/ipc/safetyGateHandlers.ts` `apps/desktop/src/main/ipc/index.ts`（permissionStore 上位スコープ抽出箇所）`packages/shared/src/types/safety-gate.ts`
+
 ## Preload safeInvoke timeout を探すとき
 
 ```bash

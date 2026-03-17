@@ -164,3 +164,6 @@ export * from "./cta-visibility";
 
 // スキルドキュメント生成型定義 (TASK-9I / TASK-04)
 export * from "./skill-docs";
+
+// SafetyGate型定義 (UT-06-003)
+export * from "./safety-gate";

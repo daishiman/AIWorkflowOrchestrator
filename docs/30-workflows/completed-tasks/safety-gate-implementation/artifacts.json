@@ -1,0 +1,157 @@
+{
+  "taskId": "UT-06-003",
+  "taskName": "SafetyGatePort 具象クラス実装（DefaultSafetyGate）",
+  "featureName": "safety-gate-implementation",
+  "githubIssue": "#1260",
+  "createdAt": "2026-03-16",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "specFile": "phase-1-requirements.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-1/requirements-report.md",
+        "outputs/phase-1/implementation-inventory.md",
+        "outputs/phase-1/acceptance-criteria-map.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "specFile": "phase-2-design.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-2/class-design.md",
+        "outputs/phase-2/ipc-design.md",
+        "outputs/phase-2/error-handling-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "specFile": "phase-3-design-review.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/minor-tasks.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "specFile": "phase-4-test-creation.md",
+      "status": "completed",
+      "outputs": [
+        "apps/desktop/src/main/permissions/default-safety-gate.test.ts",
+        "apps/desktop/src/main/ipc/handlers/safety-gate.test.ts",
+        "outputs/phase-4/red-state-confirmation.md",
+        "outputs/phase-4/existing-tests-pass.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "specFile": "phase-5-implementation.md",
+      "status": "completed",
+      "outputs": [
+        "apps/desktop/src/main/permissions/default-safety-gate.ts",
+        "apps/desktop/src/main/ipc/handlers/safety-gate.ts",
+        "outputs/phase-5/green-state-confirmation.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "specFile": "phase-6-test-expansion.md",
+      "status": "completed",
+      "outputs": [
+        "apps/desktop/src/main/permissions/default-safety-gate.test.ts",
+        "apps/desktop/src/main/ipc/handlers/safety-gate.test.ts",
+        "outputs/phase-6/coverage-report.md"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "specFile": "phase-7-coverage-check.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-decision.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "specFile": "phase-8-refactoring.md",
+      "status": "completed",
+      "outputs": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "specFile": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-9/quality-assurance-report.md",
+        "outputs/phase-9/lint-results.txt",
+        "outputs/phase-9/typecheck-results.txt",
+        "outputs/phase-9/test-results.txt"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "specFile": "phase-10-final-review.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-10/acceptance-criteria-report.md",
+        "outputs/phase-10/final-review-report.md",
+        "outputs/phase-10/minor-unassigned-tasks.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "specFile": "phase-11-manual-test.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/findings.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "specFile": "phase-12-documentation.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "完了",
+      "specFile": "phase-13-completion.md",
+      "status": "blocked",
+      "blockedReason": "ユーザーの明示的な承認が必要",
+      "outputs": [
+        "outputs/phase-13/final-confirmation-report.md",
+        "outputs/phase-13/pr-template.md"
+      ]
+    }
+  },
+  "implementationFiles": [
+    "apps/desktop/src/main/permissions/default-safety-gate.ts",
+    "apps/desktop/src/main/ipc/safetyGateHandlers.ts",
+    "apps/desktop/src/main/permissions/default-safety-gate.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/safetyGateHandlers.test.ts",
+    "packages/shared/src/types/safety-gate.ts",
+    "apps/desktop/src/preload/channels.ts"
+  ],
+  "dependencies": {
+    "prerequisites": ["UT-06-001", "UT-06-002"],
+    "consumers": ["TASK-SKILL-LIFECYCLE-08"]
+  },
+  "references": {
+    "safetyGateContract": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-2/safety-gate-contract.md",
+    "safetyGateTypes": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-5/safety-gate.ts",
+    "decisionTable": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-4/decision-table-risk-permission.md",
+    "implementationGuide": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-12/implementation-guide.md",
+    "taskInstruction": "docs/30-workflows/completed-tasks/step-05-par-task-06-trust-permission-governance/unassigned-task/task-ut-06-003-safety-gate-port-implementation.md"
+  }
+}

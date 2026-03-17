@@ -11,7 +11,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification, SkillMetadataProvider, normalizePath, cross-cutting utility, abort fallback, skip fallback, revokeSessionEntries, processPermissionFallback, executeAbortFlow, executeSkipFlow, PermissionFlowContext, AbortReason, DefaultSafetyGate, evaluateSafety, SafetyGateResult, skill:evaluate-safety, P62, P63
 allowed-tools:
   - Read
   - Glob
@@ -193,7 +193,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.02.01** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 仕様書作成完了**: スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成。SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了。Phase 10 PASS（MINOR 指摘対応済み）。artifacts.json 同期済み。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **9.02.00** | **2026-03-17** | **UT-06-003 / UT-06-005 / TASK-SKILL-LIFECYCLE-08 バッチ同期**: 2026-03-17 時点での実装完了を LOGS.md 2ファイル + SKILL.md 2ファイルに記録（P1/P25対策） |
 | **9.01.98** | **2026-03-16** | **TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了記録追加**: Section 13 に safeRegister + fallback パターンで conversation:create/list/get/update/delete/addMessage/search の7チャンネルを登録。better-sqlite3 による WAL モード DB 初期化、ConversationRepository 生成、DB 失敗時の Graceful Degradation フォールバックを実装。172テスト ALL PASS |
+| **9.01.98** | **2026-03-16** | **UT-06-003 DefaultSafetyGate 具象クラス実装完了**: SafetyGatePort 具象クラス DefaultSafetyGate を実装。IPC ハンドラ skill:evaluate-safety を追加。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。36テスト全PASS、カバレッジ全100%。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.01.97** | **2026-03-16** | **TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了記録追加**: `architecture-overview-core.md` に Main Process 構造テーブル menu.ts 追加、`technology-desktop.md` にディレクトリ構造追加、`task-workflow-completed-*.md` に完了タスク記録（メタ情報・実装内容・苦戦箇所・5分解決カード）、`lessons-learned-current.md` に教訓3件（index.ts副作用→ファイル分離、role検証手法、小規模修正ワークフロー適用）、LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）、topic-map.md 再生成 |
 | **9.01.97** | **2026-03-16** | **UT-06-005 abort-skip-retry-fallback 完了記録追加**: SkillPermissionResponse に `skip?: boolean` フィールド追加、processPermissionFallback / executeAbortFlow / executeSkipFlow メソッド追加、IPermissionStore に revokeSessionEntries? 追加を仕様書に反映 |
 | **9.01.97** | **2026-03-16** | **UT-06-001 (tool-risk-config-implementation) 完了**: `packages/shared/src/constants/security.ts` に `RiskLevel` 型・`ToolRiskConfigEntry` interface・`TOOL_RISK_CONFIG` 定数を本番実装。3段階リスクレベル（low/medium/high）、Object.freeze 深層凍結、headerColorToken テンプレートリテラル型、セキュリティ不変条件（high の全 allow フラグ false）を確定。15テスト→18テスト ALL PASS。`security-implementation.md` に Tool Risk Configuration セクション追加済み |
