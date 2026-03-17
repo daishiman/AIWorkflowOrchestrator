@@ -19,13 +19,17 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化。分類軸: ViewType/UI、IPC/Preload/Runtime、テスト/型安全、Phase12/ワークフロー |
+| 2026-03-17 | 1.30.1 | 500行制限対応。2026-03-14〜03-15 の教訓セクション（TASK-SKILL-LIFECYCLE-04/05、TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 P57〜P61、TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 追補、esbuild/payload 再監査）を lessons-learned-archive-2026-03.md へ移動 |
+| 2026-03-17 | 1.30.0 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 実装教訓を追加。GAP-03 影響範囲分析、GAP-02 テスト回帰、P42 バリデーション配置順序を追記 |
 | 2026-03-17 | 1.30.00 | TASK-SKILL-LIFECYCLE-08 仕様書作成の教訓4件を追加。docs-only Phase 12 実更新の困難さ、55ファイル間整合性維持、並列サブエージェント情報断絶、Phase 12 Task 6 遵守チェックリスト作成漏れパターンを追記 |
+| 2026-03-17 | 1.29.99 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 再監査。AI_CHECK_CONNECTION 存廃記述衝突、llm:check-health 契約ドリフト、Phase 11 プレースホルダー混入検知手順を追記 |
 | 2026-03-17 | 1.29.99 | TASK-SKILL-LIFECYCLE-08 / UT-06-005 の苦戦箇所3件（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバックテスト設計）を追加。`lessons-learned-safety-gate-permission-fallback.md` 新規作成。古いセクション（2026-03-13〜03-14 TASK-SKILL-LIFECYCLE-04/05/P57〜P61 等）を各アーカイブファイルに移動して500行以下に圧縮 |
 | 2026-03-17 | 1.29.99 | TASK-SKILL-LIFECYCLE-08 再監査の教訓3件を追加。Phase 12 実績ファイルの planned wording 残存防止、設計タスクでの screenshot 証跡必須化、未タスク参照切れの即時補完ルールを追記 |
 | 2026-03-17 | 1.29.98 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 の苦戦箇所3件を追加 |
+| 2026-03-17 | 1.29.98 | TASK-SKILL-LIFECYCLE-08 / UT-06-005 の苦戦箇所3件（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバックテスト設計）を追加 |
 | 2026-03-17 | 1.29.97 | UT-06-003 SafetyGate 実装の教訓5件を追加。IPC テスト応答形式不一致（P60）、DIP 違反遅発検出（P61）、P49 違反残存、ternary 分岐カバレッジ特定困難、未タスク配置ディレクトリ間違い（P38 再発）を追記 |
 | 2026-03-16 | 1.29.97 | TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION の教訓3件を追加。IPC ハンドラ登録漏れ検出、P42 バリデーション一括検証、better-sqlite3 Graceful Degradation を追記 |
-| 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 / UT-06-005 / UT-06-001 / TASK-SKILL-LIFECYCLE-06/07 の教訓を追加 |
+| 2026-03-16 | 1.29.96 | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 / UT-06-005 / UT-06-001 / TASK-SKILL-LIFECYCLE-07 / TASK-SKILL-LIFECYCLE-06 の教訓を追加（P57〜P59 新規） |
 | 2026-03-15 | 1.29.94 | TASK-SKILL-LIFECYCLE-05 苦戦箇所6追加 |
 | 2026-03-14 | 1.29.91 | TASK-SKILL-LIFECYCLE-04 / TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 追加 |
 | 2026-03-12 | 1.29.83 | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 追加。SKILL.md 入口 + family file + rolling LOGS + archive の責務分離、mirror/validator 同期手順標準化 |
@@ -128,6 +132,79 @@
 | 課題 | `task-workflow.md` の `unassigned-task/` 参照切れ12件で `verify-unassigned-links` が失敗した |
 | 解決策 | 欠落12件を即時復旧し、TASK-08由来の4件を新規 formalize して台帳を同時更新した |
 | 標準ルール | 未タスクの新規/移設時は `verify-unassigned-links` を即時実行し、リンク切れ0件を確認してから Phase 12 を閉じる |
+
+### 2026-03-17 TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 実装（GAP-01〜03 修正）
+
+#### 苦戦箇所1: GAP-03 修正の影響範囲が極めて小さかった理由
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `?? DEFAULT_CONFIG` を1行削除するだけで済んだ。修正規模が極めて小さい割に、Phase 1-3 の設計フェーズに多くの時間を投資した |
+| 再発条件 | Phase 1（要件定義）で「呼び出し元に null チェックが存在するか」を確認せずに設計を進める |
+| 解決策 | Phase 1 で `grep -rn "getSelectedLLMConfig" apps/desktop/src/` を実行し、呼び出し元の null チェック状況を事前確認する。既に null チェックが存在するなら DEFAULT_CONFIG fallback のみを削除で済む |
+| 標準ルール | 設計フェーズの呼び出し元調査精度が実装の効率に直結する。「影響範囲が小さい」ことが確認できれば Phase 5 の工数見積もりを縮小できる |
+| 関連タスク | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 |
+
+#### 苦戦箇所2: GAP-02 の既存テスト回帰（`"error"` → `"disconnected"`）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `status: "error"` → `"disconnected"` の変更で既存テスト `llm.test.ts` L231 が失敗。`HealthCheckResultSchema` の enum に `"disconnected"` が含まれることは事前確認済みだったが、既存テストの期待値を事前に棚卸しなかった |
+| 再発条件 | 既存コードの定数・戻り値を変更する際に、`grep -rn '"error"'` で既存テストの期待値を洗い出さない |
+| 解決策 | 値変更前に `grep -rn 'status.*"error"\|"error".*status' apps/desktop/src/__tests__/` で既存テストの期待値を確認してから実装する |
+| 標準ルール | 既存の enum 値を変更する場合は、変更前に既存テストの期待値を grep で全件確認し、回帰修正をセットで実施する |
+| 関連タスク | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 |
+
+#### 苦戦箇所3: P42 バリデーション追加の配置順序
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | P42 準拠の trim チェックを、既存の `if (!request.providerId \|\| !request.modelId)` チェックの**前**に配置すると、undefined/null に対して `.trim()` を呼んで TypeError が発生する |
+| 再発条件 | P42 バリデーション（型チェック → 空文字 → trim）を既存のバリデーション順序を無視して追加する |
+| 解決策 | バリデーション順序: (1) falsy チェック → (2) 型チェック → (3) 空文字 → (4) trim の順を守る。既存 falsy チェックの**後**に trim チェックを追加する |
+| 標準ルール | P42 バリデーション追加時は既存の falsy チェック（`!value`）を先に通過させ、その後に `.trim() === ""` を追加する |
+| 関連パターン | P42（文字列引数の .trim() バリデーション漏れ） |
+| 関連タスク | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 |
+
+```typescript
+// ❌ trim を先に追加するとfalsyチェック前にTypeError
+if (typeof request.providerId !== "string" || request.providerId.trim() === "") { ... }
+if (!request.providerId || !request.modelId) { ... } // ← 既存
+
+// ✅ 正しい順序: falsy → 型 → 空文字 → trim
+if (request.providerId || request.modelId) {
+  if (!request.providerId || !request.modelId) { ... } // 既存falsy
+  if (typeof request.providerId !== "string" || request.providerId.trim() === "") { ... } // P42追加
+  if (typeof request.modelId !== "string" || request.modelId.trim() === "") { ... } // P42追加
+}
+```
+
+#### 同種課題の簡潔解決手順（3ステップ）
+
+1. GAP 修正前に `grep -rn "getSelectedLLMConfig\|handleCheckHealth"` で呼び出し元の null チェック状況を確認し、影響範囲を見積もる。
+2. enum 値変更前に `grep -rn '"error"' __tests__/` で既存テストの期待値を全件確認し、回帰修正をセットで計画する。
+3. P42 バリデーション追加は falsy チェックの**後**に配置し、`typeof` → `=== ""` → `.trim() === ""` の順を守る。
+
+---
+
+### 2026-03-17 TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 再監査（契約衝突検知）
+
+#### 苦戦箇所: 「廃止完了」と「legacy残置」の二重記述
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task06 の成果物で `AI_CHECK_CONNECTION` を「廃止完了」と記述していた一方、実装（`aiHandlers.ts` / `preload/index.ts` / `channels.ts`）は legacy 互換で残存していた |
+| 再発条件 | 設計段階の意図（廃止予定）を、実装完了後に実測で上書きしないまま Phase 12 を完了扱いにする |
+| 解決策 | 仕様を実装実体へ同期し、`AI_CHECK_CONNECTION` は legacy 方針へ修正。primary 経路を `llm:check-health` に固定した |
+| 標準ルール | 存廃を含む IPC は「コード実体 > 設計意図」の順で判定し、Phase 12 で `rg` 実測値を必ず残す |
+
+#### 同種課題の5分解決カード
+
+1. `rg -n "AI_CHECK_CONNECTION|llm:check-health"` を Main/Preload/Spec の3層で同時実行する。  
+2. 仕様に「廃止」と書かれている項目は、ハンドラ/チャネル/API型の実体有無を実測で再確認する。  
+3. `HealthCheckResult` は `status/latency/checkedAt` の語彙を shared schema と一致させる。  
+4. Phase 11 証跡は 1x1 プレースホルダー混入有無を `file` コマンドで確認する。  
+5. 差分が残った場合は未タスク化（指示書作成 + backlog 同期）まで同一ターンで閉じる。  
 
 ### 2026-03-17 TASK-SKILL-LIFECYCLE-08 / UT-06-005（SafetyGate・Permission・Fallback 実装）
 

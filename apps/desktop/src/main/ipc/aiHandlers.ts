@@ -95,6 +95,26 @@ export function registerAIHandlers(): void {
             };
           }
 
+          // P42準拠: 空文字・トリム後空文字バリデーション
+          if (
+            typeof request.providerId !== "string" ||
+            request.providerId.trim() === ""
+          ) {
+            return {
+              success: false,
+              error: "providerId は空でない文字列で指定してください。",
+            };
+          }
+          if (
+            typeof request.modelId !== "string" ||
+            request.modelId.trim() === ""
+          ) {
+            return {
+              success: false,
+              error: "modelId は空でない文字列で指定してください。",
+            };
+          }
+
           if (!isValidProviderId(request.providerId)) {
             return {
               success: false,

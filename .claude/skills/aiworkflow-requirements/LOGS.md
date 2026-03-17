@@ -80,6 +80,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了
   - Phase 10 PASS（MINOR 指摘対応済み）、設計レベルテストケース定義
 
+## TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了（2026-03-17）
+
+### Main Chat / Settings / Selector / System Prompt の runtime 同期
+
+**実装完了した GAP/DRIFT**:
+- GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
+- GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
+- GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
+
+**テスト**: 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
+
+**未タスク**: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+
 ## UT-06-003: DefaultSafetyGate 具象クラス実装（2026-03-16）
 
 - SafetyGatePort 具象クラス DefaultSafetyGate を実装

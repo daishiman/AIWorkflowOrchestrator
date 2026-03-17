@@ -1,0 +1,67 @@
+{
+  "capturedAt": "2026-03-17T04:19:37.965Z",
+  "baseUrl": "http://127.0.0.1:5196",
+  "harnessPath": "/phase11-auth-mode.html",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-access-matrix.png",
+      "note": "Settings access card（認証方式/状態メッセージ/APIキー導線）",
+      "capturedAt": "2026-03-17T04:19:36.232Z",
+      "observed": {
+        "hasAuthModeStatus": true,
+        "hasAuthKeySection": true,
+        "hasApiKeysSection": true,
+        "hasRagSection": true,
+        "hasTerminalLauncher": false,
+        "hasSelectorPanel": false,
+        "hasSystemPromptPanel": false
+      }
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-main-chat-selector-prompt.png",
+      "note": "Settings 側で確認できる selector/prompt 関連領域（APIキー一覧・認証導線）",
+      "capturedAt": "2026-03-17T04:19:36.819Z",
+      "observed": {
+        "hasAuthModeStatus": true,
+        "hasAuthKeySection": true,
+        "hasApiKeysSection": true,
+        "hasRagSection": true,
+        "hasTerminalLauncher": false,
+        "hasSelectorPanel": false,
+        "hasSystemPromptPanel": false
+      }
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-settings-health-rag-guidance.png",
+      "note": "Settings の guidance/RAG 領域（RAG設定と認証ガイダンス）",
+      "capturedAt": "2026-03-17T04:19:37.385Z",
+      "observed": {
+        "hasAuthModeStatus": true,
+        "hasAuthKeySection": true,
+        "hasApiKeysSection": true,
+        "hasRagSection": true,
+        "hasTerminalLauncher": false,
+        "hasSelectorPanel": false,
+        "hasSystemPromptPanel": false
+      }
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-settings-terminal-launcher.png",
+      "note": "Settings header 近傍（terminal launcher 導線の有無を確認）",
+      "capturedAt": "2026-03-17T04:19:37.963Z",
+      "observed": {
+        "hasAuthModeStatus": true,
+        "hasAuthKeySection": true,
+        "hasApiKeysSection": true,
+        "hasRagSection": true,
+        "hasTerminalLauncher": false,
+        "hasSelectorPanel": false,
+        "hasSystemPromptPanel": false
+      }
+    }
+  ]
+}

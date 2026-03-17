@@ -24,24 +24,20 @@ Main Chat / Settings 同期仕様の内容を system spec と task 台帳へ同�
 ## Phase 12 必須タスク
 
 - 実装ガイド作成: Part 1 と Part 2 の 2 部構成で implementation guide を作成する
-- system spec 同期: interfaces-auth.md / api-ipc-system.md / interfaces-llm.md / ui-ux-llm-selector.md / ui-ux-system-prompt.md / ui-ux-settings.md / ui-ux-feature-components.md / arch-state-management.md / security-electron-ipc.md / task-workflow.md / lessons-learned.md を更新対象として固定する
+- system spec 同期: aiworkflow-requirements の parent + child companion を最小セットで抽出し、`outputs/phase-12/system-spec-sync-plan.md` のトレーサビリティ表に沿って更新対象を固定する
 - 変更履歴作成: documentation changelog を出力する
 - 未タスク検出: 残件があれば formalize し、0件でも検出結果を出力する
 - スキルフィードバック記録: 改善観点を 0 件でも記録する
 
 ### システム仕様同期先
 
-- interfaces-auth.md
-- api-ipc-system.md
-- interfaces-llm.md
-- ui-ux-llm-selector.md
-- ui-ux-system-prompt.md
-- ui-ux-settings.md
-- ui-ux-feature-components.md
-- arch-state-management.md
-- security-electron-ipc.md
-- task-workflow.md
-- lessons-learned.md
+- workflow-ai-runtime-authmode-unification.md
+- workflow-apikey-chat-tool-integration-alignment.md
+- api-ipc-system-core.md / llm-ipc-types.md / interfaces-system-prompt.md / interfaces-auth-history.md
+- ui-ux-settings-details.md / ui-ux-llm-selector.md / ui-ux-system-prompt.md
+- arch-state-management-core.md / security-electron-ipc-core.md
+- ipc-contract-checklist.md / legacy-ordinal-family-register.md
+- 詳細な更新対象と依存順は `outputs/phase-12/system-spec-sync-plan.md` を正本とする
 
 ## 参照資料
 
@@ -65,16 +61,26 @@ Main Chat / Settings 同期仕様の内容を system spec と task 台帳へ同�
 
 > 実装前に以下の正本仕様を確認し、既存設計との整合性を確保する。
 
-| 参照資料              | パス                                                                         | 内容                                                            |
-| --------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| interfaces-auth       | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`       | auth-mode 契約と error code の正本                              |
-| api-ipc-system        | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`        | `AI_CHAT` / `AI_CHECK_CONNECTION` / selected config の IPC 正本 |
-| interfaces-llm        | `.claude/skills/aiworkflow-requirements/references/interfaces-llm.md`        | LLM / chat 契約と coverage 指針                                 |
-| ui-ux-llm-selector    | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`    | selector UI と TODO の正本                                      |
-| ui-ux-system-prompt   | `.claude/skills/aiworkflow-requirements/references/ui-ux-system-prompt.md`   | prompt UI と template 契約の正本                                |
-| ui-ux-settings        | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`        | access capability / RAG 表示契約の正本                          |
-| arch-state-management | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` | state handoff と store 契約の正本                               |
-| security-electron-ipc | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md` | settings / key 管理 IPC の sender / error envelope 正本         |
+| 参照資料                       | パス                                                                                                   | 内容                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| workflow-ai-runtime-authmode   | `.claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-authmode-unification.md`        | capability 値と `ready/blocked/unavailable` 語彙の正本                                     |
+| workflow-apikey-chat-alignment | `.claude/skills/aiworkflow-requirements/references/workflow-apikey-chat-tool-integration-alignment.md` | provider/model 同期、`auth-key:exists.source`、cache clear の整合ワークフロー              |
+| api-ipc-system（親）           | `.claude/skills/aiworkflow-requirements/references/api-ipc-system.md`                                  | IPC契約の入口（child companion 選定）                                                      |
+| api-ipc-system-core            | `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`                             | `AI_CHAT` / `AI_CHECK_CONNECTION` / `llm:set-selected-config` / `auth-key:exists` の実契約 |
+| llm-ipc-types                  | `.claude/skills/aiworkflow-requirements/references/llm-ipc-types.md`                                   | `providerId/modelId`、`llm:check-health`、選択同期の型契約                                 |
+| interfaces-auth（親）          | `.claude/skills/aiworkflow-requirements/references/interfaces-auth.md`                                 | auth 仕様の入口                                                                            |
+| interfaces-auth-history        | `.claude/skills/aiworkflow-requirements/references/interfaces-auth-history.md`                         | `auth-mode:*` transport DTO / event payload の現行契約                                     |
+| interfaces-system-prompt       | `.claude/skills/aiworkflow-requirements/references/interfaces-system-prompt.md`                        | `system-prompt:*` の IPC / validation / error code 契約                                    |
+| ui-ux-settings（親）           | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                  | Settings 仕様の入口                                                                        |
+| ui-ux-settings-details         | `.claude/skills/aiworkflow-requirements/references/ui-ux-settings-details.md`                          | `ApiKeysSection` 防御、`AuthKeySection` 表示契約                                           |
+| ui-ux-llm-selector             | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                              | selector UI 契約                                                                           |
+| ui-ux-system-prompt            | `.claude/skills/aiworkflow-requirements/references/ui-ux-system-prompt.md`                             | prompt panel / template UI 契約                                                            |
+| arch-state-management（親）    | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                           | state 管理仕様の入口                                                                       |
+| arch-state-management-core     | `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md`                      | `llmSlice` provider/model 利用境界                                                         |
+| security-electron-ipc（親）    | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                           | セキュリティ仕様の入口                                                                     |
+| security-electron-ipc-core     | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc-core.md`                      | `safeInvoke/safeOn` 境界、sender検証順、preload 公開契約                                   |
+| ipc-contract-checklist         | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`                          | P32/P42/P44、Main→Preload→Renderer の同時更新チェック                                      |
+| legacy-ordinal-family-register | `.claude/skills/aiworkflow-requirements/references/legacy-ordinal-family-register.md`                  | 旧ファイル名引用時の path drift 防止                                                       |
 
 ## 実行手順
 

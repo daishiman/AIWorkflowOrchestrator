@@ -1,0 +1,42 @@
+{
+  "taskId": "TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001",
+  "phase": 11,
+  "capturedAt": "2026-03-17T04:19:37.965Z",
+  "captureMethod": {
+    "primary": "playwright-harness",
+    "command": "pnpm --filter @repo/desktop exec node scripts/capture-task-06-main-chat-settings-runtime-sync-phase11.mjs",
+    "fallback": "playwright-review-board",
+    "fallbackCommand": "pnpm --filter @repo/desktop exec node scripts/capture-task06-main-chat-settings-runtime-sync-phase11-fallback.mjs",
+    "note": "P53準拠。primary で UI ハーネス証跡を取得し、不足要素は fallback review-board を比較証跡として保持。"
+  },
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "scene": "Settings access card",
+      "description": "auth mode、AuthKey、APIキー導線の統合状態を確認",
+      "file": "outputs/phase-11/screenshots/TC-11-01-settings-access-matrix.png",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-11-02",
+      "scene": "Main Chat / Settings selector and prompt",
+      "description": "Settings 側同期領域を確認（selector/prompt 本体はハーネス範囲外）",
+      "file": "outputs/phase-11/screenshots/TC-11-02-main-chat-selector-prompt.png",
+      "status": "PARTIAL"
+    },
+    {
+      "id": "TC-11-03",
+      "scene": "Settings health and RAG guidance",
+      "description": "RAG セクションと guidance 表示を確認",
+      "file": "outputs/phase-11/screenshots/TC-11-03-settings-health-rag-guidance.png",
+      "status": "PASS"
+    },
+    {
+      "id": "TC-11-04",
+      "scene": "Settings persistent terminal launcher",
+      "description": "terminal launcher 常設導線（testid未検出のため PARTIAL）",
+      "file": "outputs/phase-11/screenshots/TC-11-04-settings-terminal-launcher.png",
+      "status": "PARTIAL"
+    }
+  ]
+}

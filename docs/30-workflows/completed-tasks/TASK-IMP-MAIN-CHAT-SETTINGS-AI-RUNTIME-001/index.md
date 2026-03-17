@@ -19,6 +19,10 @@ AI 機能を `Integrated API Runtime` と `ユーザー操作の Claude Code ter
 | ステータス   | spec_created                                                    |
 | 作成日       | 2026-03-13                                                      |
 
+> ステータス解釈:
+> `artifacts.json` の `specs_completed` は「Phase 1-13 の仕様書と成果物定義を生成済み」を示す。
+> 各 `phase-*.md` の `not_started` は「実装/実行フェーズは未着手」を示し、意味を分離して管理する。
+
 ## タスク概要
 
 ### 目的
