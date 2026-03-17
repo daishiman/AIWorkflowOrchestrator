@@ -7,7 +7,7 @@
 ## 仕様書インデックス
 | ファイル | 役割 | 主な見出し |
 | --- | --- | --- |
-| [architecture-implementation-patterns-core.md](architecture-implementation-patterns-core.md) | core specification | 概要 / フロントエンド実装パターン / バックエンド実装パターン |
+| [architecture-implementation-patterns-core.md](architecture-implementation-patterns-core.md) | core specification | 概要 / フロントエンド実装パターン / バックエンド実装パターン / 共有パッケージ実装パターン |
 | [architecture-implementation-patterns-details.md](architecture-implementation-patterns-details.md) | detail specification | デスクトップ（Electron）実装パターン |
 | [architecture-implementation-patterns-advanced.md](architecture-implementation-patterns-advanced.md) | advanced specification | デスクトップ（Electron）実装パターン / パフォーマンス最適化パターン / セキュリティ実装パターン |
 | [architecture-implementation-patterns-reference.md](architecture-implementation-patterns-reference.md) | reference bundle (testing foundation) | テスト実装パターン |

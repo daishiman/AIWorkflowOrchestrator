@@ -17,6 +17,7 @@ export interface SkillLifecycleJobGuide {
   handoffLabel: string;
   summary: string;
   completion: string;
+  onAction?: () => void;
 }
 
 export interface SkillLifecycleSurfaceResponsibility {

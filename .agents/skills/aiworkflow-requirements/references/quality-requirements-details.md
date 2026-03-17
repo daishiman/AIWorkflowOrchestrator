@@ -123,7 +123,7 @@ Vitestの並列実行はデフォルトで有効。スレッド数は5、テス�
 | ---- | ------------ | ---- |
 | `**/index.ts` 一括除外 | `apps/desktop/src/main/ipc/index.ts` | `registerAllIpcHandlers()` 等の実装ロジックが除外される |
 
-- 未タスク: `UT-COVERAGE-INDEX-TS-EXCLUSION-001`（`docs/30-workflows/TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION/unassigned-task/UT-COVERAGE-INDEX-TS-EXCLUSION-001.md`）
+- 未タスク: `UT-COVERAGE-INDEX-TS-EXCLUSION-001`（`docs/30-workflows/unassigned-task/task-coverage-index-ts-exclusion-001.md`）
 
 ### `@repo/shared` alias 管理ルール（TASK-FIX-10-1 2026-02-19更新）
 

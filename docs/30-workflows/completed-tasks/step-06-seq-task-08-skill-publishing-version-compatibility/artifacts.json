@@ -1,0 +1,200 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-08",
+  "title": "スキル共有・公開・互換性統合",
+  "type": "design",
+  "priority": "medium",
+  "status": "phase_12_completed",
+  "dependencies": [
+    "TASK-SKILL-LIFECYCLE-05",
+    "TASK-SKILL-LIFECYCLE-06",
+    "TASK-SKILL-LIFECYCLE-07"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/publishing-levels.md",
+        "outputs/phase-1/compatibility-requirements.md",
+        "outputs/phase-1/safety-gate-connection.md",
+        "outputs/phase-1/skill-center-registration.md",
+        "outputs/phase-1/distribution-alignment.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/publishing-metadata-design.md",
+        "outputs/phase-2/compatibility-check-design.md",
+        "outputs/phase-2/skill-center-flow-design.md",
+        "outputs/phase-2/distribution-operations-design.md",
+        "outputs/phase-2/publish-readiness-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/acceptance-criteria-check.md",
+        "outputs/phase-3/dependency-contract-alignment.md",
+        "outputs/phase-3/system-spec-alignment.md",
+        "outputs/phase-3/design-quality-evaluation.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/publishing-test-spec.md",
+        "outputs/phase-4/compatibility-test-spec.md",
+        "outputs/phase-4/skill-center-test-spec.md",
+        "outputs/phase-4/distribution-test-spec.md",
+        "outputs/phase-4/publish-readiness-test-spec.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/type-definitions.md",
+        "outputs/phase-5/service-interfaces.md",
+        "outputs/phase-5/ipc-channel-definitions.md",
+        "outputs/phase-5/zustand-slice-design.md",
+        "outputs/phase-5/spec-placement-map.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/version-compatibility-boundary-spec.md",
+        "outputs/phase-6/schema-drift-detection-spec.md",
+        "outputs/phase-6/deprecation-republish-boundary-spec.md",
+        "outputs/phase-6/concurrent-operation-conflict-spec.md",
+        "outputs/phase-6/error-handling-extended-spec.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-matrix.md",
+        "outputs/phase-7/dependency-edge-coverage.md",
+        "outputs/phase-7/type-coverage.md",
+        "outputs/phase-7/uncovered-areas.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/dedup-plan.md",
+        "outputs/phase-8/naming-audit.md",
+        "outputs/phase-8/common-utils-design.md",
+        "outputs/phase-8/navigation-check.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/type-integrity-report.md",
+        "outputs/phase-9/spec-quality-report.md",
+        "outputs/phase-9/test-coverage-report.md",
+        "outputs/phase-9/security-check-report.md",
+        "outputs/phase-9/quality-gate-result.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/acceptance-criteria-final.md",
+        "outputs/phase-10/minor-tracking-resolution.md",
+        "outputs/phase-10/dependency-final-check.md",
+        "outputs/phase-10/final-review-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": [
+        "outputs/phase-13/pr-draft.md",
+        "outputs/phase-13/completion-checklist.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "local/team/public の3レベルが定義され、遷移条件と権限マトリクスがある",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "semver/schema/依存バージョンの互換性チェックロジックが定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "Task06 の安全性ゲートと Task07 の観測指標が公開判定マトリクスに接続されている",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "Skill Center の登録・更新・公開停止フローと配布操作の責務境界がある",
+      "verified": false
+    }
+  ],
+  "createdAt": "2026-03-11",
+  "updatedAt": "2026-03-16",
+  "lastUpdated": "2026-03-17T03:31:57.568Z"
+}
