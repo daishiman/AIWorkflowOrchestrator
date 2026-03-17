@@ -1,0 +1,104 @@
+{
+  "taskId": "TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001",
+  "feature": "viewtype-renderView-foundation",
+  "created": "2026-03-17",
+  "title": "ViewType/renderView 基盤拡張",
+  "createdAt": "2026-03-17",
+  "updatedAt": "2026-03-17",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-result.md"]
+    },
+    "2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-result.md"]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-design-result.md"]
+    },
+    "5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-result.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "9": {
+      "name": "品質検証",
+      "file": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/qa-results.md"]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.md",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/topic-map-regeneration.log",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "pending",
+      "note": "ユーザー明示許可待ち。コミット・PRは未実施。"
+    }
+  }
+}
