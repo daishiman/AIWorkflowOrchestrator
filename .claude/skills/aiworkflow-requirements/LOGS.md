@@ -6,7 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-18 - TASK-SKILL-LIFECYCLE-02 SkillCenterView CTA ルーティング完了（ヘッダーCTA + JourneyPanel CTA 3種 + ナビゲーション関数3つ + 34テスト全PASS + 未タスク1件） |
 | 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了（handlePermissionCheck 接続 + sendPermissionRequestWithTimeout + PermissionTimeoutError + timeout→abort） |
+| 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
 | 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了バッチ同期（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |

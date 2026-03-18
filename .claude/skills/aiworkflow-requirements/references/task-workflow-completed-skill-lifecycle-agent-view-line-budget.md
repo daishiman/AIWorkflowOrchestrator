@@ -3,8 +3,11 @@
 > このファイルは500行超過のため分割されました。
 > 新ファイルを参照してください:
 >
-> - Skill Lifecycle 系（TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04/05/06/07）:
+> - Skill Lifecycle 系（TASK-SKILL-LIFECYCLE-04/05/06/07/08, UT-06-003/005/001）:
 >   [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
+>
+> - Skill Create & UI Integration 系（TASK-10A-C, TASK-10A-D）:
+>   [task-workflow-completed-skill-create-ui-integration.md](task-workflow-completed-skill-create-ui-integration.md)
 >
 > - Agent View / Line Budget 系（TASK-UI-03, TASK-IMP-LIGHT-THEME, TASK-07-PERSIST, TASK-FIX-SAFEINVOKE再監査, TASK-IMP-AIWORKFLOW-LINE-BUDGET）:
 >   [task-workflow-completed-agent-view-line-budget.md](task-workflow-completed-agent-view-line-budget.md)

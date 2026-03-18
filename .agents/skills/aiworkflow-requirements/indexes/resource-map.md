@@ -22,6 +22,8 @@
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | バグ修正（Skill Lifecycle 評価・採点ゲート） | workflow-skill-lifecycle-evaluation-scoring-gate.md, interfaces-agent-sdk-skill-details.md, arch-state-management-details.md | ui-ux-feature-components-reference.md, task-workflow.md, lessons-learned-current.md, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md`, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
+| バグ修正（Skill Lifecycle routing / renderView foundation） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md, arch-state-management-core.md | task-workflow.md, lessons-learned-current.md, `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| 設計仕様（Skill Lifecycle 一次導線・SkillCenterView CTA ルーティング） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md | task-workflow-completed-skill-lifecycle.md, lessons-learned-skill-lifecycle-test-hardening.md |
 | 設計仕様（Skill Lifecycle 作成済みスキル利用導線 / CTA制御マトリクス） | workflow-skill-lifecycle-created-skill-usage-journey.md, ui-ux-agent-execution.md, ui-ux-navigation.md, ui-ux-feature-components.md | interfaces-agent-sdk-executor.md, interfaces-agent-sdk-skill.md, arch-state-management.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
 | 設計仕様（Skill Lifecycle 履歴・フィードバック統合） | interfaces-agent-sdk-skill.md, interfaces-agent-sdk-history.md, arch-state-management.md | workflow-skill-lifecycle-created-skill-usage-journey.md, workflow-skill-lifecycle-evaluation-scoring-gate.md, ui-history-search-view.md, ui-ux-history-panel.md, task-workflow.md, lessons-learned-current.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
@@ -61,6 +63,7 @@
 | Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
 | PreToolUse Hook Fallback統合（UT-06-005-A: handlePermissionCheck / timeout→abort） | interfaces-agent-sdk-executor-core.md, interfaces-agent-sdk-executor-details.md, security-skill-execution.md | workflow-permission-fallback-abort-skip-retry.md, lessons-learned-safety-gate-permission-fallback.md, architecture-implementation-patterns-reference-ipc-fallback-validation.md (S32) |
 | 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06） | security-skill-execution.md, interfaces-agent-sdk-executor-details.md, arch-state-management-reference-permissions-import-lifecycle.md | lessons-learned-current.md, task-workflow-backlog.md, workflow-skill-lifecycle-evaluation-scoring-gate.md |
+| 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
 
 ---
 
@@ -388,8 +391,11 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | 1.20.1     | TASK-SKILL-LIFECYCLE-02: クイックルックアップに「設計仕様（Skill Lifecycle 一次導線・SkillCenterView CTA ルーティング）」導線を追加 |
 | 2026-03-17 | 1.20.0     | UT-06-005-A: PreToolUse Hook Fallback 統合（handlePermissionCheck / sendPermissionRequestWithTimeout / PermissionTimeoutError / timeout→abort）クイックルックアップ追加。S32 パターン参照を登録 |
+| 2026-03-17 | 1.20.0     | TASK-SKILL-LIFECYCLE-08: Skill Publishing & Version Compatibility（13型定義・4サービスIF・11 IPCチャンネル）のクイックルックアップ追加。SkillVisibility/PublishReadiness/CompatibilityCheckResult/SkillRegistryService/SkillDistributionService 導線を登録 |
 | 2026-03-17 | 1.19.0     | TASK-SKILL-LIFECYCLE-08 / UT-06-005: SafetyGate MetadataProvider 実装・Permission Fallback（abort/skip/retry/timeout）クイックルックアップを追加。`api-ipc-agent-safety.md` 新規登録（`api-ipc-agent-core.md` から safety/getFileTree セクションを分離） |
+| 2026-03-17 | 1.19.1     | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: クイックルックアップに `workflow-skill-lifecycle-routing-render-view-foundation.md` 導線を追加し、ViewType拡張・renderView分岐・follow-up 未タスクの参照を固定 |
 | 2026-03-16 | 1.18.0     | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001: Skill Docs Runtime の型定義（LLMDocQueryAdapter / DocOperationResult / SkillDocsCapabilityResolver）・エラーコード体系（1001-5001）・セキュリティ（4チャンネル4層防御）参照をクイックルックアップに追加 |
 | 2026-03-15 | 1.17.0     | TASK-SKILL-LIFECYCLE-05: CTA制御マトリクス実装完了。workflow正本にcurrent canonical set/artifact inventory/苦戦箇所を追加。クイックルックアップに「CTA制御マトリクス」導線を登録 |
 | 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |

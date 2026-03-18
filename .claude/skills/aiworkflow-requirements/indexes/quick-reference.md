@@ -34,6 +34,18 @@
 
 ---
 
+## Skill Center CTA ルーティング（TASK-SKILL-LIFECYCLE-02）
+
+| パターン | 実装 | ファイル |
+|----------|------|---------|
+| データ駆動CTA | `SKILL_LIFECYCLE_JOB_GUIDES` の `ctaLabel` + `onAction` で自動生成 | skillLifecycleJourney.ts |
+| ヘッダーCTA | 「+ 新規作成」→ `navigateToSkillCreate()` | SkillCenterView/index.tsx |
+| JourneyPanel CTA | 3ジョブ別CTA（create/use/improve） | SkillCenterView/index.tsx |
+| ナビゲーション関数 | `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` | useSkillCenter.ts |
+| P31対策 | `useAppStore((s) => s.setCurrentView)` 個別セレクタ | useSkillCenter.ts |
+
+---
+
 ## IPCチャンネル早見表
 
 ### 認証・ユーザー
@@ -184,5 +196,8 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | TASK-SKILL-LIFECYCLE-02: Skill Center CTA ルーティングセクションを追加（データ駆動CTA/ヘッダーCTA/JourneyPanel CTA/ナビゲーション関数/P31対策） |
 | 2026-03-17 | UT-06-005-A: `handlePermissionCheck` / `sendPermissionRequestWithTimeout` / `PermissionTimeoutError` を型定義クイックアクセスに追加。S32 タイムアウトパターン参照を登録 |
+| 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
+| 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

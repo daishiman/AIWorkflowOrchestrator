@@ -1,0 +1,113 @@
+{
+  "taskId": "TASK-SKILL-LIFECYCLE-02",
+  "taskName": "step-02-par-task-02-skillcenter-create-route",
+  "description": "SkillCenterView CTA ルーティング実装",
+  "completedDate": "2026-03-18",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/responsibility-matrix.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-design-summary.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/test-expansion-summary.md",
+        "outputs/phase-6/coverage-before.md",
+        "outputs/phase-6/coverage-after.md"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/gap-report.txt"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/qa-summary.md",
+        "outputs/phase-9/lint-errors.txt",
+        "outputs/phase-9/typecheck-errors.txt"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-plan.md",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/screenshots/TC-11-01-skillcenter-header-cta.png",
+        "outputs/phase-11/screenshots/TC-11-02-skillcenter-journey-panel-cta.png",
+        "outputs/phase-11/screenshots/electron-full-screen.png",
+        "outputs/phase-11/screenshots/electron-app-window.png",
+        "outputs/phase-11/screenshots/electron-app-activated.png",
+        "outputs/phase-11/screenshots/capture-metadata.json"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/system-spec-update-summary.md"
+      ]
+    }
+  },
+  "testResults": {
+    "total": 50,
+    "passed": 50,
+    "failed": 0,
+    "_note": "50はタスク対象3ファイルの全テスト数（既存5+新規追加45=50）。内訳: skillLifecycleJourney.test.ts 20件(既存5+追加15)、useSkillCenter.navigation.test.ts 4件(新規)、SkillCenterView.cta.test.tsx 26件(新規)。",
+    "files": [
+      "useSkillCenter.navigation.test.ts",
+      "SkillCenterView.cta.test.tsx",
+      "skillLifecycleJourney.test.ts"
+    ]
+  },
+  "unassignedTasks": [
+    {
+      "id": "TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001",
+      "description": "ヘッダー CTA テキストのレスポンシブ対応",
+      "priority": "LOW",
+      "specPath": "docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md"
+    }
+  ]
+}

@@ -2,13 +2,16 @@
 
 ## メタ情報
 
-| 項目     | 値                                    |
-| -------- | ------------------------------------- |
-| タスクID | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
-| 機能名   | skillcenter-create-route              |
-| Phase    | 7                                     |
-| 作成日   | 2026-03-17                            |
-| 依存     | Phase 6（テスト拡充）の成果物         |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| Phase      | 7                                     |
+| Phase名    | カバレッジ確認                        |
+| タスクID   | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
+| 前提Phase  | Phase 6（テスト拡充）                 |
+| 後続Phase  | Phase 8（リファクタリング）           |
+| ステータス | not_started                           |
+| 作成日     | 2026-03-17                            |
+| 機能名     | skillcenter-create-route              |
 
 ## 目的
 
@@ -83,8 +86,10 @@ cd apps/desktop && pnpm vitest run --coverage \
 
 ## 成果物
 
-- `outputs/phase-7/coverage-report.txt` — カバレッジ計測結果
-- `outputs/phase-7/gap-report.txt` — 未達ファイル一覧（PASS の場合は「なし」と記載）
+| 成果物              | パス                                  | 内容                                            |
+| ------------------- | ------------------------------------- | ----------------------------------------------- |
+| coverage-report.txt | `outputs/phase-7/coverage-report.txt` | カバレッジ計測結果                              |
+| gap-report.txt      | `outputs/phase-7/gap-report.txt`      | 未達ファイル一覧（PASS の場合は「なし」と記載） |
 
 ## 完了条件
 
@@ -96,6 +101,6 @@ cd apps/desktop && pnpm vitest run --coverage \
 - [ ] `outputs/phase-7/gap-report.txt` が作成されている（0件または差し戻し理由記載）
 - [ ] **本Phase内の全タスクを100%実行完了**
 
-## 次Phase
+## 次のPhase
 
-Phase 8: リファクタリング
+- [Phase 8（リファクタリング）](./phase-8-refactoring.md) に進む

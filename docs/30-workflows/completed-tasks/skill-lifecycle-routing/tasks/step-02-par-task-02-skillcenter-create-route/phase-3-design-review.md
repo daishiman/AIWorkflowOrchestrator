@@ -88,11 +88,13 @@ MINOR 判定の指摘は「機能影響なし」であっても全て未タス�
 
 > 実装前に以下の正本仕様を確認し、既存設計との整合性を確保する。
 
-| 参照資料                             | パス                                                                                        | 内容                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| ui-ux-navigation                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | GlobalNavStrip / ViewType 仕様の正本       |
-| ui-ux-feature-components             | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | SkillCenter / JourneyPanel 仕様の正本      |
-| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタ・P31/P48 対策パターン |
+| 参照資料                             | パス                                                                                        | 内容                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| ui-ux-navigation                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | GlobalNavStrip / ViewType 仕様の正本           |
+| ui-ux-feature-components             | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | SkillCenter / JourneyPanel 仕様の正本          |
+| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタ・P31/P48 対策パターン     |
+| ui-ux-design-principles              | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`              | Apple HIG / WCAG 2.1 AA の一次正本             |
+| arch-state-management                | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | Zustand Store 設計・個別セレクタ命名規約の正本 |
 
 ## 実行手順
 

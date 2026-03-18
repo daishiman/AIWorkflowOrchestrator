@@ -19,7 +19,91 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
+| 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
+| 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13）
+
+### 苦戦箇所1: docs-only タスクでの Phase 12 実更新の worktree コンフリクトリスク
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree 環境で `.claude/skills/` を実更新すると、main ブランチの同ファイルと merge 時にコンフリクトが発生するリスクがある。このリスクを理由に Phase 12 実更新を先送りする判断が繰り返し発生した（P57 の再発） |
+| 再発条件 | worktree で設計タスクを実行し、`.claude/skills/` への実更新を「merge 後でよい」と判断する |
+| 解決策 | worktree でも Phase 12 完了時点で `.claude/skills/` を実更新する。コンフリクトリスクより仕様書乖離リスクの方が高い。コンフリクト発生時は merge 時に手動解消する |
+| 標準ルール | Phase 12 の `.claude/skills/` 実更新は worktree 環境でも先送りしない（P57 準拠） |
+| 関連パターン | P57（設計タスクにおける Phase 12 システム仕様書更新の先送りパターン） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-08 |
+
+### 苦戦箇所2: 55ファイルの成果物間の整合性維持（Phase 間参照チェイン）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 1-12 で55ファイルを生成したが、後続 Phase が前 Phase の成果物パスを参照するチェインが長くなり、N-1 / N-2 Phase の参照が壊れやすかった。Phase 5 で型名を変更した際に Phase 2 / Phase 4 の参照が更新されないケースが発生した |
+| 再発条件 | 成果物数が30ファイルを超え、Phase 間の参照が3段以上の深さになる場合 |
+| 解決策 | Phase 5 以降で型名・インターフェース名を変更した場合は `grep -rn "旧名" outputs/` で全成果物の参照を検索し、同ターンで更新する |
+| 標準ルール | 型名・インターフェース名の変更は、成果物全体の grep 検索と参照更新を同時に行う |
+| 関連タスク | TASK-SKILL-LIFECYCLE-08 |
+
+### 苦戦箇所3: 並列サブエージェント間の情報断絶（P59 再発リスク）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4/5/12 を並列サブエージェントで分担した際、各エージェントが独自に成果物を生成し、後続のメインエージェントが統合する段階で件数・ステータスの不整合が発生した（P59 パターン） |
+| 再発条件 | 3つ以上のサブエージェントを並列実行し、各エージェントの成果物を統合する場合 |
+| 解決策 | 並列サブエージェントは成果物ファイルを出力し、メインエージェントが統合時に `find outputs/ -name "*.md" | wc -l` で件数を検証する。documentation-changelog は最後にメインエージェントが一括作成する |
+| 標準ルール | 並列エージェントの成果物統合後にメインエージェントが件数・ステータスの照合を行い、changelog は事後統合する（P59 準拠） |
+| 関連パターン | P59（並列エージェント changelog 件数不整合）、P43（サブエージェント rate limit 中断） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-08 |
+
+### 苦戦箇所4: Phase 12 Task 6（遵守チェックリスト）の作成漏れパターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 12 の Task 1-5 に注力した結果、Task 6（Phase 12 遵守チェックリスト）の作成が漏れた。再監査で初めて欠落が検出され、追加作業が発生した |
+| 再発条件 | Phase 12 の Task 数が5以上で、最後の Task が「チェックリスト作成」のようなメタタスクの場合 |
+| 解決策 | Phase 12 開始時に Task 6（遵守チェックリスト）を最初に空ファイルで作成し、各 Task 完了ごとにチェックを記入する |
+| 標準ルール | Phase 12 遵守チェックリストは最初に空テンプレートで作成し、逐次記入する |
+| 関連タスク | TASK-SKILL-LIFECYCLE-08 |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. Phase 12 開始時に遵守チェックリスト（Task 6）を空テンプレートで先行作成する。
+2. 型名・IF名の変更時は `grep -rn "旧名" outputs/` で成果物全体の参照を同ターンで更新する。
+3. 並列エージェントの成果物統合はメインエージェントが件数照合し、changelog は事後一括作成する。
+4. worktree 環境でも `.claude/skills/` 実更新を先送りしない（P57 準拠）。
+
+---
+
+## 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期）
+
+### 苦戦箇所1: 実更新済みなのに成果物文書が「計画」記述のまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `system-spec-update-summary.md` と `documentation-changelog.md` が計画文言のままで、実更新済みの `.claude/skills/*` と整合しなかった |
+| 解決策 | 文書を実績形式へ全面更新し、実際に更新したファイル群と validator 結果を記録した |
+| 標準ルール | Phase 12 完了前に「実更新ファイル一覧 + 検証結果 + planned wording 0件」を同一ターンで確定する |
+
+### 苦戦箇所2: 設計タスクでも screenshot 要求に対する証跡不足
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | docs-only 前提で進めた結果、Phase 11 の TC-ID と screenshot 証跡が不足して validator が失敗した |
+| 解決策 | dedicated capture script を作成し、TC-11-01〜03 の screenshot と metadata を再生成した |
+| 標準ルール | 設計タスクでもユーザーが画面検証を要求した場合は screenshot 取得を必須にし、`validate-phase11-screenshot-coverage` を完了ゲートに置く |
+
+### 苦戦箇所3: 未タスク台帳のリンク切れが後段で一括失敗を誘発
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `task-workflow.md` の `unassigned-task/` 参照切れ12件で `verify-unassigned-links` が失敗した |
+| 解決策 | 欠落12件を即時復旧し、TASK-08由来の4件を新規 formalize して台帳を同時更新した |
+| 標準ルール | 未タスクの新規/移設時は `verify-unassigned-links` を即時実行し、リンク切れ0件を確認してから Phase 12 を閉じる |
 
 ---
 
@@ -221,3 +305,66 @@
 2. 指示書は 9セクション形式（`## 1..9` + `3.5`）で作り、親タスク苦戦箇所を継承する。
 3. `task-workflow-backlog` / 関連仕様書 / workflow outputs の参照を同ターンで更新する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD --target-file` で link と品質を分離検証する。
+
+---
+
+## 2026-03-18 TASK-SKILL-LIFECYCLE-02
+
+### 苦戦箇所1: P31 Zustand 個別セレクタによる無限ループ回避
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `useSkillCenter` 内で `setCurrentView` を取得する際、合成 Hook（`useAppStore()`）を使用すると毎回新しいオブジェクト参照が返り、`useCallback` 依存配列で無限ループが発生する |
+| 再発条件 | ナビゲーション関数内で Zustand store の action を合成 Hook 経由で取得する |
+| 解決策 | `useAppStore((state) => state.setCurrentView)` のように個別セレクタで action を直接取得し、安定した参照を確保した |
+| 標準ルール | Zustand action は必ず個別セレクタ（`useAppStore(state => state.action)`）で取得する。合成 Hook の戻り値を `useEffect` / `useCallback` の依存配列に含めない（P31 準拠） |
+
+### 苦戦箇所2: P39 happy-dom 環境での fireEvent 使用
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | CTA ボタンのクリックテストで `userEvent.setup()` を使用すると `Symbol(Node prepared with document state workarounds)` エラーが発生し、テストが全滅する |
+| 再発条件 | happy-dom テスト環境で `@testing-library/user-event` を使用する |
+| 解決策 | `fireEvent.click()` を使用し、非同期ハンドラは `await act(async () => { fireEvent.click(el) })` で包む |
+| 標準ルール | happy-dom 環境では `userEvent` 使用禁止。`fireEvent` + `act()` パターンを標準とする（P39 準拠） |
+
+### 苦戦箇所3: P50 既実装検出による Phase 4-5 モード切替
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 1 開始時点で全コード実装（CTA ボタン、ナビゲーション関数、ctaLabel 型拡張）が既に完了していた。Phase 4-5 を「新規実装」前提で進めると、不要なコード重複が発生するリスクがあった |
+| 再発条件 | worktree で前タスクの成果物が残った状態で後続タスクを開始し、既存コードの確認を省略する |
+| 解決策 | Phase 1 で `git diff --stat HEAD` と対象ファイルの内容を確認し、既実装であることを検出。Phase 4-5 を「検証・補完」モードに切り替え、既存実装に対するテスト追加とカバレッジ確認に集中した |
+| 標準ルール | Phase 1 開始時に必ず P50 チェック（`git diff --stat` + 対象ファイル確認）を実施し、既実装の場合は Phase 4-5 を検証モードに切り替える |
+| 関連パターン | P50（既実装防御の発見による Phase 転換） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-02 |
+
+### 苦戦箇所4: サブエージェント間のテスト数・カバレッジ値伝達ミス（P4/P43 複合）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 並列サブエージェントが個別にテストを実行した結果、テスト数（50テスト/3ファイル）とカバレッジ値の伝達時に数値の不整合が発生した。documentation-changelog に中間報告の数値がそのまま転記され、最終的な二次検証で修正が必要になった |
+| 再発条件 | 3つ以上のサブエージェントが個別にテストを実行し、メインエージェントが結果を統合する際に照合を省略する |
+| 解決策 | メインエージェントが `pnpm --filter @repo/desktop exec vitest run` で全テストを一括実行し、出力から正確なテスト数・カバレッジ値を取得。サブエージェントの中間報告値とクロスチェックしてから changelog に記録した |
+| 標準ルール | テスト数・カバレッジ値は最終的にメインエージェントが一括実行結果から取得し、サブエージェント報告値とクロスチェックする（P4/P43 準拠） |
+| 関連パターン | P4（documentation-changelog への早期完了記載）、P43（サブエージェント rate limit 中断） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-02 |
+
+### 苦戦箇所5: Mirror Sync 差分の早期完了記載（P4 再発）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | documentation-changelog.md に「Mirror Sync 差分0件」と早期記載したが、実際は `.claude/skills/` と `.agents/skills/` の間に3ファイルの差分が残存していた。`diff -qr` による事後確認で発見し、`rsync --checksum` で修正した |
+| 再発条件 | Mirror Sync の実行結果を確認せずに changelog に「0件」と記載する |
+| 解決策 | `rsync -avz --checksum ./.claude/skills/ ./.agents/skills/` 実行後に `diff -qr ./.claude/skills/ ./.agents/skills/` で差分0件を確認してから changelog に記録する。事前ではなく事後に記録する |
+| 標準ルール | Mirror Sync は `rsync` 実行 → `diff -qr` で0件確認 → changelog 事後記録の順序を厳守する（P4 準拠） |
+| 関連パターン | P4（documentation-changelog への早期完了記載） |
+| 関連タスク | TASK-SKILL-LIFECYCLE-02 |
+
+### 同種課題の簡潔解決手順（5ステップ）
+
+1. Phase 1 開始時に `git diff --stat HEAD` で既実装を P50 チェックし、検証モードへの切替を判断する。
+2. Zustand action は個別セレクタ（`useAppStore(state => state.action)`）で取得する（P31 準拠）。
+3. happy-dom 環境では `fireEvent` + `act()` を使用し、`userEvent` は禁止する（P39 準拠）。
+4. テスト数・カバレッジ値はメインエージェントが一括実行結果からクロスチェックする。
+5. Mirror Sync は実行→確認→記録の順で事後記録する（P4 準拠）。
