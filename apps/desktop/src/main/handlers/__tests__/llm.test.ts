@@ -227,8 +227,8 @@ describe("LLM IPC Handlers", () => {
       // When: Check health
       const result = await handleCheckHealth({ providerId: "openai" });
 
-      // Then: Error with network message
-      expect(result.status).toBe("error");
+      // Then: disconnected status with network message (GAP-02: error → disconnected 統一)
+      expect(result.status).toBe("disconnected");
       expect(result.errorMessage).toContain("NETWORK_ERROR");
     });
 

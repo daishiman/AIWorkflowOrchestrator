@@ -327,6 +327,71 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 2. `keydown` 導線へ編集要素除外を適用し、誤発火を単体テストで固定する。  
 3. AppDock表示順と `NAV_SHORTCUT_TO_VIEW` の整合を同一PR単位で更新する。  
 4. Phase 11 証跡（`TC-xx` + `.png`）を workflow 配下へ保存し、coverage validator を実行する。  
-5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。
 
 ---
+
+## LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
+
+> 完了日: 2026-03-17
+
+### GAP-03: DEFAULT_CONFIG fallback 廃止
+
+**変更前の挙動**（廃止）:
+
+```typescript
+// ❌ 廃止前: 未選択時に暗黙的なデフォルトへ fallback していた
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig> {
+  return currentConfig ?? DEFAULT_CONFIG; // DEFAULT_CONFIG = { providerId: "openai", modelId: "gpt-4o" }
+}
+```
+
+**変更後の挙動**:
+
+```typescript
+// ✅ 現在: null を返す。呼び出し元が明示的にハンドリングする責務を持つ
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null> {
+  return currentConfig; // 未設定時は null
+}
+```
+
+### 状態管理への影響
+
+| 項目 | 内容 |
+| ---- | ---- |
+| `currentConfig` | `SelectedLLMConfig \| null`（変更なし） |
+| `getSelectedLLMConfig()` 戻り値 | `Promise<SelectedLLMConfig \| null>`（`null` が返る） |
+| `aiHandlers.ts` の null チェック | `if (!llmConfig)` で LLM未選択エラーを返す（既存実装） |
+| 暗黙 fallback | **廃止**。`setSelectedLLMConfig` 経由で明示的に設定が必要 |
+
+### 設計判断の根拠
+
+- 呼び出し元（`aiHandlers.ts`）に既に null チェックが存在していたため、`getSelectedLLMConfig()` 側の DEFAULT_CONFIG fallback は二重管理になっていた
+- LLM 未選択時はエラーを返してユーザーに選択を促す UX が正しい（`api-ipc-system-core.md` の「未選択時の挙動」に準拠）
+- DEFAULT_CONFIG の暗黙 fallback は設定画面での選択がスキップされる原因になっていた
+
+---
+
+## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
+
+### publishingSlice 境界
+
+| 状態 | 所有者 | 補足 |
+| --- | --- | --- |
+| `visibilityFilter` | `publishingSlice` | `"all" | SkillVisibility` で一覧フィルタを制御 |
+| `publishReadiness` | `publishingSlice` | `auto-approved` 等の公開判定結果を保持 |
+| `compatibilityResult` | `publishingSlice` | version 更新時の互換性評価結果を保持 |
+| `publishDialogState` | `publishingSlice` | register/check/confirm の3ステップ進行状態 |
+
+### state 不変条件
+
+- `visibilityFilter` の初期値は `"all"`。
+- `publishReadiness.status === "blocked"` のとき confirm アクションを禁止する。
+- `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`

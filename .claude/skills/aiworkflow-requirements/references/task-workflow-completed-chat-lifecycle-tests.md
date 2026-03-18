@@ -7,6 +7,25 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 再監査記録（2026-03-17）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 |
+| 判定 | **実装差分は反映済み / follow-up 4件は未完了** |
+| ステータス | Phase 11/12 再監査を実施、未タスクへ移管済み |
+| 対象 | `llm.ts` disconnected統一、`aiHandlers.ts` P42バリデーション、`llmConfigProvider.ts` fallback廃止、Phase11証跡再取得 |
+| 成果物 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-06-main-chat-settings-runtime-sync/outputs/` |
+
+#### 未完了差分（follow-up）
+
+| 未タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| UT-TASK06-001 | RAG state IPC 仕様化 | 未実施 |
+| UT-TASK06-002 | apiKey.validate 完全デバウンス | 未実施 |
+| UT-TASK06-003 | AccountSection header + launcher 統合 | 未実施 |
+| UT-TASK06-004 | AI_CHECK_CONNECTION legacy整理 | 未実施 |
+
 ### タスク: UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 runtime routing 統合クロージャ（2026-03-15）
 
 | 項目 | 値 |

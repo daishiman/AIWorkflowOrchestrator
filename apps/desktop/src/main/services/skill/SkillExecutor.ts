@@ -256,6 +256,18 @@ const DEFAULT_TOOLS = ["Read", "Edit", "Bash", "Glob", "Grep"] as const;
 /** デフォルトのタイムアウト（ミリ秒） */
 const DEFAULT_TIMEOUT_MS = 30000;
 
+/** Permission タイムアウトエラー (FR-102) */
+export class PermissionTimeoutError extends Error {
+  readonly timeoutMs: number;
+  constructor(timeoutMs: number, toolName: string) {
+    super(
+      `Permission request timed out after ${timeoutMs}ms for tool: ${toolName}`,
+    );
+    this.name = "PermissionTimeoutError";
+    this.timeoutMs = timeoutMs;
+  }
+}
+
 /** 同時実行の最大数 */
 const MAX_CONCURRENT_EXECUTIONS = 5;
 
@@ -1181,7 +1193,13 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
           timestamp: Date.now(),
         });
 
-        return { proceed: true };
+        // FR-101〜FR-106: Permission チェック + フォールバック統合
+        return await this.handlePermissionCheck(
+          executionId,
+          input.toolName,
+          input.args,
+          _context.signal,
+        );
       },
 
       /**
@@ -1514,6 +1532,136 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
 
     // 応答を待機
     return this.permissionResolver.waitForResponse(requestId, signal);
+  }
+
+  /**
+   * タイムアウト付き権限リクエスト送信 (FR-102)
+   *
+   * Promise.race で sendPermissionRequest とタイムアウトを競合させる。
+   * タイムアウト時は PermissionTimeoutError をスロー。
+   * 成功時は clearTimeout でタイマーを解放（メモリリーク防止）。
+   */
+  private sendPermissionRequestWithTimeout(
+    executionId: string,
+    toolName: string,
+    args: Record<string, unknown>,
+    signal?: AbortSignal,
+  ): Promise<SkillPermissionResponse> {
+    return new Promise<SkillPermissionResponse>((resolve, reject) => {
+      let settled = false;
+
+      const timeoutId = setTimeout(() => {
+        if (!settled) {
+          settled = true;
+          reject(new PermissionTimeoutError(this.defaultTimeout, toolName));
+        }
+      }, this.defaultTimeout);
+
+      this.sendPermissionRequest(executionId, toolName, args, signal)
+        .then((response) => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timeoutId);
+            resolve(response);
+          }
+        })
+        .catch((error) => {
+          if (!settled) {
+            settled = true;
+            clearTimeout(timeoutId);
+            reject(error);
+          }
+        });
+    });
+  }
+
+  /**
+   * PreToolUse Hook 用 Permission チェック (FR-101〜FR-106)
+   *
+   * フロー:
+   * 1. sendPermissionRequestWithTimeout でタイムアウト付き権限リクエスト
+   * 2. approved → { proceed: true }
+   * 3. 拒否 → processPermissionFallback で分岐
+   *    - skip → executeSkipFlow + { proceed: false }
+   *    - retry → ループ再実行 (max PERMISSION_MAX_RETRIES)
+   *    - abort/max_retries → executeAbortFlow + throw
+   * 4. 例外 → fail-closed: executeAbortFlow("unknown") + throw (NFR-101)
+   */
+  async handlePermissionCheck(
+    executionId: string,
+    toolName: string,
+    args: Record<string, unknown>,
+    signal?: AbortSignal,
+  ): Promise<PreToolUseResult> {
+    try {
+      let retryCount = 0;
+
+      while (true) {
+        const response = await this.sendPermissionRequestWithTimeout(
+          executionId,
+          toolName,
+          args,
+          signal,
+        );
+
+        // 承認された場合
+        if (response.approved) {
+          // rememberChoice が true の場合、ツールを許可リストに追加
+          if (response.rememberChoice && this.permissionStore) {
+            this.permissionStore.allowTool(toolName);
+          }
+          return { proceed: true };
+        }
+
+        // 拒否された場合 → フォールバック処理
+        const context: PermissionFlowContext = {
+          executionId,
+          requestId: response.requestId,
+          toolName,
+          retryCount,
+          maxRetries: PERMISSION_MAX_RETRIES,
+        };
+
+        const fallback = await this.processPermissionFallback(
+          response,
+          context,
+        );
+
+        switch (fallback.action) {
+          case "approved":
+            return { proceed: true };
+
+          case "skip":
+            this.executeSkipFlow(executionId, toolName);
+            return {
+              proceed: false,
+              message: `Permission denied: tool "${toolName}" was skipped`,
+            };
+
+          case "retry":
+            retryCount = fallback.retryCount ?? retryCount + 1;
+            continue;
+
+          case "abort":
+            throw new Error(
+              `Permission flow aborted: reason=${fallback.reason}, tool=${toolName}`,
+            );
+        }
+      }
+    } catch (error: unknown) {
+      // NFR-101: fail-closed — 予期しない例外は abort に倒す
+      if (error instanceof PermissionTimeoutError) {
+        await this.executeAbortFlow("timeout", executionId);
+        throw error;
+      }
+      // processPermissionFallback 内で既に abort 済みの場合は再スロー
+      if (this.abortedExecutions.has(executionId)) {
+        throw error;
+      }
+      // 未知の例外 → abort
+      await this.executeAbortFlow("unknown", executionId);
+      throw error;
+    }
   }
 
   // =================================================================

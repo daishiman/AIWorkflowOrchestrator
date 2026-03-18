@@ -3698,3 +3698,24 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **適用条件**: docs-heavy / spec-created / design タスクで、Phase 12 中に system spec 追補が発生した場合
 - **発見日**: 2026-03-15
 - **関連タスク**: TASK-SKILL-LIFECYCLE-05
+
+### [設計] 依存タスク連携における型変換点の明示パターン（TASK-SKILL-LIFECYCLE-08）
+
+- **状況**: 設計タスクシリーズ（Task06→Task07→Task08 など）で、前タスクの出力型が後タスクの判定入力として使われる際、型の変換点が暗黙のまま設計書に残り、後続実装時に依存ドリフトが発生した
+- **アプローチ**:
+  - 依存タスク連携を以下のフォーマットで Phase 2 設計書に明示する:
+    ```
+    Task-N 出力型 -> Adapter -> Task-M 入力型 -> Port -> 判定結果
+    ```
+  - 例: `PublishReadinessMetrics (Task07出力) -> CompatibilityAdapter -> CompatibilityCheckResult (Task08入力) -> PublishReadinessChecker -> PublishReadiness`
+  - Adapter が必要な場合は Phase 2 で型変換ロジックの責務を定義し、実装タスクに引き継ぐ
+- **成功パターン**:
+  - Phase 2 設計書の「依存タスク連携」セクションに変換点テーブルを作成する
+  - 変換点ごとに「入力型ソース」「変換ルール」「出力型ターゲット」を3列で定義する
+  - 後続の実装タスクに Adapter 実装を未タスクとして引き継ぐ
+- **失敗パターン**:
+  - 依存タスクの型が「互換性あり」と暗黙想定し、変換点を設計書に記載しない
+  - 後続実装タスクの Phase 2 で「Task-N の出力をそのまま使う」と判断し、型変換コストを後回しにする
+- **適用条件**: 複数の設計タスクが型契約でシリアル接続されているシリーズ設計
+- **発見日**: 2026-03-17
+- **関連タスク**: TASK-SKILL-LIFECYCLE-08

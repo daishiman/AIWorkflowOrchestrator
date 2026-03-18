@@ -3,52 +3,6 @@
 ## 役割
 
 ---
-## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（再確認を含む）
-- **Result**: success
-- **Notes**:
-  - `outputs/phase-11` の screenshot を再取得し、`advanced route fallback` で TC-11-01..05 を固定
-  - `renderView` 分岐は `App.renderView.viewtype.test.tsx` と `skillLifecycleJourney/types` の targeted suite で補助検証
-  - Phase 12 不足成果物 `spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `artifacts.json` / `outputs/artifacts.json` を補完
-  - 未タスク `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize（指示書 + backlog + spec link）
-  - `phase-11-12-guide.md` に「画面到達（route）と分岐保証（unit test）の責務分離」ルールを追記
-
-### 変更内容
-- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
-- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
-- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
-- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
-
-### AC達成状況
-AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
-
----
-
-## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
-- 完了日: 2026-03-17
-- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
-- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
-- 未タスク化: 5件（U-1〜U-5）
-- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
-
----
-
-## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11/12 実績同期）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（re-audit）
-- **Result**: success
-- **Notes**:
-  - `phase-11-manual-test.md` に TC-11-01..03 の screenshot 証跡を同期し、`validate-phase11-screenshot-coverage` を PASS 化
-  - `implementation-guide.md` の不足項目（APIシグネチャ/エッジケース）を補完し、`validate-phase12-implementation-guide` 10/10 PASS
-  - `system-spec-update-summary.md` / `documentation-changelog.md` を計画記録から実績記録へ置換
-  - `phase12-task-spec-compliance-check.md` を新規作成し、Task 1-5 完了を固定
-  - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
-
----
-
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -61,6 +15,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts`（修正）: conversation チャンネル対応追加
   - 172 tests ALL PASS（register-conversation-handlers 22 + ipc-graceful-degradation 19 + ipc-double-registration 17 + conversationHandlers 92 + conversationRepository 22）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
+
+---
+## 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - PreToolUse Hook に `handlePermissionCheck` を接続し、`processPermissionFallback` との統合を完了
+  - `sendPermissionRequestWithTimeout`（30秒タイムアウト）+ `PermissionTimeoutError` によるタイムアウト→abort 経路を実装
+  - 新規テストファイル `SkillExecutor.hook-fallback.test.ts`（15件）を追加、hooks.test.ts / performance.test.ts にモック追加
+  - 全30テスト PASS
 
 ---
 ## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了

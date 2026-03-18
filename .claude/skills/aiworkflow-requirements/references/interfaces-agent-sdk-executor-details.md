@@ -125,7 +125,35 @@ Permission レスポンスを受けて適切なアクションを決定する。
 
 #### timeout → abort フロー
 
-PermissionResolver の応答待機が `DEFAULT_TIMEOUT_MS`（300000ms = 5分）を超過した場合、`executeAbortFlow("timeout")` を呼び出して中断する。retry を経由しない直接 abort。
+`sendPermissionRequestWithTimeout()` が `DEFAULT_TIMEOUT_MS`（30000ms = 30秒）を超過した場合、`PermissionTimeoutError` を送出し、`handlePermissionCheck()` 側で `executeAbortFlow("timeout")` を呼び出して中断する。retry を経由しない直接 abort。
+
+#### PreToolUse Hook 統合（UT-06-005-A）
+
+UT-06-005 で追加された fallback 制御を、実行時の PreToolUse Hook に接続する。
+
+| 項目 | 契約 |
+| --- | --- |
+| 統合ポイント | `createHooks().PreToolUse` から `handlePermissionCheck()` を呼び出す |
+| 承認時 | `{ proceed: true }` を返しツール実行継続 |
+| 拒否時 | `processPermissionFallback()` の戻り値で `approved/skip/retry/abort` を分岐 |
+| timeout 時 | `PermissionTimeoutError` を捕捉して `executeAbortFlow("timeout")` |
+| 例外時 | fail-closed で `executeAbortFlow("unknown")` |
+
+#### UT-06-005-A 追加API
+
+| メソッド/型 | 役割 |
+| --- | --- |
+| `handlePermissionCheck(executionId, toolName, args, signal?)` | PreToolUse Hook の Permission 判定エントリポイント |
+| `sendPermissionRequestWithTimeout(...)` | `sendPermissionRequest(...)` に 30秒タイムアウトを付与 |
+| `PermissionTimeoutError` | timeout 事象を識別し、abort reason=`timeout` へ接続するエラー型 |
+
+#### UT-06-005-A 実装上の注意事項
+
+| 観点 | 詳細 |
+| --- | --- |
+| P61 DIP 違反（既知の設計負債） | `SkillExecutor` コンストラクタ内で `new PermissionResolver()` を直接生成している。`PermissionStore` は `IPermissionStore` 経由の DI 済みだが、`PermissionResolver` は未対応。テストでのモック差し替えが困難な状態。`IPermissionResolver` インターフェース抽出と DI 化は未タスク（UT-06-005-A lessons-learned 参照） |
+| Promise.race クリーンアップ | `sendPermissionRequestWithTimeout` が timeout した場合、負けた `requestPromise` が pending 状態で残る可能性がある。`PermissionResolver.cancelRequest()` を timeout 検知後に呼び出してリソースをクリーンアップする |
+| P42 バリデーション（改善余地） | `handlePermissionCheck` の `executionId` / `toolName` 引数は内部 private メソッドのためバリデーションを省略しているが、PreToolUse Hook から渡される値が空文字列になった場合の挙動は未保護。後続タスクでの対応を推奨 |
 
 ---
 

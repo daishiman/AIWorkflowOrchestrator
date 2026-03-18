@@ -45,6 +45,160 @@
 
 ---
 
+## 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-08 |
+| ステータス | `spec_created`（設計完了、実装は未タスク化済み） |
+| 成果物 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/outputs/` |
+
+### 型サマリー
+
+| 型名 | 概要 |
+| --- | --- |
+| `SkillVisibility` | 公開レベル（`local` / `team` / `public`） |
+| `SkillPublishingMetadata` | 公開メタデータの識別ユニオン（Local/Team/Public） |
+| `CompatibilityCheckResult` | 互換性判定結果（`compatible` / `minor-incompatible` / `breaking`） |
+| `PublishReadiness` | 公開判定（`auto-approved` / `review-required` / `manual-approval-required` / `blocked`） |
+| `SkillRegistryService` | 登録・更新・停止・削除・依存参照の契約 |
+| `SkillDistributionService` | import/export/fork/share 契約 |
+| `PublishReadinessChecker` | SafetyGate + Observability 入力から公開可否を返すポート |
+| `CompatibilityChecker` | semver / schema 差分の互換性を評価するポート |
+
+### 型定義詳細
+
+#### SkillVisibility
+
+```typescript
+type SkillVisibility = "local" | "team" | "public";
+```
+
+デフォルト値: `"local"`（新規作成スキルは必ず `"local"` から開始）。配置先: `packages/shared/src/skill/publishing-types.ts`
+
+#### SkillPublishingMetadata（識別ユニオン型）
+
+```typescript
+interface SkillPublishingMetadataBase {
+  name: string;         // 1〜100文字
+  description: string;  // 20〜500文字
+  version: string;      // semver 形式
+}
+interface LocalMetadata extends SkillPublishingMetadataBase { visibility: "local"; }
+interface TeamMetadata extends SkillPublishingMetadataBase {
+  visibility: "team"; author: string; tags: string[]; teamId: string;
+}
+interface PublicMetadata extends SkillPublishingMetadataBase {
+  visibility: "public"; author: string; tags: string[]; teamId: string;
+  license: string; readme: string; changelog: string; minAppVersion: string; repository?: string;
+}
+type SkillPublishingMetadata = LocalMetadata | TeamMetadata | PublicMetadata;
+```
+
+配置先: `packages/shared/src/skill/publishing-types.ts`
+
+#### CompatibilityCheckResult
+
+```typescript
+type CompatibilityLevel = "compatible" | "minor-incompatible" | "breaking";
+interface BreakingChange { field: string; changeType: "removed" | "type-changed" | "required-added"; before: string; after: string; }
+interface CompatibilityWarning { field: string; message: string; }
+interface CompatibilityCheckResult {
+  level: CompatibilityLevel;
+  breakingChanges: BreakingChange[];
+  warnings: CompatibilityWarning[];
+  suggestedBump: "major" | "minor" | "patch";
+}
+```
+
+配置先: `packages/shared/src/skill/compatibility-types.ts`
+
+#### PublishReadiness
+
+```typescript
+type PublishReadiness =
+  | { status: "auto-approved" }
+  | { status: "review-required"; reasons: string[] }
+  | { status: "manual-approval-required"; reasons: string[] }
+  | { status: "blocked"; reasons: string[] };
+```
+
+配置先: `packages/shared/src/types/publish-eligibility.ts`
+
+#### SkillRegistryService
+
+```typescript
+interface SkillRegistryService {
+  register(metadata: SkillPublishingMetadata): Promise<RegisterResult>;
+  update(skillId: string, newMetadata: SkillPublishingMetadata): Promise<UpdateResult>;
+  deprecate(skillId: string, notice: DeprecationNotice): Promise<void>;
+  remove(skillId: string): Promise<void>;
+  getDependents(skillId: string): Promise<string[]>;
+}
+```
+
+配置先: `packages/shared/src/types/skill-registry.ts`。P61 準拠: IPC ハンドラの引数型はこのインターフェース。
+
+#### SkillDistributionService
+
+```typescript
+interface SkillDistributionService {
+  importSkill(sourceUrl: string, options: ImportOptions): Promise<ImportResult>;
+  exportSkill(skillId: string, options: ExportOptions): Promise<ExportPackage>;
+  forkSkill(skillId: string, newName: string): Promise<ForkResult>;
+  shareSkill(skillId: string, teamId: string, options: ShareOptions): Promise<ShareLink>;
+}
+```
+
+配置先: `packages/shared/src/types/skill-distribution.ts`。P61 準拠: IPC ハンドラの引数型はこのインターフェース。
+
+#### PublishReadinessChecker / CompatibilityChecker
+
+```typescript
+interface PublishReadinessChecker {
+  check(safetyGate: SafetyGateInput, metrics: ObservabilityMetrics): PublishReadiness;
+}
+interface CompatibilityChecker {
+  check(oldSchema: unknown, newSchema: unknown): CompatibilityCheckResult;
+  checkDependencies(constraints: Record<string, string>): CompatibilityCheckResult;
+}
+```
+
+PublishReadinessChecker 配置先: `packages/shared/src/types/publish-eligibility.ts`
+CompatibilityChecker 配置先: `apps/desktop/src/main/domain/compatibility-checker.ts`
+
+### IPC チャンネル定数（11チャンネル）
+
+```typescript
+const SKILL_PUBLISHING_CHANNELS = {
+  REGISTER: "skill:publishing:register",
+  UPDATE: "skill:publishing:update",
+  DEPRECATE: "skill:publishing:deprecate",
+  REMOVE: "skill:publishing:remove",
+  GET_DEPENDENTS: "skill:publishing:get-dependents",
+  CHECK_READINESS: "skill:publishing:check-readiness",
+  CHECK_COMPAT: "skill:publishing:check-compatibility",
+} as const;
+
+const SKILL_DISTRIBUTION_CHANNELS = {
+  IMPORT: "skill:distribution:import",
+  EXPORT: "skill:distribution:export",
+  FORK: "skill:distribution:fork",
+  SHARE: "skill:distribution:share",
+} as const;
+```
+
+配置先: `packages/shared/src/ipc/channels.ts`（既存ファイルへ追記）。全レスポンスは `IpcResponse<T>` wrapper 形式（P60 準拠）。
+
+### 実装移行の未タスク
+
+| 未タスクID | 役割 | 指示書 |
+| --- | --- | --- |
+| `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` | 上記型のランタイム実装 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-type-impl.md` |
+| `UT-SKILL-LIFECYCLE-08-NAMING-FIX` | boolean 命名規約の是正 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`

@@ -276,6 +276,29 @@ node scripts/search-spec.js "conversationIdRef" -C 3
 5. `references/task-workflow.md` / `references/lessons-learned.md` で completed path、`external-dev-server` screenshot、`audit --target-file` ルールを確認する
 6. 実装実体は `apps/desktop/src/renderer/views/WorkspaceView/utils/quickFileSearchResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/utils/previewResilience.ts` `apps/desktop/src/renderer/views/WorkspaceView/index.tsx` `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/scripts/capture-workspace-preview-search-resilience-guard-phase11.mjs` を照合する
 
+## Main Chat / Settings runtime 同期（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）を探すとき
+
+このカテゴリは `llm:check-health` `llm:set-selected-config` `AI_CHECK_CONNECTION` `DEFAULT_CONFIG` `HealthCheckResult` `SetSelectedConfigParams` `aiHandlers` `llmConfigProvider` `disconnected` `P42 validation` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "llm:check-health" -C 3
+node scripts/search-spec.js "llm:set-selected-config" -C 3
+node scripts/search-spec.js "AI_CHECK_CONNECTION" -C 3
+node scripts/search-spec.js "DEFAULT_CONFIG" -C 3
+node scripts/search-spec.js "HealthCheckResult" -C 3
+node scripts/search-spec.js "SetSelectedConfigParams" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「Main Chat / Settings runtime 同期」を見る
+2. `references/api-ipc-system-core.md` で `AI_CHAT` IPC チャンネル・P42 準拠3段バリデーション（型チェック → 空文字列 → トリム空文字列）を確認する
+3. `references/llm-ipc-types.md` で `HealthCheckResult`（`llm:check-health` レスポンス）・`SetSelectedConfigParams`（`llm:set-selected-config` 引数）型を確認する
+4. `references/arch-state-management-core.md` で `llmSlice` の `selectedConfig` 同期フローと Store 更新タイミングを確認する
+5. `references/lessons-learned-current.md` で P42（trim バリデーション）・P60（IPC レスポンス形式不一致）の教訓と UT-TASK06-001〜004 未タスク状況を確認する
+6. `references/task-workflow-backlog.md` で UT-TASK06-001〜004（aiHandlers / llmConfigProvider / disconnected 統一 / AI_CHAT バリデーション）の状況を確認する
+7. 実装実体: `apps/desktop/src/main/ipc/aiHandlers.ts`（AI_CHAT P42バリデーション）`apps/desktop/src/main/ipc/llm.ts`（llm:check-health disconnected統一）`apps/desktop/src/main/services/llmConfigProvider.ts`（DEFAULT_CONFIG廃止）`apps/desktop/src/preload/channels.ts`（AI_CHECK_CONNECTION legacy残置）
+
 ## AI runtime/auth-mode unification を探すとき
 
 このカテゴリは `ai-runtime-authmode` `auth mode unification` `settings authmode` `legacy-ordinal-family-register` `UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001` で検索を分割する。

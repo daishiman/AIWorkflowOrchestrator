@@ -1,0 +1,76 @@
+{
+  "taskId": "UT-06-005-A",
+  "generatedAt": "2026-03-17T03:58:37.037Z",
+  "captures": [
+    {
+      "id": "TC-001",
+      "file": "tc-001.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-001.png",
+      "capturedAt": "2026-03-17T03:58:31.890Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-002",
+      "file": "tc-002.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-002.png",
+      "capturedAt": "2026-03-17T03:58:33.259Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-003",
+      "file": "tc-003.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-003.png",
+      "capturedAt": "2026-03-17T03:58:33.966Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-004",
+      "file": "tc-004.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-004.png",
+      "capturedAt": "2026-03-17T03:58:34.709Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-005",
+      "file": "tc-005.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-005.png",
+      "capturedAt": "2026-03-17T03:58:35.480Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-006",
+      "file": "tc-006.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-006.png",
+      "capturedAt": "2026-03-17T03:58:36.179Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    },
+    {
+      "id": "TC-007",
+      "file": "tc-007.png",
+      "path": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/docs/30-workflows/UT-06-005-A-hook-fallback-integration/outputs/phase-11/screenshots/tc-007.png",
+      "capturedAt": "2026-03-17T03:58:36.918Z",
+      "viewport": {
+        "width": 1600,
+        "height": 1060
+      }
+    }
+  ]
+}
