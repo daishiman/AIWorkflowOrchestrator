@@ -34,6 +34,12 @@ Phase 4 で作成した基本テストを拡充し、カバレッジ基準（Lin
 | P39 対策                  | `.claude/rules/06-known-pitfalls.md#P39`                     | happy-dom 環境では fireEvent を使用する                |
 | P41 対策                  | `.claude/rules/06-known-pitfalls.md#P41`                     | インライン関数のカバレッジカウントに注意する           |
 
+### システム仕様（aiworkflow-requirements）
+
+| 参照資料                             | パス                                                                                        | 内容                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタ・P31/P48 対策パターン |
+
 ## 実行手順
 
 ### ステップ1: カバレッジの現状を計測する

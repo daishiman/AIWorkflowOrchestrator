@@ -18,7 +18,7 @@ SkillCenterView にスキル新規作成への導線を配線する（ヘッダ�
 | 対象機能     | SkillCenterView 作成導線配線          |
 | 優先度       | 高                                    |
 | 見積もり規模 | 小規模                                |
-| ステータス   | spec_created                          |
+| ステータス   | completed                             |
 | 作成日       | 2026-03-17                            |
 
 ## タスク概要
@@ -40,7 +40,7 @@ SkillCenterView にスキル新規作成への一次導線（ヘッダーCTA）�
 
 ### 最終ゴール
 
-- SkillCenterView ヘッダーに「+ 新しいツールを作る」プライマリCTAボタンが表示される
+- SkillCenterView ヘッダーに「+ 新規作成」プライマリCTAボタンが表示される
 - JourneyPanel の各ステップカードにCTAボタンが表示され、クリックで対応画面に遷移する
 - AC-1 〜 AC-8 の全受入基準を満たす
 
@@ -71,7 +71,7 @@ SkillCenterView にスキル新規作成への一次導線（ヘッダーCTA）�
 
 | ID   | 基準                                                                                                    |
 | ---- | ------------------------------------------------------------------------------------------------------- |
-| AC-1 | SkillCenterView ヘッダーに「+ 新しいツールを作る」プライマリCTAボタンが表示される                       |
+| AC-1 | SkillCenterView ヘッダーに「+ 新規作成」プライマリCTAボタンが表示される                                 |
 | AC-2 | ボタンクリックで `setCurrentView("skillCreate")` が呼ばれ、作成画面に遷移する                           |
 | AC-3 | JourneyPanel の「スキルを作る」カードにCTAボタンが表示され、クリックで作成画面に遷移する                |
 | AC-4 | JourneyPanel の「スキルを使う」カードにCTAボタンが表示され、クリックで workspace に遷移する             |
@@ -104,21 +104,21 @@ SkillCenterView にスキル新規作成への一次導線（ヘッダーCTA）�
 
 ## Phase一覧
 
-| Phase | 名称             | 仕様書                                                 | ステータス  |
-| ----- | ---------------- | ------------------------------------------------------ | ----------- |
-| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)   | not_started |
-| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)               | not_started |
-| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md) | not_started |
-| 4     | テスト作成       | phase-4-test-creation.md                               | not_started |
-| 5     | 実装             | phase-5-implementation.md                              | not_started |
-| 6     | テスト拡充       | phase-6-test-expansion.md                              | not_started |
-| 7     | カバレッジ確認   | phase-7-coverage-check.md                              | not_started |
-| 8     | リファクタリング | phase-8-refactoring.md                                 | not_started |
-| 9     | 品質検証         | phase-9-quality-assurance.md                           | not_started |
-| 10    | 最終レビュー     | phase-10-final-review.md                               | not_started |
-| 11    | 手動テスト       | phase-11-manual-test.md                                | not_started |
-| 12    | ドキュメント     | phase-12-documentation.md                              | not_started |
-| 13    | PR作成           | phase-13-pr-creation.md                                | not_started |
+| Phase | 名称             | 仕様書                                                         | ステータス  |
+| ----- | ---------------- | -------------------------------------------------------------- | ----------- |
+| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | completed   |
+| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | completed   |
+| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | completed   |
+| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | completed   |
+| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | completed   |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | completed   |
+| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | completed   |
+| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | completed   |
+| 9     | 品質検証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | completed   |
+| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | completed   |
+| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed   |
+| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | completed   |
+| 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | not_started |
 
 ## 統合テスト連携（Phase 1〜11で必須）
 

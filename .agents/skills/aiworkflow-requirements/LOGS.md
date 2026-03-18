@@ -6,10 +6,13 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-18 - TASK-SKILL-LIFECYCLE-02 SkillCenterView CTA ルーティング完了（ヘッダーCTA + JourneyPanel CTA 3種 + ナビゲーション関数3つ + 34テスト全PASS + 未タスク1件） |
 | 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了（handlePermissionCheck 接続 + sendPermissionRequestWithTimeout + PermissionTimeoutError + timeout→abort） |
+| 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
 | 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了バッチ同期（SkillExecutor Permission拒否時フォールバック制御実装 + revokeSessionEntries追加 + SkillPermissionResponse.skip追加 + 23テスト追加 全1293テストPASS） |
+| 2026-03-17 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了同期（ViewType拡張 / renderView分岐 / screenshot 5件 / 未タスク1件 formalize） |
 | 2026-03-16 - TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（Conversation IPC ハンドラ登録修正・7チャンネル safeRegister + fallback 実装） |
 | 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%） |
 | 2026-03-16 - TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（Electronメニュー初期化修正・ズームショートカット対応） |
@@ -45,6 +48,29 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+- 完了日: 2026-03-17
+- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
+- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
+- 未タスク化: 5件（U-1〜U-5）
+- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
+
+## TASK-SKILL-LIFECYCLE-08 再監査完了（2026-03-17）
+
+- タスク名: スキル共有・公開・互換性統合（再監査）
+- 種別: 設計タスク再監査（Phase 11/12 証跡補完 + 正本同期）
+- 主要実施:
+  - `validate-phase11-screenshot-coverage` を 3/3 PASS へ回復
+  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復
+  - `verify-unassigned-links` 失敗要因だった欠落未タスク12件を復旧
+  - TASK-08由来の未タスク4件を `docs/30-workflows/unassigned-task/` に formalize
+  - `.claude/skills/aiworkflow-requirements/references/*.md` に公開/互換/配布契約を同ターン実更新
+- 成果物:
+  - `outputs/phase-12/system-spec-update-summary.md`（実績版）
+  - `outputs/phase-12/documentation-changelog.md`（実績版）
+  - `outputs/phase-12/phase12-task-spec-compliance-check.md`（新規）
+  - `outputs/phase-11/screenshots/*.png`（TC-11-01..03）
+
 ## TASK-SKILL-LIFECYCLE-08 仕様書作成完了（2026-03-17）
 
 - タスク名: スキル共有・公開・互換性統合（仕様書作成タスク）
@@ -56,6 +82,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了
   - Phase 10 PASS（MINOR 指摘対応済み）、設計レベルテストケース定義
 
+## UT-06-005-A PreToolUse Hook fallback 統合完了（2026-03-17）
+
+- タスク名: PreToolUse Hook フォールバック統合 + timeout→abort 遷移実装
+- 種別: 実装タスク
+- ワークフロー: `docs/30-workflows/UT-06-005-A-hook-fallback-integration/`
+- 主要成果物:
+  - `apps/desktop/src/main/services/skill/SkillExecutor.ts`: `handlePermissionCheck` / `sendPermissionRequestWithTimeout` / `PermissionTimeoutError` を追加し PreToolUse Hook に統合
+  - `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts`: 拒否/timeout/retry/skip/fail-closed の統合テストを追加
+  - `interfaces-agent-sdk-executor-core.md` / `interfaces-agent-sdk-executor-details.md` / `security-skill-execution.md` / `workflow-permission-fallback-abort-skip-retry.md` を同期
+- 検証:
+  - `pnpm --filter @repo/desktop typecheck`: PASS
+  - `pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts src/main/services/skill/__tests__/hooks.test.ts src/main/services/skill/__tests__/performance.test.ts --reporter=verbose`: PASS（30 tests PASS）
+
 ## UT-06-003: DefaultSafetyGate 具象クラス実装（2026-03-16）
 
 - SafetyGatePort 具象クラス DefaultSafetyGate を実装
@@ -63,6 +102,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約
 - 36テスト全PASS、カバレッジ全100%
 - 成果物: packages/shared/src/types/safety-gate.ts, apps/desktop/src/main/permissions/default-safety-gate.ts, apps/desktop/src/main/ipc/safetyGateHandlers.ts
+
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
 
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 

@@ -254,3 +254,8 @@ Family status: `reclassify-first`
 | ↑ | `lessons-learned-ipc-preload-runtime.md` | ~200 | IPC/Preload/AI Runtime / AuthMode 統一 / LLM adapter / P57-P61 | 2026-03-17 |
 | ↑ | `lessons-learned-test-typesafety.md` | ~170 | テスト/型安全 / Object.freeze+satisfies / Permission Fallback | 2026-03-17 |
 | ↑ | `lessons-learned-phase12-workflow-lifecycle.md` | ~290 | Phase 12 / ワークフロー / SKILL-LIFECYCLE-04/05/06/07 | 2026-03-17 |
+| `lessons-learned-current.md` (1489行, 3重重複含む) | `lessons-learned-safety-gate-ipc-quality.md` | ~130 | UT-06-003 SafetyGate IPC / DIP / P49 / P38 再発 | 2026-03-18 |
+| ↑ | `lessons-learned-phase12-workflow-lifecycle.md` (追記) | +80 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件 | 2026-03-18 |
+| ↑ (重複除去) | `lessons-learned-current.md` (インデックス化) | ~100 | 3重重複セクション除去、インデックス + クイックリファレンスのみ残存 | 2026-03-18 |
+| `task-workflow-completed-skill-lifecycle.md` (576行) | `task-workflow-completed-skill-create-ui-integration.md` | 152 | TASK-10A-C (SkillCreateWizard) / TASK-10A-D (スキルライフサイクルUI統合) | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle.md` | 429 | TASK-SKILL-LIFECYCLE-02/04/05/06/08, TASK-IMP-VIEWTYPE, UT-06-003/005/001 | 2026-03-18 |

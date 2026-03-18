@@ -73,6 +73,18 @@ Phase 11 の manual test。
 | 型定義・仕様書のみの変更 | `NON_VISUAL` 判定。設計文書ウォークスルーで代替 |
 | 関連UIが既存で変更なし | upstream screenshot を current workflow へ集約（必要な場合のみ） |
 
+### UI タスクの CLI 環境でのスクリーンショット取得（P53対応）
+
+UI タスクで Electron を直接起動できない CLI 環境では、**Playwright + Vite dev server パターン**を使用する。
+
+| 手順 | コマンド |
+| --- | --- |
+| 1. Vite dev server 起動 | `cd apps/desktop && npx vite --config vite.e2e.config.ts &` |
+| 2. capture-screenshots.js で撮影 | `node .claude/skills/task-specification-creator/scripts/capture-screenshots.js --workflow <path> --plan <plan.json>` |
+| 3. preflight 疎通確認 | `curl -I http://127.0.0.1:4173/` |
+
+詳細は [phase-11-12-guide.md](phase-11-12-guide.md) のセクション A/C を参照。
+
 **記録例**（`manual-test-result.md` 冒頭に明記）:
 
 ```markdown

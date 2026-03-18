@@ -3,6 +3,73 @@
 ## 役割
 
 ---
+
+## TASK-SKILL-LIFECYCLE-02 完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - SkillCenterView にヘッダー CTA（`+ 新規作成`）と JourneyPanel CTA（3ジョブ別）を追加
+  - `useSkillCenter` に `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` を追加
+  - `skillLifecycleJourney.ts` に `ctaLabel?: string` フィールドを追加
+  - テスト: 34テスト全PASS（navigation: 4, cta: 26, journey: 4追加）
+  - 未タスク: TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001（ヘッダーCTAレスポンシブ対応、LOW）
+
+### 変更内容
+- skillLifecycleJourney.ts: `ctaLabel` フィールド追加（型 + 定数値）
+- useSkillCenter.ts: ナビゲーション関数3つ + `UseSkillCenterReturn` 型拡張
+- SkillCenterView/index.tsx: ヘッダー CTA + JourneyPanel CTA + viewStyles 拡張
+
+### AC達成状況
+AC-1〜AC-8 全達成。Phase 10 判定: PASS（MINOR 1件 → 未タスク化済み）
+
+---
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（再確認を含む）
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-11` の screenshot を再取得し、`advanced route fallback` で TC-11-01..05 を固定
+  - `renderView` 分岐は `App.renderView.viewtype.test.tsx` と `skillLifecycleJourney/types` の targeted suite で補助検証
+  - Phase 12 不足成果物 `spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `artifacts.json` / `outputs/artifacts.json` を補完
+  - 未タスク `UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001` を formalize（指示書 + backlog + spec link）
+  - `phase-11-12-guide.md` に「画面到達（route）と分岐保証（unit test）の責務分離」ルールを追記
+
+### 変更内容
+- store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
+- skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
+- App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
+- テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
+
+### AC達成状況
+AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
+
+---
+
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+- 完了日: 2026-03-17
+- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
+- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
+- 未タスク化: 5件（U-1〜U-5）
+- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
+
+---
+
+## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11/12 実績同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `phase-11-manual-test.md` に TC-11-01..03 の screenshot 証跡を同期し、`validate-phase11-screenshot-coverage` を PASS 化
+  - `implementation-guide.md` の不足項目（APIシグネチャ/エッジケース）を補完し、`validate-phase12-implementation-guide` 10/10 PASS
+  - `system-spec-update-summary.md` / `documentation-changelog.md` を計画記録から実績記録へ置換
+  - `phase12-task-spec-compliance-check.md` を新規作成し、Task 1-5 完了を固定
+  - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
+
+---
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator

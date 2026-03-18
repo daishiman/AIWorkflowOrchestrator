@@ -25,7 +25,7 @@
 | `LLMSelectorPanel` | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`           | `useFetchProviders()` / `useCheckLLMHealth()`（個別セレクタ） |
 | `SkillSelector`    | `apps/desktop/src/renderer/components/skill/SkillSelector.tsx`            | `useRescanSkills()`（個別セレクタ） |
 | `AgentView`        | `apps/desktop/src/renderer/views/AgentView/index.tsx`                     | `useAppStore()` のインラインセレクタ + ローカル `fetchSkills` |
-| `SkillCenterView`  | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`               | `useAvailableSkillsMetadata()` など個別セレクタ + `useSkillCenter` ローカル状態 |
+| `SkillCenterView`  | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`               | `useAvailableSkillsMetadata()` など個別セレクタ + `useSkillCenter` ローカル状態（`navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` ナビゲーション関数3つ: TASK-SKILL-LIFECYCLE-02） |
 
 ### 歴史的な短期回避策: useRefガードパターン
 
