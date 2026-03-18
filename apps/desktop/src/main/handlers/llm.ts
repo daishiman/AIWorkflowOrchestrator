@@ -320,6 +320,20 @@ export async function handleStreamChat(
       return { requestId };
     }
 
+    // P62: modelId 必須検証（DEFAULT_CONFIG fallback 禁止）
+    if (
+      typeof request.modelId !== "string" ||
+      request.modelId.trim().length === 0
+    ) {
+      safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, {
+        code: "VALIDATION_ERROR",
+        message:
+          "Model ID is required. Please select a model in Settings before sending a message.",
+        retryable: false,
+      });
+      return { requestId };
+    }
+
     // Check for API key
     const providerId = request.providerId ?? inferProviderId(request.modelId);
 
@@ -336,7 +350,7 @@ export async function handleStreamChat(
     if (!apiKey) {
       safeSend(IPC_CHANNELS.LLM_STREAM_ERROR, {
         code: "API_KEY_MISSING",
-        message: `API key not found for provider: ${providerId}`,
+        message: `API key is not configured for ${providerId}. Please set your API key in Settings > AI Provider.`,
         retryable: false,
       });
       return { requestId };

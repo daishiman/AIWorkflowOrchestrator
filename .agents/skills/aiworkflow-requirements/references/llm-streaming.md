@@ -171,9 +171,24 @@ Renderer側でキャンセル機構を実装する際は、AbortControllerを使
 
 ---
 
+## 完了タスク記録
+
+### TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001（2026-03-18）
+
+WorkspaceChatPanel から llm-streaming の SSEフローへの連携が確立。
+
+| 観点 | 内容 |
+| --- | --- |
+| streaming 連携 | `useWorkspaceChatController` から `llm:stream-chat` を呼び出し、chunk/done/error を WorkspaceChatPanel の状態へ反映 |
+| キャンセルフロー | `cancelStream → AbortController.abort() → streamContent クリア` で llm-streaming の AbortController統合パターンを採用 |
+| エラーハンドリング | streaming エラー時は GuidanceBlock の error variant を表示し、エラーコードを ui 層で保持 |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                           |
 | ---------- | ---------- | ------------------------------------------------------------------ |
 | v1.0.0     | 2025-01-20 | 初版作成                                                           |
 | v1.1.0     | 2026-01-26 | spec-guidelines.md準拠: コードブロックを表形式・文章に変換         |
+| v1.2.0     | 2026-03-18 | WorkspaceChatPanel streaming 連携確立記録を追加（TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001） |

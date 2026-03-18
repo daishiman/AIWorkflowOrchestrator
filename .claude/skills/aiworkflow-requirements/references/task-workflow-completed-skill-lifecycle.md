@@ -50,6 +50,46 @@
 
 ---
 
+## TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001: WorkspaceChatPanel AI Runtime 同期 完了記録（2026-03-18）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 対象workflow | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment/` |
+| ステータス | completed（Phase 1-12） |
+| 完了日 | 2026-03-18 |
+| 機能 | WorkspaceChatPanel の AI runtime 同期・P62三層防御・GuidanceBlock 統合 |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| P62三層防御 | UI canSend / Controller guard / Main validation の3層で DEFAULT_CONFIG fallback を排除 |
+| GuidanceBlock | blocked/error/handoff の3 variant を実装し、provider 未設定・streaming エラー・キャンセル後の誘導を統合 |
+| 状態遷移 | idle → sending → streaming → completed/cancelled/error を `useWorkspaceChatController` で一元管理 |
+| streaming キャンセル | `cancelStream → AbortController.abort() → streamContent クリア` で llm-streaming キャンセルフローに準拠 |
+| runtime 同期 | Main Chat / Settings と同じ AI runtime セレクタ（provider/model）を WorkspaceChatPanel に接続 |
+
+### 検証証跡
+
+| 検証項目 | 結果 |
+| --- | --- |
+| TypeCheck | PASS |
+| Unit tests | PASS |
+| Phase 10 最終レビュー | PASS |
+
+### Phase 12 未タスク（3件）
+
+| 未タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| UT-INTEGRATE-ACCESS-CAPABILITY-RESOLVER-WORKSPACE-001 | AccessCapabilityResolver による Workspace 機能制御統合 | 高 |
+| UT-REFACTOR-WORKSPACE-CHAT-CONTROLLER-HOOK-001 | useWorkspaceChatController 640行リファクタリング（責務分割） | 中 |
+| UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 |
+
+---
+
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
 ### タスク概要
