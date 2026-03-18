@@ -3,6 +3,28 @@
 ## 役割
 
 ---
+
+## TASK-SKILL-LIFECYCLE-02 完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - SkillCenterView にヘッダー CTA（`+ 新規作成`）と JourneyPanel CTA（3ジョブ別）を追加
+  - `useSkillCenter` に `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` を追加
+  - `skillLifecycleJourney.ts` に `ctaLabel?: string` フィールドを追加
+  - テスト: 34テスト全PASS（navigation: 4, cta: 26, journey: 4追加）
+  - 未タスク: TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001（ヘッダーCTAレスポンシブ対応、LOW）
+
+### 変更内容
+- skillLifecycleJourney.ts: `ctaLabel` フィールド追加（型 + 定数値）
+- useSkillCenter.ts: ナビゲーション関数3つ + `UseSkillCenterReturn` 型拡張
+- SkillCenterView/index.tsx: ヘッダー CTA + JourneyPanel CTA + viewStyles 拡張
+
+### AC達成状況
+AC-1〜AC-8 全達成。Phase 10 判定: PASS（MINOR 1件 → 未タスク化済み）
+
+---
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
 
 - **Agent**: task-specification-creator
@@ -48,7 +70,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
 
 ---
-
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -63,18 +84,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
 
 ---
-## 2026-03-17 - TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了
+## 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 1-12
 - **Result**: success
 - **Notes**:
-  - Main Chat / Settings / Selector / System Prompt の runtime 同期を実装
-  - GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
-  - GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
-  - GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
-  - 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
-  - 未タスク: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+  - PreToolUse Hook に `handlePermissionCheck` を接続し、`processPermissionFallback` との統合を完了
+  - `sendPermissionRequestWithTimeout`（30秒タイムアウト）+ `PermissionTimeoutError` によるタイムアウト→abort 経路を実装
+  - 新規テストファイル `SkillExecutor.hook-fallback.test.ts`（15件）を追加、hooks.test.ts / performance.test.ts にモック追加
+  - 全30テスト PASS
 
 ---
 ## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了

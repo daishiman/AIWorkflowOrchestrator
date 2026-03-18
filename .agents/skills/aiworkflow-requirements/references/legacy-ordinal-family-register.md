@@ -188,7 +188,7 @@ Family status: `partially-ready`
 | --- | --- | --- |
 | `architecture-implementation-patterns-reference-b.md` | IPC data contracts / naming audit / unassigned scope | `architecture-implementation-patterns-reference-ipc-contract-audits.md` |
 | `architecture-implementation-patterns-reference-c.md` | AgentView / selector migration / renderer boundary | `architecture-implementation-patterns-reference-agent-view-selector-migration.md` |
-| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
+| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up / S32 Promise.race timeout pattern | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
 
 ### `interfaces-agent-sdk-skill-reference-*`
 
@@ -226,6 +226,17 @@ Family status: `reclassify-first`
 | --- | --- | --- |
 | `ui-ux-feature-components-reference-b.md` | organisms foundation / history-notification surfaces | `ui-ux-feature-components-reference-organisms-history-surfaces.md` |
 
+## Section Extract Register (2026-03-17)
+
+> 以下は 500行制限に関係なく、単一ファイルから責務別に仕様セクションを抽出・独立ファイル化した記録。
+
+| source file | extracted to | extracted sections | extract axis | date |
+| --- | --- | --- | --- | --- |
+| `api-ipc-agent-core.md` | `api-ipc-agent-safety.md` | スキル安全性評価（skill:evaluate-safety / SafetyGateResult / DefaultSafetyGate DI）、スキルファイルツリー取得（skill:getFileTree / FileNode）| SafetyGate 責務の独立化（セキュリティ評価 IPC を core から分離） | 2026-03-17 |
+| `lessons-learned-current.md` | `lessons-learned-safety-gate-permission-fallback.md` | TASK-SKILL-LIFECYCLE-08 / UT-06-005 苦戦箇所（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバック制御境界条件テスト設計） | SafetyGate・Permission・Fallback 実装教訓の責務別独立化（current から抽出） | 2026-03-17 |
+
+---
+
 ## 500-Line Split Register (2026-03-16)
 
 > 以下は ordinal rename ではなく、500行制限超過に伴うファイル分割の記録。旧ファイルはリダイレクトに変換済み。
@@ -243,3 +254,8 @@ Family status: `reclassify-first`
 | ↑ | `lessons-learned-ipc-preload-runtime.md` | ~200 | IPC/Preload/AI Runtime / AuthMode 統一 / LLM adapter / P57-P61 | 2026-03-17 |
 | ↑ | `lessons-learned-test-typesafety.md` | ~170 | テスト/型安全 / Object.freeze+satisfies / Permission Fallback | 2026-03-17 |
 | ↑ | `lessons-learned-phase12-workflow-lifecycle.md` | ~290 | Phase 12 / ワークフロー / SKILL-LIFECYCLE-04/05/06/07 | 2026-03-17 |
+| `lessons-learned-current.md` (1489行, 3重重複含む) | `lessons-learned-safety-gate-ipc-quality.md` | ~130 | UT-06-003 SafetyGate IPC / DIP / P49 / P38 再発 | 2026-03-18 |
+| ↑ | `lessons-learned-phase12-workflow-lifecycle.md` (追記) | +80 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件 | 2026-03-18 |
+| ↑ (重複除去) | `lessons-learned-current.md` (インデックス化) | ~100 | 3重重複セクション除去、インデックス + クイックリファレンスのみ残存 | 2026-03-18 |
+| `task-workflow-completed-skill-lifecycle.md` (576行) | `task-workflow-completed-skill-create-ui-integration.md` | 152 | TASK-10A-C (SkillCreateWizard) / TASK-10A-D (スキルライフサイクルUI統合) | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle.md` | 429 | TASK-SKILL-LIFECYCLE-02/04/05/06/08, TASK-IMP-VIEWTYPE, UT-06-003/005/001 | 2026-03-18 |

@@ -26,7 +26,7 @@
 | 🔗 SDK統合                | TypeScriptモジュール解決による型安全統合, **SDKテストTODO一括有効化**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | カスタムdeclare moduleとSDK実型共存, 未タスク配置ディレクトリ混同                                                                                                                                                                                                                                                                                                                  |
 | 🔧 ビルド・環境           | **モノレポ三層モジュール解決整合**, **TypeScript paths定義順序制御**, **ソース構造二重性パスマッピング吸収**, **CIガードスクリプトによるモノレポ設定ファイル整合性自動検証**, **正規表現ベースTypeScript設定ファイルパーサー**, **Worktree環境初期化プロトコル**                                                                                                                                                                                                                                                                                                                               | ネイティブモジュールNODE_MODULE_VERSION不一致, **4ファイル同期漏れ**, **TypeScript設定ファイル完全AST解析の試行**                                                                                                                                                                                                                                                                  |
 | 🔄 型定義リファクタリング | deprecatedプロパティ段階的移行                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | ドキュメント偏重による実装検証省略                                                                                                                                                                                                                                                                                                                                                 |
-| 🎨 UI/フロントエンド      | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト**                                                                                                                                                                                                                                                                                                                 |
+| 🎨 UI/フロントエンド      | **Props駆動Atoms設計**, **Record型バリアント定義**, **テーマ横断テスト（describe.each）**, **データ駆動UIパターン（定数配列+map+条件付きレンダリング）**, **Zustand個別セレクタ+happy-dom fireEventテスト統合**                                                                                                                                                                                                                                                                                                                                                                                    | **HTMLAttributes Props型衝突**, **Props命名の仕様-実装間ドリフト**                                                                                                                                                                                                                                                                                                                 |
 
 ## 成功パターン
 
@@ -3698,3 +3698,114 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **適用条件**: docs-heavy / spec-created / design タスクで、Phase 12 中に system spec 追補が発生した場合
 - **発見日**: 2026-03-15
 - **関連タスク**: TASK-SKILL-LIFECYCLE-05
+
+### [設計] 依存タスク連携における型変換点の明示パターン（TASK-SKILL-LIFECYCLE-08）
+
+- **状況**: 設計タスクシリーズ（Task06→Task07→Task08 など）で、前タスクの出力型が後タスクの判定入力として使われる際、型の変換点が暗黙のまま設計書に残り、後続実装時に依存ドリフトが発生した
+- **アプローチ**:
+  - 依存タスク連携を以下のフォーマットで Phase 2 設計書に明示する:
+    ```
+    Task-N 出力型 -> Adapter -> Task-M 入力型 -> Port -> 判定結果
+    ```
+  - 例: `PublishReadinessMetrics (Task07出力) -> CompatibilityAdapter -> CompatibilityCheckResult (Task08入力) -> PublishReadinessChecker -> PublishReadiness`
+  - Adapter が必要な場合は Phase 2 で型変換ロジックの責務を定義し、実装タスクに引き継ぐ
+- **成功パターン**:
+  - Phase 2 設計書の「依存タスク連携」セクションに変換点テーブルを作成する
+  - 変換点ごとに「入力型ソース」「変換ルール」「出力型ターゲット」を3列で定義する
+  - 後続の実装タスクに Adapter 実装を未タスクとして引き継ぐ
+- **失敗パターン**:
+  - 依存タスクの型が「互換性あり」と暗黙想定し、変換点を設計書に記載しない
+  - 後続実装タスクの Phase 2 で「Task-N の出力をそのまま使う」と判断し、型変換コストを後回しにする
+- **適用条件**: 複数の設計タスクが型契約でシリアル接続されているシリーズ設計
+- **発見日**: 2026-03-17
+- **関連タスク**: TASK-SKILL-LIFECYCLE-08
+
+### [UI] データ駆動UIパターン（定数配列 + map() + 条件付きレンダリング）（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: SkillCenterView の CTA（Call-to-Action）ボタン群を、スキルライフサイクルの各ジョブ（分析・作成・改善）に応じて動的に生成する必要があった。新しいジョブ種別の追加を最小コストで実現したい
+- **アプローチ**:
+  1. CTA の定義を `JOB_GUIDES` 定数配列として外部化する（ラベル・アイコン・遷移先・説明を1オブジェクトにまとめる）
+  2. `JOB_GUIDES.map()` でCTAカードを自動生成し、条件付きレンダリング（`isVisible` プロパティ等）で表示制御する
+  3. 新しいCTAは配列に1行追加するだけで、コンポーネント本体の修正が不要になる
+- **結果**:
+  - 拡張性: 新規CTA追加が定数配列への1行追加で完結（OCP準拠）
+  - テスタビリティ: 定数配列を直接テストでき、レンダリング結果との突合も容易
+  - 保守性: UIロジックとデータ定義が分離され、レビュー負荷が低減
+- **適用条件**: 同一レイアウトで複数のアクション項目を並べるUI（CTA群、メニュー項目、ダッシュボードカード等）
+- **失敗パターン**:
+  - 各CTAを個別の JSX ブロックとしてハードコードする（新規追加のたびにコンポーネント全体を修正）
+  - 条件分岐を `if/else` チェーンで記述する（項目数増加で可読性が崩壊）
+- **発見日**: 2026-03-18
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+- **クロスリファレンス**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md)（Store依存を避けProps駆動にする理由）
+
+```typescript
+// 定数配列でCTAを定義（1行追加で拡張可能）
+const JOB_GUIDES = [
+  {
+    job: "analysis" as const,
+    label: "スキル分析",
+    icon: SearchIcon,
+    description: "既存スキルの品質を分析します",
+    navigateTo: ViewType.SkillAnalysis,
+  },
+  {
+    job: "create" as const,
+    label: "スキル作成",
+    icon: PlusIcon,
+    description: "新しいスキルを作成します",
+    navigateTo: ViewType.SkillCreate,
+  },
+  // 新規CTA追加はここに1行追加するだけ
+] as const;
+
+// map() で自動生成 + 条件付きレンダリング
+{JOB_GUIDES.map((guide) => (
+  <CTACard
+    key={guide.job}
+    label={guide.label}
+    icon={guide.icon}
+    description={guide.description}
+    onClick={() => navigate(guide.navigateTo)}
+  />
+))}
+```
+
+### [Testing] Zustand個別セレクタ + happy-dom fireEvent テスト統合パターン（TASK-SKILL-LIFECYCLE-02）
+
+- **状況**: SkillCenterView のCTAボタンクリックテストで、Zustand Store の状態管理と happy-dom テスト環境の制約を同時に扱う必要があった
+- **アプローチ**:
+  1. **Zustand個別セレクタ**: 合成Store Hook（`useSkillCenterStore()`）ではなく、個別セレクタ（`useCurrentView()`, `useSetCurrentView()` 等）を使用し、P31（無限ループ）を防止する
+  2. **happy-dom + fireEvent**: `@testing-library/user-event` は happy-dom 環境で Symbol エラーを起こすため（P39）、`fireEvent.click()` を使用する。非同期ハンドラは `await act(async () => { fireEvent.click(el) })` で包む
+  3. **vi.mock によるセレクタモック**: 個別セレクタを `vi.mock` で差し替え、テスト対象コンポーネントの依存を最小化する
+- **結果**:
+  - P31/P39 の両方を回避しつつ、CTAボタンのナビゲーション動作を安定してテスト
+  - テストが happy-dom 環境で一貫して PASS
+  - セレクタモックにより Store 全体のセットアップが不要
+- **適用条件**: happy-dom 環境で Zustand Store を使用するコンポーネントのインタラクションテスト
+- **失敗パターン**:
+  - `userEvent.setup()` を happy-dom 環境で使用する（P39: Symbol操作エラー）
+  - 合成Store Hook の戻り値関数を `useEffect` 依存配列に含める（P31: 無限ループ）
+- **発見日**: 2026-03-18
+- **関連タスク**: TASK-SKILL-LIFECYCLE-02
+- **クロスリファレンス**: [06-known-pitfalls.md#P31](../../rules/06-known-pitfalls.md), [06-known-pitfalls.md#P39](../../rules/06-known-pitfalls.md)
+
+```typescript
+// vi.mock で個別セレクタをモック
+vi.mock("@/renderer/store/selectors", () => ({
+  useCurrentView: vi.fn(() => "skillCenter"),
+  useSetCurrentView: vi.fn(() => mockSetCurrentView),
+}));
+
+// happy-dom 環境では fireEvent を使用（userEvent は使用禁止）
+it("CTAクリックでビュー遷移する", async () => {
+  render(<SkillCenterView />);
+  const ctaButton = screen.getByRole("button", { name: "スキル作成" });
+
+  await act(async () => {
+    fireEvent.click(ctaButton);
+  });
+
+  expect(mockSetCurrentView).toHaveBeenCalledWith("skillCreate");
+});
+```

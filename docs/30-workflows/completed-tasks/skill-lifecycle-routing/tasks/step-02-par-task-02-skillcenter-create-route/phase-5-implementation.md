@@ -38,11 +38,13 @@ Phase 4 で作成したテスト（RED 状態）を GREEN にする実装を行�
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料                             | パス                                                                                        | 内容                                         |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| ui-ux-navigation                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | ViewType 仕様・setCurrentView パターンの正本 |
-| ui-ux-feature-components             | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | SkillCenter / JourneyPanel の UI 仕様の正本  |
-| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタパターンの正本           |
+| 参照資料                             | パス                                                                                        | 内容                                           |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| ui-ux-navigation                     | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | ViewType 仕様・setCurrentView パターンの正本   |
+| ui-ux-feature-components             | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md`             | SkillCenter / JourneyPanel の UI 仕様の正本    |
+| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタパターンの正本             |
+| ui-ux-design-principles              | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`              | Apple HIG / WCAG 2.1 AA の一次正本             |
+| arch-state-management                | `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                | Zustand Store 設計・個別セレクタ命名規約の正本 |
 
 ## 実行手順
 
@@ -120,7 +122,7 @@ return {
 </header>
 ```
 
-- `var(--accent)`: Apple HIG systemBlue（ライト: `#007AFF` / ダーク: `#0A84FF`）にバインドされた CSS 変数
+- `var(--accent)`: Apple HIG systemBlue（ライト: `#007AFF` / ダーク: `#0A84FF`）にバインドされた CSS 変数。正本仕様 `ui-ux-design-principles.md` の systemBlue 定義と同一
 - `sm:` ブレークポイントは Tailwind CSS の 640px。768px 未満の要件に対し、設計段階で `sm:` (640px) を採用するか `md:` (768px) を採用するかを Phase 5 実装時に確認する
 - モバイルでも `aria-label` は維持してアクセシビリティを確保する
 

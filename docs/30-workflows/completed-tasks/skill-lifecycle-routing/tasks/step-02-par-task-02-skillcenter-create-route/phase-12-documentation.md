@@ -2,13 +2,16 @@
 
 ## メタ情報
 
-| 項目     | 値                                     |
-| -------- | -------------------------------------- |
-| タスクID | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001  |
-| 機能名   | skillcenter-create-route               |
-| Phase    | 12                                     |
-| 作成日   | 2026-03-17                             |
-| 依存     | Phase 11（手動テスト 全 PASS）の成果物 |
+| 項目       | 内容                                  |
+| ---------- | ------------------------------------- |
+| Phase      | 12                                    |
+| Phase名    | ドキュメント                          |
+| タスクID   | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
+| 前提Phase  | Phase 11（手動テスト）                |
+| 後続Phase  | Phase 13（PR作成）                    |
+| ステータス | not_started                           |
+| 作成日     | 2026-03-17                            |
+| 機能名     | skillcenter-create-route              |
 
 ## 目的
 
@@ -22,7 +25,25 @@
 
 > **重要**: P4 対策として、全 Task 完了前に documentation-changelog.md に「完了」と記載しない。
 
+## 実行手順
+
 ## 実行タスク
+
+| Task   | 内容                                                | 主成果物                                                 |
+| ------ | --------------------------------------------------- | -------------------------------------------------------- |
+| Task 1 | 技術ドキュメント作成（実装ガイド作成）              | `outputs/phase-12/implementation-guide.md`               |
+| Task 2 | システムドキュメント更新（aiworkflow-requirements） | documentation-changelog 内に記録                         |
+| Task 3 | ドキュメント更新履歴作成                            | `outputs/phase-12/documentation-changelog.md`            |
+| Task 4 | 未タスク検出（残課題の検出と記録）                  | `outputs/phase-12/unassigned-task-detection.md`          |
+| Task 5 | スキルフィードバックレポート作成                    | `outputs/phase-12/skill-feedback-report.md`              |
+| Task 6 | 仕様書遵守チェックリスト                            | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+- Task 1: 技術ドキュメント作成（実装ガイド作成）
+- Task 2: システムドキュメント更新（aiworkflow-requirements等の更新）
+- Task 3: ドキュメント更新履歴作成（変更履歴の記録）
+- Task 4: 未タスク検出（残課題の検出と記録）
+- Task 5: スキルフィードバックレポート作成（ワークフロー改善点と技術的教訓の記録）
+- Task 6: 仕様書遵守チェックリスト
 
 ### Task 1: 実装ガイド作成
 
@@ -85,6 +106,15 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 実行後、`git diff --stat -- .claude/skills/` で変更ファイルを確認する（P51対策）。
 
+#### mirror sync（worktree 環境対応）
+
+```bash
+# .claude/ → .agents/ への一方向同期
+rsync -avz --checksum ./.claude/skills/ ./.agents/skills/
+# 差分確認（0差分であること）
+diff -qr ./.claude/skills/ ./.agents/skills/
+```
+
 #### Step 2: システム仕様更新
 
 新規 CTA コンポーネント・ナビゲーションアクションのインターフェースが追加された場合:
@@ -110,7 +140,7 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ### Task 4: 未タスク検出（P3/P38/P58対策）
 
-`outputs/phase-12/unassigned-task-report.md` を作成する（0件でも必須）。
+`outputs/phase-12/unassigned-task-detection.md` を作成する（0件でも必須）。
 
 検出観点:
 
@@ -129,6 +159,12 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 - [ ] `artifacts.json` の Phase 12 ステータスを更新
 - [ ] 再評価クローズした未タスクの GitHub Issue を `gh issue close` でクローズ（P56対策）
 
+### Task 6: 仕様書遵守チェックリスト
+
+- `phase12-task-spec-compliance-check.md` を作成する
+- Task 1〜5 の全完了を確認し、各タスクの完了証跡（成果物パス・検証結果）を記録する
+- 成果物: `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
 ### Task 5: スキルフィードバックレポート（P28対策）
 
 `outputs/phase-12/skill-feedback-report.md` を作成する（改善点なしでも「改善点なし」として記録）。
@@ -141,11 +177,30 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ## 成果物
 
-- `outputs/phase-12/implementation-guide.md` — 実装ガイド（Part 1 + Part 2）
-- `outputs/phase-12/component-documentation.md` — コンポーネント API ドキュメント
-- `outputs/phase-12/documentation-changelog.md` — 変更ログ（全 Step 完了後に作成）
-- `outputs/phase-12/unassigned-task-report.md` — 未タスク一覧（0件でも必須）
-- `outputs/phase-12/skill-feedback-report.md` — スキルフィードバック
+| 成果物名                   | パス                                                     | 説明                                       |
+| -------------------------- | -------------------------------------------------------- | ------------------------------------------ |
+| 実装ガイド                 | `outputs/phase-12/implementation-guide.md`               | Part 1（中学生向け）+ Part 2（開発者向け） |
+| コンポーネントドキュメント | `outputs/phase-12/component-documentation.md`            | コンポーネント API ドキュメント            |
+| ドキュメント変更ログ       | `outputs/phase-12/documentation-changelog.md`            | 変更ログ（全 Step 完了後に作成）           |
+| 未タスク検出レポート       | `outputs/phase-12/unassigned-task-detection.md`          | 未タスク一覧（0件でも必須）                |
+| スキルフィードバック       | `outputs/phase-12/skill-feedback-report.md`              | スキルフィードバック                       |
+| 仕様書遵守チェックリスト   | `outputs/phase-12/phase12-task-spec-compliance-check.md` | Task 1〜5 の完了証跡                       |
+
+## 統合テスト連携
+
+Phase 11 までの手動テスト結果と Phase 9 の品質検証結果を documentation-changelog に集約する。未タスク検出結果は Phase 10 MINOR 指摘と合わせて検証する。
+
+## 苦戦箇所の記録
+
+タスク実行中に苦戦した箇所があれば記録する。0件の場合は「苦戦箇所なし（0件）」と記載する。
+
+| 項目    | 内容                                |
+| ------- | ----------------------------------- |
+| 症状    | 発生した問題の具体的な症状          |
+| 原因    | 問題の根本原因                      |
+| 解決策  | 採用した解決策                      |
+| 学び    | 将来のタスクへの教訓                |
+| Pitfall | 該当する場合はPitfall ID（例: P31） |
 
 ## 完了条件
 
@@ -159,11 +214,14 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 - [ ] topic-map.md が再生成されている（`git diff --stat` で確認済み）
 - [ ] `documentation-changelog.md` が全 Task 完了後に作成されている（P4対策）
 - [ ] `documentation-changelog.md` の未タスク件数が `unassigned-task-detection.md` と一致している（P59対策）
-- [ ] `unassigned-task-report.md` が作成されている（0件でも必須）
+- [ ] `unassigned-task-detection.md` が作成されている（0件でも必須）
 - [ ] 検出した未タスクの3ステップ（指示書・テーブル登録・リンク追加）が全て完了している
 - [ ] `skill-feedback-report.md` が作成されている
+- [ ] `phase12-task-spec-compliance-check.md` が作成されている（Task 1〜5 の完了証跡あり）
+- [ ] mirror sync が完了している（`diff -qr` で0差分確認済み）
+- [ ] 苦戦箇所セクションが記録されている（0件でも明記）
 - [ ] **本Phase内の全タスクを100%実行完了**
 
-## 次Phase
+## 次のPhase
 
-Phase 13: 完了
+- [Phase 13（PR作成）](./phase-13-pr-creation.md) に進む
