@@ -370,9 +370,18 @@ Permission 拒否・timeout・不明エラー時は、デフォルトで abort �
 | シナリオ | 対応 | セキュリティ根拠 |
 | --- | --- | --- |
 | Permission 明示拒否 | abort（reason: "denied"） | 不正なツール実行を防止 |
-| タイムアウト（5分） | abort（reason: "timeout"） | 応答不能状態でのリソース占有を防止 |
+| タイムアウト（30秒） | abort（reason: "timeout"） | 応答不能状態でのリソース占有を防止 |
 | 最大リトライ到達（3回） | abort（reason: "max_retries"） | 無限リトライによるリソース枯渇を防止 |
 | 不明エラー | abort（reason: "unknown"） | 未知の状態での実行継続を防止 |
+
+#### UT-06-005-A 実行時統合のセキュリティ契約
+
+| 観点 | 契約 |
+| --- | --- |
+| Hook 接続 | `PreToolUse` は `handlePermissionCheck()` を必ず経由する |
+| timeout 経路 | `PermissionTimeoutError` を `executeAbortFlow("timeout")` に変換して fail-closed を維持 |
+| fallback 例外 | `processPermissionFallback()` 内例外は `executeAbortFlow("unknown")` にフォールバック |
+| skip 経路 | `executeSkipFlow()` は当該ツールのみ停止し、ExecutionState は `running` を維持 |
 
 #### revokeSessionEntries によるセッション権限クリーンアップ
 
@@ -457,6 +466,7 @@ Critical ツールは `autoDenyDefault: true` のため、PermissionDialog を�
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
+| v1.6.0     | 2026-03-17 | UT-06-005-A 反映: PreToolUse Hook への fallback 統合契約、Permission timeout 30秒化、PermissionTimeoutError→abort("timeout") の fail-closed 経路を追記 |
 | v1.5.0     | 2026-03-17 | DefaultSafetyGate 具象クラス実装完了（UT-06-003）: SafetyGatePort → DefaultSafetyGate 具象化フロー、protectedPaths 設定、DI パターンを [arch-electron-services-details-part2.md](./arch-electron-services-details-part2.md) に記録 |
 | v1.4.0     | 2026-03-16 | ToolRiskLevel参照追加: TASK-SKILL-LIFECYCLE-06設計成果物への参照リンク |
 | v1.3.0     | 2026-02-01 | toolMetadataモジュール参照追加: ALLOWED_TOOLS_WHITELIST vs toolMetadata対応表、差異理由、ui-ux-agent-execution.mdリンク |

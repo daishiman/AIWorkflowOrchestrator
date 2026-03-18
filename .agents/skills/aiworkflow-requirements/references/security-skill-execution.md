@@ -370,9 +370,18 @@ Permission 拒否・timeout・不明エラー時は、デフォルトで abort �
 | シナリオ | 対応 | セキュリティ根拠 |
 | --- | --- | --- |
 | Permission 明示拒否 | abort（reason: "denied"） | 不正なツール実行を防止 |
-| タイムアウト（5分） | abort（reason: "timeout"） | 応答不能状態でのリソース占有を防止 |
+| タイムアウト（30秒） | abort（reason: "timeout"） | 応答不能状態でのリソース占有を防止 |
 | 最大リトライ到達（3回） | abort（reason: "max_retries"） | 無限リトライによるリソース枯渇を防止 |
 | 不明エラー | abort（reason: "unknown"） | 未知の状態での実行継続を防止 |
+
+#### UT-06-005-A 実行時統合のセキュリティ契約
+
+| 観点 | 契約 |
+| --- | --- |
+| Hook 接続 | `PreToolUse` は `handlePermissionCheck()` を必ず経由する |
+| timeout 経路 | `PermissionTimeoutError` を `executeAbortFlow("timeout")` に変換して fail-closed を維持 |
+| fallback 例外 | `processPermissionFallback()` 内例外は `executeAbortFlow("unknown")` にフォールバック |
+| skip 経路 | `executeSkipFlow()` は当該ツールのみ停止し、ExecutionState は `running` を維持 |
 
 #### revokeSessionEntries によるセッション権限クリーンアップ
 
@@ -384,6 +393,49 @@ abort 時に `permissionStore.revokeSessionEntries(executionId)` を呼び出し
 1. 無限リトライによる計算リソースの枯渇を防止
 2. 繰り返しの Permission 要求によるユーザー体験の劣化を防止
 3. 攻撃者がリトライ機構を悪用して大量の Permission ダイアログを生成することを防止
+
+---
+
+## 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では公開前判定を `PublishReadiness` として設計した。  
+`ToolRiskLevel` と `SafetyGateStatus` を入力に、fail-closed で公開可否を決める。
+
+### 判定マトリクス（代表）
+
+| riskLevel | gateStatus | qualityTrend | 判定 | セキュリティ方針 |
+| --- | --- | --- | --- | --- |
+| low | approved | improving/stable | `auto-approved` | 自動公開可 |
+| medium | approved | improving/stable | `review-required` | 人手レビュー必須 |
+| high | approved | improving/stable | `manual-approval-required` | 管理者承認必須 |
+| critical | approved | any | `blocked` | fail-closed（公開不可） |
+| any | rejected | any | `blocked` | SafetyGate 優先 |
+| any | pending | any | `review-required` | 承認完了まで保留 |
+
+### 不変条件
+
+- `riskLevel === "critical"` は常に `blocked`。
+- `gateStatus === "rejected"` は品質指標に関わらず `blocked`。
+- `manual-approval-required` は `high` 以上を含むケースでのみ許容。
+
+### PublishReadiness と SkillVisibility 遷移の接続
+
+`PublishReadiness` の判定結果は `SkillVisibility` の遷移可否を制御する。
+
+| PublishReadiness | local → team | team → public | セキュリティ根拠 |
+| --- | --- | --- | --- |
+| `auto-approved` | 許可 | 許可 | 全指標が基準を充足 |
+| `review-required` | 許可（レビュー後） | 保留（レビュー完了待ち） | 人手検証が必要 |
+| `manual-approval-required` | 保留（承認待ち） | 保留（承認待ち） | high リスクツールを含む |
+| `blocked` | 拒否 | 拒否 | critical リスクまたは SafetyGate rejected |
+
+IPC チャンネル: `skill:publishing:check-readiness` → `PublishReadiness` を返却。
+型定義: `packages/shared/src/types/publish-eligibility.ts`
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-IPC-TEST`
 
 ---
 
@@ -414,6 +466,8 @@ Critical ツールは `autoDenyDefault: true` のため、PermissionDialog を�
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
+| v1.6.0     | 2026-03-17 | UT-06-005-A 反映: PreToolUse Hook への fallback 統合契約、Permission timeout 30秒化、PermissionTimeoutError→abort("timeout") の fail-closed 経路を追記 |
+| v1.5.0     | 2026-03-17 | DefaultSafetyGate 具象クラス実装完了（UT-06-003）: SafetyGatePort → DefaultSafetyGate 具象化フロー、protectedPaths 設定、DI パターンを [arch-electron-services-details-part2.md](./arch-electron-services-details-part2.md) に記録 |
 | v1.4.0     | 2026-03-16 | ToolRiskLevel参照追加: TASK-SKILL-LIFECYCLE-06設計成果物への参照リンク |
 | v1.3.0     | 2026-02-01 | toolMetadataモジュール参照追加: ALLOWED_TOOLS_WHITELIST vs toolMetadata対応表、差異理由、ui-ux-agent-execution.mdリンク |
 | 1.2.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |

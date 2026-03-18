@@ -25,11 +25,12 @@
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |
 | エラー             | `AppError`, `ValidationError` | error-handling.md          |
 | CTA制御            | `CTAVisibility`, `CTAState`   | workflow-skill-lifecycle-created-skill-usage-journey.md |
-| ViewType拡張       | `ViewType` (`skillAnalysis` / `skillCreate`) | ui-ux-navigation.md |
 | 権限フォールバック | `AbortReason`, `PermissionFlowContext`, `PermissionFlowResult` | interfaces-agent-sdk-executor-core.md |
 | 権限リトライ上限   | `PERMISSION_MAX_RETRIES`      | interfaces-agent-sdk-executor-core.md |
 | SafetyGate評価     | `SafetyGatePort`, `DefaultSafetyGate`, `evaluateSafety` | api-ipc-agent-safety.md, security-skill-execution.md |
 | Permission Fallback Hook | `processPermissionFallback`, `revokeSessionEntries` | interfaces-agent-sdk-executor-details.md |
+| PreToolUse Hook統合 | `handlePermissionCheck`, `sendPermissionRequestWithTimeout`, `PermissionTimeoutError` | interfaces-agent-sdk-executor-core.md |
+| タイムアウトパターン | S32: `Promise.race` + settled フラグ + `clearTimeout` | architecture-implementation-patterns-reference-ipc-fallback-validation.md |
 
 ---
 
@@ -183,5 +184,5 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
-| 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
+| 2026-03-17 | UT-06-005-A: `handlePermissionCheck` / `sendPermissionRequestWithTimeout` / `PermissionTimeoutError` を型定義クイックアクセスに追加。S32 タイムアウトパターン参照を登録 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

@@ -69,6 +69,25 @@
 
 ---
 
+## スキル公開・配布 契約参照（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-9F の share 型に加えて、TASK-SKILL-LIFECYCLE-08 で publish/distribution 契約を設計済み。
+
+| 契約 | 概要 | 実装ステータス |
+| --- | --- | --- |
+| `SkillPublishingMetadata` | 公開レベル別メタデータ（識別ユニオン） | 設計完了 |
+| `SkillDistributionService` | `importSkill/exportSkill/forkSkill/shareSkill` | 設計完了 |
+| `PublishReadiness` | 公開判定（4ステータス） | 設計完了 |
+| `CompatibilityCheckResult` | 互換性評価（3レベル + suggested bump） | 設計完了 |
+
+### 参照先
+
+- `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/outputs/phase-5/service-interfaces.md`
+- `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/outputs/phase-5/type-definitions.md`
+- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`
+
+---
+
 ## スキルデバッグ 型定義（TASK-9H）
 
 `packages/shared/src/types/skill-debug.ts` と `apps/desktop/src/preload/skill-api.ts` に定義されたスキルデバッグ機能の型契約。

@@ -188,7 +188,7 @@ Family status: `partially-ready`
 | --- | --- | --- |
 | `architecture-implementation-patterns-reference-b.md` | IPC data contracts / naming audit / unassigned scope | `architecture-implementation-patterns-reference-ipc-contract-audits.md` |
 | `architecture-implementation-patterns-reference-c.md` | AgentView / selector migration / renderer boundary | `architecture-implementation-patterns-reference-agent-view-selector-migration.md` |
-| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
+| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up / S32 Promise.race timeout pattern | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
 
 ### `interfaces-agent-sdk-skill-reference-*`
 
@@ -225,6 +225,17 @@ Family status: `reclassify-first`
 | file | current concern | semantic target idea |
 | --- | --- | --- |
 | `ui-ux-feature-components-reference-b.md` | organisms foundation / history-notification surfaces | `ui-ux-feature-components-reference-organisms-history-surfaces.md` |
+
+## Section Extract Register (2026-03-17)
+
+> 以下は 500行制限に関係なく、単一ファイルから責務別に仕様セクションを抽出・独立ファイル化した記録。
+
+| source file | extracted to | extracted sections | extract axis | date |
+| --- | --- | --- | --- | --- |
+| `api-ipc-agent-core.md` | `api-ipc-agent-safety.md` | スキル安全性評価（skill:evaluate-safety / SafetyGateResult / DefaultSafetyGate DI）、スキルファイルツリー取得（skill:getFileTree / FileNode）| SafetyGate 責務の独立化（セキュリティ評価 IPC を core から分離） | 2026-03-17 |
+| `lessons-learned-current.md` | `lessons-learned-safety-gate-permission-fallback.md` | TASK-SKILL-LIFECYCLE-08 / UT-06-005 苦戦箇所（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバック制御境界条件テスト設計） | SafetyGate・Permission・Fallback 実装教訓の責務別独立化（current から抽出） | 2026-03-17 |
+
+---
 
 ## 500-Line Split Register (2026-03-16)
 
