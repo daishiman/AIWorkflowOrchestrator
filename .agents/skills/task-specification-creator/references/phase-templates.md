@@ -372,6 +372,12 @@ Phase 9: 品質保証
 - [ ] 統合テスト結果が確認されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
+### IPC契約ドリフト検証【Phase 9 品質ゲート】
+
+- [ ] `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` が exit 0 で完了する
+- [ ] チャンネル孤児（R-01）の検出結果が妥当である
+- [ ] 引数形式不一致（R-02）が存在しないことを確認する
+
 ## 次のPhase
 
 Phase 10: 最終レビューゲート

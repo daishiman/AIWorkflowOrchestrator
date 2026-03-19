@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-17
+> 自動生成: 2026-03-18
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -73,6 +73,7 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | L23 |
 
 ---
 
@@ -206,6 +207,19 @@ node scripts/list-specs.js --topics
 | 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
 | 共有型インポート標準パターン（TASK-10A-D） | L348 |
 | IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
+| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L470 |
+
+### references/architecture-implementation-patterns-reference-ipc-drift-detection.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L6 |
+| スクリプト | L10 |
+| 検出ルール | L14 |
+| 実行方法 | L23 |
+| 抽出パターン | L31 |
+| 既知の制約 | L37 |
+| 苦戦箇所と教訓 | L43 |
+| 関連タスク | L49 |
 
 ### references/architecture-implementation-patterns-reference-ipc-fallback-validation.md
 
@@ -222,8 +236,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L19 |
-| 関連ドキュメント | L24 |
+| 利用順序 | L20 |
+| 関連ドキュメント | L25 |
 
 ### references/architecture-monorepo.md
 
@@ -1446,8 +1460,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L51 |
-| 完了タスク | L60 |
+| 関連ドキュメント | L52 |
+| 完了タスク | L61 |
 
 ### references/security-electron-ipc.md
 
@@ -2366,6 +2380,7 @@ node scripts/list-specs.js --topics
 | 契約ドリフト検出コマンド | L169 |
 | 関連ドキュメント | L199 |
 | 適用事例 | L213 |
+| 自動検出ツール（UT-TASK06-007） | L226 |
 
 ### references/ipc-type-resolution-guide.md
 
@@ -2393,8 +2408,8 @@ node scripts/list-specs.js --topics
 ### references/lessons-learned-archive-2026-03.md
 
 | セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
+|------------|----|\n| メタ情報 | L8 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-15） | L19 |
 
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
@@ -2456,10 +2471,11 @@ node scripts/list-specs.js --topics
 ### references/lessons-learned-current.md
 
 | セクション | 行 |
-|------------|----|\n| メタ情報 | L6 |
-| 変更履歴 | L17 |
-| 分割ファイル一覧 | L44 |
-| クイックリファレンス: カテゴリ別検索ガイド | L423 |
+|------------|----|\n| メタ情報 | L7 |
+| 変更履歴 | L18 |
+| 分割ファイル一覧 | L32 |
+| クイックリファレンス: カテゴリ別検索ガイド | L45 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L358 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

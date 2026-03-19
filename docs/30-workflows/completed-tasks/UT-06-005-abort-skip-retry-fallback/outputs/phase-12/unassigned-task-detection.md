@@ -41,7 +41,7 @@ SF-03 パターン確認済み、0件。
 
 | GAP       | 内容                                                                                               | タスクID    | 優先度 | 指示書パス                                                                        |
 | --------- | -------------------------------------------------------------------------------------------------- | ----------- | ------ | --------------------------------------------------------------------------------- |
-| GAP-02/03 | PreToolUse Hook への processPermissionFallback 統合 / sendPermissionRequest timeout→abort 遷移実装 | UT-06-005-A | 高     | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md` |
+| GAP-02/03 | PreToolUse Hook への processPermissionFallback 統合 / sendPermissionRequest timeout→abort 遷移実装 | UT-06-005-A | 高     | `docs/30-workflows/completed-tasks/task-ut-06-005-a-hook-fallback-integration.md` |
 | GAP-04    | revokeSessionEntries のセッション別本格実装（AllowedToolEntry に sessionId 追加）                  | UT-06-005-B | 中     | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md`       |
 | GAP-06    | SkillStreamMessageType に abort/skip type 追加（GAP-01 shared 型不整合も同時解消）                 | UT-06-005-C | 中     | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md`    |
 

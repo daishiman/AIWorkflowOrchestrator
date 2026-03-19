@@ -116,7 +116,61 @@
 | --- | --- | --- |
 | TASK-UI-04A-WORKSPACE-LAYOUT | layout / file browser / watcher 基盤 | **完了** |
 | TASK-UI-04B-WORKSPACE-CHAT | chat panel 統合 | **完了（2026-03-11、Phase 1-12）** |
+| TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | AI runtime 同期・P62三層防御・GuidanceBlock | **完了（2026-03-18、Phase 1-12）** |
 | TASK-UI-04C | preview / quick search 統合 | 後続 |
+
+### 完了タスク記録
+
+#### TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001（2026-03-18）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 機能 | WorkspaceChatPanel の AI runtime 同期・送信ガード・GuidanceBlock 統合 |
+| ステータス | completed（Phase 1-12） |
+| ワークフロー | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment/` |
+
+**レイアウト構成（5領域）**
+
+| 領域 | 役割 |
+| --- | --- |
+| header | タイトル・ランタイム状態バッジ |
+| chips | 添付ファイルコンテキスト（最大3件） |
+| messages | user/assistant/streaming メッセージ一覧 |
+| composer | 入力欄・送信・キャンセルボタン |
+| guidance | GuidanceBlock（blocked/error/handoff variant） |
+
+**P62三層防御（DEFAULT_CONFIG fallback 禁止）**
+
+| 層 | 防御内容 |
+| --- | --- |
+| UI canSend | provider/model 未選択時は送信ボタンを disabled |
+| Controller guard | `useWorkspaceChatController` で runtime 未設定を早期リターン |
+| Main validation | IPC ハンドラで provider/model の空文字列バリデーション |
+
+**状態遷移**
+
+`idle → sending → streaming → completed / cancelled / error`
+
+**GuidanceBlock variant**
+
+| variant | 表示条件 |
+| --- | --- |
+| blocked | provider/model 未設定（設定画面への誘導リンク付き） |
+| error | streaming エラー発生時（エラーコード・再試行ボタン） |
+| handoff | AbortController.abort() 後に streamContent をクリアして idle へ戻す |
+
+**streaming キャンセルフロー**
+
+`cancelStream → AbortController.abort() → streamContent クリア → idle 遷移`
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-REFACTOR-WORKSPACE-CHAT-CONTROLLER-HOOK-001 | useWorkspaceChatController 640行リファクタリング（責務分割） | 中 | `docs/30-workflows/unassigned-task/task-ut-refactor-workspace-chat-controller-hook-001.md` |
+| UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 | `docs/30-workflows/unassigned-task/task-ut-integrate-compact-layout-workspace-chat-001.md` |
+| UT-INTEGRATE-ACCESS-CAPABILITY-RESOLVER-WORKSPACE-001 | AccessCapabilityResolver による Workspace 機能制御統合 | 高 | `docs/30-workflows/unassigned-task/task-ut-integrate-access-capability-resolver-workspace-001.md` |
 
 ---
 
@@ -240,6 +294,70 @@ light theme remediation を直接行わず、representative screen と hardcoded
 
 ---
 
+## ChatPanel 実チャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001）
+
+TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel の実チャット配線仕様。placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）を実コンポーネントに置換する設計。
+
+### コンポーネント階層
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `ChatPanel` | organism | view | 全体制御、8状態管理、IPC結線 |
+| `RuntimeBanner` | molecule | `ChatPanel` | AccessCapability（integratedRuntime/terminalSurface/both/none）を視覚表示 |
+| `ChatMessageList` | organism | `ChatPanel` | 会話履歴の一覧表示、role="log" aria-live="polite" |
+| `ChatMessage` | molecule | `ChatMessageList` | user/assistant メッセージ表示 |
+| `StreamingMessage` | molecule | `ChatMessageList` | ストリーミング中のリアルタイム表示（既存活用） |
+| `ErrorGuidance` | molecule | `ChatPanel` | retryable エラー時の再試行導線表示 |
+| `HandoffBlock` | molecule | `ChatPanel` | handoff 状態時のターミナル起動促進表示 |
+| `PersistentTerminalLauncher` | molecule | `HandoffBlock` | ターミナルコマンド表示とコピー/起動ボタン |
+| `ComposerArea` | molecule | `ChatPanel` | ComposerInput + SendButton の統合エリア |
+| `ComposerInput` | atom | `ComposerArea` | テキスト入力フィールド（P42 3段バリデーション対応） |
+| `SendButton` | atom | `ComposerArea` | 送信ボタン（streaming中は disabled） |
+| `LLMSelectorPanel` | organism | `ChatPanel` | プロバイダー/モデル選択（既存活用） |
+
+### 8状態 UI 表示テーブル
+
+| 状態 | RuntimeBanner | ChatMessageList | ComposerArea | ErrorGuidance | HandoffBlock |
+| --- | --- | --- | --- | --- | --- |
+| `idle` | - | - | disabled | - | - |
+| `ready` | capability表示 | 履歴表示 | enabled | - | - |
+| `streaming` | capability表示 | +StreamingMessage | cancel可（送信disabled） | - | - |
+| `cancelled` | capability表示 | 履歴+中断メッセージ | enabled | - | - |
+| `completed` | capability表示 | 履歴+完了メッセージ | enabled | - | - |
+| `error` | capability表示 | 履歴+エラー表示 | enabled | retryableのみ表示 | - |
+| `blocked` | capability表示 | - | 非表示 | 表示 | - |
+| `handoff` | capability表示 | - | 非表示 | - | 表示 |
+
+### UI 契約
+
+| 項目 | 契約 |
+| --- | --- |
+| blocked 導線 | Provider/Model 未設定時は `ErrorGuidance` を表示し、設定画面への導線を提供する（P62 準拠） |
+| stream cancel | streaming 中は ComposerArea の SendButton を cancel ボタンへ切り替え、`llm:cancel-stream` を呼び出す |
+| 入力バリデーション | ComposerInput は `typeof` → `=== ""` → `.trim() === ""` の P42 準拠 3段バリデーションで空送信を防止 |
+| 状態フック | `useStreamingChat()` が `{ state: { isStreaming, content, error }, actions: { startStream, cancelStream } }` を提供 |
+| セレクタ | P31/P48 準拠で個別セレクタ + `useShallow` を使用し、派生セレクタの無限ループを防止 |
+| a11y | `ChatMessageList` は `role="log"` + `aria-live="polite"`、`ErrorGuidance` は `role="alert"` を維持する |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel placeholder → 実コンポーネント置換、8状態管理、IPC配線 | 設計完了（2026-03-18） |
+
+### 関連未タスク（Phase 7/8/10 検出）
+
+| タスクID | 内容 | 優先度 | 指示書 |
+| --- | --- | --- | --- |
+| UT-CHATPANEL-GUARD-001 | handleSendMessage ストリーミング中ガード追加 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-streaming-guard.md` |
+| UT-CHATPANEL-COV-001 | ChatPanel handleNavigateToSettings テスト追加 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-function-coverage-handlenavigatetosettings.md` |
+| UT-CHATPANEL-COV-002 | chatSlice streaming系アクション直接テスト追加 | MEDIUM | `docs/30-workflows/unassigned-task/task-chatslice-streaming-actions-test.md` |
+| UT-CHATPANEL-COV-003 | useStreamingChat 専用テストファイル作成 | HIGH | `docs/30-workflows/unassigned-task/task-usestreamingchat-test-creation.md` |
+| UT-CHATPANEL-STUB-001 | ChatPanel スタブコンポーネント本格実装 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-stub-components-implementation.md` |
+| UT-CHATPANEL-REFACTOR-001 | パルスカーソル表示ロジック共通化 | LOW | `docs/30-workflows/unassigned-task/task-streaming-pulse-cursor-commonization.md` |
+
+---
+
 ## SkillStreamDisplay コンポーネント（TASK-3-2）
 
 > **詳細仕様**: [ui-ux-feature-skill-stream.md](./ui-ux-feature-skill-stream.md)
@@ -339,4 +457,20 @@ SkillStreamDisplayコンポーネントの多言語対応機能。
 | 合計                             | 74       | -          |
 
 ---
+
+## 完了タスク
+
+### TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001（2026-03-18 完了）
+
+WorkspaceChatPanel の AI Runtime 整合。P62 三層防御（UI canSend / Controller guard / Main validation）を導入し、DEFAULT_CONFIG fallback を排除。
+
+| 項目           | 内容                                                                    |
+| -------------- | ----------------------------------------------------------------------- |
+| タスクID       | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001                            |
+| ステータス     | **完了**                                                                |
+| テスト数       | 77（自動）+ 8（手動）                                                  |
+| 5領域構成      | header / file context chips / message log / composer / guidance block  |
+| 状態遷移       | idle → sending → streaming → completed / cancelled / error / blocked   |
+| 実装ガイド     | `docs/30-workflows/.../outputs/phase-12/implementation-guide.md`        |
+| 未タスク       | 3件（controller hook 抽出 / CompactLayout 統合 / AccessCapability 統合）|
 

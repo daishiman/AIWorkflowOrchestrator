@@ -428,6 +428,37 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 ---
 
+## ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001）
+
+TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する IPC チャネル一覧。ChatPanel の実チャット配線で使用する全チャネルを定義する。
+
+### チャンネル一覧
+
+| チャネル | 方向 | 種別 | 用途 | 備考 |
+| --- | --- | --- | --- | --- |
+| `AI_CHAT` | Renderer → Main | request-response | LLM へのメッセージ送信と応答取得 | 既存チャネル（AI/チャット IPC チャネルセクション参照） |
+| `llm:stream-chat` | Renderer → Main | invoke | ストリーミングチャット開始 | 既存チャネル |
+| `llm:stream-chunk` | Main → Renderer | on | ストリーミング chunk 受信 | 既存チャネル |
+| `llm:stream-done` | Main → Renderer | on | ストリーミング完了通知 | 既存チャネル |
+| `llm:stream-error` | Main → Renderer | on | ストリーミングエラー通知 | 既存チャネル |
+| `llm:cancel-stream` | Renderer → Main | invoke | ストリームキャンセル | 既存チャネル |
+| `llm:set-selected-config` | Renderer → Main | invoke | Provider/Model 選択を Main へ同期 | 既存チャネル（LLM選択同期 IPC セクション参照） |
+| `llm:get-providers` | Renderer → Main | invoke | プロバイダー一覧取得 | 既存チャネル |
+| `llm:get-selected-config` | Renderer → Main | invoke | 現在の選択設定取得 | 既存チャネル |
+| `settings:navigate` | Renderer → Main | invoke | 設定画面へのナビゲーション（blocked 状態の ErrorGuidance から呼び出し） | 既存チャネル |
+
+### ChatPanel IPC 利用契約
+
+| 項目 | 契約 |
+| --- | --- |
+| Provider/Model 未選択時 | `llm:get-selected-config` で `null` が返った場合、AI_CHAT を呼び出さず `blocked` 状態へ遷移（P62 準拠） |
+| ストリーム開始 | `llm:stream-chat` invoke → `llm:stream-chunk` で chunk 受信 → `llm:stream-done` で完了 |
+| エラーハンドリング | `llm:stream-error` 受信時は `error` 状態へ遷移し `ErrorGuidance` を表示 |
+| キャンセル | `llm:cancel-stream` invoke 後、`cancelled` 状態へ遷移 |
+| 設定導線 | `blocked` 状態の `ErrorGuidance` から `settings:navigate` を呼び出し、設定画面へ誘導 |
+
+---
+
 ## AIプロバイダーAPI連携
 
 ### 対応プロバイダー

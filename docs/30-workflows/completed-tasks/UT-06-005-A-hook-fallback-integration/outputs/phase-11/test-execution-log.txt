@@ -1,0 +1,328 @@
+.                                        |  WARN  Unsupported engine: wanted: {"node":">=22.21.1 <23.0.0"} (current: {"node":"v22.20.0","pnpm":"10.9.0"})
+
+ RUN  v2.1.9 /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-072414-wt-2/apps/desktop
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-001: Permission 拒否 → processPermissionFallback 呼出 > Permission 拒否で retry が返された場合、max_retries 到達後に abort される
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-001
+[SkillExecutor] retry: retryCount=2/3, executionId=exec-001
+
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-001: Permission 拒否 → processPermissionFallback 呼出 > Permission 拒否で retry が返された場合、max_retries 到達後に abort される
+[SkillExecutor] max_retries reached: retryCount=3, executionId=exec-001
+[SkillExecutor] abort: reason=max_retries, executionId=exec-001
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-001: Permission 拒否 → processPermissionFallback 呼出 > Permission 拒否で skip が返された場合、{ proceed: false } が返される
+[SkillExecutor] skip: tool=Bash, executionId=exec-001
+[SkillExecutor] skip: toolName=Bash, executionId=exec-001
+
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-001: Permission 拒否 → processPermissionFallback 呼出 > Permission 拒否で retry が返された場合、max_retries 到達後に abort される
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-001: Permission 拒否 → processPermissionFallback 呼出 > Permission 拒否で skip が返された場合、{ proceed: false } が返される
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-002: タイムアウト → abort('timeout') > sendPermissionRequest が30秒以内に応答しない場合、abort される
+[SkillExecutor] abort: reason=timeout, executionId=exec-timeout
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-003: retry → sendPermissionRequest 再発行 > Permission 拒否 → retry → 2回目で承認される場合、{ proceed: true } が返る
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-retry
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-003: retry → sendPermissionRequest 再発行 > 3回 retry 後に max_retries で abort される (FR-106)
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-max-retry
+[SkillExecutor] retry: retryCount=2/3, executionId=exec-max-retry
+
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-003: retry → sendPermissionRequest 再発行 > 3回 retry 後に max_retries で abort される (FR-106)
+[SkillExecutor] max_retries reached: retryCount=3, executionId=exec-max-retry
+[SkillExecutor] abort: reason=max_retries, executionId=exec-max-retry
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-004: skip → { proceed: false } > skip 応答時にツール実行がスキップされる
+[SkillExecutor] skip: tool=Write, executionId=exec-skip
+[SkillExecutor] skip: toolName=Write, executionId=exec-skip
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-005: abort → スキル実行停止 > Permission 拒否で max_retries 到達後、エラーがスローされる
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-abort
+[SkillExecutor] retry: retryCount=2/3, executionId=exec-abort
+
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-005: abort → スキル実行停止 > Permission 拒否で max_retries 到達後、エラーがスローされる
+[SkillExecutor] max_retries reached: retryCount=3, executionId=exec-abort
+[SkillExecutor] abort: reason=max_retries, executionId=exec-abort
+
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-006: fail-closed (NFR-101) > processPermissionFallback 内部で例外が発生した場合、abort に遷移する
+[SkillExecutor] abort: reason=unknown, executionId=exec-fail-closed
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > NFR-105: 既存 FR-001〜FR-003 との非干渉 > Permission 許可済みツールは自動承認される
+[SkillExecutor] Auto-approving tool (already allowed): Read
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > retry 1回で承認された場合、waitForResponse が2回呼ばれる
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-retry-1
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > retry 2回目で skip が返された場合、{ proceed: false } が返る
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-retry-skip
+[SkillExecutor] skip: tool=Bash, executionId=exec-retry-skip
+[SkillExecutor] skip: toolName=Bash, executionId=exec-retry-skip
+
+stdout | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > abort 冪等性: 2回目の handlePermissionCheck は同一 executionId で abort 済み
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-idempotent
+[SkillExecutor] retry: retryCount=2/3, executionId=exec-idempotent
+[SkillExecutor] retry: retryCount=1/3, executionId=exec-idempotent
+[SkillExecutor] retry: retryCount=2/3, executionId=exec-idempotent
+
+stderr | src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > abort 冪等性: 2回目の handlePermissionCheck は同一 executionId で abort 済み
+[SkillExecutor] max_retries reached: retryCount=3, executionId=exec-idempotent
+[SkillExecutor] abort: reason=max_retries, executionId=exec-idempotent
+[SkillExecutor] max_retries reached: retryCount=3, executionId=exec-idempotent
+
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-002: タイムアウト → abort('timeout') > sendPermissionRequest が30秒以内に応答しない場合、abort される
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-003: retry → sendPermissionRequest 再発行 > Permission 拒否 → retry → 2回目で承認される場合、{ proceed: true } が返る
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-003: retry → sendPermissionRequest 再発行 > 3回 retry 後に max_retries で abort される (FR-106)
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-004: skip → { proceed: false } > skip 応答時にツール実行がスキップされる
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-005: abort → スキル実行停止 > Permission 拒否で max_retries 到達後、エラーがスローされる
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-A-006: fail-closed (NFR-101) > processPermissionFallback 内部で例外が発生した場合、abort に遷移する
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > NFR-105: 既存 FR-001〜FR-003 との非干渉 > Permission 許可済みツールは自動承認される
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > 承認 + rememberChoice=true で allowTool が呼ばれる
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > 承認 + rememberChoice=false で allowTool が呼ばれない
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > retry 1回で承認された場合、waitForResponse が2回呼ばれる
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > retry 2回目で skip が返された場合、{ proceed: false } が返る
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > PermissionTimeoutError が正しいプロパティを持つ
+ ✓ src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts > SkillExecutor - PreToolUse Hook Fallback Integration > TC-B: 境界値・追加カバレッジ > abort 冪等性: 2回目の handlePermissionCheck は同一 executionId で abort 済み
+stdout | src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 安全なBashコマンドは許可する
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+
+stdout | src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > /tmp への書き込みは許可する
+[SkillExecutor] Auto-approving tool (already allowed): Write
+
+stdout | src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 空コマンドやcommand未指定は許可される
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 危険コマンドをブロックする
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > パイプ経由のシェル実行をブロックする
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 安全なBashコマンドは許可する
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 保護パス /etc への書き込みをブロックする
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 保護パス ~/.ssh への書き込みをブロックする
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > .env と credentials.json を保護パスとしてブロックする
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > /tmp への書き込みは許可する
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > Write で file_path を指定した場合も判定できる
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PreToolUse > 空コマンドやcommand未指定は許可される
+ ✓ src/main/services/skill/__tests__/hooks.test.ts > SkillExecutor - Hooks > PostToolUse > tool_result と status を送信する
+stdout | src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PreToolUse Performance (NFR-001) > should complete Bash check within 10ms
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+[SkillExecutor] Auto-approving tool (already allowed): Bash
+PreToolUse (Bash): 0.1375ms per call
+
+stdout | src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PreToolUse Performance (NFR-001) > should complete Write check within 10ms
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+[SkillExecutor] Auto-approving tool (already allowed): Write
+PreToolUse (Write): 0.1507ms per call
+
+stdout | src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PostToolUse Performance (NFR-001) > should complete within 10ms
+PostToolUse: 0.0095ms per call
+
+stdout | src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > categorizeError Performance > should complete within 1ms
+categorizeError: 0.0006ms per call
+
+stdout | src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > isRetryable Performance > should complete within 1ms
+isRetryable: 0.0002ms per call
+
+ ✓ src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PreToolUse Performance (NFR-001) > should complete Bash check within 10ms
+ ✓ src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PreToolUse Performance (NFR-001) > should complete Write check within 10ms
+ ✓ src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > PostToolUse Performance (NFR-001) > should complete within 10ms
+ ✓ src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > categorizeError Performance > should complete within 1ms
+ ✓ src/main/services/skill/__tests__/performance.test.ts > SkillExecutor - Performance > isRetryable Performance > should complete within 1ms
+
+ Test Files  3 passed (3)
+      Tests  30 passed (30)
+   Start at  12:58:14
+   Duration  5.13s (transform 385ms, setup 861ms, collect 633ms, tests 157ms, environment 1.09s, prepare 378ms)
+

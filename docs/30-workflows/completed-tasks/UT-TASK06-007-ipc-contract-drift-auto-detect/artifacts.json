@@ -1,0 +1,124 @@
+{
+  "feature": "UT-TASK06-007-ipc-contract-drift-auto-detect",
+  "created": "2026-03-18T00:10:00Z",
+  "lastUpdated": "2026-03-18T09:30:00Z",
+  "status": "in_progress",
+  "taskId": "UT-TASK06-007",
+  "githubIssue": 1309,
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/p50-check-result.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "file": "phase-2-design.md",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "file": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-design.md",
+        "apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "file": "phase-5-implementation.md",
+      "artifacts": ["apps/desktop/scripts/check-ipc-contracts.ts"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": []
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "file": "phase-8-refactoring.md",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "pending",
+      "file": "phase-9-quality.md",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "pending",
+      "file": "phase-10-final-review.md",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr.md",
+      "artifacts": ["outputs/phase-13/pr-draft.md"]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "detectionRules": ["R-01", "R-02", "R-03", "R-04"],
+    "relatedPitfalls": ["P27", "P42", "P44", "P45", "P60"]
+  }
+}

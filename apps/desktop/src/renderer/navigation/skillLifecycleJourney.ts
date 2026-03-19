@@ -18,6 +18,7 @@ export interface SkillLifecycleJobGuide {
   summary: string;
   completion: string;
   onAction?: () => void;
+  ctaLabel?: string;
 }
 
 export interface SkillLifecycleSurfaceResponsibility {
@@ -52,6 +53,7 @@ export const SKILL_LIFECYCLE_JOB_GUIDES: readonly SkillLifecycleJobGuide[] = [
     summary:
       "新規作成は、いきなり詳細設定へ入らずに、まず入口で目的を言語化してから作成に進む。",
     completion: "作成後は Workspace または Agent へ渡して試す。",
+    ctaLabel: "作成を始める",
   },
   {
     id: "use",
@@ -61,6 +63,7 @@ export const SKILL_LIFECYCLE_JOB_GUIDES: readonly SkillLifecycleJobGuide[] = [
     summary:
       "利用時は、作業中の文脈を Workspace で整え、実行判断と結果確認は Agent に寄せる。",
     completion: "結果を見て、そのまま改善判断へつなぐ。",
+    ctaLabel: "使ってみる",
   },
   {
     id: "improve",
@@ -70,6 +73,7 @@ export const SKILL_LIFECYCLE_JOB_GUIDES: readonly SkillLifecycleJobGuide[] = [
     summary:
       "改善は独立した新規導線ではなく、使った後の評価結果から再度分析へ戻す流れとして扱う。",
     completion: "改善案の採用後に、再び Workspace / Agent で再評価する。",
+    ctaLabel: "改善する",
   },
 ] as const;
 

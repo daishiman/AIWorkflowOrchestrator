@@ -17,9 +17,15 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 | チャネル              | 用途                            | Request        | Response                  | 実装箇所              |
 | --------------------- | ------------------------------- | -------------- | ------------------------- | --------------------- |
-| `AI_CHAT`             | LLMへのメッセージ送信と応答取得 | AIChatRequest  | AIChatResponse            | aiHandlers.ts:21-89   |
-| `AI_CHECK_CONNECTION` | LLM/RAG接続状態確認             | なし           | AICheckConnectionResponse | aiHandlers.ts:93-112  |
-| `AI_INDEX`            | RAGドキュメントインデックス作成 | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:116-143 |
+| `AI_CHAT`             | LLMへのメッセージ送信と応答取得 | AIChatRequest  | AIChatResponse            | aiHandlers.ts:21-182  |
+| `AI_CHECK_CONNECTION` | legacy互換の接続状態確認        | なし           | AICheckConnectionResponse | aiHandlers.ts:184-204 |
+| `AI_INDEX`            | RAGドキュメントインデックス作成 | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:208-235 |
+
+#### `AI_CHECK_CONNECTION` の運用方針（Task06 再監査: 2026-03-17）
+
+- `AI_CHECK_CONNECTION` は**廃止完了ではなく legacy 互換として残置**する。
+- 新規実装・新規UI導線の health check は `llm:check-health` を primary とする。
+- 削除は `apps/desktop/src` の参照ゼロ確認と回帰テスト合格を満たした後に実施する。
 
 ### LLM選択状態管理
 
@@ -28,8 +34,11 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 - **AI_CHAT request 優先順位**:
   1. `AIChatRequest.providerId` + `AIChatRequest.modelId`（両方指定時のみ有効）
   2. Main 側の選択状態（`setSelectedLLMConfig` で保持）
+- **未選択時の挙動**:
+  - Main 側選択状態が未設定の場合はエラーを返し、暗黙 default fallback は行わない
 - **バリデーション**:
   - `providerId` / `modelId` は片方のみ指定を禁止
+  - `providerId` / `modelId` は空文字・トリム後空文字を禁止
   - `providerId` は `"openai" | "anthropic" | "google" | "xai"` のみ許可
 
 #### LLM選択同期 IPC
@@ -309,10 +318,31 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `apiKey:save` / `apiKey:delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行      | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 | `llm:set-selected-config` で Renderer 選択状態を Main 側 `ai.chat` 実行経路へ同期            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 
+### 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
+
+> 完了日: 2026-03-17
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| GAP-01: AI_CHAT P42バリデーション追加 | `apps/desktop/src/main/ipc/aiHandlers.ts` | `providerId`/`modelId` に P42 準拠3段バリデーション（`typeof` → `=== ""` → `.trim() === ""`）を追加 |
+| GAP-03: DEFAULT_CONFIG fallback 廃止 | `apps/desktop/src/main/ipc/llmConfigProvider.ts` | `?? DEFAULT_CONFIG` フォールバックを廃止。`getSelectedLLMConfig()` が `null` を返すように変更。呼び出し元（`aiHandlers.ts`）には既に null チェックが存在していた |
+| AI_CHECK_CONNECTION 存廃方針確定 | `apps/desktop/src/main/ipc/aiHandlers.ts` | legacy 互換として残置。新規実装は `llm:check-health` を primary とする方針を明文化 |
+
+**テストファイル（新規5件）**:
+
+| テストファイル | テスト数 | 対象 |
+| -------------- | -------- | ---- |
+| `aiHandlers.runtime-sync.test.ts` | 8 | AI_CHAT バリデーション / provider 解決順 |
+| `llm.runtime-sync.test.ts` | 12 | `handleCheckHealth` disconnected 返却 / `handleSetSelectedConfig` バリデーション |
+| `llmConfigProvider.runtime-sync.test.ts` | 4 | `getSelectedLLMConfig()` null 返却 |
+| `authKeyHandlers.runtime-sync.test.ts` | 9 | auth-key IPC バリデーション |
+| `apiKeyHandlers.runtime-sync.test.ts` | 12 | apiKey IPC バリデーション |
+
 ### 関連タスク
 
 | タスクID                                             | 概要                                                                              | ステータス |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------- | ---------- |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001           | Main/Chat/Settings Runtime 同期（GAP-01〜03 修正）                                | 完了       |
 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001               | SkillExecutor への AuthKeyService 注入経路を単一路化                              | 完了       |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001              | `auth-key:exists` 判定契約の env fallback 追加                                    | 完了       |
 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001           | auth-key 4チャネルの Main 登録漏れと解除連携を修正                                | 完了       |
@@ -398,6 +428,37 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 
 ---
 
+## ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001）
+
+TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する IPC チャネル一覧。ChatPanel の実チャット配線で使用する全チャネルを定義する。
+
+### チャンネル一覧
+
+| チャネル | 方向 | 種別 | 用途 | 備考 |
+| --- | --- | --- | --- | --- |
+| `AI_CHAT` | Renderer → Main | request-response | LLM へのメッセージ送信と応答取得 | 既存チャネル（AI/チャット IPC チャネルセクション参照） |
+| `llm:stream-chat` | Renderer → Main | invoke | ストリーミングチャット開始 | 既存チャネル |
+| `llm:stream-chunk` | Main → Renderer | on | ストリーミング chunk 受信 | 既存チャネル |
+| `llm:stream-done` | Main → Renderer | on | ストリーミング完了通知 | 既存チャネル |
+| `llm:stream-error` | Main → Renderer | on | ストリーミングエラー通知 | 既存チャネル |
+| `llm:cancel-stream` | Renderer → Main | invoke | ストリームキャンセル | 既存チャネル |
+| `llm:set-selected-config` | Renderer → Main | invoke | Provider/Model 選択を Main へ同期 | 既存チャネル（LLM選択同期 IPC セクション参照） |
+| `llm:get-providers` | Renderer → Main | invoke | プロバイダー一覧取得 | 既存チャネル |
+| `llm:get-selected-config` | Renderer → Main | invoke | 現在の選択設定取得 | 既存チャネル |
+| `settings:navigate` | Renderer → Main | invoke | 設定画面へのナビゲーション（blocked 状態の ErrorGuidance から呼び出し） | 既存チャネル |
+
+### ChatPanel IPC 利用契約
+
+| 項目 | 契約 |
+| --- | --- |
+| Provider/Model 未選択時 | `llm:get-selected-config` で `null` が返った場合、AI_CHAT を呼び出さず `blocked` 状態へ遷移（P62 準拠） |
+| ストリーム開始 | `llm:stream-chat` invoke → `llm:stream-chunk` で chunk 受信 → `llm:stream-done` で完了 |
+| エラーハンドリング | `llm:stream-error` 受信時は `error` 状態へ遷移し `ErrorGuidance` を表示 |
+| キャンセル | `llm:cancel-stream` invoke 後、`cancelled` 状態へ遷移 |
+| 設定導線 | `blocked` 状態の `ErrorGuidance` から `settings:navigate` を呼び出し、設定画面へ誘導 |
+
+---
+
 ## AIプロバイダーAPI連携
 
 ### 対応プロバイダー
@@ -430,4 +491,3 @@ Renderer コンポーネントが IPC レスポンスを受け取る際、Preloa
 | タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
 
 ---
-

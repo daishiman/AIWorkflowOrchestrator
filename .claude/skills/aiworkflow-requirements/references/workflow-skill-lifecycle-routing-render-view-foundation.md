@@ -118,8 +118,43 @@ Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件と�
 
 ---
 
+---
+
+## TASK-SKILL-LIFECYCLE-02: SkillCenterView CTA ルーティング（2026-03-18）
+
+| 観点 | 反映内容 | 実装アンカー |
+| --- | --- | --- |
+| ヘッダー CTA | 「+ 新規作成」ボタンで `skillCreate` へ直接遷移 | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
+| JourneyPanel CTA | 3ジョブ別 CTA ボタン（create/use/improve）で対応ビューへ遷移 | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
+| ナビゲーション関数 | `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| 型拡張 | `SkillLifecycleJobGuide` に `ctaLabel?: string` 追加 | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
+| スタイル拡張 | `viewStyles` に `headerRow` / `headerCta` / `journeyCardCta` 追加 | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
+
+### テスト証跡（Task02）
+
+34テスト全PASS:
+
+| テストファイル | テスト数 | 対象 |
+| --- | --- | --- |
+| `useSkillCenter.navigation.test.ts` | 4 | ナビゲーション関数の setCurrentView 呼び出し検証 |
+| `SkillCenterView.cta.test.tsx` | 26 | CTA 表示・非表示・クリック動作・data-testid 検証 |
+| `skillLifecycleJourney.test.ts` | TC-SL-12~15（4追加） | ctaLabel 型拡張・定数値検証 |
+
+### data-testid 一覧
+
+| data-testid | 要素 |
+| --- | --- |
+| `header-create-cta` | ヘッダーの「+ 新規作成」ボタン |
+| `skill-lifecycle-cta-create` | JourneyPanel「作成を始める」ボタン |
+| `skill-lifecycle-cta-use` | JourneyPanel「使ってみる」ボタン |
+| `skill-lifecycle-cta-improve` | JourneyPanel「改善する」ボタン |
+| `skill-lifecycle-journey` | JourneyPanel セクション全体 |
+
+---
+
 ## 変更履歴
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-18 | 1.1.0 | `TASK-SKILL-LIFECYCLE-02` の実装内容、Phase 11証跡、data-testid一覧を追加 |
 | 2026-03-17 | 1.0.0 | `TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001` の実装内容、Phase 11証跡、Phase 12同期、follow-up を統合正本として追加 |

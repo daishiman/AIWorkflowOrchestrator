@@ -1,0 +1,2838 @@
+{
+  "timestamp": "2026-03-18T04:16:38.068Z",
+  "summary": {
+    "totalHandlers": 216,
+    "totalPreloads": 147,
+    "drifts": 169,
+    "orphans": 145
+  },
+  "drifts": [
+    {
+      "channel": "agent:query",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 154,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:getStatus",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 161,
+        "detail": "ipcMain.handle(\"agent:getStatus\", async () => {"
+      }
+    },
+    {
+      "channel": "agent:createSession",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 165,
+        "detail": "ipcMain.handle(\"agent:createSession\", async () => {"
+      }
+    },
+    {
+      "channel": "agent:resumeSession",
+      "rule": "R-03",
+      "severity": "warning",
+      "message": "String literal channel name in main handler; use IPC_CHANNELS constant",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 169,
+        "detail": "ipcMain.handle(\"agent:resumeSession\", async (_event, request: unknown) => {"
+      }
+    },
+    {
+      "channel": "agent:destroySession",
+      "rule": "R-03",
+      "severity": "warning",
+      "message": "String literal channel name in main handler; use IPC_CHANNELS constant",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 173,
+        "detail": "ipcMain.handle(\"agent:destroySession\", async (_event, request: unknown) => {"
+      }
+    },
+    {
+      "channel": "agent:abort",
+      "rule": "R-03",
+      "severity": "warning",
+      "message": "String literal channel name in main handler; use IPC_CHANNELS constant",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+        "line": 177,
+        "detail": "ipcMain.handle(\"agent:abort\", () => {"
+      }
+    },
+    {
+      "channel": "CHANNELS.CHECK_INSTALLATION",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 192,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHANNELS.LIST_SKILLS",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 200,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHANNELS.GET_SKILL_DETAIL",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 212,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHANNELS.EXECUTE_SCRIPT",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 224,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHANNELS.TERMINATE_SESSION",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 236,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHANNELS.LIST_SESSIONS",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 248,
+        "detail": "ipcMain.handle(CHANNELS.LIST_SESSIONS, async (event: IpcMainInvokeEvent) => {"
+      }
+    },
+    {
+      "channel": "CHANNELS.GET_SESSION",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+        "line": 253,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.READ_FILE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "line": 494,
+        "detail": "ipcMain.handle(CHAT_EDIT_CHANNELS.READ_FILE, handleReadFile);"
+      }
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.WRITE_FILE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "line": 495,
+        "detail": "ipcMain.handle(CHAT_EDIT_CHANNELS.WRITE_FILE, handleWriteFile);"
+      }
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.GET_SELECTION",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "line": 496,
+        "detail": "ipcMain.handle(CHAT_EDIT_CHANNELS.GET_SELECTION, handleGetSelection);"
+      }
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.DETECT_LANGUAGE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "line": 497,
+        "detail": "ipcMain.handle(CHAT_EDIT_CHANNELS.DETECT_LANGUAGE, handleDetectLanguage);"
+      }
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.SEND_WITH_CONTEXT",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+        "line": 498,
+        "detail": "ipcMain.handle(CHAT_EDIT_CHANNELS.SEND_WITH_CONTEXT, handleSendWithContext);"
+      }
+    },
+    {
+      "channel": "llm:check-health",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/llm.ts",
+        "line": 129,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 346,
+        "detail": "{ providerId }"
+      }
+    },
+    {
+      "channel": "llm:stream-chat",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/llm.ts",
+        "line": 139,
+        "detail": "ipcMain.handle(IPC_CHANNELS.LLM_STREAM_CHAT, handleStreamChat);"
+      }
+    },
+    {
+      "channel": "llm:stream-cancel",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/llm.ts",
+        "line": 140,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:stop",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+        "line": 100,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:get-active-executions",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+        "line": 157,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:extract-content",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+        "line": 268,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:get-preview-content",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+        "line": 290,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "agent:cleanup-temp-files",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+        "line": 309,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "apiKey:save",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/apiKeyHandlers.ts",
+        "line": 129,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 255,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "apiKey:delete",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/apiKeyHandlers.ts",
+        "line": 201,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 257,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "apiKey:validate",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/apiKeyHandlers.ts",
+        "line": 260,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 259,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "auth-key:set",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/authKeyHandlers.ts",
+        "line": 177,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 265,
+        "detail": "{ key }"
+      }
+    },
+    {
+      "channel": "auth-key:validate",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/authKeyHandlers.ts",
+        "line": 247,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 268,
+        "detail": "{ key }"
+      }
+    },
+    {
+      "channel": "avatar:use-provider",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/avatarHandlers.ts",
+        "line": 257,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 249,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "chat-edit:read-file",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+        "line": 33,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "chat-edit:write-file",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+        "line": 60,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "chat-edit:get-selection",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+        "line": 99,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "chat-edit:send-with-context",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+        "line": 131,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_PLAN",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+        "line": 28,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_EXECUTE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+        "line": 69,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_IMPROVE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+        "line": 120,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "dialog:showOpenDialog",
+      "rule": "R-03",
+      "severity": "warning",
+      "message": "String literal channel name in preload; use IPC_CHANNELS constant",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 373,
+        "detail": "options"
+      }
+    },
+    {
+      "channel": "dialog:showSaveDialog",
+      "rule": "R-03",
+      "severity": "warning",
+      "message": "String literal channel name in preload; use IPC_CHANNELS constant",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 378,
+        "detail": "options"
+      }
+    },
+    {
+      "channel": "permission:revokeTool",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/permission-store-handlers.ts",
+        "line": 66,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 585,
+        "detail": "{ toolName }"
+      }
+    },
+    {
+      "channel": "profile:update",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 247,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 236,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "profile:link-provider",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 470,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 241,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "profile:unlink-provider",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 532,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 243,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "profile:delete",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects object, preload sends primitive (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 638,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 238,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "profile:update-timezone",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 760,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "profile:update-locale",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 838,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "profile:update-notifications",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 917,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "profile:export",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 1195,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "profile:import",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+        "line": 1319,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:evaluate-safety",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/safetyGateHandlers.ts",
+        "line": 9,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:load",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 64,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:save",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 77,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:delete",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 94,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:update",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 110,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:loadMessages",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 129,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:saveMessage",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 148,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:clearAll",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 165,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:getStats",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 190,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "session:persist:cleanup",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+        "line": 203,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analytics:record",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+        "line": 79,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analytics:statistics",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+        "line": 144,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analytics:summary",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+        "line": 187,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analytics:trend",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+        "line": 209,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analytics:export",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+        "line": 282,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill-creator:detect-mode",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 126,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 207,
+        "detail": "{ request }"
+      }
+    },
+    {
+      "channel": "skill-creator:validate",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 338,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 218,
+        "detail": "{ skillDir }"
+      }
+    },
+    {
+      "channel": "skill-creator:validate-schema",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 384,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill-creator:improve",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 441,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 233,
+        "detail": "{ skillName, ...options }"
+      }
+    },
+    {
+      "channel": "skill-creator:fork",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 471,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill-creator:share",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 512,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 247,
+        "detail": "{ skillName, format }"
+      }
+    },
+    {
+      "channel": "skill-creator:debug",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 581,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 259,
+        "detail": "{ skillName, options }"
+      }
+    },
+    {
+      "channel": "skill-creator:generate-docs",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 614,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill-creator:stats",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+        "line": 645,
+        "detail": "ipcMain.handle("
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-creator-api.ts",
+        "line": 276,
+        "detail": "{ skillName, period }"
+      }
+    },
+    {
+      "channel": "skill:debug:start",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 44,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:debug:command",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 96,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:debug:breakpoint:add",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 149,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:debug:breakpoint:remove",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 194,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:debug:inspect",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 250,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:debug:evaluate",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+        "line": 297,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:readFile",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 63,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:writeFile",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 108,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:createFile",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 159,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:deleteFile",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 208,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:listBackups",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 250,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:restoreBackup",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 280,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:getFileTree",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+        "line": 322,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:export",
+      "rule": "R-02",
+      "severity": "error",
+      "message": "Argument pattern mismatch: main expects primitive, preload sends object (P44)",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.share.ts",
+        "line": 192,
+        "detail": "ipcMain.handle(IPC_CHANNELS.SKILL_EXPORT, async (event, args: unknown) => {"
+      },
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/skill-api.ts",
+        "line": 561,
+        "detail": "{ skillName, destination }"
+      }
+    },
+    {
+      "channel": "skill:list",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 108,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:scan",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 136,
+        "detail": "ipcMain.handle(IPC_CHANNELS.SKILL_SCAN, async (event: IpcMainInvokeEvent) => {"
+      }
+    },
+    {
+      "channel": "skill:getImported",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 156,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:get-detail",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 242,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:execute",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 276,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:fork",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 450,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:analyze",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 547,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:improve",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 580,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:optimize",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 619,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:optimize:variants",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 649,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:optimize:evaluate",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 686,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:schedule:list",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 850,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:schedule:add",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 871,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:schedule:update",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 932,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:schedule:delete",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 961,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:schedule:toggle",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 987,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:docs:generate",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1054,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:docs:preview",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1161,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:docs:export",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1200,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:docs:templates",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1252,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:chain:list",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1298,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:chain:get",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1320,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:chain:save",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1346,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:chain:delete",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1376,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "skill:chain:execute",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+        "line": 1402,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.LIST",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 108,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.GET",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 156,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.CREATE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 196,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.UPDATE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 233,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.DELETE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 307,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.MIGRATE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 377,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.GET_PRESETS",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+        "line": 422,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.EXECUTE_PHASE",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 45,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.START_WATCHING",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 96,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.STOP_WATCHING",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 147,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.GET_SYNC_STATUS",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 172,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.MANUAL_SYNC",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 197,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.CANCEL_EXECUTION",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+        "line": 240,
+        "detail": "ipcMain.handle("
+      }
+    },
+    {
+      "channel": "updater:check",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+        "line": 91,
+        "detail": "ipcMain.handle(\"updater:check\", async () => {"
+      }
+    },
+    {
+      "channel": "updater:download",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+        "line": 102,
+        "detail": "ipcMain.handle(\"updater:download\", async () => {"
+      }
+    },
+    {
+      "channel": "updater:install",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+        "line": 113,
+        "detail": "ipcMain.handle(\"updater:install\", () => {"
+      }
+    },
+    {
+      "channel": "updater:get-version",
+      "rule": "R-01",
+      "severity": "warning",
+      "message": "Handler registered in main but no safeInvoke/safeOn found in preload",
+      "mainSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+        "line": 118,
+        "detail": "ipcMain.handle(\"updater:get-version\", () => {"
+      }
+    },
+    {
+      "channel": "theme:get",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 199,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "theme:set",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 201,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "theme:get-system",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 202,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth:login",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 212,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "auth:logout",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 213,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth:get-session",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 214,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth:refresh",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 215,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth:check-online",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 216,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth-mode:get",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 223,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth-mode:set",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 225,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "auth-mode:status",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 226,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "auth-mode:validate",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 228,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "workspace:load",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 273,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "workspace:save",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 275,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "workspace:add-folder",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 276,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "workspace:remove-folder",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 278,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "workspace:validate-paths",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 280,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "llm:stream-end",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 358,
+        "detail": "callback"
+      }
+    },
+    {
+      "channel": "slide:executePhase",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 405,
+        "detail": "phase, projectPath"
+      }
+    },
+    {
+      "channel": "slide:startWatching",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 407,
+        "detail": "projectPath"
+      }
+    },
+    {
+      "channel": "slide:stopWatching",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 408,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "slide:getSyncStatus",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 410,
+        "detail": "projectPath"
+      }
+    },
+    {
+      "channel": "slide:manualSync",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 412,
+        "detail": "projectPath"
+      }
+    },
+    {
+      "channel": "slide:cancelExecution",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 413,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "system-prompt:list",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 505,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "system-prompt:get",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 507,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "system-prompt:create",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 509,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "system-prompt:update",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 511,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "system-prompt:delete",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 513,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "system-prompt:migrate",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 514,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "system-prompt:get-presets",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 515,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "claude-cli:check-installation",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 521,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "claude-cli:list-skills",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 523,
+        "detail": "request || {}"
+      }
+    },
+    {
+      "channel": "claude-cli:get-skill-detail",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 525,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "claude-cli:execute-script",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 527,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "claude-cli:terminate-session",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 529,
+        "detail": "request"
+      }
+    },
+    {
+      "channel": "claude-cli:list-sessions",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 530,
+        "detail": ""
+      }
+    },
+    {
+      "channel": "claude-cli:get-session",
+      "rule": "R-04",
+      "severity": "error",
+      "message": "safeInvoke/safeOn used in preload but no ipcMain.handle/on found in main",
+      "preloadSide": {
+        "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+        "line": 532,
+        "detail": "request"
+      }
+    }
+  ],
+  "orphans": [
+    {
+      "channel": "agent:query",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+      "line": 154
+    },
+    {
+      "channel": "agent:getStatus",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+      "line": 161
+    },
+    {
+      "channel": "agent:createSession",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/agent/agent-handler.ts",
+      "line": 165
+    },
+    {
+      "channel": "CHANNELS.CHECK_INSTALLATION",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 192
+    },
+    {
+      "channel": "CHANNELS.LIST_SKILLS",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 200
+    },
+    {
+      "channel": "CHANNELS.GET_SKILL_DETAIL",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 212
+    },
+    {
+      "channel": "CHANNELS.EXECUTE_SCRIPT",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 224
+    },
+    {
+      "channel": "CHANNELS.TERMINATE_SESSION",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 236
+    },
+    {
+      "channel": "CHANNELS.LIST_SESSIONS",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 248
+    },
+    {
+      "channel": "CHANNELS.GET_SESSION",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/claude-cli/ipc-handler.ts",
+      "line": 253
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.READ_FILE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+      "line": 494
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.WRITE_FILE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+      "line": 495
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.GET_SELECTION",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+      "line": 496
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.DETECT_LANGUAGE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+      "line": 497
+    },
+    {
+      "channel": "CHAT_EDIT_CHANNELS.SEND_WITH_CONTEXT",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/chatEditHandlers.ts",
+      "line": 498
+    },
+    {
+      "channel": "llm:stream-chat",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/llm.ts",
+      "line": 139
+    },
+    {
+      "channel": "llm:stream-cancel",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/handlers/llm.ts",
+      "line": 140
+    },
+    {
+      "channel": "agent:stop",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+      "line": 100
+    },
+    {
+      "channel": "agent:get-active-executions",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+      "line": 157
+    },
+    {
+      "channel": "agent:extract-content",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+      "line": 268
+    },
+    {
+      "channel": "agent:get-preview-content",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+      "line": 290
+    },
+    {
+      "channel": "agent:cleanup-temp-files",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/agentHandlers.ts",
+      "line": 309
+    },
+    {
+      "channel": "chat-edit:read-file",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+      "line": 33
+    },
+    {
+      "channel": "chat-edit:write-file",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+      "line": 60
+    },
+    {
+      "channel": "chat-edit:get-selection",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+      "line": 99
+    },
+    {
+      "channel": "chat-edit:send-with-context",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/chatEditHandlers.ts",
+      "line": 131
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_PLAN",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+      "line": 28
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_EXECUTE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+      "line": 69
+    },
+    {
+      "channel": "CREATOR_CHANNELS.CREATOR_IMPROVE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/creatorHandlers.ts",
+      "line": 120
+    },
+    {
+      "channel": "profile:update-timezone",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+      "line": 760
+    },
+    {
+      "channel": "profile:update-locale",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+      "line": 838
+    },
+    {
+      "channel": "profile:update-notifications",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+      "line": 917
+    },
+    {
+      "channel": "profile:export",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+      "line": 1195
+    },
+    {
+      "channel": "profile:import",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/profileHandlers.ts",
+      "line": 1319
+    },
+    {
+      "channel": "skill:evaluate-safety",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/safetyGateHandlers.ts",
+      "line": 9
+    },
+    {
+      "channel": "session:persist:load",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 64
+    },
+    {
+      "channel": "session:persist:save",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 77
+    },
+    {
+      "channel": "session:persist:delete",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 94
+    },
+    {
+      "channel": "session:persist:update",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 110
+    },
+    {
+      "channel": "session:persist:loadMessages",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 129
+    },
+    {
+      "channel": "session:persist:saveMessage",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 148
+    },
+    {
+      "channel": "session:persist:clearAll",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 165
+    },
+    {
+      "channel": "session:persist:getStats",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 190
+    },
+    {
+      "channel": "session:persist:cleanup",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/session-persistence-handler.ts",
+      "line": 203
+    },
+    {
+      "channel": "skill:analytics:record",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+      "line": 79
+    },
+    {
+      "channel": "skill:analytics:statistics",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+      "line": 144
+    },
+    {
+      "channel": "skill:analytics:summary",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+      "line": 187
+    },
+    {
+      "channel": "skill:analytics:trend",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+      "line": 209
+    },
+    {
+      "channel": "skill:analytics:export",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillAnalyticsHandlers.ts",
+      "line": 282
+    },
+    {
+      "channel": "skill-creator:validate-schema",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+      "line": 384
+    },
+    {
+      "channel": "skill-creator:fork",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+      "line": 471
+    },
+    {
+      "channel": "skill-creator:generate-docs",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillCreatorHandlers.ts",
+      "line": 614
+    },
+    {
+      "channel": "skill:debug:start",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 44
+    },
+    {
+      "channel": "skill:debug:command",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 96
+    },
+    {
+      "channel": "skill:debug:breakpoint:add",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 149
+    },
+    {
+      "channel": "skill:debug:breakpoint:remove",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 194
+    },
+    {
+      "channel": "skill:debug:inspect",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 250
+    },
+    {
+      "channel": "skill:debug:evaluate",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillDebugHandlers.ts",
+      "line": 297
+    },
+    {
+      "channel": "skill:readFile",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 63
+    },
+    {
+      "channel": "skill:writeFile",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 108
+    },
+    {
+      "channel": "skill:createFile",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 159
+    },
+    {
+      "channel": "skill:deleteFile",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 208
+    },
+    {
+      "channel": "skill:listBackups",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 250
+    },
+    {
+      "channel": "skill:restoreBackup",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 280
+    },
+    {
+      "channel": "skill:getFileTree",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillFileHandlers.ts",
+      "line": 322
+    },
+    {
+      "channel": "skill:list",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 108
+    },
+    {
+      "channel": "skill:scan",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 136
+    },
+    {
+      "channel": "skill:getImported",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 156
+    },
+    {
+      "channel": "skill:get-detail",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 242
+    },
+    {
+      "channel": "skill:execute",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 276
+    },
+    {
+      "channel": "skill:fork",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 450
+    },
+    {
+      "channel": "skill:analyze",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 547
+    },
+    {
+      "channel": "skill:improve",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 580
+    },
+    {
+      "channel": "skill:optimize",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 619
+    },
+    {
+      "channel": "skill:optimize:variants",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 649
+    },
+    {
+      "channel": "skill:optimize:evaluate",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 686
+    },
+    {
+      "channel": "skill:schedule:list",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 850
+    },
+    {
+      "channel": "skill:schedule:add",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 871
+    },
+    {
+      "channel": "skill:schedule:update",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 932
+    },
+    {
+      "channel": "skill:schedule:delete",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 961
+    },
+    {
+      "channel": "skill:schedule:toggle",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 987
+    },
+    {
+      "channel": "skill:docs:generate",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1054
+    },
+    {
+      "channel": "skill:docs:preview",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1161
+    },
+    {
+      "channel": "skill:docs:export",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1200
+    },
+    {
+      "channel": "skill:docs:templates",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1252
+    },
+    {
+      "channel": "skill:chain:list",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1298
+    },
+    {
+      "channel": "skill:chain:get",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1320
+    },
+    {
+      "channel": "skill:chain:save",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1346
+    },
+    {
+      "channel": "skill:chain:delete",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1376
+    },
+    {
+      "channel": "skill:chain:execute",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/skillHandlers.ts",
+      "line": 1402
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.LIST",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 108
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.GET",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 156
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.CREATE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 196
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.UPDATE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 233
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.DELETE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 307
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.MIGRATE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 377
+    },
+    {
+      "channel": "SYSTEM_PROMPT_CHANNELS.GET_PRESETS",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/ipc/systemPromptHandlers.ts",
+      "line": 422
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.EXECUTE_PHASE",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 45
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.START_WATCHING",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 96
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.STOP_WATCHING",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 147
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.GET_SYNC_STATUS",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 172
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.MANUAL_SYNC",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 197
+    },
+    {
+      "channel": "SLIDE_IPC_CHANNELS.CANCEL_EXECUTION",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/slide/ipc-handlers.ts",
+      "line": 240
+    },
+    {
+      "channel": "updater:check",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+      "line": 91
+    },
+    {
+      "channel": "updater:download",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+      "line": 102
+    },
+    {
+      "channel": "updater:install",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+      "line": 113
+    },
+    {
+      "channel": "updater:get-version",
+      "side": "main-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/main/updater.ts",
+      "line": 118
+    },
+    {
+      "channel": "theme:get",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 199
+    },
+    {
+      "channel": "theme:set",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 201
+    },
+    {
+      "channel": "theme:get-system",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 202
+    },
+    {
+      "channel": "auth:login",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 212
+    },
+    {
+      "channel": "auth:logout",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 213
+    },
+    {
+      "channel": "auth:get-session",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 214
+    },
+    {
+      "channel": "auth:refresh",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 215
+    },
+    {
+      "channel": "auth:check-online",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 216
+    },
+    {
+      "channel": "auth-mode:get",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 223
+    },
+    {
+      "channel": "auth-mode:set",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 225
+    },
+    {
+      "channel": "auth-mode:status",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 226
+    },
+    {
+      "channel": "auth-mode:validate",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 228
+    },
+    {
+      "channel": "workspace:load",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 273
+    },
+    {
+      "channel": "workspace:save",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 275
+    },
+    {
+      "channel": "workspace:add-folder",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 276
+    },
+    {
+      "channel": "workspace:remove-folder",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 278
+    },
+    {
+      "channel": "workspace:validate-paths",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 280
+    },
+    {
+      "channel": "llm:stream-end",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 358
+    },
+    {
+      "channel": "slide:executePhase",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 405
+    },
+    {
+      "channel": "slide:startWatching",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 407
+    },
+    {
+      "channel": "slide:stopWatching",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 408
+    },
+    {
+      "channel": "slide:getSyncStatus",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 410
+    },
+    {
+      "channel": "slide:manualSync",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 412
+    },
+    {
+      "channel": "slide:cancelExecution",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 413
+    },
+    {
+      "channel": "system-prompt:list",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 505
+    },
+    {
+      "channel": "system-prompt:get",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 507
+    },
+    {
+      "channel": "system-prompt:create",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 509
+    },
+    {
+      "channel": "system-prompt:update",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 511
+    },
+    {
+      "channel": "system-prompt:delete",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 513
+    },
+    {
+      "channel": "system-prompt:migrate",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 514
+    },
+    {
+      "channel": "system-prompt:get-presets",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 515
+    },
+    {
+      "channel": "claude-cli:check-installation",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 521
+    },
+    {
+      "channel": "claude-cli:list-skills",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 523
+    },
+    {
+      "channel": "claude-cli:get-skill-detail",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 525
+    },
+    {
+      "channel": "claude-cli:execute-script",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 527
+    },
+    {
+      "channel": "claude-cli:terminate-session",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 529
+    },
+    {
+      "channel": "claude-cli:list-sessions",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 530
+    },
+    {
+      "channel": "claude-cli:get-session",
+      "side": "preload-only",
+      "file": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260318-090623-wt-2/apps/desktop/src/preload/index.ts",
+      "line": 532
+    }
+  ],
+  "passed": false
+}

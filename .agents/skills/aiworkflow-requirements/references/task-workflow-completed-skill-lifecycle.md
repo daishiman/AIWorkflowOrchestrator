@@ -3,7 +3,7 @@
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
 > 分割元: `task-workflow-completed-skill-lifecycle-agent-view-line-budget.md`（500行超のため分割）
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-005
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-003, UT-06-005
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -51,6 +51,44 @@
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
 | UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+
+---
+
+## UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16）
+
+### タスク概要
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | UT-06-003                                                                  |
+| 機能         | SafetyGatePort 具象クラス DefaultSafetyGate の Main Process 実装            |
+| 実施日       | 2026-03-16                                                                 |
+| ステータス   | completed（Phase 1-12）                                                    |
+| ワークフロー | `docs/30-workflows/safety-gate-implementation/`                            |
+| テスト       | 36 tests PASS（カバレッジ全100%）                                          |
+
+### 実装内容
+
+1. **DefaultSafetyGate**: SafetyGatePort の具象クラスとして5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約ロジックを実装
+2. **IPC ハンドラ**: `skill:evaluate-safety` チャンネルを追加し、Renderer から SafetyGate 評価を呼び出し可能に
+3. **型定義拡充**: `packages/shared/src/types/safety-gate.ts` に SafetyGrade / SafetyGateResult / SafetyCheckId 等の実装型を追加
+
+### 成果物
+
+| ファイル | 内容 |
+| --- | --- |
+| `packages/shared/src/types/safety-gate.ts` | SafetyGate 関連型定義 |
+| `apps/desktop/src/main/permissions/default-safety-gate.ts` | DefaultSafetyGate 具象クラス |
+| `apps/desktop/src/main/ipc/safetyGateHandlers.ts` | IPC ハンドラ（skill:evaluate-safety） |
+
+### 検証証跡
+
+| 検証項目 | 結果 |
+| --- | --- |
+| テスト | 36テスト全PASS |
+| Line Coverage | 100% |
+| Branch Coverage | 100% |
+| Function Coverage | 100% |
 
 ---
 
@@ -406,6 +444,43 @@ Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
 3. 画面再現が環境依存で詰まる場合は、source screenshot 集約 + review board 1件 + metadata で evidence chain を固定する。
 4. Phase 10/11/12 で残った論点は即 `unassigned-task/` に formalize し、backlog と同ターン同期する。
 5. 最後に `task-workflow` / `lessons` / `indexes` / `LOGS` / mirror を同一 wave で更新し、再監査 drift を防ぐ。
+
+---
+
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-08 |
+| タスク種別 | design |
+| ステータス | spec_created |
+| 仕様書作成日 | 2026-03-16 |
+| Phase完了 | 1-12 完了、13（PR作成）未実施 |
+| 成果物ディレクトリ | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/` |
+| 依存タスク | TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, TASK-SKILL-LIFECYCLE-07 |
+
+主要設計成果物:
+- 公開レベル定義: `SkillVisibility`（local / team / public の3段階）
+- バージョン互換性チェック: `CompatibilityCheckResult`、`CompatibilityChecker`
+- メタデータ設計: `SkillPublishingMetadata`（semver・公開日・ダウンロード数）
+- サービス設計: `SkillRegistryService`、`SkillDistributionService`
+- 公開可能性判定: `PublishReadiness`、`PublishReadinessChecker`（13項目チェック）
+- 公開判定マトリクス: SkillVisibility × CompatibilityStatus の組合せ設計
+- Skill Center フロー: 検索・閲覧・インポート・更新の UI 導線設計
+
+Phase 10 ゲート判定: PASS（MINOR 2件→未タスク記録済み）
+Phase 11 ウォークスルー: 実施済み
+
+### 2026-03-17 再監査追補（画面証跡・未タスク同期）
+
+| 観点 | 結果 |
+| --- | --- |
+| Phase 11 screenshot coverage | PASS（expected 3 / covered 3） |
+| Phase 12 implementation guide | PASS（10/10） |
+| 画面証跡 | `TC-11-01-skill-publishing-visual-review-board.png`, `TC-11-02-publishing-and-compatibility-focus.png`, `TC-11-03-safety-gate-and-permission-focus.png` |
+| 未タスク formalize | `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` / `UT-SKILL-LIFECYCLE-08-IPC-TEST` / `UT-SKILL-LIFECYCLE-08-UI-IMPL` / `UT-SKILL-LIFECYCLE-08-NAMING-FIX` を `docs/30-workflows/unassigned-task/` に作成 |
+
+再監査では「設計タスクでも明示要求がある場合は representative capture を撮影する」運用を適用し、NON_VISUAL 単独判定を採用しない。
 
 ---
 

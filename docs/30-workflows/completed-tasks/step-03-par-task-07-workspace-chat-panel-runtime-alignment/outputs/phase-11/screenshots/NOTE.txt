@@ -1,0 +1,3 @@
+CLI environment constraint (P53):
+esbuild architecture mismatch (@esbuild/darwin-arm64 vs @esbuild/darwin-x64) prevents Electron app launch in this worktree.
+Screenshots are not available. Manual test results are based on code review and automated test analysis.

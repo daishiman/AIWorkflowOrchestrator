@@ -295,6 +295,36 @@ Badge.displayName = "Badge";
 // ❌ Memo(ForwardRef(...))
 ```
 
+#### S20: データ駆動CTA設計パターン（TASK-SKILL-LIFECYCLE-02）
+
+定数配列に `ctaLabel?` + `onAction?` フィールドを持たせ、View側は `map()` + 条件レンダリングでCTAボタンを自動生成するパターン。新ステップ追加時は定数配列に1行追加するだけでView側のコード変更が不要。
+
+| 要素 | 実装 |
+| --- | --- |
+| 定数配列 | `ctaLabel?` と `onAction?` をオプショナルフィールドとして定義 |
+| View側 | `array.map()` + `ctaLabel && action` の条件でCTAボタンを自動生成 |
+| 拡張方法 | 定数配列に1行追加するだけ（Viewコード変更不要） |
+| 条件分岐 | View側にif文を追加しない — データが表示を駆動する |
+
+```typescript
+// 定数定義側: ctaLabel省略でCTA非表示
+export type SkillLifecycleJobGuide = {
+  id: string; title: string;
+  ctaLabel?: string; onAction?: () => void;
+};
+// View側: map + 条件レンダリング
+{jobs.map((job) => (
+  <div key={job.id}>
+    <h3>{job.title}</h3>
+    {job.ctaLabel && job.onAction && (
+      <button onClick={job.onAction} data-testid={`cta-${job.id}`}>{job.ctaLabel}</button>
+    )}
+  </div>
+))}
+```
+
+**S13との使い分け**: S13はキー→スタイルの静的マッピング（コンパイル時網羅性保証）、S20は配列要素にアクションを含む動的UI生成（実行時条件レンダリング）。
+
 ---
 
 ## バックエンド実装パターン
@@ -339,6 +369,25 @@ Badge.displayName = "Badge";
 | トランザクション管理 | 複数の操作を1つのトランザクションで実行 |
 | 整合性保証           | 全操作の成功または全ロールバック        |
 | 実装方法             | db.transaction()内で全操作を実行        |
+
+### 横断ユーティリティ配置ガイドライン
+
+サービス横断で使用されるユーティリティ関数（`normalizePath`、`escapeRegExp` 等）の配置先を以下の基準で決定する。
+
+| 使用箇所の数 | 配置先 | 例 |
+| --- | --- | --- |
+| 3つ以上のサービス/モジュールで使用 | `packages/shared/src/utils/` | `normalizePath`, `escapeRegExp` |
+| 2つのサービス/モジュールで使用 | 上位ディレクトリの `utils/` | `apps/desktop/src/main/utils/` |
+| 1つのサービス/モジュールでのみ使用 | サービス内に定義 | サービス固有のヘルパー |
+
+**判断フロー**:
+
+1. 新規ユーティリティ作成前に `grep -rn "export.*function.*<名前>" packages/ apps/` で既存実装を検索する
+2. 既存実装がある場合は再利用する（重複実装禁止）
+3. 新規作成する場合は上記テーブルに従い配置先を決定する
+4. `packages/shared/` に配置する場合は `package.json` の `exports` フィールドを更新する
+
+**関連 Pitfall**: P8（幽霊依存）-- `import` するなら自身の `package.json` に宣言すること
 
 ### エラーハンドリングパターン
 

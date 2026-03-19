@@ -467,3 +467,9 @@ expect(result).toEqual({
 
 ---
 
+## S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007）
+
+> 詳細は [architecture-implementation-patterns-reference-ipc-drift-detection.md](architecture-implementation-patterns-reference-ipc-drift-detection.md) を参照
+
+---
+

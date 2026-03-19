@@ -295,6 +295,36 @@ Badge.displayName = "Badge";
 // ❌ Memo(ForwardRef(...))
 ```
 
+#### S20: データ駆動CTA設計パターン（TASK-SKILL-LIFECYCLE-02）
+
+定数配列に `ctaLabel?` + `onAction?` フィールドを持たせ、View側は `map()` + 条件レンダリングでCTAボタンを自動生成するパターン。新ステップ追加時は定数配列に1行追加するだけでView側のコード変更が不要。
+
+| 要素 | 実装 |
+| --- | --- |
+| 定数配列 | `ctaLabel?` と `onAction?` をオプショナルフィールドとして定義 |
+| View側 | `array.map()` + `ctaLabel && action` の条件でCTAボタンを自動生成 |
+| 拡張方法 | 定数配列に1行追加するだけ（Viewコード変更不要） |
+| 条件分岐 | View側にif文を追加しない — データが表示を駆動する |
+
+```typescript
+// 定数定義側: ctaLabel省略でCTA非表示
+export type SkillLifecycleJobGuide = {
+  id: string; title: string;
+  ctaLabel?: string; onAction?: () => void;
+};
+// View側: map + 条件レンダリング
+{jobs.map((job) => (
+  <div key={job.id}>
+    <h3>{job.title}</h3>
+    {job.ctaLabel && job.onAction && (
+      <button onClick={job.onAction} data-testid={`cta-${job.id}`}>{job.ctaLabel}</button>
+    )}
+  </div>
+))}
+```
+
+**S13との使い分け**: S13はキー→スタイルの静的マッピング（コンパイル時網羅性保証）、S20は配列要素にアクションを含む動的UI生成（実行時条件レンダリング）。
+
 ---
 
 ## バックエンド実装パターン

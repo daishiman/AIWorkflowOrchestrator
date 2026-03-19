@@ -12,6 +12,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import type { SkillMetadata } from "@repo/shared/types/skill";
 import {
+  useAppStore,
   useAvailableSkillsMetadata,
   useImportedSkills,
   useIsLoadingSkills,
@@ -129,6 +130,12 @@ export interface UseSkillCenterReturn {
   // 計算値
   filteredSkills: SkillMetadata[];
   featuredSkills: SkillMetadata[];
+  importedSkillNames: string[];
+
+  // ナビゲーション
+  navigateToSkillCreate: () => void;
+  navigateToWorkspace: () => void;
+  navigateToSkillAnalysis: () => void;
 
   // ハンドラ
   handleAddSkill: (skillName: string) => Promise<void>;
@@ -146,6 +153,22 @@ export interface UseSkillCenterReturn {
  * SkillCenterView のメインロジックフック。
  */
 export function useSkillCenter(): UseSkillCenterReturn {
+  // --- ナビゲーション ---
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
+
+  const navigateToSkillCreate = useCallback(
+    () => setCurrentView("skillCreate"),
+    [setCurrentView],
+  );
+  const navigateToWorkspace = useCallback(
+    () => setCurrentView("workspace"),
+    [setCurrentView],
+  );
+  const navigateToSkillAnalysis = useCallback(
+    () => setCurrentView("skillAnalysis"),
+    [setCurrentView],
+  );
+
   // --- P31 対策: 個別セレクタ使用 ---
   const availableSkills = useAvailableSkillsMetadata() ?? [];
   const importedSkills = useImportedSkills() ?? [];
@@ -319,6 +342,10 @@ export function useSkillCenter(): UseSkillCenterReturn {
     addingSkills,
     filteredSkills,
     featuredSkills,
+    importedSkillNames,
+    navigateToSkillCreate,
+    navigateToWorkspace,
+    navigateToSkillAnalysis,
     handleAddSkill,
     handleRemoveSkill,
     handleOpenDetail,
