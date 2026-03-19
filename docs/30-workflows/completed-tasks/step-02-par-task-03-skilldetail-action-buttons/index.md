@@ -2,32 +2,32 @@
 
 ## メタ情報
 
-| 項目       | 内容                       |
-| ---------- | -------------------------- |
-| 機能名     | skilldetail-action-buttons |
-| 作成日     | 2026-03-17                 |
-| ステータス | Phase 12 完了（PR未着手）  |
-| 総Phase数  | 13                         |
+| 項目       | 内容                        |
+| ---------- | --------------------------- |
+| 機能名     | skilldetail-action-buttons  |
+| 作成日     | 2026-03-17                  |
+| ステータス | Phase 13 完了（PR作成済み） |
+| 総Phase数  | 13                          |
 
 ---
 
 ## Phase一覧
 
-| Phase | 名称                 | 仕様書                                                       | ステータス  |
-| ----- | -------------------- | ------------------------------------------------------------ | ----------- |
-| 1     | 要件定義             | [phase-1-requirements.md](phase-1-requirements.md)           | 完了        |
-| 2     | 設計                 | [phase-2-design.md](phase-2-design.md)                       | 完了        |
-| 3     | 設計レビューゲート   | [phase-3-design-review.md](phase-3-design-review.md)         | 完了        |
-| 4     | テスト作成           | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了        |
-| 5     | 実装                 | [phase-5-implementation.md](phase-5-implementation.md)       | 完了        |
-| 6     | テスト拡充           | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了        |
-| 7     | テストカバレッジ確認 | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了        |
-| 8     | リファクタリング     | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了        |
-| 9     | 品質保証             | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了        |
-| 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | 完了        |
-| 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了        |
-| 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了        |
-| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | not_started |
+| Phase | 名称                 | 仕様書                                                       | ステータス |
+| ----- | -------------------- | ------------------------------------------------------------ | ---------- |
+| 1     | 要件定義             | [phase-1-requirements.md](phase-1-requirements.md)           | 完了       |
+| 2     | 設計                 | [phase-2-design.md](phase-2-design.md)                       | 完了       |
+| 3     | 設計レビューゲート   | [phase-3-design-review.md](phase-3-design-review.md)         | 完了       |
+| 4     | テスト作成           | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了       |
+| 5     | 実装                 | [phase-5-implementation.md](phase-5-implementation.md)       | 完了       |
+| 6     | テスト拡充           | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了       |
+| 7     | テストカバレッジ確認 | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了       |
+| 8     | リファクタリング     | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了       |
+| 9     | 品質保証             | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了       |
+| 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
+| 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
+| 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
+| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 完了       |
 
 ---
 
@@ -82,4 +82,4 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 ---
 
 _このファイルは `generate-index.js` によって自動生成されました。_
-_最終更新: 2026-03-19T06:56:47.379Z_
+_最終更新: 2026-03-19T08:56:00.000Z_
