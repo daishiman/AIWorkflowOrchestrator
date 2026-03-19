@@ -9,6 +9,28 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { BrowserWindow } from "electron";
 import { SkillExecutor } from "../SkillExecutor";
 
+// PermissionResolver モック（handlePermissionCheck が内部で使用）
+vi.mock("../PermissionResolver", () => ({
+  PermissionResolver: vi.fn(() => ({
+    waitForResponse: vi.fn(),
+    resolveRequest: vi.fn(),
+    cancelRequest: vi.fn(),
+    cancelAll: vi.fn(),
+    pendingCount: 0,
+  })),
+}));
+
+// Permission 自動承認用 PermissionStore モック
+const mockPermissionStore = {
+  isToolAllowed: vi.fn().mockReturnValue(true),
+  allowTool: vi.fn(),
+  revokeTool: vi.fn(),
+  getAllowedTools: vi.fn().mockReturnValue([]),
+  getAllowedToolEntries: vi.fn().mockReturnValue([]),
+  clearAll: vi.fn(),
+  revokeSessionEntries: vi.fn().mockReturnValue(0),
+};
+
 // electron-store モック（PermissionStore用）
 vi.mock("electron-store", () => {
   return {
@@ -56,7 +78,7 @@ describe("SkillExecutor - Performance", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWindow = createMockBrowserWindow();
-    executor = new SkillExecutor(mockWindow);
+    executor = new SkillExecutor(mockWindow, mockPermissionStore);
   });
 
   describe("PreToolUse Performance (NFR-001)", () => {

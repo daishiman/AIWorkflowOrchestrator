@@ -192,3 +192,124 @@ describe("createApplicationMenu", () => {
 
 ---
 
+### S32: Promise.race + settled フラグ + clearTimeout タイムアウトパターン（UT-06-005-A 2026-03-17実装）
+
+IPC 経由でユーザー応答を待つ非同期処理にタイムアウトを付与するパターン。`Promise.race` の代わりに `settled` フラグで二重 resolve/reject を防止し、成功時に `clearTimeout` でメモリリークを回避する。
+
+#### 設計原則
+
+| 原則                               | 実装                                                                          |
+| ---------------------------------- | ----------------------------------------------------------------------------- |
+| settled フラグで二重決済防止       | `let settled = false` → 最初に決済した経路だけが resolve/reject を呼び出す   |
+| clearTimeout で即座リソース解放    | 成功・エラー問わず最初の決済時に `clearTimeout(timeoutId)` を呼び出す         |
+| タイムアウト専用エラー型           | `PermissionTimeoutError` のように専用クラスで timeout か否かを型で区別する   |
+| AbortSignal 統合                   | 上位キャンセルシグナルを受け取り、タイムアウトより早く abort できる設計にする |
+| fail-closed（フェイルセキュア）    | タイムアウト/エラーは abort 扱いとし、未確認のまま処理を続行させない          |
+
+#### コード例
+
+```typescript
+// apps/desktop/src/main/services/skill/SkillExecutor.ts
+
+class PermissionTimeoutError extends Error {
+  constructor(timeoutMs: number, toolName: string) {
+    super(
+      `Permission request timed out after ${timeoutMs}ms for tool: ${toolName}`,
+    );
+    this.name = "PermissionTimeoutError";
+  }
+}
+
+private sendPermissionRequestWithTimeout(
+  executionId: string,
+  toolName: string,
+  args: Record<string, unknown>,
+  signal?: AbortSignal,
+): Promise<SkillPermissionResponse> {
+  return new Promise<SkillPermissionResponse>((resolve, reject) => {
+    let settled = false;
+
+    // タイムアウトタイマー: settled チェックで二重 reject を防ぐ
+    const timeoutId = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        reject(new PermissionTimeoutError(this.defaultTimeout, toolName));
+      }
+    }, this.defaultTimeout);
+
+    // 実際の非同期処理
+    this.sendPermissionRequest(executionId, toolName, args, signal)
+      .then((response) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timeoutId); // タイマーを即座に解放
+          resolve(response);
+        }
+      })
+      .catch((error) => {
+        if (!settled) {
+          settled = true;
+          clearTimeout(timeoutId); // エラー時もタイマーを解放
+          reject(error);
+        }
+      });
+  });
+}
+```
+
+#### テスト戦略
+
+```typescript
+// Vitest でのタイムアウトテスト（P13: advanceTimersByTime 使用）
+it("タイムアウト時は PermissionTimeoutError をスローする", async () => {
+  vi.useFakeTimers();
+
+  // 応答しない sendPermissionRequest をモック
+  const hangingPromise = new Promise(() => {}); // 永遠に pending
+  vi.spyOn(executor, "sendPermissionRequest").mockReturnValue(hangingPromise);
+
+  const resultPromise = executor.sendPermissionRequestWithTimeout(
+    "exec-1",
+    "Bash",
+    {},
+  );
+
+  // タイムアウト時間を進める
+  await vi.advanceTimersByTimeAsync(DEFAULT_TIMEOUT + 1);
+
+  await expect(resultPromise).rejects.toThrow(PermissionTimeoutError);
+
+  vi.useRealTimers();
+});
+
+it("成功時はタイマーが clearTimeout される（メモリリークなし）", async () => {
+  const clearTimeoutSpy = vi.spyOn(global, "clearTimeout");
+  vi.spyOn(executor, "sendPermissionRequest").mockResolvedValue({
+    approved: true,
+  });
+
+  await executor.sendPermissionRequestWithTimeout("exec-1", "Bash", {});
+
+  expect(clearTimeoutSpy).toHaveBeenCalledOnce();
+});
+```
+
+#### 適用基準
+
+| 状況                                  | このパターンを使う                 |
+| ------------------------------------- | ---------------------------------- |
+| IPC 経由でユーザー/外部応答を待つ     | ✅ 必須                            |
+| 応答時間が不定（ユーザー操作待ち等）  | ✅ 必須                            |
+| 内部処理のみ（DB 参照、計算等）       | 不要（通常の try-catch で十分）    |
+| 複数の競合 Promise が必要な場合       | `Promise.race` + settled で統合可  |
+
+#### 関連パターン
+
+| パターン | 関連                                               |
+| -------- | -------------------------------------------------- |
+| P13      | タイマーテストの無限ループ防止（advanceTimersByTime 使用） |
+| S30      | IPC Fallback Handler DRY ヘルパー                  |
+| NFR-101  | fail-closed 原則（タイムアウト = abort 扱い）      |
+
+---
+

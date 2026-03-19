@@ -177,4 +177,42 @@ describe("skillLifecycleJourney", () => {
     expect(() => guide.onAction?.()).not.toThrow();
     expect(guide.onAction).toBeUndefined();
   });
+
+  it("TC-SL-12: 全ての SKILL_LIFECYCLE_JOB_GUIDES が ctaLabel を持つこと", () => {
+    SKILL_LIFECYCLE_JOB_GUIDES.forEach((guide) => {
+      expect(guide.ctaLabel).toBeDefined();
+      expect(typeof guide.ctaLabel).toBe("string");
+      expect((guide.ctaLabel ?? "").length).toBeGreaterThan(0);
+    });
+  });
+
+  it("TC-SL-13: ctaLabel の値が期待通りであること", () => {
+    const ctaLabels = SKILL_LIFECYCLE_JOB_GUIDES.map((guide) => guide.ctaLabel);
+    expect(ctaLabels).toEqual(["作成を始める", "使ってみる", "改善する"]);
+  });
+
+  it("TC-SL-14: SkillLifecycleJobGuide 型で ctaLabel を省略できること", () => {
+    const guideWithoutCtaLabel: SkillLifecycleJobGuide = {
+      id: "create",
+      title: "テスト",
+      entryLabel: "エントリ",
+      handoffLabel: "ハンドオフ",
+      summary: "サマリー",
+      completion: "完了",
+    };
+    expect(guideWithoutCtaLabel.ctaLabel).toBeUndefined();
+  });
+
+  it("TC-SL-15: SkillLifecycleJobGuide 型で ctaLabel を指定できること", () => {
+    const guideWithCtaLabel: SkillLifecycleJobGuide = {
+      id: "use",
+      title: "テスト",
+      entryLabel: "エントリ",
+      handoffLabel: "ハンドオフ",
+      summary: "サマリー",
+      completion: "完了",
+      ctaLabel: "カスタムCTA",
+    };
+    expect(guideWithCtaLabel.ctaLabel).toBe("カスタムCTA");
+  });
 });

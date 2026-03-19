@@ -15,7 +15,7 @@
 
 ## 目的
 
-テストファーストの原則に従い、実装前にテストコードを作成する。受入基準 AC-1〜AC-7 を網羅するテストケースを設計し、実装の正確性を担保する。P39 準拠（happy-dom 環境では fireEvent を使用）、P31 対策（個別セレクタ形式の検証）を含む。
+テストファーストの原則に従い、実装前にテストコードを作成する。受入基準 AC-1〜AC-8 を網羅するテストケースを設計し、実装の正確性を担保する。P39 準拠（happy-dom 環境では fireEvent を使用）、P31 対策（個別セレクタ形式の検証）を含む。
 
 ## 実行タスク
 
@@ -39,9 +39,10 @@
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料                             | パス                                                                                        | 内容                                       |
-| ------------------------------------ | ------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタ・P31/P48 対策パターン |
+| 参照資料                             | パス                                                                                        | 内容                                                       |
+| ------------------------------------ | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| architecture-implementation-patterns | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | Zustand 個別セレクタ・P31/P48 対策パターン                 |
+| ui-ux-design-principles              | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`              | Apple HIG / WCAG 2.1 AA の一次正本（AC-7/AC-8 テスト対象） |
 
 ## 実行手順
 
@@ -161,7 +162,7 @@ describe("SkillCenterView - モバイルレスポンシブ (AC-5)", () => {
 
 - useSkillCenter の3アクションが ViewType 遷移 Store と正しく接続していることを単体テストで確認する
 - SkillCenterView と JourneyPanel の CTA クリックが期待する Store アクションを呼び出すことを統合テストで確認する
-- AC-3（skillCreate 遷移）・AC-4（skillAnalysis 遷移）・AC-5（モバイル）・AC-7（HIG 準拠）を各テストケースと 1:1 に対応付ける
+- AC-3（skillCreate 遷移）・AC-4（skillAnalysis 遷移）・AC-5（モバイル）・AC-7/AC-8（HIG 準拠）を各テストケースと 1:1 に対応付ける
 
 ## 成果物
 
@@ -181,7 +182,7 @@ describe("SkillCenterView - モバイルレスポンシブ (AC-5)", () => {
 - [ ] モバイルレスポンシブテスト（768px 未満でアイコンのみ）が作成されている
 - [ ] P31 対策検証テスト（個別セレクタ形式の確認）が含まれている
 - [ ] 全テストケースが happy-dom 環境で `fireEvent` を使用している（P39 準拠）
-- [ ] テスト設計サマリー（受入基準 AC-1〜AC-7 との対応表）が作成されている
+- [ ] テスト設計サマリー（受入基準 AC-1〜AC-8 との対応表）が作成されている
 - [ ] 全テストが RED（実装前のため失敗）することが確認されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 

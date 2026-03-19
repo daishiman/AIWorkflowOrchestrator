@@ -2,13 +2,16 @@
 
 ## メタ情報
 
-| 項目     | 値                                    |
-| -------- | ------------------------------------- |
-| タスクID | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
-| 機能名   | skillcenter-create-route              |
-| Phase    | 9                                     |
-| 作成日   | 2026-03-17                            |
-| 依存     | Phase 8（リファクタリング）の成果物   |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| Phase      | 9                                     |
+| Phase名    | 品質検証                              |
+| タスクID   | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
+| 前提Phase  | Phase 8（リファクタリング）           |
+| 後続Phase  | Phase 10（最終レビュー）              |
+| ステータス | not_started                           |
+| 作成日     | 2026-03-17                            |
+| 機能名     | skillcenter-create-route              |
 
 ## 目的
 
@@ -16,11 +19,13 @@ Lint・型チェック・全テストを実行して、コードが品質基準�
 
 ## 参照資料
 
-- `CLAUDE.md` — pnpm コマンド規約
-- `.claude/rules/02-code-quality.md` — コード品質基準
-- `.claude/rules/07-git-and-tooling.md` — ツーリングルール
+| 参照資料          | パス                                  | 用途              |
+| ----------------- | ------------------------------------- | ----------------- |
+| pnpm コマンド規約 | `CLAUDE.md`                           | pnpm コマンド規約 |
+| コード品質ルール  | `.claude/rules/02-code-quality.md`    | コード品質基準    |
+| ツーリングルール  | `.claude/rules/07-git-and-tooling.md` | ツーリングルール  |
 
-## 実行タスク
+## 実行手順
 
 ### Task 1: Lint チェック
 
@@ -99,9 +104,11 @@ pnpm --filter @repo/shared build
 
 ## 成果物
 
-- `outputs/phase-9/lint-errors.txt` — Lint エラー一覧（0件の場合は「エラーなし」と記載）
-- `outputs/phase-9/typecheck-errors.txt` — 型チェックエラー一覧（0件の場合は「エラーなし」と記載）
-- `outputs/phase-9/qa-summary.md` — 品質検証結果サマリー
+| 成果物               | パス                                   | 内容                                                    |
+| -------------------- | -------------------------------------- | ------------------------------------------------------- |
+| lint-errors.txt      | `outputs/phase-9/lint-errors.txt`      | Lint エラー一覧（0件の場合は「エラーなし」と記載）      |
+| typecheck-errors.txt | `outputs/phase-9/typecheck-errors.txt` | 型チェックエラー一覧（0件の場合は「エラーなし」と記載） |
+| qa-summary.md        | `outputs/phase-9/qa-summary.md`        | 品質検証結果サマリー                                    |
 
 ## 完了条件
 
@@ -113,6 +120,6 @@ pnpm --filter @repo/shared build
 - [ ] `outputs/phase-9/qa-summary.md` に全 PASS が記録されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
-## 次Phase
+## 次のPhase
 
-Phase 10: 最終レビュー
+- [Phase 10（最終レビュー）](./phase-10-final-review.md) に進む

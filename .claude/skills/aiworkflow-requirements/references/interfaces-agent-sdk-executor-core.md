@@ -219,7 +219,7 @@ Permission 拒否時の abort 理由を示す型。
 | 値 | 説明 |
 | --- | --- |
 | `"denied"` | Permission が明示的に拒否された |
-| `"timeout"` | PermissionResolver の応答待機タイムアウト（300000ms） |
+| `"timeout"` | Permission チェックタイムアウト（SkillExecutor 側 30000ms） |
 | `"max_retries"` | retry 上限（PERMISSION_MAX_RETRIES=3）に到達 |
 | `"unknown"` | 不明なエラー（fail-closed 原則により abort） |
 
@@ -244,6 +244,16 @@ Permission フォールバック処理の結果。
 | `action` | `"approved" \| "skip" \| "retry" \| "abort"` | 決定されたアクション |
 | `reason?` | `AbortReason` | abort 時の理由 |
 | `retryCount?` | `number` | retry 時のカウント |
+
+#### PermissionTimeoutError（UT-06-005-A）
+
+Permission チェックタイムアウト時に送出されるエラー型。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `name` | `"PermissionTimeoutError"` | エラー識別子 |
+| `timeoutMs` | `number` | 実際に適用されたタイムアウト値 |
+| `message` | `string` | `Permission request timed out after {timeoutMs}ms for tool: {toolName}` |
 
 #### 設定定数
 
@@ -270,6 +280,7 @@ Permission フォールバック処理の結果。
 | メソッド              | シグネチャ                                            | 説明               |
 | --------------------- | ----------------------------------------------------- | ------------------ |
 | `execute`             | `(request, skill) => Promise<SkillExecutionResponse>` | スキル実行         |
+| `handlePermissionCheck` | `(executionId: string, toolName: string, args: Record<string, unknown>, signal?: AbortSignal) => Promise<PreToolUseResult>` | PreToolUse Hook の Permission 判定 + fallback 制御（UT-06-005-A） |
 | `abort`               | `(executionId: string) => boolean`                    | 実行中断           |
 | `getActiveExecutions` | `() => ExecutionInfo[]`                               | アクティブ実行一覧 |
 | `getExecutionStatus`  | `(executionId: string) => ExecutionInfo \| undefined` | 実行状態取得       |
@@ -442,3 +453,10 @@ SkillExecutorにExponential Backoff with Jitterパターンのリトライ機構
 | `RETRYABLE_NETWORK_ERRORS`  | ECONNRESET, ETIMEDOUT, ECONNREFUSED, ENOTFOUND, EAI_AGAIN | -           | リトライ対象ネットワークエラーコード |
 
 ---
+
+## 関連未タスク
+
+| タスクID | タスク名 | 優先度 | 指示書 |
+| --- | --- | --- | --- |
+| UT-06-005-A-PERMISSION-RESOLVER-DI | PermissionResolver DIP 準拠 DI 化 | 中 | `docs/30-workflows/completed-tasks/UT-06-005-A-hook-fallback-integration/unassigned-task/task-ut-06-005-a-permission-resolver-di.md` |
+| UT-06-005-A-SANITIZE-ARGS-TYPE-SAFETY | sanitizeArgs as string キャスト除去 | 低 | `docs/30-workflows/completed-tasks/UT-06-005-A-hook-fallback-integration/unassigned-task/task-ut-06-005-a-sanitize-args-type-safety.md` |

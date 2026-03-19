@@ -1,0 +1,141 @@
+{
+  "taskId": "TASK-IMP-SKILLCENTER-CREATE-ROUTE-001",
+  "taskName": "skillcenter-create-route",
+  "createdAt": "2026-03-17",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "spec": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "spec": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/responsibility-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "spec": "phase-3-design-review.md",
+      "outputs": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "spec": "phase-4-test-creation.md",
+      "outputs": [
+        "outputs/phase-4/test-design-summary.md",
+        "apps/desktop/src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCenterView.cta.test.tsx",
+        "apps/desktop/src/renderer/navigation/skillLifecycleJourney.test.ts"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "spec": "phase-5-implementation.md",
+      "outputs": [
+        "apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/index.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/components/SkillLifecycleJourneyPanel/",
+        "outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "spec": "phase-6-test-expansion.md",
+      "outputs": [
+        "outputs/phase-6/test-expansion-summary.md",
+        "outputs/phase-6/coverage-before.md",
+        "outputs/phase-6/coverage-after.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "spec": "phase-7-coverage-check.md",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "spec": "phase-8-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "spec": "phase-9-quality-assurance.md",
+      "outputs": ["outputs/phase-9/qa-summary.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "spec": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "spec": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-plan.md",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/screenshots/TC-11-01-skillcenter-header-cta.png",
+        "outputs/phase-11/screenshots/TC-11-02-skillcenter-journey-panel-cta.png",
+        "outputs/phase-11/screenshots/electron-full-screen.png",
+        "outputs/phase-11/screenshots/electron-app-window.png",
+        "outputs/phase-11/screenshots/electron-app-activated.png",
+        "outputs/phase-11/screenshots/capture-metadata.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "spec": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/component-documentation.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/system-spec-update-summary.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "spec": "phase-13-pr-creation.md",
+      "outputs": ["outputs/phase-13/completion-report.md"]
+    }
+  ],
+  "_note": "タスク対象3ファイルの全テスト数は50件（既存5+新規追加45=50）。新規追加45件はPhase 4/5で作成。プロジェクト全体のテスト総数は186件。"
+}

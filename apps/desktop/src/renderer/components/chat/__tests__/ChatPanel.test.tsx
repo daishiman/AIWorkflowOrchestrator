@@ -81,6 +81,59 @@ vi.mock("../../skill/SkillStreamingView", () => ({
   }) => <div data-testid="mock-skill-streaming-view">{skillName}</div>,
 }));
 
+vi.mock("../../skill/SkillManagementPanel", () => ({
+  SkillManagementPanel: () => (
+    <div data-testid="mock-skill-management-panel">SkillManagementPanel</div>
+  ),
+}));
+
+// ============================================
+// useStreamingChat Mock
+// ============================================
+
+vi.mock("../../../hooks/useStreamingChat", () => ({
+  useStreamingChat: vi.fn(() => ({
+    state: { isStreaming: false, content: "", error: null, requestId: null },
+    actions: { startStream: vi.fn(), cancelStream: vi.fn() },
+  })),
+}));
+
+// ============================================
+// New Component Mocks
+// ============================================
+
+vi.mock("../RuntimeBanner", () => ({
+  RuntimeBanner: () => (
+    <div data-testid="mock-runtime-banner">RuntimeBanner</div>
+  ),
+}));
+
+vi.mock("../ChatMessageList", () => ({
+  ChatMessageList: () => (
+    <div data-testid="mock-chat-message-list">ChatMessageList</div>
+  ),
+}));
+
+vi.mock("../ErrorGuidance", () => ({
+  ErrorGuidance: () => (
+    <div data-testid="mock-error-guidance">ErrorGuidance</div>
+  ),
+}));
+
+vi.mock("../HandoffBlock", () => ({
+  HandoffBlock: () => <div data-testid="mock-handoff-block">HandoffBlock</div>,
+}));
+
+vi.mock("../ComposerArea", () => ({
+  ComposerArea: () => <div data-testid="mock-composer-area">ComposerArea</div>,
+}));
+
+vi.mock("../LLMSelectorPanel", () => ({
+  LLMSelectorPanel: () => (
+    <div data-testid="mock-llm-selector-panel">LLMSelectorPanel</div>
+  ),
+}));
+
 import { ChatPanel } from "../ChatPanel";
 import type { ChatPanelHandle } from "../ChatPanel";
 import type { SkillMetadata } from "@repo/shared";
@@ -119,6 +172,16 @@ function setStoreState(overrides: Partial<Record<string, unknown>> = {}) {
     pendingPermission: null,
     fetchSkills: mockFetchSkills,
     abortExecution: mockAbortExecution,
+    // ChatPanel 新規フィールド
+    chatPanelStatus: "ready",
+    resolvedCapability: "integratedRuntime",
+    chatMessages: [],
+    chatInput: "",
+    setChatInput: vi.fn(),
+    selectedProviderId: "anthropic",
+    selectedModelId: "claude-3-5-sonnet",
+    providers: [],
+    handoffGuidance: null,
     ...overrides,
   };
 }
