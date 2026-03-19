@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-17T04:10:08.507Z
-> 対象: docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
+> 検証日時: 2026-03-19T00:09:51.782Z
+> 対象: docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
 
 ## サマリー
 

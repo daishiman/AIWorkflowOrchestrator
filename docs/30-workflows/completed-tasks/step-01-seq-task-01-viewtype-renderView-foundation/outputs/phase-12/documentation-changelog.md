@@ -37,7 +37,7 @@ TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001
 ### Step 1-D: index 再生成と整合修正
 
 - [x] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` 実行
-- [x] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --regenerate` 実行
+- [x] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --regenerate` 実行
 - [x] `artifacts.json` / `outputs/artifacts.json` に `feature` / `created` を補完し、`index.md` の `feature: undefined` を是正
 
 ### Step 2: システム仕様更新
@@ -51,17 +51,17 @@ TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001
 
 ### Step 3: 検証・監査（再実行）
 
-- [x] `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
+- [x] `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
   - 結果: `error=0`, `warning=31`, `PASS`
-- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
+- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
   - 結果: `error=0`, `warning=10`, `19項目PASS`
-- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --json`
+- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --json`
   - 結果: `ok=true`
-- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --json`
+- [x] `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --json`
   - 結果: `coveredTestCases=5/5`, `errors=0`
 - [x] `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md`
   - 結果: `currentViolations=0`, `baselineViolations=145`
-- [x] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
+- [x] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation`
   - 結果: `total=244`, `existing=232`, `missing=12`（既存 backlog の欠損リンク）
 - [x] mirror 同期
   - `rsync -a .claude/skills/aiworkflow-requirements/ .agents/skills/aiworkflow-requirements/`

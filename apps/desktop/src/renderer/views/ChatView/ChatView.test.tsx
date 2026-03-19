@@ -264,7 +264,7 @@ describe("ChatView", () => {
     });
 
     describe("履歴ボタンの遷移動作", () => {
-      it("スキル管理ボタンクリックでskill-centerへ遷移する", async () => {
+      it("スキル管理ボタンクリックでskillCenterへ遷移する", async () => {
         const mockSetCurrentView = vi.fn();
         const { useAppStore } = await import("../../store");
         vi.mocked(useAppStore).mockImplementation(((
@@ -283,7 +283,7 @@ describe("ChatView", () => {
         });
         fireEvent.click(skillManagementButton);
 
-        expect(mockSetCurrentView).toHaveBeenCalledWith("skill-center");
+        expect(mockSetCurrentView).toHaveBeenCalledWith("skillCenter");
         expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
       });
 

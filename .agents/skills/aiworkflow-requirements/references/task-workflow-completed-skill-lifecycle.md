@@ -12,7 +12,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | タスクID | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 |
-| 対象workflow | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/` |
+| 対象workflow | `docs/30-workflows/completed-tasks/step-01-seq-task-01-viewtype-renderView-foundation/` |
 | ステータス | completed（Phase 1-12） |
 | テスト | `App.renderView.viewtype` / `skillLifecycleJourney` / `types` の targeted suite PASS |
 | 画面証跡 | TC-11-01..05 screenshot（advanced route fallback） |

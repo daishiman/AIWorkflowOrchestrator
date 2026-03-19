@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                         |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                  |
-| Phase      | 1 - 要件定義                                                                                                                 |
-| 前 Phase   | なし（起点）                                                                                                                 |
-| 次 Phase   | Phase 2 - 設計                                                                                                               |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-1-requirements.md` |
-| ステータス | not_started                                                                                                                  |
+| 項目       | 内容                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                  |
+| Phase      | 1 - 要件定義                                                                                                                                 |
+| 前 Phase   | なし（起点）                                                                                                                                 |
+| 次 Phase   | Phase 2 - 設計                                                                                                                               |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-1-requirements.md` |
+| ステータス | not_started                                                                                                                                  |
 
 ## 目的
 
@@ -96,11 +96,11 @@
 
 ## 成果物
 
-| 成果物                   | パス                                                                                                                         | 種別     |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
-| 要件定義書（本ファイル） | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-1-requirements.md` | 仕様書   |
-| 現状調査結果             | 本ファイル内に記録                                                                                                           | 調査記録 |
-| 受入基準 AC-1〜AC-6      | 本ファイル内に記録                                                                                                           | 受入基準 |
+| 成果物                   | パス                                                                                                                                         | 種別     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| 要件定義書（本ファイル） | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-1-requirements.md` | 仕様書   |
+| 現状調査結果             | 本ファイル内に記録                                                                                                                           | 調査記録 |
+| 受入基準 AC-1〜AC-6      | 本ファイル内に記録                                                                                                                           | 受入基準 |
 
 ## 完了条件
 

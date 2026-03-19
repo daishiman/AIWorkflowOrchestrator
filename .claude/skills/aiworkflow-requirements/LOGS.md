@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-19 - TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（conversationDatabase.ts Factory 関数パターン / ipc/index.ts DI シグネチャ変更 / main/index.ts will-quit ライフサイクル管理 / 未タスク3件検出） |
+| 2026-03-19 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 canonical path 是正（completed-tasks 正本化 / legacy phase11 screenshot 重複除去 / capture script 同期） |
 | 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
@@ -46,6 +48,28 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
+
+- タスク名: Conversation DB 初期化/IPC graceful degradation 堅牢化
+- 種別: 実装タスク
+- 主な反映:
+  - `conversationDatabase.ts` を追加し、DB 初期化を Factory 関数群へ分離
+  - `registerAllIpcHandlers(mainWindow, conversationDb)` へ DI 化
+  - `app.whenReady()` 初期化 / `will-quit` close / fallback handler による `DB_NOT_AVAILABLE` 返却を明文化
+- 派生未タスク:
+  - `UT-CONV-DB-001` better-sqlite3 ABI rebuild
+  - `UT-CONV-DB-002` schema versioning
+  - `UT-CONV-DB-003` legacy path migration
+
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 canonical path 是正（2026-03-19）
+
+- タスク名: ViewType/renderView 基盤拡張 completed path 正本化
+- 種別: 仕様同期・証跡整理
+- 主な反映:
+  - step-01 workflow 正本を `docs/30-workflows/completed-tasks/step-01-seq-task-01-viewtype-renderView-foundation/` に統一
+  - screenshot metadata と capture script の出力先を正本 path に合わせて同期
+  - legacy 配置に残っていた Phase 11 重複証跡を整理
 
 ## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
 

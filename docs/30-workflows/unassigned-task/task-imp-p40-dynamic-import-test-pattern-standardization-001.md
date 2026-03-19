@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: N/A
+issue_number: 1343
 task_id: UT-IMP-P40-DYNAMIC-IMPORT-TEST-PATTERN-STANDARDIZATION-001
 task_name: P40 dynamic import テストパターン標準化
 category: 改善（テスト基盤）

@@ -44,7 +44,7 @@ TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001
 ## Step 1-D: index 再生成
 
 - `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行
-- `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --regenerate` を実行
+- `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --regenerate` を実行
 - `artifacts.json` / `outputs/artifacts.json` に `feature` / `created` を補完して `index.md` の `undefined` 表示を是正
 - 実行ログは `topic-map-regeneration.log` に記録
 

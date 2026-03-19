@@ -193,6 +193,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v-conv-db** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了**: `database-implementation-core.md` / `arch-ipc-persistence.md` / `api-ipc-system-core.md` / `security-electron-ipc-core.md` / `task-workflow-completed-ipc-graceful-degradation-lifecycle.md` / `lessons-learned-current.md` を更新 |
 | **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了記録追加**: GAP-01/02/03 実装完了記録追加 |

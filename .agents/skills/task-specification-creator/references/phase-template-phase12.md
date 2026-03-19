@@ -113,7 +113,7 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 | ドキュメント更新履歴 | `documentation-changelog.md` |
 | 実装ガイド | `implementation-guide.md` |
 | スキルフィードバック | `skill-feedback-report.md` |
-| 仕様書更新サマリー | `system-spec-update-summary.md` 又は `spec-update-summary.md` |
+| 仕様書更新サマリー | `system-spec-update-summary.md` |
 
 **注意**: `unassigned-task-report.md` のような類似名ファイルを作成しないこと。正式名称は `unassigned-task-detection.md` である。
 

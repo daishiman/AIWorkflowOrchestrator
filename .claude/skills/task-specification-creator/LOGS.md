@@ -4,6 +4,29 @@
 
 ---
 
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 実行完了
+- **Result**: success
+- **Notes**:
+  - `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5成果物を実績化
+  - 苦戦箇所を system spec に反映し、未タスク `UT-CONV-DB-001〜003` を formalize
+  - completed workflow / completed unassigned-task / backlog 導線を同期
+
+---
+
+## Phase 12 canonical summary 名称統一（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/テンプレート是正
+- **Result**: success
+- **Notes**:
+  - `spec-update-summary.md` から `system-spec-update-summary.md` への canonical 名称統一を反映
+  - `phase-11-12-guide.md` / `spec-update-workflow.md` / `SKILL.md` の残存参照を更新
+
+---
+
 ## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
 
 - **Agent**: task-specification-creator

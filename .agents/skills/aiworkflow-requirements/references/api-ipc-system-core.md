@@ -159,6 +159,7 @@ workspace layout 04A では、selected file の preview と status bar を最新
 ## Conversation IPC API（会話履歴永続化）
 
 > 完了タスク: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION（2026-03-16）
+> 完了タスク: TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19）
 
 ### チャンネル一覧
 
@@ -174,15 +175,20 @@ workspace layout 04A では、selected file の preview と status bar を最新
 
 ### DB 初期化フロー
 
-1. `better-sqlite3` で `~/.claude/conversations.db` を開く
-2. `pragma("journal_mode = WAL")` で WAL モード設定
-3. `CONVERSATION_DB_SCHEMA` DDL で `chat_sessions` + `chat_messages` テーブル + 4インデックスを作成
-4. `ConversationRepository(db)` を生成
-5. `registerConversationHandlers(repository)` で7チャンネルを登録
+1. `app.whenReady()` 直後に `initializeConversationDatabase()` で DB を初期化する
+2. DB パスは `app.getPath('userData')/conversations.db`（旧: `~/.claude/conversations.db`）
+3. `pragma("journal_mode = WAL")` で WAL モード設定
+4. `CONVERSATION_DB_SCHEMA` DDL で `chat_sessions` + `chat_messages` テーブル + 4インデックスを作成
+5. `ConversationRepository(db)` を生成
+6. `registerAllIpcHandlers(mainWindow, conversationDb)` に DI で注入し、`registerConversationHandlers(repository)` で7チャンネルを登録
+
+**Factory 関数パターン**: DB 初期化ロジックは `ipc/index.ts` の `registerAllIpcHandlers` から分離し、`initializeConversationDatabase()` Factory 関数に集約する。
+
+**DI パターン**: `registerAllIpcHandlers(mainWindow, conversationDb?)` の第2引数として DB インスタンスを外部注入する。DB 未注入（`undefined`）時はフォールバックハンドラが登録される。
 
 ### Graceful Degradation
 
-DB 初期化失敗時は `registerConversationFallbackHandlers()` で全7チャンネルに `DB_NOT_AVAILABLE` フォールバックを登録。S30 パターン準拠。
+DB 初期化失敗時は `conversationDb` が `null` となり、`registerConversationFallbackHandlers()` で全7チャンネルに `DB_NOT_AVAILABLE`（ERR_4006）フォールバックを登録。S30 パターン準拠。
 
 ---
 
