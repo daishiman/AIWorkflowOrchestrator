@@ -20,6 +20,14 @@
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。
 - 完了タスク、変更履歴、補助情報は `history` / `archive` 系を読む。
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け
+
+- `skill:get-detail` / `skill:update` の current contract は [interfaces-agent-sdk-skill-details.md](interfaces-agent-sdk-skill-details.md) を一次正本とする。
+- sender検証・P42・エラーサニタイズ・whitelist は [security-skill-ipc-core.md](security-skill-ipc-core.md) を併読する。
+- `registerSkillHandlers` の担当範囲は [architecture-overview-core.md](architecture-overview-core.md) を参照する。
+- object payload 標準と P44/P45 の背景は [architecture-implementation-patterns-reference-ipc-contract-audits.md](architecture-implementation-patterns-reference-ipc-contract-audits.md)、sync 手順は [ipc-contract-checklist.md](ipc-contract-checklist.md) を使う。
+- `api-ipc-agent*.md` は補助参照であり、`skill:get-detail` / `skill:update` の一次契約を上書きしない。
+
 ## ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07）
 
 | 項目 | 内容 |

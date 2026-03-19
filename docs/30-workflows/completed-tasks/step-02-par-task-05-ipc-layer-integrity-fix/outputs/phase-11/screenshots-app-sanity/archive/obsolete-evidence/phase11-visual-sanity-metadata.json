@@ -1,0 +1,36 @@
+{
+  "capturedAt": "2026-03-19T07:36:00.600Z",
+  "workflowRoot": "docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-05-ipc-layer-integrity-fix",
+  "screenshotDir": "docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-05-ipc-layer-integrity-fix/outputs/phase-11/screenshots-app-sanity",
+  "baseUrl": "http://127.0.0.1:5196",
+  "scenarios": [
+    {
+      "tc": "TC-VIS-01",
+      "file": "TC-VIS-01-skill-center-overview.png",
+      "route": "/advanced/skill-center?skipAuth=true",
+      "selector": "[data-testid=\"skill-center-view\"]",
+      "note": "Skill Center 一覧表示の視覚健全性"
+    },
+    {
+      "tc": "TC-VIS-02",
+      "file": "TC-VIS-02-skill-center-detail-panel.png",
+      "route": "/advanced/skill-center?skipAuth=true",
+      "selector": "[data-testid=\"skill-search-input\"]",
+      "note": "Skill Center 詳細パネルの視覚健全性"
+    },
+    {
+      "tc": "TC-VIS-03",
+      "file": "TC-VIS-03-skill-management-list.png",
+      "route": "/advanced/skill-management-panel?skipAuth=true",
+      "selector": "[data-testid=\"skill-management-panel\"]",
+      "note": "Skill Management Panel 一覧表示の視覚健全性"
+    },
+    {
+      "tc": "TC-VIS-04",
+      "file": "TC-VIS-04-skill-management-editor.png",
+      "route": "/advanced/skill-management-panel?skipAuth=true",
+      "selector": "[data-testid=\"skill-management-panel\"]",
+      "note": "Skill Management Panel 編集画面の視覚健全性"
+    }
+  ]
+}

@@ -299,6 +299,9 @@ IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフ�
 - 新規ハンドラ作成時: [ipc-contract-checklist.md](./ipc-contract-checklist.md) Phase 1-6 を実施
 - 引数形式変更時: P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
 - バリデーション: P42準拠3段バリデーション必須
+- skill:get-detail / skill:update のような skill 管理系 IPC は object payload を標準化し、`{ skillId }` / `{ skillName, updates }` を明示する
+- `skill:get-detail` は Preload 側で `safeInvokeUnwrap` を使うため、Main の失敗応答を `null` で曖昧化しない
+- `skill:update` は P44（構造ドリフト）と P45（命名ドリフト）を同時監視し、send/receive の双方を object payload に揃える
 
 | 検証項目             | 確認方法                                        |
 | -------------------- | ----------------------------------------------- |
@@ -468,5 +471,18 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 **テストカバレッジ**: 156テスト（94.30% Line Coverage）
 
 **関連タスク**: slide-directory-settings（2026-01-14完了）
+
+---
+
+## IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了）
+
+| チャンネル | sender検証 | whitelist | unwrap | P42 3段 | P45命名 |
+|------------|-----------|-----------|--------|---------|---------|
+| `skill:update` | validateIpcSender | ALLOWED_INVOKE_CHANNELS L494 | safeInvokeUnwrap | PASS | skillName |
+| `skill:get-detail` | validateIpcSender(既存) | ALLOWED_INVOKE_CHANNELS L486 | safeInvokeUnwrap | PASS | skillId |
+
+- Preload層早期拒否: バリデーション失敗時は `Promise.reject()` で invoke を呼ばない
+- エラーサニタイズ: `sanitizeErrorMessage()` でパス/IP/機密情報をマスク
+- unregister: `ipcMain.removeHandler(IPC_CHANNELS.SKILL_UPDATE)` L844 で P5対策
 
 ---

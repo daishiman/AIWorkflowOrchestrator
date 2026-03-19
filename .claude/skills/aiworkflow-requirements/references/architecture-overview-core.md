@@ -252,9 +252,9 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 - **引数**: `mainWindow: BrowserWindow`, `service: SkillService`
 - **mainWindow用途**: Sender検証（`validateIpcSender`）、権限/進捗イベントの通知経路
 - **service用途**: `SkillService` を中心に `SkillAnalyzer` / `SkillImprover` / `PromptOptimizer` / `SkillForker` / `SkillScheduler` へ処理委譲
-- **対応チャネル**: `skill:list`, `skill:scan`, `skill:getImported`, `skill:import`, `skill:remove`, `skill:create`, `skill:get-detail`, `skill:execute`, `skill:abort`, `skill:get-status`, `skill:analyze`, `skill:improve`, `skill:optimize`, `skill:optimize:variants`, `skill:optimize:evaluate`, `skill:fork`, `skill:schedule:*`
+- **対応チャネル**: `skill:list`, `skill:scan`, `skill:getImported`, `skill:import`, `skill:remove`, `skill:create`, `skill:get-detail`, `skill:update`, `skill:execute`, `skill:abort`, `skill:get-status`, `skill:analyze`, `skill:improve`, `skill:optimize`, `skill:optimize:variants`, `skill:optimize:evaluate`, `skill:fork`, `skill:schedule:*`
 - **セキュリティ**: 全 invoke ハンドラーで sender 検証 + P42準拠バリデーション + エラーサニタイズを適用
-- **関連タスク**: TASK-9C, TASK-9E, TASK-9G, TASK-10A-C
+- **関連タスク**: TASK-9C, TASK-9E, TASK-9G, TASK-10A-C, TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001
 
 **Pattern 3 詳細（registerSkillFileHandlers）**:
 
@@ -391,4 +391,3 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 📖 詳細: [interfaces-core.md](./interfaces-core.md)
 
 ---
-

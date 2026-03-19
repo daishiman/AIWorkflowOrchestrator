@@ -125,6 +125,19 @@ export class SkillService {
   }
 
   /**
+   * スキルを更新する（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001）
+   * @param skillName - スキル名
+   * @param updates - 更新内容
+   */
+  async updateSkill(
+    skillName: string,
+    updates: Record<string, unknown>,
+  ): Promise<void> {
+    // TODO: 実際の更新ロジックを実装する（後続タスクで対応）
+    log.info(`[SkillService] updateSkill: ${skillName}`, updates);
+  }
+
+  /**
    * IDでスキルを取得する
    */
   async getSkillById(id: SkillId): Promise<Skill | null> {

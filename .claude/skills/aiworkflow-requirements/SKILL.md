@@ -1,14 +1,13 @@
 ---
 name: aiworkflow-requirements
 description: |
-  AIWorkflowOrchestratorの正本仕様を `references/` から検索・参照・更新するスキル。
-  resource-map / quick-reference / topic-map を起点に、要件確認、UI・状態管理・API/IPC・security・task-workflow/lessons/unassigned 同期を扱う。
-  主対象: safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator、ViewType / renderView。
+  `references/` 正本仕様を resource-map / quick-reference / topic-map / keywords から段階参照し、要件確認、API/IPC契約確認、UI/状態管理/セキュリティ判断、task-workflow・lessons-learned・未タスク同期を行う。
+  主対象は safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator、view routing、権限ガバナンス、safety gate。
   Anchors:
   • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, ViewType, renderView, view routing, 画面ルーティング
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, view routing, renderView, navContract, safety gate, permission governance, ToolRiskLevel
 allowed-tools:
   - Read
   - Glob
@@ -18,9 +17,12 @@ allowed-tools:
 
 # AIWorkflow Requirements Manager
 ## 概要
+
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
+
 ## クイックスタート
+
 ### 仕様を探す
 
 ```bash
@@ -186,7 +188,6 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.02.05** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査同期**: `ui-ux-feature-components-reference.md` / `ui-ux-navigation.md` / `arch-state-management-*.md` / `workflow-skill-lifecycle-routing-render-view-foundation.md` / `task-workflow-completed-skill-lifecycle*.md` / `lessons-learned-viewtype-electron-ui.md` を更新し、detail panel 起点の `skill-editor` / `skillAnalysis` handoff、main shell screenshot 7件、selector scope 教訓を system spec 正本へ同期 |
 | **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了記録追加**: GAP-01/02/03 実装完了記録追加 |
@@ -492,6 +493,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（OAuth CSRF/State詳細を分離）、security-principles.md軽量化（参照リンク追加）、patterns.md拡充（OAuth成功/失敗パターン10件追加） |
 | **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
 | **8.41.0** | **2026-03-14** | **TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001完了**: llm-workspace-chat-edit.md更新。55テスト全PASS |
+| 2026-03-19 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 | SKILL_UPDATE/SKILL_GET_DETAIL IPC層不整合修正完了 |
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
 > 古い履歴（v9.01.90以前・v8.41.0以前）は [LOGS.md](LOGS.md) / [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

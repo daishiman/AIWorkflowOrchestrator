@@ -250,7 +250,11 @@ export function registerSkillHandlers(
       if (!validation.valid) {
         throw toIPCValidationError(validation);
       }
-      if (typeof args?.skillId !== "string" || args.skillId.trim() === "") {
+      if (
+        typeof args?.skillId !== "string" ||
+        args.skillId === "" ||
+        args.skillId.trim() === ""
+      ) {
         throw {
           code: "VALIDATION_ERROR",
           message: "skillId must be a non-empty string",
@@ -264,6 +268,68 @@ export function registerSkillHandlers(
         return { success: false, error: "スキルが見つかりません" };
       } catch (error) {
         log.error("[skillHandlers] skill:get-detail failed:", error);
+        return {
+          success: false,
+          error: sanitizeErrorMessage(error),
+        };
+      }
+    },
+  );
+
+  // skill:update - スキルを更新（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001）
+  // P45準拠: skillName（セマンティクスに一致、skillId ではない）
+  // P42準拠: 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_UPDATE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { skillName: string; updates: Record<string, unknown> },
+    ) => {
+      const validation = validateIpcSender(event, IPC_CHANNELS.SKILL_UPDATE, {
+        getAllowedWindows: () => [mainWindow],
+      });
+      if (!validation.valid) {
+        throw toIPCValidationError(validation);
+      }
+
+      if (args === null || typeof args !== "object" || Array.isArray(args)) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "payload must be a non-null object",
+        };
+      }
+
+      const { skillName, updates } = args;
+
+      // P42準拠 3段バリデーション（型チェック → 空文字列 → トリム空文字列）
+      if (
+        typeof skillName !== "string" ||
+        skillName === "" ||
+        skillName.trim() === ""
+      ) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "skillName must be a non-empty string",
+        };
+      }
+
+      // updates のバリデーション
+      if (
+        updates === null ||
+        typeof updates !== "object" ||
+        Array.isArray(updates)
+      ) {
+        throw {
+          code: "VALIDATION_ERROR",
+          message: "updates must be a non-null object",
+        };
+      }
+
+      try {
+        await skillService.updateSkill(skillName, updates);
+        return { success: true, data: undefined };
+      } catch (error) {
+        log.error("[skillHandlers] skill:update failed:", error);
         return {
           success: false,
           error: sanitizeErrorMessage(error),
@@ -779,6 +845,7 @@ export function unregisterSkillHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_IMPORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_REMOVE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_DETAIL);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_UPDATE); // TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_EXECUTE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_ABORT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_GET_STATUS);

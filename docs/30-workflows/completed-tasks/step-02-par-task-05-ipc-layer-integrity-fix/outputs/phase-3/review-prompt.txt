@@ -1,0 +1,43 @@
+TASK: TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001
+Phase: 3 - 設計レビュー入力
+
+## レビュー対象
+
+設計書: docs/.../outputs/phase-2/design.md
+バリデーション設計: docs/.../outputs/phase-2/validation-design.md
+
+## 設計サマリー
+
+本タスクはスキル関連IPC層の2件のCritical不整合を解消する設計。
+
+### Critical 1: SKILL_UPDATE デッドチャンネル解消
+
+- skillHandlers.ts に skill:update の ipcMain.handle() を新規追加
+- unregisterSkillHandlers() に removeHandler(IPC_CHANNELS.SKILL_UPDATE) を追加
+- 引数形式: { skillName: string; updates: SkillUpdateParams }
+- P42準拠3段バリデーション + P60準拠レスポンス形式
+
+### Critical 2: SKILL_GET_DETAIL Preload API 公開
+
+- skill-api.ts に getDetail(skillId) メソッドを追加
+- safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId }) で呼び出し
+- 既存ハンドラの引数形式 { skillId: string } に合わせる（P44準拠）
+
+### 共通: packages/shared チャンネル定数追加
+
+- packages/shared/src/ipc/channels.ts に SKILL_GET_DETAIL / SKILL_UPDATE を追加（P32準拠）
+
+## レビュー観点
+
+1. IPC整合性（IPC-1〜6）
+2. セキュリティ（SEC-1〜4）
+3. バリデーション（VAL-1〜6）
+4. 型定義整合性（TYPE-1〜4）
+5. エラーハンドリング（ERR-1〜3）
+6. 既存テストへの影響（TEST-1〜3）
+7. Pitfallチェック（P5/P23/P32/P42/P44/P45/P60）
+
+## 期待するレビュー出力
+
+各観点: PASS / FAIL / N/A の判定 + 判定根拠
+最終判定: PASS / MINOR / MAJOR / CRITICAL

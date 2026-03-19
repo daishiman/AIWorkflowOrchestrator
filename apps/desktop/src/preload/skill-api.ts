@@ -19,6 +19,7 @@ import type {
   SkillExecutionResponse,
   ExecutionInfo,
   RemoveResult,
+  Skill,
   SkillName,
 } from "@repo/shared/types/skill";
 import type {
@@ -155,6 +156,25 @@ export interface SkillAPI {
    * @param skillName - スキル名
    */
   remove: (skillName: SkillName) => Promise<RemoveResult>;
+
+  /**
+   * スキル詳細を取得する（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001）
+   * @param skillId - スキルID（非空文字列必須）
+   * @returns スキル詳細オブジェクト（見つからない場合は reject）
+   * @throws {{ code: "VALIDATION_ERROR" }} skillId が不正な場合
+   */
+  getDetail: (skillId: string) => Promise<Skill>;
+
+  /**
+   * スキルを更新する（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001）
+   * @param skillName - スキル名（非空文字列必須、P45準拠）
+   * @param updates - 更新内容（非null オブジェクト必須）
+   * @throws {{ code: "VALIDATION_ERROR" }} 引数が不正な場合
+   */
+  update: (
+    skillName: string,
+    updates: Record<string, unknown>,
+  ) => Promise<void>;
 
   /**
    * 完了イベントを購読
@@ -481,6 +501,54 @@ export const skillAPI: SkillAPI = {
 
   remove: (skillName: SkillName): Promise<RemoveResult> =>
     safeInvoke(IPC_CHANNELS.SKILL_REMOVE, skillName),
+
+  // === Skill Detail & Update Operations (TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001) ===
+
+  getDetail: (skillId: string): Promise<Skill> => {
+    // P42準拠 3段バリデーション（Preload層での早期拒否）
+    if (
+      typeof skillId !== "string" ||
+      skillId === "" ||
+      skillId.trim() === ""
+    ) {
+      return Promise.reject({
+        code: "VALIDATION_ERROR",
+        message: "skillId must be a non-empty string",
+      });
+    }
+    return safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId });
+  },
+
+  update: (
+    skillName: string,
+    updates: Record<string, unknown>,
+  ): Promise<void> => {
+    // P42準拠 3段バリデーション（Preload層での早期拒否）
+    if (
+      typeof skillName !== "string" ||
+      skillName === "" ||
+      skillName.trim() === ""
+    ) {
+      return Promise.reject({
+        code: "VALIDATION_ERROR",
+        message: "skillName must be a non-empty string",
+      });
+    }
+    if (
+      updates === null ||
+      typeof updates !== "object" ||
+      Array.isArray(updates)
+    ) {
+      return Promise.reject({
+        code: "VALIDATION_ERROR",
+        message: "updates must be a non-null object",
+      });
+    }
+    return safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, {
+      skillName,
+      updates,
+    });
+  },
 
   onComplete: (
     callback: (data: { executionId: string }) => void,
