@@ -81,7 +81,7 @@
 
 | タスクID                                              | 概要                                                                                                                   | 参照                                                                                                         |
 | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                    | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`               |
+| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                    | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`               |
 | UT-IMP-PHASE12-SUBAGENT-ARTIFACT-GUARD-001            | 3workflow再監査のSubAgent成果物突合を固定し、仕様書別実行ログの欠落を防ぐ（完了: 2026-03-04）                          | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-subagent-artifact-guard-001.md`          |
 | UT-IMP-PHASE12-SYSTEM-SPEC-EXTRACTION-GUARD-001       | `aiworkflow-requirements` からの必要仕様抽出と台帳同期を同一ターンで固定する（完了: 2026-03-04）                       | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-system-spec-extraction-guard-001.md`     |
 | UT-IMP-PHASE12-THREE-WORKFLOW-AUDIT-SCOPE-GUARD-001   | 3workflow再監査で `scope.currentFiles` / `currentViolations` / `baselineViolations` を分離記録する（完了: 2026-03-04） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-three-workflow-audit-scope-guard-001.md` |
@@ -117,7 +117,7 @@
 
 - `skill-creator` の `phase12-system-spec-retrospective-template.md` に preview preflight と失敗時未タスク化を追加。
 - `phase12-spec-sync-subagent-template.md` に preflight と screenshot coverage 検証の必須化を追加。
-- 未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）をテンプレートへ追補。
+- 未タスク配置先判定（未完了=`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）をテンプレートへ追補。
 - `resource-map.md` と `patterns.md` の説明をテンプレート更新に合わせて同期。
 
 ### 苦戦箇所: パターンとテンプレート本体が同期しないと再利用時に漏れが出る
@@ -247,9 +247,9 @@
 
 | 未タスクID        | 目的                                                         | タスク仕様書                                                                                 |
 | ----------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認）         | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md`         |
-| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界）   | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md`        |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認）         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md`         |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界）   | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md`        |
 
 ### 追補: UT-TASK-10A-B-001 完了（2026-03-05）
 
@@ -277,13 +277,13 @@
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 課題       | 完了済み `UT-TASK-10A-B-001` 指示書と未実施 `UT-TASK-10A-B-002〜008` 指示書が `completed-tasks/unassigned-task` に混在し、未タスク管理の配置規則とドリフトした                                                  |
 | 原因       | 完了移管と未実施管理の境界をファイル配置ルールで固定せず、参照更新だけで完了判定した                                                                                                                            |
-| 対処       | `UT-TASK-10A-B-001` は `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置。関連参照を一括修正 |
+| 対処       | `UT-TASK-10A-B-001` は `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ再配置。関連参照を一括修正 |
 | 検証       | `verify-unassigned-links` = 102/102、`audit --json --diff-from HEAD` = `currentViolations=0`, `baselineViolations=90`                                                                                           |
 | 標準ルール | 指示書運用は「完了=completed-tasks」「未実施=unassigned-task」で物理分離し、監査は `current` と `baseline` を分けて記録する                                                                                     |
 
 #### クイック解決カード（UT-TASK-10A-B-001）
 
-1. 配置判定を先に確定する。未実施UTは `docs/30-workflows/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ置く。`completed-tasks/unassigned-task` は legacy のみを許容する。
+1. 配置判定を先に確定する。未実施UTは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ置く。`completed-tasks/unassigned-task` は legacy のみを許容する。
 2. `audit-unassigned-tasks --target-file` は未実施UTにのみ適用し、完了済みUT指示書には適用しない。
 3. UI証跡は `TC-11-01`〜`TC-11-05` を同時刻で再取得し、`validate-phase11-screenshot-coverage` を 5/5 PASS で固定する。
 4. 監査結果は `verify-unassigned-links`（参照整合）と `audit --diff-from HEAD`（`current`=合否 / `baseline`=監視）を分離して記録する。
@@ -303,7 +303,7 @@ find docs/30-workflows/unassigned-task -maxdepth 1 -name 'task-10a-b-*.md' | wc 
 | 項目       | 内容                                                                                                     |
 | ---------- | -------------------------------------------------------------------------------------------------------- |
 | 課題       | 配置先ルール（完了済みUT/未実施UT/legacy）が資料ごとに揺れ、`target-file` 適用境界が誤解される           |
-| 未タスク化 | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md`                    |
+| 未タスク化 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md`                    |
 | 目的       | 配置先3分類と監査境界を1つの運用ガードへ統合し、再監査の手戻りを削減する                                 |
 | 完了判定   | `verify-unassigned-links` PASS + `audit --target-file`/`audit --diff-from HEAD` の `currentViolations=0` |
 

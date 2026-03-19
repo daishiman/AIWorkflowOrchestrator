@@ -54,7 +54,7 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | contrast audit の baseline 件数と、`docs/30-workflows/unassigned-task/` 全体の legacy 監査値が別の意味なのに、Phase 12 で 1 つの `baseline` として潰れて見える |
+| 課題 | contrast audit の baseline 件数と、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 全体の legacy 監査値が別の意味なのに、Phase 12 で 1 つの `baseline` として潰れて見える |
 | 再発条件 | `unassigned-task-detection.md` に workflow backlog だけを書き、指定ディレクトリ監査の `current/baseline` を別欄で残さない |
 | 対処 | `workflow baseline backlog=64` と `directory baselineViolations=134` を別表へ分離し、既存 normalization task 3件への導線を追加した |
 | 標準ルール | Phase 12 で未タスク配置を確認するときは「今回差分の配置」「今回差分の品質」「全体 legacy 状況」の3行を必ず残す |
@@ -80,8 +80,8 @@
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ねる | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
-| UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001 | worktree の native dependency 不整合を事前検知する | `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の preflight を build / harness / baseUrl / native dependency まで含めて 1 コマンドへ束ねる | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| UT-FIX-WORKTREE-NATIVE-BINARY-GUARD-001 | worktree の native dependency 不整合を事前検知する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-fix-worktree-native-binary-guard-001.md` |
 
 ### 2026-03-11 TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001
 
@@ -190,7 +190,7 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | current task 由来の未タスクが 0 件でも、`docs/30-workflows/unassigned-task/` 全体の legacy baseline が見えず、「指定ディレクトリも健全」と誤読されやすい |
+| 課題 | current task 由来の未タスクが 0 件でも、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 全体の legacy baseline が見えず、「指定ディレクトリも健全」と誤読されやすい |
 | 再発条件 | `unassigned-task-detection.md` に `件数: 0` だけを書き、`currentViolations` / `baselineViolations` と既存 remediation task を残さない |
 | 解決策 | `verify-unassigned-links=213/213`、`audit --diff-from HEAD current=0 / baseline=133`、`format=91 / naming=5 / misplaced=37` を明記し、既存 backlog 3件の参照を固定した |
 | 標準ルール | 0件報告では「今回タスク由来 0 件」と「ディレクトリ全体の legacy backlog 継続」を必ず分離し、既存改善未タスクの参照先を併記する |

@@ -223,7 +223,7 @@ vitest run --coverage src/main/services/skill/ 2>&1 | grep "SkillScanner"
 
 | タスクID                                          | タスク名                                            | 優先度 | 仕様書                                                                                                                                                                                      |
 | ------------------------------------------------- | --------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低     | [`docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md`](../../../docs/30-workflows/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md) |
+| TASK-FIX-14-2-SKILLEXECUTOR-CONSOLE-LOG-MIGRATION | SkillExecutor の console ログを electron-log に移行 | 低     | [`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-fix-14-2-skillexecutor-console-log-migration.md) |
 
 ---
 

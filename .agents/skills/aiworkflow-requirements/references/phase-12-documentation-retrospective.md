@@ -24,7 +24,7 @@
 - `skill-creator` へ shallow PASS 防止パターンを追加し、同種 docs-heavy task の再監査を短手順化した
 
 4. 未タスクと blocker の整理
-- active follow-up は `docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` のみ
+- active follow-up は `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` のみ
 - active unassigned task を task-specification-creator 形式の 10 見出しへ正規化した
 - `TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001` は対応済み履歴として維持した
 

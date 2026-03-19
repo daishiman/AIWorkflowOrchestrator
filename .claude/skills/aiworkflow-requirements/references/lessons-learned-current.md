@@ -18,6 +18,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-19 | 2.1.1 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査で `lessons-learned-ipc-preload-runtime.md` に task09 教訓4件を同期したことを index へ反映 |
 | 2026-03-19 | 2.1.0 | 1605行超過のため重複コンテンツ（行717-1584）を削除。2026-03-19 Conversation DB 教訓を lessons-learned-conversation-db-robustness.md に分割。分割ファイル一覧テーブルに新ファイル参照を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化。分類軸: ViewType/UI、IPC/Preload/Runtime、テスト/型安全、Phase12/ワークフロー |
 | 2026-03-17 | 1.30.1 | 500行制限対応。2026-03-14〜03-15 の教訓セクション（TASK-SKILL-LIFECYCLE-04/05、TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 P57〜P61、TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 追補、esbuild/payload 再監査）を lessons-learned-archive-2026-03.md へ移動 |
@@ -39,6 +40,7 @@
 
 > 2026-03-13〜03-14 の旧セクション（TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 / CHAT-EDIT / TERMINAL-SURFACE）は [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) を参照。
 > TASK-SKILL-LIFECYCLE-04/05、P57〜P61 は [lessons-learned-skill-lifecycle-test-hardening.md](lessons-learned-skill-lifecycle-test-hardening.md) および [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) を参照。
+> 2026-03-19 task09 再監査の current 教訓は [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) を参照。
 
 ---
 
@@ -59,7 +61,7 @@
 | ファイル | カテゴリ | 含まれるタスク | 行数目安 |
 | --- | --- | --- | --- |
 | [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 | ~160 |
-| [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001, TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | ~200 |
+| [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001, TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001, TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 | ~200 |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001 (tool-risk-config), UT-06-005 (Permission Fallback) | ~170 |
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07 | ~290 |
 | [lessons-learned-conversation-db-robustness.md](lessons-learned-conversation-db-robustness.md) | Conversation DB / SQLite 堅牢化 | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | ~60 |

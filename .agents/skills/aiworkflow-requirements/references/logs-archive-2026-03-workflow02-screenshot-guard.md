@@ -16,7 +16,7 @@
 - SubAgent-D（成果物同期）: workflow02 の `spec-update-summary.md` / `unassigned-task-detection.md` を件数・監査値・未タスク5件へ再同期
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` と `docs/30-workflows/issues/issue-972.md` の実体を確認
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md` と `docs/30-workflows/issues/issue-972.md` の実体を確認
 - `task-workflow.md` 追補検証証跡へ `lsof -nP -iTCP:5174 -sTCP:LISTEN` を追加し、残課題へ `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001` を登録
 - `ui-ux-feature-components.md` の workflow02 関連未タスク表/苦戦箇所へ Port競合行を追加
 - `lessons-learned.md` に Port競合の教訓（ポート検査→再撮影→coverage→台帳同期）を追記
@@ -63,7 +63,7 @@
 - SubAgent-C（履歴同期）: `SKILL.md` / `task-workflow.md` / `lessons-learned.md` の変更履歴へ同一内容を記録
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` の実体を確認
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md` の実体を確認
 - `task-workflow.md` に新規IDを2箇所（追加未タスク表・残課題テーブル）追記
 - `lessons-learned.md` の「関連未タスク（2026-03-04 追補）」へ新規IDを追記
 - `task-workflow.md`（v1.67.2）/ `lessons-learned.md`（v1.29.10）/ `SKILL.md`（v9.01.7）の履歴を同期
@@ -185,7 +185,7 @@
 ### 実施内容
 - `task-workflow.md` の再監査証跡を最新値へ更新（`verify-unassigned-links`: 90/90、`audit --diff-from HEAD`: baseline=92）
 - 追加苦戦箇所「UI再撮影前 preflight 不足（`ERR_CONNECTION_REFUSED` / module resolve fail）」を `task-workflow.md` / `lessons-learned.md` へ反映
-- 未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を `docs/30-workflows/unassigned-task/` 正本へ登録し、残課題テーブルへ同期
+- 未タスク `UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 正本へ登録し、残課題テーブルへ同期
 - `phase-12-documentation.md` を `completed` に同期し、`unassigned-task-detection.md` へ「新規1件登録」を追記
 
 ### 結果
@@ -256,7 +256,7 @@
 - 目的: 再確認で残った運用課題を未タスク仕様書として分離し、再利用可能な改善導線を固定する
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/` に以下2件を新規作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に以下2件を新規作成
   - `task-imp-task10a-d-subagent-execution-log-guard-001.md`
   - `task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md`
 - `task-workflow.md` の TASK-10A-D セクションと残課題テーブルに2件を登録

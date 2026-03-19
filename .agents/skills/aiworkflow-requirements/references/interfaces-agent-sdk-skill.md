@@ -194,8 +194,8 @@ const SKILL_DISTRIBUTION_CHANNELS = {
 
 | 未タスクID | 役割 | 指示書 |
 | --- | --- | --- |
-| `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` | 上記型のランタイム実装 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-type-impl.md` |
-| `UT-SKILL-LIFECYCLE-08-NAMING-FIX` | boolean 命名規約の是正 | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
+| `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` | 上記型のランタイム実装 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-skill-lifecycle-08-type-impl.md` |
+| `UT-SKILL-LIFECYCLE-08-NAMING-FIX` | boolean 命名規約の是正 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
 
 ---
 

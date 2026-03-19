@@ -6,9 +6,13 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査・仕様同期完了（task09 primary target 10ファイル更新 + screenshot 5枚 + UT-SLIDE 4件 formalize） |
 | 2026-03-19 - TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（conversationDatabase.ts Factory 関数パターン / ipc/index.ts DI シグネチャ変更 / main/index.ts will-quit ライフサイクル管理 / 未タスク3件検出） |
 | 2026-03-19 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 canonical path 是正（completed-tasks 正本化 / legacy phase11 screenshot 重複除去 / capture script 同期） |
+| 2026-03-18 - TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（ChatPanel実AIチャット配線 8状態+12コンポーネント+10IPC設計 185テストPASS Phase 1-12完了） |
+| 2026-03-18 - TASK-SKILL-LIFECYCLE-02 SkillCenterView CTA ルーティング完了（ヘッダーCTA + JourneyPanel CTA 3種 + ナビゲーション関数3つ + 34テスト全PASS + 未タスク1件） |
 | 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
+| 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了（handlePermissionCheck 接続 + sendPermissionRequestWithTimeout + PermissionTimeoutError + timeout→abort） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
@@ -70,6 +74,33 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - step-01 workflow 正本を `docs/30-workflows/completed-tasks/step-01-seq-task-01-viewtype-renderView-foundation/` に統一
   - screenshot metadata と capture script の出力先を正本 path に合わせて同期
   - legacy 配置に残っていた Phase 11 重複証跡を整理
+
+## TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査・仕様同期完了（2026-03-19）
+
+- タスク名: Slide / Modifier / Legacy Agent 経路の runtime 整流
+- 種別: 設計タスクの再監査 / documentation sync
+- ワークフロー: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/`
+- 主な更新先:
+  - `references/workflow-ai-runtime-authmode-unification.md`: task 09 artifact inventory / primary target / change history を追記
+  - `references/api-ipc-system-core.md`: slide IPC 12 channel の target 契約と current drift を追記
+  - `references/interfaces-agent-sdk-skill-advanced.md`: Slide Runtime / Modifier Skill Alignment 節を追加
+  - `references/arch-electron-services-details-part2.md`: RuntimeResolver 採用計画を追加
+  - `references/ui-ux-feature-components-details.md`: Slide Workspace runtime alignment と screenshot evidence を追加
+  - `references/arch-state-management-advanced.md`: P31 selector drift と slide slice 方針を追加
+  - `references/security-electron-ipc-core.md`: slide runtime/auth-mode IPC 境界を追加
+  - `references/task-workflow-completed.md` / `references/task-workflow-backlog.md`: task 09 完了と UT-SLIDE 系 4 件を同期
+  - `references/lessons-learned-ipc-preload-runtime.md` / `references/lessons-learned-current.md`: 再監査で得た教訓を追記
+- 画面検証:
+  - Phase 11 に representative screenshot 5 枚、`screenshot-plan.json`、`phase11-capture-metadata.json` を current workflow へ集約
+  - `esbuild` バイナリ不一致で preview 不可だったため、専用 harness + static review board で代替 capture
+- 検証結果:
+  - `verify-all-specs` 13/13 PASS、`validate-phase11-screenshot-coverage` PASS、`validate-phase12-implementation-guide` PASS、`verify-unassigned-links --source .../unassigned-task-detection.md` PASS
+  - repo-wide `verify-unassigned-links.js` は task09 外の既存 missing link 6件で FAIL のままだが、task09 自体は `audit --diff-from HEAD` で `currentViolations=0`、mirror parity も PASS
+- フォローアップ:
+  - `UT-SLIDE-IMPL-001`
+  - `UT-SLIDE-UI-001`
+  - `UT-SLIDE-P31-001`
+  - `UT-SLIDE-HANDOFF-DUP-001`
 
 ## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
 

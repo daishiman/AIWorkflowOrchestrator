@@ -97,6 +97,65 @@ export type RuntimeResolution =
 | --- | --- | --- |
 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | Skill/Agent runtime routing 統合クロージャ | 完了（2026-03-15） |
 
+## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+
+slide 経路でも `RuntimeResolver` を共通採用し、`agent-client.ts` / `modifier-skill.ts` の legacy path を `skill-executor.ts` に統合する。
+
+### DI 配線の正本
+
+| ステップ | 処理 | 実装先 |
+| --- | --- | --- |
+| 1 | `registerAllIpcHandlers()` で `RuntimeResolver` を 1 回生成する | `apps/desktop/src/main/ipc/index.ts` |
+| 2 | slide handler 登録時に resolver / auth services を注入する | `apps/desktop/src/main/slide/ipc-handlers.ts` |
+| 3 | `skill-executor.ts` が `integrated` / `handoff` を判定する | `apps/desktop/src/main/slide/skill-executor.ts` |
+| 4 | `handoffGuidance` を Renderer へ返し、UI は terminal launcher を出す | `apps/desktop/src/renderer/slide/SlideWorkspace.tsx` |
+
+### 責務境界
+
+| コンポーネント | 責務 |
+| --- | --- |
+| `RuntimeResolver` | auth mode / API key 有無による `integrated` / `handoff` 判定 |
+| `slide/ipc-handlers.ts` | sender 検証 + payload 検証 + service 委譲 |
+| `slide/skill-executor.ts` | slide phase 実行と handoff result 生成 |
+| `slide/sync-manager.ts` | reverse-sync / watcher / status authority |
+| `slide/agent-client.ts` | 廃止予定（direct SDK path） |
+| `slide/modifier-skill.ts` | 廃止予定（独立 modifier path） |
+
+### DI 配線の正本（完了設計）
+
+> **完了タスク**: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001（spec_created, 2026-03-19）
+
+| コンポーネント | 依存インターフェース | P61対策（DIP準拠） |
+| --- | --- | --- |
+| `registerSlideIpcHandlers` | `ISyncManager`, `ISkillExecutor` | 具象クラスではなくインターフェースを引数に受け取る |
+| `skill-executor.ts` | `IAuthKeyService`, `IAuthModeService` | `RuntimeResolver.resolve()` で `integrated` / `handoff` を判定 |
+| `agent-client.ts` | — | 廃止予定（Direct SDK / electron-store / env fallback path を排除） |
+
+**廃止対象サービスとその代替**:
+
+| 廃止対象 | 代替 | 理由 |
+| --- | --- | --- |
+| `agent-client.ts` の Direct SDK 呼び出し | `skill-executor.ts` + `RuntimeResolver` 経由 | safeStorage/env fallback の legacy path を排除 |
+| `modifier-skill.ts` の独立実装 | `skill-executor.ts` の `phase === "modifier"` 分岐 | 単一実行面へ統合 |
+
+### current drift（2026-03-19）
+
+| 項目 | 現状 |
+| --- | --- |
+| slide handler 登録 | `registerSlideIpcHandlers()` が `ipc/index.ts` へ未接続 |
+| runtime 判定 | slide path で `RuntimeResolver` 未使用 |
+| agent client | `@anthropic-ai/sdk` / `safeStorage` / `electron-store` / env fallback を直接利用 |
+| modifier path | `modifier-skill.ts` が独立実装のまま残存 |
+
+### follow-up
+
+| 未タスクID | 内容 |
+| --- | --- |
+| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 |
+| `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 |
+
 ## SkillScheduler / ScheduleStore（TASK-9G）
 
 スキルスケジュール実行は、Facade の `SkillService` とは独立した専用サービスで構成する。
@@ -171,9 +230,9 @@ export type RuntimeResolution =
 
 | 未タスクID | 概要 | 優先度 | 指示書 |
 | --- | --- | --- | --- |
-| UT-06-003-PRELOAD-API-IMPL | Preload 層 safeInvoke 呼び出し追加 | 高 | `docs/30-workflows/unassigned-task/task-ut-06-003-preload-api-impl.md` |
-| UT-06-003-METADATA-PROVIDER-IMPL | stub → 実 SkillMetadataProvider 実装 | 中 | `docs/30-workflows/unassigned-task/task-ut-06-003-metadata-provider-impl.md` |
-| UT-06-003-DIP-REFACTOR | unregisterSafetyGateHandlers 追加（P5 対策） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-003-dip-refactor.md` |
+| UT-06-003-PRELOAD-API-IMPL | Preload 層 safeInvoke 呼び出し追加 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-preload-api-impl.md` |
+| UT-06-003-METADATA-PROVIDER-IMPL | stub → 実 SkillMetadataProvider 実装 | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-metadata-provider-impl.md` |
+| UT-06-003-DIP-REFACTOR | unregisterSafetyGateHandlers 追加（P5 対策） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-dip-refactor.md` |
 
 ---
 

@@ -44,7 +44,7 @@
 
 ### 実施内容
 - `docs/30-workflows/TASK-UI-05-SKILL-CENTER-VIEW/` を `completed-tasks/` へ移動
-- `docs/30-workflows/unassigned-task/task-ui-05-*.md` 7件を `completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ui-05-*.md` 7件を `completed-tasks/TASK-UI-05-SKILL-CENTER-VIEW/unassigned-task/` へ移動
 - `task-workflow.md` / `ui-ux-components.md` / `ui-ux-feature-components.md` の参照パスを新ディレクトリへ同期
 - `SKILL.md` 変更履歴を `8.92.0` に更新
 
@@ -160,7 +160,7 @@
 - `references/task-workflow.md` を更新
   - 完了タスクセクションに TASK-UI-05 を追加
   - 残課題へ `UT-UI-05-001` 〜 `UT-UI-05-006` を登録
-- 未タスク指示書を `docs/30-workflows/unassigned-task/` に6件配置
+- 未タスク指示書を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に6件配置
 - 検証コマンドを実行
   - verify-all-specs: PASS (13/13, error=0)
   - validate-phase-output: PASS (28項目)

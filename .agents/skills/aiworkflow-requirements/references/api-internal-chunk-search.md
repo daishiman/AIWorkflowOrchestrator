@@ -112,7 +112,7 @@ searchChunksByNear関数を使用し、第2引数にキーワード配列（例:
 
 **参照実装**: `packages/shared/src/db/queries/chunks-search.ts`
 
-**未タスク指示書**: [`task-imp-chunk-search-api-layers.md`](../../../docs/30-workflows/unassigned-task/task-imp-chunk-search-api-layers.md)（Service/REST/IPC層の実装タスク）
+**未タスク指示書**: [`task-imp-chunk-search-api-layers.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-chunk-search-api-layers.md)（Service/REST/IPC層の実装タスク）
 
 ---
 

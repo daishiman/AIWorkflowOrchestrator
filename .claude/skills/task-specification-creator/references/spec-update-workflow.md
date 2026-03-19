@@ -26,6 +26,8 @@
 | 「`.agents` を更新したから spec sync も終わった」 | 正本は `.claude`。mirror は代替不可 |
 | 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
 | 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
+| 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
 
 ## 入口ファイル
 

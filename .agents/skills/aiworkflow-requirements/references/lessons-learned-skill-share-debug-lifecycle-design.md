@@ -49,15 +49,15 @@
 | 項目   | 内容                                                                                                                                  |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
 | 課題   | UT-9F 系6件が `docs/30-workflows/completed-tasks/skill-share/unassigned-task/` に配置され、正本ディレクトリと不一致だった             |
-| 原因   | 親ワークフロー配下配置と共通 `docs/30-workflows/unassigned-task/` の運用ルールを混同した                                              |
-| 解決策 | 6件を `docs/30-workflows/unassigned-task/` に9セクション形式で再作成し、`unassigned-task-report.md` / `task-workflow.md` の参照を同期 |
+| 原因   | 親ワークフロー配下配置と共通 `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` の運用ルールを混同した                                              |
+| 解決策 | 6件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に9セクション形式で再作成し、`unassigned-task-report.md` / `task-workflow.md` の参照を同期 |
 | 教訓   | 未タスク作成は「配置先確認 + 形式監査 + 台帳登録」を同一ターンで完了させる                                                            |
 
 ### 同種課題向け簡潔解決手順（5ステップ）
 
 1. 追加機能の完了判定は「実装 + 起動配線 + 契約 + テスト」で固定する。
 2. 仕様同期は `task-workflow.md` を起点に、関連仕様書と監査スクリプトを同時更新する。
-3. 未タスクは `docs/30-workflows/unassigned-task/` に9セクション形式で作成する。
+3. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に9セクション形式で作成する。
 4. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行する。
 5. 検証値を `documentation-changelog` と `lessons-learned` に転記して終了する。
 
@@ -193,7 +193,7 @@
 
 1. Phase 12の必須成果物5件を先に作成し、`Task 1〜5` の実施ログを埋める。
 2. `phase-12-documentation.md` のチェックボックスを実績に合わせて同期する。
-3. 未タスクはテンプレート準拠で `docs/30-workflows/unassigned-task/` に作成する。
+3. 未タスクはテンプレート準拠で `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に作成する。
 4. `verify-all-specs` / `validate-phase11-screenshot-coverage` / `verify-unassigned-links` を再実行し、結果を changelog に固定する。
 
 ### 同種課題の5分解決カード

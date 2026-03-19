@@ -60,55 +60,83 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ## Slide IPC API（スライド同期）
 
+> **Task 09 再監査同期**: 2026-03-19  
+> **ステータス**: `spec_created`（正本契約は更新済み、現行コードは legacy drift 残存）
+
 ### 概要
 
-スライドプレゼンテーション機能における双方向同期のIPCチャンネル。Reveal.js HTML（index.html）とstructure.md間の同期状態を管理する。
+slide surface の runtime/auth-mode alignment では、Reveal.js HTML と `structure.md` の同期、watch lifecycle、runtime handoff を 12 チャネル（invoke 6 + push 6）で扱う。
 
-**実装ファイル**:
+### 実装アンカー
 
-- ハンドラー: `apps/desktop/src/main/slide/sync-manager.ts`
-- ファイル監視: `apps/desktop/src/main/slide/file-watcher.ts`
-- スキル実行: `apps/desktop/src/main/slide/skill-executor.ts`
-- 型定義: `packages/shared/src/slide/types.ts`
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Main IPC | `apps/desktop/src/main/slide/ipc-handlers.ts` | slide invoke channel 境界 |
+| Main runtime | `apps/desktop/src/main/slide/skill-executor.ts` | RuntimeResolver 統合点 |
+| Main sync | `apps/desktop/src/main/slide/sync-manager.ts` | sync status / reverse-sync authority |
+| Renderer UI | `apps/desktop/src/renderer/slide/SlideWorkspace.tsx` | user-facing status / guidance surface |
+| Shared types | `packages/shared/src/slide/types.ts` | SyncStatus / SyncDirection / SkillExecutionResult 拡張点 |
 
-### チャンネル一覧
+### invoke チャネル（Renderer → Main）
 
-| チャネル              | 方向            | 用途               | Payload                                            |
-| --------------------- | --------------- | ------------------ | -------------------------------------------------- |
-| `slide:sync-status`   | Main → Renderer | 同期状態通知       | `{ status: SyncStatus, direction: SyncDirection }` |
-| `slide:sync-progress` | Main → Renderer | 同期進捗通知       | `{ percent: number, message: string }`             |
-| `slide:reverse-sync`  | Renderer → Main | 逆同期手動トリガー | `{ projectPath: string }`                          |
-| `slide:sync-error`    | Main → Renderer | 同期エラー通知     | `{ code: string, message: string }`                |
-| `slide:watch-start`   | Renderer → Main | ファイル監視開始   | `{ projectPath: string }`                          |
-| `slide:watch-stop`    | Renderer → Main | ファイル監視停止   | `{ projectPath: string }`                          |
+| チャネル | 用途 | Request | Response |
+| --- | --- | --- | --- |
+| `slide:executePhase` | slide phase 実行 | `{ phase, projectPath }` | `SlideResponse<SkillExecutionResult>` |
+| `slide:watch-start` | watch 開始 | `{ projectPath }` | `SlideResponse<{ watching: true }>` |
+| `slide:watch-stop` | watch 停止 | `{ projectPath }` | `SlideResponse<void>` |
+| `slide:sync-status` | status 取得 | `{ projectPath }` | `SlideResponse<{ status: SyncStatus, direction?: SyncDirection, watching?: boolean }>` |
+| `slide:reverse-sync` | manual reverse-sync | `{ projectPath }` | `SlideResponse<SkillExecutionResult>` |
+| `slide:cancel` | 実行キャンセル | none | `SlideResponse<void>` |
+
+### push チャネル（Main → Renderer）
+
+| チャネル | 用途 | Payload |
+| --- | --- | --- |
+| `slide:sync-status-changed` | sync 状態変化 | `{ status: SyncStatus, direction?: SyncDirection, watching?: boolean }` |
+| `slide:sync-progress` | sync 進捗 | `{ percent: number, message: string }` |
+| `slide:sync-error` | sync エラー | `{ code: string, message: string }` |
+| `slide:execution-progress` | phase 実行進捗 | `{ phase: SkillPhase, progress: number }` |
+| `slide:structureChanged` | structure file 変化 | `{ projectPath: string, changedAt: string }` |
+| `slide:watch-status` | watcher 状態 | `{ watching: boolean, projectPath: string }` |
 
 ### 型定義
 
-#### 基本型
+| 型名 | 種別 | 取りうる値 / 概要 |
+| --- | --- | --- |
+| `SyncStatus` | type | `idle` / `syncing` / `synced` / `error` |
+| `SyncDirection` | type | `forward` / `reverse` |
+| `SlideUIStatus` | derived type | `synced` / `running` / `degraded` / `guidance` |
 
-| 型名          | 種別 | 説明     | 取りうる値                               |
-| ------------- | ---- | -------- | ---------------------------------------- |
-| SyncStatus    | type | 同期状態 | `idle`, `syncing`, `synced`, `error`     |
-| SyncDirection | type | 同期方向 | `forward`（順方向）, `reverse`（逆方向） |
+### 現行コード drift（2026-03-19 再監査）
 
-#### SyncErrorPayload インターフェース
+| current code | 正本契約 | 状態 |
+| --- | --- | --- |
+| `slide:startWatching` | `slide:watch-start` | legacy 名が残存 |
+| `slide:stopWatching` | `slide:watch-stop` | legacy 名が残存 |
+| `slide:getSyncStatus` | `slide:sync-status` | legacy 名が残存 |
+| `slide:manualSync` | `slide:reverse-sync` | legacy 名が残存 |
+| `slide:syncStatusChanged` | `slide:sync-status-changed` | legacy 名が残存 |
+| `slide:executionProgress` | `slide:execution-progress` | legacy 名が残存 |
+| `manualSync -> syncManager.sync(projectPath)` | `reverse-sync` | 用語と処理が不一致 |
+| `registerSlideIpcHandlers()` 未登録 | Main IPC index へ登録済みであること | 未接続 |
 
-同期エラー時に使用するペイロード構造。
+### セキュリティ順序
 
-| フィールド | 型      | 必須 | 説明                                                                                 |
-| ---------- | ------- | ---- | ------------------------------------------------------------------------------------ |
-| code       | string  | Yes  | エラーコード（`AGENT_ERROR`, `FILE_ERROR`, `TIMEOUT`, `VALIDATION_ERROR`のいずれか） |
-| message    | string  | Yes  | 人間可読なエラーメッセージ                                                           |
-| details    | unknown | No   | 追加の詳細情報（デバッグ用）                                                         |
+slide invoke channel はすべて次の順序を守る。
+
+1. `validateIpcSender`
+2. P42 3段バリデーション（型 / 空文字列 / trim 後空文字列）
+3. path traversal guard
+4. business logic 委譲
 
 ### エラーコード
 
-| コード             | 説明                     | 対処                  |
-| ------------------ | ------------------------ | --------------------- |
-| `AGENT_ERROR`      | Agent SDK呼び出し失敗    | API接続確認、リトライ |
-| `FILE_ERROR`       | ファイル読み書き失敗     | パーミッション確認    |
-| `TIMEOUT`          | 同期タイムアウト（30秒） | 処理の再試行          |
-| `VALIDATION_ERROR` | レスポンス形式不正       | Agent出力確認         |
+| コード | 説明 | 備考 |
+| --- | --- | --- |
+| `VALIDATION_ERROR` | sender / payload / path 検証失敗 | secret 非露出 |
+| `AUTHENTICATION_ERROR` | API key 不足または handoff 必要 | `guidance` で回復導線を返す |
+| `SYNC_ERROR` | reverse-sync / watcher / file IO 失敗 | Renderer では degraded surface に正規化する |
+| `AGENT_ERROR` | runtime 実行失敗 | `code` と `message` を sanitize して返す |
 
 ---
 
@@ -344,10 +372,32 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `authKeyHandlers.runtime-sync.test.ts` | 9 | auth-key IPC バリデーション |
 | `apiKeyHandlers.runtime-sync.test.ts` | 12 | apiKey IPC バリデーション |
 
+### 完了タスク（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> 完了日: 2026-03-19
+> ステータス: spec_created（正本契約更新済み、実装は後続タスクで対応）
+
+| 変更項目 | 内容 |
+| -------- | ---- |
+| IPC チャネル名統一（4 rename） | `slide:startWatching` → `slide:watch-start`、`slide:stopWatching` → `slide:watch-stop`、`slide:getSyncStatus` → `slide:sync-status`、`slide:manualSync` → `slide:reverse-sync` |
+| push チャネル名統一（2 rename） | `slide:syncStatusChanged` → `slide:sync-status-changed`、`slide:executionProgress` → `slide:execution-progress` |
+| 新規チャネル設計 | `slide:sync-error`（push: sync エラー通知）、`slide:watch-status`（push: watcher 状態通知） |
+| セキュリティ設計 | 全 invoke チャネル（6本）に `validateIpcSender` 適用設計完了 |
+| バリデーション設計 | P42 3段バリデーション + `detectPathTraversal` を全 `projectPath` 引数に適用設計完了 |
+| セキュリティ検証順序確立 | `validateIpcSender` → P42バリデーション → パストラバーサル検出 → business logic 委譲 |
+
+**実装後続タスク**:
+
+- `UT-SLIDE-IMPL-001`: slide IPC ハンドラー実装（channel rename + validateIpcSender + path guard 追加）
+- `UT-SLIDE-UI-001`: slide UI runtime alignment 実装
+
+---
+
 ### 関連タスク
 
 | タスクID                                             | 概要                                                                              | ステータス |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------- | ---------- |
+| TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001              | Slide IPC チャネル名統一・セキュリティ設計（4 rename + validateIpcSender 設計）   | spec_created |
 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001           | Main/Chat/Settings Runtime 同期（GAP-01〜03 修正）                                | 完了       |
 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001               | SkillExecutor への AuthKeyService 注入経路を単一路化                              | 完了       |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001              | `auth-key:exists` 判定契約の env fallback 追加                                    | 完了       |

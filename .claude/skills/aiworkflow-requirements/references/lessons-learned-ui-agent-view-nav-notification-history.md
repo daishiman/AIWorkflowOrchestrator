@@ -270,7 +270,7 @@ expect(element.className).toContain(statusStyles.primary);
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | 課題       | `outputs/phase-12/*.md` を `--target-file` に渡して監査し、コマンドエラーになった                                                  |
 | 再発条件   | `--target-file` が「任意ファイル監査」と誤解される場合                                                                             |
-| 対処       | `--target-file` は `docs/30-workflows/unassigned-task/` 配下のみ適用可能と定義し、再監査コマンドを `--diff-from HEAD` へ切り替えた |
+| 対処       | `--target-file` は `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下のみ適用可能と定義し、再監査コマンドを `--diff-from HEAD` へ切り替えた |
 | 標準ルール | `--target-file` は未タスク指示書の個別監査専用。成果物監査は `--diff-from HEAD` を使う                                             |
 
 ### 苦戦箇所: `current=0` と `baseline>0` の解釈が混在しやすい
@@ -301,7 +301,7 @@ expect(element.className).toContain(statusStyles.primary);
 ### 同種課題の簡潔解決手順（未タスク監査運用 4ステップ）
 
 1. `audit-unassigned-tasks --json --diff-from HEAD` を先に実行し、`currentViolations` を合否に使う。
-2. `--target-file` は `docs/30-workflows/unassigned-task/` 配下の実体 `.md` ファイルだけに使い、ワイルドカード表記は残さない。
+2. `--target-file` は `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下の実体 `.md` ファイルだけに使い、ワイルドカード表記は残さない。
 3. `baselineViolations` は即時修正対象にせず、別未タスク（段階削減）へ分離する。
 4. 監査結果を `task-workflow.md` / `unassigned-task-detection.md` / `lessons-learned.md` の3点へ同時反映する。
 
@@ -330,7 +330,7 @@ expect(element.className).toContain(statusStyles.primary);
 | 項目       | 内容                                                                                            |
 | ---------- | ----------------------------------------------------------------------------------------------- |
 | 課題       | `UT-UI-05A-GETFILETREE-001` が workflow ローカル配下のみで管理され、正規監査対象から外れていた  |
-| 再発条件   | Phase 12で検出レポートのみ更新し、`docs/30-workflows/unassigned-task/` への正本化を省略する場合 |
+| 再発条件   | Phase 12で検出レポートのみ更新し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` への正本化を省略する場合 |
 | 対処       | 正規テンプレート準拠で未タスク3件を作成し、`task-workflow.md` 残課題テーブルと同期した          |
 | 標準ルール | 未タスクは必ず「正本配置 → 残課題登録 → 関連仕様リンク」の3点を同一ターンで完了させる           |
 
@@ -338,7 +338,7 @@ expect(element.className).toContain(statusStyles.primary);
 
 1. `git status --short` と `rg --files` で実装実体の有無を先に確定する。
 2. 画面証跡を再取得し、証跡ファイル名を更新履歴へ反映する。
-3. 未タスクを `docs/30-workflows/unassigned-task/` に正規作成し、台帳リンクを置換する。
+3. 未タスクを `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に正規作成し、台帳リンクを置換する。
 4. `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD` で current=0 を確認する。
 
 ### Phase 12準拠再確認での苦戦箇所（2026-03-02）

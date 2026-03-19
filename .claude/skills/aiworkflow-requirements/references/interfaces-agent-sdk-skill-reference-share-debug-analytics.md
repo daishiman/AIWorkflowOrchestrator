@@ -262,7 +262,7 @@ interface SkillDocsCapabilityResult {
 
 **完了タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001（2026-03-16）
 
-> 未タスク: [UT-SKILL-DOCS-TERMINAL-HANDOFF-001](../../../docs/30-workflows/unassigned-task/task-ut-skill-docs-terminal-handoff-001.md) — terminal-handoff 実パス実装
+> 未タスク: [UT-SKILL-DOCS-TERMINAL-HANDOFF-001](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-skill-docs-terminal-handoff-001.md) — terminal-handoff 実パス実装
 
 ---
 

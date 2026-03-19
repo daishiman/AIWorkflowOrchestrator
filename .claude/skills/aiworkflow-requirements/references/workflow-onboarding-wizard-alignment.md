@@ -25,7 +25,7 @@
 | SubAgent-B | 機能仕様 / 画面証跡 | `ui-ux-feature-components.md` | overlay flow、screenshot 6件、5分解決カード、関連未タスクを同期する |
 | SubAgent-C | 導線契約 | `ui-ux-navigation.md`, `ui-ux-settings.md` | overlay 表示条件、Settings rerun、`system` preview readability を正本へ固定する |
 | SubAgent-D | 状態契約 | `arch-state-management.md` | `onboarding.hasCompleted` と local state ownership、completion handoff を整理する |
-| SubAgent-E | 台帳 / 未タスク | `task-workflow.md`, `docs/30-workflows/unassigned-task/` | 完了記録、検証値、既存 follow-up backlog の配置と本文契約を同期する |
+| SubAgent-E | 台帳 / 未タスク | `task-workflow.md`, `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | 完了記録、検証値、既存 follow-up backlog の配置と本文契約を同期する |
 | SubAgent-F | 教訓化 | `lessons-learned.md` | 苦戦箇所を再発条件付きで残し、5分解決カードへ変換する |
 | Lead | 統合入口 | `workflow-onboarding-wizard-alignment.md`, `indexes/resource-map.md`, `indexes/quick-reference.md` | 次回の参照入口を 1 つにまとめる |
 
@@ -52,7 +52,7 @@
 | `TC-ID` と screenshot 命名がずれる | capture 前に coverage matrix を固めない | `TC-11-01..06` と `screenshots/*.png` を 1 対 1 に固定した | 画面検証要求がある UI は `TC-ID ↔ png` を先に決める |
 | `system` preview の split-theme で text contrast が崩れる | inner card にも dark/light split をそのまま適用する | split 表現は outer card に残し、inner card は readable surface に戻した | split-theme UI は outer/inner surface を分離して判定する |
 | mobile first fold が崩れる | desktop 用 step indicator を mobile に流用する | `grid-cols-2 sm:grid-cols-4` に変更して再撮影した | mobile wizard は first fold の主コンテンツ可視性を screenshot で確認する |
-| 既存 follow-up 未タスクが旧契約を保持する | system spec だけ直し、`docs/30-workflows/unassigned-task/` の本文を再読しない | `2.2` / `3.1` / `3.5` / 検証手順を current contract へそろえた | Phase 12 の 0 件報告でも既存 follow-up backlog の本文 drift を点検する |
+| 既存 follow-up 未タスクが旧契約を保持する | system spec だけ直し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` の本文を再読しない | `2.2` / `3.1` / `3.5` / 検証手順を current contract へそろえた | Phase 12 の 0 件報告でも既存 follow-up backlog の本文 drift を点検する |
 | mobile selected card prominence が first fold 評価に埋もれる | `TC-11-05` の合格を first fold 可視性だけで判断し、selected card の位置を別観点で見ない | manual note の改善余地を `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` として formalize した | mobile wizard は first fold と selected-state prominence を別項目で評価する |
 
 ---
@@ -62,7 +62,7 @@
 1. `onboarding.hasCompleted` と overlay 表示条件を先に固定する。
 2. rerun は force-open local state、completion は persist save として責務を分離する。
 3. `TC-ID ↔ screenshots/*.png` を capture 前に確定する。
-4. `docs/30-workflows/unassigned-task/` の既存 follow-up 本文も current contract へ再同期する。
+4. `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` の既存 follow-up 本文も current contract へ再同期する。
 5. `task-workflow` / `ui-ux-feature-components` / `ui-ux-navigation` / `ui-ux-settings` / `lessons-learned` を同一ターンで閉じる。
 
 ---
@@ -79,7 +79,7 @@
 | persist key、dismiss / forcedOpen / completion の ownership | `arch-state-management.md` | state 境界と保存責務を明示できる |
 | 完了記録、検証値、follow-up 配置確認 | `task-workflow.md` | 台帳として追跡できる |
 | 苦戦箇所、再発条件、5分解決カード | `lessons-learned.md` | 次回の短時間解決に直結する |
-| follow-up 指示書本文 | `docs/30-workflows/unassigned-task/` | 実際に着手する人が読む実行仕様を current contract に保てる |
+| follow-up 指示書本文 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | 実際に着手する人が読む実行仕様を current contract に保てる |
 
 ---
 

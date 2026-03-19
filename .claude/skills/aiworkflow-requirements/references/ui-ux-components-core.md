@@ -323,7 +323,7 @@ Desktop Renderer配下のコンポーネント構造を以下に示す。
 | a11y対応 | `SuggestionList` / `RiskPanel` の `role=\"list\"` に `aria-label` を追加 |
 | デザイン整合 | `text-white` を `text-[var(--text-inverse)]` に統一 |
 | 再監査追補 | `useSkillAnalysis` の mount/unmount 制御を補正し、React StrictMode でも分析完了後にローディングが解除されることを確認 |
-| 残課題 | current active set 6 件（UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009）を `docs/30-workflows/unassigned-task/` に維持し、完了済み 3 件（001 / 003 / 008）は `completed-tasks` へ移管 |
+| 残課題 | current active set 6 件（UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009）を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に維持し、完了済み 3 件（001 / 003 / 008）は `completed-tasks` へ移管 |
 | 詳細参照 | `ui-ux-feature-components.md` / `task-workflow.md` の TASK-10A-B 節 |
 
 ---

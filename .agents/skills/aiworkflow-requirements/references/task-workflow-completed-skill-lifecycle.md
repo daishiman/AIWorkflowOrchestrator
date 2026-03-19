@@ -3,7 +3,131 @@
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
 > 分割元: `task-workflow-completed-skill-lifecycle-agent-view-line-budget.md`（500行超のため分割）
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-003, UT-06-005
+> 対象タスク: TASK-IMP-CHATPANEL-REAL-AI-CHAT-001, TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-SKILL-LIFECYCLE-02, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, UT-06-003, UT-06-005
+> 分割先: [task-workflow-completed-ut-06-safety-gate.md](task-workflow-completed-ut-06-safety-gate.md)（UT-06-001, UT-06-003, UT-06-005）, [task-workflow-completed-skill-create-ui-integration.md](task-workflow-completed-skill-create-ui-integration.md)（TASK-10A-C, TASK-10A-D）
+
+## TASK-SKILL-LIFECYCLE-02: SkillCenterView CTA ルーティング 完了記録（2026-03-18）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SKILL-LIFECYCLE-02 |
+| 対象workflow | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-02-skillcenter-create-route/` |
+| ステータス | completed（Phase 1-12） |
+| テスト | `useSkillCenter.navigation` / `SkillCenterView.cta` / `skillLifecycleJourney` PASS |
+| 画面証跡 | CLI環境のため自動テスト結果で代替検証 |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| CTA ヘッダー | `SkillCenterView` ヘッダーに「+ 新規作成」ボタン追加（`data-testid="header-create-cta"`） |
+| CTA JourneyPanel | `SkillLifecycleJourneyPanel` に3ジョブ別 CTA ボタン追加（create/use/improve） |
+| ナビゲーション | `useSkillCenter` に `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` 追加 |
+| 型拡張 | `SkillLifecycleJobGuide` に `ctaLabel?: string` フィールド追加 |
+| スタイル | `viewStyles` に `headerRow` / `headerCta` / `journeyCardCta` 追加 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `pnpm --filter @repo/desktop exec vitest run src/renderer/views/SkillCenterView/ src/renderer/navigation/skillLifecycleJourney.test.ts` | 34テスト PASS |
+| coverage | Line 80%+ / Branch 60%+ | PASS |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| P31 対策: Zustand Hook 無限ループ | `useAppStore((state) => state.setCurrentView)` 個別セレクタ使用 | 合成Hook ではなく個別セレクタで action を取得する |
+| P39 対策: happy-dom + userEvent | `fireEvent` を使用し `await act()` で非同期ハンドラを包む | happy-dom 環境では `userEvent` 禁止 |
+
+### Phase 12 未タスク（1件）
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001 | ヘッダー CTA テキストのレスポンシブ対応（`hidden md:inline`） | LOW | `docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md` |
+
+---
+
+## TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001: WorkspaceChatPanel AI Runtime 同期 完了記録（2026-03-18）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 対象workflow | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment/` |
+| ステータス | completed（Phase 1-12） |
+| 完了日 | 2026-03-18 |
+| 機能 | WorkspaceChatPanel の AI runtime 同期・P62三層防御・GuidanceBlock 統合 |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| P62三層防御 | UI canSend / Controller guard / Main validation の3層で DEFAULT_CONFIG fallback を排除 |
+| GuidanceBlock | blocked/error/handoff の3 variant を実装し、provider 未設定・streaming エラー・キャンセル後の誘導を統合 |
+| 状態遷移 | idle → sending → streaming → completed/cancelled/error を `useWorkspaceChatController` で一元管理 |
+| streaming キャンセル | `cancelStream → AbortController.abort() → streamContent クリア` で llm-streaming キャンセルフローに準拠 |
+| runtime 同期 | Main Chat / Settings と同じ AI runtime セレクタ（provider/model）を WorkspaceChatPanel に接続 |
+
+### 検証証跡
+
+| 検証項目 | 結果 |
+| --- | --- |
+| TypeCheck | PASS |
+| Unit tests | PASS |
+| Phase 10 最終レビュー | PASS |
+
+### Phase 12 未タスク（3件）
+
+| 未タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| UT-INTEGRATE-ACCESS-CAPABILITY-RESOLVER-WORKSPACE-001 | AccessCapabilityResolver による Workspace 機能制御統合 | 高 |
+| UT-REFACTOR-WORKSPACE-CHAT-CONTROLLER-HOOK-001 | useWorkspaceChatController 640行リファクタリング（責務分割） | 中 |
+| UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 |
+
+---
+
+## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001: ChatPanel Real AI Chat 配線 設計完了記録（2026-03-18）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 |
+| 対象workflow | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
+| ステータス | spec_created（設計タスク、Phase 1-13 設計完了） |
+| タスク種別 | 設計（プロダクションコードの実装は行わない） |
+| 作成日 | 2026-03-13 |
+| 設計完了日 | 2026-03-18 |
+
+### 実装内容（設計成果物）
+
+| 観点 | 内容 |
+| --- | --- |
+| chatSlice 拡張 | `ChatPanelStatus`（8状態: idle/ready/streaming/cancelled/completed/error/blocked/handoff）、`AccessCapability`（4値: integratedRuntime/terminalSurface/both/none）、ストリーミング関連ステート/アクション |
+| 個別セレクタ12個 | `useChatPanelStatus`, `useResolvedCapability`, `useChatMessages`, `useChatInput`, `useSetChatInput`, `useSelectedProviderId`, `useSelectedModelId`, `useProviders`, `useHandoffGuidance`, `useIsStreaming`, `useSetChatPanelStatus`, `useResetChat` |
+| ChatPanel 全面書換 | 3 placeholder 置換（message-list-slot, chat-input-slot, model-selector-slot）、useStreamingChat 接続、8 状態条件レンダリング |
+| 新規コンポーネント10個 | RuntimeBanner(atom), ChatMessage(atom), ChatMessageList(molecule), ErrorGuidance(molecule), HandoffBlock(molecule), PersistentTerminalLauncher(atom), ComposerInput(atom), SendButton(atom), ComposerArea(molecule), LLMSelectorPanel(molecule) |
+| Store 統一 | useStreamingChat 内の `useStore()` を `useAppStore()` に統一する方針を確定 |
+| P62 対策 | Provider/Model 未選択時は `blocked` 状態に遷移し、暗黙 fallback を行わない |
+
+### システム仕様書更新
+
+| 更新ファイル | 更新内容 |
+| --- | --- |
+| `arch-state-management-core.md` | chatSlice 拡張セクション追加（ChatPanelStatus/AccessCapability 型定義、個別セレクタ12個、状態遷移図） |
+| `ui-ux-feature-components-core.md` | 収録機能一覧にエントリ追加、ChatPanel コンポーネント階層・Atomic Design 分類・Props 設計・8状態レンダリングマトリクス・アクセシビリティ・キーボード操作のセクション追加 |
+| `task-workflow-completed-skill-lifecycle.md` | 本記録の追加 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期（前提タスク） | 完了（2026-03-17） |
+| TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 | AI Runtime/AuthMode Unification（親ワークフロー step-01） | 完了 |
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 

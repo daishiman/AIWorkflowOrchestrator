@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 Phase 12 再監査ガード更新
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 retrospective / spec_created re-audit
+- **Result**: success
+- **Notes**:
+  - `SKILL.md` を 500行以内へ整理しつつ、`spec_created` でも system spec / LOGS / lessons / backlog / artifacts を同ターンで実更新するルールを固定
+  - `references/phase-11-12-guide.md` に screenshot fallback 時の metadata / harness path / manual-test-result 同値記録を追加
+  - `references/spec-update-workflow.md` に primary target file list 先行確定と mirror parity 必須ルールを追加
+  - 検証: `quick_validate.js .claude/skills/task-specification-creator` PASS（errors 0, warnings 10）、`validate_all.js .claude/skills/task-specification-creator` PASS（errors 0, warnings 1）
+
+---
+
 ## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
 - **Agent**: task-specification-creator

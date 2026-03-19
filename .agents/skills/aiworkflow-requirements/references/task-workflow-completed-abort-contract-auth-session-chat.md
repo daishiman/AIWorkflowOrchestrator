@@ -295,7 +295,7 @@
 | a11y改善             | `SuggestionList` / `RiskPanel` の `role="list"` に `aria-label` を追加                                                                                                                  |
 | デザイントークン統一 | `text-white` を `text-[var(--text-inverse)]` へ置換                                                                                                                                     |
 | 画面検証             | `outputs/phase-11/screenshots/TC-01`〜`TC-04` を 2026-03-02 に再取得                                                                                                                    |
-| 未タスク管理         | current active set 6 件（UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009）を `docs/30-workflows/unassigned-task/` に維持し、完了済み 3 件（001 / 003 / 008）は `completed-tasks` へ移管 |
+| 未タスク管理         | current active set 6 件（UT-TASK-10A-B-002 / 004 / 005 / 006 / 007 / 009）を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に維持し、完了済み 3 件（001 / 003 / 008）は `completed-tasks` へ移管 |
 
 ### 検証証跡
 
@@ -313,7 +313,7 @@
 | `phase-11-manual-test.md` の必須節不足              | テンプレート章立てを簡略化した場合                                                                 | 「統合テスト連携」節を追加し、`validate-phase-output` を再実行                                                                                                                                                                                                                                                       | Phase 11更新後は `validate-phase-output` を必須実行する                                                                 |
 | 未タスク件数ドリフト（7件→5件）                     | 修正済み課題を未タスク台帳に残し続ける場合                                                         | D1/D2 を修正済み化し、UT-TASK-10A-B-001〜005 のみ継続管理へ再同期                                                                                                                                                                                                                                                    | 未タスク台帳は毎回「有効件数」を再計算して更新する                                                                      |
 | light検証証跡がdarkのまま残る                       | 撮影スクリプト側のテーマモックを固定値（dark）で返す場合                                           | `capture-ut-task-10a-b-001-screenshots.mjs` で `prefers-color-scheme` 連動に修正し、TC-11-04を再撮影                                                                                                                                                                                                                 | light/dark検証は「色設定 + モック応答」の二重整合を必須化する                                                           |
-| 完了済みUT指示書の配置先誤認（001と002〜008の混在） | 完了済み指示書を `completed-tasks/unassigned-task/` に残したまま、未実施指示書と同一運用で扱う場合 | `UT-TASK-10A-B-001` を `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` に再配置。関連参照を一括更新し、`verify-unassigned-links`（102/102）と `audit --diff-from HEAD`（current=0, baseline=90）で再確認 | 指示書配置は「完了=completed-tasks」「未実施=unassigned-task」を厳守し、監査値は `current` と `baseline` を分離記録する |
+| 完了済みUT指示書の配置先誤認（001と002〜008の混在） | 完了済み指示書を `completed-tasks/unassigned-task/` に残したまま、未実施指示書と同一運用で扱う場合 | `UT-TASK-10A-B-001` を `docs/30-workflows/completed-tasks/task-10a-b-autofixable-filter-button.md` へ移管し、`UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に再配置。関連参照を一括更新し、`verify-unassigned-links`（102/102）と `audit --diff-from HEAD`（current=0, baseline=90）で再確認 | 指示書配置は「完了=completed-tasks」「未実施=unassigned-task」を厳守し、監査値は `current` と `baseline` を分離記録する |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
@@ -338,7 +338,7 @@
 
 | 観点         | 固定ルール                                                                                                                                    |
 | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 配置判定     | 未実施UTは `docs/30-workflows/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ配置する                       |
+| 配置判定     | 未実施UTは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`、完了済みUT指示書は `docs/30-workflows/completed-tasks/` 直下へ配置する                       |
 | 監査適用境界 | `audit-unassigned-tasks --target-file` は未実施UT（`unassigned-task` 系）のみ適用し、完了済み指示書（`completed-tasks/*.md`）へは適用しない   |
 | 画面証跡     | `TC-11-01`〜`TC-11-05` を同一ターンで再取得し、`validate-phase11-screenshot-coverage` 5/5 PASS を確認する                                     |
 | 合否判定     | `verify-unassigned-links` は参照整合、`audit --diff-from HEAD` は `currentViolations` を合否・`baselineViolations` を監視値として分離記録する |

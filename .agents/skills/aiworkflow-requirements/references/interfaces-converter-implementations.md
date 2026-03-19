@@ -317,7 +317,7 @@ YAMLConverterはYAML構造を解析し、トップレベルキーやネスト深
 
 **予定ファイルパス**: `packages/shared/src/services/conversion/converters/plain-text-converter.ts`
 
-**関連タスク**: `docs/30-workflows/unassigned-task/task-plaintext-converter-implementation.md` (QUALITY-02)
+**関連タスク**: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-plaintext-converter-implementation.md` (QUALITY-02)
 
 ### 基本情報（予定）
 

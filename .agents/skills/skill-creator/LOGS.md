@@ -3,6 +3,20 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+
+## 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 Phase 12 retrospective パターンを追加
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `SKILL.md` に Phase 12 再監査ショートカットを追加し、`task-specification-creator` の guide 参照と lane 分割（system spec / screenshot / unassigned / skill update + mirror）を入口から辿れるようにした
+  - `references/update-process.md` に update モードとしての Phase 12 retrospective 手順と validator チェーンを追加
+  - `references/self-improvement-cycle.md` に docs-heavy Phase 12 で優先抽出する改善候補を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に screenshot fallback の path 記録と `validate_all.js <skill-dir>` を追加
+  - 検証: `quick_validate.js .claude/skills/skill-creator` PASS（errors 0, warnings 11）、`validate_all.js .claude/skills/skill-creator` PASS（errors 0, warnings 27）
+
+---
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期ドリフト防止パターンを追加
 
 - **Agent**: skill-creator (update)

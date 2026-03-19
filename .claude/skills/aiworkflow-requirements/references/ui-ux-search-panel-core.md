@@ -161,7 +161,7 @@
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | QuickFileSearch の `score=0` 除外、stable sort、top 10 制御を再利用可能な search resilience ガードへ昇格する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | QuickFileSearch の `score=0` 除外、stable sort、top 10 制御を再利用可能な search resilience ガードへ昇格する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
 

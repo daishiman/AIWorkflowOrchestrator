@@ -217,6 +217,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
 | **worktree環境ではLOGS.md/SKILL.md更新を代替記録** | `.worktrees/` 配下で作業する場合、`.claude/skills/` はメインの作業ツリーと同期されないため、`system-spec-update-summary.md` に更新予定内容を記録し、PRマージ後にメインブランチで反映する。`skill-feedback-report.md` に代替フローを使用した旨を明記すること |
 | **並列エージェント完了後はファイルシステムで検証** | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する |
+| **primary target を先に固定する**          | Step 2 に入る前に「どの spec file が正本か」を path で列挙し、generic 名称への誤記を防ぐ |
+| **mirror parity を閉じる**                 | skill root が複数ある repo では `.claude` 更新後に `.agents` との差分を `diff -qr` で確認する |
 
 ---
 

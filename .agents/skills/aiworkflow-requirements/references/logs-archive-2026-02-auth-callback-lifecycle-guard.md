@@ -95,9 +95,9 @@
 
 ### 実施内容
 - `docs/30-workflows/TASK-9I-skill-docs/` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/` へ移動
-- `docs/30-workflows/unassigned-task/task-ut-9i-001-llm-provider-integration.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
-- `docs/30-workflows/unassigned-task/task-ut-9i-002-template-crud.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-9i-001-llm-provider-integration.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-9i-002-template-crud.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/` へ移動
 - `task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の TASK-9I 関連参照先を移管先へ更新
 
 ### 結果
@@ -114,13 +114,13 @@
 - 目的: 新規未タスク仕様書の登録、苦戦箇所の再利用化、台帳・教訓・履歴の同時同期
 
 ### SubAgent分担
-- SubAgent-A: `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md`（未タスク指示書作成・3.5苦戦箇所記録）
+- SubAgent-A: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-evidence-link-guard-001.md`（未タスク指示書作成・3.5苦戦箇所記録）
 - SubAgent-B: `references/task-workflow.md`（TASK-9I追補、残課題登録、変更履歴更新）
 - SubAgent-C: `references/lessons-learned.md`（苦戦箇所3件 + 5ステップ再利用手順の教訓化）
 - SubAgent-D: 検証証跡（links監査、target監査、差分監査）
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を task-spec テンプレート準拠（`## メタ情報` + `## 1..9`）で作成し、`3.5 実装課題と解決策` に苦戦箇所3件を記録
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` を task-spec テンプレート準拠（`## メタ情報` + `## 1..9`）で作成し、`3.5 実装課題と解決策` に苦戦箇所3件を記録
 - `task-workflow.md` の TASK-9I セクションへ、ワイルドカード参照による false fail と `current/baseline` 判定軸分離、証跡値ドリフト対策を追記
 - `task-workflow.md` の残課題（未タスク）テーブルへ `UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001` を登録
 - `lessons-learned.md` に同タスク専用セクションを追加し、同種課題の簡潔解決手順（5ステップ）を標準化
@@ -167,7 +167,7 @@
 - `quick_validate.js` を `skill-creator` / `task-specification-creator` / `aiworkflow-requirements` の3スキルで再確認し、いずれも errors 0 を確認
 - `audit-unassigned-tasks --json --target-file` を `UT-9I-001` / `UT-9I-002` へ実行し、`current=0`（baselineは既存課題）を確認
 - `task-workflow.md` の TASK-9I 完了台帳へ再確認証跡・未タスク配置/フォーマット確認・苦戦箇所/4ステップ手順を同期
-- `task-workflow.md` の SubAgent-C 参照をワイルドカード（`docs/30-workflows/unassigned-task/*.md`）から実体2ファイルへ是正し、`verify-unassigned-links` を missing 0 に回復
+- `task-workflow.md` の SubAgent-C 参照をワイルドカード（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/*.md`）から実体2ファイルへ是正し、`verify-unassigned-links` を missing 0 に回復
 - `lessons-learned.md` へ TASK-9I 再確認の苦戦箇所3件（`current`/`baseline`誤読、証跡分散、形式確認漏れ）と簡潔解決手順を追加
 
 ### 結果
@@ -190,7 +190,7 @@
 - `references/architecture-overview.md` の IPC ハンドラー登録一覧へ `registerSkillDocsHandlers`（Pattern 3）を追加
 - `references/interfaces-agent-sdk-skill.md` に TASK-9I 型定義セクションと Preload API 4メソッド、関連未タスク UT-9I-001/002 を追加
 - `references/task-workflow.md` に TASK-9I 完了記録と残課題 UT-9I-001/002 を追加
-- `docs/30-workflows/unassigned-task/` に `task-ut-9i-001-llm-provider-integration.md` / `task-ut-9i-002-template-crud.md` を新規作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に `task-ut-9i-001-llm-provider-integration.md` / `task-ut-9i-002-template-crud.md` を新規作成
 
 ### 結果
 - ステータス: success
@@ -209,7 +209,7 @@
 ### 実施内容
 
 - `docs/30-workflows/TASK-9J-skill-analytics/` を `docs/30-workflows/completed-tasks/TASK-9J-skill-analytics/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
 - `task-workflow.md` の残課題テーブルで `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を完了表記へ更新
 - `interfaces-agent-sdk-skill.md` の関連未タスク参照を completed パスへ更新
 - 移管後パスに合わせて検証コマンド例・参照パスを補正
@@ -231,7 +231,7 @@
 
 ### 実施内容
 
-- `docs/30-workflows/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を作成（9セクション + 3.5 実装課題と解決策 + SubAgent分担）
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` を作成（9セクション + 3.5 実装課題と解決策 + SubAgent分担）
 - `references/task-workflow.md` の残課題テーブルへ `UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001` を追加
 - `references/interfaces-agent-sdk-skill.md` に TASK-9J 関連未タスクセクションを追加
 - 残課題テーブル内の重複行（同一IDの完了/未完了混在）を整理し、状態矛盾を是正
@@ -342,7 +342,7 @@
 - 目的: 同種課題で再発した `spec-update-summary`/正本仕様の不一致を未タスクとして固定し、再利用可能な是正手順を明文化
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-spec-version-consistency-guard-001.md` を新規作成（9セクション + 3.5 実装課題と解決策）
 - 親タスクの苦戦箇所（版数ドリフト、手順数ドリフト、並列更新時の転記漏れ）を未タスク仕様書へ転記
 - `task-workflow.md` 残課題テーブルへ同タスクを登録
 - `task-workflow.md` の `UT-IMP-PHASE12-SPEC-SYNC-SUBAGENT-GUARD-001` 参照先を `unassigned-task/` 正本へ補正

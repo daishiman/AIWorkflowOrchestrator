@@ -213,12 +213,12 @@
 | 課題 | 依存タスク | 優先度 | 未タスク指示書 |
 |------|-----------|--------|---------------|
 | UIコンポーネント実装 | CONV-05-02, ~~history-service-db-integration~~ | 中 | CONV-05-03 |
-| validateDOMNesting警告修正 | CONV-05-03 | 低 | [task-validate-dom-nesting-bugfix.md](../../../docs/30-workflows/unassigned-task/task-validate-dom-nesting-bugfix.md) |
+| validateDOMNesting警告修正 | CONV-05-03 | 低 | [task-validate-dom-nesting-bugfix.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-validate-dom-nesting-bugfix.md) |
 | Rendererビルド問題修正 | なし | 高 | task-renderer-build-fix.md ✅ |
 | ~~GUI手動テスト実施~~ | ~~Rendererビルド修正~~ | ~~中~~ | ~~task-history-gui-manual-test.md~~ ✅ **完了** |
 | エラーメッセージ国際化対応 | なし | 低 | task-error-i18n-support.md ✅ |
 
-未タスク指示書の配置先: `docs/30-workflows/unassigned-task/`
+未タスク指示書の配置先: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`
 
 ---
 
@@ -232,4 +232,4 @@
 | アクセシビリティ | ui-ux-advanced.md                 |
 | ファイル変換アーキテクチャ | architecture-file-conversion.md |
 | 統合実装ガイド | docs/30-workflows/history-ui-integration/outputs/phase-12/implementation-guide.md |
-| 未タスク指示書 | docs/30-workflows/unassigned-task/task-history-service-db-integration.md |
+| 未タスク指示書 | docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-history-service-db-integration.md |

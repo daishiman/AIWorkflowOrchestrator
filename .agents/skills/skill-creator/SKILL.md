@@ -129,6 +129,7 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | 外部CLIエージェント委譲  | agents/delegate-to-external-cli.md   |
 | マルチスキル同時設計     | agents/design-multi-skill.md         |
 | フィードバック記録       | scripts/log_usage.js                 |
+| Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
 
 ---
 
@@ -147,6 +148,7 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | オーケストレーション         | references/orchestration-guide.md            |
 | 実行モード選択               | references/execution-mode-guide.md           |
 | ドキュメント生成             | references/api-docs-standards.md             |
+| Phase 12 再監査              | references/update-process.md                 |
 | 自己改善サイクル             | references/self-improvement-cycle.md         |
 | ライブラリ管理               | references/library-management.md             |
 
@@ -199,6 +201,13 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 ```
 
 **注意**: 各SubAgentに割り当てるファイル数は3ファイル以下を推奨（P43対策）。
+
+### Phase 12 再監査ショートカット
+
+- `spec_created` / docs-heavy task を更新する時は、先に [task-specification-creator/references/phase-11-12-guide.md](../task-specification-creator/references/phase-11-12-guide.md) と [task-specification-creator/references/spec-update-workflow.md](../task-specification-creator/references/spec-update-workflow.md) を開く。
+- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。
+- [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
+- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
 
 ### P43対策: SubAgent ファイル分割基準
 

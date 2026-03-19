@@ -71,7 +71,11 @@
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
+- screenshot fallback を使った場合でも、`outputs/phase-11/screenshots/phase11-capture-metadata.json` 等に **capture method / failure reason / source evidence / generated-at** を残し、`manual-test-result.md` と時刻・理由を一致させる。
+- `manual-test-result.md` には、fallback 時に使った harness HTML/TSX、capture script、review board PNG、metadata JSON の**実ファイル path**を残す。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
+- `spec_created` / docs-heavy task でも、Phase 12 は「計画記録」では閉じない。`.claude/skills/` 側の system spec / LOGS / lessons learned / backlog / `artifacts.json` / `outputs/artifacts.json` を **同ターンで実更新** する。
+- Step 2 の sync 先は generic なファイル名で推測せず、actual domain split を見て **primary target file list** を先に確定してから書き込む。
 - Task 12-1〜12-5 を順に閉じる。
 - `artifacts.json`、`outputs/artifacts.json`、phase 本文、`index.md` を同一ターンで同期する。
 - `current` / `baseline` の二層判定を changelog と quality report に残す。

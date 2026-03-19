@@ -134,7 +134,7 @@ Light Mode を Apple UI/UX 基準の `white background / black text` へ全画�
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する（`spec_created`） | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の root/index/artifacts/inventory/system spec extraction drift を同時に guard する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する（Phase 1-12 完了 / Phase 13 未実施） | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 ---

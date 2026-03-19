@@ -2,7 +2,7 @@
 /**
  * verify-unassigned-links.js
  *
- * task-workflow.md 内の unassigned-task 参照パス実在チェック。
+ * task-workflow.md / phase-12 成果物内の unassigned-task 参照パス実在チェック。
  *
  * Usage:
  *   node verify-unassigned-links.js
@@ -30,7 +30,8 @@ if (!existsSync(sourcePath)) {
 
 const seen = new Set();
 const refs = [];
-const regex = /`(docs\/30-workflows\/unassigned-task\/[^`]+\.md)`/g;
+const regex =
+  /`(docs\/30-workflows\/(?:unassigned-task\/[^`]+\.md|completed-tasks\/(?:unassigned-task\/[^`]+\.md|[^`]+\/unassigned-task\/[^`]+\.md)))`/g;
 
 function collectSourceFiles(entryPath) {
   if (basename(entryPath) !== "task-workflow.md") {

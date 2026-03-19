@@ -32,7 +32,7 @@
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | **課題**   | コア検証は完了していたが、レポート仕様（修正ガイダンス/件数サマリー/`printSummary`シグネチャ）がPhase 2設計と一致しなかった               |
 | **原因**   | 検出ロジックとCI統合を優先し、出力フォーマット整備を後段に回した                                                                          |
-| **解決策** | MINOR 3件を `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` に統合し、`docs/30-workflows/unassigned-task/` に起票してP3 3ステップを完了した |
+| **解決策** | MINOR 3件を `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` に統合し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に起票してP3 3ステップを完了した |
 | **教訓**   | Phase 10のMINORは「次回対応メモ」ではなく、同日中に未タスク化して追跡可能な状態にする                                                     |
 
 #### 2. Phase 12証跡と仕様書本体状態の同期漏れリスク
@@ -155,7 +155,7 @@ afterEach(() => {
 ### 同種課題の簡潔解決手順（5ステップ・CIガード版）
 
 1. Phase 10レビュー直後にMINORを分類し、同一責務なら1つの未タスクへ統合する。
-2. 未タスクは `docs/30-workflows/unassigned-task/` に作成し、`task-workflow.md` と関連仕様書への参照を同時更新する。
+2. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に作成し、`task-workflow.md` と関連仕様書への参照を同時更新する。
 3. Phase 12では成果物作成後に `verify-all-specs` と `validate-phase-output` を連続実行して、仕様書本体状態まで同期確認する。
 4. 未タスク監査は「全体ベースライン（既存違反）」と「今回対象ファイル」の2段で記録する。
 5. `lessons-learned.md` と完了タスク仕様書に苦戦箇所を即日反映し、再発防止手順を固定化する。
@@ -168,7 +168,7 @@ afterEach(() => {
 | テスト（43件）     | `scripts/__tests__/check-shared-module-sync.test.ts`                                                 |
 | CI設定             | `.github/workflows/ci.yml`                                                                           |
 | 実装ガイド         | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/outputs/phase-12/implementation-guide.md` |
-| 未タスク指示書     | `docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md`                       |
+| 未タスク指示書     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-module-sync-report-enhancement.md`                       |
 
 ### 関連ドキュメント更新
 

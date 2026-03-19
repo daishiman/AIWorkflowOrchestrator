@@ -136,7 +136,7 @@
 
 - `task-workflow.md` 残課題テーブルに `UT-IMP-PHASE12-VALIDATION-COMMAND-STANDARDIZATION-001` を追加
 - 課題を `quick_validate.js` 統一 / `verify-all-specs --workflow` 必須化 / `*-final.log` 運用の3点で定義
-- 未タスク仕様書参照を `docs/30-workflows/unassigned-task/task-imp-phase12-validation-command-standardization-001.md` へ登録
+- 未タスク仕様書参照を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-validation-command-standardization-001.md` へ登録
 
 ### 結果
 
