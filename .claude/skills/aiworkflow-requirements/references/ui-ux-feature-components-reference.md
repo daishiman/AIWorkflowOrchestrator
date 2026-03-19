@@ -14,10 +14,10 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | --- | --- | --- | --- |
 | view | SkillCenterView | 画面統合（検索、カテゴリ、おすすめ、グリッド、詳細パネル） | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
 | organism | FeaturedSection | 未追加ツールのおすすめ表示（最大3件） | `.../components/FeaturedSection/FeaturedSection.tsx` |
-| organism | SkillDetailPanel | ツール詳細表示、削除導線 | `.../components/SkillDetailPanel/SkillDetailPanel.tsx` |
+| organism | SkillDetailPanel | ツール詳細表示、編集/分析 handoff、削除導線 | `.../components/SkillDetailPanel/SkillDetailPanel.tsx` |
 | molecule | FeaturedCard / SkillCard / CategoryTabs / SkillEmptyState | カード表示・カテゴリ切替・空状態表示 | `.../components/` |
 | atom | AddButton | 追加ボタン状態遷移（idle/processing/success） | `.../components/AddButton.tsx` |
-| hook | useSkillCenter | Store接続、フィルタリング、詳細パネル状態管理 | `.../hooks/useSkillCenter.ts` |
+| hook | useSkillCenter | Store接続、フィルタリング、詳細パネル状態管理、edit/analyze handoff | `.../hooks/useSkillCenter.ts` |
 | hook | useFeaturedSkills | 未追加ツール抽出 + 多様性考慮のおすすめ選定 | `.../hooks/useFeaturedSkills.ts` |
 
 ### 進捗ステータス
@@ -58,6 +58,34 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 3. 入口画面には primary journey と destination surface を同居させず、handoff を明記する。
 4. representative screenshot は shell 全景ではなく、責務境界が読める要素 capture を正本にする。
 5. Phase 12 は `task-workflow` / `lessons-learned` / `ui-ux-feature-components` に同じ実装内容・苦戦箇所・current/baseline 監査値を同期する。
+
+### TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001（2026-03-19）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| action zone 表示条件 | `SkillDetailPanel` は `isImported && onEdit && onAnalyze` のときだけ `action-buttons-zone` を表示する |
+| edit handoff | `エディタで開く` は `handleEditSkill(skillName)` を呼び、`currentSkillName` を設定して `skill-editor` へ遷移する |
+| analyze handoff | `分析する` は `handleAnalyzeSkill(skillName)` を呼び、`currentSkillName` を設定して `skillAnalysis` へ遷移する |
+| detail state | handoff 後は `handleCloseDetail()` により detail panel を閉じ、一覧 state を残さない |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-01..07` |
+| 自動検証 | `SkillDetailPanel.test.tsx`（49 tests）+ `useSkillCenter.test.ts`（17 tests）+ `useSkillCenter.navigation.test.ts`（4 tests）で 70 tests PASS |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| standalone route の screenshot だけでは handoff 証明が弱い | destination view の単体 capture だけで完了判定する | `SkillCenter` main shell 上で detail panel click から destination まで連続 capture した | handoff 系 UI は source surface から destination まで同一 shell で撮る |
+| desktop / mobile 両パネルが同時に DOM に存在し selector が衝突する | `data-testid="edit-skill-button"` を page 全体で直接探す | visible panel を返す locator に scope して click した | shared DOM を持つ UI は panel scope を切ってから操作する |
+
+#### 同種課題の5分解決カード
+
+1. source surface がある handoff は destination 単独ではなく main shell 上で撮る。
+2. state payload が必要な遷移は `skillName` などの payload 設定順序も test で固定する。
+3. shared desktop/mobile DOM は visible container を先に特定してから selector を使う。
+4. destructive action と primary action は detail panel 内で縦方向に分離する。
+5. Phase 12 では `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同時同期する。
 
 ### 状態管理・IPC依存
 

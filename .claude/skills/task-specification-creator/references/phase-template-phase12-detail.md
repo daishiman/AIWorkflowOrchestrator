@@ -45,7 +45,7 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 | Task | 内容 | 主成果物 |
 | ---- | ---- | -------- |
 | Task 12-1 | 技術ドキュメント作成（実装ガイド作成） | `outputs/phase-12/implementation-guide.md` |
-| Task 12-2 | システムドキュメント更新（aiworkflow-requirements 等） | `outputs/phase-12/spec-update-summary.md` |
+| Task 12-2 | システムドキュメント更新（aiworkflow-requirements 等） | `outputs/phase-12/system-spec-update-summary.md` |
 | Task 12-3 | ドキュメント更新履歴作成 | `outputs/phase-12/documentation-changelog.md` |
 | Task 12-4 | 未タスク検出（残課題の検出と記録） | `outputs/phase-12/unassigned-task-detection.md` |
 | Task 12-5 | スキルフィードバックレポート作成 | `outputs/phase-12/skill-feedback-report.md` |

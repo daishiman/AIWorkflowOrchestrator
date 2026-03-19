@@ -63,7 +63,10 @@ git diff --stat -- .claude/skills/
 # 確認コマンド3: LOGS.md 2ファイル更新確認（P25対策）
 git diff --stat -- */LOGS.md
 
-# 確認コマンド4: topic-map.md 再生成確認（P2/P27対策）
+# 確認コマンド4: SKILL.md 変更履歴更新確認
+git diff --stat -- .claude/skills/*/SKILL.md
+
+# 確認コマンド5: topic-map.md 再生成確認（P2/P27対策）
 git diff --stat -- .claude/skills/*/indexes/topic-map.md
 ```
 
@@ -72,9 +75,12 @@ git diff --stat -- .claude/skills/*/indexes/topic-map.md
 - [ ] `documentation-changelog.md` ファイルが存在する
 - [ ] 本タスク実施中に変更した全ファイルが「Task 1: 実装ガイド」セクションに記録されている
 - [ ] 本タスク実施中に変更した全ファイルが「Task 2: システム仕様書更新」セクションに記録されている
+- [ ] Step 1-A で更新した `.claude/skills/aiworkflow-requirements/*` / `.claude/skills/task-specification-creator/*` の `SKILL.md` / `LOGS.md` が `documentation-changelog.md` に列挙されている
+- [ ] `skill-creator` を改善した場合、`.claude/skills/skill-creator/SKILL.md` / `.claude/skills/skill-creator/LOGS.md` と変更した asset / reference も `documentation-changelog.md` に列挙されている
 - [ ] **重要**: P4 対策として、各セクションで「全て確認完了」と記載する前に、実際にファイルが更新されたことを確認
 - [ ] **P51対策**: SubAgent完了報告の直後に `git diff --stat -- .claude/skills/` で実際の変更ファイル一覧を取得し、changelog記録と突合済み
 - [ ] **P25対策**: `git diff --stat -- */LOGS.md` で LOGS.md 2ファイルの変更を確認済み
+- [ ] `git diff --stat -- .claude/skills/*/SKILL.md` の結果も changelog 記録と突合済み
 - [ ] **P2/P27対策**: `git diff --stat -- .claude/skills/*/indexes/topic-map.md` で topic-map.md の再生成を確認済み
 
 **失敗時の対応**: `git diff` で未記録の変更がないか確認。あれば `documentation-changelog.md` に追加。SubAgent の自己申告だけでは信頼性が不十分なため、必ず git diff による実態確認を行う。

@@ -4,9 +4,9 @@
 
 実施内容:
 
-1. `SKILL.md` から新しい family file へ辿る。
-2. `LOGS.md` から archive へ辿る。
-3. `.claude` と `.agents` の file set を比較する。
+1. `SKILL.md` から current canonical file へ辿る。
+2. `LOGS.md` から archive / history へ辿れることを確認する。
+3. `.claude` と `.agents` の file set / mirror parity を確認する。
 4. validator command を replay する。
 
 この場合、通常は screenshot は不要。`manual-test-result.md` に walkthrough を残す。
@@ -28,10 +28,29 @@
 
 実施内容:
 
-1. screenshot plan を作る。
+1. `screenshot-plan.json` を作る。
 2. representative state を撮る。
-3. Apple UI/UX 観点で視覚レビューを書く。
-4. `validate-phase11-screenshot-coverage.js` を実行する。
+3. source surface から destination surface へ handoff する task は main shell 上で source-to-destination capture を行う。
+4. destination 単独 screenshot は supplemental sanity evidence として扱い、handoff 本証跡の代替にしない。
+5. Apple UI/UX 観点で視覚レビューを書く。
+6. `validate-phase11-screenshot-coverage.js` を実行する。
+
+### selector ルール
+
+- responsive UI で desktop / mobile の両 DOM が同時に存在する場合は、visible container を特定してから selector を使う。
+- `data-testid` が page 全体で二重一致する場合は panel / sheet locator を返す helper を先に作る。
+- strict mode 回避のために first-match に逃げず、「どの surface を操作したか」を証跡とコードの両方で明示する。
+
+### 必須証跡
+
+- `manual-test-result.md`
+- `manual-test-report.md`
+- `issues.md` または `discovered-issues.md`
+- `ui-sanity-visual-review.md`
+- `screenshot-plan.json`
+- `phase11-capture-metadata.json`
+- `phase-11-manual-test.md` の `テストケース` / `画面カバレッジマトリクス`
+- `screenshots/*.png`
 
 ## Apple UI/UX 観点
 
@@ -40,11 +59,5 @@
 - contrast が十分か
 - whitespace と grouping が自然か
 - error / loading / empty state が破綻していないか
-
-## 必須成果物
-
-- `manual-test-result.md`
-- `discovered-issues.md`
-- `ui-sanity-visual-review.md`（UI task または明示 screenshot request がある場合）
-
-UI task または明示 screenshot request がある場合に screenshot path を追加する。
+- destructive action と primary action が混在していないか
+- keyboard focus や dismiss 導線が視覚的に追えるか

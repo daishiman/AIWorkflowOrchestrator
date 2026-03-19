@@ -51,9 +51,16 @@ const mockRemoveSkill = vi.fn();
 const mockSetSkillFilter = vi.fn();
 const mockSetSkillCategory = vi.fn();
 const mockSelectSkillByName = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSetCurrentSkillName = vi.fn();
 
 vi.mock("../../../store", () => ({
-  useAppStore: vi.fn(),
+  useAppStore: vi.fn((selector: (state: Record<string, unknown>) => unknown) =>
+    selector({
+      setCurrentView: mockSetCurrentView,
+      setCurrentSkillName: mockSetCurrentSkillName,
+    }),
+  ),
   useAvailableSkillsMetadata: vi.fn(() => []),
   useImportedSkills: vi.fn(() => []),
   useIsLoadingSkills: vi.fn(() => false),
@@ -311,6 +318,72 @@ describe("useSkillCenter", () => {
     expect(result.current.filteredSkills.map((s) => s.name)).toContain(
       "hello-skill",
     );
+  });
+
+  // TC-06
+  it("handleEditSkill はスキル名設定・skill-editor遷移・パネル閉じを実行する", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    act(() => {
+      result.current.handleEditSkill("test-skill");
+    });
+
+    expect(mockSetCurrentSkillName).toHaveBeenCalledWith("test-skill");
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skill-editor");
+    expect(result.current.isDetailOpen).toBe(false);
+    expect(result.current.detailSkillName).toBeNull();
+  });
+
+  // TC-07
+  it("handleAnalyzeSkill はスキル名設定・skillAnalysis遷移・パネル閉じを実行する", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    act(() => {
+      result.current.handleAnalyzeSkill("test-skill");
+    });
+
+    expect(mockSetCurrentSkillName).toHaveBeenCalledWith("test-skill");
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillAnalysis");
+    expect(result.current.isDetailOpen).toBe(false);
+    expect(result.current.detailSkillName).toBeNull();
+  });
+
+  // TC-16
+  it("handleEditSkill の setCurrentSkillName → setCurrentView の呼び出し順序が正しい", () => {
+    const callOrder: string[] = [];
+    mockSetCurrentSkillName.mockImplementation(() => {
+      callOrder.push("setCurrentSkillName");
+    });
+    mockSetCurrentView.mockImplementation(() => {
+      callOrder.push("setCurrentView");
+    });
+
+    const { result } = renderHook(() => useSkillCenter());
+    act(() => {
+      result.current.handleEditSkill("test-skill");
+    });
+
+    expect(callOrder[0]).toBe("setCurrentSkillName");
+    expect(callOrder[1]).toBe("setCurrentView");
+  });
+
+  // TC-17
+  it("handleAnalyzeSkill の setCurrentSkillName → setCurrentView の呼び出し順序が正しい", () => {
+    const callOrder: string[] = [];
+    mockSetCurrentSkillName.mockImplementation(() => {
+      callOrder.push("setCurrentSkillName");
+    });
+    mockSetCurrentView.mockImplementation(() => {
+      callOrder.push("setCurrentView");
+    });
+
+    const { result } = renderHook(() => useSkillCenter());
+    act(() => {
+      result.current.handleAnalyzeSkill("test-skill");
+    });
+
+    expect(callOrder[0]).toBe("setCurrentSkillName");
+    expect(callOrder[1]).toBe("setCurrentView");
   });
 
   it("マウント時にfetchSkillsが呼ばれる", () => {

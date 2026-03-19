@@ -20,6 +20,13 @@
 - **根拠**: detect_mode.js の判定ロジックに準拠
 - **発見日**: 2026-01-06
 
+### [Phase12] Step 1-A 台帳ファイルも `documentation-changelog.md` に同値転記する
+
+- **状況**: `system-spec-update-summary.md` では Step 1-A の `SKILL.md` / `LOGS.md` 更新を記録したが、`documentation-changelog.md` の更新ファイル一覧から漏れやすい
+- **指針**: Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` は必ず changelog に canonical path で列挙する。`skill-creator` を改善した場合はその `SKILL.md` / `LOGS.md` / asset / reference も同時に列挙する
+- **根拠**: 完了記録と変更台帳がずれると、再監査時に「更新したのに changelog へ無い」「changelog にあるのに根拠がない」の両方が起きる
+- **発見日**: 2026-03-19
+
 ---
 
 ## 型定義リファクタリング
@@ -275,4 +282,3 @@ interface BadgeProps extends Omit<
 
 ```markdown
 # スキルフィードバックレポート
-
