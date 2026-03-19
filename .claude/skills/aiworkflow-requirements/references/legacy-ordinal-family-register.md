@@ -188,7 +188,7 @@ Family status: `partially-ready`
 | --- | --- | --- |
 | `architecture-implementation-patterns-reference-b.md` | IPC data contracts / naming audit / unassigned scope | `architecture-implementation-patterns-reference-ipc-contract-audits.md` |
 | `architecture-implementation-patterns-reference-c.md` | AgentView / selector migration / renderer boundary | `architecture-implementation-patterns-reference-agent-view-selector-migration.md` |
-| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up / S32 Promise.race timeout pattern | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
+| `architecture-implementation-patterns-reference-d.md` | IPC fallback helper / validation follow-up | `architecture-implementation-patterns-reference-ipc-fallback-validation.md` |
 
 ### `interfaces-agent-sdk-skill-reference-*`
 
@@ -254,8 +254,16 @@ Family status: `reclassify-first`
 | ↑ | `lessons-learned-ipc-preload-runtime.md` | ~200 | IPC/Preload/AI Runtime / AuthMode 統一 / LLM adapter / P57-P61 | 2026-03-17 |
 | ↑ | `lessons-learned-test-typesafety.md` | ~170 | テスト/型安全 / Object.freeze+satisfies / Permission Fallback | 2026-03-17 |
 | ↑ | `lessons-learned-phase12-workflow-lifecycle.md` | ~290 | Phase 12 / ワークフロー / SKILL-LIFECYCLE-04/05/06/07 | 2026-03-17 |
-| `lessons-learned-current.md` (1489行, 3重重複含む) | `lessons-learned-safety-gate-ipc-quality.md` | ~130 | UT-06-003 SafetyGate IPC / DIP / P49 / P38 再発 | 2026-03-18 |
-| ↑ | `lessons-learned-phase12-workflow-lifecycle.md` (追記) | +80 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件 | 2026-03-18 |
-| ↑ (重複除去) | `lessons-learned-current.md` (インデックス化) | ~100 | 3重重複セクション除去、インデックス + クイックリファレンスのみ残存 | 2026-03-18 |
-| `task-workflow-completed-skill-lifecycle.md` (576行) | `task-workflow-completed-skill-create-ui-integration.md` | 152 | TASK-10A-C (SkillCreateWizard) / TASK-10A-D (スキルライフサイクルUI統合) | 2026-03-18 |
-| ↑ | `task-workflow-completed-skill-lifecycle.md` | 429 | TASK-SKILL-LIFECYCLE-02/04/05/06/08, TASK-IMP-VIEWTYPE, UT-06-003/005/001 | 2026-03-18 |
+| `lessons-learned-current.md` (1598行) | `lessons-learned-current.md` | 119 | インデックス（分割ファイル対応表 + カテゴリ別検索ガイド） | 2026-03-18 |
+| ↑ | ~~`lessons-learned-current-skill-lifecycle-ipc.md`~~ | ~~411~~ | **削除（重複）**: safetygrate-ipc-gap.md + electron-menu-docs-task0912.md と完全重複。P59再発により並列エージェントが重複生成 | 2026-03-18 |
+| ↑ | `lessons-learned-current-safetygrate-ipc-gap.md` | 324 | SafetyGate / IPC GAP / バリデーション教訓（TASK-SKILL-LIFECYCLE-08, UT-06-003/005, TASK-IMP-MAIN-CHAT） | 2026-03-18 |
+| ↑ | `lessons-learned-current-electron-menu-docs-task0912.md` | 127 | Electron Menu / Skill Docs / Task09-12 教訓（P64/P65） | 2026-03-18 |
+| `task-workflow-completed-skill-lifecycle.md` (575行) | `task-workflow-completed-skill-lifecycle.md` | 28 | インデックス（分割先参照） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-ui.md` | 450 | UI実装・統合系完了記録（VIEWTYPE, TASK-10A-C/D, LIFECYCLE-04/05/08, Task09-12） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-security.md` | 127 | セキュリティ・権限ガバナンス完了記録（UT-06-003/005, LIFECYCLE-06, UT-06-001） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-design.md` | 293 | 設計タスク完了記録（LIFECYCLE-04/05/06/08, Task09-12） | 2026-03-18 |
+| `quick-reference-search-patterns.md` (567行) | `quick-reference-search-patterns.md` | 20 | インデックス（分割先参照） | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-skill-lifecycle.md` | 158 | スキルライフサイクル系検索パターン | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-ipc-infra.md` | 212 | IPC / インフラ系検索パターン | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-code.md` | 213 | コードパターン早見（Electron IPC, Zustand, CTA等） | 2026-03-18 |
+| `lessons-learned-archive-2026-03.md` (519行) | `lessons-learned-archive-2026-03.md` | 459 | 冗長記述を圧縮して500行以下に整理 | 2026-03-18 |

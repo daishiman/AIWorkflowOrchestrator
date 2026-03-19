@@ -42,10 +42,15 @@ stateDiagram-v2
     [*] --> CreateReady
     CreateReady --> ExecuteReady: created
     ExecuteReady --> Running: execute
+    Running --> PermissionPending: permission_required
+    PermissionPending --> Running: approved
     Running --> Review: done
+    Running --> Handoff: terminal_needed
     Review --> ImproveReady: improve needed
     ImproveReady --> Running: improve
+    ImproveReady --> Handoff: terminal_needed
     Review --> ReuseReady: accepted
+    Review --> Handoff: terminal_needed
 ```
 
 ### 4. 必要マイコンポーネント図
@@ -55,13 +60,17 @@ LifecycleHeader
 GoalInput
 ConstraintChips
 ExecutionSummary
+RuntimeBanner
 ImprovementSummary
+QualityGateLabel
 PrimaryActionButton
 SupportingChatPanel
 TerminalHandoffCard
 PersistentTerminalLauncher
 TerminalDock
 ```
+
+> 注記: Core Journey 図の `ConstraintChips` は atom（単一チップ）に対応し、Skill Lifecycle Panel 図の `ConstraintChipList` は molecule（チップ一覧 + 入力）に対応する。
 
 ### 5. CTA / handoff flow 図
 
@@ -110,10 +119,20 @@ SkillLifecyclePanel
 stateDiagram-v2
     [*] --> CreateReady
     CreateReady --> ExecuteReady
-    ExecuteReady --> Review
-    Review --> ImproveReady
-    Review --> TerminalDockOpen: terminal button
-    ImproveReady --> Review
+    ExecuteReady --> Running
+    Running --> PermissionPending: permission_required
+    PermissionPending --> Running: approved
+    Running --> Review: done
+    Review --> ImproveReady: improve needed
+    ImproveReady --> Running: improve
+    ImproveReady --> Review: reconsider
+    Review --> ReuseReady: accepted
+    ReuseReady --> [*]: done
+
+    note right of Review
+        TerminalDock は任意の状態から開閉可能な
+        直交UI状態として別管理する
+    end note
 ```
 
 ### 4. 必要マイコンポーネント図
@@ -123,6 +142,8 @@ LifecycleStepper
 GoalEditor
 ConstraintChipList
 CurrentOutputSummary
+RuntimeBanner
+QualityGateLabel
 PrimaryActionButton
 SecondaryActionLink
 PersistentTerminalLauncher
@@ -174,7 +195,11 @@ stateDiagram-v2
     SupportingReady --> Streaming
     Streaming --> SupportingReady
     SupportingReady --> Handoff
-    SupportingReady --> TerminalDockOpen: terminal button
+
+    note right of SupportingReady
+        TerminalDock は任意の状態から開閉可能な
+        直交UI状態として別管理する
+    end note
 ```
 
 ### 4. 必要マイコンポーネント図
@@ -201,3 +226,26 @@ flowchart LR
     F --> G[Terminal Dock]
     G --> H[選択範囲をチャットへ送る]
 ```
+
+## 実装ギャップ一覧（GAP ID 正本）
+
+> Task09-12 の各仕様書はこのテーブルを正本として参照する。
+
+### UI コンポーネント GAP
+
+| GAP ID | 説明                                                                   | 対応タスク | 関連図                         |
+| ------ | ---------------------------------------------------------------------- | ---------- | ------------------------------ |
+| C-02   | ヘッダーに固定 Terminal ボタンが存在しない                             | Task09     | 画面構成図 L28                 |
+| C-03   | TerminalHandoffCard が import されておらず未接続                       | Task09     | マイコンポーネント図 L65       |
+| C-04   | chip / constraint UI 要素が存在しない                                  | Task10     | マイコンポーネント図 L61, L139 |
+| C-05   | improve ステップで quality gate 判定結果が文字ラベルで表示されていない | Task11     | マイコンポーネント図 L65       |
+| C-06   | execute ステップで runtime banner が StatusBadge にとどまる            | Task11     | マイコンポーネント図 L142      |
+| C-07   | improve → terminal で前回改善結果の要約転送が未実装                    | Task09     | Core Journey 図 L40            |
+
+### 状態遷移 GAP
+
+| GAP ID | 説明                                          | 対応タスク | 関連図                           |
+| ------ | --------------------------------------------- | ---------- | -------------------------------- |
+| D-01   | ReuseReady 状態が未実装                       | Task12     | Core Journey 状態遷移図 L48      |
+| D-02   | TerminalDock が未接続                         | Task09     | 画面構成図 L28                   |
+| D-03   | ImproveReady → Running 再実行サイクルが未実装 | Task12     | Skill Lifecycle Panel 状態遷移図 |

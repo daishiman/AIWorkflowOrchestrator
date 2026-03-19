@@ -1,0 +1,142 @@
+{
+  "taskId": "TASK-IMP-LIFECYCLE-QUALITY-RUNTIME-UI-001",
+  "title": "品質ゲートラベル表示と実行時バナー強化",
+  "description": "QualityGateLabel コンポーネント実装と RuntimeBanner 強化（StatusBadge → trust 境界同時表示）",
+  "status": "phase-1-in-progress",
+  "createdAt": "2026-03-17",
+  "updatedAt": "2026-03-17",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "in-progress",
+      "specPath": "phase-1-requirements.md",
+      "outputPath": "outputs/phase-1/requirements-analysis.md"
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "specPath": "phase-2-design.md",
+      "outputPath": "outputs/phase-2/design-document.md"
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "specPath": "phase-3-design-review.md",
+      "outputPath": "outputs/phase-3/design-review-report.md",
+      "gate": {
+        "result": null,
+        "failAction": {
+          "MAJOR_design": "phase-2",
+          "MAJOR_requirements": "phase-1"
+        }
+      }
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": "outputs/phase-4/"
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null,
+      "productionFiles": [
+        "apps/desktop/src/renderer/components/skill/QualityGateLabel.tsx",
+        "apps/desktop/src/renderer/components/skill/RuntimeBanner.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null,
+      "gate": {
+        "result": null,
+        "failAction": {
+          "MINOR": "convert-to-unassigned-task",
+          "MAJOR": "phase-1-to-5",
+          "CRITICAL": "phase-1"
+        }
+      }
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "pending",
+      "specPath": null,
+      "outputPath": null
+    }
+  },
+  "components": {
+    "QualityGateLabel": {
+      "type": "molecule",
+      "path": "apps/desktop/src/renderer/components/skill/QualityGateLabel.tsx",
+      "status": "pending",
+      "resolves": "C-05"
+    },
+    "RuntimeBanner": {
+      "type": "molecule",
+      "path": "apps/desktop/src/renderer/components/skill/RuntimeBanner.tsx",
+      "status": "pending",
+      "resolves": "C-06"
+    }
+  },
+  "dependencies": {
+    "types": [
+      "packages/shared/src/types/skill-improver.ts",
+      "packages/shared/src/types/cta-visibility.ts"
+    ],
+    "existingComponents": [
+      "apps/desktop/src/renderer/components/skill/ScoreDisplay.tsx",
+      "apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx"
+    ],
+    "relatedTasks": [
+      "TASK-SKILL-LIFECYCLE-04",
+      "TASK-SKILL-LIFECYCLE-05",
+      "TASK-SKILL-LIFECYCLE-06"
+    ],
+    "uiContracts": [
+      "docs/30-workflows/skill-lifecycle-unification/ui-ux-realization.md",
+      "docs/30-workflows/skill-lifecycle-unification/ui-ux-diagrams.md"
+    ]
+  }
+}

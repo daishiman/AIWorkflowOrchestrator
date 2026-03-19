@@ -128,13 +128,13 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
 
-#### internal orchestration 役割
+#### 進行状況
 
-| role | 実装 | UI 露出ルール |
-| --- | --- | --- |
-| Planner | `detectMode` | mode label と説明文のみ。新ボタンは増やさない |
-| Executor | `executeSkill` | 実行ボタン 1 つに集約する |
-| Improver | `improveSkill` + `SkillAnalysisView` | 事前提案と詳細適用を段階表示する |
+| role | UIラベル | 実装 | UI 露出ルール |
+| --- | --- | --- | --- |
+| Planner | 方針判定 | `detectMode` | mode label と説明文のみ。新ボタンは増やさない |
+| Executor | 実行状況 | `executeSkill` | 実行ボタン 1 つに集約する |
+| Improver | 改善状況 | `improveSkill` + `SkillAnalysisView` | 事前提案と詳細適用を段階表示する |
 
 ---
 

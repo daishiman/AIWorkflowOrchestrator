@@ -38,9 +38,10 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
-| ChatPanel状態 | `ChatPanelStatus` (idle/ready/streaming/cancelled/completed/error/blocked/handoff) | arch-state-management-core.md |
-| ChatPanel能力 | `AccessCapability` (integratedRuntime/terminalSurface/both/none) | ui-ux-feature-components-core.md |
-| ストリーミングChat | `useStreamingChat` (state+actions hook) | interfaces-llm.md |
+| SkillExecutionStatus拡張 | `"review"` / `"improve_ready"` / `"reuse_ready"` | arch-state-management-core.md |
+| ConstraintChip | `ConstraintChipProps` | ui-ux-feature-components.md |
+| QualityGateLabel | `QualityGateLabelProps` | ui-ux-feature-components.md |
+| RuntimeBanner | `RuntimeBannerProps` | ui-ux-feature-components.md |
 
 ---
 
@@ -90,16 +91,8 @@
 | `chat:send`      | メッセージ送信 |
 | `chat:stream`    | ストリーミング |
 | `conversation:*` | 会話履歴管理   |
-| `llm:stream-chat` | ChatPanel ストリーミング開始 |
-| `llm:stream-chunk` | ストリーミングチャンク受信（Main→Renderer） |
-| `llm:stream-done` | ストリーミング完了通知 |
-| `llm:stream-error` | ストリーミングエラー通知 |
-| `llm:cancel-stream` | ストリーミングキャンセル |
 | `llm:check-health` | LLMヘルスチェック（primary） |
 | `llm:set-selected-config` | Renderer→Main 選択同期 |
-| `conversation:create` | 会話セッション作成 |
-| `conversation:addMessage` | メッセージ追加 |
-| `auth-key:exists` | APIキー存在確認（blocked→ready遷移） |
 | `AI_CHECK_CONNECTION` | legacy接続確認（新規利用禁止） |
 
 **詳細**: api-endpoints.md L126-736
@@ -221,7 +214,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
-| 2026-03-18 | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001: ChatPanelStatus/AccessCapability/useStreamingChat 型定義と llm:stream-chat/stream-chunk/stream-done/stream-error/cancel-stream + conversation:create/addMessage + auth-key:exists 10IPCチャンネルを追加 |
+| 2026-03-18 | Task09-12: SkillExecutionStatus拡張値/ConstraintChip/QualityGateLabel/RuntimeBanner 型を追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

@@ -711,12 +711,12 @@ export function SkillLifecyclePanel({
 
           <section className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
             <h3 className="text-base font-semibold text-[var(--text-primary)]">
-              内部オーケストレーション
+              進行状況
             </h3>
             <div className="mt-4 space-y-3 text-sm">
               <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3">
                 <p className="font-medium text-[var(--text-primary)]">
-                  Planner
+                  方針判定
                 </p>
                 <p className="mt-1 text-[var(--text-secondary)]">
                   {detectedMode
@@ -726,7 +726,7 @@ export function SkillLifecyclePanel({
               </div>
               <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3">
                 <p className="font-medium text-[var(--text-primary)]">
-                  Executor
+                  実行状況
                 </p>
                 <p className="mt-1 text-[var(--text-secondary)]">
                   {createdSkillName
@@ -736,7 +736,7 @@ export function SkillLifecyclePanel({
               </div>
               <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3">
                 <p className="font-medium text-[var(--text-primary)]">
-                  Improver
+                  改善状況
                 </p>
                 <p className="mt-1 text-[var(--text-secondary)]">
                   {creatorImproveResult

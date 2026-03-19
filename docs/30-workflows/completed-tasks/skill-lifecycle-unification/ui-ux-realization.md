@@ -2,7 +2,9 @@
 
 ## 概要
 
-本書は、`作る` `実行する` `改善する` を単一導線として見せるための UI/UX 正本である。`Atent Team` `SubAgent` `Codex` は内部オーケストレーションであり、ユーザーに見せる主語は常に「やりたい仕事」とする。
+本書は、`作る` `実行する` `改善する` `再利用する` を単一導線として見せるための UI/UX 正本である。`Atent Team` `SubAgent` `Codex` は内部オーケストレーションであり、ユーザーに見せる主語は常に「やりたい仕事」とする。
+
+> 注記: index.md（L8）では「ユーザージョブは `作る` `使う` `改善する` の3本」と定義しているが、本書の一次導線テーブルは `Reuse`（再利用する）を加えた4フェーズで構成する。`使う` は `Execute` と `Reuse` の両フェーズを包括した表現として対応する。
 
 詳細図解は [ui-ux-diagrams.md](./ui-ux-diagrams.md) を参照する。
 
@@ -25,6 +27,8 @@
 | Evaluation / Score           | 次の改善判断を支える                            | 一次導線の乗っ取り       |
 | Persistent Terminal Launcher | どの lifecycle surface からでも terminal を開く | 主導線そのものの置き換え |
 
+> 注記: Terminal Transcript と Evaluation / Score は Core Journey と Skill Lifecycle Panel の図解内に統合して扱う。独立 surface の図解は設けない。
+
 ## create / execute / improve の UI 契約
 
 | ステップ | 必須 UI                                         | 説明                                |
@@ -32,6 +36,8 @@
 | create   | goal input、constraint chips、generate CTA      | 何を作るかを最初に固定する          |
 | execute  | runtime banner、permission、result summary      | 実行経路と trust 境界を同時に見せる |
 | improve  | before / after summary、quality gate、retry CTA | 改善理由を先に見せる                |
+
+> 注記: runtime banner は現在 StatusBadge コンポーネント（SkillStreamingView 内）として暫定実装されている。Task11（TASK-IMP-LIFECYCLE-QUALITY-RUNTIME-UI-001）で RuntimeBanner コンポーネントへ昇格し、StatusBadge を置き換える。
 
 ## terminal handoff の扱い
 
@@ -52,6 +58,9 @@
 | running    | 進行中と停止導線を同時に出す                  |
 | handoff    | terminal へ渡す理由、渡す内容、次の操作を出す |
 | review     | quality gate と改善余地を出す                 |
+
+> 注記: ready は各フェーズの待機状態（CreateReady / ExecuteReady / ImproveReady / ReuseReady）に展開される。
+> permission と handoff は任意のフェーズで遷移しうる直交状態として扱う。
 
 ## UX の禁止事項
 
