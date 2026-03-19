@@ -1,0 +1,125 @@
+{
+  "taskId": "TASK-IMP-LIFECYCLE-CONSTRAINT-CHIPS-001",
+  "title": "ConstraintChips / ConstraintChipList コンポーネント実装と SkillLifecyclePanel 統合",
+  "status": "in-progress",
+  "createdAt": "2026-03-17",
+  "updatedAt": "2026-03-17",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "specPath": "phase-1-requirements.md",
+      "outputPath": "outputs/phase-1/requirements-analysis.md"
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "specPath": "phase-2-design.md",
+      "outputPath": "outputs/phase-2/design-document.md"
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "pending",
+      "specPath": "phase-3-design-review.md",
+      "outputPath": "outputs/phase-3/design-review-report.md"
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "not-started",
+      "specPath": null,
+      "outputPath": null
+    }
+  },
+  "gapReference": "C-04",
+  "dependsOn": ["TASK-10A-D"],
+  "newComponents": [
+    {
+      "name": "ConstraintChip",
+      "atomicDesignLayer": "atom",
+      "plannedPath": "apps/desktop/src/renderer/components/atoms/ConstraintChip/index.tsx"
+    },
+    {
+      "name": "ConstraintChipList",
+      "atomicDesignLayer": "molecule",
+      "plannedPath": "apps/desktop/src/renderer/components/molecules/ConstraintChipList/index.tsx"
+    }
+  ],
+  "modifiedComponents": [
+    {
+      "name": "SkillLifecyclePanel",
+      "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+      "changeType": "integration"
+    }
+  ],
+  "uiUxReferences": [
+    {
+      "doc": "ui-ux-realization.md",
+      "lines": "L34-38",
+      "content": "create ステップ必須UI: goal input / constraint chips / generate CTA"
+    },
+    {
+      "doc": "ui-ux-diagrams.md",
+      "lines": "L61",
+      "content": "Core Journey 必要マイコンポーネント: ConstraintChips"
+    },
+    {
+      "doc": "ui-ux-diagrams.md",
+      "lines": "L139",
+      "content": "Skill Lifecycle Panel 必要マイコンポーネント: ConstraintChipList"
+    }
+  ]
+}

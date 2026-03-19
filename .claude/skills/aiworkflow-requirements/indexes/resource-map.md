@@ -63,6 +63,10 @@
 | Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
 | 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06） | security-skill-execution.md, interfaces-agent-sdk-executor-details.md, arch-state-management-reference-permissions-import-lifecycle.md | lessons-learned-current.md, task-workflow-backlog.md, workflow-skill-lifecycle-evaluation-scoring-gate.md |
 | 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
+| UI実装（Skill Lifecycle Terminal統合 / TerminalHandoffCard / improve要約） | workflow-skill-lifecycle-terminal-integration.md（将来作成予定）, interfaces-agent-sdk-skill-reference.md, ui-ux-feature-components.md | lessons-learned-current.md, task-workflow.md |
+| UI実装（Skill Create ConstraintChip / ConstraintChipList） | ui-ux-feature-components.md, arch-state-management-core.md | lessons-learned-current.md, task-workflow.md |
+| UI実装（QualityGateLabel / RuntimeBanner） | ui-ux-feature-components.md, interfaces-agent-sdk-skill.md | lessons-learned-current.md, task-workflow.md |
+| 状態遷移実装（SkillExecutionStatus ReuseReady / ImproveReady / Review） | arch-state-management-core.md, interfaces-agent-sdk-skill.md | task-workflow.md, lessons-learned-current.md |
 
 ---
 
@@ -391,6 +395,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | 1.21.0     | Task09-12（Terminal統合・ConstraintChips・QualityGateLabel/RuntimeBanner・ReuseReady状態遷移）のクイックルックアップ追加。SkillLifecyclePanel日本語ラベル反映 |
 | 2026-03-17 | 1.20.0     | TASK-SKILL-LIFECYCLE-08: Skill Publishing & Version Compatibility（13型定義・4サービスIF・11 IPCチャンネル）のクイックルックアップ追加。SkillVisibility/PublishReadiness/CompatibilityCheckResult/SkillRegistryService/SkillDistributionService 導線を登録 |
 | 2026-03-17 | 1.20.1     | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001: 「Main Chat / Settings runtime 同期」行を追加。`設計同期（AI runtime/auth-mode unification）` 行に `llm-ipc-types.md` を追加。`llm:check-health` / `llm:set-selected-config` / `AI_CHECK_CONNECTION` IPC チャンネルと `HealthCheckResult` / `SetSelectedConfigParams` 型を各インデックスに登録 |
 | 2026-03-17 | 1.19.0     | TASK-SKILL-LIFECYCLE-08 / UT-06-005: SafetyGate MetadataProvider 実装・Permission Fallback（abort/skip/retry/timeout）クイックルックアップを追加。`api-ipc-agent-safety.md` 新規登録（`api-ipc-agent-core.md` から safety/getFileTree セクションを分離） |

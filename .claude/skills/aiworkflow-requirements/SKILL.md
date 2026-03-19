@@ -193,6 +193,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.02.04** | **2026-03-18** | **Task09-12 仕様書作成記録追加、ui-ux-diagrams.md GAP ID 正本セクション追加、Skill Lifecycle Panel 状態遷移図 ReuseReady 追加、task-workflow-completed-skill-lifecycle.md Task09-12 登録** |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了記録追加**: GAP-01/02/03 実装完了記録追加 |
 | **9.02.02** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 再監査同期**: Phase 11 screenshot 3件を再撮影して coverage validator を PASS 化、Phase 12 implementation-guide を 10/10 要件へ補強。`system-spec-update-summary.md` / `documentation-changelog.md` を実績形式へ置換し、`phase12-task-spec-compliance-check.md` を追加。`verify-unassigned-links` の欠落12件を補完し、TASK-08 follow-up 4件を未タスクへ formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

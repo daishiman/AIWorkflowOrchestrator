@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-17
+> 自動生成: 2026-03-18
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2453,13 +2453,21 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L217 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L322 |
 
+### references/lessons-learned-current-electron-menu-docs-task0912.md
+
+| セクション | 行 |
+|------------|----|\n
+### references/lessons-learned-current-safetygrate-ipc-gap.md
+
+| セクション | 行 |
+|------------|----|\n
 ### references/lessons-learned-current.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L6 |
 | 変更履歴 | L17 |
-| 分割ファイル一覧 | L44 |
-| クイックリファレンス: カテゴリ別検索ガイド | L423 |
+| 分割ファイル一覧 | L29 |
+| クイックリファレンス: カテゴリ別検索ガイド | L49 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2629,8 +2637,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L36 |
-| 関連ドキュメント | L41 |
+| 利用順序 | L38 |
+| 関連ドキュメント | L43 |
 
 ### references/llm-embedding.md
 
@@ -3598,19 +3606,40 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L9 |
 
+### references/task-workflow-completed-skill-lifecycle-design.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L8 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L93 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L115 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L168 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L205 |
+| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L254 |
+
+### references/task-workflow-completed-skill-lifecycle-security.md
+
+| セクション | 行 |
+|------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L7 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L45 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L82 |
+
+### references/task-workflow-completed-skill-lifecycle-ui.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17） | L7 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L56 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L123 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L204 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L289 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L311 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L374 |
+| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L411 |
+
 ### references/task-workflow-completed-skill-lifecycle.md
 
 | セクション | 行 |
-|------------|----|\n| TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17） | L8 |
-| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L57 |
-| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L95 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L132 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L199 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L280 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L365 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L387 |
-| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L450 |
-| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L487 |
+|------------|----|\n| 分割ファイル一覧 | L7 |
+| タスクID 逆引き | L14 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

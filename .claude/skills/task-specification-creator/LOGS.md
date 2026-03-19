@@ -406,6 +406,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## 最新ログ
 
+### 2026-03-18 - Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版） |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書 |
+| 結果 | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
+| 検証 | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み |
+
+---
+
 ### 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
 | 項目 | 内容 |

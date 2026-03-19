@@ -235,4 +235,50 @@ TASK-3-1-Aで実装したSkillExecutorの実行結果を、Renderer Processに�
 - メソッド: `evaluate(skillName: string): Promise<SafetyGateResult>`
 - Task-08（スキル公開）がこのインターフェースを通じて安全性チェックを実行する
 
+#### 具象クラス: DefaultSafetyGate（UT-06-003）
+
+- 実装ファイル: `apps/desktop/src/main/permissions/default-safety-gate.ts`
+- 共有型定義ファイル: `packages/shared/src/types/safety-gate.ts`
+- UT-06-003 で実装済み
+- DI構造: `DefaultSafetyGateDeps`（permissionStore, metadataProvider, protectedPaths）
+  - `permissionStore`: 権限ストアへのアクセス
+  - `metadataProvider`: スキルメタデータの取得
+  - `protectedPaths`: 保護対象パス一覧
+
 詳細は TASK-SKILL-LIFECYCLE-06 の実装ガイド（docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-06-trust-permission-governance/outputs/phase-12/implementation-guide.md）を参照。
+
+---
+
+## 型変更記録（UT-06-005）
+
+### SkillPermissionResponse.skip フィールド追加
+
+| 項目 | 内容 |
+| --- | --- |
+| 変更ファイル | `packages/shared/src/types/skill.ts` |
+| 変更種別 | optional フィールド追加 |
+| タスクID | UT-06-005 |
+| 完了日 | 2026-03-16 |
+
+追加フィールド:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `skip` | `boolean?` | 拒否時にスキップ（中断しない）するか。`{ approved: false, skip: true }` の組み合わせで当該ツールをスキップして実行継続する |
+
+### IPermissionStore.revokeSessionEntries メソッド追加
+
+| 項目 | 内容 |
+| --- | --- |
+| 変更ファイル | `packages/shared/src/types/permission-store.ts` |
+| 変更種別 | optional メソッド追加 |
+| タスクID | UT-06-005 |
+| 完了日 | 2026-03-16 |
+
+追加メソッド:
+
+| メソッド | シグネチャ | 説明 |
+| --- | --- | --- |
+| `revokeSessionEntries?` | `(executionId: string) => void` | 指定実行セッションで付与した一時許可を全クリア（optional メソッド）。abort フロー Step 2 で呼び出す |
+
+**実装**: `apps/desktop/src/main/services/skill/PermissionStore.ts` にスタブ実装（全エントリクリア）を追加済み。セッション別の本格実装は UT-06-005-B（未タスク）で対応予定。

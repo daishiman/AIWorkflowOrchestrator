@@ -25,6 +25,30 @@
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ---
+
+## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+- 完了日: 2026-03-17
+- 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
+- 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
+- 未タスク化: 5件（U-1〜U-5）
+- システム仕様書実更新: interfaces-agent-sdk-skill.md / workflow-skill-lifecycle-created-skill-usage-journey.md / security-skill-execution.md / api-ipc-agent-core.md / arch-electron-services-core.md / arch-state-management-core.md 他9ファイル
+
+---
+
+## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11/12 実績同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12（re-audit）
+- **Result**: success
+- **Notes**:
+  - `phase-11-manual-test.md` に TC-11-01..03 の screenshot 証跡を同期し、`validate-phase11-screenshot-coverage` を PASS 化
+  - `implementation-guide.md` の不足項目（APIシグネチャ/エッジケース）を補完し、`validate-phase12-implementation-guide` 10/10 PASS
+  - `system-spec-update-summary.md` / `documentation-changelog.md` を計画記録から実績記録へ置換
+  - `phase12-task-spec-compliance-check.md` を新規作成し、Task 1-5 完了を固定
+  - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
+
+---
+
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -37,6 +61,58 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `apps/desktop/src/main/ipc/__tests__/ipc-double-registration.test.ts`（修正）: conversation チャンネル対応追加
   - 172 tests ALL PASS（register-conversation-handlers 22 + ipc-graceful-degradation 19 + ipc-double-registration 17 + conversationHandlers 92 + conversationRepository 22）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
+
+---
+## 2026-03-17 - TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - Main Chat / Settings / Selector / System Prompt の runtime 同期を実装
+  - GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
+  - GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
+  - GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
+  - 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
+  - 未タスク: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+
+---
+## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成（設計タスク型）
+  - SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了
+  - Phase 10 PASS（MINOR 指摘対応済み）
+  - artifacts.json 同期済み、成果物格納先: docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/
+
+---
+## 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（バッチ同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 バッチ同期
+- **Result**: success
+- **Notes**:
+  - SafetyGatePort 具象クラス DefaultSafetyGate を実装（2026-03-16完了のバッチ同期）
+  - IPC ハンドラ skill:evaluate-safety を追加
+  - 5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約
+  - 36テスト全PASS、カバレッジ全100%
+
+---
+## 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了（バッチ同期）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 バッチ同期
+- **Result**: success
+- **Notes**:
+  - SkillExecutor の Permission 拒否時フォールバック制御（abort/skip/retry/timeout）を実装（2026-03-16完了のバッチ同期）
+  - processPermissionFallback / executeAbortFlow / executeSkipFlow の3メソッドを SkillExecutor.ts に追加（+187行）
+  - PermissionStore.ts に revokeSessionEntries メソッドを追加（+20行）
+  - IPermissionStore インターフェースに revokeSessionEntries? を追加（+10行）
+  - SkillPermissionResponse に skip?: boolean フィールドを追加（+3行）
+  - 全1293テスト PASS（既存1270 + 新規23）
 
 ---
 ## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
@@ -329,6 +405,53 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 長期の version changelog は [references/changelog-archive.md](references/changelog-archive.md) を参照する。
 
 ## 最新ログ
+
+### 2026-03-18 - Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版） |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書 |
+| 結果 | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
+| 検証 | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み |
+
+---
+
+### 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-13 仕様書生成） |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/` 全ファイル |
+| 結果 | スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成。SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了。Phase 10 PASS（MINOR 指摘対応済み）。artifacts.json 同期済み |
+| 検証 | Phase 1-13 全Phase完了、artifacts.json 同期済み、verification-report.md 作成済み |
+
+### 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（バッチ同期）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation（バッチ同期） |
+| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts` |
+| 結果 | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
+| 検証 | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100% |
+
+### 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了（バッチ同期）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation（バッチ同期） |
+| 変更対象 | `SkillExecutor.ts`, `PermissionStore.ts`, `permission-store.ts`, `skill.ts`, `SkillExecutor.fallback.test.ts` |
+| 結果 | SkillExecutor に processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）。PermissionStore に revokeSessionEntries 追加（+20行）。SkillPermissionResponse に skip?: boolean 追加（+3行）。新規23テスト追加で全1293テストPASS |
+| 検証 | 全1293テスト PASS（既存1270 + 新規23） |
+
+### 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts` |
+| 結果 | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
+| 検証 | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100% |
 
 ### 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）
 

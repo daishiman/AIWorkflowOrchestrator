@@ -30,6 +30,18 @@
 | 権限リトライ上限   | `PERMISSION_MAX_RETRIES`      | interfaces-agent-sdk-executor-core.md |
 | SafetyGate評価     | `SafetyGatePort`, `DefaultSafetyGate`, `evaluateSafety` | api-ipc-agent-safety.md, security-skill-execution.md |
 | Permission Fallback Hook | `processPermissionFallback`, `revokeSessionEntries` | interfaces-agent-sdk-executor-details.md |
+| スキル公開レベル   | `SkillVisibility`             | interfaces-agent-sdk-skill.md |
+| 公開メタデータ     | `SkillPublishingMetadata`     | interfaces-agent-sdk-skill.md |
+| 互換性チェック結果 | `CompatibilityCheckResult`    | interfaces-agent-sdk-skill.md |
+| 公開準備状態       | `PublishReadiness`            | interfaces-agent-sdk-skill.md |
+| スキルレジストリ   | `SkillRegistryService`        | interfaces-agent-sdk-skill.md |
+| スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
+| LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
+| LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+| SkillExecutionStatus拡張 | `"review"` / `"improve_ready"` / `"reuse_ready"` | arch-state-management-core.md |
+| ConstraintChip | `ConstraintChipProps` | ui-ux-feature-components.md |
+| QualityGateLabel | `QualityGateLabelProps` | ui-ux-feature-components.md |
+| RuntimeBanner | `RuntimeBannerProps` | ui-ux-feature-components.md |
 
 ---
 
@@ -56,6 +68,22 @@
 | `skill:execute`        | スキル実行     |
 | `skill:permission`     | 権限確認       |
 
+### スキル公開・配布
+
+| チャンネル                   | 用途           |
+| ---------------------------- | -------------- |
+| `skill:publishing:register`  | スキル登録     |
+| `skill:publishing:update`    | メタデータ更新 |
+| `skill:publishing:check-compatibility` | 互換性チェック |
+| `skill:publishing:check-readiness` | 公開準備確認 |
+| `skill:publishing:publish`   | スキル公開     |
+| `skill:publishing:unpublish` | スキル非公開化 |
+| `skill:publishing:get-status` | 公開状態取得  |
+| `skill:distribution:import`  | スキルインポート |
+| `skill:distribution:export`  | スキルエクスポート |
+| `skill:distribution:fork`    | スキルフォーク |
+| `skill:distribution:share`   | 共有リンク生成 |
+
 ### チャット
 
 | チャンネル       | 用途           |
@@ -63,6 +91,9 @@
 | `chat:send`      | メッセージ送信 |
 | `chat:stream`    | ストリーミング |
 | `conversation:*` | 会話履歴管理   |
+| `llm:check-health` | LLMヘルスチェック（primary） |
+| `llm:set-selected-config` | Renderer→Main 選択同期 |
+| `AI_CHECK_CONNECTION` | legacy接続確認（新規利用禁止） |
 
 **詳細**: api-endpoints.md L126-736
 
@@ -183,5 +214,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | Task09-12: SkillExecutionStatus拡張値/ConstraintChip/QualityGateLabel/RuntimeBanner 型を追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
+| 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

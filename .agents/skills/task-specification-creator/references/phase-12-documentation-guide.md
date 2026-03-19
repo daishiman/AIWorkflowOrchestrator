@@ -1,12 +1,36 @@
 # Phase 12 Documentation Guide
 
-## Task 12-1: implementation guide
+## Task 12-1: 実装ガイド作成【必須・2パート構成】
 
-- `## Part 1`
-- `## Part 2`
-- Part 1 は「なぜ必要か」を先に書く
-- Part 1 に日常の例えを入れる
-- Part 2 に型、シグネチャ、使用例、エラー、エッジケース、設定を入れる
+| パート | 対象読者 | 内容 |
+| ------ | -------- | ---- |
+| **Part 1** | **初学者・中学生レベル** | **概念的説明（日常の例え話、専門用語なし）** |
+| Part 2 | 開発者・技術者 | 技術的詳細（型、シグネチャ、使用例、エラー、エッジケース、設定） |
+
+**Part 1 記述ルール**:
+- 日常生活での例え話を**必ず**含め、`たとえば` を最低1回明示する
+- 専門用語は使わない（使う場合は即座に説明）
+- 「なぜ必要か」を先に説明してから「何をするか」を説明
+- 作成後に `references/phase12-checklist-definition.md` と `validate-phase12-implementation-guide.js` で内容要件を確認する
+
+**Part 1 テンプレート**:
+```markdown
+### X.X [機能名]とは何か
+
+#### 日常生活での例え
+
+[日常の具体的なシーン]に似ています。
+
+例えば、[身近な例]のようなものです。
+
+#### この機能でできること
+
+| 機能 | 説明 | 例 |
+|------|------|-----|
+| 機能A | 簡単な説明 | 具体例 |
+```
+
+詳細: `references/technical-documentation-guide.md`、`references/phase12-checklist-definition.md`
 
 ## Task 12-2: system spec update summary
 
@@ -45,6 +69,19 @@
 
 - 改善点があれば next action を書く
 - 改善点なしでも「なし」と理由を書く
+
+## Task 12-6: phase12-task-spec-compliance-check（P4対策・最終確認）
+
+- Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
+- 全タスクが「完了」と記録されてから Phase 12 を閉じる
+- `documentation-changelog.md` に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+
+**確認コマンド（docs-only タスクで特に必須）**:
+
+```bash
+grep -n "計画\|予定\|TODO\|will be\|を予定" outputs/phase-12/documentation-changelog.md
+# 出力が0件であること
+```
 
 ## 完了前チェック
 
