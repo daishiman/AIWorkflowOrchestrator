@@ -179,56 +179,41 @@ export function registerAIHandlers(): void {
     },
   );
 
-  // Check AI/RAG connection
+  // Check AI/RAG connection (guidance-only: legacy 互換残置)
+  // llm:check-health を使用してください
   ipcMain.handle(
     IPC_CHANNELS.AI_CHECK_CONNECTION,
     async (): Promise<AICheckConnectionResponse> => {
-      try {
-        // TODO: Replace with actual connection check
-        return {
-          success: true,
-          data: {
-            status: "connected",
-            indexedDocuments: 892,
-            lastSyncTime: new Date(),
-          },
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : "Unknown error",
-        };
-      }
+      return {
+        success: true,
+        data: {
+          status: "disconnected",
+          indexedDocuments: 0,
+        },
+      };
     },
   );
 
   // Index documents for RAG
   ipcMain.handle(
     IPC_CHANNELS.AI_INDEX,
-    async (_event, request: AIIndexRequest): Promise<AIIndexResponse> => {
-      try {
-        // TODO: Replace with actual indexing logic
-        console.log(
-          `Indexing folder: ${request.folderPath}, recursive: ${request.recursive}`,
-        );
-
-        // Simulate indexing
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        return {
-          success: true,
-          data: {
-            indexedCount: 15,
-            skippedCount: 3,
-            errors: [],
-          },
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: error instanceof Error ? error.message : "Unknown error",
-        };
-      }
+    async (_event, _request: AIIndexRequest): Promise<AIIndexResponse> => {
+      return {
+        success: true,
+        data: {
+          indexedCount: 0,
+          skippedCount: 0,
+          errors: [
+            "AI_INDEX は現在利用できません。RAG インデックス機能は今後のリリースで対応予定です。",
+          ],
+        },
+      };
     },
   );
+}
+
+export function unregisterAIHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.AI_CHAT);
+  ipcMain.removeHandler(IPC_CHANNELS.AI_CHECK_CONNECTION);
+  ipcMain.removeHandler(IPC_CHANNELS.AI_INDEX);
 }

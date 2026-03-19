@@ -1,0 +1,190 @@
+{
+  "taskId": "TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001",
+  "title": "RAG / AI_INDEX / Embedding / Extraction / Graph Summary の runtime ルール",
+  "type": "design",
+  "priority": "high",
+  "status": "in_progress",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md",
+        "outputs/phase-2/ui-ux-realization.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/review-prompt.txt"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/red-state-command-suite.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/implementation-log.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/regression-plan.md",
+        "outputs/phase-6/regression-execution-log.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactor-plan.md",
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/code-quality-check.md",
+        "outputs/phase-8/test-pass-confirmation.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/qa-checklist.md",
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/test-execution-log.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-report.md",
+        "outputs/phase-10/review-prompt.txt",
+        "outputs/phase-10/minor-issues.md",
+        "outputs/phase-10/phase3-minor-tracking.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/handoff-checklist.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/ui-sanity-visual-review.md",
+        "outputs/phase-11/command-transcript.md",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": [
+        "outputs/phase-13/pr-summary-draft.md",
+        "outputs/phase-13/blocked-status-record.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-01",
+      "description": "backend AI surface ごとの runtime capability / implementation status が GraphRAG / HybridRAG / CRAG / reranking まで列挙されている",
+      "verified": true
+    },
+    {
+      "id": "AC-02",
+      "description": "production mock / TODO / unsupported capability が後続設計へ割り当てられている",
+      "verified": true
+    },
+    {
+      "id": "AC-03",
+      "description": "terminal surface への silent fallback が要件・設計に含まれていない",
+      "verified": true
+    },
+    {
+      "id": "AC-04",
+      "description": "concern topology が 3 lane 以下で定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-05",
+      "description": "error policy が 5 パターン（unsupported / rate limit / timeout / job failure / provider failure）を網羅している",
+      "verified": true
+    },
+    {
+      "id": "AC-06",
+      "description": "spec sync 先が 8 ファイル（api-ipc-system / interfaces-llm / llm-embedding / architecture-rag / rag-services / rag-query-pipeline / task-workflow / lessons-learned）まで定義されている",
+      "verified": true
+    }
+  ],
+  "createdAt": "2026-03-13",
+  "updatedAt": "2026-03-19"
+}

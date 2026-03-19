@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.1.1     | 2026-03-19 | Task08 current-state sync: `HybridRAGFactory.createFull/createLite` の guidance stub 化と `[FACTORY_NOT_READY]` runtime を明記 |
 | v1.0.0     | 2025-01-15 | 初版作成                                           |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式に変換 |
 
@@ -130,11 +131,19 @@ HybridRAGEngineのファクトリクラス。設定に基づいて適切なコ�
 
 ### ファクトリメソッド
 
-| メソッド           | 状態   | 説明                                     |
-| ------------------ | ------ | ---------------------------------------- |
-| createFull()       | 未実装 | フル機能エンジン（LLMベース、CRAG有効）  |
-| createLite()       | 未実装 | 軽量版エンジン（ルールベース、CRAG無効） |
-| createForTesting() | 実装済 | テスト用エンジン（モック注入）           |
+| メソッド           | 状態 | 説明 |
+| ------------------ | ---- | ---- |
+| createFull()       | guidance stub | フル機能エンジン用 entry point。current runtime では `[FACTORY_NOT_READY]` を含む Error を throw |
+| createLite()       | guidance stub | 軽量版エンジン用 entry point。current runtime では `[FACTORY_NOT_READY]` を含む Error を throw |
+| createForTesting() | 実装済 | テスト用エンジン（モック注入） |
+
+### current runtime snapshot（2026-03-19）
+
+| 項目 | 状態 |
+| --- | --- |
+| production wiring | 未接続 |
+| local placeholder types | `IEmbeddingProvider` / `IKnowledgeGraphStore` / `ILLMClient` / `IWebSearcher` をファイル内 placeholder として保持 |
+| 推奨呼び出し | production code は `createFull()` / `createLite()` を前提にしない。テスト用途のみ `createForTesting()` を使用 |
 
 ### FullHybridRAGConfig
 

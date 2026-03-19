@@ -681,7 +681,7 @@ describe("HybridRAGFactory", () => {
 
       // When/Then: 未実装エラーがスローされる
       expect(() => HybridRAGFactory.createFull(config)).toThrow(
-        "createFull() is not yet implemented",
+        "FACTORY_NOT_READY",
       );
     });
   });
@@ -697,7 +697,7 @@ describe("HybridRAGFactory", () => {
 
       // When/Then: 未実装エラーがスローされる
       expect(() => HybridRAGFactory.createLite(config)).toThrow(
-        "createLite() is not yet implemented",
+        "FACTORY_NOT_READY",
       );
     });
   });
