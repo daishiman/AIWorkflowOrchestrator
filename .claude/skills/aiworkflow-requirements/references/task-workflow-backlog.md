@@ -493,3 +493,9 @@
 - 優先度「高」のタスクから順に実施
 
 ---
+| ~~UT-TASK06-007~~ | ~~IPC 契約ドリフト自動検出スクリプト（Phase 9 統合）~~ **完了: 2026-03-18** | ~~高~~ | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 Phase 12 skill-feedback T-02（2026-03-17） | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/` |
+| UT-TASK06-007-EXT-001 (#1328) | タプル配列経由ハンドラ抽出拡張（`[IPC_CHANNELS.XXX, handler]` 形式の約108件未抽出を解消） | 中 | UT-TASK06-007 Phase 11 TC-11-04 | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md` |
+| UT-TASK06-007-EXT-002 (#1331) | 別定数オブジェクトチャンネル解決（`CHAT_EDIT_CHANNELS` 等 `IPC_CHANNELS` 以外への対応） | 低 | UT-TASK06-007 Phase 11 TC-11-04 | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md` |
+| UT-TASK06-007-EXT-003 (#1332) | ipcMain.onパターン検証強化（`ipcMain.on` と `safeOn` の照合精度向上） | 低 | UT-TASK06-007 Phase 2 スコープ外定義 | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md` |
+| UT-TASK06-007-EXT-004 (#1333) | check-ipc-contracts.ts モジュール分割リファクタリング | 低 | UT-TASK06-007 Phase 8 リファクタリングレポート（C-04制約・2026-03-18） | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-004-script-modular-split.md` |
+| UT-TASK06-007-EXT-005 (#1334) | R-02 セマンティクスチェック精度向上 | 低 | UT-TASK06-007 Phase 9 品質レポート（R-02精度限界・2026-03-18） | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md` |

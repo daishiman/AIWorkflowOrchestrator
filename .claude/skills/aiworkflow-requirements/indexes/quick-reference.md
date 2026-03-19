@@ -38,10 +38,6 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
-| SkillExecutionStatus拡張 | `"review"` / `"improve_ready"` / `"reuse_ready"` | arch-state-management-core.md |
-| ConstraintChip | `ConstraintChipProps` | ui-ux-feature-components.md |
-| QualityGateLabel | `QualityGateLabelProps` | ui-ux-feature-components.md |
-| RuntimeBanner | `RuntimeBannerProps` | ui-ux-feature-components.md |
 
 ---
 
@@ -96,6 +92,19 @@
 | `AI_CHECK_CONNECTION` | legacy接続確認（新規利用禁止） |
 
 **詳細**: api-endpoints.md L126-736
+
+---
+
+### IPC契約ドリフト自動検出（UT-TASK06-007）
+
+| 項目 | 値 |
+| --- | --- |
+| スクリプト | `apps/desktop/scripts/check-ipc-contracts.ts` |
+| テスト | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` |
+| 実行 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` |
+| ルール | R-01(孤児), R-02(引数不一致/P44), R-03(ハードコード/P27), R-04(未登録) |
+| 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` |
+| 未タスク | EXT-001(タプル配列), EXT-002(別定数), EXT-003(ipcMain.on) |
 
 ---
 
@@ -214,7 +223,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
-| 2026-03-18 | Task09-12: SkillExecutionStatus拡張値/ConstraintChip/QualityGateLabel/RuntimeBanner 型を追加 |
+| 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

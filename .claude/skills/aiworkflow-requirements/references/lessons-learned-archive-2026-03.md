@@ -1,8 +1,9 @@
-# Lessons Learned アーカイブ（2026-03-01 〜 2026-03-13）
+# Lessons Learned アーカイブ（2026-03-01 〜 2026-03-15）
 
 > 親仕様書: [lessons-learned.md](lessons-learned.md)
 > current summary: [lessons-learned-current.md](lessons-learned-current.md)
-> 役割: 2026-03-01〜2026-03-13 の教訓エントリを保管するアーカイブ
+> 役割: 2026-03-01〜2026-03-15 の教訓エントリを保管するアーカイブ
+> 2026-03-16以降のエントリは [lessons-learned-current.md](lessons-learned-current.md) を参照
 
 ## メタ情報
 
@@ -10,12 +11,12 @@
 | -------- | ---------------------------------------------------------------------- |
 | 正本     | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md` |
 | 目的     | current summary から分離した過去教訓の保管                             |
-| スコープ | 2026-03-01〜2026-03-13 に記録された教訓エントリ                        |
+| スコープ | 2026-03-01〜2026-03-15 に記録された教訓エントリ                        |
 | 対象読者 | AIWorkflowOrchestrator 開発者                                          |
 
 ---
 
-## 教訓アーカイブ（2026-03-01 〜 2026-03-13）
+## 教訓アーカイブ（2026-03-01 〜 2026-03-15）
 
 ### 2026-03-13 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
 
