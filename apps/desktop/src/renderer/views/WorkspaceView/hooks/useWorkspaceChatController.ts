@@ -31,6 +31,7 @@ export interface WorkspaceChatController {
   errorMessage: string | null;
   selectedFiles: SelectedFile[];
   selectedFilePath: string | null;
+  selectedModelId: string | null;
   mention: ReturnType<typeof useWorkspaceMentionQuery>;
   pendingCursorPosition: number | null;
   setInputValue: (nextValue: string, cursorPosition?: number) => void;
@@ -126,7 +127,7 @@ async function buildFileContextBlock(
 function buildChatRequest(params: {
   input: string;
   contextBlock: string;
-  selectedModelId: string | null;
+  selectedModelId: string;
   selectedProviderId: "openai" | "anthropic" | "google" | "xai" | null;
 }) {
   const body =
@@ -135,7 +136,7 @@ function buildChatRequest(params: {
       : params.input;
 
   return {
-    modelId: params.selectedModelId ?? "gpt-4o",
+    modelId: params.selectedModelId,
     providerId: params.selectedProviderId ?? undefined,
     temperature: 0.2,
     stream: true,
@@ -181,6 +182,7 @@ export function useWorkspaceChatController(params: {
   const streamRequestIdRef = useRef<string | null>(null);
   const streamContentRef = useRef("");
   const isStreamingRef = useRef(false);
+  const isSendingRef = useRef(false);
   const conversationIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -190,6 +192,10 @@ export function useWorkspaceChatController(params: {
   useEffect(() => {
     isStreamingRef.current = isStreaming;
   }, [isStreaming]);
+
+  useEffect(() => {
+    isSendingRef.current = isSending;
+  }, [isSending]);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -340,11 +346,17 @@ export function useWorkspaceChatController(params: {
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
-    if (!trimmed || isSending || isStreamingRef.current) {
+    if (
+      !trimmed ||
+      isSendingRef.current ||
+      isStreamingRef.current ||
+      !selectedModelId
+    ) {
       return;
     }
 
     setErrorMessage(null);
+    isSendingRef.current = true;
     setIsSending(true);
 
     const userMessage: WorkspaceChatMessage = {
@@ -398,37 +410,42 @@ export function useWorkspaceChatController(params: {
         error instanceof Error ? error.message : "メッセージ送信に失敗しました",
       );
     } finally {
+      isSendingRef.current = false;
       setIsSending(false);
     }
   }, [
     ensureConversation,
     input,
-    isSending,
     selectedFiles,
     selectedModelId,
     selectedProviderId,
   ]);
 
-  const persistAssistantMessage = useCallback(async (content: string) => {
-    const currentConversationId = conversationIdRef.current;
-    if (!currentConversationId) {
-      return;
-    }
+  const persistAssistantMessage = useCallback(
+    async (content: string) => {
+      const currentConversationId = conversationIdRef.current;
+      if (!currentConversationId) {
+        return;
+      }
 
-    const response = await window.conversationAPI.addMessage({
-      sessionId: currentConversationId,
-      message: {
-        role: "assistant",
-        content,
-      },
-    });
+      const response = await window.conversationAPI.addMessage({
+        sessionId: currentConversationId,
+        message: {
+          role: "assistant",
+          content,
+          llmProvider: selectedProviderId ?? undefined,
+          llmModel: selectedModelId ?? undefined,
+        },
+      });
 
-    if (!response.success) {
-      throw new Error(
-        response.error?.message ?? "assistant message 保存に失敗しました",
-      );
-    }
-  }, []);
+      if (!response.success) {
+        throw new Error(
+          response.error?.message ?? "assistant message 保存に失敗しました",
+        );
+      }
+    },
+    [selectedProviderId, selectedModelId],
+  );
 
   const cancelStream = useCallback(async () => {
     const requestId = streamRequestIdRef.current;
@@ -536,7 +553,31 @@ export function useWorkspaceChatController(params: {
         setIsStreaming(false);
         streamContentRef.current = "";
         setStreamContent("");
-        setErrorMessage(`AI応答に失敗しました: ${error.message}`);
+
+        const code = "code" in error ? (error.code as string) : "UNKNOWN";
+        switch (code) {
+          case "API_KEY_MISSING":
+            setErrorMessage(
+              `APIキーが設定されていません。Settings > AI Provider から設定してください。`,
+            );
+            break;
+          case "MODEL_NOT_FOUND":
+            setErrorMessage(
+              `指定されたモデルが見つかりません。Settings でモデルを再選択してください。`,
+            );
+            break;
+          case "VALIDATION_ERROR":
+            setErrorMessage(`リクエストの検証に失敗しました: ${error.message}`);
+            break;
+          case "NETWORK_ERROR":
+            setErrorMessage(
+              `ネットワークエラーが発生しました。接続を確認して再試行してください。`,
+            );
+            break;
+          default:
+            setErrorMessage(`AI応答に失敗しました: ${error.message}`);
+            break;
+        }
       },
     );
 
@@ -589,6 +630,7 @@ export function useWorkspaceChatController(params: {
     errorMessage,
     selectedFiles,
     selectedFilePath,
+    selectedModelId,
     mention,
     pendingCursorPosition,
     setInputValue,

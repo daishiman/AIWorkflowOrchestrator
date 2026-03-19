@@ -310,11 +310,13 @@ describe("WorkspaceView", () => {
 
     await waitFor(() => {
       expect(screen.getByText("assistant response")).toBeInTheDocument();
-      expect(mockConversationAddMessage).toHaveBeenCalledWith({
+      expect(mockConversationAddMessage).toHaveBeenLastCalledWith({
         sessionId: "conversation-1",
         message: {
           role: "assistant",
           content: "assistant response",
+          llmProvider: "openai",
+          llmModel: "gpt-4o",
         },
       });
     });
