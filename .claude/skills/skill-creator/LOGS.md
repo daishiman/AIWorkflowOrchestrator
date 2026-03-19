@@ -2225,3 +2225,8 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
   - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
+
+## 2026-03-19 - Conversation DB robustness retrospective pattern
+
+- Multi-agent 実行後の Phase 12 統合で、system spec retrospective と unassigned formalize を閉じるパターンを追加。
+- 苦戦箇所を次回の短縮解決知見へ変換するテンプレート追記。

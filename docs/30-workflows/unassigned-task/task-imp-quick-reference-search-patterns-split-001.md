@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: N/A
+issue_number: 1344
 task_id: UT-IMP-QUICK-REFERENCE-SEARCH-PATTERNS-SPLIT-001
 task_name: quick-reference-search-patterns.md 500行超過分割
 category: 改善（仕様書品質）

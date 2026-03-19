@@ -200,6 +200,41 @@ Turso の Embedded Replicas は、ローカルの SQLite ファイルとクラ�
 
 ---
 
+## Conversation DB 初期化パターン
+
+### Factory 関数群（conversationDatabase.ts）
+
+| 関数 | 戻り値 | 用途 |
+|------|--------|------|
+| `initializeConversationDatabase(config?)` | `Database.Database` | DB初期化（冪等性保証） |
+| `getConversationDatabase()` | `Database.Database` | 初期化済みインスタンス取得 |
+| `isConversationDatabaseInitialized()` | `boolean` | 初期化状態確認 |
+| `closeConversationDatabase()` | `void` | WALチェックポイント + クローズ |
+| `_resetForTesting()` | `void` | テスト用状態リセット（P9対策） |
+
+### pragma 設定
+
+| pragma | 値 | 理由 |
+|--------|---|------|
+| journal_mode | WAL | 読み書き並行性向上 |
+| foreign_keys | ON | chat_messages → chat_sessions 参照整合性 |
+| busy_timeout | 5000 | 同時アクセス時のロック待機 |
+| synchronous | NORMAL | WALモード推奨値 |
+
+### ライフサイクル
+
+```
+app.whenReady() → initializeConversationDatabase()
+app.on('will-quit') → closeConversationDatabase()
+app.on('activate') → getConversationDatabase() (既存インスタンス再利用)
+```
+
+### 完了タスク
+
+- TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 (2026-03-19)
+
+---
+
 ## ベクトル検索実装（DiskANN）
 
 ### 概要

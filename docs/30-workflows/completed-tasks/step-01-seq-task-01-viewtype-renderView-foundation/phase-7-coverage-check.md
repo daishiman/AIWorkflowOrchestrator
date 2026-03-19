@@ -36,12 +36,12 @@ Phase 5 で実装し Phase 6 でテストを拡充した 3 ファイル（`store
 
 ### タスク関連
 
-| 資料名                   | パス                                                                                                                           | 参照目的                                            |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
-| Phase 6 テスト拡充仕様書 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-6-test-expansion.md` | 追加テストの確認                                    |
-| Phase 5 実装仕様書       | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` | 実装内容の確認                                      |
-| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                                                             | カバレッジ基準値（Line 80%+/Branch 60%+/Func 80%+） |
-| 既知の落とし穴 P41       | `.claude/rules/06-known-pitfalls.md#P41`                                                                                       | v8 カバレッジプロバイダのインライン関数カウント     |
+| 資料名                   | パス                                                                                                                                           | 参照目的                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Phase 6 テスト拡充仕様書 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-6-test-expansion.md` | 追加テストの確認                                    |
+| Phase 5 実装仕様書       | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` | 実装内容の確認                                      |
+| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                                                                             | カバレッジ基準値（Line 80%+/Branch 60%+/Func 80%+） |
+| 既知の落とし穴 P41       | `.claude/rules/06-known-pitfalls.md#P41`                                                                                                       | v8 カバレッジプロバイダのインライン関数カウント     |
 
 ### システム仕様
 

@@ -162,7 +162,7 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | 画面分岐 | `App.tsx` `renderView()` が `skillAnalysis -> SkillAnalysisView`、`skillCreate -> SkillCreateWizard` を返す |
 | close 導線 | `skillAnalysis` close 時は `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` |
 | legacy 互換 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化 |
-| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
+| 画面証跡 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
 | 補助検証 | `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx` で renderView case を直接検証 |
 
 ### representative evidence

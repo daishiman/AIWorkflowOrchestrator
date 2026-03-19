@@ -38,14 +38,17 @@ Phase 5 で実装したコードの品質を改善する。テストが継続し
 
 ### タスク関連
 
-| 資料名                     | パス                                                                                                                           | 参照目的                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
-| Phase 7 カバレッジレポート | `outputs/phase-7/coverage-report.md`                                                                                           | リファクタリング前のカバレッジ基準値確認            |
-| Phase 5 実装仕様書         | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` | 実装コードの全体構造確認                            |
-| コード品質ルール           | `.claude/rules/02-code-quality.md`                                                                                             | コーディング規約（any 禁止、型安全、命名規約）      |
-| アーキテクチャルール       | `.claude/rules/01-architecture.md`                                                                                             | 設計原則（SRP、SoC）                                |
-| 既知の落とし穴 P19         | `.claude/rules/06-known-pitfalls.md#P19`                                                                                       | 型キャスト（as）によるバリデーションバイパス禁止    |
-| 既知の落とし穴 P48         | `.claude/rules/06-known-pitfalls.md#P48`                                                                                       | non-null assertion (`!`) による実行時安全性偽装禁止 |
+| 資料名                     | パス                                                                                                                                           | 参照目的                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| Phase 1 要件定義           | `phase-1-requirements.md`                                                                                                                      | AC維持と後方互換条件の再確認                        |
+| Phase 2 設計仕様書         | `phase-2-design.md`                                                                                                                            | 設計意図から逸脱しないリファクタリング判断          |
+| Phase 7 カバレッジレポート | `outputs/phase-7/coverage-report.md`                                                                                                           | リファクタリング前のカバレッジ基準値確認            |
+| Phase 5 実装仕様書         | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` | 実装コードの全体構造確認                            |
+| Phase 6 テスト拡充         | `phase-6-test-expansion.md`                                                                                                                    | 追加テスト観点を壊さないことの確認                  |
+| コード品質ルール           | `.claude/rules/02-code-quality.md`                                                                                                             | コーディング規約（any 禁止、型安全、命名規約）      |
+| アーキテクチャルール       | `.claude/rules/01-architecture.md`                                                                                                             | 設計原則（SRP、SoC）                                |
+| 既知の落とし穴 P19         | `.claude/rules/06-known-pitfalls.md#P19`                                                                                                       | 型キャスト（as）によるバリデーションバイパス禁止    |
+| 既知の落とし穴 P48         | `.claude/rules/06-known-pitfalls.md#P48`                                                                                                       | non-null assertion (`!`) による実行時安全性偽装禁止 |
 
 ### システム仕様（aiworkflow-requirements）
 

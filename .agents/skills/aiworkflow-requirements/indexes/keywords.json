@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-18T11:40:04.195Z",
-  "totalKeywords": 2293,
+  "generated": "2026-03-19T02:37:45.878Z",
+  "totalKeywords": 2284,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -86,7 +86,6 @@
       "architecture-embedding-pipeline.md",
       "architecture-file-conversion.md",
       "architecture-implementation-patterns-core.md",
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "architecture-implementation-patterns.md",
       "architecture-overview-core.md",
       "architecture-overview.md",
@@ -632,7 +631,6 @@
       "arch-ipc-persistence.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk.md",
@@ -647,7 +645,6 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -661,7 +658,6 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "quality-requirements.md",
       "rag-desktop-state.md",
       "security-electron-ipc-advanced.md",
       "security-electron-ipc-core.md",
@@ -1047,12 +1043,12 @@
       "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk.md",
-      "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -1101,7 +1097,6 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "logs-archive-legacy.md",
       "quality-e2e-testing.md",
-      "quality-requirements.md",
       "security-electron-ipc-advanced.md",
       "security-electron-ipc-core.md",
       "security-electron-ipc-details.md",
@@ -1109,6 +1104,7 @@
       "security-skill-ipc-core.md",
       "task-workflow-completed-abort-contract-auth-session-chat.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle.md",
       "technology-devops-details.md",
@@ -1246,6 +1242,8 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
@@ -1281,6 +1279,7 @@
       "logs-archive-legacy.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed-ipc-graceful-degradation-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
@@ -1651,11 +1650,9 @@
       "arch-electron-services-details-part2.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-executor-details.md",
-      "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-current.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
@@ -1682,7 +1679,6 @@
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "quality-requirements.md",
       "security-implementation.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle.md"
@@ -2019,7 +2015,9 @@
     ],
     "Conversation": [
       "api-ipc-system-core.md",
-      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+      "database-implementation-core.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-conversation-db-robustness.md"
     ],
     "会話履歴永続化": [
       "api-ipc-system-core.md"
@@ -3066,7 +3064,6 @@
       "architecture-implementation-patterns-advanced.md",
       "architecture-implementation-patterns-details.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "ui-ux-portal-patterns.md"
     ],
@@ -3245,41 +3242,6 @@
     ],
     "Wrapper": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
-    ],
-    "AUTO": [
-      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md"
-    ],
-    "契約ドリフト自動検出パターン": [
-      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
-    ],
-    "契約ドリフト自動検出": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
-      "quality-requirements.md"
-    ],
-    "スクリプト": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md"
-    ],
-    "検出ルール": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md"
-    ],
-    "実行方法": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md"
-    ],
-    "抽出パターン": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md"
-    ],
-    "既知の制約": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
-      "csrf-state-parameter.md"
-    ],
-    "苦戦箇所と教訓": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
-      "csrf-state-parameter.md"
-    ],
-    "関連タスク": [
-      "architecture-implementation-patterns-reference-ipc-drift-detection.md",
-      "skill-executor-type-migration.md"
     ],
     "テスト実装パターン": [
       "architecture-implementation-patterns-reference.md"
@@ -3736,6 +3698,7 @@
       "csrf-state-parameter.md",
       "ipc-contract-checklist.md",
       "lessons-learned-archive-2026-03.md",
+      "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -3751,6 +3714,9 @@
     "セキュリティ設計根拠": [
       "csrf-state-parameter.md"
     ],
+    "既知の制約": [
+      "csrf-state-parameter.md"
+    ],
     "Implicit": [
       "csrf-state-parameter.md"
     ],
@@ -3759,6 +3725,9 @@
       "testing-dialog-patterns.md"
     ],
     "由来": [
+      "csrf-state-parameter.md"
+    ],
+    "苦戦箇所と教訓": [
       "csrf-state-parameter.md"
     ],
     "テストカバレッジ": [
@@ -3823,6 +3792,15 @@
       "quality-e2e-testing.md",
       "quality-requirements-details.md",
       "ui-ux-atoms-patterns-details.md"
+    ],
+    "DB": [
+      "database-implementation-core.md",
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
+      "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
+    ],
+    "初期化パターン": [
+      "database-implementation-core.md"
     ],
     "ベクトル検索実装": [
       "database-implementation-core.md"
@@ -5002,30 +4980,6 @@
     "適用事例": [
       "ipc-contract-checklist.md"
     ],
-    "自動検出ツール": [
-      "ipc-contract-checklist.md"
-    ],
-    "レポートモード": [
-      "ipc-contract-checklist.md"
-    ],
-    "常に": [
-      "ipc-contract-checklist.md"
-    ],
-    "exit": [
-      "ipc-contract-checklist.md"
-    ],
-    "厳格モード": [
-      "ipc-contract-checklist.md"
-    ],
-    "不一致検出時": [
-      "ipc-contract-checklist.md"
-    ],
-    "JSON": [
-      "ipc-contract-checklist.md"
-    ],
-    "出力": [
-      "ipc-contract-checklist.md"
-    ],
     "型不整合": [
       "ipc-type-resolution-guide.md"
     ],
@@ -5112,6 +5066,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -5145,6 +5100,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -5528,7 +5484,10 @@
     ],
     "CONVERSATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
     ],
     "ハンドラ登録修正": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -5703,6 +5662,27 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
+    "Robustness": [
+      "lessons-learned-conversation-db-robustness.md"
+    ],
+    "ROBUSTNESS": [
+      "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
+    ],
+    "問題パターン": [
+      "lessons-learned-conversation-db-robustness.md"
+    ],
+    "一般化": [
+      "lessons-learned-conversation-db-robustness.md"
+    ],
+    "分で確認する順序": [
+      "lessons-learned-conversation-db-robustness.md"
+    ],
+    "次回の判断ルール": [
+      "lessons-learned-conversation-db-robustness.md"
+    ],
     "current": [
       "lessons-learned-current.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -5723,9 +5703,6 @@
       "lessons-learned-current.md"
     ],
     "カテゴリ別検索ガイド": [
-      "lessons-learned-current.md"
-    ],
-    "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
     "EDIT": [
@@ -7737,9 +7714,6 @@
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
-    "ROBUSTNESS": [
-      "logs-archive-2026-02-validator-task-9f-task-9b.md"
-    ],
     "準拠再確認": [
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -9029,6 +9003,9 @@
       "skill-executor-type-migration.md"
     ],
     "苦戦した箇所と解決策": [
+      "skill-executor-type-migration.md"
+    ],
+    "関連タスク": [
       "skill-executor-type-migration.md"
     ],
     "仕様エレガンス・整合性監査ガイド": [

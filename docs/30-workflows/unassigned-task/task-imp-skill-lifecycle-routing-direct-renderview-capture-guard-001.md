@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: N/A
+issue_number: 1345
 task_id: UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001
 task_name: direct renderView 到達ガード
 category: 改善
@@ -231,7 +231,7 @@ pnpm --filter @repo/desktop exec vitest run \
   src/renderer/navigation/skillLifecycleJourney.test.ts \
   src/renderer/store/types.test.ts
 node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js \
-  --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
+  --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
   --json \
   --diff-from HEAD \
@@ -254,8 +254,8 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/discovered-issues.md`
-- `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/manual-test-result.md`
+- `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/discovered-issues.md`
+- `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/manual-test-result.md`
 - `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`
 - `.claude/skills/aiworkflow-requirements/references/workflow-skill-lifecycle-routing-render-view-foundation.md`
 

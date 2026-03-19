@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-18
+> 自動生成: 2026-03-19
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -73,7 +73,6 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | L23 |
 
 ---
 
@@ -207,19 +206,6 @@ node scripts/list-specs.js --topics
 | 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
 | 共有型インポート標準パターン（TASK-10A-D） | L348 |
 | IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
-| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L470 |
-
-### references/architecture-implementation-patterns-reference-ipc-drift-detection.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L6 |
-| スクリプト | L10 |
-| 検出ルール | L14 |
-| 実行方法 | L23 |
-| 抽出パターン | L31 |
-| 既知の制約 | L37 |
-| 苦戦箇所と教訓 | L43 |
-| 関連タスク | L49 |
 
 ### references/architecture-implementation-patterns-reference-ipc-fallback-validation.md
 
@@ -236,8 +222,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L20 |
-| 関連ドキュメント | L25 |
+| 利用順序 | L19 |
+| 関連ドキュメント | L24 |
 
 ### references/architecture-monorepo.md
 
@@ -887,8 +873,8 @@ node scripts/list-specs.js --topics
 | Slide IPC API（スライド同期） | L61 |
 | Workspace File Watch IPC API（TASK-UI-04A） | L115 |
 | Conversation IPC API（会話履歴永続化） | L159 |
-| Electron IPC API設計 | L189 |
-| AIプロバイダーAPI連携 | L431 |
+| Electron IPC API設計 | L195 |
+| AIプロバイダーAPI連携 | L437 |
 
 ### references/api-ipc-system-details.md
 
@@ -937,7 +923,8 @@ node scripts/list-specs.js --topics
 | マイグレーション管理 | L102 |
 | テスト戦略 | L142 |
 | エラーハンドリング | L172 |
-| ベクトル検索実装（DiskANN） | L203 |
+| Conversation DB 初期化パターン | L203 |
+| ベクトル検索実装（DiskANN） | L238 |
 
 ### references/database-implementation-details.md
 
@@ -1443,9 +1430,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L298 |
-| 実装例: notificationAPI（TASK-UI-08） | L350 |
-| 実装例: slideSettingsAPI | L383 |
+| 実装例: historyAPI | L302 |
+| 実装例: notificationAPI（TASK-UI-08） | L354 |
+| 実装例: slideSettingsAPI | L387 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1460,8 +1447,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L52 |
-| 完了タスク | L61 |
+| 関連ドキュメント | L51 |
+| 完了タスク | L60 |
 
 ### references/security-electron-ipc.md
 
@@ -2057,7 +2044,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 変更履歴 | L8 |
 | IPC Handler Registration Pattern（Desktop Main Process） | L18 |
 | 会話履歴永続化パターン（Desktop Main Process） | L96 |
-| 関連ドキュメント | L204 |
+| 関連ドキュメント | L235 |
 
 ### references/arch-state-management-advanced.md
 
@@ -2380,7 +2367,6 @@ node scripts/list-specs.js --topics
 | 契約ドリフト検出コマンド | L169 |
 | 関連ドキュメント | L199 |
 | 適用事例 | L213 |
-| 自動検出ツール（UT-TASK06-007） | L226 |
 
 ### references/ipc-type-resolution-guide.md
 
@@ -2408,8 +2394,8 @@ node scripts/list-specs.js --topics
 ### references/lessons-learned-archive-2026-03.md
 
 | セクション | 行 |
-|------------|----|\n| メタ情報 | L8 |
-| 教訓アーカイブ（2026-03-01 〜 2026-03-15） | L19 |
+|------------|----|\n| メタ情報 | L7 |
+| 教訓アーカイブ（2026-03-01 〜 2026-03-13） | L18 |
 
 ### references/lessons-learned-auth-ipc-contract-bridge-audit-scope.md
 
@@ -2468,14 +2454,23 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L217 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L322 |
 
-### references/lessons-learned-current.md
+### references/lessons-learned-conversation-db-robustness.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 分割ファイル一覧 | L32 |
-| クイックリファレンス: カテゴリ別検索ガイド | L45 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L358 |
+| 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L18 |
+| 問題パターン（一般化） | L38 |
+| 5分で確認する順序 | L44 |
+| 次回の判断ルール | L51 |
+
+### references/lessons-learned-current.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L6 |
+| 変更履歴 | L17 |
+| 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L45 |
+| 分割ファイル一覧 | L55 |
+| クイックリファレンス: カテゴリ別検索ガイド | L435 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -3586,6 +3581,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
+| TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L395 |
 
 ### references/task-workflow-completed-notification-history-auth-key-state.md
 

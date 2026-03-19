@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: N/A
+issue_number: 1346
 task_id: UT-IMP-SPEC-500LINE-PREEMPTIVE-SPLIT-GUIDELINE-001
 task_name: 仕様書 500行制限 先制分割ガイドライン整備
 category: 改善（仕様書品質）
