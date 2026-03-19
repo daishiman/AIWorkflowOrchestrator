@@ -13,6 +13,7 @@
 | ---------- | ---------- | ------------------------------------------------ |
 | v1.0.0     | 2025-01-20 | 初版作成                                         |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.2.0     | 2026-03-19 | Task08 完了記録追加（TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001） |
 
 ---
 
@@ -286,3 +287,15 @@ CommunityDetectorはICommunityDetectorインターフェースを実装し、コ
 - [RAGアーキテクチャ概要](./architecture-rag.md)
 - [Knowledge Graph型定義](./rag-knowledge-graph.md)
 - [クエリパイプライン](./rag-query-pipeline.md)
+
+---
+
+## Task08 完了記録（2026-03-19）
+
+TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 Phase 1-12 完了:
+
+- 21 surface の capability matrix 定義（3 lane: Index/Embedding/Search）
+- production mock を guidance-only に置換（aiHandlers, communityHandlers）
+- HybridRAGFactory throw stub を FACTORY_NOT_READY guidance に変更
+- SF-05/07/09 の silent fallback を明示化（warn ログ追加）
+- 未タスク 13件を UT-RAG-08-001〜013 として登録

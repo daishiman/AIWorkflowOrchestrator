@@ -10,6 +10,17 @@
 本ドキュメントはAIWorkflowOrchestratorプロジェクトのRAG（Retrieval-Augmented Generation）アーキテクチャのインデックスです。
 各カテゴリは以下の分割ドキュメントで詳細を定義しています。
 
+## current runtime snapshot（2026-03-19）
+
+| 領域 | current status | 主参照 |
+| --- | --- | --- |
+| AI IPC legacy health | `AI_CHECK_CONNECTION` は `disconnected` を返す legacy guidance surface | `api-ipc-system-core.md` |
+| AI IPC legacy index | `AI_INDEX` は zero-count + `errors: string[]` の guidance stub | `api-ipc-system-core.md`, `llm-ipc-types.md` |
+| Community IPC | `COMMUNITY_*` は `NOT_IN_SCOPE` guidance-only | `api-ipc-system-core.md`, `llm-ipc-types.md` |
+| GraphRAG | community search failure を warn + `fallbackReason` で可視化 | `interfaces-rag-graphrag-query.md`, `rag-query-pipeline.md` |
+| HybridRAGFactory | `createFull()` / `createLite()` は not-ready | `rag-search-hybrid.md` |
+| CommunitySummarizer | embedding failure は partial failure として扱い、要約保存を継続 | `interfaces-rag-community-summarization.md` |
+
 ---
 
 ## ドキュメント構成
@@ -110,6 +121,7 @@ Knowledge Graphに対して、3種類の検索戦略を並列実行する。
 
 | Version | Date       | Changes                                            |
 | ------- | ---------- | -------------------------------------------------- |
+| 2.0.1   | 2026-03-19 | Task08 current-state snapshot を追加。IPC legacy guidance / GraphRAG fallback / HybridRAGFactory not-ready / CommunitySummarizer partial failure を反映 |
 | 2.0.0   | 2026-01-26 | 5ファイルに分割（945行→インデックス+詳細ファイル） |
 | 1.1.0   | 2026-01-26 | コードブロック（ASCIIアート図）を表形式・文章に変換 |
 | 1.0.0   | 2026-01-25 | 初版作成                                           |

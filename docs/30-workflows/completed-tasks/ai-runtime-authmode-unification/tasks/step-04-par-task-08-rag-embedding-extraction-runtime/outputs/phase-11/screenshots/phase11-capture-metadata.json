@@ -1,0 +1,88 @@
+{
+  "capturedAt": "2026-03-19T06:00:00.249Z",
+  "mode": "fallback-review-board",
+  "reason": "current build capture blocked by esbuild native binary mismatch",
+  "workflowRoot": "docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-04-par-task-08-rag-embedding-extraction-runtime",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-rag-settings-guidance-review-board.png",
+      "sourceImage": "docs/30-workflows/completed-tasks/TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001/outputs/phase-11/screenshots/TC-11-03-settings-health-rag-guidance-rerun-20260317.png",
+      "refs": [
+        {
+          "path": "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+          "anchor": "data-testid=\"auth-mode-status\""
+        },
+        {
+          "path": "apps/desktop/src/main/ipc/aiHandlers.ts",
+          "anchor": "status: \"disconnected\""
+        },
+        {
+          "path": ".claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md",
+          "anchor": "AI_CHECK_CONNECTION"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-ai-ipc-guidance-review-board.png",
+      "sourceImage": "docs/30-workflows/completed-tasks/TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001/outputs/phase-11/screenshots/TC-11-01-settings-access-matrix-rerun-20260317.png",
+      "refs": [
+        {
+          "path": "apps/desktop/src/main/ipc/aiHandlers.ts",
+          "anchor": "AI_INDEX は現在利用できません"
+        },
+        {
+          "path": "apps/desktop/src/preload/types.ts",
+          "anchor": "export interface AICheckConnectionResponse"
+        },
+        {
+          "path": ".claude/skills/aiworkflow-requirements/references/llm-ipc-types.md",
+          "anchor": "AIIndexResponse"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-community-guidance-review-board.png",
+      "sourceImage": "docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface/outputs/phase-11/screenshots/TC-11-03-terminal-unavailable-guidance.png",
+      "refs": [
+        {
+          "path": "apps/desktop/src/main/ipc/communityHandlers.ts",
+          "anchor": "NOT_IN_SCOPE"
+        },
+        {
+          "path": "apps/desktop/src/preload/types.ts",
+          "anchor": "export interface CommunityResult<T>"
+        },
+        {
+          "path": ".claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md",
+          "anchor": "UT-RAG-08-001"
+        }
+      ]
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-graphrag-hybrid-review-board.png",
+      "sourceImage": null,
+      "refs": [
+        {
+          "path": "packages/shared/src/services/search/graphrag-query-service.ts",
+          "anchor": "fallbackReason"
+        },
+        {
+          "path": "packages/shared/src/services/search/hybrid-rag-factory.ts",
+          "anchor": "FACTORY_NOT_READY"
+        },
+        {
+          "path": "packages/shared/src/services/graph/community-summarizer.ts",
+          "anchor": "Embedding generation failed"
+        },
+        {
+          "path": ".claude/skills/aiworkflow-requirements/references/rag-query-pipeline.md",
+          "anchor": "HybridRAGFactory"
+        }
+      ]
+    }
+  ]
+}

@@ -19,13 +19,27 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | --------------------- | ------------------------------- | -------------- | ------------------------- | --------------------- |
 | `AI_CHAT`             | LLMへのメッセージ送信と応答取得 | AIChatRequest  | AIChatResponse            | aiHandlers.ts:21-182  |
 | `AI_CHECK_CONNECTION` | legacy互換の接続状態確認        | なし           | AICheckConnectionResponse | aiHandlers.ts:184-204 |
-| `AI_INDEX`            | RAGドキュメントインデックス作成 | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:208-235 |
+| `AI_INDEX`            | RAGドキュメントインデックス作成（legacy guidance stub） | AIIndexRequest | AIIndexResponse           | aiHandlers.ts:208-235 |
 
 #### `AI_CHECK_CONNECTION` の運用方針（Task06 再監査: 2026-03-17）
 
 - `AI_CHECK_CONNECTION` は**廃止完了ではなく legacy 互換として残置**する。
 - 新規実装・新規UI導線の health check は `llm:check-health` を primary とする。
 - 削除は `apps/desktop/src` の参照ゼロ確認と回帰テスト合格を満たした後に実施する。
+- current runtime の戻り値は `success: true` / `status: "disconnected"` / `indexedDocuments: 0`。
+
+#### `AI_INDEX` の運用方針（Task08 再監査: 2026-03-19）
+
+- `AI_INDEX` は long-running index job の実実装ではなく、**legacy guidance stub** として残置する。
+- request 形状は `AIIndexRequest = { folderPath: string; recursive?: boolean }` を保持する。
+- current runtime の戻り値は `success: true` + `indexedCount: 0` + `skippedCount: 0` + `errors: string[]`。
+- 排他制御・ジョブ管理・message template 標準化は follow-up（`UT-RAG-08-010`, `UT-RAG-08-011`）で扱う。
+
+#### Community IPC の運用方針（Task08 再監査: 2026-03-19）
+
+- `COMMUNITY_GET_ALL` / `COMMUNITY_GET_BY_LEVEL` / `COMMUNITY_GET_BY_ID` / `COMMUNITY_GET_MEMBERS` / `COMMUNITY_GET_SUMMARY` / `COMMUNITY_SEARCH` は current runtime では guidance-only。
+- すべての response は `ok: false` + `error.code: "NOT_IN_SCOPE"` + guidance message を返す。
+- Renderer / Preload / system spec の応答形は `CommunityResult<T>` に統一する。
 
 ### LLM選択状態管理
 

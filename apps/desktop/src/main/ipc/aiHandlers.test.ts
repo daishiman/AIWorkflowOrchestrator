@@ -209,7 +209,7 @@ describe("aiHandlers", () => {
   });
 
   describe("AI_CHECK_CONNECTION handler", () => {
-    it("接続状態を返す", async () => {
+    it("guidance-only レスポンスを返す (legacy 互換残置)", async () => {
       const handler = handlers.get(IPC_CHANNELS.AI_CHECK_CONNECTION)!;
 
       const result = (await handler({}, {})) as {
@@ -217,14 +217,12 @@ describe("aiHandlers", () => {
         data: {
           status: string;
           indexedDocuments: number;
-          lastSyncTime: Date;
         };
       };
 
       expect(result.success).toBe(true);
-      expect(result.data.status).toBe("connected");
-      expect(typeof result.data.indexedDocuments).toBe("number");
-      expect(result.data.lastSyncTime).toBeInstanceOf(Date);
+      expect(result.data.status).toBe("disconnected");
+      expect(result.data.indexedDocuments).toBe(0);
     });
   });
 
