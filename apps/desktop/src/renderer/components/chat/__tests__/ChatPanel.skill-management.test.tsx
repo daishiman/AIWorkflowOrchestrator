@@ -63,6 +63,53 @@ vi.mock("../../skill/SkillManagementPanel", () => ({
   ),
 }));
 
+// ============================================
+// useStreamingChat Mock
+// ============================================
+
+vi.mock("../../../hooks/useStreamingChat", () => ({
+  useStreamingChat: vi.fn(() => ({
+    state: { isStreaming: false, content: "", error: null, requestId: null },
+    actions: { startStream: vi.fn(), cancelStream: vi.fn() },
+  })),
+}));
+
+// ============================================
+// New Component Mocks
+// ============================================
+
+vi.mock("../RuntimeBanner", () => ({
+  RuntimeBanner: () => (
+    <div data-testid="mock-runtime-banner">RuntimeBanner</div>
+  ),
+}));
+
+vi.mock("../ChatMessageList", () => ({
+  ChatMessageList: () => (
+    <div data-testid="mock-chat-message-list">ChatMessageList</div>
+  ),
+}));
+
+vi.mock("../ErrorGuidance", () => ({
+  ErrorGuidance: () => (
+    <div data-testid="mock-error-guidance">ErrorGuidance</div>
+  ),
+}));
+
+vi.mock("../HandoffBlock", () => ({
+  HandoffBlock: () => <div data-testid="mock-handoff-block">HandoffBlock</div>,
+}));
+
+vi.mock("../ComposerArea", () => ({
+  ComposerArea: () => <div data-testid="mock-composer-area">ComposerArea</div>,
+}));
+
+vi.mock("../LLMSelectorPanel", () => ({
+  LLMSelectorPanel: () => (
+    <div data-testid="mock-llm-selector-panel">LLMSelectorPanel</div>
+  ),
+}));
+
 import { ChatPanel } from "../ChatPanel";
 
 // ============================================
@@ -76,6 +123,16 @@ const defaultStoreState = {
   skillExecutionStatus: null,
   fetchSkills: mockFetchSkills,
   pendingPermission: null,
+  // ChatPanel 新規フィールド
+  chatPanelStatus: "ready",
+  resolvedCapability: "integratedRuntime",
+  chatMessages: [],
+  chatInput: "",
+  setChatInput: vi.fn(),
+  selectedProviderId: "anthropic",
+  selectedModelId: "claude-3-5-sonnet",
+  providers: [],
+  handoffGuidance: null,
 };
 
 function setStoreState(overrides: Partial<Record<string, unknown>> = {}) {
@@ -138,7 +195,7 @@ describe("ChatPanel スキル管理パネル導線", () => {
       expect(
         screen.queryByTestId("mock-skill-management-panel"),
       ).not.toBeInTheDocument();
-      expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+      expect(screen.getByTestId("mock-chat-message-list")).toBeInTheDocument();
     });
   });
 
@@ -166,7 +223,9 @@ describe("ChatPanel スキル管理パネル導線", () => {
       const toggleButton = screen.getByTestId("skill-management-toggle");
       fireEvent.click(toggleButton);
 
-      expect(screen.queryByTestId("message-list-slot")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("mock-chat-message-list"),
+      ).not.toBeInTheDocument();
     });
 
     it("パネル表示中にaria-expandedがtrueになる", () => {
@@ -206,7 +265,7 @@ describe("ChatPanel スキル管理パネル導線", () => {
       expect(
         screen.queryByTestId("mock-skill-management-panel"),
       ).not.toBeInTheDocument();
-      expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+      expect(screen.getByTestId("mock-chat-message-list")).toBeInTheDocument();
       expect(toggleButton).toHaveAttribute("aria-expanded", "false");
       expect(toggleButton).toHaveAttribute(
         "aria-label",
@@ -292,7 +351,9 @@ describe("ChatPanel スキル管理パネル導線", () => {
         render(<ChatPanel />);
 
         // 初期状態: メッセージ領域が表示されている
-        expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("mock-chat-message-list"),
+        ).toBeInTheDocument();
         expect(
           screen.queryByTestId("mock-skill-management-panel"),
         ).not.toBeInTheDocument();
@@ -302,7 +363,7 @@ describe("ChatPanel スキル管理パネル導線", () => {
         fireEvent.click(toggleButton);
 
         expect(
-          screen.queryByTestId("message-list-slot"),
+          screen.queryByTestId("mock-chat-message-list"),
         ).not.toBeInTheDocument();
         expect(
           screen.getByTestId("mock-skill-management-panel"),
@@ -311,7 +372,9 @@ describe("ChatPanel スキル管理パネル導線", () => {
         // パネルを閉じる: メッセージ領域が復帰してパネルが消える
         fireEvent.click(toggleButton);
 
-        expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("mock-chat-message-list"),
+        ).toBeInTheDocument();
         expect(
           screen.queryByTestId("mock-skill-management-panel"),
         ).not.toBeInTheDocument();
@@ -335,7 +398,9 @@ describe("ChatPanel スキル管理パネル導線", () => {
         ).not.toBeInTheDocument();
 
         // メッセージ領域は表示されたまま
-        expect(screen.getByTestId("message-list-slot")).toBeInTheDocument();
+        expect(
+          screen.getByTestId("mock-chat-message-list"),
+        ).toBeInTheDocument();
       });
     });
 

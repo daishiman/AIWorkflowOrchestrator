@@ -811,6 +811,37 @@ export const useSetHandoffGuidance = () =>
 export const useClearHandoffGuidance = () =>
   useAppStore((state) => state.clearHandoffGuidance);
 
+// ==========================================================================
+// ChatPanel Status selectors (TASK-IMP-CHATPANEL-REAL-AI-CHAT-001)
+// P31 対策: 個別セレクタのみ。P48 対策: chatMessages には useShallow 適用
+// ==========================================================================
+
+/** ChatPanel の状態（8状態） */
+export const useChatPanelStatus = () =>
+  useAppStore((state) => state.chatPanelStatus);
+/** ChatPanel の状態を設定 */
+export const useSetChatPanelStatus = () =>
+  useAppStore((state) => state.setChatPanelStatus);
+/** 解決済み Access Capability（4値） */
+export const useResolvedCapability = () =>
+  useAppStore((state) => state.resolvedCapability);
+/** Access Capability を設定 */
+export const useSetResolvedCapability = () =>
+  useAppStore((state) => state.setResolvedCapability);
+/** 現在の会話 ID */
+export const useCurrentConversationId = () =>
+  useAppStore((state) => state.currentConversationId);
+/** 会話 ID を設定 */
+export const useSetCurrentConversationId = () =>
+  useAppStore((state) => state.setCurrentConversationId);
+/** チャットメッセージ（P48 対策: useShallow で shallow 比較） */
+export const useChatMessagesShallow = () =>
+  useAppStore(useShallow((state) => state.chatMessages));
+/** メッセージを追加 */
+export const useAddChatMessage = () => useAppStore((state) => state.addMessage);
+/** チャットをリセット */
+export const useResetChat = () => useAppStore((state) => state.resetChat);
+
 /**
  * AuthMode selectors - single hook for all AuthMode-related state and actions
  *

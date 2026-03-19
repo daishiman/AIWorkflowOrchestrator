@@ -33,6 +33,7 @@
 | History Timeline Refresh | TASK-UI-06 | HistorySearchView, HistorySearchBar, TimelineGroup, Chat/File/Skill cards | 完了 | [ui-history-search-view.md](./ui-history-search-view.md) |
 | AgentView Redesign (Tap & Discover) | TASK-UI-03 | SkillChip, ExecuteButton, FloatingExecutionBar, AdvancedSettingsPanel, RecentExecutionList | 完了 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 | Dashboard Home Enhancement | TASK-UI-07 | DashboardView, GreetingHeader, DashboardSuggestionSection, RecentTimeline | 完了 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
+| ChatPanel Real AI Chat Wiring | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | RuntimeBanner, ChatMessageList, ComposerArea, ErrorGuidance, HandoffBlock | spec_created | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
 
 ### 共通仕様
 
@@ -365,6 +366,101 @@ AIアシスタントとのチャット中にファイル編集を依頼し、差
 | Ctrl+Enter       | EditCommandInput | コマンド送信               |
 | Escape           | DiffPreview      | プレビューを閉じる         |
 | Tab              | DiffPreview      | フォーカストラップ内を循環 |
+
+---
+
+## ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）
+
+> 設計タスク。ChatPanel の placeholder を real AI chat 経路へ接続し、streaming/error/handoff 各状態の表示を設計する。
+
+### コンポーネント階層
+
+```
+ChatPanel (organism) - 全面書換（3 placeholder 置換 + 8 状態条件レンダリング）
+  +-- RuntimeBanner (atom)              # capability 表示バナー + terminal ボタン
+  +-- ChatMessageList (molecule)        # メッセージ一覧 (role="log", aria-live="polite")
+  |     +-- ChatMessage (atom)          # 個別メッセージ (user / assistant)
+  |     +-- StreamingMessage (atom)     # ストリーミング中メッセージ（既存接続）
+  +-- ErrorGuidance (molecule)          # エラー表示 (capability / network / API key)
+  +-- HandoffBlock (molecule)           # terminal handoff ブロック
+  |     +-- PersistentTerminalLauncher (atom) # terminal 常設起動ボタン
+  +-- ComposerArea (molecule)           # 入力エリア
+  |     +-- ComposerInput (atom)        # テキスト入力
+  |     +-- SendButton (atom)           # 送信ボタン
+  +-- LLMSelectorPanel (molecule)       # Provider/Model セレクタ（既存接続）
+  +-- SkillStreamingView (既存維持)     # スキル実行中表示
+  +-- SkillManagementPanel (既存維持)   # スキル管理パネル
+```
+
+### Atomic Design 分類
+
+| コンポーネント             | 分類     | 新規/既存 | ファイルパス                                                                   |
+| -------------------------- | -------- | --------- | ------------------------------------------------------------------------------ |
+| RuntimeBanner              | atom     | 新規      | `apps/desktop/src/renderer/components/chat/RuntimeBanner.tsx`              |
+| ChatMessage                | atom     | 新規      | `apps/desktop/src/renderer/components/chat/ChatMessage.tsx`                |
+| ComposerInput              | atom     | 新規      | `apps/desktop/src/renderer/components/chat/ComposerInput.tsx`              |
+| SendButton                 | atom     | 新規      | `apps/desktop/src/renderer/components/chat/SendButton.tsx`                 |
+| PersistentTerminalLauncher | atom     | 新規      | `apps/desktop/src/renderer/components/chat/PersistentTerminalLauncher.tsx` |
+| ChatMessageList            | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ChatMessageList.tsx`            |
+| ErrorGuidance              | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ErrorGuidance.tsx`              |
+| HandoffBlock               | molecule | 新規      | `apps/desktop/src/renderer/components/chat/HandoffBlock.tsx`               |
+| ComposerArea               | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ComposerArea.tsx`               |
+| LLMSelectorPanel           | molecule | 新規      | `apps/desktop/src/renderer/components/chat/LLMSelectorPanel.tsx`           |
+| ChatPanel                  | organism | 変更      | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`                  |
+| StreamingMessage           | atom     | 既存      | `apps/desktop/src/renderer/components/chat/StreamingMessage.tsx`           |
+
+### 主要 Props 設計
+
+| コンポーネント             | 主要 Props                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| RuntimeBanner              | `capability: AccessCapability`, `onTerminalClick?: () => void`                  |
+| ChatMessageList            | `messages: ChatMessage[]`, `isStreaming: boolean`                               |
+| ChatMessage                | `message: ChatMessage`                                                          |
+| ErrorGuidance              | `error: LLMError`, `onRetry?: () => void`, `onSettings?: () => void`            |
+| HandoffBlock               | `guidance: HandoffGuidance`, `onLaunch: () => void`                             |
+| PersistentTerminalLauncher | `onLaunch: () => void`                                                          |
+| ComposerInput              | `value: string`, `onChange: (v: string) => void`, `onSubmit: () => void`, `disabled: boolean` |
+| SendButton                 | `onClick: () => void`, `disabled: boolean`, `isStreaming: boolean`              |
+| ComposerArea               | `children: ReactNode`                                                           |
+| LLMSelectorPanel           | `selectedProviderId: string \| null`, `selectedModelId: string \| null`, `providers: Provider[]`, `onSelect: (providerId, modelId) => void` |
+
+### 8 状態条件レンダリング
+
+| 状態        | RuntimeBanner | ChatMessageList | ComposerArea | ErrorGuidance | HandoffBlock |
+| ----------- | ------------- | --------------- | ------------ | ------------- | ------------ |
+| `idle`      | 表示          | empty state     | 無効         | -             | -            |
+| `ready`     | 表示          | 表示            | 有効         | -             | -            |
+| `streaming` | 表示          | 表示+streaming  | 無効         | -             | -            |
+| `cancelled` | 表示          | 表示            | 有効         | -             | -            |
+| `completed` | 表示          | 表示            | 有効         | -             | -            |
+| `error`     | 表示          | 表示            | 有効         | 表示          | -            |
+| `blocked`   | 表示(警告)    | -               | 無効         | -             | -            |
+| `handoff`   | 表示          | -               | 無効         | -             | 表示         |
+
+### アクセシビリティ
+
+| コンポーネント    | ARIA 属性                      |
+| ----------------- | ------------------------------ |
+| ChatMessageList   | `role="log"`, `aria-live="polite"` |
+| RuntimeBanner     | `role="status"`                |
+| ErrorGuidance     | `role="alert"`                 |
+| ComposerInput     | `aria-label="メッセージ入力"`  |
+| SendButton        | `aria-label="送信"`            |
+
+### キーボード操作
+
+| キー           | コンポーネント | 動作                  |
+| -------------- | -------------- | --------------------- |
+| Enter          | ComposerInput  | メッセージ送信        |
+| Shift+Enter    | ComposerInput  | 改行挿入              |
+| Escape         | ComposerInput  | ストリーミングキャンセル |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel の実 AI チャット配線（設計） | spec_created（2026-03-18） |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期 | 完了（2026-03-17） |
 
 ---
 

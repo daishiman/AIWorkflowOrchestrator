@@ -71,6 +71,24 @@ docs-only task では screenshot を要求せず、以下を残す:
 4. aiworkflow-requirements 側の台帳、教訓、LOGS、SKILL history を更新する。
 5. validator を再実行する。
 
+## パターン9: P59 対策 — 並列エージェント成果物統合チェック
+
+Phase 12 を複数の SubAgent で分担する場合、documentation-changelog の件数と unassigned-task-detection の件数が乖離するリスクがある。
+
+**必須手順（メインエージェントが実施）**:
+1. 全 SubAgent 完了を確認する
+2. 件数照合を実行する:
+   ```bash
+   # unassigned-task-detection の検出件数を取得
+   grep -c "^| UT-" outputs/phase-12/unassigned-task-detection.md
+
+   # documentation-changelog の Task 4 記載件数を確認
+   grep "検出件数" outputs/phase-12/documentation-changelog.md
+   ```
+3. 件数不一致の場合は changelog を修正してから完了とする
+
+**禁止パターン**: SubAgent が独立して changelog を作成し、他 SubAgent の成果物件数を確認しないまま「完了」と記録する
+
 ## 再利用チェックリスト
 
 - [ ] Part 1 / Part 2 validator 要件を満たした
@@ -78,3 +96,4 @@ docs-only task では screenshot を要求せず、以下を残す:
 - [ ] 0件成果物を省略していない
 - [ ] UI task か docs-only task かで Phase 11 証跡を切り替えた
 - [ ] final sync の順序を守った
+- [ ] 並列 SubAgent を使った場合は documentation-changelog と unassigned-task-detection の件数を照合した（P59 対策）

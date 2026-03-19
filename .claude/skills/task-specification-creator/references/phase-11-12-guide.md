@@ -100,71 +100,23 @@ kill %1 2>/dev/null
 
 #### B. 個別撮影コマンド（補助）
 
-```bash
-# ルートベース撮影（ページ全体）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes {{変更対象のルート}} \
-  --state after
+`capture-screenshots.js` の主要オプション（`--help` で全量確認）:
 
-# コンポーネント単位撮影（要素指定）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes /settings \
-  --selector "[data-testid='my-component']" \
-  --state after
-
-# インタラクション状態撮影（ボタンクリック後等）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes /settings \
-  --action click --action-target "[data-testid='open-modal']" \
-  --state modal-open
-
-# ダークモード撮影
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --routes {{変更対象のルート}} \
-  --state after --dark
-
-# ドライラン（出力パス確認のみ）
-node .claude/skills/task-specification-creator/scripts/capture-screenshots.js \
-  --workflow docs/30-workflows/{{FEATURE_NAME}} \
-  --plan outputs/phase-11/screenshot-plan.json --dry-run
-```
-
-**スクリプトオプション一覧**: `capture-screenshots.js --help` または `--dry-run` で確認
+| 撮影モード | 追加オプション |
+| --- | --- |
+| ルートベース（ページ全体） | `--routes <path> --state after` |
+| コンポーネント単位 | `--routes <path> --selector "[data-testid='...']"` |
+| インタラクション状態 | `--action click --action-target "[data-testid='...']"` |
+| ダークモード | `--dark` を追加 |
+| ドライラン | `--plan <json> --dry-run` |
 
 #### C. 再撮影前 preflight（必須）
 
-```bash
-# 1) preview build の成否を先に確認
-pnpm --filter @repo/desktop preview
-
-# 2) 別ターミナルで疎通確認（preview起動時）
-curl -I http://127.0.0.1:4173/advanced/skill-center?skipAuth=true
-```
-
-補足:
-- build失敗または疎通失敗時は再撮影を継続しない。
-- 失敗内容を `outputs/phase-12/unassigned-task-detection.md` に記録し、`docs/30-workflows/unassigned-task/` へ未タスク化する。
-- 複数 worktree で Vite preview / dev server の参照元が揺れる場合は、`pnpm build` 後の current worktree `out/renderer` を static server（例: `python3 -m http.server 4173 --directory apps/desktop/out/renderer`）で配信し、asset hash と `phase11-capture-metadata.json` の時刻を current build と同期する。
-- capture script が loopback URL（`127.0.0.1` / `localhost`）を前提にする場合は、疎通失敗時に current worktree `out/renderer` を自動配信する fallback を許可する。fallback を使った場合は `manual-test-result.md` / `phase11-capture-metadata.json` / Phase 12 レポートに「auto static serve を使った」ことを明記し、cleanup を必ず実行する。
-- ただし docs-heavy / spec_created task で代表画面の再監査が目的かつ UI 実装差分がない場合は、build failure を即 blocker にせず、same-day upstream screenshot を current workflow に集約して review board を current workflow で新規 capture する代替経路を許可する。build failure の内容、source screenshot の由来、review board metadata は必ず残す。
+`pnpm --filter @repo/desktop preview` → 別ターミナルで `curl -I http://127.0.0.1:4173/...` で疎通確認。build/疎通失敗時は再撮影を継続せず未タスク化する。worktree 間で参照元が揺れる場合は `out/renderer` を static server で配信し metadata と同期する。docs-heavy task で UI 差分がない場合は same-day upstream screenshot を集約する代替経路を許可（build failure 内容・source 由来を記録）。
 
 #### D. 再撮影後 cleanup（必須）
 
-```bash
-# 1) 残留プロセス確認（例: captureスクリプト / vite）
-ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
-
-# 2) 必要に応じて停止
-kill <PID...> || true
-```
-
-補足:
-- 再撮影完了ログが出ても、Vite が残留するケースがある。
-- cleanup しないまま次工程へ進むと、ポート競合や再監査判定ドリフトの原因になる。
+`ps -ef | rg "capture-.*phase11|vite"` で残留プロセスを確認し停止する。cleanup しないとポート競合や判定ドリフトの原因になる。
 
 > **before撮影に関する注意**: Phase 11 の時点で実装は完了済みのため、main ブランチに切り替えて before 撮影を行うのは非現実的である。before 撮影が必要な場合は、**Phase 5（実装）開始前に main ブランチのスクリーンショットを事前に撮影しておく**こと。Phase 11 では after 撮影のみを実施する。
 
@@ -502,73 +454,25 @@ pnpm lint --cache=false
 # 未使用importの自動修正
 pnpm lint --fix
 
-# SKILL検証（正規経路: quick_validate.js）— 判定基準は spec-update-workflow.md Step 1-G.3.1 参照
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/skill-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
-node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
-
-# 検証結果の読み方:
-#   ✓ = Pass（検証項目をパス）
-#   ⚠ = Warning（合否に影響しない。分類は spec-update-workflow.md Step 1-G.3.1 参照）
-#   ✗ = Error（修正必須）
-# SKILL frontmatter検証（全3スキル一括）
-# 判定基準・Warning分類の詳細は spec-update-workflow.md Step 1-G.3 / 3.1 を参照
+# SKILL検証（全3スキル一括。判定基準は spec-update-workflow.md Step 1-G.3.1 参照）
+# 結果: ✓=Pass, ⚠=Warning(許容/要監視/要対応で分類), ✗=Error(修正必須)
 for skill in skill-creator task-specification-creator aiworkflow-requirements; do
   echo "=== $skill ===" && \
   node .claude/skills/skill-creator/scripts/quick_validate.js ".claude/skills/$skill"
 done
 ```
 
-### ⚠️ Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
+### Phase 12 漏れやすいポイント（06-known-pitfalls.md 参照）
 
-| ID | 漏れやすいポイント | 対策 |
-| -- | ------------------ | ---- |
-| P23 | SKILL.md 変更履歴の更新漏れ | LOGS.md とは別に SKILL.md の変更履歴テーブルも必ず更新 |
-| P24 | 未タスク検出時の関連ファイル調査不足 | `grep -rn` で同様パターンをプロジェクト全体から検索 |
+| ID | ポイント | 対策 |
+| -- | -------- | ---- |
 | P1 | LOGS.md 2ファイル更新漏れ | aiworkflow-requirements + task-specification-creator 両方を同時更新 |
-| P3 | 未タスク管理の3ステップ不完全 | 指示書作成だけでなく、テーブル登録まで完了すること |
-| P3派生 | 未タスク配置ディレクトリの間違い（TASK-9B-I） | 必ず `unassigned-task/` に配置。親タスクの `tasks/` ではない |
-| P48 | 全体監査FAILを今回差分FAILと誤認 | baselineとcurrentを分離し、今回差分起因の有無を別レポートで記録 |
-| P48派生 | `audit --target-file` の対象スコープ誤用 | `--target-file` は root `unassigned-task/`、actual parent `completed-tasks/<workflow>/unassigned-task/`、standalone `completed-tasks/*.md` のいずれかに合わせる。移動直後の untracked completed file は `--diff-from HEAD` で拾えないため `--target-file` を正本にする |
-| - | テスト数の設計時固定値使用（TASK-9B-I） | Phase 12では `grep -c "it\\(" *.test.ts` で実測値を使用 |
+| P3 | 未タスク管理の3ステップ不完全 | 指示書作成 + テーブル登録 + 仕様書リンク |
+| P23 | SKILL.md 変更履歴の更新漏れ | LOGS.md とは別に SKILL.md も更新 |
+| P48 | 全体監査FAILを今回差分FAILと誤認 | baseline/current を分離して記録 |
 
----
+## 基本原則
 
-## 完了タスク
-
-### タスク: UT-IMP-PHASE11-WORKTREE-PROTOCOL-001 Phase 11 Worktree環境テストプロトコル標準化（2026-03-01完了）
-
-| 項目       | 内容                                                                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001                                                                  |
-| 完了日     | 2026-03-01                                                                                             |
-| ステータス | **完了**                                                                                               |
-| 概要       | Phase 11の3層テスト分類（Layer 1-3）をWorktree制約に合わせて標準化し、CIにElectron E2Eジョブを追加 |
-
-#### 関連ドキュメント
-
-- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/phase-11-manual-test.md`
-- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/phase-12-documentation.md`
-- `../../../../docs/30-workflows/completed-tasks/ut-imp-phase11-worktree-protocol/outputs/phase-12/spec-update-summary.md`
-
----
-
-### タスク: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 skill-creator検証ゲート整合化（2026-02-26完了）
-
-| 項目       | 内容                                                                                           |
-| ---------- | ---------------------------------------------------------------------------------------------- |
-| タスクID   | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001                                                    |
-| 完了日     | 2026-02-26                                                                                     |
-| ステータス | **完了**                                                                                       |
-| 概要       | `quick_validate.js` 統一経路、Warning判定基準、Phase 11/12成果物の整合、未タスク監査運用を同期 |
-
-#### 関連ドキュメント
-
-- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-11-manual-test.md`
-- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/phase-12-documentation.md`
-- `../../../../docs/30-workflows/ut-imp-skill-validation-gate-alignment-001/outputs/phase-12/spec-update-summary.md`
-
----
 1. UI task で screenshot を省略しない。
 2. docs-only task では screenshot を要求せず、manual walkthrough と mirror parity を証跡化する。
 3. user が root を明示した場合はその root を canonical として扱う。
@@ -578,4 +482,5 @@ done
 
 | Date | Changes |
 | --- | --- |
+| 2026-03-18 | 完了タスク記録を圧縮し500行以下に縮小 |
 | 2026-03-12 | Phase 11 と Phase 12 の detail を別ファイルへ分離 |

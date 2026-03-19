@@ -1,0 +1,253 @@
+{
+  "taskId": "TASK-IMP-CHATPANEL-REAL-AI-CHAT-001",
+  "title": "ChatPanel の実 AI チャット配線",
+  "type": "design",
+  "priority": "high",
+  "status": "in_progress",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "tasks": 7,
+      "completionCriteria": 8,
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/asset-inventory.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "tasks": 8,
+      "completionCriteria": 12,
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md",
+        "outputs/phase-2/ui-ux-realization.md",
+        "outputs/phase-2/transcript-ingestion-flow.md",
+        "outputs/phase-2/state-machine.md",
+        "outputs/phase-2/component-hierarchy.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "tasks": 5,
+      "completionCriteria": 8,
+      "reviewPoints": 16,
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "tasks": 6,
+      "completionCriteria": 10,
+      "testCases": 52,
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/test-mock-strategy.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "tasks": 7,
+      "completionCriteria": 10,
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/file-change-list.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "tasks": 6,
+      "completionCriteria": 8,
+      "edgeCases": 17,
+      "artifacts": ["outputs/phase-6/regression-plan.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "tasks": 4,
+      "completionCriteria": 8,
+      "targetFiles": 13,
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/integration-test.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "tasks": 4,
+      "completionCriteria": 8,
+      "artifacts": [
+        "outputs/phase-8/refactor-plan.md",
+        "outputs/phase-8/regression-result.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "tasks": 5,
+      "completionCriteria": 10,
+      "artifacts": [
+        "outputs/phase-9/qa-checklist.md",
+        "outputs/phase-9/quality-report.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "tasks": 5,
+      "completionCriteria": 10,
+      "reviewPoints": 21,
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "tasks": 7,
+      "completionCriteria": 12,
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshots/",
+        "outputs/phase-11/screenshot-coverage.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "tasks": 5,
+      "completionCriteria": 17,
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "tasks": 5,
+      "completionCriteria": 13,
+      "artifacts": ["outputs/phase-13/pr-info.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）の置換対象が整理されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "ChatPanel の auth / runtime 要件が FR/NFR 分類で定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "状態機械（8状態+遷移）とコンポーネント階層（12コンポーネント）が設計されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "IPC 契約マトリクス（10チャンネル）が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "16 レビュー観点で MAJOR 指摘 0 件",
+      "verified": true
+    },
+    {
+      "id": "AC-6",
+      "description": "テストマトリクス（52テストケース）が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-7",
+      "description": "実装計画（6段階順序、変更ファイル13ファイル）が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-8",
+      "description": "カバレッジ目標（Line 80%, Branch 60%, Function 80%）が全対象ファイルで定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-9",
+      "description": "Phase 12 の 5 タスク必須構成が仕様書に明記されている",
+      "verified": true
+    },
+    {
+      "id": "AC-10",
+      "description": "既知の落とし穴（P31/P39/P40/P42/P48/P60/P62）への対策が全 Phase に反映されている",
+      "verified": true
+    }
+  ],
+  "dependencies": {
+    "normalFlow": {
+      "2": ["1"],
+      "3": ["2"],
+      "4": ["3"],
+      "5": ["4"],
+      "6": ["5"],
+      "7": ["6"],
+      "8": ["7"],
+      "9": ["8"],
+      "10": ["9"],
+      "11": ["10"],
+      "12": ["11"],
+      "13": ["12"]
+    },
+    "reviewLoops": {
+      "phase3_major_req": "1",
+      "phase3_major_design": "2",
+      "phase10_major_impl": "5",
+      "phase10_major_test": "4",
+      "phase10_critical": "1"
+    },
+    "coverageLoop": {
+      "phase7_miss": "6"
+    }
+  },
+  "researchArtifacts": [
+    "outputs/code-research-report.md",
+    "outputs/spec-research-report.md"
+  ],
+  "createdAt": "2026-03-13",
+  "updatedAt": "2026-03-18"
+}

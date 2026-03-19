@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-18 - TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（ChatPanel実AIチャット配線 8状態+12コンポーネント+10IPC設計 185テストPASS Phase 1-12完了） |
 | 2026-03-18 - TASK-SKILL-LIFECYCLE-02 SkillCenterView CTA ルーティング完了（ヘッダーCTA + JourneyPanel CTA 3種 + ナビゲーション関数3つ + 34テスト全PASS + 未タスク1件） |
 | 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了（handlePermissionCheck 接続 + sendPermissionRequestWithTimeout + PermissionTimeoutError + timeout→abort） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |

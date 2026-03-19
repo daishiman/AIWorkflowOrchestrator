@@ -5,6 +5,14 @@
 
 ## family 構成
 
+| file | 対象 | 役割 |
+| --- | --- | --- |
+| [phase-template-core.md](phase-template-core.md) | Phase 1-3 | 要件定義、設計、設計レビューの共通構造 |
+| [phase-template-execution.md](phase-template-execution.md) | Phase 4-10 | テスト、実装、品質、最終レビュー |
+| [phase-template-phase11.md](phase-template-phase11.md) | Phase 11 | manual walkthrough と screenshot evidence。設計タスク向けウォークスルー方式（NON_VISUAL判定）を含む |
+| [phase-template-phase12.md](phase-template-phase12.md) | Phase 12 | implementation guide、spec sync、未タスク、feedback。設計タスク向け2段階更新方式（SF-02）と未タスク4パターン（SF-03）を含む |
+| [phase-template-phase13.md](phase-template-phase13.md) | Phase 13 | user approval と PR blocked ルール |
+
 ---
 
 ## 成果物配置ルール（重要）
@@ -35,6 +43,19 @@
 | `{{NEXT_PHASE}}`    | 次のPhase番号          | `5`                                |
 | `{{TASK_NAME}}`     | タスク名               | `search-replace-ui-implementation` |
 | `{{ISO_TIMESTAMP}}` | ISO8601タイムスタンプ  | `2026-01-06T10:00:00Z`             |
+| `{{TASK_ID}}`       | workflow 全体の task ID |                                   |
+| `{{ARTIFACT_PATH}}` | `outputs/phase-N/...` の相対パス |                            |
+| `{{SYSTEM_SPEC_PATH}}` | aiworkflow-requirements 側の更新対象 |                     |
+
+---
+
+## 共通ルール
+
+1. タイトルは `# Phase N: ...` を維持する。
+2. `## メタ情報`、`## 目的`、`## 実行タスク`、`## 参照資料`、`## 成果物`、`## 完了条件` を省略しない。
+3. Phase 1-11 では `## 統合テスト連携` を必ず残す。
+4. `完了条件` と `タスク100%実行確認` はチェックリストで書く。
+5. outputs と phase 本文の名称は 1:1 に揃える。
 
 ---
 
@@ -58,14 +79,11 @@
 
 {{PHASE_PURPOSE}}
 
-<!-- このPhaseで達成すべき目的を1-2文で記述 -->
-
 ## 実行タスク
 
 {{#each TASKS}}
-
 - {{TASK_NAME}}: {{TASK_PURPOSE}}
-  {{/each}}
+{{/each}}
 
 ## 参照資料
 
@@ -79,15 +97,9 @@
 
 {{STEP_DESCRIPTION}}
 
-### ステップ2: {{STEP_NAME}}
-
-{{STEP_DESCRIPTION}}
-
-## 統合テスト連携（Phase 1〜11は必須）
+## 統合テスト連携（Phase 1-11は必須）
 
 {{INTEGRATION_TEST_ACTIONS}}
-
-<!-- このPhaseで実施/更新する統合テストの観点・実行内容を記載 -->
 
 ## 多角的チェック観点（AIが判断）
 
@@ -104,18 +116,6 @@
 | エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
 | パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
 | アクセシビリティ   | UI実装の場合                       | `aiworkflow-requirements: ui-ux-*.md`        |
-
-**Electronデスクトップアプリ観点**（本プロジェクト固有）:
-
-| 層                         | 適用判断                    | 仕様参照先                                             |
-| -------------------------- | --------------------------- | ------------------------------------------------------ |
-| フロントエンド（Renderer） | UI/React実装の場合          | `aiworkflow-requirements: ui-ux-*.md`                  |
-| バックエンド（Main）       | サービス/ロジック実装の場合 | `aiworkflow-requirements: architecture-*.md`           |
-| IPC通信                    | Main-Renderer連携の場合     | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
-| Preload/セキュリティ       | API公開の場合               | `aiworkflow-requirements: security-api-electron.md`    |
-| ローカルストレージ         | データ永続化の場合          | `aiworkflow-requirements: database-*.md`               |
-
-📖 詳細: `references/quality-standards.md` セクション8
 
 ## 成果物
 
@@ -135,11 +135,9 @@ Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）
-3. 統合テスト連携の実施（Phase 1〜11）
+3. 統合テスト連携の実施（Phase 1-11）
 4. 成果物の作成・配置
 5. 完了条件の検証
-
-**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
 
 ## タスク100%実行確認【必須】
 
@@ -154,12 +152,10 @@ Phase完了前に以下を確認:
 # Phase完了時の検証コマンド
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
-````
 
 ## 次のPhase
 
 Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
-
 ````
 
 ---
@@ -1331,4 +1327,5 @@ git push
 
 | Date | Changes |
 | --- | --- |
+| 2026-03-18 | 1241行のmonolithからインデックス+共通構造に縮小。Phase 7-13テンプレート本文をファミリーファイルに完全移管 |
 | 2026-03-12 | 1818行の monolith から family file 構成へ再編 |

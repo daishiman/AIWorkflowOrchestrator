@@ -4,6 +4,30 @@
 
 ---
 
+## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success（MINOR 2件→未タスク化）
+- **Notes**:
+  - ChatPanel placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）の置換設計
+  - 8状態 × 4 AccessCapability の状態機械設計
+  - 12コンポーネント + 10 IPC チャンネルの契約定義
+  - 185テスト ALL PASS（自動テスト32 + エッジケース25 + 設定同期8 + アクセシビリティ11 + 既存15 + スキル管理17 + StreamingMessage 31 + chatSlice 46）
+  - MINOR-1: handleSendMessage ストリーミング中ガード（→未タスク化）
+  - MINOR-2: chatSlice streaming テスト不足（→未タスク化）
+
+### 変更内容
+- ChatPanel.tsx: 283行（3 placeholder → 12コンポーネント配線）
+- chatSlice.ts: 404行（8状態遷移 + chatPanelStatus）
+- useStreamingChat.ts: 179行（streaming hook 契約）
+- テストファイル5本: chat-wiring, edge-cases, settings-sync, accessibility, ChatPanel.test
+
+### AC達成状況
+AC-1〜AC-10 判定完了。Phase 10 判定: PASS（MINOR 2件）
+
+---
+
 ## TASK-SKILL-LIFECYCLE-02 完了（2026-03-18）
 
 - **Agent**: task-specification-creator

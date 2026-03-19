@@ -3,6 +3,36 @@ import type { ChatMessage, RagConnectionStatus } from "../types";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 
 // ============================================
+// ChatPanel Status & Capability Types
+// ============================================
+
+/**
+ * ChatPanel の 8 状態
+ * idle → ready → streaming → completed/cancelled/error
+ * blocked: provider/model 未選択 or API key 未設定
+ * handoff: terminal surface のみ利用可能
+ */
+export type ChatPanelStatus =
+  | "idle"
+  | "ready"
+  | "streaming"
+  | "cancelled"
+  | "completed"
+  | "error"
+  | "blocked"
+  | "handoff";
+
+/**
+ * Access Capability 4 値
+ * authMode + API key 有無から導出
+ */
+export type AccessCapability =
+  | "integratedRuntime"
+  | "terminalSurface"
+  | "both"
+  | "none";
+
+// ============================================
 // Helper Functions
 // ============================================
 
@@ -89,6 +119,11 @@ export interface ChatSlice {
   isSending: boolean;
   ragConnectionStatus: RagConnectionStatus;
 
+  // ChatPanel Status State
+  chatPanelStatus: ChatPanelStatus;
+  resolvedCapability: AccessCapability;
+  currentConversationId: string | null;
+
   // Streaming State
   isStreaming: boolean;
   streamingContent: string;
@@ -109,6 +144,12 @@ export interface ChatSlice {
   setRagConnectionStatus: (status: RagConnectionStatus) => void;
   clearMessages: () => void;
   sendMessage: (message: string) => Promise<void>;
+
+  // ChatPanel Status Actions
+  setChatPanelStatus: (status: ChatPanelStatus) => void;
+  setResolvedCapability: (capability: AccessCapability) => void;
+  setCurrentConversationId: (id: string | null) => void;
+  resetChat: () => void;
 
   // Streaming Actions
   startStreaming: (requestId: string) => void;
@@ -141,6 +182,11 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   chatInput: "",
   isSending: false,
   ragConnectionStatus: "disconnected",
+
+  // ChatPanel Status Initial State
+  chatPanelStatus: "idle",
+  resolvedCapability: "none",
+  currentConversationId: null,
 
   // Streaming Initial State
   isStreaming: false,
@@ -183,6 +229,34 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
 
   clearMessages: () => {
     set({ chatMessages: [initialMessage] });
+  },
+
+  // ChatPanel Status Actions
+  setChatPanelStatus: (status: ChatPanelStatus) => {
+    set({ chatPanelStatus: status });
+  },
+
+  setResolvedCapability: (capability: AccessCapability) => {
+    set({ resolvedCapability: capability });
+  },
+
+  setCurrentConversationId: (id: string | null) => {
+    set({ currentConversationId: id });
+  },
+
+  resetChat: () => {
+    set({
+      chatMessages: [initialMessage],
+      chatInput: "",
+      isSending: false,
+      isStreaming: false,
+      streamingContent: "",
+      currentStreamId: null,
+      streamingMessageId: null,
+      streamingError: null,
+      chatPanelStatus: "idle",
+      currentConversationId: null,
+    });
   },
 
   sendMessage: async (message) => {

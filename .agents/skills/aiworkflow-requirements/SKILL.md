@@ -11,7 +11,7 @@ description: |
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
 
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification, SkillMetadataProvider, normalizePath, cross-cutting utility, abort fallback, skip fallback, revokeSessionEntries, processPermissionFallback, executeAbortFlow, executeSkipFlow, PermissionFlowContext, AbortReason, DefaultSafetyGate, evaluateSafety, SafetyGateResult, skill:evaluate-safety, P62, P63
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification, SkillMetadataProvider, normalizePath, cross-cutting utility, abort fallback, skip fallback, revokeSessionEntries, processPermissionFallback, executeAbortFlow, executeSkipFlow, PermissionFlowContext, AbortReason, DefaultSafetyGate, evaluateSafety, SafetyGateResult, skill:evaluate-safety, P62, P63, ViewType, renderView, App.renderView, view routing, ビュー分岐, 画面ルーティング, ChatPanel, chatSlice, chatPanelStatus, useStreamingChat, streaming, LLMSelectorPanel, ComposerInput, ChatMessageList
 allowed-tools:
   - Read
   - Glob
@@ -49,6 +49,11 @@ node scripts/search-spec.js "認証" -C 5
 1. `assets/` 配下の該当テンプレートを使用
 2. `references/spec-guidelines.md` と `references/spec-splitting-guidelines.md` を見て、classification-first で更新する
 3. 編集後は `node scripts/generate-index.js` を実行
+
+### 仕様書更新時の追加チェック【必須】
+
+- **旧セクション廃止**: 新設計セクション追加時は `grep -n "^##\|^###" {ファイル} | grep -i "{概念}"` で重複を検索し、旧セクションに `> [DEPRECATED]` 注記を追加するか削除する。処置後 `node scripts/generate-index.js` を実行（P26派生、lessons-learned-current.md 参照）
+- **IPCチャンネル照合**: 設計書にIPCチャンネル名を記載する場合、`grep -rn "{チャンネル名}" apps/desktop/src/preload/ apps/desktop/src/main/` で実装コードとの一致を確認する。不一致の場合は `> NOTE: 実装時に確定` を明記する
 
 ## ワークフロー
 
@@ -193,7 +198,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.02.04** | **2026-03-18** | **TASK-SKILL-LIFECYCLE-02 完了同期**: SkillCenterView CTA ルーティング実装完了。`ui-ux-navigation.md` v1.7.7、`task-workflow-completed-skill-lifecycle.md` に完了記録、`task-workflow-backlog.md` に未タスク TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001 を登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
+| **9.02.05** | **2026-03-18** | **TASK-SKILL-LIFECYCLE-02 完了同期**: SkillCenterView CTA ルーティング実装完了。`ui-ux-navigation.md` v1.7.7、`task-workflow-completed-skill-lifecycle.md` に完了記録、`task-workflow-backlog.md` に未タスク TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001 を登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策） |
+| **9.02.04** | **2026-03-18** | **TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 Phase 12 完了記録**: interfaces-llm, api-ipc-system, ui-ux-feature-components, ui-ux-panels, task-workflow, arch-state-management-core を更新。ChatPanel 実 AI チャット配線設計完了（8状態+12コンポーネント+10IPC+185テスト ALL PASS）。MINOR-1/2 未タスク化（backlog 登録）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **UT-06-005-A 完了同期**: PreToolUse Hook に `handlePermissionCheck` を統合し、`sendPermissionRequestWithTimeout` + `PermissionTimeoutError` による timeout→abort 経路（30秒）を仕様へ反映。`task-workflow-backlog.md` の UT-06-005-A を完了化し、`task-workflow-completed-skill-lifecycle.md` / `workflow-permission-fallback-abort-skip-retry.md` / `LOGS.md` を同一 wave で更新 |
 | **9.02.02** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 再監査同期**: Phase 11 screenshot 3件を再撮影して coverage validator を PASS 化、Phase 12 implementation-guide を 10/10 要件へ補強。`system-spec-update-summary.md` / `documentation-changelog.md` を実績形式へ置換し、`phase12-task-spec-compliance-check.md` を追加。`verify-unassigned-links` の欠落12件を補完し、TASK-08 follow-up 4件を未タスクへ formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
@@ -477,26 +483,11 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **v1.15.0** | **2026-02-19** | **TASK-9A-B完了**: ファイル編集IPCハンドラー6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）。api-ipc-agent.md/security-electron-ipc.md/architecture-overview.md/interfaces-agent-sdk-skill.md/task-workflow.md更新 |
 | **v1.14.0** | **2026-02-11** | **TASK-FIX-7-1スキル改善**: Triggerキーワードに「Setter Injection, 依存性注入, 遅延初期化, setSkillExecutor, SkillExecutor委譲」を追加。検索性向上 |
 | **v1.13.0** | **2026-02-11** | **TASK-FIX-7-1システム仕様書更新**: arch-electron-services.md v1.11.0更新（SkillService API追加、SkillService統合セクション追加）、interfaces-agent-sdk-executor.md v1.4.0更新（SkillService統合セクション新設）、architecture-implementation-patterns.md v1.17.0更新（Setter Injectionパターン追加）。LOGS.md 2ファイル・SKILL.md 2ファイル更新 |
-| **v1.12.0** | **2026-02-11** | **TASK-FIX-7-1-EXECUTE-SKILL-DELEGATION完了**: SkillService.executeSkill()をSkillExecutorに委譲するTDD実装。Phase 1-12全工程完了、統合テスト7件・ユニットテスト12件全PASS、未タスク0件。スキル更新（LOGS.md 2ファイル、SKILL.md 2ファイル） |
-| **v1.11.0** | **2026-02-10** | **TASK-FIX-6-1知見によるスキル改善**: patterns.md成功パターン3件追加（Slice統合、Race Condition対策、Phase 12チェックリスト）、arch-state-management.md v1.10.0（skillSlice統合記録）、06-known-pitfalls.md P25-P28追加、topic-map.md再生成実施 |
-| **v1.10.0** | **2026-02-10** | **TASK-FIX-6-1-STATE-CENTRALIZATION完了**: arch-state-management.md更新（skillSlice統合記録、agentSlice拡張）、テスト70件PASS、Branch Coverage 89.09%達成 |
-| **8.55.0** | **2026-02-21** | **UT-FIX-SKILL-IMPORT-RETURN-TYPE-001 未タスク検出**: skillHandlers.ts全14ハンドラ調査→3件検出（IPC応答形式統一・P45引数名ドリフト・P42バリデーション統一）。task-workflow.md残課題3エントリ追加、interfaces-agent-sdk-skill.md関連テーブル追加 |
-| **8.54.0** | **2026-02-10** | **SKILL.md最適化**: skill-creatorテンプレート準拠。変更履歴を最新20件に圧縮（古い19件をLOGS.mdに移動）。500行以内維持 |
-| **8.53.0** | **2026-02-10** | **P31対策スキル改善**: topic-map.md再生成、quick-reference.mdにP31対策早見パターン追加、SKILL.md Triggerキーワード追加、keywords.json再生成 |
-| **8.53.0** | **2026-03-09** | TASK-10A-F P50検証完了: S19パターン追加、教訓5件追加 |
-| **8.52.0** | **2026-02-10** | **UT-FIX-STORE-HOOKS-INFINITE-LOOP-001完了**: 06-known-pitfalls.md P31追加（Zustand Store Hooks無限ループ）。useRefガード実装 |
-| **8.51.0** | **2026-02-10** | **UT-FIX-5-4-AGENT-SDK-API-TYPE-MISMATCH完了**: AgentSDKAPI abort()型定義修正。`abort(): void` → `abort(): Promise<void>`に変更（2箇所: shared/types.ts, preload/types.ts）。P23パターン準拠。実装（safeInvoke）と型定義の整合性確保。24テストPASS、未タスク0件 |
-| **8.50.0** | **2026-02-10** | **UT-FIX-5-3-PRELOAD-AGENT-ABORT完了**: Agent Abort IPCセキュリティ修正。preload/index.ts `ipcRenderer.send` → `safeInvoke(IPC_CHANNELS.AGENT_ABORT)` 変更、agent-handler.ts `ipcMain.on` → `ipcMain.handle` 変更、dispose()に`removeHandler`追加。04-electron-security.md IPC原則準拠。21テストPASS、未タスク0件 |
-| **8.49.0** | **2026-02-09** | **TASK-AUTH-MODE-SELECTION-001完了**: interfaces-auth.md更新（AuthMode型・AuthModeService・SubscriptionAuthProvider追加）。認証方式選択機能（サブスクリプション/APIキー切り替え）実装。86テスト全PASS |
-| **8.48.0** | **2026-02-09** | **patterns.md構造最適化**: skill-creatorテンプレート準拠。目次カテゴリナビゲーション追加、成功パターン5カテゴリ（Phase 12ドキュメント/IPC・Electron/OAuth・認証/テスト・品質/ストア・永続化）、失敗パターン4カテゴリ（Phase 12漏れ/OAuth・認証エラー/テスト・型安全/その他）に再構成。見出しレベル統一（###カテゴリ/####個別パターン）。パターン件数：成功16件/失敗17件 |
-| **8.47.0** | **2026-02-09** | **TASK-FIX-12-1苦戦箇所記録**: patterns.md成功/失敗パターン追加（IPCチャンネル名定数化、Phase 12 Step 1更新漏れ、未タスク検出時関連ファイル調査不足、未タスク配置ディレクトリ誤り）。architecture-implementation-patterns.md v1.16.0 IPCチャンネル名定数化パターン追加済み。06-known-pitfalls.md P23/P24追加予定 |
-| **8.46.0** | **2026-02-09** | **TASK-FIX-12-1-IPC-HARDCODE-FIX完了**: SkillExecutor.ts L918/L1214 のハードコード文字列 `"skill:stream"` を `SKILL_CHANNELS.SKILL_STREAM` 定数参照に変更。IPC セキュリティ原則準拠。未タスク TASK-FIX-12-2 検出 |
-| **8.45.0** | **2026-02-08** | **TASK-FIX-16-1-SDK-AUTH-INFRASTRUCTURE完了**: security-principles.md更新（SDK認証キー管理セクション追加）、api-ipc-system.md更新（auth-key IPCチャンネル4種追加）、api-endpoints.md更新（SDK認証キーカテゴリ追加）、interfaces-agent-sdk-executor.md更新（AUTHENTICATION_ERROR追加、AuthKeyService統合）。119テスト全PASS |
-| **8.44.0** | **2026-02-08** | **TASK-FIX-4-2パターン追加**: 06-known-pitfalls.mdにP19-P20追加（型アサーション検証バイパス・テストログ出力汚染）。interfaces-agent-sdk-executor.md型バリデーションパターン記載 |
-| **8.43.0** | **2026-02-08** | **TASK-FIX-4-2-SKILL-STORE-PERSISTENCE完了**: interfaces-skill-execution.md更新（validateStoredSkillIds詳細ロジック追加）、security-principles.md更新（ストレージ整合性検証セクション追加）。87テスト全PASS |
-| **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（OAuth CSRF/State詳細を分離）、security-principles.md軽量化（参照リンク追加）、patterns.md拡充（OAuth成功/失敗パターン10件追加） |
-| **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
-| **8.41.0** | **2026-03-14** | **TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001完了**: llm-workspace-chat-edit.md更新。55テスト全PASS |
+| **v1.12.0** | **2026-02-11** | TASK-FIX-7-1完了、統合7件+ユニット12件PASS |
+| **v1.10.0** | **2026-02-10** | TASK-FIX-6-1完了+P25-P28追加、Branch Cov 89.09% |
+| **8.55.0** | **2026-02-21** | UT-FIX-SKILL-IMPORT-RETURN-TYPE-001未タスク3件検出 |
+| **8.53.0** | **2026-03-09** | TASK-10A-F P50検証完了、S19パターン+教訓5件 |
+| **8.49.0** | **2026-02-09** | TASK-AUTH-MODE-SELECTION-001完了、86テストPASS |
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
-> 古い履歴（v9.01.90以前・v8.41.0以前）は [LOGS.md](LOGS.md) / [references/logs-archive-index.md](references/logs-archive-index.md) を参照。
+> 古い履歴（v8.48.0以前）は [LOGS.md](LOGS.md) / [references/logs-archive-index.md](references/logs-archive-index.md) を参照。
