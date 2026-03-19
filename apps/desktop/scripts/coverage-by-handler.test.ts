@@ -334,7 +334,7 @@ export function registerGroupB() {
     }
 
     const handlers = extractHandlers(skillHandlersPath);
-    expect(handlers.length).toBe(30);
+    expect(handlers.length).toBe(31);
 
     // 登録関数の分類確認
     const groupedByFunction = handlers.reduce(
@@ -345,7 +345,7 @@ export function registerGroupB() {
       {} as Record<string, number>,
     );
 
-    expect(groupedByFunction["registerSkillHandlers"]).toBe(16);
+    expect(groupedByFunction["registerSkillHandlers"]).toBe(17);
     expect(groupedByFunction["registerSkillScheduleHandlers"]).toBe(5);
     expect(groupedByFunction["registerSkillDocsHandlers"]).toBe(4);
     expect(groupedByFunction["registerSkillChainHandlers"]).toBe(5);
