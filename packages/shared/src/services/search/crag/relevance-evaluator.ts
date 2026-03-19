@@ -185,7 +185,12 @@ Evaluate all ${results.length} results in order.`;
       }
 
       return parsed;
-    } catch {
+    } catch (error) {
+      // SF-07: JSON parse fallback を明示化 — score=5 fallback は維持するが警告をログに記録
+      console.warn(
+        "[RelevanceEvaluator] JSON parse failed, using fallback score=5:",
+        error instanceof Error ? error.message : String(error),
+      );
       return this.createFallbackResponse(results.length);
     }
   }

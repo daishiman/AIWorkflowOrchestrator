@@ -1,8 +1,8 @@
-# Lessons Learned アーカイブ（2026-03-14 〜 2026-03-16）
+# Lessons Learned アーカイブ（2026-03-14 〜 2026-03-18）
 
 > 親仕様書: [lessons-learned.md](lessons-learned.md)
 > current summary: [lessons-learned-current.md](lessons-learned-current.md)
-> 役割: 2026-03-14〜2026-03-16 の教訓エントリを保管するアーカイブ
+> 役割: 2026-03-14〜2026-03-18 の教訓エントリを保管するアーカイブ
 
 ## メタ情報
 
@@ -10,7 +10,7 @@
 | -------- | ---------------------------------------------------------------------- |
 | 正本     | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md` |
 | 目的     | current summary から分離した過去教訓の保管                             |
-| スコープ | 2026-03-14〜2026-03-16 に記録された教訓エントリ                        |
+| スコープ | 2026-03-14〜2026-03-18 に記録された教訓エントリ                        |
 | 対象読者 | AIWorkflowOrchestrator 開発者                                          |
 
 ---
@@ -451,3 +451,44 @@ expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
 3. screenshot plan / manual-test-result / metadata を同時更新して TC-ID と証跡を 1:1 にする。
 4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
 5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
+
+---
+
+## 教訓アーカイブ（2026-03-18）
+
+### 2026-03-18 TASK-IMP-CHATPANEL-REAL-AI-CHAT-001: ChatPanel 実AIチャット配線（設計タスク）
+
+#### 苦戦1: 旧設計セクションと新設計セクションの共存問題
+
+- **問題**: arch-state-management-core.md に旧8状態定義（L91-145）と新8状態定義（L432-527）が共存し、設計の正本がどちらか不明確になった
+- **発見経緯**: Phase 12 完了後の多角的レビュー（3並列エージェント）で spec-audit-system エージェントが検出。Phase 2-10 では見逃されていた
+- **解決策**: 旧セクションに廃止注記（`> [DEPRECATED]`）を追加し、新セクションへの参照誘導を設置
+- **教訓**: 仕様書に新セクションを追加する際は、同一概念を定義する旧セクションを `grep -n "^##\|^###" {ファイル}` で検索し、廃止処理を同時に行うこと
+- **関連 Pitfall**: P26（システム仕様書更新遅延）の派生パターン
+
+#### 苦戦2: Phase 10 MINOR ID と Phase 12 未タスク ID の不整合
+
+- **問題**: Phase 10 で付与された MINOR-1/MINOR-2 という ID が、Phase 12 Task 4 で COV-001/GUARD-001 等の別体系 ID に置き換えられた。task-workflow-backlog.md に誤った ID とファイルパスで登録され、追跡不能になった
+- **発見経緯**: 多角的レビューの spec-audit-task エージェントが backlog 登録の不整合を検出
+- **解決策**: backlog の2件を削除し、正しい6件（GUARD-001, COV-001〜003, STUB-001, REFACTOR-001）で再登録
+- **教訓**: Phase 10 MINOR 判定の ID は Phase 12 Task 4 で未タスク化する際に正式 ID に変換される。変換時に旧 ID のエントリを必ず削除すること
+- **関連 Pitfall**: P3（未タスク管理の3ステップ不完全）
+
+#### 苦戦3: blocked→ready 遷移トリガーの IPC チャンネル不一致
+
+- **問題**: state-machine.md で `blocked->ready` 遷移のトリガーを `auth-key:exists` と定義したが、LLM プロバイダー API キーの検証には `llm:check-health` が適切。Claude Agent SDK のキー存在確認と LLM プロバイダーの疎通確認は異なる概念
+- **発見経緯**: 多角的レビューの elegance-review エージェント（深層分析）が検出
+- **解決策**: verification-report.md の NOTE-4 として記録し、後続実装タスクで確定する方針
+- **教訓**: 設計書内に IPC チャンネル名を記載する際は、`grep -rn "チャンネル名" apps/desktop/src/` で実装コードに同チャンネルが存在することを確認すること
+
+#### 苦戦4: 並列エージェント間の情報断絶（P59 再確認）
+
+- **問題**: Phase 12 を複数の並列エージェントで分担した際、documentation-changelog 作成エージェントと未タスク検出エージェントの間で件数不整合が発生
+- **教訓**: documentation-changelog は全 SubAgent 完了後にメインエージェントが一括作成する。SubAgent に委譲した場合は `unassigned-task-detection.md` の件数と照合してから完了とする
+- **関連 Pitfall**: P59（並列エージェントによる changelog 件数不整合）
+
+#### 苦戦5: インラインセレクタ vs 個別セレクタの設計判断遅延
+
+- **問題**: chatSlice の selector 設計において、インラインセレクタ（`store => store.chat.messages`）vs 個別エクスポートセレクタ（`useMessages()`）の選択を Phase 5 まで保留した結果、Phase 6 でリファクタリングが必要になった
+- **教訓**: Phase 2 設計時に selector 戦略（P31/P48 準拠の個別セレクタ推奨）を明記し、実装前に確定する
+- **関連 Pitfall**: P31（Zustand Store Hooks 無限ループ）、P48（useShallow 未適用による派生セレクタ無限ループ）

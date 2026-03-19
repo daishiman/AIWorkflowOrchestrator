@@ -133,10 +133,10 @@ export class CommunitySummarizer implements ICommunitySummarizer {
         );
         embedding = embedResult.embedding;
       } catch (error) {
-        // 埋め込み失敗は警告のみで続行
+        // SF-09: 埋め込み失敗は警告のみで続行（embedding なしで summary は保存）
         console.warn(
-          `Embedding generation failed for community ${community.id}:`,
-          error,
+          `[CommunitySummarizer] Embedding generation failed for community ${community.id}:`,
+          error instanceof Error ? error.message : String(error),
         );
       }
     }

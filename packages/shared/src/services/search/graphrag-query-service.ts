@@ -366,7 +366,11 @@ export class GraphRAGQueryService implements IGraphRAGQueryService {
     const result = await this.searchCommunitySummaries(query, options);
 
     if (!result.success) {
-      // 検索失敗時はフォールバック
+      // SF-05: silent fallback を明示化 — 空配列 fallback は維持するが警告をログに記録
+      console.warn(
+        "[GraphRAGQueryService] community search failed, falling back to empty results:",
+        result.error.message,
+      );
       return {
         summaries: [],
         fallbackOccurred: true,

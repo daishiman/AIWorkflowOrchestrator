@@ -1,0 +1,159 @@
+======================================================================
+Phase 3 設計レビュー入力テキスト
+タスク: TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001
+作成日: 2026-03-19
+======================================================================
+
+## Phase 1-2 成果物サマリー
+
+### Phase 1: 要件定義
+
+対象: 21 surface（Index Lane 8 / Embedding Lane 4 / Search Lane 9）
+
+concern topology:
+  - Index Lane: AI_CHECK_CONNECTION, AI_INDEX, COMMUNITY_* (6件)
+    → 全て production mock。guidance-only 置換が必要
+  - Embedding Lane: EmbeddingService, EmbeddingPipeline, openai/qwen3 provider
+    → api-key-only、全て implemented
+  - Search Lane: QueryClassifier, EntityExtractor, RelationExtractor,
+    CommunitySummarizer, GraphRAGQueryService, HybridRAGFactory/Engine,
+    RelevanceEvaluator, CrossEncoderReranker
+    → api-key-required、HybridRAGFactory のみ throw stub（CRITICAL）
+
+Gap 整理:
+  - SF-01〜09: silent fallback（SF-04/06/08 は設計意図、SF-05/07/09 は修正対象）
+  - LR-01: AI_INDEX が setTimeout(1000) 固定値（long-running job contract 未設計）
+  - PM-01〜04: production mock（AI_CHECK_CONNECTION, AI_INDEX, community, HybridRAGFactory）
+  - GD-01〜03: guidance 不足
+
+受入基準:
+  AC-01: 21 surface の capability inventory 列挙
+  AC-02: production mock / TODO が後続 Phase に割り当て済み
+  AC-03: terminal surface への silent fallback が要件に含まれない
+  AC-04: FR/NFR が分類・優先度設定済み（FR 10件 / NFR 10件）
+  AC-05: concern topology が 3 lane 以下で定義済み
+  AC-06: error policy が 5 パターン（unsupported/rate-limit/timeout/job-failure/provider-failure）網羅
+
+---
+
+### Phase 2: 設計
+
+#### concern topology（3 lane）
+  Index Lane → Embedding Lane → Search Lane の一方向依存。
+  Search Lane から Index Lane の job state への polling 禁止。
+
+#### target topology（主要変更点）
+  - AI_CHECK_CONNECTION: guidance-only 置換（Phase 5 P2）
+  - AI_INDEX: job lifecycle IPC 実装（Phase 5 P1）
+  - community handlers (6件): 削除 + guidance-only 置換（Phase 5 P2）
+  - HybridRAGFactory: throw stub → factory 実装（Phase 5 P0）
+  - SF-05 GraphRAGQueryService: 空配列 silent return → Error throw
+  - SF-07 RelevanceEvaluator: score=5 fallback → Error throw
+  - SF-09 CommunitySummarizer: console.warn → Error throw + guidance
+
+#### runtime resolver（3択）
+  guidance-only / fail-fast / proceed
+  Step1: Task01 access matrix 参照
+  Step2: provider capability チェック
+  Step3: api-key 有無チェック
+  Step4: 実行
+
+#### error policy（5パターン）
+  unsupported capability (1000-1999) / rate limit (3000-3999) /
+  timeout (3000-3999) / long-running job failure (4000-4999) /
+  provider failure (4000-4999)
+
+#### DI 境界表
+  Main (IPC): aiHandlers, communityHandlers（依存注入なし）
+  Shared: 全 service/pipeline/provider を Interface 型で DI
+
+#### IPC 契約
+  統一形式: { success: true, data: T } | { success: false, error: { code, message } }
+  新規 channel: ai:index:progress (event), ai:index:cancel (invoke)
+  register/unregister ペア方針（P5 準拠）
+
+#### UI/UX 契約（ui-ux-realization.md）
+  4 共通部品: Status Row / Fail-Fast Notice / Guidance Block / Progress Indicator
+  blank state 禁止 / terminal 提案禁止 / API key 露出禁止
+  running 状態でのキャンセル手段必須
+
+---
+
+## 12 観点レビュープロンプト
+
+以下の 12 観点について、上記の Phase 1-2 成果物を基に
+PASS / MINOR / MAJOR の判定を行い、判定根拠を記載してください。
+
+1. surface ごとの capability 区分が曖昧でないか
+   （api-key-only と guidance-only の境界が明確か）
+   → contract-matrix.md の Capability Matrix を参照
+
+2. production mock / TODO が残ったまま成功経路に入らないか
+   → design-summary.md の target topology table と SF 是非判定を参照
+
+3. terminal surface や consumer subscription への silent fallback が紛れ込まないか
+   → scope-definition.md § 3 Terminal 非対応ポリシーを参照
+
+4. long-running index job の失敗と guidance が不足していないか
+   → contract-matrix.md § 3.1 Job State / § 2.2 IPC 契約 / ui-ux-realization.md § 6 を参照
+
+5. concern topology の 3 lane 分割が責務境界として妥当か
+   → design-summary.md § 1（lane 間依存関係含む）を参照
+
+6. error policy が 5 パターン（unsupported / rate limit / timeout / job failure / provider failure）を網羅しているか
+   → contract-matrix.md § 5 Error Policy Matrix を参照
+
+7. UI/UX 契約が pack 正本（ui-ux-realization.md）と整合しているか
+   → ui-ux-realization.md § 10（上位正本との対応）を参照
+
+8. Task01 の access matrix を消費しており、独自 mode 判定が混入していないか
+   → design-summary.md § 3-2 authority ルール / contract-matrix.md § 4.1 条件 2 を参照
+
+9. 各契約の前提条件/事後条件が contract-matrix.md で明示されているか
+   → contract-matrix.md § 7（前提条件 / 事後条件）を参照
+
+10. IPC ハンドラの依存が具象ではなく Port/Interface 境界で記述されているか
+    → contract-matrix.md § 6 DI 境界表の injected dependency 列を参照
+
+11. DI 境界表が layer ごとに整理されているか
+    → contract-matrix.md § 6 の layer 列（Main / Shared）を参照
+
+12. Phase 1 の受入基準と Phase 2 の設計要素が 1:1 で追跡できるか
+    → AC-01〜AC-06 と Phase 2 の各設計文書セクションを対応付ける
+
+---
+
+## simpler alternative 検討プロンプト
+
+以下の 3 代替案についてそれぞれ評価してください:
+
+代替案 1: 3 lane ではなく 2 lane（Index+Embedding / Search）で十分か？
+  → Index と Embedding の責務分離の必要性を論じてください
+
+代替案 2: capability matrix を省略し、api-key の有無のみで判定するシンプルモデル
+  → api-key 有無だけでは判定できないシナリオを列挙してください
+
+代替案 3: production mock を即時削除せず、feature flag で段階的に切り替える
+  → guidance-only 置換との比較でメリット/デメリットを論じてください
+
+---
+
+## 契約品質チェックプロンプト
+
+以下の 4 項目を確認してください:
+
+A. 前提条件/事後条件が全 surface（21件）で明示されているか
+   → 未定義または現状記述のまま残っている surface を列挙する
+
+B. Port/Interface 依存（具象クラス依存の排除）
+   → DI 境界表で具象クラス名（DefaultXxx, ConcreteXxx）が injected dependency に含まれていないか確認する
+
+C. DI 境界表が layer (Main / Preload / shared) で整理されているか
+   → Preload 層の記載有無、Main での DI 組み立て責務の明示状況を確認する
+
+D. Phase 1 受入基準 AC-01〜AC-06 と Phase 2 設計要素のトレーサビリティ
+   → 各 AC に対応する Phase 2 の文書セクションを 1:1 で列挙する
+
+======================================================================
+END OF REVIEW PROMPT
+======================================================================
