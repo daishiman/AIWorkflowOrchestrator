@@ -33,7 +33,7 @@
 
 | ファイル | カテゴリ | 含まれるタスク |
 | --- | --- | --- |
-| [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
+| [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
 | [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001, UT-06-005 |
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07 |
@@ -47,6 +47,7 @@
 ### ViewType / 画面遷移 / Electron メニュー
 → [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md)
 - `renderView` 分岐テスト、screenshot 到達確認、P40 テスト実行ディレクトリ依存
+- main shell handoff capture、shared DOM selector scope
 - Electron role ベースメニュー、Main Process エントリポイント副作用
 
 ### IPC / Preload / AI Runtime / 認証

@@ -65,6 +65,10 @@ export interface SkillDetailPanelProps {
   isImported: boolean;
   /** スキルデータ */
   skill?: SkillMetadata | ImportedSkill;
+  /** 編集ボタンクリック時のハンドラ（インポート済みスキルのみ有効） */
+  onEdit?: (skillName: string) => void;
+  /** 分析ボタンクリック時のハンドラ（インポート済みスキルのみ有効） */
+  onAnalyze?: (skillName: string) => void;
 }
 
 /** パネルスタイル定義 */
@@ -156,7 +160,16 @@ function safeOtherFiles(
  * スキル詳細パネルコンポーネント。
  */
 export const SkillDetailPanel: React.FC<SkillDetailPanelProps> = memo(
-  ({ skillName, isOpen, onClose, onDelete, isImported, skill }) => {
+  ({
+    skillName,
+    isOpen,
+    onClose,
+    onDelete,
+    isImported,
+    skill,
+    onEdit,
+    onAnalyze,
+  }) => {
     const panelRef = useRef<HTMLDivElement>(null);
 
     // Escape キーでパネルを閉じる
@@ -223,10 +236,13 @@ export const SkillDetailPanel: React.FC<SkillDetailPanelProps> = memo(
           <PanelContent
             skill={skill}
             displayName={displayName}
+            skillName={skillName}
             allowedTools={allowedTools}
             isImported={isImported}
             onClose={onClose}
             onDelete={handleDeleteClick}
+            onEdit={onEdit}
+            onAnalyze={onAnalyze}
           />
         </div>
 
@@ -249,10 +265,13 @@ export const SkillDetailPanel: React.FC<SkillDetailPanelProps> = memo(
           <PanelContent
             skill={skill}
             displayName={displayName}
+            skillName={skillName}
             allowedTools={allowedTools}
             isImported={isImported}
             onClose={onClose}
             onDelete={handleDeleteClick}
+            onEdit={onEdit}
+            onAnalyze={onAnalyze}
           />
         </div>
       </>
@@ -267,14 +286,27 @@ SkillDetailPanel.displayName = "SkillDetailPanel";
 interface PanelContentProps {
   skill: SkillMetadata | ImportedSkill;
   displayName: string;
+  skillName: string;
   allowedTools: string[];
   isImported: boolean;
   onClose: () => void;
   onDelete: () => void;
+  onEdit?: (skillName: string) => void;
+  onAnalyze?: (skillName: string) => void;
 }
 
 const PanelContent: React.FC<PanelContentProps> = memo(
-  ({ skill, displayName, allowedTools, isImported, onClose, onDelete }) => {
+  ({
+    skill,
+    displayName,
+    skillName,
+    allowedTools,
+    isImported,
+    onClose,
+    onDelete,
+    onEdit,
+    onAnalyze,
+  }) => {
     const description = String(skill.description ?? "");
     const agents = safeSubResources(skill.agents);
     const references = safeSubResources(skill.references);
@@ -400,6 +432,32 @@ const PanelContent: React.FC<PanelContentProps> = memo(
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* アクションボタンゾーン（インポート済みスキルのみ） */}
+          {isImported && onEdit && onAnalyze && (
+            <div className="flex gap-3" data-testid="action-buttons-zone">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => skillName && onEdit(skillName)}
+                leftIcon="pencil"
+                data-testid="edit-skill-button"
+                className="flex-1"
+              >
+                エディタで開く
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => skillName && onAnalyze(skillName)}
+                leftIcon="eye"
+                data-testid="analyze-skill-button"
+                className="flex-1"
+              >
+                分析する
+              </Button>
             </div>
           )}
 

@@ -19,6 +19,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-19 | 1.2.0 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 の icon map 未登録・PanelContentProps 漏れ・esbuild バイナリ不一致の教訓を追加 |
+| 2026-03-19 | 1.1.0 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 の main shell handoff capture / shared DOM selector scope の教訓を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
 
 ---
@@ -93,6 +95,80 @@
 | テスト alias 解決失敗 | `pwd` がパッケージルートか確認 | `cd apps/desktop && pnpm vitest run` |
 | エージェント中断後の再開 | `git diff --stat HEAD` で成果物確認 | 中断箇所を特定→不足分のみ再実行 |
 | テスト数ドキュメント不整合 | `grep -c "it\|test(" *.test.ts` | Phase 7 完了後に正確な数値で更新 |
+
+---
+
+## 2026-03-19 TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001
+
+### 苦戦箇所1: destination screenshot だけでは detail panel handoff が証明できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skill-editor` / `skillAnalysis` の到達画面だけを撮っても、`SkillCenter` detail panel からの操作で遷移した事実が読み取りにくかった |
+| 再発条件 | source surface が存在する handoff を destination 単独 capture で済ませる場合 |
+| 解決策 | main shell 上で detail panel を開き、button click から destination 描画までを同一 run で capture した |
+| 標準ルール | handoff UI は source-to-destination を同一 shell・同一 workflow 証跡で残す |
+| 関連タスク | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+
+### 苦戦箇所2: shared DOM による selector strict mode 衝突
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | desktop panel と mobile bottom sheet が同時に DOM に存在するため、`edit-skill-button` や `analyze-skill-button` が二重一致した |
+| 再発条件 | responsive UI の visible container を絞らずに `data-testid` を page 全体で引く場合 |
+| 解決策 | `openImportedDetail()` が visible panel locator を返し、その scope 内で button をクリックするように変更した |
+| 標準ルール | shared desktop/mobile DOM を持つ UI は container scope を先に切ってから selector を使う |
+| 関連タスク | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+
+### 苦戦箇所3: Icon map に存在しないアイコン名の使用
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 2 設計で `leftIcon="edit-2"` / `leftIcon="bar-chart-2"` を指定したが、Icon コンポーネントの icon map に未登録だった。テストは PASS するが実際の UI ではアイコンが表示されない |
+| 発見タイミング | Phase 5 実装後のテスト実行時に stderr 警告 `Icon "edit-2" not found in icon map` で発覚 |
+| 再発条件 | Phase 2 設計時に Icon コンポーネントの icon map を確認せずにアイコン名を指定した場合 |
+| 解決策 | 利用可能なアイコン（`pencil` / `eye`）に置き換え。`grep` で Icon コンポーネントの icon map を確認してから設計に反映 |
+| 標準ルール | Phase 2 設計時に `leftIcon` に指定するアイコン名が `apps/desktop/src/renderer/components/atoms/Icon/index.tsx` の icon map に存在するか確認する |
+| 関連タスク | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+
+### 苦戦箇所4: PanelContentProps への skillName 追加漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計書では `SkillDetailPanelProps` の拡張は記載されていたが、内部コンポーネント `PanelContentProps` への `skillName` 追加が設計に含まれていなかった。`onEdit(skillName)` を呼ぶために PanelContent が skillName を受け取る必要がある |
+| 発見タイミング | Phase 5 実装時に PanelContent 内で `skillName` が参照できないことに気付いた |
+| 再発条件 | callback に親の state を渡す必要があるとき、中間コンポーネントの Props 経路を設計書に明示しなかった場合 |
+| 解決策 | `PanelContentProps` に `skillName: string` を追加し、親コンポーネントから渡す |
+| 標準ルール | Props 拡張設計時に、内部コンポーネントの Props 型も連動して設計に含める。特に callback に親の state を渡す必要がある場合、中間コンポーネントの Props 経路を明示する |
+| 関連タスク | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+
+### 苦戦箇所5: esbuild アーキテクチャ不一致（worktree 環境固有）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree 環境で `pnpm vitest run` を実行すると `@esbuild/darwin-arm64 is present but this platform needs @esbuild/darwin-x64` エラーが発生 |
+| 原因 | Node.js が x64 モード（Rosetta 2）で動作しているのに、esbuild は arm64 バイナリのみインストールされていた |
+| 再発条件 | worktree 作成後、初回テスト実行前に `pnpm install` を実行しなかった場合 |
+| 解決策 | `pnpm install` を再実行して x64 バイナリを追加インストール |
+| 標準ルール | worktree 作成後の初回テスト実行前に `node -e "console.log(process.arch)"` でアーキテクチャを確認し、不一致があれば `pnpm install` を実行 |
+| 関連パターン | P7（ネイティブモジュールのバイナリ不一致） |
+| 関連タスク | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. source surface がある handoff は main shell 上で source から destination まで連続 capture する。
+2. destination の分岐保証は unit test、画面到達は screenshot と役割を分離する。
+3. responsive UI は visible panel locator を返す helper を用意し、button selector を scope する。
+
+### 5分解決カード
+
+| 苦戦箇所 | 即時チェック | 解決策 |
+| --- | --- | --- |
+| handoff の証跡が弱い | source surface が画面に写っているか確認 | main shell で source-to-destination capture を再取得 |
+| selector 二重一致 | `getByTestId` が strict mode で落ちていないか確認 | panel scope locator を経由して操作する |
+| Icon 未表示 | `grep -n "iconName" apps/desktop/src/renderer/components/atoms/Icon/index.tsx` で icon map を確認 | 利用可能なアイコン名に変更する |
+| Props 経路漏れ | callback 引数に親の state が含まれるか確認 | 中間コンポーネントの Props に追加して渡す |
+| esbuild バイナリ不一致 | `node -e "console.log(process.arch)"` でアーキを確認 | `pnpm install` を再実行して正しいバイナリを取得 |
 
 ---
 

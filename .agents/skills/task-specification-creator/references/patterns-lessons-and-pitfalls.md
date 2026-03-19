@@ -192,12 +192,12 @@
 - **発見日**: 2026-02-21
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
 
-### worktree環境でのPhase 11手動テスト不可
+### worktree環境でも Phase 11 screenshot は実行可能
 
-- **状況**: Git worktree上でPhase 11（手動テスト）を実行しようとした
-- **問題**: worktree環境ではElectronアプリの起動が不可能
-- **解決**: 自動テスト（vitest）で代替し、成果物に「worktree環境制約」を明記
-- **教訓**: Phase 11仕様書にworktree環境用の代替テスト手順をデフォルトで含める
+- **状況**: Git worktree 上で UI task の Phase 11 を再監査した
+- **問題**: Electron 実アプリ起動前提で考えると「worktree では手動テスト不可」と誤認しやすい
+- **解決**: Playwright + Vite harness で current worktree の build / route を直接起動し、main shell screenshot を取得した
+- **教訓**: worktree を理由に Phase 11 を自動テスト代替へ落とし込まない。UI task は harness capture、docs-only task は walkthrough に切り分ける
 - **発見日**: 2026-02-21
 - **関連タスク**: UT-FIX-SKILL-REMOVE-INTERFACE-001
 

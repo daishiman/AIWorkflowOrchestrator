@@ -55,7 +55,7 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 
 | ステージ | タイミング | 内容 | 必須 |
 | --- | --- | --- | --- |
-| Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容の計画を `system-spec-update-summary.md` に記録 | ✅ |
+| Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容を列挙し、完了前に必ず実更新結果へ置換する形で `system-spec-update-summary.md` に記録 | ✅ |
 | Step 2B: 実更新 | Task 2 完了前 | 実際に `.claude/skills/` 配下の仕様書を更新し、planned wording を除去 | ✅ |
 
 `仕様策定のみ` / `実行予定` / `保留として記録` 等の planned wording は Phase 12 完了前に全て実更新ログへ昇格すること。
@@ -113,7 +113,7 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 | ドキュメント更新履歴 | `documentation-changelog.md` |
 | 実装ガイド | `implementation-guide.md` |
 | スキルフィードバック | `skill-feedback-report.md` |
-| 仕様書更新サマリー | `system-spec-update-summary.md` 又は `spec-update-summary.md` |
+| 仕様書更新サマリー | `system-spec-update-summary.md` |
 
 **注意**: `unassigned-task-report.md` のような類似名ファイルを作成しないこと。正式名称は `unassigned-task-detection.md` である。
 

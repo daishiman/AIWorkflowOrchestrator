@@ -1,0 +1,77 @@
+{
+  "taskId": "TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001",
+  "taskName": "skilldetail-action-buttons",
+  "featureName": "skilldetail-action-buttons",
+  "createdDate": "2026-03-17",
+  "phases": {
+    "1": {
+      "name": "requirements",
+      "status": "completed",
+      "file": "phase-1-requirements.md"
+    },
+    "2": {
+      "name": "design",
+      "status": "completed",
+      "file": "phase-2-design.md"
+    },
+    "3": {
+      "name": "design-review",
+      "status": "completed",
+      "file": "phase-3-design-review.md"
+    },
+    "4": {
+      "name": "test-creation",
+      "status": "completed",
+      "file": "phase-4-test-creation.md"
+    },
+    "5": {
+      "name": "implementation",
+      "status": "completed",
+      "file": "phase-5-implementation.md"
+    },
+    "6": {
+      "name": "test-expansion",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md"
+    },
+    "7": {
+      "name": "coverage-check",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md"
+    },
+    "8": {
+      "name": "refactoring",
+      "status": "completed",
+      "file": "phase-8-refactoring.md"
+    },
+    "9": {
+      "name": "quality-assurance",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md"
+    },
+    "10": {
+      "name": "final-review",
+      "status": "completed",
+      "file": "phase-10-final-review.md"
+    },
+    "11": {
+      "name": "manual-test",
+      "status": "completed",
+      "file": "phase-11-manual-test.md"
+    },
+    "12": {
+      "name": "documentation",
+      "status": "completed",
+      "file": "phase-12-documentation.md"
+    },
+    "13": {
+      "name": "pr-creation",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md"
+    }
+  },
+  "relatedTasks": {
+    "TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001": "depends-on",
+    "TASK-SKILL-LIFECYCLE-02": "extends"
+  }
+}

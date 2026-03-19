@@ -136,6 +136,8 @@ export interface UseSkillCenterReturn {
   navigateToSkillCreate: () => void;
   navigateToWorkspace: () => void;
   navigateToSkillAnalysis: () => void;
+  handleEditSkill: (skillName: string) => void;
+  handleAnalyzeSkill: (skillName: string) => void;
 
   // ハンドラ
   handleAddSkill: (skillName: string) => Promise<void>;
@@ -155,6 +157,7 @@ export interface UseSkillCenterReturn {
 export function useSkillCenter(): UseSkillCenterReturn {
   // --- ナビゲーション ---
   const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const setCurrentSkillName = useAppStore((state) => state.setCurrentSkillName);
 
   const navigateToSkillCreate = useCallback(
     () => setCurrentView("skillCreate"),
@@ -289,6 +292,24 @@ export function useSkillCenter(): UseSkillCenterReturn {
     setDetailSkillName(null);
   }, []);
 
+  const handleEditSkill = useCallback(
+    (skillName: string): void => {
+      setCurrentSkillName(skillName);
+      setCurrentView("skill-editor");
+      handleCloseDetail();
+    },
+    [setCurrentSkillName, setCurrentView, handleCloseDetail],
+  );
+
+  const handleAnalyzeSkill = useCallback(
+    (skillName: string): void => {
+      setCurrentSkillName(skillName);
+      setCurrentView("skillAnalysis");
+      handleCloseDetail();
+    },
+    [setCurrentSkillName, setCurrentView, handleCloseDetail],
+  );
+
   const handleRequestDelete = useCallback((skillName: string) => {
     setDeleteTargetSkillName(skillName);
     setIsDeleteConfirmOpen(true);
@@ -346,6 +367,8 @@ export function useSkillCenter(): UseSkillCenterReturn {
     navigateToSkillCreate,
     navigateToWorkspace,
     navigateToSkillAnalysis,
+    handleEditSkill,
+    handleAnalyzeSkill,
     handleAddSkill,
     handleRemoveSkill,
     handleOpenDetail,

@@ -1,0 +1,12 @@
+{
+  "editHandoff": {
+    "getFileTree": ["imported-skill", "imported-skill"],
+    "analyze": [],
+    "readFile": []
+  },
+  "analyzeHandoff": {
+    "getFileTree": [],
+    "analyze": ["imported-skill", "imported-skill"],
+    "readFile": []
+  }
+}

@@ -29,6 +29,7 @@
     "screenshot:light-theme-shared-color-migration": "node scripts/capture-light-theme-shared-color-migration-phase11.mjs",
     "screenshot:onboarding-wizard": "node scripts/capture-task-061-onboarding-wizard-phase11.mjs",
     "screenshot:light-theme-contrast-guard": "node scripts/capture-light-theme-contrast-regression-guard-phase11.mjs",
+    "screenshot:skilldetail-action-buttons": "node scripts/capture-task-skilldetail-action-buttons-phase11.mjs",
     "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
