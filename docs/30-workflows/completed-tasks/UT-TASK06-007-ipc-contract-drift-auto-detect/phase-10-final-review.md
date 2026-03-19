@@ -27,6 +27,7 @@
 | ----------------------- | ------------------------------------------------------------ | -------------------------- |
 | Phase 1要件定義         | `phase-1-requirements.md`                                    | FR/NFR/AC定義              |
 | Phase 2設計書           | `phase-2-design.md`                                          | アーキテクチャ・ルール設計 |
+| Phase 5 Green確認       | `outputs/phase-5/green-confirmation.md`                      | 実装完了時の確認記録       |
 | Phase 9品質レポート     | `outputs/phase-9/quality-report.md`                          | 品質ゲート検証結果         |
 | Phase 9ドリフトレポート | `outputs/phase-9/drift-report.json`                          | 自己検証の検出結果         |
 | 実装ファイル            | `apps/desktop/scripts/check-ipc-contracts.ts`                | レビュー対象               |
@@ -228,7 +229,7 @@ MINOR判定時は**全ての指摘**を未タスク仕様書に変換する。�
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 10
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 10
 ```
 
 ## 次のPhase

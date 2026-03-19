@@ -7,17 +7,19 @@
 | タスクID | UT-TASK06-007     |
 | 作成日   | 2026-03-18        |
 | Phase    | 12 - ドキュメント |
-| 検出件数 | 3件               |
+| 検出件数 | 5件               |
 
 ---
 
 ## 検出サマリー
 
-| 未タスクID            | タイトル                                     | 優先度 | ステータス |
-| --------------------- | -------------------------------------------- | ------ | ---------- |
-| UT-TASK06-007-EXT-001 | タプル配列経由ハンドラ抽出パターン拡張       | Medium | 未着手     |
-| UT-TASK06-007-EXT-002 | 別定数オブジェクトのチャンネル解決対応       | Medium | 未着手     |
-| UT-TASK06-007-EXT-003 | ipcMain.on パターンの検証強化（第2フェーズ） | Low    | 未着手     |
+| 未タスクID            | タイトル                                              | 優先度 | ステータス |
+| --------------------- | ----------------------------------------------------- | ------ | ---------- |
+| UT-TASK06-007-EXT-001 | タプル配列経由ハンドラ抽出パターン拡張                | Medium | 未着手     |
+| UT-TASK06-007-EXT-002 | エイリアス / 再export / 動的定数のチャンネル解決強化  | Low    | 未着手     |
+| UT-TASK06-007-EXT-003 | ipcMain.on パターンの検証強化（第2フェーズ）          | Low    | 未着手     |
+| UT-TASK06-007-EXT-004 | check-ipc-contracts.ts モジュール分割リファクタリング | Low    | 未着手     |
+| UT-TASK06-007-EXT-005 | R-02 セマンティクスチェック精度向上                   | Low    | 未着手     |
 
 ---
 
@@ -54,25 +56,21 @@ for (const [channel, handler] of handlers) {
 
 ---
 
-### UT-TASK06-007-EXT-002: 別定数オブジェクトのチャンネル解決対応
+### UT-TASK06-007-EXT-002: エイリアス / 再export / 動的定数のチャンネル解決強化
 
 **概要**:
-現在の `resolveChannelMap` は `IPC_CHANNELS` 定数オブジェクトのみを解析対象とするが、プロジェクト内には `CHAT_EDIT_CHANNELS`、`SKILL_LIFECYCLE_CHANNELS` 等の別の定数オブジェクトにチャンネル定義が分散している場合がある。これらのチャンネルは現在の解析では「未定義チャンネル」として R-04（登録漏れ）の誤検出対象になる。
+2026-03-19 の再監査で `resolveChannelMap` は `IPC_CHANNELS` に加えて複数 const object を収集できるようになった。一方で、再export、別名参照、動的組み立て、構造化された alias chain までは完全に追えていない。
 
 **現状の問題**:
 
-```typescript
-// apps/desktop/src/shared/ipc-channels.ts
-export const IPC_CHANNELS = { ... };           // 解析済み
-export const CHAT_EDIT_CHANNELS = { ... };     // 未解析
-export const SKILL_LIFECYCLE_CHANNELS = { ... }; // 未解析
-```
+- 単純な object literal 以外の経路で渡されるチャンネル参照は未解決のまま残る
+- `resolveChannelMap` の coverage は改善したが、「どこまで解けるか」の境界が仕様化されていない
 
 **対応内容**:
 
-- `resolveChannelMap` を汎用化し、ファイル内の全 `export const *_CHANNELS` オブジェクトを解析対象に含める
-- または、解析対象の定数オブジェクト名をCLIオプション（`--channel-objects`）で指定可能にする
-- `check-ipc-contracts.config.json` による設定ファイルサポートも検討
+- alias / re-export / computed key を含むケースの fixture 追加
+- 「単純 object literal」「再export」「計算済み alias」を分けた仕様化
+- 必要なら設定ファイル化ではなく AST ベース判定へ昇格
 
 **影響範囲**: `apps/desktop/scripts/check-ipc-contracts.ts`（主に `resolveChannelMap` 関数）
 
@@ -102,31 +100,68 @@ export const SKILL_LIFECYCLE_CHANNELS = { ... }; // 未解析
 
 ---
 
+### UT-TASK06-007-EXT-004: check-ipc-contracts.ts モジュール分割リファクタリング
+
+**概要**:
+`check-ipc-contracts.ts` は 578 行の単一ファイルであり、EXT-001〜005 の追加実装を前提にするとさらに肥大化する。抽出器 / resolver / validator / reporter の責務境界が曖昧になるため、モジュール分割で保守性を回復する。
+
+**対応内容**:
+
+- `extractors.ts` / `resolver.ts` / `validator.ts` / `reporter.ts` への分割
+- CLI エントリと純粋関数群の分離
+- モジュール単位テストの導入
+
+**影響範囲**: `apps/desktop/scripts/check-ipc-contracts.ts`、追加モジュール群、関連テスト
+
+**関連制約**: C-04（実装ガイド 既知の制約テーブル参照）
+
+---
+
+### UT-TASK06-007-EXT-005: R-02 セマンティクスチェック精度向上
+
+**概要**:
+R-02 は近似的な静的解析に依存しており、偽陽性と見逃しの両方を残している。`skillId` / `skillName` のような P45 系ドリフトをより精密に検出できるよう、セマンティクス比較を強化する。
+
+**対応内容**:
+
+- `classifyHandlerArgPattern` / `classifyPreloadArgPattern` の `unknown` 削減
+- 参照渡しハンドラの引数推定強化
+- `rawSignature` / `rawArgs` からの命名差分ヒューリスティクス追加
+
+**影響範囲**: `apps/desktop/scripts/check-ipc-contracts.ts`（主に R-02 判定部）
+
+**関連制約**: C-05（実装ガイド 既知の制約テーブル参照）
+
+---
+
 ## P3チェックリスト
 
 **注意（P3/P38/P58対策）**: 3ステップの完了状況を記録する。
 
-| ステップ               | 内容                                                                                        | 実施状況 |
-| ---------------------- | ------------------------------------------------------------------------------------------- | -------- |
-| ① 指示書作成           | `docs/30-workflows/unassigned-task/` 配下にEXT-001/002/003の指示書を作成                    | 完了     |
-| ② task-workflow登録    | `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の残課題テーブルに追加 | 完了     |
-| ③ 関連仕様書リンク追加 | `ipc-contract-checklist.md` に「拡張課題」セクションとして参照リンクを追加                  | 完了     |
+| ステップ                    | 内容                                                                                                                 | 実施状況 |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------- |
+| ① 指示書作成                | `docs/30-workflows/unassigned-task/` 配下にEXT-001〜005の指示書を配置                                                | 完了     |
+| ② task-workflow family 同期 | `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` を同期 | 完了     |
+| ③ 関連仕様書リンク追加      | `ipc-contract-checklist.md` / `quick-reference.md` / implementation pattern detail に参照リンクを追加                | 完了     |
 
 ### 指示書配置先
 
 ```
-1. docs/30-workflows/unassigned-task/UT-TASK06-007-EXT-001-tuple-array-handler-extraction.md
-2. docs/30-workflows/unassigned-task/UT-TASK06-007-EXT-002-multi-channel-const-resolution.md
-3. docs/30-workflows/unassigned-task/UT-TASK06-007-EXT-003-ipc-on-pattern-enhancement.md
+1. docs/30-workflows/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md
+2. docs/30-workflows/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md
+3. docs/30-workflows/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md
+4. docs/30-workflows/unassigned-task/ut-task06-007-ext-004-script-modular-split.md
+5. docs/30-workflows/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md
 ```
 
-- task-workflow.md 残課題テーブル: 登録済み
-- 関連仕様書リンク: ipc-contract-checklist.md に追加済み
+- task-workflow.md / task-workflow-backlog.md / task-workflow-completed-ipc-contract-preload-alignment.md: 同期済み
+- 関連仕様書リンク: ipc-contract-checklist.md / quick-reference.md / implementation pattern detail に追加済み
 
 ---
 
 ## unassigned-task-detection.md 更新履歴
 
-| 日付       | 件数 | 変更内容                                    |
-| ---------- | ---- | ------------------------------------------- |
-| 2026-03-18 | 3件  | 初版作成（UT-TASK06-007 Phase 12 完了時点） |
+| 日付       | 件数 | 変更内容                                                            |
+| ---------- | ---- | ------------------------------------------------------------------- |
+| 2026-03-18 | 3件  | 初版作成（EXT-001〜003 を記録）                                     |
+| 2026-03-19 | 5件  | 再監査で EXT-004 / EXT-005 と backlog / completed ledger 同期を追加 |

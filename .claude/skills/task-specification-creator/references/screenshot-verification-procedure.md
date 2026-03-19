@@ -86,7 +86,7 @@ stat -c "%y" <screenshotPath>
 
 ## N/A の場合の記録
 
-UIタスクではない場合、以下のように記録する:
+UIタスクではない場合、以下のように記録する。ただし、ユーザーが branch 全体の画面検証を明示要求した場合はこの N/A 例を使わず、representative screenshot を current workflow 配下へ追加する:
 
 ```markdown
 ### 判定: N/A（UIタスクではないため）

@@ -24,7 +24,7 @@
 
 ### 1.2 問題点・課題
 
-UT-TASK06-007 Phase 11 TC-11-04 の手動テスト結果で、抽出数が期待値 324 件に対して 216 件にとどまることが判明した。差分の約 108 件がタプル配列経由の登録パターンに起因する未抽出である。未抽出チャンネルは「Mainに未登録」として誤検知され、実際には存在するハンドラが契約ドリフトとして報告されてしまう。
+UT-TASK06-007 の再監査では `--report-only` 基準値が `handlers: 216` で確定した一方、`registerFallbackHandlers` 等のタプル配列経由登録が静的抽出対象から漏れていることを確認した。未抽出チャンネルは「Main に未登録」として誤検知され、実際には存在するハンドラが契約ドリフトとして報告されてしまう。
 
 ### 1.3 放置した場合の影響
 
@@ -42,7 +42,7 @@ UT-TASK06-007 Phase 11 TC-11-04 の手動テスト結果で、抽出数が期待
 
 ### 2.2 最終ゴール
 
-抽出数が 324 件（または現時点の実登録数）に近づき、偽陽性ゼロの状態で契約チェックが実行できること。
+抽出数が current baseline の `216` 件を上回り、手動棚卸しで確認できるタプル配列由来の登録が静的抽出に反映されること。
 
 ### 2.3 スコープ
 
@@ -54,7 +54,7 @@ UT-TASK06-007 Phase 11 TC-11-04 の手動テスト結果で、抽出数が期待
 
 #### 含まないもの
 
-- `IPC_CHANNELS` 以外の定数オブジェクト対応（UT-TASK06-007-EXT-002 のスコープ）
+- エイリアス / 再export / 動的定数解決（UT-TASK06-007-EXT-002 のスコープ）
 - `ipcMain.on` / `safeOn` の照合強化（UT-TASK06-007-EXT-003 のスコープ）
 
 ### 2.4 成果物
@@ -107,7 +107,7 @@ Phase 1: 調査 → Phase 2: 実装 → Phase 3: テスト拡充 → Phase 4: �
 
 1. `grep -rn "\[IPC_CHANNELS\." apps/desktop/src/main/ --include="*.ts"` でタプル配列登録パターンを収集する
 2. `check-ipc-contracts.ts` の `extractMainHandlers` 実装を読み、現在の正規表現・AST 解析ロジックを把握する
-3. 未抽出 108 件の具体的なチャンネル名リストを作成する
+3. タプル配列由来で未抽出になっているチャンネル候補の一覧を作成する
 
 #### 成果物
 
@@ -137,7 +137,7 @@ Phase 1: 調査 → Phase 2: 実装 → Phase 3: テスト拡充 → Phase 4: �
 #### 完了条件
 
 - TypeScript コンパイルエラーが 0 件
-- `check-ipc-contracts.ts` を実行したとき抽出数が 324 件付近になる
+- `check-ipc-contracts.ts` を実行したとき抽出数が current baseline `216` 件を上回り、差分理由が説明できる
 
 ### Phase 3: テスト拡充
 
@@ -189,7 +189,7 @@ Lint・型チェック・全テストが通ることを確認する。
 ### 機能要件
 
 - [ ] `registerFallbackHandlers` 等のタプル配列内のチャンネル名が抽出される
-- [ ] 抽出数が 324 件に近づく（現状 216 件）
+- [ ] 抽出数が current baseline `216` 件を上回り、差分理由が説明できる
 - [ ] 偽陽性（未登録誤検知）が 0 件になる
 
 ### 品質要件
@@ -210,7 +210,7 @@ Lint・型チェック・全テストが通ることを確認する。
 
 1. タプル配列形式 `[IPC_CHANNELS.FOO, handler]` のフィクスチャに対して `extractMainHandlers` が `IPC_CHANNELS.FOO` を返すこと
 2. 直接呼び出し形式 `ipcMain.handle(IPC_CHANNELS.BAR, handler)` の抽出が引き続き動作すること
-3. `check-ipc-contracts.ts` を実際のコードベースに対して実行し、抽出数が 280 件以上になること
+3. `check-ipc-contracts.ts` を実際のコードベースに対して実行し、抽出数が current baseline `216` 件を上回ること、または残差分が文書化されること
 
 ### 検証手順
 
@@ -229,11 +229,11 @@ pnpm --filter @repo/desktop test
 
 ## 7. リスクと対策
 
-| リスク                                          | 影響度 | 発生確率 | 対策                                                                             |
-| ----------------------------------------------- | ------ | -------- | -------------------------------------------------------------------------------- |
-| タプル配列パターンが多様で正規表現が複雑になる  | 中     | 中       | 複数の正規表現を OR 結合し、テストケースでカバレッジを上げる                     |
-| 既存テストの回帰                                | 高     | 低       | Phase 4 で全テスト実行を必須とする                                               |
-| 抽出数が 324 件に届かない（別のパターンが残存） | 低     | 中       | 差分分析を Phase 1 で徹底し、残余パターンは EXT-002/003 のスコープとして切り出す |
+| リスク                                         | 影響度 | 発生確率 | 対策                                                                             |
+| ---------------------------------------------- | ------ | -------- | -------------------------------------------------------------------------------- |
+| タプル配列パターンが多様で正規表現が複雑になる | 中     | 中       | 複数の正規表現を OR 結合し、テストケースでカバレッジを上げる                     |
+| 既存テストの回帰                               | 高     | 低       | Phase 4 で全テスト実行を必須とする                                               |
+| 抽出数の改善が限定的で別パターンが残存する     | 低     | 中       | 差分分析を Phase 1 で徹底し、残余パターンは EXT-002/003 のスコープとして切り出す |
 
 ---
 
@@ -242,12 +242,29 @@ pnpm --filter @repo/desktop test
 ### 関連ドキュメント
 
 - [`ipc-contract-checklist.md` 将来拡張セクション](../../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md)
-- [`task-workflow-backlog.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md)
+- [`task-workflow-completed-ipc-contract-preload-alignment.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-completed-ipc-contract-preload-alignment.md)
 - 関連既知の落とし穴: [P44](../../../.claude/rules/06-known-pitfalls.md#p44), [P45](../../../.claude/rules/06-known-pitfalls.md#p45)
 
 ### 参考資料
 
-- 親タスク: `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/`
+- 親タスク: `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/`
+
+---
+
+## 9. 備考
+
+### レビュー指摘の原文（該当する場合）
+
+```
+UT-TASK06-007 Phase 11 TC-11-04:
+report-only 基準値は handlers 216。
+registerFallbackHandlers 等のタプル配列経由登録が静的抽出対象から漏れている。
+```
+
+### 補足事項
+
+- `IPC_CHANNELS` 以外の定数解決や alias 追跡は UT-TASK06-007-EXT-002 のスコープ
+- `ipcMain.on` / `safeOn` の照合精度向上は UT-TASK06-007-EXT-003 のスコープ
 
 ---
 
@@ -265,7 +282,7 @@ pnpm --filter @repo/desktop test
 
 ### 10.2 NFR 行数目安（200行）と実装規模の乖離
 
-**問題**: Phase 2 設計で NFR-05「200行以内」を目安としたが、最終的に478行になった。Phase 8 リファクタリングで分割を検討したが、テスト実行のモジュール解決が複雑化するため単一ファイル維持を選択した。
+**問題**: Phase 2 設計で NFR-05「200行以内」を目安としたが、2026-03-19 再監査時点で `check-ipc-contracts.ts` は578行になっている。Phase 8 リファクタリングで分割を検討したが、テスト実行のモジュール解決が複雑化するため単一ファイル維持を選択した。
 
 **教訓**: 本タスクで新パターンを追加するとさらに行数が増加する。事前にファイル分割（EXT-004スコープ）との優先順序を検討すること。
 
@@ -280,18 +297,3 @@ pnpm --filter @repo/desktop test
 **対策**: テスト追加時は `pnpm tsx apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` での実行を先に確認すること。
 
 ---
-
-## 9. 備考
-
-### レビュー指摘の原文（該当する場合）
-
-```
-UT-TASK06-007 Phase 11 TC-11-04:
-抽出数が期待値 324 件に対して 216 件。
-差分約 108 件はタプル配列経由登録パターン（registerFallbackHandlers 等）に起因する未抽出。
-```
-
-### 補足事項
-
-- `IPC_CHANNELS` 以外の定数（`CHAT_EDIT_CHANNELS` 等）への対応は UT-TASK06-007-EXT-002 のスコープ
-- `ipcMain.on` / `safeOn` の照合精度向上は UT-TASK06-007-EXT-003 のスコープ

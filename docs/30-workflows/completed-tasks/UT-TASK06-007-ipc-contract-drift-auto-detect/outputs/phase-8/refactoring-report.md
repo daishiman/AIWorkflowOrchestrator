@@ -2,75 +2,54 @@
 
 ## タスクID: UT-TASK06-007
 
-## 実施日: 2026-03-18
+## 実施日: 2026-03-19
 
 ## 1. 現状のコード構造分析
 
-| 確認項目          | 基準                           | 結果                                                            |
-| ----------------- | ------------------------------ | --------------------------------------------------------------- |
-| 総行数            | 200行以内（NFR-05）            | 478行 - 超過                                                    |
-| 関数数            | 4カテゴリに分類可能            | OK: Extract(2)/Resolve(2)/Validate(1)/Report(1)/Main(1)/Util(2) |
-| 重複コード        | Main/Preload抽出で類似パターン | 部分的重複あり（コメントスキップ）                              |
-| 未使用import/変数 | 0件                            | OK                                                              |
+| 確認項目     | 基準                                                   | 結果                                    |
+| ------------ | ------------------------------------------------------ | --------------------------------------- |
+| 総行数       | 200行以内（NFR-05の目安）                              | 578行。超過は継続                       |
+| テスト数     | 回帰観点が明示されていること                           | 49件。generic/multiline/R-04 を追加済み |
+| 責務分離     | 抽出 / 解決 / 検証 / 出力 / CLI の段階が読み取れること | OK                                      |
+| any型        | 0件                                                    | OK                                      |
+| `@ts-ignore` | 0件                                                    | OK                                      |
 
-## 2. 責務分離の確認
+## 2. 2026-03-19 再監査で実装済みの改善
 
-| 段階     | 期待される責務               | 結果                                           |
-| -------- | ---------------------------- | ---------------------------------------------- |
-| Extract  | Main/Preloadからエントリ抽出 | OK: extractMainHandlers, extractPreloadEntries |
-| Resolve  | チャンネル名の定数→実値解決  | OK: resolveChannelMap, resolveChannel          |
-| Validate | R-01~R-04ルール適用          | OK: matchAndValidate                           |
-| Report   | Markdown/JSON出力            | OK: generateReport                             |
+- preload 抽出を `safeInvoke<T>` / `safeOn<T>` と複数行呼び出しへ拡張
+- typed object 引数を受ける main handler を `object` と判定する補助ロジックを追加
+- `IPC_CHANNELS` だけでなく `CHANNELS` / `CHAT_EDIT_CHANNELS` など複数の定数オブジェクトを収集して解決するよう変更
+- full-ref (`CHANNELS.CHECK_INSTALLATION`) と key fallback の両方を扱えるようにした
 
-## 3. 行数超過の原因分析
+## 3. 現時点の構造判断
 
-NFR-05（200行以内）を超過した主な原因:
+| 段階 | 主な関数                                                         | 判定 |
+| ---- | ---------------------------------------------------------------- | ---- |
+| 抽出 | `extractMainHandlers`, `extractPreloadEntries`, `collectTsFiles` | OK   |
+| 分類 | `classifyHandlerArgPattern`, `classifyPreloadArgPattern`         | OK   |
+| 解決 | `resolveChannelMap`, `resolveChannel`, `mergeChannelMaps`        | OK   |
+| 検証 | `matchAndValidate`                                               | OK   |
+| 出力 | `generateReport`                                                 | OK   |
+| CLI  | `main`                                                           | OK   |
 
-1. TypeScript型定義（interface 5つ）: ~50行
-2. 正規表現パターン定数: ~5行
-3. 引数分類関数（2つ）: ~30行
-4. extractMainHandlers（マルチライン対応）: ~55行
-5. extractPreloadEntries: ~35行
-6. resolveChannelMap/resolveChannel: ~20行
-7. matchAndValidate（4ルール適用）: ~130行
-8. generateReport: ~50行
-9. collectTsFiles: ~25行
-10. main: ~60行
-11. エントリポイント判定: ~15行
+## 4. 残課題
 
-## 4. NFR-05に対する判断
+- 単一ファイル 578 行は依然として大きく、EXT-004 の優先度は維持する
+- タプル配列経由 main 登録と event listener parity は別系統の責務であり、現ファイルへ追記を続けると理解負荷が高い
+- R-02 の意味的ドリフト検出は近似的で、P45 完全自動化は未達
 
-200行以内は「目安」であり、以下の理由から現在の478行は許容範囲と判断:
+## 5. テスト確認
 
-- 型定義をインライン配置する設計判断（DI不要、単一ファイル）
-- マルチラインハンドラ対応の追加ロジック
-- 4つの独立した検出ルールの実装
-- CLI引数パースとファイル走査
-
-## 5. SOLID原則適用確認
-
-| 原則 | 確認結果                                                   |
-| ---- | ---------------------------------------------------------- |
-| SRP  | OK: 各関数が1つの責務                                      |
-| OCP  | OK: 新規ルール追加はmatchAndValidate内にcase追加で対応可能 |
-| LSP  | N/A                                                        |
-| ISP  | N/A                                                        |
-| DIP  | N/A                                                        |
-
-## 6. リファクタリング後のテスト確認
-
-| 確認項目     | 結果                         |
-| ------------ | ---------------------------- |
-| テスト全PASS | OK: 全40テストケースPASS     |
-| 行数         | 478行（NFR-05超過だが許容）  |
-| 型チェック   | worktree環境制約のため未実行 |
+| 項目       | 結果                                        |
+| ---------- | ------------------------------------------- |
+| typecheck  | PASS                                        |
+| 対象テスト | PASS (49/49)                                |
+| カバレッジ | Line 95.31% / Branch 90.84% / Function 100% |
 
 ## 完了条件チェック
 
-- [x] コード構造がExtract/Resolve/Validate/Reportの段階に分離されている
-- [x] 変数名・関数名がP44/P45の文脈で理解しやすい命名になっている
-- [x] 重複パターン: コメントスキップは両関数で個別実装（共通化不要の判断）
-- [x] 新規検出ルール追加が容易な構造になっている（OCP準拠）
-- [ ] 200行以内: 超過（478行、許容範囲と判断）
-- [x] テスト全PASS
-- [x] 本Phase内の全タスクを100%実行完了
+- [x] 抽出 / 解決 / 検証 / 出力 / CLI の責務境界は維持されている
+- [x] 2026-03-19 の追加改善を回帰テストで固定した
+- [x] `any` / `@ts-ignore` なし
+- [x] 対象テスト 49 件 PASS
+- [ ] 200行以内の目安は未達。EXT-004 を継続

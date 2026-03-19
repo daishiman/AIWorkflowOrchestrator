@@ -25,14 +25,14 @@
 
 ## 参照資料
 
-| 資料                                              | パス / リンク                                                                              |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Phase 5 実装                                      | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-5-implementation.md` |
-| Phase 6 テスト拡充                                | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-6-test-expansion.md` |
-| テストコード                                      | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                               |
-| 実装コード                                        | `apps/desktop/scripts/check-ipc-contracts.ts`                                              |
-| コード品質ルール                                  | `.claude/rules/02-code-quality.md#カバレッジ基準`                                          |
-| 既知の落とし穴（P41: v8カバレッジインライン関数） | `.claude/rules/06-known-pitfalls.md#P41`                                                   |
+| 資料                                              | パス / リンク                                                                                              |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Phase 5 実装                                      | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-5-implementation.md` |
+| Phase 6 テスト拡充                                | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-6-test-expansion.md` |
+| テストコード                                      | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                               |
+| 実装コード                                        | `apps/desktop/scripts/check-ipc-contracts.ts`                                                              |
+| コード品質ルール                                  | `.claude/rules/02-code-quality.md#カバレッジ基準`                                                          |
+| 既知の落とし穴（P41: v8カバレッジインライン関数） | `.claude/rules/06-known-pitfalls.md#P41`                                                                   |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -114,9 +114,9 @@ v8 カバレッジプロバイダは、インライン arrow function（`.filter
 
 ## 成果物
 
-| 成果物             | パス                                                                                                | 内容                         |
-| ------------------ | --------------------------------------------------------------------------------------------------- | ---------------------------- |
-| カバレッジレポート | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-7/coverage-report.md` | カバレッジ測定結果と基準判定 |
+| 成果物             | パス                                                                                                                | 内容                         |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| カバレッジレポート | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-7/coverage-report.md` | カバレッジ測定結果と基準判定 |
 
 ## 完了条件
 
@@ -143,7 +143,7 @@ v8 カバレッジプロバイダは、インライン arrow function（`.filter
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   --task-id UT-TASK06-007 \
   --phase 7 \
-  --workflow-dir docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect
+  --workflow-dir docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect
 ```
 
 ## 次のPhase

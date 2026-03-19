@@ -12,36 +12,6 @@
 
 ---
 
-## IPC layer integrity fix current canonical set
-
-### 読む順番
-
-| Step | ファイル | 確認すること |
-| ---- | -------- | ------------ |
-| 1 | `resource-map.md` | `IPC contract / preload alignment / skill management` 行の current canonical set を確定する |
-| 2 | `interfaces-agent-sdk-skill-details.md` | `getDetail` / `update` の object payload と `safeInvokeUnwrap` 契約 |
-| 3 | `security-skill-ipc-core.md` | sender検証、P42、エラーサニタイズ、whitelist 境界 |
-| 4 | `architecture-overview-core.md` | `registerSkillHandlers` が `skill:get-detail` / `skill:update` を担当すること |
-| 5 | `architecture-implementation-patterns-details.md` | `safeInvoke` / `safeInvokeUnwrap` の使い分け、channels 正本の扱い |
-| 6 | `architecture-implementation-patterns-reference-ipc-contract-audits.md` | object payload 標準（P44/P45） |
-| 7 | `ipc-contract-checklist.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` | shared / preload / main sync と自動検出ルール |
-| 8 | `api-ipc-agent-core.md` | 補助参照。handler topology と隣接 skill channel 群のみ確認する |
-
-### current contract
-
-| API | Preload 呼び出し | Main 契約 | 同期対象 |
-| --- | ---------------- | --------- | -------- |
-| `getDetail` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` | `args: { skillId: string }` を受け、`{ success: true, data: Skill } \| { success: false, error }` wrapper を返す | `packages/shared/src/types/skill.ts`、`apps/desktop/src/preload/skill-api.ts`、`apps/desktop/src/main/ipc/skillHandlers.ts`、`apps/desktop/src/preload/channels.ts`、`packages/shared/src/ipc/channels.ts`。`apps/desktop/src/preload/types.ts` は `import(\"./skill-api\").SkillAPI` により自動反映されるため確認のみ |
-| `update` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, { skillName, updates })` | `args: { skillName: string; updates: Record<string, unknown> }` を受け、`{ success: true, data: void } \| { success: false, error }` wrapper を返す | `packages/shared/src/types/skill.ts` または shared transport DTO、`apps/desktop/src/preload/skill-api.ts`、`apps/desktop/src/main/ipc/skillHandlers.ts`、`apps/desktop/src/preload/channels.ts`、`packages/shared/src/ipc/channels.ts`。`apps/desktop/src/preload/types.ts` は `import(\"./skill-api\").SkillAPI` により自動反映されるため確認のみ |
-
-誤読防止:
-
-- `skill:get-detail` / `skill:update` は positional payload に戻さない。
-- `security-skill-ipc-core.md` の TASK-4-1 由来セクションは履歴スナップショット。現行契約は `Skill API current canonical contract` を優先する。
-- `api-ipc-agent*.md` は主に topology 補助参照。一次契約の正本ではない。
-
----
-
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |
@@ -89,13 +59,8 @@
 
 | チャンネル             | 用途           |
 | ---------------------- | -------------- |
-| `skill:list`           | スキル一覧取得 |
-| `skill:scan`           | スキル再スキャン |
-| `skill:getImported`    | インポート済み |
-| `skill:get-detail`     | スキル詳細取得 |
-| `skill:update`         | スキル更新 |
-| `skill:import`         | スキルインポート |
-| `skill:remove`         | スキル削除 |
+| `skill:list-available` | スキルスキャン |
+| `skill:list-imported`  | インポート済み |
 | `skill:execute`        | スキル実行     |
 | `skill:permission`     | 権限確認       |
 
@@ -138,8 +103,29 @@
 | テスト | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` |
 | 実行 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` |
 | ルール | R-01(孤児), R-02(引数不一致/P44), R-03(ハードコード/P27), R-04(未登録) |
-| 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` |
-| 未タスク | EXT-001(タプル配列), EXT-002(別定数), EXT-003(ipcMain.on) |
+| 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` |
+| 導線 | `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/` |
+| 未タスク | EXT-001(タプル配列), EXT-002(alias/再export/動的定数), EXT-003(ipcMain.on/safeOn), EXT-004(モジュール分割), EXT-005(R-02精度向上) |
+| テスト | 44件（Line 94.94% / Branch 89.92% / Function 100%） |
+| 実行時間 | 約2.1秒（NFR-01: 10秒以内） |
+| 実測値 | Main 216 handlers / Preload 147 entries / Drifts 169 |
+
+#### CLI コマンド早見表
+
+| コマンド | 用途 |
+| --- | --- |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` | Phase 9 品質ゲート（常に exit 0） |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json --report-only` | CI/CD 統合（JSON出力） |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict` | error + warning で exit 1 |
+
+#### 検出ルール早見表
+
+| ルール | 名称 | 重大度 | 検出パターン |
+| --- | --- | --- | --- |
+| R-01 | チャンネル孤児 | warning | Main/Preload の片方のみに存在 |
+| R-02 | 引数形式不一致 | error | Main=object, Preload=primitive（P44対応） |
+| R-03 | ハードコード文字列 | warning | IPC_CHANNELS 定数でなく文字列リテラル（P27対応） |
+| R-04 | 未登録チャンネル | error | Preload にあるが Main にない |
 
 ---
 
@@ -258,7 +244,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
-| 2026-03-19 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: `skill:get-detail` / `skill:update` の current canonical set を追加。object payload + `safeInvokeUnwrap` + shared/preload/main sync と、parent/auxiliary docs の境界を明記 |
+| 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |

@@ -23,6 +23,12 @@
 > - `references/error-handling.md`（recoverable / fatal error surface を追加した場合）
 > - `references/architecture-implementation-patterns.md`（renderer local timeout+retry / parse fallback を標準化した場合）
 
+> **Phase 12 実績ベース更新ルール**:
+> - 完了記録は `verify` / `validate` / `diff` / `audit` / `screenshot` の当日実測値だけを書く
+> - `実施予定` / `後続で追記` / `N/A` を完了文言に残さない
+> - user が画面検証を要求したら、docs-heavy / backend-heavy でも `SCREENSHOT + NON_VISUAL` へ昇格する
+> - 苦戦箇所は `症状 / 再発条件 / 解決策 / 標準ルール` の4点で再利用カード化する
+
 > **統合 workflow 正本を追加する条件**:
 > - 更新先が 4仕様書以上に分散する
 > - `task-workflow.md` / `lessons-learned.md` / domain spec だけでは全体像を再利用しにくい
@@ -51,15 +57,16 @@
 | なぜ必要か | `<背景と狙い>` |
 | 完了判定 | `<Phase 12要件と一致する根拠>` |
 
-### 2.1 screenshot fallback 記録（画面検証を伴う場合）
+### 2.3 実績ベース更新・画面昇格・苦戦再利用ルール
 
-| 項目 | 内容 |
+| 観点 | 書き方 |
 | --- | --- |
-| harness file path | `<apps/.../phase11-*.html or .tsx>` |
-| capture script path | `<apps/.../capture-*.mjs>` |
-| review board path | `<workflow>/outputs/phase-11/screenshots/<review-board>.png` |
-| metadata path | `<workflow>/outputs/phase-11/screenshots/phase11-capture-metadata.json` |
-| failure reason | `<esbuild mismatch / preview unreachable / navigation unstable など>` |
+| 実績値 | `verify` / `validate` / `diff` / `audit` / `screenshot` の実測値だけを書く |
+| planned wording 禁止 | `実施予定` / `後続タスク` / `N/A` を完了文言に残さない |
+| 画面昇格 | user が画面検証を要求したら docs-heavy / backend-heavy でも `SCREENSHOT + NON_VISUAL` を採用する |
+| 苦戦箇所 | `症状 / 再発条件 / 解決策 / 標準ルール` で再利用カード化し、`task-workflow` と `lessons-learned` へ同値転記する |
+
+> ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
 
 ---
 
@@ -115,7 +122,7 @@
 | P4 | `scripts/validate-<parent-sweep>.mjs` / `diff -qr .claude/skills/<skill> .agents/skills/<skill>` | path / status / mirror drift guard を機械検証 | P1-P3 完了後 |
 | P5 | `outputs/phase-11/*` / `outputs/phase-12/spec-update-summary.md` / `skill-creator` templates | representative visual re-audit board と SubAgent 実行ログ、再利用テンプレート化を同一ターンで残す | P2-P4 と同一ターン |
 
-> user が screenshot を要求した docs-heavy task では、P5 を `N/A` にせず current workflow への representative evidence 集約可否を最初に判定する。
+> user が screenshot を要求した docs-heavy task では、P5 を `N/A` にせず current workflow への representative screenshot 集約可否を最初に判定し、`SCREENSHOT + NON_VISUAL` で閉じる。
 
 ### 3.3 仕様書別SubAgent実行ログ（必須）
 
@@ -294,7 +301,7 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
 | `pnpm install --frozen-lockfile` | worktree / UI再撮影前の依存解決 preflight | 依存欠落が解消される |
 | `rg -n "text-white\|bg-white/\|border-white/\|text-gray-\|bg-gray-\|border-gray-" apps/desktop/src/renderer` | Light Mode 全画面 drift の hardcoded neutral class 監査 | 修正対象が列挙される |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source <workflow-path>/outputs/phase-12/unassigned-task-detection.md` | current workflow 起点の未タスクリンク整合確認 | `missing: 0` |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | root `unassigned-task/` の対象未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md` | completed workflow 配下 backlog の current 監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/<task>.md` | standalone completed task spec の current 監査 | `currentViolations: 0` |
@@ -323,7 +330,6 @@ UI機能実装の場合は次を推奨:
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
-| `node .claude/skills/skill-creator/scripts/validate_all.js <skill-dir>` | スキル全体検証 | `エラー: 0` |
 
 ---
 

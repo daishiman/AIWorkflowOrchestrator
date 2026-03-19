@@ -49,8 +49,42 @@ export interface DriftReport {
 const HANDLER_PATTERN =
   /ipcMain\.(handle|on)\s*\(\s*(?:(['"`])([^'"`]+)\2|([A-Z_]+(?:\.[A-Z_]+)+))/;
 const PRELOAD_PATTERN =
-  /safe(Invoke|On)\s*\(\s*(?:(['"`])([^'"`]+)\2|([A-Z_]+(?:\.[A-Z_]+)+))(?:\s*,\s*(.+))?\)/;
-const CHANNEL_CONST_PATTERN = /^\s*([A-Z_]+)\s*:\s*['"]([^'"]+)['"]/gm;
+  /safe(Invoke|On)(?:<[\s\S]+?>)?\s*\(\s*(?:(['"`])([^'"`]+)\2|([A-Z_]+(?:\.[A-Z_]+)+))(?:\s*,\s*([\s\S]*?))?\s*\)/;
+const CHANNEL_OBJECT_PATTERN =
+  /(?:export\s+)?const\s+([A-Z][A-Z0-9_]*)\s*=\s*{([\s\S]*?)}\s*as const/gm;
+const CHANNEL_CONST_PATTERN = /^\s*([A-Z0-9_]+)\s*:\s*['"]([^'"]+)['"]/gm;
+const PRELOAD_CALL_START_PATTERN = /safe(?:Invoke|On)(?:<[\s\S]*?>)?\s*\(/;
+const PRIMITIVE_TS_TYPES = new Set([
+  "string",
+  "number",
+  "boolean",
+  "bigint",
+  "symbol",
+  "null",
+  "undefined",
+]);
+
+function normalizeTypeAnnotation(typeAnnotation: string): string {
+  return typeAnnotation
+    .replace(/\s*=>[\s\S]*$/, "")
+    .replace(/\s*=\s*[\s\S]*$/, "")
+    .replace(/^readonly\s+/, "")
+    .trim();
+}
+
+function isPrimitiveTypeAnnotation(typeAnnotation: string): boolean {
+  const normalized = normalizeTypeAnnotation(typeAnnotation)
+    .replace(/[()]/g, "")
+    .trim();
+  if (normalized.length === 0) {
+    return false;
+  }
+
+  return normalized
+    .split("|")
+    .map((part) => part.trim())
+    .every((part) => PRIMITIVE_TS_TYPES.has(part));
+}
 
 function classifyHandlerArgPattern(
   line: string,
@@ -69,6 +103,10 @@ function classifyHandlerArgPattern(
   const argsPart = arrowMatch[1].trim();
   if (!argsPart) return "none";
   if (argsPart.startsWith("{")) return "object";
+  const typedArgMatch = argsPart.match(/^[a-zA-Z_$][\w$]*\s*:\s*([\s\S]+)$/);
+  if (typedArgMatch) {
+    return isPrimitiveTypeAnnotation(typedArgMatch[1]) ? "primitive" : "object";
+  }
   if (argsPart.match(/^[a-zA-Z_$]/)) return "primitive";
   return "unknown";
 }
@@ -167,7 +205,12 @@ export function extractPreloadEntries(
       continue;
     }
 
-    const match = PRELOAD_PATTERN.exec(line);
+    let combined = line;
+    let match = PRELOAD_PATTERN.exec(combined);
+    if (!match && PRELOAD_CALL_START_PATTERN.test(trimmed)) {
+      combined = lines.slice(i, Math.min(i + 8, lines.length)).join("\n");
+      match = PRELOAD_PATTERN.exec(combined);
+    }
     if (!match) continue;
 
     const literalChannel = match[3];
@@ -176,7 +219,7 @@ export function extractPreloadEntries(
     if (!channel) continue;
 
     const rawArgs = match[5] ?? "";
-    const cleanArgs = rawArgs.replace(/\).*$/, "").trim();
+    const cleanArgs = rawArgs.trim();
     const argPattern = classifyPreloadArgPattern(cleanArgs);
 
     entries.push({
@@ -195,19 +238,56 @@ export function resolveChannelMap(
   channelsContent: string,
 ): Map<string, string> {
   const map = new Map<string, string>();
-  let m: RegExpExecArray | null;
-  const re = new RegExp(CHANNEL_CONST_PATTERN.source, "gm");
-  while ((m = re.exec(channelsContent)) !== null) {
-    map.set(m[1], m[2]);
+  let objectMatch: RegExpExecArray | null;
+  const objectRegex = new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm");
+
+  while ((objectMatch = objectRegex.exec(channelsContent)) !== null) {
+    const objectName = objectMatch[1];
+    const objectBody = objectMatch[2];
+    let entryMatch: RegExpExecArray | null;
+    const entryRegex = new RegExp(CHANNEL_CONST_PATTERN.source, "gm");
+
+    while ((entryMatch = entryRegex.exec(objectBody)) !== null) {
+      const key = entryMatch[1];
+      const value = entryMatch[2];
+      map.set(`${objectName}.${key}`, value);
+      if (!map.has(key)) {
+        map.set(key, value);
+      }
+    }
+  }
+
+  if (map.size === 0) {
+    let m: RegExpExecArray | null;
+    const re = new RegExp(CHANNEL_CONST_PATTERN.source, "gm");
+    while ((m = re.exec(channelsContent)) !== null) {
+      map.set(m[1], m[2]);
+    }
   }
   return map;
+}
+
+function mergeChannelMaps(filePaths: string[]): Map<string, string> {
+  const merged = new Map<string, string>();
+
+  for (const filePath of filePaths) {
+    const content = fs.readFileSync(filePath, "utf-8");
+    const partial = resolveChannelMap(content);
+    for (const [key, value] of partial.entries()) {
+      if (!merged.has(key)) {
+        merged.set(key, value);
+      }
+    }
+  }
+
+  return merged;
 }
 
 function resolveChannel(raw: string, channelMap: Map<string, string>): string {
   if (!raw.includes(".")) return raw;
   const parts = raw.split(".");
   const key = parts[parts.length - 1];
-  return channelMap.get(key) ?? raw;
+  return channelMap.get(raw) ?? channelMap.get(key) ?? raw;
 }
 
 export function matchAndValidate(
@@ -432,16 +512,23 @@ export function main(argv: string[]): void {
   const projectRoot = path.resolve(scriptDir, "..");
   const mainDir = path.join(projectRoot, "src", "main");
   const preloadDir = path.join(projectRoot, "src", "preload");
-  const channelsFile = path.join(preloadDir, "channels.ts");
-
-  let channelMap: Map<string, string> = new Map();
-  if (fs.existsSync(channelsFile)) {
-    const content = fs.readFileSync(channelsFile, "utf-8");
-    channelMap = resolveChannelMap(content);
-  }
+  const sharedDir = path.resolve(
+    projectRoot,
+    "..",
+    "..",
+    "packages",
+    "shared",
+    "src",
+  );
 
   const mainFiles = collectTsFiles(mainDir);
   const preloadFiles = collectTsFiles(preloadDir);
+  const sharedFiles = collectTsFiles(sharedDir);
+  const channelMap = mergeChannelMaps([
+    ...mainFiles,
+    ...preloadFiles,
+    ...sharedFiles,
+  ]);
 
   const allHandlers: HandlerEntry[] = [];
   for (const f of mainFiles) {

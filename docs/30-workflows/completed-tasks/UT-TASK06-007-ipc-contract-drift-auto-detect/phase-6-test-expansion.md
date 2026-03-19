@@ -26,15 +26,15 @@ Phase 4 で作成した基本テストに加え、異常系・境界値・エッ
 
 ## 参照資料
 
-| 資料                                              | パス / リンク                                                                              |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| Phase 4 テスト作成                                | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-4-test-creation.md`  |
-| Phase 5 実装                                      | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-5-implementation.md` |
-| テストコード                                      | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                               |
-| 実装コード                                        | `apps/desktop/scripts/check-ipc-contracts.ts`                                              |
-| 既知の落とし穴（P9: テスト間状態リーク）          | `.claude/rules/06-known-pitfalls.md#P9`                                                    |
-| 既知の落とし穴（P41: v8カバレッジインライン関数） | `.claude/rules/06-known-pitfalls.md#P41`                                                   |
-| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                   |
+| 資料                                              | パス / リンク                                                                                              |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Phase 4 テスト作成                                | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-4-test-creation.md`  |
+| Phase 5 実装                                      | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-5-implementation.md` |
+| テストコード                                      | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                               |
+| 実装コード                                        | `apps/desktop/scripts/check-ipc-contracts.ts`                                                              |
+| 既知の落とし穴（P9: テスト間状態リーク）          | `.claude/rules/06-known-pitfalls.md#P9`                                                                    |
+| 既知の落とし穴（P41: v8カバレッジインライン関数） | `.claude/rules/06-known-pitfalls.md#P41`                                                                   |
+| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                                   |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -162,7 +162,7 @@ cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   --task-id UT-TASK06-007 \
   --phase 6 \
-  --workflow-dir docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect
+  --workflow-dir docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect
 ```
 
 ## 次のPhase

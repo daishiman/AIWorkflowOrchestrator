@@ -19,15 +19,9 @@
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（Electron Menu / ズーム / ショートカット） | technology-desktop.md, architecture-overview-core.md | lessons-learned-current.md, task-workflow.md |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | ipc-contract-checklist.md, quality-requirements.md | security-electron-ipc.md, lessons-learned.md (P44/P45/P27) |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | ipc-contract-checklist.md, quality-requirements.md, architecture-implementation-patterns-reference-ipc-drift-detection.md | security-electron-ipc.md, security-electron-ipc-core.md, security-electron-ipc-history.md, task-workflow.md, task-workflow-backlog.md, task-workflow-completed-ipc-contract-preload-alignment.md, lessons-learned-ipc-preload-runtime.md, lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md |
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
-| バグ修正（IPC contract / preload alignment / skill management / `skill:get-detail` / `skill:update`） | security-skill-ipc-core.md, interfaces-agent-sdk-skill-details.md, architecture-overview-core.md, architecture-implementation-patterns-details.md, architecture-implementation-patterns-reference-ipc-contract-audits.md, ipc-contract-checklist.md | architecture-implementation-patterns-reference-ipc-drift-detection.md, api-ipc-agent-core.md, task-workflow-completed-ipc-contract-preload-alignment.md, lessons-learned-auth-ipc-contract-bridge-audit-scope.md, lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
-
-注:
-- IPC contract / preload alignment / skill management 系では `api-ipc-agent*.md` 系は補助参照。一次参照は上記 current canonical set を優先する。
-- `skill:get-detail` / `skill:update` の current canonical contract は object payload + `safeInvokeUnwrap` 前提。最初に `interfaces-agent-sdk-skill-details.md` と `security-skill-ipc-core.md` を読む。
-- `security-skill-ipc.md` / `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md` は parent 入口。実契約は child companion を正本として扱う。
 | バグ修正（Skill Lifecycle 評価・採点ゲート） | workflow-skill-lifecycle-evaluation-scoring-gate.md, interfaces-agent-sdk-skill-details.md, arch-state-management-details.md | ui-ux-feature-components-reference.md, task-workflow.md, lessons-learned-current.md, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md`, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
 | バグ修正（Skill Lifecycle routing / renderView foundation） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md, arch-state-management-core.md | task-workflow.md, lessons-learned-current.md, `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | 設計仕様（Skill Lifecycle 作成済みスキル利用導線 / CTA制御マトリクス） | workflow-skill-lifecycle-created-skill-usage-journey.md, ui-ux-agent-execution.md, ui-ux-navigation.md, ui-ux-feature-components.md | interfaces-agent-sdk-executor.md, interfaces-agent-sdk-skill.md, arch-state-management.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
@@ -56,7 +50,6 @@
 | バグ修正（Light Theme contrast regression guard / representative screenshot audit） | workflow-light-theme-contrast-regression-guard.md, ui-ux-feature-components.md, lessons-learned.md | ui-ux-design-system.md, task-workflow.md, workflow-light-theme-global-remediation.md |
 | バグ修正（Workspace preview/search resilience / fuzzy no-match / renderer timeout+retry） | workflow-workspace-preview-search-resilience-guard.md, ui-ux-search-panel.md, architecture-implementation-patterns.md | arch-state-management.md, error-handling.md, task-workflow.md, lessons-learned.md |
 | 設計同期（AI runtime/auth-mode unification） | workflow-ai-runtime-authmode-unification.md, ui-ux-settings.md, interfaces-auth.md, api-ipc-system.md, llm-ipc-types.md, legacy-ordinal-family-register.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md, `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
-| 設計仕様（RAG runtime / AI_INDEX / Embedding / Extraction / Graph Summary） | workflow-ai-runtime-authmode-unification.md, api-ipc-system.md, api-ipc-system-core.md, architecture-rag.md, interfaces-rag.md, interfaces-rag-search.md, interfaces-rag-chunk-embedding.md, interfaces-rag-entity-extraction.md | rag-services.md, interfaces-rag-graphrag-query.md, interfaces-rag-community-summarization.md, api-internal-embedding.md, rag-search-hybrid.md, rag-search-crag.md, error-handling.md, security-electron-ipc.md, quality-requirements.md, task-workflow.md, task-workflow-backlog.md（UT-RAG-08-001〜013 バックログ参照）, lessons-learned.md, lessons-learned-rag-embedding-runtime.md（Task08 教訓） |
 | Main Chat / Settings runtime 同期 | api-ipc-system-core.md, llm-ipc-types.md, arch-state-management-core.md | lessons-learned-current.md, task-workflow-backlog.md |
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
 | Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
@@ -384,11 +377,17 @@
 
 | リソース | 役割 | 読み込み条件 |
 |----------|------|-------------|
-| `apps/desktop/scripts/check-ipc-contracts.ts` | IPC契約ドリフト自動検出CLIスクリプト | R-01~R-04ルール、--report-only/--strict/--format | UT-TASK06-007 |
+| `apps/desktop/scripts/check-ipc-contracts.ts` | IPC契約ドリフト自動検出CLIスクリプト | R-01〜R-04ルール、`--report-only` / `--strict` / `--format json` を確認したい時 |
 | ipc-contract-checklist.md | R-01~R-04検出ルール仕様 | 検証ルール確認時 |
 | quality-requirements.md | CI統合品質ゲート | CIパイプライン設計時 |
-| security-electron-ipc.md | IPC契約設計原則 | セキュリティ確認時 |
-| 06-known-pitfalls.md | P44/P45/P27 苦戦パターン | 問題解決時 |
+| architecture-implementation-patterns-reference-ipc-drift-detection.md | UT固有の抽出制約・苦戦箇所・follow-up 5件 | 実装差分を短時間で確認したい時 |
+| task-workflow.md | task-workflow family の入口 | 未タスク登録と family split を確認したい時 |
+| task-workflow-backlog.md | root `unassigned-task/` の未タスク台帳 | follow-up 仕様書の配置先を確認したい時 |
+| task-workflow-completed-ipc-contract-preload-alignment.md | 親タスク完了記録と follow-up ledger | completed 導線を確認したい時 |
+| security-electron-ipc-core.md | preload / main 契約境界の基礎原則 | 契約境界を再確認したい時 |
+| security-electron-ipc-history.md | 過去の IPC drift / hardening 履歴 | 既知の再発パターンを照合したい時 |
+| lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md | Phase 12 での preload alignment 教訓 | 類似の仕様同期漏れを避けたい時 |
+| lessons-learned.md | P44/P45/P27 苦戦パターン | 問題解決時 |
 
 ### 検索クエリ例
 
@@ -409,7 +408,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-19 | 1.22.0     | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: IPC contract / preload alignment / skill management 行を `skill:get-detail` / `skill:update` 専用導線へ強化。current canonical set に `security-skill-ipc-core.md` / `interfaces-agent-sdk-skill-details.md` / `architecture-implementation-patterns-*` / `ipc-contract-checklist.md` を明示し、parent doc は入口・`api-ipc-agent*.md` は補助参照であることを追記 |
+| 2026-03-19 | 1.21.1     | UT-TASK06-007 discovery 導線を completed canonical set に再同期。implementation pattern detail / security-electron-ipc-core / security-electron-ipc-history / completed ledger / lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment を追加し、follow-up を EXT-001〜005 に更新 |
 | 2026-03-18 | 1.21.0     | UT-TASK06-007: IPC契約ドリフト自動検出CLIスクリプト（check-ipc-contracts.ts）エントリをクイックルックアップ・タスク別リソースマップに追加。R-01~R-04検出ルール、--report-only/--strict/--format オプション、EXT-001~003未タスクの導線を登録 |
 | 2026-03-17 | 1.20.0     | TASK-SKILL-LIFECYCLE-08: Skill Publishing & Version Compatibility（13型定義・4サービスIF・11 IPCチャンネル）のクイックルックアップ追加。SkillVisibility/PublishReadiness/CompatibilityCheckResult/SkillRegistryService/SkillDistributionService 導線を登録 |
 | 2026-03-17 | 1.20.1     | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001: 「Main Chat / Settings runtime 同期」行を追加。`設計同期（AI runtime/auth-mode unification）` 行に `llm-ipc-types.md` を追加。`llm:check-health` / `llm:set-selected-config` / `AI_CHECK_CONNECTION` IPC チャンネルと `HealthCheckResult` / `SetSelectedConfigParams` 型を各インデックスに登録 |

@@ -82,6 +82,18 @@
   - 設定ファイル: `codecov.yml`
 - `e2e-desktop` が失敗した場合はCI全体を失敗とする（IPC実環境回帰の防止）
 
+### 追加品質ゲート候補: IPC Contract Drift Audit（UT-TASK06-007）
+
+desktop IPC / preload surface を変更するPRでは、以下の静的監査を typecheck と対象テストの後段に置く。
+
+```bash
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict
+```
+
+- exit code `1` は error レベル drift を意味し、CI fail 条件として扱える
+- `--report-only --format json` は triage や artifact 保存向け
+- この節は「CI に組み込むときの正本順序」を定義するものであり、全 workflow がすでに wiring 済みであることまでは主張しない
+
 ---
 
 ## キャッシュ戦略

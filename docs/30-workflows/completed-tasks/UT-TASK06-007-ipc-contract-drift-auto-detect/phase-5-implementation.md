@@ -28,20 +28,20 @@ Phase 4 で作成した全テストケース（T-4-1〜T-4-8）をパスさせ�
 
 ## 参照資料
 
-| 資料                                              | パス / リンク                                                                             |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Phase 2 設計                                      | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-2-design.md`        |
-| Phase 4 テスト作成                                | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-4-test-creation.md` |
-| Phase 4 テストファイル                            | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                              |
-| IPC_CHANNELS 定数定義                             | `apps/desktop/src/main/ipc/channels.ts`（または同等ファイル）                             |
-| IPC ハンドラ登録                                  | `apps/desktop/src/main/handlers/` 配下                                                    |
-| Preload API                                       | `apps/desktop/src/preload/` 配下                                                          |
-| IPC契約チェックリスト                             | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`             |
-| 品質要件                                          | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`               |
-| 既知の落とし穴（P42: trim バリデーション）        | `.claude/rules/06-known-pitfalls.md#P42`                                                  |
-| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                  |
-| 既知の落とし穴（P27: ハードコード文字列）         | `.claude/rules/06-known-pitfalls.md#P27`                                                  |
-| 既知の落とし穴（P5: リスナー二重登録）            | `.claude/rules/06-known-pitfalls.md#P5`                                                   |
+| 資料                                              | パス / リンク                                                                                             |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Phase 2 設計                                      | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-2-design.md`        |
+| Phase 4 テスト作成                                | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-4-test-creation.md` |
+| Phase 4 テストファイル                            | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                              |
+| IPC_CHANNELS 定数定義                             | `apps/desktop/src/main/ipc/channels.ts`（または同等ファイル）                                             |
+| IPC ハンドラ登録                                  | `apps/desktop/src/main/handlers/` 配下                                                                    |
+| Preload API                                       | `apps/desktop/src/preload/` 配下                                                                          |
+| IPC契約チェックリスト                             | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`                             |
+| 品質要件                                          | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                               |
+| 既知の落とし穴（P42: trim バリデーション）        | `.claude/rules/06-known-pitfalls.md#P42`                                                                  |
+| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                                  |
+| 既知の落とし穴（P27: ハードコード文字列）         | `.claude/rules/06-known-pitfalls.md#P27`                                                                  |
+| 既知の落とし穴（P5: リスナー二重登録）            | `.claude/rules/06-known-pitfalls.md#P5`                                                                   |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -247,11 +247,11 @@ interface DriftReport {
 
 ## 成果物
 
-| 成果物                   | パス                                                                                                   | 内容                                        |
-| ------------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------------- |
-| チェックスクリプト       | `apps/desktop/scripts/check-ipc-contracts.ts`                                                          | IPC契約ドリフト自動検出スクリプト本体       |
-| Phase 9 テンプレート更新 | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-5/phase9-integration.md` | Phase 9 への統合手順（該当する場合）        |
-| Green 確認記録           | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-5/green-confirmation.md` | テスト実行結果（全 PASS）のスナップショット |
+| 成果物                   | パス                                                                                                                   | 内容                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| チェックスクリプト       | `apps/desktop/scripts/check-ipc-contracts.ts`                                                                          | IPC契約ドリフト自動検出スクリプト本体       |
+| Phase 9 テンプレート更新 | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-5/phase9-integration.md` | Phase 9 への統合手順（該当する場合）        |
+| Green 確認記録           | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-5/green-confirmation.md` | テスト実行結果（全 PASS）のスナップショット |
 
 ## 完了条件
 
@@ -279,7 +279,7 @@ interface DriftReport {
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   --task-id UT-TASK06-007 \
   --phase 5 \
-  --workflow-dir docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect
+  --workflow-dir docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect
 ```
 
 ## 次のPhase

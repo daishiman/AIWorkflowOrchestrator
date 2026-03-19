@@ -57,7 +57,7 @@
 #### 含まないもの
 
 - タプル配列パターンの抽出（UT-TASK06-007-EXT-001 のスコープ）
-- `IPC_CHANNELS` 以外の定数オブジェクト対応（UT-TASK06-007-EXT-002 のスコープ）
+- エイリアス / 再export / 動的定数解決（UT-TASK06-007-EXT-002 のスコープ）
 - `ipcRenderer.on` の検証（Renderer 側リスナーは別課題）
 
 ### 2.4 成果物
@@ -247,13 +247,32 @@ pnpm --filter @repo/desktop test
 ### 関連ドキュメント
 
 - [`ipc-contract-checklist.md` 将来拡張セクション](../../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md)
-- [`task-workflow-backlog.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md)
+- [`task-workflow-completed-ipc-contract-preload-alignment.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-completed-ipc-contract-preload-alignment.md)
 - 関連既知の落とし穴: [P5（リスナー二重登録）](../../../.claude/rules/06-known-pitfalls.md#p5), [P44](../../../.claude/rules/06-known-pitfalls.md#p44), [P45](../../../.claude/rules/06-known-pitfalls.md#p45)
 
 ### 参考資料
 
-- 親タスク: `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/`
-- 先行タスク: `docs/30-workflows/unassigned-task/UT-TASK06-007-EXT-001-tuple-array-handler-extraction.md`
+- 親タスク: `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/`
+- 先行タスク: `docs/30-workflows/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md`
+
+---
+
+## 9. 備考
+
+### レビュー指摘の原文（該当する場合）
+
+```
+UT-TASK06-007 Phase 2 スコープ外定義:
+ipcMain.on パターン（イベントリスナー）と safeOn の対応関係検証は
+UT-TASK06-007 のスコープ外として切り出す。
+現状は ipcMain.on の検出は行っているが safeOn との照合精度が低い。
+```
+
+### 補足事項
+
+- タプル配列パターンの抽出は UT-TASK06-007-EXT-001 のスコープ
+- エイリアス / 再export / 動的定数解決は UT-TASK06-007-EXT-002 のスコープ
+- `ipcMain.on` は one-way イベント、`ipcMain.handle` は request-response。照合ロジックは分離して実装すること
 
 ---
 
@@ -294,20 +313,3 @@ pnpm --filter @repo/desktop test
 **対策**: テスト追加時は `pnpm tsx apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` での実行を先に確認すること。
 
 ---
-
-## 9. 備考
-
-### レビュー指摘の原文（該当する場合）
-
-```
-UT-TASK06-007 Phase 2 スコープ外定義:
-ipcMain.on パターン（イベントリスナー）と safeOn の対応関係検証は
-UT-TASK06-007 のスコープ外として切り出す。
-現状は ipcMain.on の検出は行っているが safeOn との照合精度が低い。
-```
-
-### 補足事項
-
-- タプル配列パターンの抽出は UT-TASK06-007-EXT-001 のスコープ
-- `IPC_CHANNELS` 以外の定数オブジェクト対応は UT-TASK06-007-EXT-002 のスコープ
-- `ipcMain.on` は one-way イベント、`ipcMain.handle` は request-response。照合ロジックは分離して実装すること

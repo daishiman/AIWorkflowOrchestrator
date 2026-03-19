@@ -5,260 +5,199 @@
 | 項目       | 内容                                          |
 | ---------- | --------------------------------------------- |
 | タスクID   | UT-TASK06-007                                 |
-| 作成日     | 2026-03-18                                    |
+| 再監査日   | 2026-03-19                                    |
 | Phase      | 12 - ドキュメント                             |
 | 対象成果物 | `apps/desktop/scripts/check-ipc-contracts.ts` |
 
----
+## Part 1: 中学生でもわかる説明
 
-## Part 1: 中学生でもわかる概念説明
+### なぜ必要か
 
-### お店の注文票と厨房の調理指示書
+画面からボタンを押したとき、裏側では「この名前の仕事を、この形のデータで呼び出してください」という約束が動いている。ここがずれると、見た目は同じでも実際には動かない。
 
-レストランを想像してください。お客さんが「ラーメン1杯」と注文票に書いてウェイターに渡します。ウェイターはその注文票を厨房に届けます。厨房では調理指示書に従って料理を作ります。
+たとえば、教室の連絡係が「3年A組にプリントを配る」と名簿に書いたのに、職員室の名簿には「3A」ではなく「三年A組」と書いてあったら、人が見れば何となく分かっても機械は迷う。IPC 契約ドリフトは、これと同じで「呼び出す側の名簿」と「受ける側の名簿」が少しずつずれていく問題だ。
 
-このとき、注文票と調理指示書の内容がズレていたらどうなるでしょう？
+このずれはチャンネル名だけでなく、渡すデータの形でも起きる。だから人手でたまに眺めるだけでは足りず、毎回同じ基準で点検する仕組みが必要になる。
 
-- 注文票: 「ラーメン1杯」
-- 調理指示書: 「うどんセット」
+### 何をするか
 
-お客さんは全然違う料理を受け取ることになります。
+このスクリプトは、プロジェクト全体を見回って「画面側の注文票」と「Main Process 側の受け口」が合っているかを自動で点検する。Renderer / Preload / Main の3か所を横断して読み取り、Main だけにあるもの、Preload だけにあるもの、引数の形が違うもの、定数を使わずに文字列を直書きしているものを検出する。
 
-**Electronアプリでも同じことが起きます。**
+### 4つの検出ルール
 
-| レストランの例             | Electronアプリの例         |
-| -------------------------- | -------------------------- |
-| お客さん                   | 画面（Renderer）           |
-| ウェイター（注文票を渡す） | Preload層                  |
-| 厨房（調理指示書で動く）   | Main Process               |
-| 注文票                     | Preload側のIPC呼び出し定義 |
-| 調理指示書                 | Main側のIPCハンドラ定義    |
-
-このズレのことを **「IPC契約ドリフト」** と呼びます。
-
-### 4つのズレパターン（検出ルール）
-
-#### R-01: 注文票はあるけど調理指示書がない（またはその逆）
-
-```
-注文票: 「ラーメン1杯」
-調理指示書: （ラーメンのメニューが存在しない）
-```
-
-Preload側では「このコマンドを呼べます」と約束しているのに、Main側にそのハンドラが存在しない状態です。呼び出してもエラーになります。
-
-逆に、Main側にハンドラがあるのにPreload側で公開していないケースもあります（未公開の機能）。
-
-#### R-02: 注文票には「ラーメン1杯」、指示書には「うどんセット」
-
-```
-注文票: skillName を渡す
-調理指示書: skillId を期待する
-```
-
-チャンネル名は合っているのに、渡す引数の形式や名前が違います。これがP44/P45で記録された「引数命名の契約ドリフト」です。スクリプトが渡す値と、受け取る側が期待する値のセマンティクスがズレています。
-
-#### R-03: 注文票に正式メニュー番号ではなく手書きメモで書いてある
-
-```
-正しい: IPC_CHANNELS.SKILL_IMPORT を使う
-問題あり: "skill:import" という文字列を直接書く
-```
-
-チャンネル名を定数（`IPC_CHANNELS`）で管理せず、文字列リテラルで直接書いているケースです。タイポが発生しても気付きにくく、後でリファクタリングするときも大変です（P27パターン）。
-
-#### R-04: 注文票があるのに厨房に伝わっていない
-
-```
-IPC_CHANNELS に定義されているチャンネル名が
-ipcMain.handle() に登録されていない
-```
-
-定数ファイルにチャンネルが定義されているのに、実際のハンドラ登録が漏れているケースです。ウェイターが注文票を持っているのに厨房に届けるルートがない状態です。
-
-### このスクリプトが自動でやること
-
-このスクリプトを実行すると、プロジェクト全体のコードを自動で調べて、上記4つのズレを一覧表示してくれます。
-
-```
-実行結果の例:
-[DRIFT] R-01: チャンネル "skill:execute" はPreloadで公開されているがMainにハンドラがない
-[DRIFT] R-03: ファイル preload/skill-api.ts L42 でチャンネル名が文字列リテラル "skill:import"
-[OK] 検出されたドリフト: 2件
-```
-
----
+| ルール | たとえ                                                   | 実際に見るもの                            |
+| ------ | -------------------------------------------------------- | ----------------------------------------- |
+| R-01   | 注文票はあるのに厨房に受け口がない、またはその逆         | Main / Preload の片側にだけあるチャンネル |
+| R-02   | ラーメンを頼んだのに、厨房はセット注文の形を期待している | object vs primitive の引数不一致          |
+| R-03   | 正式なメニュー番号ではなく手書きメモで注文している       | 文字列リテラルのチャンネル指定            |
+| R-04   | メニュー表には載っているのに厨房で登録されていない       | 定数定義済みだが main 未登録のチャンネル  |
 
 ## Part 2: 開発者向け技術詳細
 
-### ファイル構成
+### TypeScript 型定義
+
+```ts
+type ArgPattern = "object" | "primitive" | "none" | "unknown";
+
+interface HandlerEntry {
+  channel: string;
+  sourceFile: string;
+  method: "handle" | "on";
+  argPattern: ArgPattern;
+}
+
+interface PreloadEntry {
+  channel: string;
+  sourceFile: string;
+  method: "safeInvoke" | "safeOn";
+  argPattern: ArgPattern;
+}
+
+interface DriftReport {
+  handlers: HandlerEntry[];
+  preloads: PreloadEntry[];
+  drifts: DriftEntry[];
+  orphans: OrphanEntry[];
+}
+
+interface CliOptions {
+  reportOnly: boolean;
+  strict: boolean;
+  format: "markdown" | "json";
+}
+```
+
+### 現在の実装規模
 
 | ファイル                                                     | 役割                      |
 | ------------------------------------------------------------ | ------------------------- |
-| `apps/desktop/scripts/check-ipc-contracts.ts`                | メインスクリプト（478行） |
-| `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` | テストスイート            |
+| `apps/desktop/scripts/check-ipc-contracts.ts`                | メインスクリプト（578行） |
+| `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` | テストスイート（49件）    |
 
-### 主要関数の説明
+### 主な処理
 
-#### `extractMainHandlers(dir: string): HandlerEntry[]`
+| 関数 / 群                                                | 役割                                                     |
+| -------------------------------------------------------- | -------------------------------------------------------- |
+| `extractMainHandlers`                                    | `ipcMain.handle` / `ipcMain.on` 系の main 登録を抽出する |
+| `extractPreloadEntries`                                  | `safeInvoke` / `safeOn` の preload 呼び出しを抽出する    |
+| `resolveChannelMap`, `resolveChannel`                    | 定数参照を実チャンネル名へ解決する                       |
+| `classifyHandlerArgPattern`, `classifyPreloadArgPattern` | object / primitive / unknown を分類する                  |
+| `matchAndValidate`                                       | R-01〜R-04 を適用し、drift/orphan を生成する             |
+| `generateReport`, `main`                                 | Markdown/JSON 出力と CLI 制御を行う                      |
 
-**役割**: Main Process ディレクトリを走査し、`ipcMain.handle()` の呼び出しを正規表現で抽出する。
+### 2026-03-19 再監査で反映済みの改善
 
-**動作**:
+- `safeInvoke<T>` / `safeOn<T>` の generic 呼び出しを抽出
+- 複数行にまたがる preload 呼び出しを抽出
+- typed object 引数を main 側 `object` と判定
+- `IPC_CHANNELS` だけでなく `CHANNELS` / `CHAT_EDIT_CHANNELS` など複数 const object を収集
+- full-ref と key fallback の両方でチャンネル解決
+- R-04 を直接固定する回帰テスト追加
 
-1. `apps/desktop/src/main/` 配下のすべての `.ts` ファイルを再帰的に読み込む
-2. `ipcMain.handle(チャンネル名, ...)` のパターンにマッチする行を抽出
-3. チャンネル名が `IPC_CHANNELS.XXX` 形式か文字列リテラルかを判別
-4. `HandlerEntry[]` として返す
+### API/CLI シグネチャ
 
-**戻り値の型**:
-
-```typescript
-interface HandlerEntry {
-  channel: string; // 解決済みチャンネル名
-  rawExpression: string; // ソース上の元の表現
-  filePath: string; // ファイルパス
-  lineNumber: number; // 行番号
-  isLiteral: boolean; // 文字列リテラルかどうか (R-03検出用)
-}
+```ts
+function extractMainHandlers(
+  fileContent: string,
+  filePath: string,
+): HandlerEntry[];
+function extractPreloadEntries(
+  fileContent: string,
+  filePath: string,
+): PreloadEntry[];
+function resolveChannelMap(source: string): Map<string, string>;
+function matchAndValidate(
+  handlers: HandlerEntry[],
+  preloads: PreloadEntry[],
+  channelMap: Map<string, string>,
+): DriftReport;
 ```
-
-#### `extractPreloadEntries(dir: string): PreloadEntry[]`
-
-**役割**: Preload ディレクトリを走査し、`safeInvoke()` / `safeOn()` の呼び出しを抽出する。
-
-**動作**:
-
-1. `apps/desktop/src/preload/` 配下のすべての `.ts` ファイルを走査
-2. `safeInvoke(チャンネル名, ...)` と `safeOn(チャンネル名, ...)` にマッチする行を抽出
-3. `PreloadEntry[]` として返す
-
-#### `resolveChannelMap(channelConstFile: string): Map<string, string>`
-
-**役割**: `IPC_CHANNELS` 定数オブジェクトを解析し、`識別子名 -> チャンネル文字列値` のマップを生成する。
-
-**動作**:
-
-1. `apps/desktop/src/shared/ipc-channels.ts` を読み込む
-2. `XXX: "channel:name"` 形式のプロパティをすべて抽出
-3. `Map<string, string>` として返す（例: `"SKILL_IMPORT" -> "skill:import"`）
-
-#### `matchAndValidate(handlers, preloadEntries, channelMap): DriftReport`
-
-**役割**: ハンドラとPreloadエントリを突き合わせ、4つのルールに基づいてドリフトを検出する。
-
-**検出ロジック**:
-
-| ルール | 検出条件                                                    |
-| ------ | ----------------------------------------------------------- |
-| R-01   | Preloadにあり → Mainにハンドラが存在しない、またはその逆    |
-| R-02   | チャンネルの引数型/名称の乖離（静的解析による近似検出）     |
-| R-03   | `isLiteral === true` のエントリ（文字列リテラルの直接使用） |
-| R-04   | `channelMap` に存在するチャンネルが `handlers` に未登録     |
-
-#### `generateReport(driftReport: DriftReport, format: "markdown" | "json"): string`
-
-**役割**: ドリフトレポートを指定フォーマットで文字列化する。
-
-- `markdown` 形式: Markdown テーブルと箇条書きで人間が読みやすい形式
-- `json` 形式: CI/CDパイプラインで機械処理しやすい形式
-
-#### `main(argv: string[]): Promise<void>`
-
-**役割**: CLIエントリポイント。引数をパースして各関数を順次呼び出す。
-
-**処理フロー**:
-
-```
-1. argv をパースしてオプション取得
-2. extractMainHandlers() でMainハンドラを収集
-3. extractPreloadEntries() でPreloadエントリを収集
-4. resolveChannelMap() でチャンネルマップを構築
-5. matchAndValidate() でドリフト検出
-6. generateReport() でレポート生成
-7. --report-only でなければ exit code を設定
-```
-
-### CLIオプション
-
-| オプション      | 型                   | デフォルト | 説明                                               |
-| --------------- | -------------------- | ---------- | -------------------------------------------------- |
-| `--report-only` | flag                 | false      | ドリフトがあってもexit 0で終了（レポート出力のみ） |
-| `--strict`      | flag                 | false      | R-04（登録漏れ）を厳格にエラー扱いする             |
-| `--format`      | `json` \| `markdown` | `markdown` | 出力フォーマット                                   |
-
-### 実行方法
 
 ```bash
-# レポートのみ出力（CIを失敗させない）
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts [--report-only] [--strict] [--format json]
+```
+
+### CLI オプション
+
+| オプション          | 説明                                         |
+| ------------------- | -------------------------------------------- |
+| `--report-only`     | ドリフトがあっても exit 0 でレポートだけ出す |
+| `--strict`          | error レベルの drift で exit 1 を返す        |
+| `--format json`     | JSON 形式で出力する                          |
+| `--format markdown` | 人が読む Markdown 形式で出力する             |
+
+### 使用例
+
+```bash
 pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only
-
-# JSON形式で出力（CI連携用）
-pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json
-
-# 厳格モード（ドリフト検出時にexit 1）
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json
 pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict
-
-# package.jsonスクリプトから実行
-pnpm --filter @repo/desktop check-ipc-contracts
 ```
 
-### 検出ルール詳細
+```ts
+import { matchAndValidate } from "../check-ipc-contracts";
 
-#### R-01: ハンドラ存在チェック（Existence Check）
-
-```typescript
-// 検出パターン
-const preloadChannels = new Set(preloadEntries.map((e) => e.channel));
-const mainChannels = new Set(handlers.map((h) => h.channel));
-
-// Preloadにあり、Mainにない
-for (const ch of preloadChannels) {
-  if (!mainChannels.has(ch)) {
-    report.r01.push({ channel: ch, direction: "preload-only" });
-  }
-}
+const report = matchAndValidate(handlers, preloads, channelMap);
+console.log(report.drifts.length);
 ```
 
-#### R-02: 引数セマンティクスチェック（Semantic Check）
+### 現在の実測値
 
-静的解析の制約から、引数名の比較に限定した近似検出を行う。`skillId` と `skillName` の混在（P45パターン）が主な検出対象。
+| 項目            | 値                                          |
+| --------------- | ------------------------------------------- |
+| Main handlers   | 216                                         |
+| Preload entries | 189                                         |
+| Drifts          | 197                                         |
+| Orphans         | 119                                         |
+| 実行時間        | 3.46秒                                      |
+| Coverage        | Line 95.31% / Branch 90.84% / Function 100% |
 
-#### R-03: 文字列リテラルチェック（Literal Check）
+### エラーハンドリング
 
-```typescript
-// 文字列リテラル直接使用の検出
-const LITERAL_PATTERN = /safeInvoke\s*\(\s*["'`]([^"'`]+)["'`]/;
-```
+- `--strict` は error レベルの drift を検出したときだけ exit 1 を返し、CI やローカル品質ゲートに組み込みやすい
+- `--report-only` は drift が残っていても exit 0 を返すため、棚卸しや現状把握で使う
+- static parsing が完全に解けないケースは `unknown` として残し、誤った「完全一致」判定を避ける
+- JSON 出力は `jq` で処理できる形を維持し、壊れた場合は Phase 9/12 の検証で即検出する
 
-#### R-04: チャンネル登録漏れチェック（Registration Check）
+### エッジケース
 
-`IPC_CHANNELS` に定義された全チャンネルが `ipcMain.handle()` で登録されているかを確認する。
+- `safeInvoke<T>` / `safeOn<T>` の generic 呼び出し
+- 複数行にまたがる preload 呼び出し
+- `CHANNELS.FOO` や `CHAT_EDIT_CHANNELS.BAR` のような full-ref 解決
+- alias / 再export / 動的定数は完全対応しておらず、EXT-002 へ分離
+- tuple array main registration は未抽出で、EXT-001 へ分離
 
 ### 既知の制約
 
-| 制約ID | 内容                                                              | 対応未タスク          |
-| ------ | ----------------------------------------------------------------- | --------------------- |
-| C-01   | `[IPC_CHANNELS.XXX, handler]` 形式のタプル配列経由ハンドラ未対応  | UT-TASK06-007-EXT-001 |
-| C-02   | `CHAT_EDIT_CHANNELS` 等の別定数オブジェクトのチャンネル解決未対応 | UT-TASK06-007-EXT-002 |
-| C-03   | `ipcMain.on` パターンの検証が第1フェーズのみ（完全網羅でない）    | UT-TASK06-007-EXT-003 |
-| C-04   | スクリプト本体が478行（200行目安を超過）                          | リファクタリング検討  |
+| 制約ID | 内容                                                                    | 対応未タスク          |
+| ------ | ----------------------------------------------------------------------- | --------------------- |
+| C-01   | `[IPC_CHANNELS.X, handler]` 形式のタプル配列経由 main 登録は未抽出      | UT-TASK06-007-EXT-001 |
+| C-02   | エイリアス / 再export / 動的定数経由のチャンネル解決は完全ではない      | UT-TASK06-007-EXT-002 |
+| C-03   | `ipcMain.on` と `safeOn` の parity はまだノイズが多い                   | UT-TASK06-007-EXT-003 |
+| C-04   | 単一ファイル 578 行で NFR-05 の目安を超過                               | UT-TASK06-007-EXT-004 |
+| C-05   | R-02 は object vs primitive 中心の heuristic で、P45 完全自動化ではない | UT-TASK06-007-EXT-005 |
 
-### テスト構成
+### 設定項目と定数一覧
 
-テストファイル: `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`
+| 項目                     | 現在値 / 形式       | 用途                                   |
+| ------------------------ | ------------------- | -------------------------------------- |
+| `--report-only`          | boolean             | 品質ゲートを fail させず棚卸しだけ行う |
+| `--strict`               | boolean             | error drift を exit code 1 に変換する  |
+| `--format`               | `markdown` / `json` | 人間向けと機械向けの出力を切り替える   |
+| `PRELOAD_PATTERN`        | 正規表現            | preload 側呼び出し抽出                 |
+| `CHANNEL_OBJECT_PATTERN` | 正規表現            | const object から channel map を抽出   |
+| `R-01`〜`R-04`           | 4ルール             | drift / orphan の分類基準              |
 
-| テストスイート          | 内容                                 |
-| ----------------------- | ------------------------------------ |
-| `extractMainHandlers`   | 正常抽出、ファイル不在、リテラル検出 |
-| `extractPreloadEntries` | safeInvoke/safeOn の各パターン抽出   |
-| `resolveChannelMap`     | 定数解析、ネスト構造対応             |
-| `matchAndValidate`      | R-01～R-04 各ルールの検出ロジック    |
-| `generateReport`        | markdown/json 両形式の出力検証       |
-| `main` (integration)    | CLIオプションの組み合わせテスト      |
+### テスト観点
 
-### 注意事項
+- generic / multiline preload extraction
+- typed object handler classification
+- full-ref channel resolution
+- R-01〜R-04 の出力
+- CLI の `report-only` / `strict` / `json`
 
-- スクリプトは静的解析ベースであり、動的に生成されるチャンネル名は検出できない
-- `resolveChannelMap` は `IPC_CHANNELS` オブジェクトの直接プロパティのみ解析する（ネストした定数オブジェクトは C-02 参照）
-- テスト実行は worktree 環境での esbuild プラットフォーム不一致を避けるため、`pnpm tsx` 経由を推奨する（P7/P63 参照）
+### 注意
+
+- このスクリプトは静的解析ベースであり、repo を「正常」と宣言するツールではない
+- PASS は「診断器として機能する」ことを意味し、repo 内の drift 件数ゼロを意味しない
+- P45 の意味的ドリフトは follow-up で継続する

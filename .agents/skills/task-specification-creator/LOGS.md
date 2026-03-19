@@ -4,15 +4,26 @@
 
 ---
 
-## task-specification-creator 監査導線改善（2026-03-19）
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
-- **Agent**: Codex
-- **Phase**: skill audit / docs refinement
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 実行完了
 - **Result**: success
 - **Notes**:
-  - `resource-map.md` 起点の最短導線を `SKILL.md` に追加し、Phase 12 文書更新と Phase 13 PR 判定への初動を 2-3 手に圧縮
-  - `phase-template-phase13.md` に local check / change-summary / pr-info の最低記録を追加し、承認前の誤進行を抑止
-  - 変更対象は `task-specification-creator` 配下に限定し、他の skill / workflow は変更していない
+  - `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5成果物を実績化
+  - 苦戦箇所を system spec に反映し、未タスク `UT-CONV-DB-001〜003` を formalize
+  - completed workflow / completed unassigned-task / backlog 導線を同期
+
+---
+
+## Phase 12 canonical summary 名称統一（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/テンプレート是正
+- **Result**: success
+- **Notes**:
+  - `spec-update-summary.md` から `system-spec-update-summary.md` への canonical 名称統一を反映
+  - `phase-11-12-guide.md` / `spec-update-workflow.md` / `SKILL.md` の残存参照を更新
 
 ---
 
@@ -647,17 +658,11 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
 | 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |
 
----
+### 2026-03-19 - UT-TASK06-007 再監査
 
-## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 完了（2026-03-19）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - スキル関連IPC層の2件Critical不整合を修正
-  - SKILL_UPDATE デッドチャンネル修正（ipcMain.handle 追加 + unregister 追加）
-  - SKILL_GET_DETAIL / SKILL_UPDATE Preload API 公開（getDetail / update メソッド追加）
-  - P42準拠3段バリデーション全引数実装
-  - Phase 1-12 完了、横断回帰8ファイル 421テスト PASS
-  - ユーザー明示要求に基づき、Phase 11 の visual sanity screenshot 5件を追加し、旧 `TC-VIS-*` は archive へ退避
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / re-audit |
+| 変更対象 | `phase-11-manual-test.md`, `phase-12-documentation.md`, `outputs/phase-12/*.md`, `docs/30-workflows/unassigned-task/ut-task06-007-ext-00*.md` |
+| 結果 | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した |
+| 検証 | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
