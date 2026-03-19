@@ -625,3 +625,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | --- | --- | --- |
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |
+
+### 2026-03-18 - UT-TASK06-007
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect） |
+| 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
+| 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |

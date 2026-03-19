@@ -212,3 +212,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `skill.ts`: SkillPermissionResponse に skip?: boolean 追加（+3行）
   - `SkillExecutor.fallback.test.ts`: 新規テスト 23ケース追加
 - テスト結果: 全1293テスト PASS（既存1270 + 新規23）
+
+## UT-TASK06-007 IPC契約ドリフト自動検出スクリプト完了（2026-03-18）
+
+- タスク名: IPC契約ドリフト自動検出スクリプト（Phase 9統合）
+- 種別: 品質改善・自動化
+- ワークフロー: UT-TASK06-007-ipc-contract-drift-auto-detect
+- GitHub Issue: #1309
+- 主要成果物:
+  - `apps/desktop/scripts/check-ipc-contracts.ts`: IPC契約ドリフト自動検出スクリプト（478行）
+  - `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`: テスト39ケース
+  - 検出ルール: R-01（チャンネル孤児/warning）, R-02（引数形式不一致/error, P44対応）, R-03（ハードコード文字列/warning, P27対応）, R-04（未登録チャンネル/error）
+  - CLIオプション: --report-only, --strict, --format json|markdown
+  - 実行時間: 1.57秒（NFR-01: 10秒以内）
+- 実コードベース検証結果: 216ハンドラ抽出, 147 Preloadエントリ抽出, R-02不一致19件検出
+- 未タスク3件検出: タプル配列抽出拡張, CHAT_EDIT_CHANNELS対応, ipcMain.on強化

@@ -6,7 +6,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
@@ -46,22 +45,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
-
-## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
-
-- タスク名: スキルライフサイクル統合 UI GAP 解消（Task09-12）仕様書作成
-- 種別: 仕様書作成（Phase 1-3 完成、Phase 4 以降は Phase 3 PASS 後に作成）
-- タスク群:
-  - TASK-IMP-LIFECYCLE-TERMINAL-INTEGRATION-001（Terminal 統合 C-02/C-03/C-04）
-  - TASK-IMP-LIFECYCLE-CONSTRAINT-CHIPS-001（制約条件入力 UI C-05/C-06）
-  - TASK-IMP-LIFECYCLE-QUALITY-RUNTIME-UI-001（QualityGateLabel + RuntimeBanner C-07）
-  - TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001（ReuseReady 状態 + Improve サイクル D-01/D-03）
-- 苦戦箇所:
-  - P64: GAP ID 正本テーブルを後から追加した際に既存仕様書の番号体系と不整合が生じた
-  - P65: Task09/Task12 において存在しない Props（`currentPhase`）や型値（`"review"`/`"improve_ready"`）を前提に Phase 2 設計を行い、Phase 4 テスト作成時にコンパイルエラーが発覚
-- 解決策:
-  - P64: 正本テーブルを既存参照の番号体系に合わせて修正。新規付番前に `grep` で全件確認する運用を確立
-  - P65: 内部状態からのフェーズ導出方式に書き換え。型変更は P32 準拠で変更先ファイルとパスを Phase 2 に明記する
 
 ## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
 - 完了日: 2026-03-17
@@ -212,3 +195,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `skill.ts`: SkillPermissionResponse に skip?: boolean 追加（+3行）
   - `SkillExecutor.fallback.test.ts`: 新規テスト 23ケース追加
 - テスト結果: 全1293テスト PASS（既存1270 + 新規23）
+
+## UT-TASK06-007 IPC契約ドリフト自動検出スクリプト完了（2026-03-18）
+
+- タスク名: IPC契約ドリフト自動検出スクリプト（Phase 9統合）
+- 種別: 品質改善・自動化
+- ワークフロー: UT-TASK06-007-ipc-contract-drift-auto-detect
+- GitHub Issue: #1309
+- 主要成果物:
+  - `apps/desktop/scripts/check-ipc-contracts.ts`: IPC契約ドリフト自動検出スクリプト（478行）
+  - `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`: テスト39ケース
+  - 検出ルール: R-01（チャンネル孤児/warning）, R-02（引数形式不一致/error, P44対応）, R-03（ハードコード文字列/warning, P27対応）, R-04（未登録チャンネル/error）
+  - CLIオプション: --report-only, --strict, --format json|markdown
+  - 実行時間: 1.57秒（NFR-01: 10秒以内）
+- 実コードベース検証結果: 216ハンドラ抽出, 147 Preloadエントリ抽出, R-02不一致19件検出
+- 未タスク3件検出: タプル配列抽出拡張, CHAT_EDIT_CHANNELS対応, ipcMain.on強化
