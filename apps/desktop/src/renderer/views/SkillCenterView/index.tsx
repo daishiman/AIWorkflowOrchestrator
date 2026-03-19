@@ -13,6 +13,7 @@ import React, { memo, useMemo, useCallback, useEffect } from "react";
 import clsx from "clsx";
 import type { SkillMetadata, ImportedSkill } from "@repo/shared/types/skill";
 import { Icon } from "../../components/atoms/Icon";
+import type { SkillLifecycleJob } from "../../navigation/skillLifecycleJourney";
 import {
   SKILL_LIFECYCLE_JOB_GUIDES,
   SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES,
@@ -91,6 +92,20 @@ export const viewStyles = {
     "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
   ),
   loadingContainer: "flex items-center justify-center py-16",
+  headerRow: "flex items-center justify-between",
+  headerCta: clsx(
+    "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl",
+    "bg-[var(--status-primary)] text-white text-sm font-medium",
+    "hover:opacity-90 transition-opacity duration-200",
+    "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)] focus:ring-offset-2",
+  ),
+  journeyCardCta: clsx(
+    "mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg",
+    "text-xs font-medium text-[var(--status-primary)]",
+    "bg-[var(--status-primary)]/10",
+    "hover:bg-[var(--status-primary)]/20 transition-colors duration-200",
+    "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)] focus:ring-offset-1",
+  ),
   loadingSpinner: "text-[var(--text-muted)]",
   errorContainer: clsx(
     "flex flex-col items-center justify-center py-16",
@@ -103,7 +118,13 @@ const PRIMARY_SURFACE_RESPONSIBILITIES =
     (surface) => surface.id !== "settings",
   );
 
-function SkillLifecycleJourneyPanel(): JSX.Element {
+interface SkillLifecycleJourneyPanelProps {
+  onJobAction?: Partial<Record<SkillLifecycleJob, () => void>>;
+}
+
+function SkillLifecycleJourneyPanel({
+  onJobAction,
+}: SkillLifecycleJourneyPanelProps): JSX.Element {
   return (
     <section
       className={viewStyles.journeyPanel}
@@ -125,24 +146,40 @@ function SkillLifecycleJourneyPanel(): JSX.Element {
       </div>
 
       <div className={viewStyles.journeyGrid}>
-        {SKILL_LIFECYCLE_JOB_GUIDES.map((job, index) => (
-          <article
-            key={job.id}
-            className={viewStyles.journeyCard}
-            data-testid={`skill-lifecycle-job-${job.id}`}
-          >
-            <div className={viewStyles.journeyCardBadge}>Step {index + 1}</div>
-            <h3 className={viewStyles.journeyCardTitle}>{job.title}</h3>
-            <p className={viewStyles.journeyCardCopy}>
-              <strong>{job.entryLabel}</strong>
-              <br />
-              {job.summary}
-              <br />
-              <strong>{job.handoffLabel}</strong>
-            </p>
-            <p className={viewStyles.journeyCardOutcome}>{job.completion}</p>
-          </article>
-        ))}
+        {SKILL_LIFECYCLE_JOB_GUIDES.map((job, index) => {
+          const action = onJobAction?.[job.id];
+          return (
+            <article
+              key={job.id}
+              className={viewStyles.journeyCard}
+              data-testid={`skill-lifecycle-job-${job.id}`}
+            >
+              <div className={viewStyles.journeyCardBadge}>
+                Step {index + 1}
+              </div>
+              <h3 className={viewStyles.journeyCardTitle}>{job.title}</h3>
+              <p className={viewStyles.journeyCardCopy}>
+                <strong>{job.entryLabel}</strong>
+                <br />
+                {job.summary}
+                <br />
+                <strong>{job.handoffLabel}</strong>
+              </p>
+              <p className={viewStyles.journeyCardOutcome}>{job.completion}</p>
+              {job.ctaLabel && action && (
+                <button
+                  type="button"
+                  className={viewStyles.journeyCardCta}
+                  onClick={action}
+                  data-testid={`skill-lifecycle-cta-${job.id}`}
+                >
+                  {job.ctaLabel}
+                  <Icon name="chevron-right" size={14} />
+                </button>
+              )}
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -227,6 +264,10 @@ export const SkillCenterView: React.FC = memo(() => {
     addingSkills,
     filteredSkills,
     featuredSkills,
+    importedSkillNames,
+    navigateToSkillCreate,
+    navigateToWorkspace,
+    navigateToSkillAnalysis,
     handleAddSkill,
     handleOpenDetail,
     handleCloseDetail,
@@ -237,10 +278,13 @@ export const SkillCenterView: React.FC = memo(() => {
     handleSetCategory,
   } = useSkillCenter();
 
-  // インポート済みスキル名の Set（カード判定用）
-  const importedSkillNames = useMemo(
-    () => importedSkills.map((s) => String(s.name)),
-    [importedSkills],
+  const journeyActions = useMemo(
+    () => ({
+      create: navigateToSkillCreate,
+      use: navigateToWorkspace,
+      improve: navigateToSkillAnalysis,
+    }),
+    [navigateToSkillCreate, navigateToWorkspace, navigateToSkillAnalysis],
   );
 
   const importedSkillNameSet = useMemo(
@@ -333,13 +377,26 @@ export const SkillCenterView: React.FC = memo(() => {
         <div className={viewStyles.content}>
           {/* ヘッダー */}
           <div className={viewStyles.header}>
-            <h1 className={viewStyles.title}>ツールを探す</h1>
-            <p className={viewStyles.subtitle}>
-              AIワークフローを強化するツールを見つけましょう
-            </p>
+            <div className={viewStyles.headerRow}>
+              <div>
+                <h1 className={viewStyles.title}>ツールを探す</h1>
+                <p className={viewStyles.subtitle}>
+                  AIワークフローを強化するツールを見つけましょう
+                </p>
+              </div>
+              <button
+                type="button"
+                className={viewStyles.headerCta}
+                onClick={navigateToSkillCreate}
+                data-testid="header-create-cta"
+              >
+                <Icon name="plus" size={16} />
+                <span>新規作成</span>
+              </button>
+            </div>
           </div>
 
-          <SkillLifecycleJourneyPanel />
+          <SkillLifecycleJourneyPanel onJobAction={journeyActions} />
           <SkillLifecycleSurfaceOwnershipPanel />
 
           {/* 検索バー */}

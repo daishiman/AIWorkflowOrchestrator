@@ -67,13 +67,13 @@ P29 対策: SKILL.md 2ファイル両方更新済み
 
 Phase 12 レビューで検出されたスコープ外 GAP を未タスク指示書として記録した。
 
-| #   | ファイルパス                                                                                          | 変更概要                                 |
-| --- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------- |
-| 9   | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md`                     | UT-06-005-A 指示書作成（GAP-02/03 対応） |
-| 10  | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md`                           | UT-06-005-B 指示書作成（GAP-04 対応）    |
-| 11  | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md`                        | UT-06-005-C 指示書作成（GAP-06 対応）    |
-| 12  | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                          | UT-06-005-A/B/C を残課題テーブルに登録   |
-| 13  | `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/outputs/phase-12/unassigned-task-detection.md` | 検出件数 0件→3件 に更新、GAP 詳細追記    |
+| #   | ファイルパス                                                                                          | 変更概要                                                                |
+| --- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 9   | `docs/30-workflows/completed-tasks/task-ut-06-005-a-hook-fallback-integration.md`                     | UT-06-005-A 指示書作成（GAP-02/03 対応、完了後に completed 配下へ移管） |
+| 10  | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md`                           | UT-06-005-B 指示書作成（GAP-04 対応）                                   |
+| 11  | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md`                        | UT-06-005-C 指示書作成（GAP-06 対応）                                   |
+| 12  | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                          | UT-06-005-A/B/C を残課題テーブルに登録                                  |
+| 13  | `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/outputs/phase-12/unassigned-task-detection.md` | 検出件数 0件→3件 に更新、GAP 詳細追記                                   |
 
 P3 対策: 3ステップ全完了（指示書作成 / task-workflow-backlog 登録 / 関連仕様書リンク追加）
 

@@ -227,6 +227,41 @@ grep -n "<対象関数名>" <対象ファイルパス>
 
 出力レポートをPhase 7成果物に含める。判定はハンドラ単位で行う（quality-requirements.md参照）。
 
+## vitest 実行不可時のフォールバック: 構造的カバレッジ分析
+
+esbuild アーキテクチャ不一致（ネイティブモジュールのバイナリ不一致等、P7参照）により worktree 環境で vitest が実行できない場合、以下の手順で構造的カバレッジ分析を実施する。
+
+### Step 1: テストケース数の正確なカウント
+
+```bash
+# テストファイル内の it() / test() 呼び出し数をカウント
+grep -c "it(\|test(" <対象テストファイル>
+
+# 全テストファイルの合計
+find <対象ディレクトリ> -name "*.test.ts" -o -name "*.test.tsx" | xargs grep -c "it(\|test(" | tail -1
+```
+
+### Step 2: テストケースID → ソースコード行のマッピング表
+
+テストケースごとに、カバーするソースコード行を対応付ける:
+
+| テストケースID | テスト内容 | カバー対象ファイル | カバー対象行（概算） |
+| -------------- | ---------- | ------------------ | -------------------- |
+| TC-01          | 正常系     | `target.ts`        | L10-L25              |
+| TC-02          | 異常系     | `target.ts`        | L26-L40              |
+
+### Step 3: 構造的カバレッジ判定
+
+マッピング表に基づき、ソースコードの各分岐・関数・行がテストでカバーされているかを判定する:
+
+| 指標              | カバー対象数 | カバー済み数 | カバレッジ率 | 基準  |
+| ----------------- | ------------ | ------------ | ------------ | ----- |
+| Line Coverage     | {{N}}        | {{M}}        | {{%}}        | 80%+  |
+| Branch Coverage   | {{N}}        | {{M}}        | {{%}}        | 60%+  |
+| Function Coverage | {{N}}        | {{M}}        | {{%}}        | 80%+  |
+
+**注意**: 構造的カバレッジ分析は vitest 実測値の代替であり、CI 環境での正式なカバレッジ測定を免除しない。PR マージ前に CI で vitest カバレッジが基準を達成していることを確認すること。
+
 ## 統合テスト連携【必須】
 
 統合テストの再実行とゲート判定:
@@ -298,6 +333,14 @@ pnpm test:integration
 pnpm test:e2e
 ````
 
+## 成果物
+
+| 成果物               | パス                                          | 説明                                |
+| -------------------- | --------------------------------------------- | ----------------------------------- |
+| リファクタリングログ | `outputs/phase-8/refactoring-log.md`          | 変更内容と改善理由の記録            |
+| コード品質チェック   | `outputs/phase-8/code-quality-check.md`       | Lint/型チェック結果（PASS 確認用）  |
+| テスト通過確認       | `outputs/phase-8/test-pass-confirmation.md`   | リファクタ後の全テスト PASS の証跡  |
+
 ## 完了条件
 
 - [ ] テストが継続成功
@@ -361,9 +404,11 @@ Phase 9: 品質保証
 
 ## 成果物
 
-| 成果物       | パス                                | 説明         |
-| ------------ | ----------------------------------- | ------------ |
-| 品質レポート | `outputs/phase-9/quality-report.md` | 品質検証結果 |
+| 成果物                   | パス                                        | 説明                                        |
+| ------------------------ | ------------------------------------------- | ------------------------------------------- |
+| 品質レポート             | `outputs/phase-9/quality-report.md`         | 品質検証結果（全ゲート通過の総括）          |
+| セキュリティチェック結果 | `outputs/phase-9/security-check.md`         | 脆弱性スキャン・OWASP確認結果              |
+| テスト実行ログ           | `outputs/phase-9/test-execution-log.md`     | 全テストスイートの実行結果とカバレッジ集計  |
 
 ## 完了条件
 
@@ -539,6 +584,42 @@ CI/ビルド環境制約でElectronを起動できない場合（スクリプト
 
 1. `outputs/phase-11/screenshots/NOTE.txt` に理由を記載（自動生成）
 2. DevToolsログまたはテスト実行結果をエビデンスとして記録
+
+### CLI環境でのスクリーンショット代替方法（P53対策）
+
+CLI環境（SSHリモート、ヘッドレスサーバー等）でGUI操作によるスクリーンショットが取得できない場合、以下の優先順で代替する:
+
+| 優先度 | 方法                                      | 条件                          |
+| ------ | ----------------------------------------- | ----------------------------- |
+| 1      | Playwright `page.screenshot()` スクリプト | Vite dev server 起動可能時    |
+| 2      | Electron `webContents.capturePage()` API  | Electron ヘッドレス起動可能時 |
+| 3      | テスト結果による間接検証                  | 上記いずれも不可の場合        |
+
+**優先度1: Playwright による自動撮影**
+
+```bash
+# Vite dev server を起動してから Playwright で撮影
+pnpm --filter @repo/desktop dev &
+npx playwright test --project=screenshots
+```
+
+**優先度2: Electron API による撮影**
+
+```typescript
+// Main Process から capturePage() を呼び出すスクリプト
+const image = await mainWindow.webContents.capturePage();
+fs.writeFileSync("outputs/phase-11/screenshots/TC-01.png", image.toPNG());
+```
+
+**優先度3: テスト結果による間接検証**
+
+自動テスト（Vitest / Playwright）の実行結果をエビデンスとして記録する:
+
+- `pnpm test` の全テスト PASS 結果をコピー
+- コンポーネントテストのスナップショット差分なしを確認
+- `manual-test-result.md` のスクリーンショット列に「テスト結果で間接検証済み」と記載
+
+**注意**: 優先度3は視覚的検証の代替であり、UI/UX品質の完全な保証ではない。PR レビュー時にレビュアーが実機で視覚確認することを推奨する。
 
 ### 画面カバレッジマトリクス（UI/UX変更時は必須）
 
@@ -841,6 +922,18 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 - [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加（**2ファイル両方必須** -- P1, P25）
 - [ ] aiworkflow-requirements/SKILL.md 変更履歴更新
 - [ ] task-specification-creator/SKILL.md 変更履歴更新
+
+**4ファイル更新確認コマンド**（P1/P25/P29 対策 — 更新後に必ず実行）:
+
+```bash
+# LOGS.md × 2 + SKILL.md × 2 に TASK_ID が含まれているか確認
+grep -rn "{{TASK_ID}}" \
+  .claude/skills/aiworkflow-requirements/LOGS.md \
+  .claude/skills/task-specification-creator/LOGS.md \
+  .claude/skills/aiworkflow-requirements/SKILL.md \
+  .claude/skills/task-specification-creator/SKILL.md
+# → 4ファイル全てにマッチしなければ更新漏れ
+```
 
 ##### Step 1-B: 実装状況テーブル更新（該当する場合）
 - [ ] api-endpoints.md等の実装ステータスを「完了」に更新

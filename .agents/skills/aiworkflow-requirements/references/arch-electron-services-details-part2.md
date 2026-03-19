@@ -126,6 +126,57 @@ export type RuntimeResolution =
 | テスタビリティ | `SchedulerSkillExecutor` をモック可能 |
 | 責務分離 | 実行制御（Scheduler）とスキル実行本体（SkillService）を分離 |
 
+## DefaultSafetyGate サービス（UT-06-003）
+
+> **実装完了**: UT-06-003
+
+スキル安全性評価サービス。SafetyGatePort インターフェースの具象実装であり、スキル公開前の安全性チェックを実行する。
+
+### ファイル構成
+
+| ファイル | 責務 |
+| --- | --- |
+| `apps/desktop/src/main/permissions/default-safety-gate.ts` | DefaultSafetyGate 具象クラス |
+| `apps/desktop/src/main/permissions/safety-gate.ts` | SafetyGatePort インターフェース定義 |
+| `packages/shared/src/types/safety-gate.ts` | SafetyGateResult 等の共有型定義 |
+| `apps/desktop/src/main/ipc/safetyGateHandlers.ts` | IPC ハンドラ登録関数（`registerSafetyGateHandlers`） |
+
+### DI 構造
+
+`DefaultSafetyGate` は `DefaultSafetyGateDeps` を受け取る Constructor Injection パターンで構成される。
+
+| 依存 | 型 | 説明 |
+| --- | --- | --- |
+| `permissionStore` | PermissionStore | 権限ストアへのアクセス |
+| `metadataProvider` | MetadataProvider | スキルメタデータの取得 |
+| `protectedPaths` | string[] | 保護対象パス一覧 |
+
+### IPC ハンドラ登録
+
+`registerSafetyGateHandlers` は `skill:evaluate-safety` チャネルの IPC ハンドラを登録する。
+詳細は [api-ipc-agent-safety.md](api-ipc-agent-safety.md) を参照。
+
+### PermissionStore 共有パターン（ipc/index.ts）
+
+`PermissionStore` インスタンスを `registerAllIpcHandlers()` 内のスコープ外（関数先頭）で1回生成し、`registerSafetyGateHandlers` と `registerSkillHandlers` の両方へ同一インスタンスを注入する。
+
+| 観点 | 説明 |
+| --- | --- |
+| 共有理由 | SafetyGate の評価結果が PermissionStore の許可状態に依存するため |
+| インスタンス数 | 1（関数スコープ内シングルトン） |
+| P5 対策 | safeRegister パターンで ipcMain.handle() 二重登録を防止 |
+| 実装タスク | TASK-SAFETY-GATE（UT-06-003） |
+
+### 関連未タスク
+
+| 未タスクID | 概要 | 優先度 | 指示書 |
+| --- | --- | --- | --- |
+| UT-06-003-PRELOAD-API-IMPL | Preload 層 safeInvoke 呼び出し追加 | 高 | `docs/30-workflows/unassigned-task/task-ut-06-003-preload-api-impl.md` |
+| UT-06-003-METADATA-PROVIDER-IMPL | stub → 実 SkillMetadataProvider 実装 | 中 | `docs/30-workflows/unassigned-task/task-ut-06-003-metadata-provider-impl.md` |
+| UT-06-003-DIP-REFACTOR | unregisterSafetyGateHandlers 追加（P5 対策） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-003-dip-refactor.md` |
+
+---
+
 ## SkillService と SkillExecutor の統合（TASK-FIX-7-1）
 
 > **実装完了**: 2026-02-11（TASK-FIX-7-1）

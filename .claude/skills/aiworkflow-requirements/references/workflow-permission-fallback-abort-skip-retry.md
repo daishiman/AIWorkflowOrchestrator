@@ -1,7 +1,7 @@
 # Permission Fallback: abort / skip / retry / timeout
 
 > 正本: `.claude/skills/aiworkflow-requirements/references/workflow-permission-fallback-abort-skip-retry.md`
-> 実装ワークフロー: `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/`
+> 実装ワークフロー: `docs/30-workflows/completed-tasks/UT-06-005-abort-skip-retry-fallback/`
 
 ---
 
@@ -32,12 +32,14 @@
 
 | パス | 種別 | 内容 |
 | --- | --- | --- |
-| `apps/desktop/src/main/services/skill/SkillExecutor.ts` | プロダクションコード | processPermissionFallback / executeAbortFlow / executeSkipFlow + 型定義 + PERMISSION_MAX_RETRIES 定数 |
+| `apps/desktop/src/main/services/skill/SkillExecutor.ts` | プロダクションコード | processPermissionFallback / executeAbortFlow / executeSkipFlow + `handlePermissionCheck` + `sendPermissionRequestWithTimeout` + `PermissionTimeoutError` |
 | `apps/desktop/src/main/services/skill/PermissionStore.ts` | プロダクションコード | revokeSessionEntries スタブ実装（全エントリクリア） |
 | `packages/shared/src/types/permission-store.ts` | 共有型定義 | IPermissionStore.revokeSessionEntries? optional メソッド |
 | `packages/shared/src/types/skill.ts` | 共有型定義 | SkillPermissionResponse.skip?: boolean |
 | `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.fallback.test.ts` | テスト | 23テスト（abort 8 / skip 4 / retry 5 / timeout 4 / fail-closed 2） |
-| `docs/30-workflows/UT-06-005-abort-skip-retry-fallback/` | ワークフロー成果物 | Phase 1-12 全成果物 |
+| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.hook-fallback.test.ts` | テスト | PreToolUse Hook 統合テスト（Permission拒否 / timeout / retry / skip / fail-closed） |
+| `docs/30-workflows/completed-tasks/UT-06-005-abort-skip-retry-fallback/` | ワークフロー成果物 | Phase 1-12 全成果物 |
+| `docs/30-workflows/UT-06-005-A-hook-fallback-integration/` | ワークフロー成果物 | PreToolUse Hook 統合 + timeout→abort 遷移の Phase 1-12 成果物 |
 
 ---
 
@@ -66,13 +68,19 @@ cancelAll() → revokeSessionEntries(sessionId) → log → IPC通知(SKILL_STRE
 
 ### 4. timeout → abort
 
-- `DEFAULT_TIMEOUT_MS = 300000`（5分、PermissionResolver 既存値を利用）
+- `DEFAULT_TIMEOUT_MS = 30000`（30秒、SkillExecutor 側 timeout guard を利用）
 - timeout 時は retry なしで直接 `executeAbortFlow("timeout")`
 
 ### 5. IPC 設計
 
 - 既存 `SKILL_STREAM` チャンネル（Main→Renderer）を再利用
 - 新規チャンネル追加なし → Preload Bridge への影響ゼロ
+
+### 6. UT-06-005-A 実行時統合（2026-03-17）
+
+- `createHooks().PreToolUse` が `handlePermissionCheck()` を呼び出す実装へ移行
+- Permission 拒否時に `processPermissionFallback()` が実行時フローで有効化
+- timeout は `PermissionTimeoutError` として検知し `executeAbortFlow("timeout")` に遷移
 
 ---
 
@@ -116,11 +124,11 @@ cancelAll() → revokeSessionEntries(sessionId) → log → IPC通知(SKILL_STRE
 
 ---
 
-## 検出した未タスク（3件）
+## 検出した未タスク（更新: 2026-03-17）
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | --- | --- | --- | --- |
-| UT-06-005-A | PreToolUse Hook フォールバック統合（GAP-02/03） | 高 | `docs/30-workflows/unassigned-task/task-ut-06-005-a-hook-fallback-integration.md` |
+| ~~UT-06-005-A~~ | ~~PreToolUse Hook フォールバック統合（GAP-02/03）~~ **完了: 2026-03-17** | ~~高~~ | `docs/30-workflows/UT-06-005-A-hook-fallback-integration/` |
 | UT-06-005-B | revokeSessionEntries セッション別本格実装（GAP-04） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md` |
 | UT-06-005-C | SkillStreamMessageType abort/skip 型追加（GAP-06） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md` |
 
@@ -141,4 +149,5 @@ cancelAll() → revokeSessionEntries(sessionId) → log → IPC通知(SKILL_STRE
 
 | 日付 | バージョン | 内容 |
 | --- | --- | --- |
+| 2026-03-17 | 1.1.0 | UT-06-005-A 完了同期。PreToolUse Hook 統合 (`handlePermissionCheck` / `sendPermissionRequestWithTimeout` / `PermissionTimeoutError`) と timeout 30秒契約、未タスク台帳更新を反映 |
 | 2026-03-16 | 1.0.0 | 初版作成。UT-06-005 完了時の実装内容・苦戦箇所・未タスク3件を統合 |

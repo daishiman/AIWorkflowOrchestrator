@@ -27,7 +27,8 @@ export function WorkspaceChatInput({
   const canSend =
     controller.input.trim().length > 0 &&
     !controller.isSending &&
-    !controller.isStreaming;
+    !controller.isStreaming &&
+    controller.selectedModelId !== null;
 
   return (
     <div className="space-y-3">
@@ -89,6 +90,15 @@ export function WorkspaceChatInput({
         ) : null}
 
         <div className="mt-3 flex items-center justify-end gap-2">
+          {controller.selectedModelId === null ? (
+            <span
+              className="text-xs text-[var(--text-primary)] opacity-50"
+              data-testid="workspace-chat-model-missing"
+            >
+              Settings でモデルを選択してください
+            </span>
+          ) : null}
+
           {controller.isStreaming ? (
             <button
               type="button"

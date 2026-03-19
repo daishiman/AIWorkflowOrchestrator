@@ -386,3 +386,84 @@ Electron 3プロセスモデル（Main/Preload/Renderer）で型定義が各層�
 
 ---
 
+## IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装）
+
+### S35: IPC ハンドラレスポンスの統一 Wrapper 形式
+
+> **発見タスク**: UT-06-003
+> **関連Pitfall**: P60（IPC テスト応答形式の不一致）
+
+#### 問題
+
+IPC ハンドラのレスポンス形式が統一されていないと、テスト設計（Phase 4）と実装（Phase 5）の間でアサーション形式が乖離する。フラットな `{ code, message }` 形式を期待するテストに対して、実装が `{ success, error: { code, message } }` の wrapper 形式を返すと、全テストの修正が必要になる。
+
+#### 解決策
+
+IPC ハンドラのレスポンスは以下の統一 wrapper 形式を使用する。
+
+```typescript
+// 成功レスポンス
+interface IPCSuccessResponse<T> {
+  success: true;
+  data: T;
+}
+
+// エラーレスポンス
+interface IPCErrorResponse {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+  };
+}
+
+type IPCResponse<T> = IPCSuccessResponse<T> | IPCErrorResponse;
+```
+
+#### テスト設計時の必須確認事項
+
+| チェック項目 | 確認方法 |
+| --- | --- |
+| 既存ハンドラのレスポンス形式 | `grep -rn "success:" apps/desktop/src/main/handlers/` |
+| wrapper 形式の統一性 | Phase 2 設計書にレスポンス型を明記 |
+| テストアサーション | `result.error.code` 形式で記述 |
+
+#### コード例
+
+```typescript
+// IPC ハンドラ実装
+ipcMain.handle("safety-gate:validate", async (_event, args) => {
+  try {
+    const result = await safetyGate.validateToolExecution(args);
+    return { success: true, data: result };
+  } catch (error: unknown) {
+    // P49 準拠: in 演算子パターンでエラーを検証
+    if (
+      error != null &&
+      typeof error === "object" &&
+      "code" in error &&
+      typeof error.code === "string"
+    ) {
+      return { success: false, error: { code: error.code, message: String(error.message ?? "") } };
+    }
+    return { success: false, error: { code: "INTERNAL_ERROR", message: "Unknown error" } };
+  }
+});
+
+// テストアサーション（wrapper 形式に合わせる）
+expect(result).toEqual({
+  success: false,
+  error: { code: "VALIDATION_ERROR", message: expect.any(String) },
+});
+```
+
+#### 適用基準
+
+| 条件 | 適用 |
+| --- | --- |
+| 新規 IPC ハンドラ | 必須（wrapper 形式を使用） |
+| 既存 IPC ハンドラ | 変更時に wrapper 形式へ統一を推奨 |
+| Phase 4 テスト設計 | Phase 2 のレスポンス型定義を参照して記述 |
+
+---
+

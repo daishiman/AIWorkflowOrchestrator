@@ -106,7 +106,8 @@
       "Bash(pnpm --filter @repo/desktop test -- --run fileTreeUtils)",
       "Bash(pnpm --filter @repo/desktop test -- --run apps/desktop/src/renderer/store/slices/__tests__/llmSlice.selectors.test.ts)",
       "Bash(CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm vitest:*)",
-      "Bash(pnpm vitest:*)"
+      "Bash(pnpm vitest:*)",
+      "Bash(gh issue:*)"
     ],
     "deny": [],
     "ask": []
