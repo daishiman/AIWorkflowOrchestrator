@@ -1,4 +1,5 @@
 import { StateCreator } from "zustand";
+import { normalizeSkillLifecycleView } from "../../navigation/skillLifecycleJourney";
 import type { ViewType } from "../types";
 
 export interface NavigationSlice {
@@ -29,16 +30,17 @@ export const createNavigationSlice: StateCreator<
 
   // Actions
   setCurrentView: (view) => {
+    const normalizedView = normalizeSkillLifecycleView(view);
     const current = get().currentView;
-    if (current === view) return;
+    if (current === normalizedView) return;
 
     set((state) => {
       const safeHistory = Array.isArray(state.viewHistory)
         ? state.viewHistory
         : [];
       return {
-        currentView: view,
-        viewHistory: [...safeHistory, view],
+        currentView: normalizedView,
+        viewHistory: [...safeHistory, normalizedView],
       };
     });
   },

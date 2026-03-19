@@ -34,6 +34,8 @@ AC-1〜AC-6 を多角的に照合し、実装の品質・整合性を検証す�
 
 | 資料名                 | パス                                 | 説明                                 |
 | ---------------------- | ------------------------------------ | ------------------------------------ |
+| Phase 2 設計仕様書     | `phase-2-design.md`                  | 設計意図とAC対応方針の確認           |
+| Phase 5 実装仕様書     | `phase-5-implementation.md`          | 最終レビュー対象の実装内容確認       |
 | Phase 9 品質検証結果   | `outputs/phase-9/qa-results.md`      | Lint・型チェック・テスト結果サマリー |
 | タスク仕様書の受入基準 | Phase 1 仕様書内 AC-1〜AC-6          | 受入基準定義                         |
 | Phase 10 ゲート判定    | `.claude/rules/05-task-execution.md` | PASS/MINOR/MAJOR/CRITICAL 判定基準   |

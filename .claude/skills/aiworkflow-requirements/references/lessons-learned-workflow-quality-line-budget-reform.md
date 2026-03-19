@@ -47,7 +47,7 @@
 | --- | --- |
 | root evidence 化 | `phase12-task-spec-compliance-check.md` に 4点突合、implementation guide 必須要素、未タスク10見出し、current / baseline を集約する |
 | split-aware link audit | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md` |
-| active 未タスク個別合否 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
+| active 未タスク個別合否 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
 | workflow 差分合否 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` |
 | generated blocker 判定 | `wc -l .claude/skills/aiworkflow-requirements/indexes/topic-map.md` で raw 値を取り、manual docs gate と別レイヤーで扱う |
 | same-wave sync | `spec-elegance-consistency-audit.md` の同一 wave checklist に従い、current canonical set / inventory / register / ledger / mirror を同一ターンで同期する |

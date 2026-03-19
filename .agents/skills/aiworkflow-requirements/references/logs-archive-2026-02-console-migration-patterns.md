@@ -118,7 +118,7 @@
 | タスクID     | TASK-FIX-13-1-DEPRECATED-PROPERTY-MIGRATION |
 | Agent        | aiworkflow-requirements |
 | 操作         | システム仕様書更新（完了タスク記録 + 型定義同期 + 未タスク登録 + 変更履歴更新） |
-| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, docs/30-workflows/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md |
+| 対象ファイル | interfaces-agent-sdk-skill.md, task-workflow.md, docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-perf-001-graph-utils-performance-benchmark.md |
 | 結果         | success |
 | 備考         | `Anchor.name`/`Skill.lastUpdated` 削除を仕様に反映。`SkillImportConfig.lastUpdated` は互換維持のため据え置き |
 

@@ -35,17 +35,22 @@ Phase 11 の manual test。
 
 ## UI task 追加要件
 
-- screenshot plan
+- `screenshot-plan.json`
+- main shell source-to-destination capture（handoff task の場合）
 - screenshot evidence
 - Apple UI/UX 視覚レビュー
 - coverage matrix
+- `phase11-capture-metadata.json`
 
 ## 必須成果物
 
 | 成果物 | 用途 |
 | --- | --- |
 | `manual-test-result.md` | walkthrough 結果 |
+| `manual-test-report.md` | 実施概要と所見 |
 | `discovered-issues.md` | blocker と note |
+| `ui-sanity-visual-review.md` | 視覚レビュー |
+| `phase11-capture-metadata.json` | capture 実行時の evidence inventory |
 
 ## 設計タスク専用セクション（SF-01対応）
 

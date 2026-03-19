@@ -14,10 +14,10 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 | --- | --- | --- | --- |
 | view | SkillCenterView | 画面統合（検索、カテゴリ、おすすめ、グリッド、詳細パネル） | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
 | organism | FeaturedSection | 未追加ツールのおすすめ表示（最大3件） | `.../components/FeaturedSection/FeaturedSection.tsx` |
-| organism | SkillDetailPanel | ツール詳細表示、削除導線 | `.../components/SkillDetailPanel/SkillDetailPanel.tsx` |
+| organism | SkillDetailPanel | ツール詳細表示、編集/分析 handoff、削除導線 | `.../components/SkillDetailPanel/SkillDetailPanel.tsx` |
 | molecule | FeaturedCard / SkillCard / CategoryTabs / SkillEmptyState | カード表示・カテゴリ切替・空状態表示 | `.../components/` |
 | atom | AddButton | 追加ボタン状態遷移（idle/processing/success） | `.../components/AddButton.tsx` |
-| hook | useSkillCenter | Store接続、フィルタリング、詳細パネル状態管理 | `.../hooks/useSkillCenter.ts` |
+| hook | useSkillCenter | Store接続、フィルタリング、詳細パネル状態管理、edit/analyze handoff | `.../hooks/useSkillCenter.ts` |
 | hook | useFeaturedSkills | 未追加ツール抽出 + 多様性考慮のおすすめ選定 | `.../hooks/useFeaturedSkills.ts` |
 
 ### 進捗ステータス
@@ -58,6 +58,34 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 3. 入口画面には primary journey と destination surface を同居させず、handoff を明記する。
 4. representative screenshot は shell 全景ではなく、責務境界が読める要素 capture を正本にする。
 5. Phase 12 は `task-workflow` / `lessons-learned` / `ui-ux-feature-components` に同じ実装内容・苦戦箇所・current/baseline 監査値を同期する。
+
+### TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001（2026-03-19）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| action zone 表示条件 | `SkillDetailPanel` は `isImported && onEdit && onAnalyze` のときだけ `action-buttons-zone` を表示する |
+| edit handoff | `エディタで開く` は `handleEditSkill(skillName)` を呼び、`currentSkillName` を設定して `skill-editor` へ遷移する |
+| analyze handoff | `分析する` は `handleAnalyzeSkill(skillName)` を呼び、`currentSkillName` を設定して `skillAnalysis` へ遷移する |
+| detail state | handoff 後は `handleCloseDetail()` により detail panel を閉じ、一覧 state を残さない |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-01..07` |
+| 自動検証 | `SkillDetailPanel.test.tsx`（49 tests）+ `useSkillCenter.test.ts`（17 tests）+ `useSkillCenter.navigation.test.ts`（4 tests）で 70 tests PASS |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| standalone route の screenshot だけでは handoff 証明が弱い | destination view の単体 capture だけで完了判定する | `SkillCenter` main shell 上で detail panel click から destination まで連続 capture した | handoff 系 UI は source surface から destination まで同一 shell で撮る |
+| desktop / mobile 両パネルが同時に DOM に存在し selector が衝突する | `data-testid="edit-skill-button"` を page 全体で直接探す | visible panel を返す locator に scope して click した | shared DOM を持つ UI は panel scope を切ってから操作する |
+
+#### 同種課題の5分解決カード
+
+1. source surface がある handoff は destination 単独ではなく main shell 上で撮る。
+2. state payload が必要な遷移は `skillName` などの payload 設定順序も test で固定する。
+3. shared desktop/mobile DOM は visible container を先に特定してから selector を使う。
+4. destructive action と primary action は detail panel 内で縦方向に分離する。
+5. Phase 12 では `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同時同期する。
 
 ### 状態管理・IPC依存
 
@@ -147,7 +175,7 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 ### 同種課題の簡潔解決手順（4ステップ）
 
 1. UI責務を `view / organism / molecule / hook` に分解し、拡張点を先に決める。  
-2. 未タスク候補を `docs/30-workflows/unassigned-task/` に分離登録する。  
+2. 未タスク候補を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に分離登録する。  
 3. `verify-unassigned-links` と `audit --target-file` で参照と形式を機械確認する。  
 4. `task-workflow.md` と `lessons-learned.md` に苦戦箇所を同一ターンで同期する。  
 
@@ -319,12 +347,12 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
+| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
 
 ### 完了済み派生タスク
 
@@ -423,9 +451,9 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 | タスクID | 内容 | 優先度 | 仕様書 |
 | --- | --- | --- | --- |
-| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
-| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
-| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
+| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
+| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
 
 ---
 

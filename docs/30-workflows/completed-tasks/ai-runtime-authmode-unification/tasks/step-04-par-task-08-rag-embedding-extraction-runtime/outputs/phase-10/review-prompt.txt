@@ -1,0 +1,74 @@
+Phase 10 Final Review Input
+===========================
+
+Task ID : TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001
+Task Type: Design (type: design)
+Review Date: 2026-03-19
+
+## Scope Summary
+
+This task (Task 08) performs two categories of work:
+1. Backend AI surface runtime capability documentation/design
+   - Defines capability matrix for 21 surfaces across 3 lanes
+   - Specifies error policy, guidance-only patterns, IPC contracts
+2. Limited production code changes (Phase 5)
+   - Replaces production mock stubs with guidance-only responses
+   - Adds register/unregister pairs for IPC handlers
+   - Adds SF-09/SF-05/SF-07 logging improvements
+
+## Phase 1-9 Artifact Paths
+
+- requirements-definition.md  : outputs/phase-1/requirements-definition.md
+- scope-definition.md         : outputs/phase-1/scope-definition.md
+- design-summary.md           : outputs/phase-2/design-summary.md
+- contract-matrix.md          : outputs/phase-2/contract-matrix.md
+- ui-ux-realization.md        : outputs/phase-2/ui-ux-realization.md
+- design-review-report.md     : outputs/phase-3/design-review-report.md
+- test-matrix.md              : outputs/phase-4/test-matrix.md
+- implementation-log.md       : outputs/phase-5/implementation-log.md
+- coverage-report.md          : outputs/phase-7/coverage-report.md
+- refactoring-log.md          : outputs/phase-8/refactoring-log.md
+- quality-report.md           : outputs/phase-9/quality-report.md
+- security-check.md           : outputs/phase-9/security-check.md
+
+## Phase 3 MINOR Issues (M-01 to M-06)
+
+M-01: contract-matrix § 7.3 CommunitySummarizer postconditions shows pre-fix state
+M-02: AI_INDEX exclusive control implementation layer not defined (MEDIUM)
+M-03: AI_INDEX failure guidance message templates not differentiated by cause
+M-04: HybridRAGFactory postconditions only says "to be implemented later" (MEDIUM)
+M-05: RelevanceEvaluator postconditions contradicts SF-07 fix decision
+M-06: Main Process DI assembly ownership not defined (MEDIUM)
+
+## Phase 5 Unresolved Items (U-01 to U-05)
+
+U-01: communityHandlers IPC response format unification (SD-I01) - medium, separate task
+U-02: HybridRAGFactory.createFull() real wiring - high, separate task
+U-03: Embedding spec diff SD-E01~07 - medium, spec update
+U-04: HybridRAGEngine any type (SD-S03) - medium, separate task
+U-05: ILLMClient type divergence (SD-S02) - medium, separate task
+
+## Coverage Summary
+
+- aiHandlers.ts: 44.72% Stmts / 72.72% Branch / 33.33% Funcs (SCF applied)
+- search (shared): 96.85% Stmts / 90.84% Branch / 100% Funcs (PASS)
+- embedding (shared): ~78.82% Funcs (SCF applied, 1.18% below 80%)
+- graph (shared): SCF PASS
+- extraction (shared): SCF PASS
+
+## Test Counts
+
+- Total: 1,085 tests (936 PASS + 15 intentional skip/todo)
+- aiHandlers: 13/13 PASS
+- search: 569/569 PASS (14 skip: external DB dependency)
+- graph: 302/302 PASS (1 todo: DiskANN future)
+- embedding: 52/52 PASS
+
+## Quality Gate (Phase 9)
+
+All 9 tasks PASS:
+- Lint: 0 errors
+- TypeScript: 0 errors
+- Silent fallback: 0 detected
+- Mock/stub residual: 0 in Phase 5 changed files
+- Security: PASS (API key not exposed)

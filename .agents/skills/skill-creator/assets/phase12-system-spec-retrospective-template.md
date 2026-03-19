@@ -51,6 +51,16 @@
 | なぜ必要か | `<背景と狙い>` |
 | 完了判定 | `<Phase 12要件と一致する根拠>` |
 
+### 2.1 screenshot fallback 記録（画面検証を伴う場合）
+
+| 項目 | 内容 |
+| --- | --- |
+| harness file path | `<apps/.../phase11-*.html or .tsx>` |
+| capture script path | `<apps/.../capture-*.mjs>` |
+| review board path | `<workflow>/outputs/phase-11/screenshots/<review-board>.png` |
+| metadata path | `<workflow>/outputs/phase-11/screenshots/phase11-capture-metadata.json` |
+| failure reason | `<esbuild mismatch / preview unreachable / navigation unstable など>` |
+
 ---
 
 ## 3. 仕様書別SubAgent分担（必須）
@@ -284,7 +294,7 @@ UI機能実装の場合は次を推奨:
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-a> && node .claude/skills/task-specification-creator/scripts/validate-phase-output.js <workflow-b>` | 2workflow同時監査（出力） | 2件とも `PASS` |
 | `pnpm install --frozen-lockfile` | worktree / UI再撮影前の依存解決 preflight | 依存欠落が解消される |
 | `rg -n "text-white\|bg-white/\|border-white/\|text-gray-\|bg-gray-\|border-gray-" apps/desktop/src/renderer` | Light Mode 全画面 drift の hardcoded neutral class 監査 | 修正対象が列挙される |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスクリンク整合確認 | `missing: 0` |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source <workflow-path>/outputs/phase-12/unassigned-task-detection.md` | current workflow 起点の未タスクリンク整合確認 | `missing: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file <unassigned-file>` | root `unassigned-task/` の対象未タスク監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --completed-unassigned-dir docs/30-workflows/completed-tasks/<workflow>/unassigned-task --target-file docs/30-workflows/completed-tasks/<workflow>/unassigned-task/<task>.md` | completed workflow 配下 backlog の current 監査 | `currentViolations: 0` |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/<task>.md` | standalone completed task spec の current 監査 | `currentViolations: 0` |
@@ -313,6 +323,7 @@ UI機能実装の場合は次を推奨:
 | `ls -lt <workflow-path>/outputs/phase-11/screenshots` | UI再撮影証跡の鮮度確認（UIタスクのみ） | 最上位ファイルの更新時刻が当日である |
 | `ps -ef \| rg "capture-.*phase11\|vite" \| rg -v rg || true` | UI再撮影後の残留プロセス確認（UIタスクのみ） | 不要プロセスが残留していない、または停止方針が記録済み |
 | `node .claude/skills/skill-creator/scripts/quick_validate.js <skill-dir>` | スキル構造検証 | `error: 0` |
+| `node .claude/skills/skill-creator/scripts/validate_all.js <skill-dir>` | スキル全体検証 | `エラー: 0` |
 
 ---
 
@@ -417,3 +428,15 @@ UI機能実装の場合は次を推奨:
 - [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している
 - [ ] `apps/desktop` 全量 `test:run` が `SIGTERM` の場合、失敗ログと分割実行結果の両方を記録している
 - [ ] テンプレート本文の重複行（同一手順番号重複、同一検証コマンド重複）がないことを確認している
+
+## 苦戦した箇所
+
+- 何が難しかったか
+- どの判断を誤ると再発するか
+- 次回 5 分で確認すべき順序は何か
+
+## 未タスク formalize 確認
+
+- unassigned-task-detection に ID が残っているか
+- 対応する unassigned-task 実ファイルがあるか
+- 関連仕様と backlog に導線があるか

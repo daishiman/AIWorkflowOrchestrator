@@ -1,7 +1,7 @@
 {
   "capturedAt": "2026-03-17T04:08:39.983Z",
-  "workflowRoot": "docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation",
-  "screenshotDir": "docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots",
+  "workflowRoot": "docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation",
+  "screenshotDir": "docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots",
   "baseUrl": "http://127.0.0.1:5194",
   "scenarios": [
     {

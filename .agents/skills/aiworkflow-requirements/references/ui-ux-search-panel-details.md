@@ -107,11 +107,11 @@ EditorInstanceインターフェースのTextArea実装。
 
 | タスクID                         | 概要                           | 優先度 | サイズ | 仕様書                                                                      |
 | -------------------------------- | ------------------------------ | ------ | ------ | --------------------------------------------------------------------------- |
-| TASK-SEARCH-REGEX-ERROR-UI-001   | 正規表現エラーのUI表示改善     | 低     | S      | [task-search-panel-regex-error-ui.md](../../../docs/30-workflows/unassigned-task/task-search-panel-regex-error-ui.md) |
-| TASK-SEARCH-HISTORY-001          | 検索履歴機能                   | 低     | M      | [task-search-panel-history.md](../../../docs/30-workflows/unassigned-task/task-search-panel-history.md) |
-| TASK-SEARCH-FILE-NAV-001         | 検索結果ファイル間ナビゲーション | 低     | M      | [task-search-panel-file-navigation.md](../../../docs/30-workflows/unassigned-task/task-search-panel-file-navigation.md) |
-| task-search-scope-folder-001     | 検索スコープ指定機能           | 中     | M      | [task-search-scope-folder.md](../../../docs/30-workflows/unassigned-task/task-search-scope-folder.md) |
-| task-search-multifile-replace-001| マルチファイル一括置換機能     | 中     | M      | [task-search-multifile-replace.md](../../../docs/30-workflows/unassigned-task/task-search-multifile-replace.md) |
+| TASK-SEARCH-REGEX-ERROR-UI-001   | 正規表現エラーのUI表示改善     | 低     | S      | [task-search-panel-regex-error-ui.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-search-panel-regex-error-ui.md) |
+| TASK-SEARCH-HISTORY-001          | 検索履歴機能                   | 低     | M      | [task-search-panel-history.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-search-panel-history.md) |
+| TASK-SEARCH-FILE-NAV-001         | 検索結果ファイル間ナビゲーション | 低     | M      | [task-search-panel-file-navigation.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-search-panel-file-navigation.md) |
+| task-search-scope-folder-001     | 検索スコープ指定機能           | 中     | M      | [task-search-scope-folder.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-search-scope-folder.md) |
+| task-search-multifile-replace-001| マルチファイル一括置換機能     | 中     | M      | [task-search-multifile-replace.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-search-multifile-replace.md) |
 
 ### 改善候補の詳細
 

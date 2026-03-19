@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-03-19T04:29:33.913Z",
+  "captureMode": "static-fallback-from-current-code",
+  "reason": "Vite/electron preview could not be used because esbuild native binary was mismatched in this worktree.",
+  "intendedHarnessPath": "/phase11-slide-ai-runtime-alignment.html",
+  "viewport": {
+    "width": 1440,
+    "height": 1180
+  },
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "current SlideWorkspace の empty state（project 未選択）",
+      "route": "static-fallback://empty",
+      "output": "screenshots/TC-11-01-slide-workspace-empty-state.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "project 選択後の current synced state",
+      "route": "static-fallback://synced",
+      "output": "screenshots/TC-11-02-slide-workspace-synced-state.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "out-of-sync 時に current 実装が manual sync button を単独表示することを確認",
+      "route": "static-fallback://out-of-sync",
+      "output": "screenshots/TC-11-03-slide-workspace-manual-sync-cta.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "modifier 実行中の progress 表示",
+      "route": "static-fallback://running",
+      "output": "screenshots/TC-11-04-slide-workspace-running-progress.png",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "description": "manual sync 失敗時の current error alert と guidance 不在",
+      "route": "static-fallback://sync-error",
+      "output": "screenshots/TC-11-05-slide-workspace-sync-error.png",
+      "priority": "A"
+    }
+  ]
+}

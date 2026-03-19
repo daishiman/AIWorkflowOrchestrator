@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-19 - TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（SkillDetailPanel action buttons / screenshot証跡7件 / backlog path drift 是正 / workflow index undefined 解消） |
+| 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
 | 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（SafetyGatePort evaluate() + IPC skill:evaluate-safety + 36テスト全PASS カバレッジ全100%）バッチ同期 |
@@ -45,6 +47,48 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
+
+- タスク名: skilldetail-action-buttons
+- 種別: UI 実装再監査 / system spec same-wave sync
+- 主要確認:
+  - `SkillDetailPanel` に `action-buttons-zone` / `edit-skill-button` / `analyze-skill-button` が imported skill 条件で表示される
+  - `useSkillCenter` が `setCurrentSkillName -> setCurrentView -> handleCloseDetail` の順で `skill-editor` / `skillAnalysis` へ handoff する
+  - Phase 11 screenshot は main shell 上の source-to-destination 証跡として TC-11-01〜07 を再取得済み
+  - `verify-unassigned-links` の missing 17件は実体欠落ではなく `path drift 14件 + stale link 2件 + duplicate 1件` だった
+- system spec update status:
+  - `workflow-skill-lifecycle-routing-render-view-foundation.md`
+  - `ui-ux-navigation.md`
+  - `ui-ux-feature-components-core.md`
+  - `ui-ux-feature-components-reference.md`
+  - `ui-ux-feature-components-advanced.md`
+  - `arch-state-management-core.md`
+  - `arch-state-management-reference-permissions-import-lifecycle.md`
+  - `task-workflow-backlog.md`
+  - `task-workflow-completed-skill-lifecycle-ui.md`
+  - `task-workflow-completed-skill-lifecycle.md`
+  - `task-workflow.md`
+  - `lessons-learned-viewtype-electron-ui.md`
+  - `lessons-learned-current.md`
+- 補足:
+  - `task-specification-creator/scripts/generate-index.js` の artifacts fallback 不足により workflow `index.md` が `undefined` になっていたため、script 側も同一 wave で補正した
+
+## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
+
+- タスク名: スキルライフサイクル統合 UI GAP 解消（Task09-12）仕様書作成
+- 種別: 仕様書作成（Phase 1-3 完成、Phase 4 以降は Phase 3 PASS 後に作成）
+- タスク群:
+  - TASK-IMP-LIFECYCLE-TERMINAL-INTEGRATION-001（Terminal 統合 C-02/C-03/C-04）
+  - TASK-IMP-LIFECYCLE-CONSTRAINT-CHIPS-001（制約条件入力 UI C-05/C-06）
+  - TASK-IMP-LIFECYCLE-QUALITY-RUNTIME-UI-001（QualityGateLabel + RuntimeBanner C-07）
+  - TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001（ReuseReady 状態 + Improve サイクル D-01/D-03）
+- 苦戦箇所:
+  - P64: GAP ID 正本テーブルを後から追加した際に既存仕様書の番号体系と不整合が生じた
+  - P65: Task09/Task12 において存在しない Props（`currentPhase`）や型値（`"review"`/`"improve_ready"`）を前提に Phase 2 設計を行い、Phase 4 テスト作成時にコンパイルエラーが発覚
+- 解決策:
+  - P64: 正本テーブルを既存参照の番号体系に合わせて修正。新規付番前に `grep` で全件確認する運用を確立
+  - P65: 内部状態からのフェーズ導出方式に書き換え。型変更は P32 準拠で変更先ファイルとパスを Phase 2 に明記する
 
 ## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
 - 完了日: 2026-03-17

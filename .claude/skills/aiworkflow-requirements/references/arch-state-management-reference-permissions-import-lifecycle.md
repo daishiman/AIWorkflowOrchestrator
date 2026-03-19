@@ -197,6 +197,9 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | `useSkillCenter` | `useAvailableSkillsMetadata() ?? []` / `useImportedSkills() ?? []` で Store 読み出し時の nullish を吸収 |
 | `useSkillCenter.handleAddSkill` | `addingSkills.has(skillName)` を先頭ガードにし、追加中の同一スキル再実行を抑止 |
 | `useSkillCenter.handleAddSkill` | 既存インポート済み時は `importSkill` 同期のみ実施し、成功アニメーション状態（`addingSkills`）を開始しない |
+| `useSkillCenter.handleEditSkill` | `setCurrentSkillName(skillName)` → `setCurrentView("skill-editor")` → `handleCloseDetail()` の順で handoff し、detail panel state を destination へ持ち込まない |
+| `useSkillCenter.handleAnalyzeSkill` | `setCurrentSkillName(skillName)` → `setCurrentView("skillAnalysis")` → `handleCloseDetail()` の順で handoff する |
+| `SkillDetailPanel` action zone | `isImported && onEdit && onAnalyze` を満たす imported detail panel だけに action buttons を表示する |
 | 検索/カテゴリ判定 | `normalizeSearchText(value)` で `description` 欠損時にも `.toLowerCase()` 例外を回避 |
 | Featured 計算 | `useFeaturedSkills` で `allSkills=[]`, `importedSkillNames=[]` を既定値化し、計算関数の前提を固定 |
 
@@ -216,6 +219,7 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 | --- | --- |
 | `apps/desktop/src/renderer/store/slices/__tests__/agentSlice.skill-integration.test.ts` | PASS（既存インポート時 IPC スキップと重複防止を確認） |
 | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts` | PASS（追加中再実行抑止 + 既存インポート時アニメーション抑止を確認） |
+| `apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillDetailPanel.test.tsx` | PASS（action zone 表示条件 + keyboard/Escape 回帰を確認） |
 | `apps/desktop/src/renderer/components/skill/__tests__/SkillImportDialog.test.tsx` | PASS（31 tests、`追加する` / `追加中...` copy と `getState()` 依存成功判定を確認） |
 | `docs/30-workflows/completed-tasks/02-TASK-FIX-SKILL-IMPORT-IDEMPOTENCY-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で冪等状態遷移（追加済み/追加中/追加後/詳細表示）を確認 |
 | `docs/30-workflows/completed-tasks/03-TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001/outputs/phase-11/screenshots/` | TC-01〜TC-04 の画面証跡で欠損メタデータ時のクラッシュ非発生を確認 |
@@ -258,7 +262,7 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 2. `.filter()` / `.map()` 派生 selector は `useShallow` 適用を先に固定する。
 3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。
-5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
+5. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
 
 ## TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07）
 
@@ -396,4 +400,3 @@ TASK-SKILL-LIFECYCLE-06 の設計により、permissionHistorySlice に以下の
 | 5 | screenshot harness のUI文言依存 | Store が内部例外を汎用文言に変換 | `data-testid` を ready 条件の正本に |
 
 詳細: `lessons-learned.md` の TASK-10A-F セクション参照
-

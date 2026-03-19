@@ -261,9 +261,9 @@ executeSkill: async (prompt) => {
 
 **関連未タスク**:
 - UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001: `abortExecution` にも同様のガードが必要な可能性（`docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md`）
-- UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001: `createStore` / `mockElectronAPI` / `flushMicrotasks` の共通ヘルパー抽出（`docs/30-workflows/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md`）
-- UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001: agentSlice 既存テスト13ファイルの環境依存エラー修復（`docs/30-workflows/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md`）
-- UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001: Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加（`docs/30-workflows/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`）
+- UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001: `createStore` / `mockElectronAPI` / `flushMicrotasks` の共通ヘルパー抽出（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md`）
+- UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001: agentSlice 既存テスト13ファイルの環境依存エラー修復（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md`）
+- UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001: Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`）
 
 #### 実装時の苦戦箇所と短縮手順
 
@@ -424,7 +424,7 @@ IPCイベントを受信して状態を更新する内部ハンドラー。`setu
 | TASK-7B                             | SkillImportDialog              | **完了**                                                                                                 |
 | TASK-7C                             | PermissionDialog               | **完了**                                                                                                 |
 | task-imp-permission-readable-ui-001 | PermissionDialog人間可読UI改善 | **完了**                                                                                                 |
-| TASK-7D                             | ChatPanel統合                  | **完了**（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
+| TASK-7D                             | ChatPanel統合                  | **完了**（[指示書](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-chatpanel-agent-integration.md)） |
 | task-imp-permission-history-001     | Permission履歴トラッキングUI   | **完了**                                                                                                 |
 | TASK-8B                             | コンポーネントテスト（全4コンポーネント+3ユーティリティ、280テスト） | **完了**                                                                                                 |
 

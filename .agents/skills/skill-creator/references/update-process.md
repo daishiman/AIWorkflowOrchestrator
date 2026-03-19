@@ -48,6 +48,25 @@ Phase 4: フィードバック（Script Task）
 [log-usage]
 ```
 
+### Mode: update（Phase 12 retrospective / spec_created 再監査）
+
+```
+Phase 1: 入口固定
+task-specification-creator/phase-11-12-guide → spec-update-workflow → primary target file list 固定
+                            ↓
+Phase 2: concern 分離
+system spec / screenshot evidence / unassigned formalize / skill update + mirror に lane 分割
+                            ↓
+Phase 3: 実更新
+.claude 正本 / outputs / docs/30-workflows/unassigned-task を同一ターンで更新
+                            ↓
+Phase 4: 検証
+verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD → quick_validate / validate_all → diff -qr
+                            ↓
+Phase 5: フィードバック
+log-usage + LOGS.md + skill feedback report
+```
+
 ### Mode: improve-prompt（プロンプト改善）
 
 ```
@@ -76,6 +95,7 @@ Phase 4: フィードバック（Script Task）
 | パフォーマンス問題 | スキルの実行効率が低下                      | improve-prompt    |
 | 使用パターン変化   | 想定外の使用方法が主流に                    | update            |
 | 依存スキル更新     | 依存先スキルの変更による影響                | update            |
+| Phase 12 再監査    | docs-heavy / `spec_created` task の実更新漏れ | update          |
 
 ---
 
@@ -138,6 +158,24 @@ node scripts/validate_all.js .claude/skills/my-skill
 
 # 5. フィードバック記録
 node scripts/log_usage.js --result success --phase update
+```
+
+### update モード（Phase 12 retrospective）
+
+```bash
+# 1. primary target と guide を先に固定
+rg -n "primary target|spec_created|screenshot fallback" \
+  .claude/skills/task-specification-creator/references/phase-11-12-guide.md \
+  .claude/skills/task-specification-creator/references/spec-update-workflow.md
+
+# 2. workflow 単位の証跡を閉じる
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js \
+  --source docs/30-workflows/<workflow>/outputs/phase-12/unassigned-task-detection.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+
+# 3. 更新した skill を構造検証
+node scripts/quick_validate.js .claude/skills/skill-creator
+node scripts/validate_all.js .claude/skills/skill-creator
 ```
 
 ### improve-prompt モード

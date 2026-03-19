@@ -189,6 +189,14 @@ TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phas
 | 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx`, `SkillCodeEditor.tsx` |
 | テスト | ✅ 完了 | `SkillEditor.test.tsx`, `SkillCodeEditor.test.tsx`, `buildFileTree.test.ts`, `getLanguage.test.ts` |
 
+### 下流導線追補（2026-03-19）
+
+| 観点 | 内容 |
+| --- | --- |
+| 入口 | imported `SkillDetailPanel` の `エディタで開く` から `skill-editor` へ到達する |
+| state payload | `currentSkillName` を先に設定してから `SkillEditorView` を描画する |
+| 証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-03-desktop-edit-handoff.png` |
+
 ### 関連ドキュメント
 
 - [TASK-9A ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/index.md)
@@ -200,9 +208,9 @@ TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phas
 
 | タスクID | 概要 | 仕様書 |
 | --- | --- | --- |
-| TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/unassigned-task/task-9a-c-syntax-highlighting.md` |
+| TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-syntax-highlighting.md` |
 | ~~TASK-9A-C-002~~ | ~~ファイル作成・削除機能~~ **完了: 2026-02-26（TASK-9Aへ統合）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md` |
-| TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/unassigned-task/task-9a-c-code-editor-migration.md` |
+| TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-code-editor-migration.md` |
 | ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
 
 ### コンポーネント階層

@@ -69,7 +69,7 @@
 | Issue | #845 |
 
 **派生未タスク**:
-- [TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001](../../../../docs/30-workflows/unassigned-task/task-imp-module-sync-report-enhancement.md): レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）— Phase 10 MINOR指摘3件統合
+- [TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001](../../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-module-sync-report-enhancement.md): レポート拡充（修正ガイダンス・サマリー数値・printSummary設計準拠）— Phase 10 MINOR指摘3件統合
 
 ---
 

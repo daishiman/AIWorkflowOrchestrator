@@ -55,7 +55,7 @@ Phase 8 → Phase 9 → Phase 10 (Gate) → Phase 11 → Phase 12 → Phase 13 �
 ```bash
 # Phase完了処理
 node .claude/skills/task-specification-creator/scripts/complete-phase.js \
-  --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --phase {{N}} \
+  --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation --phase {{N}} \
   --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
 ```
 

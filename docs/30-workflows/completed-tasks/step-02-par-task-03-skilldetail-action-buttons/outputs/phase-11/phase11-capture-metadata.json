@@ -1,0 +1,43 @@
+{
+  "capturedAt": "2026-03-19T06:53:43.897Z",
+  "baseUrl": "http://localhost:5196",
+  "workflowDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260319-123923-wt-2/docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons",
+  "screenshotDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260319-123923-wt-2/docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots",
+  "results": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-desktop-imported-detail-panel.png",
+      "state": "desktop-imported-detail-panel"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-desktop-unimported-detail-panel.png",
+      "state": "desktop-unimported-detail-panel"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-desktop-edit-handoff.png",
+      "state": "desktop-edit-handoff"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-desktop-analyze-handoff.png",
+      "state": "desktop-analyze-handoff"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-mobile-imported-bottom-sheet.png",
+      "state": "mobile-imported-bottom-sheet"
+    },
+    {
+      "tc": "TC-11-06",
+      "file": "TC-11-06-keyboard-focus-ring.png",
+      "state": "keyboard-focus-ring"
+    },
+    {
+      "tc": "TC-11-07",
+      "file": "TC-11-07-escape-close.png",
+      "state": "escape-close"
+    }
+  ]
+}

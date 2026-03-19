@@ -35,7 +35,7 @@ GraphRAGクエリサービスは、コミュニティ要約を活用してユー
 | FR-004 | スコアベースランキング     | 必須   | confidence順でソート                               |
 | FR-005 | confidence閾値フィルタリング | 必須 | 閾値未満の要約を除外                               |
 | FR-006 | 検索結果数制限             | 必須   | limitオプションによる制限                          |
-| FR-007 | フォールバック処理         | 必須   | 検索失敗時は空配列でクエリ継続                     |
+| FR-007 | フォールバック処理         | 必須   | 検索失敗時は空配列でクエリ継続し、warn + `fallbackReason` を残す |
 
 ### 非機能要件
 
@@ -98,7 +98,7 @@ query()メソッドは以下の順序で処理を実行する。
 | 失敗ケース             | フォールバック動作                 | 理由                           |
 | ---------------------- | ---------------------------------- | ------------------------------ |
 | クエリ分類失敗         | hybrid型として処理継続             | クエリ処理を継続可能にするため |
-| コミュニティ検索失敗   | 空配列で処理継続                   | 要約なしでも回答生成は可能     |
+| コミュニティ検索失敗   | 空配列で処理継続 + warn log + `fallbackReason` | 要約なしでも回答生成は可能     |
 | LLM生成失敗            | エラー返却（処理停止）             | 回答生成は必須のため           |
 
 ---
@@ -166,6 +166,16 @@ GraphRAGクエリサービスのメインインターフェース。
 | processingTimeMs              | number         | 処理時間（ミリ秒）             |
 | searchStrategy                | SearchStrategy | 使用された検索戦略             |
 | communitySummarySearchExecuted| boolean        | コミュニティ要約検索が実行されたか |
+| fallbackOccurred              | boolean        | コミュニティ検索 fallback が発生したか |
+| fallbackReason                | string?        | fallback 発生理由（error.message） |
+
+### current runtime behavior（2026-03-19）
+
+| ケース | current behavior |
+| --- | --- |
+| `enableCommunitySummary=false` | `summaries=[]`、`fallbackOccurred=false` で継続 |
+| community search failure | warn を出し、`summaries=[]`、`fallbackOccurred=true`、`fallbackReason=error.message` |
+| query classification failure | hybrid として継続 |
 
 ---
 

@@ -2,16 +2,13 @@
 name: aiworkflow-requirements
 description: |
   AIWorkflowOrchestratorの正本仕様を `references/` から検索・参照・更新するスキル。
-  resource-map / quick-reference / topic-map / keywords を起点に、必要最小限の文書だけを段階的に読む。
-  用途: 要件確認、設計/API/IPC契約確認、UI/状態管理/セキュリティ判断、task-workflow・lessons-learned・未タスク同期。
-  特に safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator の導線再編を扱う。
-
+  resource-map / quick-reference / topic-map を起点に、要件確認、UI・状態管理・API/IPC・security・task-workflow/lessons/unassigned 同期を扱う。
+  主対象: safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator、ViewType / renderView。
   Anchors:
   • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
-
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, navContract, GlobalNavStrip, MobileNavBar, SkillManagementPanel, line budget reform, spec splitting, family split, generated index sharding, ToolRiskLevel, SafetyGatePort, AllowedToolEntryV2, trust permission, permission governance, tool risk classification, SkillMetadataProvider, normalizePath, cross-cutting utility, abort fallback, skip fallback, revokeSessionEntries, processPermissionFallback, executeAbortFlow, executeSkipFlow, PermissionFlowContext, AbortReason, DefaultSafetyGate, evaluateSafety, SafetyGateResult, skill:evaluate-safety, P62, P63, ViewType, renderView, App.renderView, view routing, ビュー分岐, 画面ルーティング
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, ViewType, renderView, view routing, 画面ルーティング
 allowed-tools:
   - Read
   - Glob
@@ -20,14 +17,10 @@ allowed-tools:
 ---
 
 # AIWorkflow Requirements Manager
-
 ## 概要
-
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
-
 ## クイックスタート
-
 ### 仕様を探す
 
 ```bash
@@ -193,6 +186,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.02.05** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査同期**: `ui-ux-feature-components-reference.md` / `ui-ux-navigation.md` / `arch-state-management-*.md` / `workflow-skill-lifecycle-routing-render-view-foundation.md` / `task-workflow-completed-skill-lifecycle*.md` / `lessons-learned-viewtype-electron-ui.md` を更新し、detail panel 起点の `skill-editor` / `skillAnalysis` handoff、main shell screenshot 7件、selector scope 教訓を system spec 正本へ同期 |
 | **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了記録追加**: GAP-01/02/03 実装完了記録追加 |

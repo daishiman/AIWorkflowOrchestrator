@@ -365,7 +365,7 @@
 | タスクID     | UT-FIX-5-4                                                      |
 | Agent        | task-specification-creator                                      |
 | 操作         | 未タスク仕様書作成                                              |
-| 対象ファイル | docs/30-workflows/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md |
+| 対象ファイル | docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-fix-5-4-agent-sdk-api-type-mismatch.md |
 | 結果         | success                                                         |
 | 備考         | UT-FIX-5-3 Phase 12追加検証で発見、型定義と実装の不一致         |
 

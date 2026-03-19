@@ -34,6 +34,7 @@ const STATUS_DISPLAY = {
   pending: '未実施',
   in_progress: '実行中',
   completed: '完了',
+  phase12_completed: 'Phase 12 完了（PR未着手）',
   skipped: 'スキップ',
 };
 
@@ -92,11 +93,42 @@ function findPhaseFiles(workflowDir) {
 }
 
 // index.md生成
+function deriveOverallStatus(phases) {
+  if (!phases) {
+    return 'in_progress';
+  }
+
+  const phaseStatuses = Array.from({ length: 13 }, (_, index) => phases[String(index + 1)]?.status || 'pending');
+  const phase1to12 = phaseStatuses.slice(0, 12);
+  const phase13 = phaseStatuses[12];
+
+  if (phase1to12.every((status) => status === 'completed')) {
+    if (phase13 === 'completed') {
+      return 'completed';
+    }
+    if (phase13 === 'pending' || phase13 === 'not_started') {
+      return 'phase12_completed';
+    }
+  }
+
+  if (phaseStatuses.every((status) => status === 'pending' || status === 'not_started')) {
+    return 'pending';
+  }
+
+  return 'in_progress';
+}
+
 function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) {
-  const featureName = artifacts.feature;
-  const createdDate = artifacts.created
-    ? new Date(artifacts.created).toISOString().split('T')[0]
+  const featureName =
+    artifacts.feature ||
+    artifacts.featureName ||
+    artifacts.taskName ||
+    basename(workflowDir);
+  const createdSource = artifacts.created || artifacts.createdDate;
+  const createdDate = createdSource
+    ? new Date(createdSource).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0];
+  const overallStatus = artifacts.status || deriveOverallStatus(artifacts.phases);
 
   let content = `# ${featureName} - タスク実行仕様書
 
@@ -106,7 +138,7 @@ function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) 
 | ---- | ---- |
 | 機能名 | ${featureName} |
 | 作成日 | ${createdDate} |
-| ステータス | ${STATUS_DISPLAY[artifacts.status || 'in_progress'] || artifacts.status || 'in_progress'} |
+| ステータス | ${STATUS_DISPLAY[overallStatus] || overallStatus} |
 | 総Phase数 | 13 |
 
 ---
@@ -262,7 +294,9 @@ function main() {
   writeFileSync(indexPath, indexContent, 'utf-8');
 
   console.log(`✅ index.md generated: ${indexPath}`);
-  console.log(`   Feature: ${artifacts.feature}`);
+  console.log(
+    `   Feature: ${artifacts.feature || artifacts.featureName || artifacts.taskName || basename(workflowDir)}`
+  );
   console.log(`   Phase files found: ${Object.keys(phaseFiles).length}/13`);
 
   process.exit(0);

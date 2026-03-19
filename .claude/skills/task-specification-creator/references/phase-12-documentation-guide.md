@@ -38,6 +38,7 @@
 - Step 2 の判定結果
 - 更新した spec と理由
 - canonical root / mirror policy
+- canonical filename は `system-spec-update-summary.md`
 
 ### 設計タスク（docs-only）での注意
 
@@ -59,6 +60,8 @@
 - validator 実行結果
 - current / baseline の区別
 - artifacts 同期結果
+- Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を canonical path で列挙する
+- `skill-creator` を改善した場合は、`skill-creator/SKILL.md` / `LOGS.md` / 変更した template or reference も同じ changelog に列挙する
 
 ## Task 12-4: unassigned detection
 
@@ -74,13 +77,14 @@
 
 - Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
 - 全タスクが「完了」と記録されてから Phase 12 を閉じる
-- `documentation-changelog.md` に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+- `documentation-changelog.md` だけでなく `outputs/phase-12/*.md` 全体に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
 
-**確認コマンド（docs-only タスクで特に必須）**:
+**確認コマンド（docs-only / UI task 共通で必須）**:
 
 ```bash
-grep -n "計画\|予定\|TODO\|will be\|を予定" outputs/phase-12/documentation-changelog.md
-# 出力が0件であること
+rg -n "計画|予定|TODO|will be|を予定|仕様策定のみ|保留として記録" \
+  outputs/phase-12/*.md
+# 出力が 0 件であること
 ```
 
 ## 完了前チェック

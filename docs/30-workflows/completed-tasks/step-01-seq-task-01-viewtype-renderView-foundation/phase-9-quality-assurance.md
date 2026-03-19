@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                              |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                       |
-| Phase      | 9 - 品質検証                                                                                                                      |
-| 前 Phase   | Phase 8 - リファクタリング（`phase-8-refactoring.md`）                                                                            |
-| 次 Phase   | Phase 10 - 最終レビュー（`phase-10-final-review.md`）                                                                             |
-| 依存成果物 | `phase-8-refactoring.md`（リファクタリング完了後の実装）、`outputs/phase-8/refactoring-log.md`                                    |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-9-quality-assurance.md` |
-| ステータス | not_started                                                                                                                       |
+| 項目       | 内容                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                       |
+| Phase      | 9 - 品質検証                                                                                                                                      |
+| 前 Phase   | Phase 8 - リファクタリング（`phase-8-refactoring.md`）                                                                                            |
+| 次 Phase   | Phase 10 - 最終レビュー（`phase-10-final-review.md`）                                                                                             |
+| 依存成果物 | `phase-8-refactoring.md`（リファクタリング完了後の実装）、`outputs/phase-8/refactoring-log.md`                                                    |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-9-quality-assurance.md` |
+| ステータス | not_started                                                                                                                                       |
 
 ## 目的
 
@@ -30,6 +30,7 @@
 
 | 資料名             | パス                                     | 説明                                         |
 | ------------------ | ---------------------------------------- | -------------------------------------------- |
+| Phase 5 実装仕様書 | `phase-5-implementation.md`              | 検証対象実装と変更ファイル範囲の確認         |
 | Phase 8 成果物     | `outputs/phase-8/refactoring-log.md`     | リファクタリング変更内容（検証スコープ）     |
 | Phase 4 テスト設計 | `phase-4-test-creation.md`               | TC-VT/TC-RV/TC-SL 各テストケース定義         |
 | Phase 6 テスト拡充 | `phase-6-test-expansion.md`              | カバレッジ補完テストケース定義               |

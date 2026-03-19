@@ -195,9 +195,40 @@ IPCハンドラーの登録には3つのパターンがある:
 | カバレッジ（Branch）   | 100% |
 | カバレッジ（Function） | 100% |
 
+### DB 初期化パターン（TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001）
+
+DB初期化ロジックを `registerAllIpcHandlers` から分離し、Factory 関数パターンで管理する方式に変更された。
+
+#### `registerAllIpcHandlers` シグネチャ
+
+```
+registerAllIpcHandlers(mainWindow: BrowserWindow, conversationDb?: Database.Database | null): void
+```
+
+第2引数 `conversationDb` は省略可能（DI パターン）。省略時は内部で `getConversationDatabase()` を呼び出す。
+
+#### DB パス
+
+| 旧パス | 新パス |
+|--------|--------|
+| `~/.claude/conversations.db` | `app.getPath('userData')/conversations.db` |
+
+`app.getPath('userData')` を使用することで、OS 標準のユーザーデータディレクトリに保存される（macOS: `~/Library/Application Support/<appName>/`）。
+
+#### ライフサイクル管理
+
+| イベント | 処理 |
+|----------|------|
+| `app.whenReady()` | `initializeConversationDatabase()` 呼び出し |
+| `app.on('will-quit')` | `closeConversationDatabase()`（WALチェックポイント後にクローズ） |
+| `app.on('activate')` | `getConversationDatabase()` で既存インスタンス再利用（二重初期化防止） |
+
+詳細: [database-implementation-core.md#Conversation DB 初期化パターン](./database-implementation-core.md)
+
 ### 関連タスク
 
 - **UT-LLM-HISTORY-001**: 会話履歴永続化バックエンド実装（2026-01-24完了）
+- **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001**: Conversation DB 初期化堅牢化（2026-03-19完了）
 
 ---
 

@@ -17,18 +17,19 @@
 - [ ] 【Step 1-A】SKILL.md **2ファイル両方**の変更履歴テーブルにバージョンを追記した ⚠️ **P23: 漏れやすい**
 - [ ] 【Step 1-A】`skill-creator` を改善した場合、`.claude/skills/skill-creator/SKILL.md` の変更履歴も更新した
 - [ ] 【Step 1-A】変更履歴へ追記した Version が既存行と重複していないことを確認した（同日追補時は最大値 + 0.0.1 で採番）
+- [ ] 【Task 12-3】`documentation-changelog.md` に Step 1-A で更新した `.claude/skills/*/SKILL.md` / `.claude/skills/*/LOGS.md` が canonical path で列挙されている
 - [ ] `node .claude/skills/skill-creator/scripts/quick_validate.js` で3スキル全てが Error 0件であることを確認した（Warning の分類は `spec-update-step1-validation-commands.md` Step 1-G.3.1 を参照）
-- [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`spec-update-summary.md` に「要監視 / 要対応」を記録した
-- [ ] Task 5 で `skill-creator` を更新した場合、その変更内容を `skill-feedback-report.md` / `documentation-changelog.md` / `spec-update-summary.md` に同値で記録した
+- [ ] `quick_validate.js` の Warning を Step 1-G.3.1 で分類し、`system-spec-update-summary.md` に「要監視 / 要対応」を記録した
+- [ ] Task 5 で `skill-creator` を更新した場合、その変更内容を `skill-feedback-report.md` / `documentation-changelog.md` / `system-spec-update-summary.md` に同値で記録した
 - [ ] 【Step 1-C】`grep -rn "TASK_ID" references/` で関連タスクテーブルを全件確認した
 - [ ] 【Step 1-D】topic-map.md再生成を実行した（下記コマンド参照）
 - [ ] 【Step 2】システム仕様更新の要否を判断し、documentation-changelog.mdに記録した
-- [ ] 【Step 2】システム仕様を更新した場合、`spec-update-summary.md` と `documentation-changelog.md` の両方が「更新あり」で一致していることを確認した（片方のみ更新禁止）
+- [ ] 【Step 2】システム仕様を更新した場合、`system-spec-update-summary.md` と `documentation-changelog.md` の両方が「更新あり」で一致していることを確認した（片方のみ更新禁止）
 - [ ] 【Step 2】今回の実装で苦戦した箇所をシステム仕様書（`lessons-learned.md` または関連 `interfaces-*.md`）に記録した
-- [ ] `outputs/phase-12/spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
+- [ ] `outputs/phase-12/system-spec-update-summary.md` を作成し、Step 1-A〜3の実施結果を記録した
 - [ ] `outputs/phase-12` の必須5成果物実体と `artifacts.json` の `phases.12.status=completed` が同期している
 - [ ] `phase-12-documentation.md` の `ステータス=completed` と完了チェックリストが成果物実体・検証結果と同期している
-- [ ] completed workflow の `phase-12-documentation.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
+- [ ] completed workflow の `phase-12-documentation.md` と `outputs/phase-12/*.md` に `仕様策定のみ` / `実行予定` / `保留として記録` などの planned wording が残っていない
 - [ ] 未タスク検出レポートが出力されている【0件でも必須】
 - [ ] 初回判定が 0 件でも、親タスクの苦戦箇所を cross-cutting guard として formalize する必要が判明した場合は、`unassigned-task-detection.md` / `spec-update-summary.md` / `documentation-changelog.md` を 0→1 へ再同期した
 - [ ] スキルフィードバックレポートが出力されている【改善点なしでも必須】
