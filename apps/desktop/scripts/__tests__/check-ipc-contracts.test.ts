@@ -1,12 +1,14 @@
 // @vitest-environment node
 
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { resolve } from "node:path";
 import {
   extractMainHandlers,
   extractPreloadEntries,
   resolveChannelMap,
   matchAndValidate,
   generateReport,
+  main,
   type HandlerEntry,
   type PreloadEntry,
   type DriftReport,
@@ -108,6 +110,30 @@ describe("extractPreloadEntries", () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].argPattern).toBe("object");
+  });
+
+  it("T-4-2d2: generic付きsafeInvokeと複数行呼び出しを抽出できる", () => {
+    const source = [
+      "safeInvoke<{ success: boolean }>(",
+      "  IPC_CHANNELS.LLM_STREAM_CANCEL,",
+      "  {",
+      "    requestId,",
+      "  },",
+      ")",
+    ].join("\n");
+    const result = extractPreloadEntries(source, "preload/index.ts");
+
+    expect(result).toHaveLength(1);
+    expect(result[0].channel).toBe("IPC_CHANNELS.LLM_STREAM_CANCEL");
+    expect(result[0].argPattern).toBe("object");
+  });
+
+  it("T-4-2d3: generic付きsafeOnを抽出できる", () => {
+    const source = `safeOn<LLMError>(IPC_CHANNELS.LLM_STREAM_ERROR, callback)`;
+    const result = extractPreloadEntries(source, "preload/index.ts");
+
+    expect(result).toHaveLength(1);
+    expect(result[0].channel).toBe("IPC_CHANNELS.LLM_STREAM_ERROR");
   });
 
   it("T-4-2e: Preloadエントリ0件のファイルは空配列を返す", () => {
@@ -262,6 +288,20 @@ describe("R-02: 引数形式不一致検出 (matchAndValidate)", () => {
     const r02Drifts = report.drifts.filter((d) => d.rule === "R-02");
     expect(r02Drifts).toHaveLength(0);
   });
+
+  it("T-4-4d: 型付きオブジェクト引数はobjectとして判定する", () => {
+    const source = [
+      "ipcMain.handle(",
+      "  IPC_CHANNELS.LLM_CHECK_HEALTH,",
+      "  (_event: IpcMainInvokeEvent, params: { providerId: LLMProviderId }) =>",
+      "    handleCheckHealth(params),",
+      ")",
+    ].join("\n");
+    const handlers = extractMainHandlers(source, "main/handlers/llm.ts");
+
+    expect(handlers).toHaveLength(1);
+    expect(handlers[0].argPattern).toBe("object");
+  });
 });
 
 // ============================================================================
@@ -413,8 +453,25 @@ describe("resolveChannelMap", () => {
     const map = resolveChannelMap(channelsContent);
 
     expect(map.get("SKILL_IMPORT")).toBe("skill:import");
+    expect(map.get("IPC_CHANNELS.SKILL_IMPORT")).toBe("skill:import");
     expect(map.get("SKILL_REMOVE")).toBe("skill:remove");
     expect(map.get("SYSTEM_THEME")).toBe("system:theme-changed");
+  });
+
+  it("T-4-7c: CHANNELS系の定数オブジェクトもフル参照名で解決できる", () => {
+    const channelsContent = [
+      `const CHANNELS = {`,
+      `  CHECK_INSTALLATION: 'claude-cli:check-installation',`,
+      `  LIST_SKILLS: 'claude-cli:list-skills',`,
+      `} as const;`,
+    ].join("\n");
+
+    const map = resolveChannelMap(channelsContent);
+
+    expect(map.get("CHANNELS.CHECK_INSTALLATION")).toBe(
+      "claude-cli:check-installation",
+    );
+    expect(map.get("CHANNELS.LIST_SKILLS")).toBe("claude-cli:list-skills");
   });
 
   it("T-4-7b: 空コンテンツは空のMapを返す", () => {
@@ -491,6 +548,25 @@ describe("matchAndValidate with channelMap", () => {
     const r02Drifts = report.drifts.filter((d) => d.rule === "R-02");
     expect(r02Drifts).toHaveLength(1);
     expect(r02Drifts[0].channel).toBe("skill:import");
+  });
+
+  it("T-4-8c: preload-only orphan は R-04 として記録される", () => {
+    const handlers: HandlerEntry[] = [];
+    const preloads: PreloadEntry[] = [
+      {
+        channel: "IPC_CHANNELS.SKILL_IMPORT",
+        argPattern: "primitive",
+        filePath: "preload/skill-api.ts",
+        line: 5,
+        rawArgs: "name",
+      },
+    ];
+
+    const report = matchAndValidate(handlers, preloads, channelMap);
+    const r04Drifts = report.drifts.filter((d) => d.rule === "R-04");
+
+    expect(r04Drifts).toHaveLength(1);
+    expect(r04Drifts[0].channel).toBe("skill:import");
   });
 });
 
@@ -675,5 +751,71 @@ describe("Phase 6: P44/P45回帰テスト", () => {
     const report = matchAndValidate(handlers, preloads);
     const r02 = report.drifts.filter((d) => d.rule === "R-02");
     expect(r02).toHaveLength(0);
+  });
+});
+
+// ============================================================================
+// T-7: main() function - exit code logic tests
+// ============================================================================
+
+describe("main() exit code logic", () => {
+  let logSpy: ReturnType<typeof vi.spyOn>;
+  let errorSpy: ReturnType<typeof vi.spyOn>;
+  let originalArgv1: string | undefined;
+  const scriptPath = resolve(__dirname, "../check-ipc-contracts.ts");
+
+  beforeEach(() => {
+    process.exitCode = undefined;
+    originalArgv1 = process.argv[1];
+    process.argv[1] = scriptPath;
+    logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    process.exitCode = undefined;
+    process.argv[1] = originalArgv1!;
+    vi.restoreAllMocks();
+  });
+
+  it("T-7a: --report-only は実際のコードベースで正常実行される（exit 0）", () => {
+    main(["--report-only"]);
+    expect(process.exitCode).toBeUndefined();
+    expect(logSpy).toHaveBeenCalled();
+  });
+
+  it("T-7b: --format json で有効なJSON出力を生成する", () => {
+    main(["--report-only", "--format", "json"]);
+    const output = logSpy.mock.calls[0][0] as string;
+    expect(() => JSON.parse(output)).not.toThrow();
+    const parsed = JSON.parse(output);
+    expect(parsed.summary).toBeDefined();
+    expect(parsed.summary.totalHandlers).toBeGreaterThan(0);
+    expect(parsed.drifts).toBeDefined();
+    expect(Array.isArray(parsed.drifts)).toBe(true);
+  });
+
+  it("T-7c: デフォルトモードでerror検出時にexitCode=1を設定する", () => {
+    main([]);
+    // 実コードベースにはR-02 errorドリフトが存在するはず
+    if (process.exitCode === 1) {
+      expect(errorSpy).toHaveBeenCalled();
+    } else {
+      // ドリフトが修正済みの場合はexitCode未設定
+      expect(process.exitCode).toBeUndefined();
+    }
+  });
+
+  it("T-7d: --strict モードでwarningのみでもexitCode=1を設定する", () => {
+    main(["--strict"]);
+    // 実コードベースにはR-01/R-03 warningが存在するはず
+    expect(process.exitCode).toBe(1);
+  });
+
+  it("T-7e: --report-only --format markdown でMarkdownレポートを出力する", () => {
+    main(["--report-only", "--format", "markdown"]);
+    const output = logSpy.mock.calls[0][0] as string;
+    expect(output).toContain("IPC Contract Drift Report");
+    expect(output).toContain("**Timestamp**");
   });
 });

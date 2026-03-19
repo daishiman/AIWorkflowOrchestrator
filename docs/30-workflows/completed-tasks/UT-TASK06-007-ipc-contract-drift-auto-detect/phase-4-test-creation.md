@@ -27,19 +27,19 @@
 
 ## 参照資料
 
-| 資料                                              | パス / リンク                                                                             |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Phase 1 要件定義                                  | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-1-requirements.md`  |
-| Phase 2 設計                                      | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-2-design.md`        |
-| Phase 3 設計レビュー                              | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-3-design-review.md` |
-| IPC契約チェックリスト                             | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`             |
-| 品質要件                                          | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`               |
-| テスト駆動開発ルール                              | `.claude/rules/02-code-quality.md#テスト駆動開発（TDD）`                                  |
-| 既知の落とし穴（P9: テスト間状態リーク）          | `.claude/rules/06-known-pitfalls.md#P9`                                                   |
-| 既知の落とし穴（P40: テスト実行ディレクトリ依存） | `.claude/rules/06-known-pitfalls.md#P40`                                                  |
-| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                  |
-| 既知の落とし穴（P27: ハードコード文字列）         | `.claude/rules/06-known-pitfalls.md#P27`                                                  |
-| 既知の落とし穴（P60: IPC テスト応答形式不一致）   | `.claude/rules/06-known-pitfalls.md#P60`                                                  |
+| 資料                                              | パス / リンク                                                                                             |
+| ------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Phase 1 要件定義                                  | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-1-requirements.md`  |
+| Phase 2 設計                                      | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-2-design.md`        |
+| Phase 3 設計レビュー                              | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-3-design-review.md` |
+| IPC契約チェックリスト                             | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`                             |
+| 品質要件                                          | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                               |
+| テスト駆動開発ルール                              | `.claude/rules/02-code-quality.md#テスト駆動開発（TDD）`                                                  |
+| 既知の落とし穴（P9: テスト間状態リーク）          | `.claude/rules/06-known-pitfalls.md#P9`                                                                   |
+| 既知の落とし穴（P40: テスト実行ディレクトリ依存） | `.claude/rules/06-known-pitfalls.md#P40`                                                                  |
+| 既知の落とし穴（P44: IPC インターフェース不整合） | `.claude/rules/06-known-pitfalls.md#P44`                                                                  |
+| 既知の落とし穴（P27: ハードコード文字列）         | `.claude/rules/06-known-pitfalls.md#P27`                                                                  |
+| 既知の落とし穴（P60: IPC テスト応答形式不一致）   | `.claude/rules/06-known-pitfalls.md#P60`                                                                  |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -274,10 +274,10 @@ cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
 
 ## 成果物
 
-| 成果物       | パス                                                                                            | 内容                       |
-| ------------ | ----------------------------------------------------------------------------------------------- | -------------------------- |
-| テスト設計書 | `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-4/test-design.md` | テストケース一覧と設計根拠 |
-| テストコード | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                    | 全検出ルールのテストコード |
+| 成果物       | パス                                                                                                            | 内容                       |
+| ------------ | --------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| テスト設計書 | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-4/test-design.md` | テストケース一覧と設計根拠 |
+| テストコード | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                                    | 全検出ルールのテストコード |
 
 ## 完了条件
 
@@ -305,7 +305,7 @@ cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
   --task-id UT-TASK06-007 \
   --phase 4 \
-  --workflow-dir docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect
+  --workflow-dir docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect
 ```
 
 ## 次のPhase

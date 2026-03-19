@@ -22,10 +22,18 @@ Phase 12までの全成果物を確認し、ユーザーの明示承認後にPR�
 
 ## 参照資料
 
-| 資料名             | パス                                                                           | 説明             |
-| ------------------ | ------------------------------------------------------------------------------ | ---------------- |
-| Phase 12成果物     | `outputs/phase-12/`                                                            | 全Phase 12成果物 |
-| レビューゲート基準 | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | PR作成基準       |
+| 資料名             | パス                                                                           | 説明                 |
+| ------------------ | ------------------------------------------------------------------------------ | -------------------- |
+| Phase 2設計        | `phase-2-design.md`                                                            | 実装意図の最終確認   |
+| Phase 5 Green確認  | `outputs/phase-5/green-confirmation.md`                                        | 実装完了時の検証記録 |
+| Phase 6テスト拡充  | `phase-6-test-expansion.md`                                                    | 回帰ガードの確認     |
+| Phase 7カバレッジ  | `outputs/phase-7/coverage-report.md`                                           | カバレッジ根拠       |
+| Phase 8リファクタ  | `outputs/phase-8/refactoring-report.md`                                        | 品質改善の根拠       |
+| Phase 9品質        | `outputs/phase-9/quality-report.md`                                            | 品質ゲート結果       |
+| Phase 10レビュー   | `outputs/phase-10/final-review-result.md`                                      | 最終判定             |
+| Phase 11手動テスト | `outputs/phase-11/manual-test-result.md`                                       | 手動確認結果         |
+| Phase 12成果物     | `outputs/phase-12/`                                                            | 全Phase 12成果物     |
+| レビューゲート基準 | `.claude/skills/task-specification-creator/references/review-gate-criteria.md` | PR作成基準           |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -131,18 +139,18 @@ Phase 13 では統合テスト連携の確認は不要（Phase 12 で完了済�
 
 ## サブタスク管理
 
-| サブタスク | 担当   | ステータス | 備考                                    |
-| ---------- | ------ | ---------- | --------------------------------------- |
-| ステップ1  | メイン | 未実施     | Phase 12完了根拠の確認                  |
-| ステップ2  | メイン | 未実施     | ローカル確認（テスト・lint・typecheck） |
-| ステップ3  | メイン | BLOCKED    | ユーザー承認後にPR作成                  |
+| サブタスク | 担当   | ステータス | 備考                             |
+| ---------- | ------ | ---------- | -------------------------------- |
+| ステップ1  | メイン | 完了       | Phase 12完了根拠の確認           |
+| ステップ2  | メイン | BLOCKED    | ユーザー承認待ちのため再実行保留 |
+| ステップ3  | メイン | BLOCKED    | ユーザー承認後にPR作成           |
 
 ## タスク100%実行確認【必須】
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 13
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 13
 ```
 
-## 次のPhase
+## 現状
 
-Phase 13完了をもって、UT-TASK06-007タスクの全Phase（1-13）が完了となる。
+Phase 13 はユーザー承認待ちのため BLOCKED。承認後にローカル確認を再実行し、PR作成へ進む。

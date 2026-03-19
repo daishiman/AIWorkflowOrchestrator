@@ -18,3 +18,9 @@
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
+
+## IPC契約ドリフト品質ゲート（UT-TASK06-007）
+
+- `apps/desktop/scripts/check-ipc-contracts.ts` は desktop IPC 契約の静的監査コマンドとして再利用できる。
+- 推奨順序は `typecheck` → 対象テスト → `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict`。
+- これは CI に組み込み可能な品質ゲートの定義であり、ドキュメント上は「実行可能コマンド」を正本として保持する。ブランチごとの GHA wiring 有無は `deployment-gha.md` 側で扱う。

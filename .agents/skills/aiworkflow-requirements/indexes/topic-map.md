@@ -218,8 +218,10 @@ node scripts/list-specs.js --topics
 | 実行方法 | L23 |
 | 抽出パターン | L31 |
 | 既知の制約 | L37 |
-| 苦戦箇所と教訓 | L43 |
-| 関連タスク | L49 |
+| 教訓 | L43 |
+| テスト戦略 | L49 |
+| 実行サマリー（2026-03-19 実測） | L75 |
+| 関連タスク | L86 |
 
 ### references/architecture-implementation-patterns-reference-ipc-fallback-validation.md
 
@@ -397,7 +399,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| Skill Dashboard 型定義（AGENT-002） | L6 |
-| SkillImportStore（TASK-2B） | L413 |
+| SkillImportStore（TASK-2B） | L393 |
 
 ### references/interfaces-agent-sdk-skill-history-contract-fix-changelog.md
 
@@ -436,10 +438,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け | L23 |
-| ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L31 |
-| 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L56 |
-| 関連ドキュメント | L210 |
+| ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L23 |
+| 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L48 |
+| 関連ドキュメント | L202 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -865,8 +866,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
-| 補助参照の境界 | L19 |
-| 関連ドキュメント | L24 |
+| 関連ドキュメント | L19 |
 
 ### references/api-ipc-auth.md
 
@@ -891,9 +891,9 @@ node scripts/list-specs.js --topics
 | Slide IPC API（スライド同期） | L61 |
 | Workspace File Watch IPC API（TASK-UI-04A） | L115 |
 | Conversation IPC API（会話履歴永続化） | L159 |
-| Electron IPC API設計 | L189 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L431 |
-| AIプロバイダーAPI連携 | L462 |
+| Electron IPC API設計 | L195 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L437 |
+| AIプロバイダーAPI連携 | L468 |
 
 ### references/api-ipc-system-details.md
 
@@ -942,7 +942,8 @@ node scripts/list-specs.js --topics
 | マイグレーション管理 | L102 |
 | テスト戦略 | L142 |
 | エラーハンドリング | L172 |
-| ベクトル検索実装（DiskANN） | L203 |
+| Conversation DB 初期化パターン | L203 |
+| ベクトル検索実装（DiskANN） | L238 |
 
 ### references/database-implementation-details.md
 
@@ -1452,10 +1453,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L301 |
-| 実装例: notificationAPI（TASK-UI-08） | L353 |
-| 実装例: slideSettingsAPI | L386 |
-| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L435 |
+| 実装例: historyAPI | L302 |
+| 実装例: notificationAPI（TASK-UI-08） | L354 |
+| 実装例: slideSettingsAPI | L387 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1480,6 +1480,7 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
+| IPC契約ドリフト防止（UT-TASK06-007） | L23 |
 
 ### references/security-implementation.md
 
@@ -1544,12 +1545,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | スキル管理IPCセキュリティ | L12 |
-| スキルインポートIPCチャネル（TASK-4-1） | L96 |
-| Claude Code CLI連携セキュリティ | L141 |
-| Skill Execution Preload API セキュリティ | L202 |
-| Permission IPC Handler セキュリティ | L247 |
-| SkillAPI Preload実装（TASK-5-1） | L283 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 完了記録（2026-03-19） | L361 |
+| スキルインポートIPCチャネル（TASK-4-1） | L79 |
+| Claude Code CLI連携セキュリティ | L124 |
+| Skill Execution Preload API セキュリティ | L185 |
+| Permission IPC Handler セキュリティ | L230 |
+| SkillAPI Preload実装（TASK-5-1） | L266 |
 
 ### references/security-skill-ipc-history.md
 
@@ -1565,8 +1565,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L6 |
 | 利用順序 | L12 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け | L17 |
-| 関連ドキュメント | L23 |
+| 関連ドキュメント | L17 |
 
 ---
 
@@ -1641,6 +1640,7 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L6 |
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
+| IPC契約ドリフト品質ゲート（UT-TASK06-007） | L22 |
 
 ### references/technology-frontend.md
 
@@ -2070,7 +2070,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 変更履歴 | L8 |
 | IPC Handler Registration Pattern（Desktop Main Process） | L18 |
 | 会話履歴永続化パターン（Desktop Main Process） | L96 |
-| 関連ドキュメント | L204 |
+| 関連ドキュメント | L235 |
 
 ### references/arch-state-management-advanced.md
 
@@ -2220,13 +2220,13 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L10 |
 | ワークフロー構成 | L38 |
 | CI ワークフロー要件（PR時） | L48 |
-| キャッシュ戦略 | L87 |
-| 並列実行の活用 | L117 |
-| CD ワークフロー要件（mainマージ時） | L204 |
-| モニタリングとアラート | L228 |
-| GitHub Secrets の要件 | L275 |
-| 関連ドキュメント | L293 |
-| 変更履歴 | L301 |
+| キャッシュ戦略 | L99 |
+| 並列実行の活用 | L129 |
+| CD ワークフロー要件（mainマージ時） | L216 |
+| モニタリングとアラート | L240 |
+| GitHub Secrets の要件 | L287 |
+| 関連ドキュメント | L305 |
+| 変更履歴 | L313 |
 
 ### references/deployment-history.md
 
@@ -2436,12 +2436,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| UT-FIX-SKILL-EXECUTE-INTERFACE-001: skill:execute IPC契約ブリッジ | L6 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: IPC契約同期オーケストレーション | L51 |
-| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L71 |
-| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L125 |
-| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L208 |
-| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L256 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 教訓（2026-03-19） | L294 |
+| UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化 | L53 |
+| UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001: 未タスク監査の scope 分離 | L107 |
+| UT-UI-THEME-DYNAMIC-SWITCH-001: settingsSlice テーマ動的切替対応 | L190 |
+| TASK-9A-skill-editor: Phase 12再確認（2026-02-26） | L238 |
 
 ### references/lessons-learned-auth-ipc-fallback-registration-settings.md
 
@@ -2466,8 +2464,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| UT-IPC-DATA-FLOW-TYPE-GAPS-001: Phase 12再監査（仕様書修正タスク） | L6 |
 | UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001: task-9D〜9J 仕様差分の統合是正 | L177 |
-| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L235 |
-| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 型ギャップ教訓（2026-03-19） | L286 |
+| UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正 | L226 |
 
 ### references/lessons-learned-auth-ipc-safeinvoke-timeout.md
 
@@ -2492,6 +2489,15 @@ node scripts/list-specs.js --topics
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L217 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L322 |
 
+### references/lessons-learned-conversation-db-robustness.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L7 |
+| 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L18 |
+| 問題パターン（一般化） | L38 |
+| 5分で確認する順序 | L44 |
+| 次回の判断ルール | L51 |
+
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
 | セクション | 行 |
@@ -2503,23 +2509,25 @@ node scripts/list-specs.js --topics
 ### references/lessons-learned-current.md
 
 | セクション | 行 |
-|------------|----|\n| メタ情報 | L7 |
-| 変更履歴 | L18 |
-| 分割ファイル一覧 | L32 |
-| クイックリファレンス: カテゴリ別検索ガイド | L45 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L358 |
+|------------|----|\n| メタ情報 | L6 |
+| 変更履歴 | L17 |
+| 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L45 |
+| 分割ファイル一覧 | L55 |
+| クイックリファレンス: カテゴリ別検索ガイド | L435 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L27 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L33 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L70 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L136 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L157 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L187 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L29 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L35 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L63 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L100 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L166 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L187 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L217 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L259 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2689,8 +2697,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L38 |
-| 関連ドキュメント | L43 |
+| 利用順序 | L39 |
+| 関連ドキュメント | L44 |
 
 ### references/llm-embedding.md
 
@@ -3625,13 +3633,13 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-ipc-contract-preload-alignment.md
 
 | セクション | 行 |
-|------------|----|\n| TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: current canonical set | L6 |
-| 完了タスク | L34 |
+|------------|----|\n| 完了タスク | L6 |
 
 ### references/task-workflow-completed-ipc-graceful-degradation-lifecycle.md
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
+| TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L395 |
 
 ### references/task-workflow-completed-notification-history-auth-key-state.md
 
@@ -3698,8 +3706,16 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-skill-lifecycle.md
 
 | セクション | 行 |
-|------------|----|\n| 分割ファイル一覧 | L7 |
-| タスクID 逆引き | L14 |
+|------------|----|\n| TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17） | L8 |
+| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L57 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L95 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L132 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L199 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L280 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L365 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L387 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L450 |
+| TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L487 |
 
 ### references/task-workflow-completed-ut-06-safety-gate.md
 

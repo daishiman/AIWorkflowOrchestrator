@@ -19,3 +19,9 @@
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
+
+## IPC契約ドリフト防止（UT-TASK06-007）
+
+- sender validation や preload API 制限に加えて、Main / Preload 間の契約ドリフトは静的監査でも事前検出する。
+- current branch の実装は `apps/desktop/scripts/check-ipc-contracts.ts` にあり、generic preload / multiline preload / 複数 const object 解決まで対応済み。
+- 詳細な検出ルールは `ipc-contract-checklist.md`、完了記録と苦戦箇所は `task-workflow-completed-ipc-contract-preload-alignment.md`、履歴は `security-electron-ipc-history.md` を参照する。

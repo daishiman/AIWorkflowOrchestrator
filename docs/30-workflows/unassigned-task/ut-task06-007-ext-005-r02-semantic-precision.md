@@ -62,7 +62,7 @@ R-02 検出の精度を向上させ、偽陽性を削減しつつ、P44/P45 パ�
 #### 含まないもの
 
 - タプル配列パターン対応（EXT-001 のスコープ）
-- 別定数オブジェクト対応（EXT-002 のスコープ）
+- エイリアス / 再export / 動的定数解決（EXT-002 のスコープ）
 - `ipcMain.on` パターン対応（EXT-003 のスコープ）
 - TypeScript AST ベースの完全な型解析（将来課題）
 
@@ -141,7 +141,96 @@ Phase 1: 調査 → Phase 2: 参照渡し推定実装 → Phase 3: P45自動検�
 - 19件の R-02 結果が分類されている
 - 改善対象のパターンが特定されている
 
-### Phase 2-6: （Phase 1の結果に基づいて詳細化）
+### Phase 2: 参照渡しハンドラ推定実装
+
+#### 目的
+
+`ipcMain.handle(channel, handlerFunction)` のような参照渡しパターンでも、同一ファイル内に存在するハンドラ定義から引数パターンを推定できるようにする。
+
+#### 手順
+
+1. `handlerFunction` 形式の識別子を抽出し、同一ファイル内の `function` / `const fn = (...) =>` 定義を探索する
+2. 解決できた定義に対して既存の `classifyHandlerArgPattern` を再利用できるようにする
+3. 解決不可のケースは `unknown` を維持し、誤検出よりも保守的な判定を優先する
+4. `pnpm --filter @repo/desktop typecheck` で型エラーがないことを確認する
+
+#### 完了条件
+
+- 同一ファイル内の参照渡しハンドラで `unknown` 以外の分類が増える
+- 解決不能ケースが `unknown` のまま残る理由を説明できる
+
+### Phase 3: P45 自動検出実装
+
+#### 目的
+
+`rawSignature` と `rawArgs` の引数名から、`skillId` と `skillName` のような語義ドリフトを R-02 に反映できるようにする。
+
+#### 手順
+
+1. `rawSignature` / `rawArgs` から識別子候補を抽出する helper を追加する
+2. 汎用名（`args`, `data`, `payload` など）は除外し、意味語を優先比較する
+3. `skillId` vs `skillName` のような代表パターンを fixture 化し、R-02 として検出されることを確認する
+4. 誤検出が多い比較パターンは allowlist / ignore list の候補として整理する
+
+#### 完了条件
+
+- P45 代表パターンが自動検出される
+- 汎用名どうしの比較が過検出しない
+
+### Phase 4: ホワイトリスト / 信頼度導入
+
+#### 目的
+
+R-02 の偽陽性を運用上扱いやすくするため、既知例外の除外と検出信頼度の段階化を導入する。
+
+#### 手順
+
+1. `--r02-whitelist path/to/file.json` オプションの要否を実装方針として確定する
+2. `DriftEntry` へ `confidence` フィールドを追加するか、既存出力へ注記を追加する
+3. known false positive を fixture 化し、ホワイトリスト適用時のみ除外されることを確認する
+4. JSON 出力とテキスト出力の両方で互換性を確認する
+
+#### 完了条件
+
+- 既知の偽陽性を設定で除外できる
+- 高 / 中 / 低のいずれかで検出信頼度を区別できる
+
+### Phase 5: テスト拡充
+
+#### 目的
+
+参照渡し推定、P45 自動検出、ホワイトリストの回帰ガードを追加する。
+
+#### 手順
+
+1. 参照渡しハンドラの fixture を追加する
+2. P45 代表パターンの fixture を追加する
+3. ホワイトリスト適用あり / なしの差分テストを追加する
+4. 既存テストが全件 PASS することを確認する
+
+#### 完了条件
+
+- 新規テストが PASS
+- 既存テストが回帰しない
+
+### Phase 6: 品質検証
+
+#### 目的
+
+R-02 強化後も型安全性と実行安定性が維持されることを確認する。
+
+#### 手順
+
+1. `pnpm --filter @repo/desktop lint` を実行する
+2. `pnpm --filter @repo/desktop typecheck` を実行する
+3. `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json` を再実行し、R-02 結果を比較する
+4. 偽陽性率と `unknown` 分類率の before / after を記録する
+
+#### 完了条件
+
+- Lint エラー 0 件
+- 型エラー 0 件
+- before / after の比較結果が記録されている
 
 ---
 
@@ -206,12 +295,12 @@ pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json 2>&1 | jq '[.
 ### 関連ドキュメント
 
 - [`ipc-contract-checklist.md`](../../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md)
-- [`task-workflow-backlog.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md)
+- [`task-workflow-completed-ipc-contract-preload-alignment.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-completed-ipc-contract-preload-alignment.md)
 - 関連既知の落とし穴: [P44](../../../.claude/rules/06-known-pitfalls.md#p44), [P45](../../../.claude/rules/06-known-pitfalls.md#p45)
 
 ### 参考資料
 
-- 親タスク: `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/`
+- 親タスク: `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/`
 - Phase 9 品質レポート: `outputs/phase-9/quality-report.md`（R-02: 19件の記録）
 - Phase 12 実装ガイド: `outputs/phase-12/implementation-guide.md`（R-02 検出ロジックの説明）
 

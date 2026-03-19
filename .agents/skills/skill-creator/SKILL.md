@@ -129,7 +129,6 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | 外部CLIエージェント委譲  | agents/delegate-to-external-cli.md   |
 | マルチスキル同時設計     | agents/design-multi-skill.md         |
 | フィードバック記録       | scripts/log_usage.js                 |
-| Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
 
 ---
 
@@ -148,7 +147,6 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | オーケストレーション         | references/orchestration-guide.md            |
 | 実行モード選択               | references/execution-mode-guide.md           |
 | ドキュメント生成             | references/api-docs-standards.md             |
-| Phase 12 再監査              | references/update-process.md                 |
 | 自己改善サイクル             | references/self-improvement-cycle.md         |
 | ライブラリ管理               | references/library-management.md             |
 
@@ -202,13 +200,6 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 **注意**: 各SubAgentに割り当てるファイル数は3ファイル以下を推奨（P43対策）。
 
-### Phase 12 再監査ショートカット
-
-- `spec_created` / docs-heavy task を更新する時は、先に [task-specification-creator/references/phase-11-12-guide.md](../task-specification-creator/references/phase-11-12-guide.md) と [task-specification-creator/references/spec-update-workflow.md](../task-specification-creator/references/spec-update-workflow.md) を開く。
-- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。
-- [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
-- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
-
 ### P43対策: SubAgent ファイル分割基準
 
 | 状況 | 対応 |
@@ -242,7 +233,6 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **10.37.47** | **2026-03-19** | **Phase 12 changelog / Step 1-A 台帳同期ガードを追加**: `assets/phase12-completion-guard-checklist.md` に `git diff --stat -- .claude/skills/*/SKILL.md` と changelog 突合を追加し、`references/patterns-guideline-type.md` には「Step 1-A で更新した `SKILL.md` / `LOGS.md` も `documentation-changelog.md` に canonical path で同値転記する」ガイドラインを追加。Phase 12 再監査での台帳漏れをテンプレート段階で防止する |
 | **10.37.46** | **2026-03-18** | **TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 スキルフィードバック反映**: `references/patterns.md` に「lessons-learned 子ファイル分類パターン（classification-first）」を追加。教訓追記前にドメイン分類（auth/ipc / skill / workflow-quality / ui / 設計）で適切な子ファイルを選定し、横断的な教訓のみ current へ積み上げる運用を標準化。500行超過時の新規子ファイル作成フローも明示 |
 | **10.37.45** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/patterns.md` に「依存タスク連携における型変換点の明示パターン」を追加。設計タスクシリーズで前タスク出力型→後タスク入力型への変換点を `Task-N 出力型 -> Adapter -> Task-M 入力型 -> Port -> 判定結果` フォーマットで Phase 2 設計書に明示する運用を標準化 |
 | **10.37.44** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: `references/patterns.md` に「設計タスク（docs-only）でもサブエージェントに実更新を保留させない」パターンを追加。Phase 12 サブエージェントが「設計タスク範囲外」として実更新を保留する問題の防止策を明文化 |
@@ -287,6 +277,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | ------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **10.37.12** | **2026-03-07** | **TASK-10A-F Store駆動スキルライフサイクルUI統合の仕様同期**: `arch-state-management.md` に Case B方式の状態管理設計を追加。`lessons-learned.md` に Store mock統一パターン等5件の苦戦箇所を追加。`architecture-implementation-patterns.md` に S19（直接IPC→Store移行パターン）を新設。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）                                                                                                                                                                                       |
 | **10.37.12** | **2026-03-06** | **TASK-10A-E-C の Phase 12再監査知見をパターン化**: `references/patterns.md` に「`documentation-changelog.md` の計画記述残置を排除して実更新ログへ昇格する」パターンと、「未タスク指示書を9見出しテンプレート準拠で作成し `audit --target-file` で個別検証する」パターンを追加。Phase 12 での完了誤判定と未タスクフォーマット逸脱の再発防止を標準化                                                                                                                                                                                          |
+| **10.37.12** | **2026-03-19** | **UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映**: `assets/phase12-system-spec-retrospective-template.md` に実績ベース更新ルール、画面検証要求時の `SCREENSHOT + NON_VISUAL` 昇格、苦戦箇所の `症状 / 再発条件 / 解決策 / 標準ルール` 化を追加。`assets/phase12-spec-sync-subagent-template.md` に実測値同期と画面昇格を追記し、`references/patterns-success-phase12-advanced.md` に docs-heavy/backend-heavy でも screenshot へ昇格する成功パターンを追加。`LOGS.md` を含めて skill-creator の入口から再利用しやすい形へ整理した |
 | **10.37.11** | **2026-03-06** | **domain spec 同期ブロックを新設し Phase 12 テンプレートへ接続**: `assets/phase12-domain-spec-sync-block-template.md` を新規追加し、`interfaces` / `api-ipc` / `security` / `ui-ux-feature` などの仕様書へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義。`phase12-system-spec-retrospective-template.md` / `phase12-spec-sync-subagent-template.md` / `references/resource-map.md` / `references/patterns.md` を更新し、domain spec 側の記述漏れを完了チェックへ組み込んだ |
 | **10.37.10** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査知見を skill-creator へ反映**: `assets/phase12-system-spec-retrospective-template.md` の重複手順（6.2）を修正し、IPC transport 契約更新時の `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` 同期要件を追加。`assets/phase12-spec-sync-subagent-template.md` へ同 cross-cutting doc / 専用 harness 記録の完了条件を追記し、`references/patterns.md` に auth-mode 由来の成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期」を追加             |
 | **10.37.9**  | **2026-03-06** | **TASK-043B の Phase 12 運用知見をテンプレートへ同期**: `assets/phase12-system-spec-retrospective-template.md` と `assets/phase12-spec-sync-subagent-template.md` に `phase12-task-spec-compliance-check.md` による root evidence 集約、`currentViolations=0` と `baseline backlog` の二層管理、`audit --target-file` の `scope.currentFiles=1` 確認を追加。`references/patterns.md` に成功パターン「current=0 と baseline backlog の二層管理（TASK-043B）」を追加し、`references/resource-map.md` の説明も同内容へ最適化                    |

@@ -19,56 +19,44 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-19 | 1.2.1 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 の legacy direct SDK / modifier 経路ドリフト教訓を追加 |
-| 2026-03-19 | 1.2.0 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 の教訓3件を追加（slide IPC canonical drift、RuntimeResolver 再利用、Phase 11 fallback screenshot の固定） |
+| 2026-03-19 | 1.3.0 | UT-TASK06-007 実装セッション苦戦箇所を追加（esbuild worktree 不一致、process.argv[1] パス解決、fs モック制約、main() カバレッジ改善） |
+| 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
 
 ---
 
-## 2026-03-19 TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001
-
-### 教訓1: 正本 IPC 契約と current code の legacy channel 名は同時に記録する
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | task 09 では `slide:watch-start` などの canonical 名を設計したが、現行コードは `slide:startWatching` など旧名のまま残っていた。正本だけ更新すると「実装済み」に見えて drift が埋もれる |
-| 解決策 | `api-ipc-system-core.md` では canonical table と current drift table を同時に持つ。設計タスクでは「正本」と「現行コード」の両方を並記する |
-| 標準ルール | spec_created タスクの IPC 正本は、rename table と current drift の両方を 1 セクションに固定する |
-
-### 教訓2: RuntimeResolver 再利用は「既存共通サービスを探す」工程を明示しないと漏れる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | slide path の要件整理時に `RuntimeResolver` を再利用できたが、Phase 1 のテンプレートに「既存共通サービス探索」が明文化されておらず、初回は `agent-client.ts` 個別改善に寄りそうになった |
-| 解決策 | RuntimeResolver / handoffGuidance / TerminalHandoffBuilder のような cross-surface 共通物は、Phase 1 で `.claude/skills/` を grep して再利用可否を先に判定する |
-| 標準ルール | 新しい AI surface を触るときは、Phase 1 で `RuntimeResolver` / `handoffGuidance` / security contract の既存正本を必ず探索する |
-
-### 教訓3: Phase 11 screenshot は fallback を使っても metadata で source を固定しないと証跡として弱い
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | worktree の esbuild native binary mismatch で live preview capture が止まり、static fallback へ切り替えた。理由を metadata に残さないと「なぜ live でないのか」が追えない |
-| 解決策 | `screenshot-plan.json` と `phase11-capture-metadata.json` に captureMode / fallbackReason / route / capturedAt を必ず残す |
-| 標準ルール | fallback screenshot を使う場合は、証跡 PNG だけで終えず metadata を正本にする |
-
-### 教訓4: legacy 実行経路が複数残ると RuntimeResolver 統合の判断が遅れる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | task 09 では `agent-client.ts` の direct SDK path と `modifier-skill.ts` の独立経路が残っており、「どこが canonical で、どこを未タスクへ分離すべきか」の判断が遅れた |
-| 解決策 | 先に current 実体を `rg` で棚卸しし、`skill-executor.ts` + `RuntimeResolver` を canonical に固定する。その上で legacy path は即座に UT へ切り出す |
-| 標準ルール | runtime 整流タスクでは「実体探索 -> canonical 決定 -> legacy path の UT 化」を 1 セットで実施する |
-
-### 同種課題の簡潔解決手順（3ステップ）
-
-1. `rg -n "RuntimeResolver|agent-client|modifier-skill|skill-executor"` で current 実体を先に棚卸しする。
-2. 正本に残す経路を 1 本だけ決め、残りは current drift と follow-up UT に即時分離する。
-3. system spec / lessons / backlog / unassigned task を同一ターンで更新し、legacy path を「残す理由」ではなく「除去計画」として記録する。
-
 ## 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
 
 > この教訓は lessons-learned-current.md v1.29.97 で追加されたが、変更履歴のみの記録であったため、以下は参照先として機能する。
+
+---
+
+## 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査
+
+### 教訓1: 検出器の能力が増えたら、metrics だけでなく follow-up の意味も見直す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | generic / multiline preload 抽出と複数 const object 収集を code に追加したのに、workflow / backlog / checklist は旧前提（別定数未対応）のままだった |
+| 解決策 | code change 後に `quality-report` / `final-review` / `implementation-guide` / `LOGS.md` / `task-workflow backlog` を同ターンで再同期した |
+| 標準ルール | 検出器の出力件数や能力境界が変わったら、数値だけでなく「未タスクの意味が変わったか」を必ず確認する |
+
+### 教訓2: P45 は「設計上の目標」と「現在の自動判定能力」を分けて書く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | P45 を「完全検出済み」と書くと、R-02 が object vs primitive 中心の heuristic である事実を隠してしまう |
+| 解決策 | current docs では「P45 fully automated ではない。EXT-005 で継続」と明記した |
+| 標準ルール | ルールが heuristic の場合は、対応 Pitfall と current coverage の差を docs に残す |
+
+### 教訓3: docs-heavy task でも user 要求があれば screenshot へ昇格する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | backend-heavy task を `NON_VISUAL` で閉じると、user が求める branch 全体の画面 sanity check が欠ける |
+| 解決策 | representative dashboard harness を current workflow 配下へ capture し、TC-ID と png を 1:1 で固定した |
+| 標準ルール | docs-only / backend-heavy でも user が screenshot 検証を要求したら `SCREENSHOT + 非視覚` の二層へ昇格する |
 
 ---
 
@@ -265,3 +253,50 @@
 1. worktree 作成直後に `pnpm install --force` を実行し、ネイティブバイナリの整合を確保する。
 2. Phase 4 完了時にプロジェクト全体の `grep -c "it(" *.test.ts` でテスト総数を確定し、以降のドキュメントではこの数値を使用する。
 3. チャット UI 実装時は P62 三層防御（UI canSend / Controller guard / Main validation）を設計段階で組み込み、DEFAULT_CONFIG fallback を排除する。
+
+---
+
+## 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション
+
+### 苦戦箇所1: worktree 環境での esbuild プラットフォーム不一致（P7 worktree 派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK06-007 |
+| 課題 | worktree 環境で `pnpm install` すると、親リポジトリの node_modules キャッシュが darwin-arm64 のまま残り、x64 Node.js で vitest が起動できない |
+| 解決策 | `pnpm store prune && pnpm install --force` でキャッシュクリア＋再インストール |
+| 関連Pitfall | P7（ネイティブモジュールのバイナリ不一致）の worktree 派生パターン |
+
+### 苦戦箇所2: main() 関数テストでの process.argv[1] パス解決（P40 CLI スクリプト派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK06-007 |
+| 課題 | `main()` は `process.argv[1]` からスクリプトパスを推定。vitest から呼ぶと二重パス `apps/desktop/apps/desktop/scripts` が生成される |
+| 解決策 | `beforeEach` で `process.argv[1] = path.resolve(__dirname, "../check-ipc-contracts.ts")` に設定し `afterEach` で復元 |
+| 関連Pitfall | P40（テスト実行ディレクトリ依存）の CLI スクリプト派生パターン |
+
+### 苦戦箇所3: vi.mock("fs") の describe ブロック内配置制約
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK06-007 |
+| 課題 | `vi.mock("fs")` を describe 内に配置し `require("fs")` で参照すると、ESM import 側の fs とは異なる参照になりモック不適用 |
+| 解決策 | fs モックを諦め `process.argv[1]` パス制御＋実ファイル統合テストに切替。カバレッジ 74.49% → 94.94% |
+| 標準ルール | CLI スクリプトテストは「ファイルシステムモック」より「パス制御＋実ファイル実行」が高カバレッジに有効 |
+
+### 苦戦箇所4: main() カバレッジ改善パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK06-007 |
+| 課題 | CLI エントリポイント `main()` はファイル I/O + exit code 設定を含み、Line Coverage 74.49% の主因 |
+| 解決策 | `process.argv[1]` 固定＋実コードベース対象の統合テスト5件追加で Line 94.94% / Branch 89.92% / Function 100% に改善 |
+| 再利用パターン | CLI テストは主要フラグ（--report-only / --strict / --format）ごとに1テストケース用意する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. worktree 作成後は `pnpm store prune && pnpm install --force` でバイナリ不一致を解消
+2. CLI スクリプトテストは `beforeEach` で `process.argv[1]` をスクリプト絶対パスに固定し `afterEach` で復元
+3. `vi.mock("fs")` はファイルトップレベルに配置。describe 内配置では ESM モジュールへのモック適用が保証されない
+4. `main()` カバレッジは「fs モック」より「パス制御＋実ファイル統合テスト」で達成

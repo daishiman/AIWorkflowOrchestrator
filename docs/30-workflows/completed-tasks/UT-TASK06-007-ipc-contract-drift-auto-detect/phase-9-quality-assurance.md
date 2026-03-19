@@ -250,7 +250,7 @@ grep -n "check-ipc-contracts\|IPC契約ドリフト" .claude/skills/task-specifi
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 9
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 9
 ```
 
 ## 次のPhase

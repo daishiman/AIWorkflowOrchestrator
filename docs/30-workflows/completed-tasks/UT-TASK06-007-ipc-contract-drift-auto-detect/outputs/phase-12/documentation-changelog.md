@@ -2,179 +2,85 @@
 
 ## メタ情報
 
-| 項目     | 内容                                                       |
-| -------- | ---------------------------------------------------------- |
-| タスクID | UT-TASK06-007                                              |
-| 作成日   | 2026-03-18                                                 |
-| Phase    | 12 - ドキュメント                                          |
-| 記録方針 | 全Step完了後に事後記録（P4対策：実行前に完了と記載しない） |
+| 項目     | 内容                                                     |
+| -------- | -------------------------------------------------------- |
+| タスクID | UT-TASK06-007                                            |
+| 記録日   | 2026-03-19                                               |
+| フェーズ | 12 - ドキュメント                                        |
+| 方針     | 再監査で実際に変更したものと、実行した検証だけを記録する |
 
----
+## Step 1-A
 
-## Step 1-A: タスク完了記録
+- `.claude/skills/aiworkflow-requirements/LOGS.md`: 再監査結果、現行 metrics、follow-up の再定義を追記
+- `.claude/skills/task-specification-creator/LOGS.md`: Phase 12 再監査での是正内容を追記
+- `.claude/skills/aiworkflow-requirements/SKILL.md`: change history を更新
+- `.claude/skills/task-specification-creator/SKILL.md`: change history を更新
 
-### 実施状況: 実施済み（4ファイル同時更新）
+## Step 1-B
 
-| ファイル                                             | 更新内容                       | 実施状況 |
-| ---------------------------------------------------- | ------------------------------ | -------- |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`     | UT-TASK06-007 完了エントリ追加 | 完了     |
-| `.claude/skills/task-specification-creator/LOGS.md`  | UT-TASK06-007 完了エントリ追加 | 完了     |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`    | 変更履歴テーブル更新           | 完了     |
-| `.claude/skills/task-specification-creator/SKILL.md` | 変更履歴テーブル更新           | 完了     |
+- `quality-requirements.md`: 既存記述で要件を満たしていることを再確認し、patch 不要と判断
+- `ipc-contract-checklist.md`: 実装済み能力と residual scope を current state に更新
+- `task-workflow-completed-ipc-contract-preload-alignment.md`: 現行 metrics と struggles を同期
 
----
+## Step 1-C
 
-## Step 1-B: 実装ステータステーブル更新
+- `security-electron-ipc.md`: IPC契約ドリフト防止セクションを追加
+- `deployment-gha.md`: 追加品質ゲート候補を追記
+- `technology-devops.md`: ローカル / CI 実行順を追記
+- `task-workflow-backlog.md`: EXT-002 再定義と follow-up 導線を更新
+- `quick-reference.md` / `resource-map.md`: current 参照導線へ更新
 
-### 実施状況: 実施済み
+## Step 1-D
 
-| ファイル                                                                    | 更新内容                                         | 実施状況 |
-| --------------------------------------------------------------------------- | ------------------------------------------------ | -------- |
-| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | IPC Contract Drift Auto-Detection セクション追記 | 完了     |
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
+- `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect --regenerate`: PASS
+- `indexes/topic-map.md`, `indexes/keywords.json`, workflow `index.md` を再生成
 
----
+## Step 1-E
 
-## Step 1-C: 関連タスクテーブル確認
+- `docs/30-workflows/unassigned-task/ut-task06-007-ext-001-...md`: stale 数値目標を current baseline へ更新
+- `docs/30-workflows/unassigned-task/ut-task06-007-ext-003-...md`: EXT-002 の旧名称を新 residual scope 名へ更新
+- `docs/30-workflows/unassigned-task/ut-task06-007-ext-004-...md`: EXT-002 の旧名称を新 residual scope 名へ更新
+- `docs/30-workflows/unassigned-task/ut-task06-007-ext-005-...md`: placeholder を具体的 Phase 2-6 に展開
+- `verify-unassigned-links.js`: PASS
+- `audit-unassigned-tasks.js --json --diff-from HEAD`: PASS（currentViolations 0）
+- `audit-unassigned-tasks.js --json`: baseline 160 を参考値として記録
 
-### 実施状況: 実施済み（関連仕様書にUT-TASK06-007記録追加）
+## Step 1-F
 
-```bash
-grep -rn "UT-TASK06-007" .claude/skills/aiworkflow-requirements/references/
-```
+- `deployment-gha.md`: 更新
+- `technology-devops.md`: 更新
+- `quality-requirements.md`: 再確認のみ
+- `task-workflow-backlog.md` / completed shard: 更新
 
-**検索結果**: 0件（既存仕様書に本タスクIDへの参照なし）
+## Step 1-G
 
-以下のファイルへの参照追加を実施済み:
+| 検証                                       | 結果                                               |
+| ------------------------------------------ | -------------------------------------------------- | -------- |
+| `validate-phase12-implementation-guide.js` | PASS（10/10）                                      |
+| `validate-phase-output.js ... --phase 11`  | PASS                                               |
+| `validate-phase-output.js ... --phase 12`  | PASS                                               |
+| `validate-phase11-screenshot-coverage.js`  | PASS                                               |
+| `verify-all-specs.js --json`               | PASS（warnings 0 / info 8）                        |
+| `quick_validate.js` x3                     | PASS（345 / 26 / 10 warnings は legacy baseline）  |
+| `validate-structure.js`                    | PASS with 1 warning                                |
+| `diff -qr .claude/... .agents/...`         | PASS                                               |
+| `rg -n '予定                               | 計画' outputs/phase-12/documentation-changelog.md` | no match |
 
-- `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` - 追加済み
-- `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` - 追加済み
-- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` - 追加済み
+## Step 2
 
----
+- `outputs/phase-12/implementation-guide.md`: validator 10/10 を満たす形へ再構成
+- `outputs/phase-12/system-spec-update-summary.md`: Step 1-A〜1-G / Step 2 の実施結果を current facts で再記述
+- `outputs/phase-12/skill-feedback-report.md`: `skill-creator` を対象へ追加し、追加テンプレートを記録
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`: 実検証結果で更新
+- `phase-12-documentation.md`: 完了条件と多角的チェック観点を実行結果に合わせて更新
 
-## Step 1-D: topic-map.md 再生成
+## 補足
 
-### 実施状況: 実施済み（generate-index.js実行完了）
+- `quick_validate` の warning は未リンク references に起因する既知 baseline であり、今回差分の blocker ではない
+- `validate-structure` の warning 1件は `task-workflow-completed-skill-lifecycle.md` の既存肥大化で、今回差分ではない
+- `audit-unassigned-tasks.js --json` 単独実行は repository 全体 baseline を current violation として返すため、Phase 12 の gate 判定には `--diff-from HEAD` 付き結果を採用した
 
-実施コマンド:
+## 結論
 
-```bash
-node ./.claude/skills/aiworkflow-requirements/scripts/generate-index.js
-```
-
-**実行結果**:
-
-```
-📚 インデックス生成中...
-
-📂 360ファイルを分類:
-   API設計: 19ファイル
-   その他: 175ファイル
-   アーキテクチャ: 24ファイル
-   Claude Code: 10ファイル
-   データベース: 7ファイル
-   概要・品質: 4ファイル
-   インターフェース: 42ファイル
-   セキュリティ: 15ファイル
-   技術スタック: 8ファイル
-   UI/UX: 42ファイル
-   ワークフロー: 14ファイル
-
-1. トピックマップ生成...
-   ✅ indexes/topic-map.md
-2. キーワード索引生成...
-   ✅ indexes/keywords.json (2277キーワード)
-
-✅ インデックス生成完了
-```
-
----
-
-## Step 2: システム仕様書更新
-
-### 実施状況: 実施済み
-
-| ファイル                                                                      | 更新内容                                                  | 実施状況 |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------- | -------- |
-| `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` | Phase 7（自動検出）セクション追加 + UT-TASK06-007参照追加 | 完了     |
-| `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`   | IPC Contract Drift Auto-Detection 新規セクション追加      | 完了     |
-| `.claude/skills/task-specification-creator/references/phase-templates.md`     | Phase 12チェックリストへの自動検出スクリプト確認項目追加  | 完了     |
-
----
-
-## Phase 12 成果物作成ログ
-
-Phase 12 の本セッションで作成した成果物の実績記録:
-
-| ファイル                                                 | 作成日時   | 作成結果               |
-| -------------------------------------------------------- | ---------- | ---------------------- |
-| `outputs/phase-12/implementation-guide.md`               | 2026-03-18 | 作成完了               |
-| `outputs/phase-12/system-spec-update-summary.md`         | 2026-03-18 | 作成完了               |
-| `outputs/phase-12/documentation-changelog.md`            | 2026-03-18 | 作成完了（本ファイル） |
-| `outputs/phase-12/unassigned-task-detection.md`          | 2026-03-18 | 作成完了               |
-| `outputs/phase-12/skill-feedback-report.md`              | 2026-03-18 | 作成完了               |
-| `outputs/phase-12/phase12-task-spec-compliance-check.md` | 2026-03-18 | 作成完了               |
-
-### Task 1: 実装ガイド
-
-**作成完了。**
-
-- Part 1（中学生レベル）: 「お店の注文票と厨房の調理指示書」のアナロジーで IPC 契約ドリフトを説明
-- Part 2（開発者向け）: 主要関数6つ、CLIオプション、検出ルール詳細、既知制約を網羅
-
-### Task 2: システム仕様更新サマリー
-
-**作成完了。**
-
-- Step 1-A～1-D、Step 2 の全更新を実施済み（2026-03-18）
-- LOGS.md x2, SKILL.md x2, quality-requirements.md, ipc-contract-checklist.md, phase-templates.md, task-workflow-backlog.md, topic-map.md 全て実更新完了
-
-### Task 3: 本ファイル（documentation-changelog.md）
-
-**作成完了。**
-
-- P4対策: 全Step確認後に事後記録として作成
-- worktree環境制約下での実施内容と未実施内容を明確に区別して記録
-
-### Task 4: 未タスク検出レポート
-
-**作成完了。**
-
-- 検出3件: UT-TASK06-007-EXT-001/002/003
-- 指示書ファイル3件（EXT-001/002/003）: `docs/30-workflows/unassigned-task/` に作成済み
-- task-workflow.md 残課題テーブル: 登録済み
-- ipc-contract-checklist.md への参照リンク: 追加済み
-
-### Task 5: スキルフィードバックレポート
-
-**作成完了。**
-
-- T-01: NFR行数目安と実際規模の乖離に対するエスカレーション手順の追記
-- T-02: worktree環境でのesbuildプラットフォーム不一致対応パターンの追記
-
-### Task 6: タスク仕様準拠チェック
-
-**作成完了。**
-
-- 全6ファイルの存在確認テーブルを記録
-
----
-
-## 全体完了状態
-
-| Step                              | 実施状況                                                                         |
-| --------------------------------- | -------------------------------------------------------------------------------- |
-| Step 1-A (LOGS.md x 2 更新)       | 完了（4ファイル同時更新）                                                        |
-| Step 1-B (実装ステータス更新)     | 完了（quality-requirements.md にセクション追記）                                 |
-| Step 1-C (関連タスク検索)         | 完了（関連仕様書3ファイルにUT-TASK06-007記録追加）                               |
-| Step 1-D (topic-map 再生成)       | 完了（generate-index.js実行、360ファイル・2277キーワード）                       |
-| Step 1-E (未タスク指示書)         | 完了（3件 unassigned-task/ に配置）                                              |
-| Step 1-F (DevOps関連)             | 対象外（CI未構成）                                                               |
-| Step 1-G (検証コマンド)           | 完了                                                                             |
-| Step 2 (システム仕様書更新)       | 完了（ipc-contract-checklist.md + quality-requirements.md + phase-templates.md） |
-| Task 1 (実装ガイド)               | 完了                                                                             |
-| Task 2 (システム仕様更新サマリー) | 完了                                                                             |
-| Task 3 (本ファイル)               | 完了                                                                             |
-| Task 4 (未タスク検出)             | 完了（3件検出・指示書作成済み）                                                  |
-| Task 5 (スキルフィードバック)     | 完了                                                                             |
-| Task 6 (準拠チェック)             | 完了                                                                             |
+この changelog は「2026-03-19 の再監査で実際に修正し、検証まで完了した内容」のみを記録している。planned wording は残していない。

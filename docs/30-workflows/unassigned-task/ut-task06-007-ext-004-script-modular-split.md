@@ -7,7 +7,7 @@
 | タスクID     | UT-TASK06-007-EXT-004                                      |
 | タスク名     | check-ipc-contracts.ts モジュール分割リファクタリング      |
 | 分類         | リファクタリング                                           |
-| 対象機能     | check-ipc-contracts.ts（478行 → モジュール分割）           |
+| 対象機能     | check-ipc-contracts.ts（578行 → モジュール分割）           |
 | 優先度       | 低                                                         |
 | 見積もり規模 | 中規模                                                     |
 | ステータス   | 未実施                                                     |
@@ -20,13 +20,13 @@
 
 ### 1.1 背景
 
-`check-ipc-contracts.ts` は478行の単一ファイルであり、NFR-05 で定めるファイル行数の目安（200行以内）を大幅に超過している。Phase 8 リファクタリングでモジュール分割を検討したが、worktree 環境での `esbuild` バイナリ不一致（P7亜種）と組み合わさり、分割後のテスト実行における Vitest のモジュール解決が不安定になる懸念から、単一ファイル維持を判断した（C-04制約）。
+`check-ipc-contracts.ts` は578行の単一ファイルであり、NFR-05 で定めるファイル行数の目安（200行以内）を大幅に超過している。Phase 8 リファクタリングでモジュール分割を検討したが、worktree 環境での `esbuild` バイナリ不一致（P7亜種）と組み合わさり、分割後のテスト実行における Vitest のモジュール解決が不安定になる懸念から、単一ファイル維持を判断した（C-04制約）。
 
-EXT-001（タプル配列ハンドラ抽出）・EXT-002（マルチチャンネル定数解決）・EXT-003（ipcMain.on パターン強化）の拡張を全て実施すると、600行以上への膨張が見込まれる。この状態を放置すると、拡張追加のたびに全体理解が必要になり、開発効率が逓減する。
+EXT-001（タプル配列ハンドラ抽出）・EXT-002（エイリアス / 再export / 動的定数解決）・EXT-003（ipcMain.on パターン強化）の拡張を全て実施すると、600行以上への膨張が見込まれる。この状態を放置すると、拡張追加のたびに全体理解が必要になり、開発効率が逓減する。
 
 ### 1.2 問題点・課題
 
-- 単一ファイル478行は新規開発者が全体像を把握するコストが高い
+- 単一ファイル578行は新規開発者が全体像を把握するコストが高い
 - EXT-001/002/003 の拡張実施後にさらに 120 行以上の増加が見込まれる
 - 関数間の依存関係が暗黙的で、`extractors` / `resolver` / `validator` / `reporter` の責務境界が不明確
 - 個別モジュール単位でのユニットテストが事実上困難な構成になっている
@@ -286,7 +286,7 @@ Lint・型チェック・全テストが通ることを確認する。
 
 ### ドキュメント要件
 
-- [ ] Phase 12 完了時に `task-workflow-backlog.md` の EXT-004 ステータスを「対応済み」に更新する
+- [ ] Phase 12 完了時に `task-workflow-completed-ipc-contract-preload-alignment.md` の EXT-004 導線を完了状態へ更新する
 - [ ] Phase 12 完了時に親タスク仕様書の「未タスク」テーブルを更新する
 
 ---
@@ -343,13 +343,13 @@ pnpm --filter @repo/desktop typecheck
 ### 関連ドキュメント
 
 - [`ipc-contract-checklist.md` 将来拡張セクション](../../../.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md)
-- [`task-workflow-backlog.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md)
+- [`task-workflow-completed-ipc-contract-preload-alignment.md`](../../../.claude/skills/aiworkflow-requirements/references/task-workflow-completed-ipc-contract-preload-alignment.md)
 - 関連既知の落とし穴: [P7（ネイティブモジュールバイナリ不一致）](../../../.claude/rules/06-known-pitfalls.md#p7)、[P40（テスト実行ディレクトリ依存）](../../../.claude/rules/06-known-pitfalls.md#p40)
 
 ### 参考資料
 
-- 親タスク: `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/`
-- Phase 8 レポート: `docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-8/refactoring-report.md`（C-04制約の記録）
+- 親タスク: `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/`
+- Phase 8 レポート: `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-8/refactoring-report.md`（C-04制約の記録）
 - 関連 EXT タスク:
   - EXT-001: `docs/30-workflows/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md`
   - EXT-002: `docs/30-workflows/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md`

@@ -111,6 +111,16 @@
 
 > このプロファイルでは `interfaces / llm / api-ipc / security / ui-ux-settings / task-workflow / lessons` を同一ターンで更新する。
 
+### 2.6 実績ベース更新・画面昇格・苦戦再利用プロファイル
+
+| SubAgent | 担当範囲 | 主担当作業 | 完了条件 |
+| --- | --- | --- | --- |
+| SubAgent-SR1 | `outputs/phase-12/spec-update-summary.md` / `outputs/phase-12/documentation-changelog.md` | `verify` / `validate` / `diff` / `audit` の実測値を同期し、planned wording を除去する | 完了文言が実測値のみで説明可能 |
+| SubAgent-SR2 | `outputs/phase-11/*` / `outputs/phase-12/*` | user が画面検証を要求したら docs-heavy / backend-heavy でも screenshot へ昇格し、代表証跡を残す | `SCREENSHOT + NON_VISUAL` で current workflow に閉じる |
+| SubAgent-SR3 | `references/task-workflow.md` / `references/lessons-learned.md` | 苦戦箇所を `症状 / 再発条件 / 解決策 / 標準ルール` へ分解して再利用カード化する | 次回の短時間解決に流用可能 |
+
+> 完了条件は「実装したか」ではなく「実測証跡が同期されたか」で判定する。
+
 ## 3. 各仕様書の必須記載
 
 | 仕様書 | 必須記載 |

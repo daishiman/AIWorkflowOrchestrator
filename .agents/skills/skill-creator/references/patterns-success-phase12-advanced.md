@@ -363,18 +363,14 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **関連パターン**: S10（P31/P48 標準パターン）、Phase 12 テンプレート
 - **関連タスク**: TASK-10A-F
 
-### [Phase12] current-state 再監査では direct capture preflight / lowercase unassigned filename / indexes same-wave sync を 1 wave で閉じる
+### [Phase12] 実績ベース更新 + screenshot 昇格 + 苦戦カード再利用（UT-TASK06-007）
 
-- **状況**: current workflow の再監査で、direct capture が native binary mismatch などで失敗し、follow-up 未タスクも 10件超で formalize が必要になる
+- **状況**: Phase 12 の再監査や docs-heavy/backend-heavy の更新で、完了記録が `実施予定` や `N/A` に寄り、画面検証の要求があっても `NON_VISUAL` のまま閉じやすい
 - **アプローチ**:
-  1. direct capture は 1 回だけ preflight 実行し、失敗時は exact command / error / timeout を `command-transcript.md` に残す
-  2. screenshot 要求は `NON_VISUAL` へ逃がさず、same-day evidence を使った review board fallback を current workflow 配下へ再生成する
-  3. system spec は設計意図ではなく current behavior を正本化し、legacy guidance surface も現行契約として記録する
-  4. 未タスクは正式 ID を `UT-*` のまま保持しつつ、physical filename は lowercase `task-...md` に正規化する
-  5. `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` を併用し、`currentViolations=0` を確認する
-  6. `resource-map.md` / `quick-reference.md` / `quick-reference-search-patterns.md` / `topic-map.md` / `keywords.json` / mirror parity を same-wave で記録する
-  7. 苦戦箇所は `lessons-learned-current.md` と `skill-feedback-report.md` に同時転記し、再利用可能な手順に落とす
-- **結果**: Phase 12 の PASS 判定、system spec の current-state 同期、未タスク formalize、skill 反映が分断されなくなる
-- **適用条件**: docs-heavy 再監査、explicit screenshot 要求、follow-up 未タスク 5件以上、current-state 優先の system spec sync
+  1. `verify` / `validate` / `diff` / `audit` / `validate-phase11-screenshot-coverage` の当日実測値のみを `spec-update-summary.md` / `documentation-changelog.md` / `task-workflow.md` に転記する
+  2. ユーザーが画面検証を要求したら、docs-heavy/backend-heavy でも `SCREENSHOT + NON_VISUAL` に昇格し、代表スクリーンショットを current workflow へ集約する
+  3. 苦戦箇所は `症状 / 再発条件 / 解決策 / 標準ルール` の4点で書き、`task-workflow.md` と `lessons-learned.md` と該当テンプレートへ同値転記する
+- **結果**: 実績値と証跡の不足を同時に防ぎ、次回の同種課題を短い再利用カードで解決できる
+- **適用条件**: Phase 12 再監査、docs-heavy/backend-heavy の仕様同期、ユーザーからの明示的な画面検証要求
 - **発見日**: 2026-03-19
-- **関連タスク**: TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001
+- **関連タスク**: UT-TASK06-007

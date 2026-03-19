@@ -25,7 +25,6 @@ Phase 1、Phase 2、Phase 3。
 
 ## Phase 1 のポイント
 
-- **Step 0: P50チェック（必須）** — Phase 1 開始前に対象ファイルの実装状態を `git log` と `grep` で確認し、既実装コードの重複作成を防止する（詳細: [phase-template-phase1.md](phase-template-phase1.md)）。
 - inventory と source scope の差分を固定する。
 - acceptance criteria を番号付きで定義する。
 - Phase 1-3 完了前に Phase 4 へ進まない gate を書く。
@@ -60,20 +59,6 @@ Phase 1、Phase 2、Phase 3。
 
 - IPC ハンドラの依存先が Port/Interface であること（具象クラスを直接参照しない）
 - IPC レスポンス形式（`{ success, error }` ラッパー使用の有無）を設計時点で明示的に決定する
-
-### IPC 4層整合性チェック（デッドチャンネル防止）
-
-新規 IPC チャンネルを追加する場合、以下の4層が全て整合していることを設計時に確認する:
-
-| 層 | 確認内容 | ファイル例 |
-| --- | --- | --- |
-| 1. 定数定義 | `IPC_CHANNELS` に新チャンネルが追加されているか | `packages/shared/src/ipc/channels.ts` |
-| 2. ホワイトリスト | Preload の `allowedChannels` / `validChannels` に登録されているか | `preload/index.ts` |
-| 3. ハンドラ登録 | `ipcMain.handle()` が対応するチャンネルを処理しているか | `main/ipc/*.ts` |
-| 4. Preload API | `contextBridge.exposeInMainWorld()` で公開され、Renderer から呼び出せる形になっているか | `preload/skill-api.ts` 等 |
-
-- 設計書に4層の対応表を記載する（Phase 2 の成果物として）
-- 既存チャンネルを変更する場合も4層全てを追跡する
 
 ### GAP ID参照の整合確認（P64対策）
 

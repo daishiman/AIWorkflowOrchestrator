@@ -1,0 +1,66 @@
+{
+  "taskId": "UT-TASK06-007",
+  "sourceTaskId": "TASK-UI-07-DASHBOARD-ENHANCEMENT",
+  "captureMode": "representative-review-board",
+  "capturedAt": "2026-03-19T06:56:06.314Z",
+  "baseUrl": "http://127.0.0.1:4283",
+  "outputDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260319-131742-wt-5/docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-11/screenshots",
+  "notes": "UI差分そのものを検証するタスクではないため、branch 全体の representative screenshot audit として dashboard harness を current workflow 配下へ capture した。",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01-home-normal-light-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-19T06:56:03.334Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02-home-empty-light-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=empty&theme=light",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "light",
+      "capturedAt": "2026-03-19T06:56:04.202Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03-home-loading-dark-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=loading&theme=dark",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-19T06:56:04.910Z"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04-home-normal-mobile-dark.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=dark",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "colorScheme": "dark",
+      "capturedAt": "2026-03-19T06:56:05.591Z"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05-home-normal-kanagawa-desktop.png",
+      "route": "/phase11-dashboard-home.html?state=normal&theme=kanagawa-dragon",
+      "viewport": {
+        "width": 1440,
+        "height": 980
+      },
+      "colorScheme": "kanagawa-dragon",
+      "capturedAt": "2026-03-19T06:56:06.308Z"
+    }
+  ]
+}
