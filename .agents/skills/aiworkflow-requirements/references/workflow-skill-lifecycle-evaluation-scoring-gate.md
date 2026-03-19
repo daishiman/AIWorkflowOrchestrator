@@ -44,7 +44,7 @@ system spec へ同一 wave で同期するための統合正本。
 | 苦戦箇所 | 再発条件 | 解決策 |
 | --- | --- | --- |
 | Δ表示がテストPASSでも実画面に出ない | Hook戻り値を UI 子コンポーネントへ渡し忘れる | `SkillAnalysisView -> ScoreDisplay` の props 配線を固定し、Phase 11 screenshot で回帰確認 |
-| 未タスク配置先が workflow ローカルへドリフトする | `tasks/unassigned-task/` を一時運用し台帳更新を後回しにする | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置し、参照を同ターンで一括更新 |
+| 未タスク配置先が workflow ローカルへドリフトする | `tasks/unassigned-task/` を一時運用し台帳更新を後回しにする | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置し、参照を同ターンで一括更新 |
 | `current` と `baseline` の意味が混ざる | 監査結果を単一数値で報告する | `配置可否` / `link整合` / `currentViolations` を分離し、`baseline` は legacy監視値として別記録 |
 | docs更新が分割され same-wave が崩れる | workflow成果物だけ更新し parent docs/index/log を後回しにする | `workflow + parent docs + ledger + indexes + LOGS + mirror` を同一 wave checklist で同期 |
 
@@ -115,7 +115,7 @@ system spec へ同一 wave で同期するための統合正本。
 | A | 契約境界 | `interfaces-agent-sdk-skill-details.md` |
 | B | 状態責務 | `arch-state-management-details.md` |
 | C | UI仕様と画面証跡 | `ui-ux-feature-components-reference.md`, Phase 11 screenshots |
-| D | 未タスク導線 | `task-workflow-backlog.md`, `docs/30-workflows/unassigned-task/*.md` |
+| D | 未タスク導線 | `task-workflow-backlog.md`, `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/*.md` |
 | Lead | 入口導線と整合 | `resource-map`, `quick-reference`, `task-workflow`, `lessons`, `LOGS`, mirror |
 
 ---
@@ -137,7 +137,7 @@ system spec へ同一 wave で同期するための統合正本。
 
 1. 実装差分は UT PASS だけで閉じず、Phase 11 screenshot で最終確認する。  
 2. `workflow + parent docs + backlog + lessons` を同一ターンで同期する。  
-3. MINOR は root `docs/30-workflows/unassigned-task/` に即時未タスク化する。  
+3. MINOR は root `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に即時未タスク化する。  
 4. `verify-unassigned-links` と `audit --diff-from HEAD` を分離記録し、`current` と `baseline` を混同しない。  
 5. 仕上げで `generate-index` → `validate-structure` → mirror sync → `diff -qr` を実行する。  
 

@@ -11,17 +11,17 @@
 
 ## 目的
 
-`implementation-guide`（Part 1 / Part 2）、システム仕様書更新（`ui-ux-navigation.md` 等 + `spec-update-summary.md`）、`documentation-changelog`、未タスク検出（`unassigned-task-detection.md`）、スキルフィードバックレポートを作成する。P43 対策として、仕様書更新は 3 ファイル以下 / エージェントに分割し、documentation-changelog への「完了」記録は全 Step 完了後の最終ステップとする。
+`implementation-guide`（Part 1 / Part 2）、システム仕様書更新（`.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md` 等 + `outputs/phase-12/spec-update-summary.md`）、`documentation-changelog`、未タスク検出（`outputs/phase-12/unassigned-task-detection.md`）、スキルフィードバックレポートを作成する。P43 対策として、仕様書更新は 3 ファイル以下 / エージェントに分割し、`outputs/phase-12/documentation-changelog.md` への「完了」記録は全 Step 完了後の最終ステップとする。
 
 ## 実行タスク
 
-| #   | タスク名                         | 説明                                                |
-| --- | -------------------------------- | --------------------------------------------------- |
-| 1   | 技術ドキュメント作成             | 実装ガイド Part 1（概念説明）/ Part 2（技術詳細）   |
-| 2   | システムドキュメント更新         | Step 1: 完了記録、Step 2: システム仕様更新          |
-| 3   | ドキュメント更新履歴             | documentation-changelog.md作成 & artifacts.json更新 |
-| 4   | 未タスク検出                     | unassigned-task-detection.md作成（0件でも必須）     |
-| 5   | スキルフィードバックレポート作成 | skill-feedback-report.md作成（改善点なしでも必須）  |
+| #   | タスク名                         | 説明                                                                |
+| --- | -------------------------------- | ------------------------------------------------------------------- |
+| 1   | 技術ドキュメント作成             | 実装ガイド Part 1（概念説明）/ Part 2（技術詳細）                   |
+| 2   | システムドキュメント更新         | Step 1: 完了記録、Step 2: システム仕様更新                          |
+| 3   | ドキュメント更新履歴             | documentation-changelog.md作成 & artifacts.json更新                 |
+| 4   | 未タスク検出                     | `outputs/phase-12/unassigned-task-detection.md` 作成（0件でも必須） |
+| 5   | スキルフィードバックレポート作成 | skill-feedback-report.md作成（改善点なしでも必須）                  |
 
 - Task 12-1: 技術ドキュメント作成（実装ガイド - Part 1/Part 2）
 - Task 12-2: システムドキュメント更新（Step 1: 完了記録, Step 2: システム仕様更新）
@@ -33,12 +33,19 @@
 
 ### タスク関連
 
-| 資料名                      | パス                                     | 説明                              |
-| --------------------------- | ---------------------------------------- | --------------------------------- |
-| Phase 11 手動テスト結果     | `outputs/phase-11/manual-test-result.md` | 手動テスト結果                    |
-| Phase 12 必須チェックリスト | `.claude/rules/05-task-execution.md`     | Phase 12チェックリスト            |
-| 既知の落とし穴              | `.claude/rules/06-known-pitfalls.md`     | P1-P4, P25-P29, P43, P51, P57-P59 |
-| システム仕様書更新手順      | `spec-update-workflow.md`                | 仕様書更新ワークフロー            |
+| 資料名                      | パス                                                                           | 説明                              |
+| --------------------------- | ------------------------------------------------------------------------------ | --------------------------------- |
+| Phase 2 設計仕様書          | `phase-2-design.md`                                                            | システム仕様へ反映すべき設計意図  |
+| Phase 5 実装仕様書          | `phase-5-implementation.md`                                                    | 実装内容の記録対象整理            |
+| Phase 6 テスト拡充          | `phase-6-test-expansion.md`                                                    | 検証観点の反映内容整理            |
+| Phase 7 カバレッジ結果      | `outputs/phase-7/coverage-report.md`                                           | 品質指標の記録                    |
+| Phase 8 リファクタリング    | `outputs/phase-8/refactoring-log.md`                                           | 変更点・改善点の反映              |
+| Phase 9 品質検証結果        | `outputs/phase-9/qa-results.md`                                                | lint/typecheck/test 実績          |
+| Phase 10 最終レビュー結果   | `outputs/phase-10/final-review-report.md`                                      | 最終判定と未タスク化対象の確認    |
+| Phase 11 手動テスト結果     | `outputs/phase-11/manual-test-result.md`                                       | 手動テスト結果                    |
+| Phase 12 必須チェックリスト | `.claude/rules/05-task-execution.md`                                           | Phase 12チェックリスト            |
+| 既知の落とし穴              | `.claude/rules/06-known-pitfalls.md`                                           | P1-P4, P25-P29, P43, P51, P57-P59 |
+| システム仕様書更新手順      | `.claude/skills/task-specification-creator/references/spec-update-workflow.md` | 仕様書更新ワークフロー            |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -117,14 +124,14 @@ Phase 12 開始前に、以下の落とし穴を確認すること:
 
 **更新対象ファイル**:
 
-1. `ui-ux-navigation.md` または同等の仕様書（ViewType 追加の記録）
-2. `aiworkflow-requirements/LOGS.md`（完了記録）
-3. `task-specification-creator/LOGS.md`（完了記録）— P1/P25 対策: 2ファイル両方必須
+1. `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md` または同等の仕様書（ViewType 追加の記録）
+2. `.claude/skills/aiworkflow-requirements/LOGS.md`（完了記録）
+3. `.claude/skills/task-specification-creator/LOGS.md`（完了記録）— P1/P25 対策: 2ファイル両方必須
 
 > 上記 3 ファイルを第 1 エージェントで更新する。
 
-4. `aiworkflow-requirements/SKILL.md`（変更履歴）— P29 対策
-5. `task-specification-creator/SKILL.md`（変更履歴）— P29 対策
+4. `.claude/skills/aiworkflow-requirements/SKILL.md`（変更履歴）— P29 対策
+5. `.claude/skills/task-specification-creator/SKILL.md`（変更履歴）— P29 対策
 
 > 上記 2 ファイルを第 2 エージェントで更新する（または第 1 エージェントと合計 3 ファイル以内に収める）。
 
@@ -227,10 +234,10 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js 2>&1
 検出した未タスクに対して 3 ステップを実行する:
 
 1. `docs/30-workflows/unassigned-task/` に指示書ファイルを作成（P58対策: 設計タスクでも省略不可）
-2. `task-workflow.md` 残課題テーブルに登録
+2. `.claude/skills/aiworkflow-requirements/references/task-workflow-completed-skill-lifecycle.md` 残課題テーブルに登録
 3. 関連仕様書に参照リンクを追加
 
-P59 対策: 検出件数は `unassigned-task-detection.md` と照合し、不整合がないことを確認する。
+P59 対策: 検出件数は `outputs/phase-12/unassigned-task-detection.md` と照合し、不整合がないことを確認する。
 
 ### Task 5: スキルフィードバックレポート
 
@@ -262,13 +269,13 @@ Phase 12 実行中に苦戦した箇所を記録する。後続タスクの Phas
 
 Phase 12 の各タスクが失敗した場合の対処:
 
-| タスク | 失敗パターン                   | フォールバック                                           |
-| ------ | ------------------------------ | -------------------------------------------------------- |
-| Task 1 | 実装ガイド作成でブロック       | Part 1/Part 2 を分割して個別に作成                       |
-| Task 2 | 仕様書更新でrate limit到達     | 3ファイル以下/エージェントに再分割（P43対策）            |
-| Task 3 | changelog作成で件数不整合      | unassigned-task-detection.md と照合後に再作成（P59対策） |
-| Task 4 | 未タスク検出でgrepが大量ヒット | 関連性の高いものに絞り込み、残りは後続タスクへ           |
-| Task 5 | フィードバック内容が不明確     | 「改善点なし」として最低限のレポートを作成               |
+| タスク | 失敗パターン                   | フォールバック                                                              |
+| ------ | ------------------------------ | --------------------------------------------------------------------------- |
+| Task 1 | 実装ガイド作成でブロック       | Part 1/Part 2 を分割して個別に作成                                          |
+| Task 2 | 仕様書更新でrate limit到達     | 3ファイル以下/エージェントに再分割（P43対策）                               |
+| Task 3 | changelog作成で件数不整合      | `outputs/phase-12/unassigned-task-detection.md` と照合後に再作成（P59対策） |
+| Task 4 | 未タスク検出でgrepが大量ヒット | 関連性の高いものに絞り込み、残りは後続タスクへ                              |
+| Task 5 | フィードバック内容が不明確     | 「改善点なし」として最低限のレポートを作成                                  |
 
 ## 統合テスト連携
 
@@ -323,11 +330,11 @@ Phase 12 の各タスクが失敗した場合の対処:
 
 ### Task 2: システム仕様書更新
 
-- [ ] `ui-ux-navigation.md`（または同等仕様書）に ViewType 追加が記録されている
-- [ ] `aiworkflow-requirements/LOGS.md` が更新されている（P1/P25対策）
-- [ ] `task-specification-creator/LOGS.md` が更新されている（P1/P25対策、2ファイル両方）
-- [ ] `aiworkflow-requirements/SKILL.md` 変更履歴が更新されている（P29対策）
-- [ ] `task-specification-creator/SKILL.md` 変更履歴が更新されている（P29対策）
+- [ ] `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`（または同等仕様書）に ViewType 追加が記録されている
+- [ ] `.claude/skills/aiworkflow-requirements/LOGS.md` が更新されている（P1/P25対策）
+- [ ] `.claude/skills/task-specification-creator/LOGS.md` が更新されている（P1/P25対策、2ファイル両方）
+- [ ] `.claude/skills/aiworkflow-requirements/SKILL.md` 変更履歴が更新されている（P29対策）
+- [ ] `.claude/skills/task-specification-creator/SKILL.md` 変更履歴が更新されている（P29対策）
 - [ ] 関連タスクテーブルの grep 確認が完了している（Step 1-C）
 - [ ] `node generate-index.js` を実行し topic-map.md が再生成されている（P2/P27対策）
 
@@ -335,13 +342,13 @@ Phase 12 の各タスクが失敗した場合の対処:
 
 - [ ] `documentation-changelog.md` が作成されている
 - [ ] 全 Step の完了を確認してから「完了」と記録されている（P4対策）
-- [ ] 検出件数が `unassigned-task-detection.md` と一致している（P59対策）
+- [ ] 検出件数が `outputs/phase-12/unassigned-task-detection.md` と一致している（P59対策）
 
 ### Task 4: 未タスク検出
 
-- [ ] `unassigned-task-detection.md` が作成されている（0件でも必須）
+- [ ] `outputs/phase-12/unassigned-task-detection.md` が作成されている（0件でも必須）
 - [ ] 検出した未タスクの 3 ステップが全て完了している（P3/P38/P58対策）
-- [ ] `unassigned-task-detection.md` の件数・ステータスが更新されている
+- [ ] `outputs/phase-12/unassigned-task-detection.md` の件数・ステータスが更新されている
 
 ### Task 5: スキルフィードバック
 
@@ -378,7 +385,7 @@ Phase完了前に以下を確認:
 ```bash
 # Phase完了時の検証コマンド
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js \
-  docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
+  docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
 ```
 
 ## 次Phase

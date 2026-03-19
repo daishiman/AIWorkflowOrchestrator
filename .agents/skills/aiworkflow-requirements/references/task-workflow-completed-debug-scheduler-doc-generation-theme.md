@@ -210,7 +210,7 @@
 | Phase成果物構造          | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/TASK-9G-skill-schedule`              | 28項目 PASS（0エラー, 0警告）                                     |
 | 未タスクリンク整合       | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`                                                                     | 96/96 existing, missing=0                                         |
 | 未タスク監査（今回差分） | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`                                              | currentViolations=0（baselineViolations=71 は既存課題として分離） |
-| UT-9G未タスク配置・形式  | `docs/30-workflows/unassigned-task/` 配下の UT-9G-001〜005 指示書5件の存在確認 + `## メタ情報` + `## 1..9` 見出し検査                                   | 5/5件 配置済み、各ファイル見出し10件を満たす                      |
+| UT-9G未タスク配置・形式  | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下の UT-9G-001〜005 指示書5件の存在確認 + `## メタ情報` + `## 1..9` 見出し検査                                   | 5/5件 配置済み、各ファイル見出し10件を満たす                      |
 
 #### 再確認時の苦戦箇所（運用）
 
@@ -314,7 +314,7 @@
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
-1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md" .claude/skills/aiworkflow-requirements/references/task-workflow.md` でワイルドカード参照を検出し、実体パスへ置換する。
+1. `rg -n "docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/\\*\\.md" .claude/skills/aiworkflow-requirements/references/task-workflow.md` でワイルドカード参照を検出し、実体パスへ置換する。
 2. `verify-all-specs` と `validate-phase-output` を先に実行し、Phase整合を固定する。
 3. `verify-unassigned-links` で台帳リンク切れを先に排除する。
 4. 未タスクは `--target-file` 監査で `currentViolations.total` を合否基準にし、baselineは別枠で記録する。

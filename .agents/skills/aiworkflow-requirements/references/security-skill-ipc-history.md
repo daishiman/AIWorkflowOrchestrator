@@ -128,7 +128,7 @@ SkillAPI統一により、全13メソッドが `safeInvoke` / `safeOn` セキュ
 
 > **Note**: TASK-FIX-4-1-IPC-CONSOLIDATION で preload/channels.ts への統合は完了したが、packages/shared 配下の整理は他パッケージへの影響調査が必要なため、別タスクとして分離。
 >
-> **指示書**: [task-ipc-shared-channels-refactoring.md](../../../../docs/30-workflows/unassigned-task/task-ipc-shared-channels-refactoring.md)
+> **指示書**: [task-ipc-shared-channels-refactoring.md](../../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-shared-channels-refactoring.md)
 
 ---
 

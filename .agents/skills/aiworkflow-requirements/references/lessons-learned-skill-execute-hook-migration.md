@@ -258,7 +258,7 @@ return this.skillExecutor.execute(request, metadata);
 
 | ステップ                  | 検証コマンド                                     | 期待結果                               |
 | ------------------------- | ------------------------------------------------ | -------------------------------------- |
-| 1. 指示書ファイル存在確認 | `ls docs/30-workflows/unassigned-task/task-*.md` | 対象ファイルが存在すること             |
+| 1. 指示書ファイル存在確認 | `ls docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-*.md` | 対象ファイルが存在すること             |
 | 2. 残課題テーブル登録確認 | `grep "タスクID" task-workflow.md`               | 残課題テーブルにエントリが存在すること |
 | 3. 関連仕様書リンク確認   | `grep "タスクID" references/*.md`                | 関連仕様書に参照リンクが存在すること   |
 

@@ -168,11 +168,82 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-REFACTOR-WORKSPACE-CHAT-CONTROLLER-HOOK-001 | useWorkspaceChatController 640行リファクタリング（責務分割） | 中 | `docs/30-workflows/unassigned-task/task-ut-refactor-workspace-chat-controller-hook-001.md` |
-| UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 | `docs/30-workflows/unassigned-task/task-ut-integrate-compact-layout-workspace-chat-001.md` |
-| UT-INTEGRATE-ACCESS-CAPABILITY-RESOLVER-WORKSPACE-001 | AccessCapabilityResolver による Workspace 機能制御統合 | 高 | `docs/30-workflows/unassigned-task/task-ut-integrate-access-capability-resolver-workspace-001.md` |
+| UT-REFACTOR-WORKSPACE-CHAT-CONTROLLER-HOOK-001 | useWorkspaceChatController 640行リファクタリング（責務分割） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-refactor-workspace-chat-controller-hook-001.md` |
+| UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-integrate-compact-layout-workspace-chat-001.md` |
+| UT-INTEGRATE-ACCESS-CAPABILITY-RESOLVER-WORKSPACE-001 | AccessCapabilityResolver による Workspace 機能制御統合 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-integrate-access-capability-resolver-workspace-001.md` |
 
 ---
+
+## Slide Workspace Runtime Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+
+SlideWorkspace は slide runtime/auth-mode alignment の user-facing surface。現行コードは minimal slide UI まで実装されているが、task 09 で定義した 4領域 UI と runtime/handoff surface は未反映。
+
+### 4領域コンポーネント
+
+| コンポーネント | 役割 | 状態 |
+| --- | --- | --- |
+| `SlideSyncCard` | project path、sync state、runtime/auth badge を集約 | 正本のみ |
+| `SlideProgressRow` | running 時の progress / cancel surface | 正本のみ |
+| `SlideWatchStatus` | watcher 接続状態と sync direction を表示 | 正本のみ |
+| `SlideGuidanceBlock` | degraded / guidance 時の reason と terminal fallback CTA を表示 | 正本のみ |
+
+### 状態と CTA
+
+| UI 状態 | 表示条件 | 主 CTA |
+| --- | --- | --- |
+| `synced` | sync 完了・handoff なし | phase 実行 |
+| `running` | phase 実行中または sync 進行中 | cancel |
+| `degraded` | sync error / runtime error | retry / terminal fallback |
+| `guidance` | handoff 必須 | 設定へ移動 / terminal launcher |
+
+### 4領域 UI 設計詳細
+
+> **完了タスク**: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001（spec_created, 2026-03-19）
+
+| コンポーネント | badge / status 詳細 |
+| --- | --- |
+| `SlideSyncCard` | sync status badge: `synced` / `running` / `degraded` / `guidance` の4状態をカラー区別 |
+| `SlideProgressRow` | progress bar（0-100%）+ message テキスト。running 状態のみ表示 |
+| `SlideWatchStatus` | watcher active / inactive badge + sync direction（`forward` / `reverse`） |
+| `SlideGuidanceBlock` | failure reason（human readable）+ 次アクション提示 + terminal handoff CTA |
+
+**Persistent Terminal Launcher**: 全状態（synced / running / degraded / guidance）で右下固定表示。`HandoffGuidance.terminalCommand` をコピー/起動するボタンを提供する。
+
+### current audit（2026-03-19）
+
+| 観点 | 現在の確認結果 |
+| --- | --- |
+| empty state | open CTA は存在 |
+| synced state | project path と sync badge はあるが runtime/auth / watch status はない |
+| out-of-sync | `手動同期` ボタンのみ。reverse-sync 用語と guidance surface はない |
+| running | progress / cancel はあるが direction / watch / runtime 情報はない |
+| degraded | error alert はあるが terminal launcher / handoff reason はない |
+
+### screenshot 証跡
+
+| TC-ID | 証跡 |
+| --- | --- |
+| `TC-11-01` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-01-slide-workspace-empty-state.png` |
+| `TC-11-02` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-02-slide-workspace-synced-state.png` |
+| `TC-11-03` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-03-slide-workspace-manual-sync-cta.png` |
+| `TC-11-04` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-04-slide-workspace-running-progress.png` |
+| `TC-11-05` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-05-slide-workspace-sync-error.png` |
+
+| 補助証跡 | パス |
+| --- | --- |
+| metadata | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/phase11-capture-metadata.json` |
+| manual result | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/manual-test-result.md` |
+
+live preview は `esbuild` mismatch で失敗したため、current workflow では static fallback を正本証跡とした。live current build での再撮影は `UT-SLIDE-UI-001` で回収する。
+
+### follow-up
+
+| 未タスクID | 内容 |
+| --- | --- |
+| `UT-SLIDE-UI-001` | UI 4領域の実装と live screenshot 置換 |
+| `UT-SLIDE-IMPL-001` | runtime/auth-mode 実装収束 |
 
 ## Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW）
 
@@ -240,7 +311,7 @@
 
 | タスクID | 目的 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガードへ昇格する | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
 
@@ -282,7 +353,7 @@ light theme remediation を直接行わず、representative screen と hardcoded
 | backlog | 参照 |
 | --- | --- |
 | ThemeSelector / Auth / WorkspaceSearch の actual remediation | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
-| current build capture preflight bundle | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| current build capture preflight bundle | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
 | guard workflow の維持 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 ### 再利用ルール
@@ -349,12 +420,12 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel の実チャッ
 
 | タスクID | 内容 | 優先度 | 指示書 |
 | --- | --- | --- | --- |
-| UT-CHATPANEL-GUARD-001 | handleSendMessage ストリーミング中ガード追加 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-streaming-guard.md` |
-| UT-CHATPANEL-COV-001 | ChatPanel handleNavigateToSettings テスト追加 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-function-coverage-handlenavigatetosettings.md` |
-| UT-CHATPANEL-COV-002 | chatSlice streaming系アクション直接テスト追加 | MEDIUM | `docs/30-workflows/unassigned-task/task-chatslice-streaming-actions-test.md` |
-| UT-CHATPANEL-COV-003 | useStreamingChat 専用テストファイル作成 | HIGH | `docs/30-workflows/unassigned-task/task-usestreamingchat-test-creation.md` |
-| UT-CHATPANEL-STUB-001 | ChatPanel スタブコンポーネント本格実装 | LOW | `docs/30-workflows/unassigned-task/task-chatpanel-stub-components-implementation.md` |
-| UT-CHATPANEL-REFACTOR-001 | パルスカーソル表示ロジック共通化 | LOW | `docs/30-workflows/unassigned-task/task-streaming-pulse-cursor-commonization.md` |
+| UT-CHATPANEL-GUARD-001 | handleSendMessage ストリーミング中ガード追加 | LOW | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-chatpanel-streaming-guard.md` |
+| UT-CHATPANEL-COV-001 | ChatPanel handleNavigateToSettings テスト追加 | LOW | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-chatpanel-function-coverage-handlenavigatetosettings.md` |
+| UT-CHATPANEL-COV-002 | chatSlice streaming系アクション直接テスト追加 | MEDIUM | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-chatslice-streaming-actions-test.md` |
+| UT-CHATPANEL-COV-003 | useStreamingChat 専用テストファイル作成 | HIGH | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-usestreamingchat-test-creation.md` |
+| UT-CHATPANEL-STUB-001 | ChatPanel スタブコンポーネント本格実装 | LOW | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-chatpanel-stub-components-implementation.md` |
+| UT-CHATPANEL-REFACTOR-001 | パルスカーソル表示ロジック共通化 | LOW | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-streaming-pulse-cursor-commonization.md` |
 
 ---
 
@@ -473,4 +544,3 @@ WorkspaceChatPanel の AI Runtime 整合。P62 三層防御（UI canSend / Contr
 | 状態遷移       | idle → sending → streaming → completed / cancelled / error / blocked   |
 | 実装ガイド     | `docs/30-workflows/.../outputs/phase-12/implementation-guide.md`        |
 | 未タスク       | 3件（controller hook 抽出 / CompactLayout 統合 / AccessCapability 統合）|
-

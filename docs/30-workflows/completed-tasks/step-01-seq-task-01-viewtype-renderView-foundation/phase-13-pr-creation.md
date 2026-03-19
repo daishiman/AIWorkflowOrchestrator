@@ -29,11 +29,19 @@
 
 ### タスク関連
 
-| 資料名                      | パス                                  | 説明                    |
-| --------------------------- | ------------------------------------- | ----------------------- |
-| Phase 12 ドキュメント成果物 | `outputs/phase-12/`                   | 全ドキュメント成果物    |
-| PR作成ルール                | `.claude/rules/07-git-and-tooling.md` | ブランチ名・PR本文規約  |
-| コミット前チェックリスト    | `CLAUDE.md`                           | lint/typecheck/test必須 |
+| 資料名                      | パス                                      | 説明                    |
+| --------------------------- | ----------------------------------------- | ----------------------- |
+| Phase 2 設計仕様書          | `phase-2-design.md`                       | PR説明で触れる設計意図  |
+| Phase 5 実装仕様書          | `phase-5-implementation.md`               | 実装差分の要点確認      |
+| Phase 6 テスト拡充          | `phase-6-test-expansion.md`               | 追加テスト範囲の確認    |
+| Phase 7 カバレッジ結果      | `outputs/phase-7/coverage-report.md`      | カバレッジ基準達成確認  |
+| Phase 8 リファクタリング    | `outputs/phase-8/refactoring-log.md`      | 改善内容の確認          |
+| Phase 9 品質検証結果        | `outputs/phase-9/qa-results.md`           | lint/typecheck/test結果 |
+| Phase 10 最終レビュー結果   | `outputs/phase-10/final-review-report.md` | 最終判定と指摘確認      |
+| Phase 11 手動テスト結果     | `outputs/phase-11/manual-test-result.md`  | 画面証跡と手動確認結果  |
+| Phase 12 ドキュメント成果物 | `outputs/phase-12/`                       | 全ドキュメント成果物    |
+| PR作成ルール                | `.claude/rules/07-git-and-tooling.md`     | ブランチ名・PR本文規約  |
+| コミット前チェックリスト    | `CLAUDE.md`                               | lint/typecheck/test必須 |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -58,7 +66,7 @@ Phase 5〜12 の全成果物が揃っていることを確認する。
 | Phase 8  | `outputs/phase-8/refactoring-log.md`                        | -    |
 | Phase 9  | `outputs/phase-9/qa-results.md`                             | -    |
 | Phase 10 | `outputs/phase-10/final-review-report.md`                   | -    |
-| Phase 11 | `outputs/phase-11/manual-test-report.md`                    | -    |
+| Phase 11 | `outputs/phase-11/manual-test-result.md`                    | -    |
 | Phase 12 | `outputs/phase-12/implementation-guide.md` 等               | -    |
 
 ### Task 2: コミット前最終チェック
@@ -171,7 +179,7 @@ PR作成・CI確認が完了したら、以下のタスク完了処理を実行�
 cd /Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260317-005902-wt-3
 # タスクディレクトリを completed-tasks に移動
 mv docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation \
-   docs/30-workflows/skill-lifecycle-routing/completed-tasks/step-01-seq-task-01-viewtype-renderView-foundation
+   docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation
 ```
 
 2. **artifacts.json の Phase 13 ステータスを `completed` に更新**

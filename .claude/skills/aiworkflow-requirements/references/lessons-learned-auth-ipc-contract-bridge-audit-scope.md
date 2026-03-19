@@ -119,7 +119,7 @@
 
 | 項目 | 内容                                                                                 |
 | ---- | ------------------------------------------------------------------------------------ |
-| 課題 | 完了後も `docs/30-workflows/unassigned-task/` に残置すると台帳と実体がずれる         |
+| 課題 | 完了後も `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に残置すると台帳と実体がずれる         |
 | 原因 | 完了記録（task-workflow更新）と物理移管（completed-tasks移動）が別ターンになりやすい |
 | 対処 | 完了反映時に「行更新・物理移動・リンク検証」を同一ターンで実施                       |
 | 教訓 | Step 1-B/1-E は台帳更新だけでなくファイル配置整合まで含めて完了判定する              |

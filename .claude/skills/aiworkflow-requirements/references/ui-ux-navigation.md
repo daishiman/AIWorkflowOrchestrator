@@ -14,7 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
-| v1.7.7 | 2026-03-18 | TASK-SKILL-LIFECYCLE-02 を反映: `SkillCenterView` ヘッダーに「+ 新規作成」CTA（`data-testid="header-create-cta"`）、`SkillLifecycleJourneyPanel` に3ジョブ別 CTA（create/use/improve）、`useSkillCenter` にナビゲーション関数3つ、`ctaLabel` 型拡張を同期。関連未タスク: `TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001`（ヘッダー CTA の `hidden md:inline` レスポンシブ対応、`docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md`）、`TASK-IMP-SKILLCENTER-CTA-ACCESSIBILITY-001`（CTA 型安全性・アクセシビリティ改善、`docs/30-workflows/unassigned-task/task-imp-skillcenter-cta-accessibility-001.md`）、`TASK-IMP-SKILLCENTER-UI-REFINEMENT-001`（UI 改善: 8pxグリッド準拠・viewStyles分離、`docs/30-workflows/unassigned-task/task-imp-skillcenter-ui-refinement-001.md`） |
+| v1.7.7 | 2026-03-18 | TASK-SKILL-LIFECYCLE-02 を反映: `SkillCenterView` ヘッダーに「+ 新規作成」CTA（`data-testid="header-create-cta"`）、`SkillLifecycleJourneyPanel` に3ジョブ別 CTA（create/use/improve）、`useSkillCenter` にナビゲーション関数3つ、`ctaLabel` 型拡張を同期。関連未タスク: `TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001`（ヘッダー CTA の `hidden md:inline` レスポンシブ対応、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md`）、`TASK-IMP-SKILLCENTER-CTA-ACCESSIBILITY-001`（CTA 型安全性・アクセシビリティ改善、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skillcenter-cta-accessibility-001.md`）、`TASK-IMP-SKILLCENTER-UI-REFINEMENT-001`（UI 改善: 8pxグリッド準拠・viewStyles分離、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skillcenter-ui-refinement-001.md`） |
 | v1.7.6 | 2026-03-17 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 を反映: `skillAnalysis` / `skillCreate` ViewType と `renderView()` 分岐、`SkillAnalysisView` close→`skillCenter` 導線、Phase 11 screenshot 5件（advanced route fallback）を同期 |
 | v1.7.5 | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加。selected starter card の理解しやすさは first fold 可視性と別問題として `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` へ切り出し、関連未タスクへ登録した |
 | v1.7.4 | 2026-03-11 | TASK-UI-04C-WORKSPACE-PREVIEW を反映: `workspace` ViewType に `Cmd/Ctrl+P` の QuickFileSearch dialog、Arrow/Enter/Escape 操作、focus trap、選択時 preview panel 自動オープン、Phase 11 screenshot 11件を同期 |
@@ -162,7 +162,7 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | 画面分岐 | `App.tsx` `renderView()` が `skillAnalysis -> SkillAnalysisView`、`skillCreate -> SkillCreateWizard` を返す |
 | close 導線 | `skillAnalysis` close 時は `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` |
 | legacy 互換 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化 |
-| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
+| 画面証跡 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
 | 補助検証 | `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx` で renderView case を直接検証 |
 
 ### representative evidence

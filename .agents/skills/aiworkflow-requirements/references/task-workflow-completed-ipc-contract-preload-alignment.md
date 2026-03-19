@@ -53,9 +53,9 @@
 
 | ファイル                                                    | 配置先                               | 判定                                           |
 | ----------------------------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
 
 #### 再確認時の苦戦箇所と解決策
 
@@ -253,7 +253,7 @@
 
 - Atoms層の基盤部品（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）を新規実装し、Badge/EmptyStateを拡張
 - Apple HIG/WCAGとデザイントークン運用を仕様化し、テーマ横断・a11y検証を実施
-- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
+- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
 
 ---
 

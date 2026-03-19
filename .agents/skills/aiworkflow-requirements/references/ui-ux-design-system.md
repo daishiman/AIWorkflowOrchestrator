@@ -352,7 +352,7 @@ const variantStyles: Record<Variant, string> = {
 | UT-UI-THEME-DYNAMIC-SWITCH-001 | settingsSlice テーマ動的切替対応 | 完了（2026-02-25） | 中 | `docs/30-workflows/completed-tasks/ut-ui-theme-dynamic-switch-001.md` |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | component 側の固定色を token へ移行 | `spec_created` | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light theme 回帰検知（screenshot運用）を標準化 | 完了（Phase 1-12 完了 / Phase 13 未実施） | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
-| UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
+| UT-UI-TAILWIND-TOKENS-INTEGRATION-001 | Tailwind CSS カスタムプロパティ統合 | 未実施 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/ut-ui-tailwind-tokens-integration-001.md` |
 | UT-IMP-THEME-DYNAMIC-SWITCH-ROBUSTNESS-001 | テーマ動的切替の再発防止ガード強化 | 未実施 | 中 | `docs/30-workflows/completed-tasks/task-imp-theme-dynamic-switch-robustness-001.md` |
 
 ---

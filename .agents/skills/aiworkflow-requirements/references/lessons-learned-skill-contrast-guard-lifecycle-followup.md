@@ -37,7 +37,7 @@
 | 2026-03-05 | 1.29.24 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の追補。`apps/desktop test:run` が `SIGTERM` で中断した苦戦箇所を追加し、長時間fixtureテストの分割実行ガードを同種課題の手順へ統合 |
 | 2026-03-05 | 1.29.23 | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の教訓を追加。auth-key 既存チャネルで発生した runtime 登録漏れと unregister 非対称更新の苦戦箇所を整理し、再利用4ステップ手順を標準化 |
 | 2026-03-05 | 1.29.22 | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録 |
-| 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
+| 2026-03-05 | 1.29.21 | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
 | 2026-03-05 | 1.29.20 | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化 |
 | 2026-03-05 | 1.29.19 | UT-TASK-10A-B-009 を追加登録。完了済みUT配置ルールの文書間ドリフトと `audit --target-file` 適用境界誤用を未タスク化し、配置3分類（未実施/完了済みUT/legacy）と `current/baseline` 分離判定を再利用ルールとして固定 |
 | 2026-03-05 | 1.29.18 | UT-TASK-10A-B-001 の簡潔解決カードを追補。配置先の3分類（未実施/完了済み/legacy）と `target-file` 適用境界、画面証跡5/5基準、`current/baseline` 分離判定を同一セクションへ固定し、同種課題を短手順で再現できるよう最適化 |
@@ -64,7 +64,7 @@
 | 2026-03-03 | 1.28.7 | TASK-10A-D 教訓を追加。IPC境界の型定義不整合（`unknown[]` vs `Suggestion`型）、P40テスト実行ディレクトリ依存の再発、P11フック起因のEdit失敗の3課題と5ステップ手順を標準化 |
 | 2026-03-03 | 1.28.6 | TASK-10A-C 追補: 苦戦箇所を未タスク2件へ分離（UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001, UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001）。5仕様書同時同期ガードとUI証跡3点セット（再撮影/TCカバレッジ/鮮度確認）を再利用導線として固定 |
 | 2026-03-02 | 1.28.5 | TASK-10A-C 教訓を追加。UI再撮影後のTC紐付け検証不足、`skill:create` 契約の4仕様書同期漏れ、Phase 11/12 依存成果物参照漏れを防ぐ5ステップ手順を標準化 |
-| 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定 |
+| 2026-03-02 | 1.28.4 | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に追加し、再発防止導線を固定 |
 | 2026-03-02 | 1.28.3 | TASK-10A-B 再監査教訓を追加。Phase 11 のコード分析ベース残置、`phase-11-manual-test.md` 必須節欠落、未タスク件数ドリフト（7→5）を解消する5ステップ手順を標準化 |
 | 2026-03-02 | 1.28.2 | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定 |
 | 2026-03-02 | 1.28.1 | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化 |
@@ -125,7 +125,7 @@
 | 2026-03-05 | 1.29.24    | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の追補。`apps/desktop test:run` が `SIGTERM` で中断した苦戦箇所を追加し、長時間fixtureテストの分割実行ガードを同種課題の手順へ統合                                                                                                                                  |
 | 2026-03-05 | 1.29.23    | TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001 の教訓を追加。auth-key 既存チャネルで発生した runtime 登録漏れと unregister 非対称更新の苦戦箇所を整理し、再利用4ステップ手順を標準化                                                                                                                               |
 | 2026-03-05 | 1.29.22    | TASK-UI-01-A-STORE-SLICE-BASELINE の再監査追補。workflow 実体パスの取り違え（`docs/30-workflows/task-056a-a-store-slice-baseline` と他パス混在）を苦戦箇所へ追加し、preflight（`test -d` + `rg --files`）を標準化。関連未タスク `UT-IMP-PHASE12-WORKFLOW-PATH-CANONICALIZATION-001` を登録                     |
-| 2026-03-05 | 1.29.21    | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
+| 2026-03-05 | 1.29.21    | TASK-UI-01-A-STORE-SLICE-BASELINE の Phase 12準拠再確認を追補。`audit-unassigned-tasks --target-file` の適用境界（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下限定）と、`current`/`baseline` 判定分離の実運用手順を追加。baseline負債削減用未タスク `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を関連登録 |
 | 2026-03-05 | 1.29.20    | TASK-UI-01-A-STORE-SLICE-BASELINE 再監査の教訓を追加。Phase 11でTC-ID欠落により証跡検証が失敗した課題、slice件数の基準ドリフト（17→16）、Step 2「更新不要」誤判定を解消する4ステップ手順を標準化                                                                                                               |
 | 2026-03-05 | 1.29.19    | UT-TASK-10A-B-009 を追加登録。完了済みUT配置ルールの文書間ドリフトと `audit --target-file` 適用境界誤用を未タスク化し、配置3分類（未実施/完了済みUT/legacy）と `current/baseline` 分離判定を再利用ルールとして固定                                                                                             |
 | 2026-03-05 | 1.29.18    | UT-TASK-10A-B-001 の簡潔解決カードを追補。配置先の3分類（未実施/完了済み/legacy）と `target-file` 適用境界、画面証跡5/5基準、`current/baseline` 分離判定を同一セクションへ固定し、同種課題を短手順で再現できるよう最適化                                                                                       |
@@ -152,7 +152,7 @@
 | 2026-03-03 | 1.28.7     | TASK-10A-D 教訓を追加。IPC境界の型定義不整合（`unknown[]` vs `Suggestion`型）、P40テスト実行ディレクトリ依存の再発、P11フック起因のEdit失敗の3課題と5ステップ手順を標準化                                                                                                                                      |
 | 2026-03-03 | 1.28.6     | TASK-10A-C 追補: 苦戦箇所を未タスク2件へ分離（UT-IMP-TASK10A-C-FIVE-SPEC-SYNC-GUARD-001, UT-IMP-TASK10A-C-PHASE11-SCREENSHOT-COVERAGE-GUARD-001）。5仕様書同時同期ガードとUI証跡3点セット（再撮影/TCカバレッジ/鮮度確認）を再利用導線として固定                                                                |
 | 2026-03-02 | 1.28.5     | TASK-10A-C 教訓を追加。UI再撮影後のTC紐付け検証不足、`skill:create` 契約の4仕様書同期漏れ、Phase 11/12 依存成果物参照漏れを防ぐ5ステップ手順を標準化                                                                                                                                                           |
-| 2026-03-02 | 1.28.4     | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/unassigned-task/` に追加し、再発防止導線を固定                                                                                             |
+| 2026-03-02 | 1.28.4     | TASK-10A-B 追補: 苦戦箇所3件を未タスク化（UT-TASK-10A-B-006〜008）。Phase 11必須節検証、画面証跡鮮度確認、未タスク件数再計算同期のガード指示書を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に追加し、再発防止導線を固定                                                                                             |
 | 2026-03-02 | 1.28.3     | TASK-10A-B 再監査教訓を追加。Phase 11 のコード分析ベース残置、`phase-11-manual-test.md` 必須節欠落、未タスク件数ドリフト（7→5）を解消する5ステップ手順を標準化                                                                                                                                                 |
 | 2026-03-02 | 1.28.2     | UT-IMP-PHASE12-TWO-WORKFLOW-EVIDENCE-BUNDLE-001 を追加。2workflow同時監査の証跡集約、Task 1/3/4/5 実体突合、UI画面証跡鮮度確認、current/baseline 分離判定を未タスク化し再利用導線を固定                                                                                                                        |
 | 2026-03-02 | 1.28.1     | Phase 12準拠再確認（TASK-UI-05A/TASK-UI-05）を追加。2workflow同時監査時の証跡分散、baseline/current誤判定、成果物実体突合漏れを防ぐ4ステップ手順を標準化                                                                                                                                                       |
@@ -366,7 +366,7 @@ vi.mock("../../../store", () => ({
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | TASK-10A-F 由来 3 件は `docs/30-workflows/unassigned-task/` に正しく配置されていても、repo-wide baseline 違反が残るため「指定ディレクトリは完全準拠」とは言えなかった |
+| 課題 | TASK-10A-F 由来 3 件は `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に正しく配置されていても、repo-wide baseline 違反が残るため「指定ディレクトリは完全準拠」とは言えなかった |
 | 再発条件 | `audit-unassigned-tasks --diff-from HEAD` の `currentViolations=0` だけを見て、`baselineViolations` を読まずに結論を書く |
 | 対処 | レポートに「今回差分合格」と「legacy 負債残存」を分離記録し、legacy 正規化ガード未タスクを参照させた |
 | 標準ルール | 未タスク確認は「今回差分の配置・形式」「ディレクトリ全体の legacy 負債」の2軸で報告する |

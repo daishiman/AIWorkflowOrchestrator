@@ -30,11 +30,11 @@
 
 | TC | 証跡 | 内容 |
 | --- | --- | --- |
-| TC-11-01 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01-renderview-skill-analysis.png` | skillAnalysis 描画 |
-| TC-11-02 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-02-renderview-skill-create.png` | skillCreate 描画 |
-| TC-11-03 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-03-renderview-dashboard-regression.png` | dashboard 回帰 |
-| TC-11-04 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-04-analysis-close-to-skill-center.png` | analysis close 導線 |
-| TC-11-05 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-05-legacy-skill-center-alias-normalized.png` | legacy alias 到達面 |
+| TC-11-01 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01-renderview-skill-analysis.png` | skillAnalysis 描画 |
+| TC-11-02 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-02-renderview-skill-create.png` | skillCreate 描画 |
+| TC-11-03 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-03-renderview-dashboard-regression.png` | dashboard 回帰 |
+| TC-11-04 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-04-analysis-close-to-skill-center.png` | analysis close 導線 |
+| TC-11-05 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-05-legacy-skill-center-alias-normalized.png` | legacy alias 到達面 |
 
 `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` は
 `advanced route fallback`（`/advanced/*?skipAuth=true`）で screenshot を固定し、
@@ -76,7 +76,7 @@
 | テスト | `skillLifecycleJourney.test.ts` | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.test.ts` |
 | テスト | `types.test.ts` | `apps/desktop/src/renderer/store/types.test.ts` |
 | screenshot harness | Phase 11 capture script | `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` |
-| screenshot | TC-11-01..05 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/` |
+| screenshot | TC-11-01..05 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/` |
 
 ---
 
@@ -89,7 +89,7 @@
 | 台帳 | `references/task-workflow.md`, `references/task-workflow-completed-skill-lifecycle.md`, `references/task-workflow-backlog.md` |
 | 教訓 | `references/lessons-learned-current.md` |
 | index | `indexes/resource-map.md`, `indexes/quick-reference.md`, `indexes/quick-reference-search-patterns.md` |
-| follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | mirror root | canonical=`.claude/skills/aiworkflow-requirements/` / mirror=`.agents/skills/aiworkflow-requirements/` |
 
 Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件として記録し、
@@ -103,8 +103,8 @@ Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件と�
 | --- | --- |
 | `pnpm --filter @repo/desktop exec vitest run src/renderer/__tests__/App.renderView.viewtype.test.tsx src/renderer/navigation/skillLifecycleJourney.test.ts src/renderer/store/types.test.ts` | renderView / 型境界の回帰確認 |
 | `node apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` | Phase 11 screenshot 取得 |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation` | 画面証跡カバレッジ確認 |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation` | implementation guide literal 要件確認 |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation` | 画面証跡カバレッジ確認 |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation` | implementation guide literal 要件確認 |
 
 ---
 

@@ -1,8 +1,9 @@
-# Lessons Learned アーカイブ（2026-03-01 〜 2026-03-13）
+# Lessons Learned アーカイブ（2026-03-01 〜 2026-03-15）
 
 > 親仕様書: [lessons-learned.md](lessons-learned.md)
 > current summary: [lessons-learned-current.md](lessons-learned-current.md)
-> 役割: 2026-03-01〜2026-03-13 の教訓エントリを保管するアーカイブ
+> 役割: 2026-03-01〜2026-03-15 の教訓エントリを保管するアーカイブ
+> 2026-03-16以降のエントリは [lessons-learned-current.md](lessons-learned-current.md) を参照
 
 ## メタ情報
 
@@ -10,12 +11,12 @@
 | -------- | ---------------------------------------------------------------------- |
 | 正本     | `.claude/skills/aiworkflow-requirements/references/lessons-learned.md` |
 | 目的     | current summary から分離した過去教訓の保管                             |
-| スコープ | 2026-03-01〜2026-03-13 に記録された教訓エントリ                        |
+| スコープ | 2026-03-01〜2026-03-15 に記録された教訓エントリ                        |
 | 対象読者 | AIWorkflowOrchestrator 開発者                                          |
 
 ---
 
-## 教訓アーカイブ（2026-03-01 〜 2026-03-13）
+## 教訓アーカイブ（2026-03-01 〜 2026-03-15）
 
 ### 2026-03-13 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001
 
@@ -189,7 +190,7 @@
 | 課題 | `light-theme-shared-color-migration/` などの workflow 名だけを参照すると、正式な task spec / issue 追跡先が分離しやすい |
 | 再発条件 | 親 workflow を `completed-tasks/` へ移した後も、root `unassigned-task/` や workflow 名参照だけで運用する |
 | 解決策 | 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で個別 `currentViolations=0` を確認した |
-| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
+| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
@@ -360,7 +361,7 @@
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ---
 
@@ -411,7 +412,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 課題 | 未タスクを `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/` に置いたため、`--target-file` 監査境界と衝突した |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置した |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置した |
 | 標準ルール | active 未タスクは root canonical path を正本とし、workflow ローカル path は使わない |
 
 #### 苦戦箇所3: system spec の同期対象を絞りすぎると same-wave が崩れる

@@ -147,7 +147,7 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 ### 同種課題の簡潔解決手順（4ステップ）
 
 1. UI責務を `view / organism / molecule / hook` に分解し、拡張点を先に決める。  
-2. 未タスク候補を `docs/30-workflows/unassigned-task/` に分離登録する。  
+2. 未タスク候補を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に分離登録する。  
 3. `verify-unassigned-links` と `audit --target-file` で参照と形式を機械確認する。  
 4. `task-workflow.md` と `lessons-learned.md` に苦戦箇所を同一ターンで同期する。  
 
@@ -319,12 +319,12 @@ TASK-10A-B で `SkillAnalysisView`（分析結果の可視化と改善操作UI�
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/unassigned-task/task-10a-b-improvement-toast-notification.md` |
-| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/unassigned-task/task-10a-b-props-contract-alignment.md` |
-| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
-| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
-| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
-| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
+| UT-TASK-10A-B-002 | 改善結果トースト通知実装 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-improvement-toast-notification.md` |
+| UT-TASK-10A-B-004 | Props 契約整合（`skill` vs `skillName`） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-props-contract-alignment.md` |
+| UT-TASK-10A-B-005 | molecule 分割設計追補（Header/Error/Actions） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-analysis-view-molecule-separation.md` |
+| UT-TASK-10A-B-006 | Phase 11 必須セクション検証ガード（統合テスト連携/完了条件） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-required-sections-validation-guard.md` |
+| UT-TASK-10A-B-007 | Phase 11 画面証跡鮮度ガード（再撮影 + 更新時刻確認） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-phase11-screenshot-freshness-guard.md` |
+| UT-TASK-10A-B-009 | 完了済みUT配置ポリシー統一ガード（3分類 + target監査境界） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` |
 
 ### 完了済み派生タスク
 
@@ -423,9 +423,9 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 | タスクID | 内容 | 優先度 | 仕様書 |
 | --- | --- | --- | --- |
-| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
-| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
-| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
+| TASK-10A-G-SKILLEDITOR-FILEOPS-STORE-MIGRATION | SkillEditor.tsx ファイル操作系 direct IPC の Store 移行（6API） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md` |
+| TASK-10A-F-MINOR-01-ANALYSIS-SUCCESS-FEEDBACK | SkillAnalysisView 成功フィードバックの視覚強化 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-f-minor-01-analysis-success-feedback.md` |
+| TASK-10A-F-MINOR-02-WIZARD-GENERATE-RECOVERY | SkillCreateWizard GenerateStep のリカバリ導線追加 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-f-minor-02-wizard-generate-recovery.md` |
 
 ---
 

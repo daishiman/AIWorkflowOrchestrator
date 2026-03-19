@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                    |
-| Phase      | 6 - テスト拡充                                                                                                                 |
-| 前 Phase   | Phase 5 - 実装                                                                                                                 |
-| 次 Phase   | Phase 7 - カバレッジ確認                                                                                                       |
-| 依存成果物 | `phase-4-test-creation.md`（Phase 4 テストケース設計）、`phase-5-implementation.md`（実装成果物）                              |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-6-test-expansion.md` |
-| ステータス | not_started                                                                                                                    |
+| 項目       | 内容                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                    |
+| Phase      | 6 - テスト拡充                                                                                                                                 |
+| 前 Phase   | Phase 5 - 実装                                                                                                                                 |
+| 次 Phase   | Phase 7 - カバレッジ確認                                                                                                                       |
+| 依存成果物 | `phase-4-test-creation.md`（Phase 4 テストケース設計）、`phase-5-implementation.md`（実装成果物）                                              |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-6-test-expansion.md` |
+| ステータス | not_started                                                                                                                                    |
 
 ## 目的
 

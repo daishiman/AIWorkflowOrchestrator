@@ -220,3 +220,36 @@ rg -n "typeof .*string|=== \\\"\\\"" apps/desktop/src/main/ipc | rg -v "trim"
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001            | `auth:*`       | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化                               | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定                                                                                                                                   |
 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001   | `auth-mode:*`  | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂      | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一                                                                             |
 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | `api-key:list` | Renderer側で `result.data!.providers` の non-null assertion 使用、配列要素の type predicate 未実装 | CC-7 を3項目→7項目に拡充。`Array.isArray` + P49準拠 type predicate + P48準拠 non-null assertion 禁止でRendererの防御を標準化                                                                                      |
+
+---
+
+## 自動検出ツール（UT-TASK06-007）
+
+手動チェックリストに加え、以下の自動検出スクリプトで IPC 契約ドリフトを検証可能:
+
+```bash
+# レポートモード（常に exit 0）
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only
+
+# 厳格モード（不一致検出時 exit 1）
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict
+
+# JSON出力
+pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json
+```
+
+自動検出対象ルール:
+- **R-01**: チャンネル孤児（Main/Preloadの片方にのみ存在）- warning
+- **R-02**: 引数形式不一致（P44パターン）- error
+- **R-03**: チャンネル名ハードコード（P27パターン）- warning
+- **R-04**: 未登録チャンネル（Preloadで使用、Mainで未handle）- error
+
+既知の制約: タプル配列経由ハンドラ（`[IPC_CHANNELS.XXX, handler]` 形式）は未抽出。
+
+### 将来拡張（未タスク）
+
+- [UT-TASK06-007-EXT-001](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md): タプル配列経由ハンドラ抽出（`[IPC_CHANNELS.XXX, handler]` 形式の約108件未抽出を解消）
+- [UT-TASK06-007-EXT-002](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md): 別定数オブジェクト対応（`CHAT_EDIT_CHANNELS` 等 `IPC_CHANNELS` 以外のチャンネル解決）
+- [UT-TASK06-007-EXT-003](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md): ipcMain.on検証強化（`ipcMain.on` と `safeOn` の照合精度向上）
+- [UT-TASK06-007-EXT-004](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-004-script-modular-split.md): check-ipc-contracts.ts モジュール分割リファクタリング（C-04制約対応、478行→モジュール分割）
+- [UT-TASK06-007-EXT-005](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md): R-02 セマンティクスチェック精度向上（偽陽性削減・P45自動検出）

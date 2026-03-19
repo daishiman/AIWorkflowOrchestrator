@@ -256,7 +256,7 @@
 - 目的: 実装時に苦戦した 3 契約（cache clear / Main 同期 / `source` 表示）を、次回の短手順へ変換する改善未タスクを正本へ登録する
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を正式な未タスク仕様書として作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-apikey-chat-triple-sync-guard-001.md` を正式な未タスク仕様書として作成
 - `references/task-workflow.md` / `references/lessons-learned.md` / `references/api-ipc-system.md` / `references/workflow-apikey-chat-tool-integration-alignment.md` に関連未タスク導線を追加
 - 親 workflow の `outputs/phase-12/unassigned-task-detection.md` を更新し、blocking 0件を維持したまま改善未タスク 1件を formalize した
 

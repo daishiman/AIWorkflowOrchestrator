@@ -160,7 +160,7 @@ SkillScannerの動作を検証するE2Eテスト用フィクスチャ。後続�
 #### 将来改善ロードマップ
 
 > **記録日**: 2026-01-24（TASK-2A Phase 12）
-> **未タスク仕様書配置先**: `docs/30-workflows/unassigned-task/`
+> **未タスク仕様書配置先**: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`
 
 以下の改善は未タスク仕様書として正式に文書化済み。全て優先度「低」。
 

@@ -119,7 +119,7 @@
 - 目的: TASK-9A の Phase 12再確認で顕在化した運用課題を再発防止タスクとして未タスク化し、仕様正本へ同期
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` を新規作成（9セクション + 3.5苦戦箇所）
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` を新規作成（9セクション + 3.5苦戦箇所）
 - `references/task-workflow.md` 残課題テーブルへ `TASK-9A-C-004` を追加
 - `references/ui-ux-feature-components.md` / `references/interfaces-agent-sdk-skill.md` の関連未タスクテーブルへ同IDを追加
 - 各仕様書の変更履歴へ反映行を追加
@@ -160,7 +160,7 @@
 ### 実施内容
 - `references/ui-ux-feature-components.md` / `ui-ux-components.md` / `interfaces-agent-sdk-skill.md` / `architecture-implementation-patterns.md` / `testing-component-patterns.md` を `completed` 状態へ更新
 - `references/task-workflow.md` に TASK-9A 完了セクションを追加し、`TASK-9A-C` と `TASK-9A-C-002` を完了化
-- `docs/30-workflows/unassigned-task/task-9a-c-file-crud-operations.md` を `completed-tasks/unassigned-task/` へ移管
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-file-crud-operations.md` を `completed-tasks/unassigned-task/` へ移管
 - `scripts/generate-index.js` を実行し topic-map / keywords を再生成
 
 ### 結果
@@ -280,7 +280,7 @@
 - SubAgent-D: `aiworkflow-requirements/SKILL.md` 変更履歴更新
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md` を新規作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md` を新規作成
 - 親タスクの苦戦箇所（同期漏れ、監査誤読、コマンド誤用）を Section 3.5 に反映
 - `task-workflow.md` 残課題テーブルと `interfaces-agent-sdk-skill.md` の関連未タスクへ登録
 
@@ -350,7 +350,7 @@
 ### 実施内容
 - `references/lessons-learned.md` に苦戦箇所2件（current/baseline誤読、完了済み未タスク移管漏れ）と5ステップ解決手順を追加
 - `references/architecture-implementation-patterns.md` に未タスク監査スコープ分離パターンを追加
-- `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管し、ステータスを完了へ更新
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-unassigned-audit-scope-control-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移管し、ステータスを完了へ更新
 - `references/task-workflow.md` の該当行参照を移管先パスへ同期
 
 ### 結果

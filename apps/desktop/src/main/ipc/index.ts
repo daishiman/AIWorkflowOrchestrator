@@ -91,6 +91,7 @@ import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import Database from "better-sqlite3";
 import { registerConversationHandlers } from "./conversationHandlers";
 import { ConversationRepository } from "../repositories/conversationRepository";
+import { initializeConversationDatabase } from "../database/conversationDatabase";
 import {
   AUTH_ERROR_CODES,
   PROFILE_ERROR_CODES,
@@ -100,44 +101,6 @@ import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
-
-/** Conversation DB スキーマ定義 */
-const CONVERSATION_DB_SCHEMA = `
-  CREATE TABLE IF NOT EXISTS chat_sessions (
-    id TEXT PRIMARY KEY,
-    user_id TEXT NOT NULL,
-    title TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    message_count INTEGER NOT NULL DEFAULT 0,
-    is_favorite INTEGER NOT NULL DEFAULT 0,
-    is_pinned INTEGER NOT NULL DEFAULT 0,
-    pin_order INTEGER,
-    last_message_preview TEXT,
-    metadata JSON NOT NULL DEFAULT '{}',
-    deleted_at TEXT
-  );
-  CREATE TABLE IF NOT EXISTS chat_messages (
-    id TEXT PRIMARY KEY,
-    session_id TEXT NOT NULL,
-    role TEXT NOT NULL,
-    content TEXT NOT NULL,
-    message_index INTEGER NOT NULL,
-    timestamp TEXT NOT NULL,
-    llm_provider TEXT,
-    llm_model TEXT,
-    llm_metadata JSON,
-    attachments JSON NOT NULL DEFAULT '[]',
-    system_prompt TEXT,
-    metadata JSON NOT NULL DEFAULT '{}',
-    FOREIGN KEY (session_id) REFERENCES chat_sessions(id) ON DELETE CASCADE
-  );
-  CREATE INDEX IF NOT EXISTS idx_chat_sessions_user_id ON chat_sessions(user_id);
-  CREATE INDEX IF NOT EXISTS idx_chat_sessions_created_at ON chat_sessions(created_at DESC);
-  CREATE INDEX IF NOT EXISTS idx_chat_messages_session_id ON chat_messages(session_id);
-  CREATE UNIQUE INDEX IF NOT EXISTS idx_chat_messages_session_message
-    ON chat_messages(session_id, message_index);
-`;
 
 /** ハンドラ登録失敗情報 */
 export interface HandlerRegistrationFailure {
@@ -556,9 +519,15 @@ function safeRegister(
 /**
  * Register all IPC handlers
  * Call this after the main window is created
+ *
+ * @param mainWindow - The main BrowserWindow instance
+ * @param conversationDb - Optional pre-initialized SQLite database for conversations.
+ *   - If a Database instance is provided, it will be used directly (DI path).
+ *   - If undefined or null, the internal initialization path is used (backward-compatible).
  */
 export function registerAllIpcHandlers(
   mainWindow: BrowserWindow,
+  conversationDb?: Database.Database | null,
 ): IpcHandlerRegistrationResult {
   const failures: HandlerRegistrationFailure[] = [];
   let successCount = 0;
@@ -931,22 +900,31 @@ export function registerAllIpcHandlers(
   });
 
   // --- 13. Conversation handlers ---
-  const conversationRegistered = safeRegister(
-    "registerConversationHandlers",
-    () => {
-      const conversationDbPath = path.join(
-        homeDir,
-        ".claude",
-        "conversations.db",
-      );
-      const db = new Database(conversationDbPath);
-      db.pragma("journal_mode = WAL");
-      db.exec(CONVERSATION_DB_SCHEMA);
-      const conversationRepository = new ConversationRepository(db);
-      registerConversationHandlers(conversationRepository);
-    },
-    failures,
-  );
+  let conversationRegistered: boolean;
+  if (conversationDb != null) {
+    // DI path: 外部から注入された DB インスタンスを使用
+    conversationRegistered = safeRegister(
+      "registerConversationHandlers",
+      () => {
+        const conversationRepository = new ConversationRepository(
+          conversationDb,
+        );
+        registerConversationHandlers(conversationRepository);
+      },
+      failures,
+    );
+  } else {
+    // 後方互換パス: undefined/null の場合は initializeConversationDatabase() で初期化
+    conversationRegistered = safeRegister(
+      "registerConversationHandlers",
+      () => {
+        const db = initializeConversationDatabase();
+        const conversationRepository = new ConversationRepository(db);
+        registerConversationHandlers(conversationRepository);
+      },
+      failures,
+    );
+  }
   if (conversationRegistered) {
     successCount++;
   } else {

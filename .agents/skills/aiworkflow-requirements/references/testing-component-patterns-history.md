@@ -18,7 +18,7 @@
 | ------------------------- | ---------------------------------- | ------ | --------- | ---------------------------------------------------------------- |
 | TASK-IMP-VITEST-UTILS-001 | Vitestテスト共通ユーティリティ整備 | 中     | TASK-9A-A | ESModuleモッキング回避パターン・一時ディレクトリヘルパーの共通化 |
 
-> **配置先**: `docs/30-workflows/unassigned-task/task-vitest-test-utilities-improvement.md`
+> **配置先**: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-vitest-test-utilities-improvement.md`
 
 ---
 

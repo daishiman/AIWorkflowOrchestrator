@@ -131,9 +131,9 @@
 
 | タスクID     | タスク名                                            | 優先度 | 指示書パス                                                                              |
 | ------------ | --------------------------------------------------- | ------ | --------------------------------------------------------------------------------------- |
-| UT-9A-B-001 | IPC入力バリデーション標準化                         | 中     | `docs/30-workflows/unassigned-task/task-ipc-validation-standardize-improvements.md` |
-| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化             | 中     | `docs/30-workflows/unassigned-task/task-ipc-error-sanitize-refactoring.md`          |
-| UT-9A-B-003 | IPCテストhandlerMapモックユーティリティ共通化       | 低     | `docs/30-workflows/unassigned-task/task-ipc-test-mock-utils-improvements.md`        |
+| UT-9A-B-001 | IPC入力バリデーション標準化                         | 中     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-validation-standardize-improvements.md` |
+| UT-9A-B-002 | IPCエラーサニタイズ共通ユーティリティ化             | 中     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-error-sanitize-refactoring.md`          |
+| UT-9A-B-003 | IPCテストhandlerMapモックユーティリティ共通化       | 低     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-test-mock-utils-improvements.md`        |
 
 ---
 
@@ -160,7 +160,7 @@
 | v1.13.0    | 2026-02-27 | TASK-9F反映: スキル共有IPCチャネルセクション追加。3チャンネル（skill:importFromSource/export/validateSource）、共有型定義10型、バリデーションルール、セキュリティ仕様、完了タスク記録 |
 | v1.12.0    | 2026-02-26 | TASK-9B反映: SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ更新。拡張7チャンネル、`SkillCreatorProgress`（`phase/percentage/message`）、実装状況テーブルを実装実体へ同期 |
 | v1.11.0    | 2026-02-21 | UT-FIX-SKILL-IMPORT-INTERFACE-001反映: `skill:import` IPC引数契約を `skillName: string` に統一した完了記録を追加 |
-| v1.10.0    | 2026-02-20 | 未タスク参照パス整合を修正: UT-9A-B-001〜003 の指示書参照を `docs/30-workflows/unassigned-task/` に統一 |
+| v1.10.0    | 2026-02-20 | 未タスク参照パス整合を修正: UT-9A-B-001〜003 の指示書参照を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に統一 |
 | v1.9.0     | 2026-02-20 | UT-FIX-SKILL-REMOVE-INTERFACE-001反映: `skill:remove` 引数契約を `skillName: string` に統一し、完了タスクへ記録 |
 | v1.8.0     | 2026-02-19 | TASK-9A-B: スキルファイル操作IPCチャンネルセクション追加。6チャンネル（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、型定義、実装状況、セキュリティ仕様、完了タスク記録 |
 | v1.7.0     | 2026-02-12 | UT-9B-H-003反映: Skill Creator IPCのセキュリティ強化仕様を追記（validatePath/sanitizeErrorMessage/ALLOWED_SCHEMA_NAMES） |

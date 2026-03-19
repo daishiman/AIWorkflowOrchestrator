@@ -162,7 +162,45 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - handoff は「手動実行支援」に限定し、auto-send / hidden prompt injection を許容しない。
 - auth key の有無を判定しても key 実値は UI / command / error へ露出しない。
 
-### Conversation IPC セキュリティ契約（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION）
+### Slide runtime/auth-mode IPC 境界（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+
+slide invoke channel はすべて `validateIpcSender -> P42 -> path guard -> business` の順序を守る。
+
+| 観点 | 契約 |
+| --- | --- |
+| sender 検証 | `slide:*` invoke handler の先頭で `validateIpcSender` を実行する |
+| payload 検証 | `projectPath` は型 / 空文字列 / trim 後空文字列の 3 段で検証する |
+| path guard | `..` / null byte / allowlist 外 path を reject する |
+| runtime handoff | API key 不足や subscription mode は `guidance` 付きの handoff envelope を返す |
+| secret 非中継 | `terminalCommand` や error message に API key を含めない |
+| push channel | Renderer へ送るのは `sync-status-changed` / `sync-progress` / `sync-error` / `execution-progress` / `structureChanged` / `watch-status` に限定する |
+
+**current drift（2026-03-19）**:
+
+- `apps/desktop/src/main/slide/ipc-handlers.ts` では `validateIpcSender` と path guard が未実装
+- legacy channel 名が残存し、canonical allowlist と一致していない
+- `registerSlideIpcHandlers()` が `ipc/index.ts` へ未接続
+
+**完了タスク記録（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001、2026-03-19）**:
+
+| セキュリティ設計項目 | 内容 |
+| -------------------- | ---- |
+| validateIpcSender 適用範囲 | slide invoke channel 全 6 本（`slide:executePhase` / `slide:watch-start` / `slide:watch-stop` / `slide:sync-status` / `slide:reverse-sync` / `slide:cancel`）に適用設計完了 |
+| セキュリティ検証順序 | sender 検証 → P42 3段バリデーション → パストラバーサル検出 → エラーサニタイズ → business logic 委譲 |
+| パストラバーサル対象 | 全 invoke チャネルの `projectPath` 引数に `detectPathTraversal` 適用設計完了 |
+| エラーサニタイズ | handler 内で内部パス・スタックトレースをマスクし、`code` + `message` のみ Renderer に返却 |
+| push channel 制限 | Renderer への push は `slide:sync-status-changed` / `slide:sync-progress` / `slide:sync-error` / `slide:execution-progress` / `slide:structureChanged` / `slide:watch-status` に限定 |
+
+実装は後続タスク `UT-SLIDE-IMPL-001` で対応する。
+
+**関連未タスク**:
+
+- `UT-SLIDE-IMPL-001`
+- `UT-SLIDE-UI-001`
+
+### Conversation IPC セキュリティ契約（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION / TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001）
 
 `registerConversationHandlers()` が `registerAllIpcHandlers()` Section 13 に接続され、conversation:* 7チャンネルが Main Process で正常登録される。
 
@@ -171,17 +209,21 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 | 登録パターン | `safeRegister` + `track` で Graceful Degradation 準拠（S30） |
 | sender 検証 | 各ハンドラで `validateIpcSender` を先頭実行 |
 | 引数バリデーション | 全ハンドラで P42 準拠3段バリデーション（型チェック → 空文字列 → `trim()` 空文字列） |
-| DB 障害時 | `isConversationDbAvailable = false` → 全チャンネルが `DB_NOT_AVAILABLE`（ERR_4006）を返却 |
+| DB 障害時 | `conversationDb` が `null` → 全チャンネルが `DB_NOT_AVAILABLE`（ERR_4006）を返却 |
 | エラーメッセージ | `sanitizeRegistrationErrorMessage` でホームパスをマスク（P55準拠） |
 | 二重登録防止 | `unregisterAllIpcHandlers()` で `CONVERSATION_*` 全チャンネルを解除後に再登録（P5準拠） |
+| DB 初期化分離 | DB 初期化は `ipc/index.ts` の `registerAllIpcHandlers` から分離し、`initializeConversationDatabase()` Factory 関数に集約 |
+| DI パターン | `registerAllIpcHandlers(mainWindow, conversationDb?)` 第2引数で DB インスタンスを外部注入 |
+| DB パス | `app.getPath('userData')/conversations.db`（旧: `~/.claude/conversations.db`）に変更。OS標準のユーザーデータディレクトリを使用しパスのハードコードを排除 |
 
 **セキュリティ意図**:
 
 - conversation DB 操作は Main Process に閉じ、Renderer は Preload 公開の `conversationAPI` のみ使用
 - search クエリの SQL injection は better-sqlite3 のパラメータバインディングで防止
-- DB ファイルパスはアプリデータディレクトリに固定し、パストラバーサルを排除
+- DB ファイルパスは `app.getPath('userData')` ベースに固定し、パストラバーサルを排除
+- Factory 関数パターンにより DB 初期化失敗がフォールバック登録に確実に伝播される（DI 経由）
 
-**関連タスク**: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
+**関連タスク**: TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION（2026-03-16）、TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19）
 **関連未タスク**: UT-IPC-P42-INTRA-GROUP-CONSISTENCY-AUDIT-001（グループ内P42一貫性監査）
 **関連**: arch-ipc-persistence.md（ConversationRepository 詳細）
 

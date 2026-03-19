@@ -19,10 +19,52 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-19 | 1.2.1 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 の legacy direct SDK / modifier 経路ドリフト教訓を追加 |
+| 2026-03-19 | 1.2.0 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 の教訓3件を追加（slide IPC canonical drift、RuntimeResolver 再利用、Phase 11 fallback screenshot の固定） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
 
 ---
+
+## 2026-03-19 TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001
+
+### 教訓1: 正本 IPC 契約と current code の legacy channel 名は同時に記録する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | task 09 では `slide:watch-start` などの canonical 名を設計したが、現行コードは `slide:startWatching` など旧名のまま残っていた。正本だけ更新すると「実装済み」に見えて drift が埋もれる |
+| 解決策 | `api-ipc-system-core.md` では canonical table と current drift table を同時に持つ。設計タスクでは「正本」と「現行コード」の両方を並記する |
+| 標準ルール | spec_created タスクの IPC 正本は、rename table と current drift の両方を 1 セクションに固定する |
+
+### 教訓2: RuntimeResolver 再利用は「既存共通サービスを探す」工程を明示しないと漏れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | slide path の要件整理時に `RuntimeResolver` を再利用できたが、Phase 1 のテンプレートに「既存共通サービス探索」が明文化されておらず、初回は `agent-client.ts` 個別改善に寄りそうになった |
+| 解決策 | RuntimeResolver / handoffGuidance / TerminalHandoffBuilder のような cross-surface 共通物は、Phase 1 で `.claude/skills/` を grep して再利用可否を先に判定する |
+| 標準ルール | 新しい AI surface を触るときは、Phase 1 で `RuntimeResolver` / `handoffGuidance` / security contract の既存正本を必ず探索する |
+
+### 教訓3: Phase 11 screenshot は fallback を使っても metadata で source を固定しないと証跡として弱い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree の esbuild native binary mismatch で live preview capture が止まり、static fallback へ切り替えた。理由を metadata に残さないと「なぜ live でないのか」が追えない |
+| 解決策 | `screenshot-plan.json` と `phase11-capture-metadata.json` に captureMode / fallbackReason / route / capturedAt を必ず残す |
+| 標準ルール | fallback screenshot を使う場合は、証跡 PNG だけで終えず metadata を正本にする |
+
+### 教訓4: legacy 実行経路が複数残ると RuntimeResolver 統合の判断が遅れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | task 09 では `agent-client.ts` の direct SDK path と `modifier-skill.ts` の独立経路が残っており、「どこが canonical で、どこを未タスクへ分離すべきか」の判断が遅れた |
+| 解決策 | 先に current 実体を `rg` で棚卸しし、`skill-executor.ts` + `RuntimeResolver` を canonical に固定する。その上で legacy path は即座に UT へ切り出す |
+| 標準ルール | runtime 整流タスクでは「実体探索 -> canonical 決定 -> legacy path の UT 化」を 1 セットで実施する |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. `rg -n "RuntimeResolver|agent-client|modifier-skill|skill-executor"` で current 実体を先に棚卸しする。
+2. 正本に残す経路を 1 本だけ決め、残りは current drift と follow-up UT に即時分離する。
+3. system spec / lessons / backlog / unassigned task を同一ターンで更新し、legacy path を「残す理由」ではなく「除去計画」として記録する。
 
 ## 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
 

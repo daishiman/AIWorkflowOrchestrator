@@ -51,7 +51,7 @@
 - `arch-state-management.md` / `development-guidelines.md` / `patterns.md` / `testing-component-patterns.md` を現行 selector / preload / renderHook 実装へ同期。
 - `task-workflow.md` / `lessons-learned.md` に完了記録、SubAgent分担、検証証跡、4ステップ再利用手順を追加。
 - `generate-index.js` を再実行し、`topic-map.md` / `keywords.json` を同期。
-- `verify-unassigned-links` で露呈した既存 broken link を解消するため、`task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` を `docs/30-workflows/unassigned-task/` へ戻した。
+- `verify-unassigned-links` で露呈した既存 broken link を解消するため、`task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ戻した。
 
 ### 検証
 - `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001`
@@ -222,7 +222,7 @@
 - SubAgent-A（台帳）: `references/task-workflow.md` に関連未タスク登録（`1.67.23`）
 - SubAgent-B（IPC）: `references/api-ipc-system.md` に関連未タスク登録（`v1.5.6`）
 - SubAgent-C（教訓）: `references/lessons-learned.md` に関連未タスク登録（`1.29.30`）
-- SubAgent-D（指示書）: `docs/30-workflows/unassigned-task/` に9セクション指示書を作成
+- SubAgent-D（指示書）: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に9セクション指示書を作成
 
 ### 実施内容
 - 未タスク指示書を `task-specification-creator` テンプレート準拠（9セクション + 3.5 実装課題と解決策）で新規作成。
@@ -230,7 +230,7 @@
 - `task-workflow` / `api-ipc-system` / `lessons-learned` の3仕様書へ同IDを同期して追跡開始。
 
 ### 検証
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` → PASS（`currentViolations=0`）
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-task-investigate-five-minute-card-sync-validator-001.md` → PASS（`currentViolations=0`）
 - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js docs/30-workflows/04-TASK-INVESTIGATE-ELECTRON-SANDBOX-ITERABLE-ERROR-001` → PASS
 
 ### 結果
@@ -293,7 +293,7 @@
 
 ### 結果
 - ステータス: success
-- 補足: 未タスクは指定ディレクトリ `docs/30-workflows/unassigned-task/` の運用境界（`--target-file`）に沿って再確認し、今回差分で追加不要と判定。
+- 補足: 未タスクは指定ディレクトリ `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` の運用境界（`--target-file`）に沿って再確認し、今回差分で追加不要と判定。
 
 ---
 

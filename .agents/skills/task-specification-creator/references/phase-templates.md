@@ -5,14 +5,6 @@
 
 ## family 構成
 
-| file | 対象 | 役割 |
-| --- | --- | --- |
-| [phase-template-core.md](phase-template-core.md) | Phase 1-3 | 要件定義、設計、設計レビューの共通構造 |
-| [phase-template-execution.md](phase-template-execution.md) | Phase 4-10 | テスト、実装、品質、最終レビュー |
-| [phase-template-phase11.md](phase-template-phase11.md) | Phase 11 | manual walkthrough と screenshot evidence。設計タスク向けウォークスルー方式（NON_VISUAL判定）を含む |
-| [phase-template-phase12.md](phase-template-phase12.md) | Phase 12 | implementation guide、spec sync、未タスク、feedback。設計タスク向け2段階更新方式（SF-02）と未タスク4パターン（SF-03）を含む |
-| [phase-template-phase13.md](phase-template-phase13.md) | Phase 13 | user approval と PR blocked ルール |
-
 ---
 
 ## 成果物配置ルール（重要）
@@ -43,19 +35,6 @@
 | `{{NEXT_PHASE}}`    | 次のPhase番号          | `5`                                |
 | `{{TASK_NAME}}`     | タスク名               | `search-replace-ui-implementation` |
 | `{{ISO_TIMESTAMP}}` | ISO8601タイムスタンプ  | `2026-01-06T10:00:00Z`             |
-| `{{TASK_ID}}`       | workflow 全体の task ID |                                   |
-| `{{ARTIFACT_PATH}}` | `outputs/phase-N/...` の相対パス |                            |
-| `{{SYSTEM_SPEC_PATH}}` | aiworkflow-requirements 側の更新対象 |                     |
-
----
-
-## 共通ルール
-
-1. タイトルは `# Phase N: ...` を維持する。
-2. `## メタ情報`、`## 目的`、`## 実行タスク`、`## 参照資料`、`## 成果物`、`## 完了条件` を省略しない。
-3. Phase 1-11 では `## 統合テスト連携` を必ず残す。
-4. `完了条件` と `タスク100%実行確認` はチェックリストで書く。
-5. outputs と phase 本文の名称は 1:1 に揃える。
 
 ---
 
@@ -79,11 +58,14 @@
 
 {{PHASE_PURPOSE}}
 
+<!-- このPhaseで達成すべき目的を1-2文で記述 -->
+
 ## 実行タスク
 
 {{#each TASKS}}
+
 - {{TASK_NAME}}: {{TASK_PURPOSE}}
-{{/each}}
+  {{/each}}
 
 ## 参照資料
 
@@ -97,9 +79,15 @@
 
 {{STEP_DESCRIPTION}}
 
-## 統合テスト連携（Phase 1-11は必須）
+### ステップ2: {{STEP_NAME}}
+
+{{STEP_DESCRIPTION}}
+
+## 統合テスト連携（Phase 1〜11は必須）
 
 {{INTEGRATION_TEST_ACTIONS}}
+
+<!-- このPhaseで実施/更新する統合テストの観点・実行内容を記載 -->
 
 ## 多角的チェック観点（AIが判断）
 
@@ -116,6 +104,18 @@
 | エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
 | パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
 | アクセシビリティ   | UI実装の場合                       | `aiworkflow-requirements: ui-ux-*.md`        |
+
+**Electronデスクトップアプリ観点**（本プロジェクト固有）:
+
+| 層                         | 適用判断                    | 仕様参照先                                             |
+| -------------------------- | --------------------------- | ------------------------------------------------------ |
+| フロントエンド（Renderer） | UI/React実装の場合          | `aiworkflow-requirements: ui-ux-*.md`                  |
+| バックエンド（Main）       | サービス/ロジック実装の場合 | `aiworkflow-requirements: architecture-*.md`           |
+| IPC通信                    | Main-Renderer連携の場合     | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| Preload/セキュリティ       | API公開の場合               | `aiworkflow-requirements: security-api-electron.md`    |
+| ローカルストレージ         | データ永続化の場合          | `aiworkflow-requirements: database-*.md`               |
+
+📖 詳細: `references/quality-standards.md` セクション8
 
 ## 成果物
 
@@ -135,9 +135,11 @@ Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）
-3. 統合テスト連携の実施（Phase 1-11）
+3. 統合テスト連携の実施（Phase 1〜11）
 4. 成果物の作成・配置
 5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
 
 ## タスク100%実行確認【必須】
 
@@ -152,10 +154,12 @@ Phase完了前に以下を確認:
 # Phase完了時の検証コマンド
 node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}} --phase {{PHASE_NUMBER}}
 ```
+````
 
 ## 次のPhase
 
 Phase {{NEXT_PHASE}}: {{NEXT_PHASE_NAME}}
+
 ````
 
 ---
@@ -222,41 +226,6 @@ grep -n "<対象関数名>" <対象ファイルパス>
 5. outputs と phase 本文の名称は 1:1 に揃える。
 
 出力レポートをPhase 7成果物に含める。判定はハンドラ単位で行う（quality-requirements.md参照）。
-
-## vitest 実行不可時のフォールバック: 構造的カバレッジ分析
-
-esbuild アーキテクチャ不一致（ネイティブモジュールのバイナリ不一致等、P7参照）により worktree 環境で vitest が実行できない場合、以下の手順で構造的カバレッジ分析を実施する。
-
-### Step 1: テストケース数の正確なカウント
-
-```bash
-# テストファイル内の it() / test() 呼び出し数をカウント
-grep -c "it(\|test(" <対象テストファイル>
-
-# 全テストファイルの合計
-find <対象ディレクトリ> -name "*.test.ts" -o -name "*.test.tsx" | xargs grep -c "it(\|test(" | tail -1
-```
-
-### Step 2: テストケースID → ソースコード行のマッピング表
-
-テストケースごとに、カバーするソースコード行を対応付ける:
-
-| テストケースID | テスト内容 | カバー対象ファイル | カバー対象行（概算） |
-| -------------- | ---------- | ------------------ | -------------------- |
-| TC-01          | 正常系     | `target.ts`        | L10-L25              |
-| TC-02          | 異常系     | `target.ts`        | L26-L40              |
-
-### Step 3: 構造的カバレッジ判定
-
-マッピング表に基づき、ソースコードの各分岐・関数・行がテストでカバーされているかを判定する:
-
-| 指標              | カバー対象数 | カバー済み数 | カバレッジ率 | 基準  |
-| ----------------- | ------------ | ------------ | ------------ | ----- |
-| Line Coverage     | {{N}}        | {{M}}        | {{%}}        | 80%+  |
-| Branch Coverage   | {{N}}        | {{M}}        | {{%}}        | 60%+  |
-| Function Coverage | {{N}}        | {{M}}        | {{%}}        | 80%+  |
-
-**注意**: 構造的カバレッジ分析は vitest 実測値の代替であり、CI 環境での正式なカバレッジ測定を免除しない。PR マージ前に CI で vitest カバレッジが基準を達成していることを確認すること。
 
 ## 統合テスト連携【必須】
 
@@ -329,14 +298,6 @@ pnpm test:integration
 pnpm test:e2e
 ````
 
-## 成果物
-
-| 成果物               | パス                                          | 説明                                |
-| -------------------- | --------------------------------------------- | ----------------------------------- |
-| リファクタリングログ | `outputs/phase-8/refactoring-log.md`          | 変更内容と改善理由の記録            |
-| コード品質チェック   | `outputs/phase-8/code-quality-check.md`       | Lint/型チェック結果（PASS 確認用）  |
-| テスト通過確認       | `outputs/phase-8/test-pass-confirmation.md`   | リファクタ後の全テスト PASS の証跡  |
-
 ## 完了条件
 
 - [ ] テストが継続成功
@@ -400,11 +361,9 @@ Phase 9: 品質保証
 
 ## 成果物
 
-| 成果物                   | パス                                        | 説明                                        |
-| ------------------------ | ------------------------------------------- | ------------------------------------------- |
-| 品質レポート             | `outputs/phase-9/quality-report.md`         | 品質検証結果（全ゲート通過の総括）          |
-| セキュリティチェック結果 | `outputs/phase-9/security-check.md`         | 脆弱性スキャン・OWASP確認結果              |
-| テスト実行ログ           | `outputs/phase-9/test-execution-log.md`     | 全テストスイートの実行結果とカバレッジ集計  |
+| 成果物       | パス                                | 説明         |
+| ------------ | ----------------------------------- | ------------ |
+| 品質レポート | `outputs/phase-9/quality-report.md` | 品質検証結果 |
 
 ## 完了条件
 
@@ -412,6 +371,12 @@ Phase 9: 品質保証
 - [ ] セキュリティチェック完了
 - [ ] 統合テスト結果が確認されている
 - [ ] **本Phase内の全タスクを100%実行完了**
+
+### IPC契約ドリフト検証【Phase 9 品質ゲート】
+
+- [ ] `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` が exit 0 で完了する
+- [ ] チャンネル孤児（R-01）の検出結果が妥当である
+- [ ] 引数形式不一致（R-02）が存在しないことを確認する
 
 ## 次のPhase
 
@@ -580,42 +545,6 @@ CI/ビルド環境制約でElectronを起動できない場合（スクリプト
 
 1. `outputs/phase-11/screenshots/NOTE.txt` に理由を記載（自動生成）
 2. DevToolsログまたはテスト実行結果をエビデンスとして記録
-
-### CLI環境でのスクリーンショット代替方法（P53対策）
-
-CLI環境（SSHリモート、ヘッドレスサーバー等）でGUI操作によるスクリーンショットが取得できない場合、以下の優先順で代替する:
-
-| 優先度 | 方法                                      | 条件                          |
-| ------ | ----------------------------------------- | ----------------------------- |
-| 1      | Playwright `page.screenshot()` スクリプト | Vite dev server 起動可能時    |
-| 2      | Electron `webContents.capturePage()` API  | Electron ヘッドレス起動可能時 |
-| 3      | テスト結果による間接検証                  | 上記いずれも不可の場合        |
-
-**優先度1: Playwright による自動撮影**
-
-```bash
-# Vite dev server を起動してから Playwright で撮影
-pnpm --filter @repo/desktop dev &
-npx playwright test --project=screenshots
-```
-
-**優先度2: Electron API による撮影**
-
-```typescript
-// Main Process から capturePage() を呼び出すスクリプト
-const image = await mainWindow.webContents.capturePage();
-fs.writeFileSync("outputs/phase-11/screenshots/TC-01.png", image.toPNG());
-```
-
-**優先度3: テスト結果による間接検証**
-
-自動テスト（Vitest / Playwright）の実行結果をエビデンスとして記録する:
-
-- `pnpm test` の全テスト PASS 結果をコピー
-- コンポーネントテストのスナップショット差分なしを確認
-- `manual-test-result.md` のスクリーンショット列に「テスト結果で間接検証済み」と記載
-
-**注意**: 優先度3は視覚的検証の代替であり、UI/UX品質の完全な保証ではない。PR レビュー時にレビュアーが実機で視覚確認することを推奨する。
 
 ### 画面カバレッジマトリクス（UI/UX変更時は必須）
 
@@ -872,7 +801,7 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 | Task | 内容 | 主成果物 |
 | ---- | ---- | -------- |
 | Task 12-1 | 技術ドキュメント作成（実装ガイド作成） | `outputs/phase-12/implementation-guide.md` |
-| Task 12-2 | システムドキュメント更新（aiworkflow-requirements 等） | `outputs/phase-12/spec-update-summary.md` |
+| Task 12-2 | システムドキュメント更新（aiworkflow-requirements 等） | `outputs/phase-12/system-spec-update-summary.md` |
 | Task 12-3 | ドキュメント更新履歴作成 | `outputs/phase-12/documentation-changelog.md` |
 | Task 12-4 | 未タスク検出（残課題の検出と記録） | `outputs/phase-12/unassigned-task-detection.md` |
 | Task 12-5 | スキルフィードバックレポート作成 | `outputs/phase-12/skill-feedback-report.md` |
@@ -918,18 +847,6 @@ Phase 12実行前に、以下の既知の落とし穴を確認し、漏れを防
 - [ ] task-specification-creator/LOGS.mdにタスク完了記録を追加（**2ファイル両方必須** -- P1, P25）
 - [ ] aiworkflow-requirements/SKILL.md 変更履歴更新
 - [ ] task-specification-creator/SKILL.md 変更履歴更新
-
-**4ファイル更新確認コマンド**（P1/P25/P29 対策 — 更新後に必ず実行）:
-
-```bash
-# LOGS.md × 2 + SKILL.md × 2 に TASK_ID が含まれているか確認
-grep -rn "{{TASK_ID}}" \
-  .claude/skills/aiworkflow-requirements/LOGS.md \
-  .claude/skills/task-specification-creator/LOGS.md \
-  .claude/skills/aiworkflow-requirements/SKILL.md \
-  .claude/skills/task-specification-creator/SKILL.md
-# → 4ファイル全てにマッチしなければ更新漏れ
-```
 
 ##### Step 1-B: 実装状況テーブル更新（該当する場合）
 - [ ] api-endpoints.md等の実装ステータスを「完了」に更新
@@ -1327,5 +1244,4 @@ git push
 
 | Date | Changes |
 | --- | --- |
-| 2026-03-18 | 1241行のmonolithからインデックス+共通構造に縮小。Phase 7-13テンプレート本文をファミリーファイルに完全移管 |
 | 2026-03-12 | 1818行の monolith から family file 構成へ再編 |

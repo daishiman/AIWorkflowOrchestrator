@@ -19,3 +19,14 @@
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
+
+## IPC契約ドリフト自動検出（UT-TASK06-007）
+
+| 項目 | 内容 |
+| --- | --- |
+| スクリプト | `apps/desktop/scripts/check-ipc-contracts.ts` |
+| 実行コマンド | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` |
+| 検出ルール | R-01（チャンネル孤児/warning）, R-02（引数形式不一致/error, P44対応）, R-03（ハードコード文字列/warning, P27対応）, R-04（未登録チャンネル/error） |
+| Phase 9チェック | `--report-only` で exit 0 完了を確認 |
+| 実装日 | 2026-03-18 |
+| GitHub Issue | #1309 |
