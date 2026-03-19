@@ -29,6 +29,7 @@ const mockSelectedFiles: Array<{
 
 const mockAddFiles = vi.fn();
 const mockRemoveFile = vi.fn();
+let mockFolderFileTrees = new Map();
 
 const mockAppState = {
   selectedProviderId: "openai" as const,
@@ -37,7 +38,7 @@ const mockAppState = {
 
 vi.mock("@/renderer/store", () => ({
   useSelectedFiles: () => mockSelectedFiles,
-  useFolderFileTrees: () => new Map(),
+  useFolderFileTrees: () => mockFolderFileTrees,
   useAddFiles: () => mockAddFiles,
   useRemoveFile: () => mockRemoveFile,
   useAppStore: (selector: (state: typeof mockAppState) => unknown) =>
@@ -78,6 +79,7 @@ beforeEach(() => {
 
   // mockSelectedFiles をリセット
   mockSelectedFiles.length = 0;
+  mockFolderFileTrees = new Map();
 
   // mockAppState をデフォルト値に戻す
   mockAppState.selectedProviderId = "openai";
@@ -341,8 +343,9 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     });
 
     // 1回目の sendMessage（pending 中）
-    const firstSend = act(async () => {
-      await result.current.sendMessage();
+    let firstSend: Promise<void>;
+    act(() => {
+      firstSend = result.current.sendMessage();
     });
 
     // 2回目の sendMessage（isSending=true のはず → no-op）
@@ -352,7 +355,9 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
 
     // 1回目を解決
     resolveStreamChat({ requestId: "stream-req-1" });
-    await firstSend;
+    await act(async () => {
+      await firstSend;
+    });
 
     // streamChat は1回だけ呼ばれるべき
     expect(mockStreamChat).toHaveBeenCalledTimes(1);
@@ -464,6 +469,18 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
 
   // R-15: mention '@' 入力で候補表示
   it("R-15: '@' を入力すると mention.isOpen=true になる", () => {
+    mockFolderFileTrees = new Map([
+      [
+        "/workspace",
+        [
+          {
+            type: "file",
+            path: "/workspace/app.ts",
+            name: "app.ts",
+          },
+        ],
+      ],
+    ]);
     const { result } = renderController();
 
     act(() => {
@@ -764,8 +781,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(mockConversationCreate).toHaveBeenCalledTimes(1);
     expect(mockConversationAddMessage).toHaveBeenCalledTimes(1);
     // create が addMessage より先に呼ばれること
-    const createOrder = mockConversationCreate.mock.invocationOrder[0];
-    const addMsgOrder = mockConversationAddMessage.mock.invocationOrder[0];
+    const createOrder = mockConversationCreate.mock.invocationCallOrder[0];
+    const addMsgOrder = mockConversationAddMessage.mock.invocationCallOrder[0];
     expect(createOrder).toBeLessThan(addMsgOrder);
   });
 

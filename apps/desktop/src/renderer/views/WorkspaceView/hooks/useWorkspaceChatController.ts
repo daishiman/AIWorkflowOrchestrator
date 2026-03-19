@@ -182,6 +182,7 @@ export function useWorkspaceChatController(params: {
   const streamRequestIdRef = useRef<string | null>(null);
   const streamContentRef = useRef("");
   const isStreamingRef = useRef(false);
+  const isSendingRef = useRef(false);
   const conversationIdRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -191,6 +192,10 @@ export function useWorkspaceChatController(params: {
   useEffect(() => {
     isStreamingRef.current = isStreaming;
   }, [isStreaming]);
+
+  useEffect(() => {
+    isSendingRef.current = isSending;
+  }, [isSending]);
 
   useEffect(() => {
     conversationIdRef.current = conversationId;
@@ -341,11 +346,17 @@ export function useWorkspaceChatController(params: {
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
-    if (!trimmed || isSending || isStreamingRef.current || !selectedModelId) {
+    if (
+      !trimmed ||
+      isSendingRef.current ||
+      isStreamingRef.current ||
+      !selectedModelId
+    ) {
       return;
     }
 
     setErrorMessage(null);
+    isSendingRef.current = true;
     setIsSending(true);
 
     const userMessage: WorkspaceChatMessage = {
@@ -399,12 +410,12 @@ export function useWorkspaceChatController(params: {
         error instanceof Error ? error.message : "メッセージ送信に失敗しました",
       );
     } finally {
+      isSendingRef.current = false;
       setIsSending(false);
     }
   }, [
     ensureConversation,
     input,
-    isSending,
     selectedFiles,
     selectedModelId,
     selectedProviderId,
