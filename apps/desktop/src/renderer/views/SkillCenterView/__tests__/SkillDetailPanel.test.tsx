@@ -792,6 +792,233 @@ describe("SkillDetailPanel", () => {
     expect(screen.queryByTestId("other-files-section")).toBeNull();
   });
 
+  // --- アクションボタンゾーンテスト ---
+
+  describe("アクションボタンゾーン", () => {
+    const mockOnEdit = vi.fn();
+    const mockOnAnalyze = vi.fn();
+
+    // TC-01
+    it("isImported=true の場合にアクションボタンゾーンが表示される", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      const zones = screen.getAllByTestId("action-buttons-zone");
+      expect(zones.length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getAllByTestId("edit-skill-button").length,
+      ).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getAllByTestId("analyze-skill-button").length,
+      ).toBeGreaterThanOrEqual(1);
+    });
+
+    // TC-02
+    it("isImported=false の場合にアクションボタンゾーンが表示されない", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={false}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      expect(screen.queryByTestId("action-buttons-zone")).toBeNull();
+    });
+
+    // TC-03
+    it("編集ボタンクリックで onEdit(skillName) が呼び出される", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      const editButtons = screen.getAllByTestId("edit-skill-button");
+      fireEvent.click(editButtons[0]);
+      expect(mockOnEdit).toHaveBeenCalledTimes(1);
+      expect(mockOnEdit).toHaveBeenCalledWith("test-skill");
+    });
+
+    // TC-04
+    it("分析ボタンクリックで onAnalyze(skillName) が呼び出される", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      const analyzeButtons = screen.getAllByTestId("analyze-skill-button");
+      fireEvent.click(analyzeButtons[0]);
+      expect(mockOnAnalyze).toHaveBeenCalledTimes(1);
+      expect(mockOnAnalyze).toHaveBeenCalledWith("test-skill");
+    });
+
+    // TC-05
+    it("Escape キーで onClose が呼び出され、アクションボタンの動作は変わらない", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      fireEvent.keyDown(document, { key: "Escape" });
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      const zones = screen.getAllByTestId("action-buttons-zone");
+      expect(zones.length).toBeGreaterThanOrEqual(1);
+    });
+
+    // TC-09
+    it("skillName が null の場合にボタンクリックで onEdit が呼ばれない", () => {
+      // skillName=null の場合、SkillDetailPanel は null を返す（早期リターン）
+      // そのためアクションボタンは表示されず、テストは render 結果が空であることを確認
+      const { container } = render(
+        <SkillDetailPanel
+          skillName={null}
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      expect(container.firstChild).toBeNull();
+    });
+
+    // TC-10
+    it("skillName が空文字列の場合にボタンクリックで onEdit が呼ばれない", () => {
+      // skillName="" は falsy なので早期リターンで null を返す
+      const { container } = render(
+        <SkillDetailPanel
+          skillName=""
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      expect(container.firstChild).toBeNull();
+    });
+
+    // TC-11
+    it("onEdit のみ undefined の場合にアクションボタンゾーンが表示されない", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={undefined}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      expect(screen.queryByTestId("action-buttons-zone")).toBeNull();
+    });
+
+    // TC-12
+    it("onAnalyze のみ undefined の場合にアクションボタンゾーンが表示されない", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={undefined}
+        />,
+      );
+
+      expect(screen.queryByTestId("action-buttons-zone")).toBeNull();
+    });
+
+    // TC-15
+    it("編集・分析ボタンが flex-1 クラスを持つ", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={mockOnEdit}
+          onAnalyze={mockOnAnalyze}
+        />,
+      );
+
+      const editButtons = screen.getAllByTestId("edit-skill-button");
+      const analyzeButtons = screen.getAllByTestId("analyze-skill-button");
+      expect(editButtons[0]).toHaveClass("flex-1");
+      expect(analyzeButtons[0]).toHaveClass("flex-1");
+    });
+
+    // TC-08
+    it("onEdit/onAnalyze が undefined の場合にアクションボタンゾーンが表示されない", () => {
+      render(
+        <SkillDetailPanel
+          skillName="test-skill"
+          isOpen={true}
+          onClose={mockOnClose}
+          onDelete={mockOnDelete}
+          isImported={true}
+          skill={defaultSkill}
+          onEdit={undefined}
+          onAnalyze={undefined}
+        />,
+      );
+
+      expect(screen.queryByTestId("action-buttons-zone")).toBeNull();
+    });
+  });
+
   // --- panelStyles export テスト ---
 
   it("panelStyles がオブジェクトとして正しくexportされている", () => {

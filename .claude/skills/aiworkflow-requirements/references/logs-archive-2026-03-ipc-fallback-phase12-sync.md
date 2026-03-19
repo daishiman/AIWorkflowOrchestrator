@@ -228,7 +228,7 @@
 - Task 12-1: 実装ガイド（Part 1: 中学生レベル + Part 2: 技術詳細）を更新
 - Task 12-2: `task-workflow.md` に未タスク4件（UT-UI-03-A11Y-RADIOGROUP-001 / A11Y-DIALOG-001 / A11Y-LABEL-001 / TYPE-ASSERTION-001）を登録。`ui-ux-feature-components.md` に完了記録を追加
 - Task 12-3: `documentation-changelog.md` 作成
-- Task 12-4: Phase 10 MINOR 指摘4件を未タスク化（`docs/30-workflows/unassigned-task/` に指示書4件作成）
+- Task 12-4: Phase 10 MINOR 指摘4件を未タスク化（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に指示書4件作成）
 - Task 12-5: スキルフィードバックレポート作成
 - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 

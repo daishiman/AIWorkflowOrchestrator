@@ -48,6 +48,24 @@
 3. 新旧契約の正常系/異常系テストを同じターンで追加する。
 4. `interfaces-agent-sdk-skill.md` / `security-skill-ipc.md` / `task-workflow.md` を同時更新する。
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: IPC契約同期オーケストレーション
+
+### 苦戦箇所: child companion の同時更新が抜けると current canonical set が崩れる
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 課題 | `interfaces` / `security` / `architecture` / `task-workflow` / `lessons` を別タイミングで更新すると、参照先の正本が分裂する |
+| 原因 | 仕様書をファイル単位で見てしまい、child companion 群を1セットとして扱っていなかった |
+| 対処 | current canonical set を先に固定し、object payload 標準（`{ skillId }`, `{ skillName, updates }`）を同時反映する |
+| 教訓 | IPC契約修正はコード変更ではなく「仕様同期オーケストレーション」として扱うと漏れが減る |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. current canonical set を `interfaces-agent-sdk-skill-core.md` / `interfaces-agent-sdk-skill-details.md` / `security-skill-ipc-core.md` / `security-electron-ipc-core.md` / `architecture-overview-core.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` で固定する。
+2. `skill:get-detail` は `{ skillId }` + `safeInvokeUnwrap`、`skill:update` は `{ skillName, updates }` + `safeInvokeUnwrap` で統一する。
+3. `interfaces` / `security` / `task-workflow` / `lessons` を同一ターンで更新し、SubAgent の責務境界を崩さない。
+4. Phase 12 相当の再監査では、成果物実体・台帳同期・index再生成をセットで確認する。
+
 ---
 
 ## UT-IPC-AUTH-HANDLE-DUPLICATE-001: AUTH IPC登録一元化
@@ -119,7 +137,7 @@
 
 | 項目 | 内容                                                                                 |
 | ---- | ------------------------------------------------------------------------------------ |
-| 課題 | 完了後も `docs/30-workflows/unassigned-task/` に残置すると台帳と実体がずれる         |
+| 課題 | 完了後も `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に残置すると台帳と実体がずれる         |
 | 原因 | 完了記録（task-workflow更新）と物理移管（completed-tasks移動）が別ターンになりやすい |
 | 対処 | 完了反映時に「行更新・物理移動・リンク検証」を同一ターンで実施                       |
 | 教訓 | Step 1-B/1-E は台帳更新だけでなくファイル配置整合まで含めて完了判定する              |
@@ -273,3 +291,36 @@
 
 ---
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 教訓（2026-03-19）
+
+- P42準拠3段バリデーション（型→空文字→trim）は既存ハンドラと同一パターンのため実装コストが低い
+- object payload統一（P44対策）: `{ skillName, updates }` でMain/Preload間の引数ドリフトを防止
+- P45命名統一: 設計段階でgetDetail=skillId、update=skillNameを確定しておくと実装時の迷いがない
+- Preload層早期拒否パターン: invoke前にバリデーションすることでMain Processの不要な処理を防止
+
+### P64: 大規模ファイルのカバレッジ計測における新規コード評価
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 課題 | skillHandlers.ts（1500行超）のような大規模ファイルでは、新規追加コードのみのテストではファイル全体のLine/Function Coverageが極端に低く見える（14.91%/38.04%） |
+| 原因 | カバレッジ計測がファイル全体を対象とするため、既存の未テストコードが分母に含まれてしまう |
+| 対処 | `grep -n` で追加行を特定し、カバレッジレポートのUncovered Line #sと照合して新規コード部分のみを評価した（Branch Coverage 87.5%/94.11%を確認） |
+| 教訓 | Phase 7 カバレッジ確認では「ファイル全体」ではなく「新規追加コード部分」のBranch Coverageを評価基準とする |
+
+### P65: IPC 4層整合性チェック（デッドチャンネル防止）
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 課題 | SKILL_UPDATE チャンネルが channels.ts に定義されていたが ipcMain.handle 未登録のため、Renderer から呼び出しても応答が返らない「デッドチャンネル」状態だった |
+| 原因 | チャンネル定数・ホワイトリスト・Main ハンドラ・Preload API の4層のうち、1層でも欠けると通信が成立しない構造を見落としていた |
+| 対処 | MECE分析で4層を全て列挙し、SKILL_UPDATE は Main ハンドラ追加 + unregister 追加、SKILL_GET_DETAIL は Preload API 追加で整合を取った |
+| 教訓 | 新規IPCチャンネル追加・既存チャンネル監査では「チャンネル定数 → ホワイトリスト → Main ハンドラ → Preload API」の4層チェックリストを必ず実施する |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. `grep -rn "IPC_CHANNELS\." apps/desktop/src/` で全チャンネル参照を洗い出し、4層それぞれの有無をMECE表で確認する。
+2. 欠損層を特定したら、チャンネル定数・ホワイトリスト・Main ハンドラ・Preload API を同一コミットで揃える。
+3. 大規模ファイルへの追加実装のカバレッジ確認は、追加行の範囲を `grep -n` で特定しBranch Coverageのみを評価する。
+4. テスト追加後は `pnpm --filter @repo/desktop test` で回帰テストをPASS確認する。
+
+---

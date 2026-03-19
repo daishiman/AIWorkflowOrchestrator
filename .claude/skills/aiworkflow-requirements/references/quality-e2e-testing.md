@@ -369,8 +369,8 @@ architecture-implementation-patterns.md の「E2Eテストパターン（TASK-8C
 
 | タスクID                               | タスク名                        | 優先度 | 発見元          | タスク仕様書                                                                          |
 | -------------------------------------- | ------------------------------- | ------ | --------------- | ------------------------------------------------------------------------------------- |
-| task-e2e-permission-waitfortimeout-001 | E2E権限テスト waitForTimeout改善 | 低     | Phase 10 TQ-M1 | `docs/30-workflows/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md` |
-| task-e2e-test-readme-documentation-001 | READMEへのE2Eテスト実行方法追加  | 低     | Phase 9 DOC-M1 | `docs/30-workflows/unassigned-task/task-e2e-test-readme-documentation.md`             |
+| task-e2e-permission-waitfortimeout-001 | E2E権限テスト waitForTimeout改善 | 低     | Phase 10 TQ-M1 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-e2e-permission-waitfortimeout-refactoring.md` |
+| task-e2e-test-readme-documentation-001 | READMEへのE2Eテスト実行方法追加  | 低     | Phase 9 DOC-M1 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-e2e-test-readme-documentation.md`             |
 
 ---
 

@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.8 | 2026-03-19 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 を反映: imported `SkillDetailPanel` に `エディタで開く` / `分析する` action zone を追加し、`SkillCenter -> skill-editor / skillAnalysis` handoff、main shell screenshot 7件、keyboard focus / Escape close を同期 |
 | v1.7.7 | 2026-03-18 | TASK-SKILL-LIFECYCLE-02 を反映: `SkillCenterView` ヘッダーに「+ 新規作成」CTA（`data-testid="header-create-cta"`）、`SkillLifecycleJourneyPanel` に3ジョブ別 CTA（create/use/improve）、`useSkillCenter` にナビゲーション関数3つ、`ctaLabel` 型拡張を同期。関連未タスク: `TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001`（ヘッダー CTA の `hidden md:inline` レスポンシブ対応、`docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md`）、`TASK-IMP-SKILLCENTER-CTA-ACCESSIBILITY-001`（CTA 型安全性・アクセシビリティ改善、`docs/30-workflows/unassigned-task/task-imp-skillcenter-cta-accessibility-001.md`）、`TASK-IMP-SKILLCENTER-UI-REFINEMENT-001`（UI 改善: 8pxグリッド準拠・viewStyles分離、`docs/30-workflows/unassigned-task/task-imp-skillcenter-ui-refinement-001.md`） |
 | v1.7.6 | 2026-03-17 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 を反映: `skillAnalysis` / `skillCreate` ViewType と `renderView()` 分岐、`SkillAnalysisView` close→`skillCenter` 導線、Phase 11 screenshot 5件（advanced route fallback）を同期 |
 | v1.7.5 | 2026-03-13 | TASK-UI-09-ONBOARDING-WIZARD の mobile Step 3 follow-up を追加。selected starter card の理解しやすさは first fold 可視性と別問題として `UT-IMP-ONBOARDING-MOBILE-STARTER-CARD-ORDER-001` へ切り出し、関連未タスクへ登録した |
@@ -64,6 +65,7 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 - legacy view 値 `skill-center` は表示責務を持たず、shell で canonical `skillCenter` に正規化したうえで描画する。
 - `SkillCenterView` ヘッダーには「+ 新規作成」CTA があり、`skillCreate` への直接導線を提供する（TASK-SKILL-LIFECYCLE-02）。
 - `SkillLifecycleJourneyPanel` の各ジョブカードには `ctaLabel` 由来の CTA ボタンがあり、create→`skillCreate`、use→`workspace`、improve→`skillAnalysis` へ遷移する。
+- imported `SkillDetailPanel` には secondary handoff として `エディタで開く` / `分析する` action zone を置き、detail panel から直接 `skill-editor` / `skillAnalysis` へ遷移できる（TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001）。
 
 ### Surface ownership board（TASK-SKILL-LIFECYCLE-01）
 
@@ -133,6 +135,7 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | `graph` | グラフ画面 |
 | `agent` | エージェント画面 |
 | `skillCenter` | スキルセンター画面（canonical） |
+| `skill-editor` | スキル編集画面 |
 | `skillAnalysis` | スキル分析画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |
 | `skillCreate` | スキル作成画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |
 | `historySearch` | 履歴検索画面 |
@@ -162,13 +165,25 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | 画面分岐 | `App.tsx` `renderView()` が `skillAnalysis -> SkillAnalysisView`、`skillCreate -> SkillCreateWizard` を返す |
 | close 導線 | `skillAnalysis` close 時は `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` |
 | legacy 互換 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` に正規化 |
-| 画面証跡 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/outputs/phase-11/screenshots/TC-11-01..05` |
 | 補助検証 | `apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx` で renderView case を直接検証 |
 
 ### representative evidence
 
 - TC-11-05 は route 全景ではなく `data-testid="skill-lifecycle-surface-ownership"` の要素 capture を正本とする。
 - representative screenshot は「画面全体が見えること」より「責務境界が読めること」を優先する。
+
+### SkillDetailPanel secondary handoff（TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| source surface | imported skill の `SkillDetailPanel` |
+| action zone 条件 | `isImported && onEdit && onAnalyze` |
+| edit destination | `setCurrentSkillName(skillName)` 後に `setCurrentView("skill-editor")` |
+| analyze destination | `setCurrentSkillName(skillName)` 後に `setCurrentView("skillAnalysis")` |
+| close behavior | 遷移後は `handleCloseDetail()` で detail panel を閉じる |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-01..07` |
+| 補助検証 | `phase11-handoff-diagnostics.json` で `getFileTree` / `analyze` 呼び出しを確認する |
 
 ### TASK-SKILL-LIFECYCLE-01 苦戦箇所（再利用形式）
 

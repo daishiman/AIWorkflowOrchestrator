@@ -64,6 +64,17 @@ const createMockImportedSkill = () => ({
   status: "active" as const,
 });
 
+const createMockSkillDetail = () => ({
+  id: "skill-1",
+  name: "test-skill",
+  slug: "test-skill",
+  description: "Test skill description",
+  path: "/skills/test-skill",
+  triggers: [],
+  anchors: [],
+  lastModified: new Date("2026-01-01"),
+});
+
 // ============================================================
 // Setup
 // ============================================================
@@ -114,6 +125,26 @@ describe("1. IPC Channel Correctness", () => {
       IPC_CHANNELS.SKILL_REMOVE,
       "test-skill",
     );
+  });
+
+  it("PC-CH-05A: getDetail() invokes IPC_CHANNELS.SKILL_GET_DETAIL", async () => {
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: createMockSkillDetail(),
+    });
+    await skillAPI.getDetail("skill-1");
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_GET_DETAIL, {
+      skillId: "skill-1",
+    });
+  });
+
+  it("PC-CH-05B: update() invokes IPC_CHANNELS.SKILL_UPDATE", async () => {
+    mockInvoke.mockResolvedValue({ success: true, data: undefined });
+    await skillAPI.update("test-skill", { description: "updated" });
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_UPDATE, {
+      skillName: "test-skill",
+      updates: { description: "updated" },
+    });
   });
 
   it("PC-CH-06: execute() invokes IPC_CHANNELS.SKILL_EXECUTE", async () => {
@@ -227,6 +258,26 @@ describe("2. IPC Wrapper Selection (safeInvoke vs safeInvokeUnwrap)", () => {
 
       expect(Array.isArray(result)).toBe(true);
       expect(result).toEqual(mockData);
+    });
+
+    it("PC-W-03A: getDetail() unwraps { success, data } and returns detail directly", async () => {
+      const mockData = createMockSkillDetail();
+      mockInvoke.mockResolvedValue({ success: true, data: mockData });
+
+      const result = await skillAPI.getDetail("skill-1");
+
+      expect(result).toEqual(mockData);
+      expect(result.id).toBe("skill-1");
+    });
+
+    it("PC-W-03B: update() unwraps { success, data } and returns undefined", async () => {
+      mockInvoke.mockResolvedValue({ success: true, data: undefined });
+
+      const result = await skillAPI.update("test-skill", {
+        description: "updated",
+      });
+
+      expect(result).toBeUndefined();
     });
 
     it("PC-W-06: execute() unwraps { success, data } and returns data directly", async () => {
@@ -387,6 +438,8 @@ describe("3. Channel Whitelist Verification", () => {
     { name: "SKILL_GET_IMPORTED", channel: IPC_CHANNELS.SKILL_GET_IMPORTED },
     { name: "SKILL_IMPORT", channel: IPC_CHANNELS.SKILL_IMPORT },
     { name: "SKILL_REMOVE", channel: IPC_CHANNELS.SKILL_REMOVE },
+    { name: "SKILL_GET_DETAIL", channel: IPC_CHANNELS.SKILL_GET_DETAIL },
+    { name: "SKILL_UPDATE", channel: IPC_CHANNELS.SKILL_UPDATE },
     { name: "SKILL_EXECUTE", channel: IPC_CHANNELS.SKILL_EXECUTE },
     { name: "SKILL_ABORT", channel: IPC_CHANNELS.SKILL_ABORT },
     { name: "SKILL_GET_STATUS", channel: IPC_CHANNELS.SKILL_GET_STATUS },

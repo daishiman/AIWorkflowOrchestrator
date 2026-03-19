@@ -83,8 +83,8 @@
 | 2        | プロンプト構築             | 常時実行                          |
 | 3        | LLM呼び出し                | 常時実行                          |
 | 4        | JSONパース・検証           | 常時実行                          |
-| 5        | 埋め込み生成               | generateEmbedding=true の場合     |
-| 6        | DB保存                     | 常時実行                          |
+| 5        | 埋め込み生成               | generateEmbedding=true の場合。失敗時は warn のみで継続 |
+| 6        | DB保存                     | 常時実行。`embedding` なしでも保存を継続 |
 
 #### summarizeAll() 処理ステップ
 
@@ -181,9 +181,17 @@
 | ------------------------ | ------------------------------------ |
 | LLM_GENERATION_FAILED    | LLM生成失敗                          |
 | JSON_PARSE_FAILED        | JSONパース失敗                       |
-| EMBEDDING_FAILED         | 埋め込み生成失敗                     |
+| EMBEDDING_FAILED         | 埋め込み生成失敗（hard fail を採る経路のみ。current summarize runtime は warn に downgrade） |
 | DB_SAVE_FAILED           | データベース保存失敗                 |
 | COMMUNITY_NOT_FOUND      | コミュニティが見つからない           |
+
+### current runtime behavior（2026-03-19）
+
+| ケース | current behavior |
+| --- | --- |
+| `generateEmbedding=true` かつ埋め込み生成失敗 | `console.warn` を出し、`embedding` を省略して `updateSummary()` を継続 |
+| DB保存失敗 | `DB_SAVE_FAILED` として fail |
+| searchSummaries 埋め込み生成失敗 | 検索系エラーとして扱う。要約保存の非致命経路とは分離 |
 
 ---
 

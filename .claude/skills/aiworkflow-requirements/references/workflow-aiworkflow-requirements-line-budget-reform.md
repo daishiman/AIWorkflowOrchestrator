@@ -130,10 +130,10 @@ manual docs 34件の family split、`.claude` / `.agents` mirror sync、generate
 
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001 | generated `topic-map.md` を generator-aware に shard 化する | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
+| TASK-IMP-AIWORKFLOW-REQUIREMENTS-GENERATED-INDEX-SHARDING-001 | generated `topic-map.md` を generator-aware に shard 化する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
 | TASK-IMP-AIWORKFLOW-GENERATED-INDEX-METRIC-SYNC-GUARD-001 | `generate-index.js` 後の実測値を current system spec / unassigned task へ再同期する guard を整備する | `docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform/unassigned-task/task-imp-aiworkflow-generated-index-metric-sync-guard-001.md` |
-| TASK-IMP-AIWORKFLOW-SAME-WAVE-SYNC-GUARD-001 | current canonical set / inventory / register / parent docs / ledger / mirror の same-wave closure を guard 化する | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-same-wave-sync-guard-001.md` |
-| TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001 | Phase 12 artifact drift の回収履歴 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-req-phase12-phase-12-artifacts-missing-001.md` |
+| TASK-IMP-AIWORKFLOW-SAME-WAVE-SYNC-GUARD-001 | current canonical set / inventory / register / parent docs / ledger / mirror の same-wave closure を guard 化する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-same-wave-sync-guard-001.md` |
+| TASK-IMP-AIWORKFLOW-REQ-PHASE12-ARTIFACTS-MISSING-001 | Phase 12 artifact drift の回収履歴 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-req-phase12-phase-12-artifacts-missing-001.md` |
 
 ---
 

@@ -30,7 +30,7 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 
 | 項目 | 通常タスク | docs-only タスク |
 | ---- | ---------- | ---------------- |
-| Step 1-G 検証コマンド | 実行して結果記録 | **計画記録のみ**（実行対象コードなし） |
+| Step 1-G 検証コマンド | 実行して結果記録 | **必要コマンドを実行して結果記録**（`verify/validate/links/skill validation` を含む） |
 | implementation-guide Part 2 | 実装詳細・コード例 | 型定義・配置ルール・使用例 |
 | Step 1-B 実装状況 | `completed` | `spec_created` |
 
@@ -55,7 +55,7 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 
 | ステージ | タイミング | 内容 | 必須 |
 | --- | --- | --- | --- |
-| Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容の計画を `system-spec-update-summary.md` に記録 | ✅ |
+| Step 2A: 計画記録 | Task 2 開始時 | 更新予定ファイルと変更内容を列挙し、完了前に必ず実更新結果へ置換する形で `system-spec-update-summary.md` に記録 | ✅ |
 | Step 2B: 実更新 | Task 2 完了前 | 実際に `.claude/skills/` 配下の仕様書を更新し、planned wording を除去 | ✅ |
 
 `仕様策定のみ` / `実行予定` / `保留として記録` 等の planned wording は Phase 12 完了前に全て実更新ログへ昇格すること。
@@ -64,7 +64,8 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 
 ```bash
 rg -n "仕様策定のみ|実行予定|保留として記録" \
-  docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/ || echo "planned wording なし"
+  docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/ \
+  | rg -v 'phase12-task-spec-compliance-check.md' || echo "planned wording なし"
 ```
 
 ### 設計タスク特有の未タスク検出パターン（SF-03対応）
@@ -101,6 +102,10 @@ rg -n "仕様策定のみ|実行予定|保留として記録" \
 ```bash
 # 未タスク指示書の物理ファイル存在を確認
 ls docs/30-workflows/unassigned-task/
+
+# current workflow 起点でのリンク整合確認
+node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js \
+  --source docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/unassigned-task-detection.md
 ```
 
 ## 成果物ファイル名の照合チェック

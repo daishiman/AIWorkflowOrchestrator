@@ -35,7 +35,7 @@
 ### 残課題
 
 - `UT-UI-03-TYPE-ASSERTION-001` は 2026-03-10 の再監査で解消済み。completed unassigned 側へ正規化した
-- light theme の副次テキスト所見は global token scope の改善余地として `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を新規作成し、`docs/30-workflows/unassigned-task/` に配置した
+- light theme の副次テキスト所見は global token scope の改善余地として `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` を新規作成し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置した
 - `UT-UI-03-LIGHT-SECONDARY-TEXT-CONTRAST-001` の未タスク仕様書には、親タスクで苦戦した component/token 切り分け、dedicated harness 前提、`audit --diff-from HEAD --target-file` による品質判定を追補した
 
 ---
@@ -84,7 +84,7 @@
 
 | 未タスクID | 目的 | 参照 |
 | --- | --- | --- |
-| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の native dependency / build / harness / baseUrl preflight を 1 コマンド化し、同種タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
+| UT-IMP-PHASE11-CURRENT-BUILD-PREFLIGHT-BUNDLE-001 | current build capture の native dependency / build / harness / baseUrl preflight を 1 コマンド化し、同種タスクの初動を短縮する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-current-build-preflight-bundle-001.md` |
 | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | ThemeSelector / AuthView / WorkspaceSearchPanel の baseline contrast remediation を継続する | `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` |
 
 ### 苦戦箇所
@@ -113,8 +113,8 @@
 
 ### 関連未タスク
 
-- `docs/30-workflows/unassigned-task/task-persist-migration-versioning.md`
-- `docs/30-workflows/unassigned-task/task-persist-field-validation-guard.md`
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-persist-migration-versioning.md`
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-persist-field-validation-guard.md`
 
 ### 苦戦箇所（TASK-07）
 
@@ -204,13 +204,13 @@
 5. `current` / `baseline`、`links` / `phase outputs` / `validator` を別表で記録し、workflow outputs、`SKILL.md`、`LOGS.md`、`task-workflow`、`lessons-learned` を final state へ一括再同期する。
 
 - 未完了サブタスク連携:
-  - `docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md`
+  - `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md`
     - generated `topic-map.md` の 500行超問題に対する恒久対応を follow-up として継続。10見出しフォーマットと `currentViolations=0` を確認済み。
   - `docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform/unassigned-task/task-imp-aiworkflow-generated-index-metric-sync-guard-001.md`
     - `generate-index.js` 後の実測値が current system spec / unassigned task へ stale のまま残らないよう、metric sync guard を追加する。
-  - `docs/30-workflows/unassigned-task/task-imp-aiworkflow-same-wave-sync-guard-001.md`
+  - `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-same-wave-sync-guard-001.md`
     - current canonical set / inventory / register / parent docs / ledger / mirror を 1 wave で閉じる guard を follow-up として継続する。
-  - `docs/30-workflows/unassigned-task/task-imp-aiworkflow-req-phase12-phase-12-artifacts-missing-001.md`
+  - `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-req-phase12-phase-12-artifacts-missing-001.md`
     - phase12 artifact drift は outputs 実体化と verification rerun で解消済みの履歴扱い。
 
 - 補助ドキュメント:

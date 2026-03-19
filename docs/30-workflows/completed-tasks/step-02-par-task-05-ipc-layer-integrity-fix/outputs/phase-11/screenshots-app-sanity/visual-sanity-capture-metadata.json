@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-03-19T07:35:13.246Z",
+  "baseUrl": "http://127.0.0.1:5197",
+  "workflowRoot": "docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-05-ipc-layer-integrity-fix",
+  "screenshots": [
+    "TC-VS-01-skill-center-overview.png",
+    "TC-VS-02-skill-center-journey.png",
+    "TC-VS-03-agent-view.png",
+    "TC-VS-04-skill-management-analysis.png",
+    "TC-VS-05-create-wizard.png"
+  ]
+}

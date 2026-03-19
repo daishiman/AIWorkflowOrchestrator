@@ -162,6 +162,44 @@ contextBridge.exposeInMainWorld の公開が部分的に失敗するケース（
 - handoff は「手動実行支援」に限定し、auto-send / hidden prompt injection を許容しない。
 - auth key の有無を判定しても key 実値は UI / command / error へ露出しない。
 
+### Slide runtime/auth-mode IPC 境界（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+
+slide invoke channel はすべて `validateIpcSender -> P42 -> path guard -> business` の順序を守る。
+
+| 観点 | 契約 |
+| --- | --- |
+| sender 検証 | `slide:*` invoke handler の先頭で `validateIpcSender` を実行する |
+| payload 検証 | `projectPath` は型 / 空文字列 / trim 後空文字列の 3 段で検証する |
+| path guard | `..` / null byte / allowlist 外 path を reject する |
+| runtime handoff | API key 不足や subscription mode は `guidance` 付きの handoff envelope を返す |
+| secret 非中継 | `terminalCommand` や error message に API key を含めない |
+| push channel | Renderer へ送るのは `sync-status-changed` / `sync-progress` / `sync-error` / `execution-progress` / `structureChanged` / `watch-status` に限定する |
+
+**current drift（2026-03-19）**:
+
+- `apps/desktop/src/main/slide/ipc-handlers.ts` では `validateIpcSender` と path guard が未実装
+- legacy channel 名が残存し、canonical allowlist と一致していない
+- `registerSlideIpcHandlers()` が `ipc/index.ts` へ未接続
+
+**完了タスク記録（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001、2026-03-19）**:
+
+| セキュリティ設計項目 | 内容 |
+| -------------------- | ---- |
+| validateIpcSender 適用範囲 | slide invoke channel 全 6 本（`slide:executePhase` / `slide:watch-start` / `slide:watch-stop` / `slide:sync-status` / `slide:reverse-sync` / `slide:cancel`）に適用設計完了 |
+| セキュリティ検証順序 | sender 検証 → P42 3段バリデーション → パストラバーサル検出 → エラーサニタイズ → business logic 委譲 |
+| パストラバーサル対象 | 全 invoke チャネルの `projectPath` 引数に `detectPathTraversal` 適用設計完了 |
+| エラーサニタイズ | handler 内で内部パス・スタックトレースをマスクし、`code` + `message` のみ Renderer に返却 |
+| push channel 制限 | Renderer への push は `slide:sync-status-changed` / `slide:sync-progress` / `slide:sync-error` / `slide:execution-progress` / `slide:structureChanged` / `slide:watch-status` に限定 |
+
+実装は後続タスク `UT-SLIDE-IMPL-001` で対応する。
+
+**関連未タスク**:
+
+- `UT-SLIDE-IMPL-001`
+- `UT-SLIDE-UI-001`
+
 ### Conversation IPC セキュリティ契約（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION / TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001）
 
 `registerConversationHandlers()` が `registerAllIpcHandlers()` Section 13 に接続され、conversation:* 7チャンネルが Main Process で正常登録される。
@@ -261,6 +299,9 @@ IPC ハンドラの引数形式が Preload 側と乖離する「契約ドリフ�
 - 新規ハンドラ作成時: [ipc-contract-checklist.md](./ipc-contract-checklist.md) Phase 1-6 を実施
 - 引数形式変更時: P23/P32 準拠で3箇所同時更新（ハンドラ・Preload API・テスト）
 - バリデーション: P42準拠3段バリデーション必須
+- skill:get-detail / skill:update のような skill 管理系 IPC は object payload を標準化し、`{ skillId }` / `{ skillName, updates }` を明示する
+- `skill:get-detail` は Preload 側で `safeInvokeUnwrap` を使うため、Main の失敗応答を `null` で曖昧化しない
+- `skill:update` は P44（構造ドリフト）と P45（命名ドリフト）を同時監視し、send/receive の双方を object payload に揃える
 
 | 検証項目             | 確認方法                                        |
 | -------------------- | ----------------------------------------------- |
@@ -430,5 +471,18 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 **テストカバレッジ**: 156テスト（94.30% Line Coverage）
 
 **関連タスク**: slide-directory-settings（2026-01-14完了）
+
+---
+
+## IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了）
+
+| チャンネル | sender検証 | whitelist | unwrap | P42 3段 | P45命名 |
+|------------|-----------|-----------|--------|---------|---------|
+| `skill:update` | validateIpcSender | ALLOWED_INVOKE_CHANNELS L494 | safeInvokeUnwrap | PASS | skillName |
+| `skill:get-detail` | validateIpcSender(既存) | ALLOWED_INVOKE_CHANNELS L486 | safeInvokeUnwrap | PASS | skillId |
+
+- Preload層早期拒否: バリデーション失敗時は `Promise.reject()` で invoke を呼ばない
+- エラーサニタイズ: `sanitizeErrorMessage()` でパス/IP/機密情報をマスク
+- unregister: `ipcMain.removeHandler(IPC_CHANNELS.SKILL_UPDATE)` L844 で P5対策
 
 ---

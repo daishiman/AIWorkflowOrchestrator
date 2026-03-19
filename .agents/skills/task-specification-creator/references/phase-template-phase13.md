@@ -15,6 +15,9 @@ Phase 13 の PR 作成。
 - なぜ blocked か
 - user approval の有無
 - Phase 12 までの完了根拠
+- local check の結果要約
+- `outputs/phase-13/local-check-result.md` と `outputs/phase-13/change-summary.md` の作成有無
+- `pr-info.md` / `pr-creation-result.md` を作成できる状態か
 
 ## 関連ガイド
 

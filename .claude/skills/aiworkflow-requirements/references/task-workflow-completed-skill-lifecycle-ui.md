@@ -2,7 +2,7 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -49,7 +49,46 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/skill-lifecycle-routing/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+
+---
+
+## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001: SkillDetailPanel action buttons handoff 完了記録（2026-03-19）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 |
+| 対象workflow | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/` |
+| ステータス | completed（Phase 1-12） |
+| テスト | `SkillDetailPanel` / `useSkillCenter` / `useSkillCenter.navigation` targeted suite PASS |
+| 画面証跡 | TC-11-01..07 screenshot、metadata、handoff diagnostics |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| action zone | imported `SkillDetailPanel` に `エディタで開く` / `分析する` を追加 |
+| edit handoff | `handleEditSkill` が `currentSkillName` を設定後 `skill-editor` へ遷移 |
+| analyze handoff | `handleAnalyzeSkill` が `currentSkillName` を設定後 `skillAnalysis` へ遷移 |
+| close behavior | handoff 後に detail panel を閉じる |
+| 既存 foundation 再利用 | ViewType / renderView / `currentSkillName` は既存 Store 契約を再利用し、新規 slice は追加しない |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `cd apps/desktop && pnpm vitest run src/renderer/views/SkillCenterView/__tests__/SkillDetailPanel.test.tsx src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts` | PASS（3 files / 70 tests） |
+| screenshot | `pnpm --filter @repo/desktop run screenshot:skilldetail-action-buttons` | PASS（TC-11-01..07） |
+| coverage | `validate-phase11-screenshot-coverage --workflow .../step-02-par-task-03-skilldetail-action-buttons` | PASS（expected=7 / covered=7） |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| destination 単独 screenshot では source handoff が読めない | main shell 上で detail panel click から destination まで連続 capture | handoff UI は source-to-destination を同一 shell で撮る |
+| desktop / mobile の二重 DOM が selector strict mode を壊す | panel locator を返し、その scope で button を探す | shared DOM UI は visible container で scope を切る |
 
 ---
 

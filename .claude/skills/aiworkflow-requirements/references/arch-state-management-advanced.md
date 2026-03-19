@@ -141,7 +141,7 @@ Store Hookを分解し、個別セレクタを提供することで、関数の�
 | 苦戦箇所 | 原因 | 再発防止 |
 | --- | --- | --- |
 | 単体テスト対象を指定したつもりが広範囲テスト実行に拡大 | `pnpm --filter @repo/desktop run test:run -- <file>` が環境依存で全体実行に流れるケースがある | 単体再検証は `pnpm --filter @repo/desktop exec vitest run <file>` を標準化 |
-| 未タスクID参照に対して指示書実体が欠落しやすい | `task-workflow.md` 更新と `unassigned-task/` 実ファイル配置の同期漏れ | Phase 12で「参照パスの物理ファイル存在確認」を必須化（`ls docs/30-workflows/unassigned-task/<file>.md`） |
+| 未タスクID参照に対して指示書実体が欠落しやすい | `task-workflow.md` 更新と `unassigned-task/` 実ファイル配置の同期漏れ | Phase 12で「参照パスの物理ファイル存在確認」を必須化（`ls docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/<file>.md`） |
 | 長時間テストで性能閾値テストが一時的に不安定化 | 高負荷時にミリ秒閾値テストが揺らぐ | 失敗検知後に対象ファイル単体で再実行し、再現性を確認してから判断する |
 
 **推奨実装パターン**:
@@ -163,6 +163,43 @@ useEffect(() => {
   initializeAuthMode();
 }, [initializeAuthMode]); // 安定した参照のため無限ループしない
 ```
+
+### Slide slice runtime alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+
+slide store は `syncStatus` だけでは task 09 の runtime/auth-mode alignment を表現できない。正本では以下の state を持つ。
+
+| フィールド | 型 | 役割 |
+| --- | --- | --- |
+| `syncStatus` | `SyncStatus` | `idle` / `syncing` / `synced` / `error` |
+| `syncDirection` | `SyncDirection` | `forward` / `reverse` |
+| `syncProgress` | `{ percent, message } \| null` | sync 進捗 |
+| `syncError` | `{ code, message } \| null` | degraded reason |
+| `isHandoff` | `boolean` | terminal handoff 必須か |
+| `handoffGuidance` | `HandoffGuidance \| null` | terminal launcher 用 DTO |
+| `isWatching` | `boolean` | watcher 接続状態 |
+
+#### selector 方針
+
+- scalar state は個別 selector を使う
+- object payload は `useShallow` を使う
+- `useSlideProject()` で store 全体参照を保持しない
+
+#### current drift（2026-03-19）
+
+| 項目 | 現状 |
+| --- | --- |
+| store fields | `syncDirection` / `syncProgress` / `syncError` / `isHandoff` / `handoffGuidance` が未追加 |
+| hook pattern | `useSlideProject()` が `store` 全体参照を effect 依存へ持つ |
+| status 語彙 | `out-of-sync` が残存 |
+
+#### follow-up
+
+| 未タスクID | 内容 |
+| --- | --- |
+| `UT-SLIDE-IMPL-001` | slide store 契約を正本へ揃える |
+| `UT-SLIDE-P31-001` | `useSlideProject()` の selector migration |
 
 ### 実装済み個別セレクタ一覧（UT-STORE-HOOKS-REFACTOR-001）
 
@@ -274,8 +311,8 @@ const initializeAuthMode = useInitializeAuthMode();
 | UT-FIX-STORE-HOOKS-INFINITE-LOOP-001 | 無限ループ根本対策            | **完了**（UT-STORE-HOOKS-COMPONENT-MIGRATION-001で根本対策実施、2026-02-12） |
 | UT-STORE-HOOKS-TEST-REFACTOR-001         | Store HooksテストのrenderHookパターン移行 | **完了**（agentSlice 114テスト移行、2026-02-12） |
 | UT-FIX-AGENTVIEW-INFINITE-LOOP-001 | AgentView無限ループ修正 | **完了**（個別セレクタ15個追加、2026-02-12） |
-| task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
-| task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
+| task-imp-store-hooks-remaining-migration | 残コンポーネントの個別セレクタ移行 | 未実施（[指示書](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-store-hooks-remaining-migration.md)） |
+| task-ref-store-hooks-deprecate-composite | 合成Store Hookの非推奨化       | 未実施（[指示書](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ref-store-hooks-deprecate-composite.md)） |
 
 ### 実装詳細（TASK-UT-AUTH-MODE-UI-INTEGRATION）
 
@@ -417,4 +454,3 @@ rm -rf node_modules/.cache/eslint
 **教訓**: Phase 12は漏れが最も発生しやすい Phase。チェックリストを「完了」と記載する前に全項目を確認する。
 
 > 参照: [05-task-execution.md#Phase 12 必須チェックリスト](../../../rules/05-task-execution.md#phase-12-必須チェックリスト)
-

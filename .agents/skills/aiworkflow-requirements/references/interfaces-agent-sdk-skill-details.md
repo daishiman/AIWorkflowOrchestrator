@@ -1,6 +1,6 @@
 # Agent SDK Skill 仕様 / detail specification
 
-> 親仕様書: [interfaces-agent-sdk-skill.md](interfaces-agent-sdk-skill.md)
+> 親仕様書: [interfaces-agent-sdk-skill-core.md](interfaces-agent-sdk-skill-core.md)
 > 役割: detail specification
 
 ## Skill Dashboard 型定義（AGENT-002）
@@ -17,6 +17,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
+| `skill:update`            | Renderer → Main | スキル更新                  | `{ success: true, data: void } \| { success: false, error: string }` |
 | `skill:fork`              | Renderer → Main | スキルフォーク（TASK-9E）   | `{ success: true, data: SkillForkResult } \| { success: false, error: string }` |
 | `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string, errorCode?: string }` |
 | `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
@@ -26,6 +27,25 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `skill:optimize`          | Renderer → Main | プロンプト最適化（TASK-9C） | `OperationResult<OptimizationResult>` |
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
+
+#### TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: current contract
+
+| API | Preload payload | Preload behavior | Main / IPC contract |
+| --- | --- | --- | --- |
+| `getDetail` | `{ skillId: string }` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` を呼び、失敗時は throw する | `skill:get-detail` は `{ success: true, data: Skill } \| { success: false, error: string }` を返す |
+| `update` | `{ skillName: string, updates: Record<string, unknown> }` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, { skillName, updates })` を呼び、失敗時は throw する | `skill:update` は `{ success: true, data: void } \| { success: false, error: string }` を返す |
+
+> `getDetail` / `update` は object payload + `safeInvokeUnwrap` に統一し、Preload 側で fail-fast する。`null` 返却や positional payload へ戻さない。
+
+
+#### TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: 実装完了記録（2026-03-19）
+
+| API | 実装ステータス | 実装内容 |
+| --- | --- | --- |
+| `getDetail` | **実装済み** | Preload API 公開済み: `window.electronAPI.skill.getDetail()` メソッドを `skill-api.ts` に追加。`safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` で呼び出し、失敗時 throw。P42準拠3段バリデーション（型チェック→空文字列→トリム空文字列）適用済み |
+| `update` | **契約復旧済み** | Main Process ハンドラ登録済み: `skill:update` の `ipcMain.handle` を `skillHandlers.ts` に追加 + `unregisterSkillHandlers()` に登録。Preload API 公開済み: `window.electronAPI.skill.update()` メソッドを `skill-api.ts` に追加。P42準拠3段バリデーション適用済み。`SkillService.updateSkill()` のビジネスロジックは `UT-IMP-SKILL-UPDATE-BUSINESS-LOGIC-001` で継続管理 |
+
+> テスト実績: 5ファイル / 227件全PASS（2026-03-19 再検証）
 
 ### TASK-SKILL-LIFECYCLE-04: 評価・採点ゲート契約（2026-03-14）
 
@@ -67,7 +87,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `TASK-FIX-EVAL-STORE-DISPATCH-001` | `handleEvaluatePrompt` の Store 経由化 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md` |
 | `TASK-FIX-SCORE-DELTA-DEDUP-001` | `calculateScoreDelta` 重複解消 | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
 
-> 配置ルール: active 未タスクは `docs/30-workflows/unassigned-task/` を正本とし、workflow ローカル `tasks/unassigned-task/` は参照先として使わない。
+> 配置ルール: active 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` を正本とし、workflow ローカル `tasks/unassigned-task/` は参照先として使わない。
 >
 > 統合正本: `workflow-skill-lifecycle-evaluation-scoring-gate.md`（実装内容 / 苦戦箇所 / current canonical set / artifact inventory）
 
@@ -160,8 +180,8 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
 | ~~UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001~~ | ~~skill:ハンドラIPCレスポンス形式統一（{ success, data }ラッパー vs 直接型T混在解消）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/ut-fix-skill-ipc-response-consistency-001/index.md` **（完了: 2026-02-25）** |
-| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001 | skill IPCレスポンス契約マトリクスと自動整合チェック（Main応答形式とPreloadラッパー選択の機械検証） | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md` |
-| ~~UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001~~ | ~~skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一）~~ | ~~低~~ | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` **（再評価クローズ: 2026-02-25 / getSkillById は実装上ID検索）** |
+| UT-IMP-SKILL-IPC-RESPONSE-CONTRACT-GUARD-001 | skill IPCレスポンス契約マトリクスと自動整合チェック（Main応答形式とPreloadラッパー選択の機械検証） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-ipc-response-contract-guard-001.md` |
+| ~~UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001~~ | ~~skill:get-detail引数名ドリフト修正（P45: skillId→skillName統一）~~ | ~~低~~ | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-skill-getdetail-naming-drift.md` **（再評価クローズ: 2026-02-25 / getSkillById は実装上ID検索）** |
 | ~~UT-FIX-SKILL-VALIDATION-CONSISTENCY-001~~ | ~~skill:ハンドラP42準拠バリデーション形式統一（UT-FIX-SKILL-VALIDATION-P42-001の補完）~~ | ~~中~~ | **完了: 2026-02-24** |
 | ~~UT-FIX-SKILL-IMPORT-ID-MISMATCH-001~~ | ~~SkillImportDialog（organisms版）がskill.id（ハッシュ）を渡すためgetSkillByName失敗~~ | ~~高~~ | **完了: 2026-02-22** |
 

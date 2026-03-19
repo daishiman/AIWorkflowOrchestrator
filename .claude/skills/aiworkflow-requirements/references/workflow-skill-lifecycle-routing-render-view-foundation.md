@@ -89,7 +89,7 @@
 | 台帳 | `references/task-workflow.md`, `references/task-workflow-completed-skill-lifecycle.md`, `references/task-workflow-backlog.md` |
 | 教訓 | `references/lessons-learned-current.md` |
 | index | `indexes/resource-map.md`, `indexes/quick-reference.md`, `indexes/quick-reference-search-patterns.md` |
-| follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | mirror root | canonical=`.claude/skills/aiworkflow-requirements/` / mirror=`.agents/skills/aiworkflow-requirements/` |
 
 Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件として記録し、
@@ -152,9 +152,35 @@ Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件と�
 
 ---
 
+## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001: SkillDetailPanel 二次 handoff（2026-03-19）
+
+| 観点 | 反映内容 | 実装アンカー |
+| --- | --- | --- |
+| source action zone | imported `SkillDetailPanel` に `エディタで開く` / `分析する` を追加 | `apps/desktop/src/renderer/views/SkillCenterView/components/SkillDetailPanel/SkillDetailPanel.tsx` |
+| edit handoff | `handleEditSkill(skillName)` が `currentSkillName` を設定して `skill-editor` へ遷移 | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| analyze handoff | `handleAnalyzeSkill(skillName)` が `currentSkillName` を設定して `skillAnalysis` へ遷移 | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| shell integration | `SkillCenterView` から `SkillDetailPanel` へ `onEdit` / `onAnalyze` を接続 | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` |
+| screenshot mode | main shell 上で source panel から destination まで連続 capture し、`phase11-capture-metadata.json` に 7 evidence を保存 | `apps/desktop/scripts/capture-task-skilldetail-action-buttons-phase11.mjs` |
+
+### テスト証跡（Task03）
+
+| テストファイル | テスト数 | 対象 |
+| --- | --- | --- |
+| `SkillDetailPanel.test.tsx` | 49 | action zone 表示条件、keyboard focus、Escape close |
+| `useSkillCenter.test.ts` | 17 | edit/analyze handoff、state 更新順序 |
+| `useSkillCenter.navigation.test.ts` | 4 | SkillCenter navigation 既存契約の回帰 |
+
+### downstream adoption note
+
+- `TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001` が用意した `skillAnalysis` / `skill-editor` ViewType を、SkillCenter detail panel の secondary action が再利用する。
+- 画面到達は main shell screenshot、分岐保証は hook/unit test に分離して証明する。
+
+---
+
 ## 変更履歴
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-19 | 1.2.0 | `TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001` の secondary handoff、main shell screenshot 7件、panel-scoped selector ルールを追加 |
 | 2026-03-18 | 1.1.0 | `TASK-SKILL-LIFECYCLE-02` の実装内容、Phase 11証跡、data-testid一覧を追加 |
 | 2026-03-17 | 1.0.0 | `TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001` の実装内容、Phase 11証跡、Phase 12同期、follow-up を統合正本として追加 |

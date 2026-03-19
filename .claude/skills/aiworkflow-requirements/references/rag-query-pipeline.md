@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| v1.1.1     | 2026-03-19 | Task08 current-state sync: GraphRAG fallback metadata と HybridRAGFactory not-ready runtime を追記 |
 | v1.0.0     | 2025-01-20 | 初版作成                                                   |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換    |
 
@@ -63,6 +64,13 @@ GraphRAGクエリサービスは、RAGパイプラインの最終段に位置し
 | communityLevel         | -          | コミュニティ階層レベル（0-5） |
 | confidenceThreshold    | 0.5        | confidence閾値（0-1）         |
 | enableCommunitySummary | true       | コミュニティ要約検索を有効化  |
+
+### current fallback metadata（2026-03-19）
+
+| フィールド | 説明 |
+| --- | --- |
+| `fallbackOccurred` | community search failure による fallback 発生有無 |
+| `fallbackReason` | fallback の原因文字列（`error.message`） |
 
 ### 依存関係
 
@@ -185,13 +193,15 @@ Corrective RAGで結果品質を評価・補正する。品質に応じて3つ�
 
 ## フォールバック設計
 
-| シナリオ            | 動作                        |
-| ------------------- | --------------------------- |
-| 1つの検索戦略が失敗 | 残りの戦略の結果で続行      |
-| 2つの検索戦略が失敗 | 残りの1戦略の結果で続行     |
-| 全検索戦略が失敗    | エラーを返す                |
-| Rerankingが失敗     | Fusion結果をそのまま使用    |
-| CRAGが失敗          | Reranking結果をそのまま使用 |
+| シナリオ | 動作 |
+| --- | --- |
+| GraphRAG community search 失敗 | warn を出し、空配列 + `fallbackOccurred=true` + `fallbackReason` で続行 |
+| GraphRAG `enableCommunitySummary=false` | 検索自体を実行せず空配列で継続 |
+| 1つの検索戦略が失敗 | 残りの戦略の結果で続行 |
+| 2つの検索戦略が失敗 | 残りの1戦略の結果で続行 |
+| 全検索戦略が失敗 | エラーを返す |
+| Rerankingが失敗 | Fusion結果をそのまま使用 |
+| CRAGが失敗 | Reranking結果をそのまま使用 |
 
 ---
 
@@ -211,13 +221,13 @@ Corrective RAGで結果品質を評価・補正する。品質に応じて3つ�
 
 設定に基づいてHybridRAGEngineを生成するファクトリクラス。
 
-| メソッド           | 用途                             | 状態   |
-| ------------------ | -------------------------------- | ------ |
-| createFull()       | フル機能版（LLM分類、CRAG有効）  | 未実装 |
-| createLite()       | 軽量版（ルールベース、CRAG無効） | 未実装 |
-| createForTesting() | テスト用（モック注入可能）       | 実装済 |
+| メソッド | 用途 | 状態 |
+| --- | --- | --- |
+| createFull() | フル機能版（LLM分類、CRAG有効） | guidance stub（`[FACTORY_NOT_READY]` を throw） |
+| createLite() | 軽量版（ルールベース、CRAG無効） | guidance stub（`[FACTORY_NOT_READY]` を throw） |
+| createForTesting() | テスト用（モック注入可能） | 実装済 |
 
-**NOTE**: createFull()とcreateLite()は依存モジュール（LLMQueryClassifier, VectorSearchStrategy等）完成後に実装予定。
+**NOTE**: current production runtime では createFull() / createLite() を前提にしない。依存モジュール（LLMQueryClassifier, VectorSearchStrategy, GraphSearchStrategy, 各種Reranker, CorrectiveRAG）が未接続のため、呼び出すと guidance Error を返す。
 
 ---
 

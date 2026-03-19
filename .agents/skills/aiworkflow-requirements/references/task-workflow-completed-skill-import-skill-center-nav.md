@@ -78,13 +78,13 @@
 | 追加未タスク                                          | 概要                                                                                                                                  | 参照                                                                                                 |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | ~~UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001~~       | ~~SkillCenter Phase 11再撮影の preflight ガード（失敗時の未タスク化/代替証跡記録を標準化）~~ **完了: 2026-03-04（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
-| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                                   | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`       |
+| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                                   | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`       |
 
 #### 再追補: Phase 12テンプレート最適化の実装反映（2026-03-04）
 
 | 項目             | 内容                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 今回実装した内容 | `skill-creator` の Phase 12テンプレート2種（`phase12-system-spec-retrospective` / `phase12-spec-sync-subagent`）へ preview preflight（build + `127.0.0.1:4173` 疎通）と失敗時未タスク化分岐を追加し、さらに未タスク配置先判定（未完了=`docs/30-workflows/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）を標準化した |
+| 今回実装した内容 | `skill-creator` の Phase 12テンプレート2種（`phase12-system-spec-retrospective` / `phase12-spec-sync-subagent`）へ preview preflight（build + `127.0.0.1:4173` 疎通）と失敗時未タスク化分岐を追加し、さらに未タスク配置先判定（未完了=`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` / 完了移管=`docs/30-workflows/completed-tasks/unassigned-task/`）を標準化した |
 | 反映対象         | `.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md` / `.claude/skills/skill-creator/assets/phase12-spec-sync-subagent-template.md` / `.claude/skills/skill-creator/references/resource-map.md` / `.claude/skills/skill-creator/references/patterns.md`                                                                   |
 | 今回苦戦した箇所 | 成功/失敗パターンには preflight 教訓がある一方で、テンプレート本体の完了チェックに同条件が欠け、さらに未タスク参照先が未完了/完了移管で分岐する点が明示されておらず、仕様更新時に転記漏れが起きやすかった                                                                                                                                                |
 | 解決策           | 「簡潔手順」「検証コマンド」「完了チェック」を同時更新し、preflight 失敗時は撮影継続せず未タスク化する運用を明文化。加えて `rg` による配置先判定コマンドをテンプレートへ組み込み、参照先ドリフトを抑止した                                                                                                                                               |
@@ -125,11 +125,11 @@
 | 苦戦箇所     | screenshot 再取得は成功しても `Port 5174 is already in use` が混在し、失敗判定との切り分けが人依存になりやすい                                               |
 | 対処         | 実行前ポート検査（`lsof`）を証跡へ固定し、競合時の分岐（停止/再利用）を未タスク化                                                                            |
 | 関連未タスク | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001`                                                                                                          |
-| 参照         | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md`                                                                   |
+| 参照         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md`                                                                   |
 | 苦戦箇所     | `validate-phase11-screenshot-coverage` が PASS でも、`phase-11-manual-test.md` に画面カバレッジマトリクスがなく warning が残り、レビュー観点が人依存になった |
 | 対処         | 画面カバレッジマトリクスの必須化（視覚TC/非視覚TC区分 + 期待証跡）を未タスク化し、Phase 11 設計意図を固定する方針へ分離                                      |
 | 関連未タスク | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001`                                                                                                        |
-| 参照         | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md`                                                                 |
+| 参照         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md`                                                                 |
 
 #### 追補2: UT workflow 証跡正規化（2026-03-04）
 
@@ -172,7 +172,7 @@
 - `docs/30-workflows/skill-editor-view/` に TASK-UI-05A のワークフロー仕様（Phase 1-13）を作成。
 - `aiworkflow-requirements` 正本へ `spec_created` として同期（`ui-ux-components` / `ui-ux-feature-components` / `task-workflow`）。
 - 画面検証はスクリーンショットで実施し、現行 UI（Dashboard / Editor）と未実装ギャップを記録。
-- 再監査で `views/SkillEditorView` 実装ファイル実在と 99 テスト PASS を確認し、未タスク台帳を正規配置（`docs/30-workflows/unassigned-task/`）へ是正。
+- 再監査で `views/SkillEditorView` 実装ファイル実在と 99 テスト PASS を確認し、未タスク台帳を正規配置（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ是正。
 
 #### 仕様書別SubAgent分担（今回の同期チーム）
 
@@ -360,7 +360,7 @@
 
 1. `verify-all-specs --workflow` と `validate-phase-output` で Phase 12 の前提整合を先に固定する。
 2. `task-workflow.md` に実装要点・未タスク・検証証跡を先に記録し、参照IDを固定する。
-3. `docs/30-workflows/unassigned-task/` へ未タスク指示書を配置し、`audit-unassigned-tasks --target-file` で各ファイル形式を確認する。
+3. `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ未タスク指示書を配置し、`audit-unassigned-tasks --target-file` で各ファイル形式を確認する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD` を実行し、`currentViolations=0` を合否基準にする。
 5. 同一ターンで `lessons-learned.md` に苦戦箇所を転記し、再発条件と標準ルールをペアで残す。
 

@@ -353,7 +353,7 @@
 | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
 | 実装済み `skillHandlers.share.ts` が起動配線されていなかった                                                     | ハンドラ実装と `registerAllIpcHandlers` 反映を別タスクで進め、統合確認が遅れた | `apps/desktop/src/main/ipc/index.ts` に `registerSkillShareHandlers` と依存DIを追加し、型注釈まで固定化 | IPC追加時は「実装 + 登録 + double-registrationテスト」同時完了を必須化      |
 | 仕様書と監査スクリプトに旧型パスが混在                                                                           | `types/skill/<domain>.ts` 旧構成の記述が一部台帳に残存                         | `types/index.ts` と `types/skill-<domain>.ts` に一括統一し、監査スクリプト期待値を更新                  | Phase 12 で「実装実体→仕様→監査スクリプト」の順に突合する                   |
-| 未タスクが `docs/30-workflows/completed-tasks/skill-share/unassigned-task/` に配置され、正本ディレクトリと不一致 | 親ワークフロー配下配置と共通未タスク配置ルールの混同                           | `docs/30-workflows/unassigned-task/` に正規フォーマットで再配置し、参照先を同期                         | 未タスク作成時は `ls docs/30-workflows/unassigned-task/` を完了条件に含める |
+| 未タスクが `docs/30-workflows/completed-tasks/skill-share/unassigned-task/` に配置され、正本ディレクトリと不一致 | 親ワークフロー配下配置と共通未タスク配置ルールの混同                           | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に正規フォーマットで再配置し、参照先を同期                         | 未タスク作成時は `ls docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` を完了条件に含める |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 

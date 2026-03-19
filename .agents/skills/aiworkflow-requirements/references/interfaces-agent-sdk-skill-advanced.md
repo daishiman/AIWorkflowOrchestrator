@@ -95,37 +95,69 @@ useAppStoreから専用セレクターを提供。
 
 ---
 
-## ModifierSkill（スライド逆同期機能）
+## Slide Runtime / Modifier Skill Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
+
+> **ステータス**: `spec_created`（2026-03-19 再監査同期）
 
 ### 概要
 
-スライドプレゼンテーション機能において、Reveal.js HTML（index.html）の変更をstructure.md（構造定義ファイル）に逆同期する機能。
+slide 逆同期は `modifier-skill.ts` と `agent-client.ts` の legacy path を縮退させ、最終的に `skill-executor.ts + RuntimeResolver + handoffGuidance` へ寄せる。
 
-**実装ファイル**:
+### 現在のファイル構成
 
-- `apps/desktop/src/main/slide/modifier-skill.ts` - ModifierSkill実行ロジック
-- `apps/desktop/src/main/slide/agent-client.ts` - Agent SDK通信クライアント
-- `apps/desktop/src/main/slide/skill-executor.ts` - スキル実行オーケストレーション
-- `apps/desktop/src/main/slide/sync-manager.ts` - 同期管理
+| ファイル | 現状 | 目標責務 |
+| --- | --- | --- |
+| `apps/desktop/src/main/slide/skill-executor.ts` | slide phase 実行の中心 | RuntimeResolver 統合後の唯一の実行入口 |
+| `apps/desktop/src/main/slide/modifier-skill.ts` | reverse-sync 専用ロジック | `skill-executor.ts` へ統合し縮退予定 |
+| `apps/desktop/src/main/slide/agent-client.ts` | SDK 直呼び、safeStorage/env fallback | 廃止予定 |
+| `apps/desktop/src/main/slide/sync-manager.ts` | sync status authority | reverse-sync / watch 状態の authority |
 
-### 型定義
+### 正本契約
 
-| 型                    | 説明       |
-| --------------------- | ---------- |
-| `ModifierSkillInput`  | スキル入力 |
-| `ModifierSkillOutput` | スキル出力 |
-| `StructureChange`     | 変更情報   |
-| `SyncStatus`          | 同期状態   |
-| `SyncDirection`       | 同期方向   |
+| 観点 | 正本 |
+| --- | --- |
+| runtime 判定 | `RuntimeResolver` が `integrated` / `handoff` を返す |
+| handoff 応答 | `SkillExecutionResult` に `isHandoff?: boolean` と `guidance?: HandoffGuidance` を載せる |
+| modifier 実行 | `phase === "modifier"` も `skill-executor.ts` の同一実行面で扱う |
+| reverse-sync UI | `SlideGuidanceBlock` と terminal launcher が復旧導線を担う |
 
-### IPC チャンネル（スライド同期）
+### 型境界
 
-| チャンネル            | 方向            | 説明               |
-| --------------------- | --------------- | ------------------ |
-| `slide:sync-status`   | Main → Renderer | 同期状態通知       |
-| `slide:sync-progress` | Main → Renderer | 同期進捗通知       |
-| `slide:reverse-sync`  | Renderer → Main | 逆同期手動トリガー |
-| `slide:sync-error`    | Main → Renderer | 同期エラー通知     |
+| 型 | 役割 |
+| --- | --- |
+| `HandoffGuidance` | terminal command / context summary / reason の共通 DTO |
+| `SkillExecutionResult` | slide phase 実行の結果 envelope |
+| `SyncStatus` / `SyncDirection` | sync authority の共有型 |
+| `StructureChange` | reverse-sync 変更差分 |
+
+### 現行 drift（2026-03-19 再監査）
+
+| 項目 | current code | 状態 |
+| --- | --- | --- |
+| runtime 判定 | slide path で `RuntimeResolver` 未使用 | 未反映 |
+| handoffGuidance | slide result に未搭載 | 未反映 |
+| agent client | `@anthropic-ai/sdk` / `safeStorage` / `electron-store` / env fallback 直利用 | legacy path 残存 |
+| modifier | 専用ファイルとして残存 | 統合未実施 |
+
+### modifier-skill.ts 二重実装解消設計
+
+> **完了タスク**: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001（spec_created, 2026-03-19）
+
+`modifier-skill.ts` に独立実装されていた modifier ロジックを `skill-executor.ts` に統合する設計が完了した。
+
+| メソッド | 現在の実装先 | 統合先 |
+| --- | --- | --- |
+| `buildModifierPrompt()` | `modifier-skill.ts` | `skill-executor.ts`（`phase === "modifier"` 分岐内） |
+| `parseModifierResponse()` | `modifier-skill.ts` | `skill-executor.ts`（`phase === "modifier"` 分岐内） |
+
+**廃止対象**: `modifier-skill.ts` は `skill-executor.ts` への統合完了後に削除予定（`UT-SLIDE-IMPL-001` で実施）。
+
+### follow-up
+
+| 未タスクID | 内容 |
+| --- | --- |
+| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 |
+| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義の解消 |
 
 ---
 
@@ -313,4 +345,3 @@ skillHandlers.ts の IPC統合テストは、Handler Map方式を採用し、Ele
 | `MOCK_CACHE_DATA`               | `object`         | IMP-002キャッシュデータFixture |
 
 ---
-

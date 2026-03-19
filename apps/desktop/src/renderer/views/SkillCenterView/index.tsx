@@ -268,6 +268,8 @@ export const SkillCenterView: React.FC = memo(() => {
     navigateToSkillCreate,
     navigateToWorkspace,
     navigateToSkillAnalysis,
+    handleEditSkill,
+    handleAnalyzeSkill,
     handleAddSkill,
     handleOpenDetail,
     handleCloseDetail,
@@ -471,6 +473,8 @@ export const SkillCenterView: React.FC = memo(() => {
         onDelete={handleRequestDelete}
         isImported={isDetailImported}
         skill={detailSkill}
+        onEdit={handleEditSkill}
+        onAnalyze={handleAnalyzeSkill}
       />
 
       {isDeleteConfirmOpen && deleteTargetSkillName && (

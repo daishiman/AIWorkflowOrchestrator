@@ -3,7 +3,7 @@
  *
  * UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 4
  *
- * Tests that verify the IPC response contract consistency across all 14 skill: channels.
+ * Tests that verify the IPC response contract consistency across all 15 skill: channels.
  * These tests are designed to detect contract drift:
  *
  * 1. Return shape (wrapper vs direct vs primitive)
@@ -54,6 +54,7 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  updateSkill: vi.fn(),
   getSkillByName: vi.fn(),
   executeSkill: vi.fn(),
   setSkillExecutor: vi.fn(),
@@ -106,6 +107,7 @@ const CHANNELS = {
   IMPORT: "skill:import",
   REMOVE: "skill:remove",
   GET_DETAIL: "skill:get-detail",
+  UPDATE: "skill:update",
   EXECUTE: "skill:execute",
   ABORT: "skill:abort",
   GET_STATUS: "skill:get-status",
@@ -209,6 +211,7 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
       anchors: [],
       lastModified: new Date(),
     });
+    mockSkillService.updateSkill.mockResolvedValue(undefined);
     mockSkillService.executeSkill.mockResolvedValue({
       executionId: "exec-001",
       status: "success",
@@ -240,7 +243,7 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
   }
 
   // ===========================================================================
-  // Section 1: Handler Registration (all 14 channels)
+  // Section 1: Handler Registration (all 15 channels)
   // ===========================================================================
 
   describe("1. Handler Registration", () => {
@@ -307,6 +310,21 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
         expect(result).toHaveProperty("success", true);
         expect(result).toHaveProperty("data");
         expect(typeof result.data).toBe("object");
+      });
+
+      it("MC-N06A: skill:update returns wrapper with undefined data", async () => {
+        const handler = getHandler(CHANNELS.UPDATE);
+        const result = (await handler(
+          {},
+          {
+            skillName: "test-skill",
+            updates: { description: "updated" },
+          },
+        )) as { success: boolean; data: unknown };
+
+        expect(result).toHaveProperty("success", true);
+        expect(result).toHaveProperty("data");
+        expect(result.data).toBeUndefined();
       });
 
       it("MC-N07: skill:execute returns wrapper with data object", async () => {
@@ -496,6 +514,28 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
       });
     });
 
+    describe("skill:update validation", () => {
+      it("MC-V-UPD: throws VALIDATION_ERROR for invalid skillName", async () => {
+        const handler = getHandler(CHANNELS.UPDATE);
+        await expectValidationThrow(
+          handler,
+          (val) => ({ skillName: val, updates: { description: "x" } }),
+          "skillName must be a non-empty string",
+        );
+      });
+
+      it("MC-V-UPD-U: throws VALIDATION_ERROR for invalid updates payload", async () => {
+        const handler = getHandler(CHANNELS.UPDATE);
+
+        await expect(
+          handler({}, { skillName: "test-skill", updates: null }),
+        ).rejects.toMatchObject({
+          code: "VALIDATION_ERROR",
+          message: "updates must be a non-null object",
+        });
+      });
+    });
+
     describe("skill:execute validation", () => {
       it("MC-V-EXE: throws VALIDATION_ERROR for invalid skillId", async () => {
         const handler = getHandler(CHANNELS.EXECUTE);
@@ -605,6 +645,10 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
         { channel: CHANNELS.IMPORT, args: "test-skill" },
         { channel: CHANNELS.REMOVE, args: "test-skill" },
         { channel: CHANNELS.GET_DETAIL, args: { skillId: "skill-1" } },
+        {
+          channel: CHANNELS.UPDATE,
+          args: { skillName: "test-skill", updates: { description: "x" } },
+        },
         { channel: CHANNELS.EXECUTE, args: { skillId: "skill-1" } },
         { channel: CHANNELS.ABORT, args: "exec-001" },
         { channel: CHANNELS.GET_STATUS, args: "exec-001" },
@@ -633,8 +677,8 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
         }
       }
 
-      // Should have been called 14 times (once per handler)
-      expect(mockValidateIpcSender).toHaveBeenCalledTimes(14);
+      // Should have been called 15 times (once per handler)
+      expect(mockValidateIpcSender).toHaveBeenCalledTimes(15);
     });
 
     it("MC-SEC02: handlers throw when validateIpcSender returns invalid", async () => {
@@ -719,6 +763,27 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
         expect(typeof result.error).toBe("string");
       });
 
+      it("MC-E01-UPD: skill:update returns { success: false, error } on service error", async () => {
+        mockSkillService.updateSkill.mockRejectedValue(
+          new Error("update failed"),
+        );
+
+        const handler = getHandler(CHANNELS.UPDATE);
+        const result = (await handler(
+          {},
+          {
+            skillName: "test-skill",
+            updates: { description: "updated" },
+          },
+        )) as {
+          success: boolean;
+          error: string;
+        };
+
+        expect(result.success).toBe(false);
+        expect(typeof result.error).toBe("string");
+      });
+
       it("MC-E01-EXE: skill:execute returns { success: false, error } on service error", async () => {
         mockSkillService.executeSkill.mockRejectedValue(
           new Error("exec failed"),
@@ -794,6 +859,27 @@ describe("skillHandlers Contract Tests (Phase 4 TDD Red)", () => {
       expect(result.success).toBe(false);
       // Contract expectation: internal connection details should be sanitized
       expect(result.error).not.toContain("127.0.0.1:3456");
+    });
+
+    it("MC-SAN-UPD: skill:update should NOT leak internal error paths", async () => {
+      mockSkillService.updateSkill.mockRejectedValue(
+        new Error("ENOENT: cannot open '/internal/path/skills/test-skill'"),
+      );
+
+      const handler = getHandler(CHANNELS.UPDATE);
+      const result = (await handler(
+        {},
+        {
+          skillName: "test-skill",
+          updates: { description: "updated" },
+        },
+      )) as {
+        success: boolean;
+        error: string;
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error).not.toContain("/internal/path/");
     });
 
     it("MC-SAN-GI: skill:getImported should NOT leak internal error details", async () => {

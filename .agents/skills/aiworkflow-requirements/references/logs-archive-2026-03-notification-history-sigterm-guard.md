@@ -53,7 +53,7 @@
 
 ### 検証
 - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md`（移管前に実行）
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-desktop-testrun-sigterm-fallback-guard-001.md`（移管前に実行）
 - `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`
 
 ### 結果
@@ -165,14 +165,14 @@
 - SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.19` へ更新
 
 ### 実施内容
-- 未タスク仕様書 `docs/30-workflows/unassigned-task/task-imp-phase12-workflow-path-canonicalization-001.md` を新規作成
-- `--target-file` の適用境界を `docs/30-workflows/unassigned-task/` 限定としてテンプレート/仕様へ固定
+- 未タスク仕様書 `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-workflow-path-canonicalization-001.md` を新規作成
+- `--target-file` の適用境界を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 限定としてテンプレート/仕様へ固定
 - workflow preflight（`test -d` + `rg --files`）を苦戦箇所の再利用手順として明文化
 
 ### 検証
 - `verify-all-specs --workflow docs/30-workflows/task-056a-a-store-slice-baseline --json` → PASS（13/13）
 - `validate-phase-output docs/30-workflows/task-056a-a-store-slice-baseline` → PASS（28項目）
-- `audit-unassigned-tasks --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-workflow-path-canonicalization-001.md` → `currentViolations=0`
+- `audit-unassigned-tasks --json --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-workflow-path-canonicalization-001.md` → `currentViolations=0`
 - `audit-unassigned-tasks --json --diff-from HEAD` → `currentViolations=0`, `baselineViolations=90`
 - `verify-unassigned-links` → `ALL_LINKS_EXIST (105/105)`
 
@@ -192,13 +192,13 @@
 ### 仕様書別SubAgent分担
 - SubAgent-A（台帳同期）: `references/task-workflow.md` に再監査結果と関連未タスクを追補
 - SubAgent-B（教訓同期）: `references/lessons-learned.md` に `--target-file` 適用境界の苦戦箇所を追記
-- SubAgent-C（運用追跡）: `docs/30-workflows/unassigned-task/task-imp-phase12-unassigned-baseline-reduction-001.md` を新規作成
+- SubAgent-C（運用追跡）: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-unassigned-baseline-reduction-001.md` を新規作成
 - SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.18` へ更新
 
 ### 実施内容
 - `verify-all-specs` / `validate-phase-output` / `audit --diff-from HEAD` の再実行結果を台帳へ反映
 - 実装差分未タスクは0件、baseline負債は別未タスクで段階削減する方針を明文化
-- `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/unassigned-task/` に配置
+- `UT-IMP-PHASE12-UNASSIGNED-BASELINE-REDUCTION-001` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置
 
 ### 検証
 - `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/.../task-056a-a-store-slice-baseline` → PASS
@@ -251,20 +251,20 @@
 - 目的: 完了済みUT配置ルールの文書間ドリフトと `target-file` 誤用を未タスク化し、再利用可能な運用ガードへ固定する
 
 ### 仕様書別SubAgent分担
-- SubAgent-A（未タスク仕様作成）: `docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` を作成（Why/What/How + 3.5教訓）
+- SubAgent-A（未タスク仕様作成）: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` を作成（Why/What/How + 3.5教訓）
 - SubAgent-B（台帳同期）: `references/task-workflow.md` の未タスク管理件数と残課題テーブルへ `UT-TASK-10A-B-009` を追加（`1.67.10`）
 - SubAgent-C（UI仕様同期）: `references/ui-ux-feature-components.md` の関連未タスクへ `UT-TASK-10A-B-009` を追加（`v1.15.4`）
 - SubAgent-D（教訓同期）: `references/lessons-learned.md` に追加未タスク化追補を記録（`1.29.19`）
 - SubAgent-E（履歴同期）: `SKILL.md` 変更履歴を `9.01.16` へ更新
 
 ### 実施内容
-- 新規未タスク指示書を `docs/30-workflows/unassigned-task/` に配置
+- 新規未タスク指示書を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置
 - 配置先3分類（未実施/完了済みUT/legacy）と `target-file` 境界の苦戦箇所を 3.5 セクションへ記録
 - 仕様書3点（task-workflow/ui-ux-feature/lessons）へ同IDを同一ターンで同期
 
 ### 検証
 - `verify-unassigned-links` → `ALL_LINKS_EXIST`
-- `audit-unassigned-tasks --json --target-file docs/30-workflows/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` → `currentViolations=0`
+- `audit-unassigned-tasks --json --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-b-completed-ut-placement-policy-guard.md` → `currentViolations=0`
 - `audit-unassigned-tasks --json --diff-from HEAD` → `currentViolations=0`, `baselineViolations=90`
 
 ### 結果
@@ -313,7 +313,7 @@
 
 ### 実施内容
 - 完了済み `task-10a-b-autofixable-filter-button.md` を `docs/30-workflows/completed-tasks/` 直下へ移管
-- 未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/unassigned-task/` へ再配置
+- 未実施 `UT-TASK-10A-B-002〜008` の7件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ再配置
 - 関連参照（workflow成果物/仕様書）を一括更新し、削除済みパス参照を解消
 - スクリーンショット5件（TC-11-01〜05）を 2026-03-05 11:00 JST に再取得し、Apple UI/UX 観点で再確認
 - 検証を再実行
@@ -335,7 +335,7 @@
 - 目的: `validate-phase11-screenshot-coverage` の warning 常態化（matrix 未記載）を未タスクとして分離し、再利用可能な是正導線を固定する
 
 ### 仕様書別SubAgent分担
-- SubAgent-A（未タスク作成）: `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` を作成
+- SubAgent-A（未タスク作成）: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md` を作成
 - SubAgent-B（台帳同期）: `task-workflow.md` 追補課題と残課題テーブルへ同IDを登録
 - SubAgent-C（教訓同期）: `lessons-learned.md` / `ui-ux-feature-components.md` に苦戦箇所と4ステップ手順を追記
 - SubAgent-D（履歴同期）: `SKILL.md` 変更履歴を `9.01.11` に更新し、issue導線を追加

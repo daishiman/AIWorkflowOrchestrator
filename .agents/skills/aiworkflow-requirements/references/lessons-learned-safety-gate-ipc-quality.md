@@ -103,10 +103,10 @@ if (error != null && typeof error === "object" && "code" in error && typeof erro
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/unassigned-task/` |
+| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` |
 | 再発条件 | workflow ローカルパスに未タスクを配置する（P38/P58 と同一パターン） |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置 |
-| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/unassigned-task/`」を明示する |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置 |
+| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`」を明示する |
 | 関連パターン | P38（未タスク配置ディレクトリ間違い）、P58（設計タスクにおける未タスク指示書の配置省略） |
 | 関連タスク | UT-06-003 |
 
@@ -116,4 +116,4 @@ if (error != null && typeof error === "object" && "code" in error && typeof erro
 2. Phase 4 テスト設計時に Phase 2 のレスポンス形式定義を参照し、アサーションを wrapper 形式で記述する。
 3. catch ブロック内の `error: unknown` には `in` 演算子パターンのみ使用し、`as` キャストを禁止する。
 4. ternary 演算子の分岐カバレッジは `vitest run --coverage --reporter=json` で JSON 出力して分析する。
-5. 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置する。
+5. 未タスク指示書は必ず `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置する。

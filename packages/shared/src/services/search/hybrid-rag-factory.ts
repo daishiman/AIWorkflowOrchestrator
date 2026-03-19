@@ -161,9 +161,9 @@ export class HybridRAGFactory {
    */
   static createFull(_config: FullHybridRAGConfig): HybridRAGEngine {
     throw new Error(
-      "createFull() is not yet implemented. " +
-        "Dependent modules (LLMQueryClassifier, VectorSearchStrategy, etc.) are required. " +
-        "Use createForTesting() with mocks for now.",
+      "HybridRAGFactory.createFull() は依存モジュール完成後に利用可能になります。" +
+        "現在は createForTesting() のみ使用できます。" +
+        " [FACTORY_NOT_READY] 必要なモジュール: LLMQueryClassifier, VectorSearchStrategy, GraphSearchStrategy, CohereReranker/VoyageReranker/LLMReranker, CorrectiveRAG",
     );
   }
 
@@ -182,9 +182,9 @@ export class HybridRAGFactory {
    */
   static createLite(_config: LiteHybridRAGConfig): HybridRAGEngine {
     throw new Error(
-      "createLite() is not yet implemented. " +
-        "Dependent modules (VectorSearchStrategy, GraphSearchStrategy, etc.) are required. " +
-        "Use createForTesting() with mocks for now.",
+      "HybridRAGFactory.createLite() は依存モジュール完成後に利用可能になります。" +
+        "現在は createForTesting() のみ使用できます。" +
+        " [FACTORY_NOT_READY] 必要なモジュール: RuleBasedQueryClassifier, VectorSearchStrategy, GraphSearchStrategy",
     );
   }
 

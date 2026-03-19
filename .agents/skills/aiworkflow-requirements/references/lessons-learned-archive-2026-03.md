@@ -190,7 +190,7 @@
 | 課題 | `light-theme-shared-color-migration/` などの workflow 名だけを参照すると、正式な task spec / issue 追跡先が分離しやすい |
 | 再発条件 | 親 workflow を `completed-tasks/` へ移した後も、root `unassigned-task/` や workflow 名参照だけで運用する |
 | 解決策 | 2件を `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit-unassigned-tasks --json --diff-from HEAD --target-file <file>` で個別 `currentViolations=0` を確認した |
-| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
+| 標準ルール | active workflow 由来の未実施タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`、completed workflow 由来の継続 backlog は `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/` を正本にする |
 
 #### 同種課題の簡潔解決手順（5ステップ）
 
@@ -361,7 +361,7 @@
 
 | 未タスクID | 概要 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow の current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ---
 
@@ -412,7 +412,7 @@
 | 項目 | 内容 |
 | --- | --- |
 | 課題 | 未タスクを `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/` に置いたため、`--target-file` 監査境界と衝突した |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置した |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置した |
 | 標準ルール | active 未タスクは root canonical path を正本とし、workflow ローカル path は使わない |
 
 #### 苦戦箇所3: system spec の同期対象を絞りすぎると same-wave が崩れる
@@ -422,66 +422,6 @@
 | 課題 | workflow 成果物だけ更新して `resource-map` / `quick-reference` / `legacy register` / `LOGS` を後回しにすると、再利用入口が stale になる |
 | 解決策 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を統合正本として追加し、`parent docs / ledger / indexes / logs` を同一 wave で同期した |
 | 標準ルール | Phase 12 の close-out は `workflow + parent docs + task-workflow + lessons + indexes + LOGS + mirror` を最小単位とする |
-
----
-
-### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57〜P61）
-
-#### P57: 設計書と実コードの AuthMode 値の乖離
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 設計ドキュメントでは AuthMode を `"integrated"` / `"terminal"` / `"hybrid"` の3値で定義したが、実コードでは `"subscription" \| "api-key"` の2値。RuntimeResolver の解決テーブルの全面書き直しが必要だった |
-| 解決策 | Phase 1 で `grep -rn "AuthMode" packages/shared/` で正本型定義値を先に確認する |
-| 標準ルール | 設計書で列挙型の値を参照するときは、実コードの型定義を正本として先に確認する |
-
-#### P59: Preload API 未公開（exposeChatEditAPI 呼び出し欠落）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `chatEditApi.ts` に `exposeChatEditAPI()` 関数は定義されていたが、`preload/index.ts` で一切呼ばれておらず `window.chatEditAPI` が `undefined` |
-| 解決策 | 新規 Preload API は `preload/index.ts` の `contextBridge.exposeInMainWorld()` と else ブロック両方に追記を確認する |
-| 関連パターン | M-01（contextBridge 未使用）、P23 |
-
-#### P60: createAuthModeService のスコープ制限
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `createAuthModeService(authKeyService)` が `track()` コールバック内にあり、スコープ外から参照できなかった |
-| 解決策 | 複数のハンドラ登録ブロックで同じサービスが必要な場合、外側スコープで生成する |
-| 標準ルール | サービスの共有スコープは「最も外側の共通消費者」に合わせて配置する |
-
----
-
-### 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補）
-
-#### 苦戦箇所: 既存未タスクを再参照しても `target-file` 監査要件を満たさない場合がある
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `unassigned-task-detection.md` で「既存未タスクを再利用」と記録しても、`audit-unassigned-tasks --target-file` では current 違反が出るケースがあった |
-| 解決策 | 再参照した各未タスクに対して `audit-unassigned-tasks --target-file` を実行し、違反があれば同ターンで9見出しへ是正した |
-| 標準ルール | 「新規未タスク0件」判定時でも、再参照した既存未タスクは `target-file` 監査で `currentViolations=0` を確認する |
-
----
-
-### 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001
-
-#### 苦戦箇所1: current build screenshot が esbuild platform mismatch で停止する
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `electron-vite dev` が `@esbuild/darwin-arm64` / `@esbuild/darwin-x64` 不一致で起動できず Phase 11 の実画面 capture が中断した |
-| 解決策 | fallback review board capture を current workflow 配下で生成し、`phase11-capture-metadata.json` へ理由と source を固定した |
-| 標準ルール | 明示 screenshot 要求時は「実画面試行ログ → fallback 実行 → metadata 記録 → coverage validator PASS」まで同一ターンで閉じる |
-
-#### 苦戦箇所2: chatEdit preload と Main IPC の payload 契約がドリフトしていた
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `chatEditAPI.readFile/writeFile` が positional 引数で invoke し、Main 側の object payload 契約（`{ filePath, workspacePath? }`）と不整合だった |
-| 解決策 | `chatEditApi.ts` を object payload 契約へ統一した |
-| 標準ルール | IPC 契約変更時は handler / preload / renderer usage を 1 セットで更新し、`typecheck` と関連テストを同ターンで実行する |
 
 ---
 

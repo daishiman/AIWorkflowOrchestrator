@@ -1,0 +1,54 @@
+{
+  "capturedAt": "2026-03-19",
+  "mode": "fallback-review-board",
+  "reason": "user requested screenshot verification and current build capture was blocked by esbuild native binary mismatch",
+  "screenshots": [
+    {
+      "tc": "TC-11-01",
+      "output": "outputs/phase-11/screenshots/TC-11-01-rag-settings-guidance-review-board.png",
+      "sourceEvidence": [
+        "docs/30-workflows/completed-tasks/TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001/outputs/phase-11/screenshots/TC-11-03-settings-health-rag-guidance-rerun-20260317.png"
+      ],
+      "refs": [
+        "apps/desktop/src/renderer/views/SettingsView/index.tsx",
+        "apps/desktop/src/main/ipc/aiHandlers.ts",
+        ".claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md"
+      ]
+    },
+    {
+      "tc": "TC-11-02",
+      "output": "outputs/phase-11/screenshots/TC-11-02-ai-ipc-guidance-review-board.png",
+      "sourceEvidence": [
+        "docs/30-workflows/completed-tasks/TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001/outputs/phase-11/screenshots/TC-11-01-settings-access-matrix-rerun-20260317.png"
+      ],
+      "refs": [
+        "apps/desktop/src/main/ipc/aiHandlers.ts",
+        "apps/desktop/src/preload/types.ts",
+        ".claude/skills/aiworkflow-requirements/references/llm-ipc-types.md"
+      ]
+    },
+    {
+      "tc": "TC-11-03",
+      "output": "outputs/phase-11/screenshots/TC-11-03-community-guidance-review-board.png",
+      "sourceEvidence": [
+        "docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface/outputs/phase-11/screenshots/TC-11-03-terminal-unavailable-guidance.png"
+      ],
+      "refs": [
+        "apps/desktop/src/main/ipc/communityHandlers.ts",
+        "apps/desktop/src/preload/types.ts",
+        ".claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md"
+      ]
+    },
+    {
+      "tc": "TC-11-04",
+      "output": "outputs/phase-11/screenshots/TC-11-04-graphrag-hybrid-review-board.png",
+      "sourceEvidence": [],
+      "refs": [
+        "packages/shared/src/services/search/graphrag-query-service.ts",
+        "packages/shared/src/services/search/hybrid-rag-factory.ts",
+        "packages/shared/src/services/graph/community-summarizer.ts",
+        ".claude/skills/aiworkflow-requirements/references/rag-query-pipeline.md"
+      ]
+    }
+  ]
+}

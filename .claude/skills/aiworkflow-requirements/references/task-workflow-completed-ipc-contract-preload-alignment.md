@@ -3,6 +3,34 @@
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: current canonical set
+
+### 仕様書別SubAgent分担（今回の同期チーム）
+
+| SubAgent   | 担当仕様書 | 主担当作業 | 依存関係 |
+| ---------- | ---------- | ---------- | -------- |
+| SubAgent-A | `interfaces-agent-sdk-skill-core.md`, `interfaces-agent-sdk-skill-details.md` | `skill:get-detail` / `skill:update` の current contract 同期 | Main/Preload の object payload 確定後に更新 |
+| SubAgent-B | `security-skill-ipc-core.md`, `security-electron-ipc-core.md` | sender検証 + object payload 標準 + P42/P44/P45 を明文化 | SubAgent-A の契約定義を参照 |
+| SubAgent-C | `architecture-overview-core.md`, `task-workflow-completed-ipc-contract-preload-alignment.md` | registerSkillHandlers の対象チャネルと current canonical set を台帳化 | SubAgent-A/B の反映完了後に統合 |
+| SubAgent-D | `lessons-learned-auth-ipc-contract-bridge-audit-scope.md`, `lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md` | 同期手順と Phase12 再監査の教訓を再利用可能形式で記録 | SubAgent-C の証跡値を参照 |
+
+### current canonical set
+
+| 役割 | 正本 |
+| ---- | ---- |
+| Skill API summary | `interfaces-agent-sdk-skill-core.md` |
+| Skill API current contract | `interfaces-agent-sdk-skill-details.md` |
+| IPC セキュリティ | `security-skill-ipc-core.md`, `security-electron-ipc-core.md` |
+| ハンドラー登録一覧 | `architecture-overview-core.md` |
+| 台帳 / 完了記録 | `task-workflow-completed-ipc-contract-preload-alignment.md` |
+| 再利用教訓 | `lessons-learned-auth-ipc-contract-bridge-audit-scope.md`, `lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md` |
+
+### object payload standard
+
+- `skill:get-detail` は `{ skillId }` を渡し、Preload 側で `safeInvokeUnwrap` を使って失敗時に throw する。
+- `skill:update` は `{ skillName, updates }` を渡し、P44/P45 の契約ドリフトを避ける。
+- 仕様書更新は `interfaces` / `security` / `task-workflow` / `lessons` を同一ターンで同期する。
+
 ## 完了タスク
 
 ### タスク: UT-FIX-SKILL-EXECUTE-INTERFACE-001 skill:execute IPCハンドラ・Preload契約整合（2026-02-25完了）
@@ -53,9 +81,9 @@
 
 | ファイル                                                    | 配置先                               | 判定                                           |
 | ----------------------------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
 
 #### 再確認時の苦戦箇所と解決策
 
@@ -253,7 +281,7 @@
 
 - Atoms層の基盤部品（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）を新規実装し、Badge/EmptyStateを拡張
 - Apple HIG/WCAGとデザイントークン運用を仕様化し、テーマ横断・a11y検証を実施
-- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
+- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
 
 ---
 
@@ -381,3 +409,28 @@
 
 ---
 
+### タスク: TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 IPC層完全性修正（2026-03-19完了）
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001                                 |
+| 完了日     | 2026-03-19                                                           |
+| ステータス | **完了**                                                             |
+| テスト数   | 227（対象5ファイルの再検証で全PASS）                                |
+| 主要変更   | SKILL_UPDATE デッドチャンネル修正 + SKILL_GET_DETAIL / SKILL_UPDATE Preload API 公開 |
+
+#### 変更内容
+
+- `registerSkillHandlers()` に `skill:update` IPC ハンドラを追加し、P42準拠3段バリデーション + P45 `skillName` 命名を固定
+- `unregisterSkillHandlers()` に `removeHandler(IPC_CHANNELS.SKILL_UPDATE)` を追加し、P5対策を完了
+- `skill-api.ts` に `getDetail()` / `update()` を追加し、`safeInvokeUnwrap` + Preload 早期バリデーションへ統一
+- `packages/shared/src/ipc/channels.ts` に `SKILL_GET_DETAIL` / `SKILL_UPDATE` を追加し、shared / desktop parity を固定
+- `SkillService.updateSkill()` は現状スタブであり、`UT-IMP-SKILL-UPDATE-BUSINESS-LOGIC-001` で継続管理
+
+#### 残課題
+
+| ID | 内容 | 優先度 | 指示書 |
+| --- | --- | --- | --- |
+| UT-IMP-SKILL-UPDATE-BUSINESS-LOGIC-001 | SkillService.updateSkill() のビジネスロジック実装 | Medium | `docs/30-workflows/unassigned-task/task-ut-imp-skill-update-business-logic-001.md` |
+
+---

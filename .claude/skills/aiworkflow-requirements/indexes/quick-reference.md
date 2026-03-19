@@ -12,6 +12,36 @@
 
 ---
 
+## IPC layer integrity fix current canonical set
+
+### 読む順番
+
+| Step | ファイル | 確認すること |
+| ---- | -------- | ------------ |
+| 1 | `resource-map.md` | `IPC contract / preload alignment / skill management` 行の current canonical set を確定する |
+| 2 | `interfaces-agent-sdk-skill-details.md` | `getDetail` / `update` の object payload と `safeInvokeUnwrap` 契約 |
+| 3 | `security-skill-ipc-core.md` | sender検証、P42、エラーサニタイズ、whitelist 境界 |
+| 4 | `architecture-overview-core.md` | `registerSkillHandlers` が `skill:get-detail` / `skill:update` を担当すること |
+| 5 | `architecture-implementation-patterns-details.md` | `safeInvoke` / `safeInvokeUnwrap` の使い分け、channels 正本の扱い |
+| 6 | `architecture-implementation-patterns-reference-ipc-contract-audits.md` | object payload 標準（P44/P45） |
+| 7 | `ipc-contract-checklist.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` | shared / preload / main sync と自動検出ルール |
+| 8 | `api-ipc-agent-core.md` | 補助参照。handler topology と隣接 skill channel 群のみ確認する |
+
+### current contract
+
+| API | Preload 呼び出し | Main 契約 | 同期対象 |
+| --- | ---------------- | --------- | -------- |
+| `getDetail` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` | `args: { skillId: string }` を受け、`{ success: true, data: Skill } \| { success: false, error }` wrapper を返す | `packages/shared/src/types/skill.ts`、`apps/desktop/src/preload/skill-api.ts`、`apps/desktop/src/main/ipc/skillHandlers.ts`、`apps/desktop/src/preload/channels.ts`、`packages/shared/src/ipc/channels.ts`。`apps/desktop/src/preload/types.ts` は `import(\"./skill-api\").SkillAPI` により自動反映されるため確認のみ |
+| `update` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, { skillName, updates })` | `args: { skillName: string; updates: Record<string, unknown> }` を受け、`{ success: true, data: void } \| { success: false, error }` wrapper を返す | `packages/shared/src/types/skill.ts` または shared transport DTO、`apps/desktop/src/preload/skill-api.ts`、`apps/desktop/src/main/ipc/skillHandlers.ts`、`apps/desktop/src/preload/channels.ts`、`packages/shared/src/ipc/channels.ts`。`apps/desktop/src/preload/types.ts` は `import(\"./skill-api\").SkillAPI` により自動反映されるため確認のみ |
+
+誤読防止:
+
+- `skill:get-detail` / `skill:update` は positional payload に戻さない。
+- `security-skill-ipc-core.md` の TASK-4-1 由来セクションは履歴スナップショット。現行契約は `Skill API current canonical contract` を優先する。
+- `api-ipc-agent*.md` は主に topology 補助参照。一次契約の正本ではない。
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |
@@ -59,8 +89,13 @@
 
 | チャンネル             | 用途           |
 | ---------------------- | -------------- |
-| `skill:list-available` | スキルスキャン |
-| `skill:list-imported`  | インポート済み |
+| `skill:list`           | スキル一覧取得 |
+| `skill:scan`           | スキル再スキャン |
+| `skill:getImported`    | インポート済み |
+| `skill:get-detail`     | スキル詳細取得 |
+| `skill:update`         | スキル更新 |
+| `skill:import`         | スキルインポート |
+| `skill:remove`         | スキル削除 |
 | `skill:execute`        | スキル実行     |
 | `skill:permission`     | 権限確認       |
 
@@ -223,6 +258,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-19 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: `skill:get-detail` / `skill:update` の current canonical set を追加。object payload + `safeInvokeUnwrap` + shared/preload/main sync と、parent/auxiliary docs の境界を明記 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |

@@ -126,7 +126,7 @@
 - 目的: 2workflow同時監査時の証跡分散を未タスク化し、再利用可能な監査ガードとして台帳へ登録する
 
 ### SubAgent分担
-- SubAgent-A: 未タスク指示書作成（`docs/30-workflows/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md`）
+- SubAgent-A: 未タスク指示書作成（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-two-workflow-evidence-bundle-001.md`）
 - SubAgent-B: `task-workflow.md` 残課題テーブル同期 + 変更履歴追記
 - SubAgent-C: `lessons-learned.md` 参照導線追記
 - SubAgent-D: 検証（`verify-unassigned-links`, `audit --target-file`, 10見出し確認）
@@ -159,7 +159,7 @@
 ### 実施内容
 - 2workflowの Phase 12 を再検証し、いずれも PASS（13/13, 28項目）
 - Task 1/3/4/5 の必須成果物実体と `implementation-guide.md` の Part 1/Part 2 を確認
-- 未タスク正本3件（`task-ui-05a-*.md`）が `docs/30-workflows/unassigned-task/` に配置され、10見出し準拠であることを確認
+- 未タスク正本3件（`task-ui-05a-*.md`）が `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置され、10見出し準拠であることを確認
 - `task-workflow.md` に再確認証跡、苦戦箇所、4ステップ再利用手順を追加
 - `lessons-learned.md` に同内容の教訓を追加（version 1.28.1）
 
@@ -188,7 +188,7 @@
   - `UI05A-03-current-dashboard-20260302.png`
   - `UI05A-04-current-editor-20260302.png`
   - `UI05A-05-navigation-check-20260302.txt`
-- 未タスク正本3件を `docs/30-workflows/unassigned-task/` に作成し、残課題テーブルを同期
+- 未タスク正本3件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に作成し、残課題テーブルを同期
 - `spec-update-summary.md` を追加し、Phase 12必須成果物セットを充足
 - `artifacts.json` と `outputs/artifacts.json` を同期
 

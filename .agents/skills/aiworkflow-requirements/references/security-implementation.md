@@ -163,7 +163,7 @@ Authorization Code Flow + PKCE方式を実装し、DEBT-SEC-001/002/003を解消
 
 ### 関連未タスク
 
-- UT-06-001-CSS-RISK-VARS: CSS変数 `--risk-low` / `--risk-medium` / `--risk-high` の定義（[指示書](../../../docs/30-workflows/unassigned-task/task-ut-06-001-css-risk-variables-definition.md)）
+- UT-06-001-CSS-RISK-VARS: CSS変数 `--risk-low` / `--risk-medium` / `--risk-high` の定義（[指示書](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-001-css-risk-variables-definition.md)）
 
 ### 後続タスク
 

@@ -129,6 +129,7 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | 外部CLIエージェント委譲  | agents/delegate-to-external-cli.md   |
 | マルチスキル同時設計     | agents/design-multi-skill.md         |
 | フィードバック記録       | scripts/log_usage.js                 |
+| Phase 12 再監査同期      | assets/phase12-system-spec-retrospective-template.md |
 
 ---
 
@@ -147,6 +148,7 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 | オーケストレーション         | references/orchestration-guide.md            |
 | 実行モード選択               | references/execution-mode-guide.md           |
 | ドキュメント生成             | references/api-docs-standards.md             |
+| Phase 12 再監査              | references/update-process.md                 |
 | 自己改善サイクル             | references/self-improvement-cycle.md         |
 | ライブラリ管理               | references/library-management.md             |
 
@@ -200,6 +202,13 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 **注意**: 各SubAgentに割り当てるファイル数は3ファイル以下を推奨（P43対策）。
 
+### Phase 12 再監査ショートカット
+
+- `spec_created` / docs-heavy task を更新する時は、先に [task-specification-creator/references/phase-11-12-guide.md](../task-specification-creator/references/phase-11-12-guide.md) と [task-specification-creator/references/spec-update-workflow.md](../task-specification-creator/references/spec-update-workflow.md) を開く。
+- SubAgent lane は `A: system spec`, `B: screenshot evidence`, `C: unassigned formalize`, `D: skill update + mirror` を基本形にする。
+- [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
+- `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
+
 ### P43対策: SubAgent ファイル分割基準
 
 | 状況 | 対応 |
@@ -233,6 +242,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.37.47** | **2026-03-19** | **Phase 12 changelog / Step 1-A 台帳同期ガード + TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 フィードバック反映**: `assets/phase12-completion-guard-checklist.md` に `git diff --stat -- .claude/skills/*/SKILL.md` と changelog 突合を追加し、`references/patterns-guideline-type.md` に「Step 1-A で更新した `SKILL.md` / `LOGS.md` も `documentation-changelog.md` に canonical path で同値転記する」ガイドラインを追加。加えて `references/patterns-success-phase12-advanced.md` に direct capture preflight 失敗時の review board fallback、`UT-*` ID と lowercase `task-...md` physical filename 分離、`audit-unassigned-tasks --target-file` による `currentViolations=0` 確認、indexes same-wave sync 記録を追加し、Phase 12 再監査の再利用性を高めた |
 | **10.37.46** | **2026-03-18** | **TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 スキルフィードバック反映**: `references/patterns.md` に「lessons-learned 子ファイル分類パターン（classification-first）」を追加。教訓追記前にドメイン分類（auth/ipc / skill / workflow-quality / ui / 設計）で適切な子ファイルを選定し、横断的な教訓のみ current へ積み上げる運用を標準化。500行超過時の新規子ファイル作成フローも明示 |
 | **10.37.45** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/patterns.md` に「依存タスク連携における型変換点の明示パターン」を追加。設計タスクシリーズで前タスク出力型→後タスク入力型への変換点を `Task-N 出力型 -> Adapter -> Task-M 入力型 -> Port -> 判定結果` フォーマットで Phase 2 設計書に明示する運用を標準化 |
 | **10.37.44** | **2026-03-16** | **TASK-SKILL-LIFECYCLE-07 スキルフィードバック反映**: `references/patterns.md` に「設計タスク（docs-only）でもサブエージェントに実更新を保留させない」パターンを追加。Phase 12 サブエージェントが「設計タスク範囲外」として実更新を保留する問題の防止策を明文化 |

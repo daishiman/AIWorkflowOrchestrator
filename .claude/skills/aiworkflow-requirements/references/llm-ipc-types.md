@@ -61,7 +61,7 @@ AI/RAG接続状態確認の応答型。
 | success               | boolean                                  | 成功/失敗フラグ        |
 | data.status           | "connected" \| "disconnected" \| "error" | 接続状態               |
 | data.indexedDocuments | number                                   | インデックス済み文書数 |
-| data.lastSyncTime     | Date                                     | 最終同期時刻           |
+| data.lastSyncTime     | Date?                                    | 最終同期時刻（省略可） |
 
 **運用方針（2026-03-17）**:
 
@@ -75,7 +75,7 @@ RAGドキュメントインデックス作成リクエスト型。
 | フィールド | 型      | 必須 | 説明                         |
 | ---------- | ------- | ---- | ---------------------------- |
 | folderPath | string  | ✓    | インデックス対象フォルダパス |
-| recursive  | boolean | ✓    | 再帰的検索フラグ             |
+| recursive  | boolean | -    | 再帰的検索フラグ             |
 
 #### AIIndexResponse
 
@@ -86,7 +86,28 @@ RAGドキュメントインデックス作成リクエスト型。
 | success           | boolean                   | 成功/失敗フラグ                |
 | data.indexedCount | number                    | インデックス化されたファイル数 |
 | data.skippedCount | number                    | スキップされたファイル数       |
-| data.errors       | Array<{filePath, reason}> | エラー発生ファイル             |
+| data.errors       | string[]                  | guidance / エラーメッセージ一覧 |
+
+**運用方針（2026-03-19）**:
+
+- `AI_INDEX` は current runtime では guidance-only stub。
+- `indexedCount` / `skippedCount` は 0 固定、`errors` に利用不可理由を入れて返す。
+
+#### CommunityResult<T>
+
+Community IPC の preload 型。current runtime では guidance-only response の統一面としても使う。
+
+| フィールド     | 型                               | 説明 |
+| -------------- | -------------------------------- | ---- |
+| ok             | boolean                          | 成功/失敗フラグ |
+| value          | T                                | 成功時データ |
+| error.code     | string                           | エラーコード |
+| error.message  | string                           | 人間可読メッセージ |
+
+**運用方針（2026-03-19）**:
+
+- `communityHandlers.ts` は全 `COMMUNITY_*` で `ok: false` + `error.code = "NOT_IN_SCOPE"` を返す。
+- `value` は成功時のみ存在し、guidance-only response では省略される。
 
 ### Store 型定義
 
